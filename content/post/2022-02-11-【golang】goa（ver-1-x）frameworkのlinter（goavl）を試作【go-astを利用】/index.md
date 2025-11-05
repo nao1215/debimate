@@ -14,6 +14,7 @@ cover:
   image: images/owl-g4a1fd006f_640.jpg
   alt: "【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】"
   hidden: false
+images: ["images/owl-g4a1fd006f_640.jpg"]
 ---
 
 ## 前書き：DSLに半日悩み、カッとなって作った

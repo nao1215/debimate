@@ -13,6 +13,7 @@ cover:
   image: images/ICON-1.jpg
   alt: "【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話"
   hidden: false
+images: ["images/ICON-1.jpg"]
 ---
 
 ## 前書き：UserLAndは遅かった

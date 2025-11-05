@@ -14,6 +14,7 @@ cover:
   image: images/Rust.jpg
   alt: "感想: Rust Programming By Example: Enter the world of Rust by building engaging, concurrent, reactive, and robust applications"
   hidden: false
+images: ["images/Rust.jpg"]
 ---
 
 ## Rustアプリを写経できる数少ない書籍の一つ

@@ -13,6 +13,7 @@ cover:
   image: images/Android-pie.jpg
   alt: "Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法"
   hidden: false
+images: ["images/Android-pie.jpg"]
 ---
 
 ## 前書き

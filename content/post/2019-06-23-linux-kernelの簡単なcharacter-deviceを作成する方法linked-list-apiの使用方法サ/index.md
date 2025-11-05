@@ -14,6 +14,7 @@ cover:
   image: images/businesswoman-571153_640.jpg
   alt: "Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)"
   hidden: false
+images: ["images/businesswoman-571153_640.jpg"]
 ---
 
 ## 前書き

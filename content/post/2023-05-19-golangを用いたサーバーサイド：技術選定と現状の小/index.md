@@ -10,6 +10,7 @@ cover:
   image: images/laptop-gdce694483_640.jpg
   alt: "Golangを用いたサーバーサイド：技術選定と現状の小さな課題"
   hidden: false
+images: ["images/laptop-gdce694483_640.jpg"]
 ---
 
 ## 前書き

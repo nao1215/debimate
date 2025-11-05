@@ -13,6 +13,7 @@ cover:
   image: images/mutex2.jpg
   alt: "Linux Kernel: mutex APIによるロック(排他)方法"
   hidden: false
+images: ["images/mutex2.jpg"]
 ---
 
 ## 前書き：mutexとは

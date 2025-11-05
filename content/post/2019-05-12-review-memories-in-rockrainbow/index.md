@@ -12,6 +12,7 @@ cover:
   image: images/memories_in_rock-min.jpg
   alt: "Review: Memories in Rock(Rainbow)"
   hidden: false
+images: ["images/memories_in_rock-min.jpg"]
 ---
 
 ## 収録曲

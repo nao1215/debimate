@@ -14,6 +14,7 @@ cover:
   image: images/HelloTalkTop.jpg
   alt: "語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ"
   hidden: false
+images: ["images/HelloTalkTop.jpg"]
 ---
 
 ## 前書き

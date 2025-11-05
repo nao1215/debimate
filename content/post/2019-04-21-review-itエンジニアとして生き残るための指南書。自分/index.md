@@ -11,6 +11,7 @@ cover:
   image: images/519KqKvvgCL.jpg
   alt: "感想:  ITエンジニアとして生き残るための指南書。自分を守りアップデートするための18のテクニック。"
   hidden: false
+images: ["images/519KqKvvgCL.jpg"]
 ---
 
 ## ITエンジニアは共感し、学生は世知辛さが分かる書籍

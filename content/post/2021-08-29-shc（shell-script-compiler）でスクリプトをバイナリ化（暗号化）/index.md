@@ -13,6 +13,7 @@ cover:
   image: images/cyber-security-3400657_640-min.jpg
   alt: "shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法"
   hidden: false
+images: ["images/cyber-security-3400657_640-min.jpg"]
 ---
 
 ## 前書き：Shell Scriptの中身を見せたくない

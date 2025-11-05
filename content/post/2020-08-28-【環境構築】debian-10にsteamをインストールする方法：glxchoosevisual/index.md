@@ -15,6 +15,7 @@ cover:
   image: images/768px-Steam_icon_logo.svg_.png
   alt: "【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避"
   hidden: false
+images: ["images/768px-Steam_icon_logo.svg_.png"]
 ---
 
 ## 前書き：Steam公式はLinuxをサポート済み

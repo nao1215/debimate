@@ -13,6 +13,7 @@ cover:
   image: images/s_cat2.jpg
   alt: "Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)"
   hidden: false
+images: ["images/s_cat2.jpg"]
 ---
 
 ## 前書き

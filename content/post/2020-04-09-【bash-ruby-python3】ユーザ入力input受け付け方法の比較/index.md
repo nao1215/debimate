@@ -14,6 +14,7 @@ cover:
   image: images/laptop-820274_640-min.jpg
   alt: "【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比較"
   hidden: false
+images: ["images/laptop-820274_640-min.jpg"]
 ---
 
 ## 前書き

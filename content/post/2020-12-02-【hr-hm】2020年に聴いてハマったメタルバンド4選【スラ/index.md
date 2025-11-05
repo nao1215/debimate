@@ -11,6 +11,7 @@ cover:
   image: images/61Yh4l8u7CL._AC_.jpg
   alt: "【HR/HM】2020年に聴いてハマったメタルバンド4選【スラッシュ／ジャパメタ】"
   hidden: false
+images: ["images/61Yh4l8u7CL._AC_.jpg"]
 ---
 
 ## 前書き：30歳、メタラー歴10年

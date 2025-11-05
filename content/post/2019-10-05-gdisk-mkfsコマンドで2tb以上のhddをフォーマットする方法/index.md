@@ -13,6 +13,7 @@ cover:
   image: images/hard-drive-607461_640-min.jpg
   alt: "gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法"
   hidden: false
+images: ["images/hard-drive-607461_640-min.jpg"]
 ---
 
 ## 前書き：何故HDDを2TBまでしか認識しないか

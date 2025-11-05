@@ -8,6 +8,7 @@ cover:
   image: images/vscode.png
   alt: "qhqで管理しているリポジトリをVS Codeで開くシェル関数"
   hidden: false
+images: ["images/vscode.png"]
 ---
 
 ## 前書き

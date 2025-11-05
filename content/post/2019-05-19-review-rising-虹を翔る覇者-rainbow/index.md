@@ -12,6 +12,7 @@ cover:
   image: images/rising.jpg
   alt: "Review: RISING--虹を翔る覇者--(Rainbow)"
   hidden: false
+images: ["images/rising.jpg"]
 ---
 
 ## 収録曲

@@ -13,6 +13,7 @@ cover:
   image: images/scan-3963099_640-min.jpg
   alt: "起動済みプロセス（例：デーモンプロセス）の標準出力を確認する方法"
   hidden: false
+images: ["images/scan-3963099_640-min.jpg"]
 ---
 
 ## 前書き：ログを残さないデーモンと出会った

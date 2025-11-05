@@ -12,6 +12,7 @@ cover:
   image: images/KillemAll.jpg
   alt: "Review: Kill'Em All−血染めの鉄槌−（Metallica）"
   hidden: false
+images: ["images/KillemAll.jpg"]
 ---
 
 ## 収録曲

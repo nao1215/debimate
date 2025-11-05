@@ -14,6 +14,7 @@ cover:
   image: images/fetcher.png
   alt: "fetcher"
   hidden: false
+images: ["images/fetcher.png"]
 ---
 
 ## 前書き

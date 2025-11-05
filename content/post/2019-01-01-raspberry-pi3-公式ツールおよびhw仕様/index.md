@@ -11,6 +11,7 @@ cover:
   image: images/300px-Pi-GPIO-header.png
   alt: "Raspberry Pi3: 公式ツールおよびHW仕様"
   hidden: false
+images: ["images/300px-Pi-GPIO-header.png"]
 ---
 
 ## Raspberry Piとは

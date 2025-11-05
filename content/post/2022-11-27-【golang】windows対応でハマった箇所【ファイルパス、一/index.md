@@ -11,6 +11,7 @@ cover:
   image: images/operating-system-g6fd6f1801_640.png
   alt: "【Golang】Windows対応でハマった箇所【ファイルパス、一時ファイル削除エラー】"
   hidden: false
+images: ["images/operating-system-g6fd6f1801_640.png"]
 ---
 
 ##  前書き：Windows君さぁ......

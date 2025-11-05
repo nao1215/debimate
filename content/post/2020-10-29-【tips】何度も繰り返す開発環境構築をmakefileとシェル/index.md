@@ -13,6 +13,7 @@ cover:
   image: images/Makefile-min.jpg
   alt: "【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする"
   hidden: false
+images: ["images/Makefile-min.jpg"]
 ---
 
 ## 前書き：環境構築は面倒だから、楽をしたい

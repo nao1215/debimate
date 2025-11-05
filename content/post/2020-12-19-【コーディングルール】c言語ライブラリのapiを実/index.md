@@ -12,6 +12,7 @@ cover:
   image: images/Screenshot-from-2020-12-19-16-55-57.jpg
   alt: "【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄"
   hidden: false
+images: ["images/Screenshot-from-2020-12-19-16-55-57.jpg"]
 ---
 
 ## 前書き：未だにC言語で消耗中

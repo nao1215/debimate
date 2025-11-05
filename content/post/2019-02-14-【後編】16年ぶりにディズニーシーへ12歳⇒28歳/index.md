@@ -12,6 +12,7 @@ cover:
   image: images/-e1588345718945.jpg
   alt: "後編：16年ぶりにディズニーシーへ(12歳⇒28歳)"
   hidden: false
+images: ["images/-e1588345718945.jpg"]
 ---
 
 ## まずは前編から

@@ -14,6 +14,7 @@ cover:
   image: images/PCリスト-min-1.jpeg
   alt: "Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)"
   hidden: false
+images: ["images/PCリスト-min-1.jpeg"]
 ---
 
 ## 前書き

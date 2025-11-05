@@ -12,6 +12,7 @@ cover:
   image: images/cafe-3537801_640-min.jpg
   alt: "【亭主関白は論外】ロシア人女性と付き合うなら、男性は優しさを行動で示すべき"
   hidden: false
+images: ["images/cafe-3537801_640-min.jpg"]
 ---
 
 ## 前書き

@@ -10,6 +10,7 @@ cover:
   image: images/1000000730.jpg
   alt: "2024年の振り返り &amp; 2025年の抱負"
   hidden: false
+images: ["images/1000000730.jpg"]
 ---
 
 ## 前書き

@@ -13,6 +13,7 @@ cover:
   image: images/642206.jpg
   alt: "【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）"
   hidden: false
+images: ["images/642206.jpg"]
 ---
 
 ## Software Design誌 2回目の寄稿！

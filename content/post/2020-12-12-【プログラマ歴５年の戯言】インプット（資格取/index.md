@@ -12,6 +12,7 @@ cover:
   image: images/laptop-2838918_640-min.jpg
   alt: "【プログラマ歴５年の戯言】インプット（資格取得、書籍読み）ばかりだと成長しなかった話"
   hidden: false
+images: ["images/laptop-2838918_640-min.jpg"]
 ---
 
 ## 前書き：インプット、アウトプット、両方大事

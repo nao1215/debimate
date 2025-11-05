@@ -12,6 +12,7 @@ cover:
   image: images/raspberry-pi-1383832_640.jpg
   alt: "Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)"
   hidden: false
+images: ["images/raspberry-pi-1383832_640.jpg"]
 ---
 
 ## 前書き：SSHをよりセキュアに

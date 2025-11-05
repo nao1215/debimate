@@ -10,6 +10,7 @@ cover:
   image: images/key-2114293_640.jpg
   alt: "GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】"
   hidden: false
+images: ["images/key-2114293_640.jpg"]
 ---
 
 ##  前書き：セキュリティのお勉強中

@@ -12,6 +12,7 @@ cover:
   image: images/Ruby-min.jpg
   alt: "感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで"
   hidden: false
+images: ["images/Ruby-min.jpg"]
 ---
 
 ## Ruby入門なら本書！

@@ -10,6 +10,7 @@ cover:
   image: images/Screenshot-from-2023-09-30-18-02-30-1.png
   alt: "DependabotでGitHub ActionsのActionを最新に保つ方法"
   hidden: false
+images: ["images/Screenshot-from-2023-09-30-18-02-30-1.png"]
 ---
 
 ## 前書き：絶滅へ向かうJenkinsオジサン

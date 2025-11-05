@@ -14,6 +14,7 @@ cover:
   image: images/にせぐま-min.jpg
   alt: "ロシアのプー"
   hidden: false
+images: ["images/にせぐま-min.jpg"]
 ---
 
 ## Винни-Пух(ヴィーニ・プーフ)とは
