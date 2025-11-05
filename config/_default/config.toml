@@ -1,0 +1,19 @@
+baseURL = "https://nao1215.github.io/debimate/"
+languageCode = "ja-jp"
+title = "Debimate"
+theme = "PaperMod"
+enableRobotsTXT = true
+hasCJKLanguage = true
+ignoreLogs = ['warning-goldmark-raw-html']
+env = "production"
+images = ["images/icon.jpg"]
+publishDir = "public"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup.goldmark.renderer]
+  unsafe = true
+
+[pagination]
+  pagerSize = 50

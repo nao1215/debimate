@@ -1,0 +1,17 @@
+[params]
+  homeInfoParams = { Title = "Debimate", Content = "nchika(nao1215)の技術ブログ" }
+  mainSections = ["post"]
+  defaultTheme = "auto"
+  ShowReadingTime = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowToc = true
+  comments = false
+  ShowImageInList = true
+  ShowImageInSingle = true
+  images = ["images/default-ogp.png"]
+  enableSearch = true
+
+  [params.assets]
+    css = ["css/extended/custom.css"]
+

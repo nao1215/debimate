@@ -1,0 +1,22 @@
+# Hugo build output
+/public/
+/resources/
+
+# Hugo caches
+/.hugo_build.lock
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Node (もしnpm連携してるなら)
+node_modules/
+
+# Backup files
+*~
