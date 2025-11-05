@@ -12,6 +12,7 @@ cover:
   image: images/BSD_wordmark.svg_.png
   alt: "GitHub ActionsでBSD（FreeBSD、OpenBSD、NetBSD、Dragonfly BSD）のユニットテスト環境を構築する方法"
   hidden: false
+images: ["images/BSD_wordmark.svg_.png"]
 ---
 
 ## 前書き：BSDはクロスプラットフォーム対応の鬼門

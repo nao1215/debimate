@@ -14,6 +14,7 @@ cover:
   image: images/UserLAnd2.png
   alt: "UserLAnd"
   hidden: false
+images: ["images/UserLAnd2.png"]
 ---
 
 ## 前書き

@@ -8,6 +8,7 @@ cover:
   image: images/album-min-1.jpg
   alt: "【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】"
   hidden: false
+images: ["images/album-min-1.jpg"]
 ---
 
 ![](images/album-min-1.jpg)

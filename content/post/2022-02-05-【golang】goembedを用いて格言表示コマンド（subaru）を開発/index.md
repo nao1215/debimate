@@ -13,6 +13,7 @@ cover:
   image: images/constellations-ge1bcb2718_640.jpg
   alt: "【Golang】go:embedを用いて格言表示コマンド（subaru）を開発"
   hidden: false
+images: ["images/constellations-ge1bcb2718_640.jpg"]
 ---
 
 ## 前書き：go:embedを試したかった

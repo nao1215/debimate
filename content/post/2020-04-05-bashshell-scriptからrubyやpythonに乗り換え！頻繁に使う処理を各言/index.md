@@ -14,6 +14,7 @@ cover:
   image: images/scripts-min.jpg
   alt: "Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較"
   hidden: false
+images: ["images/scripts-min.jpg"]
 ---
 
 ## 前書き：自動化にBashを使うと後々辛い

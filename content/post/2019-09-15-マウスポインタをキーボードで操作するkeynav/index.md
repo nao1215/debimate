@@ -13,6 +13,7 @@ cover:
   image: images/keynav.gif
   alt: "マウスポインタをキーボードで操作するkeynav"
   hidden: false
+images: ["images/keynav.gif"]
 ---
 
 ## 前書き

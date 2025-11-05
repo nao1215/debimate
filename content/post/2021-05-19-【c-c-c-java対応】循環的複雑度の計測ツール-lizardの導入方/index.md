@@ -12,6 +12,7 @@ cover:
   image: images/2021-05-19-20.26.02-のスクリーンショット.jpg
   alt: "【C/C++/C#/Java対応】循環的複雑度の計測ツール lizardの導入方法【Swift/Rust/GoもOK】"
   hidden: false
+images: ["images/2021-05-19-20.26.02-のスクリーンショット.jpg"]
 ---
 
 ## 前書き：ネストの深さを指摘する時間が勿体無い 

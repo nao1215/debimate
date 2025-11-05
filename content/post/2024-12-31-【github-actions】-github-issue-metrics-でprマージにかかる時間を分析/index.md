@@ -10,6 +10,7 @@ cover:
   image: images/issue-metrics-sample-output.png
   alt: "【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析"
   hidden: false
+images: ["images/issue-metrics-sample-output.png"]
 ---
 
 ## 前書き：PRマージに時間がかかっていた

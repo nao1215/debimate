@@ -14,6 +14,7 @@ cover:
   image: images/dream.jpg
   alt: "「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について"
   hidden: false
+images: ["images/dream.jpg"]
 ---
 
 ## 前書き：災害レベルの脆弱性

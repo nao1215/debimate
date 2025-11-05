@@ -12,6 +12,7 @@ cover:
   image: images/processor-2217771_640-min.jpg
   alt: "Debian(64bit)で32bitバイナリを実行もしくは作成する方法（C言語）"
   hidden: false
+images: ["images/processor-2217771_640-min.jpg"]
 ---
 
 ## 検証環境

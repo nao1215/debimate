@@ -12,6 +12,7 @@ cover:
   image: images/debian.jpg
   alt: "Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)"
   hidden: false
+images: ["images/debian.jpg"]
 ---
 
 ## 前書き

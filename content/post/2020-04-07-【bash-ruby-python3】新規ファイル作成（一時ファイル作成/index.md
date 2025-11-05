@@ -14,6 +14,7 @@ cover:
   image: images/attach-3592638_640.jpg
   alt: "【Bash / Ruby / Python3】新規ファイル作成（一時ファイル作成含む）やファイル削除する方法の比較"
   hidden: false
+images: ["images/attach-3592638_640.jpg"]
 ---
 
 ## 前書き

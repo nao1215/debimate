@@ -12,6 +12,7 @@ cover:
   image: images/blackmore_rainbow.jpg
   alt: "Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)"
   hidden: false
+images: ["images/blackmore_rainbow.jpg"]
 ---
 
 ## 収録曲

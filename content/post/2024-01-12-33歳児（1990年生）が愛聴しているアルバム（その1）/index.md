@@ -10,6 +10,7 @@ cover:
   image: images/220174754.jpg
   alt: "33歳児（1990年生）が愛聴しているアルバム（その1）"
   hidden: false
+images: ["images/220174754.jpg"]
 ---
 
 ## 前書き

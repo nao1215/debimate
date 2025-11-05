@@ -13,6 +13,7 @@ cover:
   image: images/class.jpg
   alt: "【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】"
   hidden: false
+images: ["images/class.jpg"]
 ---
 
 ## 前書き：デザインパターンという認識がなかった

@@ -13,6 +13,7 @@ cover:
   image: images/logo.png
   alt: "Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法"
   hidden: false
+images: ["images/logo.png"]
 ---
 
 ## 前書き：スクリプトサイズが大きい理由

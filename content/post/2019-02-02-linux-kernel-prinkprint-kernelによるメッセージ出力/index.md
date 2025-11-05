@@ -12,6 +12,7 @@ cover:
   image: images/bash-161382_640.png
   alt: "Linux Kernel: prink(print kernel)によるメッセージ出力"
   hidden: false
+images: ["images/bash-161382_640.png"]
 ---
 
 ## printk()とは

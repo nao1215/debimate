@@ -14,6 +14,7 @@ cover:
   image: images/documents-1920461_640-min.jpg
   alt: "【Bash / Ruby / Python3】ファイル一覧の取得方法、ファイル数の確認方法の比較"
   hidden: false
+images: ["images/documents-1920461_640-min.jpg"]
 ---
 
 ## 前書き

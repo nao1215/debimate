@@ -14,6 +14,7 @@ cover:
   image: images/642201.png
   alt: "Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】"
   hidden: false
+images: ["images/642201.png"]
 ---
 
 ## 前書き：人生初！ソフト雑誌への寄稿 

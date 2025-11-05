@@ -10,6 +10,7 @@ cover:
   image: images/rocket-launch-4370928_1280.jpg
   alt: "実装ではなく、Pull Requestレビューから経験値を得るようになった話"
   hidden: false
+images: ["images/rocket-launch-4370928_1280.jpg"]
 ---
 
 ## パワーワード：経験値泥棒

@@ -13,6 +13,7 @@ cover:
   image: images/diamond-g26c8044a7_640.jpg
   alt: "【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby, Linux】"
   hidden: false
+images: ["images/diamond-g26c8044a7_640.jpg"]
 ---
 
 ## 前書き：gem installでコケる

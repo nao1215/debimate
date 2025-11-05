@@ -8,6 +8,7 @@ cover:
   image: images/horcrux.jpg
   alt: "【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】"
   hidden: false
+images: ["images/horcrux.jpg"]
 ---
 
 ## 前書き： jesseduffield/horcrux を参考にした

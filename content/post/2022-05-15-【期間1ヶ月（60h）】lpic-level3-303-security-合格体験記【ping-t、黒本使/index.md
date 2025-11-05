@@ -14,6 +14,7 @@ cover:
   image: images/board-2450236_640.jpg
   alt: "【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】"
   hidden: false
+images: ["images/board-2450236_640.jpg"]
 ---
 
 ## 資格有効期限切れ 2週間前の滑り込み合格 

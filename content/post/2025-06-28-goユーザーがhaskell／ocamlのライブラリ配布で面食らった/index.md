@@ -13,6 +13,7 @@ cover:
   image: images/HaskellOCaml.jpg
   alt: "GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話"
   hidden: false
+images: ["images/HaskellOCaml.jpg"]
 ---
 
 ## 前書き

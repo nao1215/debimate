@@ -14,6 +14,7 @@ cover:
   image: images/shield-490811_640-min.jpg
   alt: "【Bash / Ruby / Python3】実行ファイル名、実行ファイルの絶対 / 相対PATHを取得する方法の比較"
   hidden: false
+images: ["images/shield-490811_640-min.jpg"]
 ---
 
 ## 前書き

@@ -15,6 +15,7 @@ cover:
   image: images/fish.png
   alt: "環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)"
   hidden: false
+images: ["images/fish.png"]
 ---
 
 ## 前書き

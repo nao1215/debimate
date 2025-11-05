@@ -11,6 +11,7 @@ cover:
   image: images/Screenshot-from-2023-04-01-23-32-29.png
   alt: "【Android Studio】JSON To Kotlin ClassプラグインでAPIレスポンス用モデルの作成を楽に"
   hidden: false
+images: ["images/Screenshot-from-2023-04-01-23-32-29.png"]
 ---
 
 ## 前書き

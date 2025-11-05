@@ -13,6 +13,7 @@ cover:
   image: images/リファクタリング-min.jpg
   alt: "感想：新装版　リファクタリング　既存のコードを安全に改善する"
   hidden: false
+images: ["images/リファクタリング-min.jpg"]
 ---
 
 ## リファクタは日常的に実施すべきと教えてくれる名著

@@ -12,6 +12,7 @@ cover:
   image: images/Kernel_lists-1.png
   alt: "Linux Kernel: List構造を操作するためのAPI(Listの使い方)"
   hidden: false
+images: ["images/Kernel_lists-1.png"]
 ---
 
 ## 前書き

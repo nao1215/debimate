@@ -13,6 +13,7 @@ cover:
   image: images/Screenshot-from-2020-08-31-18-38-47-min.jpg
   alt: "【環境構築】Raspberry Pi 4台で作るKubernetesクラスタ"
   hidden: false
+images: ["images/Screenshot-from-2020-08-31-18-38-47-min.jpg"]
 ---
 
 ## 前書き：憧れのラズパイクラスタ

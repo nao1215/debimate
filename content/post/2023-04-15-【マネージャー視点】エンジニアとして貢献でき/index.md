@@ -10,6 +10,7 @@ cover:
   image: images/wood-gc77b8848b_640.jpg
   alt: "【マネージャー視点】エンジニアとして貢献できないもどかしさとメンバを不快にさせる恐怖"
   hidden: false
+images: ["images/wood-gc77b8848b_640.jpg"]
 ---
 
 ## 前書き：マネージャーと称されるお仕事、やってます

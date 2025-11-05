@@ -8,6 +8,7 @@ cover:
   image: images/migrate.jpg
   alt: "技術ブログ debimate のお引越し"
   hidden: false
+images: ["images/migrate.jpg"]
 ---
 
 ## お引越し

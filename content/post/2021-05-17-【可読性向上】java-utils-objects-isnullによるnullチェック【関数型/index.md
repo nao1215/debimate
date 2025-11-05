@@ -10,6 +10,7 @@ cover:
   image: images/finger-3026348_640.jpg
   alt: "【可読性向上】java.utils.Objects.isNull()によるnullチェック【関数型プログラミングに便利】"
   hidden: false
+images: ["images/finger-3026348_640.jpg"]
 ---
 
 ## 前書き："=="や"!="による判定と何が違う？

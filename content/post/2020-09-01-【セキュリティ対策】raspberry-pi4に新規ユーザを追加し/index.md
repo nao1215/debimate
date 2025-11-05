@@ -12,6 +12,7 @@ cover:
   image: images/subscribe-3534409_640-min.jpg
   alt: "【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除"
   hidden: false
+images: ["images/subscribe-3534409_640-min.jpg"]
 ---
 
 ## 前書き：piユーザは脆弱

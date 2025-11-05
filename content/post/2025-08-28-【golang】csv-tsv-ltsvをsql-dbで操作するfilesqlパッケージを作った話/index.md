@@ -11,6 +11,7 @@ cover:
   image: images/ChatGPT-Image-2025年8月28日-13_46_47.jpg
   alt: "【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話"
   hidden: false
+images: ["images/ChatGPT-Image-2025年8月28日-13_46_47.jpg"]
 ---
 
 ## 前書き：同じ機能を持つコマンドのメンテが面倒だった

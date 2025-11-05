@@ -12,6 +12,7 @@ cover:
   image: images/container_of.png
   alt: "Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ"
   hidden: false
+images: ["images/container_of.png"]
 ---
 
 ## container\_ofマクロとは

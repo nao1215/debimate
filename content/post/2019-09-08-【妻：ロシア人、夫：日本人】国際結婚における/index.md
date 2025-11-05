@@ -13,6 +13,7 @@ cover:
   image: images/heart-529607_640-min.jpg
   alt: "【妻：ロシア人、夫：日本人】国際結婚における三重苦：1)書類、2）お金、3）コミュニケーション"
   hidden: false
+images: ["images/heart-529607_640-min.jpg"]
 ---
 
 ## 前書き

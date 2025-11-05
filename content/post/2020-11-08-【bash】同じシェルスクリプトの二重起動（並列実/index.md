@@ -11,6 +11,7 @@ cover:
   image: images/same.jpg
   alt: "【Bash】同じシェルスクリプトの二重起動（並列実行）を防止する方法"
   hidden: false
+images: ["images/same.jpg"]
 ---
 
 ## 前書き ：同じタイミングで動かれると困る

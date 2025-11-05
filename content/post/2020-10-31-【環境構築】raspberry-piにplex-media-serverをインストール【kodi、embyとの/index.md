@@ -14,6 +14,7 @@ cover:
   image: images/Screenshot-from-2020-10-30-22-29-19.jpg
   alt: "【環境構築】Raspberry PiにPlex Media Serverをインストール【Kodi、Embyとの比較】"
   hidden: false
+images: ["images/Screenshot-from-2020-10-30-22-29-19.jpg"]
 ---
 
 ## 前書き：メディアサーバの候補はどれか

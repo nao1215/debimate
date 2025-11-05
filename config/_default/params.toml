@@ -11,6 +11,10 @@
   ShowImageInSingle = true
   images = ["images/default-ogp.png"]
   enableSearch = true
+  env = "production"
+  enableOpenGraph = true
+  enableTwitterCards = true
+
 
   [params.assets]
     css = ["css/extended/custom.css"]

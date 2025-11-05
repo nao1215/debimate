@@ -11,6 +11,7 @@ cover:
   image: images/atlas-1052011_1280.jpg
   alt: "【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話"
   hidden: false
+images: ["images/atlas-1052011_1280.jpg"]
 ---
 
 ## 前書き：OSSが放置されることは当然のようにある

@@ -14,6 +14,7 @@ cover:
   image: images/Screenshot-from-2021-01-02-14-32-32.png
   alt: "【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】"
   hidden: false
+images: ["images/Screenshot-from-2021-01-02-14-32-32.png"]
 ---
 
 ##  前書き：日頃からお世話になっているOSSへの貢献

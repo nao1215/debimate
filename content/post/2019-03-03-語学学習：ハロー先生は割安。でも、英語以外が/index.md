@@ -15,6 +15,7 @@ cover:
   image: images/hello-sensei.png
   alt: "語学学習：ハロー先生は割安。でも、英語以外ができる良い先生と巡り会いにくかった"
   hidden: false
+images: ["images/hello-sensei.png"]
 ---
 
 ## 外国人と対面で話す機会 = ハロー先生

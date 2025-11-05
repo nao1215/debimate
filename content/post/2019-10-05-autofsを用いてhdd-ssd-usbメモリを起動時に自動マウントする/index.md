@@ -13,6 +13,7 @@ cover:
   image: images/drive-3410753_640-min.jpg
   alt: "autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)"
   hidden: false
+images: ["images/drive-3410753_640-min.jpg"]
 ---
 
 ## 前書き
