@@ -1,36 +1,35 @@
-[params]
-  homeInfoParams = { Title = "Debimate", Content = "nchika(nao1215)の技術ブログ" }
-  mainSections = ["post"]
-  defaultTheme = "auto"
-  ShowReadingTime = true
-  ShowBreadCrumbs = true
-  ShowCodeCopyButtons = true
-  ShowToc = true
-  comments = false
-  ShowImageInList = true
-  ShowImageInSingle = true
-  images = ["images/default-ogp.png"]
-  enableSearch = true
-  env = "production"
-  enableOpenGraph = true
-  enableTwitterCards = true
+homeInfoParams = { Content = "nchika(nao1215)の技術ブログ。OSS、Go、人生について書きます。" }
+mainSections = ["post"]
+defaultTheme = "auto"
+ShowReadingTime = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowToc = true
+comments = false
+ShowSocialIcons = true
+ShowImageInList = true
+ShowImageInSingle = true
+images = ["images/default-ogp.png"]
+enableSearch = true
+env = "production"
+enableOpenGraph = true
+enableTwitterCards = true
 
+[assets]
+  css = ["css/extended/custom.css"]
 
-  [params.assets]
-    css = ["css/extended/custom.css"]
-
-[[params.socialIcons]]
+[[socialIcons]]
   name = "github"
   url = "https://github.com/nao1215"
 
-[[params.socialIcons]]
+[[socialIcons]]
   name = "rss"
   url = "index.xml"
 
-[[params.socialIcons]]
+[[socialIcons]]
   name = "twitter"
   url = "https://x.com/ARC_AED"
 
-[[params.socialIcons]]
+[[socialIcons]]
   name = "email"
   url = "mailto:n.chika156@gmail.com"

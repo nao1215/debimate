@@ -1,3 +1,27 @@
 body {
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
 }
+
+.main {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.home-info,
+.first-entry {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.entry-content {
+  margin-bottom: 0.25rem !important;
+}
+
+.social-icons {
+  margin-top: 0.25rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.post-entry {
+  margin-top: 0.25rem !important;
+}
