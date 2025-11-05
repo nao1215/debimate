@@ -29,7 +29,7 @@ clean: ## publicディレクトリ削除
 
 new: ## 新しい記事を作成 (例: make new title="my-post-title")
 	@test -n "$(title)" || (echo "Usage: make new title='my-post-title'" && exit 1)
-	$(HUGO) new content/post/$(title)/index.md
+	$(HUGO) new "content/post/$(title)/index.md"
 	@echo "created: content/post/$(title)/index.md"
 
 check: ## Front MatterのYAML構文を検証
