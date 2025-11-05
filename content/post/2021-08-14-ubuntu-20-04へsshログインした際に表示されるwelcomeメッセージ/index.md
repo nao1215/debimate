@@ -14,7 +14,7 @@ cover:
   image: images/welcome-sign-2284312_640-min.jpg
   alt: "Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法"
   hidden: false
-images: ["images/welcome-sign-2284312_640-min.jpg"]
+images: ["post/2021-08-14-ubuntu-20-04へsshログインした際に表示されるwelcomeメッセージ/images/welcome-sign-2284312_640-min.jpg"]
 ---
 
 ## 前書き：UbuntuはWelcomeメッセージが立派で邪魔

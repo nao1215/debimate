@@ -11,7 +11,7 @@ cover:
   image: images/ダウンロード.jpeg
   alt: "感想: 岩田さん 岩田聡はこんなことを話していた。"
   hidden: false
-images: ["images/ダウンロード.jpeg"]
+images: ["post/2019-09-28-review-岩田さん-岩田聡はこんなことを話していた。/images/ダウンロード.jpeg"]
 ---
 
 ## 任天堂 元社長である岩田 聡氏のインタビュー集

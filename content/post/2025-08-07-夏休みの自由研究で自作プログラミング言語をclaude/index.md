@@ -8,7 +8,7 @@ cover:
   image: images/ai-generated-8775234_1280.jpg
   alt: "夏休みの自由研究として自作プログラミング言語をClaudeでVibe Codingした話"
   hidden: false
-images: ["images/ai-generated-8775234_1280.jpg"]
+images: ["post/2025-08-07-夏休みの自由研究で自作プログラミング言語をclaude/images/ai-generated-8775234_1280.jpg"]
 ---
 
 ## 前書き：妻と息子が不在の一足早い夏休み

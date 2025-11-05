@@ -14,7 +14,7 @@ cover:
   image: images/card-1738844_640-min.jpg
   alt: "【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】"
   hidden: false
-images: ["images/card-1738844_640-min.jpg"]
+images: ["post/2020-04-26-【singeltonパターン】考え方は単純だが、使いどころが/images/card-1738844_640-min.jpg"]
 ---
 
 ## 前書き：Singletonパターンは奥が深い

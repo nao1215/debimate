@@ -13,7 +13,7 @@ cover:
   image: images/VIM_GDB-1.jpg
   alt: "【Vim8.1.xから標準機能】VimからGDBを起動する方法(マウスでGDBを操作可能)"
   hidden: false
-images: ["images/VIM_GDB-1.jpg"]
+images: ["post/2019-09-14-【vim8-1-xから標準機能】vimからgdbを起動する方法マウス/images/VIM_GDB-1.jpg"]
 ---
 
 ## 前書き

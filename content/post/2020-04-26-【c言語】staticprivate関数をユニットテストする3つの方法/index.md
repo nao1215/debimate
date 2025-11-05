@@ -12,7 +12,7 @@ cover:
   image: images/board-361516_640-min.jpg
   alt: "【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】"
   hidden: false
-images: ["images/board-361516_640-min.jpg"]
+images: ["post/2020-04-26-【c言語】staticprivate関数をユニットテストする3つの方法/images/board-361516_640-min.jpg"]
 ---
 
 ## 前書き：C言語のstatic関数は単体テストできます

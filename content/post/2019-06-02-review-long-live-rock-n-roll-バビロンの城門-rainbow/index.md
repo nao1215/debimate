@@ -12,7 +12,7 @@ cover:
   image: images/llrr.jpeg
   alt: "Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)"
   hidden: false
-images: ["images/llrr.jpeg"]
+images: ["post/2019-06-02-review-long-live-rock-n-roll-バビロンの城門-rainbow/images/llrr.jpeg"]
 ---
 
 ## 収録曲

@@ -14,7 +14,7 @@ cover:
   image: images/UserLAnd2.png
   alt: "UserLAnd"
   hidden: false
-images: ["images/UserLAnd2.png"]
+images: ["post/2019-03-16-androidにlinux環境を構築するuserlandがソースリーディング環/images/UserLAnd2.png"]
 ---
 
 ## 前書き

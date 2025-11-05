@@ -13,7 +13,7 @@ cover:
   image: images/Screenshot-from-2020-11-20-23-33-01.jpg
   alt: "【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法"
   hidden: false
-images: ["images/Screenshot-from-2020-11-20-23-33-01.jpg"]
+images: ["post/2020-11-20-【go言語golang】ユニットテスト時にgo-flagsに任意の引数を/images/Screenshot-from-2020-11-20-23-33-01.jpg"]
 ---
 
 ## 前書き：flag(Go標準)のテスト方法ばかり検索ヒット

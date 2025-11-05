@@ -13,7 +13,7 @@ cover:
   image: images/cpu-2103856_640.jpg
   alt: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方"
   hidden: false
-images: ["images/cpu-2103856_640.jpg"]
+images: ["post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black）のレジスタ情報／アセンブラ命令／/images/cpu-2103856_640.jpg"]
 ---
 
 ##  前書き：XINU (Real Time OS)で学んだARMに関する情報

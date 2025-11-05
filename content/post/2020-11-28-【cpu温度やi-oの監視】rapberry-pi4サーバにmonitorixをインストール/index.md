@@ -13,7 +13,7 @@ cover:
   image: images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg
   alt: "【CPU温度やI/Oの監視】Rapberry Pi4サーバにMonitorixをインストールする方法"
   hidden: false
-images: ["images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg"]
+images: ["post/2020-11-28-【cpu温度やi-oの監視】rapberry-pi4サーバにmonitorixをインストール/images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg"]
 ---
 
 ## 前書き：ラズパイサーバが停止するので監視したい

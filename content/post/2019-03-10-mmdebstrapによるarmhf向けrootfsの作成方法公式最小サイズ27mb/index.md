@@ -12,7 +12,7 @@ cover:
   image: images/debian-1277387_960_720.png
   alt: "mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)"
   hidden: false
-images: ["images/debian-1277387_960_720.png"]
+images: ["post/2019-03-10-mmdebstrapによるarmhf向けrootfsの作成方法公式最小サイズ27mb/images/debian-1277387_960_720.png"]
 ---
 
 ## mmdebstrapとは

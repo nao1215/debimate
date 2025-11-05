@@ -11,7 +11,7 @@ cover:
   image: images/Screenshot-from-2021-12-13-18-53-07.jpg
   alt: "【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点"
   hidden: false
-images: ["images/Screenshot-from-2021-12-13-18-53-07.jpg"]
+images: ["post/2021-12-13-【golang】errorsパッケージ-new-unwrap-is-asの使い方と注意点/images/Screenshot-from-2021-12-13-18-53-07.jpg"]
 ---
 
 ## 前書き：君、err != nilしかできないの?

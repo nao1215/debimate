@@ -11,7 +11,7 @@ cover:
   image: images/key-2114046_640.jpg
   alt: "【visudo / vigr / vipw】システムファイルをsudo viで編集は駄目【sudoers / group / passwd】"
   hidden: false
-images: ["images/key-2114046_640.jpg"]
+images: ["post/2020-12-16-【visudo-vigr-vipw】システムファイルをsudo-viで編集は駄目【sudoers-g/images/key-2114046_640.jpg"]
 ---
 
 ## 前書き：システムファイルの編集は慎重に

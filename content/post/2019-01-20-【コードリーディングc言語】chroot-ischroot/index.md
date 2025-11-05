@@ -14,7 +14,7 @@ cover:
   image: images/chroot-e1547979094502.gif
   alt: "コードリーディング(C言語)：chroot / ischroot"
   hidden: false
-images: ["images/chroot-e1547979094502.gif"]
+images: ["post/2019-01-20-【コードリーディングc言語】chroot-ischroot/images/chroot-e1547979094502.gif"]
 ---
 
 ## 前書き

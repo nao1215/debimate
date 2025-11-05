@@ -14,7 +14,7 @@ cover:
   image: images/chalk-1869492_640-min.jpg
   alt: "【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較"
   hidden: false
-images: ["images/chalk-1869492_640-min.jpg"]
+images: ["post/2020-04-11-【bash-ruby-python3】ansiエスケープシーケンスを用いた出力文/images/chalk-1869492_640-min.jpg"]
 ---
 
 ## 前書き

@@ -12,7 +12,7 @@ cover:
   image: images/login-3938429_640-1-min.jpg
   alt: "/etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】"
   hidden: false
-images: ["images/login-3938429_640-1-min.jpg"]
+images: ["post/2020-04-16-etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何か【ログイン禁止/images/login-3938429_640-1-min.jpg"]
 ---
 
 ## 前書き

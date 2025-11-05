@@ -13,7 +13,7 @@ cover:
   image: images/constellations-ge1bcb2718_640.jpg
   alt: "【Golang】go:embedを用いて格言表示コマンド（subaru）を開発"
   hidden: false
-images: ["images/constellations-ge1bcb2718_640.jpg"]
+images: ["post/2022-02-05-【golang】goembedを用いて格言表示コマンド（subaru）を開発/images/constellations-ge1bcb2718_640.jpg"]
 ---
 
 ## 前書き：go:embedを試したかった

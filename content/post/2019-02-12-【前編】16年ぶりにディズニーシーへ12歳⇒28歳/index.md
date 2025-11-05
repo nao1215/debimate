@@ -12,7 +12,7 @@ cover:
   image: images/2万マイル内装-1.jpg
   alt: "前編：16年ぶりにディズニーシーへ(12歳⇒28歳)"
   hidden: false
-images: ["images/2万マイル内装-1.jpg"]
+images: ["post/2019-02-12-【前編】16年ぶりにディズニーシーへ12歳⇒28歳/images/2万マイル内装-1.jpg"]
 ---
 
 ## 思い出のディズニーシーは楽しくなかった

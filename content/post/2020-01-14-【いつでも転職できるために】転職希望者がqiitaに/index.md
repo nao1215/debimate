@@ -12,7 +12,7 @@ cover:
   image: images/search-engine-optimization-4111000_640-min.jpg
   alt: "転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】"
   hidden: false
-images: ["images/search-engine-optimization-4111000_640-min.jpg"]
+images: ["post/2020-01-14-【いつでも転職できるために】転職希望者がqiitaに/images/search-engine-optimization-4111000_640-min.jpg"]
 ---
 
 ## Qiitaに投稿するメリット：企業からのスカウト

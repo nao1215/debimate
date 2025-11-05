@@ -8,7 +8,7 @@ cover:
   image: images/migrate.jpg
   alt: "技術ブログ debimate のお引越し"
   hidden: false
-images: ["images/migrate.jpg"]
+images: ["post/2025-11-05-技術ブログdebimateのお引越し（X Server to GitHub Pages）/images/migrate.jpg"]
 ---
 
 ## お引越し

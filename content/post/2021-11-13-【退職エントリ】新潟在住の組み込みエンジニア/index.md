@@ -13,7 +13,7 @@ cover:
   image: images/n001804-min.jpg
   alt: "【退職エントリ】新潟在住の組み込みエンジニアが転職を考えたキッカケ、転職活動、退職した会社への感謝"
   hidden: false
-images: ["images/n001804-min.jpg"]
+images: ["post/2021-11-13-【退職エントリ】新潟在住の組み込みエンジニア/images/n001804-min.jpg"]
 ---
 
 ![](images/n001804-min.jpg)

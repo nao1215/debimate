@@ -14,7 +14,7 @@ cover:
   image: images/man.jpg
   alt: "manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」"
   hidden: false
-images: ["images/man.jpg"]
+images: ["post/2020-01-17-manコマンドによる「ascii8進数、10進数、16進数の変換表/images/man.jpg"]
 ---
 
 ## ASCII<->N進数への変換は、Terminalで確認可能

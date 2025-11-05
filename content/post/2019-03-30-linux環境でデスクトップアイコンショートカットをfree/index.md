@@ -12,7 +12,7 @@ cover:
   image: images/bash_launch.png
   alt: "【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法"
   hidden: false
-images: ["images/bash_launch.png"]
+images: ["post/2019-03-30-linux環境でデスクトップアイコンショートカットをfree/images/bash_launch.png"]
 ---
 
 ## 前書き

@@ -13,7 +13,7 @@ cover:
   image: images/w3m.jpg
   alt: "Terminalベースのブラウザw3m"
   hidden: false
-images: ["images/w3m.jpg"]
+images: ["post/2019-09-15-terminalベースのブラウザw3m/images/w3m.jpg"]
 ---
 
 ## 前書き

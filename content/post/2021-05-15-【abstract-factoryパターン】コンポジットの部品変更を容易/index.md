@@ -11,7 +11,7 @@ cover:
   image: images/AbstractFactory-ページ1-min.jpg
   alt: "【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】"
   hidden: false
-images: ["images/AbstractFactory-ページ1-min.jpg"]
+images: ["post/2021-05-15-【abstract-factoryパターン】コンポジットの部品変更を容易/images/AbstractFactory-ページ1-min.jpg"]
 ---
 
 ## 前書き：Abstract Factoryパターンとは

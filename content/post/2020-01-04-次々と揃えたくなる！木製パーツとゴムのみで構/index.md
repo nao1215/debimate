@@ -14,7 +14,7 @@ cover:
   image: images/IMG_20200105_105737-min.jpg
   alt: "次々と揃えたくなる！木製パーツとゴムのみで構成されたUgears（メカニカルな組み立てキット）"
   hidden: false
-images: ["images/IMG_20200105_105737-min.jpg"]
+images: ["post/2020-01-04-次々と揃えたくなる！木製パーツとゴムのみで構/images/IMG_20200105_105737-min.jpg"]
 ---
 
 ## Ugearsとは

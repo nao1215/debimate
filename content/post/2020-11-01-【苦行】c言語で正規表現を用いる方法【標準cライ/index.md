@@ -13,7 +13,7 @@ cover:
   image: images/regex2-min.jpg
   alt: "【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】"
   hidden: false
-images: ["images/regex2-min.jpg"]
+images: ["post/2020-11-01-【苦行】c言語で正規表現を用いる方法【標準cライ/images/regex2-min.jpg"]
 ---
 
 ##  前書き：C言語で正規表現を使う理由などない

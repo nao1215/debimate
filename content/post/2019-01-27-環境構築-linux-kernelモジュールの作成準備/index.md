@@ -14,7 +14,7 @@ cover:
   image: images/tux.png
   alt: "環境構築: Linux Kernelモジュールの作成準備"
   hidden: false
-images: ["images/tux.png"]
+images: ["post/2019-01-27-環境構築-linux-kernelモジュールの作成準備/images/tux.png"]
 ---
 
 ## 前書き

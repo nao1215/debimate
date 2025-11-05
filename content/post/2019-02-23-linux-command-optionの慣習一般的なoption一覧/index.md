@@ -11,7 +11,7 @@ cover:
   image: images/bash-161382_640.png
   alt: "Linux Command Optionの慣習(一般的なOption一覧)"
   hidden: false
-images: ["images/bash-161382_640.png"]
+images: ["post/2019-02-23-linux-command-optionの慣習一般的なoption一覧/images/bash-161382_640.png"]
 ---
 
 ## 前書き

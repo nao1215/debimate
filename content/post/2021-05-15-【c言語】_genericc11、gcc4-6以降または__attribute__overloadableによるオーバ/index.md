@@ -11,7 +11,7 @@ cover:
   image: images/birds-6211541_640.jpg
   alt: "【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overloadable))によるオーバーロード"
   hidden: false
-images: ["images/birds-6211541_640.jpg"]
+images: ["post/2021-05-15-【c言語】_genericc11、gcc4-6以降または__attribute__overloadableによるオーバ/images/birds-6211541_640.jpg"]
 ---
 
 ## 前書き 

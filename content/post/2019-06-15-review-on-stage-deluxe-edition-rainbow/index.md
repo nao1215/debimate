@@ -12,7 +12,7 @@ cover:
   image: images/on_stage-min.jpg
   alt: "Review: On Stage Deluxe Edition (Rainbow)"
   hidden: false
-images: ["images/on_stage-min.jpg"]
+images: ["post/2019-06-15-review-on-stage-deluxe-edition-rainbow/images/on_stage-min.jpg"]
 ---
 
 ## 収録曲

@@ -14,7 +14,7 @@ cover:
   image: images/にせぐま-min.jpg
   alt: "ロシアのプー"
   hidden: false
-images: ["images/にせぐま-min.jpg"]
+images: ["post/2019-07-21-ロシアに潜んでいたくまのプーвинни-пухヴィ/images/にせぐま-min.jpg"]
 ---
 
 ## Винни-Пух(ヴィーニ・プーフ)とは

@@ -13,7 +13,7 @@ cover:
   image: images/interface-3614766_640.png
   alt: "【サイト開設6ヶ月目:記事数54本】3000PV/月・収益800円/月、問題は「偏った記事人気」「リピーター不足」「低い広告クリック率」"
   hidden: false
-images: ["images/interface-3614766_640.png"]
+images: ["post/2019-06-29-【サイト開設6ヶ月目記事数54本】3000pv-月・収益800円-月/images/interface-3614766_640.png"]
 ---
 
 ## 前書き：3000PV/月、収益800円/月

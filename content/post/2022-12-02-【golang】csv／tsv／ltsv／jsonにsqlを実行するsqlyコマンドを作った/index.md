@@ -16,7 +16,7 @@ cover:
   image: images/Screenshot-from-2022-12-02-22-41-58.png
   alt: "【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】"
   hidden: false
-images: ["images/Screenshot-from-2022-12-02-22-41-58.png"]
+images: ["post/2022-12-02-【golang】csv／tsv／ltsv／jsonにsqlを実行するsqlyコマンドを作った/images/Screenshot-from-2022-12-02-22-41-58.png"]
 ---
 
 ## 前書き

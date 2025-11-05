@@ -14,7 +14,7 @@ cover:
   image: images/settings-3311593_640.png
   alt: "【Bash / Ruby / Python3】オプション解析する方法の比較"
   hidden: false
-images: ["images/settings-3311593_640.png"]
+images: ["post/2020-04-11-【bash-ruby-python3】オプション解析する方法の比較/images/settings-3311593_640.png"]
 ---
 
 ## 前書き

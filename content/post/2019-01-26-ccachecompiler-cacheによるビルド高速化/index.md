@@ -14,7 +14,7 @@ cover:
   image: images/ccache-1.png
   alt: "ccache(compiler cache)によるビルド高速化"
   hidden: false
-images: ["images/ccache-1.png"]
+images: ["post/2019-01-26-ccachecompiler-cacheによるビルド高速化/images/ccache-1.png"]
 ---
 
 ## 前書き

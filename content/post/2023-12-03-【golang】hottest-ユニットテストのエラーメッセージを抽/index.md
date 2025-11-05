@@ -13,7 +13,7 @@ cover:
   image: images/demo.gif
   alt: "【Golang】hottest - ユニットテストのエラーメッセージを抽出するCLI／GitHub Actionsを作った話"
   hidden: false
-images: ["images/demo.gif"]
+images: ["post/2023-12-03-【golang】hottest-ユニットテストのエラーメッセージを抽/images/demo.gif"]
 ---
 
 ## 前書き 

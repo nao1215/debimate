@@ -11,7 +11,7 @@ cover:
   image: images/puzzle-654957_640-min.jpg
   alt: "【Java】Serializableの実装、役割、使い方、危険性とその対策【serialVersionUIDとは】"
   hidden: false
-images: ["images/puzzle-654957_640-min.jpg"]
+images: ["post/2021-02-20-【java】serializableの実装、役割、使い方、危険性とその対/images/puzzle-654957_640-min.jpg"]
 ---
 
 ## 前書き： Javaの勉強中に見つけたSerializable

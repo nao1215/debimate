@@ -13,7 +13,7 @@ cover:
   image: images/startup-3267505_640-min.jpg
   alt: "【オブジェクト指向】全23種類のGoFデザインパターンに関する説明と参考書籍"
   hidden: false
-images: ["images/startup-3267505_640-min.jpg"]
+images: ["post/2021-01-07-【オブジェクト指向】全23種類のgofデザインパター/images/startup-3267505_640-min.jpg"]
 ---
 
 ## Gang Of Fourデザインパターンを学ぶメリット

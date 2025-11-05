@@ -11,7 +11,7 @@ cover:
   image: images/architecture-2186812_640-1-min.jpg
   alt: "振り返り：大企業(大手メーカ)で1年半働いて感じたデメリット(残業量、スキル面、仕事の仕方)"
   hidden: false
-images: ["images/architecture-2186812_640-1-min.jpg"]
+images: ["post/2019-09-15-振り返り：大企業大手メーカで1年半働いて感じ/images/architecture-2186812_640-1-min.jpg"]
 ---
 
 ## 前書き

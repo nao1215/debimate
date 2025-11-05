@@ -13,7 +13,7 @@ cover:
   image: images/keyboard-648447_640.jpg
   alt: "振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)"
   hidden: false
-images: ["images/keyboard-648447_640.jpg"]
+images: ["post/2019-02-28-振り返り：google-adsenseが開設4日で承認された話およびサ/images/keyboard-648447_640.jpg"]
 ---
 
 ## 厳しいと有名なGoogle AdSense審査

@@ -11,7 +11,7 @@ cover:
   image: images/boys-3396713_640.jpg
   alt: "【golang】io.Readerを使いまわしてContentType判定、S3アップロードしたらハマった話"
   hidden: false
-images: ["images/boys-3396713_640.jpg"]
+images: ["post/2023-09-10-【golang】io-readerを使いまわしてcontenttypeを判定したらハマった/images/boys-3396713_640.jpg"]
 ---
 
 ## 前書き：同じハマりを繰り返す

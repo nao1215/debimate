@@ -12,7 +12,7 @@ cover:
   image: images/eyecatch-openjdk.png
   alt: "【Java 11】Shebangを用いたJavaソースファイル（単一）の実行方法 + Shebangエラー回避方法"
   hidden: false
-images: ["images/eyecatch-openjdk.png"]
+images: ["post/2020-07-23-【java-11】shebangを用いたjavaソースファイル（単一）の実行/images/eyecatch-openjdk.png"]
 ---
 
 ## 前書き：コンパイル無しでJavaアプリが動かせる 

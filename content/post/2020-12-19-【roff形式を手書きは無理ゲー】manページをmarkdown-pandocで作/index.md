@@ -12,7 +12,7 @@ cover:
   image: images/books-1845614_640-min.jpg
   alt: "【roff形式を手書きは無理ゲー】manページをMarkdown + Pandocで作成【with manページお作法】"
   hidden: false
-images: ["images/books-1845614_640-min.jpg"]
+images: ["post/2020-12-19-【roff形式を手書きは無理ゲー】manページをmarkdown-pandocで作/images/books-1845614_640-min.jpg"]
 ---
 
 ## 前書き：manualページは伝統的なドキュメント

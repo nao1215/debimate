@@ -11,7 +11,7 @@ cover:
   image: images/SV_Ler3B.jpg
   alt: "2022年の振り返り & 2023年の抱負"
   hidden: false
-images: ["images/SV_Ler3B.jpg"]
+images: ["post/2022-12-24-2022年の振り返り-2023年の抱負/images/SV_Ler3B.jpg"]
 ---
 
 ## 前書き：サクッと振り返って、来年も良い年に！

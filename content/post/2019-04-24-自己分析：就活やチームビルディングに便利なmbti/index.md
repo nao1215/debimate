@@ -14,7 +14,7 @@ cover:
   image: images/MBTI2-300x178.png
   alt: "感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)"
   hidden: false
-images: ["images/MBTI2-300x178.png"]
+images: ["post/2019-04-24-自己分析：就活やチームビルディングに便利なmbti/images/MBTI2-300x178.png"]
 ---
 
 ## 前書き：MBTIはあなたの強みを見つける方法

@@ -12,7 +12,7 @@ cover:
   image: images/mistake-3085712_640.jpg
   alt: "Linux Kernel: エラー番号の一覧"
   hidden: false
-images: ["images/mistake-3085712_640.jpg"]
+images: ["post/2019-02-24-linux-kernel-エラー番号の一覧/images/mistake-3085712_640.jpg"]
 ---
 
 ## 前書き

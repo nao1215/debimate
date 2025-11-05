@@ -10,7 +10,7 @@ cover:
   image: images/2025-05-25_12-26-1024x358.png
   alt: "O'Reilly Learning PlatformをAudify（耳）で学習する"
   hidden: false
-images: ["images/2025-05-25_12-26-1024x358.png"]
+images: ["post/2025-05-25-oreilly-learning-platformをaudify（耳）で学習する/images/2025-05-25_12-26-1024x358.png"]
 ---
 
 ##  前書き：O'Reilly Learning Platformは高め

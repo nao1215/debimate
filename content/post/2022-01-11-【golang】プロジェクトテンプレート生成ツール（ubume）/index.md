@@ -13,7 +13,7 @@ cover:
   image: images/cooking-g7a7f01727_640-min.jpg
   alt: "【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】"
   hidden: false
-images: ["images/cooking-g7a7f01727_640-min.jpg"]
+images: ["post/2022-01-11-【golang】プロジェクトテンプレート生成ツール（ubume）/images/cooking-g7a7f01727_640-min.jpg"]
 ---
 
 ## 前書き：プロジェクトを新規で作るのはダルい

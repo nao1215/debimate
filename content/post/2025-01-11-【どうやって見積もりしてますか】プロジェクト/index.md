@@ -10,7 +10,7 @@ cover:
   image: images/accountant-1794122_1280.png
   alt: "【どうやって見積もりしてますか?】プロジェクト工数を見積もるときの私なりのやり方【ボトムアップ見積り】"
   hidden: false
-images: ["images/accountant-1794122_1280.png"]
+images: ["post/2025-01-11-【どうやって見積もりしてますか】プロジェクト/images/accountant-1794122_1280.png"]
 ---
 
 ## 前書き：超概算見積もり？KKD法でいいですか？

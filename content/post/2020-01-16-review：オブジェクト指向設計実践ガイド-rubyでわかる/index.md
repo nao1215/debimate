@@ -12,7 +12,7 @@ cover:
   image: images/Ruby-min-1.jpg
   alt: "感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方"
   hidden: false
-images: ["images/Ruby-min-1.jpg"]
+images: ["post/2020-01-16-review：オブジェクト指向設計実践ガイド-rubyでわかる/images/Ruby-min-1.jpg"]
 ---
 
 ## Rubyで初めてのオブジェクト指向なら本書！

@@ -10,7 +10,7 @@ cover:
   image: images/dbms_demo-2.gif
   alt: "【機能強化】RDBMS／CSV／TSV／LTSVクライアントであるsqluvをhttps／s3／圧縮フォーマットに対応させ、カラースキームを追加"
   hidden: false
-images: ["images/dbms_demo-2.gif"]
+images: ["post/2025-03-22-【機能強化】rdbms／csv／tsv／ltsvクライアントであるsqluvをhttps/images/dbms_demo-2.gif"]
 ---
 
 ## 前書き：大幅に機能追加

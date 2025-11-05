@@ -10,7 +10,7 @@ cover:
   image: images/seasons-g45e19cb59_640.jpg
   alt: "32歳の子持ちエンジニアがキャリアパスに悩んだ話（結論：フルスタックを目指します）"
   hidden: false
-images: ["images/seasons-g45e19cb59_640.jpg"]
+images: ["post/2023-04-02-32歳の子持ちエンジニアがキャリアパスに悩んだ話/images/seasons-g45e19cb59_640.jpg"]
 ---
 
 ## 前書き：新築一戸建ての検討、迫りくる恐怖

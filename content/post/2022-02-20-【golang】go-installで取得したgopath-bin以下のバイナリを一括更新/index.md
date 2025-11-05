@@ -13,7 +13,7 @@ cover:
   image: images/Screenshot-from-2022-02-20-13-02-09.png
   alt: "【Golang】go installで取得した$GOPATH/bin以下のバイナリを一括更新するgupコマンドを試作"
   hidden: false
-images: ["images/Screenshot-from-2022-02-20-13-02-09.png"]
+images: ["post/2022-02-20-【golang】go-installで取得したgopath-bin以下のバイナリを一括更新/images/Screenshot-from-2022-02-20-13-02-09.png"]
 ---
 
 ## 前書き：バイナリの更新が面倒
