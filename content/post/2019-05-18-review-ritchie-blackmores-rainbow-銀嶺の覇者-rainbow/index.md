@@ -12,7 +12,6 @@ cover:
   image: images/blackmore_rainbow.jpg
   alt: "Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)"
   hidden: false
-images: ["post/2019-05-18-review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/images/blackmore_rainbow.jpg"]
 ---
 
 ## 収録曲

@@ -12,7 +12,6 @@ cover:
   image: images/sql.jpg
   alt: "【golang】sqlcコマンドで「SQLクエリから型安全なGoコードを生成」し、生産性を上げたい"
   hidden: false
-images: ["post/2022-06-25-【golang】sqlcコマンドで「sqlクエリから型安全なgoコード/images/sql.jpg"]
 ---
 
 ## 前書き：sqlcとは

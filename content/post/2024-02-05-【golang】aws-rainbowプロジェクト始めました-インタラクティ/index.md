@@ -12,7 +12,6 @@ cover:
   image: images/colorful-2174045_1920.png
   alt: "【Golang】AWS Rainbowプロジェクト始めました - インタラクティブにS3操作するs3hubコマンド"
   hidden: false
-images: ["post/2024-02-05-【golang】aws-rainbowプロジェクト始めました-インタラクティ/images/colorful-2174045_1920.png"]
 ---
 
 ## 前書き

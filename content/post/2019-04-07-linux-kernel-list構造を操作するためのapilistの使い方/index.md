@@ -12,7 +12,6 @@ cover:
   image: images/Kernel_lists-1.png
   alt: "Linux Kernel: List構造を操作するためのAPI(Listの使い方)"
   hidden: false
-images: ["post/2019-04-07-linux-kernel-list構造を操作するためのapilistの使い方/images/Kernel_lists-1.png"]
 ---
 
 ## 前書き

@@ -12,7 +12,6 @@ cover:
   image: images/日本はもはや「後進国」-min-1.jpg
   alt: "感想: 日本はもはや「後進国」"
   hidden: false
-images: ["post/2020-01-05-review-日本はもはや「後進国」/images/日本はもはや「後進国」-min-1.jpg"]
 ---
 
 ## 後進国から脱せられるかはトップ次第？

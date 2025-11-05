@@ -13,7 +13,6 @@ cover:
   image: images/cat.jpg
   alt: "Code Reading：Redox(Rust)版coreutilsのcatコマンド その1(全2回)"
   hidden: false
-images: ["post/2019-05-06-code-reading：redoxrust版coreutilsのcatコマンド-その1全2回/images/cat.jpg"]
 ---
 
 ## 前書き

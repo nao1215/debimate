@@ -12,7 +12,6 @@ cover:
   image: images/lfVWBmiW_400x400-min.jpg
   alt: "Raspberry Pi3/4にDockerとdocker-composeをインストールする方法"
   hidden: false
-images: ["post/2020-09-27-raspberry-pi3-4にdockerとdocker-composeをインストールする方法/images/lfVWBmiW_400x400-min.jpg"]
 ---
 
 ## 前書き

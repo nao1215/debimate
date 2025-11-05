@@ -14,7 +14,6 @@ cover:
   image: images/name-1714231_640.jpg
   alt: "【Bash / Ruby / Python3】ユーザ名 / UID / グループ名 / GIDを取得する方法の比較"
   hidden: false
-images: ["post/2020-04-12-【bash-ruby-python3】ユーザ名-uid-グループ名-gidを取得する方法/images/name-1714231_640.jpg"]
 ---
 
 ## 前書き

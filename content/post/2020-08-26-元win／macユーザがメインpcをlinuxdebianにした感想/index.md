@@ -13,7 +13,6 @@ cover:
   image: images/Screenshot-from-2020-08-25-21-51-00.png
   alt: "元Win／MacユーザがメインPCをLinux(Debian)にした感想"
   hidden: false
-images: ["post/2020-08-26-元win／macユーザがメインpcをlinuxdebianにした感想/images/Screenshot-from-2020-08-25-21-51-00.png"]
 ---
 
 ## 前書き

@@ -13,7 +13,6 @@ cover:
   image: images/exit-44205_640.jpg
   alt: "【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)"
   hidden: false
-images: ["post/2020-11-20-【go言語golang】os-exitをユニットテストする方法カバレッ/images/exit-44205_640.jpg"]
 ---
 
 ## 前書き：os.Exit()の結果は親プロセスが受信

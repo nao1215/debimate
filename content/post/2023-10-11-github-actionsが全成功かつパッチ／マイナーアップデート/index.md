@@ -12,7 +12,6 @@ cover:
   image: images/27347476.png
   alt: "GitHub Actionsが全成功かつパッチ／マイナーアップデートの場合は、Dependabotが作成したPRを自動マージする設定"
   hidden: false
-images: ["post/2023-10-11-github-actionsが全成功かつパッチ／マイナーアップデート/images/27347476.png"]
 ---
 
 ## 前書き

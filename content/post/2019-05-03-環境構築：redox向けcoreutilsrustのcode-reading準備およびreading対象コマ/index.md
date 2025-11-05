@@ -14,7 +14,6 @@ cover:
   image: images/Code_Reading.jpg
   alt: "環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧"
   hidden: false
-images: ["post/2019-05-03-環境構築：redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/images/Code_Reading.jpg"]
 ---
 
 ## 前書き：Redox版coreutilsを読む理由

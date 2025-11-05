@@ -14,7 +14,6 @@ cover:
   image: images/document-3503099_640-min.jpg
   alt: "【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較"
   hidden: false
-images: ["post/2020-04-08-【bash-ruby-python3】ファイル読み込み、ファイル書き込み/images/document-3503099_640-min.jpg"]
 ---
 
 ## 前書き

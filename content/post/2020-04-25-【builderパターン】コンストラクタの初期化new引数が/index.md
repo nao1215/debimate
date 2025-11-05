@@ -13,7 +13,6 @@ cover:
   image: images/child-1864718_640-min.jpg
   alt: "【Builderパターン】コンストラクタの初期化(new)引数が多い場合にオススメなデザインパターン"
   hidden: false
-images: ["post/2020-04-25-【builderパターン】コンストラクタの初期化new引数が/images/child-1864718_640-min.jpg"]
 ---
 
 ##  前書き：Builderパターンとは

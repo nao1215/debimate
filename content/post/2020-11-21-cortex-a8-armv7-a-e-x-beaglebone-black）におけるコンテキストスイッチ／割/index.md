@@ -12,7 +12,6 @@ cover:
   image: images/Screenshot-from-2020-11-21-12-10-31.jpg
   alt: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt"
   hidden: false
-images: ["post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black）におけるコンテキストスイッチ／割/images/Screenshot-from-2020-11-21-12-10-31.jpg"]
 ---
 
 ## 前書き：XINUソースコードから学ぶアセンブラ実装

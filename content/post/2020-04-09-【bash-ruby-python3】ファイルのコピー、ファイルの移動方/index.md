@@ -14,7 +14,6 @@ cover:
   image: images/copy-160129_640-1.jpg
   alt: "【Bash / Ruby / Python3】ファイルのコピー、ファイルの移動方法の比較"
   hidden: false
-images: ["post/2020-04-09-【bash-ruby-python3】ファイルのコピー、ファイルの移動方/images/copy-160129_640-1.jpg"]
 ---
 
 ## 前書き 

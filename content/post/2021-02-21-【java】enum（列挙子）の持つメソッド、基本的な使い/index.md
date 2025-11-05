@@ -11,7 +11,6 @@ cover:
   image: images/athletic-field-1867053_640-min.jpg
   alt: "【Java】enum（列挙子）の持つメソッド、基本的な使い方、応用（シングルトン）【実装例付き】"
   hidden: false
-images: ["post/2021-02-21-【java】enum（列挙子）の持つメソッド、基本的な使い/images/athletic-field-1867053_640-min.jpg"]
 ---
 
 ## 前書き：君、C言語のenumと雰囲気違うね

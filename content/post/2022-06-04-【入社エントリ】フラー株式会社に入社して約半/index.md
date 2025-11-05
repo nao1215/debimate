@@ -11,7 +11,6 @@ cover:
   image: images/startup-593329_640.jpg
   alt: "【入社エントリ】フラー株式会社に入社して約半年経ちました"
   hidden: false
-images: ["post/2022-06-04-【入社エントリ】フラー株式会社に入社して約半/images/startup-593329_640.jpg"]
 ---
 
 ## 前書き：人生初の転職。その感想

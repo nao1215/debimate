@@ -11,7 +11,6 @@ cover:
   image: images/banned-1726366_640.jpg
   alt: "C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法"
   hidden: false
-images: ["post/2019-09-07-c言語で非推奨なc標準関数例strcpyをコンパイルエラー/images/banned-1726366_640.jpg"]
 ---
 
 ## 前書き

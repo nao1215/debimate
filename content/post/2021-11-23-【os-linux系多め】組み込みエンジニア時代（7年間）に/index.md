@@ -14,7 +14,6 @@ cover:
   image: images/android-stack_2x.png
   alt: "【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選"
   hidden: false
-images: ["post/2021-11-23-【os-linux系多め】組み込みエンジニア時代（7年間）に/images/android-stack_2x.png"]
 ---
 
 ![](images/book2-1.jpg)

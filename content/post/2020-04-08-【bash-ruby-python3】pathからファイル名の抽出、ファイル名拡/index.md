@@ -14,7 +14,6 @@ cover:
   image: images/icon-2488093_640-1-min.jpg
   alt: "【Bash / Ruby / Python3】PATHからファイル名の抽出、ファイル名(拡張子なし)の取得、拡張子の取得方法の比較"
   hidden: false
-images: ["post/2020-04-08-【bash-ruby-python3】pathからファイル名の抽出、ファイル名拡/images/icon-2488093_640-1-min.jpg"]
 ---
 
 ## 前書き

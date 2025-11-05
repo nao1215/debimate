@@ -12,7 +12,6 @@ cover:
   image: images/NULL.jpg
   alt: "Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)"
   hidden: false
-images: ["post/2019-03-02-linux-kernel-nullポインタエラーハンドリングerr_ptr-is_err-ptr_err/images/NULL.jpg"]
 ---
 
 ## "返り値がNULL" = "情報量がない"

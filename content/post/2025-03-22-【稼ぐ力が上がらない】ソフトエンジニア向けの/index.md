@@ -10,7 +10,6 @@ cover:
   image: images/developer-8829735_1280.jpg
   alt: "【稼ぐ力が上がらない】ソフトエンジニア向けの副業は労働時間が長く、OSS開発はリターンが少ない話"
   hidden: false
-images: ["post/2025-03-22-【稼ぐ力が上がらない】ソフトエンジニア向けの/images/developer-8829735_1280.jpg"]
 ---
 
 ## 前書き：リアル人生ゲームに対する結論のないポエム

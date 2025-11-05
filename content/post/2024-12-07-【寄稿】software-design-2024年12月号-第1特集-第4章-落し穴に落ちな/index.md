@@ -13,7 +13,6 @@ cover:
   image: images/SoftwareDesign.jpg
   alt: "【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ"
   hidden: false
-images: ["post/2024-12-07-【寄稿】software-design-2024年12月号-第1特集-第4章-落し穴に落ちな/images/SoftwareDesign.jpg"]
 ---
 
 ## 祝！Software Design 3回目の寄稿

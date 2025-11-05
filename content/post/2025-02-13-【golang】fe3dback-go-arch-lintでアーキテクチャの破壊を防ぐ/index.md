@@ -8,7 +8,6 @@ cover:
   image: images/Screenshot-from-2025-02-13-23-26-45.png
   alt: "【Golang】fe3dback/go-arch-lintでアーキテクチャの破壊を防ぐ"
   hidden: false
-images: ["post/2025-02-13-【golang】fe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/images/Screenshot-from-2025-02-13-23-26-45.png"]
 ---
 
 ## 前書き：アーキテクチャは容易に壊される

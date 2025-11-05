@@ -15,7 +15,6 @@ cover:
   image: images/Screenshot-from-2020-12-12-13-22-44-1.jpg
   alt: "【静的解析】ソースコード解析補助ツールSourcetrailの導入方法【例：systemd(C言語)】"
   hidden: false
-images: ["post/2020-12-12-【静的解析】ソースコード解析補助ツールsourcetrailの導/images/Screenshot-from-2020-12-12-13-22-44-1.jpg"]
 ---
 
 ## 前書き：Sourcetrailとは 

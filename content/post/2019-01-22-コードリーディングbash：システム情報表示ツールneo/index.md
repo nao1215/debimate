@@ -14,7 +14,6 @@ cover:
   image: images/fetcher.png
   alt: "fetcher"
   hidden: false
-images: ["post/2019-01-22-コードリーディングbash：システム情報表示ツールneo/images/fetcher.png"]
 ---
 
 ## 前書き

@@ -13,7 +13,6 @@ cover:
   image: images/ajfa-deluxe-box-set-e1546407575773.jpg
   alt: "Review: Seattle '89(Metallica)"
   hidden: false
-images: ["post/2019-01-02-review-seattle-89metallica/images/ajfa-deluxe-box-set-e1546407575773.jpg"]
 ---
 
 ## 収録曲

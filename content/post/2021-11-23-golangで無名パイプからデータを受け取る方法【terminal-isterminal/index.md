@@ -11,7 +11,6 @@ cover:
   image: images/pipe-g2b0ac93f2_640-min-1.jpg
   alt: "Golangで無名パイプからデータを受け取る方法【term.IsTerminalによる判定】"
   hidden: false
-images: ["post/2021-11-23-golangで無名パイプからデータを受け取る方法【terminal-isterminal/images/pipe-g2b0ac93f2_640-min-1.jpg"]
 ---
 
 ## 前書き：os.Args\[1\]にはパイプのデータがない

@@ -13,7 +13,6 @@ cover:
   image: images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg
   alt: "Linux Kernel Tree内で自作Kernelモジュールをビルドする方法(MakefileとKconfigの書き方)"
   hidden: false
-images: ["post/2019-07-15-linux-kernel-tree内で自作kernelモジュールをビルドする方法makefileとkconfi/images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg"]
 ---
 
 ## 前書き

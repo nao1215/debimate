@@ -14,7 +14,6 @@ cover:
   image: images/tux.png
   alt: "Linux Kernel: __initマクロ、__exitマクロの役割(メモリの有効利用)"
   hidden: false
-images: ["post/2019-04-29-linux-kernel-__initマクロ、__exitマクロの役割メモリの有効利用/images/tux.png"]
 ---
 
 ## \_\_initマクロ、\_\_exitマクロが使われるケース

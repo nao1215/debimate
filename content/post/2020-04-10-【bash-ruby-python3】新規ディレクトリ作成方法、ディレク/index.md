@@ -14,7 +14,6 @@ cover:
   image: images/folder-2517423_640-min.jpg
   alt: "【Bash / Ruby / Python3】新規ディレクトリ作成方法、ディレクトリ削除方法の比較"
   hidden: false
-images: ["post/2020-04-10-【bash-ruby-python3】新規ディレクトリ作成方法、ディレク/images/folder-2517423_640-min.jpg"]
 ---
 
 ## 前書き

@@ -10,7 +10,6 @@ cover:
   image: images/android-stack_2x-695x1024.png
   alt: "AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから"
   hidden: false
-images: ["post/2023-04-17-androidプラットフォームアーキテクチャでjavaが採用され/images/android-stack_2x-695x1024.png"]
 ---
 
 ## 前書き：何故AndroidはC/C++がメインではないのか

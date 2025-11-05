@@ -13,7 +13,6 @@ cover:
   image: images/schafer-dog-4074699_640-min.jpg
   alt: "【WatchDogTimer】Raspberry Pi4サーバがフリーズ(停止)した場合に自動再起動する方法【HeartBeat】"
   hidden: false
-images: ["post/2020-11-28-【watchdogtimer】raspberry-pi4サーバがフリーズ停止した場合に自動/images/schafer-dog-4074699_640-min.jpg"]
 ---
 
 ## 前書き：ラズパイサーバがよく止まる

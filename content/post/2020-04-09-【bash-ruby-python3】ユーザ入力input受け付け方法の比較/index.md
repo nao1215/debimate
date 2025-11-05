@@ -14,7 +14,6 @@ cover:
   image: images/laptop-820274_640-min.jpg
   alt: "【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比較"
   hidden: false
-images: ["post/2020-04-09-【bash-ruby-python3】ユーザ入力input受け付け方法の比較/images/laptop-820274_640-min.jpg"]
 ---
 
 ## 前書き

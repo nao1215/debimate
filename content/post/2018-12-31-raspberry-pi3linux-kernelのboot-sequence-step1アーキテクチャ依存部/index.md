@@ -12,7 +12,6 @@ cover:
   image: images/Raspberry-Pi-3-Ports-1-1833x1080-e1546321071607.jpg
   alt: "Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部"
   hidden: false
-images: ["post/2018-12-31-raspberry-pi3linux-kernelのboot-sequence-step1アーキテクチャ依存部/images/Raspberry-Pi-3-Ports-1-1833x1080-e1546321071607.jpg"]
 ---
 
 ## 前書き

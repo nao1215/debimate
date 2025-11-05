@@ -13,7 +13,6 @@ cover:
   image: images/poedit-1-e1549180617954.png
   alt: "Bash(Shell Script)内メッセージの国際化方法"
   hidden: false
-images: ["post/2019-02-03-bashshell-script内メッセージの国際化方法/images/poedit-1-e1549180617954.png"]
 ---
 
 ## 前書き

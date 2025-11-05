@@ -11,7 +11,6 @@ cover:
   image: images/eclipse-1492818_640.jpg
   alt: "【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面"
   hidden: false
-images: ["post/2021-05-23-【java】immutable-object（不変クラス）の利点／欠点／作成方法/images/eclipse-1492818_640.jpg"]
 ---
 
 ## 前書き：これだからC言語プログラマは……

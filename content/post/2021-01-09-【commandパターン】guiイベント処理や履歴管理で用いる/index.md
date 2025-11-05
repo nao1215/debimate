@@ -12,7 +12,6 @@ cover:
   image: images/brass-telegraph-692735_640-min-1-1.jpg
   alt: "【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】"
   hidden: false
-images: ["post/2021-01-09-【commandパターン】guiイベント処理や履歴管理で用いる/images/brass-telegraph-692735_640-min-1-1.jpg"]
 ---
 
 ## 前書き：Commandパターンとは 

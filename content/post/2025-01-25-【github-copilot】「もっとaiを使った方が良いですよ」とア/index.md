@@ -12,7 +12,6 @@ cover:
   image: images/Screenshot-from-2025-01-25-10-09-53.png
   alt: "【GitHub Copilot】「もっとAIを使った方が良いですよ」とアドバイスする時代になった"
   hidden: false
-images: ["post/2025-01-25-【github-copilot】「もっとaiを使った方が良いですよ」とア/images/Screenshot-from-2025-01-25-10-09-53.png"]
 ---
 
 ## 前書き：AIが当たり前の時代に

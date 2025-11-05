@@ -12,7 +12,6 @@ cover:
   image: images/Raspberry-Pi3_min.jpg
   alt: "Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)"
   hidden: false
-images: ["post/2019-03-24-raspberry-pi3をファイルサーバsamba化し、linux-mac-winでファイル共有/images/Raspberry-Pi3_min.jpg"]
 ---
 
 ## 前書き

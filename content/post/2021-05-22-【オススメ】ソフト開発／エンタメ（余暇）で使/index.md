@@ -12,7 +12,6 @@ cover:
   image: images/icon-1328421_640.jpg
   alt: "【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】"
   hidden: false
-images: ["post/2021-05-22-【オススメ】ソフト開発／エンタメ（余暇）で使/images/icon-1328421_640.jpg"]
 ---
 
 ## 前書き：オススメ？当たり前？

@@ -14,7 +14,6 @@ cover:
   image: images/list-2389219_640.jpg
   alt: "【Bash / Ruby / Python3】ファイルの存在を確認する方法の比較"
   hidden: false
-images: ["post/2020-04-06-【bash-ruby-python3】ファイルの存在を確認する方法の比較/images/list-2389219_640.jpg"]
 ---
 
 ## 前書き

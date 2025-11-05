@@ -13,7 +13,6 @@ cover:
   image: images/Raspberry-Pi3_min.jpg
   alt: "ロシア旅行：観光ビザを簡単に取得する方法(ビザ申請代行業者を利用)"
   hidden: false
-images: ["post/2019-01-02-【ロシア旅行】観光ビザを簡単に取得する方法ビ/images/Raspberry-Pi3_min.jpg"]
 ---
 
 ![](images/サンクトペテルブルク.jpg)

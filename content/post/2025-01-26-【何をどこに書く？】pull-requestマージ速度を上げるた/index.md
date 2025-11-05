@@ -10,7 +10,6 @@ cover:
   image: images/CleanArchitecture.jpg
   alt: "【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く"
   hidden: false
-images: ["post/2025-01-26-【何をどこに書く？】pull-requestマージ速度を上げるた/images/CleanArchitecture.jpg"]
 ---
 
 ## 前書き：ドキュメンテーションコメントの書き方が分からん

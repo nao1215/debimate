@@ -11,7 +11,6 @@ cover:
   image: images/DMM.png
   alt: "DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」"
   hidden: false
-images: ["post/2019-04-20-dmm現fanza-api・twitter-botによる自動広告を半年続けた結果、「/images/DMM.png"]
 ---
 
 ## 前書き：何故、DMM APIでTwitter Botを始めたか

@@ -14,7 +14,6 @@ cover:
   image: images/the-location-of-the-1724293_640.jpg
   alt: "【Bash / Ruby / Python3】カレントワーキングディレクトリを取得する方法の比較"
   hidden: false
-images: ["post/2020-04-05-bashshell-scriptからrubyやpythonに乗り換え！カレントワーキングデ/images/the-location-of-the-1724293_640.jpg"]
 ---
 
 ## 前書き 

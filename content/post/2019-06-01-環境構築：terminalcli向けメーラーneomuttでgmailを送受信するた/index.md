@@ -14,7 +14,6 @@ cover:
   image: neomutt_icon.jpg
   alt: "neomutt"
   hidden: false
-images: ["neomutt_icon.jpg"]
 ---
 
 ## 前書き

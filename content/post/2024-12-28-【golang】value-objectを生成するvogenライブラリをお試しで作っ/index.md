@@ -11,7 +11,6 @@ cover:
   image: images/PDCV-1043_ljQ_extralarge.jpg
   alt: "【Golang】Value Objectを生成するvogenライブラリをお試しで作った話"
   hidden: false
-images: ["post/2024-12-28-【golang】value-objectを生成するvogenライブラリをお試しで作っ/images/PDCV-1043_ljQ_extralarge.jpg"]
 ---
 
 ## 前書き：GolangでValue Objectを作りづらい

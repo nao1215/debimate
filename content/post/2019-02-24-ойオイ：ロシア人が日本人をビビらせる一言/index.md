@@ -12,7 +12,6 @@ cover:
   image: images/aggression-1641959_640.jpg
   alt: "Ой!(オイ)：ロシア人が日本人をビビらせる一言"
   hidden: false
-images: ["post/2019-02-24-ойオイ：ロシア人が日本人をビビらせる一言/images/aggression-1641959_640.jpg"]
 ---
 
 ## ロシア人「"Ой!" (オイ！)」私「(´；ω；｀)何？」

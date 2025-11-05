@@ -14,7 +14,6 @@ cover:
   image: images/typewriter-1170657_640-min.jpg
   alt: "【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】"
   hidden: false
-images: ["post/2020-12-01-【lpicで見た】-etc-motdの内容を出力しているのは誰？【/images/typewriter-1170657_640-min.jpg"]
 ---
 
 ##  前書き：Message Of The Dayファイルとは

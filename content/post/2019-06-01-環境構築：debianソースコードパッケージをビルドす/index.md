@@ -12,7 +12,6 @@ cover:
   image: images/tools-498202_640-1.jpg
   alt: "環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)"
   hidden: false
-images: ["post/2019-06-01-環境構築：debianソースコードパッケージをビルドす/images/tools-498202_640-1.jpg"]
 ---
 
 ## 前書き

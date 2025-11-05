@@ -11,7 +11,6 @@ cover:
   image: images/1200px-Vala_Logo.svg_.jpg
   alt: "【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）"
   hidden: false
-images: ["post/2022-01-05-【vala言語】優れた点、linuxにおける立ち位置、物足り/images/1200px-Vala_Logo.svg_.jpg"]
 ---
 
 ## マイナーなプログラミング言語：Vala言語とは

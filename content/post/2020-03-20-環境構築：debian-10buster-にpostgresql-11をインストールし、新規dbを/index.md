@@ -14,7 +14,6 @@ cover:
   image: images/DBランキング2020年3月時点.jpg
   alt: "環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法"
   hidden: false
-images: ["post/2020-03-20-環境構築：debian-10buster-にpostgresql-11をインストールし、新規dbを/images/DBランキング2020年3月時点.jpg"]
 ---
 
 ## 前書き

@@ -12,7 +12,6 @@ cover:
   image: images/Valac.jpg
   alt: "【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】"
   hidden: false
-images: ["post/2021-11-17-【c言語】完全なオブジェクト指向ではなく、interfaceの/images/Valac.jpg"]
 ---
 
 ## C言語とオブジェクト指向は相性悪い

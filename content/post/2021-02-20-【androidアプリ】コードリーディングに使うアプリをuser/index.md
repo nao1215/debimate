@@ -13,7 +13,6 @@ cover:
   image: images/ICON-1.jpg
   alt: "【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話"
   hidden: false
-images: ["post/2021-02-20-【androidアプリ】コードリーディングに使うアプリをuser/images/ICON-1.jpg"]
 ---
 
 ## 前書き：UserLAndは遅かった
