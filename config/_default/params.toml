@@ -19,3 +19,18 @@
   [params.assets]
     css = ["css/extended/custom.css"]
 
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/nao1215"
+
+[[params.socialIcons]]
+  name = "rss"
+  url = "index.xml"
+
+[[params.socialIcons]]
+  name = "twitter"
+  url = "https://x.com/ARC_AED"
+
+[[params.socialIcons]]
+  name = "email"
+  url = "mailto:n.chika156@gmail.com"
