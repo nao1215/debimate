@@ -8,7 +8,7 @@ tags:
   - "linux"
   - "vala"
 cover:
-  image: images/1200px-Vala_Logo.svg_.jpg
+  image: "images/1200px-Vala_Logo.svg_.jpg"
   alt: "【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）"
   hidden: false
 ---

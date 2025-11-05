@@ -8,7 +8,7 @@ tags:
   - "体験談"
   - "入社エントリ"
 cover:
-  image: images/startup-593329_640.jpg
+  image: "images/startup-593329_640.jpg"
   alt: "【入社エントリ】フラー株式会社に入社して約半年経ちました"
   hidden: false
 ---

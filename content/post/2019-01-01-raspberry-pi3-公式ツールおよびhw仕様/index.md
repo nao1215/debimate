@@ -8,7 +8,7 @@ tags:
   - "linux"
   - "raspberrypi"
 cover:
-  image: images/300px-Pi-GPIO-header.png
+  image: "images/300px-Pi-GPIO-header.png"
   alt: "Raspberry Pi3: 公式ツールおよびHW仕様"
   hidden: false
 ---

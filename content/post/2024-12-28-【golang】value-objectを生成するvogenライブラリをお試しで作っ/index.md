@@ -8,7 +8,7 @@ tags:
   - "ddd"
   - "golang"
 cover:
-  image: images/PDCV-1043_ljQ_extralarge.jpg
+  image: "images/PDCV-1043_ljQ_extralarge.jpg"
   alt: "【Golang】Value Objectを生成するvogenライブラリをお試しで作った話"
   hidden: false
 ---

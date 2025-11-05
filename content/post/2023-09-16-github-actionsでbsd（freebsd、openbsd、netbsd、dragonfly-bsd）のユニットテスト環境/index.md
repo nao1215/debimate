@@ -9,7 +9,7 @@ tags:
   - "go言語"
   - "環境構築"
 cover:
-  image: images/BSD_wordmark.svg_.png
+  image: "images/BSD_wordmark.svg_.png"
   alt: "GitHub ActionsでBSD（FreeBSD、OpenBSD、NetBSD、Dragonfly BSD）のユニットテスト環境を構築する方法"
   hidden: false
 ---

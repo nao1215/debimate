@@ -11,7 +11,7 @@ tags:
   - "英語"
   - "語学学習"
 cover:
-  image: images/HelloTalkTop.jpg
+  image: "images/HelloTalkTop.jpg"
   alt: "語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ"
   hidden: false
 ---

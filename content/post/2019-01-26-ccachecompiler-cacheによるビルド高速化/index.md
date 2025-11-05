@@ -11,7 +11,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/ccache-1.png
+  image: "images/ccache-1.png"
   alt: "ccache(compiler cache)によるビルド高速化"
   hidden: false
 ---

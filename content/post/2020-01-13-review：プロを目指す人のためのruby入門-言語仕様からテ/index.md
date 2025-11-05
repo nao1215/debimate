@@ -9,7 +9,7 @@ tags:
   - "ruby"
   - "書籍"
 cover:
-  image: images/Ruby-min.jpg
+  image: "images/Ruby-min.jpg"
   alt: "感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで"
   hidden: false
 ---

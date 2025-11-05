@@ -8,7 +8,7 @@ tags:
   - "review"
   - "書籍"
 cover:
-  image: images/ダウンロード.jpeg
+  image: "images/ダウンロード.jpeg"
   alt: "感想: 岩田さん 岩田聡はこんなことを話していた。"
   hidden: false
 ---

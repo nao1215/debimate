@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/folder-2013209_640-min-1.jpg
+  image: "images/folder-2013209_640-min-1.jpg"
   alt: "【Bash / Ruby / Python3】ディレクトリの存在を確認する方法の比較"
   hidden: false
 ---

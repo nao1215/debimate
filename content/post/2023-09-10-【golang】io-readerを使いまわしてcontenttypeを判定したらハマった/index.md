@@ -8,7 +8,7 @@ tags:
   - "golang"
   - "linux"
 cover:
-  image: images/boys-3396713_640.jpg
+  image: "images/boys-3396713_640.jpg"
   alt: "【golang】io.Readerを使いまわしてContentType判定、S3アップロードしたらハマった話"
   hidden: false
 ---

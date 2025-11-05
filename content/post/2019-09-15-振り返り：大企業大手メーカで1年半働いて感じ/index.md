@@ -8,7 +8,7 @@ tags:
   - "体験談"
   - "大企業"
 cover:
-  image: images/architecture-2186812_640-1-min.jpg
+  image: "images/architecture-2186812_640-1-min.jpg"
   alt: "振り返り：大企業(大手メーカ)で1年半働いて感じたデメリット(残業量、スキル面、仕事の仕方)"
   hidden: false
 ---

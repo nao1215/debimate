@@ -10,7 +10,7 @@ tags:
   - "体験談"
   - "収益"
 cover:
-  image: images/interface-3614766_640.png
+  image: "images/interface-3614766_640.png"
   alt: "【サイト開設6ヶ月目:記事数54本】3000PV/月・収益800円/月、問題は「偏った記事人気」「リピーター不足」「低い広告クリック率」"
   hidden: false
 ---

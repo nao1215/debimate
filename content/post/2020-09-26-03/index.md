@@ -10,7 +10,7 @@ tags:
   - "ランス"
   - "レビュー"
 cover:
-  image: images/10_pack.gif
+  image: "images/10_pack.gif"
   alt: "感想：ランス03 リーザス陥落"
   hidden: false
 ---

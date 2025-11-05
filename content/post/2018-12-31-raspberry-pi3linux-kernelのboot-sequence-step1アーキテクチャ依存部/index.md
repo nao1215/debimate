@@ -9,7 +9,7 @@ tags:
   - "linuxkernel"
   - "raspberrypi"
 cover:
-  image: images/Raspberry-Pi-3-Ports-1-1833x1080-e1546321071607.jpg
+  image: "images/Raspberry-Pi-3-Ports-1-1833x1080-e1546321071607.jpg"
   alt: "Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部"
   hidden: false
 ---

@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/list-1882326_640-min.jpg
+  image: "images/list-1882326_640-min.jpg"
   alt: "【Bash / Ruby / Python3】ヒアドキュメント(文字列リテラル埋め込み)の書き方を比較"
   hidden: false
 ---

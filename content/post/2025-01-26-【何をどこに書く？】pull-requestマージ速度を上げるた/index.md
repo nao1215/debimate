@@ -7,7 +7,7 @@ categories:
 tags:
   - "プログラミング"
 cover:
-  image: images/CleanArchitecture.jpg
+  image: "images/CleanArchitecture.jpg"
   alt: "【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く"
   hidden: false
 ---

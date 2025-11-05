@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/chalk-1869492_640-min.jpg
+  image: "images/chalk-1869492_640-min.jpg"
   alt: "【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較"
   hidden: false
 ---

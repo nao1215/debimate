@@ -8,7 +8,7 @@ tags:
   - "aws"
   - "docker"
 cover:
-  image: images/dynamoAdmin.png
+  image: "images/dynamoAdmin.png"
   alt: "【Docker】DynamoDB localをローカル起動する方法【管理画面付き】"
   hidden: false
 ---

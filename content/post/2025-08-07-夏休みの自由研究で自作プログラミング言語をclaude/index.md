@@ -5,7 +5,7 @@ date: 2025-08-07
 categories:
   - "linux"
 cover:
-  image: images/ai-generated-8775234_1280.jpg
+  image: "images/ai-generated-8775234_1280.jpg"
   alt: "夏休みの自由研究として自作プログラミング言語をClaudeでVibe Codingした話"
   hidden: false
 ---

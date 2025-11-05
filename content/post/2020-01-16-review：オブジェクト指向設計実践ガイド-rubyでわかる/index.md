@@ -9,7 +9,7 @@ tags:
   - "ruby"
   - "書籍"
 cover:
-  image: images/Ruby-min-1.jpg
+  image: "images/Ruby-min-1.jpg"
   alt: "感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方"
   hidden: false
 ---

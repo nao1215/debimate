@@ -9,7 +9,7 @@ tags:
   - "体験談"
   - "旅行"
 cover:
-  image: images/-e1588345718945.jpg
+  image: "images/-e1588345718945.jpg"
   alt: "後編：16年ぶりにディズニーシーへ(12歳⇒28歳)"
   hidden: false
 ---

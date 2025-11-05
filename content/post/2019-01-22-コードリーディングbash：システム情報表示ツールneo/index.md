@@ -11,7 +11,7 @@ tags:
   - "debian"
   - "linux"
 cover:
-  image: images/fetcher.png
+  image: "images/fetcher.png"
   alt: "fetcher"
   hidden: false
 ---

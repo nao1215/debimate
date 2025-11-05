@@ -10,7 +10,7 @@ tags:
   - "体験談"
   - "収益"
 cover:
-  image: images/keyboard-648447_640.jpg
+  image: "images/keyboard-648447_640.jpg"
   alt: "振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)"
   hidden: false
 ---

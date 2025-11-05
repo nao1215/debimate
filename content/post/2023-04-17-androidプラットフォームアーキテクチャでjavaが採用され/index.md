@@ -7,7 +7,7 @@ categories:
 tags:
   - "android"
 cover:
-  image: images/android-stack_2x-695x1024.png
+  image: "images/android-stack_2x-695x1024.png"
   alt: "AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから"
   hidden: false
 ---

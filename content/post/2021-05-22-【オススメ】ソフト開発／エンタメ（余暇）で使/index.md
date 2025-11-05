@@ -9,7 +9,7 @@ tags:
   - "アプリ"
   - "開発"
 cover:
-  image: images/icon-1328421_640.jpg
+  image: "images/icon-1328421_640.jpg"
   alt: "【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】"
   hidden: false
 ---

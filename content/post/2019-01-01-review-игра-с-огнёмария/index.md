@@ -11,7 +11,7 @@ tags:
   - "russia"
   - "ария"
 cover:
-  image: images/Aria-Igra_s_ognem-e1546326094412.jpg
+  image: "images/Aria-Igra_s_ognem-e1546326094412.jpg"
   alt: "Review: Игра с огнём(АРИЯ)"
   hidden: false
 ---

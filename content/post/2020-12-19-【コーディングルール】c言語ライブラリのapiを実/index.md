@@ -9,7 +9,7 @@ tags:
   - "c言語"
   - "ライブラリ"
 cover:
-  image: images/Screenshot-from-2020-12-19-16-55-57.jpg
+  image: "images/Screenshot-from-2020-12-19-16-55-57.jpg"
   alt: "【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄"
   hidden: false
 ---

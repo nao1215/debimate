@@ -10,7 +10,7 @@ tags:
   - "linuxkernel"
   - "環境構築"
 cover:
-  image: images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg
+  image: "images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg"
   alt: "Linux Kernel Tree内で自作Kernelモジュールをビルドする方法(MakefileとKconfigの書き方)"
   hidden: false
 ---

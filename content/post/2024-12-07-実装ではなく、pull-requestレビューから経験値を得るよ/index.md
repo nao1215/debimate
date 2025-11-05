@@ -7,7 +7,7 @@ categories:
 tags:
   - "体験談"
 cover:
-  image: images/rocket-launch-4370928_1280.jpg
+  image: "images/rocket-launch-4370928_1280.jpg"
   alt: "実装ではなく、Pull Requestレビューから経験値を得るようになった話"
   hidden: false
 ---

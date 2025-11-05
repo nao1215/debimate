@@ -9,7 +9,7 @@ tags:
   - "metallica"
   - "review"
 cover:
-  image: images/KillemAll.jpg
+  image: "images/KillemAll.jpg"
   alt: "Review: Kill'Em All−血染めの鉄槌−（Metallica）"
   hidden: false
 ---

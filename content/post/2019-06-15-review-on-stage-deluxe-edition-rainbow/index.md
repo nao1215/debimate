@@ -9,7 +9,7 @@ tags:
   - "rainbow"
   - "review"
 cover:
-  image: images/on_stage-min.jpg
+  image: "images/on_stage-min.jpg"
   alt: "Review: On Stage Deluxe Edition (Rainbow)"
   hidden: false
 ---

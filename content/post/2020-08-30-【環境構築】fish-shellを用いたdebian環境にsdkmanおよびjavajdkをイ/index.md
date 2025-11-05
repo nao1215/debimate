@@ -11,7 +11,7 @@ tags:
   - "sdkman"
   - "環境構築"
 cover:
-  image: images/Screenshot-from-2020-08-30-11-24-14-min.jpg
+  image: "images/Screenshot-from-2020-08-30-11-24-14-min.jpg"
   alt: "【環境構築】fish shellを用いたDebian環境にSDKMANおよびJava(JDK)をインストールする方法"
   hidden: false
 ---

@@ -7,7 +7,7 @@ categories:
 tags:
   - "副業"
 cover:
-  image: images/developer-8829735_1280.jpg
+  image: "images/developer-8829735_1280.jpg"
   alt: "【稼ぐ力が上がらない】ソフトエンジニア向けの副業は労働時間が長く、OSS開発はリターンが少ない話"
   hidden: false
 ---

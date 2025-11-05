@@ -10,7 +10,7 @@ tags:
   - "go言語"
   - "test"
 cover:
-  image: images/demo.gif
+  image: "images/demo.gif"
   alt: "【Golang】hottest - ユニットテストのエラーメッセージを抽出するCLI／GitHub Actionsを作った話"
   hidden: false
 ---

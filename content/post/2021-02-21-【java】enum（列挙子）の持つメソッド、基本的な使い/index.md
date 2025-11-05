@@ -8,7 +8,7 @@ tags:
   - "enum"
   - "java"
 cover:
-  image: images/athletic-field-1867053_640-min.jpg
+  image: "images/athletic-field-1867053_640-min.jpg"
   alt: "【Java】enum（列挙子）の持つメソッド、基本的な使い方、応用（シングルトン）【実装例付き】"
   hidden: false
 ---

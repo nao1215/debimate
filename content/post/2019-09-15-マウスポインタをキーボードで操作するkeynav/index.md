@@ -10,7 +10,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/keynav.gif
+  image: "images/keynav.gif"
   alt: "マウスポインタをキーボードで操作するkeynav"
   hidden: false
 ---

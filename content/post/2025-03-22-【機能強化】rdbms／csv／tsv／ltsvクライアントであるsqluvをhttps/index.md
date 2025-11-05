@@ -7,7 +7,7 @@ categories:
 tags:
   - "golang"
 cover:
-  image: images/dbms_demo-2.gif
+  image: "images/dbms_demo-2.gif"
   alt: "【機能強化】RDBMS／CSV／TSV／LTSVクライアントであるsqluvをhttps／s3／圧縮フォーマットに対応させ、カラースキームを追加"
   hidden: false
 ---

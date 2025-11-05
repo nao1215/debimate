@@ -11,7 +11,7 @@ tags:
   - "mail"
   - "環境構築"
 cover:
-  image: neomutt_icon.jpg
+  image: "neomutt_icon.jpg"
   alt: "neomutt"
   hidden: false
 ---

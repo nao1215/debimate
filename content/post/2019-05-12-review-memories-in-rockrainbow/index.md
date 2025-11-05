@@ -9,7 +9,7 @@ tags:
   - "rainbow"
   - "review"
 cover:
-  image: images/memories_in_rock-min.jpg
+  image: "images/memories_in_rock-min.jpg"
   alt: "Review: Memories in Rock(Rainbow)"
   hidden: false
 ---

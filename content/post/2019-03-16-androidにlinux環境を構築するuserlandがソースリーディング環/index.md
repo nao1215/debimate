@@ -11,7 +11,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/UserLAnd2.png
+  image: "images/UserLAnd2.png"
   alt: "UserLAnd"
   hidden: false
 ---

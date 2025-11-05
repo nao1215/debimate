@@ -11,7 +11,7 @@ tags:
   - "rust"
   - "環境構築"
 cover:
-  image: images/Code_Reading.jpg
+  image: "images/Code_Reading.jpg"
   alt: "環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧"
   hidden: false
 ---

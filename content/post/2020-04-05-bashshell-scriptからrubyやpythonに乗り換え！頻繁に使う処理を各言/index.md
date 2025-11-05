@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/scripts-min.jpg
+  image: "images/scripts-min.jpg"
   alt: "Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較"
   hidden: false
 ---

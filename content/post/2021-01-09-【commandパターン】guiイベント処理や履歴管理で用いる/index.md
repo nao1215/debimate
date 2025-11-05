@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "デザインパターン"
 cover:
-  image: images/brass-telegraph-692735_640-min-1-1.jpg
+  image: "images/brass-telegraph-692735_640-min-1-1.jpg"
   alt: "【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】"
   hidden: false
 ---

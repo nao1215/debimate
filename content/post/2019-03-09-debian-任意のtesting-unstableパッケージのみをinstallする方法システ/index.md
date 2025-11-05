@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/debian.jpg
+  image: "images/debian.jpg"
   alt: "Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)"
   hidden: false
 ---

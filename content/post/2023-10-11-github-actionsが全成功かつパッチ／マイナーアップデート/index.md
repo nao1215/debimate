@@ -9,7 +9,7 @@ tags:
   - "github"
   - "環境構築"
 cover:
-  image: images/27347476.png
+  image: "images/27347476.png"
   alt: "GitHub Actionsが全成功かつパッチ／マイナーアップデートの場合は、Dependabotが作成したPRを自動マージする設定"
   hidden: false
 ---

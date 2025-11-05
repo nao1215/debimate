@@ -8,7 +8,7 @@ tags:
   - "体験談"
   - "収益"
 cover:
-  image: images/DMM.png
+  image: "images/DMM.png"
   alt: "DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」"
   hidden: false
 ---

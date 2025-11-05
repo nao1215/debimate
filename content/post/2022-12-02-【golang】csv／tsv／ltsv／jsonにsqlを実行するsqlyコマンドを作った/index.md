@@ -13,7 +13,7 @@ tags:
   - "sql"
   - "tsv"
 cover:
-  image: images/Screenshot-from-2022-12-02-22-41-58.png
+  image: "images/Screenshot-from-2022-12-02-22-41-58.png"
   alt: "【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】"
   hidden: false
 ---

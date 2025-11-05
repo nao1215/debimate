@@ -10,7 +10,7 @@ tags:
   - "rainbow"
   - "review"
 cover:
-  image: images/rainbow_boston.jpg
+  image: "images/rainbow_boston.jpg"
   alt: "Review: Boston 1981(Rainbow)"
   hidden: false
 ---

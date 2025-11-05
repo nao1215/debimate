@@ -8,7 +8,7 @@ tags:
   - "golang"
   - "sql"
 cover:
-  image: images/ChatGPT-Image-2025年8月28日-13_46_47.jpg
+  image: "images/ChatGPT-Image-2025年8月28日-13_46_47.jpg"
   alt: "【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話"
   hidden: false
 ---

@@ -9,7 +9,7 @@ tags:
   - "体験談"
   - "転職"
 cover:
-  image: images/search-engine-optimization-4111000_640-min.jpg
+  image: "images/search-engine-optimization-4111000_640-min.jpg"
   alt: "転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】"
   hidden: false
 ---

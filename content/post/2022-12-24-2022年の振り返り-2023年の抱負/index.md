@@ -8,7 +8,7 @@ tags:
   - "体験談"
   - "振り返り"
 cover:
-  image: images/SV_Ler3B.jpg
+  image: "images/SV_Ler3B.jpg"
   alt: "2022年の振り返り & 2023年の抱負"
   hidden: false
 ---

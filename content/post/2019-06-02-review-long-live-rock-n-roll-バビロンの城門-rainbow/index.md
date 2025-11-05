@@ -9,7 +9,7 @@ tags:
   - "rainbow"
   - "review"
 cover:
-  image: images/llrr.jpeg
+  image: "images/llrr.jpeg"
   alt: "Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)"
   hidden: false
 ---

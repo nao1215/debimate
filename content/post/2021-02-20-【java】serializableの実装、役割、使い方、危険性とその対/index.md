@@ -8,7 +8,7 @@ tags:
   - "java"
   - "serializable"
 cover:
-  image: images/puzzle-654957_640-min.jpg
+  image: "images/puzzle-654957_640-min.jpg"
   alt: "【Java】Serializableの実装、役割、使い方、危険性とその対策【serialVersionUIDとは】"
   hidden: false
 ---

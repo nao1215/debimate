@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "linuxkernel"
 cover:
-  image: images/NULL.jpg
+  image: "images/NULL.jpg"
   alt: "Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)"
   hidden: false
 ---

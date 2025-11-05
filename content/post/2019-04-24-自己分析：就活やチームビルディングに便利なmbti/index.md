@@ -11,7 +11,7 @@ tags:
   - "書籍"
   - "自己分析"
 cover:
-  image: images/MBTI2-300x178.png
+  image: "images/MBTI2-300x178.png"
   alt: "感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)"
   hidden: false
 ---

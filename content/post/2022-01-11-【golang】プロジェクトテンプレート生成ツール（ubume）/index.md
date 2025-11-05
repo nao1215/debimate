@@ -10,7 +10,7 @@ tags:
   - "linux"
   - "oss"
 cover:
-  image: images/cooking-g7a7f01727_640-min.jpg
+  image: "images/cooking-g7a7f01727_640-min.jpg"
   alt: "【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】"
   hidden: false
 ---

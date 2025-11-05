@@ -12,7 +12,7 @@ tags:
   - "ゲーム"
   - "環境構築"
 cover:
-  image: images/768px-Steam_icon_logo.svg_.png
+  image: "images/768px-Steam_icon_logo.svg_.png"
   alt: "【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避"
   hidden: false
 ---

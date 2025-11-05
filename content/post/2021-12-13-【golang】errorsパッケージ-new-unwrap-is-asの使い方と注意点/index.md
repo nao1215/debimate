@@ -8,7 +8,7 @@ tags:
   - "error"
   - "golang"
 cover:
-  image: images/Screenshot-from-2021-12-13-18-53-07.jpg
+  image: "images/Screenshot-from-2021-12-13-18-53-07.jpg"
   alt: "【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点"
   hidden: false
 ---

@@ -11,7 +11,7 @@ tags:
   - "ロシア語"
 coverImage: ""
 cover:
-  image: images/にせぐま-min.jpg
+  image: "images/にせぐま-min.jpg"
   alt: "ロシアのプー"
   hidden: false
 ---

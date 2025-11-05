@@ -10,7 +10,7 @@ tags:
   - "体験談"
   - "収益"
 cover:
-  image: images/_PV-e1588295103876.jpg
+  image: "images/_PV-e1588295103876.jpg"
   alt: "【記事総数100本】1万PV/月に到達せず、収益が1000〜3000円/月とフラつく。その原因は？【技術ブログだから】"
   hidden: false
 ---

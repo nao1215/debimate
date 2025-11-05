@@ -10,7 +10,7 @@ tags:
   - "uml"
   - "デザインパターン"
 cover:
-  image: images/child-1864718_640-min.jpg
+  image: "images/child-1864718_640-min.jpg"
   alt: "【Builderパターン】コンストラクタの初期化(new)引数が多い場合にオススメなデザインパターン"
   hidden: false
 ---

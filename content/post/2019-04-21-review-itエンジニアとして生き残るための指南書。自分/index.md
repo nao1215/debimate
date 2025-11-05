@@ -8,7 +8,7 @@ tags:
   - "review"
   - "書籍"
 cover:
-  image: images/519KqKvvgCL.jpg
+  image: "images/519KqKvvgCL.jpg"
   alt: "感想:  ITエンジニアとして生き残るための指南書。自分を守りアップデートするための18のテクニック。"
   hidden: false
 ---

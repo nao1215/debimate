@@ -5,7 +5,7 @@ date: 2025-03-17
 categories:
   - "linux"
 cover:
-  image: images/vscode.png
+  image: "images/vscode.png"
   alt: "qhqで管理しているリポジトリをVS Codeで開くシェル関数"
   hidden: false
 ---

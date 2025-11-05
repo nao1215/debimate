@@ -11,7 +11,7 @@ tags:
   - "体験談"
   - "書籍"
 cover:
-  image: images/android-stack_2x.png
+  image: "images/android-stack_2x.png"
   alt: "【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選"
   hidden: false
 ---

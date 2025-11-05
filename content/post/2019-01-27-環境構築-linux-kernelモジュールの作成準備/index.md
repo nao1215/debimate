@@ -11,7 +11,7 @@ tags:
   - "linuxkernel"
   - "環境構築"
 cover:
-  image: images/tux.png
+  image: "images/tux.png"
   alt: "環境構築: Linux Kernelモジュールの作成準備"
   hidden: false
 ---

@@ -7,7 +7,7 @@ categories:
 tags:
   - "体験談"
 cover:
-  image: images/220174754.jpg
+  image: "images/220174754.jpg"
   alt: "33歳児（1990年生）が愛聴しているアルバム（その1）"
   hidden: false
 ---

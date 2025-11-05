@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "raspberrypi"
 cover:
-  image: images/lfVWBmiW_400x400-min.jpg
+  image: "images/lfVWBmiW_400x400-min.jpg"
   alt: "Raspberry Pi3/4にDockerとdocker-composeをインストールする方法"
   hidden: false
 ---

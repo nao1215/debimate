@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/tools-498202_640-1.jpg
+  image: "images/tools-498202_640-1.jpg"
   alt: "環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)"
   hidden: false
 ---

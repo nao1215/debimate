@@ -10,7 +10,7 @@ tags:
   - "リファクタリング"
   - "書籍"
 cover:
-  image: images/リファクタリング-min.jpg
+  image: "images/リファクタリング-min.jpg"
   alt: "感想：新装版　リファクタリング　既存のコードを安全に改善する"
   hidden: false
 ---

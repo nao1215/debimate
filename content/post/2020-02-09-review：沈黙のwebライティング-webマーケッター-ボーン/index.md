@@ -9,7 +9,7 @@ tags:
   - "seo"
   - "書籍"
 cover:
-  image: images/adult-1868750_640-min.jpg
+  image: "images/adult-1868750_640-min.jpg"
   alt: "感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—"
   hidden: false
 ---

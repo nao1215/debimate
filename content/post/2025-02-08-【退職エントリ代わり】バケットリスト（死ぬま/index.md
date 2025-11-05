@@ -7,7 +7,7 @@ categories:
 tags:
   - "体験談"
 cover:
-  image: images/IMG_20250208_2041543-273x300.jpg
+  image: "images/IMG_20250208_2041543-273x300.jpg"
   alt: "【退職エントリ代わり】バケットリスト（死ぬまでにやりたいこと）を書き出し、目標達成に向けて動き出した話"
   hidden: false
 ---

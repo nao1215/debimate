@@ -10,7 +10,7 @@ tags:
   - "raspberrypi"
   - "サーバー"
 cover:
-  image: images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg
+  image: "images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg"
   alt: "【CPU温度やI/Oの監視】Rapberry Pi4サーバにMonitorixをインストールする方法"
   hidden: false
 ---

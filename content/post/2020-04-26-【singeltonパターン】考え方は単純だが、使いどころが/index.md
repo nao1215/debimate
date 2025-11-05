@@ -11,7 +11,7 @@ tags:
   - "singleton"
   - "デザインパターン"
 cover:
-  image: images/card-1738844_640-min.jpg
+  image: "images/card-1738844_640-min.jpg"
   alt: "【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】"
   hidden: false
 ---

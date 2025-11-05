@@ -7,7 +7,7 @@ categories:
 tags:
   - "体験談"
 cover:
-  image: images/seasons-g45e19cb59_640.jpg
+  image: "images/seasons-g45e19cb59_640.jpg"
   alt: "32歳の子持ちエンジニアがキャリアパスに悩んだ話（結論：フルスタックを目指します）"
   hidden: false
 ---

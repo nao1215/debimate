@@ -10,7 +10,7 @@ tags:
   - "linux"
   - "ユニットテスト"
 cover:
-  image: images/exit-44205_640.jpg
+  image: "images/exit-44205_640.jpg"
   alt: "【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)"
   hidden: false
 ---

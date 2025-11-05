@@ -9,7 +9,7 @@ tags:
   - "体験談"
   - "旅行"
 cover:
-  image: images/2万マイル内装-1.jpg
+  image: "images/2万マイル内装-1.jpg"
   alt: "前編：16年ぶりにディズニーシーへ(12歳⇒28歳)"
   hidden: false
 ---

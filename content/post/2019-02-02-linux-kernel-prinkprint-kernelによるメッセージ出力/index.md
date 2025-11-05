@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "linuxkernel"
 cover:
-  image: images/bash-161382_640.png
+  image: "images/bash-161382_640.png"
   alt: "Linux Kernel: prink(print kernel)によるメッセージ出力"
   hidden: false
 ---

@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/bash_launch.png
+  image: "images/bash_launch.png"
   alt: "【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法"
   hidden: false
 ---

@@ -7,7 +7,7 @@ categories:
 tags:
   - "github-actions"
 cover:
-  image: images/issue-metrics-sample-output.png
+  image: "images/issue-metrics-sample-output.png"
   alt: "【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析"
   hidden: false
 ---

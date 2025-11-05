@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/folder-2517423_640-min.jpg
+  image: "images/folder-2517423_640-min.jpg"
   alt: "【Bash / Ruby / Python3】新規ディレクトリ作成方法、ディレクトリ削除方法の比較"
   hidden: false
 ---

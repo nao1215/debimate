@@ -9,7 +9,7 @@ tags:
   - "review"
   - "書籍"
 cover:
-  image: images/51kULN0pKCL._SX353_BO1204203200_-min.jpg
+  image: "images/51kULN0pKCL._SX353_BO1204203200_-min.jpg"
   alt: "感想：改訂新版 IoTエンジニア養成読本 (Software Design plusシリーズ)"
   hidden: false
 ---

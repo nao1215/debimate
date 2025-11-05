@@ -10,7 +10,7 @@ tags:
   - "環境構築"
   - "自作pc"
 cover:
-  image: images/Screenshot-from-2020-08-25-21-51-00.png
+  image: "images/Screenshot-from-2020-08-25-21-51-00.png"
   alt: "元Win／MacユーザがメインPCをLinux(Debian)にした感想"
   hidden: false
 ---

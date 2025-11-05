@@ -11,7 +11,7 @@ tags:
   - "環境構築"
   - "自作pc"
 cover:
-  image: images/PCリスト-min-1.jpeg
+  image: "images/PCリスト-min-1.jpeg"
   alt: "Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)"
   hidden: false
 ---

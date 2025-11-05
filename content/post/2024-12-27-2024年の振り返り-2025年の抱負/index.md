@@ -7,7 +7,7 @@ categories:
 tags:
   - "体験談"
 cover:
-  image: images/1000000730.jpg
+  image: "images/1000000730.jpg"
   alt: "2024年の振り返り &amp; 2025年の抱負"
   hidden: false
 ---

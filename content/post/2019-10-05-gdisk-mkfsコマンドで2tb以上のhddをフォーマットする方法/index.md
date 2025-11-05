@@ -10,7 +10,7 @@ tags:
   - "linux"
   - "環境構築"
 cover:
-  image: images/hard-drive-607461_640-min.jpg
+  image: "images/hard-drive-607461_640-min.jpg"
   alt: "gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法"
   hidden: false
 ---

@@ -9,7 +9,7 @@ tags:
   - "xinu"
   - "アセンブラ"
 cover:
-  image: images/Screenshot-from-2020-11-21-12-10-31.jpg
+  image: "images/Screenshot-from-2020-11-21-12-10-31.jpg"
   alt: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt"
   hidden: false
 ---

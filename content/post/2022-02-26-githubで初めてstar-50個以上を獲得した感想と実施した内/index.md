@@ -11,7 +11,7 @@ tags:
   - "linux"
   - "体験談"
 cover:
-  image: images/Screenshot-from-2022-02-26-21-38-01.png
+  image: "images/Screenshot-from-2022-02-26-21-38-01.png"
   alt: "GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】"
   hidden: false
 ---

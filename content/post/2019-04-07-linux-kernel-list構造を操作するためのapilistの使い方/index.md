@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "linuxkernel"
 cover:
-  image: images/Kernel_lists-1.png
+  image: "images/Kernel_lists-1.png"
   alt: "Linux Kernel: List構造を操作するためのAPI(Listの使い方)"
   hidden: false
 ---

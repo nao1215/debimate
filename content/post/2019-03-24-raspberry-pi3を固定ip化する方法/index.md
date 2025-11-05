@@ -9,7 +9,7 @@ tags:
   - "raspberrypi"
   - "環境構築"
 cover:
-  image: images/IPアドレス.jpg
+  image: "images/IPアドレス.jpg"
   alt: "Raspberry Piに固定IPを割り当てる方法"
   hidden: false
 ---

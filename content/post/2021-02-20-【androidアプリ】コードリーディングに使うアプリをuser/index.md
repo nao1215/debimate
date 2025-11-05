@@ -10,7 +10,7 @@ tags:
   - "linux"
   - "体験談"
 cover:
-  image: images/ICON-1.jpg
+  image: "images/ICON-1.jpg"
   alt: "【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話"
   hidden: false
 ---

@@ -12,7 +12,7 @@ tags:
   - "ubuntu"
   - "環境構築"
 cover:
-  image: images/2021-01-02-15.34.19-のスクリーンショット.png
+  image: "images/2021-01-02-15.34.19-のスクリーンショット.png"
   alt: "ドスパラのTHIRDWAVE VF-AD4にelementary OS(Ubuntu派生)を入れた感想"
   hidden: false
 ---

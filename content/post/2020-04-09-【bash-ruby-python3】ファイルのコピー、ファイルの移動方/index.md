@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/copy-160129_640-1.jpg
+  image: "images/copy-160129_640-1.jpg"
   alt: "【Bash / Ruby / Python3】ファイルのコピー、ファイルの移動方法の比較"
   hidden: false
 ---

@@ -11,7 +11,7 @@ tags:
   - "rust"
   - "書籍"
 cover:
-  image: images/Rust.jpg
+  image: "images/Rust.jpg"
   alt: "感想: Rust Programming By Example: Enter the world of Rust by building engaging, concurrent, reactive, and robust applications"
   hidden: false
 ---

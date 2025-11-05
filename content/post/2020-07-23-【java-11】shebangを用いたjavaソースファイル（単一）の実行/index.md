@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "shebang"
 cover:
-  image: images/eyecatch-openjdk.png
+  image: "images/eyecatch-openjdk.png"
   alt: "【Java 11】Shebangを用いたJavaソースファイル（単一）の実行方法 + Shebangエラー回避方法"
   hidden: false
 ---

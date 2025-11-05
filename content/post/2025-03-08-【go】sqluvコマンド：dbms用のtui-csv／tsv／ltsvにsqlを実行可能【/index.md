@@ -9,7 +9,7 @@ tags:
   - "oss"
   - "sql"
 cover:
-  image: images/dbms_demo-1.gif
+  image: "images/dbms_demo-1.gif"
   alt: "【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】"
   hidden: false
 ---

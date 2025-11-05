@@ -7,7 +7,7 @@ categories:
 tags:
   - "raspberrypi"
 cover:
-  image: images/hand-2605908_640-min.jpg
+  image: "images/hand-2605908_640-min.jpg"
   alt: "Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法"
   hidden: false
 ---

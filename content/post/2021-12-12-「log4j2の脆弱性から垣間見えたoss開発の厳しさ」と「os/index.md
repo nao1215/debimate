@@ -11,7 +11,7 @@ tags:
   - "体験談"
   - "金銭"
 cover:
-  image: images/dream.jpg
+  image: "images/dream.jpg"
   alt: "「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について"
   hidden: false
 ---

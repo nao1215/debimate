@@ -7,7 +7,7 @@ categories:
 tags:
   - "体験談"
 cover:
-  image: images/wood-gc77b8848b_640.jpg
+  image: "images/wood-gc77b8848b_640.jpg"
   alt: "【マネージャー視点】エンジニアとして貢献できないもどかしさとメンバを不快にさせる恐怖"
   hidden: false
 ---

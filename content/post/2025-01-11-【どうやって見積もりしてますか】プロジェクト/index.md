@@ -7,7 +7,7 @@ categories:
 tags:
   - "見積もり"
 cover:
-  image: images/accountant-1794122_1280.png
+  image: "images/accountant-1794122_1280.png"
   alt: "【どうやって見積もりしてますか?】プロジェクト工数を見積もるときの私なりのやり方【ボトムアップ見積り】"
   hidden: false
 ---

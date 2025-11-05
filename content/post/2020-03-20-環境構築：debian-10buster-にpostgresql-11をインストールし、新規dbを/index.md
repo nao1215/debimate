@@ -11,7 +11,7 @@ tags:
   - "postgresql"
   - "環境構築"
 cover:
-  image: images/DBランキング2020年3月時点.jpg
+  image: "images/DBランキング2020年3月時点.jpg"
   alt: "環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法"
   hidden: false
 ---

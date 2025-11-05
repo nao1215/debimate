@@ -7,7 +7,7 @@ categories:
 tags:
   - "オライリー"
 cover:
-  image: images/2025-05-25_12-26-1024x358.png
+  image: "images/2025-05-25_12-26-1024x358.png"
   alt: "O'Reilly Learning PlatformをAudify（耳）で学習する"
   hidden: false
 ---

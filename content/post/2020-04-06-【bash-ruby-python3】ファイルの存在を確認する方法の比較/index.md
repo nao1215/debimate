@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/list-2389219_640.jpg
+  image: "images/list-2389219_640.jpg"
   alt: "【Bash / Ruby / Python3】ファイルの存在を確認する方法の比較"
   hidden: false
 ---

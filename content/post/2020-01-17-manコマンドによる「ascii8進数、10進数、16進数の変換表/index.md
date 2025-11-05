@@ -11,7 +11,7 @@ tags:
   - "linux"
   - "man"
 cover:
-  image: images/man.jpg
+  image: "images/man.jpg"
   alt: "manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」"
   hidden: false
 ---

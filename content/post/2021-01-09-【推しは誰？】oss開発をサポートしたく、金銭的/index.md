@@ -11,7 +11,7 @@ tags:
   - "コントリビュート"
   - "体験談"
 cover:
-  image: images/Screenshot-from-2021-01-02-14-32-32.png
+  image: "images/Screenshot-from-2021-01-02-14-32-32.png"
   alt: "【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】"
   hidden: false
 ---

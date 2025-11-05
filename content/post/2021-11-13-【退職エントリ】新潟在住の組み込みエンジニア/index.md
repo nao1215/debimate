@@ -10,7 +10,7 @@ tags:
   - "転職活動"
   - "退職"
 cover:
-  image: images/n001804-min.jpg
+  image: "images/n001804-min.jpg"
   alt: "【退職エントリ】新潟在住の組み込みエンジニアが転職を考えたキッカケ、転職活動、退職した会社への感謝"
   hidden: false
 ---

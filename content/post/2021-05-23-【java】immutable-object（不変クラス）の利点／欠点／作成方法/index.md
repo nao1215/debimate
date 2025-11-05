@@ -8,7 +8,7 @@ tags:
   - "java"
   - "オブジェクト指向"
 cover:
-  image: images/eclipse-1492818_640.jpg
+  image: "images/eclipse-1492818_640.jpg"
   alt: "【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面"
   hidden: false
 ---

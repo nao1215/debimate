@@ -10,7 +10,7 @@ tags:
   - "w3m"
   - "環境構築"
 cover:
-  image: images/w3m.jpg
+  image: "images/w3m.jpg"
   alt: "Terminalベースのブラウザw3m"
   hidden: false
 ---

@@ -10,7 +10,7 @@ tags:
   - "ocaml"
   - "プログラミング"
 cover:
-  image: images/HaskellOCaml.jpg
+  image: "images/HaskellOCaml.jpg"
   alt: "GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話"
   hidden: false
 ---

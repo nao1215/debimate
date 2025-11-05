@@ -8,7 +8,7 @@ tags:
   - "golang"
   - "linux"
 cover:
-  image: images/pipe-g2b0ac93f2_640-min-1.jpg
+  image: "images/pipe-g2b0ac93f2_640-min-1.jpg"
   alt: "Golangで無名パイプからデータを受け取る方法【term.IsTerminalによる判定】"
   hidden: false
 ---

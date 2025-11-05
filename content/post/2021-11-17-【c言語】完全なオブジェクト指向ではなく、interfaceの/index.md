@@ -9,7 +9,7 @@ tags:
   - "interface"
   - "オブジェクト指向"
 cover:
-  image: images/Valac.jpg
+  image: "images/Valac.jpg"
   alt: "【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】"
   hidden: false
 ---

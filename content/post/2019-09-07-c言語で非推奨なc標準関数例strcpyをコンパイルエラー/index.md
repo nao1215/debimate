@@ -8,7 +8,7 @@ tags:
   - "c言語"
   - "linux"
 cover:
-  image: images/banned-1726366_640.jpg
+  image: "images/banned-1726366_640.jpg"
   alt: "C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法"
   hidden: false
 ---

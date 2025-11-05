@@ -11,7 +11,7 @@ tags:
   - "lpic"
   - "motd"
 cover:
-  image: images/typewriter-1170657_640-min.jpg
+  image: "images/typewriter-1170657_640-min.jpg"
   alt: "【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】"
   hidden: false
 ---

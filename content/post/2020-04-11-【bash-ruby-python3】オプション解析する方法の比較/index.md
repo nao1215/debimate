@@ -11,7 +11,7 @@ tags:
   - "ruby"
   - "shellscript"
 cover:
-  image: images/settings-3311593_640.png
+  image: "images/settings-3311593_640.png"
   alt: "【Bash / Ruby / Python3】オプション解析する方法の比較"
   hidden: false
 ---

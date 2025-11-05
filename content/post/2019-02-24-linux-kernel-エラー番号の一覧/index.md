@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "linuxkernel"
 cover:
-  image: images/mistake-3085712_640.jpg
+  image: "images/mistake-3085712_640.jpg"
   alt: "Linux Kernel: エラー番号の一覧"
   hidden: false
 ---

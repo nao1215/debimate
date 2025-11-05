@@ -8,7 +8,7 @@ tags:
   - "java"
   - "デザインパターン"
 cover:
-  image: images/AbstractFactory-ページ1-min.jpg
+  image: "images/AbstractFactory-ページ1-min.jpg"
   alt: "【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】"
   hidden: false
 ---

@@ -9,7 +9,7 @@ tags:
   - "russia"
   - "体験談"
 cover:
-  image: images/aggression-1641959_640.jpg
+  image: "images/aggression-1641959_640.jpg"
   alt: "Ой!(オイ)：ロシア人が日本人をビビらせる一言"
   hidden: false
 ---

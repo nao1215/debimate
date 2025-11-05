@@ -11,7 +11,7 @@ tags:
   - "oss"
   - "体験談"
 cover:
-  image: images/laptop-g8777527aa_640-min.jpg
+  image: "images/laptop-g8777527aa_640-min.jpg"
   alt: "MimixBox（BusyBoxインスパイア）の概要、開発時の気づき、PR募集について【Golang学習】"
   hidden: false
 ---

@@ -9,7 +9,7 @@ tags:
   - "linux"
   - "raspberrypi"
 cover:
-  image: images/subscribe-3534409_640-min.jpg
+  image: "images/subscribe-3534409_640-min.jpg"
   alt: "【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除"
   hidden: false
 ---
