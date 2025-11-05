@@ -1,2 +1,5 @@
-# debimate
-debimate - Debianとmate（友達）となるために作った技術ブログの移転先
+# debimate とは
+
+Nao1215(nchika)の技術ブログです。
+https://nao1215.github.io/debimate/
+
