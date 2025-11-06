@@ -15,6 +15,7 @@ enableSearch = true
 env = "production"
 enableOpenGraph = true
 enableTwitterCards = true
+ShowRssButtonInSectionTermList = true
 
 [assets]
   css = ["css/extended/custom.css"]

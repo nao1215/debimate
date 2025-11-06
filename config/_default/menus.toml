@@ -1,9 +1,15 @@
+
+[[main]]
+  name = "Archive"
+  url = "archives/"
+  weight = 5
+
 [[main]]
   name = "Search"
   url = "search/"
   weight = 10
 
 [[main]]
-  name = "Archive"
-  url = "archives/"
-  weight = 5
+  name = "BucketList"
+  url = "bucket_list/"
+  weight = 11

@@ -16,4 +16,4 @@ publishDir = "public"
   unsafe = true
 
 [pagination]
-  pagerSize = 50
+  pagerSize = 60
