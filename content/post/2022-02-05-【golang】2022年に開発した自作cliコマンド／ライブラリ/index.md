@@ -9,7 +9,7 @@ tags:
   - "golang"
   - "oss"
 cover:
-  image: "images/Screenshot-from-2022-02-11-23-46-32.png"
+  image: "laptop-g6f30a755b_640.jpg"
   alt: "【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】"
   hidden: false
 ---
