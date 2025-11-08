@@ -38,9 +38,8 @@ cover:
 
 ## 本作発表前にリリース済みAlbumのReview
 
-https://debimate.jp/2019/05/19/review-ritchie-blackmores-rainbow-%e9%8a%80%e5%b6%ba%e3%81%ae%e8%a6%87%e8%80%85-rainbow/
-
-https://debimate.jp/2019/05/19/review-rising-%e8%99%b9%e3%82%92%e7%bf%94%e3%82%8b%e8%a6%87%e8%80%85-rainbow/
+- [Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
+- [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
 
 ## Rainbow初のLive作品(曲目および演奏はツギハギ)
 

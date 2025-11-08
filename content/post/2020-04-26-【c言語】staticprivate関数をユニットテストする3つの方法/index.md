@@ -196,4 +196,4 @@ private function
 
 coreutilsパッケージで提供されるfalseコマンド（必ず1を返すコマンド）は、#includeでソースファイルを読み込んでいます。以下の記事の下部に、実装解説がありますので、興味がある方は読んでみてください。
 
-https://debimate.jp/2020/04/16/etc-passwd%e3%81%ab%e8%a8%98%e8%bc%89%e3%81%95%e3%82%8c%e3%81%9f-usr-sbin-nologin-bin-false%e3%81%a8%e3%81%af%e4%bd%95%e3%81%8b%e3%80%90%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3%e7%a6%81%e6%ad%a2/
+- [/etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】](https://debimate.jp/post/2020-04-16-etc-passwd%E3%81%AB%E8%A8%98%E8%BC%89%E3%81%95%E3%82%8C%E3%81%9F-usr-sbin-nologin-bin-false%E3%81%A8%E3%81%AF%E4%BD%95%E3%81%8B%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E7%A6%81%E6%AD%A2/)

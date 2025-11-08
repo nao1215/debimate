@@ -110,7 +110,7 @@ $ neofetch
 
 mmdebstrapは、Debian9(stretch)に提供されていません。そのため、以下の記事を参考にtesting/unstableパッケージをinstallできるようにしてください。
 
-https://debimate.jp/2019/03/09/debian-%E4%BB%BB%E6%84%8F%E3%81%AEtesting-unstable%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%81%BF%E3%82%92install%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%82%B7%E3%82%B9%E3%83%86/
+- [Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)](https://debimate.jp/post/2019-03-09-debian-%E4%BB%BB%E6%84%8F%E3%81%AEtesting-unstable%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%81%BF%E3%82%92install%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%82%B7%E3%82%B9%E3%83%86/)
 
 上記の記事内容を実施後、以下のaptコマンドを実行してください。testingミラーサーバからinstallするパッケージはmmdebstrapのみで、他のパッケージはstretchミラーサーバから取得します。また、[mmdebstrap推奨パッケージ(≒依存パッケージ)](https://packages.debian.org/buster/mmdebstrap)は、明示的に指定しないとinstallされません。そのため、以下の手順ではarch-test(推奨パッケージ)などを列挙して記載しています。installしなかった場合、HOST(native)環境向けrootfsしか作成できません。
 

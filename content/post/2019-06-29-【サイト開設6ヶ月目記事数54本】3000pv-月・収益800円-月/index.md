@@ -21,9 +21,9 @@ cover:
 
 ![](images/古いPV.jpg)
 
-収益の面では、予想より好調と考えています。収益源として、[サイト開設4日目からGoogleアドセンスを導入](https://debimate.jp/2019/02/28/%E6%8C%AF%E3%82%8A%E8%BF%94%E3%82%8A%EF%BC%9Agoogle-adsense%E3%81%8C%E9%96%8B%E8%A8%AD4%E6%97%A5%E3%81%A7%E6%89%BF%E8%AA%8D%E3%81%95%E3%82%8C%E3%81%9F%E8%A9%B1%E3%81%8A%E3%82%88%E3%81%B3%E3%82%B5/)し、Amazonアソシエイトも導入しました。上図は前者のみの数値ですが、収益はどちらも発生しています(Amazonは約40円)。過去に私が試した[DMM(現FANZA)](https://www.dmm.co.jp/digital/)の広告収入は、約2万クリック(正確には閲覧数)で100円程度の収益でしたから、収益が発生するスピードが早いです(以下の記事に詳細をまとめてあります)。
+収益の面では、予想より好調と考えています。収益源として、[サイト開設4日目からGoogleアドセンスを導入](https://debimate.jp/post/2019-02-28-%E6%8C%AF%E3%82%8A%E8%BF%94%E3%82%8Agoogle-adsense%E3%81%8C%E9%96%8B%E8%A8%AD4%E6%97%A5%E3%81%A7%E6%89%BF%E8%AA%8D%E3%81%95%E3%82%8C%E3%81%9F%E8%A9%B1%E3%81%8A%E3%82%88%E3%81%B3%E3%82%B5/)し、Amazonアソシエイトも導入しました。上図は前者のみの数値ですが、収益はどちらも発生しています(Amazonは約40円)。過去に私が試した[DMM(現FANZA)](https://www.dmm.co.jp/digital/)の広告収入は、約2万クリック(正確には閲覧数)で100円程度の収益でしたから、収益が発生するスピードが早いです(以下の記事に詳細をまとめてあります)。
 
-https://debimate.jp/2019/04/20/dmm%E7%8F%BEfanza-api%E3%83%BBtwitter-bot%E3%81%AB%E3%82%88%E3%82%8B%E8%87%AA%E5%8B%95%E5%BA%83%E5%91%8A%E3%82%92%E5%8D%8A%E5%B9%B4%E7%B6%9A%E3%81%91%E3%81%9F%E7%B5%90%E6%9E%9C%E3%80%81%E3%80%8C/
+- [DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」](https://debimate.jp/post/2019-04-20-dmm%E7%8F%BEfanza-apitwitter-bot%E3%81%AB%E3%82%88%E3%82%8B%E8%87%AA%E5%8B%95%E5%BA%83%E5%91%8A%E3%82%92%E5%8D%8A%E5%B9%B4%E7%B6%9A%E3%81%91%E3%81%9F%E7%B5%90%E6%9E%9C/)
 
 アクセス数や収益は右肩上がりですが、これからも上向き続けるとは限りません。一度振り返りをし、次の6ヶ月に向けて新たな対策を実施すべき感じています。そこで本記事では、半年間で実施した事・実施しなかった事を振り返り、現状の問題点(以下3点)とその対策に触れていきます。
 
@@ -79,11 +79,11 @@ debimateは、以下の3ジャンルがメインのサイトです。
 
 | **記事名** | **全アクセスに対する割合** |
 | --- | --- |
-| [AndroidにLinux環境を構築する”UserLAnd”がソースリーディング環境(スマホ用)として最適](https://debimate.jp/2019/03/16/android%E3%81%ABlinux%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8Buserland%E3%81%8C%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E7%92%B0/) | 35.6%(PV=約1250) |
-| [Linux Kernel: prink(print kernel)によるメッセージ出力](https://debimate.jp/2019/02/24/linux-kernel-%E3%82%A8%E3%83%A9%E3%83%BC%E7%95%AA%E5%8F%B7%E3%81%AE%E4%B8%80%E8%A6%A7/) | 11.0%(PV=約380) |
-| [Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法](https://debimate.jp/2019/01/26/raspberry-pi3%E3%81%ABandroid7-1-1-google-play-store%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/) | 10.0%(PV=約350) |
-| [Linux Kernel: エラー番号の一覧](https://debimate.jp/2019/02/24/linux-kernel-%E3%82%A8%E3%83%A9%E3%83%BC%E7%95%AA%E5%8F%B7%E3%81%AE%E4%B8%80%E8%A6%A7/) | 7.1%(PV=約250) |
-| [DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」](https://debimate.jp/2019/04/20/dmm%E7%8F%BEfanza-api%E3%83%BBtwitter-bot%E3%81%AB%E3%82%88%E3%82%8B%E8%87%AA%E5%8B%95%E5%BA%83%E5%91%8A%E3%82%92%E5%8D%8A%E5%B9%B4%E7%B6%9A%E3%81%91%E3%81%9F%E7%B5%90%E6%9E%9C%E3%80%81%E3%80%8C/) | 4.4%(PV=約150) |
+| [AndroidにLinux環境を構築する”UserLAnd”がソースリーディング環境(スマホ用)として最適](https://debimate.jp/post/2019-03-16-android%E3%81%ABlinux%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8Buserland%E3%81%8C%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E7%92%B0/) | 35.6%(PV=約1250) |
+| [Linux Kernel: prink(print kernel)によるメッセージ出力](https://debimate.jp/post/2019-02-02-linux-kernel-prinkprint-kernel%E3%81%AB%E3%82%88%E3%82%8B%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E5%87%BA%E5%8A%9B/) | 11.0%(PV=約380) |
+| [Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法](https://debimate.jp/post/2019-01-26-raspberry-pi3%E3%81%ABandroid7-1-1-google-play-store%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/) | 10.0%(PV=約350) |
+| [Linux Kernel: エラー番号の一覧](https://debimate.jp/post/2019-02-24-linux-kernel-%E3%82%A8%E3%83%A9%E3%83%BC%E7%95%AA%E5%8F%B7%E3%81%AE%E4%B8%80%E8%A6%A7/) | 7.1%(PV=約250) |
+| [DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」](https://debimate.jp/post/2019-04-20-dmm%E7%8F%BEfanza-apitwitter-bot%E3%81%AB%E3%82%88%E3%82%8B%E8%87%AA%E5%8B%95%E5%BA%83%E5%91%8A%E3%82%92%E5%8D%8A%E5%B9%B4%E7%B6%9A%E3%81%91%E3%81%9F%E7%B5%90%E6%9E%9C/) | 4.4%(PV=約150) |
 
 トップを独走しているUserLAndの記事は、2018年頃から話題になり始めたアプリを紹介した内容です。アプリが新しいので、検索数が多かった(=debimateにも流入があった)と考えられます。しかし、そろそろ話題性が落ちる頃です。debimateの記事へのアクセスも減るでしょう。アクセス全体の約35%を占める記事が不人気になると、そのダメージも大きいです。
 
@@ -134,4 +134,4 @@ PV数を堅実に伸ばすという意味では、(私の場合)Linux Kernel、R
 
 ## 記事総数100本を超えた時のPV／収益はコチラ
 
-https://debimate.jp/2020/05/01/%e3%80%90%e8%a8%98%e4%ba%8b%e7%b7%8f%e6%95%b0100%e6%9c%ac%e3%80%911%e4%b8%87pv-%e6%9c%88%e3%81%ab%e5%88%b0%e9%81%94%e3%81%9b%e3%81%9a%e3%80%81%e5%8f%8e%e7%9b%8a%e3%81%8c1000%e3%80%9c3000%e5%86%86/
+[【記事総数100本】1万PV/月に到達せず、収益が1000〜3000円/月とフラつく。その原因は？【技術ブログだから】](https://debimate.jp/post/2020-05-01-%E8%A8%98%E4%BA%8B%E7%B7%8F%E6%95%B0100%E6%9C%AC1%E4%B8%87pv-%E6%9C%88%E3%81%AB%E5%88%B0%E9%81%94%E3%81%9B%E3%81%9A%E5%8F%8E%E7%9B%8A%E3%81%8C10003000%E5%86%86/)

@@ -21,7 +21,7 @@ Golangの勉強中に、「サンプルコードを試すためのプロジェ�
 
 Javaのgradleのような「Golangプロジェクトテンプレートのジェネレータ」を探しましたが、パッと見つかりませんでした。そこで、Golangプロジェクトテンプレートを生成する[ubumeコマンド](https://github.com/nao1215/mkgoprj)を作ってみました。
 
-機能が少ないので、改善案があれば[Issue（日本語もOK）](https://github.com/nao1215/mkgoprj/issues)や[問い合わせフォーム](https://debimate.jp/%e3%81%8a%e5%95%8f%e3%81%84%e5%90%88%e3%82%8f%e3%81%9b/)からご連絡いただけると嬉しいです。
+機能が少ないので、改善案があれば[Issue（日本語もOK）](https://github.com/nao1215/mkgoprj/issues)からご連絡いただけると嬉しいです。
 
 **2022年4月19日追記**：ubumeからmkgoprjにリネームしました。そして本記事に書かれている内容とは別仕様に変更（破壊的な変更）をしたので、[日本語版README](https://github.com/nao1215/mkgoprj/blob/main/doc/README.ja.md)を参照してください。
 
@@ -63,7 +63,7 @@ sample/cmd以下には、mainパッケージとそのテストファイルが格
 
 ## Makefileの仕様
 
-[Makefileは自己文書化](https://debimate.jp/2020/10/29/%E3%80%90tips%E3%80%91%E4%BD%95%E5%BA%A6%E3%82%82%E7%B9%B0%E3%82%8A%E8%BF%94%E3%81%99%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E3%82%92makefile%E3%81%A8%E3%82%B7%E3%82%A7%E3%83%AB/)されています。makeコマンドを引数なしで叩いた場合はビルドが始まらず、Makefileがどのようなターゲットを持ち、そのターゲットが何をするのかの説明文（helpメッセージ）が表示されます。 
+[Makefileは自己文書化](https://debimate.jp/post/2020-10-29-tips%E4%BD%95%E5%BA%A6%E3%82%82%E7%B9%B0%E3%82%8A%E8%BF%94%E3%81%99%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E3%82%92makefile%E3%81%A8%E3%82%B7%E3%82%A7%E3%83%AB/)されています。makeコマンドを引数なしで叩いた場合はビルドが始まらず、Makefileがどのようなターゲットを持ち、そのターゲットが何をするのかの説明文（helpメッセージ）が表示されます。 
 
 ```
 $ make
@@ -120,7 +120,3 @@ Hello, World
 **以下、追記**
 
 2022年2月現在は、オプションが増えて、作れるプロジェクト種類も増えました。本記事の内容も古くなってしまったので、興味がある方は[GitHub](https://github.com/nao1215/ubume)を覗いてみてください。READMEにスクショ付きで説明を書いています。
-
-## おまけ：2022年に作成したGolang製コマンド一覧
-
-https://debimate.jp/2022/02/05/%e3%80%90golang%e3%80%912022%e5%b9%b4%e3%81%ab%e9%96%8b%e7%99%ba%e3%81%97%e3%81%9f%e8%87%aa%e4%bd%9ccli%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%ef%bc%8f%e3%83%a9%e3%82%a4%e3%83%96%e3%83%a9%e3%83%aa/

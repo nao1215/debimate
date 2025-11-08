@@ -31,17 +31,17 @@ cover:
 
 ## 前作のReview
 
-https://debimate.jp/2019/05/19/review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/
+- [Review: On Stage Deluxe Edition (Rainbow)](https://debimate.jp/post/2019-06-15-review-on-stage-deluxe-edition-rainbow/)
+- [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
 
-https://debimate.jp/2019/06/15/review-on-stage-deluxe-edition-rainbow/
 
 ## アメリカ市場を意識した結果、大作志向の終焉
 
-本作は、Ritchie Blackmoreがアメリカ市場を意識した結果、過去の二作([銀嶺の覇者](https://debimate.jp/2019/05/19/review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)、[虹を翔ける覇者](https://debimate.jp/2019/05/19/review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/))より楽曲がコンパクトになっています。ただし、リリース時点(1977年)におけるコンパクトさであり、2019年の視点(約40年越しの視点)で聴けば、前作と大差がない重厚さです。
+本作は、Ritchie Blackmoreがアメリカ市場を意識した結果、過去の二作([銀嶺の覇者](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)、[虹を翔ける覇者](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/))より楽曲がコンパクトになっています。ただし、リリース時点(1977年)におけるコンパクトさであり、2019年の視点(約40年越しの視点)で聴けば、前作と大差がない重厚さです。
 
 コンパクトさ(短さ)で言えば、当然、2019年現在の方が極限まで圧縮されています。1980年代に海外で商業ロックが台頭し、90年代後半の日本では"Aメロ-サビ-Aメロ-サビ-ソロ-Bメロ-サビ-サビ"というシンプルな構造の曲が溢れかえり、2010年台には各種ソロまで廃されています。そのような曲に慣れた耳で、Rainbowを聴けば"Kill the King"でさえ「イントロ長い、ソロ長い」になります。
 
-1970年代の大作志向を別の言葉で解釈すると、**「ミュージシャンが実力を誇示するような楽器感の掛け合いパートの有無」**と認識した方が妥当です。つまり、本作が意味する大作志向の終焉とは、Ritchieがスリリングな掛け合いパートを意図的に廃したという事です。より具体的には、[前作](https://debimate.jp/2019/05/19/review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)の"A Light in the Black(下の動画)"に存在したギターとキーボードの掛け合いは、影を潜めてしまいました。
+1970年代の大作志向を別の言葉で解釈すると、**「ミュージシャンが実力を誇示するような楽器感の掛け合いパートの有無」**と認識した方が妥当です。つまり、本作が意味する大作志向の終焉とは、Ritchieがスリリングな掛け合いパートを意図的に廃したという事です。より具体的には、[前作](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)の"A Light in the Black(下の動画)"に存在したギターとキーボードの掛け合いは、影を潜めてしまいました。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/IQzC-9Izr4Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 

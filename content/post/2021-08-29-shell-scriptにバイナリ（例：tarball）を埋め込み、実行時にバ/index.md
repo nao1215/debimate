@@ -161,4 +161,4 @@ Hello World
 
 ## おまけ：Shell Scriptをバイナリ化する方法
 
-https://debimate.jp/2021/08/29/shc%ef%bc%88shell-script-compiler%ef%bc%89%e3%81%a7%e3%82%b9%e3%82%af%e3%83%aa%e3%83%97%e3%83%88%e3%82%92%e3%83%90%e3%82%a4%e3%83%8a%e3%83%aa%e5%8c%96%ef%bc%88%e6%9a%97%e5%8f%b7%e5%8c%96%ef%bc%89/
+- [shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法](https://debimate.jp/post/2021-08-29-shcshell-script-compiler%E3%81%A7%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%82%92%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E5%8C%96%E6%9A%97%E5%8F%B7%E5%8C%96/)

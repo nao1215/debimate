@@ -317,7 +317,7 @@ public class PythonShebang extends AbstractShebang {
 
 各インスタンスの生成処理がAbstract Factoryパターンによって統一されているため、Bashスクリプト作成もPythonスクリプト作成も、同じ手順で行なえます。
 
-そのため、[Iteratorパターン](https://debimate.jp/2021/01/02/%E3%80%90iterator%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3%E3%80%91c%E8%A8%80%E8%AA%9E%E3%81%A7%E8%A6%8B%E3%81%8B%E3%81%91%E3%82%8B%E3%81%90%E3%82%89%E3%81%84%E9%A0%BB%E5%87%BA%E3%81%AE%E3%83%87%E3%82%B6/)を使って、スクリプト２点をループ処理内で作成できます。
+そのため、[Iteratorパターン](https://debimate.jp/post/2021-01-02-iterator%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3c%E8%A8%80%E8%AA%9E%E3%81%A7%E8%A6%8B%E3%81%8B%E3%81%91%E3%82%8B%E3%81%90%E3%82%89%E3%81%84%E9%A0%BB%E5%87%BA%E3%81%AE%E3%83%87%E3%82%B6/)を使って、スクリプト２点をループ処理内で作成できます。
 
 ```
 package AbstractFactory;
@@ -370,4 +370,4 @@ Abstract Factoryパターンのデメリット
 
 GoFデザインパターン（23種類）に関しては、以下の記事でまとめてあります。
 
-https://debimate.jp/2021/01/07/%e3%80%90%e3%82%aa%e3%83%96%e3%82%b8%e3%82%a7%e3%82%af%e3%83%88%e6%8c%87%e5%90%91%e3%80%91%e5%85%a823%e7%a8%ae%e9%a1%9e%e3%81%aegof%e3%83%87%e3%82%b6%e3%82%a4%e3%83%b3%e3%83%91%e3%82%bf%e3%83%bc/
+- [【オブジェクト指向】全23種類のGoFデザインパターンに関する説明と参考書籍](https://debimate.jp/post/2021-01-07-%E3%82%AA%E3%83%96%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E6%8C%87%E5%90%91%E5%85%A823%E7%A8%AE%E9%A1%9E%E3%81%AEgof%E3%83%87%E3%82%B6%E3%82%A4%E3%83%B3%E3%83%91%E3%82%BF%E3%83%BC/)

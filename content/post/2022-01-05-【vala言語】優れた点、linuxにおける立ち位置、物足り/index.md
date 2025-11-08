@@ -71,7 +71,7 @@ Vala言語は開発ツール（下表）が存在しますが、導入が一苦�
 | [gcovr](https://gcovr.com/en/stable/) | カバレッジ | mesonバージョンが古いとカバレッジ出力時にファイルが見つけられずエラーとなる。[使い方はコチラ](https://github.com/lcallarec/vala-meson-flatpak-example)を参照すると分かりやすい。 |
 | [valadoc](https://wiki.gnome.org/Projects/Valadoc) | ドキュメントジェネレータ | valadoc自体のドキュメントが不足している事 |
 
-Vala言語の開発ツールは、最新ライブラリや最新機能を使う場合が多く、コードを書く前の事前準備が多いです。私はVala開発環境として[以前はelementary OSを使用していました](https://debimate.jp/2021/01/02/%e3%83%89%e3%82%b9%e3%83%91%e3%83%a9%e3%81%aethirdwave-vf-ad4%e3%81%abelementary-osubuntu%e6%b4%be%e7%94%9f%e3%82%92%e5%85%a5%e3%82%8c%e3%81%9f%e6%84%9f%e6%83%b3/)が、パッケージが比較的新しいUbuntuを利用するようになりました。
+Vala言語の開発ツールは、最新ライブラリや最新機能を使う場合が多く、コードを書く前の事前準備が多いです。私はVala開発環境として[以前はelementary OSを使用していました](https://debimate.jp/post/2021-01-02-%E3%83%89%E3%82%B9%E3%83%91%E3%83%A9%E3%81%AEthirdwave-vf-ad4%E3%81%ABelementary-osubuntu%E6%B4%BE%E7%94%9F%E3%82%92%E5%85%A5%E3%82%8C%E3%81%9F%E6%84%9F%E6%83%B3/)が、パッケージが比較的新しいUbuntuを利用するようになりました。
 
 Debian環境を使用していた頃は、満足のいくVala開発環境を構築できませんでした。そのため、Vala言語に興味がある方は、Ubuntu、Fedora、Arch Linuxあたりを使うと良いかもしれません。
 

@@ -9,7 +9,7 @@ tags:
   - "golang"
   - "oss"
 cover:
-  image: "laptop-g6f30a755b_640.jpg"
+  image: "images/laptop-g6f30a755b_640.jpg"
   alt: "【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】"
   hidden: false
 ---
@@ -34,7 +34,7 @@ CLIコマンドを数個作ったタイミングで、「書き捨てるだけ�
 
 以下は、開発直後に書いた記事です。
 
-https://debimate.jp/2021/11/28/%e3%80%90golang%e5%ad%a6%e7%bf%92%e3%80%91mimixbox%ef%bc%88busybox%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%91%e3%82%a4%e3%82%a2%ef%bc%89%e3%81%ae%e6%a6%82%e8%a6%81%e3%80%81%e9%96%8b%e7%99%ba%e6%99%82/
+- [MimixBox（BusyBoxインスパイア）の概要、開発時の気づき、PR募集について【Golang学習】](https://debimate.jp/post/2021-11-28-golang%E5%AD%A6%E7%BF%92mimixboxbusybox%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%91%E3%82%A4%E3%82%A2%E3%81%AE%E6%A6%82%E8%A6%81%E9%96%8B%E7%99%BA%E6%99%82/)
 
 MimixBoxは、実装1万\[LOC\]、結合テストも部分的に実施しているなど、気合が入っていたコマンドです。Twitterアカウントを作成し、[Redditで宣伝](https://www.reddit.com/r/golang/comments/rj7e44/mimixbox_mimic_busybox_on_linux/)し、「Pull Requestsを貰って、良いプロジェクトにするぞ！」と気合い入れてました（過去形）
 
@@ -77,7 +77,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 ```
 
-osinfoライブラリは、前述のMimixBoxにneofetch（golang実装）を組み込むために開発を始めました。[neofetchのコード自体は一度読んだ事があった](https://debimate.jp/2019/01/22/%e3%82%b3%e3%83%bc%e3%83%89%e3%83%aa%e3%83%bc%e3%83%87%e3%82%a3%e3%83%b3%e3%82%b0bash%ef%bc%9a%e3%82%b7%e3%82%b9%e3%83%86%e3%83%a0%e6%83%85%e5%a0%b1%e8%a1%a8%e7%a4%ba%e3%83%84%e3%83%bc%e3%83%abneo/)ので「すぐに実装できるだろう」と安易に考えていました。
+osinfoライブラリは、前述のMimixBoxにneofetch（golang実装）を組み込むために開発を始めました。[neofetchのコード自体は一度読んだ事があった](https://debimate.jp/post/2019-01-22-%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0bash%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E6%83%85%E5%A0%B1%E8%A1%A8%E7%A4%BA%E3%83%84%E3%83%BC%E3%83%ABneo/)ので「すぐに実装できるだろう」と安易に考えていました。
 
 しかし、ディストリごとに泥臭く設定ファイルを確認したり、Mac／Winにしか存在しないシステムコマンドを叩いたり、忍耐の居る作業が続く事に途中で気づきました。致命的な問題点は、BSDやWindows、マイナーLinuxディストリなどのテスト環境が確保できない点でした。
 
@@ -89,7 +89,7 @@ osinfoライブラリは、前述のMimixBoxにneofetch（golang実装）を組�
 
 [ubume](https://github.com/nao1215/mkgoprj)は、Golangでプロジェクトを作る際に「何度も何度も同じようなファイルを作るの怠いな」と感じて、数時間で実装しました。実装中は、[gradle（Java）](http://gradle.monochromeroad.com/docs/)や[valdo（Vala）](https://github.com/Prince781/valdo)のようなジェネレータをイメージしてました。
 
-https://debimate.jp/2022/01/11/%e3%80%90golang%e3%80%91%e3%83%97%e3%83%ad%e3%82%b8%e3%82%a7%e3%82%af%e3%83%88%e3%83%86%e3%83%b3%e3%83%97%e3%83%ac%e3%83%bc%e3%83%88%e7%94%9f%e6%88%90%e3%83%84%e3%83%bc%e3%83%ab%ef%bc%88ubume%ef%bc%89/
+- [【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】](https://debimate.jp/post/2022-01-11-golang%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88%E3%83%86%E3%83%B3%E3%83%97%E3%83%AC%E3%83%BC%E3%83%88%E7%94%9F%E6%88%90%E3%83%84%E3%83%BC%E3%83%ABubume/)
 
 ubumeは、個人的には便利なコマンドですし、毎日150cloneぐらいはされているので、そこそこ需要を満たせているのかなと感じています。私は頻繁に使うので、ちょこちょこ機能追加してます。
 
@@ -106,7 +106,7 @@ ubumeは、個人的には便利なコマンドですし、毎日150cloneぐら�
 
 2022年4月19日追記：ubumeからmkgoprojヘリネームしました。ちょこちょこ機能追加を続けていて、mkgoprjで作ったCLIコマンドは自動でシェル補完（\[TAB\]入力による補完）が効くようになってます（以下の記事の対応が入ってます）
 
-https://debimate.jp/2022/04/17/%e3%80%90golang%e3%80%91spf13-cobra%e3%81%8c%e6%8f%90%e4%be%9b%e3%81%99%e3%82%8b%e5%85%a5%e5%8a%9b%e8%a3%9c%e5%ae%8c%ef%bc%88shell-completion%ef%bc%89%e3%82%92%e3%83%95%e3%82%a1%e3%82%a4%e3%83%ab/
+- [【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh, fish】](https://debimate.jp/post/2022-04-17-golangspf13-cobra%E3%81%8C%E6%8F%90%E4%BE%9B%E3%81%99%E3%82%8B%E5%85%A5%E5%8A%9B%E8%A3%9C%E5%AE%8Cshell-completion%E3%82%92%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB/)
 
 ## gal：AUTHORファイル生成コマンド
 
@@ -152,7 +152,7 @@ Linux環境では、cronを経由してしまうと音声が再生されない�
 
 [subaru](https://github.com/nao1215/subaru)は、[go:embed機能（バイナリへのファイル埋め込み）](https://pkg.go.dev/embed)と[エキスパートたちのGo言語](https://amzn.to/3rpcZPM)（書籍）で学んだ内容をアウトプットするために作りました。ジョークコマンドの一種です。
 
-https://debimate.jp/2022/02/05/%e3%80%90golang%e3%80%91goembed%e3%82%92%e7%94%a8%e3%81%84%e3%81%a6%e6%a0%bc%e8%a8%80%e8%a1%a8%e7%a4%ba%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%ef%bc%88subaru%ef%bc%89%e3%82%92%e9%96%8b%e7%99%ba/
+- [【Golang】go:embedを用いて格言表示コマンド（subaru）を開発](https://debimate.jp/post/2022-02-05-golanggoembed%E3%82%92%E7%94%A8%E3%81%84%E3%81%A6%E6%A0%BC%E8%A8%80%E8%A1%A8%E7%A4%BA%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89subaru%E3%82%92%E9%96%8B%E7%99%BA/)
 
 元ネタの[fortuneコマンド](https://ja.wikipedia.org/wiki/Fortune_\(UNIX\))は、アメリカのフォーチュンクッキー（格言が書かれた紙が入ったクッキー）を模したコマンドです。コードを読んでいないのですが、格言はテキストファイルに書かれているらしいです。subaruも同じ方針を採用しました。
 
@@ -166,7 +166,7 @@ subaruの裏テーマは、PRを沢山貰う事です。私は色んな方が参
 
 [goavl](https://github.com/nao1215/goavl)は、[goa framework version 1.x](https://github.com/shogo82148/goa-v1)用のlinterです。
 
-https://debimate.jp/2022/02/11/%e3%80%90golang%e3%80%91goa%ef%bc%88ver-1-x%ef%bc%89framework%e3%81%aelinter%ef%bc%88goavl%ef%bc%89%e3%82%92%e8%a9%a6%e4%bd%9c%e3%80%90go-ast%e3%82%92%e5%88%a9%e7%94%a8%e3%80%91/
+- [【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】](https://debimate.jp/post/2022-02-11-golanggoaver-1-xframework%E3%81%AElintergoavl%E3%82%92%E8%A9%A6%E4%BD%9Cgo-ast%E3%82%92%E5%88%A9%E7%94%A8/)
 
 goaは、DSLからgolangソースコードを生成するツールです。私は2022年にgoaとお友達になったのですが、goaはツレナイ子でした。具体的には、DSL文法エラーメッセージが非常に簡素でした。その結果、「DSLの書き方が悪いのは分かるが、どこに問題があるのかが検討もつかない」という状態に陥る事が何回かありました。
 
@@ -182,7 +182,7 @@ goaに冷たくされるという課題の解決として、私はlinterの作�
 
 [gup](https://github.com/nao1215/gup)は、"$ go install"で$GOPATH/bin以下にインストールしたバイナリを最新版に更新するコマンドです。以下の記事は開発直後の内容であり、最新の仕様は[Zenn](https://zenn.dev/nao1215/articles/aef3fe318848d6)で公開しています。
 
-https://debimate.jp/2022/02/20/%e3%80%90golang%e3%80%91go-install%e3%81%a7%e5%8f%96%e5%be%97%e3%81%97%e3%81%9fgopath-bin%e4%bb%a5%e4%b8%8b%e3%81%ae%e3%83%90%e3%82%a4%e3%83%8a%e3%83%aa%e3%82%92%e4%b8%80%e6%8b%ac%e6%9b%b4%e6%96%b0/
+- [【Golang】go installで取得した$GOPATH/bin以下のバイナリを一括更新するgupコマンドを試作](https://debimate.jp/post/2022-02-20-golanggo-install%E3%81%A7%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9Fgopath-bin%E4%BB%A5%E4%B8%8B%E3%81%AE%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E3%82%92%E4%B8%80%E6%8B%AC%E6%9B%B4%E6%96%B0/)
 
 gupのイメージは、"brew upgrade"や"apt upgrade"です。初期仕様では、シェルのコマンド履歴を解析したり、ユーザーに手動設定を求める仕様であり、少し微妙な感じでした。
 
@@ -197,8 +197,6 @@ gupのイメージは、"brew upgrade"や"apt upgrade"です。初期仕様で�
 何もしなくてもPull Requestが来たので、「この機会を逃してはいけない！」と考え、機能追加を沢山しました。今は、一括アップデート、指定コマンドのみのアップデート、dry run、$GOPATH/bin（$GOBIN）にインストール済みコマンドリストの表示など、追加済みです。
 
 何やかんやで、gupは公開から一週間でStarを50個も集めてしまったので、今後作るOSSは「打倒 gup！」という目標を掲げていきます。
-
-https://debimate.jp/2022/02/26/github%e3%81%a7%e5%88%9d%e3%82%81%e3%81%a6star-50%e5%80%8b%e4%bb%a5%e4%b8%8a%e3%82%92%e7%8d%b2%e5%be%97%e3%81%97%e3%81%9f%e6%84%9f%e6%83%b3%e3%81%a8%e5%ae%9f%e6%96%bd%e3%81%97%e3%81%9f%e5%86%85/
 
 ## nameconv：命名規則を変更するライブラリ
 
@@ -282,7 +280,7 @@ $ contributor
 
 2022年の集大成。DDDを採用したり、SQLiteを利用したりと、サーバーサイドで得た知見を活かしています。
 
-https://debimate.jp/2022/12/03/%e3%80%90golang%e3%80%91csv%ef%bc%8ftsv%ef%bc%8fltsv%ef%bc%8fjson%e3%81%absql%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8bsqly%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%e3%82%92%e4%bd%9c%e3%81%a3%e3%81%9f/
+- [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
 
 ## CLIコマンド作成時に参考にした情報
 

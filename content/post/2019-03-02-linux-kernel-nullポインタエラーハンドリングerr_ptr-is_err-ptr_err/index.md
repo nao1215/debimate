@@ -22,7 +22,7 @@ User空間の関数で例を挙げれば、メモリを確保するmalloc()、�
 
 しかし、**情報がNULLだけでは、どのような原因でエラーが発生したかが分かりません**。この問題への対処として、User空間のシステムコールやライブラリ関数（一部）などは、変数errnoに補足情報を付与しています（errnoについては、以下の記事に詳細を記載しました）。
 
-https://debimate.jp/2019/02/24/linux-kernel-%E3%82%A8%E3%83%A9%E3%83%BC%E7%95%AA%E5%8F%B7%E3%81%AE%E4%B8%80%E8%A6%A7/
+[Linux Kernel: エラー番号の一覧](https://debimate.jp/post/2019-02-24-linux-kernel-%E3%82%A8%E3%83%A9%E3%83%BC%E7%95%AA%E5%8F%B7%E3%81%AE%E4%B8%80%E8%A6%A7/)
 
 変数errnoは、User空間 <-> Kernel空間で情報をやり取りするための仕組みです。しかし、変数errnoはUser空間に存在するグローバル変数で、User空間の標準ライブラリが制御しています。つまり、Kernelが変数errnoを操作する事は、適切ではありません。
 

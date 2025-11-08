@@ -14,7 +14,7 @@ cover:
 
 ## 前書き：大幅に機能追加
 
-[nao1215/sqluv](https://github.com/nao1215/sqluv)は、2週間前に「[【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】](https://debimate.jp/2025/03/08/%e3%80%90go%e3%80%91sqluv%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%ef%bc%9adbms%e7%94%a8%e3%81%aetui-csv%ef%bc%8ftsv%ef%bc%8fltsv%e3%81%absql%e3%82%92%e5%ae%9f%e8%a1%8c%e5%8f%af%e8%83%bd%e3%80%90/)」に記事で紹介しました。この記事に対する反応がそこそこあったので、「これはチャンスだ」と考えて、大幅に機能追加／バグ修正をしました。
+[nao1215/sqluv](https://github.com/nao1215/sqluv)は、2週間前に「[【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】](https://debimate.jp/post/2025-03-08-gosqluv%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89dbms%E7%94%A8%E3%81%AEtui-csvtsvltsv%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E5%8F%AF%E8%83%BD/)」に記事で紹介しました。この記事に対する反応がそこそこあったので、「これはチャンスだ」と考えて、大幅に機能追加／バグ修正をしました。
 
 普段であれば機能追加時に記事を書きませんが、今回は利便性がかなり上がったので、もう一度記事を書くことにしました。
 

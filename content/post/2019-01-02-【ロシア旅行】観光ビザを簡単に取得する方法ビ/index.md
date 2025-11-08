@@ -10,7 +10,7 @@ tags:
   - "体験談"
   - "観光"
 cover:
-  image: "images/Raspberry-Pi3_min.jpg"
+  image: "images/サンクトペテルブルク.jpg"
   alt: "ロシア旅行：観光ビザを簡単に取得する方法(ビザ申請代行業者を利用)"
   hidden: false
 ---

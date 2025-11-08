@@ -263,7 +263,7 @@ file/path/name:function1, function2  # ファイルパスの指定も可能
 
 | **静的解析ツール** | **断念理由／個人的な印象** |
 | --- | --- |
-| [Understand](https://www.techmatrix.co.jp/product/understand/index.html) | ライセンス購入必須。ソースコードの構造を様々な方法で可視化する機能を持つ。個人的には、似た機能を持つ[Sourcetrail](https://debimate.jp/2020/12/12/%e3%80%90%e9%9d%99%e7%9a%84%e8%a7%a3%e6%9e%90%e3%80%91%e3%82%bd%e3%83%bc%e3%82%b9%e3%82%b3%e3%83%bc%e3%83%89%e8%a7%a3%e6%9e%90%e8%a3%9c%e5%8a%a9%e3%83%84%e3%83%bc%e3%83%absourcetrail%e3%81%ae%e5%b0%8e/)の方が気軽に使いやすい。 |
+| [Understand](https://www.techmatrix.co.jp/product/understand/index.html) | ライセンス購入必須。ソースコードの構造を様々な方法で可視化する機能を持つ。個人的には、似た機能を持つ[Sourcetrail](https://debimate.jp/post/2020-12-12-%E9%9D%99%E7%9A%84%E8%A7%A3%E6%9E%90%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E8%A7%A3%E6%9E%90%E8%A3%9C%E5%8A%A9%E3%83%84%E3%83%BC%E3%83%ABsourcetrail%E3%81%AE%E5%B0%8E/)の方が気軽に使いやすい。 |
 | [C++Test](https://www.techmatrix.co.jp/product/ctest/casestudy/index.html) | ライセンス購入必須。単体テストのカバレッジ取得、コーディングルールチェック、フロー解析が強い。C/C++向けツールのため、組み込みソフト向け。 |
 | [Coverity](https://www.synopsys.com/ja-jp/software-integrity/security-testing/static-analysis-sast.html) | ライセンス購入必須。到達不可能なコード、推奨されないコーディング、不要な初期化など幅広い指摘を出す。C++Testに近い機能だが、Coverityは対応言語が多い（21個の言語対応）。 |
 | [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) | 対応言語が若干少ない（C/C++/C#、VB.NET、Java、Delphi、VB、HTML）。[商用のソフト開発に利用可能なライセンス](http://www.campwoodsw.com/smlicense.html)であり、利用を断念する理由はあまり無い。ただ、公式サイトが古臭くて調査しなかった。 |

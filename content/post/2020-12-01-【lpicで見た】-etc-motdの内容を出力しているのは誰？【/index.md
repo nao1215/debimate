@@ -221,4 +221,4 @@ do_login(struct ssh *ssh, Session *s, const char *command)
 
 motdは、PAMモジュールを使用して表示されるケースもあります。興味がある方は、以下の記事を確認してください。
 
-https://debimate.jp/2021/08/14/ubuntu-20-04%e3%81%b8ssh%e3%83%ad%e3%82%b0%e3%82%a4%e3%83%b3%e3%81%97%e3%81%9f%e9%9a%9b%e3%81%ab%e8%a1%a8%e7%a4%ba%e3%81%95%e3%82%8c%e3%82%8bwelcome%e3%83%a1%e3%83%83%e3%82%bb%e3%83%bc%e3%82%b8/
+- [Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法](https://debimate.jp/post/2021-08-14-ubuntu-20-04%E3%81%B8ssh%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E3%81%97%E3%81%9F%E9%9A%9B%E3%81%AB%E8%A1%A8%E7%A4%BA%E3%81%95%E3%82%8C%E3%82%8Bwelcome%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8/)

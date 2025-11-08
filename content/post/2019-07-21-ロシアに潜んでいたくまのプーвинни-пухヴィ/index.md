@@ -111,4 +111,4 @@ cover:
 
 АРИЯ(アリア)に興味がある方は、以下のАРИЯ(アリア)についての記事を確認して下さい。
 
-https://debimate.jp/2019/01/01/review-%D0%B8%D0%B3%D1%80%D0%B0-%D1%81-%D0%BE%D0%B3%D0%BD%D1%91%D0%BC%D0%B0%D1%80%D0%B8%D1%8F/
+[Review: Игра с огнём(АРИЯ)](https://debimate.jp/post/2019-01-01-review-%D0%B8%D0%B3%D1%80%D0%B0-%D1%81-%D0%BE%D0%B3%D0%BD%D1%91%D0%BC%D0%B0%D1%80%D0%B8%D1%8F/)

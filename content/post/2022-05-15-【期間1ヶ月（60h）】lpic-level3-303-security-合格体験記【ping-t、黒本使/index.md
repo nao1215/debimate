@@ -18,7 +18,7 @@ cover:
 
 ## 資格有効期限切れ 2週間前の滑り込み合格 
 
-LPIC有効期限2022年6月3日の約2週間前に、LPIC Level3 303-200（Version 2.0）に合格しました。「転職（組み込みからサーバサイドへのキャリアチェンジ）」「息子の誕生」「[Software Designへの記事寄稿](https://debimate.jp/2022/05/15/%e3%80%90%e5%af%84%e7%a8%bf%e3%80%91software-design-2022%e5%b9%b46%e6%9c%88%e5%8f%b7-%e7%ac%ac1%e7%89%b9%e9%9b%86%ef%bc%88%e7%ac%ac3%e7%ab%a0-%e3%82%b7%e3%82%a7%e3%83%ab%e3%82%b9%e3%82%af%e3%83%aa/)」と、生活の変化が多い中でギリギリ合格できて、安心しました。
+LPIC有効期限2022年6月3日の約2週間前に、LPIC Level3 303-200（Version 2.0）に合格しました。「転職（組み込みからサーバサイドへのキャリアチェンジ）」「息子の誕生」「[Software Designへの記事寄稿](https://debimate.jp/post/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)」と、生活の変化が多い中でギリギリ合格できて、安心しました。
 
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">LPIC 303合格したぞ<br>＼( ‘ω')／ウオオオオオアアアーーーッ！ <a href="https://t.co/euJ1YQKuC7">pic.twitter.com/euJ1YQKuC7</a></p>— Nao31@MIN-NIIGATA (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1525712089251078144?ref_src=twsrc%5Etfw">May 15, 2022</a></blockquote>
 

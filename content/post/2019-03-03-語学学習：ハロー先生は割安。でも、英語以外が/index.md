@@ -98,4 +98,4 @@ I  Your understand situation , so it is possible to make discount.
 
 無料で外国語を学びたい(特にアウトプットしたい)場合、HelloTalkアプリもオススメです。興味がある方は、以下の記事を参考にして下さい。
 
-https://debimate.jp/2019/04/30/%E8%AA%9E%E5%AD%A6%E5%AD%A6%E7%BF%92%EF%BC%9Ahellotalk-%E3%81%AF%E5%A4%96%E5%9B%BD%E4%BA%BA%E3%81%8B%E3%82%89%E3%83%AA%E3%82%A2%E3%82%AF%E3%82%B7%E3%83%A7%E3%83%B3%E3%82%92%E8%B2%B0%E3%81%A3%E3%81%A6/
+- [語学学習：ハロー先生は割安。でも、英語以外ができる良い先生と巡り会いにくかった](https://debimate.jp/post/2019-03-03-%E8%AA%9E%E5%AD%A6%E5%AD%A6%E7%BF%92%E3%83%8F%E3%83%AD%E3%83%BC%E5%85%88%E7%94%9F%E3%81%AF%E5%89%B2%E5%AE%89%E3%81%A7%E3%82%82%E8%8B%B1%E8%AA%9E%E4%BB%A5%E5%A4%96%E3%81%8C/)

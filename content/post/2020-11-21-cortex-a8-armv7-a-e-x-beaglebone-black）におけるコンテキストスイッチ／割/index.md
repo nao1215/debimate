@@ -30,7 +30,7 @@ cover:
 
 ARM Cortex-A8に関する情報は、以下の記事でまとめてあります。必要であれば、ご参照ください。
 
-https://debimate.jp/2020/11/21/cortex-a8-armv7-a-e-x-beaglebone-black%ef%bc%89%e3%81%ae%e3%83%ac%e3%82%b8%e3%82%b9%e3%82%bf%e6%83%85%e5%a0%b1%ef%bc%8f%e3%82%a2%e3%82%bb%e3%83%b3%e3%83%96%e3%83%a9%e5%91%bd%e4%bb%a4%ef%bc%8f/
+- [Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方](https://debimate.jp/post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black%E3%81%AE%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E6%83%85%E5%A0%B1%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9%E5%91%BD%E4%BB%A4/)
 
 ## コンテキストスイッチ
 

@@ -68,17 +68,17 @@ toC向けアプリの良い点は、両親にアプリを触ってもらえる�
 
 今年の前半は、Software Design 誌に記事を寄稿させていただき、良い経験をしました（今年、Pythonの記事も寄稿しています）。シェル界隈は、シニアエンジニアが多いので、迂闊なことを書けないなと感じました。
 
-https://debimate.jp/2022/05/15/%e3%80%90%e5%af%84%e7%a8%bf%e3%80%91software-design-2022%e5%b9%b46%e6%9c%88%e5%8f%b7-%e7%ac%ac1%e7%89%b9%e9%9b%86%ef%bc%88%e7%ac%ac3%e7%ab%a0-%e3%82%b7%e3%82%a7%e3%83%ab%e3%82%b9%e3%82%af%e3%83%aa/
+- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://debimate.jp/post/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
 
 OSS開発では、golangのバイナリをアップデートする["gupコマンド"](https://github.com/nao1215/gup)がStarを160個ぐらいかき集めてくれました。ここまでStarを獲得したのは人生初の経験であり、PRや励ましのコメントをいただく嬉しい機会もありました。go awesome にも載ったしね
 
 また、「サーバーサイドで学んだ知識の総まとめ」という立ち位置でsqlyコマンドを短期間で開発できたのも、自身の成長を感じました。前職にいたとき、DDDなんて知らなかったぞ！（システムプログラミングの世界で、DDDはあまり馴染みがない気がする）
 
-https://debimate.jp/2022/12/03/%e3%80%90golang%e3%80%91csv%ef%bc%8ftsv%ef%bc%8fltsv%ef%bc%8fjson%e3%81%absql%e3%82%92%e5%ae%9f%e8%a1%8c%e3%81%99%e3%82%8bsqly%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%e3%82%92%e4%bd%9c%e3%81%a3%e3%81%9f/
+- [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
 
 資格は、LPIC Level3を取得しました。AWS系とOSS DB Silverも取得したかったのですが、勉強時間が捻出できませんでした。
 
-https://debimate.jp/2022/05/15/%e3%80%90%e6%9c%9f%e9%96%931%e3%83%b6%e6%9c%88%ef%bc%8860h%ef%bc%89%e3%80%91lpic-level3-303-security-%e5%90%88%e6%a0%bc%e4%bd%93%e9%a8%93%e8%a8%98%e3%80%90ping-t%e3%80%81%e9%bb%92%e6%9c%ac%e4%bd%bf/
+- [【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】](https://debimate.jp/post/2022-05-15-%E6%9C%9F%E9%96%931%E3%83%B6%E6%9C%8860hlpic-level3-303-security-%E5%90%88%E6%A0%BC%E4%BD%93%E9%A8%93%E8%A8%98ping-t%E9%BB%92%E6%9C%AC%E4%BD%BF/)
 
 ## 振り返り：育児
 

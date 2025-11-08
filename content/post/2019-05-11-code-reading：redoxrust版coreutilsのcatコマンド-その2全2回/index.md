@@ -19,7 +19,7 @@ cover:
 
 Rustを学習するための一環として、Redox(OS)版coreutilsのcatコマンドをCode Readingします。本記事(その2)は、catコマンドの主要な処理(ファイル内容の表示)を説明します。catコマンドのオプションパース処理に関する内容は、以下に示す前回記事(その1)を確認して下さい。
 
-https://debimate.jp/2019/05/06/code-reading%EF%BC%9Aredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE1%E5%85%A82%E5%9B%9E/
+- [Code Reading：Redox(Rust)版coreutilsのcatコマンド その1(全2回)](https://debimate.jp/post/2019-05-06-code-readingredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE1%E5%85%A82%E5%9B%9E/)
 
 ## Reading対象のコード
 
@@ -613,4 +613,4 @@ PATH: "この部分に、エラーに応じたメッセージが出力されま�
 
 Redox版coreutils(Rust版coreutils)のCode Readingは、catコマンドだけでなく、他のコマンドに対しても実施しています。興味があれば、以下の記事から参照できます。
 
-https://debimate.jp/2019/05/03/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%EF%BC%9Aredox%E5%90%91%E3%81%91coreutilsrust%E3%81%AEcode-reading%E6%BA%96%E5%82%99%E3%81%8A%E3%82%88%E3%81%B3reading%E5%AF%BE%E8%B1%A1%E3%82%B3%E3%83%9E/
+- [環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧](https://debimate.jp/post/2019-05-03-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89redox%E5%90%91%E3%81%91coreutilsrust%E3%81%AEcode-reading%E6%BA%96%E5%82%99%E3%81%8A%E3%82%88%E3%81%B3reading%E5%AF%BE%E8%B1%A1%E3%82%B3%E3%83%9E/)

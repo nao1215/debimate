@@ -93,7 +93,7 @@ Debian10(testing)環境リポジトリを使用する方法は、ソースビル
 
 まず、以下の記事に従い、testingパッケージをインストールできる状態にします。その後は、aptコマンドで「Neomutt」、「HTMLメールを読むためのw3mパッケージ」、「パスワードを暗号化するためのgnupg」をインストールします。
 
-https://debimate.jp/2019/03/09/debian-%E4%BB%BB%E6%84%8F%E3%81%AEtesting-unstable%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%81%BF%E3%82%92install%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%82%B7%E3%82%B9%E3%83%86/
+- [Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)](https://debimate.jp/post/2019-03-09-debian-%E4%BB%BB%E6%84%8F%E3%81%AEtesting-unstable%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E3%81%AE%E3%81%BF%E3%82%92install%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%82%B7%E3%82%B9%E3%83%86/)
 
 ```
 $ sudo apt update

@@ -154,7 +154,7 @@ Plexメディアサーバにアクセスするには、ブラウザから
 
 Raspberry PiのIPアドレスは"$ hostname -I"や"$ ip a"で確認できます。Raspberry PiのIPアドレスが固定されていない（起動の度に変わってしまう）場合は、Plexメディアサーバにアクセスしづらくなるため、以下の記事を参考にIPアドレスを固定した方が好ましいです。
 
-https://debimate.jp/2019/03/24/raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/
+- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 Plexメディアサーバにアクセスすると、以下の画面が表示されます。ここまでくれば、後はガイドに従ってセットアップすれば設定が完了します。
 
@@ -175,6 +175,6 @@ Raspberry PiをPlexメディアサーバ化した後、動画や画像などをR
 
 以下の記事で、Raspberry Piにsambaをインストールする手順を記載しています。必要であれば、ご確認ください。
 
-https://debimate.jp/2019/03/24/raspberry-pi3%E3%82%92%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B5%E3%83%BC%E3%83%90samba%E5%8C%96%E3%81%97%E3%80%81linux-mac-win%E3%81%A7%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89/
+- [Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%B5%E3%83%BC%E3%83%90samba%E5%8C%96%E3%81%97linux-mac-win%E3%81%A7%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%85%B1%E6%9C%89/)
 
 「Sambaで公開しているディレクトリ」と「Plexメディアサーバのライブラリディレクトリ」を一致させれば、簡単にライブラリを更新できます。

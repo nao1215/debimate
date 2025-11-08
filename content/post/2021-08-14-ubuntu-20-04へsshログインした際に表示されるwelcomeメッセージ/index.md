@@ -90,7 +90,7 @@ motdファイルは[base-filesパッケージ](https://packages.ubuntu.com/ja/fo
 
 この仕組みに関しては、以下の記事で説明しています。興味がある方はご覧ください。
 
-https://debimate.jp/2020/12/01/%e3%80%90lpic%e3%81%a7%e8%a6%8b%e3%81%9f%e3%80%91-etc-motd%e3%81%ae%e5%86%85%e5%ae%b9%e3%82%92%e5%87%ba%e5%8a%9b%e3%81%97%e3%81%a6%e3%81%84%e3%82%8b%e3%81%ae%e3%81%af%e8%aa%b0%ef%bc%9f%e3%80%90/
+- [【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】](https://debimate.jp/post/2020-12-01-lpic%E3%81%A7%E8%A6%8B%E3%81%9F-etc-motd%E3%81%AE%E5%86%85%E5%AE%B9%E3%82%92%E5%87%BA%E5%8A%9B%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%AF%E8%AA%B0/)
 
 しかし、Ubuntu環境ではmotdファイルがありません。そのため、別の仕組みでWelcomeメッセージを表示しています。
 

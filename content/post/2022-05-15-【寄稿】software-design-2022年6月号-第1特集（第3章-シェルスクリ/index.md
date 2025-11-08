@@ -29,7 +29,7 @@ cover:
 
 ## 寄稿のキッカケ
 
-[前回のSoftware Design 2022年1月号](https://debimate.jp/2021/12/17/software-design-2022%e5%b9%b41%e6%9c%88%e5%8f%b7-%e7%ac%ac2%e7%89%b9%e9%9b%86%ef%bc%88%e7%ac%ac1%e7%ab%a0%e3%80%81%e7%ac%ac2%e7%ab%a0%ef%bc%89%e3%81%ab%e5%af%84%e7%a8%bf%e3%80%90%e3%82%ad%e3%83%83/)は、本技術ブログ経由で寄稿依頼をいただきました。
+[前回のSoftware Design 2022年1月号](https://debimate.jp/post/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)は、本技術ブログ経由で寄稿依頼をいただきました。
 
 「BashからPythonに乗り換えた方が良い」という趣旨の記事を本技術ブログで書いており、その内容を補強した記事の寄稿を依頼されました。最終的に「Pythonで自動化スクリプト シェルスクリプトもいいけどPythonもね」という記事を寄稿しました（このタイトルは私が決めたものではありません）
 

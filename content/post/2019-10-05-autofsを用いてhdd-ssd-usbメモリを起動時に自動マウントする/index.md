@@ -47,7 +47,7 @@ cover:
               `"""            Memory: 37627MiB / 64404Mi
 ```
 
-https://debimate.jp/2019/10/05/gdisk-mkfs%e3%82%b3%e3%83%9e%e3%83%b3%e3%83%89%e3%81%a72tb%e4%bb%a5%e4%b8%8a%e3%81%aehdd%e3%82%92%e3%83%95%e3%82%a9%e3%83%bc%e3%83%9e%e3%83%83%e3%83%88%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95/
+[gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法](https://debimate.jp/post/2019-10-05-gdisk-mkfs%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A72tb%E4%BB%A5%E4%B8%8A%E3%81%AEhdd%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ## autofsのインストール
 

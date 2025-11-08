@@ -19,7 +19,7 @@ cover:
 
 前回、キーボードのみで操作を完結させる手段として、keynavを紹介しました。
 
-https://debimate.jp/2019/09/15/%e3%83%9e%e3%82%a6%e3%82%b9%e3%83%9d%e3%82%a4%e3%83%b3%e3%82%bf%e3%82%92%e3%82%ad%e3%83%bc%e3%83%9c%e3%83%bc%e3%83%89%e3%81%a7%e6%93%8d%e4%bd%9c%e3%81%99%e3%82%8bkeynav/
+- [マウスポインタをキーボードで操作するkeynav](https://debimate.jp/post/2019-09-15-%E3%83%9E%E3%82%A6%E3%82%B9%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%82%92%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%81%A7%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8Bkeynav/)
 
 同じように、キーボードで操作が完結できる[w3m](http://w3m.sourceforge.net/index.ja.html)を本記事で紹介します。[w3m(WWW-wo-Miru)](http://w3m.sourceforge.net/index.ja.html%0A)は、日本人が作成したテキストベースWebブラウザです。端末上でWeb検索作業できますが、使いづらい部分があったため、それらを補うスクリプトも本記事に記載します。
 

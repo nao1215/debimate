@@ -17,9 +17,9 @@ cover:
 
 ## 前書き：ラズパイサーバが停止するので監視したい
 
-[Raspberry Pi4にPLEXマルチメディアサーバを導入](https://debimate.jp/2020/10/31/%e3%80%90%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89%e3%80%91raspberry-pi%e3%81%abplex-media-server%e3%82%92%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%80%90kodi%e3%80%81emby%e3%81%a8%e3%81%ae/)して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。
+[Raspberry Pi4にPLEXマルチメディアサーバを導入](https://debimate.jp/post/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。
 
-この問題の対症療法として、[Watch Dog Timerとheartbeatを用いてシステム停止時に自動再起動を行う対応](https://debimate.jp/2020/11/28/%e3%80%90watchdogtimer%e3%80%91raspberry-pi4%e3%82%b5%e3%83%bc%e3%83%90%e3%81%8c%e3%83%95%e3%83%aa%e3%83%bc%e3%82%ba%e5%81%9c%e6%ad%a2%e3%81%97%e3%81%9f%e5%a0%b4%e5%90%88%e3%81%ab%e8%87%aa%e5%8b%95/)を実施しました。
+この問題の対症療法として、[Watch Dog Timerとheartbeatを用いてシステム停止時に自動再起動を行う対応](https://debimate.jp/post/2020-11-28-watchdogtimerraspberry-pi4%E3%82%B5%E3%83%BC%E3%83%90%E3%81%8C%E3%83%95%E3%83%AA%E3%83%BC%E3%82%BA%E5%81%9C%E6%AD%A2%E3%81%97%E3%81%9F%E5%A0%B4%E5%90%88%E3%81%AB%E8%87%AA%E5%8B%95/)を実施しました。
 
 今回はシステムが停止する原因を探るため、Raspberry Pi4にMonitorixをインストールして、システムリソースの変化をモニタリングできるようにします。そこで、本記事では「Monitorixのインストール方法」と「Raspberry Pi向けの設定」に関して説明します。
 
@@ -28,8 +28,6 @@ cover:
 Monitorixは、軽量なシステムリソースモニタリングツールであり、Webブラウザ経由でリソースの使用状況を表したグラフを確認できます。Perlスクリプトで実装されており、Monitorixが生成するリソース監視ログ（rrdバイナリ）をrrdtoolでグラフ化（画像化）するという仕組みのようです。
 
 [公式サイト](https://www.monitorix.org/)に、
-
-[新しいタブでプレビュー(新しいタブで開く)](https://debimate.jp/?p=5296&preview=true&_thumbnail_id=5297)
 
 > Take control over your small server
 > 
@@ -95,7 +93,7 @@ $ sudo apt install monitorix
 
 Monitorixのモニタリング結果は、IPアドレス指定で確認する事になるため、DHCPで動的にIPアドレスが変わると運用しづらいです。そのため、以下の記事を参考にしてRaspberry Pi4を固定IP化します。
 
-https://debimate.jp/2019/03/24/raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/
+- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ## Raspberry Pi4 CPU／温度／電圧モニタリング有効化
 

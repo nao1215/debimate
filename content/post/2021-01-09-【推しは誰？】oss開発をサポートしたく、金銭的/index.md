@@ -38,7 +38,7 @@ _**2021年は、elementary OSに金銭面（超少額）サポートします！
 
 ## elementary OSは収益面を意識したOSS
 
-elementary OSは、Ubuntu派生（UbuntuはDebian派生）のLinuxディストリビューションであり、「安定かつ新し目のパッケージ」および「Macを意識したLook & Feel」を提供しており、[私もノートPCにインストールして愛用させてもらっています](https://debimate.jp/2021/01/02/%e3%83%89%e3%82%b9%e3%83%91%e3%83%a9%e3%81%aethirdwave-vf-ad4%e3%81%abelementary-osubuntu%e6%b4%be%e7%94%9f%e3%82%92%e5%85%a5%e3%82%8c%e3%81%9f%e6%84%9f%e6%83%b3/)。
+elementary OSは、Ubuntu派生（UbuntuはDebian派生）のLinuxディストリビューションであり、「安定かつ新し目のパッケージ」および「Macを意識したLook & Feel」を提供しており、[私もノートPCにインストールして愛用させてもらっています](https://debimate.jp/post/2021-01-02-%E3%83%89%E3%82%B9%E3%83%91%E3%83%A9%E3%81%AEthirdwave-vf-ad4%E3%81%ABelementary-osubuntu%E6%B4%BE%E7%94%9F%E3%82%92%E5%85%A5%E3%82%8C%E3%81%9F%E6%84%9F%E6%83%B3/)。
 
 ![](images/Screenshot-from-2021-01-02-15-23-16.png)
 

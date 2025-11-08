@@ -16,7 +16,7 @@ cover:
 
 ## 前書き
 
-2023年に[「2024年のOSS活動は、AWSユーティリティツールに絞ること」](https://debimate.jp/2023/12/28/2023%e5%b9%b4%e3%81%ae%e6%8c%af%e3%82%8a%e8%bf%94%e3%82%8a-2024%e5%b9%b4%e3%81%ae%e6%8a%b1%e8%b2%a0/)と目標を立て、AWS関連のOSSをまとめる[Rainbowプロジェクト（nao1215/rainbow）](https://github.com/nao1215/rainbow)を作り始めました。早いもので2024年も1ヶ月経ったので、何か作ってないと進捗上マズイですよね！一つ作りましたよ！（後述）
+2023年に[「2024年のOSS活動は、AWSユーティリティツールに絞ること」](https://debimate.jp/post/2023-12-27-2023%E5%B9%B4%E3%81%AE%E6%8C%AF%E3%82%8A%E8%BF%94%E3%82%8A-2024%E5%B9%B4%E3%81%AE%E6%8A%B1%E8%B2%A0/)と目標を立て、AWS関連のOSSをまとめる[Rainbowプロジェクト（nao1215/rainbow）](https://github.com/nao1215/rainbow)を作り始めました。早いもので2024年も1ヶ月経ったので、何か作ってないと進捗上マズイですよね！一つ作りましたよ！（後述）
 
 Rainbowは、私の好きなRitchie Blackmore's Rainbowから拝借しました。複数のツールやライブラリを集約する予定なので、虹というネーミングは無難なところだと思ってます。
 

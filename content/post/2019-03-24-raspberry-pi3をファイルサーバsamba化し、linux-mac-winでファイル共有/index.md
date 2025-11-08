@@ -80,7 +80,7 @@ Version 4.5.16-Debian
 
 各PCはRaspberry PiのIPアドレスに対してアクセスする事もあるため、固定IP化します。IPの固定化方法は、以下の記事を参照してください。固定後のIPアドレスは、"192.168.10.108"と仮定します。
 
-https://debimate.jp/2019/03/24/raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/
+- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ## 外部ストレージの自動マウント設定
 

@@ -79,7 +79,7 @@ struct mutex {
 | --- | --- |
 | atomic\_t count | atomic\_t構造体(中身はint型のcounter)としてmutexの状態を管理します。1=アンロック状態、0=ロック状態。 |
 | spinlock\_t wait\_lock | mutex内部で、mutex獲得待ちのタスクを起床(wake up)させる場合などに、spinlockを使用します。 |
-| struct list\_head wait\_list | mutex獲得待ちのタスクをList形式で管理します。Linux Kernel内のListの仕組みに関しては、[本サイトに説明記事](https://debimate.jp/2019/04/07/linux-kernel-list%e6%a7%8b%e9%80%a0%e3%82%92%e6%93%8d%e4%bd%9c%e3%81%99%e3%82%8b%e3%81%9f%e3%82%81%e3%81%aeapilist%e3%81%ae%e4%bd%bf%e3%81%84%e6%96%b9/)があります。 |
+| struct list\_head wait\_list | mutex獲得待ちのタスクをList形式で管理します。Linux Kernel内のListの仕組みに関しては、[本サイトに説明記事](https://debimate.jp/post/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)があります。 |
 | struct task\_struct \*owner; | mutex構造体を管理(使用)するタスクを意味します。 |
 | struct optimistic\_spin\_queue osq | Mutex獲得時のMCSロック(スピン)機能が有効の場合、使用します。MCSロック機能では、1）他のCPUがmutexの所有者、2）タスクの再スケジューリングが不要、の条件を共に満たした場合、ロック獲得(※)のためにスピンして待ち続けます 。※他のCPUが処理実行中のため、直ぐにロックが解放される可能性があります。 |
 | void \*magic | mutexのセマンティックス違反やデッドロックを検知する場合に使用します。 |

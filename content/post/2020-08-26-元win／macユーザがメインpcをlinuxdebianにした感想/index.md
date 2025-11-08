@@ -114,7 +114,7 @@ LinuxはAAAタイトルゲームがない。
 
 なお、Steamをインストールしたい方がいらっしゃれば、以下の記事で手順を紹介しています。
 
-https://debimate.jp/2020/08/28/%e3%80%90%e7%92%b0%e5%a2%83%e6%a7%8b%e7%af%89%e3%80%91debian-10%e3%81%absteam%e3%82%92%e3%82%a4%e3%83%b3%e3%82%b9%e3%83%88%e3%83%bc%e3%83%ab%e3%81%99%e3%82%8b%e6%96%b9%e6%b3%95%ef%bc%9aglxchoosevisual/
+- [【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避](https://debimate.jp/post/2020-08-28-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89debian-10%E3%81%ABsteam%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95glxchoosevisual/)
 
 ## △システム／デスクトップ環境
 
@@ -140,4 +140,4 @@ Windowsのような半強制Windows Updateが存在しないだけでも、Linux
 
 初めてLinux PCを作る時、自作PCは止めましょう。何らかのWindows PCをLinuxで潰す方が簡単です。自作PCをLinuxにすると、以下の記事のようにハマって大変です（大変だった）。
 
-https://debimate.jp/2019/09/29/debian10%e3%82%92ryzen-3800x%e7%92%b0%e5%a2%83%e3%81%a7%e5%8b%95%e3%81%8b%e3%81%9d%e3%81%86%e3%81%a8%e3%81%97%e3%81%a6%e3%83%8f%e3%83%9e%e3%81%a3%e3%81%9f%e5%86%85%e5%ae%b9%e3%82%b0%e3%83%a9%e3%83%9c/
+- [Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)](https://debimate.jp/post/2019-09-29-debian10%E3%82%92ryzen-3800x%E7%92%B0%E5%A2%83%E3%81%A7%E5%8B%95%E3%81%8B%E3%81%9D%E3%81%86%E3%81%A8%E3%81%97%E3%81%A6%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E5%86%85%E5%AE%B9%E3%82%B0%E3%83%A9%E3%83%9C/)

@@ -14,7 +14,7 @@ cover:
 
 ## 前書き：ドキュメンテーションコメントの書き方が分からん
 
-本記事は、[「【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析](https://debimate.jp/2024/12/31/%e3%80%90github-actions%e3%80%91-github-issue-metrics-%e3%81%a7pr%e3%83%9e%e3%83%bc%e3%82%b8%e3%81%ab%e3%81%8b%e3%81%8b%e3%82%8b%e6%99%82%e9%96%93%e3%82%92%e5%88%86%e6%9e%90/)」に関連する記事です。2024年は、Pull Request（以降PR）をマージするまでにかかる時間を如何に短縮するかに、課題感がありました。
+本記事は、[「【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析](https://debimate.jp/post/2024-12-31-github-actions-github-issue-metrics-%E3%81%A7pr%E3%83%9E%E3%83%BC%E3%82%B8%E3%81%AB%E3%81%8B%E3%81%8B%E3%82%8B%E6%99%82%E9%96%93%E3%82%92%E5%88%86%E6%9E%90/)」に関連する記事です。2024年は、Pull Request（以降PR）をマージするまでにかかる時間を如何に短縮するかに、課題感がありました。
 
 ここでのマージ条件は、「有識者から1 approveを得る」「合計2 approve以上を得る」です。課題感はそこまで深刻なものではなく、「一昔前より、残存するPR量が増えたな」「自分のPRが溜まると、コンフリクト解消が面倒だから開発の手を止めちゃうな」ぐらいのお困り感でした。[Four Keys](https://book.impress.co.jp/books/1118101029)（ソフトウェア開発チームのパフォーマンスを測る指標）を改善していこう、という意識高い系のモチベーションではありません。
 

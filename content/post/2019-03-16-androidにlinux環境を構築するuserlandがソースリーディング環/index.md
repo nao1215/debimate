@@ -126,4 +126,4 @@ trace-cmd python3 python3-dev python3-pip
 
 UserLAnd遅いのよ……
 
-https://debimate.jp/2021/02/20/%e3%80%90android%e3%82%a2%e3%83%97%e3%83%aa%e3%80%91%e3%82%b3%e3%83%bc%e3%83%89%e3%83%aa%e3%83%bc%e3%83%87%e3%82%a3%e3%83%b3%e3%82%b0%e3%81%ab%e4%bd%bf%e3%81%86%e3%82%a2%e3%83%97%e3%83%aa%e3%82%92user/
+- [【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話](https://debimate.jp/post/2021-02-20-android%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%AB%E4%BD%BF%E3%81%86%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92user/)

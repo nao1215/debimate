@@ -330,11 +330,11 @@ module_exit(debimate_exit);
 
 debimate\_init()、debimate\_exit()は、KernelモジュールをLoad/Unload時に行う初期化・終了処理です。printk()はLinux Kernel内部用の出力関数です。printk()には出力レベルが存在します。出力レベル関しては、以下の記事を参照ください。
 
-https://debimate.jp/2019/02/02/linux-kernel-prinkprint-kernel%E3%81%AB%E3%82%88%E3%82%8B%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E5%87%BA%E5%8A%9B/
+- [Linux Kernel: prink(print kernel)によるメッセージ出力](https://debimate.jp/post/2019-02-02-linux-kernel-prinkprint-kernel%E3%81%AB%E3%82%88%E3%82%8B%E3%83%A1%E3%83%83%E3%82%BB%E3%83%BC%E3%82%B8%E5%87%BA%E5%8A%9B/)
 
 また、初期化関数に付与された\_\_initマクロ、終了化関数に付与された\_\_exitマクロは、メモリを効率使用するためのものです。初期化関数・終了関数が実行後、これらの関数はメモリから解放されます。細かい仕様は、以下の記事を参照ください。
 
-https://debimate.jp/2019/04/29/linux-kernel-\_\_init%E3%83%9E%E3%82%AF%E3%83%AD%E3%80%81\_\_exit%E3%83%9E%E3%82%AF%E3%83%AD%E3%81%AE%E5%BD%B9%E5%89%B2%E3%83%A1%E3%83%A2%E3%83%AA%E3%81%AE%E6%9C%89%E5%8A%B9%E5%88%A9%E7%94%A8/
+- [Linux Kernel: __initマクロ、__exitマクロの役割(メモリの有効利用)](https://debimate.jp/post/2019-04-29-linux-kernel-__init%E3%83%9E%E3%82%AF%E3%83%AD__exit%E3%83%9E%E3%82%AF%E3%83%AD%E3%81%AE%E5%BD%B9%E5%89%B2%E3%83%A1%E3%83%A2%E3%83%AA%E3%81%AE%E6%9C%89%E5%8A%B9%E5%88%A9%E7%94%A8/)
 
 module\_init()、module\_exit()は、モジュールの初期化関数および終了関数を定義します。初期化関数を呼び出す仕組みは[initcall](https://0xax.gitbooks.io/linux-insides/content/Concepts/linux-cpu-3.html)と呼ばれ、機能毎にモジュールを初期化するタイミングをずらせます。今回のKernelモジュール(module\_init)は、device向けのタイミングで初期化されます。タイミングは以下の8種類です。
 
@@ -375,4 +375,4 @@ $ sudo dmesg | tail -n 5
 
 以上が、Kernelモジュール開発の作成準備になります。上記のコードを発展させ、Device Driverを作成したい場合は、以下の記事を確認して下さい。
 
-https://debimate.jp/2019/06/23/linux-kernel%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AAcharacter-device%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95linked-list-api%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E3%82%B5/
+[Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)](https://debimate.jp/post/2019-06-23-linux-kernel%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AAcharacter-device%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95linked-list-api%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E3%82%B5/)

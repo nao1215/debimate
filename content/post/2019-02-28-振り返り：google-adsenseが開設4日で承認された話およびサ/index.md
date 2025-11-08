@@ -52,17 +52,13 @@ https://tabibitojin.com/google-adsense-how-to-pass-it/
 
 以下に、当時の記事を掲載順に示します。興味があれば、是非一読ください。
 
-https://debimate.jp/2018/12/31/raspberry-pi3linux-kernel%E3%81%AEboot-sequence-step1%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3%E4%BE%9D%E5%AD%98%E9%83%A8/
+- [Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部](https://debimate.jp/post/2018-12-31-raspberry-pi3linux-kernel%E3%81%AEboot-sequence-step1%E3%82%A2%E3%83%BC%E3%82%AD%E3%83%86%E3%82%AF%E3%83%81%E3%83%A3%E4%BE%9D%E5%AD%98%E9%83%A8/)
+- [Review: Игра с огнём(АРИЯ)](https://debimate.jp/post/2019-01-01-review-%D0%B8%D0%B3%D1%80%D0%B0-%D1%81-%D0%BE%D0%B3%D0%BD%D1%91%D0%BC%D0%B0%D1%80%D0%B8%D1%8F/)
+- [Raspberry Pi3: 公式ツールおよびHW仕様](https://debimate.jp/post/2019-01-01-raspberry-pi3-%E5%85%AC%E5%BC%8F%E3%83%84%E3%83%BC%E3%83%AB%E3%81%8A%E3%82%88%E3%81%B3hw%E4%BB%95%E6%A7%98/)
+- [Review: Seattle '89(Metallica)](https://debimate.jp/post/2019-01-02-review-seattle-89metallica/)
+- [ロシア旅行：観光ビザを簡単に取得する方法(ビザ申請代行業者を利用)](https://debimate.jp/post/2019-01-02-%E3%83%AD%E3%82%B7%E3%82%A2%E6%97%85%E8%A1%8C%E8%A6%B3%E5%85%89%E3%83%93%E3%82%B6%E3%82%92%E7%B0%A1%E5%8D%98%E3%81%AB%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%83%93/)
+- [Review: Boston 1981(Rainbow)](https://debimate.jp/post/2019-01-04-review-boston-1981rainbow/)
 
-https://debimate.jp/2019/01/01/review-%D0%B8%D0%B3%D1%80%D0%B0-%D1%81-%D0%BE%D0%B3%D0%BD%D1%91%D0%BC%D0%B0%D1%80%D0%B8%D1%8F/
-
-https://debimate.jp/2019/01/01/raspberry-pi3-%E5%85%AC%E5%BC%8F%E3%83%84%E3%83%BC%E3%83%AB%E3%81%8A%E3%82%88%E3%81%B3hw%E4%BB%95%E6%A7%98/
-
-https://debimate.jp/2019/01/02/review-seattle-89metallica/
-
-https://debimate.jp/2019/01/03/%E3%80%90%E3%83%AD%E3%82%B7%E3%82%A2%E6%97%85%E8%A1%8C%E3%80%91%E8%A6%B3%E5%85%89%E3%83%93%E3%82%B6%E3%82%92%E7%B0%A1%E5%8D%98%E3%81%AB%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%83%93/
-
-https://debimate.jp/2019/01/04/review-boston-1981rainbow/
 
 ## まとめ
 

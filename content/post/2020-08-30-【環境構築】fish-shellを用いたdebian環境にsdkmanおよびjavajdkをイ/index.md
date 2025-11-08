@@ -67,7 +67,7 @@ $ curl -s "https://get.sdkman.io" | bash
 
 この段階でLogin Shellをfish（shell）に変更していない場合、以下の記事を参考に変更してください。また、SDKMANをfishで使うには、fisher（fishプラグインマネージャ）も必要ですので、合わせてインストールしてください。
 
-https://debimate.jp/2019/06/15/%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%EF%BC%9A%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%95%E3%83%AC%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC%E3%81%A7%E8%A3%9C%E5%AE%8C%E6%A9%9F%E8%83%BD%E3%81%AE%E5%BC%B7%E5%8A%9B/
+- [環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)](https://debimate.jp/post/2019-06-15-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%95%E3%83%AC%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC%E3%81%A7%E8%A3%9C%E5%AE%8C%E6%A9%9F%E8%83%BD%E3%81%AE%E5%BC%B7%E5%8A%9B/)
 
 ## SDKMAN! for fishプラグインのインストール
 

@@ -97,4 +97,4 @@ $ sudo pip3 install docker-compose
 
 私は、Docker Composeインストール中にmicroSDカード容量（16GB）が足りなくなり、エラーとなりました。より容量の大きいmicroSDカードに移行する場合は、以下の記事を参考にしてください。
 
-https://debimate.jp/2020/09/02/raspberry-pi4%e3%81%aeimage%ef%bc%88%e3%83%87%e3%83%bc%e3%82%bf%ef%bc%89%e3%82%92%e3%83%90%e3%83%83%e3%82%af%e3%82%a2%e3%83%83%e3%83%97%e3%81%97%e3%80%81%e3%82%88%e3%82%8a%e5%a4%a7%e5%ae%b9%e9%87%8f/
+- [Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法](https://debimate.jp/post/2020-09-02-raspberry-pi4%E3%81%AEimage%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%97%E3%82%88%E3%82%8A%E5%A4%A7%E5%AE%B9%E9%87%8F/)
