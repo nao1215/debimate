@@ -33,5 +33,21 @@ ShowRssButtonInSectionTermList = true
   url = "https://x.com/ARC_AED"
 
 [[socialIcons]]
+name = "bluesky"
+url = "https://bsky.app/profile/nchika.bsky.social"
+
+[[socialIcons]]
+name = "dev"
+url = "https://dev.to/nchika"
+
+[[socialIcons]]
+name = "hackerone"
+url = "https://hackerone.com/nchika?type=user"
+
+[[socialIcons]]
+name = "kaggle"
+url = "https://www.kaggle.com/nao1215"
+
+[[socialIcons]]
   name = "email"
   url = "mailto:n.chika156@gmail.com"
