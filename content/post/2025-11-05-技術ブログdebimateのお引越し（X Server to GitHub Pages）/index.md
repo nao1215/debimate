@@ -53,3 +53,17 @@ WordPress を褒めておくと、記事のエクスポート機能が搭載さ�
 若干、記事が見にくくなったり、検索性が落ちた部分があります。徐々に改善していくつもりです。
 
 これからも debimate をよろしくお願いします。
+
+## 2025年11月8日追記：ドメインは維持！
+
+前職のテックリードから debimate.jp を捨てることに関して、ツッコミが入りました。
+
+<blockquote class="twitter-tweet" data-lang="ja" data-dnt="true"><p lang="ja" dir="ltr">あれURLは保持しないんですか？ <a href="https://t.co/SGXD1eTCNi">https://t.co/SGXD1eTCNi</a></p>&mdash; f96fd3a0-bdb9-4f10-b69f-8f765c1d341c ICHINOSEShogo (@shogo82148) <a href="https://twitter.com/shogo82148/status/1986428488623267933?ref_src=twsrc%5Etfw">2025年11月6日</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+↑ のテックリードの発言は、「ドメインを廃止すると悪用されるよ」と暗に指摘しています。私はテックリードがドメインを廃止してはいけないと啓蒙していたのを見聞きしていたので、この指摘は予想できていました。なんなら、ブログの引っ越しを考えた瞬間から、このツッコミが来るだろうなと予想してました。
+
+ドメイン料金が毎年3,000円かかるのは微妙ですが、debimate.jp は私が7年程度かけて育てたドメインです。維持することにしました。手放した瞬間に debimate.jp を弄ばれるのも、なんか微妙な気持ちになる気がしたので。
+
+<blockquote class="twitter-tweet" data-dnt="true"><p lang="ja" dir="ltr">このままの流れでは、2026年1月1日に私が持っていたドメインは <a href="https://twitter.com/shogo82148?ref_src=twsrc%5Etfw">@shogo82148</a> に乗っ取られ、「ドメインを手放すとこんなことになるよ」と啓蒙するブログが書かれる未来が待ってます<br><br>救いの手（ドメイン代）をお待ちしております<a href="https://t.co/K5RZ1rS7pp">https://t.co/K5RZ1rS7pp</a><br>（冗談はさておき、どうするかな......）</p>&mdash; nchika (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1986436012919394740?ref_src=twsrc%5Etfw">November 6, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+debimate.jp を維持する方針に変更した後、まずは X Server 側の Aレコード設定を変更し、GitHub Pages のカスタムドメインを debimate.jp としました。debimate.jp が GitHub Pages を表示するまでに1時間ぐらいかかりました。その後、ブログ記事内リンクを貼りなおす地道な作業をやる羽目になりました。3時間ぐらいかかりました...大変でした
