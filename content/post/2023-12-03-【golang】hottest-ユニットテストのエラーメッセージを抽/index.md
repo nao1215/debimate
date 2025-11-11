@@ -15,11 +15,11 @@ cover:
   hidden: false
 ---
 
-## 前書き 
+### 前書き 
 
 本記事は、[フラー株式会社 Advent Calender 2023](https://qiita.com/advent-calendar/2023/fuller-inc) の4日目の記事です。3日目は、[@ujikawa1026](https://qiita.com/ujikawa1026)さん の「[マネージャーはなぜ忙しいのか。3年間やって少し分かってきたこと](https://namaninotiteti1026.hatenadiary.jp/entry/2023/12/02/232218)」です。
 
-## 本記事の主題：hottestの紹介／宣伝
+### 本記事の主題：hottestの紹介／宣伝
 
 本記事では、2023年に私が開発したOSSの中で出来が良い部類の[nao1215/hottest](https://github.com/nao1215/hottest) を紹介します。hottestは、E2Eテスティングフレームワークである[go-spectest/spectest](https://github.com/go-spectest/spectest)の開発中に生まれたサイドプロジェクトです。
 
@@ -31,7 +31,7 @@ cover:
 
 ![](images/spectest_ip.png)
 
-## 何故、hottestが必要だったのか
+### 何故、hottestが必要だったのか
 
 hottestを作った理由は、以下の2つです。
 
@@ -46,7 +46,7 @@ hottestを作った理由は、以下の2つです。
 
 テストケースが多くなると、実行時間が長いのでターミナルを眺めていません。そのため、どのパッケージでエラーが発生したかの検討がつかないことや、ターミナルバッファの上限値を超えてしまってエラー部分のログが残っていないことがあります。この場合は、もう一度テストを実行する羽目になります。
 
-## 課題を解決する既存ツールはないのか？
+### 課題を解決する既存ツールはないのか？
 
 課題を解決するツール（部分的に解決するツールを含む）は、3個ありました。
 
@@ -56,7 +56,7 @@ BDDスタイルのドット出力をするツールには、[gotestyourself/gote
 
 残りの2つのツールは、[rakyll/gotest](https://github.com/rakyll/gotest) と [kyoh86/richgo](https://github.com/kyoh86/richgo) であり、これらはテスト結果の標準出力に色を付けるものです。残念ながら、エラーが発生したテストを探す手間がそこまで減りませんでした。あと、ｽｯｺｺｺしないので、not for me でした。
 
-## hottestを開発開始（処理シーケンス概要）
+### hottestを開発開始（処理シーケンス概要）
 
 自分の欲しい物を探すのが手間なので、自分で作ることにしました。悪い癖です。
 
@@ -79,7 +79,7 @@ hottestの処理シーケンスを簡単に説明します。
 
 エラーが発生している場合は、エラーが起きたテストメソッド開始地点〜終了地点のログをチェックし、その内容を標準出力します。ここはロジックが甘いので、稀にログを取りこぼしてます。
 
-## GitHub Actions と組み合わせて使い勝手を向上
+### GitHub Actions と組み合わせて使い勝手を向上
 
 全テストを実行する環境は、基本的にはGitHub Actionsです。
 
@@ -128,7 +128,7 @@ jobs:
 
 ![](images/fail2.png)
 
-## Pull Requestにテスト結果コメント出力
+### Pull Requestにテスト結果コメント出力
 
 PRにコメントを残す機能は、[k1LoW/octocov](https://github.com/k1LoW/octocov)から強い影響を受けて導入しました。
 
@@ -158,7 +158,7 @@ hottestがMarkdown（PRコメント本文）を作って、GitHub Actions内でc
 
 ちなみに、Markdown生成はspectestのサイドプロジェクトに [go-spectest/markdown](https://github.com/go-spectest/markdown) ライブラリがあり、Builderパターンを用いてMarkdownを組み立ててます。こちらも気に入っているので、興味がある方はREADMEを眺めてみてください。
 
-## 最後に
+### 最後に
 
 [nao1215/hottest](https://github.com/nao1215/hottest)は、ユニットテスト結果ログからエラーメッセージを抽出するツールです。ローカル／GitHub Actionsで動作し、オプション体系が'go test'と同じなので学習コストは低いです。
 

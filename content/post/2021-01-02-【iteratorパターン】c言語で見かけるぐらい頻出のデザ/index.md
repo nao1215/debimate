@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：デザインパターンという認識がなかった
+### 前書き：デザインパターンという認識がなかった
 
 Iteratorデザインパターンは、配列／List／Mapなどのコレクション（要素の集合）を順次アクセスする際に、どのようなコレクションであっても同じAPIで操作可能にする設計方法です。
 
@@ -23,7 +23,7 @@ Iteratorデザインパターンは、配列／List／Mapなどのコレクシ�
 
 本記事では、復習の意味を込めて、Iteratorパターンの実装例をJavaとRubyで紹介します。
 
-## Iteratorパターンの概要 
+### Iteratorパターンの概要 
 
 本記事では、複数のPackageクラスを管理（集約）するRepositoryクラスに対して、Iteratorデザインパターンを適用します。下図は登場人物となるクラス、下表は各クラスの役割説明です。
 
@@ -41,7 +41,7 @@ Iteratorデザインパターンは、配列／List／Mapなどのコレクシ�
 
 ![](images/iterator-Page-2.jpg)
 
-## Iteratorパターンの実装例：Java
+### Iteratorパターンの実装例：Java
 
 Javaの場合は、Iteratorインターフェースが[java.util.Iterator](https://docs.oracle.com/javase/jp/8/docs/api/java/util/Iterator.html)として提供されているため、Iteratorインターフェースを改めて定義する必要がありません。
 
@@ -233,7 +233,7 @@ build-essentia
 
 また、Javaには[java.lang.Iterableインターフェース](https://docs.oracle.com/javase/jp/8/docs/api/java/lang/Iterable.html)も存在します。拡張For文を用いて集合を操作する際は、Iterableインターフェースを実装します。
 
-## Iteratorパターンの実装例：Ruby
+### Iteratorパターンの実装例：Ruby
 
 Rubyは、そもそもインターフェースの仕組みが言語仕様として存在しません。インターフェースと同じ役割を果たすクラスを用意すると、段々と形式張った言語（静的型付け言語）に見えてきます。
 
@@ -306,7 +306,7 @@ $ ./ruby.rb
 
 Ruby側は全体的にシンプルな実装であり、Javaの厳格さと比べると、遥かにRubyが書きやすい言語ですね（実装規模が大きくなると、Javaが良いな、となりますが）
 
-## 他のデザインパターンに関して
+### 他のデザインパターンに関して
 
 GoFデザインパターン（23種類）に関しては、以下の記事でまとめてあります。
 

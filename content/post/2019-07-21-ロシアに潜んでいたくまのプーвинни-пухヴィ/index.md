@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## Винни-Пух(ヴィーニ・プーフ)とは
+### Винни-Пух(ヴィーニ・プーフ)とは
 
 この世には3種類のプーが存在します。
 
@@ -44,13 +44,13 @@ cover:
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=400114008X&amp;linkId=4b6bd99afcd06b6c46c3a21d4ae66137"></iframe>
 
-## ロシア人によるВинни-Пух(ヴィーニ・プーフ)への反応
+### ロシア人によるВинни-Пух(ヴィーニ・プーフ)への反応
 
 「衝撃的なプーさん」、「おじさんみたいな声」と言いつつ、ロシア人にとって懐かしいアニメである事が伝わってきます。ちなみに私は、この動画経由でプーフを知りました。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4eF8wH0ouuA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-## 癖になる劇中歌
+### 癖になる劇中歌
 
 プーフ自身が唄う劇中歌(下動画)は、中毒性があり、思わず口ずさんでしまいます。
 
@@ -89,7 +89,7 @@ cover:
 > Да!  
 > (うん！)
 
-## ロシアの大御所バンドАРИЯによる楽曲提供
+### ロシアの大御所バンドАРИЯによる楽曲提供
 
 ロシアには、日本のX JAPAN相当の大御所メタルバンド"АРИЯ(アリア)"がいます。このАРИЯがプーフに楽曲提供をしています。日本で言えば、X JAPANがドラえもんに楽曲提供した感じでしょうか。動画からは、経緯がサッパリ分かりません。
 

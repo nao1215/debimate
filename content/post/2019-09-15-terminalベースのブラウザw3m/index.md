@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 前回、キーボードのみで操作を完結させる手段として、keynavを紹介しました。
 
@@ -23,7 +23,7 @@ cover:
 
 同じように、キーボードで操作が完結できる[w3m](http://w3m.sourceforge.net/index.ja.html)を本記事で紹介します。[w3m(WWW-wo-Miru)](http://w3m.sourceforge.net/index.ja.html%0A)は、日本人が作成したテキストベースWebブラウザです。端末上でWeb検索作業できますが、使いづらい部分があったため、それらを補うスクリプトも本記事に記載します。
 
-## 検証環境
+### 検証環境
 
 ```
        _,met$$$$$gg.          nao@debian 
@@ -45,7 +45,7 @@ cover:
               `"""            Memory: 2974MiB / 32060MiB 
 ```
 
-## w3mのインストール方法
+### w3mのインストール方法
 
 ```
 $ sudo apt update
@@ -54,7 +54,7 @@ $ sudo apt install w3m-img   (注釈)端末上で画像を表示したい場合�
  
 ```
 
-## w3mの起動方法
+### w3mの起動方法
 
 \[起動書式\]
 
@@ -70,7 +70,7 @@ w3m http://google.com
 
 ![w3m](images/w3m.jpg)
 
-## スクリプトによる起動簡略化
+### スクリプトによる起動簡略化
 
 w3mの使いづらい点の一つに、起動時のURL入力があります。この問題を解消するために、以下のggleスクリプトを用いれば、"ggle \[検索ワード(複数可、スペース区切り)\]"で検索が出来ます。
 
@@ -116,6 +116,6 @@ $ chmod a+x ggle    (注釈) ggleスクリプトは手動でコピーしてく�
 $ sudo cp ggle /usr/local/bin/.
 ```
 
-## 最後に
+### 最後に
 
 w3mの操作マニュアルは、[公式サイト](http://w3m.sourceforge.net/MANUAL.ja.html)を参照して下さい。

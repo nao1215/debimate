@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 収録曲
+### 収録曲
 
 ![](images/rainbow_boston.jpg)
 
@@ -32,7 +32,7 @@ cover:
 9\. Long Live Rock 'n' Roll  
 10\. Smoke On The Water ( Lazy, Women from Tokyo, Smoke On The Water)
 
-## Difficult To Cureツアーの良音質な音源
+### Difficult To Cureツアーの良音質な音源
 
 本作は、Joe Lynn Turner加入後にリリースされた"[Difficult To Cure](https://ja.wikipedia.org/wiki/%E3%82%A2%E3%82%A4%E3%83%BB%E3%82%B5%E3%83%AC%E3%83%B3%E3%83%80%E3%83%BC)"公演(1981年5月7日)を収録しています。下地となった音源は、過去に販売されていたBootlegですが、その音質は良い。収録年代およびBootlegという点を踏まえれば、「音の分離感」「アルバムを通した音量バランス」「ノイズ」の全てが、問題ないレベル。しかし、他の方のレビューでは、ギター・キーボードの音量バランスに関して指摘がありました。私も感じたことですが、ギターの音がやや小さめです。
 
@@ -42,7 +42,7 @@ cover:
 
 このように、ストレスフリーでLive音源を楽しめる段階で、音質はかなり高い水準だと思います。前任ボーカリストのGraham Bonnet時代は、"Monsters of Rock"公演ぐらいしか、まともに聴ける音源がありません。そう考えれば、Joe Lynn Turnerファンは各年代のLive音源が多数リリースされていて、恵まれていますね。
 
-## 少ない曲数ながらも、レアなセットリスト
+### 少ない曲数ながらも、レアなセットリスト
 
 本作のセットリストは、10曲のみと非常に少ないです。翌年(1982年)の公演では、20曲以上を披露しています。「CD一枚に収めるために、曲をカットした？」と疑いましたが、複数のサイト(例：[setlist.fm](https://www.setlist.fm/setlist/rainbow/1981/orpheum-theatre-boston-ma-33d82449.html))を確認した所、曲をまるまる削除する対応はしていないようです。つまり、本作は10曲でフルセットリスト。残念。
 
@@ -56,7 +56,7 @@ Graham Bonnet時代の"Love's No Friend(最もレア)"、"Lost In Hollywood"
 
 ちなみに、演奏全体の印象として、序盤、Ritchie Blackmoreの演奏が精彩を欠いています。具体的には、Catch The Rainbowに達するまで、手抜きフレーズが多い。後半から演奏に熱がこもり始める印象を受けるのは、現地のファンが盛り上がり始めたからなのでしょうか。客席の歓声が少ないから、その辺りは想像になります。
 
-## 本作に含まれなかったDifficult To Cureツアーで演奏された曲
+### 本作に含まれなかったDifficult To Cureツアーで演奏された曲
 
 [Diffcult To Cureツアーのセットリスト情報](https://www.setlist.fm/search?artist=2bd6acd6&query=tour:%28difficult+to+cure%29)を確認した所、以下の曲も演奏していたようです。私は、Joe Lynn TurnerがRainbowメンバーと歌うKill the Kingを聞いた事がありません(ソロ活動では、よく歌っています)。日本公演でKill the Kingを演奏したそうなので、Bootlegが存在してもおかしくなさそう。
 
@@ -71,7 +71,7 @@ Graham Bonnet時代の"Love's No Friend(最もレア)"、"Lost In Hollywood"
 - Woman From Tokyo
 - Kill the King
 
-## 好きな一曲
+### 好きな一曲
 
 Lost in Hollywood
 

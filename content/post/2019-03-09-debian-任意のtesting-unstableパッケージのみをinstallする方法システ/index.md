@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 Debianパッケージは、基本的な使い方をしていれば、安定版(stable)がシステムにinstallされます。しかし、「使用したいパッケージがstableにない場合」や「より新しいパッケージを使いたい場合」、システムにtesting/unstableパッケージを導入する必要性がでてきます。
 
@@ -28,7 +28,7 @@ Debianパッケージは、基本的な使い方をしていれば、安定版(s
 - installパッケージ毎の優先度を設定(Versionコントロール)
 - testing/unstableパッケージのinstall
 
-## 前提：2019年3月時点のDebian Version
+### 前提：2019年3月時点のDebian Version
 
 下表に、2019年3月時点のDebian Version名を示します。[コードネームは、Toy Storyのキャラから選ばれています](https://wiki.debian.org/DebianReleases)。映画を見た事ある人は、何故sidが開発者向けのVersionかが想像できると思います。
 
@@ -40,7 +40,7 @@ Debianパッケージは、基本的な使い方をしていれば、安定版(s
 | unstable | sid(なし) | 開発者向けのVersion。コードネームは、常に"sid"。 |
 | experimental | experimental | unstableに導入する前の実験段階Version。一般ユーザだけでなく、開発者に対しても「installは危険」と警告されています。 |
 
-## testing/unstableのミラーサーバをsources.listに追加
+### testing/unstableのミラーサーバをsources.listに追加
 
 デフォルトの状態では、install時Version向け(例：stretch)のミラーサーバのみがsources.listに追加されています。testing/unstableパッケージをミラーサーバからダウンロードするため、/etc/apt/sources.listを修正しなければいけません。
 
@@ -55,7 +55,7 @@ deb-src http://ftp.jp.debian.org/debian/ unstable main non-free
 
 "http://ftp.jp.debian.org/debian/"部分は、好きなミラーサーバを選択してください[(ミラーサーバ一覧へのリンク)](https://www.debian.or.jp/using/mirror.html)。上記で重要な部分は、"testing"もしくは"unstable"と記載した箇所です。通常であれば、stableのVersion(例：stretch)と書かれています。testing/unstableを追記した事により、これらのVersionのパッケージをミラーサーバからダウンロード可能な状態になりました(正確には、apt updateまで必要)。
 
-## installパッケージ毎の優先度を設定(Versionコントロール)
+### installパッケージ毎の優先度を設定(Versionコントロール)
 
 aptコマンドは、preferencesファイルによって、システムへ導入するパッケージを制御できます。今回は、「システム全体はstable」を維持しつつ、「apt install時に指定があった場合のみ、testing/unstableパッケージを導入可能」という状態を作ります。
 
@@ -98,7 +98,7 @@ Pin-Priority: 89
 
 testing/unstableは、優先度として100 <= Priority < 500の範囲を指定しても良いです。ただし、testing/unstableパッケージの依存関係を満たすパッケージVersionが未作成(作成中)の場合、install時にエラーとなります。
 
-## testing/unstableパッケージのinstall
+### testing/unstableパッケージのinstall
 
 testing/unstableパッケージのinstall例として、依存関係を満たせるケースと、満たせないケースの2点を紹介します。以下の手順を実行する前に、"sudo apt update"を実施してください。この段階で、パッケージがtesting/unstableに置き換わる事はありません。なお、testing/unstableをinstallする場合、以下の書式を用います。
 
@@ -166,7 +166,7 @@ Hello,World
 
 ```
 
-## 参考
+### 参考
 
 [Debian Experimental](https://wiki.debian.org/DebianExperimental)
 

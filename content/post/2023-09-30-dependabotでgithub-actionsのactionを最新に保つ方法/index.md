@@ -12,7 +12,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：絶滅へ向かうJenkinsオジサン
+### 前書き：絶滅へ向かうJenkinsオジサン
 
 結論ですが、GitHub公式ドキュメント「[Dependabot でアクションを最新に保つ](https://docs.github.com/ja/code-security/dependabot/working-with-dependabot/keeping-your-actions-up-to-date-with-dependabot)」を読めば、GitHub ActionsのActionを最新に保つ方法が分かります。ちなみに私は、現職のテックリードから教えていただいて「なにこれ便利だ」と思った記憶があります。
 
@@ -28,7 +28,7 @@ GitHub Actionsは、複数のActionを利用してワークフローを動作さ
 
 Actionの更新チェックを忘れない便利な方法として、DependabotによるGithub Actionsの定期更新があります。本記事では、定期更新方法を説明しますが、記事冒頭の公式ドキュメントを読む方が正確です。
 
-## 設定方法
+### 設定方法
 
 \`.github/dependabot.yml\`に以下の設定を追加すると、定期的にActionの更新を促すPRが作成されます。更新頻度（interval）は、daily（日）、weekly（週）、monthly（月）から選べます。
 
@@ -46,7 +46,7 @@ updates:
 
 ![](images/Screenshot-from-2023-09-30-18-02-30-1.png)
 
-## 最後に
+### 最後に
 
 短いですが、終わりです。
 

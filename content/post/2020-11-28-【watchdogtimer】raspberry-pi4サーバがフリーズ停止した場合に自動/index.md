@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：ラズパイサーバがよく止まる
+### 前書き：ラズパイサーバがよく止まる
 
 ラズパイに[PLEXマルチメディアサーバ](https://debimate.jp/post/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)を導入して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。半日で停止する事もありました。
 
@@ -29,7 +29,7 @@ cover:
 
 そこで代替案として、Watch Dog TimerとHeartbeatを利用して、ラズパイサーバ停止時に自動再起動するように設定変更しました。本記事では、その設定変更方法について説明します。
 
-## 本記事の実施内容（+ WDT／Heartbeat説明）
+### 本記事の実施内容（+ WDT／Heartbeat説明）
 
 ![](images/watchdog-Page-1-min.jpg)
 
@@ -51,7 +51,7 @@ Raspberry Pi 4サーバが何らかの異常で停止した場合、Heartbeat信
 - Heartbeat待ち時間の設定
 - Heartbeat間隔の設定
 
-## 検証環境
+### 検証環境
 
 Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
 
@@ -75,7 +75,7 @@ Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
               `"""
 ```
 
-## WDTの有効化
+### WDTの有効化
 
 Raspberry Piは一般的なPCと異なり、BIOSがありません（今どきのPCもBIOSが無い気もしますが）。
 
@@ -102,7 +102,7 @@ dtparam=watchdog=on
 
 今回の例では、デバイスツリーパラメータ（dtparam）に"watchdog=on"を渡す事によって、デバイスツリーを書き換える事なく、Raspberry Pi起動時にWDTを有効化しています。
 
-## Heartbeat待ち時間の設定
+### Heartbeat待ち時間の設定
 
 WDTが、システムからのHeartbeatを何秒以内に受信するかを設定します。今回の例では、5秒以内とします。5秒経過しても、Heartbeatを受信できなかった場合は、リセットが実行されます。
 
@@ -136,7 +136,7 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 | heartbeat | 秒単位の初期Watch Dog heartbeat（タイムアウトするまでの時間） |
 | nowayout | 一度起動した後に、Watch Dogを停止可能かどうかのフラグ |
 
-## Heartbeat間隔の設定
+### Heartbeat間隔の設定
 
 Heartbeatは、systemd（Raspberry Pi4のシステム管理デーモン）に実施させます。
 
@@ -151,7 +151,7 @@ RuntimeWatchdogSec=5
 
 ```
 
-## 再起動
+### 再起動
 
 新しい設定を反映させるために再起動します。
 
@@ -160,7 +160,7 @@ $ sudo reboot
 
 ```
 
-## 動作確認
+### 動作確認
 
 まずは、ウォッチドッグタイマ有効化の確認を行います。dmesgコマンドで起動時ログを確認し、"bcm2835-wdt"が見つかればWDTが有効化されています。
 
@@ -194,7 +194,7 @@ $ :(){ :|:& };:
 
 フォーク爆弾を実行してもsystemdがheartbeatを送り続けられる余裕がある場合、なかなかシステムが再起動しないかもしれません。
 
-## システムを落とす別の方法
+### システムを落とす別の方法
 
 私の環境では、Raspberry Pi4がフォーク爆弾で落ちるまでに時間がかかったので、他の方法を紹介します。以下の手順では、強制的にKernelパニックを発生し、即座に再起動します。
 

@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事は、以下のコマンドのコードリーディング結果を記載しています。
 
@@ -39,13 +39,13 @@ cover:
 | chroot.c | 305step | coreutils-8.23 |
 | ischroot.c | 159step | debianutils-4.4 |
 
-## 検証環境
+### 検証環境
 
 - [Debian8.6(64bit)](https://www.debian.org/index.ja.html)
 - [coreutils-8.23](https://packages.debian.org/jessie/coreutils)
 - [debianutils-4.4](https://packages.debian.org/jessie/debianutils)
 
-## chroot実装調査：coreutilesパッケージの取得
+### chroot実装調査：coreutilesパッケージの取得
 
 Debian環境下で、coreutilesパッケージ(ソースコード、パッチ)を取得する方法は以下の通りです。Debianのバージョンが異なる場合でも、同じ方法で取得できます。
 
@@ -74,7 +74,7 @@ $ ls | grep -E "chroot" 　　　　　 (注釈) chrootに関するファイル�
   chroot.c
 ```
 
-## chroot実装調査：coreutils内ソースファイルの共通初期化処理
+### chroot実装調査：coreutils内ソースファイルの共通初期化処理
 
 まず、coreutils内のソースファイルに共通する初期化処理に関して、chrootのソースファイルを例として説明します。説明対象は、coreutiles-8.23/src/chroot.cです。
 
@@ -303,7 +303,7 @@ close_stdout (void)
 
 ```
 
-## chrootのオプション処理
+### chrootのオプション処理
 
 初期化処理に続いて、chrootが受け取るオプションの取り扱い方法を説明します。実装を説明する前に、chrootの書式およびオプションを以下に示します。
 
@@ -389,7 +389,7 @@ static struct option const long_opts[] =
 };
 ```
 
-## ルートディレクトリの変更処理
+### ルートディレクトリの変更処理
 
 ルートディレクトリの変更処理を説明します。この変更処理前にはuid/gidを取得する処理、変更後には変更後のルートに移動する処理を行います。
 
@@ -453,7 +453,7 @@ static struct option const long_opts[] =
 
 chrootコマンド ≒ chrootシステムコール
 
-## ルートディレクトリ変更後のコマンド処理
+### ルートディレクトリ変更後のコマンド処理
 
 前提として、chrootコマンドは、その引数にjail環境で実行するコマンドを指定できます。コマンドの指定がない場合は、シェルによる対話型の処理が始まります。
 
@@ -554,7 +554,7 @@ if(groups && \*groups)のブロックの内容は、再度uid/gid/補助グル�
 
 \[the\_ad id="598"\]
 
-## ischroot実装調査：debianutilsパッケージの取得
+### ischroot実装調査：debianutilsパッケージの取得
 
 基本的に、debianutilsパッケージの取得は、coreutilsの取得と同じです。
 
@@ -574,7 +574,7 @@ $ ls | grep -E "ischroot"
   ischroot.c
 ```
 
-## ischrootコマンドの挙動(manより抜粋)
+### ischrootコマンドの挙動(manより抜粋)
 
 ischrootコマンドは、マイナーなため、使用方法を説明します。本コマンドは、現プロセスがjail環境かどうかをischrootコマンドの返り値で示します。
 
@@ -607,7 +607,7 @@ ischrootのオプションは、以下の通りです。
 | \--help | ヘルプを表示する |
 | \--version | バージョン情報を表示する |
 
-## ischrootの実装
+### ischrootの実装
 
 ```
 int main(int argc, char *argv[])
@@ -731,11 +731,11 @@ ischroot()では、"/"のデバイスIDおよび"/proc/1/root"のデバイスID�
 
 以上が、ischrootコマンドの処理となります。
 
-## 参考書籍
+### 参考書籍
 
 [LINUXプログラミングインタフェース(O'Reilly)](https://www.oreilly.co.jp/books/9784873115856/)  
 [Inside Linux Software オープンソースソフトウェアのからくりとしくみ(翔泳社)](http://www.shoeisha.co.jp/book/detail/9784798112831)
 
-## 最後に
+### 最後に
 
 coreutilsは、様々なOS環境で動作させる事を意識した作りであったため、「この訳分からん処理は、どんな意図で実装されているんだ……」と感じる点が多々ありました。ただし、文献数やマクロの変態さを考慮すれば、Linux Kernelよりcoreutilsは読みやすい部類かなと。

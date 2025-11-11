@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 厳しいと有名なGoogle AdSense審査
+### 厳しいと有名なGoogle AdSense審査
 
 サイトやブログを持っている方は、「**独自ドメインを取得して、広告収入を得る事**」に興味があると思われます。私もその中の一人です。会社の合併によって収入面が不安になり、この考えに辿り着きました。思い立ったら、後は行動するだけです。私はサーバレンタル・ドメイン取得・WordPressによる記事作成まで、一日で済ませました(2018年12月31日の事)。
 
@@ -29,7 +29,7 @@ https://funtre-blog.com/adsense/adsense-check/
 
 https://tabibitojin.com/google-adsense-how-to-pass-it/
 
-## Google AdSence審査 申込み時の本サイト状態
+### Google AdSence審査 申込み時の本サイト状態
 
 「Google AdSenceは厳しいぞオジサン」が提唱する審査基準は、様々な人の経験から推測された内容です。この基準に従うと、数カ月は審査申込みをしない方が得策という結論になります。しかし、私はサイト開設3日目にGoogle AdSence審査に挑戦しました。理由は、審査が否認されてもデメリットがないため。何度でも再チャレンジできます。この事実(デメリット無し)を知った私には、先人の知恵を活かす気はありませんでした。
 
@@ -44,7 +44,7 @@ https://tabibitojin.com/google-adsense-how-to-pass-it/
 
 ![](images/アドセンス.png)
 
-## 勝因は、サイトが専門的だった事？
+### 勝因は、サイトが専門的だった事？
 
 サイト開設4日目までの記事は、かなり専門的(マニアック)です。音楽CDの[ブートレグ(海賊盤)](https://ja.wikipedia.org/wiki/%E3%83%96%E3%83%BC%E3%83%88%E3%83%AC%E3%82%B0)レビューが3件、Raspberry Piというシングルボードコンピュータの[SW](https://ja.wikipedia.org/wiki/%E3%82%BD%E3%83%95%E3%83%88%E3%82%A6%E3%82%A7%E3%82%A2)/[HW](https://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%BC%E3%83%89%E3%82%A6%E3%82%A7%E3%82%A2)周りの記事が2件、ロシア旅行のビザ取得方法が1件と、「**誰が得するのか**」と思ってしまう記事ばかりです。
 
@@ -60,7 +60,7 @@ https://tabibitojin.com/google-adsense-how-to-pass-it/
 - [Review: Boston 1981(Rainbow)](https://debimate.jp/post/2019-01-04-review-boston-1981rainbow/)
 
 
-## まとめ
+### まとめ
 
 GoogleAdSenceに対する見解
 
@@ -68,7 +68,7 @@ GoogleAdSenceに対する見解
 - 推測：専門的な内容を書いたサイトは、審査が承認されやすい?
 - 希望：文章構成・画像や動画の有効利用・スマホ対応も大事であって欲しい!!
 
-## おまけ：サイト開設2ヶ月後の収益
+### おまけ：サイト開設2ヶ月後の収益
 
 広告収入でウハウハだと思った？**収益3円**の弱小サイトだよ！
 

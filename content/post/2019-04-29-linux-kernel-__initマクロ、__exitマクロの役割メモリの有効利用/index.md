@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## \_\_initマクロ、\_\_exitマクロが使われるケース
+### \_\_initマクロ、\_\_exitマクロが使われるケース
 
 一般的に、\_\_initマクロはKernelモジュールの初期化時、\_\_exitマクロはKernelモジュールの終了時に付与します。以下の例では、初期化関数がdebimate\_init()、終了関数がdebimate\_exit()で、それぞれにマクロを付与しています。
 
@@ -100,7 +100,7 @@ static void __exit debimate_exit(void)
 }
 ```
 
-## \_\_initマクロの役割・定義
+### \_\_initマクロの役割・定義
 
 \_\_initマクロは、メモリ上の初期化関数用の領域に、関数を配置します。そして、\_\_initマクロで指定した関数による初期化が終了後、その初期化関数はメモリ上から破棄(解放)されます。
 
@@ -121,7 +121,7 @@ Kernelモジュールの初期化処理は、通常一度しか呼ばれませ�
 
 \_\_noinitretpolineマクロは、CPUの脆弱性”[Spectre](https://ja.wikipedia.org/wiki/Spectre)”対策である"[Retpoline](https://pc.watch.impress.co.jp/docs/topic/feature/1176718.html)**"**を利用しない宣言です。初期化コードはSpectreの影響を受けないため、パフォーマンスが低下するRetpolineを避けています。
 
-## \_\_exitマクロの役割・定義
+### \_\_exitマクロの役割・定義
 
 \_\_exitマクロは、\_\_initマクロと同等で、メモリの有効活用を目的としています。メモリ上の終了関数用の領域(.exit.text)に、関数を配置します。その終了関数は、実行後にメモリ上から破棄(解放)されます。
 

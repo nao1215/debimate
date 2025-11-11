@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 AndroidにLinuxを導入する試みは、以前からありました。この試みは、AndroidのKernel部分が["Linux Kernel"(Linuxと共通)](https://developer.android.com/guide/platform/?hl=ja)ですから、自然な発想と考えられます。過去の例で言えば、「[Ubuntu(Debian)をAndroid端末に導入](http://gihyo.jp/admin/serial/01/ubuntu-recipe/0256)」したケースがあります。しかし、これまでのAndroidのLinux化は、煩雑な手順が必要、かつ失敗した場合に端末が文鎮化してしまうリスクがありました。
 
@@ -32,7 +32,7 @@ UserLAndは、AndroidアプリとしてPlayストア経由で配信されてい�
 
 本記事では、UserLAndの導入方法を説明した後、UserLAndの良い点・悪い点を記載します。
 
-## 環境
+### 環境
 
 今回の検証環境はスマホではなく、タブレット端末です。ただし、スマホ([Nexus 5X](https://www.amazon.co.jp/LG-H791-Nexus-5X-CARBON-32GB/dp/B01BR86Z2U))でも動作確認済みです。
 
@@ -43,7 +43,7 @@ UserLAndは、AndroidアプリとしてPlayストア経由で配信されてい�
 | メモリ | RAM 4GB / ROM 32GB |
 | ディスプレイ | 約10.8インチ / 2560x1600(WQXGA) / 約280ppi |
 
-## UserLAndにLinuxを導入する手順
+### UserLAndにLinuxを導入する手順
 
 PlayストアからUserLAndを検索し、Installします。
 
@@ -86,7 +86,7 @@ trace-cmd python3 python3-dev python3-pip
 
 \[the\_ad id="598"\]
 
-## UserLAndの良い点
+### UserLAndの良い点
 
 良い点
 
@@ -112,7 +112,7 @@ trace-cmd python3 python3-dev python3-pip
 
 もちろん、「ノートPCの方が良い」「ソフトキーボードが使いづらい」「画面が小さい」等の意見があるでしょう。しかし、私は現在のAndroid(UserLAnd)によるコードリーディング環境に満足しています。今まで出来なかった事ができるようになったのですから。
 
-## UserLAndの悪い点
+### UserLAndの悪い点
 
 悪い点
 
@@ -122,7 +122,7 @@ trace-cmd python3 python3-dev python3-pip
 
 なお、prootは他OSのGuest rootfsを仮想化し、Shell Sessionを起動できます。つまり、UserLAndは、各Linux ディストリビューションをprootによる仮想化rootfsとして用意した後、Shellを起動しています。
 
-##  追記：2年後の2021年、私はAndroidアプリを選択
+###  追記：2年後の2021年、私はAndroidアプリを選択
 
 UserLAnd遅いのよ……
 

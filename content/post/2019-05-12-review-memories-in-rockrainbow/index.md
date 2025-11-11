@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 収録曲
+### 収録曲
 
 ![](images/memories_in_rock-min.jpg)
 
@@ -43,7 +43,7 @@ cover:
 21.Since You Been Gone (日本版限定Bonus Tracks)  
 22.Catch The Rainbow (日本版限定Bonus Tracks)
 
-## Ritchie Blackmoreが19年振りにHRに回帰！
+### Ritchie Blackmoreが19年振りにHRに回帰！
 
 本作品は、Ritchie Blackmoreが19年振りにHRの世界に戻ってきた記念すべき作品です。1997年にメインの活動をBLACKMORE'S NIGHTにシフトして以来、ファンはRitchi Blackmoreが再びロックをプレイする事を心待ちにしていました。
 
@@ -67,7 +67,7 @@ Ritchie Blackmoreが2016年〜2019年にリリースした再録曲・新曲
 - [Black Sheep Of The Family(再録)](http://amass.jp/119842/)
 - [The Storm(2019年5月17日)](http://amass.jp/120185/)
 
-## Ronnie Romero(Vo.)の抜擢とその確かな実力
+### Ronnie Romero(Vo.)の抜擢とその確かな実力
 
 Ritchie BlackmoreがHR復活Liveを実施する前(Ronnie Romeroの存在が告知される前)、Joe Lynn Turnerが参加する噂が流れていました。この噂の出処は、Joe Lynn Turner本人です。「自分を含むラインナップでRainbowが再結成する計画がある」と本人が発言したため、この噂が広がったようです。しかし、早い段階でRitchie Blackmoreに「(Joe Lynn Turnerの発言には)真実も含まれているが、混乱している部分もある」と否定されていました。
 
@@ -81,7 +81,7 @@ Ritchie BlackmoreがHR復活Liveを実施する前(Ronnie Romeroの存在が告�
 
 \[the\_ad id="598"\]
 
-## 肝心の復活Liveは精細を欠いていた
+### 肝心の復活Liveは精細を欠いていた
 
 Live映像は、ファンの密録(海外なら撮影OK)がYouTubeに公開されていました。その段階で、演奏が精彩を欠き、グダっていた事が明らかになりました。私は過度な期待をせずに本作品を視聴しましたが、以下の3点はショックを受けました。
 
@@ -102,7 +102,7 @@ Live映像を見始めたばかりの段階では、
 
 復活Liveを支えていたのは、「新加入のRonnie Romero」と「キーボーディストのJens Johansson」でした。この点に関しては、多くの方が賛同すると思います。実際、Ronnie Romeroは貢献度が高く、彼自身もRainbowの一ファンである事が歌唱から滲み出ており、彼のボーカル(声量)が演奏全体を下支えていました。さらに、その声質のおかげで"Man On The Silver Mountain"や"Stargazer"がセットリストに組み込まれましたし、Ritchie Blackmoreがステージ上で「"soldier of fortune"の歌詞を知っているか」と尋ねてきて、彼が歌詞を覚えていたからセットリストに組み込まれた事実も見過ごせません(本作品には、未収録ですが)。
 
-## 好きな一曲
+### 好きな一曲
 
 Catch The Rainbow
 

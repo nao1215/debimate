@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：Abstract Factoryパターンとは
+### 前書き：Abstract Factoryパターンとは
 
 Abstract Factoryパターンは、関連するインスタンスの生成APIを抽象化クラスに集約し（= 生成に関するインターフェースを定義し）、生成処理は抽象化クラスを継承（実装）したクラスに任せる設計手法です。
 
@@ -27,7 +27,7 @@ Abstract Factoryパターンのメリット
 
 本記事では、Abstract Factoryのクラス図、実装例を示します。
 
-## Abstract Factoryパターンのクラス図
+### Abstract Factoryパターンのクラス図
 
 ![](images/AbstractFactory-ページ1-min.jpg)
 
@@ -41,7 +41,7 @@ Abstract Factoryパターンのメリット
 | ProductA | 部品 |
 | ProductB | 部品 |
 
-## Abstract Factoryパターンの実装例
+### Abstract Factoryパターンの実装例
 
 Abstract Factoryの実装例として、Bash／Pythonのスクリプトファイルを作成する処理を実装します。工場が生成する部品は、
 
@@ -55,7 +55,7 @@ Abstract Factoryの実装例として、Bash／Pythonのスクリプトファイ
 
 ![](images/AbstractFactory-ページ2-min.jpg)
 
-## 実装例：抽象クラス
+### 実装例：抽象クラス
 
 ```
 package AbstractFactory;
@@ -123,7 +123,7 @@ public abstract class AbstractShebang {
 
 ```
 
-## 実装例：Bashスクリプト作成クラス群
+### 実装例：Bashスクリプト作成クラス群
 
 ```
 package AbstractFactory;
@@ -218,7 +218,7 @@ public class BashShebang extends AbstractShebang {
 
 ```
 
-## 実装例：Pythonスクリプト作成クラス群
+### 実装例：Pythonスクリプト作成クラス群
 
 ```
 package AbstractFactory;
@@ -313,7 +313,7 @@ public class PythonShebang extends AbstractShebang {
 
 ```
 
-## 実装例：Abstract Factoryの利用者
+### 実装例：Abstract Factoryの利用者
 
 各インスタンスの生成処理がAbstract Factoryパターンによって統一されているため、Bashスクリプト作成もPythonスクリプト作成も、同じ手順で行なえます。
 
@@ -343,7 +343,7 @@ public class App {
 
 ```
 
-## 実行例
+### 実行例
 
 上記のクラスをビルド後、jarファイルを実行すると、以下のファイル２点（bash.sh、python.py）が生成されます。
 
@@ -359,14 +359,14 @@ print("Python Script")
 
 ```
 
-## Abstract Factoryパターンのデメリット
+### Abstract Factoryパターンのデメリット
 
 Abstract Factoryパターンのデメリット
 
 - 関連するインスタンス（部品）の数が増えると複雑化
 - インスタンス（部品）の種類を増やした場合、全てのFactoryに影響
 
-## 他のデザインパターンに関して
+### 他のデザインパターンに関して
 
 GoFデザインパターン（23種類）に関しては、以下の記事でまとめてあります。
 

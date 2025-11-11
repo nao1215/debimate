@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 収録曲
+### 収録曲
 
 ![](images/dio.jpeg)
 
@@ -33,7 +33,7 @@ cover:
 11\. The Mob Rules  
 12\. We Rock
 
-## Ronnie James Dioのキャリア絶頂期Live音源
+### Ronnie James Dioのキャリア絶頂期Live音源
 
 [Ronnie James Dio](https://ja.wikipedia.org/wiki/%E3%83%AD%E3%83%8B%E3%83%BC%E3%83%BB%E3%82%B8%E3%82%A7%E3%82%A4%E3%83%A0%E3%82%B9%E3%83%BB%E3%83%87%E3%82%A3%E3%82%AA)は、日本国内に限って言えば、[Rainbow](https://ja.wikipedia.org/wiki/%E3%83%AC%E3%82%A4%E3%83%B3%E3%83%9C%E3%83%BC_\(%E3%83%90%E3%83%B3%E3%83%89\))のボーカリストとして知名度があるかもしれません。しかし、そのキャリアの絶頂期は、自身のソロ活動で[Holy Diver(1983)](https://en.wikipedia.org/wiki/Holy_Diver)、[The Last in Line(1984)](https://en.wikipedia.org/wiki/The_Last_in_Line)をリリースした頃ではないでしょうか。この時期は、セットリストにRainbow、[Black Sabbath](https://ja.wikipedia.org/wiki/%E3%83%96%E3%83%A9%E3%83%83%E3%82%AF%E3%83%BB%E3%82%B5%E3%83%90%E3%82%B9)、DIO(ソロ)の楽曲が並び、選曲面でオールタイムベストと言えます。さらに、DIOの歌唱は90年代と比較して力強く(本作時点で42歳)、ギタリストもアグレッシブなソロを華やかに弾きこなす[Vivian Campbell](https://ja.wikipedia.org/wiki/%E3%83%B4%E3%82%A3%E3%83%B4%E3%82%A3%E3%82%A2%E3%83%B3%E3%83%BB%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%99%E3%83%AB)であったため、80年代のLive盤はとても聴き応えがありました。
 
@@ -45,13 +45,13 @@ cover:
 
 ハイライトは、The Last in Lineの盛り上がりをそのまま引き継いで、Heaven and Hell(楽曲の終盤)へと続くメドレーでしょう。音質面でも、同時期のLiveアルバムの中では、頭一つ飛び抜けています。ラジオ用の録音をベースとしているため、音圧がブレたり、聞き取りづらさを感じさせません。
 
-## King Biscuit Flower Hourとは
+### King Biscuit Flower Hourとは
 
 ![](images/King_Biscuit_Flower_Hour_radio_show_logo.jpg)
 
 アルバムジャケットに記載された[King Biscuit Flower Hour](https://en.wikipedia.org/wiki/King_Biscuit_Flower_Hour)を読んで、「DIOがFlower? Dragonじゃなくて?」と不思議に思い、調べました。King Biscuit Flower Hourは、DIOと一切関係がなく、1973〜2005年までに存在したラジオ番組のようです。基本的には、ロックバンドのLive音源を配信していたようで、2019年現在ではラジオ用音源をLive盤(CD)として[AliveTheLive](https://www.interart.co.jp/business/entertainment/alivethelive.html)レーベルが販売しているようです。取り扱っているバンドは、AC/DC、Aerosmith、Bob Dylan、David Bowie、ELP、Judas Priest、Metallicaなど、多岐に渡ります。バンドのオリジナルアルバムを買い集めた後、次に手を出すLive盤の漁り先として、[AliveTheLive](https://www.interart.co.jp/business/entertainment/alivethelive.html)レーベルは良さそうです。
 
-## 1984年以降のDIO
+### 1984年以降のDIO
 
 本作に関係のない余談ですが、80年代後半からDIOの人気に陰りがで始めます。まず、3作目の[Sacred Heart](https://en.wikipedia.org/wiki/Sacred_Heart_\(Dio_album\))は1st、2ndと同路線の楽曲が並んだため、若干焼き直し感がでました。その後、Vivian Campbellが給料UPを交渉(DIO以下、他メンバー以上)しましたが、最終的に失敗したため、彼はツアー中に解雇されました。4作目の[Dream Evil](https://en.wikipedia.org/wiki/Dream_Evil_\(album\))は、ギタリストがCraig Goldyに変わった影響で、楽曲に派手さが無くなりました(最大の問題は、キラーチューンの欠如ではないかと思います)。
 
@@ -59,7 +59,7 @@ cover:
 
 DIOも時代の流れについていこうと、楽曲をモダン・ヘヴィネス路線に変更しました。しかし、日本のファンは叙情性や大仰・劇的な要素を求めていたために愛想を尽かし、海外のファンはメロディを犠牲にしたヘヴィネスに然程魅力を感じなかったようです。DIOの声も加齢により徐々に勢いを失い始め、残念ながら、1980年代の人気を最後まで取り戻す事は出来ませんでした。
 
-## 好きな一曲
+### 好きな一曲
 
 We Rock
 

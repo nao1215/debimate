@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 増税前(2019年9月)に、自作PCパーツをドサッと買いました。
 
@@ -46,13 +46,13 @@ CPUはRyzen 3900X(12コア/24スレッド)以上が魅力的でしたが、
 
 本記事では、上表のRyzen 3800X環境でDebian10を立ち上げるまでに、自作PC素人(２回目)の私がハマった内容とその解決策を示します。
 
-## 既知の不具合：systemdのエラーで、ブート失敗
+### 既知の不具合：systemdのエラーで、ブート失敗
 
 2019年7月に、HW乱数を返す命令RDRANDが常に(-1)を返す不具合があり、RDRANDを使用しているsystemdがエラーとなって、ブート失敗する事が判明しました([参考記事](https://linux.srad.jp/story/19/07/17/1633219/))。
 
 Debian10は、この問題が見つかった時点で、運良く修正パッチが適用されています。しかし、systemdを使用する他のディストリビューションでは修正が反映されていない可能性もあるため、このバグに注意してください。
 
-## 電源が入らない問題
+### 電源が入らない問題
 
 説明書を読みながら各種パーツを取り付けた後、LEDは光るがCPUファンが回らない問題に遭遇しました。当然、画面には何も表示されませんでした。
 
@@ -68,7 +68,7 @@ ATXメインコネクタ用のケーブルは「メインコネクタ + ATX12V�
 
 この事に気づくまでの**原因切り分け方法は、「ケーブル・パーツを一つ抜いてから、電源ONを繰り返す事」**です。地味な方法ですが、一気に全パーツを外すよりも原因特定がしやすいです。ただし、マザーボード上のLEDがどこも点灯していない場合は、電源が駄目な場合もあるので、一気にパーツを外して良いです。
 
-## BIOS画面が表示されない問題
+### BIOS画面が表示されない問題
 
 電源が入り、ファンが回り始めて喜んだのもつかの間、モニターに何も表示されません。この際の原因切り分け方法は、マザーボードのビープ音です。マザーボードはエラー種類によって、異なるビープ音を鳴らしてくれます。エラー種類(ビープ方式)は、メーカによって差異があると思われるので、メーカHPで確認してください。
 
@@ -78,7 +78,7 @@ https://twitter.com/ARC\_AED/status/1177890905337913344
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B07QTWLVW3&amp;linkId=b94ce10cb65682e99a9fb9c372376986"></iframe>
 
-## kvm: disabled by biosエラーで停止
+### kvm: disabled by biosエラーで停止
 
 Debian10をUSBインストールした後、ブートシーケンス中に"kvm: diasbled by bios"エラーが出ました。KVMはKernel-based Virtual Machineの略で、仮想化技術の一つです。エラーメッセージ通り、BIOSの設定が必要でした。
 
@@ -94,7 +94,7 @@ BIOSの起動方法は、私の使用したマザーボードは"F2"か"Del"で�
 
 \[the\_ad id="598"\]
 
-## sev command 0x4 timed out, disabling PSPエラーで停止
+### sev command 0x4 timed out, disabling PSPエラーで停止
 
 KVMエラー解消後、次に出たエラーはPSP無効化についてでした。PSPは、(AMD) Platform Security Processorの略で、セキュリティ関係のHW機能です。BIOSでは設定変更できないため、Kernelの再ビルドが必要でした。具体的には、kernelコンフィグ(.config)のCRYPTO\_DEV\_SP\_PSPオプションを無効化します。
 
@@ -181,7 +181,7 @@ linux-source-4.19
 
 ```
 
-## ログイン画面(GUI)が出てこない問題
+### ログイン画面(GUI)が出てこない問題
 
 Linux Kernelを入れ替えた後、ブートシーケンスは進むものの、ログもない黒い画面で最終的に停止する問題が発生しました。現象は、
 
@@ -236,7 +236,7 @@ package.
 
 ```
 
-## 最後に
+### 最後に
 
 **以上の手順で、Ryzen 3800X環境でDebian10が動作しました！**
 

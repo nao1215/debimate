@@ -12,13 +12,13 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 私は昔、ネットに書かれたアルバム批評を読むのが好きだった。書き手の思い出と一緒に綴られたアルバム評が好きだった。「最近見かけなくなったな、自分で書くか」と寝る前にふと思ったので、眠くなるまで書き殴ろうと思う。
 
 なお、ミュージックアプリの上から順に「そうそう、このアルバムは語りたい」というピックアップの仕方をするため、思い入れでソートした訳ではない。また、本当のお気に入りアルバムが語られない可能性もある。
 
-## Anti（HYDE）
+### Anti（HYDE）
 
 ![](images/PDCV-1043_ljQ_extralarge.jpg)
 
@@ -38,7 +38,7 @@ Antiは、一聴しただけでサウンドが若返ったことが分かる。�
 
 ちなみに本記事で辿り着くか分からないので今のうちに書くと、DUNEとROENTGENがL'Arc～en～Ciel関係のマイベストアルバム。
 
-## Loud Playing Workshop（Unlucky Morpheus）
+### Loud Playing Workshop（Unlucky Morpheus）
 
 ![](images/51pj9QrfTBL._UF8941000_QL80_.jpg)
 
@@ -53,7 +53,7 @@ Into the Arena（MSG）やFor the Love of God（Steve Vai）あたりの「ド�
 - [【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】](https://debimate.jp/post/2022-01-08-hr-hm2021%E5%B9%B4%E3%81%AB%E8%81%B4%E3%81%84%E3%81%A6%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E3%82%A2%E3%83%AB%E3%83%90%E3%83%A09%E9%81%B82%E3%83%97%E3%83%AD%E3%82%B0/)
 
 
-## Let there Be Blood（Exodus）
+### Let there Be Blood（Exodus）
 
 ![](images/81evkWIlG2S._UF10001000_QL80_.jpg)
 
@@ -63,7 +63,7 @@ Into the Arena（MSG）やFor the Love of God（Steve Vai）あたりの「ド�
 
 白状するとExodusのアルバムは、実は本作しか聴いたことがなく、深堀すべきだと常日頃から感じている。
 
-## 虹を継ぐ覇者（虹伝説）
+### 虹を継ぐ覇者（虹伝説）
 
 ![](images/NijiDensetsu_NijiwoTsuguHasha_500.jpg)
 
@@ -79,7 +79,7 @@ Rainbowはボーカリストが複数参加したが、本作は各ボーカリ�
 
 また、Graham Bonnetに近い声質でJoe Lynn Turner時代の楽曲が聴けるのもポイントが高い（Joe Lynn Turner本人も参加してるし）
 
-## 愛音（AION）
+### 愛音（AION）
 
 ![](images/51nEra-5PwL._UF10001000_QL80_.jpg)
 
@@ -91,7 +91,7 @@ X JAPANと同格のように評価されているが、現代まで生き残っ�
 
 このアルバムは、今まで聴いた全アルバムの中でも上位に入る出来栄え。
 
-## Immortal（ANTHEM）
+### Immortal（ANTHEM）
 
 ![](images/61C0EvIDnmL._UXNaN_FMjpg_QL85_.jpg)
 
@@ -103,7 +103,7 @@ X JAPANと同格のように評価されているが、現代まで生き残っ�
 
 坂本英三の魅力は不安定さだと思っており、調子悪い日もあるけど、本人の限界まで力を出し切った120%の出来栄えを披露してくれるところが魅力。
 
-## No.0（BUCK-TICK）
+### No.0（BUCK-TICK）
 
 ![](images/zaP2_G2914108W.jpg)
 
@@ -125,7 +125,7 @@ BUCK-TICKの良いところは、サウンドが進化し続けることと、�
 
 良く分からないけど「胎内回帰」の「愛してるよ（歌詞）」を聴くと(´；ω；｀)ｳｯ…となる。ゲルニカより目に効く。なので、BABELで再生を止めている（補足：BABEL-->ゲルニカ-->胎内回帰と続く）
 
-## 璞（Gargoyle）
+### 璞（Gargoyle）
 
 ![](images/220174754.jpg)
 
@@ -139,7 +139,7 @@ Gargoyleに出会った時は衝撃を受けた。ここまでの完成度／個
 
 個人的には、本作は人生で聴いてきたアルバムのTop 10に入ると想定している（しっかり順位を付けると微妙に選外になる可能性があるが）
 
-## Tribe（Sadist）
+### Tribe（Sadist）
 
 ![](images/51XbISziPbL._AC_.jpg)
 
@@ -151,7 +151,7 @@ Gargoyleに出会った時は衝撃を受けた。ここまでの完成度／個
 
 音選びが独特なので、デスメタルバンドと比較すれば良いのか、プログレバンドと比較すれば良いのかで迷う。個性が強烈なのは間違いなく、タイトル曲のTribeは繰り返し聴きたくなる魅力を放っている。毎日聴きたいアルバムではないが、結構な頻度で思い出したように聴いている。ただし、前述したように恐怖心を感じるので、深夜は聴きたくない。
 
-## Burn the Night（Riot City）
+### Burn the Night（Riot City）
 
 ![](images/HMHR190403-347.jpg)
 
@@ -161,7 +161,7 @@ RiotとJudas Priestの間の子とも言えるサウンドで、鋼鉄な声質�
 
 どんな曲調かと質問されれば「RiotのThundersteelを知ってる？あんな感じ」と答えるかもしれない。次作では専任ボーカルが加入したが、個人的には本作のボーカルが好みだった。本作を聴いてから、NWOTHMバンドを聴き漁る時期があったが、最も出来が良かったのは本作だった。
 
-## Violent（VOLCANO）
+### Violent（VOLCANO）
 
 ![](images/71VMWWA4L0L._UF10001000_QL80_.jpg)
 
@@ -171,6 +171,6 @@ RiotとJudas Priestの間の子とも言えるサウンドで、鋼鉄な声質�
 
 サウンド自体はメロデスに近いが、ボーカルはクリーンボイス。スラッシュメタルに近いリフに、泣きのギターソロ、ドラマティックな展開が合わさると、日本的なメタルで実に安心します。
 
-## 最後に
+### 最後に
 
 タイムアップでございます。読み返してみると、ストレートな曲が収録されているアルバムが多い。

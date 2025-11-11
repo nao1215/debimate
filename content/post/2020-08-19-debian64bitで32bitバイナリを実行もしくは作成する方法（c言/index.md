@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 検証環境
+### 検証環境
 
 Debian10(64Bit)、Ryzen 7 3800X環境で検証します。CPUアーキテクチャはIntel／AMDを想定しており、ARMに関しては本記事で説明しません。
 
@@ -38,7 +38,7 @@ Debian10(64Bit)、Ryzen 7 3800X環境で検証します。CPUアーキテクチ�
               `"""            Memory: 7095MiB / 64404MiB 
 ```
 
-## Host環境／実行バイナリのBit数を確認する方法
+### Host環境／実行バイナリのBit数を確認する方法
 
 まず、前提条件となる「Host環境のBit数」および「実行バイナリのBit数」を確認する方法です。
 
@@ -58,7 +58,7 @@ sample_binary: ELF 32-bit LSB pie executable, Intel 80386, version 1 (SYSV), dyn
 
 ```
 
-## 32Bitバイナリの実行方法
+### 32Bitバイナリの実行方法
 
 64Bit環境で32Bitバイナリを実行すると、"No such file or direcotry."と表示され、バイナリが存在するにも関わらず実行できない（認識すらしていない）事があります。
 
@@ -94,7 +94,7 @@ $ ./32bit_binary
 
 ```
 
-## 32Bitバイナリの作成（コンパイル）方法
+### 32Bitバイナリの作成（コンパイル）方法
 
 64Bit環境で32Bitバイナリを作成するには、gccオプションの"-m32"を使用します。以下、-m32オプションの有無で、生成されるバイナリのBit数が変わる例です。
 

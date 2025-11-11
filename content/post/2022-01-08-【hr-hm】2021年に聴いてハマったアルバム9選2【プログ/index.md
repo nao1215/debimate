@@ -12,7 +12,7 @@ cover:
 
 ![](images/album-min-1.jpg)
 
-## 前書き：学生時代の曲を振り返る機会が増加
+### 前書き：学生時代の曲を振り返る機会が増加
 
 「[2020年に聴いてハマったメタルバンド4選](https://debimate.jp/post/2020-12-02-hr-hm2020%E5%B9%B4%E3%81%AB%E8%81%B4%E3%81%84%E3%81%A6%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E3%83%A1%E3%82%BF%E3%83%AB%E3%83%90%E3%83%B3%E3%83%894%E9%81%B8%E3%82%B9%E3%83%A9/)」に引き続き、今年は2021年に聴いてハマったアルバムを取り上げようと思います（1年の振り返り）。
 
@@ -24,7 +24,7 @@ cover:
 
 見方によっては、「2021年は義務感に駆られて新しいアルバムを聴いていた」と言えます。そんなオッサンの私が、9枚のアルバムを紹介します。2021年にリリースされたアルバムではなく、私が2021年に聴いたアルバムですのでご注意ください。
 
-## The Ultra-Violence（DEATH ANGEL）
+### The Ultra-Violence（DEATH ANGEL）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/0tQI4DhWypY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -34,7 +34,7 @@ The Ultra-Violenceは、1987年リリースのDEATH ANGEL 1stアルバム。レ�
 
 余談ですが、私はデスメタル（ジャンル）に入門しようとして、下調べせずに「（DEATH ANGELは）DEATH付いてるから、デスメタルだろ！」と思って買ったら、スラッシュメタルだったというオチ。デスメタルバンドは、Morbid Angelでした（なんて紛らわしい）。
 
-## Scream Bloody Gore（DEATH）
+### Scream Bloody Gore（DEATH）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/T-ZH-OvbQyg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -46,7 +46,7 @@ Scream Bloody Goreは、1987年リリースのDEATH 1stアルバム。前述のD
 
 ちなみに、本作のアルバムジャケットは結構気に入ってます。世間一般のメタルに対するイメージっぽいですし、ダークソウルっぽさが良い。
 
-## Anti（HYDE）
+### Anti（HYDE）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/tTJxOamTkQg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -60,7 +60,7 @@ Antiは、2019年リリースのHYDE 4thアルバム。私はL'Arc～en～Ciel�
 
 HYDE（L'Arc）は、私にとって帰るべき場所（色んなアーティスト聞いて疲れた時に心地よく聞ける音楽）なので、最新作の出来が良い事は喜ばしい事です。また、作詞面も「本作収録のZIPANG」や「NOSTALGIC（本作未収録）」あたりで、繊細さを取り戻しており、曲に入り込めます。日本語歌詞、良いよね。
 
-## Loud Playing Workshop（QUADRATUM From Unlucky Morpheus）
+### Loud Playing Workshop（QUADRATUM From Unlucky Morpheus）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E2hZDzJp9Pc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -72,7 +72,7 @@ Loud Playing Workshopは、2021年リリースのQUADRATUM From Unlucky Morpheus
 
 特に、音質と演奏の良いFar Beyond the Sunは貴重なので、本作のありがたみが大きい。
 
-## Post Human：Survival Horror（Bring Me the Horizon）
+### Post Human：Survival Horror（Bring Me the Horizon）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-q4kko7ZNNw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -84,7 +84,7 @@ Post Human：Survival Horrorは、Bring Me the Horizonの2021年リリースア�
 
 ただ、結構聴きました。トータルタイム32分で聴きやすい。
 
-## Slipknot（Slipknot）
+### Slipknot（Slipknot）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/7f-eMdzXfFg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -94,7 +94,7 @@ Slipknotは、1999年リリースのSlipknot 1stアルバム（バンド名と�
 
 本作は、リズムを楽しむアルバム。途中で呟くように歌うワンアクセントも、2000年代のV系っぽくて好み。
 
-## WE ARE X（X JAPAN）
+### WE ARE X（X JAPAN）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/xgA_mWt55j0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -106,7 +106,7 @@ WE ARE Xは、2017年リリースのX JAPANドキュメンタリーのサウン�
 
 本作はほぼベスト盤なので、当然聴きやすい。ただ、Silent Jealousyが収録されておらず、そこだけが残念です。Silent JealousyはX JAPANの楽曲の中で特に完成度が高く、楽器隊のそれぞれに見せ場があります。再結成後は、新メンバーのSUGIZOがバイオリンでイントロを弾いたりもしているので、Silent Jelousy（再結成後のライブ音源）を収録して欲しかった。
 
-## Absence of Presence（Kansas）
+### Absence of Presence（Kansas）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/lAkBt5MEp6U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -116,7 +116,7 @@ Absence of Presenceは、2020年リリースのKansas 16thアルバム。Kansas�
 
 2010年代のKansasとAsiaはAOR（Adult-Oriented Rock）と思って聴くと、精神衛生上良いですね。ガツンとした一発を求めて曲を聴くより、何度も噛み締めながら聴き流すと徐々に良さが見えてきます。
 
-## Oak, Ash & Thorn（Dark Forest）
+### Oak, Ash & Thorn（Dark Forest）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VEf0zoaMdY4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -126,7 +126,7 @@ Oak, Ash & Thornは、2020年リリースのDark Forest 5thアルバム。本作
 
 70年代や80年代の曲がOKな人はハマり、クサメタルやニューメタルやスラッシュ／デスが好きな人はちょっと厳しいかもしれません。NWOBHMが許せない人も、厳しいかもしれない。
 
-## 選外：Asia（Asia）
+### 選外：Asia（Asia）
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/GssLLBnlN14" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -136,7 +136,7 @@ Asia（邦題：詠時感〜時へのロマン）は、1982年リリースのAsi
 
 適度に楽器の音を聴きたくて、良質な歌メロを求めている人はハマる作品だろ思います。ポップだからと言って、90年代のサビが強烈なJ-POPをイメージしている人には合わないかもしれません。正直に言えば、私はAsiaにのめり込めず。Asiaには「適度に激しく」かつ「速いスピード」の楽曲がなく、キラーチューンがない印象です。平均点は高いのですが、「Asia聴こう！」という感じにはなり辛く。　
 
-## 最後に
+### 最後に
 
 シングルだと「うっせぇわ（Ado）」がベスト。歌上手いよね。
 

@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## printk()とは
+### printk()とは
 
 printk(print kernel)は、ユーザ空間のprintf( print formatted )に相当します。注意すべき点として、printf()と以下の点が異なります。本記事では、この差異を説明します。
 
@@ -26,7 +26,7 @@ printf()との差異
 - ログの出力先がメッセージ用リングバッファ
 - メッセージ表示に使用するコマンド(dmesg等)の存在
 
-## printk()フォーマット
+### printk()フォーマット
 
 pritnk()フォーマットは、printfとほぼ同様です。差異は、ログレベル(0〜7, d, c)が指定できる点、実数型(double/float)をサポートしない点です。ログレベルは後ほど解説します。
 
@@ -56,7 +56,7 @@ printk(KERN_WARNING "Test message.\n");
 
 KERN\_WARNINGは、defineマクロで定義された"4"を意味します。C言語では自動的にログレベルと書式文字列("Test〜"の部分)は、 文字列として結合されます。ログレベルを指定しなかった場合は、自動的にデフォルト値(KERN\_WARNING)となります。
 
-## ログレベル一覧
+### ログレベル一覧
 
 | **文字列** |   **defineマクロ**   | **意味・用途** |
 | --- | --- | --- |
@@ -71,7 +71,7 @@ KERN\_WARNINGは、defineマクロで定義された"4"を意味します。C言
 | d | KERN\_DEFAULT | デフォルトのログレベル |
 | c | KERN\_CONT | ログの継続(タイムスタンプの更新を回避。ブート中専用) |
 
-## printk()のラッパーマクロ
+### printk()のラッパーマクロ
 
 Kernel開発者は、printk()を高頻度で使用します。利便性を高めるために、printkに関するラッパーマクロが存在します。マクロは、"[<Linux>/include/linux/printk.h](https://github.com/torvalds/linux/blob/master/include/linux/printk.h)"に定義されています。
 
@@ -105,7 +105,7 @@ pr_warn("Test message.\n");
 
 \[the\_ad id="598"\]
 
-## printk()出力先のメッセージリングバッファ
+### printk()出力先のメッセージリングバッファ
 
 printk()は、ログレベルに関わらず、Kernel内部ログバッファにメッセージを保存しています。このログバッファは循環式であり、バッファ上限値を超えた場合は古いメッセージをに上書きする形で新しいメッセージを保存します。なお、ログバッファにメッセージを書き込む前に、タイムスタンプが付与されます。
 
@@ -113,7 +113,7 @@ printk()は、ログレベルに関わらず、Kernel内部ログバッファに
 
 ![](images/バッファサイズ.png)
 
-## メッセージ表示に利用するdmesgコマンド
+### メッセージ表示に利用するdmesgコマンド
 
 printk()で用いるログバッファは、[dmesgコマンド](http://www.atmarkit.co.jp/ait/articles/1612/20/news023.html) で内容を表示できます。dmesgは、klogctl(システムコール)を使用して、ログバッファを読み取り、標準出力 に表示します(以下の例を参考)。出力行数が多いため、head/tail/less/grepなどのコマンドで、メッセージを取捨選択したほうが良いです。
 
@@ -163,7 +163,7 @@ console_loglevel、default_message_level、minimum_console_loglevel、　default
 
 最後に余談ですが、Linuxは、dmesgとは別の仕組みでログが管理されています。システム内部では、klogd が周期的にログ内容を収集し、 /var/log/syslog に書き出しています。こちらに関しては、インフラ系の勉強時に記事を作成します。
 
-## 参考
+### 参考
 
 [Linux Kernel公式ドキュメント](https://www.kernel.org/doc/html/latest/driver-api/basics.html?highlight=printk#c.printk)
 

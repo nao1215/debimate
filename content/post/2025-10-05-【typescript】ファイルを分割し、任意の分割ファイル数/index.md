@@ -10,7 +10,7 @@ cover:
   hidden: false
 ---
 
-## 前書き： jesseduffield/horcrux を参考にした
+### 前書き： jesseduffield/horcrux を参考にした
 
 「Yet Another Horcrux を作ったよ」というお話をします。
 
@@ -27,7 +27,7 @@ cover:
 - [https://github.com/nao1215/horcrux](https://github.com/nao1215/horcrux)
 - [https://www.npmjs.com/package/@nao1215/horcrux](https://www.npmjs.com/package/@nao1215/horcrux)
 
-## N 分割ファイルのうち、M 個があれば復元可能
+### N 分割ファイルのうち、M 個があれば復元可能
 
 README から説明画像を引用しますが、以下のように5分割したファイルのうち、3個のファイルがあれば元ファイルに復元できます。実装前は、「なにこれ、RAID（Redundant Arrays of Independent Disks）？どうやって実現しているのだろうか」と不思議でした。
 
@@ -47,7 +47,7 @@ README から説明画像を引用しますが、以下のように5分割した
 
 シャミアの秘密分散は、秘密をバラす仕組みでしかないので、断片ファイル自体を暗号化しません。そこで、最初にファイルを暗号化し、その暗号鍵をシャミアの秘密分散で分割しています。
 
-## 使い方
+### 使い方
 
 ファイルを作る場合
 
@@ -83,13 +83,13 @@ const restored = await bindHorcruxes(result.horcruxes.slice(0, 2));
 console.log(restored.data.toString()); // 'Secret message'
 ```
 
-## お気に入りのロゴ
+### お気に入りのロゴ
 
 このロゴは、中二病っぽくて気に入ってます。
 
 ![](images/horcrux.jpg)
 
-## 最後に：ハリーポッターで誰が好きか
+### 最後に：ハリーポッターで誰が好きか
 
 今回、ハリーポッターに関連する OSS を作ったので、ハリーポッターに少し思いを馳せました。
 

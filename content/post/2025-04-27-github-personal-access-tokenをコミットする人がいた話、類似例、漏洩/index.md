@@ -12,7 +12,7 @@ cover:
   hidden: false
 ---
 
-##  前書き：セキュリティのお勉強中
+###  前書き：セキュリティのお勉強中
 
 本記事は、ユーザー2376名のGitHub リポジトリ8017件を調べたら、GitHub Personal Access Token 16件（全て失効済み）が見つかったという話です。悪用されたら困るので、トークン探しに使ったコードは公開しません。
 
@@ -20,7 +20,7 @@ cover:
 
 現職では不正対策に関わることになったので、最近はセキュリティスキルを伸ばしていこうとしています。セキュリティ分野はセキュリティツール開発、バグバウンティで小遣い稼ぎができる可能性があるので、[副業を探している私](https://x.com/ARC_AED/status/1915608450278756808)に丁度いいなとも思っています。
 
-## GitHub Personal Access Tokenの漏洩例を読んだ
+### GitHub Personal Access Tokenの漏洩例を読んだ
 
 私は、セキュリティを勉強する一環で、HackerOneのレポートに目を通しています。その中で、[GitHub Personal Access Tokenが漏洩した例](https://hackerone.com/reports/1087489)を見つけました。
 
@@ -30,7 +30,7 @@ cover:
 
 上記のレポートを読み、私が考えたのは「Credentials（シークレット）の漏洩を防ぐには、組織（Organization）配下のレポジトリをスキャンするだけでは足りない」ということです。エンジニア個々人が管理するリポジトリも定期的に監視しないと、会社に損害を与える可能性があります。
 
-## Credentialsをコミットする人はどの程度いるのか
+### Credentialsをコミットする人はどの程度いるのか
 
 先程のHackerOneのレポートを読んで私が次に考えたのは、「あるユーザーが管理するGitHub Repositoryをスキャンし、Credentialsの有無をレポートするツールは需要があるかどうか」でした。このツールを開発することは、比較的容易いです。そして、Credentialsをウッカリとコミットする人は存在します（見たことあります）。
 
@@ -51,7 +51,7 @@ GitHub公式が[GitHub Secret scanning](https://docs.github.com/ja/code-security
 - ユーザーがプライベートリポジトリからリリースしたアプリをスキャンできない
 - 今回のツールはLLM（生成AI）が一瞬で作れてしまえる難易度なので、MOAT（優位性）がない
 
-## 類似のツール
+### 類似のツール
 
 深くは調査していませんが、Credentialsを検知するツールは複数あります。私はOSS開発でgitleaksを使っており、稀に誤検知しますが、特に不満はありません。
 
@@ -59,6 +59,6 @@ GitHub公式が[GitHub Secret scanning](https://docs.github.com/ja/code-security
 - [gitleaks](https://github.com/gitleaks/gitleaks)：CredentialsをスキャンするOSS。検査寄り。コミット時、プッシュ時、GitHub Actions等でCredentialsを検知する。過去コミットもチェックする。組織利用になるとライセンスキーが必要。
 - [git-secrets](https://github.com/awslabs/git-secrets)：gitleaksと機能的にはほぼ同様だが、初期ルールが少なめ。その一方でルール追加が容易。
 
-## 最後に
+### 最後に
 
 個人開発アプリからGitHub Personal Access Tokenが漏洩するケースの存在を知れたことが、今回の収穫でした。話は変わりますが、セキュリティの勉強すると、「あれ、もしかして過去に実装したアレはよろしくなかったのでは？」と思う瞬間があります。これも成長ですね。

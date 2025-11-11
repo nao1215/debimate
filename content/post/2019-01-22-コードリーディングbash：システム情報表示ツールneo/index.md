@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事は、システム情報表示ツール"[neofetch](https://github.com/dylanaraps/neofetch)"のコードリーディング結果を記載しています。  
 リーディング動機は、**「neofetchは、システム情報をどこから集めているか」**が気になったからです。neofetchは約2600Step程度の小規模なBash scriptであるため、関数レベルで解説します。
@@ -27,7 +27,7 @@ POINT
 
 基本的に、neofetchはゴリ押しな作り
 
-## neofetchとは
+### neofetchとは
 
 | 項目 | 説明 |
 | --- | --- |
@@ -38,7 +38,7 @@ POINT
 | Download | [https://github.com/dylanaraps/neofetch](https://github.com/dylanaraps/neofetch) |
 | 紹介記事(日本語) | [システム情報を表示する便利なコマンド「neofetch](https://news.mynavi.jp/article/20180622-651666/) |
 
-## neofetchのコード規模
+### neofetchのコード規模
 
 本記事で確認するneofetch(Ver2.0.2)のコード規模は、以下の通り([clocコマンド](http://cloc.sourceforge.net/)を使用)。
 
@@ -50,7 +50,7 @@ POINT
 | YAML | 1 | 3 | 0 | 10 |
 | 合計 | 11 | 788 | 773 | 2740 |
 
-## インストール方法およびソースコード取得方法
+### インストール方法およびソースコード取得方法
 
 以下の手順は、Debian9を前提としています。別環境の導入手順は、[別サイト](https://orebibou.com/2016/12/%E4%BD%BF%E7%94%A8%E3%81%97%E3%81%A6%E3%81%84%E3%82%8Bos%E3%81%AE%E3%83%AD%E3%82%B4%E3%81%A8%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%E6%83%85%E5%A0%B1%E3%82%92%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E3%80%8E/)を参照してください(Debian系/RHEL系/Macに関して、記載があります)。
 
@@ -84,7 +84,7 @@ CHANGELOG.md  Makefile   ascii   debian    neofetch.1
 LICENSE.md    README.md  config  neofetch
 ```
 
-## neofetchの実装に関する説明範囲
+### neofetchの実装に関する説明範囲
 
 説明範囲は、neofetchのmain関数内に存在する関数(例：cache\_uname)とします。
 
@@ -115,7 +115,7 @@ LICENSE.md    README.md  config  neofetch
   main "$@"   
 ```
 
-## ヘッダ：Shebangおよびデバッグ用の記述
+### ヘッダ：Shebangおよびデバッグ用の記述
 
 ```
   #!/usr/bin/env bash 
@@ -152,7 +152,7 @@ $ ./neofetch
 (省略)
 ```
 
-## cache\_uname()：OSのKenel/Arch情報を取得
+### cache\_uname()：OSのKenel/Arch情報を取得
 
 cache\_uname()は、[unameコマンド](https://eng-entrance.com/linux-command-uname)を用いて、Linux KernelバージョンとCPU Architectureを取得します。以下が実装の全体です。
 
@@ -181,7 +181,7 @@ Linux 4.9.0-8-amd64 x86_64
 
 後は、配列変数unameから順番に要素を取り出して、別変数で保持しているだけです。
 
-## get\_os()：KernelからOS名の決定
+### get\_os()：KernelからOS名の決定
 
 前述のcache\_uname()で取得したカーネル情報から、OS名を決定します。以下が実装の全体です。基本的には、文字列分岐なので、実装で説明する部分はないです。
 
@@ -208,7 +208,7 @@ Linux 4.9.0-8-amd64 x86_64
 
 \[the\_ad id="598"\]
 
-## get\_default\_config()：neofetchの設定ファイルの読込
+### get\_default\_config()：neofetchの設定ファイルの読込
 
 neofetchのconfigファイルを探し、その内容を[sourceコマンド](http://www.atmarkit.co.jp/ait/articles/1712/21/news015.html)で読み込みます。このconfigファイルは、システム情報の出力順番などを実装したBash scriptです。[公式情報](https://github.com/dylanaraps/neofetch/wiki/Customizing-Info)では、このファイルをベースに、ユーザが出力形式をカスタマイズする事を目的としているようです。
 
@@ -239,7 +239,7 @@ neofetchのconfigファイルを探し、その内容を[sourceコマンド](htt
 
 このconfigファイルは、インストール方法によって、格納場所が異なります。私の環境では、"/usr/share/neofetch/config"に存在しました(aptパッケージマネージャでのインストール)。
 
-## get\_args()：引数の取得
+### get\_args()：引数の取得
 
 まず、neofetchの書式は、以下の通りです。ロングオプション(--option)を書き、その後にオプション引数を書く形式です。各オプションの説明は、総数が60個以上あったため、省略します。
 
@@ -303,7 +303,7 @@ get\_args()の実装(抜粋)は、以下の通りです。
 
 1番目の引数が空文字でない限りループを繰り返し、case文でロングオプション毎に処理を分岐させます。分岐後は、オプション引数を別変数に格納するのがメインです(例：os\_arch="$2"の部分)。ループの最後で、[shiftコマンド](https://tech.nikkeibp.co.jp/it/article/COLUMN/20060227/230882/)を用いて、引数を1つずらします。
 
-## old\_flags()：deprecatedしたオプション使用時の警告
+### old\_flags()：deprecatedしたオプション使用時の警告
 
 既に使用していないオプション設定(フラグ変数)に値が入っている場合、警告を出力します。この関数は、読み込むconfigファイルが古い場合に備えて、存在します。(オプション設定変数の一部は、configファイルに存在)。
 
@@ -323,7 +323,7 @@ get\_args()の実装(抜粋)は、以下の通りです。
   } 
 ```
 
-## get\_distro()：ディストリビューション名およびVersionの取得
+### get\_distro()：ディストリビューション名およびVersionの取得
 
 ディストリビューション(Version)を特定するために、  
 　・ 各ディストリビューション固有の設定ファイルを確認  
@@ -391,7 +391,7 @@ get\_args()の実装(抜粋)は、以下の通りです。
 
 上の表の方法で特定できなかった場合は、Unknownとなります。また、os\_archオプションが有効の場合、ディストリビューション名にCPU architectureを付与します。最後の変数ascii\_distroは、各ディストリビューションのアスキーアートを取得する際に使用します(後述)。
 
-## get\_bold：太字用のANSIエスケープコードを取得
+### get\_bold：太字用のANSIエスケープコードを取得
 
 コード中の"\\033"はESCと同等で、太字指定("ESC\[1m")となります。
 
@@ -409,7 +409,7 @@ get\_args()の実装(抜粋)は、以下の通りです。
   }  
 ```
 
-## get\_distro\_colors()：ディストリビューション毎の表示色を取得
+### get\_distro\_colors()：ディストリビューション毎の表示色を取得
 
 ディストリビューション毎に、色設定が決め打ちされており、ターミナルに表示する文字色変更はset\_colors()内の[colorコマンド](https://www.adminweb.jp/command/display/index4.html)で行います。
 
@@ -450,7 +450,7 @@ get\_args()の実装(抜粋)は、以下の通りです。
   }    
 ```
 
-## get\_image\_backend()：背景画像表示に関する設定
+### get\_image\_backend()：背景画像表示に関する設定
 
 ここでの処理は、w3m-imgおよびImageMagickパッケージの導入が前提となっています。  
 w3m-imgは、ターミナル上に画像を表示するコマンドであり、w3m(Terminalブラウザ)の派生物です。ImageMagickは、画像表示や編集用のソフトウェアです。
@@ -467,7 +467,7 @@ w3m-imgは、ターミナル上に画像を表示するコマンドであり、w
 　6. 画像の縦横を取得  
 　7. 画像のサムネイルをconvertコマンドで作成
 
-## old\_functions()：古いconfigファイル上に実装された関数と互換性を取る
+### old\_functions()：古いconfigファイル上に実装された関数と互換性を取る
 
 neofetchは、一部の関数実装をconfigファイルに分離しています。そのため、古いconfigファイルを読み込んでいる場合、deprecatedな関数が存在する可能性があります。そこで、deprecatedな関数を新しい関数名でWrappingする事により、互換性を保っています。
 
@@ -488,7 +488,7 @@ neofetchは、一部の関数実装をconfigファイルに分離しています
   }     
 ```
 
-## get\_cache\_dir()：キャッシュディレクトリの決定
+### get\_cache\_dir()：キャッシュディレクトリの決定
 
 Macか、それ以外のOSでキャッシュディレクトリを変更します。
 
@@ -501,7 +501,7 @@ Macか、それ以外のOSでキャッシュディレクトリを変更します
   }  
 ```
 
-## print\_info()：システム情報の表示
+### print\_info()：システム情報の表示
 
 システム情報を表示します。print\_info()はconfigファイルに実装されており、print\_info()内のinfo()はneofetch本体に実装があります。info()で重要な部分は、`"get_${2:-$1}" 2>/dev/null`であり、get\_XXX関数を用いて各システム情報(文字列)を取得しています。Mac OSのGPU情報のみ、cache()関数でキャッシュディレクトリに格納します(頻繁にキャッシュ化しない理由は不明)。
 
@@ -558,7 +558,7 @@ Macか、それ以外のOSでキャッシュディレクトリを変更します
 
 \[the\_ad id="598"\]
 
-## ディストリビューションアスキーアートの格納先
+### ディストリビューションアスキーアートの格納先
 
 私の環境では、`/usr/share/neofetch/ascii/distro`以下に存在します。  
 知らないディストリビューションが沢山……Kali Linux環境が欲しい。
@@ -612,7 +612,7 @@ ${c1}..............
                                              .
 ```
 
-## 最後に
+### 最後に
 
 読み終わった印象は、
 

@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 前書き： Javaの勉強中に見つけたSerializable
+### 前書き： Javaの勉強中に見つけたSerializable
 
 2021年になってから、腰を据えてJavaの勉強を始めました。
 
@@ -31,7 +31,7 @@ public class File implements Serializable, Comparable<File> {}
 
 そのため、本記事ではSerializableインターフェースに関する調査内容を紹介します。
 
-## Serializableインターフェースの実装
+### Serializableインターフェースの実装
 
 [Serializableインターフェース](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/io/Serializable.html)は、[java.baseモジュールのjava.ioパッケージ](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/io/package-summary.html)に実装があります。
 
@@ -41,7 +41,7 @@ public class File implements Serializable, Comparable<File> {}
 public interface Serializable {}
 ```
 
-## Serializableインターフェースの役割
+### Serializableインターフェースの役割
 
 Serializableインターフェースを継承したクラスは、そのクラス自体をByte配列（シリアライズされたデータ）として他の仮想マシンに送信したり、ファイルとして保存できます。Byte配列をデシリアライズ（クラスに復元）する事もできます。
 
@@ -55,7 +55,7 @@ Serializableインターフェースの役割（機能）
 
 ※ 正確には、ObjectOutputStreamクラス／ObjectInputStreamクラスがSerializableインターフェースを実装したクラスをシリアライズ／デシリアライズします。
 
-## シリアライズ対象／対象外のデータ 
+### シリアライズ対象／対象外のデータ 
 
 クラスには、大別してメソッド（関数）とフィールド（変数）があります。この中で、シリアライズされるデータ／シリアライズされないデータは以下の通りです。
 
@@ -96,7 +96,7 @@ class SampleSerial implements Serializable {
 }
 ```
 
-## serialVersionUIDとは
+### serialVersionUIDとは
 
 serialVersionUIDは、シリアライズしたデータのバージョン情報です。
 
@@ -113,7 +113,7 @@ class SampleSerial implements Serializable {
 }
 ```
 
-## シリアライズ／デシリアライズの実装例
+### シリアライズ／デシリアライズの実装例
 
 実装例として、Serializableインターフェースを実装したSampleSerialクラスをserial.serバイナリとしてシリアライズし、serial.serバイナリをデシリアライズするコードを以下に示します。
 
@@ -240,7 +240,7 @@ Company:null
 
 ```
 
-## Serializableインターフェースの危険性と対策
+### Serializableインターフェースの危険性と対策
 
 [Effective Java（第三版）](https://amzn.to/3blJ2qw)で触れられていますが、Serializableインターフェース（正確にはデシリアライズ処理）は、悪意を持ったプログラムの攻撃対象となる可能性が高いです。
 
@@ -260,7 +260,7 @@ Company:null
 
 そのため、プログラム言語や環境を選ばないjson形式でデータのやり取りを実施した方が現代的と思われます。Web APIは殆どがjson形式ですし、ネット上の知見の多さを踏まえても、json形式は好ましいフォーマットではないでしょうか。
 
-## 後書き
+### 後書き
 
 調査した内容の結論が**「Serializableインターフェースを使用しない方が良い」**は、堪えますね。
 

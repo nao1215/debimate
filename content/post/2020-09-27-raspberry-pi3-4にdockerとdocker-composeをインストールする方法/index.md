@@ -14,13 +14,13 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事では、Raspberry Pi3/4（32bit、64bit）のいずれかに対して、Dockerおよびdocker-composeをインストールする方法を紹介します。
 
 Raspberry Piのネットワーク設定が終了している状態を前提とします。
 
-## 前準備
+### 前準備
 
 Dockerはcgroups機能（プロセスが使用するリソースを制限する機能）を使用するため、/boot/cmdline.txtを編集してcgroupsを有効化します。
 
@@ -35,7 +35,7 @@ console=serial0,115200 console=tty1 root=PARTUUID=2677d299-02 rootfstype=ext4 el
 
 編集が終わった後、再起動するとcgroups機能が有効になります。
 
-## Dockerのインストール
+### Dockerのインストール
 
 まずは、Dockerの依存パッケージをインストールします。
 
@@ -75,7 +75,7 @@ $ sudo systemctl start docker
 
 ```
 
-## docker-composeのインストール
+### docker-composeのインストール
 
 Docker Composeは、複数のコンテナから構成されるアプリにおいて、コンテナの起動や停止を簡単できるようにするツールです。
 

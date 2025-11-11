@@ -13,13 +13,13 @@ cover:
   hidden: false
 ---
 
-## 前書き：同じハマりを繰り返す
+### 前書き：同じハマりを繰り返す
 
 Single Page Application（SPA）をAmazon S3にアップロードする機能を持つ[spareコマンド](https://github.com/nao1215/spare)を開発しているとき、io.Readerの使い方を間違えて少しハマってしまいました。ハマりの原因はio.Readerで読み出すデータが欠損していたことであり、欠損の原因はio.Readerを使いまわしたことです。
 
 このハマり方は2回目なので、備忘録として記事にします。
 
-## ことの発端（時系列）
+### ことの発端（時系列）
 
 1. spareコマンドにファイルをS3へアップロードする機能を追加し、S3にSPAをアップロード
 2. CloudFront経由でS3に格納されているindex.htmlをチェックしたら、画面には何も表示されず、ダウンロード処理が開始された
@@ -28,7 +28,7 @@ Single Page Application（SPA）をAmazon S3にアップロードする機能を
 5. SPAをS3へアップロードし直し
 6. 再度CloudFront経由でindex.htmlをチェックしたら、ダウンロード処理が開始されなくなったが、ブラウザには何も表示されなかった　
 
-## どこが駄目だったか
+### どこが駄目だったか
 
 以下のUploadFileメソッドは、引数input.Dataを持っており、この引数がio.Readerです。
 
@@ -73,13 +73,13 @@ func detectContentType(reader io.Reader) (string, error) {
 
 このinput.Dataの使い回しが原因で、ブラウザでindex.htmlを確認する時に何も表示されませんでした。
 
-## 何が悪いか：io.Readerは読込毎に読込開始位置が進む
+### 何が悪いか：io.Readerは読込毎に読込開始位置が進む
 
 私は古い人間なので、「io.Readerは、C言語のファイルポインタと一緒か」とすぐ思いました。
 
 io.Readerはデータの読み込み処理を実行すると、ファイルの読み込み開始位置が進みます。そのため、先程の例では「コンテンツタイプを読み込むために512Byte分、読み込み開始位置が移動」「S3へのアップロード時は、ファイルの先頭から512Byte進んだ地点のデータからファイル終端までをアップロード」という挙動をしていたことになります。
 
-## 解決策１：io.ReadSeekerなどのio.Seekerインターフェースを利用
+### 解決策１：io.ReadSeekerなどのio.Seekerインターフェースを利用
 
 先程の例のinput.Data（io.Reader）が[io.Seeker](https://pkg.go.dev/io#Seeker)を満たす場合は、input.Dataの型をio.ReadSeekerに変更するのが簡単です。ファイルの読み出し位置を変えるには、以下の例のようにSeek()メソッドを用います。
 
@@ -128,7 +128,7 @@ func main() {
 
 ```
 
-## 解決策2：io.Readerを複製
+### 解決策2：io.Readerを複製
 
 io.Readerがio.Seekerインターフェースを満たしていない場合はどうでしょうか。この場合は、io.Readerを複製する方法が考えられます。
 
@@ -180,7 +180,7 @@ func main() {
 
 ```
 
-## 最後に：CSSとJSのコンテンツ判定方法が分からない
+### 最後に：CSSとJSのコンテンツ判定方法が分からない
 
 本記事で登場したhttp.DetectContentType()は、コンテンツがCSSかJavaScriptかを判定しません。そのため、CloudFrontからindex.htmlを確認した時に、表示が崩れる問題が発生しました。表示崩れの原因は、コンテンツタイプを正しく指定せずにS3へファイルをアップロードしたからです。
 

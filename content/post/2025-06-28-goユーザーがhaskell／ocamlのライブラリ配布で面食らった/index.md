@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事画像には、Gopherを用いています。オリジナルの[The Go gopher](https://go.dev/blog/gopher)（Gopherくん）は、Renée Frenchによってデザインされ、[CC BY 4.0ライセンス](https://creativecommons.org/licenses/by/4.0/)が適用されています。
 
@@ -23,7 +23,7 @@ cover:
 
 後書きで、関数型言語に対して感じていることも書いてます。
 
-## 前提
+### 前提
 
 私は、Go でしか OSS（ライブラリ）の配布経験がありません。ここでの配布とは、GitHub Repositoryをパブリックで公開しているという意味ではなく、プログラミング言語のエコシステムに従ってOSSを配布するという意味です。ライブラリインポートしやすい形で公開している、ぐらいのニュアンスです。
 
@@ -33,7 +33,7 @@ C言語、Java、Perl、Python、Ruby、ShellScriptなどの言語を使った�
 
 本記事では、HaskellとOCamlのライブラリ配布方法を「ちょっと面倒くさいな」ぐらいのニュアンスで扱いますが、もしかするとC言語やJavaなどのライブラリ配布方法と大差ないかも知れません。歴史のある言語ほど、エコシステム周りが弱めなのは仕方がないことです。後発言語は、歴史を踏まえて改良してくるので、後発言語の方が使い勝手が良いのは当然です。
 
-## Goでのライブラリ配布
+### Goでのライブラリ配布
 
 Goでは、GitHubやGitLabなどにパブリックリポジトリを公開し、go.modファイルをプロジェクトルートディレクトリに配置すれば、ライブラリが利用できる状態になります。
 
@@ -47,7 +47,7 @@ go mod init github.com/username/mylib
 
 ライブラリ利用者側は、"import github.com/username/mylib"とソースコード中に書き、`go mod tidy`コマンドでライブラリをダウンロードすれば、ライブラリを利用できます。
 
-## Haskellでのライブラリ配布 
+### Haskellでのライブラリ配布 
 
 GitHub等にライブラリを公開する点は、Goと同様です。Haskellの場合は、Hackageにライブラリを登録します。Hackageを利用するには、[アカウント登録ページ](https://hackage.haskell.org/users/register-request)からアカウントを作成する必要があります。
 
@@ -83,7 +83,7 @@ login name: xxxxxxxxxxxxxxxx
 
 なお、私が Haskell で公開しようとしたライブラリは、[nao1215/clockwork-base32](https://github.com/nao1215/clockwork-base32)です（リリース直前で面倒くさくなって、リリースしませんでした）。base32 の変種であり、[公式ドキュメントはこちら](https://medium.com/shiguredo/base32-%E3%81%AE%E5%A4%89%E7%A8%AE%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F%E8%A9%B1-d8da2e3102ec)にあります。作った理由は、Haskell 初心者の私でも実装できる規模感の仕様であること、前職のテックリードが Go 版の実装をしてて印象に残っていたことが挙げられます。
 
-## OCamlでのライブラリ配布の場合
+### OCamlでのライブラリ配布の場合
 
 GitHub等でライブラリを公開する点は、GoとHaskellと同様です。OCamlの場合は、opam（OCaml Package Manager）としてライブラリを公開します。
 
@@ -144,7 +144,7 @@ dev-repo: "git+https://github.com/nao1215/stringx.git"
 
 少し気になるぐらいで、私のようなホビーユースであれば、特に困る話ではありません。
 
-## 最後に：関数型言語に感じていること
+### 最後に：関数型言語に感じていること
 
 一年ほど、思い出すように関数型言語にトライしていますが、まだお友達になれた感じがありません。
 

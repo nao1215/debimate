@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 GDBをリッチなText User interface環境で実行するツールは、以前から複数ありました。例えば、
 
@@ -37,7 +37,7 @@ GDBをリッチなText User interface環境で実行するツールは、以前�
 
 termdebugは使い勝手が良いため、本記事では導入方法と使い方について説明します。
 
-## 検証環境
+### 検証環境
 
 ```
        _,met$$$$$gg.          nao@debian 
@@ -60,7 +60,7 @@ termdebugは使い勝手が良いため、本記事では導入方法と使い�
 
 ```
 
-## Termdebug導入前の事前確認
+### Termdebug導入前の事前確認
 
 Termdebugは、Vim8.1.x環境でterminal機能が無ければ、使用できません。バージョン確認およびterminal機能の有効・無効確認は、以下の手順で実施します。
 
@@ -96,7 +96,7 @@ $ sudo apt install vim
 
 ```
 
-## Termdebugを利用するための設定
+### Termdebugを利用するための設定
 
 Termdebugを利用するには、"~/.vimrc"ファイルに以下の3行を追加するだけです。
 
@@ -112,7 +112,7 @@ let g:termdebug_wide = 160
 
 ```
 
-## Termdebugの使い方
+### Termdebugの使い方
 
 Vimを起動した後、":Termdebug <デバッグ対象バイナリへのPATH>"でGDBとソースコードが同時に表示できます。":Termdebug"部分をgdbコマンドに置き換えると、分かりやすいと思われます。
 

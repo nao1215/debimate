@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事では、Linux KernelにおけるCharacter Device向けのDevice Driverを作成する方法を示します。専用のHardware(例：シリアルデバイスのUARTなど)を用いず、メモリ上のデータ読み書きのみを行います。そのため、擬似デバイス(/dev/nullや/dev/zeroなど)を操作するDriverと同等です。
 
@@ -31,7 +31,7 @@ Character Deviceは、少量のデータを管理する低速のデバイスを�
 | Open | ユーザが書き込む文字列を管理するためのListを初期化します。 |
 | Close | Read/Writeシステムコールで使用したListや文字列保持用のメモリを解放します。 |
 
-## 検証環境
+### 検証環境
 
 検証は、Debian10(buster)環境で実施しました。他のディストリビューションでもDevice Driverが作成可能ですが、Debian系(Ubuntu、Kaliなど)を使用した方が作業手順に差異が少ないと思われます。
 
@@ -56,7 +56,7 @@ $ neofetch                                                    2019年06月23日 
               `"""            Memory: 5669MiB / 32060MiB 
 ```
 
-## 前準備
+### 前準備
 
 Linux Kernel用のDevice Driverを作成するには、環境構築が必要になります。環境構築およびKernelモジュールの雛形を作成するまでの手順は、以下の記事に記載してあります。本記事の手順を実施する前に、確認して下さい。
 
@@ -64,7 +64,7 @@ Linux Kernel用のDevice Driverを作成するには、環境構築が必要に�
 
 - [環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
 
-## Device DriverのLoad処理の作成
+### Device DriverのLoad処理の作成
 
 Device DriverのLoad時(手動の場合はinsmodコマンド実行時)は、以下の内容を実施します。詳細な説明は、コードの後に記載しています。
 
@@ -245,7 +245,7 @@ static struct file_operations debimate_drv_fops ={
 
 cdev\_add()ではKernelにCharacter Deviceを登録し、device\_create()では/dev以下にデバイスファイル(デバイスノード)を生成します。ここまでが、Load処理となります。
 
-## Device DriverのUnload処理の作成
+### Device DriverのUnload処理の作成
 
 Unload処理は、Load時に実行した登録処理と逆の順番で、各登録の解除処理を実施します。ここでの各登録の解除処理は、Load時の異常系(goto文を用いた解除処理)に似た流れで実施します。
 
@@ -276,7 +276,7 @@ static void __exit debimate_exit(void)
 
 ```
 
-## Device DriverのOpen処理の作成
+### Device DriverのOpen処理の作成
 
 Open処理では、同じデバイスファイルを複数プロセスから同時に開かれた場合に備えて、関数内でメモリを確保します。つまり、グローバル変数を用いて、複数プロセス用に使い回す事はしません。グローバル変数を共有する場合は、データの競合が発生しないように注意が必要です。
 
@@ -323,7 +323,7 @@ MEM_ALLOC_ERR:
 
 - [Linux Kernel: List構造を操作するためのAPI(Listの使い方)](https://debimate.jp/post/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)
 
-## Device DriverのWrite処理の作成
+### Device DriverのWrite処理の作成
 
 Write処理では、以下の処理を行います。
 
@@ -385,7 +385,7 @@ LIST_MEM_ALLOC_ERR:
 
 ```
 
-## Device DriverのRead処理の作成
+### Device DriverのRead処理の作成
 
 Read処理では、ユーザが読み込みたいByte数をListから取り出し、User空間に文字列をコピーします。
 
@@ -455,7 +455,7 @@ STR_MEM_ALLOC_ERR:
 
 ```
 
-## Device DriverのClose処理の作成
+### Device DriverのClose処理の作成
 
 Close処理では、「文字列格納用メモリ(Listの要素)の解放」、「Open関数で作成したListから順番に全てのListを削除」、「List用メモリの解放」を行います。
 
@@ -491,7 +491,7 @@ static int debimate_close(struct inode *inode, struct file *file)
 
 ```
 
-## Device Driverのテストプログラム
+### Device Driverのテストプログラム
 
 今回作成したDevice Driverのテストプログラムとして、ユーザ空間から"/dev/debimate" にアクセスし、"abcde"および"fghij"を書き込みます。その後、10Byteのデータを"/dev/debimate" から読み出し、表示します。
 

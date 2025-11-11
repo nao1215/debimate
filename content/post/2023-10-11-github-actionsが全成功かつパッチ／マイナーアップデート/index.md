@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 今どきは、zero dependency（依存なし）で開発を進めるよりも、便利なOSS（ライブラリ）を利用してサクッと開発する方が多いのではないでしょうか。他の人が開発したライブラリは日々改良されていくので、ライブラリ更新をサボっていると「自分のOSSが知らない間に動かなくなってしまった！」という状況になるかもしれません。
 
@@ -26,7 +26,7 @@ cover:
 
 この課題を解決する案として、「GitHub Actionsが全て成功している」かつ「パッチ／マイナーアップデート」の場合は、Dependabotが作成したPRを自動マージする方法があります。本記事では、この方法を説明します。
 
-## 自動PRマージ用のGitHub Actionsを作成
+### 自動PRマージ用のGitHub Actionsを作成
 
 まず、[GitHub公式手順のリンク](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions#enable-auto-merge-on-a-pull-request)を貼るので、こちらを合わせてご確認ください。
 
@@ -82,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-## GitHub Actions ワークフローの詳細
+### GitHub Actions ワークフローの詳細
 
 最初の設定は、PR作成時にワークフローが開始されることを意味します。
 
@@ -145,7 +145,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-## ライブラリを自動マージすると危険ではないか？
+### ライブラリを自動マージすると危険ではないか？
 
 ライブラリを自動マージするリスクは、当然あります。ケースバイケースなので、各自で判断基準を設けてください。
 
@@ -159,6 +159,6 @@ jobs:
 
 あとは、仕事と趣味で対応方針を変えるべきです。私の場合、趣味のOSSは利用者が少ないので楽ができる方針にガンガン倒します。でないと管理できないので……仕事の場合は、厳密にチェックします。怪しいパッケージとか信用していない開発者のライブラリ更新は、要チェックします。
 
-## 最後に
+### 最後に
 
 何も考えずにマージしたいなら、ユニットテストでガンガン虐めるべきです。

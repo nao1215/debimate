@@ -12,7 +12,7 @@ cover:
   hidden: false
 ---
 
-## 前書き："=="や"!="による判定と何が違う？
+### 前書き："=="や"!="による判定と何が違う？
 
 Javaでコードを書くと、nullチェック（NullPointerException防止）は避けられません。
 
@@ -27,7 +27,7 @@ nullチェックにisNull()やnonNull()を使うメリット
 
 本記事では、Java SE11環境で「従来の演算子を用いたnullチェック方法」と「isNull()やnonNull()を用いた方法」を比較します。また、関数型プログラミングにおけるnullチェック方法に関しても説明します。
 
-## 演算子を用いたnullチェック方法
+### 演算子を用いたnullチェック方法
 
 以下のサンプルコードでは、文字列リストの内容を表示します。
 
@@ -82,7 +82,7 @@ Ria Parapara-Leazas
 ===The end.===
 ```
 
-## isNull()およびnonNull()を用いたnullチェック 
+### isNull()およびnonNull()を用いたnullチェック 
 
 文字列リスト内容を出力する前述のコード（printStr()）をisNull()およびnonNull()で書き換えます。
 
@@ -130,7 +130,7 @@ isNull()およびnonNull()を用いた方が自然言語（英語）で処理内
 
 なお、上記のような判定処理でisNull()／nonNull()を用いるのは冗長という意見もあります。
 
-## 関数型プログラミングでのisNull()／nonNull()
+### 関数型プログラミングでのisNull()／nonNull()
 
 [Java Core API（Javadoc）](https://docs.oracle.com/javase/jp/8/docs/api/java/util/Objects.html)の説明にある通り、isNull()とnonNull()は[Stram API](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/util/stream/package-summary.html)で使用するために設計されています。
 
@@ -190,7 +190,7 @@ public class App {
 
 フィルタリング処理を「filter(i -> i != null)」と書くより、「filter(Objects::nonNull) 」と書いた方がパッと見で処理を理解しやすい筈です。
 
-## おまけ：requireNonNull()
+### おまけ：requireNonNull()
 
 [requireNonNull(T obj)](https://docs.oracle.com/javase/jp/8/docs/api/java/util/Objects.html)は、指定されたオブジェクトがnullでない事を検査するメソッドです。引数がnullではない場合はobjをそのまま返しますが、nullの場合はNullPointerExceptionをスローします。
 
@@ -203,7 +203,7 @@ public class App {
 >  }
 > ```
 
-## 後書き
+### 後書き
 
 Javaを書く限りはnullチェックが必要ですが、C言語に比べるとJavaはAPIが揃っているので、まだマシと言えるでしょう。
 

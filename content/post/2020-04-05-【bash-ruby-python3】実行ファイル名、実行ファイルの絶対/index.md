@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 自動化Script作成時に、Bash (Shell Script)ではなく、RubyやPython3を用いた方がScriptのメンテナンス負荷が低くなります。自動化Scriptに使用するプログラミング言語変更を目的として、各言語の実装を比較します。
 
@@ -26,7 +26,7 @@ Bashではなく、RubyやPython3を使った方が好ましい理由は、以�
 
 - [Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較](https://debimate.jp/post/2020-04-05-bashshell-script%E3%81%8B%E3%82%89ruby%E3%82%84python%E3%81%AB%E4%B9%97%E3%82%8A%E6%8F%9B%E3%81%88%E9%A0%BB%E7%B9%81%E3%81%AB%E4%BD%BF%E3%81%86%E5%87%A6%E7%90%86%E3%82%92%E5%90%84%E8%A8%80/)
 
-## 各言語のVersion
+### 各言語のVersion
 
 - Bash：GNU bash, バージョン 5.0.3(1)-release
 - Ruby：ruby 2.5.5p157 (2019-03-15 revision 67260)
@@ -34,7 +34,7 @@ Bashではなく、RubyやPython3を使った方が好ましい理由は、以�
 
 \[the\_ad id="598"\]
 
-## 比較：実行ファイル名 / 実行ファイルの絶対・相対PATHの取得
+### 比較：実行ファイル名 / 実行ファイルの絶対・相対PATHの取得
 
 実行ファイル名は、Usage（使い方）を表示するために取得する機会が多いです。実行ファイルのPATHは、そのPATH起点でディレクトリ移動やファイル操作する際などに用います。
 

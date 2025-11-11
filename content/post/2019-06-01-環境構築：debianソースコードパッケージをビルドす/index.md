@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 過去の記事で、debソースパッケージの取得方法を示しました。
 
@@ -29,7 +29,7 @@ cover:
 - debソースパッケージのビルド依存パッケージを取得
 - debuildコマンドでdebソースパッケージをビルド
 
-## 検証環境
+### 検証環境
 
 ```
 $ neofetch
@@ -53,7 +53,7 @@ $ neofetch
 
 ```
 
-## debパッケージ構築に最低限必要なパッケージをインストール
+### debパッケージ構築に最低限必要なパッケージをインストール
 
 debパッケージを構築するため、最低限必要なパッケージは[build-essentialパッケージ](https://packages.debian.org/ja/stretch/build-essential)です。build-essentialによって、各種コンパイラ、makeコマンド、debパッケージ構築ツールがインストールされます。
 
@@ -61,7 +61,7 @@ debパッケージを構築するため、最低限必要なパッケージは[b
 $ sudo apt install build-essential
 ```
 
-## debパッケージ作成の補助ツールをインストール
+### debパッケージ作成の補助ツールをインストール
 
 Debianパッケージシステムは、Debian独自のツールによって、パッチ管理やビルド自動化が支えられています。それらのツールをインストールします。実際の所、ビルドするだけであれば、必須パッケージはdevscriptsパッケージ(ビルドに使うdebuildが入ったパッケージ)のみです。
 
@@ -88,7 +88,7 @@ dput debhelper debmake fakeroot equivs cdbs
 | [equivs](https://packages.debian.org/ja/stretch/equivs) | 依存関係情報のみが含まれたパッケージを作成するツール(依存関係回避ツール) |
 | [cdbs](https://packages.debian.org/ja/stretch/cdbs) | debパッケージ用の共通ビルドシステム |
 
-## debソースパッケージのビルド依存パッケージを取得
+### debソースパッケージのビルド依存パッケージを取得
 
 debソースパッケージのビルド依存パッケージは、ソースパッケージ毎に異なります。それらのパッケージ名を手入力してインストールする事は面倒なため、"apt build-dep (ソースパッケージ名)"で一括インストールします。今回の例では、coreutilsパッケージのビルド依存パッケージをインストールします。
 
@@ -96,7 +96,7 @@ debソースパッケージのビルド依存パッケージは、ソースパ�
 $ sudo apt build-dep coreutils
 ```
 
-## debuildコマンドでdebソースパッケージをビルド
+### debuildコマンドでdebソースパッケージをビルド
 
 今回の例では、coreutilsパッケージのソースコードを取得して、ビルドします。取得するソースコードにはパッチも含まれていますが、パッチはソースコード取得のタイミングで適用されています。
 

@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 Androidアプリでは、RESTful APIの実行結果（≒ jsonデータ）に対応するdata classを作成し、[kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization)でjsonをdata classにデシリアライズする処理があります。
 
@@ -23,7 +23,7 @@ data classを利用する理由は、フィールドをvalとして宣言すれ�
 
 このような面倒臭さを解消するツールを調べたところ、JSON To Kotlin Classプラグインがあったので、その使い方を備忘録として残します。[Web版](https://json2kt.com/)もありますが、ファイルをダウンロードする手間があるので、私はプラグインを使うことにしました。
 
-## 検証環境
+### 検証環境
 
 Android Studio Dolphin | 2021.3.1（ちょっと古い）、JSON To Kotlin Class 3.7.4を使用しています。
 
@@ -52,7 +52,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
            ./oydmMMMMMMdhyo/.                                      
 ```
 
-## JSON To Kotlin Classのインストール
+### JSON To Kotlin Classのインストール
 
 1. Android Studioメニューの「File」->「Settings」をクリック
 2. 「Plugins」を選択し、右上の「Marketplace」タブをクリック
@@ -62,7 +62,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 ![](images/Screenshot-from-2023-04-01-23-32-29.png)
 
-## JSONからKotlin data classを作成
+### JSONからKotlin data classを作成
 
 今回の例では、[GitHub APIの特定ユーザーのリポジトリリストを取得するAPI](_wp_link_placeholder)（GET /users/{username}/repos）のレスポンスをdata classに変換します。変換した結果（data class）は、jp.debimate.leadtime.domain.modelパッケージのRepository data classとして保存します。
 
@@ -86,6 +86,6 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 INPUTとして渡したjsonが複雑すぎると、不要なクラスを生成する傾向が見られるので、適宜jsonを整形してからJSON To Kotlin Classを利用した方が良さそうです（GitHub APIドキュメントにサンプルとして提示されていたjsonをそのまま利用したら、不自然なクラスが生成されました）
 
-## 最後に
+### 最後に
 
 Kotlinは、RESTful APIのラッパー（クライアント）ライブラリが無い印象を受けました。比較対象はGolangですが、「見つからない…」と困ることが多いです。Javaライブラリは見つかるので、そちらを皆さん使っているのでしょうか？

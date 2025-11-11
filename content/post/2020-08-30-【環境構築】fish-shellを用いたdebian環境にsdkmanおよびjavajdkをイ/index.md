@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：SDKMANはbash（もしくはzsh）前提
+### 前書き：SDKMANはbash（もしくはzsh）前提
 
 [SDKMAN](https://sdkman.io/)は、JDK（Java開発環境）やGroovy、Scala、Gradleなどのバージョン管理ツールです。主に、JVM系のツールを管理します。Rubyのrbenv、Pythonのpyenvと同様の立ち位置のツールであり、CLIから任意のバージョンのソフト（例：Java）をインストール／使用／削除できます。
 
@@ -24,7 +24,7 @@ SDKMANの公式サイトに書かれている通り、SDKMANはbashで実装さ�
 
 本記事では、fish環境にSDKMANをイントールし、SDKMAN経由でJava（JDK）をインストールする方法を紹介します。
 
-## 検証環境
+### 検証環境
 
 ```
        _,met$$$$$gg.          nao@debian 
@@ -45,7 +45,7 @@ SDKMANの公式サイトに書かれている通り、SDKMANはbashで実装さ�
           `"Y$b._                                     
 ```
 
-## SDKMANのインストール
+### SDKMANのインストール
 
 まず、SDKMANの依存パッケージをインストールします。SDKMAN公式サイトに依存パッケージ情報（curl, zip/unzip）が記載されていますが、実際は以下のパッケージ5個をインストールしなければいけません。
 
@@ -63,13 +63,13 @@ $ curl -s "https://get.sdkman.io" | bash
 
 上記のコマンドが成功すれば、SDKMANは"$HOME/.sdkman"にインストールされます。
 
-## fishとfisherをインストール
+### fishとfisherをインストール
 
 この段階でLogin Shellをfish（shell）に変更していない場合、以下の記事を参考に変更してください。また、SDKMANをfishで使うには、fisher（fishプラグインマネージャ）も必要ですので、合わせてインストールしてください。
 
 - [環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)](https://debimate.jp/post/2019-06-15-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%95%E3%83%AC%E3%83%B3%E3%83%89%E3%83%AA%E3%83%BC%E3%81%A7%E8%A3%9C%E5%AE%8C%E6%A9%9F%E8%83%BD%E3%81%AE%E5%BC%B7%E5%8A%9B/)
 
-## SDKMAN! for fishプラグインのインストール
+### SDKMAN! for fishプラグインのインストール
 
 SDKMANは、bash起動時に設定ファイル（sdkman-init.sh）を読み込みます。この仕組みがfishでは上手く動かないので、別途プラグイン（[SDKMAN! for fish](https://github.com/reitzig/sdkman-for-fish)）をインストールする事によって、この問題を解決します。
 
@@ -82,7 +82,7 @@ $ fisher add reitzig/sdkman-for-fish@v1.4.0
 
 \[the\_ad id="598"\]
 
-## Javaのインストール
+### Javaのインストール
 
 ここまでの手順でSDKMANが動作します。ここからは、Javaをインストールする手順を説明します。
 
@@ -181,7 +181,7 @@ Setting java 13.0.2-open as default.
 
 ```
 
-## 環境変数JAVA\_HOMEの設定
+### 環境変数JAVA\_HOMEの設定
 
 最後に、JDKのインストール先を環境変数JAVA\_HOMEに設定します。
 

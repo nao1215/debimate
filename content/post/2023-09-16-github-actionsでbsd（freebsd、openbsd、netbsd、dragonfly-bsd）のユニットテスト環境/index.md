@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：BSDはクロスプラットフォーム対応の鬼門
+### 前書き：BSDはクロスプラットフォーム対応の鬼門
 
 私は、GolangでOSSを開発することが多く、Golangは様々なOS向けの実行バイナリを簡単に作成できる特徴があります。この特徴を活かして、「クロスプラットフォーム対応しよう！」と考えるのは自然なことです。
 
@@ -24,7 +24,7 @@ cover:
 
 つい最近、GitHub ActionsでFreeBSD、OpenBSD、NetBSD、DragonFly BSD向けのユニットテスト環境構築が成功したので、本記事ではその紹介をします。[検証に利用したOSSのリンクを貼っておきます。](https://github.com/nao1215/gup)Golang以外の言語でも、本記事の内容は使えます。
 
-## 検証環境
+### 検証環境
 
 2023年9月16日時点のGitHub Actions、Golang v1.20を使用しています。
 
@@ -34,7 +34,7 @@ GitHub ActionsでBSDをテストするには、Virtual Machine（VM）を利用�
 - [cross-platform-actions/action](https://github.com/cross-platform-actions/action)@v0.19.0
 - [vmactions/dragonflybsd-vm](https://github.com/vmactions/dragonflybsd-vm)@v0
 
-## FreeBSD：.github/workflows/freebsd.yml
+### FreeBSD：.github/workflows/freebsd.yml
 
 run節の"pkg install"の部分は、必要なパッケージをインストールする処理を記載してください。"go mod download"以降の処理は、golangでテストをするための処理なので、自身が使っているプログラミング言語に合わせてテスト実行コマンドを記載してください。
 
@@ -66,7 +66,7 @@ jobs:
 
 ```
 
-## OpenBSD：.github/workflows/openbsd.yml
+### OpenBSD：.github/workflows/openbsd.yml
 
 使用しているVMはFreeBSDと異なりますが、run節で実施している内容は概ねFreeBSDと同様です。ただし、使用しているパッケージマネージャが異なります。そして、sudoで管理者権限を付与しないとパッケージを追加できません。
 
@@ -105,7 +105,7 @@ jobs:
 
 ```
 
-## NetBSD：.github/workflows/netbsd.yml
+### NetBSD：.github/workflows/netbsd.yml
 
 問題児。トライアンドエラーの回数が多かったです。テスト実行時間がダントツで長い。20分以上かかります（Linux環境だと30秒ぐらいで終わります）
 
@@ -153,7 +153,7 @@ jobs:
 
 ```
 
-## DragonFly BSD：.github/workflows/dragonfly.yml
+### DragonFly BSD：.github/workflows/dragonfly.yml
 
 DragonFly BSDは、golangの一部機能が使えなかったり（例："go test"で"-race"オプション非対応）、DragonFly BSDに対応していない外部パッケージがありました。
 
@@ -185,7 +185,7 @@ jobs:
 
 ```
 
-## 最後に：BSDユーザー、開発辛くない？
+### 最後に：BSDユーザー、開発辛くない？
 
 BSDは、Linuxの影に隠れていますが、商用利用されています。
 

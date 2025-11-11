@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## MimixBoxはGolang学習用アプリとして開始 
+### MimixBoxはGolang学習用アプリとして開始 
 
 Golang製の[MimixBox](https://github.com/nao1215/mimixbox)は、[BusyBox](https://www.busybox.net/)（多数のUnixコマンドをシングルバイナリに詰め込んだCLIアプリ）と共通点を持ちつつ、独自の目標を持つCLIアプリとして開発しています。
 
@@ -24,7 +24,7 @@ Golang製の[MimixBox](https://github.com/nao1215/mimixbox)は、[BusyBox](https
 
 ここまで来れば「MimixBox - Mimic BusyBox on Linux（Linux上でBusyBoxを模倣する）」という名称を考えつくのは、一瞬でした。ちなみに、同様のプロジェクトには[toybox](https://github.com/shirou/toybox)と[gobox](https://github.com/surma/gobox)があります（皆、考える事は大体一緒）。
 
-## MimixBoxはBusyBoxと違う道を目指す
+### MimixBoxはBusyBoxと違う道を目指す
 
 MimixBoxは、**Linux****デスクトップ環境でのCLI（Terminal操作）が楽しくなる事**を目指します！そのため、「既存Unixコマンドの機能拡張（例：catに対する[bat](https://github.com/sharkdp/bat/blob/master/doc/README-ja.md)、lsに対する[lsd](https://github.com/Peltoche/lsd)）」や「独自コマンドの組み込み」が大事だと考えています。
 
@@ -36,7 +36,7 @@ C言語製のBuxyBoxは、制約の多い組み込み環境でも動作する事
 
 また、BusyBoxはコマンド数が400個以上あり、ドマイナーOSSのMimixBoxが同路線（量を増やす事）を真似しても勝ち目がありません。MimixBoxの出自はBusyBoxの模倣品ですが、BusyBoxを100%模倣しても面白くないので「じゃあ、コマンド単位の質を上げるか」と発想しました。
 
-## MimixBoxのロードマップ
+### MimixBoxのロードマップ
 
 MimixBoxはGolang学習用のOSSという側面もあるので、全て独自コマンドで構成するような事はしていません。まずは、一般的なUnixコマンドを量産しつつ、合間に独自コマンドを開発するようなスタイルで進めています。
 
@@ -46,7 +46,7 @@ MimixBoxはGolang学習用のOSSという側面もあるので、全て独自コ
 - Step2. オプションおよびテストを拡充（品質向上、〜Version 1.XX.xx）
 - Step3. コマンドを近代的な仕様に変更（独自性の追加、〜Version 2.XX.xx）
 
-## MimixBoxの独自オプション
+### MimixBoxの独自オプション
 
 MimixBoxは、BusyBoxとはオプションが異なります。下表にオプション一覧を示します。
 
@@ -71,7 +71,7 @@ MimixBoxは、BusyBoxとはオプションが異なります。下表にオプ�
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-## MimixBox開発中の気づき（感想）
+### MimixBox開発中の気づき（感想）
 
 気づき（感想）は、3つあります。その内容は、「プロジェクトの感触が良い事」「Golangと親友に慣れない事」「ユニットテストの重要性」についてです。
 
@@ -99,7 +99,7 @@ Golangと親友になれない件は、身も蓋もない話ですが、私はGo
 
 同じ轍を踏まないように、Version 1.0.0に移行する前にユニットテストを作り始めようかな、と考えている次第です。
 
-## Pull Requestを歓迎します
+### Pull Requestを歓迎します
 
 [MimixBox](https://github.com/nao1215/mimixbox)は、2021年11月28日現在で42個のコマンドをサポートしています（一部、基本機能すら未完成コマンドがありますが……）。より多くのコマンドをサポートしたいので、「未サポートコマンド（独自コマンド含む）の追加」「オプション追加」「バグ修正」など、PRいただけると大変嬉しいです。
 
@@ -159,7 +159,7 @@ sha512sum - alculate or Check sercure hash 512 algorithm
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-## GitHub Sponsorsでスポンサーを募集中
+### GitHub Sponsorsでスポンサーを募集中
 
 最近話題のGitHub Sponsorsに対応しています！
 
@@ -173,6 +173,6 @@ sha512sum - alculate or Check sercure hash 512 algorithm
 
 <iframe width="600" height="225" style="border: 0;" src="https://github.com/sponsors/nao1215/card" title="Sponsor nao1215"></iframe>
 
-##  おまけ：2022年に作成したGolang製コマンド一覧
+###  おまけ：2022年に作成したGolang製コマンド一覧
 
 - [【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】](https://debimate.jp/post/2022-02-05-golang2022%E5%B9%B4%E3%81%AB%E9%96%8B%E7%99%BA%E3%81%97%E3%81%9F%E8%87%AA%E4%BD%9Ccli%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA/)

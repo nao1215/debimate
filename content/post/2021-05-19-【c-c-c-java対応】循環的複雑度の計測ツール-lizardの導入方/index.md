@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：ネストの深さを指摘する時間が勿体無い 
+### 前書き：ネストの深さを指摘する時間が勿体無い 
 
 コードレビューを効果的に実施したいと考えた事はありませんか？
 
@@ -27,7 +27,7 @@ cover:
 
 本記事では、MITライセンス（商用利用可能）でリリースされている「[循環的複雑度の計測ツール lizard（Python製）](http://www.lizard.ws/)」の概要、インストール方法、使用方法を紹介します。
 
-## 検証環境
+### 検証環境
 
 elementary OS5（Ubuntu派生）上で、lizard version 1.17.7およびPython 3.6.9を使用します。
 
@@ -51,13 +51,13 @@ eee    eeeeeeeeee     eeeeee    eee   Theme: Elementary [GTK3]
          eeeeeeeeeeeeeeeee            Memory: 2315MiB / 30108MiB 
 ```
 
-## lizardが提供する機能
+### lizardが提供する機能
 
 lizardは、ソースコードの循環的複雑度（Cyclomatic Complexity Number）、メソッドの行数、メソッドのパラメータ数、ファイル内のメソッド数を算出します。任意の閾値を超えた場合、閾値以上のメソッドに警告を出せます。
 
 静的解析結果は、標準出力、csvファイル、hmtlファイルに残せます。
 
-## lizardの対応言語
+### lizardの対応言語
 
 > A list of supported languages:
 > 
@@ -80,7 +80,7 @@ lizardは、ソースコードの循環的複雑度（Cyclomatic Complexity Numb
 > 
 > [\---lizard READMEより--](https://github.com/terryyin/lizard/blob/master/README.rst)
 
-## インストール方法
+### インストール方法
 
 aptパッケージマネージャとpip3コマンドでインストールします。なお、lizardと一緒にインストールするjinja2は、lizardによる静的解析結果をHTMLに変換する際に使用するテンプレートエンジンです。
 
@@ -89,7 +89,7 @@ $ sudo apt install python3 python3-pip
 $ pip3 install lizard jinja2
 ```
 
-## 実行例と結果の読み方
+### 実行例と結果の読み方
 
 lizardコマンドを実行すると、カレントディレクトリ以下のファイルに対して静的解析します。
 
@@ -173,7 +173,7 @@ Total nloc   Avg.NLOC  AvgCCN  Avg.token   Fun Cnt  Warning cnt   Fun Rt   nloc 
 > 
 > [\--lizard公式GitHubのIssue--](https://github.com/terryyin/lizard/issues/237)
 
-## csvファイルの残し方
+### csvファイルの残し方
 
 csvオプションとリダイレクトを使用します。どの列がどの結果かは出力されないので、不親切。
 
@@ -186,7 +186,7 @@ $ cat NoSuchMethodError.csv
 
 ```
 
-## HTMLファイルの残し方
+### HTMLファイルの残し方
 
 htmlオプションとリダイレクトを使用します。
 
@@ -199,7 +199,7 @@ HTMLの表示例は、以下の通りです。閾値を超えている結果は�
 
 ![](images/2021-05-19-20.26.02-のスクリーンショット.jpg)
 
-## 警告のみを出す場合
+### 警告のみを出す場合
 
 \--warnings\_only(w)オプションを使用します。
 
@@ -214,7 +214,7 @@ $ lizard -w
 
 ```
 
-## 警告閾値を変更する場合
+### 警告閾値を変更する場合
 
 デフォルトでは、以下の閾値設定がされています。正直、循環的複雑度を除いて、設定がテキトーすぎる印象です。
 
@@ -241,7 +241,7 @@ $ lizard -Tcyclomatic_complexity=10  -L100 -w
 
 ```
 
-## ホワイトリストの設定
+### ホワイトリストの設定
 
 「このメソッドは警告が出ても仕方がない」という場合は、テキストファイルに当該メソッド名を書く事で警告を抑止できます。
 
@@ -257,7 +257,7 @@ file/path/name:function1, function2  # ファイルパスの指定も可能
 
 ```
 
-## おまけ：利用を断念した静的解析ツール
+### おまけ：利用を断念した静的解析ツール
 
 基本的にはライセンス面（購入が必要）で断念しています。ただし、Understand、C++Test、Coverityは多機能であるため、「金銭コスト」と「解析時間の長さ」が気にならない人は採用を検討して良いかもしれません。
 

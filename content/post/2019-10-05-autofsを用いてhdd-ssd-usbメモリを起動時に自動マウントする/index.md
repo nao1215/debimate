@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事では、autofsを用いて、HDD/SSD/USBメモリ(SATA接続 or M.2接続 or USB接続)を自動的にマウントする方法を紹介します。
 
@@ -23,7 +23,7 @@ cover:
 
 これらの欠点を回避する方法として、autofs(automountユーティリティ)を使用します。autofsは、ストレージの自動マウント・アンマウントが可能であり、リソースを適宜節約できます。
 
-## 検証環境
+### 検証環境
 
 検証環境はDebian10とします。使用するHDD/SSDのフォーマット方法が知りたい場合は、以下の記事を参照してください。
 
@@ -49,7 +49,7 @@ cover:
 
 [gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法](https://debimate.jp/post/2019-10-05-gdisk-mkfs%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A72tb%E4%BB%A5%E4%B8%8A%E3%81%AEhdd%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
-## autofsのインストール
+### autofsのインストール
 
 autofsおよびストレージ情報を調べるためのe2fsprogsをインストールします。
 
@@ -59,7 +59,7 @@ $ sudo apt install e2fsprogs
 
 ```
 
-## ストレージ情報(UUID)の調査
+### ストレージ情報(UUID)の調査
 
 自動マウントを行うには、ストレージを識別するための[UUID(Universally Unique Identifier)](_wp_link_placeholder)およびファイルシステムを調査する必要があります。e2fsprogsパッケージに含まれるblkidコマンドを用いれば、以下のように両方の情報が得られます。
 
@@ -73,7 +73,7 @@ $ sudo blkid
 
 ```
 
-## autofs設定ファイルに自動マウント情報を追記
+### autofs設定ファイルに自動マウント情報を追記
 
 自動マウントを有効化するため、”/etc/auto.master “および”/etc/auto.misc “を編集します。私の環境では自動マウント対象は、
 
@@ -108,7 +108,7 @@ hdd2             -fstype=ext4,rw :/dev/disk/by-uuid/fecb3b9a-af4a-4a09-abdd-3fa6
 
 ```
 
-## 自動マウントに失敗する場合
+### 自動マウントに失敗する場合
 
 自動マウントに失敗する場合は、設定ミスや[udisk(他機能)](https://wiki.archlinux.jp/index.php/Udisks)との競合が考えられます。一度、autofsを停止して、手動でautomountコマンドを実行すれば、自動マウントに失敗する理由が調査できます。
 

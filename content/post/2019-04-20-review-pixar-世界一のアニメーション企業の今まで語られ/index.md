@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 事業としてのPIXARに着目した書籍
+### 事業としてのPIXARに着目した書籍
 
 PIXARの事業的(収益的)な面に踏み込んだ書籍は、本書が初です。著者である[Lawrence Levy](http://lawrencelevy.com/)は、1995年にPIXARへ就任し、2006年に[ディズニー](https://www.disney.co.jp/)がPIXARを完全子会社として買収するまで、PIXARの経営面を支えます。[スティーブ・ジョブズ](https://ja.wikipedia.org/wiki/%E3%82%B9%E3%83%86%E3%82%A3%E3%83%BC%E3%83%96%E3%83%BB%E3%82%B8%E3%83%A7%E3%83%96%E3%82%BA)、PIXARの社員、ディズニーとの間で、板挟みになりながらもPIXARを世界的に成功した会社まで押し上げた功労者です。
 
@@ -23,7 +23,7 @@ PIXARのスタートアップ期では、ジョブズが自費で金銭的なサ
 
 大規模かつクリエィティブな会社が、どのように存続してきたかを知りたい方には、おすすめの一冊です。
 
-## PIXARのクリエイティブ面に関しては、他書籍がオススメ
+### PIXARのクリエイティブ面に関しては、他書籍がオススメ
 
 PIXARの魅力は、技術を駆使した3D映像美だけではなく、ストーリーライティングと言えます。
 
@@ -39,7 +39,7 @@ PIXARの作品の作り方は、[過去に語られた記事(「ピクサーの�
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=4478016380&amp;linkId=1581c29962e91c177086b90d1d9ef7e7"></iframe>
 
-## ジョブズの人間らしい一面が垣間見えた
+### ジョブズの人間らしい一面が垣間見えた
 
 序盤(トイ・ストーリー製作中)のジョブズは、**ただの面倒くさい上司**です。自費で5000万ドル以上の資金援助していたせいか、口を開けば「IPO(新規株公開)しろ」としか言いません。自身がAppleから追い出されてから立ち上げたNext Computerが成功していないせいか、PIXARの成功(夢物語)を頻繁に口にします。
 

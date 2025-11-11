@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 大規模なプログラムをビルドする場合、数十分〜数時間かかる事があります。ビルド時間が長いと、それだけ開発者の待ち時間が増えるわけですから、短いに越したことはありません。そんなビルド時間を短縮するツールとして、[ccache](https://ccache.samba.org/)があります。
 
@@ -35,7 +35,7 @@ ccacheのPOINT
 
 以降では、導入を記載します。環境はDebian系を想定しています。
 
-## ccacheのinstallおよび環境変数設定
+### ccacheのinstallおよび環境変数設定
 
 まず、パッケージマネージャ(apt)を用いてccacheをinstallします。その後、ログイン時にccacheの設定が自動で反映されるように、~/.bashrcファイルを編集します。
 
@@ -50,7 +50,7 @@ $ echo "export set CXX='ccache g++'" >> ~/.bashrc # g++コマンド時にccache�
 $ source ~/.bashrc  # ログインし直す代わりに、手動で変更した設定の反映(初回時のみ)
 ```
 
-## makeコマンドでビルドする際の対応
+### makeコマンドでビルドする際の対応
 
 Linuxでc言語開発をする場合、Makefileを使用します。ccacheを利用する場合は、以下のいずれかを行う必要があります。
 
@@ -69,7 +69,7 @@ hello:test.c
     $(CCACHE) $(CC) -o hello test.c    
 ```
 
-## ccacheの設定変更
+### ccacheの設定変更
 
 ```
 Usage:
@@ -85,7 +85,7 @@ Usage:
 | \-s, --show-stats | 統計情報(キャッシュヒット率、キャッシュ内のファイル数など)を表示します。 |
 | \-z, --zero-stats | 統計情報のカウンターをゼロクリア(初期化)します。 |
 
-## 参考：ccache利用時のビルド時間
+### 参考：ccache利用時のビルド時間
 
 最後に、参考として、Linuxカーネルのビルド時間(ccache有り、無し)を比較します。使用したカーネルはVersion4.8.9(stable)、コンフィグはx86\_64\_defconfigです。計測時に使用したコマンドは、通常ビルド時が`time make -j8`、ccache使用時が`time make CXX="ccache g++" CC="ccache gcc" -j8`です。
 

@@ -14,11 +14,11 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事では、Linux Kernelが用いるエラー番号を説明します。
 
-## Linux Kernelがエラー番号（errno）を正しく返す意義
+### Linux Kernelがエラー番号（errno）を正しく返す意義
 
 Linux Kernelでは、エラーの種類に応じて、返すべきエラー番号が定められています。例えば、ファイルが存在しない場合は、"ENOENT(No such file or directory、 エラー番号2)"を返します。Linux Kernel内のエラー内容は、変数errnoを通してUser空間にも伝わります。
 
@@ -33,7 +33,7 @@ Linux Kernel内で誤ったエラー番号を使用した場合、その影響�
 
 \[the\_ad id="598"\]
 
-## エラー番号の定義ファイル
+### エラー番号の定義ファイル
 
 エラー番号の定義ファイルは、下表の３種類存在します。それぞれのファイルに定義されたエラー番号の意味も後述します（表の中だけ、である調にします）。
 
@@ -205,7 +205,7 @@ Linux Kernel内で誤ったエラー番号を使用した場合、その影響�
 | EIOCBQUEUED | 529 | iocb queued, will get completion event |  iocbがキューに入れられ、完了イベントが取得される |
 | ERECALLCONFLICT | 530  | conflict with recalled state |  再呼び出し状態での衝突である |
 
-## 補足：User空間でKernel空間のエラー番号を見る方法
+### 補足：User空間でKernel空間のエラー番号を見る方法
 
 User空間には、Kernel空間のエラー番号を示すerrnoが存在します。以下に[errnoに関するMANページ情報](https://linuxjm.osdn.jp/html/LDP_man-pages/man3/errno.3.html)を引用します。
 

@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 収録曲
+### 収録曲
 
 ![](images/llrr.jpeg)
 
@@ -29,13 +29,13 @@ cover:
 7. Sensitive to Light
 8. Rainbow Eyes
 
-## 前作のReview
+### 前作のReview
 
 - [Review: On Stage Deluxe Edition (Rainbow)](https://debimate.jp/post/2019-06-15-review-on-stage-deluxe-edition-rainbow/)
 - [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
 
 
-## アメリカ市場を意識した結果、大作志向の終焉
+### アメリカ市場を意識した結果、大作志向の終焉
 
 本作は、Ritchie Blackmoreがアメリカ市場を意識した結果、過去の二作([銀嶺の覇者](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)、[虹を翔ける覇者](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/))より楽曲がコンパクトになっています。ただし、リリース時点(1977年)におけるコンパクトさであり、2019年の視点(約40年越しの視点)で聴けば、前作と大差がない重厚さです。
 
@@ -47,7 +47,7 @@ cover:
 
 90年代生まれの私の感覚では、Ritchieが時代に即したコマーシャルな楽曲を作曲できた時期は、Joe Lynn Turner後期(1983年)です。本作リリースの6年後です。それまでの間、RItchieは試行錯誤(メンバーの首切り含む)しながら、作曲スキルを磨く事になります。
 
-## 時の試練に耐えた楽曲、破れた楽曲
+### 時の試練に耐えた楽曲、破れた楽曲
 
 時の試練を耐えた楽曲の代表格は、"Kill the King"でしょう。個人的な昔話をすると、この曲を初聴した時(2010年ぐらい)、私は約20歳で、80年代のHR/HMを一通り聴き終え、70年代の名盤漁りに足を踏み入れた頃でした。80年代の洋楽は、90年代の邦楽の基盤ですからスンナリと耳に馴染みましたが、70年代の楽曲に対しては音質やリズム感を古臭く感じた記憶があります。
 
@@ -70,7 +70,7 @@ cover:
 
 と、救いがあります。
 
-## Gate of Babylonへの疑惑
+### Gate of Babylonへの疑惑
 
 Babylon(バビロン)は、「神の門」に由来を持つ単語で、現在のイラクに位置します。つまり、オリエンタルな曲調は、楽曲名(中近東)の通りという事になります。Ritchieは、イギリス出身にもかかわらず、妖艶な雰囲気を醸し出す曲を見事に書き上げています。
 
@@ -104,7 +104,7 @@ Ritchie BlackmoreがGates of Babylonを演奏しない理由(推測)
 - ポップではない：アメリカ市場を狙う時期に演奏する理由がない
 - 他人の曲：2019年現在では他人が作曲した曲を積極的に演奏する理由がない
 
-## 好きな一曲
+### 好きな一曲
 
 Rainbow Eyes
 

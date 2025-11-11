@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 Rustを学習するための一環として、Redox(OS)版coreutilsのcatコマンドをCode Readingします。Redoxプロジェクトや環境構築方法に関しては、以下の記事にまとめてあります。
 
@@ -23,7 +23,7 @@ Rustを学習するための一環として、Redox(OS)版coreutilsのcatコマ�
 
 catコマンドは、記事を2つに分けて説明します。今回(その1)は、catコマンドのオプションパース処理までを説明し、その2でcatコマンドの主要な処理(ファイル内容の表示)を説明します。
 
-## catコマンド 挙動のおさらい
+### catコマンド 挙動のおさらい
 
 ソースコードの確認に入る前に、catコマンドの挙動を確認します。catコマンドは、由来である"con**cat**enate(〜を連結する)"の通り、ファイルの中身を連結します。連結操作よりも、ファイルの中身を表示するために用いる事が多いと思います。
 
@@ -50,11 +50,11 @@ BBB
 CCC
 ```
 
-## catコマンドのコード全文(Reading対象)
+### catコマンドのコード全文(Reading対象)
 
 catコマンドは約270Stepと短いですが、本記事では全文を示しません。全文を確認する場合、[Redox版coreutilsの公式リポジトリ](https://github.com/redox-os/coreutils/blob/master/src/bin/cat.rs)を参照して下さい。ただし、Reading結果を示す際は、部分的なコードを示します。
 
-## 一行目：#!\[deny(warnings)\]について
+### 一行目：#!\[deny(warnings)\]について
 
 以下に示すcat.rsを示します。最初の部分は、"#!\[deny(warnings)\]"、crateの読込(extern部分)、モジュールの読込(use部分)で開始しています。crate・モジュールの読み込みは一般的な文法のため、一行目のみ説明します。
 
@@ -118,7 +118,7 @@ $ RUSTFLAGS="-D warnings" cargo build
 
 ```
 
-## main関数における標準出力・標準エラーの設定
+### main関数における標準出力・標準エラーの設定
 
 以下に示すmain関数内で、標準出力へのハンドラ(変数stdout)、標準エラーのハンドラ(変数stderr)を取得します。それぞれ、バッファに関する仕様が異なります。
 
@@ -140,7 +140,7 @@ fn main() {
 
 \[the\_ad id="598"\]
 
-## main関数における構造体Programの初期化
+### main関数における構造体Programの初期化
 
 main関数の残りの部分は、構造体Programの初期化(initialize())を実行後、メインとなる処理(and\_execute())を実行するだけです。and\_execute()の実行結果(終了ステータス)を引数として、現在のプロセスをexit()で終了させます。
 
@@ -330,6 +330,6 @@ SYNOPSIS
 
 変数MAN\_PAGEは、&'static str型なので、文字リテラル(バイト列)としてバイナリ中に埋め込まれます。また、文字リテラルは、r#"文字列"#という形式で表記されています。この形式は、Raw(生)の文字リテラルを定義するために使います。この形式を用いる事によって、エスケープ文字("\\")なしで、文字リテラル内の特殊文字(エスケープシーケンス)を通常の文字として扱えます([参考](https://rahul-thakoor.github.io/rust-raw-string-literals/))。
 
-## Reading結果 その2へのリンク
+### Reading結果 その2へのリンク
 
 - [Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)](https://debimate.jp/post/2019-05-11-code-readingredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE2%E5%85%A82%E5%9B%9E/)

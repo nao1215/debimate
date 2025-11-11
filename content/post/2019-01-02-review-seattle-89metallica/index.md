@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 収録曲
+### 収録曲
 
 ![](images/metallica_seattle89.jpg)
 
@@ -44,7 +44,7 @@ cover:
 2-10. Whiplash  
 2-11. Breadfan
 
-## 伝説Live。Metallica Top10に入るベストパフォーマンス
+### 伝説Live。Metallica Top10に入るベストパフォーマンス
 
 **最初に、このLiveを伝説扱いしたのは誰？**
 
@@ -56,13 +56,13 @@ Live自体は、Metallicaファンの間では高く評価されています。�
 
 バンドの絶頂期を切り取ったベストLive。一聴の価値あり。
 
-## まずは聴こう
+### まずは聴こう
 
 **観客の男性率の高さ！**
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VQzSzCeXpnc" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
 
-## 非公式音源なんて買いたくない！という方へ
+### 非公式音源なんて買いたくない！という方へ
 
 4th Albumのデラックス盤に、本作と同じCD(公式版)が含まれます。個人的な印象ですが、ブートレグ版の方が音圧があります。単純に、音が大きいだけかもしれない。
 
@@ -72,7 +72,7 @@ Live自体は、Metallicaファンの間では高く評価されています。�
 
 [![](images/ajfa-deluxe-box-set-e1546407575773.jpg)](https://www.metallica.com/store/and-justice-for-all-remastered-deluxe/REAJFADLX.html)
 
-## 好きな一曲
+### 好きな一曲
 
 **Whiplash**
 

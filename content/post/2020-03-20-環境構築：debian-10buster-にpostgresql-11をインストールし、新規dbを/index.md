@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 [PostgreSQL](https://www.postgresql.jp/)は、オープンソースのオブジェクト関係リレーショナルデータベース関係システム（ORDBMS）です。2020年時点のシェアランキングは、４位です。やや人気のないDBと言えるでしょう。
 
@@ -37,7 +37,7 @@ cover:
 - postgresユーザ以外がpostgresユーザとしてDBに接続する方法
 - 新規DB作成
 
-## 検証環境
+### 検証環境
 
 ```
        _,met$$$$$gg.          nao@debian 
@@ -59,7 +59,7 @@ cover:
               `"""            Memory: 7598MiB / 64404MiB 
 ```
 
-## PostgreSQLのインストール
+### PostgreSQLのインストール
 
 PostgreSQLのインストールには、二通りの方法があります。
 
@@ -120,7 +120,7 @@ Debian公式レポジトリには、PostgreSQLに関するサードパーティ�
 | postgresql-server-dev-11 | バックエンド開発向けのC言語ライブラリ（ヘッダ含む） |
 | pgadmin4 | pgAdmin4（GUIによる管理ツール）のユーティリティ |
 
-## PostgreSQL環境設定ファイルの置き場（PATH）
+### PostgreSQL環境設定ファイルの置き場（PATH）
 
 PostgreSQL設定ファイルの置き場は、LinuxディストリビューションやWindows環境で異なります。Debian環境では、/etc/postgresql/11/main環境設定ファイルが存在します。
 
@@ -136,11 +136,11 @@ PostgreSQL設定ファイルの置き場は、Linuxディストリビューシ�
 
 ```
 
-## PostgreSQL DB情報の置き場（PATH）
+### PostgreSQL DB情報の置き場（PATH）
 
 PostgreSQLで作成したDB情報は、/var/lib/postgresql/11/mainに存在します。手動でDBを停止させる場合などに、前述のPATHを把握しておく必要があるため、記載しておきます。
 
-## 外部ホストからの接続禁止設定
+### 外部ホストからの接続禁止設定
 
 セキュリティ対策のため、外部ホストからPostgreSQL（DB）にアクセスできないように設定します。/etc/postgresql/11/main/postgresql.confを編集し、以下の状態に変更します。
 
@@ -153,7 +153,7 @@ listen_addresses = 'localhost'
 
 ```
 
-## postgresユーザのパスワード設定
+### postgresユーザのパスワード設定
 
 PostgreSQLをaptコマンドでインストール後、postgresユーザが自動で追加されます。このpostgresユーザに対して、「OS向けパスワード設定」および「DB向けパスワード設定」を行います。
 
@@ -169,7 +169,7 @@ postgres=# ALTER USER postgres with encrypted password '任意のパスワード
 
 ```
 
-## DB操作用ユーザを追加
+### DB操作用ユーザを追加
 
 postgresユーザでDBを操作する事もできますが、OS管理ユーザ（普段使用しているユーザ）でDBを操作したい場合もあります。そのため、OS管理ユーザと同名ユーザをDBに対して追加します。
 
@@ -187,7 +187,7 @@ postgresユーザでDB用ユーザを作成しなかった場合、管理者権�
 
 \[the\_ad id="598"\]
 
-## postgresユーザ以外がpostgresユーザとしてDBに接続する方法
+### postgresユーザ以外がpostgresユーザとしてDBに接続する方法
 
 PostgreSQLでは、postgresユーザ以外がpostgresユーザとしてDBに接続できます（例：naoユーザで、'psql -U postgres'をTerminalで入力）。しかし、Peer認証として「 DB 所有者がShellを実行している OS 管理ユーザ名と一致するか」をチェックされます。その結果、
 
@@ -214,7 +214,7 @@ $ sudo systemctl restart postgresql
 
 ```
 
-## 新規DB作成
+### 新規DB作成
 
 新規DB作成のため、psqlコマンドでPostgreSQLに接続し、CREATE文を実行します。
 

@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：Redox版coreutilsを読む理由
+### 前書き：Redox版coreutilsを読む理由
 
 [Redoxプロジェクトが開発しているcoreutils](https://github.com/redox-os/coreutils)を読む理由は、「(Rust初心者の私が)**Rustを学習する**」ためです。Redoxプロジェクトに関わるコードは、基本的にRustで書かれています。何故、Redox(Kernel)ではなくて、coreutilsを読むのかと言えば、
 
@@ -36,7 +36,7 @@ Rustは登場してから日が浅い言語のため、日本語情報が少な�
 - Rust(nightly)のインストール
 - Redox版coreutilsのビルド
 
-## Redoxのサイドプロジェクト一覧
+### Redoxのサイドプロジェクト一覧
 
 前提として、[Redox](https://www.redox-os.org/jp/)は、Rust言語で書かれたUNIXライクのOSです。Redox(Kernel)を開発するプロジェクトだけでなく、ユーザランド向けアプリケーションを対象としたサイドプロジェクトが多数存在します。現段階で、Redox(再度プロジェクト含む)は下図のように、一般的なディストリビューションのような見た目をしています。
 
@@ -64,7 +64,7 @@ Rustは登場してから日が浅い言語のため、日本語情報が少な�
 | [uutils/coreutils](https://github.com/uutils/coreutils) | GNU coreutilsをクロスプラットフォーム向けにRustで書き直したコマンドセット |
 | [m-labs/smoltcp](https://github.com/m-labs/smoltcp) | Redoxで用いられるネットワークスタック |
 
-## Reading対象のCoreutilsコマンド一覧(Reading結果一覧)
+### Reading対象のCoreutilsコマンド一覧(Reading結果一覧)
 
 [Redox版Coreutils](https://github.com/redox-os/coreutils)コマンド全てをReading対象とします。コマンド名称にリンクが貼ってある場合、そのリンク先はReading結果(本サイト内の記事)です。2019年5月3日段階で、まだ未着手です。
 
@@ -94,7 +94,7 @@ Redox版Coreutilsは、数が少なく、低機能(小規模)である事が特�
 | uptime | 65 | システム稼働時間を表示 |
 | which | 53 | 実行コマンドの絶対PATHを表示 |
 
-## 開発環境
+### 開発環境
 
 開発環境は、Debianを想定しています。
 
@@ -119,7 +119,7 @@ $ neofetch
               `"""            Memory: 3157MB / 32069MB 
 ```
 
-## Rust(nightly)のインストール
+### Rust(nightly)のインストール
 
 Rustは、3種類のバージョンが同時期に提供されます。
 
@@ -228,7 +228,7 @@ info: checking for self-updates
 
 ```
 
-## Redox版coreutilsのビルド
+### Redox版coreutilsのビルド
 
 まず、[Redox版coreutilsのGitHub](_wp_link_placeholder)からRepositoryをクローン(複製)します。
 

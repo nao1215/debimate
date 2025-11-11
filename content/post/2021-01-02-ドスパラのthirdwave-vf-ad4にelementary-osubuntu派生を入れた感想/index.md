@@ -17,7 +17,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：安価なノートPC VF-AD4を購入しました
+### 前書き：安価なノートPC VF-AD4を購入しました
 
 私は以前から、物書きやコードリーディングの用途で、ノートPCの購入を検討していました。
 
@@ -35,7 +35,7 @@ cover:
 - elementary OSのインストール方法
 - elementary OSへの所感
 
-## VF-AD4の価格帯で購入を検討したPC
+### VF-AD4の価格帯で購入を検討したPC
 
 前提情報ですが、私がノートPCを購入するにあたって、押さえておきたかったポイントは以下の通りです。
 
@@ -75,7 +75,7 @@ TECLAST F7Plusは聞いたことのないシリーズでしたが、コスパは
 
 [![](images/Epoxfl_UcAA1Ssw-min.jpeg)](http://裏)
 
-## elementary OSのインストール方法
+### elementary OSのインストール方法
 
 [elementary OS](https://elementary.io/ja/)は、完成度の高いUbuntuから派生したディストリビューションなので、インストーラが親切な作りになっています。そのため、インストール画面まで到達すれば、インストールで困る事はないでしょう。
 
@@ -97,7 +97,7 @@ TECLAST F7Plusは聞いたことのないシリーズでしたが、コスパは
 
 上記手順4.を実施しないと、「Verification failed: (0x1A) Security Violation 」と表示されて、elementary OSインストーラが起動できません。
 
-## elementary OSへの所感
+### elementary OSへの所感
 
 elementary OSは、Ubuntu派生であるため、堅実な作りの印象。
 
@@ -125,7 +125,7 @@ elementary OSのシステム要件には、「Intel Core i3 またはそれと�
 
 これからのリリースで、致命的な不具合（例：GUIクラッシュなど）が発生しない限り、「elementary OSはユーザが増えていきそうなディストリビューション」という印象を受けました。
 
-## 余談：Valaとは一体……？
+### 余談：Valaとは一体……？
 
 elementary OSのデスクトップアプリ開発で用いられるVala言語。
 

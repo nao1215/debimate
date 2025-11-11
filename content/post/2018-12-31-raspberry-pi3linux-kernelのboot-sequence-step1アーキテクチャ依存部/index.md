@@ -14,13 +14,13 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 シングルボードコンピュータの[Raspberry Pi3](https://www.raspberrypi.org/)を用いて、[Linux Kernel](https://www.kernel.org/)のBoot Sequenceを調査します。その調査結果を複数回に分けて、記事にします。対象のLinux Kernelは、[Raspberry Pi(OS)のソースコード rpi-4.1.y](https://github.com/raspberrypi/linux)とします。
 
 本記事では、電源投入からinitプロセスが立ち上がるまでを記載します。
 
-## Raspberry Piの起動に関わるソフトウェア
+### Raspberry Piの起動に関わるソフトウェア
 
 Raspberry Piに電源が投入された後、複数のBootloaderが実行されます。Bootloaderが多段の理由は、公式で情報がありません。推測ですが、バイナリサイズや起動コードの隠蔽が目的ではないかと考えています。
 
@@ -34,7 +34,7 @@ Raspberry Piに電源が投入された後、複数のBootloaderが実行され�
 
 ※2012年10月まで、start.elfを読み込むためのloader.bin(三段階目)が存在したが、削除された。参考：[https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=65022](https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=65022)
 
-## 起動シーケンスの概略
+### 起動シーケンスの概略
 
 1. 電源を投入
 2. GPU(Broadcom VideoCore IV)が起動
@@ -47,7 +47,7 @@ Raspberry Piに電源が投入された後、複数のBootloaderが実行され�
 9. Linux Kernelが初期化プロセス(デバイスの初期化、Linux Kernelサブシステムの初期化など)を実行
 10. Linux Kernelがsystemd(initプロセス)を起動
 
-## 参考
+### 参考
 
 [How does Raspberry Pi boot?](https://raspberrypi.stackexchange.com/questions/10489/how-does-raspberry-pi-boot)
 

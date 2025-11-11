@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：gem installでコケる
+### 前書き：gem installでコケる
 
 原因は単なる権限の問題。Ruby初心者なので自分用にメモします。
 
@@ -34,7 +34,7 @@ ERROR:  While executing gem ... (Gem::FilePermissionError)
 
 そこで本記事では、gemインストール時の権限エラー解決方法を2通り紹介します。
 
-## 検証環境
+### 検証環境
 
 ```
            ./oydmMMMMMMmdyo/.              nao@nao 
@@ -60,7 +60,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 ```
 
-## 解決方法その１：環境変数GEM\_HOMEを変更
+### 解決方法その１：環境変数GEM\_HOMEを変更
 
 複数バージョンのRubyを使用しない人にとっては、この解決方法が簡単です。
 
@@ -78,7 +78,7 @@ $ echo 'export PATH="$PATH:~/.ruby/bin"' >> ~/.bashrc
 $ source ~/.bashrc    　　　　　　　　　　　　　
 ```
 
-## 解決方法その2：rbenvを使用
+### 解決方法その2：rbenvを使用
 
 Rubyのバージョンをコントロールしたい人向けの解決策です。
 
@@ -144,6 +144,6 @@ $ rbenv global 3.1.0
 
 最後の"rbenv global $(任意のバージョン)"を実行しないと、システムで使用するRubyが未確定の状態となります。この状態でgemを実行すると、"rbenv: gem: command not found"となるので、注意してください。
 
-## 最後に
+### 最後に
 
 Ruby界隈の人ではないので、rbenvでバージョンコントロールするのは大変そうだなという他人事な感想を持ちました。慣れると楽なんでしょうか。Python界隈も同じ問題があり、大変そう。

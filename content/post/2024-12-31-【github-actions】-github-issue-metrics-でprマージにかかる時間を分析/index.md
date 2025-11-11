@@ -12,7 +12,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：PRマージに時間がかかっていた
+### 前書き：PRマージに時間がかかっていた
 
 2024年は、私のPull Request（PR）がなかなかマージできない課題がありました。
 
@@ -29,7 +29,7 @@ cover:
 
 本記事では、[github/issue-metrics](https://github.com/github/issue-metrics?tab=readme-ov-file) の導入方法を簡単に紹介します。殆ど公式のREADMEどおりです。
 
-## github/issue-metricsの概要
+### github/issue-metricsの概要
 
 github/issue-metricsは、GitHub Actionsであり、指定したリポジトリ内のIssue、Pull Request、Discussionに関するメトリクスを取得できます。一つのGitHub Actions workflowで、複数のリポジトリの情報を取得することもできます。
 
@@ -47,7 +47,7 @@ github/issue-metricsは、GitHub Actionsであり、指定したリポジトリ�
 
 ![](images/issue-metrics-sample-output.png)
 
-## GitHub Actionsの作り方
+### GitHub Actionsの作り方
 
 [公式READMEに記載されているGitHub Actions workflowファイル](https://github.com/github/issue-metrics?tab=readme-ov-file#getting-started)を以下に示します。
 
@@ -112,7 +112,7 @@ SEARCH_QUERY: 'repo:nao1215/markdown is:pr created:${{ env.last_month }} -reason
 
 「Markdownじゃなくて、Excelで図示して見たいんだよね！」という場合は、[一度メトリクスをjsonで出力](https://github.com/github/issue-metrics/blob/main/docs/example-using-json-instead-markdown-output.md)して、jsonを別形式に変換する方法が考えられます。試していません。
 
-## 最後に：github/issue-metricsで何が分かったか
+### 最後に：github/issue-metricsで何が分かったか
 
 ざっくりコメントを書くと、PRのマージにかかる時間は予想より非常に短かったです。私がせっかちなだけだったかもしれない。
 

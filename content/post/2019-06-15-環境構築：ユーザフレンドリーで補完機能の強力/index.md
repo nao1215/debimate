@@ -17,7 +17,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事では、CLI(Terminal)で用いるinteractive shellを**[fish(friendly interactive shell)](https://fishshell.com/)**に移行する方法を記載します。fishは、Debian環境のdefault shellである**dash(POSIX互換のash拡張)**やlogin shellである**bash**よりも優れた点が多いです。
 
@@ -36,7 +36,7 @@ fishの優れた点
 
 本記事では、POSIX非互換というデメリットに配慮しつつ、Login shellをbashからfishへ移行する手順を示します。
 
-## 検証環境
+### 検証環境
 
 Debian9(stretch)環境を使用します。Default shellはdash、Login shellはbashという環境です。
 
@@ -72,7 +72,7 @@ nao:x:1000:1000:CHIKAMATSU Naohiro,,,:/home/nao:/bin/bash
 
 ```
 
-## fishとfisherのインストール
+### fishとfisherのインストール
 
 まずは、fish(shell)とfisher(fishプラグインマネージャ)をインストールします。Debian9(stretch)以降であれば、aptでfishを取得可能です。fisherは、[公式サイトのインストール手順](https://github.com/jorgebucaran/fisher)で取得します。
 
@@ -82,7 +82,7 @@ $ curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.
 
 ```
 
-## Login shellのみをfishに変更
+### Login shellのみをfishに変更
 
 「前書き」で記載したとおり、fishはPOSIX互換性がありません。そのため、Default shell をfishに変更した場合(/bin/shのシンボリックリンクが/usr/bin/fishの状態)、POSIX互換を前提としたshell scriptを読み込めず、何らかの動作異常を起こす可能性があります。
 
@@ -140,7 +140,7 @@ source $HOME/.cargo/env
 
 ```
 
-## お前を消す方法：Welcome to fish, the friendly interactive shell
+### お前を消す方法：Welcome to fish, the friendly interactive shell
 
 上記の手順の後にTerminalを再起動すると分かりますが、fish起動後に
 
@@ -160,7 +160,7 @@ set fish_greeting
 
 \[the\_ad id="598"\]
 
-## Terminalのカラースキームを変更
+### Terminalのカラースキームを変更
 
 FishはTerminalのカラースキームが複数用意されています。最も簡単にカラースキームを設定する方法は、後述するWebブラウザを用いる方法です。
 
@@ -181,7 +181,7 @@ $ sudo apt install fonts-powerline
 
 ![](images/fish.png)
 
-## 便利pluginのインストール
+### 便利pluginのインストール
 
 「最近使用したディレクトリにジャンプできる[z plugin](https://github.com/jethrokuan/z)」および「あいまい検索ができる[fzf plugin](https://github.com/junegunn/fzf)」のみをインストールします。
 
@@ -201,7 +201,7 @@ $ echo "set -U FZF_LEGACY_KEYBINDINGS 0"             >> ~/.config/fish/config.fi
 
 ```
 
-## 他に設定を変更する場合：Webブラウザで設定
+### 他に設定を変更する場合：Webブラウザで設定
 
 fishは、設定をWebブラウザ経由で変更することが出来ます。Terminalで"fish\_config"と入力し、実行すれば以下の画面が開かれます。後は、ユーザの好みで設定を適宜変更して下さい。
 

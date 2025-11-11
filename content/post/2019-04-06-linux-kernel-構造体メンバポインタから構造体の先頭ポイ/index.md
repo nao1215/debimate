@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## container\_ofマクロとは
+### container\_ofマクロとは
 
 container\_ofマクロは、Linux Kernelで用いられ、「構造体メンバポインタ」から「そのメンバを含む構造体の先頭ポインタ」を得られるマクロです。C言語では、[offsetofマクロ](http://www.c-tipsref.com/reference/stddef/offsetof.html)によって構造体メンバアドレスのオフセット(構造体先頭アドレスからメンバ変数までのオフセット)を算出できます。container\_ofマクロは、このオフセットを利用し、構造体の先頭アドレスを算出しています。
 
@@ -27,7 +27,7 @@ container\_ofマクロは、Linux Kernelで用いられ、「構造体メンバ�
 - 使用例(User空間での使用例)
 - 実装解説
 
-## container\_ofマクロの定義
+### container\_ofマクロの定義
 
 container\_ofマクロは、$(KERNEL\_TOP\_DIR)/include/linux/kernel.hに定義されています。
 
@@ -44,7 +44,7 @@ container\_ofマクロは、$(KERNEL\_TOP\_DIR)/include/linux/kernel.hに定義�
     (type *)( (char *)__mptr - offsetof(type,member) );})                     
 ```
 
-## 引数
+### 引数
 
 | **No.** | **引数名** | **説明** |
 | --- | --- | --- |
@@ -52,7 +52,7 @@ container\_ofマクロは、$(KERNEL\_TOP\_DIR)/include/linux/kernel.hに定義�
 | 2 | type | 第一引数ptrが指す構造体メンバを含む構造体名 |
 | 3 | member | 第一引数ptrが指す構造体メンバの名称 |
 
-## 使用例(User空間での使用例)
+### 使用例(User空間での使用例)
 
 User空間でもcontainer\_ofマクロは動作するため、今回の使用例ではUser空間のサンプルプログラムを用います。以下のサンプルプログラムは、game構造体のメンバ変数(price、genre、score)のポインタを用いて、game構造体の先頭ポインタを取得します。また、「メンバ変数アドレス」と「構造体の先頭アドレス」のオフセットも合わせて表示します。
 
@@ -125,7 +125,7 @@ Struct head address from score = 0x55cf6e4c4260 (注釈)：メンバ変数score�
 
 ```
 
-## 実装解説
+### 実装解説
 
 以下の通り、container\_ofの定義を読みやすい形に整形しました。
 

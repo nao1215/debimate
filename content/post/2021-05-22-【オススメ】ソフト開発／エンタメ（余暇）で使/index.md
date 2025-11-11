@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：オススメ？当たり前？
+### 前書き：オススメ？当たり前？
 
 本記事は、読者の皆様にLinuxアプリをオススメするように見せかけた備忘録記事です。
 
@@ -22,7 +22,7 @@ cover:
 
 そこで、本記事では私が頻繁に使用するLinuxアプリをリストアップします。Linuxアプリと言っても、最近はクロスプラットホーム対応アプリやWebアプリの数が増えました。そのため、Windows／Macユーザの方にとっても馴染みのあるアプリが登場します。
 
-## リストから除外するアプリ
+### リストから除外するアプリ
 
 ターミナルで使用するCLIコマンド（基本的なコマンド）は、除外します。例えば、[git(構成管理)](https://git-scm.com/)、[gcc(コンパイラ)](https://gcc.gnu.org/)、[ssh(他PCへのログイン)](http://www.openssh.com/)、[tmux(ターミナル画面分割)](https://github.com/tmux/tmux/wiki)、[fish(shell)](https://fishshell.com/)、[sdkman(環境構築ツール)](https://sdkman.io/)、[ag(高速版grep)](https://github.com/ggreer/the_silver_searcher)、[bat（カラフルなcat）](https://github.com/sharkdp/bat)等です。
 
@@ -32,7 +32,7 @@ cover:
 
 \[the\_ad id="598"\]
 
-## エディタ／IDE
+### エディタ／IDE
 
 エディタは、Visual Studio Codeさえあれば十分な印象。
 
@@ -46,7 +46,7 @@ cover:
 | [Android Studio](https://developer.android.com/studio?hl=ja) | Androidアプリ開発向け統合開発環境。 |
 | [IntelliJ IDEA](https://www.jetbrains.com/ja-jp/idea/) | JVM（Java）系開発向け統合開発環境。有償版か無料版かでSpring FrameやDB周りの機能差あり。個人的にはVisual Studio Codeで十分。 |
 
-## 調査／コード設計／GUI設計／静的解析
+### 調査／コード設計／GUI設計／静的解析
 
 基本的には、静的解析、作図、仮想環境、GUI構築ツールをリストアップしています。
 
@@ -67,7 +67,7 @@ cover:
 | [Glade](https://glade.gnome.org/) | GTKを使用したGUIアプリの画面構築で使用。 |
 | [Inkscape](https://inkscape.org/ja/) | ベクター画像エディタ。アイコン作成で使用。 |
 
-## オフィス／ドキュメント系
+### オフィス／ドキュメント系
 
 「Linuxはオフィスツールが弱い」
 
@@ -82,7 +82,7 @@ cover:
 | [Joplin](https://joplinapp.org/) | マークダウン形式でToDo、ノートを残せるアプリ。コート調査メモやブログネタを整理するために使用。類似アプリは[evernote](https://evernote.com/intl/jp)。 |
 | [Evince](https://wiki.gnome.org/action/show/Apps/Evince) | PDFビューワー。 |
 
-## エンターテイメント（マルチメディア、SNS）
+### エンターテイメント（マルチメディア、SNS）
 
 Linuxは、意外とエンタメが弱くないです。
 
@@ -98,7 +98,7 @@ Linux上でGoogle ChromeやFireFoxが動作するため、Webアプリは何で�
 | [Photo](https://github.com/elementary/photos) | 写真管理アプリ（elementary OSフォルトアプリ）。雰囲気は、Macの写真アプリに類似。 |
 | [Steam](https://store.steampowered.com/?l=japanese) | ゲーム配信プラットフォーム。Linux環境で動作するゲームの配信に力を入れているため、今後に期待。[Helltaker](https://store.steampowered.com/app/1289310/Helltaker/?l=japanese)が最近面白かった。 |
 
-## 最後に：メインPCがLinuxでも結構大丈夫
+### 最後に：メインPCがLinuxでも結構大丈夫
 
 「デスクトップPCをLinuxに変更しようかな」と気の迷いを起こしている方は、以下の記事も参考にしてみてください。Linuxデスクトップ環境の強みと弱みがまとめてあります。
 

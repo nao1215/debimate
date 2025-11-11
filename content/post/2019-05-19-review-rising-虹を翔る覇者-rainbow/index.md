@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 収録曲
+### 収録曲
 
 ![](images/rising.jpg)
 
@@ -27,11 +27,11 @@ cover:
 5. Stargazer
 6. A Light in the Black
 
-## 前作のReview
+### 前作のReview
 
 [Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
 
-## Rainbowの全アルバム中、最も重いサウンド
+### Rainbowの全アルバム中、最も重いサウンド
 
 本作は、前作の["Ritchie Blackmore's Rainbow(銀嶺の覇者)"](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)と比較して、メンバーチェンジで獲得したCozy Powell(Dr.)のシンプルで力強いドラミングによって、Hard Rock然としたサウンドへと急激に様変わりしています。
 
@@ -45,7 +45,7 @@ CozyとDIOの活躍によって、中低音域は音の厚みがあり、Ritchie
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/bQ3OjffJ1w0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-## 本作の評価は大半がB面(死語)
+### 本作の評価は大半がB面(死語)
 
 B面(死語)とは、何でしょうか。まずは、そこからです。私の世代(平成2年生まれ)では、「B面=c/w」という認識です。それより若い世代は、ダウンロード販売を通り越してストリーミング世代ですから、ますます意味が分からないと思います。
 
@@ -67,7 +67,7 @@ Stargazerは、オリエンタルなフレーズがスローテンポで繰り�
 
 一転して、A Light in the Blackは、激しさを感じさせる一曲です。特に、RitchieとTony Carey(Key.)の掛け合いが聴きどころです。Burn(Deep Purple)のように、中間部で延々と弾き続ける二人が、この曲を支えています。RitchieはJazzも嗜むため、中間部で各パートが掛け合う流れは、割と自然に出てきます。その掛け合いが上手く当てはまった例が、本曲です。一聴してハマる事は難しいと思いますが、聴き続けるとその魅力に取り憑かれる筈です。
 
-## 好きな一曲
+### 好きな一曲
 
 A Light in the Black
 
@@ -77,7 +77,7 @@ A Light in the Black
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B005S1Y4XU&amp;linkId=aba57a8030fd40dcffd8bd12e2b50aff"></iframe>
 
-## 次作のReview
+### 次作のReview
 
 - [Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)](https://debimate.jp/post/2019-06-02-review-long-live-rock-n-roll-%E3%83%90%E3%83%93%E3%83%AD%E3%83%B3%E3%81%AE%E5%9F%8E%E9%96%80-rainbow/)
 - [Review: On Stage Deluxe Edition (Rainbow)](https://debimate.jp/post/2019-06-15-review-on-stage-deluxe-edition-rainbow/)

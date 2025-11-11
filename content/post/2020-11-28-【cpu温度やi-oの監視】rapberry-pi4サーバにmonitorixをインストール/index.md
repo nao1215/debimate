@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：ラズパイサーバが停止するので監視したい
+### 前書き：ラズパイサーバが停止するので監視したい
 
 [Raspberry Pi4にPLEXマルチメディアサーバを導入](https://debimate.jp/post/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。
 
@@ -23,7 +23,7 @@ cover:
 
 今回はシステムが停止する原因を探るため、Raspberry Pi4にMonitorixをインストールして、システムリソースの変化をモニタリングできるようにします。そこで、本記事では「Monitorixのインストール方法」と「Raspberry Pi向けの設定」に関して説明します。
 
-## Monitorixとは
+### Monitorixとは
 
 Monitorixは、軽量なシステムリソースモニタリングツールであり、Webブラウザ経由でリソースの使用状況を表したグラフを確認できます。Perlスクリプトで実装されており、Monitorixが生成するリソース監視ログ（rrdバイナリ）をrrdtoolでグラフ化（画像化）するという仕組みのようです。
 
@@ -57,7 +57,7 @@ Monitorixの画面
 
 私のように「何をモニタリングすれば良いか決めていない」「監視に手間を掛けたくない」という方はMonitorixを選択し、「いやいや、見た目大事っしょ」という方は他のツールを選択すれば良いと思います。
 
-## 検証環境
+### 検証環境
 
 Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
 
@@ -80,7 +80,7 @@ Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
           `"Y$b._
 ```
 
-## Monitorixのインストール
+### Monitorixのインストール
 
 2020年11月現在、aptパッケージマネージャーでmonitorix-3.10.1がインストールできます。
 
@@ -89,13 +89,13 @@ $ sudo apt install monitorix
 
 ```
 
-## Raspberry Piの固定IP化
+### Raspberry Piの固定IP化
 
 Monitorixのモニタリング結果は、IPアドレス指定で確認する事になるため、DHCPで動的にIPアドレスが変わると運用しづらいです。そのため、以下の記事を参考にしてRaspberry Pi4を固定IP化します。
 
 - [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
-## Raspberry Pi4 CPU／温度／電圧モニタリング有効化
+### Raspberry Pi4 CPU／温度／電圧モニタリング有効化
 
 Monitorixの設定ファイル/etc/monitorix/monitorix.confを編集して、Raspberry Pi4のCPU使用率、温度、電圧のモニタリング（センサ情報のモニタリング）を無効から有効に変更します。
 
@@ -150,7 +150,7 @@ $ sudo vim /etc/monitorix/monitorix.conf
 
 ```
 
-## monitorix.confの修正頻度が高そうなパラメータ
+### monitorix.confの修正頻度が高そうなパラメータ
 
 下表に、Monitorix設定ファイル/etc/monitorix/monitorix.confのパラメータの中から、修正する可能性が高そうなものをピックアップして紹介します。下表に登場しないパラメータは、[公式ドキュメント](https://www.monitorix.org/documentation.html)で確認してください。
 
@@ -165,7 +165,7 @@ $ sudo vim /etc/monitorix/monitorix.conf
 
 ポート番号に関しては、既に8080番を他のサービスが使用している場合、別の値に変更が必要です。
 
-## モニタリング結果の確認
+### モニタリング結果の確認
 
 Monitorixの設定変更を行ったため、まずはsystemdを用いてMonitorixを再起動します。デフォルトでMonitorixは有効化されていると思いますが、有効化（enable）してから再起動（restart）します。
 

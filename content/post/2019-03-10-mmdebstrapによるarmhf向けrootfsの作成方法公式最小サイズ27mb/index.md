@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## mmdebstrapとは
+### mmdebstrapとは
 
 [mmdebstrap](https://gitlab.mister-muffin.de/josch/mmdebstrap)とは、最小構成rootfsを作成するための[debootstrap](https://manpages.debian.org/stretch/debootstrap/debootstrap.8.en.html)を代替するコマンドです。debootstrapと同様に、[Debianサポートアーキテクチャ](https://www.debian.org/ports/index.ja.html)向けのrootfsを作成できます。mm(Multi-Mirror)が意味するように、複数のミラーサーバを使用する事により、debootstrapより3〜6倍ほど高速に動作します。
 
@@ -22,7 +22,7 @@ cover:
 
 mmdebstrapは開発中ですが、組み込み分野で使用される可能性もあります。そのため、本記事ではmmdebstrapの基本的な特徴を押さえた後、stretch環境への導入方法、rootfsの作成方法を記載します。
 
-## mmdebstrapの良い点
+### mmdebstrapの良い点
 
 以下の内容は、[公式レポジトリのREADME](https://gitlab.mister-muffin.de/josch/mmdebstrap)を日本語訳し、意味が通るように補足・意訳しています。比較対象は、debootstrapです。
 
@@ -47,7 +47,7 @@ aptコマンドを使用した恩恵として、debootstrapより3〜6倍高速�
 |   buildddpkgopt   (minbaseに[build-essential](https://packages.debian.org/ja/stretch/build-essential)を含めたrootfs)   | 20.55 s | 59.38 s |
 | \- (minbaseに重要なパッケージを含めたrootfs。   debootstrapのデフォルト構成) | 18.98 s | 127.18 s |
 
-## mmdebstrapの書式・オプション
+### mmdebstrapの書式・オプション
 
 ```
 書式
@@ -82,7 +82,7 @@ rootfs(TARGET)形式は、非圧縮(ディレクトリ)、tar(アーカイブ)�
 | important, debootstrap, - | requiredに"Priority:important"パッケージを加えて、installします。 |
 | standard | "Priority:standard"パッケージを全てinstallします。 |
 
-## mmdebstrapのinstall方法
+### mmdebstrapのinstall方法
 
 今回使用した環境は、以下の通りです。
 
@@ -120,7 +120,7 @@ uidmap binfmt-support dpkg-dev proot  qemu-user qemu-user-static
 
 ```
 
-## mmdebstrapの実行例
+### mmdebstrapの実行例
 
 まず、Host環境(amd64)向けrootfs作成の成功例・失敗例を示した後、Target環境について説明します。
 
@@ -266,7 +266,7 @@ $ du -sh rpi-stable.tar.gz 　(注釈)：rootfsの中身が空っぽ
 
 \[the\_ad id="598"\]
 
-## Raspberry Pi3環境でのrootfs動作確認
+### Raspberry Pi3環境でのrootfs動作確認
 
 上記の手順で作成したTarget環境向けrootfsをRaspberry Pi3にコピーし、動作確認します。
 
@@ -315,7 +315,7 @@ bash: apt: command not found
 
 ```
 
-## おまけ: 最小rootfs作成に挑戦……敗北
+### おまけ: 最小rootfs作成に挑戦……敗北
 
 私が作成したTarget環境(armhf)向けのrootfsは、35MBです。このサイズは、組み込み環境としては大きいです。rootfsサイズは、起動速度にも関わるため、より小さいサイズのrootfsを試みました。結果は駄目でしたが、考え方と実行結果ログを残しておきます。
 

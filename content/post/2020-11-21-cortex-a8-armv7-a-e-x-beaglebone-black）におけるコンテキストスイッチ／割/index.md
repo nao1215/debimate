@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：XINUソースコードから学ぶアセンブラ実装
+### 前書き：XINUソースコードから学ぶアセンブラ実装
 
 本記事では、ARM Cortex-A8における
 
@@ -26,13 +26,13 @@ cover:
 
 なお、[XINU (Xinu Is Not Unix )](https://ja.wikipedia.org/wiki/Xinu)とは、パデュー大学のダグラス・カマーが教育目的で開発した Real Time OS であり、ARM Cortex-A8が搭載された[BeagleBone Black（シングルボードコンピュータ）](https://www.rs-online.com/designspark/picavrno-1)上で動作します。
 
-## ARMレジスタに関する基礎知識 
+### ARMレジスタに関する基礎知識 
 
 ARM Cortex-A8に関する情報は、以下の記事でまとめてあります。必要であれば、ご参照ください。
 
 - [Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方](https://debimate.jp/post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black%E3%81%AE%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E6%83%85%E5%A0%B1%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9%E5%91%BD%E4%BB%A4/)
 
-## コンテキストスイッチ
+### コンテキストスイッチ
 
 コンテキストスイッチは、プロセスが持つレジスタやスタック情報を保存／復元する操作を意味します。
 
@@ -62,7 +62,7 @@ ctxsw:
     mov pc, r12             /* 新しいプロセスに戻る   */
 ```
 
-## 割り込み操作
+### 割り込み操作
 
 XINU（Kenel）では、システムコールやデバイス操作を行う際、システムリソース状態が不正状態にならないように（複数のプロセスが同時にリソースアクセスしないように）、
 
@@ -127,7 +127,7 @@ restore:
 
 ![](images/Screenshot-from-2020-11-21-12-10-31.jpg)
 
-## Halt（システム停止）
+### Halt（システム停止）
 
 Haltでは、同じ分岐先へのジャンプを繰り返す事によって、システムを無限ループ状態（停止状態）とします。初めてみた時、「システム停止は、単なる無限ループなのか」と驚きました。
 

@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：人生で初めてGitHub Star 50個超え
+### 前書き：人生で初めてGitHub Star 50個超え
 
 ["go install"したバイナリをアップデートするgupコマンド](https://github.com/nao1215/gup)が、公開から一週間でGitHub Starを50個以上獲得しました！ちょっと嬉しい。最新の仕様は、[Zenn](https://zenn.dev/nao1215/articles/aef3fe318848d6)で説明しています。
 
@@ -30,7 +30,7 @@ gupコマンドの初期版は、4〜6時間で完成しました。それなの
 
 今回、GitHub Starを思いがけず大量獲得したため、「GitHub Starを獲得する方法論があるのではないか」と考え、調査してみました。本記事では、その方法論の内容と「gupコマンドでは、それらの方法論を実践していたかどうか」を記載します。
 
-## GitHub Starを獲得するためにすべき事
+### GitHub Starを獲得するためにすべき事
 
 [creativeit](https://www.creativeit.io/blog/how-to-collect-github-stars-and-create-github-trending-repos-1)や[dev.to](https://dev.to/nastyox1/8-concrete-steps-to-get-stars-on-github-355c)、[その他のサイト](https://zenn.dev/hand_dot/articles/542449fe4fc771)（複数）で語られていた方法の中で、他の人の力を借りず再現できる内容は以下の通りでした。
 
@@ -40,7 +40,7 @@ gupコマンドの初期版は、4〜6時間で完成しました。それなの
 
 上記とは逆に、「他の人の力を借りるパターン」はインフルエンサーに宣伝してもらう等です。知人にインフルエンサーがいる場合は宣伝を気軽にお願いできますが、いない場合は依頼のハードルが上がります（依頼しても拒否られる可能性もあります）。
 
-## gupの場合：READMEは無骨
+### gupの場合：READMEは無骨
 
 gupコマンドは、格好良いロゴも綺麗なアイキャッチもないので、スクショをペタッと貼ったREADMEでした。ターミナル画像（スクショ）は、gifですらありません！
 
@@ -52,7 +52,7 @@ gupコマンドは、格好良いロゴも綺麗なアイキャッチもない�
 
 ロゴやアイキャッチを頑張るなら、良い感じの無料ロゴメーカーを探すか、[ココナラ](https://coconala.com/)等で制作依頼（有料）を出すか。私の場合は、気合入っていないOSSなら、スクショで十分じゃないかと考えています（自作したOSSがヒットするか分からないので）
 
-## gupの場合：OGP設定をしていない
+### gupの場合：OGP設定をしていない
 
 GitHubでは、リポジトリの\[Settings\] > \[General\] > \[Social preview\]からOGP設定ができます。gupでは、OGP設定をしませんでした。その理由は、ロゴもアイキャッチもないので、OGP設定用の画像がないから。
 
@@ -60,7 +60,7 @@ GitHubでは、リポジトリの\[Settings\] > \[General\] > \[Social preview\]
 
 \[caption id="attachment\_7886" align="aligncenter" width="397"\]![](images/Screenshot-from-2022-02-26-22-59-22.png) OGP設定なし\[/caption\] \[caption id="attachment\_7887" align="aligncenter" width="396"\]![](images/Screenshot-from-2022-02-26-22-57-53.jpg) OGP設定あり\[/caption\] 
 
-## gupの場合：Redditで宣伝し、効果があった
+### gupの場合：Redditで宣伝し、効果があった
 
 gupコマンドは、[Redditで宣伝記事](https://www.reddit.com/r/golang/comments/sxr6jn/gup_update_binaries_installed_by_go_install/)を書いており、9,300PVを集めました。RedditからGitHubへの流入は100人ぐらい来ていました。Redditに書いた次の日には、Starを10〜20個ほど獲得していました。
 
@@ -70,7 +70,7 @@ gupコマンドは、[Redditで宣伝記事](https://www.reddit.com/r/golang/com
 
 （ちなみに、上記の画像でGitHub内から流入が多い理由は不明）
 
-## 番外：インフルエンサーのツイートは強い
+### 番外：インフルエンサーのツイートは強い
 
 gupコマンドは、golang界隈で有名なmattn氏によってツイート（紹介）されました。
 
@@ -78,7 +78,7 @@ gupコマンドは、golang界隈で有名なmattn氏によってツイート（
 
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">go install でインストールしたバイナリを更新するプログラム。go version -m を使う手法。 <a href="https://twitter.com/hashtag/golang?src=hash&amp;ref_src=twsrc%5Etfw">#golang</a> / “GitHub - nao1215/gup: gup - Update binaries installed by "go install"” <a href="https://t.co/PKmfRNRCAc">https://t.co/PKmfRNRCAc</a></p>— mattn (@mattn_jp) <a href="https://twitter.com/mattn_jp/status/1495990584322162693?ref_src=twsrc%5Etfw">February 22, 2022</a></blockquote>
 
-## 最後に：上記の方法論、再現性無いですよね？
+### 最後に：上記の方法論、再現性無いですよね？
 
 結局の所、**「OSSがユーザーの課題を解決しているか」**という点が、小手先のStar獲得方法より大事という印象を持ちました。微妙なOSSを凄そうに見せかけても、ユーザーは見抜く筈です。
 

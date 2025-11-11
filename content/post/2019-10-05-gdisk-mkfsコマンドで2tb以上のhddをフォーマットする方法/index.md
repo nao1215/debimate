@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：何故HDDを2TBまでしか認識しないか
+### 前書き：何故HDDを2TBまでしか認識しないか
 
 本記事では、gdisk/mkfsコマンドを用いて2TB超のHDDをフォーマットする方法を紹介します。
 
@@ -23,7 +23,7 @@ cover:
 
 つまり、MBRにしか対応していないコマンド(例：fdisk)でHDDフォーマットを実行した場合、2TBまでしか認識しません。**2TB以上のHDDを取り扱う場合は、gdiskコマンドを使用します。**gdiskは、GPT(GUID Partition Table)形式でHDD領域を管理します。GPTは、セクター管理に8Byte(64bit)を使用できるため、最大8ZB(=2の64乗×512Byte)まで管理できます。一般的なHDDサイズ(2TB〜8TB)であれば、確実にフォーマットできます。
 
-## 検証環境
+### 検証環境
 
 Debian10環境とWestern DigitalのHDD(4TB、3.5インチ)を使用します。
 
@@ -49,7 +49,7 @@ Debian10環境とWestern DigitalのHDD(4TB、3.5インチ)を使用します。
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B01MRSPHIW&amp;linkId=5abcaca97012902ee766d24a0e9452d9"></iframe>
 
-## gdiskのインストール
+### gdiskのインストール
 
 以下の手順でgdiskコマンドをインストール可能です。また、HDDがどのPATH(/dev/sd\*)で認識されているかを調べるために、hwinfoコマンドも一緒にインストールします。
 
@@ -59,7 +59,7 @@ $ sudo apt install hwinfo   (注釈)：ハードウェア情報を調べるコ�
 
 ```
 
-## フォーマット対象のHDDを調査する方法
+### フォーマット対象のHDDを調査する方法
 
 フォーマット対象のPATH情報(/dev/sd\*のいずれか)を明確にしなければ、OSが入ったSSDやHDDを誤って消去する可能性があります。そこで、hwinfoコマンドを用いて、HDDの型番情報から、フォーマット対象のHDD PATHを明確にします。
 
@@ -186,7 +186,7 @@ Device     Boot  Start       End   Sectors  Size Id Type
 
 ```
 
-## gdiskコマンドによるパーティション作成
+### gdiskコマンドによるパーティション作成
 
 私の環境では、フォーマット対象のHDDは/dev/sdbです。gdiskコマンドを起動すると、GPT形式ではなくMBR形式でHDDが管理されているため、警告が出ます。今回のフォーマットでは、MBRをGPTに変換することが目的ですから、この警告は無視します。
 
@@ -264,7 +264,7 @@ The operation has completed successfully.
 
 ```
 
-## パーティションをext4形式でフォーマット
+### パーティションをext4形式でフォーマット
 
 gdiskコマンドによって、/dev/sdb1パーティションが作成されています。このパーティションをmkfsコマンドによって、ext4ファイルシステムでフォーマットします。
 

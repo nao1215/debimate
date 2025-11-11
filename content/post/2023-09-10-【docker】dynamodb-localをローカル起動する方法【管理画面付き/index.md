@@ -13,11 +13,11 @@ cover:
   hidden: false
 ---
 
-## 前書き：DynamoDB、はじめまして
+### 前書き：DynamoDB、はじめまして
 
 本記事では、DynamoDBをローカルで起動する方法を説明します。[DynamoDB](https://aws.amazon.com/jp/dynamodb/)は、AWSが提供するNoSQLデータベースです。サーバーレスのKey Valueストアであり、フルマネージドサービスです。
 
-## 検証環境
+### 検証環境
 
 本記事は、Ubuntu環境で検証しています。Docker Composeを使用するため、別途インストールが必要です。
 
@@ -52,13 +52,13 @@ Docker Compose version v2.6.1
 
 ```
 
-## Docker上でDynamoDB本体と管理画面を立ち上げ 
+### Docker上でDynamoDB本体と管理画面を立ち上げ 
 
 [DynamoDBをローカル上で立ち上げる方法がAWS公式サイト](https://docs.aws.amazon.com/ja_jp/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html)に書かれています。jarファイルをローカルにインストールしてDynamoDBを立ち上げる方法もありますが、JREを準備する必要があり、手間がかかります。
 
 そこで、[AWS公式が提供しているamazon/dynamodb-local（Dockerイメージ）](https://hub.docker.com/r/amazon/dynamodb-local)を利用して、DynamoDBをローカルに立ち上げます。ローカルで立ち上がったDynamoDBをAWS CLIで操作するのは億劫なので、管理画面ブラウザから操作できるようにします。具体的には、[aaronshaf/dynamodb-admin（Dockerイメージ）](https://github.com/aaronshaf/dynamodb-admin)を使用します。こちらのイメージはAWS公式提供ではないので、気になる方はAWS CLIで操作しましょう。
 
-## compose.ymlの中身
+### compose.ymlの中身
 
 ```
 version: '3.8'
@@ -86,7 +86,7 @@ services:
 
 ```
 
-## 実行結果
+### 実行結果
 
 以下のコマンドでDockerをバックグラウンド実行する。初回実行時は、イメージの取得から始まるため、時間がかかります。
 
@@ -105,6 +105,6 @@ Dockerの起動が確認できたら、http://127.0.0.1:8001にアクセスし�
 command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
 ```
 
-## 最後に
+### 最後に
 
 AWSの勉強を真面目に始めましたが、サービスが多すぎて覚えられない。

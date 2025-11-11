@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-##  前書き：Builderパターンとは
+###  前書き：Builderパターンとは
 
 Builderパターンは、GoF（Gang of Four）デザインパターンの一つであり、複雑な構造を持つインスタンス生成を容易にするための手法です。
 
@@ -33,7 +33,7 @@ Builderパターンは、GoF（Gang of Four）デザインパターンの一つ�
 
 必須パラメータに対してのみ設定を行うBuilderコンストラクタを呼び出し、ConcreateBuiderでオプションパラメータへの設定を行うイメージです。文字だけでは分かりづらいと思うので、本記事ではクラス図、シーケンス図、実装の順で紹介します。
 
-## Builderパターン：クラス図
+### Builderパターン：クラス図
 
 ![](images/class-1.jpg)
 
@@ -43,11 +43,11 @@ BuilderクラスのInterfaceであるbuild\_XXX相当のメソッド数は、当
 
 Interfaceを実装しているConcreteBuilderは結果を返すメソッド（get\_result）を持っており、返す内容は自由です。自身（self／this）、数値、文字列でも何でも良いです。
 
-## Builderパターン：シーケンス図
+### Builderパターン：シーケンス図
 
 ![](images/seq-1.jpg)
 
-## Builderパターン：Rubyによる実装例
+### Builderパターン：Rubyによる実装例
 
 Rubyはinterfaceが無いので、雰囲気を伝えるための実装となります。（本当はJavaで実装するのが適切ですが、Javaをササッと書けないのでRubyにしました）
 
@@ -182,7 +182,7 @@ bash_dir.builder.get_result()
 
 \[the\_ad id="598"\]
 
-## Builderパターン：実装例の実行結果 
+### Builderパターン：実装例の実行結果 
 
 ```
 HTML Builderを使用したケース
@@ -199,7 +199,7 @@ exit 0
 
 ```
 
-## 他のデザインパターンに関して
+### 他のデザインパターンに関して
 
 GoFデザインパターン（23種類）に関しては、以下の記事でまとめてあります。
 

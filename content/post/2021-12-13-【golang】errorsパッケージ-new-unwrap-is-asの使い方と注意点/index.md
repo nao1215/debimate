@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：君、err != nilしかできないの?
+### 前書き：君、err != nilしかできないの?
 
 Golangでは、errorがnilでなければ上位関数にそのままerrorを戻す処理が頻繁にあります。
 
@@ -28,7 +28,7 @@ if err != nil {
 
 そこで、本記事ではerrorsパッケージに備わるメソッドNew()、Unwrap()、Is()、As()の使い方および注意点を説明し、基本的なgolangエラーハンドリング方法を押さえます。
 
-## 調査環境
+### 調査環境
 
 Ubuntu21.04、go1.17（linux/amd64）で調査しました。
 
@@ -56,7 +56,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 }
 ```
 
-## New()：基本仕様
+### New()：基本仕様
 
 ```
 func New(text string) error
@@ -90,7 +90,7 @@ func (e *errorString) Error() string {
 }
 ```
 
-## New()：エラーメッセージ出力方法
+### New()：エラーメッセージ出力方法
 
 他言語経験者は「エラーメッセージを表示するには、fmt.Println(error.Error())とすれば良いのかな」と考えるでしょう。その方法でも間違いではありませんが、fmt.Println(error)でもエラーメッセージを出力できます。
 
@@ -132,7 +132,7 @@ func (p *pp) handleMethods(verb rune) (handled bool) {
 			// 省略
 ```
 
-## New()：エラーメッセージに関する2つの注意点
+### New()：エラーメッセージに関する2つの注意点
 
 errors.New()に渡すメッセージでは、
 
@@ -171,7 +171,7 @@ func testErr() error {
 
 英文では、":"は句読点の一種であり、説明を追加するために用いられます。そのため、プログラムであってもメッセージを":"で繋ぐのは、英語圏の視点では当たり前なんだよなーと感じました。当たり前の視点ですが、英語苦手なので抜け落ちてました。
 
-## Unwrap()：基本仕様
+### Unwrap()：基本仕様
 
 ```
 func Unwrap(err error) error
@@ -271,7 +271,7 @@ test error
 
 ```
 
-## Unwrap()：errorをラッピングする理由
+### Unwrap()：errorをラッピングする理由
 
 そもそも論ですが、errorインターフェースをラッピングすると何が嬉しいのでしょうか。
 
@@ -332,7 +332,7 @@ $ ./main
 
 ```
 
-## Is()：基本仕様
+### Is()：基本仕様
 
 ```
 func Is(err, target error) bool
@@ -370,7 +370,7 @@ func Is(err, target error) bool {
 
 ③では、引数errをアンラップして、forループの頭に戻ります。Unwrap()の結果が"err == nil"の場合は、大本のerrorインターフェースに辿り着いた事を意味するため、errとtargetの不一致が確定します。
 
-## Is()：使用方法
+### Is()：使用方法
 
 errors.Is()は、ラッピングされたエラーであっても、エラーが任意エラーと一致するかどうかを期待通りに返せます（以下の実装例におけるprintReadableErrByIs()と実行結果を参照）。
 
@@ -415,7 +415,7 @@ default                              (注釈)：期待通りに判定できて�
 
 ```
 
-## As()：基本仕様
+### As()：基本仕様
 
 ```
 func As(err error, target interface{}) bool
@@ -464,7 +464,7 @@ func As(err error, target interface{}) bool {
 
 As()とIs()の使い方はほぼ同様のため、As()の使用方法は省略します。
 
-## 最後に
+### 最後に
 
 New()、Unwrap()、Is()、As()を押さえて、ようやくgolangエラーハンドリングのスタート地点に立てた状態な気がします。実装レイヤー単位でどのようにエラーを処理していくかが大事な設計であり、私は最適解になかなか達せません。
 

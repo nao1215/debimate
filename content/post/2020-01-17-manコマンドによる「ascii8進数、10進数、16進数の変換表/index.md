@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## ASCII<->N進数への変換は、Terminalで確認可能
+### ASCII<->N進数への変換は、Terminalで確認可能
 
 ASCIIコードは、10進数（8進数、16進数）から英数字・記号に変換するための文字コードです。正確には、文字コードとは以下の定義のように、2進数との変換を指します。
 
@@ -28,7 +28,7 @@ ASCIIコードは、10進数（8進数、16進数）から英数字・記号に�
 
 本記事では、manコマンドによるASCII変換表のインストール方法、表示方法を紹介します。
 
-## ASCII変換表のMAN Pageをインストール
+### ASCII変換表のMAN Pageをインストール
 
 ASCII変換表のMAN Pageは、[Linux man-pages project](https://www.kernel.org/doc/man-pages/)が作成しています。このプロジェクトは、Linux KernelとCライブラリ（≒glibc）とのインターフェースを説明する事を主な目的としており、様々なMan Pageを提供しています。ASCIIとKernelはあまり関係がありませんが、このプロジェクトがASCIIコード変換表のMan pageを提供しています。 
 
@@ -41,7 +41,7 @@ $ sudo apt install manpages-ja manpages
   (注釈)：*-jaは日本語版、manpagesは英語版
 ```
 
-## manコマンドによるASCII変換表の表示手順
+### manコマンドによるASCII変換表の表示手順
 
 Terminal上で"man ascii"と入力すれば、ASCIIコード変換表が表示されます。
 

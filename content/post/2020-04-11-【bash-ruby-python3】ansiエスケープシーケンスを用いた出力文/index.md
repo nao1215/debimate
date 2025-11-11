@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 自動化Script作成時に、Bash (Shell Script)ではなく、RubyやPython3を用いた方がScriptのメンテナンス負荷が低くなります。自動化Scriptに使用するプログラミング言語変更を目的として、各言語の実装を比較します。
 
@@ -27,13 +27,13 @@ Bashではなく、RubyやPython3を使った方が好ましい理由は、以�
 - [Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較](https://debimate.jp/post/2020-04-05-bashshell-script%E3%81%8B%E3%82%89ruby%E3%82%84python%E3%81%AB%E4%B9%97%E3%82%8A%E6%8F%9B%E3%81%88%E9%A0%BB%E7%B9%81%E3%81%AB%E4%BD%BF%E3%81%86%E5%87%A6%E7%90%86%E3%82%92%E5%90%84%E8%A8%80/)
 
 
-## 各言語のVersion
+### 各言語のVersion
 
 - Bash：GNU bash, バージョン 5.0.3(1)-release
 - Ruby：ruby 2.5.5p157 (2019-03-15 revision 67260)
 - Python：Python 3.7.3
 
-## ANSIエスケープシーケンスの一覧
+### ANSIエスケープシーケンスの一覧
 
 ANSIエスケープシーケンスでは、ターミナルに表示される文字色や背景色の変更、文字の強調などができます。以下に、文字色設定の一例を示します。
 
@@ -53,7 +53,7 @@ ANSIエスケープシーケンスでは、ターミナルに表示される文�
 
 ![](images/color-min.jpg)
 
-## 比較：出力文字色の変更方法
+### 比較：出力文字色の変更方法
 
 自動化Scriptでは、ユーザに分かりやすくするために、警告メッセージやエラーメッセージの文字色をデフォルト色から変更する事があります。
 

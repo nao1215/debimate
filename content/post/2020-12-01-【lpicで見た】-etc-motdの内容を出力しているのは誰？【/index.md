@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-##  前書き：Message Of The Dayファイルとは
+###  前書き：Message Of The Dayファイルとは
 
 LPIC受験者は、よくご存知の/etc/motd (Message Of The Day)ファイル。
 
@@ -70,7 +70,7 @@ lemmy@motorhead:~ $    (注釈) sshログイン直後のプロンプト
 - /etc/motdを表示する人
 - /etc/motdメッセージを非表示にする方法
 
-## /etc/motdファイルはbase-filesが生成
+### /etc/motdファイルはbase-filesが生成
 
 そもそも、/etc/motdファイルは誰が作るのでしょうか。
 
@@ -133,7 +133,7 @@ endif
 
 ```
 
-## motdを表示する人 = sshd (openssh-server)
+### motdを表示する人 = sshd (openssh-server)
 
 では、本題である/etc/motdファイルの内容を表示する人は誰でしょうか。
 
@@ -170,7 +170,7 @@ do_motd(void)
 
 ```
 
-## motdメッセージを非表示にする方法
+### motdメッセージを非表示にする方法
 
 前述したopenssh-7.9p1/session.cを読んでいた時に気づきましたが、${HOME}/.hushloginファイルが存在する場合は、ログイン時にmotdメッセージを出力しないようです。
 
@@ -217,7 +217,7 @@ do_login(struct ssh *ssh, Session *s, const char *command)
 
 恐らく、ssh認証方式によってmotdメッセージの出力有無が決まっているのでしょう（この内容はLPIC出題内容にあったかどうか忘れました）
 
-## 補足：Debian 8以降やUbuntuにおけるmotdの仕組み
+### 補足：Debian 8以降やUbuntuにおけるmotdの仕組み
 
 motdは、PAMモジュールを使用して表示されるケースもあります。興味がある方は、以下の記事を確認してください。
 

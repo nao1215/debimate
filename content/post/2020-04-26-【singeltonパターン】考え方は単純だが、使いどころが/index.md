@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：Singletonパターンは奥が深い
+### 前書き：Singletonパターンは奥が深い
 
 Singletonパターンは、GoF（Gang of Four）デザインパターンの一つであり、あるクラスのインスタンスが一つしかない状態を保証する方法です。「インスタンスが一つしか無い」という前提を生み出す事で、複数のインスタンスを用いる事によるバグの発生リスクを無くせます（正しく実装できていれば）。
 
@@ -30,7 +30,7 @@ Singletonパターンに則ったクラスである条件は、以下の３点�
 
 Singletonは作り方のシンプルさと裏腹に、使い方を誤ったケースが多いデザインパターンです。そのため、本記事では「Singletonが適さないケース」、「Singletonが適したケース」、「Singletonが適したクラス（機能）例」、「Singeltonの実装例（Ruby、Java）」を説明します。
 
-## Singletonパターンが適さないケース
+### Singletonパターンが適さないケース
 
 | **No.** | **適さないケース** | **理由** |
 | --- | --- | --- |
@@ -39,7 +39,7 @@ Singletonは作り方のシンプルさと裏腹に、使い方を誤ったケ�
 | 3 | マルチスレッド環境に導入する場合 | Singeltonへのアクセス管理（ロック）にコストが発生してしまう |
 | 4 | 常に決まった値を渡す（or 出力） | クラスメソッド（static関数）に置き換えた方が良い |
 
-## Singletonパターンが適したケース
+### Singletonパターンが適したケース
 
 [IBMが定義するSingletonパターンが適したケース](https://www.ibm.com/developerworks/jp/webservices/library/co-single.html#d)は、以下の3項目を全て満たした場合です。正直、私は下記の引用説明ではピンとこなかったので、Singletonを使ったクラス例を調べました（後述しています）。
 
@@ -47,7 +47,7 @@ Singletonは作り方のシンプルさと裏腹に、使い方を誤ったケ�
 > すべてのアプリケーションは、常にこのクラスの1つのインスタンスのみを必要とするか? (「常に 」と「1つの」がキーワード)  
 > このクラスのクライアントは、自分自身がその一部に含まれているアプリケーションを意識しないべきか?
 
-## Singletonパターンが適したクラス例
+### Singletonパターンが適したクラス例
 
 以下に、Singletonパターンで設計した方が良い可能性のあるクラス（機能）を示します。
 
@@ -59,7 +59,7 @@ Singletonは作り方のシンプルさと裏腹に、使い方を誤ったケ�
 
 上記のクラス（機能）を踏まえると、リソース管理にSingletonパターンが適していると考えられます。リソースに対して複数のインスタンスが管理を行えば、状態管理で不整合が生じる可能性があります。この不整合を防止するために、Singletonを用いるのは自然な事だと思います。
 
-## Singletonパターンの実装例（Ruby）
+### Singletonパターンの実装例（Ruby）
 
 Singletonパターンを実装するには、[singletonモジュール](https://docs.ruby-lang.org/ja/latest/class/Singleton.html)をClassにMix-inします。singletonモジュールによって、new()メソッドはprivateメソッドとなり、Singleton化されたクラス外部からnew()をコールすれば**"private method \`new' called for SingletonClass:Class (NoMethodError)"**とエラーが発生します**。**
 
@@ -113,7 +113,7 @@ s1_instanceとs2_instanceは同一です。
 
 \[the\_ad id="598"\]
 
-## Singletonパターンの実装例（JavaでEnumを用いた場合）
+### Singletonパターンの実装例（JavaでEnumを用いた場合）
 
 Enumを利用する理由は、Javaの言語仕様上、Enumがグローバルに唯一のインスタンスとなる事が保証されるためです。Enumは、厳密なSingletonであり、スレッドセーフかつabstractな実装もできます。最も大きなデメリットは、Java言語仕様を知らない人が見ると、不思議なコードと感じてしまう事でしょう。
 
@@ -177,7 +177,7 @@ s1_instanceとs2_instanceは同一です。
 
 ```
 
-## 他のデザインパターンに関して
+### 他のデザインパターンに関して
 
 GoFデザインパターン（23種類）に関しては、以下の記事でまとめてあります。
 

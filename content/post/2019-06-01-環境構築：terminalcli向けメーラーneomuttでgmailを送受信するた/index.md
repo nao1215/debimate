@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 [Neomutt](https://neomutt.org/)は、Command Line Interface(CLI)で使用するメールクライアントです。mutt(1995年に登場したメーラー)をforkしたプロジェクトであり、その上位互換となっています。CLI環境でメールを読む理由は、**動作が快適な事**や**省メモリである事**が挙げられます。
 
@@ -35,7 +35,7 @@ GUI環境のメーラーは、Microsoft Outlook、Thunderbird、Gmailなどが�
 - キャッシュ設定
 - キーバインディング設定
 
-## 検証環境
+### 検証環境
 
 ```
 $ neofetch
@@ -58,7 +58,7 @@ $ neofetch
               `"""            Memory: 4168MB / 32069MB 
 ```
 
-## Gmailアプリパスワードの取得
+### Gmailアプリパスワードの取得
 
 前提として、Gmailのメールアドレスとパスワードを取得している状態とします。NeomuttがGmailサーバからメールを取得する際、普段使用するパスワードではなく、Neomutt用パスワードが必要になります。
 
@@ -78,7 +78,7 @@ $ neofetch
 
 ![](images/s_password-1.jpg)
 
-## Neomuttおよび関連パッケージの取得
+### Neomuttおよび関連パッケージの取得
 
 NeomuttをDebian9環境にインストールするには、
 
@@ -102,7 +102,7 @@ $ sudo apt install neomutt/testing w3m gnupg
 
 ```
 
-## GmailアプリパスワードをGPGで暗号化
+### GmailアプリパスワードをGPGで暗号化
 
 Neomuttの各種設定は、neomuttrcファイルに記載します。この設定には、Gmailアプリパスワードを記載する事も含まれますが、平文でパスワードを残す事はセキュリティにリスクがあります。そのため、パスワードを暗号化します。
 
@@ -174,7 +174,7 @@ $ shred -u ~/.config/neomutt/passwds (注釈)：平文ファイルを完全に�
 
 \[the\_ad id="598"\]
 
-## Gmailの送受信設定
+### Gmailの送受信設定
 
 Gmailの送受信設定をneomuttrcファイル(Neomuttの設定ファイル)に記載します。記載する内容は、ユーザの本名やGmailアドレスによって変わるため、注意が必要です。
 
@@ -199,7 +199,7 @@ set folder    = "imaps://imap.gmail.com:993" # 受信メールの読み込み先
 
 ```
 
-## メールセキュリティ設定
+### メールセキュリティ設定
 
 メールセキュリティ設定を"~/.config/neomutt/neomuttrc"に記載します。ここでのセキュリティ設定は、以下の2点です。
 
@@ -215,7 +215,7 @@ set ssl_force_tls     = yes # SSLを次世代規格のTLSに強制的に変更
 
 ```
 
-## メーラー基本設定
+### メーラー基本設定
 
 Neomuttのメーラーとしての基本設定を"~/.config/neomutt/neomuttrc"に記載します。「CA証明書(SSLサーバの証明書)を格納するディレクトリ」や「HTMLメールを読むための設定ファイル」は自動生成されないため、事前に作成しておきます。
 
@@ -250,7 +250,7 @@ auto_view text/html                              # HTMLを自動でw3mで開封
 
 ```
 
-## キャッシュ設定
+### キャッシュ設定
 
 Neomuttの起動を早めるために、各メールに対するキャッシュ設定を"~/.config/neomutt/neomuttrc"に記載します。キャッシュを格納するディレクトリは、自動生成されないため、予め作成しておきます。
 
@@ -269,7 +269,7 @@ set message_cachedir = "~/.mutt/cache/bodies"  # IMAP経由で受信したメッ
 
 ```
 
-## キーバインディング設定
+### キーバインディング設定
 
 キーバインディング設定は、ユーザの好みの範疇のため、設定しなくても良いです。
 
@@ -286,6 +286,6 @@ bind index,pager \Cv sidebar-toggle-visible   # サイドバーを開く、も�
 
 ```
 
-## 最後に
+### 最後に
 
 ここまでの設定によって、Gmailの送受信ができるようになってます。より細かい設定は、[Neomutt公式サイトのリファレンス](https://neomutt.org/guide/reference.html)を確認して下さい。

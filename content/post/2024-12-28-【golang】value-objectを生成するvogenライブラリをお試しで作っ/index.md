@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：GolangでValue Objectを作りづらい
+### 前書き：GolangでValue Objectを作りづらい
 
 2025年の抱負で[「ブログのアウトプットを増やす（リンク先の末尾を参照）」](https://debimate.jp/post/2024-12-27-2024%E5%B9%B4%E3%81%AE%E6%8C%AF%E3%82%8A%E8%BF%94%E3%82%8A-2025%E5%B9%B4%E3%81%AE%E6%8A%B1%E8%B2%A0/)と宣言したので、早速アウトプットします。
 
@@ -51,7 +51,7 @@ Person構造体が持つ`name`フィールドは可視性がプライベート�
 
 ということで、[nao1215/vogen](https://github.com/nao1215/vogen)パッケージを2時間ぐらいで作りました。
 
-## vogenは、メタデータからValue Objectを生成
+### vogenは、メタデータからValue Objectを生成
 
 [nao1215/vogen](https://github.com/nao1215/vogen)パッケージは、`New()`、`Getter`、`Equal()`を持つValue Objectコードを自動生成するライブラリです。Value Object Generatorの略です。
 
@@ -184,7 +184,7 @@ func (o Address) Equal(other Address) bool {
 
 ```
 
-## 微妙な点１：大して楽ではない
+### 微妙な点１：大して楽ではない
 
 勢いで作ったので、利便性の低さが気になっています。
 
@@ -192,7 +192,7 @@ func (o Address) Equal(other Address) bool {
 
 まず、厳密なValue Objectをプロダクションコードに導入したことがないので、「今までValue Objectがなくても上手く動いていたのに、今更こんな厳密な仕組みを導入するんですか？」という気持ちが前にでてきてしまいます。
 
-## 微妙な点2：New()時にバリデーションできない
+### 微妙な点2：New()時にバリデーションできない
 
 「バリデーションされた値を保持している」という状態は、安心感があります。しかし、vogenパッケージはそのような機能を導入できていません。構造体生成時に受け取る値を無条件で信用します。ピュアな奴め。
 
@@ -257,7 +257,7 @@ func NewPersonStrictly(name string, age int) (Person, error) {
 }
 ```
 
-## 最後に
+### 最後に
 
 最近はDDD（Domain-Driven Design）やアーキテクチャを勉強していることもあり、「理論に合わせてなるべく厳密に実装してみよう」とトライしている最中です。その一環で、vogenパッケージを施策してみました。
 

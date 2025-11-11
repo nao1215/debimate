@@ -17,13 +17,13 @@ cover:
   hidden: false
 ---
 
-## 前書き：Steam公式はLinuxをサポート済み
+### 前書き：Steam公式はLinuxをサポート済み
 
 Steamは、PCゲームの購入ができるプラットフォームであり、2012年からLinux環境でも動作します。[Debian公式サイトにSteamの導入方法を紹介した記事](https://wiki.debian.org/Steam)がありますが、グラフィックボードがNVIDIA環境の場合は追加手順が必要です。
 
 本記事では、追加手順を含めて、Steamのインストール方法を紹介します。
 
-## 検証環境
+### 検証環境
 
 ```
        _,met$$$$$gg.          nao@debian 
@@ -47,7 +47,7 @@ Steamは、PCゲームの購入ができるプラットフォームであり、2
 
 \[the\_ad id="598"\]
 
-## Steamパッケージのインストール前準備
+### Steamパッケージのインストール前準備
 
 この前準備では、以下の2点を行います。
 
@@ -83,7 +83,7 @@ $ sudo apt update
 
 以上で、前準備は終了です。
 
-## Steamパッケージ／Vulkan Driverインストール
+### Steamパッケージ／Vulkan Driverインストール
 
 SteamパッケージとVulkan（グラフィックAPI）をインストールします。
 
@@ -95,7 +95,7 @@ $ sudo apt install mesa-vulkan-drivers libglx-mesa0:i386 mesa-vulkan-drivers:i38
 
 \[the\_ad id="598"\]
 
-## glXChooseVisual failedエラー回避用にライブラリをインストール
+### glXChooseVisual failedエラー回避用にライブラリをインストール
 
 ここまでの手順を終えた後にSteamを起動すると、以下のエラーポップ（glXChooseVisual failedエラー）が表示される場合があります。
 
@@ -110,7 +110,7 @@ $ sudo apt install libgl1-nvidia-glvnd-glx:i386
 
 なお、PCゲームをプレイする場合はNVIDIAを使う方が多いと思いますが、グラフィックボードはAMDやIntelも存在します。AMD／Intel環境の方は、glXChooseVisual failedエラーを上記の手順で解決できないため、ご注意ください。
 
-## Steamの起動
+### Steamの起動
 
 ここまでの手順で、Steamが起動できる筈です。
 

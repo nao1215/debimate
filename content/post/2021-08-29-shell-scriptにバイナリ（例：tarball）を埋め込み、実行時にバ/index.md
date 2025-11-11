@@ -15,7 +15,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：スクリプトサイズが大きい理由
+### 前書き：スクリプトサイズが大きい理由
 
 プロプラエタリソフト（例：商用ソフト）のShell Scriptインストーラのサイズを見たら、数百MBだった事はありませんか？
 
@@ -25,7 +25,7 @@ cover:
 
 本記事では、Shell Scriptにバイナリを埋め込み、実行時にバイナリを取り出す方法を紹介します。
 
-## 検証環境
+### 検証環境
 
 Ubuntu 21.04、Bash 5.1.4、tar (GNU tar) 1.34を使用します。
 
@@ -52,7 +52,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
            ./oydmMMMMMMdhyo/.                                      
 ```
 
-## 検証用のtarball作成
+### 検証用のtarball作成
 
 Shell Script（test.sh）を含むbinディレクトリを圧縮して、tarballを作成します。tarballの中に、他のファイル（例：パッケージや画像）を含んでも問題ありません。
 
@@ -70,7 +70,7 @@ $ ls
 bin  bin.tar.gz
 ```
 
-## tarballを埋め込んだShell Scriptの作り方
+### tarballを埋め込んだShell Scriptの作り方
 
 Shell Scriptの末尾にバイナリを埋め込み、バイナリを実行時に取り出す考え方は、以下の通りです。
 
@@ -149,7 +149,7 @@ tar: Error is not recoverable: exiting now
 
 NULL文字が省略された場合、tarball展開時にチェックサムチェックエラーが発生し、処理が継続できなくなります。
 
-## tarball結合後のShell Script実行例
+### tarball結合後のShell Script実行例
 
 embed.shは、tarballを/tmp以下に展開後、/tmp/bin/test.shを実行します。test.shは"Hello World"を表示し、終了します。
 
@@ -159,6 +159,6 @@ Hello World
 
 ```
 
-## おまけ：Shell Scriptをバイナリ化する方法
+### おまけ：Shell Scriptをバイナリ化する方法
 
 - [shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法](https://debimate.jp/post/2021-08-29-shcshell-script-compiler%E3%81%A7%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%82%92%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E5%8C%96%E6%9A%97%E5%8F%B7%E5%8C%96/)

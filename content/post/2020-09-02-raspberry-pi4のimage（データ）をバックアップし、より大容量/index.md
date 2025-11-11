@@ -12,13 +12,13 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 本記事では、Raspberry Pi4のOS imageをバックアップし、より大容量なmicroSDカードにバックアップimageをリストアする方法を紹介します。
 
 Raspberry Piには、「[SD Card Copier](https://pishop.co.za/blog/my-tutorial-post/clone-your-micro-sd-directly-on-rpi/)」というアプリがインストールされていますが、本記事では使用しません。代わりに、CLIでmicroSDカードのデータをバックアップ／リストアします。
 
-## 検証環境
+### 検証環境
 
 ```
        _,met$$$$$gg.          nao@debian 
@@ -39,7 +39,7 @@ Raspberry Piには、「[SD Card Copier](https://pishop.co.za/blog/my-tutorial-p
           `"Y$b._                                     
 ```
 
-## Raspberry Piのバックアップimageを作成
+### Raspberry Piのバックアップimageを作成
 
 まず、Host環境（Linux）にカードリーダーを接続し、microSDカードを挿入します。microSDカードがLinux上で、どのデバイスファイル（/dev以下のファイル）として認識されているかをfdiskコマンドで調べます。
 
@@ -122,7 +122,7 @@ $ sudo dd if=/dev/sde of=raspi.img bs=10M
 
 バックアップが完了した後、microSDカードをカードリーダから取り外します。
 
-## バックアップimageをmicroSDカードにリストア
+### バックアップimageをmicroSDカードにリストア
 
 先程バックアップしたRaspberry Piのimageを新しいmicroSD（今回は64GB）にリストアします。microSDカードがどのデバイスファイルに割り当てられたかは、前述の手順と同様にfdiskコマンドで確認します（確認結果は省略し、/dev/sdeだったと仮定して以下の手順を進めます）。
 
@@ -134,7 +134,7 @@ $ sudo dd if=raspi.img of=/dev/sde bs=20M
 
 ```
 
-## microSDカードのパーティションを拡張
+### microSDカードのパーティションを拡張
 
 今回の例では、Raspberry Pi用のmicroSDカードは、容量が16GBから64GBに拡張されました。しかしながら、ddコマンドで新しいmicroSDカードにリストアしただけでは、使用できる領域は16GBのままです。
 
@@ -154,7 +154,7 @@ $sudo raspi-config
 
 ```
 
-## おまけ：バックアップimageサイズを縮小する方法
+### おまけ：バックアップimageサイズを縮小する方法
 
 [Raspberry Pi公式がバックアップimageを縮小するためのperlスクリプト](https://www.raspberrypi.org/forums/viewtopic.php?f=91&t=58069)を提供しています。以下の書式で使用します。
 

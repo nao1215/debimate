@@ -14,7 +14,7 @@ cover:
   hidden: false
 ---
 
-## 前書き
+### 前書き
 
 Raspberry Piに他PCからSSHなどでアクセスする場合、IPアドレスが必要です。IPアドレスが[DHCP](https://ja.wikipedia.org/wiki/Dynamic_Host_Configuration_Protocol)で動的に割り当てられる場合、都度Raspberry Pi3のIPアドレスを調べなければなりません。その手間を無くすため、IPアドレスを固定化します。
 
@@ -27,7 +27,7 @@ IPアドレス固定化のために必要な情報
 - [デフォルトゲートウェイ](https://employment.en-japan.com/tenshoku-daijiten/14868/)アドレス
 - [DNSサーバ](https://www.kagoya.jp/howto/rentalserver/dns-server/)アドレス
 
-## DHCPサーバが割り当てるIPアドレス範囲
+### DHCPサーバが割り当てるIPアドレス範囲
 
 実際の所、IPアドレスの固定化では、DHCPサーバが割り当てるIPアドレスを正確に知る必要がありません。最低限、「このIPアドレスで固定化しよう！」と考えているIPアドレスが、DHCPサーバのIPアドレス割り当て範囲に入っていれば良いです。
 
@@ -53,7 +53,7 @@ $ hostname -I    (注釈)：-Iオプションは、ホストのIPアドレスを
 
 ```
 
-## サブネットマスクの取得方法
+### サブネットマスクの取得方法
 
 サブネットマスクは、IPアドレスのネットワーク部を割り出すための情報です。IPアドレスは、ネットワーク部とホスト部から成り立っています。ネットワーク部は、IPアドレスとサブネットマスクの論理積から得られます。詳しい説明は、[このサイト](https://wa3.i-3-i.info/word11975.html)が分かりやすいです。
 
@@ -88,7 +88,7 @@ wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 
 ```
 
-## デフォルトゲートウェイアドレスの取得方法
+### デフォルトゲートウェイアドレスの取得方法
 
 デフォルトゲートウェイとは、外部ネットワークと通信する場合、通信プロトコルを変換かつ外部ネットワークと接続するシステムです。デフォルトゲートウェイのIPアドレスは、[route](https://www.atmarkit.co.jp/ait/articles/1710/13/news013.html)コマンドでDestination(受信先サイト)が"0.0.0.0"の行を確認すれば判断できます。該当行のGatewayが、デフォルトゲートウェイのIPアドレスです。
 
@@ -101,7 +101,7 @@ $ route -n     (注釈)：-nオプションは、名前解決をせずに、IP�
 
 ```
 
-## DNSサーバアドレス取得方法
+### DNSサーバアドレス取得方法
 
 DNSサーバとは、ホスト名・ドメイン名などの名前からIPアドレスを得るシステムです。DNSサーバのIPアドレスは、"/etc/resolv.conf"を参照すれば調べられます。
 
@@ -112,7 +112,7 @@ nameserver 192.168.10.1
 
 ```
 
-## IPアドレス固定化のための設定
+### IPアドレス固定化のための設定
 
 固定IPアドレスを"192.168.10.108"、サブネットマスクを"255.255.255.0(/24)"、デフォルトゲートウェイ・DNSサーバを"192.168.10.1"と仮定します。なお、サブネットマスク(XX.XX.XX.XX)をネットマスク(/8〜/32の範囲)に変換しなければならないので、[変換表](http://www.ahref.org/doc/ipsubnet.html)を使ってください。
 
@@ -134,7 +134,7 @@ static domain_name_servers=192.168.10.0
 
 ```
 
-## 別の手段：/boot/cmdline.txtを修正　
+### 別の手段：/boot/cmdline.txtを修正　
 
 Raspberry Piの/boot/cmdline.txtに
 

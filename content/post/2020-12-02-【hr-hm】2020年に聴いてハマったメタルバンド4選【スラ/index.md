@@ -13,7 +13,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：30歳、メタラー歴10年
+### 前書き：30歳、メタラー歴10年
 
 10代はV系で音楽の良さに目覚め、20代はメタルに傾倒し、30歳で90年代の懐メロを楽しむようになり始めたオッサン。
 
@@ -21,7 +21,7 @@ cover:
 
 事前に私の好みの傾向を話しておくと、V系はL'Arc／DIR／清春／the GazettE、メタルはNWOBHM／スラッシュ／パワーメタル（クサメタル）、70年代のプログレやRanibow／Queen／Led Zeppelin辺りを聴きます。ジャズやクラシックも聴きますが、頻度は低いです。
 
-## Riot City（2019年デビュー）
+### Riot City（2019年デビュー）
 
 ![](images/71nKIxLsGL._AC_SY355_.jpg)
 
@@ -33,7 +33,7 @@ cover:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Je_f3dgxq4o" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-## System Of A Down（1998年デビュー）
+### System Of A Down（1998年デビュー）
 
 ![](images/SystemofaDownToxicityalbumcover-min.jpg)
 
@@ -49,7 +49,7 @@ SOADは親しみやすい。メタル初心者にもオススメしたい。一�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/5vBGOrI6yBk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-## Overkill（1984年デビュー）
+### Overkill（1984年デビュー）
 
 ![](images/91kja6-CKmL._AC_UL320_.jpg)
 
@@ -63,7 +63,7 @@ SOADは親しみやすい。メタル初心者にもオススメしたい。一�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/c_c3GBrWsao" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-## BLIZARD（1984年デビュー）
+### BLIZARD（1984年デビュー）
 
 ![](images/61Yh4l8u7CL._AC_.jpg)
 
@@ -79,10 +79,10 @@ DEAD ENDと同様、BLIZARDはあと5年ぐらいデビューが遅ければ、�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_SoS9CzjF5A" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-## 選外：陰陽座
+### 選外：陰陽座
 
 聴けばハマりそうなんだけど、バジリスクの曲しか知らないからCD購入していません。MetallicaのBatteryに似ていると名高い悪路王が気になっていますが、YouTubeで試し聴きできない……
 
-## そして2021年へ
+### そして2021年へ
 
 - [【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】](https://debimate.jp/post/2022-01-08-hr-hm2021%E5%B9%B4%E3%81%AB%E8%81%B4%E3%81%84%E3%81%A6%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E3%82%A2%E3%83%AB%E3%83%90%E3%83%A09%E9%81%B82%E3%83%97%E3%83%AD%E3%82%B0/)

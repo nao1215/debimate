@@ -16,7 +16,7 @@ cover:
   hidden: false
 ---
 
-## 前書き：UbuntuはWelcomeメッセージが立派で邪魔
+### 前書き：UbuntuはWelcomeメッセージが立派で邪魔
 
 ラズパイサーバ（[Raspberry Pi OS](https://www.raspberrypi.org/software/)）から[HP小型PC](https://amzn.to/3jQZUtz)（[Ubuntu 20.04](https://releases.ubuntu.com/20.04/)）にサーバ移行した時、UbuntuのWelcomeメッセージがラズパイより立派な事に気づきました。
 
@@ -54,7 +54,7 @@ Last login: Mon Aug  9 01:43:07 2021 from XXX.XXX.X.XX
 
 そこで、本記事では「Welcomeメッセージを表示する仕組み」を説明した後に、「Welcomeメッセージを表示しない方法」を紹介します。
 
-## 検証環境
+### 検証環境
 
 第8世代Intel Core i3、RAM8GB、Ubuntu 20.04です。サーバーというより、ただのPC。
 
@@ -82,7 +82,7 @@ ossyNMMMNyMMhsssssssssssssshmmmhssssssso   CPU: Intel i3-8100T (4) @ 3.100GHz
 
 ```
 
-## Welcomeメッセージは/etc/motdではない
+### Welcomeメッセージは/etc/motdではない
 
 Linuxでは、ユーザーにメッセージを伝える方法として、/etc/motdファイルを利用する事があります。motdは、Message Of The Dayの略です。
 
@@ -100,7 +100,7 @@ cat: /etc/motd: そのようなファイルやディレクトリはありませ�
 
 ```
 
-## UbuntuのWelcomeメッセージは/etc/update-motd.d/
+### UbuntuのWelcomeメッセージは/etc/update-motd.d/
 
 UbuntuのWelcomeメッセージは、/etc/update-motd.d以下にある複数のShell Scriptを順番に実行する事によって、メッセージ本文を作成しています。Scriptの実行順番は、ファイル名の先頭にある数値で制御されています。数値が小さいScriptから順番に実行されます。
 
@@ -168,7 +168,7 @@ Welcome to Ubuntu 21.04 (GNU/Linux 5.11.0-25-generic x86_64)
 
 ```
 
-## /etc/update-motd.d/以下のScriptを実行しているのは誰？
+### /etc/update-motd.d/以下のScriptを実行しているのは誰？
 
 ログイン時に、**pam\_motd.so共有ライブラリ**が/run/motd.dynamicファイルを動的に作成した後（≒/etc/update-motd.d以下のScriptを実行した後）、motd.dynamicファイルの中身を表示します。ここでのpam（Pluggable Authentication Module）とは、ユーザ認証に関連する機能提供するモジュールです。
 
@@ -233,7 +233,7 @@ To see these additional updates run: apt list --upgradable
 
 なお、Welcomeメッセージの最下部（"Last login:〜"）はpam\_lastlog.soが表示するログイン履歴です。
 
-## Welcomeメッセージを表示しない方法
+### Welcomeメッセージを表示しない方法
 
 複数の案が考えられます。
 
