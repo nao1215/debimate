@@ -1,4 +1,3 @@
-
 [[main]]
   name = "Archive"
   url = "archives/"
@@ -7,9 +6,9 @@
 [[main]]
   name = "Search"
   url = "search/"
-  weight = 10
+  weight = 15
 
 [[main]]
   name = "BucketList"
   url = "bucket_list/"
-  weight = 11
+  weight = 20
