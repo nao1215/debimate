@@ -110,7 +110,7 @@ a,Yulia,25
 
 ### 対応しているバリデーションタグ一覧
 
-[go-playground/validator](https://github.com/go-playground/validator) が対応しているタグを部分的に実装しています。理論的には、[go-playground/validator](https://github.com/go-playground/validator)  の全タグを導入できます。しかし、[nao1215/csv](https://github.com/nao1215/csv) を自分でも使わないので、タグを増やしていません。2025年現在では、優秀な LLM が存在するので、ガッとタグを増やそうと思えば増やせます。
+[nao1215/csv](https://github.com/nao1215/csv)は、[go-playground/validator](https://github.com/go-playground/validator) が対応しているタグを部分的に実装しています。理論的には、[go-playground/validator](https://github.com/go-playground/validator)  の全タグを導入できます。しかし、[nao1215/csv](https://github.com/nao1215/csv) を自分でも使わないので、タグを増やしていません。2025年現在では、優秀な LLM が存在するので、ガッとタグを増やそうと思えば増やせます。
 
 #### String rules
 
