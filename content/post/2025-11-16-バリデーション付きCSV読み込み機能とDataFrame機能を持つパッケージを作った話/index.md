@@ -235,7 +235,9 @@ func ExampleDataFrame_joinFilterSort() {
 
 ### 誤算：DataFrame 同士を結合する仕様の実現で悩んだ
 
-私は、[pandas](https://pandas.pydata.org/) で一つの DataFrame を使い回す例ばかりを見ていたので、DataFrame 同士が結合できることを知らずに機能追加を始めました。DataFrame 同士を結合できる仕様に気づいた時、私は実装を断念するつもりでした。[nao1215/filesql](https://github.com/nao1215/filesql) は内部的に SQLite3 を利用しており、初期化時に CSV ファイルパスを受け取ると sql.DB 構造体を返す仕様です。普通に実装すると、DataFrame 1個が sql.DB 構造体1個を持つ構成になります。つまり、DataFrame 同士を結合しようとすると、sql.DB 構造体 A から　sql.DB 構造体 B へデータをコピーする処理が発生します。巨大な CSV ファイルを扱う場合、このコピー処理は遅すぎて許容できません。  
+私は、[pandas](https://pandas.pydata.org/) で一つの DataFrame を使い回す例ばかりを見ていたので、DataFrame 同士が結合できることを知らずに機能追加を始めました。DataFrame 同士を結合できる仕様に気づいた時、私は実装を断念するつもりでした。理由は、素直なやり方で実装できないからです。
+
+具体的に説明しましょう。[nao1215/filesql](https://github.com/nao1215/filesql) は内部的に SQLite3 を利用しており、初期化時に CSV ファイルパスを受け取ると sql.DB 構造体を返す仕様です。普通に実装すると、DataFrame 1個が sql.DB 構造体1個を持つ構成になります。つまり、DataFrame 同士を結合しようとすると、sql.DB 構造体 A から　sql.DB 構造体 B へデータをコピーする処理が発生します。巨大な CSV ファイルを扱う場合、このコピー処理は遅すぎて許容できません。  
 
 VTuber の動画を見ながら導いた結論は、「必要なタイミングだけ、データ読み込みや SQL 実行をする」でした。例えば、DataFrame 初期化やフィルタリング設定をしている段階では、SQL を実行する必要がありません。ユーザーが表の中身を確認したくなった時に初めて、SQL を実行すれば十分です。Lazy Load や Deferred initcalls と発想は同じです。必要になるまで、実行を遅らせます。
 
