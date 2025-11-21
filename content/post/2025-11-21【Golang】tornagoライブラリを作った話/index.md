@@ -387,12 +387,6 @@ sequenceDiagram
     Tornago-->>App: *TorProcess（起動完了）
 ```
 
-
-### デバッグが甘いが、一応実装した機能
-
-- NewIdentity（IPローテーション）：Torでは、同じ出口ノードを使い続けるとブロックされるリスクがあるため、定期的にCircuitを切り替える機能があります。
-- Hidden Serviceの永続化：`WithHiddenServicePrivateKey()`で秘密鍵を指定すれば、同じアドレスを維持できます。
-
 ### 最後に
 
 もう少し理解度が上がったら、Tor に関する技術同人誌を書く予定です。
