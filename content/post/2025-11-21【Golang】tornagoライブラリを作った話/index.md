@@ -355,6 +355,7 @@ tornago 側では、Tor プロセスを起動した後、SOCKS5 ポートと Con
 
 以下に、Tor 初期化シーケンスを示します。なお、余談ですが、このシーケンスのデバッグに大変時間がかかりました。Tor へのアクセスが早すぎて Tor プロセスが落ちたり、Tor コミュニケーションの方法を実装ミスしていたり......合計5時間ぐらいデバッグしていました。
 
+
 ```mermaid
 sequenceDiagram
     participant App as アプリケーション
@@ -385,6 +386,7 @@ sequenceDiagram
 
     Tornago-->>App: *TorProcess（起動完了）
 ```
+
 
 ### デバッグが甘いが、一応実装した機能
 
