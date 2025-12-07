@@ -22,6 +22,9 @@ cover:
 
 そこで、本記事では私が頻繁に使用するLinuxアプリをリストアップします。Linuxアプリと言っても、最近はクロスプラットホーム対応アプリやWebアプリの数が増えました。そのため、Windows／Macユーザの方にとっても馴染みのあるアプリが登場します。
 
+---
+
+
 ### リストから除外するアプリ
 
 ターミナルで使用するCLIコマンド（基本的なコマンド）は、除外します。例えば、[git(構成管理)](https://git-scm.com/)、[gcc(コンパイラ)](https://gcc.gnu.org/)、[ssh(他PCへのログイン)](http://www.openssh.com/)、[tmux(ターミナル画面分割)](https://github.com/tmux/tmux/wiki)、[fish(shell)](https://fishshell.com/)、[sdkman(環境構築ツール)](https://sdkman.io/)、[ag(高速版grep)](https://github.com/ggreer/the_silver_searcher)、[bat（カラフルなcat）](https://github.com/sharkdp/bat)等です。
@@ -31,6 +34,9 @@ cover:
 さらに言えば、昔は[Linux Kernel開発者のようにターミナルに引きこもる硬派なエンジニア](https://cpplover.blogspot.com/2013/06/linux.html)に憧れていましたが、最近はGUIアプリを抵抗なく使うようになりました。「皆さんも使いやすいGUIアプリを知りたい筈」という前提で、アプリをリストアップします。
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### エディタ／IDE
 
@@ -45,6 +51,9 @@ cover:
 | [micro](https://micro-editor.github.io/) | シンプルなCLIエディタ。Windowsのメモ帳ポジション。日本語を書く場合とGitのコミットメッセージには、microを使う。 |
 | [Android Studio](https://developer.android.com/studio?hl=ja) | Androidアプリ開発向け統合開発環境。 |
 | [IntelliJ IDEA](https://www.jetbrains.com/ja-jp/idea/) | JVM（Java）系開発向け統合開発環境。有償版か無料版かでSpring FrameやDB周りの機能差あり。個人的にはVisual Studio Codeで十分。 |
+
+---
+
 
 ### 調査／コード設計／GUI設計／静的解析
 
@@ -67,6 +76,9 @@ cover:
 | [Glade](https://glade.gnome.org/) | GTKを使用したGUIアプリの画面構築で使用。 |
 | [Inkscape](https://inkscape.org/ja/) | ベクター画像エディタ。アイコン作成で使用。 |
 
+---
+
+
 ### オフィス／ドキュメント系
 
 「Linuxはオフィスツールが弱い」
@@ -81,6 +93,9 @@ cover:
 | [Slack](https://slack.com/intl/ja-jp/) | 人気のあるチャットツール。 |
 | [Joplin](https://joplinapp.org/) | マークダウン形式でToDo、ノートを残せるアプリ。コート調査メモやブログネタを整理するために使用。類似アプリは[evernote](https://evernote.com/intl/jp)。 |
 | [Evince](https://wiki.gnome.org/action/show/Apps/Evince) | PDFビューワー。 |
+
+---
+
 
 ### エンターテイメント（マルチメディア、SNS）
 
@@ -97,6 +112,9 @@ Linux上でGoogle ChromeやFireFoxが動作するため、Webアプリは何で�
 | [Cinema](https://appcenter.elementary.io/com.github.artemanufrij.playmyvideos/) | ムービープレイヤー（elementary OSフォルトアプリ）。オススメするほど多機能ではないが、シンプルで分かりやすい。 |
 | [Photo](https://github.com/elementary/photos) | 写真管理アプリ（elementary OSフォルトアプリ）。雰囲気は、Macの写真アプリに類似。 |
 | [Steam](https://store.steampowered.com/?l=japanese) | ゲーム配信プラットフォーム。Linux環境で動作するゲームの配信に力を入れているため、今後に期待。[Helltaker](https://store.steampowered.com/app/1289310/Helltaker/?l=japanese)が最近面白かった。 |
+
+---
+
 
 ### 最後に：メインPCがLinuxでも結構大丈夫
 

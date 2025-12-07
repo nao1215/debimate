@@ -31,6 +31,9 @@ cover:
 9. Seek & Destroy
 10. Metal Militia
 
+---
+
+
 ### Kill'Em AllはThrash Metalの原点
 
 Kill'em AllはMetallicaの1st Albumであり、1983年〜1990年に一大ムーブメントとなったThrash Metal（音楽ジャンル）の方向性を示しました。圧倒的なスピード感で、湿り気や泥臭さを排除した無機質なリフを弾き倒すスタイルは、過去のバンドに見られないものでした（同時期にThrash Metalバンドは複数いましたが、作品のリリースが早かったのはMetallica）。
@@ -48,6 +51,9 @@ Metallicaが影響を受けたジャンル（バンド）
 - 伝統的なHR（Deep Purple、Rainbow、Queen、etc）
 
 ちなみに、Larsから言及される機会が多いバンドはDiamond Head。Diamond HeadのメンバーとLarsが同居していた過去があったり、Metallicaの手持ち曲数が少ない時にDiamond Headの曲を頻繁に演奏していたので、Diamond HeadはLarsのお気に入りバンドとみなして間違いないでしょう。彼らについて語る時のLarsは、ただのファン。
+
+---
+
 
 ### Kill'Em AllはDave Mustaineの影響が色濃く残る
 
@@ -69,6 +75,9 @@ MustaineはMetallica脱退時、自身が作曲した４曲をAlbumに収録し�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/O5mMjlPn0Jg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
+---
+
+
 ### Kill'Em All以前のJames Hetfieldは声が甲高い
 
 Kill'Em Allの収録曲はLive定番曲が多いため、現在のJames Hetfield（ボーカル）が出す野太い声に聞き慣れている方が多いかも知れません。本作におけるJames Hetfieldは、歌唱スタイルがまだ大成しきっておらず、幼さの残る甲高い声で歌い上げています。
@@ -79,6 +88,9 @@ Kill'Em Allの収録曲はLive定番曲が多いため、現在のJames Hetfield
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### 本作の仮タイトル：Metal Up Your Ass
 
 本作のタイトルは"Metal Up Your Ass"というダサい名前になる予定でしたが、末尾に下品な言葉が含まれていたため、レコード会社が難色を示したそうです。その結果、別タイトルを考え出す必要性が出たわけですが、レコード会社への怒りが止まらなかったCliffが叫んだ言葉（”Kill'Em All”）が採用された経緯があります。
@@ -86,6 +98,9 @@ Kill'Em Allの収録曲はLive定番曲が多いため、現在のJames Hetfield
 別に"Metal Up Your Ass"自体が黒歴史ワードとなったかと言えば、そうでもなく。JamesがLiveで"Kill'Em Allは、Metal Up Your Assになるはずだったんだ!!"と叫んだり（Cliff'Em Allで確認可能）、関連グッズとしてTシャツが販売されたりしています。Metallica当人たちにとっては、真面目に考えたタイトル案だったのでしょう。ダサいけど。
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B01N6HPLQS&amp;linkId=763ca338f350d1f1096050f11228956f"></iframe>
+
+---
+
 
 ### 好きな一曲
 

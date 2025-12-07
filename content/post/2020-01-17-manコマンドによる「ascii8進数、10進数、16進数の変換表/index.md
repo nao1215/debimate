@@ -28,6 +28,9 @@ ASCIIコードは、10進数（8進数、16進数）から英数字・記号に�
 
 本記事では、manコマンドによるASCII変換表のインストール方法、表示方法を紹介します。
 
+---
+
+
 ### ASCII変換表のMAN Pageをインストール
 
 ASCII変換表のMAN Pageは、[Linux man-pages project](https://www.kernel.org/doc/man-pages/)が作成しています。このプロジェクトは、Linux KernelとCライブラリ（≒glibc）とのインターフェースを説明する事を主な目的としており、様々なMan Pageを提供しています。ASCIIとKernelはあまり関係がありませんが、このプロジェクトがASCIIコード変換表のMan pageを提供しています。 
@@ -40,6 +43,9 @@ $ sudo apt upgrade
 $ sudo apt install manpages-ja manpages
   (注釈)：*-jaは日本語版、manpagesは英語版
 ```
+
+---
+
 
 ### manコマンドによるASCII変換表の表示手順
 

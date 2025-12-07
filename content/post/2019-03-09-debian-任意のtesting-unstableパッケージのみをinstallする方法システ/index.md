@@ -28,6 +28,9 @@ Debianパッケージは、基本的な使い方をしていれば、安定版(s
 - installパッケージ毎の優先度を設定(Versionコントロール)
 - testing/unstableパッケージのinstall
 
+---
+
+
 ### 前提：2019年3月時点のDebian Version
 
 下表に、2019年3月時点のDebian Version名を示します。[コードネームは、Toy Storyのキャラから選ばれています](https://wiki.debian.org/DebianReleases)。映画を見た事ある人は、何故sidが開発者向けのVersionかが想像できると思います。
@@ -39,6 +42,9 @@ Debianパッケージは、基本的な使い方をしていれば、安定版(s
 | testing | buster(10.x) | 次の安定版として、公開テスト中のVersion。 |
 | unstable | sid(なし) | 開発者向けのVersion。コードネームは、常に"sid"。 |
 | experimental | experimental | unstableに導入する前の実験段階Version。一般ユーザだけでなく、開発者に対しても「installは危険」と警告されています。 |
+
+---
+
 
 ### testing/unstableのミラーサーバをsources.listに追加
 
@@ -54,6 +60,9 @@ deb-src http://ftp.jp.debian.org/debian/ unstable main non-free
 ```
 
 "http://ftp.jp.debian.org/debian/"部分は、好きなミラーサーバを選択してください[(ミラーサーバ一覧へのリンク)](https://www.debian.or.jp/using/mirror.html)。上記で重要な部分は、"testing"もしくは"unstable"と記載した箇所です。通常であれば、stableのVersion(例：stretch)と書かれています。testing/unstableを追記した事により、これらのVersionのパッケージをミラーサーバからダウンロード可能な状態になりました(正確には、apt updateまで必要)。
+
+---
+
 
 ### installパッケージ毎の優先度を設定(Versionコントロール)
 
@@ -97,6 +106,9 @@ Pin-Priority: 89
 | P = 0 | 動作未定義。 |
 
 testing/unstableは、優先度として100 <= Priority < 500の範囲を指定しても良いです。ただし、testing/unstableパッケージの依存関係を満たすパッケージVersionが未作成(作成中)の場合、install時にエラーとなります。
+
+---
+
 
 ### testing/unstableパッケージのinstall
 
@@ -165,6 +177,9 @@ $ perl -e 'print "Hello,World\n";'
 Hello,World
 
 ```
+
+---
+
 
 ### 参考
 

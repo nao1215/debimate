@@ -24,6 +24,9 @@ AndroidでJavaを採用した理由が気になって夜しか眠れなかった
 
 組み込みLinuxの流れで考えると、「何故、全てC／C++で書かなかったのか」「Android 1.0開発当初（2005年〜2008年）は、組み込み環境が貧弱なのでJavaで書くと遅かったのではないか」と疑問に感じました。
 
+---
+
+
 ### Javaを採用した理由は訴訟で語られていた
 
 答えは意外なところで語られていました。
@@ -47,6 +50,9 @@ GoogleとOracleとJava著作権侵害訴訟（[GoogleがOracleのJava SE APIを1
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">AndroidがJavaを採用した理由は、Javaが世界中の大学で学べ、知名度があったかららしい。Linux Kernelが下にいると、GUIはC++でQtやGTKを動かすのが順当だと考えてしまうが、そもそもガラケーもJava MEを採用してるケースがあったのね。<br><br>00年代のソフト事情を知らないから、歴史を紐解くと面白い</p>— nchika@Database Removal Newbie (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1647646365059784704?ref_src=twsrc%5Etfw">April 16, 2023</a></blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+---
+
 
 ### おまけ：ガラケーはどんな世界だったのか
 
@@ -73,6 +79,9 @@ ITRONでは開発が厳しかったのか、[2000年代後半からは汎用OS�
 Symbianにしても組み込みLinuxにしても、各社の内製ライブラリが外部に公開されることが少なかったでしょうから、AndroidやiOSを開発するよりも実装量が多かったのではないかと思われます。
 
 思い返せば、ガラケー時代は１社で年に数台の新機種ケータイをリリースしていた訳ですから、「さぞかし開発現場は修羅場であっただろう」と容易に想像できてしまう。大企業のことだからファームもミドルもアプリも外注して、短い開発期間で下請け業者が悲鳴を上げていたのではないかと（名高いYRP野比とガラケーは関係があった気がします。調べないけど）
+
+---
+
 
 ### 最後に
 

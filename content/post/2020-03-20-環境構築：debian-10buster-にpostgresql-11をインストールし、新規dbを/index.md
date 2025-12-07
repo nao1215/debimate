@@ -37,6 +37,9 @@ cover:
 - postgresユーザ以外がpostgresユーザとしてDBに接続する方法
 - 新規DB作成
 
+---
+
+
 ### 検証環境
 
 ```
@@ -58,6 +61,9 @@ cover:
           `"Y$b._             GPU: NVIDIA NVIDIA Corporation TU107 
               `"""            Memory: 7598MiB / 64404MiB 
 ```
+
+---
+
 
 ### PostgreSQLのインストール
 
@@ -120,6 +126,9 @@ Debian公式レポジトリには、PostgreSQLに関するサードパーティ�
 | postgresql-server-dev-11 | バックエンド開発向けのC言語ライブラリ（ヘッダ含む） |
 | pgadmin4 | pgAdmin4（GUIによる管理ツール）のユーティリティ |
 
+---
+
+
 ### PostgreSQL環境設定ファイルの置き場（PATH）
 
 PostgreSQL設定ファイルの置き場は、LinuxディストリビューションやWindows環境で異なります。Debian環境では、/etc/postgresql/11/main環境設定ファイルが存在します。
@@ -136,9 +145,15 @@ PostgreSQL設定ファイルの置き場は、Linuxディストリビューシ�
 
 ```
 
+---
+
+
 ### PostgreSQL DB情報の置き場（PATH）
 
 PostgreSQLで作成したDB情報は、/var/lib/postgresql/11/mainに存在します。手動でDBを停止させる場合などに、前述のPATHを把握しておく必要があるため、記載しておきます。
+
+---
+
 
 ### 外部ホストからの接続禁止設定
 
@@ -152,6 +167,9 @@ listen_addresses = '*'
 listen_addresses = 'localhost' 
 
 ```
+
+---
+
 
 ### postgresユーザのパスワード設定
 
@@ -168,6 +186,9 @@ $ psql                (注釈)：psql実行後、DB操作用のターミナル�
 postgres=# ALTER USER postgres with encrypted password '任意のパスワード';
 
 ```
+
+---
+
 
 ### DB操作用ユーザを追加
 
@@ -186,6 +207,9 @@ $ createuser --pwprompt --interactive 任意のユーザ名
 postgresユーザでDB用ユーザを作成しなかった場合、管理者権限を付与できません。
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### postgresユーザ以外がpostgresユーザとしてDBに接続する方法
 
@@ -213,6 +237,9 @@ local   all   postgres   md5
 $ sudo systemctl restart postgresql 
 
 ```
+
+---
+
 
 ### 新規DB作成
 

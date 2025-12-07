@@ -25,6 +25,9 @@ Javaのenumを多機能と感じた例として、以下の3点が挙げられ�
 
 他の言語と比較しても多機能なJavaのenumに関して、本記事では基本的な使い方から応用（シングルトンとして利用する方法）まで順番に説明していきます。
 
+---
+
+
 ### enumが持つメソッド一覧
 
 [Java SE11のjava.baseモジュールのjava.lang.Enum](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/lang/Enum.html)には、下表のメソッドが定義されています。例外を投げるclone()、実装できないfinalize()を除いて、下表のメソッドの実装例／実行結果を順に示します。
@@ -347,6 +350,9 @@ public class App {
 
 ```
 
+---
+
+
 ### C言語ライクな使い方の例
 
 Javaのenumの最も単純な使い方の例として、enum Actor（役者）を定義して、whoメソッドの引数がどの役者であったかを判定するプログラムを以下に示します。
@@ -401,6 +407,9 @@ Can't convert string.
 java.lang.IllegalArgumentException: No enum constant Test.App.Actor.Katyuska Moon Fox
 
 ```
+
+---
+
 
 ### enum定数が数値と文字列を持つ例（C言語では不可）
 
@@ -483,6 +492,9 @@ public class App {
 
 ```
 
+---
+
+
 ### 応用：enumでシングルトンを作成
 
 Javaの言語仕様上、Enumがグローバルに唯一のインスタンスとなる事が保証されます。Enumは、厳密なSingletonであり、スレッドセーフかつabstractな実装もできます。
@@ -490,6 +502,9 @@ Javaの言語仕様上、Enumがグローバルに唯一のインスタンスと
 シングルトンを作成する方法に関して、以下の記事で紹介しています。
 
 - [【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】](https://debimate.jp/post/2020-04-26-singelton%E3%83%91%E3%82%BF%E3%83%BC%E3%83%B3%E8%80%83%E3%81%88%E6%96%B9%E3%81%AF%E5%8D%98%E7%B4%94%E3%81%A0%E3%81%8C%E4%BD%BF%E3%81%84%E3%81%A9%E3%81%93%E3%82%8D%E3%81%8C/)
+
+---
+
 
 ###  後書き
 

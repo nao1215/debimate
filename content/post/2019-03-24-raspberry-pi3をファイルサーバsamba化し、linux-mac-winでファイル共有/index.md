@@ -27,6 +27,9 @@ cover:
 - 外部ストレージの自動マウント設定
 - sambaの設定・立ち上げ
 
+---
+
+
 ### 環境
 
 | **項目** | **機器/Version** | **用途・備考** |
@@ -62,6 +65,9 @@ $ neofetch
 
 ```
 
+---
+
+
 ### sambaパッケージのインストール
 
 exfat-fuse、cifs-utilsは、Windows側のファイルシステムをmountする場合に備えて、インストールします。autofsは、外部ストレージを自動でmount/unmoutするために導入します。
@@ -76,11 +82,17 @@ Version 4.5.16-Debian
 
 ```
 
+---
+
+
 ### Raspberry Pi3を固定IP化
 
 各PCはRaspberry PiのIPアドレスに対してアクセスする事もあるため、固定IP化します。IPの固定化方法は、以下の記事を参照してください。固定後のIPアドレスは、"192.168.10.108"と仮定します。
 
 - [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
+
+---
+
 
 ### 外部ストレージの自動マウント設定
 
@@ -148,6 +160,9 @@ ssd             -fstype=exfat-fuse,rw,umask=000 :/dev/disk/by-uuid/5B2B-6E3C
 
 ```
 
+---
+
+
 ### sambaの設定・立ち上げ
 
 smb.confを編集し、ネットワークに公開するディレクトリの設定を行います。Raspberry Pi上にnaoユーザが存在すると仮定し、以下の設定ファイルを記載しています。
@@ -203,6 +218,9 @@ $ sudo systemctl enable nmbd
 $ sudo reboot
 
 ```
+
+---
+
 
 ### sambaアクセス権を設定する場合
 

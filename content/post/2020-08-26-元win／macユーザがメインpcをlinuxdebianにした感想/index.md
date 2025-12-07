@@ -23,6 +23,9 @@ cover:
 
 そんな私がメインPCをLinuxに置き換えた3年間で感じた事をジャンル毎にコメントしていきます。各ジャンルの先頭（見出し）に「◯：快適、△：少しだけ不満あり、☓：不便」とザックリ評価を付けています。　　　　　　　　
 
+---
+
+
 ### △音楽
 
 ![](images/Screenshot-from-2020-08-26-19-00-59-min.jpg)
@@ -45,6 +48,9 @@ cover:
 
 ただし、上記のような音楽との向き合い方は、やや古いスタイルです。ストリーミングやデジタル配信で生活している人は、あまり音楽面で不満が出ないかも知れません。
 
+---
+
+
 ### △動画（☓編集、◯再生）
 
 ![](images/vector-video-player-941434_640.png)
@@ -66,6 +72,9 @@ cover:
 
 私は気にしていませんが、Linuxにおける動画再生での唯一のデメリットは、利用可能なBlu-rayプレイヤーアプリが存在しない事です。Blu-rayを沢山お持ちの方は、この点に注意してください。
 
+---
+
+
 ### ◯ネットサーフィン／ブラウザ
 
 ![](images/browser-1666982_640-1.png)
@@ -75,6 +84,9 @@ cover:
 Google Chrome、Fire Foxを普段使いしている方であれば、Linuxに移行しても困る事はないでしょう。その一方で、WindowsのIE／Edge、MacのSafariはLinuxに存在しないので、これらのブラウザユーザはLinuxに移行すると各種データの移行作業が発生して辛いかも知れません。
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### ☓Office
 
@@ -92,6 +104,9 @@ Linuxには、様々なOfficeアプリがあります。
 
 「私は気にならない」もしくは「家でOfficeを使わない」という方がいらっしゃるとは思いますが、LinuxのOfficeに関する個人的な評価は☓とさせていただきました。
 
+---
+
+
 ### ◯プログラミング
 
 ![skill](images/laptop-1071781_640-min.jpg)
@@ -104,6 +119,9 @@ Win／Mac／Linuxの中で、Linuxがダントツで最高。
 
 Linuxばかりを持ち上げていますが、最近のWindowsも好印象です。[WSL2](https://docs.microsoft.com/ja-jp/windows/wsl/)、[Docker](https://www.docker.com/)、[Windows Package Manager](https://github.com/microsoft/winget-cli)、[Windows Terminal](https://github.com/microsoft/terminal)など、開発に役立つツールが続々と公開されているので、近い将来にメインPCをWindowsに戻す可能性があるかも知れません（およそ10年ぶり）。
 
+---
+
+
 ### ☓ゲーム
 
 LinuxはAAAタイトルゲームがない。
@@ -115,6 +133,9 @@ LinuxはAAAタイトルゲームがない。
 なお、Steamをインストールしたい方がいらっしゃれば、以下の記事で手順を紹介しています。
 
 - [【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避](https://debimate.jp/post/2020-08-28-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89debian-10%E3%81%ABsteam%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95glxchoosevisual/)
+
+---
+
 
 ### △システム／デスクトップ環境
 
@@ -133,6 +154,9 @@ Windowsのような半強制Windows Updateが存在しないだけでも、Linux
 - 画面のクラッシュ（2015〜2016年ごろのUbuntuに見られた現象）
 
 でしょうか。そこまで深刻な不満は少ないですが、些細な不満が多々あります。
+
+---
+
 
 ### 最後に
 

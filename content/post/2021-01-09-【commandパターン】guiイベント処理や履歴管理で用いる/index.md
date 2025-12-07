@@ -30,6 +30,9 @@ Commandパターンは、イベント駆動型アプリ（例：GUIアプリ）�
 
 本記事では、「Commandパターンのクラス図／シーケンス図」を示した後に、「Javaによる実装例」を紹介します。
 
+---
+
+
 ###  Commandパターンのクラス図
 
 ![](images/command_base-min-1.jpg)
@@ -42,9 +45,15 @@ Commandパターンは、イベント駆動型アプリ（例：GUIアプリ）�
 | ConcreteCommand | Receiverクラスのメソッドを用いて、Commandインターフェースのメソッドを実装します。 |
 | Receiver | 実処理を担当するクラス。 |
 
+---
+
+
 ###  Commandパターンのシーケンス図
 
 ![](images/command_Sequence.jpg)
+
+---
+
 
 ### Commandパターンの実装例
 
@@ -264,6 +273,9 @@ $ gradle run
 ```
 
 なお、最近は関数型言語で用いられるラムダ式（JavaもSE 8からサポート済み）を用いれば、Commandデザインパターンを用いずに同様の内容をよりシンプルに実装できます。
+
+---
+
 
 ### 他のデザインパターンに関して
 

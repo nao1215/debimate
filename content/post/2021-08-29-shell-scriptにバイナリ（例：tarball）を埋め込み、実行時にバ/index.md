@@ -25,6 +25,9 @@ cover:
 
 本記事では、Shell Scriptにバイナリを埋め込み、実行時にバイナリを取り出す方法を紹介します。
 
+---
+
+
 ### 検証環境
 
 Ubuntu 21.04、Bash 5.1.4、tar (GNU tar) 1.34を使用します。
@@ -52,6 +55,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
            ./oydmMMMMMMdhyo/.                                      
 ```
 
+---
+
+
 ### 検証用のtarball作成
 
 Shell Script（test.sh）を含むbinディレクトリを圧縮して、tarballを作成します。tarballの中に、他のファイル（例：パッケージや画像）を含んでも問題ありません。
@@ -69,6 +75,9 @@ $ tar cvfz bin.tar.gz bin
 $ ls
 bin  bin.tar.gz
 ```
+
+---
+
 
 ### tarballを埋め込んだShell Scriptの作り方
 
@@ -149,6 +158,9 @@ tar: Error is not recoverable: exiting now
 
 NULL文字が省略された場合、tarball展開時にチェックサムチェックエラーが発生し、処理が継続できなくなります。
 
+---
+
+
 ### tarball結合後のShell Script実行例
 
 embed.shは、tarballを/tmp以下に展開後、/tmp/bin/test.shを実行します。test.shは"Hello World"を表示し、終了します。
@@ -158,6 +170,9 @@ $ ./embed.sh
 Hello World
 
 ```
+
+---
+
 
 ### おまけ：Shell Scriptをバイナリ化する方法
 

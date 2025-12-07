@@ -27,6 +27,9 @@ cover:
 - [https://github.com/nao1215/horcrux](https://github.com/nao1215/horcrux)
 - [https://www.npmjs.com/package/@nao1215/horcrux](https://www.npmjs.com/package/@nao1215/horcrux)
 
+---
+
+
 ### N 分割ファイルのうち、M 個があれば復元可能
 
 README から説明画像を引用しますが、以下のように5分割したファイルのうち、3個のファイルがあれば元ファイルに復元できます。実装前は、「なにこれ、RAID（Redundant Arrays of Independent Disks）？どうやって実現しているのだろうか」と不思議でした。
@@ -46,6 +49,9 @@ README から説明画像を引用しますが、以下のように5分割した
 閾値 t （復元に必要な数）と総数 n （断片ファイルの総数）を設定し、n > t にしておけば、断片ファイルに多めの情報をもたせることで、総数 n のうち任意の t 個が揃えば復元できます。具体的には、多項式の次数が t-1 なので、t 点揃えばラグランジュ補完で唯一の多項式が決まり、定数項（秘密）の値が復元できます。
 
 シャミアの秘密分散は、秘密をバラす仕組みでしかないので、断片ファイル自体を暗号化しません。そこで、最初にファイルを暗号化し、その暗号鍵をシャミアの秘密分散で分割しています。
+
+---
+
 
 ### 使い方
 
@@ -83,11 +89,17 @@ const restored = await bindHorcruxes(result.horcruxes.slice(0, 2));
 console.log(restored.data.toString()); // 'Secret message'
 ```
 
+---
+
+
 ### お気に入りのロゴ
 
 このロゴは、中二病っぽくて気に入ってます。
 
 ![](images/horcrux.jpg)
+
+---
+
 
 ### 最後に：ハリーポッターで誰が好きか
 

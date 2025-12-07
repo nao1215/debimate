@@ -32,6 +32,9 @@ UserLAndは、AndroidアプリとしてPlayストア経由で配信されてい�
 
 本記事では、UserLAndの導入方法を説明した後、UserLAndの良い点・悪い点を記載します。
 
+---
+
+
 ### 環境
 
 今回の検証環境はスマホではなく、タブレット端末です。ただし、スマホ([Nexus 5X](https://www.amazon.co.jp/LG-H791-Nexus-5X-CARBON-32GB/dp/B01BR86Z2U))でも動作確認済みです。
@@ -42,6 +45,9 @@ UserLAndは、AndroidアプリとしてPlayストア経由で配信されてい�
 | CPU | HUAWEI Kirin 960s オクタコア   (4 x Cortex-A73@2.1GHz + 4 x Cortex-A53@1.8GHz) |
 | メモリ | RAM 4GB / ROM 32GB |
 | ディスプレイ | 約10.8インチ / 2560x1600(WQXGA) / 約280ppi |
+
+---
+
 
 ### UserLAndにLinuxを導入する手順
 
@@ -86,6 +92,9 @@ trace-cmd python3 python3-dev python3-pip
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### UserLAndの良い点
 
 良い点
@@ -112,6 +121,9 @@ trace-cmd python3 python3-dev python3-pip
 
 もちろん、「ノートPCの方が良い」「ソフトキーボードが使いづらい」「画面が小さい」等の意見があるでしょう。しかし、私は現在のAndroid(UserLAnd)によるコードリーディング環境に満足しています。今まで出来なかった事ができるようになったのですから。
 
+---
+
+
 ### UserLAndの悪い点
 
 悪い点
@@ -121,6 +133,9 @@ trace-cmd python3 python3-dev python3-pip
 やや処理速度が遅い理由は簡単で、prootを使用しているからです。prootはroot権限を擬似的に提供するため、[ptrace](http://surf.ml.seikei.ac.jp/~nakano/JMwww/html/LDP_man-pages/man2/ptrace.2.html)システムコールを使用します。ptraceは、子プロセスが実行したシステムコールの監視・制御ができます。より具体的には、ファイルアクセス関連システムコールが発生した場合、システムコールをフックし、ファイルアクセス先のPATH名を書き換えています。システムコール単位でフック処理が入るため、処理速度が落ちてしまう点は仕方がありません。
 
 なお、prootは他OSのGuest rootfsを仮想化し、Shell Sessionを起動できます。つまり、UserLAndは、各Linux ディストリビューションをprootによる仮想化rootfsとして用意した後、Shellを起動しています。
+
+---
+
 
 ###  追記：2年後の2021年、私はAndroidアプリを選択
 

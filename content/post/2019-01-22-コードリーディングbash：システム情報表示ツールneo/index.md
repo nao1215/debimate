@@ -27,6 +27,9 @@ POINT
 
 基本的に、neofetchはゴリ押しな作り
 
+---
+
+
 ### neofetchとは
 
 | 項目 | 説明 |
@@ -37,6 +40,9 @@ POINT
 | ライセンス | [MIT](https://github.com/dylanaraps/neofetch/blob/master/LICENSE.md) |
 | Download | [https://github.com/dylanaraps/neofetch](https://github.com/dylanaraps/neofetch) |
 | 紹介記事(日本語) | [システム情報を表示する便利なコマンド「neofetch](https://news.mynavi.jp/article/20180622-651666/) |
+
+---
+
 
 ### neofetchのコード規模
 
@@ -49,6 +55,9 @@ POINT
 | make | 2 | 6 | 0 | 22 |
 | YAML | 1 | 3 | 0 | 10 |
 | 合計 | 11 | 788 | 773 | 2740 |
+
+---
+
 
 ### インストール方法およびソースコード取得方法
 
@@ -84,6 +93,9 @@ CHANGELOG.md  Makefile   ascii   debian    neofetch.1
 LICENSE.md    README.md  config  neofetch
 ```
 
+---
+
+
 ### neofetchの実装に関する説明範囲
 
 説明範囲は、neofetchのmain関数内に存在する関数(例：cache\_uname)とします。
@@ -114,6 +126,9 @@ LICENSE.md    README.md  config  neofetch
 
   main "$@"   
 ```
+
+---
+
 
 ### ヘッダ：Shebangおよびデバッグ用の記述
 
@@ -152,6 +167,9 @@ $ ./neofetch
 (省略)
 ```
 
+---
+
+
 ### cache\_uname()：OSのKenel/Arch情報を取得
 
 cache\_uname()は、[unameコマンド](https://eng-entrance.com/linux-command-uname)を用いて、Linux KernelバージョンとCPU Architectureを取得します。以下が実装の全体です。
@@ -181,6 +199,9 @@ Linux 4.9.0-8-amd64 x86_64
 
 後は、配列変数unameから順番に要素を取り出して、別変数で保持しているだけです。
 
+---
+
+
 ### get\_os()：KernelからOS名の決定
 
 前述のcache\_uname()で取得したカーネル情報から、OS名を決定します。以下が実装の全体です。基本的には、文字列分岐なので、実装で説明する部分はないです。
@@ -207,6 +228,9 @@ Linux 4.9.0-8-amd64 x86_64
 私がneofetchの実装を見て存在を認識したOSは、[Haiku](https://ja.wikipedia.org/wiki/Haiku_\(%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0\))/AIX/IRIXあたり。
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### get\_default\_config()：neofetchの設定ファイルの読込
 
@@ -238,6 +262,9 @@ neofetchのconfigファイルを探し、その内容を[sourceコマンド](htt
 ```
 
 このconfigファイルは、インストール方法によって、格納場所が異なります。私の環境では、"/usr/share/neofetch/config"に存在しました(aptパッケージマネージャでのインストール)。
+
+---
+
 
 ### get\_args()：引数の取得
 
@@ -289,6 +316,9 @@ get\_args()の実装(抜粋)は、以下の通りです。
       done   
 ```
 
+---
+
+
 ### 1\. カスタムしたconfigファイルを使用するかを判定(最初のcase文からwhile文の前まで)
 
 まず、最初のcase文において、関数に渡した全引数($@)をチェックします。本来の意図では、"--config none"のみがconfig無効化を意味しますが、"--config off"や"--config"などの誤った記載を認めるため、このようなcase文になっています。
@@ -299,9 +329,15 @@ get\_args()の実装(抜粋)は、以下の通りです。
 
 関数get\_user\_config(本記事に未掲載)はデフォルトconfigファイルを再び読み込んだ後、"${HOME}/.config/neofetch"以下にコピーします。このタイミングでしたい事は、本当はコピーだけです。しかし、次のオプション解析内でユーザ指定configを読み込む際、同関数を使いまわしたいようです。そのため、無駄ですが、デフォルトconfigファイルを2回読み込んでいるようです。　
 
+---
+
+
 ### 2\. オプション解析(while文の中身)
 
 1番目の引数が空文字でない限りループを繰り返し、case文でロングオプション毎に処理を分岐させます。分岐後は、オプション引数を別変数に格納するのがメインです(例：os\_arch="$2"の部分)。ループの最後で、[shiftコマンド](https://tech.nikkeibp.co.jp/it/article/COLUMN/20060227/230882/)を用いて、引数を1つずらします。
+
+---
+
 
 ### old\_flags()：deprecatedしたオプション使用時の警告
 
@@ -322,6 +358,9 @@ get\_args()の実装(抜粋)は、以下の通りです。
       [[ -n "$progress_color_total" ]] && err "Config: \$progress_color_total is deprecated, use \$bar_color_total instead."                                                   
   } 
 ```
+
+---
+
 
 ### get\_distro()：ディストリビューション名およびVersionの取得
 
@@ -391,6 +430,9 @@ get\_args()の実装(抜粋)は、以下の通りです。
 
 上の表の方法で特定できなかった場合は、Unknownとなります。また、os\_archオプションが有効の場合、ディストリビューション名にCPU architectureを付与します。最後の変数ascii\_distroは、各ディストリビューションのアスキーアートを取得する際に使用します(後述)。
 
+---
+
+
 ### get\_bold：太字用のANSIエスケープコードを取得
 
 コード中の"\\033"はESCと同等で、太字指定("ESC\[1m")となります。
@@ -408,6 +450,9 @@ get\_args()の実装(抜粋)は、以下の通りです。
       esac                                                                                                                                          
   }  
 ```
+
+---
+
 
 ### get\_distro\_colors()：ディストリビューション毎の表示色を取得
 
@@ -450,6 +495,9 @@ get\_args()の実装(抜粋)は、以下の通りです。
   }    
 ```
 
+---
+
+
 ### get\_image\_backend()：背景画像表示に関する設定
 
 ここでの処理は、w3m-imgおよびImageMagickパッケージの導入が前提となっています。  
@@ -466,6 +514,9 @@ w3m-imgは、ターミナル上に画像を表示するコマンドであり、w
 　5. 現在のTerminalの縦横を取得  
 　6. 画像の縦横を取得  
 　7. 画像のサムネイルをconvertコマンドで作成
+
+---
+
 
 ### old\_functions()：古いconfigファイル上に実装された関数と互換性を取る
 
@@ -488,6 +539,9 @@ neofetchは、一部の関数実装をconfigファイルに分離しています
   }     
 ```
 
+---
+
+
 ### get\_cache\_dir()：キャッシュディレクトリの決定
 
 Macか、それ以外のOSでキャッシュディレクトリを変更します。
@@ -500,6 +554,9 @@ Macか、それ以外のOSでキャッシュディレクトリを変更します
       esac                                                                                                                                          
   }  
 ```
+
+---
+
 
 ### print\_info()：システム情報の表示
 
@@ -558,6 +615,9 @@ Macか、それ以外のOSでキャッシュディレクトリを変更します
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### ディストリビューションアスキーアートの格納先
 
 私の環境では、`/usr/share/neofetch/ascii/distro`以下に存在します。  
@@ -611,6 +671,9 @@ ${c1}..............
                                             .'
                                              .
 ```
+
+---
+
 
 ### 最後に
 

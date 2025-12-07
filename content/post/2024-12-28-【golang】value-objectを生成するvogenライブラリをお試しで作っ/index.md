@@ -51,6 +51,9 @@ Person構造体が持つ`name`フィールドは可視性がプライベート�
 
 ということで、[nao1215/vogen](https://github.com/nao1215/vogen)パッケージを2時間ぐらいで作りました。
 
+---
+
+
 ### vogenは、メタデータからValue Objectを生成
 
 [nao1215/vogen](https://github.com/nao1215/vogen)パッケージは、`New()`、`Getter`、`Equal()`を持つValue Objectコードを自動生成するライブラリです。Value Object Generatorの略です。
@@ -184,6 +187,9 @@ func (o Address) Equal(other Address) bool {
 
 ```
 
+---
+
+
 ### 微妙な点１：大して楽ではない
 
 勢いで作ったので、利便性の低さが気になっています。
@@ -191,6 +197,9 @@ func (o Address) Equal(other Address) bool {
 「自動生成コードは、テストカバレッジの計測対象外にしよう」というルールがあったとしても、vogenパッケージに便利さを感じていません。「メタデータを書く量」と「自動生成されるコード量」が見合ってません。"自分で書いた方が早インパラ（[元ネタ](https://x.com/ngntrtr/status/1343030917044944897)）"という気持ちになる可能性があります。
 
 まず、厳密なValue Objectをプロダクションコードに導入したことがないので、「今までValue Objectがなくても上手く動いていたのに、今更こんな厳密な仕組みを導入するんですか？」という気持ちが前にでてきてしまいます。
+
+---
+
 
 ### 微妙な点2：New()時にバリデーションできない
 
@@ -256,6 +265,9 @@ func NewPersonStrictly(name string, age int) (Person, error) {
 	return o, nil
 }
 ```
+
+---
+
 
 ### 最後に
 

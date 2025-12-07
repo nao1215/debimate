@@ -25,6 +25,9 @@ Javaのgradleのような「Golangプロジェクトテンプレートのジェ�
 
 **2022年4月19日追記**：ubumeからmkgoprjにリネームしました。そして本記事に書かれている内容とは別仕様に変更（破壊的な変更）をしたので、[日本語版README](https://github.com/nao1215/mkgoprj/blob/main/doc/README.ja.md)を参照してください。
 
+---
+
+
 ### インストール方法
 
 go installでインストールしてください。
@@ -34,6 +37,9 @@ $ go install github.com/nao1215/mkgoprj/v2@latest
 ```
 
 Golang開発環境が未構築の場合は、ubumeコマンドのインストール前に[Golang公式サイト](https://go.dev/doc/install)を参考にしてGolang開発環境を構築してください。
+
+---
+
 
 ### 使い方
 
@@ -60,6 +66,9 @@ sample/
 ```
 
 sample/cmd以下には、mainパッケージとそのテストファイルが格納されています。コードをビルド、テスト、フォーマットするためのMakefileも生成します。" $ go mod init github.com/nao1215/sample" も実行済みの状態です。
+
+---
+
 
 ### Makefileの仕様
 
@@ -96,6 +105,9 @@ clean: ## Clean project
 
 ```
 
+---
+
+
 ### ビルド方法
 
 "make build"でプロジェクトルートディレクトリに、バイナリが生成されます（今回はsampleバイナリが生成されます）。
@@ -112,6 +124,9 @@ $ ./sample
 Hello, World
 
 ```
+
+---
+
 
 ### 最後に（追記含む）
 

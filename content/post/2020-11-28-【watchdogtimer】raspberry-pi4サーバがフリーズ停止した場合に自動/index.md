@@ -29,6 +29,9 @@ cover:
 
 そこで代替案として、Watch Dog TimerとHeartbeatを利用して、ラズパイサーバ停止時に自動再起動するように設定変更しました。本記事では、その設定変更方法について説明します。
 
+---
+
+
 ### 本記事の実施内容（+ WDT／Heartbeat説明）
 
 ![](images/watchdog-Page-1-min.jpg)
@@ -50,6 +53,9 @@ Raspberry Pi 4サーバが何らかの異常で停止した場合、Heartbeat信
 - WDTの有効化
 - Heartbeat待ち時間の設定
 - Heartbeat間隔の設定
+
+---
+
 
 ### 検証環境
 
@@ -74,6 +80,9 @@ Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
           `"Y$b._
               `"""
 ```
+
+---
+
 
 ### WDTの有効化
 
@@ -101,6 +110,9 @@ dtparam=watchdog=on
 この面倒な作業を簡略化する方法として、Linux Kernelがデバイスツリーに関する処理（=ハードウェア初期化）を実施する際、デバイスツリーパラメータを渡せます。このパラメータによって、動的にデバイスツリー設定を変更できます。
 
 今回の例では、デバイスツリーパラメータ（dtparam）に"watchdog=on"を渡す事によって、デバイスツリーを書き換える事なく、Raspberry Pi起動時にWDTを有効化しています。
+
+---
+
 
 ### Heartbeat待ち時間の設定
 
@@ -136,6 +148,9 @@ MODULE_PARM_DESC(nowayout, "Watchdog cannot be stopped once started (default="
 | heartbeat | 秒単位の初期Watch Dog heartbeat（タイムアウトするまでの時間） |
 | nowayout | 一度起動した後に、Watch Dogを停止可能かどうかのフラグ |
 
+---
+
+
 ### Heartbeat間隔の設定
 
 Heartbeatは、systemd（Raspberry Pi4のシステム管理デーモン）に実施させます。
@@ -151,6 +166,9 @@ RuntimeWatchdogSec=5
 
 ```
 
+---
+
+
 ### 再起動
 
 新しい設定を反映させるために再起動します。
@@ -159,6 +177,9 @@ RuntimeWatchdogSec=5
 $ sudo reboot
 
 ```
+
+---
+
 
 ### 動作確認
 
@@ -193,6 +214,9 @@ $ :(){ :|:& };:
 フォーク爆弾の後で（実行から数分後）、自動で再起動すれば設定が正しく反映されています。
 
 フォーク爆弾を実行してもsystemdがheartbeatを送り続けられる余裕がある場合、なかなかシステムが再起動しないかもしれません。
+
+---
+
 
 ### システムを落とす別の方法
 

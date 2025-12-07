@@ -23,6 +23,9 @@ cover:
 
 余談ですが、最近iPhoneとAndroid機の両刀をしていますが、もうAndroidもOSの出来が成熟していますね。iOSから乗り換えようか、本格的に思案中です。
 
+---
+
+
 ### 開発環境
 
 | **項目** | **機器/Version** | **用途・備考** |
@@ -36,12 +39,18 @@ cover:
 | 映像/音声 | HDMIケーブル(PS4付属品) | ー |
 | 入出力装置 | キーボード、マウス | USB接続タイプ |
 
+---
+
+
 ### Androidイメージ・Google Play Storeインストーラの準備
 
 以下のURLより、ファイルがダウンロードできます。
 
 - [Androidイメージ(and7\_1-tablet-23012017.zip)](https://raspbian-france.fr/download/and7_1-tablet-23012017.zip)
 - [Google Play Storeインストーラ(gapps.sh)](http://raspbian-france.fr/download/gapps.sh)
+
+---
+
 
 ### AndroidイメージをSDカードにコピー
 
@@ -72,6 +81,9 @@ $./etcher-1.3.1-x86_64.AppImage
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### Android端末を無線接続(Raspberry Pi3のIPアドレス調査)
 
 有線接続時のIPアドレス確認方法が分からなかったため、無線接続での方法を記載します。まず、Raspberry Pi3に以下のデバイスを接続後、電源を投入します。
@@ -85,6 +97,9 @@ $./etcher-1.3.1-x86_64.AppImage
 ![](images/rpi.jpeg)
 
 無線接続するには、起動画面から\[Setting\]/\[Wifi\]まで移動し、WifiをONにします。その後、WiFi Network(SSID)に対応するパスワードを入力すれば、接続が確立します。接続の確立後、\[Setting\]/\[Wifi\]の歯車マークを押すと、IPアドレスが表示されます。なお、このIPアドレスはGoogle Play Storeのインストール時に使用します。
+
+---
+
 
 ### Google Play StoreをRaspberry Pi3にインストール
 
@@ -126,11 +141,17 @@ $ chmod a+x ./gapps.sh
 $ sudo ./gapps.sh      (注釈)：スクリプト内部でRaspberry Pi3に自動接続する
 ```
 
+---
+
+
 ### Google Play Storeの認証(アカウント登録)
 
 再起動したRaspberry Pi3から、Google Play Storeを実行すれば、よくあるアカウント登録手順が表示されます。以降の手順は、不要と思うので説明しません。
 
 ![](images/account_google.png)
+
+---
+
 
 ### ハマった箇所
 
@@ -235,6 +256,9 @@ gapps.shがAndroidの/systemディレクトリにコピーするためのファ�
 　4. gapps/tmpディレクトリの内容からgapps/sys("/system"にコピーする内容)を作成
 
 前述の3番(★)で、gapps/pkgディレクトリ以下のtarballを収集する事が正しいです。しかし、実際はgappsディレクトリの一つ上の階層からtarballを収集し、gapps/tmpディレクトリに展開します。そして、私の環境でToolchainやLinux Kernelなどのtarballがその階層に存在したため、gapps/sysの内容が期待値通りにならなかった事により、エラーとなりました。(根本的には「Toolchainが悪さしたんだろうな」と想像しましたが、時間の無駄なので調査せず)
+
+---
+
 
 ### 後書き
 

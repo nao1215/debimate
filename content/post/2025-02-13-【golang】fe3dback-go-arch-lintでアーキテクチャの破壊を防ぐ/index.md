@@ -24,6 +24,9 @@ cover:
 
 実装者のスキルレベルに合わせて、PRレビューの確認観点を意識的に変えるのは、それなりの難しさがあります。レビュー時間もかかります。レビューが長引くと、疲労によって余計な一言をコメントしてしまうリスクも高まります。となると、機械（リンター）ができることは機械にやらせよう、という発想に辿り着きます。機械から指摘された方が、イラッとしませんしね。
 
+---
+
+
 ### リンター候補
 
 [fe3dback/go-arch-lint](https://github.com/fe3dback/go-arch-lint)と[arch-go/arch-go](https://github.com/arch-go/arch-go)が候補でした。どちらもインポート対象パッケージ（依存パッケージ）をチェックする機能があります。
@@ -32,11 +35,17 @@ cover:
 
 しかし、go-arch-lintを採用しました。その理由は、「機能が少ない分、相対的に設定が楽そう」「既存プロジェクトは、arch-goの厳しい設定をパスできない」と考えたからです。プロジェクト特性に合わせて、好きなリンターを選択すれば良いかなといったレベル感です。
 
+---
+
+
 ### fe3dback/go-arch-lintのインストール方法
 
 ```
 go install github.com/fe3dback/go-arch-lint@latest
 ```
+
+---
+
 
 ### go-arch-lintの設定
 
@@ -72,6 +81,9 @@ go install github.com/fe3dback/go-arch-lint@latest
 4. commonVendorsに、どのパッケージからも呼び出せるサードパーティライブラリ名を設定
 5. commonComponentsに、どのパッケージからも呼び出せるパッケージ名（componentsで定義したパッケージ）を設定
 6. depsに、各パッケージ（componentsで定義したパッケージ）の依存関係および利用するサードパーティライブラリを設定
+
+---
+
 
 ### 設定例：公式の例、nao1215/sqlyの例
 
@@ -269,6 +281,9 @@ deps:
 
 ```
 
+---
+
+
 ### GitHub Actionsによるアーキテクチャルール違反の検知
 
 `.github/workflows/arch-lint.yml`に以下の設定を書くと、PR作成時にアーキテクチャが期待通りに実装されているかをチェックできます。
@@ -309,6 +324,9 @@ jobs:
 
 ```
 
+---
+
+
 ### pre-commitによるコミット前チェック
 
 [公式のREADME](https://github.com/fe3dback/go-arch-lint?tab=readme-ov-file#pre-commit)では、[pre-commit](https://pre-commit.com/)を利用して、コミット前にアーキテクチャルール違反チェックおよびグラフ更新チェックを行う方法が提示されています。私は、python環境を構築するのがそれなりに手間だと考えているので、この方法を採用していません。
@@ -331,6 +349,9 @@ repos:
         args: ['--include-vendors=true', '--out=go-arch-lint-graph.svg']
 
 ```
+
+---
+
 
 ### 最後に
 

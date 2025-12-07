@@ -37,6 +37,9 @@ cover:
 - 例：debimate管理人の診断結果
 - 強みを伸ばしたい人へ：ストレングスファインダー
 
+---
+
+
 ### MBTIとは
 
 MBTI(Myers–Briggs Type Indicator)は、ユング心理学的類型論を拡張して開発された性格分析メソッドです。人の性格(特性)を以下の4指標([16タイプ](https://www.16personalities.com/ja/%E6%80%A7%E6%A0%BC%E3%82%BF%E3%82%A4%E3%83%97))で判断し、分類します。
@@ -51,6 +54,9 @@ MBTIは、[日本人が好む血液型診断](https://spicomi.net/media/articles
 性格を16通りのいずれかに分類するために、10分程度で100件近い質問を回答する必要があります。質問は、以下の画像のように、「同意する(賛成)、同意しない(反対)、中立」から自分に当てはまる回答を選択します。どちらかと言えば同意する、といった回答方式も可能です。
 
 ![](images/test_sample-300x238.png)
+
+---
+
 
 ### MBTIを試せるサイト
 
@@ -69,6 +75,9 @@ MBTI診断後に得られる情報
 
 [![](images/MBTI2-300x178.png)](https://www.16personalities.com/ja/%E6%80%A7%E6%A0%BC%E8%A8%BA%E6%96%AD%E3%83%86%E3%82%B9%E3%83%88)
 
+---
+
+
 ### 例：debimate管理人の診断結果
 
 診断結果の例ですが、私の場合は「建築家型(INTJ-A / INTJ-T)」と診断されます。以下の引用のような概要に始まり、強みもしっかりと説明されます。
@@ -78,6 +87,9 @@ MBTI診断後に得られる情報
 > [16 Personalities](https://www.16personalities.com/ja/intj%E5%9E%8B%E3%81%AE%E6%80%A7%E6%A0%BC)
 
 ![](images/strength-1-300x265.png)
+
+---
+
 
 ### 強みを伸ばしたい人へ：ストレングスファインダー
 

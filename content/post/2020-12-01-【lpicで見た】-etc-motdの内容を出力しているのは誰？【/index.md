@@ -70,6 +70,9 @@ lemmy@motorhead:~ $    (注釈) sshログイン直後のプロンプト
 - /etc/motdを表示する人
 - /etc/motdメッセージを非表示にする方法
 
+---
+
+
 ### /etc/motdファイルはbase-filesが生成
 
 そもそも、/etc/motdファイルは誰が作るのでしょうか。
@@ -133,6 +136,9 @@ endif
 
 ```
 
+---
+
+
 ### motdを表示する人 = sshd (openssh-server)
 
 では、本題である/etc/motdファイルの内容を表示する人は誰でしょうか。
@@ -169,6 +175,9 @@ do_motd(void)
 }
 
 ```
+
+---
+
 
 ### motdメッセージを非表示にする方法
 
@@ -216,6 +225,9 @@ do_login(struct ssh *ssh, Session *s, const char *command)
 ```
 
 恐らく、ssh認証方式によってmotdメッセージの出力有無が決まっているのでしょう（この内容はLPIC出題内容にあったかどうか忘れました）
+
+---
+
 
 ### 補足：Debian 8以降やUbuntuにおけるmotdの仕組み
 

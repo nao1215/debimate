@@ -38,6 +38,9 @@ Debian10(64Bit)、Ryzen 7 3800X環境で検証します。CPUアーキテクチ�
               `"""            Memory: 7095MiB / 64404MiB 
 ```
 
+---
+
+
 ### Host環境／実行バイナリのBit数を確認する方法
 
 まず、前提条件となる「Host環境のBit数」および「実行バイナリのBit数」を確認する方法です。
@@ -57,6 +60,9 @@ $ file sample_binary
 sample_binary: ELF 32-bit LSB pie executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=04ac1983fddf51757d34321b3d8d45111a9c813f, not stripped
 
 ```
+
+---
+
 
 ### 32Bitバイナリの実行方法
 
@@ -93,6 +99,9 @@ $ ./32bit_binary
 32bit Binary
 
 ```
+
+---
+
 
 ### 32Bitバイナリの作成（コンパイル）方法
 

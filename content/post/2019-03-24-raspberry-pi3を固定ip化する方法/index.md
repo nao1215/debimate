@@ -27,6 +27,9 @@ IPアドレス固定化のために必要な情報
 - [デフォルトゲートウェイ](https://employment.en-japan.com/tenshoku-daijiten/14868/)アドレス
 - [DNSサーバ](https://www.kagoya.jp/howto/rentalserver/dns-server/)アドレス
 
+---
+
+
 ### DHCPサーバが割り当てるIPアドレス範囲
 
 実際の所、IPアドレスの固定化では、DHCPサーバが割り当てるIPアドレスを正確に知る必要がありません。最低限、「このIPアドレスで固定化しよう！」と考えているIPアドレスが、DHCPサーバのIPアドレス割り当て範囲に入っていれば良いです。
@@ -52,6 +55,9 @@ $ hostname -I    (注釈)：-Iオプションは、ホストのIPアドレスを
 192.168.10.108   (注釈)：動的に割り当てられたIPアドレス
 
 ```
+
+---
+
 
 ### サブネットマスクの取得方法
 
@@ -88,6 +94,9 @@ wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
 
 ```
 
+---
+
+
 ### デフォルトゲートウェイアドレスの取得方法
 
 デフォルトゲートウェイとは、外部ネットワークと通信する場合、通信プロトコルを変換かつ外部ネットワークと接続するシステムです。デフォルトゲートウェイのIPアドレスは、[route](https://www.atmarkit.co.jp/ait/articles/1710/13/news013.html)コマンドでDestination(受信先サイト)が"0.0.0.0"の行を確認すれば判断できます。該当行のGatewayが、デフォルトゲートウェイのIPアドレスです。
@@ -101,6 +110,9 @@ $ route -n     (注釈)：-nオプションは、名前解決をせずに、IP�
 
 ```
 
+---
+
+
 ### DNSサーバアドレス取得方法
 
 DNSサーバとは、ホスト名・ドメイン名などの名前からIPアドレスを得るシステムです。DNSサーバのIPアドレスは、"/etc/resolv.conf"を参照すれば調べられます。
@@ -111,6 +123,9 @@ $ cat /etc/resolv.conf
 nameserver 192.168.10.1
 
 ```
+
+---
+
 
 ### IPアドレス固定化のための設定
 
@@ -133,6 +148,9 @@ static routers=192.168.10.0
 static domain_name_servers=192.168.10.0
 
 ```
+
+---
+
 
 ### 別の手段：/boot/cmdline.txtを修正　
 

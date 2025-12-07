@@ -24,6 +24,9 @@ cover:
 
 つい最近、GitHub ActionsでFreeBSD、OpenBSD、NetBSD、DragonFly BSD向けのユニットテスト環境構築が成功したので、本記事ではその紹介をします。[検証に利用したOSSのリンクを貼っておきます。](https://github.com/nao1215/gup)Golang以外の言語でも、本記事の内容は使えます。
 
+---
+
+
 ### 検証環境
 
 2023年9月16日時点のGitHub Actions、Golang v1.20を使用しています。
@@ -33,6 +36,9 @@ GitHub ActionsでBSDをテストするには、Virtual Machine（VM）を利用�
 - [vmactions/freebsd-vm](https://github.com/vmactions/freebsd-vm)@v0
 - [cross-platform-actions/action](https://github.com/cross-platform-actions/action)@v0.19.0
 - [vmactions/dragonflybsd-vm](https://github.com/vmactions/dragonflybsd-vm)@v0
+
+---
+
 
 ### FreeBSD：.github/workflows/freebsd.yml
 
@@ -65,6 +71,9 @@ jobs:
             go test -race -v ./...
 
 ```
+
+---
+
 
 ### OpenBSD：.github/workflows/openbsd.yml
 
@@ -104,6 +113,9 @@ jobs:
             go test -race -v ./...
 
 ```
+
+---
+
 
 ### NetBSD：.github/workflows/netbsd.yml
 
@@ -153,6 +165,9 @@ jobs:
 
 ```
 
+---
+
+
 ### DragonFly BSD：.github/workflows/dragonfly.yml
 
 DragonFly BSDは、golangの一部機能が使えなかったり（例："go test"で"-race"オプション非対応）、DragonFly BSDに対応していない外部パッケージがありました。
@@ -184,6 +199,9 @@ jobs:
             go test -v ./...
 
 ```
+
+---
+
 
 ### 最後に：BSDユーザー、開発辛くない？
 

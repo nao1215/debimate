@@ -33,6 +33,9 @@ Linux Kernelに限らず、様々なプログラミング言語やライブラ�
 
 本記事では、mutexを使用する上での注意点を述べた後に、Linux Kernelのmutex APIについて説明していきます。
 
+---
+
+
 ### mutexを使用する上での注意点
 
 Linux Kernelソースコードのinclude/linux/mutex.hには、mutexを使用する上での注意点(以下の箇条書き)が記載されています。User空間でも同じようなノウハウ(注意点)があると思いますが、赤字部分はHardwareを考慮した注意事点(Kernel空間ならではの注意点)です。
@@ -48,6 +51,9 @@ Linux Kernelソースコードのinclude/linux/mutex.hには、mutexを使用す
 > - 獲得されたmutex(使用中のmutex)は、再初期化してはいけない
 > - mutexは、taskletsやtimerのようなHW/SWのIRQ(割り込み)コンテキストで使用不可
 >     - 理由：割り込みハンドラがロック中のmutexを獲得しようとするとデッドロック発生するため
+
+---
+
 
 ### Linux Kernel mutex構造体
 
@@ -84,6 +90,9 @@ struct mutex {
 | struct optimistic\_spin\_queue osq | Mutex獲得時のMCSロック(スピン)機能が有効の場合、使用します。MCSロック機能では、1）他のCPUがmutexの所有者、2）タスクの再スケジューリングが不要、の条件を共に満たした場合、ロック獲得(※)のためにスピンして待ち続けます 。※他のCPUが処理実行中のため、直ぐにロックが解放される可能性があります。 |
 | void \*magic | mutexのセマンティックス違反やデッドロックを検知する場合に使用します。 |
 | struct lockdep\_map dep\_map | lockdep機能(ロック獲得順番などの正当性チェッカ)で用いるロック依存関係マップです。 |
+
+---
+
 
 ### Linux Kernel mutexの初期化(動的)
 
@@ -124,6 +133,9 @@ __mutex_init(struct mutex *lock, const char *name, struct lock_class_key *key)
 
 ```
 
+---
+
+
 ### Linux Kernel mutexの初期化(静的)
 
 Linux Kernel内で、静的にmutexを初期化する場合、DEFINE\_MUTEXマクロを使用します。ここでの静的とは、mutexの変数宣言時という意味です。DEFINE\_MUTEXマクロをコールすると、新しいmutex構造体(\_\_mutex)が作成され、初期化済みになります。初期化例は、以下の通りです。
@@ -148,6 +160,9 @@ DEFINE\_MUTEXマクロの定義は、include/linux/mutex.hにあり、以下の�
 
 ```
 
+---
+
+
 ### mutex(ロック)獲得およびmutex(ロック)解放
 
 mutex獲得にはmutex\_lock()、mutex解放にはmutex\_unlock()を用います。mutex\_lock()はmutexを獲得できれば処理を継続しますが、mutexを獲得できなければ獲得できる状態になるまでスリープします。どちらのケースも、mutex\_lock()の処理が終了した後では、mutexを獲得した状態になっています。
@@ -165,6 +180,9 @@ mutex_unlock(&__mutex);
 ```
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### mutex(ロック)の状態をチェック
 
@@ -184,6 +202,9 @@ if(mutex_is_locked(&__mutex)) {
 
 ```
 
+---
+
+
 ### mutex獲得を試み、獲得失敗時はスリープしない
 
 mutexの獲得失敗時、mutex\_lock()のようにスリープ状態に移行せず、そのまま処理を継続するには、mutex\_trylock()を使用します。mutex\_trylock()は、mutexの獲得成功時には1を返し、獲得失敗時は0を返します。
@@ -201,6 +222,9 @@ if(mutex_trylock(&__mutex)) {
 }
 
 ```
+
+---
+
 
 ### 割り込み可能なスリープでmutex獲得を待機
 
@@ -221,6 +245,9 @@ if(!mutex_lock_interruptible(&__mutex)) {
 }
 
 ```
+
+---
+
 
 ### mutex獲得待機タスクのKILLを検出
 

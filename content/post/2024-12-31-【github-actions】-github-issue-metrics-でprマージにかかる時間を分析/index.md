@@ -29,6 +29,9 @@ cover:
 
 本記事では、[github/issue-metrics](https://github.com/github/issue-metrics?tab=readme-ov-file) の導入方法を簡単に紹介します。殆ど公式のREADMEどおりです。
 
+---
+
+
 ### github/issue-metricsの概要
 
 github/issue-metricsは、GitHub Actionsであり、指定したリポジトリ内のIssue、Pull Request、Discussionに関するメトリクスを取得できます。一つのGitHub Actions workflowで、複数のリポジトリの情報を取得することもできます。
@@ -46,6 +49,9 @@ github/issue-metricsは、GitHub Actionsであり、指定したリポジトリ�
 以下に、[公式READMから引用したサンプルレポート](https://github.com/github/issue-metrics?tab=readme-ov-file#getting-started)を示します。
 
 ![](images/issue-metrics-sample-output.png)
+
+---
+
 
 ### GitHub Actionsの作り方
 
@@ -111,6 +117,9 @@ SEARCH_QUERY: 'repo:nao1215/markdown is:pr created:${{ env.last_month }} -reason
 取得対象のPR期間は、"2023-05-01..2023-05-31"のように"${YYYY-MM-DD}..${YYYY-MM-DD}で指定しています。全PRのメトリクスデータが欲しい場合は、${リポジトリ作成日}..${GitHub Actions実行日の日付}と指定してください。
 
 「Markdownじゃなくて、Excelで図示して見たいんだよね！」という場合は、[一度メトリクスをjsonで出力](https://github.com/github/issue-metrics/blob/main/docs/example-using-json-instead-markdown-output.md)して、jsonを別形式に変換する方法が考えられます。試していません。
+
+---
+
 
 ### 最後に：github/issue-metricsで何が分かったか
 

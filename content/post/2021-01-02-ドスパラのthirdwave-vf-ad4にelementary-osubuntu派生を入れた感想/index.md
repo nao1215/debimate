@@ -35,6 +35,9 @@ cover:
 - elementary OSのインストール方法
 - elementary OSへの所感
 
+---
+
+
 ### VF-AD4の価格帯で購入を検討したPC
 
 前提情報ですが、私がノートPCを購入するにあたって、押さえておきたかったポイントは以下の通りです。
@@ -75,6 +78,9 @@ TECLAST F7Plusは聞いたことのないシリーズでしたが、コスパは
 
 [![](images/Epoxfl_UcAA1Ssw-min.jpeg)](http://裏)
 
+---
+
+
 ### elementary OSのインストール方法
 
 [elementary OS](https://elementary.io/ja/)は、完成度の高いUbuntuから派生したディストリビューションなので、インストーラが親切な作りになっています。そのため、インストール画面まで到達すれば、インストールで困る事はないでしょう。
@@ -96,6 +102,9 @@ TECLAST F7Plusは聞いたことのないシリーズでしたが、コスパは
 7. elementary OSインストーラの設問に答えながら、インストール（[他サイトによる詳細な手順](https://kb.seeck.jp/archives/11669)）
 
 上記手順4.を実施しないと、「Verification failed: (0x1A) Security Violation 」と表示されて、elementary OSインストーラが起動できません。
+
+---
+
 
 ### elementary OSへの所感
 
@@ -124,6 +133,9 @@ Macに近いGUIを提供しつつ、Linuxにありがちなカスタマイズ要
 elementary OSのシステム要件には、「Intel Core i3 またはそれと同等のデュアルコア 64bit プロセッサ」と書かれていますが、Celeron N4000で動作しました。若干、Twitterなどで画像読み込み時にカクつきますが、タイピング中はキビキビ動作します。
 
 これからのリリースで、致命的な不具合（例：GUIクラッシュなど）が発生しない限り、「elementary OSはユーザが増えていきそうなディストリビューション」という印象を受けました。
+
+---
+
 
 ### 余談：Valaとは一体……？
 

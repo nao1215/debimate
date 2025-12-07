@@ -28,6 +28,9 @@ cover:
 
 本記事では、上記2点に関して記載します。なお、本記事は、2016年に書いた内容に加筆したものであり、2019年現在から3年経過しています。その3年の間に、私は他人のコードを読む事が勉強になる事を肌で感じています。そのため、コマンド(パッケージ)のソースコード取得方法は、プログラマであれば覚えておいて損はないと考えています。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -51,6 +54,9 @@ $ neofetch
               `"""            Memory: 4660MB / 32069MB 
 ```
 
+---
+
+
 ### 一般的なコマンドの格納先
 
 Linuxのディレクトリ階層は、Filesystem Hierarchy Standardで(ある程度)定められています。そのため、Linuxコマンドの格納先は、一般的に下表のディレクトリとなります。自作コマンドであれば、格納が推奨されているディレクトリは、/usr/local/bin です。
@@ -69,6 +75,9 @@ Linuxのディレクトリ階層は、Filesystem Hierarchy Standardで(ある程
 | --- | --- |
 | [whereis](http://itpro.nikkeibp.co.jp/article/COLUMN/20140212/536211/) | コマンド格納先、manの格納先を表示 |
 | [which](http://itpro.nikkeibp.co.jp/article/COLUMN/20060228/230996/?rt=nocnt) | コマンドの格納先を表示 |
+
+---
+
 
 ### コマンドのソースコードの取得方法(CUI)
 
@@ -137,6 +146,9 @@ $ ls | grep mkdir    (注釈) mkdir以外のソースコードが格納されて
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### コマンドのソースコードの取得方法(GUI)
 
 一例ですが、以下のサイトからパッケージ名を検索して、ソースを取得する事ができます。
@@ -144,6 +156,9 @@ $ ls | grep mkdir    (注釈) mkdir以外のソースコードが格納されて
 - [Debian公式サイト](https://packages.debian.org/jessie/coreutils)
 - [Ubuntu公式サイト](http://packages.ubuntu.com/ja/)
 - [GNUオペレーティング・システム](https://www.gnu.org/)
+
+---
+
 
 ### おまけ：DebianソースコードをWebブラウザで閲覧
 

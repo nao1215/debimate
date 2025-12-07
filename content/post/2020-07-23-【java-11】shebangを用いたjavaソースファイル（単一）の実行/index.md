@@ -18,6 +18,9 @@ cover:
 
 最近のJavaは、リリースペースが半年に一回と早まり、新機能が次々と追加されています。新機能の中で、Java 11からコンパイル無しでJavaソースファイル（単一ファイル）が実行できる機能があり、本記事ではその使い方（およびShebangエラー回避方法）を説明します。
 
+---
+
+
 ### 本記事で使用したJavaのバージョン
 
 OSはDebian（Linux）とし、Java 11環境で検証しました。
@@ -28,6 +31,9 @@ openjdk 11.0.7 2020-04-14
 OpenJDK Runtime Environment (build 11.0.7+10-post-Debian-3deb10u1)
 OpenJDK 64-Bit Server VM (build 11.0.7+10-post-Debian-3deb10u1, mixed mode, sharing)
 ```
+
+---
+
 
 ### 使用方法・実行例：JavaコードにShebangを付けるだけ
 
@@ -76,6 +82,9 @@ nao@debian ~> ./hello
 Hello Terminal
 
 ```
+
+---
+
 
 ### 拡張子に".java"が付いているとエラー
 

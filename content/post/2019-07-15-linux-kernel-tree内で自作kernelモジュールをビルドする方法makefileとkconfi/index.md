@@ -32,6 +32,9 @@ Current directory
 
 この構成では、自作KernelモジュールおよびLinux Kernelソースコードを同時にビルドできません。そこで、本記事では、自作Kernelモジュールをlinux-source-4.9の中に移動させ、Kernelルートディレクトリ(linux-source-4.9)にあるMakefileから自作Kernelモジュールをビルドする方法を示します。
 
+---
+
+
 ### 検証環境
 
 検証環境は、Debian10(buster)で実施します。本記事では、既存のKernelモジュールを利用して、手順を説明します。自作Kernelモジュールを0ベースで作成したい方は、以下の過去記事も合わせて確認して下さい。
@@ -60,6 +63,9 @@ $ neofetch
 
 [環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
 
+---
+
+
 ### Linux Kernelのビルドに必要なパッケージのinstall
 
 Linux Kernelのビルド時に必要なパッケージをinstallします。以下の手順は、Debian前提です。
@@ -72,6 +78,9 @@ build-essential chrpath socat libsdl1.2-dev xterm libncurses5-dev \
 lzop flex libelf-dev kmod
 
 ```
+
+---
+
 
 ### Linux KernelソースおよびKernelモジュールの取得
 
@@ -96,6 +105,9 @@ LinuxKernelArticle/  linux-source-4.19/
 ```
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### Kernelモジュール移動およびKconfig修正
 
@@ -145,6 +157,9 @@ config DEBIMATE_DRIVER
 | default | ビルド時のデフォルト(以下のy/m/nのいずれか)を設定します。    1. Kernelモジュールが組み込み可能(y) 2. モジュール化が可能(m) 3. ビルドしないか(n)   |
 | help | make menuconfigで表示するHELPメッセージ |
 
+---
+
+
 ### Makefileの修正
 
 修正対象のMakefileは、修正したKconfigと同じ階層にあります。今回は、linux-source-4.19/drivers/char/Makefileに対して、以下の1行を追記します。
@@ -162,6 +177,9 @@ debimate\_module.o部分は、Kernelモジュールソースコード名と同�
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### 自作Kernelモジュール用コンフィグが表示されるかを確認
 
 linux-source-4.19直下で、make menuconfigを実行します。実行後、Kernel Configuration画面が表示されます。
@@ -177,6 +195,9 @@ $ make menuconfig
 今回追加した自作Kernelモジュール用の設定は、Device Drivers -> Character devices -> DEBIMATE Test Module. に存在します。デフォルトでは、ビルド対象に含まれていないため(=n設定のため)、DEBIMATE Test Module.までカーソルを移動した後に、"m"を押下する事によってモジュール化を有効にします。Kernel内部に組み込む場合は、"y"を押下して下さい。
 
 ![Kernel Config](images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg)
+
+---
+
 
 ### 自作モジュールのビルド確認
 
@@ -195,6 +216,9 @@ drivers/char/debimate_module.ko
 ```
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### 最後に：Character Device作成方法に興味がある方へ
 

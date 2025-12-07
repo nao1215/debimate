@@ -24,6 +24,9 @@ Golang製の[MimixBox](https://github.com/nao1215/mimixbox)は、[BusyBox](https
 
 ここまで来れば「MimixBox - Mimic BusyBox on Linux（Linux上でBusyBoxを模倣する）」という名称を考えつくのは、一瞬でした。ちなみに、同様のプロジェクトには[toybox](https://github.com/shirou/toybox)と[gobox](https://github.com/surma/gobox)があります（皆、考える事は大体一緒）。
 
+---
+
+
 ### MimixBoxはBusyBoxと違う道を目指す
 
 MimixBoxは、**Linux****デスクトップ環境でのCLI（Terminal操作）が楽しくなる事**を目指します！そのため、「既存Unixコマンドの機能拡張（例：catに対する[bat](https://github.com/sharkdp/bat/blob/master/doc/README-ja.md)、lsに対する[lsd](https://github.com/Peltoche/lsd)）」や「独自コマンドの組み込み」が大事だと考えています。
@@ -36,6 +39,9 @@ C言語製のBuxyBoxは、制約の多い組み込み環境でも動作する事
 
 また、BusyBoxはコマンド数が400個以上あり、ドマイナーOSSのMimixBoxが同路線（量を増やす事）を真似しても勝ち目がありません。MimixBoxの出自はBusyBoxの模倣品ですが、BusyBoxを100%模倣しても面白くないので「じゃあ、コマンド単位の質を上げるか」と発想しました。
 
+---
+
+
 ### MimixBoxのロードマップ
 
 MimixBoxはGolang学習用のOSSという側面もあるので、全て独自コマンドで構成するような事はしていません。まずは、一般的なUnixコマンドを量産しつつ、合間に独自コマンドを開発するようなスタイルで進めています。
@@ -45,6 +51,9 @@ MimixBoxはGolang学習用のOSSという側面もあるので、全て独自コ
 - Step1. 100件以上のUnixコマンドを実装（機能の増加、〜Version 0.XX.xx）
 - Step2. オプションおよびテストを拡充（品質向上、〜Version 1.XX.xx）
 - Step3. コマンドを近代的な仕様に変更（独自性の追加、〜Version 2.XX.xx）
+
+---
+
 
 ### MimixBoxの独自オプション
 
@@ -70,6 +79,9 @@ MimixBoxは、BusyBoxとはオプションが異なります。下表にオプ�
 <blockquote class="twitter-tweet" data-conversation="none" data-theme="light"><p dir="ltr" lang="ja">MimixBox（BusyBoxのパクリ）は<br>$ make docker<br>を叩くと、Docker環境で安全にMimixBoxと遊べるようにした。ドッグフーディングし始めると、バグがチラホラ見つかる。<br><br>自前のシェルも早く準備したい。<br>ただ、Coreutils再実装ばかりではなくて、独自コマンドも追加したいのよね<a href="https://t.co/qDAPYL2mk8">https://t.co/qDAPYL2mk8</a></p>— Nao31@ (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1461950699441377281?ref_src=twsrc%5Etfw">November 20, 2021</a></blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+---
+
 
 ### MimixBox開発中の気づき（感想）
 
@@ -98,6 +110,9 @@ Golangと親友になれない件は、身も蓋もない話ですが、私はGo
 全コマンドに影響がある修正は、何度も発生しました。例えば、「[パイプ（"|"）対応](https://debimate.jp/post/2021-11-23-golang%E3%81%A7%E7%84%A1%E5%90%8D%E3%83%91%E3%82%A4%E3%83%97%E3%81%8B%E3%82%89%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E5%8F%97%E3%81%91%E5%8F%96%E3%82%8B%E6%96%B9%E6%B3%95terminal-isterminal/)」「リダイレクト（">"や">>"）対応」「引数で指定された環境変数の展開」あたりは、初期実装時には未対応でした。そのため、途中で機能追加しました。が、テストが無かったのでデグレしているのかが即座に分からず、手間が多くかかりました。
 
 同じ轍を踏まないように、Version 1.0.0に移行する前にユニットテストを作り始めようかな、と考えている次第です。
+
+---
+
 
 ### Pull Requestを歓迎します
 
@@ -159,6 +174,9 @@ sha512sum - alculate or Check sercure hash 512 algorithm
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+---
+
+
 ### GitHub Sponsorsでスポンサーを募集中
 
 最近話題のGitHub Sponsorsに対応しています！
@@ -172,6 +190,9 @@ sha512sum - alculate or Check sercure hash 512 algorithm
 - 優先的に開発するコマンドの決定権（コマンド1個分かつ規模200〜500\[LOC\]程度）
 
 <iframe width="600" height="225" style="border: 0;" src="https://github.com/sponsors/nao1215/card" title="Sponsor nao1215"></iframe>
+
+---
+
 
 ###  おまけ：2022年に作成したGolang製コマンド一覧
 

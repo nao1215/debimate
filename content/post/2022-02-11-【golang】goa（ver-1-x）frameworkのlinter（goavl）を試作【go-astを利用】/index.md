@@ -30,6 +30,9 @@ goavlは、**goa version 1 のみをサポート**し、現行のversion 3 は�
 
 本記事では、「goavlをどのように機能を用いて実装したかの説明（ザックリ説明）」と「goavlの基本機能」について説明します。
 
+---
+
+
 ### GolangはASTを作る標準パッケージが存在
 
 linter（静的解析ツール）を作る場合は、ソースコードの中身を解析する必要があります。
@@ -39,6 +42,9 @@ linter（静的解析ツール）を作る場合は、ソースコードの中�
 Golangでは、標準パッケージ[go/ast](https://pkg.go.dev/go/ast)がAST（構文解析木）を作成してくれます。そのため、lexerやparserを自作せずにすみます。さらに、ASTを可視化する関数ast.Print() が用意されており、ASTを目視確認しながら実装を進められます。これが本当に便利。
 
 どれぐらい便利かというと、目的の機能をlinterに導入するのに要した時間が10〜12時間ぐらいでした。go/astやast.Print() がなければ、10倍以上の時間が必要だったと思います。
+
+---
+
 
 ### ASTの出力例
 
@@ -322,6 +328,9 @@ ast.Print()結果には、Package、Name、Specsなどの変数名が書かれ�
 
 ```
 
+---
+
+
 ### ast.Fileノードを愚直に辿るとどうなるか
 
 ast.Print()の結果を見ながら、愚直にast.File構造体を辿っていくと、あなたのエンジニア人生で見た事がない深さのネストコードが拝めます。そして、この実装方法は間違えています。
@@ -369,11 +378,17 @@ var X = f(3.14)*2 + c
 
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">ASTを再帰的に探索する処理を試したら、ネストがかなり浅くなった。 <a href="https://t.co/PWYdH9lnFk">pic.twitter.com/PWYdH9lnFk</a></p>— Nao31 (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1491769878151577602?ref_src=twsrc%5Etfw">February 10, 2022</a></blockquote>
 
+---
+
+
 ### より詳細なAST情報が欲しい方への参考文献（日本語）
 
 - [GoのAST全部見る](https://monpoke1.hatenablog.com/entry/2018/12/16/110943#Spec)
 - [GoのためのGo](https://motemen.github.io/go-for-go-book/)
 - [ASTを取得する方法を調べる](https://tenntenn.dev/ja/posts/qiita-13340f2845316532b55a/)
+
+---
+
 
 ### goavlの設計
 
@@ -410,6 +425,9 @@ func Run(files []string) {
 
 ASTを用いたTaskは、例えば「命名規則が正しいか」といった観点（1個単位）で作ります。多くのLinterがこの方針を採用していると思われます。今回実装したTaskは、goa-designに関する知識がある方でないと理解できないので、説明を省略します。
 
+---
+
+
 ### goavlの使い方
 
 インストール方法は、[README（日本語）](https://github.com/nao1215/goavl)を参照してください。goavlは、引数指定が無い場合はカレントディレクトリ以下のgoa-designファイルをチェックし、--fileオプションをつけた場合は任意のgoa-designファイルをチェックします。
@@ -436,6 +454,9 @@ $ goavl
 ```
 
 現状は、「命名規則チェック」や「関数の使用条件チェック」、「APIや属性の説明が書かれているかのチェック」を行います。指摘箇所（ファイル、行数）と直し方を併記しているため、goavlを使えばgoa-designファイルの修正が容易にできる筈です。
+
+---
+
 
 ### 最後に：goavlの由来
 

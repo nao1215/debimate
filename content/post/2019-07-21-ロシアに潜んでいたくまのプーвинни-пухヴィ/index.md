@@ -44,11 +44,17 @@ cover:
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=400114008X&amp;linkId=4b6bd99afcd06b6c46c3a21d4ae66137"></iframe>
 
+---
+
+
 ### ロシア人によるВинни-Пух(ヴィーニ・プーフ)への反応
 
 「衝撃的なプーさん」、「おじさんみたいな声」と言いつつ、ロシア人にとって懐かしいアニメである事が伝わってきます。ちなみに私は、この動画経由でプーフを知りました。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/4eF8wH0ouuA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+
+---
+
 
 ### 癖になる劇中歌
 
@@ -88,6 +94,9 @@ cover:
 > (食事の時間だ)  
 > Да!  
 > (うん！)
+
+---
+
 
 ### ロシアの大御所バンドАРИЯによる楽曲提供
 

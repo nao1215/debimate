@@ -36,6 +36,9 @@ fishの優れた点
 
 本記事では、POSIX非互換というデメリットに配慮しつつ、Login shellをbashからfishへ移行する手順を示します。
 
+---
+
+
 ### 検証環境
 
 Debian9(stretch)環境を使用します。Default shellはdash、Login shellはbashという環境です。
@@ -72,6 +75,9 @@ nao:x:1000:1000:CHIKAMATSU Naohiro,,,:/home/nao:/bin/bash
 
 ```
 
+---
+
+
 ### fishとfisherのインストール
 
 まずは、fish(shell)とfisher(fishプラグインマネージャ)をインストールします。Debian9(stretch)以降であれば、aptでfishを取得可能です。fisherは、[公式サイトのインストール手順](https://github.com/jorgebucaran/fisher)で取得します。
@@ -81,6 +87,9 @@ $ sudo apt install fish
 $ curl https://git.io/fisher --create-dirs -sLo ~/.config/fish/functions/fisher.fish
 
 ```
+
+---
+
 
 ### Login shellのみをfishに変更
 
@@ -140,6 +149,9 @@ source $HOME/.cargo/env
 
 ```
 
+---
+
+
 ### お前を消す方法：Welcome to fish, the friendly interactive shell
 
 上記の手順の後にTerminalを再起動すると分かりますが、fish起動後に
@@ -159,6 +171,9 @@ set fish_greeting
 ```
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### Terminalのカラースキームを変更
 
@@ -181,6 +196,9 @@ $ sudo apt install fonts-powerline
 
 ![](images/fish.png)
 
+---
+
+
 ### 便利pluginのインストール
 
 「最近使用したディレクトリにジャンプできる[z plugin](https://github.com/jethrokuan/z)」および「あいまい検索ができる[fzf plugin](https://github.com/junegunn/fzf)」のみをインストールします。
@@ -200,6 +218,9 @@ $ echo "# (昔、fishのキーバインドとコンフリクトしたため)"   
 $ echo "set -U FZF_LEGACY_KEYBINDINGS 0"             >> ~/.config/fish/config.fish
 
 ```
+
+---
+
 
 ### 他に設定を変更する場合：Webブラウザで設定
 

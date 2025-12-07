@@ -21,6 +21,9 @@ cover:
 
 事前に私の好みの傾向を話しておくと、V系はL'Arc／DIR／清春／the GazettE、メタルはNWOBHM／スラッシュ／パワーメタル（クサメタル）、70年代のプログレやRanibow／Queen／Led Zeppelin辺りを聴きます。ジャズやクラシックも聴きますが、頻度は低いです。
 
+---
+
+
 ### Riot City（2019年デビュー）
 
 ![](images/71nKIxLsGL._AC_SY355_.jpg)
@@ -32,6 +35,9 @@ cover:
 金属的なハイトーンの質感はJudas PriestやRiotに近く、耳に心地よく残ります。適度なスピード感や曲のヘヴィネス具合が現代的な水準でありつつ、正統派らしさを強く感じさせるのはハイトーンボーカルのおかげでしょう。歌メロやギターソロも高水準。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Je_f3dgxq4o" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+
+---
+
 
 ### System Of A Down（1998年デビュー）
 
@@ -49,6 +55,9 @@ SOADは親しみやすい。メタル初心者にもオススメしたい。一�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/5vBGOrI6yBk" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
+---
+
+
 ### Overkill（1984年デビュー）
 
 ![](images/91kja6-CKmL._AC_UL320_.jpg)
@@ -62,6 +71,9 @@ SOADは親しみやすい。メタル初心者にもオススメしたい。一�
 新しいスラッシュメタルバンドを探すより、まずは古参バンド（Overkill）を楽しみたい。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/c_c3GBrWsao" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+
+---
+
 
 ### BLIZARD（1984年デビュー）
 
@@ -79,9 +91,15 @@ DEAD ENDと同様、BLIZARDはあと5年ぐらいデビューが遅ければ、�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_SoS9CzjF5A" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
+---
+
+
 ### 選外：陰陽座
 
 聴けばハマりそうなんだけど、バジリスクの曲しか知らないからCD購入していません。MetallicaのBatteryに似ていると名高い悪路王が気になっていますが、YouTubeで試し聴きできない……
+
+---
+
 
 ### そして2021年へ
 

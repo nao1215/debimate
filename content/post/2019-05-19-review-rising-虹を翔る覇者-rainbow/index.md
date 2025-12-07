@@ -27,9 +27,15 @@ cover:
 5. Stargazer
 6. A Light in the Black
 
+---
+
+
 ### 前作のReview
 
 [Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
+
+---
+
 
 ### Rainbowの全アルバム中、最も重いサウンド
 
@@ -44,6 +50,9 @@ cover:
 CozyとDIOの活躍によって、中低音域は音の厚みがあり、RitchieとTony Carey(Key.)が織りなす広がりのあるフレーズを下支えてくれました。特に、DIOは最初期の音楽キャリアと比較すると、大きな変化を感じます。以下の動画は、1962年(Risingの14年前)の音源ですが、柔らかな声でコブシがありません。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/bQ3OjffJ1w0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+
+---
+
 
 ### 本作の評価は大半がB面(死語)
 
@@ -67,6 +76,9 @@ Stargazerは、オリエンタルなフレーズがスローテンポで繰り�
 
 一転して、A Light in the Blackは、激しさを感じさせる一曲です。特に、RitchieとTony Carey(Key.)の掛け合いが聴きどころです。Burn(Deep Purple)のように、中間部で延々と弾き続ける二人が、この曲を支えています。RitchieはJazzも嗜むため、中間部で各パートが掛け合う流れは、割と自然に出てきます。その掛け合いが上手く当てはまった例が、本曲です。一聴してハマる事は難しいと思いますが、聴き続けるとその魅力に取り憑かれる筈です。
 
+---
+
+
 ### 好きな一曲
 
 A Light in the Black
@@ -76,6 +88,9 @@ A Light in the Black
 <iframe width="560" height="315" src="https://www.youtube.com/embed/x2m8TlDwNIk" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B005S1Y4XU&amp;linkId=aba57a8030fd40dcffd8bd12e2b50aff"></iframe>
+
+---
+
 
 ### 次作のReview
 

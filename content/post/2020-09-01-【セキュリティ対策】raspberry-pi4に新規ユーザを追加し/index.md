@@ -20,6 +20,9 @@ Raspberry Piのデフォルトユーザであるpiユーザ（管理者権限あ
 
 一般的には、piユーザのパスワードを変更する事によって、セキュリティリスクを減らします。本記事では、もう一歩踏み込んで、piユーザ以外に管理者権限を付与した後に、piユーザを削除する方法を紹介します。
 
+---
+
+
 ### 新規ユーザの追加
 
 新規ユーザ名は任意ですが、本記事では新規ユーザをantonとして以下の手順を進めます。なお、antonの元ネタは、シリコンバレー（海外ドラマ）の登場人物であるギルフォイルが構築したサーバ名です。
@@ -55,6 +58,9 @@ $ sudo useradd -m -d /home/anton -s /bin/dash anton
 
 ```
 
+---
+
+
 ### 新規ユーザに管理者権限を付与
 
 各ユーザの管理者権限の有無は、/etc/sudoersファイルで管理されています。/etc/sudoersファイルの書式を間違うと、sudoコマンドが使用できなくなる落とし穴があります。
@@ -67,6 +73,9 @@ $ sudo useradd -m -d /home/anton -s /bin/dash anton
 $ sudo gpasswd -a anton sudo
 
 ```
+
+---
+
 
 ### 「piユーザ所属グループ」と「新規ユーザの所属グループ」を一致させる
 
@@ -90,6 +99,9 @@ anton : anton adm dialout cdrom sudo audio video plugdev games users input netde
 
 ```
 
+---
+
+
 ### piユーザの自動ログインを解除
 
 Raspberry Piは、CLIもしくはGUI環境にpiユーザで自動ログインするかどうかを設定できます。piユーザは後ほど削除するため、自動ログイン設定を変更しておきます。
@@ -106,6 +118,9 @@ CLI環境にする場合：[B1 Console]を選択
 GUI環境にする場合：[B3 Desktop]を選択
 
 ```
+
+---
+
 
 ### piユーザの削除
 

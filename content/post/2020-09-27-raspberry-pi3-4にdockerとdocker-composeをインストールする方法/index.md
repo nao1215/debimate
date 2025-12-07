@@ -20,6 +20,9 @@ cover:
 
 Raspberry Piのネットワーク設定が終了している状態を前提とします。
 
+---
+
+
 ### 前準備
 
 Dockerはcgroups機能（プロセスが使用するリソースを制限する機能）を使用するため、/boot/cmdline.txtを編集してcgroupsを有効化します。
@@ -34,6 +37,9 @@ console=serial0,115200 console=tty1 root=PARTUUID=2677d299-02 rootfstype=ext4 el
 ```
 
 編集が終わった後、再起動するとcgroups機能が有効になります。
+
+---
+
 
 ### Dockerのインストール
 
@@ -74,6 +80,9 @@ $ sudo systemctl enable docker
 $ sudo systemctl start docker
 
 ```
+
+---
+
 
 ### docker-composeのインストール
 

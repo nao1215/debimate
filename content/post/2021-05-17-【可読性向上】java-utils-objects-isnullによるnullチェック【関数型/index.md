@@ -27,6 +27,9 @@ nullチェックにisNull()やnonNull()を使うメリット
 
 本記事では、Java SE11環境で「従来の演算子を用いたnullチェック方法」と「isNull()やnonNull()を用いた方法」を比較します。また、関数型プログラミングにおけるnullチェック方法に関しても説明します。
 
+---
+
+
 ### 演算子を用いたnullチェック方法
 
 以下のサンプルコードでは、文字列リストの内容を表示します。
@@ -82,6 +85,9 @@ Ria Parapara-Leazas
 ===The end.===
 ```
 
+---
+
+
 ### isNull()およびnonNull()を用いたnullチェック 
 
 文字列リスト内容を出力する前述のコード（printStr()）をisNull()およびnonNull()で書き換えます。
@@ -129,6 +135,9 @@ public class App {
 isNull()およびnonNull()を用いた方が自然言語（英語）で処理内容が記載されているため、可読性が高いです。個人的な印象としては、上記のコードはPythonライクに見えます。
 
 なお、上記のような判定処理でisNull()／nonNull()を用いるのは冗長という意見もあります。
+
+---
+
 
 ### 関数型プログラミングでのisNull()／nonNull()
 
@@ -190,6 +199,9 @@ public class App {
 
 フィルタリング処理を「filter(i -> i != null)」と書くより、「filter(Objects::nonNull) 」と書いた方がパッと見で処理を理解しやすい筈です。
 
+---
+
+
 ### おまけ：requireNonNull()
 
 [requireNonNull(T obj)](https://docs.oracle.com/javase/jp/8/docs/api/java/util/Objects.html)は、指定されたオブジェクトがnullでない事を検査するメソッドです。引数がnullではない場合はobjをそのまま返しますが、nullの場合はNullPointerExceptionをスローします。
@@ -202,6 +214,9 @@ public class App {
 >      this.baz = Objects.requireNonNull(baz, "baz must not be null");
 >  }
 > ```
+
+---
+
 
 ### 後書き
 

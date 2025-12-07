@@ -23,6 +23,9 @@ Steamは、PCゲームの購入ができるプラットフォームであり、2
 
 本記事では、追加手順を含めて、Steamのインストール方法を紹介します。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -46,6 +49,9 @@ Steamは、PCゲームの購入ができるプラットフォームであり、2
 ```
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### Steamパッケージのインストール前準備
 
@@ -83,6 +89,9 @@ $ sudo apt update
 
 以上で、前準備は終了です。
 
+---
+
+
 ### Steamパッケージ／Vulkan Driverインストール
 
 SteamパッケージとVulkan（グラフィックAPI）をインストールします。
@@ -94,6 +103,9 @@ $ sudo apt install mesa-vulkan-drivers libglx-mesa0:i386 mesa-vulkan-drivers:i38
 ```
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### glXChooseVisual failedエラー回避用にライブラリをインストール
 
@@ -109,6 +121,9 @@ $ sudo apt install libgl1-nvidia-glvnd-glx:i386
 ```
 
 なお、PCゲームをプレイする場合はNVIDIAを使う方が多いと思いますが、グラフィックボードはAMDやIntelも存在します。AMD／Intel環境の方は、glXChooseVisual failedエラーを上記の手順で解決できないため、ご注意ください。
+
+---
+
 
 ### Steamの起動
 

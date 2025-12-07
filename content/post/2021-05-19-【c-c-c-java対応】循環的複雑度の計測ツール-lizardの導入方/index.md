@@ -27,6 +27,9 @@ cover:
 
 本記事では、MITライセンス（商用利用可能）でリリースされている「[循環的複雑度の計測ツール lizard（Python製）](http://www.lizard.ws/)」の概要、インストール方法、使用方法を紹介します。
 
+---
+
+
 ### 検証環境
 
 elementary OS5（Ubuntu派生）上で、lizard version 1.17.7およびPython 3.6.9を使用します。
@@ -51,11 +54,17 @@ eee    eeeeeeeeee     eeeeee    eee   Theme: Elementary [GTK3]
          eeeeeeeeeeeeeeeee            Memory: 2315MiB / 30108MiB 
 ```
 
+---
+
+
 ### lizardが提供する機能
 
 lizardは、ソースコードの循環的複雑度（Cyclomatic Complexity Number）、メソッドの行数、メソッドのパラメータ数、ファイル内のメソッド数を算出します。任意の閾値を超えた場合、閾値以上のメソッドに警告を出せます。
 
 静的解析結果は、標準出力、csvファイル、hmtlファイルに残せます。
+
+---
+
 
 ### lizardの対応言語
 
@@ -80,6 +89,9 @@ lizardは、ソースコードの循環的複雑度（Cyclomatic Complexity Numb
 > 
 > [\---lizard READMEより--](https://github.com/terryyin/lizard/blob/master/README.rst)
 
+---
+
+
 ### インストール方法
 
 aptパッケージマネージャとpip3コマンドでインストールします。なお、lizardと一緒にインストールするjinja2は、lizardによる静的解析結果をHTMLに変換する際に使用するテンプレートエンジンです。
@@ -88,6 +100,9 @@ aptパッケージマネージャとpip3コマンドでインストールしま�
 $ sudo apt install python3 python3-pip
 $ pip3 install lizard jinja2
 ```
+
+---
+
 
 ### 実行例と結果の読み方
 
@@ -173,6 +188,9 @@ Total nloc   Avg.NLOC  AvgCCN  Avg.token   Fun Cnt  Warning cnt   Fun Rt   nloc 
 > 
 > [\--lizard公式GitHubのIssue--](https://github.com/terryyin/lizard/issues/237)
 
+---
+
+
 ### csvファイルの残し方
 
 csvオプションとリダイレクトを使用します。どの列がどの結果かは出力されないので、不親切。
@@ -186,6 +204,9 @@ $ cat NoSuchMethodError.csv
 
 ```
 
+---
+
+
 ### HTMLファイルの残し方
 
 htmlオプションとリダイレクトを使用します。
@@ -198,6 +219,9 @@ $ lizard --html > all.html
 HTMLの表示例は、以下の通りです。閾値を超えている結果は、背景色が赤くなります。
 
 ![](images/2021-05-19-20.26.02-のスクリーンショット.jpg)
+
+---
+
 
 ### 警告のみを出す場合
 
@@ -213,6 +237,9 @@ $ lizard -w
 (省略)
 
 ```
+
+---
+
 
 ### 警告閾値を変更する場合
 
@@ -241,6 +268,9 @@ $ lizard -Tcyclomatic_complexity=10  -L100 -w
 
 ```
 
+---
+
+
 ### ホワイトリストの設定
 
 「このメソッドは警告が出ても仕方がない」という場合は、テキストファイルに当該メソッド名を書く事で警告を抑止できます。
@@ -256,6 +286,9 @@ function_name1, function_name2    # カンマ区切りでメソッド名を列�
 file/path/name:function1, function2  # ファイルパスの指定も可能 
 
 ```
+
+---
+
 
 ### おまけ：利用を断念した静的解析ツール
 

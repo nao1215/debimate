@@ -23,6 +23,9 @@ data classを利用する理由は、フィールドをvalとして宣言すれ�
 
 このような面倒臭さを解消するツールを調べたところ、JSON To Kotlin Classプラグインがあったので、その使い方を備忘録として残します。[Web版](https://json2kt.com/)もありますが、ファイルをダウンロードする手間があるので、私はプラグインを使うことにしました。
 
+---
+
+
 ### 検証環境
 
 Android Studio Dolphin | 2021.3.1（ちょっと古い）、JSON To Kotlin Class 3.7.4を使用しています。
@@ -52,6 +55,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
            ./oydmMMMMMMdhyo/.                                      
 ```
 
+---
+
+
 ### JSON To Kotlin Classのインストール
 
 1. Android Studioメニューの「File」->「Settings」をクリック
@@ -61,6 +67,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 5. プラグインがインストールされたら、Android Studioを再起動
 
 ![](images/Screenshot-from-2023-04-01-23-32-29.png)
+
+---
+
 
 ### JSONからKotlin data classを作成
 
@@ -85,6 +94,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 ![](images/Screenshot-from-2023-04-02-00-42-07.png)
 
 INPUTとして渡したjsonが複雑すぎると、不要なクラスを生成する傾向が見られるので、適宜jsonを整形してからJSON To Kotlin Classを利用した方が良さそうです（GitHub APIドキュメントにサンプルとして提示されていたjsonをそのまま利用したら、不自然なクラスが生成されました）
+
+---
+
 
 ### 最後に
 

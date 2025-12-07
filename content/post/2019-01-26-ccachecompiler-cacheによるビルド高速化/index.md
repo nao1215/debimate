@@ -35,6 +35,9 @@ ccacheのPOINT
 
 以降では、導入を記載します。環境はDebian系を想定しています。
 
+---
+
+
 ### ccacheのinstallおよび環境変数設定
 
 まず、パッケージマネージャ(apt)を用いてccacheをinstallします。その後、ログイン時にccacheの設定が自動で反映されるように、~/.bashrcファイルを編集します。
@@ -49,6 +52,9 @@ $ echo "export set CXX='ccache g++'" >> ~/.bashrc # g++コマンド時にccache�
 
 $ source ~/.bashrc  # ログインし直す代わりに、手動で変更した設定の反映(初回時のみ)
 ```
+
+---
+
 
 ### makeコマンドでビルドする際の対応
 
@@ -69,6 +75,9 @@ hello:test.c
     $(CCACHE) $(CC) -o hello test.c    
 ```
 
+---
+
+
 ### ccacheの設定変更
 
 ```
@@ -84,6 +93,9 @@ Usage:
 | \-M, --max-size=SIZE | キャッシュの最大サイズを設定します(◯G、◯M、◯Kという記述方法で指定。例：`ccache -M 10G` ) |
 | \-s, --show-stats | 統計情報(キャッシュヒット率、キャッシュ内のファイル数など)を表示します。 |
 | \-z, --zero-stats | 統計情報のカウンターをゼロクリア(初期化)します。 |
+
+---
+
 
 ### 参考：ccache利用時のビルド時間
 

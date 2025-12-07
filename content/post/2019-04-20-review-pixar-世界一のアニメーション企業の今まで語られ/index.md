@@ -23,6 +23,9 @@ PIXARのスタートアップ期では、ジョブズが自費で金銭的なサ
 
 大規模かつクリエィティブな会社が、どのように存続してきたかを知りたい方には、おすすめの一冊です。
 
+---
+
+
 ### PIXARのクリエイティブ面に関しては、他書籍がオススメ
 
 PIXARの魅力は、技術を駆使した3D映像美だけではなく、ストーリーライティングと言えます。
@@ -38,6 +41,9 @@ PIXARの魅力は、技術を駆使した3D映像美だけではなく、スト�
 PIXARの作品の作り方は、[過去に語られた記事(「ピクサーの作品に秘められた物語を書くための22の法則」)](https://gigazine.net/news/20130320-pixar-22-rules-of-storytelling/)がありますし、以下の書籍でも丁寧に説明されています。
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=4478016380&amp;linkId=1581c29962e91c177086b90d1d9ef7e7"></iframe>
+
+---
+
 
 ### ジョブズの人間らしい一面が垣間見えた
 

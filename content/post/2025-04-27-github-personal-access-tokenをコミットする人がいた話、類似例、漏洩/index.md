@@ -20,6 +20,9 @@ cover:
 
 現職では不正対策に関わることになったので、最近はセキュリティスキルを伸ばしていこうとしています。セキュリティ分野はセキュリティツール開発、バグバウンティで小遣い稼ぎができる可能性があるので、[副業を探している私](https://x.com/ARC_AED/status/1915608450278756808)に丁度いいなとも思っています。
 
+---
+
+
 ### GitHub Personal Access Tokenの漏洩例を読んだ
 
 私は、セキュリティを勉強する一環で、HackerOneのレポートに目を通しています。その中で、[GitHub Personal Access Tokenが漏洩した例](https://hackerone.com/reports/1087489)を見つけました。
@@ -29,6 +32,9 @@ cover:
 発見者がGitHub APIを通じてPersonal Access Tokenを検証した結果、ECサイト会社（組織）に属するリポジトリのうち、アクセス範囲がパブリック／プライベートを問わず読み書き可能（pull: true, push: true, admin: false）であったことが確認されました。Personal Access Tokenを悪用すれば、ShopifyのGitHubリポジトリに対して任意のコードをプッシュし、バックドアを仕込むなどの深刻な被害を引き起こす可能性がありました。
 
 上記のレポートを読み、私が考えたのは「Credentials（シークレット）の漏洩を防ぐには、組織（Organization）配下のレポジトリをスキャンするだけでは足りない」ということです。エンジニア個々人が管理するリポジトリも定期的に監視しないと、会社に損害を与える可能性があります。
+
+---
+
 
 ### Credentialsをコミットする人はどの程度いるのか
 
@@ -51,6 +57,9 @@ GitHub公式が[GitHub Secret scanning](https://docs.github.com/ja/code-security
 - ユーザーがプライベートリポジトリからリリースしたアプリをスキャンできない
 - 今回のツールはLLM（生成AI）が一瞬で作れてしまえる難易度なので、MOAT（優位性）がない
 
+---
+
+
 ### 類似のツール
 
 深くは調査していませんが、Credentialsを検知するツールは複数あります。私はOSS開発でgitleaksを使っており、稀に誤検知しますが、特に不満はありません。
@@ -58,6 +67,9 @@ GitHub公式が[GitHub Secret scanning](https://docs.github.com/ja/code-security
 - [GitGurdian](https://www.gitguardian.com/)：CredentialsをスキャンするSaaS。チーム規模が一定数を超えるとお高くなる。正直な感想としては、GitHub本家のSecret scanningとの棲み分けが分からない。無料の範疇であれば、GitGuardiaを使いたい。
 - [gitleaks](https://github.com/gitleaks/gitleaks)：CredentialsをスキャンするOSS。検査寄り。コミット時、プッシュ時、GitHub Actions等でCredentialsを検知する。過去コミットもチェックする。組織利用になるとライセンスキーが必要。
 - [git-secrets](https://github.com/awslabs/git-secrets)：gitleaksと機能的にはほぼ同様だが、初期ルールが少なめ。その一方でルール追加が容易。
+
+---
+
 
 ### 最後に
 

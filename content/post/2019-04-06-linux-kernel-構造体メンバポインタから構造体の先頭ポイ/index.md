@@ -27,6 +27,9 @@ container\_ofマクロは、Linux Kernelで用いられ、「構造体メンバ�
 - 使用例(User空間での使用例)
 - 実装解説
 
+---
+
+
 ### container\_ofマクロの定義
 
 container\_ofマクロは、$(KERNEL\_TOP\_DIR)/include/linux/kernel.hに定義されています。
@@ -44,6 +47,9 @@ container\_ofマクロは、$(KERNEL\_TOP\_DIR)/include/linux/kernel.hに定義�
     (type *)( (char *)__mptr - offsetof(type,member) );})                     
 ```
 
+---
+
+
 ### 引数
 
 | **No.** | **引数名** | **説明** |
@@ -51,6 +57,9 @@ container\_ofマクロは、$(KERNEL\_TOP\_DIR)/include/linux/kernel.hに定義�
 | 1 | ptr | 構造体メンバへのポインタ |
 | 2 | type | 第一引数ptrが指す構造体メンバを含む構造体名 |
 | 3 | member | 第一引数ptrが指す構造体メンバの名称 |
+
+---
+
 
 ### 使用例(User空間での使用例)
 
@@ -124,6 +133,9 @@ OFFSET:head <-> member score   = 0x104
 Struct head address from score = 0x55cf6e4c4260 (注釈)：メンバ変数scoreからgame構造体の先頭アドレスを取得
 
 ```
+
+---
+
 
 ### 実装解説
 

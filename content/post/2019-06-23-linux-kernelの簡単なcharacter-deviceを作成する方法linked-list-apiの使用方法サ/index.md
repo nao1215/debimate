@@ -31,6 +31,9 @@ Character Deviceは、少量のデータを管理する低速のデバイスを�
 | Open | ユーザが書き込む文字列を管理するためのListを初期化します。 |
 | Close | Read/Writeシステムコールで使用したListや文字列保持用のメモリを解放します。 |
 
+---
+
+
 ### 検証環境
 
 検証は、Debian10(buster)環境で実施しました。他のディストリビューションでもDevice Driverが作成可能ですが、Debian系(Ubuntu、Kaliなど)を使用した方が作業手順に差異が少ないと思われます。
@@ -56,6 +59,9 @@ $ neofetch                                                    2019年06月23日 
               `"""            Memory: 5669MiB / 32060MiB 
 ```
 
+---
+
+
 ### 前準備
 
 Linux Kernel用のDevice Driverを作成するには、環境構築が必要になります。環境構築およびKernelモジュールの雛形を作成するまでの手順は、以下の記事に記載してあります。本記事の手順を実施する前に、確認して下さい。
@@ -63,6 +69,9 @@ Linux Kernel用のDevice Driverを作成するには、環境構築が必要に�
 また、本記事で使用するコードは、[GitHub](https://github.com/nao1215/LinuxKernelArticle/tree/master/01_char_device)に格納してあります。
 
 - [環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
+
+---
+
 
 ### Device DriverのLoad処理の作成
 
@@ -245,6 +254,9 @@ static struct file_operations debimate_drv_fops ={
 
 cdev\_add()ではKernelにCharacter Deviceを登録し、device\_create()では/dev以下にデバイスファイル(デバイスノード)を生成します。ここまでが、Load処理となります。
 
+---
+
+
 ### Device DriverのUnload処理の作成
 
 Unload処理は、Load時に実行した登録処理と逆の順番で、各登録の解除処理を実施します。ここでの各登録の解除処理は、Load時の異常系(goto文を用いた解除処理)に似た流れで実施します。
@@ -275,6 +287,9 @@ static void __exit debimate_exit(void)
 }
 
 ```
+
+---
+
 
 ### Device DriverのOpen処理の作成
 
@@ -322,6 +337,9 @@ MEM_ALLOC_ERR:
 (Linked) List操作の方法(API)に関しては、別記事でまとめています。これから説明するWrite、Read、Closeでは、List操作を知らないと理解できない内容のため、自身がない方は確認して下さい。
 
 - [Linux Kernel: List構造を操作するためのAPI(Listの使い方)](https://debimate.jp/post/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)
+
+---
+
 
 ### Device DriverのWrite処理の作成
 
@@ -384,6 +402,9 @@ LIST_MEM_ALLOC_ERR:
 }
 
 ```
+
+---
+
 
 ### Device DriverのRead処理の作成
 
@@ -455,6 +476,9 @@ STR_MEM_ALLOC_ERR:
 
 ```
 
+---
+
+
 ### Device DriverのClose処理の作成
 
 Close処理では、「文字列格納用メモリ(Listの要素)の解放」、「Open関数で作成したListから順番に全てのListを削除」、「List用メモリの解放」を行います。
@@ -490,6 +514,9 @@ static int debimate_close(struct inode *inode, struct file *file)
 }
 
 ```
+
+---
+
 
 ### Device Driverのテストプログラム
 

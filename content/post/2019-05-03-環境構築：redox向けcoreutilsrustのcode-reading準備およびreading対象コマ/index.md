@@ -36,6 +36,9 @@ Rustは登場してから日が浅い言語のため、日本語情報が少な�
 - Rust(nightly)のインストール
 - Redox版coreutilsのビルド
 
+---
+
+
 ### Redoxのサイドプロジェクト一覧
 
 前提として、[Redox](https://www.redox-os.org/jp/)は、Rust言語で書かれたUNIXライクのOSです。Redox(Kernel)を開発するプロジェクトだけでなく、ユーザランド向けアプリケーションを対象としたサイドプロジェクトが多数存在します。現段階で、Redox(再度プロジェクト含む)は下図のように、一般的なディストリビューションのような見た目をしています。
@@ -63,6 +66,9 @@ Rustは登場してから日が浅い言語のため、日本語情報が少な�
 | [Binutils](https://gitlab.redox-os.org/redox-os/binutils) | バイナリファイル操作用ユーティリティ |
 | [uutils/coreutils](https://github.com/uutils/coreutils) | GNU coreutilsをクロスプラットフォーム向けにRustで書き直したコマンドセット |
 | [m-labs/smoltcp](https://github.com/m-labs/smoltcp) | Redoxで用いられるネットワークスタック |
+
+---
+
 
 ### Reading対象のCoreutilsコマンド一覧(Reading結果一覧)
 
@@ -94,6 +100,9 @@ Redox版Coreutilsは、数が少なく、低機能(小規模)である事が特�
 | uptime | 65 | システム稼働時間を表示 |
 | which | 53 | 実行コマンドの絶対PATHを表示 |
 
+---
+
+
 ### 開発環境
 
 開発環境は、Debianを想定しています。
@@ -118,6 +127,9 @@ $ neofetch
           `"Y$b._             GPU: Intel Integrated Graphics 
               `"""            Memory: 3157MB / 32069MB 
 ```
+
+---
+
 
 ### Rust(nightly)のインストール
 
@@ -227,6 +239,9 @@ info: checking for self-updates
   nightly-x86_64-unknown-linux-gnu unchanged - rustc 1.36.0-nightly (08bfe1612 2019-05-02)
 
 ```
+
+---
+
 
 ### Redox版coreutilsのビルド
 

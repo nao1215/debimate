@@ -22,6 +22,9 @@ sqlcは、DBスキーマ（DBテーブル定義）、SQLクエリ定義、設定
 
 個人的な視点では、sqlcは「SQLクエリを検証してから、そのクエリを実行するGolangコードを書いて、クエリ結果を受け取るための構造体を書くのが大変」という課題を解決するツールです。独自の[DSL（Domain Specific Language）](https://e-words.jp/w/DSL.html#:~:text=DSL%20%E3%80%90Domain%2DSpecific%20Language%E3%80%91,%E8%A8%80%E8%AA%9E%E3%81%AA%E3%81%A9%E3%81%8C%E8%A9%B2%E5%BD%93%E3%81%99%E3%82%8B%E3%80%82)は殆ど登場しないので、SQLをゴリゴリ書ける開発者には使いやすいツールです。
 
+---
+
+
 ### sqlcに着目した理由
 
 sqlcに着目した理由は、標準パッケージ主体の開発スタイル（ORM "Object-Relational Mapping"を避けた開発スタイル）の中で、少しでも実装量を減らして開発速度を向上させたいからです。
@@ -38,6 +41,9 @@ ORM（例：[go-gorm/gorm](https://github.com/go-gorm/gorm)、[ent/ent](https://
 
 ※ 「ddl-maker用の構造体」と「sqlcが自動生成する構造体」が同じ役割を持つ、という新たな課題が発生します。しかし、この問題は弊社固有のものなので、皆さんは気にされなくて大丈夫です。
 
+---
+
+
 ### DBおよびプログラミング言語のサポート状況
 
 sqlcは、GolangでMySQL／PostgreSQLをサポートしています。他の言語サポートは、開発段階のようです。[今後](https://docs.sqlc.dev/en/latest/reference/language-support.html)は、サポートDBにSQLiteを追加し、サポート言語にC#, TypeScriptを追加するようです。
@@ -47,6 +53,9 @@ sqlcは、GolangでMySQL／PostgreSQLをサポートしています。他の言�
 | Go | Stable | Stable |
 | Kotlin | Beta | Beta |
 | Python | Beta | Beta |
+
+---
+
 
 ### sqlcのインストール方法
 
@@ -62,6 +71,9 @@ $ go get github.com/kyleconroy/sqlc/cmd/sqlc
 
 Macユーザーであれば"$ brew install sqlc"、Ubuntuユーザーであれば"$ sudo snap install sqlc"でインストールする方法もあります。
 
+---
+
+
 ### sqlcのインプットファイル一覧
 
 前提として、sqlcによる自動生成には、以下のファイルを準備する必要があります。
@@ -71,6 +83,9 @@ Macユーザーであれば"$ brew install sqlc"、Ubuntuユーザーであれ�
 - sqlc設定ファイル（sqlc.yaml or sqlc.json）
 
 これらのサンプル（書き方）を順番に説明します。言語はGolang、DBはMySQLとします。
+
+---
+
 
 ### DBテーブル定義（schema.sql）
 
@@ -104,6 +119,9 @@ CREATE TABLE `user_department_relation` (
 ) ENGINE = InnoDB DEFAULT CHARACTER SET utf8mb4;
 
 ```
+
+---
+
 
 ### SQLクエリ定義（query.sql）
 
@@ -205,6 +223,9 @@ FROM
 
 そこで、意図的に`SELECT u.name AS user_name, d.name AS department_name 〜`と書くこと（AS句でカラムに別名をつけること）によって、sqlcが人間に優しい構造体フィールド名（"UserName"、"DepartmentName"）を命名するようにしています。
 
+---
+
+
 ### sqlc設定ファイル（sqlc.yaml or sqlc.json）
 
 [sqlc設定ファイル](https://docs.sqlc.dev/en/latest/reference/config.html)は、yaml形式もしくはjson形式がサポートされています。設定ファイルにはVersion 1とVersion 2があり、今回の例ではVersion 2を採用します。
@@ -248,6 +269,9 @@ sql:
 - sqlcインプットファイル（schema、queries）は、sqlc設定ファイル（sqlc.yaml or sqlc.json）を基点とした相対パスを指定
 - engineは、postgresqlかmysqlのいずれかが入る
 - 自動生成先ディレクトリ（out）は、sqlc設定ファイル（sqlc.yaml or sqlc.json）を基点とした相対パスを指定
+
+---
+
 
 ### 自動生成の例
 
@@ -571,6 +595,9 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (sql.Res
 
 という流れで、非常に使いやすく、シンプルです（[参考ドキュメント](https://docs.sqlc.dev/en/stable/tutorials/getting-started-mysql.html)）
 
+---
+
+
 ### sqlcが持つサブコマンド、オプション
 
 ```
@@ -600,6 +627,9 @@ generateサブコマンド以外で良く使う可能性があるのは、以下
 
 - compile：SQLシンタックスおよび型エラーのチェック
 - init：sqlc.yamlの生成（あまり記載が埋まってなくて不満……）
+
+---
+
 
 ### 最後に
 

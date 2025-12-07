@@ -14,6 +14,9 @@ cover:
 
 複数のリポジトリを用いて開発している人は、[x-motemen/ghq](https://github.com/x-motemen/ghq)でリポジトリを管理するケースが多いでしょう。本記事では、ターミナルからghqで管理しているリポジトリをVS Codeで開く方法を紹介します。
 
+---
+
+
 ### ツールインストール
 
 [x-motemen/ghq](https://github.com/x-motemen/ghq) および [peco/peco](https://github.com/peco/peco) を利用します。以下はgoコマンドを利用したインストール方法です。他のインストール方法を利用する場合は、公式サイトを確認してください。
@@ -22,6 +25,9 @@ cover:
 go install github.com/x-motemen/ghq@latest
 go install github.com/peco/peco/cmd/peco@latest
 ```
+
+---
+
 
 ### ~/.bashrc もしくは ~/.zshrc に関数を定義
 
@@ -49,6 +55,9 @@ codeコマンドは、VS Codeを起動するコマンドであり、\`$(ghq root
 
 ![](images/vscode_result.png)
 
+---
+
+
 ### codeコマンドへのPATHが通っていない場合
 
 macOSでは、VS Code（GUI）を利用しているのにも関わらず、codeコマンドのPATHが通っていない場合があります。[公式手順の方法](https://code.visualstudio.com/docs/setup/mac#_configure-the-path-with-vs-code)でPATHを通します。
@@ -57,6 +66,9 @@ macOSでは、VS Code（GUI）を利用しているのにも関わらず、code�
 2. コマンドパレット（Cmd+Shift+P）を開く
 3. "shell command"と入力
 4. 選択肢"Shell Command: Install 'code' command in PATH" を実行
+
+---
+
 
 ### 最後に
 

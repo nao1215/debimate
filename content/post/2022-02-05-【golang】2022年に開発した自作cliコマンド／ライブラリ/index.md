@@ -26,6 +26,9 @@ CLIコマンドを数個作ったタイミングで、「書き捨てるだけ�
 
 で、この手の記事を年末に一気に書くのは辛い。本当に辛い。そこで、年初のうちから本記事に各CLIコマンドに対する所感を記録します。あと、宣伝も兼ねています。興味あったらOSSを使ってください（感想やバグ報告をできればお聞かせください）
 
+---
+
+
 ### Mimixbox：BusyBoxインスパイアコマンド
 
 [MimixBox](https://github.com/nao1215/mimixbox)は、BusyBoxと同じく、シングルバイナリの中にUnixユーティリティコマンドが複数入っているコマンドです。Golangの勉強題材を考えるのが面倒で「Unixコマンドの再実装が楽だな」と考えて、開発を始めました。
@@ -45,6 +48,9 @@ MimixBoxは、実装1万\[LOC\]、結合テストも部分的に実施してい�
 MimixBoxはUnix哲学に反していて、色んな機能を詰め込もうとし過ぎました。「実装対象のコマンドが多い」、「オプションも多い」、「テスト大変」など、弊害がチラホラ現れました。おかげさまでモチベもだだ下がり。
 
 オリジナルコマンドをMimixBoxに詰め込んだりもしていましたが、別プロジェクトとして管理しようかなと考えている段階です。コントリビュータが多ければ話が違うのでしょうけど、私一人で開発しきれない……
+
+---
+
 
 ### osinfo：OS情報取得ライブラリ
 
@@ -85,6 +91,9 @@ osinfoライブラリは、前述のMimixBoxにneofetch（golang実装）を組�
 
 で、前述したMimixBox開発のモチベダウンも影響して、osinfoライブラリは実装完了する事なく幕を閉じました。このライブラリは、リポジトリごと削除する可能性が高いですね。
 
+---
+
+
 ### ubume：プロジェクトテンプレート生成コマンド
 
 [ubume](https://github.com/nao1215/mkgoprj)は、Golangでプロジェクトを作る際に「何度も何度も同じようなファイルを作るの怠いな」と感じて、数時間で実装しました。実装中は、[gradle（Java）](http://gradle.monochromeroad.com/docs/)や[valdo（Vala）](https://github.com/Prince781/valdo)のようなジェネレータをイメージしてました。
@@ -108,6 +117,9 @@ ubumeは、個人的には便利なコマンドですし、毎日150cloneぐら�
 
 - [【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh, fish】](https://debimate.jp/post/2022-04-17-golangspf13-cobra%E3%81%8C%E6%8F%90%E4%BE%9B%E3%81%99%E3%82%8B%E5%85%A5%E5%8A%9B%E8%A3%9C%E5%AE%8Cshell-completion%E3%82%92%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB/)
 
+---
+
+
 ### gal：AUTHORファイル生成コマンド
 
 [gal（ギャル）](https://github.com/nao1215/gal)は、MimixBox開発中にパッと作りました。
@@ -121,6 +133,9 @@ galの実装は、シンプルです。
 2022年2月に機能追加を行い、「コミット数の降順（コミット数の多いユーザが先頭に来る並べ方）」もしくは「修正行数の降順（修正量が多いユーザが先頭に来る並べ方）」を追加しました。個人的には、もう追加したい機能がないので開発終了。
 
 余談ですが、「次は自動でChangelog.mdを生成だ！」と考えていたら、[git-chglog](https://blog.wadackel.me/2018/git-chglog/)が存在していて出鼻をくじかれました。
+
+---
+
 
 ### speaker：テキスト音声読み上げ（時報機能付き）
 
@@ -148,6 +163,9 @@ Linux環境では、cronを経由してしまうと音声が再生されない�
 
 余談ですが、speakerを公開して数時間で「翻訳機能をつけてくれ！」と要望がきましたが、「嫌だ」と突っぱねました。気軽に面倒な事を言われても対応できないよ……（若い時は対応したかもしれない）
 
+---
+
+
 ### subaru：fortuneインスパイアコマンド
 
 [subaru](https://github.com/nao1215/subaru)は、[go:embed機能（バイナリへのファイル埋め込み）](https://pkg.go.dev/embed)と[エキスパートたちのGo言語](https://amzn.to/3rpcZPM)（書籍）で学んだ内容をアウトプットするために作りました。ジョークコマンドの一種です。
@@ -161,6 +179,9 @@ Golangでは、go installコマンドを用いてバイナリをインストー�
 subaruの裏テーマは、PRを沢山貰う事です。私は色んな方が参加してOSSをより良くする姿に憧れがあります（その割には他の人のOSSにコントリビュートしていませんが…）。そのため、格言の追加に伴うコード修正が発生しないような設計にしました。
 
 「PRした事ないな」という方がいらっしゃれば、是非PRの練習台に[subaruコマンド](https://github.com/nao1215/subaru)を使用してください。
+
+---
+
 
 ### goavl：goa framework linter
 
@@ -177,6 +198,9 @@ goaに冷たくされるという課題の解決として、私はlinterの作�
 そこで、完全自前でlinterを作成する運びとしました。休日を一日潰して作りました。goavlは、以下の画像で示すように、「指摘箇所（ファイル、行数）」と「直し方」を出力してくれます。あとは、「チェック項目の追加」と「Visual Studio Code」との連携ができれば完璧ですかね。
 
 ![](images/Screenshot-from-2022-02-11-23-46-32.png)
+
+---
+
 
 ### gup：$GOPATH/bin以下のバイナリ一括更新
 
@@ -198,6 +222,9 @@ gupのイメージは、"brew upgrade"や"apt upgrade"です。初期仕様で�
 
 何やかんやで、gupは公開から一週間でStarを50個も集めてしまったので、今後作るOSSは「打倒 gup！」という目標を掲げていきます。
 
+---
+
+
 ### nameconv：命名規則を変更するライブラリ
 
 [nameconv](https://github.com/nao1215/nameconv)は、文字列の命名規則を変更したり、文字列の命名規則が何か（例：スネークケース or not）を判定するためのライブラリです。文字列のパースをする人は、使用する可能性があるライブラリ。
@@ -209,6 +236,9 @@ nameconvは、前述の[goavl](https://github.com/nao1215/goavl)やCSVファイ�
 フォーク元を使わなかった理由は、「フォーク元の更新が年単位で止まっている事」と「修正したい箇所があった事」です。Pull Requestを出してもマージされないかな、という判断をしました。
 
 少し予定が狂った所は、caseeの更新が再開された事です。何故、このタイミングで……
+
+---
+
 
 ### posixer：POSIXコマンドのインストール有無をチェック
 
@@ -247,6 +277,9 @@ $ posixer check
 
 結果を表で出力している理由は、[olekukonko/tablewriter](https://github.com/olekukonko/tablewriter)を使いたかったからです。作ったは良いけど、こんなコマンドは自分でも要らない（使うタイミングが殆どない）と思ってます。
 
+---
+
+
 ### contributor：コントリビュータリストを表示
 
 [contributor](https://github.com/nao1215/contributor)は、コードもしくはドキュメントを修正した人のリストを表示するコマンドです。gitで管理しているプロジェクトのみ対応しています。1時間ぐらいでガッと作りました。
@@ -276,17 +309,26 @@ $ contributor
 +-------------------------+-----------------------------------------------------------+-----------+-----------+
 ```
 
+---
+
+
 ###  sqly：CSVに対してSQLを実行するCLI
 
 2022年の集大成。DDDを採用したり、SQLiteを利用したりと、サーバーサイドで得た知見を活かしています。
 
 - [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
 
+---
+
+
 ### CLIコマンド作成時に参考にした情報
 
 - [UNIXという考え方〜その設計思想と哲学〜](https://amzn.to/3Gt5ZWu)
 - [コマンドラインツールについて語るときに僕の語ること / Taichi Nakashima](https://www.youtube.com/watch?v=M8jfKWvz15A&t=1077s)
 - [Readme Driven Development](https://tom.preston-werner.com/2010/08/23/readme-driven-development.html)
+
+---
+
 
 ### 最後に：本記事は2022年の間、適宜更新されます
 

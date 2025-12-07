@@ -28,6 +28,9 @@ Shell Scriptをバイナリ化する利点
 
 本記事では、shc（Shell Script Compiler）を用いてShell Scriptをバイナリ化する方法を紹介します。
 
+---
+
+
 ### 検証環境
 
 Ubuntu 21.04、Bash 5.1.4、shc 4.0.3を使用します。
@@ -55,6 +58,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
            ./oydmMMMMMMdhyo/.                                      
 ```
 
+---
+
+
 ### shcコマンドの概要
 
 [shcコマンド](https://github.com/neurobin/shc)は、C言語で実装されたシェルスクリプトコンパイラです（GPL v3）。[ARC4](https://e-words.jp/w/RC4.html)で暗号化したShell ScriptをC言語にソースコード中に埋め込み、そのコードをコンパイルする事によってバイナリを生成しています。生成したバイナリの有効期限を設定する事もできます。
@@ -68,6 +74,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 5. 手順4.の完了後、"sh -c $復号した文字列"を実行
 
 上記の2.と5.の通り、途中でC言語ソースコードに変換されていますが、生成されるのはshellに依存したバイナリです（Shellの-cオプションは、指定した文字列を実行するオプション）
+
+---
+
 
 ### shcコマンドのインストール
 
@@ -91,6 +100,9 @@ $ sudo make install         (注釈) インストール
 
 ```
 
+---
+
+
 ### shcコマンドのオプション
 
 | **オプション** | **オプション引数** | **説明** |
@@ -112,6 +124,9 @@ $ sudo make install         (注釈) インストール
 | \-A | なし | shcコマンドの概要を表示して終了 |
 | \-B | なし | Busybox向けにコンパイル |
 | \-H | なし | ヘルプメッセージを表示して終了 |
+
+---
+
 
 ### shcコマンドによるバイナリ生成の例
 

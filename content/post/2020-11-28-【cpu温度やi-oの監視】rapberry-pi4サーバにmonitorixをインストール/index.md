@@ -23,6 +23,9 @@ cover:
 
 今回はシステムが停止する原因を探るため、Raspberry Pi4にMonitorixをインストールして、システムリソースの変化をモニタリングできるようにします。そこで、本記事では「Monitorixのインストール方法」と「Raspberry Pi向けの設定」に関して説明します。
 
+---
+
+
 ### Monitorixとは
 
 Monitorixは、軽量なシステムリソースモニタリングツールであり、Webブラウザ経由でリソースの使用状況を表したグラフを確認できます。Perlスクリプトで実装されており、Monitorixが生成するリソース監視ログ（rrdバイナリ）をrrdtoolでグラフ化（画像化）するという仕組みのようです。
@@ -57,6 +60,9 @@ Monitorixの画面
 
 私のように「何をモニタリングすれば良いか決めていない」「監視に手間を掛けたくない」という方はMonitorixを選択し、「いやいや、見た目大事っしょ」という方は他のツールを選択すれば良いと思います。
 
+---
+
+
 ### 検証環境
 
 Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
@@ -80,6 +86,9 @@ Raspberry Pi4（RAM8GB）、Raspberry Pi OS環境で検証します。
           `"Y$b._
 ```
 
+---
+
+
 ### Monitorixのインストール
 
 2020年11月現在、aptパッケージマネージャーでmonitorix-3.10.1がインストールできます。
@@ -89,11 +98,17 @@ $ sudo apt install monitorix
 
 ```
 
+---
+
+
 ### Raspberry Piの固定IP化
 
 Monitorixのモニタリング結果は、IPアドレス指定で確認する事になるため、DHCPで動的にIPアドレスが変わると運用しづらいです。そのため、以下の記事を参考にしてRaspberry Pi4を固定IP化します。
 
 - [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
+
+---
+
 
 ### Raspberry Pi4 CPU／温度／電圧モニタリング有効化
 
@@ -150,6 +165,9 @@ $ sudo vim /etc/monitorix/monitorix.conf
 
 ```
 
+---
+
+
 ### monitorix.confの修正頻度が高そうなパラメータ
 
 下表に、Monitorix設定ファイル/etc/monitorix/monitorix.confのパラメータの中から、修正する可能性が高そうなものをピックアップして紹介します。下表に登場しないパラメータは、[公式ドキュメント](https://www.monitorix.org/documentation.html)で確認してください。
@@ -164,6 +182,9 @@ $ sudo vim /etc/monitorix/monitorix.conf
 | port(httpd\_builtin) | モニタリング結果を表示する際に使用するポート番号（デフォルト8080番） |
 
 ポート番号に関しては、既に8080番を他のサービスが使用している場合、別の値に変更が必要です。
+
+---
+
 
 ### モニタリング結果の確認
 

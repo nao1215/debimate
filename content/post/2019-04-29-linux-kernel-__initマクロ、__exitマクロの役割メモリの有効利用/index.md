@@ -100,6 +100,9 @@ static void __exit debimate_exit(void)
 }
 ```
 
+---
+
+
 ### \_\_initマクロの役割・定義
 
 \_\_initマクロは、メモリ上の初期化関数用の領域に、関数を配置します。そして、\_\_initマクロで指定した関数による初期化が終了後、その初期化関数はメモリ上から破棄(解放)されます。
@@ -120,6 +123,9 @@ Kernelモジュールの初期化処理は、通常一度しか呼ばれませ�
 [\_\_latent\_entropyマクロ](https://lwn.net/Articles/688492/)は、Kernel内部のエントロピーが少ない問題を解決します( エントロピーを増やしてくれます)。エントロピーは、Kernelが質の良い乱数を生成するために、プールされています。初期化時以外にも、キーボード入力やストレージ書き込みなどで発生するHW割込をもとに、予測しづらい情報としてプールされます。このプールが情報量が多く、かつ不確実な内容であれば、 偏りのない乱数が生成できます。
 
 \_\_noinitretpolineマクロは、CPUの脆弱性”[Spectre](https://ja.wikipedia.org/wiki/Spectre)”対策である"[Retpoline](https://pc.watch.impress.co.jp/docs/topic/feature/1176718.html)**"**を利用しない宣言です。初期化コードはSpectreの影響を受けないため、パフォーマンスが低下するRetpolineを避けています。
+
+---
+
 
 ### \_\_exitマクロの役割・定義
 

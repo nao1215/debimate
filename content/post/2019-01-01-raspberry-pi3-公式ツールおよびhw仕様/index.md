@@ -21,6 +21,9 @@ Raspberry Piは、[ラズベリーパイ財団(イギリス)](https://en.wikiped
 
 2019年現在、Raspbianは、Linux初心者向けの環境と言い切れます。例えば、各種の初期設定をGUIで促すポップ画面が出たり、各種プログラミング言語(Python、Java、Scratch)環境が初期状態で整っています。
 
+---
+
+
 ### Raspberry Pi 公式サイト・ツール
 
 | **項目** | URL |
@@ -30,6 +33,9 @@ Raspberry Piは、[ラズベリーパイ財団(イギリス)](https://en.wikiped
 | 公式Linux Kernel | [https://github.com/raspberrypi/linux](https://github.com/raspberrypi/linux) |
 | 公式Toolchain | [https://github.com/raspberrypi/tools](https://github.com/raspberrypi/tools) |
 |   販売サイト(Pimoroni)   | [https://shop.pimoroni.com/](https://shop.pimoroni.com/) |
+
+---
+
 
 ### Raspberry Pi3 HW仕様
 
@@ -51,11 +57,17 @@ Raspberry Piは、[ラズベリーパイ財団(イギリス)](https://en.wikiped
 | Peripheral Interface | GPIO40ピン(SPI、I2S、UART) |
 | ストレージ | microSD |
 
+---
+
+
 ### Raspberry Pi GPIO40ピンの仕様
 
 ![](images/300px-Pi-GPIO-header.png)
 
 出典："RPi Low-level peripherals" (Embedded Linux Wiki) [https://elinux.org/RPi\_Low-level\_peripherals](https://elinux.org/RPi_Low-level_peripherals)
+
+---
+
 
 ### シングルボード検索サイト
 

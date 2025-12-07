@@ -28,6 +28,9 @@ if err != nil {
 
 そこで、本記事ではerrorsパッケージに備わるメソッドNew()、Unwrap()、Is()、As()の使い方および注意点を説明し、基本的なgolangエラーハンドリング方法を押さえます。
 
+---
+
+
 ### 調査環境
 
 Ubuntu21.04、go1.17（linux/amd64）で調査しました。
@@ -55,6 +58,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
            ./oydmMMMMMMdhyo/.   
 }
 ```
+
+---
+
 
 ### New()：基本仕様
 
@@ -89,6 +95,9 @@ func (e *errorString) Error() string {
 	return e.s
 }
 ```
+
+---
+
 
 ### New()：エラーメッセージ出力方法
 
@@ -132,6 +141,9 @@ func (p *pp) handleMethods(verb rune) (handled bool) {
 			// 省略
 ```
 
+---
+
+
 ### New()：エラーメッセージに関する2つの注意点
 
 errors.New()に渡すメッセージでは、
@@ -170,6 +182,9 @@ func testErr() error {
 のように、メッセージをコロン":"で繋ぐ出力が多い事に気づきました。
 
 英文では、":"は句読点の一種であり、説明を追加するために用いられます。そのため、プログラムであってもメッセージを":"で繋ぐのは、英語圏の視点では当たり前なんだよなーと感じました。当たり前の視点ですが、英語苦手なので抜け落ちてました。
+
+---
+
 
 ### Unwrap()：基本仕様
 
@@ -271,6 +286,9 @@ test error
 
 ```
 
+---
+
+
 ### Unwrap()：errorをラッピングする理由
 
 そもそも論ですが、errorインターフェースをラッピングすると何が嬉しいのでしょうか。
@@ -332,6 +350,9 @@ $ ./main
 
 ```
 
+---
+
+
 ### Is()：基本仕様
 
 ```
@@ -369,6 +390,9 @@ func Is(err, target error) bool {
 ②では、型アサーションで引数errがIs()メソッドを持つかどうかをチェックし、持つ場合はerrとtargetの一致確認を行います。
 
 ③では、引数errをアンラップして、forループの頭に戻ります。Unwrap()の結果が"err == nil"の場合は、大本のerrorインターフェースに辿り着いた事を意味するため、errとtargetの不一致が確定します。
+
+---
+
 
 ### Is()：使用方法
 
@@ -414,6 +438,9 @@ not readable
 default                              (注釈)：期待通りに判定できていない
 
 ```
+
+---
+
 
 ### As()：基本仕様
 
@@ -463,6 +490,9 @@ func As(err error, target interface{}) bool {
 ③以降のforループでは、引数targetに引数errが代入可能であれば代入後にtrueを返します。代入不可の場合における処理の流れは、errors.Is()とほぼ同様です。引数errがAs()メソッドを持つ場合はコールし、コールしても引数errとtargetが一致していない場合はerrをUnwrap()し、forループ先頭に戻ります。
 
 As()とIs()の使い方はほぼ同様のため、As()の使用方法は省略します。
+
+---
+
 
 ### 最後に
 

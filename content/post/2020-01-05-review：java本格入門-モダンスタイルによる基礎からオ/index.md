@@ -32,6 +32,9 @@ cover:
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B071D8RYR5&amp;linkId=07a96fc8a8522a6c20b6d871c2603934"></iframe>
 
+---
+
+
 ### Javaは、2020年以降も生き残るのか
 
 本書を読んでいた際に感じた事は、

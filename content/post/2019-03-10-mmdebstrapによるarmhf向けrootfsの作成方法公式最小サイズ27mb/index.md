@@ -22,6 +22,9 @@ cover:
 
 mmdebstrapは開発中ですが、組み込み分野で使用される可能性もあります。そのため、本記事ではmmdebstrapの基本的な特徴を押さえた後、stretch環境への導入方法、rootfsの作成方法を記載します。
 
+---
+
+
 ### mmdebstrapの良い点
 
 以下の内容は、[公式レポジトリのREADME](https://gitlab.mister-muffin.de/josch/mmdebstrap)を日本語訳し、意味が通るように補足・意訳しています。比較対象は、debootstrapです。
@@ -46,6 +49,9 @@ aptコマンドを使用した恩恵として、debootstrapより3〜6倍高速�
 |   minbase   ([必須・推奨](https://wiki.debian.org/DependencyHell)・aptパッケージから構成されたrootfs)   | 14.18 s | 51.47 s |
 |   buildddpkgopt   (minbaseに[build-essential](https://packages.debian.org/ja/stretch/build-essential)を含めたrootfs)   | 20.55 s | 59.38 s |
 | \- (minbaseに重要なパッケージを含めたrootfs。   debootstrapのデフォルト構成) | 18.98 s | 127.18 s |
+
+---
+
 
 ### mmdebstrapの書式・オプション
 
@@ -81,6 +87,9 @@ rootfs(TARGET)形式は、非圧縮(ディレクトリ)、tar(アーカイブ)�
 | buildd | minbaseに[build-essential](https://packages.debian.org/ja/stretch/build-essential)を加えて、installします。 |
 | important, debootstrap, - | requiredに"Priority:important"パッケージを加えて、installします。 |
 | standard | "Priority:standard"パッケージを全てinstallします。 |
+
+---
+
 
 ### mmdebstrapのinstall方法
 
@@ -119,6 +128,9 @@ $ sudo apt install mmdebstrap/testing arch-test fakechroot fakeroot mount \
 uidmap binfmt-support dpkg-dev proot  qemu-user qemu-user-static
 
 ```
+
+---
+
 
 ### mmdebstrapの実行例
 
@@ -266,6 +278,9 @@ $ du -sh rpi-stable.tar.gz 　(注釈)：rootfsの中身が空っぽ
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### Raspberry Pi3環境でのrootfs動作確認
 
 上記の手順で作成したTarget環境向けrootfsをRaspberry Pi3にコピーし、動作確認します。
@@ -314,6 +329,9 @@ bash: apt: command not found
 (documentがないため、何も表示されない)
 
 ```
+
+---
+
 
 ### おまけ: 最小rootfs作成に挑戦……敗北
 

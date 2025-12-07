@@ -43,6 +43,9 @@ BashによるShell Scriptを国際化(メッセージ翻訳)する方法は、C�
 
 「Bashでユーティリティライブラリあるの？」「ライブラリを使うより、自分で書いたほうが早い」と思われる方がいると思います。Bashライブラリの少なさに関しても(正確には定着しない理由に関して)、「[stack overflow "Bash utility script library"](https://stackoverflow.com/questions/11369522/bash-utility-script-library)」で議論されています。ここまでで、何が言いたいかと言えば、**本記事は普通にScriptを書くには必要のない情報**という事です。
 
+---
+
+
 ### 前準備：Bashライブラリ１点、Shell Script１点
 
 検証用にファイル2点を用意します。
@@ -92,6 +95,9 @@ empty_test_file already exists. Not make it.
 
 ```
 
+---
+
+
 ### 国際化ライブラリの準備
 
 Debian環境では、[gettext-baseパッケージ](https://packages.debian.org/stretch/gettext-base)が国際化用ライブラリを提供します。ライブラリが存在するかを[whichコマンド](https://webkaru.net/linux/which-command/)で確認し、存在しなければ[aptパッケージマネージャ](https://eng-entrance.com/linux-package-apt-2)でインストールしてください。
@@ -103,6 +109,9 @@ $ which gettext.sh
 $ sudo apt install gettext-base
 
 ```
+
+---
+
 
 ### 国際化に必要なメッセージカタログとは
 
@@ -122,6 +131,9 @@ $ sudo apt install gettext-base
 | mo(Machine Object)  | .poファイルをコンパイルしたバイナリファイル  |
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### メッセージカタログの作成手順
 
@@ -300,6 +312,9 @@ $ sudo install -m 0644 ru.mo /usr/local/share/locale/ru/LC_MESSAGES/libbash.mo
 
 ```
 
+---
+
+
 ### 動作確認
 
 ここまでの手順で、国際化に必要な事柄が全て終了しています。以下に、動作確認結果として、出力メッセージが英語・日本語・ロシア語に切り替わったログを示します。なお、ロケールは、コマンド実行時に[環境変数LANG](https://eng-entrance.com/linux-localization-locale)を変更する事によって、設定しました。
@@ -329,6 +344,9 @@ empty_test_file уже существует. Операция не может б
 
 余談ですが、"Создать "ではなく、"Создан"が正しいらしい。
 
+---
+
+
 ### メッセージカタログのアップデート方法
 
 ソースコードを修正した場合、翻訳対象のメッセージ位置(行番号)が変わります。そのため、.potファイルを再作成しなければいけません。しかし、再作成した.potファイルから.poファイルを作成すると、今までに翻訳したメッセージが無くなってしまいます。
@@ -341,6 +359,9 @@ $ msgmerge -U ja.po libbash.pot
 $ msgmerge -U ru.po libbash.pot
 
 ```
+
+---
+
 
 ### 参考
 

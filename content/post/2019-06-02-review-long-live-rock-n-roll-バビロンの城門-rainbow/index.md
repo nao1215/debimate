@@ -29,10 +29,16 @@ cover:
 7. Sensitive to Light
 8. Rainbow Eyes
 
+---
+
+
 ### 前作のReview
 
 - [Review: On Stage Deluxe Edition (Rainbow)](https://debimate.jp/post/2019-06-15-review-on-stage-deluxe-edition-rainbow/)
 - [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
+
+---
+
 
 
 ### アメリカ市場を意識した結果、大作志向の終焉
@@ -46,6 +52,9 @@ cover:
 <iframe width="560" height="315" src="https://www.youtube.com/embed/IQzC-9Izr4Y" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
 90年代生まれの私の感覚では、Ritchieが時代に即したコマーシャルな楽曲を作曲できた時期は、Joe Lynn Turner後期(1983年)です。本作リリースの6年後です。それまでの間、RItchieは試行錯誤(メンバーの首切り含む)しながら、作曲スキルを磨く事になります。
+
+---
+
 
 ### 時の試練に耐えた楽曲、破れた楽曲
 
@@ -69,6 +78,9 @@ cover:
 - Sensitive to Light：曲調が明るいから聴きやすい
 
 と、救いがあります。
+
+---
+
 
 ### Gate of Babylonへの疑惑
 
@@ -103,6 +115,9 @@ Ritchie BlackmoreがGates of Babylonを演奏しない理由(推測)
 - 作曲者不在：David Stoneは次アルバム("Down to Earth")に不参加
 - ポップではない：アメリカ市場を狙う時期に演奏する理由がない
 - 他人の曲：2019年現在では他人が作曲した曲を積極的に演奏する理由がない
+
+---
+
 
 ### 好きな一曲
 

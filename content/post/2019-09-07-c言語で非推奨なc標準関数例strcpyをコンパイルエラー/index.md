@@ -27,6 +27,9 @@ C言語は歴史の長い言語のため、非推奨関数があります。例�
 
 コンパイラを利用した方法であれば、エンジニアのスキル習熟度に左右されませんし(実行はコマンドを叩くだけ)、人の目と違い検知漏れが発生しません。今まで、禁止関数を強制的にコンパイルエラーにする発想が無かったため、本記事ではその仕組みに関して説明します。
 
+---
+
+
 ### 禁止関数リストbanned.hについて
 
 [GitHubにgit(banned.h)のオリジナルコード](https://github.com/git/git/blob/master/banned.h)があります。2019年9月7日時点で、banned.hの中身は以下の通りです。gitにおける禁止関数は、strcpy()、strcat()、strncpy()、strncat()、sprintf()、vsprintf()と定めているようです。
@@ -98,6 +101,9 @@ main.c:9:5: note: in expansion of macro ‘strcpy’
 
 ```
 
+---
+
+
 ### 禁止関数の追加例
 
 禁止関数の追加例として、文字列を数値に変換するatoi()をbanned.hに加えて、コンパイルエラーを起こす方法を以下に示します。banned.hの変更方法(banned.h)、atoi()を呼び出すコード(main.c)、コンパイル例を順に記載します。
@@ -157,6 +163,9 @@ main.c:7:5: note: in expansion of macro ‘atoi’
 ```
 
 想定通り、"error: ‘sorry\_atoi\_is\_a\_banned\_function’ undeclared"が表示されている事がログから読み取れます。
+
+---
+
 
 ### C言語の時代遅れ・非推奨な関数の調べ方
 

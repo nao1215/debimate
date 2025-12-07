@@ -24,6 +24,9 @@ LPIC有効期限2022年6月3日の約2週間前に、LPIC Level3 303-200（Versi
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
+---
+
+
 ### 合格の1週間前にVer3.0（最新試験）を受験。不合格
 
 LPICは、[2021年12月にLPIC Level3 303をバージョンアップ（Ver 2.0-->Ver 3.0）](https://prtimes.jp/main/html/rd/p/000000014.000034743.html)しました。私は情報の仕入れ方が悪く、2022年4月に前バージョン（Ver 2.0）の試験が受験できなくなったと思い込み、参考書がリリースされていない中でVer3.0を2022年5月に受験しました。
@@ -39,6 +42,9 @@ LPICは、[2021年12月にLPIC Level3 303をバージョンアップ（Ver 2.0--
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">英語は4月までですが、日本語版は8月末まで受験可能ですね<br>2.0ならping-tだけでも合格できましたので、また頑張ってみてください！</p>— メンプテイ (@mempty101) <a href="https://twitter.com/mempty101/status/1523976338503127042?ref_src=twsrc%5Etfw">May 10, 2022</a></blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+---
+
 
 ### 「勉強期間（勉強時間）」と「使った書籍（サイト）」
 
@@ -58,6 +64,9 @@ ping-tは、40h以上使用しました。一度目のテストの前に、全�
 他の教材は、選択肢として[学易](https://gakuyasu.byaku.jp/)と[CramMedia](https://www.crammedia.com/)がありました。
 
 どちらも使用経験がなかったので、今回は採用しませんでした。模試と本番の問題が一致する確率が60%〜90%と高いらしいですが、その割にTwitterで良い評判が見当たりませんでした。そんな物にお金払いたくなかったので、安定の黒本とping-tを採用。
+
+---
+
 
 ### 最後に：試験よりも、老化と子育てに苦しむ
 

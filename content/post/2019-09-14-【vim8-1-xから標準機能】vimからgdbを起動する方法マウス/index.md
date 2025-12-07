@@ -37,6 +37,9 @@ GDBをリッチなText User interface環境で実行するツールは、以前�
 
 termdebugは使い勝手が良いため、本記事では導入方法と使い方について説明します。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -59,6 +62,9 @@ termdebugは使い勝手が良いため、本記事では導入方法と使い�
               `"""            Memory: 3840MiB / 32060MiB 
 
 ```
+
+---
+
 
 ### Termdebug導入前の事前確認
 
@@ -96,6 +102,9 @@ $ sudo apt install vim
 
 ```
 
+---
+
+
 ### Termdebugを利用するための設定
 
 Termdebugを利用するには、"~/.vimrc"ファイルに以下の3行を追加するだけです。
@@ -111,6 +120,9 @@ set mouse=a
 let g:termdebug_wide = 160
 
 ```
+
+---
+
 
 ### Termdebugの使い方
 

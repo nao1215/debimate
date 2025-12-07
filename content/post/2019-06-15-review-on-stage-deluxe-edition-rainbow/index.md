@@ -36,10 +36,16 @@ cover:
 5\. Medly: Man On The Silver Mountain/Blues/Starstruck  
 6\. Do you close your eyes
 
+---
+
+
 ### 本作発表前にリリース済みAlbumのReview
 
 - [Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
 - [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
+
+---
+
 
 ### Rainbow初のLive作品(曲目および演奏はツギハギ)
 
@@ -50,6 +56,9 @@ cover:
 ツギハギであったとしても(ツギハギであるからこそ)、三頭政治時代(Ritchie, DIO, Cozyのラインナップ時代)の鬼気迫るパフォーマンスが音源越しに伝わってきます。ツギハギ自体は、本作の価値を落とすものではないでしょう。そもそも、Live作品の音源修正は一般的な手法です。
 
 仮に、ツギハギが気になる場合は、DISK2を聴きましょう。Deluxe版リリース時の粋な計らいか(ミックスが面倒だったのか)、DISK2だけは大阪公演(9日)で構成されています。どうせだったら、残りの大阪公演(5日、8日)もオフィシャルリリースして欲しいものです。ちなみに、ツギハギの出自となる公演は、ファンがBootleg音源(海賊版)を検証して、あらかた解明されています([参考](http://www.venus.dti.ne.jp/hidekun/sub7.html))。
+
+---
+
 
 ### 曲数も、選曲も不思議なセットリスト
 
@@ -64,6 +73,9 @@ Risingからの選曲が少ない理由は、ある程度推測できます。Ri
 <iframe width="560" height="315" src="https://www.youtube.com/embed/t9m_TVilibQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### 曲調が激変したStill I'm Sad
 
@@ -81,6 +93,9 @@ Rithcieは、同曲をRainbowの「[1st(銀嶺の覇者)](https://debimate.jp/20
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/tJX2dvQwDZ0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
+---
+
+
 ### 好きな一曲
 
 Still I'm Sad
@@ -90,6 +105,9 @@ Tony Carey(Keyboard)がRitchieを無視して、Keyboardソロを始めて面白
 <iframe width="560" height="315" src="https://www.youtube.com/embed/xQILvo18VS4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B0098WZDZ8&amp;linkId=84ff50a5bbdc48f9f50bd474058702b4"></iframe>
+
+---
+
 
 ### 次作のReview
 

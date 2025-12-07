@@ -36,6 +36,9 @@ cover:
 
 <iframe style="width:120px;height:240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B075V9B2JH&amp;linkId=1db5e8901c3c214d62c89fb0b09dbdda"></iframe>
 
+---
+
+
 ### 本書の欠点：ビルドが通らないか、バグがある
 
 本書を読み進めていく内に、致命的な欠点に気づくと思います。そう、コードがビルドエラーを起こします。書籍中のコードとGitHub上のコードを見比べて、自分の力でコードを修正しなければいけません。やっとの事でビルドを通すと、バグに気づきます。

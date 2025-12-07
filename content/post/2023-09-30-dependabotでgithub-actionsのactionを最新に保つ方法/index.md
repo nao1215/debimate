@@ -28,6 +28,9 @@ GitHub Actionsは、複数のActionを利用してワークフローを動作さ
 
 Actionの更新チェックを忘れない便利な方法として、DependabotによるGithub Actionsの定期更新があります。本記事では、定期更新方法を説明しますが、記事冒頭の公式ドキュメントを読む方が正確です。
 
+---
+
+
 ### 設定方法
 
 \`.github/dependabot.yml\`に以下の設定を追加すると、定期的にActionの更新を促すPRが作成されます。更新頻度（interval）は、daily（日）、weekly（週）、monthly（月）から選べます。
@@ -45,6 +48,9 @@ updates:
 以下が作成されたPRの例です。
 
 ![](images/Screenshot-from-2023-09-30-18-02-30-1.png)
+
+---
+
 
 ### 最後に
 

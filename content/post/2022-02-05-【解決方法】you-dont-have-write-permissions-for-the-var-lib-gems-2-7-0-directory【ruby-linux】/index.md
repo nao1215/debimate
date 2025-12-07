@@ -34,6 +34,9 @@ ERROR:  While executing gem ... (Gem::FilePermissionError)
 
 そこで本記事では、gemインストール時の権限エラー解決方法を2通り紹介します。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -60,6 +63,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 ```
 
+---
+
+
 ### 解決方法その１：環境変数GEM\_HOMEを変更
 
 複数バージョンのRubyを使用しない人にとっては、この解決方法が簡単です。
@@ -77,6 +83,9 @@ $ echo 'export PATH="$PATH:~/.ruby/bin"' >> ~/.bashrc
 （注釈）変更した設定の読み込み。
 $ source ~/.bashrc    　　　　　　　　　　　　　
 ```
+
+---
+
 
 ### 解決方法その2：rbenvを使用
 
@@ -143,6 +152,9 @@ $ rbenv global 3.1.0
 ```
 
 最後の"rbenv global $(任意のバージョン)"を実行しないと、システムで使用するRubyが未確定の状態となります。この状態でgemを実行すると、"rbenv: gem: command not found"となるので、注意してください。
+
+---
+
 
 ### 最後に
 

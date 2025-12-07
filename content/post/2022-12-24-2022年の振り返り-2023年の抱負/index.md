@@ -21,6 +21,9 @@ cover:
 
 ![](images/SV_Ler3B.jpg)
 
+---
+
+
 ### 振り返り：ジョブチェンジ
 
 2022年1月に転職し、組み込みエンジニアからサーバーサイドとなりました。
@@ -30,6 +33,9 @@ AWS（with CloudFormation）やGolangといった初めて触る技術に戸惑�
 また、Technical Managerという役職（？）になり、プロダクトを技術面から支える立場になりました。補足すると、TMの仕事はディレクターとの要件調整、関連会社との技術面調整、スケジュール／タスク管理、コーディングなどを行います。この立場は、前職のProject Leaderと似ているので、スッと馴染めました。
 
 個人的には「もっと上手に仕事を回したいな」と感じています。その一方で、会社からMVPを頂いたり、社長から「評価良かったよ」と言われたりしているので、ある程度の活躍はできているようです。
+
+---
+
 
 ### 振り返り：人生初のモバイルアプリリリース
 
@@ -41,6 +47,9 @@ AWS（with CloudFormation）やGolangといった初めて触る技術に戸惑�
 という状態だったので、Android, iOS向けのアプリをリリースできたのは嬉しいです。自分でAndroid端末を3台用意してテストしてます。iPhoneも1台、私用で買おうか迷ってます。
 
 toC向けアプリの良い点は、両親にアプリを触ってもらえること。エンジニア人生で「母さん、このアプリは自分が作ったやつなんだ」を言える日が来るとは思いませんでした。自分が作ったのはサーバー側だから目に見えんけどな！
+
+---
+
 
 ### 振り返り：チームビルディング
 
@@ -64,6 +73,9 @@ toC向けアプリの良い点は、両親にアプリを触ってもらえる�
 
 上記の課題に関しては今年の11月から対応を考え、徐々に改善していこうと行動を始めた段階です。来年は、エンジニア全員がより良い開発体験できていると嬉しいです。
 
+---
+
+
 ### 振り返り：アウトプット
 
 今年の前半は、Software Design 誌に記事を寄稿させていただき、良い経験をしました（今年、Pythonの記事も寄稿しています）。シェル界隈は、シニアエンジニアが多いので、迂闊なことを書けないなと感じました。
@@ -80,6 +92,9 @@ OSS開発では、golangのバイナリをアップデートする["gupコマン
 
 - [【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】](https://debimate.jp/post/2022-05-15-%E6%9C%9F%E9%96%931%E3%83%B6%E6%9C%8860hlpic-level3-303-security-%E5%90%88%E6%A0%BC%E4%BD%93%E9%A8%93%E8%A8%98ping-t%E9%BB%92%E6%9C%AC%E4%BD%BF/)
 
+---
+
+
 ### 振り返り：育児
 
 今年の3月に長男爆誕。
@@ -91,6 +106,9 @@ OSS開発では、golangのバイナリをアップデートする["gupコマン
 残業30~40h + 家事／育児 + OSS開発を実施すると、日中の仕事で頭が全く回らなくなるので、何かを諦める必要があるなと感じました。
 
 Twitterを見ていると、エンジニア男性は家事育児を頑張る一方で、可処分時間の減少に悩んでいる人が多いなと思います。私もその一人です。息子が不定期に泣くので、まとまった時間を確保しづらいと感じています。本を読む時間を増やしたいです。
+
+---
+
 
 ### 振り返り：趣味
 
@@ -105,6 +123,9 @@ Twitterを見ていると、エンジニア男性は家事育児を頑張る一�
 <iframe width="560" height="315" src="https://www.youtube.com/embed/JpEbc4wmwkw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/OW-w-SFDzVM" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
+
+---
+
 
 ### 2023年の抱負
 

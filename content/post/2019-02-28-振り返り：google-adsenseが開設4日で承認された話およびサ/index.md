@@ -29,6 +29,9 @@ https://funtre-blog.com/adsense/adsense-check/
 
 https://tabibitojin.com/google-adsense-how-to-pass-it/
 
+---
+
+
 ### Google AdSence審査 申込み時の本サイト状態
 
 「Google AdSenceは厳しいぞオジサン」が提唱する審査基準は、様々な人の経験から推測された内容です。この基準に従うと、数カ月は審査申込みをしない方が得策という結論になります。しかし、私はサイト開設3日目にGoogle AdSence審査に挑戦しました。理由は、審査が否認されてもデメリットがないため。何度でも再チャレンジできます。この事実(デメリット無し)を知った私には、先人の知恵を活かす気はありませんでした。
@@ -43,6 +46,9 @@ https://tabibitojin.com/google-adsense-how-to-pass-it/
 | PV | 100以上(1日) ※無関係という人多数 | 合計10以下 |
 
 ![](images/アドセンス.png)
+
+---
+
 
 ### 勝因は、サイトが専門的だった事？
 
@@ -59,6 +65,9 @@ https://tabibitojin.com/google-adsense-how-to-pass-it/
 - [ロシア旅行：観光ビザを簡単に取得する方法(ビザ申請代行業者を利用)](https://debimate.jp/post/2019-01-02-%E3%83%AD%E3%82%B7%E3%82%A2%E6%97%85%E8%A1%8C%E8%A6%B3%E5%85%89%E3%83%93%E3%82%B6%E3%82%92%E7%B0%A1%E5%8D%98%E3%81%AB%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%83%93/)
 - [Review: Boston 1981(Rainbow)](https://debimate.jp/post/2019-01-04-review-boston-1981rainbow/)
 
+---
+
+
 
 ### まとめ
 
@@ -67,6 +76,9 @@ GoogleAdSenceに対する見解
 - 事実：Google AdSence審査は記事数が少なくても、サイト開設4日後でも通る
 - 推測：専門的な内容を書いたサイトは、審査が承認されやすい?
 - 希望：文章構成・画像や動画の有効利用・スマホ対応も大事であって欲しい!!
+
+---
+
 
 ### おまけ：サイト開設2ヶ月後の収益
 

@@ -25,6 +25,9 @@ onionlint scan http://example.onion/ --format json
 
 正直なところ、BBC（British Broadcasting Corporation、英国放送協会）のようなサイトに対して onionlint を使うと、onionlint が指摘しまくるので使えたものではありません。ユースケースは、小規模な .onion サイトのアクセス前に攻撃されないかを事前チェックするケース、自身が .onion サイトを運営する時に意図せず個人の特定につながる情報を開示していないかをチェックするケースが考えられます。
 
+---
+
+
 ### onionlint ルール一覧
 
 2025年11月25日現在、onionlint が検出できるルールは以下のとおりです。
@@ -67,6 +70,9 @@ onionlint scan http://example.onion/ --format json
 | 不審な外部リダイレクト | meta refresh、JavaScript、HTTPヘッダーによる.onion以外のURLへの自動リダイレクトを検出し、ユーザーの匿名性解除を防止 |
 | 隠しまたは不審なiframe | クリックジャッキング、ドライブバイダウンロード、IP漏洩に使用される可能性のある隠しiframe（0x0サイズ、visibility:hidden、画面外）を検出 |
 
+---
+
+
 
 
 ### [nao1215/tornago](https://github.com/nao1215/tornago) の実力を示すために開発
@@ -78,6 +84,9 @@ onionlint scan http://example.onion/ --format json
 残念なことに、[他のサイトで宣伝された](https://dormoshe.io/newsletters/ag/golang/307)割に、tornago はあまり注目されませんでした。ツールを作って実力を示すべきだなと思い、onionlint を開発しました。onionlint の開発前に「ダークウェブ監視ツール」も実装したのですが、微妙な感じがして公開していません。この非公開ツールは、ダークウェブを監視して HTML ファイルに Diff があったら特定のアクションを行うツールなのですが、嬉しいポイントが個人的に分かりませんでした。
 
 tornago の実力を分かりやすく示すツールとしては、「匿名チャット」や「匿名ファイル共有」がパッと思い浮かびます。しかし、これらに手を出すと、社会を悪い方向へ傾けてしまうので、実装しませんでした。
+
+---
+
 
 ### 最後に：嫁も Tor を知っていた
 

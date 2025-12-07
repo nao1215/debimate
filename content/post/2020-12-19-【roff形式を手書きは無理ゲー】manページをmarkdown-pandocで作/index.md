@@ -60,6 +60,9 @@ serial \[en] シリアル番号付きのファイル名にリネームする。
 - Markdownの記載例
 - manページの置き場
 
+---
+
+
 ### 検証環境
 
 ```
@@ -82,6 +85,9 @@ serial \[en] シリアル番号付きのファイル名にリネームする。
 
 ```
 
+---
+
+
 ### Pandocのインストール
 
 [Pandoc](https://pandoc.org/)は、ドキュメント変換ツール（Python製）です。
@@ -95,6 +101,9 @@ $ sudo apt install pandoc
 
 ```
 
+---
+
+
 ### Markdownをmanページに変換する方法
 
 Markdownをmanページに変換する場合は、-sオプションでヘッダ／フッタの付与、-tオプションで変換フォーマットを指定します。
@@ -103,6 +112,9 @@ Markdownをmanページに変換する場合は、-sオプションでヘッダ�
 $ pandoc markdown.md -s -t man > man.1
 
 ```
+
+---
+
 
 ### manページ命名規則とセクション番号
 
@@ -137,6 +149,9 @@ manページの命名規則は、以下の通りです。拡張子が1〜8の数
 1. Markdown(serial.1.md)をmanページに変換（$ pandoc serial.1.md -s -t man > serial.1）
 2. manページをgz形式で圧縮（$ gzip -f serial.1）
 
+---
+
+
 ### manページに記載する内容
 
 manページには、標準の書式（セクション）が存在します。
@@ -163,6 +178,9 @@ manページには、標準の書式（セクション）が存在します。
 | LICENSE | ライセンス情報 |
 
 表に存在しないセクションは多数存在しますし、独自のセクションを作成しても問題はありません。ただし、なるべく慣習に合わせて作成した方が読者の負荷が減ります。
+
+---
+
 
 ### Markdownの記載例
 
@@ -252,6 +270,9 @@ See GitHub Issues: https://github.com/nao1215/serial/issues
 serial command project is licensed under the terms of the MIT license.
 
 ```
+
+---
+
 
 ### manページの置き場
 

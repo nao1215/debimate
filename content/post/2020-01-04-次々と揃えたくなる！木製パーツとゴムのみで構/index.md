@@ -26,6 +26,9 @@ cover:
 
 初期のUgearsは、ウクライナの会社がKickstarter（クラウドファンディング）で資金調達をしていたため、入手難易度がそこそこ高かったです。2020年現在は、Ugears開発会社の経営が軌道に乗ったので、AmazonやEショップなどで気軽に手に入れる事が可能になりました。書店やオモチャ屋でも類似商品を見かけますが、そちらはUgearsではなく中国の別会社である事が多く、作りがやや粗雑なようです。
 
+---
+
+
 ### 親切な説明で組み立てが容易
 
 Ugearsの組み立て方は、説明書もしくは説明動画を見ながら、木のプレートから部品を取り外し、ハメ込み作業を行うだけです。説明書は日本語に翻訳されていません。しかし、下図のように使用するパーツ番号やハメ込み位置が丁寧にビジュアライズされているため、組み立てで迷う事は少ないでしょう。
@@ -40,6 +43,9 @@ Ugearsの組み立て方は、説明書もしくは説明動画を見ながら�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ImxBZDetwlU" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
+---
+
+
 ### Card Holderの場合、所要時間は3時間
 
 嫁からCard Holderのキットをクリスマスプレゼントとして貰ったので、実際に組み立ててみました。余談ですが、嫁には[アンティークボックス](https://www.amazon.co.jp/Ugears-Antique-%E3%82%A2%E3%83%B3%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AF%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9-%E3%83%96%E3%83%AD%E3%83%83%E3%82%AF-%E3%81%8A%E3%82%82%E3%81%A1%E3%82%83/dp/B07Y9CYVJV/ref=as_li_ss_tl?__mk_ja_JP=%E3%82%AB%E3%82%BF%E3%82%AB%E3%83%8A&keywords=%E3%82%A2%E3%83%B3%E3%83%86%E3%82%A3%E3%83%BC%E3%82%AF%E3%83%9C%E3%83%83%E3%82%AF%E3%82%B9+Ugears&qid=1578109447&sr=8-1&linkCode=ll1&tag=debimate07-22&linkId=ebba61d5c05b79be705eea4509d4ffba&language=ja_JP)を買いました。途中で休憩を入れたとしても、Card Holder（パーツ数は約80個）は3時間程度で終わりました。
@@ -51,6 +57,9 @@ https://twitter.com/ARC\_AED/status/1213141819896160256
 組み立てのコツは、全ての木材ハメ込み部分にロウを塗りたくり、滑りを良くする事です。説明書上は、可動部だけロウを塗れば良いと記載されています。しかし、木材のハメ込みは力がいりますし、ロウは沢山使っても余ります。作業を楽にするために、ロウを有効活用しましょう。
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### 不安材料はゴムが切れる事だけ
 

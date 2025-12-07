@@ -18,6 +18,9 @@ cover:
 
 Raspberry Piには、「[SD Card Copier](https://pishop.co.za/blog/my-tutorial-post/clone-your-micro-sd-directly-on-rpi/)」というアプリがインストールされていますが、本記事では使用しません。代わりに、CLIでmicroSDカードのデータをバックアップ／リストアします。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -38,6 +41,9 @@ Raspberry Piには、「[SD Card Copier](https://pishop.co.za/blog/my-tutorial-p
        `Y$$b.
           `"Y$b._                                     
 ```
+
+---
+
 
 ### Raspberry Piのバックアップimageを作成
 
@@ -122,6 +128,9 @@ $ sudo dd if=/dev/sde of=raspi.img bs=10M
 
 バックアップが完了した後、microSDカードをカードリーダから取り外します。
 
+---
+
+
 ### バックアップimageをmicroSDカードにリストア
 
 先程バックアップしたRaspberry Piのimageを新しいmicroSD（今回は64GB）にリストアします。microSDカードがどのデバイスファイルに割り当てられたかは、前述の手順と同様にfdiskコマンドで確認します（確認結果は省略し、/dev/sdeだったと仮定して以下の手順を進めます）。
@@ -133,6 +142,9 @@ $ sudo dd if=/dev/sde of=raspi.img bs=10M
 $ sudo dd if=raspi.img of=/dev/sde bs=20M
 
 ```
+
+---
+
 
 ### microSDカードのパーティションを拡張
 
@@ -153,6 +165,9 @@ $sudo raspi-config
 再起動を促すメッセージでYes
 
 ```
+
+---
+
 
 ### おまけ：バックアップimageサイズを縮小する方法
 

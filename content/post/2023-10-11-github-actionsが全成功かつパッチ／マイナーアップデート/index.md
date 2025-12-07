@@ -26,6 +26,9 @@ cover:
 
 この課題を解決する案として、「GitHub Actionsが全て成功している」かつ「パッチ／マイナーアップデート」の場合は、Dependabotが作成したPRを自動マージする方法があります。本記事では、この方法を説明します。
 
+---
+
+
 ### 自動PRマージ用のGitHub Actionsを作成
 
 まず、[GitHub公式手順のリンク](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions#enable-auto-merge-on-a-pull-request)を貼るので、こちらを合わせてご確認ください。
@@ -81,6 +84,9 @@ jobs:
           PR_TITLE: ${{ github.event.pull_request.title }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+---
+
 
 ### GitHub Actions ワークフローの詳細
 
@@ -145,6 +151,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+---
+
+
 ### ライブラリを自動マージすると危険ではないか？
 
 ライブラリを自動マージするリスクは、当然あります。ケースバイケースなので、各自で判断基準を設けてください。
@@ -158,6 +167,9 @@ jobs:
 大事なのは、リリース前にQAをすることだと考えています。GitHubでタグを切ったり、リリースバージョンを公開する前に、QA（主にリグレッション）結果に問題がなければ良いかなと割り切って考えてます。
 
 あとは、仕事と趣味で対応方針を変えるべきです。私の場合、趣味のOSSは利用者が少ないので楽ができる方針にガンガン倒します。でないと管理できないので……仕事の場合は、厳密にチェックします。怪しいパッケージとか信用していない開発者のライブラリ更新は、要チェックします。
+
+---
+
 
 ### 最後に
 

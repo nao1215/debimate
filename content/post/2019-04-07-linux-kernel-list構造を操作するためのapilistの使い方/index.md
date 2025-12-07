@@ -31,6 +31,9 @@ Linux Kernel Linked Listsの説明順
 - List構造からデータを参照
 - List構造のシーケンシャル探索(for文)
 
+---
+
+
 ### 一般的なList構造とその欠点
 
 KernelのList構造に触れる前に、一般的なList構造について説明します。C言語の参考書では、List構造は「データ」と密結合の場合が多いです。以下にコード例として、NUM\_LIST構造体を示します。NUM\_LIST構造体は、List構造(nextポインタ)として、NUM\_LIST構造体のポインタを持ちます。
@@ -79,6 +82,9 @@ struct NUM_LIST * list_add_num(struct NUM_LIST *head, unsigned int num) {
 
 例えば、"char data\[256\];"を持つCHAR\_LIST構造体を実装した場合、API(上記の例では、list\_add\_num)の再実装が必要です。この点が、密結合のLink構造の欠点(面倒臭さ)と言えます。
 
+---
+
+
 ### Linux KernelのList構造
 
 Linux KernelのList構造は、データと分離されており、粗結合の状態です。定義は、$(Linux Kernel Top Directory)/include/linux/types.hに存在し、以下のような実装です。List構造(list\_head構造体)へのnextポインタ、prevポインタを持つだけのシンプルな内容です。
@@ -106,6 +112,9 @@ Linux Kernel形式でNUM\_LIST構造体をLinkさせた図(単方向のみLink�
 Linux Kenel形式のList構造の利点は、データ構造(構造体)に応じて、List操作APIを再実装する必要性が無い事です。この利点は、データ構造とList構造が互いに影響しない事(粗結合である事)によって、実現されています。
 
 勘の良い方は、「List構造をnext->next->...と辿れるけど、肝心のデータにアクセスできないのではないか」と考えたかもしれません。Linux Kernelは、「List構造のポインタ」から「List構造を含むデータ構造体の先頭ポインタ」を得るマクロが用意されています(後述)。そのため、List構造ポインタからデータにアクセス可能です。
+
+---
+
 
 ### List構造の初期化(動的)
 
@@ -138,6 +147,9 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### List構造の初期化(静的)
 
 Linux Kernel内で、静的にList構造を初期化する場合、LIST\_HEADマクロを使用します。ここでの静的とは、List構造(list\_head構造体)の変数宣言時という意味です。LIST\_HEADマクロをコールすると、新しいlist\_head構造体(list)が作成され、初期化済みの状態になります。初期化例は、以下の通りです。
@@ -163,6 +175,9 @@ struct list_head list = LIST_HEAD_INIT(name);
 struct list_head list = { &(list), &(list) }  /* List構造を初期化しただけ */
 
 ```
+
+---
+
 
 ### List構造に要素を追加
 
@@ -246,6 +261,9 @@ static inline void __list_add(struct list_head *new,
 
 ```
 
+---
+
+
 ### List構造から要素を削除
 
 List構造から要素を削除する場合、list\_del()を使用します。使用方法は、削除対象のList構造(list\_head構造体)を引数として渡すだけです。しかし、削除と言いつつ、ポインタの連結を変更しているだけなので、データ構造が確保していたメモリは解放されません。そのため、list\_del()を呼ぶ前に、データ構造が使用したメモリを解放しなければいけません。
@@ -288,6 +306,9 @@ static inline void __list_del(struct list_head * prev, struct list_head * next)
 }                                                                                                        
 
 ```
+
+---
+
 
 ### List構造からデータを参照
 
@@ -334,6 +355,9 @@ list\_entry()の実装は、$(Linux Kernel Top Directory)/include/linux/list.h�
 container\_ofマクロの仕様に関しては、別記事で詳細に記載しています。
 
 - [Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ](https://debimate.jp/post/2019-04-06-linux-kernel-%E6%A7%8B%E9%80%A0%E4%BD%93%E3%83%A1%E3%83%B3%E3%83%90%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%81%8B%E3%82%89%E6%A7%8B%E9%80%A0%E4%BD%93%E3%81%AE%E5%85%88%E9%A0%AD%E3%83%9D%E3%82%A4/)
+
+---
+
 
 ### List構造のシーケンシャル探索(for文)
 
@@ -405,6 +429,9 @@ list\_for\_each\_entry()の実装は、$(Linux Kernel Top Directory)/include/lin
 list\_for\_each\_entry()は、for文を作成しているだけです。前提として、C言語のfor文は、"for (初期化; 条件式; 変化式)"で表されます。
 
 まず、for文の初期化部分は、list\_first\_entry()でList構造(list\_head構造体)の先頭ポインタ(iterator)を取得しています。次に、条件式は「データ構造が持つList構造が指すポインタ」!=「List構造体の先頭ポインタ」です。最後に、変化式はlist\_next\_entry()で、iteratorを次のList構造ポインタに変更しています。
+
+---
+
 
 ### 最後に
 

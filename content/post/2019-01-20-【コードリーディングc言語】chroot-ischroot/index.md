@@ -39,11 +39,17 @@ cover:
 | chroot.c | 305step | coreutils-8.23 |
 | ischroot.c | 159step | debianutils-4.4 |
 
+---
+
+
 ### 検証環境
 
 - [Debian8.6(64bit)](https://www.debian.org/index.ja.html)
 - [coreutils-8.23](https://packages.debian.org/jessie/coreutils)
 - [debianutils-4.4](https://packages.debian.org/jessie/debianutils)
+
+---
+
 
 ### chroot実装調査：coreutilesパッケージの取得
 
@@ -73,6 +79,9 @@ $ cd coreutils-8.23/src           (注釈) coreutilsのソースコードが格�
 $ ls | grep -E "chroot" 　　　　　 (注釈) chrootに関するファイルのみを表示
   chroot.c
 ```
+
+---
+
 
 ### chroot実装調査：coreutils内ソースファイルの共通初期化処理
 
@@ -303,6 +312,9 @@ close_stdout (void)
 
 ```
 
+---
+
+
 ### chrootのオプション処理
 
 初期化処理に続いて、chrootが受け取るオプションの取り扱い方法を説明します。実装を説明する前に、chrootの書式およびオプションを以下に示します。
@@ -389,6 +401,9 @@ static struct option const long_opts[] =
 };
 ```
 
+---
+
+
 ### ルートディレクトリの変更処理
 
 ルートディレクトリの変更処理を説明します。この変更処理前にはuid/gidを取得する処理、変更後には変更後のルートに移動する処理を行います。
@@ -452,6 +467,9 @@ static struct option const long_opts[] =
 個人的な結論
 
 chrootコマンド ≒ chrootシステムコール
+
+---
+
 
 ### ルートディレクトリ変更後のコマンド処理
 
@@ -554,6 +572,9 @@ if(groups && \*groups)のブロックの内容は、再度uid/gid/補助グル�
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### ischroot実装調査：debianutilsパッケージの取得
 
 基本的に、debianutilsパッケージの取得は、coreutilsの取得と同じです。
@@ -573,6 +594,9 @@ $ ls | grep -E "ischroot"
   ischroot.1
   ischroot.c
 ```
+
+---
+
 
 ### ischrootコマンドの挙動(manより抜粋)
 
@@ -606,6 +630,9 @@ ischrootのオプションは、以下の通りです。
 | \-t, --default-true | ischrootコマンドを一般ユーザが実行した場合の返り値が0になる。 |
 | \--help | ヘルプを表示する |
 | \--version | バージョン情報を表示する |
+
+---
+
 
 ### ischrootの実装
 
@@ -731,10 +758,16 @@ ischroot()では、"/"のデバイスIDおよび"/proc/1/root"のデバイスID�
 
 以上が、ischrootコマンドの処理となります。
 
+---
+
+
 ### 参考書籍
 
 [LINUXプログラミングインタフェース(O'Reilly)](https://www.oreilly.co.jp/books/9784873115856/)  
 [Inside Linux Software オープンソースソフトウェアのからくりとしくみ(翔泳社)](http://www.shoeisha.co.jp/book/detail/9784798112831)
+
+---
+
 
 ### 最後に
 

@@ -44,6 +44,9 @@ cover:
 2-10. Whiplash  
 2-11. Breadfan
 
+---
+
+
 ### 伝説Live。Metallica Top10に入るベストパフォーマンス
 
 **最初に、このLiveを伝説扱いしたのは誰？**
@@ -56,11 +59,17 @@ Live自体は、Metallicaファンの間では高く評価されています。�
 
 バンドの絶頂期を切り取ったベストLive。一聴の価値あり。
 
+---
+
+
 ### まずは聴こう
 
 **観客の男性率の高さ！**
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/VQzSzCeXpnc" frameborder="0" allowfullscreen="allowfullscreen"></iframe>
+
+---
+
 
 ### 非公式音源なんて買いたくない！という方へ
 
@@ -71,6 +80,9 @@ Live自体は、Metallicaファンの間では高く評価されています。�
 **"...AND JUSTICE FOR ALL (DELUXE BOX SET)"を買えば良い。**
 
 [![](images/ajfa-deluxe-box-set-e1546407575773.jpg)](https://www.metallica.com/store/and-justice-for-all-remastered-deluxe/REAJFADLX.html)
+
+---
+
 
 ### 好きな一曲
 

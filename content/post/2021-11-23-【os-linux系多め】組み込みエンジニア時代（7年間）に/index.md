@@ -28,6 +28,9 @@ cover:
 
 以降では、書籍（合計9冊）を順番に紹介します。書籍タイトルはAmazonへのリンクとなっています。[リーダブルコード](https://amzn.to/3CD6480)、[Effective Java](https://amzn.to/3nGLVcO)、[APIデザインの極意](https://amzn.to/3r106vr)、[UNIXという考え方](https://amzn.to/3nHu7OI)あたりも良書だと思いますが、有名なので紹介を割愛します。本記事では「ややマイナー本」かつ「読んだ時の印象が良かった本」を取り上げようかなと考えています。
 
+---
+
+
 ### [Linuxプログラミングインターフェース](https://amzn.to/3oW1zk7)
 
 **THE 鈍器**
@@ -40,6 +43,9 @@ cover:
 
 ネットワークに関して深堀する場合は「[Linuxで動かしながら学ぶTCP/IPネットワーク入門](https://amzn.to/3FGwuaU)」や「[マスタリングTCP/IPシリーズ](https://amzn.to/3FESnqT)」、スレッドに関しては「[Linuxとpthreadsによる マルチスレッドプログラミング入門](https://amzn.to/3r2y6rl)」あたりがオススメです。
 
+---
+
+
 ### [Xinuオペレーティングシステムデザイン 改訂2版](https://amzn.to/3cH95cK)
 
 Xinuは、パデュー大学で教育目的で開発されたOSです。
@@ -51,6 +57,9 @@ Xinuは、パデュー大学で教育目的で開発されたOSです。
 類似書籍に「[はじめてのOSコードリーディング ~UNIX V6で学ぶカーネルのしくみ](https://amzn.to/3CVdkwh)」がありますが、こちらはC言語が古い文法（K&R前の文法）でコーディングされています。C言語初学者には、Xinuのコードの方が読みやすい筈です。
 
 OSに関して発展的な内容を求める場合は、[OSdev](https://wiki.osdev.org/Expanded_Main_Page)が楽しいかもしれません。OSに関する日本語書籍では「[新装改訂版 Linuxのブートプロセスをみる](https://amzn.to/3r2Nbt4)」「[ゼロからのOS自作入門](https://amzn.to/3xdjXZr)」あたりが取っつきやすいです。Linux Kernelの書籍は「[詳解 Linuxカーネル 第3版](https://amzn.to/3cGdqgs)」や「[Linuxデバイスドライバ 第3版](https://amzn.to/3CL6qt4)」がありますが、15年近く前の書籍であり、賞味期限切れな印象です。
+
+---
+
 
 ### [C言語によるオブジェクト指向プログラミング入門](https://amzn.to/3xgSwy4)
 
@@ -66,6 +75,9 @@ C言語をメインで使うプログラマは、データ構造に対して気�
 
 OOP等のモダンなC言語開発に興味がある人は「[モダンC言語プログラミング](https://amzn.to/3CJHv9l)」や「[テスト駆動開発による組み込みプログラミング](https://amzn.to/3nHzm0Y)」がオススメです。しかし、チーム全員で輪読しないと効果が薄い可能性が高いです（チームで一人だけ意識高い系になってしまう）。
 
+---
+
+
 ### [ゲームで極める シェルスクリプトスーパーテクニック](https://amzn.to/30SQcRp)
 
 シェルスクリプトに関する書籍の中で、最も特徴的な本書。書籍名に「ゲーム」と名付けているため、読者層を狭めてしまっている感じがします。
@@ -75,6 +87,9 @@ OOP等のモダンなC言語開発に興味がある人は「[モダンC言語�
 個人的には「[シェルプログラミング実用テクニック](https://amzn.to/3xeE7lE)」を読んだ後に、「[bashクックブック](https://amzn.to/3HJs6JT)」「[覚えて便利 いますぐ使える!シェルスクリプトシンプルレシピ54](https://amzn.to/3oQfzvz)」あたりを読めば、シェルスクリプトに関しては充分な知識が身につくと思います。
 
 最近だと、「[1日1問、半年以内に習得 シェル・ワンライナー160本ノック](https://amzn.to/3r0O5Gk)」あたりが注目株ですが、未読なのでオススメできません（かなり読みたい）
+
+---
+
 
 ### [Inside Linux Software　～オープンソースソフトウェアのからくりとしくみ～](https://amzn.to/2ZxRtgI)
 
@@ -86,6 +101,9 @@ Autotoolによるビルド自動化（環境に合わせたビルド）、パッ
 
 OSSに詳しくなると、ビルド職人かRoot File System職人を生業とする可能性があります。ビルド職人を目指す方は「[Linux from scratch](http://lfsbookja.osdn.jp/)」、組み込み用のrootfs職人を目指す方は「[Embedded Linux Systems with the Yocto Project](https://amzn.to/3nGLWxj)」あたりに目を通して、2年間ぐらいビルドエラーと格闘すれば一人前の職人になれます（私は、実際にしました）
 
+---
+
+
 ### [Androidを支える技術](https://amzn.to/3FGxThG)
 
 本書は、Androidアプリではなく、Androidプラットフォームアーキテクチャ（下図）について説明しています。AndroidはLinux Kernel上にハード抽象化レイヤー（HAL）、コロコロと仕様が変更されるRuntime、Java Native InterfaceでラッピングされたNativeレイヤーがあり、それらの上でJavaのミドルウェアが動いています。
@@ -94,6 +112,9 @@ OSSに詳しくなると、ビルド職人かRoot File System職人を生業と�
 
 \[caption id="attachment\_7042" align="aligncenter" width="480"\]![Androidアーキテクチャ](images/android-stack_2x.png) https://developer.android.com/guide/platform?hl=jaより引用\[/caption\] 
 
+---
+
+
 ### [2週間でできる！ スクリプト言語の作り方](https://amzn.to/3FFzjZL)
 
 コンパイラ本であれば「[タイガー本](https://amzn.to/3HPFOLA)」や「[flex & bison: Text Processing Tools](https://amzn.to/3cHd4WI)」あたりが本格的で面白みがあります。しかし、「敷居の高さ」や「手を動かして学べない点」を考慮すると、それらを最初に読むには厳しさがあります。
@@ -101,6 +122,9 @@ OSSに詳しくなると、ビルド職人かRoot File System職人を生業と�
 その一方で、本書はJavaでStone言語を作る流れとなっており、手を動かして学びたい私にとってはピッタリでした。ただし、サンプルコードにコメントがなかったり、ビルドまでに手直しが必要であったりと、Java初心者には厳しいかもしれません（とは言え、初めてのJava学習用に本書を購入した私が対応できたので、そこまで難しい問題ではないと思います）
 
 同様に、スクリプト言語を作る書籍としては「[Go言語で作るインタプリタ](https://amzn.to/3nGOZph)」も良書でした（世間一般的にはコチラの方が良書な気がします）
+
+---
+
 
 ### [メタプログラミングRuby 第2版](https://amzn.to/3CH7RZx)
 
@@ -112,6 +136,9 @@ OOPに関しても、デザインパターン本（Java本）を読む前に「[
 
 これからRubyを学ぶ人には、「[チェリー本](https://amzn.to/3FzWWCS)」が入門としてオススメです（私が読んだのは初版なので、実はリンク先の改訂2版を未読）
 
+---
+
+
 ### [詳説 正規表現 第3版](https://amzn.to/3xcbLst)
 
 本書を読むと、「正規表現？Google検索でコピペるよ」から「パフォーマンスを意識した正規表現を書く」までに、レベルアップします。正規表現の書式、方言、ベンチマーク（効率の良い正規表現の書き方）などが体系に学べるのは、本書だけでしょう。
@@ -119,6 +146,9 @@ OOPに関しても、デザインパターン本（Java本）を読む前に「[
 重点的に取り扱われている言語は、Perl、Java、.NET、PHPであり、Ruby、Python、Tcl（!!）も話題には出てきます。[C言語は出てこず、自分で使い方を調べました](https://debimate.jp/post/2020-11-01-%E8%8B%A6%E8%A1%8Cc%E8%A8%80%E8%AA%9E%E3%81%A7%E6%AD%A3%E8%A6%8F%E8%A1%A8%E7%8F%BE%E3%82%92%E7%94%A8%E3%81%84%E3%82%8B%E6%96%B9%E6%B3%95%E6%A8%99%E6%BA%96c%E3%83%A9%E3%82%A4/)。登場する言語がやや古いのは否めません。
 
 正規表現は学んで損がない技術の代表格なので、色んな方に本書を手に取っていただきたいです。
+
+---
+
 
 ### 最後に
 

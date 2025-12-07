@@ -23,6 +23,9 @@ cover:
 
 同じように、キーボードで操作が完結できる[w3m](http://w3m.sourceforge.net/index.ja.html)を本記事で紹介します。[w3m(WWW-wo-Miru)](http://w3m.sourceforge.net/index.ja.html%0A)は、日本人が作成したテキストベースWebブラウザです。端末上でWeb検索作業できますが、使いづらい部分があったため、それらを補うスクリプトも本記事に記載します。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -45,6 +48,9 @@ cover:
               `"""            Memory: 2974MiB / 32060MiB 
 ```
 
+---
+
+
 ### w3mのインストール方法
 
 ```
@@ -53,6 +59,9 @@ $ sudo apt install w3m
 $ sudo apt install w3m-img   (注釈)端末上で画像を表示したい場合はインストール
  
 ```
+
+---
+
 
 ### w3mの起動方法
 
@@ -69,6 +78,9 @@ w3m http://google.com
 ```
 
 ![w3m](images/w3m.jpg)
+
+---
+
 
 ### スクリプトによる起動簡略化
 
@@ -115,6 +127,9 @@ ggleスクリプトは、以下の手順でインストールしてください�
 $ chmod a+x ggle    (注釈) ggleスクリプトは手動でコピーしてください
 $ sudo cp ggle /usr/local/bin/.
 ```
+
+---
+
 
 ### 最後に
 

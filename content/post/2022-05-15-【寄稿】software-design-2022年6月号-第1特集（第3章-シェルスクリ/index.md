@@ -27,6 +27,9 @@ cover:
 
 フラーは、組み込みエンジニア（私）をサーバーサイドとして雇ってくださった稀有な会社です。フルリモートで働ける素晴らしい会社。
 
+---
+
+
 ### 寄稿のキッカケ
 
 [前回のSoftware Design 2022年1月号](https://debimate.jp/post/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)は、本技術ブログ経由で寄稿依頼をいただきました。
@@ -38,6 +41,9 @@ cover:
 前回の記事はPythonを推す内容でしたが、私は「シェルスクリプトを否定したくない、悪者にしたくない」と考えていました。そのため、「シェルは良いツールだ。でも、チーム開発や大規模開発で弱みがある。適材適所でシェルスクリプトかPythonを選択すれば良い」という趣旨の主張を記事に盛り込みました。
 
 その主張が「並々ならぬ想い」として伝わったようです。正直なところ、私はPythonよりシェルスクリプトの方が利用頻度高いので、前回の寄稿では「なぜ私にPython記事の寄稿依頼を？」と感じながら執筆していました。
+
+---
+
 
 ### 執筆後の感想
 
@@ -58,6 +64,9 @@ cover:
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">Software Design 2022年6月号（5月18日発売予定）に、記事を寄稿させていただきました<br><br>第1特集 第3章 シェルスクリプトの使い方<br><br>「シェルスクリプト開発サポートツール紹介」「誤ったファイル削除の防止」「バイナリ埋め込みインストーラ」など、初心者以外の方も楽しめる内容です！ <a href="https://t.co/mfwxwgDZIK">https://t.co/mfwxwgDZIK</a></p>— Nao31@MIN-NIIGATA (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1519163900540850176?ref_src=twsrc%5Etfw">April 27, 2022</a></blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+---
+
 
 ### 最後に：同人／商業で記事や書籍の執筆を続けたい
 

@@ -19,6 +19,9 @@ cover:
 
 なお、記事中に"--"という表示がありますが、この表記はハイフンが２個ある記載を意図しています。WordPressの機能によって、"--"が正しく表記されていません。
 
+---
+
+
 ### Command Line Interface仕様の種類
 
 Command Line Interfaceには、複数の仕様があります。
@@ -30,6 +33,9 @@ Command Line Interfaceには、複数の仕様があります。
 - その他（Command作成者が独自に決めた仕様）
 
 現実的には、POSIX/GNUの仕様を併せ持つCommand Option Parser Library（Option解析ライブラリ）が、各言語向けに存在します。つまり、Commad Optionを解析するコードを自力で書かない限り、GNU/POSIXの仕様に（ある程度）従います。例えば、C言語であれば、getopt()がPOSIX規格の Short Option("-")を解析し、getopt\_long()がPOSIX規格/GNUのOption("-"と"--")を解釈します。これらの関数は、どちらも[Glibc](https://www.gnu.org/software/libc/)が提供する関数で、標準的なLinuxであれば導入されています。
+
+---
+
 
 ### Command Optionに関するPOSIX規格
 
@@ -52,6 +58,9 @@ POSIX規格（抜粋）
 
 しかし、Optionを用いない仕様（例："command 生成ファイル名"）とし、スクリプト種類は生成ファイル名の拡張子から判定した方が利便性が高かったです。
 
+---
+
+
 ### Command Optionに関するGNU Coding Style
 
 [GNU Coding Style](https://www.gnu.org/prep/standards/html_node/Command_002dLine-Interfaces.html)では、POSIX規格に従う事を推奨しています。さらに、GNUではPOSIX規格に以下の仕様を加えています。
@@ -61,6 +70,9 @@ POSIX規格（抜粋）
 - "--"およびOptionのロング名のサポート（例："-v"に対応する"--version"）
 - OptionとOption引数が連結した形式のサポート（例：--test=path）
 - "--version"(バージョン表示)および"--help"(ヘルプもしくはUsageの表示)を最低限サポートする事
+
+---
+
 
 ### 一般的なOption一覧
 
@@ -97,6 +109,9 @@ Linuxで頻繁に使用されるCommandは、ある程度同じ意味合いのOp
 | x | extract | アーカイブなどから抽出するファイル一覧を表示（tar、zip） |
 | y | yes | ユーザ確認する処理において、全確認項目に対してユーザがyesと回答したとみなす（apt、yum） |
 | z | zip(compress) | 圧縮を有効化（tar） |
+
+---
+
 
 ### 参考
 

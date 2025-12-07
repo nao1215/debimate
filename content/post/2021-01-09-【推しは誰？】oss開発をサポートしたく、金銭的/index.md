@@ -36,6 +36,9 @@ _**2021年は、elementary OSに金銭面（超少額）サポートします！
 
 [![](images/寄付.jpg)](https://elementary.io/ja/get-involved)
 
+---
+
+
 ### elementary OSは収益面を意識したOSS
 
 elementary OSは、Ubuntu派生（UbuntuはDebian派生）のLinuxディストリビューションであり、「安定かつ新し目のパッケージ」および「Macを意識したLook & Feel」を提供しており、[私もノートPCにインストールして愛用させてもらっています](https://debimate.jp/post/2021-01-02-%E3%83%89%E3%82%B9%E3%83%91%E3%83%A9%E3%81%AEthirdwave-vf-ad4%E3%81%ABelementary-osubuntu%E6%B4%BE%E7%94%9F%E3%82%92%E5%85%A5%E3%82%8C%E3%81%9F%E6%84%9F%E6%83%B3/)。
@@ -60,6 +63,9 @@ LinuxのOSやアプリが有料であるパターン（正確には無料／有�
 
 私は、ソフト開発者は正当な対価を得られるべきだと考えているため、elementary OSの姿勢には賛同しています。
 
+---
+
+
 ### elementary OSへの金銭的な貢献とは
 
 elementary OSに対しては、以下の手段で金銭サポートができるようです。スポンサーになれば、elementary OSプロジェクトから開発中ソフトにアクセスする権利やelementary OSグッズを貰えるようです。
@@ -77,6 +83,9 @@ elementary OSに対しては、以下の手段で金銭サポートができる�
 
 [![](images/sponser.jpg)](https://github.com/sponsors/elementary)
 
+---
+
+
 ### グッズ + Patreonを選択
 
 私は形に残るものが欲しかったので、マグカップを選びました！
@@ -90,6 +99,9 @@ elementary OSに対しては、以下の手段で金銭サポートができる�
 1年分を一回払いすると、5% OFFになるようです。こちらもグッズを提供していただけるので、届くのが楽しみです。
 
 ![](images/Screenshot-from-2021-01-09-21-11-23.jpg)![](images/Screenshot-from-2021-01-09-21-20-01.jpg)
+
+---
+
 
 ### 後書き
 

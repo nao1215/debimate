@@ -28,6 +28,9 @@ cover:
 
 私が細かな仕様を知らなかったため、本記事ではnologin／falseコマンドの仕様に関する調査結果を説明します。
 
+---
+
+
 ### 検証環境
 
 ```
@@ -49,6 +52,9 @@ cover:
           `"Y$b._             GPU: NVIDIA NVIDIA Corporation TU107 
               `"""            Memory: 6818MiB / 64404MiB
 ```
+
+---
+
 
 ### 前提：/etc/passwdの仕様
 
@@ -73,6 +79,9 @@ bin:x:2:2:bin:/bin:/usr/sbin/nologin
 sys:x:3:3:sys:/dev:/usr/sbin/nologin
 
 ```
+
+---
+
 
 ### nologinコマンドの仕様
 
@@ -112,6 +121,9 @@ shadow-utils 4.5                              07/27/2018                        
 ```
 
 manには、「nologinコマンドは非0（失敗）の値を返して終了する」と記載されているので、実装を確認します。
+
+---
+
 
 ### nologinコマンドの実装
 
@@ -187,6 +199,9 @@ Apr 16 20:24:01 debian nologin: Attempted login by nao on /dev/pts/1
 
 ```
 
+---
+
+
 ### Debianはnologinコマンドのログイン拒否メッセージを変更不可
 
 色々なサイトで、「/etc/nologin.txtを編集すれば、ログイン拒否メッセージを変更可能」と書かれています。しかし、前述の実装の限り、ログイン拒否メッセージは固定の文字列です。
@@ -199,6 +214,9 @@ Apr 16 20:24:01 debian nologin: Attempted login by nao on /dev/pts/1
 調査した結果、Debianのnologinコマンドは「/etc/nologin.txt」を確認しませんが、[Linux Kernel Organization](https://en.wikipedia.org/wiki/Linux_Kernel_Organization)が配布している[util-linux](https://github.com/karelzak/util-linux)版は「/etc/nologin.txt」を確認するようです（[util-linux版ソースコード](https://github.com/karelzak/util-linux/blob/master/login-utils/nologin.c)を参照）
 
 \[the\_ad id="598"\]
+
+---
+
 
 ### falseコマンドの仕様
 
@@ -214,6 +232,9 @@ $ echo $?
 1
 
 ```
+
+---
+
 
 ### falseコマンドの実装
 
@@ -250,6 +271,9 @@ true.cファイル内では、EXIT\_STATUSが未定義の場合、「#define EXI
 ```
 
 つまり、true.cをコンパイルした場合はEXIT\_STATUSは成功になり、false.cをコンパイルした場合はEXIT\_STATUSは失敗となります。読めばすぐ理解できますが、このような実装は初めて見ました。
+
+---
+
 
 ### まとめ
 

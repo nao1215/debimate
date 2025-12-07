@@ -21,6 +21,9 @@ cover:
 
 個人的な備忘録として、Windows環境向けに注意すべき点を本記事に記載します。問題に遭遇次第、適宜加筆します（現段階は数が多くありません）
 
+---
+
+
 ### GitHub Actions の一例
 
 Windows環境でのユニットテストを実施するGitHub Actionsの例です。
@@ -61,6 +64,9 @@ jobs:
           go test -race -v ./...
 ```
 
+---
+
+
 ### 注意点：ファイルパスの区切り文字
 
 ファイルパスの区切り文字の差異は、クロスプラットフォーム対応で有名な注意点の一つです。LinuxやMacでは区切り文字が"/"ですが、Windowsでは"\\"です。
@@ -83,6 +89,9 @@ filepath.Join("dir", "example.txt")
 // Windows：dir\example.txt
 
 ```
+
+---
+
 
 ### 注意点：一時ディレクトリが削除できない問題の対応
 
@@ -114,6 +123,9 @@ func removeDir(dir string) {
 //	defer removeDir(dir)
 
 ```
+
+---
+
 
 ### 最後に
 

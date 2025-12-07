@@ -20,6 +20,9 @@ cover:
 
 本記事では、電源投入からinitプロセスが立ち上がるまでを記載します。
 
+---
+
+
 ### Raspberry Piの起動に関わるソフトウェア
 
 Raspberry Piに電源が投入された後、複数のBootloaderが実行されます。Bootloaderが多段の理由は、公式で情報がありません。推測ですが、バイナリサイズや起動コードの隠蔽が目的ではないかと考えています。
@@ -34,6 +37,9 @@ Raspberry Piに電源が投入された後、複数のBootloaderが実行され�
 
 ※2012年10月まで、start.elfを読み込むためのloader.bin(三段階目)が存在したが、削除された。参考：[https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=65022](https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=65022)
 
+---
+
+
 ### 起動シーケンスの概略
 
 1. 電源を投入
@@ -46,6 +52,9 @@ Raspberry Piに電源が投入された後、複数のBootloaderが実行され�
 8. start.elf内でkernel7.img(Linux Kernel)のStart Addressに移動
 9. Linux Kernelが初期化プロセス(デバイスの初期化、Linux Kernelサブシステムの初期化など)を実行
 10. Linux Kernelがsystemd(initプロセス)を起動
+
+---
+
 
 ### 参考
 

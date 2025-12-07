@@ -20,6 +20,9 @@ cover:
 
 本記事は、「Linux Kernel Device Driverの雛形作成」や「Linux Kernel内APIを試すためのモジュール作成」を目的として、最低限必要な環境構築手順を記載しています。
 
+---
+
+
 ### 開発環境
 
 ```
@@ -43,6 +46,9 @@ $ neofetch
               `"""            Memory: 3487MB / 32069MB 
 ```
 
+---
+
+
 ### Linux Kenelモジュールとは
 
 Linux Kernelモジュールとは、Linux Kenelの機能を拡張するためのオブジェクトファイル(\*.koファイル)です。特徴として、Linuxの起動後に、動的にLoad/Unloadできます。イメージとしては、アプリケーションのPluginと同等です。
@@ -58,6 +64,9 @@ Linux Kernelは、機能拡張方法が2つあります。
 
 後者も、.configファイルを編集する点では、同様です。ただし、機能の必要・不要の設定ではなく、モジュール化フラグを設定します。利点は、機能が必要になったタイミングで\*.koファイルをloadできる事で、欠点はload時にオーバヘッドがある事です。この方法は、デバイスドライバで用いられる事が多いです。
 
+---
+
+
 ### Linux Kernel開発に必須パッケージのinstall
 
 Linux Kernelの開発(主にビルド)で必須なパッケージをinstallします。導入順番は、Linux Kernelヘッダ、ビルド時の依存パッケージです。今回は、ディストリビューション(Debian)が提供しているパッケージを用います。
@@ -71,6 +80,9 @@ build-essential chrpath socat libsdl1.2-dev xterm libncurses5-dev \
 lzop flex libelf-dev kmod
 ```
 
+---
+
+
 ### Linux Kernelソースコードの取得
 
 前述の手順で入手したLinux Kernelヘッダと同じバージョンのLinux Kernelソースコードを取得します。取得したソースコードは、/usr/src以下にtarballで格納されます。具体的には、linux-source-<Version>.tar.xzが一時開発元オリジナルソースコード、その他のファイルがDebian独自のパッチです。[詳細は、Debian公式サイトに記載されています。](https://packages.debian.org/stretch/all/linux-source-4.9/filelist)
@@ -80,6 +92,9 @@ $ uname -r       (注釈) Kernelバージョンの確認
 4.9.0-8-amd64
 $ sudo apt install linux-source-4.9  (注釈) linux-source-X.Xの"X.X"は、unameコマンドで確認したバージョンを記載。
 ```
+
+---
+
 
 ### Linux Kernelのビルド確認
 
@@ -182,6 +197,9 @@ $ make -j8   (注釈) -jの後の数値は、CPUコア数×2
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### Linux Kernelモジュール(雛形)を作成・ビルド
 
 Linux Kernelモジュールの雛形を作成します。作成するファイルは、ソースファイル(今回はtest\_module.c)とMakefileです。ソース内容は、後ほど説明します。なお、Linux Kernelのコーディング規約の一つに、「Tabを使う事(size=8)」があります。基本的に私は、commitするわけではないため、この規約に従っていない場合があります。
@@ -239,6 +257,9 @@ $ ls
 Makefile        debimate_module.c   debimate_module.mod.c  debimate_module.oModule.symvers  debimate_module.ko  debimate_module.mod.o  modules.order
 
 ```
+
+---
+
 
 ### debimate\_module.cの内容説明
 
@@ -346,6 +367,9 @@ module\_init()、module\_exit()は、モジュールの初期化関数および�
 6. fs
 7. device
 8. late
+
+---
+
 
 ### KernelモジュールのLoad/Unloadを確認
 

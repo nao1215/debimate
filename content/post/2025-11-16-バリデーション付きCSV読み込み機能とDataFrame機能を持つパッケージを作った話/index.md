@@ -14,6 +14,9 @@ cover:
 
 本記事で取り上げるのは、2024年に開発した [nao1215/csv](https://github.com/nao1215/csv) です。本来の予定では、新規に開発した機能の紹介だけ書く予定でした。しかし、本ブログで一度も nao1215/csv の説明をしていなかったようなので、まずは基本機能を説明した後に新機能（DataFrame）について紹介します。
 
+---
+
+
 ### キッカケ：CSV 読み込みが辛い時期があった
 
 君は、CSV を読み込んだことがあるだろうか。  
@@ -25,6 +28,9 @@ cover:
 私が特に辛かったのが、どの行で読み込みエラーが発生したか分からなかったことです。私は、Golang 標準ライブラリの csv パッケージや [shogo82148/go-header-csv](https://github.com/shogo82148/go-header-csv) を利用して CSV を読み込むケースが当時多かったです。しかし、これらのライブラリは、エラーが発生した行番号を教えてくれませんでした（注：[go-header-csv は、v0.1.0からエラー発生行番号を教えてくれます](https://shogo82148.github.io/blog/2025/03/27/convert-csv-to-structs-in-golang/)）。
 
 また、CSV カラムに関するバリデーション要件が入ってくると、地獄の門が開門します。一度 CSV を読み込んだ後に、カラム単位でバリデーションしたり、「カラム A が◯◯の場合は、カラム B は☓☓でなければならない」などの条件を地道に実装する必要がでてきます。この要件を含むタスクと2度出会いましたが、実装者は苦戦していました。そう、私は実装していません。管理側の立場だったので、レビューしただけでした。このバリデーション処理はカラムが数百単位であったので、愚直に実装すると、かなり見通しの悪いコードが出来上がります。
+
+---
+
 
 ### [go-playground/validator](https://github.com/go-playground/validator) を参考に [nao1215/csv](https://github.com/nao1215/csv) を開発
 
@@ -108,9 +114,15 @@ a,Yulia,25
 }
 ```
 
+---
+
+
 ### 対応しているバリデーションタグ一覧
 
 [nao1215/csv](https://github.com/nao1215/csv)は、[go-playground/validator](https://github.com/go-playground/validator) が対応しているタグを部分的に実装しています。理論的には、[go-playground/validator](https://github.com/go-playground/validator)  の全タグを導入できます。しかし、[nao1215/csv](https://github.com/nao1215/csv) を自分でも使わないので、タグを増やしていません。2025年現在では、優秀な LLM が存在するので、ガッとタグを増やそうと思えば増やせます。
+
+---
+
 
 #### String rules
 
@@ -126,11 +138,17 @@ a,Yulia,25
 | numeric      | Numeric only                             |
 | uppercase    | Uppercase only                           |
 
+---
+
+
 #### Format rules
 
 | Tag Name | Description         |
 | -------- | ------------------- |
 | email    | Valid email address |
+
+---
+
 
 #### Comparison rules
 
@@ -143,6 +161,9 @@ a,Yulia,25
 | lte      | Less or equal                |
 | ne       | Not equal                    |
 
+---
+
+
 #### Other rules
 
 | Tag Name | Description                    |
@@ -152,6 +173,9 @@ a,Yulia,25
 | min      | Minimum value                  |
 | oneof    | Must match one of given values |
 | required | Must not be empty              |
+
+---
+
 
 ### 本題：v0.3.0で DataFrame 機能を追加
 
@@ -233,6 +257,9 @@ func ExampleDataFrame_joinFilterSort() {
 }
 ```
 
+---
+
+
 ### 誤算：DataFrame 同士を結合する仕様の実現で悩んだ
 
 私は、[pandas](https://pandas.pydata.org/) で一つの DataFrame を使い回す例ばかりを見ていたので、DataFrame 同士が結合できることを知らずに機能追加を始めました。DataFrame 同士を結合できる仕様に気づいた時、私は実装を断念するつもりでした。理由は、素直なやり方で実装できないからです。
@@ -242,6 +269,9 @@ func ExampleDataFrame_joinFilterSort() {
 VTuber の動画を見ながら導いた結論は、「必要なタイミングだけ、データ読み込みや SQL 実行をする」でした。例えば、DataFrame 初期化やフィルタリング設定をしている段階では、SQL を実行する必要がありません。ユーザーが表の中身を確認したくなった時に初めて、SQL を実行すれば十分です。Lazy Load や Deferred initcalls と発想は同じです。必要になるまで、実行を遅らせます。
 
 この発想のおかげで、シンプルな DataFrame を実装できました。当然、[pandas](https://pandas.pydata.org/) と使い勝手は違いますし、機能が足りていません。しかし、私としては [nao1215/filesql](https://github.com/nao1215/filesql) の新しい使い方を提示できたので満足です。機能拡張は、Issue が飛んできたら行います。
+
+---
+
 
 ### 最後に：CSV や SQL 系のツールばかり作っている
 

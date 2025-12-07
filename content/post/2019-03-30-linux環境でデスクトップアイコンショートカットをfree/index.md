@@ -27,6 +27,9 @@ cover:
 - デスクトップエントリファイルの作成
 - デスクトップファイルデータベースを更新
 
+---
+
+
 ### 検証環境
 
 ```
@@ -60,6 +63,9 @@ freedesktop.orgに準じたデスクトップ環境
 - [Cinnamon](http://developer.linuxmint.com/projects/cinnamon-projects.html)
 - [Xfce](https://www.xfce.org/)
 - [LXDE](https://lxde.org/)
+
+---
+
 
 ### デスクトップアイコンの準備
 
@@ -104,6 +110,9 @@ $  ls -al /usr/share/icons/hicolor/512x512/apps/only_win.png
 -rw-r--r-- 1 root root 14505  3月 30 17:54 /usr/share/icons/hicolor/512x512/apps/only_win.png
 
 ```
+
+---
+
 
 ### デスクトップアイコン経由で実行するアプリの準備
 
@@ -150,6 +159,9 @@ $ /usr/local/bin/only_win  (注釈)：only_winの実行。実行後、以下の�
 ```
 
 ![](images/only_win.png)
+
+---
+
 
 ### デスクトップエントリファイルの作成
 
@@ -213,6 +225,9 @@ Terminal=false                            # アプリをTerminalで実行する�
 
 \[the\_ad id="598"\]
 
+---
+
+
 ### 作成したデスクトップエントリファイルの検証
 
 作成したデスクトップエントリファイルは、desktop-file-validateコマンドで書式が正しいかをチェックできます。書式エラーがある場合は、その箇所が指摘されるため、適宜修正します。
@@ -224,6 +239,9 @@ $ sudo apt install desktop-file-utils
 $ desktop-file-validate ~/.local/share/applications/only_win.desktop
 
 ```
+
+---
+
 
 ### デスクトップファイルデータベースを更新
 
@@ -240,6 +258,9 @@ $ desktop-file-validate ~/.local/share/applications/only_win.desktop
 only\_winアイコンをクリックすれば、前述の自作アプリ(Windowのみを表示するアプリ)が起動します。この起動時にアプリケーションの信頼性を問うポップアップが出た場合、「信頼します(実行OK)」を意味する選択肢を選んでください。
 
 ![](images/sample_only_win.png)
+
+---
+
 
 ### おまけ：GUIでデスクトップアイコンを追加する方法
 

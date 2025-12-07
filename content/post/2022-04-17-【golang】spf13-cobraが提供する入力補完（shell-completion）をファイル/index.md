@@ -62,6 +62,9 @@ __posixer_init_completion()
 
 そこで、本記事では「シェル補完ファイルのインストール先」を示し、シェル補完ファイルインストールの実装例を示します。
 
+---
+
+
 ### 検証環境
 
 Ubuntu21.10、golang version 1.18、spf13/cobra v1.4.0で検証しました。
@@ -92,6 +95,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Theme: Yaru-dark [GTK2/3]
 
 ```
 
+---
+
+
 ### シェル補完ファイルの出力先
 
 シェル補完ファイルは、シェル毎に格納先が異なります。格納先は大別して、「OS内の全ユーザーが参照できる場所（例：/etc以下 や /usr/local/share以下）」と「特定のユーザーのみが参照できる場所（例：$HOME以下）」の2種類があります。
@@ -107,6 +113,9 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Theme: Yaru-dark [GTK2/3]
     - [参考情報](https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org)
 
 デフォルトのzshでは、シェル補完ファイル格納先がユーザーホームディレクトリ以下に存在しません。そこで、zshがシェル補完ファイルの格納先を$fpathで管理している事を利用します。具体的には、.zshrcを編集して、$fpathに"$HOME/.zsh/completion"を追加します。
+
+---
+
 
 ### シェル補完ファイル作成の流れ
 
@@ -137,6 +146,9 @@ func Execute() {
 }                                                    
 
 ```
+
+---
+
 
 ### シェル補完ファイル作成の実例
 
@@ -290,6 +302,9 @@ autoload -Uz compinit && compinit -i
 }
 
 ```
+
+---
+
 
 ### 最後に
 

@@ -16,6 +16,9 @@ cover:
 
 Tor 用いて不法／違法な行為をする方が現れないように、本記事はダークウェブへのアクセス方法は意図的にボカして記載します。その理由は、不法／違法な行為のヒントを与えてしまうリスクがあるからです。Tor を利用する際は、一般的な Web サイト（サーフェスウェブ）にアクセスする程度に留めてください。最近の SNS も充分ダークだと思います。
 
+---
+
+
 ### ダークウェブ監視の需要
 
 ここでのダークウェブとは、一般的な検索エンジンでは辿り着けない Web サイトであり、本記事では Tor（The Onion Router）を利用してアクセスできる Web サイトと定義します。ネットワークのトップレベルドメインの末尾が「.onion」であり、Google 等の検索エンジンでは殆どヒットしません。ヒットしても、Google Chrome のようなブラウザでは閲覧できません。
@@ -24,6 +27,9 @@ Tor 用いて不法／違法な行為をする方が現れないように、本�
 
 とは言え、非エンジニアにはダークウェブを覗くことの心理的な抵抗感、監視難易度の高さがある筈です。現実的には、どこかのセキュリティ会社が代理で監視する建付けとなるでしょう。
 
+---
+
+
 ### ダークウェブ監視に用いるライブラリの選択肢
 
 Tor を用いた監視では、[torproject/stem](https://gitlab.torproject.org/tpo/network-health/stem)（Python）を利用する例が多いようです。Tor 公式が stem を提供しており、API ドキュメントが豊富です。stem の実行環境である Python は、スクレイピングライブラリのエコシステムに強みがあります。
@@ -31,6 +37,9 @@ Tor を用いた監視では、[torproject/stem](https://gitlab.torproject.org/t
 このような状況を踏まえると、ライブラリ選定の第一候補に stem が挙げられても不思議ではありません。その一方で、「[Stem is mostly unmaintained.](https://stem.torproject.org/)」と公式サイトに書かれており、開発が活発ではないようです。さらに私個人の好みを言えば、互換性に関して安定感のある Go の方が好みです。
 
 ライブラリ選択肢が多い方が健全なので、Go 向けライブラリの [nao1215/tornago](https://github.com/nao1215/tornago) を作りました。tornago は、台風を意味する Tornado が由来です。台風に関連付けたかったわけではなく、Tor と Go を繋げられれば何でも良かったです。
+
+---
+
 
 ### [nao1215/tornago](https://github.com/nao1215/tornago) は薄い Tor ラッパー
 
@@ -43,6 +52,9 @@ Tor を用いた監視では、[torproject/stem](https://gitlab.torproject.org/t
 - Tor Server: Tor の ControlPort を介して Hidden Service を作成・管理
 
 Tor を起動する際に管理者権限が必要ないので、OS 側で事前に Tor を立ち上げることなく、Tor Client/Server を利用できます。
+
+---
+
 
 ### Tor Client の例： 通常のサイトへのアクセス
 
@@ -136,6 +148,9 @@ Status: 200 OK
 Response preview (first 500 bytes):
 <!doctype html><html lang="en"><head><title>Example Domain</title>...
 ```
+
+---
+
 
 
 ###  Tor Server の例： .onion（Hidden Service）の立ち上げ
@@ -342,6 +357,9 @@ func main() {
 
 ![onion-site](./images/tornago-onion-site.png)
 
+---
+
+
 
 ### Tor デーモンを立ち上げる`tornago.StartTorDaemon()`が長い
 
@@ -386,6 +404,9 @@ sequenceDiagram
 
     Tornago-->>App: *TorProcess（起動完了）
 ```
+
+---
+
 
 ### 最後に
 

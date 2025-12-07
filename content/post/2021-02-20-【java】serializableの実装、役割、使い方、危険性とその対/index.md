@@ -31,6 +31,9 @@ public class File implements Serializable, Comparable<File> {}
 
 そのため、本記事ではSerializableインターフェースに関する調査内容を紹介します。
 
+---
+
+
 ### Serializableインターフェースの実装
 
 [Serializableインターフェース](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/io/Serializable.html)は、[java.baseモジュールのjava.ioパッケージ](https://docs.oracle.com/javase/jp/11/docs/api/java.base/java/io/package-summary.html)に実装があります。
@@ -40,6 +43,9 @@ public class File implements Serializable, Comparable<File> {}
 ```
 public interface Serializable {}
 ```
+
+---
+
 
 ### Serializableインターフェースの役割
 
@@ -54,6 +60,9 @@ Serializableインターフェースの役割（機能）
 - シリアライズしたデータは、ファイルとして書き出し可能　　　　
 
 ※ 正確には、ObjectOutputStreamクラス／ObjectInputStreamクラスがSerializableインターフェースを実装したクラスをシリアライズ／デシリアライズします。
+
+---
+
 
 ### シリアライズ対象／対象外のデータ 
 
@@ -96,6 +105,9 @@ class SampleSerial implements Serializable {
 }
 ```
 
+---
+
+
 ### serialVersionUIDとは
 
 serialVersionUIDは、シリアライズしたデータのバージョン情報です。
@@ -112,6 +124,9 @@ class SampleSerial implements Serializable {
   // (省略)
 }
 ```
+
+---
+
 
 ### シリアライズ／デシリアライズの実装例
 
@@ -240,6 +255,9 @@ Company:null
 
 ```
 
+---
+
+
 ### Serializableインターフェースの危険性と対策
 
 [Effective Java（第三版）](https://amzn.to/3blJ2qw)で触れられていますが、Serializableインターフェース（正確にはデシリアライズ処理）は、悪意を持ったプログラムの攻撃対象となる可能性が高いです。
@@ -259,6 +277,9 @@ Company:null
 そもそも、シリアライズ／デシリアライズを利用しなければいけない場面は、あまり多くはありません。パッと思いつくのは、ネットワークに関する低レイヤーのアプリぐらいです。もしくは、難読化を施したいデータ（例：ゲームのセーブデータなど）でしょうか。
 
 そのため、プログラム言語や環境を選ばないjson形式でデータのやり取りを実施した方が現代的と思われます。Web APIは殆どがjson形式ですし、ネット上の知見の多さを踏まえても、json形式は好ましいフォーマットではないでしょうか。
+
+---
+
 
 ### 後書き
 
