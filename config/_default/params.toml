@@ -1,4 +1,4 @@
-homeInfoParams = { Content = "nchika(nao1215)の技術ブログ。OSS、Go、人生について書きます。<br><br>私は組み込みからバックエンドにキャリアチェンジしており、Go、AWSをメインに使っています。現在は、プリカアプリ不正対策や機械学習をメインに勉強しています。<br><br>本ブログは、WordPressからHugoに移行した関係で、古い記事は表示やリンクが不適切なケースがあります。" }
+homeInfoParams = { Content = "nchika(nao1215)の技術ブログ。OSS、Go、人生について書きます。<br><br>私は組み込みからバックエンドにキャリアチェンジしており、Go、AWSをメインに使っています。現在は、プリカアプリ不正対策、機械学習、React Nativeをメインに勉強しています。" }
 mainSections = ["post"]
 defaultTheme = "auto"
 ShowReadingTime = true
