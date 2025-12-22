@@ -184,7 +184,7 @@ GitHub Star や GitHub Sponsors が増えるのは嬉しいのですが、結局
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/Be5BcWSC1Fs?si=ND7Lc0jr7_MnkOJ7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-余談ですが、古いディズニー映画を一通り見ると、「ピノキオだけ、予算がダントツに違う」と感じられるはずです。魂がこもってます。
+余談ですが、古いディズニー映画を一通り見ると、「ピノキオだけ、予算がダントツに違う」と感じられるはずです。絵の質感が他の映画より際立っており、動きも精細です。魂がこもってます。
 
 ----
 
