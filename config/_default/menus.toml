@@ -12,3 +12,8 @@
   name = "BucketList"
   url = "bucket_list/"
   weight = 20
+
+[[main]]
+  name = "GitHub Sponsors"
+  url = "https://github.com/sponsors/nao1215"
+  weight = 25
