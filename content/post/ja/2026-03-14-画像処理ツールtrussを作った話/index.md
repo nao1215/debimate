@@ -61,11 +61,40 @@ flowchart TB
 
 #### 切り抜き・回転・背景色指定
 
+```sh
+# 領域の切り抜き (x, y, 幅, 高さ) -- リサイズ前に適用される
+truss photo.jpg -o cropped.jpg --crop 100,50,400,300
+
+# 時計回りに270度回転 (0, 90, 180, 270 を指定可能)
+truss photo.jpg -o rotated.jpg --rotate 270
+
+# 背景色を RRGGBB または RRGGBBAA の16進数で指定 (contain モードや PNG の透過に便利)
+truss photo.jpg -o out.png --width 300 --height 300 --fit contain --background FF6B35FF
+```
+
 | Original | Crop | Rotate | Background  |
 |---|---|---|---|
 | ![original](images/sample-bee.jpg) | ![cropped](images/sample-bee-cropped.jpg) | ![rotated](images/sample-bee-rotated.jpg) | ![background](images/sample-bee-bg.png) |
 
 #### フィッティング
+
+```sh
+# contain -- 枠内に収める。余白はグレーの背景で埋める
+truss photo.jpg -o out.jpg --width 300 --height 300 --fit contain --background CCCCCC
+
+# cover -- 枠を埋める。はみ出した部分は切り取る
+truss photo.jpg -o out.jpg --width 300 --height 300 --fit cover
+
+# fill -- 指定サイズに引き伸ばす
+truss photo.jpg -o out.jpg --width 300 --height 300 --fit fill
+
+# inside -- contain と同様だが、拡大はしない
+truss photo.jpg -o out.jpg --width 300 --height 300 --fit inside
+
+# 幅のみ指定 -- アスペクト比を維持して高さを自動計算
+truss photo.jpg -o out.jpg --width 800
+```
+
 
 | Original (640 × 427) | contain 300 × 300 | cover 300 × 300 | fill 300 × 300 | inside 300 × 300 |
 |---|---|---|---|---|
@@ -74,17 +103,50 @@ flowchart TB
 
 #### ぼかし・シャープネス・透かし
 
+```sh
+# ガウシアンぼかし (sigma 0.1 - 100.0)
+truss photo.jpg -o blurred.jpg --blur 5.0
+
+# シャープネス (sigma 0.1 - 100.0)
+truss photo.jpg -o sharpened.jpg --sharpen 3.0
+
+# 透かしの詳細設定
+truss photo.jpg -o watermarked.jpg \
+  --watermark logo.png \
+  --watermark-position bottom-right \
+  --watermark-opacity 50 \
+  --watermark-margin 10
+```
+
 | Original | Gaussian Blur | Sharpen | Watermark |
 |---|---|---|---|
 | ![original](images/sample-bee.jpg) | ![blurred](images/sample-bee-blurred.jpg) | ![sharpened](images/sample-bee-sharpened.jpg) | ![watermarked](images/sample-bee-watermarked.jpg) |
 
 #### 配置変更
 
+```sh
+truss photo.jpg -o thumb.jpg --width 300 --height 300 --fit cover --position top-left
+
+truss photo.jpg -o thumb.jpg --width 300 --height 300 --fit cover --position bottom-right
+```
+
 | `--position top-left` | `--position center` | `--position bottom-right` |
 |---|---|---|
 | ![top-left](images/sample-bee-cover-topleft.jpg) | ![center](images/sample-bee-cover.jpg) | ![bottom-right](images/sample-bee-cover-bottomright.jpg) |
 
 #### 最適化
+
+```sh
+# JPEG → WebP (ファイルサイズ削減、見た目の品質は同等)
+truss photo.jpg -o photo.webp --quality 80
+
+# JPEG → AVIF (最高圧縮率)
+truss photo.jpg -o photo.avif --quality 50
+
+# Explicit format override (ignore extension)
+truss photo.jpg -o output.bin --format png
+```
+
 
 | Quality 90 (95 KB) | Original (80 KB) | Quality 30 (27 KB) |
 |---|---|---|
@@ -203,6 +265,8 @@ truss には、実績がありません。
 ### 2026.03.14 追記
 
 サーバー用途として使うより、Wasm として使って貰った方が筋が良いと結論づけました。単なる画像変換をしたい場合、Wasm で対応すればサーバーコストがかかりません。頭の中で何個かサービスを考えたのですが、「それ、Wasm でよくね」となりました。まずは、Wasm としての価値を高める方針で改良します。
+
+例えば、Wasm を利用するための npm パッケージを作ります。
 
 ---
 
