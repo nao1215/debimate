@@ -16,8 +16,8 @@ cover:
 
 truss は、画像の変換（拡張子変更）、リサイズ、ぼかし、透かし、切り抜き等ができるツールであり、JPEG、PNG、WebP、AVIF、BMP、SVG に対応しています。クロスプラットフォーム対応（Linux, macOS, Windows）であり、CLI・サーバー・Wasm で動作します。
 
-下図が示す通り、CLI・サーバー・Wasm はコアとなるライブラリを共有しており、サーバーはローカルストレージか、クラウドストレージ（AWS、Azure、Google Cloud）を利用できます。ただし、クラウドストレージはモックを使ったテストしかしておらず、実環境での動作はまだ未確認です。Wasmは、[GitHub Pages でデモ](https://nao1215.github.io/truss/)が動いています。
-
+下図が示す通り、CLI・サーバー・Wasm はコアとなるライブラリを共有しており、サーバーはローカルストレージか、クラウドストレージ（AWS、Azure、Google Cloud）を利用できます。ただし、クラウドストレージはモックを使ったテストしかしておらず、実環境での動作はまだ未確認です。Wasmは、[GitHub Pages でデモ](https://nao1215.github.io/truss/)が動いていますし、
+[「No AI Training」の透かしを入れるクン」](https://no-ai-marks.com/)としてサービスを動かしてます。なお、AI生成画像を否定する立場ではありません。
 
 ```mermaid
 flowchart TB
