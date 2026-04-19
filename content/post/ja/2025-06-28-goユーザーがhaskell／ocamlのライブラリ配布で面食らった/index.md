@@ -30,7 +30,7 @@ cover:
 
 私は、Go でしか OSS（ライブラリ）の配布経験がありません。ここでの配布とは、GitHub Repositoryをパブリックで公開しているという意味ではなく、プログラミング言語のエコシステムに従ってOSSを配布するという意味です。ライブラリインポートしやすい形で公開している、ぐらいのニュアンスです。
 
-\[caption id="attachment\_9306" align="aligncenter" width="821"\]![](images/oss.png) OCamlはまだ配布できていない\[/caption\] 
+![](images/oss.png)
 
 C言語、Java、Perl、Python、Ruby、ShellScriptなどの言語を使った経験もありますが、それらを使ったライブラリをOSSで配布したことはありません。つまり、C言語〜ShellScriptの配布方法を把握していません（C言語に関してはGNUでの管理方法を知っていますが、GNU以外の配布方法を知りません）
 
