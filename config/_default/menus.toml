@@ -1,12 +1,7 @@
 [[main]]
-  name = "Japanese Posts"
+  name = "Posts"
   url = "post/ja/"
   weight = 1
-
-[[main]]
-  name = "English Posts"
-  url = "post/en/"
-  weight = 2
 
 [[main]]
   name = "Archive"

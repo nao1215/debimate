@@ -1,5 +1,5 @@
 baseURL = "https://debimate.jp/"
-languageCode = "ja-jp"
+locale = "ja-jp"
 title = "Debimate"
 theme = "PaperMod"
 enableRobotsTXT = true
