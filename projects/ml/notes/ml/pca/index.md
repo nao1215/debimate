@@ -138,7 +138,7 @@ plt.show()
 
 具体的な利用例：
 
-* [k-means](../k-means/k-means.md)前の次元削減
+* [k-means](../k-means/)前の次元削減
 * SVM（Support Vector Machine）・線形モデル前の特徴整理
 * 高次元データ（画像・センサデータ）の圧縮
 * 可視化用の2次元投影
