@@ -22,26 +22,26 @@ ShowBreadCrumbs: true
 
 | No. | 項目 |
 | --- | --- |
-| 1 | [平均（算術平均）](math/mean/mean/) |
-| 2 | [中央値（メジアン）](math/median/median/) |
-| 3 | [四分位点（quantile）](math/quantile/quantile/) |
-| 4 | [分散（バリアンス）](math/variance/variance/) |
-| 5 | [標準偏差](math/stddev/stddev/) |
-| 6 | [歪度（skewness）と log1p 変換](math/skewness/skewness/) |
-| 7 | [カーネル密度推定（KDE）](math/kde/kde/) |
-| 8 | [相関係数](math/correlation/correlation/) |
+| 1 | [平均（算術平均）](math/mean/) |
+| 2 | [中央値（メジアン）](math/median/) |
+| 3 | [四分位点（quantile）](math/quantile/) |
+| 4 | [分散（バリアンス）](math/variance/) |
+| 5 | [標準偏差](math/stddev/) |
+| 6 | [歪度（skewness）と log1p 変換](math/skewness/) |
+| 7 | [カーネル密度推定（KDE）](math/kde/) |
+| 8 | [相関係数](math/correlation/) |
 
 #### Machine Learning（古典的アルゴリズム・評価指標）
 
 | No. | 項目 |
 | --- | --- |
-| 1 | [ROC-AUC / PR-AUC](ml/roc-pr-auc/roc-pr-auc/) |
-| 2 | [混同行列・偽陽性/偽陰性・閾値調整](ml/confusion-matrix/confusion-matrix/) |
-| 3 | [PCA - Principal Component Analysis](ml/pca/pca/) |
-| 4 | [k-means - K-means／k平均法](ml/k-means/k-means/) |
-| 5 | [RandomForest - ランダムフォレスト](ml/random-forest/random-forest/) |
-| 6 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/gradient-boosting/) |
-| 7 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/logistic-regression/) |
+| 1 | [ROC-AUC / PR-AUC](ml/roc-pr-auc/) |
+| 2 | [混同行列・偽陽性/偽陰性・閾値調整](ml/confusion-matrix/) |
+| 3 | [PCA - Principal Component Analysis](ml/pca/) |
+| 4 | [k-means - K-means／k平均法](ml/k-means/) |
+| 5 | [RandomForest - ランダムフォレスト](ml/random-forest/) |
+| 6 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) |
+| 7 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) |
 
 #### MLOps
 
