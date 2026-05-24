@@ -51,7 +51,7 @@ cover:
 
 АРИЯは、ロシア国内で絶大な人気を誇るメタルバンド。日本ならばX JAPAN、イギリスならばDeep Purpleのようなポジションにいるようだ。2018年現在も、ライブ参戦報告がSNS([ロシアのFacebookであるVK](https://ja.wikipedia.org/wiki/VK_\(SNS\)))に投稿される事から、その人気の高さが伺えます。
 
-語学学習アプリ"[HelloTalk](_wp_link_placeholder)"にすら、АРИЯに関する投稿があるぐらいです。
+語学学習アプリ"HelloTalk"にすら、АРИЯに関する投稿があるぐらいです。
 
 ![](images/aria_fan-e1546508888186.png)
 

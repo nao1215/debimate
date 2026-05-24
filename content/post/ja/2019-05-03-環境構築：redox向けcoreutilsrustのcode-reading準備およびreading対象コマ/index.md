@@ -245,7 +245,7 @@ info: checking for self-updates
 
 ### Redox版coreutilsのビルド
 
-まず、[Redox版coreutilsのGitHub](_wp_link_placeholder)からRepositoryをクローン(複製)します。
+まず、Redox版coreutilsのGitHubからRepositoryをクローン(複製)します。
 
 ```
 $ git clone https://github.com/redox-os/coreutils.git

@@ -73,7 +73,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 ### JSONからKotlin data classを作成
 
-今回の例では、[GitHub APIの特定ユーザーのリポジトリリストを取得するAPI](_wp_link_placeholder)（GET /users/{username}/repos）のレスポンスをdata classに変換します。変換した結果（data class）は、jp.debimate.leadtime.domain.modelパッケージのRepository data classとして保存します。
+今回の例では、GitHub APIの特定ユーザーのリポジトリリストを取得するAPI（GET /users/{username}/repos）のレスポンスをdata classに変換します。変換した結果（data class）は、jp.debimate.leadtime.domain.modelパッケージのRepository data classとして保存します。
 
 1. Android StudioのProject（デフォルトでは画面左にあるファイラ）でdata classを作成したいpackageを右クリックし、「Kotlin data class File from JSON」を選択
 2. \[Generate Kotlin Data Class Code\]画面の「JSON Text」フィールドにJSONを入力

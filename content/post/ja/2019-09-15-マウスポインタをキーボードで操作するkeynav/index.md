@@ -131,7 +131,7 @@ l：領域の右側だけを残して、領域縮小する例
 
 ### keynavのキーバインド設定変更
 
-keynavのキーバインド設定は、"$HOME/.config/keynav/keynavrc"ファイルに記載されています。私の環境では存在しなかったため、[公式サイト](_wp_link_placeholder)からコピーしました。以下にkeynavrcの一部を示します。
+keynavのキーバインド設定は、"$HOME/.config/keynav/keynavrc"ファイルに記載されています。私の環境では存在しなかったため、公式サイトからコピーしました。以下にkeynavrcの一部を示します。
 
 ```
 ctrl+semicolon start

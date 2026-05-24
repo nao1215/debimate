@@ -70,7 +70,7 @@ $ sudo apt install e2fsprogs
 
 ### ストレージ情報(UUID)の調査
 
-自動マウントを行うには、ストレージを識別するための[UUID(Universally Unique Identifier)](_wp_link_placeholder)およびファイルシステムを調査する必要があります。e2fsprogsパッケージに含まれるblkidコマンドを用いれば、以下のように両方の情報が得られます。
+自動マウントを行うには、ストレージを識別するためのUUID(Universally Unique Identifier)およびファイルシステムを調査する必要があります。e2fsprogsパッケージに含まれるblkidコマンドを用いれば、以下のように両方の情報が得られます。
 
 ```
 $ sudo blkid
