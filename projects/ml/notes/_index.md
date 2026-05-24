@@ -42,6 +42,7 @@ ShowBreadCrumbs: true
 | 5 | [RandomForest - ランダムフォレスト](ml/random-forest/) |
 | 6 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) |
 | 7 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) |
+| 8 | [kNN - k近傍法](ml/knn/) |
 
 #### MLOps
 
