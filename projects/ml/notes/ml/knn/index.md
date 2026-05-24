@@ -66,7 +66,7 @@ nearest_idx = np.argsort(dists)[:5]
 
 ![kNN concept](./knn_concept.svg)
 
-次に、k の値で決定境界がどう変わるかを確認する。k=1 は訓練点1つだけ見るので境界がギザギザで過学習気味。k=25 は遠くまで見るので境界がなだらかになる一方、細かい構造が潰れる。実運用では交差検証で適切な k を選ぶ。
+次に、k の値で決定境界がどう変わるかを確認する。k=1 は訓練点1つだけ見るので境界がギザギザで[過学習](../overfitting/)気味。k=25 は遠くまで見るので境界がなだらかになる一方、細かい構造が潰れる。実運用では[交差検証](../cross-validation/)で適切な k を選ぶ。
 
 ```python
 from sklearn.datasets import make_classification
