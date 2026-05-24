@@ -20,16 +20,18 @@ ShowBreadCrumbs: true
 
 #### Mathematics（数学の基礎）
 
-| No. | 項目 |
-| --- | --- |
-| 1 | [平均（算術平均）](math/mean/) |
-| 2 | [中央値（メジアン）](math/median/) |
-| 3 | [四分位点（quantile）](math/quantile/) |
-| 4 | [分散（バリアンス）](math/variance/) |
-| 5 | [標準偏差](math/stddev/) |
-| 6 | [歪度（skewness）と log1p 変換](math/skewness/) |
-| 7 | [カーネル密度推定（KDE）](math/kde/) |
-| 8 | [相関係数](math/correlation/) |
+代表値 → 散らばり → 分布の形 → 2 変数の関係、の順で読むと積み上がりやすい。
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [平均（算術平均）](math/mean/) | 代表値 |
+| 2 | [中央値（メジアン）](math/median/) | 代表値 |
+| 3 | [四分位点（quantile）](math/quantile/) | 代表値・散らばり |
+| 4 | [分散（バリアンス）](math/variance/) | 散らばり |
+| 5 | [標準偏差](math/stddev/) | 散らばり |
+| 6 | [歪度（skewness）と log1p 変換](math/skewness/) | 分布の形 |
+| 7 | [カーネル密度推定（KDE）](math/kde/) | 分布の可視化 |
+| 8 | [相関係数](math/correlation/) | 2 変数の関係 |
 
 #### Machine Learning（評価・概念・アルゴリズム）
 
