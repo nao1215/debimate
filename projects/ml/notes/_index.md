@@ -43,6 +43,10 @@ ShowBreadCrumbs: true
 | 6 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) |
 | 7 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) |
 | 8 | [kNN - k近傍法](ml/knn/) |
+| 9 | [過学習（overfitting）](ml/overfitting/) |
+| 10 | [正則化（regularization）](ml/regularization/) |
+| 11 | [交差検証（cross validation）](ml/cross-validation/) |
+| 12 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) |
 
 #### MLOps
 
