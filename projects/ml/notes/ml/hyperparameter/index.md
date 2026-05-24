@@ -57,7 +57,7 @@ scikit-learn の API で言うと、`Ridge(alpha=1.0).fit(X, y)` の `alpha=1.0`
 3. 一番良かったものを採用
 4. 必要なら 1 で外した範囲を再探索
 
-scikit-learn では `GridSearchCV`（網羅探索）や `RandomizedSearchCV`（ランダム探索）が用意されている。候補数が多くなる勾配ブースティング系では Optuna のようなベイズ最適化系ツールも使われる。
+scikit-learn では `GridSearchCV`（網羅探索）や `RandomizedSearchCV`（ランダム探索）が用意されている。候補数が多くなる[勾配ブースティング](../gradient-boosting/)系では Optuna のようなベイズ最適化系ツールも使われる。
 
 ---
 
