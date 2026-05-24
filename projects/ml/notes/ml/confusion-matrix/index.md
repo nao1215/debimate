@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "metrics"]
-weight: 11
+weight: 1
 ---
 
 混同行列（confusion matrix）は、分類結果を「正解/不正解」と「陽性/陰性」の組み合わせで整理した 2×2 の表である。偽陽性（False Positive, FP）と偽陰性（False Negative, FN）のバランスを見ることで、誤りの種類を把握できる。

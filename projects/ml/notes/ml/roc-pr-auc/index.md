@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "metrics"]
-weight: 10
+weight: 2
 ---
 
 ROC-AUC（Receiver Operating Characteristic - Area Under the Curve）と PR-AUC（Precision-Recall - Area Under the Curve）は、二値分類モデルの性能を「閾値に依存せず」 1 つの数で比較するための指標である。両者は同じ予測スコアから計算できるが、不均衡データ（陽性クラスが極端に少ないデータ）における振る舞いが大きく違うため、目的によって使い分ける。

@@ -31,22 +31,25 @@ ShowBreadCrumbs: true
 | 7 | [カーネル密度推定（KDE）](math/kde/) |
 | 8 | [相関係数](math/correlation/) |
 
-#### Machine Learning（古典的アルゴリズム・評価指標）
+#### Machine Learning（評価・概念・アルゴリズム）
 
-| No. | 項目 |
-| --- | --- |
-| 1 | [ROC-AUC / PR-AUC](ml/roc-pr-auc/) |
-| 2 | [混同行列・偽陽性/偽陰性・閾値調整](ml/confusion-matrix/) |
-| 3 | [PCA - Principal Component Analysis](ml/pca/) |
-| 4 | [k-means - K-means／k平均法](ml/k-means/) |
-| 5 | [RandomForest - ランダムフォレスト](ml/random-forest/) |
-| 6 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) |
-| 7 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) |
-| 8 | [kNN - k近傍法](ml/knn/) |
-| 9 | [過学習（overfitting）](ml/overfitting/) |
-| 10 | [正則化（regularization）](ml/regularization/) |
-| 11 | [交差検証（cross validation）](ml/cross-validation/) |
-| 12 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) |
+評価指標 → 学習の一般概念 → 教師あり（シンプル → 複雑） → 教師なし、の順で学習するのが分かりやすい。
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [混同行列・偽陽性/偽陰性・閾値調整](ml/confusion-matrix/) | 評価指標 |
+| 2 | [ROC-AUC / PR-AUC](ml/roc-pr-auc/) | 評価指標 |
+| 3 | [過学習（overfitting）](ml/overfitting/) | 学習概念 |
+| 4 | [正則化（regularization）](ml/regularization/) | 学習概念 |
+| 5 | [交差検証（cross validation）](ml/cross-validation/) | 学習概念 |
+| 6 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) | 学習概念 |
+| 7 | [標準化と特徴量スケーリング（standardization）](ml/standardization/) | 前処理 |
+| 8 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) | 教師あり |
+| 9 | [kNN - k近傍法](ml/knn/) | 教師あり |
+| 10 | [RandomForest - ランダムフォレスト](ml/random-forest/) | 教師あり |
+| 11 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) | 教師あり |
+| 12 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
+| 13 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
 
 #### MLOps
 

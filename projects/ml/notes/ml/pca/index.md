@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
-weight: 12
+weight: 13
 ---
 
 PCA（主成分分析）は、多次元データの「ばらつき（分散）が大きい方向」を見つけ、座標軸をその方向へ回転させてから、重要な軸だけ残す方法である。  
@@ -27,7 +27,7 @@ graph LR
 
 ### 前提・注意
 
-- スケールが違うと結果が歪むので、[標準化](../../math/stddev/)（[平均](../../math/mean/)0・[分散](../../math/variance/)1）が基本
+- スケールが違うと結果が歪むので、[標準化](../standardization/)（[平均](../../math/mean/)0・[分散](../../math/variance/)1）が基本
 - 外れ値に引っ張られやすい
 - 主成分は「軸の組み合わせ」なので解釈しづらいことがある
 

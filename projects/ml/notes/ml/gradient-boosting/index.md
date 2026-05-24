@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 15
+weight: 11
 ---
 
 GradientBoosting は、弱い学習器（主に浅い決定木）を順番に足していくアンサンブル手法。前のモデルの誤差（残差）を次のモデルが補正するように学習し、加法モデルとして精度を高める。
