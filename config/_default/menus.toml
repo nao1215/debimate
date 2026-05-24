@@ -4,13 +4,18 @@
   weight = 1
 
 [[main]]
+  name = "Machine Learning"
+  url = "ml/"
+  weight = 3
+
+[[main]]
   name = "Archive"
   url = "archives/"
   weight = 5
 
 [[main]]
-  name = "Search"
-  url = "search/"
+  name = "GitHub Sponsors"
+  url = "https://github.com/sponsors/nao1215"
   weight = 15
 
 [[main]]
@@ -19,6 +24,6 @@
   weight = 20
 
 [[main]]
-  name = "GitHub Sponsors"
-  url = "https://github.com/sponsors/nao1215"
+  name = "Search"
+  url = "search/"
   weight = 25

@@ -1,0 +1,22 @@
+[project]
+name = "machine-learning-notes"
+version = "0.1.0"
+description = "Personal machine learning notes with datasets, math, and MLOps"
+requires-python = ">=3.12"
+
+dependencies = [
+  "numpy",
+  "pandas",
+  "scikit-learn",
+  "matplotlib",
+  "seaborn",
+  "jupyter",
+  "ipykernel",
+  "kaggle>=1.8.3",
+]
+
+[dependency-groups]
+dev = [
+  "ruff",
+  "black",
+]

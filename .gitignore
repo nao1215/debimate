@@ -20,3 +20,22 @@ node_modules/
 
 # Backup files
 *~
+
+# Claude Code local config
+.claude/
+
+# projects/<topic>/ 学習プロジェクト共通
+# Python venv / cache
+projects/**/.venv/
+projects/**/.ruff_cache/
+projects/**/__pycache__/
+projects/**/.pytest_cache/
+projects/**/.ipynb_checkpoints/
+projects/**/.python-version
+
+# データセット本体は再取得可能なので追跡しない（LICENSE/README は除外しない）
+projects/**/datasets/**/raw/**
+projects/**/datasets/**/*.zip
+projects/**/datasets/**/*.csv
+projects/**/datasets/**/*.parquet
+projects/**/datasets/**/*.json

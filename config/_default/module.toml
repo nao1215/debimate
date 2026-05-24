@@ -1,0 +1,39 @@
+[hugoVersion]
+  extended = false
+  min = "0.146.0"
+
+# 標準mount: 明示的に[[mounts]]を書く場合、デフォルトmountも全て書き出す必要がある
+[[mounts]]
+  source = "content"
+  target = "content"
+
+[[mounts]]
+  source = "static"
+  target = "static"
+
+[[mounts]]
+  source = "layouts"
+  target = "layouts"
+
+[[mounts]]
+  source = "data"
+  target = "data"
+
+[[mounts]]
+  source = "assets"
+  target = "assets"
+
+[[mounts]]
+  source = "i18n"
+  target = "i18n"
+
+[[mounts]]
+  source = "archetypes"
+  target = "archetypes"
+
+# 学習プロジェクト: projects/<topic>/notes を独立セクションとしてマウント
+# Posts/Archives から除外するため content/post 配下ではなく独自セクションに置く
+# ファイル本体は projects/ml/notes/ にあり、GitHub でもそのまま閲覧可能
+[[mounts]]
+  source = "projects/ml/notes"
+  target = "content/ml"

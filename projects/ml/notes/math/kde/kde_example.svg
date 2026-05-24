@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="300" viewBox="0 0 520 300">
+<rect width="100%" height="100%" fill="white"/>
+<text x="260" y="22" font-size="14" text-anchor="middle" font-family="sans-serif">Histogram vs KDE</text>
+<rect x="40" y="40" width="440" height="220" fill="none" stroke="#333" stroke-width="0.8"/>
+<line x1="113.33333333333333" y1="40" x2="113.33333333333333" y2="260" stroke="#eee" stroke-width="0.6"/>
+<line x1="40" y1="76.66666666666666" x2="480" y2="76.66666666666666" stroke="#eee" stroke-width="0.6"/>
+<line x1="186.66666666666666" y1="40" x2="186.66666666666666" y2="260" stroke="#eee" stroke-width="0.6"/>
+<line x1="40" y1="113.33333333333333" x2="480" y2="113.33333333333333" stroke="#eee" stroke-width="0.6"/>
+<line x1="260.0" y1="40" x2="260.0" y2="260" stroke="#eee" stroke-width="0.6"/>
+<line x1="40" y1="150.0" x2="480" y2="150.0" stroke="#eee" stroke-width="0.6"/>
+<line x1="333.3333333333333" y1="40" x2="333.3333333333333" y2="260" stroke="#eee" stroke-width="0.6"/>
+<line x1="40" y1="186.66666666666666" x2="480" y2="186.66666666666666" stroke="#eee" stroke-width="0.6"/>
+<line x1="406.6666666666667" y1="40" x2="406.6666666666667" y2="260" stroke="#eee" stroke-width="0.6"/>
+<line x1="40" y1="223.33333333333334" x2="480" y2="223.33333333333334" stroke="#eee" stroke-width="0.6"/>
+<rect x="44.00" y="242.00" width="40.89" height="14.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="92.89" y="214.00" width="40.89" height="42.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="141.78" y="186.00" width="40.89" height="70.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="190.67" y="144.00" width="40.89" height="112.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="239.56" y="102.00" width="40.89" height="154.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="288.44" y="130.00" width="40.89" height="126.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="337.33" y="172.00" width="40.89" height="84.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="386.22" y="200.00" width="40.89" height="56.00" fill="#4C78A8" fill-opacity="0.4"/>
+<rect x="435.11" y="228.00" width="40.89" height="28.00" fill="#4C78A8" fill-opacity="0.4"/>
+<path d="M67.50,251.20 L95.00,238.00 L122.50,207.20 L150.00,163.20 L177.50,114.80 L205.00,84.00 L232.50,66.40 L260.00,75.20 L287.50,101.60 L315.00,141.20 L342.50,180.80 L370.00,216.00 L397.50,238.00 L425.00,249.00" fill="none" stroke="#F58518" stroke-width="2"/>
+<rect x="60" y="50" width="10" height="10" fill="#4C78A8" fill-opacity="0.4"/>
+<text x="76" y="59" font-size="10" font-family="sans-serif">hist</text>
+<line x1="120" y1="55" x2="140" y2="55" stroke="#F58518" stroke-width="2"/>
+<text x="146" y="59" font-size="10" font-family="sans-serif">kde</text>
+</svg>

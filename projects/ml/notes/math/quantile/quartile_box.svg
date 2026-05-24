@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="200">
+  <rect width="100%" height="100%" fill="white" />
+  <text x="40" y="24" font-size="16">Boxplot (Q1, median, Q3)</text>
+  <line x1="40.00" y1="100.0" x2="560.00" y2="100.0" stroke="#333" />
+  <line x1="40.00" y1="85.0" x2="40.00" y2="115.0" stroke="#333" />
+  <line x1="560.00" y1="85.0" x2="560.00" y2="115.0" stroke="#333" />
+  <rect x="106.11" y="80.0" width="98.86" height="40" fill="#7aa6c2" opacity="0.6" stroke="#333" />
+  <line x1="150.63" y1="80.0" x2="150.63" y2="120.0" stroke="#e15759" stroke-width="2" />
+  <text x="106.11" y="74.0" font-size="12" fill="#f28e2b">Q1</text>
+  <text x="150.63" y="74.0" font-size="12" fill="#e15759">Q2</text>
+  <text x="204.97" y="74.0" font-size="12" fill="#59a14f">Q3</text>
+</svg>

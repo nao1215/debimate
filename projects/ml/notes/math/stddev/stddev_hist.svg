@@ -1,0 +1,45 @@
+<svg xmlns='http://www.w3.org/2000/svg' width='640' height='400' viewBox='0 0 640 400'>
+<rect width='100%' height='100%' fill='white'/>
+<line x1='60' y1='350' x2='620' y2='350' stroke='#333' stroke-width='1'/>
+<line x1='60' y1='350' x2='60' y2='30' stroke='#333' stroke-width='1'/>
+<rect x='60.00' y='326.00' width='18.67' height='24.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='78.67' y='342.00' width='18.67' height='8.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='97.33' y='334.00' width='18.67' height='16.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='116.00' y='342.00' width='18.67' height='8.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='134.67' y='302.00' width='18.67' height='48.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='153.33' y='310.00' width='18.67' height='40.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='172.00' y='310.00' width='18.67' height='40.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='190.67' y='286.00' width='18.67' height='64.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='209.33' y='230.00' width='18.67' height='120.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='228.00' y='174.00' width='18.67' height='176.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='246.67' y='190.00' width='18.67' height='160.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='265.33' y='174.00' width='18.67' height='176.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='284.00' y='118.00' width='18.67' height='232.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='302.67' y='62.00' width='18.67' height='288.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='321.33' y='30.00' width='18.67' height='320.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='340.00' y='38.00' width='18.67' height='312.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='358.67' y='46.00' width='18.67' height='304.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='377.33' y='62.00' width='18.67' height='288.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='396.00' y='118.00' width='18.67' height='232.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='414.67' y='54.00' width='18.67' height='296.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='433.33' y='166.00' width='18.67' height='184.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='452.00' y='182.00' width='18.67' height='168.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='470.67' y='166.00' width='18.67' height='184.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='489.33' y='254.00' width='18.67' height='96.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='508.00' y='278.00' width='18.67' height='72.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='526.67' y='278.00' width='18.67' height='72.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='545.33' y='326.00' width='18.67' height='24.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='564.00' y='326.00' width='18.67' height='24.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='582.67' y='342.00' width='18.67' height='8.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<rect x='601.33' y='334.00' width='18.67' height='16.00' fill='#7aa6c2' stroke='white' stroke-width='1'/>
+<line x1='355.36' y1='30' x2='355.36' y2='350' stroke='#e15759' stroke-width='2' stroke-dasharray='6 4'/>
+<line x1='258.30' y1='30' x2='258.30' y2='350' stroke='#59a14f' stroke-width='2' stroke-dasharray='4 4'/>
+<line x1='452.41' y1='30' x2='452.41' y2='350' stroke='#59a14f' stroke-width='2' stroke-dasharray='4 4'/>
+<text x='320' y='20' text-anchor='middle' font-family='Arial' font-size='16' fill='#111'>Stddev around mean</text>
+<text x='340.00' y='390' text-anchor='middle' font-family='Arial' font-size='12' fill='#111'>Value</text>
+<text x='15' y='190.00' text-anchor='middle' font-family='Arial' font-size='12' fill='#111' transform='rotate(-90 15 190.00)'>Count</text>
+<line x1='470' y1='40' x2='490' y2='40' stroke='#e15759' stroke-width='2' stroke-dasharray='6 4'/>
+<text x='496' y='44' font-family='Arial' font-size='11' fill='#111'>mean</text>
+<line x1='470' y1='56' x2='490' y2='56' stroke='#59a14f' stroke-width='2' stroke-dasharray='4 4'/>
+<text x='496' y='60' font-family='Arial' font-size='11' fill='#111'>mean +/- stddev</text>
+</svg>
