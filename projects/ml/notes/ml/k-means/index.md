@@ -124,6 +124,77 @@ plt.show()
 
 ---
 
+### k の選び方
+
+「クラスタ数 `k` を事前に決める必要がある」のが k-means の最大の制約で、`k` をどう決めるかは独立した問題になる。
+
+最初に注意したいのは、イナーシャ（クラスタ内分散の合計, SSE）は「`k` を増やすほど単調に減る量」という性質である。極端には `k = n`（サンプル数と同じ）にすればイナーシャ = 0 になる。「イナーシャ最小だから良いクラスタ」という選び方は「訓練精度 100% だから良いモデル」と同型の誤りなので、イナーシャだけを最小化する選び方は採用できない。
+
+実用では次の 3 つの指標を併用するのが定石である。
+
+- イナーシャ（inertia, SSE）: `k` で単調減少。曲がり角（elbow, 肘）を目視で探す
+- シルエット係数（silhouette score）: 各点について「同じクラスタ内の他点との近さ」と「最も近い他クラスタとの遠さ」の比を取る指標。-1〜+1 で「高い」ほど良い（0.5 以上で良好、0.2 以下は怪しい）
+- Davies-Bouldin インデックス: クラスタ内分散とクラスタ間距離の比。「低い」ほど良い
+
+3 指標が「同じ `k` 付近で山/谷を作る」ことを確認できると、その `k` を技術的に強く推せると言える。scikit-learn で 3 指標を一度に計算する例を示す。
+
+```python
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs
+from sklearn.metrics import davies_bouldin_score, silhouette_score
+
+X, _ = make_blobs(n_samples=300, centers=3, cluster_std=1.0, random_state=0)
+
+ks = list(range(2, 11))
+inertias, silhouettes, db_scores = [], [], []
+for k in ks:
+    km = KMeans(n_clusters=k, n_init=10, random_state=0).fit(X)
+    inertias.append(km.inertia_)
+    silhouettes.append(silhouette_score(X, km.labels_))
+    db_scores.append(davies_bouldin_score(X, km.labels_))
+
+fig, axes = plt.subplots(1, 3, figsize=(12, 3.5))
+axes[0].plot(ks, inertias, "o-", color="#7aa6c2", linewidth=2)
+axes[0].set_title("Elbow (inertia)"); axes[0].set_xlabel("k")
+axes[1].plot(ks, silhouettes, "o-", color="#59a14f", linewidth=2)
+axes[1].set_title("Silhouette (higher better)"); axes[1].set_xlabel("k")
+axes[2].plot(ks, db_scores, "o-", color="#e15759", linewidth=2)
+axes[2].set_title("Davies-Bouldin (lower better)"); axes[2].set_xlabel("k")
+for ax in axes:
+    ax.axvline(3, color="gray", linestyle="--", alpha=0.5)
+fig.suptitle("Three indicators agree on k=3 for a 3-cluster blob dataset")
+plt.tight_layout()
+plt.savefig("k-means_selection.svg", bbox_inches="tight")
+```
+
+出力例:
+
+```text
+k     inertia   silhouette   davies-bouldin
+2      1010.1        0.446         0.849
+3       536.4        0.484         0.720   ← elbow / silhouette 最大 / DB 最小
+4       448.6        0.411         0.919
+5       372.2        0.390         0.938
+6       315.1        0.361         0.918
+```
+
+![Elbow, silhouette, and Davies-Bouldin all peak/dip at k=3](./k-means_selection.svg)
+
+3 つとも k=3 を指していて、技術的には k=3 で裏取りが取れている状態と考えられる。`k=2` の elbow も大きく下がっているように見えるが、silhouette と DB の両方が k=3 で改善するため、k=3 を採用する判断ができる。
+
+現実的には、ここに「ビジネス文脈の擦り合わせ」が加わる。クラスタリングは正解ラベルが無いため、技術指標で出した `k` が業務として運用しやすいかをセグメント設計の担当者と確認する必要がある。具体的には次のような確認軸がある。
+
+- セグメントごとに違う施策が打てるか
+- 各セグメントを言語化（命名）できるか
+- 運用人員・予算がセグメント数をさばけるか
+
+技術指標と業務文脈の両輪で決まるのが現実的な手順となる。技術的に最適な `k` でも業務で運用できなければ採用しないし、技術的にギリギリの差なら業務側の好みに寄せる、といった判断が入る。
+
+ここで使った図を生成するスクリプトは `projects/ml/scripts/notes/k-means_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/k-means_gen.py` で再生成できる。
+
+---
+
 ### 数学での使いどころ
 
 数学・統計の文脈では、k-meansは以下の用途で使われる。
