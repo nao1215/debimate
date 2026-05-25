@@ -52,7 +52,9 @@ ShowBreadCrumbs: true
 
 #### MLOps
 
-作成中。
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [データドリフト（data drift / concept drift）](mlops/data-drift/) | 監視 |
 
 #### 理解度チェック
 
