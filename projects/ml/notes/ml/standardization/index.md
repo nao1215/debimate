@@ -123,7 +123,7 @@ scores = cross_val_score(pipe, X, y, cv=5, scoring="roc_auc")
 print("ROC-AUC:", scores.mean(), "+/-", scores.std())
 ```
 
-Pipeline 化すると、CV の各 fold で訓練データだけに `fit` し、テスト fold には学習済みパラメータで `transform` だけが適用されるため、「テストデータの情報が標準化に漏れる」（リーケージ）を機械的に防げる。直接 `StandardScaler().fit_transform(X)` を全データに当てた後に分割すると、テストデータの平均・分散が訓練に混ざってしまい、評価が楽観的になる落とし穴がある。
+Pipeline 化すると、CV の各 fold で訓練データだけに `fit` し、テスト fold には学習済みパラメータで `transform` だけが適用されるため、「テストデータの情報が標準化に漏れる」（[リーケージ](../data-leakage/)）を機械的に防げる。直接 `StandardScaler().fit_transform(X)` を全データに当てた後に分割すると、テストデータの平均・分散が訓練に混ざってしまい、評価が楽観的になる落とし穴がある。
 
 ---
 
