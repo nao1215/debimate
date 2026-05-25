@@ -48,6 +48,7 @@ ShowBreadCrumbs: true
 | 11 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) | 教師あり |
 | 12 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
 | 13 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
+| 14 | [データリーク（data leakage）](ml/data-leakage/) | 学習概念 |
 
 #### MLOps
 
