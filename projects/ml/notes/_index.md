@@ -52,6 +52,7 @@ ShowBreadCrumbs: true
 | 14 | [データリーク（data leakage）](ml/data-leakage/) | 学習概念 |
 | 15 | [次元の呪い（curse of dimensionality）](ml/curse-of-dimensionality/) | 学習概念 |
 | 16 | [カテゴリ変数のエンコーディング（categorical encoding）](ml/categorical-encoding/) | 前処理 |
+| 17 | [バイアス-バリアンス分解（bias-variance tradeoff）](ml/bias-variance-tradeoff/) | 学習概念 |
 
 #### MLOps
 
