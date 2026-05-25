@@ -30,6 +30,7 @@ ShowBreadCrumbs: true
 | 6 | [歪度（skewness）と log1p 変換](math/skewness/) | 分布の形 |
 | 7 | [カーネル密度推定（KDE）](math/kde/) | 分布の可視化 |
 | 8 | [相関係数](math/correlation/) | 2 変数の関係 |
+| 9 | [同時分布・周辺分布・条件付き分布](math/joint-marginal-conditional/) | 確率分布の基礎 |
 
 #### Machine Learning（評価・概念・アルゴリズム）
 
