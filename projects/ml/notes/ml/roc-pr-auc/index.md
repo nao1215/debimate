@@ -219,8 +219,6 @@ plt.savefig("roc-pr-auc_curves.svg", bbox_inches="tight")
 
 `y_score` はモデルが出す確率（あるいは確率に変換できるスコア）で、scikit-learn なら `model.predict_proba(X)[:, 1]` で得られる。`model.predict(X)` ではなく確率を渡すのが要点で、`predict` の結果は閾値を 0.5 で打ち切った 0/1 ラベルなので曲線が描けない。
 
-これらの図をまとめて生成するスクリプトは `projects/ml/scripts/notes/roc-pr-auc_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/roc-pr-auc_gen.py` で再生成できる。
-
 ---
 
 ### 数学での使いどころ

@@ -105,8 +105,6 @@ print("median:", np.median(base), "->", np.median(outlier))
 # median: 10.10 -> 10.10
 ```
 
-このノートの図を生成するスクリプトは `projects/ml/scripts/notes/median_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/median_gen.py` で再生成できる。
-
 ---
 
 ### 数学での使いどころ

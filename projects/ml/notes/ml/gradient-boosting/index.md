@@ -218,8 +218,6 @@ print("Trees actually used:", model.n_iter_)
 | XGBoost | 老舗。安定性が高く、GPU 対応も成熟 |
 | CatBoost | Yandex 製。カテゴリ変数を生のまま扱える点が強み |
 
-これらの図をまとめて生成するスクリプトは `projects/ml/scripts/notes/gradient-boosting_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/gradient-boosting_gen.py` で再生成できる。
-
 ---
 
 ### 機械学習での使いどころ

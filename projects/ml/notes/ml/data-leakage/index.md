@@ -218,8 +218,6 @@ Correct CV (pipeline):     0.505
 
 一般に、CV を信用しすぎないこと、Pipeline で前処理を閉じること、特徴量に as-of timestamp を付ける文化を持ち込むこと、の 3 点を守るだけでほとんどのリーク事故は未然に防げると言える。
 
-ここで使った図をまとめて生成するスクリプトは `projects/ml/scripts/notes/data-leakage_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/data-leakage_gen.py` で再生成できる。
-
 ---
 
 ### よくある誤解

@@ -209,8 +209,6 @@ plt.savefig("joint-marginal-conditional_continuous.svg", bbox_inches="tight")
 - Naive Bayes 分類器: 特徴量間の条件付き独立 `P(x1, x2, ..., xn | y) = Π_i P(xi | y)` を仮定して計算量を抑える
 - 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違うときの確率出力の再校正
 
-ここで使った図をまとめて生成するスクリプトは `projects/ml/scripts/notes/joint-marginal-conditional_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/joint-marginal-conditional_gen.py` で再生成できる。
-
 ---
 
 ### よくある誤解

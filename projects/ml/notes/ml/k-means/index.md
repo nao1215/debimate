@@ -191,8 +191,6 @@ k     inertia   silhouette   davies-bouldin
 
 技術指標と業務文脈の両輪で決まるのが現実的な手順となる。技術的に最適な `k` でも業務で運用できなければ採用しないし、技術的にギリギリの差なら業務側の好みに寄せる、といった判断が入る。
 
-ここで使った図を生成するスクリプトは `projects/ml/scripts/notes/k-means_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/k-means_gen.py` で再生成できる。
-
 ---
 
 ### 数学での使いどころ

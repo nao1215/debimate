@@ -190,8 +190,6 @@ plt.savefig("data-drift_decay.svg", bbox_inches="tight")
 
 一般に、デプロイがゴールではなく「劣化に気づける状態」を作ることがモデルを本番で使い続ける前提条件と考えられる。コードもモデルも変えていないのに精度が下がる現象がある、と知っているだけで運用後の混乱を減らせる。
 
-ここで使った図をまとめて生成するスクリプトは `projects/ml/scripts/notes/data-drift_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/data-drift_gen.py` で再生成できる。
-
 ---
 
 ### よくある誤解

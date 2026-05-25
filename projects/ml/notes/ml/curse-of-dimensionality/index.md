@@ -188,7 +188,7 @@ plt.savefig("curse-of-dimensionality_knn_decay.svg", bbox_inches="tight")
 
 3 モデルの挙動の違いは、それぞれが何に依存しているかで説明できる。
 
-- LR: 各特徴量の係数を直接学習。距離概念を使わない。ノイズ特徴量は係数が 0 付近に縮むだけ。`[L2 正則化](../regularization/)` で過学習も抑えられる
+- LR: 各特徴量の係数を直接学習。距離概念を使わない。ノイズ特徴量は係数が 0 付近に縮むだけ。[L2 正則化](../regularization/) で過学習も抑えられる
 - RF: 各分割は「特徴量 `X` が閾値 `t` 以下か」の 1 次元判定の連鎖。距離概念を使わない。各木は特徴量サブセットだけ見るため高次元耐性がさらに高い
 - kNN: 全特徴量を使った距離計算が核。距離が意味を失った瞬間に動かなくなる
 
@@ -229,8 +229,6 @@ plt.savefig("curse-of-dimensionality_knn_decay.svg", bbox_inches="tight")
 - 特徴量設計レビュー: 「特徴量を増やせば精度が上がる」という素朴な発想に歯止めをかける
 - テキスト・画像のように本質的に高次元なデータでは、距離指標を見直す or 埋め込みで次元圧縮を組み合わせる
 - [ハイパーパラメータ](../hyperparameter/)探索の難しさ: 次元が増えるとパラメータ空間も指数的に広がり、GridSearch では実質的に探索不能になる（ベイズ最適化が有利になる理由のひとつ）
-
-ここで使った図をまとめて生成するスクリプトは `projects/ml/scripts/notes/curse-of-dimensionality_gen.py` にあり、`cd projects/ml && uv run python scripts/notes/curse-of-dimensionality_gen.py` で再生成できる。
 
 ---
 
