@@ -70,6 +70,9 @@ ShowBreadCrumbs: true
 | 24 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
 | 25 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
 | 26 | [特徴量重要度（permutation importance）](ml/feature-importance/) | 解釈性 |
+| 27 | [パーセプトロン（perceptron）](ml/perceptron/) | 深層学習 |
+| 28 | [活性化関数（sigmoid / ReLU / GELU）](ml/activation-functions/) | 深層学習 |
+| 29 | [誤差逆伝播法（backpropagation）](ml/backpropagation/) | 深層学習 |
 
 #### MLOps
 
