@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
-weight: 6
+weight: 9
 ---
 
 ハイパーパラメータ（hyperparameter）は、機械学習モデルを学習させる前に人間が決める設定値のこと。  

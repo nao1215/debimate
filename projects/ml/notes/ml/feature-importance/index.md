@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "interpretability"]
-weight: 25
+weight: 26
 ---
 
 特徴量重要度（feature importance）は、「学習済みモデルにとってどの特徴量がどれだけ予測に効いているか」を定量化する値である。モデルの説明性を上げる、不要な特徴量を捨てる、データ収集の優先順位を決める、といった目的で使われる。

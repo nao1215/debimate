@@ -4,13 +4,13 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 9
+weight: 18
 ---
 
 kNN（k近傍法、k-Nearest Neighbors）は、新しい点を予測するとき、訓練データの中で「その点に最も近い k 個のサンプル」を見て、多数決（分類）または平均（回帰）で答えを決める手法である。  
 モデルを学習で作るのではなく、訓練データをそのまま記憶しておくのが特徴。「怠惰な学習（lazy learning）」とも呼ばれる。
 
-距離は通常ユークリッド距離 `d(x, x_i) = sqrt(sum((x - x_i)^2))` を使う。スケール差が結果に直結するため、[標準化](../standardization/)（[標準偏差](../../math/stddev/)で割って平均 0・分散 1 に揃える）が基本。
+距離は通常ユークリッド距離 `d(x, x_i) = sqrt(sum((x - x_i)^2))` を使う。スケール差が結果に直結するため、[標準化](../standardization/)（[標準偏差](../../math/stddev/)で割って平均 0・分散 1 に揃える）が基本。距離計算は内積を経由した [ベクトル・行列の演算](../../math/vector-matrix-ops/) で書け、`||x - x_i||^2 = ||x||^2 - 2 x · x_i + ||x_i||^2` の関係から行列積 1 回で全訓練点との距離を一括計算できる。
 
 ```mermaid
 graph LR

@@ -4,7 +4,7 @@ date: 2026-05-25
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
-weight: 15
+weight: 12
 ---
 
 次元の呪い（curse of dimensionality）は、特徴量の次元が高くなるにつれて距離・体積・サンプル密度の常識的な感覚が崩れ、距離ベースのアルゴリズムが機能しなくなる現象群の総称である。1961 年に Bellman が制御理論の文脈で命名した古い用語だが、機械学習の文脈では「特徴量を増やすほど精度が上がるとは限らない、むしろ kNN や RBF カーネルがほぼ動かなくなる」という現実問題として現れる。

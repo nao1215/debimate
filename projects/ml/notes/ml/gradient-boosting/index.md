@@ -4,12 +4,14 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 11
+weight: 22
 ---
 
-GradientBoosting（勾配ブースティング）は、浅い決定木のような弱い学習器を 1 本ずつ順番に足していき、前のモデルが取りこぼした「誤差（残差）」を次の木で説明させることで予測精度を高める教師あり学習の手法である。最終的な予測は、これまで足したすべての木の出力を足し合わせた加法モデル `F(x) = f_1(x) + f_2(x) + ... + f_M(x)` として表される。
+GradientBoosting（勾配ブースティング）は、浅い [決定木](../decision-tree/) のような弱い学習器を 1 本ずつ順番に足していき、前のモデルが取りこぼした「誤差（残差）」を次の木で説明させることで予測精度を高める教師あり学習の手法である。最終的な予測は、これまで足したすべての木の出力を足し合わせた加法モデル `F(x) = f_1(x) + f_2(x) + ... + f_M(x)` として表される。
 
-[RandomForest](../random-forest/) と並ぶアンサンブル手法だが、考え方の方向が逆になっている。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取る。RandomForest が「多様な意見を平均して安定させる」のに対し、GradientBoosting は「直前の誤りを少しずつ削っていく」発想と言える。
+[RandomForest](../random-forest/) と並ぶ [アンサンブル学習](../ensemble-learning/) の代表だが、考え方の方向が逆になっている。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取る。RandomForest が「多様な意見を平均して安定させる」のに対し、GradientBoosting は「直前の誤りを少しずつ削っていく」発想と言える。
+
+「残差」は厳密には [損失関数](../loss-functions/) の負の勾配で、回帰なら MSE の勾配（= 残差そのもの）、分類なら交差エントロピーの勾配が使われる。損失関数を切り替えれば回帰・分類・分位回帰・ランキングなど多用途に適用できる柔軟さが、勾配ブースティングの強みの 1 つとなる。
 
 | | RandomForest（Bagging） | GradientBoosting（Boosting） |
 |---|---|---|

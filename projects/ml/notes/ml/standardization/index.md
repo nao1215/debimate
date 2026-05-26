@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "preprocessing"]
-weight: 7
+weight: 13
 ---
 
 特徴量スケーリングは、複数の特徴量のスケール（値の取り得る範囲・分散）を揃える前処理である。代表は標準化（standardization, Z-score）と正規化（normalization, Min-Max）の 2 つで、scikit-learn ではそれぞれ `StandardScaler` と `MinMaxScaler` が対応する。
@@ -26,6 +26,8 @@ weight: 7
 ![Histograms before and after standardization](./standardization_hist.svg)
 
 スケーリングは「形を変える」のではなく「軸の単位を揃える」操作であることに注意したい。分布の歪み（[歪度](../../math/skewness/)）はスケーリングしても残るので、必要なら別途 `log1p` などの変換と組み合わせる。
+
+[PCA](../pca/) のようにスケールが結果に直接効く手法の前処理として標準化は必須となる。共分散行列を [固有値分解](../../math/eigen-decomposition/) する際、分散の大きい特徴量に主成分軸が引きずられるためで、「PCA の前に標準化」は事実上のルールと言える。
 
 ---
 

@@ -4,13 +4,15 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 10
+weight: 21
 ---
 
-RandomForest は、複数の決定木を組み合わせて予測するアンサンブル手法（Bagging）。  
+RandomForest は、複数の[決定木](../decision-tree/)を組み合わせて予測する[アンサンブル学習](../ensemble-learning/) の代表的手法（Bagging）。  
 アンサンブル手法は、複数のモデルの出力をまとめて、単体より安定・高精度を狙う方法。
 Bagging（Bootstrap Aggregating）は、ブートストラップで作った複数の学習セットで別々のモデルを学習し、予測を平均/多数決で集約する考え方。
 それぞれの木は「ブートストラップサンプル」と「特徴量のランダム選択」で多様性を持たせ、分類は多数決、回帰は平均でまとめる。
+
+[決定木](../decision-tree/) 単体は過学習しやすく不安定（高 Variance）だが、独立に近い多数の木を平均することで Variance を縮める、というのが原理である（[バイアス-バリアンス分解](../bias-variance-tradeoff/) の bagging 側）。学習後は `feature_importances_`（MDI）で各特徴量の寄与が取れるが、高カーディナリティバイアスがあるため [特徴量重要度](../feature-importance/) で再検証するのが安全と考えられる。
 
 ### 決定木の分岐例（しきい値）
 

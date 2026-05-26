@@ -46,30 +46,30 @@ ShowBreadCrumbs: true
 | --- | --- | --- |
 | 1 | [混同行列・偽陽性/偽陰性・閾値調整](ml/confusion-matrix/) | 評価指標 |
 | 2 | [ROC-AUC / PR-AUC](ml/roc-pr-auc/) | 評価指標 |
-| 3 | [過学習（overfitting）](ml/overfitting/) | 学習概念 |
-| 4 | [正則化（regularization）](ml/regularization/) | 学習概念 |
-| 5 | [交差検証（cross validation）](ml/cross-validation/) | 学習概念 |
-| 6 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) | 学習概念 |
-| 7 | [標準化と特徴量スケーリング（standardization）](ml/standardization/) | 前処理 |
-| 8 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) | 教師あり |
-| 9 | [kNN - k近傍法](ml/knn/) | 教師あり |
-| 10 | [RandomForest - ランダムフォレスト](ml/random-forest/) | 教師あり |
-| 11 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) | 教師あり |
-| 12 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
-| 13 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
-| 14 | [データリーク（data leakage）](ml/data-leakage/) | 学習概念 |
-| 15 | [次元の呪い（curse of dimensionality）](ml/curse-of-dimensionality/) | 学習概念 |
-| 16 | [カテゴリ変数のエンコーディング（categorical encoding）](ml/categorical-encoding/) | 前処理 |
-| 17 | [バイアス-バリアンス分解（bias-variance tradeoff）](ml/bias-variance-tradeoff/) | 学習概念 |
-| 18 | [損失関数（MSE / 交差エントロピー）](ml/loss-functions/) | 学習概念 |
-| 19 | [線形回帰（linear regression）](ml/linear-regression/) | 教師あり |
-| 20 | [回帰の評価指標（RMSE / MAE / R²）](ml/regression-metrics/) | 評価指標 |
-| 21 | [決定木（decision tree）](ml/decision-tree/) | 教師あり |
-| 22 | [サポートベクターマシン（SVM）](ml/svm/) | 教師あり |
+| 3 | [回帰の評価指標（RMSE / MAE / R²）](ml/regression-metrics/) | 評価指標 |
+| 4 | [損失関数（MSE / 交差エントロピー）](ml/loss-functions/) | 学習概念 |
+| 5 | [過学習（overfitting）](ml/overfitting/) | 学習概念 |
+| 6 | [バイアス-バリアンス分解（bias-variance tradeoff）](ml/bias-variance-tradeoff/) | 学習概念 |
+| 7 | [正則化（regularization）](ml/regularization/) | 学習概念 |
+| 8 | [交差検証（cross validation）](ml/cross-validation/) | 学習概念 |
+| 9 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) | 学習概念 |
+| 10 | [データリーク（data leakage）](ml/data-leakage/) | 学習概念 |
+| 11 | [クラス不均衡への対処（class imbalance）](ml/class-imbalance/) | 学習概念 |
+| 12 | [次元の呪い（curse of dimensionality）](ml/curse-of-dimensionality/) | 学習概念 |
+| 13 | [標準化と特徴量スケーリング（standardization）](ml/standardization/) | 前処理 |
+| 14 | [カテゴリ変数のエンコーディング（categorical encoding）](ml/categorical-encoding/) | 前処理 |
+| 15 | [特徴量選択（feature selection）](ml/feature-selection/) | 前処理 |
+| 16 | [線形回帰（linear regression）](ml/linear-regression/) | 教師あり |
+| 17 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) | 教師あり |
+| 18 | [kNN - k近傍法](ml/knn/) | 教師あり |
+| 19 | [決定木（decision tree）](ml/decision-tree/) | 教師あり |
+| 20 | [サポートベクターマシン（SVM）](ml/svm/) | 教師あり |
+| 21 | [RandomForest - ランダムフォレスト](ml/random-forest/) | 教師あり |
+| 22 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) | 教師あり |
 | 23 | [アンサンブル学習（bagging / boosting / stacking）](ml/ensemble-learning/) | 学習概念 |
-| 24 | [クラス不均衡への対処（class imbalance）](ml/class-imbalance/) | 学習概念 |
-| 25 | [特徴量重要度（permutation importance）](ml/feature-importance/) | 解釈性 |
-| 26 | [特徴量選択（feature selection）](ml/feature-selection/) | 前処理 |
+| 24 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
+| 25 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
+| 26 | [特徴量重要度（permutation importance）](ml/feature-importance/) | 解釈性 |
 
 #### MLOps
 

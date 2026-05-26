@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 21
+weight: 19
 ---
 
 決定木（decision tree）は、入力空間を「if-then-else」の分割で繰り返し切り分け、葉ノードに到達した時点でクラス（分類）または値（回帰）を出すモデルである。学習は「分割すると不純度が最も下がる特徴量と閾値」を貪欲的に選ぶことを再帰的に繰り返すアルゴリズムで、最終的には軸に平行な階段状の決定境界を作る。

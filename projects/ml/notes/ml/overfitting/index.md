@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
-weight: 3
+weight: 5
 ---
 
 過学習（overfitting）は、モデルが訓練データの特徴を「覚えすぎ」て、未知のデータでうまく予測できなくなる現象である。  

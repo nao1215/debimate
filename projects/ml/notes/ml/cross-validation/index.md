@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
-weight: 5
+weight: 8
 ---
 
 交差検証（cross validation, CV）は、限られた学習データを「訓練用」と「検証用」に何通りも分け直して評価することで、モデルの性能をより安定して見積もる手法である。  
