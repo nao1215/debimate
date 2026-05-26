@@ -32,13 +32,17 @@ ShowBreadCrumbs: true
 | 8 | [相関係数](math/correlation/) | 2 変数の関係 |
 | 9 | [期待値](math/expectation/) | 確率分布の基礎 |
 | 10 | [同時分布・周辺分布・条件付き分布](math/joint-marginal-conditional/) | 確率分布の基礎 |
-| 11 | [ベイズの定理](math/bayes-theorem/) | 確率推論 |
-| 12 | [対数・指数関数の性質と log-odds](math/log-exp-logodds/) | 関数 |
-| 13 | [ベクトルと行列の演算（内積・行列積）](math/vector-matrix-ops/) | 線形代数 |
-| 14 | [固有値・固有ベクトルと固有値分解](math/eigen-decomposition/) | 線形代数 |
-| 15 | [偏微分と勾配](math/partial-derivative-gradient/) | 微分 |
-| 16 | [最急降下法・確率的勾配降下法（SGD）](math/gradient-descent-sgd/) | 最適化 |
-| 17 | [仮説検定・p 値・信頼区間](math/hypothesis-test/) | 統計的推論 |
+| 11 | [代表的な確率分布](math/probability-distributions/) | 確率分布 |
+| 12 | [ベイズの定理](math/bayes-theorem/) | 確率推論 |
+| 13 | [対数・指数関数の性質と log-odds](math/log-exp-logodds/) | 関数 |
+| 14 | [情報理論（エントロピー / KL / 相互情報量）](math/information-theory/) | 情報理論 |
+| 15 | [ベクトルと行列の演算（内積・行列積）](math/vector-matrix-ops/) | 線形代数 |
+| 16 | [固有値・固有ベクトルと固有値分解](math/eigen-decomposition/) | 線形代数 |
+| 17 | [偏微分と勾配](math/partial-derivative-gradient/) | 微分 |
+| 18 | [最急降下法・確率的勾配降下法（SGD）](math/gradient-descent-sgd/) | 最適化 |
+| 19 | [凸関数と凸最適化](math/convex-functions/) | 最適化 |
+| 20 | [大数の法則と中心極限定理（LLN / CLT）](math/lln-clt/) | 統計的推論 |
+| 21 | [仮説検定・p 値・信頼区間](math/hypothesis-test/) | 統計的推論 |
 
 #### Machine Learning（評価・概念・アルゴリズム）
 

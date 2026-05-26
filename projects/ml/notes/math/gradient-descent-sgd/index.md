@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "math", "optimization"]
-weight: 17
+weight: 19
 ---
 
 最急降下法（gradient descent, GD）は、関数 `f(x)` を最小化するために「現在地から見て最も急に下る方向（= 負の勾配 `-∇f`）に少しずつ進む」反復アルゴリズムである。確率的勾配降下法（stochastic gradient descent, SGD）は、勾配を全データではなくランダムな 1 サンプル（または小バッチ）から推定して更新する派生で、大規模データでの学習に欠かせない手法となる。

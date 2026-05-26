@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "math", "calculus"]
-weight: 16
+weight: 18
 ---
 
 偏微分（partial derivative）は、複数の変数を持つ関数 `f(x, y, ...)` を「ある 1 変数だけ動かして、他は固定する」と決めて、その 1 変数についての変化率を取った量である。勾配（gradient, `∇f`）は、全変数についての偏微分をベクトルに並べたもので、そのベクトルが「f が最も急に増える向き」を指す性質を持つ。

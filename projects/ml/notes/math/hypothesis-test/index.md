@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "math", "statistics"]
-weight: 18
+weight: 22
 ---
 
 仮説検定（hypothesis testing）は、ある主張（帰無仮説）が正しいと仮定したときに、観測されたデータがどれくらい「ありえない」かを定量化して結論を出す統計的手続きである。p 値（p-value）はその「ありえなさ」を 1 つの確率として表した量、信頼区間（confidence interval）は推定値の周りに「真値があると考えられる範囲」を区間で示したものとなる。

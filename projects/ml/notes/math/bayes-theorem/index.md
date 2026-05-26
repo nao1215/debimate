@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "math", "statistics", "probability"]
-weight: 12
+weight: 13
 ---
 
 ベイズの定理（Bayes' theorem）は、ある仮説に対する確率を「観測したデータ」を踏まえて更新する規則である。式で書くと、

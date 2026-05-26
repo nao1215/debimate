@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "math", "linear-algebra"]
-weight: 15
+weight: 17
 ---
 
 固有ベクトル（eigenvector）は、ある正方行列 `A` をかけても向きが変わらないベクトルのことで、固有値（eigenvalue）はその「向きが変わらないベクトル」が `A` によってスカラー倍された倍率である。式で書くと、
