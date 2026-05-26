@@ -30,7 +30,15 @@ ShowBreadCrumbs: true
 | 6 | [歪度（skewness）と log1p 変換](math/skewness/) | 分布の形 |
 | 7 | [カーネル密度推定（KDE）](math/kde/) | 分布の可視化 |
 | 8 | [相関係数](math/correlation/) | 2 変数の関係 |
-| 9 | [同時分布・周辺分布・条件付き分布](math/joint-marginal-conditional/) | 確率分布の基礎 |
+| 9 | [期待値](math/expectation/) | 確率分布の基礎 |
+| 10 | [同時分布・周辺分布・条件付き分布](math/joint-marginal-conditional/) | 確率分布の基礎 |
+| 11 | [ベイズの定理](math/bayes-theorem/) | 確率推論 |
+| 12 | [対数・指数関数の性質と log-odds](math/log-exp-logodds/) | 関数 |
+| 13 | [ベクトルと行列の演算（内積・行列積）](math/vector-matrix-ops/) | 線形代数 |
+| 14 | [固有値・固有ベクトルと固有値分解](math/eigen-decomposition/) | 線形代数 |
+| 15 | [偏微分と勾配](math/partial-derivative-gradient/) | 微分 |
+| 16 | [最急降下法・確率的勾配降下法（SGD）](math/gradient-descent-sgd/) | 最適化 |
+| 17 | [仮説検定・p 値・信頼区間](math/hypothesis-test/) | 統計的推論 |
 
 #### Machine Learning（評価・概念・アルゴリズム）
 

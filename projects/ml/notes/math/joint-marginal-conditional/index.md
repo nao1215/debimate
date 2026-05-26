@@ -4,7 +4,7 @@ date: 2026-05-25
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "math", "statistics", "probability"]
-weight: 10
+weight: 11
 ---
 
 確率変数が複数あるとき、それらの関係を表す分布には 3 種類ある。同時分布（joint distribution, `P(x, y)`）、周辺分布（marginal distribution, `P(x)` や `P(y)`）、条件付き分布（conditional distribution, `P(y|x)`）の 3 つで、機械学習の本や論文で繰り返し出てくる基本概念である。
@@ -169,6 +169,64 @@ plt.savefig("joint-marginal-conditional_continuous.svg", bbox_inches="tight")
 ![Continuous joint and marginals](./joint-marginal-conditional_continuous.svg)
 
 中央の散布図が同時分布 `P(x, y)` のサンプル可視化で、上端と右端のヒストグラムがそれぞれ `P(x)` と `P(y)` の周辺分布である。連続の場合、条件付き分布 `P(y|x=a)` は「`x=a` 付近の縦の細い帯に入る点だけ取り出した分布」に対応する。`x` と `y` に [相関](../correlation/) があるため、`x` が大きい領域では `y` も大きめ、という関係が見える。
+
+---
+
+### 独立 vs 従属を視覚的に区別する
+
+独立性（independence）の数学的定義は `P(x, y) = P(x) × P(y)` で、これが成り立つときに限り「`X` を知っても `Y` の予測には何も寄与しない」となる。同時分布の散布図を見れば、独立か従属かは形からほぼ判定できる。
+
+```python
+indep_x = rng.normal(0, 1, 800)
+indep_y = rng.normal(0, 1, 800)
+dep = rng.multivariate_normal([0, 0], [[1.0, 0.85], [0.85, 1.0]], size=800)
+print(f"independent r = {np.corrcoef(indep_x, indep_y)[0,1]:+.2f}")
+print(f"dependent   r = {np.corrcoef(dep[:,0], dep[:,1])[0,1]:+.2f}")
+plt.savefig("joint-marginal-conditional_independence.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+independent r = -0.02
+dependent   r = +0.84
+```
+
+![独立な散布図は円形、従属（高相関）な散布図は楕円に伸びる](./joint-marginal-conditional_independence.svg)
+
+左の独立な散布図は円形に近く、どの `x` の帯を切ってもその中の `y` の分布形はほぼ同じになる（= `P(y|x)` が `x` に依存しない = `P(y|x) = P(y)`）。右の従属な散布図は楕円形に細長く伸び、`x` の小さい領域では `y` も小さく、`x` の大きい領域では `y` も大きい、という関係が見える。これが「`X` を知ると `Y` の分布が動く」、つまり従属性を視覚的に示している。
+
+注意点として、Pearson 相関 `r ≈ 0` は「線形関係が無い」ことしか示さず、独立性とは別物である。`y = x^2` のような非線形依存があると `r ≈ 0` でも完全に従属であり、独立性は相互情報量（mutual information）や [相関係数](../correlation/) のノートで触れた他の指標で確認する必要がある。
+
+---
+
+### 条件付き分布をスライスとして見る
+
+連続変数での条件付き分布 `P(y|x=c)` を、散布図の「縦の帯」として直接取り出してヒストグラムにする。
+
+```python
+samples = rng.multivariate_normal([0, 0], [[1.0, 0.7], [0.7, 1.0]], size=5000)
+# x ≈ -1.5, 0, +1.5 の 3 帯を取り出して y の分布を比較
+for c in [-1.5, 0.0, 1.5]:
+    in_slice = np.abs(samples[:, 0] - c) < 0.25
+    y_in_slice = samples[in_slice, 1]
+    print(f"x≈{c:+.1f}: E[y|x] ≈ {y_in_slice.mean():+.2f}  (theory: {0.7*c:+.2f})")
+plt.savefig("joint-marginal-conditional_slicing.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+x≈-1.5: E[y|x] ≈ -0.99  (theory: -1.05)
+x≈+0.0: E[y|x] ≈ +0.04  (theory: +0.00)
+x≈+1.5: E[y|x] ≈ +1.07  (theory: +1.05)
+```
+
+![同時分布から x の値ごとに条件付き分布 P(y|x) を取り出す](./joint-marginal-conditional_slicing.svg)
+
+左の散布図で 3 つの縦の色帯がそれぞれ `x ≈ -1.5`, `0`, `+1.5` 付近の点を取り出した範囲で、その中の `y` 値だけを集めてヒストグラム化したのが右の図である。条件 `x` が動くと条件付き分布 `P(y|x)` の中心が動く（`x` の増加とともに右に移動）のが見て取れる。
+
+回帰モデルが学習している関数 `f(x) = E[y|x]` は、まさにこの「`x` を固定したときの `y` の期待値」を `x` の関数として推定するものに他ならない。`predict_proba` も同じく `P(y=1|x)` の推定であり、条件付き分布の視点はそのまま予測モデルの設計思想と一致する。
 
 ---
 

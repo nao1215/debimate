@@ -50,6 +50,56 @@ weight: 3
 
 ---
 
+### Breakdown point: 50% まで耐える
+
+ロバスト統計には「breakdown point（崩壊点）」という指標がある。「データのうち何 % が任意の極端な値に置き換わったとき、推定値が任意の値に動きうるか」を表す。平均の breakdown point は 0%（1 個でも極端な値が混ざると引きずられる）に対し、中央値の breakdown point は 50% である。
+
+```python
+fractions = np.linspace(0, 0.55, 30)
+mean_drift, median_drift = [], []
+for frac in fractions:
+    n_contam = int(round(len(clean) * frac))
+    contaminated = clean.copy()
+    if n_contam > 0:
+        idx = rng.choice(len(clean), size=n_contam, replace=False)
+        contaminated[idx] = 500.0
+    mean_drift.append(contaminated.mean() - clean.mean())
+    median_drift.append(np.median(contaminated) - np.median(clean))
+plt.savefig("median_breakdown.svg", bbox_inches="tight")
+```
+
+![崩壊点: 中央値はデータの半分まで汚染されてもほぼ動かない](./median_breakdown.svg)
+
+赤い線が平均の動き、緑が中央値の動き。横軸は「データの何 % を極端な値（500）に置き換えたか」である。平均は汚染率に比例して直線的に上昇していくのに対し、中央値は約 50% に達するまではほぼ動かない。50% を超えると一気に「外れ値側の値」が真ん中の順位に来るので跳ね上がる。この性質が「中央値はロバスト統計の代表」と呼ばれる理由となる。
+
+「データの半分まで信頼できないかもしれない」状況は通常まれだが、極端な裾を持つ分布や、悪意のあるデータ汚染が考えられる場面（不正検出、ロバスト回帰）では breakdown point の高さが大きな安全マージンになる、と考えられる。
+
+---
+
+### Quantile regression: 「中央値を予測する回帰」
+
+回帰モデルにも「平均を予測する OLS」と「中央値を予測する quantile regression」の対比がある。外れ値が混ざるデータで両者を当てると、振る舞いが目に見えて違う。
+
+```python
+from sklearn.linear_model import LinearRegression, QuantileRegressor
+
+x_data = np.linspace(0, 10, 80)
+y_data = 1.5 * x_data + 2.0 + rng.normal(0, 1.5, 80)
+# 10 個の上方外れ値を注入
+y_data[rng.choice(80, 10, replace=False)] += rng.uniform(15, 30, 10)
+
+ols = LinearRegression().fit(x_data.reshape(-1, 1), y_data)
+qr = QuantileRegressor(quantile=0.5, alpha=0.0).fit(x_data.reshape(-1, 1), y_data)
+# 詳細な描画は scripts 側を参照
+plt.savefig("median_quantile_regression.svg", bbox_inches="tight")
+```
+
+![OLS と quantile regression の比較。外れ値で OLS は引きずられ、quantile は中央線を保つ](./median_quantile_regression.svg)
+
+真の傾きは 1.5 だが、上方に外れ値を混ぜたため OLS（赤、L2 損失）は傾きを大きく見積もる方向に引きずられる。一方で quantile regression（緑、`quantile=0.5` で L1 損失）は外れ値の影響を抑え、真の傾き付近に張り付く。回帰でロバスト性が欲しい場面では、損失関数を L1 に切り替える（あるいは Huber 損失のような L1/L2 のハイブリッドを使う）のが定石となる。
+
+---
+
 ### 前提・注意
 
 - データは「順序付け可能」であることが前提（数値・順序尺度）

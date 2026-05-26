@@ -122,6 +122,49 @@ plt.show()
 ![quartile_hist](./quartile_hist.svg)
 ![quartile_box](./quartile_box.svg)
 
+### IQR ルールで外れ値を検出する
+
+Tukey の IQR ルールを適用して、外れ値を「マークするだけ」のシンプルな検出を見る。
+
+```python
+data = np.concatenate([rng.normal(50, 8, 200), [10, 15, 95, 110, 130]])
+q1, q3 = np.quantile(data, [0.25, 0.75])
+iqr = q3 - q1
+lo, hi = q1 - 1.5 * iqr, q3 + 1.5 * iqr
+is_outlier = (data < lo) | (data > hi)
+print(f"flagged {is_outlier.sum()} of {len(data)} as outliers")
+plt.savefig("quantile_iqr_outliers.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+flagged 5 of 205 as outliers
+```
+
+![IQR ルールで上下の外れ値を検出した結果](./quantile_iqr_outliers.svg)
+
+緑の帯が IQR、赤い破線が `Q1 - 1.5·IQR` と `Q3 + 1.5·IQR` の境界（フェンス, fence）で、その外側に落ちた点が外れ値として ×印で示されている。注入した 5 個の極端な値が全部正しくフラグされている。
+
+「1.5」という係数は経験則で、厳しめに見るなら `3.0`（extreme outlier）を使う。正規分布の場合、`1.5×IQR` ルールで誤検出される割合はおおよそ 0.7% 程度になることが知られており、3σ ルール（0.27%）よりやや甘い目安となる。
+
+### 分位回帰で「予測区間」を作る
+
+分位回帰（quantile regression）は、平均ではなく特定の分位点（10%、50%、90% など）を予測する回帰手法である。低分位と高分位の予測を上下に並べると、予測区間（prediction interval）として読める。
+
+```python
+from sklearn.ensemble import GradientBoostingRegressor
+
+q_low = GradientBoostingRegressor(loss="quantile", alpha=0.1).fit(X, y)
+q_med = GradientBoostingRegressor(loss="quantile", alpha=0.5).fit(X, y)
+q_high = GradientBoostingRegressor(loss="quantile", alpha=0.9).fit(X, y)
+plt.savefig("quantile_regression_bands.svg", bbox_inches="tight")
+```
+
+![分位回帰で得た中央値とその上下 80% 区間](./quantile_regression_bands.svg)
+
+赤い線が中央値の予測、緑の帯が `q=0.1` 〜 `q=0.9` の 80% 予測区間である。データの分散が `x` の右側で大きくなる構造（不均一分散）をしているため、緑の帯も右に行くほど広がっている。在庫計画・需要予測・SLA 設計のように「平均だけでなくバラつきを含めて意思決定したい」場面で頻出する手法で、`q=0.95` のような片側の予測値を「安全マージン」として使う。
+
 ---
 
 ### 数学での使いどころ

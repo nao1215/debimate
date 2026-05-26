@@ -88,6 +88,54 @@ plt.show()
 
 ![stddev_hist](./stddev_hist.svg)
 
+### 68-95-99.7 ルールを可視化する
+
+正規分布の経験則を、標準正規分布の図に重ねて見る。
+
+```python
+from scipy import stats
+
+x = np.linspace(-4, 4, 800)
+pdf = stats.norm.pdf(x)
+plt.plot(x, pdf, color="#7aa6c2", lw=2)
+plt.fill_between(x, pdf, where=(np.abs(x) <= 3), alpha=0.6, label="±3σ: 99.7%")
+plt.fill_between(x, pdf, where=(np.abs(x) <= 2), alpha=0.5, label="±2σ: 95.4%")
+plt.fill_between(x, pdf, where=(np.abs(x) <= 1), alpha=0.55, label="±1σ: 68.3%")
+plt.savefig("stddev_normal_rule.svg", bbox_inches="tight")
+```
+
+![±1σ・±2σ・±3σ がそれぞれ 68/95/99.7% を覆う](./stddev_normal_rule.svg)
+
+入れ子の 3 色の帯がそれぞれ ±1σ・±2σ・±3σ の範囲を表しており、覆っている確率の割合がラベルに書かれている。「3σ ルール」（観測値が ±3σ を超えれば異常）はこの 99.7% という数字が根拠で、正規分布ならば 1000 個に 3 個程度しか出ない極端な値、という意味になる。
+
+ただし正規分布から外れる（裾の重い分布、歪んだ分布）と数字が大きく変わる。例として t 分布（自由度 5）では ±3σ の中に入る確率は 97% 程度に下がり、log-normal のような右に裾の長い分布ではさらに崩れる。実際のデータに 3σ ルールを適用する前に、ヒストグラムや [KDE](../kde/) で形を確認するのが安全と考えられる。
+
+### Z スコアで異なる単位の値を比較する
+
+Z スコア `z = (x - μ) / σ` を使うと、平均・標準偏差が違うデータ同士を「平均から何 σ離れているか」という共通単位で比較できる。
+
+```python
+math_scores = rng.normal(70, 15, 200).clip(0, 100)
+english_scores = rng.normal(50, 5, 200).clip(0, 100)
+student_math, student_english = 85, 58
+z_math = (student_math - math_scores.mean()) / math_scores.std()
+z_english = (student_english - english_scores.mean()) / english_scores.std()
+print(f"math z = {z_math:+.2f}, english z = {z_english:+.2f}")
+plt.savefig("stddev_zscore_compare.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+math z = +1.04, english z = +1.34
+```
+
+![同じ生徒の数学と英語、生スコアでは数学が高いが Z スコアでは英語の方が相対的に高い](./stddev_zscore_compare.svg)
+
+左の生スコアでは「数学 85 点 > 英語 58 点」で数学の方が高く見えるが、右の Z スコア表示では英語の方が `+1.34σ` と数学 `+1.04σ` より相対的に高い位置にいる。これは英語の母集団のばらつきが小さい（σ=5）ため、同じ生スコアの差でも母集団内での偏差としては大きく見える、という構造である。偏差値（`z × 10 + 50`）はこの考え方を 1 次変換しただけのもので、Z スコアは「異なる母集団の相対位置を統一する」道具となる。
+
+機械学習の [標準化](../../ml/standardization/) も全く同じ操作で、特徴量を Z スコアに変換することで、距離ベース（kNN、k-means）や正則化を伴うモデル（Ridge、Lasso、ロジスティック回帰）が安定して動くようになる。
+
 ---
 
 ### Z スコアと標準化

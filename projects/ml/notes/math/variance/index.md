@@ -73,6 +73,66 @@ plt.show()
 
 ![variance_hist](./variance_hist.svg)
 
+### 分散分解を可視化する
+
+「全体の分散 = 群内分散の平均 + 群間平均の分散」を、3 群の合成データで確認する。
+
+```python
+groups = ["A", "B", "C"]
+group_means = [3.0, 6.0, 9.0]
+data_by_group = {g: rng.normal(m, 1.0, 80) for g, m in zip(groups, group_means)}
+all_data = np.concatenate(list(data_by_group.values()))
+
+total = all_data.var()
+within = np.mean([v.var() for v in data_by_group.values()])
+between = np.mean([(m - all_data.mean()) ** 2 for m in group_means])
+print(f"total = {total:.2f}, within = {within:.2f}, between = {between:.2f}")
+plt.savefig("variance_decomposition.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+total = 7.05, within = 1.00, between = 6.00
+```
+
+![群内分散と群間分散の和が全体分散にほぼ一致する](./variance_decomposition.svg)
+
+左の図は 3 群（A, B, C）の生データで、各群の中での散らばり（群内分散, 平均 ≈ 1.0）と、群の平均値同士の散らばり（群間分散 ≈ 6.0）の 2 つに分けて見える。右の棒グラフはその数値で、全体分散 7.05 ≈ 群内 1.00 + 群間 6.00 と分解されている。
+
+ANOVA（分散分析）はこの分解を使って「群間分散が群内分散より十分大きいか」を検定するもので、決定木の分割基準（回帰木の MSE 減少）も同じ発想で動いている。「特徴量で分割したら、分割後の群内分散の和が分割前より小さくなるか」を測れば、良い分割かどうかが判定できる、というのが核心となる。
+
+### 平均化が分散を縮める（バギングの原理）
+
+加法性 `Var(X + Y) = Var(X) + Var(Y)`（独立時）から派生する重要な結果として、`n` 個の独立な予測値を平均すると分散が `1/n` に縮む、という性質がある。
+
+`Var((X_1 + X_2 + ... + X_n) / n) = (1/n^2) × n × Var(X_i) = Var(X_i) / n`
+
+これがランダムフォレストやバギング（bagging, bootstrap aggregating）の理論的根拠となる。
+
+```python
+rng = np.random.default_rng(1)
+n_trials = 5000
+for n in [1, 4, 16, 64, 256]:
+    samples = rng.normal(0.0, 1.0, (n_trials, n)).mean(axis=1)
+    print(f"n={n:3d}: var = {samples.var():.4f}")
+plt.savefig("variance_averaging.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+n=  1: var = 0.9956
+n=  4: var = 0.2447
+n= 16: var = 0.0608
+n= 64: var = 0.0149
+n=256: var = 0.0038
+```
+
+![n を増やすほど平均推定の分散が 1/n の速さで縮む](./variance_averaging.svg)
+
+ヒストグラムが `n` を 1, 4, 16, 64, 256 と増やしたときの「平均値の分布」で、`n` が増えるほど真の値（0）の周りに鋭く集中していく。分散は `1/n` の速さで縮むので、64 個の平均で分散は 1/64 ≈ 0.016 まで小さくなっている。バギングが「個別モデルの分散を抑える」効果を持つのは、この原理が背景にある。前提となる「独立性」が崩れる（個別モデルが似た予測をする）と効果が薄れる点が実装上の落とし穴で、ランダムフォレストが特徴量サンプリングで相関を下げているのも同じ理由となる。
+
 ---
 
 ### 分散の分解と加法性

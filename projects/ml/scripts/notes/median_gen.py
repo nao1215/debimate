@@ -78,3 +78,66 @@ save("median_l1_vs_l2.svg")
 
 print("Mean:", base.mean(), "->", outlier.mean())
 print("Median:", np.median(base), "->", np.median(outlier))
+
+
+# --- 図3: Breakdown point - mean drifts smoothly, median holds until 50% ---
+clean = rng.normal(50, 5, 100)
+fractions = np.linspace(0, 0.55, 30)
+mean_drift = []
+median_drift = []
+clean_mean = clean.mean()
+clean_median = np.median(clean)
+for frac in fractions:
+    n_contam = int(round(len(clean) * frac))
+    contaminated = clean.copy()
+    if n_contam > 0:
+        # Replace n_contam values with extreme outliers
+        idx = rng.choice(len(clean), size=n_contam, replace=False)
+        contaminated[idx] = 500.0
+    mean_drift.append(contaminated.mean() - clean_mean)
+    median_drift.append(np.median(contaminated) - clean_median)
+
+plt.figure(figsize=(7, 4.5))
+plt.plot(fractions * 100, mean_drift, "o-", color=COLOR_RED, lw=2, label="mean drift")
+plt.plot(fractions * 100, median_drift, "s-", color=COLOR_GREEN, lw=2, label="median drift")
+plt.axvline(50, color="black", ls=":", lw=1.5, label="median breakdown = 50%")
+plt.xlabel("fraction of data replaced by extreme outlier (%)")
+plt.ylabel("estimator drift from clean value")
+plt.title("Breakdown point: median stays put until ~50% data is contaminated")
+plt.legend()
+plt.grid(True, alpha=0.25)
+plt.tight_layout()
+save("median_breakdown.svg")
+
+
+# --- 図4: Quantile regression vs OLS on outlier-heavy data ---
+from sklearn.linear_model import LinearRegression, QuantileRegressor
+
+rng2 = np.random.default_rng(42)
+n = 80
+x_data = np.linspace(0, 10, n)
+y_clean = 1.5 * x_data + 2.0 + rng2.normal(0, 1.5, n)
+# Inject outliers on upper region
+y_data = y_clean.copy()
+outlier_idx = rng2.choice(n, size=10, replace=False)
+y_data[outlier_idx] += rng2.uniform(15, 30, 10)
+
+X = x_data.reshape(-1, 1)
+ols = LinearRegression().fit(X, y_data)
+qr = QuantileRegressor(quantile=0.5, alpha=0.0).fit(X, y_data)
+x_grid = np.linspace(0, 10, 100).reshape(-1, 1)
+
+plt.figure(figsize=(7.5, 4.5))
+plt.scatter(x_data, y_data, color=COLOR_BLUE, alpha=0.6, label="data with outliers")
+plt.plot(x_grid, ols.predict(x_grid), color=COLOR_RED, lw=2,
+         label=f"OLS (mean): slope={ols.coef_[0]:.2f}")
+plt.plot(x_grid, qr.predict(x_grid), color=COLOR_GREEN, lw=2,
+         label=f"Median regression: slope={qr.coef_[0]:.2f}")
+plt.plot(x_data, 1.5 * x_data + 2.0, color="black", ls=":", lw=1.5,
+         label="true slope=1.5")
+plt.xlabel("x"); plt.ylabel("y")
+plt.title("OLS (mean-based) is pulled up by outliers, quantile regression holds the median line")
+plt.legend()
+plt.grid(True, alpha=0.25)
+plt.tight_layout()
+save("median_quantile_regression.svg")

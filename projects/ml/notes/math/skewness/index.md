@@ -95,6 +95,55 @@ plt.show()
 
 ![skewness_log1p](./skewness_log1p.svg)
 
+### 右歪み・対称・左歪みの並列比較
+
+歪度の符号と分布形の対応を、3 種類のデータで並べて見る。
+
+```python
+from scipy import stats
+
+right = rng.lognormal(0.0, 0.6, 5000)
+sym = rng.normal(2.0, 0.8, 5000)
+left = -rng.lognormal(0.0, 0.6, 5000) + np.exp(2)
+for name, data in [("right", right), ("sym", sym), ("left", left)]:
+    print(f"{name}: skew={stats.skew(data):+.2f}, mean={data.mean():.2f}, median={np.median(data):.2f}")
+plt.savefig("skewness_sign_compare.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+right: skew=+2.05, mean=1.27, median=1.01
+sym:   skew=+0.00, mean=2.00, median=2.00
+left:  skew=-2.05, mean=6.12, median=6.38
+```
+
+![右歪み・対称・左歪みでの mean と median の位置](./skewness_sign_compare.svg)
+
+3 つのヒストグラムで、赤線が平均、緑線が中央値である。右歪み（左図）では平均が中央値より右にあり、対称（中央）では一致、左歪み（右図）では平均が中央値より左にある、というのが歪度の符号と直接対応している。「平均と中央値のどちらが大きいか」という素朴な観察だけでも、歪みの方向がある程度判定できる。
+
+### 回帰の残差プロットで効く log 変換
+
+右に歪んだ目的変数をそのまま線形回帰すると、残差が予測値の大きさに比例して広がる「ファン型」になりがちで、線形回帰の仮定（残差の等分散性）が崩れる。`log1p(y)` で学習してから `expm1` で戻すと、残差が均一に近づく。
+
+```python
+from sklearn.linear_model import LinearRegression
+
+area = rng.uniform(30, 200, 300)
+price = np.exp(1.0 + 0.015 * area + rng.normal(0, 0.25, 300))  # right-skewed
+X = area.reshape(-1, 1)
+ols_raw = LinearRegression().fit(X, price)
+ols_log = LinearRegression().fit(X, np.log1p(price))
+# 詳細は scripts 側を参照
+plt.savefig("skewness_residual_diag.svg", bbox_inches="tight")
+```
+
+![生の y で学習すると残差がファン型、log1p 変換で均一に](./skewness_residual_diag.svg)
+
+上段が生の `y` での回帰と残差プロット、下段が `log1p(y)` での回帰と残差プロット。右上の残差は予測値が大きい右側で大きく広がる「ファン型」をしているのに対し、右下の log1p 後の残差は予測値全域で一様に近い形になっている。残差が等分散になると、信頼区間・予測区間の解釈が安定し、勾配ブースティング以外の線形・正則化系モデルの予測性能が改善することが多いと考えられる。
+
+なお木系モデル（ランダムフォレスト・勾配ブースティング）は分割点の順序しか見ないため、目的変数の変換による予測性能の改善はほとんど無い場合が多い。歪度補正は線形モデル・距離ベース・ベイズモデルで主に効く前処理となる。
+
 ---
 
 ### 数学での使いどころ

@@ -141,3 +141,78 @@ print(f"P(y) = {p_y}")
 print(f"P(y | x=low)  = {conditionals[0]}")
 print(f"P(y | x=mid)  = {conditionals[1]}")
 print(f"P(y | x=high) = {conditionals[2]}")
+
+
+# ============================================================
+# 図4: 独立 vs 従属の同時分布
+# ============================================================
+n_pts = 800
+indep_x = rng.normal(0, 1, n_pts)
+indep_y = rng.normal(0, 1, n_pts)
+mean_dep = [0, 0]
+cov_dep = [[1.0, 0.85], [0.85, 1.0]]
+dep = rng.multivariate_normal(mean_dep, cov_dep, size=n_pts)
+dep_x, dep_y = dep[:, 0], dep[:, 1]
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 5))
+
+for ax, (xv, yv), title in [
+    (axes[0], (indep_x, indep_y), "Independent: P(x, y) = P(x) P(y)"),
+    (axes[1], (dep_x, dep_y), "Dependent: P(x, y) ≠ P(x) P(y)"),
+]:
+    ax.scatter(xv, yv, s=10, alpha=0.4, color=COLOR_BLUE)
+    r = np.corrcoef(xv, yv)[0, 1]
+    ax.axhline(0, color="gray", lw=0.5)
+    ax.axvline(0, color="gray", lw=0.5)
+    ax.set_xlim(-4, 4); ax.set_ylim(-4, 4)
+    ax.set_aspect("equal")
+    ax.set_title(f"{title}\nr = {r:+.2f}", fontsize=10)
+    ax.set_xlabel("x"); ax.set_ylabel("y")
+    ax.grid(True, alpha=0.25)
+plt.suptitle("Independence test: independent → marginals factor; dependent → they don't",
+             y=1.02, fontsize=11)
+plt.tight_layout()
+save("joint-marginal-conditional_independence.svg")
+
+
+# ============================================================
+# 図5: 連続分布から条件付き分布を切り出す
+# ============================================================
+mean_c = [0, 0]
+cov_c = [[1.0, 0.7], [0.7, 1.0]]
+samples_c = rng.multivariate_normal(mean_c, cov_c, size=5000)
+
+fig = plt.figure(figsize=(11, 5))
+gs = fig.add_gridspec(1, 2, width_ratios=[1.2, 1])
+
+ax1 = fig.add_subplot(gs[0, 0])
+ax1.scatter(samples_c[:, 0], samples_c[:, 1], s=4, alpha=0.25, color=COLOR_BLUE)
+# Vertical slice around x = 1.5
+slice_centers = [-1.5, 0.0, 1.5]
+slice_w = 0.25
+colors_slice = [COLOR_GREEN, COLOR_RED, "#b07aa1"]
+for c, color in zip(slice_centers, colors_slice):
+    ax1.axvspan(c - slice_w, c + slice_w, alpha=0.25, color=color)
+ax1.axhline(0, color="gray", lw=0.5)
+ax1.axvline(0, color="gray", lw=0.5)
+ax1.set_xlim(-4, 4); ax1.set_ylim(-4, 4)
+ax1.set_aspect("equal")
+ax1.set_xlabel("x"); ax1.set_ylabel("y")
+ax1.set_title("Joint scatter with vertical 'condition x = c' slices")
+
+ax2 = fig.add_subplot(gs[0, 1])
+y_grid = np.linspace(-4, 4, 400)
+for c, color in zip(slice_centers, colors_slice):
+    in_slice = np.abs(samples_c[:, 0] - c) < slice_w
+    y_subset = samples_c[in_slice, 1]
+    # Expected mean of P(y | x=c) for correlated bivariate normal: rho * c
+    rho = 0.7
+    expected_mean = rho * c
+    ax2.hist(y_subset, bins=30, alpha=0.5, color=color, density=True,
+             label=f"P(y | x≈{c}), E[y|x]={expected_mean:+.1f}")
+ax2.set_xlabel("y"); ax2.set_ylabel("density")
+ax2.set_title("Conditional distributions P(y | x = c)")
+ax2.legend(fontsize=8)
+ax2.grid(True, alpha=0.25)
+plt.tight_layout()
+save("joint-marginal-conditional_slicing.svg")

@@ -28,6 +28,20 @@ mu = argmin_c  E[(X - c)^2]
 
 幾何学的には、平均は「データ点群の重心」と等しい。各点が等しい質量を持つと考えたときの物理的な重心が平均、というイメージで、これが「外れ値が遠くにあると重心が引きずられる」直感を支えている。
 
+平均と中央値の使い分けは、外れ値の有無と「何を最小化したいか」の 2 軸で整理できる。
+
+```mermaid
+graph TD
+    A["代表値が欲しい"] --> B{"外れ値や強い歪みが<br/>ある?"}
+    B -->|No| C["平均 (mean)<br/>L2 最適・解析しやすい"]
+    B -->|Yes| D{"何を最小化したい?"}
+    D -->|"二乗誤差 (L2)"| C
+    D -->|"絶対誤差 (L1)"| E["中央値 (median)<br/>外れ値にロバスト"]
+    D -->|"分布の形を残す"| F["四分位点/分位点"]
+```
+
+---
+
 ### 前提・注意
 
 - データは数値であることが前提
@@ -78,6 +92,47 @@ plt.show()
 出力:
 
 ![mean_hist](./mean_hist.svg)
+
+### 外れ値 1 つで平均は動く
+
+平均の「弱点」として頻繁に指摘されるのが、外れ値への感度の高さである。50 個の値（平均 50 周辺）に「500」という値を 1 つだけ追加すると、平均は 9 ほどジャンプするのに対し、中央値はほぼ動かない。
+
+```python
+base = rng.normal(50, 5, 50)
+contaminated = np.concatenate([base, [500]])
+
+print(f"clean:        mean = {base.mean():.2f}, median = {np.median(base):.2f}")
+print(f"with outlier: mean = {contaminated.mean():.2f}, median = {np.median(contaminated):.2f}")
+plt.savefig("mean_outlier_drift.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+clean:        mean = 50.31, median = 50.10
+with outlier: mean = 59.13, median = 50.10
+```
+
+![外れ値 1 つで平均が動き、中央値は動かない](./mean_outlier_drift.svg)
+
+これは「平均は値の重心、中央値は順位の中心」という違いから直接来る性質で、データに極端な値が混ざる可能性がある場面（収入・取引額・反応時間など）では平均をそのまま代表値として読むと判断を誤る、と考えられる。
+
+### L2 と L1 の最小化点としての平均・中央値
+
+冒頭で示した `mu = argmin_c E[(X - c)^2]` の関係を、実際に損失関数のグラフで確認する。
+
+```python
+data = rng.normal(5.0, 1.5, 50)
+cs = np.linspace(0, 10, 400)
+mse = np.array([np.mean((data - c) ** 2) for c in cs])
+mae = np.array([np.mean(np.abs(data - c)) for c in cs])
+# 詳細は scripts 側を参照
+plt.savefig("mean_l2_vs_median_l1.svg", bbox_inches="tight")
+```
+
+![L2 損失の最小点が平均、L1 損失の最小点が中央値](./mean_l2_vs_median_l1.svg)
+
+左の青い曲線は二乗誤差 `MSE(c) = mean((x - c)^2)` を `c` の関数として描いたもので、極小点が標本平均と一致する。右の絶対誤差 `MAE(c) = mean(|x - c|)` は極小点が標本中央値と一致する。回帰問題で MSE 損失を使うと平均的な振る舞いを学習し、MAE 損失を使うと中央値的な振る舞いを学習する、というのはこの関係から直接導かれる。
 
 ---
 

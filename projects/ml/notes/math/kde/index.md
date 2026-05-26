@@ -115,6 +115,68 @@ plt.show()
 
 ![kde_example](./kde_example.svg)
 
+### 1 点ずつのカーネルの足し合わせとして見る
+
+KDE の式 `f(x) = (1/(n h)) Σ K((x - x_i) / h)` がそのまま何をやっているかを、サンプル 15 点で可視化する。
+
+```python
+sample = rng.normal(0, 1, 15)
+xs = np.linspace(-4, 4, 400)
+h = 0.5
+total = np.zeros_like(xs)
+for xi in sample:
+    k = np.exp(-0.5 * ((xs - xi) / h) ** 2) / (h * np.sqrt(2 * np.pi))
+    total += k / len(sample)
+    plt.plot(xs, k / len(sample), alpha=0.5)
+plt.plot(xs, total, color="#e15759", lw=2.5)
+plt.savefig("kde_per_point_intuition.svg", bbox_inches="tight")
+```
+
+![1 点ごとのガウスカーネルとその総和としての KDE 曲線](./kde_per_point_intuition.svg)
+
+青い細い曲線がそれぞれ 1 つのデータ点に対応するガウスカーネルで、`n` で割って正規化済みである。その全部を足し上げた赤い曲線が KDE となる。点が密集している領域では青いカーネルが重なって厚くなり、結果として赤い曲線が高くなる、というのが KDE の動作原理である。
+
+### バンド幅で見え方が変わる
+
+`h` の選び方による見え方の違いを、2 峰性データで確認する。
+
+```python
+data = np.concatenate([rng.normal(-2.0, 0.8, 200), rng.normal(2.0, 0.8, 200)])
+for h in [0.1, 0.5, 2.0]:
+    kde = stats.gaussian_kde(data, bw_method=h / data.std())
+    # 描画は scripts 側を参照
+plt.savefig("kde_bandwidth.svg", bbox_inches="tight")
+```
+
+![h が小さすぎるとノイズだらけ、大きすぎると 2 峰が消える](./kde_bandwidth.svg)
+
+3 つのパネルを左から見ていく。
+
+- `h=0.1`: 個々の点の小山が見えるレベルで、ピークが偽物にしか見えない（under-smoothing, 過小平滑）
+- `h=0.5`: 2 つの山がはっきり分かれて見える。データの本来の構造が見えている
+- `h=2.0`: 山が 1 つに潰れて、もはや 2 峰性が分からない（over-smoothing, 過剰平滑）
+
+KDE は分布形を「見せる」ための道具なので、`h` の選び方そのものが結論を左右する。Silverman の規則のような自動選択でも、複数の `h` で目視確認するのが安全と考えられる。
+
+### クラスごとの KDE で「特徴量がクラスを分けているか」を見る
+
+EDA で頻出の使い方として、クラスごとに KDE を重ね描きすると「この特徴量がクラスをどれくらい分けているか」が一目で分かる。
+
+```python
+class0 = rng.normal(35, 8, 420)  # non-churn customers
+class1 = rng.normal(48, 10, 180)  # churn customers
+kde0 = stats.gaussian_kde(class0)
+kde1 = stats.gaussian_kde(class1)
+# 描画は scripts 側を参照
+plt.savefig("kde_class_conditional.svg", bbox_inches="tight")
+```
+
+![クラスごとの age 分布を KDE で重ね描き](./kde_class_conditional.svg)
+
+非解約（青）と解約（赤）顧客の年齢分布を KDE で見たもので、解約者の方が高齢側に分布が寄っている様子が一目で分かる。重なりの大きさが「この特徴量だけではクラスを完全に分けられない」程度を示し、後段で `age + 他の特徴量` を組み合わせる必要性の判断材料になる。
+
+ナイーブベイズ分類器・ガウス判別分析の確率モデルも、各クラスの特徴量分布を確率密度として扱う点で KDE と発想が同じである。
+
 ---
 
 ### 数学での使いどころ
