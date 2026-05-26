@@ -7,7 +7,7 @@ tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 14
 ---
 
-特徴量スケーリングは、複数の特徴量のスケール（値の取り得る範囲・分散）を揃える前処理である。代表は標準化（standardization, Z-score）と正規化（normalization, Min-Max）の 2 つで、scikit-learn ではそれぞれ `StandardScaler` と `MinMaxScaler` が対応する。
+特徴量スケーリングは、複数の特徴量のスケール（値の取り得る範囲・分散）を揃える前処理である。代表は標準化（standardization, Z-score）と正規化（normalization, Min-Max）の 2 つで、scikit-learn ではそれぞれ `StandardScaler` と `MinMaxScaler` が対応する。前処理の順序として、まず [欠損値処理](../missing-values/) で `NaN` を埋めた後にスケーリングを当てる、というのが定石となる。
 
 スケールを揃える理由は、特定のモデルでは特徴量のスケール差がそのまま学習結果を歪めるからである。例えば金額（数十万円）と年齢（〜100）を素のまま [kNN](../knn/) に入れると、金額の差が距離計算を支配して年齢が無視される、といったことが起きる。スケーリングが必要かどうかはモデル種別で決まり、判断基準を持っていれば「とりあえず標準化」のような迷いから解放されると考えられる。
 

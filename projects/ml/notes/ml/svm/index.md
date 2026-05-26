@@ -164,7 +164,7 @@ plt.savefig("svm_rbf_gamma.png", bbox_inches="tight")
 ### 適さないケース / 落とし穴
 
 - 大規模データ（n > 10 万）: 訓練時間が爆発する。線形 SVM か別のアルゴリズム（[勾配ブースティング](../gradient-boosting/)、ニューラルネット）を使う
-- 確率出力が必要: SVM の決定関数は確率ではない。`probability=True` で Platt scaling を当てられるが、追加コストが大きい。確率が要るなら [ロジスティック回帰](../logistic-regression/) の方が素直
+- 確率出力が必要: SVM の決定関数は確率ではない。`probability=True` で Platt scaling を当てられるが、追加コストが大きい。確率が要るなら [ロジスティック回帰](../logistic-regression/) の方が素直（校正の詳細は [確率の校正](../probability-calibration/) 参照）
 - 特徴量のスケールが不揃い: RBF カーネルが歪む。[標準化](../standardization/) を必ず先に挟む
 - ハイパーパラメータの探索コスト: `C` と `γ` の 2 次元グリッドが必要で、データが大きいと現実的でない
 - カテゴリ変数を整数のまま: 順序を仮定してしまう。[ダミー化](../categorical-encoding/) を経由

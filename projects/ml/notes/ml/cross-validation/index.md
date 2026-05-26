@@ -26,7 +26,7 @@ weight: 9
 - 各回でモデルを再学習するので、計算コストは単純評価の `k` 倍
 - データの並びに偏りがある場合は事前に `shuffle=True` でシャッフルする
 - 分類で各クラスの比率を保ちたいときは StratifiedKFold を使う
-- 時系列データには使えない（未来情報のリーク）。代わりに TimeSeriesSplit を使う
+- 時系列データには使えない（未来情報のリーク）。代わりに TimeSeriesSplit を使う（[時系列予測](../time-series-forecasting/) のノートで walk-forward CV の詳細を解説）
 
 ---
 

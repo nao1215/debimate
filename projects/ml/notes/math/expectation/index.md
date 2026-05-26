@@ -77,7 +77,7 @@ plt.savefig("law_of_large_numbers.svg", bbox_inches="tight")
 
 `E[X] = ∫_{-∞}^{∞} x f(x) dx`
 
-対称な分布（正規分布など）では `E[X]` は中央値・最頻値と一致するが、非対称な分布では大きくずれる。
+対称な分布（正規分布など）では `E[X]` は中央値・最頻値と一致するが、非対称な分布では大きくずれる。代表的な分布の `E[X]` 公式は [代表的な確率分布](../probability-distributions/) のノートにまとめてある。
 
 ```python
 from scipy import stats

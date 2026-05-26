@@ -15,12 +15,12 @@ weight: 15
 
 ```mermaid
 graph LR
-    A[カテゴリ変数] --> B{順序あり?}
-    B -- Yes --> C[Ordinal encoding]
-    B -- No --> D{基数 cardinality}
-    D -- "〜20" --> E[One-hot encoding]
-    D -- "20〜10k" --> F[Target encoding<br/>or One-hot]
-    D -- "10k〜" --> G[Hashing / Embedding<br/>または集約特徴量]
+    A["カテゴリ変数"] --> B{"順序あり?"}
+    B -- Yes --> C["Ordinal encoding"]
+    B -- No --> D{"基数 cardinality"}
+    D -- "〜20" --> E["One-hot encoding"]
+    D -- "20〜10k" --> F["Target encoding<br/>or One-hot"]
+    D -- "10k〜" --> G["Hashing / Embedding<br/>または集約特徴量"]
 ```
 
 順序があれば Ordinal、なければ基数で分岐するというのが大筋。基数が極端に多いとき（ユーザー ID、商品 ID、URL など）はそもそも「カテゴリ」として扱うのではなく集約特徴量への変換を検討すべきで、これは後述する。

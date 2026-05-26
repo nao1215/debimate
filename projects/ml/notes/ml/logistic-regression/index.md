@@ -15,7 +15,7 @@ LogisticRegression（ロジスティック回帰）は、[線形回帰](../linea
 
 他モデルとの位置づけを整理しておくと次のようになる。
 
-- [kNN](../knn/) より高速で確率出力を持つが、非線形には弱い
+- [kNN](../knn/) より高速で確率出力を持つが、非線形には弱い（確率出力の信頼性については [確率の校正](../probability-calibration/) 参照）
 - [RandomForest](../random-forest/) / [勾配ブースティング](../gradient-boosting/) より精度は劣ることが多いが、係数の解釈性が高く軽量
 - ニューラルネットワークの最終層（二値なら sigmoid、多クラスなら softmax）は、本質的に LogisticRegression と同じ
 
