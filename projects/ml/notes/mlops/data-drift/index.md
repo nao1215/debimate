@@ -4,7 +4,7 @@ date: 2026-05-25
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "mlops", "monitoring"]
-weight: 1
+weight: 4
 ---
 
 データドリフト（data drift）は、本番運用しているモデルが時間の経過とともに精度を落としていく現象の総称である。学習時には観測できなかった「入力データや入力と出力の関係の変化」が本番で起きるため、コードもモデルも変えていないのに性能が劣化する。

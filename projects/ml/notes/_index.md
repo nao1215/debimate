@@ -75,7 +75,12 @@ ShowBreadCrumbs: true
 
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
-| 1 | [データドリフト（data drift / concept drift）](mlops/data-drift/) | 監視 |
+| 1 | [実験管理（experiment tracking）](mlops/experiment-tracking/) | 開発 |
+| 2 | [モデルレジストリとバージョニング](mlops/model-registry/) | 開発 |
+| 3 | [推論サービング（バッチ / オンライン）](mlops/inference-serving/) | 配信 |
+| 4 | [データドリフト（data drift / concept drift）](mlops/data-drift/) | 監視 |
+| 5 | [モデル性能劣化の監視](mlops/model-performance-monitoring/) | 監視 |
+| 6 | [再学習パイプライン](mlops/retraining-pipeline/) | 運用 |
 
 #### 理解度チェック
 
