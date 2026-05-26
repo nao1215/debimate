@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 21
+weight: 23
 ---
 
 RandomForest は、複数の[決定木](../decision-tree/)を組み合わせて予測する[アンサンブル学習](../ensemble-learning/) の代表的手法（Bagging）。  

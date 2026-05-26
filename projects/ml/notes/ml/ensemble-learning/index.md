@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 23
+weight: 25
 ---
 
 アンサンブル学習（ensemble learning）は、複数の弱いモデル（weak learner）を組み合わせて 1 つの強いモデルを作る一般的な枠組みである。アプローチは大きく 3 系統に分かれる。

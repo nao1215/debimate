@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "preprocessing"]
-weight: 13
+weight: 14
 ---
 
 特徴量スケーリングは、複数の特徴量のスケール（値の取り得る範囲・分散）を揃える前処理である。代表は標準化（standardization, Z-score）と正規化（normalization, Min-Max）の 2 つで、scikit-learn ではそれぞれ `StandardScaler` と `MinMaxScaler` が対応する。

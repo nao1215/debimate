@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
-weight: 24
+weight: 27
 ---
 
 k-means（k平均法）は、データを「k個のクラスタ」に分け、各クラスタの中心（重心）に最も近い点同士を集める教師なし学習の手法である。  

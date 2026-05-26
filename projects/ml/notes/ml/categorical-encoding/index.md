@@ -4,7 +4,7 @@ date: 2026-05-25
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "preprocessing"]
-weight: 14
+weight: 15
 ---
 
 カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称である。機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / ニューラルネット / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とするため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せない。

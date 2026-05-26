@@ -4,7 +4,7 @@ date: 2026-05-26
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised", "deep-learning"]
-weight: 27
+weight: 34
 ---
 
 パーセプトロン（perceptron）は 1958 年に Frank Rosenblatt が提案した、神経細胞の動作を模した最も基本的な分類器である。入力特徴量に重みを掛けて足し合わせ、その和がある閾値を超えるかどうかでクラスを判定するだけの単純な構造を持つ。

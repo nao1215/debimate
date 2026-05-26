@@ -4,7 +4,7 @@ date: 2026-05-24
 draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
-weight: 18
+weight: 20
 ---
 
 kNN（k近傍法、k-Nearest Neighbors）は、新しい点を予測するとき、訓練データの中で「その点に最も近い k 個のサンプル」を見て、多数決（分類）または平均（回帰）で答えを決める手法である。  

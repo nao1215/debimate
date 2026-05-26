@@ -51,32 +51,39 @@ ShowBreadCrumbs: true
 | 1 | [混同行列・偽陽性/偽陰性・閾値調整](ml/confusion-matrix/) | 評価指標 |
 | 2 | [ROC-AUC / PR-AUC](ml/roc-pr-auc/) | 評価指標 |
 | 3 | [回帰の評価指標（RMSE / MAE / R²）](ml/regression-metrics/) | 評価指標 |
-| 4 | [損失関数（MSE / 交差エントロピー）](ml/loss-functions/) | 学習概念 |
-| 5 | [過学習（overfitting）](ml/overfitting/) | 学習概念 |
-| 6 | [バイアス-バリアンス分解（bias-variance tradeoff）](ml/bias-variance-tradeoff/) | 学習概念 |
-| 7 | [正則化（regularization）](ml/regularization/) | 学習概念 |
-| 8 | [交差検証（cross validation）](ml/cross-validation/) | 学習概念 |
-| 9 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) | 学習概念 |
-| 10 | [データリーク（data leakage）](ml/data-leakage/) | 学習概念 |
-| 11 | [クラス不均衡への対処（class imbalance）](ml/class-imbalance/) | 学習概念 |
-| 12 | [次元の呪い（curse of dimensionality）](ml/curse-of-dimensionality/) | 学習概念 |
-| 13 | [標準化と特徴量スケーリング（standardization）](ml/standardization/) | 前処理 |
-| 14 | [カテゴリ変数のエンコーディング（categorical encoding）](ml/categorical-encoding/) | 前処理 |
-| 15 | [特徴量選択（feature selection）](ml/feature-selection/) | 前処理 |
-| 16 | [線形回帰（linear regression）](ml/linear-regression/) | 教師あり |
-| 17 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) | 教師あり |
-| 18 | [kNN - k近傍法](ml/knn/) | 教師あり |
-| 19 | [決定木（decision tree）](ml/decision-tree/) | 教師あり |
-| 20 | [サポートベクターマシン（SVM）](ml/svm/) | 教師あり |
-| 21 | [RandomForest - ランダムフォレスト](ml/random-forest/) | 教師あり |
-| 22 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) | 教師あり |
-| 23 | [アンサンブル学習（bagging / boosting / stacking）](ml/ensemble-learning/) | 学習概念 |
-| 24 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
-| 25 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
-| 26 | [特徴量重要度（permutation importance）](ml/feature-importance/) | 解釈性 |
-| 27 | [パーセプトロン（perceptron）](ml/perceptron/) | 深層学習 |
-| 28 | [活性化関数（sigmoid / ReLU / GELU）](ml/activation-functions/) | 深層学習 |
-| 29 | [誤差逆伝播法（backpropagation）](ml/backpropagation/) | 深層学習 |
+| 4 | [確率の校正（Platt scaling / Isotonic）](ml/probability-calibration/) | 評価指標 |
+| 5 | [損失関数（MSE / 交差エントロピー）](ml/loss-functions/) | 学習概念 |
+| 6 | [過学習（overfitting）](ml/overfitting/) | 学習概念 |
+| 7 | [バイアス-バリアンス分解（bias-variance tradeoff）](ml/bias-variance-tradeoff/) | 学習概念 |
+| 8 | [正則化（regularization）](ml/regularization/) | 学習概念 |
+| 9 | [交差検証（cross validation）](ml/cross-validation/) | 学習概念 |
+| 10 | [ハイパーパラメータ（hyperparameter）](ml/hyperparameter/) | 学習概念 |
+| 11 | [データリーク（data leakage）](ml/data-leakage/) | 学習概念 |
+| 12 | [クラス不均衡への対処（class imbalance）](ml/class-imbalance/) | 学習概念 |
+| 13 | [次元の呪い（curse of dimensionality）](ml/curse-of-dimensionality/) | 学習概念 |
+| 14 | [標準化と特徴量スケーリング（standardization）](ml/standardization/) | 前処理 |
+| 15 | [カテゴリ変数のエンコーディング（categorical encoding）](ml/categorical-encoding/) | 前処理 |
+| 16 | [欠損値処理（MCAR / MAR / MNAR）](ml/missing-values/) | 前処理 |
+| 17 | [特徴量選択（feature selection）](ml/feature-selection/) | 前処理 |
+| 18 | [線形回帰（linear regression）](ml/linear-regression/) | 教師あり |
+| 19 | [LogisticRegression - ロジスティック回帰](ml/logistic-regression/) | 教師あり |
+| 20 | [kNN - k近傍法](ml/knn/) | 教師あり |
+| 21 | [決定木（decision tree）](ml/decision-tree/) | 教師あり |
+| 22 | [サポートベクターマシン（SVM）](ml/svm/) | 教師あり |
+| 23 | [RandomForest - ランダムフォレスト](ml/random-forest/) | 教師あり |
+| 24 | [GradientBoosting - 勾配ブースティング](ml/gradient-boosting/) | 教師あり |
+| 25 | [アンサンブル学習（bagging / boosting / stacking）](ml/ensemble-learning/) | 学習概念 |
+| 26 | [時系列予測（time series forecasting）](ml/time-series-forecasting/) | 時系列 |
+| 27 | [k-means - K-means／k平均法](ml/k-means/) | 教師なし |
+| 28 | [PCA - Principal Component Analysis](ml/pca/) | 教師なし |
+| 29 | [DBSCAN（density-based clustering）](ml/dbscan/) | 教師なし |
+| 30 | [階層的クラスタリング（hierarchical clustering）](ml/hierarchical-clustering/) | 教師なし |
+| 31 | [t-SNE と UMAP（非線形次元削減）](ml/tsne-umap/) | 教師なし |
+| 32 | [異常検知（Isolation Forest / LOF / One-Class SVM）](ml/anomaly-detection/) | 教師なし |
+| 33 | [特徴量重要度（permutation importance）](ml/feature-importance/) | 解釈性 |
+| 34 | [パーセプトロン（perceptron）](ml/perceptron/) | 深層学習 |
+| 35 | [活性化関数（sigmoid / ReLU / GELU）](ml/activation-functions/) | 深層学習 |
+| 36 | [誤差逆伝播法（backpropagation）](ml/backpropagation/) | 深層学習 |
 
 #### MLOps
 
