@@ -61,6 +61,15 @@ ShowBreadCrumbs: true
 | 15 | [次元の呪い（curse of dimensionality）](ml/curse-of-dimensionality/) | 学習概念 |
 | 16 | [カテゴリ変数のエンコーディング（categorical encoding）](ml/categorical-encoding/) | 前処理 |
 | 17 | [バイアス-バリアンス分解（bias-variance tradeoff）](ml/bias-variance-tradeoff/) | 学習概念 |
+| 18 | [損失関数（MSE / 交差エントロピー）](ml/loss-functions/) | 学習概念 |
+| 19 | [線形回帰（linear regression）](ml/linear-regression/) | 教師あり |
+| 20 | [回帰の評価指標（RMSE / MAE / R²）](ml/regression-metrics/) | 評価指標 |
+| 21 | [決定木（decision tree）](ml/decision-tree/) | 教師あり |
+| 22 | [サポートベクターマシン（SVM）](ml/svm/) | 教師あり |
+| 23 | [アンサンブル学習（bagging / boosting / stacking）](ml/ensemble-learning/) | 学習概念 |
+| 24 | [クラス不均衡への対処（class imbalance）](ml/class-imbalance/) | 学習概念 |
+| 25 | [特徴量重要度（permutation importance）](ml/feature-importance/) | 解釈性 |
+| 26 | [特徴量選択（feature selection）](ml/feature-selection/) | 前処理 |
 
 #### MLOps
 

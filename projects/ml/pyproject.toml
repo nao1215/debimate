@@ -13,6 +13,7 @@ dependencies = [
   "jupyter",
   "ipykernel",
   "kaggle>=1.8.3",
+  "imbalanced-learn>=0.14.1",
 ]
 
 [dependency-groups]
