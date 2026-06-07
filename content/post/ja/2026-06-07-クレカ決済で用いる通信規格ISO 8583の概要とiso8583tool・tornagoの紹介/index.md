@@ -323,7 +323,7 @@ iso8583tool が提供する機能は、以下のとおりです。
 | `doctor` | どの spec preset が合うかを推定 |
 | `sample` | BASE I サンプルを出力 |
 
-以下の GIF は `view` の動作例です。
+以下は、`view` の動作例です。
 
 ![iso8583tool view](images/iso8583tool-view.jpg#center)
 
