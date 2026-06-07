@@ -18,8 +18,8 @@ help:  ## コマンド一覧を表示
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-serve: ## ローカル開発サーバ起動 (Draft含む)
-	$(HUGO) server -D --disableFastRender --port $(SERVER_PORT)
+serve: ## ローカル開発サーバ起動 (Draft/Future含む)
+	$(HUGO) server -D -F --disableFastRender --port $(SERVER_PORT)
 
 build: ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
@@ -44,4 +44,3 @@ deploy: build ## デプロイ実行（GitHub Actionsを利用）
 logs: ## デプロイジョブの最新ログを表示
 	@gh run list --limit 1
 	@gh run watch
-
