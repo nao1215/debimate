@@ -2,7 +2,7 @@
 title: "履歴書・職務経歴書・CVをyamlから生成するnao1215/careerを作った話"
 type: post
 date: 2026-06-14
-draft: true
+draft: false
 categories:
   - "linux"
 cover:
