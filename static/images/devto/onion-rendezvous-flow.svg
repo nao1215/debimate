@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="860" viewBox="0 0 1200 860" role="img" aria-labelledby="title desc">
   <title id="title">Tor onion rendezvous flow</title>
-  <desc id="desc">A client and an onion service build separate Tor circuits and meet at a rendezvous point, keeping traffic inside the Tor network.</desc>
-  <rect x="0" y="0" width="1200" height="640" fill="#f8fafc"/>
+  <desc id="desc">A client and an onion service build separate Tor circuits and meet at a rendezvous point. Encrypted requests and responses stay inside the Tor network.</desc>
+  <rect x="0" y="0" width="1200" height="860" fill="#f8fafc"/>
 
   <rect x="60" y="32" width="190" height="52" rx="12" ry="12" fill="#ffffff" stroke="#334155" stroke-width="2"/>
   <rect x="345" y="32" width="220" height="52" rx="12" ry="12" fill="#ffffff" stroke="#334155" stroke-width="2"/>
@@ -13,36 +13,64 @@
   <text x="740" y="65" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#0f172a">Rendezvous point</text>
   <text x="1035" y="65" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#0f172a">Onion service</text>
 
-  <line x1="155" y1="84" x2="155" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
-  <line x1="455" y1="84" x2="455" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
-  <line x1="740" y1="84" x2="740" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
-  <line x1="1035" y1="84" x2="1035" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="155" y1="84" x2="155" y2="790" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="455" y1="84" x2="455" y2="790" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="740" y1="84" x2="740" y2="790" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="1035" y1="84" x2="1035" y2="790" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
 
-  <rect x="690" y="105" width="330" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="855" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">The service publishes itself inside Tor</text>
+  <rect x="300" y="105" width="600" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="600" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">1. The onion service is published inside Tor</text>
 
   <line x1="1035" y1="185" x2="468" y2="185" stroke="#334155" stroke-width="2.5"/>
   <polygon points="468,185 480,179 480,191" fill="#334155"/>
-  <text x="790" y="173" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Publish introduction point</text>
+  <rect x="720" y="150" width="255" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="848" y="171" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Publish introduction point</text>
 
-  <rect x="110" y="225" width="320" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="270" y="258" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">The client prepares a Tor circuit</text>
+  <rect x="300" y="225" width="600" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="600" y="258" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">2. The client prepares the connection</text>
 
   <line x1="155" y1="310" x2="727" y2="310" stroke="#334155" stroke-width="2.5"/>
   <polygon points="727,310 715,304 715,316" fill="#334155"/>
-  <text x="310" y="298" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Build client-side circuit</text>
+  <rect x="255" y="276" width="250" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="380" y="297" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Build client-side circuit</text>
 
   <line x1="155" y1="380" x2="442" y2="380" stroke="#334155" stroke-width="2.5"/>
   <polygon points="442,380 430,374 430,386" fill="#334155"/>
-  <text x="212" y="368" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Ask the service to meet at the rendezvous point</text>
+  <rect x="160" y="332" width="390" height="54" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="355" y="355" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Send rendezvous point info</text>
+  <text x="355" y="375" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">and request connection to the service</text>
 
-  <rect x="760" y="415" width="300" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="910" y="448" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">The service builds its own circuit</text>
+  <rect x="300" y="430" width="600" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="600" y="463" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">3. The onion service builds its own circuit</text>
 
-  <line x1="1035" y1="500" x2="753" y2="500" stroke="#334155" stroke-width="2.5"/>
-  <polygon points="753,500 765,494 765,506" fill="#334155"/>
-  <text x="860" y="488" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Build service-side circuit</text>
+  <line x1="1035" y1="515" x2="753" y2="515" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="753,515 765,509 765,521" fill="#334155"/>
+  <rect x="810" y="481" width="245" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="932" y="502" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Build service-side circuit</text>
 
-  <rect x="335" y="548" width="520" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="595" y="581" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">Traffic stays inside the Tor network</text>
+  <rect x="300" y="555" width="600" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="600" y="588" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">4. The client and service meet inside the Tor network</text>
+
+  <line x1="155" y1="640" x2="727" y2="640" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="727,640 715,634 715,646" fill="#334155"/>
+  <rect x="240" y="608" width="175" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="328" y="629" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Encrypted request</text>
+
+  <line x1="740" y1="690" x2="1022" y2="690" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="1022,690 1010,684 1010,696" fill="#334155"/>
+  <rect x="770" y="658" width="175" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="858" y="679" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Encrypted request</text>
+
+  <line x1="1035" y1="740" x2="753" y2="740" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="753,740 765,734 765,746" fill="#334155"/>
+  <rect x="775" y="708" width="190" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="870" y="729" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Encrypted response</text>
+
+  <line x1="740" y1="790" x2="168" y2="790" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="168,790 180,784 180,796" fill="#334155"/>
+  <rect x="240" y="758" width="190" height="32" rx="8" ry="8" fill="#ffffff" opacity="0.96"/>
+  <text x="335" y="779" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Encrypted response</text>
+
+  <rect x="250" y="815" width="700" height="30" rx="10" ry="10" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="600" y="836" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="500" fill="#1e3a8a">No exit relay is used. The communication stays inside the Tor network.</text>
 </svg>
