@@ -1,42 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 280" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="280" viewBox="0 0 1200 280" role="img" aria-labelledby="title desc">
   <title id="title">Card payment message flow</title>
-  <desc id="desc">Request flows from cardholder to issuer through merchant, acquirer, and brand. Response flows back the same way.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
-    </marker>
-    <style>
-      .bg { fill: #f8fafc; }
-      .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 14; ry: 14; }
-      .line { stroke: #334155; stroke-width: 3; fill: none; marker-end: url(#arrow); }
-      .label { font: 600 22px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #0f172a; text-anchor: middle; }
-      .small { font: 500 18px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #475569; text-anchor: middle; }
-    </style>
-  </defs>
-  <rect class="bg" x="0" y="0" width="1200" height="280"/>
+  <desc id="desc">Request flows from cardholder to issuer through merchant, acquirer, and brand. The response flows back the same way.</desc>
+  <rect x="0" y="0" width="1200" height="280" fill="#f8fafc"/>
 
-  <text class="small" x="600" y="48">Authorization request</text>
-  <text class="small" x="600" y="232">Approval or decline</text>
+  <text x="600" y="42" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="#475569">Authorization request</text>
+  <text x="600" y="236" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="#475569">Approval or decline over the same path</text>
 
-  <rect class="box" x="35" y="78" width="180" height="64"/>
-  <rect class="box" x="265" y="78" width="180" height="64"/>
-  <rect class="box" x="495" y="78" width="180" height="64"/>
-  <rect class="box" x="725" y="78" width="180" height="64"/>
-  <rect class="box" x="955" y="78" width="180" height="64"/>
+  <rect x="35" y="78" width="180" height="64" rx="14" ry="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="265" y="78" width="180" height="64" rx="14" ry="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="495" y="78" width="180" height="64" rx="14" ry="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="725" y="78" width="180" height="64" rx="14" ry="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="955" y="78" width="180" height="64" rx="14" ry="14" fill="#ffffff" stroke="#334155" stroke-width="2"/>
 
-  <text class="label" x="125" y="118">Cardholder</text>
-  <text class="label" x="355" y="118">Merchant</text>
-  <text class="label" x="585" y="118">Acquirer</text>
-  <text class="label" x="815" y="118">Brand</text>
-  <text class="label" x="1045" y="118">Issuer</text>
+  <text x="125" y="118" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#0f172a">Cardholder</text>
+  <text x="355" y="118" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#0f172a">Merchant</text>
+  <text x="585" y="118" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#0f172a">Acquirer</text>
+  <text x="815" y="118" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#0f172a">Brand</text>
+  <text x="1045" y="118" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600" fill="#0f172a">Issuer</text>
 
-  <path class="line" d="M 215 110 L 265 110"/>
-  <path class="line" d="M 445 110 L 495 110"/>
-  <path class="line" d="M 675 110 L 725 110"/>
-  <path class="line" d="M 905 110 L 955 110"/>
+  <line x1="228" y1="110" x2="252" y2="110" stroke="#334155" stroke-width="3"/>
+  <polygon points="218,110 232,103 232,117" fill="#334155"/>
+  <polygon points="262,110 248,103 248,117" fill="#334155"/>
 
-  <path class="line" d="M 955 182 L 905 182"/>
-  <path class="line" d="M 725 182 L 675 182"/>
-  <path class="line" d="M 495 182 L 445 182"/>
-  <path class="line" d="M 265 182 L 215 182"/>
+  <line x1="458" y1="110" x2="482" y2="110" stroke="#334155" stroke-width="3"/>
+  <polygon points="448,110 462,103 462,117" fill="#334155"/>
+  <polygon points="492,110 478,103 478,117" fill="#334155"/>
+
+  <line x1="688" y1="110" x2="712" y2="110" stroke="#334155" stroke-width="3"/>
+  <polygon points="678,110 692,103 692,117" fill="#334155"/>
+  <polygon points="722,110 708,103 708,117" fill="#334155"/>
+
+  <line x1="918" y1="110" x2="942" y2="110" stroke="#334155" stroke-width="3"/>
+  <polygon points="908,110 922,103 922,117" fill="#334155"/>
+  <polygon points="952,110 938,103 938,117" fill="#334155"/>
 </svg>

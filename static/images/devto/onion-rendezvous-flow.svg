@@ -1,59 +1,48 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640" role="img" aria-labelledby="title desc">
   <title id="title">Tor onion rendezvous flow</title>
   <desc id="desc">A client and an onion service build separate Tor circuits and meet at a rendezvous point, keeping traffic inside the Tor network.</desc>
-  <defs>
-    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="strokeWidth">
-      <path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/>
-    </marker>
-    <style>
-      .bg { fill: #f8fafc; }
-      .box { fill: #ffffff; stroke: #334155; stroke-width: 2; rx: 12; ry: 12; }
-      .life { stroke: #cbd5e1; stroke-width: 2; stroke-dasharray: 8 8; }
-      .arrow { stroke: #334155; stroke-width: 2.5; fill: none; marker-end: url(#arrow); }
-      .label { font: 600 20px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #0f172a; text-anchor: middle; }
-      .small { font: 500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #0f172a; }
-      .note { fill: #f0fdf4; stroke: #16a34a; stroke-width: 1.5; rx: 12; ry: 12; }
-      .noteText { font: 500 16px -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; fill: #166534; text-anchor: middle; }
-    </style>
-  </defs>
-  <rect class="bg" x="0" y="0" width="1200" height="640"/>
+  <rect x="0" y="0" width="1200" height="640" fill="#f8fafc"/>
 
-  <rect class="box" x="60" y="32" width="190" height="52"/>
-  <rect class="box" x="345" y="32" width="220" height="52"/>
-  <rect class="box" x="635" y="32" width="210" height="52"/>
-  <rect class="box" x="930" y="32" width="210" height="52"/>
+  <rect x="60" y="32" width="190" height="52" rx="12" ry="12" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="345" y="32" width="220" height="52" rx="12" ry="12" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="635" y="32" width="210" height="52" rx="12" ry="12" fill="#ffffff" stroke="#334155" stroke-width="2"/>
+  <rect x="930" y="32" width="210" height="52" rx="12" ry="12" fill="#ffffff" stroke="#334155" stroke-width="2"/>
 
-  <text class="label" x="155" y="65">Your app</text>
-  <text class="label" x="455" y="65">Introduction point</text>
-  <text class="label" x="740" y="65">Rendezvous point</text>
-  <text class="label" x="1035" y="65">Onion service</text>
+  <text x="155" y="65" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#0f172a">Your app</text>
+  <text x="455" y="65" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#0f172a">Introduction point</text>
+  <text x="740" y="65" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#0f172a">Rendezvous point</text>
+  <text x="1035" y="65" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="600" fill="#0f172a">Onion service</text>
 
-  <line class="life" x1="155" y1="84" x2="155" y2="575"/>
-  <line class="life" x1="455" y1="84" x2="455" y2="575"/>
-  <line class="life" x1="740" y1="84" x2="740" y2="575"/>
-  <line class="life" x1="1035" y1="84" x2="1035" y2="575"/>
+  <line x1="155" y1="84" x2="155" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="455" y1="84" x2="455" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="740" y1="84" x2="740" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+  <line x1="1035" y1="84" x2="1035" y2="575" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
 
-  <rect class="note" x="690" y="105" width="330" height="52"/>
-  <text class="noteText" x="855" y="138">The service publishes itself inside Tor</text>
+  <rect x="690" y="105" width="330" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="855" y="138" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">The service publishes itself inside Tor</text>
 
-  <path class="arrow" d="M 1035 185 L 455 185"/>
-  <text class="small" x="785" y="175">Publish introduction point</text>
+  <line x1="1035" y1="185" x2="468" y2="185" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="468,185 480,179 480,191" fill="#334155"/>
+  <text x="790" y="173" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Publish introduction point</text>
 
-  <rect class="note" x="110" y="225" width="320" height="52"/>
-  <text class="noteText" x="270" y="258">The client prepares a Tor circuit</text>
+  <rect x="110" y="225" width="320" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="270" y="258" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">The client prepares a Tor circuit</text>
 
-  <path class="arrow" d="M 155 310 L 740 310"/>
-  <text class="small" x="325" y="300">Build client-side circuit</text>
+  <line x1="155" y1="310" x2="727" y2="310" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="727,310 715,304 715,316" fill="#334155"/>
+  <text x="310" y="298" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Build client-side circuit</text>
 
-  <path class="arrow" d="M 155 380 L 455 380"/>
-  <text class="small" x="215" y="370">Ask the service to meet at the rendezvous point</text>
+  <line x1="155" y1="380" x2="442" y2="380" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="442,380 430,374 430,386" fill="#334155"/>
+  <text x="212" y="368" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Ask the service to meet at the rendezvous point</text>
 
-  <rect class="note" x="760" y="415" width="300" height="52"/>
-  <text class="noteText" x="910" y="448">The service builds its own circuit</text>
+  <rect x="760" y="415" width="300" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="910" y="448" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">The service builds its own circuit</text>
 
-  <path class="arrow" d="M 1035 500 L 740 500"/>
-  <text class="small" x="860" y="490">Build service-side circuit</text>
+  <line x1="1035" y1="500" x2="753" y2="500" stroke="#334155" stroke-width="2.5"/>
+  <polygon points="753,500 765,494 765,506" fill="#334155"/>
+  <text x="860" y="488" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#0f172a">Build service-side circuit</text>
 
-  <rect class="note" x="335" y="548" width="520" height="52"/>
-  <text class="noteText" x="595" y="581">Traffic stays inside the Tor network</text>
+  <rect x="335" y="548" width="520" height="52" rx="12" ry="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="595" y="581" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="500" fill="#166534">Traffic stays inside the Tor network</text>
 </svg>
