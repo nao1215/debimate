@@ -2,7 +2,7 @@
 title: "CLI向けブラックボックス E2E テストランナー nao1215/atago を作った"
 type: post
 date: 2026-07-04
-draft: true
+draft: false
 categories:
   - "linux"
 cover:
