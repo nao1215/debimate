@@ -4,6 +4,11 @@
   weight = 1
 
 [[main]]
+  name = "Weekly"
+  url = "weekly/"
+  weight = 2
+
+[[main]]
   name = "Machine Learning"
   url = "ml/"
   weight = 3
