@@ -1,0 +1,56 @@
+{{- $giscus := site.Params.giscus -}}
+{{- if not $giscus.enabled -}}
+  {{- return -}}
+{{- end -}}
+{{- if or (not $giscus.repo) (not $giscus.repoId) (not $giscus.category) (not $giscus.categoryId) -}}
+  {{- return -}}
+{{- end -}}
+
+<section class="post-comments">
+  <h2 class="post-comments-title">Comments</h2>
+  <div id="giscus-container"></div>
+  <div id="giscus-fallback" class="post-comments-fallback" hidden>
+    <p>コメント欄を読み込めませんでした。GitHub Discussions から直接コメントしてください。</p>
+    <p><a href="{{ $giscus.discussionUrl | default `https://github.com/nao1215/debimate/discussions` }}" target="_blank" rel="noopener noreferrer">Discussion を開く</a></p>
+  </div>
+  <script>
+    (function () {
+      const container = document.getElementById('giscus-container');
+      const fallback = document.getElementById('giscus-fallback');
+      const showFallback = function () {
+        fallback.hidden = false;
+      };
+
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+      script.setAttribute('data-repo', '{{ $giscus.repo }}');
+      script.setAttribute('data-repo-id', '{{ $giscus.repoId }}');
+      script.setAttribute('data-category', '{{ $giscus.category }}');
+      script.setAttribute('data-category-id', '{{ $giscus.categoryId }}');
+      script.setAttribute('data-mapping', '{{ $giscus.mapping | default `pathname` }}');
+      script.setAttribute('data-strict', '{{ $giscus.strict | default `0` }}');
+      script.setAttribute('data-reactions-enabled', '{{ $giscus.reactionsEnabled | default `1` }}');
+      script.setAttribute('data-emit-metadata', '{{ $giscus.emitMetadata | default `0` }}');
+      script.setAttribute('data-input-position', '{{ $giscus.inputPosition | default `top` }}');
+      script.setAttribute('data-theme', 'preferred_color_scheme');
+      script.setAttribute('data-lang', '{{ $giscus.lang | default `ja` }}');
+      script.setAttribute('data-loading', '{{ $giscus.loading | default `lazy` }}');
+      script.addEventListener('error', showFallback);
+      container.appendChild(script);
+
+      window.setTimeout(function () {
+        if (!container.querySelector('iframe.giscus-frame')) {
+          showFallback();
+        }
+      }, 4000);
+    })();
+  </script>
+  <noscript>
+    <div class="post-comments-fallback">
+      <p>コメント欄を表示するには JavaScript を有効にしてください。</p>
+      <p><a href="{{ $giscus.discussionUrl | default `https://github.com/nao1215/debimate/discussions` }}" target="_blank" rel="noopener noreferrer">Discussion を開く</a></p>
+    </div>
+  </noscript>
+</section>

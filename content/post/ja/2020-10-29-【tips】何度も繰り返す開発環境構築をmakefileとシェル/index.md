@@ -1,17 +1,18 @@
 ---
-title: "【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする"
+title: 【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする
 type: post
 date: 2020-10-29
 categories:
-  - "linux"
+- インフラ
+- プログラミング
+- OSS
 tags:
-  - "makefile"
-  - "shell"
-  - "shellscript"
-  - "環境構築"
+- makefile
+- shellscript
+- 環境構築
 cover:
-  image: "images/Makefile-min.jpg"
-  alt: "【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする"
+  image: images/Makefile-min.jpg
+  alt: 【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする
   hidden: false
 ---
 

@@ -1,18 +1,16 @@
 ---
-title: "「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について"
+title: 「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について
 type: post
 date: 2021-12-12
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "linux"
-  - "oss"
-  - "体験談"
-  - "金銭"
+- oss
+- 金銭
 cover:
-  image: "images/dream.jpg"
-  alt: "「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について"
+  image: images/dream.jpg
+  alt: 「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について
   hidden: false
 ---
 

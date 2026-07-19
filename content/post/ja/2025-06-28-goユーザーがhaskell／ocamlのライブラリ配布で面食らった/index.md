@@ -1,17 +1,18 @@
 ---
-title: "GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話"
+title: GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話
 type: post
 date: 2025-06-28
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "haskell"
-  - "ocaml"
-  - "プログラミング"
+- golang
+- haskell
+- ocaml
+- プログラミング
 cover:
-  image: "images/HaskellOCaml.jpg"
-  alt: "GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話"
+  image: images/HaskellOCaml.jpg
+  alt: GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話
   hidden: false
 ---
 

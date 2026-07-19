@@ -1,12 +1,13 @@
 ---
-title: "【Golang】.onion（Torサイト）の匿名性チェックを行う nao1215/onionlint を作った話"
+title: 【Golang】.onion（Torサイト）の匿名性チェックを行う nao1215/onionlint を作った話
 type: post
 date: 2025-11-25
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/onionlint-logo-small.png"
-  alt: "onionlint-logo"
+  image: images/onionlint-logo-small.png
+  alt: onionlint-logo
   hidden: false
 ---
 

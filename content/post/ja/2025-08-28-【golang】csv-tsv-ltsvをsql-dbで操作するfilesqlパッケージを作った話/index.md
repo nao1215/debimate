@@ -1,15 +1,16 @@
 ---
-title: "【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話"
+title: 【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話
 type: post
 date: 2025-08-28
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "sql"
+- golang
+- sql
 cover:
-  image: "images/ChatGPT-Image-2025年8月28日-13_46_47.jpg"
-  alt: "【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話"
+  image: images/ChatGPT-Image-2025年8月28日-13_46_47.jpg
+  alt: 【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話
   hidden: false
 ---
 

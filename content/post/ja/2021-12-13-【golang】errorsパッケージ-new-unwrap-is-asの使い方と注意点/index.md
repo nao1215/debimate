@@ -1,15 +1,15 @@
 ---
-title: "【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点"
+title: 【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点
 type: post
 date: 2021-12-13
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "error"
-  - "golang"
+- error
+- golang
 cover:
-  image: "images/Screenshot-from-2021-12-13-18-53-07.jpg"
-  alt: "【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点"
+  image: images/Screenshot-from-2021-12-13-18-53-07.jpg
+  alt: 【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点
   hidden: false
 ---
 

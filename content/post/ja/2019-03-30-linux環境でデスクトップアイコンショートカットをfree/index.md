@@ -1,16 +1,15 @@
 ---
-title: "【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法"
+title: 【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法
 type: post
 date: 2019-03-30
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "環境構築"
+- debian
+- 環境構築
 cover:
-  image: "images/bash_launch.png"
-  alt: "【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法"
+  image: images/bash_launch.png
+  alt: 【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法
   hidden: false
 ---
 

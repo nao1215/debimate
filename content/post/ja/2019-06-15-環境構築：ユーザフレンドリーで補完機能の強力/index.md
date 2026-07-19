@@ -1,19 +1,19 @@
 ---
-title: "環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)"
+title: 環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)
 type: post
 date: 2019-06-15
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "dash"
-  - "debian"
-  - "fish"
-  - "linux"
-  - "shell"
-  - "環境構築"
+- dash
+- debian
+- fish
+- shellscript
+- 環境構築
 cover:
-  image: "images/fish.png"
-  alt: "環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)"
+  image: images/fish.png
+  alt: 環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)
   hidden: false
 ---
 

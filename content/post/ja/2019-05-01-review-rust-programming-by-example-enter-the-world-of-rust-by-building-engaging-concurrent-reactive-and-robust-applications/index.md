@@ -1,18 +1,17 @@
 ---
-title: "感想: Rust Programming By Example: Enter the world of Rust by building engaging, concurrent, reactive, and robust applications"
+title: '感想: Rust Programming By Example: Enter the world of Rust by building engaging,
+  concurrent, reactive, and robust applications'
 type: post
 date: 2019-05-01
 categories:
-  - "linux"
-  - "書籍"
+- 書評
+- プログラミング
 tags:
-  - "linux"
-  - "review"
-  - "rust"
-  - "書籍"
+- rust
 cover:
-  image: "images/Rust.jpg"
-  alt: "感想: Rust Programming By Example: Enter the world of Rust by building engaging, concurrent, reactive, and robust applications"
+  image: images/Rust.jpg
+  alt: '感想: Rust Programming By Example: Enter the world of Rust by building engaging,
+    concurrent, reactive, and robust applications'
   hidden: false
 ---
 

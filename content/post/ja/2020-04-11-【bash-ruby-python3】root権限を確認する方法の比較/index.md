@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】root権限を確認する方法の比較"
+title: 【Bash / Ruby / Python3】root権限を確認する方法の比較
 type: post
 date: 2020-04-11
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/password-397652_640-min-1.jpg"
-  alt: "【Bash / Ruby / Python3】root権限を確認する方法の比較"
+  image: images/password-397652_640-min-1.jpg
+  alt: 【Bash / Ruby / Python3】root権限を確認する方法の比較
   hidden: false
 ---
 

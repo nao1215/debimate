@@ -1,17 +1,17 @@
 ---
-title: "Bash(Shell Script)内メッセージの国際化方法"
+title: Bash(Shell Script)内メッセージの国際化方法
 type: post
 date: 2019-02-03
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "bash"
-  - "command"
-  - "debian"
-  - "linux"
+- bash
+- command
+- debian
 cover:
-  image: "images/poedit-1-e1549180617954.png"
-  alt: "Bash(Shell Script)内メッセージの国際化方法"
+  image: images/poedit-1-e1549180617954.png
+  alt: Bash(Shell Script)内メッセージの国際化方法
   hidden: false
 ---
 

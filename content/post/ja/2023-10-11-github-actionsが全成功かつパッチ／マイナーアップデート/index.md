@@ -1,16 +1,17 @@
 ---
-title: "GitHub Actionsが全成功かつパッチ／マイナーアップデートの場合は、Dependabotが作成したPRを自動マージする設定"
+title: GitHub Actionsが全成功かつパッチ／マイナーアップデートの場合は、Dependabotが作成したPRを自動マージする設定
 type: post
 date: 2023-10-11
 categories:
-  - "linux"
+- インフラ
+- OSS
 tags:
-  - "dependabot"
-  - "github"
-  - "環境構築"
+- dependabot
+- github
+- 環境構築
 cover:
-  image: "images/27347476.png"
-  alt: "GitHub Actionsが全成功かつパッチ／マイナーアップデートの場合は、Dependabotが作成したPRを自動マージする設定"
+  image: images/27347476.png
+  alt: GitHub Actionsが全成功かつパッチ／マイナーアップデートの場合は、Dependabotが作成したPRを自動マージする設定
   hidden: false
 ---
 

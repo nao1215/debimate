@@ -1,13 +1,14 @@
 ---
-title: "履歴書・職務経歴書・CVをyamlから生成するnao1215/careerを作った話"
+title: 履歴書・職務経歴書・CVをyamlから生成するnao1215/careerを作った話
 type: post
 date: 2026-06-14
 draft: false
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/japanese-resume-p-1-top-half.png"
-  alt: "japanese-resume-p-1-top-half"
+  image: images/japanese-resume-p-1-top-half.png
+  alt: japanese-resume-p-1-top-half
   hidden: false
 ---
 

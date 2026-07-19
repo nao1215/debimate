@@ -1,18 +1,17 @@
 ---
-title: "環境構築：Terminal(CLI)向けメーラー\"Neomutt\"でGmailを送受信するための設定"
+title: 環境構築：Terminal(CLI)向けメーラー"Neomutt"でGmailを送受信するための設定
 type: post
 date: 2019-06-01
-categories: 
-  - "linux"
-tags: 
-  - "command"
-  - "debian"
-  - "linux"
-  - "mail"
-  - "環境構築"
+categories:
+- インフラ
+tags:
+- command
+- debian
+- mail
+- 環境構築
 cover:
-  image: "images/neomutt_icon.jpg"
-  alt: "neomutt"
+  image: images/neomutt_icon.jpg
+  alt: neomutt
   hidden: false
 ---
 

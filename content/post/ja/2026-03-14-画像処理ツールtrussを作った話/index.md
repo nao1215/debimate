@@ -1,12 +1,13 @@
 ---
-title: "【Rust】CLI・サーバー・Wasm で動く画像処理ツール truss を作った話"
+title: 【Rust】CLI・サーバー・Wasm で動く画像処理ツール truss を作った話
 type: post
 date: 2026-03-14
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/2026-truss-logo.png"
-  alt: "truss-logo"
+  image: images/2026-truss-logo.png
+  alt: truss-logo
   hidden: false
 ---
 

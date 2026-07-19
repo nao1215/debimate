@@ -1,15 +1,16 @@
 ---
-title: "【Golang】Value Objectを生成するvogenライブラリをお試しで作った話"
+title: 【Golang】Value Objectを生成するvogenライブラリをお試しで作った話
 type: post
 date: 2024-12-28
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "ddd"
-  - "golang"
+- ddd
+- golang
 cover:
-  image: "images/business-3208596_640.jpg"
-  alt: "【Golang】Value Objectを生成するvogenライブラリをお試しで作った話"
+  image: images/business-3208596_640.jpg
+  alt: 【Golang】Value Objectを生成するvogenライブラリをお試しで作った話
   hidden: false
 ---
 

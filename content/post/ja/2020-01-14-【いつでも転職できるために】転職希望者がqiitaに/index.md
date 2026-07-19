@@ -1,16 +1,15 @@
 ---
-title: "転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】"
+title: 転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】
 type: post
 date: 2020-01-14
 categories:
-  - "体験談"
+- キャリア
 tags:
-  - "qiita"
-  - "体験談"
-  - "転職"
+- qiita
+- 転職
 cover:
-  image: "images/search-engine-optimization-4111000_640-min.jpg"
-  alt: "転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】"
+  image: images/search-engine-optimization-4111000_640-min.jpg
+  alt: 転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】
   hidden: false
 ---
 

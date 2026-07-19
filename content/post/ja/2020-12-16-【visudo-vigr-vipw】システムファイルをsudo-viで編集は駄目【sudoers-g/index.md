@@ -1,15 +1,14 @@
 ---
-title: "【visudo / vigr / vipw】システムファイルをsudo viで編集は駄目【sudoers / group / passwd】"
+title: 【visudo / vigr / vipw】システムファイルをsudo viで編集は駄目【sudoers / group / passwd】
 type: post
 date: 2020-12-16
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
+- debian
 cover:
-  image: "images/key-2114046_640.jpg"
-  alt: "【visudo / vigr / vipw】システムファイルをsudo viで編集は駄目【sudoers / group / passwd】"
+  image: images/key-2114046_640.jpg
+  alt: 【visudo / vigr / vipw】システムファイルをsudo viで編集は駄目【sudoers / group / passwd】
   hidden: false
 ---
 

@@ -1,16 +1,14 @@
 ---
-title: "感想：改訂新版 IoTエンジニア養成読本 (Software Design plusシリーズ)"
+title: 感想：改訂新版 IoTエンジニア養成読本 (Software Design plusシリーズ)
 type: post
 date: 2020-01-07
 categories:
-  - "書籍"
+- 書評
 tags:
-  - "iot"
-  - "review"
-  - "書籍"
+- iot
 cover:
-  image: "images/51kULN0pKCL._SX353_BO1204203200_-min.jpg"
-  alt: "感想：改訂新版 IoTエンジニア養成読本 (Software Design plusシリーズ)"
+  image: images/51kULN0pKCL._SX353_BO1204203200_-min.jpg
+  alt: 感想：改訂新版 IoTエンジニア養成読本 (Software Design plusシリーズ)
   hidden: false
 ---
 

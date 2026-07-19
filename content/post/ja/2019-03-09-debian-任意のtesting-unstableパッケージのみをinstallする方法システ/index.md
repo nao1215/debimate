@@ -1,16 +1,15 @@
 ---
-title: "Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)"
+title: 'Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)'
 type: post
 date: 2019-03-09
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "環境構築"
+- debian
+- 環境構築
 cover:
-  image: "images/debian.jpg"
-  alt: "Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)"
+  image: images/debian.jpg
+  alt: 'Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)'
   hidden: false
 ---
 

@@ -1,16 +1,15 @@
 ---
-title: "mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)"
+title: mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)
 type: post
 date: 2019-03-10
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "開発環境"
+- debian
+- 開発環境
 cover:
-  image: "images/debian-1277387_960_720.png"
-  alt: "mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)"
+  image: images/debian-1277387_960_720.png
+  alt: mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)
   hidden: false
 ---
 

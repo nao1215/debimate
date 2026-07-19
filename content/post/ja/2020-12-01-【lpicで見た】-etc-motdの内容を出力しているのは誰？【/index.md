@@ -1,18 +1,18 @@
 ---
-title: "【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】"
+title: 【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】
 type: post
 date: 2020-12-01
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "codereading"
-  - "debian"
-  - "linux"
-  - "lpic"
-  - "motd"
+- codereading
+- debian
+- lpic
+- motd
 cover:
-  image: "images/typewriter-1170657_640-min.jpg"
-  alt: "【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】"
+  image: images/typewriter-1170657_640-min.jpg
+  alt: 【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】
   hidden: false
 ---
 

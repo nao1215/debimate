@@ -1,16 +1,14 @@
 ---
-title: "Review: Live Philadelphia '84 King Biscuit Flower Hour(DIO)"
+title: 'Review: Live Philadelphia ''84 King Biscuit Flower Hour(DIO)'
 type: post
 date: 2019-01-26
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "dio"
-  - "hrhm"
-  - "review"
+- dio
 cover:
-  image: "images/King_Biscuit_Flower_Hour_radio_show_logo.jpg"
-  alt: "Review: Live Philadelphia '84 King Biscuit Flower Hour(DIO)"
+  image: images/King_Biscuit_Flower_Hour_radio_show_logo.jpg
+  alt: 'Review: Live Philadelphia ''84 King Biscuit Flower Hour(DIO)'
   hidden: false
 ---
 

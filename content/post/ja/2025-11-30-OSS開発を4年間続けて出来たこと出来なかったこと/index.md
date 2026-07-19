@@ -1,12 +1,13 @@
 ---
-title: "4年間続けたOSS開発を振り返る"
+title: 4年間続けたOSS開発を振り返る
 type: post
 date: 2025-11-30
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/star-history-20251130.png"
-  alt: "レゴ"
+  image: images/star-history-20251130.png
+  alt: レゴ
   hidden: false
 ---
 

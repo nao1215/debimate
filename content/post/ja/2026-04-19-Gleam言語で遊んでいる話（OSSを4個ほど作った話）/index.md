@@ -1,12 +1,12 @@
 ---
-title: "関数型言語 Gleam で遊んでいる話（OSS4個を連作した話）"
+title: 関数型言語 Gleam で遊んでいる話（OSS4個を連作した話）
 type: post
 date: 2026-04-19
 categories:
-  - "linux"
+- プログラミング
 cover:
-  image: "images/Gleam-OSS.png"
-  alt: "Gleam-OSS"
+  image: images/Gleam-OSS.png
+  alt: Gleam-OSS
   hidden: false
 ---
 

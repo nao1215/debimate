@@ -1,16 +1,15 @@
 ---
-title: "Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)"
+title: Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)
 type: post
 date: 2019-03-24
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "linux"
-  - "raspberrypi"
-  - "環境構築"
+- raspberrypi
+- 環境構築
 cover:
-  image: "images/Raspberry-Pi3_min.jpg"
-  alt: "Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)"
+  image: images/Raspberry-Pi3_min.jpg
+  alt: Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)
   hidden: false
 ---
 

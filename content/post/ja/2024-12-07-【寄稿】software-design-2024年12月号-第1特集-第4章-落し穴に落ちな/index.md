@@ -1,17 +1,16 @@
 ---
-title: "【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ"
+title: 【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ
 type: post
 date: 2024-12-07
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "softwaredesign"
-  - "体験談"
-  - "寄稿"
+- softwaredesign
+- 寄稿
 cover:
-  image: "images/SoftwareDesign.jpg"
-  alt: "【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ"
+  image: images/SoftwareDesign.jpg
+  alt: 【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ
   hidden: false
 ---
 

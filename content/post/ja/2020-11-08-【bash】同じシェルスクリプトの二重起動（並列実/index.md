@@ -1,15 +1,15 @@
 ---
-title: "【Bash】同じシェルスクリプトの二重起動（並列実行）を防止する方法"
+title: 【Bash】同じシェルスクリプトの二重起動（並列実行）を防止する方法
 type: post
 date: 2020-11-08
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "shellscript"
+- bash
+- shellscript
 cover:
-  image: "images/same.jpg"
-  alt: "【Bash】同じシェルスクリプトの二重起動（並列実行）を防止する方法"
+  image: images/same.jpg
+  alt: 【Bash】同じシェルスクリプトの二重起動（並列実行）を防止する方法
   hidden: false
 ---
 

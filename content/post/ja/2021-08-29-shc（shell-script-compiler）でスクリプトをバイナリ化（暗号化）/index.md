@@ -1,17 +1,15 @@
 ---
-title: "shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法"
+title: shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法
 type: post
 date: 2021-08-29
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "shell"
-  - "shellscript"
+- bash
+- shellscript
 cover:
-  image: "images/cyber-security-3400657_640-min.jpg"
-  alt: "shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法"
+  image: images/cyber-security-3400657_640-min.jpg
+  alt: shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法
   hidden: false
 ---
 

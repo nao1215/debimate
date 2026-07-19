@@ -1,17 +1,16 @@
 ---
-title: "感想：ランス03 リーザス陥落"
+title: 感想：ランス03 リーザス陥落
 type: post
 date: 2020-09-26
 categories:
-  - "ゲーム-漫画-ドラマ-映画"
+- エンタメ
 tags:
-  - "アリスソフト"
-  - "ゲーム"
-  - "ランス"
-  - "レビュー"
+- アリスソフト
+- ゲーム
+- ランス
 cover:
-  image: "images/71FrOQlI7YL._AC_SL1000_-min.jpg"
-  alt: "感想：ランス03 リーザス陥落"
+  image: images/71FrOQlI7YL._AC_SL1000_-min.jpg
+  alt: 感想：ランス03 リーザス陥落
   hidden: false
 ---
 

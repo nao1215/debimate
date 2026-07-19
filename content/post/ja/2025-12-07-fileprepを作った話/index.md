@@ -1,12 +1,13 @@
 ---
-title: "【Golang】CSV、TSV、LTSV、Parquet、Excel に前処理とバリデーションを行う nao1215/fileprep を作った話"
+title: 【Golang】CSV、TSV、LTSV、Parquet、Excel に前処理とバリデーションを行う nao1215/fileprep を作った話
 type: post
 date: 2025-12-07
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/20251207-fileprep-logo.jpg"
-  alt: "fileprep"
+  image: images/20251207-fileprep-logo.jpg
+  alt: fileprep
   hidden: false
 ---
 

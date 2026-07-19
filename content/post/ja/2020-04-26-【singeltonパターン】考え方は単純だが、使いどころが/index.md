@@ -1,18 +1,17 @@
 ---
-title: "【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】"
+title: 【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】
 type: post
 date: 2020-04-26
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
-  - "linux"
-  - "ruby"
-  - "singleton"
-  - "デザインパターン"
+- java
+- ruby
+- singleton
+- デザインパターン
 cover:
-  image: "images/card-1738844_640-min.jpg"
-  alt: "【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】"
+  image: images/card-1738844_640-min.jpg
+  alt: 【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】
   hidden: false
 ---
 

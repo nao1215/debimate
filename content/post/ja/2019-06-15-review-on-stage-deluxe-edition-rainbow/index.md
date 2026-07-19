@@ -1,16 +1,14 @@
 ---
-title: "Review: On Stage Deluxe Edition (Rainbow)"
+title: 'Review: On Stage Deluxe Edition (Rainbow)'
 type: post
 date: 2019-06-15
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "rainbow"
-  - "review"
+- rainbow
 cover:
-  image: "images/on_stage-min.jpg"
-  alt: "Review: On Stage Deluxe Edition (Rainbow)"
+  image: images/on_stage-min.jpg
+  alt: 'Review: On Stage Deluxe Edition (Rainbow)'
   hidden: false
 ---
 

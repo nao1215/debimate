@@ -1,17 +1,15 @@
 ---
-title: "【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)"
+title: 【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)
 type: post
 date: 2020-11-20
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "golang"
-  - "go言語"
-  - "linux"
-  - "ユニットテスト"
+- golang
+- ユニットテスト
 cover:
-  image: "images/exit-44205_640.jpg"
-  alt: "【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)"
+  image: images/exit-44205_640.jpg
+  alt: 【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)
   hidden: false
 ---
 

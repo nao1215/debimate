@@ -1,16 +1,14 @@
 ---
-title: "Review: Memories in Rock(Rainbow)"
+title: 'Review: Memories in Rock(Rainbow)'
 type: post
 date: 2019-05-12
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "rainbow"
-  - "review"
+- rainbow
 cover:
-  image: "images/memories_in_rock-min.jpg"
-  alt: "Review: Memories in Rock(Rainbow)"
+  image: images/memories_in_rock-min.jpg
+  alt: 'Review: Memories in Rock(Rainbow)'
   hidden: false
 ---
 

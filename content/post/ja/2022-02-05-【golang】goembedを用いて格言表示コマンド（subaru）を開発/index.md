@@ -1,17 +1,16 @@
 ---
-title: "【Golang】go:embedを用いて格言表示コマンド（subaru）を開発"
+title: 【Golang】go:embedを用いて格言表示コマンド（subaru）を開発
 type: post
 date: 2022-02-05
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "oss"
-  - "体験談"
+- golang
+- oss
 cover:
-  image: "images/constellations-ge1bcb2718_640.jpg"
-  alt: "【Golang】go:embedを用いて格言表示コマンド（subaru）を開発"
+  image: images/constellations-ge1bcb2718_640.jpg
+  alt: 【Golang】go:embedを用いて格言表示コマンド（subaru）を開発
   hidden: false
 ---
 

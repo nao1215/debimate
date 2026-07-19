@@ -1,17 +1,15 @@
 ---
-title: "Review: Seattle '89(Metallica)"
+title: 'Review: Seattle ''89(Metallica)'
 type: post
 date: 2019-01-02
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "bootleg"
-  - "hrhm"
-  - "metallica"
-  - "review"
+- bootleg
+- metallica
 cover:
-  image: "images/ajfa-deluxe-box-set-e1546407575773.jpg"
-  alt: "Review: Seattle '89(Metallica)"
+  image: images/ajfa-deluxe-box-set-e1546407575773.jpg
+  alt: 'Review: Seattle ''89(Metallica)'
   hidden: false
 ---
 

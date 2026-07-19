@@ -1,16 +1,15 @@
 ---
-title: "【roff形式を手書きは無理ゲー】manページをMarkdown + Pandocで作成【with manページお作法】"
+title: 【roff形式を手書きは無理ゲー】manページをMarkdown + Pandocで作成【with manページお作法】
 type: post
 date: 2020-12-19
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "man"
+- debian
+- man
 cover:
-  image: "images/books-1845614_640-min.jpg"
-  alt: "【roff形式を手書きは無理ゲー】manページをMarkdown + Pandocで作成【with manページお作法】"
+  image: images/books-1845614_640-min.jpg
+  alt: 【roff形式を手書きは無理ゲー】manページをMarkdown + Pandocで作成【with manページお作法】
   hidden: false
 ---
 

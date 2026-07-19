@@ -1,14 +1,12 @@
 ---
-title: "実装ではなく、Pull Requestレビューから経験値を得るようになった話"
+title: 実装ではなく、Pull Requestレビューから経験値を得るようになった話
 type: post
 date: 2024-12-07
 categories:
-  - "体験談"
-tags:
-  - "体験談"
+- キャリア
 cover:
-  image: "images/rocket-launch-4370928_1280.jpg"
-  alt: "実装ではなく、Pull Requestレビューから経験値を得るようになった話"
+  image: images/rocket-launch-4370928_1280.jpg
+  alt: 実装ではなく、Pull Requestレビューから経験値を得るようになった話
   hidden: false
 ---
 

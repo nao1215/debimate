@@ -1,18 +1,16 @@
 ---
-title: "AndroidにLinux環境を構築する\"UserLAnd\"がソースリーディング環境(スマホ用)として最適"
+title: AndroidにLinux環境を構築する"UserLAnd"がソースリーディング環境(スマホ用)として最適
 type: post
 date: 2019-03-16
-categories: 
-  - "linux"
-  - "体験談"
-tags: 
-  - "android"
-  - "debian"
-  - "linux"
-  - "環境構築"
+categories:
+- インフラ
+tags:
+- android
+- debian
+- 環境構築
 cover:
-  image: "images/UserLAnd2.png"
-  alt: "UserLAnd"
+  image: images/UserLAnd2.png
+  alt: UserLAnd
   hidden: false
 ---
 

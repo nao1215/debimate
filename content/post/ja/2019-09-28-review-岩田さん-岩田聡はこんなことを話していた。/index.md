@@ -1,15 +1,12 @@
 ---
-title: "感想: 岩田さん 岩田聡はこんなことを話していた。"
+title: '感想: 岩田さん 岩田聡はこんなことを話していた。'
 type: post
 date: 2019-09-28
 categories:
-  - "書籍"
-tags:
-  - "review"
-  - "書籍"
+- 書評
 cover:
-  image: "images/ダウンロード.jpeg"
-  alt: "感想: 岩田さん 岩田聡はこんなことを話していた。"
+  image: images/ダウンロード.jpeg
+  alt: '感想: 岩田さん 岩田聡はこんなことを話していた。'
   hidden: false
 ---
 

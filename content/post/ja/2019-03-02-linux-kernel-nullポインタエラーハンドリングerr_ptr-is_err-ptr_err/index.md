@@ -1,16 +1,15 @@
 ---
-title: "Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)"
+title: 'Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)'
 type: post
 date: 2019-03-02
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- linuxkernel
 cover:
-  image: "images/NULL.jpg"
-  alt: "Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)"
+  image: images/NULL.jpg
+  alt: 'Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)'
   hidden: false
 ---
 

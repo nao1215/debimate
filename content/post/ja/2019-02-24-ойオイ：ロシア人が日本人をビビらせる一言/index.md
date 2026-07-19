@@ -1,16 +1,13 @@
 ---
-title: "Ой!(オイ)：ロシア人が日本人をビビらせる一言"
+title: Ой!(オイ)：ロシア人が日本人をビビらせる一言
 type: post
 date: 2019-02-24
 categories:
-  - "russia"
-  - "体験談"
-tags:
-  - "russia"
-  - "体験談"
+- ロシア
+- 生活
 cover:
-  image: "images/aggression-1641959_640.jpg"
-  alt: "Ой!(オイ)：ロシア人が日本人をビビらせる一言"
+  image: images/aggression-1641959_640.jpg
+  alt: Ой!(オイ)：ロシア人が日本人をビビらせる一言
   hidden: false
 ---
 

@@ -1,12 +1,13 @@
 ---
-title: "【Golang】クレカ番号などを検出・マスクするsensitiveライブラリを作った話"
+title: 【Golang】クレカ番号などを検出・マスクするsensitiveライブラリを作った話
 type: post
 date: 2026-02-08
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/2026-sensitive-logo.png"
-  alt: "sensitive-logo"
+  image: images/2026-sensitive-logo.png
+  alt: sensitive-logo
   hidden: false
 ---
 

@@ -1,17 +1,16 @@
 ---
-title: "【Golang】hottest - ユニットテストのエラーメッセージを抽出するCLI／GitHub Actionsを作った話"
+title: 【Golang】hottest - ユニットテストのエラーメッセージを抽出するCLI／GitHub Actionsを作った話
 type: post
 date: 2023-12-03
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "go言語"
-  - "test"
+- golang
+- test
 cover:
-  image: "images/demo.gif"
-  alt: "【Golang】hottest - ユニットテストのエラーメッセージを抽出するCLI／GitHub Actionsを作った話"
+  image: images/demo.gif
+  alt: 【Golang】hottest - ユニットテストのエラーメッセージを抽出するCLI／GitHub Actionsを作った話
   hidden: false
 ---
 

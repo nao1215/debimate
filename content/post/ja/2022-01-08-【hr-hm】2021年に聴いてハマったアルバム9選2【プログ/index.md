@@ -1,12 +1,12 @@
 ---
-title: "【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】"
+title: 【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】
 type: post
 date: 2022-01-08
 categories:
-  - "hrhm"
+- 音楽
 cover:
-  image: "images/album-min-1.jpg"
-  alt: "【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】"
+  image: images/album-min-1.jpg
+  alt: 【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】
   hidden: false
 ---
 

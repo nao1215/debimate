@@ -1,17 +1,16 @@
 ---
-title: "Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法"
+title: Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法
 type: post
 date: 2019-01-26
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "android"
-  - "linux"
-  - "raspberrypi"
-  - "環境構築"
+- android
+- raspberrypi
+- 環境構築
 cover:
-  image: "images/Android-pie.jpg"
-  alt: "Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法"
+  image: images/Android-pie.jpg
+  alt: Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法
   hidden: false
 ---
 

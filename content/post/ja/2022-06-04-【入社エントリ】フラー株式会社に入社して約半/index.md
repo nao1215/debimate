@@ -1,15 +1,14 @@
 ---
-title: "【入社エントリ】フラー株式会社に入社して約半年経ちました"
+title: 【入社エントリ】フラー株式会社に入社して約半年経ちました
 type: post
 date: 2022-06-04
 categories:
-  - "体験談"
+- キャリア
 tags:
-  - "体験談"
-  - "入社エントリ"
+- 入社エントリ
 cover:
-  image: "images/startup-593329_640.jpg"
-  alt: "【入社エントリ】フラー株式会社に入社して約半年経ちました"
+  image: images/startup-593329_640.jpg
+  alt: 【入社エントリ】フラー株式会社に入社して約半年経ちました
   hidden: false
 ---
 

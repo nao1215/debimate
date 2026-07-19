@@ -1,18 +1,18 @@
 ---
-title: "コードリーディング(Bash)：システム情報表示ツール\"neofetch\""
+title: コードリーディング(Bash)：システム情報表示ツール"neofetch"
 type: post
 date: 2019-01-22
-categories: 
-  - "linux"
-tags: 
-  - "bash"
-  - "codereading"
-  - "command"
-  - "debian"
-  - "linux"
+categories:
+- インフラ
+- プログラミング
+tags:
+- bash
+- codereading
+- command
+- debian
 cover:
-  image: "images/fetcher.png"
-  alt: "fetcher"
+  image: images/fetcher.png
+  alt: fetcher
   hidden: false
 ---
 

@@ -1,16 +1,15 @@
 ---
-title: "Review: レオン（完全版）"
+title: 'Review: レオン（完全版）'
 type: post
 date: 2019-11-17
 categories:
-  - "ゲーム-漫画-ドラマ-映画"
+- エンタメ
 tags:
-  - "review"
-  - "レオン"
-  - "映画"
+- レオン
+- 映画
 cover:
-  image: "images/71eaOU3PHL._SY445_.jpg"
-  alt: "Review: レオン（完全版）"
+  image: images/71eaOU3PHL._SY445_.jpg
+  alt: 'Review: レオン（完全版）'
   hidden: false
 ---
 

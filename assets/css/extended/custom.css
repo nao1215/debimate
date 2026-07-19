@@ -38,3 +38,58 @@ html {
 .post-content h1 { font-size: 2rem; }
 .post-content h2 { font-size: 1.6rem; }
 .post-content h3 { font-size: 1.3rem; }
+
+.related-posts,
+.post-comments {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.related-posts-title,
+.post-comments-title {
+  margin-bottom: 1rem;
+  font-size: 1.15rem;
+}
+
+.post-comments-fallback {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--entry);
+}
+
+.post-comments-fallback p {
+  margin: 0 0 0.6rem;
+}
+
+.post-comments-fallback p:last-child {
+  margin-bottom: 0;
+}
+
+.related-posts-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.related-post {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--entry);
+}
+
+.related-post-link {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.related-post-name {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.related-post-meta {
+  color: var(--secondary);
+  font-size: 0.9rem;
+}

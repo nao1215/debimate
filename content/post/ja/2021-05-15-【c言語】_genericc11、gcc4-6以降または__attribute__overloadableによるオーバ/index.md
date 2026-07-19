@@ -1,15 +1,14 @@
 ---
-title: "【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overloadable))によるオーバーロード"
+title: 【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overloadable))によるオーバーロード
 type: post
 date: 2021-05-15
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
+- c言語
 cover:
-  image: "images/birds-6211541_640.jpg"
-  alt: "【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overloadable))によるオーバーロード"
+  image: images/birds-6211541_640.jpg
+  alt: 【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overloadable))によるオーバーロード
   hidden: false
 ---
 

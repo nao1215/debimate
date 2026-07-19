@@ -1,16 +1,13 @@
 ---
-title: "【亭主関白は論外】ロシア人女性と付き合うなら、男性は優しさを行動で示すべき"
+title: 【亭主関白は論外】ロシア人女性と付き合うなら、男性は優しさを行動で示すべき
 type: post
 date: 2019-11-16
 categories:
-  - "russia"
-  - "体験談"
-tags:
-  - "russia"
-  - "体験談"
+- ロシア
+- 生活
 cover:
-  image: "images/gentlemen-2835737_640-min.jpg"
-  alt: "【亭主関白は論外】ロシア人女性と付き合うなら、男性は優しさを行動で示すべき"
+  image: images/gentlemen-2835737_640-min.jpg
+  alt: 【亭主関白は論外】ロシア人女性と付き合うなら、男性は優しさを行動で示すべき
   hidden: false
 ---
 

@@ -1,16 +1,15 @@
 ---
-title: "【golang】sqlcコマンドで「SQLクエリから型安全なGoコードを生成」し、生産性を上げたい"
+title: 【golang】sqlcコマンドで「SQLクエリから型安全なGoコードを生成」し、生産性を上げたい
 type: post
 date: 2022-06-25
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "golang"
-  - "go言語"
-  - "sql"
+- golang
+- sql
 cover:
-  image: "images/sql.jpg"
-  alt: "【golang】sqlcコマンドで「SQLクエリから型安全なGoコードを生成」し、生産性を上げたい"
+  image: images/sql.jpg
+  alt: 【golang】sqlcコマンドで「SQLクエリから型安全なGoコードを生成」し、生産性を上げたい
   hidden: false
 ---
 

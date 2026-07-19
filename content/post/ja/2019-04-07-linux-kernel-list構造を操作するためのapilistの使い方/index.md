@@ -1,16 +1,15 @@
 ---
-title: "Linux Kernel: List構造を操作するためのAPI(Listの使い方)"
+title: 'Linux Kernel: List構造を操作するためのAPI(Listの使い方)'
 type: post
 date: 2019-04-07
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- linuxkernel
 cover:
-  image: "images/Kernel_lists-1.png"
-  alt: "Linux Kernel: List構造を操作するためのAPI(Listの使い方)"
+  image: images/Kernel_lists-1.png
+  alt: 'Linux Kernel: List構造を操作するためのAPI(Listの使い方)'
   hidden: false
 ---
 

@@ -1,17 +1,16 @@
 ---
-title: "振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)"
+title: 振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)
 type: post
 date: 2019-02-28
 categories:
-  - "体験談"
+- ブログ運営
 tags:
-  - "adsense"
-  - "wordpress"
-  - "体験談"
-  - "収益"
+- adsense
+- wordpress
+- 収益
 cover:
-  image: "images/keyboard-648447_640.jpg"
-  alt: "振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)"
+  image: images/keyboard-648447_640.jpg
+  alt: 振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)
   hidden: false
 ---
 

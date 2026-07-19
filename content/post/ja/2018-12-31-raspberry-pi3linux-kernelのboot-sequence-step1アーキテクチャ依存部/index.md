@@ -1,16 +1,16 @@
 ---
-title: "Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部"
+title: Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部
 type: post
 date: 2018-12-31
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "linux"
-  - "linuxkernel"
-  - "raspberrypi"
+- linuxkernel
+- raspberrypi
 cover:
-  image: "images/Raspberry-Pi-3-Ports-1-1833x1080-e1546321071607.jpg"
-  alt: "Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部"
+  image: images/Raspberry-Pi-3-Ports-1-1833x1080-e1546321071607.jpg
+  alt: Raspberry Pi3(Linux Kernel)のBoot Sequence Step1:アーキテクチャ依存部
   hidden: false
 ---
 

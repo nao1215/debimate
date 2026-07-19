@@ -1,16 +1,15 @@
 ---
-title: "【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除"
+title: 【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除
 type: post
 date: 2020-09-01
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "raspberrypi"
+- debian
+- raspberrypi
 cover:
-  image: "images/subscribe-3534409_640-min.jpg"
-  alt: "【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除"
+  image: images/subscribe-3534409_640-min.jpg
+  alt: 【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除
   hidden: false
 ---
 

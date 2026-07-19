@@ -1,15 +1,15 @@
 ---
-title: "【Java】Serializableの実装、役割、使い方、危険性とその対策【serialVersionUIDとは】"
+title: 【Java】Serializableの実装、役割、使い方、危険性とその対策【serialVersionUIDとは】
 type: post
 date: 2021-02-20
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
-  - "serializable"
+- java
+- serializable
 cover:
-  image: "images/puzzle-654957_640-min.jpg"
-  alt: "【Java】Serializableの実装、役割、使い方、危険性とその対策【serialVersionUIDとは】"
+  image: images/puzzle-654957_640-min.jpg
+  alt: 【Java】Serializableの実装、役割、使い方、危険性とその対策【serialVersionUIDとは】
   hidden: false
 ---
 

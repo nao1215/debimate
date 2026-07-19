@@ -1,16 +1,17 @@
 ---
-title: "【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄"
+title: 【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄
 type: post
 date: 2020-12-19
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "api"
-  - "c言語"
-  - "ライブラリ"
+- api
+- c言語
+- ライブラリ
 cover:
-  image: "images/source-code-583537_640.jpg"
-  alt: "【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄"
+  image: images/source-code-583537_640.jpg
+  alt: 【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄
   hidden: false
 ---
 

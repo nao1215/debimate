@@ -1,17 +1,18 @@
 ---
-title: "【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】"
+title: 【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】
 type: post
 date: 2020-11-01
 categories:
-  - "linux"
+- インフラ
+- プログラミング
+- OSS
 tags:
-  - "c言語"
-  - "debian"
-  - "linux"
-  - "正規表現"
+- c言語
+- debian
+- 正規表現
 cover:
-  image: "images/regex2-min.jpg"
-  alt: "【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】"
+  image: images/regex2-min.jpg
+  alt: 【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】
   hidden: false
 ---
 

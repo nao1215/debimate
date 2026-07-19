@@ -1,15 +1,16 @@
 ---
-title: "【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話"
+title: 【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話
 type: post
 date: 2025-09-20
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "oss"
-  - "体験談"
+- oss
+- 体験談
 cover:
-  image: "images/prompt_logo.jpeg"
-  alt: "【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話"
+  image: images/prompt_logo.jpeg
+  alt: 【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話
   hidden: false
 ---
 

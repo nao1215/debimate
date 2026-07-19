@@ -1,14 +1,15 @@
 ---
-title: "DependabotでGitHub ActionsのActionを最新に保つ方法"
+title: DependabotでGitHub ActionsのActionを最新に保つ方法
 type: post
 date: 2023-09-30
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "github"
+- github
 cover:
-  image: "images/Screenshot-from-2023-09-30-18-02-30-1.png"
-  alt: "DependabotでGitHub ActionsのActionを最新に保つ方法"
+  image: images/Screenshot-from-2023-09-30-18-02-30-1.png
+  alt: DependabotでGitHub ActionsのActionを最新に保つ方法
   hidden: false
 ---
 

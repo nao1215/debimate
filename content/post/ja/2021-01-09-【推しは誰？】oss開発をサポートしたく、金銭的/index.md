@@ -1,18 +1,16 @@
 ---
-title: "【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】"
+title: 【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】
 type: post
 date: 2021-01-09
 categories:
-  - "linux"
-  - "体験談"
+- インフラ
+- OSS
 tags:
-  - "elementaryos"
-  - "linux"
-  - "コントリビュート"
-  - "体験談"
+- elementaryos
+- コントリビュート
 cover:
-  image: "images/Screenshot-from-2021-01-02-14-32-32.png"
-  alt: "【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】"
+  image: images/Screenshot-from-2021-01-02-14-32-32.png
+  alt: 【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】
   hidden: false
 ---
 

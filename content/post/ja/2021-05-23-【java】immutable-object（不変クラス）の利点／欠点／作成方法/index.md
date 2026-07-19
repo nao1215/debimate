@@ -1,15 +1,15 @@
 ---
-title: "【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面"
+title: 【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面
 type: post
 date: 2021-05-23
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
-  - "オブジェクト指向"
+- java
+- オブジェクト指向
 cover:
-  image: "images/eclipse-1492818_640.jpg"
-  alt: "【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面"
+  image: images/eclipse-1492818_640.jpg
+  alt: 【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面
   hidden: false
 ---
 

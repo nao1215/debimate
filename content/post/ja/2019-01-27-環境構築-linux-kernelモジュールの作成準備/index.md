@@ -1,18 +1,18 @@
 ---
-title: "環境構築: Linux Kernelモジュールの作成準備"
+title: '環境構築: Linux Kernelモジュールの作成準備'
 type: post
 date: 2019-01-27
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "c言語"
-  - "debian"
-  - "linux"
-  - "linuxkernel"
-  - "環境構築"
+- c言語
+- debian
+- linuxkernel
+- 環境構築
 cover:
-  image: "images/tux.png"
-  alt: "環境構築: Linux Kernelモジュールの作成準備"
+  image: images/tux.png
+  alt: '環境構築: Linux Kernelモジュールの作成準備'
   hidden: false
 ---
 

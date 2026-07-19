@@ -1,16 +1,16 @@
 ---
-title: "【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】"
+title: 【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】
 type: post
 date: 2022-02-05
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "oss"
+- golang
+- oss
 cover:
-  image: "images/laptop-g6f30a755b_640.jpg"
-  alt: "【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】"
+  image: images/laptop-g6f30a755b_640.jpg
+  alt: 【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】
   hidden: false
 ---
 

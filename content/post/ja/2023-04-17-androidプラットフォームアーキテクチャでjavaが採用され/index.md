@@ -1,14 +1,14 @@
 ---
-title: "AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから"
+title: AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから
 type: post
 date: 2023-04-17
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "android"
+- android
 cover:
-  image: "images/android-stack_2x-695x1024.png"
-  alt: "AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから"
+  image: images/android-stack_2x-695x1024.png
+  alt: AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから
   hidden: false
 ---
 

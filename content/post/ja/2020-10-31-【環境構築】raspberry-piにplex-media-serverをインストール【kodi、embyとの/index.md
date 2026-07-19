@@ -1,18 +1,18 @@
 ---
-title: "【環境構築】Raspberry PiにPlex Media Serverをインストール【Kodi、Embyとの比較】"
+title: 【環境構築】Raspberry PiにPlex Media Serverをインストール【Kodi、Embyとの比較】
 type: post
 date: 2020-10-31
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "emby"
-  - "kodi"
-  - "plex"
-  - "raspberrypi"
-  - "環境構築"
+- emby
+- kodi
+- plex
+- raspberrypi
+- 環境構築
 cover:
-  image: "images/Screenshot-from-2020-10-30-22-29-19.jpg"
-  alt: "【環境構築】Raspberry PiにPlex Media Serverをインストール【Kodi、Embyとの比較】"
+  image: images/Screenshot-from-2020-10-30-22-29-19.jpg
+  alt: 【環境構築】Raspberry PiにPlex Media Serverをインストール【Kodi、Embyとの比較】
   hidden: false
 ---
 

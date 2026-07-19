@@ -1,16 +1,17 @@
 ---
-title: "/etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】"
+title: /etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】
 type: post
 date: 2020-04-16
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "debian"
-  - "login"
-  - "shell"
+- debian
+- login
+- shellscript
 cover:
-  image: "images/login-3938429_640-1-min.jpg"
-  alt: "/etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】"
+  image: images/login-3938429_640-1-min.jpg
+  alt: /etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】
   hidden: false
 ---
 

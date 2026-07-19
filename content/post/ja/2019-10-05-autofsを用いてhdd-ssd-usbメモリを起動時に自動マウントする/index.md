@@ -1,17 +1,16 @@
 ---
-title: "autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)"
+title: autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)
 type: post
 date: 2019-10-05
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "hdd"
-  - "linux"
-  - "環境構築"
+- debian
+- hdd
+- 環境構築
 cover:
-  image: "images/drive-3410753_640-min.jpg"
-  alt: "autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)"
+  image: images/drive-3410753_640-min.jpg
+  alt: autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)
   hidden: false
 ---
 

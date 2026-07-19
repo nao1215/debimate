@@ -1,15 +1,14 @@
 ---
-title: "DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」"
+title: DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」
 type: post
 date: 2019-04-20
 categories:
-  - "体験談"
+- ブログ運営
 tags:
-  - "体験談"
-  - "収益"
+- 収益
 cover:
-  image: "images/DMM.png"
-  alt: "DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」"
+  image: images/DMM.png
+  alt: DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」
   hidden: false
 ---
 

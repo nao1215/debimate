@@ -1,16 +1,14 @@
 ---
-title: "Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)"
+title: 'Review: Ritchie Blackmore''s Rainbow--銀嶺の覇者--(Rainbow)'
 type: post
 date: 2019-05-18
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "rainbow"
-  - "review"
+- rainbow
 cover:
-  image: "images/blackmore_rainbow.jpg"
-  alt: "Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)"
+  image: images/blackmore_rainbow.jpg
+  alt: 'Review: Ritchie Blackmore''s Rainbow--銀嶺の覇者--(Rainbow)'
   hidden: false
 ---
 

@@ -1,16 +1,17 @@
 ---
-title: "【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】"
+title: 【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】
 type: post
 date: 2025-03-08
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "oss"
-  - "sql"
+- golang
+- oss
+- sql
 cover:
-  image: "images/dbms_demo-1.gif"
-  alt: "【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】"
+  image: images/dbms_demo-1.gif
+  alt: 【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】
   hidden: false
 ---
 

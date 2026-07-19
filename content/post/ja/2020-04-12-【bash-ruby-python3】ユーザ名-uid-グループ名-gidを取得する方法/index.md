@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ユーザ名 / UID / グループ名 / GIDを取得する方法の比較"
+title: 【Bash / Ruby / Python3】ユーザ名 / UID / グループ名 / GIDを取得する方法の比較
 type: post
 date: 2020-04-12
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/name-1714231_640.jpg"
-  alt: "【Bash / Ruby / Python3】ユーザ名 / UID / グループ名 / GIDを取得する方法の比較"
+  image: images/name-1714231_640.jpg
+  alt: 【Bash / Ruby / Python3】ユーザ名 / UID / グループ名 / GIDを取得する方法の比較
   hidden: false
 ---
 

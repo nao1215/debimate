@@ -1,16 +1,16 @@
 ---
-title: "【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】"
+title: 【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】
 type: post
 date: 2021-05-22
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "linux"
-  - "アプリ"
-  - "開発"
+- アプリ
+- 開発
 cover:
-  image: "images/icon-1328421_640.jpg"
-  alt: "【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】"
+  image: images/icon-1328421_640.jpg
+  alt: 【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】
   hidden: false
 ---
 

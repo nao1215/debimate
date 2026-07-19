@@ -1,16 +1,17 @@
 ---
-title: "【Golang】AWS Rainbowプロジェクト始めました - インタラクティブにS3操作するs3hubコマンド"
+title: 【Golang】AWS Rainbowプロジェクト始めました - インタラクティブにS3操作するs3hubコマンド
 type: post
 date: 2024-02-05
 categories:
-  - "linux"
-  - "体験談"
+- インフラ
+- プログラミング
+- OSS
 tags:
-  - "aws"
-  - "golang"
+- aws
+- golang
 cover:
-  image: "images/colorful-2174045_1920.png"
-  alt: "【Golang】AWS Rainbowプロジェクト始めました - インタラクティブにS3操作するs3hubコマンド"
+  image: images/colorful-2174045_1920.png
+  alt: 【Golang】AWS Rainbowプロジェクト始めました - インタラクティブにS3操作するs3hubコマンド
   hidden: false
 ---
 

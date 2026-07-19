@@ -1,14 +1,14 @@
 ---
-title: "Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法"
+title: Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法
 type: post
 date: 2020-09-02
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "raspberrypi"
+- raspberrypi
 cover:
-  image: "images/hand-2605908_640-min.jpg"
-  alt: "Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法"
+  image: images/hand-2605908_640-min.jpg
+  alt: Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法
   hidden: false
 ---
 

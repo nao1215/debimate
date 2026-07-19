@@ -1,14 +1,14 @@
 ---
-title: "O'Reilly Learning PlatformをAudify（耳）で学習する"
+title: O'Reilly Learning PlatformをAudify（耳）で学習する
 type: post
 date: 2025-05-25
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "オライリー"
+- オライリー
 cover:
-  image: "images/2025-05-25_12-26-1024x358.png"
-  alt: "O'Reilly Learning PlatformをAudify（耳）で学習する"
+  image: images/2025-05-25_12-26-1024x358.png
+  alt: O'Reilly Learning PlatformをAudify（耳）で学習する
   hidden: false
 ---
 

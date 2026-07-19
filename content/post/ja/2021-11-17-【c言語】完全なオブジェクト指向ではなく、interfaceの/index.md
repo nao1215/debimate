@@ -1,16 +1,16 @@
 ---
-title: "【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】"
+title: 【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】
 type: post
 date: 2021-11-17
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "interface"
-  - "オブジェクト指向"
+- c言語
+- interface
+- オブジェクト指向
 cover:
-  image: "images/Valac.jpg"
-  alt: "【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】"
+  image: images/Valac.jpg
+  alt: 【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】
   hidden: false
 ---
 

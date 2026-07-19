@@ -1,18 +1,18 @@
 ---
-title: "ccache(compiler cache)によるビルド高速化"
+title: ccache(compiler cache)によるビルド高速化
 type: post
 date: 2019-01-26
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "build"
-  - "command"
-  - "debian"
-  - "linux"
-  - "環境構築"
+- build
+- command
+- debian
+- 環境構築
 cover:
-  image: "images/ccache-1.png"
-  alt: "ccache(compiler cache)によるビルド高速化"
+  image: images/ccache-1.png
+  alt: ccache(compiler cache)によるビルド高速化
   hidden: false
 ---
 

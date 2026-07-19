@@ -1,18 +1,17 @@
 ---
-title: "環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法"
+title: 環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法
 type: post
 date: 2020-03-20
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "db"
-  - "debian"
-  - "linux"
-  - "postgresql"
-  - "環境構築"
+- db
+- debian
+- postgresql
+- 環境構築
 cover:
-  image: "images/DBランキング2020年3月時点.jpg"
-  alt: "環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法"
+  image: images/DBランキング2020年3月時点.jpg
+  alt: 環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法
   hidden: false
 ---
 

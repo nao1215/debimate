@@ -1,18 +1,18 @@
 ---
-title: "【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】"
+title: 【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】
 type: post
 date: 2022-02-11
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "cli"
-  - "golang"
-  - "linux"
-  - "ツール"
-  - "体験談"
+- cli
+- golang
+- ツール
+- 体験談
 cover:
-  image: "images/owl-g4a1fd006f_640.jpg"
-  alt: "【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】"
+  image: images/owl-g4a1fd006f_640.jpg
+  alt: 【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】
   hidden: false
 ---
 

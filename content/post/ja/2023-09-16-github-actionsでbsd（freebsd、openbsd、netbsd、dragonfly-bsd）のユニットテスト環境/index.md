@@ -1,16 +1,16 @@
 ---
-title: "GitHub ActionsでBSD（FreeBSD、OpenBSD、NetBSD、Dragonfly BSD）のユニットテスト環境を構築する方法"
+title: GitHub ActionsでBSD（FreeBSD、OpenBSD、NetBSD、Dragonfly BSD）のユニットテスト環境を構築する方法
 type: post
 date: 2023-09-16
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "golang"
-  - "go言語"
-  - "環境構築"
+- golang
+- 環境構築
 cover:
-  image: "images/BSD_wordmark.svg_.png"
-  alt: "GitHub ActionsでBSD（FreeBSD、OpenBSD、NetBSD、Dragonfly BSD）のユニットテスト環境を構築する方法"
+  image: images/BSD_wordmark.svg_.png
+  alt: GitHub ActionsでBSD（FreeBSD、OpenBSD、NetBSD、Dragonfly BSD）のユニットテスト環境を構築する方法
   hidden: false
 ---
 

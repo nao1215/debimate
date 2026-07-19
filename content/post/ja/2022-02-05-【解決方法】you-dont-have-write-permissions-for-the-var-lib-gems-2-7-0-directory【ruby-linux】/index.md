@@ -1,17 +1,19 @@
 ---
-title: "【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby, Linux】"
+title: 【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby,
+  Linux】
 type: post
 date: 2022-02-05
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "linux"
-  - "ruby"
-  - "ubuntu"
-  - "エラー解決"
+- ruby
+- ubuntu
+- エラー解決
 cover:
-  image: "images/diamond-g26c8044a7_640.jpg"
-  alt: "【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby, Linux】"
+  image: images/diamond-g26c8044a7_640.jpg
+  alt: 【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby,
+    Linux】
   hidden: false
 ---
 

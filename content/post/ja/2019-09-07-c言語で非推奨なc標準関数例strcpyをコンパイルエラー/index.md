@@ -1,15 +1,14 @@
 ---
-title: "C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法"
+title: C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法
 type: post
 date: 2019-09-07
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
+- c言語
 cover:
-  image: "images/banned-1726366_640.jpg"
-  alt: "C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法"
+  image: images/banned-1726366_640.jpg
+  alt: C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法
   hidden: false
 ---
 

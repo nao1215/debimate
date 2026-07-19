@@ -1,16 +1,15 @@
 ---
-title: "【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】"
+title: 【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】
 type: post
 date: 2021-01-09
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
-  - "linux"
-  - "デザインパターン"
+- java
+- デザインパターン
 cover:
-  image: "images/brass-telegraph-692735_640-min-1-1.jpg"
-  alt: "【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】"
+  image: images/brass-telegraph-692735_640-min-1-1.jpg
+  alt: 【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】
   hidden: false
 ---
 

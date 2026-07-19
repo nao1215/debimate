@@ -1,16 +1,15 @@
 ---
-title: "Raspberry Piに固定IPを割り当てる方法"
+title: Raspberry Piに固定IPを割り当てる方法
 type: post
 date: 2019-03-24
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "linux"
-  - "raspberrypi"
-  - "環境構築"
+- raspberrypi
+- 環境構築
 cover:
-  image: "images/IPアドレス.jpg"
-  alt: "Raspberry Piに固定IPを割り当てる方法"
+  image: images/IPアドレス.jpg
+  alt: Raspberry Piに固定IPを割り当てる方法
   hidden: false
 ---
 

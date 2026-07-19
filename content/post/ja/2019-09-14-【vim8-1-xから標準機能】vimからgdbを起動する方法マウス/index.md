@@ -1,17 +1,16 @@
 ---
-title: "【Vim8.1.xから標準機能】VimからGDBを起動する方法(マウスでGDBを操作可能)"
+title: 【Vim8.1.xから標準機能】VimからGDBを起動する方法(マウスでGDBを操作可能)
 type: post
 date: 2019-09-14
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "vim"
-  - "環境構築"
+- debian
+- vim
+- 環境構築
 cover:
-  image: "images/VIM_GDB-1.jpg"
-  alt: "【Vim8.1.xから標準機能】VimからGDBを起動する方法(マウスでGDBを操作可能)"
+  image: images/VIM_GDB-1.jpg
+  alt: 【Vim8.1.xから標準機能】VimからGDBを起動する方法(マウスでGDBを操作可能)
   hidden: false
 ---
 

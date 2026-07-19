@@ -1,16 +1,15 @@
 ---
-title: "Linux Kernel: prink(print kernel)によるメッセージ出力"
+title: 'Linux Kernel: prink(print kernel)によるメッセージ出力'
 type: post
 date: 2019-02-02
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- linuxkernel
 cover:
-  image: "images/bash-161382_640.png"
-  alt: "Linux Kernel: prink(print kernel)によるメッセージ出力"
+  image: images/bash-161382_640.png
+  alt: 'Linux Kernel: prink(print kernel)によるメッセージ出力'
   hidden: false
 ---
 

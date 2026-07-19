@@ -1,17 +1,17 @@
 ---
-title: "Linux Kernel: mutex APIによるロック(排他)方法"
+title: 'Linux Kernel: mutex APIによるロック(排他)方法'
 type: post
 date: 2019-07-07
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "c言語"
-  - "debian"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- debian
+- linuxkernel
 cover:
-  image: "images/mutex2.jpg"
-  alt: "Linux Kernel: mutex APIによるロック(排他)方法"
+  image: images/mutex2.jpg
+  alt: 'Linux Kernel: mutex APIによるロック(排他)方法'
   hidden: false
 ---
 

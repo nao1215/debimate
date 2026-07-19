@@ -1,14 +1,14 @@
 ---
-title: "Golangを用いたサーバーサイド：技術選定と現状の小さな課題"
+title: Golangを用いたサーバーサイド：技術選定と現状の小さな課題
 type: post
 date: 2023-05-19
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "golang"
+- golang
 cover:
-  image: "images/laptop-gdce694483_640.jpg"
-  alt: "Golangを用いたサーバーサイド：技術選定と現状の小さな課題"
+  image: images/laptop-gdce694483_640.jpg
+  alt: Golangを用いたサーバーサイド：技術選定と現状の小さな課題
   hidden: false
 ---
 

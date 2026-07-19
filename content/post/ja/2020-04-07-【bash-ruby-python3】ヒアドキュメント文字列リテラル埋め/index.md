@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ヒアドキュメント(文字列リテラル埋め込み)の書き方を比較"
+title: 【Bash / Ruby / Python3】ヒアドキュメント(文字列リテラル埋め込み)の書き方を比較
 type: post
 date: 2020-04-07
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/list-1882326_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】ヒアドキュメント(文字列リテラル埋め込み)の書き方を比較"
+  image: images/list-1882326_640-min.jpg
+  alt: 【Bash / Ruby / Python3】ヒアドキュメント(文字列リテラル埋め込み)の書き方を比較
   hidden: false
 ---
 

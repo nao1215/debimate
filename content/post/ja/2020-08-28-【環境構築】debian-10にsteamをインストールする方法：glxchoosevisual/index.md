@@ -1,19 +1,18 @@
 ---
-title: "【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避"
+title: 【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避
 type: post
 date: 2020-08-28
 categories:
-  - "linux"
-  - "ゲーム-漫画-ドラマ-映画"
+- エンタメ
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "steam"
-  - "ゲーム"
-  - "環境構築"
+- debian
+- steam
+- ゲーム
+- 環境構築
 cover:
-  image: "images/768px-Steam_icon_logo.svg_.png"
-  alt: "【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避"
+  image: images/768px-Steam_icon_logo.svg_.png
+  alt: 【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避
   hidden: false
 ---
 

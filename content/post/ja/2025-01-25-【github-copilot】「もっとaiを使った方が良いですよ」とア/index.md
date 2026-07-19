@@ -1,16 +1,16 @@
 ---
-title: "【GitHub Copilot】「もっとAIを使った方が良いですよ」とアドバイスする時代になった"
+title: 【GitHub Copilot】「もっとAIを使った方が良いですよ」とアドバイスする時代になった
 type: post
 date: 2025-01-25
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "ai"
-  - "github"
+- ai
+- github
 cover:
-  image: "images/Screenshot-from-2025-01-25-10-09-53.png"
-  alt: "【GitHub Copilot】「もっとAIを使った方が良いですよ」とアドバイスする時代になった"
+  image: images/Screenshot-from-2025-01-25-10-09-53.png
+  alt: 【GitHub Copilot】「もっとAIを使った方が良いですよ」とアドバイスする時代になった
   hidden: false
 ---
 

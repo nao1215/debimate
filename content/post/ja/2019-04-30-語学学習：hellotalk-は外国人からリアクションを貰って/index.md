@@ -1,18 +1,17 @@
 ---
-title: "語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ"
+title: 語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ
 type: post
 date: 2019-04-30
 categories:
-  - "体験談"
+- 生活
 tags:
-  - "hellotalk"
-  - "ロシア語"
-  - "体験談"
-  - "英語"
-  - "語学学習"
+- hellotalk
+- ロシア語
+- 英語
+- 語学学習
 cover:
-  image: "images/HelloTalkTop.jpg"
-  alt: "語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ"
+  image: images/HelloTalkTop.jpg
+  alt: 語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ
   hidden: false
 ---
 

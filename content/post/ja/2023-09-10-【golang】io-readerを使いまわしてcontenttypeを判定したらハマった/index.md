@@ -1,15 +1,14 @@
 ---
-title: "【golang】io.Readerを使いまわしてContentType判定、S3アップロードしたらハマった話"
+title: 【golang】io.Readerを使いまわしてContentType判定、S3アップロードしたらハマった話
 type: post
 date: 2023-09-10
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "golang"
-  - "linux"
+- golang
 cover:
-  image: "images/boys-3396713_640.jpg"
-  alt: "【golang】io.Readerを使いまわしてContentType判定、S3アップロードしたらハマった話"
+  image: images/boys-3396713_640.jpg
+  alt: 【golang】io.Readerを使いまわしてContentType判定、S3アップロードしたらハマった話
   hidden: false
 ---
 

@@ -1,17 +1,17 @@
 ---
-title: "【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】"
+title: 【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】
 type: post
 date: 2021-01-02
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "iteratorパターン"
-  - "java"
-  - "ruby"
-  - "デザインパターン"
+- iteratorパターン
+- java
+- ruby
+- デザインパターン
 cover:
-  image: "images/class.jpg"
-  alt: "【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】"
+  image: images/class.jpg
+  alt: 【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】
   hidden: false
 ---
 

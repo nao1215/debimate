@@ -1,18 +1,17 @@
 ---
-title: "ロシアに潜んでいたくまのプー\"Винни-Пух(ヴィーニ・プーフ、ソ連版くまのプー)\""
+title: ロシアに潜んでいたくまのプー"Винни-Пух(ヴィーニ・プーフ、ソ連版くまのプー)"
 type: post
 date: 2019-07-21
-categories: 
-  - "russia"
-tags: 
-  - "russia"
-  - "винни-пух"
-  - "ディズニー"
-  - "ロシア語"
-coverImage: ""
+categories:
+- ロシア
+tags:
+- винни-пух
+- ディズニー
+- ロシア語
+coverImage: ''
 cover:
-  image: "images/にせぐま-min.jpg"
-  alt: "ロシアのプー"
+  image: images/にせぐま-min.jpg
+  alt: ロシアのプー
   hidden: false
 ---
 

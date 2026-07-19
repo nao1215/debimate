@@ -1,16 +1,14 @@
 ---
-title: "感想: 日本はもはや「後進国」"
+title: '感想: 日本はもはや「後進国」'
 type: post
 date: 2020-01-05
 categories:
-  - "書籍"
+- 書評
 tags:
-  - "review"
-  - "書籍"
-  - "経済"
+- 経済
 cover:
-  image: "images/日本はもはや「後進国」-min-1.jpg"
-  alt: "感想: 日本はもはや「後進国」"
+  image: images/日本はもはや「後進国」-min-1.jpg
+  alt: '感想: 日本はもはや「後進国」'
   hidden: false
 ---
 

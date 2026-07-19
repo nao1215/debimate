@@ -1,16 +1,15 @@
 ---
-title: "Raspberry Pi3/4にDockerとdocker-composeをインストールする方法"
+title: Raspberry Pi3/4にDockerとdocker-composeをインストールする方法
 type: post
 date: 2020-09-27
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "docker"
-  - "linux"
-  - "raspberrypi"
+- docker
+- raspberrypi
 cover:
-  image: "images/lfVWBmiW_400x400-min.jpg"
-  alt: "Raspberry Pi3/4にDockerとdocker-composeをインストールする方法"
+  image: images/lfVWBmiW_400x400-min.jpg
+  alt: Raspberry Pi3/4にDockerとdocker-composeをインストールする方法
   hidden: false
 ---
 

@@ -1,16 +1,15 @@
 ---
-title: "Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)"
+title: Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)
 type: post
 date: 2019-03-26
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "linux"
-  - "raspberrypi"
-  - "環境構築"
+- raspberrypi
+- 環境構築
 cover:
-  image: "images/raspberry-pi-1383832_640.jpg"
-  alt: "Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)"
+  image: images/raspberry-pi-1383832_640.jpg
+  alt: Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)
   hidden: false
 ---
 

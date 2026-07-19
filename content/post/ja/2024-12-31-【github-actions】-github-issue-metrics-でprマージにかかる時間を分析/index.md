@@ -1,14 +1,15 @@
 ---
-title: "【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析"
+title: 【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析
 type: post
 date: 2024-12-31
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "github-actions"
+- github-actions
 cover:
-  image: "images/issue-metrics-sample-output.png"
-  alt: "【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析"
+  image: images/issue-metrics-sample-output.png
+  alt: 【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析
   hidden: false
 ---
 

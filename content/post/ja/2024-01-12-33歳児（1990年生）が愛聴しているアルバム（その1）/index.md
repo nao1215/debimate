@@ -1,14 +1,14 @@
 ---
-title: "33歳児（1990年生）が愛聴しているアルバム（その1）"
+title: 33歳児（1990年生）が愛聴しているアルバム（その1）
 type: post
 date: 2024-01-12
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "体験談"
+- 体験談
 cover:
-  image: "images/220174754.jpg"
-  alt: "33歳児（1990年生）が愛聴しているアルバム（その1）"
+  image: images/220174754.jpg
+  alt: 33歳児（1990年生）が愛聴しているアルバム（その1）
   hidden: false
 ---
 

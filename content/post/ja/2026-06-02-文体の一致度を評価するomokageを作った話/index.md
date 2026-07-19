@@ -1,13 +1,14 @@
 ---
-title: "文体の一致度を評価する nao1215/omokage を作った話"
+title: 文体の一致度を評価する nao1215/omokage を作った話
 type: post
 date: 2026-06-02
 draft: false
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/omokage-icon.jpg"
-  alt: "omokage"
+  image: images/omokage-icon.jpg
+  alt: omokage
   hidden: false
 ---
 

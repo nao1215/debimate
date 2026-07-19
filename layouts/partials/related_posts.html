@@ -1,0 +1,21 @@
+{{- if not site.Params.relatedPosts.enabled -}}
+  {{- return -}}
+{{- end -}}
+
+{{- $count := site.Params.relatedPosts.count | default 4 -}}
+{{- $pages := site.RegularPages.Related . | first $count -}}
+{{- if gt (len $pages) 0 -}}
+<section class="related-posts">
+  <h2 class="related-posts-title">次に読む</h2>
+  <div class="related-posts-list">
+    {{- range $pages }}
+    <article class="related-post">
+      <a class="related-post-link" href="{{ .RelPermalink }}">
+        <span class="related-post-name">{{ .Title }}</span>
+        <span class="related-post-meta">{{ partial "post_meta.html" . }}</span>
+      </a>
+    </article>
+    {{- end }}
+  </div>
+</section>
+{{- end -}}

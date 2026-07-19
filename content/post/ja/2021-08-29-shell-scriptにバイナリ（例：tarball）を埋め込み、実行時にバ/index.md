@@ -1,17 +1,15 @@
 ---
-title: "Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法"
+title: Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法
 type: post
 date: 2021-08-29
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "shell"
-  - "shellscript"
+- bash
+- shellscript
 cover:
-  image: "images/walnuts-1739021_640-min.jpg"
-  alt: "Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法"
+  image: images/walnuts-1739021_640-min.jpg
+  alt: Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法
   hidden: false
 ---
 

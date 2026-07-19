@@ -1,17 +1,15 @@
 ---
-title: "【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）"
+title: 【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）
 type: post
 date: 2022-05-15
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "linux"
-  - "体験談"
-  - "書籍"
+- 書籍
 cover:
-  image: "images/642206.jpg"
-  alt: "【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）"
+  image: images/642206.jpg
+  alt: 【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）
   hidden: false
 ---
 

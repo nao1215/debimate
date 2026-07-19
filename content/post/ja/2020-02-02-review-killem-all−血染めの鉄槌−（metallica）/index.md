@@ -1,16 +1,14 @@
 ---
-title: "Review: Kill'Em All−血染めの鉄槌−（Metallica）"
+title: 'Review: Kill''Em All−血染めの鉄槌−（Metallica）'
 type: post
 date: 2020-02-02
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "metallica"
-  - "review"
+- metallica
 cover:
-  image: "images/KillemAll.jpg"
-  alt: "Review: Kill'Em All−血染めの鉄槌−（Metallica）"
+  image: images/KillemAll.jpg
+  alt: 'Review: Kill''Em All−血染めの鉄槌−（Metallica）'
   hidden: false
 ---
 

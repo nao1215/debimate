@@ -1,15 +1,15 @@
 ---
-title: "【Android Studio】JSON To Kotlin ClassプラグインでAPIレスポンス用モデルの作成を楽に"
+title: 【Android Studio】JSON To Kotlin ClassプラグインでAPIレスポンス用モデルの作成を楽に
 type: post
 date: 2023-04-01
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "android"
-  - "kotlin"
+- android
+- kotlin
 cover:
-  image: "images/Screenshot-from-2023-04-01-23-32-29.png"
-  alt: "【Android Studio】JSON To Kotlin ClassプラグインでAPIレスポンス用モデルの作成を楽に"
+  image: images/Screenshot-from-2023-04-01-23-32-29.png
+  alt: 【Android Studio】JSON To Kotlin ClassプラグインでAPIレスポンス用モデルの作成を楽に
   hidden: false
 ---
 

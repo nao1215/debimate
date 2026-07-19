@@ -1,18 +1,16 @@
 ---
-title: "GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】"
+title: GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】
 type: post
 date: 2022-02-26
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "github"
-  - "golang"
-  - "linux"
-  - "体験談"
+- github
+- golang
 cover:
-  image: "images/Screenshot-from-2022-02-26-21-38-01.png"
-  alt: "GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】"
+  image: images/Screenshot-from-2022-02-26-21-38-01.png
+  alt: GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】
   hidden: false
 ---
 

@@ -1,18 +1,18 @@
 ---
-title: "【環境構築】fish shellを用いたDebian環境にSDKMANおよびJava(JDK)をインストールする方法"
+title: 【環境構築】fish shellを用いたDebian環境にSDKMANおよびJava(JDK)をインストールする方法
 type: post
 date: 2020-08-30
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "debian"
-  - "java"
-  - "linux"
-  - "sdkman"
-  - "環境構築"
+- debian
+- java
+- sdkman
+- 環境構築
 cover:
-  image: "images/Screenshot-from-2020-08-30-11-24-14-min.jpg"
-  alt: "【環境構築】fish shellを用いたDebian環境にSDKMANおよびJava(JDK)をインストールする方法"
+  image: images/Screenshot-from-2020-08-30-11-24-14-min.jpg
+  alt: 【環境構築】fish shellを用いたDebian環境にSDKMANおよびJava(JDK)をインストールする方法
   hidden: false
 ---
 

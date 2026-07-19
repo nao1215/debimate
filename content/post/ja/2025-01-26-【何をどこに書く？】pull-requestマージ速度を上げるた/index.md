@@ -1,14 +1,14 @@
 ---
-title: "【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く"
+title: 【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く
 type: post
 date: 2025-01-26
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "プログラミング"
+- プログラミング
 cover:
-  image: "images/CleanArchitecture.jpg"
-  alt: "【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く"
+  image: images/CleanArchitecture.jpg
+  alt: 【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く
   hidden: false
 ---
 

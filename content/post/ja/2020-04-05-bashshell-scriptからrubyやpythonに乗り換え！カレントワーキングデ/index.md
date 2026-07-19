@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】カレントワーキングディレクトリを取得する方法の比較"
+title: 【Bash / Ruby / Python3】カレントワーキングディレクトリを取得する方法の比較
 type: post
 date: 2020-04-05
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/the-location-of-the-1724293_640.jpg"
-  alt: "【Bash / Ruby / Python3】カレントワーキングディレクトリを取得する方法の比較"
+  image: images/the-location-of-the-1724293_640.jpg
+  alt: 【Bash / Ruby / Python3】カレントワーキングディレクトリを取得する方法の比較
   hidden: false
 ---
 

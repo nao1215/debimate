@@ -1,18 +1,13 @@
 ---
-title: "【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選"
+title: 【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選
 type: post
 date: 2021-11-23
 categories:
-  - "linux"
-  - "体験談"
-  - "書籍"
-tags:
-  - "linux"
-  - "体験談"
-  - "書籍"
+- 書評
+- プログラミング
 cover:
-  image: "images/android-stack_2x.png"
-  alt: "【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選"
+  image: images/android-stack_2x.png
+  alt: 【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選
   hidden: false
 ---
 

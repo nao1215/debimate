@@ -1,16 +1,14 @@
 ---
-title: "感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方"
+title: 感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方
 type: post
 date: 2020-01-16
 categories:
-  - "書籍"
+- 書評
 tags:
-  - "review"
-  - "ruby"
-  - "書籍"
+- ruby
 cover:
-  image: "images/ruby_obj-min.jpg"
-  alt: "感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方"
+  image: images/ruby_obj-min.jpg
+  alt: 感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方
   hidden: false
 ---
 

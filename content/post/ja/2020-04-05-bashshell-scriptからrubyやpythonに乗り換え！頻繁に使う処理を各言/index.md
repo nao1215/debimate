@@ -1,18 +1,17 @@
 ---
-title: "Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較"
+title: Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較
 type: post
 date: 2020-04-05
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/scripts-min.jpg"
-  alt: "Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較"
+  image: images/scripts-min.jpg
+  alt: Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較
   hidden: false
 ---
 

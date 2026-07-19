@@ -1,18 +1,17 @@
 ---
-title: "Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)"
+title: Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)
 type: post
 date: 2019-09-29
 categories:
-  - "linux"
-  - "体験談"
+- インフラ
 tags:
-  - "debian"
-  - "ryzen"
-  - "環境構築"
-  - "自作pc"
+- debian
+- ryzen
+- 環境構築
+- 自作pc
 cover:
-  image: "images/PCリスト-min-1.jpeg"
-  alt: "Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)"
+  image: images/PCリスト-min-1.jpeg
+  alt: Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)
   hidden: false
 ---
 

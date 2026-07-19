@@ -1,12 +1,12 @@
 ---
-title: '技術ブログ debimate のお引越し（X Server to GitHub Pages）'
+title: 技術ブログ debimate のお引越し（X Server to GitHub Pages）
 type: post
 date: 2025-11-05
 categories:
-  - "体験談"
+- ブログ運営
 cover:
-  image: "images/migrate.jpg"
-  alt: "技術ブログ debimate のお引越し"
+  image: images/migrate.jpg
+  alt: 技術ブログ debimate のお引越し
   hidden: false
 ---
 

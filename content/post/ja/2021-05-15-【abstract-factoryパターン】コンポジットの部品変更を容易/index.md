@@ -1,15 +1,15 @@
 ---
-title: "【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】"
+title: 【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】
 type: post
 date: 2021-05-15
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
-  - "デザインパターン"
+- java
+- デザインパターン
 cover:
-  image: "images/AbstractFactory-ページ1-min.jpg"
-  alt: "【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】"
+  image: images/AbstractFactory-ページ1-min.jpg
+  alt: 【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】
   hidden: false
 ---
 

@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】実行ファイル名、実行ファイルの絶対 / 相対PATHを取得する方法の比較"
+title: 【Bash / Ruby / Python3】実行ファイル名、実行ファイルの絶対 / 相対PATHを取得する方法の比較
 type: post
 date: 2020-04-05
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/shield-490811_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】実行ファイル名、実行ファイルの絶対 / 相対PATHを取得する方法の比較"
+  image: images/shield-490811_640-min.jpg
+  alt: 【Bash / Ruby / Python3】実行ファイル名、実行ファイルの絶対 / 相対PATHを取得する方法の比較
   hidden: false
 ---
 

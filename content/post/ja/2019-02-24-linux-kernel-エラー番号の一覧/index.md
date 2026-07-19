@@ -1,16 +1,15 @@
 ---
-title: "Linux Kernel: エラー番号の一覧"
+title: 'Linux Kernel: エラー番号の一覧'
 type: post
 date: 2019-02-24
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- linuxkernel
 cover:
-  image: "images/mistake-3085712_640.jpg"
-  alt: "Linux Kernel: エラー番号の一覧"
+  image: images/mistake-3085712_640.jpg
+  alt: 'Linux Kernel: エラー番号の一覧'
   hidden: false
 ---
 

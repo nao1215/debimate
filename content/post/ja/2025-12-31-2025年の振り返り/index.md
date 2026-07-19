@@ -1,12 +1,12 @@
 ---
-title: "2025年の振り返り & 2026年の抱負"
+title: 2025年の振り返り & 2026年の抱負
 type: post
 date: 2025-12-08
 categories:
-  - "linux"
+- プログラミング
 cover:
-  image: "images/2025-suntopia_world.jpg"
-  alt: "2025-suntopia_world"
+  image: images/2025-suntopia_world.jpg
+  alt: 2025-suntopia_world
   hidden: false
 ---
 

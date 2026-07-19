@@ -1,18 +1,17 @@
 ---
-title: "Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法"
+title: Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法
 type: post
 date: 2021-08-14
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "linux"
-  - "lpic"
-  - "ssh"
-  - "ubuntu"
-  - "サーバー"
+- lpic
+- ssh
+- ubuntu
+- サーバー
 cover:
-  image: "images/welcome-sign-2284312_640-min.jpg"
-  alt: "Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法"
+  image: images/welcome-sign-2284312_640-min.jpg
+  alt: Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法
   hidden: false
 ---
 

@@ -1,15 +1,14 @@
 ---
-title: "2022年の振り返り & 2023年の抱負"
+title: 2022年の振り返り & 2023年の抱負
 type: post
 date: 2022-12-24
 categories:
-  - "体験談"
+- キャリア
 tags:
-  - "体験談"
-  - "振り返り"
+- 振り返り
 cover:
-  image: "images/SV_Ler3B.jpg"
-  alt: "2022年の振り返り & 2023年の抱負"
+  image: images/SV_Ler3B.jpg
+  alt: 2022年の振り返り & 2023年の抱負
   hidden: false
 ---
 

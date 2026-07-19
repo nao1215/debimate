@@ -1,17 +1,15 @@
 ---
-title: "Review: Boston 1981(Rainbow)"
+title: 'Review: Boston 1981(Rainbow)'
 type: post
 date: 2019-01-04
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "bootleg"
-  - "hrhm"
-  - "rainbow"
-  - "review"
+- bootleg
+- rainbow
 cover:
-  image: "images/rainbow_boston.jpg"
-  alt: "Review: Boston 1981(Rainbow)"
+  image: images/rainbow_boston.jpg
+  alt: 'Review: Boston 1981(Rainbow)'
   hidden: false
 ---
 

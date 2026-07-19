@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ファイル一覧の取得方法、ファイル数の確認方法の比較"
+title: 【Bash / Ruby / Python3】ファイル一覧の取得方法、ファイル数の確認方法の比較
 type: post
 date: 2020-04-09
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/documents-1920461_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】ファイル一覧の取得方法、ファイル数の確認方法の比較"
+  image: images/documents-1920461_640-min.jpg
+  alt: 【Bash / Ruby / Python3】ファイル一覧の取得方法、ファイル数の確認方法の比較
   hidden: false
 ---
 

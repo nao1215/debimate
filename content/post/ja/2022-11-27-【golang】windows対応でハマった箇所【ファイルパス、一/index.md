@@ -1,15 +1,15 @@
 ---
-title: "【Golang】Windows対応でハマった箇所【ファイルパス、一時ファイル削除エラー】"
+title: 【Golang】Windows対応でハマった箇所【ファイルパス、一時ファイル削除エラー】
 type: post
 date: 2022-11-27
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "golang"
-  - "windows"
+- golang
+- windows
 cover:
-  image: "images/operating-system-g6fd6f1801_640.png"
-  alt: "【Golang】Windows対応でハマった箇所【ファイルパス、一時ファイル削除エラー】"
+  image: images/operating-system-g6fd6f1801_640.png
+  alt: 【Golang】Windows対応でハマった箇所【ファイルパス、一時ファイル削除エラー】
   hidden: false
 ---
 

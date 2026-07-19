@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】オプション解析する方法の比較"
+title: 【Bash / Ruby / Python3】オプション解析する方法の比較
 type: post
 date: 2020-04-11
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/settings-3311593_640.png"
-  alt: "【Bash / Ruby / Python3】オプション解析する方法の比較"
+  image: images/settings-3311593_640.png
+  alt: 【Bash / Ruby / Python3】オプション解析する方法の比較
   hidden: false
 ---
 

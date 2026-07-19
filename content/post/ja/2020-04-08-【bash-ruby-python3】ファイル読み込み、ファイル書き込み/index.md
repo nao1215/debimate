@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較"
+title: 【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較
 type: post
 date: 2020-04-08
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/document-3503099_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較"
+  image: images/document-3503099_640-min.jpg
+  alt: 【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較
   hidden: false
 ---
 

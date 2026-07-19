@@ -1,17 +1,16 @@
 ---
-title: "【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】"
+title: 【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】
 type: post
 date: 2022-01-11
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "linux"
-  - "oss"
+- golang
+- oss
 cover:
-  image: "images/cooking-g7a7f01727_640-min.jpg"
-  alt: "【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】"
+  image: images/cooking-g7a7f01727_640-min.jpg
+  alt: 【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】
   hidden: false
 ---
 

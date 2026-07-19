@@ -1,18 +1,16 @@
 ---
-title: "【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】"
+title: 【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】
 type: post
 date: 2022-05-15
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- キャリア
 tags:
-  - "linux"
-  - "lpic"
-  - "体験談"
-  - "資格"
+- lpic
+- 資格
 cover:
-  image: "images/board-2450236_640.jpg"
-  alt: "【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】"
+  image: images/board-2450236_640.jpg
+  alt: 【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】
   hidden: false
 ---
 

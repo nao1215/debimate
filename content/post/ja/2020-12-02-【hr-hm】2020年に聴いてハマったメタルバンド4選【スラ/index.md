@@ -1,15 +1,14 @@
 ---
-title: "【HR/HM】2020年に聴いてハマったメタルバンド4選【スラッシュ／ジャパメタ】"
+title: 【HR/HM】2020年に聴いてハマったメタルバンド4選【スラッシュ／ジャパメタ】
 type: post
 date: 2020-12-02
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "ベスト"
+- ベスト
 cover:
-  image: "images/61Yh4l8u7CL._AC_.jpg"
-  alt: "【HR/HM】2020年に聴いてハマったメタルバンド4選【スラッシュ／ジャパメタ】"
+  image: images/61Yh4l8u7CL._AC_.jpg
+  alt: 【HR/HM】2020年に聴いてハマったメタルバンド4選【スラッシュ／ジャパメタ】
   hidden: false
 ---
 

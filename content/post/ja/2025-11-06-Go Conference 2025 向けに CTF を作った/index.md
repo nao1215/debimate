@@ -1,12 +1,12 @@
 ---
-title: 'Go Conference 2025 向けに CTF を作った話（会社のテックブログのリンクを引用）'
+title: Go Conference 2025 向けに CTF を作った話（会社のテックブログのリンクを引用）
 type: post
 date: 2025-11-06
 categories:
-  - "体験談"
+- ブログ運営
 cover:
-  image: "images/2025-11-06-ctf2025.jpg"
-  alt: "2025-11-06-ctf2025.jpg"
+  image: images/2025-11-06-ctf2025.jpg
+  alt: 2025-11-06-ctf2025.jpg
   hidden: false
 ---
 

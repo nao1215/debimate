@@ -1,14 +1,15 @@
 ---
-title: "GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】"
+title: GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】
 type: post
 date: 2025-04-27
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "github"
+- github
 cover:
-  image: "images/key-2114293_640.jpg"
-  alt: "GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】"
+  image: images/key-2114293_640.jpg
+  alt: GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】
   hidden: false
 ---
 

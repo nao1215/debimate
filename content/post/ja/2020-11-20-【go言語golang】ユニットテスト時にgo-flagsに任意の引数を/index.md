@@ -1,17 +1,15 @@
 ---
-title: "【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法"
+title: 【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法
 type: post
 date: 2020-11-20
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "golang"
-  - "go言語"
-  - "linux"
-  - "ユニットテスト"
+- golang
+- ユニットテスト
 cover:
-  image: "images/doors-1767563_640-min.jpg"
-  alt: "【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法"
+  image: images/doors-1767563_640-min.jpg
+  alt: 【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法
   hidden: false
 ---
 

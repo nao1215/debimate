@@ -1,12 +1,13 @@
 ---
-title: "【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】"
+title: 【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】
 type: post
 date: 2025-10-05
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/horcrux.jpg"
-  alt: "【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】"
+  image: images/horcrux.jpg
+  alt: 【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】
   hidden: false
 ---
 

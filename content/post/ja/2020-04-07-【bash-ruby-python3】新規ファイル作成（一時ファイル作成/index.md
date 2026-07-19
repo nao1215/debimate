@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】新規ファイル作成（一時ファイル作成含む）やファイル削除する方法の比較"
+title: 【Bash / Ruby / Python3】新規ファイル作成（一時ファイル作成含む）やファイル削除する方法の比較
 type: post
 date: 2020-04-07
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/attach-3592638_640.jpg"
-  alt: "【Bash / Ruby / Python3】新規ファイル作成（一時ファイル作成含む）やファイル削除する方法の比較"
+  image: images/attach-3592638_640.jpg
+  alt: 【Bash / Ruby / Python3】新規ファイル作成（一時ファイル作成含む）やファイル削除する方法の比較
   hidden: false
 ---
 

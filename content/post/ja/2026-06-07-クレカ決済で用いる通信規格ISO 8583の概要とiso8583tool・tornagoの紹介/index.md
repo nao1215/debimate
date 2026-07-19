@@ -1,13 +1,13 @@
 ---
-title: "クレカ決済で用いる通信規格 ISO 8583 の概要と、iso8583tool・tornago の紹介"
+title: クレカ決済で用いる通信規格 ISO 8583 の概要と、iso8583tool・tornago の紹介
 type: post
 date: 2026-06-07
 draft: false
 categories:
-  - "linux"
+- プログラミング
 cover:
-  image: "images/iso8583-icon.jpg"
-  alt: "iso8583-icon"
+  image: images/iso8583-icon.jpg
+  alt: iso8583-icon
   hidden: false
 ---
 

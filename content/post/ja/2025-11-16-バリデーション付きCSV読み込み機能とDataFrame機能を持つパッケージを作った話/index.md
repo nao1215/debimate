@@ -1,12 +1,13 @@
 ---
-title: "【Golang】バリデーション付き CSV 読み込み機能と DataFrame 機能を持つパッケージを作った話"
+title: 【Golang】バリデーション付き CSV 読み込み機能と DataFrame 機能を持つパッケージを作った話
 type: post
 date: 2025-11-15
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/csv-logo.png"
-  alt: "csv package logo"
+  image: images/csv-logo.png
+  alt: csv package logo
   hidden: false
 ---
 

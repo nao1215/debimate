@@ -1,16 +1,14 @@
 ---
-title: "Review: RISING--虹を翔る覇者--(Rainbow)"
+title: 'Review: RISING--虹を翔る覇者--(Rainbow)'
 type: post
 date: 2019-05-19
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "rainbow"
-  - "review"
+- rainbow
 cover:
-  image: "images/rising.jpg"
-  alt: "Review: RISING--虹を翔る覇者--(Rainbow)"
+  image: images/rising.jpg
+  alt: 'Review: RISING--虹を翔る覇者--(Rainbow)'
   hidden: false
 ---
 

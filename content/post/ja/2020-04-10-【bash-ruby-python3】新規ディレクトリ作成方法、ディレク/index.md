@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】新規ディレクトリ作成方法、ディレクトリ削除方法の比較"
+title: 【Bash / Ruby / Python3】新規ディレクトリ作成方法、ディレクトリ削除方法の比較
 type: post
 date: 2020-04-10
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/folder-2517423_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】新規ディレクトリ作成方法、ディレクトリ削除方法の比較"
+  image: images/folder-2517423_640-min.jpg
+  alt: 【Bash / Ruby / Python3】新規ディレクトリ作成方法、ディレクトリ削除方法の比較
   hidden: false
 ---
 

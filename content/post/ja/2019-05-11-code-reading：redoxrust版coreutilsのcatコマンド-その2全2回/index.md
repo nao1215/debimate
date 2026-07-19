@@ -1,17 +1,16 @@
 ---
-title: "Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)"
+title: Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)
 type: post
 date: 2019-05-11
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "codereading"
-  - "coreutils"
-  - "linux"
-  - "rust"
+- codereading
+- coreutils
+- rust
 cover:
-  image: "images/s_cat2.jpg"
-  alt: "Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)"
+  image: images/s_cat2.jpg
+  alt: Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)
   hidden: false
 ---
 

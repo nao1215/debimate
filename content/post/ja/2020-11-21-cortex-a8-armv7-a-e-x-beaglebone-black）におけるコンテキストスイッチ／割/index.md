@@ -1,16 +1,16 @@
 ---
-title: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt"
+title: Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt
 type: post
 date: 2020-11-21
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "arm"
-  - "xinu"
-  - "アセンブラ"
+- arm
+- xinu
+- アセンブラ
 cover:
-  image: "images/Screenshot-from-2020-11-21-12-10-31.jpg"
-  alt: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt"
+  image: images/Screenshot-from-2020-11-21-12-10-31.jpg
+  alt: Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt
   hidden: false
 ---
 

@@ -1,17 +1,16 @@
 ---
-title: "【Builderパターン】コンストラクタの初期化(new)引数が多い場合にオススメなデザインパターン"
+title: 【Builderパターン】コンストラクタの初期化(new)引数が多い場合にオススメなデザインパターン
 type: post
 date: 2020-04-25
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "linux"
-  - "ruby"
-  - "uml"
-  - "デザインパターン"
+- ruby
+- uml
+- デザインパターン
 cover:
-  image: "images/child-1864718_640-min.jpg"
-  alt: "【Builderパターン】コンストラクタの初期化(new)引数が多い場合にオススメなデザインパターン"
+  image: images/child-1864718_640-min.jpg
+  alt: 【Builderパターン】コンストラクタの初期化(new)引数が多い場合にオススメなデザインパターン
   hidden: false
 ---
 

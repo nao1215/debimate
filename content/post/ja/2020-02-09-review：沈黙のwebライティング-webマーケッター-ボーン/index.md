@@ -1,16 +1,14 @@
 ---
-title: "感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—"
+title: 感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—
 type: post
 date: 2020-02-09
 categories:
-  - "書籍"
+- 書評
 tags:
-  - "review"
-  - "seo"
-  - "書籍"
+- seo
 cover:
-  image: "images/沈黙のWebライティング-min.jpg"
-  alt: "感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—"
+  image: images/沈黙のWebライティング-min.jpg
+  alt: 感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—
   hidden: false
 ---
 

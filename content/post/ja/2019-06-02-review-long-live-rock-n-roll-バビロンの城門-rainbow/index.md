@@ -1,16 +1,14 @@
 ---
-title: "Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)"
+title: 'Review: Long Live Rock ''n'' Roll--バビロンの城門--(Rainbow)'
 type: post
 date: 2019-06-02
 categories:
-  - "hrhm"
+- 音楽
 tags:
-  - "hrhm"
-  - "rainbow"
-  - "review"
+- rainbow
 cover:
-  image: "images/llrr.jpeg"
-  alt: "Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)"
+  image: images/llrr.jpeg
+  alt: 'Review: Long Live Rock ''n'' Roll--バビロンの城門--(Rainbow)'
   hidden: false
 ---
 

@@ -1,16 +1,14 @@
 ---
-title: "感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで"
+title: 感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで
 type: post
 date: 2020-01-13
 categories:
-  - "書籍"
+- 書評
 tags:
-  - "review"
-  - "ruby"
-  - "書籍"
+- ruby
 cover:
-  image: "images/Ruby-min.jpg"
-  alt: "感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで"
+  image: images/Ruby-min.jpg
+  alt: 感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで
   hidden: false
 ---
 

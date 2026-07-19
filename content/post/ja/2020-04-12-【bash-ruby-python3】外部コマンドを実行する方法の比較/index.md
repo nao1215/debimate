@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】外部コマンドを実行する方法の比較"
+title: 【Bash / Ruby / Python3】外部コマンドを実行する方法の比較
 type: post
 date: 2020-04-12
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/ubuntu-3145957_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】外部コマンドを実行する方法の比較"
+  image: images/ubuntu-3145957_640-min.jpg
+  alt: 【Bash / Ruby / Python3】外部コマンドを実行する方法の比較
   hidden: false
 ---
 

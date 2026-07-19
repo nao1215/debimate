@@ -1,17 +1,16 @@
 ---
-title: "【Golang】go installで取得した$GOPATH/bin以下のバイナリを一括更新するgupコマンドを試作"
+title: 【Golang】go installで取得した$GOPATH/bin以下のバイナリを一括更新するgupコマンドを試作
 type: post
 date: 2022-02-20
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "linux"
-  - "oss"
+- golang
+- oss
 cover:
-  image: "images/Screenshot-from-2022-02-20-13-02-09.png"
-  alt: "【Golang】go installで取得した$GOPATH/bin以下のバイナリを一括更新するgupコマンドを試作"
+  image: images/Screenshot-from-2022-02-20-13-02-09.png
+  alt: 【Golang】go installで取得した$GOPATH/bin以下のバイナリを一括更新するgupコマンドを試作
   hidden: false
 ---
 

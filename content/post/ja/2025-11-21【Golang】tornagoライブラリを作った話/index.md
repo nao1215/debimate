@@ -1,12 +1,13 @@
 ---
-title: "【Golang】tor client/server を実装するための nao1215/tornago ライブラリを作った話"
+title: 【Golang】tor client/server を実装するための nao1215/tornago ライブラリを作った話
 type: post
 date: 2025-11-15
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/tornago-logo-small.png"
-  alt: "tornago-logo"
+  image: images/tornago-logo-small.png
+  alt: tornago-logo
   hidden: false
 ---
 

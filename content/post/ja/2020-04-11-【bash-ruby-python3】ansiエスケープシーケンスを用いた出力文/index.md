@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較"
+title: 【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較
 type: post
 date: 2020-04-11
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/chalk-1869492_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較"
+  image: images/chalk-1869492_640-min.jpg
+  alt: 【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較
   hidden: false
 ---
 

@@ -1,16 +1,17 @@
 ---
-title: "【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh, fish】"
+title: 【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh,
+  fish】
 type: post
 date: 2022-04-17
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "cli"
-  - "golang"
-  - "linux"
+- cli
+- golang
 cover:
-  image: "images/snake-gc4e761055_640.jpg"
-  alt: "【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh, fish】"
+  image: images/snake-gc4e761055_640.jpg
+  alt: 【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh,
+    fish】
   hidden: false
 ---
 

@@ -1,18 +1,17 @@
 ---
-title: "manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」"
+title: manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」
 type: post
 date: 2020-01-17
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "ascii"
-  - "command"
-  - "debian"
-  - "linux"
-  - "man"
+- ascii
+- command
+- debian
+- man
 cover:
-  image: "images/man.jpg"
-  alt: "manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」"
+  image: images/man.jpg
+  alt: manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」
   hidden: false
 ---
 

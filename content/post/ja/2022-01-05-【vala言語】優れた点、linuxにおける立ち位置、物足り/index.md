@@ -1,15 +1,15 @@
 ---
-title: "【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）"
+title: 【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）
 type: post
 date: 2022-01-05
 categories:
-  - "linux"
+- プログラミング
+- OSS
 tags:
-  - "linux"
-  - "vala"
+- vala
 cover:
-  image: "images/1200px-Vala_Logo.svg_.jpg"
-  alt: "【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）"
+  image: images/1200px-Vala_Logo.svg_.jpg
+  alt: 【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）
   hidden: false
 ---
 

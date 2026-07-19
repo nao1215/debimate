@@ -1,17 +1,16 @@
 ---
-title: "【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話"
+title: 【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話
 type: post
 date: 2021-02-20
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "android"
-  - "codereading"
-  - "linux"
-  - "体験談"
+- android
+- codereading
+- 体験談
 cover:
-  image: "images/ICON-1.jpg"
-  alt: "【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話"
+  image: images/ICON-1.jpg
+  alt: 【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話
   hidden: false
 ---
 

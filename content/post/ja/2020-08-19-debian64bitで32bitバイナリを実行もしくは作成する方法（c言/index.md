@@ -1,16 +1,16 @@
 ---
-title: "Debian(64bit)で32bitバイナリを実行もしくは作成する方法（C言語）"
+title: Debian(64bit)で32bitバイナリを実行もしくは作成する方法（C言語）
 type: post
 date: 2020-08-19
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "c言語"
-  - "debian"
-  - "linux"
+- c言語
+- debian
 cover:
-  image: "images/processor-2217771_640-min.jpg"
-  alt: "Debian(64bit)で32bitバイナリを実行もしくは作成する方法（C言語）"
+  image: images/processor-2217771_640-min.jpg
+  alt: Debian(64bit)で32bitバイナリを実行もしくは作成する方法（C言語）
   hidden: false
 ---
 

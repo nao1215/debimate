@@ -1,15 +1,14 @@
 ---
-title: "Linux Command Optionの慣習(一般的なOption一覧)"
+title: Linux Command Optionの慣習(一般的なOption一覧)
 type: post
 date: 2019-02-23
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "command"
-  - "linux"
+- command
 cover:
-  image: "images/bash-161382_640.png"
-  alt: "Linux Command Optionの慣習(一般的なOption一覧)"
+  image: images/bash-161382_640.png
+  alt: Linux Command Optionの慣習(一般的なOption一覧)
   hidden: false
 ---
 

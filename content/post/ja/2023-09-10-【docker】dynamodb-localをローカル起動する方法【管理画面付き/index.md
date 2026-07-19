@@ -1,15 +1,15 @@
 ---
-title: "【Docker】DynamoDB localをローカル起動する方法【管理画面付き】"
+title: 【Docker】DynamoDB localをローカル起動する方法【管理画面付き】
 type: post
 date: 2023-09-10
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "aws"
-  - "docker"
+- aws
+- docker
 cover:
-  image: "images/dynamoAdmin.png"
-  alt: "【Docker】DynamoDB localをローカル起動する方法【管理画面付き】"
+  image: images/dynamoAdmin.png
+  alt: 【Docker】DynamoDB localをローカル起動する方法【管理画面付き】
   hidden: false
 ---
 

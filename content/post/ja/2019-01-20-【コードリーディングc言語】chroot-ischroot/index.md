@@ -1,18 +1,18 @@
 ---
-title: "コードリーディング(C言語)：chroot / ischroot"
+title: コードリーディング(C言語)：chroot / ischroot
 type: post
 date: 2019-01-20
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "codereading"
-  - "command"
-  - "c言語"
-  - "debian"
-  - "linux"
+- codereading
+- command
+- c言語
+- debian
 cover:
-  image: "images/chroot-e1547979094502.gif"
-  alt: "コードリーディング(C言語)：chroot / ischroot"
+  image: images/chroot-e1547979094502.gif
+  alt: コードリーディング(C言語)：chroot / ischroot
   hidden: false
 ---
 

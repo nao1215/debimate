@@ -1,13 +1,13 @@
 ---
-title: "あなたの文章が読みたい"
+title: あなたの文章が読みたい
 type: post
 date: 2026-05-31
 draft: false
 categories:
-  - "体験談"
+- キャリア
 cover:
-  image: "images/text-lover.jpg"
-  alt: "text-lover"
+  image: images/text-lover.jpg
+  alt: text-lover
   hidden: false
 ---
 

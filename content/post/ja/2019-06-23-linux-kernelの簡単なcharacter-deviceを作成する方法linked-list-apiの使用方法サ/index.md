@@ -1,18 +1,18 @@
 ---
-title: "Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)"
+title: Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)
 type: post
 date: 2019-06-23
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "c言語"
-  - "debian"
-  - "devicedriver"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- debian
+- devicedriver
+- linuxkernel
 cover:
-  image: "images/s_charcter_device-1.jpg"
-  alt: "Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)"
+  image: images/s_charcter_device-1.jpg
+  alt: Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)
   hidden: false
 ---
 

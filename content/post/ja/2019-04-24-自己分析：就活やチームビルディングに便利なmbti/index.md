@@ -1,18 +1,15 @@
 ---
-title: "感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)"
+title: 感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)
 type: post
 date: 2019-04-24
 categories:
-  - "体験談"
-  - "書籍"
+- 書評
 tags:
-  - "mbti"
-  - "体験談"
-  - "書籍"
-  - "自己分析"
+- mbti
+- 自己分析
 cover:
-  image: "images/MBTI2-300x178.png"
-  alt: "感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)"
+  image: images/MBTI2-300x178.png
+  alt: 感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)
   hidden: false
 ---
 

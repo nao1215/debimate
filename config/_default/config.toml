@@ -8,10 +8,28 @@ ignoreLogs = ['warning-goldmark-raw-html']
 env = "production"
 images = ["images/icon.jpg"]
 publishDir = "public"
+enableGitInfo = true
 
 [services]
   [services.googleAnalytics]
     id = "G-CT6HRDERYM"
+
+[related]
+  includeNewer = true
+  threshold = 20
+  toLower = true
+
+  [[related.indices]]
+    name = "series"
+    weight = 120
+
+  [[related.indices]]
+    name = "tags"
+    weight = 80
+
+  [[related.indices]]
+    name = "categories"
+    weight = 60
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]

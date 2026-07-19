@@ -1,18 +1,16 @@
 ---
-title: "Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】"
+title: Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】
 type: post
 date: 2021-12-17
 categories:
-  - "linux"
-  - "体験談"
-  - "書籍"
+- 書評
+- プログラミング
+- OSS
 tags:
-  - "linux"
-  - "python"
-  - "体験談"
+- python
 cover:
-  image: "images/642201.png"
-  alt: "Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】"
+  image: images/642201.png
+  alt: Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】
   hidden: false
 ---
 

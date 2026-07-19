@@ -1,16 +1,15 @@
 ---
-title: "【Java 11】Shebangを用いたJavaソースファイル（単一）の実行方法 + Shebangエラー回避方法"
+title: 【Java 11】Shebangを用いたJavaソースファイル（単一）の実行方法 + Shebangエラー回避方法
 type: post
 date: 2020-07-23
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
-  - "linux"
-  - "shebang"
+- java
+- shebang
 cover:
-  image: "images/eyecatch-openjdk.png"
-  alt: "【Java 11】Shebangを用いたJavaソースファイル（単一）の実行方法 + Shebangエラー回避方法"
+  image: images/eyecatch-openjdk.png
+  alt: 【Java 11】Shebangを用いたJavaソースファイル（単一）の実行方法 + Shebangエラー回避方法
   hidden: false
 ---
 

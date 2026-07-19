@@ -1,14 +1,12 @@
 ---
-title: "2023年の振り返り & 2024年の抱負"
+title: 2023年の振り返り & 2024年の抱負
 type: post
 date: 2023-12-27
 categories:
-  - "体験談"
-tags:
-  - "体験談"
+- キャリア
 cover:
-  image: "images/IMG_20231111_095534-1-scaled.jpg"
-  alt: "2023年の振り返り & 2024年の抱負"
+  image: images/IMG_20231111_095534-1-scaled.jpg
+  alt: 2023年の振り返り & 2024年の抱負
   hidden: false
 ---
 

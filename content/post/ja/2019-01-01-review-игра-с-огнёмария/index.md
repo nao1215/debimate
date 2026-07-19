@@ -1,18 +1,15 @@
 ---
-title: "Review: Игра с огнём(АРИЯ)"
+title: 'Review: Игра с огнём(АРИЯ)'
 type: post
 date: 2019-01-01
 categories:
-  - "hrhm"
-  - "russia"
+- 音楽
+- ロシア
 tags:
-  - "hrhm"
-  - "review"
-  - "russia"
-  - "ария"
+- ария
 cover:
-  image: "images/Aria-Igra_s_ognem-e1546326094412.jpg"
-  alt: "Review: Игра с огнём(АРИЯ)"
+  image: images/Aria-Igra_s_ognem-e1546326094412.jpg
+  alt: 'Review: Игра с огнём(АРИЯ)'
   hidden: false
 ---
 

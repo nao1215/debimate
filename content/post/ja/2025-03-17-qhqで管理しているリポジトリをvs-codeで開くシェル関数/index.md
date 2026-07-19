@@ -1,12 +1,12 @@
 ---
-title: "qhqで管理しているリポジトリをVS Codeで開くシェル関数"
+title: qhqで管理しているリポジトリをVS Codeで開くシェル関数
 type: post
 date: 2025-03-17
 categories:
-  - "linux"
+- プログラミング
 cover:
-  image: "images/vscode.png"
-  alt: "qhqで管理しているリポジトリをVS Codeで開くシェル関数"
+  image: images/vscode.png
+  alt: qhqで管理しているリポジトリをVS Codeで開くシェル関数
   hidden: false
 ---
 

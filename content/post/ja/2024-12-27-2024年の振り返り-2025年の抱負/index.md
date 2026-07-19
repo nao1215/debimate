@@ -1,14 +1,12 @@
 ---
-title: "2024年の振り返り & 2025年の抱負"
+title: 2024年の振り返り & 2025年の抱負
 type: post
 date: 2024-12-27
 categories:
-  - "体験談"
-tags:
-  - "体験談"
+- キャリア
 cover:
-  image: "images/IMG_20240620_105741-scaled.jpg"
-  alt: "2024年の振り返り &amp; 2025年の抱負"
+  image: images/IMG_20240620_105741-scaled.jpg
+  alt: 2024年の振り返り &amp; 2025年の抱負
   hidden: false
 ---
 

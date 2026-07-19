@@ -1,18 +1,19 @@
 ---
-title: "環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧"
+title: 環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧
 type: post
 date: 2019-05-03
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "codereading"
-  - "coreutils"
-  - "debian"
-  - "rust"
-  - "環境構築"
+- codereading
+- coreutils
+- debian
+- rust
+- 環境構築
 cover:
-  image: "images/Code_Reading.jpg"
-  alt: "環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧"
+  image: images/Code_Reading.jpg
+  alt: 環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧
   hidden: false
 ---
 

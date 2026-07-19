@@ -1,17 +1,16 @@
 ---
-title: "マウスポインタをキーボードで操作するkeynav"
+title: マウスポインタをキーボードで操作するkeynav
 type: post
 date: 2019-09-15
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "keynav"
-  - "linux"
-  - "環境構築"
+- debian
+- keynav
+- 環境構築
 cover:
-  image: "images/keynav.gif"
-  alt: "マウスポインタをキーボードで操作するkeynav"
+  image: images/keynav.gif
+  alt: マウスポインタをキーボードで操作するkeynav
   hidden: false
 ---
 

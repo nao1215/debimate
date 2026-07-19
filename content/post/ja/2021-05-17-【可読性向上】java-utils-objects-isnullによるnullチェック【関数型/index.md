@@ -1,14 +1,14 @@
 ---
-title: "【可読性向上】java.utils.Objects.isNull()によるnullチェック【関数型プログラミングに便利】"
+title: 【可読性向上】java.utils.Objects.isNull()によるnullチェック【関数型プログラミングに便利】
 type: post
 date: 2021-05-17
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "java"
+- java
 cover:
-  image: "images/finger-3026348_640.jpg"
-  alt: "【可読性向上】java.utils.Objects.isNull()によるnullチェック【関数型プログラミングに便利】"
+  image: images/finger-3026348_640.jpg
+  alt: 【可読性向上】java.utils.Objects.isNull()によるnullチェック【関数型プログラミングに便利】
   hidden: false
 ---
 

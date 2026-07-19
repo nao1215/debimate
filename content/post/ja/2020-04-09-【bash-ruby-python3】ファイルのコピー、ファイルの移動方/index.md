@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ファイルのコピー、ファイルの移動方法の比較"
+title: 【Bash / Ruby / Python3】ファイルのコピー、ファイルの移動方法の比較
 type: post
 date: 2020-04-09
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/copy-160129_640-1.jpg"
-  alt: "【Bash / Ruby / Python3】ファイルのコピー、ファイルの移動方法の比較"
+  image: images/copy-160129_640-1.jpg
+  alt: 【Bash / Ruby / Python3】ファイルのコピー、ファイルの移動方法の比較
   hidden: false
 ---
 

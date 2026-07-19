@@ -1,16 +1,15 @@
 ---
-title: "環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)"
+title: 環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)
 type: post
 date: 2019-06-01
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "環境構築"
+- debian
+- 環境構築
 cover:
-  image: "images/tools-498202_640-1.jpg"
-  alt: "環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)"
+  image: images/tools-498202_640-1.jpg
+  alt: 環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)
   hidden: false
 ---
 

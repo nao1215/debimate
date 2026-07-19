@@ -7,17 +7,37 @@ ShowReadingTime = true
 ShowBreadCrumbs = true
 ShowCodeCopyButtons = true
 ShowToc = true
-comments = false
+comments = true
 ShowSocialIcons = true
 ShowImageInList = true
 ShowImageInSingle = true
 ShowShareButtons = true
+ShowUpdatedDate = true
 images = ["images/default-ogp.jpg"]
 enableSearch = true
 env = "production"
 enableOpenGraph = true
 enableTwitterCards = true
 ShowRssButtonInSectionTermList = true
+
+[relatedPosts]
+  enabled = true
+  count = 4
+
+[giscus]
+  enabled = true
+  repo = "nao1215/debimate"
+  repoId = "R_kgDOQPrmZA"
+  category = "Announcements"
+  categoryId = "DIC_kwDOQPrmZM4C-P6U"
+  discussionUrl = "https://github.com/nao1215/debimate/discussions/12"
+  mapping = "pathname"
+  strict = "1"
+  reactionsEnabled = "1"
+  emitMetadata = "0"
+  inputPosition = "top"
+  lang = "ja"
+  loading = "lazy"
 
 [assets]
   css = ["css/extended/custom.css"]

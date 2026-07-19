@@ -1,13 +1,14 @@
 ---
-title: "CLI向けブラックボックス E2E テストランナー nao1215/atago を作った話"
+title: CLI向けブラックボックス E2E テストランナー nao1215/atago を作った話
 type: post
 date: 2026-07-04
 draft: false
 categories:
-  - "linux"
+- プログラミング
+- OSS
 cover:
-  image: "images/atago-logo.jpg"
-  alt: "atago-logo"
+  image: images/atago-logo.jpg
+  alt: atago-logo
   hidden: false
 ---
 

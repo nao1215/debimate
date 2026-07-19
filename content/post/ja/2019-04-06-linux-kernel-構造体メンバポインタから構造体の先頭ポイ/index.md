@@ -1,16 +1,15 @@
 ---
-title: "Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ"
+title: 'Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ'
 type: post
 date: 2019-04-06
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
-  - "linuxkernel"
+- c言語
+- linuxkernel
 cover:
-  image: "images/container_of.png"
-  alt: "Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ"
+  image: images/container_of.png
+  alt: 'Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ'
   hidden: false
 ---
 

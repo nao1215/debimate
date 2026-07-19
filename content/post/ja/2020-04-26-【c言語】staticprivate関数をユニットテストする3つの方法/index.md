@@ -1,16 +1,15 @@
 ---
-title: "【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】"
+title: 【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】
 type: post
 date: 2020-04-26
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "c言語"
-  - "linux"
-  - "ユニットテスト"
+- c言語
+- ユニットテスト
 cover:
-  image: "images/board-361516_640-min.jpg"
-  alt: "【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】"
+  image: images/board-361516_640-min.jpg
+  alt: 【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】
   hidden: false
 ---
 

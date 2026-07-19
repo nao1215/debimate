@@ -1,17 +1,15 @@
 ---
-title: "感想：新装版　リファクタリング　既存のコードを安全に改善する"
+title: 感想：新装版　リファクタリング　既存のコードを安全に改善する
 type: post
 date: 2020-01-13
 categories:
-  - "書籍"
+- 書評
 tags:
-  - "java"
-  - "review"
-  - "リファクタリング"
-  - "書籍"
+- java
+- リファクタリング
 cover:
-  image: "images/リファクタリング-min.jpg"
-  alt: "感想：新装版　リファクタリング　既存のコードを安全に改善する"
+  image: images/リファクタリング-min.jpg
+  alt: 感想：新装版　リファクタリング　既存のコードを安全に改善する
   hidden: false
 ---
 

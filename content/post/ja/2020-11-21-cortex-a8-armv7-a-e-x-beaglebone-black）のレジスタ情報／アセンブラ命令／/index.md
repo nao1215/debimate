@@ -1,17 +1,17 @@
 ---
-title: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方"
+title: Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方
 type: post
 date: 2020-11-21
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "arm"
-  - "xinu"
-  - "アセンブラ"
-  - "レジスタ"
+- arm
+- xinu
+- アセンブラ
+- レジスタ
 cover:
-  image: "images/cpu-2103856_640.jpg"
-  alt: "Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方"
+  image: images/cpu-2103856_640.jpg
+  alt: Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方
   hidden: false
 ---
 

@@ -1,17 +1,16 @@
 ---
-title: "Terminalベースのブラウザw3m"
+title: Terminalベースのブラウザw3m
 type: post
 date: 2019-09-15
 categories:
-  - "linux"
+- インフラ
 tags:
-  - "debian"
-  - "linux"
-  - "w3m"
-  - "環境構築"
+- debian
+- w3m
+- 環境構築
 cover:
-  image: "images/w3m.jpg"
-  alt: "Terminalベースのブラウザw3m"
+  image: images/w3m.jpg
+  alt: Terminalベースのブラウザw3m
   hidden: false
 ---
 

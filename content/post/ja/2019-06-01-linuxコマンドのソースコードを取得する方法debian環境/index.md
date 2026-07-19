@@ -1,17 +1,17 @@
 ---
-title: "Linuxコマンドのソースコードを取得する方法(Debian環境)：オリジナルコマンド作成前の勉強向け"
+title: Linuxコマンドのソースコードを取得する方法(Debian環境)：オリジナルコマンド作成前の勉強向け
 type: post
 date: 2019-06-01
 categories:
-  - "linux"
+- インフラ
+- プログラミング
 tags:
-  - "codereading"
-  - "command"
-  - "debian"
-  - "linux"
+- codereading
+- command
+- debian
 cover:
-  image: "images/code-2434271_640-min.jpg"
-  alt: "Linuxコマンドのソースコードを取得する方法(Debian環境)：オリジナルコマンド作成前の勉強向け"
+  image: images/code-2434271_640-min.jpg
+  alt: Linuxコマンドのソースコードを取得する方法(Debian環境)：オリジナルコマンド作成前の勉強向け
   hidden: false
 ---
 

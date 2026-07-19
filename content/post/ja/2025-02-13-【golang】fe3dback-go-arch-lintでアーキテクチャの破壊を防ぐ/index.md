@@ -1,12 +1,12 @@
 ---
-title: "【Golang】fe3dback/go-arch-lintでアーキテクチャの破壊を防ぐ"
+title: 【Golang】fe3dback/go-arch-lintでアーキテクチャの破壊を防ぐ
 type: post
 date: 2025-02-13
 categories:
-  - "linux"
+- プログラミング
 cover:
-  image: "images/Screenshot-from-2025-02-13-23-26-45.png"
-  alt: "【Golang】fe3dback/go-arch-lintでアーキテクチャの破壊を防ぐ"
+  image: images/Screenshot-from-2025-02-13-23-26-45.png
+  alt: 【Golang】fe3dback/go-arch-lintでアーキテクチャの破壊を防ぐ
   hidden: false
 ---
 

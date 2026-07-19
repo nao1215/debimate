@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ファイルの存在を確認する方法の比較"
+title: 【Bash / Ruby / Python3】ファイルの存在を確認する方法の比較
 type: post
 date: 2020-04-06
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/list-2389219_640.jpg"
-  alt: "【Bash / Ruby / Python3】ファイルの存在を確認する方法の比較"
+  image: images/list-2389219_640.jpg
+  alt: 【Bash / Ruby / Python3】ファイルの存在を確認する方法の比較
   hidden: false
 ---
 

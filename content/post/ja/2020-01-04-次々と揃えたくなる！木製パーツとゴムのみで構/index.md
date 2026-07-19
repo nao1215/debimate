@@ -1,18 +1,16 @@
 ---
-title: "次々と揃えたくなる！木製パーツとゴムのみで構成されたUgears（メカニカルな組み立てキット）"
+title: 次々と揃えたくなる！木製パーツとゴムのみで構成されたUgears（メカニカルな組み立てキット）
 type: post
 date: 2020-01-04
 categories:
-  - "russia"
-  - "体験談"
+- ロシア
+- 生活
 tags:
-  - "russia"
-  - "ugears"
-  - "ガジェット"
-  - "体験談"
+- ugears
+- ガジェット
 cover:
-  image: "images/IMG_20200105_105737-min.jpg"
-  alt: "次々と揃えたくなる！木製パーツとゴムのみで構成されたUgears（メカニカルな組み立てキット）"
+  image: images/IMG_20200105_105737-min.jpg
+  alt: 次々と揃えたくなる！木製パーツとゴムのみで構成されたUgears（メカニカルな組み立てキット）
   hidden: false
 ---
 

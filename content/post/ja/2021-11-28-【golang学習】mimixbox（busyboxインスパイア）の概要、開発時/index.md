@@ -1,18 +1,16 @@
 ---
-title: "MimixBox（BusyBoxインスパイア）の概要、開発時の気づき、PR募集について【Golang学習】"
+title: MimixBox（BusyBoxインスパイア）の概要、開発時の気づき、PR募集について【Golang学習】
 type: post
 date: 2021-11-28
 categories:
-  - "linux"
-  - "体験談"
+- プログラミング
+- OSS
 tags:
-  - "golang"
-  - "linux"
-  - "oss"
-  - "体験談"
+- golang
+- oss
 cover:
-  image: "images/laptop-g8777527aa_640-min.jpg"
-  alt: "MimixBox（BusyBoxインスパイア）の概要、開発時の気づき、PR募集について【Golang学習】"
+  image: images/laptop-g8777527aa_640-min.jpg
+  alt: MimixBox（BusyBoxインスパイア）の概要、開発時の気づき、PR募集について【Golang学習】
   hidden: false
 ---
 

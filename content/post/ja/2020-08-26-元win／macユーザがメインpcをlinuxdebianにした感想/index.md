@@ -1,17 +1,15 @@
 ---
-title: "元Win／MacユーザがメインPCをLinux(Debian)にした感想"
+title: 元Win／MacユーザがメインPCをLinux(Debian)にした感想
 type: post
 date: 2020-08-26
 categories:
-  - "linux"
-  - "体験談"
+- インフラ
 tags:
-  - "linux"
-  - "環境構築"
-  - "自作pc"
+- 環境構築
+- 自作pc
 cover:
-  image: "images/Screenshot-from-2020-08-25-21-51-00.png"
-  alt: "元Win／MacユーザがメインPCをLinux(Debian)にした感想"
+  image: images/Screenshot-from-2020-08-25-21-51-00.png
+  alt: 元Win／MacユーザがメインPCをLinux(Debian)にした感想
   hidden: false
 ---
 

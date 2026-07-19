@@ -1,18 +1,17 @@
 ---
-title: "【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比較"
+title: 【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比較
 type: post
 date: 2020-04-09
 categories:
-  - "linux"
+- プログラミング
 tags:
-  - "bash"
-  - "linux"
-  - "python"
-  - "ruby"
-  - "shellscript"
+- bash
+- python
+- ruby
+- shellscript
 cover:
-  image: "images/laptop-820274_640-min.jpg"
-  alt: "【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比較"
+  image: images/laptop-820274_640-min.jpg
+  alt: 【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比較
   hidden: false
 ---
 
