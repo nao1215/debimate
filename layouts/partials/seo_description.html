@@ -1,0 +1,25 @@
+{{- $description := "" -}}
+{{- with .Description -}}
+  {{- $description = . | plainify | htmlUnescape | chomp -}}
+{{- else -}}
+  {{- if and $.IsHome site.Params.description -}}
+    {{- $description = site.Params.description | plainify | htmlUnescape | chomp -}}
+  {{- else if or $.IsPage $.IsSection -}}
+    {{- $summary := $.Summary | plainify | htmlUnescape | chomp -}}
+    {{- if $summary -}}
+      {{- $description = $summary -}}
+    {{- else -}}
+      {{- $description = $.Plain | plainify | htmlUnescape | chomp -}}
+    {{- end -}}
+  {{- else -}}
+    {{- with site.Params.description -}}
+      {{- $description = . | plainify | htmlUnescape | chomp -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $description = $description | replaceRE "\\s+" " " | strings.TrimSpace -}}
+{{- if not $description -}}
+  {{- $description = printf "%s - %s" .Title site.Title -}}
+{{- end -}}
+{{- $description | truncate 160 -}}

@@ -1,0 +1,36 @@
+{{- $u := urls.Parse .Destination -}}
+{{- $src := $u.String -}}
+{{- $page := or .PageInner .Page -}}
+{{- if not $u.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $u.Path }}
+  {{- with or (.PageInner.Resources.Get $path) (resources.Get $path) -}}
+    {{- $src = .RelPermalink -}}
+    {{- with $u.RawQuery -}}
+      {{- $src = printf "%s?%s" $src . -}}
+    {{- end -}}
+    {{- with $u.Fragment -}}
+      {{- $src = printf "%s#%s" $src . -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $alt := .Text | plainify | htmlUnescape | chomp | replaceRE "\\s+" " " | strings.TrimSpace -}}
+{{- if and (not $alt) .Title -}}
+  {{- $alt = .Title | plainify | htmlUnescape | chomp | replaceRE "\\s+" " " | strings.TrimSpace -}}
+{{- end -}}
+{{- if not $alt -}}
+  {{- $base := path.Base $u.Path | replaceRE "\\.[^.]+$" "" | replaceRE "[-_]+" " " | strings.TrimSpace -}}
+  {{- with $base -}}
+    {{- $alt = . -}}
+  {{- end -}}
+{{- end -}}
+{{- if and (not $alt) $page -}}
+  {{- $alt = printf "%s の画像" ($page.Title | plainify) -}}
+{{- end -}}
+{{- $attributes := merge .Attributes (dict "alt" $alt "src" $src "title" (.Title | transform.HTMLEscape) "loading" "lazy") -}}
+<img
+  {{- range $k, $v := $attributes -}}
+    {{- if $v -}}
+      {{- printf " %s=%q" $k $v | safeHTMLAttr -}}
+    {{- end -}}
+  {{- end -}}>
+{{- /**/ -}}

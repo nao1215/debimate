@@ -1,5 +1,6 @@
 baseURL = "https://debimate.jp/"
 locale = "ja-jp"
+defaultContentLanguage = "ja"
 title = "Debimate"
 theme = "PaperMod"
 enableRobotsTXT = true
@@ -13,6 +14,12 @@ enableGitInfo = true
 [services]
   [services.googleAnalytics]
     id = "G-CT6HRDERYM"
+
+[languages]
+  [languages.ja]
+    label = "Japanese"
+    locale = "ja-JP"
+    weight = 1
 
 [related]
   includeNewer = true

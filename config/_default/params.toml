@@ -1,4 +1,5 @@
 homeInfoParams = { Content = "nchika(nao1215)のブログ。技術的な内容や OSS について書き、週報や学習記録を残します。" }
+description = "nchika(nao1215)のブログ。技術的な内容や OSS について書き、週報や学習記録を残します。Go、C言語、Linux、OSS 開発、学習記録を中心に発信しています。"
 
 author = "nchika"
 mainSections = ["post"]
@@ -26,6 +27,17 @@ ShowRssButtonInSectionTermList = true
 
 [assets]
   css = ["css/extended/custom.css"]
+
+[schema]
+  publisherType = "Person"
+  sameAs = [
+    "https://github.com/nao1215",
+    "https://x.com/ARC_AED",
+    "https://bsky.app/profile/nchika.bsky.social",
+    "https://dev.to/nchika",
+    "https://hackerone.com/nchika?type=user",
+    "https://www.kaggle.com/nao1215",
+  ]
 
 [[socialIcons]]
   name = "github"
