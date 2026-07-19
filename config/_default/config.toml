@@ -9,6 +9,10 @@ env = "production"
 images = ["images/icon.jpg"]
 publishDir = "public"
 
+[services]
+  [services.googleAnalytics]
+    id = "G-CT6HRDERYM"
+
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
