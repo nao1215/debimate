@@ -3,7 +3,7 @@ title: 【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overload
 type: post
 date: 2021-05-15
 categories:
-- プログラミング
+- C
 tags:
 - c言語
 cover:

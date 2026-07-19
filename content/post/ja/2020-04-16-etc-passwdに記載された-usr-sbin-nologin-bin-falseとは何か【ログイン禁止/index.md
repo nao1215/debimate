@@ -3,8 +3,8 @@ title: /etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【
 type: post
 date: 2020-04-16
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- スクリプト
 tags:
 - debian
 - login

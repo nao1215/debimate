@@ -3,7 +3,8 @@ title: 'Linux Kernel: List構造を操作するためのAPI(Listの使い方)'
 type: post
 date: 2019-04-07
 categories:
-- プログラミング
+- Linuxカーネル
+- C
 tags:
 - c言語
 - linuxkernel

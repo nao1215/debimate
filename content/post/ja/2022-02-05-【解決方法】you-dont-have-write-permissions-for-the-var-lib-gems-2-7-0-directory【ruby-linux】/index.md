@@ -4,7 +4,7 @@ title: 【解決方法】You don't have write permissions for the /var/lib/gems/
 type: post
 date: 2022-02-05
 categories:
-- インフラ
+- Linux運用
 - プログラミング
 tags:
 - ruby

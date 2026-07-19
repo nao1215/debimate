@@ -3,7 +3,7 @@ title: 【roff形式を手書きは無理ゲー】manページをMarkdown + Pand
 type: post
 date: 2020-12-19
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - man

@@ -3,8 +3,8 @@ title: 【環境構築】fish shellを用いたDebian環境にSDKMANおよびJav
 type: post
 date: 2020-08-30
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- Java
 tags:
 - debian
 - java

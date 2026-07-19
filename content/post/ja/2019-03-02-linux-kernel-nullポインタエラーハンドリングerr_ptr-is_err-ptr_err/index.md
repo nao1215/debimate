@@ -3,7 +3,8 @@ title: 'Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ER
 type: post
 date: 2019-03-02
 categories:
-- プログラミング
+- Linuxカーネル
+- C
 tags:
 - c言語
 - linuxkernel

@@ -3,7 +3,7 @@ title: Raspberry Piに固定IPを割り当てる方法
 type: post
 date: 2019-03-24
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - raspberrypi
 - 環境構築

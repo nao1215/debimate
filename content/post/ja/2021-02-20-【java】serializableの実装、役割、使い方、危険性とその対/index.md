@@ -3,7 +3,7 @@ title: 【Java】Serializableの実装、役割、使い方、危険性とその
 type: post
 date: 2021-02-20
 categories:
-- プログラミング
+- Java
 tags:
 - java
 - serializable

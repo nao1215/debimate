@@ -3,8 +3,8 @@ title: コードリーディング(Bash)：システム情報表示ツール"neo
 type: post
 date: 2019-01-22
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- スクリプト
 tags:
 - bash
 - codereading

@@ -3,7 +3,7 @@ title: マウスポインタをキーボードで操作するkeynav
 type: post
 date: 2019-09-15
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - keynav

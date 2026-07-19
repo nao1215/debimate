@@ -3,7 +3,7 @@ title: 【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/a
 type: post
 date: 2022-02-11
 categories:
-- プログラミング
+- Go
 - OSS
 tags:
 - cli

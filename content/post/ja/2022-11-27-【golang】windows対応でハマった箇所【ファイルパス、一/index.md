@@ -3,7 +3,7 @@ title: 【Golang】Windows対応でハマった箇所【ファイルパス、一
 type: post
 date: 2022-11-27
 categories:
-- プログラミング
+- Go
 tags:
 - golang
 - windows

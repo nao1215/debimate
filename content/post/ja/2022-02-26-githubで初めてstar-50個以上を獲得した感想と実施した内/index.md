@@ -3,7 +3,7 @@ title: GitHubで初めてStar 50個以上を獲得した感想と実施した内
 type: post
 date: 2022-02-26
 categories:
-- プログラミング
+- Go
 - OSS
 tags:
 - github

@@ -3,7 +3,7 @@ title: 【golang】io.Readerを使いまわしてContentType判定、S3アップ
 type: post
 date: 2023-09-10
 categories:
-- プログラミング
+- Go
 tags:
 - golang
 cover:

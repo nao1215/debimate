@@ -3,7 +3,7 @@ title: 環境構築：Debian 10(buster) にPostgreSQL 11をインストールし
 type: post
 date: 2020-03-20
 categories:
-- インフラ
+- Linux運用
 tags:
 - db
 - debian

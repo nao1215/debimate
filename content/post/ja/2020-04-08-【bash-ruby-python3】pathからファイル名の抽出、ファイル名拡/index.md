@@ -3,7 +3,7 @@ title: 【Bash / Ruby / Python3】PATHからファイル名の抽出、ファイ
 type: post
 date: 2020-04-08
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - python

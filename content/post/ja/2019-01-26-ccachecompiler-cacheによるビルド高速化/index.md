@@ -3,7 +3,7 @@ title: ccache(compiler cache)によるビルド高速化
 type: post
 date: 2019-01-26
 categories:
-- インフラ
+- Linux運用
 - プログラミング
 tags:
 - build

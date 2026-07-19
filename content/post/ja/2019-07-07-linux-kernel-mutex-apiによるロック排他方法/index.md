@@ -3,8 +3,9 @@ title: 'Linux Kernel: mutex APIによるロック(排他)方法'
 type: post
 date: 2019-07-07
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- Linuxカーネル
+- C
 tags:
 - c言語
 - debian

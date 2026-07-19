@@ -3,7 +3,7 @@ title: Linuxコマンドのソースコードを取得する方法(Debian環境)
 type: post
 date: 2019-06-01
 categories:
-- インフラ
+- Linux運用
 - プログラミング
 tags:
 - codereading

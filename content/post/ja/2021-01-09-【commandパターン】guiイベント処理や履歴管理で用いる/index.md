@@ -3,7 +3,7 @@ title: 【Commandパターン】GUIイベント処理や履歴管理で用いる
 type: post
 date: 2021-01-09
 categories:
-- プログラミング
+- Java
 tags:
 - java
 - デザインパターン

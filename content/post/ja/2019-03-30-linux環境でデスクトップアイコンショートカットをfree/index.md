@@ -3,7 +3,7 @@ title: 【Desktop entry】Linux環境でデスクトップアイコン(ショー
 type: post
 date: 2019-03-30
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - 環境構築

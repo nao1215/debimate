@@ -3,7 +3,7 @@ title: 【Bash / Ruby / Python3】ヒアドキュメント(文字列リテラル
 type: post
 date: 2020-04-07
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - python

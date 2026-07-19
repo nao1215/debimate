@@ -3,7 +3,7 @@ title: gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットす
 type: post
 date: 2019-10-05
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - hdd

@@ -3,7 +3,7 @@ title: 【Bash / Ruby / Python3】root権限を確認する方法の比較
 type: post
 date: 2020-04-11
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - python

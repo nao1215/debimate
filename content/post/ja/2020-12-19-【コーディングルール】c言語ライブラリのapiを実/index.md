@@ -3,7 +3,7 @@ title: 【コーディングルール】C言語ライブラリのAPIを実装す
 type: post
 date: 2020-12-19
 categories:
-- プログラミング
+- C
 - OSS
 tags:
 - api

@@ -3,7 +3,7 @@ title: 【Bash / Ruby / Python3】ユーザ入力(input)受け付け方法の比
 type: post
 date: 2020-04-09
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - python

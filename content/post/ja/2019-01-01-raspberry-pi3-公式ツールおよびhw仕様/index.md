@@ -3,7 +3,7 @@ title: 'Raspberry Pi3: 公式ツールおよびHW仕様'
 type: post
 date: 2019-01-01
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - raspberrypi
 cover:

@@ -4,7 +4,7 @@ type: post
 date: 2020-08-28
 categories:
 - エンタメ
-- インフラ
+- Linux運用
 tags:
 - debian
 - steam

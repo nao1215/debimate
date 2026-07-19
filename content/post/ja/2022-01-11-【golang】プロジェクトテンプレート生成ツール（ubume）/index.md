@@ -3,7 +3,7 @@ title: 【Golang】プロジェクトテンプレート生成ツール（ubume�
 type: post
 date: 2022-01-11
 categories:
-- プログラミング
+- Go
 - OSS
 tags:
 - golang

@@ -3,7 +3,7 @@ title: 環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびRe
 type: post
 date: 2019-05-03
 categories:
-- インフラ
+- Linux運用
 - プログラミング
 tags:
 - codereading

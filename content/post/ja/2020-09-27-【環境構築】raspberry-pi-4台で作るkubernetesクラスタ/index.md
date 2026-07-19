@@ -3,7 +3,7 @@ title: 【環境構築】Raspberry Pi 4台で作るKubernetesクラスタ
 type: post
 date: 2020-09-27
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - docker
 - kubernetes

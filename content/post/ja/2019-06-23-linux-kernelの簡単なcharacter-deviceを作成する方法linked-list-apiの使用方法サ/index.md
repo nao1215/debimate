@@ -3,8 +3,9 @@ title: Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List
 type: post
 date: 2019-06-23
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- Linuxカーネル
+- C
 tags:
 - c言語
 - debian

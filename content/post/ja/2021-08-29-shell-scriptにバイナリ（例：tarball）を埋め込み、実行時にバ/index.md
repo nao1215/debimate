@@ -3,7 +3,7 @@ title: Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時
 type: post
 date: 2021-08-29
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - shellscript

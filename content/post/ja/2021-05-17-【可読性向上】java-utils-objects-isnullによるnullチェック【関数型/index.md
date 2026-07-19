@@ -3,7 +3,7 @@ title: 【可読性向上】java.utils.Objects.isNull()によるnullチェック
 type: post
 date: 2021-05-17
 categories:
-- プログラミング
+- Java
 tags:
 - java
 cover:

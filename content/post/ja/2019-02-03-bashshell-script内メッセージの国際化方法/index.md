@@ -3,8 +3,8 @@ title: Bash(Shell Script)内メッセージの国際化方法
 type: post
 date: 2019-02-03
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- スクリプト
 tags:
 - bash
 - command

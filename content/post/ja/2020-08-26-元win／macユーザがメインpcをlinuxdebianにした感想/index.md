@@ -3,7 +3,7 @@ title: 元Win／MacユーザがメインPCをLinux(Debian)にした感想
 type: post
 date: 2020-08-26
 categories:
-- インフラ
+- Linux運用
 tags:
 - 環境構築
 - 自作pc

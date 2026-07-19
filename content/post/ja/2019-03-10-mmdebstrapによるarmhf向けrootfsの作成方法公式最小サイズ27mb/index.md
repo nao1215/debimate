@@ -3,7 +3,7 @@ title: mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ
 type: post
 date: 2019-03-10
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - 開発環境

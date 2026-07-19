@@ -3,7 +3,7 @@ title: 【Abstract Factoryパターン】コンポジットの部品変更を容
 type: post
 date: 2021-05-15
 categories:
-- プログラミング
+- Java
 tags:
 - java
 - デザインパターン

@@ -3,7 +3,7 @@ title: 【WatchDogTimer】Raspberry Pi4サーバがフリーズ(停止)した場
 type: post
 date: 2020-11-28
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - debian
 - raspberrypi

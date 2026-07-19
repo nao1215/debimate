@@ -3,8 +3,9 @@ title: '環境構築: Linux Kernelモジュールの作成準備'
 type: post
 date: 2019-01-27
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- Linuxカーネル
+- C
 tags:
 - c言語
 - debian

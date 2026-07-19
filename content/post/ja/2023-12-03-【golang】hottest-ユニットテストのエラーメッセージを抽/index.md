@@ -3,7 +3,7 @@ title: 【Golang】hottest - ユニットテストのエラーメッセージを
 type: post
 date: 2023-12-03
 categories:
-- プログラミング
+- Go
 - OSS
 tags:
 - golang

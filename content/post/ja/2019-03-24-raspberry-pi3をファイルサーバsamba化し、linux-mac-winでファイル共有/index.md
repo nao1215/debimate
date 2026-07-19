@@ -3,7 +3,7 @@ title: Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファ
 type: post
 date: 2019-03-24
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - raspberrypi
 - 環境構築

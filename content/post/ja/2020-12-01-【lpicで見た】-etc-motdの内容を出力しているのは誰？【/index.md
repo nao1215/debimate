@@ -3,7 +3,7 @@ title: 【LPICで見た】/etc/motdの内容を出力しているのは誰？【
 type: post
 date: 2020-12-01
 categories:
-- インフラ
+- Linux運用
 - プログラミング
 tags:
 - codereading

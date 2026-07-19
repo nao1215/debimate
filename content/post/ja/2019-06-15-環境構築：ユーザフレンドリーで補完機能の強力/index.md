@@ -3,8 +3,8 @@ title: 環境構築：ユーザフレンドリーで補完機能の強力なfish
 type: post
 date: 2019-06-15
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- スクリプト
 tags:
 - dash
 - debian

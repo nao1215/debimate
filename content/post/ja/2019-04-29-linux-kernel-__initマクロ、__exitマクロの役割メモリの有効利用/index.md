@@ -3,8 +3,9 @@ title: 'Linux Kernel: __initマクロ、__exitマクロの役割(メモリの有
 type: post
 date: 2019-04-29
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- Linuxカーネル
+- C
 tags:
 - c言語
 - debian

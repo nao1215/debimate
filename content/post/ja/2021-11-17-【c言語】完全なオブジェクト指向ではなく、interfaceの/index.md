@@ -3,7 +3,7 @@ title: 【C言語】完全なオブジェクト指向ではなく、Interfaceの
 type: post
 date: 2021-11-17
 categories:
-- プログラミング
+- C
 tags:
 - c言語
 - interface

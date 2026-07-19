@@ -3,7 +3,7 @@ title: Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処
 type: post
 date: 2020-04-05
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - python

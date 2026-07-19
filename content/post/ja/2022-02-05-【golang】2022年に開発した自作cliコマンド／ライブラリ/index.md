@@ -3,7 +3,7 @@ title: 【Golang】2022年に開発した自作CLIコマンド／ライブラリ
 type: post
 date: 2022-02-05
 categories:
-- プログラミング
+- Go
 - OSS
 tags:
 - golang

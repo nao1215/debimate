@@ -2,8 +2,14 @@
 
 As of July 19, 2026, this site has 169 tags and the following normalized categories:
 
-- `プログラミング`
-- `インフラ`
+- `Go`
+- `Java`
+- `C`
+- `スクリプト`
+- `Linuxカーネル`
+- `Linux運用`
+- `Raspberry Pi`
+- `コンテナ`
 - `OSS`
 - `キャリア`
 - `ブログ運営`
@@ -21,10 +27,22 @@ As of July 19, 2026, this site has 169 tags and the following normalized categor
 
 ### Category assignment
 
-- `プログラミング`
-  Code, language features, algorithms, APIs, testing, code reading, and library design.
-- `インフラ`
-  OS setup, Debian/Ubuntu, Raspberry Pi, Docker, Kubernetes, servers, terminals, and environment setup.
+- `Go`
+  Go language, Go libraries, and Go tooling.
+- `Java`
+  Java language, Java ecosystem, and object-oriented design examples centered on Java.
+- `C`
+  C language, C libraries, and low-level API usage outside Linux kernel internals.
+- `スクリプト`
+  Bash, shell scripts, and cross-language scripting comparisons with Python/Ruby.
+- `Linuxカーネル`
+  Linux kernel internals, drivers, boot sequence, and kernel APIs.
+- `Linux運用`
+  Debian/Ubuntu, terminal tooling, package management, servers, and general Linux environment setup.
+- `Raspberry Pi`
+  Raspberry Pi hardware, setup, and operations.
+- `コンテナ`
+  Docker, Kubernetes, and containerized local environments.
 - `OSS`
   Articles about publishing, maintaining, contributing to, or announcing open-source software.
 - `キャリア`
@@ -62,6 +80,17 @@ As of July 19, 2026, this site has 169 tags and the following normalized categor
   - `hrhm`
   - `russia`
 - Removed the generic format tag `review`.
+
+## Related-post logic
+
+The "次に読む" block prefers:
+
+1. Same `series`
+2. Shared `tags`
+3. Shared `categories`
+4. Same section as a weak tiebreaker
+
+This is intentionally stricter than Hugo's generic related-content defaults so language- or topic-adjacent posts are surfaced more often.
 
 ## Audit command
 

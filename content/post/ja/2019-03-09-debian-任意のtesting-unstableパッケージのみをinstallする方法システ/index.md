@@ -3,7 +3,7 @@ title: 'Debian: 任意のtesting/unstableパッケージのみをinstallする�
 type: post
 date: 2019-03-09
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - 環境構築

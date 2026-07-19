@@ -3,7 +3,7 @@ title: AndroidにLinux環境を構築する"UserLAnd"がソースリーディン
 type: post
 date: 2019-03-16
 categories:
-- インフラ
+- Linux運用
 tags:
 - android
 - debian

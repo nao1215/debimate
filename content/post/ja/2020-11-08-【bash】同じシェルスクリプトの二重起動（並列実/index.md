@@ -3,7 +3,7 @@ title: 【Bash】同じシェルスクリプトの二重起動（並列実行）
 type: post
 date: 2020-11-08
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - shellscript

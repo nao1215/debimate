@@ -3,7 +3,43 @@
 {{- end -}}
 
 {{- $count := site.Params.relatedPosts.count | default 4 -}}
-{{- $pages := site.RegularPages.Related . | first $count -}}
+{{- $currentTags := .Params.tags | default (slice) -}}
+{{- $currentCategories := .Params.categories | default (slice) -}}
+{{- $currentSeries := .Params.series | default (slice) -}}
+{{- $scored := slice -}}
+
+{{- range site.RegularPages -}}
+  {{- if ne .RelPermalink $.RelPermalink -}}
+    {{- $score := 0 -}}
+    {{- $sharedSeries := intersect ($.Params.series | default (slice)) (.Params.series | default (slice)) -}}
+    {{- $sharedTags := intersect $currentTags (.Params.tags | default (slice)) -}}
+    {{- $sharedCategories := intersect $currentCategories (.Params.categories | default (slice)) -}}
+
+    {{- if gt (len $sharedSeries) 0 -}}
+      {{- $score = add $score (mul (len $sharedSeries) 100) -}}
+    {{- end -}}
+    {{- if gt (len $sharedTags) 0 -}}
+      {{- $score = add $score (mul (len $sharedTags) 20) -}}
+    {{- end -}}
+    {{- if gt (len $sharedCategories) 0 -}}
+      {{- $score = add $score (mul (len $sharedCategories) 8) -}}
+    {{- end -}}
+    {{- if eq .Section $.Section -}}
+      {{- $score = add $score 3 -}}
+    {{- end -}}
+
+    {{- if gt $score 0 -}}
+      {{- $key := printf "%05d-%012d" $score .Lastmod.Unix -}}
+      {{- $scored = $scored | append (dict "key" $key "page" . "score" $score) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- $pages := slice -}}
+{{- range first $count (sort $scored "key" "desc") -}}
+  {{- $pages = $pages | append .page -}}
+{{- end -}}
+
 {{- if gt (len $pages) 0 -}}
 <section class="related-posts">
   <h2 class="related-posts-title">次に読む</h2>

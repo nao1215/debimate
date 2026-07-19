@@ -3,7 +3,7 @@ title: 【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた
 type: post
 date: 2020-04-11
 categories:
-- プログラミング
+- スクリプト
 tags:
 - bash
 - python

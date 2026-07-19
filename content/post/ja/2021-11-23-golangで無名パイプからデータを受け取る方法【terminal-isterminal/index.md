@@ -3,7 +3,7 @@ title: Golangで無名パイプからデータを受け取る方法【term.IsTer
 type: post
 date: 2021-11-23
 categories:
-- プログラミング
+- Go
 tags:
 - golang
 cover:

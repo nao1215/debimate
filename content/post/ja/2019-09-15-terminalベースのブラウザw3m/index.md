@@ -3,7 +3,7 @@ title: Terminalベースのブラウザw3m
 type: post
 date: 2019-09-15
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - w3m

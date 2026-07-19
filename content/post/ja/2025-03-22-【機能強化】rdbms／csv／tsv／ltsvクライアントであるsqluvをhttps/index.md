@@ -3,7 +3,7 @@ title: 【機能強化】RDBMS／CSV／TSV／LTSVクライアントであるsqlu
 type: post
 date: 2025-03-22
 categories:
-- プログラミング
+- Go
 tags:
 - golang
 cover:

@@ -3,7 +3,7 @@ title: Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールす�
 type: post
 date: 2019-01-26
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - android
 - raspberrypi

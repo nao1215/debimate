@@ -3,8 +3,8 @@ title: コードリーディング(C言語)：chroot / ischroot
 type: post
 date: 2019-01-20
 categories:
-- インフラ
-- プログラミング
+- Linux運用
+- C
 tags:
 - codereading
 - command

@@ -3,7 +3,7 @@ title: 【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方
 type: post
 date: 2021-12-13
 categories:
-- プログラミング
+- Go
 tags:
 - error
 - golang

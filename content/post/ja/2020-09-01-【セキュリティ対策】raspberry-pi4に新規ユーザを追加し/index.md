@@ -3,7 +3,7 @@ title: 【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し
 type: post
 date: 2020-09-01
 categories:
-- インフラ
+- Raspberry Pi
 tags:
 - debian
 - raspberrypi

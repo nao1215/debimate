@@ -3,7 +3,7 @@ title: 【visudo / vigr / vipw】システムファイルをsudo viで編集は�
 type: post
 date: 2020-12-16
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 cover:

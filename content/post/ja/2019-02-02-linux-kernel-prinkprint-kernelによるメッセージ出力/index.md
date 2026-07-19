@@ -3,7 +3,8 @@ title: 'Linux Kernel: prink(print kernel)によるメッセージ出力'
 type: post
 date: 2019-02-02
 categories:
-- プログラミング
+- Linuxカーネル
+- C
 tags:
 - c言語
 - linuxkernel

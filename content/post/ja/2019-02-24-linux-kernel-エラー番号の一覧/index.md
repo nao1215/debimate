@@ -3,7 +3,8 @@ title: 'Linux Kernel: エラー番号の一覧'
 type: post
 date: 2019-02-24
 categories:
-- プログラミング
+- Linuxカーネル
+- C
 tags:
 - c言語
 - linuxkernel

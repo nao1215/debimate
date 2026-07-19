@@ -3,7 +3,7 @@ title: ドスパラのTHIRDWAVE VF-AD4にelementary OS(Ubuntu派生)を入れた
 type: post
 date: 2021-01-02
 categories:
-- インフラ
+- Linux運用
 tags:
 - debian
 - elementaryos
