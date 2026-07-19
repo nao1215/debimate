@@ -9,8 +9,8 @@
   weight = 2
 
 [[main]]
-  name = "Machine Learning"
-  url = "ml/"
+  name = "Learning"
+  url = "learning/"
   weight = 3
 
 [[main]]
@@ -22,13 +22,3 @@
   name = "GitHub Sponsors"
   url = "https://github.com/sponsors/nao1215"
   weight = 15
-
-[[main]]
-  name = "BucketList"
-  url = "bucket_list/"
-  weight = 20
-
-[[main]]
-  name = "Search"
-  url = "search/"
-  weight = 25
