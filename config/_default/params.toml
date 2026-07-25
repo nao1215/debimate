@@ -1,4 +1,4 @@
-homeInfoParams = { Content = "nchika(nao1215)のブログ。技術的な内容や OSS について書き、週報や学習記録を残します。" }
+homeInfoParams = { Content = "nchika(nao1215)のブログ。技術的な内容や OSS について書き、[週報](https://debimate.jp/weekly/)や[学習記録](https://debimate.jp/learning/)を残します。" }
 description = "nchika(nao1215)のブログ。技術的な内容や OSS について書き、週報や学習記録を残します。Go、C言語、Linux、OSS 開発、学習記録を中心に発信しています。"
 
 author = "nchika"
