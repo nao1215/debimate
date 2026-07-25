@@ -11,6 +11,10 @@ cover:
   image: images/debian.jpg
   alt: 'Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)'
   hidden: false
+aliases:
+- /post/2019-03-09-debian-任意のtesting-unstableパッケージのみをinstallする方法システ/
+- /2019/03/09/debian-任意のtesting-unstableパッケージのみをinstallする方法システ/
+- /2019/03/09/
 ---
 
 ### 前書き

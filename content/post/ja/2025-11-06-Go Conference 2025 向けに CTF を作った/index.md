@@ -8,6 +8,10 @@ cover:
   image: images/2025-11-06-ctf2025.jpg
   alt: 2025-11-06-ctf2025.jpg
   hidden: false
+aliases:
+- /post/2025-11-06-Go Conference 2025 向けに CTF を作った/
+- /2025/11/06/Go Conference 2025 向けに CTF を作った/
+- /2025/11/06/
 ---
 
 ### 会社で書いた記事を引用

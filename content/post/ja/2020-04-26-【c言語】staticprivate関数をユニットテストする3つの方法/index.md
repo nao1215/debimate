@@ -11,6 +11,9 @@ cover:
   image: images/board-361516_640-min.jpg
   alt: 【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】
   hidden: false
+aliases:
+- /post/2020-04-26-【c言語】staticprivate関数をユニットテストする3つの方法/
+- /2020/04/26/【c言語】staticprivate関数をユニットテストする3つの方法/
 ---
 
 ### 前書き：C言語のstatic関数は単体テストできます
@@ -207,4 +210,4 @@ private function
 
 coreutilsパッケージで提供されるfalseコマンド（必ず1を返すコマンド）は、#includeでソースファイルを読み込んでいます。以下の記事の下部に、実装解説がありますので、興味がある方は読んでみてください。
 
-- [/etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】](https://debimate.jp/post/2020-04-16-etc-passwd%E3%81%AB%E8%A8%98%E8%BC%89%E3%81%95%E3%82%8C%E3%81%9F-usr-sbin-nologin-bin-false%E3%81%A8%E3%81%AF%E4%BD%95%E3%81%8B%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E7%A6%81%E6%AD%A2/)
+- [/etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】](https://debimate.jp/post/ja/2020-04-16-etc-passwd%E3%81%AB%E8%A8%98%E8%BC%89%E3%81%95%E3%82%8C%E3%81%9F-usr-sbin-nologin-bin-false%E3%81%A8%E3%81%AF%E4%BD%95%E3%81%8B%E3%83%AD%E3%82%B0%E3%82%A4%E3%83%B3%E7%A6%81%E6%AD%A2/)

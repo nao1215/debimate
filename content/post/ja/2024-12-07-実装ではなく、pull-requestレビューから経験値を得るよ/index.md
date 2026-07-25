@@ -8,6 +8,9 @@ cover:
   image: images/rocket-launch-4370928_1280.jpg
   alt: 実装ではなく、Pull Requestレビューから経験値を得るようになった話
   hidden: false
+aliases:
+- /post/2024-12-07-実装ではなく、pull-requestレビューから経験値を得るよ/
+- /2024/12/07/実装ではなく、pull-requestレビューから経験値を得るよ/
 ---
 
 ### パワーワード：経験値泥棒

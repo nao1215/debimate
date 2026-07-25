@@ -13,6 +13,9 @@ cover:
   image: images/Screenshot-from-2020-08-31-18-38-47-min.jpg
   alt: 【環境構築】Raspberry Pi 4台で作るKubernetesクラスタ
   hidden: false
+aliases:
+- /post/2020-09-27-【環境構築】raspberry-pi-4台で作るkubernetesクラスタ/
+- /2020/09/27/【環境構築】raspberry-pi-4台で作るkubernetesクラスタ/
 ---
 
 ### 前書き：憧れのラズパイクラスタ
@@ -81,7 +84,7 @@ DHCP設定の場合、Raspberry Piの再起動に伴い、IPアドレスが変�
 
 以下の記事を参考にIPアドレスを固定化します。SSH接続する際にIPアドレスが必須なので、メモしてください。
 
-- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
+- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/ja/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ---
 
@@ -132,7 +135,7 @@ $ sudo vi /etc/hosts
 
 Raspberry Piのデフォルトユーザ（piユーザ）は、パスワードが知れ渡っているため、セキュリティリスクがあります。そのため、新規ユーザ（任意のユーザ名）を作成し、piユーザを削除します。
 
-- [【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除](https://debimate.jp/post/2020-09-01-%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%E5%AF%BE%E7%AD%96raspberry-pi4%E3%81%AB%E6%96%B0%E8%A6%8F%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%97/)
+- [【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除](https://debimate.jp/post/ja/2020-09-01-%E3%82%BB%E3%82%AD%E3%83%A5%E3%83%AA%E3%83%86%E3%82%A3%E5%AF%BE%E7%AD%96raspberry-pi4%E3%81%AB%E6%96%B0%E8%A6%8F%E3%83%A6%E3%83%BC%E3%82%B6%E3%82%92%E8%BF%BD%E5%8A%A0%E3%81%97/)
 
 ---
 
@@ -156,7 +159,7 @@ $ sudo raspi-config
 
 デフォルトのSSH接続設定は脆弱なので、以下の記事を参考にセキュリティ対策を実施してください。
 
-- [Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)](https://debimate.jp/post/2019-03-26-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi3%E5%90%91%E3%81%91%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2ssh%E6%8E%A5%E7%B6%9A%E8%A8%AD%E5%AE%9A%E5%85%AC%E9%96%8B%E9%8D%B5%E8%AA%8D/)
+- [Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)](https://debimate.jp/post/ja/2019-03-26-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi3%E5%90%91%E3%81%91%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2ssh%E6%8E%A5%E7%B6%9A%E8%A8%AD%E5%AE%9A%E5%85%AC%E9%96%8B%E9%8D%B5%E8%AA%8D/)
 
 ---
 
@@ -167,7 +170,7 @@ $ sudo raspi-config
 
 DockerとDocker Composeをインストールしますので、別記事を参照してください。
 
-- [Raspberry Pi3/4にDockerとdocker-composeをインストールする方法](https://debimate.jp/post/2020-09-27-raspberry-pi3-4%E3%81%ABdocker%E3%81%A8docker-compose%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
+- [Raspberry Pi3/4にDockerとdocker-composeをインストールする方法](https://debimate.jp/post/ja/2020-09-27-raspberry-pi3-4%E3%81%ABdocker%E3%81%A8docker-compose%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ---
 

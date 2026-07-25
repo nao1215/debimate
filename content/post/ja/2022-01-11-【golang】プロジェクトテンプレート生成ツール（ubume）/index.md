@@ -12,6 +12,10 @@ cover:
   image: images/cooking-g7a7f01727_640-min.jpg
   alt: 【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】
   hidden: false
+aliases:
+- /post/2022-01-11-【golang】プロジェクトテンプレート生成ツール（ubume）/
+- /2022/01/11/【golang】プロジェクトテンプレート生成ツール（ubume）/
+- /2022/01/11/
 ---
 
 ### 前書き：プロジェクトを新規で作るのはダルい
@@ -71,7 +75,7 @@ sample/cmd以下には、mainパッケージとそのテストファイルが格
 
 ### Makefileの仕様
 
-[Makefileは自己文書化](https://debimate.jp/post/2020-10-29-tips%E4%BD%95%E5%BA%A6%E3%82%82%E7%B9%B0%E3%82%8A%E8%BF%94%E3%81%99%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E3%82%92makefile%E3%81%A8%E3%82%B7%E3%82%A7%E3%83%AB/)されています。makeコマンドを引数なしで叩いた場合はビルドが始まらず、Makefileがどのようなターゲットを持ち、そのターゲットが何をするのかの説明文（helpメッセージ）が表示されます。 
+[Makefileは自己文書化](https://debimate.jp/post/ja/2020-10-29-tips%E4%BD%95%E5%BA%A6%E3%82%82%E7%B9%B0%E3%82%8A%E8%BF%94%E3%81%99%E9%96%8B%E7%99%BA%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89%E3%82%92makefile%E3%81%A8%E3%82%B7%E3%82%A7%E3%83%AB/)されています。makeコマンドを引数なしで叩いた場合はビルドが始まらず、Makefileがどのようなターゲットを持ち、そのターゲットが何をするのかの説明文（helpメッセージ）が表示されます。 
 
 ```
 $ make

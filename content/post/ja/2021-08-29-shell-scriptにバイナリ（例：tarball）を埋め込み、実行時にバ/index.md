@@ -11,6 +11,9 @@ cover:
   image: images/walnuts-1739021_640-min.jpg
   alt: Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法
   hidden: false
+aliases:
+- /post/2021-08-29-shell-scriptにバイナリ（例：tarball）を埋め込み、実行時にバ/
+- /2021/08/29/shell-scriptにバイナリ（例：tarball）を埋め込み、実行時にバ/
 ---
 
 ### 前書き：スクリプトサイズが大きい理由
@@ -174,4 +177,4 @@ Hello World
 
 ### おまけ：Shell Scriptをバイナリ化する方法
 
-- [shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法](https://debimate.jp/post/2021-08-29-shcshell-script-compiler%E3%81%A7%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%82%92%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E5%8C%96%E6%9A%97%E5%8F%B7%E5%8C%96/)
+- [shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法](https://debimate.jp/post/ja/2021-08-29-shcshell-script-compiler%E3%81%A7%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%97%E3%83%88%E3%82%92%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E5%8C%96%E6%9A%97%E5%8F%B7%E5%8C%96/)

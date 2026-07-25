@@ -14,6 +14,10 @@ cover:
   image: images/Makefile-min.jpg
   alt: 【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする
   hidden: false
+aliases:
+- /post/2020-10-29-【tips】何度も繰り返す開発環境構築をmakefileとシェル/
+- /2020/10/29/【tips】何度も繰り返す開発環境構築をmakefileとシェル/
+- /2020/10/29/
 ---
 
 ### 前書き：環境構築は面倒だから、楽をしたい

@@ -11,6 +11,9 @@ cover:
   image: images/lfVWBmiW_400x400-min.jpg
   alt: Raspberry Pi3/4にDockerとdocker-composeをインストールする方法
   hidden: false
+aliases:
+- /post/2020-09-27-raspberry-pi3-4にdockerとdocker-composeをインストールする方法/
+- /2020/09/27/raspberry-pi3-4にdockerとdocker-composeをインストールする方法/
 ---
 
 ### 前書き
@@ -105,4 +108,4 @@ $ sudo pip3 install docker-compose
 
 私は、Docker Composeインストール中にmicroSDカード容量（16GB）が足りなくなり、エラーとなりました。より容量の大きいmicroSDカードに移行する場合は、以下の記事を参考にしてください。
 
-- [Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法](https://debimate.jp/post/2020-09-02-raspberry-pi4%E3%81%AEimage%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%97%E3%82%88%E3%82%8A%E5%A4%A7%E5%AE%B9%E9%87%8F/)
+- [Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法](https://debimate.jp/post/ja/2020-09-02-raspberry-pi4%E3%81%AEimage%E3%83%87%E3%83%BC%E3%82%BF%E3%82%92%E3%83%90%E3%83%83%E3%82%AF%E3%82%A2%E3%83%83%E3%83%97%E3%81%97%E3%82%88%E3%82%8A%E5%A4%A7%E5%AE%B9%E9%87%8F/)

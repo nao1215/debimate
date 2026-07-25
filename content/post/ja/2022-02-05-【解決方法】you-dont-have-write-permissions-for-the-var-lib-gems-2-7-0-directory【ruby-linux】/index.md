@@ -15,6 +15,9 @@ cover:
   alt: 【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby,
     Linux】
   hidden: false
+aliases:
+- /post/2022-02-05-【解決方法】you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directory【ruby-linux】/
+- /2022/02/05/【解決方法】you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directory【ruby-linux】/
 ---
 
 ### 前書き：gem installでコケる

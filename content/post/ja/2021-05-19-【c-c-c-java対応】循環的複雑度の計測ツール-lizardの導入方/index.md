@@ -11,6 +11,10 @@ cover:
   image: images/2021-05-19-20.26.02-のスクリーンショット.jpg
   alt: 【C/C++/C#/Java対応】循環的複雑度の計測ツール lizardの導入方法【Swift/Rust/GoもOK】
   hidden: false
+aliases:
+- /post/2021-05-19-【c-c-c-java対応】循環的複雑度の計測ツール-lizardの導入方/
+- /2021/05/19/【c-c-c-java対応】循環的複雑度の計測ツール-lizardの導入方/
+- /2021/05/19/
 ---
 
 ### 前書き：ネストの深さを指摘する時間が勿体無い 
@@ -295,7 +299,7 @@ file/path/name:function1, function2  # ファイルパスの指定も可能
 
 | **静的解析ツール** | **断念理由／個人的な印象** |
 | --- | --- |
-| [Understand](https://www.techmatrix.co.jp/product/understand/index.html) | ライセンス購入必須。ソースコードの構造を様々な方法で可視化する機能を持つ。個人的には、似た機能を持つ[Sourcetrail](https://debimate.jp/post/2020-12-12-%E9%9D%99%E7%9A%84%E8%A7%A3%E6%9E%90%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E8%A7%A3%E6%9E%90%E8%A3%9C%E5%8A%A9%E3%83%84%E3%83%BC%E3%83%ABsourcetrail%E3%81%AE%E5%B0%8E/)の方が気軽に使いやすい。 |
+| [Understand](https://www.techmatrix.co.jp/product/understand/index.html) | ライセンス購入必須。ソースコードの構造を様々な方法で可視化する機能を持つ。個人的には、似た機能を持つ[Sourcetrail](https://debimate.jp/post/ja/2020-12-12-%E9%9D%99%E7%9A%84%E8%A7%A3%E6%9E%90%E3%82%BD%E3%83%BC%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%89%E8%A7%A3%E6%9E%90%E8%A3%9C%E5%8A%A9%E3%83%84%E3%83%BC%E3%83%ABsourcetrail%E3%81%AE%E5%B0%8E/)の方が気軽に使いやすい。 |
 | [C++Test](https://www.techmatrix.co.jp/product/ctest/casestudy/index.html) | ライセンス購入必須。単体テストのカバレッジ取得、コーディングルールチェック、フロー解析が強い。C/C++向けツールのため、組み込みソフト向け。 |
 | [Coverity](https://www.synopsys.com/ja-jp/software-integrity/security-testing/static-analysis-sast.html) | ライセンス購入必須。到達不可能なコード、推奨されないコーディング、不要な初期化など幅広い指摘を出す。C++Testに近い機能だが、Coverityは対応言語が多い（21個の言語対応）。 |
 | [SourceMonitor](http://www.campwoodsw.com/sourcemonitor.html) | 対応言語が若干少ない（C/C++/C#、VB.NET、Java、Delphi、VB、HTML）。[商用のソフト開発に利用可能なライセンス](http://www.campwoodsw.com/smlicense.html)であり、利用を断念する理由はあまり無い。ただ、公式サイトが古臭くて調査しなかった。 |

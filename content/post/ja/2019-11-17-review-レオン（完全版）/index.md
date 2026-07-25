@@ -11,6 +11,10 @@ cover:
   image: images/71eaOU3PHL._SY445_.jpg
   alt: 'Review: レオン（完全版）'
   hidden: false
+aliases:
+- /post/2019-11-17-review-レオン（完全版）/
+- /2019/11/17/review-レオン（完全版）/
+- /2019/11/17/
 ---
 
 ### シンプルなストーリーで描かれた純愛作品

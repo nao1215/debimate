@@ -10,6 +10,10 @@ cover:
   image: images/沈黙のWebライティング-min.jpg
   alt: 感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—
   hidden: false
+aliases:
+- /post/2020-02-09-review：沈黙のwebライティング-webマーケッター-ボーン/
+- /2020/02/09/review：沈黙のwebライティング-webマーケッター-ボーン/
+- /2020/02/09/
 ---
 
 ### SEOの名著と呼ばれる"沈黙のWebライティング"

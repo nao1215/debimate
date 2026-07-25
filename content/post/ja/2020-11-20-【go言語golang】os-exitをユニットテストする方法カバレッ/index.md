@@ -11,6 +11,9 @@ cover:
   image: images/exit-44205_640.jpg
   alt: 【Go言語(Golang)】os.Exit()をユニットテストする方法(カバレッジも取得する方法)
   hidden: false
+aliases:
+- /post/2020-11-20-【go言語golang】os-exitをユニットテストする方法カバレッ/
+- /2020/11/20/【go言語golang】os-exitをユニットテストする方法カバレッ/
 ---
 
 ### 前書き：os.Exit()の結果は親プロセスが受信
@@ -131,7 +134,7 @@ func TestDier(t *testing.T) {
 
 興味がある方は、以下の記事を参照してください。
 
-[【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】](https://debimate.jp/post/2020-04-26-c%E8%A8%80%E8%AA%9Estaticprivate%E9%96%A2%E6%95%B0%E3%82%92%E3%83%A6%E3%83%8B%E3%83%83%E3%83%88%E3%83%86%E3%82%B9%E3%83%88%E3%81%99%E3%82%8B3%E3%81%A4%E3%81%AE%E6%96%B9%E6%B3%95/)
+[【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】](https://debimate.jp/post/ja/2020-04-26-c%E8%A8%80%E8%AA%9Estaticprivate%E9%96%A2%E6%95%B0%E3%82%92%E3%83%A6%E3%83%8B%E3%83%83%E3%83%88%E3%83%86%E3%82%B9%E3%83%88%E3%81%99%E3%82%8B3%E3%81%A4%E3%81%AE%E6%96%B9%E6%B3%95/)
 
 ---
 

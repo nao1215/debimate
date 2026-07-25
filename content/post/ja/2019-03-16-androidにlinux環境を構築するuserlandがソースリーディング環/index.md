@@ -12,6 +12,10 @@ cover:
   image: images/UserLAnd2.png
   alt: UserLAnd
   hidden: false
+aliases:
+- /post/2019-03-16-androidにlinux環境を構築するuserlandがソースリーディング環/
+- /2019/03/16/androidにlinux環境を構築するuserlandがソースリーディング環/
+- /2019/03/16/
 ---
 
 ### 前書き
@@ -139,4 +143,4 @@ trace-cmd python3 python3-dev python3-pip
 
 UserLAnd遅いのよ……
 
-- [【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話](https://debimate.jp/post/2021-02-20-android%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%AB%E4%BD%BF%E3%81%86%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92user/)
+- [【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話](https://debimate.jp/post/ja/2021-02-20-android%E3%82%A2%E3%83%97%E3%83%AA%E3%82%B3%E3%83%BC%E3%83%89%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%81%AB%E4%BD%BF%E3%81%86%E3%82%A2%E3%83%97%E3%83%AA%E3%82%92user/)

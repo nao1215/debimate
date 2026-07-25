@@ -12,6 +12,9 @@ cover:
   image: images/drive-3410753_640-min.jpg
   alt: autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)
   hidden: false
+aliases:
+- /post/2019-10-05-autofsを用いてhdd-ssd-usbメモリを起動時に自動マウントする/
+- /2019/10/05/autofsを用いてhdd-ssd-usbメモリを起動時に自動マウントする/
 ---
 
 ### 前書き
@@ -49,7 +52,7 @@ cover:
               `"""            Memory: 37627MiB / 64404Mi
 ```
 
-[gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法](https://debimate.jp/post/2019-10-05-gdisk-mkfs%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A72tb%E4%BB%A5%E4%B8%8A%E3%81%AEhdd%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
+[gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法](https://debimate.jp/post/ja/2019-10-05-gdisk-mkfs%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A72tb%E4%BB%A5%E4%B8%8A%E3%81%AEhdd%E3%82%92%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ---
 

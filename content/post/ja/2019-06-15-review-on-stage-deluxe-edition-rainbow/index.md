@@ -10,6 +10,9 @@ cover:
   image: images/on_stage-min.jpg
   alt: 'Review: On Stage Deluxe Edition (Rainbow)'
   hidden: false
+aliases:
+- /post/2019-06-15-review-on-stage-deluxe-edition-rainbow/
+- /2019/06/15/review-on-stage-deluxe-edition-rainbow/
 ---
 
 ### 収録曲
@@ -39,8 +42,8 @@ cover:
 
 ### 本作発表前にリリース済みAlbumのReview
 
-- [Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
-- [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
+- [Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/ja/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
+- [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/ja/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
 
 ---
 

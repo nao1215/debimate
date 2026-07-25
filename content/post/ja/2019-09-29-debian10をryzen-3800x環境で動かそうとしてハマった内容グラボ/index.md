@@ -13,6 +13,10 @@ cover:
   image: images/PCリスト-min-1.jpeg
   alt: Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)
   hidden: false
+aliases:
+- /post/2019-09-29-debian10をryzen-3800x環境で動かそうとしてハマった内容グラボ/
+- /2019/09/29/debian10をryzen-3800x環境で動かそうとしてハマった内容グラボ/
+- /2019/09/29/
 ---
 
 ### 前書き

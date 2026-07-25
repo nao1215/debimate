@@ -10,6 +10,10 @@ cover:
   image: images/hand-2605908_640-min.jpg
   alt: Raspberry Pi4のimage（データ）をバックアップし、より大容量なmicroSDカードにリストアする方法
   hidden: false
+aliases:
+- /post/2020-09-02-raspberry-pi4のimage（データ）をバックアップし、より大容量/
+- /2020/09/02/raspberry-pi4のimage（データ）をバックアップし、より大容量/
+- /2020/09/02/
 ---
 
 ### 前書き

@@ -12,6 +12,10 @@ cover:
   image: images/Kernel_lists-1.png
   alt: 'Linux Kernel: List構造を操作するためのAPI(Listの使い方)'
   hidden: false
+aliases:
+- /post/2019-04-07-linux-kernel-list構造を操作するためのapilistの使い方/
+- /2019/04/07/linux-kernel-list構造を操作するためのapilistの使い方/
+- /2019/04/07/
 ---
 
 ### 前書き
@@ -354,7 +358,7 @@ list\_entry()の実装は、$(Linux Kernel Top Directory)/include/linux/list.h�
 
 container\_ofマクロの仕様に関しては、別記事で詳細に記載しています。
 
-- [Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ](https://debimate.jp/post/2019-04-06-linux-kernel-%E6%A7%8B%E9%80%A0%E4%BD%93%E3%83%A1%E3%83%B3%E3%83%90%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%81%8B%E3%82%89%E6%A7%8B%E9%80%A0%E4%BD%93%E3%81%AE%E5%85%88%E9%A0%AD%E3%83%9D%E3%82%A4/)
+- [Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ](https://debimate.jp/post/ja/2019-04-06-linux-kernel-%E6%A7%8B%E9%80%A0%E4%BD%93%E3%83%A1%E3%83%B3%E3%83%90%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%81%8B%E3%82%89%E6%A7%8B%E9%80%A0%E4%BD%93%E3%81%AE%E5%85%88%E9%A0%AD%E3%83%9D%E3%82%A4/)
 
 ---
 
@@ -437,6 +441,6 @@ list\_for\_each\_entry()は、for文を作成しているだけです。前提�
 
 本記事で説明した内容で、Linked Listを用いたDevice Driverを作成しています。Listの使い方をより具体的に知りたい場合は、以下の記事を確認して下さい。
 
-- [Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)](https://debimate.jp/post/2019-06-23-linux-kernel%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AAcharacter-device%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95linked-list-api%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E3%82%B5/)
+- [Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)](https://debimate.jp/post/ja/2019-06-23-linux-kernel%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AAcharacter-device%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95linked-list-api%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E3%82%B5/)
 
 本記事が説明しているLinux KernelのList操作APIは、必要最低限な内容のみです。他にも、Linux Kernelには、List操作用のAPIが定義されています。今後、List操作APIの第二弾として、別記事を作成予定です。

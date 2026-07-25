@@ -15,6 +15,10 @@ cover:
   image: images/s_charcter_device-1.jpg
   alt: Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)
   hidden: false
+aliases:
+- /post/2019-06-23-linux-kernelの簡単なcharacter-deviceを作成する方法linked-list-apiの使用方法サ/
+- /2019/06/23/linux-kernelの簡単なcharacter-deviceを作成する方法linked-list-apiの使用方法サ/
+- /2019/06/23/
 ---
 
 ### 前書き
@@ -69,7 +73,7 @@ Linux Kernel用のDevice Driverを作成するには、環境構築が必要に�
 
 また、本記事で使用するコードは、[GitHub](https://github.com/nao1215/LinuxKernelArticle/tree/master/01_char_device)に格納してあります。
 
-- [環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
+- [環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/ja/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
 
 ---
 
@@ -169,7 +173,7 @@ Load用の関数(debimate\_init())全体で注意すべき点は、各登録処�
 
 異常系処理で用いられるIS\_ERR()やPTR\_ERR()は、NULLポインタのエラー原因を特定するためのKernel APIです。このKernel特有のエラーハンドリングに関しては、以下の記事にまとめてあります。
 
-- [Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)](https://debimate.jp/post/2019-03-02-linux-kernel-null%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%82%A8%E3%83%A9%E3%83%BC%E3%83%8F%E3%83%B3%E3%83%89%E3%83%AA%E3%83%B3%E3%82%B0err_ptr-is_err-ptr_err/)
+- [Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)](https://debimate.jp/post/ja/2019-03-02-linux-kernel-null%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%82%A8%E3%83%A9%E3%83%BC%E3%83%8F%E3%83%B3%E3%83%89%E3%83%AA%E3%83%B3%E3%82%B0err_ptr-is_err-ptr_err/)
 
 debimate\_init()の最初で実行しているalloc\_chrdev\_region()では、メジャー番号を動的に取得しています。引数のMINOR\_NR\_BASE、MAX\_MINOR\_NRは、マイナー番号用の設定です。メジャー番号はデバイスの種類を表し、マイナー番号は同じ種類のデバイス(複数個)を識別するため値です。
 
@@ -337,7 +341,7 @@ MEM_ALLOC_ERR:
 
 (Linked) List操作の方法(API)に関しては、別記事でまとめています。これから説明するWrite、Read、Closeでは、List操作を知らないと理解できない内容のため、自身がない方は確認して下さい。
 
-- [Linux Kernel: List構造を操作するためのAPI(Listの使い方)](https://debimate.jp/post/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)
+- [Linux Kernel: List構造を操作するためのAPI(Listの使い方)](https://debimate.jp/post/ja/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)
 
 ---
 

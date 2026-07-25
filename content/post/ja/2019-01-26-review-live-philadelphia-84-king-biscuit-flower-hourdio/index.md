@@ -10,6 +10,9 @@ cover:
   image: images/King_Biscuit_Flower_Hour_radio_show_logo.jpg
   alt: 'Review: Live Philadelphia ''84 King Biscuit Flower Hour(DIO)'
   hidden: false
+aliases:
+- /post/2019-01-26-review-live-philadelphia-84-king-biscuit-flower-hourdio/
+- /2019/01/26/review-live-philadelphia-84-king-biscuit-flower-hourdio/
 ---
 
 ### 収録曲

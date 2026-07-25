@@ -9,6 +9,9 @@ cover:
   image: images/tornago-logo-small.png
   alt: tornago-logo
   hidden: false
+aliases:
+- /post/2025-11-21【Golang】tornagoライブラリを作った話/
+- /2025/11/21/
 ---
 
 ### 悪用厳禁

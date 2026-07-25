@@ -12,6 +12,10 @@ cover:
   image: images/Screenshot-from-2022-02-26-21-38-01.png
   alt: GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】
   hidden: false
+aliases:
+- /post/2022-02-26-githubで初めてstar-50個以上を獲得した感想と実施した内/
+- /2022/02/26/githubで初めてstar-50個以上を獲得した感想と実施した内/
+- /2022/02/26/
 ---
 
 ### 前書き：人生で初めてGitHub Star 50個超え

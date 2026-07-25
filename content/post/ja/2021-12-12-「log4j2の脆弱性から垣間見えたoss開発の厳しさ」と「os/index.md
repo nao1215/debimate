@@ -12,6 +12,10 @@ cover:
   image: images/dream.jpg
   alt: 「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について
   hidden: false
+aliases:
+- /post/2021-12-12-「log4j2の脆弱性から垣間見えたoss開発の厳しさ」と「os/
+- /2021/12/12/「log4j2の脆弱性から垣間見えたoss開発の厳しさ」と「os/
+- /2021/12/12/
 ---
 
 ### 前書き：災害レベルの脆弱性
@@ -79,7 +83,7 @@ Log4j2に関する情報収集の中で、海外の方は
 
 思い直した理由としては、「[Vim/NeoVimプラグイン作者](https://zenn.dev/shougo/articles/github-sponsors)や[Linux Kernel界隈で有名な方](https://satoru-takeuchi.hatenablog.com/entry/2020/07/22/215403)がGitHub Sponsors有効化を公言した事（GitHub Sponsorsが身近になってきた事）」や「技術記事でお世話になった方へ金銭的な恩返しができる事」が大きいです（あと、月額千円なら懐がそこまで痛くないかな、という考え）
 
-考えているだけでは何も変わらないので、私はPatreonやGitHub SponsorsでOSS開発者を支援（?）し始めました。例えば、2021年は[elementary OS](https://debimate.jp/post/2021-01-09-%E6%8E%A8%E3%81%97%E3%81%AF%E8%AA%B0oss%E9%96%8B%E7%99%BA%E3%82%92%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%97%E3%81%9F%E3%81%8F%E9%87%91%E9%8A%AD%E7%9A%84/)に寄付しましたし、最近は[Satoru Takeuchi氏](https://github.com/sponsors/satoru-takeuchi)と[skanehira氏](https://github.com/sponsors/skanehira)に対してGitHub Sponsorsを開始しました（少額ですが……）。
+考えているだけでは何も変わらないので、私はPatreonやGitHub SponsorsでOSS開発者を支援（?）し始めました。例えば、2021年は[elementary OS](https://debimate.jp/post/ja/2021-01-09-%E6%8E%A8%E3%81%97%E3%81%AF%E8%AA%B0oss%E9%96%8B%E7%99%BA%E3%82%92%E3%82%B5%E3%83%9D%E3%83%BC%E3%83%88%E3%81%97%E3%81%9F%E3%81%8F%E9%87%91%E9%8A%AD%E7%9A%84/)に寄付しましたし、最近は[Satoru Takeuchi氏](https://github.com/sponsors/satoru-takeuchi)と[skanehira氏](https://github.com/sponsors/skanehira)に対してGitHub Sponsorsを開始しました（少額ですが……）。
 
 「お金を払うのが絶対正義！」という考えでもありません。例えば、OSS開発者が書いている技術ブログの広告をクリックすればお金を払わずに（自分の懐を傷めずに）、感謝の気持ちを表せます。また、御礼の言葉を開発者に直接伝えても良いでしょう。
 

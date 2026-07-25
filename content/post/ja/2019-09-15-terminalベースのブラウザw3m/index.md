@@ -12,13 +12,16 @@ cover:
   image: images/w3m.jpg
   alt: Terminalベースのブラウザw3m
   hidden: false
+aliases:
+- /post/2019-09-15-terminalベースのブラウザw3m/
+- /2019/09/15/terminalベースのブラウザw3m/
 ---
 
 ### 前書き
 
 前回、キーボードのみで操作を完結させる手段として、keynavを紹介しました。
 
-- [マウスポインタをキーボードで操作するkeynav](https://debimate.jp/post/2019-09-15-%E3%83%9E%E3%82%A6%E3%82%B9%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%82%92%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%81%A7%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8Bkeynav/)
+- [マウスポインタをキーボードで操作するkeynav](https://debimate.jp/post/ja/2019-09-15-%E3%83%9E%E3%82%A6%E3%82%B9%E3%83%9D%E3%82%A4%E3%83%B3%E3%82%BF%E3%82%92%E3%82%AD%E3%83%BC%E3%83%9C%E3%83%BC%E3%83%89%E3%81%A7%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8Bkeynav/)
 
 同じように、キーボードで操作が完結できる[w3m](http://w3m.sourceforge.net/index.ja.html)を本記事で紹介します。[w3m(WWW-wo-Miru)](http://w3m.sourceforge.net/index.ja.html%0A)は、日本人が作成したテキストベースWebブラウザです。端末上でWeb検索作業できますが、使いづらい部分があったため、それらを補うスクリプトも本記事に記載します。
 

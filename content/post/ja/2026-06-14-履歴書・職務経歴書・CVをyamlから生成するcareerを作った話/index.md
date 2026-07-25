@@ -10,6 +10,10 @@ cover:
   image: images/japanese-resume-p-1-top-half.png
   alt: japanese-resume-p-1-top-half
   hidden: false
+aliases:
+- /post/2026-06-14-履歴書・職務経歴書・CVをyamlから生成するcareerを作った話/
+- /2026/06/14/履歴書・職務経歴書・CVをyamlから生成するcareerを作った話/
+- /2026/06/14/
 ---
 
 

@@ -12,13 +12,16 @@ cover:
   image: images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg
   alt: 【CPU温度やI/Oの監視】Rapberry Pi4サーバにMonitorixをインストールする方法
   hidden: false
+aliases:
+- /post/2020-11-28-【cpu温度やi-oの監視】rapberry-pi4サーバにmonitorixをインストール/
+- /2020/11/28/【cpu温度やi-oの監視】rapberry-pi4サーバにmonitorixをインストール/
 ---
 
 ### 前書き：ラズパイサーバが停止するので監視したい
 
-[Raspberry Pi4にPLEXマルチメディアサーバを導入](https://debimate.jp/post/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。
+[Raspberry Pi4にPLEXマルチメディアサーバを導入](https://debimate.jp/post/ja/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。
 
-この問題の対症療法として、[Watch Dog Timerとheartbeatを用いてシステム停止時に自動再起動を行う対応](https://debimate.jp/post/2020-11-28-watchdogtimerraspberry-pi4%E3%82%B5%E3%83%BC%E3%83%90%E3%81%8C%E3%83%95%E3%83%AA%E3%83%BC%E3%82%BA%E5%81%9C%E6%AD%A2%E3%81%97%E3%81%9F%E5%A0%B4%E5%90%88%E3%81%AB%E8%87%AA%E5%8B%95/)を実施しました。
+この問題の対症療法として、[Watch Dog Timerとheartbeatを用いてシステム停止時に自動再起動を行う対応](https://debimate.jp/post/ja/2020-11-28-watchdogtimerraspberry-pi4%E3%82%B5%E3%83%BC%E3%83%90%E3%81%8C%E3%83%95%E3%83%AA%E3%83%BC%E3%82%BA%E5%81%9C%E6%AD%A2%E3%81%97%E3%81%9F%E5%A0%B4%E5%90%88%E3%81%AB%E8%87%AA%E5%8B%95/)を実施しました。
 
 今回はシステムが停止する原因を探るため、Raspberry Pi4にMonitorixをインストールして、システムリソースの変化をモニタリングできるようにします。そこで、本記事では「Monitorixのインストール方法」と「Raspberry Pi向けの設定」に関して説明します。
 
@@ -104,7 +107,7 @@ $ sudo apt install monitorix
 
 Monitorixのモニタリング結果は、IPアドレス指定で確認する事になるため、DHCPで動的にIPアドレスが変わると運用しづらいです。そのため、以下の記事を参考にしてRaspberry Pi4を固定IP化します。
 
-- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
+- [Raspberry Piに固定IPを割り当てる方法](https://debimate.jp/post/ja/2019-03-24-raspberry-pi3%E3%82%92%E5%9B%BA%E5%AE%9Aip%E5%8C%96%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/)
 
 ---
 

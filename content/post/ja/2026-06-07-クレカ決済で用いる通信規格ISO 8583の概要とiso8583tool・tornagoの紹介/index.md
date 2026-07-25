@@ -9,6 +9,10 @@ cover:
   image: images/iso8583-icon.jpg
   alt: iso8583-icon
   hidden: false
+aliases:
+- /post/2026-06-07-クレカ決済で用いる通信規格ISO 8583の概要とiso8583tool・tornagoの紹介/
+- /2026/06/07/クレカ決済で用いる通信規格ISO 8583の概要とiso8583tool・tornagoの紹介/
+- /2026/06/07/
 ---
 
 ### 前書き：Fintech らしい記事を書く

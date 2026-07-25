@@ -9,6 +9,10 @@ cover:
   image: images/text-lover.jpg
   alt: text-lover
   hidden: false
+aliases:
+- /post/2026-05-31-あなたの文章が読みたい/
+- /2026/05/31/あなたの文章が読みたい/
+- /2026/05/31/
 ---
 
 ### LLMっぽい文章を見ると身構えてしまう

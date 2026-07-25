@@ -13,6 +13,9 @@ cover:
   image: images/scripts-min.jpg
   alt: Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較
   hidden: false
+aliases:
+- /post/2020-04-05-bashshell-scriptからrubyやpythonに乗り換え！頻繁に使う処理を各言/
+- /2020/04/05/bashshell-scriptからrubyやpythonに乗り換え！頻繁に使う処理を各言/
 ---
 
 ### 前書き：自動化にBashを使うと後々辛い
@@ -61,26 +64,26 @@ Bashが機能的に貧弱な点
 
 | **No.** | **種類** | **実装内容** |
 | --- | --- | --- |
-| 1 | PATH取得 | [カレントワーキングディレクトリの取得](https://debimate.jp/post/2020-04-05-bashshell-script%E3%81%8B%E3%82%89ruby%E3%82%84python%E3%81%AB%E4%B9%97%E3%82%8A%E6%8F%9B%E3%81%88%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%E3%83%87/) |
-| 2 | PATH取得 | [実行ファイル名、実行ファイルの相対・絶対PATHの取得](https://debimate.jp/post/2020-04-05-bash-ruby-python3%E5%AE%9F%E8%A1%8C%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D%E5%AE%9F%E8%A1%8C%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B5%B6%E5%AF%BE/) |
-| 3 | ファイル操作 | [ファイルの存在確認](https://debimate.jp/post/2020-04-06-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E5%AD%98%E5%9C%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
-| 4 | ファイル操作 | [新規ファイル作成（一時ファイル作成含む）、ファイル削除](https://debimate.jp/post/2020-04-07-bash-ruby-python3%E6%96%B0%E8%A6%8F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90%E4%B8%80%E6%99%82%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90/) |
-| 5 | ファイル操作 | [ファイル読み込み、ファイル書き込み](https://debimate.jp/post/2020-04-08-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF/) |
-| 6 | ファイル操作 | [PATHからのファイル名抽出、ファイル名(拡張子なし）取得、拡張子の取得](https://debimate.jp/post/2020-04-08-bash-ruby-python3path%E3%81%8B%E3%82%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%AE%E6%8A%BD%E5%87%BA%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D%E6%8B%A1/) |
-| 7 | ファイル操作 | [ファイル一覧取得、ファイル数確認](https://debimate.jp/post/2020-04-09-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%B8%80%E8%A6%A7%E3%81%AE%E5%8F%96%E5%BE%97%E6%96%B9%E6%B3%95%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E6%95%B0/) |
-| 8 | ファイル操作 | [ファイルのコピー、ファイルの移動](https://debimate.jp/post/2020-04-09-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E3%82%B3%E3%83%94%E3%83%BC%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%A7%BB%E5%8B%95%E6%96%B9/) |
+| 1 | PATH取得 | [カレントワーキングディレクトリの取得](https://debimate.jp/post/ja/2020-04-05-bashshell-script%E3%81%8B%E3%82%89ruby%E3%82%84python%E3%81%AB%E4%B9%97%E3%82%8A%E6%8F%9B%E3%81%88%E3%82%AB%E3%83%AC%E3%83%B3%E3%83%88%E3%83%AF%E3%83%BC%E3%82%AD%E3%83%B3%E3%82%B0%E3%83%87/) |
+| 2 | PATH取得 | [実行ファイル名、実行ファイルの相対・絶対PATHの取得](https://debimate.jp/post/ja/2020-04-05-bash-ruby-python3%E5%AE%9F%E8%A1%8C%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D%E5%AE%9F%E8%A1%8C%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%B5%B6%E5%AF%BE/) |
+| 3 | ファイル操作 | [ファイルの存在確認](https://debimate.jp/post/ja/2020-04-06-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E5%AD%98%E5%9C%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
+| 4 | ファイル操作 | [新規ファイル作成（一時ファイル作成含む）、ファイル削除](https://debimate.jp/post/ja/2020-04-07-bash-ruby-python3%E6%96%B0%E8%A6%8F%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90%E4%B8%80%E6%99%82%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%BD%9C%E6%88%90/) |
+| 5 | ファイル操作 | [ファイル読み込み、ファイル書き込み](https://debimate.jp/post/ja/2020-04-08-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%81%BF%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E6%9B%B8%E3%81%8D%E8%BE%BC%E3%81%BF/) |
+| 6 | ファイル操作 | [PATHからのファイル名抽出、ファイル名(拡張子なし）取得、拡張子の取得](https://debimate.jp/post/ja/2020-04-08-bash-ruby-python3path%E3%81%8B%E3%82%89%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D%E3%81%AE%E6%8A%BD%E5%87%BA%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E5%90%8D%E6%8B%A1/) |
+| 7 | ファイル操作 | [ファイル一覧取得、ファイル数確認](https://debimate.jp/post/ja/2020-04-09-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E4%B8%80%E8%A6%A7%E3%81%AE%E5%8F%96%E5%BE%97%E6%96%B9%E6%B3%95%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E6%95%B0/) |
+| 8 | ファイル操作 | [ファイルのコピー、ファイルの移動](https://debimate.jp/post/ja/2020-04-09-bash-ruby-python3%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E3%82%B3%E3%83%94%E3%83%BC%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AE%E7%A7%BB%E5%8B%95%E6%96%B9/) |
 | 9 | ファイル操作 | ファイルの圧縮・展開 |
-| 10 | ディレクトリ操作 | [ディレクトリの存在確認](https://debimate.jp/post/2020-04-06-bash-ruby-python3%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E3%81%AE%E5%AD%98%E5%9C%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE/) |
-| 11 | ディレクトリ操作 | [新規ディレクトリ作成、ディレクトリ削除](https://debimate.jp/post/2020-04-10-bash-ruby-python3%E6%96%B0%E8%A6%8F%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E4%BD%9C%E6%88%90%E6%96%B9%E6%B3%95%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF/) |
+| 10 | ディレクトリ操作 | [ディレクトリの存在確認](https://debimate.jp/post/ja/2020-04-06-bash-ruby-python3%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E3%81%AE%E5%AD%98%E5%9C%A8%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE/) |
+| 11 | ディレクトリ操作 | [新規ディレクトリ作成、ディレクトリ削除](https://debimate.jp/post/ja/2020-04-10-bash-ruby-python3%E6%96%B0%E8%A6%8F%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E4%BD%9C%E6%88%90%E6%96%B9%E6%B3%95%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF/) |
 | 12 | 文字列操作 | 文字列判定、正規表現による文字列加工 |
-| 13 | 文字列操作 | [ヒアドキュメントの書き方](https://debimate.jp/post/2020-04-07-bash-ruby-python3%E3%83%92%E3%82%A2%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88%E6%96%87%E5%AD%97%E5%88%97%E3%83%AA%E3%83%86%E3%83%A9%E3%83%AB%E5%9F%8B%E3%82%81/) |
-| 14 | 文字列操作 | [出力文字色の変更](https://debimate.jp/post/2020-04-11-bash-ruby-python3ansi%E3%82%A8%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%97%E3%82%B7%E3%83%BC%E3%82%B1%E3%83%B3%E3%82%B9%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E5%87%BA%E5%8A%9B%E6%96%87/) |
-| 15 | 権限操作 | [ユーザ名、UID、グループ名、GIDの取得](https://debimate.jp/post/2020-04-12-bash-ruby-python3%E3%83%A6%E3%83%BC%E3%82%B6%E5%90%8D-uid-%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E5%90%8D-gid%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/) |
-| 16 | 権限操作 | [root権限確認](https://debimate.jp/post/2020-04-11-bash-ruby-python3root%E6%A8%A9%E9%99%90%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
+| 13 | 文字列操作 | [ヒアドキュメントの書き方](https://debimate.jp/post/ja/2020-04-07-bash-ruby-python3%E3%83%92%E3%82%A2%E3%83%89%E3%82%AD%E3%83%A5%E3%83%A1%E3%83%B3%E3%83%88%E6%96%87%E5%AD%97%E5%88%97%E3%83%AA%E3%83%86%E3%83%A9%E3%83%AB%E5%9F%8B%E3%82%81/) |
+| 14 | 文字列操作 | [出力文字色の変更](https://debimate.jp/post/ja/2020-04-11-bash-ruby-python3ansi%E3%82%A8%E3%82%B9%E3%82%B1%E3%83%BC%E3%83%97%E3%82%B7%E3%83%BC%E3%82%B1%E3%83%B3%E3%82%B9%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E5%87%BA%E5%8A%9B%E6%96%87/) |
+| 15 | 権限操作 | [ユーザ名、UID、グループ名、GIDの取得](https://debimate.jp/post/ja/2020-04-12-bash-ruby-python3%E3%83%A6%E3%83%BC%E3%82%B6%E5%90%8D-uid-%E3%82%B0%E3%83%AB%E3%83%BC%E3%83%97%E5%90%8D-gid%E3%82%92%E5%8F%96%E5%BE%97%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95/) |
+| 16 | 権限操作 | [root権限確認](https://debimate.jp/post/ja/2020-04-11-bash-ruby-python3root%E6%A8%A9%E9%99%90%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
 | 17 | 権限操作 | ファイルアクセス権の確認や変更 |
-| 18 | 外部コマンド操作 | [外部コマンドの実行](https://debimate.jp/post/2020-04-12-bash-ruby-python3%E5%A4%96%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
-| 19 | UI | [ユーザ入力の取得](https://debimate.jp/post/2020-04-09-bash-ruby-python3%E3%83%A6%E3%83%BC%E3%82%B6%E5%85%A5%E5%8A%9Binput%E5%8F%97%E3%81%91%E4%BB%98%E3%81%91%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
-| 20 | UI | [オプション解析](https://debimate.jp/post/2020-04-11-bash-ruby-python3%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3%E8%A7%A3%E6%9E%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
+| 18 | 外部コマンド操作 | [外部コマンドの実行](https://debimate.jp/post/ja/2020-04-12-bash-ruby-python3%E5%A4%96%E9%83%A8%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
+| 19 | UI | [ユーザ入力の取得](https://debimate.jp/post/ja/2020-04-09-bash-ruby-python3%E3%83%A6%E3%83%BC%E3%82%B6%E5%85%A5%E5%8A%9Binput%E5%8F%97%E3%81%91%E4%BB%98%E3%81%91%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
+| 20 | UI | [オプション解析](https://debimate.jp/post/ja/2020-04-11-bash-ruby-python3%E3%82%AA%E3%83%97%E3%82%B7%E3%83%A7%E3%83%B3%E8%A7%A3%E6%9E%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AE%E6%AF%94%E8%BC%83/) |
 
 各言語のVersionは、以下を想定しています。
 

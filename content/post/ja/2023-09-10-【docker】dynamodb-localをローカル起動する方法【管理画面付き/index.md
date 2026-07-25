@@ -11,6 +11,9 @@ cover:
   image: images/dynamoAdmin.png
   alt: 【Docker】DynamoDB localをローカル起動する方法【管理画面付き】
   hidden: false
+aliases:
+- /post/2023-09-10-【docker】dynamodb-localをローカル起動する方法【管理画面付き/
+- /2023/09/10/【docker】dynamodb-localをローカル起動する方法【管理画面付き/
 ---
 
 ### 前書き：DynamoDB、はじめまして

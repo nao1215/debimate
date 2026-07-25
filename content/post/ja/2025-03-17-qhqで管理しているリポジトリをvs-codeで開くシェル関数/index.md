@@ -8,6 +8,10 @@ cover:
   image: images/vscode.png
   alt: qhqで管理しているリポジトリをVS Codeで開くシェル関数
   hidden: false
+aliases:
+- /post/2025-03-17-qhqで管理しているリポジトリをvs-codeで開くシェル関数/
+- /2025/03/17/qhqで管理しているリポジトリをvs-codeで開くシェル関数/
+- /2025/03/17/
 ---
 
 ### 前書き

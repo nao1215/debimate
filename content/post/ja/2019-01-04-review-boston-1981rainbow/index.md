@@ -11,6 +11,10 @@ cover:
   image: images/rainbow_boston.jpg
   alt: 'Review: Boston 1981(Rainbow)'
   hidden: false
+aliases:
+- /post/2019-01-04-review-boston-1981rainbow/
+- /2019/01/04/review-boston-1981rainbow/
+- /2019/01/04/
 ---
 
 ### 収録曲

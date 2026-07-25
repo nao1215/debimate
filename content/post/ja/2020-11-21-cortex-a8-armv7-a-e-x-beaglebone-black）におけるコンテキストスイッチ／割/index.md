@@ -12,6 +12,9 @@ cover:
   image: images/Screenshot-from-2020-11-21-12-10-31.jpg
   alt: Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）におけるコンテキストスイッチ／割り込み操作／Halt
   hidden: false
+aliases:
+- /post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black）におけるコンテキストスイッチ／割/
+- /2020/11/21/cortex-a8-armv7-a-e-x-beaglebone-black）におけるコンテキストスイッチ／割/
 ---
 
 ### 前書き：XINUソースコードから学ぶアセンブラ実装
@@ -33,7 +36,7 @@ cover:
 
 ARM Cortex-A8に関する情報は、以下の記事でまとめてあります。必要であれば、ご参照ください。
 
-- [Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方](https://debimate.jp/post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black%E3%81%AE%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E6%83%85%E5%A0%B1%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9%E5%91%BD%E4%BB%A4/)
+- [Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方](https://debimate.jp/post/ja/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black%E3%81%AE%E3%83%AC%E3%82%B8%E3%82%B9%E3%82%BF%E6%83%85%E5%A0%B1%E3%82%A2%E3%82%BB%E3%83%B3%E3%83%96%E3%83%A9%E5%91%BD%E4%BB%A4/)
 
 ---
 

@@ -10,6 +10,10 @@ cover:
   image: images/rising.jpg
   alt: 'Review: RISING--虹を翔る覇者--(Rainbow)'
   hidden: false
+aliases:
+- /post/2019-05-19-review-rising-虹を翔る覇者-rainbow/
+- /2019/05/19/review-rising-虹を翔る覇者-rainbow/
+- /2019/05/19/
 ---
 
 ### 収録曲
@@ -30,14 +34,14 @@ cover:
 
 ### 前作のReview
 
-[Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
+[Review: Ritchie Blackmore's Rainbow--銀嶺の覇者--(Rainbow)](https://debimate.jp/post/ja/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)
 
 ---
 
 
 ### Rainbowの全アルバム中、最も重いサウンド
 
-本作は、前作の["Ritchie Blackmore's Rainbow(銀嶺の覇者)"](https://debimate.jp/post/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)と比較して、メンバーチェンジで獲得したCozy Powell(Dr.)のシンプルで力強いドラミングによって、Hard Rock然としたサウンドへと急激に様変わりしています。
+本作は、前作の["Ritchie Blackmore's Rainbow(銀嶺の覇者)"](https://debimate.jp/post/ja/2019-05-18-review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)と比較して、メンバーチェンジで獲得したCozy Powell(Dr.)のシンプルで力強いドラミングによって、Hard Rock然としたサウンドへと急激に様変わりしています。
 
 メンバーチェンジの影響は、ドラムだけでなくサウンド全体に影響がありました。それもその筈で、前作をリリースしてから、わずか三ヶ月でRitchieとDIO以外のメンバーが全員入れ替わっています。Ritchieのお眼鏡に叶うメンバーを揃えた訳ですから、各パートの演奏力が底上げされ、サウンド全体の説得力が増しています。
 
@@ -92,5 +96,5 @@ A Light in the Black
 
 ### 次作のReview
 
-- [Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)](https://debimate.jp/post/2019-06-02-review-long-live-rock-n-roll-%E3%83%90%E3%83%93%E3%83%AD%E3%83%B3%E3%81%AE%E5%9F%8E%E9%96%80-rainbow/)
-- [Review: On Stage Deluxe Edition (Rainbow)](https://debimate.jp/post/2019-06-15-review-on-stage-deluxe-edition-rainbow/)
+- [Review: Long Live Rock 'n' Roll--バビロンの城門--(Rainbow)](https://debimate.jp/post/ja/2019-06-02-review-long-live-rock-n-roll-%E3%83%90%E3%83%93%E3%83%AD%E3%83%B3%E3%81%AE%E5%9F%8E%E9%96%80-rainbow/)
+- [Review: On Stage Deluxe Edition (Rainbow)](https://debimate.jp/post/ja/2019-06-15-review-on-stage-deluxe-edition-rainbow/)

@@ -8,7 +8,7 @@
 # サイト情報
 HUGO := hugo
 SERVER_PORT := 1313
-BASE_URL := https://nao1215.github.io/debimate
+BASE_URL := https://debimate.jp
 
 # ==========================================================
 # タスク定義

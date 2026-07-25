@@ -14,6 +14,10 @@ cover:
   image: images/regex2-min.jpg
   alt: 【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】
   hidden: false
+aliases:
+- /post/2020-11-01-【苦行】c言語で正規表現を用いる方法【標準cライ/
+- /2020/11/01/【苦行】c言語で正規表現を用いる方法【標準cライ/
+- /2020/11/01/
 ---
 
 ###  前書き：C言語で正規表現を使う理由などない
@@ -704,7 +708,7 @@ int main(void)
 
 C言語における文字列リストの取り扱い方法は、Linux Kernelの実装が参考になります。興味があれば、以下をご確認ください。
 
-- [Linux Kernel: List構造を操作するためのAPI(Listの使い方)](https://debimate.jp/post/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)
+- [Linux Kernel: List構造を操作するためのAPI(Listの使い方)](https://debimate.jp/post/ja/2019-04-07-linux-kernel-list%E6%A7%8B%E9%80%A0%E3%82%92%E6%93%8D%E4%BD%9C%E3%81%99%E3%82%8B%E3%81%9F%E3%82%81%E3%81%AEapilist%E3%81%AE%E4%BD%BF%E3%81%84%E6%96%B9/)
 
 3つ目に関しては、glibcのregexec()は長すぎる正規表現パターン（正規表現オブジェクト）を受け取るとSegmentation Faultする事があるそうです。TerminalやGUIから正規表現パターンを受け取って正規表現パターンマッチングを行う場合は、注意が必要です。
 

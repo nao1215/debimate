@@ -13,11 +13,15 @@ cover:
   image: images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg
   alt: Linux Kernel Tree内で自作Kernelモジュールをビルドする方法(MakefileとKconfigの書き方)
   hidden: false
+aliases:
+- /post/2019-07-15-linux-kernel-tree内で自作kernelモジュールをビルドする方法makefileとkconfi/
+- /2019/07/15/linux-kernel-tree内で自作kernelモジュールをビルドする方法makefileとkconfi/
+- /2019/07/15/
 ---
 
 ### 前書き
 
-[過去の記事(環境構築: Linux Kernelモジュールの作成準備)](https://debimate.jp/post/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)では、
+[過去の記事(環境構築: Linux Kernelモジュールの作成準備)](https://debimate.jp/post/ja/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)では、
 
 - Linux Kernelソースコード
 - 自作Kernelモジュール
@@ -61,7 +65,7 @@ $ neofetch
 
 ```
 
-[環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
+[環境構築: Linux Kernelモジュールの作成準備](https://debimate.jp/post/ja/2019-01-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89-linux-kernel%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%E3%81%AE%E4%BD%9C%E6%88%90%E6%BA%96%E5%82%99/)
 
 ---
 
@@ -224,4 +228,4 @@ drivers/char/debimate_module.ko
 
 本記事で使用したCharacter Deviceに関する記事があります。Character Deviceの作成方法に興味がある方は、ご参考にして下さい。
 
-[Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)](https://debimate.jp/post/2019-06-23-linux-kernel%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AAcharacter-device%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95linked-list-api%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E3%82%B5/)
+[Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)](https://debimate.jp/post/ja/2019-06-23-linux-kernel%E3%81%AE%E7%B0%A1%E5%8D%98%E3%81%AAcharacter-device%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95linked-list-api%E3%81%AE%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E3%82%B5/)

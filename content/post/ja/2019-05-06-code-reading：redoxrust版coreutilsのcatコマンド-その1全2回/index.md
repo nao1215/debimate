@@ -12,13 +12,17 @@ cover:
   image: images/cat.jpg
   alt: Code Reading：Redox(Rust)版coreutilsのcatコマンド その1(全2回)
   hidden: false
+aliases:
+- /post/2019-05-06-code-reading：redoxrust版coreutilsのcatコマンド-その1全2回/
+- /2019/05/06/code-reading：redoxrust版coreutilsのcatコマンド-その1全2回/
+- /2019/05/06/
 ---
 
 ### 前書き
 
 Rustを学習するための一環として、Redox(OS)版coreutilsのcatコマンドをCode Readingします。Redoxプロジェクトや環境構築方法に関しては、以下の記事にまとめてあります。
 
-- [環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧](https://debimate.jp/post/2019-05-03-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89redox%E5%90%91%E3%81%91coreutilsrust%E3%81%AEcode-reading%E6%BA%96%E5%82%99%E3%81%8A%E3%82%88%E3%81%B3reading%E5%AF%BE%E8%B1%A1%E3%82%B3%E3%83%9E/)
+- [環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧](https://debimate.jp/post/ja/2019-05-03-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89redox%E5%90%91%E3%81%91coreutilsrust%E3%81%AEcode-reading%E6%BA%96%E5%82%99%E3%81%8A%E3%82%88%E3%81%B3reading%E5%AF%BE%E8%B1%A1%E3%82%B3%E3%83%9E/)
 
 catコマンドは、記事を2つに分けて説明します。今回(その1)は、catコマンドのオプションパース処理までを説明し、その2でcatコマンドの主要な処理(ファイル内容の表示)を説明します。
 
@@ -349,4 +353,4 @@ SYNOPSIS
 
 ### Reading結果 その2へのリンク
 
-- [Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)](https://debimate.jp/post/2019-05-11-code-readingredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE2%E5%85%A82%E5%9B%9E/)
+- [Code Reading：Redox(Rust)版coreutilsのcatコマンド その2(全2回)](https://debimate.jp/post/ja/2019-05-11-code-readingredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE2%E5%85%A82%E5%9B%9E/)

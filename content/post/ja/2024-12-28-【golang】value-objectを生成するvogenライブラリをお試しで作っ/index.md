@@ -12,11 +12,15 @@ cover:
   image: images/business-3208596_640.jpg
   alt: 【Golang】Value Objectを生成するvogenライブラリをお試しで作った話
   hidden: false
+aliases:
+- /post/2024-12-28-【golang】value-objectを生成するvogenライブラリをお試しで作っ/
+- /2024/12/28/【golang】value-objectを生成するvogenライブラリをお試しで作っ/
+- /2024/12/28/
 ---
 
 ### 前書き：GolangでValue Objectを作りづらい
 
-2025年の抱負で[「ブログのアウトプットを増やす（リンク先の末尾を参照）」](https://debimate.jp/post/2024-12-27-2024%E5%B9%B4%E3%81%AE%E6%8C%AF%E3%82%8A%E8%BF%94%E3%82%8A-2025%E5%B9%B4%E3%81%AE%E6%8A%B1%E8%B2%A0/)と宣言したので、早速アウトプットします。
+2025年の抱負で[「ブログのアウトプットを増やす（リンク先の末尾を参照）」](https://debimate.jp/post/ja/2024-12-27-2024%E5%B9%B4%E3%81%AE%E6%8C%AF%E3%82%8A%E8%BF%94%E3%82%8A-2025%E5%B9%B4%E3%81%AE%E6%8A%B1%E8%B2%A0/)と宣言したので、早速アウトプットします。
 
 今回取り扱うValue Objectとは、主に以下のような特徴を持ちます（本記事の本題と関係ない要素は意図的に省略しています）
 

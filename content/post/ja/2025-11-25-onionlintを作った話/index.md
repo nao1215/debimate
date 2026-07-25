@@ -9,6 +9,10 @@ cover:
   image: images/onionlint-logo-small.png
   alt: onionlint-logo
   hidden: false
+aliases:
+- /post/2025-11-25-onionlintを作った話/
+- /2025/11/25/onionlintを作った話/
+- /2025/11/25/
 ---
 
 ### onionlint とは
@@ -80,7 +84,7 @@ onionlint scan http://example.onion/ --format json
 
 [nao1215/tornago](https://github.com/nao1215/tornago) は、Tor の Client/Server を作るためのライブラリです。Linux、macOS、Windows、BSD ファミリーで動作します。紹介記事は、こちらです。
 
-- [【Golang】tor client/server を実装するための nao1215/tornago ライブラリを作った話](https://debimate.jp/post/2025-11-21golangtornago%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F%E8%A9%B1/)
+- [【Golang】tor client/server を実装するための nao1215/tornago ライブラリを作った話](https://debimate.jp/post/ja/2025-11-21golangtornago%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F%E8%A9%B1/)
 
 残念なことに、[他のサイトで宣伝された](https://dormoshe.io/newsletters/ag/golang/307)割に、tornago はあまり注目されませんでした。ツールを作って実力を示すべきだなと思い、onionlint を開発しました。onionlint の開発前に「ダークウェブ監視ツール」も実装したのですが、微妙な感じがして公開していません。この非公開ツールは、ダークウェブを監視して HTML ファイルに Diff があったら特定のアクションを行うツールなのですが、嬉しいポイントが個人的に分かりませんでした。
 

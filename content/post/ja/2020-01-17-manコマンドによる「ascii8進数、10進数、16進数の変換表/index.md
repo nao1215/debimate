@@ -13,6 +13,10 @@ cover:
   image: images/man.jpg
   alt: manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」
   hidden: false
+aliases:
+- /post/2020-01-17-manコマンドによる「ascii8進数、10進数、16進数の変換表/
+- /2020/01/17/manコマンドによる「ascii8進数、10進数、16進数の変換表/
+- /2020/01/17/
 ---
 
 ### ASCII<->N進数への変換は、Terminalで確認可能

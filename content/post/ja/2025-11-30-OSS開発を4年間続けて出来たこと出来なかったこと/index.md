@@ -9,6 +9,10 @@ cover:
   image: images/star-history-20251130.png
   alt: レゴ
   hidden: false
+aliases:
+- /post/2025-11-30-OSS開発を4年間続けて出来たこと出来なかったこと/
+- /2025/11/30/OSS開発を4年間続けて出来たこと出来なかったこと/
+- /2025/11/30/
 ---
 
 ### OSS 開発を始めてから4年経った
@@ -138,7 +142,7 @@ LLM 登場前は、夜泣きする息子の対応しつつ、深夜に吐きそ�
 
 私は、BSD サポートを切った時、ユーザーから「対応を続けてよ！（意訳）」と言われて、怒って反論したことがあります。
 
-GitHub Actions で BSD 環境を整えると、セットアップが遅い問題があります（環境の作り方は[別記事](https://debimate.jp/post/2023-09-16-github-actions%E3%81%A7bsdfreebsdopenbsdnetbsddragonfly-bsd%E3%81%AE%E3%83%A6%E3%83%8B%E3%83%83%E3%83%88%E3%83%86%E3%82%B9%E3%83%88%E7%92%B0%E5%A2%83/)を参照してください）。さらに、私は BSD 環境を持っていないので、BSD 固有のエラーが出ると対応に多くの時間を取られます。
+GitHub Actions で BSD 環境を整えると、セットアップが遅い問題があります（環境の作り方は[別記事](https://debimate.jp/post/ja/2023-09-16-github-actions%E3%81%A7bsdfreebsdopenbsdnetbsddragonfly-bsd%E3%81%AE%E3%83%A6%E3%83%8B%E3%83%83%E3%83%88%E3%83%86%E3%82%B9%E3%83%88%E7%92%B0%E5%A2%83/)を参照してください）。さらに、私は BSD 環境を持っていないので、BSD 固有のエラーが出ると対応に多くの時間を取られます。
 
 当時、家事と育児でストレスフルでした。その状況下で BSD 環境のサポートを要望された時、感情に任せて反論してしまいました。「一方的に使っていないで、手伝ってほしい」旨の返信を書いた記憶があります。ついでに、GitHub で初めてブロック機能を使いました。
 
@@ -176,4 +180,4 @@ Dark Web を調査するツールで、[s-rah/onionscan](https://github.com/s-ra
 
 ### 追記：さらに新しい OSS をリリースしたよ
 
-[【Golang】CSV、TSV、LTSV、Parquet、Excel に前処理とバリデーションを行う nao1215/fileprep を作った話](https://debimate.jp/post/2025-12-07-fileprep%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F%E8%A9%B1/)
+[【Golang】CSV、TSV、LTSV、Parquet、Excel に前処理とバリデーションを行う nao1215/fileprep を作った話](https://debimate.jp/post/ja/2025-12-07-fileprep%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F%E8%A9%B1/)

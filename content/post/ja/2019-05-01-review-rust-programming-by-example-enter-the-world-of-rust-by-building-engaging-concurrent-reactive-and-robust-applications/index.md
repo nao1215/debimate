@@ -13,6 +13,10 @@ cover:
   alt: '感想: Rust Programming By Example: Enter the world of Rust by building engaging,
     concurrent, reactive, and robust applications'
   hidden: false
+aliases:
+- /post/2019-05-01-review-rust-programming-by-example-enter-the-world-of-rust-by-building-engaging-concurrent-reactive-and-robust-applications/
+- /2019/05/01/review-rust-programming-by-example-enter-the-world-of-rust-by-building-engaging-concurrent-reactive-and-robust-applications/
+- /2019/05/01/
 ---
 
 ### Rustアプリを写経できる数少ない書籍の一つ

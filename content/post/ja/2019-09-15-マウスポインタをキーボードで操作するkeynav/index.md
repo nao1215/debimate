@@ -12,6 +12,9 @@ cover:
   image: images/keynav.gif
   alt: マウスポインタをキーボードで操作するkeynav
   hidden: false
+aliases:
+- /post/2019-09-15-マウスポインタをキーボードで操作するkeynav/
+- /2019/09/15/マウスポインタをキーボードで操作するkeynav/
 ---
 
 ### 前書き

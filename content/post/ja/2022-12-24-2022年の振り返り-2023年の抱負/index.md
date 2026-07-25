@@ -10,6 +10,10 @@ cover:
   image: images/SV_Ler3B.jpg
   alt: 2022年の振り返り & 2023年の抱負
   hidden: false
+aliases:
+- /post/2022-12-24-2022年の振り返り-2023年の抱負/
+- /2022/12/24/2022年の振り返り-2023年の抱負/
+- /2022/12/24/
 ---
 
 ### 前書き：サクッと振り返って、来年も良い年に！
@@ -79,17 +83,17 @@ toC向けアプリの良い点は、両親にアプリを触ってもらえる�
 
 今年の前半は、Software Design 誌に記事を寄稿させていただき、良い経験をしました（今年、Pythonの記事も寄稿しています）。シェル界隈は、シニアエンジニアが多いので、迂闊なことを書けないなと感じました。
 
-- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://debimate.jp/post/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
+- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://debimate.jp/post/ja/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
 
 OSS開発では、golangのバイナリをアップデートする["gupコマンド"](https://github.com/nao1215/gup)がStarを160個ぐらいかき集めてくれました。ここまでStarを獲得したのは人生初の経験であり、PRや励ましのコメントをいただく嬉しい機会もありました。go awesome にも載ったしね
 
 また、「サーバーサイドで学んだ知識の総まとめ」という立ち位置でsqlyコマンドを短期間で開発できたのも、自身の成長を感じました。前職にいたとき、DDDなんて知らなかったぞ！（システムプログラミングの世界で、DDDはあまり馴染みがない気がする）
 
-- [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
+- [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/ja/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
 
 資格は、LPIC Level3を取得しました。AWS系とOSS DB Silverも取得したかったのですが、勉強時間が捻出できませんでした。
 
-- [【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】](https://debimate.jp/post/2022-05-15-%E6%9C%9F%E9%96%931%E3%83%B6%E6%9C%8860hlpic-level3-303-security-%E5%90%88%E6%A0%BC%E4%BD%93%E9%A8%93%E8%A8%98ping-t%E9%BB%92%E6%9C%AC%E4%BD%BF/)
+- [【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】](https://debimate.jp/post/ja/2022-05-15-%E6%9C%9F%E9%96%931%E3%83%B6%E6%9C%8860hlpic-level3-303-security-%E5%90%88%E6%A0%BC%E4%BD%93%E9%A8%93%E8%A8%98ping-t%E9%BB%92%E6%9C%AC%E4%BD%BF/)
 
 ---
 

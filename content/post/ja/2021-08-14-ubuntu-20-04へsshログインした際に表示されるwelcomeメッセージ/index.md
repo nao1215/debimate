@@ -13,6 +13,10 @@ cover:
   image: images/welcome-sign-2284312_640-min.jpg
   alt: Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法
   hidden: false
+aliases:
+- /post/2021-08-14-ubuntu-20-04へsshログインした際に表示されるwelcomeメッセージ/
+- /2021/08/14/ubuntu-20-04へsshログインした際に表示されるwelcomeメッセージ/
+- /2021/08/14/
 ---
 
 ### 前書き：UbuntuはWelcomeメッセージが立派で邪魔
@@ -95,7 +99,7 @@ motdファイルは[base-filesパッケージ](https://packages.ubuntu.com/ja/fo
 
 この仕組みに関しては、以下の記事で説明しています。興味がある方はご覧ください。
 
-- [【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】](https://debimate.jp/post/2020-12-01-lpic%E3%81%A7%E8%A6%8B%E3%81%9F-etc-motd%E3%81%AE%E5%86%85%E5%AE%B9%E3%82%92%E5%87%BA%E5%8A%9B%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%AF%E8%AA%B0/)
+- [【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】](https://debimate.jp/post/ja/2020-12-01-lpic%E3%81%A7%E8%A6%8B%E3%81%9F-etc-motd%E3%81%AE%E5%86%85%E5%AE%B9%E3%82%92%E5%87%BA%E5%8A%9B%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%AF%E8%AA%B0/)
 
 しかし、Ubuntu環境ではmotdファイルがありません。そのため、別の仕組みでWelcomeメッセージを表示しています。
 

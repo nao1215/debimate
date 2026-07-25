@@ -11,6 +11,9 @@ cover:
   image: images/Aria-Igra_s_ognem-e1546326094412.jpg
   alt: 'Review: Игра с огнём(АРИЯ)'
   hidden: false
+aliases:
+- /post/2019-01-01-review-игра-с-огнёмария/
+- /2019/01/01/review-игра-с-огнёмария/
 ---
 
 ### 収録曲

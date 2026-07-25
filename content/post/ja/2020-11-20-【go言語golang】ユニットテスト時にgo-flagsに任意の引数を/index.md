@@ -11,6 +11,9 @@ cover:
   image: images/doors-1767563_640-min.jpg
   alt: 【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法
   hidden: false
+aliases:
+- /post/2020-11-20-【go言語golang】ユニットテスト時にgo-flagsに任意の引数を/
+- /2020/11/20/【go言語golang】ユニットテスト時にgo-flagsに任意の引数を/
 ---
 
 ### 前書き：flag(Go標準)のテスト方法ばかり検索ヒット

@@ -11,6 +11,10 @@ cover:
   image: images/Screenshot-from-2020-08-25-21-51-00.png
   alt: 元Win／MacユーザがメインPCをLinux(Debian)にした感想
   hidden: false
+aliases:
+- /post/2020-08-26-元win／macユーザがメインpcをlinuxdebianにした感想/
+- /2020/08/26/元win／macユーザがメインpcをlinuxdebianにした感想/
+- /2020/08/26/
 ---
 
 ### 前書き
@@ -130,7 +134,7 @@ LinuxはAAAタイトルゲームがない。
 
 なお、Steamをインストールしたい方がいらっしゃれば、以下の記事で手順を紹介しています。
 
-- [【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避](https://debimate.jp/post/2020-08-28-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89debian-10%E3%81%ABsteam%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95glxchoosevisual/)
+- [【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避](https://debimate.jp/post/ja/2020-08-28-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89debian-10%E3%81%ABsteam%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AB%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95glxchoosevisual/)
 
 ---
 
@@ -162,4 +166,4 @@ Windowsのような半強制Windows Updateが存在しないだけでも、Linux
 
 初めてLinux PCを作る時、自作PCは止めましょう。何らかのWindows PCをLinuxで潰す方が簡単です。自作PCをLinuxにすると、以下の記事のようにハマって大変です（大変だった）。
 
-- [Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)](https://debimate.jp/post/2019-09-29-debian10%E3%82%92ryzen-3800x%E7%92%B0%E5%A2%83%E3%81%A7%E5%8B%95%E3%81%8B%E3%81%9D%E3%81%86%E3%81%A8%E3%81%97%E3%81%A6%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E5%86%85%E5%AE%B9%E3%82%B0%E3%83%A9%E3%83%9C/)
+- [Debian10をRyzen 3800X環境で動かそうとしてハマった内容(グラボ必須、BIOS設定、Kernel設定)](https://debimate.jp/post/ja/2019-09-29-debian10%E3%82%92ryzen-3800x%E7%92%B0%E5%A2%83%E3%81%A7%E5%8B%95%E3%81%8B%E3%81%9D%E3%81%86%E3%81%A8%E3%81%97%E3%81%A6%E3%83%8F%E3%83%9E%E3%81%A3%E3%81%9F%E5%86%85%E5%AE%B9%E3%82%B0%E3%83%A9%E3%83%9C/)

@@ -9,6 +9,10 @@ cover:
   image: images/2026-truss-logo.png
   alt: truss-logo
   hidden: false
+aliases:
+- /post/2026-03-14-画像処理ツールtrussを作った話/
+- /2026/03/14/画像処理ツールtrussを作った話/
+- /2026/03/14/
 ---
 
 ### 前書き

@@ -12,11 +12,14 @@ cover:
   image: images/ICON-1.jpg
   alt: 【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話
   hidden: false
+aliases:
+- /post/2021-02-20-【androidアプリ】コードリーディングに使うアプリをuser/
+- /2021/02/20/【androidアプリ】コードリーディングに使うアプリをuser/
 ---
 
 ### 前書き：UserLAndは遅かった
 
-約2年前の2019年、私は[AndroidスマホでコードリーディングするにはUserLAndが最適](https://debimate.jp/post/2019-03-16-android%E3%81%ABlinux%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8Buserland%E3%81%8C%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E7%92%B0/)だと結論づけていました。
+約2年前の2019年、私は[AndroidスマホでコードリーディングするにはUserLAndが最適](https://debimate.jp/post/ja/2019-03-16-android%E3%81%ABlinux%E7%92%B0%E5%A2%83%E3%82%92%E6%A7%8B%E7%AF%89%E3%81%99%E3%82%8Buserland%E3%81%8C%E3%82%BD%E3%83%BC%E3%82%B9%E3%83%AA%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E7%92%B0/)だと結論づけていました。
 
 しかし、使い込んでいく内にUserLAnd特有の**「ファイル操作が遅い点」**に我慢できなくなりました。
 

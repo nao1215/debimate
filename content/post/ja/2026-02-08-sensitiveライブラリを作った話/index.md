@@ -9,6 +9,10 @@ cover:
   image: images/2026-sensitive-logo.png
   alt: sensitive-logo
   hidden: false
+aliases:
+- /post/2026-02-08-sensitiveライブラリを作った話/
+- /2026/02/08/sensitiveライブラリを作った話/
+- /2026/02/08/
 ---
 
 ### 前書き

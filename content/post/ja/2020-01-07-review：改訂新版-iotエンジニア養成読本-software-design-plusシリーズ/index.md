@@ -10,6 +10,10 @@ cover:
   image: images/51kULN0pKCL._SX353_BO1204203200_-min.jpg
   alt: 感想：改訂新版 IoTエンジニア養成読本 (Software Design plusシリーズ)
   hidden: false
+aliases:
+- /post/2020-01-07-review：改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
+- /2020/01/07/review：改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
+- /2020/01/07/
 ---
 
 ### IoTと縁がなかった開発者向けの網羅的な一冊

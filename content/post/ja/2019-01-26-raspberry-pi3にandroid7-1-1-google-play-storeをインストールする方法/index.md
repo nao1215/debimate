@@ -12,6 +12,9 @@ cover:
   image: images/Android-pie.jpg
   alt: Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法
   hidden: false
+aliases:
+- /post/2019-01-26-raspberry-pi3にandroid7-1-1-google-play-storeをインストールする方法/
+- /2019/01/26/raspberry-pi3にandroid7-1-1-google-play-storeをインストールする方法/
 ---
 
 ### 前書き

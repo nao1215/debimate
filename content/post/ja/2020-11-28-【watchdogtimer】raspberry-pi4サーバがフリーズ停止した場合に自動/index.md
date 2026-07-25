@@ -12,11 +12,14 @@ cover:
   image: images/schafer-dog-4074699_640-min.jpg
   alt: 【WatchDogTimer】Raspberry Pi4サーバがフリーズ(停止)した場合に自動再起動する方法【HeartBeat】
   hidden: false
+aliases:
+- /post/2020-11-28-【watchdogtimer】raspberry-pi4サーバがフリーズ停止した場合に自動/
+- /2020/11/28/【watchdogtimer】raspberry-pi4サーバがフリーズ停止した場合に自動/
 ---
 
 ### 前書き：ラズパイサーバがよく止まる
 
-ラズパイに[PLEXマルチメディアサーバ](https://debimate.jp/post/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)を導入して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。半日で停止する事もありました。
+ラズパイに[PLEXマルチメディアサーバ](https://debimate.jp/post/ja/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)を導入して、約一ヶ月ほど運用した結果、2〜3日の稼働でシステム停止してしまう問題に遭遇しています。半日で停止する事もありました。
 
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">Plexメディアサーバー用に、<br>・ラズパイ4（8GB）<br>・HDD 1TB<br>・SSD 128GB（Boot用）<br>・microSDは無し<br>の環境を作成中。<br><br>このケースはmicroSDカード差込口を逆方向まで持ってくる基板が付いてきたけど、それを経由するとmicroSDの読み込みでエラーが頻出する。<br>なのでSSDブートに切り替え中。 <a href="https://t.co/uvqZR5Gz0s">pic.twitter.com/uvqZR5Gz0s</a></p>— Nao03 (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1324705933365305344?ref_src=twsrc%5Etfw">November 6, 2020</a></blockquote>
 

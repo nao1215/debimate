@@ -12,6 +12,9 @@ cover:
   image: images/Screenshot-from-2021-01-02-14-32-32.png
   alt: 【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】
   hidden: false
+aliases:
+- /post/2021-01-09-【推しは誰？】oss開発をサポートしたく、金銭的/
+- /2021/01/09/【推しは誰？】oss開発をサポートしたく、金銭的/
 ---
 
 ###  前書き：日頃からお世話になっているOSSへの貢献
@@ -39,7 +42,7 @@ _**2021年は、elementary OSに金銭面（超少額）サポートします！
 
 ### elementary OSは収益面を意識したOSS
 
-elementary OSは、Ubuntu派生（UbuntuはDebian派生）のLinuxディストリビューションであり、「安定かつ新し目のパッケージ」および「Macを意識したLook & Feel」を提供しており、[私もノートPCにインストールして愛用させてもらっています](https://debimate.jp/post/2021-01-02-%E3%83%89%E3%82%B9%E3%83%91%E3%83%A9%E3%81%AEthirdwave-vf-ad4%E3%81%ABelementary-osubuntu%E6%B4%BE%E7%94%9F%E3%82%92%E5%85%A5%E3%82%8C%E3%81%9F%E6%84%9F%E6%83%B3/)。
+elementary OSは、Ubuntu派生（UbuntuはDebian派生）のLinuxディストリビューションであり、「安定かつ新し目のパッケージ」および「Macを意識したLook & Feel」を提供しており、[私もノートPCにインストールして愛用させてもらっています](https://debimate.jp/post/ja/2021-01-02-%E3%83%89%E3%82%B9%E3%83%91%E3%83%A9%E3%81%AEthirdwave-vf-ad4%E3%81%ABelementary-osubuntu%E6%B4%BE%E7%94%9F%E3%82%92%E5%85%A5%E3%82%8C%E3%81%9F%E6%84%9F%E6%83%B3/)。
 
 ![](images/Screenshot-from-2021-01-02-15-23-16.png)
 

@@ -9,6 +9,10 @@ cover:
   image: images/csv-logo.png
   alt: csv package logo
   hidden: false
+aliases:
+- /post/2025-11-16-バリデーション付きCSV読み込み機能とDataFrame機能を持つパッケージを作った話/
+- /2025/11/16/バリデーション付きCSV読み込み機能とDataFrame機能を持つパッケージを作った話/
+- /2025/11/16/
 ---
 
 ### 前書き：バリデーション付きCSV読み込み機能は2024年に開発

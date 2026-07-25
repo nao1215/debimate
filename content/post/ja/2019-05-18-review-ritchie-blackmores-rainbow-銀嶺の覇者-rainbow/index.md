@@ -10,6 +10,10 @@ cover:
   image: images/blackmore_rainbow.jpg
   alt: 'Review: Ritchie Blackmore''s Rainbow--銀嶺の覇者--(Rainbow)'
   hidden: false
+aliases:
+- /post/2019-05-18-review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/
+- /2019/05/18/review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/
+- /2019/05/18/
 ---
 
 ### 収録曲
@@ -85,4 +89,4 @@ Live版の激しさ、ボーカリスト毎の個性を知った後に聞き直�
 
 ### 次作のReview
 
-- [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)
+- [Review: RISING--虹を翔る覇者--(Rainbow)](https://debimate.jp/post/ja/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)

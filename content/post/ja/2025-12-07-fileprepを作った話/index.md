@@ -9,6 +9,10 @@ cover:
   image: images/20251207-fileprep-logo.jpg
   alt: fileprep
   hidden: false
+aliases:
+- /post/2025-12-07-fileprepを作った話/
+- /2025/12/07/fileprepを作った話/
+- /2025/12/07/
 ---
 
 ### [nao1215/fileprep](https://github.com/nao1215/fileprep)（前処理ライブラリ） を開発した理由

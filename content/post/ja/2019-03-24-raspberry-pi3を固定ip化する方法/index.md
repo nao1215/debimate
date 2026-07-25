@@ -11,6 +11,9 @@ cover:
   image: images/IPアドレス.jpg
   alt: Raspberry Piに固定IPを割り当てる方法
   hidden: false
+aliases:
+- /post/2019-03-24-raspberry-pi3を固定ip化する方法/
+- /2019/03/24/raspberry-pi3を固定ip化する方法/
 ---
 
 ### 前書き

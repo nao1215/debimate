@@ -10,6 +10,10 @@ cover:
   image: images/KillemAll.jpg
   alt: 'Review: Kill''Em All−血染めの鉄槌−（Metallica）'
   hidden: false
+aliases:
+- /post/2020-02-02-review-killem-all−血染めの鉄槌−（metallica）/
+- /2020/02/02/review-killem-all−血染めの鉄槌−（metallica）/
+- /2020/02/02/
 ---
 
 ### 収録曲

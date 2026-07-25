@@ -14,6 +14,10 @@ cover:
   image: images/fetcher.png
   alt: fetcher
   hidden: false
+aliases:
+- /post/2019-01-22-コードリーディングbash：システム情報表示ツールneo/
+- /2019/01/22/コードリーディングbash：システム情報表示ツールneo/
+- /2019/01/22/
 ---
 
 ### 前書き

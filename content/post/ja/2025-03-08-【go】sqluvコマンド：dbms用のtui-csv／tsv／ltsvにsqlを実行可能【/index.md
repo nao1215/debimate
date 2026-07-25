@@ -13,6 +13,10 @@ cover:
   image: images/dbms_demo-1.gif
   alt: 【Go】sqluvコマンド：DBMS用のTUI + CSV／TSV／LTSVにSQLを実行可能【開発背景や使い方、生成AIの活用】
   hidden: false
+aliases:
+- /post/2025-03-08-【go】sqluvコマンド：dbms用のtui-csv／tsv／ltsvにsqlを実行可能【/
+- /2025/03/08/【go】sqluvコマンド：dbms用のtui-csv／tsv／ltsvにsqlを実行可能【/
+- /2025/03/08/
 ---
 
 ### sqluvとは
@@ -125,4 +129,4 @@ TUIを作り始めた初期段階は、生成されるコードの精度が低�
 
 まずは使い込んで、使い勝手が悪い部分を改善していこうと考えています。現状は、トランザクション周りがまともに機能しないだろうなと考えていますが、バグレポが書かれるまではTUIの修正を優先します。
 
-追記：[2週間で怒涛の機能追加をしたので改めて記事を書きました。](https://debimate.jp/post/2025-03-22-%E6%A9%9F%E8%83%BD%E5%BC%B7%E5%8C%96rdbmscsvtsvltsv%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%82%E3%82%8Bsqluv%E3%82%92https/)
+追記：[2週間で怒涛の機能追加をしたので改めて記事を書きました。](https://debimate.jp/post/ja/2025-03-22-%E6%A9%9F%E8%83%BD%E5%BC%B7%E5%8C%96rdbmscsvtsvltsv%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%82%E3%82%8Bsqluv%E3%82%92https/)

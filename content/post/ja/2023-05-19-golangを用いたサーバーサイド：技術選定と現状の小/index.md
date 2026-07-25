@@ -10,6 +10,10 @@ cover:
   image: images/laptop-gdce694483_640.jpg
   alt: Golangを用いたサーバーサイド：技術選定と現状の小さな課題
   hidden: false
+aliases:
+- /post/2023-05-19-golangを用いたサーバーサイド：技術選定と現状の小/
+- /2023/05/19/golangを用いたサーバーサイド：技術選定と現状の小/
+- /2023/05/19/
 ---
 
 ### 前書き
@@ -86,7 +90,7 @@ ORMは「オブジェクト指向で設計されたレイヤー」と「DBスキ
 
 Golang内にSQLを書くと、"+="で文字列連結をすることになりますが、この書き方ではSQLを簡単にコピペできません。検証済みのSQLをペタッとGolangコードにコピーすることも出来ません。ヒアドキュメントを使えばいいじゃん！と考えても「ヒアドキュメントのバッククォート」と「MySQLのエスケープ文字」が競合します。
 
-この煩わしさを解決しようとすると、SQLファイルからGolangコードを生成する[kyleconroy/sqlc](https://github.com/kyleconroy/sqlc)が輝いて見えます。[sqlcに関しては過去に別記事でまとめましたが](https://debimate.jp/post/2022-06-25-golangsqlc%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A7sql%E3%82%AF%E3%82%A8%E3%83%AA%E3%81%8B%E3%82%89%E5%9E%8B%E5%AE%89%E5%85%A8%E3%81%AAgo%E3%82%B3%E3%83%BC%E3%83%89/)、sqlcは型安全なCRUDコード + DBテーブルに対応したモデル（構造体）を自動生成します。
+この煩わしさを解決しようとすると、SQLファイルからGolangコードを生成する[kyleconroy/sqlc](https://github.com/kyleconroy/sqlc)が輝いて見えます。[sqlcに関しては過去に別記事でまとめましたが](https://debimate.jp/post/ja/2022-06-25-golangsqlc%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%81%A7sql%E3%82%AF%E3%82%A8%E3%83%AA%E3%81%8B%E3%82%89%E5%9E%8B%E5%AE%89%E5%85%A8%E3%81%AAgo%E3%82%B3%E3%83%BC%E3%83%89/)、sqlcは型安全なCRUDコード + DBテーブルに対応したモデル（構造体）を自動生成します。
 
 DDLとCRUDコード生成に利用しているmyddlmakerは、現職のテックリードが開発したものであり、不満はありません。必要であれば機能追加も柔軟に行われています。しかし、私の「SQLをキレイに書きたい（割と見栄えの問題）」の解決を図ると、myddlmaker --> sqlc に置き換えたい欲求も生まれます。
 

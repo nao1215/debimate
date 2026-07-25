@@ -12,6 +12,9 @@ cover:
   image: images/constellations-ge1bcb2718_640.jpg
   alt: 【Golang】go:embedを用いて格言表示コマンド（subaru）を開発
   hidden: false
+aliases:
+- /post/2022-02-05-【golang】goembedを用いて格言表示コマンド（subaru）を開発/
+- /2022/02/05/【golang】goembedを用いて格言表示コマンド（subaru）を開発/
 ---
 
 ### 前書き：go:embedを試したかった
@@ -20,7 +23,7 @@ Golangでは、[go:embed](https://pkg.go.dev/embed)がVersion1.16から組み込
 
 go:embedの利点は、「バイナリインストール（設定ファイルや関連ファイル含む）がより簡単になる事」でしょうか。go:embedを用いる事によって、バイナリの中に設定ファイルやスクリプトなどを埋め込めます。そのため、バイナリをシステムに置くだけで、インストール作業が完了となります。
 
-この手法は、他言語でも一般的です。例えば、[シェルスクリプトにバイナリを埋め込んで、インストーラを作る手法](https://debimate.jp/post/2021-08-29-shell-script%E3%81%AB%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E4%BE%8Btarball%E3%82%92%E5%9F%8B%E3%82%81%E8%BE%BC%E3%81%BF%E5%AE%9F%E8%A1%8C%E6%99%82%E3%81%AB%E3%83%90/)があります。
+この手法は、他言語でも一般的です。例えば、[シェルスクリプトにバイナリを埋め込んで、インストーラを作る手法](https://debimate.jp/post/ja/2021-08-29-shell-script%E3%81%AB%E3%83%90%E3%82%A4%E3%83%8A%E3%83%AA%E4%BE%8Btarball%E3%82%92%E5%9F%8B%E3%82%81%E8%BE%BC%E3%81%BF%E5%AE%9F%E8%A1%8C%E6%99%82%E3%81%AB%E3%83%90/)があります。
 
 馴染み深いがゆえに、「go:embedを使ったコマンドを作ってみたいな」と2021年から考えていました。2022年の2月に重い腰を上げて、go:embedの勉強用コマンド（subaru）を作ることにしました。
 
@@ -186,4 +189,4 @@ subaru（昴）は、子供に付けようと思った名前です。
 
 ###  おまけ：2022年に作成したGolang製コマンド一覧
 
-[【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】](https://debimate.jp/post/2022-02-05-golang2022%E5%B9%B4%E3%81%AB%E9%96%8B%E7%99%BA%E3%81%97%E3%81%9F%E8%87%AA%E4%BD%9Ccli%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA/)
+[【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】](https://debimate.jp/post/ja/2022-02-05-golang2022%E5%B9%B4%E3%81%AB%E9%96%8B%E7%99%BA%E3%81%97%E3%81%9F%E8%87%AA%E4%BD%9Ccli%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA/)

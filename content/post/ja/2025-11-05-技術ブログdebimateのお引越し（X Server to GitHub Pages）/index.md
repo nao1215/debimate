@@ -8,6 +8,10 @@ cover:
   image: images/migrate.jpg
   alt: 技術ブログ debimate のお引越し
   hidden: false
+aliases:
+- /post/2025-11-05-技術ブログdebimateのお引越し（X Server to GitHub Pages）/
+- /2025/11/05/技術ブログdebimateのお引越し（X Server to GitHub Pages）/
+- /2025/11/05/
 ---
 
 ### お引越し
@@ -51,9 +55,9 @@ WordPress を褒めておくと、記事のエクスポート機能が搭載さ�
 「私がなぜ、技術ブログを書き始めたか」という話をすると、技術ブログで一発当ててやるぜ！と燃えていた時期がありました。SEO 対策に X Server と契約し（ここが本当に SEO に効いたかは謎）、2018年12月から約2年間ほど毎週2本以上の記事を書き続けました。その結果、2022年頃は月2万 PV 程度の閲覧がありました。しかし、悲しい現実ですが、エンジニアはブログ内の広告を踏まない、もしくは広告を非表示にしているので、広告収入は殆どありませんでした。
 
 広告収入が得られない一方で、技術評論社から Software Design の寄稿依頼を受け、数十万円を稼ぐことができました。この段階で、私のブログマネタイズは終わりました。3回も寄稿でき、幸せものです。
-- [Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】](https://nao1215.github.io/debimate/post/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)
-- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://nao1215.github.io/debimate/post/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
-- [【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ](https://nao1215.github.io/debimate/post/2024-12-07-%E5%AF%84%E7%A8%BFsoftware-design-2024%E5%B9%B412%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86-%E7%AC%AC4%E7%AB%A0-%E8%90%BD%E3%81%97%E7%A9%B4%E3%81%AB%E8%90%BD%E3%81%A1%E3%81%AA/)
+- [Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】](https://debimate.jp/post/ja/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)
+- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://debimate.jp/post/ja/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
+- [【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ](https://debimate.jp/post/ja/2024-12-07-%E5%AF%84%E7%A8%BFsoftware-design-2024%E5%B9%B412%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86-%E7%AC%AC4%E7%AB%A0-%E8%90%BD%E3%81%97%E7%A9%B4%E3%81%AB%E8%90%BD%E3%81%A1%E3%81%AA/)
 
 前述のように、何故か SEO 対策で X Server を利用していましたが、もう SEO は気にしていません。ブログマネタイズが終わった段階で、X Server を利用する理由がなくなっていました。
 

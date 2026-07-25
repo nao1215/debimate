@@ -15,6 +15,10 @@ cover:
   image: images/Code_Reading.jpg
   alt: 環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧
   hidden: false
+aliases:
+- /post/2019-05-03-環境構築：redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
+- /2019/05/03/環境構築：redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
+- /2019/05/03/
 ---
 
 ### 前書き：Redox版coreutilsを読む理由
@@ -79,7 +83,7 @@ Redox版Coreutilsは、数が少なく、低機能(小規模)である事が特�
 
 | **Coreutilsコマンド** | **Step数** | **機能説明** |
 | --- | --- | --- |
-| [cat](https://debimate.jp/post/2019-05-06-code-readingredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE1%E5%85%A82%E5%9B%9E/) | 269 | ファイル閲覧や文字列の連結 |
+| [cat](https://debimate.jp/post/ja/2019-05-06-code-readingredoxrust%E7%89%88coreutils%E3%81%AEcat%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89-%E3%81%9D%E3%81%AE1%E5%85%A82%E5%9B%9E/) | 269 | ファイル閲覧や文字列の連結 |
 | chown | 91 | ファイル・ディレクトリの所有権やグループ変更 |
 | clear | 34 | 端末(画面上の文字)をクリア |
 | dd | 199 | ブロック単位でファイルコピーや変換 |

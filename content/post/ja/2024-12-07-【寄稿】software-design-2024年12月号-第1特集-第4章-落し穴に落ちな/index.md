@@ -12,6 +12,9 @@ cover:
   image: images/SoftwareDesign.jpg
   alt: 【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ
   hidden: false
+aliases:
+- /post/2024-12-07-【寄稿】software-design-2024年12月号-第1特集-第4章-落し穴に落ちな/
+- /2024/12/07/【寄稿】software-design-2024年12月号-第1特集-第4章-落し穴に落ちな/
 ---
 
 ### 祝！Software Design 3回目の寄稿
@@ -20,8 +23,8 @@ cover:
 
 過去2回に引き続き、内容はシェルスクリプトに関する記事です。2022年1月号はPythonに関して説明していますが、シェルスクリプトと比較した記事になっています。過去の寄稿に関する感想は、別記事でまとめてあります。
 
-- [Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】](https://debimate.jp/post/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)
-- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://debimate.jp/post/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
+- [Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】](https://debimate.jp/post/ja/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)
+- [【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）](https://debimate.jp/post/ja/2022-05-15-%E5%AF%84%E7%A8%BFsoftware-design-2022%E5%B9%B46%E6%9C%88%E5%8F%B7-%E7%AC%AC1%E7%89%B9%E9%9B%86%E7%AC%AC3%E7%AB%A0-%E3%82%B7%E3%82%A7%E3%83%AB%E3%82%B9%E3%82%AF%E3%83%AA/)
 
 本記事では、自分向けの備忘録として、執筆スケジュール、記事構成について、ヤラカシたこと、余談3点を紹介します。
 

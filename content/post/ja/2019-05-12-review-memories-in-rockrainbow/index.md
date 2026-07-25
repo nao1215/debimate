@@ -10,6 +10,10 @@ cover:
   image: images/memories_in_rock-min.jpg
   alt: 'Review: Memories in Rock(Rainbow)'
   hidden: false
+aliases:
+- /post/2019-05-12-review-memories-in-rockrainbow/
+- /2019/05/12/review-memories-in-rockrainbow/
+- /2019/05/12/
 ---
 
 ### 収録曲

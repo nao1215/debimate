@@ -8,6 +8,9 @@ cover:
   image: images/51FipV6dEVL._SX350_BO1204203200_.jpg
   alt: 'Review: PIXAR <ピクサー> 世界一のアニメーション企業の今まで語られなかったお金の話'
   hidden: false
+aliases:
+- /post/2019-04-20-review-pixar-世界一のアニメーション企業の今まで語られ/
+- /2019/04/20/review-pixar-世界一のアニメーション企業の今まで語られ/
 ---
 
 ### 事業としてのPIXARに着目した書籍

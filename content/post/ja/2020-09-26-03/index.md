@@ -12,6 +12,10 @@ cover:
   image: images/71FrOQlI7YL._AC_SL1000_-min.jpg
   alt: 感想：ランス03 リーザス陥落
   hidden: false
+aliases:
+- /post/2020-09-26-03/
+- /2020/09/26/03/
+- /2020/09/26/
 ---
 
 ### ランス03は、ランス3のリメイク作品（24年ぶり）

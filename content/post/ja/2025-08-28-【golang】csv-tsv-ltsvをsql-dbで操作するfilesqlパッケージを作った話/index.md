@@ -12,6 +12,10 @@ cover:
   image: images/ChatGPT-Image-2025年8月28日-13_46_47.jpg
   alt: 【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話
   hidden: false
+aliases:
+- /post/2025-08-28-【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
+- /2025/08/28/【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
+- /2025/08/28/
 ---
 
 ### 前書き：同じ機能を持つコマンドのメンテが面倒だった
@@ -22,8 +26,8 @@ cover:
 
 filesql は、2つの CLI ツール - [sqly](https://github.com/nao1215/sqly) と [sqluv](https://github.com/nao1215/sqluv)のメンテナンス経験から生まれました。各コマンドの機能は、以下の記事で説明しています。興味がある方はご一読ください。
 
-- [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
-- [【機能強化】RDBMS／CSV／TSV／LTSVクライアントであるsqluvをhttps／s3／圧縮フォーマットに対応させ、カラースキームを追加](https://debimate.jp/post/2025-03-22-%E6%A9%9F%E8%83%BD%E5%BC%B7%E5%8C%96rdbmscsvtsvltsv%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%82%E3%82%8Bsqluv%E3%82%92https/)
+- [【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/ja/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)
+- [【機能強化】RDBMS／CSV／TSV／LTSVクライアントであるsqluvをhttps／s3／圧縮フォーマットに対応させ、カラースキームを追加](https://debimate.jp/post/ja/2025-03-22-%E6%A9%9F%E8%83%BD%E5%BC%B7%E5%8C%96rdbmscsvtsvltsv%E3%82%AF%E3%83%A9%E3%82%A4%E3%82%A2%E3%83%B3%E3%83%88%E3%81%A7%E3%81%82%E3%82%8Bsqluv%E3%82%92https/)
 
 sqly と sqluv コマンドには、「CSV、TSV、その他のファイル形式に対してSQLクエリを実行する」という共通の機能がありました。しかし、実装は共通化されていません。片方を直すと、他方も類似の修正が必要です。しかも、実装が微妙に違います。何故このような作りになっているかといえば、何も考えずに勢いで二つ目（sqluv）を作ったからです。設計行為をしていません。
 

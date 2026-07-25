@@ -11,6 +11,10 @@ cover:
   image: images/subscribe-3534409_640-min.jpg
   alt: 【セキュリティ対策】Raspberry Pi4に新規ユーザを追加し、piユーザを削除
   hidden: false
+aliases:
+- /post/2020-09-01-【セキュリティ対策】raspberry-pi4に新規ユーザを追加し/
+- /2020/09/01/【セキュリティ対策】raspberry-pi4に新規ユーザを追加し/
+- /2020/09/01/
 ---
 
 ### 前書き：piユーザは脆弱

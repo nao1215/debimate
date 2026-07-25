@@ -12,6 +12,10 @@ cover:
   image: images/prompt_logo.jpeg
   alt: 【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話
   hidden: false
+aliases:
+- /post/2025-09-20-【nao1215-prompt】コードを読むのが辛いから、放置されたoss/
+- /2025/09/20/【nao1215-prompt】コードを読むのが辛いから、放置されたoss/
+- /2025/09/20/
 ---
 
 ### 前書き：OSSが放置されることは当然のようにある

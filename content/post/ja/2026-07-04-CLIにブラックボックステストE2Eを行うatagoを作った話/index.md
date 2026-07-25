@@ -10,6 +10,10 @@ cover:
   image: images/atago-logo.jpg
   alt: atago-logo
   hidden: false
+aliases:
+- /post/2026-07-04-CLIにブラックボックステストE2Eを行うatagoを作った話/
+- /2026/07/04/CLIにブラックボックステストE2Eを行うatagoを作った話/
+- /2026/07/04/
 ---
 
 ###  前書き：LLM の登場で自作 OSS の E2E テストを書く機会が増えた

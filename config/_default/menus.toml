@@ -14,11 +14,6 @@
   weight = 3
 
 [[main]]
-  name = "Archive"
-  url = "archives/"
-  weight = 5
-
-[[main]]
   name = "GitHub Sponsors"
   url = "https://github.com/sponsors/nao1215"
   weight = 15

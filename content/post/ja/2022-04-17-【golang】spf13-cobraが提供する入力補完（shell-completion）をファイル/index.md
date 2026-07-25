@@ -13,6 +13,10 @@ cover:
   alt: 【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh,
     fish】
   hidden: false
+aliases:
+- /post/2022-04-17-【golang】spf13-cobraが提供する入力補完（shell-completion）をファイル/
+- /2022/04/17/【golang】spf13-cobraが提供する入力補完（shell-completion）をファイル/
+- /2022/04/17/
 ---
 
 ### 前書き：spf13/cobraのシェル補完は便利

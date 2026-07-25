@@ -13,6 +13,9 @@ cover:
   image: images/document-3503099_640-min.jpg
   alt: 【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較
   hidden: false
+aliases:
+- /post/2020-04-08-【bash-ruby-python3】ファイル読み込み、ファイル書き込み/
+- /2020/04/08/【bash-ruby-python3】ファイル読み込み、ファイル書き込み/
 ---
 
 ### 前書き
@@ -23,7 +26,7 @@ cover:
 
 Bashではなく、RubyやPython3を使った方が好ましい理由は、以下の記事に記載しています。この記事には、各プログラミング言語の様々な実装（ディレクトリ操作やファイル操作など）を比較した他記事へのリンクを一覧にまとめています。
 
-- [Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較](https://debimate.jp/post/2020-04-05-bashshell-script%E3%81%8B%E3%82%89ruby%E3%82%84python%E3%81%AB%E4%B9%97%E3%82%8A%E6%8F%9B%E3%81%88%E9%A0%BB%E7%B9%81%E3%81%AB%E4%BD%BF%E3%81%86%E5%87%A6%E7%90%86%E3%82%92%E5%90%84%E8%A8%80/)
+- [Bash(Shell Script)からRubyやPythonに乗り換え！頻繁に使う処理を各言語で比較](https://debimate.jp/post/ja/2020-04-05-bashshell-script%E3%81%8B%E3%82%89ruby%E3%82%84python%E3%81%AB%E4%B9%97%E3%82%8A%E6%8F%9B%E3%81%88%E9%A0%BB%E7%B9%81%E3%81%AB%E4%BD%BF%E3%81%86%E5%87%A6%E7%90%86%E3%82%92%E5%90%84%E8%A8%80/)
 
 ---
 

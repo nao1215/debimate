@@ -13,6 +13,9 @@ cover:
   image: images/2021-01-02-15.34.19-のスクリーンショット.png
   alt: ドスパラのTHIRDWAVE VF-AD4にelementary OS(Ubuntu派生)を入れた感想
   hidden: false
+aliases:
+- /post/2021-01-02-ドスパラのthirdwave-vf-ad4にelementary-osubuntu派生を入れた感想/
+- /2021/01/02/ドスパラのthirdwave-vf-ad4にelementary-osubuntu派生を入れた感想/
 ---
 
 ### 前書き：安価なノートPC VF-AD4を購入しました

@@ -10,6 +10,10 @@ cover:
   image: images/omokage-icon.jpg
   alt: omokage
   hidden: false
+aliases:
+- /post/2026-06-02-文体の一致度を評価するomokageを作った話/
+- /2026/06/02/文体の一致度を評価するomokageを作った話/
+- /2026/06/02/
 ---
 
 

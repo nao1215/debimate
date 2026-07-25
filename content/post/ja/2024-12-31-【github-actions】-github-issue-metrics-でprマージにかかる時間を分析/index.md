@@ -11,6 +11,10 @@ cover:
   image: images/issue-metrics-sample-output.png
   alt: 【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析
   hidden: false
+aliases:
+- /post/2024-12-31-【github-actions】-github-issue-metrics-でprマージにかかる時間を分析/
+- /2024/12/31/【github-actions】-github-issue-metrics-でprマージにかかる時間を分析/
+- /2024/12/31/
 ---
 
 ### 前書き：PRマージに時間がかかっていた

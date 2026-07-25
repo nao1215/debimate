@@ -11,6 +11,9 @@ cover:
   image: images/642206.jpg
   alt: 【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）
   hidden: false
+aliases:
+- /post/2022-05-15-【寄稿】software-design-2022年6月号-第1特集（第3章-シェルスクリ/
+- /2022/05/15/【寄稿】software-design-2022年6月号-第1特集（第3章-シェルスクリ/
 ---
 
 ### Software Design誌 2回目の寄稿！
@@ -30,7 +33,7 @@ cover:
 
 ### 寄稿のキッカケ
 
-[前回のSoftware Design 2022年1月号](https://debimate.jp/post/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)は、本技術ブログ経由で寄稿依頼をいただきました。
+[前回のSoftware Design 2022年1月号](https://debimate.jp/post/ja/2021-12-17-software-design-2022%E5%B9%B41%E6%9C%88%E5%8F%B7-%E7%AC%AC2%E7%89%B9%E9%9B%86%E7%AC%AC1%E7%AB%A0%E7%AC%AC2%E7%AB%A0%E3%81%AB%E5%AF%84%E7%A8%BF%E3%82%AD%E3%83%83/)は、本技術ブログ経由で寄稿依頼をいただきました。
 
 「BashからPythonに乗り換えた方が良い」という趣旨の記事を本技術ブログで書いており、その内容を補強した記事の寄稿を依頼されました。最終的に「Pythonで自動化スクリプト シェルスクリプトもいいけどPythonもね」という記事を寄稿しました（このタイトルは私が決めたものではありません）
 
