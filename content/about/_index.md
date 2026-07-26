@@ -24,7 +24,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 ---
 
-### お気に入り OSS
+### お気に入り自作 OSS
 
 <div class="oss-grid">
 
@@ -131,7 +131,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 ---
 
-### その他 OSS の一部（経歴に紐づく等）
+### その他の自作 OSS（一部。経歴に紐づくもの、思い出があるもの等）
 
 
 <div class="oss-grid">
