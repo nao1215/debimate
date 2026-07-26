@@ -24,7 +24,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 ---
 
-### 人気のある OSS／経歴に紐づく OSS
+### お気に入り OSS
 
 <div class="oss-grid">
 
@@ -74,17 +74,6 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 <div class="oss-card">
   <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/mimixbox" target="_blank" rel="noopener noreferrer">mimixbox</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/mimixbox?style=flat-square&label=%E2%98%85&color=blue" alt="mimixbox star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">BusyBox に着想を得たツールボックス。自作 OSS で人気のないツールの統合先</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
     <a class="oss-card-name" href="https://github.com/nao1215/atago" target="_blank" rel="noopener noreferrer">atago</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
@@ -103,6 +92,59 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     </div>
   </div>
   <p class="oss-card-desc">文章が特定の書き手の文体にどれだけ近いかを測定する、ローカルファーストな CLI（日本語／英語対応）</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/oaspec" target="_blank" rel="noopener noreferrer">oaspec</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/oaspec?style=flat-square&label=%E2%98%85&color=blue" alt="oaspec star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">OpenAPI 3.x の仕様から型安全な Gleam サーバースタブ／クライアント SDK を生成</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/career" target="_blank" rel="noopener noreferrer">career</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/career?style=flat-square&label=%E2%98%85&color=blue" alt="career star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">1 つの YAML から履歴書・職務経歴書・英文 CV を PDF 生成するツール</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/metamon" target="_blank" rel="noopener noreferrer">metamon</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/metamon?style=flat-square&label=%E2%98%85&color=blue" alt="metamon star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">Gleam 向けのプロパティベーステスト・メタモルフィックテストライブラリ</p>
+</div>
+
+</div>
+
+---
+
+### その他 OSS の一部（経歴に紐づく等）
+
+
+<div class="oss-grid">
+
+<div class="oss-card">
+  <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/mimixbox" target="_blank" rel="noopener noreferrer">mimixbox</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/mimixbox?style=flat-square&label=%E2%98%85&color=blue" alt="mimixbox star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">BusyBox に着想を得たツールボックス。自作 OSS で人気のないツールの統合先</p>
 </div>
 
 <div class="oss-card">
@@ -182,49 +224,6 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
   <p class="oss-card-desc">Go 製のシンプルな Tor クライアント／サーバーライブラリ</p>
 </div>
 
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/oaspec" target="_blank" rel="noopener noreferrer">oaspec</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/oaspec?style=flat-square&label=%E2%98%85&color=blue" alt="oaspec star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">OpenAPI 3.x の仕様から型安全な Gleam サーバースタブ／クライアント SDK を生成</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/career" target="_blank" rel="noopener noreferrer">career</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/career?style=flat-square&label=%E2%98%85&color=blue" alt="career star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">1 つの YAML から履歴書・職務経歴書・英文 CV を PDF 生成するツール</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/dataprep" target="_blank" rel="noopener noreferrer">dataprep</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/dataprep?style=flat-square&label=%E2%98%85&color=blue" alt="dataprep star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">Gleam 向けの型駆動な前処理・バリデーションコンビネータライブラリ</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/metamon" target="_blank" rel="noopener noreferrer">metamon</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/metamon?style=flat-square&label=%E2%98%85&color=blue" alt="metamon star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">Gleam 向けのプロパティベーステスト・メタモルフィックテストライブラリ</p>
-</div>
 
 <div class="oss-card">
   <div class="oss-card-header">
@@ -246,6 +245,17 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     </div>
   </div>
   <p class="oss-card-desc">SQL スキーマ／クエリから型安全な Gleam コードを生成する sqlc 的ツール</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/dataprep" target="_blank" rel="noopener noreferrer">dataprep</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/dataprep?style=flat-square&label=%E2%98%85&color=blue" alt="dataprep star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">Gleam 向けの型駆動な前処理・バリデーションコンビネータライブラリ</p>
 </div>
 
 <div class="oss-card">
