@@ -1,3 +1,7 @@
+:root {
+  --main-width: 820px;
+}
+
 body {
   font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
 }

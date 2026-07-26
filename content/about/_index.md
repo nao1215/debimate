@@ -12,6 +12,8 @@ Go と AWS 中心のバックエンドエンジニア。組み込みソフトウ
 
 OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weekly/)、[学習記録](https://debimate.jp/learning/)を書いています。
 
+---
+
 ### 各種リンク
 
 - GitHub: [nao1215](https://github.com/nao1215)
@@ -20,6 +22,7 @@ OSS を継続的に開発しており、Software Design（技術評論社）へ�
 
 Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもありますが、数年以上利用停止しています。
 
+---
 
 ### 人気のある OSS／経歴に紐づく OSS
 
@@ -88,7 +91,7 @@ Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもあり�
       <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/atago?style=flat-square&label=%E2%98%85&color=blue" alt="atago star count" loading="lazy">
     </div>
   </div>
-  <p class="oss-card-desc">平易な YAML から CLI の終了コード・出力・ファイル差分・スナップショット・TUI まで検証する E2E テストツール</p>
+  <p class="oss-card-desc">YAML で定義したテスト条件に基づき、CLI の終了コード・出力・ファイル差分・スナップショット・TUI まで検証する E2E テストツール</p>
 </div>
 
 <div class="oss-card">
@@ -269,6 +272,7 @@ Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもあり�
 
 </div>
 
+---
 
 ### 出版
 
@@ -280,6 +284,8 @@ Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもあり�
 |2022|6|[Software Design 2022年6月号 第1特集（第3章）](https://gihyo.jp/magazine/SD/archive/2022/202206)|
 |2022|3|[ワンランク上を目指す人のためのPython実践活用ガイド（第5章、5-1, 5-2）](https://gihyo.jp/book/2022/978-4-297-12639-1)|
 |2021|12|[Software Design 2022年1月号 第2特集（第1章、第2章）](https://gihyo.jp/magazine/SD/archive/2022/202201)|
+
+---
 
 ### Bucket List
 
