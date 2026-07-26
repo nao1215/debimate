@@ -93,6 +93,17 @@ Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもあり�
 
 <div class="oss-card">
   <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/omokage" target="_blank" rel="noopener noreferrer">omokage</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/omokage?style=flat-square&label=%E2%98%85&color=blue" alt="omokage star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">文章が特定の書き手の文体にどれだけ近いかを測定する、ローカルファーストな CLI（日本語／英語対応）</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
     <a class="oss-card-name" href="https://github.com/nao1215/jose" target="_blank" rel="noopener noreferrer">jose</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
@@ -100,6 +111,17 @@ Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもあり�
     </div>
   </div>
   <p class="oss-card-desc">JOSE（JSON Object Signing and Encryption）を扱う CLI ツール</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
+    <a class="oss-card-name" href="https://github.com/nao1215/onionscan" target="_blank" rel="noopener noreferrer">onionscan</a>
+    <div class="oss-card-meta">
+      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/onionscan?style=flat-square&label=%E2%98%85&color=blue" alt="onionscan star count" loading="lazy">
+    </div>
+  </div>
+  <p class="oss-card-desc">ダークウェブ（Onion サイト）を調査するためのツール</p>
 </div>
 
 <div class="oss-card">
