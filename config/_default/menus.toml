@@ -1,17 +1,22 @@
 [[main]]
+  name = "About"
+  url = "about/"
+  weight = 1
+
+[[main]]
   name = "Posts"
   url = "post/ja/"
-  weight = 1
+  weight = 2
 
 [[main]]
   name = "Weekly"
   url = "weekly/"
-  weight = 2
+  weight = 3
 
 [[main]]
   name = "Learning"
   url = "learning/"
-  weight = 3
+  weight = 4
 
 [[main]]
   name = "GitHub Sponsors"
