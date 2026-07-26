@@ -8,7 +8,7 @@ ShowToc: false
 
 ### nchika (nao1215)
 
-Go と AWS 中心のバックエンドエンジニア。組み込みソフトウェア開発からキャリアを始め、受託でのサーバーサイド／インフラ開発を経て、現在は金融領域（Fintech）のバックエンド開発とエンジニアリングマネジメントを兼務しています。
+Go を中心に、金融領域（Fintech）バックエンド開発に携わるエンジニア。組み込みソフトウェア開発からキャリアを始め、受託でのサーバーサイド／インフラ開発を経て、現在は Visa プリペイドカードアプリの開発とエンジニアリングマネジメントを兼務しています。
 
 OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weekly/)、[学習記録](https://debimate.jp/learning/)を書いています。
 
@@ -212,18 +212,6 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
   </div>
   <p class="oss-card-desc">署名付き URL や SSRF 対策、AVIF／WebP／SVG 対応の画像処理ツールキット（CLI／HTTP／WASM）</p>
 </div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/tornago" target="_blank" rel="noopener noreferrer">tornago</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/tornago?style=flat-square&label=%E2%98%85&color=blue" alt="tornago star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">Go 製のシンプルな Tor クライアント／サーバーライブラリ</p>
-</div>
-
 
 <div class="oss-card">
   <div class="oss-card-header">
