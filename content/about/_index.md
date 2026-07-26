@@ -20,7 +20,7 @@ OSS を継続的に開発しており、Software Design（技術評論社）へ�
 - X (Twitter): [@ARC_AED](https://x.com/ARC_AED)
 - Bluesky: [@nchika.bsky.social](https://bsky.app/profile/nchika.bsky.social)　※ 殆ど利用していません
 
-Qiita や Zenn、Dev.to、note、Kaggle、HackerOne のアカウントもありますが、数年以上利用停止しています。
+Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントもありますが、数年以上利用停止しています。
 
 ---
 
