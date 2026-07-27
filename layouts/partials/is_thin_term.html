@@ -1,0 +1,7 @@
+{{- /* タクソノミー用語ページのうち、収録記事が閾値未満のものを「薄い」と判定する。
+       head.html の noindex 判定と sitemap.xml の除外判定で共有する。
+       真なら非空文字列を、偽なら空文字列を返す。 */ -}}
+{{- $threshold := site.Params.thinTermThreshold | default 3 -}}
+{{- if and (eq .Kind "term") (lt (len .Pages) $threshold) -}}
+thin
+{{- end -}}

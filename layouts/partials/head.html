@@ -2,7 +2,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 {{- if hugo.IsProduction | or (eq site.Params.env "production") | and (ne .Params.robotsNoIndex true) }}
+{{- if partial "is_thin_term.html" . }}
+{{- /* 収録記事が少ないタグ／カテゴリ一覧は薄いページなのでインデックスさせない。
+       リンクは辿らせたいので nofollow は付けない。 */}}
+<meta name="robots" content="noindex, follow">
+{{- else }}
 <meta name="robots" content="index, follow">
+{{- end }}
 {{- else }}
 <meta name="robots" content="noindex, nofollow">
 {{- end }}
@@ -92,7 +98,10 @@
 <link rel="icon" type="image/png" sizes="16x16" href="{{ site.Params.assets.favicon16x16 | default "favicon-16x16.png" | absURL }}">
 <link rel="icon" type="image/png" sizes="32x32" href="{{ site.Params.assets.favicon32x32 | default "favicon-32x32.png" | absURL }}">
 <link rel="apple-touch-icon" href="{{ site.Params.assets.apple_touch_icon | default "apple-touch-icon.png" | absURL }}">
-<link rel="mask-icon" href="{{ site.Params.assets.safari_pinned_tab | default "safari-pinned-tab.svg" | absURL }}">
+{{- /* mask-icon は SVG を用意していないため出さない（全ページで 404 を踏むのを避ける） */}}
+{{- with site.Params.assets.safari_pinned_tab }}
+<link rel="mask-icon" href="{{ . | absURL }}">
+{{- end }}
 <meta name="theme-color" content="{{ site.Params.assets.theme_color | default "#2e2e33" }}">
 <meta name="msapplication-TileColor" content="{{ site.Params.assets.msapplication_TileColor | default "#2e2e33" }}">
 
