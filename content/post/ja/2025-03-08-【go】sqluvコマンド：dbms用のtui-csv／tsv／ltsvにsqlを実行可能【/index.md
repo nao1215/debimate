@@ -17,6 +17,10 @@ aliases:
 - /post/2025-03-08-【go】sqluvコマンド：dbms用のtui-csv／tsv／ltsvにsqlを実行可能【/
 - /2025/03/08/【go】sqluvコマンド：dbms用のtui-csv／tsv／ltsvにsqlを実行可能【/
 - /2025/03/08/
+- /2025/03/08/gosqluvコマンドdbms用のtui-csvtsvltsvにsqlを実行可能/
+- /post/2025-03-08-gosqluvコマンドdbms用のtui-csvtsvltsvにsqlを実行可能/
+- /2025/03/09/【go】sqluvコマンド：dbms用のtui-csv／tsv／ltsvにsqlを実行可能【/
+- /2025/03/09/gosqluvコマンドdbms用のtui-csvtsvltsvにsqlを実行可能/
 ---
 
 ### sqluvとは

@@ -19,6 +19,7 @@ aliases:
 - /post/2019-06-23-linux-kernelの簡単なcharacter-deviceを作成する方法linked-list-apiの使用方法サ/
 - /2019/06/23/linux-kernelの簡単なcharacter-deviceを作成する方法linked-list-apiの使用方法サ/
 - /2019/06/23/
+- /2019/06/24/linux-kernelの簡単なcharacter-deviceを作成する方法linked-list-apiの使用方法サ/
 ---
 
 ### 前書き

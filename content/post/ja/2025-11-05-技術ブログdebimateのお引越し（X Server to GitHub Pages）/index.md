@@ -12,6 +12,10 @@ aliases:
 - /post/2025-11-05-技術ブログdebimateのお引越し（X Server to GitHub Pages）/
 - /2025/11/05/技術ブログdebimateのお引越し（X Server to GitHub Pages）/
 - /2025/11/05/
+- /2025/11/05/技術ブログdebimateのお引越しx-server-to-github-pages/
+- /post/2025-11-05-技術ブログdebimateのお引越しx-server-to-github-pages/
+- /2025/11/06/技術ブログdebimateのお引越し（X Server to GitHub Pages）/
+- /2025/11/06/技術ブログdebimateのお引越しx-server-to-github-pages/
 ---
 
 ### お引越し

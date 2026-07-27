@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-09-【bash-ruby-python3】ファイルのコピー、ファイルの移動方/
 - /2020/04/09/【bash-ruby-python3】ファイルのコピー、ファイルの移動方/
+- /2020/04/09/bash-ruby-python3ファイルのコピーファイルの移動方/
+- /post/2020-04-09-bash-ruby-python3ファイルのコピーファイルの移動方/
+- /2020/04/10/【bash-ruby-python3】ファイルのコピー、ファイルの移動方/
+- /2020/04/10/bash-ruby-python3ファイルのコピーファイルの移動方/
 ---
 
 ### 前書き 

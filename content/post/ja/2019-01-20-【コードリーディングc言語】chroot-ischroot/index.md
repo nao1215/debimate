@@ -18,6 +18,10 @@ aliases:
 - /post/2019-01-20-【コードリーディングc言語】chroot-ischroot/
 - /2019/01/20/【コードリーディングc言語】chroot-ischroot/
 - /2019/01/20/
+- /2019/01/20/コードリーディングc言語chroot-ischroot/
+- /post/2019-01-20-コードリーディングc言語chroot-ischroot/
+- /2019/01/21/【コードリーディングc言語】chroot-ischroot/
+- /2019/01/21/コードリーディングc言語chroot-ischroot/
 ---
 
 ### 前書き

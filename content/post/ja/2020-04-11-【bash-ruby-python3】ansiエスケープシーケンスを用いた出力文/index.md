@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-11-【bash-ruby-python3】ansiエスケープシーケンスを用いた出力文/
 - /2020/04/11/【bash-ruby-python3】ansiエスケープシーケンスを用いた出力文/
+- /2020/04/11/bash-ruby-python3ansiエスケープシーケンスを用いた出力文/
+- /post/2020-04-11-bash-ruby-python3ansiエスケープシーケンスを用いた出力文/
+- /2020/04/12/【bash-ruby-python3】ansiエスケープシーケンスを用いた出力文/
+- /2020/04/12/bash-ruby-python3ansiエスケープシーケンスを用いた出力文/
 ---
 
 ### 前書き

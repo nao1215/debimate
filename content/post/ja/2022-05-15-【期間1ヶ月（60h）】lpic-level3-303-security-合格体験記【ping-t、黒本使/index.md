@@ -15,6 +15,10 @@ cover:
 aliases:
 - /post/2022-05-15-【期間1ヶ月（60h）】lpic-level3-303-security-合格体験記【ping-t、黒本使/
 - /2022/05/15/【期間1ヶ月（60h）】lpic-level3-303-security-合格体験記【ping-t、黒本使/
+- /2022/05/15/期間1ヶ月60hlpic-level3-303-security-合格体験記ping-t黒本使/
+- /post/2022-05-15-期間1ヶ月60hlpic-level3-303-security-合格体験記ping-t黒本使/
+- /2022/05/16/【期間1ヶ月（60h）】lpic-level3-303-security-合格体験記【ping-t、黒本使/
+- /2022/05/16/期間1ヶ月60hlpic-level3-303-security-合格体験記ping-t黒本使/
 ---
 
 ### 資格有効期限切れ 2週間前の滑り込み合格 

@@ -16,6 +16,10 @@ aliases:
 - /post/2022-02-20-【golang】go-installで取得したgopath-bin以下のバイナリを一括更新/
 - /2022/02/20/【golang】go-installで取得したgopath-bin以下のバイナリを一括更新/
 - /2022/02/20/
+- /2022/02/20/golanggo-installで取得したgopath-bin以下のバイナリを一括更新/
+- /post/2022-02-20-golanggo-installで取得したgopath-bin以下のバイナリを一括更新/
+- /2022/02/21/【golang】go-installで取得したgopath-bin以下のバイナリを一括更新/
+- /2022/02/21/golanggo-installで取得したgopath-bin以下のバイナリを一括更新/
 ---
 
 ### 前書き：バイナリの更新が面倒

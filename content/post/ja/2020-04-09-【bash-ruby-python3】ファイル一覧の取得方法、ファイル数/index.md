@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-09-【bash-ruby-python3】ファイル一覧の取得方法、ファイル数/
 - /2020/04/09/【bash-ruby-python3】ファイル一覧の取得方法、ファイル数/
+- /2020/04/09/bash-ruby-python3ファイル一覧の取得方法ファイル数/
+- /post/2020-04-09-bash-ruby-python3ファイル一覧の取得方法ファイル数/
+- /2020/04/10/【bash-ruby-python3】ファイル一覧の取得方法、ファイル数/
+- /2020/04/10/bash-ruby-python3ファイル一覧の取得方法ファイル数/
 ---
 
 ### 前書き

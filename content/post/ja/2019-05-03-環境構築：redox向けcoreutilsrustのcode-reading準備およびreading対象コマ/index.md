@@ -19,6 +19,10 @@ aliases:
 - /post/2019-05-03-環境構築：redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
 - /2019/05/03/環境構築：redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
 - /2019/05/03/
+- /2019/05/03/環境構築redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
+- /post/2019-05-03-環境構築redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
+- /2019/05/04/環境構築：redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
+- /2019/05/04/環境構築redox向けcoreutilsrustのcode-reading準備およびreading対象コマ/
 ---
 
 ### 前書き：Redox版coreutilsを読む理由

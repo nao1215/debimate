@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-12-【bash-ruby-python3】ユーザ名-uid-グループ名-gidを取得する方法/
 - /2020/04/12/【bash-ruby-python3】ユーザ名-uid-グループ名-gidを取得する方法/
+- /2020/04/12/bash-ruby-python3ユーザ名-uid-グループ名-gidを取得する方法/
+- /post/2020-04-12-bash-ruby-python3ユーザ名-uid-グループ名-gidを取得する方法/
+- /2020/04/13/【bash-ruby-python3】ユーザ名-uid-グループ名-gidを取得する方法/
+- /2020/04/13/bash-ruby-python3ユーザ名-uid-グループ名-gidを取得する方法/
 ---
 
 ### 前書き

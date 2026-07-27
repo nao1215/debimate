@@ -13,6 +13,10 @@ cover:
 aliases:
 - /post/2025-03-22-【機能強化】rdbms／csv／tsv／ltsvクライアントであるsqluvをhttps/
 - /2025/03/22/【機能強化】rdbms／csv／tsv／ltsvクライアントであるsqluvをhttps/
+- /2025/03/22/機能強化rdbmscsvtsvltsvクライアントであるsqluvをhttps/
+- /post/2025-03-22-機能強化rdbmscsvtsvltsvクライアントであるsqluvをhttps/
+- /2025/03/23/【機能強化】rdbms／csv／tsv／ltsvクライアントであるsqluvをhttps/
+- /2025/03/23/機能強化rdbmscsvtsvltsvクライアントであるsqluvをhttps/
 ---
 
 ### 前書き：大幅に機能追加

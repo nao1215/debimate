@@ -15,6 +15,10 @@ aliases:
 - /post/2022-06-25-【golang】sqlcコマンドで「sqlクエリから型安全なgoコード/
 - /2022/06/25/【golang】sqlcコマンドで「sqlクエリから型安全なgoコード/
 - /2022/06/25/
+- /2022/06/25/golangsqlcコマンドでsqlクエリから型安全なgoコード/
+- /post/2022-06-25-golangsqlcコマンドでsqlクエリから型安全なgoコード/
+- /2022/06/26/【golang】sqlcコマンドで「sqlクエリから型安全なgoコード/
+- /2022/06/26/golangsqlcコマンドでsqlクエリから型安全なgoコード/
 ---
 
 ### 前書き：sqlcとは

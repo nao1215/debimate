@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2020-11-20-【go言語golang】os-exitをユニットテストする方法カバレッ/
 - /2020/11/20/【go言語golang】os-exitをユニットテストする方法カバレッ/
+- /2020/11/20/go言語golangos-exitをユニットテストする方法カバレッ/
+- /post/2020-11-20-go言語golangos-exitをユニットテストする方法カバレッ/
+- /2020/11/21/【go言語golang】os-exitをユニットテストする方法カバレッ/
+- /2020/11/21/go言語golangos-exitをユニットテストする方法カバレッ/
 ---
 
 ### 前書き：os.Exit()の結果は親プロセスが受信

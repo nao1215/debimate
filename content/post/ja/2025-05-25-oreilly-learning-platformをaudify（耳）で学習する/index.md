@@ -14,6 +14,10 @@ aliases:
 - /post/2025-05-25-oreilly-learning-platformをaudify（耳）で学習する/
 - /2025/05/25/oreilly-learning-platformをaudify（耳）で学習する/
 - /2025/05/25/
+- /2025/05/25/oreilly-learning-platformをaudify耳で学習する/
+- /post/2025-05-25-oreilly-learning-platformをaudify耳で学習する/
+- /2025/05/26/oreilly-learning-platformをaudify（耳）で学習する/
+- /2025/05/26/oreilly-learning-platformをaudify耳で学習する/
 ---
 
 ###  前書き：O'Reilly Learning Platformは高め

@@ -16,6 +16,7 @@ aliases:
 - /post/2018-12-31-raspberry-pi3linux-kernelのboot-sequence-step1アーキテクチャ依存部/
 - /2018/12/31/raspberry-pi3linux-kernelのboot-sequence-step1アーキテクチャ依存部/
 - /2018/12/31/
+- /2019/01/01/raspberry-pi3linux-kernelのboot-sequence-step1アーキテクチャ依存部/
 ---
 
 ### 前書き

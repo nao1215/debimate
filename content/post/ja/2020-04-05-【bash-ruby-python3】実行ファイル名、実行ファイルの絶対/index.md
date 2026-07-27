@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-05-【bash-ruby-python3】実行ファイル名、実行ファイルの絶対/
 - /2020/04/05/【bash-ruby-python3】実行ファイル名、実行ファイルの絶対/
+- /2020/04/05/bash-ruby-python3実行ファイル名実行ファイルの絶対/
+- /post/2020-04-05-bash-ruby-python3実行ファイル名実行ファイルの絶対/
+- /2020/04/06/【bash-ruby-python3】実行ファイル名、実行ファイルの絶対/
+- /2020/04/06/bash-ruby-python3実行ファイル名実行ファイルの絶対/
 ---
 
 ### 前書き

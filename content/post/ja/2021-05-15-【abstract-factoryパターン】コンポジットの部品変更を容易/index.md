@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2021-05-15-【abstract-factoryパターン】コンポジットの部品変更を容易/
 - /2021/05/15/【abstract-factoryパターン】コンポジットの部品変更を容易/
+- /2021/05/15/abstract-factoryパターンコンポジットの部品変更を容易/
+- /post/2021-05-15-abstract-factoryパターンコンポジットの部品変更を容易/
+- /2021/05/16/【abstract-factoryパターン】コンポジットの部品変更を容易/
+- /2021/05/16/abstract-factoryパターンコンポジットの部品変更を容易/
 ---
 
 ### 前書き：Abstract Factoryパターンとは

@@ -15,6 +15,10 @@ aliases:
 - /post/2025-04-27-github-personal-access-tokenをコミットする人がいた話、類似例、漏洩/
 - /2025/04/27/github-personal-access-tokenをコミットする人がいた話、類似例、漏洩/
 - /2025/04/27/
+- /2025/04/27/github-personal-access-tokenをコミットする人がいた話類似例漏洩/
+- /post/2025-04-27-github-personal-access-tokenをコミットする人がいた話類似例漏洩/
+- /2025/04/28/github-personal-access-tokenをコミットする人がいた話、類似例、漏洩/
+- /2025/04/28/github-personal-access-tokenをコミットする人がいた話類似例漏洩/
 ---
 
 ###  前書き：セキュリティのお勉強中

@@ -14,6 +14,7 @@ cover:
 aliases:
 - /post/2019-03-24-raspberry-pi3を固定ip化する方法/
 - /2019/03/24/raspberry-pi3を固定ip化する方法/
+- /2019/03/25/raspberry-pi3を固定ip化する方法/
 ---
 
 ### 前書き

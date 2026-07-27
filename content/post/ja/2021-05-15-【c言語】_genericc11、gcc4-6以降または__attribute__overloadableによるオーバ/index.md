@@ -13,6 +13,10 @@ cover:
 aliases:
 - /post/2021-05-15-【c言語】_genericc11、gcc4-6以降または__attribute__overloadableによるオーバ/
 - /2021/05/15/【c言語】_genericc11、gcc4-6以降または__attribute__overloadableによるオーバ/
+- /2021/05/15/c言語_genericc11gcc4-6以降または__attribute__overloadableによるオーバ/
+- /post/2021-05-15-c言語_genericc11gcc4-6以降または__attribute__overloadableによるオーバ/
+- /2021/05/16/【c言語】_genericc11、gcc4-6以降または__attribute__overloadableによるオーバ/
+- /2021/05/16/c言語_genericc11gcc4-6以降または__attribute__overloadableによるオーバ/
 ---
 
 ### 前書き 

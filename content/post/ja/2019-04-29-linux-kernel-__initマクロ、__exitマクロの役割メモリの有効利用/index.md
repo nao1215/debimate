@@ -19,6 +19,10 @@ aliases:
 - /post/2019-04-29-linux-kernel-__initマクロ、__exitマクロの役割メモリの有効利用/
 - /2019/04/29/linux-kernel-__initマクロ、__exitマクロの役割メモリの有効利用/
 - /2019/04/29/
+- /2019/04/29/linux-kernel-__initマクロ__exitマクロの役割メモリの有効利用/
+- /post/2019-04-29-linux-kernel-__initマクロ__exitマクロの役割メモリの有効利用/
+- /2019/04/30/linux-kernel-__initマクロ、__exitマクロの役割メモリの有効利用/
+- /2019/04/30/linux-kernel-__initマクロ__exitマクロの役割メモリの有効利用/
 ---
 
 ### \_\_initマクロ、\_\_exitマクロが使われるケース

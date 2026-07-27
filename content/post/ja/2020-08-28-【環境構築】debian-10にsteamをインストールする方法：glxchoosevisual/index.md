@@ -18,6 +18,10 @@ aliases:
 - /post/2020-08-28-【環境構築】debian-10にsteamをインストールする方法：glxchoosevisual/
 - /2020/08/28/【環境構築】debian-10にsteamをインストールする方法：glxchoosevisual/
 - /2020/08/28/
+- /2020/08/28/環境構築debian-10にsteamをインストールする方法glxchoosevisual/
+- /post/2020-08-28-環境構築debian-10にsteamをインストールする方法glxchoosevisual/
+- /2020/08/29/【環境構築】debian-10にsteamをインストールする方法：glxchoosevisual/
+- /2020/08/29/環境構築debian-10にsteamをインストールする方法glxchoosevisual/
 ---
 
 ### 前書き：Steam公式はLinuxをサポート済み

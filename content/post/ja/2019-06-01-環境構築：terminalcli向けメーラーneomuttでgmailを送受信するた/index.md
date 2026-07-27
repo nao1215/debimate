@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2019-06-01-環境構築：terminalcli向けメーラーneomuttでgmailを送受信するた/
 - /2019/06/01/環境構築：terminalcli向けメーラーneomuttでgmailを送受信するた/
+- /2019/06/01/環境構築terminalcli向けメーラーneomuttでgmailを送受信するた/
+- /post/2019-06-01-環境構築terminalcli向けメーラーneomuttでgmailを送受信するた/
+- /2019/06/02/環境構築：terminalcli向けメーラーneomuttでgmailを送受信するた/
+- /2019/06/02/環境構築terminalcli向けメーラーneomuttでgmailを送受信するた/
 ---
 
 ### 前書き

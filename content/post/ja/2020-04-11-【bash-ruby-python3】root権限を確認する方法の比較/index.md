@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-11-【bash-ruby-python3】root権限を確認する方法の比較/
 - /2020/04/11/【bash-ruby-python3】root権限を確認する方法の比較/
+- /2020/04/11/bash-ruby-python3root権限を確認する方法の比較/
+- /post/2020-04-11-bash-ruby-python3root権限を確認する方法の比較/
+- /2020/04/12/【bash-ruby-python3】root権限を確認する方法の比較/
+- /2020/04/12/bash-ruby-python3root権限を確認する方法の比較/
 ---
 
 ### 前書き

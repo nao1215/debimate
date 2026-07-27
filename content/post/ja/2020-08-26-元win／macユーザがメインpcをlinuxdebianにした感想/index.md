@@ -15,6 +15,10 @@ aliases:
 - /post/2020-08-26-元win／macユーザがメインpcをlinuxdebianにした感想/
 - /2020/08/26/元win／macユーザがメインpcをlinuxdebianにした感想/
 - /2020/08/26/
+- /2020/08/26/元winmacユーザがメインpcをlinuxdebianにした感想/
+- /post/2020-08-26-元winmacユーザがメインpcをlinuxdebianにした感想/
+- /2020/08/27/元win／macユーザがメインpcをlinuxdebianにした感想/
+- /2020/08/27/元winmacユーザがメインpcをlinuxdebianにした感想/
 ---
 
 ### 前書き

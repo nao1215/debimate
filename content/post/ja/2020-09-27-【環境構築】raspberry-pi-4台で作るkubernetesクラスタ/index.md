@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-09-27-【環境構築】raspberry-pi-4台で作るkubernetesクラスタ/
 - /2020/09/27/【環境構築】raspberry-pi-4台で作るkubernetesクラスタ/
+- /2020/09/27/環境構築raspberry-pi-4台で作るkubernetesクラスタ/
+- /post/2020-09-27-環境構築raspberry-pi-4台で作るkubernetesクラスタ/
+- /2020/09/28/【環境構築】raspberry-pi-4台で作るkubernetesクラスタ/
+- /2020/09/28/環境構築raspberry-pi-4台で作るkubernetesクラスタ/
 ---
 
 ### 前書き：憧れのラズパイクラスタ

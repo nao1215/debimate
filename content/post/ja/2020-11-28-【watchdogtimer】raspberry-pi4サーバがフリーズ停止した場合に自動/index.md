@@ -15,6 +15,10 @@ cover:
 aliases:
 - /post/2020-11-28-【watchdogtimer】raspberry-pi4サーバがフリーズ停止した場合に自動/
 - /2020/11/28/【watchdogtimer】raspberry-pi4サーバがフリーズ停止した場合に自動/
+- /2020/11/28/watchdogtimerraspberry-pi4サーバがフリーズ停止した場合に自動/
+- /post/2020-11-28-watchdogtimerraspberry-pi4サーバがフリーズ停止した場合に自動/
+- /2020/11/29/【watchdogtimer】raspberry-pi4サーバがフリーズ停止した場合に自動/
+- /2020/11/29/watchdogtimerraspberry-pi4サーバがフリーズ停止した場合に自動/
 ---
 
 ### 前書き：ラズパイサーバがよく止まる

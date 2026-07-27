@@ -15,6 +15,10 @@ aliases:
 - /post/2021-05-23-【java】immutable-object（不変クラス）の利点／欠点／作成方法/
 - /2021/05/23/【java】immutable-object（不変クラス）の利点／欠点／作成方法/
 - /2021/05/23/
+- /2021/05/23/javaimmutable-object不変クラスの利点欠点作成方法/
+- /post/2021-05-23-javaimmutable-object不変クラスの利点欠点作成方法/
+- /2021/05/24/【java】immutable-object（不変クラス）の利点／欠点／作成方法/
+- /2021/05/24/javaimmutable-object不変クラスの利点欠点作成方法/
 ---
 
 ### 前書き：これだからC言語プログラマは……

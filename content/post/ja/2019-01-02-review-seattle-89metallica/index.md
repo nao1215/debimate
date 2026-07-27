@@ -14,6 +14,7 @@ cover:
 aliases:
 - /post/2019-01-02-review-seattle-89metallica/
 - /2019/01/02/review-seattle-89metallica/
+- /2019/01/03/review-seattle-89metallica/
 ---
 
 ### 収録曲

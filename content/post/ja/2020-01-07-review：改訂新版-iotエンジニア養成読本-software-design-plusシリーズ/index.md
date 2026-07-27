@@ -14,6 +14,10 @@ aliases:
 - /post/2020-01-07-review：改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
 - /2020/01/07/review：改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
 - /2020/01/07/
+- /2020/01/07/review改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
+- /post/2020-01-07-review改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
+- /2020/01/08/review：改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
+- /2020/01/08/review改訂新版-iotエンジニア養成読本-software-design-plusシリーズ/
 ---
 
 ### IoTと縁がなかった開発者向けの網羅的な一冊

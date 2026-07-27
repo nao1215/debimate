@@ -14,6 +14,7 @@ aliases:
 - /post/2019-05-12-review-memories-in-rockrainbow/
 - /2019/05/12/review-memories-in-rockrainbow/
 - /2019/05/12/
+- /2019/05/13/review-memories-in-rockrainbow/
 ---
 
 ### 収録曲

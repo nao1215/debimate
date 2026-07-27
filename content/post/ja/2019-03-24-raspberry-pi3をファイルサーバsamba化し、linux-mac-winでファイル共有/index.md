@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2019-03-24-raspberry-pi3をファイルサーバsamba化し、linux-mac-winでファイル共有/
 - /2019/03/24/raspberry-pi3をファイルサーバsamba化し、linux-mac-winでファイル共有/
+- /2019/03/24/raspberry-pi3をファイルサーバsamba化しlinux-mac-winでファイル共有/
+- /post/2019-03-24-raspberry-pi3をファイルサーバsamba化しlinux-mac-winでファイル共有/
+- /2019/03/25/raspberry-pi3をファイルサーバsamba化し、linux-mac-winでファイル共有/
+- /2019/03/25/raspberry-pi3をファイルサーバsamba化しlinux-mac-winでファイル共有/
 ---
 
 ### 前書き

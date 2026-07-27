@@ -15,6 +15,7 @@ cover:
 aliases:
 - /post/2019-10-05-autofsを用いてhdd-ssd-usbメモリを起動時に自動マウントする/
 - /2019/10/05/autofsを用いてhdd-ssd-usbメモリを起動時に自動マウントする/
+- /2019/10/06/autofsを用いてhdd-ssd-usbメモリを起動時に自動マウントする/
 ---
 
 ### 前書き

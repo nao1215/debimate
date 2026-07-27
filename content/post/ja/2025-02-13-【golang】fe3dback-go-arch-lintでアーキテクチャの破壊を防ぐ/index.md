@@ -12,6 +12,10 @@ aliases:
 - /post/2025-02-13-【golang】fe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/
 - /2025/02/13/【golang】fe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/
 - /2025/02/13/
+- /2025/02/13/golangfe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/
+- /post/2025-02-13-golangfe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/
+- /2025/02/14/【golang】fe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/
+- /2025/02/14/golangfe3dback-go-arch-lintでアーキテクチャの破壊を防ぐ/
 ---
 
 ### 前書き：アーキテクチャは容易に壊される

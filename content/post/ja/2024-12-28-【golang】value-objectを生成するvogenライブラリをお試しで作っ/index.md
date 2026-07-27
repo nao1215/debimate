@@ -16,6 +16,10 @@ aliases:
 - /post/2024-12-28-【golang】value-objectを生成するvogenライブラリをお試しで作っ/
 - /2024/12/28/【golang】value-objectを生成するvogenライブラリをお試しで作っ/
 - /2024/12/28/
+- /2024/12/28/golangvalue-objectを生成するvogenライブラリをお試しで作っ/
+- /post/2024-12-28-golangvalue-objectを生成するvogenライブラリをお試しで作っ/
+- /2024/12/29/【golang】value-objectを生成するvogenライブラリをお試しで作っ/
+- /2024/12/29/golangvalue-objectを生成するvogenライブラリをお試しで作っ/
 ---
 
 ### 前書き：GolangでValue Objectを作りづらい

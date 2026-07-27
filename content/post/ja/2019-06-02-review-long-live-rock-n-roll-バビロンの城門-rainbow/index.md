@@ -14,6 +14,7 @@ aliases:
 - /post/2019-06-02-review-long-live-rock-n-roll-バビロンの城門-rainbow/
 - /2019/06/02/review-long-live-rock-n-roll-バビロンの城門-rainbow/
 - /2019/06/02/
+- /2019/06/03/review-long-live-rock-n-roll-バビロンの城門-rainbow/
 ---
 
 ### 収録曲

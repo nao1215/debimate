@@ -16,6 +16,7 @@ aliases:
 - /post/2019-03-16-androidにlinux環境を構築するuserlandがソースリーディング環/
 - /2019/03/16/androidにlinux環境を構築するuserlandがソースリーディング環/
 - /2019/03/16/
+- /2019/03/17/androidにlinux環境を構築するuserlandがソースリーディング環/
 ---
 
 ### 前書き

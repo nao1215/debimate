@@ -17,6 +17,10 @@ aliases:
 - /post/2020-04-16-etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何か【ログイン禁止/
 - /2020/04/16/etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何か【ログイン禁止/
 - /2020/04/16/
+- /2020/04/16/etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何かログイン禁止/
+- /post/2020-04-16-etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何かログイン禁止/
+- /2020/04/17/etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何か【ログイン禁止/
+- /2020/04/17/etc-passwdに記載された-usr-sbin-nologin-bin-falseとは何かログイン禁止/
 ---
 
 ### 前書き

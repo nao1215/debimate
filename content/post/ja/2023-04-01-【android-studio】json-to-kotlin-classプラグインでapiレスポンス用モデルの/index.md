@@ -15,6 +15,10 @@ aliases:
 - /post/2023-04-01-【android-studio】json-to-kotlin-classプラグインでapiレスポンス用モデルの/
 - /2023/04/01/【android-studio】json-to-kotlin-classプラグインでapiレスポンス用モデルの/
 - /2023/04/01/
+- /2023/04/01/android-studiojson-to-kotlin-classプラグインでapiレスポンス用モデルの/
+- /post/2023-04-01-android-studiojson-to-kotlin-classプラグインでapiレスポンス用モデルの/
+- /2023/04/02/【android-studio】json-to-kotlin-classプラグインでapiレスポンス用モデルの/
+- /2023/04/02/android-studiojson-to-kotlin-classプラグインでapiレスポンス用モデルの/
 ---
 
 ### 前書き

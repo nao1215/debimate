@@ -16,6 +16,10 @@ aliases:
 - /post/2023-09-16-github-actionsでbsd（freebsd、openbsd、netbsd、dragonfly-bsd）のユニットテスト環境/
 - /2023/09/16/github-actionsでbsd（freebsd、openbsd、netbsd、dragonfly-bsd）のユニットテスト環境/
 - /2023/09/16/
+- /2023/09/16/github-actionsでbsdfreebsdopenbsdnetbsddragonfly-bsdのユニットテスト環境/
+- /post/2023-09-16-github-actionsでbsdfreebsdopenbsdnetbsddragonfly-bsdのユニットテスト環境/
+- /2023/09/17/github-actionsでbsd（freebsd、openbsd、netbsd、dragonfly-bsd）のユニットテスト環境/
+- /2023/09/17/github-actionsでbsdfreebsdopenbsdnetbsddragonfly-bsdのユニットテスト環境/
 ---
 
 ### 前書き：BSDはクロスプラットフォーム対応の鬼門

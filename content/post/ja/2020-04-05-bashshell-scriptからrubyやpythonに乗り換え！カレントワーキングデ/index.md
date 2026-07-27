@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-05-bashshell-scriptからrubyやpythonに乗り換え！カレントワーキングデ/
 - /2020/04/05/bashshell-scriptからrubyやpythonに乗り換え！カレントワーキングデ/
+- /2020/04/05/bashshell-scriptからrubyやpythonに乗り換えカレントワーキングデ/
+- /post/2020-04-05-bashshell-scriptからrubyやpythonに乗り換えカレントワーキングデ/
+- /2020/04/06/bashshell-scriptからrubyやpythonに乗り換え！カレントワーキングデ/
+- /2020/04/06/bashshell-scriptからrubyやpythonに乗り換えカレントワーキングデ/
 ---
 
 ### 前書き 

@@ -13,6 +13,10 @@ cover:
 aliases:
 - /post/2021-11-23-golangで無名パイプからデータを受け取る方法【terminal-isterminal/
 - /2021/11/23/golangで無名パイプからデータを受け取る方法【terminal-isterminal/
+- /2021/11/23/golangで無名パイプからデータを受け取る方法terminal-isterminal/
+- /post/2021-11-23-golangで無名パイプからデータを受け取る方法terminal-isterminal/
+- /2021/11/24/golangで無名パイプからデータを受け取る方法【terminal-isterminal/
+- /2021/11/24/golangで無名パイプからデータを受け取る方法terminal-isterminal/
 ---
 
 ### 前書き：os.Args\[1\]にはパイプのデータがない

@@ -15,6 +15,10 @@ aliases:
 - /post/2021-12-13-【golang】errorsパッケージ-new-unwrap-is-asの使い方と注意点/
 - /2021/12/13/【golang】errorsパッケージ-new-unwrap-is-asの使い方と注意点/
 - /2021/12/13/
+- /2021/12/13/golangerrorsパッケージ-new-unwrap-is-asの使い方と注意点/
+- /post/2021-12-13-golangerrorsパッケージ-new-unwrap-is-asの使い方と注意点/
+- /2021/12/14/【golang】errorsパッケージ-new-unwrap-is-asの使い方と注意点/
+- /2021/12/14/golangerrorsパッケージ-new-unwrap-is-asの使い方と注意点/
 ---
 
 ### 前書き：君、err != nilしかできないの?

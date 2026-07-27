@@ -16,6 +16,7 @@ aliases:
 - /post/2019-04-07-linux-kernel-list構造を操作するためのapilistの使い方/
 - /2019/04/07/linux-kernel-list構造を操作するためのapilistの使い方/
 - /2019/04/07/
+- /2019/04/08/linux-kernel-list構造を操作するためのapilistの使い方/
 ---
 
 ### 前書き

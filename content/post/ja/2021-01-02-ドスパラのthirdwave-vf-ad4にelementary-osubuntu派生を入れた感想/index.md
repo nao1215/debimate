@@ -16,6 +16,7 @@ cover:
 aliases:
 - /post/2021-01-02-ドスパラのthirdwave-vf-ad4にelementary-osubuntu派生を入れた感想/
 - /2021/01/02/ドスパラのthirdwave-vf-ad4にelementary-osubuntu派生を入れた感想/
+- /2021/01/03/ドスパラのthirdwave-vf-ad4にelementary-osubuntu派生を入れた感想/
 ---
 
 ### 前書き：安価なノートPC VF-AD4を購入しました

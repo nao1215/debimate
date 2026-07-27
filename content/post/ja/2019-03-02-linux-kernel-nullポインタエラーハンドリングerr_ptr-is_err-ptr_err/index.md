@@ -16,6 +16,7 @@ aliases:
 - /post/2019-03-02-linux-kernel-nullポインタエラーハンドリングerr_ptr-is_err-ptr_err/
 - /2019/03/02/linux-kernel-nullポインタエラーハンドリングerr_ptr-is_err-ptr_err/
 - /2019/03/02/
+- /2019/03/03/linux-kernel-nullポインタエラーハンドリングerr_ptr-is_err-ptr_err/
 ---
 
 ### "返り値がNULL" = "情報量がない"

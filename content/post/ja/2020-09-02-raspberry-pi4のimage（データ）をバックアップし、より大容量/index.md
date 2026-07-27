@@ -14,6 +14,10 @@ aliases:
 - /post/2020-09-02-raspberry-pi4のimage（データ）をバックアップし、より大容量/
 - /2020/09/02/raspberry-pi4のimage（データ）をバックアップし、より大容量/
 - /2020/09/02/
+- /2020/09/02/raspberry-pi4のimageデータをバックアップしより大容量/
+- /post/2020-09-02-raspberry-pi4のimageデータをバックアップしより大容量/
+- /2020/09/03/raspberry-pi4のimage（データ）をバックアップし、より大容量/
+- /2020/09/03/raspberry-pi4のimageデータをバックアップしより大容量/
 ---
 
 ### 前書き

@@ -15,6 +15,7 @@ aliases:
 - /post/2019-01-04-review-boston-1981rainbow/
 - /2019/01/04/review-boston-1981rainbow/
 - /2019/01/04/
+- /2019/01/05/review-boston-1981rainbow/
 ---
 
 ### 収録曲

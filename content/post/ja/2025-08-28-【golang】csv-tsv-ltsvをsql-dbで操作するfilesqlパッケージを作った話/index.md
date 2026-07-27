@@ -16,6 +16,10 @@ aliases:
 - /post/2025-08-28-【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
 - /2025/08/28/【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
 - /2025/08/28/
+- /2025/08/28/golangcsv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
+- /post/2025-08-28-golangcsv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
+- /2025/08/29/【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
+- /2025/08/29/golangcsv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話/
 ---
 
 ### 前書き：同じ機能を持つコマンドのメンテが面倒だった

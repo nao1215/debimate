@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-09-【bash-ruby-python3】ユーザ入力input受け付け方法の比較/
 - /2020/04/09/【bash-ruby-python3】ユーザ入力input受け付け方法の比較/
+- /2020/04/09/bash-ruby-python3ユーザ入力input受け付け方法の比較/
+- /post/2020-04-09-bash-ruby-python3ユーザ入力input受け付け方法の比較/
+- /2020/04/10/【bash-ruby-python3】ユーザ入力input受け付け方法の比較/
+- /2020/04/10/bash-ruby-python3ユーザ入力input受け付け方法の比較/
 ---
 
 ### 前書き

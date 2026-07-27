@@ -15,6 +15,10 @@ cover:
 aliases:
 - /post/2022-02-05-【golang】goembedを用いて格言表示コマンド（subaru）を開発/
 - /2022/02/05/【golang】goembedを用いて格言表示コマンド（subaru）を開発/
+- /2022/02/05/golanggoembedを用いて格言表示コマンドsubaruを開発/
+- /post/2022-02-05-golanggoembedを用いて格言表示コマンドsubaruを開発/
+- /2022/02/06/【golang】goembedを用いて格言表示コマンド（subaru）を開発/
+- /2022/02/06/golanggoembedを用いて格言表示コマンドsubaruを開発/
 ---
 
 ### 前書き：go:embedを試したかった

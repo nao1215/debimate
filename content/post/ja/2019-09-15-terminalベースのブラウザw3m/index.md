@@ -15,6 +15,7 @@ cover:
 aliases:
 - /post/2019-09-15-terminalベースのブラウザw3m/
 - /2019/09/15/terminalベースのブラウザw3m/
+- /2019/09/16/terminalベースのブラウザw3m/
 ---
 
 ### 前書き

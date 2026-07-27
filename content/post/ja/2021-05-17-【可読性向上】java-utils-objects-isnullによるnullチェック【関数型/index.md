@@ -14,6 +14,10 @@ aliases:
 - /post/2021-05-17-【可読性向上】java-utils-objects-isnullによるnullチェック【関数型/
 - /2021/05/17/【可読性向上】java-utils-objects-isnullによるnullチェック【関数型/
 - /2021/05/17/
+- /2021/05/17/可読性向上java-utils-objects-isnullによるnullチェック関数型/
+- /post/2021-05-17-可読性向上java-utils-objects-isnullによるnullチェック関数型/
+- /2021/05/18/【可読性向上】java-utils-objects-isnullによるnullチェック【関数型/
+- /2021/05/18/可読性向上java-utils-objects-isnullによるnullチェック関数型/
 ---
 
 ### 前書き："=="や"!="による判定と何が違う？

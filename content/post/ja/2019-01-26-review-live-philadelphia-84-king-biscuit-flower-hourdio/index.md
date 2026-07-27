@@ -13,6 +13,7 @@ cover:
 aliases:
 - /post/2019-01-26-review-live-philadelphia-84-king-biscuit-flower-hourdio/
 - /2019/01/26/review-live-philadelphia-84-king-biscuit-flower-hourdio/
+- /2019/01/27/review-live-philadelphia-84-king-biscuit-flower-hourdio/
 ---
 
 ### 収録曲

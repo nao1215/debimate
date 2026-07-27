@@ -17,6 +17,7 @@ aliases:
 - /post/2019-02-03-bashshell-script内メッセージの国際化方法/
 - /2019/02/03/bashshell-script内メッセージの国際化方法/
 - /2019/02/03/
+- /2019/02/04/bashshell-script内メッセージの国際化方法/
 ---
 
 ### 前書き

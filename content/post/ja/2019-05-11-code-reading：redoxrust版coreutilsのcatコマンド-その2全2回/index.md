@@ -16,6 +16,10 @@ aliases:
 - /post/2019-05-11-code-reading：redoxrust版coreutilsのcatコマンド-その2全2回/
 - /2019/05/11/code-reading：redoxrust版coreutilsのcatコマンド-その2全2回/
 - /2019/05/11/
+- /2019/05/11/code-readingredoxrust版coreutilsのcatコマンド-その2全2回/
+- /post/2019-05-11-code-readingredoxrust版coreutilsのcatコマンド-その2全2回/
+- /2019/05/12/code-reading：redoxrust版coreutilsのcatコマンド-その2全2回/
+- /2019/05/12/code-readingredoxrust版coreutilsのcatコマンド-その2全2回/
 ---
 
 ### 前書き

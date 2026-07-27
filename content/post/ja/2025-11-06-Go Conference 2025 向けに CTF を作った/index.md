@@ -12,6 +12,10 @@ aliases:
 - /post/2025-11-06-Go Conference 2025 向けに CTF を作った/
 - /2025/11/06/Go Conference 2025 向けに CTF を作った/
 - /2025/11/06/
+- /2025/11/06/go-conference-2025-向けに-ctf-を作った/
+- /post/2025-11-06-go-conference-2025-向けに-ctf-を作った/
+- /2025/11/07/Go Conference 2025 向けに CTF を作った/
+- /2025/11/07/go-conference-2025-向けに-ctf-を作った/
 ---
 
 ### 会社で書いた記事を引用

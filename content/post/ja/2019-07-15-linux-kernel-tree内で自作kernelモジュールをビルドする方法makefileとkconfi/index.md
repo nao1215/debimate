@@ -17,6 +17,7 @@ aliases:
 - /post/2019-07-15-linux-kernel-tree内で自作kernelモジュールをビルドする方法makefileとkconfi/
 - /2019/07/15/linux-kernel-tree内で自作kernelモジュールをビルドする方法makefileとkconfi/
 - /2019/07/15/
+- /2019/07/16/linux-kernel-tree内で自作kernelモジュールをビルドする方法makefileとkconfi/
 ---
 
 ### 前書き

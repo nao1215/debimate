@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2021-08-29-shc（shell-script-compiler）でスクリプトをバイナリ化（暗号化）/
 - /2021/08/29/shc（shell-script-compiler）でスクリプトをバイナリ化（暗号化）/
+- /2021/08/29/shcshell-script-compilerでスクリプトをバイナリ化暗号化/
+- /post/2021-08-29-shcshell-script-compilerでスクリプトをバイナリ化暗号化/
+- /2021/08/30/shc（shell-script-compiler）でスクリプトをバイナリ化（暗号化）/
+- /2021/08/30/shcshell-script-compilerでスクリプトをバイナリ化暗号化/
 ---
 
 ### 前書き：Shell Scriptの中身を見せたくない

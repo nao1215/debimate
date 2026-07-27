@@ -21,8 +21,16 @@ help:  ## コマンド一覧を表示
 serve: ## ローカル開発サーバ起動 (Draft/Future含む)
 	$(HUGO) server -D -F --disableFastRender --port $(SERVER_PORT)
 
-build: ## 本番用ビルド（最小化あり）
+build: redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
+
+redirects: ## 移行前URL向けのalias・リダイレクトを再生成
+	python3 scripts/ensure_post_aliases.py
+	python3 scripts/gen_legacy_redirects.py
+
+redirects-check: ## 移行前URL向けのリダイレクトが最新か検証
+	python3 scripts/ensure_post_aliases.py --check
+	python3 scripts/gen_legacy_redirects.py --check
 
 clean: ## publicディレクトリ削除
 	rm -rf public

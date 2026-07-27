@@ -15,6 +15,7 @@ cover:
 aliases:
 - /post/2019-02-24-linux-kernel-エラー番号の一覧/
 - /2019/02/24/linux-kernel-エラー番号の一覧/
+- /2019/02/25/linux-kernel-エラー番号の一覧/
 ---
 
 ### 前書き

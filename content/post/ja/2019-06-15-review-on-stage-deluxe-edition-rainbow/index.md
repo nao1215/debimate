@@ -13,6 +13,7 @@ cover:
 aliases:
 - /post/2019-06-15-review-on-stage-deluxe-edition-rainbow/
 - /2019/06/15/review-on-stage-deluxe-edition-rainbow/
+- /2019/06/16/review-on-stage-deluxe-edition-rainbow/
 ---
 
 ### 収録曲

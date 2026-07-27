@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-12-【bash-ruby-python3】外部コマンドを実行する方法の比較/
 - /2020/04/12/【bash-ruby-python3】外部コマンドを実行する方法の比較/
+- /2020/04/12/bash-ruby-python3外部コマンドを実行する方法の比較/
+- /post/2020-04-12-bash-ruby-python3外部コマンドを実行する方法の比較/
+- /2020/04/13/【bash-ruby-python3】外部コマンドを実行する方法の比較/
+- /2020/04/13/bash-ruby-python3外部コマンドを実行する方法の比較/
 ---
 
 自動化Script作成時に、Bash (Shell Script)ではなく、RubyやPython3を用いた方がScriptのメンテナンス負荷が低くなります。自動化Scriptに使用するプログラミング言語変更を目的として、各言語の実装を比較します。

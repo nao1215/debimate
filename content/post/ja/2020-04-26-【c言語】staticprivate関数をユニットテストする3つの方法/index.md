@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2020-04-26-【c言語】staticprivate関数をユニットテストする3つの方法/
 - /2020/04/26/【c言語】staticprivate関数をユニットテストする3つの方法/
+- /2020/04/26/c言語staticprivate関数をユニットテストする3つの方法/
+- /post/2020-04-26-c言語staticprivate関数をユニットテストする3つの方法/
+- /2020/04/27/【c言語】staticprivate関数をユニットテストする3つの方法/
+- /2020/04/27/c言語staticprivate関数をユニットテストする3つの方法/
 ---
 
 ### 前書き：C言語のstatic関数は単体テストできます

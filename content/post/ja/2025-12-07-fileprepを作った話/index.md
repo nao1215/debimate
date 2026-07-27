@@ -13,6 +13,7 @@ aliases:
 - /post/2025-12-07-fileprepを作った話/
 - /2025/12/07/fileprepを作った話/
 - /2025/12/07/
+- /2025/12/08/fileprepを作った話/
 ---
 
 ### [nao1215/fileprep](https://github.com/nao1215/fileprep)（前処理ライブラリ） を開発した理由

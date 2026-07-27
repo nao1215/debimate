@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-07-【bash-ruby-python3】新規ファイル作成（一時ファイル作成/
 - /2020/04/07/【bash-ruby-python3】新規ファイル作成（一時ファイル作成/
+- /2020/04/07/bash-ruby-python3新規ファイル作成一時ファイル作成/
+- /post/2020-04-07-bash-ruby-python3新規ファイル作成一時ファイル作成/
+- /2020/04/08/【bash-ruby-python3】新規ファイル作成（一時ファイル作成/
+- /2020/04/08/bash-ruby-python3新規ファイル作成一時ファイル作成/
 ---
 
 ### 前書き

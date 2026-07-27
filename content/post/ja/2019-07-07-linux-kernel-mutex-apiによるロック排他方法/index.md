@@ -18,6 +18,7 @@ aliases:
 - /post/2019-07-07-linux-kernel-mutex-apiによるロック排他方法/
 - /2019/07/07/linux-kernel-mutex-apiによるロック排他方法/
 - /2019/07/07/
+- /2019/07/08/linux-kernel-mutex-apiによるロック排他方法/
 ---
 
 ### 前書き：mutexとは

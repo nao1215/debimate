@@ -13,6 +13,10 @@ cover:
 aliases:
 - /post/2023-09-10-【golang】io-readerを使いまわしてcontenttypeを判定したらハマった/
 - /2023/09/10/【golang】io-readerを使いまわしてcontenttypeを判定したらハマった/
+- /2023/09/10/golangio-readerを使いまわしてcontenttypeを判定したらハマった/
+- /post/2023-09-10-golangio-readerを使いまわしてcontenttypeを判定したらハマった/
+- /2023/09/11/【golang】io-readerを使いまわしてcontenttypeを判定したらハマった/
+- /2023/09/11/golangio-readerを使いまわしてcontenttypeを判定したらハマった/
 ---
 
 ### 前書き：同じハマりを繰り返す

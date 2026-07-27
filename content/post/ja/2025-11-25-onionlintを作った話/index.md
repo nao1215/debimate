@@ -13,6 +13,7 @@ aliases:
 - /post/2025-11-25-onionlintを作った話/
 - /2025/11/25/onionlintを作った話/
 - /2025/11/25/
+- /2025/11/26/onionlintを作った話/
 ---
 
 ### onionlint とは

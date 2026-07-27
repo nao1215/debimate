@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-08-【bash-ruby-python3】pathからファイル名の抽出、ファイル名拡/
 - /2020/04/08/【bash-ruby-python3】pathからファイル名の抽出、ファイル名拡/
+- /2020/04/08/bash-ruby-python3pathからファイル名の抽出ファイル名拡/
+- /post/2020-04-08-bash-ruby-python3pathからファイル名の抽出ファイル名拡/
+- /2020/04/09/【bash-ruby-python3】pathからファイル名の抽出、ファイル名拡/
+- /2020/04/09/bash-ruby-python3pathからファイル名の抽出ファイル名拡/
 ---
 
 ### 前書き

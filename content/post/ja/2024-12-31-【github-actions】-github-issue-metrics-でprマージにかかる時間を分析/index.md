@@ -15,6 +15,10 @@ aliases:
 - /post/2024-12-31-【github-actions】-github-issue-metrics-でprマージにかかる時間を分析/
 - /2024/12/31/【github-actions】-github-issue-metrics-でprマージにかかる時間を分析/
 - /2024/12/31/
+- /2024/12/31/github-actions-github-issue-metrics-でprマージにかかる時間を分析/
+- /post/2024-12-31-github-actions-github-issue-metrics-でprマージにかかる時間を分析/
+- /2025/01/01/【github-actions】-github-issue-metrics-でprマージにかかる時間を分析/
+- /2025/01/01/github-actions-github-issue-metrics-でprマージにかかる時間を分析/
 ---
 
 ### 前書き：PRマージに時間がかかっていた

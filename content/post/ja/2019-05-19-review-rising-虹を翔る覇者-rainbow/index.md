@@ -14,6 +14,7 @@ aliases:
 - /post/2019-05-19-review-rising-虹を翔る覇者-rainbow/
 - /2019/05/19/review-rising-虹を翔る覇者-rainbow/
 - /2019/05/19/
+- /2019/05/20/review-rising-虹を翔る覇者-rainbow/
 ---
 
 ### 収録曲

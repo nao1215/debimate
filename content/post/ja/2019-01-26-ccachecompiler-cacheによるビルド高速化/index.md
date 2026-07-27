@@ -17,6 +17,7 @@ cover:
 aliases:
 - /post/2019-01-26-ccachecompiler-cacheによるビルド高速化/
 - /2019/01/26/ccachecompiler-cacheによるビルド高速化/
+- /2019/01/27/ccachecompiler-cacheによるビルド高速化/
 ---
 
 ### 前書き

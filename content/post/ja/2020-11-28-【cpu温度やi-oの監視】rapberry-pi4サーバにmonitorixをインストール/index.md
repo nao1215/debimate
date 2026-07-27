@@ -15,6 +15,10 @@ cover:
 aliases:
 - /post/2020-11-28-【cpu温度やi-oの監視】rapberry-pi4サーバにmonitorixをインストール/
 - /2020/11/28/【cpu温度やi-oの監視】rapberry-pi4サーバにmonitorixをインストール/
+- /2020/11/28/cpu温度やi-oの監視rapberry-pi4サーバにmonitorixをインストール/
+- /post/2020-11-28-cpu温度やi-oの監視rapberry-pi4サーバにmonitorixをインストール/
+- /2020/11/29/【cpu温度やi-oの監視】rapberry-pi4サーバにmonitorixをインストール/
+- /2020/11/29/cpu温度やi-oの監視rapberry-pi4サーバにmonitorixをインストール/
 ---
 
 ### 前書き：ラズパイサーバが停止するので監視したい

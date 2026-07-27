@@ -14,6 +14,7 @@ cover:
 aliases:
 - /post/2020-09-27-raspberry-pi3-4にdockerとdocker-composeをインストールする方法/
 - /2020/09/27/raspberry-pi3-4にdockerとdocker-composeをインストールする方法/
+- /2020/09/28/raspberry-pi3-4にdockerとdocker-composeをインストールする方法/
 ---
 
 ### 前書き

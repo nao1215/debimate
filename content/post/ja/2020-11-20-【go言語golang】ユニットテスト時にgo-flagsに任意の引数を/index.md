@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2020-11-20-【go言語golang】ユニットテスト時にgo-flagsに任意の引数を/
 - /2020/11/20/【go言語golang】ユニットテスト時にgo-flagsに任意の引数を/
+- /2020/11/20/go言語golangユニットテスト時にgo-flagsに任意の引数を/
+- /post/2020-11-20-go言語golangユニットテスト時にgo-flagsに任意の引数を/
+- /2020/11/21/【go言語golang】ユニットテスト時にgo-flagsに任意の引数を/
+- /2020/11/21/go言語golangユニットテスト時にgo-flagsに任意の引数を/
 ---
 
 ### 前書き：flag(Go標準)のテスト方法ばかり検索ヒット

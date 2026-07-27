@@ -16,6 +16,10 @@ aliases:
 - /post/2021-11-28-【golang学習】mimixbox（busyboxインスパイア）の概要、開発時/
 - /2021/11/28/【golang学習】mimixbox（busyboxインスパイア）の概要、開発時/
 - /2021/11/28/
+- /2021/11/28/golang学習mimixboxbusyboxインスパイアの概要開発時/
+- /post/2021-11-28-golang学習mimixboxbusyboxインスパイアの概要開発時/
+- /2021/11/29/【golang学習】mimixbox（busyboxインスパイア）の概要、開発時/
+- /2021/11/29/golang学習mimixboxbusyboxインスパイアの概要開発時/
 ---
 
 ### MimixBoxはGolang学習用アプリとして開始 

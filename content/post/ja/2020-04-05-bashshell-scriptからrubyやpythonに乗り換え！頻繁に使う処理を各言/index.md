@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-05-bashshell-scriptからrubyやpythonに乗り換え！頻繁に使う処理を各言/
 - /2020/04/05/bashshell-scriptからrubyやpythonに乗り換え！頻繁に使う処理を各言/
+- /2020/04/05/bashshell-scriptからrubyやpythonに乗り換え頻繁に使う処理を各言/
+- /post/2020-04-05-bashshell-scriptからrubyやpythonに乗り換え頻繁に使う処理を各言/
+- /2020/04/06/bashshell-scriptからrubyやpythonに乗り換え！頻繁に使う処理を各言/
+- /2020/04/06/bashshell-scriptからrubyやpythonに乗り換え頻繁に使う処理を各言/
 ---
 
 ### 前書き：自動化にBashを使うと後々辛い

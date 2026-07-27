@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2023-09-10-【docker】dynamodb-localをローカル起動する方法【管理画面付き/
 - /2023/09/10/【docker】dynamodb-localをローカル起動する方法【管理画面付き/
+- /2023/09/10/dockerdynamodb-localをローカル起動する方法管理画面付き/
+- /post/2023-09-10-dockerdynamodb-localをローカル起動する方法管理画面付き/
+- /2023/09/11/【docker】dynamodb-localをローカル起動する方法【管理画面付き/
+- /2023/09/11/dockerdynamodb-localをローカル起動する方法管理画面付き/
 ---
 
 ### 前書き：DynamoDB、はじめまして

@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2021-08-29-shell-scriptにバイナリ（例：tarball）を埋め込み、実行時にバ/
 - /2021/08/29/shell-scriptにバイナリ（例：tarball）を埋め込み、実行時にバ/
+- /2021/08/29/shell-scriptにバイナリ例tarballを埋め込み実行時にバ/
+- /post/2021-08-29-shell-scriptにバイナリ例tarballを埋め込み実行時にバ/
+- /2021/08/30/shell-scriptにバイナリ（例：tarball）を埋め込み、実行時にバ/
+- /2021/08/30/shell-scriptにバイナリ例tarballを埋め込み実行時にバ/
 ---
 
 ### 前書き：スクリプトサイズが大きい理由

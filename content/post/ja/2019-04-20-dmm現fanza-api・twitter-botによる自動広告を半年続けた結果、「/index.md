@@ -13,6 +13,10 @@ cover:
 aliases:
 - /post/2019-04-20-dmm現fanza-api・twitter-botによる自動広告を半年続けた結果、「/
 - /2019/04/20/dmm現fanza-api・twitter-botによる自動広告を半年続けた結果、「/
+- /2019/04/20/dmm現fanza-apitwitter-botによる自動広告を半年続けた結果/
+- /post/2019-04-20-dmm現fanza-apitwitter-botによる自動広告を半年続けた結果/
+- /2019/04/21/dmm現fanza-api・twitter-botによる自動広告を半年続けた結果、「/
+- /2019/04/21/dmm現fanza-apitwitter-botによる自動広告を半年続けた結果/
 ---
 
 ### 前書き：何故、DMM APIでTwitter Botを始めたか

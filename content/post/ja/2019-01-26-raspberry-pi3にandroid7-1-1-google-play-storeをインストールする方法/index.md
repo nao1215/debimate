@@ -15,6 +15,7 @@ cover:
 aliases:
 - /post/2019-01-26-raspberry-pi3にandroid7-1-1-google-play-storeをインストールする方法/
 - /2019/01/26/raspberry-pi3にandroid7-1-1-google-play-storeをインストールする方法/
+- /2019/01/27/raspberry-pi3にandroid7-1-1-google-play-storeをインストールする方法/
 ---
 
 ### 前書き

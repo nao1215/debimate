@@ -14,6 +14,7 @@ aliases:
 - /post/2019-02-23-linux-command-optionの慣習一般的なoption一覧/
 - /2019/02/23/linux-command-optionの慣習一般的なoption一覧/
 - /2019/02/23/
+- /2019/02/24/linux-command-optionの慣習一般的なoption一覧/
 ---
 
 ### 前書き

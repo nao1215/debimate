@@ -15,6 +15,7 @@ aliases:
 - /post/2019-03-09-debian-任意のtesting-unstableパッケージのみをinstallする方法システ/
 - /2019/03/09/debian-任意のtesting-unstableパッケージのみをinstallする方法システ/
 - /2019/03/09/
+- /2019/03/10/debian-任意のtesting-unstableパッケージのみをinstallする方法システ/
 ---
 
 ### 前書き

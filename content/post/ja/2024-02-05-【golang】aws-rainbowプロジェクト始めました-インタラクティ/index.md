@@ -17,6 +17,10 @@ aliases:
 - /post/2024-02-05-【golang】aws-rainbowプロジェクト始めました-インタラクティ/
 - /2024/02/05/【golang】aws-rainbowプロジェクト始めました-インタラクティ/
 - /2024/02/05/
+- /2024/02/05/golangaws-rainbowプロジェクト始めました-インタラクティ/
+- /post/2024-02-05-golangaws-rainbowプロジェクト始めました-インタラクティ/
+- /2024/02/06/【golang】aws-rainbowプロジェクト始めました-インタラクティ/
+- /2024/02/06/golangaws-rainbowプロジェクト始めました-インタラクティ/
 ---
 
 ### 前書き

@@ -14,6 +14,7 @@ aliases:
 - /post/2019-05-18-review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/
 - /2019/05/18/review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/
 - /2019/05/18/
+- /2019/05/19/review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/
 ---
 
 ### 収録曲

@@ -18,6 +18,10 @@ aliases:
 - /post/2020-08-30-【環境構築】fish-shellを用いたdebian環境にsdkmanおよびjavajdkをイ/
 - /2020/08/30/【環境構築】fish-shellを用いたdebian環境にsdkmanおよびjavajdkをイ/
 - /2020/08/30/
+- /2020/08/30/環境構築fish-shellを用いたdebian環境にsdkmanおよびjavajdkをイ/
+- /post/2020-08-30-環境構築fish-shellを用いたdebian環境にsdkmanおよびjavajdkをイ/
+- /2020/08/31/【環境構築】fish-shellを用いたdebian環境にsdkmanおよびjavajdkをイ/
+- /2020/08/31/環境構築fish-shellを用いたdebian環境にsdkmanおよびjavajdkをイ/
 ---
 
 ### 前書き：SDKMANはbash（もしくはzsh）前提

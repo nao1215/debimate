@@ -16,6 +16,7 @@ aliases:
 - /post/2019-02-02-linux-kernel-prinkprint-kernelによるメッセージ出力/
 - /2019/02/02/linux-kernel-prinkprint-kernelによるメッセージ出力/
 - /2019/02/02/
+- /2019/02/03/linux-kernel-prinkprint-kernelによるメッセージ出力/
 ---
 
 ### printk()とは

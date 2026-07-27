@@ -14,6 +14,10 @@ aliases:
 - /post/2020-12-16-【visudo-vigr-vipw】システムファイルをsudo-viで編集は駄目【sudoers-g/
 - /2020/12/16/【visudo-vigr-vipw】システムファイルをsudo-viで編集は駄目【sudoers-g/
 - /2020/12/16/
+- /2020/12/16/visudo-vigr-vipwシステムファイルをsudo-viで編集は駄目sudoers-g/
+- /post/2020-12-16-visudo-vigr-vipwシステムファイルをsudo-viで編集は駄目sudoers-g/
+- /2020/12/17/【visudo-vigr-vipw】システムファイルをsudo-viで編集は駄目【sudoers-g/
+- /2020/12/17/visudo-vigr-vipwシステムファイルをsudo-viで編集は駄目sudoers-g/
 ---
 
 ### 前書き：システムファイルの編集は慎重に

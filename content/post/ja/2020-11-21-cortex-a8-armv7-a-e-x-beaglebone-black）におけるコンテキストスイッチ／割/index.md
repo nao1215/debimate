@@ -15,6 +15,10 @@ cover:
 aliases:
 - /post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-black）におけるコンテキストスイッチ／割/
 - /2020/11/21/cortex-a8-armv7-a-e-x-beaglebone-black）におけるコンテキストスイッチ／割/
+- /2020/11/21/cortex-a8-armv7-a-e-x-beaglebone-blackにおけるコンテキストスイッチ割/
+- /post/2020-11-21-cortex-a8-armv7-a-e-x-beaglebone-blackにおけるコンテキストスイッチ割/
+- /2020/11/22/cortex-a8-armv7-a-e-x-beaglebone-black）におけるコンテキストスイッチ／割/
+- /2020/11/22/cortex-a8-armv7-a-e-x-beaglebone-blackにおけるコンテキストスイッチ割/
 ---
 
 ### 前書き：XINUソースコードから学ぶアセンブラ実装

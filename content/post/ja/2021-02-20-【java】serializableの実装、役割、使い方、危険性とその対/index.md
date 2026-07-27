@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2021-02-20-【java】serializableの実装、役割、使い方、危険性とその対/
 - /2021/02/20/【java】serializableの実装、役割、使い方、危険性とその対/
+- /2021/02/20/javaserializableの実装役割使い方危険性とその対/
+- /post/2021-02-20-javaserializableの実装役割使い方危険性とその対/
+- /2021/02/21/【java】serializableの実装、役割、使い方、危険性とその対/
+- /2021/02/21/javaserializableの実装役割使い方危険性とその対/
 ---
 
 ### 前書き： Javaの勉強中に見つけたSerializable

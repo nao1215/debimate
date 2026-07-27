@@ -15,6 +15,7 @@ aliases:
 - /post/2023-09-30-dependabotでgithub-actionsのactionを最新に保つ方法/
 - /2023/09/30/dependabotでgithub-actionsのactionを最新に保つ方法/
 - /2023/09/30/
+- /2023/10/01/dependabotでgithub-actionsのactionを最新に保つ方法/
 ---
 
 ### 前書き：絶滅へ向かうJenkinsオジサン

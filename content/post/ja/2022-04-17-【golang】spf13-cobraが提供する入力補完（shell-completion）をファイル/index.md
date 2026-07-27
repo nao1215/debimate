@@ -17,6 +17,10 @@ aliases:
 - /post/2022-04-17-【golang】spf13-cobraが提供する入力補完（shell-completion）をファイル/
 - /2022/04/17/【golang】spf13-cobraが提供する入力補完（shell-completion）をファイル/
 - /2022/04/17/
+- /2022/04/17/golangspf13-cobraが提供する入力補完shell-completionをファイル/
+- /post/2022-04-17-golangspf13-cobraが提供する入力補完shell-completionをファイル/
+- /2022/04/18/【golang】spf13-cobraが提供する入力補完（shell-completion）をファイル/
+- /2022/04/18/golangspf13-cobraが提供する入力補完shell-completionをファイル/
 ---
 
 ### 前書き：spf13/cobraのシェル補完は便利

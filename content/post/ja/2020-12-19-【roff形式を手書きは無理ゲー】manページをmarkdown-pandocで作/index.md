@@ -14,6 +14,10 @@ cover:
 aliases:
 - /post/2020-12-19-【roff形式を手書きは無理ゲー】manページをmarkdown-pandocで作/
 - /2020/12/19/【roff形式を手書きは無理ゲー】manページをmarkdown-pandocで作/
+- /2020/12/19/roff形式を手書きは無理ゲーmanページをmarkdown-pandocで作/
+- /post/2020-12-19-roff形式を手書きは無理ゲーmanページをmarkdown-pandocで作/
+- /2020/12/20/【roff形式を手書きは無理ゲー】manページをmarkdown-pandocで作/
+- /2020/12/20/roff形式を手書きは無理ゲーmanページをmarkdown-pandocで作/
 ---
 
 ### 前書き：manualページは伝統的なドキュメント

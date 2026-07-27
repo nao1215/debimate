@@ -16,6 +16,10 @@ cover:
 aliases:
 - /post/2020-04-08-【bash-ruby-python3】ファイル読み込み、ファイル書き込み/
 - /2020/04/08/【bash-ruby-python3】ファイル読み込み、ファイル書き込み/
+- /2020/04/08/bash-ruby-python3ファイル読み込みファイル書き込み/
+- /post/2020-04-08-bash-ruby-python3ファイル読み込みファイル書き込み/
+- /2020/04/09/【bash-ruby-python3】ファイル読み込み、ファイル書き込み/
+- /2020/04/09/bash-ruby-python3ファイル読み込みファイル書き込み/
 ---
 
 ### 前書き
