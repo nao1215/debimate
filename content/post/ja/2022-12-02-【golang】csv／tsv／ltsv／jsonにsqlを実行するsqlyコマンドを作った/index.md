@@ -20,6 +20,10 @@ aliases:
 - /post/2022-12-02-【golang】csv／tsv／ltsv／jsonにsqlを実行するsqlyコマンドを作った/
 - /2022/12/02/【golang】csv／tsv／ltsv／jsonにsqlを実行するsqlyコマンドを作った/
 - /2022/12/02/
+- /2022/12/02/golangcsvtsvltsvjsonにsqlを実行するsqlyコマンドを作った/
+- /post/2022-12-02-golangcsvtsvltsvjsonにsqlを実行するsqlyコマンドを作った/
+- /2022/12/03/【golang】csv／tsv／ltsv／jsonにsqlを実行するsqlyコマンドを作った/
+- /2022/12/03/golangcsvtsvltsvjsonにsqlを実行するsqlyコマンドを作った/
 ---
 
 ### 前書き
@@ -30,7 +34,7 @@ aliases:
 
 sqlyで使用している言語はGolang、主たる依存ライブラリはSQLite3です。
 
-[![](images/sqly.png)](https://github.com/nao1215/sqly)
+[![nao1215/sqly の GitHub リポジトリカード（star 24・fork 0）](images/sqly.png)](https://github.com/nao1215/sqly)
 
 なお、sqlyの名前の由来は「有名な [jmoiron/sqlx](https://github.com/jmoiron/sqlx) を超えるツールを作る（xの次はy）」という気持ちを込めて命名しました。嘘です。正しい由来は、スラングの「literally（マジで？）」のように「（CSVに）SQLぅ？（正気かコイツ）」というニュアンスで名付けました。
 
@@ -88,7 +92,7 @@ Google Sheetsを用いて、300以上あるカラムの中から問題のある�
 
 類似のツールはあります。例えば、以下の4つが挙げられます。多機能さでは、trdsqlがずば抜けていました。
 
-[![](images/trdsql.png)](https://github.com/noborus/trdsql)[![](images/q.png)](https://github.com/harelba/q)[![](images/csvq.png)](https://github.com/mithrandie/csvq)[![](images/textql.png)](https://github.com/dinedal/textql)
+[![noborus/trdsql の GitHub リポジトリカード（star 1k・fork 52）](images/trdsql.png)](https://github.com/noborus/trdsql)[![harelba/q の GitHub リポジトリカード（star 9k・fork 401）](images/q.png)](https://github.com/harelba/q)[![mithrandie/csvq の GitHub リポジトリカード（star 1k・fork 50）](images/csvq.png)](https://github.com/mithrandie/csvq)[![dinedal/textql の GitHub リポジトリカード（star 8k・fork 308）](images/textql.png)](https://github.com/dinedal/textql)
 
 上記のツールは、どれも素晴らしいものでした。
 
@@ -109,7 +113,7 @@ sqlyは、CSV／TSV／LTSV／JSONを読み込んだ後に、読み込んだデ�
 
 ユーザーとのインターフェースにsqly shell（sqliteやmysqlのクライアントコマンドに似たもの）があり、ユーザーの操作を楽にするためのヘルパーコマンド（例：ファイルをDBにインポートするコマンド）が定義されています。sqlyは、ヘルパーコマンドを経由して、各ファイルを読み書きし、SQLを実行する流れになっています（若干嘘をついています）
 
-![](images/sqly-1.png)
+![sqly の階層構造図。上から sqly shell、sqly helper command、data import/exporter と sql executor、file reader/writer と SQLite3](images/sqly-1.png)
 
 sqlyは、DDD（Domain Driven Design、ドメイン駆動設計）を採用し、その設計を実現するためにレイヤードアーキテクチャを採用しています。そもそも論として、sqlyレベルのコード規模でDDDを採用する必要は無いと考えましたが、以下の利点があったため採用しました。
 
@@ -122,13 +126,13 @@ sqlyは、DDD（Domain Driven Design、ドメイン駆動設計）を採用し�
 
 [loov/goda](https://github.com/loov/goda) で、sqlyパッケージ内の依存関係を確認すると、左（UIに近い部分）から右（DBに近い部分）に依存が流れていき、右端のmodelパッケージに依存が集まっている形になります。依存関係が破綻している部分がない（== 自分より上位レイヤーに依存しているパッケージがいない）ので、見た目上は綺麗な構成です。
 
-![](images/dependency.png)
+![sqly のパッケージ依存グラフ。di を起点に shell・usecase・infrastructure を経て domain/model へ依存が向かう](images/dependency.png)
 
 ここでモデリングについて熱く語れると格好良いのですが、sqlyでは雑に考えました。具体的には、「各インプットデータからDBテーブルを表すモデルに変換しやすければ、設計として十分」と考えました。
 
 この雑さを反映するように、sqlyでは「ファイル形式と一対一対応するモデル（例：CSVファイルに対応したCSVモデル）」と「DBテーブル一つに対応するモデル（Tableモデル）」が存在し、sqly内部で最終的にTableモデルへ変換するシンプルな構造となっています。
 
-![](images/sqly-ページ2.png)
+![csv/tsv/ltsv/json の各ファイルをそれぞれのモデルへ読み込み、共通の table model へ集約するデータフロー図](images/sqly-ページ2.png)
 
 上記の変換図を書いて失敗に気づきましたが、DBテーブル内容をファイルへアウトプットする時はTableモデルから直接各ファイル形式にデータを変換しています。TableモデルをCSV モデルなどに変換してからファイル出力すべきでした。雑に考えると駄目ですね。反省。
 
@@ -198,7 +202,7 @@ $ sqly --sql "SELECT user_name, position FROM user INNER JOIN identifier ON user
 
 シェルモードの例を以下に示します。シェルモードでは”.”始まりのsqlyヘルパーコマンドが使用できます。ヘルパーコマンドを用いて、ファイルをインポート、DBテーブルをエクスポート、SQL結果の出力形式変更などを行います。
 
-![](images/Screenshot-from-2022-12-02-22-41-58.png)
+![sqly シェルモードの端末画面。.help でヘルパーコマンド一覧を表示し、.mode ltsv や SELECT * FROM user、.tables、.header user を実行した結果と SQL キーワードの補完候補](images/Screenshot-from-2022-12-02-22-41-58.png)
 
 ---
 
