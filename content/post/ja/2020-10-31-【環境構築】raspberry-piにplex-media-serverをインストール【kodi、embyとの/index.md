@@ -5,8 +5,6 @@ date: 2020-10-31
 categories:
 - Raspberry Pi
 tags:
-- emby
-- kodi
 - plex
 - raspberrypi
 - 環境構築
@@ -18,6 +16,10 @@ aliases:
 - /post/2020-10-31-【環境構築】raspberry-piにplex-media-serverをインストール【kodi、embyとの/
 - /2020/10/31/【環境構築】raspberry-piにplex-media-serverをインストール【kodi、embyとの/
 - /2020/10/31/
+- /2020/10/31/環境構築raspberry-piにplex-media-serverをインストールkodiembyとの/
+- /post/2020-10-31-環境構築raspberry-piにplex-media-serverをインストールkodiembyとの/
+- /2020/11/01/【環境構築】raspberry-piにplex-media-serverをインストール【kodi、embyとの/
+- /2020/11/01/環境構築raspberry-piにplex-media-serverをインストールkodiembyとの/
 ---
 
 ### 前書き：メディアサーバの候補はどれか

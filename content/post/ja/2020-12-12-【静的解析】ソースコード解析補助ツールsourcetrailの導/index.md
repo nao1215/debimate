@@ -8,9 +8,8 @@ categories:
 tags:
 - c言語
 - debian
-- sourcetrail
-- systemd
 - 静的解析
+- systemd
 cover:
   image: images/Screenshot-from-2020-12-12-13-22-44-1.jpg
   alt: 【静的解析】ソースコード解析補助ツールSourcetrailの導入方法【例：systemd(C言語)】
@@ -18,6 +17,10 @@ cover:
 aliases:
 - /post/2020-12-12-【静的解析】ソースコード解析補助ツールsourcetrailの導/
 - /2020/12/12/【静的解析】ソースコード解析補助ツールsourcetrailの導/
+- /2020/12/12/静的解析ソースコード解析補助ツールsourcetrailの導/
+- /post/2020-12-12-静的解析ソースコード解析補助ツールsourcetrailの導/
+- /2020/12/13/【静的解析】ソースコード解析補助ツールsourcetrailの導/
+- /2020/12/13/静的解析ソースコード解析補助ツールsourcetrailの導/
 ---
 
 ### 前書き：Sourcetrailとは 

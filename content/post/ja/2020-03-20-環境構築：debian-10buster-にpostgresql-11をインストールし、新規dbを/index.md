@@ -5,9 +5,8 @@ date: 2020-03-20
 categories:
 - Linux運用
 tags:
-- db
-- debian
 - postgresql
+- debian
 - 環境構築
 cover:
   image: images/DBランキング2020年3月時点.jpg
@@ -17,6 +16,10 @@ aliases:
 - /post/2020-03-20-環境構築：debian-10buster-にpostgresql-11をインストールし、新規dbを/
 - /2020/03/20/環境構築：debian-10buster-にpostgresql-11をインストールし、新規dbを/
 - /2020/03/20/
+- /2020/03/20/環境構築debian-10buster-にpostgresql-11をインストールし新規dbを/
+- /post/2020-03-20-環境構築debian-10buster-にpostgresql-11をインストールし新規dbを/
+- /2020/03/21/環境構築：debian-10buster-にpostgresql-11をインストールし、新規dbを/
+- /2020/03/21/環境構築debian-10buster-にpostgresql-11をインストールし新規dbを/
 ---
 
 ### 前書き

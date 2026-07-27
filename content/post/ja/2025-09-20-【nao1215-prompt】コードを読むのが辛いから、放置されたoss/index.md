@@ -7,7 +7,6 @@ categories:
 - OSS
 tags:
 - oss
-- 体験談
 cover:
   image: images/prompt_logo.jpeg
   alt: 【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話
@@ -16,6 +15,10 @@ aliases:
 - /post/2025-09-20-【nao1215-prompt】コードを読むのが辛いから、放置されたoss/
 - /2025/09/20/【nao1215-prompt】コードを読むのが辛いから、放置されたoss/
 - /2025/09/20/
+- /2025/09/20/nao1215-promptコードを読むのが辛いから放置されたoss/
+- /post/2025-09-20-nao1215-promptコードを読むのが辛いから放置されたoss/
+- /2025/09/21/【nao1215-prompt】コードを読むのが辛いから、放置されたoss/
+- /2025/09/21/nao1215-promptコードを読むのが辛いから放置されたoss/
 ---
 
 ### 前書き：OSSが放置されることは当然のようにある

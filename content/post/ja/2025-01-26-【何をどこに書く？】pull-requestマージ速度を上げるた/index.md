@@ -4,8 +4,6 @@ type: post
 date: 2025-01-26
 categories:
 - プログラミング
-tags:
-- プログラミング
 cover:
   image: images/CleanArchitecture.jpg
   alt: 【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く
@@ -14,6 +12,10 @@ aliases:
 - /post/2025-01-26-【何をどこに書く？】pull-requestマージ速度を上げるた/
 - /2025/01/26/【何をどこに書く？】pull-requestマージ速度を上げるた/
 - /2025/01/26/
+- /2025/01/26/何をどこに書くpull-requestマージ速度を上げるた/
+- /post/2025-01-26-何をどこに書くpull-requestマージ速度を上げるた/
+- /2025/01/27/【何をどこに書く？】pull-requestマージ速度を上げるた/
+- /2025/01/27/何をどこに書くpull-requestマージ速度を上げるた/
 ---
 
 ### 前書き：ドキュメンテーションコメントの書き方が分からん

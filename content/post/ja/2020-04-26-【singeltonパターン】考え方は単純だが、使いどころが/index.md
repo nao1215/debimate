@@ -7,7 +7,6 @@ categories:
 tags:
 - java
 - ruby
-- singleton
 - デザインパターン
 cover:
   image: images/card-1738844_640-min.jpg
@@ -16,6 +15,10 @@ cover:
 aliases:
 - /post/2020-04-26-【singeltonパターン】考え方は単純だが、使いどころが/
 - /2020/04/26/【singeltonパターン】考え方は単純だが、使いどころが/
+- /2020/04/26/singeltonパターン考え方は単純だが使いどころが/
+- /post/2020-04-26-singeltonパターン考え方は単純だが使いどころが/
+- /2020/04/27/【singeltonパターン】考え方は単純だが、使いどころが/
+- /2020/04/27/singeltonパターン考え方は単純だが使いどころが/
 ---
 
 ### 前書き：Singletonパターンは奥が深い

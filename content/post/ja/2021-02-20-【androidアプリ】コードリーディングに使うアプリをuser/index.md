@@ -7,7 +7,6 @@ categories:
 tags:
 - android
 - codereading
-- 体験談
 cover:
   image: images/ICON-1.jpg
   alt: 【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話
@@ -15,6 +14,10 @@ cover:
 aliases:
 - /post/2021-02-20-【androidアプリ】コードリーディングに使うアプリをuser/
 - /2021/02/20/【androidアプリ】コードリーディングに使うアプリをuser/
+- /2021/02/20/androidアプリコードリーディングに使うアプリをuser/
+- /post/2021-02-20-androidアプリコードリーディングに使うアプリをuser/
+- /2021/02/21/【androidアプリ】コードリーディングに使うアプリをuser/
+- /2021/02/21/androidアプリコードリーディングに使うアプリをuser/
 ---
 
 ### 前書き：UserLAndは遅かった

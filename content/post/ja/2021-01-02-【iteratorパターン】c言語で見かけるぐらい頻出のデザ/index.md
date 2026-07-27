@@ -5,10 +5,9 @@ date: 2021-01-02
 categories:
 - Java
 tags:
-- iteratorパターン
+- デザインパターン
 - java
 - ruby
-- デザインパターン
 cover:
   image: images/class.jpg
   alt: 【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】
@@ -16,6 +15,10 @@ cover:
 aliases:
 - /post/2021-01-02-【iteratorパターン】c言語で見かけるぐらい頻出のデザ/
 - /2021/01/02/【iteratorパターン】c言語で見かけるぐらい頻出のデザ/
+- /2021/01/02/iteratorパターンc言語で見かけるぐらい頻出のデザ/
+- /post/2021-01-02-iteratorパターンc言語で見かけるぐらい頻出のデザ/
+- /2021/01/03/【iteratorパターン】c言語で見かけるぐらい頻出のデザ/
+- /2021/01/03/iteratorパターンc言語で見かけるぐらい頻出のデザ/
 ---
 
 ### 前書き：デザインパターンという認識がなかった

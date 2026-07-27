@@ -6,7 +6,7 @@ categories:
 - Linux運用
 tags:
 - debian
-- 開発環境
+- 環境構築
 cover:
   image: images/debian-1277387_960_720.png
   alt: mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)
@@ -15,6 +15,7 @@ aliases:
 - /post/2019-03-10-mmdebstrapによるarmhf向けrootfsの作成方法公式最小サイズ27mb/
 - /2019/03/10/mmdebstrapによるarmhf向けrootfsの作成方法公式最小サイズ27mb/
 - /2019/03/10/
+- /2019/03/11/mmdebstrapによるarmhf向けrootfsの作成方法公式最小サイズ27mb/
 ---
 
 ### mmdebstrapとは

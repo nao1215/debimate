@@ -5,8 +5,6 @@ date: 2022-05-15
 categories:
 - プログラミング
 - OSS
-tags:
-- 書籍
 cover:
   image: images/642206.jpg
   alt: 【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）
@@ -14,6 +12,10 @@ cover:
 aliases:
 - /post/2022-05-15-【寄稿】software-design-2022年6月号-第1特集（第3章-シェルスクリ/
 - /2022/05/15/【寄稿】software-design-2022年6月号-第1特集（第3章-シェルスクリ/
+- /2022/05/15/寄稿software-design-2022年6月号-第1特集第3章-シェルスクリ/
+- /post/2022-05-15-寄稿software-design-2022年6月号-第1特集第3章-シェルスクリ/
+- /2022/05/16/【寄稿】software-design-2022年6月号-第1特集（第3章-シェルスクリ/
+- /2022/05/16/寄稿software-design-2022年6月号-第1特集第3章-シェルスクリ/
 ---
 
 ### Software Design誌 2回目の寄稿！

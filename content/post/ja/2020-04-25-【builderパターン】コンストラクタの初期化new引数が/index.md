@@ -6,7 +6,6 @@ categories:
 - プログラミング
 tags:
 - ruby
-- uml
 - デザインパターン
 cover:
   image: images/child-1864718_640-min.jpg
@@ -16,6 +15,10 @@ aliases:
 - /post/2020-04-25-【builderパターン】コンストラクタの初期化new引数が/
 - /2020/04/25/【builderパターン】コンストラクタの初期化new引数が/
 - /2020/04/25/
+- /2020/04/25/builderパターンコンストラクタの初期化new引数が/
+- /post/2020-04-25-builderパターンコンストラクタの初期化new引数が/
+- /2020/04/26/【builderパターン】コンストラクタの初期化new引数が/
+- /2020/04/26/builderパターンコンストラクタの初期化new引数が/
 ---
 
 ###  前書き：Builderパターンとは

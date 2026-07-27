@@ -8,8 +8,6 @@ categories:
 tags:
 - cli
 - golang
-- ツール
-- 体験談
 cover:
   image: images/owl-g4a1fd006f_640.jpg
   alt: 【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】
@@ -18,6 +16,10 @@ aliases:
 - /post/2022-02-11-【golang】goa（ver-1-x）frameworkのlinter（goavl）を試作【go-astを利用】/
 - /2022/02/11/【golang】goa（ver-1-x）frameworkのlinter（goavl）を試作【go-astを利用】/
 - /2022/02/11/
+- /2022/02/11/golanggoaver-1-xframeworkのlintergoavlを試作go-astを利用/
+- /post/2022-02-11-golanggoaver-1-xframeworkのlintergoavlを試作go-astを利用/
+- /2022/02/12/【golang】goa（ver-1-x）frameworkのlinter（goavl）を試作【go-astを利用】/
+- /2022/02/12/golanggoaver-1-xframeworkのlintergoavlを試作go-astを利用/
 ---
 
 ### 前書き：DSLに半日悩み、カッとなって作った

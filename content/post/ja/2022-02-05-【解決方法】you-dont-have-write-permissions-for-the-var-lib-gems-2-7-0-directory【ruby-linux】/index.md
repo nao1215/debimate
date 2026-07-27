@@ -9,7 +9,6 @@ categories:
 tags:
 - ruby
 - ubuntu
-- エラー解決
 cover:
   image: images/diamond-g26c8044a7_640.jpg
   alt: 【解決方法】You don't have write permissions for the /var/lib/gems/2.7.0 directory【Ruby,
@@ -18,6 +17,10 @@ cover:
 aliases:
 - /post/2022-02-05-【解決方法】you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directory【ruby-linux】/
 - /2022/02/05/【解決方法】you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directory【ruby-linux】/
+- /2022/02/05/解決方法you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directoryruby-linux/
+- /post/2022-02-05-解決方法you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directoryruby-linux/
+- /2022/02/06/【解決方法】you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directory【ruby-linux】/
+- /2022/02/06/解決方法you-dont-have-write-permissions-for-the-var-lib-gems-2-7-0-directoryruby-linux/
 ---
 
 ### 前書き：gem installでコケる

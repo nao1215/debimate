@@ -81,6 +81,42 @@ As of July 19, 2026, this site has 169 tags and the following normalized categor
   - `russia`
 - Removed the generic format tag `review`.
 
+### Second pass (July 27, 2026)
+
+`体験談` and `書籍` were listed above but still present in the front matter, so this
+pass removed them for real. Tag count went from 170 to 139.
+
+- Merged into an existing canonical tag:
+  - `dash`, `fish` -> `shellscript`
+  - `db` -> `postgresql`
+  - `emby`, `kodi` -> `plex`
+  - `hellotalk`, `ハロー先生`, `英語` -> `語学学習`
+  - `interface` -> `オブジェクト指向`
+  - `iteratorパターン`, `singleton`, `uml` -> `デザインパターン`
+  - `sourcetrail` -> `静的解析`
+  - `ugears` -> `ガジェット`
+  - `アリスソフト`, `ランス` -> `ゲーム`
+  - `ビザ`, `観光` -> `旅行`
+  - `レジスタ` -> `arm`
+  - `自己分析` -> `mbti`
+  - `転職活動`, `退職` -> `転職`
+  - `開発環境` -> `環境構築`
+- Removed as category duplicates: `プログラミング`, `life`, `体験談`, `書籍`
+- Removed as too generic: `アプリ`, `エラー解決`, `ツール`, `ポエム`, `開発`
+
+Every removed term keeps a redirect in `scripts/legacy_redirects.tsv`
+(both `/tag/<name>/` and `/tags/<name>/`), so inbound links stay alive.
+
+## Thin term pages
+
+Tags with a genuinely unique subject (`ария`, `винни-пух`, `レオン` and similar
+proper nouns) have no sensible merge target, so they stay on their posts.
+Their term pages are thin, however, so `layouts/partials/is_thin_term.html`
+marks any term page holding fewer than `site.Params.thinTermThreshold`
+(default 3) posts. Those pages get `noindex, follow` in `head.html` and are
+dropped from `layouts/sitemap.xml`. Navigation and internal linking are
+unaffected — only indexing is.
+
 ## Related-post logic
 
 The "次に読む" block prefers:

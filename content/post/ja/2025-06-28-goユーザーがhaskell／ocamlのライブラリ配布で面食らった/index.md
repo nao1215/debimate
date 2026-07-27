@@ -9,7 +9,6 @@ tags:
 - golang
 - haskell
 - ocaml
-- プログラミング
 cover:
   image: images/HaskellOCaml.jpg
   alt: GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話
@@ -18,6 +17,10 @@ aliases:
 - /post/2025-06-28-goユーザーがhaskell／ocamlのライブラリ配布で面食らった/
 - /2025/06/28/goユーザーがhaskell／ocamlのライブラリ配布で面食らった/
 - /2025/06/28/
+- /2025/06/28/goユーザーがhaskellocamlのライブラリ配布で面食らった/
+- /post/2025-06-28-goユーザーがhaskellocamlのライブラリ配布で面食らった/
+- /2025/06/29/goユーザーがhaskell／ocamlのライブラリ配布で面食らった/
+- /2025/06/29/goユーザーがhaskellocamlのライブラリ配布で面食らった/
 ---
 
 ### 前書き
