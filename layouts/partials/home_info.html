@@ -1,0 +1,30 @@
+{{- with site.Params.homeInfoParams }}
+{{- $weeklyPage := site.GetPage "section" "weekly" }}
+{{- $weeklyBanner := "" }}
+{{- with $weeklyPage }}
+    {{- with .Resources.GetMatch "image/weekly-card-banner.png" }}
+        {{- $weeklyBanner = .RelPermalink }}
+    {{- end }}
+{{- end }}
+<article class="first-entry home-info">
+    {{- with .Title }}
+    <header class="entry-header">
+        <h1>{{ . | markdownify }}</h1>
+    </header>
+    {{- end }}
+    <div class="entry-content">
+        {{ .Content | markdownify }}
+    </div>
+    <footer class="entry-footer">
+        {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+    </footer>
+    {{- with hugo.Data.generated.weekly_latest }}
+    {{- if .available }}
+    <a class="latest-weekly" href="{{ printf "%s#%s" (.path | relURL) .fragment }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+        <span class="latest-weekly-label">最新の週報</span>
+        <span class="latest-weekly-title">{{ .title }}</span>
+    </a>
+    {{- end }}
+    {{- end }}
+</article>
+{{- end -}}

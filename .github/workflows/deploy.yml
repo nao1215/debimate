@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # Monday 00:10 JST
+    - cron: '10 15 * * 0'
   workflow_dispatch:
 
 permissions:
@@ -30,6 +33,9 @@ jobs:
         with:
           hugo-version: '0.161.1'
           extended: true
+
+      - name: Generate latest weekly link data
+        run: python3 scripts/gen_weekly_latest.py
 
       - name: Build site
         run: hugo --minify

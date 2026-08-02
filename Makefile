@@ -18,11 +18,17 @@ help:  ## コマンド一覧を表示
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-serve: ## ローカル開発サーバ起動 (Draft/Future含む)
+serve: weekly-latest ## ローカル開発サーバ起動 (Draft/Future含む)
 	$(HUGO) server -D -F --disableFastRender --port $(SERVER_PORT)
 
-build: redirects ## 本番用ビルド（最小化あり）
+build: weekly-latest redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
+
+weekly-latest: ## Top 用の最新週報リンクデータを生成
+	python3 scripts/gen_weekly_latest.py
+
+weekly-latest-check: ## Top 用の最新週報リンクデータが最新か検証
+	python3 scripts/gen_weekly_latest.py --check
 
 redirects: ## 移行前URL向けのalias・リダイレクトを再生成
 	python3 scripts/ensure_post_aliases.py

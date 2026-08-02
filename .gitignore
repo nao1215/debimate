@@ -1,6 +1,7 @@
 # Hugo build output
 /public/
 /resources/
+/data/generated/
 
 # Hugo caches
 /.hugo_build.lock
@@ -20,6 +21,7 @@ node_modules/
 
 # Backup files
 *~
+__pycache__/
 
 # Claude Code local config
 .claude/

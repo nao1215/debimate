@@ -2,6 +2,9 @@
 title: "Weekly"
 summary: "週報を1ページにまとめたセクション"
 description: ""
+cover:
+  image: "image/weekly-ogp-owl.png"
+  relative: true
 ---
 
 
