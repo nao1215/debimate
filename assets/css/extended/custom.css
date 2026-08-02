@@ -67,6 +67,13 @@ html[data-theme="dark"] .latest-weekly {
   font-weight: 600;
 }
 
+.latest-weekly-note {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--secondary);
+  font-size: 0.82rem;
+}
+
 .latest-weekly:hover .latest-weekly-title {
   text-decoration: underline;
 }
