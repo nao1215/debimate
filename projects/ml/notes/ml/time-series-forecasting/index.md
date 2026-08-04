@@ -7,13 +7,13 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 26
 ---
 
-時系列予測（time series forecasting）は、「過去の観測値から未来の値を予測する」教師あり学習の一系統である。需要予測、株価、気温、サーバー負荷、医療モニタリングなど、ビジネスでも研究でも頻出する。
+時系列予測（time series forecasting）は、「過去の観測値から未来の値を予測する」教師あり学習の一系統です。需要予測、株価、気温、サーバー負荷、医療モニタリングなど、ビジネスでも研究でも頻出します。
 
-通常の教師あり学習（[線形回帰](../linear-regression/)、[勾配ブースティング](../gradient-boosting/)）と異なる点は、(1) サンプル間に時間的順序があり独立でない、(2) 評価は「未来データで」行う必要がある、(3) トレンド・季節性・自己相関という特有の構造を持つ、の 3 点。これを無視して通常の CV を当てると、未来情報がリークして本番性能が崩れる。
+通常の教師あり学習（[線形回帰](../linear-regression/)、[勾配ブースティング](../gradient-boosting/)）と異なる点は、(1) サンプル間に時間的順序があり独立でない、(2) 評価は「未来データで」行う必要がある、(3) トレンド・季節性・自己相関という特有の構造を持つ、の 3 点です。これを無視して通常の CV を当てると、未来情報がリークして本番性能が崩れます。
 
 ### 時系列の 3 つの成分
 
-多くの時系列は次のように分解できる。
+多くの時系列は次のように分解できます。
 
 ```text
 y_t = trend(t) + seasonal(t) + residual(t)
@@ -37,13 +37,13 @@ plt.savefig("ts_decomposition.svg", bbox_inches="tight")
 
 ![時系列の trend / seasonal / residual 分解](./ts_decomposition.svg)
 
-上から「観測値」「トレンド」「季節性」「残差」。3 成分を抜き出すことで、それぞれを別の手法で予測する戦略が取れる。代表ライブラリは `statsmodels.tsa.seasonal_decompose`、Facebook Prophet（自動分解 + 予測）など。
+上から「観測値」「トレンド」「季節性」「残差」。3 成分を抜き出すことで、それぞれを別の手法で予測する戦略が取れます。代表ライブラリは `statsmodels.tsa.seasonal_decompose`、Facebook Prophet（自動分解 + 予測）など。
 
 ---
 
 ### 時系列の train/test 分割: forward-only
 
-最も基本的で最もよく忘れられるルール: **時系列は時間順に分割する**。
+最も基本的で最もよく忘れられるルールは、時系列を時間順に分割する事です。
 
 ```python
 # 詳細は scripts 側を参照
@@ -52,15 +52,15 @@ plt.savefig("ts_train_test_split.svg", bbox_inches="tight")
 
 ![WRONG: random split / RIGHT: forward-only split](./ts_train_test_split.svg)
 
-左は通常の機械学習でやる「ランダム分割」。時系列でこれを当てると、未来の test サンプルが train に混じり、`月 40 と月 60 の値から月 50 を予測する` 状況になる。本番では未来は分からないので、test 評価が本番性能と大きく乖離する（[data leakage](../data-leakage/) の典型）。
+左は通常の機械学習でやる「ランダム分割」。時系列でこれを当てると、未来の test サンプルが train に混じり、`月 40 と月 60 の値から月 50 を予測する` 状況になります。本番では未来は分からないので、test 評価が本番性能と大きく乖離します（[data leakage](../data-leakage/) の典型）。
 
-右の「forward-only split」では `t < cutoff` を訓練、`t ≥ cutoff` をテストとし、訓練データに未来が混じらないことを保証する。実装は `sklearn.model_selection.TimeSeriesSplit` で扱える。
+右の「forward-only split」では `t < cutoff` を訓練、`t ≥ cutoff` をテストとし、訓練データに未来が混じらないことを保証します。実装は `sklearn.model_selection.TimeSeriesSplit` で扱えます。
 
 ---
 
 ### Walk-forward / Expanding-window CV
 
-単一の train/test 分割では、特定の時期の精度しか測れない。複数の時点で評価したい場合は walk-forward CV（または expanding window CV）を使う。
+単一の train/test 分割では、特定の時期の精度しか測れません。複数の時点で評価したい場合は walk-forward CV（または expanding window CV）を使います。
 
 ```mermaid
 graph LR
@@ -71,11 +71,11 @@ graph LR
     C --> C1["test 36-43"]
 ```
 
-各 fold で訓練データが拡張されながら、test は常に train の後ろに来る。
+各 fold で訓練データが拡張されながら、test は常に train の後ろに来ます。
 
 ![Walk-forward CV: train 拡張、test は常に未来](./ts_walkforward_cv.svg)
 
-scikit-learn の `TimeSeriesSplit(n_splits=5)` でこのパターンが作れる。`gap=N` で「予測のリードタイム」（train と test の間に N サンプル空ける）も指定できる。
+scikit-learn の `TimeSeriesSplit(n_splits=5)` でこのパターンが作れます。`gap=N` で「予測のリードタイム」（train と test の間に N サンプル空ける）も指定できます。
 
 ローリングウィンドウ CV（古い train を捨てる）と expanding window CV（古い train も残す）の使い分け:
 
@@ -86,7 +86,7 @@ scikit-learn の `TimeSeriesSplit(n_splits=5)` でこのパターンが作れる
 
 ### 3 つのアプローチ比較
 
-時系列予測のアプローチは大きく 3 系統。
+時系列予測のアプローチは大きく 3 系統です。
 
 | アプローチ | 代表手法 | 強み | 弱み |
 |---|---|---|---|
@@ -113,13 +113,13 @@ plt.savefig("ts_forecast_compare.svg", bbox_inches="tight")
 - linear trend (橙): トレンドだけ拾うが季節性を取りこぼす。MAE 11.2
 - trend + seasonal (赤): 真の構造を捉える。MAE 4.8
 
-「特徴量に時刻情報をどう入れるか」で同じ線形回帰でも性能が大きく変わる、という典型例。月インデックスを `sin / cos` 変換するのは「lag features」と並んで時系列特化の特徴量エンジニアリングの定番テクニック。
+「特徴量に時刻情報をどう入れるか」で同じ線形回帰でも性能が大きく変わる、という典型例です。月インデックスを `sin / cos` 変換するのは「lag features」と並んで時系列特化の特徴量エンジニアリングの定番テクニックです。
 
 ---
 
 ### 時系列特化の特徴量エンジニアリング
 
-ML 回帰アプローチで時系列を扱うとき、次の特徴量を作るのが定石。
+ML 回帰アプローチで時系列を扱うとき、次の特徴量を作るのが定石です。
 
 | 特徴量 | 例 | 目的 |
 |---|---|---|
@@ -129,7 +129,7 @@ ML 回帰アプローチで時系列を扱うとき、次の特徴量を作る�
 | Cyclical encoding | `sin(2π·month/12)`、`cos(2π·month/12)` | 周期性を連続的に表現 |
 | External regressors | 気温、イベント、競合価格 | 外生要因の取り込み |
 
-これらを作ってから [勾配ブースティング](../gradient-boosting/) （LightGBM、XGBoost）に突っ込むのが、Kaggle 時系列コンペでも実務でも定番の組み合わせとなる。
+これらを作ってから [勾配ブースティング](../gradient-boosting/) （LightGBM、XGBoost）に突っ込むのが、Kaggle 時系列コンペでも実務でも定番の組み合わせとなります。
 
 ### 代表的なアルゴリズム
 
@@ -139,7 +139,7 @@ ML 回帰アプローチで時系列を扱うとき、次の特徴量を作る�
 - DeepAR / N-BEATS / Temporal Fusion Transformer: 深層学習ベース
 - LightGBM / XGBoost + lag features: 表データ系の万能解
 
-短期予測 (1〜数ステップ先) と長期予測（数十〜数百ステップ先）で適する手法が違う。短期は ARIMA や ML 回帰で十分、長期は Prophet や深層学習が候補。
+短期予測 (1〜数ステップ先) と長期予測（数十〜数百ステップ先）で適する手法が違います。短期は ARIMA や ML 回帰で十分、長期は Prophet や深層学習が候補です。
 
 ### 数学での使いどころ
 

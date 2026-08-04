@@ -7,13 +7,13 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 31
 ---
 
-t-SNE（t-distributed Stochastic Neighbor Embedding）と UMAP（Uniform Manifold Approximation and Projection）は、高次元データを 2 〜 3 次元に圧縮して可視化するための非線形次元削減アルゴリズムである。[PCA](../pca/) が線形変換に限定されるのに対し、t-SNE / UMAP は曲がった多様体（manifold）構造を保ったまま低次元化できる。
+t-SNE（t-distributed Stochastic Neighbor Embedding）と UMAP（Uniform Manifold Approximation and Projection）は、高次元データを 2 〜 3 次元に圧縮して可視化するための非線形次元削減アルゴリズムです。[PCA](../pca/) が線形変換に限定されるのに対し、t-SNE / UMAP は曲がった多様体（manifold）構造を保ったまま低次元化できます。
 
-主な用途は「可視化」で、本格的な機械学習の前処理に使うことは少ない。MNIST のような高次元画像、文書埋め込み、遺伝子発現データ、ニューラルネットの中間層 activations などを 2D 散布図にして、クラスタや構造を目で確認するのに使う。
+主な用途は「可視化」で、本格的な機械学習の前処理に使うことは少ないです。MNIST のような高次元画像、文書埋め込み、遺伝子発現データ、ニューラルネットの中間層 activations などを 2D 散布図にして、クラスタや構造を目で確認するのに使います。
 
 ### PCA との対比
 
-同じ手書き数字データに 3 つの手法を当ててみる。
+同じ手書き数字データに 3 つの手法を当ててみます。
 
 ```python
 from sklearn.datasets import load_digits
@@ -36,19 +36,19 @@ plt.savefig("tsne_umap_compare.png", bbox_inches="tight")
 - t-SNE（中央）: 数字ごとに明確に分かれた島ができる。形は自由
 - UMAP（右）: t-SNE と同程度のクラスタ分離。t-SNE より大局的な構造（クラスタ同士の距離）も保たれやすい
 
-「分類しやすそうに見えるか」「クラスタが明瞭か」を目視で判断する用途には、PCA より圧倒的に t-SNE / UMAP が強い。
+「分類しやすそうに見えるか」「クラスタが明瞭か」を目視で判断する用途には、PCA より圧倒的に t-SNE / UMAP が強いです。
 
 ---
 
 ### t-SNE: 近傍構造を保つ
 
-t-SNE は「高次元での点間の近さ」を「低次元での点間の近さ」として保とうとするアルゴリズム。
+t-SNE は「高次元での点間の近さ」を「低次元での点間の近さ」として保とうとするアルゴリズムです。
 
 1. 高次元で各点 `x_i` の近傍に対し条件付き確率 `p_{j|i}`（`x_i` の隣に `x_j` が来る確率）を計算
 2. 低次元の埋め込み `y_i` に対しても同様の確率 `q_{j|i}` を計算
 3. 高次元と低次元の確率分布の [KL ダイバージェンス](../../math/information-theory/) を最小化するように `y_i` を勾配降下で更新
 
-最大のハイパーパラメータは perplexity で、「各点が見る近傍の数」を制御する。
+最大のハイパーパラメータは perplexity で、「各点が見る近傍の数」を制御します。
 
 ```python
 for perp in [5, 30, 100, 500]:
@@ -63,7 +63,7 @@ plt.savefig("tsne_perplexity_sensitivity.png", bbox_inches="tight")
 - perplexity = 100: 大局的すぎる。クラスタ境界が曖昧
 - perplexity = 500: ほぼ意味を失う。クラスタが融解
 
-公式推奨は 5〜50 の範囲で `5, 30, 50` などを試す。データセットサイズ `n` に対して `perplexity < n/3` を目安に。
+公式推奨は 5〜50 の範囲で `5, 30, 50` などを試します。データセットサイズ `n` に対して `perplexity < n/3` を目安に。
 
 ---
 
@@ -76,7 +76,7 @@ UMAP は数学的にはトポロジカルデータ解析の理論に基づく手
 - 大局的な構造もある程度保たれる
 - 次元削減の出力次元を 3 以上にしてもまともに動く
 
-という実用上の利点がある。主要ハイパーパラメータは `n_neighbors`（局所 vs 大局）と `min_dist`（クラスタの密度）。
+という実用上の利点があります。主要ハイパーパラメータは `n_neighbors`（局所 vs 大局）と `min_dist`（クラスタの密度）。
 
 ```python
 for n_neighbors in [5, 15, 50]:
@@ -92,13 +92,13 @@ plt.savefig("umap_param_grid.png", bbox_inches="tight")
 - `min_dist` を小さく: クラスタが密にまとまる
 - `min_dist` を大きく: クラスタがふんわり広がる
 
-実用デフォルトは `n_neighbors=15, min_dist=0.1`。EDA で複数試して目視判断するのが現実的。
+実用デフォルトは `n_neighbors=15, min_dist=0.1`です。EDA で複数試して目視判断するのが現実的です。
 
 ---
 
 ### 非線形性が効く例: Swiss Roll
 
-3D の Swiss Roll を 2D に展開できるかで PCA と UMAP の違いが見える。
+3D の Swiss Roll を 2D に展開できるかで PCA と UMAP の違いが見えます。
 
 ```python
 from sklearn.datasets import make_swiss_roll
@@ -110,23 +110,23 @@ plt.savefig("tsne_umap_swissroll.png", bbox_inches="tight")
 
 ![PCA と UMAP の Swiss Roll 比較](./tsne_umap_swissroll.png)
 
-PCA は線形射影しかできないので Swiss Roll を「上から見下ろす」だけで、巻かれた構造が潰れる。UMAP は manifold を「ほぐして」展開し、巻かれていた螺旋を直線的に並べる。
+PCA は線形射影しかできないので Swiss Roll を「上から見下ろす」だけで、巻かれた構造が潰れます。UMAP は manifold を「ほぐして」展開し、巻かれていた螺旋を直線的に並べます。
 
-「データが本質的に低次元の manifold 上に乗っている」場合、非線形手法は劇的に効く。深層学習で抽出した embedding（512〜2048 次元）の可視化も同様で、`PCA → 直接 plot` より `PCA で 50 次元程度 → UMAP で 2 次元` というパイプラインが定番。
+「データが本質的に低次元の manifold 上に乗っている」場合、非線形手法は劇的に効きます。深層学習で抽出した embedding（512〜2048 次元）の可視化も同様で、`PCA → 直接 plot` より `PCA で 50 次元程度 → UMAP で 2 次元` というパイプラインが定番です。
 
 ---
 
 ### 落とし穴の中核: 距離の意味
 
-t-SNE / UMAP の最大の注意点: **クラスタ間の距離は意味を持たない**。
+t-SNE / UMAP の最大の注意点は、クラスタ間の距離が意味を持たない事です。
 
 - 2 つのクラスタが近くにある = 元データでも近い、とは限らない
 - クラスタの大きさ（広がり）も意味を持たない
 - 軸の絶対値も意味を持たない
 
-「埋め込み上で見える距離」は元データの距離と直接対応しない、というのは t-SNE / UMAP のアルゴリズム上の性質（局所構造優先）から来る。「同じクラスタに属する点同士は近い」は信用できるが、「異なるクラスタの距離」は信用できないと考えるのが安全。
+「埋め込み上で見える距離」は元データの距離と直接対応しない、というのは t-SNE / UMAP のアルゴリズム上の性質（局所構造優先）から来ます。「同じクラスタに属する点同士は近い」は信用できるが、「異なるクラスタの距離」は信用できないと考えるのが安全です。
 
-UMAP は t-SNE よりは大局構造を保つが、それでも「距離の絶対値」を信頼するレベルではない。距離の比較が本当に必要なら PCA や MDS（Multidimensional Scaling）を使う。
+UMAP は t-SNE よりは大局構造を保つが、それでも「距離の絶対値」を信頼するレベルではありません。距離の比較が本当に必要なら PCA や MDS（Multidimensional Scaling）を使います。
 
 ### 数学での使いどころ
 
@@ -151,7 +151,7 @@ UMAP は t-SNE よりは大局構造を保つが、それでも「距離の絶�
 - LLM の hidden state の可視化（layer-wise 分析）
 - 強化学習の state representation の理解
 
-実装は scikit-learn の `manifold.TSNE`、`umap-learn`（pip install umap-learn）。大規模データ向けに `openTSNE`（並列・高速）、`pacmap`（さらに高速）もある。
+実装は scikit-learn の `manifold.TSNE`、`umap-learn`（pip install umap-learn）。大規模データ向けに `openTSNE`（並列・高速）、`pacmap`（さらに高速）もあります。
 
 ---
 

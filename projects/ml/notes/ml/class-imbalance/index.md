@@ -7,11 +7,11 @@ tags: ["machine-learning", "scikit-learn", "imbalance"]
 weight: 12
 ---
 
-クラス不均衡（class imbalance）は、分類問題でクラス間のサンプル数が大きく偏っている状況を指す。不正検知（不正取引 1% 未満）、希少疾患の診断（陽性 0.1% 程度）、迷惑メール（ハム多数）など、実問題では「興味のあるクラスが少数派」というのが典型的なパターンとなる。
+クラス不均衡（class imbalance）は、分類問題でクラス間のサンプル数が大きく偏っている状況を指します。不正検知（不正取引 1% 未満）、希少疾患の診断（陽性 0.1% 程度）、迷惑メール（ハム多数）など、実問題では「興味のあるクラスが少数派」というのが典型的なパターンとなります。
 
-不均衡データで何も対策しないと、(1) 多数派クラスに引きずられた決定境界が引かれる、(2) Accuracy が高くても少数派の Recall がほぼ 0、(3) 確率出力の校正が崩れる、という 3 つの問題が同時に起きる。対処は「データ側で再サンプリングする」「損失側でクラスに重みを付ける」「評価指標を不均衡に強いものに切り替える」の 3 系統に大別できる。
+不均衡データで何も対策しないと、(1) 多数派クラスに引きずられた決定境界が引かれる、(2) Accuracy が高くても少数派の Recall がほぼ 0、(3) 確率出力の校正が崩れる、という 3 つの問題が同時に起きます。対処は「データ側で再サンプリングする」「損失側でクラスに重みを付ける」「評価指標を不均衡に強いものに切り替える」の 3 系統に大別できます。
 
-[ROC-AUC / PR-AUC](../roc-pr-auc/)、[混同行列](../confusion-matrix/) のノートで触れた評価指標の話とセットで使う場面が多い。
+[ROC-AUC / PR-AUC](../roc-pr-auc/)、[混同行列](../confusion-matrix/) のノートで触れた評価指標の話とセットで使う場面が多いです。
 
 ### 不均衡対処の判断軸
 
@@ -36,7 +36,7 @@ graph TD
 
 ### Accuracy が高くても意味が無いケース
 
-95:5 の不均衡データで「全部多数派と予測する」だけのモデルは Accuracy 95% を取る。これがいかに役に立たないかを数字で見る。
+95:5 の不均衡データで「全部多数派と予測する」だけのモデルは Accuracy 95% を取ります。これがいかに役に立たないかを数字で見ます。
 
 ```python
 import numpy as np
@@ -63,9 +63,9 @@ Recall   = 0.000
 F1       = 0.000
 ```
 
-Accuracy だけ見ると 95% で「良いモデル」に見えるが、Recall も F1 も 0 で少数派を 1 件も検出できていない。不均衡データでは Accuracy を主指標にすると意思決定を完全に誤る、というのがこの数字の意味するところとなる。
+Accuracy だけ見ると 95% で「良いモデル」に見えるが、Recall も F1 も 0 で少数派を 1 件も検出できていません。不均衡データでは Accuracy を主指標にすると意思決定を完全に誤る、というのがこの数字の意味するところとなります。
 
-不均衡データで使うべき評価指標は次の通り。
+不均衡データで使うべき評価指標は次の通りです。
 
 - Precision・Recall（[混同行列](../confusion-matrix/) のノート参照）
 - F1 スコア（Precision と Recall の調和平均）
@@ -76,7 +76,7 @@ Accuracy だけ見ると 95% で「良いモデル」に見えるが、Recall �
 
 ### 対処 1: 損失の重み付け（class_weight）
 
-最も軽量な対処が、損失関数に「少数派サンプルの誤りを重く罰する」重みを掛けることである。`scikit-learn` では `class_weight="balanced"` 1 行で利用できる。
+最も軽量な対処が、損失関数に「少数派サンプルの誤りを重く罰する」重みを掛けることです。`scikit-learn` では `class_weight="balanced"` 1 行で利用できます。
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -89,15 +89,15 @@ plt.savefig("imbalance_class_weight.png", bbox_inches="tight")
 
 ![class_weight 無しと balanced の決定境界](./imbalance_class_weight.png)
 
-左の素のロジスティック回帰では、決定境界が多数派側（青）にかなり寄っており、少数派（赤）の領域に入り込んでいる。右では `class_weight="balanced"`（多数派と少数派の損失の重みを反比例で調整）を加えただけで、境界が少数派を救う方向に動く。Recall が向上する代償として、Precision はやや下がる。
+左の素のロジスティック回帰では、決定境界が多数派側（青）にかなり寄っており、少数派（赤）の領域に入り込んでいます。右では `class_weight="balanced"`（多数派と少数派の損失の重みを反比例で調整）を加えただけで、境界が少数派を救う方向に動きます。Recall が向上する代償として、Precision はやや下がります。
 
-`balanced` は自動的に `n_samples / (n_classes × bincount(y))` で重みを計算するが、業務上の損失（誤検出と見逃しのコスト）が分かるなら明示的に `class_weight={0: 1, 1: 20}` のように与える方が筋がよい。
+`balanced` は自動的に `n_samples / (n_classes × bincount(y))` で重みを計算するが、業務上の損失（誤検出と見逃しのコスト）が分かるなら明示的に `class_weight={0: 1, 1: 20}` のように与える方が筋がよいです。
 
 ---
 
 ### 対処 2: リサンプリング
 
-データ側でクラス比率を変える方法。`imbalanced-learn` ライブラリが定番で、scikit-learn と互換性のある API で提供される。
+データ側でクラス比率を変える方法です。`imbalanced-learn` ライブラリが定番で、scikit-learn と互換性のある API で提供されます。
 
 ```python
 from imblearn.over_sampling import RandomOverSampler, SMOTE
@@ -120,7 +120,7 @@ plt.savefig("imbalance_resampling.png", bbox_inches="tight")
 - Random under-sampling: 多数派からランダムに間引く。多数派の情報を失うが計算が軽い
 - SMOTE（Synthetic Minority Over-sampling Technique）: 少数派サンプル同士を結ぶ線分上に「合成サンプル」を作る。単純複製と違い決定境界を滑らかにする
 
-決定境界の違いも見ておく。
+決定境界の違いも見ておきます。
 
 ```python
 # 各リサンプリング後にロジスティック回帰を当てる
@@ -129,17 +129,17 @@ plt.savefig("imbalance_boundary_resampling.png", bbox_inches="tight")
 
 ![リサンプリング戦略別の決定境界](./imbalance_boundary_resampling.png)
 
-リサンプリング後はいずれも境界が少数派側に押し戻され、少数派を捕まえやすい形になる。SMOTE は合成点が散布図の薄い赤点として可視化される（黒縁の点）。
+リサンプリング後はいずれも境界が少数派側に押し戻され、少数派を捕まえやすい形になります。SMOTE は合成点が散布図の薄い赤点として可視化されます（黒縁の点）。
 
-注意: リサンプリングは訓練データだけに適用する。テストデータも resample してしまうと、評価が現実と乖離する（[data leakage](../data-leakage/) と同じ罠）。`Pipeline` の代わりに `imblearn.pipeline.Pipeline` を使うと、CV 時に fold ごとに正しく resampling される。
+注意: リサンプリングは訓練データだけに適用します。テストデータも resample してしまうと、評価が現実と乖離します（[data leakage](../data-leakage/) と同じ罠）。`Pipeline` の代わりに `imblearn.pipeline.Pipeline` を使うと、CV 時に fold ごとに正しく resampling されます。
 
 ---
 
 ### 対処 3: 評価指標を変える
 
-不均衡データでは Accuracy をやめ、Precision / Recall / F1 / PR-AUC を主指標にする。クラス比率に依存しない指標として MCC（Matthews correlation coefficient）も使いやすい。
+不均衡データでは Accuracy をやめ、Precision / Recall / F1 / PR-AUC を主指標にします。クラス比率に依存しない指標として MCC（Matthews correlation coefficient）も使いやすいです。
 
-4 つのモデル（naive baseline、素 LR、class_weight、SMOTE）で評価指標を並べると、Accuracy がいかに誤った印象を与えるかが明確になる。
+4 つのモデル（naive baseline、素 LR、class_weight、SMOTE）で評価指標を並べると、Accuracy がいかに誤った印象を与えるかが明確になります。
 
 ```python
 # 詳細な評価は scripts 側を参照
@@ -148,9 +148,9 @@ plt.savefig("imbalance_metrics_breakdown.svg", bbox_inches="tight")
 
 ![5 指標 × 4 モデルでの比較](./imbalance_metrics_breakdown.svg)
 
-「全部多数派と予測」のベースラインを見ると、Accuracy（灰色）は 0.95 で他のモデルとほぼ並ぶが、Precision・Recall・F1・PR-AUC（青〜赤）は軒並み 0。Accuracy だけで判断すると、何もしないモデルが「最良」に見えてしまう。
+「全部多数派と予測」のベースラインを見ると、Accuracy（灰色）は 0.95 で他のモデルとほぼ並ぶが、Precision・Recall・F1・PR-AUC（青〜赤）は軒並み 0です。Accuracy だけで判断すると、何もしないモデルが「最良」に見えてしまいます。
 
-class_weight と SMOTE を入れると Recall（緑）が大きく改善し、F1（橙）と PR-AUC（赤）が伸びる。素の LR は Accuracy 高めだが Recall が低く、少数派を捕まえられていない様子が見える。
+class_weight と SMOTE を入れると Recall（緑）が大きく改善し、F1（橙）と PR-AUC（赤）が伸びます。素の LR は Accuracy 高めだが Recall が低く、少数派を捕まえられていない様子が見えます。
 
 「どの対策を選ぶか」は業務目線で:
 
@@ -162,7 +162,7 @@ class_weight と SMOTE を入れると Recall（緑）が大きく改善し、F1
 
 ### 閾値調整: 同じモデルで Precision/Recall を動かす
 
-確率出力を持つモデルなら、リサンプリングや重み付けをしなくても、判定閾値を動かすだけで Precision と Recall を交換できる。デフォルト閾値 0.5 を 0.3 に下げれば、少数派を取りこぼしにくくなる（Recall 上昇）が、誤検出も増える（Precision 低下）。
+確率出力を持つモデルなら、リサンプリングや重み付けをしなくても、判定閾値を動かすだけで Precision と Recall を交換できます。デフォルト閾値 0.5 を 0.3 に下げれば、少数派を取りこぼしにくくなる（Recall 上昇）が、誤検出も増えます（Precision 低下）。
 
 ```python
 proba = LogisticRegression(max_iter=2000).fit(X_tr, y_tr).predict_proba(X_te)[:, 1]
@@ -171,7 +171,7 @@ for thr in [0.5, 0.3, 0.1]:
     print(f"thr={thr}: precision={precision_score(y_te, pred):.2f}, recall={recall_score(y_te, pred):.2f}")
 ```
 
-PR 曲線（[ROC-AUC / PR-AUC](../roc-pr-auc/)）の上で「業務上ちょうど良い閾値」を選ぶ運用は、リサンプリングをしないシンプルな対処として有力である。
+PR 曲線（[ROC-AUC / PR-AUC](../roc-pr-auc/)）の上で「業務上ちょうど良い閾値」を選ぶ運用は、リサンプリングをしないシンプルな対処として有力です。
 
 ### 数学での使いどころ
 
@@ -194,7 +194,7 @@ PR 曲線（[ROC-AUC / PR-AUC](../roc-pr-auc/)）の上で「業務上ちょう�
 - セグメンテーション（画像）: 背景 vs 物体ピクセル比が極端な不均衡。Dice loss、Focal loss
 - 不均衡時系列予測: 異常イベント前後の窓を切り出して再サンプリング
 
-scikit-learn の `class_weight="balanced"` はロジスティック回帰、SVM、決定木、ランダムフォレストで一律に効く。勾配ブースティング系（XGBoost、LightGBM）でも `scale_pos_weight` パラメータで同等の効果が得られる。
+scikit-learn の `class_weight="balanced"` はロジスティック回帰、SVM、決定木、ランダムフォレストで一律に効きます。勾配ブースティング系（XGBoost、LightGBM）でも `scale_pos_weight` パラメータで同等の効果が得られます。
 
 ---
 

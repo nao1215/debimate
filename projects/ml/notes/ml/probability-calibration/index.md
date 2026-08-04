@@ -7,13 +7,13 @@ tags: ["machine-learning", "scikit-learn", "metrics"]
 weight: 4
 ---
 
-確率の校正（probability calibration）は、分類モデルが出す `predict_proba` の値を「実際の正例比率」と一致させる後処理である。多くのモデルは「分類は正しいが確率値は信用できない」状態で出てくる。例えば「0.9 の確率で陽性」と予測した 100 件のうち、実際の陽性が 70 件しかないなら、確率出力は校正されていない（過信、overconfidence）と言える。
+確率の校正（probability calibration）は、分類モデルが出す `predict_proba` の値を「実際の正例比率」と一致させる後処理です。多くのモデルは「分類は正しいが確率値は信用できない」状態で出てきます。例えば「0.9 の確率で陽性」と予測した 100 件のうち、実際の陽性が 70 件しかないなら、確率出力は校正されていない（過信、overconfidence）と言えます。
 
-校正が必要な代表モデル: [サポートベクターマシン](../svm/) のスコア、[ランダムフォレスト](../random-forest/)、ナイーブベイズ。[ロジスティック回帰](../logistic-regression/) は損失関数（交差エントロピー）の性質上比較的校正されているが、それでも [クラス不均衡](../class-imbalance/) があれば再校正が必要となる。確率出力をそのまま意思決定に使うとき（しきい値判定、損益計算、リスク評価）は、校正のステップが事実上必須となる。
+校正が必要な代表モデル: [サポートベクターマシン](../svm/) のスコア、[ランダムフォレスト](../random-forest/)、ナイーブベイズです。[ロジスティック回帰](../logistic-regression/) は損失関数（交差エントロピー）の性質上比較的校正されているが、それでも [クラス不均衡](../class-imbalance/) があれば再校正が必要となります。確率出力をそのまま意思決定に使うとき（しきい値判定、損益計算、リスク評価）は、校正のステップが事実上必須となります。
 
 ### 校正の有無を見る: 信頼性プロット
 
-信頼性プロット（reliability diagram）は「予測確率を `0.0〜0.1, 0.1〜0.2, ..., 0.9〜1.0` の 10 ビンに分け、各ビンでの実測正例比率を縦軸に描く」もの。理想的な校正なら対角線（`predicted = observed`）に乗る。
+信頼性プロット（reliability diagram）は「予測確率を `0.0〜0.1, 0.1〜0.2, ..., 0.9〜1.0` の 10 ビンに分け、各ビンでの実測正例比率を縦軸に描く」ものです。理想的な校正なら対角線（`predicted = observed`）に乗ります。
 
 ```python
 from sklearn.calibration import calibration_curve
@@ -38,14 +38,14 @@ plt.savefig("calib_reliability_diagram.svg", bbox_inches="tight")
 
 ![4 分類器の信頼性プロット](./calib_reliability_diagram.svg)
 
-理想は対角線（黒い破線）。各モデルが対角線からどう外れるかで「校正の癖」が分かる。
+理想は対角線（黒い破線）。各モデルが対角線からどう外れるかで「校正の癖」が分かります。
 
 - ロジスティック回帰: ほぼ対角線に沿う（交差エントロピー損失で訓練したため）
 - Random Forest: S 字型に歪む（中央が下凸、両端が上凸の典型）
 - Naive Bayes: 確率を 0 や 1 に押し付ける（特徴量間の独立性仮定が崩れると過信になる）
 - SVM: スコアが確率ではないため、対角線から大きく外れる
 
-「分類精度は高いが確率出力は信用できない」モデルが多数派、と覚えておくと良い。
+「分類精度は高いが確率出力は信用できない」モデルが多数派、と覚えておくと良いです。
 
 ---
 
@@ -58,7 +58,7 @@ plt.savefig("calib_reliability_diagram.svg", bbox_inches="tight")
 | Beta calibration | Beta 分布ベースの校正 | Platt と Isotonic の中間的な柔軟性 |
 | Temperature scaling | softmax の logits を温度 `T` で割る | 深層学習で標準 |
 
-scikit-learn では `CalibratedClassifierCV(base_estimator, method="sigmoid")` で Platt、`method="isotonic"` で Isotonic が使える。両方とも内部で CV を回して校正パラメータを推定する。
+scikit-learn では `CalibratedClassifierCV(base_estimator, method="sigmoid")` で Platt、`method="isotonic"` で Isotonic が使えます。両方とも内部で CV を回して校正パラメータを推定します。
 
 ```python
 from sklearn.calibration import CalibratedClassifierCV
@@ -71,15 +71,15 @@ plt.savefig("calib_before_after.svg", bbox_inches="tight")
 
 ![校正前と Platt / Isotonic 後の比較](./calib_before_after.svg)
 
-校正前の Naive Bayes は信頼性プロットが大きく歪んでいる（左、Brier score 0.27）。Platt scaling 適用後（中央、Brier 0.17）と Isotonic 後（右、Brier 0.15）はいずれも対角線に近づき、Brier スコアも改善している。
+校正前の Naive Bayes は信頼性プロットが大きく歪んでいます（左、Brier score 0.27）。Platt scaling 適用後（中央、Brier 0.17）と Isotonic 後（右、Brier 0.15）はいずれも対角線に近づき、Brier スコアも改善しています。
 
-Brier スコア `(1/n) Σ (p_pred - y)²` は「予測確率と正解の平均二乗誤差」で、校正の良さを 1 つの数で表す指標。低いほど良い。
+Brier スコア `(1/n) Σ (p_pred - y)²` は「予測確率と正解の平均二乗誤差」で、校正の良さを 1 つの数で表す指標です。低いほど良いです。
 
 ---
 
 ### 確率分布の形が変わる
 
-校正によって出力確率の分布形そのものが変わる。
+校正によって出力確率の分布形そのものが変わります。
 
 ```python
 for name, clf in [("Uncalibrated NB", base), ("Platt", platt), ("Isotonic", iso)]:
@@ -89,9 +89,9 @@ plt.savefig("calib_probability_histogram.svg", bbox_inches="tight")
 
 ![校正前後の確率ヒストグラム](./calib_probability_histogram.svg)
 
-校正前の Naive Bayes は確率を `0` と `1` の両端に押し付ける（過信）。Platt 後は中央寄りに山ができ、Isotonic 後は中央付近に集中する。「中央寄りで微妙な確率」が出るようになる、というのが校正の効果。
+校正前の Naive Bayes は確率を `0` と `1` の両端に押し付けます（過信）。Platt 後は中央寄りに山ができ、Isotonic 後は中央付近に集中します。「中央寄りで微妙な確率」が出るようになる、というのが校正の効果です。
 
-過信の確率出力を意思決定にそのまま使うと、リスクを過小評価しやすい。例として、不正検知で「99% の確率で不正」と判定したケースの実際の不正率が 70% なら、自動却下の閾値設計が崩れる。
+過信の確率出力を意思決定にそのまま使うと、リスクを過小評価しやすいです。例として、不正検知で「99% の確率で不正」と判定したケースの実際の不正率が 70% なら、自動却下の閾値設計が崩れます。
 
 ### 校正のタイミング
 

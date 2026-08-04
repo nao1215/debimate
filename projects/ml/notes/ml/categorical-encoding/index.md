@@ -7,9 +7,9 @@ tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 15
 ---
 
-カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称である。機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / ニューラルネット / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とするため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せない。
+カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称です。機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / ニューラルネット / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とするため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。
 
-選び方を間違えると、列数の爆発で計算不能になる、順序を勝手に持ち込んでしまう、[データリーク](../data-leakage/) を起こすといった事故につながる。判断の核は「カテゴリの基数（cardinality, 種類数）」「順序の有無」「目的変数との関係を埋め込んでよいか」の 3 軸と考えられる。
+選び方を間違えると、列数の爆発で計算不能になる、順序を勝手に持ち込んでしまう、[データリーク](../data-leakage/) を起こすといった事故につながります。判断の核は「カテゴリの基数（cardinality, 種類数）」「順序の有無」「目的変数との関係を埋め込んでよいか」の 3 軸と考えられます。
 
 ### 基数で第一候補が決まる
 
@@ -23,13 +23,13 @@ graph LR
     D -- "10k〜" --> G["Hashing / Embedding<br/>または集約特徴量"]
 ```
 
-順序があれば Ordinal、なければ基数で分岐するというのが大筋。基数が極端に多いとき（ユーザー ID、商品 ID、URL など）はそもそも「カテゴリ」として扱うのではなく集約特徴量への変換を検討すべきで、これは後述する。
+順序があれば Ordinal、なければ基数で分岐するというのが大筋です。基数が極端に多いとき（ユーザー ID、商品 ID、URL など）は「カテゴリ」として扱うのではなく集約特徴量への変換を検討すべきで、これは後述します。
 
 ---
 
 ### 4 種類のエンコーディングを並べて見る
 
-同じ入力 `["A", "B", "C", "A", "B", "C"]` に対して、4 つの方式がどんな出力を返すかを並べる。`scikit-learn` で簡単に確認できる。
+同じ入力 `["A", "B", "C", "A", "B", "C"]` に対して、4 つの方式がどんな出力を返すかを並べます。`scikit-learn` で簡単に確認できます。
 
 ```python
 import matplotlib.pyplot as plt
@@ -71,13 +71,13 @@ plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
 
 ![4 つのエンコーディング方式の出力比較](./categorical-encoding_methods.svg)
 
-入力 6 行が共通で、出力の「列数」と「値の意味」が方式ごとに違うのが見て取れる。One-hot は基数と同じ列数になるが、Ordinal は 1 列、Target encoding も 1 列、Hashing は事前に決めた固定列数で押し込む。
+入力 6 行が共通で、出力の「列数」と「値の意味」が方式ごとに違うのが見て取れます。One-hot は基数と同じ列数になるが、Ordinal は 1 列、Target encoding も 1 列、Hashing は事前に決めた固定列数で押し込みます。
 
 ---
 
 ### One-hot encoding
 
-各カテゴリに対して 0/1 の独立した列を割り当てる。最も基本で、解釈が明確で、順序を勝手に持ち込まない。
+各カテゴリに対して 0/1 の独立した列を割り当てます。最も基本で、解釈が明確で、順序を勝手に持ち込みません。
 
 - 利点: 順序を導入しない（モデルが「A < B」のような誤解釈をしない）、解釈が明確、ほぼ全ての ML モデルに使える
 - 欠点: 基数と同じだけ列数が増える。基数が大きいと列爆発する
@@ -88,27 +88,27 @@ plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
 
 ### Ordinal encoding
 
-各カテゴリに整数を割り当てて 1 列で済ます。
+各カテゴリに整数を割り当てて 1 列で済まします。
 
 - 利点: 1 列で完結する、ストレージ・計算が軽い
 - 欠点: 整数の大小関係に意味を持たせてしまう（`'electronics'=0` `'food'=1` `'books'=2` だと「electronics と food は近く、books は遠い」と線形モデルが解釈する）
 - scikit-learn: `OrdinalEncoder`
 - 適切な使用場面: 順序があるカテゴリ（`low < medium < high`、星評価、学年など）。順序なしには使ってはならない
 
-決定木系（[RandomForest](../random-forest/) / [GradientBoosting](../gradient-boosting/)）は順序ベース判定なので Ordinal でも崩壊しないが、それでも「順序の意味付け」の罠は残る（カテゴリ A, B, C の順番がアルファベット順なだけで、モデルが C を A の上位とみなしてしまう）と考えられる。
+決定木系（[RandomForest](../random-forest/) / [GradientBoosting](../gradient-boosting/)）は順序ベース判定なので Ordinal でも崩壊しないが、それでも「順序の意味付け」の罠は残る（カテゴリ A, B, C の順番がアルファベット順なだけで、モデルが C を A の上位とみなしてしまう）と考えられます。
 
 ---
 
 ### Target encoding
 
-各カテゴリを「そのカテゴリでの目的変数の集約値」に置き換える。1 列で目的変数との関係を埋め込めるため、高基数カテゴリで効きやすい。
+各カテゴリを「そのカテゴリでの目的変数の集約値」に置き換えます。1 列で目的変数との関係を埋め込めるため、高基数カテゴリで効きやすいです。
 
 - 利点: 1 列で完結、目的変数との関係を直接エンコード、高基数に強い
 - 欠点: [データリーク](../data-leakage/) のリスクが極めて高い。素朴に全データで集約してから CV すると、テスト fold の目的変数情報が訓練 fold に漏れる
 - 必須の防御: `cross_val_score` / `GridSearchCV` の中で `TargetEncoder` を `Pipeline` に組み込む。scikit-learn の `TargetEncoder` （1.3 以降）は内部で cross-fitting を行ってリークを抑える設計になっている
 - 適切な使用場面: 基数が 20〜数万のカテゴリ（都道府県、商品カテゴリ、ユーザーセグメントなど）
 
-リークが入るとどう見えるかを、真の信号が無いランダムデータで確認する。50 個のランダムカテゴリ × 二値ランダムラベルなら、正しく CV 内で集約すれば accuracy は chance level（0.5）付近になるはずだが、全データで集約してから CV すると 0.6 を超える「見せかけの精度」が出る。
+真の信号が無いランダムデータで、リークが入るとどう見えるかを確認します。50 個のランダムカテゴリ × 二値ランダムラベルなら、正しく CV 内で集約すれば accuracy は chance level（0.5）付近になるはずだが、全データで集約してから CV すると 0.6 を超える「見せかけの精度」が出ます。
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -157,24 +157,24 @@ Correct (Pipeline):    CV accuracy = 0.534  (≈ chance level)
 
 ![Target encoding はリークすると性能を過大評価する](./categorical-encoding_leak.svg)
 
-真の信号が無いはずなのに wrong way では 0.618 まで上振れする。Pipeline で正しく閉じれば 0.534 とほぼ chance level に収まる。Target encoding を使う場面では「集約は CV fold の中だけで行う」が絶対条件と言える。
+真の信号が無いはずなのに wrong way では 0.618 まで上振れします。Pipeline で正しく閉じれば 0.534 とほぼ chance level に収まります。Target encoding を使う場面では「集約は CV fold の中だけで行う」が絶対条件と言えます。
 
 ---
 
 ### Hashing trick と Embedding
 
-基数が極端に大きい場面（URL、商品 ID、トークンなど）では、One-hot は不可能、Target encoding もカテゴリごとのサンプル数が少なすぎて機能しないことがある。
+基数が極端に大きい場面（URL、商品 ID、トークンなど）では、One-hot は不可能、Target encoding もカテゴリごとのサンプル数が少なすぎて機能しないことがあります。
 
 - Hashing trick: ハッシュ関数で「固定次元のビット列」に押し込む。例: `dim=16` なら基数が 100 万でも 16 列に収まる。代償として「衝突」（別カテゴリが同じビン）が起きるが、線形モデルなら衝突の影響は平均的に小さい
 - Embedding: 深層学習で密ベクトル表現を学習する。意味的に近いカテゴリが近いベクトルになる利点があるが、ニューラルネットの訓練が前提
 
-scikit-learn なら `FeatureHasher`、TensorFlow / PyTorch なら `Embedding` 層を使う。
+scikit-learn なら `FeatureHasher`、TensorFlow / PyTorch なら `Embedding` 層を使います。
 
 ---
 
 ### 基数で選ぶ判断軸
 
-基数が増えると、One-hot は列数が線形に爆発する一方、Target encoding と Hashing は列数が一定に保たれる。
+基数が増えると、One-hot は列数が線形に爆発する一方、Target encoding と Hashing は列数が一定に保たれます。
 
 ![基数増加に対する各方式の列数挙動](./categorical-encoding_cardinality.svg)
 
@@ -186,32 +186,32 @@ scikit-learn なら `FeatureHasher`、TensorFlow / PyTorch なら `Embedding` �
 | 20〜10,000 | One-hot または Target encoding | Target は CV 内で集約必須 |
 | 10,000〜 | Hashing trick / Embedding / 集約特徴量 | One-hot は実質不可能 |
 
-数値はあくまで目安で、サンプル数・モデル種別・メモリ予算と合わせて決める。木系モデルなら One-hot より Ordinal の方が分割効率が良いこともある、といった例外もある。
+数値はあくまで目安で、サンプル数・モデル種別・メモリ予算と合わせて決めます。木系モデルなら One-hot より Ordinal の方が分割効率が良いこともある、といった例外もあります。
 
 ---
 
 ### ID 系は「カテゴリ」ではなく「集約特徴量」にする
 
-ユーザー ID（100 万種類）、商品 ID（数十万種類）、注文 ID といった「識別子」を One-hot や Target encoding でそのままエンコードすると次の問題が起きる。
+ユーザー ID（100 万種類）、商品 ID（数十万種類）、注文 ID といった「識別子」を One-hot や Target encoding でそのままエンコードすると次の問題が起きます。
 
 - メモリ・計算量が破綻する（100 万列の sparse 行列を作っても後段モデルに渡せない）
 - 推論時に新規 ID が来ると OOV（out of vocabulary, 未知カテゴリ）になり予測不能
 - ID ごとの「個性」を学習しているだけで汎化能力がほぼゼロ
 - 個人情報保護の観点でも好ましくない（モデルに ID 自体が乗る）
 
-打ち手は「ID をやめて、その ID に紐づく行動を集約した数値特徴量に変換する」こと。例:
+打ち手は「ID をやめて、その ID に紐づく行動を集約した数値特徴量に変換する」ことです。例:
 
 - ユーザー ID → 過去 30 日の購入回数、平均購入額、最終購入からの経過日数、利用カテゴリ数
 - 商品 ID → 過去 7 日の販売数、平均レビュー点、在庫日数
-- 注文 ID → そもそも特徴量化しない（識別子は集計の主キーとして使う）
+- 注文 ID → 特徴量化しない（識別子は集計の主キーとして使う）
 
-ID は「識別子」であって「カテゴリ」ではない、という区別をつけるのが定石となる。
+ID は「識別子」であって「カテゴリ」ではない、という区別をつけるのが定石となります。
 
 ---
 
 ### 機械学習での使いどころ
 
-エンコーディングは Claude にテーブルデータの前処理を任せたときに必ず登場する操作で、ここを押さえると Claude の出力コードを読むときの判断軸が増える。
+エンコーディングは Claude にテーブルデータの前処理を任せたときに必ず登場する操作で、ここを押さえると Claude の出力コードを読むときの判断軸が増えます。
 
 - 受領したテーブルの各列に対して、エンコーディング方法と理由を明示する
 - 高基数カテゴリ（ID 系を含む）の扱い方を最初に決める

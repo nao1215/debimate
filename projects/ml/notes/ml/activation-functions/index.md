@@ -7,15 +7,15 @@ tags: ["machine-learning", "deep-learning"]
 weight: 35
 ---
 
-活性化関数（activation function）は、ニューラルネットの各ニューロンで「線形和の結果 `z = w · x + b` を非線形に変換する関数」のことである。これがあるからこそ複数層を積む意味が生まれ、ニューラルネットが任意の非線形関数を近似できるようになる。
+活性化関数（activation function）は、ニューラルネットの各ニューロンで「線形和の結果 `z = w · x + b` を非線形に変換する関数」のことです。これがあるからこそ複数層を積む意味が生まれ、ニューラルネットが任意の非線形関数を近似できるようになります。
 
-線形変換だけを何層積んでも、合成は結局 1 つの線形変換に潰れる（`A_2 (A_1 x) = (A_2 A_1) x`）。深さに意味を持たせるためには、層と層の間に「非線形」を入れる必要がある。その非線形を担うのが活性化関数で、選び方が学習の速さ・最終精度・[勾配消失](#勾配消失問題と-relu-の登場) の起きにくさを大きく左右する。
+線形変換だけを何層積んでも、合成は結局 1 つの線形変換に潰れます（`A_2 (A_1 x) = (A_2 A_1) x`）。深さに意味を持たせるためには、層と層の間に「非線形」を入れる必要があります。その非線形を担うのが活性化関数で、選び方が学習の速さ・最終精度・[勾配消失](#勾配消失問題と-relu-の登場) の起きにくさを大きく左右します。
 
-[パーセプトロン](../perceptron/) の step function を皮切りに、sigmoid → tanh → ReLU → GELU と歴史的に進化してきた経緯がある。現代の深層学習では ReLU 系（ReLU、Leaky ReLU、GELU、Swish）が標準で、sigmoid・tanh は出力層や特殊用途に限定されている。
+[パーセプトロン](../perceptron/) の step function を皮切りに、sigmoid → tanh → ReLU → GELU と歴史的に進化してきた経緯があります。現代の深層学習では ReLU 系（ReLU、Leaky ReLU、GELU、Swish）が標準で、sigmoid・tanh は出力層や特殊用途に限定されています。
 
 ### 代表的な活性化関数の形
 
-6 つの主要な活性化関数の入力 → 出力の対応を並べる。
+6 つの主要な活性化関数の入力 → 出力の対応を並べます。
 
 ```python
 import numpy as np
@@ -55,7 +55,7 @@ plt.savefig("activations_shapes.svg", bbox_inches="tight")
 
 ### 勾配消失問題と ReLU の登場
 
-活性化関数を選ぶうえで最も重要なのが「勾配（derivative）の振る舞い」である。[誤差逆伝播法](../backpropagation/) で勾配が層を伝わる際、各層の活性化関数の微分が掛け合わされる。この値が `< 1` の領域では、層を伝わるたびに勾配が指数的に小さくなる（vanishing gradient）。
+活性化関数を選ぶうえで最も重要なのが「勾配（derivative）の振る舞い」です。[誤差逆伝播法](../backpropagation/) で勾配が層を伝わる際、各層の活性化関数の微分が掛け合わされます。この値が `< 1` の領域では、層を伝わるたびに勾配が指数的に小さくなります（vanishing gradient）。
 
 ```python
 sigmoid_grad = sigmoid * (1 - sigmoid)        # max = 0.25 at z=0
@@ -70,15 +70,15 @@ plt.savefig("activations_gradients.svg", bbox_inches="tight")
 - tanh は `z = 0` で 1 と高いが、`|z| > 2` で急速に飽和し、深いネットでは同様に勾配が消える
 - ReLU は正領域で常に 1。何層積んでも正領域なら勾配が衰えない
 
-これが「2010 年代に深層学習がブレイクした主因の 1 つ」と言われる ReLU の貢献である。LeCun・Bengio・Hinton らの研究で、ReLU が深いネットの学習を可能にしたことが Nobel-level の発見として認知された（実際に 2024 年 Nobel 物理学賞）。
+これが「2010 年代に深層学習がブレイクした主因の 1 つ」と言われる ReLU の貢献です。LeCun・Bengio・Hinton らの研究で、ReLU が深いネットの学習を可能にしたことが Nobel-level の発見として認知されました（実際に 2024 年 Nobel 物理学賞）。
 
-ReLU にも弱点はあり、`z < 0` で勾配がちょうど 0 になるため、一度負側に振れたニューロンが学習しなくなる「dead ReLU」現象が起きる。これを救うために Leaky ReLU（負側にも小さい勾配 α を残す）、ELU、Swish、GELU などの改良版が次々に提案された。
+ReLU にも弱点はあり、`z < 0` で勾配がちょうど 0 になるため、一度負側に振れたニューロンが学習しなくなる「dead ReLU」現象が起きます。これを救うために Leaky ReLU（負側にも小さい勾配 α を残す）、ELU、Swish、GELU などの改良版が次々に提案されました。
 
 ---
 
 ### 同じ NN・違う活性化関数での決定境界
 
-同じアーキテクチャ（隠れ層 8-8）・同じデータでも、活性化関数で決定境界の形が変わる。
+同じアーキテクチャ（隠れ層 8-8）・同じデータでも、活性化関数で決定境界の形が変わります。
 
 ```python
 from sklearn.datasets import make_moons
@@ -97,13 +97,13 @@ plt.savefig("activations_decision_boundary.png", bbox_inches="tight")
 - tanh（中央）: sigmoid より急峻で当てはまりが改善
 - ReLU（右）: 折り目のある「piecewise linear」な境界。表現力が高く、学習も速い
 
-ReLU の境界が「直線の組み合わせ」になっているのは、ReLU 自身が piecewise linear だからである。複数の ReLU を組み合わせると、結果も piecewise linear な関数になり、これが [決定木](../decision-tree/) の階段状境界に近い表現を持つ。
+ReLU の境界が「直線の組み合わせ」になっているのは、ReLU 自身が piecewise linear だからであります。複数の ReLU を組み合わせると、結果も piecewise linear な関数になり、これが [決定木](../decision-tree/) の階段状境界に近い表現を持ちます。
 
 ---
 
 ### 学習速度の比較
 
-5 層の MLP を sigmoid / tanh / ReLU で訓練し、収束速度を比べる。
+5 層の MLP を sigmoid / tanh / ReLU で訓練し、収束速度を比べます。
 
 ```python
 from sklearn.neural_network import MLPRegressor
@@ -122,19 +122,19 @@ plt.savefig("activations_training_curves.svg", bbox_inches="tight")
 
 ![5 層 NN の学習曲線](./activations_training_curves.svg)
 
-縦軸が log スケールの MSE 損失。
+縦軸が log スケールの MSE 損失です。
 
 - ReLU（赤）: 数 epoch で大きく loss が下がり、80 epoch までに最低まで到達
 - tanh（緑）: ReLU よりやや遅いが収束はする
 - sigmoid（青）: 勾配消失で学習が極端に遅く、80 epoch でも他の 2 つの半分にしかならない
 
-「5 層程度でこの差」というのが重要で、ResNet のような 100 層を超えるネットワークでは sigmoid は実質的に学習不可能となる。逆に言うと「ReLU 以前は 2-3 層が限界だった」のが「ReLU 以降は 100+ 層でも普通に学習できる」ようになった、というのが深層学習の歴史的転換点となる。
+「5 層程度でこの差」というのが重要で、ResNet のような 100 層を超えるネットワークでは sigmoid は実質的に学習不可能となります。逆に言うと「ReLU 以前は 2-3 層が限界だった」のが「ReLU 以降は 100+ 層でも普通に学習できる」ようになった、というのが深層学習の歴史的転換点となります。
 
 ---
 
 ### 出力層の活性化関数
 
-隠れ層では基本 ReLU 系を使うが、出力層は「タスクに応じた関数」を使い分ける。
+隠れ層では基本 ReLU 系を使うが、出力層は「タスクに応じた関数」を使い分けます。
 
 ```mermaid
 graph TD
@@ -154,7 +154,7 @@ graph TD
 | 正の連続値 | exp / softplus | log-likelihood of Poisson 等 |
 | ピクセル値生成 | tanh / sigmoid | MSE / cross-entropy |
 
-これらは [損失関数](../loss-functions/) の選び方とセットで決まる。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、フレームワークでは `BCEWithLogitsLoss` や `CrossEntropyLoss` が「activation + loss」を内部で融合してくれる。
+これらは [損失関数](../loss-functions/) の選び方とセットで決まります。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、フレームワークでは `BCEWithLogitsLoss` や `CrossEntropyLoss` が「activation + loss」を内部で融合してくれます。
 
 ### 数学での使いどころ
 
@@ -177,7 +177,7 @@ graph TD
 - 画像生成 (GAN, Diffusion): tanh（出力を -1〜1 に正規化する場合）
 - 強化学習のポリシー: softmax（離散行動）または tanh（連続行動）
 
-ReLU の問題（dead neuron）が顕在化したケースでは、Leaky ReLU、ELU、Swish、GELU を試す。最新の Transformer 系では GELU が定着しているが、ReLU で十分なケースも多いと考えられる。
+ReLU の問題（dead neuron）が顕在化したケースでは、Leaky ReLU、ELU、Swish、GELU を試します。最新の Transformer 系では GELU が定着しているが、ReLU で十分なケースも多いと考えられます。
 
 ---
 

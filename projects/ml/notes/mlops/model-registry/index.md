@@ -7,13 +7,13 @@ tags: ["machine-learning", "mlops"]
 weight: 2
 ---
 
-モデルレジストリ（model registry）は、学習済みモデルに「名前 + バージョン + ステージ」を付けて中央管理する仕組みである。コードの世界での Git や npm レジストリに相当するもので、機械学習モデル特有のメタデータ（学習データ、ハイパーパラメータ、評価指標、承認者、デプロイ履歴）も一緒に管理する。
+モデルレジストリ（model registry）は、学習済みモデルに「名前 + バージョン + ステージ」を付けて中央管理する仕組みです。コードの世界での Git や npm レジストリに相当するもので、機械学習モデル特有のメタデータ（学習データ、ハイパーパラメータ、評価指標、承認者、デプロイ履歴）も一緒に管理します。
 
-[実験管理](../experiment-tracking/) と隣接するが役割は別物。実験管理は「すべての試行を残す」場所、モデルレジストリは「本番に出すと決めた選別済みモデルを管理する」場所、と棲み分ける。MLflow Model Registry、SageMaker Model Registry、Vertex AI Model Registry、Weights & Biases Model Registry などが代表実装で、いずれも同じコンセプトに沿っている。
+[実験管理](../experiment-tracking/) と隣接するが役割は別物です。実験管理は「すべての試行を残す」場所、モデルレジストリは「本番に出すと決めた選別済みモデルを管理する」場所、と棲み分けます。MLflow Model Registry、SageMaker Model Registry、Vertex AI Model Registry、Weights & Biases Model Registry などが代表実装で、いずれも同じコンセプトに沿っています。
 
 ### モデルレジストリが解決する課題
 
-レジストリを使わないと、学習済みモデル（`.pkl`、`.pt`、`.onnx` などのファイル）が共有ドライブや S3 バケットに無秩序に増えていく。
+レジストリを使わないと、学習済みモデル（`.pkl`、`.pt`、`.onnx` などのファイル）が共有ドライブや S3 バケットに無秩序に増えていきます。
 
 ```python
 # 共有ドライブ上のファイル例
@@ -26,17 +26,17 @@ model_2025-12-01.pkl       # 命名が時系列ベース
 model_takashi_branch.pkl   # 個人ブランチがそのまま本番に
 ```
 
-3 か月後に「今本番で動いているのはどれ？」と聞かれて答えられない、というのが典型的な失敗パターンとなる。
+3 か月後に「今本番で動いているのはどれ？」と聞かれて答えられない、というのが典型的な失敗パターンとなります。
 
 ![Naked file storage vs Model registry](./registry_vs_naked_files.svg)
 
-左の「ファイル名で管理」は、誰が責任者か、いつ本番に上がったか、評価指標は何だったかを別ドキュメント（Confluence、Notion、Slack）で追わないと分からない。右の「モデルレジストリ」は、`version` / `stage` / `metric` / `owner` / `promoted` がすべて 1 箇所に集まり、API・UI 両方から検索可能となる。
+左の「ファイル名で管理」は、誰が責任者か、いつ本番に上がったか、評価指標は何だったかを別ドキュメント（Confluence、Notion、Slack）で追わないと分かりません。右の「モデルレジストリ」は、`version` / `stage` / `metric` / `owner` / `promoted` がすべて 1 箇所に集まり、API・UI 両方から検索可能となります。
 
 ---
 
 ### ライフサイクルとステージ
 
-モデルレジストリは「ステージ（stage）」という抽象でモデルの状態を管理する。MLflow を例に取ると、次の 4 ステージが標準。
+モデルレジストリは「ステージ（stage）」という抽象でモデルの状態を管理します。MLflow を例に取ると、次の 4 ステージが標準です。
 
 ```mermaid
 graph LR
@@ -53,21 +53,21 @@ graph LR
 - Production: 本番トラフィックを受けている
 - Archived: 役目を終えた
 
-「`v3` を Production に上げる」ボタン 1 つでデプロイのトリガーが発火し、同じワンクリックで切り戻し（rollback）もできる、というのが理想形となる。
+「`v3` を Production に上げる」ボタン 1 つでデプロイのトリガーが発火し、同じワンクリックで切り戻し（rollback）もできる、というのが理想形となります。
 
 ### バージョン timeline の例
 
-複数の version が並走するのが普通で、registry はそれを年表として記録する。
+複数の version が並走するのが普通で、registry はそれを年表として記録します。
 
 ![モデル version の lifecycle 例](./registry_version_timeline.svg)
 
-`v1` から始まり、`v2` が登場して Production に昇格、`v3` は Staging で問題が出て Production に上がらず Archived、`v4` が現在の Production、というシナリオ。色がそのままステージで、各 version の経過が線で追える。「いつ何が本番だったか」のスナップショットが取れるので、後で「2026 年 5 月の予測結果はどのモデルだったか」のような監査要求に即答できる。
+`v1` から始まり、`v2` が登場して Production に昇格、`v3` は Staging で問題が出て Production に上がらず Archived、`v4` が現在の Production、というシナリオです。色がそのままステージで、各 version の経過が線で追えます。「いつ何が本番だったか」のスナップショットが取れるので、後で「2026 年 5 月の予測結果はどのモデルだったか」のような監査要求に即答できます。
 
 ---
 
 ### コード例: MLflow Model Registry
 
-[実験管理](../experiment-tracking/) で記録した run の中から best を選んで registry に登録する流れ。
+[実験管理](../experiment-tracking/) で記録した run の中から best を選んで registry に登録する流れです。
 
 ```python
 import mlflow
@@ -100,13 +100,13 @@ model = mlflow.pyfunc.load_model("models:/churn-classifier/Production")
 predictions = model.predict(X_new)
 ```
 
-`models:/churn-classifier/Production` のような URI で参照することで、Production stage が動けば本番コードが自動的に新モデルを使うようになる、というのが registry の威力である。
+`models:/churn-classifier/Production` のような URI で参照することで、Production stage が動けば本番コードが自動的に新モデルを使うようになる、というのが registry の威力です。
 
 ---
 
 ### メタデータとして何を残すか
 
-レジストリには「モデルファイル本体」だけでなく、後で参照したくなる属性を全部紐付ける。
+レジストリには「モデルファイル本体」だけでなく、後で参照したくなる属性を全部紐付けます。
 
 | 種別 | 例 |
 |---|---|
@@ -117,13 +117,13 @@ predictions = model.predict(X_new)
 | 運用 | deployed_endpoint_url, last_traffic_seen_at |
 | 説明 | description, model_card_url, known_limitations |
 
-特に「モデルカード（model card）」と呼ばれる説明文書を必ず添えるのは、現代の MLOps では事実上のルールとなっている。`想定する入力分布`、`既知の限界`、`fairness 評価結果`、`ライセンス` などを構造化して残しておくと、後で別チームが使うときの事故が減ると考えられる。
+特に「モデルカード（model card）」と呼ばれる説明文書を必ず添えるのは、現代の MLOps では事実上のルールとなっています。`想定する入力分布`、`既知の限界`、`fairness 評価結果`、`ライセンス` などを構造化して残しておくと、後で別チームが使うときの事故が減ると考えられます。
 
 ---
 
 ### Champion-Challenger と rollback
 
-レジストリの真価が出るのは「新モデルを本番に出したら問題が見つかった」場面である。champion-challenger パターン（既存の Production = champion を、新候補 = challenger と比較）を使うと、安全に切り替えができる。
+レジストリの真価が出るのは「新モデルを本番に出したら問題が見つかった」場面です。champion-challenger パターン（既存の Production = champion と、新候補 = challenger を比較）を使うと、安全に切り替えができます。
 
 ![Champion-Challenger と即時 rollback の流れ](./registry_champion_challenger.svg)
 
@@ -136,13 +136,13 @@ predictions = model.predict(X_new)
 - Day 30: v5 のメトリクスが悪化（f1 = 0.84、champion は 0.88）
 - Day 30: 即 rollback。100% を v4 に戻し、v5 を Archived へ
 
-レジストリ無しだとこの rollback が `git revert` → `docker build` → デプロイ、と数十分〜数時間かかる。レジストリありだと「`v4` を Production に戻す」ボタン 1 つで秒で切り戻る。本番障害対応のスピードに直結する違いとなる。
+レジストリ無しだとこの rollback が `git revert` → `docker build` → デプロイ、と数十分〜数時間かかります。レジストリありだと「`v4` を Production に戻す」ボタン 1 つで秒で切り戻ります。本番障害対応のスピードに直結する違いとなります。
 
 ---
 
 ### バージョニング規約
 
-モデルのバージョン番号にどう意味を持たせるかは、組織で決める運用ルール。3 つの流派がある。
+モデルのバージョン番号にどう意味を持たせるかは、組織で決める運用ルールです。3 つの流派があります。
 
 | 流派 | 例 | 特徴 |
 |---|---|---|
@@ -150,7 +150,7 @@ predictions = model.predict(X_new)
 | Semver 風 | `v2.3.1`（major.minor.patch） | 後方互換の有無を示せるが運用が重い |
 | 日付ベース | `2026-05-26.1` | 「いつのモデル」が一目で分かる |
 
-機械学習モデルは「API スキーマ変更」と「学習データ変更」の両方が起きるため、純粋な semver は当てはめにくい。実務では「単調増加 ID + 別途タグ」（`v23` + `tag: feature-A-added`）の運用が一番扱いやすいと考えられる。
+機械学習モデルは「API スキーマ変更」と「学習データ変更」の両方が起きるため、純粋な semver は当てはめにくいです。「単調増加 ID + 別途タグ」（`v23` + `tag: feature-A-added`）の運用が一番扱いやすいと考えられます。
 
 ### 数学での使いどころ
 

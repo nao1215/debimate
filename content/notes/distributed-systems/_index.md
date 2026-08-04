@@ -11,13 +11,17 @@ ShowBreadCrumbs: true
 description: ""
 ---
 
-分散システムに関する技術ノートです。コンテンツは準備中です。
+分散システムに関する技術ノートです。障害検知・合意・複製・整合性を中心に整理しています。
 
 ---
 
 ### コンテンツ一覧
 
-準備中。
+#### Failure Detection
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Heartbeat - ノードの死活監視](/notes/distributed-systems/heartbeat/) | 障害検知 |
 
 ---
 

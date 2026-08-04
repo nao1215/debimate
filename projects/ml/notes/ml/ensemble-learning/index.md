@@ -7,13 +7,13 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 25
 ---
 
-アンサンブル学習（ensemble learning）は、複数の弱いモデル（weak learner）を組み合わせて 1 つの強いモデルを作る一般的な枠組みである。アプローチは大きく 3 系統に分かれる。
+アンサンブル学習（ensemble learning）は、複数の弱いモデル（weak learner）を組み合わせて 1 つの強いモデルを作る一般的な枠組みです。アプローチは大きく 3 系統に分かれます。
 
 - bagging（bootstrap aggregating）: 独立に学習した多数のモデルを平均（または多数決）
 - boosting: 前のモデルの誤りを補正するように、次のモデルを逐次的に追加
 - stacking: 異なる種類の複数モデルを学習し、その出力をメタ学習器で結合
 
-[ランダムフォレスト](../random-forest/) は bagging の代表、[勾配ブースティング](../gradient-boosting/) は boosting の代表で、いずれも単体の [決定木](../decision-tree/) を構成要素として使う。アンサンブルは [バイアス-バリアンス分解](../bias-variance-tradeoff/) の枠組みで「Variance を抑える」「Bias を抑える」の両軸から理解できる。
+[ランダムフォレスト](../random-forest/) は bagging の代表、[勾配ブースティング](../gradient-boosting/) は boosting の代表で、いずれも単体の [決定木](../decision-tree/) を構成要素として使います。アンサンブルは [バイアス-バリアンス分解](../bias-variance-tradeoff/) の枠組みで「Variance を抑える」「Bias を抑える」の両軸から理解できます。
 
 ### 3 系統のアンサンブルの違い
 
@@ -40,7 +40,7 @@ graph TD
 
 ### 決定境界で見る違い
 
-同じデータに 3 つのアプローチを適用して、決定境界の形を見る。
+同じデータに 3 つのアプローチを適用して、決定境界の形を見ます。
 
 ```python
 from sklearn.datasets import make_moons
@@ -61,15 +61,15 @@ plt.savefig("ensemble_boundary_compare.png", bbox_inches="tight")
 
 ![単一決定木 / Bagging / Boosting の決定境界](./ensemble_boundary_compare.png)
 
-左の単一決定木は階段状で粗い境界。中央の Bagging（ランダムフォレスト）は階段の段差が平均化されてやや滑らかになる。右の Boosting はさらにデータに合致した曲線的な境界を作っている。同じノイズの多いデータでも、アンサンブルにすると境界の安定性と精度の両方が向上する傾向が見える。
+左の単一決定木は階段状で粗い境界です。中央の Bagging（ランダムフォレスト）は階段の段差が平均化されてやや滑らかになります。右の Boosting はさらにデータに合致した曲線的な境界を作っています。同じノイズの多いデータでも、アンサンブルにすると境界の安定性と精度の両方が向上する傾向が見えます。
 
 ---
 
 ### Bagging: Variance を平均で打ち消す
 
-Bagging（bootstrap aggregating）は、訓練データから [bootstrap サンプリング](../cross-validation/)（重複ありの復元抽出）でデータセットを `B` 個作り、それぞれで別々にモデルを学習し、最終予測は全モデルの出力の平均（回帰）か多数決（分類）にする。
+Bagging（bootstrap aggregating）は、訓練データから [bootstrap サンプリング](../cross-validation/)（重複ありの復元抽出）でデータセットを `B` 個作り、それぞれで別々にモデルを学習し、最終予測は全モデルの出力の平均（回帰）か多数決（分類）にします。
 
-[分散](../../math/variance/) のノートで触れた通り、独立な `B` 個の予測値を平均すると分散は `1/B` に縮む。Bagging はこの性質を使って、過学習しがちな深い決定木の予測分散を抑える設計となる。
+[分散](../../math/variance/) のノートで触れた通り、独立な `B` 個の予測値を平均すると分散は `1/B` に縮みます。Bagging はこの性質を使って、過学習しがちな深い決定木の予測分散を抑える設計となります。
 
 ```python
 # 20 個の深い決定木（個別）と 20 個の Bagging 予測器を 1 次元データで比較
@@ -84,15 +84,15 @@ plt.savefig("ensemble_bagging_variance.svg", bbox_inches="tight")
 
 ![個別の深い決定木は予測がバラつき、Bagging で平均化すると安定する](./ensemble_bagging_variance.svg)
 
-左の薄い青い線が「異なる訓練データで学習した 20 個の単一決定木の予測」で、それぞれが大きく異なる曲線を描く（高 Variance）。右の緑の線が「同じ 20 通りで Bagging（各 100 本の木の平均）した予測」で、20 本の曲線がほぼ重なる（低 Variance）。
+左の薄い青い線が「異なる訓練データで学習した 20 個の単一決定木の予測」で、それぞれが大きく異なる曲線を描きます（高 Variance）。右の緑の線が「同じ 20 通りで Bagging（各 100 本の木の平均）した予測」で、20 本の曲線がほぼ重なります（低 Variance）。
 
-ランダムフォレストは Bagging に「特徴量サンプリング」を加えた手法で、木同士の相関をさらに下げて Variance 削減効果を強める。詳細は [ランダムフォレスト](../random-forest/) のノートで触れている。
+ランダムフォレストは Bagging に「特徴量サンプリング」を加えた手法で、木同士の相関をさらに下げて Variance 削減効果を強めます。詳細は [ランダムフォレスト](../random-forest/) のノートで触れています。
 
 ---
 
 ### Boosting: Bias を逐次補正する
 
-Boosting は弱学習器（典型的には浅い決定木 = stump や `max_depth=3` 程度）を 1 つずつ追加していく。各ラウンドで「これまでの予測の残差（または誤分類されたサンプル）」を補正する方向に新しい学習器を学習する。
+Boosting は弱学習器（典型的には浅い決定木 = stump や `max_depth=3` 程度）を 1 つずつ追加していきます。各ラウンドで「これまでの予測の残差（または誤分類されたサンプル）」を補正する方向に新しい学習器を学習します。
 
 `F_m(x) = F_{m-1}(x) + ν · h_m(x)`
 
@@ -116,21 +116,21 @@ plt.savefig("ensemble_boosting_rounds.svg", bbox_inches="tight")
 
 ![Boosting のラウンド進行に伴う予測曲線の変化と訓練 MSE の推移](./ensemble_boosting_rounds.svg)
 
-左の図でラウンド 1 では浅い決定木 1 本の粗い予測、ラウンド 5 で形が見えてきて、ラウンド 30 でデータに沿った曲線になる。右の図で訓練 MSE はラウンドが進むほど単調に減少する。これを止めずに続けると過学習するため、early stopping（検証スコアが改善しなくなった時点で止める）が必須となる。
+左の図でラウンド 1 では浅い決定木 1 本の粗い予測、ラウンド 5 で形が見えてきて、ラウンド 30 でデータに沿った曲線になります。右の図で訓練 MSE はラウンドが進むほど単調に減少します。これを止めずに続けると過学習するため、early stopping（検証スコアが改善しなくなった時点で止める）が必須となります。
 
-Boosting には複数の変種がある。
+Boosting には複数の変種があります。
 
 - AdaBoost: 誤分類サンプルに高い重みを付けて次のラウンドを学習（古典）
 - 勾配ブースティング: 損失関数の勾配を残差として扱う（任意の微分可能損失に対応）
 - XGBoost / LightGBM / CatBoost: 勾配ブースティングの高速・実用版
 
-詳細は [勾配ブースティング](../gradient-boosting/) のノートで取り上げている。
+詳細は [勾配ブースティング](../gradient-boosting/) のノートで取り上げています。
 
 ---
 
 ### Stacking: 異なるモデルを組み合わせる
 
-Stacking は「異なる種類のモデル」を組み合わせる。基本モデル（base learners）を [交差検証](../cross-validation/) で学習し、その out-of-fold 予測をメタ学習器（meta learner）の入力として使う。
+Stacking は「異なる種類のモデル」を組み合わせます。基本モデル（base learners）を [交差検証](../cross-validation/) で学習し、その out-of-fold 予測をメタ学習器（meta learner）の入力として使います。
 
 ```mermaid
 graph LR
@@ -144,7 +144,7 @@ graph LR
     F --> G["最終予測"]
 ```
 
-3 つのアプローチの精度を実データで比較する。
+3 つのアプローチの精度を実データで比較します。
 
 ```python
 from sklearn.ensemble import StackingClassifier
@@ -179,9 +179,9 @@ stacking: 0.923
 
 ![単一決定木と 3 種類のアンサンブルの精度比較](./ensemble_accuracy_compare.svg)
 
-単一決定木の 85% から、いずれのアンサンブルも 92% 前後まで精度が上がる。Boosting と Stacking が拮抗しており、Stacking は base learner の多様性（線形 + 非線形カーネル + 木系）で互いの弱点を補完する効果が出ている。
+単一決定木の 85% から、いずれのアンサンブルも 92% 前後まで精度が上がります。Boosting と Stacking が拮抗しており、Stacking は base learner の多様性（線形 + 非線形カーネル + 木系）で互いの弱点を補完する効果が出ています。
 
-ただし Stacking はモデルが多重になるため、訓練時間・推論時間・メンテナンスコストがすべて増える。Kaggle 上位陣の解法ではよく見るが、実運用では「シンプルな勾配ブースティング 1 本」で十分な性能が出ることも多い、と考えられる。
+ただし Stacking はモデルが多重になるため、訓練時間・推論時間・メンテナンスコストがすべて増えます。Kaggle 上位陣の解法ではよく見るが、実運用では「シンプルな勾配ブースティング 1 本」で十分な性能が出ることも多い、と考えられます。
 
 ### 数学での使いどころ
 

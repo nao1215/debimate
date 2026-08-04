@@ -7,9 +7,9 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 32
 ---
 
-異常検知（anomaly detection, outlier detection）は、「正常データから外れた点」を検出する教師なし学習の一系統である。不正検知、故障予測、ネットワーク侵入検知、品質管理、医療診断など、「興味のあるクラスのサンプルが極端に少ない / 事前にラベルが取れない」場面で使われる。
+異常検知（anomaly detection, outlier detection）は、「正常データから外れた点」を検出する教師なし学習の一系統です。不正検知、故障予測、ネットワーク侵入検知、品質管理、医療診断など、「興味のあるクラスのサンプルが極端に少ない / 事前にラベルが取れない」場面で使われます。
 
-[クラス不均衡](../class-imbalance/) の極端なケースとも見なせるが、不均衡分類は「正例と負例の両方にラベルがある」状況、異常検知は「正常データだけ（または僅かな異常ラベル）から学ぶ」状況、という違いがある。代表的なアルゴリズムは 4 つで、データの形状と分布の前提によって使い分ける。
+[クラス不均衡](../class-imbalance/) の極端なケースとも見なせるが、不均衡分類は「正例と負例の両方にラベルがある」状況、異常検知は「正常データだけ（または僅かな異常ラベル）から学ぶ」状況、という違いがあります。代表的なアルゴリズムは 4 つで、データの形状と分布の前提によって使い分けます。
 
 ### 4 つの代表アルゴリズム
 
@@ -42,20 +42,20 @@ plt.savefig("anomaly_methods_compare.png", bbox_inches="tight")
 
 ![4 つの異常検知アルゴリズムの判定領域](./anomaly_methods_compare.png)
 
-正常クラスタが 2 つ + 散在する真の異常点（緑の枠）で 4 アルゴリズムを比較。
+正常クラスタが 2 つ + 散在する真の異常点（緑の枠）で 4 アルゴリズムを比較です。
 
 - Isolation Forest: 境界が「軸に平行な階段状」（決定木ベースなので）
 - LOF: 「境界線」なし。点ごとに異常判定（プロットには色付き領域は出せない）
 - One-Class SVM: 非線形な滑らかな境界（RBF カーネル）
 - Elliptic Envelope: 楕円形の境界（多変量正規分布の等密度面）
 
-それぞれが微妙に違う異常を検出する。実用では「データの形」「外れ値の性質」「計算コスト」のトレードオフで選ぶ。
+それぞれが微妙に違う異常を検出します。実用では「データの形」「外れ値の性質」「計算コスト」のトレードオフで選びます。
 
 ---
 
 ### Isolation Forest: 「孤立しやすい点」が異常
 
-Isolation Forest（iForest）は最も実用的な異常検知アルゴリズムの 1 つ。アイデアは「データを再帰的にランダムに分割して、何ステップで点を孤立させられるか」を測ること。
+Isolation Forest（iForest）は最も実用的な異常検知アルゴリズムの 1 つ。アイデアは「データを再帰的にランダムに分割して、何ステップで点を孤立させられるか」を測ることです。
 
 ```mermaid
 graph TD
@@ -66,11 +66,11 @@ graph TD
     D --> E["平均経路長が短い = 異常"]
 ```
 
-直感: 異常点は他の点から離れているので、ランダムな分割でも少数ステップで「単独」になりやすい。逆に正常点は密集地帯にいるので、何度も分割しないと孤立しない。
+直感: 異常点は他の点から離れているので、ランダムな分割でも少数ステップで「単独」になりやすいです。逆に正常点は密集地帯にいるので、何度も分割しないと孤立しません。
 
 ![Isolation Forest の概念図](./anomaly_isolation_concept.svg)
 
-赤い星（異常点）は緑線 2 本の分割だけで他の点と分離される。青い正常点を 1 つだけ取り出すには、はるかに多くの分割が必要。これを多数の木で平均化して anomaly score を計算する。
+赤い星（異常点）は緑線 2 本の分割だけで他の点と分離されます。青い正常点を 1 つだけ取り出すには、はるかに多くの分割が必要です。これを多数の木で平均化して anomaly score を計算します。
 
 iForest の長所:
 
@@ -81,7 +81,7 @@ iForest の長所:
 
 ### しきい値の選び方
 
-`contamination` パラメータ（異常の予測比率）は重要な hyperparameter。
+`contamination` パラメータ（異常の予測比率）は重要な hyperparameterです。
 
 ```python
 clf = IsolationForest(contamination="auto").fit(X)
@@ -93,19 +93,19 @@ plt.savefig("anomaly_threshold_tuning.svg", bbox_inches="tight")
 
 ![Score の分布と異なる contamination 値のしきい値](./anomaly_threshold_tuning.svg)
 
-正常データ（青）と異常データ（赤）のスコア分布が描かれ、3 つの異なる contamination でのしきい値が縦線で示されている。
+正常データ（青）と異常データ（赤）のスコア分布が描かれ、3 つの異なる contamination でのしきい値が縦線で示されています。
 
 - `contamination = 0.03`: しきい値が厳しい → 誤検知少だが見逃しが増える
 - `contamination = 0.07`: バランスの良い設定
 - `contamination = 0.15`: しきい値が緩い → 異常を捕まえやすいが誤検知も増える
 
-業務上のコスト（誤検知 vs 見逃し）に応じて選ぶ。`contamination="auto"` でアルゴリズムが自動推定もできるが、ドメイン知識で `0.01〜0.10` 程度の範囲から選ぶのが標準。
+業務上のコスト（誤検知 vs 見逃し）に応じて選びます。`contamination="auto"` でアルゴリズムが自動推定もできるが、ドメイン知識で `0.01〜0.10` 程度の範囲から選ぶのが標準です。
 
 ---
 
 ### 時系列の異常検知
 
-時系列特化の異常検知では、シンプルな rolling z-score がよく使われる。
+時系列特化の異常検知では、シンプルな rolling z-score がよく使われます。
 
 ```python
 window = 30
@@ -118,7 +118,7 @@ plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
 
 ![時系列の rolling z-score 異常検知](./anomaly_time_series.svg)
 
-過去 30 ステップの平均と標準偏差を計算し、現在値が `|z| > 3` を超えたら異常と判定。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出している。
+過去 30 ステップの平均と標準偏差を計算し、現在値が `|z| > 3` を超えたら異常と判定です。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出しています。
 
 時系列専用の手法は他にも:
 
@@ -154,7 +154,7 @@ plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
 - データ品質チェック: 入力データ自体の異常を発見
 - A/B test 中の異常値除去（[時系列予測](../time-series-forecasting/) の前処理）
 
-scikit-learn では `sklearn.ensemble.IsolationForest`、`sklearn.neighbors.LocalOutlierFactor`、`sklearn.svm.OneClassSVM`、`sklearn.covariance.EllipticEnvelope` が標準。深層学習系は `pyod`（Python Outlier Detection、20+ アルゴリズム）、`anomalib`（画像特化）、`tsod`（時系列特化）。
+scikit-learn では `sklearn.ensemble.IsolationForest`、`sklearn.neighbors.LocalOutlierFactor`、`sklearn.svm.OneClassSVM`、`sklearn.covariance.EllipticEnvelope` が標準です。深層学習系は `pyod`（Python Outlier Detection、20+ アルゴリズム）、`anomalib`（画像特化）、`tsod`（時系列特化）。
 
 ---
 

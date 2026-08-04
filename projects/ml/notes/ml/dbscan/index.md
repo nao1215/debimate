@@ -7,13 +7,13 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 29
 ---
 
-DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムである。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、形状が不規則だったりノイズが混じるデータで威力を発揮する。
+DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムです。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、形状が不規則だったりノイズが混じるデータで威力を発揮します。
 
 代表的な使い分けの判断軸: クラスタが「球形に近く `k` が分かっている」なら [k-means](../k-means/)、「密度の濃淡が手がかりで `k` 不明 + 外れ値あり」なら DBSCAN、「階層関係を見たい」なら [階層的クラスタリング](../hierarchical-clustering/)。
 
 ### k-means との対比
 
-非凸データ（三日月型）に対する両者の挙動。
+非凸データ（三日月型）に対する両者の挙動です。
 
 ```python
 from sklearn.cluster import DBSCAN, KMeans
@@ -27,13 +27,13 @@ plt.savefig("dbscan_vs_kmeans.svg", bbox_inches="tight")
 
 ![k-means は分離失敗、DBSCAN は月を正しく抽出](./dbscan_vs_kmeans.svg)
 
-k-means（左）はクラスタを「球形」で近似するため、三日月型データを縦に分けてしまい間違える。DBSCAN（右）は「密につながった点同士は同じクラスタ」と判定するので、月の形をそのまま 2 クラスタに分けられる。さらに端の数点が「noise」として `×` 印で別扱いされている。
+k-means（左）はクラスタを「球形」で近似するため、三日月型データを縦に分けてしまい間違えます。DBSCAN（右）は「密につながった点同士は同じクラスタ」と判定するので、月の形をそのまま 2 クラスタに分けられます。さらに端の数点が「noise」として `×` 印で別扱いされています。
 
 ---
 
 ### コア・ボーダー・ノイズの 3 分類
 
-DBSCAN は各点を 3 種類に分類する。
+DBSCAN は各点を 3 種類に分類します。
 
 - core point（コア点）: 半径 `eps` 以内に `min_samples` 個以上の点を持つ
 - border point（ボーダー点）: コア点ではないが、コア点の近傍 `eps` に入る
@@ -61,7 +61,7 @@ plt.savefig("dbscan_core_border_noise.svg", bbox_inches="tight")
 
 ![赤がコア、橙がボーダー、×がノイズ](./dbscan_core_border_noise.svg)
 
-赤い円が各 core 点の `eps` 範囲。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられる。ボーダー点はコアではないがクラスタの縁に属し、ノイズ点は外れ値として `label = -1` で返される。
+赤い円が各 core 点の `eps` 範囲です。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられます。ボーダー点はコアではないがクラスタの縁に属し、ノイズ点は外れ値として `label = -1` で返されます。
 
 ---
 
@@ -72,7 +72,7 @@ DBSCAN の 2 つのハイパーパラメータ:
 - `eps`（半径）: クラスタの「密度しきい値」を間接的に決める
 - `min_samples`（最小サンプル数）: コア点の判定基準
 
-`eps` の効果を見る。
+`eps` の効果を見ます。
 
 ```python
 for eps in [0.3, 0.8, 2.0]:
@@ -86,7 +86,7 @@ plt.savefig("dbscan_eps_sensitivity.png", bbox_inches="tight")
 - `eps = 0.8`: 適切。3 つのクラスタが正しく分離される
 - `eps = 2.0`: 密度しきい値が低すぎる。すべてが 1 つの大クラスタに
 
-`eps` の選び方の定石として「k-distance プロット」がある。各点の `k` 番目近傍までの距離をソートしてグラフ化し、曲がり角（elbow）の高さを `eps` の目安にする。
+`eps` の選び方の定石として「k-distance プロット」があります。各点の `k` 番目近傍までの距離をソートしてグラフ化し、曲がり角（elbow）の高さを `eps` の目安にします。
 
 ```python
 from sklearn.neighbors import NearestNeighbors
@@ -101,7 +101,7 @@ plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 
 ![k-distance プロット: 曲がり角を eps として採用](./dbscan_k_distance_elbow.svg)
 
-横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」。曲がり角（多くの場合 95 パーセンタイル付近）が「ここから先は外れ値」の境界で、その高さを `eps` の初期値にする。
+横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」。曲がり角（多くの場合 95 パーセンタイル付近）が「ここから先は外れ値」の境界で、その高さを `eps` の初期値にします。
 
 `min_samples` は次の目安で選ぶ:
 
@@ -131,7 +131,7 @@ plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 - 形状認識（非凸オブジェクトの抽出）
 - ストリーミング応用: streaming-DBSCAN、ST-DBSCAN
 
-scikit-learn では `sklearn.cluster.DBSCAN`、大規模データ向けに `HDBSCAN`（階層型 DBSCAN、`hdbscan` パッケージ）がある。HDBSCAN は `eps` を自動で選ぶため使いやすい。
+scikit-learn では `sklearn.cluster.DBSCAN`、大規模データ向けに `HDBSCAN`（階層型 DBSCAN、`hdbscan` パッケージ）があります。HDBSCAN は `eps` を自動で選ぶため使いやすいです。
 
 ---
 

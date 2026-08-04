@@ -7,15 +7,15 @@ tags: ["machine-learning", "scikit-learn", "interpretability"]
 weight: 33
 ---
 
-特徴量重要度（feature importance）は、「学習済みモデルにとってどの特徴量がどれだけ予測に効いているか」を定量化する値である。モデルの説明性を上げる、不要な特徴量を捨てる、データ収集の優先順位を決める、といった目的で使われる。
+特徴量重要度（feature importance）は、「学習済みモデルにとってどの特徴量がどれだけ予測に効いているか」を定量化する値です。モデルの説明性を上げる、不要な特徴量を捨てる、データ収集の優先順位を決める、といった目的で使われます。
 
-代表的な手法は 3 系統に大別できる。
+代表的な手法は 3 系統に大別できます。
 
 - 組み込み重要度（model-specific）: 木系モデルの MDI（mean decrease in impurity）、線形モデルの係数の絶対値
 - 並べ替え重要度（permutation importance）: 1 列をシャッフルしたときのスコア低下を測る
 - SHAP 値（model-agnostic, ゲーム理論ベース）: 各サンプル × 各特徴量に対する寄与を協力ゲーム理論の枠組みで分配
 
-このうち permutation importance は実装がシンプルで偏りが少なく、モデルに依存しないため第一選択肢として使いやすい。組み込み重要度は学習データから直接取れるので速いが、いくつかの落とし穴（高カーディナリティバイアス）がある。
+このうち permutation importance は実装がシンプルで偏りが少なく、モデルに依存しないため第一選択肢として使いやすいです。組み込み重要度は学習データから直接取れるので速いが、いくつかの落とし穴（高カーディナリティバイアス）があります。
 
 ### 3 系統の使い分け
 
@@ -40,7 +40,7 @@ graph TD
 
 ### 組み込み重要度（MDI）: 速いが偏る
 
-[ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) では、各特徴量で分割したときの「不純度の減少量の合計」が `feature_importances_` として取れる。これが MDI（mean decrease in impurity）である。
+[ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) では、各特徴量で分割したときの「不純度の減少量の合計」が `feature_importances_` として取れます。これが MDI（mean decrease in impurity）です。
 
 ```python
 from sklearn.datasets import load_breast_cancer
@@ -59,9 +59,9 @@ plt.savefig("featimp_mdi.svg", bbox_inches="tight")
 
 ![乳がんデータでの MDI 上位 15 特徴量](./featimp_mdi.svg)
 
-`worst perimeter`、`worst area`、`worst concave points` あたりが上位に来ている。MDI の利点は (1) 学習中に副産物として計算できるので高速、(2) すべての訓練サンプルを使うので分散が小さい、という 2 点。
+`worst perimeter`、`worst area`、`worst concave points` あたりが上位に来ています。MDI の利点は (1) 学習中に副産物として計算できるので高速、(2) すべての訓練サンプルを使うので分散が小さい、という 2 点です。
 
-ただし MDI には 2 つの偏りがある。
+ただし MDI には 2 つの偏りがあります。
 
 - 高カーディナリティバイアス: 連続値や値の種類が多い特徴量に高い重要度を付けやすい
 - 相関する特徴量への分散: 似た特徴量があると重要度が分散して、本来重要なはずの特徴量の値が薄まる
@@ -80,7 +80,7 @@ graph LR
     D --> E["5. n_repeats 回繰り返し平均"]
 ```
 
-「その特徴量を壊したらどれだけスコアが落ちるか」を測る、というシンプルな発想である。
+「その特徴量を壊したらどれだけスコアが落ちるか」を測る、というシンプルな発想です。
 
 ```python
 import numpy as np
@@ -95,9 +95,9 @@ plt.savefig("featimp_permutation_steps.svg", bbox_inches="tight")
 
 ![Permutation importance の手順](./featimp_permutation_steps.svg)
 
-左: 元のデータ X、中央: x2 列だけランダムに並べ替えたデータ、右: スコア低下から計算した重要度。x2 列をシャッフルするとスコアが大きく落ちるので、x2 の重要度が高いと判定される。x1 や x3 の重要度はほぼ 0、x4 もわずかにスコアに寄与している、という読みになる。
+左: 元のデータ X、中央: x2 列だけランダムに並べ替えたデータ、右: スコア低下から計算した重要度です。x2 列をシャッフルするとスコアが大きく落ちるので、x2 の重要度が高いと判定されます。x1 や x3 の重要度はほぼ 0、x4 もわずかにスコアに寄与している、という読みになります。
 
-実装は scikit-learn の `permutation_importance` 1 行で済む。
+実装は scikit-learn の `permutation_importance` 1 行で済みます。
 
 ```python
 from sklearn.inspection import permutation_importance
@@ -109,9 +109,9 @@ plt.savefig("featimp_mdi_vs_permutation.svg", bbox_inches="tight")
 
 ![MDI と permutation importance を並べて比較](./featimp_mdi_vs_permutation.svg)
 
-左が MDI（訓練データから計算）、右が permutation importance（テストデータから計算）。上位の特徴量はおおむね一致するが、順位や相対的な大きさが微妙に異なる。permutation importance は誤差バー（黒い線）も出すので、「重要度の差は誤差範囲か」も判断できる。
+左が MDI（訓練データから計算）、右が permutation importance（テストデータから計算）。上位の特徴量はおおむね一致するが、順位や相対的な大きさが微妙に異なります。permutation importance は誤差バー（黒い線）も出すので、「重要度の差は誤差範囲か」も判断できます。
 
-注意点として、permutation importance は次の特性を持つ。
+注意点として、permutation importance は次の特性を持ちます。
 
 - テストデータ（または validation データ）で計算する: 訓練データで計算すると過学習を含んだ重要度になる
 - 計算コストが高い: 特徴量数 × n_repeats 回の評価が必要
@@ -121,7 +121,7 @@ plt.savefig("featimp_mdi_vs_permutation.svg", bbox_inches="tight")
 
 ### MDI のバイアスを permutation で見破る
 
-「高カーディナリティ特徴量に MDI がバイアスする」現象を、ランダムな ID 列を加えて確認する。
+ランダムな ID 列を加えて、「高カーディナリティ特徴量に MDI がバイアスする」現象を確認します。
 
 ```python
 from sklearn.datasets import make_classification
@@ -138,17 +138,17 @@ plt.savefig("featimp_mdi_bias.svg", bbox_inches="tight")
 
 ![ランダム ID 列が MDI で過大評価される](./featimp_mdi_bias.svg)
 
-`random_id` は予測に全く無関係なランダム列だが、MDI（青）では `x1` `x2` と並ぶ重要度を獲得している。これは木が「分割の候補」として連続値や値の種類の多い列を選びやすく、訓練データ上ではたまたま不純度を下げる分割を見つけられてしまうため。
+`random_id` は予測に全く無関係なランダム列だが、MDI（青）では `x1` `x2` と並ぶ重要度を獲得しています。これは木が「分割の候補」として連続値や値の種類の多い列を選びやすく、訓練データ上ではたまたま不純度を下げる分割を見つけられてしまうためです。
 
-一方、permutation importance（緑）では `random_id` の値はほぼ 0 で、本物の `x1〜x3` だけが正しく高い重要度を持つ。テストデータでシャッフルしても、もともと予測に効いていないのでスコアが落ちないからである。
+一方、permutation importance（緑）では `random_id` の値はほぼ 0 で、本物の `x1〜x3` だけが正しく高い重要度を持ちます。テストデータでシャッフルしても、もともと予測に効いていないのでスコアが落ちないからです。
 
-教訓: 木系モデルの MDI を信じる前に、permutation importance で再検証するのが安全。実装が `from sklearn.inspection import permutation_importance` で 1 行なので、コストはほぼ無い。
+教訓: 木系モデルの MDI を信じる前に、permutation importance で再検証するのが安全です。実装が `from sklearn.inspection import permutation_importance` で 1 行なので、コストはほぼありません。
 
 ---
 
 ### 相関のある特徴量は重要度が分散する
 
-互いに相関の強い特徴量があると、permutation importance は両者の重要度を「半分ずつ」分配しがちになる。`A` と `B` が同じ情報を持つなら、`A` をシャッフルしても `B` から情報を引けるのでスコアが落ちにくく、`B` をシャッフルしても同様、という現象である。
+互いに相関の強い特徴量があると、permutation importance は両者の重要度を「半分ずつ」分配しがちになります。`A` と `B` が同じ情報を持つなら、`A` をシャッフルしても `B` から情報を引けるのでスコアが落ちにくく、`B` をシャッフルしても同様、という現象です。
 
 対策:
 

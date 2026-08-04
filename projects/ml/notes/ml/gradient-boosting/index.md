@@ -7,11 +7,11 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 24
 ---
 
-GradientBoosting（勾配ブースティング）は、浅い [決定木](../decision-tree/) のような弱い学習器を 1 本ずつ順番に足していき、前のモデルが取りこぼした「誤差（残差）」を次の木で説明させることで予測精度を高める教師あり学習の手法である。最終的な予測は、これまで足したすべての木の出力を足し合わせた加法モデル `F(x) = f_1(x) + f_2(x) + ... + f_M(x)` として表される。
+GradientBoosting（勾配ブースティング）は、浅い [決定木](../decision-tree/) のような弱い学習器を 1 本ずつ順番に足していき、前のモデルが取りこぼした「誤差（残差）」を次の木で説明させることで予測精度を高める教師あり学習の手法です。最終的な予測は、これまで足したすべての木の出力を足し合わせた加法モデル `F(x) = f_1(x) + f_2(x) + ... + f_M(x)` として表されます。
 
-[RandomForest](../random-forest/) と並ぶ [アンサンブル学習](../ensemble-learning/) の代表だが、考え方の方向が逆になっている。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取る。RandomForest が「多様な意見を平均して安定させる」のに対し、GradientBoosting は「直前の誤りを少しずつ削っていく」発想と言える。
+[RandomForest](../random-forest/) と並ぶ [アンサンブル学習](../ensemble-learning/) の代表だが、考え方の方向が逆になっています。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取ります。RandomForest が「多様な意見を平均して安定させる」のに対し、GradientBoosting は「直前の誤りを少しずつ削っていく」発想と言えます。
 
-「残差」は厳密には [損失関数](../loss-functions/) の負の勾配で、回帰なら MSE の勾配（= 残差そのもの）、分類なら交差エントロピーの勾配が使われる。損失関数を切り替えれば回帰・分類・分位回帰・ランキングなど多用途に適用できる柔軟さが、勾配ブースティングの強みの 1 つとなる。
+「残差」は厳密には [損失関数](../loss-functions/) の負の勾配で、回帰なら MSE の勾配（= 残差そのもの）、分類なら交差エントロピーの勾配が使われます。損失関数を切り替えれば回帰・分類・分位回帰・ランキングなど多用途に適用できる柔軟さが、勾配ブースティングの強みの 1 つとなります。
 
 | | RandomForest（Bagging） | GradientBoosting（Boosting） |
 |---|---|---|
@@ -22,7 +22,7 @@ GradientBoosting（勾配ブースティング）は、浅い [決定木](../dec
 | 学習の並列化 | 容易（木同士が独立） | 木単位では困難（依存関係あり） |
 | 代表実装 | scikit-learn `RandomForestClassifier` | scikit-learn `HistGradientBoostingClassifier`、LightGBM、XGBoost、CatBoost |
 
-表形式データ（テーブルデータ）のコンペや実運用では、Kaggle 系を中心に GradientBoosting 系（特に LightGBM / XGBoost）が最強クラスのモデルとして使われることが多いと言える。一方でハイパーパラメータの感度が高く、調整なしでは [RandomForest](../random-forest/) に負けることもあるため、`learning_rate` と `n_estimators` と `max_depth` のバランス取りが運用上の中核となる。
+表形式データ（テーブルデータ）のコンペや実運用では、Kaggle 系を中心に GradientBoosting 系（特に LightGBM / XGBoost）が最強クラスのモデルとして使われることが多いと言えます。一方でハイパーパラメータの感度が高く、調整なしでは [RandomForest](../random-forest/) に負けることもあるため、`learning_rate` と `n_estimators` と `max_depth` のバランス取りが運用上の中核となります。
 
 ### 用語の整理
 
@@ -51,30 +51,30 @@ graph TD
     F -- はい --> G[最終モデル]
 ```
 
-「勾配」という名前は、損失関数を最小化する方向（勾配方向）に予測を更新していくことから来ている。回帰での二乗誤差なら勾配は単純な残差そのものになるが、分類のロジスティック損失では勾配がもう少し複雑な形になる。詳細はライブラリが自動で扱うので、利用側は「残差を埋めていく」と理解しておけば十分と考えられる。
+「勾配」という名前は、損失関数を最小化する方向（勾配方向）に予測を更新していくことから来ています。回帰での二乗誤差なら勾配は単純な残差そのものになるが、分類のロジスティック損失では勾配がもう少し複雑な形になります。詳細はライブラリが自動で扱うので、利用側は「残差を埋めていく」と理解しておけば十分と考えられます。
 
 ---
 
 ### 残差を埋めていく直感
 
-弱い学習器（浅い木）を 1, 3, 10, 50 本と積み上げると、予測曲線が真の関数（緑の点線）に徐々に近づいていく。
+弱い学習器（浅い木）を 1, 3, 10, 50 本と積み上げると、予測曲線が真の関数（緑の点線）に徐々に近づいていきます。
 
 ![Progressive fit by GBDT](./gradient-boosting_progressive_fit.svg)
 
-1 本だけだと階段関数のような粗い形にしかならない。3 本足すと細かい階段が増え、10 本で大まかな形が見えてくる。50 本では真の関数によく一致するが、訓練点のノイズに引っ張られ始めている兆候も見える（これが過学習の入口）。
+1 本だけだと階段関数のような粗い形にしかなりません。3 本足すと細かい階段が増え、10 本で大まかな形が見えてきます。50 本では真の関数によく一致するが、訓練点のノイズに引っ張られ始めている兆候も見えます（これが過学習の入口）。
 
-各イテレーションで何が起きているかをもう少し細かく見ると、次のような流れになる。
+各イテレーションで何が起きているかをもう少し細かく見ると、次のような流れになります。
 
 ![Residual fitting step by step](./gradient-boosting_residual.svg)
 
-左図: 1 本目の木は元データを粗く近似する。残差（真値 - 予測）が残っている。
-右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習する。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなる。これを繰り返すのが GradientBoosting の本質である。
+左図: 1 本目の木は元データを粗く近似します。残差（真値 - 予測）が残っています。
+右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習します。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなります。これを繰り返すのが GradientBoosting の本質です。
 
 ---
 
 ### 決定木の分岐例（しきい値）
 
-GradientBoosting で使う弱い学習器は、典型的には深さ 3〜8 の決定木である。決定木は「ある特徴量がしきい値以下か」で分岐を作り、葉に予測値を持つ。
+GradientBoosting で使う弱い学習器は、典型的には深さ 3〜8 の決定木です。決定木は「ある特徴量がしきい値以下か」で分岐を作り、葉に予測値を持ちます。
 
 ```mermaid
 graph TD
@@ -86,19 +86,19 @@ graph TD
     Z -->|No| D["予測: 1"]
 ```
 
-GradientBoosting は、こうした浅い木を何百本も足し合わせる。1 本の木の表現力は限定的だが、足し合わせることで滑らかな関数や複雑な相互作用を表現できるようになる。
+GradientBoosting は、こうした浅い木を何百本も足し合わせます。1 本の木の表現力は限定的だが、足し合わせることで滑らかな関数や複雑な相互作用を表現できるようになります。
 
 ---
 
 ### ハイパーパラメータのトレードオフ
 
-GradientBoosting の挙動を決める主要なハイパーパラメータは 3 つあり、互いに強く絡み合っている。[ハイパーパラメータ](../hyperparameter/)の選定はこの 3 つから入る。
+GradientBoosting の挙動を決める主要なハイパーパラメータは 3 つあり、互いに強く絡み合っています。[ハイパーパラメータ](../hyperparameter/)の選定はこの 3 つから入ります。
 
 - `learning_rate` （学習率、典型値 0.01〜0.3）: 各木の寄与の大きさ。小さいほど慎重に学習する
 - `n_estimators` （木の本数、典型値 100〜2000）: 何本まで足すか
 - `max_depth` （各木の深さ、典型値 3〜8）: 個々の木の複雑さ
 
-`learning_rate` と `n_estimators` は「ほぼ反比例」の関係にある。`learning_rate=0.5` なら 50 本で十分でも、`learning_rate=0.01` なら 500〜1000 本必要、という具合に動く。下の図は同じデータで `learning_rate` だけ変えた 3 ケースの test log loss を `n_estimators` ごとに描いたもの。
+`learning_rate` と `n_estimators` は「ほぼ反比例」の関係にあります。`learning_rate=0.5` なら 50 本で十分でも、`learning_rate=0.01` なら 500〜1000 本必要、という具合に動きます。下の図は同じデータで `learning_rate` だけ変えた 3 ケースの test log loss を `n_estimators` ごとに描いたものです。
 
 ![learning_rate trade-off](./gradient-boosting_learning_rate.svg)
 
@@ -106,7 +106,7 @@ GradientBoosting の挙動を決める主要なハイパーパラメータは 3 
 - `learning_rate=0.1` はバランスが良く、安定して低い loss に届く
 - `learning_rate=0.01` はゆっくり下がるが、300 本ではまだ底に届いていない
 
-経験則として、`learning_rate=0.05〜0.1` に固定し、`n_estimators` を大きめに取って early stopping で打ち切る、というやり方が安定する。
+経験則として、`learning_rate=0.05〜0.1` に固定し、`n_estimators` を大きめに取って early stopping で打ち切る、というやり方が安定します。
 
 ```python
 from sklearn.ensemble import HistGradientBoostingClassifier
@@ -122,19 +122,19 @@ model = HistGradientBoostingClassifier(
 )
 ```
 
-`HistGradientBoostingClassifier` は scikit-learn 0.21 から導入された高速実装で、ヒストグラム化により大規模データでも実用的に動く。`GradientBoostingClassifier` より一桁速いことが多いので、特別な理由がなければこちらを使うのが標準的と考えられる。
+`HistGradientBoostingClassifier` は scikit-learn 0.21 から導入された高速実装で、ヒストグラム化により大規模データでも実用的に動きます。`GradientBoostingClassifier` より一桁速いことが多いので、特別な理由がなければこちらを使うのが標準的と考えられます。
 
 ---
 
 ### 過学習と早期停止
 
-GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を増やすほど訓練誤差は下がり続ける。一方でテスト誤差はある時点で底を打ち、その後上昇に転じる。これが GradientBoosting の典型的な過学習パターンである。
+GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を増やすほど訓練誤差は下がり続けます。一方でテスト誤差はある時点で底を打ち、その後上昇に転じます。これが GradientBoosting の典型的な過学習パターンです。
 
 ![Train vs test loss with early stopping](./gradient-boosting_early_stopping.svg)
 
-このデータでは test log loss は 89 イテレーション付近で最小（0.291）に到達し、その後 500 イテレーションまで進めると 0.371 まで悪化する。500 本も学習させると 27% も loss が悪化する勘定で、early stopping を入れないと無駄な計算をしながら過学習を進めることになる。
+このデータでは test log loss は 89 イテレーション付近で最小（0.291）に到達し、その後 500 イテレーションまで進めると 0.371 まで悪化します。500 本も学習させると 27% も loss が悪化する勘定で、early stopping を入れないと無駄な計算をしながら過学習を進めることになります。
 
-[過学習](../overfitting/)対策として、GradientBoosting 系では次の手段が標準的に用意されている。
+[過学習](../overfitting/)対策として、GradientBoosting 系では次の手段が標準的に用意されています。
 
 - early stopping: 検証 loss が改善しなくなったら学習を打ち切る
 - `learning_rate` を小さく: 1 本あたりの影響を抑えて、慎重に進む
@@ -179,7 +179,7 @@ GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を
 
 ## Python での実例
 
-scikit-learn には 2 種類の実装がある。新しめのプロジェクトでは `HistGradientBoostingClassifier` を選ぶのが標準的。
+scikit-learn には 2 種類の実装があります。新しめのプロジェクトでは `HistGradientBoostingClassifier` を選ぶのが標準的です。
 
 ```python
 import pandas as pd
@@ -209,9 +209,9 @@ print("ROC-AUC:", roc_auc_score(y_valid, proba))
 print("Trees actually used:", model.n_iter_)
 ```
 
-`n_iter_` で実際に学習された木の本数を確認できる。`max_iter=1000` でも early stopping で 100〜300 本で止まることが多い。
+`n_iter_` で実際に学習された木の本数を確認できます。`max_iter=1000` でも early stopping で 100〜300 本で止まることが多いです。
 
-より高速・高性能が必要な場合は LightGBM / XGBoost / CatBoost への乗り換えを検討する。インターフェースは scikit-learn 互換のラッパーがあるので、置き換えは小さな差分で済む。
+より高速・高性能が必要な場合は LightGBM / XGBoost / CatBoost への乗り換えを検討します。インターフェースは scikit-learn 互換のラッパーがあるので、置き換えは小さな差分で済みます。
 
 | 実装 | 特徴 |
 |---|---|
@@ -224,7 +224,7 @@ print("Trees actually used:", model.n_iter_)
 
 ### 機械学習での使いどころ
 
-表形式データの分類・回帰では、まず [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) でベースラインを取り、その後 GradientBoosting 系で本命を狙う、という流れが定番になっていると言える。
+表形式データの分類・回帰では、まず [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) でベースラインを取り、その後 GradientBoosting 系で本命を狙う、という流れが定番になっていると言えます。
 
 - 高精度が必要な分類・回帰: Kaggle のテーブルコンペで上位常連
 - 特徴量が多く複雑な関係を含むデータ: 非線形・相互作用に強い

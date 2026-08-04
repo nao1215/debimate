@@ -7,16 +7,16 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 30
 ---
 
-階層的クラスタリング（hierarchical clustering）は、データ点を徐々にマージしていく（または分割していく）ことで、樹形図（dendrogram）として全階層のクラスタ構造を可視化するアルゴリズムである。[k-means](../k-means/) や [DBSCAN](../dbscan/) のように「事前に `k` やパラメータを決める」必要がなく、樹形図を見てから「どこで切るか」で粒度を選べる。
+階層的クラスタリング（hierarchical clustering）は、データ点を徐々にマージしていく（または分割していく）ことで、樹形図（dendrogram）として全階層のクラスタ構造を可視化するアルゴリズムです。[k-means](../k-means/) や [DBSCAN](../dbscan/) のように「事前に `k` やパラメータを決める」必要がなく、樹形図を見てから「どこで切るか」で粒度を選べます。
 
-代表的な使い分けの判断軸: 「`k` が決まらない、まず構造を見たい」「樹形図で説明したい」「クラスタの粒度を後から変えたい」場合に階層的が向く。ただし計算量 `O(n²)` 〜 `O(n³)` で大規模データには不向き。
+代表的な使い分けの判断軸: 「`k` が決まらない、まず構造を見たい」「樹形図で説明したい」「クラスタの粒度を後から変えたい」場合に階層的が向きます。ただし計算量 `O(n²)` 〜 `O(n³)` で大規模データには不向きです。
 
 ### 凝集型と分割型
 
 - 凝集型（agglomerative, bottom-up）: 各点を 1 クラスタとして始め、最も近い 2 クラスタを順にマージ
 - 分割型（divisive, top-down）: 全データを 1 クラスタとして始め、繰り返し 2 分割
 
-実装はほぼ凝集型が標準（scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy`）。分割型は計算量が大きく、`scipy` の `cluster.hierarchy.bisect_kmeans` 程度。
+実装はほぼ凝集型が標準（scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy`）。分割型は計算量が大きく、`scipy` の `cluster.hierarchy.bisect_kmeans` 程度です。
 
 ```python
 import numpy as np
@@ -31,13 +31,13 @@ plt.savefig("hierarchical_steps.svg", bbox_inches="tight")
 
 ![凝集型クラスタリングのステップ進行](./hierarchical_steps.svg)
 
-ステップ 0 では各点が独立したクラスタ。ステップ 1 で最も近い 2 点（左下のペア）をマージ、ステップ 2 では別の点群がまとまり、ステップ 3 で `k = 3` の状態に到達。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムだが、最近接の定義（リンク方法）で結果が変わる。
+ステップ 0 では各点が独立したクラスタです。ステップ 1 で最も近い 2 点（左下のペア）をマージ、ステップ 2 では別の点群がまとまり、ステップ 3 で `k = 3` の状態に到達です。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムだが、最近接の定義（リンク方法）で結果が変わります。
 
 ---
 
 ### 樹形図（dendrogram）と切り方
 
-凝集型の出力は「樹形図」で可視化する。
+凝集型の出力は「樹形図」で可視化します。
 
 ```python
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
@@ -53,19 +53,19 @@ plt.savefig("hierarchical_dendrogram.svg", bbox_inches="tight")
 
 ![Dendrogram と高さによる切り分け](./hierarchical_dendrogram.svg)
 
-左の樹形図は「下からマージしていく階層」を表す。高さ `h` で水平に切ると、その時点での「未マージのサブツリー数」がクラスタ数になる。
+左の樹形図は「下からマージしていく階層」を表します。高さ `h` で水平に切ると、その時点での「未マージのサブツリー数」がクラスタ数になります。
 
 - 高さ 8 で切る: 3 つのクラスタ
 - 高さ 15 で切る: 2 つのクラスタ
 - 高さ 0 で切る: n 個のクラスタ（各点独立）
 
-右の散布図は `h = 8` で切った結果。`k` を事前に決めなくても、樹形図を眺めて「どの高さで切るのが自然か」を判断できる。「縦に伸びた gap」（マージ間隔が大きい高さ）が自然な切れ目の候補となる。
+右の散布図は `h = 8` で切った結果です。`k` を事前に決めなくても、樹形図を眺めて「どの高さで切るのが自然か」を判断できます。「縦に伸びた gap」（マージ間隔が大きい高さ）が自然な切れ目の候補となります。
 
 ---
 
 ### リンク方法（linkage method）
 
-「2 つのクラスタ間の距離」をどう定義するかで、樹形図の形と結果が変わる。
+「2 つのクラスタ間の距離」をどう定義するかで、樹形図の形と結果が変わります。
 
 | 手法 | クラスタ間距離 | 性質 |
 |---|---|---|
@@ -85,18 +85,18 @@ plt.savefig("hierarchical_linkage_compare.png", bbox_inches="tight")
 
 ![Linkage 4 種類の dendrogram と決定結果](./hierarchical_linkage_compare.png)
 
-上段が樹形図、下段が `k = 3` で切った結果のクラスタ。
+上段が樹形図、下段が `k = 3` で切った結果のクラスタです。
 
 - single: 樹形図が縦に長いチェーン構造。ノイズに弱く、しばしば「巨大な 1 クラスタ + 小クラスタ」に
 - complete: コンパクトな樹形図。外れ値の影響を受けやすい
 - average: 安定的に動く、中庸の選択
 - ward: 最も「均等な大きさのクラスタ」を作る。scikit-learn のデフォルト
 
-実用ではまず ward から試すのが定石。データに非凸な構造（チェーン状の伸び）があれば single も試す価値がある。
+実用ではまず ward から試すのが定石です。データに非凸な構造（チェーン状の伸び）があれば single も試す価値があります。
 
 ### コフェネティック相関係数で linkage を選ぶ
 
-「どの linkage が今のデータに合うか」を客観的に評価する指標がコフェネティック相関係数（cophenetic correlation coefficient）。元の距離行列と樹形図上の距離行列の相関で、1 に近いほど樹形図がデータの距離関係をよく保存している。
+「どの linkage が今のデータに合うか」を客観的に評価する指標がコフェネティック相関係数（cophenetic correlation coefficient）。元の距離行列と樹形図上の距離行列の相関で、1 に近いほど樹形図がデータの距離関係をよく保存しています。
 
 ```python
 from scipy.cluster.hierarchy import linkage, cophenet
@@ -118,7 +118,7 @@ average: cophenetic r = 0.844
 ward: cophenetic r = 0.751
 ```
 
-この場合 average が最も距離関係を保存している、と分かる。ただし「最良の linkage = 最大の精度」ではないので、ドメイン的に意味があるクラスタが出るかどうかは別途確認が必要。
+この場合 average が最も距離関係を保存している、と分かります。ただし「最良の linkage = 最大の精度」ではないので、ドメイン的に意味があるクラスタが出るかどうかは別途確認が必要です。
 
 ### 数学での使いどころ
 
@@ -144,7 +144,7 @@ ward: cophenetic r = 0.751
 - レコメンドのアイテム類似性ツリー
 - 質的データの分類（カテゴリ間の距離）
 
-scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy` の `linkage / dendrogram / fcluster` がメイン。seaborn の `clustermap` は heatmap + dendrogram を同時に描けるので EDA で重宝する。
+scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy` の `linkage / dendrogram / fcluster` がメインです。seaborn の `clustermap` は heatmap + dendrogram を同時に描けるので EDA で重宝します。
 
 ---
 

@@ -7,9 +7,9 @@ tags: ["machine-learning", "deep-learning"]
 weight: 36
 ---
 
-誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて損失の勾配を効率的に計算するアルゴリズムである。中身は [偏微分と勾配](../../math/partial-derivative-gradient/) のノートで触れた「連鎖律（chain rule）」を、計算グラフに対して系統的に適用したものに過ぎない。だが「あらゆる深さ・幅のネットワークで全パラメータの勾配を `O(forward の計算量)` で取れる」という効率性が革命的で、これが現代の深層学習を可能にした基盤技術となる。
+誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて損失の勾配を効率的に計算するアルゴリズムです。中身は [偏微分と勾配](../../math/partial-derivative-gradient/) のノートで触れた「連鎖律（chain rule）」を計算グラフに対して系統的に適用したものに過ぎません。ただし「あらゆる深さ・幅のネットワークで全パラメータの勾配を `O(forward の計算量)` で取れる」という効率性が効いており、これが現代の深層学習を可能にした基盤技術となります。
 
-backprop 自体は学習則ではなく、`勾配を計算するだけ` の手続き。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や Adam に渡してパラメータを更新する、という分業構造になっている。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなる。
+backprop 自体は学習則ではなく、`勾配を計算するだけ` の手続きです。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や Adam に渡してパラメータを更新する、という分業構造になっています。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなります。
 
 ### 全体像: forward と backward の対
 
@@ -23,13 +23,13 @@ graph LR
     F --> A
 ```
 
-forward と backward は逆方向に走り、forward で計算した中間値（activations）を backward で使うため、メモリは forward の中間値全部を保持する必要がある。「深いネット = 大量メモリ」と言われるのは、この backward 用の中間値保持が主因。
+forward と backward は逆方向に走り、forward で計算した中間値（activations）を backward で使うため、メモリは forward の中間値全部を保持する必要があります。「深いネット = 大量メモリ」と言われるのは、この backward 用の中間値保持が主因です。
 
 ---
 
 ### 最小例で手計算
 
-2 層 NN を 1 サンプルで動かして、forward と backward を全部書き下す。
+2 層 NN を 1 サンプルで動かして、forward と backward を全部書き下します。
 
 ネットワーク:
 
@@ -72,7 +72,7 @@ L = 0.25
 
 ![小さな NN の forward と backward の全体](./backprop_tiny_network.svg)
 
-青い矢印が forward、各ノードに「値」と「勾配 `∂L/∂node`」が並ぶ。forward を 1 回回せば、backward で各パラメータの勾配が「右から左」に向かって連鎖律で計算できる。重要なのは「同じノードを通る勾配は再利用される」点で、これが backprop の計算効率の源泉となる。
+青い矢印が forward、各ノードに「値」と「勾配 `∂L/∂node`」が並びます。forward を 1 回回せば、backward で各パラメータの勾配が「右から左」に向かって連鎖律で計算できます。重要なのは「同じノードを通る勾配は再利用される」点で、これが backprop の計算効率の源泉となります。
 
 ---
 
@@ -82,23 +82,23 @@ L = 0.25
 
 `dL/dx = (dL/df) × (df/dg) × (dg/dh) × (dh/dx)`
 
-と「各段階の微分の積」になる。これが連鎖律で、深いネットでは「層数 ぶんの微分の積」を計算することに対応する。
+と「各段階の微分の積」になります。これが連鎖律で、深いネットでは「層数 ぶんの微分の積」を計算することに対応します。
 
 ![連鎖律: 各段階の微分を順に掛け合わせる](./backprop_chain_rule.svg)
 
-青の forward 矢印が「値の計算」、赤の backward 矢印が「勾配の伝播」。一見複雑だが、各段階で必要なのは「直前のノードの値」と「そのノードの微分」だけなので、深さ N に対して N 回の掛け算で全勾配が取れる。
+青の forward 矢印が「値の計算」、赤の backward 矢印が「勾配の伝播」。一見複雑だが、各段階で必要なのは「直前のノードの値」と「そのノードの微分」だけなので、深さ N に対して N 回の掛け算で全勾配が取れます。
 
-これを「自分で頭で式変形しなくていい」のが backprop の最大の発明である。連鎖律自体は Newton の時代からあるが、それを「グラフ上で機械的に適用するアルゴリズム」として定式化したのが Rumelhart, Hinton, Williams（1986）の論文で、これが深層学習のスタート地点となった。
+これを「自分で頭で式変形しなくていい」のが backprop の最大の発明です。連鎖律自体は Newton の時代からあるが、それを「グラフ上で機械的に適用するアルゴリズム」として定式化したのが Rumelhart, Hinton, Williams（1986）の論文で、これが深層学習のスタート地点となりました。
 
 ---
 
 ### 計算グラフとしての見方
 
-複雑な NN を「計算グラフ（computational graph）」として捉えると、backward の方向が「グラフを逆向きに辿る」だけになる。
+複雑な NN を「計算グラフ（computational graph）」として捉えると、backward の方向が「グラフを逆向きに辿る」だけになります。
 
 ![Forward は左→右、backward は右→左](./backprop_computational_graph.svg)
 
-各ノードは「演算」、エッジは「データの流れ」を表す。forward では入力から損失まで値を計算して保持し、backward では損失から始めて各ノードの勾配を上流に伝播していく。PyTorch / TensorFlow / JAX といったフレームワークは、内部でこの計算グラフを自動構築し、`loss.backward()` 1 行で全勾配を取得できる仕組み（automatic differentiation, autograd）を提供している。
+各ノードは「演算」、エッジは「データの流れ」を表します。forward では入力から損失まで値を計算して保持し、backward では損失から始めて各ノードの勾配を上流に伝播していきます。PyTorch / TensorFlow / JAX といったフレームワークは、内部でこの計算グラフを自動構築し、`loss.backward()` 1 行で全勾配を取得できる仕組み（automatic differentiation, autograd）を提供しています。
 
 ```python
 # PyTorch での例
@@ -121,13 +121,13 @@ print(f"∂L/∂w1 = {w1.grad}")  # tensor(-1.)
 print(f"∂L/∂w2 = {w2.grad}")  # tensor(-5.)
 ```
 
-`requires_grad=True` を付けたテンソルは autograd の追跡対象になり、`backward()` で勾配が `.grad` 属性に書き込まれる。これが現代の深層学習フレームワークの基本 API で、ネットワーク構造が複雑になっても backward を手書きする必要は無くなる。
+`requires_grad=True` を付けたテンソルは autograd の追跡対象になり、`backward()` で勾配が `.grad` 属性に書き込まれます。これが現代の深層学習フレームワークの基本 API で、ネットワーク構造が複雑になっても backward を手書きする必要は無くなります。
 
 ---
 
 ### 勾配消失問題: なぜ深いと学習が遅いのか
 
-連鎖律で勾配を掛け合わせるとき、各層の活性化関数の微分が `< 1` なら、層を重ねるほど勾配が指数的に小さくなる。これが [活性化関数](../activation-functions/) のノートでも触れた「勾配消失（vanishing gradient）」問題である。
+連鎖律で勾配を掛け合わせるとき、各層の活性化関数の微分が `< 1` なら、層を重ねるほど勾配が指数的に小さくなります。これが [活性化関数](../activation-functions/) のノートでも触れた「勾配消失（vanishing gradient）」問題です。
 
 ```python
 # 各層の勾配の attenuation (近似)
@@ -154,7 +154,7 @@ relu:    layer 10 gradient ≈ 1.95e-03
 
 ![10 層 NN での勾配の減衰](./backprop_vanishing.svg)
 
-sigmoid を 10 層積むと、出力層からの勾配が下位層に届く頃には `10^-6` まで縮む。これでは下位層の重みがほぼ更新されず、学習が止まる。対策が:
+sigmoid を 10 層積むと、出力層からの勾配が下位層に届く頃には `10^-6` まで縮みます。これでは下位層の重みがほぼ更新されず、学習が止まります。対策が:
 
 - ReLU 系の [活性化関数](../activation-functions/) を使う（飽和域がなく勾配が消えにくい）
 - Residual connection（ResNet）: 勾配を skip 接続で直接下位層に届ける
@@ -162,13 +162,13 @@ sigmoid を 10 層積むと、出力層からの勾配が下位層に届く頃�
 - 適切な重み初期化（Xavier / He）: 初期勾配が極端にならないように調整
 - 勾配クリッピング: 勾配爆発の逆問題に対する対策
 
-これらが組み合わさって、現代の 100 層 / 1000 層の超深層モデルが学習可能になっている。
+これらが組み合わさって、現代の 100 層 / 1000 層の超深層モデルが学習可能になっています。
 
 ---
 
 ### Forward / backward のメモリと計算量
 
-backprop の計算量は「forward と同じオーダー」だが、メモリ使用は「全中間値を保持」する必要があるため大きくなる。
+backprop の計算量は「forward と同じオーダー」だが、メモリ使用は「全中間値を保持」する必要があるため大きくなります。
 
 | 量 | forward だけ | backprop |
 |---|---|---|
@@ -181,7 +181,7 @@ backprop の計算量は「forward と同じオーダー」だが、メモリ使
 - Mixed precision（fp16, bf16）: 中間値の精度を下げてメモリ半減
 - Activation offloading: 中間値を CPU や別 GPU に退避
 
-これらは PyTorch / DeepSpeed / Megatron 等のフレームワークが標準サポートしている。
+これらは PyTorch / DeepSpeed / Megatron 等のフレームワークが標準サポートしています。
 
 ### 数学での使いどころ
 
@@ -195,7 +195,7 @@ backprop の計算量は「forward と同じオーダー」だが、メモリ使
 
 ### 機械学習での使いどころ
 
-backprop はニューラルネット学習のあらゆる場面で使われる。
+backprop はニューラルネット学習のあらゆる場面で使われます。
 
 - 教師あり学習: CNN / RNN / Transformer の全モデル
 - 強化学習: ポリシー勾配法（REINFORCE）、Actor-Critic
@@ -208,7 +208,7 @@ backprop はニューラルネット学習のあらゆる場面で使われる�
 - 微分可能な物理シミュレーション・ニューラル ODE
 - 微分可能なレンダリング（NeRF、3D Gaussian Splatting）
 
-すべて「微分可能な計算をグラフ化 → backward で勾配取得 → optimizer で更新」の同じパターンで動いている。
+すべて「微分可能な計算をグラフ化 → backward で勾配取得 → optimizer で更新」の同じパターンで動いています。
 
 ---
 

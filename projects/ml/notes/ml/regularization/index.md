@@ -7,19 +7,19 @@ tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 8
 ---
 
-正則化（regularization）は、[過学習](../overfitting/)を抑えるためにモデルの「複雑さ」へペナルティを課す仕組みである。  
-学習時に最小化する損失関数に、パラメータの大きさを表す項を足すことで、極端に大きな重みを持つモデルが選ばれにくくなる。
+正則化（regularization）は、[過学習](../overfitting/)を抑えるためにモデルの「複雑さ」へペナルティを課す仕組みです。  
+学習時に最小化する損失関数に、パラメータの大きさを表す項を足すことで、極端に大きな重みを持つモデルが選ばれにくくなります。
 
-ペナルティの形によって主に L2（リッジ）、L1（ラッソ）、L1 と L2 の組み合わせ（Elastic Net）に分かれる。
+ペナルティの形によって主に L2（リッジ）、L1（ラッソ）、L1 と L2 の組み合わせ（Elastic Net）に分かれます。
 
 - L2: `loss = 通常の誤差 + alpha * sum(w_i ^ 2)`
 - L1: `loss = 通常の誤差 + alpha * sum(|w_i|)`
 
-`alpha` は正則化の強さを決める[ハイパーパラメータ](../hyperparameter/)。大きいほどブレーキが強い。`alpha=0` は正則化なし（通常の最小二乗）と同じ。
+`alpha` は正則化の強さを決める[ハイパーパラメータ](../hyperparameter/)。大きいほどブレーキが強いです。`alpha=0` は正則化なし（通常の最小二乗）と同じ。
 
 ### 正則化が効く様子
 
-意図的に過学習しやすい設定（多項式の次数 15）に L2 正則化をかけ、`alpha` を変えた3例。
+意図的に過学習しやすい設定（多項式の次数 15）に L2 正則化をかけ、`alpha` を変えた3例です。
 
 ![alpha を変えた多項式回帰](./regularization_curves.svg)
 
@@ -27,13 +27,13 @@ weight: 8
 - `alpha=0.1`: 緑の真の関数にほぼ沿う、ちょうど良い状態
 - `alpha=100`: ブレーキが強すぎて直線に近づき、データの特徴を捉えきれない = 未学習
 
-`alpha` 自体も[交差検証](../cross-validation/)で選ぶのが基本。「正則化を入れれば過学習しない」のではなく「適切な `alpha` を選んで初めて効く」点に注意する。
+`alpha` 自体も[交差検証](../cross-validation/)で選ぶのが基本です。「正則化を入れれば過学習しない」のではなく「適切な `alpha` を選んで初めて効く」点に注意します。
 
 ---
 
 ### L1 と L2 の違い
 
-両方とも係数を 0 に近づけるが、近づけ方が違う。
+両方とも係数を 0 に近づけるが、近づけ方が違います。
 
 ![L1 と L2 の係数の違い](./regularization_l1_l2.svg)
 
@@ -50,7 +50,7 @@ weight: 8
 
 ### Python での実例
 
-scikit-learn では正則化はモデルクラスとして用意されている。回帰なら `Ridge` / `Lasso`、[ロジスティック回帰](../logistic-regression/)なら `LogisticRegression` の `penalty` 引数で指定する。
+scikit-learn では正則化はモデルクラスとして用意されています。回帰なら `Ridge` / `Lasso`、[ロジスティック回帰](../logistic-regression/)なら `LogisticRegression` の `penalty` 引数で指定します。
 
 ```python
 from sklearn.datasets import make_regression
@@ -74,13 +74,13 @@ for model in [
 
 出力の例:
 
-```
+```text
 LinearRegression   test R^2: 0.972  nonzero coefs: 20/20
 Ridge              test R^2: 0.974  nonzero coefs: 20/20
 Lasso              test R^2: 0.973  nonzero coefs: 6/20
 ```
 
-Lasso だけが係数の多くを 0 に潰し、実質 5 個の特徴量で同等のスコアを出している。本当に効く特徴量を知りたい場面で役立つ。
+Lasso だけが係数の多くを 0 に潰し、実質 5 個の特徴量で同等のスコアを出しています。本当に効く特徴量を知りたい場面で役立ちます。
 
 ---
 
@@ -94,7 +94,7 @@ Lasso だけが係数の多くを 0 に潰し、実質 5 個の特徴量で同�
 - ニューラルネット: weight decay（L2 と同じ）、dropout、batch normalization
 - [GradientBoosting](../gradient-boosting/): `reg_alpha`（L1）、`reg_lambda`（L2）、`min_child_weight` など
 
-決定木そのものには「正則化項」は無いが、`max_depth` や `min_samples_leaf` の上限を絞ることが事実上の正則化として働く。[RandomForest](../random-forest/) や GradientBoosting でハイパーパラメータを絞ることは、概念上は正則化と同じことをしている。
+決定木そのものには「正則化項」は無いが、`max_depth` や `min_samples_leaf` の上限を絞ることが事実上の正則化として働きます。[RandomForest](../random-forest/) や GradientBoosting でハイパーパラメータを絞ることは、概念上は正則化と同じことをしています。
 
 ---
 

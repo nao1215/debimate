@@ -7,13 +7,13 @@ tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 16
 ---
 
-欠損値（missing values）は実データに付き物の汚れで、何も対処せずに学習器に渡すと多くの実装でエラーになるか、無視されてサンプル数が激減する。「平均で埋める」「行ごと削除する」のような素朴な対応も状況次第では正しいが、欠損が起きるメカニズム（MCAR / MAR / MNAR）を理解せずに当てると分析結果がバイアスする。
+欠損値（missing values）は実データに付き物の汚れで、何も対処せずに学習器に渡すと多くの実装でエラーになるか、無視されてサンプル数が激減します。「平均で埋める」「行ごと削除する」のような素朴な対応も状況次第では正しいが、欠損が起きるメカニズム（MCAR / MAR / MNAR）を理解せずに当てると分析結果がバイアスします。
 
-欠損値処理は [標準化](../standardization/) や [カテゴリ変数のエンコーディング](../categorical-encoding/) と並ぶ前処理の基本で、`scikit-learn` では `sklearn.impute` モジュールに `SimpleImputer / KNNImputer / IterativeImputer` の 3 系統が提供されている。
+欠損値処理は [標準化](../standardization/) や [カテゴリ変数のエンコーディング](../categorical-encoding/) と並ぶ前処理の基本で、`scikit-learn` では `sklearn.impute` モジュールに `SimpleImputer / KNNImputer / IterativeImputer` の 3 系統が提供されています。
 
 ### 欠損のメカニズム: MCAR / MAR / MNAR
 
-欠損は「なぜ欠損したか」で 3 種類に分かれる。これが対処方針を決める最初のステップ。
+欠損は「なぜ欠損したか」で 3 種類に分かれます。これが対処方針を決める最初のステップです。
 
 | 略称 | 正式名 | 意味 | 対処 |
 |---|---|---|---|
@@ -49,9 +49,9 @@ plt.savefig("missing_mcar_mar_mnar.svg", bbox_inches="tight")
 
 ![MCAR / MAR / MNAR の散布図比較](./missing_mcar_mar_mnar.svg)
 
-左の MCAR では欠損（×印）が散布図全域にランダムに分布。中央の MAR では `age < 30` で欠損が集中（年齢に依存）。右の MNAR では高所得側で欠損が集中（欠損変数自身に依存）。
+左の MCAR では欠損（×印）が散布図全域にランダムに分布です。中央の MAR では `age < 30` で欠損が集中（年齢に依存）。右の MNAR では高所得側で欠損が集中（欠損変数自身に依存）。
 
-実データのほとんどは MAR か MNAR で、純粋な MCAR は稀。「欠損が起きるパターンを理解せず単純な処理を当てると、暗黙のバイアスが入る」というのが欠損値処理の落とし穴の中心となる。
+実データのほとんどは MAR か MNAR で、純粋な MCAR は稀です。「欠損が起きるパターンを理解せず単純な処理を当てると、暗黙のバイアスが入る」というのが欠損値処理の落とし穴の中心となります。
 
 ---
 
@@ -79,19 +79,19 @@ plt.savefig("missing_imputation_compare.svg", bbox_inches="tight")
 
 ![4 つの imputation 手法で欠損を埋めた結果](./missing_imputation_compare.svg)
 
-赤い × が補完された値、緑が「本当の値」（隠したもの）、青が観測されたデータ。
+赤い × が補完された値、緑が「本当の値」（隠したもの）、青が観測されたデータです。
 
 - 平均・中央値: 全部同じ値（水平な × の列）になり、`x` との関係を完全に潰す
 - KNN: 近くの観測点に引っ張られて、`x` との関係を部分的に保持
 - Iterative (RF): `y` を `x` から回帰予測する形で補完、関係を最もよく復元
 
-「単純な平均補完」が標準的すぎて、関係性を潰すリスクが見落とされがち。線形回帰や決定木で他の変数から欠損変数を予測するアプローチの方が、ML パイプライン全体としては精度が出やすい、と考えられる。
+「単純な平均補完」が標準的すぎて、関係性を潰すリスクが見落とされがちです。線形回帰や決定木で他の変数から欠損変数を予測するアプローチの方が、ML パイプライン全体としては精度が出やすい、と考えられます。
 
 ---
 
 ### Missing indicator: 「欠損だったこと」自体を特徴量にする
 
-`imputation` で穴を埋めた後、「もともと欠損だったかどうか」をバイナリ特徴量として残すパターンが安全策として広く使われる。
+`imputation` で穴を埋めた後、「もともと欠損だったかどうか」をバイナリ特徴量として残すパターンが安全策として広く使われます。
 
 ```python
 from sklearn.impute import SimpleImputer
@@ -106,11 +106,11 @@ plt.savefig("missing_indicator_pattern.svg", bbox_inches="tight")
 
 ![Imputation のみ vs Imputation + missing indicator](./missing_indicator_pattern.svg)
 
-左の「imputation のみ」では補完後、モデルは「欠損だった」事実を知らない。MAR / MNAR の場合、欠損していたという事実が予測に役立つ可能性があるのを取りこぼす。
+左の「imputation のみ」では補完後、モデルは「欠損だった」事実を知りません。MAR / MNAR の場合、欠損していたという事実が予測に役立つ可能性があるのを取りこぼします。
 
-右の「Imputation + indicator」では `was_missing` バイナリ列を追加することで、モデルが「欠損だった」を独立した特徴量として学習できる。例として「収入が記入されていないユーザーほど離反率が高い」のような関係が拾える。
+右の「Imputation + indicator」では `was_missing` バイナリ列を追加することで、モデルが「欠損だった」を独立した特徴量として学習できます。例として「収入が記入されていないユーザーほど離反率が高い」のような関係が拾えます。
 
-scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加される。
+scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加されます。
 
 ### 列ごとの戦略
 
@@ -123,7 +123,7 @@ scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加さ
 | 30〜50% | imputation するか、列を落とすか慎重判断 |
 | > 50% | 列削除が現実的、または欠損自体を特徴量化 |
 
-ただし「欠損率 90% だが欠損していない 10% がきわめて重要」のようなケースもあり、機械的に切らずに [特徴量重要度](../feature-importance/) や欠損フラグの予測力を見て判断する。
+ただし「欠損率 90% だが欠損していない 10% がきわめて重要」のようなケースもあり、機械的に切らずに [特徴量重要度](../feature-importance/) や欠損フラグの予測力を見て判断します。
 
 ---
 
@@ -135,7 +135,7 @@ scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加さ
 - 時系列: 前方フィル（forward fill）、線形補間、季節調整付き補間
 - テキスト: 空文字列、`"<missing>"`、専用トークン
 
-[カテゴリ変数のエンコーディング](../categorical-encoding/) のノートで触れたように、CatBoost や LightGBM など一部の勾配ブースティング実装は欠損値を「専用カテゴリ」として自動処理する。ここでも「欠損値の発生源」を捉えるため、一般的には別の手法（imputation）を経由する方が透明性は高いと考えられる。
+[カテゴリ変数のエンコーディング](../categorical-encoding/) のノートで触れたように、CatBoost や LightGBM など一部の勾配ブースティング実装は欠損値を「専用カテゴリ」として自動処理します。ここでも「欠損値の発生源」を捉えるため、一般的には別の手法（imputation）を経由する方が透明性は高いと考えられます。
 
 ### 数学での使いどころ
 
@@ -160,7 +160,7 @@ scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加さ
 - 時系列の欠測 → 時系列特化の補間
 - 連合学習の欠損（一部のクライアントが特定の特徴量を持たない）
 
-scikit-learn では `sklearn.impute.SimpleImputer / KNNImputer / IterativeImputer`、pandas では `df.fillna() / df.interpolate()`、時系列特化なら `statsmodels.tsa.tsatools` を使うのが定石となる。
+scikit-learn では `sklearn.impute.SimpleImputer / KNNImputer / IterativeImputer`、pandas では `df.fillna() / df.interpolate()`、時系列特化なら `statsmodels.tsa.tsatools` を使うのが定石となります。
 
 ---
 
