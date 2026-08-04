@@ -88,7 +88,6 @@ Linuxで頻繁に使用されるCommandは、ある程度同じ意味合いのOp
 | b | bytes、blocks | バイトやブロックのサイズを設定（du、df） |
 | c | cmd | サブプロセスに渡すCommandおよびOptionを設定（bash、python） |
 | d | debug | debugメッセージを出力（多くのCommand） |
-| d | dry-run |   ファイルやシステムに変更を加えずに、処理の検証     |
 | d | delete |   引数で指定した対象を削除         |
 | e | exclude | 除外対象（例：ファイル）を設定(rync) |
 | f | file | 使用するfileを設定（awk、make、sed、tar） |
@@ -99,7 +98,7 @@ Linuxで頻繁に使用されるCommandは、ある程度同じ意味合いのOp
 | k | keep | ファイル・メッセージ・リソースなどの削除を抑制（passwd、bzip） |
 | l | list | ファイル・ディレクトリなどのリストを表示（unzip、ls） |
 | m | mode | 権限の設定（install、mkdir） |
-| n | number | 番号（例：行番号）を表示(head、tail、grep) |
+| n | number、dry-run | 番号（例：行番号）を表示(head、tail、grep)。dry-runは、ファイルやシステムに変更を加えずに処理を検証（make） |
 | o | output | 出力ファイル名や出力ファイルパスの設定（多くのCommand） |
 | p | 多種多様 | [参考文献](https://www.gnu.org/prep/standards/html_node/Option-Table.html#Option-Table)を参照 |
 | q | quiet | メッセージの出力を抑制（多くのCommand） |

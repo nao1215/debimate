@@ -9,13 +9,13 @@
   weight = 2
 
 [[main]]
-  name = "Weekly"
-  url = "weekly/"
+  name = "Notes"
+  url = "notes/"
   weight = 3
 
 [[main]]
-  name = "Learning"
-  url = "learning/"
+  name = "Weekly"
+  url = "weekly/"
   weight = 4
 
 [[main]]

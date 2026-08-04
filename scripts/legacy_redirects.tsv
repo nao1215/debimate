@@ -1,6 +1,7 @@
 # 移行前 URL -> 現行 URL のリダイレクト表。
 # scripts/gen_legacy_redirects.py が static/ 配下へ meta refresh の HTML を生成する。
 # Hugo の aliases で表現できないタクソノミー・固定ページ・削除済み記事の旧 URL を扱う。
+/learning/	/notes/
 /author/nao/	/post/
 /author/nao/page/2/	/post/
 /author/nao/page/3/	/post/

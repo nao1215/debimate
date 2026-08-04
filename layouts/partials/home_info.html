@@ -6,6 +6,13 @@
         {{- $weeklyBanner = .RelPermalink }}
     {{- end }}
 {{- end }}
+{{- $notesPage := site.GetPage "section" "notes" }}
+{{- $notesBanner := "" }}
+{{- with $notesPage }}
+    {{- with .Resources.GetMatch "image/notes-card-banner.png" }}
+        {{- $notesBanner = .RelPermalink }}
+    {{- end }}
+{{- end }}
 <article class="first-entry home-info">
     {{- with .Title }}
     <header class="entry-header">
@@ -20,12 +27,19 @@
     </footer>
     {{- with hugo.Data.generated.weekly_latest }}
     {{- if .available }}
-    <a class="latest-weekly" href="{{ printf "%s#%s" (.path | relURL) .fragment }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+    <a class="latest-weekly latest-weekly-report" href="{{ printf "%s#%s" (.path | relURL) .fragment }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
         <span class="latest-weekly-label">最新の週報</span>
         <span class="latest-weekly-title">{{ .title }}</span>
         <span class="latest-weekly-note">不定期に加筆される週報。扱うトピックも不定。X（旧 Twitter）の代替。</span>
     </a>
     {{- end }}
+    {{- end }}
+    {{- with $notesPage }}
+    <a class="latest-weekly latest-notes" href="{{ .RelPermalink }}"{{ with $notesBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+        <span class="latest-weekly-label">Notes</span>
+        <span class="latest-weekly-title">技術ノート</span>
+        <span class="latest-weekly-note">学習や開発の過程で調べた技術情報を整理したノート</span>
+    </a>
     {{- end }}
 </article>
 {{- end -}}

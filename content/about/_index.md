@@ -10,7 +10,7 @@ ShowToc: false
 
 Go を中心に、金融領域（Fintech）バックエンド開発に携わるエンジニア。組み込みソフトウェア開発からキャリアを始め、受託でのサーバーサイド／インフラ開発を経て、現在は Visa プリペイドカードアプリの開発とエンジニアリングマネジメントを兼務しています。
 
-OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weekly/)、[学習記録](https://debimate.jp/learning/)を書いています。
+OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weekly/)、[技術ノート](https://debimate.jp/notes/)を書いています。
 
 ---
 
@@ -284,4 +284,3 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 |2021|12|[Software Design 2022年1月号 第2特集（第1章、第2章）](https://gihyo.jp/magazine/SD/archive/2022/202201)|
 
 ---
-

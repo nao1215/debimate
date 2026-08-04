@@ -48,6 +48,11 @@ body {
   border-color: var(--secondary);
 }
 
+.latest-weekly-report {
+  background-position: 0 0, right 54%;
+  background-size: auto, 122% auto;
+}
+
 html[data-theme="dark"] .latest-weekly {
   background-image:
     linear-gradient(0deg, rgba(46, 46, 51, 0.72), rgba(46, 46, 51, 0.72)),
