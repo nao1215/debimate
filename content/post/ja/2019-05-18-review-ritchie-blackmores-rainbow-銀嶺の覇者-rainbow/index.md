@@ -33,7 +33,6 @@ aliases:
 8. Sixteenth Century Greensleeves
 9. Still I'm Sad
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -55,7 +54,6 @@ Rockバンドの1st Albumは、「初期衝動」や「荒削りながらも〜�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/tD8E4-d_6lM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-\[the\_ad id="598"\]
 
 しかし、腰を据えて曲と向き合ってみたら、パンクを感じてきました。ここで感じるパンクとは、「三大パンクバンド(Clash, Damned, Pistols)」や「ロックとの境界が曖昧な90's以降のパンク」**ではなく**、[Hanoi Rocks](https://ja.wikipedia.org/wiki/%E3%83%8F%E3%83%8E%E3%82%A4%E3%83%BB%E3%83%AD%E3%83%83%E3%82%AF%E3%82%B9)です。
 

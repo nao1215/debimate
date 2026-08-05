@@ -75,7 +75,6 @@ Stargazerは、オリエンタルなフレーズがスローテンポで繰り�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/tzVJPgCn-Z8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-\[the\_ad id="598"\]
 
 一転して、A Light in the Blackは、激しさを感じさせる一曲です。特に、RitchieとTony Carey(Key.)の掛け合いが聴きどころです。Burn(Deep Purple)のように、中間部で延々と弾き続ける二人が、この曲を支えています。RitchieはJazzも嗜むため、中間部で各パートが掛け合う流れは、割と自然に出てきます。その掛け合いが上手く当てはまった例が、本曲です。一聴してハマる事は難しいと思いますが、聴き続けるとその魅力に取り憑かれる筈です。
 

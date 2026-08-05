@@ -101,7 +101,6 @@ Babylon(バビロン)は、「神の門」に由来を持つ単語で、現在�
 > \[和訳\]  
 > DaisleyとStoneは、彼らの貢献のためにアルバムクレジットに記載されていますが、彼らはレコーディングセッション途中でバンドに参加しました。彼らは、3曲目("L.A. Connection")と4曲("Gates of Babylon")にしか関わっていません。Stoneは "Gates of Babylon"の一部を作曲していますが、クレジットされていません。
 
-\[the\_ad id="598"\]
 
 さらに、[海外の記事](http://jeffcramer.blogspot.com/2013/05/a-very-candid-conversation-)で、David Stone本人から楽曲への関与が語られています。David Stoneが関連した部分の詳細は海外記事で確認して欲しいですが、最も端的に"Gate of Babylon"について話した箇所がありました。
 

@@ -70,7 +70,13 @@ GitHubでは、リポジトリの\[Settings\] > \[General\] > \[Social preview\]
 
 以下、OGP設定がされている場合とされていない場合の比較です。ちなみに、[下側（ubumeコマンド）](https://github.com/nao1215/ubume)はOGPを設定していますが、Starを獲得できていません！
 
-\[caption id="attachment\_7886" align="aligncenter" width="397"\]![](images/Screenshot-from-2022-02-26-22-59-22.png) OGP設定なし\[/caption\] \[caption id="attachment\_7887" align="aligncenter" width="396"\]![](images/Screenshot-from-2022-02-26-22-57-53.jpg) OGP設定あり\[/caption\] 
+![](images/Screenshot-from-2022-02-26-22-59-22.png)
+
+OGP設定なし
+
+![](images/Screenshot-from-2022-02-26-22-57-53.jpg)
+
+OGP設定あり
 
 ---
 

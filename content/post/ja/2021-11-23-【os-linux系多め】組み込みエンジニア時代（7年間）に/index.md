@@ -112,7 +112,9 @@ OSSに詳しくなると、ビルド職人かRoot File System職人を生業と�
 
 残念な事に、本書を読んで仕事の役に立った事がありません。ただし、日本語でAndroidアーキテクチャを説明している書籍は少なく、本書は念入りに調査して記載している事が伝わってきて、読み応えがありました。OS好きな人にはオススメ。
 
-\[caption id="attachment\_7042" align="aligncenter" width="480"\]![Androidアーキテクチャ](images/android-stack_2x.png) https://developer.android.com/guide/platform?hl=jaより引用\[/caption\] 
+![Androidアーキテクチャ](images/android-stack_2x.png)
+
+https://developer.android.com/guide/platform?hl=jaより引用
 
 ---
 

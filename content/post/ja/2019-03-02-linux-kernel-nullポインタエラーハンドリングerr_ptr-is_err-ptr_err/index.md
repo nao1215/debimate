@@ -167,7 +167,6 @@ i=4095, Cast Value=0x00000fff, Not ERRNO
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -206,7 +205,7 @@ static int debimate_init(void)
         struct device *debimate_dev = NULL;                               
                                                                                     
         /* メジャー番号の動的確保 */                                                
-        result = alloc_chrdev_region(&amp;dev, MINOR_NR_BASE, MAX_MINOR_NR, DEV_NAME);  
+        result = alloc_chrdev_region(&dev, MINOR_NR_BASE, MAX_MINOR_NR, DEV_NAME);  
         if (0 != result) {                                                          
                 pr_err("%s: alloc_chrdev_region = %d\n", __func__, result);         
                 goto REGION_ERR;                                                    

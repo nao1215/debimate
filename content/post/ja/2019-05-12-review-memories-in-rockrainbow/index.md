@@ -88,7 +88,6 @@ Ritchie BlackmoreがHR復活Liveを実施する前(Ronnie Romeroの存在が告�
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/netq5AdcmN4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-\[the\_ad id="598"\]
 
 ---
 

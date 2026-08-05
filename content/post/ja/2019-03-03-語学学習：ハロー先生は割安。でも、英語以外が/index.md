@@ -86,7 +86,6 @@ I  Your understand situation , so it is possible to make discount.
 
 **要約(和訳)：安くできますよ**
 
-\[the\_ad id="598"\]
 
 ---
 

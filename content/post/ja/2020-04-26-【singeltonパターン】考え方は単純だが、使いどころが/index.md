@@ -128,7 +128,6 @@ s1_instanceとs2_instanceは同一です。
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

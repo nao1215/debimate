@@ -175,7 +175,6 @@ set fish_greeting
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

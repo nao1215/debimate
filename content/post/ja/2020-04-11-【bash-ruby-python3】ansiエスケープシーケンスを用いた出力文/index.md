@@ -154,7 +154,6 @@ warn_message("ワーニングメッセージ(黄色)")
 
 ```
 
-\[the\_ad id="598"\]
 
 **Bash、Ruby、Python3の実行例**
 

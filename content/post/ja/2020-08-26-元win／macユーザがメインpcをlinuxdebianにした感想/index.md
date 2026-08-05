@@ -89,7 +89,6 @@ aliases:
 
 Google Chrome、Fire Foxを普段使いしている方であれば、Linuxに移行しても困る事はないでしょう。その一方で、WindowsのIE／Edge、MacのSafariはLinuxに存在しないので、これらのブラウザユーザはLinuxに移行すると各種データの移行作業が発生して辛いかも知れません。
 
-\[the\_ad id="598"\]
 
 ---
 

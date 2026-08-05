@@ -195,7 +195,6 @@ bash_dir.builder.get_result()
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

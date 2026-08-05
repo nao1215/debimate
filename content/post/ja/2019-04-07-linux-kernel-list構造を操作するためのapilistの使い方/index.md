@@ -150,7 +150,6 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
 > 
 > Read/write処理が"引き裂かれる(分割される)"： 単一のメモリアクセスを多数の小さなメモリアクセスに置き換えます。p=0x01020304のような値を置き換える状況下で、GCCはレジスタの中に定数を格納した後にメモリアクセスする等の代わりに、2つの16bit store immediate命令に置き換える事ができます(そして、そうします！)。WRITE\_ONCEマクロは、私達がGCCに"余計な事をするな！"と言う事ができます。例えば、WRITE\_ONCE(p, 0x01020304);と書く事によって。
 
-\[the\_ad id="598"\]
 
 ---
 

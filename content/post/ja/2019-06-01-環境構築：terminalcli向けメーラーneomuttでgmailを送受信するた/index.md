@@ -190,7 +190,6 @@ $ shred -u ~/.config/neomutt/passwds (注釈)：平文ファイルを完全に�
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

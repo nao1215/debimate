@@ -121,7 +121,6 @@ PermitRootLogin no
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

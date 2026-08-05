@@ -108,7 +108,6 @@ BIOSの起動方法は、私の使用したマザーボードは"F2"か"Del"で�
 5. BIOS画面で、Advanced > CPU Configuration > SVM = Enabledに変更
 6. F10(Save & Exit)を押下
 
-\[the\_ad id="598"\]
 
 ---
 

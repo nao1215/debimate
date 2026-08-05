@@ -280,7 +280,6 @@ $ du -sh rpi-stable.tar.gz 　(注釈)：rootfsの中身が空っぽ
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

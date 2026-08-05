@@ -235,7 +235,6 @@ Linux 4.9.0-8-amd64 x86_64
 
 私がneofetchの実装を見て存在を認識したOSは、[Haiku](https://ja.wikipedia.org/wiki/Haiku_\(%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0\))/AIX/IRIXあたり。
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -621,7 +620,6 @@ Macか、それ以外のOSでキャッシュディレクトリを変更します
 | DE | \[Windows/Mac\]   決め打ち(スクリプト内にハードコーディング)      \[Linux\]   環境変数$XDG\_CURRENT\_DESKTOP |
 | WM | \[Mac\]   決め打ち(スクリプト内にハードコーディング)      \[Windows\]   tasklistコマンド      \[その他\]   xpropコマンド |
 
-\[the\_ad id="598"\]
 
 ---
 

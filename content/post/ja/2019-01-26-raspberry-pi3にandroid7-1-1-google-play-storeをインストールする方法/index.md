@@ -82,7 +82,6 @@ $./etcher-1.3.1-x86_64.AppImage
 
 ![](images/flash.png)
 
-\[the\_ad id="598"\]
 
 ---
 

@@ -64,7 +64,7 @@ aliases:
 
 ### 曲数も、選曲も不思議なセットリスト
 
-本作で不思議な点は、セットリストでしょう。セットリスト全6曲(DISK1)の内、他バンドの曲が2曲(Still I'm Sad, Mistreated)、当時リリース前の曲が1曲(Kill the King)、[1st(銀嶺の覇者)](https://debimate.jp/2019/05/19/review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)からの3曲で構成されています。曲数が少ない事もさる事ながら、[Rising(虹を翔ける覇者)](https://debimate.jp/2019/05/19/review-rising-%e8%99%b9%e3%82%92%e7%bf%94%e3%82%8b%e8%a6%87%e8%80%85-rainbow/)からの選曲が皆無です(Risingの楽曲は、DISK2のDo you close your eyesのみです)。
+本作で不思議な点は、セットリストでしょう。セットリスト全6曲(DISK1)の内、他バンドの曲が2曲(Still I'm Sad, Mistreated)、当時リリース前の曲が1曲(Kill the King)、[1st(銀嶺の覇者)](https://debimate.jp/post/ja/2019-05-18-review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/)からの3曲で構成されています。曲数が少ない事もさる事ながら、[Rising(虹を翔ける覇者)](https://debimate.jp/post/ja/2019-05-19-review-rising-%E8%99%B9%E3%82%92%E7%BF%94%E3%82%8B%E8%A6%87%E8%80%85-rainbow/)からの選曲が皆無です(Risingの楽曲は、DISK2のDo you close your eyesのみです)。
 
 Risingからの選曲が少ない理由は、ある程度推測できます。Risingの楽曲は、純粋なバンドサウンドでなく、フィルハーモニーが下支えています。そのため、Live再現が厳しかったと推測できます。しかし、曲数の少なさに関して、説得力のある理由がありません。Deep Purple時代のMistreatedをプレイするのであれば、他のDeep Purpleの名曲(後年のRainbowで演奏するBurn、Smoke on the waterなど)もプレイすれば良かったのではないかと考えてしまいます。
 
@@ -74,7 +74,6 @@ Risingからの選曲が少ない理由は、ある程度推測できます。Ri
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/t9m_TVilibQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -85,7 +84,7 @@ Risingからの選曲が少ない理由は、ある程度推測できます。Ri
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ONVXNH7D4Qw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-Rithcieは、同曲をRainbowの「[1st(銀嶺の覇者)](https://debimate.jp/2019/05/19/review-ritchie-blackmores-rainbow-%E9%8A%80%E5%B6%BA%E3%81%AE%E8%A6%87%E8%80%85-rainbow/)」および「8th(Stranger in Us All)」で取り上げています。1stに収録されているVersionは、インストです。ボーカルが不在である事とドラムの軽さで、聴きやすいギターインストレベルに留まっています。
+Rithcieは、同曲をRainbowの「[1st(銀嶺の覇者)](https://debimate.jp/post/ja/2019-05-18-review-ritchie-blackmores-rainbow-銀嶺の覇者-rainbow/)」および「8th(Stranger in Us All)」で取り上げています。1stに収録されているVersionは、インストです。ボーカルが不在である事とドラムの軽さで、聴きやすいギターインストレベルに留まっています。
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hRpsA-UvJDg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
@@ -113,4 +112,4 @@ Tony Carey(Keyboard)がRitchieを無視して、Keyboardソロを始めて面白
 
 ### 次作のReview
 
-https://debimate.jp/2019/06/02/review-long-live-rock-n-roll-%e3%83%90%e3%83%93%e3%83%ad%e3%83%b3%e3%81%ae%e5%9f%8e%e9%96%80-rainbow/
+https://debimate.jp/post/ja/2019-06-02-review-long-live-rock-n-roll-%E3%83%90%E3%83%93%E3%83%AD%E3%83%B3%E3%81%AE%E5%9F%8E%E9%96%80-rainbow/

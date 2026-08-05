@@ -120,7 +120,7 @@ testing/unstableパッケージのinstall例として、依存関係を満たせ
 
 書式
 
-\# apt install <package\_name>/<Version>
+\# apt install <package\_name>/`<Version>`
 
 依存関係を満たせるケース
 

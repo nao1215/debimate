@@ -41,7 +41,6 @@ Bashではなく、RubyやPython3を使った方が好ましい理由は、以�
 - Ruby：ruby 2.5.5p157 (2019-03-15 revision 67260)
 - Python：Python 3.7.3
 
-\[the\_ad id="598"\]
 
 ---
 

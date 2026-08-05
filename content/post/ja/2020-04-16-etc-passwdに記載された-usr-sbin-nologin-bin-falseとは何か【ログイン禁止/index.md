@@ -222,7 +222,6 @@ Apr 16 20:24:01 debian nologin: Attempted login by nao on /dev/pts/1
 
 調査した結果、Debianのnologinコマンドは「/etc/nologin.txt」を確認しませんが、[Linux Kernel Organization](https://en.wikipedia.org/wiki/Linux_Kernel_Organization)が配布している[util-linux](https://github.com/karelzak/util-linux)版は「/etc/nologin.txt」を確認するようです（[util-linux版ソースコード](https://github.com/karelzak/util-linux/blob/master/login-utils/nologin.c)を参照）
 
-\[the\_ad id="598"\]
 
 ---
 

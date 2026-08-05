@@ -93,7 +93,6 @@ libncurses5-dev wget build-essential device-tree-compiler \
 trace-cmd python3 python3-dev python3-pip
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

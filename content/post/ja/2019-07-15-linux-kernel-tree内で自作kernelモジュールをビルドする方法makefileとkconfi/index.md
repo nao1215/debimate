@@ -89,7 +89,7 @@ lzop flex libelf-dev kmod
 
 ### Linux KernelソースおよびKernelモジュールの取得
 
-Linux KernelソースコードおよびKernelモジュールを取得します。aptコマンドで取得したLinux Kernelソースコードは、/usr/src以下にtarballで格納されます。具体的には、linux-source-<Version>.tar.xzが一時開発元オリジナルソースコード、その他のファイルがDebian独自のパッチです。[詳細は、Debian公式サイトに記載されています。](https://packages.debian.org/stretch/all/linux-source-4.9/filelist)
+Linux KernelソースコードおよびKernelモジュールを取得します。aptコマンドで取得したLinux Kernelソースコードは、/usr/src以下にtarballで格納されます。具体的には、linux-source-`<Version>`.tar.xzが一時開発元オリジナルソースコード、その他のファイルがDebian独自のパッチです。[詳細は、Debian公式サイトに記載されています。](https://packages.debian.org/stretch/all/linux-source-4.9/filelist)
 
 Kernelモジュールは、過去記事で作成したCharacter DriverをGitHubから取得(再利用)します。
 
@@ -109,7 +109,6 @@ LinuxKernelArticle/  linux-source-4.19/
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -180,7 +179,6 @@ obj-$(CONFIG\_DEBIMATE\_DRIVER)におけるDEBIMETE\_DRIVER部分は、Kconfig�
 
 debimate\_module.o部分は、Kernelモジュールソースコード名と同名でなければいけません(拡張子部分は除く)。例えば、Kernelモジュールがtest\_test.cという名称の場合、test\_test.oと記載します。
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -220,7 +218,6 @@ drivers/char/debimate_module.ko
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

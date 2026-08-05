@@ -270,7 +270,6 @@ $ ./target/debug/cat -n
 
 一時バッファ経由で標準出力に書き込む理由は、I/O速度を向上させるためです。Rust は、アクセス競合を起こさないように、非バッファI/Oを採用しています。非バッファI/Oは、処理が遅いです。遅い理由は、Read/Writeの度にLock/Unlock処理を繰り返す事、およびシステムコール使用回数がバッファを利用している時用も増えてしまう事が挙げられます([参考](https://stackoverflow.com/questions/43028653/rust-file-i-o-is-very-slow-compared-with-c-is-something-wrong))。
 
-\[the\_ad id="598"\]
 
 では、上述の1.〜3.の処理を順に説明します。
 

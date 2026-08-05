@@ -35,7 +35,9 @@ C言語にオブジェクト指向を適用する場合、実装規模が爆発�
 
 オブジェクト指向のメリットを得るために、C++や[Vala言語](https://ja.wikipedia.org/wiki/Vala)を選択する方法もあります。しかし、プロジェクトによってはC言語を選択しなければならない場合があるでしょう（補足：Vala言語はC#のような文法を持ち、valaファイル → C言語ファイル（中間ファイル） → バイナリの順でコンパイルするマイナー言語）
 
-\[caption id="attachment\_6924" align="aligncenter" width="628"\]![Introducing Vala Programming（Michael Lauer著、35頁）より引用](images/Valac.jpg) Introducing Vala Programming（Michael Lauer著、35頁）より引用\[/caption\] 
+![Introducing Vala Programming（Michael Lauer著、35頁）より引用](images/Valac.jpg)
+
+Introducing Vala Programming（Michael Lauer著、35頁）より引用
 
 上記のような課題を踏まえて、C言語ではどこまでオブジェクト指向ライクに実装すべきでしょうか。その現実解は、「Golangのようにクラス構造や継承を捨て、Interfaceだけ利用する」ではないかと感じ始めました。
 

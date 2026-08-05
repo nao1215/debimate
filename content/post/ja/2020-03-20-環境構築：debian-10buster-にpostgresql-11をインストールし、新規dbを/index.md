@@ -212,7 +212,6 @@ $ createuser --pwprompt --interactive 任意のユーザ名
 
 postgresユーザでDB用ユーザを作成しなかった場合、管理者権限を付与できません。
 
-\[the\_ad id="598"\]
 
 ---
 

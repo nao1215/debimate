@@ -92,7 +92,6 @@ Kill'Em Allの収録曲はLive定番曲が多いため、現在のJames Hetfield
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/a2KjOYx8BTs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
 
-\[the\_ad id="598"\]
 
 ---
 

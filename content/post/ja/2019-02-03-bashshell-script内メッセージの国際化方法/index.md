@@ -135,7 +135,6 @@ $ sudo apt install gettext-base
 | po(Portable Object)  | .poファイルを基に、各言語向けに翻訳したファイル。言語ごとに、別ファイルで管理 |
 | mo(Machine Object)  | .poファイルをコンパイルしたバイナリファイル  |
 
-\[the\_ad id="598"\]
 
 ---
 

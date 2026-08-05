@@ -100,7 +100,6 @@ $ fisher add reitzig/sdkman-for-fish@v1.4.0
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

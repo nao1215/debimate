@@ -227,7 +227,6 @@ Terminal=false                            # アプリをTerminalで実行する�
 | System | ログビューワやネットワークモニタのようなシステムアプリ |
 | Utility | 小規模なユーティリティアプリ |
 
-\[the\_ad id="598"\]
 
 ---
 

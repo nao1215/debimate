@@ -38,7 +38,6 @@ Linux Kernel内で誤ったエラー番号を使用した場合、その影響�
 - FreeBSD Kernelよりもエラー番号が多い事
 - Linux Kernel内専用のエラー番号がある事
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -192,7 +191,6 @@ Linux Kernel内で誤ったエラー番号を使用した場合、その影響�
 | ERFKILL | 132 | Operation not possible due to RF-kill | RF-killのため操作できない |
 | EHWPOISON | 133 | Memory page has hardware error | メモリページはHWエラーがあります。 |
 
-\[the\_ad id="598"\]
 
 | <KERNEL\_TOP>/include/linux/errno.h |  |  |  |
 | --- | --- | --- | --- |

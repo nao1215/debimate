@@ -221,7 +221,6 @@ python.py: error: unrecognized arguments: -a
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

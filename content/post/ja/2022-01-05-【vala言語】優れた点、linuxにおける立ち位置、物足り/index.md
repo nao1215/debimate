@@ -47,7 +47,9 @@ class Demo.HelloWorld : GLib.Object {
 
 Vala言語は、実行速度が高速です。その理由は、Vala言語で書いたコードからC言語が生成され、そのC言語コードをもとにしてバイナリを作成するからです。C言語が高速なのは、言うまでもないでしょう。ただし、valac（valaコンパイラ）は冗長なCコードを生成するため、Vala言語製バイナリの実行速度はピュアなC／C++製バイナリより遅い可能性が高いです（それでも、スクリプト言語よりは高速です）。
 
-\[caption id="attachment\_6924" align="aligncenter" width="628"\]![](images/Valac.jpg) Introducing Vala Programming（Michael Lauer著、35頁）より引用\[/caption\] 
+![](images/Valac.jpg)
+
+Introducing Vala Programming（Michael Lauer著、35頁）より引用
 
 また、Vala言語が[GTK（GNOME Tool Kit）](https://www.gtk.org/)と相性が良い理由は、GTKが利用しているGObjectやGLibのラッパーAPI（GTK自体のラッパーAPI含む）が多数用意されているからです。C／C++もGLibやGTKを利用できますが、Valaの方がプログラマに優しい点が多いです。例えば、Valaの方がC／C++よりコード記述量が少ない傾向があり、GCがあるためメモリ管理も不要です。
 

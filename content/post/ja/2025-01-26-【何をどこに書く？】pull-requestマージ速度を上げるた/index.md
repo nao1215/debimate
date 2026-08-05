@@ -43,7 +43,9 @@ aliases:
 - GitHub の PR Descriptionに、仕様の背景や各種資料のリンクを記載
 - クリーンアーキテクチャを採用
 
-\[caption id="attachment\_9054" align="aligncenter" width="729"\]![](images/CleanArchitecture.jpg) The Clean Architecture (https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) から引用\[/caption\] 
+![](images/CleanArchitecture.jpg)
+
+The Clean Architecture (https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) から引用
 
 ---
 

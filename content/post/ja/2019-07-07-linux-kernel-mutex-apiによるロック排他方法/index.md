@@ -185,7 +185,6 @@ mutex_unlock(&__mutex);
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

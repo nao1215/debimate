@@ -25,7 +25,9 @@ AndroidでJavaを採用した理由が気になって夜しか眠れなかった
 
 そして、Java API Framework（Oracle Javaとは別物）がAndroidのコアな機能を提供する形になっています。私達がAndroidアプリを開発する場合は、JavaやKotlinでJava API Frameworkを呼び出す形になっています。
 
-\[caption id="attachment\_8352" align="aligncenter" width="523"\]![](images/android-stack_2x-695x1024.png) Android公式ドキュメント：プラットフォーム アーキテクチャより引用\[/caption\] 
+![](images/android-stack_2x-695x1024.png)
+
+Android公式ドキュメント：プラットフォーム アーキテクチャより引用
 
 組み込みLinuxの流れで考えると、「何故、全てC／C++で書かなかったのか」「Android 1.0開発当初（2005年〜2008年）は、組み込み環境が貧弱なのでJavaで書くと遅かったのではないか」と疑問に感じました。
 

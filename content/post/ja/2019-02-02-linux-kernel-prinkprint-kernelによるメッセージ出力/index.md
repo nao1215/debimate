@@ -87,7 +87,7 @@ KERN\_WARNINGは、defineマクロで定義された"4"を意味します。C言
 
 ### printk()のラッパーマクロ
 
-Kernel開発者は、printk()を高頻度で使用します。利便性を高めるために、printkに関するラッパーマクロが存在します。マクロは、"[<Linux>/include/linux/printk.h](https://github.com/torvalds/linux/blob/master/include/linux/printk.h)"に定義されています。
+Kernel開発者は、printk()を高頻度で使用します。利便性を高めるために、printkに関するラッパーマクロが存在します。マクロは、"[`<Linux>`/include/linux/printk.h](https://github.com/torvalds/linux/blob/master/include/linux/printk.h)"に定義されています。
 
 良く使用するマクロは、ログレベルを省略できるマクロです。マクロは、以下のように定義されています。全てのログレベルに対して、マクロが用意されています(下表)。
 
@@ -117,7 +117,6 @@ pr_warn("Test message.\n");
 
 上記の他にも、一度しかprintkを表示しないマクロや遅延表示するマクロが存在します。
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -192,4 +191,4 @@ console_loglevel、default_message_level、minimum_console_loglevel、　default
 
 [カーネル・ロギング: API と実装(IBM)](https://www.ibm.com/developerworks/jp/linux/library/l-kernel-logging-apis/index.html)
 
-[<Linux>kernel/printk/printk.c](https://github.com/torvalds/linux/blob/master/kernel/printk/printk.c)
+[`<Linux>`kernel/printk/printk.c](https://github.com/torvalds/linux/blob/master/kernel/printk/printk.c)

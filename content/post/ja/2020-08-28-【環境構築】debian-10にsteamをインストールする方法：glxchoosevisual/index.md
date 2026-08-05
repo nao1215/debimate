@@ -55,7 +55,6 @@ Steamは、PCゲームの購入ができるプラットフォームであり、2
               `"""
 ```
 
-\[the\_ad id="598"\]
 
 ---
 
@@ -109,7 +108,6 @@ $ sudo apt install mesa-vulkan-drivers libglx-mesa0:i386 mesa-vulkan-drivers:i38
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

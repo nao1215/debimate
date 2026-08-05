@@ -91,7 +91,7 @@ lzop flex libelf-dev kmod
 
 ### Linux Kernelソースコードの取得
 
-前述の手順で入手したLinux Kernelヘッダと同じバージョンのLinux Kernelソースコードを取得します。取得したソースコードは、/usr/src以下にtarballで格納されます。具体的には、linux-source-<Version>.tar.xzが一時開発元オリジナルソースコード、その他のファイルがDebian独自のパッチです。[詳細は、Debian公式サイトに記載されています。](https://packages.debian.org/stretch/all/linux-source-4.9/filelist)
+前述の手順で入手したLinux Kernelヘッダと同じバージョンのLinux Kernelソースコードを取得します。取得したソースコードは、/usr/src以下にtarballで格納されます。具体的には、linux-source-`<Version>`.tar.xzが一時開発元オリジナルソースコード、その他のファイルがDebian独自のパッチです。[詳細は、Debian公式サイトに記載されています。](https://packages.debian.org/stretch/all/linux-source-4.9/filelist)
 
 ```
 $ uname -r       (注釈) Kernelバージョンの確認
@@ -201,7 +201,6 @@ $ make -j8   (注釈) -jの後の数値は、CPUコア数×2
 
 ```
 
-\[the\_ad id="598"\]
 
 ---
 

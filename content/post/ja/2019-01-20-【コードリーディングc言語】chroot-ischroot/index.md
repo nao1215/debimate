@@ -259,7 +259,6 @@ $ locale                 # ja_JP.UTF-8 = 日本語
   LC_ALL=
 ```
 
-\[the\_ad id="598"\]
 
 次に、bindtextdomain()は、ドメイン名"PACKAGE"のカタログディレクトリを"LOCALEDIR"に設定します。具体的には、変数PACKAGEはMakefile中に"coreutils"と定義され、変数LOCALEDIRはlib/configmake.h中に"/usr/share/locale"と定義されています。
 
@@ -578,7 +577,6 @@ if(groups && \*groups)のブロックの内容は、再度uid/gid/補助グル�
 
 最後までの流れは、uid/gid/補助グループの設定、およびexecvp()によるコマンド実行です。必要なコマンド・ライブラリがなければ、エラー終了です。
 
-\[the\_ad id="598"\]
 
 ---
 

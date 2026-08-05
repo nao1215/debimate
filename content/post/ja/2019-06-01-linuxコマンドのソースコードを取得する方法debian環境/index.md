@@ -148,7 +148,6 @@ $ ls | grep mkdir    (注釈) mkdir以外のソースコードが格納されて
   mkdir.c
 ```
 
-\[the\_ad id="598"\]
 
 ---
 
