@@ -29,6 +29,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [Lease - 期限付きで権利を貸す仕組み](/notes/distributed-systems/lease/) | 協調 |
 
+#### Durability
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [WAL - 書き込み先行ログと 2 つのウォーターマーク](/notes/distributed-systems/write-ahead-log/) | 耐久性 |
+
 ---
 
 ### 参考文献（手元にある書籍）
