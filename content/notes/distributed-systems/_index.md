@@ -23,6 +23,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [Heartbeat - ノードの死活監視](/notes/distributed-systems/heartbeat/) | 障害検知 |
 
+#### Coordination
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Lease - 期限付きで権利を貸す仕組み](/notes/distributed-systems/lease/) | 協調 |
+
 ---
 
 ### 参考文献（手元にある書籍）
