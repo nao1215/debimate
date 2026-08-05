@@ -25,21 +25,23 @@
     <footer class="entry-footer">
         {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
     </footer>
-    {{- with hugo.Data.generated.weekly_latest }}
-    {{- if .available }}
-    <a class="latest-weekly latest-weekly-report" href="{{ printf "%s#%s" (.path | relURL) .fragment }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
-        <span class="latest-weekly-label">最新の週報</span>
-        <span class="latest-weekly-title">{{ .title }}</span>
-        <span class="latest-weekly-note">不定期に加筆される週報。扱うトピックも不定。X（旧 Twitter）の代替。</span>
-    </a>
-    {{- end }}
-    {{- end }}
-    {{- with $notesPage }}
-    <a class="latest-weekly latest-notes" href="{{ .RelPermalink }}"{{ with $notesBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
-        <span class="latest-weekly-label">Notes</span>
-        <span class="latest-weekly-title">技術ノート</span>
-        <span class="latest-weekly-note">学習や開発の過程で調べた技術情報を整理したノート</span>
-    </a>
-    {{- end }}
+    <div class="home-cards">
+        {{- with hugo.Data.generated.weekly_latest }}
+        {{- if .available }}
+        <a class="latest-weekly latest-weekly-report" href="{{ printf "%s#%s" (.path | relURL) .fragment }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+            <span class="latest-weekly-label">最新の週報</span>
+            <span class="latest-weekly-title">{{ .title }}</span>
+            <span class="latest-weekly-note">不定期に加筆する週報。X の代替。</span>
+        </a>
+        {{- end }}
+        {{- end }}
+        {{- with $notesPage }}
+        <a class="latest-weekly latest-notes" href="{{ .RelPermalink }}"{{ with $notesBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+            <span class="latest-weekly-label">Notes</span>
+            <span class="latest-weekly-title">技術ノート</span>
+            <span class="latest-weekly-note">調べた技術情報を整理したノート</span>
+        </a>
+        {{- end }}
+    </div>
 </article>
 {{- end -}}
