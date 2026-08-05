@@ -45,4 +45,4 @@ enableGitInfo = true
   unsafe = true
 
 [pagination]
-  pagerSize = 60
+  pagerSize = 20

@@ -1,0 +1,19 @@
+{{/*
+  公開から一定期間が過ぎた記事の冒頭に、内容が古い可能性を知らせる注意書きを出す。
+
+  - 対象は params.toml の mainSections（既定では post）に含まれるセクションだけ。
+    技術ノートや週報は継続して手を入れるため対象外とする。
+  - 判定に使うのは .Date（初回公開日）。.Lastmod は enableGitInfo によって
+    誤字修正でも更新されるため、「公開から時間が経った」の判定には使わない。
+  - 閾値は params.toml の oldPostYears で変更できる（既定 2 年）。
+*/}}
+{{- $mainSections := site.Params.mainSections | default (slice "post") }}
+{{- if in $mainSections .Section }}
+  {{- $years := site.Params.oldPostYears | default 2 }}
+  {{- $elapsed := div (sub now.Unix .Date.Unix) 31557600.0 }}
+  {{- if ge $elapsed $years }}
+  <div class="old-post-notice">
+    この記事は公開から {{ math.Floor $elapsed }} 年以上が経過しています。内容が古くなっている可能性があります。
+  </div>
+  {{- end }}
+{{- end }}

@@ -34,6 +34,8 @@
   {{- partial "toc.html" . }}
   {{- end }}
 
+  {{- partial "old_post_notice.html" . }}
+
   {{- if .Content }}
   <div class="post-content">
     {{- if not (.Param "disableAnchoredHeadings") }}

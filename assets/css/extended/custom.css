@@ -206,3 +206,15 @@ html {
   font-size: 0.9rem;
   line-height: 1.6;
 }
+
+/* 公開から時間が経った記事の冒頭に出す注意書き */
+.old-post-notice {
+  margin: 1.5rem 0 0;
+  padding: 0.7rem 1rem;
+  border-left: 3px solid var(--secondary);
+  background: var(--code-bg);
+  color: var(--secondary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  border-radius: 0 4px 4px 0;
+}
