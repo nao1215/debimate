@@ -1,0 +1,28 @@
+{{- /*
+  表をスクロール可能なコンテナで包む。
+  PaperMod の .post-content table には overflow-x が無いため、コンテンツ幅
+  （--main-width）を超える表は素で見切れる。列数の多い比較表は詰めても収まらない
+  ので、表の中だけを横スクロールさせる。
+*/ -}}
+<div class="table-wrap">
+  <table>
+    <thead>
+      {{- range .THead }}
+      <tr>
+        {{- range . }}
+        <th {{- with .Alignment }} style="text-align: {{ . }}"{{ end }}>{{ .Text }}</th>
+        {{- end }}
+      </tr>
+      {{- end }}
+    </thead>
+    <tbody>
+      {{- range .TBody }}
+      <tr>
+        {{- range . }}
+        <td {{- with .Alignment }} style="text-align: {{ . }}"{{ end }}>{{ .Text }}</td>
+        {{- end }}
+      </tr>
+      {{- end }}
+    </tbody>
+  </table>
+</div>

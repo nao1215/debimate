@@ -375,3 +375,14 @@ body.home .post-entry .entry-header h2 {
   font-size: 1.15rem;
   line-height: 1.45;
 }
+
+/* 表がコンテンツ幅を超えた時に、ページごと横へ伸びず表の中だけをスクロールさせる。
+   包む div は layouts/_markup/render-table.html が出力する */
+.post-content .table-wrap {
+  overflow-x: auto;
+  margin-bottom: var(--content-gap);
+}
+
+.post-content .table-wrap > table {
+  margin-bottom: 0;
+}
