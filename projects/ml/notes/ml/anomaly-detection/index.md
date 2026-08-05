@@ -9,7 +9,7 @@ weight: 32
 
 異常検知（anomaly detection, outlier detection）は、「正常データから外れた点」を検出する教師なし学習の一系統です。不正検知、故障予測、ネットワーク侵入検知、品質管理、医療診断など、「興味のあるクラスのサンプルが極端に少ない / 事前にラベルが取れない」場面で使われます。
 
-[クラス不均衡](../class-imbalance/) の極端なケースとも見なせるが、不均衡分類は「正例と負例の両方にラベルがある」状況、異常検知は「正常データだけ（または僅かな異常ラベル）から学ぶ」状況、という違いがあります。代表的なアルゴリズムは 4 つで、データの形状と分布の前提によって使い分けます。
+[クラス不均衡](../class-imbalance/) の極端なケースとも見なせます。ただし、不均衡分類は「正例と負例の両方にラベルがある」状況、異常検知は「正常データだけ（または僅かな異常ラベル）から学ぶ」状況、という違いがあります。代表的なアルゴリズムは 4 つで、データの形状と分布の前提によって使い分けます。
 
 ### 4 つの代表アルゴリズム
 
@@ -46,7 +46,7 @@ plt.savefig("anomaly_methods_compare.png", bbox_inches="tight")
 
 - Isolation Forest: 境界が「軸に平行な階段状」（決定木ベースなので）
 - LOF: 「境界線」なし。点ごとに異常判定（プロットには色付き領域は出せない）
-- One-Class SVM: 非線形な滑らかな境界（RBF カーネル）
+- One-Class SVM: RBF（Radial Basis Function）カーネルによる非線形で滑らかな境界
 - Elliptic Envelope: 楕円形の境界（多変量正規分布の等密度面）
 
 それぞれが微妙に違う異常を検出します。実用では「データの形」「外れ値の性質」「計算コスト」のトレードオフで選びます。
@@ -74,7 +74,7 @@ graph TD
 
 iForest の長所:
 
-- 計算量が線形 `O(n log n)` で大規模データに強い
+- 計算量が `O(n log n)` で大規模データに強い
 - 高次元データでも比較的安定
 - 解釈しやすい（木構造）
 - 学習データに異常が含まれていてもロバスト
@@ -99,7 +99,7 @@ plt.savefig("anomaly_threshold_tuning.svg", bbox_inches="tight")
 - `contamination = 0.07`: バランスの良い設定
 - `contamination = 0.15`: しきい値が緩い → 異常を捕まえやすいが誤検知も増える
 
-業務上のコスト（誤検知 vs 見逃し）に応じて選びます。`contamination="auto"` でアルゴリズムが自動推定もできるが、ドメイン知識で `0.01〜0.10` 程度の範囲から選ぶのが標準です。
+業務上のコスト（誤検知 vs 見逃し）に応じて選びます。`contamination="auto"` を指定するとアルゴリズムが自動推定します。ただし、ドメイン知識で `0.01〜0.10` 程度の範囲から選ぶのが標準です。
 
 ---
 
@@ -118,14 +118,14 @@ plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
 
 ![時系列の rolling z-score 異常検知](./anomaly_time_series.svg)
 
-過去 30 ステップの平均と標準偏差を計算し、現在値が `|z| > 3` を超えたら異常と判定です。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出しています。
+具体的には、過去 30 ステップの平均と標準偏差を計算し、現在値が `|z| > 3` を超えたら異常と判定します。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出しています。
 
 時系列専用の手法は他にも:
 
 - ARIMA + 残差検定（[時系列予測](../time-series-forecasting/) 参照）
 - 周期性を考慮した STL 分解 + 残差検定
 - LSTM autoencoder の再構成誤差
-- Matrix Profile（NLP の手法を借りた変則的アプローチ）
+- Matrix Profile（部分列同士の距離を総当たりで求め、繰り返しパターンと異常部分列を同時に見つける手法）
 - Spectral residual（Microsoft Azure Anomaly Detector）
 
 ### 数学での使いどころ
@@ -162,7 +162,7 @@ scikit-learn では `sklearn.ensemble.IsolationForest`、`sklearn.neighbors.Loca
 
 - 異常の定義が不明確: 「何が異常か」をビジネス側と擦り合わせないと、技術的に検出しても価値がない
 - 教師あり問題を異常検知で解こうとする: ラベルがあるなら [class-imbalance](../class-imbalance/) の不均衡分類の方が精度が出ることが多い
-- contamination を当てずっぽうで決める: ドメイン知識または PR 曲線で根拠を持って選ぶ
+- contamination を当てずっぽうで決める: ドメイン知識または PR（Precision-Recall）曲線で根拠を持って選ぶ
 - スケールが揃っていない: 距離ベース手法（LOF、One-Class SVM、Elliptic）が崩れる。[標準化](../standardization/) を必ず先に
 - 高次元データで Elliptic Envelope: 共分散行列の推定が困難に。Isolation Forest や LOF へ
 - 学習データの異常を放置: 異常を含むデータで学習すると境界が歪む。最初の数イテレーションで除外する 2 段階アプローチが有効

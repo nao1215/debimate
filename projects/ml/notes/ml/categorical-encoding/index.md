@@ -71,7 +71,7 @@ plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
 
 ![4 つのエンコーディング方式の出力比較](./categorical-encoding_methods.svg)
 
-入力 6 行が共通で、出力の「列数」と「値の意味」が方式ごとに違うのが見て取れます。One-hot は基数と同じ列数になるが、Ordinal は 1 列、Target encoding も 1 列、Hashing は事前に決めた固定列数で押し込みます。
+入力 6 行が共通で、出力の「列数」と「値の意味」が方式ごとに違うのが見て取れます。One-hot は基数と同じ列数になります。一方、Ordinal は 1 列、Target encoding も 1 列、Hashing は事前に決めた固定列数で押し込みます。
 
 ---
 
@@ -95,7 +95,7 @@ plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
 - scikit-learn: `OrdinalEncoder`
 - 適切な使用場面: 順序があるカテゴリ（`low < medium < high`、星評価、学年など）。順序なしには使ってはならない
 
-決定木系（[RandomForest](../random-forest/) / [GradientBoosting](../gradient-boosting/)）は順序ベース判定なので Ordinal でも崩壊しないが、それでも「順序の意味付け」の罠は残る（カテゴリ A, B, C の順番がアルファベット順なだけで、モデルが C を A の上位とみなしてしまう）と考えられます。
+決定木系（[RandomForest](../random-forest/) / [GradientBoosting](../gradient-boosting/)）は順序ベース判定なので Ordinal でも崩壊しません。ただし、それでも「順序の意味付け」の罠は残る（カテゴリ A, B, C の順番がアルファベット順なだけで、モデルが C を A の上位とみなしてしまう）と考えられます。
 
 ---
 
@@ -108,7 +108,7 @@ plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
 - 必須の防御: `cross_val_score` / `GridSearchCV` の中で `TargetEncoder` を `Pipeline` に組み込む。scikit-learn の `TargetEncoder` （1.3 以降）は内部で cross-fitting を行ってリークを抑える設計になっている
 - 適切な使用場面: 基数が 20〜数万のカテゴリ（都道府県、商品カテゴリ、ユーザーセグメントなど）
 
-真の信号が無いランダムデータで、リークが入るとどう見えるかを確認します。50 個のランダムカテゴリ × 二値ランダムラベルなら、正しく CV 内で集約すれば accuracy は chance level（0.5）付近になるはずだが、全データで集約してから CV すると 0.6 を超える「見せかけの精度」が出ます。
+真の信号が無いランダムデータで、リークが入るとどう見えるかを確認します。50 個のランダムカテゴリ × 二値ランダムラベルなら、正しく CV 内で集約すれば accuracy は chance level（0.5）付近になるはずです。しかし、全データで集約してから CV すると 0.6 を超える「見せかけの精度」が出ます。
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -165,8 +165,8 @@ Correct (Pipeline):    CV accuracy = 0.534  (≈ chance level)
 
 基数が極端に大きい場面（URL、商品 ID、トークンなど）では、One-hot は不可能、Target encoding もカテゴリごとのサンプル数が少なすぎて機能しないことがあります。
 
-- Hashing trick: ハッシュ関数で「固定次元のビット列」に押し込む。例: `dim=16` なら基数が 100 万でも 16 列に収まる。代償として「衝突」（別カテゴリが同じビン）が起きるが、線形モデルなら衝突の影響は平均的に小さい
-- Embedding: 深層学習で密ベクトル表現を学習する。意味的に近いカテゴリが近いベクトルになる利点があるが、ニューラルネットの訓練が前提
+- Hashing trick: ハッシュ関数で「固定次元のビット列」に押し込む。例: `dim=16` なら基数が 100 万でも 16 列に収まる。代償として「衝突」（別カテゴリが同じビン）が起きる。ただし、線形モデルなら衝突の影響は平均的に小さい
+- Embedding: 深層学習で密ベクトル表現を学習する。意味的に近いカテゴリが近いベクトルになる利点がある。ただし、ニューラルネットの訓練が前提
 
 scikit-learn なら `FeatureHasher`、TensorFlow / PyTorch なら `Embedding` 層を使います。
 
@@ -225,7 +225,7 @@ ID は「識別子」であって「カテゴリ」ではない、という区�
 ### よくある誤解
 
 - 「Ordinal encoding が一番コンパクトで効率的」とは限らない: 順序のないカテゴリに整数を割り当てると、線形モデルや距離ベース手法は「整数の大小」を関係性として解釈してしまう。木系以外ではほぼ NG
-- 「Target encoding は便利、無条件で使える」ではない: 素朴に全データで集約すれば必ず [リーク](../data-leakage/) する。`Pipeline` 必須
+- 「Target encoding は便利、無条件で使える」ではない: 単純に全データで集約すれば必ず [リーク](../data-leakage/) する。`Pipeline` 必須
 - 「One-hot encoding はカテゴリ数が多くても sparse 行列で乗り切れる」とは限らない: メモリには載っても、後段モデルが密行列を要求する場合（kNN, ニューラルネット）は実質不可能。たとえ通っても [次元の呪い](../curse-of-dimensionality/) でモデル性能が落ちる
 - 「ユーザー ID をエンコードするのが普通」ではない: ID は識別子であってカテゴリ変数ではない。集約特徴量に変換するのが特徴量設計の定石
 - 「encoding は精度に影響しない」ではない: 同じデータ・同じモデルでもエンコーディング選択次第で精度が大きく変わる。Claude が提示してくる前処理コードは必ず方式と基数を確認する習慣をつけたほうが良い

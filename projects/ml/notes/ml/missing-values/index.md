@@ -7,7 +7,7 @@ tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 16
 ---
 
-欠損値（missing values）は実データに付き物の汚れで、何も対処せずに学習器に渡すと多くの実装でエラーになるか、無視されてサンプル数が激減します。「平均で埋める」「行ごと削除する」のような素朴な対応も状況次第では正しいが、欠損が起きるメカニズム（MCAR / MAR / MNAR）を理解せずに当てると分析結果がバイアスします。
+欠損値（missing values）は実データに付き物の汚れで、何も対処せずに学習器に渡すと多くの実装でエラーになるか、無視されてサンプル数が激減します。「平均で埋める」「行ごと削除する」のような単純な対応も状況次第では正しい選択になります。ただし、欠損が起きるメカニズム（MCAR / MAR / MNAR）を理解せずに当てると分析結果がバイアスします。
 
 欠損値処理は [標準化](../standardization/) や [カテゴリ変数のエンコーディング](../categorical-encoding/) と並ぶ前処理の基本で、`scikit-learn` では `sklearn.impute` モジュールに `SimpleImputer / KNNImputer / IterativeImputer` の 3 系統が提供されています。
 
@@ -57,7 +57,7 @@ plt.savefig("missing_mcar_mar_mnar.svg", bbox_inches="tight")
 
 ### Imputation 手法の比較
 
-scikit-learn 標準の 4 系統:
+scikit-learn で選べる 4 通りの補完方法:
 
 | 手法 | 仕組み | 強み | 弱み |
 |---|---|---|---|
@@ -135,7 +135,7 @@ scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加さ
 - 時系列: 前方フィル（forward fill）、線形補間、季節調整付き補間
 - テキスト: 空文字列、`"<missing>"`、専用トークン
 
-[カテゴリ変数のエンコーディング](../categorical-encoding/) のノートで触れたように、CatBoost や LightGBM など一部の勾配ブースティング実装は欠損値を「専用カテゴリ」として自動処理します。ここでも「欠損値の発生源」を捉えるため、一般的には別の手法（imputation）を経由する方が透明性は高いと考えられます。
+[カテゴリ変数のエンコーディング](../categorical-encoding/) のノートで触れたように、CatBoost や LightGBM など一部の勾配ブースティング実装は、欠損値を専用の分岐先へ自動で振り分けます。ここでも「欠損値の発生源」を捉えるため、一般的には別の手法（imputation）を経由する方が透明性は高いと考えられます。
 
 ### 数学での使いどころ
 
@@ -173,7 +173,7 @@ scikit-learn では `sklearn.impute.SimpleImputer / KNNImputer / IterativeImpute
 - カテゴリ変数の最頻値補完で過剰な偏り: 「未回答」自体に意味があるなら専用カテゴリで
 - IterativeImputer の収束問題: 欠損が多すぎるとループが収束しない。`max_iter` を増やすか単純化
 - 時系列で先のデータから補間: 因果的に未来のデータが過去に漏れる。`forward fill` で過去側からのみ
-- 多重代入を 1 回の imputation で済ます: ばらつきを過小評価。本格的な統計推論なら `m=5` 程度の MI を
+- 多重代入を 1 回の imputation で済ます: ばらつきを過小評価。本格的な統計推論なら `m=5` 程度の多重代入（MI, Multiple Imputation）を
 - 欠損率を可視化しない: 各列の欠損率は EDA で必ず確認。`df.isnull().mean()`、`missingno` で行ごとパターンも見る
 - LightGBM / XGBoost の欠損値自動処理を「特別な機能」と捉える: 内部では「欠損は片方の分岐に固定的に振る」だけで、imputation の代わりにはならない場面もある
 - 「欠損値はノイズ」と捉える: 欠損自体が情報を含むことが多い（離脱、忘れ、抵抗）。missing indicator で残す

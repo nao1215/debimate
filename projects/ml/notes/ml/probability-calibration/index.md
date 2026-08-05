@@ -9,7 +9,7 @@ weight: 4
 
 確率の校正（probability calibration）は、分類モデルが出す `predict_proba` の値を「実際の正例比率」と一致させる後処理です。多くのモデルは「分類は正しいが確率値は信用できない」状態で出てきます。例えば「0.9 の確率で陽性」と予測した 100 件のうち、実際の陽性が 70 件しかないなら、確率出力は校正されていない（過信、overconfidence）と言えます。
 
-校正が必要な代表モデル: [サポートベクターマシン](../svm/) のスコア、[ランダムフォレスト](../random-forest/)、ナイーブベイズです。[ロジスティック回帰](../logistic-regression/) は損失関数（交差エントロピー）の性質上比較的校正されているが、それでも [クラス不均衡](../class-imbalance/) があれば再校正が必要となります。確率出力をそのまま意思決定に使うとき（しきい値判定、損益計算、リスク評価）は、校正のステップが事実上必須となります。
+校正が必要な代表モデル: [サポートベクターマシン](../svm/) のスコア、[ランダムフォレスト](../random-forest/)、ナイーブベイズです。[ロジスティック回帰](../logistic-regression/) は損失関数（交差エントロピー）の性質上、比較的校正されています。それでも [クラス不均衡](../class-imbalance/) があれば再校正が必要となります。確率出力をそのまま意思決定に使うとき（しきい値判定、損益計算、リスク評価）は、校正のステップが事実上必須となります。
 
 ### 校正の有無を見る: 信頼性プロット
 
@@ -58,7 +58,7 @@ plt.savefig("calib_reliability_diagram.svg", bbox_inches="tight")
 | Beta calibration | Beta 分布ベースの校正 | Platt と Isotonic の中間的な柔軟性 |
 | Temperature scaling | softmax の logits を温度 `T` で割る | 深層学習で標準 |
 
-scikit-learn では `CalibratedClassifierCV(base_estimator, method="sigmoid")` で Platt、`method="isotonic"` で Isotonic が使えます。両方とも内部で CV を回して校正パラメータを推定します。
+scikit-learn では `CalibratedClassifierCV(base_estimator, method="sigmoid")` で Platt、`method="isotonic"` で Isotonic が使えます。両方とも内部で CV（cross validation、[交差検証](../cross-validation/)）を回して校正パラメータを推定します。
 
 ```python
 from sklearn.calibration import CalibratedClassifierCV
@@ -103,7 +103,7 @@ plt.savefig("calib_probability_histogram.svg", bbox_inches="tight")
 
 - 真の確率分布 `P(y=1 | x)` の推定: 校正は予測値をこの真値に近づける操作
 - [情報理論](../../math/information-theory/) の交差エントロピー: 校正されていれば cross-entropy が最小化される
-- Brier スコアの分解: Calibration + Refinement + Uncertainty
+- Brier スコアの分解: Reliability - Resolution + Uncertainty（Murphy 分解）
 - ベイズ推論: 事後確率の校正は事前分布の妥当性に依存
 - Reliability diagram は分位点を使う ([四分位点](../../math/quantile/) 参照)
 
@@ -116,7 +116,7 @@ plt.savefig("calib_probability_histogram.svg", bbox_inches="tight")
 - アンサンブル: 異なるモデルの確率出力を平均するとき、校正されていないと偏る
 - アクティブラーニング: 不確実なサンプル（`p ≈ 0.5`）を選んで人手ラベリング → 校正されていないと選択が歪む
 - 意思決定理論: 期待損失最小化に確率値を使う場合
-- A/B test での確率予測: 「予測 CTR」を業務指標に変換する場合
+- A/B test での確率予測: 「予測 CTR（Click Through Rate、クリック率）」を業務指標に変換する場合
 - LLM の confidence: token-level の確率を信頼度として使う場面
 
 ---
@@ -127,8 +127,8 @@ plt.savefig("calib_probability_histogram.svg", bbox_inches="tight")
 - 訓練データで校正: 過学習する。`CalibratedClassifierCV` を使うか、別 fold を確保
 - データが少なすぎる: Isotonic は overfit しやすい。`n < 500` 程度なら Platt の方が安全
 - 不均衡データで校正後の閾値を 0.5 のまま: 校正は確率を正しくするだけで、閾値の意味は変わる。PR 曲線で再選定
-- 校正後にスコアの順位が変わる: Platt は単調変換なので順位は保たれるが、isotonic は段階的なので隣接サンプルの順位が同じになることがある
+- 校正後にスコアの順位が変わる: Platt は単調変換なので順位が保たれる。一方、isotonic は段階的なので隣接サンプルの順位が同じになることがある
 - 校正の頻度を決めない: ドリフトで時間とともに崩れる。定期的に reliability diagram を確認
 - 多クラス分類で one-vs-rest 校正: クラス間の整合性が崩れることがある（合計確率が 1 にならない）。multinomial 校正を使う
-- LightGBM / XGBoost のデフォルト出力: 比較的校正されているが、深いブースティングだと過信気味。Platt や isotonic を当てる価値あり
+- LightGBM / XGBoost のデフォルト出力: 比較的校正されている。ただし、深いブースティングだと過信気味。Platt や isotonic を当てる価値あり
 - 「校正したから安心」: 校正は分布シフト下では崩れる。本番でも reliability diagram を継続監視する

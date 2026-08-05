@@ -51,11 +51,11 @@ f(x) = (1 / (n * h)) * Σ K((x - x_i) / h)
 バンド幅 `h` の選定は KDE の最大の関心事です。代表的な手法は次の通りです。
 
 - Silverman's rule of thumb: `h = 1.06 * sigma * n^(-1/5)`（簡便でよく使われる）
-- Scott's rule: `h = n^(-1/(d+4))`（多次元 KDE 向け）
+- Scott's rule: `h = sigma * n^(-1/(d+4))`（`d` は次元数。多次元 KDE 向け）
 - [交差検証](../../ml/cross-validation/) による選択: 最尤推定でデータの尤度を最大化する `h` を探す
 - 経験的調整: 複数の `h` で描いて、過剰平滑（ピークが消える）と過小平滑（ノイズが残る）の中間を選ぶ
 
-scikit-learn の `KernelDensity` や seaborn の `kdeplot` では、デフォルトで Silverman 系の規則が使われます。実務的には、複数の `h` を試して目視で判断するのが一番素直と考えられます。
+scikit-learn の `KernelDensity` はデフォルトが `bandwidth=1.0` の固定値で、seaborn の `kdeplot` はデフォルトで Scott の規則を使います。実務的には、複数の `h` を試して目視で判断するのが一番素直と考えられます。
 
 ---
 
@@ -152,7 +152,7 @@ plt.savefig("kde_bandwidth.svg", bbox_inches="tight")
 
 3 つのパネルを左から見ていきます。
 
-- `h=0.1`: 個々の点の小山が見えるレベルで、ピークが偽物にしか見えない（under-smoothing, 過小平滑）
+- `h=0.1`: 個々の点の小山がそのまま残り、データには無いピークが多数現れる（under-smoothing, 過小平滑）
 - `h=0.5`: 2 つの山がはっきり分かれて見える。データの本来の構造が見えている
 - `h=2.0`: 山が 1 つに潰れて、もはや 2 峰性が分からない（over-smoothing, 過剰平滑）
 

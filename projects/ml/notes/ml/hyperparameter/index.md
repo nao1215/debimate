@@ -23,7 +23,7 @@ scikit-learn の API で言うと、`Ridge(alpha=1.0).fit(X, y)` の `alpha=1.0`
 
 ### 同じアルゴリズムでも全然違う挙動になる
 
-データとアルゴリズムを固定して、ハイパーパラメータだけ変えた例です。Ridge 回帰の正則化強度 `alpha` を 3 段階です。
+データとアルゴリズムを固定して、ハイパーパラメータだけ変えた例です。Ridge 回帰の正則化強度 `alpha` を 3 段階に振っています。
 
 ![alpha の違いで挙動が変わる](./hyperparameter_compare.svg)
 

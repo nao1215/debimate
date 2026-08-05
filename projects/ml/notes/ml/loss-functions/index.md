@@ -61,7 +61,7 @@ plt.savefig("loss_regression_shapes.svg", bbox_inches="tight")
 
 3 本の曲線の読み方:
 
-- MSE（青）: 二次関数。残差 `±1` の損失は 1 だが、`±3` の損失は 9 に跳ね上がる。外れ値の影響が極端に大きい
+- MSE（青）: 二次関数。残差 `±1` の損失は 1。`±3` では損失が 9 に跳ね上がる。外れ値の影響が極端に大きい
 - MAE（赤）: 線形。残差 `±1` で損失 1、`±3` で損失 3。外れ値の影響が線形にしか効かない
 - Huber（緑）: 小さい残差では MSE（二次）、大きい残差では MAE（線形）。両者の良いとこ取りで、外れ値耐性と滑らかさを両立する。閾値 `δ` で切り替える残差を決める
 
@@ -162,13 +162,13 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 
 `L = -log p_c = -z_c + log(Σ_j exp(z_j))`
 
-の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を引く形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス」の特殊形でもあり、情報理論との繋がりも明確です。
+の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を引く形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス（Kullback-Leibler divergence、2 つの確率分布のずれを測る量）」の特殊形でもあり、情報理論との繋がりも明確です。
 
 ### 数学での使いどころ
 
 - 最尤推定との対応: ガウス雑音モデルの最尤推定は MSE 最小化、カテゴリ分布の最尤推定は交差エントロピー最小化と等価
 - KL ダイバージェンス: 交差エントロピー = `H(p)` + `KL(p || q)` の `q` 依存部分（`p` は真の分布、`q` は予測分布）
-- 凸最適化: MSE・MAE・交差エントロピーはいずれも凸関数。グローバル最適解が一意に決まる（パラメータが線形に効く範囲では）
+- 凸最適化: MSE・MAE・交差エントロピーはいずれも凸関数。局所最適解に捕まらず、グローバル最適解へ到達できる（パラメータが線形に効く範囲では）
 - 正則化付きの目的関数: `L(θ) + λ ||θ||_2^2` のように [正則化](../regularization/) 項を加えて過学習を制御
 - ベイズ的解釈: MSE は正規分布尤度、MAE はラプラス分布尤度、交差エントロピーはベルヌーイ/カテゴリ尤度に対応
 
@@ -185,7 +185,7 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 - 顔認識・メトリック学習: contrastive loss、triplet loss、ArcFace
 - 強化学習: policy gradient の `log π(a|s) × advantage`
 - セグメンテーション: Dice loss、Focal loss（クラス不均衡対応）
-- 生成モデル: VAE の ELBO、GAN の min-max 損失、Diffusion の score matching
+- 生成モデル: VAE（Variational AutoEncoder）の ELBO（Evidence Lower Bound、対数尤度の下界）、GAN（Generative Adversarial Network）の min-max 損失、Diffusion の score matching
 
 実装上、scikit-learn では `LinearRegression`（MSE）、`HuberRegressor`、`QuantileRegressor`、`LogisticRegression`（交差エントロピー）のように、損失関数がモデル名に組み込まれているのが普通です。深層学習フレームワークでは `nn.MSELoss`、`nn.L1Loss`、`nn.HuberLoss`、`nn.CrossEntropyLoss` を選んで `loss.backward()` で勾配を計算する形になります。
 

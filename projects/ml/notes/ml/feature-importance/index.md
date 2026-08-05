@@ -15,7 +15,7 @@ weight: 33
 - 並べ替え重要度（permutation importance）: 1 列をシャッフルしたときのスコア低下を測る
 - SHAP 値（model-agnostic, ゲーム理論ベース）: 各サンプル × 各特徴量に対する寄与を協力ゲーム理論の枠組みで分配
 
-このうち permutation importance は実装がシンプルで偏りが少なく、モデルに依存しないため第一選択肢として使いやすいです。組み込み重要度は学習データから直接取れるので速いが、いくつかの落とし穴（高カーディナリティバイアス）があります。
+このうち permutation importance は実装がシンプルで偏りが少なく、モデルに依存しないため第一選択肢として使いやすいです。組み込み重要度は学習データから直接取れるので高速です。その一方で、いくつかの落とし穴（高カーディナリティバイアス）があります。
 
 ### 3 系統の使い分け
 
@@ -109,7 +109,7 @@ plt.savefig("featimp_mdi_vs_permutation.svg", bbox_inches="tight")
 
 ![MDI と permutation importance を並べて比較](./featimp_mdi_vs_permutation.svg)
 
-左が MDI（訓練データから計算）、右が permutation importance（テストデータから計算）。上位の特徴量はおおむね一致するが、順位や相対的な大きさが微妙に異なります。permutation importance は誤差バー（黒い線）も出すので、「重要度の差は誤差範囲か」も判断できます。
+左が MDI（訓練データから計算）、右が permutation importance（テストデータから計算）。上位の特徴量はおおむね一致します。ただし、順位や相対的な大きさは微妙に異なります。permutation importance は誤差バー（黒い線）も出すので、「重要度の差は誤差範囲か」も判断できます。
 
 注意点として、permutation importance は次の特性を持ちます。
 
@@ -138,7 +138,7 @@ plt.savefig("featimp_mdi_bias.svg", bbox_inches="tight")
 
 ![ランダム ID 列が MDI で過大評価される](./featimp_mdi_bias.svg)
 
-`random_id` は予測に全く無関係なランダム列だが、MDI（青）では `x1` `x2` と並ぶ重要度を獲得しています。これは木が「分割の候補」として連続値や値の種類の多い列を選びやすく、訓練データ上ではたまたま不純度を下げる分割を見つけられてしまうためです。
+`random_id` は予測に全く無関係なランダム列です。それでも MDI（青）では、 `x1` `x2` と並ぶ重要度を獲得しています。これは木が「分割の候補」として連続値や値の種類の多い列を選びやすく、訓練データ上ではたまたま不純度を下げる分割を見つけられてしまうためです。
 
 一方、permutation importance（緑）では `random_id` の値はほぼ 0 で、本物の `x1〜x3` だけが正しく高い重要度を持ちます。テストデータでシャッフルしても、もともと予測に効いていないのでスコアが落ちないからです。
 
@@ -148,7 +148,7 @@ plt.savefig("featimp_mdi_bias.svg", bbox_inches="tight")
 
 ### 相関のある特徴量は重要度が分散する
 
-互いに相関の強い特徴量があると、permutation importance は両者の重要度を「半分ずつ」分配しがちになります。`A` と `B` が同じ情報を持つなら、`A` をシャッフルしても `B` から情報を引けるのでスコアが落ちにくく、`B` をシャッフルしても同様、という現象です。
+互いに相関の強い特徴量があると、permutation importance は両者とも重要度を低く見積もりがちになります。`A` と `B` が同じ情報を持つなら、`A` をシャッフルしても `B` から情報を引けるのでスコアが落ちにくく、`B` をシャッフルしても同様、という現象です。
 
 対策:
 
@@ -162,13 +162,13 @@ plt.savefig("featimp_mdi_bias.svg", bbox_inches="tight")
 - Permutation importance とランダム置換の検定: 帰無仮説「この特徴量は予測に寄与しない」の検定統計量に近い解釈
 - SHAP value: Shapley value（協力ゲーム理論）に基づく特徴量への寄与の分配
 - Sobol 感度指標: 各特徴量の分散寄与（数値解析・物理シミュレーションで頻出）
-- 部分依存プロット（PDP）と ICE プロット: 重要度に加えて「効きの方向」を見る
+- 部分依存プロット（PDP）と ICE（Individual Conditional Expectation）プロット: 重要度に加えて「効きの方向」を見る
 
 ---
 
 ### 機械学習での使いどころ
 
-- EDA と特徴量設計: 重要度が高いトップ N に絞ってドメイン的な解釈を進める
+- EDA（Exploratory Data Analysis、探索的データ解析）と特徴量設計: 重要度が高いトップ N に絞ってドメイン的な解釈を進める
 - [特徴量選択](../feature-selection/): 重要度の低い特徴量を順に削って評価する recursive feature elimination
 - モデルデバッグ: 不自然に重要度が高い特徴量がないか確認（[データリーク](../data-leakage/) の早期発見）
 - ステークホルダー説明: 「このモデルはこれらの変数で予測している」と提示する

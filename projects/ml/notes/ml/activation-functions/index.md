@@ -37,7 +37,7 @@ plt.savefig("activations_shapes.svg", bbox_inches="tight")
 | 関数 | 値域 | 滑らかさ | 計算量 | 主な用途 |
 |---|---|---|---|---|
 | step | `{0, 1}` | 不連続 | 最軽 | 古典 [パーセプトロン](../perceptron/) のみ |
-| sigmoid | `(0, 1)` | 滑らか | 重 (exp) | 2 値分類の出力層、ゲート（LSTM, GRU） |
+| sigmoid | `(0, 1)` | 滑らか | 重 (exp) | 2 値分類の出力層、LSTM（Long Short-Term Memory）や GRU（Gated Recurrent Unit）のゲート |
 | tanh | `(-1, 1)` | 滑らか | 重 (exp) | 隠れ層（RNN で稀に） |
 | ReLU | `[0, ∞)` | 0 で折れ目 | 最軽 (比較) | 隠れ層の標準 |
 | Leaky ReLU | `(-∞, ∞)` | 0 で折れ目 | 最軽 | ReLU の「dead neuron」対策 |
@@ -67,10 +67,10 @@ plt.savefig("activations_gradients.svg", bbox_inches="tight")
 ![各活性化関数の勾配。sigmoid と tanh は飽和域で勾配が 0 に近づく](./activations_gradients.svg)
 
 - sigmoid の勾配は `z = 0` で最大 0.25、`|z| > 3` でほぼ 0。10 層積むと勾配が `0.25^10 ≈ 10^-6` まで縮む
-- tanh は `z = 0` で 1 と高いが、`|z| > 2` で急速に飽和し、深いネットでは同様に勾配が消える
+- tanh は `z = 0` で 1 と高い。ただし、`|z| > 2` で急速に飽和し、深いネットでは同様に勾配が消える
 - ReLU は正領域で常に 1。何層積んでも正領域なら勾配が衰えない
 
-これが「2010 年代に深層学習がブレイクした主因の 1 つ」と言われる ReLU の貢献です。LeCun・Bengio・Hinton らの研究で、ReLU が深いネットの学習を可能にしたことが Nobel-level の発見として認知されました（実際に 2024 年 Nobel 物理学賞）。
+これが「2010 年代に深層学習がブレイクした主因の 1 つ」と言われる ReLU の貢献です。ReLU を深いネットへ広めたのは Nair・Hinton（2010）や Glorot ら（2011）の研究で、これが深い層の学習を現実的にしました。2024 年のノーベル物理学賞は Hopfield と Hinton がニューラルネットの基礎的な発見に対して受賞したもので、ReLU に対する賞ではありません。
 
 ReLU にも弱点はあり、`z < 0` で勾配がちょうど 0 になるため、一度負側に振れたニューロンが学習しなくなる「dead ReLU」現象が起きます。これを救うために Leaky ReLU（負側にも小さい勾配 α を残す）、ELU、Swish、GELU などの改良版が次々に提案されました。
 
@@ -103,7 +103,7 @@ ReLU の境界が「直線の組み合わせ」になっているのは、ReLU �
 
 ### 学習速度の比較
 
-5 層の MLP を sigmoid / tanh / ReLU で訓練し、収束速度を比べます。
+5 層の MLP（Multi-Layer Perceptron、多層パーセプトロン）を sigmoid / tanh / ReLU で訓練し、収束速度を比べます。
 
 ```python
 from sklearn.neural_network import MLPRegressor
@@ -134,7 +134,7 @@ plt.savefig("activations_training_curves.svg", bbox_inches="tight")
 
 ### 出力層の活性化関数
 
-隠れ層では基本 ReLU 系を使うが、出力層は「タスクに応じた関数」を使い分けます。
+隠れ層では基本 ReLU 系を使います。一方、出力層は「タスクに応じた関数」を使い分けます。
 
 ```mermaid
 graph TD
@@ -177,7 +177,7 @@ graph TD
 - 画像生成 (GAN, Diffusion): tanh（出力を -1〜1 に正規化する場合）
 - 強化学習のポリシー: softmax（離散行動）または tanh（連続行動）
 
-ReLU の問題（dead neuron）が顕在化したケースでは、Leaky ReLU、ELU、Swish、GELU を試します。最新の Transformer 系では GELU が定着しているが、ReLU で十分なケースも多いと考えられます。
+ReLU の問題（dead neuron）が顕在化したケースでは、Leaky ReLU、ELU、Swish、GELU を試します。最新の Transformer 系では GELU が定着しています。ただし、ReLU で十分なケースも多いと考えられます。
 
 ---
 
@@ -190,7 +190,7 @@ ReLU の問題（dead neuron）が顕在化したケースでは、Leaky ReLU、
 - softmax で 1 つだけ高い logit: 他クラスの確率がほぼ 0 になり、勾配が消える。温度パラメータ（temperature scaling）で和らげる
 - tanh と sigmoid を混ぜすぎる: 1 つのアーキで一貫して 1 種類使うほうが debug しやすい
 - 活性化関数を入れ忘れる: 線形層を重ねただけになり、深さの意味が無くなる。多層なのに精度が単層と変わらないなら疑う
-- batch normalization と ReLU の順番: BN → ReLU が標準だが、ReLU → BN を試している論文もある。フレームワーク既定に従うのが無難
+- batch normalization と ReLU の順番: BN → ReLU が標準。ReLU → BN を試している論文もある。フレームワーク既定に従うのが無難
 - 古典的なネットワーク（pre-2010）の文献を読んで sigmoid を使う: 当時の常識で、現代では非標準。論文を読むときは年代を意識する
 - 「ReLU が全てを解決する」と思う: dead neuron、出力が非対称（常に >= 0）など独自の問題もある。タスクごとに最適は変わる
 - 勾配消失と勾配爆発を混同: 勾配消失は活性化関数の選択で対処、勾配爆発は gradient clipping + 重みの初期化 + 正則化で対処、と原因と対処が違う

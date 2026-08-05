@@ -14,9 +14,9 @@ weight: 1
 ### 用語
 
 - TP（True Positive）: 実際に陽性で、予測も陽性
-- FP（False Positive）: 実際は陰性だが、予測は陽性（誤検知）
+- FP（False Positive）: 実際は陰性、予測は陽性（誤検知）
 - TN（True Negative）: 実際に陰性で、予測も陰性
-- FN（False Negative）: 実際は陽性だが、予測は陰性（見逃し）
+- FN（False Negative）: 実際は陽性、予測は陰性（見逃し）
 
 ---
 

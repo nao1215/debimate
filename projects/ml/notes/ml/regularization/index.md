@@ -33,12 +33,12 @@ weight: 8
 
 ### L1 と L2 の違い
 
-両方とも係数を 0 に近づけるが、近づけ方が違います。
+両方とも係数を 0 に近づけます。ただし、近づけ方が違います。
 
 ![L1 と L2 の係数の違い](./regularization_l1_l2.svg)
 
 - L1（左, Lasso）: 不要な特徴量の係数を完全に 0 にする。「特徴量を選別する」効果がある
-- L2（右, Ridge）: すべての係数を均等に 0 へ縮める。0 にはしないが小さくする
+- L2（右, Ridge）: すべての係数を同じ比率で 0 へ縮める。0 にはしないが小さくする
 
 使い分けの目安:
 
@@ -90,11 +90,11 @@ Lasso だけが係数の多くを 0 に潰し、実質 5 個の特徴量で同�
 
 - 線形回帰: Ridge（L2）、Lasso（L1）、Elastic Net
 - [ロジスティック回帰](../logistic-regression/): `penalty='l1'` / `'l2'` / `'elasticnet'`
-- SVM: `C` パラメータ（C が小さいほど正則化が強い）
+- [SVM](../svm/)（support vector machine、サポートベクターマシン）: `C` パラメータ（C が小さいほど正則化が強い）
 - ニューラルネット: weight decay（L2 と同じ）、dropout、batch normalization
 - [GradientBoosting](../gradient-boosting/): `reg_alpha`（L1）、`reg_lambda`（L2）、`min_child_weight` など
 
-決定木そのものには「正則化項」は無いが、`max_depth` や `min_samples_leaf` の上限を絞ることが事実上の正則化として働きます。[RandomForest](../random-forest/) や GradientBoosting でハイパーパラメータを絞ることは、概念上は正則化と同じことをしています。
+決定木そのものに「正則化項」はありません。その代わり、`max_depth` や `min_samples_leaf` の上限を絞ることが事実上の正則化として働きます。[RandomForest](../random-forest/) や GradientBoosting でハイパーパラメータを絞ることは、概念上は正則化と同じことをしています。
 
 ---
 

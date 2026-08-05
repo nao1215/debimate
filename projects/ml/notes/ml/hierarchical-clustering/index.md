@@ -16,7 +16,7 @@ weight: 30
 - 凝集型（agglomerative, bottom-up）: 各点を 1 クラスタとして始め、最も近い 2 クラスタを順にマージ
 - 分割型（divisive, top-down）: 全データを 1 クラスタとして始め、繰り返し 2 分割
 
-実装はほぼ凝集型が標準（scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy`）。分割型は計算量が大きく、`scipy` の `cluster.hierarchy.bisect_kmeans` 程度です。
+実装はほぼ凝集型が標準（scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy`）。分割型は計算量が大きく、scikit-learn の `BisectingKMeans` のように k-means を再帰的に適用する実装が使われる程度です。
 
 ```python
 import numpy as np
@@ -31,7 +31,7 @@ plt.savefig("hierarchical_steps.svg", bbox_inches="tight")
 
 ![凝集型クラスタリングのステップ進行](./hierarchical_steps.svg)
 
-ステップ 0 では各点が独立したクラスタです。ステップ 1 で最も近い 2 点（左下のペア）をマージ、ステップ 2 では別の点群がまとまり、ステップ 3 で `k = 3` の状態に到達です。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムだが、最近接の定義（リンク方法）で結果が変わります。
+ステップ 0 では各点が独立したクラスタです。ステップ 1 で最も近い 2 点（左下のペア）をマージ、ステップ 2 では別の点群がまとまり、ステップ 3 で `k = 3` の状態に到達です。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムです。ただし、最近接の定義（リンク方法）で結果が変わります。
 
 ---
 

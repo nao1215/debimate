@@ -36,7 +36,7 @@ graph TD
 
 ### Accuracy が高くても意味が無いケース
 
-95:5 の不均衡データで「全部多数派と予測する」だけのモデルは Accuracy 95% を取ります。これがいかに役に立たないかを数字で見ます。
+95:5 の不均衡データで「全部多数派と予測する」だけのモデルは Accuracy 95% を取ります。この Accuracy が何を見落としているかを数字で確認します。
 
 ```python
 import numpy as np
@@ -63,7 +63,7 @@ Recall   = 0.000
 F1       = 0.000
 ```
 
-Accuracy だけ見ると 95% で「良いモデル」に見えるが、Recall も F1 も 0 で少数派を 1 件も検出できていません。不均衡データでは Accuracy を主指標にすると意思決定を完全に誤る、というのがこの数字の意味するところとなります。
+Accuracy だけ見ると 95% で「良いモデル」に見えます。しかし、Recall も F1 も 0 で、少数派を 1 件も検出できていません。不均衡データでは Accuracy を主指標にすると意思決定を完全に誤る、というのがこの数字の意味するところとなります。
 
 不均衡データで使うべき評価指標は次の通りです。
 
@@ -91,7 +91,7 @@ plt.savefig("imbalance_class_weight.png", bbox_inches="tight")
 
 左の素のロジスティック回帰では、決定境界が多数派側（青）にかなり寄っており、少数派（赤）の領域に入り込んでいます。右では `class_weight="balanced"`（多数派と少数派の損失の重みを反比例で調整）を加えただけで、境界が少数派を救う方向に動きます。Recall が向上する代償として、Precision はやや下がります。
 
-`balanced` は自動的に `n_samples / (n_classes × bincount(y))` で重みを計算するが、業務上の損失（誤検出と見逃しのコスト）が分かるなら明示的に `class_weight={0: 1, 1: 20}` のように与える方が筋がよいです。
+`balanced` は自動的に `n_samples / (n_classes × bincount(y))` で重みを計算します。損失（誤検出と見逃しのコスト）が分かるなら、明示的に `class_weight={0: 1, 1: 20}` のように与える方が筋がよいです。
 
 ---
 
@@ -137,7 +137,7 @@ plt.savefig("imbalance_boundary_resampling.png", bbox_inches="tight")
 
 ### 対処 3: 評価指標を変える
 
-不均衡データでは Accuracy をやめ、Precision / Recall / F1 / PR-AUC を主指標にします。クラス比率に依存しない指標として MCC（Matthews correlation coefficient）も使いやすいです。
+不均衡データでは Accuracy をやめ、Precision / Recall / F1 / PR-AUC を主指標にします。クラス比率に依存しない MCC（Matthews correlation coefficient）も使いやすいです。
 
 4 つのモデル（naive baseline、素 LR、class_weight、SMOTE）で評価指標を並べると、Accuracy がいかに誤った印象を与えるかが明確になります。
 
@@ -148,7 +148,7 @@ plt.savefig("imbalance_metrics_breakdown.svg", bbox_inches="tight")
 
 ![5 指標 × 4 モデルでの比較](./imbalance_metrics_breakdown.svg)
 
-「全部多数派と予測」のベースラインを見ると、Accuracy（灰色）は 0.95 で他のモデルとほぼ並ぶが、Precision・Recall・F1・PR-AUC（青〜赤）は軒並み 0です。Accuracy だけで判断すると、何もしないモデルが「最良」に見えてしまいます。
+「全部多数派と予測」のベースラインを見ると、Accuracy（灰色）は 0.95 で他のモデルとほぼ並びます。一方、Precision・Recall・F1・PR-AUC（青〜赤）は軒並み 0です。Accuracy だけで判断すると、何もしないモデルが「最良」に見えてしまいます。
 
 class_weight と SMOTE を入れると Recall（緑）が大きく改善し、F1（橙）と PR-AUC（赤）が伸びます。素の LR は Accuracy 高めだが Recall が低く、少数派を捕まえられていない様子が見えます。
 
@@ -162,7 +162,7 @@ class_weight と SMOTE を入れると Recall（緑）が大きく改善し、F1
 
 ### 閾値調整: 同じモデルで Precision/Recall を動かす
 
-確率出力を持つモデルなら、リサンプリングや重み付けをしなくても、判定閾値を動かすだけで Precision と Recall を交換できます。デフォルト閾値 0.5 を 0.3 に下げれば、少数派を取りこぼしにくくなる（Recall 上昇）が、誤検出も増えます（Precision 低下）。
+確率出力を持つモデルなら、リサンプリングや重み付けをしなくても、判定閾値を動かすだけで Precision と Recall を交換できます。例えば、デフォルト閾値 0.5 を 0.3 に下げれば、少数派を取りこぼしにくくなる（Recall 上昇）が、誤検出も増えます（Precision 低下）。
 
 ```python
 proba = LogisticRegression(max_iter=2000).fit(X_tr, y_tr).predict_proba(X_te)[:, 1]

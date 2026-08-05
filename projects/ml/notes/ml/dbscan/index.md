@@ -36,7 +36,7 @@ k-means（左）はクラスタを「球形」で近似するため、三日月�
 DBSCAN は各点を 3 種類に分類します。
 
 - core point（コア点）: 半径 `eps` 以内に `min_samples` 個以上の点を持つ
-- border point（ボーダー点）: コア点ではないが、コア点の近傍 `eps` に入る
+- border point（ボーダー点）: コア点ではないものの、コア点の近傍 `eps` に入る
 - noise point（ノイズ点）: どちらでもない外れ値
 
 ```mermaid
@@ -131,7 +131,7 @@ plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 - 形状認識（非凸オブジェクトの抽出）
 - ストリーミング応用: streaming-DBSCAN、ST-DBSCAN
 
-scikit-learn では `sklearn.cluster.DBSCAN`、大規模データ向けに `HDBSCAN`（階層型 DBSCAN、`hdbscan` パッケージ）があります。HDBSCAN は `eps` を自動で選ぶため使いやすいです。
+scikit-learn では `sklearn.cluster.DBSCAN`、密度が異なるクラスタ向けに `HDBSCAN`（階層型 DBSCAN、scikit-learn 1.3 以降は `sklearn.cluster.HDBSCAN`）があります。HDBSCAN は複数の密度でのクラスタから安定したものを選ぶため、`eps` の調整が要りません。
 
 ---
 
@@ -141,7 +141,7 @@ scikit-learn では `sklearn.cluster.DBSCAN`、大規模データ向けに `HDBS
 - 密度が大きく異なる複数クラスタ: 単一の `eps` では全部をうまく扱えない。HDBSCAN を検討
 - スケールが揃っていない: 距離計算が歪む。[標準化](../standardization/) を必ず先に
 - `eps` を当てずっぽうで決める: k-distance プロットで根拠を持って選ぶ
-- 巨大データ（n > 10⁶）で素朴な DBSCAN: 計算量が `O(n²)` で破綻。Ball Tree / KD Tree で `O(n log n)` に
+- 巨大データ（n > 10⁶）で単純な実装の DBSCAN: 計算量が `O(n²)` で破綻。Ball Tree / KD Tree で `O(n log n)` に
 - カテゴリ変数を含むデータ: ユークリッド距離が意味を持たない。Gower 距離か、別のクラスタリングを検討
 - noise を必ず捨てる: 業務によっては noise こそ重要（不正検知、希少事例）
 - `eps` を本番運用中も固定: データ分布が変わると noise 率が変動する。定期的に再校正
