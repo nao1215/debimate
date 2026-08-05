@@ -1,0 +1,39 @@
+# トップページの Featured OSS カードで紹介する候補。
+# 全件を HTML へ出力し、表示する 1 枚は閲覧時に JavaScript が選ぶ。
+# ここに追記すれば候補が増える。star 数は shields.io のバッジで取るため持たせない。
+# 説明文は content/about/_index.md の OSS 一覧と揃えている。
+- name: gup
+  repo: https://github.com/nao1215/gup
+  lang: Go
+  langColor: "#00ADD8"
+  desc: go install でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール
+
+- name: sqly
+  repo: https://github.com/nao1215/sqly
+  lang: Go
+  langColor: "#00ADD8"
+  desc: CSV／TSV／LTSV／JSON／Parquet／Excel などに対して、シェルから直接 SQL を実行するツール
+
+- name: atago
+  repo: https://github.com/nao1215/atago
+  lang: Go
+  langColor: "#00ADD8"
+  desc: YAML で定義したテスト条件に基づき、CLI の終了コード・出力・ファイル差分・スナップショット・TUI まで検証する E2E テストツール
+
+- name: filesql
+  repo: https://github.com/nao1215/filesql
+  lang: Go
+  langColor: "#00ADD8"
+  desc: CSV／TSV／LTSV／Parquet／Excel などのファイルを SQLite として読み込む database/sql ドライバ
+
+- name: markdown
+  repo: https://github.com/nao1215/markdown
+  lang: Go
+  langColor: "#00ADD8"
+  desc: Markdown と Mermaid 図を組み立てるための Go ライブラリ
+
+- name: omokage
+  repo: https://github.com/nao1215/omokage
+  lang: Go
+  langColor: "#00ADD8"
+  desc: 文章が特定の書き手の文体にどれだけ近いかを測定する、ローカルファーストな CLI（日本語／英語対応）

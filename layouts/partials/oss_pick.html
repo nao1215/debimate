@@ -1,0 +1,49 @@
+{{/*
+  トップページで自作 OSS を 1 件だけ紹介するカード。
+
+  - 候補は data/oss_cards.yaml。全件を出力しておき、表示する 1 枚は
+    閲覧時に JavaScript が選ぶ。静的サイトなのでビルド時に選ぶと
+    次のデプロイまで同じものが出続けるため、訪問ごとの入れ替えは
+    クライアント側で行う。
+  - JavaScript が無効な環境では先頭の 1 枚だけが出る（CSS で制御）。
+  - star 数は shields.io のバッジ画像。ビルド時に GitHub API を叩くと
+    レート制限で CI が落ちるため、About ページと同じ方式に揃えている。
+*/}}
+{{/*
+  イラストは 1.78:1 で、カード（およそ 6.8:1）へ cover で敷くと 2 倍以上に
+  拡大されて絵が巨大になる。左側にイラストと同じ余白色を継ぎ足して
+  横長にしてから敷く事で、拡大せずカード全面の背景として使える。
+*/}}
+{{- $banner := "" }}
+{{- with resources.Get "images/oss-card-banner.png" }}
+{{- $banner = (.Filter (images.Padding 0 0 0 3033 "#fefaf7")).Resize "1800x webp q90" }}
+{{- end }}
+{{- with hugo.Data.oss_cards }}
+<div class="oss-pick-wrap" data-oss-pick{{ with $banner }} style="--oss-pick-bg: url('{{ .RelPermalink }}');"{{ end }}>
+  {{- range . }}
+  <a class="oss-pick" href="{{ .repo }}" target="_blank" rel="noopener noreferrer">
+    <span class="oss-pick-body">
+      <span class="oss-pick-label">Featured OSS</span>
+      <span class="oss-pick-head">
+        <span class="oss-pick-name">{{ .name }}</span>
+        <span class="oss-card-lang"><i class="oss-lang-dot" style="background:{{ .langColor }}"></i>{{ .lang }}</span>
+        <img class="oss-card-badge" src="https://img.shields.io/github/stars/{{ replace .repo "https://github.com/" "" }}?style=flat-square&label=%E2%98%85&color=blue" alt="{{ .name }} の star 数" loading="lazy">
+      </span>
+      <span class="oss-pick-desc">{{ .desc }}</span>
+    </span>
+  </a>
+  {{- end }}
+</div>
+<script>
+  (function () {
+    var wrap = document.querySelector('[data-oss-pick]');
+    if (!wrap) return;
+    var cards = wrap.querySelectorAll('.oss-pick');
+    if (cards.length < 2) return;
+    var pick = Math.floor(Math.random() * cards.length);
+    for (var i = 0; i < cards.length; i++) {
+      cards[i].style.display = i === pick ? 'block' : 'none';
+    }
+  })();
+</script>
+{{- end }}
