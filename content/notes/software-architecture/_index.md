@@ -11,13 +11,17 @@ ShowBreadCrumbs: true
 description: ""
 ---
 
-ソフトウェアアーキテクチャに関する技術ノートです。コンテンツは準備中です。
+ソフトウェアアーキテクチャに関する技術ノートです。DDD・アーキテクチャスタイル・設計パターンを中心に整理しています。
 
 ---
 
 ### コンテンツ一覧
 
-準備中。
+#### Domain-Driven Design
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Value Object・Entity・Aggregate - DDD のモデル構成要素](/notes/software-architecture/value-object-entity-aggregate/) | DDD |
 
 ---
 
