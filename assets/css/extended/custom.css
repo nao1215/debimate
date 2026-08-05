@@ -232,12 +232,18 @@ html {
   border-radius: 0 4px 4px 0;
 }
 
-/* トップページの記事一覧を 2 列に並べる。
+/* トップページの記事一覧を 3 列に並べる。
    home-info（プロフィールと 2 枚のカード）とページャは全幅のまま残す。
    body.home は baseof.html で .IsHome の時だけ付与している */
+body.home {
+  /* 記事本文と同じ 820px だと 3 列は 1 列 260px 程度になり窮屈なので、
+     トップだけヘッダと同じ 1024px まで広げる */
+  --main-width: 1024px;
+}
+
 body.home main.main {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
   gap: 1rem;
 }
 
@@ -369,7 +375,7 @@ html[data-theme="dark"] .oss-pick {
   }
 }
 
-/* トップの一覧はカード幅が半分なので、テーマ既定の 24px だと
+/* トップの一覧はカード幅が 1/3 なので、テーマ既定の 24px だと
    タイトルが大きく見える。ここだけ縮める（他の一覧ページは既定のまま） */
 body.home .post-entry .entry-header h2 {
   font-size: 1.15rem;
