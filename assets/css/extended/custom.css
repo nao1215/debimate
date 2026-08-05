@@ -231,3 +231,50 @@ html {
   line-height: 1.7;
   border-radius: 0 4px 4px 0;
 }
+
+/* トップページの記事一覧を 2 列に並べる。
+   home-info（プロフィールと 2 枚のカード）とページャは全幅のまま残す。
+   body.home は baseof.html で .IsHome の時だけ付与している */
+body.home main.main {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+}
+
+body.home main.main > .first-entry,
+body.home main.main > .page-footer {
+  grid-column: 1 / -1;
+}
+
+body.home main.main > .post-entry {
+  margin: 0 !important;
+}
+
+/* カードの高さを揃える。カバー画像の縦横比を固定し、要約の行数を切り、
+   日付を下端へ寄せる事で、隣り合うカードの下端が揃う */
+body.home main.main > .post-entry {
+  display: flex;
+  flex-direction: column;
+}
+
+body.home .post-entry .entry-cover {
+  margin-bottom: 0.6rem;
+}
+
+body.home .post-entry .entry-cover img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+body.home .post-entry .entry-content p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+body.home .post-entry .entry-footer {
+  margin-top: auto;
+}

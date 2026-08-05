@@ -17,7 +17,7 @@
 </head>
 
 {{- if (or (ne .Kind `page` ) (eq .Layout `archives`) (eq .Layout `search`)) }}
-<body class="list" id="top">
+<body class="list{{ if .IsHome }} home{{ end }}" id="top">
 {{- else }}
 <body id="top">
 {{- end }}
