@@ -86,5 +86,7 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
         with:
-          # 既定の 10 分では Pages 側の一時的な遅延を吸収できずタイムアウトしたため 15 分にする
-          timeout: "900000"
+          # deploy-pages v5 は timeout を 600000ms (10 分) で頭打ちにする
+          # (src/internal/deployment.js の MAX_TIMEOUT)。900000 を渡すと警告付きで
+          # 600000 へ丸められるため、上限である事を明示する意味で 600000 を指定する
+          timeout: "600000"
