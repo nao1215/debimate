@@ -14,9 +14,12 @@ permissions:
   pages: write
   id-token: write
 
+# 進行中の Pages デプロイは中断しない。中断すると Pages 側のデプロイが
+# error のまま残り、後続のデプロイが deployment_queued から進まなくなる事があるため。
+# 待機中の run は Actions 標準の pending 置換で最新の 1 件だけが残る
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -40,6 +43,33 @@ jobs:
       - name: Build site
         run: hugo --minify
 
+      # デプロイが失敗した際に成果物の状態を後から判断できるようにする。
+      # ファイルの内容には触れず、パスとサイズだけを記録する
+      - name: Report public directory size
+        run: |
+          set -eu
+          sizes="$(mktemp)"
+          # sort の出力を一旦ファイルへ受ける。head へ直接パイプすると
+          # SIGPIPE でパイプライン全体が失敗し得るため
+          find public -type f -printf '%s\t%p\n' | sort -nr > "${sizes}"
+          total="$(du -sh public | cut -f1)"
+          count="$(wc -l < "${sizes}")"
+          echo "public size : ${total}"
+          echo "public files: ${count}"
+          echo "top 20 largest files (bytes, path):"
+          head -20 "${sizes}"
+          {
+            echo "### Pages artifact (public/)"
+            echo ""
+            echo "- total size: ${total}"
+            echo "- file count: ${count}"
+            echo ""
+            echo "| bytes | path |"
+            echo "| --- | --- |"
+            head -20 "${sizes}" | awk -F'\t' '{printf "| %s | %s |\n", $1, $2}'
+          } >> "${GITHUB_STEP_SUMMARY}"
+          rm -f "${sizes}"
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
@@ -55,3 +85,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+        with:
+          # 既定の 10 分では Pages 側の一時的な遅延を吸収できずタイムアウトしたため 15 分にする
+          timeout: "900000"
