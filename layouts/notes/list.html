@@ -34,4 +34,50 @@
 </div>
 {{- end }}
 
+{{/* セクション一覧は、トップページと同じ画像付きカードで並べる。
+     バナー画像は content/notes/image/<セクション名>-card-banner.png を使う */}}
+{{- if and (eq .Kind "section") .Parent.IsHome }}
+{{- $notesPage := . }}
+{{- $cards := slice }}
+{{- range .Sections.ByWeight }}
+{{- $banner := "" }}
+{{- with $notesPage.Resources.GetMatch (printf "image/%s-card-banner.png" .File.ContentBaseName) }}
+{{- $banner = .RelPermalink }}
+{{- end }}
+{{- $cards = $cards | append (dict
+  "url" .RelPermalink
+  "label" (.Params.cardLabel | default "")
+  "title" .Title
+  "note" (.Params.cardNote | default "")
+  "banner" $banner) }}
+{{- end }}
+{{- with site.GetPage "/ml" }}
+{{- $banner := "" }}
+{{- with $notesPage.Resources.GetMatch "image/machine-learning-card-banner.png" }}
+{{- $banner = .RelPermalink }}
+{{- end }}
+{{- $cards = $cards | append (dict
+  "url" .RelPermalink
+  "label" "機械学習"
+  "title" .Title
+  "note" "機械学習の初歩を学んだ記録"
+  "banner" $banner) }}
+{{- end }}
+{{- with $cards }}
+<div class="notes-cards">
+  {{- range . }}
+  <a class="latest-weekly notes-card{{ if not .banner }} latest-weekly-plain{{ end }}" href="{{ .url }}"{{ with .banner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+    {{- with .label }}
+    <span class="latest-weekly-label">{{ . }}</span>
+    {{- end }}
+    <span class="latest-weekly-title">{{ .title }}</span>
+    {{- with .note }}
+    <span class="latest-weekly-note">{{ . }}</span>
+    {{- end }}
+  </a>
+  {{- end }}
+</div>
+{{- end }}
+{{- end }}
+
 {{- end }}{{/* end main */}}

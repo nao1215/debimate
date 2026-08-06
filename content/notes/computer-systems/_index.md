@@ -2,6 +2,9 @@
 title: "Computer Systems"
 date: 2026-08-04
 draft: false
+weight: 10
+cardLabel: "低レイヤ"
+cardNote: "OS・カーネル・組み込み Linux のノート"
 
 ShowToc: true
 TocOpen: true

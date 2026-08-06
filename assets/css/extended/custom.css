@@ -50,7 +50,7 @@ body {
   background-color: var(--entry);
   background-image:
     linear-gradient(0deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
-    var(--latest-weekly-bg);
+    var(--latest-weekly-bg, none);
   /* イラストはカード全面に敷く。cover なら余白も letterbox も出ず、
      画面幅が変わっても常にカードを埋める。絵の主役は右側にあるので
      右端を基準に寄せる */
@@ -69,7 +69,32 @@ body {
 html[data-theme="dark"] .latest-weekly {
   background-image:
     linear-gradient(0deg, rgba(46, 46, 51, 0.72), rgba(46, 46, 51, 0.72)),
-    var(--latest-weekly-bg);
+    var(--latest-weekly-bg, none);
+}
+
+/* 技術ノートのセクション一覧。トップページのカードと同じ見た目で 2 列に並べる */
+.notes-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin: 1.2rem 0 0.5rem;
+}
+
+/* 画面が狭い場合は 1 列に落とす */
+@media (max-width: 640px) {
+  .notes-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.notes-cards .notes-card {
+  margin: 0;
+}
+
+/* バナー画像が無いカードは、絵のための右余白を空けない */
+.latest-weekly-plain {
+  padding-right: 0.95rem;
+  min-height: 0;
 }
 
 .latest-weekly-label {

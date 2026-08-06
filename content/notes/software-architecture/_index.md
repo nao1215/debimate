@@ -2,6 +2,9 @@
 title: "Software Architecture"
 date: 2026-08-04
 draft: false
+weight: 20
+cardLabel: "設計"
+cardNote: "DDD・アーキテクチャスタイル・設計パターンのノート"
 
 ShowToc: true
 TocOpen: true

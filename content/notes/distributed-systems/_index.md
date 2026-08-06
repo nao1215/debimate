@@ -2,6 +2,9 @@
 title: "Distributed Systems"
 date: 2026-08-04
 draft: false
+weight: 30
+cardLabel: "分散システム"
+cardNote: "障害検知・合意・複製・整合性のノート"
 
 ShowToc: true
 TocOpen: true
