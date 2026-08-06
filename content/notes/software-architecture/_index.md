@@ -22,6 +22,7 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Value Object・Entity・Aggregate - DDD のモデル構成要素](/notes/software-architecture/value-object-entity-aggregate/) | DDD |
+| 2 | [Bounded Context - モデルが通用する範囲を区切る](/notes/software-architecture/bounded-context/) | DDD |
 
 ---
 
