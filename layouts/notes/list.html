@@ -35,13 +35,13 @@
 {{- end }}
 
 {{/* セクション一覧は、トップページと同じ画像付きカードで並べる。
-     バナー画像は content/notes/image/<セクション名>-card-banner.png を使う */}}
+     バナー画像は content/notes/image/<セクション名>-card-banner.webp を使う */}}
 {{- if and (eq .Kind "section") .Parent.IsHome }}
 {{- $notesPage := . }}
 {{- $cards := slice }}
 {{- range .Sections.ByWeight }}
 {{- $banner := "" }}
-{{- with $notesPage.Resources.GetMatch (printf "image/%s-card-banner.png" .File.ContentBaseName) }}
+{{- with $notesPage.Resources.GetMatch (printf "image/%s-card-banner.webp" .File.ContentBaseName) }}
 {{- $banner = .RelPermalink }}
 {{- end }}
 {{- $cards = $cards | append (dict
@@ -53,7 +53,7 @@
 {{- end }}
 {{- with site.GetPage "/ml" }}
 {{- $banner := "" }}
-{{- with $notesPage.Resources.GetMatch "image/machine-learning-card-banner.png" }}
+{{- with $notesPage.Resources.GetMatch "image/machine-learning-card-banner.webp" }}
 {{- $banner = .RelPermalink }}
 {{- end }}
 {{- $cards = $cards | append (dict

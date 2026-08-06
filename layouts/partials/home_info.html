@@ -2,14 +2,14 @@
 {{- $weeklyPage := site.GetPage "section" "weekly" }}
 {{- $weeklyBanner := "" }}
 {{- with $weeklyPage }}
-    {{- with .Resources.GetMatch "image/weekly-card-banner.png" }}
+    {{- with .Resources.GetMatch "image/weekly-card-banner.webp" }}
         {{- $weeklyBanner = .RelPermalink }}
     {{- end }}
 {{- end }}
 {{- $notesPage := site.GetPage "section" "notes" }}
 {{- $notesBanner := "" }}
 {{- with $notesPage }}
-    {{- with .Resources.GetMatch "image/notes-card-banner.png" }}
+    {{- with .Resources.GetMatch "image/notes-card-banner.webp" }}
         {{- $notesBanner = .RelPermalink }}
     {{- end }}
 {{- end }}
