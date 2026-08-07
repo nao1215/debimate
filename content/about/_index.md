@@ -8,7 +8,7 @@ ShowToc: false
 
 ### nchika (nao1215)
 
-Go を中心に、金融領域（Fintech）バックエンド開発に携わるエンジニア。組み込みソフトウェア開発からキャリアを始め、受託でのサーバーサイド／インフラ開発を経て、現在は Visa プリペイドカードアプリの開発とエンジニアリングマネジメントを兼務しています。
+Linux カーネルから決済バックエンドまで、レイヤーを縦断してきた Go エンジニア。組み込みソフトウェア開発からキャリアを始め、受託でのサーバーサイド／インフラ開発を経て、現在は Visa プリペイドカードアプリの開発とエンジニアリングマネジメントを兼務しています。
 
 OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weekly/)、[技術ノート](https://debimate.jp/notes/)を書いています。
 
@@ -36,7 +36,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
       <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/gup?style=flat-square&label=%E2%98%85&color=blue" alt="gup star count" loading="lazy">
     </div>
   </div>
-  <p class="oss-card-desc"><code>go install</code> でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール</p>
+    <p class="oss-card-desc"><code>go install</code> でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール。<a href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer">Awesome Go</a> 掲載</p>
 </div>
 
 <div class="oss-card">
@@ -94,39 +94,6 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
   <p class="oss-card-desc">文章が特定の書き手の文体にどれだけ近いかを測定する、ローカルファーストな CLI（日本語／英語対応）</p>
 </div>
 
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/oaspec" target="_blank" rel="noopener noreferrer">oaspec</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/oaspec?style=flat-square&label=%E2%98%85&color=blue" alt="oaspec star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">OpenAPI 3.x の仕様から型安全な Gleam サーバースタブ／クライアント SDK を生成</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/career" target="_blank" rel="noopener noreferrer">career</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/career?style=flat-square&label=%E2%98%85&color=blue" alt="career star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">1 つの YAML から履歴書・職務経歴書・英文 CV を PDF 生成するツール</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/metamon" target="_blank" rel="noopener noreferrer">metamon</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/metamon?style=flat-square&label=%E2%98%85&color=blue" alt="metamon star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">Gleam 向けのプロパティベーステスト・メタモルフィックテストライブラリ</p>
-</div>
-
 </div>
 
 ---
@@ -182,17 +149,6 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 <div class="oss-card">
   <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/qrkit" target="_blank" rel="noopener noreferrer">qrkit</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/qrkit?style=flat-square&label=%E2%98%85&color=blue" alt="qrkit star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">ターミナル／SVG／PNG 出力に対応した純 Gleam 製 QR コード生成ライブラリ</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
     <a class="oss-card-name" href="https://github.com/nao1215/libvalacore" target="_blank" rel="noopener noreferrer">libvalacore</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#fbe5cd"></i>Vala</span>
@@ -215,46 +171,13 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 <div class="oss-card">
   <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/mobilepkg" target="_blank" rel="noopener noreferrer">mobilepkg</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/mobilepkg?style=flat-square&label=%E2%98%85&color=blue" alt="mobilepkg star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">APK／XAPK／APKS／AAB／IPA を解析するモバイルアプリパッケージ検査ツール</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/sqlode" target="_blank" rel="noopener noreferrer">sqlode</a>
+    <a class="oss-card-name" href="https://github.com/nao1215/oaspec" target="_blank" rel="noopener noreferrer">oaspec</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/sqlode?style=flat-square&label=%E2%98%85&color=blue" alt="sqlode star count" loading="lazy">
+      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/oaspec?style=flat-square&label=%E2%98%85&color=blue" alt="oaspec star count" loading="lazy">
     </div>
   </div>
-  <p class="oss-card-desc">SQL スキーマ／クエリから型安全な Gleam コードを生成する sqlc 的ツール</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/dataprep" target="_blank" rel="noopener noreferrer">dataprep</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/dataprep?style=flat-square&label=%E2%98%85&color=blue" alt="dataprep star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">Gleam 向けの型駆動な前処理・バリデーションコンビネータライブラリ</p>
-</div>
-
-<div class="oss-card">
-  <div class="oss-card-header">
-    <a class="oss-card-name" href="https://github.com/nao1215/automata" target="_blank" rel="noopener noreferrer">automata</a>
-    <div class="oss-card-meta">
-      <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/automata?style=flat-square&label=%E2%98%85&color=blue" alt="automata star count" loading="lazy">
-    </div>
-  </div>
-  <p class="oss-card-desc">Cron・RRULE・リトライ・ファイルシステムイベント・有限オートマトンを扱う Gleam ライブラリ</p>
+  <p class="oss-card-desc">OpenAPI 3.x の仕様から型安全な Gleam サーバースタブ／クライアント SDK を生成</p>
 </div>
 
 <div class="oss-card">
