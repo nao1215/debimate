@@ -32,6 +32,7 @@ description: ""
 | --- | --- | --- |
 | 1 | [Lease - 期限付きで権利を貸す仕組み](/notes/distributed-systems/lease/) | 協調 |
 | 2 | [Quorum - 過半数で決定を成立させる仕組み](/notes/distributed-systems/quorum/) | 協調 |
+| 3 | [Leader and Followers - 更新を 1 台へ集約する複製の型](/notes/distributed-systems/leader-and-followers/) | 協調 |
 
 #### Durability
 
