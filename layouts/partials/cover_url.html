@@ -1,0 +1,21 @@
+{{- /*
+  cover.image の絶対URLを返す。
+
+  ページバンドル（例: content/post/ja/<記事>/images/foo.webp）に実体があれば
+  そのリソースの Permalink を使う。見つからない場合だけ、PaperMod 既定の
+  absURL / cover.relative の挙動へフォールバックする。
+
+  これにより OGP 用に static/images/ へ画像を複製する必要がなくなる。
+*/ -}}
+{{- $url := "" -}}
+{{- with .Params.cover.image -}}
+  {{- $res := ($.Resources.ByType "image").GetMatch (printf "*%s*" .) -}}
+  {{- if $res -}}
+    {{- $url = $res.Permalink -}}
+  {{- else if (eq $.Params.cover.relative true) -}}
+    {{- $url = (path.Join $.RelPermalink .) | absURL -}}
+  {{- else -}}
+    {{- $url = . | absURL -}}
+  {{- end -}}
+{{- end -}}
+{{- return $url -}}

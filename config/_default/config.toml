@@ -7,7 +7,7 @@ enableRobotsTXT = true
 hasCJKLanguage = true
 ignoreLogs = ['warning-goldmark-raw-html']
 env = "production"
-images = ["images/icon.webp"]
+images = ["images/default-ogp.webp"]
 publishDir = "public"
 enableGitInfo = true
 

@@ -80,12 +80,7 @@
   "wordCount" : "{{ .WordCount }}",
   "inLanguage": {{ .Language.Lang | default "ja" }},
   {{ if .Params.cover.image -}}
-  "image":
-    {{- if (ne .Params.cover.relative true) -}}
-    {{ .Params.cover.image | absURL }},
-    {{- else -}}
-    {{ (path.Join .RelPermalink .Params.cover.image ) | absURL }},
-    {{- end}}
+  "image": {{ partial "cover_url.html" . }},
   {{- else }}
     {{- $images := partial "templates/_funcs/get-page-images" . -}}
     {{- with index $images 0 -}}

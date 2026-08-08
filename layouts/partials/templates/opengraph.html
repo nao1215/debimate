@@ -34,11 +34,7 @@
 {{- end }}
 
 {{- if .Params.cover.image -}}
-  {{- if (ne .Params.cover.relative true) }}
-    <meta property="og:image" content="{{ .Params.cover.image | absURL }}">
-  {{- else}}
-    <meta property="og:image" content="{{ (path.Join .RelPermalink .Params.cover.image ) | absURL }}">
-  {{- end}}
+    <meta property="og:image" content="{{ partial "cover_url.html" . }}">
 {{- else }}
   {{- with partial "_funcs/get-page-images" . }}
     {{- range . | first 6 }}
