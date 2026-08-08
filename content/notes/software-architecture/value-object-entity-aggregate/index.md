@@ -230,7 +230,7 @@ ID の型付けにも差が出ます。Go で `type OrderID string` のような
 
 Aggregate とは、1 つの単位として扱う一群のドメインオブジェクトで、その中の 1 つを集約ルートに選びます。[Martin Fowler の説明](https://martinfowler.com/bliki/DDD_Aggregate.html)では、集約の外からの参照は集約ルートへ向かい、ルートが集約全体の整合性を保証します。読み書きの単位も集約になります。
 
-境界の決め方は、オブジェクトの近さではなく不変条件です。合計金額の上限という規則が注文と明細にまたがるなら、その 2 つは同じ集約に入ります。規則がまたがらない顧客は別の集約になり、そちらへは ID で参照します。ID 参照は [Vaughn Vernon の Effective Aggregate Design](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf) が推奨する形で、直接参照が禁止されているわけではありません。参照を持っても相手が自分の整合性の境界に入らない、という点が要点です。
+境界の決め方は、オブジェクトの近さではなく不変条件です。合計金額の上限という規則が注文と明細にまたがるなら、その 2 つは同じ集約に入ります。規則がまたがらない顧客は別の集約になり、顧客へは ID で参照します。ID 参照は [Vaughn Vernon の Effective Aggregate Design](https://www.dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf) が推奨する形で、直接参照が禁止されているわけではありません。参照を持っても相手が自分の整合性の境界に入らない、という点が要点です。
 
 Go で集約ルートを書くと、内部を隠しきれない所が出ます。
 

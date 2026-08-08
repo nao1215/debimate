@@ -170,7 +170,7 @@ func ToShipment(o sales.Order, addr shipping.Address) shipping.Shipment {
 | Published Language | 合意 | ドメイン情報を表現できる共有言語を文書化し、相互に翻訳する |
 | Separate Ways | 両チーム | 連携せず、それぞれで完結させる |
 
-この 8 つは、DDD Reference が Context Map の後ろに並べているものです。Reference は Big Ball of Mud を加えた 9 つを並べており、そちらは境界どうしの関係ではなく、境界の中が混ざってしまった状態を表します。
+この 8 つは、DDD Reference が Context Map の後ろに並べているものです。Reference は Big Ball of Mud を加えた 9 つを並べており、Big Ball of Mud は境界どうしの関係ではなく、境界の中が混ざってしまった状態を表します。
 
 選び方は排他ではありません。上流が Open-host Service を出しつつ Published Language を定め、下流の一部は Conformist として従い、残りは Anticorruption Layer を作る、という組み合わせが起こります。下流が選べるのは Conformist と Anticorruption Layer と Separate Ways で、上流を動かせるかどうかが分かれ目になります。
 
@@ -243,4 +243,4 @@ flowchart LR
 
 4 つは一列に並びません。1 つの Bounded Context の中に複数の Aggregate が入り、同じ Bounded Context を 1 つ以上のパッケージで表します。Aggregate とパッケージは、どちらも境界の内側にある別々の切り口です。サービスとの対応はさらに緩く、複数の境界を 1 つのサービスへ載せる形も、1 つの境界を複数のサービスで実装する形も起こります。
 
-境界の数と位置は、最初から正しく引けるものではありません。語の食い違いが見つかるたびに引き直す事になるため、引き直しの費用が上がりすぎない範囲で、粗く始める方が扱いやすいと考えられます。
+境界の数と位置は、最初から正しく引けるものではありません。語の食い違いが見つかるたびに引き直す事になるため、引き直しのコストが上がりすぎない範囲で、粗く始める方が扱いやすいと考えられます。
