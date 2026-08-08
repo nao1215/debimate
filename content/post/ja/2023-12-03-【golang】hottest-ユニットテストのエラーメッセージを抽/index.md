@@ -39,7 +39,7 @@ aliases:
 
 なお、[go-spectest/spectest](https://github.com/go-spectest/spectest)についても軽く触れると、spectestはE2Eテスト結果からMarkdownドキュメントを生成する機能を持つE2Eテスト用ライブラリです。[steinfletcher/apitest](https://github.com/steinfletcher/apitest)をフォークし、私が下図のようなMarkdownドキュメント生成機能を新規実装しました。もっと新機能を追加する予定でしたが、私が思い描く機能を追加で実装できる設計ではなかったので、spectestの開発を止める予定です（フルスクラッチで作り直します）
 
-![](images/spectest_ip.png)
+![](images/spectest_ip.webp)
 
 ---
 
@@ -144,11 +144,11 @@ jobs:
 
 **テスト成功時**
 
-![](images/success2.png)
+![](images/success2.webp)
 
 **テスト失敗時**
 
-![](images/fail2.png)
+![](images/fail2.webp)
 
 ---
 
@@ -165,11 +165,11 @@ octocov は、テストカバレッジ集計結果をPRコメントとして残�
 
 **全テスト成功時**
 
-![github-actions-success](images/github_actions_success.png)
+![github-actions-success](images/github_actions_success.webp)
 
 **1件でもテストが失敗している時**
 
-![github-actions-fail](images/github_actions_fail.png)
+![github-actions-fail](images/github_actions_fail.webp)
 
 PRコメント機能の実装は、少し手抜きをしています。Advent Calendar（= 本記事）にPRコメント機能の話を書きたいと思った時（2023.12.01）には、まだ影も形もありませんでした。
 

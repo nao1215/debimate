@@ -9,7 +9,7 @@ tags:
 - raspberrypi
 - サーバー
 cover:
-  image: images/schafer-dog-4074699_640-min.jpg
+  image: images/schafer-dog-4074699_640-min.webp
   alt: 【WatchDogTimer】Raspberry Pi4サーバがフリーズ(停止)した場合に自動再起動する方法【HeartBeat】
   hidden: false
 aliases:
@@ -40,7 +40,7 @@ aliases:
 
 ### 本記事の実施内容（+ WDT／Heartbeat説明）
 
-![](images/watchdog-Page-1-min.jpg)
+![](images/watchdog-Page-1-min.webp)
 
 Watch Dog Timer（以下、WDT）は、プログラムが異常動作していないかを監視するハードウェアです。システム起動時からカウンタを動かし、信号を受け取るとカウンタクリアします。
 
@@ -50,7 +50,7 @@ Raspberry Pi 4サーバが何らかの異常で停止した場合、Heartbeat信
 
 下図のように、本記事で紹介する設定では、WDT割り込み時はCPUにリセット命令を出します。
 
-![](images/watchdog-Copy-of-Page-1-min.jpg)
+![](images/watchdog-Copy-of-Page-1-min.webp)
 
 以上を踏まえ、本記事では以下の対応を行います。
 

@@ -5,7 +5,7 @@ date: 2025-11-05
 categories:
 - ブログ運営
 cover:
-  image: images/migrate.jpg
+  image: images/migrate.webp
   alt: 技術ブログ debimate のお引越し
   hidden: false
 aliases:

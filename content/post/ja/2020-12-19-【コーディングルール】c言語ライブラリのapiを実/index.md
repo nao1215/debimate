@@ -10,7 +10,7 @@ tags:
 - c言語
 - ライブラリ
 cover:
-  image: images/source-code-583537_640.jpg
+  image: images/source-code-583537_640.webp
   alt: 【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄
   hidden: false
 aliases:
@@ -169,7 +169,7 @@ int atoi(char *p)
 }
 ```
 
-![](images/Screenshot-from-2020-12-19-16-55-57.jpg)
+![](images/Screenshot-from-2020-12-19-16-55-57.webp)
 
 [私がDoxygenで生成したドキュメント（サンプル）のリンクを貼っておきます](https://nao1215.github.io/LearningXinuFromSource/html/index.html)。Doxygenは、画像の挿入やコールグラフの描画もできるため、ライブラリ開発者にも役立ちます。
 

@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/2026-sensitive-logo.png
+  image: images/2026-sensitive-logo.webp
   alt: sensitive-logo
   hidden: false
 aliases:

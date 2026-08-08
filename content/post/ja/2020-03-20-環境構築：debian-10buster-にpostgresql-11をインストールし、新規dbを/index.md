@@ -9,7 +9,7 @@ tags:
 - debian
 - 環境構築
 cover:
-  image: images/DBランキング2020年3月時点.jpg
+  image: images/DBランキング2020年3月時点.webp
   alt: 環境構築：Debian 10(buster) にPostgreSQL 11をインストールし、新規DBを作成する方法
   hidden: false
 aliases:
@@ -26,7 +26,7 @@ aliases:
 
 [PostgreSQL](https://www.postgresql.jp/)は、オープンソースのオブジェクト関係リレーショナルデータベース関係システム（ORDBMS）です。2020年時点のシェアランキングは、４位です。やや人気のないDBと言えるでしょう。
 
-![](images/DBランキング（2020年3月時点）.jpg)
+![](images/DBランキング（2020年3月時点）.webp)
 
 シェア１位のOracle DatabaseおよびMicrosoft SQL Serverは、有償です（Microsoft SQL Severは無償版も存在）。そのため、PostgreSQLは同じくオープンソースであるMySQL（シェア２位）と比較される機会が多いです。PostgreSQLは高機能・堅牢な設計、MySQLは速度に重きを置いた設計であり、用途に応じて使い分けられるようです。
 

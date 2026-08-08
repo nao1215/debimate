@@ -9,7 +9,7 @@ tags:
 - golang
 - oss
 cover:
-  image: images/laptop-g6f30a755b_640.jpg
+  image: images/laptop-g6f30a755b_640.webp
   alt: 【Golang】2022年に開発した自作CLIコマンド／ライブラリに対する所感と宣伝【OSS】
   hidden: false
 aliases:
@@ -204,7 +204,7 @@ goaに冷たくされるという課題の解決として、私はlinterの作�
 
 そこで、完全自前でlinterを作成する運びとしました。休日を一日潰して作りました。goavlは、以下の画像で示すように、「指摘箇所（ファイル、行数）」と「直し方」を出力してくれます。あとは、「チェック項目の追加」と「Visual Studio Code」との連携ができれば完璧ですかね。
 
-![](images/Screenshot-from-2022-02-11-23-46-32.png)
+![](images/Screenshot-from-2022-02-11-23-46-32.webp)
 
 ---
 

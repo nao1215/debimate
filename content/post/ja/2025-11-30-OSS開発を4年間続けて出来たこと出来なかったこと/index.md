@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/star-history-20251130.png
+  image: images/star-history-20251130.webp
   alt: レゴ
   hidden: false
 aliases:
@@ -38,7 +38,7 @@ GitHub Star が100個ついた OSS を作っても、利用者が0名という�
 
 以下の画像は、どの程度利用されているかを [pkg.go.dev](https://pkg.go.dev/github.com/nao1215/filesql?tab=importedby) が計測したものです。"Known importers: 2"と書かれていますが、これは全て自己利用です。つまり、他の人は誰も使っていません。
 
-![filesql-no-user](./images/2025-11-30-filesql.png)
+![filesql-no-user](./images/2025-11-30-filesql.webp)
 
 私が作った OSS で利用者が確認できているのは、[nao1215/gup](https://github.com/nao1215/gup)、[nao1215/markdown](https://github.com/nao1215/markdown)、[nao1215/sqly](https://github.com/nao1215/sqly) だけです。殆ど利用されていないので、致命的なバグがあってもクレームが飛んできません。「このバグ、誰も文句言わないのか」と何度思ったことか。
 
@@ -176,11 +176,11 @@ OSS は、義務感にかられて開発するものではないです。エン�
 Dark Web を調査するツールで、[s-rah/onionscan](https://github.com/s-rah/onionscan) インスパイアです。
 
 [nao1215/onionscan](https://github.com/nao1215/onionscan)
-![onionscan](./images/20251130-onionscan-logo.jpg)
+![onionscan](./images/20251130-onionscan-logo.webp)
 
 レポート結果は、[nao1215/markdown](https://github.com/nao1215/markdown) を使って、markdwon として出力しています。json でも出力できます。
 
-![report](./images/20251130-onionscan-report-markdown.png)
+![report](./images/20251130-onionscan-report-markdown.webp)
 
 ### 追記：さらに新しい OSS をリリースしたよ
 

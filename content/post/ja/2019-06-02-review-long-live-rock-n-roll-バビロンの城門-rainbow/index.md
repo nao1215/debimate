@@ -7,7 +7,7 @@ categories:
 tags:
 - rainbow
 cover:
-  image: images/llrr.jpeg
+  image: images/llrr.webp
   alt: 'Review: Long Live Rock ''n'' Roll--バビロンの城門--(Rainbow)'
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 
 ### 収録曲
 
-![](images/llrr.jpeg)
+![](images/llrr.webp)
 
 収録曲
 

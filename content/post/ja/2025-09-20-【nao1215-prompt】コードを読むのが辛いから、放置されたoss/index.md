@@ -8,7 +8,7 @@ categories:
 tags:
 - oss
 cover:
-  image: images/prompt_logo.jpeg
+  image: images/prompt_logo.webp
   alt: 【nao1215/prompt】コードを読むのが辛いから、放置されたOSSをforkせずに作り直した話
   hidden: false
 aliases:

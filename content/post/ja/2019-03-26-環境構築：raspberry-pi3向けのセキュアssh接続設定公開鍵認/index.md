@@ -8,7 +8,7 @@ tags:
 - raspberrypi
 - 環境構築
 cover:
-  image: images/raspberry-pi-1383832_640.jpg
+  image: images/raspberry-pi-1383832_640.webp
   alt: Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)
   hidden: false
 aliases:

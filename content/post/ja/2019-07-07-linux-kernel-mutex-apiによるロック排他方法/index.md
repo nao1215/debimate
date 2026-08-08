@@ -11,7 +11,7 @@ tags:
 - debian
 - linuxkernel
 cover:
-  image: images/mutex2.jpg
+  image: images/mutex2.webp
   alt: 'Linux Kernel: mutex APIによるロック(排他)方法'
   hidden: false
 aliases:

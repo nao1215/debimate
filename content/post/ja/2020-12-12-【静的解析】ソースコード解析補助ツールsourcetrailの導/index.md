@@ -11,7 +11,7 @@ tags:
 - 静的解析
 - systemd
 cover:
-  image: images/Screenshot-from-2020-12-12-13-22-44-1.jpg
+  image: images/Screenshot-from-2020-12-12-13-22-44-1.webp
   alt: 【静的解析】ソースコード解析補助ツールSourcetrailの導入方法【例：systemd(C言語)】
   hidden: false
 aliases:
@@ -166,7 +166,7 @@ Sourcetrailでソースコード解析するには、解析対象のソースコ
 - Sourcetrail Project Name：任意の名前（例：解析対象の名前）
 - Sourcetrail Project Location：Sourcetrailプロジェクトファイルの保存先
 
-![](images/Screenshot-from-2020-12-12-15-40-46.jpg)
+![](images/Screenshot-from-2020-12-12-15-40-46.webp)
 
 ---
 
@@ -177,7 +177,7 @@ Sourcetrailでソースコード解析するには、解析対象のソースコ
 
 今回はC言語のソースコードを解析するため、"Source Gropu Types"はCを選択し、"Empty C Source Group"を選択してください。
 
-![](images/Screenshot-from-2020-12-12-15-59-10.jpg)
+![](images/Screenshot-from-2020-12-12-15-59-10.webp)
 
 各Source Group Typesに関する説明は、以下の通りです。解析対象のプロジェクト（ビルドシステム）に応じて、選択を変えてください。
 
@@ -195,7 +195,7 @@ Source Groupを選択後にNextボタンを押すと、コンパイル設定画�
 - C Standard：言語の規格
 - Cross-Cimpilation：クロスコンパイル（別CPU向けコンパイル）の設定
 
-![](images/Screenshot-from-2020-12-12-16-15-43.jpg)
+![](images/Screenshot-from-2020-12-12-16-15-43.webp)
 
 ---
 
@@ -208,7 +208,7 @@ Source Groupを選択後にNextボタンを押すと、コンパイル設定画�
 - Excluded Files & Directories：解析対象外ソースコードもしくは解析対象外ディレクトリのPATH
 - Source Files Extensions：解析対象ソースコードの拡張子（今回はC言語のみ）
 
-![](images/Screenshot-from-2020-12-12-16-25-10.jpg)
+![](images/Screenshot-from-2020-12-12-16-25-10.webp)
 
 一般的なC言語のプロジェクトでは、\*.cファイルはsrcディレクトリ直下に存在します。そのため、今回の例であれば、systemd/src以下を解析対象としています。
 
@@ -224,7 +224,7 @@ Source Groupを選択後にNextボタンを押すと、コンパイル設定画�
 - Include Paths：解析対象プロジェクト内に存在するヘッダファイルへのPATH
 - Global Include Paths：依存している外部ライブラリヘッダファイルへのPATH
 
-![](images/Screenshot-from-2020-12-12-16-38-01.jpg)
+![](images/Screenshot-from-2020-12-12-16-38-01.webp)
 
 Include Paths（解析対象プロジェクト内のヘッダファイル）は、自動で設定できます。auto-detectボタンを押下し、Detect Include Paths画面でプロジェクトルートディレクトリを指定してからStartボタンを押下すれば設定完了します。
 
@@ -237,7 +237,7 @@ Global Include Paths（依存外部ライブラリヘッダ）は、detectボタ
 
 PATH情報が不足しているヘッダファイルの一覧は、validate include directivesボタンを押下すると取得できます（下図参照）。
 
-![](images/Screenshot-from-2020-12-12-16-49-56.jpg)
+![](images/Screenshot-from-2020-12-12-16-49-56.webp)
 
 ヘッダファイルがどのPATHに存在するかは、apt-fileコマンドで調査できます。もしくは、[Debianパッケージ検索（Webサイト）](https://www.debian.org/distrib/packages.ja.html)でも調査できます。
 
@@ -273,7 +273,7 @@ PATH情報が全て解決できていない状態でも、プロジェクトの�
 - Precompiled Header File：プリコンパイル済みヘッダ（pch.h）へのPATH
 - Precompiled Header Flags：プリコンパイル済みヘッダ生成時のコンパイラフラグ
 
-![](images/Screenshot-from-2020-12-12-17-15-21.jpg)
+![](images/Screenshot-from-2020-12-12-17-15-21.webp)
 
 systemdはコンパイラにClangではなく、gccを使用しています。プリコンパイルヘッダも使用していません。そのため、上記の項目全てが、設定不要です。
 

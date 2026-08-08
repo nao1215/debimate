@@ -10,7 +10,7 @@ tags:
 - ubuntu
 - 環境構築
 cover:
-  image: images/2021-01-02-15.34.19-のスクリーンショット.png
+  image: images/2021-01-02-15.34.19-のスクリーンショット.webp
   alt: ドスパラのTHIRDWAVE VF-AD4にelementary OS(Ubuntu派生)を入れた感想
   hidden: false
 aliases:
@@ -78,7 +78,7 @@ TECLAST F7Plusは聞いたことのないシリーズでしたが、コスパは
 
 強いて不満を挙げれば、M.2 SSDの取り付け向きでしょうか。ノートPCでは、SSD基板面を裏にして取り付けるのが普通なのでしょうか？ 妻に指摘されるまで、表裏の間違いに気づけませんでした。
 
-[![](images/Epoxfl_UcAA1Ssw-min.jpeg)](http://裏)
+[![](images/Epoxfl_UcAA1Ssw-min.webp)](http://裏)
 
 ---
 
@@ -89,7 +89,7 @@ TECLAST F7Plusは聞いたことのないシリーズでしたが、コスパは
 
 なお、elementary OS公式サイトでOS imageを配布していますが、無料／有償のどちらかを選択してからダウンロードする仕組みです（以下、参考画像）
 
-![](images/Screenshot-from-2021-01-02-14-32-32.png)
+![](images/Screenshot-from-2021-01-02-14-32-32.webp)
 
 ソフト開発費を回収しようとする姿勢には、大いに賛同します。残念ながら、ユーザーの約99.875%は無料でダウンロードしているようで、オープンソースで健全に資金を集める難しさを感じてしまいます。
 
@@ -122,7 +122,7 @@ elementary OSは、Ubuntu派生であるため、堅実な作りの印象。
 
 Macに近いGUIを提供しつつ、Linuxにありがちなカスタマイズ要素を削ぎ落とし、Linux初心者が操作時に迷わないように作られています。
 
-![](images/Screenshot-from-2021-01-02-15-23-16.png)
+![](images/Screenshot-from-2021-01-02-15-23-16.webp)
 
 [次バージョンでは、タッチパッドのマルチタッチジェスチャーに対応](https://blog.elementary.io/our-2020-in-review/)するようなので、ますます使い勝手はMacに近づきそうです。
 
@@ -130,7 +130,7 @@ Macに近いGUIを提供しつつ、Linuxにありがちなカスタマイズ要
 
 パッケージインストールを検証した所、[Visual Studio Code](https://code.visualstudio.com/)、[Google Chrome](https://www.google.com/intl/ja_jp/chrome/)、[Joplin](https://joplinapp.org/)などの開発ツールを使えましたし、C／C++、各種スクリプト言語、Java、Goなどのプログラミング言語も問題なく使えました。
 
-![](images/2021-01-02-15.34.19-のスクリーンショット.png)
+![](images/2021-01-02-15.34.19-のスクリーンショット.webp)
 
 elementary OSのシステム要件には、「Intel Core i3 またはそれと同等のデュアルコア 64bit プロセッサ」と書かれていますが、Celeron N4000で動作しました。若干、Twitterなどで画像読み込み時にカクつきますが、タイピング中はキビキビ動作します。
 

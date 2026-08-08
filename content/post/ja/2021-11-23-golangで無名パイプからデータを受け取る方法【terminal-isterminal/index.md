@@ -7,7 +7,7 @@ categories:
 tags:
 - golang
 cover:
-  image: images/pipe-g2b0ac93f2_640-min-1.jpg
+  image: images/pipe-g2b0ac93f2_640-min-1.webp
   alt: Golangで無名パイプからデータを受け取る方法【term.IsTerminalによる判定】
   hidden: false
 aliases:
@@ -105,7 +105,7 @@ func hasPipeData() bool {
 
 パイプを用いて実行したかどうかによって、プロセスの標準入力（STDIN）がターミナルもしくはパイプ（他プロセスの標準出力）のどちらに結びつくのかが異なります。標準入力がターミナルと結びついていなければ、パイプからデータがあるとみなせます。
 
-![](images/pipe.jpg)
+![](images/pipe.webp)
 
 ---
 

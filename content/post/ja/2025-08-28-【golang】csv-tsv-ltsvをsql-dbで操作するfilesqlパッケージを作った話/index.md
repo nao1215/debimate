@@ -9,7 +9,7 @@ tags:
 - golang
 - sql
 cover:
-  image: images/ChatGPT-Image-2025年8月28日-13_46_47.jpg
+  image: images/ChatGPT-Image-2025年8月28日-13_46_47.webp
   alt: 【Golang】CSV, TSV, LTSVをsql.DBで操作するfilesqlパッケージを作った話
   hidden: false
 aliases:
@@ -26,7 +26,7 @@ aliases:
 
 [filesql](https://github.com/nao1215/filesql) パッケージは、SQL ドライバーであり、SQLite3 のSQL 構文を使用してCSV、TSV、LTSV ファイルにクエリを実行できます。リリースして1週間経っていませんが、過去2番目の勢いで GitHub Star を獲得できています。嬉しいことですね。
 
-![](images/star-history-2025828-1024x731.png)
+![](images/star-history-2025828-1024x731.webp)
 
 filesql は、2つの CLI ツール - [sqly](https://github.com/nao1215/sqly) と [sqluv](https://github.com/nao1215/sqluv)のメンテナンス経験から生まれました。各コマンドの機能は、以下の記事で説明しています。興味がある方はご一読ください。
 
@@ -204,7 +204,7 @@ OSS は利用者を増やさないと、バグ出しや機能強化がなかな�
 
 なんと！今回は r/golang（Golang の話題を話すチャンネル）で1位の投稿になりました！やったぜ。
 
-![](images/Reddit_filesql.png)
+![](images/Reddit_filesql.webp)
 
 2025年8月28日時点で、以下の反応がありました。コメントも沢山いただき、提案された機能を一気に実装しました。久しぶりに日付が変わる時間ぐらいまで開発を続けてました。
 
@@ -227,4 +227,4 @@ OSS は利用者を増やさないと、バグ出しや機能強化がなかな�
 
 ※2025年8月30日追記：ロゴを作りました。同じ路線で、もう少し小洒落た感じにしたい。
 
-![](images/filesql-logo-small-300x200.jpg)
+![](images/filesql-logo-small-300x200.webp)

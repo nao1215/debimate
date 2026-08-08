@@ -9,7 +9,7 @@ tags:
 - raspberrypi
 - サーバー
 cover:
-  image: images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg
+  image: images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.webp
   alt: 【CPU温度やI/Oの監視】Rapberry Pi4サーバにMonitorixをインストールする方法
   hidden: false
 aliases:
@@ -54,11 +54,11 @@ Monitorixはaptパッケージマネージャーでインストールできま�
 
 Monitorixの画面
 
-![](images/mail.jpg)
+![](images/mail.webp)
 
 [netdata](https://github.com/netdata/netdata)の画面
 
-![](images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.jpg)
+![](images/95625372-40afc800-0a2d-11eb-8425-3355c8c4a3f3-0000-min.webp)
 
 [grafana](https://grafana.com/)の画面
 
@@ -206,12 +206,12 @@ $ sudo systemctl restart monitorix
 
 Monitorixが正しく動作している場合は、以下の画面がWebブラウザに表示されます。
 
-![](images/Screenshot-from-2020-11-28-22-23-13.jpg)
+![](images/Screenshot-from-2020-11-28-22-23-13.webp)
 
 Dailyのモニタリング結果（一部）は、以下のように表示されます。下図は抜粋であり、実際にはファイルシステム使用率やネットワーク統計情報なども出力されています。
 
-![](images/Screenshot-from-2020-11-28-22-24-01.jpg)
+![](images/Screenshot-from-2020-11-28-22-24-01.webp)
 
 Raspberry Pi4のCPU使用率、温度、電圧のモニタリング結果は、以下の通りです。大きいファンを使用、かつ全く負荷がかかっていない環境のため、温度が40℃ぐらいしかありません（下図の右上）。
 
-![](images/Screenshot-from-2020-11-28-22-24-30.jpg)
+![](images/Screenshot-from-2020-11-28-22-24-30.webp)

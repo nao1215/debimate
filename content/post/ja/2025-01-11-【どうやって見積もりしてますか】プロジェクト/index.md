@@ -8,7 +8,7 @@ categories:
 tags:
 - 見積もり
 cover:
-  image: images/accountant-1794122_1280.png
+  image: images/accountant-1794122_1280.webp
   alt: 【どうやって見積もりしてますか?】プロジェクト工数を見積もるときの私なりのやり方【ボトムアップ見積り】
   hidden: false
 aliases:
@@ -140,7 +140,7 @@ aliases:
 > 
 > 引用元：[品質を犠牲にすることでソフトウェア開発のスピードは上がるのか？](https://www.publickey1.jp/blog/20/_2020_1.html)
 
-![](images/speed.png)
+![](images/speed.webp)
 
 削るべきは、テストではなく、要件です。
 

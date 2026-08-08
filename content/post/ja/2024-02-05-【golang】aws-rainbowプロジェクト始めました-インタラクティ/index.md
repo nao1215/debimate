@@ -10,7 +10,7 @@ tags:
 - aws
 - golang
 cover:
-  image: images/colorful-2174045_1920.png
+  image: images/colorful-2174045_1920.webp
   alt: 【Golang】AWS Rainbowプロジェクト始めました - インタラクティブにS3操作するs3hubコマンド
   hidden: false
 aliases:

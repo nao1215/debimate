@@ -7,7 +7,7 @@ categories:
 tags:
 - 収益
 cover:
-  image: images/DMM.png
+  image: images/DMM.webp
   alt: DMM(現FANZA) API・Twitter Botによる自動広告を半年続けた結果、「得た収益」と「二度とやらないと誓った理由」
   hidden: false
 aliases:
@@ -38,7 +38,7 @@ aliases:
 
 ### DMM APIを用いた自動広告の概略
 
-![](images/DMM_prog.png)
+![](images/DMM_prog.webp)
 
 自動広告プログラムのポイント
 
@@ -58,7 +58,7 @@ aliases:
 
 購入者が少ない理由を考えましたが、多くの男性は無料動画サイトで事を済まします。そもそも、[DMM(現FANZA)](https://www.dmm.co.jp/digital/)で作品を購入する層が少ないのではないかと推測しました。
 
-![](images/DMM.png)
+![](images/DMM.webp)
 
 ---
 

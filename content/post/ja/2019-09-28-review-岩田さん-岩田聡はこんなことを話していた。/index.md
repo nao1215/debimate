@@ -5,7 +5,7 @@ date: 2019-09-28
 categories:
 - 書評
 cover:
-  image: images/ダウンロード.jpeg
+  image: images/ダウンロード.webp
   alt: '感想: 岩田さん 岩田聡はこんなことを話していた。'
   hidden: false
 aliases:

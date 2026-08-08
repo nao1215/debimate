@@ -7,7 +7,7 @@ categories:
 tags:
 - ruby
 cover:
-  image: images/Ruby-min.jpg
+  image: images/Ruby-min.webp
   alt: 感想：プロを目指す人のためのRuby入門 言語仕様からテスト駆動開発・デバッグ技法まで
   hidden: false
 aliases:
@@ -44,7 +44,7 @@ Rubyらしいコードが分かるメリットは、意図せず他プログラ�
 
 ### Rubyの良さ：書き捨てのコードが早く書けそう
 
-![](images/プログラミング.jpg)
+![](images/プログラミング.webp)
 
 本書を読んだ後に分かったRubyの良さは、コードが書きやすそう、という点です。Ruby学習の前に学んだJavaとは比べ物にならない記述量で、簡単に文字列やファイル操作ができます。ちょっとした自動化スクリプトを書く際に、BashよりRubyを採用する機会が増えそうです。
 

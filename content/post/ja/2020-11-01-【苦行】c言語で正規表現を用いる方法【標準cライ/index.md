@@ -11,7 +11,7 @@ tags:
 - debian
 - 正規表現
 cover:
-  image: images/regex2-min.jpg
+  image: images/regex2-min.webp
   alt: 【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】
   hidden: false
 aliases:

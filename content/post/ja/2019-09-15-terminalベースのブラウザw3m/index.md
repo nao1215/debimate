@@ -9,7 +9,7 @@ tags:
 - w3m
 - 環境構築
 cover:
-  image: images/w3m.jpg
+  image: images/w3m.webp
   alt: Terminalベースのブラウザw3m
   hidden: false
 aliases:
@@ -80,7 +80,7 @@ w3m $URL
 w3m http://google.com
 ```
 
-![w3m](images/w3m.jpg)
+![w3m](images/w3m.webp)
 
 ---
 

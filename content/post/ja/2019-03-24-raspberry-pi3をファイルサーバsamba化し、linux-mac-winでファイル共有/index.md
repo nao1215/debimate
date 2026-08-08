@@ -8,7 +8,7 @@ tags:
 - raspberrypi
 - 環境構築
 cover:
-  image: images/Raspberry-Pi3_min.jpg
+  image: images/Raspberry-Pi3_min.webp
   alt: Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)
   hidden: false
 aliases:

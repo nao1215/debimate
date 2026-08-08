@@ -8,7 +8,7 @@ tags:
 - golang
 - ユニットテスト
 cover:
-  image: images/doors-1767563_640-min.jpg
+  image: images/doors-1767563_640-min.webp
   alt: 【Go言語(Golang)】ユニットテスト時にgo-flagsに任意の引数を渡す方法
   hidden: false
 aliases:
@@ -134,6 +134,6 @@ func TestArgs(t *testing.T) {
 
 カバレッジもキチンと取得されています（カバレッジ結果画像中のコードは、上記のテストコードと細部が異なりますが、大枠は同じです）
 
-![](images/Screenshot-from-2020-11-20-23-33-01.jpg)
+![](images/Screenshot-from-2020-11-20-23-33-01.webp)
 
 他に正しい方法があるかも知れません。しかし、今回紹介した方法でもgo-flagsパッケージに対するユニットテスト実施およびカバレッジ取得が出来ます。

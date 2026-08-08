@@ -8,7 +8,7 @@ tags:
 - bash
 - shellscript
 cover:
-  image: images/walnuts-1739021_640-min.jpg
+  image: images/walnuts-1739021_640-min.webp
   alt: Shell Scriptにバイナリ（例：tarball）を埋め込み、実行時にバイナリを取り出す方法
   hidden: false
 aliases:

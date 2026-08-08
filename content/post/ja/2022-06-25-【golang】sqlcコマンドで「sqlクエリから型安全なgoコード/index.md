@@ -8,7 +8,7 @@ tags:
 - golang
 - sql
 cover:
-  image: images/sql.jpg
+  image: images/sql.webp
   alt: 【golang】sqlcコマンドで「SQLクエリから型安全なGoコードを生成」し、生産性を上げたい
   hidden: false
 aliases:

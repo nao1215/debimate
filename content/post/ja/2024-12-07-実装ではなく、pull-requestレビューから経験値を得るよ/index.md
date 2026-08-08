@@ -5,7 +5,7 @@ date: 2024-12-07
 categories:
 - キャリア
 cover:
-  image: images/rocket-launch-4370928_1280.jpg
+  image: images/rocket-launch-4370928_1280.webp
   alt: 実装ではなく、Pull Requestレビューから経験値を得るようになった話
   hidden: false
 aliases:

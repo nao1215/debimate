@@ -10,7 +10,7 @@ tags:
 - ruby
 - shellscript
 cover:
-  image: images/password-397652_640-min-1.jpg
+  image: images/password-397652_640-min-1.webp
   alt: 【Bash / Ruby / Python3】root権限を確認する方法の比較
   hidden: false
 aliases:

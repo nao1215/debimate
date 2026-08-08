@@ -7,7 +7,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/omokage-icon.jpg
+  image: images/omokage-icon.webp
   alt: omokage
   hidden: false
 aliases:
@@ -29,7 +29,7 @@ aliases:
 そこで、[nao1215/omokage](https://github.com/nao1215/omokage) を作りました。読みは「おもかげ」です。
 
 <p align="center">
-  <img src="images/omokage-icon.jpg" alt="omokage" width="280">
+  <img src="images/omokage-icon.webp" alt="omokage" width="280">
 </p>
 
 ---

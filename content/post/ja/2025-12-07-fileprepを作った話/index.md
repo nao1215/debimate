@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/20251207-fileprep-logo.jpg
+  image: images/20251207-fileprep-logo.webp
   alt: fileprep
   hidden: false
 aliases:

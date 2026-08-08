@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/2026-truss-logo.png
+  image: images/2026-truss-logo.webp
   alt: truss-logo
   hidden: false
 aliases:

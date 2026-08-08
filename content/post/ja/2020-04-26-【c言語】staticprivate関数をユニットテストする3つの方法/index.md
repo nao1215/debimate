@@ -8,7 +8,7 @@ tags:
 - c言語
 - ユニットテスト
 cover:
-  image: images/board-361516_640-min.jpg
+  image: images/board-361516_640-min.webp
   alt: 【C言語】static(private)関数をユニットテストする3つの方法【単体テストのバッドノウハウ】
   hidden: false
 aliases:

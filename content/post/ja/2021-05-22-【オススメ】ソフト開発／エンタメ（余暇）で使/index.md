@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/icon-1328421_640.jpg
+  image: images/icon-1328421_640.webp
   alt: 【オススメ】ソフト開発／エンタメ（余暇）で使用するLinuxアプリ【Debian／elementary OS】
   hidden: false
 aliases:

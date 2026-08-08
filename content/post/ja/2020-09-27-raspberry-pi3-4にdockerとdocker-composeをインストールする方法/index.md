@@ -8,7 +8,7 @@ tags:
 - docker
 - raspberrypi
 cover:
-  image: images/lfVWBmiW_400x400-min.jpg
+  image: images/lfVWBmiW_400x400-min.webp
   alt: Raspberry Pi3/4にDockerとdocker-composeをインストールする方法
   hidden: false
 aliases:

@@ -12,7 +12,7 @@ tags:
 - devicedriver
 - linuxkernel
 cover:
-  image: images/s_charcter_device-1.jpg
+  image: images/s_charcter_device-1.webp
   alt: Linux Kernelの簡単なCharacter Deviceを作成する方法(Linked List APIの使用方法サンプル)
   hidden: false
 aliases:

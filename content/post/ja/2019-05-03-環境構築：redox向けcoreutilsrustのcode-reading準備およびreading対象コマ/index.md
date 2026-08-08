@@ -12,7 +12,7 @@ tags:
 - rust
 - 環境構築
 cover:
-  image: images/Code_Reading.jpg
+  image: images/Code_Reading.webp
   alt: 環境構築：Redox向けcoreutils(Rust)のCode Reading準備およびReading対象コマンド一覧
   hidden: false
 aliases:
@@ -52,7 +52,7 @@ Rustは登場してから日が浅い言語のため、日本語情報が少な�
 
 前提として、[Redox](https://www.redox-os.org/jp/)は、Rust言語で書かれたUNIXライクのOSです。Redox(Kernel)を開発するプロジェクトだけでなく、ユーザランド向けアプリケーションを対象としたサイドプロジェクトが多数存在します。現段階で、Redox(再度プロジェクト含む)は下図のように、一般的なディストリビューションのような見た目をしています。
 
-![](images/Redox-destop.jpg)
+![](images/Redox-destop.webp)
 
 下表(一部抜粋)が、Redoxサイドプロジェクト一覧です。なお、coreutilsは2種類存在しますが、BSDライクをReading対象とします。GNUライク版(uutils)は、[BusyBox](https://ja.wikipedia.org/wiki/BusyBox)に似ていたため、Reading対象としませんでした。
 

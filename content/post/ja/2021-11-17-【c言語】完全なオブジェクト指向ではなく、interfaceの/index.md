@@ -8,7 +8,7 @@ tags:
 - c言語
 - オブジェクト指向
 cover:
-  image: images/Valac.jpg
+  image: images/Valac.webp
   alt: 【C言語】完全なオブジェクト指向ではなく、Interfaceのみを利用する選択【Golangを参考に】
   hidden: false
 aliases:
@@ -35,7 +35,7 @@ C言語にオブジェクト指向を適用する場合、実装規模が爆発�
 
 オブジェクト指向のメリットを得るために、C++や[Vala言語](https://ja.wikipedia.org/wiki/Vala)を選択する方法もあります。しかし、プロジェクトによってはC言語を選択しなければならない場合があるでしょう（補足：Vala言語はC#のような文法を持ち、valaファイル → C言語ファイル（中間ファイル） → バイナリの順でコンパイルするマイナー言語）
 
-![Introducing Vala Programming（Michael Lauer著、35頁）より引用](images/Valac.jpg)
+![Introducing Vala Programming（Michael Lauer著、35頁）より引用](images/Valac.webp)
 
 Introducing Vala Programming（Michael Lauer著、35頁）より引用
 

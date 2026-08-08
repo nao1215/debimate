@@ -9,7 +9,7 @@ tags:
 - cli
 - golang
 cover:
-  image: images/snake-gc4e761055_640.jpg
+  image: images/snake-gc4e761055_640.webp
   alt: 【Golang】spf13/cobraが提供する入力補完（shell completion）をファイル形式でインストールする方法【bash, zsh,
     fish】
   hidden: false

@@ -7,7 +7,7 @@ categories:
 tags:
 - seo
 cover:
-  image: images/沈黙のWebライティング-min.jpg
+  image: images/沈黙のWebライティング-min.webp
   alt: 感想：沈黙のWebライティング —Webマーケッター ボーンの激闘—
   hidden: false
 aliases:
@@ -62,7 +62,7 @@ _**Search Engine Optimization（Web検索最適化）。**_
 
 ### **理系が削ぎ落としてしまうエモーショナル**
 
-![笑顔](images/adult-1868750_640-min.jpg)
+![笑顔](images/adult-1868750_640-min.webp)
 
 エモーショナルライティングは、**「共感 ＝ 相手の感情を自分毎として感じること」**を引き起こさせる作文術で、雑な例を出すと「冬の朝は寒くて、布団からなかなか抜け出せませんよね！」みたいに「（読者が）あるある〜」と感じる文章です。
 
@@ -77,7 +77,7 @@ _**Search Engine Optimization（Web検索最適化）。**_
 
 ### 記事のバズらせ方。バズすら理詰め
 
-![SNS](images/icon-2083456_640-min.jpg)
+![SNS](images/icon-2083456_640-min.webp)
 
 **Twitter、Instagram、Google砲……**
 

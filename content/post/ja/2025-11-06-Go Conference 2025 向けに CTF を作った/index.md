@@ -5,7 +5,7 @@ date: 2025-11-06
 categories:
 - ブログ運営
 cover:
-  image: images/2025-11-06-ctf2025.jpg
+  image: images/2025-11-06-ctf2025.webp
   alt: 2025-11-06-ctf2025.jpg
   hidden: false
 aliases:

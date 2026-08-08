@@ -5,7 +5,7 @@ date: 2025-02-13
 categories:
 - プログラミング
 cover:
-  image: images/Screenshot-from-2025-02-13-23-26-45.png
+  image: images/Screenshot-from-2025-02-13-23-26-45.webp
   alt: 【Golang】fe3dback/go-arch-lintでアーキテクチャの破壊を防ぐ
   hidden: false
 aliases:

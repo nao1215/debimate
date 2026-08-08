@@ -8,7 +8,7 @@ tags:
 - java
 - デザインパターン
 cover:
-  image: images/brass-telegraph-692735_640-min-1-1.jpg
+  image: images/brass-telegraph-692735_640-min-1-1.webp
   alt: 【Commandパターン】GUIイベント処理や履歴管理で用いるデザインパターン【コード例：Java】
   hidden: false
 aliases:
@@ -41,7 +41,7 @@ Commandパターンは、イベント駆動型アプリ（例：GUIアプリ）�
 
 ###  Commandパターンのクラス図
 
-![](images/command_base-min-1.jpg)
+![](images/command_base-min-1.webp)
 
 | **クラス名** | **説明** |
 | :-- | :-- |
@@ -56,7 +56,7 @@ Commandパターンは、イベント駆動型アプリ（例：GUIアプリ）�
 
 ###  Commandパターンのシーケンス図
 
-![](images/command_Sequence.jpg)
+![](images/command_Sequence.webp)
 
 ---
 
@@ -73,7 +73,7 @@ Commandパターンの例として、
 
 紹介するサンプルコードは、クラス図で表すと以下の構成になります。
 
-![](images/sample-min.jpg)
+![](images/sample-min.webp)
 
 複数のコマンドを処理するMacroCommandクラスは、Commandインターフェースを実装したクラスをリスト形式で保持し、リストの内容を順次実行します。今回の例では、ファイル作成コマンド→ファイル存在確認コマンドの順で処理が実行されるように、実装します。
 

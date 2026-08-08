@@ -9,7 +9,7 @@ tags:
 - hdd
 - 環境構築
 cover:
-  image: images/drive-3410753_640-min.jpg
+  image: images/drive-3410753_640-min.webp
   alt: autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)
   hidden: false
 aliases:

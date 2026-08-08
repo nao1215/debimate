@@ -11,7 +11,7 @@ tags:
 - command
 - debian
 cover:
-  image: images/fetcher.png
+  image: images/fetcher.webp
   alt: fetcher
   hidden: false
 aliases:
@@ -29,7 +29,7 @@ aliases:
 本記事は、システム情報表示ツール"[neofetch](https://github.com/dylanaraps/neofetch)"のコードリーディング結果を記載しています。  
 リーディング動機は、**「neofetchは、システム情報をどこから集めているか」**が気になったからです。neofetchは約2600Step程度の小規模なBash scriptであるため、関数レベルで解説します。
 
-![](images/fetcher.png)
+![](images/fetcher.webp)
 
 POINT
 
@@ -691,4 +691,4 @@ ${c1}..............
 
 ちなみに、公式サイトの出力で表示されている画像の作者は、[Kuvshinov Ilya(twitter)](https://twitter.com/Kuvshinov_Ilya)。中国・韓国の人が書く絵に似ていると思いましたが、まさかのロシア人。私はこの絵の雰囲気が好き。
 
-![](images/russia_pic.png)
+![](images/russia_pic.webp)

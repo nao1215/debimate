@@ -5,7 +5,7 @@ date: 2023-04-15
 categories:
 - キャリア
 cover:
-  image: images/wood-gc77b8848b_640.jpg
+  image: images/wood-gc77b8848b_640.webp
   alt: 【マネージャー視点】エンジニアとして貢献できないもどかしさとメンバを不快にさせる恐怖
   hidden: false
 aliases:

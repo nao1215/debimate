@@ -11,7 +11,7 @@ tags:
 - ゲーム
 - 環境構築
 cover:
-  image: images/768px-Steam_icon_logo.svg_.png
+  image: images/768px-Steam_icon_logo.svg_.webp
   alt: 【環境構築】Debian 10にSteamをインストールする方法：glXChooseVisual failedエラー回避
   hidden: false
 aliases:
@@ -116,7 +116,7 @@ $ sudo apt install mesa-vulkan-drivers libglx-mesa0:i386 mesa-vulkan-drivers:i38
 
 ここまでの手順を終えた後にSteamを起動すると、以下のエラーポップ（glXChooseVisual failedエラー）が表示される場合があります。
 
-![](images/Screenshot-from-2020-08-28-19-32-18.png)
+![](images/Screenshot-from-2020-08-28-19-32-18.webp)
 
 上記エラーを回避するため、NVIDIAのOpenGLライブラリ（グラフィックAPI）を追加でインストールします。
 
@@ -141,6 +141,6 @@ $ steam
 
 ```
 
-![](images/Screenshot-from-2020-08-28-20-27-51-min.jpg)
+![](images/Screenshot-from-2020-08-28-20-27-51-min.webp)
 
 Debian環境で[Helltaker](https://store.steampowered.com/app/1289310/Helltaker/)と[Aseprite](https://store.steampowered.com/app/431730/Aseprite/?l=japanese)が動作する所までは、確認済みです。

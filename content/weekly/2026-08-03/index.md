@@ -26,7 +26,7 @@ date: 2026-08-03T00:00:00+09:00
 リンクカード画像は、私の SNS アイコン（下図）から着想を得ている。私の知り合いには話したことがあるが、このアイコンは大学院〜新卒時代に付き合っていた人から貰ったビーズ細工であり、ペンギンは Linux をイメージしてフクロウの後ろでチラつかせた。20代前半の頃に作ったアイコンを15年近く使い続け、派生画像を作る未来が来るとは考えもしなかった。今ではすっかり自認フクロウ。
 
 
-{{< figure src="my-icon.jpg" alt="nchikaのアイコン" width="150" align="center" >}}
+{{< figure src="my-icon.webp" alt="nchikaのアイコン" width="150" align="center" >}}
 
 話を戻すと、技術ノートには [Machine Learning](https://debimate.jp/ml/) のセクションしかなかったので、[Distributed Systems](https://debimate.jp/notes/distributed-systems/)、[Software Architecture](https://debimate.jp/notes/software-architecture/)、[Security](https://debimate.jp/notes/security/)、[Computer Systems](https://debimate.jp/notes/computer-systems/) を追加した。既存記事へのリンクや参考書籍をチマチマと技術ノートに追記しているのだが、昔の自分は熱心に記事を書いたり書籍を読み漁っていたのだなと感心してしまった。努力の痕跡を感じる。20代の自分は、年間600時間も残業していたのに早朝に勉強したり、休日に記事を書き続けていたので、体力オバケだったのだと思う。
 

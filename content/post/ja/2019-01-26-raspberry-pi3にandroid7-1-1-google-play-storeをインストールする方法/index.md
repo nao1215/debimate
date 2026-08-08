@@ -9,7 +9,7 @@ tags:
 - raspberrypi
 - 環境構築
 cover:
-  image: images/Android-pie.jpg
+  image: images/Android-pie.webp
   alt: Raspberry Pi3にAndroid7.1.1 + Google Play Storeをインストールする方法
   hidden: false
 aliases:
@@ -22,7 +22,7 @@ aliases:
 
 本記事は、[Install Android on his Raspberry Pi](https://howtoraspberrypi.com/install-android-raspberry-pi/)を実践した結果を示します。具体的には、Raspberry Pi3に対して、Android7.1.1とGoogle Play Storeをインストールします。Androidの最新バージョンは、2018年にリリースされた9.x系ですので、やや古いバージョン(2016年時点の最新版)のインストール方法になります。
 
-[![](images/android-p-clear-bg-with-shadow.png)](https://developer.android.com/?hl=ja)
+[![](images/android-p-clear-bg-with-shadow.webp)](https://developer.android.com/?hl=ja)
 
 余談ですが、最近iPhoneとAndroid機の両刀をしていますが、もうAndroidもOSの出来が成熟していますね。iOSから乗り換えようか、本格的に思案中です。
 
@@ -66,7 +66,7 @@ CLI(CUI)でSDカードにAndroidイメージをコピーできますが、今回
 - 自動的にイメージの書き込み先(MicroSDカード)を判別
 - Linux/Mac/Windowsに対応 
 
-![](images/etcher.png)
+![](images/etcher.webp)
 
 [Etcher](https://etcher.io/)の"Download for Linux x64"よりZIPファイルをダウンロードした後、以下の手順でEtcherをインストールおよび実行します。
 
@@ -80,7 +80,7 @@ $./etcher-1.3.1-x86_64.AppImage
 
 以下の実行画面において、\[Select image\]ボタンより"and7\_1-tablet-23012017.zip"を選択した後、\[Flash\]ボタンを押下します。なお、実行者が一般ユーザの場合、rootパスワードの入力が必須です。
 
-![](images/flash.png)
+![](images/flash.webp)
 
 
 ---
@@ -96,7 +96,7 @@ $./etcher-1.3.1-x86_64.AppImage
 - USBマウス
 - microUSB
 
-![](images/rpi.jpeg)
+![](images/rpi.webp)
 
 無線接続するには、起動画面から\[Setting\]/\[Wifi\]まで移動し、WifiをONにします。その後、WiFi Network(SSID)に対応するパスワードを入力すれば、接続が確立します。接続の確立後、\[Setting\]/\[Wifi\]の歯車マークを押すと、IPアドレスが表示されます。なお、このIPアドレスはGoogle Play Storeのインストール時に使用します。
 
@@ -150,7 +150,7 @@ $ sudo ./gapps.sh      (注釈)：スクリプト内部でRaspberry Pi3に自動
 
 再起動したRaspberry Pi3から、Google Play Storeを実行すれば、よくあるアカウント登録手順が表示されます。以降の手順は、不要と思うので説明しません。
 
-![](images/account_google.png)
+![](images/account_google.webp)
 
 ---
 
@@ -271,4 +271,4 @@ Raspberry Pi3のCPUでは、動作がモッサリもっさりしてて、アプ�
 
 直撮り画像で申し訳ありませんが、初期アプリはこんな感じです。Raspberry Pi3でGoogle Play Storeがインストールできる事自体は素晴らしいけど、ダウンロードした他アプリが動作するかどうかは、また別の問題といった感じでした。
 
-![](images/android.jpeg)
+![](images/android.webp)

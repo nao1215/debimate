@@ -9,7 +9,7 @@ tags:
 - ddd
 - golang
 cover:
-  image: images/business-3208596_640.jpg
+  image: images/business-3208596_640.webp
   alt: 【Golang】Value Objectを生成するvogenライブラリをお試しで作った話
   hidden: false
 aliases:

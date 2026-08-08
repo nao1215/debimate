@@ -5,7 +5,7 @@ date: 2019-04-21
 categories:
 - 書評
 cover:
-  image: images/519KqKvvgCL.jpg
+  image: images/519KqKvvgCL.webp
   alt: '感想:  ITエンジニアとして生き残るための指南書。自分を守りアップデートするための18のテクニック。'
   hidden: false
 aliases:

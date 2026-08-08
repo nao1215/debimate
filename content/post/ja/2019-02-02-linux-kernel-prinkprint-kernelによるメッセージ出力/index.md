@@ -9,7 +9,7 @@ tags:
 - c言語
 - linuxkernel
 cover:
-  image: images/bash-161382_640.png
+  image: images/bash-161382_640.webp
   alt: 'Linux Kernel: prink(print kernel)によるメッセージ出力'
   hidden: false
 aliases:
@@ -127,7 +127,7 @@ printk()は、ログレベルに関わらず、Kernel内部ログバッファに
 
 ログバッファのサイズ変更は、Linux Kernelビルド前設定("make menuconfig")で行います。変更対象は"**CONFIG\_LOG\_BUF\_SHIFT"**で、Bitシフトでしか設定できません(下図)。
 
-![](images/バッファサイズ.png)
+![](images/バッファサイズ.webp)
 
 ---
 

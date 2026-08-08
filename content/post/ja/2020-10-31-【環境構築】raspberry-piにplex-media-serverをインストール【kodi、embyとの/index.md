@@ -9,7 +9,7 @@ tags:
 - raspberrypi
 - 環境構築
 cover:
-  image: images/Screenshot-from-2020-10-30-22-29-19.jpg
+  image: images/Screenshot-from-2020-10-30-22-29-19.webp
   alt: 【環境構築】Raspberry PiにPlex Media Serverをインストール【Kodi、Embyとの比較】
   hidden: false
 aliases:
@@ -28,7 +28,7 @@ aliases:
 
 Raspbery Piをメディアサーバとして運用する事を考え、使いやすそうなアプリを探した結果、[Plex](https://www.plex.tv/ja/)、[Kodi](https://kodi.tv/)、[Emby](https://emby.media/)の3種類が候補に上がりました。
 
-![](images/logos2.jpg)
+![](images/logos2.webp)
 
 | **サーバ** | **インストール** | **リモートアクセス** | **拡張性** | **モバイルアプリ** | **ブラウザ** | **ログイン** |
 | :-- | :-- | :-- | :-- | :-- | :-- | :-- |
@@ -85,7 +85,7 @@ Plexモバイルアプリは、課金しなければストリーミングが利�
 
 どのぐらい酷いかと言えば、下の画像ぐらいレイアウトが壊れていて、各種ボタンが押しづらく、ボタン押下後にStart／Stopが点滅して挙動不審になったりします。
 
-![](images/mobile_plex-min.jpg)
+![](images/mobile_plex-min.webp)
 
 許容できない方にはキツイかも知れませんが、私はPCをメインで使用しますし、「モバイルからもストリーミング出来ればいいや」ぐらいの考えなので、許容しています。
 
@@ -176,7 +176,7 @@ Raspberry PiのIPアドレスは"$ hostname -I"や"$ ip a"で確認できます�
 
 Plexメディアサーバにアクセスすると、以下の画面が表示されます。ここまでくれば、後はガイドに従ってセットアップすれば設定が完了します。
 
-![](images/Screenshot-from-2020-10-30-22-29-19.jpg)
+![](images/Screenshot-from-2020-10-30-22-29-19.webp)
 
 Plexメディアサーバのトップ画面に辿り着いた後、多くの人が行うと思われる設定項目へのパスは、以下の通りです。
 

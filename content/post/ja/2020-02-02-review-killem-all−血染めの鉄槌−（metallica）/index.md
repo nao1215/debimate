@@ -7,7 +7,7 @@ categories:
 tags:
 - metallica
 cover:
-  image: images/KillemAll.jpg
+  image: images/KillemAll.webp
   alt: 'Review: Kill''Em All−血染めの鉄槌−（Metallica）'
   hidden: false
 aliases:
@@ -22,7 +22,7 @@ aliases:
 
 ### 収録曲
 
-![](images/KillemAll.jpg)
+![](images/KillemAll.webp)
 
 収録曲
 

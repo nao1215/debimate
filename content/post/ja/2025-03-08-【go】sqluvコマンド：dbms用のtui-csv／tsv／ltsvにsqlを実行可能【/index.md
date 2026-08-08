@@ -84,17 +84,17 @@ sqluvは、起動時にファイルパスが指定されていない場合、DBM
 - New：新規に接続先情報を入力した後、DBに接続
 - List：過去に入力した接続先情報リストから一つ選択肢した後、DBに接続
 
-![](images/dbms_first.png)
+![](images/dbms_first.webp)
 
 Newボタン押下後に表示されるNew Database Connection画面は、以下のとおりです。入力した情報でDB接続に成功した場合は、\`~/.config/sqluv/dbms.yml\`に接続先情報が記録されます。パスワードをファイルに平文で書くかどうかを一瞬迷ったのですが、暗号化しました。
 
-![](images/dbms_info.png)
+![](images/dbms_info.webp)
 
 Listボタン押下後に表示されるSaved Connections画面は、以下のとおりです。前述のNew Database Connection画面で入力したConnection Nameがリスト表示されます。矢印キーで接続先を選び、Enterで接続開始します。
 
 任意のリスト項目を削除する機能は、未実装です。その代わり、接続に失敗した場合は接続先情報を消すかどうかを尋ねるモーダルが出ます。
 
-![](images/dbms_list.png)
+![](images/dbms_list.webp)
 
 ---
 
@@ -103,11 +103,11 @@ Listボタン押下後に表示されるSaved Connections画面は、以下の�
 
 HOME画面のサイドバーにはテーブル一覧、右上にはSQL入力エリア、右下にはSQL実行結果表示エリアがあります。Ctrl-DかESCでアプリ終了し、TABやShift-TABでフォーカスを変更します。
 
-![](images/home.png)
+![](images/home.webp)
 
 SQLを入力し、Execute Queryボタンを押下すると、テーブルが表示されます。テーブルは、矢印キーやマウス操作でフォーカス位置変更やスクロールできます。
 
-![](images/result-1024x577.png)
+![](images/result-1024x577.webp)
 
 当初予定では、Ctrl-EnterでSQLを実行するつもりでした。しかし、Ctrl-EnterがただのEnterと判定されてしまうため、泣く泣くExecute Queryボタンを設けました。
 

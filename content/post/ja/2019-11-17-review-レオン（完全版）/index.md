@@ -8,7 +8,7 @@ tags:
 - レオン
 - 映画
 cover:
-  image: images/71eaOU3PHL._SY445_.jpg
+  image: images/71eaOU3PHL._SY445_.webp
   alt: 'Review: レオン（完全版）'
   hidden: false
 aliases:

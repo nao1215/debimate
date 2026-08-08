@@ -7,7 +7,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/japanese-resume-p-1-top-half.png
+  image: images/japanese-resume-p-1-top-half.webp
   alt: japanese-resume-p-1-top-half
   hidden: false
 aliases:
@@ -43,18 +43,18 @@ aliases:
 以下、生成した履歴書・職務経歴書・CV です。全て PDF として生成されます。
 
 #### CV サンプル
-![CV](./images/cv-p-1.png)
+![CV](./images/cv-p-1.webp)
 
 #### 履歴書サンプル
 
-![履歴書](./images/japanese-resume-p-1.png)
-![履歴書](./images/japanese-resume-p-2.png)
+![履歴書](./images/japanese-resume-p-1.webp)
+![履歴書](./images/japanese-resume-p-2.webp)
 
 #### 職務経歴書サンプル
 
 下図には書かれていませんが、資格、出版・登壇、自己PR、リンクを書くこともできます。
 
-![職務経歴書](./images/work-history-p-1.png)
+![職務経歴書](./images/work-history-p-1.webp)
 
 #### インプットデータである yaml ファイル
 

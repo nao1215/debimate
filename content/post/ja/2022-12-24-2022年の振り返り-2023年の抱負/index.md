@@ -7,7 +7,7 @@ categories:
 tags:
 - 振り返り
 cover:
-  image: images/SV_Ler3B.jpg
+  image: images/SV_Ler3B.webp
   alt: 2022年の振り返り & 2023年の抱負
   hidden: false
 aliases:
@@ -23,7 +23,7 @@ aliases:
 
 なお、弊社はフリーアドレスなので、座席は自由です。ここはこたつスペースであり、高頻度でサーバーサイド民（軟体生物）がぐでっとした感じで生息しています。
 
-![](images/SV_Ler3B.jpg)
+![](images/SV_Ler3B.webp)
 
 ---
 

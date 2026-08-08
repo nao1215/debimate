@@ -10,7 +10,7 @@ tags:
 - linuxkernel
 - 環境構築
 cover:
-  image: images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg
+  image: images/Screenshot-from-2019-07-15-12-39-42-min-300x228.webp
   alt: Linux Kernel Tree内で自作Kernelモジュールをビルドする方法(MakefileとKconfigの書き方)
   hidden: false
 aliases:
@@ -197,7 +197,7 @@ $ make menuconfig
 
 今回追加した自作Kernelモジュール用の設定は、Device Drivers -> Character devices -> DEBIMATE Test Module. に存在します。デフォルトでは、ビルド対象に含まれていないため(=n設定のため)、DEBIMATE Test Module.までカーソルを移動した後に、"m"を押下する事によってモジュール化を有効にします。Kernel内部に組み込む場合は、"y"を押下して下さい。
 
-![Kernel Config](images/Screenshot-from-2019-07-15-12-39-42-min-300x228.jpg)
+![Kernel Config](images/Screenshot-from-2019-07-15-12-39-42-min-300x228.webp)
 
 ---
 

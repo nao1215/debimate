@@ -139,4 +139,4 @@ gup: go1.17
 
 上記の"path github.com/nao1215/gup"の部分が、コマンドパス情報です。ここからパスを取得するようにコードを書き換えたら、$GOPATH/bin以下のバイナリを全て更新できました。手動設定も不要です！嬉しい！
 
-![](images/Screenshot-from-2022-02-21-19-31-58.png)
+![](images/Screenshot-from-2022-02-21-19-31-58.webp)

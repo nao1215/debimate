@@ -7,7 +7,7 @@ categories:
 tags:
 - dio
 cover:
-  image: images/King_Biscuit_Flower_Hour_radio_show_logo.jpg
+  image: images/King_Biscuit_Flower_Hour_radio_show_logo.webp
   alt: 'Review: Live Philadelphia ''84 King Biscuit Flower Hour(DIO)'
   hidden: false
 aliases:
@@ -18,7 +18,7 @@ aliases:
 
 ### 収録曲
 
-![](images/dio.jpeg)
+![](images/dio.webp)
 
 収録曲
 
@@ -55,7 +55,7 @@ aliases:
 
 ### King Biscuit Flower Hourとは
 
-![](images/King_Biscuit_Flower_Hour_radio_show_logo.jpg)
+![](images/King_Biscuit_Flower_Hour_radio_show_logo.webp)
 
 アルバムジャケットに記載された[King Biscuit Flower Hour](https://en.wikipedia.org/wiki/King_Biscuit_Flower_Hour)を読んで、「DIOがFlower? Dragonじゃなくて?」と不思議に思い、調べました。King Biscuit Flower Hourは、DIOと一切関係がなく、1973〜2005年までに存在したラジオ番組のようです。基本的には、ロックバンドのLive音源を配信していたようで、2019年現在ではラジオ用音源をLive盤(CD)として[AliveTheLive](https://www.interart.co.jp/business/entertainment/alivethelive.html)レーベルが販売しているようです。取り扱っているバンドは、AC/DC、Aerosmith、Bob Dylan、David Bowie、ELP、Judas Priest、Metallicaなど、多岐に渡ります。バンドのオリジナルアルバムを買い集めた後、次に手を出すLive盤の漁り先として、[AliveTheLive](https://www.interart.co.jp/business/entertainment/alivethelive.html)レーベルは良さそうです。
 

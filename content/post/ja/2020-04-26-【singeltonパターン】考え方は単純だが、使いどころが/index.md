@@ -9,7 +9,7 @@ tags:
 - ruby
 - デザインパターン
 cover:
-  image: images/card-1738844_640-min.jpg
+  image: images/card-1738844_640-min.webp
   alt: 【Singeltonパターン】考え方は単純だが、使いどころが大切なデザインパターン【コード例はRubyとJava】
   hidden: false
 aliases:
@@ -31,7 +31,7 @@ Singletonパターンに則ったクラスである条件は、以下の３点�
 - private変数として、自身のクラスインスタンスを持つ。
 - public関数として、自身のクラスインスタンスを返すgetterメソッドを持つ。
 
-![](images/class-2.jpg)
+![](images/class-2.webp)
 
 Singletonは作り方のシンプルさと裏腹に、使い方を誤ったケースが多いデザインパターンです。そのため、本記事では「Singletonが適さないケース」、「Singletonが適したケース」、「Singletonが適したクラス（機能）例」、「Singeltonの実装例（Ruby、Java）」を説明します。
 

@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/csv-logo.png
+  image: images/csv-logo.webp
   alt: csv package logo
   hidden: false
 aliases:

@@ -5,7 +5,7 @@ date: 2023-04-02
 categories:
 - キャリア
 cover:
-  image: images/seasons-g45e19cb59_640.jpg
+  image: images/seasons-g45e19cb59_640.webp
   alt: 32歳の子持ちエンジニアがキャリアパスに悩んだ話（結論：フルスタックを目指します）
   hidden: false
 aliases:

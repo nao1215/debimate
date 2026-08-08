@@ -8,7 +8,7 @@ tags:
 - bootleg
 - metallica
 cover:
-  image: images/ajfa-deluxe-box-set-e1546407575773.jpg
+  image: images/ajfa-deluxe-box-set-e1546407575773.webp
   alt: 'Review: Seattle ''89(Metallica)'
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 
 ### 収録曲
 
-![](images/metallica_seattle89.jpg)
+![](images/metallica_seattle89.webp)
 
 収録曲
 
@@ -81,7 +81,7 @@ Live自体は、Metallicaファンの間では高く評価されています。�
 
 **"...AND JUSTICE FOR ALL (DELUXE BOX SET)"を買えば良い。**
 
-[![](images/ajfa-deluxe-box-set-e1546407575773.jpg)](https://www.metallica.com/store/and-justice-for-all-remastered-deluxe/REAJFADLX.html)
+[![](images/ajfa-deluxe-box-set-e1546407575773.webp)](https://www.metallica.com/store/and-justice-for-all-remastered-deluxe/REAJFADLX.html)
 
 ---
 

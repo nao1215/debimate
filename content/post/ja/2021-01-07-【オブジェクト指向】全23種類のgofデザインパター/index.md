@@ -9,7 +9,7 @@ tags:
 - ruby
 - デザインパターン
 cover:
-  image: images/startup-3267505_640-min.jpg
+  image: images/startup-3267505_640-min.webp
   alt: 【オブジェクト指向】全23種類のGoFデザインパターンに関する説明と参考書籍
   hidden: false
 aliases:

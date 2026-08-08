@@ -10,7 +10,7 @@ tags:
 - ruby
 - shellscript
 cover:
-  image: images/chalk-1869492_640-min.jpg
+  image: images/chalk-1869492_640-min.webp
   alt: 【Bash / Ruby / Python3】ANSIエスケープシーケンスを用いた出力文字色の変更方法を比較
   hidden: false
 aliases:
@@ -63,7 +63,7 @@ ANSIエスケープシーケンスでは、ターミナルに表示される文�
 
 出力例は、以下の通りです。
 
-![](images/color-min.jpg)
+![](images/color-min.webp)
 
 ---
 
@@ -157,4 +157,4 @@ warn_message("ワーニングメッセージ(黄色)")
 
 **Bash、Ruby、Python3の実行例**
 
-![](images/color_sample-min.jpg)
+![](images/color_sample-min.webp)

@@ -7,7 +7,7 @@ categories:
 tags:
 - 転職
 cover:
-  image: images/n001804-min.jpg
+  image: images/n001804-min.webp
   alt: 【退職エントリ】新潟在住の組み込みエンジニアが転職を考えたキッカケ、転職活動、退職した会社への感謝
   hidden: false
 aliases:
@@ -20,7 +20,7 @@ aliases:
 - /2021/11/14/退職エントリ新潟在住の組み込みエンジニア/
 ---
 
-![](images/n001804-min.jpg)
+![](images/n001804-min.webp)
 
 本画像は新潟駅南の写真であり、著作権およびその他の権利は[townphoto.net様](https://townphoto.net/niigata/niigata18.html)が保有しています。
 

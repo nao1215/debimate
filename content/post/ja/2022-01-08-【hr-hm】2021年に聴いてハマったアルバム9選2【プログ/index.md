@@ -5,7 +5,7 @@ date: 2022-01-08
 categories:
 - 音楽
 cover:
-  image: images/album-min-1.jpg
+  image: images/album-min-1.webp
   alt: 【HR/HM】2021年に聴いてハマったアルバム9選+2【プログレ】
   hidden: false
 aliases:
@@ -18,7 +18,7 @@ aliases:
 - /2022/01/09/hr-hm2021年に聴いてハマったアルバム9選2プログ/
 ---
 
-![](images/album-min-1.jpg)
+![](images/album-min-1.webp)
 
 ### 前書き：学生時代の曲を振り返る機会が増加
 

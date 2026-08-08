@@ -8,7 +8,7 @@ tags:
 - debian
 - 環境構築
 cover:
-  image: images/bash_launch.png
+  image: images/bash_launch.webp
   alt: 【Desktop entry】Linux環境でデスクトップアイコン(ショートカット)をfreedesktop.org仕様で作成する方法
   hidden: false
 aliases:
@@ -104,7 +104,7 @@ $ ls  /usr/share/icons/hicolor/
 
 今回の例では、/usr/share/icons/hicolor/512x512/apps/以下に、以下のアイコン用画像(only\_win.png)を格納します。アイコン用画像は、好きな画像をネットから探してください。
 
-![](images/only_win-1.png)
+![](images/only_win-1.webp)
 
 ```
 $ sudo mkdir -p /usr/share/icons/hicolor/512x512/apps
@@ -162,7 +162,7 @@ $ /usr/local/bin/only_win  (注釈)：only_winの実行。実行後、以下の�
 
 ```
 
-![](images/only_win.png)
+![](images/only_win.webp)
 
 ---
 
@@ -252,15 +252,15 @@ $ desktop-file-validate ~/.local/share/applications/only_win.desktop
 
 今回の例では、アプリカテゴリ=グラフィックスとして設定しているため、下画像のようにグラフィックスメニューにデスクトップアイコン(ショートカット)が表示されます。
 
-![](images/menu_onlywindow.png)
+![](images/menu_onlywindow.webp)
 
 当然、デスクトップ上にもアイコンを設置できます。設置手順は、デスクトップ環境によって差異がありますが、デスクトップアイコンを右クリックすれば「デスクトップに表示する」旨の選択肢が出ます。設定が終了すれば、下画像のようにデスクトップアイコンが表示されます。
 
-![](images/desktop.png)
+![](images/desktop.webp)
 
 only\_winアイコンをクリックすれば、前述の自作アプリ(Windowのみを表示するアプリ)が起動します。この起動時にアプリケーションの信頼性を問うポップアップが出た場合、「信頼します(実行OK)」を意味する選択肢を選んでください。
 
-![](images/sample_only_win.png)
+![](images/sample_only_win.webp)
 
 ---
 
@@ -269,6 +269,6 @@ only\_winアイコンをクリックすれば、前述の自作アプリ(Window�
 
 デスクトップ画面で右クリックすれば、「新しいロンチャ(Launcher)を追加」する旨の選択肢があります。その選択肢を選んだ後、下図のように起動対象のアプリ情報を入力する画面が出てきます。この画面上で必須項目を入力すれば、デスクトップエントリファイルを作成しなくてもデスクトップアイコンを作成できます。
 
-![](images/bash_launch.png)
+![](images/bash_launch.webp)
 
 GUIでの設定方法が分からなかった場合、各デスクトップ環境における設定方法は、[外部サイト](http://xmodulo.com/create-desktop-shortcut-launcher-linux.html)に詳しい手順が示されています。

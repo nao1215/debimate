@@ -8,7 +8,7 @@ tags:
 - qiita
 - 転職
 cover:
-  image: images/search-engine-optimization-4111000_640-min.jpg
+  image: images/search-engine-optimization-4111000_640-min.webp
   alt: 転職希望者がQiitaに投稿するメリットはスカウトメールが届く事【Twitterも大事】
   hidden: false
 aliases:
@@ -42,7 +42,7 @@ Qiitaには、12月のアドベントカレンダーを筆頭に、マニアッ�
 
 ### 転職を促すスカウトメールはスパムではないか？
 
-![](images/メール.jpg)
+![](images/メール.webp)
 
 私が受け取ったスカウトメールのケースでは、実在する企業（もしくは委託業者）からの連絡でした。つまり、架空の企業からのスカウトメールでない限り、スカウトメールをスパムと捉えるかは人によります。
 
@@ -76,7 +76,7 @@ Qiitaには、12月のアドベントカレンダーを筆頭に、マニアッ�
 
 ### スカウトメールを貰うために何故Qiita？
 
-![](images/search-engine-optimization-4111000_640-min.jpg)
+![](images/search-engine-optimization-4111000_640-min.webp)
 
 Qiitaを使う理由は、**「QiitaのSEO対策が良く、多くの人に閲覧されるから」**です。SEOはSearch Engine Optimization（＝検索エンジン最適化）の略であり、本サイトのような付け焼き刃なWebサイトを作って頑張った程度では、Qiitaに太刀打ちできません。
 

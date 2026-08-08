@@ -7,7 +7,7 @@ categories:
 tags:
 - ベスト
 cover:
-  image: images/61Yh4l8u7CL._AC_.jpg
+  image: images/61Yh4l8u7CL._AC_.webp
   alt: 【HR/HM】2020年に聴いてハマったメタルバンド4選【スラッシュ／ジャパメタ】
   hidden: false
 aliases:
@@ -33,7 +33,7 @@ aliases:
 
 ### Riot City（2019年デビュー）
 
-![](images/71nKIxLsGL._AC_SY355_.jpg)
+![](images/71nKIxLsGL._AC_SY355_.webp)
 
 本記事で紹介するバンドの中で最も若手であり、2011年にカナダで結成、2019年にデビューアルバム（**全曲必聴！**）をリリースしたRiot City。
 
@@ -48,7 +48,7 @@ aliases:
 
 ### System Of A Down（1998年デビュー）
 
-![](images/SystemofaDownToxicityalbumcover-min.jpg)
+![](images/SystemofaDownToxicityalbumcover-min.webp)
 
 先日、[メタルバンドとして初めてYouTubeで楽曲（"Chop Suey!"）が10億回再生された](http://amass.jp/141893/)System Of A Down。メッチャクチャ有名どころにも関わらず、今までガン無視しておりました。恥ずべき所でございます、ええ、Prison Songでドハマりしました。
 
@@ -67,7 +67,7 @@ SOADは親しみやすい。メタル初心者にもオススメしたい。一�
 
 ### Overkill（1984年デビュー）
 
-![](images/91kja6-CKmL._AC_UL320_.jpg)
+![](images/91kja6-CKmL._AC_UL320_.webp)
 
 スラッシュ・メタル界では大ベテランバンドのOverkill。BIG4（Metallica／Megadeth／Slayer／Anthrax）、Testament、Exodusと嗜んできたにも関わらず、スルーしていました！実は8年ぐらい前に"Bring Me The Night"を聴いて、その実力は知っていたものの、CD購入まで至っていませんでした。
 
@@ -84,7 +84,7 @@ SOADは親しみやすい。メタル初心者にもオススメしたい。一�
 
 ### BLIZARD（1984年デビュー）
 
-![](images/61Yh4l8u7CL._AC_.jpg)
+![](images/61Yh4l8u7CL._AC_.webp)
 
 本記事で紹介するバンドの中で唯一のジャパメタ、BLIZARD。
 

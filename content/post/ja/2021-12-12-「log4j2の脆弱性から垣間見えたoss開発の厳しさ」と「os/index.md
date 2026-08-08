@@ -9,7 +9,7 @@ tags:
 - oss
 - 金銭
 cover:
-  image: images/dream.jpg
+  image: images/dream.webp
   alt: 「Log4j2の脆弱性から垣間見えたOSS開発の厳しさ」と「OSS開発者に投げ銭する文化（未来）」について
   hidden: false
 aliases:
@@ -32,7 +32,7 @@ aliases:
 > 
 > [JCERT CCより引用](https://www.jpcert.or.jp/at/2021/at210050.html)
 
-![](images/災害.jpg)
+![](images/災害.webp)
 
 Log4j2は有名なライブラリであり、脆弱性の影響範囲が大きかったと思われます。休日出勤で脆弱性対応された方もいらっしゃるのではないでしょうか。
 

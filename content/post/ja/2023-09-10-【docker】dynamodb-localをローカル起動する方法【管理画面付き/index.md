@@ -8,7 +8,7 @@ tags:
 - aws
 - docker
 cover:
-  image: images/dynamoAdmin.png
+  image: images/dynamoAdmin.webp
   alt: 【Docker】DynamoDB localをローカル起動する方法【管理画面付き】
   hidden: false
 aliases:
@@ -116,7 +116,7 @@ $ docker compose up -d
 
 Dockerの起動が確認できたら、http://127.0.0.1:8001にアクセスします。DynamoDBの管理画面が表示されていれば成功です。
 
-![](images/dynamoAdmin.png)
+![](images/dynamoAdmin.webp)
 
 余談ですが、DynamoDB localは内部的に[SQLite](https://www.sqlite.org/docs.html)を使用しています。今回示した例ではファイルにデータを書き込みますが、インメモリーに書き込むこともできます。その場合は、dynamodb-localイメージ（compose.yml）のcommandを以下の設定に変更します。
 

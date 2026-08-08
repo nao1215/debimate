@@ -8,7 +8,7 @@ tags:
 - debian
 - 環境構築
 cover:
-  image: images/debian-1277387_960_720.png
+  image: images/debian-1277387_960_720.webp
   alt: mmdebstrapによるarmhf向けrootfsの作成方法(公式最小サイズ27MB)
   hidden: false
 aliases:

@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/tornago-logo-small.png
+  image: images/tornago-logo-small.webp
   alt: tornago-logo
   hidden: false
 aliases:
@@ -366,7 +366,7 @@ func main() {
 
 上記のコードを実行した後、Tor に対応したブラウザで .onion にアクセスすると、以下の画面が表示されます。
 
-![onion-site](./images/tornago-onion-site.png)
+![onion-site](./images/tornago-onion-site.webp)
 
 ---
 

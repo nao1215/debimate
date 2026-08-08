@@ -9,7 +9,7 @@ tags:
 - xinu
 - アセンブラ
 cover:
-  image: images/cpu-2103856_640.jpg
+  image: images/cpu-2103856_640.webp
   alt: Cortex-A8 (ARMv7-A, e.x. BeagleBone Black）のレジスタ情報／アセンブラ命令／インラインアセンブラの書き方
   hidden: false
 aliases:

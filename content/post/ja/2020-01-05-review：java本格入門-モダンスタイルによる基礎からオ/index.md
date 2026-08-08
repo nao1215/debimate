@@ -7,7 +7,7 @@ categories:
 tags:
 - java
 cover:
-  image: images/Java本格入門-_モダンスタイルによる基礎からオブジェクト指向・実用ライブラリまで-min.jpg
+  image: images/Java本格入門-_モダンスタイルによる基礎からオブジェクト指向・実用ライブラリまで-min.webp
   alt: 感想：Java本格入門 ~モダンスタイルによる基礎からオブジェクト指向・実用ライブラリまで
   hidden: false
 aliases:

@@ -9,7 +9,7 @@ tags:
 - c言語
 - linuxkernel
 cover:
-  image: images/mistake-3085712_640.jpg
+  image: images/mistake-3085712_640.webp
   alt: 'Linux Kernel: エラー番号の一覧'
   hidden: false
 aliases:

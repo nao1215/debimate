@@ -6,7 +6,7 @@ draft: false
 categories:
 - プログラミング
 cover:
-  image: images/iso8583-icon.jpg
+  image: images/iso8583-icon.webp
   alt: iso8583-icon
   hidden: false
 aliases:
@@ -333,7 +333,7 @@ iso8583tool が提供する機能は、以下のとおりです。
 
 以下は、`view` の動作例です。
 
-![iso8583tool view](images/iso8583tool-view.jpg#center)
+![iso8583tool view](images/iso8583tool-view.webp#center)
 
 iso8583tool は、万能ではありません。明確に使いづらい点は、Brand の独自拡張に当たる Field 仕様を利用者が spec ファイルとして定義する必要があることです。例えば、以下の JSON（spec ファイル）が示すように、Field 55 は TLV、Field 127 は nested bitmap、Field 48 は private overlay、といった情報を与えなければなりません。
 
@@ -400,7 +400,7 @@ PCI DSSでは、保護すべきカード会員データとして `PAN / Cardhold
 
 前述の PCI DSS に準拠している Issuer であれば、PAN が DB に平文でベタ書きされていることはありません。それでも PAN が盗まれるのはなぜか。よくあるケースは、フロント側の改ざんです。EC サイトの JavaScript 改ざんや決済フォームに悪意のあるスクリプト混入などで、入力時点の PAN やセキュリティコードを抜かれ、悪意のあるユーザーが管理するサーバーまで送信されます。
 
-![leak-credit-card](images/leak-creditcard.jpg#center)
+![leak-credit-card](images/leak-creditcard.webp#center)
 
 
 PAN や セキュリティコードが漏洩すると、一般的にはクレカ更新の案内が Issuer から届きます。私も漏洩に伴うクレカ更新の経験があります。妻にプレゼントするイヤリングを小規模サイトで購入した時に、漏洩していました。
@@ -459,7 +459,7 @@ flowchart LR
 
 ダークウェブ監視は、`tornago` だけあれば成立する話でもありません。`.onion`（ダークウェブ）は、Google で検索すれば全部出てくる世界ではありません。何らかの検索インデックスが必要になります。Ahmia（下図）のようなダークウェブ検索サイトはありますが、Reddit や Telegram などから継続的に情報を集めて独自のインデックスを作らないと監視の成果が上がりづらいでしょ。
 
-![Ahmia のトップページ](images/ahmia-onion.jpg#center)
+![Ahmia のトップページ](images/ahmia-onion.webp#center)
 
 独自のインデックスを構築できたら、定期的にクロール・スクレイピングして、サイトがどのように変化したかの差分検知が必要です。差分検知を仕込むと、法に触れるデータを DB に保存する可能性があります。私は危険な橋を渡りたくないので、監視ツールの開発を断念しました。
 

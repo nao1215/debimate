@@ -8,7 +8,7 @@ categories:
 tags:
 - vala
 cover:
-  image: images/1200px-Vala_Logo.svg_.jpg
+  image: images/1200px-Vala_Logo.svg_.webp
   alt: 【Vala言語】優れた点、Linuxにおける立ち位置、物足りなさとその対策（coreライブラリ開発）
   hidden: false
 aliases:
@@ -47,7 +47,7 @@ class Demo.HelloWorld : GLib.Object {
 
 Vala言語は、実行速度が高速です。その理由は、Vala言語で書いたコードからC言語が生成され、そのC言語コードをもとにしてバイナリを作成するからです。C言語が高速なのは、言うまでもないでしょう。ただし、valac（valaコンパイラ）は冗長なCコードを生成するため、Vala言語製バイナリの実行速度はピュアなC／C++製バイナリより遅い可能性が高いです（それでも、スクリプト言語よりは高速です）。
 
-![](images/Valac.jpg)
+![](images/Valac.webp)
 
 Introducing Vala Programming（Michael Lauer著、35頁）より引用
 

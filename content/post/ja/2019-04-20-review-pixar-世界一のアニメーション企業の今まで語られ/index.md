@@ -5,7 +5,7 @@ date: 2019-04-20
 categories:
 - 書評
 cover:
-  image: images/51FipV6dEVL._SX350_BO1204203200_.jpg
+  image: images/51FipV6dEVL._SX350_BO1204203200_.webp
   alt: 'Review: PIXAR <ピクサー> 世界一のアニメーション企業の今まで語られなかったお金の話'
   hidden: false
 aliases:

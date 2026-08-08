@@ -8,7 +8,7 @@ tags:
 - 語学学習
 - ロシア語
 cover:
-  image: images/HelloTalkTop.jpg
+  image: images/HelloTalkTop.webp
   alt: 語学学習：HelloTalk は外国人からリアクションを貰ってモチベUPできるオススメアプリ
   hidden: false
 aliases:
@@ -37,7 +37,7 @@ aliases:
 
 本記事では、私がこの問題を解決するために使ったアプリ"[HelloTalk](https://www.hellotalk.com/?lang=ja)"を紹介します。HelloTalkは、英語(正確には一つの言語)であれば無料で、世界中の人とチャットできるアプリです。
 
-![](images/HelloTalkTop.jpg)
+![](images/HelloTalkTop.webp)
 
 HelloTalkの対応項目
 
@@ -81,7 +81,7 @@ HelloTalkは無料版と有料版が存在し、有料版は複数の支払い�
 
 がオススメの対応です。ちなみに、私は英語とロシア語を勉強したかったため(複数言語を勉強したかったため)、永久会員(8,800円支払い済)です。
 
-![](images/forever.jpg)
+![](images/forever.webp)
 
 ---
 
@@ -90,7 +90,7 @@ HelloTalkは無料版と有料版が存在し、有料版は複数の支払い�
 
 私は、Twitter/Facebook/Instagramなどの様々なSNSと同じで、**「モーメントで他の人から"いいね"や”リプライ”を貰う」**と嬉しいです。HelloTalkのモーメントは、基本的にTwitterのツイートと同じ事が出来ます。
 
-![](images/timeline_2.jpg)
+![](images/timeline_2.webp)
 
 上の画像を見ていただければ、「"いいね"」、「文法の訂正」、「ツイートへの反応」がある事が分かると思います。HelloTalkの良い点は、Twitterより他の人が沢山反応を返してくれます。また、ツイートを読んだ外国人が文法訂正もしてくれるため、アウトプットをモチベーション高く続けられます。
 
@@ -117,7 +117,7 @@ HelloTalkは無料版と有料版が存在し、有料版は複数の支払い�
 
 上記の行為が行われているとシステムが検知した場合、以下のメッセージが出ます。
 
-![](images/forbidden3.jpg)![](images/forbidden-1.jpg)
+![](images/forbidden3.webp)![](images/forbidden-1.webp)
 
 つまり、システムとして、「他サイトへの誘導」「不適切画像・動画の送信」「連絡先交換の強要」が出来ないようになっています。ブロック機能もあるため、自分と合わない人がいれば、即座にブロックしてしまえば不快な気持ちにならないで済みます。
 
@@ -125,7 +125,7 @@ HelloTalkは無料版と有料版が存在し、有料版は複数の支払い�
 
 相手を選べば、異文化交流は楽しいです。私も沢山の方とチャットしています。
 
-![](images/chat.jpg)
+![](images/chat.webp)
 
 ---
 

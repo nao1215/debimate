@@ -7,7 +7,7 @@ categories:
 tags:
 - mbti
 cover:
-  image: images/MBTI2-300x178.png
+  image: images/MBTI2-300x178.webp
   alt: 感想：就活やチームビルディングに便利なMBTI(あなたの強みを見つける方法)
   hidden: false
 aliases:
@@ -57,7 +57,7 @@ MBTIは、[日本人が好む血液型診断](https://spicomi.net/media/articles
 
 性格を16通りのいずれかに分類するために、10分程度で100件近い質問を回答する必要があります。質問は、以下の画像のように、「同意する(賛成)、同意しない(反対)、中立」から自分に当てはまる回答を選択します。どちらかと言えば同意する、といった回答方式も可能です。
 
-![](images/test_sample-300x238.png)
+![](images/test_sample-300x238.webp)
 
 ---
 
@@ -77,7 +77,7 @@ MBTI診断後に得られる情報
 - キャリアパス
 - 職場習慣
 
-[![](images/MBTI2-300x178.png)](https://www.16personalities.com/ja/%E6%80%A7%E6%A0%BC%E8%A8%BA%E6%96%AD%E3%83%86%E3%82%B9%E3%83%88)
+[![](images/MBTI2-300x178.webp)](https://www.16personalities.com/ja/%E6%80%A7%E6%A0%BC%E8%A8%BA%E6%96%AD%E3%83%86%E3%82%B9%E3%83%88)
 
 ---
 
@@ -90,7 +90,7 @@ MBTI診断後に得られる情報
 > 
 > [16 Personalities](https://www.16personalities.com/ja/intj%E5%9E%8B%E3%81%AE%E6%80%A7%E6%A0%BC)
 
-![](images/strength-1-300x265.png)
+![](images/strength-1-300x265.webp)
 
 ---
 

@@ -8,7 +8,7 @@ tags:
 - bash
 - shellscript
 cover:
-  image: images/cyber-security-3400657_640-min.jpg
+  image: images/cyber-security-3400657_640-min.webp
   alt: shc（Shell Script Compiler）でスクリプトをバイナリ化（暗号化）する方法
   hidden: false
 aliases:

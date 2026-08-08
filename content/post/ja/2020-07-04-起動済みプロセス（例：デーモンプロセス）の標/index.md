@@ -9,7 +9,7 @@ tags:
 - ログ
 - 標準出力
 cover:
-  image: images/scan-3963099_640-min.jpg
+  image: images/scan-3963099_640-min.webp
   alt: 起動済みプロセス（例：デーモンプロセス）の標準出力を確認する方法
   hidden: false
 aliases:

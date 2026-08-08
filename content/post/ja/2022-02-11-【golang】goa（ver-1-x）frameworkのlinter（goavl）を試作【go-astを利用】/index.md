@@ -9,7 +9,7 @@ tags:
 - cli
 - golang
 cover:
-  image: images/owl-g4a1fd006f_640.jpg
+  image: images/owl-g4a1fd006f_640.webp
   alt: 【Golang】goa（ver 1.x）frameworkのlinter（goavl）を試作【go/astを利用】
   hidden: false
 aliases:

@@ -8,7 +8,7 @@ categories:
 tags:
 - ария
 cover:
-  image: images/Aria-Igra_s_ognem-e1546326094412.jpg
+  image: images/Aria-Igra_s_ognem-e1546326094412.webp
   alt: 'Review: Игра с огнём(АРИЯ)'
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 
 ### 収録曲
 
-![Aria_ИГРА С ОГНЕМ](images/Aria-Igra_s_ognem-e1546326094412.jpg)
+![Aria_ИГРА С ОГНЕМ](images/Aria-Igra_s_ognem-e1546326094412.webp)
 
 収録曲
 
@@ -54,7 +54,7 @@ aliases:
 
 語学学習アプリ"HelloTalk"にすら、АРИЯに関する投稿があるぐらいです。
 
-![](images/aria_fan-e1546508888186.png)
+![](images/aria_fan-e1546508888186.webp)
 
 デビューから本作まで(80年代)のサウンドは、紛れもなくNWOBHMの影響下にあります。身も蓋もない言い方をすれば、Iron Maiden。ボーカルの哀愁漂う歌い回しからScorpionsとも形容されますが、そのサウンドは間違いなくMaidenの影響下にあります。AriaとMaidenの比較動画が作成されるぐらい、似ています。メタルではよくある事（●３●）＜ハッハー！！
 

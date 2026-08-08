@@ -8,7 +8,7 @@ categories:
 tags:
 - github-actions
 cover:
-  image: images/issue-metrics-sample-output.png
+  image: images/issue-metrics-sample-output.webp
   alt: 【GitHub Actions】 github/issue-metrics でPRマージにかかる時間を分析
   hidden: false
 aliases:
@@ -57,7 +57,7 @@ github/issue-metricsは、GitHub Actionsであり、指定したリポジトリ�
 
 以下に、[公式READMから引用したサンプルレポート](https://github.com/github/issue-metrics?tab=readme-ov-file#getting-started)を示します。
 
-![](images/issue-metrics-sample-output.png)
+![](images/issue-metrics-sample-output.webp)
 
 ---
 

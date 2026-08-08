@@ -5,7 +5,7 @@ date: 2025-01-26
 categories:
 - プログラミング
 cover:
-  image: images/CleanArchitecture.jpg
+  image: images/CleanArchitecture.webp
   alt: 【何をどこに書く？】Pull Requestマージ速度を上げるためにドキュメンテーションコメントを書く
   hidden: false
 aliases:
@@ -43,7 +43,7 @@ aliases:
 - GitHub の PR Descriptionに、仕様の背景や各種資料のリンクを記載
 - クリーンアーキテクチャを採用
 
-![](images/CleanArchitecture.jpg)
+![](images/CleanArchitecture.webp)
 
 The Clean Architecture (https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html) から引用
 
@@ -90,7 +90,7 @@ PR上でのコメントは、会話が完了すると折りたたまれている
 
 関数やメソッド名をマウスホバーすると、ドキュメンテーションコメントが表示されるから（以下の画像が参考例）。また、golangではドキュメンテーションコメント（Go Docコメント）からドキュメントを生成できるから。と書きましたが、プロダクト開発でGo Docが役立ったことが今のところないです。OSSライブラリ開発では、役立っています。
 
-![](images/Screenshot-from-2025-01-26-14-40-36.png)
+![](images/Screenshot-from-2025-01-26-14-40-36.webp)
 
 前提ですが、コードリーディングには、以下の2つの方法があります。ドキュメンテーションコメントは、幅優先のコードリーディングを楽にします。
 

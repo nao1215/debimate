@@ -5,7 +5,7 @@ date: 2025-12-08
 categories:
 - プログラミング
 cover:
-  image: images/2025-suntopia_world.jpg
+  image: images/2025-suntopia_world.webp
   alt: 2025-suntopia_world
   hidden: false
 aliases:
@@ -96,13 +96,13 @@ OSS 開発についてまとめると、今年は filesql の年でした。file
 <blockquote class="twitter-tweet" data-dnt="true"><p lang="ja" dir="ltr">Golang Weekly で初めて紹介された<br>ビビった<a href="https://t.co/vSezrzjB63">https://t.co/vSezrzjB63</a><br><br>紹介されたのは、filesql<a href="https://t.co/wgsjnBwXhB">https://t.co/wgsjnBwXhB</a> <a href="https://t.co/IQeKQAZgu5">pic.twitter.com/IQeKQAZgu5</a></p>&mdash; nchika (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1998888877919187116?ref_src=twsrc%5Etfw">December 10, 2025</a></blockquote> <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 
-![StarHistory](images/star-history-20251221.png)
+![StarHistory](images/star-history-20251221.webp)
 
 ---
 
 filesql の偉大な功績としては、GitHub Sponsors を2名もたらしました。1名は、filesql を試した同僚。もう1名は、決済を扱う [moov](https://moov.io/) に所属する方です。後者の方は、Issue で機能追加要望をいただき、実装したらスポンサーになっていただきました。追加機能は、アメリカの送金で用いる Automated Clearing House フォーマットに対して SQL を実行できるようにするものです。完全にアメリカ向けの機能です。
 
-![StarHistory](images/2025-github-sponsors.png)
+![StarHistory](images/2025-github-sponsors.webp)
 
 GitHub Star や GitHub Sponsors が増えるのは嬉しいのですが、結局は宣伝力や運の要素が大きいと感じています。ある一定の水準の OSS を作り、大衆受けしやすいテーマを取り扱っていれば、後はインフルエンサーの目にとまるかの勝負です。技術力と関係ないスキルが重要です。
 
@@ -136,11 +136,11 @@ GitHub Star や GitHub Sponsors が増えるのは嬉しいのですが、結局
 
 我が家は、2024年に建築したばかりのため、庭の大部分が地面むき出しでした。~外構の予算オーバーで芝生を諦めた背景があります。~ 庭の地面を覆い隠すには、グラウンドカバーとなる植物を植える必要があります。独断と偏見で、芝桜を選びました。コメリで1個120円程度の芝桜を60〜70個ほど仕入れました。2〜3日に一回、芝桜を12個買っていく嫌な客ムーブをしました。
 
-![shibazakura](./images/2025-shibazakura-komeri.png)
+![shibazakura](./images/2025-shibazakura-komeri.webp)
 
 芝桜は横方向に広がるので、最初スカスカの状態（地面が見える状態）でも3ヶ月ほど経てば、地面を覆い隠してくれます。綺麗な花が咲きますが、散るのが早いです。冬に葉っぱの見た目が悪くなり、3〜5年で花が咲かなくなるらしいので、ベストなグランウンドカバーではないかもしれません。
 
-![shibazakura2](./images/2025-shibazakura.png)
+![shibazakura2](./images/2025-shibazakura.webp)
 
 夏は息子の課外学習をかねて、苺、トマト、スイカ、トウモロコシ、メロンを育てました。あと、冬から春にかけて大根。
 
@@ -148,22 +148,22 @@ GitHub Star や GitHub Sponsors が増えるのは嬉しいのですが、結局
 
 苺は、鳥に食べられることが多く、殆ど収穫できませんでした。最初は「ネズミが食べているのかな」と推測しましたが、庭を監視していたらヒヨドリが食べてました。ちなみに、ヒヨドリは我が家のブルーベリーも食べていくため、嫁が怒っていました。
 
-![ichigo](./images/2025-ichigo.png)
+![ichigo](./images/2025-ichigo.webp)
 
 収穫量トップクラスは、トマトです。 沢山実りました。最近トマトが高いので、苗代をペイできました。土と肥料を考慮すると、ペイできてない気がしますが。
 
-![tomato](./images/2025-tomato.png)
+![tomato](./images/2025-tomato.webp)
 
 スイカは、収穫しましたが、美味しくなかったです。1個目は、日照量が不足しており、中身が白かったです。食べてみましたが、モッサリきゅうり味で不味かったです。2個目は、赤かったけど、熟れ過ぎなのに青臭くて、味も薄かったです。
 
-![suika-siro](./images/2025-suika-white.png)
-![suika-aka](./images/2025-suika-aka.png)
+![suika-siro](./images/2025-suika-white.webp)
+![suika-aka](./images/2025-suika-aka.webp)
 
 
 トウモロコシとメロン、大根は、収穫できませんでした。メロンは収穫するのをサボっていたら、ナメクジが付いてて腐ってました（画像なし）。トウモロコシは収穫前に、誰かに食べられてました。苺もそうですが、面白いことに丁度食べ頃のタイミングで齧られます。トウモロコシの黄色い実が見えていたわけでもないのに、動物がどうやって食べ頃と判断しているのかが不思議でした。大根も齧られたのですが、齧られた大根を見て息子が号泣してました。急に泣き声が聞こえたので、怪我でもしたのかと驚いた記憶があります。
 
-![toumorokoshi](./images/2025-toumorokosi.png)
-![daikon](./images/2025-daikon.png)
+![toumorokoshi](./images/2025-toumorokosi.webp)
+![daikon](./images/2025-daikon.webp)
 
 なお、我が家では、果樹も育てています。
 
@@ -209,13 +209,13 @@ GitHub Star や GitHub Sponsors が増えるのは嬉しいのですが、結局
 
 今年は少しルールを破りまして、配当金以外でも散財をしました（「何故、そのお金を旅行に使わなかった」という声が聞こえた気がしました）。例えば、YAMAHA FS820 RR アコースティックギターを買いました。このギターは安価ですが、色味が良く、音色も悪くありません。楽譜を入手できていないので、あまり弾けていません。息子が興味を持ったら、同じギターの青色を買い与えたいです。
 
-![guitar](./images/2025-guitar.png)
+![guitar](./images/2025-guitar.webp)
 
 また、童心に返るために、ミニ四駆を買いました。発端は、トミカです。息子と一緒にトミカを買いに行った時に、[トミカとミニ四駆のコラボ](https://www.takaratomy.co.jp/products/tomica/sp/tamiya/)を見かけました。その流れで Amazon でミニ四駆の値段をチェックしたら、安価なんですよね。1000円以下です。
 
 「安いからどれか買うか」と思い、真っ先に選んだのはビークスパイダーでした。組み立てたら、シール貼りが下手くそすぎてフロントが事故車みたいに歪みました。子供の頃はそこまで好きではありませんでしたが、大人の目線で見ると最もフォルムが美しく、格好良い（小並感）。腰から後ろがふつくしい。ネーミングも好みです。語感が良い。ビークスパイダー（くちばしを持つ蜘蛛）。連呼したい。ビークスパイダー。風で切り裂くイメージが Beak なんでしょうね多分。~スクレイピングアプリを作ったら、名前をパクりたい。~
 
-![beak-spider](./images/2025-beak-spider.png)
+![beak-spider](./images/2025-beak-spider.webp)
 
 ---
 
@@ -223,8 +223,8 @@ GitHub Star や GitHub Sponsors が増えるのは嬉しいのですが、結局
 
 餃子とピザを作る頻度が高かったです。Go Conference 2025 の Capture The Flag 向けレシピアプリで公開した料理の写真は、私が作ったものと居酒屋でパシャリしたものです。餃子は、タネから作るのですが、皮は市販品です。いつか、皮から作りたいなと思ってます。なお、息子は餃子を食べてくれません。
 
-![pizza](./images/2025-pizza.png)
-![gyouza](./images/2025-gyouza.png)
+![pizza](./images/2025-pizza.webp)
+![gyouza](./images/2025-gyouza.webp)
 
 ---
 

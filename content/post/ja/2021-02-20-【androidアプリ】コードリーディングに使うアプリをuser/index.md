@@ -8,7 +8,7 @@ tags:
 - android
 - codereading
 cover:
-  image: images/ICON-1.jpg
+  image: images/ICON-1.webp
   alt: 【Androidアプリ】コードリーディングに使うアプリをUserLAndからSource Code Viewer Proに浮気した話
   hidden: false
 aliases:
@@ -32,7 +32,7 @@ UserLAndは「Android環境でのLinux」という点でまだまだ魅力的な
 
 そこで、本記事ではAndroidでコードリーディングするために[「Source Code Viewer Pro（有料）」](https://play.google.com/store/apps/details?id=com.sourceviewerpro&hl=ja&gl=US)を試した感想を記載します。
 
-![](images/title.jpg)
+![](images/title.webp)
 
 ---
 
@@ -71,17 +71,17 @@ Source Code Viewer Proの良い点／悪い点は、以下の通りです。作�
 
 行の折り返しが少ない状態でソースコードを表示すると、以下のような状態となります。フォントサイズがかなり小さいので、目が悪い人は縦持ちでコードを読むのは難しいと思います。揺れる電車の中では、私は殆ど読めませんでした。
 
-![](images/Screenshot_20210220-205823.jpg)
+![](images/Screenshot_20210220-205823.webp)
 
 横持ち状態であれば、それなりのフォントサイズなので文字が読みやすいです。行の折り返しが発生する事は少ないですが、一画面に表示される行数は20行程度になります。
 
-![](images/Screenshot_20210220-211420.jpg)
+![](images/Screenshot_20210220-211420.webp)
 
 ちなみに、上記のスクリーンショットは[OUKITEL WP8 Pro（6.3インチ）](https://amzn.to/3biVDLa)で取得しました。つまり、前述の感想は、かなり大型のスマホでの使用感です。小型のスマホでSource Code Viewer Proを使った場合では、読みづらさが増す筈です。
 
 大型スマホも横持ちしづらい欠点があるので、スマホリングを付けた方が便利です。
 
-![](images/IMG_20210220_230625-1.jpg)
+![](images/IMG_20210220_230625-1.webp)
 
 ---
 
@@ -99,7 +99,7 @@ Source Code Viewer Proの良い点／悪い点は、以下の通りです。作�
 - ダークテーマのON/OFF
 - ハイライトの設定
 
-![](images/Screenshot_20210220-205833.jpg)
+![](images/Screenshot_20210220-205833.webp)
 
 ---
 
@@ -112,7 +112,7 @@ Source Code Viewer Proの良い点／悪い点は、以下の通りです。作�
 
 表示しているファイル内の関数を一通り眺める場合には便利です。ファイル内に登場する全ての関数（他ファイルで定義されている関数）が表示される訳ではありません。
 
-![](images/Screenshot_20210220-205849-1.jpg)
+![](images/Screenshot_20210220-205849-1.webp)
 
 ---
 

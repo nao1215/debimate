@@ -9,7 +9,7 @@ tags:
 - elementaryos
 - コントリビュート
 cover:
-  image: images/Screenshot-from-2021-01-02-14-32-32.png
+  image: images/Screenshot-from-2021-01-02-14-32-32.webp
   alt: 【推しは誰？】OSS開発をサポートしたく、金銭的なコントリビュートを始めました【elementary OS】
   hidden: false
 aliases:
@@ -39,7 +39,7 @@ _**2021年は、elementary OSに金銭面（超少額）サポートします！
 
 では、開発者としてのサポート以外に、どのようにOSSへ貢献する方法があるかと考え直した時、[elementary OSのサイト](https://elementary.io/ja/get-involved)で見かけた金銭的なサポートがパッと思いつきました。
 
-[![](images/寄付.jpg)](https://elementary.io/ja/get-involved)
+[![](images/寄付.webp)](https://elementary.io/ja/get-involved)
 
 ---
 
@@ -48,21 +48,21 @@ _**2021年は、elementary OSに金銭面（超少額）サポートします！
 
 elementary OSは、Ubuntu派生（UbuntuはDebian派生）のLinuxディストリビューションであり、「安定かつ新し目のパッケージ」および「Macを意識したLook & Feel」を提供しており、[私もノートPCにインストールして愛用させてもらっています](https://debimate.jp/post/ja/2021-01-02-%E3%83%89%E3%82%B9%E3%83%91%E3%83%A9%E3%81%AEthirdwave-vf-ad4%E3%81%ABelementary-osubuntu%E6%B4%BE%E7%94%9F%E3%82%92%E5%85%A5%E3%82%8C%E3%81%9F%E6%84%9F%E6%83%B3/)。
 
-![](images/Screenshot-from-2021-01-02-15-23-16.png)
+![](images/Screenshot-from-2021-01-02-15-23-16.webp)
 
 elementary OSの挑戦的な部分は、OSのダウンロード時に、"Pay What You Want"方式（購入者の望む金額 = 0円以上で支払う方式）を採用しています。
 
 一昔前は「基本ソフトであるOSにお金を取るMicrosoftは守銭奴」、「Linuxは無料。サイコー」というような主張が見かけられましたが、その時期と比べるとLinux関係のソフト開発者の意識が変わってきた感じがします。
 
-![](images/Screenshot-from-2021-01-02-14-32-32.png)
+![](images/Screenshot-from-2021-01-02-14-32-32.webp)
 
 elementary OSは、アプリケーションを販売する場としてAppCenterを用意しています。AppCenterは、WindowのMicrosoft Store、MacのiTunes、UbuntuのUbntuソフトと同じようなアプリであり、こちらも"Pay What You Want"方式を採用しています。
 
 LinuxのOSやアプリが有料であるパターン（正確には無料／有料のどちらでもインストール可能なパターン）は、そこそこ珍しいのではないでしょうか。
 
-![](images/Screenshot-from-2021-01-09-19-29-58.jpg)
+![](images/Screenshot-from-2021-01-09-19-29-58.webp)
 
-![](images/Screenshot-from-2021-01-09-19-21-49.jpg)
+![](images/Screenshot-from-2021-01-09-19-21-49.webp)
 
 "Pay What You Want"方式を採用した背景には、従来のLinuxが大事にしてきたFree（自由）の重要性を踏まえつつ、ボランティア主体でプロジェクトを推進し続けられない現実と真剣に向き合った結果があるのではないかなと、推測しています。
 
@@ -86,7 +86,7 @@ elementary OSに対しては、以下の手段で金銭サポートができる�
 
 例えば、GitHub Sponserは2021年1月現在で582人います。意外と多くの方が金銭サポートしていますね。
 
-[![](images/sponser.jpg)](https://github.com/sponsors/elementary)
+[![](images/sponser.webp)](https://github.com/sponsors/elementary)
 
 ---
 
@@ -97,13 +97,13 @@ elementary OSに対しては、以下の手段で金銭サポートができる�
 
 ただし、本記事の執筆段階では[購入画面から次の画面に進めないバグ（住所情報を入力後、何も表示されずに購入画面に戻るバグ）](https://github.com/elementary/website/issues/2606)があるため、elementary OSプロジェクトの修正待ちです。どうせコロナで出荷が遅れるようなので、気長に待ちます。
 
-![](images/Screenshot-from-2021-01-09-20-52-59.jpg)
+![](images/Screenshot-from-2021-01-09-20-52-59.webp)
 
 グッズの購入はあまりプロジェクトの金銭的なサポートにはならないと考え、Patreonで月10ドルの支援も行いました！
 
 1年分を一回払いすると、5% OFFになるようです。こちらもグッズを提供していただけるので、届くのが楽しみです。
 
-![](images/Screenshot-from-2021-01-09-21-11-23.jpg)![](images/Screenshot-from-2021-01-09-21-20-01.jpg)
+![](images/Screenshot-from-2021-01-09-21-11-23.webp)![](images/Screenshot-from-2021-01-09-21-20-01.webp)
 
 ---
 

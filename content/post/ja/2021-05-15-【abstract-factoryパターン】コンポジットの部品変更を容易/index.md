@@ -8,7 +8,7 @@ tags:
 - java
 - デザインパターン
 cover:
-  image: images/AbstractFactory-ページ1-min.jpg
+  image: images/AbstractFactory-ページ1-min.webp
   alt: 【Abstract Factoryパターン】コンポジットの部品変更を容易にするデザインパターン【コード例：Java】
   hidden: false
 aliases:
@@ -39,7 +39,7 @@ Abstract Factoryパターンのメリット
 
 ### Abstract Factoryパターンのクラス図
 
-![](images/AbstractFactory-ページ1-min.jpg)
+![](images/AbstractFactory-ページ1-min.webp)
 
 | **クラス名** | **説明** |
 | --- | --- |
@@ -66,7 +66,7 @@ Abstract Factoryの実装例として、Bash／Pythonのスクリプトファイ
 
 紹介するサンプルコードは、クラス図で表すと以下の構成になります。
 
-![](images/AbstractFactory-ページ2-min.jpg)
+![](images/AbstractFactory-ページ2-min.webp)
 
 ---
 

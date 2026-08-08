@@ -7,7 +7,7 @@ categories:
 tags:
 - rainbow
 cover:
-  image: images/memories_in_rock-min.jpg
+  image: images/memories_in_rock-min.webp
   alt: 'Review: Memories in Rock(Rainbow)'
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 
 ### 収録曲
 
-![](images/memories_in_rock-min.jpg)
+![](images/memories_in_rock-min.webp)
 
 収録曲
 

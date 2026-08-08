@@ -9,7 +9,7 @@ tags:
 - c言語
 - linuxkernel
 cover:
-  image: images/container_of.png
+  image: images/container_of.webp
   alt: 'Linux Kernel: 構造体メンバポインタから構造体の先頭ポインタを得るcontainer_ofマクロ'
   hidden: false
 aliases:

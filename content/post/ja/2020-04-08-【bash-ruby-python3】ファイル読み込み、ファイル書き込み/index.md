@@ -10,7 +10,7 @@ tags:
 - ruby
 - shellscript
 cover:
-  image: images/document-3503099_640-min.jpg
+  image: images/document-3503099_640-min.webp
   alt: 【Bash / Ruby / Python3】ファイル読み込み、ファイル書き込みの方法を比較
   hidden: false
 aliases:

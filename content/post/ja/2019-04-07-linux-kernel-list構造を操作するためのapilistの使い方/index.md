@@ -9,7 +9,7 @@ tags:
 - c言語
 - linuxkernel
 cover:
-  image: images/Kernel_lists-1.png
+  image: images/Kernel_lists-1.webp
   alt: 'Linux Kernel: List構造を操作するためのAPI(Listの使い方)'
   hidden: false
 aliases:
@@ -53,7 +53,7 @@ struct NUM_LIST{
 
 NUM\_LIST構造体をLinkさせた図は、以下の通りです。3個のノードが結ばれた状態です。
 
-![](images/normal_list.png)
+![](images/normal_list.webp)
 
 このような密結合のList構造における欠点は、「データ毎(構造体毎)にList操作用のAPIを実装しなければならない」という事です。例えば、NUM\_LIST構造体に対して、要素を追加する関数add\_num\_list(以下)を作成したとします。list\_add\_num()がNUM\_LIST構造体にしか使用できない事は、C言語経験者であれば容易に想像できると思います。
 
@@ -112,7 +112,7 @@ struct NUM_LIST{
 
 Linux Kernel形式でNUM\_LIST構造体をLinkさせた図(単方向のみLinkさせた図)は、以下の通りです。
 
-![](images/kernel_list.png)
+![](images/kernel_list.webp)
 
 Linux Kenel形式のList構造の利点は、データ構造(構造体)に応じて、List操作APIを再実装する必要性が無い事です。この利点は、データ構造とList構造が互いに影響しない事(粗結合である事)によって、実現されています。
 

@@ -9,7 +9,7 @@ tags:
 - golang
 - oss
 cover:
-  image: images/cooking-g7a7f01727_640-min.jpg
+  image: images/cooking-g7a7f01727_640-min.webp
   alt: 【Golang】プロジェクトテンプレート生成ツール（ubume）を試作【改善案を募集】
   hidden: false
 aliases:

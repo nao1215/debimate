@@ -10,7 +10,7 @@ tags:
 - debian
 - man
 cover:
-  image: images/man.jpg
+  image: images/man.webp
   alt: manコマンドによる「ASCII ⇔ 8進数、10進数、16進数の変換表」
   hidden: false
 aliases:

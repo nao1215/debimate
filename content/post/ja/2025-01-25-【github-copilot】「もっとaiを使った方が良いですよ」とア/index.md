@@ -9,7 +9,7 @@ tags:
 - ai
 - github
 cover:
-  image: images/Screenshot-from-2025-01-25-10-09-53.png
+  image: images/Screenshot-from-2025-01-25-10-09-53.webp
   alt: 【GitHub Copilot】「もっとAIを使った方が良いですよ」とアドバイスする時代になった
   hidden: false
 aliases:
@@ -55,7 +55,7 @@ Nが一桁なので私が勘違いしている可能性を否定できないの�
 
 AI活用しているメンバは、GitHub Copilotチャットがウィンドウ横に出ていたりします。また、Slack上でAIを使っている旨を発言しているので、そこからも答え合わせできます（書いててアレですが、ストーカーみたいで気持ち悪いな）。AI活用していないメンバには、直接「AI使ってますか？」と聞いてます。
 
-![](images/Screenshot-from-2025-01-25-11-07-21-1024x683.jpg)
+![](images/Screenshot-from-2025-01-25-11-07-21-1024x683.webp)
 
 ---
 

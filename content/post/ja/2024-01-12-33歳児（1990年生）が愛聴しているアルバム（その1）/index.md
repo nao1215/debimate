@@ -5,7 +5,7 @@ date: 2024-01-12
 categories:
 - 音楽
 cover:
-  image: images/220174754.jpg
+  image: images/220174754.webp
   alt: 33歳児（1990年生）が愛聴しているアルバム（その1）
   hidden: false
 aliases:
@@ -29,7 +29,7 @@ aliases:
 
 ### Anti（HYDE）
 
-![](images/PDCV-1043_ljQ_extralarge.jpg)
+![](images/PDCV-1043_ljQ_extralarge.webp)
 
 Antiを聴いた時は、驚きと喜びがあった。
 
@@ -52,7 +52,7 @@ Antiは、一聴しただけでサウンドが若返ったことが分かる。�
 
 ### Loud Playing Workshop（Unlucky Morpheus）
 
-![](images/51pj9QrfTBL._UF8941000_QL80_.jpg)
+![](images/51pj9QrfTBL._UF8941000_QL80_.webp)
 
 こんなんズルいよ、メタル好きは皆好きだよコレ（主語がデカい）
 
@@ -70,7 +70,7 @@ Into the Arena（MSG）やFor the Love of God（Steve Vai）あたりの「ド�
 
 ### Let there Be Blood（Exodus）
 
-![](images/81evkWIlG2S._UF10001000_QL80_.jpg)
+![](images/81evkWIlG2S._UF10001000_QL80_.webp)
 
 85年リリースの1stアルバム「Bonded by Blood」を再録した作品。純粋に出来が良い1stを忠実に再録し、ブルータリティや激しさを加味したサウンドに仕上がっている。
 
@@ -83,7 +83,7 @@ Into the Arena（MSG）やFor the Love of God（Steve Vai）あたりの「ド�
 
 ### 虹を継ぐ覇者（虹伝説）
 
-![](images/NijiDensetsu_NijiwoTsuguHasha_500.jpg)
+![](images/NijiDensetsu_NijiwoTsuguHasha_500.webp)
 
 私は、2つの虹が好きである。
 
@@ -102,7 +102,7 @@ Rainbowはボーカリストが複数参加したが、本作は各ボーカリ�
 
 ### 愛音（AION）
 
-![](images/51nEra-5PwL._UF10001000_QL80_.jpg)
+![](images/51nEra-5PwL._UF10001000_QL80_.webp)
 
 「90年代にこんな実力派のメタルバンド（V系）がいたのか〜！」と気づいた時には活動停止していて、悲しみに暮れた。その出会いは、2022年。
 
@@ -117,7 +117,7 @@ X JAPANと同格のように評価されているが、現代まで生き残っ�
 
 ### Immortal（ANTHEM）
 
-![](images/61C0EvIDnmL._UXNaN_FMjpg_QL85_.jpg)
+![](images/61C0EvIDnmL._UXNaN_FMjpg_QL85_.webp)
 
 ジャパメタ枠の中では最も好きなANTHEM。
 
@@ -132,7 +132,7 @@ X JAPANと同格のように評価されているが、現代まで生き残っ�
 
 ### No.0（BUCK-TICK）
 
-![](images/zaP2_G2914108W.jpg)
+![](images/zaP2_G2914108W.webp)
 
 BUCK-TICKとの出会いは、15年前に遡る。
 
@@ -157,7 +157,7 @@ BUCK-TICKの良いところは、サウンドが進化し続けることと、�
 
 ### 璞（Gargoyle）
 
-![](images/220174754.jpg)
+![](images/220174754.webp)
 
 Gargoyleに出会った時は衝撃を受けた。ここまでの完成度／個性を持つメタルバンドが日本に居たとは思わなかった。
 
@@ -174,7 +174,7 @@ Gargoyleに出会った時は衝撃を受けた。ここまでの完成度／個
 
 ### Tribe（Sadist）
 
-![](images/51XbISziPbL._AC_.jpg)
+![](images/51XbISziPbL._AC_.webp)
 
 美しきデスメタル。本作を深夜に聴くと少し恐怖でゾクゾクする。
 
@@ -189,7 +189,7 @@ Gargoyleに出会った時は衝撃を受けた。ここまでの完成度／個
 
 ### Burn the Night（Riot City）
 
-![](images/HMHR190403-347.jpg)
+![](images/HMHR190403-347.webp)
 
 NWOTHMバンドの一つで、80'sに流行ったNWOBHMの現代版（Tは、Traditional）
 
@@ -202,7 +202,7 @@ RiotとJudas Priestの間の子とも言えるサウンドで、鋼鉄な声質�
 
 ### Violent（VOLCANO）
 
-![](images/71VMWWA4L0L._UF10001000_QL80_.jpg)
+![](images/71VMWWA4L0L._UF10001000_QL80_.webp)
 
 オタクは、すぐドリームチームを妄想する。本作は、そんな妄想が具現化している。「Gargoyleギタリストの屍忌蛇」と「AIONボーカリストのNOV」がタッグを組んでいるのだ。
 

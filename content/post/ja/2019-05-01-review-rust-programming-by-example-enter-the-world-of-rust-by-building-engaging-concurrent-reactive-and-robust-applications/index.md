@@ -9,7 +9,7 @@ categories:
 tags:
 - rust
 cover:
-  image: images/Rust.jpg
+  image: images/Rust.webp
   alt: '感想: Rust Programming By Example: Enter the world of Rust by building engaging,
     concurrent, reactive, and robust applications'
   hidden: false
@@ -58,6 +58,6 @@ aliases:
 
 テトリスに関しては、下画像を見れば、スコアの配置がおかしい事に気づくと思います。さらに、最も右側にブロックが置けません。ブロックも正しく重なりません。これらの不具合は写経ミスではなく、GitHub上のコードで同じ現象が発生します。
 
-![](images/tetris.png)
+![](images/tetris.webp)
 
 初心者向けの書籍で、ビルドエラーが起きてしまう状態は残念です。編集や共著者とのクロスチェックを真面目にやれば、防げたミスだと思います。

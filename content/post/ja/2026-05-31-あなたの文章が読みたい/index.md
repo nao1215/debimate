@@ -6,7 +6,7 @@ draft: false
 categories:
 - キャリア
 cover:
-  image: images/text-lover.jpg
+  image: images/text-lover.webp
   alt: text-lover
   hidden: false
 aliases:

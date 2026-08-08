@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/onionlint-logo-small.png
+  image: images/onionlint-logo-small.webp
   alt: onionlint-logo
   hidden: false
 aliases:

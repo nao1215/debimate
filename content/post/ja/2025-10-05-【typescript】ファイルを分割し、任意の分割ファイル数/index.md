@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/horcrux.jpg
+  image: images/horcrux.webp
   alt: 【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】
   hidden: false
 aliases:
@@ -43,7 +43,7 @@ aliases:
 
 README から説明画像を引用しますが、以下のように5分割したファイルのうち、3個のファイルがあれば元ファイルに復元できます。実装前は、「なにこれ、RAID（Redundant Arrays of Independent Disks）？どうやって実現しているのだろうか」と不思議でした。
 
-![](images/horcrux_example.jpg)
+![](images/horcrux_example.webp)
 
 この疑問への回答は、 [hocrux コマンドの作者がキチンと README に書いていました](https://github.com/jesseduffield/horcrux?tab=readme-ov-file#faq)。
 
@@ -105,7 +105,7 @@ console.log(restored.data.toString()); // 'Secret message'
 
 このロゴは、中二病っぽくて気に入ってます。
 
-![](images/horcrux.jpg)
+![](images/horcrux.webp)
 
 ---
 

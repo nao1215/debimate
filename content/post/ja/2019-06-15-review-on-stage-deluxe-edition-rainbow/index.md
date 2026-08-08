@@ -7,7 +7,7 @@ categories:
 tags:
 - rainbow
 cover:
-  image: images/on_stage-min.jpg
+  image: images/on_stage-min.webp
   alt: 'Review: On Stage Deluxe Edition (Rainbow)'
   hidden: false
 aliases:
@@ -18,7 +18,7 @@ aliases:
 
 ### 収録曲
 
-![on_stage](images/on_stage-min.jpg)
+![on_stage](images/on_stage-min.webp)
 
 収録曲
 

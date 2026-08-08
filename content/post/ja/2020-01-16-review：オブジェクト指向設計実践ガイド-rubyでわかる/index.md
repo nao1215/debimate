@@ -7,7 +7,7 @@ categories:
 tags:
 - ruby
 cover:
-  image: images/ruby_obj-min.jpg
+  image: images/ruby_obj-min.webp
   alt: 感想：オブジェクト指向設計実践ガイド ~Rubyでわかる 進化しつづける柔軟なアプリケーションの育て方
   hidden: false
 aliases:

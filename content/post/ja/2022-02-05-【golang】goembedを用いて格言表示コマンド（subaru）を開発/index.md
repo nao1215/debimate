@@ -9,7 +9,7 @@ tags:
 - golang
 - oss
 cover:
-  image: images/constellations-ge1bcb2718_640.jpg
+  image: images/constellations-ge1bcb2718_640.webp
   alt: 【Golang】go:embedを用いて格言表示コマンド（subaru）を開発
   hidden: false
 aliases:

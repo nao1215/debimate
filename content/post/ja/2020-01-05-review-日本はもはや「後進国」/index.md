@@ -7,7 +7,7 @@ categories:
 tags:
 - 経済
 cover:
-  image: images/日本はもはや「後進国」-min-1.jpg
+  image: images/日本はもはや「後進国」-min-1.webp
   alt: '感想: 日本はもはや「後進国」'
   hidden: false
 aliases:

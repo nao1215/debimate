@@ -9,7 +9,7 @@ tags:
 - coreutils
 - rust
 cover:
-  image: images/cat.jpg
+  image: images/cat.webp
   alt: Code Reading：Redox(Rust)版coreutilsのcatコマンド その1(全2回)
   hidden: false
 aliases:

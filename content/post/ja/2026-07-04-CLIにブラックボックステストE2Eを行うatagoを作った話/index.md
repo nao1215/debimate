@@ -7,7 +7,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/atago-logo.jpg
+  image: images/atago-logo.webp
   alt: atago-logo
   hidden: false
 aliases:

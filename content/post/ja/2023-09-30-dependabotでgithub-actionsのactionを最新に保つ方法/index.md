@@ -8,7 +8,7 @@ categories:
 tags:
 - github
 cover:
-  image: images/Screenshot-from-2023-09-30-18-02-30-1.png
+  image: images/Screenshot-from-2023-09-30-18-02-30-1.webp
   alt: DependabotでGitHub ActionsのActionを最新に保つ方法
   hidden: false
 aliases:
@@ -53,7 +53,7 @@ updates:
 
 以下が作成されたPRの例です。
 
-![](images/Screenshot-from-2023-09-30-18-02-30-1.png)
+![](images/Screenshot-from-2023-09-30-18-02-30-1.webp)
 
 ---
 

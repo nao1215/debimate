@@ -6,7 +6,7 @@ categories:
 - 書評
 - プログラミング
 cover:
-  image: images/android-stack_2x.png
+  image: images/android-stack_2x.webp
   alt: 【OS/Linux系多め】組み込みエンジニア時代（7年間）に役立った良書9選
   hidden: false
 aliases:
@@ -18,7 +18,7 @@ aliases:
 - /2021/11/24/os-linux系多め組み込みエンジニア時代7年間に/
 ---
 
-![](images/book2-1.jpg)
+![](images/book2-1.webp)
 
 ### 前書き：技術レイヤーが変わる前に振り返り
 
@@ -112,7 +112,7 @@ OSSに詳しくなると、ビルド職人かRoot File System職人を生業と�
 
 残念な事に、本書を読んで仕事の役に立った事がありません。ただし、日本語でAndroidアーキテクチャを説明している書籍は少なく、本書は念入りに調査して記載している事が伝わってきて、読み応えがありました。OS好きな人にはオススメ。
 
-![Androidアーキテクチャ](images/android-stack_2x.png)
+![Androidアーキテクチャ](images/android-stack_2x.webp)
 
 https://developer.android.com/guide/platform?hl=jaより引用
 

@@ -10,7 +10,7 @@ tags:
 - ruby
 - shellscript
 cover:
-  image: images/name-1714231_640.jpg
+  image: images/name-1714231_640.webp
   alt: 【Bash / Ruby / Python3】ユーザ名 / UID / グループ名 / GIDを取得する方法の比較
   hidden: false
 aliases:

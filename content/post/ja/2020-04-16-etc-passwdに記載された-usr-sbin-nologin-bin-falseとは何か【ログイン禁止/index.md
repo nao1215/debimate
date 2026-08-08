@@ -10,7 +10,7 @@ tags:
 - login
 - shellscript
 cover:
-  image: images/login-3938429_640-1-min.jpg
+  image: images/login-3938429_640-1-min.webp
   alt: /etc/passwdに記載された/usr/sbin/nologin, /bin/falseとは何か【ログイン禁止】
   hidden: false
 aliases:

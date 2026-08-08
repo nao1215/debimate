@@ -9,7 +9,7 @@ tags:
 - 語学学習
 - ロシア語
 cover:
-  image: images/hello-sensei.png
+  image: images/hello-sensei.webp
   alt: 語学学習：ハロー先生は割安。でも、英語以外ができる良い先生と巡り会いにくかった
   hidden: false
 aliases:
@@ -28,7 +28,7 @@ aliases:
 
 私も、現在進行形で英語とロシア語は、その状態です。そのため、解決策として「**OUTPUTの機会を増やそう**」と考えました。OUTPUTの機会の一つとして利用した「[ハロー先生ドットコム（以下、ハロー先生）](https://hello-sensei.com/)」について、本記事では紹介します。結論から言えば、私は二度と[ハロー先生](https://hello-sensei.com/)を使用するつもりはありません。
 
-![](images/hello-sensei.png)
+![](images/hello-sensei.webp)
 
 ちなみに私は、ロシア語をメインで勉強するために、ハロー先生を利用しました。
 

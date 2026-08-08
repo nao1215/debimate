@@ -9,7 +9,7 @@ tags:
 - wordpress
 - 収益
 cover:
-  image: images/keyboard-648447_640.jpg
+  image: images/keyboard-648447_640.webp
   alt: 振り返り：Google AdSenseがサイト開設4日で承認された話(およびサイト開設2ヶ月目の収益)
   hidden: false
 aliases:
@@ -52,7 +52,7 @@ https://tabibitojin.com/google-adsense-how-to-pass-it/
 | 開設期間 | 数ヶ月以上 | 4日 |
 | PV | 100以上(1日) ※無関係という人多数 | 合計10以下 |
 
-![](images/アドセンス.png)
+![](images/アドセンス.webp)
 
 ---
 
@@ -93,4 +93,4 @@ GoogleAdSenceに対する見解
 
 サーバ・ドメイン代を入れたら、**万単位の赤**を出しているよ！
 
-![](images/収益2.png)
+![](images/収益2.webp)

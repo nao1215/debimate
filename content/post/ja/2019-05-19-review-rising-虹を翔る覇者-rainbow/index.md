@@ -7,7 +7,7 @@ categories:
 tags:
 - rainbow
 cover:
-  image: images/rising.jpg
+  image: images/rising.webp
   alt: 'Review: RISING--虹を翔る覇者--(Rainbow)'
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 
 ### 収録曲
 
-![](images/rising.jpg)
+![](images/rising.webp)
 
 収録曲
 

@@ -7,7 +7,7 @@ categories:
 tags:
 - debian
 cover:
-  image: images/key-2114046_640.jpg
+  image: images/key-2114046_640.webp
   alt: 【visudo / vigr / vipw】システムファイルをsudo viで編集は駄目【sudoers / group / passwd】
   hidden: false
 aliases:

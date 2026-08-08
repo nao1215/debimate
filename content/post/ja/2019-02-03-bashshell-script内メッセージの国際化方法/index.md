@@ -10,7 +10,7 @@ tags:
 - command
 - debian
 cover:
-  image: images/poedit-1-e1549180617954.png
+  image: images/poedit-1-e1549180617954.webp
   alt: Bash(Shell Script)内メッセージの国際化方法
   hidden: false
 aliases:
@@ -220,7 +220,7 @@ msgstr ""
 
 potファイルをコピーし、各言語のpoファイルを作成します。今回は、日本語向け(ja.po)およびロシア語向け(ru.po)を作成します。この編集では、[poedit](https://poedit.net/)を用います。
 
-[![](images/poedit-1-e1549180617954.png)](https://poedit.net/)
+[![](images/poedit-1-e1549180617954.webp)](https://poedit.net/)
 
 poeditは、翻訳対象以外の余計な情報を読まずにすむため、他のエディタ(例：[vim](https://www.vim.org/)/[emacs](https://www.gnu.org/software/emacs/)/[VScode](https://code.visualstudio.com/)/[Atom](https://atom.io/)など)と比べて編集が楽です。特に、文字コードの設定などを自動で実施してくれる点が良いです。
 
@@ -236,7 +236,7 @@ $ poedit ja.po
 $ poedit ru.po
 ```
 
-![](images/poedit_ja.png)      　　　　   
+![](images/poedit_ja.webp)      　　　　   
 
 ```
 # SOME DESCRIPTIVE TITLE.

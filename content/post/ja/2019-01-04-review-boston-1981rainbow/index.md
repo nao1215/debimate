@@ -8,7 +8,7 @@ tags:
 - bootleg
 - rainbow
 cover:
-  image: images/rainbow_boston.jpg
+  image: images/rainbow_boston.webp
   alt: 'Review: Boston 1981(Rainbow)'
   hidden: false
 aliases:
@@ -20,7 +20,7 @@ aliases:
 
 ### 収録曲
 
-![](images/rainbow_boston.jpg)
+![](images/rainbow_boston.webp)
 
 収録曲
 

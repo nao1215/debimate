@@ -29,7 +29,7 @@ aliases:
 
 このような問題を防ぐために、Dependabotでライブラリ更新を監視する対応策があります。私は、趣味のOSS開発でDependabotを採用しており、Dependabotが定期的に「Bump〜」から始まるPRを作り、ライブラリの更新を教えてくれます。便利ですね。
 
-![](images/Screenshot-from-2023-10-11-21-30-45.png)
+![](images/Screenshot-from-2023-10-11-21-30-45.webp)
 
 ……が、OSSを何十個も作っていると、Bump地獄に見舞われます。無心でPRをポチポチマージして回る羽目になります。気合をいれて開発中のOSSならまだしも、「もう自分も使ってないんだよな、このOSS」という温度感の場合でもライブラリ更新PRを手動マージしなければいけません。
 
@@ -46,11 +46,11 @@ aliases:
 
 以下の画像のように、"Allow GitHub Actions to create and approve pull requests"がONになっている必要があります。
 
-![](images/Screenshot-from-2023-10-11-21-50-59.png)
+![](images/Screenshot-from-2023-10-11-21-50-59.webp)
 
 また、GitHub Actionsのテストが通ったときのみ、マージできる設定を有効化します。\[Setting\] > \[Branch protection rule\] > \[Require status checks to pass before merging\] を有効化し、任意のGitHub Actionsを指定します。今回はユニットテストを指定しています。
 
-![](images/Screenshot-from-2023-10-12-07-28-39.png)
+![](images/Screenshot-from-2023-10-12-07-28-39.webp)
 
 続いて、Dependabotが作成したPRを自動マージするGitHub Actionsワークフローを作成します。今回は、\`.github/workflows/auto-merged.yml\`に以下の設定を書きます。
 
@@ -125,7 +125,7 @@ permissions:
 
 今回の自動PRマージが正常に動作すると、下図のように"(auto merged)"というプレフィックスがPR名に付きます。このようなPR名変更に必要な権限設定も、上記の設定に含まれています。
 
-![](images/Screenshot-from-2023-10-11-22-02-49.png)
+![](images/Screenshot-from-2023-10-11-22-02-49.webp)
 
 次は、ジョブの設定です。Ubuntu最新版を使用し、DependabotがPR作成者の場合にのみ実行します。なお、タイムアウト値に特に意味はありません。
 

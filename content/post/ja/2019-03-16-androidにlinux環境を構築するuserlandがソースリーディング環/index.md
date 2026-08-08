@@ -9,7 +9,7 @@ tags:
 - debian
 - 環境構築
 cover:
-  image: images/UserLAnd2.png
+  image: images/UserLAnd2.webp
   alt: UserLAnd
   hidden: false
 aliases:
@@ -23,7 +23,7 @@ aliases:
 
 AndroidにLinuxを導入する試みは、以前からありました。この試みは、AndroidのKernel部分が["Linux Kernel"(Linuxと共通)](https://developer.android.com/guide/platform/?hl=ja)ですから、自然な発想と考えられます。過去の例で言えば、「[Ubuntu(Debian)をAndroid端末に導入](http://gihyo.jp/admin/serial/01/ubuntu-recipe/0256)」したケースがあります。しかし、これまでのAndroidのLinux化は、煩雑な手順が必要、かつ失敗した場合に端末が文鎮化してしまうリスクがありました。
 
-この課題を解決したアプリとして、"[UserLAnd](https://userland.tech/)"があります。[![](images/userLand.png)](https://userland.tech/)
+この課題を解決したアプリとして、"[UserLAnd](https://userland.tech/)"があります。[![](images/userLand.webp)](https://userland.tech/)
 
 UserLAndの特徴
 
@@ -56,11 +56,11 @@ UserLAndは、AndroidアプリとしてPlayストア経由で配信されてい�
 
 PlayストアからUserLAndを検索し、Installします。
 
-![](images/userLand_app.jpg)
+![](images/userLand_app.webp)
 
 UserLAndを起動し、実行したいディストリビューションを選択します。今回はDebianを選択しますが、好みで別のディストリビューションを選択しても問題ありません。
 
-![](images/userland_1.jpg)
+![](images/userland_1.webp)
 
 OSを選択後、UserLAndからアクセス権限を要求されるため、許可してください。この権限は、UserLAndが以下の手順を実施するために必要です。
 
@@ -68,21 +68,21 @@ OSを選択後、UserLAndからアクセス権限を要求されるため、許�
 2. ディレクトリ内にDebianをInstall
 3. proot(疑似root権限)でDebianを実行
 
-![](images/userland_permission-1.jpg)
+![](images/userland_permission-1.webp)
 
-![](images/Userland_permission2-1.jpg)
+![](images/Userland_permission2-1.webp)
 
 Debian環境下で使用するユーザ名・ログインパスワード・VNCパスワードを設定します。
 
-![](images/Userland_password.jpg)
+![](images/Userland_password.webp)
 
 外部端末や他のアプリからの接続方法を選択します。私はデスクトップ環境を使用する予定がないため、SSHとしました。デスクトップ環境を使用する場合は、[XSDLを使用する方法](https://github.com/CypherpunkArmory/UserLAnd/wiki/Getting-Started-in-UserLAnd)が公式サイトに記載されています。
 
-![](images/SSH.jpg)
+![](images/SSH.webp)
 
 自動的にTerminalが立ち上がった後、ログインします。その後、必要なパッケージをパッケージマネージャでInstallしてください(sudo必須)。私の場合のaptコマンド実行例を残します。
 
-![](images/Screenshot_20190313-232625.jpg)
+![](images/Screenshot_20190313-232625.webp)
 
 ```
 $ sudo apt update
@@ -119,7 +119,7 @@ trace-cmd python3 python3-dev python3-pip
 
 最後に、外出中にソースコードが快適に読める点です。Androidでソースコードを読む場合、使い慣れないCode Viewerを使用し、タグジャンプもできない等、不満が多々ありました。これらの不満は、UserLAndによって「普段の開発環境(Debian)と同じ状態をAndroidに構築できた」ため、解消されました。私のように、Terminal上でコードを読んでいた人(Vim/Emacsユーザ)は、Androidで快適にコードを読めるのではないでしょうか。
 
-![](images/VIMLAND.jpg)
+![](images/VIMLAND.webp)
 
 もちろん、「ノートPCの方が良い」「ソフトキーボードが使いづらい」「画面が小さい」等の意見があるでしょう。しかし、私は現在のAndroid(UserLAnd)によるコードリーディング環境に満足しています。今まで出来なかった事ができるようになったのですから。
 

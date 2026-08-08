@@ -9,7 +9,7 @@ tags:
 - github
 - golang
 cover:
-  image: images/Screenshot-from-2022-02-26-21-38-01.png
+  image: images/Screenshot-from-2022-02-26-21-38-01.webp
   alt: GitHubで初めてStar 50個以上を獲得した感想と実施した内容【Redditで宣伝】
   hidden: false
 aliases:
@@ -23,7 +23,7 @@ aliases:
 
 ["go install"したバイナリをアップデートするgupコマンド](https://github.com/nao1215/gup)が、公開から一週間でGitHub Starを50個以上獲得しました！ちょっと嬉しい。最新の仕様は、[Zenn](https://zenn.dev/nao1215/articles/aef3fe318848d6)で説明しています。
 
-![](images/Screenshot-from-2022-02-26-21-38-01.png)
+![](images/Screenshot-from-2022-02-26-21-38-01.webp)
 
 gupコマンドの初期版は、4〜6時間で完成しました。それなのに1ヶ月以上かけて作成した[MimixBox（golang製のBusyBox）](https://github.com/nao1215/mimixbox)のStar数をアッサリと抜き去り、私を悲しい気持ちにさせました。
 
@@ -53,7 +53,7 @@ gupコマンドの初期版は、4〜6時間で完成しました。それなの
 
 gupコマンドは、格好良いロゴも綺麗なアイキャッチもないので、スクショをペタッと貼ったREADMEでした。ターミナル画像（スクショ）は、gifですらありません！
 
-![](images/Screenshot-from-2022-02-26-22-40-32.png)
+![](images/Screenshot-from-2022-02-26-22-40-32.webp)
 
 文字だけのREADMEよりマシですが、[最近のOSSはもう少し小綺麗](https://github.com/sharkdp/bat/blob/master/doc/README-ja.md)ですよね。
 
@@ -70,11 +70,11 @@ GitHubでは、リポジトリの\[Settings\] > \[General\] > \[Social preview\]
 
 以下、OGP設定がされている場合とされていない場合の比較です。ちなみに、[下側（ubumeコマンド）](https://github.com/nao1215/ubume)はOGPを設定していますが、Starを獲得できていません！
 
-![](images/Screenshot-from-2022-02-26-22-59-22.png)
+![](images/Screenshot-from-2022-02-26-22-59-22.webp)
 
 OGP設定なし
 
-![](images/Screenshot-from-2022-02-26-22-57-53.jpg)
+![](images/Screenshot-from-2022-02-26-22-57-53.webp)
 
 OGP設定あり
 
@@ -85,7 +85,7 @@ OGP設定あり
 
 gupコマンドは、[Redditで宣伝記事](https://www.reddit.com/r/golang/comments/sxr6jn/gup_update_binaries_installed_by_go_install/)を書いており、9,300PVを集めました。RedditからGitHubへの流入は100人ぐらい来ていました。Redditに書いた次の日には、Starを10〜20個ほど獲得していました。
 
-![](images/Screenshot-from-2022-02-26-21-40-49.png)
+![](images/Screenshot-from-2022-02-26-21-40-49.webp)
 
 [GitHub Issueでコメント](https://github.com/nao1215/gup/issues/2)を残す人がいたり、Redditで意見もいただけました。そのため、Redditへの投稿は、費用対効果の高い活動だと考えてます。ただし、一回限りの技だと思います。
 
@@ -113,4 +113,4 @@ gupコマンドは、golangユーザーの「"go install"で取得したバイ�
 
 MimixBoxもRedditで宣伝していますが、gupコマンドと比較するとそこまでヒットしていません。今後は、「趣味以外で作るOSSは、想定ユーザーを設定してから開発しようかな」と考えています。Star多いとモチベが維持できるので。
 
-![](images/star-history-2022226.png)
+![](images/star-history-2022226.webp)

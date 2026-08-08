@@ -9,7 +9,7 @@ tags:
 - vim
 - 環境構築
 cover:
-  image: images/VIM_GDB-1.jpg
+  image: images/VIM_GDB-1.webp
   alt: 【Vim8.1.xから標準機能】VimからGDBを起動する方法(マウスでGDBを操作可能)
   hidden: false
 aliases:
@@ -137,7 +137,7 @@ Vimを起動した後、":Termdebug <デバッグ対象バイナリへのPATH>"�
 
 例えば、rpnバイナリをGDBデバッグする場合は、":Termdebug rpn"とVim上で入力します。以下に起動後のイメージを示します。
 
-![VIM_GDB](images/VIM_GDB-1.jpg)
+![VIM_GDB](images/VIM_GDB-1.webp)
 
 上記のVim画像の右側がソースコード画面、左上がGDB画面、左下がプログラムのI/O画面です。GDB画面に移動(例："Ctrl-w w")すれば、GDBを操作できます。GDBを終了させれば、画面はソースコードのみ表示された状態に戻り、Window横幅も元の設定に戻ります。
 

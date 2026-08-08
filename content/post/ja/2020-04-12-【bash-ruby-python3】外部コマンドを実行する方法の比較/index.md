@@ -10,7 +10,7 @@ tags:
 - ruby
 - shellscript
 cover:
-  image: images/ubuntu-3145957_640-min.jpg
+  image: images/ubuntu-3145957_640-min.webp
   alt: 【Bash / Ruby / Python3】外部コマンドを実行する方法の比較
   hidden: false
 aliases:

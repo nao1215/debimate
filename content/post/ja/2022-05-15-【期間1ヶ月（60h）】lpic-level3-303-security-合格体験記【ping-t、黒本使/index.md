@@ -9,7 +9,7 @@ tags:
 - lpic
 - 資格
 cover:
-  image: images/board-2450236_640.jpg
+  image: images/board-2450236_640.webp
   alt: 【勉強期間1ヶ月（60h）】LPIC Level3 303 (Security) 合格体験記【ping-t、黒本使用】
   hidden: false
 aliases:
@@ -64,7 +64,7 @@ ping-tは、40h以上使用しました。一度目のテストの前に、全�
 
 具体的には、2回目のテスト直前は以下の画像の状態です（模試1回しかしていないので、レベルが21以上に上がりませんでした）
 
-![](images/pingt.png)
+![](images/pingt.webp)
 
 他の教材は、選択肢として[学易](https://gakuyasu.byaku.jp/)と[CramMedia](https://www.crammedia.com/)がありました。
 

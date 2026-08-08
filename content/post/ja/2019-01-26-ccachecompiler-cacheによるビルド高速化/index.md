@@ -11,7 +11,7 @@ tags:
 - debian
 - 環境構築
 cover:
-  image: images/ccache-1.png
+  image: images/ccache-1.webp
   alt: ccache(compiler cache)によるビルド高速化
   hidden: false
 aliases:
@@ -24,7 +24,7 @@ aliases:
 
 大規模なプログラムをビルドする場合、数十分〜数時間かかる事があります。ビルド時間が長いと、それだけ開発者の待ち時間が増えるわけですから、短いに越したことはありません。そんなビルド時間を短縮するツールとして、[ccache](https://ccache.samba.org/)があります。
 
-[![](images/ccache-1.png)](https://ccache.samba.org/)
+[![](images/ccache-1.webp)](https://ccache.samba.org/)
 
 ccacheはgcc向けのビルド高速化ツールで、対応言語は C/C++/Objective-C/Objective-C++です。ビルド時のキャッシュを残し、二回目のビルド以降にキャッシュを再利用できる場合は、キャッシュを用いる事によりビルド速度を改善します。
 

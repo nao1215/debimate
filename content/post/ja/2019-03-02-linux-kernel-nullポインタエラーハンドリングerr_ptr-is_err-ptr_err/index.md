@@ -9,7 +9,7 @@ tags:
 - c言語
 - linuxkernel
 cover:
-  image: images/NULL.jpg
+  image: images/NULL.webp
   alt: 'Linux Kernel: NULLポインタエラーハンドリング(ERR_PTR, IS_ERR, PTR_ERR)'
   hidden: false
 aliases:

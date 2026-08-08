@@ -10,7 +10,7 @@ tags:
 - command
 - debian
 cover:
-  image: images/code-2434271_640-min.jpg
+  image: images/code-2434271_640-min.webp
   alt: Linuxコマンドのソースコードを取得する方法(Debian環境)：オリジナルコマンド作成前の勉強向け
   hidden: false
 aliases:
@@ -167,7 +167,7 @@ $ ls | grep mkdir    (注釈) mkdir以外のソースコードが格納されて
 
 ソースコードをダウンロードして確認する事が面倒であれば、「[Debian Sources](https://sources.debian.org/)」がオススメです。Webブラウザからソースコードパッケージの内容を確認する事が出来ます。
 
-![](images/debian_sources.png)
+![](images/debian_sources.webp)
 
 また、"apt source"コマンドで取得したdebソースパッケージをビルドしたくなった場合、以下の記事にビルド手順をまとめてあります。
 

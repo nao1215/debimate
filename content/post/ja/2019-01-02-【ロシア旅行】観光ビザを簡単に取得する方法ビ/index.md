@@ -7,7 +7,7 @@ categories:
 tags:
 - 旅行
 cover:
-  image: images/サンクトペテルブルク.jpg
+  image: images/サンクトペテルブルク.webp
   alt: ロシア旅行：観光ビザを簡単に取得する方法(ビザ申請代行業者を利用)
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 - /2019/01/03/ロシア旅行観光ビザを簡単に取得する方法ビ/
 ---
 
-![](images/サンクトペテルブルク.jpg)
+![](images/サンクトペテルブルク.webp)
 
 写真は、2018年の夏に撮影した「[ペテルゴフ　夏の宮殿(サンクトペテルブルク)](https://ja.wikipedia.org/wiki/%E3%83%9A%E3%83%86%E3%83%AB%E3%82%B4%E3%83%95)」です。ペテルゴフは、ピョートル大帝(1世)のもとで建設された庭園で、150個を超える噴水がある綺麗な観光地です。過去の私のように、
 
@@ -104,7 +104,7 @@ aliases:
 
 **Step1：ロシアビザセンター公式サイトで観光ビザ申し込み**
 
-[ロシアビザセンター](https://visa.d2.r-cms.jp/tourism_visa/)の観光ビザ申し込みフォームを記載し、申請します。全項目が日本語であるため、申請で戸惑う事はないと思います。[![](images/russia_visa-e1546508054645.png)](https://visa.d2.r-cms.jp/tourism_visa/)
+[ロシアビザセンター](https://visa.d2.r-cms.jp/tourism_visa/)の観光ビザ申し込みフォームを記載し、申請します。全項目が日本語であるため、申請で戸惑う事はないと思います。[![](images/russia_visa-e1546508054645.webp)](https://visa.d2.r-cms.jp/tourism_visa/)
 
 **Step2：観光ビザの申し込み料金を支払い**
 

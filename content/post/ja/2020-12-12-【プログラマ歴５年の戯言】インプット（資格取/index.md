@@ -7,7 +7,7 @@ categories:
 tags:
 - プログラマ
 cover:
-  image: images/laptop-2838918_640-min.jpg
+  image: images/laptop-2838918_640-min.webp
   alt: 【プログラマ歴５年の戯言】インプット（資格取得、書籍読み）ばかりだと成長しなかった話
   hidden: false
 aliases:

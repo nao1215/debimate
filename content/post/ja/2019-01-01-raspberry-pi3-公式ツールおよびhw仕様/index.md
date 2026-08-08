@@ -7,7 +7,7 @@ categories:
 tags:
 - raspberrypi
 cover:
-  image: images/300px-Pi-GPIO-header.png
+  image: images/300px-Pi-GPIO-header.webp
   alt: 'Raspberry Pi3: 公式ツールおよびHW仕様'
   hidden: false
 aliases:
@@ -65,7 +65,7 @@ Raspberry Piは、[ラズベリーパイ財団(イギリス)](https://en.wikiped
 
 ### Raspberry Pi GPIO40ピンの仕様
 
-![](images/300px-Pi-GPIO-header.png)
+![](images/300px-Pi-GPIO-header.webp)
 
 出典："RPi Low-level peripherals" (Embedded Linux Wiki) [https://elinux.org/RPi\_Low-level\_peripherals](https://elinux.org/RPi_Low-level_peripherals)
 
@@ -74,4 +74,4 @@ Raspberry Piは、[ラズベリーパイ財団(イギリス)](https://en.wikiped
 
 ### シングルボード検索サイト
 
-Raspberry Pi以外のシングルボードを勉強したくなった場合は、以下のサイトで様々なシングルボードを検索できます。2019年1月1日現在、292個のボードが登録されています。[![The Single Board Computer Database](images/SingleBoardDB.png)](https://www.hackerboards.com/search_boarddb.php)
+Raspberry Pi以外のシングルボードを勉強したくなった場合は、以下のサイトで様々なシングルボードを検索できます。2019年1月1日現在、292個のボードが登録されています。[![The Single Board Computer Database](images/SingleBoardDB.webp)](https://www.hackerboards.com/search_boarddb.php)

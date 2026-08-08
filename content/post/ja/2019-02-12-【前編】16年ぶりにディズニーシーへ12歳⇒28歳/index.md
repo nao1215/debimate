@@ -8,7 +8,7 @@ tags:
 - ディズニーシー
 - 旅行
 cover:
-  image: images/2万マイル内装-1.jpg
+  image: images/2万マイル内装-1.webp
   alt: 前編：16年ぶりにディズニーシーへ(12歳⇒28歳)
   hidden: false
 aliases:
@@ -35,7 +35,7 @@ aliases:
 
 思い出した限り、子供へのつかみが悪かったディズニーシー。脳内によぎるシーは大人向けという言葉。しかし、今回の再訪（2019年2月10日）で「ディズニーシー（[タワーオブテラー](https://www.tokyodisneyresort.jp/tds/attraction/detail/243/)）面白い！」と実感できました。この思い出を10年後に思い出せるように、記事として残します。長いため、前編・[後編](https://debimate.jp/post/ja/2019-02-14-%E5%BE%8C%E7%B7%A816%E5%B9%B4%E3%81%B6%E3%82%8A%E3%81%AB%E3%83%87%E3%82%A3%E3%82%BA%E3%83%8B%E3%83%BC%E3%82%B7%E3%83%BC%E3%81%B812%E6%AD%B328%E6%AD%B3/)の二つに分けます。
 
-![](images/DSC00718.jpg)
+![](images/DSC00718.webp)
 
 ---
 
@@ -57,7 +57,7 @@ aliases:
 
 が、幸運な事に、この失敗は当日リカバリーできました。エントランス（正確には入館ゲート）の中央チケット販売がガラガラであったため（誇張なしに誰も並んでいなかったため）、１分でチケットを購入できました。入園後、[USJ](https://www.usj.co.jp/)の地球儀が目の前に現れ、「**お前！[USJ](https://www.usj.co.jp/)に居るんじゃなかったのか！**」と一人で驚いていました。完全な記憶違い。
 
-![](images/入り口.jpg)
+![](images/入り口.webp)
 
 入園後に最初に目指したのは、[レイジングスピリッツ](https://www.tokyodisneyresort.jp/tds/attraction/detail/242/)のファストパス売り場。しかし、その道中にある[センターオブジアース](https://www.tokyodisneyresort.jp/tds/attraction/detail/223/)で、「前日の雪の影響により、システム点検中です」という声が聞こえました。案の定、レイジングスピリッツも点検中。[インディ・ジョーンズ](https://www.tokyodisneyresort.jp/tds/attraction/detail/222/)はそもそも休止期間中で、[フランダーのフライングフィッシュコースター](https://www.tokyodisneyresort.jp/tds/attraction/detail/237/)も凍結！
 
@@ -72,11 +72,11 @@ aliases:
 
 ### 思い出の海底2万マイルへ
 
-![](images/DSC00721.jpg)
+![](images/DSC00721.webp)
 
 外で遊べないとなったら、もう屋内で遊べる場所と言えば、海底2万マイルしか出てきません。50分待ちであったため、すぐに並び始めました。並んでいる間に、「おっ」と思ったのは、岩場に投げ捨てられたお金でしょう。「どこの観光名所だよ」とか考えていました。
 
-![](images/コイン.jpg)
+![](images/コイン.webp)
 
 海底2万マイルは、小物の出来がよく、マジマジと見ていられます。逆に、アトラクションに乗ったら、
 
@@ -88,9 +88,9 @@ aliases:
 
 などと考え、全く純粋に楽しめなかった。おとなになるってかなしいことなの…………
 
-![](images/2万マイル内装.jpg)
+![](images/2万マイル内装.webp)
 
-![](images/2万マイル内装2.jpg)
+![](images/2万マイル内装2.webp)
 
 ---
 
@@ -119,7 +119,7 @@ aliases:
 
 次に向かったのは、[フランダーのフライングフィッシュコースター](https://www.tokyodisneyresort.jp/tds/attraction/detail/237/)。恐らく、ディズニーシーの中では、最も遅いコースターでしょう。ディズニーランドの[ガジェットのゴーコースター](https://www.tokyodisneyresort.jp/tdl/attraction/detail/179/)と同系統と言えます。以前、ゴーコースターを10分程度で乗れたため、乗るまでに70分かかったフィッシュコースターは期待値を上回ってきませんでした。
 
-![](images/人魚.jpg)
+![](images/人魚.webp)
 
 このフィッシュコースターの待ち時間中、「コースターが動く音がインダストリアルミュージックみたい」と言いながら、恋人と談笑していました。私の頭の中では、マリリン・マンソンが止まらず。
 
@@ -129,7 +129,7 @@ aliases:
 
 惜しむらくは、ディズニーランドにある[スターツアーズ](https://www.tokyodisneyresort.jp/tdl/attraction/detail/183/)と違って、3D映像じゃない事。3D映画は人気が出ませんでしたけど、短編映像では迫力があって好きなんですよね。長時間は酔うから、敬遠したいけど。
 
-![](images/nimo.jpg)
+![](images/nimo.webp)
 
 ---
 

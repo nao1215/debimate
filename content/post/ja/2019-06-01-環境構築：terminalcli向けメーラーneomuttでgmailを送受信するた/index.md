@@ -10,7 +10,7 @@ tags:
 - mail
 - 環境構築
 cover:
-  image: images/neomutt_icon.jpg
+  image: images/neomutt_icon.webp
   alt: neomutt
   hidden: false
 aliases:
@@ -76,19 +76,19 @@ $ neofetch
 
 そのため、Neomutt用パスワードをGoogleから取得する手順を示します。まずは、[Googleのアプリ設定ページ(外部)](https://security.google.com/settings/security/apppasswords)に移動し、ログインします。ログイン後、アプリパスワードの画面(下画像)が出てきます。
 
-![](images/s_neomutt.jpg)
+![](images/s_neomutt.webp)
 
 「アプリパスワードを生成するアプリとデバイスを選択して下さい」という文章の下にあるプルダウンを選択します。「アプリを選択」というプルダウンでは、**メール**を選択します。
 
-![](images/s_mail.jpg)
+![](images/s_mail.webp)
 
 「デバイスを選択」というプルダウンでは、**環境に合わせて選択**して下さい。私の環境は、Debianなので、その他を選択しました。
 
-![](images/s_device_neomutt.jpg)
+![](images/s_device_neomutt.webp)
 
 「生成」ボタンを押した後、以下のようにパスワード(下画像の黄色部)が生成されます。このパスワードは一度しか表示できないため、どこかにメモしておいて下さい。なお、私は画像中のパスワードは使用していないため、セキュリティ的な問題はありません。
 
-![](images/s_password-1.jpg)
+![](images/s_password-1.webp)
 
 ---
 

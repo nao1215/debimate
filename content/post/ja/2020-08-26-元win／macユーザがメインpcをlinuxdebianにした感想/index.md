@@ -8,7 +8,7 @@ tags:
 - 環境構築
 - 自作pc
 cover:
-  image: images/Screenshot-from-2020-08-25-21-51-00.png
+  image: images/Screenshot-from-2020-08-25-21-51-00.webp
   alt: 元Win／MacユーザがメインPCをLinux(Debian)にした感想
   hidden: false
 aliases:
@@ -34,7 +34,7 @@ aliases:
 
 ### △音楽
 
-![](images/Screenshot-from-2020-08-26-19-00-59-min.jpg)
+![](images/Screenshot-from-2020-08-26-19-00-59-min.webp)
 
 音楽は作曲／鑑賞という2つの観点がありますが、私は作曲ができないので、鑑賞に関してのみコメントします。
 
@@ -59,7 +59,7 @@ aliases:
 
 ### △動画（☓編集、◯再生）
 
-![](images/vector-video-player-941434_640.png)
+![](images/vector-video-player-941434_640.webp)
 
 動画も音楽同様、編集／鑑賞という2つの観点があります。
 
@@ -83,7 +83,7 @@ aliases:
 
 ### ◯ネットサーフィン／ブラウザ
 
-![](images/browser-1666982_640-1.png)
+![](images/browser-1666982_640-1.webp)
 
 ブラウザはOSによる差が少ないため、Linuxでも非常に快適です。Linuxだから見れないサイトは、今まで遭遇した事がありません。
 
@@ -95,7 +95,7 @@ Google Chrome、Fire Foxを普段使いしている方であれば、Linuxに移
 
 ### ☓Office
 
-![](images/document-3503099_640-min.jpg)
+![](images/document-3503099_640-min.webp)
 
 Linuxには、様々なOfficeアプリがあります。
 
@@ -114,7 +114,7 @@ Linuxには、様々なOfficeアプリがあります。
 
 ### ◯プログラミング
 
-![skill](images/laptop-1071781_640-min.jpg)
+![skill](images/laptop-1071781_640-min.webp)
 
 Win／Mac／Linuxの中で、Linuxがダントツで最高。
 
@@ -144,7 +144,7 @@ LinuxはAAAタイトルゲームがない。
 
 ### △システム／デスクトップ環境
 
-![](images/Screenshot-from-2020-08-25-21-51-00.png)
+![](images/Screenshot-from-2020-08-25-21-51-00.webp)
 
 Windowsのような半強制Windows Updateが存在しないだけでも、Linuxは素晴らしいです。
 

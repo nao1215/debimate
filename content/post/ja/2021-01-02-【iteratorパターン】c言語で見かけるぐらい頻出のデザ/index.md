@@ -9,7 +9,7 @@ tags:
 - java
 - ruby
 cover:
-  image: images/class.jpg
+  image: images/class.webp
   alt: 【Iteratorパターン】C言語で見かけるぐらい頻出のデザインパターン【コード例：Java、Ruby】
   hidden: false
 aliases:
@@ -36,7 +36,7 @@ Iteratorデザインパターンは、配列／List／Mapなどのコレクシ�
 
 本記事では、複数のPackageクラスを管理（集約）するRepositoryクラスに対して、Iteratorデザインパターンを適用します。下図は登場人物となるクラス、下表は各クラスの役割説明です。
 
-![](images/class.jpg)
+![](images/class.webp)
 
 | **クラス名** | **役割** |
 | :-- | :-- |
@@ -48,7 +48,7 @@ Iteratorデザインパターンは、配列／List／Mapなどのコレクシ�
 
 最終的な実装のイメージとしては、リポジトリの中にあるパッケージを一つずつ、iteratorインターフェースで取り出していきます。その過程で重要になるのは、Iteratorインターフェースの持つhasNext()とnext()です。次の要素（= パッケージ）が存在するかをhasNext()で調べ、次の要素が存在する場合はnext()で要素を取得します。
 
-![](images/iterator-Page-2.jpg)
+![](images/iterator-Page-2.webp)
 
 ---
 

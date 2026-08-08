@@ -9,7 +9,7 @@ tags:
 - softwaredesign
 - 寄稿
 cover:
-  image: images/SoftwareDesign.jpg
+  image: images/SoftwareDesign.webp
   alt: 【寄稿】Software Design 2024年12月号 第1特集 第4章 落し穴に落ちないシェルスクリプト開発のススメ
   hidden: false
 aliases:

@@ -7,7 +7,7 @@ categories:
 tags:
 - オライリー
 cover:
-  image: images/2025-05-25_12-26-1024x358.png
+  image: images/2025-05-25_12-26-1024x358.webp
   alt: O'Reilly Learning PlatformをAudify（耳）で学習する
   hidden: false
 aliases:
@@ -28,7 +28,7 @@ O'Reilly Learning Platformは、オライリー書籍（他社の書籍含む）
 
 O'Reilly Learning Platformは、[お高めのサービス](https://www.oreilly.com/online-learning/pricing.html)です。個人利用の場合、月額49ドル。確実にペイするには、月に2冊程度を読む必要があります。
 
-![](images/2025-05-25_12-26-1024x358.png)
+![](images/2025-05-25_12-26-1024x358.webp)
 
 ---
 
@@ -48,7 +48,7 @@ O'Reilly Learning Platformは、[お高めのサービス](https://www.oreilly.c
 
 「月2冊の技術書を読む」ことを習慣化するには、既に習慣化されている料理とエアロバイクの時間に読書を組み込むのが適切だと考えました。そこでたどり着いたのが[Audify](https://play.google.com/store/apps/details?id=com.tangerinesoftwarehouse.audify&hl=ja)です。Audifyは、iOS／Android対応の音声読み上げアプリであり、EPUB、PDF、Webページに対応しています。
 
-![](images/Audify.jpg)
+![](images/Audify.webp)
 
 O'Reilly Learning Platformの内容を読み上げてもらうには、Audify経由でO'Reilly Learning Platformにサインインする必要があります。これ以外の点は特に制約がなく、自然な使い心地で利用できています。Audifyの基本機能は以下の通りです。
 
@@ -75,7 +75,7 @@ O'Reilly Learning Platformの内容を読み上げてもらうには、Audify経
 
 その一方で、組織論や技術的な方針に関する書籍は、Audifyで聴いていて内容が頭に入ってきやすいです。例えば、以下のような書籍（＋ Tidy Firstやクリーンコードクックブックなど）は、そこまで技術的に深いトピックを取り扱わないので、ながら勉強できます（血肉になっているかは不明）。
 
-![](images/オライリー-1024x586.png)
+![](images/オライリー-1024x586.webp)
 
 ---
 

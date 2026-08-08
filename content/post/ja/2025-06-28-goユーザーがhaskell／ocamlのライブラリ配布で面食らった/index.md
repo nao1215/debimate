@@ -10,7 +10,7 @@ tags:
 - haskell
 - ocaml
 cover:
-  image: images/HaskellOCaml.jpg
+  image: images/HaskellOCaml.webp
   alt: GoユーザーがHaskell／OCamlのライブラリ配布で面食らった話
   hidden: false
 aliases:
@@ -38,7 +38,7 @@ aliases:
 
 私は、Go でしか OSS（ライブラリ）の配布経験がありません。ここでの配布とは、GitHub Repositoryをパブリックで公開しているという意味ではなく、プログラミング言語のエコシステムに従ってOSSを配布するという意味です。ライブラリインポートしやすい形で公開している、ぐらいのニュアンスです。
 
-![](images/oss.png)
+![](images/oss.webp)
 
 C言語、Java、Perl、Python、Ruby、ShellScriptなどの言語を使った経験もありますが、それらを使ったライブラリをOSSで配布したことはありません。つまり、C言語〜ShellScriptの配布方法を把握していません（C言語に関してはGNUでの管理方法を知っていますが、GNU以外の配布方法を知りません）
 
@@ -154,7 +154,7 @@ dev-repo: "git+https://github.com/nao1215/stringx.git"
 
 以下は、私がリリースを試みている、[nao1215/stringx](https://github.com/nao1215/stringx) ライブラリです。大したライブラリではないので、レビューで弾かれないかなとビクビクしてます。
 
-![](images/opam.png)
+![](images/opam.webp)
 
 個人的には、Haskell よりも OCaml の方が配布が楽かなと感じました。その一方で、Goと比較して気になりポイントが何点かありました。
 

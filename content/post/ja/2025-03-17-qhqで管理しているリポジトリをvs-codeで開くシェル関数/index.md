@@ -5,7 +5,7 @@ date: 2025-03-17
 categories:
 - プログラミング
 cover:
-  image: images/vscode.png
+  image: images/vscode.webp
   alt: qhqで管理しているリポジトリをVS Codeで開くシェル関数
   hidden: false
 aliases:
@@ -58,7 +58,7 @@ codeコマンドは、VS Codeを起動するコマンドであり、\`$(ghq root
 
 以下、vscode関数の実行例です。選択したリポジトリをVS Codeで開きます。
 
-![](images/vscode_result.png)
+![](images/vscode_result.webp)
 
 ---
 

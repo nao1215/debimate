@@ -6,7 +6,7 @@ categories:
 - プログラミング
 - OSS
 cover:
-  image: images/642206.jpg
+  image: images/642206.webp
   alt: 【寄稿】Software Design 2022年6月号 第1特集（第3章 シェルスクリプトの使い方）
   hidden: false
 aliases:
@@ -22,7 +22,7 @@ aliases:
 
 技術評論社の[Software Design 2022年6月号](https://gihyo.jp/magazine/SD/archive/2022/202206) 第1特集 第3章 「シェルスクリプトの使い方」に寄稿する機会をいただきました！2022年1月号に続いて、2回目の寄稿です。表紙がワンちゃんからネコちゃんに戻っています！
 
-![](images/Screenshot-from-2022-05-15-18-57-15.png)
+![](images/Screenshot-from-2022-05-15-18-57-15.webp)
 
 <iframe style="width: 120px; height: 240px;" sandbox="allow-popups allow-scripts allow-modals allow-forms allow-same-origin" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B09Y49MS88&amp;linkId=8996464fb0daeea988a888e7d2a39770"></iframe>
 

@@ -10,7 +10,7 @@ tags:
 - debian
 - 環境構築
 cover:
-  image: images/fish.png
+  image: images/fish.webp
   alt: 環境構築：ユーザフレンドリーで補完機能の強力なfishへ移行(Login shellをbashからfishへ移行)
   hidden: false
 aliases:
@@ -198,7 +198,7 @@ $ sudo apt install fonts-powerline
 
 今回の例で使用したbobthefishは、[別途カラースキーム一覧](https://github.com/oh-my-fish/theme-bobthefish#configuration)があります。好きなカラースキームを探して、"~/.config/fish/config.fish"に"set theme\_color\_scheme (カラースキーム名)"を追記すれば、反映されます。カラースキームの色合いをテストする場合は、"\_\_bobthefish\_display\_colors"で確認できます(下画像)。
 
-![](images/fish.png)
+![](images/fish.webp)
 
 ---
 
@@ -230,4 +230,4 @@ $ echo "set -U FZF_LEGACY_KEYBINDINGS 0"             >> ~/.config/fish/config.fi
 
 fishは、設定をWebブラウザ経由で変更することが出来ます。Terminalで"fish\_config"と入力し、実行すれば以下の画面が開かれます。後は、ユーザの好みで設定を適宜変更して下さい。
 
-![](images/fish_setting.png)
+![](images/fish_setting.webp)

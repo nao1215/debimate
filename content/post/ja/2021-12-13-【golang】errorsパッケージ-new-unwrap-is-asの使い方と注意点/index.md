@@ -8,7 +8,7 @@ tags:
 - error
 - golang
 cover:
-  image: images/Screenshot-from-2021-12-13-18-53-07.jpg
+  image: images/Screenshot-from-2021-12-13-18-53-07.webp
   alt: 【golang】errorsパッケージ New(), Unwrap(), Is(), As()の使い方と注意点
   hidden: false
 aliases:
@@ -167,7 +167,7 @@ func testErr() error {
 }
 ```
 
-![](images/Screenshot-from-2021-12-13-18-53-07.jpg)
+![](images/Screenshot-from-2021-12-13-18-53-07.webp)
 
 "error strings should not be capitalized"は「エラー文字列は大文字にしないでください」
 

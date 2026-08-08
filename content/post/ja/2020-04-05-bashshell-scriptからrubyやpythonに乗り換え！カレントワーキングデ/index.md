@@ -10,7 +10,7 @@ tags:
 - ruby
 - shellscript
 cover:
-  image: images/the-location-of-the-1724293_640.jpg
+  image: images/the-location-of-the-1724293_640.webp
   alt: 【Bash / Ruby / Python3】カレントワーキングディレクトリを取得する方法の比較
   hidden: false
 aliases:

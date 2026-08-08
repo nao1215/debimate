@@ -7,7 +7,7 @@ categories:
 tags:
 - c言語
 cover:
-  image: images/birds-6211541_640.jpg
+  image: images/birds-6211541_640.webp
   alt: 【C言語】_Generic(C11、gcc4.6以降)または__attribute__((overloadable))によるオーバーロード
   hidden: false
 aliases:

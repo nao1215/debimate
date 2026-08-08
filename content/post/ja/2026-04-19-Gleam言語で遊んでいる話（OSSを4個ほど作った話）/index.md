@@ -5,7 +5,7 @@ date: 2026-04-19
 categories:
 - プログラミング
 cover:
-  image: images/Gleam-OSS.png
+  image: images/Gleam-OSS.webp
   alt: Gleam-OSS
   hidden: false
 aliases:
@@ -49,7 +49,7 @@ Gleam ではフロントとサーバーをモノレポで作りやすく、複�
 ### Gleam で何を作ったか
 
 まずは、開発サイクルを学ぶために、サーバー側で利用しそうなライブラリを4個ほど作りました。フロント側は、まだ一度も作ったことがありません。
-![Gleam](./images/Gleam-OSS.png)
+![Gleam](./images/Gleam-OSS.webp)
 
 - [nao1215/dataprep](https://github.com/nao1215/dataprep): Composable, type-driven preprocessing and validation combinator library for Gleam
 - [nao1215/yabase](https://github.com/nao1215/yabase): Yet Another Base -- a unified, type-safe interface for multiple binary-to-text encodings in Gleam.

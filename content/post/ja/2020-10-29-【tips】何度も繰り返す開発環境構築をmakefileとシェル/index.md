@@ -11,7 +11,7 @@ tags:
 - shellscript
 - 環境構築
 cover:
-  image: images/Makefile-min.jpg
+  image: images/Makefile-min.webp
   alt: 【Tips】何度も繰り返す開発環境構築をMakefileとシェルスクリプトで楽にする
   hidden: false
 aliases:
@@ -51,7 +51,7 @@ aliases:
 
 **インストーラを単一スクリプトにすると、スクリプトが手に追えないサイズ（負債）に変化**
 
-![](images/big_scirpt-min.jpg)
+![](images/big_scirpt-min.webp)
 
 前提として、複数アプリのインストーラを単一スクリプトで作成した場合、「一部のアプリのみインストール」がしづらくなります。オプションでインストール対象アプリを切り分ける事もできますが、その処理を追加する分だけスクリプトが肥大化します。
 
@@ -59,7 +59,7 @@ aliases:
 
 **インストーラを複数のスクリプトにすると、一括インストールがしづらく**
 
-![](images/scripts_all-min.jpg)
+![](images/scripts_all-min.webp)
 
 スクリプトの肥大化を防ぐために、アプリ単位でインストールスクリプトを作成したとしましょう。この場合、任意のアプリインストールは楽になりますが、全てのアプリを一括インストールしづらくなります。
 
@@ -80,7 +80,7 @@ aliases:
 
 ### 解決策：Makefileでインストーラスクリプトを制御
 
-![](images/Makefile-min.jpg)
+![](images/Makefile-min.webp)
 
 Makefile（makeコマンド）は、C／C++で頻繁に用いられるツールであり、コンパイル／依存関係の管理／インストールを簡単にしてくれます。
 

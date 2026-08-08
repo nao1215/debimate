@@ -12,7 +12,7 @@ tags:
 - linuxkernel
 - マクロ
 cover:
-  image: images/tux.png
+  image: images/tux.webp
   alt: 'Linux Kernel: __initマクロ、__exitマクロの役割(メモリの有効利用)'
   hidden: false
 aliases:

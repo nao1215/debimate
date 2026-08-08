@@ -8,7 +8,7 @@ tags:
 - android
 - kotlin
 cover:
-  image: images/Screenshot-from-2023-04-01-23-32-29.png
+  image: images/Screenshot-from-2023-04-01-23-32-29.webp
   alt: 【Android Studio】JSON To Kotlin ClassプラグインでAPIレスポンス用モデルの作成を楽に
   hidden: false
 aliases:
@@ -74,7 +74,7 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 4. 「Install」ボタンをクリックして、プラグインをインストール
 5. プラグインがインストールされたら、Android Studioを再起動
 
-![](images/Screenshot-from-2023-04-01-23-32-29.png)
+![](images/Screenshot-from-2023-04-01-23-32-29.webp)
 
 ---
 
@@ -89,17 +89,17 @@ oMm/        .dMMMMMMMMh:      :dMMMMMMMo   Icons: ubuntu-mono-dark [GTK2/3]
 
 上記の手順3. まで実施すると、以下の画像の状態になります。
 
-![](images/Screenshot-from-2023-04-02-00-38-54.png)
+![](images/Screenshot-from-2023-04-02-00-38-54.webp)
 
 4\. \[Generate Kotlin Data Class Code\]画面の「ADVANCED」ボタンを押下し、生成するdata classの細かい設定を行う（任意）。設定項目を以下の画像で示します。フィールドをValにするかVarにするか、nullを許容するか、どのライブラリでデシリアライズするか等はjsonによって設定値が異なると思われます。
 
-![](images/Screenshot-from-2023-04-02-00-41-23.png)
+![](images/Screenshot-from-2023-04-02-00-41-23.webp)
 
-![](images/Screenshot-from-2023-04-02-00-41-36.png)
+![](images/Screenshot-from-2023-04-02-00-41-36.webp)
 
-![](images/Screenshot-from-2023-04-02-00-41-55.png)
+![](images/Screenshot-from-2023-04-02-00-41-55.webp)
 
-![](images/Screenshot-from-2023-04-02-00-42-07.png)
+![](images/Screenshot-from-2023-04-02-00-42-07.webp)
 
 INPUTとして渡したjsonが複雑すぎると、不要なクラスを生成する傾向が見られるので、適宜jsonを整形してからJSON To Kotlin Classを利用した方が良さそうです（GitHub APIドキュメントにサンプルとして提示されていたjsonをそのまま利用したら、不自然なクラスが生成されました）
 

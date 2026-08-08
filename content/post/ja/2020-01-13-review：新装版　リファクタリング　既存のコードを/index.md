@@ -8,7 +8,7 @@ tags:
 - java
 - リファクタリング
 cover:
-  image: images/リファクタリング-min.jpg
+  image: images/リファクタリング-min.webp
   alt: 感想：新装版　リファクタリング　既存のコードを安全に改善する
   hidden: false
 aliases:

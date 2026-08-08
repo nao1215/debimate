@@ -6,7 +6,7 @@ categories:
 tags:
   - "life"
 cover:
-  image: "images/2025-11-05-bucket-list.jpg"
+  image: "images/2025-11-05-bucket-list.webp"
   alt: "bucket-list"
   hidden: false
 ---

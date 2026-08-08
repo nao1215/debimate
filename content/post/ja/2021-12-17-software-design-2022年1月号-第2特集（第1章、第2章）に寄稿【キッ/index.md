@@ -9,7 +9,7 @@ categories:
 tags:
 - python
 cover:
-  image: images/642201.png
+  image: images/642201.webp
   alt: Software Design 2022年1月号 第2特集（第1章、第2章）に寄稿【キッカケ、感想、書き足りない内容】
   hidden: false
 aliases:
@@ -28,7 +28,7 @@ aliases:
 
 間違いなく、2021年で最も嬉しい出来事です！（エンジニア人生の中でトップクラスの嬉しさ）
 
-![](images/特集.jpg)
+![](images/特集.webp)
 
 <iframe style="width: 120px; height: 240px;" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&amp;bc1=000000&amp;IS2=1&amp;bg1=FFFFFF&amp;fc1=000000&amp;lc1=0000FF&amp;t=debimate07-22&amp;language=ja_JP&amp;o=9&amp;p=8&amp;l=as4&amp;m=amazon&amp;f=ifr&amp;ref=as_ss_li_til&amp;asins=B09M552FPJ&amp;linkId=d80c19a5ca1e708a1cf65cd3827151f3"></iframe>
 
@@ -103,7 +103,7 @@ aliases:
 
 例えば、読者的には「パイプの受け取り方（下図）」「Pythonパッケージ構成」あたりの方が嬉しいトピックだったのではないかと、原稿提出後に考えたりしました。あと2ページあれば、追記できたのに……（限界までページ数を増やしていたので、追記の申し出は流石にしませんでした）
 
-![](images/pipe.jpg)
+![](images/pipe.webp)
 
 さらに言えば、ロギングは大事な部分をページ数の都合で、泣く泣くカットしています。以下、カットした内容です。「出力されないログは意味がないよね」とか、色々と書きたい内容がありましたが、必要最低限の内容のみが誌面に登場しています。
 

@@ -7,7 +7,7 @@ categories:
 tags:
 - rainbow
 cover:
-  image: images/blackmore_rainbow.jpg
+  image: images/blackmore_rainbow.webp
   alt: 'Review: Ritchie Blackmore''s Rainbow--銀嶺の覇者--(Rainbow)'
   hidden: false
 aliases:
@@ -19,7 +19,7 @@ aliases:
 
 ### 収録曲
 
-![](images/blackmore_rainbow.jpg)
+![](images/blackmore_rainbow.webp)
 
 収録曲
 

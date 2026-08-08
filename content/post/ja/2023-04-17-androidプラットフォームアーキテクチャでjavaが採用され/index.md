@@ -7,7 +7,7 @@ categories:
 tags:
 - android
 cover:
-  image: images/android-stack_2x-695x1024.png
+  image: images/android-stack_2x-695x1024.webp
   alt: AndroidプラットフォームアーキテクチャでJavaが採用されている理由は、エンジニア人口が多いから
   hidden: false
 aliases:
@@ -25,7 +25,7 @@ AndroidでJavaを採用した理由が気になって夜しか眠れなかった
 
 そして、Java API Framework（Oracle Javaとは別物）がAndroidのコアな機能を提供する形になっています。私達がAndroidアプリを開発する場合は、JavaやKotlinでJava API Frameworkを呼び出す形になっています。
 
-![](images/android-stack_2x-695x1024.png)
+![](images/android-stack_2x-695x1024.webp)
 
 Android公式ドキュメント：プラットフォーム アーキテクチャより引用
 

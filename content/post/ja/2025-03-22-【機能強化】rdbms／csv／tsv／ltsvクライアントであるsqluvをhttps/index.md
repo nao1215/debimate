@@ -66,9 +66,9 @@ v0.3.0（2025.03.22）時点で以下の機能があります。
 
 SQLクエリの実行が成功した場合、sqluvはSQLite3内にクエリ情報を保存します。Historyボタンから履歴を参照でき、選択した履歴をSQLクエリを書くテキストエリアに反映（コピー）できます。
 
-![](images/history_button.png)
+![](images/history_button.webp)
 
-![](images/sql_query_history.png)
+![](images/sql_query_history.webp)
 
 ---
 

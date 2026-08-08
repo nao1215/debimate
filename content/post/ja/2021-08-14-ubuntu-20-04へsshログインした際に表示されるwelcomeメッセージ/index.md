@@ -10,7 +10,7 @@ tags:
 - ubuntu
 - サーバー
 cover:
-  image: images/welcome-sign-2284312_640-min.jpg
+  image: images/welcome-sign-2284312_640-min.webp
   alt: Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法
   hidden: false
 aliases:

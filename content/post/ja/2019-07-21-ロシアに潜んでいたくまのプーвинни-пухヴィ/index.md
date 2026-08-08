@@ -10,7 +10,7 @@ tags:
 - ロシア語
 coverImage: ''
 cover:
-  image: images/にせぐま-min.jpg
+  image: images/にせぐま-min.webp
   alt: ロシアのプー
   hidden: false
 aliases:

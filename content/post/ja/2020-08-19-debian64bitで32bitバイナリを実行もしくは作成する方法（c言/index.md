@@ -9,7 +9,7 @@ tags:
 - c言語
 - debian
 cover:
-  image: images/processor-2217771_640-min.jpg
+  image: images/processor-2217771_640-min.webp
   alt: Debian(64bit)で32bitバイナリを実行もしくは作成する方法（C言語）
   hidden: false
 aliases:

@@ -8,7 +8,7 @@ tags:
 - java
 - オブジェクト指向
 cover:
-  image: images/eclipse-1492818_640.jpg
+  image: images/eclipse-1492818_640.webp
   alt: 【Java】immutable object（不変クラス）の利点／欠点／作成方法および不変クラスで実装する場面
   hidden: false
 aliases:
@@ -50,7 +50,7 @@ String msg2 = msg1;              // new String(msg1);とするよりもコスト
 System.out.println(msg1 == msg2);  // true
 ```
 
-![](images/immutable.jpg)
+![](images/immutable.webp)
 
 また、インスタンスが不変であるため、スレッドセーフである事は自明でしょう。複数スレッドが不変インスタンスをどのタイミングでチェックしても、結果は変わりません。また、常に同じ結果を返せるという点（一意である点）は、HashMapキー／HashSet要素／キャッシュに利用できる事を意味します。
 
