@@ -9,7 +9,9 @@ weight: 5
 
 Leader and Followers は、同じデータを複製して持つノードのうち 1 台を Leader に決め、更新を全て Leader が受け付けて残りの Follower へ配る構成です。更新の受け口が 1 台に絞られるため、同じデータへの更新の順序は Leader が決めた 1 つに定まります。ここでは、ノードが停止する故障とネットワークが分断される故障を扱い、誤った値を返す故障（ビザンチン障害）は対象外とします。
 
-パターンの名前は Unmesh Joshi の書籍『Patterns of Distributed Systems』（邦訳『分散システムのためのデザインパターン』）で使われているもので、Martin Fowler のサイトにも [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) として要約が置かれています。冒頭の一文は「1 台のサーバに、複数のサーバへまたがる複製を統率させる」で、解法の節は「クラスタの中の 1 台を Leader として選ぶ。Leader はクラスタ全体を代表して決定を下し、その決定を他の全サーバへ伝播させる」と述べています。仕組みの説明には Raft を使います。Raft は、複製したログを全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
+パターンの名前は Unmesh Joshi の書籍『Patterns of Distributed Systems』（邦訳『分散システムのためのデザインパターン』）で使われているもので、Martin Fowler のサイトにも [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) として要約が置かれています。
+
+冒頭の一文は「1 台のサーバに、複数のサーバへまたがる複製を統率させる」で、解法の節は「クラスタの中の 1 台を Leader として選ぶ。Leader はクラスタ全体を代表して決定を下し、その決定を他の全サーバへ伝播させる」と述べています。仕組みの説明には Raft を使います。Raft は、複製したログを全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
 
 登場人物と経路を以下に示します。
 
@@ -55,13 +57,13 @@ sequenceDiagram
 
 全体の順序として残るのは、候補のうち確定したものだけです。確定していない更新は、次の Leader が持っていなければ切り捨てられます。次の Leader が持っている場合は残り、現在の任期の更新が確定した時点で一緒に確定します。なお、並びを決める役目を 1 台へ固定しない解き方もあります。
 
-Paxos は Leslie Lamport が示した合意アルゴリズムです。同氏の [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf) は、合意アルゴリズムを「提案された値のうち 1 つだけが選ばれる事を保証する」ものだと述べています。この保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。同じ論文は、提案を出すノードが複数居ると、互いに大きな番号を出し合って何も選ばれないまま進まなくなる場面を挙げ、安定して前へ進めるには提案を出す役を 1 台に定めるとよいと書いています。その役の選出が失敗しても、1 つの値だけが選ばれるという保証は崩れません。ログの各位置について Paxos を繰り返し、安定した Leader で処理を効率化する構成が、一般に Multi-Paxos と呼ばれます。
+Paxos は Leslie Lamport が示した合意アルゴリズムです。同氏の [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf) は、合意アルゴリズムを「提案された値のうち 1 つだけが選ばれる事を保証する」ものだと述べています。この保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。
+
+同じ論文は、提案を出すノードが複数居ると、互いに大きな番号を出し合って何も選ばれないまま進まなくなる場面を挙げ、安定して前へ進めるには提案を出す役を 1 台に定めるとよいと書いています。その役の選出が失敗しても、1 つの値だけが選ばれるという保証は崩れません。ログの各位置について Paxos を繰り返し、安定した Leader で処理を効率化する構成が、一般に Multi-Paxos と呼ばれます。
 
 ---
 
-### 仕組み
-
-#### 任期と選出
+### 任期と選出
 
 Leader は固定ではなく、落ちた時に選び直せる必要があります。Raft は時間を任期（term）という単調増加する番号で区切り、1 つの任期に立つ Leader を最大 1 台に制限します。Diego Ongaro と John Ousterhout が 2014 年に発表した [Raft の論文](https://raft.github.io/raft.pdf)は、この性質を Election Safety と呼び、「1 つの任期で選ばれる Leader は最大 1 台」と定義しています。
 
@@ -112,9 +114,13 @@ func (n *node) handleRequestVote(term int, candidateID string) bool {
 
 時刻を合わせずに済むのは安全性の話で、可用性はタイミングに依存します。Raft は、信号が往復する時間・選出の待ち時間・ノードが故障する平均間隔が、この順に十分な差で並ぶ事を前提にしています。待ち時間が往復の時間に近いと、生きている Leader が居るのに選出が始まり、更新が進まなくなります。
 
-#### 更新の複製と確定
+---
 
-Client の更新を受け取った Leader は、まず自分のログの末尾へ追記し、続けて同じ内容を Follower へ送ります。ログは [WAL](../write-ahead-log/)（Write-Ahead Log、書き込み先行ログ）と同じ追記型の列で、Leader が決めた順序をそのまま保持します。追記した 1 件をエントリと呼びます。現在の任期で作られたエントリが過半数のノードへ複製された時点で、Leader はそのエントリを確定（commit）させます。過去の任期のエントリは、複製された数だけを根拠に確定させません。確定は実行と同じではありません。Leader は確定したエントリを自分の状態機械（state machine、ログのコマンドを順に適用して状態を作る部分）へ適用し、その実行結果を Client へ返します。
+### 更新の複製と確定
+
+Client の更新を受け取った Leader は、まず自分のログの末尾へ追記し、続けて同じ内容を Follower へ送ります。ログは [WAL](../write-ahead-log/)（Write-Ahead Log、書き込み先行ログ）と同じ追記型の列で、Leader が決めた順序をそのまま保持します。追記した 1 件をエントリと呼びます。
+
+現在の任期で作られたエントリが過半数のノードへ複製された時点で、Leader はそのエントリを確定（commit）させます。過去の任期のエントリは、複製された数だけを根拠に確定させません。確定は実行と同じではありません。Leader は確定したエントリを自分の状態機械（state machine、ログのコマンドを順に適用して状態を作る部分）へ適用し、その実行結果を Client へ返します。
 
 追記しかしないのは Leader のログだけです。Follower のログは Leader のものと突き合わせられ、食い違う位置から後ろが削られます。Raft は、Leader が追記しかしない性質を Leader Append-Only と呼び、「Leader は自分のログのエントリを上書きも削除もせず、追記だけを行う」と定義しています。
 
@@ -166,9 +172,13 @@ func (n *node) advanceCommitIndex() {
 }
 ```
 
-注意点として、現在の任期で作られたエントリだけを確定させる条件が入っています。Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件にあたります。過去の任期のエントリを応答数だけで確定させると、後から別の内容で上書きされる場合があるためです。
+注意点として、現在の任期で作られたエントリだけを確定させる条件が入っています。Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件にあたります。
 
-#### 古い Leader を締め出す
+過去の任期のエントリを応答数だけで確定させると、後から別の内容で上書きされる場合があるためです。
+
+---
+
+### 古い Leader を締め出す
 
 ネットワークが分断されると、Leader が生きているのに Follower がその信号を受け取れない状態になります。多数派（過半数が残った側）のノードは新しい Leader を選び、少数派に取り残された旧 Leader は自分が Leader のつもりで動き続けます。1 台に集約したはずの更新の受け口が、一時的に 2 台へ増えます。
 
@@ -218,7 +228,9 @@ func (n *node) handleAppendEntries(args appendEntriesArgs) appendEntriesReply {
 
 ここまでのコードのレシーバを `node` で揃えているのは、1 台のノードが Follower・Candidate・Leader を務め分けるためです。役割は `role` フィールドで表し、より新しい任期を見たノードは、それまでの役割にかかわらず Follower へ戻ります。
 
-#### 読み取りをどこへ流すか
+---
+
+### 読み取りをどこへ流すか
 
 読み取りを Follower へ分散させると、Leader の負荷は下がります。その代わり、確定した更新がまだ届いていない Follower は古い値を返します。更新の直後に自分の書いた値を読み返す用途では、この遅れが表に出ます。
 
