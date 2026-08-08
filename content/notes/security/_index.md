@@ -4,7 +4,7 @@ date: 2026-08-04
 draft: false
 weight: 40
 cardLabel: "セキュリティ"
-cardNote: "認証・セキュアコーディング・秘密情報管理のノート"
+cardNote: "認証・暗号・安全な実装を扱うノート"
 
 ShowToc: true
 TocOpen: true
