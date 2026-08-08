@@ -20,20 +20,8 @@
   langColor: "#00ADD8"
   desc: YAML で定義したテスト条件に基づき、CLI の終了コード・出力・ファイル差分・スナップショット・TUI まで検証する E2E テストツール
 
-- name: filesql
-  repo: https://github.com/nao1215/filesql
-  lang: Go
-  langColor: "#00ADD8"
-  desc: CSV／TSV／LTSV／Parquet／Excel などのファイルを SQLite として読み込む database/sql ドライバ
-
 - name: markdown
   repo: https://github.com/nao1215/markdown
   lang: Go
   langColor: "#00ADD8"
   desc: Markdown と Mermaid 図を組み立てるための Go ライブラリ
-
-- name: omokage
-  repo: https://github.com/nao1215/omokage
-  lang: Go
-  langColor: "#00ADD8"
-  desc: 文章が特定の書き手の文体にどれだけ近いかを測定する、ローカルファーストな CLI（日本語／英語対応）
