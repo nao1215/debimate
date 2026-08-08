@@ -28,6 +28,7 @@ description: ""
 | 2 | [Bounded Context - モデルが通用する範囲を区切る](/notes/software-architecture/bounded-context/) | DDD |
 | 3 | [Repository - Aggregate の永続化を隠す境界](/notes/software-architecture/repository/) | DDD |
 | 4 | [Domain Event - ドメインで起きた事実を伝える](/notes/software-architecture/domain-event/) | DDD |
+| 5 | [Anticorruption Layer - 上流のモデルを自分の語へ翻訳する](/notes/software-architecture/anti-corruption-layer/) | DDD |
 
 #### Container Patterns
 
