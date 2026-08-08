@@ -29,6 +29,12 @@ description: ""
 | 3 | [Repository - Aggregate の永続化を隠す境界](/notes/software-architecture/repository/) | DDD |
 | 4 | [Domain Event - ドメインで起きた事実を伝える](/notes/software-architecture/domain-event/) | DDD |
 
+#### Container Patterns
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Sidecar - アプリケーションへ機能を足す補助コンテナ](/notes/software-architecture/sidecar/) | 設計パターン |
+
 ---
 
 ### 参考文献（手元にある書籍）
