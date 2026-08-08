@@ -34,6 +34,8 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Sidecar - アプリケーションへ機能を足す補助コンテナ](/notes/software-architecture/sidecar/) | 設計パターン |
+| 2 | [Ambassador - 外部との通信を仲介する補助コンテナ](/notes/software-architecture/ambassador/) | 設計パターン |
+| 3 | [Adapter - アプリケーションの出力を外向きに揃える補助コンテナ](/notes/software-architecture/adapter/) | 設計パターン |
 
 ---
 
