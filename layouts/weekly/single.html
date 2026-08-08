@@ -1,0 +1,52 @@
+{{/*
+  週報 1 週分のページ。
+
+  週報は書き散らしなので、古い記事の注意書き・関連記事・広告は出さない。
+  日付と話題タグ、本文、前後の週へのリンクだけを置く。
+*/}}
+{{- define "main" }}
+
+<article class="post-single weekly-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+  </header>
+
+  {{- if .Content }}
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+  {{- end }}
+
+  <footer class="post-footer">
+    {{/* テーマの post_nav_links.html は mainSections (post) だけを対象にするため、
+         週報では何も出ない。前の週・一覧・次の週を 1 行に並べて辿れるようにする。
+         最初と最新の週では端のリンクが出ないので、一覧は grid の列を固定して
+         中央からずれないようにする (custom.css の .weekly-paginav) */}}
+    {{- $weeks := .Parent.RegularPages.ByDate.Reverse }}
+    <nav class="paginav weekly-paginav">
+      {{- with $weeks.Prev . }}
+      <a class="prev" href="{{ .Permalink }}">
+        <span class="title">« 前の週</span>
+        <br>
+        <span>{{ .Title }}</span>
+      </a>
+      {{- end }}
+      <a class="index" href="{{ .Parent.RelPermalink }}">
+        <span>週報の一覧</span>
+      </a>
+      {{- with $weeks.Next . }}
+      <a class="next" href="{{ .Permalink }}">
+        <span class="title">次の週 »</span>
+        <br>
+        <span>{{ .Title }}</span>
+      </a>
+      {{- end }}
+    </nav>
+    {{- if (and site.Params.ShowShareButtons (ne .Params.disableShare true)) }}
+    {{- partial "share_icons.html" . -}}
+    {{- end }}
+  </footer>
+</article>
+
+{{- end }}{{/* end main */}}

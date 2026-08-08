@@ -1,9 +1,15 @@
 {{- with site.Params.homeInfoParams }}
 {{- $weeklyPage := site.GetPage "section" "weekly" }}
 {{- $weeklyBanner := "" }}
+{{- $latestWeekly := false }}
 {{- with $weeklyPage }}
     {{- with .Resources.GetMatch "image/weekly-card-banner.webp" }}
         {{- $weeklyBanner = .RelPermalink }}
+    {{- end }}
+    {{/* 週報は 1 週 1 ページ。未来日付のページはビルド対象外なので、
+         日付降順の先頭がそのまま「公開済みの最新週」になる */}}
+    {{- with .RegularPages.ByDate.Reverse }}
+        {{- $latestWeekly = index . 0 }}
     {{- end }}
 {{- end }}
 {{- $notesPage := site.GetPage "section" "notes" }}
@@ -26,14 +32,12 @@
         {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
     </footer>
     <div class="home-cards">
-        {{- with hugo.Data.generated.weekly_latest }}
-        {{- if .available }}
-        <a class="latest-weekly latest-weekly-report" href="{{ printf "%s#%s" (.path | relURL) .fragment }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+        {{- with $latestWeekly }}
+        <a class="latest-weekly latest-weekly-report" href="{{ .RelPermalink }}"{{ with $weeklyBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
             <span class="latest-weekly-label">最新の週報</span>
-            <span class="latest-weekly-title">{{ .title }}</span>
+            <span class="latest-weekly-title">{{ .Title }}</span>
             <span class="latest-weekly-note">不定期に加筆する週報</span>
         </a>
-        {{- end }}
         {{- end }}
         {{- with $notesPage }}
         <a class="latest-weekly latest-notes" href="{{ .RelPermalink }}"{{ with $notesBanner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>

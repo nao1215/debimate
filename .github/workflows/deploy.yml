@@ -37,9 +37,6 @@ jobs:
           hugo-version: '0.161.1'
           extended: true
 
-      - name: Generate latest weekly link data
-        run: python3 scripts/gen_weekly_latest.py
-
       - name: Build site
         run: hugo --minify
 

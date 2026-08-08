@@ -417,3 +417,127 @@ body.home .post-entry .entry-header h2 {
 .post-content .table-wrap > table {
   margin-bottom: 0;
 }
+
+/* ==========================================================
+   週報（/weekly/）
+   1 週 1 ファイルで書くが、一覧では各週を連結して 1 ページに見せる。
+   週と週の区切りが分かる程度の装飾に留め、本文の見た目は他ページと揃える
+   ========================================================== */
+
+/* PaperMod は一覧系のページ (body.list) に薄いグレー (--code-bg) を敷き、
+   記事ページは白 (--theme) にする。リンクが並ぶ索引ページには合っているが、
+   /weekly/ は形こそ一覧でも中身は本文そのものなので、同じ文章が週ごとの
+   ページでは白、一覧ではグレーになってしまう。週報の一覧だけ記事ページと
+   地色を揃える。--theme を使うのでダークモードでも従来どおり。
+   /notes/ や /post/ の一覧はテーマ既定のまま触らない */
+body.list:has(.weekly-entry) {
+  background: var(--theme);
+}
+
+.weekly-intro {
+  margin-bottom: var(--content-gap);
+  color: var(--secondary);
+}
+
+.weekly-year {
+  margin: 2.5rem 0 0.5rem;
+  color: var(--secondary);
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+}
+
+.weekly-entry {
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
+
+.weekly-entry + .weekly-entry {
+  margin-top: 2.2rem;
+}
+
+.weekly-entry-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+}
+
+.weekly-entry-title a {
+  color: var(--primary);
+}
+
+.weekly-entry-title a:hover {
+  text-decoration: underline;
+}
+
+.weekly-archive {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.weekly-archive h2 {
+  font-size: 1.2rem;
+}
+
+.weekly-archive h3 {
+  margin: 1.2rem 0 0.4rem;
+  color: var(--secondary);
+  font-size: 1rem;
+}
+
+.weekly-archive ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+/* 週報の前後移動。前の週・週報の一覧・次の週を 1 行に並べる。
+
+   PaperMod の .paginav は prev と next を 50% ずつに割り、next を
+   margin-inline-start: auto で右へ寄せる作りなので、真ん中に 3 つ目を
+   足すと崩れる。grid で列を明示して置き換える。最初の週には prev が、
+   最新の週には next が出ないため、列を固定しないと一覧が中央からずれる。 */
+.weekly-paginav {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weekly-paginav .prev,
+.weekly-paginav .index,
+.weekly-paginav .next {
+  width: auto;
+}
+
+.weekly-paginav .prev {
+  grid-column: 1;
+}
+
+.weekly-paginav .index {
+  grid-column: 2;
+  text-align: center;
+}
+
+.weekly-paginav .next {
+  grid-column: 3;
+  margin-inline-start: 0;
+  text-align: right;
+}
+
+/* 一覧は 1 行なので、両隣の 2 行目 (週のタイトル) と同じ大きさに揃える。
+   .title の小さい字送りを当てると、真ん中だけ見出しの注釈のように見える */
+
+/* 画面が狭いと 3 列は窮屈になるので、一覧を下の行へ回して中央に置く */
+@media (max-width: 480px) {
+  .weekly-paginav {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .weekly-paginav .index {
+    grid-row: 2;
+    grid-column: 1 / -1;
+  }
+
+  .weekly-paginav .next {
+    grid-column: 2;
+  }
+}

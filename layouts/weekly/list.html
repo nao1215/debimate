@@ -1,0 +1,86 @@
+{{/*
+  週報一覧。
+
+  週報は 1 週 1 ファイル (content/weekly/<YYYY-MM-DD>/index.md) で書くが、
+  読む側は今まで通り 1 ページを延々スクロールできる方が良いので、
+  ここで各週の .Content を連結して出力する。
+  1 ページあたり 12 週 (約 3 ヶ月) で、それより古い週は次ページへ送る。
+*/}}
+{{- define "main" }}
+
+{{- $weeksPerPage := 12 }}
+{{- $pages := .RegularPages.ByDate.Reverse }}
+{{- $paginator := .Paginate $pages $weeksPerPage }}
+
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>
+    {{ .Title }}
+    {{- if .Param "ShowRssButtonInSectionTermList" }}
+    {{- with .OutputFormats.Get "rss" }}
+    <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+    {{- end }}
+    {{- end }}
+  </h1>
+</header>
+
+{{- if and .Content (eq $paginator.PageNumber 1) }}
+<div class="post-content weekly-intro">{{ .Content }}</div>
+{{- end }}
+
+{{- $prevYear := "" }}
+{{- range $paginator.Pages }}
+{{- $year := .Date.Format "2006" }}
+{{- if ne $year $prevYear }}
+<h2 class="weekly-year" id="{{ $year }}">{{ $year }}</h2>
+{{- $prevYear = $year }}
+{{- end }}
+
+<article class="weekly-entry">
+  {{/* 旧 /weekly/#20260803週 形式のリンクを生かすため、id は分割前と同じにする */}}
+  <h3 class="weekly-entry-title" id="{{ .Date.Format "20060102" }}週">
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </h3>
+  <div class="post-content">
+    {{ .Content }}
+  </div>
+</article>
+{{- end }}
+
+{{- if gt $paginator.TotalPages 1 }}
+<nav class="weekly-archive">
+  <h2>週報の一覧</h2>
+  {{- $prevYear = "" }}
+  {{- range $pages }}
+  {{- $year := .Date.Format "2006" }}
+  {{- if ne $year $prevYear }}
+  {{- if $prevYear }}</ul>{{ end }}
+  <h3>{{ $year }}</h3>
+  <ul>
+  {{- $prevYear = $year }}
+  {{- end }}
+    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+  {{- end }}
+  {{- if $prevYear }}</ul>{{ end }}
+</nav>
+
+<footer class="page-footer">
+  <nav class="pagination">
+    {{- if $paginator.HasPrev }}
+    <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
+    {{- end }}
+    {{- if $paginator.HasNext }}
+    <a class="next" href="{{ $paginator.Next.URL | absURL }}">{{ i18n "next_page" }}&nbsp;»</a>
+    {{- end }}
+  </nav>
+</footer>
+{{- end }}
+
+{{- end }}{{/* end main */}}

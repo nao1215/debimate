@@ -10,6 +10,18 @@ HUGO := hugo
 SERVER_PORT := 1313
 BASE_URL := https://debimate.jp
 
+# `make weekly 20260810` のように日付を位置引数で受け取る。
+# Make は引数もターゲットとして実行しようとするため、日付を「何もしない
+# ターゲット」として定義して握り潰す。weekly が最初のゴールの時だけ定義
+# するのは、無条件の catch-all ルール (%:) にすると build を buld と
+# 打ち間違えた時にエラーにならず黙って成功してしまうため
+ifeq (weekly,$(firstword $(MAKECMDGOALS)))
+WEEKLY_ARG := $(word 2,$(MAKECMDGOALS))
+ifneq ($(WEEKLY_ARG),)
+$(eval $(WEEKLY_ARG):;@:)
+endif
+endif
+
 # ==========================================================
 # タスク定義
 # ==========================================================
@@ -18,17 +30,30 @@ help:  ## コマンド一覧を表示
 	@echo "Available commands:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 
-serve: weekly-latest ## ローカル開発サーバ起動 (Draft/Future含む)
+serve: ## ローカル開発サーバ起動 (Draft/Future含む)
 	$(HUGO) server -D -F --disableFastRender --port $(SERVER_PORT)
 
-build: weekly-latest redirects ## 本番用ビルド（最小化あり）
+build: redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
 
-weekly-latest: ## Top 用の最新週報リンクデータを生成
-	python3 scripts/gen_weekly_latest.py
-
-weekly-latest-check: ## Top 用の最新週報リンクデータが最新か検証
-	python3 scripts/gen_weekly_latest.py --check
+weekly: ## 新しい週報を作成 (例: make weekly 20260810。省略時は今週の月曜)
+	@set -eu; \
+	arg="$(WEEKLY_ARG)"; \
+	if [ -z "$$arg" ]; then \
+	  arg="$$(date -d "-$$(( $$(date +%u) - 1 )) days" +%Y%m%d)"; \
+	  echo "日付の指定がないので、今週の月曜 ($$arg) を使う"; \
+	fi; \
+	digits="$$(printf '%s' "$$arg" | tr -d '-')"; \
+	case "$$digits" in \
+	  [0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]) ;; \
+	  *) echo "Usage: make weekly 20260810"; exit 1;; \
+	esac; \
+	slug="$$(printf '%s' "$$digits" | sed -E 's/^(.{4})(.{2})(.{2})$$/\1-\2-\3/')"; \
+	if ! checked="$$(date -d "$$slug" +%Y-%m-%d)"; then echo "存在しない日付: $$slug"; exit 1; fi; \
+	if [ "$$(date -d "$$slug" +%u)" != "1" ]; then \
+	  echo "注意: $$slug は月曜ではない (既存の週報は全て月曜始まり)"; \
+	fi; \
+	$(HUGO) new "content/weekly/$$slug/index.md"
 
 redirects: ## 移行前URL向けのalias・リダイレクトを再生成
 	python3 scripts/ensure_post_aliases.py
