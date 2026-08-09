@@ -541,3 +541,17 @@ body.list:has(.weekly-entry) {
     grid-column: 2;
   }
 }
+
+/* 記事ページ最上段のカバー画像。
+
+   テーマ既定は .entry-cover img { width: 100% } なので、本来 100〜500px しか
+   ない書影やロゴが本文幅 (820px) まで引き伸ばされていた。カバー 218 枚のうち
+   174 枚が拡大表示で、最大 8.2 倍。元の解像度を超えて拡大した分がそのまま
+   ぼやけとして出るため、上限を 520px に決め、かつ元画像より大きくしない。
+   一覧・トップのカードは別ルール (body.home .post-entry) なので影響しない。 */
+.post-single .entry-cover img {
+  width: auto;
+  max-width: min(100%, 520px);
+  height: auto;
+  margin-inline: auto;
+}
