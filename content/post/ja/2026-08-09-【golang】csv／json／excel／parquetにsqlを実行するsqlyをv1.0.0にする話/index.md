@@ -15,6 +15,14 @@ cover:
   image: images/sqly-logo.webp
   alt: 【Golang】CSV／JSON／Excel／Parquet に SQL を実行する sqly を約4年かけて v1.0.0 にした
   hidden: false
+aliases:
+- /post/2026-08-09-【golang】csv／json／excel／parquetにsqlを実行するsqlyをv1.0.0にする話/
+- /2026/08/09/【golang】csv／json／excel／parquetにsqlを実行するsqlyをv1.0.0にする話/
+- /2026/08/09/golangcsvjsonexcelparquetにsqlを実行するsqlyをv100にする話/
+- /post/2026-08-09-golangcsvjsonexcelparquetにsqlを実行するsqlyをv100にする話/
+- /2026/08/10/【golang】csv／json／excel／parquetにsqlを実行するsqlyをv1.0.0にする話/
+- /2026/08/10/golangcsvjsonexcelparquetにsqlを実行するsqlyをv100にする話/
+- /2026/08/09/
 ---
 
 ### 前書き：ファイルに SQL を実行する小さな CLI を v1.0.0 に
@@ -83,9 +91,9 @@ sqly の単純な使い方はファイル閲覧・フィルタリングですが
 
 サポートしているファイル形式は4形式から9形式へ増え、8種類の圧縮形式（gz／bz2／xz／zst／z／snappy／s2／lz4）を透過的に読めるようになりました。ACH や Fedwire という米国の銀行間決済フォーマットが混ざっているのは、私が決済の仕事をしている影響です。`--dialect` を使うと、MySQL／PostgreSQL／GoogleSQL の構文を SQLite 構文へ変換してから実行します。エミュレーションではなく変換であるため、期待通りの挙動にならないケースがあります。ドキュメントに制約事項を多数記載してあります。
 
-LLM の登場により、CLI としての契約に対する考え方が変化しました。2022年の sqly は「人間が対話シェルで使う道具」でした。現在は、シェルスクリプト・CI・LLM エージェントから呼ばれる事を前提に、exit code の分類、stdout と stderr の使い分け、`--inspect` の JSON スキーマ出力といった「プログラムから見た振る舞い」を仕様として明文化しています。
+LLM の登場により、CLI としての外部仕様に対する考え方が変化しました。2022年の sqly は「人間が対話シェルで使う道具」でした。現在は、シェルスクリプト・CI・LLM エージェントから呼ばれる事を前提に、exit code の分類、stdout と stderr の使い分け、`--inspect` の JSON スキーマ出力といった「プログラムから見た振る舞い」を仕様として明文化しています。
 
-外部仕様だけでなく、内部設計も別物になりました。sqly が自前で持っていた「ファイルを読み込み SQLite に入れて書き戻す」部分、「シェルの入力処理（プロンプト処理）」は、それぞれ [filesql](https://github.com/nao1215/filesql) と [prompt](https://github.com/nao1215/prompt) という別の OSS に切り出されています。
+外部仕様だけでなく、内部設計も別物になりました。sqly が自前で持っていた「ファイルを読み込み SQLite に入れて書き戻す処理」、「シェルの入力処理（プロンプト処理）」は、それぞれ [filesql](https://github.com/nao1215/filesql) と [prompt](https://github.com/nao1215/prompt) という別の OSS に切り出されています。
 
 ---
 
@@ -190,7 +198,7 @@ Parquet の読み込みでは、ファイルが持つ型情報を捨てて全カ
 
 「ファイルに SQL を実行する」と聞いて、多くの人が [DuckDB](https://github.com/duckdb/duckdb) を思い浮かべると思います。DuckDB は in-process の分析用 DB で、列指向の実行エンジンを持ち、CSV や Parquet を直接読めて、CLI シェルもあります。大量のデータを集計・分析するワークロードなら、SQLite3 を土台にする sqly より、分析のために設計された DuckDB を選ぶ方が自然です。
 
-sqly と DuckDB は、主目的が違います。DuckDB は分析 DB そのものであり、ファイル読み込みは DB へデータを入れる手段です。sqly は「手元のファイルをサッと SQL で閲覧・編集すること」が主目的で、DB はファイルを触るための手段です。この違いが機能差を生んでいます。sqly には、補完と履歴を持つシェル、`.save` による元ファイルへの書き戻し、文字コードの適切なハンドリング、exit code や stdout の明確な仕様（E2E テストで仕様固定）といった特徴があります。
+sqly と DuckDB は、主目的が違います。DuckDB は分析 DB そのものであり、ファイル読み込みは DB へデータを入れる手段です。sqly は「手元のファイルをサッと SQL で閲覧・編集すること」が主目的で、DB はファイルを触るための手段です。この違いが機能差を生んでいます。sqly には、補完と履歴を持つシェル、`.save` による元ファイルへの書き戻し、パイプ連携、文字コードの適切なハンドリング、exit code や stdout の明確な仕様（E2E テストで仕様固定）といった特徴があります。
 
 同じ CLI 寄りのツールも多機能で、sqly の代替に成り得ます。[trdsql](https://github.com/noborus/trdsql) は CSV／LTSV／JSON／YAML などに SQL を実行でき、SQLite3 以外に MySQL や PostgreSQL を実行エンジンとして選べるのが特徴で、現在も活発に開発されています。[csvq](https://github.com/mithrandie/csvq) は、sqly と機能的に近く、独自の SQL エンジンとカーソルまで備えた意欲的な設計です。[q](https://github.com/harelba/q) および [textql](https://github.com/dinedal/textql) は10年選手の定番で、[Miller](https://github.com/johnkerl/miller) や awk は SQL ではなくフィールド指向のテキスト処理という別の答えを持っています。2022年の記事で同じ顔ぶれを比較していて、当時「多機能さでは trdsql がずば抜けていた」と書きました。4年経っても、それぞれの立ち位置は大きく変わっていません。
 
