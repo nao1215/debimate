@@ -9,7 +9,7 @@ weight: 4
 
 Domain Event とは、ドメインの中で既に起きた出来事を表すオブジェクトです。過去の記録なので通常は不変で、出来事が起きた時刻と、関与したエンティティの識別子を持ちます。ここでは、1 つの [Bounded Context](../bounded-context/) の中で [Aggregate](../value-object-entity-aggregate/) 同士を繋ぐ用途と、Bounded Context をまたいで他のシステムへ伝える用途を扱います。
 
-全ての状態変更をイベントの並びとして保存し、状態をその再生で復元する Event Sourcing の詳細は対象外とし、違いは末尾で 1 段落だけ触れます。
+全ての状態変更をイベントの並びとして保存し、状態をその再生で復元する [Event Sourcing](../event-sourcing/) の詳細は対象外とし、違いは末尾で 1 段落だけ触れます。
 
 DDD（Domain-Driven Design、ドメイン駆動設計）での位置付けは、Eric Evans の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) に書かれています。同書は Domain Events を「ドメインエキスパートが関心を持つ何かが起きた」と要約し、「ドメインの活動に関する情報を一つ一つ区切られた出来事の連なりとしてモデル化し、それぞれの出来事をドメインオブジェクトとして表現せよ」と述べています。
 
@@ -90,7 +90,7 @@ sequenceDiagram
 
 上図の Client 2 は、自分の注文に何の問題も無いのに失敗しています。`Order` と `Stock` を同じトランザクションへ入れた事で、注文の確定という業務が在庫の混雑に巻き込まれました。行ロックで待つ実装を選べば失敗はしません。その場合は代わりに、注文の確定が在庫の待ち時間だけ遅くなります。どちらを選んでも、トランザクションが長いほど影響は大きくなり、注文に含まれる商品が増えるほど巻き込まれる相手も増えます。
 
-在庫が別の Bounded Context へ移り、DB が分かれた場合はさらに直接的です。1 つのローカルトランザクションで両方を更新する経路が無くなり、上のコードは書けなくなります。複数の DB を 1 つのコミットにまとめる分散トランザクション（2 相コミット）を持ち込めば形は保てるものの、参加者の 1 つが停止すると全体が待たされます。
+在庫が別の Bounded Context へ移り、DB が分かれた場合はさらに直接的です。1 つのローカルトランザクションで両方を更新する経路が無くなり、上のコードは書けなくなります。複数の DB を 1 つのコミットにまとめる分散トランザクション（[2 相コミット](../../distributed-systems/two-phase-commit/)）を持ち込めば形は保てるものの、参加者の 1 つが停止すると全体が待たされます。
 
 Vernon の [Effective Aggregate Design Part II](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf) は、この場面での指針を「1 つの Aggregate インスタンスへコマンドを実行した結果、他の 1 つ以上の Aggregate で追加の業務規則を実行する必要があるなら、結果整合性を使え」と書いています。コマンドは状態を変えてほしいという要求で、`order.Confirm(...)` のように Aggregate のメソッドを呼ぶ形を指します。
 
@@ -398,4 +398,4 @@ Integration Event は、外部へ公開する事を前提に形を決めた Doma
 
 なお、Domain Event を同じ Bounded Context の中で使うという線引きは、後から広まった運用上の指針です。Evans の DDD Reference は、Domain Event をノードをまたいで伝わるものとして説明しており、範囲を Bounded Context の中に限っていません。
 
-Event Sourcing は、この表の 3 つとは軸が違います。メッセージの種類ではなく、状態そのものを Domain Event の並びとして永続化し、再生で復元する方式です。保存されるのは Domain Event なので、どちらかを選ぶ関係にはありません。Domain Event を使う事は、Event Sourcing を採用する事を意味しません。
+[Event Sourcing](../event-sourcing/) は、この表の 3 つとは軸が違います。メッセージの種類ではなく、状態そのものを Domain Event の並びとして永続化し、再生で復元する方式です。保存されるのは Domain Event なので、どちらかを選ぶ関係にはありません。Domain Event を使う事は、Event Sourcing を採用する事を意味しません。

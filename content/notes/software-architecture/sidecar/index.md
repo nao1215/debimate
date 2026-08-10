@@ -11,7 +11,7 @@ Sidecar とは、主となるアプリケーションのコンテナと同じ実
 
 中には複数のコンテナを置け、それぞれを独立したコンテナとして設定できます。コンテナの配置とライフサイクルを管理する基盤は、ここでは実行基盤と呼びます。Kubernetes や Amazon ECS がこれにあたります。ここでは 1 台のマシンへ同居させる構成だけを扱い、複数のマシンへまたがる[Leader and Followers](../../distributed-systems/leader-and-followers/)のようなパターンは対象外とします。
 
-この名前は、Brendan Burns が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、Ambassador・Adapter と並ぶ 3 つのパターンの 1 つ目として紹介されました。
+この名前は、Brendan Burns が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、[Ambassador](../ambassador/)・[Adapter](../adapter/) と並ぶ 3 つのパターンの 1 つ目として紹介されました。
 
 体系化したのは、Brendan Burns と David Oppenheimer が 2016 年に発表した論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」です。
 

@@ -167,7 +167,7 @@ func ToShipment(o sales.Order, addr shipping.Address) shipping.Shipment {
 | Shared Kernel | 両チーム | モデルとコードの一部を共有し、変更は合意の上で行う |
 | Customer/Supplier Development | 両チーム | 下流の要求を上流の計画へ組み込み、優先度を交渉する |
 | Conformist | 下流 | 上流のモデルへそのまま従い、変換を作らない |
-| Anticorruption Layer | 下流 | 変換層を挟み、相手のモデルを自分の語へ翻訳する |
+| [Anticorruption Layer](../anti-corruption-layer/) | 下流 | 変換層を挟み、相手のモデルを自分の語へ翻訳する |
 | Open-host Service | 上流 | 多数の相手向けにプロトコルを公開する |
 | Published Language | 合意 | ドメイン情報を表現できる共有言語を文書化し、相互に翻訳する |
 | Separate Ways | 両チーム | 連携せず、それぞれで完結させる |
