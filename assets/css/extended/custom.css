@@ -157,6 +157,22 @@ html {
 .post-content h2 { font-size: 1.6rem; }
 .post-content h3 { font-size: 1.3rem; }
 
+/* テーマ既定の .post-title は 40px 固定で、狭い画面では
+   「2026/08/10週の学び」のようなタイトルが画面幅いっぱいに膨らむ。
+   スマホ幅だけ縮める（PC 幅は既定のまま） */
+@media (max-width: 640px) {
+  .post-title {
+    font-size: 1.7rem;
+    line-height: 1.35;
+  }
+}
+
+@media (max-width: 480px) {
+  .post-title {
+    font-size: 1.5rem;
+  }
+}
+
 .related-posts {
   margin-top: 2rem;
   padding-top: 1.25rem;
