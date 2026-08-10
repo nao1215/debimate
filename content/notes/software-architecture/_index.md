@@ -29,6 +29,8 @@ description: ""
 | 3 | [Repository - Aggregate の永続化を隠す境界](/notes/software-architecture/repository/) | DDD |
 | 4 | [Domain Event - ドメインで起きた事実を伝える](/notes/software-architecture/domain-event/) | DDD |
 | 5 | [Anticorruption Layer - 上流のモデルを自分の語へ翻訳する](/notes/software-architecture/anti-corruption-layer/) | DDD |
+| 6 | [Event Sourcing - 出来事の並びを一次記録にする](/notes/software-architecture/event-sourcing/) | 設計パターン |
+| 7 | [CQRS - コマンドとクエリの分離](/notes/software-architecture/cqrs/) | 設計パターン |
 
 #### Container Patterns
 
