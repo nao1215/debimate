@@ -35,6 +35,20 @@ description: ""
 | --- | --- | --- |
 | 1 | [Proof of Work - 計算作業をブロック追加の条件にする](/notes/blockchain-systems/proof-of-work/) | 作業証明 |
 
+#### Transaction
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [UTXO - 未使用の取引出力でコインを表すモデル](/notes/blockchain-systems/utxo/) | 取引 / UTXO |
+| 2 | [Bitcoin Script - 出力の使う条件を書くスタック言語](/notes/blockchain-systems/bitcoin-script/) | 取引 / スクリプト |
+
+#### Cryptography
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Hash Function - 改竄の検出を支える 3 つの耐性](/notes/blockchain-systems/hash-function/) | ハッシュ関数 |
+| 2 | [Digital Signature - 秘密鍵で作り公開鍵で検証する証明](/notes/blockchain-systems/digital-signature/) | デジタル署名 |
+
 ---
 
 ### 参考文献（手元にある書籍）
