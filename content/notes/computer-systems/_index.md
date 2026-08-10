@@ -62,7 +62,7 @@ description: ""
 | 9 | [【roff形式を手書きは無理ゲー】manページをMarkdown + Pandocで作成【with manページお作法】](/post/ja/2020-12-19-【roff形式を手書きは無理ゲー】manページをmarkdown-pandocで作/) | man page |
 | 10 | [環境構築：Debianソースコードパッケージをビルドする方法(debソースパッケージ構築ツールのインストール)](/post/ja/2019-06-01-環境構築：debianソースコードパッケージをビルドす/) | パッケージ |
 | 11 | [Debian: 任意のtesting/unstableパッケージのみをinstallする方法(システム全体はstableを維持)](/post/ja/2019-03-09-debian-任意のtesting-unstableパッケージのみをinstallする方法システ/) | パッケージ |
-| 12 | [【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】](/post/ja/2020-12-01-【lpicで見た】-etc-motdの内容を出力しているのは誰/) | ログイン |
+| 12 | [【LPICで見た】/etc/motdの内容を出力しているのは誰？【答え:sshd】](/post/ja/2020-12-01-lpicで見た-etc-motdの内容を出力しているのは誰/) | ログイン |
 | 13 | [Ubuntu (20.04)へsshログインした際に表示されるWelcomeメッセージの仕組みと表示しない方法](/post/ja/2021-08-14-ubuntu-20-04へsshログインした際に表示されるwelcomeメッセージ/) | ログイン |
 | 14 | [【Bash / Ruby / Python3】オプション解析する方法の比較](/post/ja/2020-04-11-【bash-ruby-python3】オプション解析する方法の比較/) | CLI |
 | 15 | [【Bash / Ruby / Python3】root権限を確認する方法の比較](/post/ja/2020-04-11-【bash-ruby-python3】root権限を確認する方法の比較/) | 権限 |
@@ -97,7 +97,7 @@ description: ""
 | 1 | [C言語で非推奨なC標準関数(例:strcpy)をコンパイルエラーにする方法](/post/ja/2019-09-07-c言語で非推奨なc標準関数例strcpyをコンパイルエラー/) | C / Toolchain |
 | 2 | [【苦行】C言語で正規表現を用いる方法【標準Cライブラリ(glibc)使用】](/post/ja/2020-11-01-【苦行】c言語で正規表現を用いる方法【標準cライ/) | glibc |
 | 3 | [【C言語】static(private)関数をユニットテストする3つの方法](/post/ja/2020-04-26-【c言語】staticprivate関数をユニットテストする3つの方法/) | C |
-| 4 | [【C言語】\_Generic(C11)、GCC4.6以降または\_\_attribute\_\_((overloadable))によるオーバーロード](/post/ja/2021-05-15-【c言語】_genericc11gcc4-6以降または__attribute__overloadableによるオーバ/) | C / GCC |
+| 4 | [【C言語】\_Generic(C11)、GCC4.6以降または\_\_attribute\_\_((overloadable))によるオーバーロード](/post/ja/2021-05-15-c言語_genericc11gcc4-6以降または__attribute__overloadableによるオーバ/) | C / GCC |
 | 5 | [【コーディングルール】C言語ライブラリのAPIを実装する際に注意すべき事柄](/post/ja/2020-12-19-【コーディングルール】c言語ライブラリのapiを実/) | API設計 |
 
 ---
@@ -108,7 +108,7 @@ description: ""
 | --- | --- | --- |
 | 1 | [autofsを用いてHDD/SSD/USBメモリを起動時に自動マウントする方法(Debian)](/post/ja/2019-10-05-autofsを用いてhdd-ssd-usbメモリを起動時に自動マウントする/) | mount |
 | 2 | [gdisk/mkfsコマンドで2TB以上の大容量HDDをフォーマットする方法](/post/ja/2019-10-05-gdisk-mkfsコマンドで2tb以上のhddをフォーマットする方法/) | filesystem |
-| 3 | [Raspberry Pi4のimage（データ）をバックアップし、より大容量のSDカードへ移行する方法](/post/ja/2020-09-02-raspberry-pi4のimage（データ）をバックアップしより大容量/) | backup |
+| 3 | [Raspberry Pi4のimage（データ）をバックアップし、より大容量のSDカードへ移行する方法](/post/ja/2020-09-02-raspberry-pi4のimageデータをバックアップしより大容量/) | backup |
 | 4 | [Raspberry Pi3をsambaファイルサーバ化し、Linux/Mac/Winでファイル共有(外付けSSDを使用)](/post/ja/2019-03-24-raspberry-pi3をファイルサーバsamba化しlinux-mac-winでファイル共有/) | file server |
 
 ---

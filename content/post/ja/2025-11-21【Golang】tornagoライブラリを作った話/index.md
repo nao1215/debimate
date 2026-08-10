@@ -17,9 +17,6 @@ aliases:
 - /post/2025-11-21golangtornagoライブラリを作った話/
 - /2025/11/22/【Golang】tornagoライブラリを作った話/
 - /2025/11/22/golangtornagoライブラリを作った話/
-
-- /2025/11/22/【Golang】tornagoライブラリを作った話/
-- /2025/11/22/golangtornagoライブラリを作った話/
 ---
 
 ### 悪用厳禁

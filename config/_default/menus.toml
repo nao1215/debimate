@@ -22,3 +22,8 @@
   name = "GitHub Sponsors"
   url = "https://github.com/sponsors/nao1215"
   weight = 15
+
+[[main]]
+  name = "Search"
+  url = "search/"
+  weight = 25

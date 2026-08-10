@@ -1,0 +1,30 @@
+{{- /*
+  検索索引（Fuse.js が読む /index.json）。
+
+  テーマ既定のテンプレートからの変更点は 2 つ。
+
+  1. 本文を先頭 3,000 文字までに切る
+     全記事の本文をそのまま入れると 3.2MB（gzip 1.0MB）になり、検索ページを
+     開くたびに丸ごとダウンロードする事になっていた。3,000 文字で切ると
+     1.9MB（gzip 0.6MB）まで落ちる。記事の後半にしか出てこない語は
+     引っかからなくなるが、316 本のうち 99 本は元から 3,000 文字未満で影響がない。
+
+  2. .Scratch をやめて slice / append で組む
+     .Scratch はページに紐づいて残るため、hugo server のリビルドで前回分に
+     追記され、開発時だけ検索結果が 2 件ずつ重複していた。
+
+  合わせて、改行や連続する空白を 1 個の空白に潰している。行またぎの語も
+  1 つの文字列として拾えるようになり、その分だけ索引も小さくなる。
+*/ -}}
+{{- $index := slice -}}
+{{- range site.RegularPages -}}
+  {{- if and (not .Params.searchHidden) (ne .Layout "archives") (ne .Layout "search") -}}
+    {{- $plain := .Plain | replaceRE "\\s+" " " | strings.TrimSpace -}}
+    {{- $index = $index | append (dict
+      "title" .Title
+      "content" (substr $plain 0 3000)
+      "permalink" .Permalink
+      "summary" .Summary) -}}
+  {{- end -}}
+{{- end -}}
+{{- $index | jsonify -}}

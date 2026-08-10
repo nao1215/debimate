@@ -1,6 +1,15 @@
 :root {
   --main-width: 820px;
 
+  /* ヘッダの幅を本文と揃える。
+
+     テーマ既定はヘッダだけ --nav-width: 1024px で本文（--main-width）より
+     広く、メニューが本文の右端よりさらに右へ離れて見えていた。本文と同じ
+     変数を見るようにすると、Search の右端が本文の右端に、ロゴの左端が
+     本文の左端に揃う。トップは body.home で --main-width を 1024px に
+     しているので、そちらは従来どおりの幅のまま */
+  --nav-width: var(--main-width);
+
   /* 背景色をサイト全体で揃える。
 
      テーマ既定では一覧ページだけ .list { background: var(--code-bg) } で
@@ -13,6 +22,17 @@
   --theme: rgb(245, 245, 245);
   --code-bg: rgb(233, 233, 233);
   --border: rgb(224, 224, 224);
+}
+
+
+/* 本文中の動画（GIF を置き換えた MP4）を画像と同じ見た目にする。
+   テーマは img にしか max-width や角丸を当てていないため */
+.post-content video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  margin: 1rem 0;
 }
 
 /* 一覧ページは --code-bg を背景に使う作りなので、上の変更に合わせて

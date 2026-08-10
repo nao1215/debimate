@@ -25,6 +25,42 @@ ShowRssButtonInSectionTermList = true
   enabled = true
   count = 4
 
+# 検索（Fuse.js）の設定。
+#
+# PaperMod 既定は threshold = 0.4 の曖昧検索を permalink・content まで含む
+# 4 キーに掛けるため、日本語だと無関係な記事が大量に混ざる。実際に
+# 「ランス」で 238 件が当たり、「レオン（完全版）」や「混同行列」が上位に来ていた。
+#
+# threshold を 0.1 まで絞ると、ほぼ語が含まれる記事だけが残る（「ランス」23 件、
+# 「クイズ」1 件、「分散システム」3 件）。permalink はローマ字の URL が
+# 日本語検索の雑音になるだけなので、キーから外す。title を重く見て、
+# 見出しに語がある記事を上へ出す。
+[fuseOpts]
+  isCaseSensitive = false
+  includeScore = false
+  includeMatches = false
+  shouldSort = true
+  findAllMatches = false
+  minMatchCharLength = 1
+  location = 0
+  threshold = 0.1
+  distance = 100
+  ignoreLocation = true
+  # 「Debian」のような頻出語は数十件当たる。上位 20 件で打ち切る
+  limit = 20
+
+  [[fuseOpts.keys]]
+    name = "title"
+    weight = 0.5
+
+  [[fuseOpts.keys]]
+    name = "summary"
+    weight = 0.3
+
+  [[fuseOpts.keys]]
+    name = "content"
+    weight = 0.2
+
 [assets]
   css = ["css/extended/custom.css"]
 

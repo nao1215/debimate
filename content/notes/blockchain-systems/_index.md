@@ -2,7 +2,7 @@
 title: "Blockchain Systems"
 date: 2026-08-08
 draft: false
-weight: 40
+weight: 60
 cardLabel: "ブロックチェーン"
 cardNote: "ブロックチェーンを構成・接続する技術のノート"
 

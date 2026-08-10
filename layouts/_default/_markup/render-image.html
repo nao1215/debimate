@@ -26,6 +26,15 @@
 {{- if and (not $alt) $page -}}
   {{- $alt = printf "%s の画像" ($page.Title | plainify) -}}
 {{- end -}}
+{{- /* 動画は img では再生できないので video で出す。GIF の置き換えとして
+       使うため、GIF と同じく自動再生・ループ・無音で、操作は出さない。
+       alt は video に無いので、代わりに本文として入れる */ -}}
+{{- $ext := path.Ext $u.Path | lower -}}
+{{- if in (slice ".mp4" ".webm") $ext -}}
+<video autoplay loop muted playsinline preload="metadata"
+  {{- with .Title }} title="{{ . | transform.HTMLEscape }}"{{ end -}}
+  > <source src="{{ $src }}" type="{{ if eq $ext ".webm" }}video/webm{{ else }}video/mp4{{ end }}">{{ $alt }}</video>
+{{- else -}}
 {{- $attributes := merge .Attributes (dict "alt" $alt "src" $src "title" (.Title | transform.HTMLEscape) "loading" "lazy") -}}
 <img
   {{- range $k, $v := $attributes -}}
@@ -33,4 +42,5 @@
       {{- printf " %s=%q" $k $v | safeHTMLAttr -}}
     {{- end -}}
   {{- end -}}>
+{{- end -}}
 {{- /**/ -}}

@@ -29,7 +29,7 @@ aliases:
 
 c-bata/go-prompt（下図は、同じ作者の[c-bata/kube-prompt](https://github.com/c-bata/kube-prompt)で用いられるgo-prompt）は、利用方法が分かりやすく、シェルのようなプロンプトを実現するには便利なライブラリでした。ただし、まだ枯れたソフトウェアではなかったため、バグが存在しました。先程述べたようにメンテナンスが滞っていたため、バグ対策を利用者側でワークアラウンド対応するか、諦めていました。
 
-![](images/kube-prompt.gif)
+![kube-prompt の動作デモ](images/kube-prompt.mp4)
 
 私もOSSを開発する立場なので、メンテナンスが滞る原因にいくつか心当たりがあります。
 

@@ -2,7 +2,7 @@
 title: "Distributed Systems"
 date: 2026-08-04
 draft: false
-weight: 30
+weight: 50
 cardLabel: "分散システム"
 cardNote: "障害・合意・複製・整合性を扱うノート"
 
