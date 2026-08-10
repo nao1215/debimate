@@ -40,6 +40,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [WAL - 書き込み先行ログと 2 つのウォーターマーク](/notes/distributed-systems/write-ahead-log/) | 耐久性 |
 
+#### Distributed Transactions
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [2PC - 確定か中止を全参加者で揃える](/notes/distributed-systems/two-phase-commit/) | 分散トランザクション |
+
 ---
 
 ### 参考文献（手元にある書籍）
