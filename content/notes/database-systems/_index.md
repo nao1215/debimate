@@ -25,6 +25,7 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [B-Tree - ページ単位の入出力に合わせた索引の木](/notes/database-systems/b-tree/) | 索引 / 探索木 |
+| 2 | [Index Scan - 索引から表の行へ届くまでに何が起きるか](/notes/database-systems/index-scan/) | 索引 / アクセス方法 |
 
 #### Durability / Storage
 
