@@ -4,14 +4,14 @@ date: 2026-08-10
 draft: false
 series: ["技術ノート"]
 tags: ["blockchain-systems", "cryptography"]
-weight: 7
+weight: 3
 ---
 
 ハッシュ関数は、任意の長さのデータを固定長の値へ変換する関数です。変換後の値をハッシュ値と呼びます。ここで扱うのは、その中でも改竄の検出に耐える性質を持つ暗号学的ハッシュ関数で、通信のエラー検出だけを目的とした関数（CRC、Cyclic Redundancy Check など）は対象外です。SHA-256 の内部の計算手順も扱いません。
 
 この性質を知りたくなる場面の代表は、このセクションの他のノートを読む時です。[Bitcoin Block](../bitcoin-block/) の「取引を 1 バイトでも書き換えると別の値になる」も、[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) の「32 バイトで数千件を代表できる」も、[Proof of Work](../proof-of-work/) の「総当たりより良い方法が知られていない」も、全てハッシュ関数の性質を根拠にしています。
 
-ダウンロードページの checksum や、バージョン管理ツール Git のコミット ID のように、ブロックチェーンの外でも同じ性質が使われています。
+ダウンロードページの checksum や、バージョン管理ツール Git のコミット ID のように、ブロックチェーンの外でも同じ性質が使われています。ハッシュ関数が Bitcoin のどの問題を引き受けているのかは、[Blockchain Basics](../blockchain-basics/) で他の仕組みと並べて整理しています。
 
 入力と出力の関係を以下に示します。
 

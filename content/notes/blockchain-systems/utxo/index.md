@@ -4,7 +4,7 @@ date: 2026-08-10
 draft: false
 series: ["技術ノート"]
 tags: ["blockchain-systems", "bitcoin"]
-weight: 6
+weight: 5
 ---
 
 UTXO（Unspent Transaction Output、未使用の取引出力）は、取引の出力（金額と使う条件が書かれた、コインの置き場）のうち、まだ別の取引に消費されていない物です。Bitcoin には口座という仕組みも、残高という 1 つの値を直接更新する場所もありません。支払いは、過去の取引が作った出力を丸ごと消費し、新しい出力を作る事で表されます。まだ消費されていない出力を集めた物は、UTXO 集合（UTXO set）と呼ばれます。

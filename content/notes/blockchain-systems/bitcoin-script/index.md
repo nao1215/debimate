@@ -4,7 +4,7 @@ date: 2026-08-10
 draft: false
 series: ["技術ノート"]
 tags: ["blockchain-systems", "bitcoin"]
-weight: 9
+weight: 6
 ---
 
 Bitcoin Script は、取引の出力に「使う条件」を書くための小さなプログラミング言語です。[UTXO](../utxo/) のノートで「出力には金額と使う条件が書かれる」とだけ述べ、条件式の書き方は扱わずにいました。その中身がこの言語です。ここでは代表的な条件である P2PKH（Pay to Public Key Hash）を軸に実行の仕組みを説明し、命令（opcode）の全一覧や、手数料・サイズの上限の規則は扱いません。

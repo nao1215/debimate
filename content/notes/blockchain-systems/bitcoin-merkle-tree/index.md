@@ -4,7 +4,7 @@ date: 2026-08-09
 draft: false
 series: ["技術ノート"]
 tags: ["blockchain-systems", "bitcoin"]
-weight: 3
+weight: 9
 ---
 
 Bitcoin は、ブロックに入った取引（transaction、以下の図では Tx と略します）の並びを Merkle Tree で 1 つのルートハッシュへ畳み込み、80 バイトのブロックヘッダに収めています。ここでは、Bitcoin が何を葉にして木を組み立てているのか、その木で取引の包含をどう検証するのかを説明します。

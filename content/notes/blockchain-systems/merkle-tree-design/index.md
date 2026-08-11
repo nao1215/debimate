@@ -4,7 +4,7 @@ date: 2026-08-09
 draft: false
 series: ["技術ノート"]
 tags: ["blockchain-systems", "cryptography"]
-weight: 4
+weight: 10
 ---
 
 Merkle Tree の構築方法は 1 通りに決まっていません。奇数の葉をどう組むか、葉と内部ノードをどうハッシュするか、葉をどう並べるかは、それぞれのプロトコルが決める設計事項です。ルートハッシュが何を保証しているのかは、この規則を決めて初めて確定します。
