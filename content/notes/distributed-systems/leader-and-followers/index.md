@@ -9,7 +9,7 @@ weight: 5
 
 Leader and Followers は、同じデータを複製して持つノードのうち 1 台を Leader に決め、更新を全て Leader が受け付けて残りの Follower へ配る構成です。更新の受け口が 1 台に絞られるため、同じデータへの更新の順序は Leader が決めた 1 つに定まります。ここでは、ノードが停止する故障とネットワークが分断される故障を扱い、誤った値を返す故障（ビザンチン障害）は対象外とします。
 
-パターンの名前は Unmesh Joshi の書籍『Patterns of Distributed Systems』（邦訳『分散システムのためのデザインパターン』）で使われているもので、Martin Fowler のサイトにも [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) として要約が置かれています。
+パターンの名前は Unmesh Joshi 氏の書籍『Patterns of Distributed Systems』（邦訳『分散システムのためのデザインパターン』）で使われているもので、Martin Fowler 氏のサイトにも [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) として要約が置かれています。
 
 冒頭の一文は「1 台のサーバに、複数のサーバへまたがる複製を統率させる」で、解法の節は「クラスタの中の 1 台を Leader として選ぶ。Leader はクラスタ全体を代表して決定を下し、その決定を他の全サーバへ伝播させる」と述べています。仕組みの説明には Raft を使います。Raft は、複製したログを全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
 
@@ -57,7 +57,7 @@ sequenceDiagram
 
 全体の順序として残るのは、候補のうち確定したものだけです。確定していない更新は、次の Leader が持っていなければ切り捨てられます。次の Leader が持っている場合は残り、現在の任期の更新が確定した時点で一緒に確定します。なお、並びを決める役目を 1 台へ固定しない解き方もあります。
 
-Paxos は Leslie Lamport が示した合意アルゴリズムです。同氏の [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf) は、合意アルゴリズムを「提案された値のうち 1 つだけが選ばれる事を保証する」ものだと述べています。この保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。
+Paxos は Leslie Lamport 氏が示した合意アルゴリズムです。同氏の [Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf) は、合意アルゴリズムを「提案された値のうち 1 つだけが選ばれる事を保証する」ものだと述べています。この保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。
 
 同じ論文は、提案を出すノードが複数居ると、互いに大きな番号を出し合って何も選ばれないまま進まなくなる場面を挙げ、安定して前へ進めるには提案を出す役を 1 台に定めるとよいと書いています。その役の選出が失敗しても、1 つの値だけが選ばれるという保証は崩れません。ログの各位置について Paxos を繰り返し、安定した Leader で処理を効率化する構成が、一般に Multi-Paxos と呼ばれます。
 

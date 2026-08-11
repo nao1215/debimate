@@ -11,7 +11,7 @@ Adapter とは、アプリケーションと同じ実行単位へ配置し、外
 
 実行単位（同じマシンへまとめて配置され、まとめて作られ削除されるコンテナの集まり）・実行基盤（コンテナの配置とライフサイクルを管理する基盤）・volume（同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場）は、[Sidecar](../sidecar/) と同じ意味で使います。同じ実行単位のコンテナはネットワークを共有する設定にできるため、隣のコンテナへ localhost で届きます。
 
-この名前は、Brendan Burns が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、Sidecar・Ambassador と並ぶ 3 つのパターンの 3 つ目として紹介されました。同ブログは Adapter を「出力を標準化し、正規化する」と説明しています。
+この名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、Sidecar・Ambassador と並ぶ 3 つのパターンの 3 つ目として紹介されました。同ブログは Adapter を「出力を標準化し、正規化する」と説明しています。
 
 体系化した論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」の 4.3 節は、「Ambassador パターンがアプリケーションへ外の世界を単純化して見せるのに対し、Adapter は外の世界へ、単純化され均質にされたアプリケーションの姿を見せる」と書き、それを「複数のコンテナにまたがって出力とインターフェースを標準化する事で行う」としています。
 

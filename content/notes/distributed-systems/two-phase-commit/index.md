@@ -23,7 +23,7 @@ flowchart TD
 
 上図のコーディネータは確定か中止かを決める役、参加者は自分のローカルトランザクションを実際に確定・中止する役です。
 
-Jim Gray と Leslie Lamport の論文「[Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf)」（2004 年）は、この 2 つを transaction manager、resource manager と呼び、2PC を単一のコーディネータで合意へ到達する古典的なトランザクションコミットのプロトコルとして説明しています。
+Jim Gray 氏と Leslie Lamport 氏の論文「[Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf)」（2004 年）は、この 2 つを transaction manager、resource manager と呼び、2PC を単一のコーディネータで合意へ到達する古典的なトランザクションコミットのプロトコルとして説明しています。
 
 ---
 

@@ -7,9 +7,9 @@ tags: ["software-architecture", "ddd"]
 weight: 3
 ---
 
-Repository とは、Aggregate（集約）を 1 つの単位として保存・復元する仕組みで、呼び出す側からはメモリ上のコレクションのように見えます。Eric Evans の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) は、DDD（Domain-Driven Design、ドメイン駆動設計）の Repository を「ユビキタス言語で表現された、集約への問い合わせ手段」と要約しています。ユビキタス言語とは、[Bounded Context](../bounded-context/) の中の全員が会話・図・コードで同じ意味で使う語彙です。
+Repository とは、Aggregate（集約）を 1 つの単位として保存・復元する仕組みで、呼び出す側からはメモリ上のコレクションのように見えます。Eric Evans 氏の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) は、DDD（Domain-Driven Design、ドメイン駆動設計）の Repository を「ユビキタス言語で表現された、集約への問い合わせ手段」と要約しています。ユビキタス言語とは、[Bounded Context](../bounded-context/) の中の全員が会話・図・コードで同じ意味で使う語彙です。
 
-Martin Fowler の書籍『Patterns of Enterprise Application Architecture』でも、Edward Hieatt と Rob Mee が [Repository](https://martinfowler.com/eaaCatalog/repository.html) を「ドメイン層とデータマッピング層の仲介役で、コレクションのようなインターフェースを通じてドメインオブジェクトへアクセスさせるもの」と定義しています。
+Martin Fowler 氏の書籍『Patterns of Enterprise Application Architecture』でも、Edward Hieatt 氏と Rob Mee 氏が [Repository](https://martinfowler.com/eaaCatalog/repository.html) を「ドメイン層とデータマッピング層の仲介役で、コレクションのようなインターフェースを通じてドメインオブジェクトへアクセスさせるもの」と定義しています。
 
 この定義に集約は現れません。出し入れの単位を集約へ結び付けているのは DDD で、その制約が実装へ何を持ち込むのかが、ここでの主題になります。
 
@@ -40,7 +40,7 @@ flowchart TB
 
 この向きの変え方を依存性逆転と呼びます。呼び出す側でインターフェースを宣言し、呼び出される実装がそれを満たすと、参照は実装からインターフェースへ向き、上位の層が下位の層を参照する関係が消えます。なお、DDD Reference はインターフェースをどの層に置くかを指定していません。上図の配置は依存性逆転を当てはめたもので、Repository の定義そのものではありません。
 
-注意点として、インターフェースの置き場所を変えただけでは依存は消えません。Repository のメソッドが返す型が DB の行をそのまま写した構造体なら、ドメイン層はテーブルの形に縛られたままです。返す型が集約である事まで含めて、この配置が成立します。行そのものが自分の保存方法を知る形は、Fowler が Repository と分けている [Active Record](https://martinfowler.com/eaaCatalog/activeRecord.html) にあたります。
+注意点として、インターフェースの置き場所を変えただけでは依存は消えません。Repository のメソッドが返す型が DB の行をそのまま写した構造体なら、ドメイン層はテーブルの形に縛られたままです。返す型が集約である事まで含めて、この配置が成立します。行そのものが自分の保存方法を知る形は、Fowler 氏が Repository と分けている [Active Record](https://martinfowler.com/eaaCatalog/activeRecord.html) にあたります。
 
 ---
 
@@ -70,7 +70,7 @@ flowchart TB
 UPDATE order_lines SET quantity = 10 WHERE order_id = 'A-1' AND sku = 'X';
 ```
 
-集約ルートを迂回して明細を書き換える経路は、[Aggregate](../value-object-entity-aggregate/) でも扱いました。オブジェクトの参照ではなく SQL で起きているだけで、壊れ方は変わりません。Evans は、制約のないクエリが 2 通りの壊し方をし得ると書いています。
+集約ルートを迂回して明細を書き換える経路は、[Aggregate](../value-object-entity-aggregate/) でも扱いました。オブジェクトの参照ではなく SQL で起きているだけで、壊れ方は変わりません。Evans 氏は、制約のないクエリが 2 通りの壊し方をし得ると書いています。
 
 1 つは、オブジェクトから特定のフィールドだけを引き出してカプセル化を破る事。もう 1 つは、集約の内部にあるオブジェクトだけを単体で構築する事です。明細だけを取り出すと、集約ルートである注文は取り出された事を知らないため、合計金額の上限を検査する機会がありません。規則を検査できるオブジェクトが居なくなると、検査はクエリとアプリケーション層のコードへ移り、Entity と Value Object には規則を持たないフィールドだけが残ります。
 
@@ -116,7 +116,7 @@ type Repository interface {
 
 ### 集約単位で出し入れする
 
-Evans は、直接アクセスが実際に必要な集約ルートに対してだけ Repository を用意する事を求めています。テーブルごとに 1 つ作る物ではないので、`OrderLine` のための Repository は作りません。明細は `Order` を通してのみ手に入ります。
+Evans 氏は、直接アクセスが実際に必要な集約ルートに対してだけ Repository を用意する事を求めています。テーブルごとに 1 つ作る物ではないので、`OrderLine` のための Repository は作りません。明細は `Order` を通してのみ手に入ります。
 
 テーブルごとに作った方が実装は素直になるのではないか、と考える方がいるかもしれません。確かに実装は素直になります。その代わり、`OrderLine` を単体で保存する経路が開き、上で見た `UPDATE order_lines` と同じ更新をアプリケーションのコードから書けてしまいます。
 
@@ -186,7 +186,7 @@ var ErrConflict = errors.New("order: conflict")
 
 ### 検索条件をどう渡すか
 
-Evans は、ドメイン専門家にとって意味のある条件でオブジェクトを選ぶメソッドを用意する事を求めています。「出荷が済んでいない注文」は業務で使う語で、`FindUnshipped` はその語をそのままメソッド名にしたものです。一方、`FindByCustomerIDAndStatusAndCreatedAfter` は SQL の `WHERE` 句を写しただけで、業務の語にはなっていません。
+Evans 氏は、ドメイン専門家にとって意味のある条件でオブジェクトを選ぶメソッドを用意する事を求めています。「出荷が済んでいない注文」は業務で使う語で、`FindUnshipped` はその語をそのままメソッド名にしたものです。一方、`FindByCustomerIDAndStatusAndCreatedAfter` は SQL の `WHERE` 句を写しただけで、業務の語にはなっていません。
 
 条件の組み合わせが増えれば、メソッドも増えます。対処の方向は 3 つあります。
 
@@ -196,7 +196,7 @@ Evans は、ドメイン専門家にとって意味のある条件でオブジ�
 | Specification を渡す | 条件そのものをオブジェクトにして組み合わせる | 条件を実行時に組み立てる必要がある |
 | 照会の経路を分ける | 表示のための検索を Repository の外へ出す | 検索条件が画面の都合で決まり、更新に使わない |
 
-Specification とは、Evans と Fowler が論文「[Specifications](https://martinfowler.com/apsupp/spec.pdf)」で示したパターンで、候補が条件に合うかを判定する規則そのものをオブジェクトにします。論文が中心の考えとして挙げているのは、合致の判定方法の記述と、判定される候補オブジェクトを分離する事です。条件を `and` や `or` で組み合わせられるため、メソッド名の組み合わせ爆発は起きません。
+Specification とは、Evans 氏と Fowler 氏が論文「[Specifications](https://martinfowler.com/apsupp/spec.pdf)」で示したパターンで、候補が条件に合うかを判定する規則そのものをオブジェクトにします。論文が中心の考えとして挙げているのは、合致の判定方法の記述と、判定される候補オブジェクトを分離する事です。条件を `and` や `or` で組み合わせられるため、メソッド名の組み合わせ爆発は起きません。
 
 ただし、この論文が扱っているのは、候補を受け取って真偽を返す `isSatisfiedBy` という判定の抽象で、条件を DB のクエリへ変換する方法は含まれていません。Repository へ Specification を渡す設計では、`WHERE` 句への変換を自分で書く事になります。
 
@@ -206,7 +206,7 @@ Specification とは、Evans と Fowler が論文「[Specifications](https://mar
 
 ### トランザクションの範囲
 
-Evans は、トランザクションと分散（複数のサーバへ分けて置く事）を統べる単位として、集約の境界を使う事を求めています。1 回の操作で 1 つの集約だけを更新するなら、`Save` の中でトランザクションを開いて閉じる形にできます。この形では `FindByID` と `Save` が別のトランザクションになるため、上で書いたバージョン番号による検査が別途必要です。
+Evans 氏は、トランザクションと分散（複数のサーバへ分けて置く事）を統べる単位として、集約の境界を使う事を求めています。1 回の操作で 1 つの集約だけを更新するなら、`Save` の中でトランザクションを開いて閉じる形にできます。この形では `FindByID` と `Save` が別のトランザクションになるため、上で書いたバージョン番号による検査が別途必要です。
 
 複数の集約を 1 回の操作で更新したくなった場合、まず境界が業務と合っていない徴候として疑います。2 つの集約が同時に壊れる規則があるなら、その規則を検査できるのは両方を持っている場所だけで、境界の引き直しが解になるためです。境界が正しいと判断した場合の道は 2 つあり、1 つは、別々のトランザクションに分けて結果整合性で追いつかせる方法で、[Aggregate](../value-object-entity-aggregate/) で扱いました。
 
@@ -220,7 +220,7 @@ Evans は、トランザクションと分散（複数のサーバへ分けて�
 
 Repository は集約全体を復元します。この性質は不変条件を守る時に効き、画面へ一覧を出す時には重くなります。注文の一覧に 20 件を並べ、1 件につき注文番号と合計金額と状態の 3 つだけを表示する場合でも、20 個の集約を明細まで含めて構築する事になります。表示のためだけに集約を丸ごと復元するのは無駄ではないか、と考える方がいるかもしれません。
 
-Evans は、完全に構築された集約であるかのように見せる proxy を返す選択肢も挙げています。明細を触られた時に初めて DB を読む形になるため、一覧の各行で明細を触ると読み込みが件数分だけ走ります。もう 1 つの方向が、照会の経路を Repository から分ける事で、以下ではその方法を扱います。
+Evans 氏は、完全に構築された集約であるかのように見せる proxy を返す選択肢も挙げています。明細を触られた時に初めて DB を読む形になるため、一覧の各行で明細を触ると読み込みが件数分だけ走ります。もう 1 つの方向が、照会の経路を Repository から分ける事で、以下ではその方法を扱います。
 
 更新と表示で経路を分けた構成を以下に示します。
 

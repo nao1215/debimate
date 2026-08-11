@@ -11,7 +11,7 @@ Domain Event とは、ドメインの中で既に起きた出来事を表すオ�
 
 全ての状態変更をイベントの並びとして保存し、状態をその再生で復元する [Event Sourcing](../event-sourcing/) の詳細は対象外とし、違いは末尾で 1 段落だけ触れます。
 
-DDD（Domain-Driven Design、ドメイン駆動設計）での位置付けは、Eric Evans の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) に書かれています。同書は Domain Events を「ドメインエキスパートが関心を持つ何かが起きた」と要約し、「ドメインの活動に関する情報を一つ一つ区切られた出来事の連なりとしてモデル化し、それぞれの出来事をドメインオブジェクトとして表現せよ」と述べています。
+DDD（Domain-Driven Design、ドメイン駆動設計）での位置付けは、Eric Evans 氏の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) に書かれています。同書は Domain Events を「ドメインエキスパートが関心を持つ何かが起きた」と要約し、「ドメインの活動に関する情報を一つ一つ区切られた出来事の連なりとしてモデル化し、それぞれの出来事をドメインオブジェクトとして表現せよ」と述べています。
 
 連なりというのは、業務上意味のある出来事を 1 件ずつ独立したドメインオブジェクトとして明示する形を指します。同書は続けて、ドメインエキスパートが追跡したい出来事や通知を受けたい出来事、他のモデルオブジェクトの状態変化に結び付く出来事を明示せよと述べており、関係のない活動は無視してよいとしています。現在の状態を捨ててイベントだけを保存せよという指示ではありません。不変である事と、時刻および識別子を持つ事も同じ箇所の記述です。
 
@@ -35,7 +35,7 @@ flowchart LR
 
 ### なぜ Domain Event が必要なのか
 
-Aggregate は、内部の不変条件を常に保つ単位です。Vaughn Vernon が 2011 年に発表した [Effective Aggregate Design Part I](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf) は、「適切に設計された Bounded Context は、あらゆる場合において 1 トランザクションにつき 1 つの Aggregate インスタンスだけを変更する」と書いています。同じ論文は、この原則が経験則（rule of thumb）で、ほとんどの場合に目指すべき目標だとも添えています。
+Aggregate は、内部の不変条件を常に保つ単位です。Vaughn Vernon 氏が 2011 年に発表した [Effective Aggregate Design Part I](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf) は、「適切に設計された Bounded Context は、あらゆる場合において 1 トランザクションにつき 1 つの Aggregate インスタンスだけを変更する」と書いています。同じ論文は、この原則が経験則（rule of thumb）で、ほとんどの場合に目指すべき目標だとも添えています。
 
 原則を外して 2 つの Aggregate を 1 つのトランザクションで更新すると、次のようなコードになります。注文の確定と在庫の引き当てを同時に行う実装です。
 
@@ -92,9 +92,9 @@ sequenceDiagram
 
 在庫が別の Bounded Context へ移り、DB が分かれた場合はさらに直接的です。1 つのローカルトランザクションで両方を更新する経路が無くなり、上のコードは書けなくなります。複数の DB を 1 つのコミットにまとめる分散トランザクション（[2 相コミット](../../distributed-systems/two-phase-commit/)）を持ち込めば形は保てるものの、参加者の 1 つが停止すると全体が待たされます。
 
-Vernon の [Effective Aggregate Design Part II](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf) は、この場面での指針を「1 つの Aggregate インスタンスへコマンドを実行した結果、他の 1 つ以上の Aggregate で追加の業務規則を実行する必要があるなら、結果整合性を使え」と書いています。コマンドは状態を変えてほしいという要求で、`order.Confirm(...)` のように Aggregate のメソッドを呼ぶ形を指します。
+Vernon 氏の [Effective Aggregate Design Part II](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_2.pdf) は、この場面での指針を「1 つの Aggregate インスタンスへコマンドを実行した結果、他の 1 つ以上の Aggregate で追加の業務規則を実行する必要があるなら、結果整合性を使え」と書いています。コマンドは状態を変えてほしいという要求で、`order.Confirm(...)` のように Aggregate のメソッドを呼ぶ形を指します。
 
-同じ論文は Evans の書籍『Domain-Driven Design』から「Aggregate をまたぐ規則は、常に最新である事を期待されない」という一文も引いています。結果整合性とは、いずれ全体が一致するものの、ある瞬間を切り取ると[ずれている状態を許す](../value-object-entity-aggregate/)考え方です。Domain Event は、この結果整合性を実現する手段になります。
+同じ論文は Evans 氏の書籍『Domain-Driven Design』から「Aggregate をまたぐ規則は、常に最新である事を期待されない」という一文も引いています。結果整合性とは、いずれ全体が一致するものの、ある瞬間を切り取ると[ずれている状態を許す](../value-object-entity-aggregate/)考え方です。Domain Event は、この結果整合性を実現する手段になります。
 
 ---
 
@@ -125,7 +125,7 @@ func (e OrderConfirmed) Name() string { return "order.confirmed" }
 
 過去形の名前は、受け取る相手との関係を決めています。「注文を確定せよ」という命令は特定の処理が実行される事を期待していて、その成否は発行元にとって意味を持ちます。「注文が確定した」という事実は起きた事を伝えるだけで、発行元は誰がどう処理したかを知りません。注意点として、事実を取り消せない事と、受信側が処理を失敗させられない事は別です。受信側の処理は普通に失敗します。
 
-時刻の扱いにも注意が要ります。Martin Fowler の [Domain Event](https://martinfowler.com/eaaDev/DomainEvent.html) は、「出来事が世界で起きた時刻」と「その出来事に気付いた時刻」の 2 つを区別すべきだと書いています。どちらを保持しているのかがフィールド名で分かるようにします。
+時刻の扱いにも注意が要ります。Martin Fowler 氏の [Domain Event](https://martinfowler.com/eaaDev/DomainEvent.html) は、「出来事が世界で起きた時刻」と「その出来事に気付いた時刻」の 2 つを区別すべきだと書いています。どちらを保持しているのかがフィールド名で分かるようにします。
 
 ---
 
@@ -159,7 +159,7 @@ func (o *Order) PullEvents() []DomainEvent {
 
 記録と発行を分けている点が効いています。`Confirm` の時点ではイベントを外へ出さず、Aggregate の中へ溜めるだけです。溜めたイベントを取り出すのは Repository の `Save` だけなので、途中で処理を中断すれば、イベントは外へ出ないまま終わります。この順序によって、起きていない事実を配ってしまう事故を防げます。
 
-Vernon の論文は、`Confirm` にあたるメソッドの中から発行の窓口を直接呼ぶ書き方を示しています。その形で同じ `Confirm` を書くと以下になります。
+Vernon 氏の論文は、`Confirm` にあたるメソッドの中から発行の窓口を直接呼ぶ書き方を示しています。その形で同じ `Confirm` を書くと以下になります。
 
 ```go
 // publisher はパッケージレベルの変数です。
@@ -181,7 +181,7 @@ func (o *Order) Confirm(now time.Time) error {
 }
 ```
 
-違いは `o.events` への追記が `publisher.Publish` に変わった 1 行だけです。発行の窓口をパッケージレベルの変数に置いているのは、Vernon の論文が `DomainEventPublisher.instance()` というシングルトン経由で呼んでいるためです。
+違いは `o.events` への追記が `publisher.Publish` に変わった 1 行だけです。発行の窓口をパッケージレベルの変数に置いているのは、Vernon 氏の論文が `DomainEventPublisher.instance()` というシングルトン経由で呼んでいるためです。
 
 `Order` に窓口を持たせず、引数でも渡さない形にすると、`Confirm` の呼び出し側はイベントが出る事を知らずに済みます。その代わり、`Order` の依存がシグネチャに現れず、テストで差し替える経路も外から見えなくなります。
 
@@ -374,7 +374,7 @@ func (h *stockHandler) Handle(ctx context.Context, ev OrderConfirmed) error {
 - 業務上、複数の Aggregate が必ず同時に成立しなければならない場合。Aggregate の境界の引き方から見直す
 - ハンドラが 1 つしかなく、今後も増える見込みが無い連携。関数を直接呼ぶ方が追いやすい
 
-最後の判断は、遅延を許容できるかをドメインエキスパートに聞いて決めます。Vernon の Effective Aggregate Design Part II も、ドメインエキスパートは開発者より遅延に寛容な場合が多く、数秒から数日の遅れを許す事があると書いています。
+最後の判断は、遅延を許容できるかをドメインエキスパートに聞いて決めます。Vernon 氏の Effective Aggregate Design Part II も、ドメインエキスパートは開発者より遅延に寛容な場合が多く、数秒から数日の遅れを許す事があると書いています。
 
 ---
 
@@ -396,6 +396,6 @@ func (h *stockHandler) Handle(ctx context.Context, ev OrderConfirmed) error {
 
 Integration Event は、外部へ公開する事を前提に形を決めた Domain Event だと考えられます。内部のモデルをそのまま外へ出すと、受け手が内部の変更に引きずられます。Bounded Context の境界を越える時は、公開用の形へ変換してから送ります。
 
-なお、Domain Event を同じ Bounded Context の中で使うという線引きは、後から広まった運用上の指針です。Evans の DDD Reference は、Domain Event をノードをまたいで伝わるものとして説明しており、範囲を Bounded Context の中に限っていません。
+なお、Domain Event を同じ Bounded Context の中で使うという線引きは、後から広まった運用上の指針です。Evans 氏の DDD Reference は、Domain Event をノードをまたいで伝わるものとして説明しており、範囲を Bounded Context の中に限っていません。
 
 [Event Sourcing](../event-sourcing/) は、この表の 3 つとは軸が違います。メッセージの種類ではなく、状態そのものを Domain Event の並びとして永続化し、再生で復元する方式です。保存されるのは Domain Event なので、どちらかを選ぶ関係にはありません。Domain Event を使う事は、Event Sourcing を採用する事を意味しません。

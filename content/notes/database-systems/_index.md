@@ -26,6 +26,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [B-Tree - ページ単位の入出力に合わせた索引の木](/notes/database-systems/b-tree/) | 索引 / 探索木 |
 
+#### Data Modeling
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Soft Delete - 削除フラグを最初の選択肢にしない](/notes/database-systems/soft-delete/) | データモデリング |
+
 ---
 
 ### 参考文献（手元にある書籍）
