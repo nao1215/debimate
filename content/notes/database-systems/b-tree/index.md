@@ -65,7 +65,7 @@ flowchart LR
 
 キーの順に並んだ探索木なら二分探索木でも同じ事ができるのではないか、と考える方がいるかもしれません。しかし、二分探索木をディスク上の索引に使うと、最悪の場合は木の段数と同じ回数だけページの読み出しが発生します。
 
-DB がストレージとやり取りする単位はページなので、1 バイトだけ必要な場合もページ 1 枚をまるごと読み込む事になります。ページの大きさは製品で違い、MySQL の InnoDB は索引のページについて[「The default size of an index page is 16KB」と書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-physical-structure.html)。
+DB がストレージとやり取りする単位はページなので、1 バイトだけ必要な場合もページ 1 枚をまるごと読み込む事になります。ページの大きさは製品で違い、MySQL の InnoDB は索引のページについて[「The default size of an index page is 16KB」（索引ページの既定の大きさは 16KB）と書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-physical-structure.html)。
 
 二分探索木のノードはキー 1 個とポインタ 2 本しか持ちません。ポインタとは、別のページの位置を指す数バイトの値です。ノードをページに 1 個ずつ置くと、16KB を読んでも得られるのは比較 1 回分の情報になります。
 
@@ -91,7 +91,7 @@ DB がストレージとやり取りする単位はページなので、1 バイ
 
 B-Tree のノードは、木の中の位置によって 3 種類に分かれます。一番上にある 1 つが根ノード、一番下に並ぶのが葉ノード、その間にあるのが内部ノードです。実装の一例として、PostgreSQL のドキュメントは、[葉が表の行を指す項目を持ち、内部ノードが 1 つ下の段を指す項目を持つと説明しています](https://www.postgresql.org/docs/current/btree.html)（原文では「tuples that point to table rows」と「tuples that point to the next level down」）。
 
-同じ箇所には「Typically, over 99% of all pages are leaf pages.」とあります。索引のページの大半は葉で、上の段は木を降りるための道案内だけを担うという事です。件数が増えた時に増えるのも、そのほとんどが葉のページになります。
+同じ箇所には「Typically, over 99% of all pages are leaf pages.」（通常、全ページの 99% 超が葉ページになる）とあります。索引のページの大半は葉で、上の段は木を降りるための道案内だけを担うという事です。件数が増えた時に増えるのも、そのほとんどが葉のページになります。
 
 根と内部ノードが持つ値が、区切りキーです。区切りキーは、下の段のどのページへ進むかを分ける境目の値になります。キーが 2 個並んでいれば、その 2 個で数直線が 3 つの区間に割れ、ポインタが 3 本伸びます。
 
@@ -159,7 +159,7 @@ flowchart TD
 
 ### 満杯のノードを分割して段数を保つ
 
-キーを挿入していくと、いずれかの葉が満杯になります。B-Tree は、満杯になったノードを 2 つへ分割して空きを作ります。PostgreSQL は、この操作を[「A page split operation makes room for items that originally belonged on the overflowing page by moving a portion of the items to a new page.」と説明しています](https://www.postgresql.org/docs/current/btree.html)。
+キーを挿入していくと、いずれかの葉が満杯になります。B-Tree は、満杯になったノードを 2 つへ分割して空きを作ります。PostgreSQL は、この操作を[「A page split operation makes room for items that originally belonged on the overflowing page by moving a portion of the items to a new page.」（ページ分割は、あふれたページに元々あった項目の一部を新しいページへ移す事で空きを作る）と説明しています](https://www.postgresql.org/docs/current/btree.html)。
 
 葉が 1 枚割れた時に、親が何を受け取るのかを以下に示します。分割に関係する枝だけを抜き出した図で、親はほかにも枝を持ちます。
 
@@ -187,7 +187,7 @@ flowchart TB
 
 葉を割る時に、境目の 48 は右側の葉に残ったまま、親にも区切りキーとしてコピーされます。これは値を葉に集めた形だからです。値を内部ノードにも置く古典的な B-Tree では、境目のキーは上の段へ移り、下からは取り除かれます。上の段のキーが道案内でしかないか、値の置き場所も兼ねるかで、分割の後始末が変わります。
 
-親も満杯だった場合は、親を割り、その区切りキーをさらに上の段へ渡します。PostgreSQL は、この連鎖を[「Page splits 'cascade upwards' in a recursive fashion.」と書いています](https://www.postgresql.org/docs/current/btree.html)。連鎖が根まで届くと、元の根の 1 つ上に新しい根が作られます。
+親も満杯だった場合は、親を割り、その区切りキーをさらに上の段へ渡します。PostgreSQL は、この連鎖を[「Page splits 'cascade upwards' in a recursive fashion.」（ページ分割は再帰的に上へ連鎖する）と書いています](https://www.postgresql.org/docs/current/btree.html)。連鎖が根まで届くと、元の根の 1 つ上に新しい根が作られます。
 
 分割が根まで連鎖した場合の流れを以下に示します。
 
@@ -209,9 +209,9 @@ sequenceDiagram
 
 1 回の分割では、割れた 2 枚と区切りキーを受け取る親をはじめ、複数のページが書き換わります。何枚がどの順で書き換わるかは実装で違い、同じ段のページを横に繋いでいる実装なら隣のページも更新の対象になります。そのため実際の DB では、分割の途中でクラッシュしても索引を復旧できる仕組みが別に要ります。[WAL](/notes/distributed-systems/write-ahead-log/) や、実装ごとに定められたページ分割の手順がその役割を担います。ここでは、その詳細までは扱いません。
 
-分割した 2 枚がどこまで埋まるかは、挿入の順序で変わります。InnoDB のドキュメントは、昇順か降順に挿入した場合のページが[「about 15/16 full」、ランダムな順なら「from 1/2 to 15/16 full」になると書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-physical-structure.html)。順序に沿った挿入はページを高い充填率で使いやすい一方、ランダムな位置への挿入では途中のページで分割が起こりやすく、同じ件数でも索引が大きくなる場合があります。
+分割した 2 枚がどこまで埋まるかは、挿入の順序で変わります。InnoDB のドキュメントは、昇順か降順に挿入した場合のページが[「about 15/16 full」（およそ 15/16 まで埋まる）、ランダムな順なら「from 1/2 to 15/16 full」（1/2 から 15/16 まで埋まる）になると書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-physical-structure.html)。順序に沿った挿入はページを高い充填率で使いやすい一方、ランダムな位置への挿入では途中のページで分割が起こりやすく、同じ件数でも索引が大きくなる場合があります。
 
-連番のように末尾へ追加していく場合は、右端のページを割る動きが特別に扱われます。PostgreSQL は、葉ページを指定した割合まで詰めるのは索引を作り直す時と[「when extending the index at the right」だと書いています](https://www.postgresql.org/docs/current/sql-createindex.html)。この割合の既定値は 90 で、左のページを詰めたまま残せるので索引は小さく収まります。
+連番のように末尾へ追加していく場合は、右端のページを割る動きが特別に扱われます。PostgreSQL は、葉ページを指定した割合まで詰めるのは索引を作り直す時と[「when extending the index at the right」（索引を右端へ伸ばす時）だと書いています](https://www.postgresql.org/docs/current/sql-createindex.html)。この割合の既定値は 90 で、左のページを詰めたまま残せるので索引は小さく収まります。
 
 同じ件数でも、埋まり方が悪いほど索引のページ数が増え、段数が増える方向へ動きます。索引を張る列に連番を選ぶか、値が散らばる識別子を選ぶかで、索引の大きさが変わり得るという事です。ここから先の判断は、扱うデータ量や製品の実装まで見ないと決まりません。
 
@@ -223,7 +223,7 @@ DB が実際に使う索引の多くは、B-Tree そのものではなく B+tree
 
 値を上の段から追い出すと、1 ページに入る区切りキーの数が増え、分岐数が上がりやすくなります。加えて、探索が葉まで降りる形に揃うので、どのキーでも木を降りる回数が揃います。
 
-値の置き方は、同じ製品の中でも用途で分かれます。SQLite のファイルフォーマットの説明は、[表を格納する木が「store all data in the leaves」、索引の木が「store no data at all」だと書いています](https://sqlite.org/fileformat2.html)。表を格納する木は値を葉へ集めた B+tree の形で、索引の木は内部ノードにもキーの本体を置き、行のデータだけを持ちません。
+値の置き方は、同じ製品の中でも用途で分かれます。SQLite のファイルフォーマットの説明は、[表を格納する木が「store all data in the leaves」（全てのデータを葉へ格納する）、索引の木が「store no data at all」（データを一切格納しない）だと書いています](https://sqlite.org/fileformat2.html)。表を格納する木は値を葉へ集めた B+tree の形で、索引の木は内部ノードにもキーの本体を置き、行のデータだけを持ちません。
 
 もう 1 つ、DB の B+tree 実装でよく見られる工夫として、範囲の走査を速くするために同じ段のページを横に繋ぐ形があります。例えば PostgreSQL は、[葉に限らず各段のページが前後に辿れる双方向のリストとして繋がっていると書いています](https://www.postgresql.org/docs/current/btree.html)（原文は「each level of the tree can be used as a doubly-linked list of pages」）。
 
@@ -241,7 +241,7 @@ flowchart LR
 
 一方、SQLite の葉ページは兄弟へのポインタを持たないため、葉から隣の葉へ直接リンクを辿る構造ではありません。範囲の取り出しで上の段へ戻らずに済むかどうかは、このように実装によって変わります。
 
-注意点として、製品のドキュメントに出てくる「B-tree」は、多くの場合この系統の総称です。MySQL の用語集は[「The use of the term B-tree is intended as a reference to the general class of index design.」と断っています](https://dev.mysql.com/doc/refman/8.4/en/glossary.html)。各ストレージエンジンの構造は、古典的な B-Tree にない工夫を持つ変種と見なしてよいとも書かれています。
+注意点として、製品のドキュメントに出てくる「B-tree」は、多くの場合この系統の総称です。MySQL の用語集は[「The use of the term B-tree is intended as a reference to the general class of index design.」（B-tree という用語は、索引設計の一般的な系統を指すものとして使っている）と断っています](https://dev.mysql.com/doc/refman/8.4/en/glossary.html)。各ストレージエンジンの構造は、古典的な B-Tree にない工夫を持つ変種と見なしてよいとも書かれています。
 
 名前で構造を判断せず、値がどこにあるかと、同じ段が繋がっているかを見る方が確実だと考えられます。この 2 点が分かれば、範囲の取り出しに何回の降下が要るかと、並べ替えを省けるかが読み取れます。
 

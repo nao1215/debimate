@@ -74,7 +74,7 @@ flowchart LR
 
 ### 奇数の葉は最後を複製する
 
-木の組み立て方は Merkle Tree で 1 通りに決まっておらず、Bitcoin の作り方は数ある流儀の 1 つです。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」と Merkle Tree としては異例の選択だと断っています。
+木の組み立て方は Merkle Tree で 1 通りに決まっておらず、Bitcoin の作り方は数ある流儀の 1 つです。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
 
 取引 3 件のブロックでの複製を以下に示します。
 
@@ -90,7 +90,7 @@ flowchart BT
 
 上図の Hash22 は、Hash2 を 2 つ連結した組のハッシュです。この木は、4 件目の取引として Tx2 をもう一度並べた場合と同じ形になります。
 
-複製規則の副作用として、異なる取引の並びから同じルートハッシュが決まる形が存在します。同じコメントは「This results in certain sequences of transactions leading to the same merkle root」と書いています。SHA-256 の衝突ではなく、木の構築規則に由来する一致です。
+複製規則の副作用として、異なる取引の並びから同じルートハッシュが決まる形が存在します。同じコメントは「This results in certain sequences of transactions leading to the same merkle root」（この結果、ある種の取引の並びが同じ merkle root へ至る）と書いています。SHA-256 の衝突ではなく、木の構築規則に由来する一致です。
 
 放置すると、細工したブロックを無効と記録した事で、同じハッシュを持つ正当なブロックまで受け取れなくなる攻撃（[CVE-2012-2459](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2012-2459)）に繋がります。そのため Bitcoin Core は、段の末尾で同じハッシュ 2 つを組にする箇所を検出し、そのブロックを棄却しています。
 
@@ -173,7 +173,7 @@ sequenceDiagram
     Note over C,F: 一致すれば Tx2 は<br/>そのブロックに<br/>入っていた
 ```
 
-上図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていた事だけです。証明を受け取ったクライアントは Tx2 が有効な取引だと確かめたのではないか、と考える方がいるかもしれません。白書は「He can't check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it」と書いています。
+上図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていた事だけです。証明を受け取ったクライアントは Tx2 が有効な取引だと確かめたのではないか、と考える方がいるかもしれません。白書は「He can't check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it」（利用者自身が取引を検証する事はできないが、チェーン上の場所と結び付ける事で、ネットワークのノードがそれを受け入れた事は分かる）と書いています。
 
 署名が正しいか、使おうとしている残高が既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
 

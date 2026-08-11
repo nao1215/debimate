@@ -38,6 +38,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [Soft Delete - 削除フラグを最初の選択肢にしない](/notes/database-systems/soft-delete/) | データモデリング |
 
+#### Query Processing
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Query Processing - SQL から実行計画を作り、動かすまで](/notes/database-systems/query-processing/) | 問い合わせ処理 |
+
 ---
 
 ### 参考文献（手元にある書籍）

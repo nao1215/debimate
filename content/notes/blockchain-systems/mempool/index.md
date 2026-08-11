@@ -60,7 +60,7 @@ flowchart LR
 
 有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。Bitcoin の代表的な実装である Bitcoin Core のドキュメントは、[policy が、consensus に加えて未確認の取引へ課す検証規則であり、ノードごとに設定できるものだと説明しています](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)。
 
-同じドキュメントには「Policy is not applied to transactions in blocks」という一文があります。ブロックに入った取引へ policy は適用されず、判定に使われるのは consensus rule だけという事になります。
+同じドキュメントには「Policy is not applied to transactions in blocks」（policy はブロックに入った取引へは適用されない）という一文があります。判定に使われるのは consensus rule だけ、という事になります。
 
 2 つの違いを以下に示します。
 

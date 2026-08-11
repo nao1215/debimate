@@ -63,7 +63,7 @@ flowchart LR
     end
 ```
 
-RFC 自身が、接頭辞で入力空間を分ける目的を「this domain separation is required to give second preimage resistance」と書いています。second preimage resistance（第 2 原像計算困難性）は、ある値と同じハッシュになる別の入力を見つけられない性質です。
+RFC 自身が、接頭辞で入力空間を分ける目的を「this domain separation is required to give second preimage resistance」（この domain separation は second preimage resistance を与えるために必要だ）と書いています。second preimage resistance（第 2 原像計算困難性）は、ある値と同じハッシュになる別の入力を見つけられない性質です。
 
 ハッシュ関数そのものが安全でも、木の構築規則が曖昧なら問題は生じ得ます。木の構築規則はプロトコル設計の一部で、新しく Merkle Tree を設計するなら、接頭辞で葉と内部ノードを分ける方が安全だと考えられます。
 

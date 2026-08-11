@@ -93,7 +93,7 @@ flowchart LR
 
 PostgreSQL や SQLite のように部分索引を持つ製品なら、索引に載せる行を選ぶ条件（predicate）を付けて、その条件を満たす行だけへ一意性を課せます。条件に合う行の間だけで一意性を強制し、合わない行は縛りません。
 
-公式ドキュメントは、部分索引の使い道の 1 つとして[「This enforces uniqueness among the rows that satisfy the index predicate, without constraining those that do not.」と説明しています](https://www.postgresql.org/docs/current/indexes-partial.html)。
+公式ドキュメントは、部分索引の使い道の 1 つとして[「This enforces uniqueness among the rows that satisfy the index predicate, without constraining those that do not.」（索引の条件を満たす行の間で一意性を強制し、満たさない行は縛らない）と説明しています](https://www.postgresql.org/docs/current/indexes-partial.html)。
 
 表に付けた `UNIQUE (email)` を外し、代わりに次の索引を置きます。
 
@@ -117,7 +117,7 @@ CREATE UNIQUE INDEX members_email_active_idx
 
 `is_deleted` や `deleted_at` は、業務の語彙ではありません。和田卓人氏の「[SQL アンチパターン 幻の第 26 章「とりあえず削除フラグ」](https://www.slideshare.net/slideshow/ronsakucasual/52256922)」は、解決策への糸口として ledsun 氏の「[論理削除フラグという名の死亡フラグ](https://ledsun.hatenablog.com/entry/2015/03/27/015203)」から一文を引いています。引かれているのは「私の経験上は、ユーザーから「論理削除」という言葉を聞いたことがありません」で、引用元ではこの後に、退職や売上の打ち消しといった実際に聞く要件が並べられています。
 
-同じ所を指した文章に、Udi Dahan 氏の [Don't Delete – Just Don't](https://udidahan.com/2009/09/01/dont-delete-just-dont/) があります。「don't think about deleting entities. Look for the reason why.」と書き、続けてエンティティが移り変わる状態を理解するよう促しています。ユーザーが削除と呼ぶ操作の裏には、商品の販売終了・注文のキャンセル・従業員の解雇や退職といった、それぞれ違う業務上の意図があるという説明です。
+同じ所を指した文章に、Udi Dahan 氏の [Don't Delete – Just Don't](https://udidahan.com/2009/09/01/dont-delete-just-dont/) があります。「don't think about deleting entities. Look for the reason why.」（エンティティを削除する事を考えるのではなく、その理由を探しなさい）と書き、続けてエンティティが移り変わる状態を理解するよう促しています。ユーザーが削除と呼ぶ操作の裏には、商品の販売終了・注文のキャンセル・従業員の解雇や退職といった、それぞれ違う業務上の意図があるという説明です。
 
 画面のボタンが「削除」でも、業務にはその操作を指す名前が既にあります。対応の例を以下に挙げます。
 
@@ -220,7 +220,7 @@ flowchart LR
 
 ここまでは、行を残す前提で書いてきました。残せない場合もあります。個人データの消去を求められた時が、その代表です。GDPR（General Data Protection Regulation、EU 一般データ保護規則）の第 17 条は、消去権（right to erasure）を定めています。
 
-同条の第 1 項は、[「The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay」と書いています](https://gdpr-info.eu/art-17-gdpr/)。データ主体は、自分に関する個人データの消去を不当な遅滞なく行うよう管理者へ求められる、という内容です。
+同条の第 1 項は、[「The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay」（データ主体は、自分に関する個人データの消去を不当な遅滞なく行うよう管理者へ求める権利を持つ）と書いています](https://gdpr-info.eu/art-17-gdpr/)。
 
 この権利は無条件ではありません。引用した一文は `where one of the following grounds applies` と続き、収集の目的が達成された場合や同意が撤回された場合など、(a) から (f) の発動事由が並びます。第 3 項にも例外があり、法的義務の遵守や、法的請求の主張・行使・防御に必要な場合が挙がっています。何をどこまで消すのかの判断は法務の領域にあり、設計側が決めるのは、消すと決まった時に消せる構造を持っているかどうかだけだと考えられます。
 
