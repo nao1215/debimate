@@ -101,7 +101,7 @@ flowchart LR
 | 42 | taro@example.com | 2026-03-01 10:00 | 退会済みとして残っている |
 | 51 | taro@example.com | NULL | `UNIQUE (email)` 違反で入らない |
 
-PostgreSQL や SQLite のように部分索引を持つ製品なら、索引に載せる行を選ぶ条件（predicate）を付けて、その条件を満たす行だけへ一意性を課せます。
+PostgreSQL や SQLite のように部分索引を持つ DBMS（Database Management System）なら、索引に載せる行を選ぶ条件（predicate）を付けて、その条件を満たす行だけへ一意性を課せます。
 
 公式ドキュメントは、部分索引の使い道の 1 つとして[「This enforces uniqueness among the rows that satisfy the index predicate, without constraining those that do not.」（索引の条件を満たす行の間で一意性を強制し、満たさない行は縛らない）と説明しています](https://www.postgresql.org/docs/current/indexes-partial.html)。
 
@@ -115,7 +115,7 @@ CREATE UNIQUE INDEX members_email_active_idx
 
 この索引は `deleted_at` が `NULL` の行だけを対象にします。退会済みの行と同じメールアドレスで新規に登録でき、有効な会員どうしで同じアドレスが重複する事は防げます。裏返すと、条件から外れた行は縛られないので、退会済みの行どうしで同じアドレスは何行でも並びます。登録と退会を繰り返した会員の行は、その分だけ積み上がります。
 
-部分索引は全ての製品にあるわけではありません。例えば MySQL は `WHERE` 句を付けて索引を作る構文を持たないため、[式の値を索引する functional key parts](https://dev.mysql.com/doc/refman/8.4/en/create-index.html) で代用します。退会済みなら `NULL` を返す式に一意索引を張ると、`NULL` は一意性の検査から外れるので同じ効果を得られます。索引そのものの構造は [B-Tree](../b-tree/) のノートで扱っています。
+部分索引は全ての DBMS にあるわけではありません。例えば MySQL は `WHERE` 句を付けて索引を作る構文を持たないため、[式の値を索引する functional key parts](https://dev.mysql.com/doc/refman/8.4/en/create-index.html) で代用します。退会済みなら `NULL` を返す式に一意索引を張ると、`NULL` は一意性の検査から外れるので同じ効果を得られます。索引そのものの構造は [B-Tree](../b-tree/) のノートで扱っています。
 
 外部キー制約も同じ問題を抱えます。通常の外部キーが保証するのは参照先の行が存在する事までで、その行が業務上まだ有効かどうかまでは見ません。`orders` から `members` への外部キーも、`member_id` に対応する行が `members` にある事だけを確かめ、`deleted_at` が `NULL` かどうかは確かめません。
 
@@ -163,7 +163,7 @@ stateDiagram-v2
 
 状態を列で持つ設計にも、削除フラグと共通する限界があります。`status` を `UPDATE` で書き換えると、書き換える前の値はその列に残りません。「いつ退会したのか」「一度退会してから再入会したのか」に、現在の状態を持つ列だけでは答えられません。
 
-状態を書き換える前の値が製品側に残る仕組みもあります。SQL Server の temporal table や MariaDB のシステムバージョニングは、`UPDATE` の前の値を自動で保持します。そうした仕組みを使わない場合、遷移そのものを残すには、遷移を 1 行として追記する表を別に置きます。以下は PostgreSQL の構文で書いた例です。
+状態を書き換える前の値が DBMS 側に残る仕組みもあります。SQL Server の temporal table や MariaDB のシステムバージョニングは、`UPDATE` の前の値を自動で保持します。そうした仕組みを使わない場合、遷移そのものを残すには、遷移を 1 行として追記する表を別に置きます。以下は PostgreSQL の構文で書いた例です。
 
 ```sql
 CREATE TABLE member_status_changes (

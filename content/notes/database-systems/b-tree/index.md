@@ -11,7 +11,7 @@ B-Tree は、1 つのノードに数百件のキーを並べる事で、木の�
 
 そのため、`WHERE user_id = 42` のような等値の絞り込み、`WHERE created_at BETWEEN ... AND ...` のような範囲の絞り込み、`ORDER BY created_at` のような並べ替えを DB が効率よく処理できるかどうかは、多くの場合この構造が土台になっています。
 
-ただし、全ての DB の全ての索引が B-Tree だという意味ではありません。ハッシュ索引や全文検索用の索引など別系統の構造を持つ製品もあり、同じ製品の中でも用途で使い分けられます。以下では、その B-Tree 系の索引が、なぜ DB にとって都合の良い構造なのかを追います。
+ただし、全ての DB の全ての索引が B-Tree だという意味ではありません。ハッシュ索引や全文検索用の索引など別系統の構造を持つ DBMS（Database Management System）もあり、同じ DBMS の中でも用途で使い分けられます。以下では、その B-Tree 系の索引が、なぜ DB にとって都合の良い構造なのかを追います。
 
 ---
 
@@ -65,7 +65,7 @@ flowchart LR
 
 キーの順に並んだ探索木なら二分探索木でも同じ事ができるのではないか、と考える方がいるかもしれません。しかし、二分探索木をディスク上の索引に使うと、最悪の場合は木の段数と同じ回数だけページの読み出しが発生します。
 
-DB がストレージとやり取りする単位はページなので、1 バイトだけ必要な場合もページ 1 枚をまるごと読み込む事になります。ページの大きさは製品で違い、MySQL の InnoDB は索引のページについて[「The default size of an index page is 16KB」（索引ページの既定の大きさは 16KB）と書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-physical-structure.html)。
+DB がストレージとやり取りする単位はページなので、1 バイトだけ必要な場合もページ 1 枚をまるごと読み込む事になります。ページの大きさは DBMS で違い、MySQL の InnoDB は索引のページについて[「The default size of an index page is 16KB」（索引ページの既定の大きさは 16KB）と書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-physical-structure.html)。
 
 二分探索木のノードはキー 1 個とポインタ 2 本しか持ちません。ポインタとは、別のページの位置を指す数バイトの値です。ノードをページに 1 個ずつ置くと、16KB を読んでも得られるのは比較 1 回分の情報になります。
 
@@ -213,7 +213,7 @@ sequenceDiagram
 
 連番のように末尾へ追加していく場合は、右端のページを割る動きが特別に扱われます。PostgreSQL は、葉ページを指定した割合まで詰めるのは索引を作り直す時と[「when extending the index at the right」（索引を右端へ伸ばす時）だと書いています](https://www.postgresql.org/docs/current/sql-createindex.html)。この割合の既定値は 90 で、左のページを詰めたまま残せるので索引は小さく収まります。
 
-同じ件数でも、埋まり方が悪いほど索引のページ数が増え、段数が増える方向へ動きます。索引を張る列に連番を選ぶか、値が散らばる識別子を選ぶかで、索引の大きさが変わり得るという事です。ここから先の判断は、扱うデータ量や製品の実装まで見ないと決まりません。
+同じ件数でも、埋まり方が悪いほど索引のページ数が増え、段数が増える方向へ動きます。索引を張る列に連番を選ぶか、値が散らばる識別子を選ぶかで、索引の大きさが変わり得るという事です。ここから先の判断は、扱うデータ量や実装まで見ないと決まりません。
 
 ---
 
@@ -241,7 +241,7 @@ flowchart TB
 
 上図の B-Tree では根に 30 の値そのものが載るので、探索が途中で終わる場合があります。B+tree の根が持つのは区切りキーだけで、30 の値は葉に置かれます。値を上の段から追い出すと、1 ページに入る区切りキーの数が増えて分岐数が上がりやすくなり、探索が葉まで降りる形に揃うのでどのキーでも木を降りる回数が揃います。
 
-値の置き方は、同じ製品の中でも用途で分かれます。SQLite のファイルフォーマットの説明は、[表を格納する木が「store all data in the leaves」（全てのデータを葉へ格納する）、索引の木が「store no data at all」（データを一切格納しない）だと書いています](https://sqlite.org/fileformat2.html)。表を格納する木は値を葉へ集めた B+tree の形で、索引の木は内部ノードにもキーの本体を置き、行のデータだけを持ちません。
+値の置き方は、同じ DBMS の中でも用途で分かれます。SQLite のファイルフォーマットの説明は、[表を格納する木が「store all data in the leaves」（全てのデータを葉へ格納する）、索引の木が「store no data at all」（データを一切格納しない）だと書いています](https://sqlite.org/fileformat2.html)。表を格納する木は値を葉へ集めた B+tree の形で、索引の木は内部ノードにもキーの本体を置き、行のデータだけを持ちません。
 
 もう 1 つ、DB の B+tree 実装でよく見られる工夫として、範囲の走査を速くするために同じ段のページを横に繋ぐ形があります。例えば PostgreSQL は、[葉に限らず各段のページが前後に辿れる双方向のリストとして繋がっていると書いています](https://www.postgresql.org/docs/current/btree.html)（原文は「each level of the tree can be used as a doubly-linked list of pages」）。
 
@@ -259,7 +259,7 @@ flowchart LR
 
 一方、SQLite の葉ページは兄弟へのポインタを持たないため、葉から隣の葉へ直接リンクを辿る構造ではありません。範囲の取り出しで上の段へ戻らずに済むかどうかは、このように実装によって変わります。
 
-注意点として、製品のドキュメントに出てくる「B-tree」は、多くの場合この系統の総称です。MySQL の用語集は[「The use of the term B-tree is intended as a reference to the general class of index design.」（B-tree という用語は、索引設計の一般的な系統を指すものとして使っている）と断っています](https://dev.mysql.com/doc/refman/8.4/en/glossary.html)。
+注意点として、DBMS のドキュメントに出てくる「B-tree」は、多くの場合この系統の総称です。MySQL の用語集は[「The use of the term B-tree is intended as a reference to the general class of index design.」（B-tree という用語は、索引設計の一般的な系統を指すものとして使っている）と断っています](https://dev.mysql.com/doc/refman/8.4/en/glossary.html)。
 
 名前で構造を判断せず、値がどこにあるかと、同じ段が繋がっているかを見る方が確実だと考えられます。この 2 点が分かれば、範囲の取り出しに何回の降下が要るかと、並べ替えを省けるかが読み取れます。
 

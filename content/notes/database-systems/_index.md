@@ -38,6 +38,7 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Soft Delete - 削除フラグを最初の選択肢にしない](/notes/database-systems/soft-delete/) | データモデリング |
+| 2 | [NULL - 値が無い事の表し方と、三値論理が及ぼす影響](/notes/database-systems/sql-null/) | データモデリング / SQL |
 
 #### Query Processing
 
