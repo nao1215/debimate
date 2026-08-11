@@ -173,7 +173,9 @@ sequenceDiagram
     Note over C,F: 一致すれば Tx2 は<br/>そのブロックに<br/>入っていた
 ```
 
-上図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていた事だけです。証明を受け取ったクライアントは Tx2 が有効な取引だと確かめたのではないか、と考える方がいるかもしれません。白書は「He can't check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it」（利用者自身が取引を検証する事はできないが、チェーン上の場所と結び付ける事で、ネットワークのノードがそれを受け入れた事は分かる）と書いています。
+上図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていた事だけです。証明を受け取ったクライアントは Tx2 が有効な取引だと確かめたのではないか、と考える方がいるかもしれません。
+
+白書は「He can't check the transaction for himself, but by linking it to a place in the chain, he can see that a network node has accepted it」（利用者自身が取引を検証する事はできないが、チェーン上の場所と結び付ける事で、ネットワークのノードがそれを受け入れた事は分かる）と書いています。
 
 署名が正しいか、使おうとしている残高が既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
 
