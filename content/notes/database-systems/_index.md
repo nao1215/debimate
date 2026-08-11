@@ -26,6 +26,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [B-Tree - ページ単位の入出力に合わせた索引の木](/notes/database-systems/b-tree/) | 索引 / 探索木 |
 
+#### Durability / Storage
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [WAL - 書き込み先行ログと 2 つのウォーターマーク](/notes/distributed-systems/write-ahead-log/) | 耐久性 |
+
 #### Data Modeling
 
 | No. | 項目 | カテゴリ |

@@ -3,7 +3,7 @@ title: "WAL - 書き込み先行ログと 2 つのウォーターマーク"
 date: 2026-08-05
 draft: false
 series: ["技術ノート"]
-tags: ["distributed-systems", "storage"]
+tags: ["distributed-systems", "database-systems", "storage"]
 weight: 3
 ---
 
