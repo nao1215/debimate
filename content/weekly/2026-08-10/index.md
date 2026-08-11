@@ -45,3 +45,18 @@ gup、sqly は息子が産まれた歳に開発した OSS の中で、唯一メ�
 このコメントは、機能差異・開発期間の認識が正しくない。「sqly は DuckDB にない機能があるし、年単位開発したんだよ！」という気持ちが先立った。しかし、今後の開発方針に大いに影響を与えるコメントであることも確かだ。LLM 時代は、類似ツールが存在する状況下で、機能差異の少ない OSS を作ることの価値が相対的に下がってしまった。
 
 今後の OSS 開発では、一言で説明できる強み、複数人での開発体制、AI に支配されないエコシステムを構築しなければならない。AI に対して拒否反応をもつユーザーが多い中で、信頼感を獲得するムーブが大事だ。信頼されないと、見向きもされない。既に有名な開発者は「新作 OSS だ！」と注目されるだろうが、私のような弱小開発者は開発以外に力を入れて勝負しなければならない。ﾅﾝﾀﾞｺﾚ、ｼｺﾞﾄ ｶ?
+
+---
+
+#### [nao1215/markdown](https://github.com/nao1215/markdown) が argo に組み込まれていることを知る
+
+次なる v1.0.0 候補を探している最中に、nao1215/markdown ライブラリの利用者が Used by 表示されていること（下図）に気づいた。このライブラリは、ビルダーパターンで Markdown を組み立てる。テンプレートのように部分的に文字列を置換するのではなく、上から下に向かって Markdown を構築するイメージだ。
+
+![markdownライブラリの利用者](markdown-used-by.webp)
+
+驚きだったのが、nao1215/markdown が Azure と KubeVirt、Argo で利用されていたことだ。有名どころばかりだ。以下のプロジェクトで利用されていた（他にも利用されていたが、割愛）。
+- [argoproj/argo-workflows](https://github.com/argoproj/argo-workflows)
+- [Azure/alzlib](https://github.com/Azure/alzlib)
+- [kubevirt/project-infra](https://github.com/kubevirt/project-infra)
+
+Argo に至っては、生成した Markdown を HTML に変換して[トレーシングリファレンス](https://argo-workflows.readthedocs.io/en/latest/tracing/)、[コンフィグマップリファレンス](https://argo-workflows.readthedocs.io/en/latest/workflow-controller-configmap/)、[ワークフロー変数カタログ](https://argo-workflows.readthedocs.io/en/latest/variable-flow/variables/)として公開していた。しかも、ゴールデンテストとしてドキュメント更新漏れがないかを CI でチェックしていた。便利に使っていただいているようで、ありがたい限りである。
