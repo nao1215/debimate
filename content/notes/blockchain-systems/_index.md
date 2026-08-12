@@ -38,6 +38,8 @@ description: ""
 | --- | --- | --- |
 | 1 | [UTXO - 未使用の取引出力でコインを表すモデル](/notes/blockchain-systems/utxo/) | 取引 / UTXO |
 | 2 | [Bitcoin Script - 出力の使う条件を書くスタック言語](/notes/blockchain-systems/bitcoin-script/) | 取引 / スクリプト |
+| 3 | [Ethereum Account Model - 残高と通し番号を状態として持つモデル](/notes/blockchain-systems/ethereum-account-model/) | 取引 / アカウントモデル |
+| 4 | [Ethereum Transaction - 署名された実行の依頼と手数料の上限](/notes/blockchain-systems/ethereum-transaction/) | 取引 / gas と署名 |
 
 #### Data Structure
 
