@@ -46,6 +46,13 @@ description: ""
 | --- | --- | --- |
 | 1 | [Query Processing - SQL から実行計画を作り、動かすまで](/notes/database-systems/query-processing/) | 問い合わせ処理 |
 
+#### Transaction / Concurrency Control
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Transaction Isolation - 同時実行で現れる異常と分離レベル](/notes/database-systems/transaction-isolation/) | トランザクション / 同時実行制御 |
+| 2 | [Snapshot Isolation - 固定したスナップショットで読み、書き込みの重なりを止める](/notes/database-systems/snapshot-isolation/) | トランザクション / 同時実行制御 |
+
 ---
 
 ### 参考文献（手元にある書籍）
