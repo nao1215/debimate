@@ -58,7 +58,7 @@ flowchart LR
 
 ### consensus rule と policy の違い
 
-有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。Bitcoin の代表的な実装である Bitcoin Core のドキュメントは、[policy が、consensus に加えて未確認の取引へ課す検証規則であり、ノードごとに設定できるものだと説明しています](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)。
+有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。Bitcoin の代表的な実装である [Bitcoin Core のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)は、policy が、consensus に加えて未確認の取引へ課す検証規則であり、ノードごとに設定できるものだと説明しています。
 
 同じドキュメントには「Policy is not applied to transactions in blocks」（policy はブロックに入った取引へは適用されない）という一文があります。判定に使われるのは consensus rule だけ、という事になります。
 
@@ -88,7 +88,7 @@ flowchart LR
 
 1 つ目の最低の手数料率は、手数料の極端に低い取引を mempool と中継の対象から外すための基準です。メモリと通信帯域を大量に使う送り付けは、この基準で抑えられます。2 つ目は、Bitcoin Core が標準的とみなす形式だけを通常の中継の対象とするための判定で、consensus 上の有効性とは別の条件になります。
 
-3 つ目の上限は、判定を通った取引にも効いてきます。mempool が上限に達すると、[手数料の面で優先度の低い取引や取引の集合から取り除かれます](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)。取り除かれる取引を以下に示します。
+3 つ目の上限は、判定を通った取引にも効いてきます。mempool が上限に達すると、手数料の面で優先度の低い取引や取引の集合から取り除かれると[設計のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)は説明しています。取り除かれる取引を以下に示します。
 
 ```mermaid
 flowchart LR
@@ -107,7 +107,7 @@ flowchart LR
 
 同じ入力を使う 2 つの取引は、同じ有効な履歴の中で両方は成立しません（[UTXO](../utxo/)）。ノードは、片方を mempool へ入れた後にもう片方を受け取っても、そのまま両方を保持する事はしません。どちらを持つのかの判定が、ブロックへ入る前の段階でも要ります。
 
-後から来た取引が既存の取引を置き換える場合があり、この置き換えは replace-by-fee（RBF）と呼ばれます。Bitcoin Core は、[置き換えによって mempool の手数料の面での状態が悪化しない事や、追加の中継コストに見合う手数料を払う事などを確認します](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md)。条件はバージョンによって変わるため、詳細は上のドキュメントで確認してください。
+後から来た取引が既存の取引を置き換える場合があり、この置き換えは replace-by-fee（RBF）と呼ばれます。[Bitcoin Core](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-replacements.md) は、置き換えによって mempool の手数料の面での状態が悪化しない事や、追加の中継コストに見合う手数料を払う事などを確認します。条件はバージョンによって変わるため、詳細は上のドキュメントで確認してください。
 
 置き換えが起きる流れを以下に示します。
 
@@ -122,11 +122,11 @@ sequenceDiagram
     Note over N: t を取り除き<br/>t' を mempool へ入れる
 ```
 
-上図の取引 t は、置き換えが成立した時点でそのノードの mempool から消えます。手数料を低く付けすぎた送金をやり直す手段として使われる一方、受け取る側から見れば、未確認の取引の内容が変わり得るという事になります。[Bitcoin の仕様提案である BIP（Bitcoin Improvement Proposal）125 も、置き換えられる取引の受取人が、確認されるまで支払いとして扱わない選択を取れると書いています](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki)。
+上図の取引 t は、置き換えが成立した時点でそのノードの mempool から消えます。手数料を低く付けすぎた送金をやり直す手段として使われる一方、受け取る側から見れば、未確認の取引の内容が変わり得るという事になります。Bitcoin の仕様提案である [BIP（Bitcoin Improvement Proposal）125](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki) も、置き換えられる取引の受取人が、確認されるまで支払いとして扱わない選択を取れると書いています。
 
 条件が手数料の増加を求めるのは、置き換えを繰り返す形の送り付けを避けるためです。同じドキュメントは、手数料率だけを条件にすると、少しずつ小さい取引を何度も中継させる余地が残ると説明しています。置き換えのたびに帯域ぶんの手数料を求めておけば、繰り返す側にコストが積み上がります。
 
-置き換えを認めるかどうかと、どの取引を対象にするかは方針の一部です。[BIP 125 は、置き換えを許す意思を取引の中で示す方法と、当時の実装が使っていた条件を定めました](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki)。Bitcoin Core の現在の方針はそこから変わっており、[意思表示の有無によらず置き換えを認める設定が v28.0 で既定になりました](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-28.0.md)。
+置き換えを認めるかどうかと、どの取引を対象にするかは方針の一部です。[BIP 125](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki) は、置き換えを許す意思を取引の中で示す方法と、当時の実装が使っていた条件を定めました。Bitcoin Core の現在の方針はそこから変わっており、意思表示の有無によらず置き換えを認める設定が [v28.0](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-28.0.md) で既定になりました。
 
 ---
 

@@ -60,15 +60,15 @@ CREATE TABLE users (
 
 ### なぜ NULL を普通の値として扱えないのか
 
-`NULL` が特別扱いされている事は、他の「空っぽに見える値」との違いに出ます。MySQL のマニュアルは、0 や空文字列を `NOT NULL` の列へ入れられる事を挙げて、[「These are in fact values, whereas `NULL` means 'not having a value.'」（これらは実際には値であり、`NULL` は「値を持っていない」事を意味する）と書いています](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html)。0 は数量が 0 である事を表し、空文字列には長さ 0 の文字列が入っています。
+`NULL` が特別扱いされている事は、他の「空っぽに見える値」との違いに出ます。MySQL のマニュアルは、0 や空文字列を `NOT NULL` の列へ入れられる事を挙げて、「[These are in fact values, whereas `NULL` means 'not having a value.'](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html)」（これらは実際には値であり、`NULL` は「値を持っていない」事を意味する）と書いています。0 は数量が 0 である事を表し、空文字列には長さ 0 の文字列が入っています。
 
-ただし、空文字列を `NULL` と別扱いするかは DBMS で割れます。Oracle は[「The database currently treats a character value with a length of zero as null.」（データベースは現在、長さ 0 の文字値を null として扱う）と書いています](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Nulls.html)。同じ箇所は、将来のリリースでもそうとは限らないとも断っています。
+ただし、空文字列を `NULL` と別扱いするかは DBMS で割れます。Oracle は「[The database currently treats a character value with a length of zero as null.](https://docs.oracle.com/en/database/oracle/oracle-database/23/sqlrf/Nulls.html)」（データベースは現在、長さ 0 の文字値を null として扱う）と書いています。同じ箇所は、将来のリリースでもそうとは限らないとも断っています。
 
 `NULL` が何を表しているのかも 1 つに決まっていません。未入力・不明・該当なし・まだ決まっていない、のどれでも同じ `NULL` になります。この違いをどう扱うかは「NULL に何を意味させるか」で扱います。
 
 値が存在しないか不明であるため、通常の比較では TRUE / FALSE を決められません。
 
-PostgreSQL のドキュメントは、[「SQL uses a three-valued logic system with true, false, and `null`, which represents "unknown".」（SQL は true・false・「unknown」を表す null からなる三値論理を使う）と書いています](https://www.postgresql.org/docs/current/functions-logical.html)。真と偽に UNKNOWN を足した 3 つで論理を組み立てる、という規則です。
+PostgreSQL のドキュメントは、「[SQL uses a three-valued logic system with true, false, and `null`, which represents "unknown".](https://www.postgresql.org/docs/current/functions-logical.html)」（SQL は true・false・「unknown」を表す null からなる三値論理を使う）と書いています。真と偽に UNKNOWN を足した 3 つで論理を組み立てる、という規則です。
 
 ここから 1 つの規則が出ます。`=`・`<>`・`<`・`>` のような比較演算子は、左右のどちらか一方でも `NULL` なら結果が UNKNOWN になります。`NULL = NULL` も `NULL <> 20` も UNKNOWN で、片方の値が分かっているかどうかは関係ありません。分からない値と比べた答えは分からない、という事です。
 
@@ -86,7 +86,7 @@ UNKNOWN は、それを含む式の全体へ伝わります。AND・OR・NOT の
 
 比較演算子の結果が UNKNOWN にしかならない以上、`NULL` かどうかを判定するには専用の書き方が要ります。`IS NULL` と `IS NOT NULL` は値どうしを比べず、その列が `NULL` かどうかだけを TRUE か FALSE で返します。
 
-MySQL のマニュアルも、[「You cannot use arithmetic comparison operators such as `=`, `<`, or `<>` to test for `NULL`.」（`=`、`<`、`<>` のような算術比較演算子で `NULL` を判定する事はできない）と書いています](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html)。
+MySQL のマニュアルも、「[You cannot use arithmetic comparison operators such as `=`, `<`, or `<>` to test for `NULL`.](https://dev.mysql.com/doc/refman/8.4/en/working-with-null.html)」（`=`、`<`、`<>` のような算術比較演算子で `NULL` を判定する事はできない）と書いています。
 
 ここまでは比較演算子と論理演算子に限った規則です。`GROUP BY`・`DISTINCT`・`UNION` は `NULL` どうしを同じものとして 1 つに畳みます。比較にも、`NULL` を同一として扱う専用の述語があります。
 
@@ -95,7 +95,7 @@ SELECT NULL = NULL;                      -- NULL（UNKNOWN）
 SELECT NULL IS NOT DISTINCT FROM NULL;   -- 1（TRUE）
 ```
 
-PostgreSQL のドキュメントは `IS NOT DISTINCT FROM` について、[「it returns true when both inputs are null, and false when only one input is null」（両方の入力が null なら true、片方だけが null なら false を返す）と書いています](https://www.postgresql.org/docs/current/functions-comparison.html)。同じ箇所は、この述語の中では null を「unknown」ではなく通常のデータ値のように扱うとも説明しています。
+PostgreSQL のドキュメントは `IS NOT DISTINCT FROM` について、「[it returns true when both inputs are null, and false when only one input is null](https://www.postgresql.org/docs/current/functions-comparison.html)」（両方の入力が null なら true、片方だけが null なら false を返す）と書いています。同じ箇所は、この述語の中では null を「unknown」ではなく通常のデータ値のように扱うとも説明しています。
 
 上の結果は手元の SQLite で確かめたものです。`=` では `NULL` どうしを一致とみなせない場面で、こうした述語が選択肢になります。対応の有無と構文は DBMS で違うので、使う前にドキュメントで確かめる事になります。
 
@@ -184,7 +184,7 @@ id が 2 の行では `2 = 2` が TRUE になるので、`NOT TRUE` で FALSE �
 
 #### 集約関数ごとに NULL の扱いが違う
 
-PostgreSQL のドキュメントは、`count(*)` を[「Computes the number of input rows.」（入力行の数を計算する）、`count(any)` を「Computes the number of input rows in which the input value is not null.」（入力値が null でない入力行の数を計算する）と定義しています](https://www.postgresql.org/docs/current/functions-aggregate.html)。
+PostgreSQL のドキュメントは、`count(*)` を「[Computes the number of input rows.](https://www.postgresql.org/docs/current/functions-aggregate.html)」（入力行の数を計算する）、`count(any)` を「[Computes the number of input rows in which the input value is not null.](https://www.postgresql.org/docs/current/functions-aggregate.html)」（入力値が null でない入力行の数を計算する）と定義しています。
 
 `sum` と `avg` も、同じページで「non-null input values」（null でない入力値）を対象にすると書かれています。先ほどの 4 行に対する結果を並べます。`age` は 20・31・`NULL`・45 の 4 つです。
 
@@ -197,19 +197,19 @@ PostgreSQL のドキュメントは、`count(*)` を[「Computes the number of i
 
 `AVG` の分母が行数ではなく、値が入っている行の数である点は、集計値を読む側に効いてきます。未入力を 0 とみなした平均が欲しいなら、`AVG(COALESCE(age, 0))` のように書き手が指定します。
 
-対象の行が 1 つも無い場合も注意が要ります。同じページは、`count` を除く関数が[「return a null value when no rows are selected」（行が 1 つも選ばれない時に null を返す）と書き](https://www.postgresql.org/docs/current/functions-aggregate.html)、`sum` が 0 ではなく null を返す事を例に挙げています。合計を 0 として扱いたいなら `COALESCE` で包みます。
+対象の行が 1 つも無い場合も注意が要ります。同じページは、`count` を除く関数が「[return a null value when no rows are selected](https://www.postgresql.org/docs/current/functions-aggregate.html)」（行が 1 つも選ばれない時に null を返す）と書き、`sum` が 0 ではなく null を返す事を例に挙げています。合計を 0 として扱いたいなら `COALESCE` で包みます。
 
 #### 一意制約が NULL を重複と見るかは実装で決まる
 
-同じ値を 2 行に入れられなくする一意制約も、`NULL` に対しては直感と違う動きをします。PostgreSQL は[「By default, two null values are not considered equal in this comparison.」（既定では、この比較において 2 つの null は等しいとみなされない）と書いており](https://www.postgresql.org/docs/current/ddl-constraints.html)、`email` に一意制約を張っても、`email` が `NULL` の会員は何行でも入ります。
+同じ値を 2 行に入れられなくする一意制約も、`NULL` に対しては直感と違う動きをします。PostgreSQL は「[By default, two null values are not considered equal in this comparison.](https://www.postgresql.org/docs/current/ddl-constraints.html)」（既定では、この比較において 2 つの null は等しいとみなされない）と書いており、`email` に一意制約を張っても、`email` が `NULL` の会員は何行でも入ります。
 
-ここは DBMS ごとに割れます。同じページは[「The default null treatment in unique constraints is implementation-defined according to the SQL standard」（一意制約における null の既定の扱いは、SQL 標準では実装定義である）と断り](https://www.postgresql.org/docs/current/ddl-constraints.html)、他の実装は異なる振る舞いをすると続けています。
+ここは DBMS ごとに割れます。同じページは「[The default null treatment in unique constraints is implementation-defined according to the SQL standard](https://www.postgresql.org/docs/current/ddl-constraints.html)」（一意制約における null の既定の扱いは、SQL 標準では実装定義である）と断り、他の実装は異なる振る舞いをすると続けています。
 
 PostgreSQL 自身も `NULLS NOT DISTINCT` を付ければ `NULL` どうしを重複として扱えます。「`NULL` は一意制約に引っかからない」を SQL 全体の規則として覚えると、移植した先で別の結果になります。
 
 #### OUTER JOIN は NULL を作り出す
 
-`LEFT OUTER JOIN` は、左の表の行を必ず残し、右の表に相手が居ない行では右側の列を `NULL` で埋める結合です。PostgreSQL は、結合条件を満たす相手が無い行には[「a joined row is added with null values in columns of T2」（T2 の列を null にした結合行が追加される）と書いています](https://www.postgresql.org/docs/current/queries-table-expressions.html)。埋めるための `NULL` は、表のどこにも保存されていません。
+`LEFT OUTER JOIN` は、左の表の行を必ず残し、右の表に相手が居ない行では右側の列を `NULL` で埋める結合です。PostgreSQL は、結合条件を満たす相手が無い行には「[a joined row is added with null values in columns of T2](https://www.postgresql.org/docs/current/queries-table-expressions.html)」（T2 の列を null にした結合行が追加される）と書いています。埋めるための `NULL` は、表のどこにも保存されていません。
 
 `users` へ注文の表 `orders` を左外部結合した場合の、2 種類の `NULL` を以下に示します。
 

@@ -103,7 +103,7 @@ flowchart LR
 
 PostgreSQL や SQLite のように部分索引を持つ DBMS（Database Management System）なら、索引に載せる行を選ぶ条件（predicate）を付けて、その条件を満たす行だけへ一意性を課せます。
 
-公式ドキュメントは、部分索引の使い道の 1 つとして[「This enforces uniqueness among the rows that satisfy the index predicate, without constraining those that do not.」（索引の条件を満たす行の間で一意性を強制し、満たさない行は縛らない）と説明しています](https://www.postgresql.org/docs/current/indexes-partial.html)。
+公式ドキュメントは、部分索引の使い道の 1 つとして「[This enforces uniqueness among the rows that satisfy the index predicate, without constraining those that do not.](https://www.postgresql.org/docs/current/indexes-partial.html)」（索引の条件を満たす行の間で一意性を強制し、満たさない行は縛らない）と説明しています。
 
 表に付けた `UNIQUE (email)` を外し、代わりに次の索引を置きます。
 
@@ -236,7 +236,7 @@ flowchart LR
 
 ここまでは、行を残す前提で書いてきました。残せない場合もあります。個人データの消去を求められた時が、その代表です。GDPR（General Data Protection Regulation、EU 一般データ保護規則）の第 17 条は、消去権（right to erasure）を定めています。
 
-同条の第 1 項は、[「The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay」（データ主体は、自分に関する個人データの消去を不当な遅滞なく行うよう管理者へ求める権利を持つ）と書いています](https://gdpr-info.eu/art-17-gdpr/)。
+同条の第 1 項は、「[The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay](https://gdpr-info.eu/art-17-gdpr/)」（データ主体は、自分に関する個人データの消去を不当な遅滞なく行うよう管理者へ求める権利を持つ）と書いています。
 
 この権利は無条件ではありません。引用した一文は `where one of the following grounds applies` と続き、収集の目的が達成された場合や同意が撤回された場合など、(a) から (f) の発動事由が並びます。第 3 項にも例外があり、法的義務の遵守や、法的請求の主張・行使・防御に必要な場合が挙がっています。何をどこまで消すのかの判断は法務の領域にあり、設計側が決めるのは、消すと決まった時に消せる構造を持っているかどうかだけだと考えられます。
 

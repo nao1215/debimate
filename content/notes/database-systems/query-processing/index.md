@@ -11,7 +11,7 @@ Query Processing（問い合わせ処理）は、DB（データベース）が�
 
 開発者がこの仕組みへ最初に触れるのは、応答の遅い問い合わせを調べる場面ではないでしょうか。PostgreSQL で `EXPLAIN SELECT ...` と打つと、`Seq Scan` `Index Scan` `Hash Join` のような語が並んだ木が返ってきます。出力の形は DBMS（Database Management System）で違い、MySQL の `EXPLAIN` は形式を指定しなければ表の形になります。
 
-MySQL のマニュアルは、オプティマイザが選んだ操作の集まりを[「query execution plan」（クエリ実行計画）と呼んでいます](https://dev.mysql.com/doc/refman/8.4/en/execution-plan-information.html)。オプティマイザとは、実行方法を選ぶ段階に付いた名前です。この木を読めるようになると、遅い問い合わせのどの部分が原因なのかを絞り込めます。
+MySQL のマニュアルは、オプティマイザが選んだ操作の集まりを「[query execution plan](https://dev.mysql.com/doc/refman/8.4/en/execution-plan-information.html)」（クエリ実行計画）と呼んでいます。オプティマイザとは、実行方法を選ぶ段階に付いた名前です。この木を読めるようになると、遅い問い合わせのどの部分が原因なのかを絞り込めます。
 
 昨日まで速かった SQL が今日から遅い、という現象の理由も、木を見比べれば見当が付きます。以下では、DB がその木をどう作り、どう動かすのかを追います。
 
@@ -35,7 +35,7 @@ flowchart LR
 
 ### 前提と説明の範囲
 
-処理を何段階に分けるかと、それぞれの段階の呼び名は DBMS で違います。PostgreSQL のドキュメントは、接続の確立を別にすると[パーサ、書き換えシステム、プランナ／オプティマイザ、エグゼキュータの 4 つに分けて説明しています](https://www.postgresql.org/docs/current/query-path.html)。
+処理を何段階に分けるかと、それぞれの段階の呼び名は DBMS で違います。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/query-path.html)は、接続の確立を別にするとパーサ、書き換えシステム、プランナ／オプティマイザ、エグゼキュータの 4 つに分けて説明しています。
 
 以降では、どの DBMS にも現れる「構文を解析して名前や型を解決する」「実行方法を選ぶ」「選んだ手順を動かす」の 3 つを軸に置き、実装で割れる所は都度断ります。本ノートで、説明する範囲も決めておきます。ここでは、1 台の DB が 1 本の `SELECT` を処理する場合を扱い、複数の問い合わせが同時に走る時の並行制御と、処理を複数のノードや複数の CPU へ分散する構成は対象外とします。
 
@@ -83,19 +83,19 @@ QUERY PLAN
 `--SEARCH o USING INDEX idx_orders_user_id (user_id=?)
 ```
 
-2 行をどう読むのかは、SQLite のドキュメントで確かめられます。`SCAN` は表を全部読む事、`SEARCH` は行の一部だけを訪れる事を表し、並び順については[「The order of the entries indicates the nesting order.」（項目の並び順が入れ子の順序を表す）と書かれています](https://www.sqlite.org/eqp.html)。先に並ぶ側が外側の繰り返しになります。
+2 行をどう読むのかは、SQLite のドキュメントで確かめられます。`SCAN` は表を全部読む事、`SEARCH` は行の一部だけを訪れる事を表し、並び順については「[The order of the entries indicates the nesting order.](https://www.sqlite.org/eqp.html)」（項目の並び順が入れ子の順序を表す）と書かれています。先に並ぶ側が外側の繰り返しになります。
 
 上の出力で外側に来ているのは、`FROM` の 2 番目に書いた `u`、つまり利用者の表です。`country` に索引が無いため全部読み、そこで得た日本の 100 件それぞれについて、内側で注文の表を索引で引いています。`(user_id=?)` の `?` には、外側から渡る `u.id` の値が入ります。上図の手順 2 と同じ形です。
 
 どちらの表を外側にするかは、統計情報や推定行数、条件を通る行の割合、候補ごとの見積もりコストを合わせて決まります。索引はその材料の 1 つで、この例ではそれが効いた、という読み方になります。
 
-`FROM` の順を入れ替えて注文の表を後ろに書いても、返ってくる実行計画は同じでした。SQLite のドキュメントも、この出力が[「how the query is actually evaluated, not how it is specified in the SQL statement」（SQL 文にどう書かれたかではなく、問い合わせが実際にどう評価されるか）を示すと書いています](https://www.sqlite.org/eqp.html)。なお、出力の形式はバージョンで変わる事があります。
+`FROM` の順を入れ替えて注文の表を後ろに書いても、返ってくる実行計画は同じでした。SQLite のドキュメントも、この出力が「[how the query is actually evaluated, not how it is specified in the SQL statement](https://www.sqlite.org/eqp.html)」（SQL 文にどう書かれたかではなく、問い合わせが実際にどう評価されるか）を示すと書いています。なお、出力の形式はバージョンで変わる事があります。
 
-既定では、SQL に書いた順序は読む順序の指示になっていません。指示にする手段は別に用意されています。SQLite は `CROSS JOIN` と書かれた結合だけ順序を並べ替えず、[「the programmer can force SQLite to choose a particular loop nesting order」（プログラマが特定のループの入れ子順序を SQLite へ強制できる）と説明しています](https://www.sqlite.org/optoverview.html)。
+既定では、SQL に書いた順序は読む順序の指示になっていません。指示にする手段は別に用意されています。SQLite は `CROSS JOIN` と書かれた結合だけ順序を並べ替えず、「[the programmer can force SQLite to choose a particular loop nesting order](https://www.sqlite.org/optoverview.html)」（プログラマが特定のループの入れ子順序を SQLite へ強制できる）と説明しています。
 
 同じ結果を返す実行計画のそれぞれは、ここでは候補と呼びます。候補の数は、結合する表が増えるほど急に増えます。
 
-PostgreSQL のドキュメントは、[「examining each possible way in which a query can be executed would take an excessive amount of time and memory」（問い合わせを実行し得る全ての方法を調べると、過大な時間とメモリが掛かる）場合があると書き](https://www.postgresql.org/docs/current/planner-optimizer.html)、結合の数がしきい値を超えると遺伝的アルゴリズムによる探索へ切り替えると説明しています。
+PostgreSQL のドキュメントは、「[examining each possible way in which a query can be executed would take an excessive amount of time and memory](https://www.postgresql.org/docs/current/planner-optimizer.html)」（問い合わせを実行し得る全ての方法を調べると、過大な時間とメモリが掛かる）場合があると書き、結合の数がしきい値を超えると遺伝的アルゴリズムによる探索へ切り替えると説明しています。
 
 切り替わり方を以下に示します。
 
@@ -116,7 +116,7 @@ flowchart LR
 
 最初の段階は構文解析です。文字列として届いた SQL が、取り出す列・読む対象・条件といった部品へ分解され、SQL の文法だけを頼りにした木になります。
 
-PostgreSQL のドキュメントは、この段階では[「It does not make any lookups in the system catalogs」（システムカタログを一切引かない）と書いています](https://www.postgresql.org/docs/current/parser-stage.html)。木の中に `users` という名前が有っても、それがどの表を指すのかはまだ確かめていません。
+PostgreSQL のドキュメントは、この段階では「[It does not make any lookups in the system catalogs](https://www.postgresql.org/docs/current/parser-stage.html)」（システムカタログを一切引かない）と書いています。木の中に `users` という名前が有っても、それがどの表を指すのかはまだ確かめていません。
 
 先ほどの `SELECT` を木にすると、次の形になります。
 
@@ -132,13 +132,13 @@ flowchart TD
 
 1 つ目は、名前と型の解決です。`users` という表と `country` という列が本当にあるのか、`country` の型が何なのかは、DB が自身のスキーマを格納したカタログを引いて確かめます。
 
-PostgreSQL はこの処理を transformation process と呼びます。パーサが返した木を入力に取って[「the semantic interpretation needed to understand which tables, functions, and operators are referenced by the query」（どの表・関数・演算子を参照しているのかを理解するのに必要な意味解釈）を行い、できた構造を query tree と呼ぶ、と書いています](https://www.postgresql.org/docs/current/parser-stage.html)。
+PostgreSQL はこの処理を transformation process と呼びます。パーサが返した木を入力に取って「[the semantic interpretation needed to understand which tables, functions, and operators are referenced by the query](https://www.postgresql.org/docs/current/parser-stage.html)」（どの表・関数・演算子を参照しているのかを理解するのに必要な意味解釈）を行い、できた構造を query tree と呼ぶ、と書いています。
 
 つまり、構文だけを表す木（parse tree）と、DB が意味を解決し終えた問い合わせの木（query tree）は別のものです。形は似ていても、名前がどの実体を指すのかが決まっています。
 
-同じページは、後者が[「structurally similar to the raw parse tree in most places, but it has many differences in detail」（大部分は raw parse tree と構造が似ているが、細部には多くの違いがある）だと書いています](https://www.postgresql.org/docs/current/parser-stage.html)。
+同じページは、後者が「[structurally similar to the raw parse tree in most places, but it has many differences in detail](https://www.postgresql.org/docs/current/parser-stage.html)」（大部分は raw parse tree と構造が似ているが、細部には多くの違いがある）だと書いています。
 
-2 つ目は、書き換えの規則です。例えばビューを読む問い合わせでは、ビューの名前が、その定義に書かれた問い合わせへ置き換わります。PostgreSQL は、書き換えシステムが問い合わせの木に対して[「looks for any rules (stored in the system catalogs) to apply to the query tree」（システムカタログに格納された規則の中から、問い合わせの木へ適用できるものを探す）と説明しています](https://www.postgresql.org/docs/current/query-path.html)。
+2 つ目は、書き換えの規則です。例えばビューを読む問い合わせでは、ビューの名前が、その定義に書かれた問い合わせへ置き換わります。PostgreSQL は、書き換えシステムが問い合わせの木に対して「[looks for any rules (stored in the system catalogs) to apply to the query tree](https://www.postgresql.org/docs/current/query-path.html)」（システムカタログに格納された規則の中から、問い合わせの木へ適用できるものを探す）と説明しています。
 
 この 2 つをどこで、どういう区切りで行うかは DBMS で違います。PostgreSQL と SQLite の段階の分け方を以下に示します。
 
@@ -157,13 +157,13 @@ flowchart TB
     end
 ```
 
-上図の SQLite に、独立した書き換えの段階はありません。木を組み立てた後に[「the code generator runs to analyze the parse tree and generate bytecode」（コードジェネレータが動き、parse tree を解析してバイトコードを生成する）段階が置かれ](https://www.sqlite.org/arch.html)、木からバイトコードまでが 1 つの流れになっています。段階の数と呼び名が違っても、名前や型の解決を挟んでから実行方法の選択へ進む順序は共通しています。
+上図の SQLite に、独立した書き換えの段階はありません。木を組み立てた後に「[the code generator runs to analyze the parse tree and generate bytecode](https://www.sqlite.org/arch.html)」（コードジェネレータが動き、parse tree を解析してバイトコードを生成する）段階が置かれ、木からバイトコードまでが 1 つの流れになっています。段階の数と呼び名が違っても、名前や型の解決を挟んでから実行方法の選択へ進む順序は共通しています。
 
 ---
 
 ### コストで実行方法を選ぶ
 
-実行方法を選ぶ段階の仕事について、PostgreSQL のドキュメントは[「The task of the planner/optimizer is to create an optimal execution plan.」（プランナ／オプティマイザの仕事は、最適な実行計画を作る事だ）と書いています](https://www.postgresql.org/docs/current/planner-optimizer.html)。候補の中から、見積もったコストが最も小さいものを選びます。なお、`ORDER BY` を書いていなければ、行の並ぶ順序は選ばれた手順によって変わり得ます。
+実行方法を選ぶ段階の仕事について、PostgreSQL のドキュメントは「[The task of the planner/optimizer is to create an optimal execution plan.](https://www.postgresql.org/docs/current/planner-optimizer.html)」（プランナ／オプティマイザの仕事は、最適な実行計画を作る事だ）と書いています。候補の中から、見積もったコストが最も小さいものを選びます。なお、`ORDER BY` を書いていなければ、行の並ぶ順序は選ばれた手順によって変わり得ます。
 
 選択肢は大きく 2 種類あります。1 つは、1 つの表から行をどう取り出すかです。表を先頭から順に読む方法（sequential scan）と、索引を辿って必要な行だけを読む方法（index scan）が代表になります。同じ動作でも `EXPLAIN` での名前は DBMS で違い、表の全走査を PostgreSQL は `Seq Scan`、SQLite は `SCAN` と表示します。
 
@@ -179,11 +179,11 @@ flowchart TB
 
 3 つ目の列に書いたのは、その手段が選ばれやすい条件です。その場面で必ず選ばれるという意味ではありません。どの手段を持つかも DBMS で違うので、`EXPLAIN` に出てくる名前はその DBMS のドキュメントで引く必要があります。
 
-どの候補を選ぶかを決める材料が、統計情報です。PostgreSQL は表と索引の行数とディスクブロック数を `pg_class` へ、列の値の分布を `pg_statistic` へ持ちます。ドキュメントは、`pg_statistic` の項目が [`ANALYZE` と `VACUUM ANALYZE` で更新され、更新した直後でも「always approximate」（常に近似）だと断っています](https://www.postgresql.org/docs/current/planner-stats.html)。
+どの候補を選ぶかを決める材料が、統計情報です。PostgreSQL は表と索引の行数とディスクブロック数を `pg_class` へ、列の値の分布を `pg_statistic` へ持ちます。ドキュメントは、`pg_statistic` の項目が `ANALYZE` と `VACUUM ANALYZE` で更新され、更新した直後でも「[always approximate](https://www.postgresql.org/docs/current/planner-stats.html)」（常に近似）だと断っています。
 
 `pg_class` が持つ行数とブロック数は、`CREATE INDEX` のような一部の DDL でも更新されます。更新の間隔が空くほど、実際の値との差は開きます。
 
-統計を見て選ぶ作りは PostgreSQL に限りません。SQLite のドキュメントも、[「SQLite uses a cost-based query planner that estimates the CPU and disk I/O costs of various competing query plans」（SQLite はコストに基づいたクエリプランナを使い、競合する複数の実行計画について CPU とディスク入出力のコストを見積もる）と書いています](https://www.sqlite.org/optoverview.html)。
+統計を見て選ぶ作りは PostgreSQL に限りません。SQLite のドキュメントも、「[SQLite uses a cost-based query planner that estimates the CPU and disk I/O costs of various competing query plans](https://www.sqlite.org/optoverview.html)」（SQLite はコストに基づいたクエリプランナを使い、競合する複数の実行計画について CPU とディスク入出力のコストを見積もる）と書いています。
 
 統計は `ANALYZE` で集められ、`sqlite_stat` で始まる名前の表へ格納されます。ただし SQLite で `ANALYZE` を実行するかどうかは任意で、集めていない間は組み込みの既定の推定値が使われます。
 
@@ -220,9 +220,9 @@ flowchart TB
 
 例えば `country = 'JP'` を通る行が 1%、`city = '東京'` を通る行が 1% なら、掛け合わせた見積もりは 0.01% です。東京の行がほぼ全て日本であれば、実際に残るのは 1% に近く、見積もりは 2 桁ずれます。PostgreSQL は、この種の相関を扱うために `CREATE STATISTICS` で複数列の統計を作る手段を用意しています。
 
-見積もりが外れても、結果の行が間違う訳ではありません。ずれるのは、どの手順が速いかという判断だけです。ずれているかどうかは、実行せずに計画だけを表示する `EXPLAIN` では分かりません。PostgreSQL は、`EXPLAIN` に `ANALYZE` を付けると実際に問い合わせを実行し、[「the true row counts and true run time」（実際の行数と実際の実行時間）を見積もりと並べて表示すると書いています](https://www.postgresql.org/docs/current/using-explain.html)。
+見積もりが外れても、結果の行が間違う訳ではありません。ずれるのは、どの手順が速いかという判断だけです。ずれているかどうかは、実行せずに計画だけを表示する `EXPLAIN` では分かりません。PostgreSQL は、`EXPLAIN` に `ANALYZE` を付けると実際に問い合わせを実行し、「[the true row counts and true run time](https://www.postgresql.org/docs/current/using-explain.html)」（実際の行数と実際の実行時間）を見積もりと並べて表示すると書いています。
 
-同じページは、見積もった行数が[「reasonably close to reality」（実際と十分に近い）かどうかを見る事が最も重要だと書いています](https://www.postgresql.org/docs/current/using-explain.html)。見積もりと実際が大きく開いている演算子を探すと、遅さの原因を絞り込めます。なお、`EXPLAIN ANALYZE` は問い合わせを実際に動かすので、更新を伴う文で使う時は影響に注意が要ります。
+同じページは、見積もった行数が「[reasonably close to reality](https://www.postgresql.org/docs/current/using-explain.html)」（実際と十分に近い）かどうかを見る事が最も重要だと書いています。見積もりと実際が大きく開いている演算子を探すと、遅さの原因を絞り込めます。なお、`EXPLAIN ANALYZE` は問い合わせを実際に動かすので、更新を伴う文で使う時は影響に注意が要ります。
 
 ---
 
@@ -247,11 +247,11 @@ flowchart TD
 
 上図で、元の SQL に書いた条件は 2 か所へ分かれました。`u.country = 'JP'` は利用者の表を走査する所で行を絞る条件になり、`o.user_id = u.id` は 2 つの入力を突き合わせる条件になっています。1 つの表だけで判定できる条件を走査する演算子へ寄せると、結合へ渡る行数が減ります。
 
-この木を動かす段階について、PostgreSQL のドキュメントは[「This is essentially a demand-pull pipeline mechanism.」（これは本質的に、要求で引き出すパイプラインの仕組みだ）と書いています](https://www.postgresql.org/docs/current/executor.html)。上の演算子が下の演算子へ次の 1 行を要求し、要求された演算子が 1 行だけ返します。返す行が尽きた演算子は、その旨を呼び出し元へ伝えます。
+この木を動かす段階について、PostgreSQL のドキュメントは「[This is essentially a demand-pull pipeline mechanism.](https://www.postgresql.org/docs/current/executor.html)」（これは本質的に、要求で引き出すパイプラインの仕組みだ）と書いています。上の演算子が下の演算子へ次の 1 行を要求し、要求された演算子が 1 行だけ返します。返す行が尽きた演算子は、その旨を呼び出し元へ伝えます。
 
 この作りは、Goetz Graefe 氏の論文「Query Evaluation Techniques for Large Databases」（ACM Computing Surveys 25(2)）で整理されています。論文は演算子を 3 つの手続きへ分けます。
 
-3 つの手続きの名前は、ファイル走査での呼び名を全ての演算子へ流用したものです。論文は[「In a file scan, these functions are called open, next, and close procedures; we adopt these names for all operators.」（ファイル走査では、これらの機能を open・next・close の手続きと呼ぶ。本稿では、この名前を全ての演算子へ用いる）と書いています](https://cs.uwaterloo.ca/~david/cs848s13/graefe.pdf)。
+3 つの手続きの名前は、ファイル走査での呼び名を全ての演算子へ流用したものです。論文は「[In a file scan, these functions are called open, next, and close procedures; we adopt these names for all operators.](https://cs.uwaterloo.ca/~david/cs848s13/graefe.pdf)」（ファイル走査では、これらの機能を open・next・close の手続きと呼ぶ。本稿では、この名前を全ての演算子へ用いる）と書いています。
 
 この形で実装した演算子は、論文の中で iterator と呼ばれています。同じ箇所は、商用システムでは row-source などとも呼ばれると紹介しています。名前が違っても手続きの形は揃っているので、演算子どうしを組み合わせて複雑な実行計画を作れます。
 
@@ -279,7 +279,7 @@ sequenceDiagram
 
 読み込んだ中間データを保持する必要があるため、メモリも使います。実装によっては、作業用に割り当てられたメモリへ収まらない場合に、中間データの一部を一時ファイルなどのストレージへ書き出して処理を続けます。整列やハッシュ表の構築が入る計画では、入力の行数が増えた時にメモリ内で完結するかどうかで所要時間が変わり得ます。
 
-演算子の木を辿る作りが唯一の形ではありません。前掲の図のとおり、SQLite は[SQL のテキストをバイトコードへコンパイルし、そのバイトコードを仮想マシンで動かします](https://www.sqlite.org/arch.html)。バイトコードは、DB の内部だけで使う小さな命令列です。
+演算子の木を辿る作りが唯一の形ではありません。前掲の図のとおり、[SQLite](https://www.sqlite.org/arch.html) は SQL のテキストをバイトコードへコンパイルし、そのバイトコードを仮想マシンで動かします。バイトコードは、DB の内部だけで使う小さな命令列です。
 
 アプリケーションが `sqlite3_step()` を呼ぶと、その命令列が仮想マシンへ渡って動きます。1 行ずつ結果を作って返す点は木を辿る作りと共通していて、違うのは木を降りるか命令列を進むかという実行の形です。
 

@@ -67,7 +67,7 @@ Onion Routing は、通信を複数の中継役へ順に通し、どの 1 台も
 - Middle Relay: 2 台目。Tor の内部だけと通信する
 - Exit Relay: 3 台目。ここから Tor の外にある宛先へ接続する
 
-台数は利用者が選ぶ設定ではありません。Tor Project は[「the path length is hard-coded at three (except if you're accessing an onion service)」（onion service へアクセスする場合を除き、経路の長さは 3 に固定されている）と説明しています](https://support.torproject.org/about-tor/using-and-sharing/circuit-length/)。
+台数は利用者が選ぶ設定ではありません。Tor Project は「[the path length is hard-coded at three (except if you're accessing an onion service)](https://support.torproject.org/about-tor/using-and-sharing/circuit-length/)」（onion service へアクセスする場合を除き、経路の長さは 3 に固定されている）と説明しています。
 
 Tor の設計論文「[Tor: The Second-Generation Onion Router](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)」は、経路上の各ノードについて「knows its predecessor and successor, but no other nodes in the circuit」（直前と直後は知るものの、経路上のほかのノードは知らない）と書いています。
 
@@ -112,7 +112,7 @@ flowchart TB
 
 最初に Guard Relay との間で鍵を導出し、その鍵で暗号化した通信の中を通して Middle Relay と handshake します。次に、その 2 重の暗号の中を通して Exit Relay と handshake します。この入れ子のおかげで、Guard Relay は Middle Relay 以降の鍵を知りません。
 
-Tor Project は[この鍵について「these extra layers of encryption mean that only the exit relay can read the cells」（この追加の暗号層により、cell を読めるのは exit relay だけになる）と説明しています](https://support.torproject.org/about-tor/how-tor-works/key-management/)。cell は、Tor が経路上で通信を運ぶ単位です。
+Tor Project はこの鍵について「[these extra layers of encryption mean that only the exit relay can read the cells](https://support.torproject.org/about-tor/how-tor-works/key-management/)」（この追加の暗号層により、cell を読めるのは exit relay だけになる）と説明しています。cell は、Tor が経路上で通信を運ぶ単位です。
 
 包み方と剥がし方を以下に示します。図の K1・K2・K3 は 1 リレーにつき 1 つの鍵として書いた概念上の表記で、実際には送信と受信の方向などに応じた鍵が導出されます。
 
@@ -129,7 +129,7 @@ flowchart LR
 
 ### Exit Relay から先は Tor の暗号化が掛からない
 
-層は Exit Relay で全部剥がれます。そのため、Exit Relay から Web サーバまでの区間には、Tor による暗号化が残りません。Tor Project も、暗号化される範囲を[「between the Tor client (on your computer) and where it pops out somewhere else in the world」（コンピュータ上の Tor クライアントと、世界のどこかで通信が外へ出る地点との間）だと書いています](https://support.torproject.org/about/how-is-tor-different-from-other-proxies/)。
+層は Exit Relay で全部剥がれます。そのため、Exit Relay から Web サーバまでの区間には、Tor による暗号化が残りません。Tor Project も、暗号化される範囲を「[between the Tor client (on your computer) and where it pops out somewhere else in the world](https://support.torproject.org/about/how-is-tor-different-from-other-proxies/)」（コンピュータ上の Tor クライアントと、世界のどこかで通信が外へ出る地点との間）だと書いています。
 
 暗号化が効く区間を以下に示します。
 
@@ -140,7 +140,7 @@ flowchart LR
 
 上図のとおり、Tor を使う事と、中身が送信者から受信者まで通しで暗号化される事（End-to-End の暗号化）は別です。Exit Relay から中身を隠すのは HTTPS の仕事で、Tor が隠すのは経路の情報です。
 
-Tor Project の案内も、機微な情報を渡す相手について[「display a padlock or onion icon in the address bar, include https:// in the URL, and display the proper expected name for the website」（アドレス欄に錠前か onion のアイコンが出ていて、URL に https:// が含まれ、サイトの名前が期待どおりに表示される）事を確かめるよう注意しています](https://support.torproject.org/faq/staying-anonymous/)。
+Tor Project の案内も、機微な情報を渡す相手について「[display a padlock or onion icon in the address bar, include https:// in the URL, and display the proper expected name for the website](https://support.torproject.org/faq/staying-anonymous/)」（アドレス欄に錠前か onion のアイコンが出ていて、URL に https:// が含まれ、サイトの名前が期待どおりに表示される）事を確かめるよう注意しています。
 
 Tor だけを使う場合と、HTTPS を併用する場合の違いを次に示します。
 
@@ -183,7 +183,7 @@ sequenceDiagram
 
 同じ解説も、この役が「simply relays (end-to-end encrypted) messages from client to service and vice versa」（クライアントとサービスの間で、End-to-End に暗号化されたメッセージを中継するだけ）だと書いています。その結果、既定の構成では、クライアントはサービスの IP アドレスを知らず、サービスもクライアントの IP アドレスを知らないまま通信できます。
 
-通信が Tor の外へ出ない点も、通常の Web アクセスとの違いになります。Tor Project は[「All traffic between Tor users and onion services is end-to-end encrypted」（Tor ユーザと onion service の間の通信は全て End-to-End に暗号化される）と書き、HTTPS で接続するかどうかを気にする必要はないと説明しています](https://support.torproject.org/tor-browser/features/onion-services/)。
+通信が Tor の外へ出ない点も、通常の Web アクセスとの違いになります。Tor Project は「[All traffic between Tor users and onion services is end-to-end encrypted](https://support.torproject.org/tor-browser/features/onion-services/)」（Tor ユーザと onion service の間の通信は全て End-to-End に暗号化される）と書き、HTTPS で接続するかどうかを気にする必要はないと説明しています。
 
 守られるのはクライアントとサービスの間の転送路で、繋いだ先が意図した相手かどうかは別の問題です。`.onion` のアドレスは長い文字列なので、似せたアドレスへ誘導される余地は残ります。
 
@@ -195,7 +195,7 @@ sequenceDiagram
 
 論文は、ネットワークの全ての通信路を観測できる攻撃者を global passive adversary と呼び、匿名性の設計で最もよく想定される脅威として挙げています。
 
-そのうえで[「like all practical low-latency systems, Tor does not protect against such a strong adversary」（遅延の小さい実用的なシステムがどれもそうであるように、Tor はこれほど強い攻撃者からは守らない）と書いています](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)。実際に想定するのは、通信の一部を観測できる相手です。
+そのうえで「[like all practical low-latency systems, Tor does not protect against such a strong adversary](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)」（遅延の小さい実用的なシステムがどれもそうであるように、Tor はこれほど強い攻撃者からは守らない）と書いています。実際に想定するのは、通信の一部を観測できる相手です。
 
 想定の外に残る攻撃を次に示します。
 
@@ -209,17 +209,17 @@ sequenceDiagram
 
 Traffic correlation は、経路の中身を解読しない攻撃です。両端を観測できる攻撃者は、global passive adversary でなくてもこの攻撃を行えます。
 
-論文はこの攻撃について[「can confirm a suspicion that Alice is talking to Bob if the timing and volume patterns of the traffic on the connection are distinct enough」（通信の時刻と量の型が十分に特徴的であれば、Alice が Bob と通信しているという疑いを裏付けられる）と述べています](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)。
+論文はこの攻撃について「[can confirm a suspicion that Alice is talking to Bob if the timing and volume patterns of the traffic on the connection are distinct enough](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)」（通信の時刻と量の型が十分に特徴的であれば、Alice が Bob と通信しているという疑いを裏付けられる）と述べています。
 
 同じ論文が「Tor only minimally hides such correlations」（Tor がこの相関を隠せるのは最小限にとどまる）と認めているとおり、守りは限定的です。
 
 Malicious exit relay は、Exit Relay の運用者が中身を読める構造から出てきます。HTTPS を使っていれば読めるのは暗号文だけです。
 
-Browser fingerprinting は、経路ではなくブラウザの実装が相手です。Tor Project は fingerprinting を[「the systematic collection of information about the web browser to make educated guesses about its identity or characteristics」（Web ブラウザに関する情報を体系的に集め、その識別情報や特徴を推測する事）と説明しています](https://support.torproject.org/anti-fingerprinting/)。
+Browser fingerprinting は、経路ではなくブラウザの実装が相手です。Tor Project は fingerprinting を「[the systematic collection of information about the web browser to make educated guesses about its identity or characteristics](https://support.torproject.org/anti-fingerprinting/)」（Web ブラウザに関する情報を体系的に集め、その識別情報や特徴を推測する事）と説明しています。
 
 対処は Tor Browser 側にあり、ブラウザが自分の種類を名乗る User-Agent の値を揃える、画面の大きさをいくつかの区分へ丸める、といった方法で利用者どうしを似せています。
 
-Application layer leak は、通信が Tor へ入る前の問題です。Tor Project は[「Tor only protects applications that are properly configured to send their Internet traffic through Tor.」（Tor が守るのは、通信を Tor へ通すよう正しく設定されたアプリケーションだけ）と書いています](https://support.torproject.org/faq/staying-anonymous/)。
+Application layer leak は、通信が Tor へ入る前の問題です。Tor Project は「[Tor only protects applications that are properly configured to send their Internet traffic through Tor.](https://support.torproject.org/faq/staying-anonymous/)」（Tor が守るのは、通信を Tor へ通すよう正しく設定されたアプリケーションだけ）と書いています。
 
 利用者が自分で明かす情報も同じ層にあります。サイトへログインしたり氏名を入力したりすれば、経路がどれだけ隠れていても、その相手に対しては匿名ではなくなります。
 

@@ -44,7 +44,7 @@ Ethereum のアカウントは、アドレスに対応付けられた 4 つの�
 | storageRoot | そのアカウントの記憶領域の中身を符号化した Merkle Patricia Trie のルートノードのハッシュ |
 | codeHash | EVM 上のそのアカウントのコードのハッシュ |
 
-公式ドキュメントは 1 行目の nonce を[「the number of transactions sent from an externally-owned account or the number of contracts created by a contract account」（外部所有アカウントから送られた取引の件数、またはコントラクトアカウントが作ったコントラクトの件数）と定義しています](https://ethereum.org/en/developers/docs/accounts/)。
+公式ドキュメントは 1 行目の nonce を「[the number of transactions sent from an externally-owned account or the number of contracts created by a contract account](https://ethereum.org/en/developers/docs/accounts/)」（外部所有アカウントから送られた取引の件数、またはコントラクトアカウントが作ったコントラクトの件数）と定義しています。
 
 通常の EOA では、この理解で足ります。EIP-7702 の委任コードを使う EOA では実行中の処理で nonce がさらに進む場合があるので、送った取引の件数と常に一致する訳ではありません。
 
@@ -58,7 +58,7 @@ Ethereum のアカウントは、アドレスに対応付けられた 4 つの�
 
 アカウントには 2 種類あります。利用者が秘密鍵で制御する EOA（Externally Owned Account、外部所有アカウント）と、アドレスにコードが結び付いたコントラクトアカウント（contract account）です。コントラクトアカウントのコードは、そのアカウントへの呼び出しを受けた時に実行されます。
 
-2 種類の違いは、取引を起こせるかどうかに出ます。[公式ドキュメントは、コントラクトアカウントについて「Can only send messages in response to receiving a transaction」（取引を受け取った事に応じてメッセージを送る事しかできない）と書いています](https://ethereum.org/en/developers/docs/accounts/)。署名して送り出す取引の起点になれるのは EOA だけです。
+2 種類の違いは、取引を起こせるかどうかに出ます。公式ドキュメントは、コントラクトアカウントについて「[Can only send messages in response to receiving a transaction](https://ethereum.org/en/developers/docs/accounts/)」（取引を受け取った事に応じてメッセージを送る事しかできない）と書いています。署名して送り出す取引の起点になれるのは EOA だけです。
 
 1 件の取引が 2 つのコントラクトへ届くまでを以下に示します。
 
@@ -76,7 +76,7 @@ sequenceDiagram
 
 上図でコントラクト A からコントラクト B への呼び出しは、EOA が出した取引の実行の中で起きます。ここでのメッセージは、取引と違って署名も nonce も持たず、実行の中でコントラクトから別のコントラクトへ渡されます。コントラクト B は取引を直接受け取らずに、このメッセージでコードが動きます。
 
-従来は、コードの有無を 2 種類の見分けの手掛かりにできました。[公式ドキュメントも、EOA について「the codeHash field is the hash of an empty string」（codeHash の項目は空文字列のハッシュになる）と書いています](https://ethereum.org/en/developers/docs/accounts/)。
+従来は、コードの有無を 2 種類の見分けの手掛かりにできました。公式ドキュメントも、EOA について「[the codeHash field is the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（codeHash の項目は空文字列のハッシュになる）と書いています。
 
 今の Ethereum では、コードが空なら EOA という判定は成り立ちません。2025 年に実施された Pectra というプロトコルの更新で [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA は指定したコントラクトのコードへ自分の取引の実行を委ねられるようになりました。EIP は Ethereum Improvement Proposal の略で、仕様変更の提案を指します。
 
@@ -92,7 +92,7 @@ sequenceDiagram
 
 その役割を担うのが nonce です。以下では、通常の EOA が取引を送る場合を扱い、EIP-7702 の委任コードの実行で nonce が追加で変わる場合は除きます。取引には送り主の nonce を書く項目があり、その値は、送り主のアカウントが今持っている nonce と一致している必要があります。取り込まれると 1 増えるため、同じ取引をもう一度流しても古い番号として弾かれます。
 
-[『Mastering Ethereum』第 2 版の第 6 章は「every single transaction is unique, even when sending the same amount of ether to the same recipient address multiple times」（同じ額を同じ宛先へ何度送っても、取引はどれも別の物になる）と説明しています](https://masteringethereum.xyz/chapter_6.html)。
+『Mastering Ethereum』第 2 版の第 6 章は「[every single transaction is unique, even when sending the same amount of ether to the same recipient address multiple times](https://masteringethereum.xyz/chapter_6.html)」（同じ額を同じ宛先へ何度送っても、取引はどれも別の物になる）と説明しています。
 
 止まるのは同じチェーンでの再送です。別のチェーンへの再生は、chain ID を署名の対象に含める事で防ぎます。この仕組みを legacy transaction へ導入したのが [EIP-155](https://eips.ethereum.org/EIPS/eip-155) で、現在の typed transaction も chain ID を署名の対象に含みます。
 
@@ -126,7 +126,7 @@ flowchart TD
 
 #### 飛んだ番号と、同じ番号の競合
 
-番号が飛んだ取引も、その時点では有効になりません。nonce 0 の取引の後に nonce 2 を送ると、欠けた 1 が取り込まれるまで、2 はブロックへ入りません。[同章は「The Ethereum network processes transactions sequentially based on the nonce」（Ethereum のネットワークは nonce に従って取引を順に処理する）と説明しています](https://masteringethereum.xyz/chapter_6.html)。
+番号が飛んだ取引も、その時点では有効になりません。nonce 0 の取引の後に nonce 2 を送ると、欠けた 1 が取り込まれるまで、2 はブロックへ入りません。同章は「[The Ethereum network processes transactions sequentially based on the nonce](https://masteringethereum.xyz/chapter_6.html)」（Ethereum のネットワークは nonce に従って取引を順に処理する）と説明しています。
 
 通常の EOA では、多くのクライアントがその間 mempool へ置いて待ちます。保持そのものはコンセンサス規則ではなくクライアントの方針で、保持する件数や時間の上限を超えると捨てられます。未確認の取引の置き場の性質は、Bitcoin を例に [Mempool](../mempool/) で扱っています。
 
@@ -150,7 +150,7 @@ flowchart TD
 
 ### 世界状態と execution layer の `state_root`
 
-全アカウントの現在の状態をまとめた物を世界状態（world state）と呼びます。[公式ドキュメントは「Instead of a distributed ledger, Ethereum is a distributed state machine」（Ethereum は分散台帳ではなく分散状態機械である）と書いています](https://ethereum.org/en/developers/docs/evm/)。取引は、この状態を次の状態へ移す入力です。
+全アカウントの現在の状態をまとめた物を世界状態（world state）と呼びます。公式ドキュメントは「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書いています。取引は、この状態を次の状態へ移す入力です。
 
 世界状態は、アドレスを `keccak256` でハッシュした値を経路に使う trie で表されます。現在の Ethereum の本番ネットワーク（Mainnet）では、modified Merkle Patricia Trie が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
 
@@ -164,11 +164,11 @@ flowchart LR
     S1 -.->|"ルートハッシュだけを書く"| H["execution payload の<br/>state_root"]
 ```
 
-上図の S' はノードが自分で保持し、外へ書かれるのは 1 つのルートハッシュだけです。[公式ドキュメントは、この項目を「root hash for the global state after applying changes in this block」（このブロックでの変更を適用した後の、全体の状態のルートハッシュ）と説明しています](https://ethereum.org/en/developers/docs/blocks/)。
+上図の S' はノードが自分で保持し、外へ書かれるのは 1 つのルートハッシュだけです。公式ドキュメントは、この項目を「[root hash for the global state after applying changes in this block](https://ethereum.org/en/developers/docs/blocks/)」（このブロックでの変更を適用した後の、全体の状態のルートハッシュ）と説明しています。
 
 `state_root` は、取引の並びを含む execution payload に書かれます。合意層（consensus layer）のブロックにも同じ名前の項目があるため、ここで扱うのは EVM の状態を代表する execution layer の `state_root` だと断っておきます。
 
-[公式ドキュメントは、全てのクライアントが execution payload の取引を実行し直し、得られた状態が `state_root` と一致する事を確かめると書いています](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
+[公式ドキュメント](https://ethereum.org/en/developers/docs/blocks/)は、全てのクライアントが execution payload の取引を実行し直し、得られた状態が `state_root` と一致する事を確かめると書いています。一致しなければ、そのブロックは受け入れられません。
 
 [Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入った取引の並びを代表する値を持っていました。Ethereum の execution layer では、取引の並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。ハッシュした値から経路が一意に決まるため、あるアカウントが存在しない事も 1 本の経路で示せます。
 

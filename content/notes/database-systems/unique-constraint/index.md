@@ -9,7 +9,7 @@ weight: 9
 
 一意制約（unique constraint）は、ある列、または複数の列の組に入っている値が表の中で重複しない事を DB（データベース）に保証させる仕組みです。SQL では、列の定義へ `UNIQUE` を書くか、表に対して `UNIQUE (列名, ...)` を書いて宣言します。
 
-PostgreSQL のドキュメントは、この制約が[「ensure that the data contained in a column, or a group of columns, is unique among all the rows in the table」（1 つの列、または複数の列の組に入っているデータが、表の全ての行の中で一意である事を保証する）物だと説明しています](https://www.postgresql.org/docs/current/ddl-constraints.html)。
+PostgreSQL のドキュメントは、この制約が「[ensure that the data contained in a column, or a group of columns, is unique among all the rows in the table](https://www.postgresql.org/docs/current/ddl-constraints.html)」（1 つの列、または複数の列の組に入っているデータが、表の全ての行の中で一意である事を保証する）物だと説明しています。
 
 この制約が必要になる場面の代表は、会員登録のメールアドレスです。同じアドレスで 2 件のアカウントができると、パスワード再設定のメールがどちらへ届くのかが決まらず、問い合わせを受けた時にどちらが本人の物かも判定できません。重複を消して片方へ寄せる作業は、後になるほど難しくなります。
 
@@ -76,7 +76,7 @@ flowchart LR
 
 上図で重要なのは、どちらが成功するかではなく、重複した状態が成立しない点です。後から来た方は、競合する相手がまだ確定していなければ結果を待ちます。相手が確定すれば重複として弾かれ、取り消されていれば挿入できます。
 
-失敗した方には、一意制約に違反したというエラーが返ります。SQLSTATE は、SQL のエラーに付く 5 文字の符号です。PostgreSQL は、この違反へ [`23505`（`unique_violation`）を割り当てています](https://www.postgresql.org/docs/current/errcodes-appendix.html)。アプリケーションは、この符号を見て「メールアドレスの重複」という業務上のエラーへ変換できます。利用者へどこまで理由を明示するかは、画面や API の要件に合わせて別に決めます。
+失敗した方には、一意制約に違反したというエラーが返ります。SQLSTATE は、SQL のエラーに付く 5 文字の符号です。PostgreSQL は、この違反へ [`23505`（`unique_violation`）](https://www.postgresql.org/docs/current/errcodes-appendix.html)を割り当てています。アプリケーションは、この符号を見て「メールアドレスの重複」という業務上のエラーへ変換できます。利用者へどこまで理由を明示するかは、画面や API の要件に合わせて別に決めます。
 
 この経路を想定外の失敗として扱い、HTTP の 500 を返す実装にすると、業務のエラーとして返せる要求まで障害になります。同じ値の登録が同時に届くのは、異常な事態ではありません。
 
@@ -156,7 +156,7 @@ CREATE UNIQUE INDEX users_email_active_idx
 
 一意制約に違反した `INSERT` は、既定ではエラーになります。エラーを受けてから、衝突した既存の行へ `UPDATE` を投げ直す方法も考えられます。ただし PostgreSQL では違反でトランザクションが中断するので、SAVEPOINT を張るか、トランザクションを分け直す必要があります。分け直せば、その 2 文の間にまた競合が入ります。PostgreSQL の `ON CONFLICT` 句は、この往復を避けて、衝突した時の動作を `INSERT` の中で決める書き方です。
 
-ドキュメントは、この句が[一意制約違反または排他制約違反のエラーを起こす代わりの動作を指定する物だと説明しています](https://www.postgresql.org/docs/current/sql-insert.html)。書ける動作は 2 つです。
+[ドキュメント](https://www.postgresql.org/docs/current/sql-insert.html)は、この句が一意制約違反または排他制約違反のエラーを起こす代わりの動作を指定する物だと説明しています。書ける動作は 2 つです。
 
 | 指定 | 衝突した行への動作 | 使う場面 |
 | --- | --- | --- |

@@ -45,7 +45,7 @@ sequenceDiagram
 
 正しさだけを求めるなら、トランザクションを 1 本ずつ順に実行すれば済みます。同時に 1 本しか走っていなければ、互いの途中経過を読む事も、自分が読んだ値を横から書き換えられる事もありません。ただし、この方式では接続を増やしても処理量が伸びず、1 本の長いトランザクションが後続を全部待たせます。そこで DBMS は、複数のトランザクションを重ねて実行しつつ、1 本ずつ実行した場合と同じ結果へ近づけます。
 
-SQL 標準の最も強いレベルは、この一致そのものを要求しています。PostgreSQL のドキュメントは Serializable について、並行実行しても[「guaranteed to produce the same effect as running them one at a time in some order」（何らかの順序で 1 本ずつ実行した場合と同じ結果になる事が保証される）と書いています](https://www.postgresql.org/docs/current/transaction-iso.html)。
+SQL 標準の最も強いレベルは、この一致そのものを要求しています。PostgreSQL のドキュメントは Serializable について、並行実行しても「[guaranteed to produce the same effect as running them one at a time in some order](https://www.postgresql.org/docs/current/transaction-iso.html)」（何らかの順序で 1 本ずつ実行した場合と同じ結果になる事が保証される）と書いています。
 
 残りの 3 レベルは、並行するトランザクションの相互作用から生じる現象のうち、各レベルで起きてはならないものによって定義されています。全部を直列実行と一致させるのではなく、許す現象を増やす事で、DBMS がより高い並行性を取りやすくします。減るコストが待ちなのか、中止と再試行なのか、検査そのものなのかは実現方式で変わるので、レベルを下げれば必ず速くなるとは限りません。
 
@@ -79,7 +79,7 @@ flowchart TB
 
 後ろの 2 つの違いは、変わるのが読んだ行なのか、条件に合う行の集合なのかです。集合が変われば phantom read に当てはまるので、挿入で行が増える形だけとは限りません。
 
-PostgreSQL のドキュメントは、同じ検索条件の問い合わせを実行し直したトランザクションが[「finds that the set of rows satisfying the condition has changed due to another recently-committed transaction」（最近確定した別のトランザクションによって、条件を満たす行の集合が変わっている事を見付ける）現象を phantom read と定義しています](https://www.postgresql.org/docs/current/transaction-iso.html)。
+PostgreSQL のドキュメントは、同じ検索条件の問い合わせを実行し直したトランザクションが「[finds that the set of rows satisfying the condition has changed due to another recently-committed transaction](https://www.postgresql.org/docs/current/transaction-iso.html)」（最近確定した別のトランザクションによって、条件を満たす行の集合が変わっている事を見付ける）現象を phantom read と定義しています。
 
 1 本のトランザクションの中で、2 種類の読み直しを並べた流れを以下に示します。
 
@@ -119,7 +119,7 @@ sequenceDiagram
 | REPEATABLE READ | 起きない | 起きない | 起き得る |
 | SERIALIZABLE | 起きない | 起きない | 起きない |
 
-上の表の「起き得る」は、その現象を標準が禁止していないという意味で、実装がそれより強く保証しても標準には反しません。PostgreSQL のドキュメントは、自身の REPEATABLE READ が phantom read を許さない事に触れた上で、[「higher guarantees are acceptable」（より強い保証は許容される）と述べています](https://www.postgresql.org/docs/current/transaction-iso.html)。
+上の表の「起き得る」は、その現象を標準が禁止していないという意味で、実装がそれより強く保証しても標準には反しません。PostgreSQL のドキュメントは、自身の REPEATABLE READ が phantom read を許さない事に触れた上で、「[higher guarantees are acceptable](https://www.postgresql.org/docs/current/transaction-iso.html)」（より強い保証は許容される）と述べています。
 
 最終行の SERIALIZABLE だけは、この 3 列で定義が尽きるわけではありません。各レベルが 1 つ手前へ何を足すのかを以下に示します。
 
@@ -134,9 +134,9 @@ Berenson 氏らの論文は、SQL 標準の 4.28 項が SERIALIZABLE に「commo
 
 SERIALIZABLE が要求しているのは、並行実行の結果が何らかの直列実行と同じ効果になる事です。3 つの現象は、そこから外れる形のうち名前が付いた一部にすぎず、名前の付いていない外れ方が残っていれば直列実行とは一致しません。
 
-同じレベル名でも、DBMS による差があります。PostgreSQL は 4 つ全部を指定として受け付けるものの、内部では 3 つしか実装しておらず、ドキュメントは[「PostgreSQL's Read Uncommitted mode behaves like Read Committed」（PostgreSQL の Read Uncommitted モードは Read Committed と同じように動く）と書いています](https://www.postgresql.org/docs/current/transaction-iso.html)。
+同じレベル名でも、DBMS による差があります。PostgreSQL は 4 つ全部を指定として受け付けるものの、内部では 3 つしか実装しておらず、ドキュメントは「[PostgreSQL's Read Uncommitted mode behaves like Read Committed](https://www.postgresql.org/docs/current/transaction-iso.html)」（PostgreSQL の Read Uncommitted モードは Read Committed と同じように動く）と書いています。
 
-[Oracle Database のドキュメントは、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードを挙げており](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)、read uncommitted と repeatable read は挙げていません。MySQL の InnoDB は、[4 つ全部に対応した上で既定を REPEATABLE READ としています](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
+[Oracle Database のドキュメント](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)は、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードを挙げており、read uncommitted と repeatable read は挙げていません。MySQL の [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
 
 ---
 
@@ -182,9 +182,9 @@ sequenceDiagram
 
 どちらの方式になるかはレベルで決まり、PostgreSQL と InnoDB はどちらも READ COMMITTED が文ごと、REPEATABLE READ が固定です。
 
-PostgreSQL のドキュメントは、READ COMMITTED の `SELECT` が[「sees a snapshot of the database as of the instant the query begins to run」（問い合わせが動き始めた瞬間のデータベースのスナップショットを見る）と書いています](https://www.postgresql.org/docs/current/transaction-iso.html)。InnoDB も同じで、読み取りごとに新しいスナップショットを取ります。
+PostgreSQL のドキュメントは、READ COMMITTED の `SELECT` が「[sees a snapshot of the database as of the instant the query begins to run](https://www.postgresql.org/docs/current/transaction-iso.html)」（問い合わせが動き始めた瞬間のデータベースのスナップショットを見る）と書いています。InnoDB も同じで、読み取りごとに新しいスナップショットを取ります。
 
-同じ REPEATABLE READ でも、固定の基準になるのは PostgreSQL が最初の文、InnoDB が最初の読み取りです。InnoDB のドキュメントは、同じトランザクションの consistent read が[「the snapshot established by the first such read in that transaction」（そのトランザクションの中で最初のそうした読み取りで確立されたスナップショット）を読み続けると書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)。
+同じ REPEATABLE READ でも、固定の基準になるのは PostgreSQL が最初の文、InnoDB が最初の読み取りです。InnoDB のドキュメントは、同じトランザクションの consistent read が「[the snapshot established by the first such read in that transaction](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)」（そのトランザクションの中で最初のそうした読み取りで確立されたスナップショット）を読み続けると書いています。
 
 PostgreSQL の REPEATABLE READ が基準にするのは、トランザクションの中で最初に実行したトランザクション制御以外の文の開始時点です。どちらも `BEGIN` を発行した時点ではありません。
 
@@ -202,7 +202,7 @@ Berenson 氏らの論文は、2 相ロック（two-phase locking）を規律ど�
 
 範囲をロックして phantom read を防ぐ実装では、条件に合う行が新しく挿入される値の隙間まで対象にする必要があります。MySQL の InnoDB はこの方法を使い、単位になるのは [Index Scan](../index-scan/) で見た索引の範囲です。ドキュメントは、一意索引を一意な条件で引く場合、見付けたレコードだけをロックして隙間はロックしないと書いています。
 
-それ以外の検索条件では、ロックを伴う読み取りと `UPDATE`・`DELETE` が、走査した索引の範囲を[「using gap locks or next-key locks to block insertions by other sessions into the gaps covered by the range」（gap lock か next-key lock で、その範囲に含まれる隙間への他セッションからの挿入を防ぐ）形でロックします](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)。
+それ以外の検索条件では、ロックを伴う読み取りと `UPDATE`・`DELETE` が、走査した索引の範囲を「[using gap locks or next-key locks to block insertions by other sessions into the gaps covered by the range](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)」（gap lock か next-key lock で、その範囲に含まれる隙間への他セッションからの挿入を防ぐ）形でロックします。
 
 範囲をロックして待たせる方法だけが選択肢ではありません。別の DBMS には、範囲をロックする代わりに、読み書きの依存関係を検査する方式もあります。
 
@@ -226,7 +226,7 @@ Berenson 氏らの論文は、2 相ロック（two-phase locking）を規律ど�
 - 競合を検査して片方を中止する。確定の時点で判定する形が代表になる
 - 待たせた上で中止する。相手の確定を待ち、確定していたら自分を中止する
 
-PostgreSQL の REPEATABLE READ は 3 番目です。ドキュメントは、先に更新した側が確定していれば[「rolled back with the message ERROR: could not serialize access due to concurrent update」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）と書いています](https://www.postgresql.org/docs/current/transaction-iso.html)。
+PostgreSQL の REPEATABLE READ は 3 番目です。ドキュメントは、先に更新した側が確定していれば「[rolled back with the message ERROR: could not serialize access due to concurrent update](https://www.postgresql.org/docs/current/transaction-iso.html)」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）と書いています。
 
 Oracle の serializable も同じ形で、トランザクションの開始後に確定した更新へ当たると `ORA-08177` を返します。どの方式を採るかで、アプリケーションが用意する後始末が変わります。待たせる方式ならデッドロックへの備え、中止させる方式なら再試行の処理が要ります。
 
@@ -242,7 +242,7 @@ flowchart LR
 
 上図の分かれ方は、InnoDB と PostgreSQL のどちらにも当てはまります。MVCC とロックは、DBMS ごとにどちらか一方を選ぶ二択ではありません。どちらが働くかは操作ごとに決まります。
 
-InnoDB のドキュメント自身も、[「InnoDB supports each of the transaction isolation levels described here using different locking strategies」（InnoDB はここで説明した各分離レベルに、それぞれ違うロック戦略で対応している）と書いています](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)。
+InnoDB のドキュメント自身も、「[InnoDB supports each of the transaction isolation levels described here using different locking strategies](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)」（InnoDB はここで説明した各分離レベルに、それぞれ違うロック戦略で対応している）と書いています。
 
 読み取りをトランザクション単位のスナップショットで固定し、書き込みは同じデータへの競合を検出して捌く、という組み方が Snapshot Isolation です。冒頭の在庫の例のような競合は防げる一方、別々の行を書き換えて制約を壊す write skew は残ります。[Snapshot Isolation](../snapshot-isolation/) で扱います。
 

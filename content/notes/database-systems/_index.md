@@ -54,6 +54,8 @@ description: ""
 | --- | --- | --- |
 | 1 | [Transaction Isolation - 同時実行で現れる異常と分離レベル](/notes/database-systems/transaction-isolation/) | トランザクション / 同時実行制御 |
 | 2 | [Snapshot Isolation - 固定したスナップショットで読み、書き込みの重なりを止める](/notes/database-systems/snapshot-isolation/) | トランザクション / 同時実行制御 |
+| 3 | [Transaction Scope - トランザクションに何を入れるか](/notes/database-systems/transaction-scope/) | トランザクション / ロック |
+| 4 | [Deadlock - 更新順序が逆になると何が起きるか](/notes/database-systems/deadlock/) | トランザクション / ロック |
 
 ---
 

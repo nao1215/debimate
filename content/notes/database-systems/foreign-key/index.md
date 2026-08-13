@@ -9,7 +9,7 @@ weight: 8
 
 外部キー制約（foreign key constraint）は、ある表の列に入っている値が、別の表に実在する行を指している事を DB（データベース）に保証させる仕組みです。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
 
-PostgreSQL のドキュメントは、この制約が[「the values in a column (or a group of columns) must match the values appearing in some row of another table」（1 つの列、または複数の列の組の値が、別の表のいずれかの行に現れる値と一致しなければならない）事を指定すると説明しています](https://www.postgresql.org/docs/current/ddl-constraints.html)。
+PostgreSQL のドキュメントは、この制約が「[the values in a column (or a group of columns) must match the values appearing in some row of another table](https://www.postgresql.org/docs/current/ddl-constraints.html)」（1 つの列、または複数の列の組の値が、別の表のいずれかの行に現れる値と一致しなければならない）事を指定すると説明しています。
 
 この制約が必要になる場面の代表は、注文の一覧に「存在しない会員の ID」が混ざった時の調査です。会員の表と突き合わせる集計では指す先の無い注文が結果から落ちるので、注文表を素直に合計した値と食い違います。値が入った経路も、`INSERT` の時なのか会員を消した時なのかも、後から辿れません。
 
@@ -93,11 +93,11 @@ flowchart LR
 
 外部キー制約は、この検査を DB へ 1 つ置きます。どの経路から来た `INSERT` でも同じ検査が掛かり、通らない書き込みはエラーで止まります。守れる範囲を広げているのは、検査の内容ではなく検査を置いた位置です。
 
-ただし、制約を書けば全部の経路が塞がる訳ではありません。制約が有効になっている事が要ります。SQLite は[「Foreign key constraints are disabled by default (for backwards compatibility), so must be enabled separately for each database connection.」（外部キー制約は既定で無効で、接続ごとに有効にする必要がある）と書いています](https://www.sqlite.org/foreignkeys.html)。
+ただし、制約を書けば全部の経路が塞がる訳ではありません。制約が有効になっている事が要ります。SQLite は「[Foreign key constraints are disabled by default (for backwards compatibility), so must be enabled separately for each database connection.](https://www.sqlite.org/foreignkeys.html)」（外部キー制約は既定で無効で、接続ごとに有効にする必要がある）と書いています。
 
 制約を後から張る場合は、検査の範囲に注意が要ります。PostgreSQL で `NOT VALID` を付けると、制約を足す前からある行の一括検査を省けます。以降の `INSERT` と `UPDATE` には制約が掛かり、既存の行は後から `VALIDATE CONSTRAINT` で検証できます。
 
-参照の列が `NULL` を許す場合も、外部キー制約は通ります。PostgreSQL は[「Normally, a referencing row need not satisfy the foreign key constraint if any of its referencing columns are null.」（参照する側の列のいずれかが NULL であれば、通常その行は外部キー制約を満たす必要が無い）と書いています](https://www.postgresql.org/docs/current/ddl-constraints.html)。
+参照の列が `NULL` を許す場合も、外部キー制約は通ります。PostgreSQL は「[Normally, a referencing row need not satisfy the foreign key constraint if any of its referencing columns are null.](https://www.postgresql.org/docs/current/ddl-constraints.html)」（参照する側の列のいずれかが NULL であれば、通常その行は外部キー制約を満たす必要が無い）と書いています。
 
 ---
 
@@ -143,7 +143,7 @@ sequenceDiagram
 | `SET NULL` | 子は残り、参照の列が `NULL` になる | 参照の列が `NOT NULL` なら、その `DELETE` は失敗する |
 | `SET DEFAULT` | 子は残り、参照の列が既定値になる | 既定値が `NULL` 以外なら、その値を持つ親の行が要る |
 
-`NO ACTION` と `RESTRICT` は、どちらも子が残っていれば親を消せません。PostgreSQL のドキュメントは `RESTRICT` について[「RESTRICT does not allow the check to be deferred until later in the transaction」（RESTRICT は、検査をトランザクションの後ろへ遅らせる事を許さない）と書いています](https://www.postgresql.org/docs/current/ddl-constraints.html)。
+`NO ACTION` と `RESTRICT` は、どちらも子が残っていれば親を消せません。PostgreSQL のドキュメントは `RESTRICT` について「[RESTRICT does not allow the check to be deferred until later in the transaction](https://www.postgresql.org/docs/current/ddl-constraints.html)」（RESTRICT は、検査をトランザクションの後ろへ遅らせる事を許さない）と書いています。
 
 検査を遅らせられると、親と子をまとめて差し替える処理を書けます。途中で一時的に参照先が欠けても、`COMMIT` の時点でそろっていればよい、という形です。遅らせるには制約へ `DEFERRABLE` を付ける必要があり、既定は `NOT DEFERRABLE` なので、上の DDL のままでは遅れません。なお、上の 5 つは PostgreSQL の指定です。利用できる指定や検査のタイミングは DBMS によって違うので、他を使う場合はドキュメントで確かめる事になります。
 
@@ -184,7 +184,7 @@ flowchart TB
 - 一括での投入や DB の移行で、親から先に入れるという順序の縛りが出る
 - `CASCADE` の連鎖が、設計時に想定した範囲を超えて広がる事がある
 
-索引は、列の値から該当する行の位置を引ける補助の構造で、これが無いと DB は表を先頭から読む事になります。2 つ目の索引の扱いは DBMS によって違い、PostgreSQL は[「the declaration of a foreign key constraint does not automatically create an index on the referencing columns」（外部キー制約の宣言は、参照する列へ索引を自動では作らない）と書いています](https://www.postgresql.org/docs/current/ddl-constraints.html)。
+索引は、列の値から該当する行の位置を引ける補助の構造で、これが無いと DB は表を先頭から読む事になります。2 つ目の索引の扱いは DBMS によって違い、PostgreSQL は「[the declaration of a foreign key constraint does not automatically create an index on the referencing columns](https://www.postgresql.org/docs/current/ddl-constraints.html)」（外部キー制約の宣言は、参照する列へ索引を自動では作らない）と書いています。
 
 DBMS によっては自動で作る物もあります。索引の有無で親の削除がどう変わるのかを以下に示します。
 

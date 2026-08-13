@@ -116,7 +116,7 @@ sequenceDiagram
 
 ### PostgreSQL の REPEATABLE READ との関係
 
-PostgreSQL のドキュメントは、[自身の REPEATABLE READ が「Snapshot Isolation」として学術文献や他の DB で知られる技術で実装されていると書いています](https://www.postgresql.org/docs/current/transaction-iso.html)。同じドキュメントは、2 本が互いの集計結果を別々の行として書き足す例を挙げ、REPEATABLE READ なら 2 本とも確定できると説明しています。write skew がそのまま出る、という事です。
+PostgreSQL のドキュメントは、自身の REPEATABLE READ が「[Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」として学術文献や他の DB で知られる技術で実装されていると書いています。同じドキュメントは、2 本が互いの集計結果を別々の行として書き足す例を挙げ、REPEATABLE READ なら 2 本とも確定できると説明しています。write skew がそのまま出る、という事です。
 
 REPEATABLE READ という名前が Snapshot Isolation を意味するわけではありません。標準が定めているのは、そのレベルで起きてはならない現象までで、実現方式は DBMS が決めます。同じ名前で読み取りのロックを使う実装なら、write skew は起きません。手元の DBMS がどちらなのかは、ドキュメントで確かめる事になります。
 
@@ -126,7 +126,7 @@ REPEATABLE READ という名前が Snapshot Isolation を意味するわけで�
 
 Snapshot Isolation に直列化異常の検査を足し、write skew のような異常を防ぐ方式の 1 つが Serializable Snapshot Isolation（SSI）です。SERIALIZABLE の実現方法が SSI だけ、という事ではありません。
 
-PostgreSQL のドキュメントは、[SERIALIZABLE が「Serializable Snapshot Isolation」（SSI）で実装されており、Snapshot Isolation に直列化異常の検査を足した技術だと説明しています](https://www.postgresql.org/docs/current/transaction-iso.html)。
+PostgreSQL のドキュメントは、SERIALIZABLE が「[Serializable Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」（SSI）で実装されており、Snapshot Isolation に直列化異常の検査を足した技術だと説明しています。
 
 足されるのは、トランザクションの間の読み書きの依存関係を追う仕組みです。PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。ドキュメントは、この記録が、ある書き込みが並行するトランザクションの先の読み取りの結果を変えていたかどうかを判定するためのものだと説明しています。
 
@@ -155,7 +155,7 @@ flowchart TB
 
 押さえられるのは、壊れる制約に関わる行を全部ロックできる場合です。まだ存在しない行が制約に関わるなら、行ロックには掴む対象がありません。条件に合う行が後から挿入されて制約が壊れる形は、行ロックの外に残ります。
 
-PostgreSQL のドキュメントも、REPEATABLE READ で業務上の規則を守らせるなら、競合するトランザクションを止める明示的なロックを慎重に使う必要があると注意しています。加えて、`LOCK TABLE` のような明示的なロックで書き込みを止めて最新の確定状態を検査する場合は、スナップショットが固定される前にロックを取る必要があります。アプリケーション側での整合性の検査を扱う[ページが、REPEATABLE READ では問い合わせを実行する前にロックを取るよう注意しています](https://www.postgresql.org/docs/current/applevel-consistency.html)。
+PostgreSQL のドキュメントも、REPEATABLE READ で業務上の規則を守らせるなら、競合するトランザクションを止める明示的なロックを慎重に使う必要があると注意しています。加えて、`LOCK TABLE` のような明示的なロックで書き込みを止めて最新の確定状態を検査する場合は、スナップショットが固定される前にロックを取る必要があります。アプリケーション側での整合性の検査を扱う[ページ](https://www.postgresql.org/docs/current/applevel-consistency.html)が、REPEATABLE READ では問い合わせを実行する前にロックを取るよう注意しています。
 
 スナップショットが先に固定されていると、ロックを取って以降の書き込みを止めても、ロックを取る前に別のトランザクションが確定した変更は見えないままになるためです。[Soft Delete](../soft-delete/) のノートでも、状態の遷移を直列化する手当てとして同じ書き方を挙げています。
 

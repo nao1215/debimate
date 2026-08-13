@@ -61,13 +61,13 @@ authenticator は、何を根拠に本人だと見なすかで整理できます
 | 所持 | 登録済みの物を今持っている | セキュリティキー、秘密鍵を持つ端末 | 盗難・紛失・複製 |
 | 生体 | 身体や振る舞いの特徴が一致する | 指紋、顔、虹彩 | 偽造・照合の誤り |
 
-生体は、単独の authenticator としてサーバへ送られるとは限りません。[Passkey](../passkey/) では、指紋や PIN の照合を端末の中で行う user verification（利用者の確認）として使い、その結果によって秘密鍵を使う事が許可されます。サーバへ届くのは秘密鍵で作った署名と、確認が済んだかどうかの印です。NIST SP 800-63B も、生体的特徴が[それ単独では認証器と認められないとしています](https://pages.nist.gov/800-63-4/sp800-63b.html)。
+生体は、単独の authenticator としてサーバへ送られるとは限りません。[Passkey](../passkey/) では、指紋や PIN の照合を端末の中で行う user verification（利用者の確認）として使い、その結果によって秘密鍵を使う事が許可されます。サーバへ届くのは秘密鍵で作った署名と、確認が済んだかどうかの印です。[NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b.html) も、生体的特徴がそれ単独では認証器と認められないとしています。
 
 3 つの軸へ無理に収めると、何へ寄りかかっているのかが見えなくなります。SMS で送る確認コードは、登録済みの電話番号を持つ端末へ届くという意味で所持の要素として使われます。ただし、その保証は SIM swap や電話番号の移転で崩れます。
 
 メールで送る確認コードは形が似ていても、確かめているのはそのメールアカウントへログインできる事で、強さはそのメールアカウントの認証に依存します。なお、NIST SP 800-63B はメールを out-of-band authenticator として扱いません。復旧の経路でよく使われる形なので、「Account Recovery が認証の強さの上限になりやすい」で改めて扱います。
 
-MFA（Multi-Factor Authentication、多要素認証）は、異なる要素を 2 つ以上そろえないと通らないようにする考え方です。認証の保証水準（AAL、Authentication Assurance Level）を 3 段に分けた 2 段目の AAL2 も、異なる 2 つの要素の保持と制御を安全な認証プロトコルで証明する事を[要件の 1 つに置いています](https://pages.nist.gov/800-63-4/sp800-63b.html)。要素を重ねると何が変わるのかを以下に示します。
+MFA（Multi-Factor Authentication、多要素認証）は、異なる要素を 2 つ以上そろえないと通らないようにする考え方です。認証の保証水準（AAL、Authentication Assurance Level）を 3 段に分けた 2 段目の AAL2 も、異なる 2 つの要素の保持と制御を安全な認証プロトコルで証明する事を要件の 1 つに置いていると[同じ指針](https://pages.nist.gov/800-63-4/sp800-63b.html)は述べています。要素を重ねると何が変わるのかを以下に示します。
 
 ```mermaid
 flowchart TB
@@ -79,7 +79,7 @@ flowchart TB
 
 上図で MFA が塞いでいるのは、漏洩した値だけで通る経路です。攻撃者が偽サイトを用意して確認コードをその場で本物のサーバへ中継する経路と、認証を通した後に発行された値を盗む経路は残ります。後の経路は「持ち回る値は、持っている相手をそのまま通す」で扱います。
 
-中継への強さは方式で分かれます。同じ指針は、フィッシング耐性の方法としてチャネルの束縛と検証者名の束縛の[2 つを挙げています](https://pages.nist.gov/800-63-4/sp800-63b.html)。[Passkey](../passkey/) は後者にあたり、偽サイトのドメインで作られた値は本物のサーバの検証を通りません。
+中継への強さは方式で分かれます。[同じ指針](https://pages.nist.gov/800-63-4/sp800-63b.html)は、フィッシング耐性の方法としてチャネルの束縛と検証者名の束縛の 2 つを挙げています。[Passkey](../passkey/) は後者にあたり、偽サイトのドメインで作られた値は本物のサーバの検証を通りません。
 
 ---
 
@@ -122,7 +122,7 @@ Session ID は左の列の代表で、Cookie で運ぶ構成が広く使われ�
 
 発行した値は、提示すれば通るという意味で authenticator と同じ性質を持ちます。Session ID を Cookie で運ぶ構成も同じで、Cookie はサーバが発行した値をブラウザが保存し、同じサイトへの要求へ自動で添える仕組みなので、値を持っている事がそのまま提示になります。
 
-この性質を名前にした形式が Bearer Token です。RFC 6750 は[「any party in possession of the token (a "bearer") can use the token in any way that any other party in possession of it can」（その Token を保持するどの当事者も、他の保持者と同じようにその Token を使える）という性質を持つセキュリティトークンだと定義しています](https://www.rfc-editor.org/rfc/rfc6750#section-1.2)。
+この性質を名前にした形式が Bearer Token です。RFC 6750 は「[any party in possession of the token (a "bearer") can use the token in any way that any other party in possession of it can](https://www.rfc-editor.org/rfc/rfc6750#section-1.2)」（その Token を保持するどの当事者も、他の保持者と同じようにその Token を使える）という性質を持つセキュリティトークンだと定義しています。
 
 値が漏れた時に何が起きるのかを以下に示します。
 
@@ -142,7 +142,7 @@ sequenceDiagram
 
 上図で攻撃者の要求を止められないのは、サーバが利用者と区別する材料を持たないためです。ログインへ MFA を足しても、盗んだ値をそのまま使う経路は防げません。Password や MFA を使った初回の認証はログインの時点で終わっており、この値はその結果を運んでいるだけだからです。
 
-そのため、値が経路上に露出しない事が前提になります。RFC 6750 も、Bearer Token を伴う要求で常に TLS か同等の転送路の保護を使うよう[求めています](https://www.rfc-editor.org/rfc/rfc6750#section-5.3)。TLS は、通信路を暗号化して経路上での盗み見と書き換えを防ぐ規約です。
+そのため、値が経路上に露出しない事が前提になります。[RFC 6750](https://www.rfc-editor.org/rfc/rfc6750#section-5.3) も、Bearer Token を伴う要求で常に TLS か同等の転送路の保護を使うよう求めています。TLS は、通信路を暗号化して経路上での盗み見と書き換えを防ぐ規約です。
 
 漏洩そのものを完全には避けられません。そのため、被害の続く時間を短くする手や、盗んだ値だけでは通らないようにする手が併用されます。有効期限を分単位まで縮める、重要な操作の前に認証をやり直させる、といった方法です。OAuth では [DPoP](https://www.rfc-editor.org/rfc/rfc9449.html)（Demonstrating Proof of Possession）のように、Access Token を鍵へ結び付け、要求のたびに対応する秘密鍵の保持を証明させる方法もあります。
 

@@ -72,7 +72,7 @@ Authenticator には、端末に組み込まれた Platform Authenticator と、
 
 「that can register a user with a given Relying Party and later assert possession of the registered public key credential」（ある Relying Party に対して利用者を登録し、後から登録済みの公開鍵資格情報の保持を主張できるもの）
 
-定義はこの後に[「and optionally verify the user to the Relying Party」（任意で、利用者を Relying Party へ確認する）と続きます](https://www.w3.org/TR/webauthn-3/#authenticator)。通常の認証では、操作している人が居る事を User Presence で確認し、利用者が誰かの確認は Relying Party の要求に応じて加わります。
+定義はこの後に「[and optionally verify the user to the Relying Party](https://www.w3.org/TR/webauthn-3/#authenticator)」（任意で、利用者を Relying Party へ確認する）と続きます。通常の認証では、操作している人が居る事を User Presence で確認し、利用者が誰かの確認は Relying Party の要求に応じて加わります。
 
 主体とプロトコルの関係を以下に示します。
 
@@ -92,7 +92,7 @@ flowchart LR
 
 Authenticator が返す署名と付随データの組を assertion と呼び、これがサーバまで運ばれます。
 
-FIDO Alliance は、この 2 つの標準について[「The same standards, commonly known as FIDO2 (WebAuthn and CTAP), are leveraged to deploy FIDO with passkeys for sign-in.」（サインインで passkey を使う FIDO の実現には、FIDO2 として知られる WebAuthn と CTAP という同じ標準が使われる）と説明しています](https://fidoalliance.org/passkeys/)。
+FIDO Alliance は、この 2 つの標準について「[The same standards, commonly known as FIDO2 (WebAuthn and CTAP), are leveraged to deploy FIDO with passkeys for sign-in.](https://fidoalliance.org/passkeys/)」（サインインで passkey を使う FIDO の実現には、FIDO2 として知られる WebAuthn と CTAP という同じ標準が使われる）と説明しています。
 
 ---
 
@@ -154,7 +154,7 @@ sequenceDiagram
 
 そのためサーバは、署名の検証とは別に、challenge が自分の出した値か、origin が期待する相手か、RP ID のハッシュが自分のものかを 1 つずつ突き合わせます。
 
-W3C の仕様は、この流れの概説として[「extracts the credential ID, looks up the registered credential public key in its database, and verifies the assertion signature」（credential ID を取り出し、DB に登録済みの公開鍵を引いて、assertion の署名を検証する）と書いています](https://www.w3.org/TR/webauthn-3/#sctn-sample-scenarios)。
+W3C の仕様は、この流れの概説として「[extracts the credential ID, looks up the registered credential public key in its database, and verifies the assertion signature](https://www.w3.org/TR/webauthn-3/#sctn-sample-scenarios)」（credential ID を取り出し、DB に登録済みの公開鍵を引いて、assertion の署名を検証する）と書いています。
 
 規範的な検証の手順は、challenge・origin・RP ID のハッシュ・フラグの確認まで含めて仕様が定めています。
 
@@ -220,9 +220,9 @@ flowchart TB
     DC -.- DN["credential ID を指定した<br/>認証にも使える"]
 ```
 
-W3C の仕様は Discoverable Credential について[「usable in authentication ceremonies where the Relying Party does not provide any credential IDs」（Relying Party が credential ID を 1 つも渡さない認証で使える）と定義しています](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential)。
+W3C の仕様は Discoverable Credential について「[usable in authentication ceremonies where the Relying Party does not provide any credential IDs](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential)」（Relying Party が credential ID を 1 つも渡さない認証で使える）と定義しています。
 
-同じ仕様は、Discoverable Credential が[「also usable in authentication ceremonies where credential IDs are given」（credential ID が与えられる認証でも使える）とも注記しています](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential)。上図の点線が示すとおり、発見できる事と credential ID を指定して使う事は排他ではありません。
+同じ仕様は、Discoverable Credential が「[also usable in authentication ceremonies where credential IDs are given](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential)」（credential ID が与えられる認証でも使える）とも注記しています。上図の点線が示すとおり、発見できる事と credential ID を指定して使う事は排他ではありません。
 
 Non-discoverable な資格情報の方は、credential ID を `allowCredentials` で渡す必要があると仕様が書いています。指定なしでも使えるかどうかが、2 つの分かれ目です。
 
@@ -238,7 +238,7 @@ Relying Party が利用者を先に特定しなくても Authenticator が資格
 
 「秘密鍵は絶対に端末から出ない」という説明は、Passkey 全体には当てはまりません。[W3C の仕様](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)は、資格情報をバックアップできるかどうかを Backup Eligibility（BE）、今バックアップされているかどうかを Backup State（BS）として、authenticatorData のフラグで表します。
 
-BE は作成時に決まり、後から変わりません。仕様は[「A backup eligible public key credential source is referred to as a multi-device credential」（バックアップの対象にできる公開鍵資格情報は multi-device credential と呼ばれる）と書いています](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)。対象にできないものは single-device credential と呼ばれます。
+BE は作成時に決まり、後から変わりません。仕様は「[A backup eligible public key credential source is referred to as a multi-device credential](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)」（バックアップの対象にできる公開鍵資格情報は multi-device credential と呼ばれる）と書いています。対象にできないものは single-device credential と呼ばれます。
 
 BS は現在の状態を表し、時間とともに変わります。BE が 1 の資格情報でも、今すでに別の端末へ同期されているとは限りません。3 つの状態を以下に示します。
 
