@@ -4,7 +4,7 @@ date: 2026-08-11
 draft: false
 series: ["技術ノート"]
 tags: ["security", "privacy"]
-weight: 2
+weight: 3
 ---
 
 Tor は、通信を複数のリレー（中継役のサーバ）へ順に通し、経路のどの 1 台からも接続元と接続先の両方が見えないようにする通信の仕組みです。通常の Web サイトへ接続する場合は、Guard・Middle・Exit という 3 台のリレーを経由します。名前は The Onion Router に由来し、リレーごとに別の鍵で通信を包む構造から付いています。

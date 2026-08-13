@@ -39,6 +39,8 @@ description: ""
 | --- | --- | --- |
 | 1 | [Soft Delete - 削除フラグを最初の選択肢にしない](/notes/database-systems/soft-delete/) | データモデリング |
 | 2 | [NULL - 値が無い事の表し方と、三値論理が及ぼす影響](/notes/database-systems/sql-null/) | データモデリング / SQL |
+| 3 | [Foreign Key - 参照先の存在を DB に保証させる](/notes/database-systems/foreign-key/) | データモデリング / 制約 |
+| 4 | [UNIQUE Constraint - 重複を最後に止める場所を決める](/notes/database-systems/unique-constraint/) | データモデリング / 制約 |
 
 #### Query Processing
 

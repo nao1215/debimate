@@ -36,7 +36,8 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
       <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/gup?style=flat-square&label=%E2%98%85&color=blue" alt="gup star count" loading="lazy">
     </div>
   </div>
-    <p class="oss-card-desc"><code>go install</code> でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール。<a href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer">Awesome Go</a> 掲載</p>
+  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
+  <p class="oss-card-desc"><code>go install</code> でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール</p>
 </div>
 
 <div class="oss-card">
@@ -47,6 +48,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
       <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/filesql?style=flat-square&label=%E2%98%85&color=blue" alt="filesql star count" loading="lazy">
     </div>
   </div>
+  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc">CSV／TSV／LTSV／Parquet／Excel などのファイルを SQLite として読み込む database/sql ドライバ</p>
 </div>
 
@@ -58,6 +60,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
       <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/sqly?style=flat-square&label=%E2%98%85&color=blue" alt="sqly star count" loading="lazy">
     </div>
   </div>
+  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc">CSV／TSV／LTSV／Parquet／Excel などに対して、シェルから直接 SQL を実行するツール</p>
 </div>
 
@@ -69,6 +72,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
       <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/markdown?style=flat-square&label=%E2%98%85&color=blue" alt="markdown star count" loading="lazy">
     </div>
   </div>
+  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc">Markdown と Mermaid 図を組み立てるための Go ライブラリ</p>
 </div>
 

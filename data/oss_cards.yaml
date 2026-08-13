@@ -2,17 +2,27 @@
 # 全件を HTML へ出力し、表示する 1 枚は閲覧時に JavaScript が選ぶ。
 # ここに追記すれば候補が増える。star 数は shields.io のバッジで取るため持たせない。
 # 説明文は content/about/_index.md の OSS 一覧と揃えている。
+# awesome: true を付けると、README と同じ Awesome Go のバッジを併記する。
 - name: gup
   repo: https://github.com/nao1215/gup
   lang: Go
   langColor: "#00ADD8"
+  awesome: true
   desc: go install でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール
 
 - name: sqly
   repo: https://github.com/nao1215/sqly
   lang: Go
   langColor: "#00ADD8"
+  awesome: true
   desc: CSV／TSV／LTSV／JSON／Parquet／Excel などに対して、シェルから直接 SQL を実行するツール
+
+- name: filesql
+  repo: https://github.com/nao1215/filesql
+  lang: Go
+  langColor: "#00ADD8"
+  awesome: true
+  desc: CSV／TSV／LTSV／Parquet／Excel などのファイルを SQLite として読み込む database/sql ドライバ
 
 - name: atago
   repo: https://github.com/nao1215/atago
@@ -24,4 +34,5 @@
   repo: https://github.com/nao1215/markdown
   lang: Go
   langColor: "#00ADD8"
+  awesome: true
   desc: Markdown と Mermaid 図を組み立てるための Go ライブラリ

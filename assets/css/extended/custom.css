@@ -267,6 +267,18 @@ html {
   height: 1.1rem;
 }
 
+/* Awesome Go 掲載バッジ。README と同じ awesome.re の SVG を使う。
+   横幅がカード幅の半分近くあるため、header へは入れず独立した行に置く */
+.oss-card-awesome {
+  display: inline-block;
+  margin-top: 0.55rem;
+  line-height: 0;
+}
+
+.oss-card-awesome img {
+  height: 1.1rem;
+}
+
 .oss-card-meta {
   display: flex;
   align-items: center;
