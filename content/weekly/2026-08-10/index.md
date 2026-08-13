@@ -60,3 +60,11 @@ gup、sqly は息子が産まれた歳に開発した OSS の中で、唯一メ�
 - [kubevirt/project-infra](https://github.com/kubevirt/project-infra)
 
 Argo に至っては、生成した Markdown を HTML に変換して[トレーシングリファレンス](https://argo-workflows.readthedocs.io/en/latest/tracing/)、[コンフィグマップリファレンス](https://argo-workflows.readthedocs.io/en/latest/workflow-controller-configmap/)、[ワークフロー変数カタログ](https://argo-workflows.readthedocs.io/en/latest/variable-flow/variables/)として公開していた。しかも、ゴールデンテストとしてドキュメント更新漏れがないかを CI でチェックしていた。便利に使っていただいているようで、ありがたい限りである。
+
+#### [Awesome Go](https://github.com/avelino/awesome-go) に 自作 OSS を3つ登録（合計4個登録）
+
+ソフトウェア界隈では、一定の品質に達しているツール・便利なツールを Awesome ○○○ としてリスト化したリポジトリがある。その Go 言語版に、自分が開発した sqly, markdown, filesql が追加された。markdown を v1.0.0 にアップグレードしたので、一度に3個登録申請した。すんなり承認された。以前から [gup](https://github.com/nao1215/gup) が登録されているので、4個目である。
+
+![Awesome Go](awesome-go-my-oss.webp)
+
+Awesome Go には最後に [atago](https://github.com/nao1215/atago)（12月にならないと登録申請できない）を送り込んだら、次は別の言語で Awesome な OSS を作るつもりだ。ちなみに、Awesome Go はメンテナンス状況が怪しい。一定期間更新されていない OSS を除外する処理が壊れていそうだった。それだけでなく、一定の基準を満たした OSS が自動で追加される仕組みは、意図的でなく、実装ミスのようにも見えた。
