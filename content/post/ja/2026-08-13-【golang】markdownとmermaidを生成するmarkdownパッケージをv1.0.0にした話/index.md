@@ -49,9 +49,11 @@ import (
 )
 
 func main() {
+	// 第1引数は出力先の io.Writer。WithBlockSpacing() はブロック間に空行を挟むオプション
 	md.NewMarkdown(os.Stdout, md.WithBlockSpacing()).
 		H1("This is H1").
 		PlainText("This is plain text").
+		// 末尾に f が付くメソッドは、fmt.Sprintf と同じ書式指定が使える
 		H2f("This is %s with text format", "H2").
 		PlainTextf("Text formatting, such as %s and %s, %s styles.",
 			md.Bold("bold"), md.Italic("italic"), md.Code("code")).
@@ -79,7 +81,7 @@ func main() {
 				{"John", "30", "UK"},
 			},
 		}).
-		Build()
+		Build() // ここで初めて io.Writer へ書き込む
 }
 ```
 
@@ -182,14 +184,16 @@ import (
 )
 
 func main() {
+	// ファイルではなく文字列として受け取るので、出力先には io.Discard を渡す
 	diagram := sequence.NewDiagram(io.Discard).
 		Participant("Sophia").
 		Participant("David").
 		Participant("Subaru").
-		LF().
+		LF(). // LF() は空行の挿入。図の可読性のために入れている
 		SyncRequest("Sophia", "David", "Please wake up Subaru").
 		SyncResponse("David", "Sophia", "OK").
 		LF().
+		// LoopStart/LoopEnd、BreakStart/BreakEnd は対で呼び、loop と break を囲む
 		LoopStart("until Subaru wake up").
 		SyncRequest("David", "Subaru", "Wake up!").
 		SyncResponse("Subaru", "David", "zzz").
@@ -200,10 +204,11 @@ func main() {
 		LoopEnd().
 		LF().
 		SyncResponse("David", "Sophia", "wake up, wake up").
-		String()
+		String() // 組み立てた mermaid を文字列として取り出す
 
 	markdown.NewMarkdown(os.Stdout, markdown.WithBlockSpacing()).
 		H2("Sequence Diagram").
+		// 言語指定を mermaid にしたコードブロックへ、ダイアグラムを埋め込む
 		CodeBlocks(markdown.SyntaxHighlightMermaid, diagram).
 		Build()
 }
@@ -283,8 +288,8 @@ import (
 )
 
 func main() {
-	// Inside a step, append to the summary the runner renders; outside one,
-	// write a local file.
+	// GitHub Actions のステップ内ではサマリファイルへ追記し、
+	// ローカル実行時はカレントディレクトリのファイルへ書き出す
 	path := os.Getenv("GITHUB_STEP_SUMMARY")
 	flags := os.O_APPEND | os.O_CREATE | os.O_WRONLY
 	if path == "" {
@@ -301,6 +306,7 @@ func main() {
 		}
 	}()
 
+	// カバレッジを円グラフにする。WithShowData(true) で実数値も併記する
 	coverage := piechart.NewPieChart(
 		io.Discard,
 		piechart.WithTitle("Coverage"),
@@ -310,6 +316,7 @@ func main() {
 		LabelAndIntValue("uncovered", 8).
 		String()
 
+	// サマリファイルを出力先にして、テーブル、アラート、円グラフを書き込む
 	err = markdown.NewMarkdown(f, markdown.WithBlockSpacing()).
 		H2("Test Results").
 		Table(markdown.TableSet{
@@ -319,10 +326,11 @@ func main() {
 				{"core", "89", "2"},
 			},
 		}).
-		Warning("2 tests failed in core; see the failed step for logs.").
+		Warning("2 tests failed in core; see the failed step for logs."). // GitHub のアラート記法
 		CodeBlocks(markdown.SyntaxHighlightMermaid, coverage).
 		Build()
 
+	// メソッドチェーン中に発生したエラーは、Build() の戻り値でまとめて返ってくる
 	if err != nil {
 		panic(err)
 	}
