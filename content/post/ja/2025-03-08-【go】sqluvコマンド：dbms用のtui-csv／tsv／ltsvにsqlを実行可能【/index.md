@@ -31,7 +31,7 @@ aliases:
 
 sqluvは、ローカルのCSV／TSV／LTSVファイルをインポートし、それらのファイルに対してSQLを実行する機能も持ちます。この機能は、私が以前開発した[nao1215/sqlyコマンド](https://github.com/nao1215/sqly)から移植しています。
 
-関連記事：[【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/ja/2022-12-02-【golang】csv／tsv／ltsv／jsonにsqlを実行するsqlyコマンドを作った/)
+関連記事：[【Golang】CSV／TSV／LTSV／JSONにSQLを実行するsqlyコマンドを作った話【開発背景／設計／使い方】](https://debimate.jp/post/ja/2022-12-02-golangcsvtsvltsvjsonにsqlを実行するsqlyコマンドを作った/)
 
 ちなみに、名前の由来は、SQL + LOVE（短縮形はLUV）であり、SQLと仲良くなりたい気持ちをコマンド名に込めました。
 
