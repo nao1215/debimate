@@ -37,8 +37,18 @@ jobs:
           hugo-version: '0.161.1'
           extended: true
 
+      - name: Check redirect tables are up to date
+        run: make redirects-check
+
       - name: Build site
         run: hugo --minify
+
+      # 生成後の public/ を検査する。リンク切れのまま公開すると、直前の
+      # デプロイまで正常だったURLが落ちるため、artifact を上げる前に止める。
+      # 外部サイトは 403/429 で不安定なので見に行かない（muffet は手元で
+      # make lint-links-external を使う）
+      - name: Check internal links
+        run: python3 scripts/check_links.py
 
       # デプロイが失敗した際に成果物の状態を後から判断できるようにする。
       # ファイルの内容には触れず、パスとサイズだけを記録する

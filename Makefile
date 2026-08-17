@@ -63,6 +63,18 @@ redirects-check: ## 移行前URL向けのリダイレクトが最新か検証
 	python3 scripts/ensure_post_aliases.py --check
 	python3 scripts/gen_legacy_redirects.py --check
 
+lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビルドから実施）
+	$(HUGO) --minify
+	python3 scripts/check_links.py
+
+lint-links-external: ## 外部リンク込みでmuffetを実行（403/429が出るので参考値）
+	@command -v muffet >/dev/null || (echo "muffet が無い: go install github.com/raviqqe/muffet/v2@latest" && exit 1)
+	$(HUGO) server --port $(SERVER_PORT) --bind 127.0.0.1 --renderToMemory & \
+	  server=$$!; \
+	  trap 'kill $$server' EXIT; \
+	  until curl -sf -o /dev/null http://localhost:$(SERVER_PORT)/; do sleep 1; done; \
+	  muffet -c 16 -t 20 http://localhost:$(SERVER_PORT)
+
 clean: ## publicディレクトリ削除
 	rm -rf public
 
