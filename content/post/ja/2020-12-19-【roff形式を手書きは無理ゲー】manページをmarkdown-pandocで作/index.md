@@ -96,7 +96,7 @@ serial \[en] シリアル番号付きのファイル名にリネームする。
 
 ### Pandocのインストール
 
-[Pandoc](https://pandoc.org/)は、ドキュメント変換ツール（Python製）です。
+[Pandoc](https://pandoc.org/)は、ドキュメント変換ツール（Haskell製）です。
 
 Markdownをmanページに変換するだけであれば、[Ronn](https://rtomayko.github.io/ronn/)（ruby製）もあります。しかし、Pandocは多種多様なフォーマット変換に対応しています。また、Pandocの方がRonnよりも活発に開発を続けています。この2点が、Pandocを選んだ理由です。
 
