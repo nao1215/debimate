@@ -21,6 +21,8 @@ aliases:
 - /2026/08/13/golangmarkdownとmermaidを生成するmarkdownパッケージをv100にした話/
 - /post/2026-08-13-golangmarkdownとmermaidを生成するmarkdownパッケージをv100にした話/
 - /2026/08/13/
+- /2026/08/14/【golang】markdownとmermaidを生成するmarkdownパッケージをv1.0.0にした話/
+- /2026/08/14/golangmarkdownとmermaidを生成するmarkdownパッケージをv100にした話/
 ---
 
 ### 前書き：v1.0.0 に達した3本目の OSS
