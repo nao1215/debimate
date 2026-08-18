@@ -66,7 +66,7 @@ Evans 氏は、上流のシステムとの大きなインターフェースが�
 
 ### ACL の中に何を置くか
 
-ACL の中身は、ここでは 3 つの責任に分けて見ます。下流が宣言したインターフェースを満たす `Checker`、2 つのモデルを翻訳する部分、上流の既存の API（Application Programming Interface）をそのまま呼ぶクライアントです。この 3 分割は説明のための整理で、原典が規定している構造ではありません。
+ACL の中身は、ここでは 3 つの責任に分けて見ます。下流が宣言したインターフェースを満たす `Checker`、2 つのモデルを翻訳する部分、上流の既存の API（Application Programming Interface）をそのまま呼ぶクライアントです。この 3 分割は説明のための整理で、DDD Reference が規定している構造ではありません。
 
 Microsoft の [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer) は、ACL を「同じ意味論を共有しない異なるサブシステムの間に facade または adapter の層を実装する」パターンとして説明しています。ここで言う意味論は、同じ名前や値が何を指すのかについて、それぞれのシステムが持っている取り決めです。
 

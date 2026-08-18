@@ -52,7 +52,8 @@ description: ""
 | --- | --- | --- |
 | 1 | [Plugin Architecture - コアを肥大化させずに機能を足す](/notes/software-architecture/plugin-architecture/) | 設計パターン |
 | 2 | [Parse, Don't Validate - 不正な状態を後段へ持ち込まない](/notes/software-architecture/parse-dont-validate/) | 設計パターン |
-
+| 3 | [Configuration Is an Interface - 設定ファイルも API として設計する](/notes/software-architecture/configuration-as-interface/) | 設計パターン |
+| 4 | [Design for Deletion - 足すより消しやすく設計する](/notes/software-architecture/design-for-deletion/) | 設計パターン |
 
 ---
 
