@@ -40,6 +40,20 @@ description: ""
 | 2 | [Ambassador - 外部との通信を仲介する補助コンテナ](/notes/software-architecture/ambassador/) | 設計パターン |
 | 3 | [Adapter - アプリケーションの出力を外向きに揃える補助コンテナ](/notes/software-architecture/adapter/) | 設計パターン |
 
+#### Release Patterns
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Feature Flag - 機能の有効・無効を切り替える設計](/notes/software-architecture/feature-flag/) | 設計パターン |
+
+#### Boundaries and Lifecycle
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Plugin Architecture - コアを肥大化させずに機能を足す](/notes/software-architecture/plugin-architecture/) | 設計パターン |
+| 2 | [Parse, Don't Validate - 不正な状態を後段へ持ち込まない](/notes/software-architecture/parse-dont-validate/) | 設計パターン |
+
+
 ---
 
 ### 参考文献（手元にある書籍）

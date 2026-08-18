@@ -31,7 +31,7 @@ sequenceDiagram
 
 ### 前提と説明の範囲
 
-本ノートで、説明する範囲も決めておきます。分離レベルの意味と、dirty read・nonrepeatable read・phantom read・lost update という異常の名前は [Transaction Isolation](../transaction-isolation/) で扱っているので、ここでは繰り返しません。行のバージョンを併存させる MVCC の仕組みも同じノートにあります。
+分離レベルの意味と、dirty read・nonrepeatable read・phantom read・lost update という異常の名前は [Transaction Isolation](../transaction-isolation/) で扱っているので、本ノートでは繰り返しません。行のバージョンを併存させる MVCC の仕組みも同じノートにあります。
 
 ここで見るのは、Snapshot Isolation が何を防いで何を防がないのか、その線が他の実現方式とどう違うのかです。
 

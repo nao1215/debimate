@@ -9,7 +9,7 @@ weight: 2
 
 Bitcoin の送金は、ウォレット（鍵を管理し、取引を組み立てるソフトウェア）が取引を作り、ネットワークへ流し、マイナーがブロックへ取り込むまでの段階を通ります。取引が共有された履歴の中に位置を持つのは最後の段階で、送信した時点ではまだどこにも記録されていません。以下では、Alice が Bob へ 0.1 BTC（BTC は Bitcoin の通貨単位）を送る 1 件の取引で、作成からブロックへの取り込みまでを順に追います。
 
-本ノートで、説明する範囲も決めておきます。各段階で何が起きるのかと、どの仕組みが登場するのかを扱い、[署名の計算手順](../digital-signature/)、[Bitcoin Script の命令](../bitcoin-script/)、[SHA-256（Secure Hash Algorithm 256、Bitcoin が使うハッシュ関数）の内部](../hash-function/)、[Merkle Tree の構築規則](../merkle-tree-design/)、[合格条件の計算](../proof-of-work/)といった詳細は、各ノートへ譲ります。全体の問題設定は [Blockchain Basics](../blockchain-basics/) で整理しています。
+本ノートでは、各段階で何が起きるのかと、どの仕組みが登場するのかを扱い、[署名の計算手順](../digital-signature/)、[Bitcoin Script の命令](../bitcoin-script/)、[SHA-256（Secure Hash Algorithm 256、Bitcoin が使うハッシュ関数）の内部](../hash-function/)、[Merkle Tree の構築規則](../merkle-tree-design/)、[合格条件の計算](../proof-of-work/)といった詳細は、各ノートへ譲ります。全体の問題設定は [Blockchain Basics](../blockchain-basics/) で整理しています。
 
 送金がブロックへ取り込まれるまでの間に、取引が今どこまで進んでいるのかを知りたくなる事があります。代表的な場面は、ウォレットで送信を終えた後の待ち時間です。画面には「未確認」と表示され、しばらく経ってから確認済みへ変わります。その間に取引がどこを通り、誰が何を確かめているのかは、ウォレットの画面からは見えません。
 

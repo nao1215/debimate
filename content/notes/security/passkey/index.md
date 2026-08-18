@@ -31,7 +31,7 @@ flowchart TB
 
 ### 前提と説明の範囲
 
-本ノートで、説明する範囲も決めておきます。ここでは、Web ブラウザから Passkey を使う場合の処理の流れを扱い、Authenticator の内部実装・組織での配布運用は扱いません。Authenticator の出自を Relying Party へ証明する attestation の検証方式も範囲外にします。以降、単に「サーバ」と書く場合は、認証を行う Relying Party のサーバを指します。
+本ノートでは、Web ブラウザから Passkey を使う場合の処理の流れを扱い、Authenticator の内部実装・組織での配布運用は扱いません。Authenticator の出自を Relying Party へ証明する attestation の検証方式も範囲外にします。以降、単に「サーバ」と書く場合は、認証を行う Relying Party のサーバを指します。
 
 署名を作る手順と検証の計算は [Digital Signature](../../blockchain-systems/digital-signature/) のノートで扱っているので、ここでは繰り返しません。ハッシュ値の性質は [Hash Function](../../blockchain-systems/hash-function/) のノートにあります。
 

@@ -13,7 +13,7 @@ Deadlock（デッドロック）は、2 本以上のトランザクションが�
 
 MySQL のドキュメントは、デッドロックを「[a situation in which multiple transactions are unable to proceed because each transaction holds a lock that is needed by another one](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)」（複数のトランザクションが、それぞれ他方の必要とするロックを持っているために、どれも先へ進めない状況）と定義しています。
 
-本ノートで、説明する範囲も決めておきます。以降は PostgreSQL の挙動を基本に説明し、挙動が違う箇所では MySQL と Oracle Database の例も示します。トランザクションへ何を入れるかの判断は [Transaction Scope](../transaction-scope/)、分離レベルは [Transaction Isolation](../transaction-isolation/) の題材とします。
+本ノートでは PostgreSQL の挙動を基本に説明し、挙動が違う箇所では MySQL と Oracle Database の例も示します。トランザクションへ何を入れるかの判断は [Transaction Scope](../transaction-scope/)、分離レベルは [Transaction Isolation](../transaction-isolation/) の題材とします。
 
 前提を 1 つ置きます。行を更新すると DBMS（Database Management System）はその行にロックを取り、通常はトランザクションが終わるまで解放しません。1 行目を更新した後に 2 行目を待っている間も、1 行目は握ったままです。
 
@@ -162,7 +162,7 @@ flowchart LR
     end
 ```
 
-上図の下側は、書いた SQL の並べ替えからは順序を制御しにくい部分です。上から順に見ていきます。外部キーの検査は、子側の `INSERT` と `UPDATE` に加えて、親側の `DELETE` と親キーの `UPDATE` でも走ります。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)は、制約の検査が要る操作が、検査のために見た行へ共有のレコードロックを設定すると書いています。
+上図の下側は、書いた SQL の並べ替えからは順序を制御しにくい部分です。外部キーの検査は、子側の `INSERT` と `UPDATE` に加えて、親側の `DELETE` と親キーの `UPDATE` でも走ります。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)は、制約の検査が要る操作が、検査のために見た行へ共有のレコードロックを設定すると書いています。
 
 親を消す経路と子を挿す経路は、書いた SQL の上では別の表を触っています。ロックの上では同じ行で交わるため、順序を決める時に見落とします。[Foreign Key](../foreign-key/) を張った表を更新する経路は、この形で交差します。
 

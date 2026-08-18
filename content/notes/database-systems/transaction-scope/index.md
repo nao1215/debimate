@@ -13,7 +13,7 @@ Transaction Scope（トランザクションの範囲）は、`BEGIN` から `CO
 
 範囲が問題になる場面の代表は、外部システムの呼び出しが途中に挟まる処理です。在庫を引き当て、決済 API を呼び、注文の行を作る、という 3 つの処理があるとします。どれかが失敗したら全部無かった事にしたいので、3 つをまとめて 1 つのトランザクションで囲みたくなります。
 
-本ノートで、説明する範囲も決めておきます。以降は PostgreSQL の挙動を基本に説明します。複数の行を違う順序でロックして互いに待つ状態は [Deadlock](../deadlock/)、他のトランザクションの変更がどこまで見えるかを定める分離レベルは [Transaction Isolation](../transaction-isolation/)、複数の DB にまたがる確定は [2PC（Two-Phase Commit、2 相コミット）](../../distributed-systems/two-phase-commit/) の題材とします。
+本ノートでは PostgreSQL の挙動を基本に説明します。複数の行を違う順序でロックして互いに待つ状態は [Deadlock](../deadlock/)、他のトランザクションの変更がどこまで見えるかを定める分離レベルは [Transaction Isolation](../transaction-isolation/)、複数の DB にまたがる確定は [2PC（Two-Phase Commit、2 相コミット）](../../distributed-systems/two-phase-commit/) の題材とします。
 
 3 つの処理を 1 つのトランザクションへ入れた形を以下に示します。以降で問題にするのはこの形です。
 
