@@ -52,8 +52,6 @@ description: ""
 | --- | --- | --- |
 | 1 | [Plugin Architecture - コアを肥大化させずに機能を足す](/notes/software-architecture/plugin-architecture/) | 設計パターン |
 | 2 | [Parse, Don't Validate - 不正な状態を後段へ持ち込まない](/notes/software-architecture/parse-dont-validate/) | 設計パターン |
-| 3 | [Configuration Is an Interface - 設定ファイルも API として設計する](/notes/software-architecture/configuration-as-interface/) | 設計パターン |
-| 4 | [Design for Deletion - 足すより消しやすく設計する](/notes/software-architecture/design-for-deletion/) | 設計パターン |
 
 ---
 
@@ -63,7 +61,7 @@ description: ""
 - [ソフトウェアアーキテクトのための意思決定術　リーダーシップ／技術／プロダクトマネジメントの活用](https://book.impress.co.jp/books/1123101159)
 - [マイクロサービスアーキテクチャ 第2版](https://www.oreilly.co.jp/books/9784814400010/)
 - [ドメイン駆動設計をはじめよう―ソフトウェアの実装と事業戦略を結びつける実践技法](https://www.oreilly.co.jp//books/9784814400737/)
-- [関数型ドメインモデリング](https://tatsu-zine.com/books/domain-modeling-made-functional?srsltid=AfmBOop42xjqnPjqKJAL67ViqcyQJX4fHwCDqd1nf3hOOD-QdQ9pR4Ut)
+- [関数型ドメインモデリング](https://tatsu-zine.com/books/domain-modeling-made-functional)
 - [セキュア・バイ・デザイン 安全なソフトウェア設計](https://book.mynavi.jp/ec/products/detail/id=124056)
 - [ソフトウェアアーキテクチャの基礎 第2版―エンジニアリングに基づく体系的アプローチ](https://www.oreilly.co.jp/books/9784814401550/)
 - [ドメイン駆動設計 モデリング/実装ガイド](https://booth.pm/ja/items/1835632)
