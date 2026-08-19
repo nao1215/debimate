@@ -68,9 +68,7 @@ Passkey という言葉は資格情報を指し、それを扱う仕組みは複
 - Client: ブラウザや OS。WebAuthn の API を実装する
 - Authenticator: 鍵を作り、保持し、署名する部品
 
-Authenticator には、端末に組み込まれた Platform Authenticator と、USB や NFC などで繋ぐ Roaming Authenticator があります。W3C の [Web Authentication 仕様](https://www.w3.org/TR/webauthn-3/)は、この部品を次のように定義しています。
-
-「that can register a user with a given Relying Party and later assert possession of the registered public key credential」（ある Relying Party に対して利用者を登録し、後から登録済みの公開鍵資格情報の保持を主張できるもの）
+Authenticator には、端末に組み込まれた Platform Authenticator と、USB や NFC などで繋ぐ Roaming Authenticator があります。W3C の [Web Authentication 仕様](https://www.w3.org/TR/webauthn-3/)は、この部品を「that can register a user with a given Relying Party and later assert possession of the registered public key credential」（ある Relying Party に対して利用者を登録し、後から登録済みの公開鍵資格情報の保持を主張できるもの）と定義しています。
 
 定義はこの後に「[and optionally verify the user to the Relying Party](https://www.w3.org/TR/webauthn-3/#authenticator)」（任意で、利用者を Relying Party に確認する）と続きます。通常の認証では、操作している人が居る事を User Presence で確認し、利用者が誰かの確認は Relying Party の要求に応じて加わります。
 

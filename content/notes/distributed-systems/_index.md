@@ -46,6 +46,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [2PC - 確定か中止を全参加者で揃える](/notes/distributed-systems/two-phase-commit/) | 分散トランザクション |
 
+#### Reliability
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Idempotency - 同じ要求を何度受け取っても結果を 1 回分に保つ](/notes/distributed-systems/idempotency/) | 信頼性 |
+
 ---
 
 ### 参考文献（手元にある書籍）
