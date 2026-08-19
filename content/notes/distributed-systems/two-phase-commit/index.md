@@ -200,7 +200,7 @@ flowchart LR
 
 - 参加者に他の組織のサービスが混ざる統合。相手にロックの保持と in-doubt の受け入れを要求する事になる
 - 書き込みの遅延とスループットを最優先する経路
-- DB の更新を先に確定し、イベントを介して別のサービスを後から追随させる結果整合で足りる業務。[Domain Event](../../software-architecture/domain-event/) で扱った Transactional Outbox は、そのイベント発行を確実にする代表的な方法になる
+- DB の更新を先に確定し、イベントを介して別のサービスを後から追随させる結果整合で足りる業務。[Transactional Outbox](../transactional-outbox/) は、そのイベント発行を確実にする代表的な方法になる
 
 ---
 

@@ -51,6 +51,7 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Idempotency - 同じ要求を何度受け取っても結果を 1 回分に保つ](/notes/distributed-systems/idempotency/) | 信頼性 |
+| 2 | [Transactional Outbox - DB 更新とイベント送信を食い違わせない](/notes/distributed-systems/transactional-outbox/) | 信頼性 |
 
 ---
 
