@@ -102,7 +102,7 @@ sequenceDiagram
 
 標準の 3 つに入っていない異常もあります。Berenson 氏らが 1995 年に発表した論文「[A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf)」は、3 つの現象では商用の DBMS が実装している分離レベルを区別できないと指摘し、異常を足しました。足された異常には、確定していない書き込みを別のトランザクションが上書きする dirty write と、冒頭の在庫の例で挙げた lost update が入ります。
 
-論文は、nonrepeatable read を広く解釈した P2 を禁止すれば lost update も併せて防げると書かれています。効いているのは論文が採る広い解釈であって、標準の表で REPEATABLE READ を選べばどの DBMS でも lost update が防がれる、という意味にはなりません。何をどう防ぐかは、以降で見る実現方式で決まります。
+論文には、nonrepeatable read を広く解釈した P2 を禁止すれば lost update も併せて防げると書かれています。効いているのは論文が採る広い解釈であって、標準の表で REPEATABLE READ を選べばどの DBMS でも lost update が防がれる、という意味にはなりません。何をどう防ぐかは、以降で見る実現方式で決まります。
 
 もう 1 つが write skew です。2 本のトランザクションがそれぞれ別の行を書いた結果、両方が読んでいた条件だけが壊れる異常で、[Snapshot Isolation](../snapshot-isolation/) で扱います。
 
@@ -200,7 +200,7 @@ flowchart LR
 
 Berenson 氏らの論文は、2 相ロック（two-phase locking）を規律どおりに使えば直列化可能性を保証できると述べています。2 相ロックとは、ロックを取り終えてから解放を始め、解放後は新しいロックを取らない規律です。
 
-範囲をロックして phantom read を防ぐ実装では、条件に合う行が新しく挿入される値の隙間まで対象にする必要があります。MySQL の InnoDB はこの方法を使い、単位になるのは [Index Scan](../index-scan/) で見た索引の範囲です。ドキュメントは、一意索引を一意な条件で引く場合、見付けたレコードだけをロックして隙間はロックしないと書かれています。
+範囲をロックして phantom read を防ぐ実装では、条件に合う行が新しく挿入される値の隙間まで対象にする必要があります。MySQL の InnoDB はこの方法を使い、単位になるのは [Index Scan](../index-scan/) で見た索引の範囲です。ドキュメントには、一意索引を一意な条件で引く場合、見付けたレコードだけをロックして隙間はロックしないと書かれています。
 
 それ以外の検索条件では、ロックを伴う読み取りと `UPDATE`・`DELETE` が、走査した索引の範囲を「[using gap locks or next-key locks to block insertions by other sessions into the gaps covered by the range](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)」（gap lock か next-key lock で、その範囲に含まれる隙間への他セッションからの挿入を防ぐ）形でロックします。
 

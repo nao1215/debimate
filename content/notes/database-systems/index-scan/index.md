@@ -35,7 +35,7 @@ flowchart LR
 
 2 つ目は、B-Tree 系の索引がキーの順に並んだ木で、一番上のノードを根、一番下に並ぶノードを葉と呼ぶ事です。探索は根から葉に 1 段ずつ進むので、以降ではこの動きを「降りる」と書きます。木の構造は [B-Tree](/notes/database-systems/b-tree/) のノートで扱っています。
 
-本ノートでは、1 台の DB が B-Tree 系の索引を 1 本引いて `SELECT` の行を取り出す場合を扱い、行を更新した時の索引の維持と、複数の処理が同時に読み書きする時の並行制御は対象外とします。どの方法を選ぶかを決める枠組みは [Query Processing](/notes/database-systems/query-processing/) のノートにあります。
+本ノートでは、1 台の DB が B-Tree 系の索引を 1 本引いて `SELECT` の行を取り出す場合を追います。行を更新した時の索引の維持と、複数の処理が同時に読み書きする時の並行制御には触れません。どの方法を選ぶかを決める枠組みは [Query Processing](/notes/database-systems/query-processing/) のノートにあります。
 
 索引と表が別々に置かれる構成も前提に含めます。InnoDB の主キー索引のように葉が行そのものを持つクラスタ化索引では、表を読みに行く段が最初からありません。
 
@@ -227,7 +227,7 @@ flowchart LR
 
 1 つ目の型は、先ほどの SQLite で再現できます。取り出す列を `SELECT status` に固定したまま条件だけを変えると、`WHERE user_id + 0 = 42` も `WHERE amount = 42` も `SCAN orders` になりました。
 
-SQLite のドキュメントは、`SCAN` が全ての行を訪れる事を表し、索引で定義された順に辿る場合も含むと書かれています。`SEARCH` については、表の行の一部だけを訪れる事を表すと[同じページ](https://www.sqlite.org/eqp.html)は説明しています（原文では「only a subset of the table rows are visited」）。絞り込めているかどうかは、この 2 語の差に出ます。
+SQLite のドキュメントには、`SCAN` が全ての行を訪れる事を表し、索引で定義された順に辿る場合も含むと書かれています。`SEARCH` については、表の行の一部だけを訪れる事を表すと[同じページ](https://www.sqlite.org/eqp.html)は説明しています（原文では「only a subset of the table rows are visited」）。絞り込めているかどうかは、この 2 語の差に出ます。
 
 1 つ目の型の 2 行には、それぞれ回避手段と例外があります。
 

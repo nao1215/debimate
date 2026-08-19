@@ -60,7 +60,9 @@ sequenceDiagram
 
 接続の占有は、接続プールを使う言語では特に見えにくい形で効きます。Go の `database/sql` のドキュメントは、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書いており、その接続がプールに戻るのは `Commit` か `Rollback` の後です。
 
-外部 API の応答が数秒に伸びると、その間ずっと 1 本を握ります。上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。加えて、開いたままのトランザクションは、[古い行バージョンを `VACUUM` が回収できる時点](https://www.postgresql.org/docs/current/routine-vacuuming.html)を遅らせ、表の膨張につながる事があります。PostgreSQL は [`idle_in_transaction_session_timeout` の説明](https://www.postgresql.org/docs/current/runtime-config-client.html)で、開いたトランザクションがあると、そのトランザクションにはまだ見える可能性のある古い行バージョンを `VACUUM` が除去できず、長く続けば表の膨張につながると説明されています。どこまで遅れるかは分離レベルとスナップショットの持ち方で変わるので、[Transaction Isolation](../transaction-isolation/) に譲ります。
+外部 API の応答が数秒に伸びると、その間ずっと 1 本を握ります。上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
+
+開いたままのトランザクションは、[古い行バージョンを `VACUUM` が回収できる時点](https://www.postgresql.org/docs/current/routine-vacuuming.html)を遅らせ、表の膨張につながる事があります。PostgreSQL は [`idle_in_transaction_session_timeout` の説明](https://www.postgresql.org/docs/current/runtime-config-client.html)で、開いたトランザクションがあると、そのトランザクションにはまだ見える可能性のある古い行バージョンを `VACUUM` が除去できず、長く続けば表の膨張につながると説明されています。どこまで遅れるかは分離レベルとスナップショットの持ち方で変わるので、[Transaction Isolation](../transaction-isolation/) に譲ります。
 
 ---
 

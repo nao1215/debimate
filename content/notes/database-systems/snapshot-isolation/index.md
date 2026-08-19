@@ -39,7 +39,7 @@ sequenceDiagram
 
 ### スナップショットを固定して読む
 
-論文は、各トランザクションが Start-Timestamp（読み取りの基準時点）で確定済みだったデータのスナップショットから読む方式だと説明されています。Start-Timestamp は最初の読み取りより前であればよく、以降の読み取りは全部この時点を基準にします。
+論文には、各トランザクションが Start-Timestamp（読み取りの基準時点）で確定済みだったデータのスナップショットから読む方式だと説明されています。Start-Timestamp は最初の読み取りより前であればよく、以降の読み取りは全部この時点を基準にします。
 
 固定されるのは、他のトランザクションが後から確定した変更に対してです。自分がそのトランザクションの中で書いた変更は、後の読み取りから見えます。
 
@@ -51,7 +51,7 @@ sequenceDiagram
 
 読み取りが待たないだけでは、[Transaction Isolation](../transaction-isolation/) の冒頭で見た在庫の取り合いは止まりません。2 本とも同じ残数 1 を読み、両方が 0 を書けてしまいます。Snapshot Isolation は、書き込みに検査を置いてこれを止めます。
 
-論文が定めた条件は、T1 が確定できるのは、T1 の実行区間 [Start-Timestamp, Commit-Timestamp] の中に Commit-Timestamp を持つ別のトランザクションが、T1 も書いたデータを書いていない場合に限る、というものです。満たさなければ T1 は中止されます。論文はこの規律を first-committer-wins と呼び、lost update を防ぐと書かれています。
+論文が定めた条件は、T1 が確定できるのは、T1 の実行区間 [Start-Timestamp, Commit-Timestamp] の中に Commit-Timestamp を持つ別のトランザクションが、T1 も書いたデータを書いていない場合に限る、というものです。満たさなければ T1 は中止されます。論文はこの規律を first-committer-wins と呼び、lost update を防ぐと説明しています。
 
 ```mermaid
 sequenceDiagram
@@ -116,7 +116,7 @@ sequenceDiagram
 
 ### PostgreSQL の REPEATABLE READ との関係
 
-PostgreSQL のドキュメントは、自身の REPEATABLE READ には「[Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」として学術文献や他の DB で知られる技術で実装されていると書かれています。同じドキュメントは、2 本が互いの集計結果を別々の行として書き足す例を挙げ、REPEATABLE READ なら 2 本とも確定できると説明されています。write skew がそのまま出る、という事です。
+PostgreSQL のドキュメントは、自身の REPEATABLE READ には「[Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」として学術文献や他の DB で知られる技術で実装されていると書かれています。同じドキュメントには、2 本が互いの集計結果を別々の行として書き足す例が挙げられ、REPEATABLE READ なら 2 本とも確定できると説明されています。write skew がそのまま出る、という事です。
 
 REPEATABLE READ という名前が Snapshot Isolation を意味するわけではありません。標準が定めているのは、そのレベルで起きてはならない現象までで、実現方式は DBMS が決めます。同じ名前で読み取りのロックを使う実装なら、write skew は起きません。手元の DBMS がどちらなのかは、ドキュメントで確かめる事になります。
 
@@ -128,7 +128,7 @@ Snapshot Isolation に直列化異常の検査を足し、write skew のよう�
 
 PostgreSQL のドキュメントは、SERIALIZABLE には「[Serializable Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」（SSI）で実装されており、Snapshot Isolation に直列化異常の検査を足した技術だと説明されています。
 
-足されるのは、トランザクションの間の読み書きの依存関係を追う仕組みです。PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。ドキュメントは、この記録が、ある書き込みが並行するトランザクションの先の読み取りの結果を変えていたかどうかを判定するためのものだと説明されています。
+足されるのは、トランザクションの間の読み書きの依存関係を追う仕組みです。PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。ドキュメントには、この記録が、ある書き込みが並行するトランザクションの先の読み取りの結果を変えていたかどうかを判定するためのものだと説明されています。
 
 記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、そのトランザクションは直列化の失敗として中止されます。述語ロックは依存関係を見付けるための材料で、判定そのものではありません。
 
