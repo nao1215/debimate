@@ -5,6 +5,7 @@
     title          見出し。空なら見出し無し
     discussionUrl  読み込み失敗時のリンク先
     id             複数埋め込み用のコンテナID (省略時 giscus-container)
+    loading        "lazy" | "eager" (省略時 params.toml の値)
 */ -}}
 {{- $giscus := site.Params.giscus -}}
 {{- if not $giscus.enabled -}}
@@ -17,6 +18,7 @@
 {{- $term := .term | default "" -}}
 {{- $discussionUrl := .discussionUrl | default $giscus.discussionUrl | default "https://github.com/nao1215/debimate/discussions" -}}
 {{- $id := .id | default "giscus-container" -}}
+{{- $loading := .loading | default $giscus.loading | default "lazy" -}}
 
 <section class="post-comments" id="{{ $id }}-section">
   {{- with .title }}
@@ -53,15 +55,11 @@
       script.setAttribute('data-input-position', {{ $giscus.inputPosition | default "top" }});
       script.setAttribute('data-theme', 'preferred_color_scheme');
       script.setAttribute('data-lang', {{ $giscus.lang | default "ja" }});
-      script.setAttribute('data-loading', {{ $giscus.loading | default "lazy" }});
+      script.setAttribute('data-loading', {{ $loading }});
+      // giscus.app に到達できない (広告ブロッカー等) ときだけ代替リンクを出す。
+      // lazy 読み込みでは画面に入るまで iframe が作られないので、時間で判定しない
       script.addEventListener('error', showFallback);
       container.appendChild(script);
-
-      window.setTimeout(function () {
-        if (!container.querySelector('iframe.giscus-frame')) {
-          showFallback();
-        }
-      }, 4000);
     })();
   </script>
   <noscript>
