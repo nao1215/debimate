@@ -7,6 +7,7 @@
     fallbackLabel  読み込み失敗時のリンク文言
     id             複数埋め込み用のコンテナID (省略時 giscus-container)
     loading        "lazy" | "eager" (省略時 params.toml の値)
+    manual         true なら読み込み時に起動せず window.giscusInit[id](term) で起動する
 */ -}}
 {{- $giscus := site.Params.giscus -}}
 {{- if not $giscus.enabled -}}
@@ -25,6 +26,7 @@
   {{- with .title }}
   <h2 class="post-comments-title">{{ . }}</h2>
   {{- end }}
+  <div id="{{ $id }}-loading" class="bbs-note">書き込み欄を読み込んでいます…</div>
   <div id="{{ $id }}"></div>
   <div id="{{ $id }}-fallback" class="post-comments-fallback" hidden>
     <p>書き込み欄 (giscus) を読み込めませんでした。広告ブロッカーなどの拡張機能が <code>giscus.app</code> を遮断している場合は、このサイトで一時的に許可すると表示されます。</p>
@@ -32,11 +34,44 @@
   </div>
   <script>
     (function () {
+      const init = function (term) {
       const container = document.getElementById({{ $id }});
       const fallback = document.getElementById({{ $id }} + '-fallback');
+      const loading = document.getElementById({{ $id }} + '-loading');
+      let settled = false;
       const showFallback = function () {
+        if (settled) return;
+        settled = true;
+        loading.hidden = true;
         fallback.hidden = false;
       };
+      const showLoaded = function () {
+        if (settled) return;
+        settled = true;
+        loading.hidden = true;
+      };
+      // giscus の iframe が描画されたら「読み込み中」を消す。
+      // iframe の中身 (widget) まで届いたかは giscus からの postMessage で判断する
+      window.addEventListener('message', function (ev) {
+        if (ev.origin === 'https://giscus.app') showLoaded();
+      });
+      const observer = new MutationObserver(function () {
+        const frame = container.querySelector('iframe.giscus-frame');
+        if (frame) {
+          observer.disconnect();
+          frame.addEventListener('load', function () {
+            // load 後 3 秒待っても giscus から message が来なければ iframe 側が遮断されている
+            window.setTimeout(function () {
+              if (!settled) showFallback();
+            }, 3000);
+          });
+        }
+      });
+      observer.observe(container, { childList: true, subtree: true });
+      // lazy 読み込みは画面に入るまで iframe を作らないので、長めに待ってから諦める
+      window.setTimeout(function () {
+        if (!settled && !container.querySelector('iframe.giscus-frame')) showFallback();
+      }, {{ cond (eq $loading "eager") 10000 60000 }});
 
       const script = document.createElement('script');
       script.src = 'https://giscus.app/client.js';
@@ -47,9 +82,7 @@
       script.setAttribute('data-category', {{ $giscus.category }});
       script.setAttribute('data-category-id', {{ $giscus.categoryId }});
       script.setAttribute('data-mapping', {{ $mapping }});
-      {{- if $term }}
-      script.setAttribute('data-term', {{ $term }});
-      {{- end }}
+      if (term) script.setAttribute('data-term', term);
       script.setAttribute('data-strict', {{ $giscus.strict | default "0" }});
       script.setAttribute('data-reactions-enabled', {{ $giscus.reactionsEnabled | default "1" }});
       script.setAttribute('data-emit-metadata', {{ $giscus.emitMetadata | default "0" }});
@@ -57,10 +90,15 @@
       script.setAttribute('data-theme', 'preferred_color_scheme');
       script.setAttribute('data-lang', {{ $giscus.lang | default "ja" }});
       script.setAttribute('data-loading', {{ $loading }});
-      // giscus.app に到達できない (広告ブロッカー等) ときだけ代替リンクを出す。
-      // lazy 読み込みでは画面に入るまで iframe が作られないので、時間で判定しない
       script.addEventListener('error', showFallback);
       container.appendChild(script);
+      };
+      {{- if .manual }}
+      window.giscusInit = window.giscusInit || {};
+      window.giscusInit[{{ $id }}] = init;
+      {{- else }}
+      init({{ $term }});
+      {{- end }}
     })();
   </script>
   <noscript>

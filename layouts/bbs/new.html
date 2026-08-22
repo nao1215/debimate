@@ -21,7 +21,7 @@
   <div id="bbs-new-giscus" hidden>
     {{- partial "giscus.html" (dict
       "mapping" "specific"
-      "term" "__BBS_NEW_TITLE__"
+      "manual" true
       "title" "最初の書き込み"
       "id" "giscus-new"
       "discussionUrl" "https://github.com/nao1215/debimate/discussions/new?category=general"
@@ -36,10 +36,6 @@
       const wrap = document.getElementById('bbs-new-giscus');
       const hint = document.getElementById('bbs-new-hint');
       const echo = document.getElementById('bbs-new-title-echo');
-      // giscus.html が挿入した script は term が仮なので取り除き、タイトル確定後に差し替える
-      const tmpl = wrap.querySelector('script');
-      const tmplSrc = tmpl ? tmpl.textContent : '';
-      if (tmpl) tmpl.remove();
       form.addEventListener('submit', function (ev) {
         ev.preventDefault();
         const title = input.value.trim();
@@ -49,9 +45,8 @@
         echo.textContent = title;
         hint.hidden = false;
         wrap.hidden = false;
-        const s = document.createElement('script');
-        s.textContent = tmplSrc.replace('"__BBS_NEW_TITLE__"', JSON.stringify(title));
-        wrap.appendChild(s);
+        // giscus.html (manual) が登録した起動関数をタイトル確定後に呼ぶ
+        window.giscusInit['giscus-new'](title);
       });
     })();
   </script>

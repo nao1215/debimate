@@ -6,13 +6,13 @@
     <h1 class="post-title">{{ .Title }}</h1>
     <div class="post-meta bbs-item-meta">
       <span>{{ $t.author.login }}</span>
-      <span>作成 {{ (time.AsTime $t.createdAt) | time.Format "2006-01-02 15:04" }}</span>
-      <span>コメント {{ $t.commentCount }} 件</span>
+      <span>作成 {{ (time.AsTime $t.createdat) | time.Format "2006-01-02 15:04" }}</span>
+      <span>コメント {{ $t.commentcount }} 件</span>
       {{- if $t.locked }}<span>ロック中</span>{{ end }}
     </div>
   </header>
   <div class="post-content bbs-body">
-    {{ $t.bodyHTML | safeHTML }}
+    {{ $t.bodyhtml | safeHTML }}
   </div>
   {{- partial "giscus.html" (dict
     "mapping" "number"
