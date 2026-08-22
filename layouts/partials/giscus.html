@@ -4,6 +4,7 @@
     term           mapping=specific/number のときの対象
     title          見出し。空なら見出し無し
     discussionUrl  読み込み失敗時のリンク先
+    fallbackLabel  読み込み失敗時のリンク文言
     id             複数埋め込み用のコンテナID (省略時 giscus-container)
     loading        "lazy" | "eager" (省略時 params.toml の値)
 */ -}}
@@ -26,8 +27,8 @@
   {{- end }}
   <div id="{{ $id }}"></div>
   <div id="{{ $id }}-fallback" class="post-comments-fallback" hidden>
-    <p>書き込み欄を読み込めませんでした。GitHub Discussions から直接書き込んでください。</p>
-    <p><a href="{{ $discussionUrl }}" target="_blank" rel="noopener noreferrer">Discussions を開く</a></p>
+    <p>書き込み欄 (giscus) を読み込めませんでした。広告ブロッカーなどの拡張機能が <code>giscus.app</code> を遮断している場合は、このサイトで一時的に許可すると表示されます。</p>
+    <p>そのままでも GitHub Discussions から直接書き込めます: <a href="{{ $discussionUrl }}" target="_blank" rel="noopener noreferrer">{{ .fallbackLabel | default "Discussions を開く" }}</a></p>
   </div>
   <script>
     (function () {
