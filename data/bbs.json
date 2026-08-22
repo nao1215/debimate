@@ -1,4 +1,29 @@
 {
-  "fetchedat": "2026-08-22T21:18:22+09:00",
-  "threads": []
+  "fetchedat": "2026-08-22T21:25:33+09:00",
+  "threads": [
+    {
+      "number": 16,
+      "title": "テストスレッドだよ",
+      "url": "https://github.com/nao1215/debimate/discussions/16",
+      "bodyhtml": "",
+      "viagiscus": true,
+      "createdat": "2026-08-22T21:21:52+09:00",
+      "updatedat": "2026-08-22T21:21:53+09:00",
+      "lastactivityat": "2026-08-22T21:21:53+09:00",
+      "locked": false,
+      "isanswered": null,
+      "author": {
+        "login": "nao1215",
+        "url": "https://github.com/nao1215",
+        "avatarurl": "https://avatars.githubusercontent.com/u/22737008?u=60c1d3787eb76fdc4b6243ab2d4ffe7739b7493a&v=4"
+      },
+      "category": {
+        "name": "General",
+        "slug": "general"
+      },
+      "commentcount": 1,
+      "lastcommentby": "nao1215",
+      "reactioncount": 0
+    }
+  ]
 }

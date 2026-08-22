@@ -11,9 +11,11 @@
       {{- if $t.locked }}<span>ロック中</span>{{ end }}
     </div>
   </header>
+  {{- with $t.bodyhtml }}
   <div class="post-content bbs-body">
-    {{ $t.bodyhtml | safeHTML }}
+    {{ . | safeHTML }}
   </div>
+  {{- end }}
   {{- partial "giscus.html" (dict
     "mapping" "number"
     "term" (string (int $t.number))

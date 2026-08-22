@@ -54,6 +54,9 @@ query($owner: String!, $repo: String!, $after: String) {
           totalCount
           nodes { createdAt author { login } }
         }
+        firstComment: comments(first: 1) {
+          nodes { author { login url avatarUrl } }
+        }
         reactions { totalCount }
       }
     }
@@ -111,12 +114,20 @@ def main() -> None:
                 n["updatedAt"], last["createdAt"] if last else n["createdAt"]
             )
             author = n["author"] or {"login": "ghost", "url": "", "avatarUrl": ""}
+            # giscus 経由で立ったスレッドは Discussion 本体が giscus ボット作
+            # (ページの説明 + URL) で、本人の投稿は 1 件目のコメントになる。
+            # その場合は本文を出さず、投稿者は 1 件目のコメントの人にする
+            via_giscus = author["login"].lower().startswith("giscus")
+            first = n["firstComment"]["nodes"]
+            if via_giscus and first and first[0]["author"]:
+                author = first[0]["author"]
             threads.append(
                 {
                     "number": n["number"],
                     "title": n["title"],
                     "url": n["url"],
-                    "bodyhtml": n["bodyHTML"],
+                    "bodyhtml": "" if via_giscus else n["bodyHTML"],
+                    "viagiscus": via_giscus,
                     "createdat": jst(n["createdAt"]),
                     "updatedat": jst(n["updatedAt"]),
                     "lastactivityat": jst(last_activity),
