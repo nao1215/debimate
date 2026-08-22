@@ -21,6 +21,8 @@
 {{- $discussionUrl := .discussionUrl | default $giscus.discussionUrl | default "https://github.com/nao1215/debimate/discussions" -}}
 {{- $id := .id | default "giscus-container" -}}
 {{- $loading := .loading | default $giscus.loading | default "lazy" -}}
+{{- /* カスタムテーマは https の URL が必要なので、hugo server (http) では標準テーマに落とす */ -}}
+{{- $theme := cond hugo.IsServer "preferred_color_scheme" (absURL "css/giscus-theme.css") -}}
 
 <section class="post-comments" id="{{ $id }}-section">
   {{- with .title }}
@@ -87,7 +89,7 @@
       script.setAttribute('data-reactions-enabled', {{ $giscus.reactionsEnabled | default "1" }});
       script.setAttribute('data-emit-metadata', {{ $giscus.emitMetadata | default "0" }});
       script.setAttribute('data-input-position', {{ $giscus.inputPosition | default "top" }});
-      script.setAttribute('data-theme', 'preferred_color_scheme');
+      script.setAttribute('data-theme', {{ $theme }});
       script.setAttribute('data-lang', {{ $giscus.lang | default "ja" }});
       script.setAttribute('data-loading', {{ $loading }});
       script.addEventListener('error', showFallback);
