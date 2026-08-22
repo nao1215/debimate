@@ -1,0 +1,4 @@
+{{- partial "giscus.html" (dict
+  "title" (.Params.commentsTitle | default "Comments")
+  "discussionUrl" .Params.discussionUrl
+) -}}

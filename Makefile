@@ -55,6 +55,9 @@ weekly: ## 新しい週報を作成 (例: make weekly 20260810。省略時は今
 	fi; \
 	$(HUGO) new "content/weekly/$$slug/index.md"
 
+bbs: ## BBS のスレッド一覧を GitHub Discussions から取得して data/bbs.json を更新
+	python3 scripts/fetch_bbs.py
+
 redirects: ## 移行前URL向けのalias・リダイレクトを再生成
 	python3 scripts/ensure_post_aliases.py
 	python3 scripts/gen_legacy_redirects.py

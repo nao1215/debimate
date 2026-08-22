@@ -615,3 +615,160 @@ body.home .post-entry .entry-header h2 {
   height: auto;
   margin-inline: auto;
 }
+
+/* BBS / giscus */
+.post-comments {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.post-comments-title {
+  margin-bottom: 1rem;
+  font-size: 1.15rem;
+}
+
+.post-comments-fallback {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--entry);
+}
+
+.post-comments-fallback p {
+  margin: 0 0 0.6rem;
+}
+
+.post-comments-fallback p:last-child {
+  margin-bottom: 0;
+}
+
+/* BBS: ツールバーとボタン */
+.bbs-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin: 1.25rem 0 1rem;
+}
+
+.bbs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem;
+}
+
+.bbs-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--entry);
+  color: var(--primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+  box-shadow: none;
+  white-space: nowrap;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.bbs-button:hover {
+  border-color: var(--secondary);
+  background: var(--code-bg);
+}
+
+.bbs-button-primary {
+  border-color: var(--secondary);
+}
+
+.bbs-note {
+  color: var(--secondary);
+  font-size: 0.9rem;
+}
+
+.bbs-list {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 2rem;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.bbs-item {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--entry);
+}
+
+.bbs-item-title {
+  font-weight: 600;
+  font-size: 1.05rem;
+  box-shadow: none;
+}
+
+.bbs-item-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  margin-top: 0.35rem;
+  color: var(--secondary);
+  font-size: 0.85rem;
+}
+
+.bbs-empty {
+  padding: 1.5rem;
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  text-align: center;
+  color: var(--secondary);
+}
+
+.bbs-breadcrumb {
+  color: var(--secondary);
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.bbs-body {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--entry);
+}
+
+.bbs-new-form {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.bbs-new-form input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--theme);
+  color: var(--primary);
+  font-size: 1rem;
+}
+
+.bbs-new-form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.bbs-new-form button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.bbs-new-form button:disabled,
+.bbs-new-form input:disabled {
+  opacity: 0.6;
+}

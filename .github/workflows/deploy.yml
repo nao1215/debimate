@@ -8,9 +8,16 @@ on:
     # Monday 00:10 JST
     - cron: '10 15 * * 0'
   workflow_dispatch:
+  # BBS (/bbs/) は GitHub Discussions をビルド時に静的化しているので、
+  # スレッドの作成・コメントで再ビルドして一覧へ反映する
+  discussion:
+    types: [created, edited, deleted, transferred, category_changed, locked, unlocked]
+  discussion_comment:
+    types: [created, edited, deleted]
 
 permissions:
   contents: read
+  discussions: read
   pages: write
   id-token: write
 
@@ -39,6 +46,14 @@ jobs:
 
       - name: Check redirect tables are up to date
         run: make redirects-check
+
+      # BBS のスレッド一覧を Discussions から取得する (data/bbs.json)。
+      # リポジトリに入っている JSON はローカル確認用のスナップショットで、
+      # 本番は常にここで取り直す
+      - name: Fetch BBS threads from GitHub Discussions
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/fetch_bbs.py
 
       - name: Build site
         run: hugo --minify

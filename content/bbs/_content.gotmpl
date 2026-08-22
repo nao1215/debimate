@@ -1,0 +1,21 @@
+{{/* data/bbs.json (scripts/fetch_bbs.py が生成) から /bbs/<number>/ を作る */}}
+{{- range hugo.Data.bbs.threads }}
+{{- $path := string (int .number) }}
+{{- $page := dict
+  "path" $path
+  "kind" "page"
+  "title" .title
+  "date" (time.AsTime .createdAt)
+  "lastmod" (time.AsTime .lastActivityAt)
+  "description" (printf "%s さんが立てた話題。コメント %d 件" .author.login (int .commentCount))
+  "params" (dict
+    "thread" .
+    "hideMeta" true
+    "ShowToc" false
+    "disableShare" true
+    "disableRelatedPosts" true
+    "disableAdsense" true
+  )
+}}
+{{- $.AddPage $page }}
+{{- end }}

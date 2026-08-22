@@ -1,0 +1,73 @@
+{{- /*
+  giscus を埋め込む。引数は dict:
+    mapping        "pathname" | "number" | "specific" など (省略時 params.toml の値)
+    term           mapping=specific/number のときの対象
+    title          見出し。空なら見出し無し
+    discussionUrl  読み込み失敗時のリンク先
+    id             複数埋め込み用のコンテナID (省略時 giscus-container)
+*/ -}}
+{{- $giscus := site.Params.giscus -}}
+{{- if not $giscus.enabled -}}
+  {{- return -}}
+{{- end -}}
+{{- if or (not $giscus.repo) (not $giscus.repoId) (not $giscus.category) (not $giscus.categoryId) -}}
+  {{- return -}}
+{{- end -}}
+{{- $mapping := .mapping | default $giscus.mapping | default "pathname" -}}
+{{- $term := .term | default "" -}}
+{{- $discussionUrl := .discussionUrl | default $giscus.discussionUrl | default "https://github.com/nao1215/debimate/discussions" -}}
+{{- $id := .id | default "giscus-container" -}}
+
+<section class="post-comments" id="{{ $id }}-section">
+  {{- with .title }}
+  <h2 class="post-comments-title">{{ . }}</h2>
+  {{- end }}
+  <div id="{{ $id }}"></div>
+  <div id="{{ $id }}-fallback" class="post-comments-fallback" hidden>
+    <p>書き込み欄を読み込めませんでした。GitHub Discussions から直接書き込んでください。</p>
+    <p><a href="{{ $discussionUrl }}" target="_blank" rel="noopener noreferrer">Discussions を開く</a></p>
+  </div>
+  <script>
+    (function () {
+      const container = document.getElementById({{ $id }});
+      const fallback = document.getElementById({{ $id }} + '-fallback');
+      const showFallback = function () {
+        fallback.hidden = false;
+      };
+
+      const script = document.createElement('script');
+      script.src = 'https://giscus.app/client.js';
+      script.async = true;
+      script.crossOrigin = 'anonymous';
+      script.setAttribute('data-repo', {{ $giscus.repo }});
+      script.setAttribute('data-repo-id', {{ $giscus.repoId }});
+      script.setAttribute('data-category', {{ $giscus.category }});
+      script.setAttribute('data-category-id', {{ $giscus.categoryId }});
+      script.setAttribute('data-mapping', {{ $mapping }});
+      {{- if $term }}
+      script.setAttribute('data-term', {{ $term }});
+      {{- end }}
+      script.setAttribute('data-strict', {{ $giscus.strict | default "0" }});
+      script.setAttribute('data-reactions-enabled', {{ $giscus.reactionsEnabled | default "1" }});
+      script.setAttribute('data-emit-metadata', {{ $giscus.emitMetadata | default "0" }});
+      script.setAttribute('data-input-position', {{ $giscus.inputPosition | default "top" }});
+      script.setAttribute('data-theme', 'preferred_color_scheme');
+      script.setAttribute('data-lang', {{ $giscus.lang | default "ja" }});
+      script.setAttribute('data-loading', {{ $giscus.loading | default "lazy" }});
+      script.addEventListener('error', showFallback);
+      container.appendChild(script);
+
+      window.setTimeout(function () {
+        if (!container.querySelector('iframe.giscus-frame')) {
+          showFallback();
+        }
+      }, 4000);
+    })();
+  </script>
+  <noscript>
+    <div class="post-comments-fallback">
+      <p>書き込み欄を表示するには JavaScript を有効にしてください。</p>
+      <p><a href="{{ $discussionUrl }}" target="_blank" rel="noopener noreferrer">Discussions を開く</a></p>
+    </div>
+  </noscript>
+</section>

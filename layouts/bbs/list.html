@@ -1,0 +1,41 @@
+{{- define "main" }}
+{{- $threads := hugo.Data.bbs.threads | default slice }}
+<header class="page-header bbs-header">
+  <h1>{{ .Title }}</h1>
+  <div class="post-description">{{ .Description }}</div>
+</header>
+
+<div class="bbs-toolbar">
+  <span class="bbs-note">
+    {{- with hugo.Data.bbs.fetchedAt }}一覧の更新: {{ (time.AsTime .) | time.Format "2006-01-02 15:04" }} UTC{{ end }}
+  </span>
+  <a class="bbs-button" href="{{ "bbs/new/" | relURL }}">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    新しい話題を立てる
+  </a>
+</div>
+
+{{- if $threads }}
+<ul class="bbs-list">
+  {{- range $threads }}
+  {{- $page := site.GetPage (printf "/bbs/%d" (int .number)) }}
+  <li class="bbs-item">
+    <a class="bbs-item-title" href="{{ with $page }}{{ .RelPermalink }}{{ else }}{{ $.RelPermalink }}{{ end }}">{{ .title }}</a>
+    <div class="bbs-item-meta">
+      <span>{{ .author.login }}</span>
+      <span>作成 {{ (time.AsTime .createdAt) | time.Format "2006-01-02" }}</span>
+      <span>コメント {{ .commentCount }} 件</span>
+      {{- if .commentCount }}
+      <span>最終 {{ (time.AsTime .lastActivityAt) | time.Format "2006-01-02 15:04" }}{{ with .lastCommentBy }} ({{ . }}){{ end }}</span>
+      {{- end }}
+      {{- if .locked }}<span>ロック中</span>{{ end }}
+    </div>
+  </li>
+  {{- end }}
+</ul>
+{{- else }}
+<div class="bbs-empty">
+  <p>まだ話題がありません。最初の話題を立ててみてください。</p>
+</div>
+{{- end }}
+{{- end }}

@@ -80,6 +80,11 @@ ShowRssButtonInSectionTermList = true
   url = "https://github.com/nao1215"
 
 [[socialIcons]]
+  name = "sponsors"
+  title = "GitHub Sponsors"
+  url = "https://github.com/sponsors/nao1215"
+
+[[socialIcons]]
   name = "rss"
   url = "index.xml"
 
@@ -106,3 +111,22 @@ url = "https://www.kaggle.com/nao1215"
 [[socialIcons]]
   name = "email"
   url = "mailto:n.chika156@gmail.com"
+
+# BBS (giscus = GitHub Discussions をバックエンドにした掲示板)。
+# 投稿データは nao1215/debimate の Discussions に入る。
+# フラット構成: /bbs/ ページ 1 枚に General カテゴリのスレッドをぶら下げる。
+# 各ページの front matter で comments: true にしたページだけ表示する。
+[giscus]
+  enabled = true
+  repo = "nao1215/debimate"
+  repoId = "R_kgDOQPrmZA"
+  category = "General"
+  categoryId = "DIC_kwDOQPrmZM4C-P6V"
+  discussionUrl = "https://github.com/nao1215/debimate/discussions"
+  mapping = "pathname"
+  strict = "1"
+  reactionsEnabled = "1"
+  emitMetadata = "0"
+  inputPosition = "top"
+  lang = "ja"
+  loading = "lazy"

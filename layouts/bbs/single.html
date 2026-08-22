@@ -1,0 +1,25 @@
+{{- define "main" }}
+{{- $t := .Params.thread }}
+<article class="post-single bbs-thread">
+  <header class="post-header">
+    <div class="bbs-breadcrumb"><a href="{{ "bbs/" | relURL }}">BBS</a> / #{{ int $t.number }}</div>
+    <h1 class="post-title">{{ .Title }}</h1>
+    <div class="post-meta bbs-item-meta">
+      <span>{{ $t.author.login }}</span>
+      <span>作成 {{ (time.AsTime $t.createdAt) | time.Format "2006-01-02 15:04" }}</span>
+      <span>コメント {{ $t.commentCount }} 件</span>
+      {{- if $t.locked }}<span>ロック中</span>{{ end }}
+    </div>
+  </header>
+  <div class="post-content bbs-body">
+    {{ $t.bodyHTML | safeHTML }}
+  </div>
+  {{- partial "giscus.html" (dict
+    "mapping" "number"
+    "term" (string (int $t.number))
+    "title" "コメント"
+    "discussionUrl" $t.url
+  ) }}
+  <p class="bbs-note">コメントは数分後に一覧へ反映されます。</p>
+</article>
+{{- end }}

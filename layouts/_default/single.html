@@ -51,7 +51,9 @@
       <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
       {{- end }}
     </ul>
+    {{- if not .Params.disableRelatedPosts }}
     {{- partial "related_posts.html" . }}
+    {{- end }}
     {{- if (.Param "ShowPostNavLinks") }}
     {{- partial "post_nav_links.html" . }}
     {{- end }}
@@ -61,6 +63,7 @@
   </footer>
 
   {{/* Google AdSense - 記事下広告 */}}
+  {{- if not .Params.disableAdsense }}
   <div class="post-adsense" style="margin-top: 2em; text-align: center;">
     <ins class="adsbygoogle"
          style="display:block"
@@ -72,6 +75,7 @@
          (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
   </div>
+  {{- end }}
 
   {{- if (.Param "comments") }}
   {{- partial "comments.html" . }}

@@ -19,9 +19,9 @@
   weight = 4
 
 [[main]]
-  name = "GitHub Sponsors"
-  url = "https://github.com/sponsors/nao1215"
-  weight = 15
+  name = "BBS"
+  url = "bbs/"
+  weight = 5
 
 [[main]]
   name = "Search"

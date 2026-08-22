@@ -1,0 +1,56 @@
+{{- define "main" }}
+<article class="post-single bbs-thread">
+  <header class="post-header">
+    <div class="bbs-breadcrumb"><a href="{{ "bbs/" | relURL }}">BBS</a> / 新しい話題</div>
+    <h1 class="post-title">{{ .Title }}</h1>
+  </header>
+  <div class="post-content">
+    <p>書き込みには GitHub アカウントでのサインインが必要です。</p>
+    <form class="bbs-new-form" id="bbs-new-form">
+      <label for="bbs-new-title">タイトル</label>
+      <input id="bbs-new-title" type="text" maxlength="120" placeholder="例: 技術に関係のない話も OK" autocomplete="off" required>
+      <div class="bbs-new-form-actions">
+        <button type="submit" class="bbs-button">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          この話題で書き込み欄を開く
+        </button>
+      </div>
+    </form>
+    <p class="bbs-note" id="bbs-new-hint" hidden>タイトル「<span id="bbs-new-title-echo"></span>」で書き込み欄を開きました。最初の投稿がスレッドの本文になります。別のタイトルにしたい場合はページを再読み込みしてください。</p>
+  </div>
+  <div id="bbs-new-giscus" hidden>
+    {{- partial "giscus.html" (dict
+      "mapping" "specific"
+      "term" "__BBS_NEW_TITLE__"
+      "title" "最初の書き込み"
+      "id" "giscus-new"
+    ) }}
+  </div>
+  <script>
+    (function () {
+      const form = document.getElementById('bbs-new-form');
+      const input = document.getElementById('bbs-new-title');
+      const wrap = document.getElementById('bbs-new-giscus');
+      const hint = document.getElementById('bbs-new-hint');
+      const echo = document.getElementById('bbs-new-title-echo');
+      // giscus.html が挿入した script は term が仮なので取り除き、タイトル確定後に差し替える
+      const tmpl = wrap.querySelector('script');
+      const tmplSrc = tmpl ? tmpl.textContent : '';
+      if (tmpl) tmpl.remove();
+      form.addEventListener('submit', function (ev) {
+        ev.preventDefault();
+        const title = input.value.trim();
+        if (!title) return;
+        input.disabled = true;
+        form.querySelector('button').disabled = true;
+        echo.textContent = title;
+        hint.hidden = false;
+        wrap.hidden = false;
+        const s = document.createElement('script');
+        s.textContent = tmplSrc.replace('"__BBS_NEW_TITLE__"', JSON.stringify(title));
+        wrap.appendChild(s);
+      });
+    })();
+  </script>
+</article>
+{{- end }}
