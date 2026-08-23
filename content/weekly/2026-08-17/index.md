@@ -100,3 +100,4 @@ date: 2026-08-17T00:00:00+09:00
 block コマンドは、[mise](https://github.com/jdx/mise)、[aqua](https://github.com/aquaproj/aqua)、[nix](https://nixos.org/) から影響を受けている。[信頼できる開発元からツールをダウンロードし、チェックサムも検証する。なるべく不正なツールをインストールしないための仕組みも入れている](https://nao1215.github.io/block/security/)。用途や機能の多くは aqua と重なっている。初期設計では、block の裏側を mise と aqua にする案を考えていた。極端な話、ブロックチェーン向けの Registry を aqua 用に整備するだけでも、block 相当のことはかなりできる。
 
 しかし、今後ブロックチェーン固有の機能を足したくなる可能性もあるので、最終的には独立したツールとして実装した。とはいえ、「aqua + block-registry で良かったのでは？」という疑惑は若干残っている。早まったかもしれない。一晩考えたが、将来的には「Blockchain Toolchain Manager」から「Blockchain Development Toolbox」になる気がする。環境を構築した先の、ローカルチェーンの起動や状態確認、開発環境の診断なども扱う。ただし何でも屋にすると即座にメンテナンス不能になるので、どこまでを block の責務にするかは慎重に決めたい。
+
