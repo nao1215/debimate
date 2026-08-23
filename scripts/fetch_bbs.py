@@ -119,6 +119,11 @@ def main() -> None:
             # その場合は本文を出さず、投稿者は 1 件目のコメントの人にする
             via_giscus = author["login"].lower().startswith("giscus")
             first = n["firstComment"]["nodes"]
+            # giscus 経由のスレッドは本人が Discussion を消せない (作者が bot)。
+            # 本人が 1 件目のコメント (実質の本文) を消してコメントが 0 件に
+            # なったスレッドは、削除されたものとして一覧から外す
+            if via_giscus and n["comments"]["totalCount"] == 0:
+                continue
             if via_giscus and first and first[0]["author"]:
                 author = first[0]["author"]
             threads.append(

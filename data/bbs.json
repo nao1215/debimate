@@ -1,5 +1,5 @@
 {
-  "fetchedat": "2026-08-22T21:25:33+09:00",
+  "fetchedat": "2026-08-22T21:45:46+09:00",
   "threads": [
     {
       "number": 16,
@@ -8,8 +8,8 @@
       "bodyhtml": "",
       "viagiscus": true,
       "createdat": "2026-08-22T21:21:52+09:00",
-      "updatedat": "2026-08-22T21:21:53+09:00",
-      "lastactivityat": "2026-08-22T21:21:53+09:00",
+      "updatedat": "2026-08-22T21:41:17+09:00",
+      "lastactivityat": "2026-08-22T21:41:17+09:00",
       "locked": false,
       "isanswered": null,
       "author": {
@@ -21,7 +21,7 @@
         "name": "General",
         "slug": "general"
       },
-      "commentcount": 1,
+      "commentcount": 4,
       "lastcommentby": "nao1215",
       "reactioncount": 0
     }
