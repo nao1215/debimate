@@ -42,7 +42,10 @@ description: ""
 
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
-| 1 | [GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】](/post/ja/2025-04-27-github-personal-access-token%E3%82%92%E3%82%B3%E3%83%9F%E3%83%83%E3%83%88%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%8C%E3%81%84%E3%81%9F%E8%A9%B1%E9%A1%9E%E4%BC%BC%E4%BE%8B%E6%BC%8F%E6%B4%A9/) | 既存記事 / シークレット漏洩対策 |
+| 1 | [Shamir's Secret Sharing - 閾値以上の Share が揃った時だけ Secret を復元する](/notes/security/shamir-secret-sharing/) | 技術ノート / 秘密分散 |
+| 2 | [Timelock Encryption - 将来の条件が成立するまで復号できなくする](/notes/security/timelock-encryption/) | 技術ノート / 時限暗号 |
+| 3 | [GitHub Personal Access Tokenをコミットする人がいた話、類似例、漏洩対策ツール【GitHub Secret scanning、gitleaks、git-secrets、gitguardian】](/post/ja/2025-04-27-github-personal-access-token%E3%82%92%E3%82%B3%E3%83%9F%E3%83%83%E3%83%88%E3%81%99%E3%82%8B%E4%BA%BA%E3%81%8C%E3%81%84%E3%81%9F%E8%A9%B1%E9%A1%9E%E4%BC%BC%E4%BE%8B%E6%BC%8F%E6%B4%A9/) | 既存記事 / シークレット漏洩対策 |
+| 4 | [【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】](/post/ja/2025-10-05-typescript%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E5%88%86%E5%89%B2%E3%81%97%E4%BB%BB%E6%84%8F%E3%81%AE%E5%88%86%E5%89%B2%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E6%95%B0/) | 既存記事 / 秘密分散 |
 
 ---
 
