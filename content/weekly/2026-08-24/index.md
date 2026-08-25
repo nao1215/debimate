@@ -27,8 +27,8 @@ Weekly と BBS の構成は、私が10代の頃の個人サイトから強い影
 
 --- 
 
-#### [gup](https://github.com/nao1215/gup) が [topgrade-rs/topgrade](https://github.com/topgrade-rs/topgrade) のバックエンドに使われていた
+#### [gup](https://github.com/nao1215/gup) が [topgrade](https://github.com/topgrade-rs/topgrade) のバックエンドに
 
-gup は `go install`したバイナリを更新するツールであり、私が開発した OSS の中で一番成功している。そんな gup が、topgrade で利用されていた。topgrade はあらゆるバイナリの更新するツール。go 製バイナリの更新に gup が利用されているようだった。ありがとうございます。なお、ChatGPT にエゴサさせて発覚した。
+gup は `go install`したバイナリを更新するツールであり、私が開発した OSS の中で一番成功している。そんな gup が、topgrade で利用されていた。topgrade はあらゆるツールを更新するコマンド。go 製バイナリの更新に gup が利用されているようだった。ありがとうございます。なお、ChatGPT にエゴサさせて発覚した。
 
 ![topgrade](topgrade_demo.gif)
