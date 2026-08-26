@@ -2,7 +2,7 @@
 title: "Passkey - 秘密鍵をサーバに渡さない認証"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Security"]
 tags: ["security", "authentication"]
 weight: 2
 ---

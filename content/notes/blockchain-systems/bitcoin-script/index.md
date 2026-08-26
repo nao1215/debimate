@@ -2,7 +2,7 @@
 title: "Bitcoin Script - 出力の使う条件を書くスタック言語"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 6
 ---

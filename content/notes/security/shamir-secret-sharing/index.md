@@ -2,7 +2,7 @@
 title: "Shamir's Secret Sharing - 閾値以上の Share が揃った時だけ Secret を復元する"
 date: 2026-08-22
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Security"]
 tags: ["security", "cryptography"]
 weight: 4
 ---

@@ -2,7 +2,7 @@
 title: "Heartbeat - ノードの死活監視"
 date: 2026-08-05
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "failure-detection"]
 weight: 1
 ---

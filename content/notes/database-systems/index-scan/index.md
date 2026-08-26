@@ -2,7 +2,7 @@
 title: "Index Scan - 索引から表の行に届くまでに何が起きるか"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "index"]
 weight: 4
 ---

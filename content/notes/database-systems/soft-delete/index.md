@@ -2,7 +2,7 @@
 title: "Soft Delete - 削除フラグを最初の選択肢にしない"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 2
 ---

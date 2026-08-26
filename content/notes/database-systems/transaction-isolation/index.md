@@ -2,7 +2,7 @@
 title: "Transaction Isolation - 同時実行で現れる異常と分離レベル"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 6
 ---

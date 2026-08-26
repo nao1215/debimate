@@ -2,7 +2,7 @@
 title: "Plugin Architecture - コアを肥大化させずに機能を足す"
 date: 2026-08-17
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 12
 ---

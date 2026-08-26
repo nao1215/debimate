@@ -2,7 +2,7 @@
 title: "B-Tree - ページ単位の入出力に合わせた索引の木"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "index"]
 weight: 1
 ---

@@ -2,7 +2,7 @@
 title: "仮説検定・p 値・信頼区間（hypothesis testing / p-value / confidence interval）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 22
 ---

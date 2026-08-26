@@ -2,7 +2,7 @@
 title: "最急降下法・確率的勾配降下法（gradient descent / SGD）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "optimization"]
 weight: 19
 ---

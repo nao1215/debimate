@@ -2,7 +2,7 @@
 title: "Idempotency - 同じ要求を何度受け取っても結果を 1 回分に保つ"
 date: 2026-08-18
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "reliability"]
 weight: 7
 ---

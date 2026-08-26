@@ -2,7 +2,7 @@
 title: "Proof of Work - 計算作業をブロック追加の条件にする"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 11
 ---

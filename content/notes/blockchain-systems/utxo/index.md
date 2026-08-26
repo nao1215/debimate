@@ -2,7 +2,7 @@
 title: "UTXO - 未使用の取引出力でコインを表すモデル"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 5
 ---

@@ -2,7 +2,7 @@
 title: "バイアス-バリアンス分解（bias-variance tradeoff）"
 date: 2026-05-25
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 7
 ---

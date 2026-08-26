@@ -14,6 +14,7 @@ ShowImageInList = true
 ShowImageInSingle = true
 ShowShareButtons = true
 ShowUpdatedDate = true
+ShowPostNavLinks = true
 images = ["images/default-ogp.webp"]
 enableSearch = true
 env = "production"

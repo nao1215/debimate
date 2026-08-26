@@ -2,7 +2,7 @@
 title: "ベクトルと行列の演算（内積・行列積）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "linear-algebra"]
 weight: 16
 ---

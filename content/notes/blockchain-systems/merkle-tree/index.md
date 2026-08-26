@@ -2,7 +2,7 @@
 title: "Merkle Tree - ハッシュ木で包含を証明する"
 date: 2026-08-08
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 8
 ---

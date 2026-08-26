@@ -2,7 +2,7 @@
 title: "Ethereum Account Model - 残高と通し番号を状態として持つモデル"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum"]
 weight: 13
 ---

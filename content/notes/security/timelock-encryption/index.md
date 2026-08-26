@@ -2,7 +2,7 @@
 title: "Timelock Encryption - 将来の条件が成立するまで復号できなくする"
 date: 2026-08-22
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Security"]
 tags: ["security", "cryptography"]
 weight: 5
 ---

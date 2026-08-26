@@ -2,7 +2,7 @@
 title: "実験管理（experiment tracking）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "MLOps"]
 tags: ["machine-learning", "mlops"]
 weight: 1
 ---

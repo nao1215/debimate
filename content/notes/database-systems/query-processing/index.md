@@ -2,7 +2,7 @@
 title: "Query Processing - SQL から実行計画を作り、動かすまで"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "query-processing"]
 weight: 3
 ---

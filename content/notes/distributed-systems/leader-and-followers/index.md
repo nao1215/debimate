@@ -2,7 +2,7 @@
 title: "Leader and Followers - 更新を 1 台に集約する複製の型"
 date: 2026-08-07
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 5
 ---

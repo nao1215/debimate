@@ -2,7 +2,7 @@
 title: "ベイズの定理（Bayes' theorem）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 13
 ---

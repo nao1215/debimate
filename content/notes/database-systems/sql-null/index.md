@@ -2,7 +2,7 @@
 title: "NULL - 値が無い事の表し方と、三値論理が及ぼす影響"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "sql"]
 weight: 5
 ---

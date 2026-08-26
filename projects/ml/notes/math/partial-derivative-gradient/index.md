@@ -2,7 +2,7 @@
 title: "偏微分と勾配（partial derivative / gradient）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "calculus"]
 weight: 18
 ---

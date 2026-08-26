@@ -2,7 +2,7 @@
 title: "UNIQUE Constraint - 重複を最後に止める場所を決める"
 date: 2026-08-12
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 9
 ---

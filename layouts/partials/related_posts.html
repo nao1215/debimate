@@ -28,8 +28,20 @@
       {{- $score = add $score 3 -}}
     {{- end -}}
 
+    {{/* 同点になった時の並び順。以前は .Lastmod の新しい順にしていたが、
+         enableGitInfo が有効なので誤字修正でも Lastmod が動く。その結果、
+         最近触った数本が全記事の「次に読む」を占有し、340 ページ中 108 ページは
+         一度も推薦されない状態だった。公開日 (.Date) が近い順に変えて、
+         同じ時期に書いた記事同士が繋がるようにする */}}
     {{- if gt $score 0 -}}
-      {{- $key := printf "%05d-%012d" $score .Lastmod.Unix -}}
+      {{- $gap := 99998 -}}
+      {{- if and (not $.Date.IsZero) (not .Date.IsZero) -}}
+        {{- $days := int (math.Floor (div (math.Abs (sub $.Date.Unix .Date.Unix)) 86400.0)) -}}
+        {{- if lt $days 99998 -}}
+          {{- $gap = $days -}}
+        {{- end -}}
+      {{- end -}}
+      {{- $key := printf "%05d-%05d" $score (sub 99999 $gap) -}}
       {{- $scored = $scored | append (dict "key" $key "page" . "score" $score) -}}
     {{- end -}}
   {{- end -}}

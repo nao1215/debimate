@@ -2,7 +2,7 @@
 title: "データドリフト（data drift / concept drift）"
 date: 2026-05-25
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "MLOps"]
 tags: ["machine-learning", "mlops", "monitoring"]
 weight: 4
 ---

@@ -2,7 +2,7 @@
 title: "Deadlock - 更新順序が逆になると何が起きるか"
 date: 2026-08-12
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 11
 ---

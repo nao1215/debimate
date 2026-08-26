@@ -2,7 +2,7 @@
 title: "Transactional Outbox - DB 更新とイベント送信を食い違わせない"
 date: 2026-08-18
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "messaging"]
 weight: 8
 ---

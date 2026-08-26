@@ -2,7 +2,7 @@
 title: "Quorum - 過半数で決定を成立させる仕組み"
 date: 2026-08-06
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 4
 ---

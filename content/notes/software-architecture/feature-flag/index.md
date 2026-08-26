@@ -2,7 +2,7 @@
 title: "Feature Flag - 機能の有効・無効を切り替える設計"
 date: 2026-08-17
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 11
 ---

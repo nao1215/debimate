@@ -2,7 +2,7 @@
 title: "Anticorruption Layer - 上流のモデルを自分の語に翻訳する"
 date: 2026-08-08
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 8
 ---

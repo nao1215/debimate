@@ -2,7 +2,7 @@
 title: "Authentication - ログインした相手を本人として扱う根拠"
 date: 2026-08-12
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Security"]
 tags: ["security", "authentication"]
 weight: 1
 ---

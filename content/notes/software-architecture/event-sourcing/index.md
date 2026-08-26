@@ -2,7 +2,7 @@
 title: "Event Sourcing - 出来事の並びを一次記録にする"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 9
 ---

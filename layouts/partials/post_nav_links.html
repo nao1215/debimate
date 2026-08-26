@@ -1,0 +1,92 @@
+{{/*
+  記事下の前後ナビ。
+
+  テーマ既定 (themes/PaperMod/layouts/partials/post_nav_links.html) は
+  mainSections (post) に属するページだけを対象にするため、weight で
+  学習順を定義しているノート (notes / ml) では何も出なかった。全 51 + 64 本が
+  順番を持っているのに「次のノート」へ進む導線が無い状態だったので、
+  セクションごとに並びの取り方を変える。
+
+  - post   : サイト全体の post を公開日順に辿る (テーマ既定と同じ挙動)
+  - notes  : 同じサブセクション内を weight 順。中央はサブセクションの入口
+  - ml     : 同じサブセクション (math / ml / mlops) 内を weight 順。
+             サブセクションには _index.md が無く一覧ページの中身が空なので、
+             中央は目次を持つ /ml/ へ送る
+  - それ以外 (about / bbs / search など) は並びの意味が無いので何も出さない
+*/}}
+
+{{- $isMain := in (site.Params.mainSections | default (slice "post")) .Section -}}
+{{- $isNotes := in (slice "notes" "ml") .Section -}}
+
+{{- if $isMain }}
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- if and (gt (len $pages) 1) (in $pages . ) }}
+<nav class="paginav">
+  {{- with $pages.Next . }}
+  <a class="prev" href="{{ .Permalink }}">
+    <span class="title">« {{ i18n "prev_page" }}</span>
+    <br>
+    <span>{{- .Name -}}</span>
+  </a>
+  {{- end }}
+  {{- with $pages.Prev . }}
+  <a class="next" href="{{ .Permalink }}">
+    <span class="title">{{ i18n "next_page" }} »</span>
+    <br>
+    <span>{{- .Name -}}</span>
+  </a>
+  {{- end }}
+</nav>
+{{- end }}
+
+{{- else if $isNotes }}
+{{/* 同じ並びに属するノートを series の末尾の値 (Distributed Systems や
+     Mathematics といったセクション名) で拾う。ml のサブディレクトリには
+     _index.md が無く Hugo のセクションにならないため、.Parent で辿ると
+     math のノートから mlops のノートへ飛んでしまう。series なら
+     notes と ml のどちらでも同じ書き方で並びを取れる。
+     並び順は front matter の weight 昇順で、これが学習順にあたる */}}
+{{- $group := "" }}
+{{- with .Params.series }}
+{{- if gt (len .) 1 }}
+{{- $group = index . (sub (len .) 1) }}
+{{- end }}
+{{- end }}
+{{- $siblings := slice }}
+{{- with $group }}
+{{- $siblings = (where site.RegularPages "Params.series" "intersect" (slice .)).ByWeight }}
+{{- end }}
+{{/* ml のサブディレクトリはセクションにならず一覧ページの中身も空なので、
+     中央のリンクは目次を持つ /ml/ へ送る。notes はサブセクションの
+     _index.md がそのまま入口になる */}}
+{{- $index := cond (eq .Section "ml") (site.GetPage "/ml") .Parent }}
+{{- $indexLabel := cond (eq .Section "ml") "機械学習ノート" .Parent.Title }}
+{{- if $index }}
+<nav class="paginav notes-paginav">
+  {{/* Pages.Next / Pages.Prev は「日付降順に並んだ一覧」を前提にした名前で、
+       weight 昇順に並べた一覧では Next が 1 つ前の項目を指す。
+       学習順で読めるように、ここでは入れ替えて使う */}}
+  {{- with $siblings }}
+  {{- with .Next $ }}
+  <a class="prev" href="{{ .Permalink }}">
+    <span class="title">« 前のノート</span>
+    <br>
+    <span>{{ .Title }}</span>
+  </a>
+  {{- end }}
+  {{- end }}
+  <a class="index" href="{{ $index.RelPermalink }}">
+    <span>{{ $indexLabel }}の一覧</span>
+  </a>
+  {{- with $siblings }}
+  {{- with .Prev $ }}
+  <a class="next" href="{{ .Permalink }}">
+    <span class="title">次のノート »</span>
+    <br>
+    <span>{{ .Title }}</span>
+  </a>
+  {{- end }}
+  {{- end }}
+</nav>
+{{- end }}
+{{- end }}

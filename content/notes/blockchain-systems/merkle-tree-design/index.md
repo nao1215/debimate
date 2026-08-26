@@ -2,7 +2,7 @@
 title: "Merkle Tree Design - 構築規則が決める安全性と証明能力"
 date: 2026-08-09
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 10
 ---

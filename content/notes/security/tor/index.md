@@ -2,7 +2,7 @@
 title: "Tor - 複数のリレーで接続元と接続先を切り離す"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Security"]
 tags: ["security", "privacy"]
 weight: 3
 ---

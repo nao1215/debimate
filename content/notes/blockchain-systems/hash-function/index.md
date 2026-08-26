@@ -2,7 +2,7 @@
 title: "Hash Function - 改竄の検出を支える 3 つの耐性"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 3
 ---

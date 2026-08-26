@@ -2,7 +2,7 @@
 title: "Bitcoin Block - 取引をまとめてチェーンにする単位"
 date: 2026-08-09
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 7
 ---

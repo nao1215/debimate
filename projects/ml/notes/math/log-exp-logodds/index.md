@@ -2,7 +2,7 @@
 title: "対数・指数関数の性質と log-odds（log / exp / logit）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math"]
 weight: 14
 ---

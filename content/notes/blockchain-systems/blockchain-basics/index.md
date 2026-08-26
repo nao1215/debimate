@@ -2,7 +2,7 @@
 title: "Blockchain Basics - 中央管理者なしで同じ履歴を共有する"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 1
 ---

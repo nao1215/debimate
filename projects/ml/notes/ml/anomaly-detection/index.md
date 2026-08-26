@@ -2,7 +2,7 @@
 title: "異常検知（anomaly detection）: Isolation Forest / LOF / One-Class SVM"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 32
 ---

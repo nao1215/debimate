@@ -2,7 +2,7 @@
 title: "固有値・固有ベクトルと固有値分解（eigenvalue / eigenvector / spectral decomposition）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "linear-algebra"]
 weight: 17
 ---

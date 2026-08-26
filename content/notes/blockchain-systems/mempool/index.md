@@ -2,7 +2,7 @@
 title: "Mempool - 未確認取引の置き場とノードごとの受け入れ方針"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 12
 ---

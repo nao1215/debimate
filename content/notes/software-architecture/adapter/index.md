@@ -2,7 +2,7 @@
 title: "Adapter - アプリケーションの出力を外向きに揃える補助コンテナ"
 date: 2026-08-08
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 7
 ---

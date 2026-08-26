@@ -2,7 +2,7 @@
 title: "歪度（skewness）と log1p 変換"
 date: 2026-05-24
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 7
 ---

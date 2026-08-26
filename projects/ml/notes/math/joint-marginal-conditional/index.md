@@ -2,7 +2,7 @@
 title: "同時分布・周辺分布・条件付き分布"
 date: 2026-05-25
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 11
 ---

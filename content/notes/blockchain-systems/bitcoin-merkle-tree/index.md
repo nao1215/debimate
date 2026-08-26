@@ -2,7 +2,7 @@
 title: "Bitcoin Merkle Tree - txid の木と SPV による検証"
 date: 2026-08-09
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 9
 ---

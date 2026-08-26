@@ -2,7 +2,7 @@
 title: "Repository - Aggregate の永続化を隠す境界"
 date: 2026-08-06
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 3
 ---

@@ -2,7 +2,7 @@
 title: "Domain Event - ドメインで起きた事実を伝える"
 date: 2026-08-07
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 4
 ---

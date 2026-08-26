@@ -2,7 +2,7 @@
 title: "Foreign Key - 参照先の存在を DB に保証させる"
 date: 2026-08-12
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 8
 ---

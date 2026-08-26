@@ -2,7 +2,7 @@
 title: "Value Object・Entity・Aggregate - DDD のモデル構成要素"
 date: 2026-08-05
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 1
 ---

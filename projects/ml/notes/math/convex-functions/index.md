@@ -2,7 +2,7 @@
 title: "凸関数と凸最適化（convex functions / convex optimization）"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "optimization"]
 weight: 20
 ---

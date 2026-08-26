@@ -549,13 +549,15 @@ body.home .post-entry .entry-header h2 {
   padding-left: 1.2rem;
 }
 
-/* 週報の前後移動。前の週・週報の一覧・次の週を 1 行に並べる。
+/* 前後移動 + 一覧への 3 点ナビ。週報 (.weekly-paginav) と、
+   weight で並び順を持つノート (.notes-paginav) が共有する。
 
    PaperMod の .paginav は prev と next を 50% ずつに割り、next を
    margin-inline-start: auto で右へ寄せる作りなので、真ん中に 3 つ目を
    足すと崩れる。grid で列を明示して置き換える。最初の週には prev が、
    最新の週には next が出ないため、列を固定しないと一覧が中央からずれる。 */
-.weekly-paginav {
+.weekly-paginav,
+.notes-paginav {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
@@ -564,20 +566,26 @@ body.home .post-entry .entry-header h2 {
 
 .weekly-paginav .prev,
 .weekly-paginav .index,
-.weekly-paginav .next {
+.weekly-paginav .next,
+.notes-paginav .prev,
+.notes-paginav .index,
+.notes-paginav .next {
   width: auto;
 }
 
-.weekly-paginav .prev {
+.weekly-paginav .prev,
+.notes-paginav .prev {
   grid-column: 1;
 }
 
-.weekly-paginav .index {
+.weekly-paginav .index,
+.notes-paginav .index {
   grid-column: 2;
   text-align: center;
 }
 
-.weekly-paginav .next {
+.weekly-paginav .next,
+.notes-paginav .next {
   grid-column: 3;
   margin-inline-start: 0;
   text-align: right;
@@ -588,16 +596,19 @@ body.home .post-entry .entry-header h2 {
 
 /* 画面が狭いと 3 列は窮屈になるので、一覧を下の行へ回して中央に置く */
 @media (max-width: 480px) {
-  .weekly-paginav {
+  .weekly-paginav,
+  .notes-paginav {
     grid-template-columns: 1fr 1fr;
   }
 
-  .weekly-paginav .index {
+  .weekly-paginav .index,
+  .notes-paginav .index {
     grid-row: 2;
     grid-column: 1 / -1;
   }
 
-  .weekly-paginav .next {
+  .weekly-paginav .next,
+  .notes-paginav .next {
     grid-column: 2;
   }
 }

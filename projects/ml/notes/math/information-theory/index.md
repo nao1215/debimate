@@ -2,7 +2,7 @@
 title: "情報理論（information theory）: エントロピー・KL ダイバージェンス・相互情報量"
 date: 2026-05-26
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "information-theory"]
 weight: 15
 ---

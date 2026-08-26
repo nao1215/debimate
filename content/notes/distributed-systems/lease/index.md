@@ -2,7 +2,7 @@
 title: "Lease - 期限付きで権利を貸す仕組み"
 date: 2026-08-05
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 2
 ---

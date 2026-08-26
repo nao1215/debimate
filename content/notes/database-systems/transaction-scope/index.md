@@ -2,7 +2,7 @@
 title: "Transaction Scope - トランザクションに何を入れるか"
 date: 2026-08-12
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 10
 ---

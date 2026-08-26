@@ -2,7 +2,7 @@
 title: "Ethereum Transaction - 署名された実行の依頼と手数料の上限"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum"]
 weight: 14
 ---

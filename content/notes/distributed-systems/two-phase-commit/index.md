@@ -2,7 +2,7 @@
 title: "2PC - 確定か中止を全参加者で揃える"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "transaction"]
 weight: 6
 ---

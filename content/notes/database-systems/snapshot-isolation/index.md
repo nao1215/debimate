@@ -2,7 +2,7 @@
 title: "Snapshot Isolation - 固定したスナップショットで読み、書き込みの重なりを止める"
 date: 2026-08-11
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 7
 ---

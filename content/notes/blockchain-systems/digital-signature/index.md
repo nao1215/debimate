@@ -2,7 +2,7 @@
 title: "Digital Signature - 秘密鍵で作り公開鍵で検証する証明"
 date: 2026-08-10
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 4
 ---

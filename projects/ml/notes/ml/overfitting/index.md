@@ -2,7 +2,7 @@
 title: "過学習（overfitting）"
 date: 2026-05-24
 draft: false
-series: ["機械学習ノート"]
+series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 6
 ---

@@ -2,7 +2,7 @@
 title: "Bounded Context - モデルが通用する範囲を区切る"
 date: 2026-08-06
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 2
 ---

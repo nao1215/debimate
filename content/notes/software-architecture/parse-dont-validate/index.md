@@ -2,7 +2,7 @@
 title: "Parse, Don't Validate - 不正な状態を後段に持ち込まない"
 date: 2026-08-17
 draft: false
-series: ["技術ノート"]
+series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 13
 ---
