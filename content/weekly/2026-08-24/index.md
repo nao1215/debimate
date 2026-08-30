@@ -70,4 +70,5 @@ truss は、端的に説明すれば、画像変換 CLI・サーバー・WASM �
 .....というゲスパーをする必要も実はなく、具体的な説明が truss を利用しているライブラリの説明に書かれていた。
 
 > [Managed hosting frequently ships without GD's WebP/AVIF support or without ImageMagick at all, and installing either usually means a support ticket or no option at all. Better Image Optimizer sidesteps that gap: it fetches a single, statically-linked truss binary pinned by version and SHA-256 in the module's own code, stores it on the private filesystem, and shells out to it via Symfony Process.](https://github.com/mayankguptadotcom/better-image-optimizer)
+>
 > 和訳：マネージドホスティングでは、GDのWebP/AVIFサポートやImageMagickが全く含まれていない状態で出荷されることが多く、どちらかをインストールするにはサポートチケットを発行するか、そもそもインストールするオプションがないのが一般的です。Better Image Optimizerはこのギャップを回避します。trussモジュール独自のコード内でバージョンとSHA-256によって固定された単一の静的リンクバイナリを取得し、それをプライベートファイルシステムに保存し、Symfony Processを介してシェルから実行します。
