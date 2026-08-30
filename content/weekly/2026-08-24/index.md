@@ -58,3 +58,13 @@ gup は `go install`したバイナリを更新するツールであり、私が
 私は二つの虹（もう一つは L'Arc～en～Ciel だ）を聴き込んでおり、VOW WOW 初期の三作はキーボードとギターから Rainbow や Deep Purple の影響を感じ取れる。"MASK OF FLESH (Masquerade)"にいたっては、「Rainbow のカーボンコピー」と評されるレビューがあるぐらいだった。この事実に気づいてから、VOW WOW をリピートし続けている。不思議なことに、日本人がギターとキーボードの掛け合いを行うと、演奏に遊びがあるはずなのにタイトさを感じる。日本人らしさを感じるプレイといれば、Who do They think We are ? -A Tribute to Deep Purple From Japan に収録されている Burn であり、色んな元ネタを踏まえた完コピ演奏である。
 
 今回は、音の捉え方を変えただけで、VOW WOW への評価が大きく変わった。評価軸、大事だね！
+
+---
+
+#### [truss](https://github.com/nao1215/truss) の利用者から機能要望が来た
+
+truss は、端的に説明すれば、画像変換 CLI・サーバー・WASM である（[紹介記事はこちら](/post/ja/2026-03-14-画像処理ツールtrussを作った話/)）。いつの間にか Drupal（WordPress のような CMS）モジュールのバックエンド候補として検討されているようで、機能追加要望があった。不思議な話でもあり、[PHP の GD](https://www.php.net/manual/ja/book.image.php) や [ImageMagick](https://imagemagick.org/) を差し置いて、何故 truss が選ばれているのか。ネットで検索したら、答えが出てきた。
+
+[機能追加の依頼者](https://drupal-govcon-2026.sessionize.com/speaker/72cf0f63-b3c8-466a-9401-5b0c610ee0b4)は Drupal GovCon（2026年）で発表しており、「Drupal モジュールが高速な Rust 製 CLI を 管理して直接起動し、結果を静的成果物として保存すればよい」旨の考えを示していた。truss も Rust 製 CLI であるため、この方の戦略とマッチしていたのだろう。ImageMagick は機能的に圧倒的に優れているが、配布が少し面倒だ。単一バイナリではなく、かつランタイム環境によって考慮すべき事柄があるため、ユーザーが戸惑う場面が増える。Rust 製 CLI であれば、バイナリﾎﾟﾝｯが簡単にできる。
+
+「truss にはサーバー機能あるのに、バイナリとして利用するのか」と考えたりもしたが、小規模用途ならバイナリを直接呼び出した方が実装量もインフラコストも安いのだろうなと想像した。
