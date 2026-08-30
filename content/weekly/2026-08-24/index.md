@@ -67,4 +67,7 @@ truss は、端的に説明すれば、画像変換 CLI・サーバー・WASM �
 
 [機能追加の依頼者](https://drupal-govcon-2026.sessionize.com/speaker/72cf0f63-b3c8-466a-9401-5b0c610ee0b4)は Drupal GovCon（2026年）で発表しており、「Drupal モジュールが高速な Rust 製 CLI を 管理して直接起動し、結果を静的成果物として保存すればよい」旨の考えを示していた。truss も Rust 製 CLI であるため、この方の戦略とマッチしていたのだろう。ImageMagick は機能的に圧倒的に優れているが、配布が少し面倒だ。単一バイナリではなく、かつランタイム環境によって考慮すべき事柄があるため、ユーザーが戸惑う場面が増える。Rust 製 CLI であれば、バイナリﾎﾟﾝｯが簡単にできる。
 
-「truss にはサーバー機能あるのに、バイナリとして利用するのか」と考えたりもしたが、小規模用途ならバイナリを直接呼び出した方が実装量もインフラコストも安いのだろうなと想像した。
+.....というゲスパーをする必要も実はなく、具体的な説明が truss を利用しているライブラリの説明に書かれていた。
+
+> [Managed hosting frequently ships without GD's WebP/AVIF support or without ImageMagick at all, and installing either usually means a support ticket or no option at all. Better Image Optimizer sidesteps that gap: it fetches a single, statically-linked truss binary pinned by version and SHA-256 in the module's own code, stores it on the private filesystem, and shells out to it via Symfony Process.](https://github.com/mayankguptadotcom/better-image-optimizer)
+> 和訳：マネージドホスティングでは、GDのWebP/AVIFサポートやImageMagickが全く含まれていない状態で出荷されることが多く、どちらかをインストールするにはサポートチケットを発行するか、そもそもインストールするオプションがないのが一般的です。Better Image Optimizerはこのギャップを回避します。trussモジュール独自のコード内でバージョンとSHA-256によって固定された単一の静的リンクバイナリを取得し、それをプライベートファイルシステムに保存し、Symfony Processを介してシェルから実行します。
