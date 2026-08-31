@@ -783,3 +783,38 @@ body.home .post-entry .entry-header h2 {
 .bbs-new-form input:disabled {
   opacity: 0.6;
 }
+
+/* figures ショートコードで作る画像の横並び。
+
+   並べる画像は縦長と横長が混ざるため、幅を等分すると縦長だけが極端に
+   高くなって釣り合わない。高さを揃えて幅を成り行きにする方が、
+   写真の大きさが揃って見える。 */
+.figure-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+.figure-row figure {
+  margin: 0;
+  min-width: 0;
+}
+
+/* figure ショートコードの width 属性より CSS を優先させる */
+.figure-row figure img {
+  width: auto;
+  height: var(--figure-row-height, 16rem);
+  max-width: 100%;
+  object-fit: contain;
+}
+
+/* 横に 2 枚並べると 1 枚あたりが小さくなりすぎる幅では、縦へ積む */
+@media (max-width: 480px) {
+  .figure-row figure img {
+    width: 100%;
+    height: auto;
+  }
+}
