@@ -11,11 +11,9 @@ Sidecar とは、主となるアプリケーションのコンテナと同じ実
 
 中には複数のコンテナを置け、それぞれを独立したコンテナとして設定できます。コンテナの配置とライフサイクルを管理する基盤は、ここでは実行基盤と呼びます。Kubernetes や Amazon ECS がその例です。ここで説明するのは、1 台のマシンに同居させる構成だけです。複数のマシンにまたがる [Leader and Followers](../../distributed-systems/leader-and-followers/) のようなパターンには触れません。
 
-この名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、[Ambassador](../ambassador/)・[Adapter](../adapter/) と並ぶ 3 つのパターンの 1 つ目として紹介されました。
+Sidecar は、複数のコンテナを 1 つの実行単位に置く構成の中で最も一般的なパターンで、「Sidecar はメインのコンテナを拡張し、強化する」と位置付けられています。例として挙がっているのは、Web サーバのログをローカルディスクから読み取り、クラスタのストレージに流す logsaver コンテナです。この位置付けは、Brendan Burns 氏と David Oppenheimer 氏が 2016 年に発表した論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」の 4.1 節にあります。
 
-体系化したのは、Brendan Burns 氏と David Oppenheimer 氏が 2016 年に発表した論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」です。
-
-同論文の 4.1 節は Sidecar を複数コンテナ構成で最も一般的なパターンと位置付け、「Sidecar はメインのコンテナを拡張し、強化する」と説明されています。例として挙がっているのは、Web サーバのログをローカルディスクから読み取り、クラスタのストレージに流す logsaver コンテナです。
+Sidecar という名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、[Ambassador](../ambassador/)・[Adapter](../adapter/) と並ぶ 3 つのパターンの 1 つ目として紹介されました。上記の論文は、このブログのパターンを体系化した物です。
 
 論文の例と同じ構成を以下に示します。
 

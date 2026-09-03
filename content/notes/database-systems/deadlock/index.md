@@ -7,17 +7,13 @@ tags: ["database-systems", "transaction"]
 weight: 11
 ---
 
-Deadlock（デッドロック）は、2 本以上のトランザクションが、それぞれ自分の取ったロックを持ったまま他のトランザクションのロックの解放を待ち、待つ先を辿ると自分に戻ってしまうために、どれも先に進めなくなる状態です。
+Deadlock（デッドロック）は、2 本以上のトランザクションが、それぞれ自分の取ったロックを持ったまま他のトランザクションのロックの解放を待ち、待つ先を辿ると自分に戻ってしまうために、どれも先に進めなくなる状態です。MySQL のドキュメントにも、デッドロックは「[a situation in which multiple transactions are unable to proceed because each transaction holds a lock that is needed by another one](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)」（複数のトランザクションが、それぞれ他方の必要とするロックを持っているために、どれも先に進めない状況）だと書かれています。
 
 開発者がこの名前を目にするのは、エラーログの中ではないでしょうか。PostgreSQL は `deadlock detected`、MySQL は `Deadlock found when trying to get lock; try restarting transaction` を返します。手元で 1 本ずつ動かしている間は出ず、同じ処理が同時に走る本番環境で遭遇しやすいです。
 
-MySQL のドキュメントは、デッドロックを「[a situation in which multiple transactions are unable to proceed because each transaction holds a lock that is needed by another one](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)」（複数のトランザクションが、それぞれ他方の必要とするロックを持っているために、どれも先に進めない状況）と定義しています。
-
 本ノートでは PostgreSQL の挙動を基本に説明し、挙動が違う箇所では MySQL と Oracle Database の例も示します。トランザクションに何を入れるかの判断は [Transaction Scope](../transaction-scope/)、分離レベルは [Transaction Isolation](../transaction-isolation/) の題材とします。
 
-前提を 1 つ置きます。行を更新すると DBMS（Database Management System）はその行にロックを取り、通常はトランザクションが終わるまで解放しません。1 行目を更新した後に 2 行目を待っている間も、1 行目は握ったままです。
-
-2 本が同じ 2 行を逆の順で触った場合を以下に示します。
+前提を 1 つ置きます。行を更新すると DBMS（Database Management System）はその行にロックを取り、通常はトランザクションが終わるまで解放しません。1 行目を更新した後に 2 行目を待っている間も、1 行目は握ったままです。2 本が同じ 2 行を逆の順で触った場合は以下の通りです。
 
 ```mermaid
 sequenceDiagram
@@ -33,8 +29,6 @@ sequenceDiagram
 ```
 
 上記の図の送金 A と送金 B は、待つ相手が互いに相手になっています。誰が誰を待っているのかを辿ると出発点に戻るため、この関係を循環待ち（circular wait）と呼びます。2 本とは限りません。A が B を待ち、B が C を待ち、C が A を待つ形でも同じく循環します。
-
-順序が揃っていれば、後から来た方は最初に競合した行で待ち、先に来た方が終われば進めます。この例で循環待ちを作っているのは、2 本が同じ 2 行を逆の順で取得している事です。トランザクションを短くすると、ロックを持っている時間が縮んで競合そのものは起きにくくなります。ただし、トランザクションを短くするだけでは、逆順取得という原因そのものは消えません。
 
 ---
 
@@ -74,6 +68,8 @@ flowchart LR
 ---
 
 ### 取得順序を揃える
+
+冒頭の例で循環待ちを作っているのは、2 本が同じ 2 行を逆の順で取得している事です。順序が揃っていれば、後から来た方は最初に競合した行で待ち、先に来た方が終われば進めます。トランザクションを短くすると、ロックを持っている時間が縮んで競合そのものは起きにくくなります。ただし、トランザクションを短くするだけでは、逆順取得という原因そのものは消えません。
 
 代表的な防ぎ方は、ロックを取る順序を全ての経路で揃える事です。PostgreSQL のドキュメントは、最善の防御が一般には「[being certain that all applications using a database acquire locks on multiple objects in a consistent order](https://www.postgresql.org/docs/current/explicit-locking.html)」（そのデータベースを使う全てのアプリケーションが、複数のオブジェクトに一貫した順序でロックを取るようにする事）だと書かれています。
 

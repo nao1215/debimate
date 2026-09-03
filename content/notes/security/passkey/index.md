@@ -7,7 +7,7 @@ tags: ["security", "authentication"]
 weight: 2
 ---
 
-Passkey は、Authenticator が管理する秘密鍵を Relying Party のサーバに渡さずに署名を作り、サーバが対になる公開鍵で署名を検証する認証の方式です。FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだと説明されています。
+Passkey は、手元の端末（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバが対になる公開鍵で署名を検証する認証の方式です。FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだと説明されています。
 
 この方式が必要な場面の代表は、ログイン画面をそのまま真似た偽サイトへの入力です。Password は利用者が読み書きできる文字列なので、相手を間違えればそのまま攻撃者の手に渡り、本物のサイトで使われます。署名は、宛先のドメインと 1 回限りの乱数に結び付いた値になるので、覗き見ても別のサイトや次回のログインでは通りません。
 

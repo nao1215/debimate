@@ -43,7 +43,8 @@ def save(name: str) -> None:
 def attacker_success_probability(q: float, z: int) -> float:
     """Bitcoin 白書 (Nakamoto 2008) の AttackerSuccessProbability を写したもの。
 
-    z ブロック遅れている攻撃者が、正直なマイナーの列に追い付く確率を返す。
+    受け取り側が取引の後ろに z ブロック積むまで待った時点で、攻撃者がなお
+    追い付く確率を返す。攻撃者の進捗は期待値 z*q/p の Poisson 分布と仮定する。
     """
     p = 1.0 - q
     lam = z * (q / p)

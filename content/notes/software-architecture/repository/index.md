@@ -7,11 +7,11 @@ tags: ["software-architecture", "ddd"]
 weight: 3
 ---
 
-Repository とは、Aggregate（集約）を 1 つの単位として保存・復元する仕組みで、呼び出す側からはメモリ上のコレクションのように見えます。Eric Evans 氏の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) は、DDD（Domain-Driven Design、ドメイン駆動設計）の Repository を「ユビキタス言語で表現された、集約への問い合わせ手段」と要約しています。ユビキタス言語とは、[Bounded Context](../bounded-context/) の中の全員が会話・図・コードで同じ意味で使う語彙です。
+Repository とは、Aggregate（集約）を 1 つの単位として保存・復元する仕組みで、呼び出す側からはメモリ上のコレクションのように見えます。一般には「ドメイン層とデータマッピング層の仲介役で、コレクションのようなインターフェースを通じてドメインオブジェクトにアクセスさせるもの」と定義されています（Martin Fowler 氏の書籍『Patterns of Enterprise Application Architecture』所収、Edward Hieatt 氏と Rob Mee 氏による [Repository](https://martinfowler.com/eaaCatalog/repository.html)）。
 
-Martin Fowler 氏の書籍『Patterns of Enterprise Application Architecture』でも、Edward Hieatt 氏と Rob Mee 氏が [Repository](https://martinfowler.com/eaaCatalog/repository.html) を「ドメイン層とデータマッピング層の仲介役で、コレクションのようなインターフェースを通じてドメインオブジェクトにアクセスさせるもの」と定義しています。
+この定義に集約は現れません。出し入れの単位を集約に結び付けているのは DDD（Domain-Driven Design、ドメイン駆動設計）で、ここでは、その制約が実装に何を持ち込むのかを追います。
 
-この定義に集約は現れません。出し入れの単位を集約に結び付けているのは DDD で、その制約が実装に何を持ち込むのかが、ここでの主題になります。
+DDD の Repository は「ユビキタス言語で表現された、集約への問い合わせ手段」と要約されています（Eric Evans 氏の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf)）。ユビキタス言語とは、[Bounded Context](../bounded-context/) の中の全員が会話・図・コードで同じ意味で使う語彙です。
 
 O/R マッパ（Object-Relational Mapper、オブジェクトと DB のテーブルを対応付ける仕組み）の選び方や DB（データベース）スキーマの設計は範囲外で、[Value Object・Entity・Aggregate](../value-object-entity-aggregate/) で扱った集約ルートと不変条件の話を前提にします。層は 3 つ出てきます。ドメイン層は業務の規則と、それを表す型を置く場所です。アプリケーション層はユースケースの手順を組み立てる場所で、インフラストラクチャ層は DB やネットワークを実際に触る場所を指します。
 

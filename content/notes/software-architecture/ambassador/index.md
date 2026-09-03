@@ -11,11 +11,13 @@ Ambassador とは、アプリケーションのコンテナと同じ実行単位
 
 同じ実行単位のコンテナがネットワークを共有する構成では、隣のコンテナに localhost で届きます。共有するかどうかは実行基盤と設定で決まります。実行単位（同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まり）と実行基盤（コンテナの配置とライフサイクルを管理する基盤）は、[Sidecar](../sidecar/) と同じ意味で使います。
 
-この名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、Sidecar・Adapter と並ぶ 3 つのパターンの 2 つ目として紹介されました。同ブログには、Ambassador が「ローカルの接続を外の世界に仲介する」ものだと書かれています。
+Ambassador が仲介するのは、メインのコンテナに向かう通信と、そこから出る通信の両方です。ローカルの接続を外の世界に繋ぐ位置に立つ物、というのがこのパターンの定義です。
 
-体系化したのは Brendan Burns 氏と David Oppenheimer 氏の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」で、その 4.2 節は「Ambassador コンテナは、メインのコンテナに向かう通信と、そこから出る通信を仲介する」と書いています。
+この名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、Sidecar・Adapter と並ぶ 3 つのパターンの 2 つ目として紹介されました。同ブログには Ambassador が「ローカルの接続を外の世界に仲介する」ものだと書かれています。
 
-上記ブログが挙げる Redis の例を以下に示します。Redis は主にメモリ上でデータを扱うデータストアで、書き込みを受け付ける 1 台と、読み取り専用の複製を複数台という構成を組めます。
+「Ambassador コンテナは、メインのコンテナに向かう通信と、そこから出る通信を仲介する」という定義は、体系化した Brendan Burns 氏と David Oppenheimer 氏の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」の 4.2 節にあります。
+
+上記のブログが挙げる Redis の例を以下に示します。Redis は主にメモリ上でデータを扱うデータストアで、書き込みを受け付ける 1 台と、読み取り専用の複製を複数台という構成を組めます。
 
 ```mermaid
 flowchart LR
@@ -31,7 +33,7 @@ flowchart LR
 
 上記の図のアプリケーションが知っているのは、localhost の 1 つの宛先だけです。書き込みを master に、読み取りを replica に振り分けるのは ambassador で、replica が 2 台から 5 台に増えた時に構成を追いかける責任も ambassador に移ります。
 
-構成の変化を検知する実装ならアプリケーションを触らずに追随でき、そうでなければ ambassador の設定を書き換えます。ブログも、アプリケーションから見れば localhost の Redis に繋いでいるだけだと書かれています。
+構成の変化を検知する実装ならアプリケーションを触らずに追随でき、そうでなければ ambassador の設定を書き換えます。アプリケーションから見れば、localhost の Redis に繋いでいるだけです。同じブログにもそう書かれています。
 
 ---
 

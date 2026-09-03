@@ -7,11 +7,11 @@ tags: ["blockchain-systems", "consensus"]
 weight: 15
 ---
 
-finality（ファイナリティ、確定性）は、一度確定したと扱った取引が後から覆らない性質です。この性質を注意深く扱う必要があるのは、入金を検知して商品を発送したり、[アカウントの残高](../ethereum-account-model/)を加算したりするアプリケーションを書く時です。取引が後から履歴から消えても、渡した物は戻ってきません。
+finality（ファイナリティ、確定性）は、一度確定したと扱った取引が後から覆らない性質です。この性質を注意深く扱う必要があるのは、入金を検知して商品を発送したり、[アカウントの残高](../ethereum-account-model/)を加算したりするアプリケーションを書く時です。取引が後で履歴から消えても、渡した物は戻ってきません。
 
 取引がブロックに入った事と、その取引をもう覆らないものとして扱える事は、別です。Ethereum のノードはこの段階の違いを `latest`・`safe`・`finalized` の 3 つに分けており、残高を尋ねる `eth_getBalance` でも、アドレスと一緒にどれで見るのかを渡します。ブロック番号を知らなくても位置で指せる文字列なので、ブロックタグと呼びます。
 
-本ノートでは、取引をアプリケーションがいつ確定済みとして扱えるのかを説明します。1 件の取引が通る段階と、3 つのタグの対応は以下の通りです。
+本ノートでは、アプリケーションが取引をいつ確定済みとして扱えるのかを説明します。1 件の取引が通る段階と、3 つのタグの対応は以下の通りです。
 
 ```mermaid
 flowchart LR
@@ -43,7 +43,9 @@ sequenceDiagram
     N-->>P: その取引は<br/>ブロックから外れた
 ```
 
-記録が消えるわけではありませんが、渡した商品は戻りません。ブロックが外れる典型的な例は、複数のマイナーがほぼ同時にブロックを作り、チェーンの末尾が一時的に 2 本に分かれた場合です。分かれた直後は、どちらの列も規則を満たしています。
+記録が消えるわけではありませんが、渡した商品は戻りません。
+
+ブロックが外れる典型的な例は、複数のマイナーがほぼ同時にブロックを作り、チェーンの末尾が一時的に 2 本に分かれた場合です。分かれた直後は、どちらの列も規則を満たしています。各参加者は、積まれた計算量が最も大きい列を canonical chain（正しい履歴として扱う列）に選び、選ばれなかった側のブロックは列から外れます。
 
 ```mermaid
 flowchart LR
@@ -54,7 +56,7 @@ flowchart LR
     B -.->|"canonical chain に<br/>選ばれなかった列"| Z["取引はブロックから外れる"]
 ```
 
-各参加者は、積まれた計算量が最も大きい列を canonical chain（正しい履歴として扱う列）に選びます。この差し替えを reorg（chain reorganization、チェーンの組み替え）と呼びます。[Bitcoin Block](../bitcoin-block/) が「巻き戻り」と呼んでいるのは、reorg で取引がブロックから外れる現象です。
+この差し替えを reorg（chain reorganization、チェーンの組み替え）と呼びます。[Bitcoin Block](../bitcoin-block/) が「巻き戻り」と呼んでいるのは、reorg で取引がブロックから外れる現象です。
 
 外れた取引が無効になったわけではありません。ただし、取り込みを待つ状態に戻るかどうかは、プロトコルの外で決まります。
 
@@ -76,7 +78,7 @@ sequenceDiagram
     participant R as 受け取る側
     participant Q as 攻撃者
     H->>R: 取引の入ったブロックを配る
-    Q->>Q: 取引を除いた列を<br/>公開せずに伸ばす
+    Q->>Q: 支払いを差し替えた列を<br/>公開せずに伸ばす
     H->>R: 後ろに z 個積む
     R->>R: 確認数 z+1 で<br/>商品を渡す
     Q->>Q: 遅れを詰める
@@ -89,9 +91,9 @@ sequenceDiagram
 
 ![後ろに積むブロック数 z と攻撃の成功確率。縦軸は対数で、q が 0.10 の線は z が 5 で 0.1% を下回る。q が 0.45 では z を 25 まで積んでも 0.1% に届かない](images/finality_success_rate.svg)
 
-確率は `z` に対して指数的に下がる一方、0 には届きません。この性質を probabilistic finality（確率的な確定性）と呼びます。
+攻撃者が過半のハッシュ計算能力を握っていない限り、確率は `z` に対して指数的に下がります。一方で、0 には届きません。この性質を probabilistic finality（確率的な確定性）と呼びます。
 
-成功確率が 0.1% を下回る `z` を `q` ごとに並べると、以下が得られます。
+白書は、成功確率が 0.1% を下回る `z` を `q` ごとに並べています。
 
 | 攻撃者のハッシュ計算能力の割合 `q` | 必要な `z`（後ろに積むブロック数） | 確認数（`z + 1`） |
 | --- | --- | --- |
@@ -104,7 +106,7 @@ sequenceDiagram
 | 0.40 | 89 | 90 |
 | 0.45 | 340 | 341 |
 
-確認数 6 が Bitcoin の規則として定められていると考える方がいるかもしれません。しかし白書にあるのは、`q` を 0.10 と仮定した時に `z` が 5 で確率が 0.1% を下回るという計算だけです。`q` を 0.30 と置けば、同じ 0.1% を下回るのに確認数は 25 必要です。
+確認数 6 が Bitcoin の規則として定められていると考える方がいるかもしれません。しかし上の表が示しているのは、必要な `z` が `q` の置き方で変わるという事です。確認数 6 は `q` を 0.10 と置いた時の値で、`q` を 0.30 と見るなら 25 必要になります。
 
 この表の値は、上のモデルの中での確率です。ネットワークの分断、実装とコンセンサスの不具合、参加者の調整による介入はモデルの外にあるので、`q` を 0.10 と置いた確認数 6 も絶対的な安全の基準にはなりません。
 
@@ -114,20 +116,20 @@ sequenceDiagram
 
 Ethereum のバリデータ（validator）は、ether をプロトコルに預けて、ブロックの提案と検証と投票を行う参加者です。規則に反する投票を残すと、預けた ether が減らされます。
 
-この投票を finality に変える仕組みが Casper FFG（Casper the Friendly Finality Gadget）です。投票の対象になるのは[全てのブロックではなく、epoch の境界にあるブロックだけ](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/gasper/)で、これを checkpoint と呼びます。Ethereum の時間は 12 秒の slot に区切られ、32 slot で 1 epoch（6 分 24 秒）になります。
+この投票を finality に変える仕組みが Casper FFG（Casper the Friendly Finality Gadget）です。Ethereum の時間は 12 秒の slot に区切られ、32 slot で 1 epoch（6 分 24 秒）になります。[justified と finalized に上がれるのは全てのブロックではなく、epoch の境界にあるブロックだけ](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/gasper/)で、これを checkpoint と呼びます。
 
-checkpoint は 2 段階で確定します。預けられた ether の 2/3 を占めるバリデータが投票すると justified になり、次の epoch の checkpoint まで justified になった時点で finalized に変わります。
+checkpoint は 2 段階で確定します。投票は 1 つの checkpoint を指すのではなく、既に justified な checkpoint を起点として次の checkpoint へ張る形で行い、預けられた ether の 2/3 が同じ組に投票すると、張られた先が justified になります。その先へもう 1 本張られた時点で、起点だった checkpoint が finalized に変わります。
 
 ```mermaid
 stateDiagram-v2
     [*] --> 投票待ち: epoch の境界のブロックとして作られる
-    投票待ち --> justified: 預けられた ether の 2/3 を占めるバリデータが投票する
-    justified --> finalized: 次の epoch の checkpoint が justified になる
+    投票待ち --> justified: justified な checkpoint から<br/>2/3 の投票が張られる
+    justified --> finalized: 次の checkpoint へ<br/>もう 1 本張られる
     投票待ち --> 破棄: 別の列が canonical chain になる
     justified --> 破棄: 別の列が canonical chain になる<br/>（finalized ほど固定されていない）
 ```
 
-確定が投票より 1 epoch 遅れるのは、この 2 段階のためです。末尾の checkpoint は justified までしか進めず、finalized に届くのは次の epoch の投票が集まってからです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
+ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。確定が投票より 1 epoch 遅れるのは、2 段階を踏むためです。末尾の checkpoint は justified までしか進めず、finalized に届くのは次の epoch の投票が集まってからです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
 
 ```mermaid
 flowchart LR
@@ -137,7 +139,9 @@ flowchart LR
     C2 -.->|"上に justified が積まれた"| F2["epoch N+1 は finalized"]
 ```
 
-finalized な checkpoint と矛盾する別の checkpoint を finalized にすると、預けられた ether の 1/3 以上を占めるバリデータが、処罰の対象になる投票を証拠として残します。これが [Casper FFG](https://arxiv.org/abs/1710.09437) の accountable safety で、矛盾する finality が成立した時には、預けられた ether の少なくとも 1/3 が失われます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
+finalized な checkpoint と矛盾する別の checkpoint を finalized にするには、2/3 の投票が 2 つ要ります。2 つの 2/3 は必ず 1/3 以上重なるので、預けられた ether の 1/3 以上を占めるバリデータが、処罰の対象になる投票を証拠として残します。これが [Casper FFG](https://arxiv.org/abs/1710.09437) の accountable safety で、矛盾する finality が成立した時には、預けられた ether の少なくとも 1/3 が失われます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
+
+ただし、この保証が効くのはバリデータの預け入れが動かない間です。後で触れる inactivity leak が働くと、誰も処罰されないまま両方の checkpoint が finalized になり得ます。
 
 ---
 
@@ -176,7 +180,7 @@ Casper FFG が証明しているのは、accountable safety と plausible livene
 
 前者は、矛盾する finality が成立した時に、その責任を負うバリデータを特定できるという性質です。後者は、過去に何が起きていても、2/3 のバリデータが規則に従っている限り、誰も処罰されずに次の checkpoint を finalize できる、という別の性質です。覆らない事と止まらない事は、別々に証明されています。
 
-その 2/3 が集まらない状態から抜け出す手段は、Casper FFG の外にあります。Ethereum は finality が 4 epoch 進まないと inactivity leak に入り、多数派の列に投票していないバリデータの残高を減らしていきます。投票している側が残りの ether の 2/3 を占めるところまで減らす仕組みで、その間に復帰したバリデータは減らされる側から外れます。
+その 2/3 が集まらない状態から抜け出す手段も、同じ論文が inactivity leak として示しています。Ethereum では finality の遅れが 4 epoch を超えると leak に入り、多数派の列に投票していないバリデータの残高が減っていきます。投票している側が残りの ether の 2/3 を占めるところまで減らす仕組みです。
 
 ```mermaid
 flowchart LR
@@ -206,7 +210,7 @@ flowchart TD
 
 攻撃コストを問うのは、分岐の最後です。攻撃者がいなくても、複数のマイナーが同時にブロックを作れば組み替えは起きます。
 
-待てる時間も材料です。ブロック間隔が 10 分のチェーンで確認数 6 まで待つと、取り込まれてから 50 分、送信から数えると 1 時間ほどかかります。Ethereum の `finalized` が指すのは順調な時でも 2 epoch 前の checkpoint なので、現在から見ると 12 分から 19 分ほど過去のブロックです。
+待てる時間も材料です。ブロック間隔が 10 分のチェーンで確認数 6 まで待つと、取り込まれてから 50 分、送信から数えると 1 時間ほどかかります。Ethereum の `finalized` が指すのは、順調な時でも 2 epoch 前の checkpoint です。現在が epoch のどこにいるかで、13 分から 19 分ほど過去のブロックになります。
 
 チェーンの性質も、同じ確認数の意味を変えます。ハッシュ計算能力が少数の参加者に集中している proof of work のチェーンでは、仮定する `q`（攻撃者が握るハッシュ計算能力の割合）を大きく取る方が現実的で、必要な `z` はその分だけ増えます。
 
@@ -255,4 +259,4 @@ destination chain に裏付けのない資産が残るのは、bridge が預け�
 - 未確認である事を添えて取引の状態を見せるだけの、価値を渡さない表示
 - 同じ運営者が両端を持ち、食い違いを後から直せる内部の移動
 
-最後の項目だけは、覆った時に誰かが損害を引き受ける前提の上に立っています。引き受ける相手が決まっていない設計では、待つ選択の方が安全だと考えられます。
+どの項目も、覆った時の損害を誰かが引き受ける前提の上に立っています。最後の項目が成り立つのは、両端が同じ運営者なので、引き受ける相手が最初から決まっているからです。相手が決まっていない設計では、待つ選択の方が安全だと考えられます。

@@ -7,13 +7,11 @@ tags: ["database-systems", "data-modeling"]
 weight: 8
 ---
 
-外部キー制約（foreign key constraint）は、ある表の列に入っている値が、別の表に実在する行を指している事を DB（データベース）に保証させる仕組みです。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
-
-PostgreSQL のドキュメントは、この制約には「[the values in a column (or a group of columns) must match the values appearing in some row of another table](https://www.postgresql.org/docs/current/ddl-constraints.html)」（1 つの列、または複数の列の組の値が、別の表のいずれかの行に現れる値と一致しなければならない）事を指定すると説明されています。
+外部キー制約（foreign key constraint）は、ある表の列に入っている値が、別の表に実在する行を指している事を DB（データベース）に保証させる仕組みです。PostgreSQL のドキュメントには、この制約が指定するのは「[the values in a column (or a group of columns) must match the values appearing in some row of another table](https://www.postgresql.org/docs/current/ddl-constraints.html)」（1 つの列、または複数の列の組の値が、別の表のいずれかの行に現れる値と一致しなければならない）事だと書かれています。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
 
 この制約が必要になる場面の代表は、注文の一覧に「存在しない会員の ID」が混ざった時の調査です。会員の表と突き合わせる集計では指す先の無い注文が結果から落ちるので、注文表を素直に合計した値と食い違います。値が入った経路も、`INSERT` の時なのか会員を消した時なのかも、後から辿れません。
 
-本ノートでは、1 つの DB の中で表と表を結ぶ外部キー制約を扱い、サービスをまたいだ参照は「外部キーを張らない場合、誰が整合性を守るのか」でだけ触れます。以降の SQL は PostgreSQL の構文で書き、会員（`members`）と注文（`orders`）を例に使います。2 つの表の関係を以下に示します。
+会員（`members`）と注文（`orders`）を例に、2 つの表の関係は以下の通りです。
 
 ```mermaid
 erDiagram
@@ -29,7 +27,13 @@ erDiagram
     }
 ```
 
+---
+
+### 前提と説明の範囲
+
 上記の図の `||--o{` は、`members` の 1 行に対して `orders` が 0 行以上ぶら下がる関係を表します。PK は主キー（その表で行を一意に決める列）、FK は外部キーです。参照される `members` を親、参照する `orders` を子と呼びます。
+
+本ノートでは、1 つの DB の中で表と表を結ぶ外部キー制約を扱い、サービスをまたいだ参照は「外部キーを張らない場合、誰が整合性を守るのか」でだけ触れます。以降の SQL は PostgreSQL の構文で書きます。
 
 制約は子の表に書きます。PostgreSQL では、参照先に主キー・一意制約・部分索引ではない一意索引のどれかが必要です。参照する値が参照先で一意に特定できないと、この `CREATE TABLE` 自体が失敗します。
 

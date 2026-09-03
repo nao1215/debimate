@@ -7,7 +7,7 @@ tags: ["software-architecture", "design-pattern"]
 weight: 9
 ---
 
-Event Sourcing とは、アプリケーションの現在の状態ではなく、状態を変えた出来事の並びを永続化し、状態はその再生で復元する方式です。Martin Fowler 氏の [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) は、この方式を「アプリケーションの状態への全ての変更をイベントの列として記録する」と要約しています。
+Event Sourcing とは、アプリケーションの現在の状態ではなく、状態を変えた出来事の並びを永続化し、状態はその再生（replay）で復元する方式です。Martin Fowler 氏の [Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) は、この方式を「アプリケーションの状態への全ての変更をイベントの列として記録する」と要約しています。
 
 出来事を表すオブジェクトは [Domain Event](../domain-event/) で扱ったので、ここではその並びを一次記録に据える部分を扱います。例には、Domain Event のノートと同じ注文（`Order` [集約](../value-object-entity-aggregate/)）を使います。
 
@@ -163,7 +163,11 @@ flowchart LR
     N[("スナップショット<br/>version 900 時点")] -- 起点として読む --> O
 ```
 
-上記の図のスナップショットは再生を速くするための導出物で、一次記録はイベントのままです。壊れても消しても、イベントから作り直せます。
+間隔を変えると、再生するイベント数の上限も一緒に動きます。
+
+![横軸がストリームのイベント数、縦軸が現在の状態を復元するために再生するイベント数のグラフ。スナップショットが無い線はイベント数と同じだけ直線的に伸び、100 件ごとにスナップショットを取る線は最大 100 件、500 件ごとの線は最大 500 件で頭打ちになるのこぎり波を描く](images/event-sourcing_replay_cost.svg)
+
+間隔を狭めるほど再生は短くなり、その分だけスナップショットを保存する回数が増えます。スナップショットは再生を速くするための導出物で、一次記録はイベントのままです。壊れても消しても、イベントから作り直せます。
 
 ---
 

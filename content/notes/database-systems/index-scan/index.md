@@ -70,13 +70,17 @@ flowchart TB
     K3 --> P3
 ```
 
-上記の図では、索引を 1 枚読んで得た 3 件のために表を 3 枚読んでいます。散らばったまま一致する行が増えれば、表を読むページの枚数もそれにつれて増えます。
+上記の図では、索引を 1 枚読んで得た 3 件のために表を 3 枚読んでいます。
 
 この散らばり具合は、行が挿入・更新されてきた履歴で決まり、問い合わせの書き方では動きません。PostgreSQL は、列ごとの統計情報の 1 つとして、この値を `pg_stats` の `correlation` に持っています。
 
 ドキュメントは、この値が -1 か +1 に近い時、その列への index scan が「[estimated to be cheaper than when it is near zero, due to reduction of random access to the disk](https://www.postgresql.org/docs/current/view-pg-stats.html)」（0 に近い時より安いと見積もられる。ディスクへのランダムアクセスが減るため）と書かれています。
 
-一致する行が増えるほど、この 2 段目の読み出しは積み上がります。表が小さい場合は、積み上がる前に全走査が有利になります。PostgreSQL のドキュメントは、100 行から 1 行を選ぶ例について、その 100 行がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読む事に勝てる計画は無い）と書かれています。
+一致する行が増えるほど、この 2 段目の読み出しは積み上がります。一方、全走査が読むページの枚数は、条件で絞れた割合、つまり選択性（selectivity）では動きません。そのため、2 つの経路が読む枚数はどこかで入れ替わります。
+
+![選択性を横軸に取った概念図。全走査が読むページ枚数は水平のまま変わらず、Index Scan は右上がりに増えて途中で交わる。一致した行がページに散っている場合は交点が左へ、表の並びとキーの順序が揃っている場合は交点が右へ動く](images/index_scan_crossover.svg)
+
+上記の図に目盛りを置いていないのは、交点の位置が実測ではなく、表の大きさと行の散らばり具合（scattered／clustered）で決まるためです。表が小さいほど全走査の読む枚数そのものが少ないので、交点は左へ寄ります。PostgreSQL のドキュメントは、100 行から 1 行を選ぶ例について、その 100 行がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読む事に勝てる計画は無い）と書かれています。
 
 ここまでを 1 本にまとめると、Index Scan で読む量はおよそ「索引で読むページ + 表で読むページ」になります。コストモデルとしては粗いものの、以降の節を読む見取り図としては使えます。
 
