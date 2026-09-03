@@ -55,6 +55,7 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Proof of Work - 計算作業をブロック追加の条件にする](/notes/blockchain-systems/proof-of-work/) | 作業証明 |
+| 2 | [Finality - ブロックチェーンの取引はいつ確定したと言えるのか](/notes/blockchain-systems/finality/) | 確定性 / reorg |
 
 #### Node Policy
 
