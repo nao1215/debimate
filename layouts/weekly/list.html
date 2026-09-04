@@ -35,6 +35,15 @@
 <div class="post-content weekly-intro">{{ .Content }}</div>
 {{- end }}
 
+<div class="weekly-toolbar" data-weekly-sort-controls hidden>
+  <span class="weekly-sort-label">並び順</span>
+  <div class="weekly-sort-buttons" role="group" aria-label="週報の並び順">
+    <button type="button" class="weekly-sort-button" data-weekly-sort="desc" aria-pressed="true">新しい順</button>
+    <button type="button" class="weekly-sort-button" data-weekly-sort="asc" aria-pressed="false">古い順</button>
+  </div>
+</div>
+
+<div class="weekly-list" data-weekly-list>
 {{- $prevYear := "" }}
 {{- range $paginator.Pages }}
 {{- $year := .Date.Format "2006" }}
@@ -43,7 +52,7 @@
 {{- $prevYear = $year }}
 {{- end }}
 
-<article class="weekly-entry">
+<article class="weekly-entry" data-weekly-date="{{ .Date.Format "2006-01-02" }}" data-weekly-year="{{ $year }}">
   {{/* 旧 /weekly/#20260803週 形式のリンクを生かすため、id は分割前と同じにする */}}
   <h3 class="weekly-entry-title" id="{{ .Date.Format "20060102" }}週">
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
@@ -53,10 +62,12 @@
   </div>
 </article>
 {{- end }}
+</div>
 
 {{- if gt $paginator.TotalPages 1 }}
-<nav class="weekly-archive">
+<nav class="weekly-archive" data-weekly-archive>
   <h2>週報の一覧</h2>
+  <div data-weekly-archive-items>
   {{- $prevYear = "" }}
   {{- range $pages }}
   {{- $year := .Date.Format "2006" }}
@@ -66,13 +77,14 @@
   <ul>
   {{- $prevYear = $year }}
   {{- end }}
-    <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    <li data-weekly-date="{{ .Date.Format "2006-01-02" }}" data-weekly-year="{{ $year }}"><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
   {{- end }}
   {{- if $prevYear }}</ul>{{ end }}
+  </div>
 </nav>
 
 <footer class="page-footer">
-  <nav class="pagination">
+  <nav class="pagination weekly-pagination">
     {{- if $paginator.HasPrev }}
     <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
     {{- end }}
@@ -82,5 +94,96 @@
   </nav>
 </footer>
 {{- end }}
+
+<script>
+  (() => {
+    const list = document.querySelector('[data-weekly-list]');
+    const controls = document.querySelector('[data-weekly-sort-controls]');
+    if (!list || !controls) return;
+
+    const buttons = [...controls.querySelectorAll('[data-weekly-sort]')];
+    const orderFromURL = new URLSearchParams(window.location.search).get('sort');
+    let order = orderFromURL === 'asc' ? 'asc' : 'desc';
+
+    const compareByDate = (left, right) => {
+      const comparison = left.dataset.weeklyDate.localeCompare(right.dataset.weeklyDate);
+      return order === 'asc' ? comparison : -comparison;
+    };
+
+    const renderList = () => {
+      const entries = [...list.querySelectorAll('.weekly-entry')].sort(compareByDate);
+      list.replaceChildren();
+
+      let previousYear = '';
+      entries.forEach((entry) => {
+        const year = entry.dataset.weeklyYear ?? '';
+        if (year !== previousYear) {
+          const heading = document.createElement('h2');
+          heading.className = 'weekly-year';
+          heading.id = year;
+          heading.textContent = year;
+          list.appendChild(heading);
+          previousYear = year;
+        }
+        list.appendChild(entry);
+      });
+    };
+
+    const renderArchive = () => {
+      const archive = document.querySelector('[data-weekly-archive]');
+      const archiveItems = archive?.querySelector('[data-weekly-archive-items]');
+      if (!archiveItems) return;
+
+      const items = [...archiveItems.querySelectorAll('li[data-weekly-date]')].sort(compareByDate);
+      archiveItems.replaceChildren();
+
+      let currentYear = '';
+      let listForYear;
+      items.forEach((item) => {
+        const year = item.dataset.weeklyYear;
+        if (year !== currentYear) {
+          const heading = document.createElement('h3');
+          heading.textContent = year;
+          archiveItems.appendChild(heading);
+          listForYear = document.createElement('ul');
+          archiveItems.appendChild(listForYear);
+          currentYear = year;
+        }
+        listForYear.appendChild(item);
+      });
+    };
+
+    const updatePaginationLinks = () => {
+      document.querySelectorAll('.weekly-pagination a').forEach((link) => {
+        const url = new URL(link.href, window.location.href);
+        url.searchParams.set('sort', order);
+        link.href = url.href;
+      });
+    };
+
+    const setOrder = (nextOrder, updateURL = false) => {
+      order = nextOrder;
+      buttons.forEach((button) => {
+        button.setAttribute('aria-pressed', String(button.dataset.weeklySort === order));
+      });
+      renderList();
+      renderArchive();
+      updatePaginationLinks();
+
+      if (updateURL) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort', order);
+        window.history.replaceState(null, '', url);
+      }
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => setOrder(button.dataset.weeklySort, true));
+    });
+
+    controls.hidden = false;
+    setOrder(order);
+  })();
+</script>
 
 {{- end }}{{/* end main */}}
