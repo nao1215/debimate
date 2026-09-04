@@ -30,6 +30,14 @@ description: ""
 
 ---
 
+#### Cryptography
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Random Number - 暗号で乱数がなぜ重要なのか](/notes/security/random-number/) | 技術ノート / 乱数 |
+
+---
+
 #### Privacy
 
 | No. | 項目 | カテゴリ |
