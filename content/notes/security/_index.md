@@ -35,6 +35,7 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Random Number - 暗号で乱数がなぜ重要なのか](/notes/security/random-number/) | 技術ノート / 乱数 |
+| 2 | [Nonce - 用途によって異なる「一度」の意味](/notes/security/nonce/) | 技術ノート / 乱数 |
 
 ---
 
