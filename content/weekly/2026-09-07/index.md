@@ -93,6 +93,6 @@ GitHub Pages は、OSS 自体がプライベートでもパブリック公開さ
 
 最近、月に一回程度の頻度で GUI が固まっていた。Ubuntu 26.04 が不安定なディストリだからだろうとゲスパーしていた。念のため、Claude に原因調査をさせたらメモリ不足が原因であり、Ubuntu は濡れ衣だった。ローカルマシン（NucBox EVO-X2）は、128GB の RAM があり、その内の 64GB がシステムに割り当てられ、残りは GPU 用 VRAM に割り当てられている。メモリは潤沢にある方だ。
 
-メモリ不足の原因の一つは jsonize の Fuzzing テストだった。jsonize の aligned テーブルパーサは、列数は256上限だが、行数に上限がない。仕様上、入力の約13,000倍のメモリを保持する。Fuzzing では、入力1 MB 上限なので十数 GB 規模に達する。その他にも [filesql](https://github.com/nao1215/filesql) や [hugo](https://gohugo.io/) も数十 GB のメモリを喰うことがあるらしいが、原因調査できていない。
+メモリ不足の原因の一つは jsonize の Fuzzing テストだった。jsonize の aligned テーブルパーサは、列数は256上限だが、行数に上限がない。仕様上、入力の約13,000倍のメモリを保持する。Fuzzing では、入力1 MB 上限なので、確保するメモリは十数 GB 規模に達する。その他にも [filesql](https://github.com/nao1215/filesql) や [hugo](https://gohugo.io/) も数十 GB のメモリを喰うことがあるらしいが、原因調査できていない。
 
 一先ず、[earlyoom](https://github.com/rfjakob/earlyoom) を入れて、メモリ枯渇時にプロセスを素早く Kill できるようにした。Ubuntu よ、疑ってごめんな。Debian と比較して、どうしても君の GUI 安定性が信用できないんだ。
