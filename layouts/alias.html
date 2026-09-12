@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ .Permalink }}</title>
+    <link rel="canonical" href="{{ .Permalink }}">
+    <meta name="robots" content="noindex">
+    {{- if eq .Page.Section "weeknotes" }}
+    <script>
+      // Preserve sorting preferences and links to headings on the old URLs.
+      const target = new URL({{ .Permalink }});
+      target.search = window.location.search;
+      target.hash = window.location.hash;
+      window.location.replace(target.href);
+    </script>
+    {{- end }}
+    <meta http-equiv="refresh" content="0; url={{ .Permalink }}">
+  </head>
+  <body><a href="{{ .Permalink }}">移動先のページを開く</a></body>
+</html>

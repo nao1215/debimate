@@ -1,7 +1,7 @@
 {{/*
   週報一覧。
 
-  週報は 1 週 1 ファイル (content/weekly/<YYYY-MM-DD>/index.md) で書くが、
+  週報は 1 週 1 ファイル (content/weeknotes/<YYYY>/<MM-DD>/index.md) で書くが、
   読む側は今まで通り 1 ページを延々スクロールできる方が良いので、
   ここで各週の .Content を連結して出力する。
   1 ページあたり 12 週 (約 3 ヶ月) で、それより古い週は次ページへ送る。
@@ -32,29 +32,29 @@
 </header>
 
 {{- if and .Content (eq $paginator.PageNumber 1) }}
-<div class="post-content weekly-intro">{{ .Content }}</div>
+<div class="post-content weeknotes-intro">{{ .Content }}</div>
 {{- end }}
 
-<div class="weekly-toolbar" data-weekly-sort-controls hidden>
-  <span class="weekly-sort-label">並び順</span>
-  <div class="weekly-sort-buttons" role="group" aria-label="週報の並び順">
-    <button type="button" class="weekly-sort-button" data-weekly-sort="desc" aria-pressed="true">新しい順</button>
-    <button type="button" class="weekly-sort-button" data-weekly-sort="asc" aria-pressed="false">古い順</button>
+<div class="weeknotes-toolbar" data-weeknotes-sort-controls hidden>
+  <span class="weeknotes-sort-label">並び順</span>
+  <div class="weeknotes-sort-buttons" role="group" aria-label="週報の並び順">
+    <button type="button" class="weeknotes-sort-button" data-weeknotes-sort="desc" aria-pressed="true">新しい順</button>
+    <button type="button" class="weeknotes-sort-button" data-weeknotes-sort="asc" aria-pressed="false">古い順</button>
   </div>
 </div>
 
-<div class="weekly-list" data-weekly-list>
+<div class="weeknotes-list" data-weeknotes-list>
 {{- $prevYear := "" }}
 {{- range $paginator.Pages }}
 {{- $year := .Date.Format "2006" }}
 {{- if ne $year $prevYear }}
-<h2 class="weekly-year" id="{{ $year }}">{{ $year }}</h2>
+<h2 class="weeknotes-year" id="{{ $year }}">{{ $year }}</h2>
 {{- $prevYear = $year }}
 {{- end }}
 
-<article class="weekly-entry" data-weekly-date="{{ .Date.Format "2006-01-02" }}" data-weekly-year="{{ $year }}">
+<article class="weeknotes-entry" data-weeknotes-date="{{ .Date.Format "2006-01-02" }}" data-weeknotes-year="{{ $year }}">
   {{/* 旧 /weekly/#20260803週 形式のリンクを生かすため、id は分割前と同じにする */}}
-  <h3 class="weekly-entry-title" id="{{ .Date.Format "20060102" }}週">
+  <h3 class="weeknotes-entry-title" id="{{ .Date.Format "20060102" }}週">
     <a href="{{ .RelPermalink }}">{{ .Title }}</a>
   </h3>
   <div class="post-content">
@@ -65,9 +65,9 @@
 </div>
 
 {{- if gt $paginator.TotalPages 1 }}
-<nav class="weekly-archive" data-weekly-archive>
+<nav class="weeknotes-archive" data-weeknotes-archive>
   <h2>週報の一覧</h2>
-  <div data-weekly-archive-items>
+  <div data-weeknotes-archive-items>
   {{- $prevYear = "" }}
   {{- range $pages }}
   {{- $year := .Date.Format "2006" }}
@@ -77,14 +77,14 @@
   <ul>
   {{- $prevYear = $year }}
   {{- end }}
-    <li data-weekly-date="{{ .Date.Format "2006-01-02" }}" data-weekly-year="{{ $year }}"><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+    <li data-weeknotes-date="{{ .Date.Format "2006-01-02" }}" data-weeknotes-year="{{ $year }}"><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
   {{- end }}
   {{- if $prevYear }}</ul>{{ end }}
   </div>
 </nav>
 
 <footer class="page-footer">
-  <nav class="pagination weekly-pagination">
+  <nav class="pagination weeknotes-pagination">
     {{- if $paginator.HasPrev }}
     <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">«&nbsp;{{ i18n "prev_page" }}</a>
     {{- end }}
@@ -97,29 +97,29 @@
 
 <script>
   (() => {
-    const list = document.querySelector('[data-weekly-list]');
-    const controls = document.querySelector('[data-weekly-sort-controls]');
+    const list = document.querySelector('[data-weeknotes-list]');
+    const controls = document.querySelector('[data-weeknotes-sort-controls]');
     if (!list || !controls) return;
 
-    const buttons = [...controls.querySelectorAll('[data-weekly-sort]')];
+    const buttons = [...controls.querySelectorAll('[data-weeknotes-sort]')];
     const orderFromURL = new URLSearchParams(window.location.search).get('sort');
     let order = orderFromURL === 'asc' ? 'asc' : 'desc';
 
     const compareByDate = (left, right) => {
-      const comparison = left.dataset.weeklyDate.localeCompare(right.dataset.weeklyDate);
+      const comparison = left.dataset.weeknotesDate.localeCompare(right.dataset.weeknotesDate);
       return order === 'asc' ? comparison : -comparison;
     };
 
     const renderList = () => {
-      const entries = [...list.querySelectorAll('.weekly-entry')].sort(compareByDate);
+      const entries = [...list.querySelectorAll('.weeknotes-entry')].sort(compareByDate);
       list.replaceChildren();
 
       let previousYear = '';
       entries.forEach((entry) => {
-        const year = entry.dataset.weeklyYear ?? '';
+        const year = entry.dataset.weeknotesYear ?? '';
         if (year !== previousYear) {
           const heading = document.createElement('h2');
-          heading.className = 'weekly-year';
+          heading.className = 'weeknotes-year';
           heading.id = year;
           heading.textContent = year;
           list.appendChild(heading);
@@ -130,17 +130,17 @@
     };
 
     const renderArchive = () => {
-      const archive = document.querySelector('[data-weekly-archive]');
-      const archiveItems = archive?.querySelector('[data-weekly-archive-items]');
+      const archive = document.querySelector('[data-weeknotes-archive]');
+      const archiveItems = archive?.querySelector('[data-weeknotes-archive-items]');
       if (!archiveItems) return;
 
-      const items = [...archiveItems.querySelectorAll('li[data-weekly-date]')].sort(compareByDate);
+      const items = [...archiveItems.querySelectorAll('li[data-weeknotes-date]')].sort(compareByDate);
       archiveItems.replaceChildren();
 
       let currentYear = '';
       let listForYear;
       items.forEach((item) => {
-        const year = item.dataset.weeklyYear;
+        const year = item.dataset.weeknotesYear;
         if (year !== currentYear) {
           const heading = document.createElement('h3');
           heading.textContent = year;
@@ -154,7 +154,7 @@
     };
 
     const updatePaginationLinks = () => {
-      document.querySelectorAll('.weekly-pagination a').forEach((link) => {
+      document.querySelectorAll('.weeknotes-pagination a').forEach((link) => {
         const url = new URL(link.href, window.location.href);
         url.searchParams.set('sort', order);
         link.href = url.href;
@@ -164,7 +164,7 @@
     const setOrder = (nextOrder, updateURL = false) => {
       order = nextOrder;
       buttons.forEach((button) => {
-        button.setAttribute('aria-pressed', String(button.dataset.weeklySort === order));
+        button.setAttribute('aria-pressed', String(button.dataset.weeknotesSort === order));
       });
       renderList();
       renderArchive();
@@ -178,7 +178,7 @@
     };
 
     buttons.forEach((button) => {
-      button.addEventListener('click', () => setOrder(button.dataset.weeklySort, true));
+      button.addEventListener('click', () => setOrder(button.dataset.weeknotesSort, true));
     });
 
     controls.hidden = false;

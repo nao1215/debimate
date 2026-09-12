@@ -1,6 +1,6 @@
 [hugoVersion]
   extended = false
-  min = "0.146.0"
+  min = "0.153.0"
 
 # 標準mount: 明示的に[[mounts]]を書く場合、デフォルトmountも全て書き出す必要がある
 [[mounts]]
@@ -10,6 +10,12 @@
 [[mounts]]
   source = "static"
   target = "static"
+
+# Preserve image URLs embedded in old feeds and external links without duplicating files.
+[[mounts]]
+  source = "content/weeknotes/image"
+  target = "static/weekly/image"
+  files = ["*.webp"]
 
 [[mounts]]
   source = "layouts"

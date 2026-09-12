@@ -74,11 +74,11 @@ body {
   margin: 0.85rem 0 0.5rem;
 }
 
-.home-cards .latest-weekly {
+.home-cards .latest-weeknotes {
   margin: 0;
 }
 
-.latest-weekly {
+.latest-weeknotes {
   display: block;
   margin: 0.85rem 0 0.5rem;
   /* 右 42% はイラストの領域。文字が重ならないよう padding で空ける */
@@ -89,7 +89,7 @@ body {
   background-color: var(--entry);
   background-image:
     linear-gradient(0deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
-    var(--latest-weekly-bg, none);
+    var(--latest-weeknotes-bg, none);
   /* イラストはカード全面に敷く。cover なら余白も letterbox も出ず、
      画面幅が変わっても常にカードを埋める。絵の主役は右側にあるので
      右端を基準に寄せる */
@@ -100,15 +100,15 @@ body {
   transition: border-color 0.15s ease;
 }
 
-.latest-weekly:hover {
+.latest-weeknotes:hover {
   border-color: var(--secondary);
 }
 
 
-html[data-theme="dark"] .latest-weekly {
+html[data-theme="dark"] .latest-weeknotes {
   background-image:
     linear-gradient(0deg, rgba(46, 46, 51, 0.72), rgba(46, 46, 51, 0.72)),
-    var(--latest-weekly-bg, none);
+    var(--latest-weeknotes-bg, none);
 }
 
 /* 技術ノートのセクション一覧。トップページのカードと同じ見た目で 2 列に並べる */
@@ -131,32 +131,32 @@ html[data-theme="dark"] .latest-weekly {
 }
 
 /* バナー画像が無いカードは、絵のための右余白を空けない */
-.latest-weekly-plain {
+.latest-weeknotes-plain {
   padding-right: 0.95rem;
   min-height: 0;
 }
 
-.latest-weekly-label {
+.latest-weeknotes-label {
   display: block;
   margin-bottom: 0.2rem;
   color: var(--secondary);
   font-size: 0.82rem;
 }
 
-.latest-weekly-title {
+.latest-weeknotes-title {
   display: block;
   color: var(--primary);
   font-weight: 600;
 }
 
-.latest-weekly-note {
+.latest-weeknotes-note {
   display: block;
   margin-top: 0.2rem;
   color: var(--secondary);
   font-size: 0.82rem;
 }
 
-.latest-weekly:hover .latest-weekly-title {
+.latest-weeknotes:hover .latest-weeknotes-title {
   text-decoration: underline;
 }
 
@@ -486,7 +486,7 @@ body.home .post-entry .entry-header h2 {
 }
 
 /* ==========================================================
-   週報（/weekly/）
+   週報（/weeknotes/）
    1 週 1 ファイルで書くが、一覧では各週を連結して 1 ページに見せる。
    週と週の区切りが分かる程度の装飾に留め、本文の見た目は他ページと揃える
    ========================================================== */
@@ -494,12 +494,12 @@ body.home .post-entry .entry-header h2 {
 /* 週報一覧だけ地色を記事ページに合わせる指定は、ファイル冒頭で全ページの
    背景を --theme に統一したため不要になった */
 
-.weekly-intro {
+.weeknotes-intro {
   margin-bottom: var(--content-gap);
   color: var(--secondary);
 }
 
-.weekly-toolbar {
+.weeknotes-toolbar {
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -509,12 +509,12 @@ body.home .post-entry .entry-header h2 {
   font-size: 0.9rem;
 }
 
-.weekly-sort-buttons {
+.weeknotes-sort-buttons {
   display: inline-flex;
   gap: 0.25rem;
 }
 
-.weekly-sort-button {
+.weeknotes-sort-button {
   padding: 0.35rem 0.65rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -524,74 +524,74 @@ body.home .post-entry .entry-header h2 {
   font: inherit;
 }
 
-.weekly-sort-button[aria-pressed="true"] {
+.weeknotes-sort-button[aria-pressed="true"] {
   background: var(--tertiary);
   color: var(--primary);
 }
 
-.weekly-sort-button:hover,
-.weekly-sort-button:focus-visible {
+.weeknotes-sort-button:hover,
+.weeknotes-sort-button:focus-visible {
   color: var(--primary);
 }
 
-.weekly-year {
+.weeknotes-year {
   margin: 2.5rem 0 0.5rem;
   color: var(--secondary);
   font-size: 1.1rem;
   letter-spacing: 0.08em;
 }
 
-.weekly-entry {
+.weeknotes-entry {
   padding-top: 1.2rem;
   border-top: 1px solid var(--border);
 }
 
-.weekly-entry + .weekly-entry {
+.weeknotes-entry + .weeknotes-entry {
   margin-top: 2.2rem;
 }
 
-.weekly-entry-title {
+.weeknotes-entry-title {
   margin: 0 0 0.5rem;
   font-size: 1.35rem;
 }
 
-.weekly-entry-title a {
+.weeknotes-entry-title a {
   color: var(--primary);
 }
 
-.weekly-entry-title a:hover {
+.weeknotes-entry-title a:hover {
   text-decoration: underline;
 }
 
-.weekly-archive {
+.weeknotes-archive {
   margin-top: 3rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
 }
 
-.weekly-archive h2 {
+.weeknotes-archive h2 {
   font-size: 1.2rem;
 }
 
-.weekly-archive h3 {
+.weeknotes-archive h3 {
   margin: 1.2rem 0 0.4rem;
   color: var(--secondary);
   font-size: 1rem;
 }
 
-.weekly-archive ul {
+.weeknotes-archive ul {
   margin: 0;
   padding-left: 1.2rem;
 }
 
-/* 前後移動 + 一覧への 3 点ナビ。週報 (.weekly-paginav) と、
+/* 前後移動 + 一覧への 3 点ナビ。週報 (.weeknotes-paginav) と、
    weight で並び順を持つノート (.notes-paginav) が共有する。
 
    PaperMod の .paginav は prev と next を 50% ずつに割り、next を
    margin-inline-start: auto で右へ寄せる作りなので、真ん中に 3 つ目を
    足すと崩れる。grid で列を明示して置き換える。最初の週には prev が、
    最新の週には next が出ないため、列を固定しないと一覧が中央からずれる。 */
-.weekly-paginav,
+.weeknotes-paginav,
 .notes-paginav {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -599,27 +599,27 @@ body.home .post-entry .entry-header h2 {
   gap: 0.5rem;
 }
 
-.weekly-paginav .prev,
-.weekly-paginav .index,
-.weekly-paginav .next,
+.weeknotes-paginav .prev,
+.weeknotes-paginav .index,
+.weeknotes-paginav .next,
 .notes-paginav .prev,
 .notes-paginav .index,
 .notes-paginav .next {
   width: auto;
 }
 
-.weekly-paginav .prev,
+.weeknotes-paginav .prev,
 .notes-paginav .prev {
   grid-column: 1;
 }
 
-.weekly-paginav .index,
+.weeknotes-paginav .index,
 .notes-paginav .index {
   grid-column: 2;
   text-align: center;
 }
 
-.weekly-paginav .next,
+.weeknotes-paginav .next,
 .notes-paginav .next {
   grid-column: 3;
   margin-inline-start: 0;
@@ -631,18 +631,18 @@ body.home .post-entry .entry-header h2 {
 
 /* 画面が狭いと 3 列は窮屈になるので、一覧を下の行へ回して中央に置く */
 @media (max-width: 480px) {
-  .weekly-paginav,
+  .weeknotes-paginav,
   .notes-paginav {
     grid-template-columns: 1fr 1fr;
   }
 
-  .weekly-paginav .index,
+  .weeknotes-paginav .index,
   .notes-paginav .index {
     grid-row: 2;
     grid-column: 1 / -1;
   }
 
-  .weekly-paginav .next,
+  .weeknotes-paginav .next,
   .notes-paginav .next {
     grid-column: 2;
   }

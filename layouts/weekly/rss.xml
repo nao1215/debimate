@@ -1,0 +1,27 @@
+{{- /* Keep existing subscriptions alive; HTML redirects do not work in feed readers. */ -}}
+{{- $legacy := . -}}
+{{- with site.GetPage "/weeknotes" -}}
+{{- printf "<?xml version=\"1.0\" encoding=\"utf-8\"?>" | safeHTML }}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>{{ .Title }} on {{ site.Title }}</title>
+    <link>{{ .Permalink }}</link>
+    <description>{{ .Summary }}</description>
+    {{- with $legacy.OutputFormats.Get "RSS" }}
+    <atom:link href="{{ .Permalink }}" rel="self" type="application/rss+xml" />
+    {{- end }}
+    {{- $pages := .RegularPages.ByDate.Reverse }}
+    {{- $limit := site.Config.Services.RSS.Limit }}
+    {{- if ge $limit 1 }}{{ $pages = first $limit $pages }}{{ end }}
+    {{- range $pages }}
+    <item>
+      <title>{{ .Title }}</title>
+      <link>{{ .Permalink }}</link>
+      <pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      <guid>{{ replace .Permalink "/weeknotes/" "/weekly/" }}</guid>
+      <description>{{ .Summary | html }}</description>
+    </item>
+    {{- end }}
+  </channel>
+</rss>
+{{- end }}

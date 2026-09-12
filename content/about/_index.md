@@ -10,7 +10,7 @@ ShowToc: false
 
 Linux カーネルから決済バックエンドまで、レイヤーを縦断してきた Go エンジニア。組み込みソフトウェア開発からキャリアを始め、受託でのサーバーサイド／インフラ開発を経て、現在は Visa プリペイドカードアプリの開発とエンジニアリングマネジメントを兼務しています。
 
-OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weekly/)、[技術ノート](https://debimate.jp/notes/)を書いています。
+OSS を継続的に開発しており、Software Design（技術評論社）への寄稿経験があります。現在は SNS から離れ、本ブログ（[debimate](https://debimate.jp/)）で[技術的な記事（+ 個人的な話）](https://debimate.jp/post/ja/)や[週報](https://debimate.jp/weeknotes/)、[技術ノート](https://debimate.jp/notes/)を書いています。
 
 ---
 

@@ -66,13 +66,13 @@
 {{- with $cards }}
 <div class="notes-cards">
   {{- range . }}
-  <a class="latest-weekly notes-card{{ if not .banner }} latest-weekly-plain{{ end }}" href="{{ .url }}"{{ with .banner }} style="--latest-weekly-bg: url('{{ . }}');"{{ end }}>
+  <a class="latest-weeknotes notes-card{{ if not .banner }} latest-weeknotes-plain{{ end }}" href="{{ .url }}"{{ with .banner }} style="--latest-weeknotes-bg: url('{{ . }}');"{{ end }}>
     {{- with .label }}
-    <span class="latest-weekly-label">{{ . }}</span>
+    <span class="latest-weeknotes-label">{{ . }}</span>
     {{- end }}
-    <span class="latest-weekly-title">{{ .title }}</span>
+    <span class="latest-weeknotes-title">{{ .title }}</span>
     {{- with .note }}
-    <span class="latest-weekly-note">{{ . }}</span>
+    <span class="latest-weeknotes-note">{{ . }}</span>
     {{- end }}
   </a>
   {{- end }}

@@ -46,3 +46,7 @@ enableGitInfo = true
 
 [pagination]
   pagerSize = 30
+
+# Keep public URLs stable when organizing Weeknotes sources by year.
+[permalinks.page]
+  weeknotes = "/weeknotes/:year-:month-:day/"

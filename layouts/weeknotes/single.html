@@ -6,7 +6,14 @@
 */}}
 {{- define "main" }}
 
-<article class="post-single weekly-single">
+{{- /* Preserve pre-rename image URLs even though sources now live under year/month-day. */}}
+{{- $date := .Date.Format "2006-01-02" }}
+{{- range .Resources }}
+  {{- $legacy := resources.Copy (printf "weekly/%s/%s" $date .Name) . }}
+  {{- $legacy.Publish }}
+{{- end }}
+
+<article class="post-single weeknotes-single">
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
     <h1 class="post-title">{{ .Title }}</h1>
@@ -22,9 +29,9 @@
     {{/* テーマの post_nav_links.html は mainSections (post) だけを対象にするため、
          週報では何も出ない。前の週・一覧・次の週を 1 行に並べて辿れるようにする。
          最初と最新の週では端のリンクが出ないので、一覧は grid の列を固定して
-         中央からずれないようにする (custom.css の .weekly-paginav) */}}
+         中央からずれないようにする (custom.css の .weeknotes-paginav) */}}
     {{- $weeks := .Parent.RegularPages.ByDate.Reverse }}
-    <nav class="paginav weekly-paginav">
+    <nav class="paginav weeknotes-paginav">
       {{- with $weeks.Prev . }}
       <a class="prev" href="{{ .Permalink }}">
         <span class="title">« 前の週</span>

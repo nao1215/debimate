@@ -65,6 +65,9 @@ jobs:
       - name: Check internal links
         run: python3 scripts/check_links.py
 
+      - name: Check Weeknotes migration
+        run: python3 scripts/check_weeknotes.py
+
       # デプロイが失敗した際に成果物の状態を後から判断できるようにする。
       # ファイルの内容には触れず、パスとサイズだけを記録する
       - name: Report public directory size
