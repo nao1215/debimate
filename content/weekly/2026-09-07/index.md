@@ -5,10 +5,12 @@ date: 2026-09-07T00:00:00+09:00
 
 #### 新コマンド jsonize(jz) を非公開で開発中
 
-"jsonize(jz) - Turn command output into JSON." を開発している。既に類似のコマンド [kellyjonbrazil/jc](https://github.com/kellyjonbrazil/jc) が存在する。完全には同じにならない筈なので、作り直している形だ。最近は、やたら作り込んでからパブリック化している。パブリックにしても誰も使わないのだが、気持ちの問題だ。大体のパターンでは、GitHub Actions の利用料が上限を迎えて、公開せざるを得なくなる。
+"jsonize(jz) - Turn command output into JSON." を開発している。既に類似のコマンド [kellyjonbrazil/jc](https://github.com/kellyjonbrazil/jc) が存在する。完全には同じにならない筈なので、作り直している形だ。最近は、やたら作り込んでからパブリック化している。パブリックにしても誰も使わないのだが、気持ちの問題だ。大体のパターンでは、GitHub Actions の利用料が上限を迎えて、公開せざるを得なくなる（※）。
 
 GitHub Pages は、OSS 自体がプライベートでもパブリック公開される。興味がある方は、以下から内容をチェックできる。
 - [nao1215.github.io/jsonize/](https://nao1215.github.io/jsonize/)
+
+※ 上限を迎えたので、公開：https://github.com/nao1215/jsonize
 
 ----
 
@@ -84,3 +86,13 @@ GitHub Pages は、OSS 自体がプライベートでもパブリック公開さ
 #### 風邪を引いた
 
 東京に行くと、高頻度で体調を崩す。あれだけ人が密集していれば、風邪を貰ってきやすいだろう。咳をしすぎて、腰を若干痛めた。原因は分からないが、東京ではマスクをしてても鼻に不快感がある。花粉系の鼻炎持ちなので、何かを感じ取っている可能性がある。大気汚染マップを確認したが、そこまで空気が汚いわけではないようだ。汚染はされていなくても、自分の勘違いでなければ東京の一部の駅は臭い気がする。
+
+----
+
+#### GUI が固まる原因は Ubuntu ではなく、自分だった
+
+最近、月に一回程度の頻度で GUI が固まっていた。Ubuntu 26.04 が不安定なディストリだからだろうとゲスパーしていた。念のため、Claude に原因調査をさせたらメモリ不足が原因であり、Ubuntu は濡れ衣だった。ローカルマシン（NucBox EVO-X2）は、128GB の RAM があり、その内の 64GB がシステムに割り当てられ、残りは GPU 用 VRAM に割り当てられている。メモリは潤沢にある方だ。
+
+メモリ不足の原因の一つは jsonize の Fuzzing テストだった。jsonize の aligned テーブルパーサは、列数は256上限だが、行数に上限がない。仕様上、入力の約13,000倍のメモリを保持する。Fuzzing では、入力1 MB 上限なので十数 GB 規模に達する。その他にも [filesql](https://github.com/nao1215/filesql) や [hugo](https://gohugo.io/) も数十 GB のメモリを喰うことがあるらしいが、原因調査できていない。
+
+一先ず、[earlyoom](https://github.com/rfjakob/earlyoom) を入れて、メモリ枯渇時にプロセスを素早く Kill できるようにした。Ubuntu よ、疑ってごめんな。Debian と比較して、どうしても君の GUI 安定性が信用できないんだ。
