@@ -95,4 +95,4 @@ GitHub Pages は、OSS 自体がプライベートでもパブリック公開さ
 
 メモリ不足の原因の一つは jsonize の Fuzzing テストだった。jsonize の aligned テーブルパーサは、列数は256上限だが、行数に上限がない。仕様上、入力の約13,000倍のメモリを保持する。Fuzzing では、入力1 MB 上限なので、確保するメモリは十数 GB 規模に達する。その他にも [filesql](https://github.com/nao1215/filesql) や [hugo](https://gohugo.io/) も数十 GB のメモリを喰うことがあるらしいが、原因調査できていない。
 
-一先ず、[earlyoom](https://github.com/rfjakob/earlyoom) を入れて、メモリ枯渇時にプロセスを素早く Kill できるようにした。Ubuntu よ、疑ってごめんな。Debian と比較して、どうしても君の GUI 安定性が信用できないんだ。あと、率直な感想を書くと、Claude に Linux Kernel 周りの知識で勝てる気がしないと思った。
+一先ず、[earlyoom](https://github.com/rfjakob/earlyoom) を入れて、メモリ枯渇時にプロセスを素早く Kill できるようにした。jsonize 側も Issue を書いた。そして Ubuntu よ、疑ってごめんな。Debian と比較して、どうしても君の GUI 安定性が信用できないんだ。あと、率直な感想を書くと、Claude に Linux Kernel 周りの知識で勝てる気がしないと思った。
