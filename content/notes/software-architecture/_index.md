@@ -46,6 +46,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [Feature Flag - 機能の有効・無効を切り替える設計](/notes/software-architecture/feature-flag/) | 設計パターン |
 
+#### Migration Patterns
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Strangler Fig - 古いシステムを段階的に置き換える](/notes/software-architecture/strangler-fig/) | 設計パターン |
+
 #### Boundaries and Lifecycle
 
 | No. | 項目 | カテゴリ |
