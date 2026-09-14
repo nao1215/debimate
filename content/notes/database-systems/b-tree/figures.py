@@ -70,20 +70,3 @@ plt.xlabel("Number of keys in the index (n)")
 plt.ylabel("Levels from root to leaf")
 plt.legend(loc="upper left", frameon=False, fontsize=9)
 save("b-tree_levels_by_fanout.svg")
-
-
-# --- 図2: 分岐数が大きい時、件数を 10 倍にすると段数がいくつ増えるか ---
-n2 = np.logspace(5, 12, 4000)
-decades = np.logspace(5, 12, 8)
-for fanout, color, label in [(100, COLOR_BLUE, "Fanout f = 100"), (500, COLOR_GREEN, "Fanout f = 500")]:
-    plt.plot(n2, levels(n2, fanout), color=color, linewidth=1.8, label=label)
-    plt.plot(decades, levels(decades, fanout), linestyle="none", marker="o",
-             markersize=5, color=color)
-
-plt.xscale("log")
-plt.ylim(0, 7)
-plt.yticks(range(0, 8))
-plt.xlabel("Number of keys in the index (n), one marker per 10x")
-plt.ylabel("Levels from root to leaf")
-plt.legend(loc="upper left", frameon=False, fontsize=9)
-save("b-tree_levels_per_decade.svg")

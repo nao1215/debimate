@@ -11,7 +11,7 @@ weight: 14
 
 コントラクトとは、アドレスの下にコードと storage（値を保存する領域）を持つアカウントです。取引の宛先がコードを実行するアカウントであれば、そのコードが EVM（Ethereum Virtual Machine）で実行されます。
 
-読者がこの形に触れるのは、ウォレットの確認画面ではないでしょうか。金額のほかに「ガスの上限」や「最大手数料」が並び、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなる事から出てきます。前者は「手数料は使った gas と単価で決まる」、後者は「実行の結果はレシートに残る」でこの場面に戻ります。
+読者がこの形に触れるのは、ウォレットの確認画面ではないでしょうか。金額のほかに、実行の計算量を測る単位である gas に関わる「ガスの上限」や「最大手数料」が並び、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなる事から出てきます。前者は「手数料は使った gas と単価で決まる」、後者は「実行の結果はレシートに残る」でこの場面に戻ります。
 
 本ノートでは、1 件の取引に何が書かれ、送り主がどう確かめられ、手数料がどう決まるのかを扱います。アカウントが持つ状態と nonce による順序は [Ethereum Account Model](../ethereum-account-model/) で扱っており、EVM の命令とコントラクトの書き方は扱いません。
 
@@ -31,35 +31,19 @@ flowchart LR
 
 ### なぜ取引に gas の上限を書くのか
 
-Bitcoin の取引は、消費する出力と作る出力を並べたデータで、検証に必要な手間が中身からほぼ決まります（[UTXO](../utxo/)）。Ethereum の取引は宛先のコードを動かせるため、何段階の処理になるのかがデータを見ただけでは決まりません。
+Bitcoin の取引は、消費する出力と作る出力を並べたデータで、検証に必要な手間が中身からほぼ決まります（[UTXO](../utxo/)）。Ethereum の取引は宛先のコードを動かせるため、何段階の処理になるのかがデータを見ただけでは分かりません。
 
 素朴に「実行が終わるまで動かす」形にすると、終わらない処理を含む取引を 1 件流すだけで、全ノードの計算を占有できます。実行の量を測る単位が gas で、公式ドキュメントは「[the unit that measures the amount of computational effort required to execute specific operations](https://ethereum.org/en/developers/docs/gas/)」（特定の操作の実行に要する計算量を測る単位）と定義しています。
 
-[同じページ](https://ethereum.org/en/developers/docs/gas/)は、1 件あたりの上限を課す理由として、コードの中の意図しない、または悪意のある無限ループなど、計算の浪費を防ぐ事を挙げています。送り主は、その取引が使って良い gas の上限を自分で書きます。
-
-上限の有無で実行がどう変わるのかは、以下の通りです。
-
-```mermaid
-flowchart TD
-    subgraph NG["上限が無い場合"]
-        direction TB
-        N1["終わらない処理を含む取引"] --> N2["全ノードが実行を続ける<br/>他の取引の処理も進まない"]
-    end
-    subgraph OK["上限を書く場合"]
-        direction TB
-        O1["gasLimit を上限に実行する"] --> O2["使い切った時点で中断し<br/>EVM の状態の変更を取り消す"]
-    end
-```
-
-処理が終わらなくても、実行は gasLimit で止まります。止まった取引の手数料は「手数料は使った gas と単価で決まる」で扱います。
+[同じページ](https://ethereum.org/en/developers/docs/gas/)は、1 件あたりの上限を課す理由として、コードの中の意図しない、または悪意のある無限ループなど、計算の浪費を防ぐ事を挙げています。送り主は、その取引が使って良い gas の上限（gasLimit）を自分で書きます。処理が終わらなくても、実行は gasLimit で止まります。止まった取引の手数料は「手数料は使った gas と単価で決まる」で扱います。
 
 ---
 
 ### 取引に書かれる項目
 
-以降では、Type 2 transaction を中心の例にし、その実行に使う gas（execution gas）と手数料を扱います。EIP-4844 が足した blob gas とその手数料は対象外とします。
+仕様変更の提案である EIP（Ethereum Improvement Proposal）の 1 つ、[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) が手数料を base fee と priority fee の 2 段に分け、その形の取引に付いた先頭バイトが 0x02 です。この形を Type 2 transaction と呼び、以降はこれを中心の例にします。
 
-仕様変更の提案である EIP（Ethereum Improvement Proposal）の 1 つ、[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) が手数料を base fee と priority fee の 2 段に分け、その形の取引に付いた先頭バイトが 0x02 です。1 件の取引が持つ主な項目は以下の通りです。
+扱う手数料は、実行に使う gas（execution gas）の分です。大きなデータを伴う取引のために EIP-4844 が足した blob gas とその手数料は扱いません。1 件の取引が持つ主な項目は以下の通りです。
 
 | 項目 | 何を決めるか |
 | --- | --- |
@@ -76,9 +60,7 @@ flowchart TD
 
 nonce が何を防ぎ、どの範囲の順序を縛るのかは [Ethereum Account Model](../ethereum-account-model/) で扱っています。value と data は独立していて、`value` が 0 でも `data` を渡してコントラクトを呼べます。
 
-accessList は、列挙するだけで安くなる項目ではありません。列挙した分にも gas が掛かります。その代わりに、申告したアドレスと storage key は最初から触った事のある扱い（warm）になり、実行中のアクセスが安く済みます。
-
-EIP-2930 も、一覧に無い所へのアクセスは「[possible, but become more expensive](https://eips.ethereum.org/EIPS/eip-2930)」（可能。ただし、より高くつく）と書かれています。実行中に触らない項目まで並べると、申告の分だけ gas が増えます。
+accessList は、列挙するだけで安くなる項目ではありません。列挙した分にも gas が掛かります。その代わりに、申告したアドレスと storage key は最初から触った事のある扱い（warm）になり、実行中のアクセスが安く済みます。EIP-2930 にも、一覧に無い所へのアクセスは「[possible, but become more expensive](https://eips.ethereum.org/EIPS/eip-2930)」（可能。ただし、より高くつく）と書かれています。実行中に触らない項目まで並べると、申告の分だけ gas が増えます。
 
 項目の並びは 1 通りではありません。EIP-2718 は「[`TransactionType || TransactionPayload` is a valid transaction](https://eips.ethereum.org/EIPS/eip-2718)」（TransactionType と TransactionPayload を繋いだ物が有効な取引になる）と書いており、先頭の 1 バイトで中身の読み方が切り替わります。
 
@@ -95,17 +77,17 @@ flowchart TD
 
 0x80 から 0xbf で始まるデータは、どちらの形にも当てはまりません。0xff は将来の拡張用に予約されています。
 
-型はほかにもあります。legacy transaction は、maxFeePerGas と maxPriorityFeePerGas の代わりに gasPrice を 1 つ持ちます。chain ID を独立した項目としては持たず、EIP-155 に従う物では署名の中に埋め込みます。
+型はほかにもあります。legacy transaction は、maxFeePerGas と maxPriorityFeePerGas の代わりに gasPrice を 1 つ持ちます。chain ID を独立した項目としては持たず、含める場合は署名の中に埋め込みます。
 
-[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) の blob transaction は、blob と呼ばれる大きなデータを伴い、実行用の gas とは別に blob gas という単位で課金されます。同じ EIP はこれを通常の gas から独立した新しい種類の gas だと書いており、blob gas と blob fee はここでは扱いません。
+[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) の blob transaction は、blob と呼ばれる大きなデータを伴い、実行用の gas とは別に blob gas という単位で課金されます。
 
-EIP-7702 の型もあります。EOA がコードの実行先を指定できるようにする仕組みで、EOA とコントラクトの境界には、この型による例外があります。
+EIP-7702 の型もあります。EOA が指定したコントラクトのコードに自分の実行を委ねる委任（delegation）の仕組みで、EOA とコントラクトの境界には、この型による例外があります。
 
 ---
 
 ### 送り主は署名から復元される
 
-上の表に、送り主のアドレスを書く項目がありません。取引のデータには送り主が入っておらず、署名から復元します。[『Mastering Ethereum』第 2 版の第 6 章](https://masteringethereum.xyz/chapter_6.html)も、legacy transaction の形を説明する中で、EOA の公開鍵が ECDSA 署名の `v`、`r`、`s` の 3 つの値から導けると書かれています。公開鍵からアドレスが決まるため、送り主も決まります。
+上の表に、送り主のアドレスを書く項目がありません。取引のデータには送り主が入っておらず、署名から復元します。[『Mastering Ethereum』第 2 版の第 6 章](https://masteringethereum.xyz/chapter_6.html)にも、legacy transaction の形を説明する中で、EOA の公開鍵が ECDSA 署名の `v`、`r`、`s` の 3 つの値から導けると書かれています。公開鍵からアドレスが決まるため、送り主も決まります。
 
 ここでの復元は、手元の公開鍵で署名を検証する操作とは別です。楕円曲線を使う署名方式である ECDSA では、署名と対象のデータから公開鍵の候補が求まり、legacy transaction の `v` や typed transaction の `yParity` が、どれを使うのかを指します。署名の計算は [Digital Signature](../digital-signature/) で扱っています。
 
@@ -123,15 +105,15 @@ flowchart LR
 
 署名済みの取引をそのまま別のチェーンに流されると、送り主が承認していない送金が成立してしまいます。これを防ぐために、署名の対象に chain ID を入れます。
 
-入るかどうかは取引の形で変わります。typed transaction と、[EIP-155 に従う legacy transaction](https://eips.ethereum.org/EIPS/eip-155) では、署名のためのハッシュを計算する対象に chain ID を含めます。同じ EIP は、chain ID を含めない以前の署名も引き続き有効だと書いており、その形の取引に chain ID は入りません。チェーンをまたいだ再利用の詳細は [Ethereum Account Model](../ethereum-account-model/) で扱っています。
+入るかどうかは取引の形で変わります。typed transaction と、[EIP-155 に従う legacy transaction](https://eips.ethereum.org/EIPS/eip-155) では、署名のためのハッシュを計算する対象に chain ID を含めます。同じ EIP は、chain ID を含めない以前の署名も引き続き有効だと書いており、その形の取引に chain ID は入りません。
 
 ---
 
 ### 手数料は使った gas と単価で決まる
 
-送り主が払う額は、`使った gas × (base fee + priority fee)` で決まります。base fee はブロックごとに決まる 1 gas あたりの最低額で、priority fee はブロックを作る参加者に渡す上乗せ分です。[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)は、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。base fee がブロックごとにどう調整されるのかは扱いません。
+送り主が払う額は、`使った gas × (base fee + priority fee)` で決まります。base fee はブロックごとに決まる 1 gas あたりの最低額で、priority fee はブロックを作る参加者に渡す上乗せ分です。[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)には、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。base fee がブロックごとにどう調整されるのかは扱いません。
 
-取引に書く 2 つの上限は、この式の別々の場所に効きます。gasLimit は使う量の上限で、maxFeePerGas は 1 gas あたりの額の上限です。delegation の無い通常の EOA に data 無しで ETH を送るだけなら 21,000 gas で、data を付けたりコードが動いたりすると増えます。
+取引に書く 2 つの上限は、この式の別々の場所に効きます。gasLimit は使う量の上限で、maxFeePerGas は 1 gas あたりの額の上限です。委任を設定していない EOA に data 無しで ETH を送るだけなら 21,000 gas で、data を付けたりコードが動いたりすると増えます。
 
 実際に渡る priority fee は、maxPriorityFeePerGas と、maxFeePerGas から base fee を引いた残りのうち、小さい方になります。base fee が maxFeePerGas を超えている間、その取引は取り込まれません。2 つの上限が支払いに効く形は以下の通りです。
 
@@ -146,11 +128,13 @@ flowchart TD
 
 実行が gasLimit に届かずに終われば、使わずに済んだ分は手数料になりません。それでも取引を出す時点では、`gasLimit × maxFeePerGas + value` の残高が必要です。ウォレットの確認画面に出る「最大手数料」は、実際に引かれる額ではなく、この `gasLimit × maxFeePerGas` を指します。
 
-実行を始めた後、途中で gas を使い切った場合は扱いが変わります。公式ドキュメントは「[the EVM will revert any changes, but all the gas provided will still be consumed for the work performed](https://ethereum.org/en/developers/docs/gas/)」（EVM は変更を全て取り消す。ただし、行った処理の分として、渡された gas は全て消費される）と書かれています。
+つまり、送り主が取引に書けるのは上限までで、払う額は、使った gas と、取り込まれたブロックの base fee が分かるまで確定しません。単純な送金でも、単価はブロックごとに変わります。Bitcoin の手数料は、入力が参照する出力の合計と作る出力の合計の差なので、出来上がった取引のデータで額が決まっています（[UTXO](../utxo/)）。
+
+実行を始めた後、途中で gas を使い切った場合は扱いが変わります。公式ドキュメントには「[the EVM will revert any changes, but all the gas provided will still be consumed for the work performed](https://ethereum.org/en/developers/docs/gas/)」（EVM は変更を全て取り消す。ただし、行った処理の分として、渡された gas は全て消費される）と書かれています。
 
 gasLimit の分の gas が消費され、その gas に対する手数料を払う事になります。しかし、失敗した実行がいつもこの形になる訳ではありません。`REVERT` 命令で中止した場合は、残った gas が消費されずに終わります。この命令は「実行の結果はレシートに残る」で扱います。
 
-実行を始められない場合もあります。単純な送金に 20,000 の gasLimit を付けた例について、[同じページ](https://ethereum.org/en/developers/docs/gas/)は、その取引がブロックに入る前に拒否され、gas は消費されないと書かれています。
+実行を始められない場合もあります。[同じページ](https://ethereum.org/en/developers/docs/gas/)の例では、単純な送金に 20,000 の gasLimit を付けた取引は、検証の段階で失敗してブロックに入る前に拒否され、gas も消費されません。
 
 境目になるのは、実行を始める前に必ず必要な分です。この分を intrinsic gas と呼び、上に挙げた単純な送金なら 21,000 で、data や accessList を付ければ、その内容に応じて増えます。gasLimit がこれに届かない取引は実行を始められません。満たしていれば、少なくとも gasLimit が intrinsic gas に足りない事を理由に拒否される事はなくなります。
 
@@ -158,7 +142,9 @@ gasLimit の分の gas が消費され、その gas に対する手数料を払�
 
 ### 実行の結果はレシートに残る
 
-取引がブロックに入った事は、実行が成功した事を意味しません。失敗した実行も、手数料を払った取引としてブロックに残ります。結果を読み取る先が、取引ごとに作られる取引レシート（receipt）です。
+ブロックに入った事は、実行が成功した事を意味しません。Ethereum は、取引として有効かどうかの検査と、実行が成功したかどうかを分けて扱います。gasLimit が intrinsic gas に届かない物のように、有効でない取引はブロックに入りません。有効であれば、実行に失敗しても手数料を払ってブロックに残ります。
+
+Bitcoin にはこの 2 段の区別が無く、検証を通らない取引はブロックに入らないだけです（[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/)）。Ethereum で実行の結果を読み取る先が、取引ごとに作られる取引レシート（receipt）です。
 
 実行を途中で中止し、状態の変更を取り消す命令が `REVERT` で、gas を使い切らずに失敗する道はここから生まれます。成否は、レシートの中の 1 つの値で表されます。EIP-658 はこの項目を「[a status code, 0 indicating failure ... and 1 indicating success](https://eips.ethereum.org/EIPS/eip-658)」（0 が失敗、1 が成功を示す状態コード）と定めています。
 
@@ -166,7 +152,7 @@ gasLimit の分の gas が消費され、その gas に対する手数料を払�
 
 [同じ EIP](https://eips.ethereum.org/EIPS/eip-658) は、`REVERT` 命令が入った後は、gas を使い切った場合に限り取引が失敗したと利用者が仮定できなくなったと書いており、消費した gas の量から成否を判定できない事が、この項目を入れた理由の 1 つになっています。
 
-プロトコルが定めるレシートの中身は 4 つです。[EIP-2718 は legacy receipt を `rlp([status, cumulativeGasUsed, logsBloom, logs])` と書かれています](https://eips.ethereum.org/EIPS/eip-2718)。状態コード、そのブロックでの累計の gas、ログを絞り込むための logs bloom、実行中にコードが出したログです。typed transaction のレシートには、この 4 つの前に型のバイトが付きます。1 件が使った量はこの中に無く、前の取引の累計との差として求まります。
+プロトコルが定めるレシートの中身は 4 つです。[EIP-2718 には legacy receipt が `rlp([status, cumulativeGasUsed, logsBloom, logs])` と書かれています](https://eips.ethereum.org/EIPS/eip-2718)。状態コード、そのブロックでの累計の gas、ログを絞り込むための logs bloom、実行中にコードが出したログです。typed transaction のレシートには、この 4 つの前に型のバイトが付きます。1 件が使った量はこの中に無く、前の取引の累計との差として求まります。
 
 ノードに問い合わせる時に見るのは、この形そのものではありません。[JSON-RPC のドキュメント](https://ethereum.org/en/developers/docs/apis/json-rpc/)によれば、`eth_getTransactionReceipt` は、1 件が使った量の `gasUsed` や、実際に払った単価の `effectiveGasPrice` も含めて返します。プロトコルが記録する項目と、API が組み立てて返す項目は別だという事です。
 
@@ -210,21 +196,3 @@ flowchart TD
 1 つ目と 2 つ目は、実行の量を事前に決められないコードを扱えるようにした事の裏返しです。見積もりを外した時の損失を小さくするため、ウォレットはノードに依頼し、ブロックに入れずに同じ取引を試してもらって、使われた gas の量を見積もります。試した時点と実行される時点で状態が違えば、必要な量も変わります。
 
 3 つ目は Ethereum に固有の性質ではありません。実行時の状態を入力に取るプログラムであれば、依頼した時点の状態と実行される時点の状態が違う限り、同じ形で現れます。
-
----
-
-### Bitcoin の取引との違い
-
-2 つのチェーンの取引は、何を指示するデータなのかで分かれます。以下が違いです。
-
-| | Ethereum の取引 | Bitcoin の取引 |
-| --- | --- | --- |
-| 指示する内容 | アカウントの状態の更新。宛先でコードが実行される場合は、その実行を伴う | 出力の消費と、新しい出力の作成 |
-| 手数料の書き方 | gas の上限と 1 gas あたりの上限を項目として書く | 項目を持たず、入力の合計と出力の合計の差として指定する |
-| 額の決まり方 | 使った gas に、その時の単価を掛けて決まる | 取引の大きさと、狙う手数料率からウォレットが出力の額を決める |
-| 送り主の表し方 | 署名から復元する | 送り主の項目を持たず、入力ごとに使う資格を証明する |
-| 失敗した実行の扱い | ブロックに残り、レシートの状態コードが 0 になる | 検証に失敗する取引は、有効なチェーンに現れない |
-
-上の表で 3 行目が対になっているのは、額が決まる時点です。Ethereum では実行してみるまで使う gas が確定しないのに対し、Bitcoin では取引を組み立てた時点で差額が確定します。
-
-表の最後の行が、2 つの差が最も出る所です。Bitcoin では条件を満たさない取引が無効になるだけで、失敗という結果は記録に残りません。Ethereum では実行の途中まで進んだ事実が手数料として残り、結果がレシートに書かれます。取引が作られてからブロックに入るまでの流れは、Bitcoin を例に [Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で扱っています。

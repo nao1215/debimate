@@ -35,30 +35,26 @@ flowchart LR
 
 ### アカウントが持つ 4 つの状態
 
-Ethereum のアカウントは、アドレスに対応付けられた 4 つの項目で表されます。公式ドキュメントが挙げる項目は以下の通りです。
+Ethereum のアカウントには、利用者が秘密鍵で操作する EOA（Externally Owned Account、外部所有アカウント）と、コードを持つコントラクトアカウント（contract account）の 2 種類があります。どちらも、アドレスに対応付けられた同じ 4 つの項目で表されます。公式ドキュメントが挙げる項目は以下の通りです。
 
 | 項目 | 何を表すか |
 | --- | --- |
-| nonce | 取引の順序付けやコントラクト作成に使われるカウンタ。通常の EOA では取引の送信ごとに増える |
+| nonce | 取引の順序付けやコントラクト作成に使われるカウンタ。EOA では取引の送信ごとに増える |
 | balance | そのアドレスが持つ wei の量。1 ETH は `10^18` wei |
 | storageRoot | そのアカウントの記憶領域の中身を符号化した Merkle Patricia Trie のルートノードのハッシュ |
 | codeHash | EVM 上のそのアカウントのコードのハッシュ |
 
 公式ドキュメントは 1 行目の nonce を「[the number of transactions sent from an externally-owned account or the number of contracts created by a contract account](https://ethereum.org/en/developers/docs/accounts/)」（外部所有アカウントから送られた取引の件数、またはコントラクトアカウントが作ったコントラクトの件数）と定義しています。
 
-通常の EOA では、この理解で足ります。EIP-7702 の委任コードを使う EOA では実行中の処理で nonce がさらに進む場合があるので、送った取引の件数と常に一致する訳ではありません。
-
 3 行目の記憶領域には、コードが実行のたびに読み書きし、次の実行にも残したい値が入ります。例えば、トークンの残高表がここに置かれます。中身をまとめる Merkle Patricia Trie の構造は、後の「世界状態と execution layer の `state_root`」で扱います。
-
-4 つの項目は、どのアカウントにもあります。従来の EOA では記憶領域が空で、`codeHash` も空のコードを表す値でした。コードと記憶領域を実際に使うのは主にコントラクトアカウントで、後の「EOA とコントラクトアカウント」で扱う EIP-7702 の後は、EOA も委任を通じてコードと自分の記憶領域を使い得ます。
 
 ---
 
 ### EOA とコントラクトアカウント
 
-アカウントには 2 種類あります。利用者が秘密鍵で制御する EOA（Externally Owned Account、外部所有アカウント）と、アドレスにコードが結び付いたコントラクトアカウント（contract account）です。コントラクトアカウントのコードは、そのアカウントへの呼び出しを受けた時に実行されます。
+コントラクトアカウントのコードは、そのアカウントへの呼び出しを受けた時に実行されます。
 
-2 種類の違いは、取引を起こせるかどうかに出ます。公式ドキュメントは、コントラクトアカウントについて「[Can only send messages in response to receiving a transaction](https://ethereum.org/en/developers/docs/accounts/)」（取引を受け取った事に応じてメッセージを送る事しかできない）と書かれています。署名して送り出す取引の起点になれるのは EOA だけです。
+2 種類の違いは、取引を起こせるかどうかに出ます。公式ドキュメントには、コントラクトアカウントについて「[Can only send messages in response to receiving a transaction](https://ethereum.org/en/developers/docs/accounts/)」（取引を受け取った事に応じてメッセージを送る事しかできない）と書かれています。署名して送り出す取引の起点になれるのは EOA だけです。
 
 1 件の取引が 2 つのコントラクトに届くまでの流れは以下の通りです。
 
@@ -76,7 +72,7 @@ sequenceDiagram
 
 上記の図でコントラクト A からコントラクト B への呼び出しは、EOA が出した取引の実行の中で起きます。ここでのメッセージは、取引と違って署名も nonce も持たず、実行の中でコントラクトから別のコントラクトに渡されます。コントラクト B は取引を直接受け取らずに、このメッセージでコードが動きます。
 
-従来は、コードの有無を 2 種類の見分けの手掛かりにできました。公式ドキュメントも、EOA について「[the codeHash field is the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（codeHash の項目は空文字列のハッシュになる）と書かれています。
+従来は、コードの有無を 2 種類の見分けの手掛かりにできました。公式ドキュメントにも、EOA について「[the codeHash field is the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（codeHash の項目は空文字列のハッシュになる）と書かれています。
 
 今の Ethereum では、コードが空なら EOA という判定は成り立ちません。2025 年に実施された Pectra というプロトコルの更新で [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA は指定したコントラクトのコードに自分の取引の実行を委ねられるようになりました。EIP は Ethereum Improvement Proposal の略で、仕様変更の提案を指します。
 
@@ -94,13 +90,13 @@ sequenceDiagram
 
 『Mastering Ethereum』第 2 版の第 6 章には「[every single transaction is unique, even when sending the same amount of ether to the same recipient address multiple times](https://masteringethereum.xyz/chapter_6.html)」（同じ額を同じ宛先に何度送っても、取引はどれも別の物になる）と説明されています。
 
-止まるのは同じチェーンでの再送です。別のチェーンへの再生は、chain ID を署名の対象に含める事で防ぎます。この仕組みを legacy transaction に導入したのが [EIP-155](https://eips.ethereum.org/EIPS/eip-155) で、現在の typed transaction も chain ID を署名の対象に含みます。
+止まるのは同じチェーンでの再送です。別のチェーンへの再生は、chain ID を署名の対象に含める事で防ぎます。この仕組みを旧来の形式の取引（legacy transaction）に導入したのが [EIP-155](https://eips.ethereum.org/EIPS/eip-155) で、先頭に型を表すバイトを持つ現在の形式（typed transaction）も chain ID を署名の対象に含みます。
 
 #### nonce が増えるのはどの時点か
 
 nonce の一致は、取引が有効である条件の 1 つです。このほかに署名が有効か、手数料と送る額を払える残高があるかなども検査されます。ここを通らない取引はブロックに入れられず、アカウントの nonce も動きません。
 
-実行が始まった後にコードが `REVERT` した場合や gas を使い切った場合、その取引による状態の変更は取り消されます。それでも送り主の nonce の増加と手数料の支払いは残るため、次に有効な番号は 1 つ進んだままです。
+実行が始まった後にコードが `REVERT`（実行を中止して変更を取り消す命令）を呼んだ場合や gas を使い切った場合、その取引による状態の変更は取り消されます。それでも送り主の nonce の増加と手数料の支払いは残るため、次に有効な番号は 1 つ進んだままです。
 
 #### ブロックの並びが順序を決め、nonce が同じ送り主の中を縛る
 
@@ -154,6 +150,8 @@ flowchart TD
 
 世界状態は、アドレスを `keccak256` でハッシュした値を経路に使う trie で表されます。現在の Ethereum の本番ネットワーク（Mainnet）では、modified Merkle Patricia Trie が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
 
+現在の Ethereum のブロックは、取引を実行する execution layer と、ブロックについて合意を取る合意層（consensus layer）の 2 層で扱われます。取引の並びは execution payload という execution layer 用のまとまりに入り、それが合意層のブロックに含まれます。合意層のブロックにも `state_root` という項目があります。しかし、それが指すのは合意層の状態で、ここで扱う EVM の状態ではありません。
+
 ブロックに入るのは状態そのものではありません。実行した後の状態と、そこから書かれる値の関係は以下の通りです。
 
 ```mermaid
@@ -164,11 +162,9 @@ flowchart LR
     S1 -.->|"ルートハッシュだけを書く"| H["execution payload の<br/>state_root"]
 ```
 
-上記の図の S' はノードが自分で保持し、外に書かれるのは 1 つのルートハッシュだけです。公式ドキュメントは、この項目を「[root hash for the global state after applying changes in this block](https://ethereum.org/en/developers/docs/blocks/)」（このブロックでの変更を適用した後の、全体の状態のルートハッシュ）と説明されています。
+上記の図の S' は各ノードが手元に保持し、ブロックに書かれるのは 1 つのルートハッシュだけです。公式ドキュメントでは、execution payload の `state_root` が「[root hash for the global state after applying changes in this block](https://ethereum.org/en/developers/docs/blocks/)」（このブロックでの変更を適用した後の、全体の状態のルートハッシュ）と説明されています。
 
-`state_root` は、取引の並びを含む execution payload に書かれます。合意層（consensus layer）のブロックにも同じ名前の項目があるため、ここで扱うのは EVM の状態を代表する execution layer の `state_root` だと断っておきます。
-
-[公式ドキュメント](https://ethereum.org/en/developers/docs/blocks/)は、全てのクライアントが execution payload の取引を実行し直し、得られた状態が `state_root` と一致する事を確かめると書かれています。一致しなければ、そのブロックは受け入れられません。
+[公式ドキュメント](https://ethereum.org/en/developers/docs/blocks/)には、全てのクライアントが execution payload の取引を実行し直し、得られた状態が `state_root` の示す状態と一致する事を確かめると書かれています。一致しなければ、そのブロックは受け入れられません。
 
 [Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入った取引の並びを代表する値を持っていました。Ethereum の execution layer では、取引の並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。ハッシュした値から経路が一意に決まるため、あるアカウントが存在しない事も 1 本の経路で示せます。
 
@@ -196,22 +192,4 @@ flowchart LR
 
 1 つ目と 2 つ目は、同じ送り主の取引を番号で 1 本に並べる事の裏返しです。番号を連番にせず、別の方法で取引の重複を弾くアカウントモデルもあり、この制約はモデルではなく nonce の決め方から来ています。
 
-4 つ目は、状態の持ち方の違いから来ます。UTXO では、検証に使う UTXO 集合から、消費された出力を外せます。アカウントモデルでは、実行に必要なアカウントと記憶領域の状態を保持し続ける事になります。記憶領域の値は上書きも 0 への書き戻しもできるので、個々の書き込みが永久に残る訳ではありません。どこまでを保持するのかは、モデルではなく Ethereum の状態の設計で決まります。
-
----
-
-### UTXO モデルとの違い
-
-2 つのモデルは、コインの所在をどう表すかで分かれます。以下が違いです。
-
-| | アカウントモデル | UTXO モデル |
-| --- | --- | --- |
-| 資産の表し方 | アカウントの状態として残高を保存する | 使い切りの出力として持つ |
-| 残高の求め方 | アカウントの項目を読む | 手元の鍵で使える UTXO を合計する |
-| 支払い | 残高から金額を引き、宛先の残高に足す | 出力を使い切り、お釣りの出力を作る |
-| 競合の扱い | 同じ送り主の同じ通し番号の取引が両立しない | 同じ outpoint への参照が両立しない |
-| 同じ取引の再送 | アカウントの通し番号が進んでいるため無効 | 参照先が使用済みになり無効 |
-
-表に入らない差が、取引を組み立てる手順にあります。UTXO では、支払いのたびに手元の出力を選んで合算し、余りをお釣りの出力として作ります。アカウントモデルでは、この選択とお釣りの出力を作る手順は必要ありません。
-
-どちらのモデルでも、取引の検証には現在の状態が必要です。競合が同じ番号として表れるか、同じ outpoint への参照として表れるかも、状態の表し方から決まります。UTXO から見た同じ比較は [UTXO](../utxo/) にも置いてあります。
+4 つ目は、状態の持ち方の違いから来ます。UTXO では、検証に使う UTXO 集合から、消費された出力を外せます。アカウントモデルでは、実行に必要なアカウントと記憶領域の状態を保持し続ける事になります。記憶領域の値は上書きも 0 への書き戻しもできるので、個々の書き込みが永久に残る訳ではありません。どこまでを保持し続けるのかは、Ethereum が状態をどう設計するかによって変わります。
