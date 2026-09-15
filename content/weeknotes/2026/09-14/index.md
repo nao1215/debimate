@@ -37,8 +37,8 @@ json 出力機能が有効に使われる日が来るとは、思いもしなか
 
 #### Wasm は便利な中間表現
 
-[ncruces/wasm2go](https://github.com/ncruces/wasm2go) を眺めていて、他言語ライブラリ --> Wasm --> Go に置換する案は実用的だなと感じた。特段新しい案でもない。[「GoにおけるFFIのこれまでとこれから（Go Conference 2026、goccy 氏）」](https://speakerdeck.com/goccy/go-niokeru-ffi-no-kore-madeto-korekara) でも似た内容が触れられていた。例えば、SQLite は利用しているシステムコールが少ないため、Wasm to Go しやすい。C/C++、Rust、Go、Zig などが Wasm 化しやすい言語であり、つまり流用できる資産とみなせる。
+[ncruces/wasm2go](https://github.com/ncruces/wasm2go) を眺めていて、Wasm を中間表現として C/C++などの既存資産を CGO なしの Go パッケージに組み込む案は、実用的だと感じた。特段新しい案でもない。[「GoにおけるFFIのこれまでとこれから（Go Conference 2026、goccy 氏）」](https://speakerdeck.com/goccy/go-niokeru-ffi-no-kore-madeto-korekara) でも似た内容が触れられていた。例えば、SQLite は利用しているシステムコールが少ないため、Wasm to Go しやすい。
 
-オリジナルコードを参照させながら LLM に他言語版を実装させる案もあるが、機械的に置換した方が安心。トークンを浪費しないし、変なバグを埋め込まない。個人的に試してみたいのは、[NKF（Network Kanji Filter）](https://github.com/nurse/nkf) の Go 化である。NKF は、文字コードや改行コードを変換するツールで、昔の印象だと精度が良かった。作業としては NKF を Wasm to Go して、型やら良い感じの API を独自設計して提供する必要がある。
+オリジナルコードを参照させながら LLM に他言語版を実装させる案もあるが、機械的に置換した方が安心。トークンを浪費しないし、誤解釈によるバグを埋め込まない。個人的に試してみたいのは、[NKF（Network Kanji Filter）](https://github.com/nurse/nkf) の Go 化である。NKF は、文字コードや改行コードを変換するツールで、昔の印象だと精度が良かった。作業としては NKF を Wasm to Go して、型やら良い感じの API を独自設計して提供する必要がある。
 
 文字コードの領域は、Go において決定版ライブラリが恐らく存在せず（ないよね？）、メンテ状況が怪しいライブラリが多い。文字コードは沼なので、ライブラリ開発自体が難しい。その結果として、「Excel を CSV として保存すると Shift-JIS になるから、UTF-8 に変換しようか」みたいなエッジケースだけ個別対応する羽目になる。2022年頃から文字コード自動判別ライブラリが欲しかったので、今度文字コードで苦しんだらライブラリを開発するかも。
