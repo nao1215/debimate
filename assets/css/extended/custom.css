@@ -366,6 +366,12 @@ body.home .post-entry .entry-cover img {
   border-radius: 8px;
 }
 
+/* 横長のロゴなど、全体を表示する指定のカバー。 */
+body.home .post-entry .entry-cover-contain img {
+  object-fit: contain;
+  background-color: #fff;
+}
+
 body.home .post-entry .entry-content p {
   display: -webkit-box;
   -webkit-line-clamp: 3;
