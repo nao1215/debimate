@@ -18,7 +18,11 @@
       <title>{{ .Title }}</title>
       <link>{{ .Permalink }}</link>
       <pubDate>{{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      {{- if in site.Data.legacy_urls.weeknotes (.Date.Format "2006-01-02") }}
       <guid>{{ replace .Permalink "/weeknotes/" "/weekly/" }}</guid>
+      {{- else }}
+      <guid>{{ .Permalink }}</guid>
+      {{- end }}
       <description>{{ .Summary | html }}</description>
     </item>
     {{- end }}

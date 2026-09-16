@@ -44,7 +44,10 @@ jobs:
           hugo-version: '0.161.1'
           extended: true
 
-      - name: Check redirect tables are up to date
+      - name: Test migration checks
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
+
+      - name: Check legacy redirect tables are up to date
         run: make redirects-check
 
       # BBS のスレッド一覧を Discussions から取得する (data/bbs.json)。

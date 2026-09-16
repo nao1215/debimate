@@ -8,9 +8,11 @@
 
 {{- /* Preserve pre-rename image URLs even though sources now live under year/month-day. */}}
 {{- $date := .Date.Format "2006-01-02" }}
+{{- if in site.Data.legacy_urls.weeknotes $date }}
 {{- range .Resources }}
   {{- $legacy := resources.Copy (printf "weekly/%s/%s" $date .Name) . }}
   {{- $legacy.Publish }}
+{{- end }}
 {{- end }}
 
 <article class="post-single weeknotes-single">

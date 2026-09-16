@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import json
 import re
 from collections import Counter
 from pathlib import Path
@@ -11,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 POST_ROOT = REPO_ROOT / "content" / "post" / "ja"
+LEGACY_URLS = REPO_ROOT / "data" / "legacy_urls.json"
 FRONT_MATTER_DELIM = "---"
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 WHITESPACE_PATTERN = re.compile(r"[\s　]+")
@@ -18,7 +20,14 @@ NON_SLUG_PATTERN = re.compile(r"[^\w\-]", re.UNICODE)
 
 
 def iter_post_files() -> list[Path]:
-    return sorted(path / "index.md" for path in POST_ROOT.iterdir() if (path / "index.md").is_file())
+    # 移行済みの対象だけを固定する。新規記事や同日付の記事の追加で、既存の
+    # alias の要求や競合解決が変わらないよう、全記事の列挙は行わない。
+    names = json.loads(LEGACY_URLS.read_text(encoding="utf-8"))["posts"]
+    paths = sorted(POST_ROOT / name / "index.md" for name in names)
+    for path in paths:
+        if not path.is_file():
+            raise FileNotFoundError(f"Legacy post is missing: {path}")
+    return paths
 
 
 def split_front_matter(text: str) -> tuple[str, list[str], str]:
@@ -158,7 +167,7 @@ def main() -> int:
             changed += 1
 
     if args.check and changed:
-        print(f"{changed} files would be updated")
+        print(f"{changed} legacy posts would be updated; run make redirects")
         return 1
 
     print(f"updated {changed} files")
