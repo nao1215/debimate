@@ -16,6 +16,14 @@ cover:
   fit: contain
   alt: jsonize-logo
   hidden: false
+aliases:
+- /post/2026-09-16-jsonizeでJSONをUnixパイプラインの共通言語にする/
+- /2026/09/16/jsonizeでJSONをUnixパイプラインの共通言語にする/
+- /2026/09/16/jsonizeでjsonをunixパイプラインの共通言語にする/
+- /post/2026-09-16-jsonizeでjsonをunixパイプラインの共通言語にする/
+- /2026/09/17/jsonizeでJSONをUnixパイプラインの共通言語にする/
+- /2026/09/17/jsonizeでjsonをunixパイプラインの共通言語にする/
+- /2026/09/16/
 ---
 
 ### 前書き：JSON, JSON, JSON...
