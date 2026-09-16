@@ -2,7 +2,7 @@
 title: jsonize で JSON を Unix パイプラインの共通言語にする
 type: post
 date: 2026-09-16
-draft: true
+draft: false
 categories:
 - プログラミング
 - OSS
