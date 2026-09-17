@@ -35,6 +35,6 @@ GitHub Pages 用の HTML 転送で、JavaScript が有効ならクエリとフ�
 `/weeknotes/` の URL と GUID で配信します。
 
 - `make redirects-check`：固定した移行対象の記事と静的リダイレクトを検証
-- `python3 scripts/check_weeknotes.py`：ビルド後の移行対象の週報・画像と旧 RSS を検証
+- `python3 scripts/check_weeknotes.py`：ビルド後の移行対象の週報・画像と旧 RSS、話題ページのナビゲーション・サイトマップ・SEO メタデータを検証（新規週報に旧 URL のエイリアスは要求しない）
 - `make lint-links`：サイトをビルドし、新規投稿を含むサイト内リンク・画像・参照先の見出しを検証
 - `python3 -m unittest discover -s scripts -p 'test_*.py'`：新規投稿に移行用 URL を要求しないことなどの回帰テスト

@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 
 from check_links import parse
 from check_weeknotes_navigation import check as check_navigation
+from check_weeknotes_seo import check as check_seo
 
 
 def main() -> None:
@@ -19,6 +20,7 @@ def main() -> None:
     legacy_dates = json.loads((repo / "data/legacy_urls.json").read_text())["weeknotes"]
     check(root, repo / "content/weeknotes", legacy_dates)
     check_navigation(root)
+    check_seo(root)
 
 
 def check(root: Path, content: Path, legacy_dates: list[str]) -> None:

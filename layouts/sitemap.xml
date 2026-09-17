@@ -1,13 +1,32 @@
 {{- printf "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>" | safeHTML }}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  {{- $entries := slice }}
   {{- range .Pages }}
+    {{- $entries = $entries | append (dict "page" . "lastmod" .Lastmod) }}
+  {{- end }}
+  {{- /* Generated Weeknotes stay out of regular page lists and RSS, but belong in the sitemap. */}}
+  {{- range partial "weeknotes/topics.html" . }}
+    {{- $entries = $entries | append (dict "page" .page "lastmod" .week.Lastmod) }}
+  {{- end }}
+  {{- range (site.GetPage "/weeknotes").RegularPages.GroupByDate "2006" }}
+    {{- $lastmod := (index .Pages.ByLastmod.Reverse 0).Lastmod }}
+    {{- with site.GetPage (printf "/weeknotes/archive-%s" .Key) }}
+      {{- $entries = $entries | append (dict "page" . "lastmod" $lastmod) }}
+    {{- end }}
+  {{- end }}
+  {{- $seen := dict }}
+  {{- range $entries }}
+  {{- $lastmod := .lastmod }}
+  {{- with .page }}
   {{- /* 収録記事が少ないタグ／カテゴリ一覧は noindex にしているので載せない */}}
-  {{- if partial "is_thin_term.html" . }}{{ continue }}{{ end }}
+  {{- if or (partial "is_thin_term.html" .) .Params.robotsNoIndex (isset $seen .Permalink) }}{{ continue }}{{ end }}
+  {{- $seen = merge $seen (dict .Permalink true) }}
   <url>
     <loc>{{ .Permalink }}</loc>
-    {{- if not .Lastmod.IsZero }}
-    <lastmod>{{ .Lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</lastmod>
+    {{- if not $lastmod.IsZero }}
+    <lastmod>{{ $lastmod.Format "2006-01-02T15:04:05-07:00" | safeHTML }}</lastmod>
     {{- end }}
   </url>
+  {{- end }}
   {{- end }}
 </urlset>

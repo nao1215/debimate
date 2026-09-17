@@ -4,6 +4,11 @@
 {{- else -}}
   {{- if and $.IsHome site.Params.description -}}
     {{- $description = site.Params.description | plainify | htmlUnescape | chomp -}}
+  {{- else if and (eq $.Section "weeknotes") (eq $.Layout "topic") -}}
+    {{- /* Generated topics render the source week's HTML instead of .Content. */ -}}
+    {{- range where (partial "weeknotes/topics.html" $) "page.RelPermalink" $.RelPermalink -}}
+      {{- $description = .body | replaceRE `(?is)<(script|style|iframe)\b[^>]*>.*?</(script|style|iframe)>` "" | plainify | htmlUnescape | chomp -}}
+    {{- end -}}
   {{- else if or $.IsPage $.IsSection -}}
     {{- $summary := $.Summary | plainify | htmlUnescape | chomp -}}
     {{- if $summary -}}
