@@ -129,6 +129,8 @@ scenarios:
             empty: true        # 標準エラー出力が空であること
 ```
 
+<br>
+
 #### 対話型 CLI の expect / send 検証
 
 ```yaml
@@ -154,6 +156,8 @@ scenarios:
           stdout:
             contains: hello interactive world  # 端末のエコーを含む出力を検証
 ```
+
+<br>
 
 #### Mock Server を用いた API クライアント CLI 検証
 

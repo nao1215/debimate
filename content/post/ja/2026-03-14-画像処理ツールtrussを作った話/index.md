@@ -65,6 +65,8 @@ flowchart TB
 | TIFF        | Yes  | Yes | Yes  | Yes  | Yes | Yes  | -   |
 | SVG         | Yes  | Yes | Yes  | Yes  | Yes | Yes  | Yes |
 
+<br>
+
 #### 切り抜き・回転・背景色指定
 
 ```sh
@@ -81,6 +83,8 @@ truss photo.jpg -o out.png --width 300 --height 300 --fit contain --background F
 | Original | Crop | Rotate | Background  |
 |---|---|---|---|
 | ![original](images/sample-bee.jpg) | ![cropped](images/sample-bee-cropped.jpg) | ![rotated](images/sample-bee-rotated.jpg) | ![background](images/sample-bee-bg.png) |
+
+<br>
 
 #### フィッティング
 
@@ -107,6 +111,8 @@ truss photo.jpg -o out.jpg --width 800
 | ![original](images/sample-bee.jpg) | ![contain](images/sample-bee-contain.jpg) | ![cover](images/sample-bee-cover.jpg) | ![fill](images/sample-bee-fill.jpg) | ![inside](images/sample-bee-inside.jpg) |
 
 
+<br>
+
 #### ぼかし・シャープネス・透かし
 
 ```sh
@@ -128,6 +134,8 @@ truss photo.jpg -o watermarked.jpg \
 |---|---|---|---|
 | ![original](images/sample-bee.jpg) | ![blurred](images/sample-bee-blurred.jpg) | ![sharpened](images/sample-bee-sharpened.jpg) | ![watermarked](images/sample-bee-watermarked.jpg) |
 
+<br>
+
 #### 配置変更
 
 ```sh
@@ -139,6 +147,8 @@ truss photo.jpg -o thumb.jpg --width 300 --height 300 --fit cover --position bot
 | `--position top-left` | `--position center` | `--position bottom-right` |
 |---|---|---|
 | ![top-left](images/sample-bee-cover-topleft.jpg) | ![center](images/sample-bee-cover.jpg) | ![bottom-right](images/sample-bee-cover-bottomright.jpg) |
+
+<br>
 
 #### 最適化
 
@@ -189,12 +199,16 @@ truss が提供する API の詳細は、[OpenAPI（swagger）ドキュメント
 | `GET /images/by-path` | 署名付きURLで認証し、ストレージからパス指定で画像を取得・変換する |
 | `GET /images/by-url` | 署名付きURLで認証し、リモートURLから画像を取得・変換する |
 
+<br>
+
 #### Private Endpoints (Bearer Token)
 
 | Endpoint | Description |
 |----------|-------------|
 | `POST /images:transform` | ストレージまたはリモートURLの画像を変換する |
 | `POST /images` | マルチパートフォームで画像をアップロードし変換する |
+
+<br>
 
 #### Infrastructure Endpoints
 

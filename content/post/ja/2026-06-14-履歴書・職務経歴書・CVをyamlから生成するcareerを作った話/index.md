@@ -45,16 +45,22 @@ aliases:
 #### CV サンプル
 ![CV](./images/cv-p-1.webp)
 
+<br>
+
 #### 履歴書サンプル
 
 ![履歴書](./images/japanese-resume-p-1.webp)
 ![履歴書](./images/japanese-resume-p-2.webp)
+
+<br>
 
 #### 職務経歴書サンプル
 
 下図には書かれていませんが、資格、出版・登壇、自己PR、リンクを書くこともできます。
 
 ![職務経歴書](./images/work-history-p-1.webp)
+
+<br>
 
 #### インプットデータである yaml ファイル
 

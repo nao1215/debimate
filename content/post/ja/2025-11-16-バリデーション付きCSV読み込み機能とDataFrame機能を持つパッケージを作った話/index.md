@@ -150,6 +150,8 @@ a,Yulia,25
 ---
 
 
+<br>
+
 #### Format rules
 
 | Tag Name | Description         |
@@ -158,6 +160,8 @@ a,Yulia,25
 
 ---
 
+
+<br>
 
 #### Comparison rules
 
@@ -172,6 +176,8 @@ a,Yulia,25
 
 ---
 
+
+<br>
 
 #### Other rules
 

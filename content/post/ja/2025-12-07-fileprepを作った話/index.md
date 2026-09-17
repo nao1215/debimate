@@ -130,6 +130,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `uppercase` | 大文字に変換 | `prep:"uppercase"` |
 | `default=value` | 空の場合にデフォルト値を設定 | `prep:"default=N/A"` |
 
+<br>
+
 #### 文字列変換
 
 | タグ | 説明 | 例 |
@@ -142,6 +144,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `strip_newline` | 改行を削除 (LF, CRLF, CR) | `prep:"strip_newline"` |
 | `collapse_space` | 複数のスペースを1つに | `prep:"collapse_space"` |
 
+<br>
+
 #### 文字フィルタリング
 
 | タグ | 説明 | 例 |
@@ -152,12 +156,16 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `keep_alpha` | アルファベットのみを保持 | `prep:"keep_alpha"` |
 | `trim_set=chars` | 指定文字を両端から削除 | `prep:"trim_set=@#$"` |
 
+<br>
+
 #### パディング
 
 | タグ | 説明 | 例 |
 |-----|------|-----|
 | `pad_left=N:char` | N文字まで左にパディング | `prep:"pad_left=5:0"` |
 | `pad_right=N:char` | N文字まで右にパディング | `prep:"pad_right=10: "` |
+
+<br>
 
 #### 高度な前処理
 
@@ -178,6 +186,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `required` | フィールドは空であってはならない | `validate:"required"` |
 | `boolean` | true, false, 0, または 1 である必要がある | `validate:"boolean"` |
 
+<br>
+
 #### 文字種バリデータ
 
 | タグ | 説明 | 例 |
@@ -193,6 +203,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `printascii` | 印刷可能なASCII文字（0x20-0x7E） | `validate:"printascii"` |
 | `multibyte` | マルチバイト文字を含む | `validate:"multibyte"` |
 
+<br>
+
 #### 数値比較バリデータ
 
 | タグ | 説明 | 例 |
@@ -207,6 +219,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `max=N` | 値が最大N | `validate:"max=100"` |
 | `len=N` | 正確にN文字 | `validate:"len=10"` |
 
+<br>
+
 #### 文字列バリデータ
 
 | タグ | 説明 | 例 |
@@ -216,6 +230,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `uppercase` | すべて大文字である | `validate:"uppercase"` |
 | `eq_ignore_case=value` | 大文字小文字を無視して等しい | `validate:"eq_ignore_case=yes"` |
 | `ne_ignore_case=value` | 大文字小文字を無視して等しくない | `validate:"ne_ignore_case=no"` |
+
+<br>
 
 #### 文字列内容バリデータ
 
@@ -232,6 +248,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `excludesall=chars` | いずれの文字も含まない | `validate:"excludesall=<>"` |
 | `excludesrune=r` | 指定ルーンを含まない | `validate:"excludesrune=$"` |
 
+<br>
+
 #### フォーマットバリデータ
 
 | タグ | 説明 | 例 |
@@ -244,6 +262,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `url_encoded` | URLエンコード文字列 | `validate:"url_encoded"` |
 | `datauri` | 有効なデータURI | `validate:"datauri"` |
 | `uuid` | 有効なUUID | `validate:"uuid"` |
+
+<br>
 
 #### ネットワークバリデータ
 
@@ -259,6 +279,8 @@ Name: "Jane Smith", Email: "jane@example.com"
 | `hostname` | 有効なホスト名（RFC 952） | `validate:"hostname"` |
 | `hostname_rfc1123` | 有効なホスト名（RFC 1123） | `validate:"hostname_rfc1123"` |
 | `hostname_port` | 有効なホスト名:ポート | `validate:"hostname_port"` |
+
+<br>
 
 #### クロスフィールドバリデータ
 
