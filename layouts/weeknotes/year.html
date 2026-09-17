@@ -1,0 +1,17 @@
+{{- define "main" }}
+<header class="page-header">
+  {{ partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  <p><a href="{{ "/weeknotes/" | relURL }}">Weeknotes の目次</a></p>
+</header>
+<div class="weeknotes-list">
+  {{- range (site.GetPage "/weeknotes").RegularPages.ByDate.Reverse }}
+    {{- if eq (.Date.Format "2006") $.Params.year }}
+    <article class="weeknotes-entry">
+      <h2 class="weeknotes-entry-title" id="{{ .Date.Format "20060102" }}週"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+      <div class="post-content">{{ .Content }}</div>
+    </article>
+    {{- end }}
+  {{- end }}
+</div>
+{{- end }}

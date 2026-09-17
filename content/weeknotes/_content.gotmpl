@@ -1,0 +1,22 @@
+{{/* Keep weekly Markdown as the source of truth; generate topic and annual pages. */}}
+{{- range os.ReadDir "content/weeknotes" }}
+  {{- if and .IsDir (findRE `^\d{4}$` .Name) }}
+    {{- $year := .Name }}
+    {{- $.AddPage (dict "path" (printf "archive-%s" $year) "url" (printf "/weeknotes/%s/" $year) "title" (printf "%s年" $year) "layout" "year" "build" (dict "list" "never" "render" "always") "params" (dict "year" $year)) }}
+    {{- range os.ReadDir (printf "content/weeknotes/%s" $year) }}
+      {{- $file := printf "content/weeknotes/%s/%s/index.md" $year .Name }}
+      {{- if and .IsDir (os.FileExists $file) }}
+        {{- $source := os.ReadFile $file }}
+        {{- $front := index (findRE `(?s)^---\r?\n.*?\r?\n---` $source 1) 0 }}
+        {{- $meta := $front | replaceRE `(?m)^---\r?$` "" | transform.Unmarshal }}
+        {{- $date := time.AsTime $meta.date }}
+        {{- range $heading := partial "weeknotes/headings.html" $source }}
+          {{- $title := $heading | replaceRE `^####[ \t]+` "" | replaceRE `[ \t]+#+[ \t]*$` "" | replaceRE `\[([^]]+)\]\([^)]+\)` "$1" | replaceRE "[`*_]" "" | htmlUnescape }}
+          {{- $key := substr (crypto.SHA256 $heading) 0 12 }}
+          {{- $path := printf "topics/%s/%s" ($date.Format "2006-01-02") $key }}
+          {{- $.AddPage (dict "path" $path "url" (printf "/weeknotes/%s/%s/" ($date.Format "2006-01-02") $key) "title" $title "layout" "topic" "dates" (dict "date" $date "publishDate" (time.AsTime (default $meta.date $meta.publishDate))) "draft" (default false $meta.draft) "build" (dict "list" "never" "render" "always") "params" (dict "year" ($date.Format "2006"))) }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

@@ -8,6 +8,7 @@ from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
 
 from check_links import parse
+from check_weeknotes_navigation import check as check_navigation
 
 
 def main() -> None:
@@ -17,6 +18,7 @@ def main() -> None:
     repo = Path(__file__).resolve().parents[1]
     legacy_dates = json.loads((repo / "data/legacy_urls.json").read_text())["weeknotes"]
     check(root, repo / "content/weeknotes", legacy_dates)
+    check_navigation(root)
 
 
 def check(root: Path, content: Path, legacy_dates: list[str]) -> None:

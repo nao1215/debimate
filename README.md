@@ -8,6 +8,17 @@ https://debimate.jp
 
 本文と画像は `content/weeknotes/<YYYY>/<MM-DD>/`、テンプレートは `layouts/weeknotes/` にあります。
 公開 URL は `/weeknotes/YYYY-MM-DD/` を維持します。
+
+`/weeknotes/` は、年ごとに「全週報」と各週のリンクを並べ、各週の下に
+本文の `####` 見出しを箇条書きにした目次です。
+「全週報」のリンク（例：`/weeknotes/2026/`）には、その年の週報全文をまとめています。
+各話題の個別ページでは、目次の並び順に前後の話題へ移動でき、フッター中央から
+その年のまとめに戻れます。週は新しい順、同じ週の話題は本文の順です。
+
+ページは `content/weeknotes/_content.gotmpl` でビルド時に生成するため、
+今までどおり週報の Markdown を更新するだけで反映されます。
+個別 URL の末尾は見出しのハッシュです（見出しを変更すると URL も変わります）。
+
 旧 `/weekly/` と各週の URL は `/weeknotes/` へ転送し、旧 RSS と画像 URL も維持しています。
 GitHub Pages 用の HTML 転送で、JavaScript が有効ならクエリとフラグメントも引き継ぎます。
 

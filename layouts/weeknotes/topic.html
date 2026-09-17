@@ -1,0 +1,31 @@
+{{- define "main" }}
+{{- $topics := partial "weeknotes/topics.html" . }}
+{{- $position := 0 }}
+{{- range $i, $topic := $topics }}
+  {{- if eq .page.RelPermalink $.RelPermalink }}{{ $position = $i }}{{ end }}
+{{- end }}
+{{- $topic := index $topics $position }}
+<article class="post-single weeknotes-single">
+  <header class="post-header">
+    {{ partial "breadcrumbs.html" . }}
+    <h1 class="post-title">{{ .Title }}</h1>
+    <div class="post-meta"><a href="{{ $topic.week.RelPermalink }}">{{ $topic.week.Title }}</a></div>
+  </header>
+  <div class="post-content">{{ $topic.body }}</div>
+  <footer class="post-footer">
+    <nav class="paginav weeknotes-paginav" aria-label="Weeknotes の話題">
+      {{- if gt $position 0 }}
+      {{- with (index $topics (sub $position 1)).page }}
+      <a class="prev" rel="prev" href="{{ .RelPermalink }}"><span class="title">« 前の話題</span><br><span>{{ .Title }}</span></a>
+      {{- end }}
+      {{- end }}
+      <a class="index" href="{{ printf "/weeknotes/%s/" .Params.year | relURL }}">{{ .Params.year }}年の<br>Weeknotesまとめ</a>
+      {{- if lt (add $position 1) (len $topics) }}
+      {{- with (index $topics (add $position 1)).page }}
+      <a class="next" rel="next" href="{{ .RelPermalink }}"><span class="title">次の話題 »</span><br><span>{{ .Title }}</span></a>
+      {{- end }}
+      {{- end }}
+    </nav>
+  </footer>
+</article>
+{{- end }}
