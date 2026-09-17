@@ -4,7 +4,7 @@
   （--main-width）を超える表は素で見切れる。列数の多い比較表は詰めても収まらない
   ので、表の中だけを横スクロールさせる。
 */ -}}
-<div class="table-wrap">
+<div class="table-wrap{{ if .Page.Params.wrapTables }} table-wrap-fit{{ end }}">
   <table>
     <thead>
       {{- range .THead }}

@@ -491,6 +491,28 @@ body.home .post-entry .entry-header h2 {
   margin-bottom: 0;
 }
 
+/* Opt-in for concise article tables that should wrap within the viewport. */
+.post-content .table-wrap-fit > table {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.post-content .table-wrap-fit th,
+.post-content .table-wrap-fit td,
+.post-content .table-wrap-fit code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+  .post-content .table-wrap-fit th,
+  .post-content .table-wrap-fit td {
+    padding: 6px;
+    font-size: 0.85rem;
+  }
+}
+
 /* ==========================================================
    週報（/weeknotes/）
    1 週 1 ファイルで書き、目次では話題を、年別まとめでは全文を表示する。
