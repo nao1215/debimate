@@ -510,8 +510,87 @@ body.home .post-entry .entry-header h2 {
   font-size: 0.85rem;
 }
 
-.weeknotes-index li {
-  margin-block: 0.6rem;
+.weeknotes-index-year {
+  margin-top: 2.5rem;
+}
+
+.weeknotes-index-year + .weeknotes-index-year {
+  margin-top: 4rem;
+}
+
+.weeknotes-index-year-header,
+.weeknotes-index-week-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.weeknotes-index-year-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.weeknotes-index-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.weeknotes-index-count {
+  flex-shrink: 0;
+  color: var(--secondary);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.weeknotes-index-week {
+  margin-top: 2rem;
+}
+
+.weeknotes-index-week-header {
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.weeknotes-index-week-header h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.weeknotes-index-topics {
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.weeknotes-index-topics a {
+  display: block;
+  padding-block: 0.45rem;
+  color: var(--content);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.weeknotes-index a {
+  text-decoration: none;
+  box-shadow: none;
+}
+
+.weeknotes-index a:hover,
+.weeknotes-index a:focus-visible {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.weeknotes-index a:focus-visible {
+  outline: 2px solid var(--secondary);
+  outline-offset: 3px;
 }
 
 .weeknotes-paginav a {

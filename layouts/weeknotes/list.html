@@ -4,26 +4,34 @@
   <h1>{{ .Title }}{{ with .OutputFormats.Get "rss" }} <a class="weeknotes-rss" href="{{ .RelPermalink }}" aria-label="Weeknotes RSS">RSS</a>{{ end }}</h1>
 </header>
 <div class="post-content weeknotes-intro">{{ .Content }}</div>
-<div class="post-content weeknotes-index">
+<div class="weeknotes-index">
   {{- $topics := partial "weeknotes/topics.html" . }}
   {{- range .RegularPages.ByDate.Reverse.GroupByDate "2006" }}
-  <section>
-    <h2 id="{{ .Key }}">{{ .Key }}年</h2>
-    <ul>
-      <li><a href="{{ printf "/weeknotes/%s/" .Key | relURL }}">全週報</a></li>
+  {{- $yearTopics := where $topics "page.Params.year" .Key }}
+  <section class="weeknotes-index-year" aria-labelledby="{{ .Key }}">
+    <header class="weeknotes-index-year-header">
+      <h2 id="{{ .Key }}">{{ .Key }}年</h2>
+      <div class="weeknotes-index-summary">
+        <a href="{{ printf "/weeknotes/%s/" .Key | relURL }}">全週報を読む <span aria-hidden="true">→</span></a>
+        <span class="weeknotes-index-count">{{ len .Pages }}週・{{ len $yearTopics }}件</span>
+      </div>
+    </header>
       {{- range .Pages }}
-      <li>
-        <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-        {{- with where $topics "week.RelPermalink" .RelPermalink }}
-        <ul>
+      {{- $weekTopics := where $topics "week.RelPermalink" .RelPermalink }}
+      <section class="weeknotes-index-week" aria-labelledby="week-{{ .Date.Format "20060102" }}">
+        <header class="weeknotes-index-week-header">
+          <h3 id="week-{{ .Date.Format "20060102" }}"><a href="{{ .RelPermalink }}">{{ .Date.Format "01/02" }} の週</a></h3>
+          <span class="weeknotes-index-count">{{ len $weekTopics }}件</span>
+        </header>
+        {{- with $weekTopics }}
+        <ul class="weeknotes-index-topics" role="list">
           {{- range . }}
           <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a></li>
           {{- end }}
         </ul>
         {{- end }}
-      </li>
+      </section>
       {{- end }}
-    </ul>
   </section>
   {{- end }}
 </div>
