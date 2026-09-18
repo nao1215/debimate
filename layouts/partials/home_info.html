@@ -34,9 +34,15 @@
     <div class="home-cards">
         {{- with $latestWeeknotes }}
         <a class="latest-weeknotes latest-weeknotes-report" href="{{ .RelPermalink }}"{{ with $weeknotesBanner }} style="--latest-weeknotes-bg: url('{{ . }}');"{{ end }}>
-            <span class="latest-weeknotes-label">最新の週報</span>
+            <span class="latest-weeknotes-label">今週の Weeknotes</span>
             <span class="latest-weeknotes-title">{{ .Title }}</span>
-            <span class="latest-weeknotes-note">不定期に加筆する週報</span>
+            {{- $topics := slice }}
+            {{- range partial "weeknotes/headings.html" .RawContent }}
+                {{- $topics = $topics | append (replaceRE `^####[ \t]+` "" . | plainify) }}
+            {{- end }}
+            {{- with $topics }}
+            <span class="latest-weeknotes-note">{{ delimit . "、" }}</span>
+            {{- end }}
         </a>
         {{- end }}
         {{- with $notesPage }}

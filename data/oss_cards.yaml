@@ -30,6 +30,18 @@
   langColor: "#00ADD8"
   desc: YAML で定義したテスト条件に基づき、CLI の終了コード・出力・ファイル差分・スナップショット・TUI まで検証する E2E テストツール
 
+- name: himorime
+  repo: https://github.com/nao1215/himorime
+  lang: Go
+  langColor: "#00ADD8"
+  desc: YAML で定義したコマンドの実行時間・スループット・CPU 時間・ピーク RSS を測定し、性能劣化を検出するベンチマークツール
+
+- name: jsonize
+  repo: https://github.com/nao1215/jsonize
+  lang: Go
+  langColor: "#00ADD8"
+  desc: コマンド出力・ファイル・引数を JSON に変換し、Unix パイプラインで扱えるようにするツール
+
 - name: markdown
   repo: https://github.com/nao1215/markdown
   lang: Go

@@ -104,6 +104,11 @@ body {
   border-color: var(--secondary);
 }
 
+/* Weeknotes はトピックを 2 行で見せるため、右側イラストとの余白を少しだけ詰める。 */
+.latest-weeknotes-report {
+  padding-right: 38%;
+}
+
 
 html[data-theme="dark"] .latest-weeknotes {
   background-image:
@@ -150,10 +155,14 @@ html[data-theme="dark"] .latest-weeknotes {
 }
 
 .latest-weeknotes-note {
-  display: block;
+  display: -webkit-box;
   margin-top: 0.2rem;
   color: var(--secondary);
   font-size: 0.82rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .latest-weeknotes:hover .latest-weeknotes-title {
