@@ -71,6 +71,9 @@ jobs:
       - name: Check AdSense loading
         run: python3 scripts/check_adsense.py
 
+      - name: Check responsive images
+        run: python3 scripts/check_image_delivery.py
+
       - name: Check pagination SEO
         run: python3 scripts/check_pagination_seo.py
 

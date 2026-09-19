@@ -14,10 +14,7 @@
   拡大されて絵が巨大になる。左側にイラストと同じ余白色を継ぎ足して
   横長にしてから敷く事で、拡大せずカード全面の背景として使える。
 */}}
-{{- $banner := "" }}
-{{- with resources.Get "images/oss-card-banner.webp" }}
-{{- $banner = (.Filter (images.Padding 0 0 0 3033 "#fefaf7")).Resize "1800x webp q90" }}
-{{- end }}
+{{- $banner := partial "oss_banner.html" . }}
 {{- with hugo.Data.oss_cards }}
 <div class="oss-pick-wrap" data-oss-pick{{ with $banner }} style="--oss-pick-bg: url('{{ .RelPermalink }}');"{{ end }}>
   {{- range . }}

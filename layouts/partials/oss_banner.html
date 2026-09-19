@@ -1,0 +1,5 @@
+{{- $banner := false -}}
+{{- with resources.Get "images/oss-card-banner.webp" -}}
+  {{- $banner = (.Filter (images.Padding 0 0 0 3033 "#fefaf7")).Resize "1800x webp q90" -}}
+{{- end -}}
+{{- return $banner -}}

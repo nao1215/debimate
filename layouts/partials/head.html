@@ -52,6 +52,11 @@
   {{- $canonicalURL = trim . " " -}}
 {{- end -}}
 <link rel="canonical" href="{{ $canonicalURL }}">
+{{- if and .IsHome (eq $pageNumber 1) -}}
+  {{- with partial "oss_banner.html" . -}}
+<link rel="preload" as="image" type="image/webp" href="{{ .RelPermalink }}" fetchpriority="high">
+  {{- end -}}
+{{- end -}}
 {{- if site.Params.analytics.google.SiteVerificationTag }}
 <meta name="google-site-verification" content="{{ site.Params.analytics.google.SiteVerificationTag }}">
 {{- end }}
