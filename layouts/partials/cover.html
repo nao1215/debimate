@@ -26,7 +26,7 @@
     {{- /* We are not using the .Param.cover.relative to decide the location of image */}}
     {{- /* If we have the image in pageBundle or globalResources we can process the image */}}
 
-    {{- $sizes := (slice "360" "480" "720" "1080" "1500") }}
+    {{- $sizes := (slice "360" "480" "640" "720" "960" "1080" "1500") }}
     {{- $imgdl := (.Params.cover.image) | absURL }}
     {{- if $cover -}}
         {{- $imgdl = $cover.Permalink }}
@@ -38,6 +38,9 @@
         {{- $slot := 520 }}
         {{- if $cover }}{{ $slot = int (math.Min $slot $cover.Width) }}{{ end }}
         {{- $sizesAttr = printf "min(100vw, %dpx)" $slot }}
+    {{- else if .IsHome }}
+        {{- /* The homepage uses a three-column grid above 640px. */ -}}
+        {{- $sizesAttr = "(min-width: 641px) 360px, calc(100vw - 28px)" }}
     {{- end }}
 
     {{- if $addLink }}

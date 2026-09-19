@@ -36,11 +36,16 @@
 
   {{- partial "old_post_notice.html" . }}
 
-  {{- if .Content }}
+  {{- $content := .Content -}}
+  {{- if in $content "twitter-tweet" -}}
+    {{- .Store.Set "hasTwitterEmbed" true -}}
+    {{- $content = $content | replaceRE `(?is)<script\b[^>]*\bsrc=["']https://platform\.twitter\.com/widgets\.js["'][^>]*>\s*</script>` "" -}}
+  {{- end -}}
+  {{- if $content }}
   <div class="post-content">
     {{- if not (.Param "disableAnchoredHeadings") }}
-    {{- partial "anchored_headings.html" .Content -}}
-    {{- else }}{{ .Content }}{{ end }}
+    {{- partial "anchored_headings.html" $content -}}
+    {{- else }}{{ $content | safeHTML }}{{ end }}
   </div>
   {{- end }}
 

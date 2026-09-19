@@ -87,19 +87,49 @@
 {{- $reset := (resources.Get "css/core/reset.css") }}
 {{- $media := (resources.Get "css/core/zmedia.css") }}
 {{- $license_css := (resources.Get "css/core/license.css") }}
-{{- $common := (resources.Match "css/common/*.css") | resources.Concat "assets/css/common.css" }}
+{{- /* Load only the theme components used by this page type. */ -}}
+{{- $styleVariant := "list" -}}
+{{- if eq .Kind "404" -}}
+  {{- $styleVariant = "404" -}}
+{{- else if eq .Layout "archives" -}}
+  {{- $styleVariant = "archives" -}}
+{{- else if eq .Layout "search" -}}
+  {{- $styleVariant = "search" -}}
+{{- else if .IsPage -}}
+  {{- $styleVariant = "single" -}}
+{{- else if eq .Kind "taxonomy" -}}
+  {{- $styleVariant = "terms" -}}
+{{- end -}}
+{{- $commonResources := slice -}}
+{{- if eq .Kind "404" }}{{ $commonResources = $commonResources | append (resources.Get "css/common/404.css") }}{{ end -}}
+{{- if eq .Layout "archives" }}{{ $commonResources = $commonResources | append (resources.Get "css/common/archive.css") }}{{ end -}}
+{{- $commonResources = $commonResources | append (resources.Get "css/common/footer.css") -}}
+{{- $commonResources = $commonResources | append (resources.Get "css/common/header.css") -}}
+{{- $commonResources = $commonResources | append (resources.Get "css/common/main.css") -}}
+{{- if and (not .IsPage) (ne .Layout "archives") (ne .Layout "search") -}}
+  {{- $commonResources = $commonResources | append (resources.Get "css/common/post-entry.css") -}}
+{{- end -}}
+{{- if and .IsPage (ne .Layout "search") -}}
+  {{- $commonResources = $commonResources | append (resources.Get "css/common/post-single.css") -}}
+{{- end -}}
+{{- if and .IsHome site.Params.profileMode.enabled -}}
+  {{- $commonResources = $commonResources | append (resources.Get "css/common/profile-mode.css") -}}
+{{- end -}}
+{{- if eq .Layout "search" }}{{ $commonResources = $commonResources | append (resources.Get "css/common/search.css") }}{{ end -}}
+{{- if eq .Kind "taxonomy" }}{{ $commonResources = $commonResources | append (resources.Get "css/common/terms.css") }}{{ end -}}
+{{- $common := $commonResources | resources.Concat (printf "assets/css/common-%s.css" $styleVariant) -}}
 
 {{- /* markup.highlight.noClasses should be set to `false` */}}
 {{- $chroma_styles := (resources.Get "css/includes/chroma-styles.css") }}
 {{- $chroma_mod := (resources.Get "css/includes/chroma-mod.css") }}
 
 {{- /* order is important */}}
-{{- $core := (slice $theme_vars $reset $common $chroma_styles $chroma_mod $includes_all $media) | resources.Concat "assets/css/core.css" | resources.Minify }}
+{{- $core := (slice $theme_vars $reset $common $chroma_styles $chroma_mod $includes_all $media) | resources.Concat (printf "assets/css/core-%s.css" $styleVariant) | resources.Minify }}
 {{- $extended := (resources.Match "css/extended/*.css") | resources.Concat "assets/css/extended.css" | resources.Minify }}
 
 {{- /* bundle all required css */}}
 {{- /* Add extended css after theme style */ -}}
-{{- $stylesheet := (slice $license_css $core $extended) | resources.Concat "assets/css/stylesheet.css"  }}
+{{- $stylesheet := (slice $license_css $core $extended) | resources.Concat (printf "assets/css/stylesheet-%s.css" $styleVariant)  }}
 
 {{- if not site.Params.assets.disableFingerprinting }}
 {{- $stylesheet := $stylesheet | fingerprint }}
@@ -124,7 +154,6 @@
 {{- end -}}
 
 {{- /* Favicons */}}
-<link rel="icon" href="{{ site.Params.assets.favicon | default "favicon.ico" | absURL }}">
 <link rel="icon" type="image/png" sizes="16x16" href="{{ site.Params.assets.favicon16x16 | default "favicon-16x16.png" | absURL }}">
 <link rel="icon" type="image/png" sizes="32x32" href="{{ site.Params.assets.favicon32x32 | default "favicon-32x32.png" | absURL }}">
 <link rel="apple-touch-icon" href="{{ site.Params.assets.apple_touch_icon | default "apple-touch-icon.png" | absURL }}">

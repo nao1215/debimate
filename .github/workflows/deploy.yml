@@ -41,7 +41,7 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.161.1'
+          hugo-version: '0.166.0'
           extended: true
 
       - name: Test migration checks
@@ -71,11 +71,17 @@ jobs:
       - name: Check AdSense loading
         run: python3 scripts/check_adsense.py
 
+      - name: Check asset delivery
+        run: python3 scripts/check_asset_delivery.py
+
       - name: Check responsive images
         run: python3 scripts/check_image_delivery.py
 
       - name: Check pagination SEO
         run: python3 scripts/check_pagination_seo.py
+
+      - name: Check Twitter embeds
+        run: python3 scripts/check_twitter_embeds.py
 
       - name: Check Weeknotes migration
         run: python3 scripts/check_weeknotes.py

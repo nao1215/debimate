@@ -7,3 +7,36 @@
   .mermaid { background: #ffffff !important; padding: 10px; border-radius: 5px; }
 </style>
 {{- end }}
+{{- if .Store.Get "hasTwitterEmbed" }}
+<script>
+(() => {
+  const tweets = document.querySelectorAll('.twitter-tweet');
+  if (!tweets.length) return;
+
+  let loaded = false;
+  const loadTwitter = () => {
+    if (loaded) return;
+    loaded = true;
+    const script = document.createElement('script');
+    script.src = 'https://platform.twitter.com/widgets.js';
+    script.async = true;
+    script.charset = 'utf-8';
+    script.dataset.twitterWidgets = 'true';
+    document.head.appendChild(script);
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    loadTwitter();
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    if (entries.some((entry) => entry.isIntersecting)) {
+      observer.disconnect();
+      loadTwitter();
+    }
+  }, { rootMargin: '800px 0px' });
+  tweets.forEach((tweet) => observer.observe(tweet));
+})();
+</script>
+{{- end }}
