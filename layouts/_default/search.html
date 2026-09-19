@@ -1,0 +1,27 @@
+{{- define "main" }}
+
+<header class="page-header search-page-header">
+  <h1>{{- .Title -}}</h1>
+  <div class="post-description">
+    {{ .Description | default "記事・週報・技術ノートを横断して検索できます。" }}
+  </div>
+</header>
+
+<section class="search-panel" aria-label="サイト内検索">
+  <label class="search-label" for="searchInput">キーワード</label>
+  <div class="search-input-wrap">
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"></circle>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input id="searchInput" autofocus
+      placeholder="{{ .Params.placeholder | default "例: Go、分散システム、キャリア" }}"
+      aria-describedby="searchStatus" type="search" autocomplete="off" maxlength="64">
+  </div>
+  <p id="searchStatus" class="search-status" aria-live="polite">検索データを読み込んでいます…</p>
+</section>
+
+<ul id="searchResults" class="search-results" aria-label="検索結果"></ul>
+
+{{- end }}{{/* end main */ -}}
