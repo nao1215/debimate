@@ -1,0 +1,24 @@
+{{- $level := .Level -}}
+{{- $visualClass := "" -}}
+{{- /*
+  通常の記事は、文字を大きくしすぎないため本文を ### から書いてきた。
+  ページタイトルが h1 なので、HTML 上は h2 から始まるよう一段繰り上げる。
+  元のレベルは class に残し、custom.css で従来と同じ見た目にする。
+
+  Weeknotes は h4 を話題の分割位置として使うため、post だけを対象にする。
+*/ -}}
+{{- if and (eq .Page.Section "post") (ge .Level 3) -}}
+  {{- $level = sub .Level 1 -}}
+  {{- $visualClass = printf "heading-level-%d" .Level -}}
+{{- end -}}
+{{- $class := $visualClass -}}
+{{- with index .Attributes "class" -}}
+  {{- $class = strings.TrimSpace (printf "%s %s" $class .) -}}
+{{- end -}}
+<h{{ $level }} id="{{ .Anchor }}"
+  {{- with $class }} class="{{ . }}"{{ end -}}
+  {{- range $key, $value := .Attributes -}}
+    {{- if and $value (ne $key "class") (ne $key "id") }} {{ printf "%s=%q" $key $value | safeHTMLAttr }}{{ end -}}
+  {{- end -}}>
+  {{- .Text -}}
+</h{{ $level }}>

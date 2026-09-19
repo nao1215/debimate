@@ -218,6 +218,28 @@ html {
 .post-content h2 { font-size: 1.6rem; }
 .post-content h3 { font-size: 1.3rem; }
 
+/* 記事本文の Markdown 見出しは、従来の文字サイズを保ったまま
+   render-heading.html で HTML レベルだけ一段繰り上げる。 */
+.post-content h2.heading-level-3 {
+  margin: 24px 0 16px;
+  font-size: 1.3rem;
+}
+
+.post-content h3.heading-level-4 {
+  margin: 24px 0 16px;
+  font-size: 16px;
+}
+
+.post-content h4.heading-level-5 {
+  margin: 24px 0 16px;
+  font-size: 14px;
+}
+
+.post-content h5.heading-level-6 {
+  margin: 24px 0 16px;
+  font-size: 12px;
+}
+
 /* テーマ既定の .post-title は 40px 固定で、狭い画面では
    「2026/08/10週の学び」のようなタイトルが画面幅いっぱいに膨らむ。
    スマホ幅だけ縮める（PC 幅は既定のまま） */
