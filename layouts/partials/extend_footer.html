@@ -1,3 +1,4 @@
+{{- if .Store.Get "hasMermaid" }}
 <script type="module">
   import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
   mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
@@ -5,3 +6,4 @@
 <style>
   .mermaid { background: #ffffff !important; padding: 10px; border-radius: 5px; }
 </style>
+{{- end }}
