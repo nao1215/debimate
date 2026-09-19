@@ -68,6 +68,9 @@ jobs:
       - name: Check internal links
         run: python3 scripts/check_links.py
 
+      - name: Check pagination SEO
+        run: python3 scripts/check_pagination_seo.py
+
       - name: Check Weeknotes migration
         run: python3 scripts/check_weeknotes.py
 
