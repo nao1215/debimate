@@ -33,6 +33,8 @@ def check(root: Path) -> None:
     article_path = next(root.glob("post/ja/*/index.html"))
     pages = {
         "home": Assets(root / "index.html"),
+        "about": Assets(root / "about" / "index.html"),
+        "posts": Assets(root / "post" / "ja" / "index.html"),
         "search": Assets(root / "search" / "index.html"),
         "article": Assets(article_path),
     }
@@ -44,7 +46,17 @@ def check(root: Path) -> None:
         )
 
     bundles = {page.stylesheets[0] for page in pages.values()}
-    assert len(bundles) == len(pages), "Home, search, and article pages must use distinct CSS bundles"
+    assert len(bundles) == len(pages), (
+        "Home, About, Posts, Search, and article pages must use distinct CSS bundles"
+    )
+
+    css = {
+        name: local_path(root, page.stylesheets[0]).read_text()
+        for name, page in pages.items()
+    }
+    assert ".post-content" in css["about"], "About bundle is missing prose styles"
+    assert ".archive-year" in css["posts"], "Posts bundle is missing archive styles"
+    assert ".post-entry" in css["search"], "Search bundle is missing result-card styles"
 
     home = pages["home"]
     assert not any(icon and icon.endswith("favicon.ico") for icon in home.icons), (
@@ -53,7 +65,7 @@ def check(root: Path) -> None:
     assert any(icon and "favicon-16x16.png" in icon for icon in home.icons)
     assert any(icon and "favicon-32x32.png" in icon for icon in home.icons)
 
-    print("Asset delivery verified: page-specific CSS and PNG favicons")
+    print("Asset delivery verified: page-specific CSS dependencies and PNG favicons")
 
 
 if __name__ == "__main__":

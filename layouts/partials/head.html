@@ -89,27 +89,33 @@
 {{- $license_css := (resources.Get "css/core/license.css") }}
 {{- /* Load only the theme components used by this page type. */ -}}
 {{- $styleVariant := "list" -}}
+{{- $isPostArchive := and (eq .Kind "section") (eq .Section "post") -}}
+{{- $hasSectionContent := and (not .IsPage) (not .IsHome) (ne .RawContent "") -}}
 {{- if eq .Kind "404" -}}
   {{- $styleVariant = "404" -}}
-{{- else if eq .Layout "archives" -}}
+{{- else if or (eq .Layout "archives") $isPostArchive -}}
   {{- $styleVariant = "archives" -}}
 {{- else if eq .Layout "search" -}}
   {{- $styleVariant = "search" -}}
 {{- else if .IsPage -}}
   {{- $styleVariant = "single" -}}
+{{- else if $hasSectionContent -}}
+  {{- $styleVariant = "content-list" -}}
 {{- else if eq .Kind "taxonomy" -}}
   {{- $styleVariant = "terms" -}}
+{{- else if .IsHome -}}
+  {{- $styleVariant = "home" -}}
 {{- end -}}
 {{- $commonResources := slice -}}
 {{- if eq .Kind "404" }}{{ $commonResources = $commonResources | append (resources.Get "css/common/404.css") }}{{ end -}}
-{{- if eq .Layout "archives" }}{{ $commonResources = $commonResources | append (resources.Get "css/common/archive.css") }}{{ end -}}
+{{- if or (eq .Layout "archives") $isPostArchive }}{{ $commonResources = $commonResources | append (resources.Get "css/common/archive.css") }}{{ end -}}
 {{- $commonResources = $commonResources | append (resources.Get "css/common/footer.css") -}}
 {{- $commonResources = $commonResources | append (resources.Get "css/common/header.css") -}}
 {{- $commonResources = $commonResources | append (resources.Get "css/common/main.css") -}}
-{{- if and (not .IsPage) (ne .Layout "archives") (ne .Layout "search") -}}
+{{- if or (eq .Layout "search") (and (not .IsPage) (not $isPostArchive) (ne .Layout "archives")) -}}
   {{- $commonResources = $commonResources | append (resources.Get "css/common/post-entry.css") -}}
 {{- end -}}
-{{- if and .IsPage (ne .Layout "search") -}}
+{{- if or (and .IsPage (ne .Layout "search")) $hasSectionContent -}}
   {{- $commonResources = $commonResources | append (resources.Get "css/common/post-single.css") -}}
 {{- end -}}
 {{- if and .IsHome site.Params.profileMode.enabled -}}

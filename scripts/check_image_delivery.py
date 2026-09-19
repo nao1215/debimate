@@ -11,6 +11,7 @@ class HomePage(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.cover_images = []
         self.image_preloads = []
+        self.oss_badges = []
         self.in_cover = False
         self.oss_style = ""
         self.feed(path.read_text())
@@ -22,6 +23,8 @@ class HomePage(HTMLParser):
             self.in_cover = True
         if tag == "img" and self.in_cover:
             self.cover_images.append(attrs)
+        if tag == "img" and "oss-card-badge" in attrs.get("class", "").split():
+            self.oss_badges.append(attrs)
         if tag == "link" and "preload" in attrs.get("rel", "").split() and attrs.get("as") == "image":
             self.image_preloads.append(attrs)
         if has_oss_pick:
@@ -39,6 +42,20 @@ def check(root: Path) -> None:
         for attribute in ("srcset", "sizes", "width", "height"):
             assert image.get(attribute), f"Homepage cover is missing {attribute}: {image.get('src')}"
         assert image.get("loading") == "lazy", f"Homepage cover must be lazy-loaded: {image.get('src')}"
+        assert image.get("sizes") == (
+            "(min-width: 992px) 300px, "
+            "(min-width: 769px) calc((100vw - 64px) / 2 - 50px), "
+            "(min-width: 652px) calc((100vw - 44px) / 2 - 30px), "
+            "calc(100vw - 58px)"
+        ), (
+            f"Homepage cover has an inaccurate sizes hint: {image.get('sizes')}"
+        )
+
+    assert home.oss_badges, "No Featured OSS badges found on the homepage"
+    for badge in home.oss_badges:
+        assert badge.get("width") and badge.get("height"), (
+            f"Featured OSS badge is missing intrinsic dimensions: {badge.get('src')}"
+        )
 
     match = re.search(r"--oss-pick-bg:\s*url\(['\"]?([^'\")]+)", home.oss_style)
     assert match, "Featured OSS background image not found"

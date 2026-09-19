@@ -38,9 +38,9 @@
         {{- $slot := 520 }}
         {{- if $cover }}{{ $slot = int (math.Min $slot $cover.Width) }}{{ end }}
         {{- $sizesAttr = printf "min(100vw, %dpx)" $slot }}
-    {{- else if .IsHome }}
-        {{- /* The homepage uses a three-column grid above 640px. */ -}}
-        {{- $sizesAttr = "(min-width: 641px) 360px, calc(100vw - 28px)" }}
+    {{- else if $.IsHome }}
+        {{- /* Match the one-, two-, and three-column homepage grid including its padding. */ -}}
+        {{- $sizesAttr = "(min-width: 992px) 300px, (min-width: 769px) calc((100vw - 64px) / 2 - 50px), (min-width: 652px) calc((100vw - 44px) / 2 - 30px), calc(100vw - 58px)" }}
     {{- end }}
 
     {{- if $addLink }}
@@ -53,7 +53,7 @@
             <img loading="{{$loading}}"
                 srcset='{{- range $size := $sizes -}}
                             {{- if (ge $cover.Width $size) }}
-                                {{- printf "%s %s" (($cover.Resize (printf "%sx" $size)).Permalink) (printf "%sw," $size) }}
+                                {{- printf "%s %s" (($cover.Resize (printf "%sx q70" $size)).Permalink) (printf "%sw," $size) }}
                             {{- end }}
                         {{- end }}
                         {{- printf "%s %dw" ($cover.Permalink) ($cover.Width) }}'
