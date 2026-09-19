@@ -22,6 +22,38 @@
   --theme: rgb(245, 245, 245);
   --code-bg: rgb(233, 233, 233);
   --border: rgb(224, 224, 224);
+  /* 補助文字を --code-bg に載せても WCAG AA の 4.5:1 を下回らない色にする */
+  --secondary: rgb(100, 100, 100);
+}
+
+:root[data-theme="dark"] {
+  /* ダークテーマの --code-bg に対しても 4.5:1 以上を保つ */
+  --secondary: rgb(170, 171, 172);
+}
+
+
+/* 本文リンクは色だけに頼らず、常時下線で周囲の文章と区別する */
+.post-content a:not(.anchor) {
+  box-shadow: none;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.post-content a:not(.anchor):hover {
+  text-decoration-thickness: 2px;
+}
+
+/* テーマ既定では一部ボタンの outline が消えるため、キーボード操作時だけ戻す */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+#theme-toggle:focus-visible,
+.top-link:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
 }
 
 
