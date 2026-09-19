@@ -6,7 +6,6 @@ const searchInput = document.getElementById('searchInput');
 const searchStatus = document.getElementById('searchStatus');
 let first;
 let last;
-let currentElement = null;
 let resultsAvailable = false;
 
 function escapeHtml(value) {
@@ -111,18 +110,16 @@ function focusResult(item) {
   });
   if (!item) {
     searchInput.focus();
-    currentElement = null;
     return;
   }
   item.classList.add('focus');
-  currentElement = item.querySelector('a');
-  currentElement.focus();
+  item.querySelector('a').focus();
 }
 
 document.addEventListener('keydown', (event) => {
   const active = document.activeElement;
-  const insideSearch = document.getElementById('searchbox')?.contains(active) ||
-    document.querySelector('.search-panel')?.contains(active) || resultList.contains(active);
+  const insideSearch = document.querySelector('.search-panel').contains(active) ||
+    resultList.contains(active);
 
   if (event.key === 'Escape' && insideSearch) {
     searchInput.value = '';
