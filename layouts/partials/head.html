@@ -13,8 +13,29 @@
 <meta name="robots" content="noindex, nofollow">
 {{- end }}
 
+{{- /* Initialize the same paginator used by PaperMod's default list template. */ -}}
+{{- $pageNumber := 1 -}}
+{{- $paginationURL := .Permalink -}}
+{{- if or .IsHome (eq .Kind "term") -}}
+  {{- $pages := union .RegularPages .Sections -}}
+  {{- if .IsHome -}}
+    {{- $pages = where site.RegularPages "Type" "in" site.Params.mainSections -}}
+    {{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true" -}}
+  {{- end -}}
+  {{- $paginator := .Paginate $pages -}}
+  {{- $pageNumber = $paginator.PageNumber -}}
+  {{- if gt $pageNumber 1 -}}
+    {{- $paginationURL = $paginator.URL | absURL -}}
+    {{- .Store.Set "paginationPageNumber" $pageNumber -}}
+  {{- end -}}
+{{- end -}}
+{{- $paginationTitle := "" -}}
+{{- if gt $pageNumber 1 -}}
+  {{- $paginationTitle = printf " - %dページ目" $pageNumber -}}
+{{- end -}}
+
 {{- /* Title */}}
-<title>{{ if .IsHome }}{{ else }}{{ if .Title }}{{ .Title }} | {{ end }}{{ end }}{{ site.Title }}</title>
+<title>{{ if .IsHome }}{{ else }}{{ if .Title }}{{ .Title }} | {{ end }}{{ end }}{{ site.Title }}{{ $paginationTitle }}</title>
 
 {{- /* Meta */}}
 {{- if .IsHome }}
@@ -26,22 +47,9 @@
 {{- end }}
 <meta name="description" content="{{ partial "seo_description.html" . }}">
 <meta name="author" content="{{ (partial "author.html" . ) }}">
-{{- $canonicalURL := .Permalink -}}
+{{- $canonicalURL := $paginationURL -}}
 {{- with .Params.canonicalURL -}}
   {{- $canonicalURL = trim . " " -}}
-{{- else -}}
-  {{- if or .IsHome (eq .Kind "term") -}}
-    {{- /* Keep this collection in sync with PaperMod's default list template. */ -}}
-    {{- $pages := union .RegularPages .Sections -}}
-    {{- if .IsHome -}}
-      {{- $pages = where site.RegularPages "Type" "in" site.Params.mainSections -}}
-      {{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true" -}}
-    {{- end -}}
-    {{- $paginator := .Paginate $pages -}}
-    {{- if gt $paginator.PageNumber 1 -}}
-      {{- $canonicalURL = $paginator.URL | absURL -}}
-    {{- end -}}
-  {{- end -}}
 {{- end -}}
 <link rel="canonical" href="{{ $canonicalURL }}">
 {{- if site.Params.analytics.google.SiteVerificationTag }}

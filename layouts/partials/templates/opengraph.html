@@ -4,9 +4,11 @@
   <meta property="og:site_name" content="{{ . }}">
 {{- end }}
 
-{{- with or .Title site.Title site.Params.title | plainify }}
-  <meta property="og:title" content="{{ . }}">
+{{- $title := or .Title site.Title site.Params.title | plainify -}}
+{{- with .Store.Get "paginationPageNumber" -}}
+  {{- $title = printf "%s - %dページ目" $title . -}}
 {{- end }}
+<meta property="og:title" content="{{ $title }}">
 
 <meta property="og:description" content="{{ partial "seo_description.html" . }}">
 

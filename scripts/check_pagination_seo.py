@@ -10,15 +10,30 @@ class Page(HTMLParser):
     def __init__(self, path: Path):
         super().__init__(convert_charrefs=True)
         self.canonical = []
+        self.in_title = False
         self.is_redirect = False
+        self.meta = {}
+        self.title = ""
         self.feed(path.read_text())
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "title":
+            self.in_title = True
         if tag == "link" and "canonical" in attrs.get("rel", "").split():
             self.canonical.append(attrs.get("href"))
-        if tag == "meta" and attrs.get("http-equiv", "").lower() == "refresh":
-            self.is_redirect = True
+        if tag == "meta":
+            self.meta[attrs.get("name", attrs.get("property"))] = attrs.get("content")
+            if attrs.get("http-equiv", "").lower() == "refresh":
+                self.is_redirect = True
+
+    def handle_endtag(self, tag):
+        if tag == "title":
+            self.in_title = False
+
+    def handle_data(self, data):
+        if self.in_title:
+            self.title += data
 
 
 def check(root: Path) -> None:
@@ -46,10 +61,17 @@ def check(root: Path) -> None:
             f"Canonical must point at the pagination page itself: {path} -> {page.canonical[0]}"
         )
         assert not canonical.query and not canonical.fragment, f"Canonical must be clean: {path}"
+
+        suffix = f" - {page_number}ページ目"
+        assert page.title.endswith(suffix), f"Page number missing from title: {path}"
+        for key in ("og:title", "twitter:title", "description", "og:description", "twitter:description"):
+            assert page.meta.get(key, "").endswith(suffix), (
+                f"Page number missing from {key}: {path}"
+            )
         checked += 1
 
     assert checked, "No pagination pages found"
-    print(f"Pagination SEO verified: {checked} self-referencing canonical URLs")
+    print(f"Pagination SEO verified: {checked} canonical URLs and unique metadata sets")
 
 
 if __name__ == "__main__":

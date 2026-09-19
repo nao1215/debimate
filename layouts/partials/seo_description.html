@@ -27,4 +27,11 @@
 {{- if not $description -}}
   {{- $description = printf "%s - %s" .Title site.Title -}}
 {{- end -}}
-{{- $description | truncate 160 -}}
+{{- $pageNumber := .Store.Get "paginationPageNumber" | default 1 -}}
+{{- if gt $pageNumber 1 -}}
+  {{- $suffix := printf " - %dページ目" $pageNumber -}}
+  {{- $description = printf "%s%s" ($description | truncate (sub 160 (len $suffix))) $suffix -}}
+  {{- $description -}}
+{{- else -}}
+  {{- $description | truncate 160 -}}
+{{- end -}}
