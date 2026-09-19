@@ -76,6 +76,7 @@ redirects-check: ## 移行前URL向けのリダイレクトが最新か検証
 
 lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビルドから実施）
 	$(HUGO) --minify
+	python3 scripts/check_adsense.py
 	python3 scripts/check_links.py
 	python3 scripts/check_pagination_seo.py
 	python3 scripts/check_weeknotes.py

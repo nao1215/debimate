@@ -1,2 +1,5 @@
+{{- $customSingle := in (slice "bbs" "weeknotes") .Section -}}
+{{- if and .IsPage (not .Params.disableAdsense) (not $customSingle) (ne .Layout "search") }}
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5850634964503982"
      crossorigin="anonymous"></script>
+{{- end }}
