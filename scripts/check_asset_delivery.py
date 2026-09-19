@@ -9,14 +9,19 @@ from urllib.parse import urlparse
 class Assets(HTMLParser):
     def __init__(self, path: Path):
         super().__init__(convert_charrefs=True)
+        self.classes = set()
+        self.element_ids = set()
         self.icons = []
         self.stylesheets = []
         self.feed(path.read_text())
 
     def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        self.classes.update(attrs.get("class", "").split())
+        if attrs.get("id"):
+            self.element_ids.add(attrs["id"])
         if tag != "link":
             return
-        attrs = dict(attrs)
         rel = attrs.get("rel", "").split()
         href = attrs.get("href")
         if "icon" in rel:
@@ -57,6 +62,10 @@ def check(root: Path) -> None:
     assert ".post-content" in css["about"], "About bundle is missing prose styles"
     assert ".archive-year" in css["posts"], "Posts bundle is missing archive styles"
     assert ".post-entry" in css["search"], "Search bundle is missing result-card styles"
+    assert ".search-panel" in css["search"], "Search bundle is missing panel styles"
+    assert ".search-result-summary" in css["search"], "Search bundle is missing summary styles"
+    assert "search-panel" in pages["search"].classes
+    assert {"searchInput", "searchStatus", "searchResults"} <= pages["search"].element_ids
 
     home = pages["home"]
     assert not any(icon and icon.endswith("favicon.ico") for icon in home.icons), (
