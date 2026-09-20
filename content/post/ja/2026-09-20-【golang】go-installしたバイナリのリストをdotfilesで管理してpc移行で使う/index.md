@@ -2,7 +2,7 @@
 title: 【Golang】go installしたバイナリのリストをdotfilesとして管理してPC移行で使う
 type: post
 date: 2026-09-20
-draft: true
+draft: false
 categories:
 - Go
 tags:
