@@ -20,6 +20,8 @@ cover:
 
 本記事では、[Claude のキャンペーン](https://claude.com/contact-sales/claude-for-oss)に応募した際の申請文を共有します。申請から1ヶ月ほど経ちましたが返事はなく、サイレント不採択ではないかと予想しています。
 
+（単純に、目を見張る OSS 活動ではなかった、とも考えています）
+
 ---
 
 ### 応募条件（Who should apply）
