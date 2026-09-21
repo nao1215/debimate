@@ -19,7 +19,7 @@ date: 2026-07-06T00:00:00+09:00
 
 #### 他者の OSS star 獲得履歴が隠蔽された
 
-GitHub Star と言えば、[GitHub は他者が管理する Star 獲得履歴をプレイベート化した](https://github.blog/changelog/2026-06-30-upcoming-access-restrictions-to-public-api-endpoints-and-ui-views/)。私は、誰がどんな有名 OSS を Star しているのかを見に行くのが好きだった。しかし、悪用する人がいたので制限がかかったらしい。以前は、GitHub は永久に生き残るプラットフォームだと感じていたが、最近は LLM の登場で壊れてきた雰囲気がある。それでも GitHub は嫌いになることはできない。
+GitHub Star と言えば、[GitHub は他者が管理する Star 獲得履歴をプライベート化した](https://github.blog/changelog/2026-06-30-upcoming-access-restrictions-to-public-api-endpoints-and-ui-views/)。私は、誰がどんな有名 OSS を Star しているのかを見に行くのが好きだった。しかし、悪用する人がいたので制限がかかったらしい。以前は、GitHub は永久に生き残るプラットフォームだと感じていたが、最近は LLM の登場で壊れてきた雰囲気がある。それでも GitHub は嫌いになることはできない。
 
 ---
 
