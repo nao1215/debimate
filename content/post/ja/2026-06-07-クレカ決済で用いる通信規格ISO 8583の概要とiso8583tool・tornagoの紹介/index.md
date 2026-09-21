@@ -5,6 +5,11 @@ date: 2026-06-07
 draft: false
 categories:
 - プログラミング
+tags:
+- iso8583
+- golang
+- payments
+- oss
 cover:
   image: images/iso8583-icon.webp
   alt: iso8583-icon

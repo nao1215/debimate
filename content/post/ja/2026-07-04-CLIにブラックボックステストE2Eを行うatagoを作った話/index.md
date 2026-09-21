@@ -6,6 +6,11 @@ draft: false
 categories:
 - プログラミング
 - OSS
+tags:
+- golang
+- cli
+- e2e
+- oss
 cover:
   image: images/atago-logo.webp
   alt: atago-logo

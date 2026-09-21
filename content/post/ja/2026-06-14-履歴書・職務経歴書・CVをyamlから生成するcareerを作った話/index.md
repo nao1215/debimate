@@ -6,6 +6,11 @@ draft: false
 categories:
 - プログラミング
 - OSS
+tags:
+- golang
+- yaml
+- resume
+- oss
 cover:
   image: images/japanese-resume-p-1-top-half.webp
   alt: japanese-resume-p-1-top-half
@@ -377,4 +382,3 @@ career generate resume.yaml --template all  # PDF を生成
 ### 最後に
 
 試しに私の履歴書と職務経歴書を作成しましたが、概ね満足できるクオリティでした（フォントが若干怪しさを感じましたが）。そして、妻にとっては yaml が難しかったようです。
-

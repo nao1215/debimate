@@ -6,6 +6,11 @@ draft: false
 categories:
 - プログラミング
 - OSS
+tags:
+- golang
+- llm
+- writing
+- oss
 cover:
   image: images/omokage-icon.webp
   alt: omokage
