@@ -1,4 +1,4 @@
-homeInfoParams = { Content = "nchika(nao1215)のブログ" }
+homeInfoParams = { Content = "Go・CLI・決済領域を中心にOSSを開発するバックエンドエンジニア nchika(nao1215) のブログ" }
 description = "nchika(nao1215)のブログ。技術的な内容や OSS について書き、週報や技術ノートを残します。Go、C言語、Linux、OSS 開発、技術ノートを中心に発信しています。"
 
 author = "nchika"
