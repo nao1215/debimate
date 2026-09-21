@@ -1,30 +1,58 @@
 {{- /*
-  検索索引（Fuse.js が読む /index.json）。
+  検索索引（/search/ の fastsearch.js が読む /index.json）。
 
-  テーマ既定のテンプレートからの変更点は 2 つ。
+  1 レコードの単位はページではなく「検索結果として見せたい塊」にする。
 
-  1. 本文を先頭 3,000 文字までに切る
-     全記事の本文をそのまま入れると 3.2MB（gzip 1.0MB）になり、検索ページを
-     開くたびに丸ごとダウンロードする事になっていた。3,000 文字で切ると
-     1.9MB（gzip 0.6MB）まで落ちる。記事の後半にしか出てこない語は
-     引っかからなくなるが、316 本のうち 99 本は元から 3,000 文字未満で影響がない。
+  - 記事（post）: 1 記事 1 レコード
+  - 技術ノート（notes・ml）: 1 ページ 1 レコード。h2/h3 を headings に入れ、
+    どの見出しで当たったかを結果に出せるようにする
+  - Weeknotes: 週ではなく話題（h4）ごとに 1 レコード。URL は話題ページ
+    （/weeknotes/2026-09-21/xxxx/）を指し、parent_title に週の題を入れる。
+    週単位だと「2026/09/14週」としか出ず、検索語との関係が見えなかった
 
-  2. .Scratch をやめて slice / append で組む
-     .Scratch はページに紐づいて残るため、hugo server のリビルドで前回分に
-     追記され、開発時だけ検索結果が 2 件ずつ重複していた。
+  本文は先頭 3,000 文字までに切る。全文を入れると索引が数 MB になり、
+  検索ページを開くたびに丸ごとダウンロードする事になる。
 
-  合わせて、改行や連続する空白を 1 個の空白に潰している。行またぎの語も
-  1 つの文字列として拾えるようになり、その分だけ索引も小さくなる。
+  .Scratch ではなく slice / append で組むのは、.Scratch がページに紐づいて
+  残り、hugo server のリビルドで結果が重複するため。
 */ -}}
 {{- $index := slice -}}
 {{- range site.RegularPages -}}
-  {{- if and (not .Params.searchHidden) (ne .Layout "archives") (ne .Layout "search") -}}
-    {{- $plain := .Plain | replaceRE "\\s+" " " | strings.TrimSpace -}}
-    {{- $index = $index | append (dict
-      "title" .Title
-      "content" (substr $plain 0 3000)
-      "permalink" .Permalink
-      "summary" .Summary) -}}
+  {{- if or .Params.searchHidden (eq .Layout "archives") (eq .Layout "search") (eq .Section "weeknotes") -}}
+    {{- continue -}}
   {{- end -}}
+  {{- $type := "page" -}}
+  {{- if eq .Section "post" }}{{ $type = "post" }}{{ else if in (slice "notes" "ml") .Section }}{{ $type = "note" }}{{ end -}}
+  {{- $headings := slice -}}
+  {{- if eq $type "note" -}}
+    {{- range findRE `(?s)<h[23]\b[^>]*>.*?</h[23]>` .Content -}}
+      {{- $headings = $headings | append (. | plainify | htmlUnescape | strings.TrimSpace) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $parent := "" -}}
+  {{- if and (eq $type "note") .Parent -}}
+    {{- $parent = .Parent.Params.cardLabel | default .Parent.Title -}}
+  {{- end -}}
+  {{- $plain := .Plain | htmlUnescape | replaceRE "\\s+" " " | strings.TrimSpace -}}
+  {{- $index = $index | append (dict
+    "type" $type
+    "title" .Title
+    "parent_title" $parent
+    "url" .RelPermalink
+    "date" (.Date.Format "2006-01-02")
+    "headings" $headings
+    "content" (substr $plain 0 3000)) -}}
+{{- end -}}
+{{- range partial "weeknotes/topics.html" . -}}
+  {{- if .page.Draft }}{{ continue }}{{ end -}}
+  {{- $plain := .body | plainify | htmlUnescape | replaceRE "\\s+" " " | strings.TrimSpace -}}
+  {{- $index = $index | append (dict
+    "type" "weeknotes"
+    "title" .page.Title
+    "parent_title" .week.Title
+    "url" .page.RelPermalink
+    "date" (.week.Date.Format "2006-01-02")
+    "headings" (slice)
+    "content" (substr $plain 0 3000)) -}}
 {{- end -}}
 {{- $index | jsonify -}}

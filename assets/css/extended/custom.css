@@ -204,18 +204,62 @@ body {
 }
 
 .search-result-title {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
+  display: block;
   color: var(--primary);
   font-weight: 650;
   line-height: 1.45;
 }
 
-.search-result-title > span {
-  flex: 0 0 auto;
+.search-result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
   color: var(--secondary);
+  font-size: 0.8rem;
+}
+
+/* 種別はサイトの無彩色の中で塗り・枠・地色の違いだけで見分ける */
+.search-result-badge {
+  padding: 0.05rem 0.5rem;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.search-result-badge-post {
+  color: var(--theme);
+  background: var(--primary);
+}
+
+.search-result-badge-weeknotes {
+  color: var(--primary);
+  background: transparent;
+}
+
+.search-result-badge-note,
+.search-result-badge-page {
+  color: var(--primary);
+  border-color: var(--border);
+  background: var(--code-bg);
+}
+
+.search-result-heading {
+  display: block;
+  margin-top: 0.3rem;
+  color: var(--secondary);
+  font-size: 0.85rem;
+}
+
+#searchResults mark {
+  padding: 0 0.1em;
+  color: var(--primary);
+  font-weight: 700;
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  border-radius: 3px;
 }
 
 .search-result-summary {
@@ -226,7 +270,7 @@ body {
   font-size: 0.9rem;
   line-height: 1.65;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
 }
 
 @media (max-width: 640px) {
