@@ -1,0 +1,6 @@
+<section class="application-card application-card-{{ .Get "lang" }}">
+  <p class="application-card-label">{{ .Get "label" }}</p>
+  <div class="application-card-body">
+    {{ .Inner | markdownify }}
+  </div>
+</section>

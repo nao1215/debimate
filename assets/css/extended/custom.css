@@ -67,6 +67,36 @@ summary:focus-visible,
   margin: 1rem 0;
 }
 
+/* 申請文の英語原文と日本語訳を常時表示するカード */
+.post-content .application-card {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--border);
+  border-left: 5px solid #2f5f8f;
+  border-radius: 8px;
+  background: var(--entry);
+}
+
+.post-content .application-card-ja {
+  border-left-color: #2f855a;
+}
+
+.post-content .application-card-label {
+  margin: 0 0 0.75rem;
+  color: var(--secondary);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.post-content .application-card-body > :first-child {
+  margin-top: 0;
+}
+
+.post-content .application-card-body > :last-child {
+  margin-bottom: 0;
+}
+
 /* 一覧ページは --code-bg を背景に使う作りなので、上の変更に合わせて
    ページ背景と同じ --theme を見るようにする（ダークは元から --theme） */
 .list {
