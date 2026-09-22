@@ -43,3 +43,14 @@ jsonize は jo の用途をカバーできる一方、ライブラリとして�
 
 あとは、ダイの大冒険 勇者アバンと獄炎の魔王、フリーレン、サンキューピッチ、転生モノがいくつか最後の砦として残っている。面白い漫画があればこっそり教えていただきたい。
 
+---
+
+#### Googlebook OS + ラップトップ PC の情報が発表され始めた
+
+- [Googlebook: The laptop your Android phone has been waiting for（公式）](https://blog.google/products-and-platforms/devices/googlebook/pre-order-googlebook/)
+- [「Linuxデスクトップ元年」到来か。Debianが使えるGooglebook OS発表](https://smhn.info/202609-googlebook-os-debian-linux-environment-launch)
+- [Googlebook OS の詳細が公開。Android と ChromeOS を統合、アップデートは最大 10 年](https://helentech.jp/news-googlebook-os-design-android-integration-91503/)
+
+金額は、899 USD（約14万）。Aluminium OS と呼ばれていた頃から注目していたが、ようやくお披露目された。個人的に注目している点は、2つ。一つは、Debian が動くこと。pKVM ベースの Level 5認証ハイパーバイザで隔離された Linux 環境を動かせる。もう一つは、Android アプリがネイティブに動かせる構成であること。ChromeOS が長年やってきたエミュレート／仮想化コンテナ内での実行ではなく、ネイティブに動かせる。勿論、全ての Android アプリが動くわけではないと思うが、大きな前進だ。開発者目線では、Gemini やスマホとの連携は正直興味がない。
+
+次に買うラップトップは、間違いなく Googlebook のどれかになると思う。もう少し先の将来を予測すると、Chromebox のようにデスクトップ環境向けの OS が登場すると、かなりテンションが上がる。私の開発環境なんて、Go と Visual Studio Code が動けば問題ないので、Android アプリも動かせるオモチャみたいな OS が欲しい。ここ最近の製品発表で一番テンションが上がった。
