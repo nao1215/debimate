@@ -59,7 +59,7 @@ jsonize は jo の用途をカバーできる一方、ライブラリとして�
 
 #### Bluesky のターミナルクライアントを作った
 
-[nao1215/atago](https://github.com/nao1215/atago) が TUI アプリを E2E テストでき、その機能を強化・検証するために、テスト対象アプリとして [nao1215/bluesky-terminal-client](https://github.com/nao1215/bluesky-terminal-client) を実装した。本当は Reddit クライアントがベストだったが、パブリック API を自由に使えない問題があった。仕方なく、Bluesky を題材にした。
+[nao1215/atago](https://github.com/nao1215/atago) が TUI アプリを E2E テストでき、その機能を強化・検証するために、テスト対象アプリとして [nao1215/bluesky-terminal-client](https://github.com/nao1215/bluesky-terminal-client) を実装した。本当は Reddit クライアントがベストだったが、Reddit はパブリック API を自由に使えない問題があった。仕方なく、Bluesky を題材にした。
 
 ターミナル上にインラインで画像を表示するために、Rust を採用した。私の把握している範囲では、Go の TUI ライブラリで高解像度の画像をインライン表示できるものは存在しない認識。
 
