@@ -70,3 +70,24 @@ jsonize は jo の用途をカバーできる一方、ライブラリとして�
 ![bluesky-terminal-client の画像ビューア](viewer.gif)
 
 しっかりと記事を書いて GitHub Star 稼ぎをしても良いのだが、「今更 Bluesky クライアントを紹介してもな」というお気持ちがあったので、weeknotes でひっそりと紹介する。
+
+---
+
+#### 新しい机が届いて、開発環境が整った
+
+2026/07/20週で「[仕事机の新調を検討](https://debimate.jp/weeknotes/2026-07-20/4c975a8cf076/)」、「[仕事机の現物確認 again](https://debimate.jp/weeknotes/2026-07-20/78170379e238/)」の話を書いたが、遂に机が届いた。ほぼ2か月待ちだった。ダイニングテーブルを仕事机にしているので、少し低めだ。
+
+{{< figures >}}
+{{< figure src="新しい机.webp" alt="新しい机" >}}
+{{< figure src="仕事環境.webp" alt="新しい机を設置した仕事環境" >}}
+{{< /figures >}}
+
+上記の机以外に追加で購入したものは、以下の通り。
+
+- [Anker Charging Station](https://www.amazon.co.jp/dp/B0D31HML9J?th=1&linkCode=ll2&tag=debimate07-22&linkId=1b23830ced4f5d82a1c7568ae33a6300&ref_=as_li_ss_tl)（上記の画像に見えない位置に置いてある）
+- [Edifier MR5 モニタースピーカー](https://www.amazon.co.jp/dp/B0DYJX892C?th=1&linkCode=ll2&tag=debimate07-22&linkId=29fb9eb5c071d97c639c6248f34c2d91&ref_=as_li_ss_tl)
+- [VAYDEER 金属製デュアルモニタースタンド](https://www.amazon.co.jp/dp/B0GGQQ54DD?th=1&linkCode=ll2&tag=debimate07-22&linkId=1dacb9da8c45bb8474949beeb39ffad1&ref_=as_li_ss_tl)
+
+机に余裕ができ、ドラムの音がしっかり聞こえるスピーカーに代わって、集中しやすい。モニタースタンド（デスクシェルフ）と Charging Station の両方に USB ポートが大量にあるので、PC 側の USB ポートが空いた。モニタースタンドには、タブレットやスマホを立てかけられ、下にキーボードとノート PC を同時に収納できる。引き出しが二か所あるのも便利だ。この利便性のために、木製の高級っぽいデスクシェルフを選ばなかった。
+
+新しい椅子かソファも買う予定だったが、旅行やら何やらで予算オーバーした。暫く買い物は控えたい。
