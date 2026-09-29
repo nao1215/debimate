@@ -68,7 +68,7 @@ Steam で快適にプレイできることに気づいてからチマチマと�
 
 現在の作業環境は、NucBox EVO-X2 であり、以下の構成だ。最近は、円安と半導体不足によって、[同じ PC の性能落ち版（RAM が64 GB と控えめ）](https://www.amazon.co.jp/dp/B0F5HDWNKR?pd_rd_i=B0F5HDWNKR&pd_rd_w=1I1QR&content-id=amzn1.sym.b8a755c3-4dc6-4219-9ded-79127776efca&pf_rd_p=b8a755c3-4dc6-4219-9ded-79127776efca&pf_rd_r=8EC1DT6F7AB41041NT31&pd_rd_wg=aCq2V&pd_rd_r=6b360132-4acb-4121-9302-fcb06d0bb8b7&sp_csd=d2lkZ2V0TmFtZT1zcF9kZXRhaWxfdGhlbWF0aWM&th=1&linkCode=ll2&tag=debimate07-22&linkId=21ed38cafc9d836c79ae03fc6cf77082&ref_=as_li_ss_tl)が37万する。2025年11月に、RAM 128 GB 版（私の PC）を買った時は29万程度だった。EVO-X2 はメモリ交換できないのが欠点だが、RAM を VRAM に回せるのが利点だ。
 
-```shell
+```text
            `.:/ossyyyysso/:.                nao@EVO-X2
         .:oyyyyyyyyyyyyyyyyyyo:`            ----------
       -oyyyyyyyodMMyyyyyyyysyyyyo-          OS: Kubuntu 26.04.1 LTS (Resolute Raccoon) x86_64
