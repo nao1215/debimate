@@ -36,6 +36,7 @@ ShowRssButtonInSectionTermList = true
     "https://x.com/ARC_AED",
     "https://bsky.app/profile/nchika.bsky.social",
     "https://dev.to/nchika",
+    "https://nao1215.itch.io/",
     "https://hackerone.com/nchika?type=user",
     "https://www.kaggle.com/nao1215",
   ]
@@ -64,6 +65,11 @@ url = "https://bsky.app/profile/nchika.bsky.social"
 [[socialIcons]]
 name = "dev"
 url = "https://dev.to/nchika"
+
+[[socialIcons]]
+name = "itchio"
+title = "itch.io"
+url = "https://nao1215.itch.io/"
 
 [[socialIcons]]
 name = "hackerone"
