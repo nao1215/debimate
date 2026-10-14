@@ -10,3 +10,11 @@ LLM を用いて、複数のゲーム（例：ブラックジャック）を作�
 LLM を使って、定性的・定量的にゲームをデバッグさせても、なかなかゲームは面白くならない。基本的に開発できる時間が限られているので、LLM エージェント同士が協調開発できるようなシステムで作り込んでおり、勝率やプレイ時間、ユーザーが面白さを感じるであろう要素（例：レアアイテムの出現頻度）をデータで出せるようにしている。ゲームエンジンも予め作成してあり、YAML でゲーム要素を制御するようにし、実装で LLM トークンを消費しないようにした。
 
 夜中に LLM が OK 出したものをテストプレイするが、プロンプトを書くのは面倒である。そこで、任天堂の[ゼルダエディタ](https://game.watch.impress.co.jp/docs/news/1078888.html)を参考にして、デバッグプレイ中にバグや意見の記録を残せるようにして LLM が後日改善していく仕組みを整えた。LLM が修正を加えると、YAML をホットリロードして変更が反映される。この状態であれば、快適に修正できる。今までゲーム開発はやり方が分からなかったが、4本目となると「あぁ、こうすれば楽に開発できるんだな」というポイントが分かってきた。ただし、面白さの見極め方はまだ掴めていない。
+
+----
+
+#### コーヒーよりコーヒー飲料のカフェイン量が丁度よい
+
+[UCC ゴールドスペシャル アイスコーヒー 1000ml](https://www.amazon.co.jp/%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB-%E3%82%A2%E3%82%A4%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC-%E7%B4%99%E3%83%91%E3%83%83%E3%82%AF-%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC-1000ml%C3%974%E6%9C%AC/dp/B0C4T4BCY9?adgrpid=201141217400&dib=eyJ2IjoiMSJ9.ytk4dmLlKSqIFkfYhWBRDdlat7aaTFM9tzfX6iVQS5eiPpDEirDNSdlrT5xBl3FiHcSSzCcBEC4Sn_N3brZUArv0EQJMWHGNRUGiPPLD_J39DBpYtKZMegvZXb0f8HpAwLp2bjmLfDPK5d-mDpVWD34Y7GKxG8JjuZjhN4YAP814mUY2cJ9_r6BP13tWV_O4zxyCX3aK4YR58ANZmjmsNc5ChVxry2ePxcMLQxJD78rB0xS23VfAqgWA1Mtl-H5XG9U-ERT7DiTcLwoqMdhrZUufaa70b66JpDJ91SHWSLY.Rxsk5quYiNPodTrj0t42WjUj05BqYQY43O23BQTq1Yg&dib_tag=se&hvadid=820969925415&hvdev=c&hvexpln=0&hvlocphy=1009355&hvnetw=g&hvocijid=12996461231464784762--&hvqmt=b&hvrand=12996461231464784762&hvtargid=kwd-976384799416&hydadcr=2160_13594741_1058984&jp-ad-ap=0&keywords=ucc%2B%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC%2B%E7%B4%99%E3%83%91%E3%83%83%E3%82%AF&mcid=4f53a88b38183ea3a4848def34141723&qid=1791972859&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&linkCode=ll2&tag=debimate07-22&linkId=7eaf7e7d0db821f396713a95e6bcae81&ref_=as_li_ss_tl)を1日1本ぐらいのペースで飲んでいる。以前は薄いインスタントコーヒーを飲んでいたが、UCC 製品に切り替えていた。切り替えてから寝付きが悪く、最初は「転職して無意識下でストレスを受けているのか？」と考えていた。真面目に原因を考えた結果、コーヒーのカフェインに負けているのだろうと結論づけた。
+
+UCC はディズニーランド・ディズニーシーのスポンサーらしく（紙パックに書いてあった）、[パークチケットが当たるキャンペーン](https://www.ucc.co.jp/company/news/2026/rel260915.html)を展開している。応募にはレシートが必要であり、ここに食品メーカーキャンペーンの嫌な部分が全て詰まっている。レシート、商品の外箱の一部、応募シール......この辺を食品メーカーは要求する。「昭和か？」と感じてしまう。この仕組みは、敷居が高い。敷居が高いと言いつつ、同じ仕組みの丸美屋キャンペーンをせっせと応募したりするぐらいにはマメである。でも、スマホアプリで完結するような仕組みを提供していただきたい。
