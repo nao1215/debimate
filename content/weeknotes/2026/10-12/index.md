@@ -30,3 +30,24 @@ Go, Rust, Node, Python、Docker あたりで開発していると、ビルド時
 Amazon で値段をチラ見したところ、[Samsung 990 PRO 4TB PCIe Gen 4.0 x4](https://www.amazon.co.jp/Samsung-%E6%9C%80%E5%A4%A7%E8%BB%A2%E9%80%81%E9%80%9F%E5%BA%A6-MZ-V9P4T0B-EC-%E5%9B%BD%E5%86%85%E6%AD%A3%E8%A6%8F%E4%BF%9D%E8%A8%BC%E5%93%81/dp/B0CHRSJ4LR?crid=2VXAPUI90YWZ2&dib=eyJ2IjoiMSJ9.5kkb36nTWxT65PzScJkWINzUguMnp2wtt5dzEYnbwKxm21mDfBCyUulg42Hb4ise0W99UCK5KXR_2KUVM2MTNl950BYyqdJBGYENsRkXATd0MZhivzFDyXtd0r3UjGtcDLoYpCfBSgAYOuIobGyTm9ra06b5ZJy67QzN5EXvWlhsLtQF9JvLDlzVPhvqrQXNjGB9TYsOajHurvz8WwK-8M3FPAAIZpgsqucaDplwnmxO2T5jjj_BKoOijvepvIgKbfeG2Uebesv5pivy0Or41G1zmMXgkepDMfG1LdbEKKI.hc5WSu8dMM6lfJTpLY0fS7WCB5xYmroFNLGrQ5cAQhQ&dib_tag=se&keywords=ssd%2B4tb&qid=1792198637&refinements=p_n_g-1003526536111%3A16192276051%2Cp_123%3A202186%7C46655&rnid=23341432051&sprefix=SSD%2B%2Caps%2C218&sr=8-1&th=1&linkCode=ll2&tag=debimate07-22&linkId=5c90d553ed11c31acdda1e7f6e4a0b08&ref_=as_li_ss_tl) が168,667円。手が出せない金額帯だった。GPU みたいな値段をしている。1TB ですら34,980円。私の知っている価格帯から2〜3倍以上高くなっている。今の PC で使っている KIOXIA SSD 2TB が2025年11月時点では24,280円だった。さらに言えば、私が使っている PC は2025年11月時点で295,490円だったが、2026年10月時点で598,000円に値上がりしていた。
 
 円安と AI 需要が落ち着いてくれないと、庶民は PC 関係の買い物ができない。AI 需要は数年続き、半導体の生産量が需要に追いついていない状況なので、下手すると5年ぐらいは高価格帯を維持するかもしれない。もっと性能がいい PC を選択すべきだった。
+
+----
+
+#### 調査系の LLM スキルを改良している
+
+最近はエゴサスキル、競合調査スキルをチマチマと改良している。それぞれの存在意義は、以下のとおりだ。
+
+- エゴサスキル：ブログへの反応、OSS への隠れた貢献やライブラリ利用者の把握
+- 競合調査スキル：類似ツールの特徴把握、Moatの有無、ポジションの取り方を把握
+
+エゴサに関しては、昔であれば X を見て「反応があるじゃん。嬉しいわ」ぐらいのレベル感だった。最近は「[gup](https://github.com/nao1215/gup) が知らない間にパッケージマネージャに組み込まれたぞ」や「[markdown](https://github.com/nao1215/markdown) が有名な OSS に利用され始めたから、互換性を維持しないとマズイぞ」のように、作者が把握しておかなければ不都合がありそうなイベントが増えた。
+
+1ヶ月に一度、スキルを使ってエゴサをして、状況を把握するようにしている。X（旧 Twitter）を見なくなった都合上、昔の知人情報も近況把握がてらにエゴサしている。ストーカーである。
+
+競合調査スキルは、仕事でも使えるが、もっぱら私の思いつきをバッサリと切り捨てるために使っている。私が作る OSS は、基本的に類似品がある。私は思いついたことをガッと実装してしまう癖があり、リリースや紹介記事を書くタイミングで差別化に困るのだ。[sqly](https://github.com/nao1215/sqly), [atago](https://github.com/nao1215/atago), [jsonize](https://github.com/nao1215/jsonize) は、まさにその典型例だ。
+
+LLM 登場前は実装力の証左として OSS リリースには一定の意味があったが、今は LLM が実装を担うので OSS を形にすることの価値は下がっただろう。OSS であっても Moat（持続的な競争優位性）は必要と考え、最近は一部のコード（例：漫画作成 CLI、ゲームエンジン、複数のゲーム）を隠している。ゲームエンジンは汎用性が高まったら、公開する可能性がある。
+
+別に OSS なんて自由に公開してもいい。しかし、私は割と作り込むし、紹介記事を何だかんだで書いてしまう。そうすると残るのは、微妙な反応を得た OSS だ。そんなものを保守するのは、結構辛い。例えば、[Gleam パッケージを1ヶ月で18個作った](https://hex.pm/users/nao1215)が、何を考えて次から次へと連作したのかが自分でも分からない。単純に、存在しないパッケージを見つけたら、実装してしまった。
+
+やはり、OSS を開発したからには皆に利用してもらいたい。このような心境の変化があって、競合調査スキルで公開可否を決めている。公開しないだけで、開発はずっと続けている。どの OSS が好意的に受け止められるかは正直読めないので、暫くすると「気にせず公開してしまえよ」というスタンスに戻すかもしれない。
