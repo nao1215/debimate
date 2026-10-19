@@ -61,6 +61,6 @@ UI に使える画像は [ComfyUI](https://github.com/comfy-org/comfyui) に頼�
 
 #### Rabbit Run をブラウザ対応した
 
-[hajimehoshi/ebiten](https://github.com/hajimehoshi/ebiten)（Go 製） が WASM 対応しているので、お試しでブラウザ対応した。本格的なテストプレイはしていない。
+[hajimehoshi/ebiten](https://github.com/hajimehoshi/ebiten)（Go 製） が WASM 対応しているので、お試しでブラウザ対応した。本格的なテストプレイはしていない。カクツキや音声飛びは修正済み。
 
 https://nao1215.github.io/rabbitrun/
