@@ -23,8 +23,8 @@
   awesome: true
   desc: Markdown と Mermaid 図を組み立てるための Go ライブラリ
 
-- name: rabbitrun
-  repo: https://github.com/nao1215/rabbitrun
+- name: gozen
+  repo: https://github.com/nao1215/gozen
   lang: Go
   langColor: "#00ADD8"
-  desc: 美少女キャラの応援とともに先へ進むランゲーム（カジュアルゲーム）
+  desc: YAMLでRPG・ADV・SLGを作り、戦闘の計測やデバッグもできるEbitengine向けゲームフレームワーク
