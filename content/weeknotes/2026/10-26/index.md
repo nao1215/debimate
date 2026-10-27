@@ -17,7 +17,7 @@ date: 2026-10-26T00:00:00+09:00
 
 #### 仮想配信ライブゲーム（放置ゲーム）succubus-liveを公開
 
-[nao1215/gozen](https://github.com/nao1215/gozen) の機能紹介の例として、仮想配信ライブゲーム（放置ゲーム）[nao1215/succubus-live](https://github.com/nao1215/succubus-live) を公開した。VTuber の配信を見るようなもので、キャラの表情変化、音声、チャットが楽しめる。話題選出はマニアックになるように指示を出したが、まだ全編通してプレイを試していない。ジャンルとしては放置ゲーであり、ラジオとして使う。
+[nao1215/gozen](https://github.com/nao1215/gozen) の機能紹介の例として、仮想ライブ配信ゲーム（放置ゲーム）[nao1215/succubus-live](https://github.com/nao1215/succubus-live) を公開した。VTuber の配信を見るようなもので、キャラの表情変化、音声、チャットが楽しめる。話題選出はマニアックになるように指示を出したが、まだ全編通してプレイを試していない。ジャンルとしては放置ゲーであり、ラジオとして使う。
 
 ブラウザ版： https://nao1215.github.io/succubus-live/
 
