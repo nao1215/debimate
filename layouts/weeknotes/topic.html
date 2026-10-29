@@ -5,6 +5,8 @@
   {{- if eq .page.RelPermalink $.RelPermalink }}{{ $position = $i }}{{ end }}
 {{- end }}
 {{- $topic := index $topics $position }}
+{{- /* render hook が hasMermaid を立てるのは週ページの Store なので、話題ページにも立てて mermaid.js を読ませる */}}
+{{- if strings.Contains $topic.body `<pre class="mermaid">` }}{{ .Store.Set "hasMermaid" true }}{{ end }}
 <article class="post-single weeknotes-single">
   <header class="post-header">
     {{ partial "breadcrumbs.html" . }}
