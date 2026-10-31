@@ -194,4 +194,13 @@ sequenceDiagram
 
 <br>
 
-次のゲーム開発も着手している。私が本当に作りたかった SLG 要素と、AI を用いた画像の制約を踏まえて、現実的な落とし所を見つけた。次回作は、リソース管理ゲームであり、名前は「DEATH MARCH（死の行進）」だ。そう、ソフト開発のマネージメントゲーだ。完全に私の得意領域で、残業過多もマネージメントも経験している。派手な演出も不要で、基本的に表情変化だけで成り立つ。問題は、現代的な労務管理に準じているので「言うほどデスマってないな」と感じることだ。お楽しみに（売るか、OSS 公開するかで迷っている）。
+公開したゲームとフレームワークは、以下の3つ。公開に至らなかったものが、4件（ピンボール・テトリス・RPG・SLG）。
+
+| Succubus Live | Rabbit Run | Gozen |
+|:--:|:--:|:--:|
+| [![Succubus Live：仮想ライブ配信ゲーム](succubus-live.webp)](https://nao1215.github.io/succubus-live/) | [![Rabbit Run：ウサギを操作するランゲーム](rabbitrun.webp)](https://nao1215.github.io/rabbitrun/) | [![Gozen：ゲーム制作フレームワーク](gozen.webp)](https://nao1215.github.io/gozen/) |
+| [プレイ](https://nao1215.github.io/succubus-live/) / [GitHub](https://github.com/nao1215/succubus-live) | [プレイ](https://nao1215.github.io/rabbitrun/) / [GitHub](https://github.com/nao1215/rabbitrun) | [公式サイト](https://nao1215.github.io/gozen/) / [GitHub](https://github.com/nao1215/gozen) |
+
+<br>
+
+次のゲーム開発も着手している。今度は、男が登場する（重要）。私が本当に作りたかった SLG 要素と、AI を用いた画像の制約を踏まえて、現実的な落とし所を見つけた。次回作は、リソース管理ゲームであり、名前は「DEATH MARCH（死の行進）」だ。そう、ソフト開発のマネージメントゲーだ。完全に私の得意領域で、残業過多もマネージメントも経験している。派手な演出も不要で、基本的に表情変化だけで成り立つ。問題は、現代的な労務管理に準じているので「言うほどデスマってないな」と感じることだ。お楽しみに（売るか、OSS 公開するかで迷っている）。

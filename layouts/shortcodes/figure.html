@@ -8,6 +8,10 @@
   リソースが見つからない場合は、本家と同じく src をそのまま使う。
 */}}
 {{- $src := .Get "src" -}}
+{{- $caption := .Get "caption" -}}
+{{- if and (eq .Page.Section "weeknotes") (not $caption) (not (.Get "title")) -}}
+  {{- $caption = .Get "alt" -}}
+{{- end -}}
 {{- $u := urls.Parse $src -}}
 {{- if not $u.IsAbs -}}
 {{- $path := strings.TrimPrefix "./" $u.Path -}}
@@ -30,13 +34,13 @@
          {{- with .Get "height" }} height="{{ . }}"{{ end -}}
     /> <!-- Closing img tag -->
     {{- if .Get "link" }}</a>{{ end -}}
-    {{- if or (or (.Get "title") (.Get "caption")) (.Get "attr") -}}
+    {{- if or (or (.Get "title") $caption) (.Get "attr") -}}
         <figcaption>
             {{ with (.Get "title") -}}
                 {{ . }}
             {{- end -}}
-            {{- if or (.Get "caption") (.Get "attr") -}}<p>
-                {{- .Get "caption" | markdownify -}}
+            {{- if or $caption (.Get "attr") -}}<p>
+                {{- $caption | markdownify -}}
                 {{- with .Get "attrlink" }}
                     <a href="{{ . }}">
                 {{- end -}}

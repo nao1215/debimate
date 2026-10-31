@@ -11,11 +11,15 @@ LLM を使って、定性的・定量的にゲームをデバッグさせても�
 
 夜中に LLM が OK 出したものをテストプレイするが、プロンプトを書くのは面倒である。そこで、任天堂の[ゼルダエディタ](https://game.watch.impress.co.jp/docs/news/1078888.html)を参考にして、デバッグプレイ中にバグや意見の記録を残せるようにして LLM が後日改善していく仕組みを整えた。LLM が修正を加えると、YAML をホットリロードして変更が反映される。この状態であれば、快適に修正できる。今までゲーム開発はやり方が分からなかったが、4本目となると「あぁ、こうすれば楽に開発できるんだな」というポイントが分かってきた。ただし、面白さの見極め方はまだ掴めていない。
 
+{{< figure src="playtest-memo.webp" link="https://nao1215.github.io/gozen/" alt="Gozen のプレイ中にメモを残す画面" caption="[Gozen のプレイ中にメモを残す画面](https://nao1215.github.io/gozen/)" width="600" align="center" >}}
+
 ----
 
 #### コーヒーよりコーヒー飲料のカフェイン量が丁度よい
 
 [UCC ゴールドスペシャル アイスコーヒー 1000ml](https://www.amazon.co.jp/%E3%82%B4%E3%83%BC%E3%83%AB%E3%83%89%E3%82%B9%E3%83%9A%E3%82%B7%E3%83%A3%E3%83%AB-%E3%82%A2%E3%82%A4%E3%82%B9%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC-%E7%B4%99%E3%83%91%E3%83%83%E3%82%AF-%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC-1000ml%C3%974%E6%9C%AC/dp/B0C4T4BCY9?adgrpid=201141217400&dib=eyJ2IjoiMSJ9.ytk4dmLlKSqIFkfYhWBRDdlat7aaTFM9tzfX6iVQS5eiPpDEirDNSdlrT5xBl3FiHcSSzCcBEC4Sn_N3brZUArv0EQJMWHGNRUGiPPLD_J39DBpYtKZMegvZXb0f8HpAwLp2bjmLfDPK5d-mDpVWD34Y7GKxG8JjuZjhN4YAP814mUY2cJ9_r6BP13tWV_O4zxyCX3aK4YR58ANZmjmsNc5ChVxry2ePxcMLQxJD78rB0xS23VfAqgWA1Mtl-H5XG9U-ERT7DiTcLwoqMdhrZUufaa70b66JpDJ91SHWSLY.Rxsk5quYiNPodTrj0t42WjUj05BqYQY43O23BQTq1Yg&dib_tag=se&hvadid=820969925415&hvdev=c&hvexpln=0&hvlocphy=1009355&hvnetw=g&hvocijid=12996461231464784762--&hvqmt=b&hvrand=12996461231464784762&hvtargid=kwd-976384799416&hydadcr=2160_13594741_1058984&jp-ad-ap=0&keywords=ucc%2B%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC%2B%E7%B4%99%E3%83%91%E3%83%83%E3%82%AF&mcid=4f53a88b38183ea3a4848def34141723&qid=1791972859&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1&linkCode=ll2&tag=debimate07-22&linkId=7eaf7e7d0db821f396713a95e6bcae81&ref_=as_li_ss_tl)を1日1本ぐらいのペースで飲んでいる。以前は薄いインスタントコーヒーを飲んでいたが、UCC 製品に切り替えていた。切り替えてから寝付きが悪く、最初は「転職して無意識下でストレスを受けているのか？」と考えていた。真面目に原因を考えた結果、コーヒーのカフェインに負けているのだろうと結論づけた。
+
+{{< figure src="ucc.webp" link="https://www.ucc.co.jp/product/drink/coffee/gold-special/gold-special-ice-no-sugar-1000ml.html" alt="UCC ゴールドスペシャル 無糖 1000ml" caption="UCC ゴールドスペシャル 無糖 1000ml<br>出典：[公式サイト](https://www.ucc.co.jp/product/drink/coffee/gold-special/gold-special-ice-no-sugar-1000ml.html)（2026年10月31日取得）" width="400" align="center" >}}
 
 UCC はディズニーランド・ディズニーシーのスポンサーらしく（紙パックに書いてあった）、[パークチケットが当たるキャンペーン](https://www.ucc.co.jp/company/news/2026/rel260915.html)を展開している。応募にはレシートが必要であり、ここに食品メーカーキャンペーンの嫌な部分が全て詰まっている。レシート、商品の外箱の一部、応募シール......この辺を食品メーカーは要求する。「昭和か？」と感じてしまう。この仕組みは、敷居が高い。敷居が高いと言いつつ、同じ仕組みの丸美屋キャンペーンをせっせと応募したりするぐらいにはマメである。でも、スマホアプリで完結するような仕組みを提供していただきたい。
 
@@ -28,6 +32,8 @@ Go, Rust, Node, Python、Docker あたりで開発していると、ビルド時
 定期的にゴミを消す仕組みを作ったり、ストレージ分散すれば、この問題は解決できる。しかし、私にとって2枚目の SSD はバックアップ用途なので、普段使いしたくない。SSD は、書き込めば書き込むほど劣化する。となると、ストレージ自体を強化したい。
 
 Amazon で値段をチラ見したところ、[Samsung 990 PRO 4TB PCIe Gen 4.0 x4](https://www.amazon.co.jp/Samsung-%E6%9C%80%E5%A4%A7%E8%BB%A2%E9%80%81%E9%80%9F%E5%BA%A6-MZ-V9P4T0B-EC-%E5%9B%BD%E5%86%85%E6%AD%A3%E8%A6%8F%E4%BF%9D%E8%A8%BC%E5%93%81/dp/B0CHRSJ4LR?crid=2VXAPUI90YWZ2&dib=eyJ2IjoiMSJ9.5kkb36nTWxT65PzScJkWINzUguMnp2wtt5dzEYnbwKxm21mDfBCyUulg42Hb4ise0W99UCK5KXR_2KUVM2MTNl950BYyqdJBGYENsRkXATd0MZhivzFDyXtd0r3UjGtcDLoYpCfBSgAYOuIobGyTm9ra06b5ZJy67QzN5EXvWlhsLtQF9JvLDlzVPhvqrQXNjGB9TYsOajHurvz8WwK-8M3FPAAIZpgsqucaDplwnmxO2T5jjj_BKoOijvepvIgKbfeG2Uebesv5pivy0Or41G1zmMXgkepDMfG1LdbEKKI.hc5WSu8dMM6lfJTpLY0fS7WCB5xYmroFNLGrQ5cAQhQ&dib_tag=se&keywords=ssd%2B4tb&qid=1792198637&refinements=p_n_g-1003526536111%3A16192276051%2Cp_123%3A202186%7C46655&rnid=23341432051&sprefix=SSD%2B%2Caps%2C218&sr=8-1&th=1&linkCode=ll2&tag=debimate07-22&linkId=5c90d553ed11c31acdda1e7f6e4a0b08&ref_=as_li_ss_tl) が168,667円。手が出せない金額帯だった。GPU みたいな値段をしている。1TB ですら34,980円。私の知っている価格帯から2〜3倍以上高くなっている。今の PC で使っている KIOXIA SSD 2TB が2025年11月時点では24,280円だった。さらに言えば、私が使っている PC は2025年11月時点で295,490円だったが、2026年10月時点で598,000円に値上がりしていた。
+
+{{< figure src="ssd.webp" link="https://www.itgm.co.jp/product/ssd-990-pro.php" alt="Samsung 990 PRO 4TB" caption="Samsung 990 PRO 4TB<br>出典：[公式サイト](https://www.itgm.co.jp/product/ssd-990-pro.php)（2026年10月31日取得）" width="500" align="center" >}}
 
 円安と AI 需要が落ち着いてくれないと、庶民は PC 関係の買い物ができない。AI 需要は数年続き、半導体の生産量が需要に追いついていない状況なので、下手すると5年ぐらいは高価格帯を維持するかもしれない。もっと性能がいい PC を選択すべきだった。
 
@@ -43,5 +49,7 @@ Amazon で値段をチラ見したところ、[Samsung 990 PRO 4TB PCIe Gen 4.0 
 エゴサに関しては、昔であれば X を見て「反応があるじゃん。嬉しいわ」ぐらいのレベル感だった。最近は「[gup](https://github.com/nao1215/gup) が知らない間にパッケージマネージャに組み込まれたぞ」や「[markdown](https://github.com/nao1215/markdown) が有名な OSS に利用され始めたから、互換性を維持しないとマズイぞ」のように、作者が把握しておかなければ不都合がありそうなイベントが増えた。1ヶ月に一度、スキルを使ってエゴサをして、状況を把握するようにしている。X（旧 Twitter）を見なくなった都合上、昔の知人情報も近況把握がてらにエゴサしている。ストーカーである。
 
 競合調査スキルは、仕事でも使えるが、もっぱら私の思いつきをバッサリと切り捨てるために使っている。私が作る OSS は、基本的に類似品がある。私は思いついたことをガッと実装してしまう癖があり、リリースや紹介記事を書くタイミングで差別化に困るのだ。[sqly](https://github.com/nao1215/sqly), [atago](https://github.com/nao1215/atago), [jsonize](https://github.com/nao1215/jsonize) は、まさにその典型例だ。LLM 登場前は実装力の証左として OSS リリースには一定の意味があったが、今は LLM が実装を担うので OSS を形にすることの価値は下がっただろう。OSS であっても Moat（持続的な競争優位性）は必要と考え、最近は一部のコード（例：漫画作成 CLI、ゲームエンジン、複数のゲーム）を隠している。ゲームエンジンは汎用性が高まったら、公開する可能性がある。
+
+{{< figure src="llm-research-report.webp" alt="sqly の競合調査をまとめた HTML レポート" caption="競合調査スキルの出力例（2026年10月17日の sqly 調査レポート）" width="600" align="center" >}}
 
 別に OSS なんて自由に公開してもいい。しかし、私は割と作り込むし、紹介記事を何だかんだで書いてしまう。そうすると残るのは、微妙な反応を得た OSS だ。そんなものを保守するのは、結構辛い。例えば、[Gleam パッケージを1ヶ月で18個作った](https://hex.pm/users/nao1215)が、何を考えて次から次へと連作したのかが自分でも分からない。単純に、存在しないパッケージを見つけたら、実装してしまった。やはり、OSS を開発したからには皆に利用してもらいたい。このような心境の変化があって、競合調査スキルで公開可否を決めている。公開しないだけで、開発はずっと続けている。どの OSS が好意的に受け止められるかは正直読めないので、暫くすると「気にせず公開してしまえよ」というスタンスに戻すかもしれない。

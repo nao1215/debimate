@@ -7,6 +7,8 @@ date: 2026-09-28T00:00:00+09:00
 
 「OSS ライブラリのメンテナンス具合を調べるツールが欲しいな（作ろうかな）」と考え、類似 OSS を調査したら OpenSSF Scorecard に辿り着いた。OpenSSF Scorecard は、OSS の開発・配布過程にあるセキュリティ上の弱点を自動点検し、保守体制の一部を可視化する。雑に説明すれば、OSS の状態をスコア化する。
 
+{{< figure src="openssf.webp" link="https://scorecard.dev/" alt="OpenSSF Scorecard のチェック結果の表示例" caption="OpenSSF Scorecard のチェック結果の表示例<br>出典：[公式サイト](https://scorecard.dev/)（2026年10月31日取得）" width="600" align="center" >}}
+
 成熟したライブラリや単独開発ではスコアが低くなりがちだが、GitHub Actions に余計な権限を与えていないかをチェックできる利点がある。GitHub Actions の Runner 上で任意コマンドを実行する類の脆弱性を見かける機会が増えたので、対策をしておきたかった（参考：[相次ぐGitHub Actions 侵害から学ぶ、初期アクセス手法と開発者が知っておきたい対策](https://blog.flatt.tech/entry/2026-github-actions-security-part1)）。一先ず、Go 製の主要 OSS に OpenSSF Scorecard を導入した。導入済み OSS は、README 上部のバッジにスコアが表示されている。
 
 ついでに、OpenSSF criticality score を計測した。gup が 0.4 を超えているので、[Claude for Open Source Program](https://claude.com/contact-sales/claude-for-oss) の申込条件を満たしていることに気づいた。計測方法によっては 0.4 を下回る説があるが......調べてから再挑戦する。
@@ -20,6 +22,8 @@ date: 2026-09-28T00:00:00+09:00
 | [atago](https://github.com/nao1215/atago) | 0.32255 | 18 | 3 | 1 | 46 | 33 |
 
 Measured with [criticality_score](https://github.com/ossf/criticality_score) v2.0.4 (default scorer, deps.dev disabled) on 2026-09-28.
+
+{{< figure src="claude-for-oss.webp" link="https://claude.com/contact-sales/claude-for-oss" alt="Claude for Open Source の案内ページ" caption="[Claude for Open Source の案内ページ](https://claude.com/contact-sales/claude-for-oss)（2026年10月31日時点の画面）" width="700" align="center" >}}
 
 ---
 
@@ -46,6 +50,8 @@ Measured with [criticality_score](https://github.com/ossf/criticality_score) v2.
 [一つ前のトピック](/weeknotes/2026-09-28/8fcde970e32f/)でゲーム作りの話を書いたので、その続きを書く。まず、最近内省して自己理解したが、私はゲームを作りたいわけではない。大学生の頃からゲーム作りが一つの目標だった。それは何も取り柄がなく、ゲームばかりしていた学生だったから、身近だったゲームを作りたいという発想に至っただけだ。その証拠に、いつまで経ってもゲームが完成せず、作りたいゲームジャンルも思いつかない。これだけ OSS を作っているにもかかわらず、ゲームに関しては一向に先へ進まないのだ！ガハハ。
 
 ここからも最近の気づきだが、自分で考えた独自世界をゲーム（or 何らかの媒体）に落とし込みたい欲求がある。自分が若い頃に見聞きしたファンタジーやクトゥルフのような内容を再解釈して、独自の世界に落とし込みたい。そもそも私は、世界のすべてを把握する行為が好きっぽい。攻略本やファンブックに書かれた隠し設定を読むのが好きだし、ムジュラの仮面や NIER、ソウルシリーズのような考えさせる世界観にハマりがちだ。
+
+{{< figure src="my_favorite_game.webp" alt="好きなゲーム9作品のパッケージ画像" width="360" align="center" >}}
 
 そうなってくると、まずはゲームを作るより独自の世界に関する設定を書き出して、そこにフィットするゲームを考えれば前に進む気がしている。逆パターンは、エンジニアリング視点で面白いシステムを考えて、そこに設定を当て込む案。この案が、[一つ前のトピック](/weeknotes/2026-09-28/8fcde970e32f/)で書いた初期パラメータを決めたら勝手に世界が自動構築されるゲーム。見るだけのシムシティ。
 
@@ -106,6 +112,8 @@ oyyyyysosdyyyyyyyyyyyyyyyyyyydMMMMysyyyo    WM Theme: Breeze
 #### ローカル LLM（ollama）を導入したが、実用的ではない
 
 [一つ前のトピック](/weeknotes/2026-09-28/93784ae25f4c/)でローカル LLM の話題を出したが、試していなかった。結論としては、自分の PC 環境（RYZEN AI MAX+ 395、Radeon 8060S、RAM 128GB。RAM 64GB 分を GPU 用に割り当て）では厳しかった。[Ollama](https://ollama.com/) で Ryzen AI MAX+ 395 の Radeon 8060S を ROCm（Radeon Open Compute、AMD GPU 向けの計算基盤）経由で利用した。Ollama 自体はローカル LLM を動かすサーバーで、モデルを保存・読込して、GPU を使って推論結果を回答する。チャットとコード相談は Ollama の対話画面を使い、ファイルを読み書きする用途では [OpenCode](https://opencode.ai/ja) から Ollama に接続した。
+
+{{< figure src="ollama.webp" link="https://ollama.com/" alt="Ollama" caption="Ollama<br>出典：[公式サイト](https://ollama.com/)（2026年10月31日取得）" width="600" align="center" >}}
 
 用途と速度の良い塩梅を目指すために、モデルを使い分けている。Compaction を抑えるために、128K（131,072トークン）を扱えるようにした。その代わり、メモリ使用量が増える。正直、以下のモデルでは、どの用途でも自分が求める品質には届かなかった。
 - 通常チャット：Qwen3 8B

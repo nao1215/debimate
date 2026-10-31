@@ -1,5 +1,5 @@
 ---
-title: "Wallet - 鍵の管理からチェーンごとの機能差まで"
+title: "Wallet - 送金の仕組みと鍵の管理、セキュリティ"
 date: 2026-10-31T00:00:00+09:00
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

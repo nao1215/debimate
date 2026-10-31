@@ -27,6 +27,8 @@ date: 2026-08-17T00:00:00+09:00
 
 「[ビットコイン・スタンダード:お金が変わると世界が変わる](https://www.minervashobo.co.jp/book/b577558.html)」を読んだ。著者の思想が強い。好戦的だ。ビットコインに軸足を置いたポジショントークな一面もある。ただし、前半の貨幣（貝、金属）、金本位制、法定通貨、ハイパーインフレーションあたりの説明は、下手な金融本より明快で理解しやすかった。金融本は、歴史の説明や引用が多くて、100ページほど読み進めたのに虚無が広がるときがある。それに比べれば、本書は主張が明確だ。
 
+{{< figure src="bitcoin-book.webp" link="https://www.minervashobo.co.jp/book/b577558.html" alt="ビットコイン・スタンダードの書影" caption="ビットコイン・スタンダードの書影<br>出典：[公式サイト](https://www.minervashobo.co.jp/book/b577558.html)（2026年10月31日取得）" width="200" align="center" >}}
+
 本書は、ビットコインの重要性を説いている。技術仕様が知りたい人は、O'Reilly 本を手に取るべきだ。中盤（5章〜7章）あたりから、「金本位制＝善、法定通貨（ついでに政府）＝悪、Bitcoin＝金本位制に近くてデジタル時代の最適解」という思想が、強引な因果関係として顔を出し始める。面白くないとは言ってない。一気に飛躍が始まる。例えば、5章では金本位制の時代に発明された技術や芸術文化を持ち上げ、それ以外を下げている。金本位制の時代に作曲されたクラシックと比較して、現代の音楽（例：ダンスミュージック）が低俗だと語っている。脳内でひろゆきが「あなたの感想ですよね」と論破を始めてしまう。中盤は経済学だけでなく、文化・政治・個人の自由まで話を広げる。著者の価値観や立場を把握してから読むと、スッと理解できる。
 
 ふと考えたが、暗号資産がない世界で LLM に漠然としたプロンプトを与えて、ビットコインが完成するイメージが湧かなかった。サトシ・ナカモト氏の設計センスが無ければ生まれてこないだろう。非中央集権を維持するために何を捨てるかという判断、参加者をプロトコルに従わせるインセンティブ設計、ハードウェア性能の向上を吸収する仕組み……貨幣や金融に対するドメイン知識も必要である。LLM は与えられた制約の中では強い。しかし、初手でこの制約の置き方を選べるとは思えない。
@@ -49,6 +51,8 @@ date: 2026-08-17T00:00:00+09:00
 3. 画面が E-Ink
 4. ハイスペックである
 
+{{< figure src="poco.webp" link="https://www.mi.com/jp/product/poco-f6-pro/" alt="現在使用している POCO F6 Pro の製品画像" caption="現在使用している POCO F6 Pro の製品画像<br>出典：[公式サイト](https://www.mi.com/jp/product/poco-f6-pro/)（2026年10月31日取得）" width="450" align="center" >}}
+
 カメラ性能に重きを置くのは、子供の写真を撮るからだ。過去にカメラ性能が低い機種を買って、子供の可愛い時期にフォーカスが合わなくて相当不満だった。[Surface Duo 2](https://support.microsoft.com/ja-jp/surface/models/surface-duo-2-features)、君のことだ。折りたたみ機種が欲しくて買った。パカパカにロマンを感じた。使い始めて気づいたが、タッチの反応が悪く、カメラフォーカスが動き続ける欠点があった。二度と折りたたみ機種を買わないと誓った。
 
 前述の要件を満たすスマホはないので、普通に考えると2台持ちしなければならない。スマホアプリのデバッグを考えると、iPhone + Android が最高の組み合わせだ。しかし、私は iPhone に OS レベルで馴染めない。となると、Pixel + 変態 Android 機の組み合わせが思いつく。OS がほぼ同一なので、2台持ちの言い訳が難しい。しかも、2026年は半導体不足でスマホが高騰しており、Pixel 10a が約8万、Pixel 11が約14万と非常に高い。
@@ -67,6 +71,8 @@ date: 2026-08-17T00:00:00+09:00
 #### 関数型ドメインモデリング
 
 技術ノートに「[Parse, Don't Validate - 不正な状態を後段へ持ち込まない](/notes/software-architecture/parse-dont-validate/)」を追加した。私が書いた内容（殆ど LLM が書いた内容）を読むよりも、[関数型ドメインモデリング](https://tatsu-zine.com/books/domain-modeling-made-functional)を一読することをオススメする。本書の内容を忠実に再現している企業は、恐らく少ないだろう。状態ごとに型を変えたり、Read/Write などの用途にあわせて型を変える利点が理解できても、チームで型を清潔に維持するのが大変だからだ。
+
+{{< figure src="domain-book.webp" link="https://tatsu-zine.com/books/domain-modeling-made-functional" alt="関数型ドメインモデリングの書影" caption="関数型ドメインモデリングの書影<br>出典：[公式サイト](https://tatsu-zine.com/books/domain-modeling-made-functional)（2026年10月31日取得）" width="320" align="center" >}}
 
 私は Go が好きだが、Goは Parse, Don't Validate を実践するのに苦労する言語だ。Rust は、実践しやすい。よくある取り組みとして、Go や TypeScript に対して Linter や何らかの制約を駆使して、関数型言語の機能もどきを導入することがある。この発想に至る気持ちは理解できるのだが、言語レベルで一貫性を保証できないから採用しづらい。チーム開発であれば、言語標準の機能を前提として、Go や TS で開発するのが自然だ。理由は簡単で、言語の基本的な使い方を捻じ曲げるほどの熱意をチーム全体に伝搬させるのは、至難の業だからだ。冷めた目で見てくる人が出てくるよ多分。
 
@@ -98,6 +104,8 @@ date: 2026-08-17T00:00:00+09:00
 - [nao1215/block](https://github.com/nao1215/block) - 設定ファイルに従って blockchain toolchain をインストール
 - [nao1215/setup-block](https://github.com/nao1215/setup-block) - GitHub Actions で block コマンド環境をセットアップ
 - [nao1215/block-registry](https://github.com/nao1215/block-registry) - block コマンドでインストールできるツールリスト
+
+{{< figure src="block.webp" link="https://nao1215.github.io/block/" alt="block：ブロックチェーン開発環境の構築ツール" caption="block：ブロックチェーン開発環境の構築ツール<br>出典：[公式サイト](https://nao1215.github.io/block/)（2026年10月31日取得）" width="600" align="center" >}}
 
 block コマンドは、[mise](https://github.com/jdx/mise)、[aqua](https://github.com/aquaproj/aqua)、[nix](https://nixos.org/) から影響を受けている。[信頼できる開発元からツールをダウンロードし、チェックサムも検証する。なるべく不正なツールをインストールしないための仕組みも入れている](https://nao1215.github.io/block/security/)。用途や機能の多くは aqua と重なっている。初期設計では、block の裏側を mise と aqua にする案を考えていた。極端な話、ブロックチェーン向けの Registry を aqua 用に整備するだけでも、block 相当のことはかなりできる。
 

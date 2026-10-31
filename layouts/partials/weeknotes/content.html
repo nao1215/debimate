@@ -1,0 +1,9 @@
+{{/* Keep the introduction, then show topics newest first without changing anchors. */}}
+{{- $parts := split (replaceRE `<h4\b` "<!--weeknote-topic--><h4" .Content) "<!--weeknote-topic-->" }}
+{{- $content := index $parts 0 }}
+{{- $topics := slice }}
+{{- range after 1 $parts }}
+  {{- $topics = $topics | append (replaceRE `(?s)\s*<hr\s*/?>\s*$` "" .) }}
+{{- end }}
+{{- $content = printf "%s%s" $content (delimit (collections.Reverse $topics) "<hr>\n") }}
+{{- return ($content | safeHTML) }}

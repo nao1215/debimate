@@ -29,7 +29,7 @@ description: ""
 
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
-| 1 | [Wallet - 鍵の管理からチェーンごとの機能差まで](/notes/blockchain-systems/wallet/) | ウォレット / OSS / セキュリティ |
+| 1 | [Wallet - 送金の仕組みと鍵の管理、セキュリティ](/notes/blockchain-systems/wallet/) | ウォレット / OSS / セキュリティ |
 
 #### Cryptography
 

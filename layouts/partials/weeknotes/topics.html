@@ -2,6 +2,7 @@
 {{- $topics := slice }}
 {{- range (site.GetPage "/weeknotes").RegularPages.ByDate.Reverse }}
   {{- $week := . }}
+  {{- $weekTopics := slice }}
   {{- $headings := partial "weeknotes/headings.html" .RawContent }}
   {{- $parts := split (replaceRE `<h4\b` "<!--weeknote-topic--><h4" .Content) "<!--weeknote-topic-->" }}
   {{- range $i, $part := after 1 $parts }}
@@ -11,10 +12,13 @@
     {{- $path := printf "/weeknotes/topics/%s/%s" ($week.Date.Format "2006-01-02") $key }}
     {{- with site.GetPage $path }}
       {{- $body := strings.TrimPrefix $heading $part | replaceRE `(?s)\s*<hr\s*/?>\s*$` "" }}
-      {{- $topics = $topics | append (dict "page" . "body" ($body | safeHTML) "week" $week) }}
+      {{- $weekTopics = $weekTopics | append (dict "page" . "body" ($body | safeHTML) "week" $week) }}
     {{- else }}
       {{- errorf "Missing Weeknotes topic: %s (%s)" $title $path }}
     {{- end }}
+  {{- end }}
+  {{- range collections.Reverse $weekTopics }}
+    {{- $topics = $topics | append . }}
   {{- end }}
 {{- end }}
 {{- return $topics }}

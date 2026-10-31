@@ -30,6 +30,8 @@
        使うため、GIF と同じく自動再生・ループ・無音で、操作は出さない。
        alt は video に無いので、代わりに本文として入れる */ -}}
 {{- $ext := path.Ext $u.Path | lower -}}
+{{- $showCaption := eq $page.Section "weeknotes" -}}
+{{- if $showCaption -}}<span class="weeknotes-captioned-image">{{- end -}}
 {{- if in (slice ".mp4" ".webm") $ext -}}
 <video autoplay loop muted playsinline preload="metadata"
   {{- with .Title }} title="{{ . | transform.HTMLEscape }}"{{ end -}}
@@ -42,5 +44,8 @@
       {{- printf " %s=%q" $k $v | safeHTMLAttr -}}
     {{- end -}}
   {{- end -}}>
+{{- end -}}
+{{- if $showCaption -}}
+<span class="weeknotes-image-caption">{{ $alt }}</span></span>
 {{- end -}}
 {{- /**/ -}}

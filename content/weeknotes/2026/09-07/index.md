@@ -12,6 +12,8 @@ date: 2026-09-07T00:00:00+09:00
 GitHub Pages は、OSS 自体がプライベートでもパブリック公開される。興味がある方は、以下から内容をチェックできる。
 - [nao1215.github.io/jsonize/](https://nao1215.github.io/jsonize/)
 
+{{< figure src="jsonize-logo.webp" link="https://nao1215.github.io/jsonize/" alt="jsonize：コマンドの出力を JSON に変換" caption="[jsonize：コマンドの出力を JSON に変換](https://nao1215.github.io/jsonize/)" width="600" align="center" >}}
+
 ※ 上限を迎えたので、公開：https://github.com/nao1215/jsonize
 
 ----
@@ -98,3 +100,5 @@ GitHub Pages は、OSS 自体がプライベートでもパブリック公開さ
 メモリ不足の原因の一つは jsonize の Fuzzing テストだった。jsonize の aligned テーブルパーサは、列数は256上限だが、行数に上限がない。仕様上、入力の約13,000倍のメモリを保持する。Fuzzing では、入力1 MB 上限なので、確保するメモリは十数 GB 規模に達する。その他にも [filesql](https://github.com/nao1215/filesql) や [hugo](https://gohugo.io/) も数十 GB のメモリを喰うことがあるらしいが、原因調査できていない。
 
 一先ず、[earlyoom](https://github.com/rfjakob/earlyoom) を入れて、メモリ枯渇時にプロセスを素早く Kill できるようにした。jsonize 側も Issue を書いた。そして Ubuntu よ、疑ってごめんな。Debian と比較して、どうしても君の GUI 安定性が信用できないんだ。あと、率直な感想を書くと、Claude に Linux Kernel 周りの知識で勝てる気がしないと思った。
+
+{{< figure src="earlyoom.webp" link="https://github.com/rfjakob/earlyoom#readme" alt="earlyoom の README にある概要とメモリ不足への対処の説明" caption="[earlyoom の README](https://github.com/rfjakob/earlyoom#readme)（2026年10月31日時点の画面）" width="700" align="center" >}}

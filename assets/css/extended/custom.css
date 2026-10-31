@@ -1132,6 +1132,36 @@ body.home .post-entry .entry-header h2 {
    並べる画像は縦長と横長が混ざるため、幅を等分すると縦長だけが極端に
    高くなって釣り合わない。高さを揃えて幅を成り行きにする方が、
    写真の大きさが揃って見える。 */
+/* All weeknote reading views share image and caption alignment. */
+.post-content.weeknotes-content img,
+.post-content.weeknotes-content video {
+  display: block;
+  margin-inline: auto;
+}
+
+.weeknotes-content figure,
+.weeknotes-content figcaption,
+.weeknotes-content figcaption p {
+  text-align: center;
+}
+
+.weeknotes-captioned-image {
+  display: block;
+}
+
+.post-content .weeknotes-captioned-image img,
+.post-content .weeknotes-captioned-image video {
+  margin-bottom: 8px;
+}
+
+.weeknotes-image-caption {
+  display: block;
+  color: var(--secondary);
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: center;
+}
+
 .figure-row {
   display: flex;
   flex-wrap: wrap;

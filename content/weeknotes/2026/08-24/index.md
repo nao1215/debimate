@@ -9,6 +9,8 @@ date: 2026-08-24T00:00:00+09:00
 
 Debimate（本ブログ）に、[BBS](/bbs/) を導入した。技術的には、[giscus/giscus](https://github.com/giscus/giscus) を利用している。GitHub Discussions にコメントが記録されるため、投稿には GitHub アカウントがいる。アカウントを要求する仕様は、荒らし防止に役立つと考えている。なお、コメント投稿で再デプロイが走るため、リアルタイム性はない。
 
+{{< figure src="blog-bbs.webp" link="/bbs/" alt="Debimate の BBS" caption="Debimate の BBS（2026年10月31日時点の画面）" width="700" align="center" >}}
+
 Weeknotes と BBS の構成は、私が10代の頃の個人サイトから強い影響を受けている。当時は、雑多な近況を公開して、BBS で好き勝手に交流していた。SNS が流行る前のインターネット文化だ。X（旧 Twitter）に比べれば、牧歌的な交流スタイルだった。
 
 今回は、狙って Weeknotes と BBS を導入したわけではない。点が線になる感じだ。WordPress から GitHub Pages への移行、ブログを自己ブランディングの道具として再活用、X への拒否反応、LLM によるサイト構成変更の容易化......色んなものが重なって、段階的に BBS へ辿り着いた。果てして書き込みが増えるのだろうか。
@@ -18,6 +20,8 @@ Weeknotes と BBS の構成は、私が10代の頃の個人サイトから強い
 #### ブロックチェーンの応用先としてのタイムカプセル
 
 私の悪い癖だが、新しい技術概念を勉強している最中に、他のことに夢中になってしまう。試験勉強中に部屋の掃除を始めるのに近い。この悪い癖から生まれた成果物がブロックチェーン環境構築コマンドの [block](https://github.com/nao1215/block) だ。[先週の Weeknotes](/weeknotes/2026-08-17/#ブロックチェーン環境構築ツールを開発) に詳細を書いてある。
+
+{{< figure src="block.webp" link="https://nao1215.github.io/block/" alt="block：ブロックチェーン開発環境の構築ツール" caption="block：ブロックチェーン開発環境の構築ツール<br>出典：[公式サイト](https://nao1215.github.io/block/)（2026年10月31日取得）" width="600" align="center" >}}
 
 ブロックチェーンの特徴が掴めてくると、私は「分散ノード」「改ざんが検知できる」という特徴から、「そこそこ大事なデータを皆で管理するシステム（インフラコストを自分だけで賄わないシステム）」を構築できないかと考えた。
 
@@ -57,6 +61,8 @@ gup は `go install`したバイナリを更新するツールであり、私が
 
 80's に登場・活躍した邦楽バンドの中では、ヴィジュアル系バンドが好きだ。私の中では、X JAPAN、DEAD END、Gargoyle、AION、BUCK TICK が殿堂入りポジション。他には、ボーカルから DIO の影響が感じられる ANTHEM を愛聴していた。聖飢魔II、SHOW-YA なども聞くが、キリがないので割愛する。そのようなバンドと比較して、VOW WOW に対する私の評価（2010年頃の評価）は、さほど高くはなかった。ブルージーであり、スラッシュメタルのように激しくはなく、歌唱と演奏は上手いがハマりどころがなかった。しかし、最近ふと気づいた。「VOW WOW は、Rainbow（Ritchie Blackmore）の影響を受けていないか？」と。
 
+{{< figure src="vowwow-press.webp" link="https://prtimes.jp/main/html/rd/p/000000271.000112870.html" alt="VOW WOW のライブ写真" caption="VOW WOW のライブ写真<br>出典：[BS朝日の公演発表](https://prtimes.jp/main/html/rd/p/000000271.000112870.html)（2026年9月公開）" width="600" align="center" >}}
+
 私は二つの虹（もう一つは L'Arc～en～Ciel だ）を聴き込んでおり、VOW WOW 初期の三作はキーボードとギターから Rainbow や Deep Purple の影響を感じ取れる。"MASK OF FLESH (Masquerade)"にいたっては、「Rainbow のカーボンコピー」と評されるレビューがあるぐらいだった。この事実に気づいてから、VOW WOW をリピートし続けている。不思議なことに、日本人がギターとキーボードの掛け合いを行うと、演奏に遊びがあるはずなのにタイトさを感じる。日本人らしさを感じるプレイといれば、Who do They think We are ? -A Tribute to Deep Purple From Japan に収録されている Burn であり、色んな元ネタを踏まえた完コピ演奏である。
 
 今回は、音の捉え方を変えただけで、VOW WOW への評価が大きく変わった。評価軸、大事だね！
@@ -66,6 +72,8 @@ gup は `go install`したバイナリを更新するツールであり、私が
 #### [truss](https://github.com/nao1215/truss) の利用者から機能要望が来た
 
 truss は、端的に説明すれば、画像変換 CLI・サーバー・WASM である（[紹介記事はこちら](/post/ja/2026-03-14-画像処理ツールtrussを作った話/)）。いつの間にか Drupal（WordPress のような CMS）モジュールのバックエンド候補として検討されているようで、機能追加要望があった。不思議な話でもあり、[PHP の GD](https://www.php.net/manual/ja/book.image.php) や [ImageMagick](https://imagemagick.org/) を差し置いて、何故 truss が選ばれているのか。ネットで検索したら、答えが出てきた。
+
+{{< figure src="2026-truss-logo.webp" link="https://nao1215.github.io/truss/" alt="truss：画像変換 CLI・HTTP サーバー・WASM" caption="[truss：画像変換 CLI・HTTP サーバー・WASM](https://nao1215.github.io/truss/)" width="600" align="center" >}}
 
 [機能追加の依頼者](https://drupal-govcon-2026.sessionize.com/speaker/72cf0f63-b3c8-466a-9401-5b0c610ee0b4)は Drupal GovCon（2026年）で発表しており、「Drupal モジュールが高速な Rust 製 CLI を 管理して直接起動し、結果を静的成果物として保存すればよい」旨の考えを示していた。truss も Rust 製 CLI であるため、この方の戦略とマッチしていたのだろう。ImageMagick は機能的に圧倒的に優れているが、配布が少し面倒だ。単一バイナリではなく、かつランタイム環境によって考慮すべき事柄があるため、ユーザーが戸惑う場面が増える。Rust 製 CLI であれば、バイナリﾎﾟﾝｯが簡単にできる。
 

@@ -21,6 +21,17 @@ def main() -> None:
     check(root, repo / "content/weeknotes", legacy_dates)
     check_navigation(root)
     check_seo(root)
+    check_mermaid(root)
+
+
+def check_mermaid(root: Path) -> None:
+    pages = []
+    for page in (root / "weeknotes").rglob("index.html"):
+        text = page.read_text()
+        if '<pre class="mermaid">' in text:
+            assert "mermaid.esm.min.mjs" in text, f"Mermaid loader missing: {page}"
+            pages.append(page)
+    print(f"Weeknotes Mermaid loaders verified: {len(pages)} pages")
 
 
 def check(root: Path, content: Path, legacy_dates: list[str]) -> None:

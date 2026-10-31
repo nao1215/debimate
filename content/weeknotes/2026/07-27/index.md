@@ -12,6 +12,8 @@ date: 2026-07-27T00:00:00+09:00
 - About ページを追加
 - ページの横幅を調整
 
+{{< figure src="blog-home.webp" link="/" alt="Debimate のトップページ" caption="Debimate のトップページ（2026年10月31日時点の画面）" width="700" align="center" >}}
+
 急にブログに力を入れ始めた理由は、SNS（特に X）から離れたいこと、ブログは自分好みに変更しがいがあることだ。X は、収益配分が導入されてから眉をひそめるようなポストを見かける頻度が増えた。問題発言をした方が稼ぎやすいので、人々の行動が負の方向へ最適化されている。「いや、あなたは現実世界でもその振る舞いされているんですか？」と尋ねたくなる人がいる。勿論、良い人もいる。趣味に全力の人も存在して、心温まるポストに遭遇する機会はゼロではない。しかし、不快なポストを見る機会の方が圧倒的に多いので、X から離れることにした。
 
 X に比べると、ブログはほぼ無風だ。誰が読んでいるか分からない（と言いつつ、Google Analytics を導入しているため、Page View 程度は取得している）。ブログは週報と学習記録を残せるので、何でもかんでも記録したい私の性に合う。ブログでは書き散らせるが、SNS では他人の目を気にしてしまう。
@@ -24,6 +26,8 @@ X に比べると、ブログはほぼ無風だ。誰が読んでいるか分か
 
 私はアイマスファンというより、二次創作を楽しむ派だった。ニコニコ動画で NovelsM@ster（例：ぷよm@s）を頻繁に見ていた。そんな私が約15年ぶりにアイマスコンテンツに触れ、[シャニソン](https://shinycolors-song-for-prism.idolmaster-official.jp/)の動画をリピートしている。昔と比べてアニメ調の3Dモデルが自然に表現されており、MV のカメラワークが現代的になったと感じる。特に「[快盗Vを見逃すな](https://youtu.be/5jnVYppFt48)」あたり。技術の進歩と時代の流れについて、現職の方と「このクオリティがスマホで動くのは凄い」「（集金的な意味合いで）昔よりも露出度上がってません？」などと、一方的に話した。昔より男性向けゲーム感が強まったのは、気の所為ではないはず。
 
+<iframe width="560" height="315" style="display: block; margin-inline: auto; max-width: 100%;" src="https://www.youtube.com/embed/5jnVYppFt48?si=bKZCmDnjK7Vx1gM5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 残念ながら、私はスマホゲーをプレイする気力がないので、MV を見るだけでマネーを落とさないユーザーである。開発者の端くれなので、開発の労力を考えると課金しないことに罪悪感がある。昔は、ベスト盤 CD ぐらい購入していたのだが、最近は Spotify で完結してしまう。
 
 ---
@@ -33,6 +37,8 @@ X に比べると、ブログはほぼ無風だ。誰が読んでいるか分か
 仕事で [goccy/bigquery-emulator](https://github.com/goccy/bigquery-emulator) を眺めていた時、大雑把な仕様が「BigQuery の SQL 方言（ZetaSQL クエリ）を受け付け、SQLite 方言に変換して SQLite（DB）にクエリする」だと知った。この仕様を自作 OSS へ横展開できることに気づいた。「[nao1215/filesql](https://github.com/nao1215/filesql) と [nao1215/sqly](https://github.com/nao1215/sqly)  を同じ仕様で拡張して、任意の SQL 方言でクエリを実行できるのでは？」と。
 
 知らない読者向けに説明すると、filesql は任意のファイルフォーマットを SQLite3 に取り込むライブラリであり、sqly は filesql を用いてファイルに SQL を実行するコマンドである。sqly（filesql）は、SQL パーサーの実装が難易度高かったので、SQLite3 にパースを委譲している（[詳細は実装当時の記事を参照してください](https://debimate.jp/post/ja/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)）。sqly は実装当初から [noborus/trdsql](https://github.com/noborus/trdsql) などの先発ツールに負けており、trdsql は MySQL や PostgreSQL とも接続できる強みがあった。安易に真似すると RDBMS サーバーをセットアップする労力がかかるので、私は避けていた。しかし、SQL 方言間の変換であれば、環境構築の労力が増えないので許容でき、ユーザーは使い慣れた SQL を実行できるメリットがあると判断した。現在、お試し実装中である。
+
+{{< figure src="sqly-logo.webp" link="https://nao1215.github.io/sqly/" alt="sqly：CSV・JSON・Excel・Parquet に SQL を実行" caption="[sqly：CSV・JSON・Excel・Parquet に SQL を実行](https://nao1215.github.io/sqly/)" width="600" align="center" >}}
 
 なお、filesql は巨大なライブラリに成りつつあり、v1.0.0 前に API を整理するかもしれない。どうせ誰も filesql を使っていないので、気軽に変更できる。金融専用のフォーマットを導入した辺りでカオスになった。
 

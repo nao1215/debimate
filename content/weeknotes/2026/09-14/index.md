@@ -39,6 +39,8 @@ json 出力機能が有効に使われる日が来るとは、思いもしなか
 
 [ncruces/wasm2go](https://github.com/ncruces/wasm2go) を眺めていて、Wasm を中間表現として C/C++などの既存資産を CGO なしの Go パッケージに組み込む案は、実用的だと感じた。特段新しい案でもない。[「GoにおけるFFIのこれまでとこれから（Go Conference 2026、goccy 氏）」](https://speakerdeck.com/goccy/go-niokeru-ffi-no-kore-madeto-korekara) でも似た内容が触れられていた。例えば、SQLite は利用しているシステムコールが少ないため、Wasm to Go しやすい。
 
+{{< figure src="wasm.webp" link="https://speakerdeck.com/goccy/go-niokeru-ffi-no-kore-madeto-korekara" alt="GoにおけるFFIのこれまでとこれから：表紙スライド" caption="出典：[GoにおけるFFIのこれまでとこれから／goccy 氏](https://speakerdeck.com/goccy/go-niokeru-ffi-no-kore-madeto-korekara)" width="600" align="center" >}}
+
 オリジナルコードを参照させながら LLM に他言語版を実装させる案もあるが、機械的に置換した方が安心。トークンを浪費しないし、誤解釈によるバグを埋め込まない。個人的に試してみたいのは、[NKF（Network Kanji Filter）](https://github.com/nurse/nkf) の Go 化である。NKF は、文字コードや改行コードを変換するツールで、昔の印象だと精度が良かった。作業としては NKF を Wasm to Go して、型やら良い感じの API を独自設計して提供する必要がある。
 
 文字コードの領域は、Go において決定版ライブラリが恐らく存在せず（ないよね？）、メンテ状況が怪しいライブラリが多い。文字コードは沼なので、ライブラリ開発自体が難しい。その結果として、「Excel を CSV として保存すると Shift-JIS になるから、UTF-8 に変換しようか」みたいなエッジケースだけ個別対応する羽目になる。2022年頃から文字コード自動判別ライブラリが欲しかったので、今度文字コードで苦しんだらライブラリを開発するかも。
@@ -58,6 +60,8 @@ json 出力機能が有効に使われる日が来るとは、思いもしなか
 #### 比較表を書くと、改善する羽目になる
 
 [nao1215/jsonize](https://github.com/nao1215/jsonize) がある程度完成したので、 [記事](/post/ja/2026-09-16-jsonizeでjsonをunixパイプラインの共通言語にする/)を書いたり、類似ツールとの比較表を書いたりしていた。
+
+{{< figure src="jsonize-comparison.webp" link="https://github.com/nao1215/jsonize#compared-with-jc-and-jo" alt="jsonize の README にある jc・jo・jz の比較表" caption="[README の比較表](https://github.com/nao1215/jsonize#compared-with-jc-and-jo)（2026年10月31日時点）" width="400" align="center" >}}
 
 比較表は厄介だ。サボりがバレる。脳内でイマジナリー上司に詰められる。
 
@@ -79,6 +83,8 @@ jsonize は比較表を導入したせいで、性能改善する羽目になっ
 #### パフォーマンス測定（ベンチマーク）で使う himorime を作った
 
 [jsonize](https://github.com/nao1215/jsonize) の比較表を作っている時に、ベンチマークスクリプトが必要になった。実行時間やメモリ使用量などのパフォーマンス測定は、様々な OSS で必要になる頻度が高く、かつ劣化にはすぐ気づきたい。OSS 間で品質基準を統一したかったので、ツール化することにした。名前は、[himorime（火防女）](https://github.com/nao1215/himorime)だ。
+
+{{< figure src="himorime.webp" link="https://nao1215.github.io/himorime/" alt="himorime：CLI の性能計測ツール" caption="himorime：CLI の性能計測ツール<br>出典：[公式サイト](https://nao1215.github.io/himorime/)（2026年10月31日取得）" width="600" align="center" >}}
 
 himorime は、E2E ツールの atago の姉妹ツールとして設計している。E2E は atago、パフォーマンス計測は himorime と責務を分けた。どちらもコマンドをテスト対象としている。atago に himorime の機能を統合すると、atago 自体の設計が壊れ始めるリスクが合ったので、素直に別ツールとした。現在はバグ潰しの最中で、それが完了すると私の OSS に himorime が組み込まれていく。最後に、紹介記事を作成する予定。
 

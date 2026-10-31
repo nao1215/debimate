@@ -11,6 +11,8 @@ date: 2026-08-10T00:00:00+09:00
 
 記事：[【Golang】CSV／JSON／Excel／Parquet に SQL を実行する sqly を約4年かけて v1.0.0 にした](https://debimate.jp/post/ja/2026-08-09-golangcsvjsonexcelparquet%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%92v1.0.0%E3%81%AB%E3%81%99%E3%82%8B%E8%A9%B1/)
 
+{{< figure src="sqly-logo.webp" link="https://nao1215.github.io/sqly/" alt="sqly：CSV・JSON・Excel・Parquet に SQL を実行" caption="[sqly：CSV・JSON・Excel・Parquet に SQL を実行](https://nao1215.github.io/sqly/)" width="600" align="center" >}}
+
 gup、sqly は息子が産まれた歳に開発した OSS の中で、唯一メンテナンスを続けている。他の同級生 OSS は、Public Archive してある。バックエンドエンジニアとして未熟な時期に sqly を開発したので、「当時の自分がこの設計をよく思いついたな」と感じる部分が多々ある。sqly は取り扱う題材が SQL なので、陳腐化せずに長く開発を続けられる筈だ。ここまでたどり着くのに結構コストかけているので、GitHub Star が付くことを祈る。無風は、キツイ。
 
 ---
@@ -18,6 +20,10 @@ gup、sqly は息子が産まれた歳に開発した OSS の中で、唯一メ�
 #### フライパンを壊した
 
 ティファール深型の炒め鍋（26cm）の取っ手がすっぽ抜けた。5〜6年の利用だっただろうか。最近は餃子が引っ付きやすく、買い替え時期が近そうだった。しかし、洗っている最中に取っ手が取れるとは。引退試合が用意されている選手ばかりではないと、どこぞの野球選手が話していたことを思い出した。私は、このフライパンの引退日が今日だとは考えもしなかった。
+
+同じ[ティファールのフライパン](https://www.amazon.co.jp/dp/B08VNSCX87?&linkCode=ll2&tag=debimate07-22&linkId=e24aec678ee305aa61903b4cfb820d07&ref_=as_li_ss_tl)を買うつもりだ。
+
+{{< figure src="tfal-g26277.webp" link="https://www.amazon.co.jp/dp/B08VNSCX87?&linkCode=ll2&tag=debimate07-22&linkId=e24aec678ee305aa61903b4cfb820d07&ref_=as_li_ss_tl" alt="ティファール IHルージュ・アンリミテッド マルチパン26cm G26277" caption="ティファールの深型炒め鍋26cm。画像出典：[Amazonの商品ページ](https://www.amazon.co.jp/dp/B08VNSCX87?&linkCode=ll2&tag=debimate07-22&linkId=e24aec678ee305aa61903b4cfb820d07&ref_=as_li_ss_tl)" width="450" align="center" >}}
 
 ---
 
@@ -61,6 +67,8 @@ gup、sqly は息子が産まれた歳に開発した OSS の中で、唯一メ�
 - [Azure/alzlib](https://github.com/Azure/alzlib)
 - [kubevirt/project-infra](https://github.com/kubevirt/project-infra)
 
+{{< figure src="markdown-dependents.webp" link="https://github.com/nao1215/markdown/network/dependents" alt="nao1215/markdown の利用リポジトリ一覧" caption="nao1215/markdown の利用リポジトリ一覧（2026年10月31日時点の画面）" width="700" align="center" >}}
+
 Argo に至っては、生成した Markdown を HTML に変換して[トレーシングリファレンス](https://argo-workflows.readthedocs.io/en/latest/tracing/)、[コンフィグマップリファレンス](https://argo-workflows.readthedocs.io/en/latest/workflow-controller-configmap/)、[ワークフロー変数カタログ](https://argo-workflows.readthedocs.io/en/latest/variable-flow/variables/)として公開していた。しかも、ゴールデンテストとしてドキュメント更新漏れがないかを CI でチェックしていた。便利に使っていただいているようで、ありがたい限りである。
 
 ---
@@ -79,6 +87,8 @@ Awesome Go には最後に [atago](https://github.com/nao1215/atago)（12月に�
 
 [コラージュフルフル](https://karadanokabi.jp/cfs/?_gl=1*18c5trq*_gcl_au*MTU0MzgyMDkzNC4xNzg2NjI1OTI3)をご存知だろうか。抗真菌（抗カビ）成分と殺菌成分が入ったシャンプーもしくはボディーソープである。かなりお高く、1000円（詰め替え）〜3000円（ボトル）のレンジで販売されており、サイズも小さい。ケチな私がリピートして買い続けている理由は、癜風（でんぷう）に効いたからだ。
 
+{{< figure src="soap.webp" link="https://karadanokabi.jp/cfs/" alt="コラージュフルフル液体石鹸の製品画像" caption="コラージュフルフル液体石鹸の製品画像<br>出典：[公式サイト](https://karadanokabi.jp/cfs/)（2026年10月31日取得）" width="318" align="center" >}}
+
 癜風は、マラセチア菌が異常に増殖して、身体にシミのようなものが大量にできる病気である。汗のかきやすい季節に発生しやすい。私は、肉厚なので癜風が夏に出来やすかった。皮膚科でクリームを処方してもらい、1ヶ月単位で治すのが常なのだが、通院が面倒である。そんな中、学生時代に利用していたコラージュフルフルを思い出した（当時はフケがでたので利用していた）。コラージュフルフルが試したら抜群の効き目を発揮して、手放せない存在となった。
 
 なお、コラージュフルフルのシャンプーは髪がゴワつくので利用していない。高かったので、買い続けない理由ができて丁度いい。ボディーソープがあれば十分だ。
@@ -92,6 +102,8 @@ Awesome Go には最後に [atago](https://github.com/nao1215/atago)（12月に�
 今日は、生姜醤油ラーメンとサイドメニューで約1500円。一昔前だと、高いと感じる金額だ。しかし、チャーシュー麺、卓上調味料の刻み生姜、唐揚げ、炒飯を食べると、流石に満足度が高い。ダイエット中だったので、舌に旨味が走った。寒天とは違う。問題は、摂取カロリーが一食で一日分に近くなることだ。金曜日だから許して欲しい。なお、最近は食事量が増えているが、体重は増えていない。微減だ。
 
 私は、カップラーメンだと[スーパーカップの醤油](https://www.acecook.co.jp/brand/super/)を頻繁に食べる。幼少期から食べているからか、もはや味の良し悪しで選んでない。慣れ親しんだ味が欲しい。盲目的に愛しているわけではなく、ここ数年でスーパーカップの味が落ちた認識がある。丸いチャーシュー時代が好きだった。カップラーメンは、スーパーカップかペヤングしか選択してない。保守的なのかもしれない。
+
+{{< figure src="ramen.webp" link="https://www.acecook.co.jp/brand/super/" alt="スーパーカップのしょうゆラーメン" caption="スーパーカップのしょうゆラーメン<br>出典：[公式サイト](https://www.acecook.co.jp/brand/super/)（2026年10月31日取得）" width="380" align="center" >}}
 
 ----
 
@@ -110,6 +122,13 @@ Awesome Go には最後に [atago](https://github.com/nao1215/atago)（12月に�
 何となく [Coincheck](https://coincheck.com/ja/) を使い続ける選択肢を取りたくなかったので、楽天経済圏の[楽天ウォレット](https://www.rakuten-wallet.co.jp/)を選んだ。ビットコイン購入自体は済ませたのだが、UX が悪かった。ログインで30分以上、格闘した。二要素認証を一度削除し、パスキーで再ログインする時に PIN 入力が反応せず、画面遷移も「キャッシュでも残っているのか？」と感じるほど不自然だった。一般ユーザーは、この状態に陥るとログイン画面で離脱すると思われる。
 
 Coincheck、楽天ウォレットともに、スプレッド（売値と買値の差。手数料）が高い。相場次第だが、販売所を使うと Coincheck は5〜8%、楽天ウォレットは3.5〜5%のスプレッドになるらしい（2026年8月時点で確認したおおよその値）。売買の両方でスプレッドがかかる。Coincheck の利点は、取引所（板）を使うとスプレッドがほぼ消える点、楽天ウォレットは楽天ポイントを暗号資産に交換できる点だ。選択肢を増やしたくて、[bitbank](https://bitbank.cc/) の口座も開設しておいた。
+
+| Coincheck | 楽天ウォレット | bitbank |
+|:--:|:--:|:--:|
+| [![Coincheck の公式紹介画像](coincheck.webp)](https://coincheck.com/ja/) | [![楽天ウォレット の公式紹介画像](rakuten-wallet.webp)](https://www.rakuten-wallet.co.jp/) | [![bitbank の公式紹介画像](bitbank.webp)](https://bitbank.cc/) |
+| [公式サイト・画像出典](https://coincheck.com/ja/) | [公式サイト・画像出典](https://www.rakuten-wallet.co.jp/) | [公式サイト・画像出典](https://bitbank.cc/) |
+
+<p class="weeknotes-image-caption">各社の公式紹介画像（2026年10月31日取得）。</p>
 
 ポイントをビットコインにする遊びがしたかったので、楽天ウォレット（最も手数料が高い）をメインとした。ボラティリティが高い暗号資産を定期的に現金で買う選択肢が考えられない。なお、ここ数年で売却する予定がない。理由は、税制と確定申告が難解だからだ。
 

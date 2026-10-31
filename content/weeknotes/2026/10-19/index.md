@@ -47,9 +47,11 @@ date: 2026-10-19T00:00:00+09:00
 
 先月の終わりから、ゲーム開発をずっと続けている。平日は LLM に自動開発をさせ、夜か休日にテストプレイしている。
 
-[hajimehoshi/ebiten](https://github.com/hajimehoshi/ebiten)（Go 製） をゲームエンジンとして利用しており、その上で動作するフレームワークとして、nao1215/gozen（プライベート）を作り始めた。エビ天に合わせて、mentsuyu（めんつゆ）にしようかと思ったが、既に先客がいた。gozen はツールセットの側面が強いので、御膳から名前を拝借した。エビ天御膳。蕎麦とかついてきそう。偶然だが、御膳には go の文字が入っていて満足である。なお、ebiten（ebitengine） はマルチプラットフォームであり、この点に関しては強くリスペクトしている。
+[hajimehoshi/ebiten](https://github.com/hajimehoshi/ebiten)（Go 製） をゲームエンジンとして利用しており、その上で動作するフレームワークとして、nao1215/gozen（当時はプライベート。現在は[公開済み](https://nao1215.github.io/gozen/)）を作り始めた。エビ天に合わせて、mentsuyu（めんつゆ）にしようかと思ったが、既に先客がいた。gozen はツールセットの側面が強いので、御膳から名前を拝借した。エビ天御膳。蕎麦とかついてきそう。偶然だが、御膳には go の文字が入っていて満足である。なお、ebiten（ebitengine） はマルチプラットフォームであり、この点に関しては強くリスペクトしている。
 
 >Ebitengine のゲームは様々な環境で動きます。デスクトップ (Windows、macOS、Linux、FreeBSD)、 Web ブラウザ (WebAssembly)、モバイル (Android と iOS) で動きます。さらに、 v2.10 からすべてのデスクトップ向けビルドは Pure Go なので、 C コンパイラなしで開発できます。 Nintendo Switch™ もサポートされています。
+
+{{< figure src="gozen.webp" link="https://nao1215.github.io/gozen/" alt="Gozen：ゲーム制作フレームワーク" caption="[Gozen：ゲーム制作フレームワーク](https://nao1215.github.io/gozen/)" width="600" align="center" >}}
 
 LLM のおかげで、大学生の頃からの夢だったゲーム開発が実現できるようになった。自分が納得できるゲームを作るまで、暫くは OSS 開発をしない。新しい会社で必要な知識をキャッチアップしつつ、ゲームを作る方針になる。最近は、ゲーム開発の面倒な部分に気づき始めたので、開発の全貌が想像できるようになってきたようだ。ゲームは開発規模が大きく、1週間で雛形すらできない。シナリオ、音楽、ゲームデザインなどの幅広い知識が要求され、仕様変更が激しい。大変だ。
 
@@ -63,7 +65,7 @@ UI に使える画像は [ComfyUI](https://github.com/comfy-org/comfyui) に頼�
 
 [hajimehoshi/ebiten](https://github.com/hajimehoshi/ebiten)（Go 製） が WASM 対応しているので、お試しでブラウザ対応した。本格的なテストプレイはしていない。カクツキや音声飛びは修正済み。
 
-https://nao1215.github.io/rabbitrun/
+{{< figure src="rabbitrun.webp" link="https://nao1215.github.io/rabbitrun/" alt="Rabbit Run：ウサギを操作するランゲーム" caption="[Rabbit Run をブラウザでプレイ](https://nao1215.github.io/rabbitrun/) / [GitHub](https://github.com/nao1215/rabbitrun)" width="600" align="center" >}}
 
 ---
 

@@ -22,8 +22,8 @@
   </header>
 
   {{- if .Content }}
-  <div class="post-content">
-    {{ .Content }}
+  <div class="post-content weeknotes-content">
+    {{ partial "weeknotes/content.html" . }}
   </div>
   {{- end }}
 

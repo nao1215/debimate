@@ -11,11 +11,15 @@ date: 2026-07-13T00:00:00+09:00
 
 嫁が疲れてフライパンの火を消し忘れて、夕飯を焦がしたので夕飯がてらに。夕食の候補には、[幸楽苑](https://www.kourakuen.co.jp/)、[政家（タレカツの店）](https://r.gnavi.co.jp/bdc162ce0000/)、[焼肉きんぐ](https://www.yakiniku-king.jp/)、[かつ一](https://www.katsuiti.com/)あたりが並ぶのだが、野菜とデザートが食べれて脂負けしないしゃぶ葉が選ばれた。息子が産まれる前は焼肉きんぐが強い選択肢だったが、味が落ちたのと、胃腸の弱まりが原因で第一候補にはならなくなった。宇都宮にいた頃は、嫁と2人で6000円ぐらいで満足していた記憶がある。
 
+{{< figure src="yakiniku-king.webp" link="https://www.yakiniku-king.jp/" alt="焼肉きんぐのメニュー紹介画像。肉、サラダ、ご飯もの、デザートが並ぶ" caption="焼肉きんぐのメニュー紹介画像<br>出典：[焼肉きんぐ公式サイト](https://www.yakiniku-king.jp/)（2026年10月31日取得）" width="600" align="center" >}}
+
 ---
 
 #### 3D 酔いに負けた
 
 KINGDOM HEARTS が Steam セールで安かったので積んでおいたのだが、約20年（23年?）ぶりにプレイしたら3D 酔いになった。カメラの動きが激しいとは思ったが、まさか酔うとは思いもよらず。30分ぐらいで断念した。楽しめた時間は短かったが、Linux で KINGDOM HEARTS がプレイできるとは、良い時代になったと思う。
+
+{{< figure src="kingdom-hearts.webp" link="https://store.steampowered.com/app/2552430/" alt="KINGDOM HEARTS -HD 1.5+2.5 ReMIX-" caption="出典：[KINGDOM HEARTS -HD 1.5+2.5 ReMIX-／Steam](https://store.steampowered.com/app/2552430/)" width="600" align="center" >}}
 
 とは言え、PS2 のゲームをリマスターした程度だと、ポリゴンがカクカクしていて時代を感じてしまう。当時は華麗なグラフィックだと思ったが、流石に PS4 まで経験しているとやや厳しい。ディズニーと言えば、[ディズニーランド入園料が値上げされ、1日最大1万2400円になる](https://news.yahoo.co.jp/articles/70b35ef3063175124ecb5ee7de7a105ecb21ccdf)らしいので、息子と今年中に行くと決めた。ランドかシーかは決めていない。息子はディズニーの映画をよく見ているので楽しめると思う。
 
@@ -24,6 +28,8 @@ KINGDOM HEARTS が Steam セールで安かったので積んでおいたのだ�
 #### 黒夢の再録を発見
 
 Spotify で少年（黒夢）の再録を見つけ、その後に Drug TReatment、CORKSCREW の再録がリリースされて驚いた。私が情報を仕入れておらず、前情報無しで急に好きなアルバムが登場したので直ぐに聴いた。LUNA SEA もそうだが、再録アルバムは2枚同時出しが流行りなのだろうか。
+
+{{< figure src="kuroyume.webp" link="https://www.yamahamusic.co.jp/s/ymc/discography/1221" alt="黒夢 CORKSCREW 2026 のジャケット" caption="黒夢 CORKSCREW 2026 のジャケット<br>出典：[公式サイト](https://www.yamahamusic.co.jp/s/ymc/discography/1221)（2026年10月31日取得）" width="420" align="center" >}}
 
 今回の2枚の中で思い入れがあるアルバムは、CORKSCREW の方。初めて聴いたのは高校生だったか、大学生だったか。FOREVER LOVE（2007年、ソロ）が既にリリースされていた時期に、黒夢に触れた記憶がある。「何だこのペラッペラな音は」と感じたのを覚えている。音質に対して悪い意味で衝撃を受けたのは、Sex Pistols と Metallica の Kill 'Em All、そして CORKSCREW だ。当時は 70's〜80's のサウンドに慣れていなかった（黒夢は90年代だ）。聴き込んでいくと、このパンクな感じが癖になった。1曲目から6曲目（少年）までの流れは何度も聞きこんだし、COWBOY〜LAST PLEASURE までの流れも印象深い。SADS の 1st（SAD BLOOD ROCK′N′ROLL）もパンクサウンドだったが、リピートしたのは CORKSCREW だ。
 
@@ -34,6 +40,8 @@ Spotify で少年（黒夢）の再録を見つけ、その後に Drug TReatment
 #### Codex さん、無料で使わせてください
 
 [Codex for Open Source](https://openai.com/ja-JP/form/codex-for-oss/) に応募した。[Claude for Open Source](https://claude.com/contact-sales/claude-for-oss)は、GitHub の認証で連続失敗したので、応募を諦めた。Claude 側は基準が厳しいので素直に諦められる。Codex 側も採択されれば運が良いぐらいの感覚。
+
+{{< figure src="claude-for-oss.webp" link="https://claude.com/contact-sales/claude-for-oss" alt="本文で触れた Claude for Open Source の案内ページ" caption="[本文で触れた Claude for Open Source の案内ページ](https://claude.com/contact-sales/claude-for-oss)（2026年10月31日時点の画面）" width="700" align="center" >}}
 
 私は LLM を昼夜問わず半年程度使い潰してきたが、流石に止めた。サブスク代をペイできたと感じていないからだ。今までの利用で LLM の使い方をプライベートで学べたし、作りたい OSS が今のところ無いので LLM は不要だ。
 
