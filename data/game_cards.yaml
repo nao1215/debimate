@@ -7,7 +7,7 @@
     - src: images/game-picks/rabbit-cool.png
       crop: 440x580 Top
     - src: images/game-picks/rabbit-cute.png
-      crop: 440x580 Top
+      crop: 640x580 Top
     - src: images/game-picks/rabbit-gyal.png
       crop: 440x580 Top
     - src: images/game-picks/rabbit-street.png

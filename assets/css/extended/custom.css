@@ -1554,6 +1554,8 @@ html[data-theme="dark"] .game-pick { background: #36343a; color: #fff5fa; }
 .game-pick .game-pick-art img:nth-child(2) { left: 16%; }
 .game-pick .game-pick-art img:nth-child(3) { left: 46%; }
 .game-pick .game-pick-art img:nth-child(4) { left: 68%; }
+/* Keep the raised hand and elbow inside the green character's source image. */
+.game-pick-rabbit-run .game-pick-art img:nth-child(2) { width: 50.91%; left: 8.045%; }
 @media (max-width: 640px) {
   .game-pick { grid-template-columns: minmax(0, 1fr); }
   .game-pick .game-pick-body { padding-right: 1rem; padding-bottom: 6.5rem; }
