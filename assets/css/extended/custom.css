@@ -1478,25 +1478,31 @@ body.card-list-page { --main-width: 1440px; }
   text-decoration-thickness: 2px;
 }
 
-/* Games: two image-led cards per row, stacked on small screens. */
-body.games-page { --main-width: 960px; }
+/* Games: playable demos beside each description. */
+body.games-page { --main-width: 1100px; }
 .games-header { margin-bottom: 28px; }
 .games-header > p { margin-top: 16px; color: var(--secondary); font-size: 16px; line-height: 1.8; }
-.games-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
-.game-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--entry); }
-.game-cover { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; background: #f4f2ed; }
-.game-body { padding: 22px; display: flex; flex-direction: column; align-items: flex-start; }
+.games-section { margin-bottom: 40px; }
+.games-divider { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
+.games-section > h2 { margin-bottom: 20px; font-size: 23px; }
+.games-list { display: grid; gap: 24px; }
+.game-card { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); min-width: 0; align-items: stretch; gap: 28px; }
+.game-demo { align-self: start; position: relative; margin: 0; min-width: 0; background: #171a20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+.game-demo video { display: block; max-width: 100%; width: auto; height: auto; max-height: 360px; }
+.game-demo figcaption { width: 100%; padding: 8px 12px; font-size: 12px; color: #e5e7eb; background: #171a20; text-align: center; }
+.game-body { padding: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
+.game-ogp { display: block; width: 100%; max-width: 320px; height: auto; border-radius: 7px; margin: 0 auto 12px; }
 .game-label { color: var(--secondary); font-size: 13px; }
-.game-body h2 { margin: 8px 0 12px; font-size: 26px; line-height: 1.3; }
+.game-body h3 { margin: 0 0 8px; font-size: 28px; line-height: 1.3; }
 .game-description { font-size: 15px; line-height: 1.8; }
-.game-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
-.game-links { display: flex; align-items: baseline; gap: 16px; font-size: 13px; }
+.game-links { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; margin-top: 12px; font-size: 13px; }
 .game-links a { white-space: nowrap; text-decoration: underline; text-underline-offset: 0.25em; }
 .game-links a:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
 @media (max-width: 640px) {
-  .games-list { grid-template-columns: minmax(0, 1fr); }
-  .game-body { padding: 24px; }
-  .game-body h2 { font-size: 26px; }
+  .game-card { grid-template-columns: minmax(0, 1fr); }
+  .game-body { padding: 0 4px; }
+  .game-body h3 { font-size: 26px; }
+  .game-demo video { max-height: 320px; }
 }
 
 .games-header > p a { text-decoration: underline; text-underline-offset: 0.2em; }

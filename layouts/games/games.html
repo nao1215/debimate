@@ -4,24 +4,37 @@
   <h1>{{ .Title }}</h1>
   <p><a href="https://ebitengine.org/ja/">Ebitengine</a>{{ strings.TrimPrefix "Ebitengine" .Description }}</p>
 </header>
-<div class="games-list">
-  {{- range $i, $game := .Params.games }}
+{{- range $group := slice "games" "tools" }}
+{{- if eq $group "tools" }}<hr class="games-divider">{{ end }}
+<section class="games-section" aria-labelledby="{{ $group }}-heading">
+  <h2 id="{{ $group }}-heading">{{ if eq $group "games" }}ブラウザで遊べるゲーム{{ else }}ゲーム制作フレームワーク{{ end }}</h2>
+  <div class="games-list">
+  {{- range $.Params.games }}
+  {{- if or (and (eq $group "games") .play) (and (eq $group "tools") (not .play)) }}
   <article class="game-card" aria-labelledby="game-{{ .name | anchorize }}">
-    {{- $image := $.Resources.GetMatch .image }}
-    {{ partial "card_image.html" (dict "loading" (cond (eq $i 0) "eager" "lazy") "resource" $image "src" $image.RelPermalink "alt" .name "class" "game-cover" "sizes" "(min-width: 1008px) 468px, (min-width: 641px) calc((100vw - 72px) / 2), calc(100vw - 32px)") }}
+    <figure class="game-demo">
+      {{- $video := $.Resources.Get .video | fingerprint }}
+      {{- $poster := $.Resources.Get .poster | fingerprint }}
+      <video width="{{ .videoWidth }}" height="{{ .videoHeight }}" poster="{{ $poster.RelPermalink }}" src="{{ $video.RelPermalink }}" muted loop playsinline preload="none" aria-label="{{ .name }}のプレイ動画" data-game-demo></video>
+      <figcaption>{{ .name }}の{{ if .play }}プレイ動画{{ else }}サンプルゲーム{{ end }}</figcaption>
+    </figure>
     <div class="game-body">
-      <div class="game-meta">
-        <p class="game-label">{{ .label }}</p>
-        <div class="game-links">
-          {{- with .play }}<a href="{{ . }}">ブラウザでプレイ</a>{{ end }}
-          {{- with .website }}<a href="{{ . }}">公式サイト</a>{{ end }}
-          <a href="{{ .repo }}">OSS / GitHub</a>
-        </div>
-      </div>
-      <h2 id="game-{{ .name | anchorize }}">{{ .name }}</h2>
+      {{- $image := $.Resources.Get .image }}
+      {{ partial "card_image.html" (dict "loading" "lazy" "resource" $image "src" $image.RelPermalink "alt" (printf "%sの紹介画像" .name) "class" "game-ogp" "sizes" "(min-width: 641px) 320px, calc(100vw - 80px)") }}
+      <h3 id="game-{{ .name | anchorize }}">{{ .name }}</h3>
       <p class="game-description">{{ .description }}</p>
+      <div class="game-links">
+        {{- with .play }}<a class="game-play" href="{{ . }}">ブラウザでプレイ →</a>{{ end }}
+        {{- with .website }}<a class="game-play" href="{{ . }}">公式サイト →</a>{{ end }}
+        <a href="{{ .repo }}">GitHub</a>
+      </div>
     </div>
   </article>
   {{- end }}
-</div>
+  {{- end }}
+  </div>
+</section>
+{{- end }}
+{{- $script := resources.Get "js/game-demos.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>
 {{- end }}
