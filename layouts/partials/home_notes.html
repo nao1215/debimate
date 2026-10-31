@@ -1,0 +1,14 @@
+<section class="home-notes" aria-labelledby="home-notes-title">
+  <div class="home-section-heading"><h2 id="home-notes-title">技術ノート</h2><a href="{{ "notes/" | relURL }}">すべてのノート →</a></div>
+  {{- $notes := where site.RegularPages "Section" "notes" -}}
+  {{- $notes = where $notes "Params.hiddenInHomeList" "ne" true -}}
+  {{- range $i, $note := $notes.ByDate.Reverse }}
+  <article class="post-entry note-entry{{ if ge $i 6 }} home-deferred{{ end }}">
+    <figure class="entry-cover note-title-cover" style="background-image: linear-gradient(rgba(246,245,241,.78), rgba(246,245,241,.78)), url('{{ partial "note_banner_url.html" . }}');"><img src="{{ partial "note_title_image.html" . }}" width="960" height="540" alt="" loading="lazy"></figure>
+    <header class="entry-header"><h3>{{ .Title }}</h3></header>
+    <div class="entry-content"><p>{{ .Description | default (.Summary | plainify | htmlUnescape) }}</p></div>
+    <footer class="entry-footer">{{ .CurrentSection.Title }} · {{ .Date.Format "2006/01/02" }}</footer>
+    <a class="entry-link" href="{{ .RelPermalink }}" aria-label="{{ .Title }}"></a>
+  </article>
+  {{- end }}
+</section>

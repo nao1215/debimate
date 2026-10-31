@@ -12,13 +12,6 @@
         {{- $latestWeeknotes = index . 0 }}
     {{- end }}
 {{- end }}
-{{- $notesPage := site.GetPage "section" "notes" }}
-{{- $notesBanner := "" }}
-{{- with $notesPage }}
-    {{- with .Resources.GetMatch "image/notes-card-banner.webp" }}
-        {{- $notesBanner = .RelPermalink }}
-    {{- end }}
-{{- end }}
 <article class="first-entry home-info">
     {{- with .Title }}
     <header class="entry-header">
@@ -45,14 +38,7 @@
             {{- end }}
         </a>
         {{- end }}
-        {{- with $notesPage }}
-        <a class="latest-weeknotes latest-notes" href="{{ .RelPermalink }}"{{ with $notesBanner }} style="--latest-weeknotes-bg: url('{{ . }}');"{{ end }}>
-            <span class="latest-weeknotes-label">Notes</span>
-            <span class="latest-weeknotes-title">技術ノート</span>
-            <span class="latest-weeknotes-note">技術情報を整理したノート</span>
-        </a>
-        {{- end }}
+        {{- partial "oss_pick.html" . }}
     </div>
-    {{- partial "oss_pick.html" . }}
 </article>
 {{- end -}}

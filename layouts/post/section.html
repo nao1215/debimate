@@ -22,51 +22,32 @@
   {{- end }}
 </header>
 
-{{- $pages := .RegularPagesRecursive.ByPublishDate.Reverse }}
-
-{{- range $pages.GroupByPublishDate "2006" }}
-{{- if ne .Key "0001" }}
-<div class="archive-year">
-  {{- $year := replace .Key "0001" "" }}
-  <h2 class="archive-year-header" id="{{ $year }}">
-    <a class="archive-header-link" href="#{{ $year }}">
-      {{- $year -}}
-    </a>
-    <sup class="archive-count">&nbsp;{{ len .Pages }}</sup>
-  </h2>
-  {{- range .Pages.GroupByDate "January" }}
-  <div class="archive-month">
-    <h3 class="archive-month-header" id="{{ $year }}-{{ .Key }}">
-      <a class="archive-header-link" href="#{{ $year }}-{{ .Key }}">
-        {{- .Key -}}
-      </a>
-      <sup class="archive-count">&nbsp;{{ len .Pages }}</sup>
-    </h3>
-    <div class="archive-posts">
-      {{- range .Pages }}
-      <div class="archive-entry">
-        <h3 class="archive-entry-title entry-hint-parent">
-          {{- .Title | markdownify }}
-          {{- if .Draft }}
-          <span class="entry-hint" title="Draft">
-            <svg xmlns="http://www.w3.org/2000/svg" height="15" viewBox="0 -960 960 960" fill="currentColor">
-              <path
-                d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
-            </svg>
-          </span>
-          {{- end }}
-        </h3>
-        <div class="archive-meta">
-          {{- partial "post_meta.html" . -}}
-        </div>
-        <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+{{- $loading := "eager" }}
+{{- range .RegularPagesRecursive.ByPublishDate.Reverse.GroupByPublishDate "2006" }}
+<section class="listing-year" aria-labelledby="year-{{ .Key }}">
+<h2 id="year-{{ .Key }}">{{ .Key }}年</h2>
+<div class="listing-cards">
+{{- range .Pages }}
+  {{- $fallback := partial "list_title_image.html" (dict "title" .Title "label" "記事") }}
+  {{- $image := partial "cover_url.html" . | default $fallback }}
+  <article class="listing-card">
+    <a class="listing-card-link" href="{{ .RelPermalink }}">
+      {{- $cover := false }}
+      {{- /* Resolve the current article's bundle, not the list page's. */}}
+      {{- $page := . }}
+      {{- with .Params.cover.image }}{{ $cover = $page.Resources.GetMatch (printf "*%s*" .) }}{{ end }}
+      {{ partial "card_image.html" (dict "loading" $loading "resource" $cover "src" $image "fallback" $fallback "sizes" "(min-width: 1488px) 272px, (min-width: 901px) calc((100vw - 120px) / 5), (min-width: 541px) calc((100vw - 72px) / 2), calc(100vw - 32px)") }}
+      <div class="listing-card-body">
+        <h3>{{ .Title }}</h3>
+        <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "2006/01/02" }}</time>
       </div>
-      {{- end }}
-    </div>
-  </div>
-  {{- end }}
+    </a>
+  </article>
+  {{- $loading = "lazy" }}
+{{- end }}
 </div>
+</section>
 {{- end }}
+{{- $script := resources.Get "js/list-cards.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>
 {{- end }}
-
-{{- end }}{{/* end main */}}

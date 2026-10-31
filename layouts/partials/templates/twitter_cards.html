@@ -1,4 +1,8 @@
-{{- if .Params.cover.image -}}
+{{- $noteBanner := partial "note_banner_url.html" . -}}
+{{- if $noteBanner -}}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="{{ $noteBanner }}">
+{{- else if .Params.cover.image -}}
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="{{ partial "cover_url.html" . }}">
 {{- else }}

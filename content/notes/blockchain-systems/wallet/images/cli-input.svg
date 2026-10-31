@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220" role="img"><title>CLI の引数。実行用ではない模式図</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#596b76" stroke-width="1.5"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK JP","Noto Sans JP",sans-serif;fill:#28343b} .small{fill:#555}</style>
+<rect width="400" height="220" fill="white"/>
+<text x="20" y="32" font-size="22" font-weight="bold" text-anchor="start">CLI：コマンドで指定</text>
+<rect x="20" y="52" width="358" height="104" fill="#eaf1f5" stroke="#9cabb5" stroke-width="1.3"/>
+<text x="34" y="87" font-size="21" font-weight="normal" text-anchor="start">cast send &quot;$receiver&quot;</text>
+<text x="58" y="128" font-size="21" font-weight="normal" text-anchor="start">--value 1ether …</text>
+<text x="20" y="184" font-size="18" font-weight="normal" text-anchor="start">$receiver：受取人のアドレス</text>
+<text x="20" y="211" font-size="18" font-weight="normal" text-anchor="start">1ether：送金する数量</text>
+</svg>

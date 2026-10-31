@@ -18,4 +18,9 @@
     {{- $url = . | absURL -}}
   {{- end -}}
 {{- end -}}
+{{- if and (eq .Section "weeknotes") (eq .Layout "topic") -}}
+  {{- range where (partial "weeknotes/topics.html" .) "page.RelPermalink" .RelPermalink -}}
+    {{- with partial "weeknotes/topic_image.html" . -}}{{ $url = . | absURL }}{{- end -}}
+  {{- end -}}
+{{- end -}}
 {{- return $url -}}

@@ -303,7 +303,7 @@ body {
   margin-bottom: 0.25rem !important;
 }
 
-/* トップの週報カードと Notes カードを 2 列に並べる。
+/* トップの週報カードと Featured OSS を 2 列に並べる。
    片方しか無い場合は auto-fit で 1 枚が幅いっぱいになる */
 .home-cards {
   display: grid;
@@ -1328,3 +1328,138 @@ body.home .post-entry .entry-header h2 {
     padding: 4px;
   }
 }
+
+/* Homepage: two card columns each for articles and notes. */
+body.home { --main-width: 1440px; }
+body.home .home-columns {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 32px;
+}
+.home-columns section {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-content: start;
+}
+.home-section-heading {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+}
+.home-section-heading h2 { font-size: 25px; }
+.home-section-heading a { font-size: 13px; color: var(--secondary); }
+.home-columns .post-entry {
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+body.home .home-columns .entry-header h2,
+.home-columns .entry-header h3 { font-size: 19px; line-height: 1.45; overflow-wrap: anywhere; }
+body.home .home-columns .entry-cover img { aspect-ratio: 16 / 9; }
+@media (min-width: 701px) and (max-width: 900px) {
+  .home-columns section { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  body.home .home-columns { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+}
+@media (max-width: 480px) {
+  .home-columns section { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Reserve identical text areas so both lists keep the same row height. */
+body.home .home-columns .entry-cover { margin: 0 0 16px; }
+body.home .home-columns .entry-header { height: 83px; overflow: hidden; }
+body.home .home-columns .entry-header :is(h2,h3) {
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+body.home .home-columns .entry-content { margin: 8px 0; height: 70px; font-size: 14px; line-height: 1.65; }
+body.home .home-columns .entry-content p { margin: 0; }
+body.home .home-columns .entry-footer { height: 40px; font-size: 12px; line-height: 20px; overflow: hidden; }
+.home-columns .post-entry[hidden] { display: none; }
+.home-list-more { grid-column: 1 / -1; padding: 14px; border: 1px solid var(--border); border-radius: 8px; color: var(--primary); background: var(--entry); cursor: pointer; }
+.home-list-more[hidden] { display: none; }
+.home-list-status { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--secondary); }
+#home-posts-title, #home-notes-title { scroll-margin-top: 24px; }
+
+.home-cards .oss-pick-wrap { min-width: 0; }
+.home-cards .oss-pick { margin: 0; height: 100%; }
+
+/* Keep the list headings close to the home banners. */
+body.home .home-info { min-height: 0; justify-content: flex-start; }
+body.home main.main { row-gap: 20px; }
+.home-section-heading { margin-top: 6px; }
+
+/* Article archives and individual Weeknotes topics. */
+.listing-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.listing-card { min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--entry); }
+.listing-card-link { display: flex; flex-direction: column; height: 100%; color: var(--primary); text-decoration: none; }
+.listing-card-link > img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: #f2efe9; }
+.listing-card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
+.listing-card-body :is(h2,h3) { margin: 0; font-size: 18px; line-height: 1.5; overflow-wrap: anywhere; }
+.listing-card-body time { margin-top: auto; font-size: 12px; color: var(--secondary); }
+.listing-card-link:hover :is(h2,h3) { text-decoration: underline; }
+.weeknotes-index .listing-card-link:hover { text-decoration: none; }
+.weeknotes-topic-cards { margin-top: 12px; }
+@media (max-width: 540px) { .listing-cards { grid-template-columns: minmax(0, 1fr); } }
+
+.page-header + .listing-cards { margin-top: 24px; }
+
+/* Give the article/topic archives the same width as the homepage. */
+body.card-list-page { --main-width: 1440px; }
+@media (min-width: 901px) {
+  .card-list-page .listing-cards { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
+  .card-list-page .listing-card-body { padding: 14px; }
+  .card-list-page .listing-card-body :is(h2,h3) { font-size: 16px; }
+}
+
+.listing-year { margin-top: 32px; }
+.listing-year > h2 { margin-bottom: 20px; font-size: 26px; }
+
+.weeknotes-index .weeknotes-read-week {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-thickness: 1px;
+}
+.weeknotes-index .weeknotes-read-week:hover {
+  text-decoration-thickness: 2px;
+}
+
+/* Games: two image-led cards per row, stacked on small screens. */
+body.games-page { --main-width: 960px; }
+.games-header { margin-bottom: 28px; }
+.games-header > p { margin-top: 16px; color: var(--secondary); font-size: 16px; line-height: 1.8; }
+.games-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.game-card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: var(--entry); }
+.game-cover { display: block; width: 100%; height: auto; aspect-ratio: 2 / 1; object-fit: cover; background: #f4f2ed; }
+.game-body { padding: 22px; display: flex; flex-direction: column; align-items: flex-start; }
+.game-label { color: var(--secondary); font-size: 13px; }
+.game-body h2 { margin: 8px 0 12px; font-size: 26px; line-height: 1.3; }
+.game-description { font-size: 15px; line-height: 1.8; }
+.game-meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
+.game-links { display: flex; align-items: baseline; gap: 16px; font-size: 13px; }
+.game-links a { white-space: nowrap; text-decoration: underline; text-underline-offset: 0.25em; }
+.game-links a:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+@media (max-width: 640px) {
+  .games-list { grid-template-columns: minmax(0, 1fr); }
+  .game-body { padding: 24px; }
+  .game-body h2 { font-size: 26px; }
+}
+
+.games-header > p a { text-decoration: underline; text-underline-offset: 0.2em; }
+
+.note-title-cover { background-size: cover; background-position: center; border-radius: 8px; overflow: hidden; }
+
+html.js .home-columns .home-deferred { display: none; }

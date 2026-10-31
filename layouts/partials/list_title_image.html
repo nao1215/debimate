@@ -1,0 +1,7 @@
+{{- $lines := findRE `.{1,18}` (.title | plainify | htmlUnescape | truncate 70) -}}
+{{- $text := "" -}}
+{{- range $i, $line := $lines -}}
+  {{- $text = printf `%s<text x="60" y="%d">%s</text>` $text (add 180 (mul $i 65)) ($line | htmlEscape) -}}
+{{- end -}}
+{{- $svg := printf `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540"><rect width="960" height="540" fill="#f2efe9"/><path d="M60 110H900" stroke="#c6beb0"/><g fill="#353b3c" font-family="sans-serif"><text x="60" y="78" font-size="26">%s</text><g font-size="44" font-weight="600">%s</g><text x="60" y="490" font-size="22" fill="#747570">debimate</text></g></svg>` (.label | htmlEscape) $text -}}
+{{- return (resources.FromString (printf "list-cards/%s.svg" (md5 $svg)) $svg).RelPermalink -}}

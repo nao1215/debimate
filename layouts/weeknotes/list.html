@@ -20,21 +20,34 @@
       {{- $weekTopics := where $topics "week.RelPermalink" .RelPermalink }}
       <section class="weeknotes-index-week" aria-labelledby="week-{{ .Date.Format "20060102" }}">
         <header class="weeknotes-index-week-header">
-          <h3 id="week-{{ .Date.Format "20060102" }}"><a href="{{ .RelPermalink }}">{{ .Date.Format "01/02" }} の週</a></h3>
+          <h3 id="week-{{ .Date.Format "20060102" }}"><a class="weeknotes-read-week" href="{{ .RelPermalink }}">{{ .Date.Format "01/02" }} の週を全文で読む <span aria-hidden="true">→</span></a></h3>
           <span class="weeknotes-index-count">{{ len $weekTopics }}件</span>
         </header>
         {{- with $weekTopics }}
-        <ul class="weeknotes-index-topics" role="list">
+        <div class="listing-cards weeknotes-topic-cards">
           {{- range . }}
-          <li><a href="{{ .page.RelPermalink }}">{{ .page.Title }}</a></li>
+          {{- $image := partial "weeknotes/topic_image.html" . }}
+          <article class="listing-card">
+            <a class="listing-card-link" href="{{ .page.RelPermalink }}">
+              {{- with $image }}
+              <img src="{{ . }}" data-card-optional alt="" width="960" height="540" loading="lazy">
+              {{- end }}
+              <div class="listing-card-body">
+                <h3>{{ .page.Title }}</h3>
+                <time datetime="{{ .week.Date.Format "2006-01-02" }}">{{ .week.Date.Format "2006/01/02" }} の週</time>
+              </div>
+            </a>
+          </article>
           {{- end }}
-        </ul>
+        </div>
         {{- end }}
       </section>
       {{- end }}
   </section>
   {{- end }}
 </div>
+{{- $script := resources.Get "js/list-cards.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>
 {{/* Preserve old links to weekly anchors on the former full-text index. */}}
 <script>
 (() => {

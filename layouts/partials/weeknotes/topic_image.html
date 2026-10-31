@@ -1,0 +1,22 @@
+{{- /* Only use images belonging to this topic's week; skip small badges and GIFs. */ -}}
+{{- $url := "" -}}
+{{- $week := .week -}}
+{{- range findRE `<img\b[^>]*>` (string .body) -}}
+  {{- if not $url -}}
+    {{- $src := replaceRE `(?s).*?\ssrc="([^"]+)".*` "$1" . | htmlUnescape -}}
+    {{- range $week.Resources.ByType "image" -}}
+      {{- if and (eq (urls.Parse $src).Path .RelPermalink) (in (slice "jpeg" "png" "webp") .MediaType.SubType) -}}
+        {{- if and (ge .Width 320) (ge .Height 180) -}}
+          {{- $url = (.Resize "720x webp q80").RelPermalink -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $url -}}
+  {{- with findRE `https://(?:www\.)?youtube(?:-nocookie)?\.com/embed/[A-Za-z0-9_-]{11}` (string .body) 1 -}}
+    {{- $id := replaceRE `.*/` "" (index . 0) -}}
+    {{- $url = printf "https://i.ytimg.com/vi/%s/hqdefault.jpg" $id -}}
+  {{- end -}}
+{{- end -}}
+{{- return $url -}}

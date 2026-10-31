@@ -17,9 +17,9 @@
 </head>
 
 {{- if (or (ne .Kind `page` ) (eq .Layout `archives`) (eq .Layout `search`)) }}
-<body class="list{{ if .IsHome }} home{{ end }}" id="top">
+<body class="list{{ if .IsHome }} home{{ end }}{{ if and .IsSection (in (slice "post" "weeknotes") .Section) }} card-list-page{{ end }}" id="top">
 {{- else }}
-<body id="top">
+<body{{ if eq .Layout "games" }} class="games-page"{{ end }} id="top">
 {{- end }}
     {{ partialCached "header.html" . .Page -}}
     <main class="main">

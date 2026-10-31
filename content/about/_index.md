@@ -109,6 +109,13 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
 
 <div class="oss-card">
   <div class="oss-card-header">
+    <a class="oss-card-name" href="/games/">各種ゲーム</a>
+  </div>
+  <p class="oss-card-desc">Succubus Live、Rabbit Run と、ゲーム制作フレームワーク Gozen</p>
+</div>
+
+<div class="oss-card">
+  <div class="oss-card-header">
     <a class="oss-card-name" href="https://github.com/nao1215/mimixbox" target="_blank" rel="noopener noreferrer">mimixbox</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>

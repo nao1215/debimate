@@ -52,8 +52,16 @@
 {{- partial "home_info.html" . }}
 {{- end }}
 
+{{- $splitHome := and .IsHome (eq $paginator.PageNumber 1) }}
+{{- if $splitHome }}
+<div class="home-columns">
+<section class="home-posts" aria-labelledby="home-posts-title">
+<div class="home-section-heading"><h2 id="home-posts-title">記事</h2><a href="{{ "post/" | relURL }}">すべての記事 →</a></div>
+{{- end }}
 {{- $term := .Data.Term }}
-{{- range $index, $page := $paginator.Pages }}
+{{- $entries := $paginator.Pages }}
+{{- if $splitHome }}{{ $entries = $pages.ByDate.Reverse }}{{ end }}
+{{- range $index, $page := $entries }}
 
 {{- $class := "post-entry" }}
 
@@ -64,7 +72,7 @@
 {{- $class = "post-entry tag-entry" }}
 {{- end }}
 
-<article class="{{ $class }}">
+<article class="{{ $class }}{{ if and $splitHome (ge $index 6) }} home-deferred{{ end }}">
   {{- $isHidden := (.Param "cover.hiddenInList") | default (.Param "cover.hidden") | default false }}
   {{- partial "cover.html" (dict "cxt" . "IsHome" $.IsHome "IsSingle" false "isHidden" $isHidden) }}
   <header class="entry-header">
@@ -94,7 +102,14 @@
 </article>
 {{- end }}
 
-{{- if gt $paginator.TotalPages 1 }}
+{{- if $splitHome }}
+</section>
+{{ partial "home_notes.html" . }}
+</div>
+{{- $scroll := resources.Get "js/home-lists.js" | minify | fingerprint }}
+<script src="{{ $scroll.RelPermalink }}" defer></script>
+{{- end }}
+{{- if and (not .IsHome) (gt $paginator.TotalPages 1) }}
 <footer class="page-footer">
   <nav class="pagination">
     {{- if $paginator.HasPrev }}

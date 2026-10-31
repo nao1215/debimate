@@ -37,7 +37,7 @@ help:  ## コマンド一覧を表示
 serve: ## 使用中のポートを解放してローカル開発サーバ起動 (Draft/Future含む)
 	@command -v fuser >/dev/null || (echo "fuser が必要です: sudo apt install psmisc"; exit 1)
 	@fuser -k "$(SERVER_PORT)/tcp" >/dev/null 2>&1 || true
-	$(HUGO) server -D -F --disableFastRender --port $(SERVER_PORT)
+	$(HUGO) server -D -F --disableFastRender --renderToMemory --port $(SERVER_PORT)
 
 build: redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify

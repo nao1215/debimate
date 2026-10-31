@@ -25,6 +25,12 @@ description: ""
 | 1 | [Blockchain Basics - 中央管理者なしで同じ履歴を共有する](/notes/blockchain-systems/blockchain-basics/) | 導入 / 全体像 |
 | 2 | [Bitcoin Transaction Lifecycle - 送金がブロックへ入るまで](/notes/blockchain-systems/bitcoin-transaction-lifecycle/) | 導入 / 取引の流れ |
 
+#### Wallet
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Wallet - 鍵の管理からチェーンごとの機能差まで](/notes/blockchain-systems/wallet/) | ウォレット / OSS / セキュリティ |
+
 #### Cryptography
 
 | No. | 項目 | カテゴリ |

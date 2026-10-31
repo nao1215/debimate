@@ -35,7 +35,10 @@
   <meta property="og:type" content="website">
 {{- end }}
 
-{{- if .Params.cover.image -}}
+{{- $noteBanner := partial "note_banner_url.html" . -}}
+{{- if $noteBanner -}}
+    <meta property="og:image" content="{{ $noteBanner }}">
+{{- else if .Params.cover.image -}}
     <meta property="og:image" content="{{ partial "cover_url.html" . }}">
 {{- else }}
   {{- with partial "_funcs/get-page-images" . }}

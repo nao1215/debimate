@@ -1,0 +1,4 @@
+platforms = ["linux/amd64"]
+
+[tools]
+foundry = "1.7.1"

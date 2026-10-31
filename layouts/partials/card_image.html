@@ -1,0 +1,25 @@
+{{- $resource := .resource -}}
+{{- $url := .src -}}
+{{- $width := 960 -}}
+{{- $height := 540 -}}
+{{- $srcset := slice -}}
+{{- if and $resource (reflect.IsImageResourceProcessable $resource) -}}
+  {{- $width = $resource.Width -}}
+  {{- $height = $resource.Height -}}
+  {{- range slice 320 640 960 -}}
+    {{- if le . $resource.Width -}}
+      {{- $image := $resource.Resize (printf "%dx webp q75" .) -}}
+      {{- $srcset = $srcset | append (printf "%s %dw" $image.RelPermalink .) -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $default := $resource.Resize (printf "%dx webp q75" (int (math.Min 640 $resource.Width))) -}}
+  {{- $url = $default.RelPermalink -}}
+  {{- if not (in (slice 320 640 960) $default.Width) -}}
+    {{- $srcset = $srcset | append (printf "%s %dw" $default.RelPermalink $default.Width) -}}
+  {{- end -}}
+{{- end -}}
+<img{{ with .class }} class="{{ . }}"{{ end }} src="{{ $url }}"
+  {{ with $srcset }}srcset="{{ delimit . ", " }}" sizes="{{ $.sizes }}"{{ end }}
+  {{ with .fallback }}data-card-fallback="{{ . }}"{{ end }}
+  alt="{{ .alt | default "" }}" width="{{ $width }}" height="{{ $height }}"
+  loading="{{ .loading | default "lazy" }}"{{ if eq .loading "eager" }} fetchpriority="high"{{ end }} decoding="async">

@@ -1,0 +1,16 @@
+Sender: 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+Receiver: 0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+
+Chain | Role | Before (ETH) | After (ETH)
+A (31337) | sender | 10000 | 9998.999979
+A (31337) | receiver | 10000 | 10001
+B (31338) | sender | 10000 | 10000
+B (31338) | receiver | 10000 | 10000
+
+Transaction hash: 0x83013928e84493ed2eed3b3dcadf95896c85dcb68b9c661fec7f54d77ca31b1b
+Status: 1 (success)
+Block: 1
+Gas used: 21000
+Effective gas price: 1000000000 wei
+Fee: 0.000021 ETH
+Assertions: receiver +1 ETH; sender -(1 ETH + fee); both B balances unchanged: PASS

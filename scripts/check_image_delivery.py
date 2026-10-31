@@ -39,17 +39,25 @@ def check(root: Path) -> None:
     home = HomePage(root / "index.html")
     assert home.cover_images, "No cover images found on the homepage"
     for image in home.cover_images:
-        for attribute in ("srcset", "sizes", "width", "height"):
-            assert image.get(attribute), f"Homepage cover is missing {attribute}: {image.get('src')}"
-        assert image.get("loading") == "lazy", f"Homepage cover must be lazy-loaded: {image.get('src')}"
+        for attribute in ("width", "height"):
+            assert image.get(attribute), f"Missing {attribute}: {image.get('src')}"
+        assert image.get("loading") == "lazy", image.get("src")
+        if image.get("src", "").endswith(".svg"):
+            # Text-only vector overlays share category backgrounds through CSS.
+            svg = root / image["src"].lstrip("/")
+            assert svg.stat().st_size < 10000, f"Oversized title SVG: {svg}"
+            assert "base64," not in svg.read_text(), f"Background embedded in {svg}"
+            continue
+        for attribute in ("srcset", "sizes"):
+            assert image.get(attribute), f"Missing {attribute}: {image.get('src')}"
+        candidates = [item.strip().rsplit(" ", 1)[-1] for item in image["srcset"].split(",") if item.strip()]
+        assert len(candidates) == len(set(candidates)), f"Duplicate srcset widths: {image.get('src')}"
         assert image.get("sizes") == (
-            "(min-width: 992px) 300px, "
-            "(min-width: 769px) calc((100vw - 64px) / 2 - 50px), "
-            "(min-width: 652px) calc((100vw - 44px) / 2 - 30px), "
-            "calc(100vw - 58px)"
-        ), (
-            f"Homepage cover has an inaccurate sizes hint: {image.get('sizes')}"
-        )
+            "(min-width: 1488px) 311px, "
+            "(min-width: 901px) calc((100vw - 244px) / 4), "
+            "(min-width: 481px) calc((100vw - 130px) / 2), "
+            "calc(100vw - 60px)"
+        ), f"Inaccurate homepage sizes: {image.get('sizes')}"
 
     assert home.oss_badges, "No Featured OSS badges found on the homepage"
     for badge in home.oss_badges:

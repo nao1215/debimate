@@ -1,0 +1,12 @@
+{{- $url := "" -}}
+{{- if eq .Section "notes" -}}
+  {{- $section := .CurrentSection -}}
+  {{- with site.GetPage "/notes" -}}
+    {{- with .Resources.GetMatch (printf "image/%s-card-banner.webp" $section.File.ContentBaseName) -}}
+      {{- $url = .Permalink -}}
+    {{- else -}}
+      {{- with .Resources.GetMatch "image/notes-card-banner.webp" -}}{{ $url = .Permalink }}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $url -}}

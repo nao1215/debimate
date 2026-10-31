@@ -1,0 +1,27 @@
+{{- define "main" }}
+<header class="page-header games-header">
+  {{ partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+  <p><a href="https://ebitengine.org/ja/">Ebitengine</a>{{ strings.TrimPrefix "Ebitengine" .Description }}</p>
+</header>
+<div class="games-list">
+  {{- range $i, $game := .Params.games }}
+  <article class="game-card" aria-labelledby="game-{{ .name | anchorize }}">
+    {{- $image := $.Resources.GetMatch .image }}
+    {{ partial "card_image.html" (dict "loading" (cond (eq $i 0) "eager" "lazy") "resource" $image "src" $image.RelPermalink "alt" .name "class" "game-cover" "sizes" "(min-width: 1008px) 468px, (min-width: 641px) calc((100vw - 72px) / 2), calc(100vw - 32px)") }}
+    <div class="game-body">
+      <div class="game-meta">
+        <p class="game-label">{{ .label }}</p>
+        <div class="game-links">
+          {{- with .play }}<a href="{{ . }}">ブラウザでプレイ</a>{{ end }}
+          {{- with .website }}<a href="{{ . }}">公式サイト</a>{{ end }}
+          <a href="{{ .repo }}">OSS / GitHub</a>
+        </div>
+      </div>
+      <h2 id="game-{{ .name | anchorize }}">{{ .name }}</h2>
+      <p class="game-description">{{ .description }}</p>
+    </div>
+  </article>
+  {{- end }}
+</div>
+{{- end }}
