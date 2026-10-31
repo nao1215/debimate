@@ -13,7 +13,7 @@
     <h1 class="post-title">{{ .Title }}</h1>
     <div class="post-meta"><a href="{{ $topic.week.RelPermalink }}">{{ $topic.week.Title }}</a></div>
   </header>
-  <div class="post-content weeknotes-content">{{ $topic.body }}</div>
+  <div class="post-content weeknotes-content">{{ partial "weeknotes/optimize_content.html" (dict "body" $topic.body "week" $topic.week "prioritize" true) }}</div>
   <footer class="post-footer">
     <nav class="paginav weeknotes-paginav" aria-label="Weeknotes の話題">
       {{- if gt $position 0 }}

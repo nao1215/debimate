@@ -1,19 +1,8 @@
 {{- /* Only use images belonging to this topic's week; skip small badges.
       Animated GIFs retain their animation when resized to WebP. */ -}}
 {{- $url := "" -}}
-{{- $week := .week -}}
-{{- range findRE `<img\b[^>]*>` (string .body) -}}
-  {{- if not $url -}}
-    {{- $src := replaceRE `(?s).*?\ssrc="([^"]+)".*` "$1" . | htmlUnescape -}}
-    {{- range $week.Resources.ByType "image" -}}
-      {{- if and (eq (urls.Parse $src).Path (urls.Parse .RelPermalink).Path) (in (slice "jpeg" "png" "webp" "gif") .MediaType.SubType) -}}
-        {{- /* Accept portrait product photos and book covers as well as landscapes. */ -}}
-        {{- if and (ge .Width 180) (ge .Height 180) (ge (mul .Width .Height) 57600) -}}
-          {{- $url = (.Resize (printf "%dx webp q80" (int (math.Min 720 .Width)))).RelPermalink -}}
-        {{- end -}}
-      {{- end -}}
-    {{- end -}}
-  {{- end -}}
+{{- with partial "weeknotes/topic_image_resource.html" . -}}
+  {{- $url = (.Resize (printf "%dx webp q80" (int (math.Min 720 .Width)))).RelPermalink -}}
 {{- end -}}
 {{- if not $url -}}
   {{- with findRE `https://(?:www\.)?youtube(?:-nocookie)?\.com/embed/[A-Za-z0-9_-]{11}` (string .body) 1 -}}

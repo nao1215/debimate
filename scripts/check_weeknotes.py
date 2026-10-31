@@ -3,11 +3,13 @@
 
 import argparse
 import json
+import re
 from pathlib import Path
 from urllib.parse import urlparse
 import xml.etree.ElementTree as ET
 
 from check_links import parse
+from check_weeknotes_images import check as check_images
 from check_weeknotes_navigation import check as check_navigation
 from check_weeknotes_seo import check as check_seo
 
@@ -22,13 +24,14 @@ def main() -> None:
     check_navigation(root)
     check_seo(root)
     check_mermaid(root)
+    check_images(root)
 
 
 def check_mermaid(root: Path) -> None:
     pages = []
     for page in (root / "weeknotes").rglob("index.html"):
         text = page.read_text()
-        if '<pre class="mermaid">' in text:
+        if re.search(r'<pre\b[^>]*\bclass=(?:"mermaid"|mermaid)(?:[\s>])', text):
             assert "mermaid.esm.min.mjs" in text, f"Mermaid loader missing: {page}"
             pages.append(page)
     print(f"Weeknotes Mermaid loaders verified: {len(pages)} pages")

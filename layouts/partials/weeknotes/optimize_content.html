@@ -1,0 +1,35 @@
+{{/* Process only the displayed HTML; topic extraction still sees original bundle URLs. */}}
+{{- $body := string .body -}}
+{{- $week := .week -}}
+{{- $prioritize := .prioritize | default false -}}
+{{- $first := true -}}
+{{- range findRE `<img\b[^>]*>` $body -}}
+  {{- $tag := . -}}
+  {{- $src := replaceRE `(?s).*?\ssrc="([^"]+)".*` "$1" $tag | htmlUnescape -}}
+  {{- range $week.Resources.ByType "image" -}}
+    {{- if and (eq (urls.Parse $src).Path (urls.Parse .RelPermalink).Path) (in (slice "jpeg" "png" "webp" "gif") .MediaType.SubType) -}}
+      {{- $width := 820 -}}
+      {{- with findRE `\swidth="\d+"` $tag 1 -}}
+        {{- $width = int (replaceRE `\D` "" (index . 0)) -}}
+      {{- end -}}
+      {{- $attrs := partialCached "weeknotes/image_delivery.html" (dict "image" . "width" $width) .RelPermalink $width -}}
+      {{- if and $prioritize $first -}}
+        {{- $attrs = merge $attrs (dict "loading" "eager" "fetchpriority" "high" "sizes" (strings.TrimPrefix "auto, " $attrs.sizes)) -}}
+      {{- end -}}
+      {{- $first = false -}}
+      {{- $new := replaceRE `\s(?:src|width|height|srcset|sizes|loading|decoding|fetchpriority)="[^"]*"` "" $tag -}}
+      {{- $new = replaceRE `\s*/?>$` "" $new -}}
+      {{- range $key, $value := $attrs -}}
+        {{- $new = printf `%s %s="%s"` $new $key (printf "%v" $value | htmlEscape) -}}
+      {{- end -}}
+      {{- $body = replace $body $tag (printf "%s>" $new) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- /* Native lazy loading keeps embeds crawlable and does not require scrolling JS. */ -}}
+{{- range findRE `<iframe\b[^>]*>` $body -}}
+  {{- if not (findRE `\sloading=` .) -}}
+    {{- $body = replace $body . (replaceRE `<iframe\b` `<iframe loading="lazy"` .) -}}
+  {{- end -}}
+{{- end -}}
+{{- return ($body | safeHTML) -}}

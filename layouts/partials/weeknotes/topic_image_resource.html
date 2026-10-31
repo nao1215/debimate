@@ -1,0 +1,15 @@
+{{- $image := false -}}
+{{- $week := .week -}}
+{{- range findRE `<img\b[^>]*>` (string .body) -}}
+  {{- if not $image -}}
+    {{- $src := replaceRE `(?s).*?\ssrc="([^"]+)".*` "$1" . | htmlUnescape -}}
+    {{- range $week.Resources.ByType "image" -}}
+      {{- if and (eq (urls.Parse $src).Path (urls.Parse .RelPermalink).Path) (in (slice "jpeg" "png" "webp" "gif") .MediaType.SubType) -}}
+        {{- if and (ge .Width 180) (ge .Height 180) (ge (mul .Width .Height) 57600) -}}
+          {{- $image = . -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $image -}}

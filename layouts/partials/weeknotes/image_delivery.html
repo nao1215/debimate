@@ -1,0 +1,36 @@
+{{/* Responsive derivatives retain animation. Never choose a larger file than the source. */}}
+{{- $image := .image -}}
+{{- $width := int (math.Min $image.Width (.width | default 820)) -}}
+{{- $height := int (math.Round (div (mul (float $width) $image.Height) $image.Width)) -}}
+{{- $limit := int (math.Min $image.Width (mul $width 2)) -}}
+{{- /* Large GIF frame buffers can exceed Hugo's per-image memory limit. */ -}}
+{{- if eq $image.MediaType.SubType "gif" -}}
+  {{- $limit = int (math.Min 720 $limit) -}}
+{{- end -}}
+{{- $fallbackWidth := int (math.Min $width $limit) -}}
+{{- $candidates := slice -}}
+{{- $fallback := $image -}}
+{{- $hasLimit := false -}}
+{{- $originalBytes := len $image.Content -}}
+{{- range sort (uniq (slice (int (math.Min 360 $limit)) (int (math.Min 720 $limit)) $fallbackWidth $limit)) -}}
+  {{- $variant := $image.Resize (printf "%dx webp q82" .) -}}
+  {{- if lt (len $variant.Content) $originalBytes -}}
+    {{- if eq (int $variant.Width) $limit -}}{{- $hasLimit = true -}}{{- end -}}
+    {{- $candidates = $candidates | append (printf "%s %dw" $variant.RelPermalink $variant.Width) -}}
+    {{- if eq (int $variant.Width) $fallbackWidth -}}{{- $fallback = $variant -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $hasLimit -}}
+  {{- $candidates = $candidates | append (printf "%s %dw" $image.RelPermalink $image.Width) -}}
+{{- end -}}
+{{- /* A same-width WebP may already be present; keep one candidate per width. */ -}}
+{{- $unique := slice -}}
+{{- $seen := slice -}}
+{{- range $candidates -}}
+  {{- $descriptor := index (last 1 (split . " ")) 0 -}}
+  {{- if not (in $seen $descriptor) -}}
+    {{- $unique = $unique | append . -}}
+    {{- $seen = $seen | append $descriptor -}}
+  {{- end -}}
+{{- end -}}
+{{- return (dict "src" $fallback.RelPermalink "width" $width "height" $height "srcset" (delimit $unique ", ") "sizes" (printf "auto, (max-width: %dpx) calc(100vw - 48px), %dpx" (add $width 48) $width) "loading" "lazy" "decoding" "async") -}}

@@ -6,4 +6,4 @@
   {{- $topics = $topics | append (replaceRE `(?s)\s*<hr\s*/?>\s*$` "" .) }}
 {{- end }}
 {{- $content = printf "%s%s" $content (delimit (collections.Reverse $topics) "<hr>\n") }}
-{{- return ($content | safeHTML) }}
+{{- return (partial "weeknotes/optimize_content.html" (dict "body" $content "week" .)) }}

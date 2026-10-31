@@ -5,6 +5,7 @@
 </header>
 <div class="post-content weeknotes-intro">{{ .Content }}</div>
 <div class="weeknotes-index">
+  {{- $cardIndex := 0 }}
   {{- $topics := partial "weeknotes/topics.html" . }}
   {{- range .RegularPages.ByDate.Reverse.GroupByDate "2006" }}
   {{- $yearTopics := where $topics "page.Params.year" .Key }}
@@ -27,10 +28,20 @@
         <div class="listing-cards weeknotes-topic-cards">
           {{- range . }}
           {{- $image := partial "weeknotes/topic_image.html" . }}
+          {{- $attrs := dict "src" $image "loading" "lazy" "decoding" "async" }}
+          {{- with partial "weeknotes/topic_image_resource.html" . }}
+            {{- $attrs = partialCached "weeknotes/image_delivery.html" (dict "image" . "width" 360) .RelPermalink 360 }}
+          {{- end }}
+          {{- $sizes := "(min-width: 1488px) 274px, (min-width: 901px) calc((100vw - 120px) / 5), (min-width: 541px) calc((100vw - 72px) / 2), calc(100vw - 48px)" }}
+          {{- $attrs = merge $attrs (dict "width" 960 "height" 540 "sizes" (printf "auto, %s" $sizes)) }}
+          {{- if eq $cardIndex 0 }}
+            {{- $attrs = merge $attrs (dict "loading" "eager" "fetchpriority" "high" "sizes" $sizes) }}
+          {{- end }}
+          {{- $cardIndex = add $cardIndex 1 }}
           <article class="listing-card">
             <a class="listing-card-link" href="{{ .page.RelPermalink }}">
               {{- with $image }}
-              <img src="{{ . }}" data-card-optional alt="" width="960" height="540" loading="lazy">
+              <img data-card-optional alt=""{{ range $key, $value := $attrs }} {{ printf "%s=%q" $key (printf "%v" $value) | safeHTMLAttr }}{{ end }}>
               {{- end }}
               <div class="listing-card-body">
                 <h3>{{ .page.Title }}</h3>
