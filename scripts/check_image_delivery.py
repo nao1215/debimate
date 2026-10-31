@@ -12,6 +12,7 @@ class HomePage(HTMLParser):
         self.cover_images = []
         self.image_preloads = []
         self.oss_badges = []
+        self.in_weeknote = False
         self.in_cover = False
         self.in_note_cover = False
         self.note_covers = 0
@@ -22,6 +23,8 @@ class HomePage(HTMLParser):
     def handle_starttag(self, tag, attrs):
         has_oss_pick = any(key == "data-oss-pick" for key, _ in attrs)
         attrs = dict(attrs)
+        if tag == "article":
+            self.in_weeknote = "weeknote-entry" in attrs.get("class", "").split()
         if tag == "figure" and "entry-cover" in attrs.get("class", "").split():
             self.in_cover = True
             self.in_note_cover = "note-title-cover" in attrs.get("class", "").split()
@@ -29,6 +32,7 @@ class HomePage(HTMLParser):
         if tag == "svg" and self.in_note_cover:
             self.inline_note_titles += 1
         if tag == "img" and self.in_cover:
+            attrs["weeknote"] = self.in_weeknote
             self.cover_images.append(attrs)
         if tag == "img" and "oss-card-badge" in attrs.get("class", "").split():
             self.oss_badges.append(attrs)
@@ -38,6 +42,8 @@ class HomePage(HTMLParser):
             self.oss_style = attrs.get("style", "")
 
     def handle_endtag(self, tag):
+        if tag == "article":
+            self.in_weeknote = False
         if tag == "figure":
             self.in_cover = False
             self.in_note_cover = False
@@ -62,13 +68,20 @@ def check(root: Path) -> None:
             assert image.get(attribute), f"Missing {attribute}: {image.get('src')}"
         candidates = [item.strip().rsplit(" ", 1)[-1] for item in image["srcset"].split(",") if item.strip()]
         assert len(candidates) == len(set(candidates)), f"Duplicate srcset widths: {image.get('src')}"
-        assert image.get("sizes") == (
+        expected_sizes = (
             "(min-width: 1488px) 312px, "
             "(min-width: 901px) calc((100vw - 238px) / 4), "
             "(min-width: 701px) calc((100vw - 186px) / 3), "
             "(min-width: 481px) calc((100vw - 130px) / 2), "
             "calc(100vw - 60px)"
-        ), f"Inaccurate homepage sizes: {image.get('sizes')}"
+        )
+        if image["weeknote"]:
+            expected_sizes = "auto, " + expected_sizes.replace("(min-width: 481px) calc((100vw - 130px) / 2), ", "")
+            # JPEG derivatives cannot silently keep a heavy animation.
+            assert image["src"].endswith(".jpg"), image["src"]
+        assert image.get("sizes") == expected_sizes, f"Inaccurate homepage sizes: {image.get('sizes')}"
+
+    assert any(image["weeknote"] for image in home.cover_images), "Missing homepage Weeknotes cards"
 
     assert home.oss_badges, "No Featured OSS badges found on the homepage"
     for badge in home.oss_badges:

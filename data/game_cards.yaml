@@ -1,0 +1,24 @@
+# Existing game artwork, cropped at build time for the compact homepage card.
+- name: Rabbit Run
+  slug: rabbit-run
+  play: https://nao1215.github.io/rabbitrun/
+  description: ウサギを走らせ、ハンマーで壁を壊すランゲーム。
+  images:
+    - src: images/game-picks/rabbit-cool.png
+      crop: 440x580 Top
+    - src: images/game-picks/rabbit-cute.png
+      crop: 440x580 Top
+    - src: images/game-picks/rabbit-gyal.png
+      crop: 440x580 Top
+    - src: images/game-picks/rabbit-street.png
+      crop: 440x580 Top
+- name: Succubus Live
+  slug: succubus-live
+  thumbnail_width: 560
+  play: https://nao1215.github.io/succubus-live/
+  description: 配信者たちの会話や音声を楽しむ、仮想ライブ配信ゲーム。
+  images:
+    - src: images/game-picks/succubus-mora.png
+      crop: 2048x900 Top
+    - src: images/game-picks/succubus-ella.png
+      crops: ["2048x1205 Top", "2048x900 Bottom"]

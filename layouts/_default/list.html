@@ -105,6 +105,7 @@
 
 {{- if $splitHome }}
 </section>
+{{ partial "home_weeknotes.html" . }}
 {{ partial "home_notes.html" . }}
 </div>
 {{- $scroll := resources.Get "js/home-lists.js" | minify | fingerprint }}

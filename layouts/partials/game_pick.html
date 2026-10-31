@@ -1,0 +1,25 @@
+{{- with hugo.Data.game_cards }}
+<div class="game-pick-wrap" data-game-pick>
+  {{- range $i, $game := . }}
+  <a class="game-pick game-pick-{{ .slug }}" href="{{ .play }}"{{ if $i }} hidden{{ end }}>
+    <span class="game-pick-body">
+      <span class="game-pick-label">自作ブラウザゲーム</span>
+      <span class="game-pick-name">{{ .name }}</span>
+      <span class="game-pick-desc">{{ .description }}</span>
+      <span class="game-pick-action">ブラウザで遊ぶ <span aria-hidden="true">→</span></span>
+    </span>
+    <span class="game-pick-art" aria-hidden="true">
+      {{- range .images }}
+        {{- $image := resources.Get .src }}
+        {{- with .crop }}{{ $image = $image.Crop . }}{{ end }}
+        {{- range .crops }}{{ $image = $image.Crop . }}{{ end }}
+        {{- $image = $image.Resize (printf "%dx webp q82" (int (math.Min ($game.thumbnail_width | default 280) $image.Width))) }}
+        <img src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}" alt="" decoding="async" loading="lazy">
+      {{- end }}
+    </span>
+  </a>
+  {{- end }}
+</div>
+{{- $script := resources.Get "js/game-pick.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>
+{{- end }}

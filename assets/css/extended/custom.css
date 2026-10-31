@@ -303,8 +303,7 @@ body {
   margin-bottom: 0.25rem !important;
 }
 
-/* トップの週報カードと Featured OSS を 2 列に並べる。
-   片方しか無い場合は auto-fit で 1 枚が幅いっぱいになる */
+/* Featured OSS とブラウザゲームを横並びにする表示枠。 */
 .home-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
@@ -1136,6 +1135,7 @@ body.home .post-entry .entry-header h2 {
 .post-content.weeknotes-content img,
 .post-content.weeknotes-content video {
   display: block;
+  height: auto;
   margin-inline: auto;
 }
 
@@ -1359,7 +1359,7 @@ body.home .post-entry .entry-header h2 {
   }
 }
 
-/* Homepage: three article columns and one note column. */
+/* Homepage: two article columns, one weeknote column, and one note column. */
 /* Appending cards must not move the viewport with the sentinel or footer. */
 body.home { --main-width: 1440px; overflow-anchor: none; }
 body.home .home-columns {
@@ -1375,9 +1375,14 @@ body.home .home-columns {
   gap: 18px;
   align-content: start;
 }
-.home-columns .home-posts { grid-column: span 3; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.home-columns .home-posts { grid-column: span 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-columns .home-weeknotes,
 .home-columns .home-notes { grid-template-columns: minmax(0, 1fr); }
 .home-posts .post-entry { background: #fff; }
+.home-weeknotes .post-entry { background: #f5f8f9; }
+html[data-theme="dark"] .home-weeknotes .post-entry { background: #2c3035; }
+.home-weeknotes .entry-cover img { object-fit: cover; }
+.weeknote-week-link { position: relative; z-index: 2; text-decoration: underline; text-underline-offset: 3px; }
 .home-notes .post-entry { background: #faf8f5; }
 html[data-theme="dark"] .home-posts .post-entry { background: #302e2b; }
 html[data-theme="dark"] .home-notes .post-entry { background: #292f32; }
@@ -1403,7 +1408,7 @@ body.home .home-columns .entry-header h2,
 body.home .home-columns .entry-cover img { aspect-ratio: 16 / 9; }
 @media (min-width: 701px) and (max-width: 900px) {
   body.home .home-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .home-columns .home-posts { grid-column: span 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-columns .home-posts { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 700px) {
   body.home .home-columns { grid-template-columns: minmax(0, 1fr); gap: 32px; }
@@ -1428,7 +1433,7 @@ body.home .home-columns .entry-content p { margin: 0; }
 body.home .home-columns .entry-footer { height: 40px; font-size: 12px; line-height: 20px; overflow: hidden; }
 .home-columns .post-entry[hidden] { display: none; }
 .home-list-status { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--secondary); }
-#home-posts-title, #home-notes-title { scroll-margin-top: 24px; }
+#home-posts-title, #home-weeknotes-title, #home-notes-title { scroll-margin-top: 24px; }
 
 .home-cards .oss-pick-wrap { min-width: 0; }
 .home-cards .oss-pick { margin: 0; height: 100%; }
@@ -1511,4 +1516,55 @@ html:not(.js) .home-columns .home-list-status { display: none; }
   .home-section-heading { gap: 6px; }
   .home-section-heading h2 { font-size: 21px; }
   .home-section-heading a { font-size: 12px; }
+}
+
+.home-weeknotes-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; }
+
+/* Compact game artwork sits beside the text instead of cropping an entire OGP. */
+.game-pick-wrap { min-width: 0; }
+.game-pick {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42%;
+  height: 100%;
+  min-height: 8.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fefaf7;
+  color: #342c37;
+  text-decoration: none;
+}
+.game-pick[hidden] { display: none; }
+.game-pick:hover { border-color: var(--secondary); }
+.game-pick:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.game-pick-body { padding: .9rem 0 .9rem 1rem; position: relative; z-index: 1; }
+.game-pick-label { display: block; font-size: .78rem; opacity: .8; }
+.game-pick-name { display: block; font-size: 1.18rem; font-weight: 700; margin-top: .15rem; }
+.game-pick-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: .82rem; line-height: 1.6; margin-top: .25rem; }
+.game-pick-action { display: block; font-size: .78rem; margin-top: .35rem; }
+.game-pick:hover .game-pick-action { text-decoration: underline; text-underline-offset: 3px; }
+.game-pick-art { position: relative; min-width: 0; }
+.game-pick-art img { position: absolute; bottom: 0; left: -5%; width: 64%; height: 100%; object-fit: contain; object-position: center bottom; }
+.game-pick-art img + img { left: 38%; }
+html[data-theme="dark"] .game-pick { background: #36343a; color: #fff5fa; }
+/* Keep the selected characters visible, including on narrow screens. */
+.game-pick { grid-template-columns: minmax(0, 1fr) 55%; }
+.game-pick .game-pick-art img { display: block; width: 35%; left: -10%; }
+.game-pick .game-pick-art img:nth-child(2) { left: 16%; }
+.game-pick .game-pick-art img:nth-child(3) { left: 46%; }
+.game-pick .game-pick-art img:nth-child(4) { left: 68%; }
+@media (max-width: 640px) {
+  .game-pick { grid-template-columns: minmax(0, 1fr); }
+  .game-pick .game-pick-body { padding-right: 1rem; padding-bottom: 6.5rem; }
+  .game-pick .game-pick-art { position: absolute; right: 0; bottom: 0; width: 100%; height: 6.2rem; }
+}
+
+/* Preserve the full width of the Succubus artwork so arms are not sliced off. */
+.game-pick-succubus-live .game-pick-art { clip-path: inset(0 0 0 -35%); }
+.game-pick-succubus-live .game-pick-art img { width: 102.4%; left: -31.2%; bottom: -15px; }
+.game-pick-succubus-live .game-pick-art img:nth-child(2) { left: 21.8%; bottom: -18px; }
+@media (max-width: 640px) {
+  .game-pick-succubus-live .game-pick-art img { left: -21.2%; bottom: -11px; }
+  .game-pick-succubus-live .game-pick-art img:nth-child(2) { bottom: -12px; }
 }

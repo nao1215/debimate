@@ -1,17 +1,4 @@
 {{- with site.Params.homeInfoParams }}
-{{- $weeknotesPage := site.GetPage "section" "weeknotes" }}
-{{- $weeknotesBanner := "" }}
-{{- $latestWeeknotes := false }}
-{{- with $weeknotesPage }}
-    {{- with .Resources.GetMatch "image/weekly-card-banner.webp" }}
-        {{- $weeknotesBanner = .RelPermalink }}
-    {{- end }}
-    {{/* 週報は 1 週 1 ページ。未来日付のページはビルド対象外なので、
-         日付降順の先頭がそのまま「公開済みの最新週」になる */}}
-    {{- with .RegularPages.ByDate.Reverse }}
-        {{- $latestWeeknotes = index . 0 }}
-    {{- end }}
-{{- end }}
 <article class="first-entry home-info">
     {{- with .Title }}
     <header class="entry-header">
@@ -25,20 +12,8 @@
         {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
     </footer>
     <div class="home-cards">
-        {{- with $latestWeeknotes }}
-        <a class="latest-weeknotes latest-weeknotes-report" href="{{ .RelPermalink }}"{{ with $weeknotesBanner }} style="--latest-weeknotes-bg: url('{{ . }}');"{{ end }}>
-            <span class="latest-weeknotes-label">今週の Weeknotes</span>
-            <span class="latest-weeknotes-title">{{ .Title }}</span>
-            {{- $topics := slice }}
-            {{- range partial "weeknotes/headings.html" .RawContent }}
-                {{- $topics = $topics | append (replaceRE `^####[ \t]+` "" . | plainify) }}
-            {{- end }}
-            {{- with $topics }}
-            <span class="latest-weeknotes-note">{{ delimit . "、" }}</span>
-            {{- end }}
-        </a>
-        {{- end }}
         {{- partial "oss_pick.html" . }}
+        {{- partial "game_pick.html" . }}
     </div>
 </article>
 {{- end -}}

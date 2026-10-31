@@ -11,7 +11,8 @@ const rememberVisible = (key, count) => {
 };
 document.querySelectorAll('.home-columns > section').forEach((section) => {
   const cards = [...section.querySelectorAll('.post-entry')];
-  const batch = 6;
+  const configuredBatch = Number(section.getAttribute('data-home-batch'));
+  const batch = Number.isInteger(configuredBatch) && configuredBatch > 0 ? configuredBatch : 6;
   if (cards.length <= batch) return;
   const status = section.querySelector('.home-list-status');
   if (!('IntersectionObserver' in window)) {

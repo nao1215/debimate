@@ -1,0 +1,39 @@
+<section class="home-weeknotes" aria-labelledby="home-weeknotes-title" data-home-batch="3">
+  <div class="home-section-heading">
+    <h2 id="home-weeknotes-title">週報</h2>
+    <nav class="home-weeknotes-links" aria-label="週報を読む">
+      {{- with (site.GetPage "/weeknotes").RegularPages.ByDate.Reverse }}
+      <a href="{{ (index . 0).RelPermalink }}">今週を読む</a>
+      {{- end }}
+      <a href="{{ "/weeknotes/" | relURL }}">全週報 →</a>
+    </nav>
+  </div>
+  {{- $topics := partial "weeknotes/topics.html" . }}
+  {{ partial "home_list_controls.html" (dict "count" (len $topics) "label" "話題" "batch" 3) }}
+  {{- range $i, $topic := $topics }}
+  {{- $image := partial "weeknotes/topic_image_resource.html" . }}
+  {{- $url := "" }}
+  {{- if not $image }}
+    {{- $url = partial "weeknotes/topic_image.html" . }}
+    {{- if not (hasPrefix $url "https://") }}
+      {{- $image = (site.GetPage "/weeknotes").Resources.Get "image/weekly-ogp-owl.webp" }}
+    {{- end }}
+  {{- end }}
+  {{- $srcset := printf "%s 480w" $url }}
+  {{- with $image }}
+    {{- /* JPEG is deliberately static, including when the source is animated. */}}
+    {{- $small := .Resize (printf "%dx jpg q80" (int (math.Min 360 .Width))) }}
+    {{- $large := .Resize (printf "%dx jpg q80" (int (math.Min 720 .Width))) }}
+    {{- $url = $small.RelPermalink }}
+    {{- $srcset = printf "%s %dw" $small.RelPermalink $small.Width }}
+    {{- if ne $small.Width $large.Width }}{{ $srcset = printf "%s, %s %dw" $srcset $large.RelPermalink $large.Width }}{{ end }}
+  {{- end }}
+  <article class="post-entry weeknote-entry{{ if ge $i 3 }} home-deferred{{ end }}">
+    <figure class="entry-cover"><img src="{{ $url }}" srcset="{{ $srcset }}" sizes="auto, (min-width: 1488px) 312px, (min-width: 901px) calc((100vw - 238px) / 4), (min-width: 701px) calc((100vw - 186px) / 3), calc(100vw - 60px)" width="960" height="540" loading="lazy" decoding="async" alt=""></figure>
+    <header class="entry-header"><h3>{{ .page.Title }}</h3></header>
+    <div class="entry-content"><p>{{ .body | plainify | htmlUnescape | replaceRE `\s+` " " | truncate 160 }}</p></div>
+    <footer class="entry-footer"><a class="weeknote-week-link" href="{{ .week.RelPermalink }}">{{ .week.Date.Format "2006/01/02" }} の週から</a></footer>
+    <a class="entry-link" href="{{ .page.RelPermalink }}" aria-label="週報の話題：{{ .page.Title }}"></a>
+  </article>
+  {{- end }}
+</section>

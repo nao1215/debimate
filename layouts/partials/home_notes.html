@@ -1,10 +1,10 @@
-<section class="home-notes" aria-labelledby="home-notes-title">
+<section class="home-notes" aria-labelledby="home-notes-title" data-home-batch="3">
   <div class="home-section-heading"><h2 id="home-notes-title">技術ノート</h2><a href="{{ "notes/" | relURL }}">全ノート →</a></div>
   {{- $notes := where site.RegularPages "Section" "notes" -}}
   {{- $notes = where $notes "Params.hiddenInHomeList" "ne" true -}}
-{{ partial "home_list_controls.html" (dict "count" (len $notes) "label" "技術ノート") }}
+{{ partial "home_list_controls.html" (dict "count" (len $notes) "label" "技術ノート" "batch" 3) }}
   {{- range $i, $note := $notes.ByDate.Reverse }}
-  <article class="post-entry note-entry{{ if ge $i 6 }} home-deferred{{ end }}">
+  <article class="post-entry note-entry{{ if ge $i 3 }} home-deferred{{ end }}">
     <figure class="entry-cover note-title-cover" style="background-image: linear-gradient(rgba(246,245,241,.78), rgba(246,245,241,.78)), url('{{ partial "home_note_banner.html" . }}');">{{ partial "note_title_image.html" . }}</figure>
     <header class="entry-header"><h3>{{ .Title }}</h3></header>
     <div class="entry-content"><p>{{ .Description | default (.Summary | plainify | htmlUnescape) }}</p></div>

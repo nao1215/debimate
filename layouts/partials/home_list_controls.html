@@ -1,3 +1,4 @@
-{{- if gt .count 6 }}
-<p class="home-list-status" aria-live="polite">{{ .count }} 件中 6 件</p>
+{{- $batch := .batch | default 6 }}
+{{- if gt .count $batch }}
+<p class="home-list-status" aria-live="polite">{{ .count }} 件中 {{ $batch }} 件</p>
 {{- end }}
