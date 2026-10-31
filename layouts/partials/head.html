@@ -2,6 +2,7 @@
 {{- if .IsHome }}<script>document.documentElement.classList.add("js");</script>{{ end -}}
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
 {{- if hugo.IsProduction | or (eq site.Params.env "production") | and (ne .Params.robotsNoIndex true) }}
 {{- if partial "is_thin_term.html" . }}
 {{- /* 収録記事が少ないタグ／カテゴリ一覧は薄いページなのでインデックスさせない。
@@ -84,6 +85,18 @@
 
 {{- $includes_all := $includes | resources.Concat "assets/css/includes.css" }}
 
+{{- if and .IsHome (eq (.Store.Get "paginationPageNumber" | default 1) 1) }}
+  {{- $banners := slice }}
+  {{- $notes := where site.RegularPages "Section" "notes" }}
+  {{- $notes = where $notes "Params.hiddenInHomeList" "ne" true }}
+  {{- range first 2 $notes.ByDate.Reverse }}
+    {{- $banner := partial "home_note_banner.html" . }}
+    {{- if and $banner (not (in $banners $banner)) }}
+      <link rel="preload" as="image" href="{{ $banner }}">
+      {{- $banners = $banners | append $banner }}
+    {{- end }}
+  {{- end }}
+{{- end }}
 {{- $theme_vars := (resources.Get "css/core/theme-vars.css") }}
 {{- $reset := (resources.Get "css/core/reset.css") }}
 {{- $media := (resources.Get "css/core/zmedia.css") }}

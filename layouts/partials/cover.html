@@ -40,7 +40,7 @@
         {{- $sizesAttr = printf "min(100vw, %dpx)" $slot }}
     {{- else if $.IsHome }}
         {{- /* Match the one-, two-, and four-column homepage grid including its padding. */ -}}
-        {{- $sizesAttr = "(min-width: 1488px) 311px, (min-width: 901px) calc((100vw - 244px) / 4), (min-width: 481px) calc((100vw - 130px) / 2), calc(100vw - 60px)" }}
+        {{- $sizesAttr = "(min-width: 1488px) 312px, (min-width: 901px) calc((100vw - 238px) / 4), (min-width: 701px) calc((100vw - 186px) / 3), (min-width: 481px) calc((100vw - 130px) / 2), calc(100vw - 60px)" }}
     {{- end }}
 
     {{- if $addLink }}

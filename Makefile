@@ -81,6 +81,7 @@ lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビ�
 	python3 scripts/check_image_delivery.py
 	python3 scripts/check_links.py
 	python3 scripts/check_pagination_seo.py
+	python3 scripts/check_rss.py
 	python3 scripts/check_twitter_embeds.py
 	python3 scripts/check_weeknotes.py
 

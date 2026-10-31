@@ -30,14 +30,16 @@
   {{- end }}
 {{- end }}
 
-{{- $pctx := . }}
-{{- if .IsHome }}{{ $pctx = site }}{{ end }}
 {{- $pages := slice }}
-{{- if or $.IsHome $.IsSection }}
-{{- $pages = $pctx.RegularPages }}
+{{- if .IsHome }}
+{{- $pages = site.RegularPages }}
+{{- else if .IsSection }}
+{{- $pages = .RegularPagesRecursive }}
 {{- else }}
-{{- $pages = $pctx.Pages }}
+{{- $pages = .RegularPages }}
 {{- end }}
+{{- $pages = where $pages "Layout" "not in" (slice "search" "archives") }}
+{{- $pages = $pages.ByPublishDate.Reverse }}
 {{- $limit := site.Config.Services.RSS.Limit }}
 {{- if ge $limit 1 }}
 {{- $pages = $pages | first $limit }}
@@ -59,13 +61,12 @@
     <language>{{ site.Language.Locale }}</language>{{ with $authorEmail }}
     <managingEditor>{{.}}{{ with $authorName }} ({{ . }}){{ end }}</managingEditor>{{ end }}{{ with $authorEmail }}
     <webMaster>{{ . }}{{ with $authorName }} ({{ . }}){{ end }}</webMaster>{{ end }}{{ with site.Copyright }}
-    <copyright>{{ . | markdownify | plainify | strings.TrimPrefix "© " }}</copyright>{{ end }}{{ if not .Date.IsZero }}
+    <copyright>{{ . | markdownify | plainify | strings.TrimPrefix "© " }}</copyright>{{ end }}{{ with $pages }}
     <lastBuildDate>{{ (index $pages.ByLastmod.Reverse 0).Lastmod.Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</lastBuildDate>{{ end }}
     {{- with .OutputFormats.Get "RSS" }}
     {{ printf "<atom:link href=%q rel=\"self\" type=%q />" .Permalink .MediaType | safeHTML }}
     {{- end }}
     {{- range $pages }}
-    {{- if and (ne .Layout `search`) (ne .Layout `archives`) }}
     <item>
       <title>{{ .Title }}</title>
       <link>{{ .Permalink }}</link>
@@ -77,7 +78,6 @@
       <content:encoded>{{ (printf "<![CDATA[%s]]>" .Content) | safeHTML }}</content:encoded>
       {{- end }}
     </item>
-    {{- end }}
     {{- end }}
   </channel>
 </rss>

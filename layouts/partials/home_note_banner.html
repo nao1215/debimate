@@ -1,0 +1,8 @@
+{{- $url := "" -}}
+{{- $section := .CurrentSection -}}
+{{- with site.GetPage "/notes" -}}
+  {{- $banner := .Resources.GetMatch (printf "image/%s-card-banner.webp" $section.File.ContentBaseName) -}}
+  {{- if not $banner }}{{ $banner = .Resources.GetMatch "image/notes-card-banner.webp" }}{{ end -}}
+  {{- with $banner }}{{ $url = (.Resize "640x webp q70").RelPermalink }}{{ end -}}
+{{- end -}}
+{{- return $url -}}

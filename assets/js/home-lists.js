@@ -1,41 +1,45 @@
-// Keep complete lists in HTML for no-JS readers; reveal cards progressively.
+// All cards remain in HTML; reveal the next batch as the list end approaches.
+// Keep list heights across reload/back so native scroll restoration uses the same layout.
+const homeListState = history.state?.homeLists || {};
+const rememberVisible = (key, count) => {
+  homeListState[key] = count;
+  try {
+    history.replaceState({ ...history.state, homeLists: homeListState }, '');
+  } catch (_) {
+    // Progressive loading still works when history storage is unavailable.
+  }
+};
 document.querySelectorAll('.home-columns > section').forEach((section) => {
   const cards = [...section.querySelectorAll('.post-entry')];
   const batch = 6;
   if (cards.length <= batch) return;
-  let visible = batch;
+  const status = section.querySelector('.home-list-status');
+  if (!('IntersectionObserver' in window)) {
+    cards.forEach((card) => card.classList.remove('home-deferred'));
+    status.textContent = `${cards.length} 件中 ${cards.length} 件`;
+    return;
+  }
+  const key = section.getAttribute('aria-labelledby');
+  const saved = homeListState[key];
+  let visible = Number.isInteger(saved) ? Math.min(cards.length, Math.max(batch, saved)) : batch;
   cards.slice(visible).forEach((card) => { card.hidden = true; });
   cards.forEach((card) => card.classList.remove('home-deferred'));
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'home-list-more';
-  button.textContent = 'もっと見る';
-  button.setAttribute('aria-label', `${section.querySelector('h2').textContent}をもっと見る`);
-  const status = document.createElement('p');
-  status.className = 'home-list-status';
-  status.setAttribute('aria-live', 'polite');
-  section.append(button, status);
-  let observer;
-  const update = () => {
-    status.textContent = `${cards.length} 件中 ${visible} 件`;
-    if (visible === cards.length) {
-      button.hidden = true;
-      observer?.disconnect();
-    }
-  };
-  const reveal = (manual = false) => {
+  status.textContent = `${cards.length} 件中 ${visible} 件`;
+  rememberVisible(key, visible);
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    observer.unobserve(status);
     const start = visible;
     visible = Math.min(visible + batch, cards.length);
     cards.slice(start, visible).forEach((card) => { card.hidden = false; });
-    if (manual) cards[start]?.querySelector('.entry-link')?.focus({ preventScroll: true });
-    update();
-  };
-  button.addEventListener('click', () => reveal(true));
-  if ('IntersectionObserver' in window) {
-    observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) reveal();
-    }, { rootMargin: '0px 0px 200px 0px' });
-    observer.observe(button);
-  }
-  update();
+    status.textContent = `${cards.length} 件中 ${visible} 件`;
+    rememberVisible(key, visible);
+    if (visible < cards.length) {
+      // Fill the viewport if needed; CSS disables anchoring to the moving list end.
+      requestAnimationFrame(() => observer.observe(status));
+    } else {
+      observer.disconnect();
+    }
+  }, { rootMargin: '0px 0px 400px 0px' });
+  if (visible < cards.length) observer.observe(status);
 });

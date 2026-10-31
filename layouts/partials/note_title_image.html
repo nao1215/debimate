@@ -1,4 +1,4 @@
-{{- /* Home-only SVG, regenerated from the title at build time. */ -}}
+{{- /* Inline home cover lettering: render with the document, without a lazy image request. */ -}}
 {{- $title := .Title | plainify | htmlUnescape -}}
 {{- $parts := split $title " - " -}}
 {{- $heading := (index $parts 0) | truncate 54 -}}
@@ -14,6 +14,5 @@
 {{- range $i, $line := findRE `.{1,26}` $subtitle -}}
   {{- $text = printf "%s<text x=\"64\" y=\"%d\" font-size=\"30\" fill=\"#52616b\">%s</text>" $text (add $y (mul $i 44)) ($line | htmlEscape) -}}
 {{- end -}}
-{{- $svg := printf `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><path d="M64 116H896" stroke="#b3bfc4"/><g font-family="'Noto Sans CJK JP','Hiragino Kaku Gothic ProN',sans-serif" fill="#25353e"><text x="64" y="80" font-size="25" letter-spacing="2">%s</text>%s<text x="64" y="493" font-size="20" fill="#65757d">debimate / 技術ノート</text></g></svg>` (.CurrentSection.Title | htmlEscape) $text -}}
-{{- $image := resources.FromString (printf "note-cards/%s.svg" (md5 (printf "%s%s" .RelPermalink $svg))) $svg -}}
-{{- return $image.RelPermalink -}}
+{{- $svg := printf `<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><path d="M64 116H896" stroke="#b3bfc4"/><g font-family="'Noto Sans CJK JP','Hiragino Kaku Gothic ProN',sans-serif" fill="#25353e"><text x="64" y="80" font-size="25" letter-spacing="2">%s</text>%s<text x="64" y="493" font-size="20" fill="#65757d">debimate / 技術ノート</text></g></svg>` (.CurrentSection.Title | htmlEscape) $text -}}
+{{- return ($svg | safeHTML) -}}

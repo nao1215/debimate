@@ -13,6 +13,9 @@ class HomePage(HTMLParser):
         self.image_preloads = []
         self.oss_badges = []
         self.in_cover = False
+        self.in_note_cover = False
+        self.note_covers = 0
+        self.inline_note_titles = 0
         self.oss_style = ""
         self.feed(path.read_text())
 
@@ -21,6 +24,10 @@ class HomePage(HTMLParser):
         attrs = dict(attrs)
         if tag == "figure" and "entry-cover" in attrs.get("class", "").split():
             self.in_cover = True
+            self.in_note_cover = "note-title-cover" in attrs.get("class", "").split()
+            self.note_covers += int(self.in_note_cover)
+        if tag == "svg" and self.in_note_cover:
+            self.inline_note_titles += 1
         if tag == "img" and self.in_cover:
             self.cover_images.append(attrs)
         if tag == "img" and "oss-card-badge" in attrs.get("class", "").split():
@@ -33,10 +40,13 @@ class HomePage(HTMLParser):
     def handle_endtag(self, tag):
         if tag == "figure":
             self.in_cover = False
+            self.in_note_cover = False
 
 
 def check(root: Path) -> None:
     home = HomePage(root / "index.html")
+    assert home.note_covers > 0, "Missing note cover art"
+    assert home.inline_note_titles == home.note_covers, "Note lettering must render inline, without lazy image loading"
     assert home.cover_images, "No cover images found on the homepage"
     for image in home.cover_images:
         for attribute in ("width", "height"):
@@ -53,8 +63,9 @@ def check(root: Path) -> None:
         candidates = [item.strip().rsplit(" ", 1)[-1] for item in image["srcset"].split(",") if item.strip()]
         assert len(candidates) == len(set(candidates)), f"Duplicate srcset widths: {image.get('src')}"
         assert image.get("sizes") == (
-            "(min-width: 1488px) 311px, "
-            "(min-width: 901px) calc((100vw - 244px) / 4), "
+            "(min-width: 1488px) 312px, "
+            "(min-width: 901px) calc((100vw - 238px) / 4), "
+            "(min-width: 701px) calc((100vw - 186px) / 3), "
             "(min-width: 481px) calc((100vw - 130px) / 2), "
             "calc(100vw - 60px)"
         ), f"Inaccurate homepage sizes: {image.get('sizes')}"
