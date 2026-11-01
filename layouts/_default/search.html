@@ -19,7 +19,8 @@
       placeholder="{{ .Params.placeholder | default "例: Go、分散システム、キャリア" }}"
       aria-describedby="searchStatus" type="search" autocomplete="off" maxlength="64">
   </div>
-  <p id="searchStatus" class="search-status" aria-live="polite">検索データを読み込んでいます…</p>
+  <p id="searchStatus" class="search-status" aria-live="polite">キーワードを入力すると検索します。</p>
+  <button id="searchRetry" type="button" hidden>再試行</button>
 </section>
 
 <ul id="searchResults" class="search-results" aria-label="検索結果"></ul>

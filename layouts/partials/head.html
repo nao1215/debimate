@@ -177,7 +177,6 @@
 
 {{- /* Search */}}
 {{- if (eq .Layout `search`) -}}
-<link crossorigin="anonymous" rel="preload" as="fetch" href="../index.json">
 {{- /* 検索は Fuse.js を使わず、fastsearch.js だけで部分一致を行う */}}
 {{- $fastsearch := resources.Get "js/fastsearch.js" | js.Build | resources.Minify }}
 {{- if not site.Params.assets.disableFingerprinting }}

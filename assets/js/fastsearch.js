@@ -22,9 +22,14 @@ const TYPE_LABELS = {
 const TYPE_ORDER = {post: 0, note: 1, weeknotes: 2, page: 3};
 
 let records;
+let loading;
+let composing = false;
+let searchTimer;
+let revision = 0;
 const resultList = document.getElementById('searchResults');
 const searchInput = document.getElementById('searchInput');
 const searchStatus = document.getElementById('searchStatus');
+const searchRetry = document.getElementById('searchRetry');
 let first;
 let last;
 let resultsAvailable = false;
@@ -164,10 +169,12 @@ function setStatus(message) {
   searchStatus.textContent = message;
 }
 
-function renderResults() {
+async function renderResults() {
+  const currentRevision = ++revision;
   const input = searchInput.value.trim();
   resultList.innerHTML = '';
   resultsAvailable = false;
+  searchRetry.hidden = true;
 
   if (!input) {
     setStatus(`キーワードを入力すると、最大${LIMIT}件の候補を表示します。`);
@@ -175,8 +182,22 @@ function renderResults() {
   }
   if (!records) {
     setStatus('検索データを読み込んでいます…');
-    return;
+    try {
+      loading ||= fetch('../index.json').then(async response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        records = data.map(prepare);
+      }).finally(() => { loading = null; });
+      await loading;
+    } catch (error) {
+      if (revision !== currentRevision || composing) return;
+      console.error(error);
+      setStatus('検索データを読み込めませんでした。再試行してください。');
+      searchRetry.hidden = false;
+      return;
+    }
   }
+  if (revision !== currentRevision || composing) return;
 
   const {terms, hits} = search(input);
   if (hits.length === 0) {
@@ -193,19 +214,23 @@ function renderResults() {
   last = resultList.lastElementChild;
 }
 
-window.addEventListener('load', async () => {
-  try {
-    const response = await fetch('../index.json');
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    records = (await response.json()).map(prepare);
-    renderResults();
-  } catch (error) {
-    console.error(error);
-    setStatus('検索データを読み込めませんでした。時間をおいて再度お試しください。');
-  }
-});
-
-searchInput.addEventListener('input', renderResults);
+function scheduleSearch() {
+  clearTimeout(searchTimer);
+  revision++;
+  resultsAvailable = false;
+  resultList.innerHTML = '';
+  searchRetry.hidden = true;
+  if (composing) return;
+  if (!searchInput.value.trim()) { void renderResults(); return; }
+  setStatus('検索しています…');
+  searchTimer = setTimeout(renderResults, 200);
+}
+searchInput.addEventListener('compositionstart', () => { composing = true; scheduleSearch(); });
+searchInput.addEventListener('compositionend', () => { composing = false; scheduleSearch(); });
+searchInput.addEventListener('input', event => { if (!event.isComposing) scheduleSearch(); });
+searchRetry.addEventListener('click', () => { clearTimeout(searchTimer); void renderResults(); });
+// Browsers may restore the input on reload; an empty page does no index work.
+if (searchInput.value.trim()) scheduleSearch();
 
 function focusResult(item) {
   document.querySelectorAll('#searchResults .focus').forEach((element) => {
@@ -231,7 +256,7 @@ document.addEventListener('keydown', (event) => {
 
   if (event.key === 'Escape' && insideSearch) {
     searchInput.value = '';
-    renderResults();
+    scheduleSearch();
     focusResult(null);
     return;
   }
