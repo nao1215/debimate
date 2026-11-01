@@ -31,6 +31,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: '0.166.0'
     steps:
       - name: Checkout source
         uses: actions/checkout@v7
@@ -41,8 +43,18 @@ jobs:
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: '0.166.0'
+          hugo-version: ${{ env.HUGO_VERSION }}
           extended: true
+
+      # Hugo は元画像と変換条件に応じてキャッシュを選ぶため、前のコミットの
+      # 変換済み画像も再利用できる。Hugo 更新時は別のキャッシュに切り替える。
+      - name: Cache processed images
+        uses: actions/cache@v6
+        with:
+          path: resources/_gen/images
+          key: ${{ runner.os }}-${{ runner.arch }}-hugo-${{ env.HUGO_VERSION }}-images-v1-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-hugo-${{ env.HUGO_VERSION }}-images-v1-
 
       - name: Test migration checks
         run: python3 -m unittest discover -s scripts -p 'test_*.py'
@@ -59,7 +71,8 @@ jobs:
         run: python3 scripts/fetch_bbs.py
 
       - name: Build site
-        run: hugo --minify
+        # 不要になった変換結果を削除してからキャッシュを保存する。
+        run: hugo --minify --gc
 
       # 生成後の public/ を検査する。リンク切れのまま公開すると、直前の
       # デプロイまで正常だったURLが落ちるため、artifact を上げる前に止める。
