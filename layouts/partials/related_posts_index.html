@@ -1,0 +1,17 @@
+{{/* ビルド内で共有する逆引き索引。ページ参照と通し番号を保持し、本文やHTMLの複製は作らない。
+     ページの順序は site.RegularPages と一致させ、同点時の選出を変えない。 */}}
+{{- $buckets := newScratch -}}
+{{- $pages := newScratch -}}
+{{- range $ordinal, $page := .RegularPages -}}
+  {{- $id := printf "%012d" $ordinal -}}
+  {{- $pages.Set $id $page -}}
+  {{- range $field := slice "series" "tags" "categories" "section" -}}
+    {{- $terms := index $page.Params $field | default (slice) -}}
+    {{- if eq $field "section" -}}{{- $terms = slice $page.Section -}}{{- end -}}
+    {{- range uniq $terms -}}
+      {{- $key := printf "%s:%s" $field (jsonify .) -}}
+      {{- $buckets.Add $key (slice $id) -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return (dict "buckets" $buckets.Values "pages" $pages.Values) -}}

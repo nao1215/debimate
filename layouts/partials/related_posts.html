@@ -3,31 +3,29 @@
 {{- end -}}
 
 {{- $count := site.Params.relatedPosts.count | default 4 -}}
-{{- $currentTags := .Params.tags | default (slice) -}}
-{{- $currentCategories := .Params.categories | default (slice) -}}
-{{- $currentSeries := .Params.series | default (slice) -}}
+{{- $index := partialCached "related_posts_index.html" site -}}
+{{- $scores := newScratch -}}
 {{- $scored := slice -}}
 
-{{- range site.RegularPages -}}
+{{/* 得点が付く候補だけを索引から取得し、無関係なページの比較を省く。
+     同じ値の重複は intersect と同様に一度だけ数える。 */}}
+{{- $fields := dict "series" 100 "tags" 20 "categories" 8 "section" 3 -}}
+{{- range $field, $weight := $fields -}}
+  {{- $terms := index $.Params $field | default (slice) -}}
+  {{- if eq $field "section" -}}{{- $terms = slice $.Section -}}{{- end -}}
+  {{- range uniq $terms -}}
+    {{- $key := printf "%s:%s" $field (jsonify .) -}}
+    {{- range index $index.buckets $key -}}
+      {{- $scores.Add . $weight -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{/* 通し番号の順に走査し、得点と日付差が同じ場合も従来の順序を保つ。 */}}
+{{- range $id, $score := $scores.Values -}}
+  {{- $page := index $index.pages $id -}}
+  {{- with $page -}}
   {{- if ne .RelPermalink $.RelPermalink -}}
-    {{- $score := 0 -}}
-    {{- $sharedSeries := intersect ($.Params.series | default (slice)) (.Params.series | default (slice)) -}}
-    {{- $sharedTags := intersect $currentTags (.Params.tags | default (slice)) -}}
-    {{- $sharedCategories := intersect $currentCategories (.Params.categories | default (slice)) -}}
-
-    {{- if gt (len $sharedSeries) 0 -}}
-      {{- $score = add $score (mul (len $sharedSeries) 100) -}}
-    {{- end -}}
-    {{- if gt (len $sharedTags) 0 -}}
-      {{- $score = add $score (mul (len $sharedTags) 20) -}}
-    {{- end -}}
-    {{- if gt (len $sharedCategories) 0 -}}
-      {{- $score = add $score (mul (len $sharedCategories) 8) -}}
-    {{- end -}}
-    {{- if eq .Section $.Section -}}
-      {{- $score = add $score 3 -}}
-    {{- end -}}
-
     {{/* 同点になった時の並び順。以前は .Lastmod の新しい順にしていたが、
          enableGitInfo が有効なので誤字修正でも Lastmod が動く。その結果、
          最近触った数本が全記事の「次に読む」を占有し、340 ページ中 108 ページは
@@ -45,6 +43,7 @@
       {{- $scored = $scored | append (dict "key" $key "page" . "score" $score) -}}
     {{- end -}}
   {{- end -}}
+{{- end -}}
 {{- end -}}
 
 {{- $pages := slice -}}
