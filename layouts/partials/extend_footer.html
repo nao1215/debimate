@@ -1,21 +1,35 @@
-{{- if .Store.Get "hasMermaid" }}
+{{- if or (.Store.Get "hasMermaid") (eq .Layout "year") }}
 <script type="module">
-  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-  mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+  let renderer;
+  let rendering = Promise.resolve();
+  const renderDiagrams = () => {
+    rendering = rendering.then(async () => {
+      const nodes = [...document.querySelectorAll('pre.mermaid:not([data-processed])')];
+      if (!nodes.length) return;
+      if (!renderer) {
+        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
+        mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
+        renderer = mermaid;
+      }
+      await renderer.run({ nodes });
+    }).catch(error => console.warn('Mermaid rendering failed', error));
+  };
+  document.addEventListener('annual:loaded', renderDiagrams);
+  renderDiagrams();
 </script>
 <style>
   .mermaid { background: #ffffff !important; padding: 10px; border-radius: 5px; }
 </style>
 {{- end }}
-{{- if .Store.Get "hasTwitterEmbed" }}
+{{- if or (.Store.Get "hasTwitterEmbed") (eq .Layout "year") }}
 <script>
 (() => {
-  const tweets = document.querySelectorAll('.twitter-tweet');
-  if (!tweets.length) return;
-
   let loaded = false;
   const loadTwitter = () => {
-    if (loaded) return;
+    if (loaded) {
+      window.twttr?.widgets?.load();
+      return;
+    }
     loaded = true;
     const script = document.createElement('script');
     script.src = 'https://platform.twitter.com/widgets.js';
@@ -24,19 +38,20 @@
     script.dataset.twitterWidgets = 'true';
     document.head.appendChild(script);
   };
-
-  if (!('IntersectionObserver' in window)) {
-    loadTwitter();
-    return;
-  }
-
-  const observer = new IntersectionObserver((entries) => {
-    if (entries.some((entry) => entry.isIntersecting)) {
+  const observer = 'IntersectionObserver' in window ? new IntersectionObserver(entries => {
+    if (entries.some(entry => entry.isIntersecting)) {
       observer.disconnect();
       loadTwitter();
     }
-  }, { rootMargin: '800px 0px' });
-  tweets.forEach((tweet) => observer.observe(tweet));
+  }, { rootMargin: '800px 0px' }) : null;
+  const watchTweets = () => {
+    const tweets = document.querySelectorAll('.twitter-tweet');
+    if (!tweets.length) return;
+    if (!observer || loaded) loadTwitter();
+    else tweets.forEach(tweet => observer.observe(tweet));
+  };
+  document.addEventListener('annual:loaded', watchTweets);
+  watchTweets();
 })();
 </script>
 {{- end }}

@@ -37,15 +37,31 @@ class Page(HTMLParser):
 
 
 
+def paginated(root: Path, start: str) -> list[Page]:
+    pages = []
+    seen = set()
+    url = start
+    while url:
+        assert url not in seen, f"Pagination cycle: {url}"
+        seen.add(url)
+        page = Page(root / urlparse(url).path.strip("/") / "index.html")
+        pages.append(page)
+        next_links = [link["href"] for link in page.links if link.get("rel") == "next"]
+        assert len(next_links) <= 1
+        url = next_links[0] if next_links else None
+    return pages
+
+
 def check(root: Path) -> None:
-    index = Page(root / "weeknotes/index.html")
+    indexes = paginated(root, "/weeknotes/")
+    index_links = [link for page in indexes for link in page.links]
     topics = [
-        link["href"] for link in index.links
+        link["href"] for link in index_links
         if re.fullmatch(r"/weeknotes/\d{4}-\d{2}-\d{2}/[a-f0-9]{12}/", link.get("href", ""))
     ]
     assert topics, "Weeknotes index must link to individual topics"
     assert len(topics) == len(set(topics)), "Duplicate topics in index"
-    assert index.headings == 0, "Index must not contain the weekly full text"
+    assert all(page.headings == 0 for page in indexes), "Index must not contain the weekly full text"
     # Source topics are appended chronologically; all reading surfaces reverse them.
     source_root = Path(__file__).resolve().parents[1] / "content/weeknotes"
     expected_topics = []
@@ -87,10 +103,10 @@ def check(root: Path) -> None:
         weekly = Page(root / f"weeknotes/{week}/index.html")
         assert [t.strip() for t in weekly.titles["h4"]] == titles, f"Incorrect topic order in {week}"
     for year, count in counts.items():
-        annual = Page(root / f"weeknotes/{year}/index.html")
-        assert [t.strip() for t in annual.titles["h4"]] == year_titles[year], f"Incorrect topic order in {year} archive"
-        assert annual.headings == count, f"Missing full-text topics in {year} archive"
-        assert any(link.get("href") == f"/weeknotes/{year}/" for link in index.links)
+        annual = paginated(root, f"/weeknotes/{year}/")
+        assert [t.strip() for page in annual for t in page.titles["h4"]] == year_titles[year], f"Incorrect topic order in {year} archive"
+        assert sum(page.headings for page in annual) == count, f"Missing full-text topics in {year} archive"
+        assert any(link.get("href") == f"/weeknotes/{year}/" for link in index_links)
     print(f"Weeknotes navigation verified: {len(topics)} topics, {len(counts)} annual archives")
 
 

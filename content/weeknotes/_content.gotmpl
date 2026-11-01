@@ -3,7 +3,7 @@
 {{- range os.ReadDir "content/weeknotes" }}
   {{- if and .IsDir (findRE `^\d{4}$` .Name) }}
     {{- $year := .Name }}
-    {{- $.AddPage (dict "path" (printf "archive-%s" $year) "url" (printf "/weeknotes/%s/" $year) "title" (printf "%s年" $year) "layout" "year" "build" (dict "list" "never" "render" "always") "params" (dict "year" $year)) }}
+    {{- $.AddPage (dict "kind" "section" "outputs" (slice "HTML") "path" (printf "archive-%s" $year) "url" (printf "/weeknotes/%s/" $year) "title" (printf "%s年" $year) "layout" "year" "build" (dict "list" "never" "render" "always") "params" (dict "year" $year)) }}
     {{- range os.ReadDir (printf "content/weeknotes/%s" $year) }}
       {{- $file := printf "content/weeknotes/%s/%s/index.md" $year .Name }}
       {{- if and .IsDir (os.FileExists $file) }}

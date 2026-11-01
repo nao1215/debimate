@@ -41,3 +41,6 @@ projects/**/datasets/**/*.zip
 projects/**/datasets/**/*.csv
 projects/**/datasets/**/*.parquet
 projects/**/datasets/**/*.json
+
+# Local Lighthouse reports
+/reports/lighthouse/

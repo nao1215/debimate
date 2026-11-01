@@ -55,6 +55,9 @@ def check(root: Path) -> None:
         assert len(page.canonical) == 1, f"Expected one canonical URL: {path}"
         canonical = urlparse(page.canonical[0])
         expected_path = "/" + path.parent.relative_to(root).as_posix() + "/"
+        # /post/ is a retained duplicate of the canonical /post/ja/ archive.
+        if expected_path.startswith("/post/page/"):
+            expected_path = expected_path.replace("/post/page/", "/post/ja/page/", 1)
         assert canonical.scheme == "https", f"Canonical must use HTTPS: {path}"
         assert canonical.netloc == "debimate.jp", f"Unexpected canonical host: {path}"
         assert unquote(canonical.path) == expected_path, (

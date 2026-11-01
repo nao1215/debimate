@@ -77,6 +77,9 @@ redirects-check: ## 移行前URL向けのリダイレクトが最新か検証
 lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビルドから実施）
 	$(HUGO) --minify
 	python3 scripts/check_adsense.py
+	python3 scripts/check_home_delivery.py
+	python3 scripts/check_archive_delivery.py
+	node --test scripts/check_home_lists.mjs
 	python3 scripts/check_asset_delivery.py
 	python3 scripts/check_image_delivery.py
 	python3 scripts/check_links.py
@@ -113,3 +116,12 @@ deploy: build ## デプロイ実行（GitHub Actionsを利用）
 logs: ## デプロイジョブの最新ログを表示
 	@gh run list --limit 1
 	@gh run watch
+
+.PHONY: audit-home
+audit-home: ## Lighthouseでトップを3回計測（Node.js/Chrome必須、初回はnpm取得）
+	python3 scripts/audit_home.py
+
+.PHONY: audit-page
+AUDIT_PATH ?= /games/
+audit-page: ## 指定ページをLighthouseで3回計測（例: make audit-page AUDIT_PATH=/weeknotes/）
+	python3 scripts/audit_home.py --path "$(AUDIT_PATH)" --output reports/lighthouse/page

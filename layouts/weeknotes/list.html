@@ -4,19 +4,26 @@
   <h1>{{ .Title }}{{ with .OutputFormats.Get "rss" }} <a class="weeknotes-rss" href="{{ .RelPermalink }}" aria-label="Weeknotes RSS">RSS</a>{{ end }}</h1>
 </header>
 <div class="post-content weeknotes-intro">{{ .Content }}</div>
-<div class="weeknotes-index">
+<div class="weeknotes-index" data-archive-list="weeks">
   {{- $cardIndex := 0 }}
   {{- $topics := partial "weeknotes/topics.html" . }}
-  {{- range .RegularPages.ByDate.Reverse.GroupByDate "2006" }}
+  {{- $pager := partial "archive_paginator.html" . -}}
+  {{- range $pager.Pages.GroupByDate "2006" }}
   {{- $yearTopics := where $topics "page.Params.year" .Key }}
-  <section class="weeknotes-index-year" aria-labelledby="{{ .Key }}">
+  {{- $year := .Key -}}
+  {{- $yearWeeks := 0 -}}
+  {{- range (site.GetPage "/weeknotes").RegularPages.GroupByDate "2006" -}}
+    {{- if eq .Key $year -}}{{- $yearWeeks = len .Pages -}}{{- end -}}
+  {{- end -}}
+  <section data-archive-group="{{ .Key }}" class="weeknotes-index-year" aria-labelledby="{{ .Key }}">
     <header class="weeknotes-index-year-header">
       <h2 id="{{ .Key }}">{{ .Key }}年</h2>
       <div class="weeknotes-index-summary">
         <a href="{{ printf "/weeknotes/%s/" .Key | relURL }}">全週報を読む <span aria-hidden="true">→</span></a>
-        <span class="weeknotes-index-count">{{ len .Pages }}週・{{ len $yearTopics }}件</span>
+        <span class="weeknotes-index-count">全{{ $yearWeeks }}週・{{ len $yearTopics }}件</span>
       </div>
     </header>
+      <div data-archive-children>
       {{- range .Pages }}
       {{- $weekTopics := where $topics "week.RelPermalink" .RelPermalink }}
       <section class="weeknotes-index-week" aria-labelledby="week-{{ .Date.Format "20060102" }}">
@@ -54,15 +61,18 @@
         {{- end }}
       </section>
       {{- end }}
+  </div>
   </section>
   {{- end }}
 </div>
+{{ partial "archive_pagination.html" $pager }}
 {{- $script := resources.Get "js/list-cards.js" | minify | fingerprint }}
 <script src="{{ $script.RelPermalink }}" defer></script>
 {{/* Preserve old links to weekly anchors on the former full-text index. */}}
 <script>
 (() => {
-  const fragment = decodeURIComponent(location.hash.slice(1));
+  let fragment;
+  try { fragment = decodeURIComponent(location.hash.slice(1)); } catch (_) { return; }
   const match = /^(\d{4})(\d{2})(\d{2})週$/.exec(fragment);
   if (match) location.replace({{ "/weeknotes/" | relURL }} + match[1] + '/' + location.hash);
 })();

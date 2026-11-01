@@ -1,5 +1,4 @@
 <meta charset="utf-8">
-{{- if .IsHome }}<script>document.documentElement.classList.add("js");</script>{{ end -}}
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
@@ -31,6 +30,12 @@
     {{- .Store.Set "paginationPageNumber" $pageNumber -}}
   {{- end -}}
 {{- end -}}
+{{- with partial "archive_paginator.html" . -}}
+  {{- $pageNumber = .PageNumber -}}
+  {{- $paginationURL = .URL | absURL -}}
+  {{- if gt $pageNumber 1 -}}{{- $.Store.Set "paginationPageNumber" $pageNumber -}}{{- end -}}
+{{- end -}}
+{{- .Store.Set "paginationURL" $paginationURL -}}
 {{- $paginationTitle := "" -}}
 {{- if gt $pageNumber 1 -}}
   {{- $paginationTitle = printf " - %dページ目" $pageNumber -}}
@@ -52,11 +57,23 @@
 {{- $canonicalURL := $paginationURL -}}
 {{- with .Params.canonicalURL -}}
   {{- $canonicalURL = trim . " " -}}
+  {{- if and $.IsSection (gt $pageNumber 1) -}}
+    {{- $canonicalURL = printf "%s/page/%d/" (strings.TrimSuffix "/" $canonicalURL) $pageNumber -}}
+  {{- end -}}
 {{- end -}}
 <link rel="canonical" href="{{ $canonicalURL }}">
+{{- .Store.Set "paginationURL" $canonicalURL -}}
 {{- if and .IsHome (eq $pageNumber 1) -}}
   {{- with partial "oss_banner.html" . -}}
 <link rel="preload" as="image" type="image/webp" href="{{ .RelPermalink }}" fetchpriority="high">
+  {{- end -}}
+{{- end -}}
+{{- if eq .Layout "games" -}}
+  {{- with index .Params.games 0 -}}
+    {{- with $.Resources.Get .poster -}}
+      {{- $poster := partial "game_poster.html" . -}}
+<link rel="preload" as="image" type="image/webp" href="{{ $poster.RelPermalink }}" fetchpriority="high">
+    {{- end -}}
   {{- end -}}
 {{- end -}}
 {{- if site.Params.analytics.google.SiteVerificationTag }}
@@ -104,7 +121,7 @@
 {{- /* Load only the theme components used by this page type. */ -}}
 {{- $styleVariant := "list" -}}
 {{- $isPostArchive := and (eq .Kind "section") (eq .Section "post") -}}
-{{- $hasSectionContent := and (not .IsPage) (not .IsHome) (ne .RawContent "") -}}
+{{- $hasSectionContent := and (not .IsPage) (not .IsHome) (or (ne .RawContent "") (eq .Layout "year")) -}}
 {{- if eq .Kind "404" -}}
   {{- $styleVariant = "404" -}}
 {{- else if or (eq .Layout "archives") $isPostArchive -}}

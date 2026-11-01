@@ -1,0 +1,17 @@
+{{- $pager := false -}}
+{{- if and .IsSection (eq .Section "post") -}}
+  {{- $pages := slice -}}
+  {{- range .RegularPagesRecursive.ByPublishDate.Reverse.GroupByPublishDate "2006" -}}
+    {{- range .Pages -}}{{- $pages = $pages | append . -}}{{- end -}}
+  {{- end -}}
+  {{- $pager = .Paginate $pages 20 -}}
+{{- else if and .IsSection (eq .Section "weeknotes") -}}
+  {{- if eq .Layout "year" -}}
+    {{- range (site.GetPage "/weeknotes").RegularPages.ByDate.Reverse.GroupByDate "2006" -}}
+      {{- if eq .Key $.Params.year -}}{{- $pager = $.Paginate .Pages 1 -}}{{- end -}}
+    {{- end -}}
+  {{- else if eq .RelPermalink (site.GetPage "/weeknotes").RelPermalink -}}
+    {{- $pager = .Paginate .RegularPages.ByDate.Reverse 2 -}}
+  {{- end -}}
+{{- end -}}
+{{- return $pager -}}

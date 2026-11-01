@@ -71,6 +71,12 @@ jobs:
       - name: Check AdSense loading
         run: python3 scripts/check_adsense.py
 
+      - name: Check homepage batches and archive delivery
+        run: |
+          python3 scripts/check_home_delivery.py
+          python3 scripts/check_archive_delivery.py
+          node --test scripts/check_home_lists.mjs
+
       - name: Check asset delivery
         run: python3 scripts/check_asset_delivery.py
 

@@ -1,4 +1,4 @@
-<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:url" content="{{ .Store.Get "paginationURL" | default .Permalink }}">
 
 {{- with or site.Title site.Params.title | plainify }}
   <meta property="og:site_name" content="{{ . }}">

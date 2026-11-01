@@ -23,11 +23,28 @@
 </header>
 
 {{- $loading := "eager" }}
-{{- range .RegularPagesRecursive.ByPublishDate.Reverse.GroupByPublishDate "2006" }}
-<section class="listing-year" aria-labelledby="year-{{ .Key }}">
-<h2 id="year-{{ .Key }}">{{ .Key }}年</h2>
-<div class="listing-cards">
-{{- range .Pages }}
+{{- $pager := partial "archive_paginator.html" . -}}
+{{- $years := dict -}}
+{{- range $pager.Pagers -}}
+  {{- $url := .URL -}}
+  {{- range .Pages.GroupByPublishDate "2006" -}}
+    {{- if not (isset $years .Key) -}}{{- $years = merge $years (dict .Key $url) -}}{{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $visibleYears := slice -}}
+{{- range $pager.Pages.GroupByPublishDate "2006" -}}{{- $visibleYears = $visibleYears | append .Key -}}{{- end -}}
+<nav class="archive-years" aria-label="年を選ぶ">
+  {{- range .RegularPagesRecursive.ByPublishDate.Reverse.GroupByPublishDate "2006" -}}
+  <a data-archive-anchor="year-{{ .Key }}" href="{{ index $years .Key }}#year-{{ .Key }}"{{ if not (in $visibleYears .Key) }} id="year-{{ .Key }}" class="archive-anchor-placeholder"{{ end }}>{{ .Key }}年</a>
+  {{- end -}}
+</nav>
+<div data-archive-list="posts">
+{{- range $year := $visibleYears }}
+<section data-archive-group="{{ $year }}" class="listing-year" aria-labelledby="year-{{ $year }}">
+<h2 id="year-{{ $year }}">{{ $year }}年</h2>
+<div class="listing-cards" data-archive-children>
+{{- range $pager.Pages }}
+{{- if eq (.PublishDate.Format "2006") $year }}
   {{- $fallback := partial "list_title_image.html" (dict "title" .Title "label" "記事") }}
   {{- $image := partial "cover_url.html" . | default $fallback }}
   <article class="listing-card">
@@ -45,9 +62,14 @@
   </article>
   {{- $loading = "lazy" }}
 {{- end }}
+{{- end }}
 </div>
 </section>
 {{- end }}
+</div>
+{{ partial "archive_pagination.html" $pager }}
+{{- $fragments := resources.Get "js/archive-fragments.js" | minify | fingerprint }}
+<script src="{{ $fragments.RelPermalink }}" defer></script>
 {{- $script := resources.Get "js/list-cards.js" | minify | fingerprint }}
 <script src="{{ $script.RelPermalink }}" defer></script>
 {{- end }}

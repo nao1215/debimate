@@ -5,67 +5,123 @@ import { test } from 'node:test';
 import { runInNewContext } from 'node:vm';
 
 const source = readFileSync(new URL('../assets/js/home-lists.js', import.meta.url), 'utf8');
-
-function mount(history) {
+const tick = () => new Promise((resolve) => setImmediate(resolve));
+function mount({ state = {}, fetcher, observer = true, brokenHistory = false } = {}) {
   const observers = [];
-  const sections = ['home-posts-title', 'home-weeknotes-title', 'home-notes-title'].map((key) => {
-    const cards = Array.from({ length: 60 }, () => ({
-      hidden: false, classList: { remove() {} },
-    }));
-    const status = { textContent: '' };
-    return {
-      cards, status,
-      getAttribute: (name) => name === 'data-home-batch' ? (key === 'home-posts-title' ? null : '3') : key,
+  const requests = [];
+  const events = {};
+  const history = { state, replaceState(value) {
+    if (brokenHistory) throw new Error('unavailable');
+    this.state = structuredClone(value);
+  } };
+  const sections = ['posts', 'weeknotes', 'notes'].map((key, index) => {
+    const batch = index === 0 ? 6 : 3;
+    const cards = Array(batch).fill({});
+    const button = { hidden: true, addEventListener(_, fn) { this.click = fn; } };
+    const message = {};
+    const status = {
+      dataset: { total: '60', next: `/${key}/2` },
+      querySelector: (selector) => selector === 'button' ? button : message,
+    };
+    return { cards, status, button, message,
+      getAttribute: () => `home-${key}-title`,
       querySelectorAll: () => cards,
       querySelector: () => status,
+      insertBefore: (fragment) => cards.push(...fragment.querySelectorAll()),
     };
   });
   class IntersectionObserver {
     constructor(callback) { this.callback = callback; observers.push(this); }
-    observe() {}
-    unobserve() {}
-    disconnect() {}
+    observe() { this.observing = true; }
+    unobserve() { this.observing = false; }
+    disconnect() { this.observing = false; }
   }
+  const window = {
+    ...(observer ? { IntersectionObserver } : {}), scrollY: 0,
+    addEventListener: (name, fn) => { events[name] = fn; },
+    scrollTo: (_, y) => { window.scrollY = y; },
+  };
   runInNewContext(source, {
-    history, window: { IntersectionObserver }, IntersectionObserver,
-    document: { querySelectorAll: () => sections },
+    history, window, IntersectionObserver,
+    setTimeout: (callback) => callback(), clearTimeout() {},
+    document: {
+      querySelectorAll: () => sections,
+      createElement: () => {
+        const template = { innerHTML: '' };
+        template.content = { querySelectorAll: () => Array(Number(template.innerHTML)).fill({}) };
+        return template;
+      },
+    },
     requestAnimationFrame: (callback) => callback(),
+    fetch: async (url) => {
+      requests.push(url);
+      if (fetcher) return fetcher(url);
+      const [, key, page] = url.split('/');
+      const batch = key === 'posts' ? 6 : 3;
+      return { ok: true, json: async () => ({ html: String(batch), next: Number(page) * batch < 60 ? `/${key}/${Number(page) + 1}` : '' }) };
+    },
   });
-  return {
-    counts: () => sections.map((section) => section.cards.filter((card) => !card.hidden).length),
+  return { history, sections, requests, events, window, observers,
+    counts: () => sections.map((section) => section.cards.length),
     approachEnd: (index) => observers[index].callback([{ isIntersecting: true }]),
   };
 }
 
-test('reload restores all three lists independently and keeps unrelated history state', () => {
-  const history = {
-    state: { unrelated: 'keep' },
-    replaceState(state) { this.state = structuredClone(state); },
-  };
-  const page = mount(history);
-  page.approachEnd(0);
-  page.approachEnd(0);
-  page.approachEnd(1);
-  page.approachEnd(2);
+test('no eager requests; lists load independently and restore saved counts', async () => {
+  const page = mount({ state: { unrelated: 'keep' } });
+  assert.deepEqual(page.requests, []);
+  assert.deepEqual(page.counts(), [6, 3, 3]);
+  await page.approachEnd(0);
+  await page.approachEnd(0);
+  await page.approachEnd(1);
+  await page.approachEnd(2);
   assert.deepEqual(page.counts(), [18, 6, 6]);
-  const reloaded = mount(history);
-  assert.deepEqual(reloaded.counts(), [18, 6, 6]);
-  reloaded.approachEnd(0);
-  assert.deepEqual(reloaded.counts(), [24, 6, 6]);
-  assert.equal(history.state.unrelated, 'keep');
-  assert.deepEqual(mount({ state: null, replaceState() {} }).counts(), [6, 3, 3]);
+  page.window.scrollY = 1200;
+  page.events.scroll();
+  const restored = mount({ state: page.history.state });
+  await tick();
+  assert.deepEqual(restored.counts(), [18, 6, 6]);
+  assert.equal(restored.window.scrollY, 1200);
+  assert.equal(restored.history.state.unrelated, 'keep');
 });
 
-test('saved counts tolerate content removal and invalid values', () => {
-  const page = mount({
-    state: { homeLists: { 'home-posts-title': 600, 'home-notes-title': -1 } },
-    replaceState() {},
-  });
-  assert.deepEqual(page.counts(), [60, 3, 3]);
-});
-
-test('history failures do not prevent progressive loading', () => {
-  const page = mount({ state: null, replaceState() { throw new Error('unavailable'); } });
-  page.approachEnd(0);
+test('failure retains cards and next URL; explicit retry works', async () => {
+  let fail = true;
+  const page = mount({ fetcher: async () => ({ ok: !fail, status: 503, json: async () => ({ html: '6', next: '' }) }) });
+  await page.approachEnd(0);
+  assert.deepEqual(page.counts(), [6, 3, 3]);
+  assert.equal(page.sections[0].button.textContent, '再試行');
+  assert.equal(page.observers[0].observing, false);
+  fail = false;
+  await page.sections[0].button.click();
   assert.deepEqual(page.counts(), [12, 3, 3]);
+  assert.equal(page.sections[0].button.hidden, true);
+  assert.deepEqual(page.requests, ['/posts/2', '/posts/2']);
+});
+
+test('overlapping observer and button events do not duplicate a batch', async () => {
+  let complete;
+  const page = mount({ fetcher: () => new Promise((resolve) => { complete = resolve; }) });
+  const pending = page.approachEnd(0);
+  await page.approachEnd(0);
+  await page.sections[0].button.click();
+  complete({ ok: true, json: async () => ({ html: '6', next: '' }) });
+  await pending;
+  assert.equal(page.requests.length, 1);
+  assert.equal(page.counts()[0], 12);
+});
+
+test('buttons work without IntersectionObserver or writable history', async () => {
+  const page = mount({ observer: false, brokenHistory: true });
+  await page.sections[0].button.click();
+  assert.deepEqual(page.counts(), [12, 3, 3]);
+});
+
+test('stale/invalid saved counts are bounded; user interaction prevents scroll jump', async () => {
+  const page = mount({ state: { homeLists: { 'home-posts-title': 600, 'home-notes-title': -1 }, homeScrollY: 900 } });
+  page.events.wheel();
+  await tick();
+  assert.deepEqual(page.counts(), [60, 3, 3]);
+  assert.equal(page.window.scrollY, 0);
+  assert.equal(page.sections[0].button.hidden, true);
 });

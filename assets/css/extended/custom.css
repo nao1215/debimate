@@ -1488,7 +1488,7 @@ body.games-page { --main-width: 1100px; }
 .games-list { display: grid; gap: 24px; }
 .game-card { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); min-width: 0; align-items: stretch; gap: 28px; }
 .game-demo { align-self: start; position: relative; margin: 0; min-width: 0; background: #171a20; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
-.game-demo video { display: block; max-width: 100%; width: auto; height: auto; max-height: 360px; }
+.game-demo video, .game-demo img { display: block; max-width: 100%; width: auto; height: auto; max-height: 360px; }
 .game-demo figcaption { width: 100%; padding: 8px 12px; font-size: 12px; color: #e5e7eb; background: #171a20; text-align: center; }
 .game-body { padding: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; }
 .game-ogp { display: block; width: 100%; max-width: 320px; height: auto; border-radius: 7px; margin: 0 auto 12px; }
@@ -1502,19 +1502,18 @@ body.games-page { --main-width: 1100px; }
   .game-card { grid-template-columns: minmax(0, 1fr); }
   .game-body { padding: 0 4px; }
   .game-body h3 { font-size: 26px; }
-  .game-demo video { max-height: 320px; }
+  .game-demo video, .game-demo img { max-height: 320px; }
 }
 
 .games-header > p a { text-decoration: underline; text-underline-offset: 0.2em; }
 
 .note-title-cover { background-size: cover; background-position: center; border-radius: 8px; overflow: hidden; }
 
-html.js .home-columns .home-deferred { display: none; }
 
 .note-title-cover { background-color: #f6f5f1; }
 .note-title-cover svg { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; }
 
-html:not(.js) .home-columns .home-list-status { display: none; }
+
 
 .home-section-heading h2, .home-section-heading a { white-space: nowrap; }
 .home-columns .home-list-status { order: 1; }
@@ -1576,3 +1575,17 @@ html[data-theme="dark"] .game-pick { background: #36343a; color: #fff5fa; }
   .game-pick-succubus-live .game-pick-art img { left: -21.2%; bottom: -11px; }
   .game-pick-succubus-live .game-pick-art img:nth-child(2) { bottom: -12px; }
 }
+
+.home-list-status button { display: block; margin: 8px auto; padding: 6px 16px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+.home-list-status button[hidden] { display: none; }
+.home-list-status button:disabled { cursor: wait; }
+
+.archive-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; margin: 32px 0; }
+.archive-pagination a { padding: 10px 16px; border: 1px solid var(--border); border-radius: 6px; }
+
+.archive-years { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 24px; }
+
+.archive-pagination[hidden] { display: none; }
+.archive-scroll-status { min-height: 24px; margin: 24px 0; text-align: center; color: var(--secondary); font-size: 14px; overflow-anchor: none; }
+.archive-scroll-status button { margin-left: 12px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
+[data-archive-list] { overflow-anchor: none; }

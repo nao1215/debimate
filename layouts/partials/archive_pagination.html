@@ -1,0 +1,10 @@
+{{- if gt .TotalPages 1 -}}
+<nav class="archive-pagination" aria-label="ページ切り替え">
+  {{- with .Prev }}<a rel="prev" href="{{ .URL }}">← 新しい記事</a>{{ end -}}
+  <span>{{ .PageNumber }} / {{ .TotalPages }} ページ</span>
+  {{- with .Next }}<a rel="next" href="{{ .URL }}">以前の記事 →</a>{{ end -}}
+</nav>
+{{- end -}}
+
+{{- $script := resources.Get "js/archive-scroll.js" | minify | fingerprint -}}
+<script src="{{ $script.RelPermalink }}" defer></script>

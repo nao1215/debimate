@@ -62,7 +62,7 @@
 </script>
 {{- if and (eq .Section "weeknotes") (eq .Layout "year") }}
 <script type="application/ld+json">
-{{ dict "@context" "https://schema.org" "@type" "CollectionPage" "name" .Title "url" .Permalink "description" (partial "seo_description.html" .) | jsonify | safeJS }}
+{{ dict "@context" "https://schema.org" "@type" "CollectionPage" "name" .Title "url" (.Store.Get "paginationURL" | default .Permalink) "description" (partial "seo_description.html" .) | jsonify | safeJS }}
 </script>
 {{- else if .IsPage }}
 {{- $description := partial "seo_description.html" . -}}

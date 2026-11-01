@@ -1,4 +1,0 @@
-{{- $batch := .batch | default 6 }}
-{{- if gt .count $batch }}
-<p class="home-list-status" aria-live="polite">{{ .count }} 件中 {{ $batch }} 件</p>
-{{- end }}

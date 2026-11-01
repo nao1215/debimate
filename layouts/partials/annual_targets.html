@@ -1,0 +1,16 @@
+{{- /* A small external index preserves old links to headings in unloaded weeks. */ -}}
+{{- $targets := dict -}}
+{{- range .Pagers -}}
+  {{- $url := .URL -}}
+  {{- range .Pages -}}
+    {{- $targets = merge $targets (dict (printf "%s週" (.Date.Format "20060102")) $url) -}}
+    {{- range findRE `\bid="[^"]+"` .Content -}}
+      {{- $id := . | strings.TrimPrefix `id="` | strings.TrimSuffix `"` | htmlUnescape -}}
+      {{- if not (isset $targets $id) -}}
+        {{- $targets = merge $targets (dict $id $url) -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- $resource := resources.FromString (printf "assets/annual/%s.json" (crypto.MD5 .First.URL)) ($targets | jsonify) | fingerprint -}}
+{{- return $resource.RelPermalink -}}

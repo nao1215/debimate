@@ -1,0 +1,22 @@
+{{- /* Publish small, content-addressed batches, linked backwards so each URL
+      changes when any following batch changes. Only the first batch is inline. */ -}}
+{{- $cards := .cards -}}
+{{- $batch := .batch -}}
+{{- $next := "" -}}
+{{- $last := int (math.Ceil (div (len $cards) (float $batch))) -}}
+{{- if gt $last 1 -}}
+  {{- range seq $last -1 2 -}}
+    {{- $offset := mul (sub . 1) $batch -}}
+    {{- $html := delimit (first $batch (after $offset $cards)) "" -}}
+    {{- $payload := dict "html" $html "next" $next | jsonify -}}
+    {{- $resource := resources.FromString (printf "assets/home/%s-%d.json" $.key .) $payload | fingerprint -}}
+    {{- $next = $resource.RelPermalink -}}
+  {{- end -}}
+{{- end -}}
+{{- range first $batch $cards -}}{{ . | safeHTML }}{{- end -}}
+{{- if $next -}}
+<div class="home-list-status" data-next="{{ $next }}" data-total="{{ len $cards }}">
+  <span role="status">{{ len $cards }} 件中 {{ $batch }} 件</span>
+  <button type="button" hidden>もっと見る</button>
+</div>
+{{- end -}}

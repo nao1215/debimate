@@ -1,20 +1,25 @@
 {{- define "main" }}
+{{- $pager := partial "archive_paginator.html" . -}}
 <header class="page-header">
   {{ partial "breadcrumbs.html" . }}
   <h1>{{ .Title }}</h1>
   <p><a href="{{ "/weeknotes/" | relURL }}">Weeknotes の目次</a></p>
 </header>
-<div class="weeknotes-list">
-  {{- range (site.GetPage "/weeknotes").RegularPages.ByDate.Reverse }}
-    {{- if eq (.Date.Format "2006") $.Params.year }}
+{{- with $pager -}}
+<div class="weeknotes-list" data-annual-content data-archive-list="annual" data-anchor-index="{{ partialCached "annual_targets.html" . .First.URL }}">
+  {{- range .Pages }}
     {{- $content := partial "weeknotes/content.html" . }}
-    {{- /* Embedded content sets the source week's Store, not the archive's. */}}
     {{- if strings.Contains $content `<pre class="mermaid">` }}{{ $.Store.Set "hasMermaid" true }}{{ end }}
+    {{- if strings.Contains $content `twitter-tweet` }}{{ $.Store.Set "hasTwitterEmbed" true }}{{ end }}
     <article class="weeknotes-entry">
       <h2 class="weeknotes-entry-title" id="{{ .Date.Format "20060102" }}週"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
       <div class="post-content weeknotes-content">{{ $content }}</div>
     </article>
-    {{- end }}
   {{- end }}
 </div>
+{{ partial "archive_pagination.html" . }}
+{{- end -}}
+{{- $fragments := resources.Get "js/archive-fragments.js" | minify | fingerprint }}
+<script src="{{ $fragments.RelPermalink }}" defer></script>
+
 {{- end }}
