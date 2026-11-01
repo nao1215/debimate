@@ -42,6 +42,10 @@ serve: ## 使用中のポートを解放してローカル開発サーバ起動 
 build: redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
 
+.PHONY: check-browser
+check-browser: ## ビルド済み public/ をブラウザ検証（初回は npm ci と npx playwright install chromium）
+	npm run test:browser
+
 weeknote: ## 新しい週報を作成 (例: make weeknote 20260810。省略時は今週の月曜)
 	@set -eu; \
 	arg="$(WEEKNOTE_ARG)"; \

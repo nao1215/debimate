@@ -1,0 +1,10 @@
+{
+  "name": "debimate-browser-checks",
+  "private": true,
+  "scripts": {
+    "test:browser": "node scripts/run_browser_checks.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  }
+}

@@ -1,8 +1,8 @@
 // Usage: PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs node scripts/check_archives_browser.mjs http://127.0.0.1:8141
 import assert from 'node:assert/strict';
-const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+import { launchBrowser, saveFailure, localURL } from './browser_support.mjs';
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8141').origin;
-const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
+const browser = await launchBrowser();
 const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
 await context.route('**/*', route => {
   const url = new URL(route.request().url());
@@ -18,6 +18,7 @@ const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 try {
   const cases = [
+    ['/post/', '.listing-card'],
     ['/post/ja/', '.listing-card'],
     ['/weeknotes/', '.weeknotes-index-week'],
     ['/weeknotes/2026/', '.weeknotes-entry'],
@@ -60,7 +61,7 @@ try {
       const groups = await page.locator('[data-archive-group]').evaluateAll(nodes => nodes.map(node => node.dataset.archiveGroup));
       assert.equal(new Set(groups).size, groups.length);
       const destination = await page.locator('.listing-card-link, .weeknotes-entry-title a').last().getAttribute('href');
-      await page.goto(new URL(destination, origin).href);
+      await page.goto(localURL(destination, origin));
       await page.goBack();
       await page.waitForFunction(() => document.documentElement.dataset.archiveReady === 'true');
       await assertPosition(saved);
@@ -107,6 +108,7 @@ try {
   console.log('PASS removed annual controls and preserved old weekly anchors');
 
   const noJS = await browser.newContext({ javaScriptEnabled: false });
+  await noJS.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
   const staticPage = await noJS.newPage();
   for (const [path] of cases) {
     await staticPage.goto(origin + path);
@@ -136,6 +138,9 @@ try {
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
   console.log('PASS Games: visible autoplay, offscreen pause, deferred media, reduced-motion');
   assert.deepEqual(errors, []);
+} catch (error) {
+  await saveFailure(browser, 'archives');
+  throw error;
 } finally {
   await context.close();
   await browser.close();

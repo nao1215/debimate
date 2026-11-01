@@ -44,3 +44,4 @@ projects/**/datasets/**/*.json
 
 # Local Lighthouse reports
 /reports/lighthouse/
+/reports/browser/

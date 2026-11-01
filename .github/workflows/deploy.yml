@@ -30,7 +30,8 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    # Keep the OS within the pinned Playwright version's supported platforms.
+    runs-on: ubuntu-24.04
     env:
       HUGO_VERSION: '0.166.0'
     steps:
@@ -105,6 +106,30 @@ jobs:
 
       - name: Check Weeknotes migration
         run: python3 scripts/check_weeknotes.py
+
+      - name: Setup Node for browser checks
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install browser test dependencies
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Check browser interactions before publishing
+        timeout-minutes: 12
+        run: make check-browser
+
+      - name: Upload browser failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: browser-check-failure
+          path: reports/browser/
+          if-no-files-found: ignore
+          retention-days: 7
 
       # デプロイが失敗した際に成果物の状態を後から判断できるようにする。
       # ファイルの内容には触れず、パスとサイズだけを記録する

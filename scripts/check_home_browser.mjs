@@ -1,8 +1,8 @@
 // Usage: node scripts/check_home_browser.mjs http://127.0.0.1:8138
 // Requires Playwright; PLAYWRIGHT_MODULE can point to a temporary installation.
-const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+import { launchBrowser, saveFailure, localURL } from './browser_support.mjs';
 import assert from 'node:assert/strict';
-const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH || '/usr/bin/google-chrome', headless: true, args: ['--no-sandbox'] });
+const browser = await launchBrowser();
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8138').origin;
 try {
   for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
@@ -27,7 +27,7 @@ try {
     await page.waitForFunction(count => document.querySelectorAll('.home-posts .post-entry').length >= count, before);
     await page.waitForFunction(() => Math.abs(window.scrollY - 1000) < 10);
     const href = await section.locator('.post-entry .entry-link').first().getAttribute('href');
-    await page.goto(href);
+    await page.goto(localURL(href, origin));
     await page.goBack();
     await page.waitForFunction(count => document.querySelectorAll('.home-posts .post-entry').length >= count, before);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
@@ -36,6 +36,7 @@ try {
     await context.close();
   }
   const noJS = await browser.newContext({ javaScriptEnabled: false });
+  await noJS.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
   const staticPage = await noJS.newPage();
   await staticPage.goto(origin);
   assert.equal(await staticPage.locator('.home-columns .post-entry').count(), 12);
@@ -44,6 +45,7 @@ try {
   await noJS.close();
   console.log('PASS JavaScript disabled: cards and archive links remain');
   const context = await browser.newContext();
+  await context.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
   // Disable automatic observation to exercise explicit retries deterministically.
   await context.addInitScript(() => { delete window.IntersectionObserver; });
   let fail = true;
@@ -69,4 +71,7 @@ try {
   assert.equal(new Set(urls).size, urls.length);
   console.log(`PASS failed request/retry and all ${total} posts without duplicates`);
   await context.close();
+} catch (error) {
+  await saveFailure(browser, 'home');
+  throw error;
 } finally { await browser.close(); }
