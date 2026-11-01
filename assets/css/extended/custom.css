@@ -533,6 +533,8 @@ html {
 
 .oss-card-badge {
   height: 1.1rem;
+  width: auto;
+  flex-shrink: 0;
 }
 
 /* Awesome Go 掲載バッジ。README と同じ awesome.re の SVG を使う。
@@ -1392,7 +1394,17 @@ body.home .home-columns {
 .home-weeknotes .post-entry { background: #f5f8f9; }
 html[data-theme="dark"] .home-weeknotes .post-entry { background: #2c3035; }
 .home-weeknotes .entry-cover img { object-fit: cover; }
-.weeknote-week-link { position: relative; z-index: 2; text-decoration: underline; text-underline-offset: 3px; }
+.weeknote-week-link {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 8px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.weeknote-week-link:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; border-radius: 4px; }
 .home-notes .post-entry { background: #faf8f5; }
 html[data-theme="dark"] .home-posts .post-entry { background: #302e2b; }
 html[data-theme="dark"] .home-notes .post-entry { background: #292f32; }
