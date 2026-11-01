@@ -1,11 +1,11 @@
 <section class="home-weeknotes" aria-labelledby="home-weeknotes-title">
   <div class="home-section-heading">
-    <h2 id="home-weeknotes-title">週報</h2>
-    <nav class="home-weeknotes-links" aria-label="週報を読む">
+    <h2 id="home-weeknotes-title">Weeknotes</h2>
+    <nav class="home-weeknotes-links" aria-label="Weeknotesを読む">
       {{- with (site.GetPage "/weeknotes").RegularPages.ByDate.Reverse }}
       <a href="{{ (index . 0).RelPermalink }}">今週を読む</a>
       {{- end }}
-      <a href="{{ "/weeknotes/" | relURL }}">全週報 →</a>
+      <a href="{{ "/weeknotes/" | relURL }}">一覧 →</a>
     </nav>
   </div>
   {{- $topics := partial "weeknotes/topics.html" . }}

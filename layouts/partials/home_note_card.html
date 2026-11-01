@@ -1,7 +1,6 @@
   <article class="post-entry note-entry">
     <figure class="entry-cover note-title-cover" style="background-image: linear-gradient(rgba(246,245,241,.78), rgba(246,245,241,.78)), url('{{ partial "home_note_banner.html" . }}');">{{ partial "note_title_image.html" . }}</figure>
     <header class="entry-header"><h3>{{ .Title }}</h3></header>
-    <div class="entry-content"><p>{{ .Description | default (.Summary | plainify | htmlUnescape) }}</p></div>
-    <footer class="entry-footer">{{ .CurrentSection.Title }} · {{ .Date.Format "2006/01/02" }}</footer>
+    <footer class="entry-footer"><span>{{ .CurrentSection.Title }} · {{ .Date.Format "2006/01/02" }}</span></footer>
     <a class="entry-link" href="{{ .RelPermalink }}" aria-label="{{ .Title }}"></a>
   </article>

@@ -1,6 +1,6 @@
 <section class="home-notes" aria-labelledby="home-notes-title">
   <div class="home-section-heading"><h2 id="home-notes-title">技術ノート</h2><a href="{{ "notes/" | relURL }}">全ノート →</a></div>
-  {{- $notes := where site.RegularPages "Section" "notes" -}}
+  {{- $notes := where site.RegularPages "Section" "in" (slice "notes" "ml") -}}
   {{- $notes = where $notes "Params.hiddenInHomeList" "ne" true -}}
 {{- $cards := slice -}}
   {{- range $notes.ByDate.Reverse }}

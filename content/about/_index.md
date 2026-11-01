@@ -33,10 +33,10 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/gup" target="_blank" rel="noopener noreferrer">gup</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/gup?style=flat-square&label=%E2%98%85&color=blue" alt="gup star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/gup?style=flat-square&label=%E2%98%85&color=blue" alt="gup star count" loading="lazy">
     </div>
+    <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img width="104" height="20" src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   </div>
-  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc"><code>go install</code> でインストールしたバイナリを並行更新し、環境間でエクスポート／インポートするツール</p>
 </div>
 
@@ -45,10 +45,10 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/filesql" target="_blank" rel="noopener noreferrer">filesql</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/filesql?style=flat-square&label=%E2%98%85&color=blue" alt="filesql star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/filesql?style=flat-square&label=%E2%98%85&color=blue" alt="filesql star count" loading="lazy">
     </div>
+    <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img width="104" height="20" src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   </div>
-  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc">CSV／TSV／LTSV／Parquet／Excel などのファイルを SQLite として読み込む database/sql ドライバ</p>
 </div>
 
@@ -57,10 +57,10 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/sqly" target="_blank" rel="noopener noreferrer">sqly</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/sqly?style=flat-square&label=%E2%98%85&color=blue" alt="sqly star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/sqly?style=flat-square&label=%E2%98%85&color=blue" alt="sqly star count" loading="lazy">
     </div>
+    <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img width="104" height="20" src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   </div>
-  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc">CSV／TSV／LTSV／Parquet／Excel などに対して、シェルから直接 SQL を実行するツール</p>
 </div>
 
@@ -69,10 +69,10 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/markdown" target="_blank" rel="noopener noreferrer">markdown</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/markdown?style=flat-square&label=%E2%98%85&color=blue" alt="markdown star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/markdown?style=flat-square&label=%E2%98%85&color=blue" alt="markdown star count" loading="lazy">
     </div>
+    <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img width="104" height="20" src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   </div>
-  <a class="oss-card-awesome" href="https://github.com/avelino/awesome-go" target="_blank" rel="noopener noreferrer"><img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome Go" loading="lazy"></a>
   <p class="oss-card-desc">Markdown と Mermaid 図を組み立てるための Go ライブラリ</p>
 </div>
 
@@ -81,7 +81,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/atago" target="_blank" rel="noopener noreferrer">atago</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/atago?style=flat-square&label=%E2%98%85&color=blue" alt="atago star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/atago?style=flat-square&label=%E2%98%85&color=blue" alt="atago star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">YAML で定義したテスト条件に基づき、CLI の終了コード・出力・ファイル差分・スナップショット・TUI まで検証する E2E テストツール</p>
@@ -92,7 +92,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/omokage" target="_blank" rel="noopener noreferrer">omokage</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/omokage?style=flat-square&label=%E2%98%85&color=blue" alt="omokage star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/omokage?style=flat-square&label=%E2%98%85&color=blue" alt="omokage star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">文章が特定の書き手の文体にどれだけ近いかを測定する、ローカルファーストな CLI（日本語／英語対応）</p>
@@ -119,7 +119,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/mimixbox" target="_blank" rel="noopener noreferrer">mimixbox</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/mimixbox?style=flat-square&label=%E2%98%85&color=blue" alt="mimixbox star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/mimixbox?style=flat-square&label=%E2%98%85&color=blue" alt="mimixbox star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">BusyBox に着想を得たツールボックス。自作 OSS で人気のないツールの統合先</p>
@@ -130,7 +130,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/jose" target="_blank" rel="noopener noreferrer">jose</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/jose?style=flat-square&label=%E2%98%85&color=blue" alt="jose star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/jose?style=flat-square&label=%E2%98%85&color=blue" alt="jose star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">JOSE（JSON Object Signing and Encryption）を扱う CLI ツール</p>
@@ -141,7 +141,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/onionscan" target="_blank" rel="noopener noreferrer">onionscan</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/onionscan?style=flat-square&label=%E2%98%85&color=blue" alt="onionscan star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/onionscan?style=flat-square&label=%E2%98%85&color=blue" alt="onionscan star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">ダークウェブ（Onion サイト）を調査するためのツール</p>
@@ -152,7 +152,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/horcrux" target="_blank" rel="noopener noreferrer">horcrux</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#3178c6"></i>TypeScript</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/horcrux?style=flat-square&label=%E2%98%85&color=blue" alt="horcrux star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/horcrux?style=flat-square&label=%E2%98%85&color=blue" alt="horcrux star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">ファイルを暗号化して分割する Node／React Native 向けライブラリ</p>
@@ -163,7 +163,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/libvalacore" target="_blank" rel="noopener noreferrer">libvalacore</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#fbe5cd"></i>Vala</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/libvalacore?style=flat-square&label=%E2%98%85&color=blue" alt="libvalacore star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/libvalacore?style=flat-square&label=%E2%98%85&color=blue" alt="libvalacore star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">Vala 言語向けの標準ライブラリ拡張</p>
@@ -174,7 +174,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/truss" target="_blank" rel="noopener noreferrer">truss</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#dea584"></i>Rust</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/truss?style=flat-square&label=%E2%98%85&color=blue" alt="truss star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/truss?style=flat-square&label=%E2%98%85&color=blue" alt="truss star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">署名付き URL や SSRF 対策、AVIF／WebP／SVG 対応の画像処理ツールキット（CLI／HTTP／WASM）</p>
@@ -185,7 +185,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/oaspec" target="_blank" rel="noopener noreferrer">oaspec</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#ffaff3"></i>Gleam</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/oaspec?style=flat-square&label=%E2%98%85&color=blue" alt="oaspec star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/oaspec?style=flat-square&label=%E2%98%85&color=blue" alt="oaspec star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">OpenAPI 3.x の仕様から型安全な Gleam サーバースタブ／クライアント SDK を生成</p>
@@ -196,7 +196,7 @@ Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以
     <a class="oss-card-name" href="https://github.com/nao1215/iso8583tool" target="_blank" rel="noopener noreferrer">iso8583tool</a>
     <div class="oss-card-meta">
       <span class="oss-card-lang"><i class="oss-lang-dot" style="background:#00ADD8"></i>Go</span>
-      <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/iso8583tool?style=flat-square&label=%E2%98%85&color=blue" alt="iso8583tool star count" loading="lazy">
+      <img class="oss-card-badge" width="52" height="20" src="https://img.shields.io/github/stars/nao1215/iso8583tool?style=flat-square&label=%E2%98%85&color=blue" alt="iso8583tool star count" loading="lazy">
     </div>
   </div>
   <p class="oss-card-desc">ISO 8583 決済メッセージのデバッグ・検査用 CLI</p>

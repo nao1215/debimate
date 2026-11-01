@@ -501,13 +501,17 @@ html {
 
 .oss-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 0.9rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 20px;
   margin: 1.25rem 0;
 }
 
 .oss-card {
-  padding: 0.9rem 1rem;
+  padding: 20px;
+  display: grid;
+  grid-template-rows: minmax(52px, auto) auto;
+  gap: 12px;
+  align-content: start;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--entry);
@@ -520,9 +524,10 @@ html {
 
 .oss-card-header {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  align-content: flex-start;
+  gap: 8px;
 }
 
 .oss-card-name {
@@ -537,17 +542,20 @@ html {
   flex-shrink: 0;
 }
 
-/* Awesome Go 掲載バッジ。README と同じ awesome.re の SVG を使う。
-   横幅がカード幅の半分近くあるため、header へは入れず独立した行に置く */
+/* 名前・言語・Star数と並べ、狭いカードでは折り返す。 */
 .oss-card-awesome {
   display: inline-block;
-  margin-top: 0.55rem;
+  flex-shrink: 0;
+  margin: 0;
   line-height: 0;
 }
 
 .oss-card-awesome img {
   height: 1.1rem;
 }
+
+.post-content .oss-card-badge,
+.post-content .oss-card-awesome img { margin: 0; }
 
 .oss-card-meta {
   display: flex;
@@ -575,8 +583,9 @@ html {
   border-radius: 50%;
 }
 
-.oss-card-desc {
-  margin: 0.5rem 0 0;
+.post-content .oss-card-desc {
+  grid-row: 2;
+  margin: 0;
   color: var(--secondary);
   font-size: 0.9rem;
   line-height: 1.6;
@@ -1399,8 +1408,8 @@ html[data-theme="dark"] .home-weeknotes .post-entry { background: #2c3035; }
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  padding: 0 8px;
+  min-height: 24px;
+  padding: 0;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -1421,12 +1430,12 @@ html[data-theme="dark"] .home-notes .post-entry { background: #292f32; }
 .home-columns .post-entry {
   min-width: 0;
   margin: 0;
-  padding: 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
 }
 body.home .home-columns .entry-header h2,
-.home-columns .entry-header h3 { font-size: 19px; line-height: 1.45; overflow-wrap: anywhere; }
+.home-columns .entry-header h3 { font-size: 17px; line-height: 1.4; overflow-wrap: anywhere; }
 body.home .home-columns .entry-cover img { aspect-ratio: 16 / 9; }
 @media (min-width: 701px) and (max-width: 900px) {
   body.home .home-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -1441,8 +1450,8 @@ body.home .home-columns .entry-cover img { aspect-ratio: 16 / 9; }
 }
 
 /* Reserve identical text areas so both lists keep the same row height. */
-body.home .home-columns .entry-cover { margin: 0 0 16px; }
-body.home .home-columns .entry-header { height: 83px; overflow: hidden; }
+body.home .home-columns .entry-cover { margin: 0 0 10px; }
+body.home .home-columns .entry-header { height: 72px; overflow: hidden; }
 body.home .home-columns .entry-header :is(h2,h3) {
   margin: 0;
   display: -webkit-box;
@@ -1450,9 +1459,23 @@ body.home .home-columns .entry-header :is(h2,h3) {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-body.home .home-columns .entry-content { margin: 8px 0; height: 70px; font-size: 14px; line-height: 1.65; }
-body.home .home-columns .entry-content p { margin: 0; }
-body.home .home-columns .entry-footer { height: 40px; font-size: 12px; line-height: 20px; overflow: hidden; }
+body.home .home-columns .entry-footer {
+  display: flex;
+  align-items: center;
+  position: relative;
+  top: 5px;
+  height: 24px;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 20px;
+  overflow: hidden;
+}
+body.home .home-columns .entry-footer > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .home-columns .post-entry[hidden] { display: none; }
 .home-list-status { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--secondary); }
 #home-posts-title, #home-weeknotes-title, #home-notes-title { scroll-margin-top: 24px; }
@@ -1471,9 +1494,19 @@ body.home main.main { row-gap: 20px; }
 .listing-card-link { display: flex; flex-direction: column; height: 100%; color: var(--primary); text-decoration: none; }
 .listing-card-link > img,
 .listing-card-link > video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: #f2efe9; }
-.listing-card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
-.listing-card-body :is(h2,h3) { margin: 0; font-size: 18px; line-height: 1.5; overflow-wrap: anywhere; }
-.listing-card-body time { margin-top: auto; font-size: 12px; color: var(--secondary); }
+.listing-card-body { padding: 12px 12px 8px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+.listing-card-body :is(h2,h3) {
+  margin: 0;
+  height: 4.2em;
+  font-size: 16px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.listing-card-body time { margin-top: auto; font-size: 12px; line-height: 20px; color: var(--secondary); }
 .listing-card-link:hover :is(h2,h3) { text-decoration: underline; }
 .weeknotes-index .listing-card-link:hover { text-decoration: none; }
 .weeknotes-topic-cards { margin-top: 12px; }
@@ -1485,8 +1518,6 @@ body.home main.main { row-gap: 20px; }
 body.card-list-page { --main-width: 1440px; }
 @media (min-width: 901px) {
   .card-list-page .listing-cards { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px; }
-  .card-list-page .listing-card-body { padding: 14px; }
-  .card-list-page .listing-card-body :is(h2,h3) { font-size: 16px; }
 }
 
 .listing-year { margin-top: 32px; }
