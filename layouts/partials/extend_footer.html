@@ -1,22 +1,6 @@
 {{- if or (.Store.Get "hasMermaid") (eq .Layout "year") }}
-<script type="module">
-  let renderer;
-  let rendering = Promise.resolve();
-  const renderDiagrams = () => {
-    rendering = rendering.then(async () => {
-      const nodes = [...document.querySelectorAll('pre.mermaid:not([data-processed])')];
-      if (!nodes.length) return;
-      if (!renderer) {
-        const { default: mermaid } = await import('https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs');
-        mermaid.initialize({ startOnLoad: false, theme: 'neutral' });
-        renderer = mermaid;
-      }
-      await renderer.run({ nodes });
-    }).catch(error => console.warn('Mermaid rendering failed', error));
-  };
-  document.addEventListener('annual:loaded', renderDiagrams);
-  renderDiagrams();
-</script>
+{{- $mermaid := resources.Get "js/mermaid-lazy.js" | minify | fingerprint }}
+<script type="module" src="{{ $mermaid.RelPermalink }}"></script>
 <style>
   .mermaid { background: #ffffff !important; padding: 10px; border-radius: 5px; }
 </style>

@@ -300,7 +300,10 @@
 
 {{- /* Misc */}}
 {{- if hugo.IsProduction | or (eq site.Params.env "production") }}
-{{- partial "google_analytics.html" . }}
+{{- /* Preserve Hugo's GA configuration and privacy checks. Download with low
+      priority and execute after parsing, without an idle/interaction delay. */}}
+{{- $analytics := partial "google_analytics.html" . }}
+{{- $analytics | replaceRE `<script async src="https://www\.googletagmanager\.com/gtag/js\?` `<script defer fetchpriority="low" src="https://www.googletagmanager.com/gtag/js?` | safeHTML }}
 {{- partial "templates/opengraph.html" . }}
 {{- partial "templates/twitter_cards.html" . }}
 {{- partial "templates/schema_json.html" . }}

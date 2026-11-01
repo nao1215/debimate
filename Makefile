@@ -79,7 +79,7 @@ lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビ�
 	python3 scripts/check_adsense.py
 	python3 scripts/check_home_delivery.py
 	python3 scripts/check_archive_delivery.py
-	node --test scripts/check_home_lists.mjs
+	node --test scripts/check_home_lists.mjs scripts/check_mermaid_lazy.mjs
 	python3 scripts/check_asset_delivery.py
 	python3 scripts/check_image_delivery.py
 	python3 scripts/check_links.py

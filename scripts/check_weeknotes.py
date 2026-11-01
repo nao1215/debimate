@@ -29,12 +29,12 @@ def main() -> None:
 
 def check_mermaid(root: Path) -> None:
     pages = []
-    for page in (root / "weeknotes").rglob("index.html"):
+    for page in root.rglob("index.html"):
         text = page.read_text()
         if re.search(r'<pre\b[^>]*\bclass=(?:"mermaid"|mermaid)(?:[\s>])', text):
-            assert "mermaid.esm.min.mjs" in text, f"Mermaid loader missing: {page}"
+            assert "/js/mermaid-lazy." in text, f"Mermaid loader missing: {page}"
             pages.append(page)
-    print(f"Weeknotes Mermaid loaders verified: {len(pages)} pages")
+    print(f"Site-wide Mermaid loaders verified: {len(pages)} pages")
 
 
 def check(root: Path, content: Path, legacy_dates: list[str]) -> None:

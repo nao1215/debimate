@@ -75,7 +75,7 @@ jobs:
         run: |
           python3 scripts/check_home_delivery.py
           python3 scripts/check_archive_delivery.py
-          node --test scripts/check_home_lists.mjs
+          node --test scripts/check_home_lists.mjs scripts/check_mermaid_lazy.mjs
 
       - name: Check asset delivery
         run: python3 scripts/check_asset_delivery.py
