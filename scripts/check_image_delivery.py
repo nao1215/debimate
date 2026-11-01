@@ -77,8 +77,12 @@ def check(root: Path) -> None:
         )
         if image["weeknote"]:
             expected_sizes = "auto, " + expected_sizes.replace("(min-width: 481px) calc((100vw - 130px) / 2), ", "")
-            # JPEG derivatives cannot silently keep a heavy animation.
-            assert image["src"].endswith(".jpg"), image["src"]
+            # Generated covers use WebP so animated sources keep moving.
+            for candidate in image["srcset"].split(","):
+                url, width = candidate.strip().rsplit(" ", 1)
+                if "_hu_" in url:
+                    assert url.endswith(".webp"), url
+                    assert int(width[:-1]) <= 720, candidate
         assert image.get("sizes") == expected_sizes, f"Inaccurate homepage sizes: {image.get('sizes')}"
 
     assert any(image["weeknote"] for image in home.cover_images), "Missing homepage Weeknotes cards"

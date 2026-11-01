@@ -1,6 +1,8 @@
 ---
 title: "2026/10/26週"
 date: 2026-10-26T00:00:00+09:00
+cardGames:
+  "仮想配信ライブゲーム（放置ゲーム）succubus-liveを公開": "Succubus Live"
 ---
 
 #### 時のオカリナリメイク（switch2込み）を予約
@@ -21,7 +23,7 @@ date: 2026-10-26T00:00:00+09:00
 
 ブラウザ版： https://nao1215.github.io/succubus-live/
 
-{{< figure src="succubus-demo.gif" alt="配信を開き、コメントを打ち、投げ銭して、全画面にしてから別の配信に移る様子" width="600" align="center" >}}
+{{< game-demo "Succubus Live" >}}
 
 | ロビー：全チャンネルが同時配信中、賑わっている順 | チャット：コメントを読んで返事をする |
 |:--|:--|

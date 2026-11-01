@@ -1,0 +1,9 @@
+{{- $game := false -}}
+{{- with index (.week.Params.cardgames | default dict) (lower .page.Title) -}}
+  {{- with where (site.GetPage "/games").Params.games "name" . -}}
+    {{- $game = index . 0 -}}
+  {{- else -}}
+    {{- errorf "Unknown Weeknotes card game preview: %s" . -}}
+  {{- end -}}
+{{- end -}}
+{{- return $game -}}

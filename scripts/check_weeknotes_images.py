@@ -11,6 +11,8 @@ class Images(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.images = []
         self.frames = []
+        self.videos = []
+        self.scripts = []
         self.feed(path.read_text())
 
     def handle_starttag(self, tag, pairs):
@@ -21,12 +23,25 @@ class Images(HTMLParser):
             self.images.append(attrs)
         if tag == "iframe":
             self.frames.append(attrs)
+        if tag == "video" and "data-game-demo" in attrs:
+            self.videos.append(attrs)
+        if tag == "script":
+            self.scripts.append(attrs.get("src", ""))
 
 
 def check(root: Path) -> None:
     count = 0
     for path in (root / "weeknotes").rglob("index.html"):
         page = Images(path)
+        if page.videos:
+            assert any("/js/game-demos." in src for src in page.scripts), path
+        for video in page.videos:
+            assert video.get("preload") == "none", (path, video)
+            assert "src" not in video, (path, video)
+            assert all(key in video for key in ("muted", "loop", "playsinline")), (path, video)
+            for key in ("data-src", "data-poster"):
+                target = root / unquote(urlparse(video[key]).path).lstrip("/")
+                assert target.is_file(), (path, target)
         for image in page.images:
             assert int(image.get("width", 0)) > 0, (path, image)
             assert int(image.get("height", 0)) > 0, (path, image)
@@ -45,6 +60,16 @@ def check(root: Path) -> None:
                 widths.append(descriptor)
                 assert (root / unquote(urlparse(url).path).lstrip("/")).is_file(), url
             assert len(widths) == len(set(widths)), (path, image)
+            if "data-card-optional" in image:
+                candidates = [
+                    item.strip().rsplit(" ", 1)
+                    for item in image["srcset"].split(",")
+                ]
+                if any("_hu_" in url for url, _ in candidates):
+                    # A rejected large derivative must not bring the original
+                    # animation back into the high-DPR candidate set.
+                    assert all("_hu_" in url for url, _ in candidates), (path, image)
+                    assert all(int(width[:-1]) <= 720 for _, width in candidates), (path, image)
             if image.get("fetchpriority") == "high":
                 assert image["loading"] == "eager", (path, image)
                 assert not image["sizes"].startswith("auto"), (path, image)

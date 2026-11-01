@@ -1,5 +1,7 @@
 {{/* Responsive derivatives retain animation. Never choose a larger file than the source. */}}
 {{- $image := .image -}}
+{{- $thumbnail := .thumbnail | default false -}}
+{{- $quality := cond $thumbnail 65 82 -}}
 {{- $width := int (math.Min $image.Width (.width | default 820)) -}}
 {{- $height := int (math.Round (div (mul (float $width) $image.Height) $image.Width)) -}}
 {{- $limit := int (math.Min $image.Width (mul $width 2)) -}}
@@ -12,15 +14,22 @@
 {{- $fallback := $image -}}
 {{- $hasLimit := false -}}
 {{- $originalBytes := len $image.Content -}}
-{{- range sort (uniq (slice (int (math.Min 360 $limit)) (int (math.Min 720 $limit)) $fallbackWidth $limit)) -}}
-  {{- $variant := $image.Resize (printf "%dx webp q82" .) -}}
+{{- $widths := slice (int (math.Min 360 $limit)) (int (math.Min 720 $limit)) $fallbackWidth $limit -}}
+{{- if $thumbnail -}}
+  {{- $widths = $widths | append (int (math.Min 540 $limit)) -}}
+{{- end -}}
+{{- range sort (uniq $widths) -}}
+  {{- $variant := $image.Resize (printf "%dx webp q%d" . $quality) -}}
   {{- if lt (len $variant.Content) $originalBytes -}}
     {{- if eq (int $variant.Width) $limit -}}{{- $hasLimit = true -}}{{- end -}}
     {{- $candidates = $candidates | append (printf "%s %dw" $variant.RelPermalink $variant.Width) -}}
     {{- if eq (int $variant.Width) $fallbackWidth -}}{{- $fallback = $variant -}}{{- end -}}
   {{- end -}}
 {{- end -}}
-{{- if not $hasLimit -}}
+{{- /* Cards use the smaller derivatives even if the largest derivative is
+      rejected. Adding the original here would make high-DPR screens fetch it
+      again. Article images retain their existing full-resolution fallback. */ -}}
+{{- if and (not $hasLimit) (or (not $thumbnail) (not $candidates)) -}}
   {{- $candidates = $candidates | append (printf "%s %dw" $image.RelPermalink $image.Width) -}}
 {{- end -}}
 {{- /* A same-width WebP may already be present; keep one candidate per width. */ -}}

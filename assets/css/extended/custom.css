@@ -627,11 +627,21 @@ body.home .post-entry .entry-cover {
   margin-bottom: 1rem;
 }
 
-body.home .post-entry .entry-cover img {
+body.home .post-entry .entry-cover img,
+body.home .post-entry .entry-cover video {
   width: 100%;
+  height: auto;
+  display: block;
   aspect-ratio: 16 / 9;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.post-content .weeknote-game-demo video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
 }
 
 /* 横長のロゴなど、全体を表示する指定のカバー。 */
@@ -1447,7 +1457,8 @@ body.home main.main { row-gap: 20px; }
 .listing-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .listing-card { min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 12px; background: var(--entry); }
 .listing-card-link { display: flex; flex-direction: column; height: 100%; color: var(--primary); text-decoration: none; }
-.listing-card-link > img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: #f2efe9; }
+.listing-card-link > img,
+.listing-card-link > video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: #f2efe9; }
 .listing-card-body { padding: 18px; flex: 1; display: flex; flex-direction: column; gap: 16px; }
 .listing-card-body :is(h2,h3) { margin: 0; font-size: 18px; line-height: 1.5; overflow-wrap: anywhere; }
 .listing-card-body time { margin-top: auto; font-size: 12px; color: var(--secondary); }

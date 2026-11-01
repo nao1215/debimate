@@ -1,6 +1,9 @@
 // Keep autoplay for visible previews, without fetching offscreen videos/posters.
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-document.querySelectorAll('[data-game-demo]').forEach(video => {
+const initializedDemos = new WeakSet();
+const initializeGameDemos = root => root.querySelectorAll('[data-game-demo]').forEach(video => {
+  if (initializedDemos.has(video)) return;
+  initializedDemos.add(video);
   const showPoster = () => {
     if (video.dataset.poster) {
       video.poster = video.dataset.poster;
@@ -39,3 +42,11 @@ document.querySelectorAll('[data-game-demo]').forEach(video => {
     update();
   }).observe(video);
 });
+initializeGameDemos(document);
+document.addEventListener('archive:loaded', () => initializeGameDemos(document));
+// Home cards also arrive in scroll-loaded batches.
+const homeWeeknotes = document.querySelector('.home-weeknotes');
+if (homeWeeknotes) {
+  new MutationObserver(() => initializeGameDemos(homeWeeknotes))
+    .observe(homeWeeknotes, { childList: true });
+}

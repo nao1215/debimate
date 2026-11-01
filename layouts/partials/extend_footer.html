@@ -55,3 +55,8 @@
 })();
 </script>
 {{- end }}
+{{- if or (.Store.Get "hasGameDemo") (eq .Layout "year") }}
+{{- $demos := resources.Get "js/game-demos.js" | minify | fingerprint }}
+<script src="{{ $demos.RelPermalink }}" defer></script>
+<noscript><style>.weeknote-game-demo video { display: none; }</style></noscript>
+{{- end }}
