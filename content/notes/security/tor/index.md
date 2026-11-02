@@ -7,20 +7,20 @@ tags: ["security", "privacy"]
 weight: 3
 ---
 
-Tor は、通信を複数のリレー（中継役のサーバ）に順に通し、経路のどの 1 台からも接続元と接続先の両方が見えないようにする通信の仕組みです。通常の Web サイトに接続する場合は、Guard・Middle・Exit という 3 台のリレーを経由します。名前は The Onion Router に由来し、リレーごとに別の鍵で通信を包む構造から付いています。
+Tor は、通信を複数のリレー（中継役のサーバー）に順に通し、経路のどの 1 台からも接続元と接続先の両方が見えないようにする通信の仕組みです。通常の Web サイトに接続する場合は、Guard・Middle・Exit という 3 台のリレーを経由します。名前は The Onion Router に由来し、リレーごとに別の鍵で通信を包む構造から付いています。
 
-この仕組みが必要な場面の代表は、素性を明かさずに行いたい調査です。例えば、自社の情報が無断で転載されていないかを Web サイトで確かめたい時、普通の HTTP クライアントで接続すると、相手のサーバには調査する側の IP アドレスが残ります。誰が見に来たのかを相手に渡さずに中身を取得したい、という要求がここで出てきます。
+この仕組みが必要な場面の代表は、素性を明かさずに行いたい調査です。例えば、自社の情報が無断で転載されていないかを Web サイトで確かめたい時、普通の HTTP クライアントで接続すると、相手のサーバーには調査する側の IP アドレスが残ります。誰が見に来たのかを相手に渡さずに中身を取得したい、という要求がここで出てきます。
 
 直接つないだ場合と、Tor を経由した場合の違いを以下に示します。
 
 ```mermaid
 flowchart TB
     subgraph D["直接つなぐ場合"]
-        C1["Client"] --> S1["Web サーバ"]
+        C1["Client"] --> S1["Web サーバー"]
         S1 -.- N1["接続元 IP と接続先 IP を<br/>1 つの接続から観測できる"]
     end
     subgraph T["Tor を経由する場合"]
-        C2["Client"] --> G["Guard Relay"] --> M["Middle Relay"] --> E["Exit Relay"] --> S2["Web サーバ"]
+        C2["Client"] --> G["Guard Relay"] --> M["Middle Relay"] --> E["Exit Relay"] --> S2["Web サーバー"]
         G -.- N2["接続元は分かる<br/>接続先は分からない"]
         E -.- N3["接続先は分かる<br/>接続元は分からない"]
     end
@@ -32,7 +32,7 @@ flowchart TB
 
 ### 前提と説明の範囲
 
-本ノートでは、Tor クライアントが経路を作って通信する部分と、`.onion` のアドレスに接続する部分を説明します。リレーの運用方法、Tor Browser の設定手順、特定のサイトへの到達方法には触れません。
+本記事では、Tor クライアントが経路を作って通信する部分と、`.onion` のアドレスに接続する部分を説明します。リレーの運用方法、Tor Browser の設定手順、特定のサイトへの到達方法には触れません。
 
 暗号方式の中身も範囲外にします。鍵の合意手順と暗号の種類は Tor の仕様が定めており、ここで必要なのは「リレーごとに別の鍵で包む」という構造だけです。
 
@@ -40,26 +40,26 @@ flowchart TB
 
 ### なぜ接続元と接続先を切り離す必要があるのか
 
-TCP/IP の通信では、パケットの先頭に送信元 IP アドレスと宛先 IP アドレスが平文で入ります。HTTPS が守るのは中身であって、この 2 つのアドレスは経路上の装置から見えたままです。IP アドレスから契約者や組織が絞り込まれる事もあるため、身元に繋がる情報として扱う必要があります。
+TCP/IP の通信では、パケットの先頭に送信元 IP アドレスと宛先 IP アドレスが平文で入ります。HTTPS が守るのは中身であって、この 2 つのアドレスは経路上の装置から見えたままです。IP アドレスから契約者や組織が絞り込まれることもあるため、身元に繋がる情報として扱う必要があります。
 
 通常の接続で誰が何を観測できるかは、以下の通りです。
 
 ```mermaid
 flowchart LR
-    C["Client"] --> I["ISP・経路上の装置"] --> S["Web サーバ"]
+    C["Client"] --> I["ISP・経路上の装置"] --> S["Web サーバー"]
     I -.- N1["接続元 IP<br/>接続先 IP<br/>通信量と時刻"]
     S -.- N2["接続元 IP<br/>要求の内容"]
 ```
 
-上記の図の ISP（Internet Service Provider、契約している回線業者）と経路上の装置は、中身を読めなくても「誰が、どこに、いつ、どれだけ」を記録できます。接続先の Web サーバは、要求の中身に加えて、接続してきた相手の IP アドレスを受け取ります。経路の途中と接続先の両方に、接続元を指す値が残ります。
+上記の図の ISP（Internet Service Provider、契約している回線業者）と経路上の装置は、中身を読めなくても「誰が、どこに、いつ、どれだけ」を記録できます。接続先の Web サーバーは、要求の中身に加えて、接続してきた相手の IP アドレスを受け取ります。経路の途中と接続先の両方に、接続元を指す値が残ります。
 
-素朴な対策は、プロキシを 1 台挟んで接続元を付け替える方法です。この形では、そのプロキシ 1 台が接続元と接続先の両方を知る事になります。
+素朴な対策は、プロキシを 1 台挟んで接続元を付け替える方法です。この形では、そのプロキシ 1 台が接続元と接続先の両方を知ることになります。
 
 [Tor Project の説明](https://support.torproject.org/about/how-is-tor-different-from-other-proxies/)も、単純なプロキシには「a single point of trust and failure」（信頼と障害が集まる単一の点）を作ると書かれています。Tor はこれに対して、層状に暗号化したうえで通信を複数のリレーに通します。
 
 ---
 
-### Onion Routing でリレーごとに知る事を分ける
+### Onion Routing でリレーごとに知ることを分ける
 
 Onion Routing は、通信を複数の中継役に順に通し、どの 1 台も直前と直後しか知らない状態を作る方式です。Tor クライアントは、まずリレーの一覧を取得します。一覧はディレクトリ権威（directory authority）と呼ばれる複数の運用者が署名した文書として配られ、クライアントはその中から選んだリレーを繋いで経路（circuit）を作ります。経路上の位置には呼び名が付きます。
 
@@ -75,10 +75,10 @@ Tor の設計論文「[Tor: The Second-Generation Onion Router](https://svn-arch
 
 ```mermaid
 flowchart TB
-    C["Client"] --> G["Guard Relay"] --> M["Middle Relay"] --> E["Exit Relay"] --> W["Web サーバ"]
+    C["Client"] --> G["Guard Relay"] --> M["Middle Relay"] --> E["Exit Relay"] --> W["Web サーバー"]
     G -.- GN["直前は Client<br/>直後は Middle<br/>宛先は見えない"]
     M -.- MN["直前は Guard<br/>直後は Exit<br/>接続元も宛先も見えない"]
-    E -.- EN["直前は Middle<br/>直後は Web サーバ<br/>接続元は見えない"]
+    E -.- EN["直前は Middle<br/>直後は Web サーバー<br/>接続元は見えない"]
     W -.- WN["接続元として見えるのは<br/>Exit Relay の IP"]
 ```
 
@@ -92,15 +92,15 @@ flowchart TB
 | Guard Relay | 見える | 見えない | 見えない |
 | Middle Relay | 見えない | 見えない | 見えない |
 | Exit Relay | 見えない | 見える | HTTPS でなければ見える |
-| Web サーバ | 見えない | ー | 見える |
+| Web サーバー | 見えない | ー | 見える |
 
 表の 1 行目が示すとおり、契約している回線業者から接続先は隠れます。Guard Relay への接続そのものは見えるので、Tor を使っている事実までは隠せません。
 
-1 台目だけは、経路を作るたびにネットワーク全体から選び直す訳ではありません。[Tor の guard 仕様](https://spec.torproject.org/guard-spec/index.html)には「Tor clients choose a small number of guard nodes」（Tor クライアントは少数の guard ノードを選ぶ）と書かれています。
+1 台目だけは、経路を作るたびにネットワーク全体から選び直すわけではありません。[Tor の guard 仕様](https://spec.torproject.org/guard-spec/index.html)には「Tor clients choose a small number of guard nodes」（Tor クライアントは少数の guard ノードを選ぶ）と書かれています。
 
 毎回ネットワーク全体から入口を選ぶ構成では、経路を作り直す回数が増えるほど、攻撃者のリレーが 1 台目に入る経路が現れる可能性が上がります。
 
-同じ仕様は、この扱いの狙いを「to prevent an attacker who controls some fraction of the network from observing a fraction of every user's traffic」（ネットワークの一部を支配する攻撃者が、全ユーザの通信の一部を観測する事を防ぐため）だと説明されています。
+同じ仕様は、この扱いの狙いを「to prevent an attacker who controls some fraction of the network from observing a fraction of every user's traffic」（ネットワークの一部を支配する攻撃者が、全ユーザーの通信の一部を観測することを防ぐため）だと説明されています。
 
 候補を少数に絞って使い続けると、攻撃者のリレーが 1 台目に入る機会が、経路を作り直す回数に比例して増える形を避けられます。1 台に永久に固定するのではなく、候補の入れ替えも起こります。
 
@@ -118,29 +118,29 @@ Tor Project はこの鍵について「[these extra layers of encryption mean th
 
 ```mermaid
 flowchart LR
-    C["Client<br/>K3・K2・K1 の順に包む"] --> G["Guard<br/>K1 の層を剥がす"] --> M["Middle<br/>K2 の層を剥がす"] --> E["Exit<br/>K3 の層を剥がす"] --> W["Web サーバ<br/>元の要求"]
+    C["Client<br/>K3・K2・K1 の順に包む"] --> G["Guard<br/>K1 の層を剥がす"] --> M["Middle<br/>K2 の層を剥がす"] --> E["Exit<br/>K3 の層を剥がす"] --> W["Web サーバー<br/>元の要求"]
 ```
 
-上記の図の Guard Relay は K1 の層だけを開け、同じ経路の次のリレーに流します。転送先は経路を伸ばす時に決まっており、cell を開けると指示が現れる訳ではありません。残りは K2 と K3 で包まれたままなので、中身も最終的な宛先も読めません。
+上記の図の Guard Relay は K1 の層だけを開け、同じ経路の次のリレーに流します。転送先は経路を伸ばす時に決まっており、cell を開けると指示が現れるわけではありません。残りは K2 と K3 で包まれたままなので、中身も最終的な宛先も読めません。
 
-玉ねぎのように暗号を剥がす、という言い方だけでは、なぜ 1 台目が中身を読めないのかまで伝わりません。読めない理由は、鍵を導出した順序によって、Guard Relay が自分の層の鍵しか持たない事にあります。
+玉ねぎのように暗号を剥がす、という言い方だけでは、なぜ 1 台目が中身を読めないのかまで伝わりません。読めない理由は、鍵を導出した順序によって、Guard Relay が自分の層の鍵しか持たないことにあります。
 
 ---
 
 ### Exit Relay から先は Tor の暗号化が掛からない
 
-層は Exit Relay で全部剥がれます。そのため、Exit Relay から Web サーバまでの区間には、Tor による暗号化が残りません。Tor Project も、暗号化される範囲を「[between the Tor client (on your computer) and where it pops out somewhere else in the world](https://support.torproject.org/about/how-is-tor-different-from-other-proxies/)」（コンピュータ上の Tor クライアントと、世界のどこかで通信が外に出る地点との間）だと書かれています。
+層は Exit Relay で全部剥がれます。そのため、Exit Relay から Web サーバーまでの区間には、Tor による暗号化が残りません。Tor Project も、暗号化される範囲を「[between the Tor client (on your computer) and where it pops out somewhere else in the world](https://support.torproject.org/about/how-is-tor-different-from-other-proxies/)」（コンピュータ上の Tor クライアントと、世界のどこかで通信が外に出る地点との間）だと書かれています。
 
 暗号化が効く区間は以下の通りです。
 
 ```mermaid
 flowchart LR
-    C["Client"] -- "Tor の層状暗号" --> G["Guard"] --> M["Middle"] --> E["Exit"] -- "Tor の保護は無い" --> W["Web サーバ"]
+    C["Client"] -- "Tor の層状暗号" --> G["Guard"] --> M["Middle"] --> E["Exit"] -- "Tor の保護は無い" --> W["Web サーバー"]
 ```
 
-上記の図のとおり、Tor を使う事と、中身が送信者から受信者まで通しで暗号化される事（End-to-End の暗号化）は別です。Exit Relay から中身を隠すのは HTTPS の仕事で、Tor が隠すのは経路の情報です。
+上記の図のとおり、Tor を使うことと、中身が送信者から受信者まで通しで暗号化されること（End-to-End の暗号化）は別です。Exit Relay から中身を隠すのは HTTPS の仕事で、Tor が隠すのは経路の情報です。
 
-Tor Project の案内も、機微な情報を渡す相手について「[display a padlock or onion icon in the address bar, include https:// in the URL, and display the proper expected name for the website](https://support.torproject.org/faq/staying-anonymous/)」（アドレス欄に錠前か onion のアイコンが出ていて、URL に https:// が含まれ、サイトの名前が期待どおりに表示される）事を確かめるよう注意しています。
+Tor Project の案内も、機微な情報を渡す相手について「[display a padlock or onion icon in the address bar, include https:// in the URL, and display the proper expected name for the website](https://support.torproject.org/faq/staying-anonymous/)」（アドレス欄に錠前か onion のアイコンが出ていて、URL に https:// が含まれ、サイトの名前が期待どおりに表示される）ことを確かめるよう注意しています。
 
 Tor だけを使う場合と、HTTPS を併用する場合の違いを次に示します。
 
@@ -156,7 +156,7 @@ Tor だけを使う場合と、HTTPS を併用する場合の違いを次に示�
 
 `.onion` で終わるアドレスへの接続では、通信が Tor ネットワークの外に出ません。宛先がインターネット上の IP アドレスではなく、サービスの公開鍵から作ったアドレスなので、外に出す Exit Relay が必要ない構成になります。
 
-[Tor Project の解説](https://community.torproject.org/onion-services/overview/)によると、サービスはまず複数のリレーに長期の経路を張り、自分への取り次ぎ役（introduction point）になってもらいます。この経路も Tor の経路なので、「the server does not reveal the service location to the introduction points」（サーバは取り次ぎ役に対して自分の所在を明かさない）状態が保たれます。
+[Tor Project の解説](https://community.torproject.org/onion-services/overview/)によると、サービスはまず複数のリレーに長期の経路を張り、自分への取り次ぎ役（introduction point）になってもらいます。この経路も Tor の経路なので、「the server does not reveal the service location to the introduction points」（サーバーは取り次ぎ役に対して自分の所在を明かさない）状態が保たれます。
 
 サービスは取り次ぎ役の一覧を署名付きの descriptor としてまとめ、Tor ネットワーク上の分散ハッシュ表に載せます。クライアントは `.onion` のアドレスに含まれる公開鍵を起点として descriptor の正当性を[検証](../../blockchain-systems/digital-signature/)し、取り次ぎ役の情報を取り出します。アドレスがサービスの identity と結び付いているので、別のサービスが用意した descriptor は通りません。接続の流れは以下の通りです。
 
@@ -183,7 +183,7 @@ sequenceDiagram
 
 同じ解説も、この役には「simply relays (end-to-end encrypted) messages from client to service and vice versa」（クライアントとサービスの間で、End-to-End に暗号化されたメッセージを中継するだけ）だと書かれています。その結果、既定の構成では、クライアントはサービスの IP アドレスを知らず、サービスもクライアントの IP アドレスを知らないまま通信できます。
 
-通信が Tor の外に出ない点も、通常の Web アクセスとの違いになります。Tor Project には「[All traffic between Tor users and onion services is end-to-end encrypted](https://support.torproject.org/tor-browser/features/onion-services/)」（Tor ユーザと onion service の間の通信は全て End-to-End に暗号化される）と書き、HTTPS で接続するかどうかを気にする必要はないと説明されています。
+通信が Tor の外に出ない点も、通常の Web アクセスとの違いになります。Tor Project には「[All traffic between Tor users and onion services is end-to-end encrypted](https://support.torproject.org/tor-browser/features/onion-services/)」（Tor ユーザーと onion service の間の通信は全て End-to-End に暗号化される）と書き、HTTPS で接続するかどうかを気にする必要はないと説明されています。
 
 守られるのはクライアントとサービスの間の転送路で、繋いだ先が意図した相手かどうかは別の問題です。`.onion` のアドレスは長い文字列なので、似せたアドレスに誘導される余地は残ります。
 
@@ -191,7 +191,7 @@ sequenceDiagram
 
 ### Tor が守らない範囲
 
-「Tor を使えば匿名」という要約は成り立ちません。設計論文が最初に断っているのは、全ての通信路を観測できる攻撃者を想定していない事です。
+「Tor を使えば匿名」という要約は成り立ちません。設計論文が最初に断っているのは、全ての通信路を観測できる攻撃者を想定していないことです。
 
 論文は、ネットワークの全ての通信路を観測できる攻撃者を global passive adversary と呼び、匿名性の設計で最もよく想定される脅威として挙げています。
 
@@ -215,7 +215,7 @@ Traffic correlation は、経路の中身を解読しない攻撃です。両端
 
 Malicious exit relay は、Exit Relay の運用者が中身を読める構造から出てきます。HTTPS を使っていれば読めるのは暗号文だけです。
 
-Browser fingerprinting は、経路ではなくブラウザの実装が相手です。Tor Project は fingerprinting を「[the systematic collection of information about the web browser to make educated guesses about its identity or characteristics](https://support.torproject.org/anti-fingerprinting/)」（Web ブラウザに関する情報を体系的に集め、その識別情報や特徴を推測する事）と説明されています。
+Browser fingerprinting は、経路ではなくブラウザの実装が相手です。Tor Project は fingerprinting を「[the systematic collection of information about the web browser to make educated guesses about its identity or characteristics](https://support.torproject.org/anti-fingerprinting/)」（Web ブラウザに関する情報を体系的に集め、その識別情報や特徴を推測すること）と説明されています。
 
 対処は Tor Browser 側にあり、ブラウザが自分の種類を名乗る User-Agent の値を揃える、画面の大きさをいくつかの区分に丸める、といった方法で利用者どうしを似せています。
 
@@ -227,7 +227,7 @@ Application layer leak は、通信が Tor に入る前の問題です。Tor Pro
 
 ### tornago が使っている Tor の機能
 
-ここまでの仕組みを踏まえると、Tor を利用するプログラムが実際に触る部分は限られます。[nao1215/tornago](https://github.com/nao1215/tornago) は、Go から Tor 経由の通信と Onion Service の作成を扱うためのライブラリで、Tor のロジックを実装し直したものではありません。tor コマンド（デーモン）に 2 つの口から指示を出します。デーモンは自分で起動する事も、既に動いているものに繋ぐ事もできます。
+ここまでの仕組みを踏まえると、Tor を利用するプログラムが実際に触る部分は限られます。[nao1215/tornago](https://github.com/nao1215/tornago) は、Go から Tor 経由の通信と Onion Service の作成を扱うためのライブラリで、Tor のロジックを実装し直したものではありません。tor コマンド（デーモン）に 2 つの口から指示を出します。デーモンは自分で起動することも、既に動いているものに繋ぐこともできます。
 
 - SOCKS5 プロキシ: アプリケーションの TCP / HTTP 通信を Tor の経路に流す口
 - ControlPort: tor デーモンに命令を送る口。Onion Service の作成や経路の作り直しで使う
@@ -242,7 +242,7 @@ flowchart LR
     D --> N["Tor ネットワーク<br/>経路の構築と層状の暗号化"]
 ```
 
-上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago が扱うのは構築済みの経路を使うための口です。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、その 80 番ポートをローカルの HTTP サーバに転送する対応付けを設定します。
+上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago が扱うのは構築済みの経路を使うための口です。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、その 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。
 
 注意点として、ControlPort は tor デーモンを操作する管理用の口です。Onion Service の作成や経路の制御まで行えるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
 
@@ -264,9 +264,9 @@ flowchart LR
 
 ### 欠点
 
-以下は、遅延の小さい通信を保ったまま経路を隠す事を優先した結果として現れる制約です。
+以下は、遅延の小さい通信を保ったまま経路を隠すことを優先した結果として現れる制約です。
 
-- 複数のリレーを経由し、経路が地理的に遠回りになる事もあるため、直接つなぐ場合より遅延が大きい
+- 複数のリレーを経由し、経路が地理的に遠回りになることもあるため、直接つなぐ場合より遅延が大きい
 - リレーの一覧に署名するディレクトリ権威への信頼は残る
 - 経路の両端を観測できる攻撃者に対しては、通信の型を突き合わせられる
 - Exit Relay から先には Tor の暗号化が掛からず、中身の保護は HTTPS に依存する

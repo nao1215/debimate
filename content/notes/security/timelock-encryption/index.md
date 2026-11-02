@@ -27,7 +27,7 @@ flowchart TB
 
 実現の仕方は 2 通りあります。解く側に逐次計算を課して時間を稼ぐ Time-lock Puzzle と、決まった時刻ごとに署名を公開する drand という外部のサービスを使う tlock です。違いは以下の通りです。
 
-| 方式 | 解く側が復号まで得られない物 | 復号条件 |
+| 方式 | 解く側が復号まで得られないもの | 復号条件 |
 | --- | --- | --- |
 | Time-lock Puzzle | 逐次計算の結果 | 逐次計算を終える |
 | drand / tlock | 将来の round の署名 | round の署名を取得する |
@@ -54,7 +54,7 @@ sequenceDiagram
     P-->>U: 鍵で復号
 ```
 
-sleep も待機処理を消せば終わります。鍵を時刻サーバ 1 台に預けると、運用者が予定より早く鍵を渡せる一方、サーバが停止すれば鍵を受け取れません。
+sleep も待機処理を消せば終わります。鍵を時刻サーバー 1 台に預けると、運用者が予定より早く鍵を渡せる一方、サーバーが停止すれば鍵を受け取れません。
 
 [Rivest 氏、Shamir 氏、Wagner 氏の 1996 年の論文](https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-684.pdf)は、Timed-release Cryptography の実現方法として、連続した計算を要求する方法と、将来まで値を公開しない trusted agent を使う方法を分けています。
 
@@ -82,14 +82,14 @@ sequenceDiagram
     S->>S: 共通鍵を取り出して復号
 ```
 
-解く人は n、a、t などの puzzle を受け取りますが、p と q は知りません。逐次 2 乗を大幅に高速化する方法がないという仮定の下では、解く人は repeated squaring（繰り返し 2 乗）を t 回行います。この逐次性は、素因数分解困難性だけから証明されている訳ではありません。
+解く人は n、a、t などの puzzle を受け取りますが、p と q は知りません。逐次 2 乗を大幅に高速化する方法がないという仮定の下では、解く人は repeated squaring（繰り返し 2 乗）を t 回行います。この逐次性は、素因数分解困難性だけから証明されているわけではありません。
 
 ```mermaid
 flowchart LR
     X0["x0 = a"] --> X1["x1 = x0^2 mod n"] --> X2["x2 = x1^2 mod n"] --> X3["…"] --> XT["xt = a^(2^t) mod n"]
 ```
 
-各段は直前の値を必要とするため、t 個の計算を別々の CPU に配る単純な並列化は使えません。とは言え、1 回の 2 乗を速くするハードウェアや、より速い実装の影響は受けます。論文も CPU time と real time を近付ける事が難点だと述べています。
+各段は直前の値を必要とするため、t 個の計算を別々の CPU に配る単純な並列化は使えません。とは言え、1 回の 2 乗を速くするハードウェアや、より速い実装の影響は受けます。論文も CPU time と real time を近付けることが難点だと述べています。
 
 puzzle が指定できるのは 2 乗の回数 t だけで、それが何秒に相当するかは、解く人の計算速度（図の faster hardware）と、計算を始めた時刻（later start）で決まります。作成者が想定した秒数 T は、作成した時点の見積もりです。
 
@@ -101,7 +101,7 @@ puzzle が指定できるのは 2 乗の回数 t だけで、それが何秒に�
 
 ### drand は round ごとに threshold 署名を公開する
 
-drand は、一定間隔の round ごとに公開検証できる乱数を生成する randomness beacon（乱数ビーコン）です。genesis time は round 1 の基準時刻、period は round の間隔です。`floor((time - genesis) / period) + 1` は、その時刻に対応する round 番号を返します。drand の停止や遅延があれば、その round の署名がまだ公開されていない場合があります。期限前に開けない事を優先するなら、対象時刻以後に始まる最初の round を選びます。
+drand は、一定間隔の round ごとに公開検証できる乱数を生成する randomness beacon（乱数ビーコン）です。genesis time は round 1 の基準時刻、period は round の間隔です。`floor((time - genesis) / period) + 1` は、その時刻に対応する round 番号を返します。drand の停止や遅延があれば、その round の署名がまだ公開されていない場合があります。期限前に開けないことを優先するなら、対象時刻以後に始まる最初の round を選びます。
 
 セットアップでは DKG（Distributed Key Generation、分散鍵生成）を実行し、各ノードが秘密鍵 Share を得ます。全体の秘密鍵を知る単独の dealer は存在しません。round の時刻になると各ノードが部分 BLS（Boneh-Lynn-Shacham）署名を出し、threshold 個から 1 つの署名を合成します。
 
@@ -122,7 +122,7 @@ sequenceDiagram
 
 [drand の暗号方式の説明](https://docs.drand.love/docs/cryptography/)によれば、threshold 未満の秘密鍵 Share からは将来の署名を予測できません。この構成は [Shamir's Secret Sharing](../shamir-secret-sharing/) と同じ多項式補間を使いますが、Secret を復元せずに部分署名を合成します。
 
-round と時刻の対応は決定的なので、暗号化時に将来の round を指定できます。しかし、単独ノードの時計が解禁を決める訳ではありません。threshold 個の正しい部分署名が集まった時に署名が生成されます。
+round と時刻の対応は決定的なので、暗号化時に将来の round を指定できます。しかし、単独ノードの時計が解禁を決めるわけではありません。threshold 個の正しい部分署名が集まった時に署名が生成されます。
 
 ---
 
@@ -196,7 +196,7 @@ Time-lock Puzzle と tlock では、予定より早く復号される障害と�
 
 - Time-lock Puzzle は第三者やネットワークを使わず、計算量で待ち時間を作れる
 - drand / tlock は将来の round を指定し、暗号化した本人が不在でも公開値から復号できる
-- drand / tlock は単独の時刻サーバではなく、threshold のノード集合に依存する
+- drand / tlock は単独の時刻サーバーではなく、threshold のノード集合に依存する
 
 ---
 
@@ -213,4 +213,4 @@ Time-lock Puzzle と tlock では、予定より早く復号される障害と�
 
 - 絶対時刻を細かい粒度で保証したい用途に Time-lock Puzzle を使う場合
 - drand が停止しても必ず取り出せなければならない長期保管
-- 現在の暗号学的仮定が数十年後も成り立つ事を前提とする保管
+- 現在の暗号学的仮定が数十年後も成り立つことを前提とする保管

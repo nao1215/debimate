@@ -11,7 +11,7 @@ Deadlock（デッドロック）は、2 本以上のトランザクションが�
 
 開発者がこの名前を目にするのは、エラーログの中ではないでしょうか。PostgreSQL は `deadlock detected`、MySQL は `Deadlock found when trying to get lock; try restarting transaction` を返します。手元で 1 本ずつ動かしている間は出ず、同じ処理が同時に走る本番環境で遭遇しやすいです。
 
-本ノートでは PostgreSQL の挙動を基本に説明し、挙動が違う箇所では MySQL と Oracle Database の例も示します。トランザクションに何を入れるかの判断は [Transaction Scope](../transaction-scope/)、分離レベルは [Transaction Isolation](../transaction-isolation/) の題材とします。
+本記事では PostgreSQL の挙動を基本に説明し、挙動が違う箇所では MySQL と Oracle Database の例も示します。トランザクションに何を入れるかの判断は [Transaction Scope](../transaction-scope/)、分離レベルは [Transaction Isolation](../transaction-isolation/) の題材とします。
 
 前提を 1 つ置きます。行を更新すると DBMS（Database Management System）はその行にロックを取り、通常はトランザクションが終わるまで解放しません。1 行目を更新した後に 2 行目を待っている間も、1 行目は握ったままです。2 本が同じ 2 行を逆の順で触った場合は以下の通りです。
 
@@ -36,7 +36,7 @@ sequenceDiagram
 
 循環待ちができても、結果が壊れるわけではありません。多くの DBMS はこの循環を検出し、関わっているどれかを巻き戻します。PostgreSQL には「[automatically detects deadlock situations and resolves them by aborting one of the transactions involved](https://www.postgresql.org/docs/current/explicit-locking.html)」（デッドロックの状況を自動的に検出し、関係するトランザクションのうち 1 本を中止して解決する）と書かれています。
 
-どれが巻き戻されるかは、アプリケーションからは選べません。同じドキュメントは「Exactly which transaction will be aborted is difficult to predict and should not be relied upon」（どのトランザクションが中止されるのかを正確に予測するのは難しく、当てにするべきではない）と付け加えています。自分が書いた処理は、成功する事もあれば犠牲として中止される事もある、という前提で組む事になります。
+どれが巻き戻されるかは、アプリケーションからは選べません。同じドキュメントは「Exactly which transaction will be aborted is difficult to predict and should not be relied upon」（どのトランザクションが中止されるのかを正確に予測するのは難しく、当てにするべきではない）と付け加えています。自分が書いた処理は、成功することもあれば犠牲として中止されることもある、という前提で組むことになります。
 
 待ちが起きてから処置に至るまでの段は以下の通りです。
 
@@ -57,11 +57,11 @@ flowchart LR
 
 [同じページ](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。
 
-中止する単位も DBMS で分かれます。ここで注意したいのは、直前のロック待ちのタイムアウトと、循環を見付けて解くデッドロックの検出が別の仕組みだという事です。MySQL のストレージエンジンである InnoDB は、既定でデッドロックを検出します。[InnoDB のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)によれば、検出して犠牲に選ばれたトランザクションは、1 文ではなく全体が巻き戻されます。検出は設定で止める事もでき、止めた場合はロック待ちのタイムアウトが循環待ちを解く役目を引き受けます。
+中止する単位も DBMS で分かれます。ここで注意したいのは、直前のロック待ちのタイムアウトと、循環を見付けて解くデッドロックの検出が別の仕組みだということです。MySQL のストレージエンジンである InnoDB は、既定でデッドロックを検出します。[InnoDB のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)によれば、検出して犠牲に選ばれたトランザクションは、1 文ではなく全体が巻き戻されます。検出は設定で止めることもでき、止めた場合はロック待ちのタイムアウトが循環待ちを解く役目を引き受けます。
 
 [Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html) はトランザクションではなく、デッドロックに関わった 1 文を巻き戻します。この時に解放されるのはその文に伴うロックの一部で、それ以前の文で取得したロックや変更はトランザクションの中に残ります。
 
-同じドキュメントには「Usually, the signaled transaction should be rolled back explicitly, but it can retry the rolled-back statement after waiting」（通常、通知を受けたトランザクションは明示的に巻き戻すべきだが、待ってから巻き戻された文を再試行する事もできる）と書かれています。
+同じドキュメントには「Usually, the signaled transaction should be rolled back explicitly, but it can retry the rolled-back statement after waiting」（通常、通知を受けたトランザクションは明示的に巻き戻すべきだが、待ってから巻き戻された文を再試行することもできる）と書かれています。
 
 アプリケーション側では、デッドロックのエラーを受けたトランザクションを明示的に巻き戻す設計にしておくと、DBMS ごとの単位の違いに引きずられません。
 
@@ -69,11 +69,11 @@ flowchart LR
 
 ### 取得順序を揃える
 
-冒頭の例で循環待ちを作っているのは、2 本が同じ 2 行を逆の順で取得している事です。順序が揃っていれば、後から来た方は最初に競合した行で待ち、先に来た方が終われば進めます。トランザクションを短くすると、ロックを持っている時間が縮んで競合そのものは起きにくくなります。ただし、トランザクションを短くするだけでは、逆順取得という原因そのものは消えません。
+冒頭の例で循環待ちを作っているのは、2 本が同じ 2 行を逆の順で取得していることです。順序が揃っていれば、後から来た方は最初に競合した行で待ち、先に来た方が終われば進めます。トランザクションを短くすると、ロックを持っている時間が縮んで競合そのものは起きにくくなります。ただし、トランザクションを短くするだけでは、逆順取得という原因そのものは消えません。
 
-代表的な防ぎ方は、ロックを取る順序を全ての経路で揃える事です。PostgreSQL のドキュメントは、最善の防御が一般には「[being certain that all applications using a database acquire locks on multiple objects in a consistent order](https://www.postgresql.org/docs/current/explicit-locking.html)」（そのデータベースを使う全てのアプリケーションが、複数のオブジェクトに一貫した順序でロックを取るようにする事）だと書かれています。
+代表的な防ぎ方は、ロックを取る順序を全ての経路で揃えることです。PostgreSQL のドキュメントは、最善の防御が一般には「[being certain that all applications using a database acquire locks on multiple objects in a consistent order](https://www.postgresql.org/docs/current/explicit-locking.html)」（そのデータベースを使う全てのアプリケーションが、複数のオブジェクトに一貫した順序でロックを取るようにすること）だと書かれています。
 
-同じドキュメントは、条件をもう 1 つ挙げています。「the first lock acquired on an object in a transaction is the most restrictive mode that will be needed for that object」（トランザクションの中で 1 つのオブジェクトに最初に取るロックが、そのオブジェクトに対して必要になる最も制限の強いモードである事）も確実にすべきだと書かれています。
+同じドキュメントは、条件をもう 1 つ挙げています。「the first lock acquired on an object in a transaction is the most restrictive mode that will be needed for that object」（トランザクションの中で 1 つのオブジェクトに最初に取るロックが、そのオブジェクトに対して必要になる最も制限の強いモードであること）も確実にすべきだと書かれています。
 
 行へのロックには種類があります。[PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html) の行レベルロックは、`FOR KEY SHARE`、`FOR SHARE`、`FOR NO KEY UPDATE`、`FOR UPDATE` の 4 つのモードを持ちます。同じ行に複数のトランザクションが同時にロックを持てるかどうかは、モードの組み合わせで決まります。共存できる組み合わせがある一方、`FOR UPDATE` は他の行レベルロックと競合します。
 
@@ -124,7 +124,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 
 途中の `UPDATE` で失敗した場合は `defer` に置いた `tx.Rollback()` が走ります。そのため、それまでに適用した更新も残りません。`Commit()` が成功した後にも同じ `Rollback()` は走ります。その場合は `sql.ErrTxDone` が返るだけで、確定した内容には影響しません。
 
-並べ替えのキーが主キーである必要はありません。条件は、全ての対象に対して決定的な順序を作れる事、その順序に使う値がロック取得中に変わらない事、全ての経路が同じ規則で並べる事です。同順位があり得るキーを使うなら、`priority ASC, id ASC` のように、主キーのような一意な値を最後の比較キーに加えます。
+並べ替えのキーが主キーである必要はありません。条件は、全ての対象に対して決定的な順序を作れること、その順序に使う値がロック取得中に変わらないこと、全ての経路が同じ規則で並べることです。同順位があり得るキーを使うなら、`priority ASC, id ASC` のように、主キーのような一意な値を最後の比較キーに加えます。
 
 この方法を成り立たせるには、少なくとも次の 4 つが必要です。
 
@@ -133,7 +133,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 - 競合するロックを取り始める前に、対象と取得順序を決められる
 - 同じロック対象を共有する全ての経路が、同じ規則を守っている
 
-3 つ目は、トランザクションを始める前に対象が分かっている事までは求めません。トランザクションの中で決めても、競合するロックを取り始める前に順序が定まっていれば足ります。`WHERE status = 'pending'` のように 1 文で複数行を更新する形が難しいのは、その 1 文の中で DBMS がどの順序で対象行に到達するかが、アプリケーション側から決めにくいからです。`SELECT ... ORDER BY id FOR UPDATE` で対象を確定しながら順序を決めた上で更新するか、対象と順序を決められない処理として再試行で受ける事になります。
+3 つ目は、トランザクションを始める前に対象が分かっていることまでは求めません。トランザクションの中で決めても、競合するロックを取り始める前に順序が定まっていれば足ります。`WHERE status = 'pending'` のように 1 文で複数行を更新する形が難しいのは、その 1 文の中で DBMS がどの順序で対象行に到達するかが、アプリケーション側から決めにくいからです。`SELECT ... ORDER BY id FOR UPDATE` で対象を確定しながら順序を決めた上で更新するか、対象と順序を決められない処理として再試行で受けることになります。
 
 抜けやすいのは 4 つ目です。1 箇所でも別の順序でロックを取る経路が残っていると、その経路と他の経路の間で循環待ちができます。同じ表の中だけの話ではありません。`accounts` から `transfers` の順で触る経路と、`transfers` から `accounts` の順で触る経路があれば、それだけで循環します。バッチ処理や管理画面のように、通常の経路と別に書かれたコードが該当します。
 
@@ -174,17 +174,17 @@ flowchart LR
 
 ### 再試行まで含めて設計する
 
-中止されたトランザクションを再試行する経路は、最後まで捨てられません。再試行を組む時に決める事は 3 つあります。
+中止されたトランザクションを再試行する経路は、最後まで捨てられません。再試行を組む時に決めることは 3 つあります。
 
-- 再試行して良い中止かどうかの判別。デッドロックによる中止と直列化の失敗は、やり直すと通る事がある
+- 再試行して良い中止かどうかの判別。デッドロックによる中止と直列化の失敗は、やり直すと通ることがある
 - 上限の回数と、試行の間隔。失敗した処理が揃って再試行すると、また同じ競合を起こす
 - 再試行する単位。トランザクションの先頭からやり直すので、その中で読んだ値も読み直す
 
-判別には、DBMS が返すエラーの識別子を使います。PostgreSQL は SQLSTATE の `40P01` をデッドロックに、`40001` を直列化の失敗に割り当てています。MySQL はサーバのエラー番号 `1213` をデッドロックに割り当てており、その SQLSTATE は `40001` です。SQLSTATE だけで横断的に判定すると、2 つの DBMS で別の事象が同じ値に見えます。
+判別には、DBMS が返すエラーの識別子を使います。PostgreSQL は SQLSTATE の `40P01` をデッドロックに、`40001` を直列化の失敗に割り当てています。MySQL はサーバーのエラー番号 `1213` をデッドロックに割り当てており、その SQLSTATE は `40001` です。SQLSTATE だけで横断的に判定すると、2 つの DBMS で別の事象が同じ値に見えます。
 
 `40P01` を受けたトランザクションは、その途中から処理を続けられません。巻き戻した上で、新しいトランザクションとして先頭からやり直します。Go の `database/sql` であれば、先の `applyUpdates` のようにトランザクション 1 本を関数に収めておくと、その関数を呼び直すだけで再試行の単位が揃います。
 
-文法の誤りや、入力値に原因がある `NOT NULL` 違反・`CHECK` 違反のような失敗は、同じ入力をそのまま再試行しても解消しません。中止の理由を見ずに一律で再試行すると、こうした失敗を上限まで繰り返す事になります。
+文法の誤りや、入力値に原因がある `NOT NULL` 違反・`CHECK` 違反のような失敗は、同じ入力をそのまま再試行しても解消しません。中止の理由を見ずに一律で再試行すると、こうした失敗を上限まで繰り返すことになります。
 
 間隔には、待ち時間にランダムなずれを入れます。高負荷の時ほど多くの処理が同時に失敗しやすく、全てが同じ長さだけ待つと揃って再試行して、また同じロック競合を起こします。上限まで試して成功しなかった処理は、業務としての失敗として扱い、利用者に返すか、後で処理する列に移します。
 

@@ -31,7 +31,7 @@ sequenceDiagram
 
 ### 前提と説明の範囲
 
-分離レベルの意味と、dirty read・nonrepeatable read・phantom read・lost update という異常の名前は [Transaction Isolation](../transaction-isolation/) で扱っているので、本ノートでは繰り返しません。行のバージョンを併存させる MVCC の仕組みも同じノートにあります。
+分離レベルの意味と、dirty read・nonrepeatable read・phantom read・lost update という異常の名前は [Transaction Isolation](../transaction-isolation/) で扱っているので、本記事では繰り返しません。行のバージョンを併存させる MVCC の仕組みも同じノートにあります。
 
 ここで見るのは、Snapshot Isolation が何を防いで何を防がないのか、その線が他の実現方式とどう違うのかです。
 
@@ -43,7 +43,7 @@ sequenceDiagram
 
 固定されるのは、他のトランザクションが後から確定した変更に対してです。自分がそのトランザクションの中で書いた変更は、後の読み取りから見えます。
 
-読み手は書き手の確定を待ちません。論文も、Snapshot Isolation で走るトランザクションは、Start-Timestamp のスナップショットを保てる限り読み取りで止められる事がないと書かれています。読み手が書き手を止める事もないので、集計の間も更新は進みます。
+読み手は書き手の確定を待ちません。論文も、Snapshot Isolation で走るトランザクションは、Start-Timestamp のスナップショットを保てる限り読み取りで止められることがないと書かれています。読み手が書き手を止めることもないので、集計の間も更新は進みます。
 
 ---
 
@@ -93,7 +93,7 @@ sequenceDiagram
 
 上記の図の 2 本は同じ内容のスナップショットを見て、それぞれ x と y という別の行を書きます。書き込みが重なっていないので first-committer-wins は働かず、両方とも確定します。どちらのトランザクションも自分のスナップショットの中では合計 0 を残す計算をしており、制約を破っているのは確定した後の状態だけです。
 
-論文も、個々の残高は負になって良く合計だけが非負であれば良い銀行の制約を例に挙げています。書き込みが重ならなければ検査に掛からないので、壊れる条件は 2 つの行にまたがる制約に限りません。条件に合う行を数える制約も、2 本がそれぞれ別の行を挿入する事で壊れます。
+論文も、個々の残高は負になって良く合計だけが非負であれば良い銀行の制約を例に挙げています。書き込みが重ならなければ検査に掛からないので、壊れる条件は 2 つの行にまたがる制約に限りません。条件に合う行を数える制約も、2 本がそれぞれ別の行を挿入することで壊れます。
 
 ---
 
@@ -116,15 +116,15 @@ sequenceDiagram
 
 ### PostgreSQL の REPEATABLE READ との関係
 
-PostgreSQL のドキュメントは、自身の REPEATABLE READ には「[Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」として学術文献や他の DB で知られる技術で実装されていると書かれています。同じドキュメントには、2 本が互いの集計結果を別々の行として書き足す例が挙げられ、REPEATABLE READ なら 2 本とも確定できると説明されています。write skew がそのまま出る、という事です。
+PostgreSQL のドキュメントは、自身の REPEATABLE READ には「[Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」として学術文献や他の DB で知られる技術で実装されていると書かれています。同じドキュメントには、2 本が互いの集計結果を別々の行として書き足す例が挙げられ、REPEATABLE READ なら 2 本とも確定できると説明されています。write skew がそのまま出る、ということです。
 
-REPEATABLE READ という名前が Snapshot Isolation を意味するわけではありません。標準が定めているのは、そのレベルで起きてはならない現象までで、実現方式は DBMS が決めます。同じ名前で読み取りのロックを使う実装なら、write skew は起きません。手元の DBMS がどちらなのかは、ドキュメントで確かめる事になります。
+REPEATABLE READ という名前が Snapshot Isolation を意味するわけではありません。標準が定めているのは、そのレベルで起きてはならない現象までで、実現方式は DBMS が決めます。同じ名前で読み取りのロックを使う実装なら、write skew は起きません。手元の DBMS がどちらなのかは、ドキュメントで確かめることになります。
 
 ---
 
 ### Serializable Snapshot Isolation が足す検査
 
-Snapshot Isolation に直列化異常の検査を足し、write skew のような異常を防ぐ方式の 1 つが Serializable Snapshot Isolation（SSI）です。SERIALIZABLE の実現方法が SSI だけ、という事ではありません。
+Snapshot Isolation に直列化異常の検査を足し、write skew のような異常を防ぐ方式の 1 つが Serializable Snapshot Isolation（SSI）です。SERIALIZABLE の実現方法が SSI だけ、ということではありません。
 
 PostgreSQL のドキュメントは、SERIALIZABLE には「[Serializable Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」（SSI）で実装されており、Snapshot Isolation に直列化異常の検査を足した技術だと説明されています。
 
@@ -151,7 +151,7 @@ flowchart TB
 
 アプリケーション側で write skew を止める手もあります。`SELECT ... FOR UPDATE` のように、読む時点で行にロックを取る書き方です。ロックを取れば、その行は自分のトランザクションが終わるまで他から更新されません。
 
-口座の例なら、T1 と T2 の両方が x と y の 2 行を同じ規則でロックして読む必要があります。片方だけがロックを取っても、もう片方が同じ規則に従わなければ write skew は一般には防げません。ロックの取り方をトランザクションの間で揃える事が前提になります。
+口座の例なら、T1 と T2 の両方が x と y の 2 行を同じ規則でロックして読む必要があります。片方だけがロックを取っても、もう片方が同じ規則に従わなければ write skew は一般には防げません。ロックの取り方をトランザクションの間で揃えることが前提になります。
 
 押さえられるのは、壊れる制約に関わる行を全部ロックできる場合です。まだ存在しない行が制約に関わるなら、行ロックには掴む対象がありません。条件に合う行が後から挿入されて制約が壊れる形は、行ロックの外に残ります。
 
@@ -174,7 +174,7 @@ PostgreSQL のドキュメントも、REPEATABLE READ で業務上の規則を�
 
 以下は、Snapshot Isolation を使う時に考慮する必要がある制約です。
 
-- 別々の行を書く write skew が残り、壊れた事は結果の値としてだけ現れる
+- 別々の行を書く write skew が残り、壊れたことは結果の値としてだけ現れる
 - 書き込みが重なったトランザクションは中止されるので、再試行の処理が必要
 - 古いバージョンを保持する領域が必要で、長いトランザクションがあるほど溜まる
 - SQL 標準に Snapshot Isolation という分離レベル名が無く、標準のレベル名だけからは実現方式を判別できない
