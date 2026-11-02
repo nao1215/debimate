@@ -6,7 +6,8 @@ import { readFileSync } from 'node:fs';
 const source = readFileSync(new URL('../assets/js/mermaid-lazy.js', import.meta.url), 'utf8')
   .replace(/import\('[^']+'\)/, 'loadMermaid()');
 const tick = () => new Promise(resolve => setTimeout(resolve, 15));
-const diagram = (text = 'graph TD; A-->B', top = 0) => ({
+let diagramCount = 0;
+const diagram = (text = `graph TD; A${++diagramCount}-->B`, top = 0) => ({
   textContent: text, dataset: {}, isConnected: true, top,
   getClientRects() { return this.hidden ? [] : [{}]; },
   getBoundingClientRect() { return { top: this.top, bottom: this.top + 100 }; },
@@ -15,16 +16,20 @@ function setup(nodes, { observer = true, run, download } = {}) {
   const events = {};
   const observed = new Set();
   const calls = [];
+  const ids = [];
   let callback;
   let imports = 0;
   let initialized = 0;
   const mermaid = {
     initialize(config) { assert.equal(config.startOnLoad, false); initialized++; },
-    async run({ nodes: batch }) {
-      assert.equal(batch.length, 1);
-      calls.push(batch[0]);
-      if (run) await run(batch[0]);
-      batch[0].dataset.processed = 'true';
+    async render(id, text) {
+      // render() does not receive the node; find it by its (unique) definition.
+      const node = nodes.find(n => n.textContent === text && !n.dataset.processed);
+      assert.ok(node, `no pending diagram for ${text}`);
+      assert.ok(!ids.includes(id), `duplicate render id ${id}`);
+      ids.push(id); calls.push(node);
+      if (run) await run(node);
+      return { svg: `<svg id="${id}"></svg>` };
     },
   };
   const sandbox = {
@@ -98,9 +103,10 @@ test('a broken diagram preserves its source and does not block later diagrams', 
 });
 
 test('failed download leaves definitions readable', async () => {
-  const a = diagram(); const env = setup([a], { download() { throw Error('offline'); } });
+  const a = diagram(); const source0 = a.textContent;
+  const env = setup([a], { download() { throw Error('offline'); } });
   env.enter(a); await tick();
-  assert.equal(a.textContent, 'graph TD; A-->B'); assert.equal(a.dataset.mermaidError, 'true');
+  assert.equal(a.textContent, source0); assert.equal(a.dataset.mermaidError, 'true');
 });
 
 test('without IntersectionObserver, diagrams still render serially', async () => {
