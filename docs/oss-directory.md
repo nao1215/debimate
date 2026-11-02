@@ -10,7 +10,7 @@
 - `website` は GitHub Pages API の公開 URL と実ページを照合して設定する。リポジトリの `homepage` が空でも Pages が公開されていることがあるので、`has_pages` も確認する。
 - プロフィール README と照合して `projects` の追加・削除を行う。アーカイブ済みの旧作品は含めない。
 - `stars` は GitHub GraphQL API の `stargazerCount`。`scripts/fetch_oss_stars.py` が全件を一括取得して `asOf` とともに更新する。取得・検証が全部成功したときだけファイルを置き換える。上位4件はビルド時に自動選択する。
-- 既存の `deploy.yml` で Hugo ビルド前に取得する。毎週月曜 00:10 JST、手動実行、通常のデプロイ時に更新される。取得値は公開成果物に反映し、自動コミットはしない。ローカルのスナップショットを更新する場合は `python3 scripts/fetch_oss_stars.py`（gh の認証が必要）。
+- 既存の `deploy.yml` で Hugo ビルド前に取得する。毎週月曜 00:10 JST、手動実行、通常のデプロイ時に更新される。取得値は OSS 一覧とトップページの Featured OSS の両方に反映し、自動コミットはしない。ローカルのスナップショットを更新する場合は `python3 scripts/fetch_oss_stars.py`（gh の認証が必要）。
 - `category` は用途、`language` は実装言語、`kind` は利用形態。説明文は各 README と照合する。
 - `article` は Hugo のコンテンツパス（`content` と `index.md` を除く）。記事 URL はテンプレートで解決する。
 - 紹介記事は執筆当時の情報。現在のインストール方法と仕様は README から参照できる。

@@ -19,7 +19,7 @@
       if (visible) count++;
     });
     tabs.forEach(tab => tab.setAttribute('aria-pressed', String(tab.dataset.category === category)));
-    document.querySelector('[data-oss-count]').textContent = words.length || language.value ? `${count} 件が見つかりました` : category === 'popular' ? 'GitHub スター数順' : '';
+    document.querySelector('[data-oss-count]').textContent = words.length || language.value ? `${count} 件が見つかりました` : '';
     document.querySelector('[data-oss-empty]').hidden = count !== 0;
     document.querySelector('[data-oss-games]').hidden = category !== 'games';
   };

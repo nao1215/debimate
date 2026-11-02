@@ -6,8 +6,7 @@
     次のデプロイまで同じものが出続けるため、訪問ごとの入れ替えは
     クライアント側で行う。
   - JavaScript が無効な環境では先頭の 1 枚だけが出る（CSS で制御）。
-  - star 数は shields.io のバッジ画像。ビルド時に GitHub API を叩くと
-    レート制限で CI が落ちるため、About ページと同じ方式に揃えている。
+  - star 数は GitHub Actions で更新する data/oss_catalog.json から静的生成する。
 */}}
 {{/*
   イラストは 1.78:1 で、カード（およそ 6.8:1）へ cover で敷くと 2 倍以上に
@@ -24,7 +23,12 @@
       <span class="oss-pick-head">
         <span class="oss-pick-name">{{ .name }}</span>
         <span class="oss-card-lang"><i class="oss-lang-dot" style="background:{{ .langColor }}"></i>{{ .lang }}</span>
-        <img class="oss-card-badge" src="https://img.shields.io/github/stars/{{ replace .repo "https://github.com/" "" }}?style=flat-square&label=%E2%98%85&color=blue" width="52" height="20" alt="{{ .name }} の star 数" loading="lazy">
+        {{- $projects := where hugo.Data.oss_catalog.projects "name" .name }}
+        {{- if eq (len $projects) 1 }}
+          {{ partial "oss_stars.html" (index $projects 0) }}
+        {{- else }}
+          {{ errorf "Featured OSS %q must exist in data/oss_catalog.json" .name }}
+        {{- end }}
         {{- if .awesome }}
         {{/* カード全体が <a> なので、バッジは Awesome Go へのリンクにせず画像だけ置く */}}
         <img class="oss-card-badge" src="https://awesome.re/mentioned-badge.svg" width="104" height="20" alt="Mentioned in Awesome Go" loading="lazy">

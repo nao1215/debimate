@@ -1,7 +1,7 @@
 # トップページの Featured OSS カードで紹介する候補。
 # 全件を HTML へ出力し、表示する 1 枚は閲覧時に JavaScript が選ぶ。
-# ここに追記すれば候補が増える。star 数は shields.io のバッジで取るため持たせない。
-# 説明文は content/about/_index.md の OSS 一覧と揃えている。
+# data/oss_catalog.json にある OSS をここに追記すれば候補が増える。
+# star 数はカタログから参照し、GitHub Actions の定期更新に追従する。
 # awesome: true を付けると、README と同じ Awesome Go のバッジを併記する。
 - name: gup
   repo: https://github.com/nao1215/gup

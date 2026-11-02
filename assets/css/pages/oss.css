@@ -25,12 +25,9 @@ body:has(.oss-directory) { --main-width: 1100px; }
 .oss-result-count:empty { display: none; }
 .oss-directory .oss-card-name { font-size: 16px; margin: 0; overflow-wrap: anywhere; }
 .oss-directory .oss-card-desc { color: var(--secondary); font-size: 13px; line-height: 1.65; margin: 0; }
-.oss-stars { display: inline-flex; overflow: hidden; border-radius: 3px; font: 11px/20px sans-serif; color: #fff; white-space: nowrap; }
-.oss-stars > span:first-child { background: #555; padding: 0 5px; }
-.oss-stars > span:last-child { background: #1672a5; padding: 0 6px; }
 .oss-links { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 0; padding-top: 0; font-size: 12px; }
 .oss-links a, .oss-games-link a { text-decoration: underline; text-underline-offset: 3px; }
-.oss-games-link { margin-bottom: 12px; }
+.oss-games-link { margin-top: 16px; }
 .oss-empty { padding: 24px 0; }
 @media (max-width: 600px) {
   .oss-search { min-width: 100%; }

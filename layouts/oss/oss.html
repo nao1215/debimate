@@ -20,7 +20,6 @@
     <button type="reset">リセット</button>
     <p class="oss-result-count" role="status" aria-live="polite" aria-atomic="true" data-oss-count></p>
   </form>
-  <p class="oss-games-link" data-oss-games hidden><a href="{{ "games/" | relURL }}">プレイ動画とブラウザ版は Games へ →</a></p>
   <div class="oss-grid" id="oss-results">
   {{ range $index, $project := $ranked }}
     <article class="oss-card" id="project-{{ .name }}" data-oss-project data-language="{{ .language }}" data-category="{{ .category }}" data-popular="{{ lt $index 4 }}">
@@ -29,7 +28,7 @@
         <div class="oss-card-meta">
           {{ $colors := dict "Go" "#00ADD8" "Gleam" "#ffaff3" "Rust" "#dea584" "TypeScript" "#3178c6" "Shell" "#89e051" "JavaScript" "#f1e05a" }}
           <span class="oss-card-lang"><i class="oss-lang-dot" style="background:{{ index $colors .language }}"></i>{{ .language }}</span>
-          <span class="oss-stars" aria-label="{{ .stars }} GitHub stars"><span aria-hidden="true">★</span><span>{{ .stars }}</span></span>
+          {{ partial "oss_stars.html" . }}
         </div>
       </div>
       <p class="oss-card-desc">{{ .description }}</p>
@@ -37,6 +36,7 @@
     </article>
   {{ end }}
   </div>
+  <p class="oss-games-link" data-oss-games hidden><a href="{{ "games/" | relURL }}">プレイ動画とブラウザ版は Games へ →</a></p>
   <p class="oss-empty" data-oss-empty hidden>該当する OSS はありません。キーワードや言語を変えてみてください。</p>
 </section>
 </div>
