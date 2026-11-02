@@ -1,12 +1,21 @@
 {{- with hugo.Data.game_cards }}
 <div class="game-pick-wrap" data-game-pick>
   {{- range $i, $game := . }}
-  <a class="game-pick game-pick-{{ .slug }}" href="{{ .play }}"{{ if $i }} hidden{{ end }}>
+  {{/*
+    枠全体は GitHub へのリンク（star を貰う入口）。ゲームは読み込みが重いので、
+    「ブラウザで遊ぶ」を押した時だけ開く。リンクの中にリンクは置けないため、
+    枠一面に重ねた空のリンクと、その上に浮かせた遊ぶリンクに分けている。
+  */}}
+  <div class="game-pick game-pick-{{ .slug }}"{{ if $i }} hidden{{ end }}>
+    <a class="game-pick-cover" href="{{ .repo }}" target="_blank" rel="noopener noreferrer" aria-label="{{ .name }} の GitHub リポジトリ"></a>
     <span class="game-pick-body">
       <span class="game-pick-label">自作ブラウザゲーム</span>
-      <span class="game-pick-name">{{ .name }}</span>
+      <span class="game-pick-head">
+        <span class="game-pick-name">{{ .name }}</span>
+        <img class="oss-card-badge" src="https://img.shields.io/github/stars/{{ replace .repo "https://github.com/" "" }}?style=flat-square&label=%E2%98%85&color=blue" width="52" height="20" alt="{{ .name }} の star 数" loading="lazy">
+      </span>
       <span class="game-pick-desc">{{ .description }}</span>
-      <span class="game-pick-action">ブラウザで遊ぶ <span aria-hidden="true">→</span></span>
+      <span class="game-pick-action"><a class="game-pick-play" href="{{ .play }}">ブラウザで遊ぶ <span aria-hidden="true">→</span></a></span>
     </span>
     <span class="game-pick-art" aria-hidden="true">
       {{- range .images }}
@@ -17,7 +26,7 @@
         <img src="{{ $image.RelPermalink }}" width="{{ $image.Width }}" height="{{ $image.Height }}" alt="" decoding="async" loading="lazy">
       {{- end }}
     </span>
-  </a>
+  </div>
   {{- end }}
 </div>
 {{- $script := resources.Get "js/game-pick.js" | minify | fingerprint }}

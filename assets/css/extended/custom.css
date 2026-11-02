@@ -705,9 +705,14 @@ body.home .post-entry .entry-footer {
   border-color: var(--secondary);
 }
 
+/* 暗い時も、ゲームの枠と同じく白に近い文字にする */
+html[data-theme="dark"] .oss-pick-label,
+html[data-theme="dark"] .oss-pick-name,
+html[data-theme="dark"] .oss-pick-desc { color: #fff5fa; }
+
 html[data-theme="dark"] .oss-pick {
   background-image:
-    linear-gradient(0deg, rgba(46, 46, 51, 0.72), rgba(46, 46, 51, 0.72)),
+    linear-gradient(0deg, rgba(46, 46, 51, 0.86), rgba(46, 46, 51, 0.86)),
     var(--oss-pick-bg);
 }
 
@@ -720,7 +725,9 @@ html[data-theme="dark"] .oss-pick {
 .oss-pick-label {
   display: block;
   margin-bottom: 0.25rem;
-  color: var(--secondary);
+  /* 背景にイラストを敷いているので、薄い灰色だと読みにくい。ゲームの枠と同じ濃さにする */
+  color: var(--primary);
+  opacity: 0.8;
   font-size: 0.82rem;
 }
 
@@ -747,7 +754,7 @@ html[data-theme="dark"] .oss-pick {
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-top: 0.4rem;
-  color: var(--secondary);
+  color: var(--content);
   font-size: 0.85rem;
   line-height: 1.7;
 }
@@ -1580,7 +1587,7 @@ body.games-page { --main-width: 1100px; }
 .home-weeknotes-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; }
 
 /* Compact game artwork sits beside the text instead of cropping an entire OGP. */
-.game-pick-wrap { min-width: 0; }
+.game-pick-wrap { min-width: 0; container-type: inline-size; }
 .game-pick {
   position: relative;
   display: grid;
@@ -1596,13 +1603,18 @@ body.games-page { --main-width: 1100px; }
 }
 .game-pick[hidden] { display: none; }
 .game-pick:hover { border-color: var(--secondary); }
-.game-pick:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-.game-pick-body { padding: .9rem 0 .9rem 1rem; position: relative; z-index: 1; }
+.game-pick-cover { position: absolute; inset: 0; z-index: 2; border-radius: inherit; }
+.game-pick-cover:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
+/* Text sits above the cover but lets clicks fall through to it, except the play link. */
+.game-pick-body { padding: .9rem .75rem .9rem 1rem; position: relative; z-index: 3; pointer-events: none; }
+.game-pick-head { display: flex; align-items: center; flex-wrap: wrap; column-gap: .5rem; margin-top: .15rem; }
+.game-pick-head .game-pick-name { margin-top: 0; }
 .game-pick-label { display: block; font-size: .78rem; opacity: .8; }
 .game-pick-name { display: block; font-size: 1.18rem; font-weight: 700; margin-top: .15rem; }
 .game-pick-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: .82rem; line-height: 1.6; margin-top: .25rem; }
 .game-pick-action { display: block; font-size: .78rem; margin-top: .35rem; }
-.game-pick:hover .game-pick-action { text-decoration: underline; text-underline-offset: 3px; }
+.game-pick-play { pointer-events: auto; white-space: nowrap; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.game-pick-play:hover, .game-pick-play:focus-visible { text-decoration-thickness: 2px; }
 .game-pick-art { position: relative; min-width: 0; }
 .game-pick-art img { position: absolute; bottom: 0; left: -5%; width: 64%; height: 100%; object-fit: contain; object-position: center bottom; }
 .game-pick-art img + img { left: 38%; }
@@ -1615,6 +1627,15 @@ html[data-theme="dark"] .game-pick { background: #36343a; color: #fff5fa; }
 .game-pick .game-pick-art img:nth-child(4) { left: 68%; }
 /* Keep the raised hand and elbow inside the green character's source image. */
 .game-pick-rabbit-run .game-pick-art img:nth-child(2) { width: 50.91%; left: 8.045%; }
+/* The art bleeds left into the text column; stop the text before it. */
+.game-pick-rabbit-run .game-pick-body { padding-right: 5cqw; }
+.game-pick-succubus-live .game-pick-body { padding-right: 3cqw; }
+/* In a mid-width card, narrow the art column (the characters shrink, never crop) so the name and star badge share a line. */
+@container (min-width: 300px) and (max-width: 560px) {
+  .game-pick { grid-template-columns: minmax(0, 1fr) 42%; }
+  /* If the badge still does not fit beside the name, hide it instead of adding a row. */
+  .game-pick-head { row-gap: 1rem; max-height: 2.1rem; overflow: hidden; }
+}
 @media (max-width: 640px) {
   .game-pick { grid-template-columns: minmax(0, 1fr); }
   .game-pick .game-pick-body { padding-right: 1rem; padding-bottom: 6.5rem; }

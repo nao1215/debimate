@@ -2,6 +2,7 @@
 - name: Rabbit Run
   slug: rabbit-run
   play: https://nao1215.github.io/rabbitrun/
+  repo: https://github.com/nao1215/rabbitrun
   description: ウサギを走らせ、ハンマーで壁を壊すランゲーム。
   images:
     - src: images/game-picks/rabbit-cool.png
@@ -16,6 +17,7 @@
   slug: succubus-live
   thumbnail_width: 560
   play: https://nao1215.github.io/succubus-live/
+  repo: https://github.com/nao1215/succubus-live
   description: 配信者たちの会話や音声を楽しむ、仮想ライブ配信ゲーム。
   images:
     - src: images/game-picks/succubus-mora.png
