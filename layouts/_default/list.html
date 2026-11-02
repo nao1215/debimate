@@ -76,8 +76,8 @@
 {{- if $splitHome }}
 {{ partial "home_list.html" (dict "cards" $cards "batch" 6 "key" "posts") }}
 </section>
-{{ partial "home_weeknotes.html" . }}
 {{ partial "home_notes.html" . }}
+{{ partial "home_weeknotes.html" . }}
 </div>
 {{- $scroll := resources.Get "js/home-lists.js" | minify | fingerprint }}
 <script src="{{ $scroll.RelPermalink }}" defer></script>
