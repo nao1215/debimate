@@ -5,13 +5,14 @@ draft: false
 series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 8
+wrapTables: true
 ---
 
-外部キー制約（foreign key constraint）は、ある表の列に入っている値が、別の表に実在する行を指していることを DB（データベース）に保証させる仕組みです。PostgreSQL のドキュメントには、この制約が指定するのは「[the values in a column (or a group of columns) must match the values appearing in some row of another table](https://www.postgresql.org/docs/current/ddl-constraints.html)」（1 つの列、または複数の列の組の値が、別の表のいずれかの行に現れる値と一致しなければならない）ことだと書かれています。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
+外部キー制約（foreign key constraint）は、ある表の列に入っている値が、別の表に実在する行を指していることを DB（データベース）に保証させる仕組みです。[PostgreSQL](https://www.postgresql.org/docs/current/ddl-constraints.html) の定義では、1 つの列または複数の列の組の値が、別の表のいずれかの行に現れる値と一致する必要があります。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
 
-この制約が必要になる場面の代表は、注文の一覧に「存在しない会員の ID」が混ざった時の調査です。会員の表と突き合わせる集計では指す先の無い注文が結果から落ちるので、注文表を素直に合計した値と食い違います。値が入った経路も、`INSERT` の時なのか会員を消した時なのかも、後から辿れません。
+この制約が必要になる場面の代表は、注文の一覧に「存在しない会員の ID」が混ざった時の調査です。会員別の集計と、注文表を素直に合計した値が食い違います。その ID が `INSERT` の時に入ったのか、会員を消した時に生まれたのかも、後からは辿れません。
 
-会員（`members`）と注文（`orders`）を例に、2 つの表の関係は以下の通りです。
+例えば、会員（`members`）と注文（`orders`）の関係は以下のようになります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -28,15 +29,23 @@ erDiagram
     }
 ```
 
----
-
-### 前提と説明の範囲
-
 上記の図の `||--o{` は、`members` の 1 行に対して `orders` が 0 行以上ぶら下がる関係を表します。PK は主キー（その表で行を一意に決める列）、FK は外部キーです。参照される `members` を親、参照する `orders` を子と呼びます。
 
-本記事では、1 つの DB の中で表と表を結ぶ外部キー制約を扱い、サービスをまたいだ参照は「外部キーを張らない場合、誰が整合性を守るのか」でだけ触れます。以降の SQL は PostgreSQL の構文で書きます。
+本記事では、1 つの DB の中で表と表を結ぶ外部キー制約を説明します。孤児レコードが生まれる経路から始めて、次の疑問に答えます。
 
-制約は子の表に書きます。PostgreSQL では、参照先に主キー・一意制約・部分索引ではない一意索引のどれかが必要です。参照する値が参照先で一意に特定できないと、この `CREATE TABLE` 自体が失敗します。
+- 外部キーが無いと、参照先の無い行はどんな経路で生まれるのか。
+- アプリケーションで親の存在を確かめるだけでは、なぜ足りないのか。
+- 確認と書き込みの間に親が消えた時、外部キー制約はどう止めるのか。
+- 親の行を消す時、子の行をどう扱うのか。
+- 外部キーを張らない場合、誰が参照整合性を守るのか。
+
+サービスをまたいだ参照には、「外部キーを張らない場合に整合性を守る担当」の節でだけ触れます。以降の SQL は PostgreSQL の構文で書きます。
+
+---
+
+### 外部キーが無い時に生まれる孤児レコード
+
+制約は子の表に書きます。参照先の列は、値から 1 行に決まる（重複しない）ことを DB が保証している必要があります。PostgreSQL でこの保証に当たるのは、主キー・一意制約・一意索引（部分索引を除く）のどれかです。索引は、列の値から該当する行の位置を引ける補助の構造です。参照する値が参照先で一意に特定できないと、この `CREATE TABLE` 自体が失敗します。
 
 ```sql
 CREATE TABLE members (
@@ -50,10 +59,6 @@ CREATE TABLE orders (
     amount    INT NOT NULL
 );
 ```
-
----
-
-### 外部キーが無い時に残るのは、行ではなく矛盾
 
 制約を書かなかった場合、`member_id` はただの整数の列になります。DB は、その値が `members` の誰かを指しているかどうかを見ません。参照先の無い子の行は孤児レコードと呼ばれ、次の 2 つの経路で生まれます。
 
@@ -85,7 +90,7 @@ INSERT INTO orders (id, member_id, amount) VALUES (1001, 999, 3000);
 
 外部キー制約を張らずに、注文を作る処理の中で会員の存在を確かめる方法もあります。注文 API のコードに `SELECT` を 1 本足せば済む、という判断です。この方法が守れるのは、その処理を通った書き込みだけになります。表を更新する経路が 1 本だとは限りません。
 
-同じ `orders` を更新し得る経路は以下の通りです。
+例えば、同じ `orders` を更新し得る経路には次のようなものがあります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -98,23 +103,17 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図で存在確認を行うのは注文 API だけです。経路が増えるたびに同じ検査を書き足す設計になり、書き足し忘れは構文の誤りではないので、DB が自動で止めることはありません。孤児が混ざった結果として返る行数の増減も、正常な結果と区別が付きません。
+上記の図で存在確認を行うのは注文 API だけです。経路が増えるたびに、同じ検査を書き足す必要があります。書き足し忘れても構文の誤りにはならないので、その経路からの書き込みは DB に止められません。
 
 外部キー制約は、この検査を DB に 1 つ置きます。どの経路から来た `INSERT` でも同じ検査が掛かり、通らない書き込みはエラーで止まります。守れる範囲を広げているのは、検査の内容ではなく検査を置いた位置です。
 
-ただし、制約を書けば全部の経路が塞がるわけではありません。制約が有効になっていることが必要です。SQLite には「[Foreign key constraints are disabled by default (for backwards compatibility), so must be enabled separately for each database connection.](https://www.sqlite.org/foreignkeys.html)」（外部キー制約は既定で無効で、接続ごとに有効にする必要がある）と書かれています。
-
-制約を後から張る場合は、検査の範囲に注意が必要です。PostgreSQL で `NOT VALID` を付けると、制約を足す前からある行の一括検査を省けます。以降の `INSERT` と `UPDATE` には制約が掛かり、既存の行は後から `VALIDATE CONSTRAINT` で検証できます。
-
-参照の列が `NULL` の行も、外部キー制約に違反しません。PostgreSQL には「[Normally, a referencing row need not satisfy the foreign key constraint if any of its referencing columns are null.](https://www.postgresql.org/docs/current/ddl-constraints.html)」（参照する側の列のいずれかが NULL であれば、通常その行は外部キー制約を満たす必要が無い）と書かれています。
-
 ---
 
-### 存在を確かめてから書くまでの間に、親は消える
+### 存在の確認と書き込みの間に起きる削除
 
 アプリケーションでの存在確認には、経路の数とは別の弱点があります。`SELECT` で親の行を確かめてから `INSERT` するまでの間に、別のトランザクションが親を消せる点です。経路を 1 本に絞り込んでも、この弱点は残ります。
 
-トランザクションは、まとめて成功か失敗かを決める書き込みのひとかたまりで、`COMMIT` で確定します。2 つのトランザクションが重なった時の順序は以下の通りです。
+トランザクションは、まとめて成功か失敗かを決める書き込みのひとかたまりで、`COMMIT` で確定します。以下は、2 つのトランザクションが重なった時の順序です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -131,19 +130,38 @@ sequenceDiagram
     Note over A,B: 確認は成功し<br/>結果は孤児レコード
 ```
 
-上記の図の注文 API は、自分の見た結果に従って正しく動いています。確認した時点では会員 42 が実在し、`INSERT` を出す時点では実在しません。読み取りが見た時点と、書き込みが行われる時点は別です。そのため、間に入った削除を検知できません。
+上記の図の注文 API は、自分の見た結果に従って正しく動いています。確認した時点では会員 42 が実在し、`INSERT` を出す時点では実在しません。
 
-競合した時にどう振る舞うかは、分離レベル・ロックの取り方・DBMS（Database Management System）の実装方式で変わります。ただし、そのどれもが「`orders.member_id` は必ず `members.id` を指す」という業務上の制約を宣言するものではありません。分離レベルは [Transaction Isolation](../transaction-isolation/) のノートで扱っています。
+競合した時にどう振る舞うかは、分離レベル（同時に走るトランザクションどうしが互いの変更をどこまで見るかの設定）・ロックの取り方・DBMS（Database Management System）の実装方式で変わります。これらを工夫して競合を防げても、「`orders.member_id` は必ず `members.id` を指す」という規則を守り続ける責任は、注文を `INSERT` する処理にも会員を `DELETE` する処理にも残ります。分離レベルは [Transaction Isolation](../transaction-isolation/) のノートで扱っています。
 
-外部キー制約を書けば、存在確認と競合の処理を DB が担当します。親の削除と子の追加が競合した場合も、DB が必要な待機や制約の検査を行い、制約に違反する状態を確定させません。アプリケーションが `SELECT` で確かめる形と違い、確認と書き込みが別々の判断に分かれないからです。
+外部キー制約を書けば、確認と書き込みを DB が 1 つの操作として扱います。PostgreSQL 17.10 で外部キー制約を張った表に、上記の図の 2 本を流しました。図と違い、退会処理は `DELETE` から `COMMIT` までを 3 秒空け、その途中で注文 API が `INSERT` を出しています。
 
-アプリケーションで保証するなら、注文を `INSERT` する処理だけでなく、会員を `DELETE` する処理も含めて同じ規約で足並みをそろえる必要があります。守る対象が 1 つの処理から、親と子を触る全ての処理に広がります。
+```text
+-- 注文 API 側の psql（抜粋）
+INSERT INTO orders (id, member_id, amount) VALUES (1001, 42, 3000);
+ERROR:  insert or update on table "orders" violates foreign key constraint "orders_member_id_fkey"
+DETAIL:  Key (member_id)=(42) is not present in table "members".
+```
+
+外部キーの検査は会員 42 の行にロックを取ろうとするので、`INSERT` は退会処理の `COMMIT` まで待たされ（約 2.5 秒）、会員が消えたと分かった時点でエラーになりました。注文 1001 は入らず、孤児は生まれていません。`COMMIT` が `INSERT` より先なら、待たずに同じエラーで止まります。
 
 ---
 
-### ON DELETE の指定は、親子の所有関係を表す
+### 制約を書いても検査されない行
 
-外部キー制約を張ると、親の行を消す操作の意味を決める必要が出ます。`ON DELETE` に何を書くかで、削除が子にどう及ぶのかが変わります。PostgreSQL が用意している指定は以下の通りです。
+外部キー制約を書いても、全ての行が検査されるとは限りません。まず、制約が有効になっていることが必要です。SQLite のドキュメントには「[Foreign key constraints are disabled by default (for backwards compatibility), so must be enabled separately for each database connection.](https://www.sqlite.org/foreignkeys.html)」（外部キー制約は既定で無効で、接続ごとに有効にする必要がある）とあります。
+
+制約を後から張る場合は、検査の範囲に注意が必要です。PostgreSQL で `NOT VALID` を付けると、制約を足す前からある行の一括検査を省けます。以降の `INSERT` と `UPDATE` には制約が掛かり、既存の行は後から `VALIDATE CONSTRAINT` で検証できます。
+
+参照の列が `NULL` の行も、外部キー制約に違反しません。PostgreSQL には「[Normally, a referencing row need not satisfy the foreign key constraint if any of its referencing columns are null.](https://www.postgresql.org/docs/current/ddl-constraints.html)」（参照する側の列のいずれかが NULL であれば、通常その行は外部キー制約を満たす必要が無い）と書かれています。
+
+`member_id` を `NULL` 可にすると、会員を指さない注文が制約を通ります。上の DDL では `NOT NULL` を付けているので、その行は入りません。
+
+---
+
+### ON DELETE の指定と親子の所有関係
+
+外部キー制約を張ると、親の行を消す操作の意味を決める必要が出ます。`ON DELETE` に何を書くかで、削除が子にどう及ぶのかが変わります。制約の検査は通常は文ごとに行われ、`DEFERRABLE` を付けた制約では `COMMIT` まで遅らせられます。PostgreSQL が用意している指定を整理すると、以下の通りです。
 
 | 指定 | 親を `DELETE` した時 | 注意する点 |
 | --- | --- | --- |
@@ -153,9 +171,7 @@ sequenceDiagram
 | `SET NULL` | 子は残り、参照の列が `NULL` になる | 参照の列が `NOT NULL` なら、その `DELETE` は失敗する |
 | `SET DEFAULT` | 子は残り、参照の列が既定値になる | 既定値が `NULL` 以外なら、その値を持つ親の行が必要 |
 
-`NO ACTION` と `RESTRICT` は、どちらも子が残っていれば親を消せません。PostgreSQL のドキュメントは `RESTRICT` について「[RESTRICT does not allow the check to be deferred until later in the transaction](https://www.postgresql.org/docs/current/ddl-constraints.html)」（RESTRICT は、検査をトランザクションの後ろに遅らせることを許さない）と書かれています。
-
-検査を遅らせられると、親と子をまとめて差し替える処理を書けます。途中で一時的に参照先が欠けても、`COMMIT` の時点でそろっていれば良い、という形です。遅らせるには制約に `DEFERRABLE` を付ける必要があり、既定は `NOT DEFERRABLE` なので、上の DDL のままでは遅れません。なお、上の 5 つは PostgreSQL の指定です。利用できる指定や検査のタイミングは DBMS によって違うので、他を使う場合はドキュメントで確かめることになります。
+`NO ACTION` と `RESTRICT` は、どちらも子が残っていれば親を消せません。検査を遅らせられると、親と子をまとめて差し替える処理を書けます。例えば、親の行をいったん消して同じ ID で入れ直す処理は、途中で一時的に参照先が欠けても、`COMMIT` の時点でそろっていれば違反になりません。`RESTRICT` はこうした操作も拒否します。既定は `NOT DEFERRABLE` なので、上の DDL のままでは検査を遅らせられません。利用できる指定と検査のタイミングは DBMS で違います。
 
 どれを選ぶかは、性能や書きやすさではなく、子の行が親なしで意味を持つかどうかで決まります。以下が判断の分かれ目です。
 
@@ -171,51 +187,11 @@ flowchart TB
 
 上記の図の注文明細は、注文 1 件に含まれる商品ごとの行です。注文が消えれば残す理由が無く、所有している側が消える時に一緒に消える関係なので `CASCADE` が合います。会員と注文は違い、退会しても過去の売上の記録として残す必要があります。案件から担当者への参照のように、相手が居なくなっても行そのものは残したい関係では `SET NULL` が合います。
 
-`CASCADE` を「親を消す時に子を消す手間が省ける指定」として選ぶと、この判断が飛びます。連鎖は子の子にも続きます。会員を 1 行消した結果として、注文と注文明細がまとめて消える構成にもなります。行を残したい要求は、[Soft Delete](../soft-delete/) のノートで扱う設計課題です。
-
-なお、親の主キーを書き換える場合の指定が `ON UPDATE` で、書ける語は `ON DELETE` とほぼ同じです。主キーを後から変えない設計にしていれば、出番はほとんどありません。
+`CASCADE` を「親を消す時に子を消す手間が省ける指定」として選ぶと、子が親なしで意味を持つかという判断を飛ばしてしまいます。連鎖は子の子にも続くので、会員を 1 行消した結果として、注文と注文明細がまとめて消える構成にもなります。行を残したい要求は、[Soft Delete](../soft-delete/) のノートで扱う設計課題です。
 
 ---
 
-### 利点
-
-- 制約が有効である限り、どの経路から来た書き込みでも参照先の無い行が入らない
-- 親の削除と子の追加が競合しても、参照整合性の維持を DB に任せられる
-- 親を消した時の扱いが表の定義に宣言として残り、経路ごとの実装に散らない
-- 表と表の関係が定義から読み取れ、後から構造を辿れる
-
----
-
-### 欠点
-
-以下は、参照の検査を DB に寄せた結果として現れる制約です。
-
-- 子への書き込みのたびに親の存在を確かめるので、書き込みの負担が増える
-- 親の削除や更新のたびに子を探すので、子の列に索引が無いと表の走査になる
-- 表をまたぐ検査なので、親と子が別のノードに分かれる構成では張りにくい
-- 一括での投入や DB の移行で、親から先に入れるという順序の縛りが出る
-- `CASCADE` の連鎖が、設計時に想定した範囲を超えて広がることがある
-
-索引は、列の値から該当する行の位置を引ける補助の構造で、これが無いと DB は表を先頭から読むことになります。2 つ目の索引の扱いは DBMS によって違い、PostgreSQL には「[the declaration of a foreign key constraint does not automatically create an index on the referencing columns](https://www.postgresql.org/docs/current/ddl-constraints.html)」（外部キー制約の宣言は、参照する列に索引を自動では作らない）と書かれています。
-
-DBMS によっては自動で作るものもあります。索引の有無で親の削除がどう変わるのかは、以下の通りです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    D["DELETE FROM members<br/>WHERE id = 42"] --> Q{"orders.member_id に<br/>索引があるか"}
-    Q -->|"ある"| I["索引を引いて<br/>該当する注文を探せる"]
-    Q -->|"無い"| S["orders を端から走査して<br/>member_id = 42 を探す"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の索引が無い経路では、子の表が大きくなるほど親を 1 行消す操作が重くなります。索引があっても、条件に一致する行が表の大部分を占める場合は走査が選ばれます。索引の構造は [B-Tree](../b-tree/) のノートで扱っています。
-
-3 つ目のノードをまたぐ構成についても、分散を前提に作られた DBMS には外部キーを支援するものがあります。手元の DBMS で張れるかどうかは、ドキュメントで確かめることになります。
-
----
-
-### 外部キーを張らない場合、誰が整合性を守るのか
+### 外部キーを張らない場合に整合性を守る担当
 
 外部キー制約を置かない構成もあります。代表的なのは次の 3 つです。
 
@@ -229,7 +205,7 @@ flowchart LR
 
 制約を外した場合、参照整合性を守る担当は DB の外に移ります。移し先は、代表的には次の 3 つです。
 
-- 親と子を変更する経路を管理下に寄せ、作成・更新・削除の全部で同じ参照整合性の規約を守る
+- 親と子を変更する経路を 1 か所に集め、作成・更新・削除の全部で同じ参照整合性の規約を守る
 - 孤児を定期的に検出し、業務の判断で直すか消すかを決める
 - 孤児が居る前提で読み、表示を組み立てる処理で欠けた参照を扱う
 
@@ -248,3 +224,41 @@ WHERE o.member_id IS NOT NULL
 検出は、孤児が生まれることを止めません。見付かった時点で、その注文をどう扱うのかという業務の判断が必要です。3 つ目の「居る前提で読む」は、その判断を読み取りの処理に埋め込む方法で、会員名の欄に「退会済み」と出すような扱いになります。
 
 外部キーを張らない設計は、条件がそろえば妥当な選択です。決めておくことは、参照先の存在を誰がいつ確かめるのか、確かめられなかった行をどう扱うのかの 2 つになります。この 2 つを決めないまま制約を外すと、担当が誰にも割り当てられていない状態になります。
+
+---
+
+### 利点
+
+- 制約が有効である限り、どの経路から来た書き込みでも参照先の無い行が入らない
+- 親の削除と子の追加が競合しても、参照整合性の維持を DB に任せられる
+- 親を消した時の扱いが表の定義に宣言として残り、経路ごとの実装に散らない
+- 表と表の関係が定義から読み取れ、後から構造を辿れる
+
+---
+
+### 欠点
+
+外部キー制約は、参照の検査を DB に寄せます。その分、次の負担と縛りが生じます。
+
+- 子への書き込みのたびに親の存在を確かめるので、書き込みの負担が増える
+- 親の削除や更新のたびに子を探すので、子の列に索引が無いと表の走査になる
+- 表をまたぐ検査なので、親と子が別のノードに分かれる構成では張りにくい
+- 一括での投入や DB の移行で、親から先に入れるという順序の縛りが出る
+- `CASCADE` の連鎖が、設計時に想定した範囲を超えて広がることがある
+
+欠点の 2 つ目に挙げた子の列の索引は、DBMS によって扱いが違います。PostgreSQL のドキュメントには「[the declaration of a foreign key constraint does not automatically create an index on the referencing columns](https://www.postgresql.org/docs/current/ddl-constraints.html)」（外部キー制約の宣言は、参照する列に索引を自動では作らない）とあります。
+
+DBMS によっては自動で作るものもあります。索引の有無で親の削除がどう変わるのかを以下の図に示します。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
+flowchart LR
+    D["DELETE FROM members<br/>WHERE id = 42"] --> Q{"orders.member_id に<br/>索引があるか"}
+    Q -->|"ある"| I["索引を引いて<br/>該当する注文を探せる"]
+    Q -->|"無い"| S["orders を端から走査して<br/>member_id = 42 を探す"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```
+
+上記の図の索引が無い経路では、子の表が大きくなるほど親を 1 行消す操作が重くなります。索引の構造は [B-Tree](../b-tree/) のノートで扱っています。
+
+欠点の 3 つ目に挙げた、親と子が別のノードに分かれる構成についても、分散を前提に作られた DBMS には外部キーを支援するものがあります。

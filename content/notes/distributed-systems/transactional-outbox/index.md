@@ -5,13 +5,14 @@ draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "messaging"]
 weight: 8
+wrapTables: true
 ---
 
-書き込み先が 2 つある注文を例に説明を始めましょう。書き込み先の 1 つは注文の記録をする DB、もう 1 つは在庫や配送を担う別のサービスに「注文が確定した」と伝えるためのメッセージブローカー（メッセージを預かって配る仕組み）です。
+Transactional Outbox は、送るべきメッセージを業務データの更新と同じトランザクションで DB の outbox テーブルに書き、別のプロセス（message relay）がそれを後からメッセージブローカー（メッセージを預かって受信側に配る仕組み）に送るパターンです。書き込み先を DB の 1 箇所に寄せることで、2 つの書き込みが食い違う余地を減らします。
 
-Transactional Outbox は、送るべきメッセージを業務データの更新と同じトランザクションで書き、別のプロセスがそれを後からブローカーに送るパターンです。書き込み先を DB の 1 箇所に寄せることで、2 つの書き込みが食い違う余地を減らします。
+例えば、注文を確定する処理には書き込み先が 2 つあります。1 つは注文を記録する DB、もう 1 つは在庫や配送を担う別のサービスに「注文が確定した」と伝えるためのメッセージブローカーです。
 
-注文を確定した直後にプロセスが停止すると、不都合がある状況が発生します。
+以下は、注文を確定した直後にプロセスが停止した場合の流れです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -28,22 +29,30 @@ sequenceDiagram
     Note over D,B: 注文は DB に残り<br/>メッセージは出ない
 ```
 
-注文を確定した事実と、それを外に知らせたかどうかが、この 1 回の停止でずれます。在庫を担うサービスは注文の存在を知らないまま動き続け、アプリケーションから見ると失敗した処理は 1 つもありません。
+この 1 回の停止で、注文は確定したのに外には知らされていない、という食い違いが生じます。在庫を担うサービスは注文の存在を知りません。一方、アプリケーションから見ると、失敗した処理は 1 つもありません。
 
-本記事では、この食い違いを防ぐ方法を説明します。受け取った側で重複をどう排除するかの実装と、複数サービスにまたがる業務の取り消しには触れません。
+本記事では、この食い違いを防ぐ方法を説明します。答えていく疑問は 5 つです。
+
+- なぜ送信と commit の順序を入れ替えても、食い違いを防げないのか。
+- 送るべきメッセージは、DB の中にどう書くのか。
+- relay は何を読んで、outbox の行をブローカーに送るのか。
+- 先に INSERT した行が後から発行されるのは、どんな時か。
+- メッセージが発行される回数と順序は、どこまで保証されるのか。
+
+受け取った側で重複をどう排除するかの実装と、複数サービスにまたがる業務の取り消しは、本記事では扱いません。
 
 ---
 
-### なぜ 2 つの書き込みが食い違うのか
+### 2 つの書き込みが食い違う理由
 
-冒頭で見たのは commit の後で止まる場合です。順序を入れ替えても、壊れ方が入れ替わるだけになります。
+冒頭の例から送信と commit の順序を入れ替えても、壊れ方が入れ替わるだけです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph S1["先に送ってから commit する"]
         direction LR
-        A1["メッセージを送る"] --> A2["COMMIT に失敗する"] --> A3["起きていない確定が<br/>配られる"]
+        A1["メッセージを送る"] --> A2["COMMIT に失敗する"] --> A3["起きていない確定を<br/>知らせてしまう"]
     end
     subgraph S2["commit してから送る"]
         direction LR
@@ -56,13 +65,13 @@ flowchart LR
 
 2 つの書き込みを 1 つの操作にまとめる手段としては、[2PC](../two-phase-commit/) があります。関わった全員の最終的な判断を確定か中止のどちらか一方に揃えるプロトコルで、DB とブローカーを 2 つの参加者として並べれば、片方だけが成立した状態を避けられます。
 
-しかし、[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)はこの手を選ばない理由を 2 つ挙げています。1 つは、DB とメッセージブローカーの一方または両方が 2PC に対応していない場合があることです。もう 1 つは、対応していたとしても、サービスを DB とブローカーの両方に結合させるのは望ましくないことが多い、という点です。
+しかし、[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)は、DB とブローカーの一方または両方が 2PC に対応していない場合があることと、サービスを両方に結合させるのは望ましくないことが多い点を挙げ、この手を選びません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
 
 ---
 
-### 書き込み先を DB の 1 箇所に寄せる
+### 書き込み先の DB への集約
 
-壊れる原因は順序の選び方ではなく、1 つの処理が 2 つの書き込み先を持っていることです。そのため Transactional Outbox は、ブローカーへの送信をトランザクションの外に押し出さず、送るべきメッセージを DB の中に書きます。
+食い違いの原因は順序の選び方ではなく、1 つの処理が 2 つの書き込み先を持っていることです。そのため Transactional Outbox は、ブローカーへ直接送る代わりに、送るべきメッセージを DB の中に書きます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -80,11 +89,11 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-メッセージを送る側を Sender、outbox の行をブローカーに発行するプロセスを message relay と呼びます。Sender はブローカーと直接やり取りしないため、ブローカーが停止しても、直ちに注文の受け付けが止まるわけではありません。
+上記の図では、メッセージを送る側を Sender と呼んでいます。Sender はブローカーと直接やり取りしないため、ブローカーが停止しても、直ちに注文の受け付けが止まるわけではありません。
 
-commit が成立すれば、配送すべきメッセージが outbox に残り、rollback すれば業務データもろとも消えます。トランザクションが決めるのはここまでです。実際にブローカーへ届くのは、relay が outbox を読んで発行してからになります。
+commit が成立すれば、配送すべきメッセージが outbox に残り、rollback すれば業務データもろとも消えます。トランザクションが決めるのはここまでです。
 
-この例で同じトランザクションに入るのは、この 2 つの INSERT です。以下が、PostgreSQL での一例です。
+この例では、以下の 2 つの INSERT を同じトランザクションに入れます（PostgreSQL の例）。
 
 ```sql
 BEGIN;
@@ -124,25 +133,36 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams が挙げられています。
+トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、パターンの説明は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
 
-DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
-
-挙げられている主な性質は、以下の通りです。
+パターンの説明が挙げている主な性質を整理すると、以下の通りです。
 
 | 観点 | Polling publisher | Transaction log tailing |
 |---|---|---|
 | 読む先 | outbox テーブル | DB のトランザクションログ |
 | 利点 | 特定のトランザクションログ機構に依存しにくい | commit 済みの変更をトランザクションログから追跡できる |
-| 欠点 | 順序通りに発行するのが難しい。全ての NoSQL の DB が対応しているわけではない | DB 固有の解決策が必要。重複した発行を避けるのが難しい |
+| 欠点 | 順序通りに発行するのが難しい。この方式に対応していない NoSQL の DB もある | DB 固有の解決策が必要。重複した発行を避けるのが難しい |
+
+順序が崩れるのは、outbox の行の ID の順と commit の順がずれ、読んだ時点でまだ commit されていなかった行を後から拾う場合です。PostgreSQL 17 で、注文 A の行を INSERT して commit を 3 秒遅らせ、その間に注文 B の行を INSERT して commit しました。B の commit 直後と A の commit 後に、relay が未送信の行を id の順に読んで送信済みにした結果は以下の通りです。
+
+```text
+-- relay 1 回目
+2|OrderConfirmed B
+-- relay 2 回目
+1|OrderConfirmed A
+```
+
+先に採番された A が、B の後に発行されています。読んだ位置を最後の id で覚える relay なら、2 回目は id 2 より後ろしか探さないので、A は一度も発行されません。
+
+NoSQL の DB の中には、未送信の行を条件で探す問い合わせが苦手なものがあります。log tailing の重複は、ログのどこまで読んだかの記録と発行が別の書き込みになることから生じます。
 
 読む先が違っても、outbox に書く側の処理は変わりません。変わるのは、メッセージがどの順序で何回ブローカーに発行されるかです。
 
 ---
 
-### 何が保証され、何が保証されないか
+### 保証される範囲と保証されない範囲
 
-outbox に配送すべきメッセージが残るかどうかは、commit の成否と一致します。しかし、送られる回数までは一致しません。relay がブローカーに発行した後、発行済みを記録する前に落ちると、再起動後に同じメッセージをもう一度発行します。
+outbox に配送すべきメッセージが残るかどうかは、commit の成否と一致します。しかし、ブローカーに発行される回数が 1 回になるとは限りません。relay がブローカーに発行した後、outbox の行に送信済みの印を付ける（または行を消す）前に落ちると、再起動後に同じメッセージをもう一度発行します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -158,11 +178,13 @@ sequenceDiagram
     R->>B: 同じメッセージを<br/>もう一度発行する
 ```
 
-発行と記録は別の書き込みなので、その間で落ちたことを再起動後の relay は区別できません。relay が未送信のメッセージを継続して再試行する前提では、取りこぼしを避ける代わりに同じメッセージを複数回発行し得ます。この配送方式を at-least-once と呼びます。
+発行と記録は別の書き込みなので、再起動後の relay は、発行の前に落ちたのか、発行と記録の間で落ちたのかを区別できません。relay が未送信のメッセージを継続して再試行する前提では、取りこぼしを避ける代わりに同じメッセージを複数回発行し得ます。この配送方式を at-least-once と呼びます。
 
 relay が決めるのはブローカーへ発行するまでで、受信側のサービスに何回届くかはブローカーの配送保証にも左右されます。どちらの経路でも重複はあり得るので、受け取る側は冪等（べきとう、idempotent）でなければなりません。実現の方法は [Idempotency](../idempotency/) が扱っています。
 
-順序も同じで、保証の範囲が段階に分かれます。アプリケーションが送った順序でブローカーに発行されることは利点として挙げられている一方で、Polling publisher の欠点には順序通りの発行が難しいことが挙げられており、この性質は relay の実装で変わります。受信側それぞれに同じ順序で届くことは、多くの場合に必要になるものの、このパターンでは扱われていません。
+順序も同じで、保証の範囲が段階に分かれます。relay が 1 つだけで、commit した順に行を発行すれば、ブローカーへの発行順は保てます。relay を並列にしたり、前述の実験のように ID の順と commit の順がずれたりすると崩れます。受信側それぞれに同じ順序で届くことは多くの場合に必要ですが、ブローカーの性質で決まり、このパターンは扱っていません。
+
+<br>
 
 Polling publisher で送信済みを outbox に記録する実装では、1 行を未送信と送信済みの 2 状態で扱えます。
 
@@ -177,14 +199,13 @@ stateDiagram-v2
     Sent --> [*]: 保持期間を過ぎた行を削除する（運用側で決める）
 ```
 
-この実装で送信済みになった行をいつまで置くかは、このパターンが決めていません。行が積み上がるほど未送信の行を探す読み取りは重くなるので、削除の周期は運用側で決めることになります。
+送信済みになった行をいつまで置くかは、パターンでは決められていません。行が積み上がるほど未送信の行を探す読み取りは重くなるので、削除の周期は運用側で決める必要があります。
 
 ---
 
 ### 利点
 
 - 2PC を使わずに、DB の更新と配送すべきメッセージの記録のずれを防げる
-- 配送すべきメッセージが outbox に残るのは、DB のトランザクションが commit した場合だけである
 - メッセージの順序を保つよう設計できるが、実際の保証は relay の実装に依存する
 - ブローカーへの同期送信を待たず、業務データと outbox の記録を commit できる
 
@@ -192,12 +213,9 @@ stateDiagram-v2
 
 ### 欠点
 
-最初の 2 つはパターンの説明が挙げているもので、残りは outbox を持つことの代償です。
-
 - outbox への INSERT を書き忘れると、DB だけが更新されてメッセージが出ない状態に戻る
 - relay が同じメッセージを 2 回以上発行し得るので、受け取る側を冪等にする必要がある
-- 業務と直接関係のない outbox テーブルと relay プロセスを運用し続けることになる
-- 送信済みの行を削除する周期を別に決めて運用する必要がある
+- 業務と直接関係のない outbox テーブルと relay プロセスを運用し続ける必要がある
 
 ---
 
