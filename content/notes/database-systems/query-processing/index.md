@@ -14,6 +14,7 @@ Query Processing（問い合わせ処理）は、DB（データベース）が�
 この木を読めるようになると、遅い問い合わせのどの部分が原因なのかを絞り込めます。昨日まで速かった SQL が今日から遅い、という現象の理由も、木を見比べれば見当が付きます。SQL 文が結果の行になるまでの流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     S["SQL 文"] --> P["構文解析"]
     P --> T1["構文を表す木"]
@@ -23,6 +24,7 @@ flowchart LR
     O --> Q["実行計画"]
     Q --> E["実行"]
     E --> R["結果の行"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 DB は条件に合う行を集めるだけでなく、どの手順で集めるかも決めています。同じ SQL 文でも、表の大きさや索引（インデックス）の有無が変われば、「実行方法を選ぶ」段階から出てくる実行計画は変わります。
@@ -44,6 +46,7 @@ SQL は、欲しい結果の条件を書く言語です。どの表をどの順�
 素朴に考えても、次の 2 つの手順が思い付きます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph A["手順 1：注文から始める"]
         A1["注文 100 万件を読む"] --> A2["1 件ごとに<br/>利用者を引く"]
@@ -52,6 +55,7 @@ flowchart TB
     subgraph B["手順 2：利用者から始める"]
         B1["利用者 1 万件から<br/>日本の 100 件を取り出す"] --> B2["100 件それぞれについて<br/>索引で注文を引く"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 どちらの手順も同じ行の集まりを返します。しかし、突き合わせの起点になるのは、手順 1 では最後に捨てる行まで含めた 100 万件、手順 2 では 100 件で、4 桁の差があります。手順 2 も日本の 100 件を選ぶために利用者 1 万件を読むので、読む総量の差はこれより小さくなります。
@@ -177,6 +181,7 @@ PostgreSQL は、この種の相関を扱うために `CREATE STATISTICS` で複
 以下は、先ほどの問い合わせを merge join で処理する場合の実行計画です。名前の解決を経て作った問い合わせの木とは別の木で、実行方法を選ぶ段階がそこから作ります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     MJ["MergeJoin<br/>o.user_id = u.id"]
     S1["Sort<br/>user_id で並べ替え"]
@@ -187,6 +192,7 @@ flowchart TD
     S1 --> Q1
     MJ --> S2
     S2 --> Q2
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で、元の SQL の 2 つの条件は別々の演算子に置かれています。`u.country = 'JP'` は利用者の表を走査する所で行を絞る条件になり、`o.user_id = u.id` は 2 つの入力を突き合わせる条件になっています。1 つの表だけで判定できる条件を走査する演算子に寄せると、結合に渡る行数が減ります。
@@ -200,6 +206,7 @@ PostgreSQL の実行器（エグゼキュータ）では、上の演算子が下
 上記の実行計画の木から、`MergeJoin` の下で注文の表を並べ替える枝（`Sort` と `SeqScan orders`）だけを取り出すと、要求と応答の往復は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant M as MergeJoin
     participant S as Sort

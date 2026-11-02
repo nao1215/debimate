@@ -16,6 +16,7 @@ Sidecar は、複数のコンテナを 1 つの実行単位に置く構成の中
 論文の例と同じ構成を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["クライアント"] --> W
     subgraph UNIT["同じ実行単位"]
@@ -26,6 +27,7 @@ flowchart LR
         L -- ログを読む --> V
     end
     L -- 転送 --> S[("クラスタのストレージ")]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 2 つのコンテナは、共有 volume だけで繋がっています。volume とは、コンテナの外に置かれ、同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場です。マウントとは、volume が自分のファイルシステムの一部として見えるように指定する操作です。
@@ -51,6 +53,7 @@ Sidecar という名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開
 転送先が停止してログが溜まった場合に何が起きうるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant L as ログ転送プロセス
     participant W as Web サーバー
@@ -96,6 +99,7 @@ Sidecar を通信の経路に置くと、順序が問題になります。メイ
 順序を制御しない場合に起きる失敗は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant M as main コンテナ
     participant P as proxy sidecar
@@ -115,6 +119,7 @@ sequenceDiagram
 以下が望ましい順序です。実行基盤が sidecar のライフサイクルを扱う役目を持ちます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant R as 実行基盤
     participant S as sidecar

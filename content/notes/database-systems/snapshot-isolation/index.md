@@ -14,6 +14,7 @@ Snapshot Isolation は、トランザクションごとに 1 つのスナップ�
 1 本のトランザクションが、読みと書きで何を基準にするのかを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant T as トランザクション T
     participant D as DB
@@ -54,6 +55,7 @@ sequenceDiagram
 論文が定めた条件は、T1 が確定できるのは、T1 の実行区間 [Start-Timestamp, Commit-Timestamp] の中に Commit-Timestamp を持つ別のトランザクションが、T1 も書いたデータを書いていない場合に限る、というものです。満たさなければ T1 は中止されます。論文はこの規律を first-committer-wins と呼び、lost update を防ぐと説明しています。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 注文 A
     participant D as 在庫の行
@@ -79,6 +81,7 @@ first-committer-wins が見ているのは、同じデータへの書き込み�
 2 つの口座に掛かる制約が破れる様子は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant T1 as T1
     participant D as DB
@@ -133,12 +136,14 @@ PostgreSQL のドキュメントは、SERIALIZABLE には「[Serializable Snapsh
 記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、そのトランザクションは直列化の失敗として中止されます。述語ロックは依存関係を見付けるための材料で、判定そのものではありません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     S["Snapshot Isolation<br/>スナップショットの固定と<br/>書き込みの重なりの検査"] --> A["読み取りが触れたデータや範囲を<br/>述語ロックとして記録する"]
     A --> C["記録を使って、並行する書き込みとの<br/>読み書きの依存関係を検出する"]
     C --> B{"直列化異常につながり得る<br/>依存関係の組み合わせか"}
     B -->|"はい"| X["直列化の失敗として中止する"]
     B -->|"いいえ"| O["そのまま確定する"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 述語ロックは名前にロックが付いていても、PostgreSQL のドキュメントによれば待ちを起こさず、デッドロックの原因にもなりません。依存関係の監視そのものが相手を待たせない代わりに、監視のコストと直列化の失敗が生じ得るので、呼び出す側には再試行の処理が必要です。

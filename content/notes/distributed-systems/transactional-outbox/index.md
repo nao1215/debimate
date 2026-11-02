@@ -14,6 +14,7 @@ Transactional Outbox は、送るべきメッセージを業務データの更�
 注文を確定した直後にプロセスが停止すると、不都合がある状況が発生します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as アプリケーション
     participant D as DB
@@ -38,6 +39,7 @@ sequenceDiagram
 冒頭で見たのは commit の後で止まる場合です。順序を入れ替えても、壊れ方が入れ替わるだけになります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph S1["先に送ってから commit する"]
         direction LR
@@ -47,6 +49,7 @@ flowchart LR
         direction LR
         B1["COMMIT する"] --> B2["送信の前に停止する"] --> B3["確定した注文が<br/>誰にも伝わらない"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 例えば、決済の完了を伝えるメッセージを先に送ると、受け取った側は領収書を発行します。その後でトランザクションが中止されれば、DB に存在しない決済の領収書だけが残ります。
@@ -62,6 +65,7 @@ flowchart LR
 壊れる原因は順序の選び方ではなく、1 つの処理が 2 つの書き込み先を持っていることです。そのため Transactional Outbox は、ブローカーへの送信をトランザクションの外に押し出さず、送るべきメッセージを DB の中に書きます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph T["1 つのトランザクション"]
         direction LR
@@ -73,6 +77,7 @@ flowchart LR
     X -. 未送信の行を読む .-> R["message relay"]
     R -- 発行する --> Q["メッセージブローカー"]
     Q --> C["受信側のサービス"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 メッセージを送る側を Sender、outbox の行をブローカーに発行するプロセスを message relay と呼びます。Sender はブローカーと直接やり取りしないため、ブローカーが停止しても、直ちに注文の受け付けが止まるわけではありません。
@@ -105,6 +110,7 @@ outbox の 3 つの列は、どの注文についての出来事かを指す `ag
 outbox に溜まった行をブローカーに送る方法は、relay が何を読むかで 2 つに分かれます。Polling publisher は outbox テーブルを繰り返し読み、まだ送っていない行を見つけて発行します。Transaction log tailing は、DB が自分の永続化のために書いているトランザクションログを追い、outbox に挿入された各メッセージを発行します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph DB["DB"]
         direction LR
@@ -115,6 +121,7 @@ flowchart LR
     L -. 追記を追う .-> G["Transaction log tailing"]
     P --> Q["メッセージブローカー"]
     G --> Q
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams が挙げられています。
@@ -138,6 +145,7 @@ DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Dat
 outbox に配送すべきメッセージが残るかどうかは、commit の成否と一致します。しかし、送られる回数までは一致しません。relay がブローカーに発行した後、発行済みを記録する前に落ちると、再起動後に同じメッセージをもう一度発行します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant R as message relay
     participant O as outbox テーブル
@@ -159,6 +167,7 @@ relay が決めるのはブローカーへ発行するまでで、受信側の�
 Polling publisher で送信済みを outbox に記録する実装では、1 行を未送信と送信済みの 2 状態で扱えます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     state "未送信" as Unsent
     state "送信済み" as Sent

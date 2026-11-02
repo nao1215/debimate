@@ -18,11 +18,13 @@ weight: 14
 取引が作られてから結果が残るまでを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["取引を組み立てる<br/>宛先・金額・data<br/>gas の上限"] --> B["秘密鍵で署名する"]
     B --> C["ネットワークに流す"]
     C --> D["ブロックに取り込まれ<br/>実行される"]
     D --> E["レシートに結果が残る"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で秘密鍵を使うのは、署名の段階だけです。中継するノードが中身を書き換えること自体はできます。書き換えた取引がどう扱われるのかは、「送り主は署名から復元される」で扱います。
@@ -67,10 +69,12 @@ accessList は、列挙するだけで安くなる項目ではありません。
 先頭のバイトで読み方が分かれる様子は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     B["取引の先頭 1 バイト"] --> Q{"値の範囲"}
     Q -->|"0x00〜0x7f"| N["TransactionType<br/>続きは型ごとの<br/>TransactionPayload"]
     Q -->|"0xc0〜0xfe"| L["legacy transaction<br/>RLP で符号化した並び"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で TransactionType を持つ側が typed transaction で、Type 2 もここに入ります。この分岐があるため、新しい項目を持つ型を足しても、古い形の取引はそのまま検証できます。RLP（Recursive Length Prefix）は、Ethereum がデータを並べる時に使う符号化の規則です。
@@ -94,11 +98,13 @@ EIP-7702 の型もあります。EOA が指定したコントラクトのコー�
 署名から送り主が決まるまでは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     H["署名の対象になった<br/>取引のデータ"] --> P["公開鍵を復元する"]
     S["署名 r, s と yParity"] --> P
     P --> A["アドレスを計算する"]
     A --> C["そのアカウントの<br/>nonce と残高を照合する"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で、取引のデータを 1 バイトでも書き換えると、署名の対象が変わります。元の署名をそのまま付けても、復元されるのは元の送り主とは別のアドレスになるか、復元そのものが失敗します。どちらにしても、元の送り主が承認した取引としては成立しません。
@@ -118,12 +124,14 @@ flowchart LR
 実際に渡る priority fee は、maxPriorityFeePerGas と、maxFeePerGas から base fee を引いた残りのうち、小さい方になります。base fee が maxFeePerGas を超えている間、その取引は取り込まれません。2 つの上限が支払いに効く形は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     G["gasLimit<br/>使って良い量の上限"] --> U["実際に使った gas"]
     G --> R["使わずに済んだ分"]
     M["maxFeePerGas<br/>1 gas あたりの額の上限"] --> C["base fee + priority fee<br/>この額を超えない"]
     U --> F["支払い<br/>使った gas × 単価"]
     C --> F
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 実行が gasLimit に届かずに終われば、使わずに済んだ分は手数料になりません。それでも取引を出す時点では、`gasLimit × maxFeePerGas + value` の残高が必要です。ウォレットの確認画面に出る「最大手数料」は、実際に引かれる額ではなく、この `gasLimit × maxFeePerGas` を指します。
@@ -159,12 +167,14 @@ Bitcoin にはこの 2 段の区別が無く、検証を通らない取引はブ
 実行の結果で何が分かれるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     E["ブロックの中で実行する"] --> Q{"トップレベルの実行"}
     Q -->|"成功"| S1["status 1<br/>EVM 実行による<br/>状態変更が残る"]
     Q -->|"失敗<br/>REVERT の伝播や gas 切れ"| S0["status 0<br/>EVM 実行による<br/>状態変更を取り消す"]
     S1 --> F["nonce を 1 進め<br/>消費した gas の分を支払う"]
     S0 --> F
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 取り消されるのは、EVM の実行中に生じた状態の変更です。`value` の移動も、コードが storage に書き込んだ分もここに入ります。失敗した取引で送った額は送り主に残り、消えるのは手数料の分だけということです。

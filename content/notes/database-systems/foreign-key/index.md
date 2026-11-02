@@ -14,6 +14,7 @@ weight: 8
 会員（`members`）と注文（`orders`）を例に、2 つの表の関係は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 erDiagram
     members ||--o{ orders : "member_id が参照する"
     members {
@@ -57,12 +58,14 @@ CREATE TABLE orders (
 制約を書かなかった場合、`member_id` はただの整数の列になります。DB は、その値が `members` の誰かを指しているかどうかを見ません。参照先の無い子の行は孤児レコードと呼ばれ、次の 2 つの経路で生まれます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     A["存在しない ID で INSERT<br/>member_id = 999"] --> O["孤児レコード<br/>参照先の無い注文"]
     B["親を DELETE<br/>会員 42 を削除"] --> O
     O --> C["INNER JOIN で消える"]
     O --> D["会員別の集計に入らない"]
     O --> E["注文から会員名を引けない"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 どちらの経路でも、`INSERT` や `DELETE` はエラーを返しません。制約が無いので、DB にとっては正常な書き込みです。孤児が生まれた瞬間には何も起きず、後から読む時に影響が出ます。
@@ -85,12 +88,14 @@ INSERT INTO orders (id, member_id, amount) VALUES (1001, 999, 3000);
 同じ `orders` を更新し得る経路は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["注文 API<br/>存在確認あり"] --> T[(orders)]
     B["夜間バッチ<br/>他社データの取り込み"] --> T
     C["管理者が手で流す SQL"] --> T
     D["Migration<br/>表の定義を変える一括処理"] --> T
     E["障害復旧の際の<br/>データ修正"] --> T
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で存在確認を行うのは注文 API だけです。経路が増えるたびに同じ検査を書き足す設計になり、書き足し忘れは構文の誤りではないので、DB が自動で止めることはありません。孤児が混ざった結果として返る行数の増減も、正常な結果と区別が付きません。
@@ -112,6 +117,7 @@ flowchart LR
 トランザクションは、まとめて成功か失敗かを決める書き込みのひとかたまりで、`COMMIT` で確定します。2 つのトランザクションが重なった時の順序は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 注文 API
     participant DB as DB
@@ -154,11 +160,13 @@ sequenceDiagram
 どれを選ぶかは、性能や書きやすさではなく、子の行が親なしで意味を持つかどうかで決まります。以下が判断の分かれ目です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     Q{"親が消えた後、子の行は<br/>単独で意味を持つか"}
     Q -->|"持たない<br/>注文と注文明細"| C["CASCADE<br/>親の一部として消す"]
     Q -->|"持つ<br/>会員と注文"| R["NO ACTION / RESTRICT<br/>消させない"]
     Q -->|"持つが参照は切って良い<br/>担当者と案件"| S["SET NULL<br/>参照だけ外す"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の注文明細は、注文 1 件に含まれる商品ごとの行です。注文が消えれば残す理由が無く、所有している側が消える時に一緒に消える関係なので `CASCADE` が合います。会員と注文は違い、退会しても過去の売上の記録として残す必要があります。案件から担当者への参照のように、相手が居なくなっても行そのものは残したい関係では `SET NULL` が合います。
@@ -193,10 +201,12 @@ flowchart TB
 DBMS によっては自動で作るものもあります。索引の有無で親の削除がどう変わるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     D["DELETE FROM members<br/>WHERE id = 42"] --> Q{"orders.member_id に<br/>索引があるか"}
     Q -->|"ある"| I["索引を引いて<br/>該当する注文を探せる"]
     Q -->|"無い"| S["orders を端から走査して<br/>member_id = 42 を探す"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の索引が無い経路では、子の表が大きくなるほど親を 1 行消す操作が重くなります。索引があっても、条件に一致する行が表の大部分を占める場合は走査が選ばれます。索引の構造は [B-Tree](../b-tree/) のノートで扱っています。

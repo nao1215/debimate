@@ -12,6 +12,7 @@ Shamir's Secret Sharing（SSS）は、1 つの Secret を n 個の Share に分�
 例えば、サービスの署名鍵を 1 台に置けば、その端末の故障で鍵を失います。鍵を 5 人全員にコピーすると、1 人分のコピーが漏洩しただけで鍵全体が知られます。`(3, 5)` の SSS は、2 個を失っても復元でき、漏れた Share が 2 個までなら Secret の候補を絞れない状態を作ります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     S["Secret"] --> T["(k, n) threshold scheme"]
     T --> A["Share 1"]
@@ -24,6 +25,7 @@ flowchart LR
     D --> J
     J -->|"k 個以上"| R["Secret を復元"]
     J -->|"k-1 個以下"| U["Secret を特定できない"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 この分岐は Share を持つ人の身元を判定しません。閾値以上の数の Share を集められる主体なら、正規の管理者でも攻撃者でも Secret を復元できます。
@@ -35,6 +37,7 @@ flowchart LR
 鍵の保管では、失わないことと漏らさないことを両立させる必要があります。1 か所だけに保管すると紛失に弱く、同じ鍵のコピーを増やすと漏洩の入口も増えます。ファイルを順番に切る方法では、1 個の断片から元データの一部がそのまま読めます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph O["1 か所だけ"]
         O1["Secret"] --> O2["故障すると復元不能"]
@@ -45,6 +48,7 @@ flowchart TB
     subgraph F["単純に分割"]
         F1["元データを切る"] --> F2["断片から一部が読める"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 SSS は、n-k 個までの紛失と k-1 個までの漏洩を別々に数えます。`(3, 5)` なら、5 か所のうち 3 か所から Share を回収できる可用性と、3 個未満の Share からは Secret の情報が得られない秘匿性を同時に持たせられます。
@@ -72,6 +76,7 @@ SSS では、dealer（Share の生成役）が次数 k-1 以下の多項式を�
 Share は多項式の断片ではなく、異なる x 座標で計算した点 `(x, q(x))` です。値の偏りを残さないため、以下は素数 13 で割った余りの世界で計算します。Secret を 4、残りの係数を 2 と 3 にすると、`q(x) = 4 + 2x + 3x^2 mod 13` です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     S["Secret 4"] --> A["a0 = 4"]
     R["一様な乱数"] --> B["a1 = 2<br/>a2 = 3"]
@@ -82,6 +87,7 @@ flowchart LR
     Q --> P3["(3, 11)"]
     Q --> P4["(4, 8)"]
     Q --> P5["(5, 11)"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 | Share | 計算 |
@@ -103,6 +109,7 @@ x 座標が異なる k 個の点があると、次数 k-1 以下で全ての点�
 ラグランジュ補間（Lagrange interpolation）は、集めた各点について「自分の x 座標では 1、ほかの x 座標では 0」になる基底多項式を作り、Share の y 値を掛けて足します。Secret だけが目的なら多項式の全係数を求めず、`x = 0` の値 `q(0)` を直接計算できます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant H as Share 保持者
     participant R as 復元処理
@@ -156,6 +163,7 @@ SSS が保証する範囲は、正しく生成された異なる Share の個数
 | k 個以上漏洩 | 攻撃者も Secret を復元できる |
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph I["SSS が定める範囲"]
         I1["Share の生成"]
@@ -168,6 +176,7 @@ flowchart LR
         O4["復元後の Secret の消去"]
     end
     I -.- O
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Share 保持者が誰なのかを確かめる処理は [Authentication](../authentication/) です。Share の配布先は Authorization（認可）や配布ポリシーで決め、配送経路と保存場所は別に保護します。
@@ -183,12 +192,14 @@ SSS には Share の改竄検出も含まれません。値を置き換えられ
 大きなファイルを SSS で直接分けると、元データと同程度の Share を n 個保管します。そのためファイルを共通鍵で暗号化し、小さな共通鍵だけを SSS で分ける構成があります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     F["ファイル"] --> E["共通鍵で暗号化"]
     K["共通鍵"] --> E
     E --> C["暗号文"]
     K --> S["SSS で鍵を分散"]
     S --> H["Share 1 … Share n"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 この構成では、ファイルの秘匿を暗号方式が担い、共通鍵の復元条件を SSS が担います。「[【TypeScript】ファイルを分割し、任意の分割ファイル数で復元できる nao1215/horcrux を作った話【分霊箱】](/post/ja/2025-10-05-typescript%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%82%92%E5%88%86%E5%89%B2%E3%81%97%E4%BB%BB%E6%84%8F%E3%81%AE%E5%88%86%E5%89%B2%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E6%95%B0/)」は、この組み合わせを実装した例です。

@@ -18,6 +18,7 @@ O/R マッパ（Object-Relational Mapper、オブジェクトと DB のテーブ
 例には、注文（`Order`）と、その中にある明細を使います。3 つの層が誰をどちらから参照しているかを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph APP["アプリケーション層"]
         U["ユースケース"]
@@ -34,6 +35,7 @@ flowchart TB
     U --> A
     I -. "インターフェースを満たす" .-> R
     I --> DB
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の点線が、実装とインターフェースの関係を表しています。インターフェースをドメイン層に置き、実装をインフラストラクチャ層に置くと、層をまたぐ実線はドメイン層に向かうものだけになります。ドメイン層は DB の存在を知らないまま「注文を保存する」と書け、SQL を書くコードはドメイン層を参照する立場に回ります。
@@ -49,6 +51,7 @@ flowchart TB
 Order 集約の中身と、そこに置かれた規則は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph AG["Order 集約"]
         R["Order（集約ルート）<br/>id = A-1<br/>payment = 代金引換<br/>lines = OrderLine の一覧"]
@@ -58,6 +61,7 @@ flowchart TB
         R --> L2
     end
     RULE["規則<br/>合計 19,000 円が<br/>代金引換の上限を超えない"] -. "検査できるのは Order だけ" .-> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の `sku` は SKU（Stock Keeping Unit、在庫管理の最小単位）で、在庫を数える単位ごとに振る番号です。同じ商品でも、色やサイズが違えば別の SKU になります。合計 19,000 円は、`unitPrice` と `quantity` を明細 2 件分だけ掛けて足した値です。
@@ -225,6 +229,7 @@ Evans 氏は、完全に構築された集約であるかのように見せる p
 更新と表示で経路を分けた構成は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["更新のユースケース"] --> R["Repository 実装"]
     R --> A["Order 集約"]
@@ -232,6 +237,7 @@ flowchart LR
     Q["表示のユースケース"] --> QS["照会サービス"]
     QS --> DB
     QS -. "表示用のデータを返す" .-> Q
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の実線は全て呼び出しの向きで、下の経路は集約を通らずに DB に届いています。照会サービスは表示に必要な列だけを SELECT し、集約ではないデータを返すため、明細を構築する処理が発生しません。この分割を明示的な設計として扱い、更新と照会で別のモデルを持つものが CQRS（Command Query Responsibility Segregation）です。ここでは Repository の限界として触れるだけで、CQRS 自体は [CQRS](../cqrs/) で扱います。

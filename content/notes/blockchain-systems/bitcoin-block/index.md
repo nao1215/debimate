@@ -16,6 +16,7 @@ Bitcoin のブロックは、発生した取引をまとめて 1 つに束ね、
 ブロック 2 つが繋がった様子を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart RL
     subgraph B2["ブロック N+1"]
         H2["ヘッダ<br/>直前のブロックのハッシュ<br/>ルートハッシュ など"]
@@ -26,6 +27,7 @@ flowchart RL
         D1["本体<br/>Tx0, Tx1, Tx2, ..."]
     end
     H2 -->|"ブロック N の<br/>ヘッダのハッシュを指す"| H1
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、各ブロックはヘッダと本体に分かれ、ヘッダの中の「直前のブロックのハッシュ」が 1 つ前のブロックを指します。この参照の繰り返しがチェーンを作ります。ヘッダのもう 1 つの項目であるルートハッシュは、本体の取引の並び全体を代表する値です。
@@ -41,6 +43,7 @@ Bitcoin には、履歴を管理する中央のサーバーがありません。
 順序が揃わないまま同じコインが 2 回使われた場合に、何が起きるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 支払う人
     participant X as 参加者 X
@@ -73,6 +76,7 @@ sequenceDiagram
 Alice が Bob に支払う取引が、作られてから履歴に載るまでの流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as Alice
     participant N as ネットワークの参加者
@@ -117,9 +121,11 @@ sequenceDiagram
 書き換えの影響が後ろに伝わる様子は以下の通りです。図の矢印は、ヘッダが持つ参照の向きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart RL
     B3["ブロック N+2"] -->|"一致"| B2["ブロック N+1"]
     B2 -.->|"不一致になる"| B1["ブロック N<br/>取引を 1 件書き換えた"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で、ブロック N の取引を書き換えるとブロック N のヘッダのハッシュが変わり、ブロック N+1 が持つ参照と一致しなくなります。繋がりを取り戻すには N+1 以降の全ヘッダの作り直しが必要で、ヘッダを 1 つ作り直すたびに proof of work もやり直しになります。後ろにブロックが積まれるほど、書き換えに必要な計算量が膨らみます。

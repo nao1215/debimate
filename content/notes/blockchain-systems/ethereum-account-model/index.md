@@ -16,6 +16,7 @@ weight: 13
 1 件の送金がアカウントの状態をどう書き換えるのかを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph S0["取引の前の状態"]
         A0["Alice<br/>残高 5 ETH<br/>nonce 7"]
@@ -27,6 +28,7 @@ flowchart LR
         B1["Bob<br/>残高 3 ETH<br/>nonce 0"]
     end
     S0 --> TX --> S1
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Bob のように受け取るだけのアカウントでは、nonce は動きません。送り主の残高からは、送る 1 ETH に加えて手数料も引かれます。手数料は、実行に要した計算量を gas という単位で計り、その量と単価から決まります。
@@ -59,6 +61,7 @@ Ethereum のアカウントには、利用者が秘密鍵で操作する EOA（E
 1 件の取引が 2 つのコントラクトに届くまでの流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant K as 利用者の秘密鍵
     participant E as EOA
@@ -107,6 +110,7 @@ nonce が制約するのは、同じ送り主が出した取引どうしの前�
 同じ送り主の 2 件を含む 2 通りの並びは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     subgraph OK["受け入れられる並び"]
         direction TB
@@ -116,6 +120,7 @@ flowchart TD
         direction TB
         N1["Alice nonce 4"] --> N2["Alice nonce 3"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の受け入れられる並びでは、Alice の 2 件の間に別の送り主の取引が入っています。受け入れられない並びの先頭にある nonce 4 は、その時点の Alice の nonce（3）と一致しないため、取引として有効になりません。
@@ -129,11 +134,13 @@ flowchart TD
 届いた取引の nonce と、送り主のアカウントの nonce を比べた結果の行き先は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     T["届いた取引の nonce"] --> Q{"アカウントの<br/>nonce と比べる"}
     Q -->|"一致する"| R["今なら有効に<br/>なり得る"]
     Q -->|"大きい"| W["まだ有効にならない<br/>多くのクライアントは保持する"]
     Q -->|"小さい"| N["使用済みの番号として拒否"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で「まだ有効にならない」に落ちた取引は、欠けた番号の取引が取り込まれた時点で有効になり得ます。
@@ -155,11 +162,13 @@ flowchart TD
 ブロックに入るのは状態そのものではありません。実行した後の状態と、そこから書かれる値の関係は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     T["ブロックの取引の並び"] --> X
     S0["世界状態 S<br/>ルートハッシュ 0xaa…"] --> X["取引を並び順に実行"]
     X --> S1["世界状態 S'<br/>ルートハッシュ 0xbb…"]
     S1 -.->|"ルートハッシュだけを書く"| H["execution payload の<br/>state_root"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の S' は各ノードが手元に保持し、ブロックに書かれるのは 1 つのルートハッシュだけです。公式ドキュメントでは、execution payload の `state_root` が「[root hash for the global state after applying changes in this block](https://ethereum.org/en/developers/docs/blocks/)」（このブロックでの変更を適用した後の、全体の状態のルートハッシュ）と説明されています。

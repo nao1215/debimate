@@ -18,10 +18,12 @@ Feature Flag が効果的なのは、デプロイとリリースを別のタイ�
 1 つのデプロイ済みビルドから、Off と On でユーザーに見えるものが変わる様子を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     B["1 つのビルド<br/>（デプロイ済み）"] --> F{"Feature Flag"}
     F -->|Off| U1["ユーザーに見えるのは<br/>これまでの決済処理"]
     F -->|On| U2["ユーザーに見えるのは<br/>新しい決済処理"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Off の分岐にこれまでの実装を置く方針は、Hodgson 氏が勧めています。この方針に揃えておくと、全ての組み合わせではなく、本番で使う予定の構成と、問題が起きたときの切り戻し先を重点的に検証できます。
@@ -35,6 +37,7 @@ Off の分岐にこれまでの実装を置く方針は、Hodgson 氏が勧め�
 デプロイとリリースを 1 つの操作として扱う設計も、同じ弱さを抱えます。切り戻しが前のビルドの再デプロイになり、直前まで動いていた別の変更まで巻き戻ります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph L["長寿命ブランチで統合する形"]
         direction LR
@@ -46,6 +49,7 @@ flowchart LR
         C1["未完成のコード"] --> Fl["Feature Flag<br/>を Off にする"]
         Fl --> M2["main に<br/>毎日統合"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の右では、未完成のコードを Off の分岐に閉じ込められる限り、統合を先送りせずに済みます。代わりに、ユーザーにはまだ公開していないコードパスも本番環境に載ることになります。切り戻しの速さは値の置き場所で変わり、Feature Flag の値を外部の設定サービスから取得する構成なら、値の変更だけで切り替えられます。値をリポジトリで管理する構成なら、変更の反映には再デプロイが必要です。
@@ -61,6 +65,7 @@ flowchart LR
 設定値を直接読む形と、Toggle Router を挟んだ形は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph N["Toggle Router が無い場合"]
         direction LR
@@ -75,6 +80,7 @@ flowchart LR
         D3["返金処理"] --> TR2
         TR2 --> Cfg2[("設定値")]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の左では、判断のロジックを変えるたびに設定値を読む箇所を全部たどり直すことになり、1 箇所の漏れに気付きにくくなります。
@@ -117,11 +123,13 @@ After の Checkout は、`new-checkout` という flag の名前や、その値�
 Toggle Router が判断に使うのは、flag の状態を決める Toggle Configuration と、ユーザー ID のように判断に添える Toggle Context です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     TP["Toggle Point<br/>分岐させる箇所"] --> TR["Toggle Router<br/>判断の中身"]
     TC["Toggle Configuration<br/>flag の状態を決める設定"] --> TR
     CX["Toggle Context<br/>ユーザー ID などの情報"] --> TR
     TR -- "On / Off" --> TP
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Toggle Router は、両方から判断を組み立てます。設定だけで決まる flag なら Toggle Context は空で構いません。
@@ -133,6 +141,7 @@ flowchart LR
 Hodgson 氏が整理しているのは、Toggle Point・Toggle Router・Toggle Context という設計と運用の概念です。評価をどう呼び出すかという、ベンダーに依存しない共通の API までは定めていません。そこを定めているのが [OpenFeature](https://openfeature.dev/) で、Feature Flag の評価についてベンダー非依存の仕様を置いています。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     App["アプリケーション"] --> EA["Evaluation API"]
     EC["Evaluation Context"] --> EA
@@ -141,6 +150,7 @@ flowchart LR
     Pr --> FM["Feature Flag<br/>管理システム"]
     EA --> R["評価結果"]
     DV -. "異常時はこれが評価結果になる" .-> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 アプリケーションが呼ぶ入口が Evaluation API、判断に添える情報が Evaluation Context です。Feature Flag 管理システムとの接続を受け持ち、flag の値を解決する境界が Provider です。
@@ -171,6 +181,7 @@ Feature Flag は、どれくらい長く残るかと、実行中にどれくら�
 Toggle Configuration の置き場所は、変更が反映されるまでの単位を決めます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     S["Toggle Configuration<br/>の置き場所"] --> P1["ビルド時に固定<br/>（コード内の定数）"]
     S --> P2["起動時に読む<br/>（設定ファイル）"]
@@ -178,6 +189,7 @@ flowchart LR
     P1 --> E1["反映は再ビルド後"]
     P2 --> E2["反映は再起動後<br/>（配置形態によっては再デプロイ）"]
     P3 --> E3["反映は即時"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Hodgson 氏は、flag の性質が許すならソース管理に置いて再デプロイで変える形を勧めています。リリースごとの Toggle Configuration が固定される分、検証すべき構成が減るからです。即座の再設定が必要なのは Ops Toggle のような一部です。

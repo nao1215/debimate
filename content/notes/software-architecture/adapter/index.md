@@ -18,6 +18,7 @@ Adapter は「複数のコンテナにまたがって出力とインターフェ
 論文とブログが挙げる監視の例を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph U1["実行単位 1"]
         A1["アプリ A<br/>JMX"] --> D1["adapter"]
@@ -31,6 +32,7 @@ flowchart LR
     D1 --> M["監視基盤"]
     D2 --> M
     D3 --> M
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の監視基盤が知っているのは 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。JMX（Java Management Extensions）は Java の管理と監視のための仕様で、アプリケーションが登録した情報を外から読み書きする窓口です。
@@ -54,6 +56,7 @@ Ambassador との違いは、単純化して見せる相手にあります。論
 変換をアプリケーションの外に出さず、監視基盤の中に持たせる方法もあります。その場合に何が起きるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph M["監視基盤"]
         C1["A 用の変換コード"]
@@ -63,6 +66,7 @@ flowchart LR
     A1["アプリ A<br/>JMX"] --> C1
     A2["アプリ B<br/>StatsD"] --> C2
     A3["アプリ C<br/>独自の形式"] --> C3
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図では、変換のコードが監視基盤の中に集まっています。アプリケーションが 1 つ増えるたびに監視基盤に手を入れることになり、変換の誤りが監視基盤そのものを壊す位置に置かれます。論文にも、既存の監視ソリューションには複数種類のバックエンドと通信できるものがあるものの、監視システム自身の中にアプリケーション固有のコードを持つので、関心の分離がきれいに保たれないと書かれています。
@@ -96,6 +100,7 @@ Prometheus はメトリクスを取りに来て蓄える監視基盤で、[公�
 以下が取りに来る形での往復です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant M as 監視基盤
     participant D as adapter

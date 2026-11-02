@@ -16,10 +16,12 @@ Strangler Fig は、古いシステムの外側に新しいシステムを作り
 このチームは最初の一歩として、モノリスの手前に要求を振り分ける入口を置けます。この移行用の入口は、以降ではファサード（façade）と呼びます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C[クライアント] --> F[ファサード]
     F -->|"GET /orders/{id}/invoice"| N["請求サービス<br/>（新システム）"]
     F -->|その他の要求| L["注文管理のモノリス<br/>（レガシーシステム）"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 請求サービスは同じ URL と応答の形で答えるので、クライアントからは、どちらのシステムが応答したのかが分かりません。請求の後も同じように機能を移し、モノリス宛ての要求と、ファサードを通らない依存（モノリスの中の関数呼び出しや、モノリスの DB を直接読む他のシステム）が無くなった時点で、モノリスを止められます。
@@ -48,6 +50,7 @@ flowchart LR
 レガシーシステムの機能を新システムで全て作り直し、ある日に一斉に切り替える進め方をビッグバン移行と呼びます。作り直しの間もレガシーシステムは業務で使われるので、税率の変更や不具合の修正が入り続けます。新システムはその変更も取り込み続けなければならず、完成の日が遠ざかります。切替日までは、新システムの成果は利用者に 1 つも届きません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph B["ビッグバン移行"]
         direction LR
@@ -60,6 +63,7 @@ flowchart LR
         S2 --> S3["レガシーシステムを<br/>止める"]
         S1 -.->|問題が出たら| R1["請求の<br/>切り替えを戻す"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Strangler Fig でも、新旧が DB を共有していれば、その DB を通じて影響は移した機能の外にも広がり得ます。
@@ -90,12 +94,14 @@ Strangler Fig でも、新旧が DB を共有していれば、その DB を通�
 ファサードは、届いた要求の中身を見て、送り先をレガシーシステムと新システムから選びます。送り先は、パスとメソッドのほか、ヘッダーやテナント（1 つのシステムを共有して使う顧客の単位。会社など）で決めたり、利用者の一定の割合だけを新システムに送ったりして選べます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     R[要求] --> P{"請求書の<br/>経路か"}
     P -->|いいえ| L[レガシーシステム]
     P -->|はい| T{"対象の<br/>テナントか"}
     T -->|いいえ| L
     T -->|はい| N[新システム]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 振り分けの規則に書いていない経路は、今まで通りレガシーシステムが受けます。割合で分ける時は、利用者 ID から送り先を計算するなど、同じ利用者が要求ごとに新旧を行き来しない分け方を選びます。行き来すると、同じ請求書の表示が画面を開くたびに変わって見えることがあります。
@@ -105,6 +111,7 @@ flowchart LR
 ファサードが振り分けられるのは、ファサードを通る要求だけです。システムの間を伝わる更新を途中で受け取り、その一部を新しい部品に回すやり方は [Event Interception](https://martinfowler.com/articles/patterns-legacy-displacement/event-interception.html) と呼ばれ、HTTP の要求のほか、メッセージ基盤や CDC（Change Data Capture。DB の変更ログを順に読み、確定した変更を外に流す仕組み）も受け取る場所になります。一方、注文の確定処理が請求書を作る関数を直接呼んでいる場合は、途中で受け取れる場所がありません。この場合は、呼び出し側のコードを変えて、注文が確定したことを外に知らせるようにします。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant F as ファサード
     participant L as レガシーシステム
@@ -161,6 +168,7 @@ sequenceDiagram
 素朴には、1 つの要求を処理する中で 2 つの DB に順に書けば済むように見えます。このやり方を二重書き込み（dual write）と呼びます。2 つの書き込みは、通常は 1 つのトランザクションとして確定できません。以下は、同じ請求書の金額を 2 本の要求がほぼ同時に変え、書き込みが割り込んだ場合の一例です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 要求 A の処理
     participant B as 要求 B の処理
@@ -178,11 +186,13 @@ sequenceDiagram
 どちらの値が正しいか分からなくなる状態を避けるには、書き込みを受け付ける所有者を 1 つに定め、もう一方の DB には所有者で確定した変更を後から流します。流す手段には、CDC や、後で送るメッセージを変更と同じトランザクションで書いておく [Transactional Outbox](../../distributed-systems/transactional-outbox/) があります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A[請求書を扱う処理] -->|書き込み| O[("所有者である DB")]
     O --> T["変更を流す<br/>CDC または Outbox"]
     T -->|"同じ変更が<br/>2 回届き得る"| R[冪等な受け手]
     R --> P[("もう一方の DB")]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 受け手は[冪等](../../distributed-systems/idempotency/)（同じ変更を何回適用しても、1 回適用した時と結果が同じになる性質）にしておきます。再送や受け手の並列処理で後の変更が先に届くこともあり、この入れ替わりは冪等にしても防げません。対策の例は、所有者で請求書ごとに更新番号を振り、受け手が最後に適用した番号より古い変更を捨てる方法です。この方法は、変更が「金額を 1,500 円にする」のように変更後の値を運ぶ場合に使えます。「300 円増やす」のような差分を運ぶ変更では、古い変更を捨てると、その差分が失われます。
@@ -230,6 +240,7 @@ Azure の例との違いは 2 つあります。1 つは、二重書き込みを
 1 つの機能を移す時は、戻す操作が軽い段階から順に進めます。最初に置く並行稼働（Parallel Run）は、新旧に同じ入力を処理させて結果を比べるやり方で、Sam Newman 氏の書籍『モノリスからマイクロサービスへ』にも名前が出てきます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph R["規則を戻せば以降の要求はレガシーシステムに届く"]
         direction LR
@@ -243,6 +254,7 @@ flowchart TB
         P5["旧データを<br/>削除"]
     end
     R --> D --> X
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 ファサードが要求を複製して並行稼働する場合、利用者にはレガシーシステムの応答を返し、新システムの応答は比較の記録にだけ使います。更新の経路を複製すると、新システムも請求書を発行し、通知のメールが 2 通出るような副作用が起き得るので、複製するのは主に参照の経路です。ただし GET でも、照会の度に最終アクセス時刻を書き換える、外部の API を呼ぶといった処理は動きます。

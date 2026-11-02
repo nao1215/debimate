@@ -14,10 +14,12 @@ Authentication（認証）は、アクセスしてきた相手が、登録済み
 本記事では、Web アプリケーションが自分の利用者を認証する場合を説明します。組織をまたいで認証結果を受け渡す SAML や OpenID Connect の詳細には踏み込みません。1 回のログインで何が起きるかを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     R["登録<br/>利用者と authenticator を<br/>結び付ける"] --> P["提示<br/>authenticator を使う"]
     P --> V["検証<br/>登録済みのものかを確かめる"]
     V --> S["結果の持ち回り<br/>以降の要求に認証結果を運ぶ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の登録が、後の全ての判断の土台になります。ここで結び付ける相手を誤ると、以降の検証をどれだけ厳密にしても別人を通し続けます。
@@ -31,6 +33,7 @@ Password による認証では、届いた文字列と保存済みの値を突�
 どう保存しても、比べているのは届いた値だけです。送ってきたのが登録した利用者なのか、その値を手に入れた別の相手なのかは区別できません。盗まれた Password が使われた時に、サーバーから何が見えるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant U as 利用者
     participant S as サーバー
@@ -70,11 +73,13 @@ authenticator は、何を根拠に本人だと見なすかで整理できます
 MFA（Multi-Factor Authentication、多要素認証）は、異なる要素を 2 つ以上そろえないと通らないようにする考え方です。認証の保証水準（AAL、Authentication Assurance Level）を 3 段に分けた 2 段目の AAL2 も、異なる 2 つの要素の保持と制御を安全な認証プロトコルで証明することを要件の 1 つに置いていると[同じ指針](https://pages.nist.gov/800-63-4/sp800-63b.html)は述べています。要素を重ねると何が変わるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     L["Password だけが漏洩"] --> Q{"追加の要素を<br/>要求しているか"}
     Q -->|"していない"| N["そのままログインできる"]
     Q -->|"している"| M["端末や鍵も必要になる"]
     M -.- R["利用者に入力させて<br/>その場で中継する経路は残る"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で MFA が塞いでいるのは、漏洩した値だけで通る経路です。攻撃者が偽サイトを用意して確認コードをその場で本物のサーバーに中継する経路と、認証を通した後に発行された値を盗む経路は残ります。後の経路は「持ち回る値は、持っている相手をそのまま通す」で扱います。
@@ -90,6 +95,7 @@ HTTP の要求は 1 本ずつ独立しているので、要求のたびに authe
 そのため、1 回の認証の結果を表す値を発行し、以降の要求ではその値を提示させる形が広く使われます。ログインから以降の要求までの流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント
     participant S as サーバー
@@ -127,6 +133,7 @@ Session ID は左の列の代表で、Cookie で運ぶ構成が広く使われ�
 値が漏れた時に何が起きるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant U as 利用者
     participant S as サーバー
@@ -155,6 +162,7 @@ sequenceDiagram
 攻撃者から見ると、この復旧の経路も入口の 1 つです。ログインの経路と復旧の経路のどちらでも試せる状況では、アカウントの強さは弱い方の経路に引き寄せられます。以下が 2 つの経路です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph N["通常のログイン"]
         L["中継に強い方式<br/>Passkey など"]
@@ -168,6 +176,7 @@ flowchart LR
     M --> AC
     Q --> AC
     C --> AC
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の復旧の経路に並べた 3 つは、どれも通常のログインとは別の材料で通ります。メールの確認コードで復旧できるなら、そのアカウントの強さはメールアカウントの強さに寄りかかります。秘密の質問は、知識に頼る弱い例として置いています。答えは公開情報や過去の漏洩から推測できてしまいます。
@@ -198,6 +207,7 @@ Authorization（認可）は、その相手にその操作を許すかどうか�
 ログイン画面と照合の処理だけを Authentication として扱うと、ここまでで見た穴がその外側に残ります。以下が設計の対象になる範囲です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     A["登録<br/>誰と authenticator を結び付けるか"] --> B["提示と検証<br/>どの要素をいくつ求めるか"]
     B --> C["結果の持ち回り<br/>記録を引くか値だけで検証するか"]
@@ -205,6 +215,7 @@ flowchart TB
     D --> E["復旧<br/>新しい authenticator を<br/>結び付け直す"]
     E --> A
     C -.- F["認可は別の判断<br/>資源ごとに所有者を確かめる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図は、冒頭で見た 1 回のログインの流れに、失効と復旧を足した形です。復旧から登録に線が戻るのは、復旧が新しい authenticator を結び付け直す処理だからです。そこを登録の内容を追認するだけの手順にすると、最も通りやすい入口になります。点線で外した認可は、通った相手に何を許すかの判断なので、この流れとは別に設計します。

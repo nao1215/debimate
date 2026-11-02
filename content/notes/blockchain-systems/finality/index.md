@@ -14,10 +14,12 @@ finality（ファイナリティ、確定性）は、一度確定したと扱っ
 本記事では、アプリケーションが取引をいつ確定済みとして扱えるのかを説明します。1 件の取引が通る段階と、3 つのタグの対応は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     M["mempool にある<br/>どのブロックにも入っていない"] --> L["ブロックに入った<br/>ブロックタグ latest"]
     L --> S["一定の仮定の下では<br/>組み替わらない<br/>ブロックタグ safe"]
     S --> F["覆らないと扱える<br/>ブロックタグ finalized"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 `latest` を読むコードは最も早く反応できます。その代わり、読んだ内容が覆る確率も最も高くなります。1 件の送金がどの段階を通るのかは、[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で追っています。
@@ -29,6 +31,7 @@ flowchart LR
 最新のブロックだけを見て入金を判定すると、次の流れで商品を失います。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant U as 購入者
     participant P as アプリケーション
@@ -48,12 +51,14 @@ sequenceDiagram
 ブロックが外れる典型的な例は、複数のマイナーがほぼ同時にブロックを作り、チェーンの末尾が一時的に 2 本に分かれた場合です。分かれた直後は、どちらの列も規則を満たしています。各参加者は、積まれた計算量が最も大きい列を canonical chain（正しい履歴として扱う列）に選び、選ばれなかった側のブロックは列から外れます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["ブロック N-1"] --> B["ブロック N<br/>取引を含む"]
     A --> C["ブロック N'"]
     C --> D["ブロック N'+1"]
     D --> E["ブロック N'+2<br/>この列が canonical chain になる"]
     B -.->|"canonical chain に<br/>選ばれなかった列"| Z["取引はブロックから外れる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 この差し替えを reorg（chain reorganization、チェーンの組み替え）と呼びます。[Bitcoin Block](../bitcoin-block/) が「巻き戻り」と呼んでいるのは、reorg で取引がブロックから外れる現象です。
@@ -73,6 +78,7 @@ Bitcoin には、この取引はもう覆らないと宣言する仕組みがあ
 正直なマイナーは、規則どおりにブロックを作り、見つけたらすぐ公開する参加者です。やり直しが間に合うのは、攻撃者が公開せずに伸ばした列が、その列に追い付いた時です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant H as 正直なマイナー
     participant R as 受け取る側
@@ -121,6 +127,7 @@ Ethereum のバリデータ（validator）は、ether をプロトコルに預�
 checkpoint は 2 段階で確定します。投票は 1 つの checkpoint を指すのではなく、既に justified な checkpoint を起点として次の checkpoint へ張る形で行い、預けられた ether の 2/3 が同じ組に投票すると、張られた先が justified になります。その先へもう 1 本張られた時点で、起点だった checkpoint が finalized に変わります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     [*] --> 投票待ち: epoch の境界のブロックとして作られる
     投票待ち --> justified: justified な checkpoint から<br/>2/3 の投票が張られる
@@ -132,11 +139,13 @@ stateDiagram-v2
 ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。確定が投票より 1 epoch 遅れるのは、2 段階を踏むためです。末尾の checkpoint は justified までしか進めず、finalized に届くのは次の epoch の投票が集まってからです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C1["checkpoint<br/>epoch N"] -->|"supermajority link<br/>2/3 の投票"| C2["checkpoint<br/>epoch N+1"]
     C2 -->|"同じ投票が張られる"| C3["checkpoint<br/>epoch N+2"]
     C1 -.->|"上に justified が積まれた"| F1["epoch N は finalized"]
     C2 -.->|"上に justified が積まれた"| F2["epoch N+1 は finalized"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 finalized な checkpoint と矛盾する別の checkpoint を finalized にするには、2/3 の投票が 2 つ要ります。2 つの 2/3 は必ず 1/3 以上重なるので、預けられた ether の 1/3 以上を占めるバリデータが、処罰の対象になる投票を証拠として残します。これが [Casper FFG](https://arxiv.org/abs/1710.09437) の accountable safety で、矛盾する finality が成立した時には、預けられた ether の少なくとも 1/3 が失われます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
@@ -183,11 +192,13 @@ Casper FFG が証明しているのは、accountable safety と plausible livene
 その 2/3 が集まらない状態から抜け出す手段も、同じ論文が inactivity leak として示しています。Ethereum では finality の遅れが 4 epoch を超えると leak に入り、多数派の列に投票していないバリデータの残高が減っていきます。投票している側が残りの ether の 2/3 を占めるところまで減らす仕組みです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["2/3 の投票が集まり<br/>finalize が進む"] --> B["投票が 2/3 に届かず<br/>finalize が止まる"]
     B --> C["止まったまま<br/>4 epoch を超える"]
     C --> D["inactivity leak が動き<br/>多数派の列に投票していない<br/>バリデータの ether が減る"]
     D --> A
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 finality が進まなくても、ブロックの生成自体は続けられます。その間に進まなくなるのは `finalized` を待つアプリケーションで、`latest` だけを見ているコードは finalize の停止に気付きません。
@@ -199,6 +210,7 @@ finality が進まなくても、ブロックの生成自体は続けられま�
 確認数の閾値は、チェーンではなくアプリケーションが決めます。判断の出発点は、覆った時の損失をそのまま受け入れられるかどうかです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     A{"覆った時の損失を<br/>そのまま受け入れられるか"} -->|"受け入れられる"| B["ブロックに入った時点で進める"]
     A -->|"受け入れられない"| C{"渡したものを<br/>後から取り戻せるか"}
@@ -206,6 +218,7 @@ flowchart TD
     C -->|"取り戻せない"| E{"失う額は攻撃者が<br/>払うコストを上回るか"}
     E -->|"下回る"| F["自然な組み替えが収まる<br/>確認数まで待つ"]
     E -->|"上回る"| G["finalized か<br/>より深い確認数まで待つ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 攻撃コストを問うのは、分岐の最後です。攻撃者がいなくても、複数のマイナーが同時にブロックを作れば組み替えは起きます。
@@ -225,6 +238,7 @@ flowchart TD
 2 つのチェーンをまたいで資産を移す bridge も、同じ判断をプログラムとして下しています。source chain（送り出す側のチェーン）で資産が預けられたことを確かめてから、destination chain（受け取る側のチェーン）で対応する資産を発行します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant S as source chain
     participant B as bridge

@@ -16,10 +16,12 @@ proof of work（作業証明）は、条件を満たすハッシュ値の提示�
 Bitcoin では、ブロックが有効な候補として受け入れられるには proof of work を満たす必要があります。ブロックの候補を作り、合格のハッシュを探す参加者をマイナー（miner）と呼びます。マイナーと他の参加者の関係を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     M["マイナー<br/>候補を作り<br/>proof of work を試行"] -- 候補を配る --> A["参加者 A<br/>検証して受け入れ"]
     M -- 候補を配る --> B["参加者 B<br/>検証して受け入れ"]
     M -- 候補を配る --> C["参加者 C<br/>検証して受け入れ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、マイナーは候補をネットワークに配るだけで、受け取った各参加者が proof of work と他の規則を検証し、有効なら自分の列に受け入れます。権利を配る主体は居ません。ここで説明するのは Bitcoin の proof of work で、ブロックとヘッダの構造は [Bitcoin Block](../bitcoin-block/) の内容を前提にします。採掘用ハードウェアの詳細や報酬の経済性には触れません。
@@ -31,11 +33,13 @@ Bitcoin のブロックは、取引の並びを全参加者で共有するため
 マイナーは、ヘッダの中の nonce という値を変えながらハッシュを計算し、決められた上限（target）を下回る値が出るまで繰り返します。作業の全体は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     H["ヘッダを組む<br/>（nonce を含む）"] --> S["SHA-256 を 2 回適用"]
     S --> J{"target 以下?"}
     J -->|いいえ| N["nonce を変える"] --> S
     J -->|はい| B["ブロックを<br/>ネットワークに配る"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の試行の繰り返しが採掘（マイニング）で、合格のハッシュが出た時点で、ブロックを有効な候補としてネットワークに配れます。受け取った参加者は、proof of work に加えて取引の中身も検証してから、ブロックを自分の列に受け入れます。
@@ -49,9 +53,11 @@ flowchart LR
 この期待作業量は、実際に実行された計算の回数ではありません。実際の回数と、ネットワークが評価する量の関係は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     M["実際の採掘<br/>1 回で当たることも<br/>100 億回掛かることもある"] --> V["ネットワークから確認できるもの<br/>ヘッダと合格したハッシュ<br/>外れた試行の履歴は残らない"]
     V --> E["target から期待作業量を求め<br/>ブロックごとに足し上げる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、各参加者はブロックヘッダと合格したハッシュを確認できるものの、そこまでに何回失敗したかは分かりません。そこで、各ブロックの target から期待作業量を求め、ブロックごとに足し上げた累積が列を比較する基準になります。Bitcoin Core が列の比較に使う chainwork も、この累積で、実行された SHA-256 の回数の記録ではありません。
@@ -63,6 +69,7 @@ flowchart TD
 数え方の違いで何が起きるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     subgraph V1["参加者の数で数える場合"]
         A1["攻撃者"] --> F1["偽の参加者を大量に用意"]
@@ -72,6 +79,7 @@ flowchart TD
         A2["攻撃者"] --> F2["参加者を装っても<br/>ハッシュ計算能力は増えない"]
         F2 --> W2["履歴を速く伸ばすには<br/>実際の計算資源が必要"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の右側では、ブロックを見付ける機会がハッシュ計算能力に紐付いています。偽の参加者を増やしてもハッシュ計算能力は増えないため、履歴を伸ばす力は増えません。ハッシュ計算能力を増やすには現実の計算資源とそれを動かすコストが必要なため、票の偽造に実費が掛かります。安全の根拠が、参加者の身元ではなく物理的な資源の消費に置き換わっています。
@@ -150,12 +158,14 @@ nonce は 4 バイトなので、全て試しても約 43 億通り（2^32 通�
 以下が調整の繰り返しです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     B["2,016 ブロックの<br/>生成時間を実測"] --> C{"2 週間より<br/>短い?"}
     C -->|"短い（速すぎ）"| D["target を小さくして<br/>条件を厳しく"]
     C -->|"長い（遅すぎ）"| E["target を大きくして<br/>条件を緩く"]
     D --> F["次の 2,016 ブロック"] --> B
     E --> F
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の実測に使う時刻は、マイナーが申告するヘッダの時刻です。全参加者が同じヘッダの列から同じ規則で次の target を計算できるため、難易度の調整に管理者は必要ありません。申告された時刻をどこまで信用するか、偽装にどう耐えるかの検証規則は、ここでは扱いません。[Bitcoin Block](../bitcoin-block/) のノートで「条件の厳しさは自動で調整される」と書いた仕組みの中身が、この 2,016 ブロックごとの再計算です。
@@ -171,6 +181,7 @@ flowchart LR
 攻撃者が背負う競争は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph HN["正直なマイナー"]
         R["平均およそ 10 分に 1 個<br/>積み続ける"]
@@ -179,6 +190,7 @@ flowchart LR
         W["ブロック N から<br/>proof of work をやり直す"] --> X["正直な列より<br/>累積期待作業量を大きくする"]
     end
     X -.過半数未満なら<br/>長期的には不利.-> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の競争で、攻撃者のハッシュ計算能力が過半数未満でも、運が続けば一時的に追い付くことはあり得ます。ただし、取引の上に積まれたブロックが増えるほど、追い付くために必要な幸運は大きくなります。白書も、追い付くべきブロック数が増えるほど攻撃者の成功確率は指数的に下がると分析しています。

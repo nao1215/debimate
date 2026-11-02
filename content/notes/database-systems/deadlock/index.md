@@ -16,6 +16,7 @@ Deadlock（デッドロック）は、2 本以上のトランザクションが�
 前提を 1 つ置きます。行を更新すると DBMS（Database Management System）はその行にロックを取り、通常はトランザクションが終わるまで解放しません。1 行目を更新した後に 2 行目を待っている間も、1 行目は握ったままです。2 本が同じ 2 行を逆の順で触った場合は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 送金 A
     participant R1 as 口座 1 の行
@@ -41,6 +42,7 @@ sequenceDiagram
 待ちが起きてから処置に至るまでの段は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     W["ロック待ちが発生"] --> T["deadlock_timeout まで待つ"]
     T --> U{"その前に<br/>ロックを取得できたか"}
@@ -49,6 +51,7 @@ flowchart LR
     C -->|"無い"| H["ロックの解放を待つ"]
     C -->|"ある"| K["1 本を中止"]
     K --> R["呼び出し側が再試行"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の検査は、待つたびに走るわけではありません。PostgreSQL で検査の契機になるのは、待ち時間が `deadlock_timeout` を超えた時です。[ドキュメント](https://www.postgresql.org/docs/current/runtime-config-locks.html)は、検査のコストが高いため一定時間待ってから調べる設計だと説明し、既定を 1 秒としています。その前にロックを取得できた待ちは、検査に掛からないまま終わります。循環が見付からなければ、そのままロックの解放を待ちます。
@@ -146,6 +149,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 1 つのトランザクションが取るロックの内訳は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     T["トランザクションが取るロック"] --> A
     T --> B
@@ -156,6 +160,7 @@ flowchart LR
         F["外部キーの検査が触る行"]
         G["索引レコードの隙間<br/>InnoDB の場合"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の下側は、書いた SQL の並べ替えからは順序を制御しにくい部分です。外部キーの検査は、子側の `INSERT` と `UPDATE` に加えて、親側の `DELETE` と親キーの `UPDATE` でも走ります。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)は、制約の検査が必要な操作が、検査のために見た行に共有のレコードロックを設定すると書かれています。

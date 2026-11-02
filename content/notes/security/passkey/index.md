@@ -14,6 +14,7 @@ Passkey は、手元の端末（Authenticator）が管理する秘密鍵をサ�
 2 つの方式で、どこに何が置かれるのかを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph P["Password 認証"]
         U1["User<br/>password を覚える"] -- "password を送る" --> S1["Server<br/>password hash を保存"]
@@ -21,6 +22,7 @@ flowchart TB
     subgraph K["Passkey"]
         A["Authenticator<br/>秘密鍵を保持"] -- "署名を送る" --> S2["Server<br/>公開鍵を保存"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Passkey では、秘密鍵が Authenticator の管理下に留まり、サーバーに渡るのは署名です。秘密鍵で作った署名は、対になる公開鍵で検証できます。公開鍵から秘密鍵を導くことはできないため、検証する側は署名を作れません。
@@ -44,12 +46,14 @@ Password 認証が前提にしているのは、利用者とサーバーが同�
 同じ文字列が届き得る先は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     U["User"] -- "password" --> S["本物の Server"]
     U -- "password" --> F["偽サイト"]
     U -- "同じ password" --> O["別のサービス"]
     S -.- SN["漏洩すると<br/>hash から推測される"]
     F -.- FN["そのまま本物に<br/>使い回される"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の偽サイトに向かう経路が phishing です。利用者が相手のドメインを見誤ると、認証に必要な材料がそろった形で攻撃者に渡ります。別のサービスに同じ文字列を使い回していれば、1 か所の漏洩が他のサービスに波及します。
@@ -75,6 +79,7 @@ Authenticator には、端末に組み込まれた Platform Authenticator と、
 以下が主体とプロトコルの関係です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     RP["Relying Party<br/>challenge の生成と検証"] -- "HTTPS" --> P["Web ページのスクリプト"]
     P -- "WebAuthn API" --> B["Client<br/>ブラウザ・OS"]
@@ -84,6 +89,7 @@ flowchart LR
     RA -- "署名" --> B
     B -- "assertion" --> P
     P -- "HTTPS" --> RP
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の WebAuthn は、Web ページのスクリプトが Client を呼び出すための API です。Client と Roaming Authenticator の間は CTAP（Client to Authenticator Protocol）で繋がります。Platform Authenticator には端末の中の仕組みで繋がるので、CTAP を通るとは限りません。
@@ -99,6 +105,7 @@ FIDO Alliance は、この 2 つの標準について「[The same standards, com
 登録は、サーバーが 1 回限りの乱数である challenge を作る所から始まります。ブラウザは `navigator.credentials.create()` を呼び、Authenticator が鍵ペアを作ります。図には RP ID と clientDataJSON も出てきます。前者は資格情報を紐づける対象を表す識別子、後者は Client が組み立てる要求のデータです。登録の流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant S as Relying Party
     participant B as Client
@@ -130,6 +137,7 @@ Authenticator に渡るのは clientDataJSON のハッシュで、origin その�
 認証でも、始まりはサーバーが作る challenge です。ブラウザは `navigator.credentials.get()` を呼び、Authenticator は登録済みの秘密鍵で署名を作ります。認証の流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant S as Relying Party
     participant B as Client
@@ -167,6 +175,7 @@ signCount は、対応する Authenticator が実装している場合に、認�
 Passkey が phishing に強いのは、利用者ではなく Client が、要求された RP ID と呼び出し元の origin を照合するからです。判断の材料になるのは、利用者が読む画面の見た目ではありません。偽サイトが Passkey を要求した場合に何が起きるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     F["偽サイト<br/>origin: examp1e.com"] --> B["Client"]
     B --> C{"要求された RP ID は<br/>origin に対応するか"}
@@ -175,6 +184,7 @@ flowchart TB
     A --> D{"その RP ID の鍵はあるか"}
     D -->|"無い"| X["署名しない"]
     D -->|"有る"| Z["偽サイト用の鍵で署名<br/>本物のサイトでは通らない"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の分岐は 2 段に分かれます。Client は、スクリプトが指定した RP ID が呼び出し元の origin に対応することを確かめ、対応しない RP ID を渡された要求を拒否します。偽サイトが本物のドメインを RP ID として名乗っても、ここで止まります。
@@ -212,10 +222,12 @@ User Presence は、セキュリティキーに触れるような単純な操作
 WebAuthn の資格情報は、credential ID の指定が必要かどうかで 2 通りに分かれます。以下が 2 つの性質です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     W["WebAuthn の資格情報"] --> N["Non-discoverable Credential<br/>credential ID を<br/>allowCredentials で渡す必要がある"]
     W --> DC["Discoverable Credential / Passkey<br/>credential ID の指定なしでも<br/>RP ID から発見できる"]
     DC -.- DN["credential ID を指定した<br/>認証にも使える"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 W3C の仕様は Discoverable Credential について「[usable in authentication ceremonies where the Relying Party does not provide any credential IDs](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential)」（Relying Party が credential ID を 1 つも渡さない認証で使える）と定義しています。
@@ -241,12 +253,14 @@ BE は作成時に決まり、後から変わりません。仕様には「[A ba
 BS は現在の状態を表し、時間とともに変わります。BE が 1 の資格情報でも、今すでに別の端末に同期されているとは限りません。以下が 3 つの状態です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     C["資格情報"] --> M["Multi-device Credential<br/>BE = 1・バックアップできる"]
     C --> SD["Single-device Credential<br/>BE = 0・バックアップできない"]
     M --> B0["BS = 0<br/>今はバックアップされていない"]
     M --> B1["BS = 1<br/>今バックアップされている"]
     B1 -.- PP["バックアップの方法は<br/>Provider の実装に依存"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の BS が 1 の資格情報は、現在バックアップ済みの状態です。仕様が表すのはここまでで、バックアップや端末の間の同期をどう実現するかは、Passkey Provider など資格情報を管理する仕組みに依存します。

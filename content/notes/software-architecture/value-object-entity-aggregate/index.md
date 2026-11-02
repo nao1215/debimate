@@ -12,6 +12,7 @@ Value Object・Entity・Aggregate（集約）は、DDD（Domain-Driven Design、
 3 つは並列に選ぶ選択肢ではありません。まず個々の概念を Value Object と Entity のどちらで表すかを決め、次にそれらを Aggregate という境界でくくります。本記事では、この順で 3 つの役割を説明し、Go と Rust の型でそれぞれをどこまで表現できるかを比べます。境界づけられたコンテキスト（[Bounded Context](../bounded-context/)）の切り方のような、モデルより上の設計は扱いません。注文（`Order`）と明細（`OrderLine`）を例に、3 つの関係は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     subgraph AG["Order 集約"]
         R["Order<br/>集約ルート（Entity）"]
@@ -28,6 +29,7 @@ flowchart TD
     EX["集約の外側のコード"] --> R
     EX -. "参照を保持しない" .-> L
     R -. "CustomerID で参照する" .-> CR
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の点線が制約を表しています。集約の外側が参照を保持して良いのは、集約ルート（集約の入口になり、集約全体の不変条件を守る Entity）である `Order` だけです。`Customer` 集約に向かう点線はルート同士を結んでおり、Entity は ID を持つので、他の集約からはその ID で指せます。
@@ -43,6 +45,7 @@ flowchart TD
 検査を通る経路と通らない経路が同居した場合に何が起きるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 呼び出し側 A
     participant B as 呼び出し側 B
@@ -231,11 +234,13 @@ pub fn lines(&self) -> &[OrderLine] {
 集約をまたぐ更新は、以下のようにトランザクションを分けて扱います。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     UC["ユースケース"] --> T1["トランザクション 1<br/>Order 集約を更新"]
     T1 --> EV["ドメインイベント<br/>OrderConfirmed"]
     EV --> T2["トランザクション 2<br/>Stock 集約を更新"]
     UC -. "1 つのトランザクションで<br/>両方を更新しない" .-> T2
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のドメインイベントは、集約に何が起きたかを表すデータです。`OrderConfirmed` は「注文が確定した」を意味します。点線が避けたい経路で、2 つの集約を 1 つのトランザクションで更新すると、境界の意味が消え、ロックの範囲も広がります。

@@ -10,6 +10,7 @@ weight: 1
 ブロックチェーンは、取引の履歴を参加者がそれぞれ複製して持ち、新しい取引をまとめた塊を順に繋いで追記していくデータの持ち方です。Bitcoin は、この持ち方で送金の履歴を共有します。データの持ち方は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     subgraph PA["参加者 A が持つ複製"]
         A1["ブロック 1<br/>取引の塊"] --> A2["ブロック 2<br/>取引の塊"] --> A3["ブロック 3<br/>新しい取引の塊"]
@@ -17,6 +18,7 @@ flowchart TD
     subgraph PB["参加者 B が持つ複製"]
         B1["ブロック 1<br/>取引の塊"] --> B2["ブロック 2<br/>取引の塊"] --> B3["ブロック 3<br/>新しい取引の塊"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 1 つの箱がブロックで、矢印で繋がった列がチェーンです。新しいブロックは列の末尾に追記され、参加者はそれぞれ同じ列の複製を持ちます。
@@ -30,9 +32,11 @@ flowchart TD
 銀行の送金では、口座の残高と入出金の履歴を銀行が管理します。内部で DB（Database、データベース）が複製・分散されていても、どの記録を正しいものとするかは銀行が決められます。利用者から見た経路を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     A["Alice"] --> BK["銀行<br/>正しい記録を決める<br/>中央の管理主体"]
     BK --> B["Bob"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の銀行が決めているのは 3 つです。送金を指示したのが口座の持ち主かどうか、同じ資金を使う指示のどちらを通すか、どの記録を正しい履歴とするかです。利用者は、この判断を銀行に任せる形で送金します。
@@ -48,12 +52,14 @@ Bitcoin のネットワークには、参加の登録も許可も必要ありま
 取引が広まる様子は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["Alice"] --> N1["Node A"]
     A --> N2["Node B"]
     A --> N3["Node C"]
     N1 -.中継.-> N2
     N2 -.中継.-> N3
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Node A・Node B・Node C は対等で、どれか 1 台の判断が他を従わせるわけではありません。誰でも参加できるため、参加者の頭数も基準になりません。1 人が多数のノードを動かせるからです。決める必要があるのは、次の 7 つです。

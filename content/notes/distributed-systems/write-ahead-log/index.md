@@ -14,12 +14,14 @@ WAL（Write-Ahead Log、書き込み先行ログ）は、状態を変更する�
 書き込みが到着してから応答するまでの経路を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["クライアント"] -->|"1. 変更を要求"| S["サーバー"]
     S -->|"2. 追記してディスクに同期"| W[("WAL<br/>追記専用ファイル")]
     S -->|"3. メモリ上の状態に適用"| M["メモリ上の状態"]
     S -->|"4. 応答"| C
     W -.->|"再起動時に再適用"| M
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で順番が効いているのは 2 と 3 です。ディスクに書き終えるのが先で、メモリ上の状態を変えるのは後になります。逆順にすると、応答を返した変更がディスクに残っていない状態が生まれます。点線の経路は通常の処理では通らず、再起動の時だけ通ります。
@@ -37,6 +39,7 @@ flowchart LR
 その状況は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント
     participant S as サーバー
@@ -59,6 +62,7 @@ WAL は、この問題を「変更内容を 1 箇所に記録してから、実�
 停止した時点ごとに、復旧後どうなるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     A["1. WAL に追記"] --> B["2. ディスクに同期"]
     B --> C["3. メモリ上の状態に適用"]
@@ -66,6 +70,7 @@ flowchart TD
     A -. "ここで停止" .-> X["復旧時に末尾の書きかけを捨てる<br/>変更は無かったことになる"]
     B -. "ここで停止" .-> Y["復旧時にログから再適用する<br/>変更は残る"]
     C -. "ここで停止" .-> Y
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の分かれ目は、2 の同期が終わったかどうかだけです。終わる前に止まれば変更は消え、終わった後に止まれば必ず適用されます。どちらに転んでも、応答を返すのは 4 の時点なので、応答済みの変更が失われることはありません。
@@ -184,12 +189,14 @@ WAL は追記しかしないため、放置すればディスクを使い切り�
 index 200 までを反映したスナップショットを取った後、どのセグメントが削除できるようになるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     SNAP["スナップショット<br/>index 200 まで反映済み"] -->|"低位ウォーターマークを 201 にする"| LWM["低位ウォーターマーク = 201<br/>201 番以降を残す"]
     LWM -->|"削除できる"| S1["segment 1<br/>index 1-100"]
     LWM -->|"削除できる"| S2["segment 2<br/>index 101-200"]
     LWM -->|"残す"| S3["segment 3<br/>index 201-300"]
     LWM -->|"残す"| S4["segment 4<br/>index 301-"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のスナップショットは、index 200 までを適用した後の状態をそのまま保存したものです。この状態から再開できるので、index 200 以前のエントリを再適用する必要はありません。segment 1 と segment 2 がファイルごと削除の対象になり、復旧はスナップショットの読み込みと index 201 以降の再適用に変わります。
@@ -209,6 +216,7 @@ WAL が守るのは、1 台のサーバーが停止して再起動するまで�
 過半数を条件とする方式で、Leader が書き込みを受け取ってから高位ウォーターマークが進むまでの流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント
     participant L as Leader

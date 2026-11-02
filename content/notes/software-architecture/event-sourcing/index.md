@@ -18,12 +18,14 @@ Event Sourcing とは、アプリケーションの現在の状態ではなく�
 ここで扱う構成を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["コマンド"] --> A["Order 集約"]
     A -- 記録 --> E["OrderCanceled"]
     E -- 追記 --> S[("イベントストア")]
     S -- 再生 --> A
     S -. 投影 .-> R[("読み取りモデル")]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のコマンドは、`order.Cancel(...)` のようなメソッド呼び出しで表される状態変更の要求です。要求を受けた `Order` 集約がイベントを作り、イベントストアに追記されます。イベントストアが唯一の一次記録で、`Order` の現在の状態はイベントの再生で導出されます。検索用の読み取りモデルも、イベントを順に読んで書き写す投影で後から作ります。
@@ -39,6 +41,7 @@ flowchart LR
 以下が 2 つの構成の違いです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     subgraph W["状態を上書きする構成"]
         U["更新処理"] --> T1[("orders<br/>状態を上書き")]
@@ -48,6 +51,7 @@ flowchart TD
         V["更新処理"] --> E1[("イベントストア<br/>追記だけ")]
         E1 -- 再生で導出 --> T2["現在の状態"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の右側では、記録が業務処理の副産物ではなく本体です。イベントに残らなかった更新は状態にも反映されないため、再生で導出される状態については「状態は変わったのに履歴に無い」という食い違いが構造として起きません。Fowler 氏は、イベントログの上に築ける機能の 1 つとして、「アプリケーションの状態を完全に捨てて、空のアプリケーションにイベントログからイベントを再実行することで再構築できる」ことを挙げています。
@@ -92,6 +96,7 @@ func (s *eventStore) Append(tx Tx, streamID string, expected int, events []Domai
 競合の流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C1 as 処理 1
     participant C2 as 処理 2

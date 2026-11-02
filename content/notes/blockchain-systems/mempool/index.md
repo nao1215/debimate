@@ -16,6 +16,7 @@ mempool（memory pool）は、まだブロックに入っていない取引を�
 2 台のノードが別の中身を持つ様子を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph X["Node X の mempool"]
         X1["取引 a"]
@@ -25,6 +26,7 @@ flowchart LR
         Y1["取引 a"]
         Y2["取引 c"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の取引 b と取引 c は、片方のノードだけが持っています。ネットワーク全体で 1 つの mempool を共有する仕組みは無く、どのノードから見るかで中身が変わります。
@@ -42,12 +44,14 @@ flowchart LR
 以下が 2 段の判定です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     T["受け取った取引"] --> V{"取引として有効か"}
     V -->|"満たさない"| D1["捨てる"]
     V -->|"満たす"| P{"自分の方針を満たすか"}
     P -->|"満たさない"| D2["mempool に入れない"]
     P -->|"満たす"| M["mempool に入れて中継する"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 1 つ目の判定は全ノードで共通の規則、2 つ目はノードごとの方針です。1 つ目は、同じチェーンの状態を前提にすれば、どのノードでも同じ結果になります。2 つ目で落ちた取引は、別の方針を持つノードなら受け入れることがあります。
@@ -91,10 +95,12 @@ flowchart LR
 3 つ目の上限は、判定を通った取引にも効いてきます。mempool が上限に達すると、手数料の面で優先度の低い取引や取引の集合から取り除かれると[設計のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)は説明しています。以下が取り除かれる取引です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     N["新しい取引<br/>優先度 高"] --> MP["mempool<br/>上限に達している"]
     MP --> KEEP["優先度の高い取引が残る"]
     MP --> EV["優先度の低い取引が<br/>取り除かれる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で取り除かれた取引は、そのノードから消えます。取引そのものが無効になったわけではなく、別のノードがまだ持っていれば、後から中継されて戻ってくることもあります。優先度をどう決めるかは実装が変えてくる部分なので、詳細は上のドキュメントに譲ります。
@@ -112,6 +118,7 @@ flowchart LR
 置き換えが起きる流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant W as 送金する人のウォレット
     participant N as Node

@@ -16,6 +16,7 @@ Quorum（クォーラム、定足数）は、ある操作を成立させるた�
 書き込みが成立するまでの流れを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["クライアント"] -->|"書き込みを要求"| Co["Node 1<br/>調整役"]
     Co --> N2["Node 2"]
@@ -25,6 +26,7 @@ flowchart LR
     N2 -.->|"受理を応答"| Co
     N3 -.->|"受理を応答"| Co
     Co -->|"自分を含む 3 台で成立"| C
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の調整役は、クライアントの要求を最初に受けたノードが務めます。複製を持つ 5 台のうちの 1 台なので、N に数えるのは複製の台数だけです。調整役が落ちた場合は、クライアントが別のノードに送り直します。数えているのは自分を含めた台数で、残る 2 台の応答は待ちません。遅いノードや落ちたノードの遅延がクライアントの待ち時間に響かないことが、クォーラムを使う直接の理由です。
@@ -38,6 +40,7 @@ flowchart LR
 1 台で成立させる構成の問題は、ネットワークが分断された時に表に出ます。分断された両側が、それぞれ独立に書き込みを受け付けます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C1 as クライアント 1
     participant A as Node A
@@ -67,6 +70,7 @@ N 台の複製に対して、書き込みに必要な応答数を W、読み取�
 重なりの様子は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     WC["クライアント A<br/>書き込み W=3"] --> N1["Node 1"]
     WC --> N2["Node 2"]
@@ -74,6 +78,7 @@ flowchart TB
     RC["クライアント B<br/>読み取り R=3"] --> N3
     RC --> N4["Node 4"]
     RC --> N5["Node 5"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Node 3 が重なりです。N は 5、W と R はどちらも 3 なので `W + R = 6` となり、N を 1 台分超えます。5 台から 3 台ずつをどう選んでも、超えた 1 台分はどちらの集合にも入ります。
@@ -133,6 +138,7 @@ R と W を利用者の設定として外に出した例に、Amazon が社内�
 5 台が 3 台と 2 台に分断された場合は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph P1["多数派 3 台"]
         A["Node 1"]
@@ -148,6 +154,7 @@ flowchart TB
     CB["クライアント B"] --> D
     D -->|"2 台しか揃わず失敗"| CB
     P1 -. "通信できない" .- P2
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で分かれ目になっているのは、要求を受けたノードがどちら側に居るかだけです。少数派に送ったクライアント B は失敗を受け取り、別のノードに送り直すまで書き込めません。多数派が残る分かれ方であれば、クラスタ全体としては分断中も書き込みを受け付けられ、値が 2 箇所で別々に進むことはありません。5 台が 2 台・2 台・1 台に割れた場合は、どこも過半数を作れないので全体が止まります。

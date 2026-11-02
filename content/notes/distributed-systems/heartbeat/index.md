@@ -14,6 +14,7 @@ weight: 1
 登場人物と信号の向きを以下に示します。監視される側から送る形が基本です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     N1[Node 1] -- heartbeat --> M[Monitor]
     N2[Node 2] -- heartbeat --> M
@@ -22,6 +23,7 @@ flowchart LR
     subgraph Monitor の内部判断
         D[一定時間 受信なし] --> F[Node 3 を故障とみなす]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の点線部分が途絶えた信号で、Monitor に「故障しました」という報告は届きません。落ちたノードは自分の停止を報告できないので、Monitor は「何も届かないこと」から Node 3 の故障を判断します。
@@ -41,6 +43,7 @@ flowchart LR
 信号が途絶えたときに Monitor から見える現象は以下の通りです。3 つの分岐は同時に起きるのではなく、どれか 1 つが起きている状況を表します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant M as Monitor
     participant N as Node
@@ -96,6 +99,7 @@ Kubernetes には両方の形があります。各ノードで動くエージェ
 二値（生きている／死んでいる）で扱うと、一時的な遅延で即座に故障扱いになります。多くの実装は間に猶予の状態を挟みます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     [*] --> Alive
     Alive --> Suspect: 閾値を超えて未受信

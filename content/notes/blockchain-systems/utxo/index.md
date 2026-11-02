@@ -16,6 +16,7 @@ UTXO（Unspent Transaction Output、未使用の取引出力）は、取引の�
 コインが取引から取引に渡っていく様子を以下に示します。図の矢印は、入力が持つ参照の向きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart RL
     subgraph T2["取引 2"]
         I2["入力<br/>取引 1 の出力 0 を参照"]
@@ -25,6 +26,7 @@ flowchart RL
         O1["出力 0<br/>Alice 宛（使用済み）"]
     end
     I2 -->|"参照"| O1
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で、取引 1 の出力は、それを消費する取引 2 がブロックに取り込まれた時点で使用済みになり、コインは Bob 宛の出力に移ります。まだ消費されていない Bob 宛の出力が UTXO で、Bob はこれを参照し、使う資格を証明する取引を作ればコインを使えます。図の取引 1 はコインベース取引（[Bitcoin Block](../bitcoin-block/) で説明した、ブロックの先頭に置かれる報酬の取引）で、出力の参照をどこまでも遡ると、コインベース取引に行き着きます。
@@ -56,6 +58,7 @@ UTXO では、入力が「どの取引の何番目の出力を消費するか」
 取引は、入力（input）の並びと出力（output）の並びを持つデータです。入力は過去の出力を消費し、出力は新しいコインの置き場になります。入力 2 つと出力 2 つを持つ取引の形は以下の通りです。図の矢印は、入力が持つ参照の向きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart RL
     subgraph TX["取引"]
         I0["入力 0<br/>参照先と資格の証明"]
@@ -65,6 +68,7 @@ flowchart RL
     end
     I0 -->|"参照"| P0["過去の取引の出力<br/>0.2 BTC"]
     I1 -->|"参照"| P1["別の取引の出力<br/>0.3 BTC"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の取引が使えるのは、0.2 BTC と 0.3 BTC を合わせた 0.5 BTC です。出力 2 つの金額の合計は、この 0.5 BTC 以下にする必要があります。合計が 0.5 BTC を下回った場合の差の行き先は、後述の手数料です。以下が入力と出力の主な項目です。
@@ -93,11 +97,13 @@ txid の計算方法は、[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) の「�
 手元の UTXO の金額が支払いたい額と一致することは稀なので、多くの取引は、余った分を自分宛の出力として戻します。この自分宛の出力がお釣り（change）です。例えば、1.0 BTC の UTXO を 1 つ持つ Alice が、Bob に 0.3 BTC 払う取引は以下の通りです。この図の矢印は、これまでの参照の向きとは逆で、コインが移る向きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     U["Alice の UTXO<br/>1.0 BTC"] -->|"丸ごと消費"| TX["取引"]
     TX --> B["出力 0<br/>Bob 宛 0.3 BTC"]
     TX --> C["出力 1<br/>Alice 宛 0.69 BTC<br/>お釣り"]
     TX -.-> F["差額 0.01 BTC<br/>手数料"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の手数料 0.01 BTC は、出力としてどこにも書かれず、入力と出力の差として残ります。金額は例で、手数料をいくら残すかは取引を作る人が決めます。[白書](https://bitcoin.org/bitcoin.pdf)は、典型的な取引の形として、1 つの大きな入力か小さな金額を組み合わせる複数の入力と、支払い先とお釣り先（あれば）という最大 2 つの出力を挙げています。これは白書での説明の形で、出力を 3 つ以上持つ取引も作れます。
@@ -113,6 +119,7 @@ flowchart LR
 ブロックの取り込みで集合が入れ替わる様子は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph S1["取り込み前の UTXO 集合"]
         A["出力 a<br/>1.0 BTC"]
@@ -127,6 +134,7 @@ flowchart LR
         D2["出力 d<br/>0.69 BTC"]
     end
     S1 --> BLK --> S2
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の入れ替えを続けると、集合にはまだ消費されていない出力だけが残り続けます。入力が集合に無い出力を参照する取引は無効です。既に消費された出力への参照も、初めから存在しない出力への参照も、同じ「集合に無い」という判定で弾かれます。参照先が集合に残っていることは検証項目の 1 つで、実際の検証ではこのほかに、金額の合計や使う条件の確認なども行われます。

@@ -16,11 +16,13 @@ PostgreSQL のドキュメントは、この制約には「[ensure that the data
 本記事では、1 つの表の中で値を重複させない制約を扱い、以降の SQL は PostgreSQL の構文で書きます。重複を止められる場所を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     R["登録の要求"] --> I["入力時の事前確認<br/>必要なら利用者に案内する"]
     I --> A["アプリケーションでの確認<br/>SELECT で存在を見る"]
     A --> D["一意制約<br/>重複した書き込みを止める"]
     D --> T[("users 表")]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の前の 2 つは、重複を早く見付けるために使えます。一意制約は、並行する書き込みを含めて、重複した状態が表に確定するのを最後に止めます。ここで扱うのは一意制約です。制約を伴わない一意索引や排他制約のように、同じ位置で止める仕組みは他にもあります。
@@ -34,6 +36,7 @@ flowchart LR
 2 つの要求が重なった時の順序は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 要求 A
     participant DB as DB
@@ -64,6 +67,7 @@ sequenceDiagram
 同じ値の `INSERT` が同時に走った時に何が起きるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["要求 A<br/>INSERT email='taro@example.com'"] --> U{"一意索引で競合を検査"}
     B["要求 B<br/>INSERT email='taro@example.com'"] --> U
@@ -72,6 +76,7 @@ flowchart LR
     W -->|"先行が取り消し"| S["後続が挿入できる"]
     E --> R["どちらの場合も<br/>重複した状態は成立しない"]
     S --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で重要なのは、どちらが成功するかではなく、重複した状態が成立しない点です。後から来た方は、競合する相手がまだ確定していなければ結果を待ちます。相手が確定すれば重複として弾かれ、取り消されていれば挿入できます。
@@ -126,6 +131,7 @@ CREATE TABLE identities (
 どちらも、一意性を掛けたい範囲と、制約が実際に掛かる範囲がずれる形です。以下が範囲のずれです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph E["列に付けた UNIQUE が掛かる範囲"]
         subgraph W["一意性を掛けたい範囲"]
@@ -133,6 +139,7 @@ flowchart TB
         end
         D["deleted_at に日時<br/>退会済みの会員"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の内側が掛けたい範囲で、外側が実際に掛かる範囲です。有効な会員だけに一意性を掛けたい場合、PostgreSQL では索引に載せる行を条件で絞れます。列に付けた `UNIQUE` を外し、退会した日時を持つ列を足した上で置き換えます。
@@ -216,12 +223,14 @@ ON CONFLICT (user_id, provider) DO UPDATE
 1 つ目は、「なぜ存在確認してから INSERT しても重複するのか」で見た通り、経路をそろえても競合の隙間が残ります。2 つ目と 3 つ目は、重複が生まれることを止めずに、後から辻褄を合わせる方針です。制約の有無で、辻褄を合わせる場所がどこに移るのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     W["同じ値の書き込みが<br/>2 件届く"] --> N{"一意制約があるか"}
     N -->|"ある"| S["1 件はその場でエラー<br/>重複は入らない"]
     N -->|"無い"| I["2 行とも入る"]
     I --> F["後から検出する"]
     F --> J["どちらを残すかの<br/>業務判断"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の「後から検出する」に進む経路では、判断を下すまでの間、重複した行を読んだ集計や通知が出続けます。どちらを残して良いのかは表の外にある業務の要求で決まるので、機械的には片付きません。重複は、長ければ検出を回す間隔のあいだ残り続けます。

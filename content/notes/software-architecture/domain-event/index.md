@@ -16,6 +16,7 @@ Domain Event は「ドメインエキスパートが関心を持つ何かが起�
 発行から処理までの経路を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph T1["トランザクション 1"]
         A["Order 集約"] -- 記録 --> E["OrderConfirmed"]
@@ -25,6 +26,7 @@ flowchart LR
         H["在庫のハンドラ"] --> S["Stock 集約"]
     end
     E -. 配送 .-> H
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の `Order` を確定させる処理は `Stock` の更新を待たずに完了し、在庫の引き当ては後から別のトランザクションで実行されます。点線の配送は、同じプロセスの中でハンドラを呼ぶか、メッセージブローカーを挟むかのどちらかです。トランザクションを分けたことで、注文の確定は在庫の混雑から切り離され、代わりに 2 つの状態がずれている時間が生まれます。
@@ -71,6 +73,7 @@ func (u *usecase) confirmOrder(ctx context.Context, id OrderID) error {
 人気商品への注文が 2 件同時に届いた場合は以下の通りです。`Stock` をバージョン列で守る楽観的ロックの実装を想定しています。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C1 as Client 1
     participant C2 as Client 2

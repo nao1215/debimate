@@ -14,6 +14,7 @@ Parse, don't validate は、「外部から来たデータを検査したら、�
 ここで扱うのは、入力そのものから判定できる形式・構造・値域などの不変条件です。在庫の有無や権限のように、外部状態に問い合わせなければ決まらない条件は別に扱います。検査した時点の事実を型に載せることはできます。しかし、その型だけで後の外部状態まで保証はできません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph D["検査結果を捨てる形"]
         direction LR
@@ -27,6 +28,7 @@ flowchart LR
         P2 --> E2["Email<br/>（検査済みの型）"]
         E2 --> U2["後段の処理<br/>（再検査は不要）"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の右では、検査で分かった事実を `Email` という型に載せて後段に渡しています。これをどこまで型だけで成立させられるかは言語によって変わり、Go ではゼロ値が例外になります。
@@ -38,10 +40,12 @@ flowchart LR
 `validate` という名前の関数は多くの場合、`bool` か `error` を返します。`error` なら失敗の理由や種類まで運べます。ただし、検査対象の型は前後で変わりません。`string` は `string` のままなので、検査によって得た「この値は条件を満たしている」という事実は、後段に型として引き継がれません。値を受け取った関数は、それが検査済みかどうかを型から判断できません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     In["生の注文データ"] --> S1["注文の受付<br/>（ここでも検査）"]
     S1 --> S2["注文の保存<br/>（ここでも検査）"]
     S2 --> S3["確認メールの送信<br/>（ここでも検査）"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図では同じ検査が 3 箇所に複製されています。問題になるのは重複そのものよりも、後段で検査が失敗した時には既に前段が入力に作用し終えている点です。
@@ -55,6 +59,7 @@ King 氏は、この状態を指す語として 2016 年の論文 The Seven Turr
 生のデータは、必要な精度の型に、できる限り入口で変換します。必要以上に精密にはしません。内側の関数は、受け取った型が検査済みだと前提にでき、同じ検査を書き直さずに済みます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph OUT["入口の外<br/>（信用しない領域）"]
         direction LR
@@ -68,6 +73,7 @@ flowchart LR
         direction LR
         U1["内側の処理 A"] --> U2["内側の処理 B"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 寄せるのは変換であって、変換の回数を 1 回に固定する話ではありません。多段の解析は認められており、「[Don’t be afraid to parse data in multiple passes.](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)」（データを何段階かに分けて解析することを恐れなくて良い）と書かれています。
@@ -83,10 +89,12 @@ flowchart LR
 King 氏が例に使う `NonEmpty` は、先頭の要素をリスト本体とは別のフィールドとして持つ型です。残りの部分が空でも先頭は必ず存在するので、要素 0 個の値を作れません。前述の記事で "really just a tuple" と書かれている通り、これは直和型ではなく直積型であり、Go でも同じ形を書けます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     NE["NonEmpty"] --> H["head<br/>必ず 1 つある"]
     NE --> T["tail<br/>空でもよい"]
     L["ふつうのリスト"] --> Z["要素 0 個の値を<br/>作れてしまう"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Go でも `type NonEmpty[T any] struct { head T; tail []T }` として同じ形を書けます。`NonEmpty` のように形だけで不変条件が閉じる型は、そのまま書けます。手段が足りなくなるのは、次の節の `Email` のように値の中身に条件を課す場合です。
@@ -123,10 +131,12 @@ func (e Email) String() string { return e.value }
 この形でも塞げない経路が 2 つあります。Go の変数は宣言しただけで初期化されるので、`var e Email` はコンパイルを通り、空の `Email` が出来上がります。同じパッケージの中なら `Email{value: "bogus"}` も書けます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["別のパッケージから<br/>NewEmail を呼ぶ"] --> OK["検査を通った Email"]
     B["別のパッケージで<br/>var e Email"] --> NG["検査を経ていない Email"]
     C["同じパッケージで<br/>Email{value: ...}"] --> NG
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 未公開フィールドが塞ぐのは、パッケージの外から任意の内部値を直接注入する経路です。ゼロ値の生成は言語仕様なので塞げず、同じパッケージの中では未公開フィールドに直接値を入れられます。
@@ -169,11 +179,13 @@ func (e Email) MarshalJSON() ([]byte, error) {
 `UnmarshalJSON` を実装しても、親オブジェクトからフィールド自体が省略されれば `UnmarshalJSON` は呼ばれず、そのフィールドは更新されません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     J["キーがある"] --> UM["UnmarshalJSON"]
     UM --> N["NewEmail の検査を通る"]
     M["キーが省略された"] -.呼ばれない.-> UM
     M --> Z["フィールドは<br/>更新されない"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 必須フィールドの欠落は `UnmarshalJSON` だけでは検知できないので、親の入力型を解析し、後段で使う型に変換する段階で扱います。

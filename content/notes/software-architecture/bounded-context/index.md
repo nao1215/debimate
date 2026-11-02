@@ -14,6 +14,7 @@ Bounded Context（境界づけられたコンテキスト）とは、あるモ�
 EC（Electronic Commerce）サイトを例に、1 件の買い物を扱う 3 つの境界を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph SA["販売コンテキスト"]
         S1["注文<br/>見積もり・値引き・成立"]
@@ -26,6 +27,7 @@ flowchart TB
     end
     S1 -. "注文 ID で対応付ける" .-> B1
     S1 -. "注文 ID で対応付ける" .-> H1
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 3 つは、どれも 1 件の買い物から始まる業務です。同じ買い物を扱っていても、持つ属性も、状態が変わる条件も違います。この例では対応付けに注文 ID を使い、値引き率や追跡番号のような属性は、それぞれの境界が自分の語で持ちます。境界の間で ID しか渡してはいけないという規則があるわけではありません。
@@ -39,11 +41,13 @@ flowchart TB
 読み取れないだけなら、規約で補えます。問題は、変更の理由が 3 つの業務から同時に来ることです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     C["配送からの要求<br/>1 件の注文を分割して送りたい"] --> M["全社共通の注文モデル<br/>明細に配送先を追加"]
     M --> SH["配送の機能<br/>要求どおりに動く"]
     M --> SA["販売の機能<br/>値引きの計算が明細単位に変わる"]
     M --> BI["請求の機能<br/>請求書の明細行が増える"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の左端にある要求は、配送の業務だけから出ています。それでも、モデルを共有している販売と請求の 2 つが影響を受けます。共有されたモデルに手を入れる限り、変更のたびに 3 つ全部の検証が必要になり、変更を出せる速さは最も慎重な業務に合わせて落ちます。
@@ -185,12 +189,14 @@ func ToShipment(o sales.Order, addr shipping.Address) shipping.Shipment {
 DDD Reference の 2 つの説明を並べると、上流のモデルに合わせる窮屈さを受け入れて統合の単純さを取るなら Conformist、上流のモデルが自分のプロジェクトの必要に合わず、合わせることが現実的でないなら Anticorruption Layer になります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     U["上流のコンテキスト<br/>外部の在庫システム"] --> A
     subgraph D["自分のコンテキスト（下流）"]
         A["Anticorruption Layer<br/>相手の語を自分の語に翻訳する"] --> M["自分の語のモデル"]
     end
     U -. "直接依存すると<br/>相手の語が入り込む" .-> M
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の点線が避けたい経路です。相手のモデルを直接使うと、相手の語とデータの形が下流のモデルの内側まで届き、相手の変更に合わせて下流の設計が動くことになります。Anticorruption Layer を挟むと、相手が変わった時に直す場所が境界の入口 1 箇所で済みます。

@@ -16,11 +16,13 @@ CQRS（Command Query Responsibility Segregation、コマンドとクエリの責
 2 つのモデルに分けた構成を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     UI["画面"] -- "コマンド<br/>（キャンセルせよ）" --> C["更新モデル<br/>（Order 集約）"]
     UI -- "クエリ<br/>（今日の一覧）" --> Q["読み取りモデル<br/>（一覧・集計の形）"]
     C -- 書き込み --> DB[("DB")]
     Q -- 読み出し --> DB
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で見てほしいのは、要求の種類で通るモデルが分かれる点です。更新モデルは業務規則の検査に専念し、読み取りモデルは画面や集計に合わせた形を取れます。図の DB は 1 つを共有しても、保存先ごと分けても構いません。その選択は「2 つのモデルをどこまで分けるか」で扱います。
@@ -119,10 +121,12 @@ type OrderQueryService interface {
 結果を実体として保存しない通常のビューは、問い合わせのたびに正規化されたテーブルの結合と集計を計算し直します。その負荷は更新と同じ DB に載るため、読み取りが増えるほど更新と資源を取り合います。この形で支えきれなくなった時には、保存先を分けることも選択肢になります。以下が分けた構成です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["更新モデル"] -- 書き込み --> W[("更新用の DB")]
     W -- 反映 --> R[("読み取り用の DB")]
     Q["読み取りモデル"] -- 読み出し --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の反映は、多くの実装で更新の完了とは別のタイミングで走ります。その結果、読み取りは[結果整合](../domain-event/)（いずれ一致するものの、ある瞬間を切り取るとずれを許す性質）になることが多く、書いた直後のクエリが古い値を返す場合があります。

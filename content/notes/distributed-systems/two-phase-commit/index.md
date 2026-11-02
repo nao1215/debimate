@@ -24,6 +24,7 @@ Jim Gray 氏と Leslie Lamport 氏の論文「[Consensus on Transaction Commit](
 素朴な方法は、アプリケーションが 2 つの DB に順番に COMMIT を送ることです。この方法は、1 つ目の COMMIT と 2 つ目の COMMIT の間に故障が挟まると壊れます。具体的には、以下の流れで片方だけが成立します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as アプリケーション
     participant D1 as 注文の DB
@@ -52,6 +53,7 @@ sequenceDiagram
 yes の返事は、コーディネータに言われればいつでも確定するという約束です。参加者は、返事の後に再起動しても約束を守れるように、クラッシュしても消えないディスクに先に書きます。prepare を受けてから yes を返すまでの順序は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as コーディネータ
     participant P as 参加者 A
@@ -72,6 +74,7 @@ yes と答えた参加者は、自分から中止する権利を手放します�
 以下が参加者の状態遷移です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     [*] --> working
     working --> prepared: prepare を受けて<br/>ディスクに記録
@@ -93,6 +96,7 @@ stateDiagram-v2
 prepare から確定までの全体の流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as コーディネータ
     participant P1 as 参加者 A
@@ -127,6 +131,7 @@ in-doubt の間、参加者はロックを保持し続けます。その結果�
 コーディネータの停止で何が詰まるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as コーディネータ
     participant P as 参加者 A
@@ -149,6 +154,7 @@ blocking を避ける狙いで提案されてきた手順は、non-blocking comm
 決定の記録がどこにあるのかは、2PC と並べると以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph T["2PC"]
         TP["prepared の参加者"] -. 決定を聞けない .-> TC["コーディネータ<br/>停止中"]
@@ -160,6 +166,7 @@ flowchart LR
         PL --> PA2[("acceptor 2")]
         PA3[("acceptor 3<br/>停止中")]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Paxos Commit では、acceptor が 1 台止まっていても、1 台に定まった Leader が参加者と残り 2 台の acceptor に通信できれば、参加者は決定を知ることができます。故障に強くなる代わりに、メッセージの数は増えます。F = 0 にして acceptor と Leader を 1 台ずつ同じノードに置くと、Paxos Commit は 2PC と本質的に同じ手順になります。そのノードで Leader と acceptor を兼ねるのが、2PC のコーディネータです。

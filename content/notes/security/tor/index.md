@@ -14,6 +14,7 @@ Tor は、通信を複数のリレー（中継役のサーバー）に順に通�
 直接つないだ場合と、Tor を経由した場合の違いを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph D["直接つなぐ場合"]
         C1["Client"] --> S1["Web サーバー"]
@@ -24,6 +25,7 @@ flowchart TB
         G -.- N2["接続元は分かる<br/>接続先は分からない"]
         E -.- N3["接続先は分かる<br/>接続元は分からない"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Tor を経由する経路で壊しているのは、接続元と接続先を 1 か所から観測できる状態です。
@@ -45,10 +47,12 @@ TCP/IP の通信では、パケットの先頭に送信元 IP アドレスと宛
 通常の接続で誰が何を観測できるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["Client"] --> I["ISP・経路上の装置"] --> S["Web サーバー"]
     I -.- N1["接続元 IP<br/>接続先 IP<br/>通信量と時刻"]
     S -.- N2["接続元 IP<br/>要求の内容"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の ISP（Internet Service Provider、契約している回線業者）と経路上の装置は、中身を読めなくても「誰が、どこに、いつ、どれだけ」を記録できます。接続先の Web サーバーは、要求の中身に加えて、接続してきた相手の IP アドレスを受け取ります。経路の途中と接続先の両方に、接続元を指す値が残ります。
@@ -74,12 +78,14 @@ Tor の設計論文「[Tor: The Second-Generation Onion Router](https://svn-arch
 各地点が何を知るのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     C["Client"] --> G["Guard Relay"] --> M["Middle Relay"] --> E["Exit Relay"] --> W["Web サーバー"]
     G -.- GN["直前は Client<br/>直後は Middle<br/>宛先は見えない"]
     M -.- MN["直前は Guard<br/>直後は Exit<br/>接続元も宛先も見えない"]
     E -.- EN["直前は Middle<br/>直後は Web サーバー<br/>接続元は見えない"]
     W -.- WN["接続元として見えるのは<br/>Exit Relay の IP"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で効いているのは、接続元を知る Guard Relay と接続先を知る Exit Relay の間に、両隣の IP アドレスしか知らない Middle Relay が挟まっている構造です。
@@ -117,8 +123,10 @@ Tor Project はこの鍵について「[these extra layers of encryption mean th
 包み方と剥がし方は以下の通りです。図の K1・K2・K3 は 1 リレーにつき 1 つの鍵として書いた概念上の表記で、実際には送信と受信の方向などに応じた鍵が導出されます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["Client<br/>K3・K2・K1 の順に包む"] --> G["Guard<br/>K1 の層を剥がす"] --> M["Middle<br/>K2 の層を剥がす"] --> E["Exit<br/>K3 の層を剥がす"] --> W["Web サーバー<br/>元の要求"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Guard Relay は K1 の層だけを開け、同じ経路の次のリレーに流します。転送先は経路を伸ばす時に決まっており、cell を開けると指示が現れるわけではありません。残りは K2 と K3 で包まれたままなので、中身も最終的な宛先も読めません。
@@ -134,8 +142,10 @@ flowchart LR
 暗号化が効く区間は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["Client"] -- "Tor の層状暗号" --> G["Guard"] --> M["Middle"] --> E["Exit"] -- "Tor の保護は無い" --> W["Web サーバー"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、Tor を使うことと、中身が送信者から受信者まで通しで暗号化されること（End-to-End の暗号化）は別です。Exit Relay から中身を隠すのは HTTPS の仕事で、Tor が隠すのは経路の情報です。
@@ -161,6 +171,7 @@ Tor だけを使う場合と、HTTPS を併用する場合の違いを次に示�
 サービスは取り次ぎ役の一覧を署名付きの descriptor としてまとめ、Tor ネットワーク上の分散ハッシュ表に載せます。クライアントは `.onion` のアドレスに含まれる公開鍵を起点として descriptor の正当性を[検証](../../blockchain-systems/digital-signature/)し、取り次ぎ役の情報を取り出します。アドレスがサービスの identity と結び付いているので、別のサービスが用意した descriptor は通りません。接続の流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as Client
     participant D as 分散ハッシュ表
@@ -235,11 +246,13 @@ Application layer leak は、通信が Tor に入る前の問題です。Tor Pro
 以下が役割の分かれ方です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["アプリケーション"] --> T["tornago"]
     T -- "SOCKS5" --> D["tor デーモン"]
     T -- "ControlPort<br/>ADD_ONION" --> D
     D --> N["Tor ネットワーク<br/>経路の構築と層状の暗号化"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago が扱うのは構築済みの経路を使うための口です。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、その 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。

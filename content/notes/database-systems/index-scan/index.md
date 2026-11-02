@@ -18,11 +18,13 @@ Index Scan は、索引（インデックス）を辿って条件に一致する
 条件に一致する行が返るまでの流れを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["WHERE user_id = 42"] --> D["索引を根から降りて<br/>開始位置の葉を決める"]
     D --> L["葉の項目を順に読み<br/>行の在り処を得る"]
     L --> T["表のページを読む"]
     T --> R["結果の行"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の最初の 2 段は索引の中だけで完結し、最後の「表のページを読む」は条件によっては省けます。問い合わせごとに読む量が大きく動くのは、この段が残るかどうかと、そこで何枚のページを読むかで決まります。
@@ -54,6 +56,7 @@ flowchart LR
 同じ 3 件が、索引と表でどう並ぶのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph IDX["索引の葉：キーの順に並ぶ"]
         K1["user_id 42<br/>1 件目"]
@@ -68,6 +71,7 @@ flowchart TB
     K1 --> P1
     K2 --> P2
     K3 --> P3
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図では、索引を 1 枚読んで得た 3 件のために表を 3 枚読んでいます。
@@ -99,6 +103,7 @@ Index Scan の動きは、冒頭の図に示した 3 つの段に分かれます
 この 3 つを動かすのが実行器で、実行計画の各段を実際に走らせる部分を指します。最初の 2 行を取り出すまでの往復は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant E as 実行器
     participant I as 索引
@@ -159,6 +164,7 @@ QUERY PLAN
 以下が 2 つの経路の分かれ目です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     Q["WHERE user_id = 42"] --> D{"取り出す列が<br/>索引に揃っているか"}
     D -->|"揃っていない"| A1["索引を降りる"]
@@ -166,6 +172,7 @@ flowchart TB
     A2 --> R["結果の行"]
     D -->|"揃っている"| B1["索引を降りる"]
     B1 --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の揃っている経路では、一致する行が多い問い合わせほど「表のページを読む」を省けた時の差が大きくなります。索引に列を足せばこの経路に寄せられるため、PostgreSQL は検索の対象にしない列を索引に載せる `INCLUDE` を用意しています。
@@ -177,10 +184,12 @@ flowchart TB
 visibility map は、ヒープページ 1 枚につき 1 ビットを持つ一覧です。そのページに載る全ての行が、現在と将来の全てのトランザクションから見えると分かっている時にビットが立ちます。ビットを確認してからの分かれ道は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     F["索引で候補の項目を見つける"] --> V{"対応するヒープページの<br/>visibility map のビット"}
     V -->|"立っている"| A["索引から取り出した値を<br/>そのまま返す"]
     V -->|"立っていない"| B["ヒープの行そのものを読む"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の下の経路が残るので、index-only scan はヒープへの読み出しを大きく減らす形であって、必ず 0 にする形ではありません。実際に何回ヒープを読みに行ったのかは、[`EXPLAIN ANALYZE`](https://www.postgresql.org/docs/current/using-explain.html) の出力に出る `Heap Fetches` で分かります。index-only scan のドキュメントも、この形が有利になるのはヒープページの相当な割合でビットが立っている場合だけだと断っています。
@@ -196,6 +205,7 @@ flowchart TB
 2 本の索引を合成する場合の流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     I1["索引 A を走査"] --> B1["行の位置の<br/>ビットマップ"]
     I2["索引 B を走査"] --> B2["行の位置の<br/>ビットマップ"]
@@ -203,6 +213,7 @@ flowchart LR
     B2 --> AN
     AN --> S["表のページを<br/>物理的な順に読む"]
     S --> R["結果の行"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の最後で表を読む順序は、索引に並んでいた順ではなく物理的な順です。同じページに載っている行をまとめて処理でき、ページを何度も読み直す動きが減ります。同じドキュメントは、その代償として「[any ordering of the original indexes is lost](https://www.postgresql.org/docs/current/indexes-bitmap-scans.html)」（元の索引が持っていた順序は失われる）と書き、`ORDER BY` があれば別に整列の段が必要だと続けています。

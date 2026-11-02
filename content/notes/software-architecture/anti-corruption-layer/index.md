@@ -12,6 +12,7 @@ Anticorruption Layer（腐敗防止層。Anti-Corruption Layer とも綴り、AC
 販売コンテキストが外部の在庫システムを利用する場面では、ACL の位置と語の切り替わりは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph DOWN["下流：販売コンテキスト"]
         M["注文の成立を判断するモデル<br/>語：販売できる数・販売停止"]
@@ -24,6 +25,7 @@ flowchart LR
     A -- "相手の既存の API を呼ぶ" --> L
     L -- "相手の語で返す" --> A
     A -- "自分の語に翻訳して返す" --> M
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で相手の語が現れるのは、ACL と在庫システムを結ぶ 2 本の矢印だけです。販売コンテキストのモデルは自分の語だけで問い合わせと応答を受け取り、正常に終わった問い合わせで `QTY_ON_HAND` のような相手の項目名を目にすることはありません。
@@ -47,11 +49,13 @@ Microsoft の [Azure Architecture Center](https://learn.microsoft.com/en-us/azur
 例に使う在庫システムの応答には、`ITEM_CD`（商品コード）、`QTY_ON_HAND`（手持ちの数量）、`QTY_ALLOC`（引き当て済みの数量）、`STS`（商品の状態コード）が並んでいます。引き当て済みというのは、既に別の注文に割り当ててあり、手元にあっても他には売れない数量です。この応答の型を下流のコードにそのまま渡した場合は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     U["ACL が無い場合<br/>在庫システムの応答をそのまま渡す<br/>ITEM_CD・QTY_ON_HAND<br/>QTY_ALLOC・STS"]
     U --> A["注文の受付<br/>手持ちから引き当て済みを引いて判定"]
     U --> B["商品の一覧<br/>手持ちの数量を残数として表示"]
     U --> C["再入荷の通知<br/>状態コードで対象を絞り込む"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 3 箇所は、どれも在庫システムの語で書かれています。「販売できる数」という販売の語はどこにも現れず、代わりに手持ちから引き当て済みを引く計算が 3 箇所に複製されます。状態コードの解釈も同じで、どの値が販売停止を意味するのかを 3 箇所が個別に知っている状態になります。
@@ -73,6 +77,7 @@ ACL の中身は、ここでは 3 つの責任に分けて見ます。下流が�
 上に挙げた順で、3 つと下流のモデルの関係は以下の通りです。最初の図では、ACL を下流のチームが持つ部品として販売コンテキストの枠に入れました。コードではドメインモデルの `sales` とは別のパッケージに置くので、この図では枠を分けます。図の矢印は、呼び出しの流れではなく、コードがどちらを参照するかの向きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph S["sales パッケージ（下流のモデル）"]
         I["StockChecker<br/>自分の語で宣言したインターフェース"]
@@ -87,6 +92,7 @@ flowchart TB
     C -. "満たす" .-> I
     C --> K --> U
     C --> T --> M
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で在庫システムを知っているのは ACL の枠の中だけで、`sales` から ACL を参照する矢印はありません。この向きは、下流のパッケージが上流の型を import しているかで、ある程度まで確認できます。しかし、import が 1 本も無くても語は入り込みます。次の `Availability` は在庫システムのパッケージを参照していません。

@@ -16,6 +16,7 @@ Bitcoin の送金は、ウォレット（鍵を管理し、取引を組み立て
 送信から取り込みまでの流れは以下の通りです。図に出てくる [UTXO](../utxo/) は使い道の決まっていないコインの単位、[mempool](../mempool/) はブロックに入る前の取引を溜める場所です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant W as Alice のウォレット
     participant N as ネットワークのノード
@@ -46,11 +47,13 @@ Bitcoin に口座はなく、Alice の残高は、Alice の鍵で使える [UTXO
 入力は選んだ UTXO を丸ごと消費するため、支払う額との差はお釣りとして自分宛の出力に戻します。以下が組み立てた取引の形です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     U["Alice の UTXO<br/>0.3 BTC"] -->|"入力 0 で参照"| TX["取引"]
     TX --> O0["出力 0<br/>Bob 宛 0.1 BTC"]
     TX --> O1["出力 1<br/>Alice 宛 0.1998 BTC<br/>お釣り"]
     TX -.-> F["差額 0.0002 BTC<br/>手数料"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の手数料は、取引のどこにも項目として書かれません。入力の合計から出力の合計を引いた差が、この取引を取り込んだマイナーの報酬になります。金額は例で、いくら残すかは取引を作る人が決めます。出力とお釣りの扱いは [UTXO](../utxo/) で説明しています。
@@ -68,10 +71,12 @@ flowchart LR
 Alice は取引の内容を対象に秘密鍵で署名を作り、公開鍵と一緒に入力に入れます。以下が署名の材料と行き先です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     TXD["取引の内容<br/>入力・出力・金額"] --> S["署名の作成"]
     SK["Alice の秘密鍵"] --> S
     S --> IN["入力に<br/>署名と公開鍵を入れる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の署名は取引の内容と結び付いているため、途中の誰かが宛先や金額を書き換えると検証が通らなくなります。取引のどの範囲を署名の対象に含めるかは sighash type という指定で選べ、最も広く使われる指定では全ての入力と出力が範囲に入ります。指定の種類と署名の計算は [Digital Signature](../digital-signature/) で説明しています。
@@ -92,6 +97,7 @@ flowchart LR
 受け入れられた取引は、まだブロックに入っていない取引の置き場（[mempool](../mempool/)）に入ります。mempool はノードごとに持つもので、届く順や方針の違いによって中身は完全には一致しません。取引が広まる様子は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant W as Alice のウォレット
     participant X as Node X
@@ -119,11 +125,13 @@ mempool の取引は、まだ履歴のどこにも位置を持っていません
 ブロックには取り込めるデータ量に上限があるため、混雑している時は、サイズあたりの手数料率が高い取引から取り込まれやすくなります。Alice の取引は、この選抜を通るまで mempool で待ちます。候補が組み上がるまでは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     MP["mempool<br/>取り込み待ちの取引"] --> SEL["手数料率などで選抜"]
     SEL --> BODY["ブロック本体<br/>コインベース取引 + 選んだ取引"]
     BODY -->|"Merkle Tree で畳み込む"| ROOT["ルートハッシュ"]
     ROOT --> HDR["ブロックヘッダ 80 バイト"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の先頭に置くコインベース取引は、過去の出力を参照せず、ブロックを作った参加者が報酬と手数料を受け取る取引です。ヘッダにはルートハッシュのほかに、直前のブロックのハッシュ値、時刻、合格条件、nonce が入ります。ヘッダの項目は [Bitcoin Block](../bitcoin-block/)、木の作り方と Bitcoin での規則は [Merkle Tree](../merkle-tree/) と [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で説明しています。
@@ -151,10 +159,12 @@ Bob から見ると、自分宛の出力が UTXO 集合に加わります。ブ�
 取り込まれた後、チェーンがどう伸びるかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart RL
     B3["ブロック N+2"] --> B2["ブロック N+1"]
     B2 --> B1["ブロック N<br/>Alice の取引を含む"]
     B1 --> B0["ブロック N-1"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の状態で、Alice の取引の確認数は 3 です。取引を含むブロック自身を 1 個目として数え、後ろに 2 個積まれています。ウォレットが表示する確認数は、この数です。後ろに積まれるブロックが増えるほど、その位置を覆すのに必要な計算量は大きくなります。

@@ -16,11 +16,13 @@ weight: 3
 入力と出力の関係を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["1 文字のデータ"] --> H["SHA-256"]
     B["数 MB の取引の並び"] --> H
     C["数 GB のファイル"] --> H
     H --> O["必ず 32 バイトの<br/>ハッシュ値"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、入力がどれだけ大きくても、出力は決まった長さに収まります。同じ入力からは必ず同じ出力が得られ、計算した人によって値が変わることはありません。改竄の検出には、この 2 つにもう 1 つ性質が加わります。元のデータと同じハッシュ値を持つ別のデータを現実的な計算量では作れない、という性質です。困難さの中身は「3 つの耐性」の節で展開します。
@@ -38,10 +40,12 @@ flowchart LR
 この「一致すれば同じデータとみなす」という判断は、同じハッシュ値を持つ別のデータを作れないことに立脚しています。作れてしまうなら、攻撃者はデータを差し替えてもハッシュ値の比較を通過できます。Bitcoin がハッシュ値に委ねている役割は以下の通りです。図の矢印は、どの用途がどの性質を利用しているかの対応です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     P["同じハッシュ値を持つ<br/>別のデータを作れない"] --> A["直前のブロックのハッシュ<br/>過去の書き換えの検出"]
     P --> B["ルートハッシュ<br/>32 バイトで取引数千件を代表"]
     Q["条件を満たす入力を<br/>効率よく逆算する<br/>既知の方法が無い"] --> C["proof of work<br/>nonce の探索"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の「別のデータを作れない」は、次の節で説明する 3 つの耐性のうちの 2 つです。「効率よく逆算する既知の方法が無い」ことは、3 つのうちの原像計算困難性と同じ「出力から入力に」の向きの困難さで、条件を満たす入力を探す場面に当てはめた形になります。proof of work との結び付きは、雪崩効果の節で説明します。
@@ -61,6 +65,7 @@ flowchart TD
 3 つの違いを図でも示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     subgraph C1["原像"]
         G1["与えられる: ハッシュ値 h"] --> F1["探す: H(m) = h となる m"]
@@ -71,6 +76,7 @@ flowchart TD
     subgraph C3["衝突"]
         G3["与えられるものは無し<br/>m1 と m2 を自由に選ぶ"] --> F3["探す: H(m1) = H(m2) となる組"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 改竄の検出で直接効いているのは第二原像計算困難性です。攻撃者の手元には書き換えたい正しいデータ（m1）があり、同じハッシュ値を持つ偽データ（m2）を探すためです。例えば、ブロックに取り込まれた他人の取引について、同じ txid を持つ別の取引に差し替える攻撃は、第二原像を探す問題になります。原像計算困難性は、ハッシュ値から元のデータを推測させない一方向性で、パスワードの保存などで効きます。
@@ -119,12 +125,14 @@ SHA-256（Secure Hash Algorithm 256）は、NIST（米国国立標準技術研�
 Bitcoin での適用のされ方は、これまでのノートで見たとおりです。以下が 2 つの経路です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     T["取引・ブロックヘッダ・<br/>Merkle Tree のノード"] --> D["SHA-256 を 2 回"]
     D --> R["txid・ブロックのハッシュ・<br/>ルートハッシュ"]
     P["アドレスの元になるデータ"] --> S1["SHA-256"]
     S1 --> S2["RIPEMD-160"]
     S2 --> A["20 バイトに短縮した値"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の上の経路で、1 回ではなく 2 回続けて適用する理由は、ここでは扱いません。下の経路にある RIPEMD-160 は出力 160 ビットの別のハッシュ関数で、支払いの宛先に使うアドレス（[UTXO](../utxo/) で触れた、使う条件を組み立てるための情報を符号化した文字列）の形式によっては、この経路で短縮した値を使います。

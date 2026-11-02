@@ -12,6 +12,7 @@ weight: 7
 冪等（べきとう、idempotent）は、同じ操作を 1 回実行した時と、繰り返し実行した時とで、要求した側が意図した結果が同じになる性質です。上の POST が冪等なら、もう一度送っても課金は 1 回分に留まります。本記事では、要求の再送で生じる重複を説明します。誤った値を返す故障（ビザンチン障害）と、複数の要求を跨いだ順序の保証には触れません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント
     participant A as 決済 API
@@ -32,6 +33,7 @@ sequenceDiagram
 区別が付かない以上、送信側が選べるのは再送するか諦めるかの 2 つで、どちらを選んでも壊れる場合が残ります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     T["応答が返らない"] --> R["再送する"]
     T --> G["諦める"]
@@ -39,11 +41,13 @@ flowchart LR
     R --> R2["処理済みだった場合<br/>課金が 2 回成立する"]
     G --> G1["未着だった場合<br/>課金は成立しない"]
     G --> G2["処理済みだった場合<br/>成立した課金を<br/>未処理として扱う"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 諦めれば重複は生じない代わりに、成立した課金が送信側では未処理のまま残ります。成功を確認できるまで再試行する方式では、同じ要求が複数回届く可能性があります。1 回分の課金を作る要求が 2 通届けば、素朴な実装は 2 回分の課金を作ります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント
     participant A as 決済 API
@@ -66,6 +70,7 @@ sequenceDiagram
 一番単純な方法は、繰り返しても結果が変わらない書き方を選ぶことです。残高 500 の口座に「残高を 100 減らす」と「残高を 400 にする」を 3 回ずつ適用すると、以下の通りに分かれます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph REL["差分の指定: 残高を 100 減らす"]
         direction LR
@@ -75,6 +80,7 @@ flowchart TB
         direction LR
         A0["500"] --> A1["400"] --> A2["400"] --> A3["400"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 「残高を 100 減らす」は、実行した回数だけ残高が減ります。一方、「残高を 400 にする」は、同じ要求だけを繰り返す限り最終状態が 400 のままです。
@@ -102,6 +108,7 @@ HTTP の意味論を定める RFC 9110 は、PUT・DELETE と safe なメソッ�
 サーバーはキーを記録してから業務処理（ここでは課金を記録する処理）を行い、同じキーの 2 度目には業務処理を再実行せず、記録済みの応答を返します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント
     participant A as 決済 API
@@ -155,6 +162,7 @@ RETURNING id;
 1 通目の処理が終わる前に 2 通目が届く場合、2 通目に何を返せるかは、キーの記録をどのトランザクションに置いたかで変わります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as クライアント（2 通目）
     participant A as 決済 API
@@ -187,6 +195,7 @@ sequenceDiagram
 キーの記録は、いつか消さなければ増え続けます。有効期限のポリシーは、API を提供する側が定めて文書化するよう求められています。具体的な期間は示されていません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     [*] --> None
     None: 未登録

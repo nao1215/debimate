@@ -28,6 +28,7 @@ DB は表や索引をページという固定長の単位で管理し、スト�
 ここまでに出てきたノードの姿は、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     N["ノード 1 つ<br/>キー：30 ｜ 60 ｜ 90 ｜ … ｜ 4820"]
     C1["30 未満を<br/>受け持つノード"]
@@ -38,6 +39,7 @@ flowchart TB
     N --> C2
     N --> C3
     N --> C4
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の一番上にある箱 1 個がノードです。中にはキーが小さい順に数百件並び、隣り合うキーで区切られた区間ごとに、1 つ下のノードへの枝が伸びます。
@@ -95,6 +97,7 @@ B-Tree のノードは、木の中の位置によって 3 種類に分かれま�
 キー 42 を探す経路は以下の通りです。区切りキーが 150, 220 の内部ノードより下は省いています。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     R["根：100"]
     I1["内部ノード：30, 60"]
@@ -109,6 +112,7 @@ flowchart TD
     I1 -->|"42 は 30 以上 60 未満"| L2
     I1 --> L3
     L2 -->|"行、または<br/>行を見つける情報を得る"| T
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図では、そのページに載っている区切りキーだけを材料に、索引を 3 枚降りて目的のキーに辿り着いています。探索の途中で分岐が枝分かれしないので、索引を降りる回数は段数で決まります。葉から先で追加のページを読むかどうかは実装と問い合わせによって変わり、葉に行データが入っている場合や、必要な列が索引だけで揃う場合には、そこで読み取りが完結することもあります。実際に読むページの枚数は、一致する行が複数の葉にまたがればその分だけ増えます。
@@ -126,6 +130,7 @@ flowchart TD
 葉が 1 枚割れた時に、親が何を受け取るのかは、以下の通りです。分割に関係する枝だけを抜き出した図で、親はほかにも枝を持ちます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph BEFORE["分割前：葉が満杯の状態でキー 48 が来る"]
         PB["親：60"]
@@ -143,6 +148,7 @@ flowchart TB
         PA --> LA2
         PA --> LA3
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で動いているのは、元の葉に入っていたキーの後半です。48 と 55 が新しい葉に移り、その新しい葉の先頭になる 48 が、親の区切りキーとしてコピーされます。60 以上の範囲を受け持つ隣の葉は、この分割では変更されません。段数もこの操作では変わりません。
@@ -168,6 +174,7 @@ flowchart TB
 DB が実際に使う索引の多くは、B-Tree そのものではなく B+tree と呼ばれる変種です。2 つの違いは、葉より上のノードに何を置くかにあります。2 つを並べると、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph BT["B-Tree：内部ノードにも値を置く"]
         BR["根：30 + 30 の値"]
@@ -183,6 +190,7 @@ flowchart TB
         PR --> PL1
         PR --> PL2
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の B-Tree では根に 30 の値そのものが載るので、探索が途中で終わる場合があります。B+tree の根が持つのは区切りキーだけで、30 の値は葉に置かれます。値を上の段から追い出すと、1 ページに入る区切りキーの数が増えて分岐数が上がりやすくなります。加えて、どのキーの探索も葉で終わり、全ての葉は同じ深さにあるので、木を降りる回数はどのキーでも同じです。
@@ -194,11 +202,13 @@ flowchart TB
 範囲を取り出す時に、この横の繋がりがどう働くかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     R["根から 42 の葉に降りる"] --> A
     subgraph LEAVES["葉の連結"]
         A["30, 42, 55"] -->|"次の葉に"| B["60, 71, 88"] -->|"次の葉に"| C["100, 118"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で根から降りているのは 1 度だけです。42 以上 90 以下を取り出す条件なら、最初の葉に着いた後は横の繋がりを辿るだけで済み、上の段に戻る動きは必要ありません。`ORDER BY` の並べ方が索引の並び順と一致していれば、整列の処理も省けます。

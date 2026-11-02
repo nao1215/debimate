@@ -16,6 +16,7 @@ Transaction Isolation（分離）は、複数のトランザクションを同�
 同じ行を読んでから書く 2 本のトランザクションを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 注文 A
     participant D as 在庫の行
@@ -52,6 +53,7 @@ SQL 標準の最も強いレベルは、この一致そのものを要求して�
 2 本のトランザクションが重なった時、分離レベルが何を定めるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     Q["同時に走る 2 本のトランザクション"] --> C{"同じ行や範囲に触れるか"}
     C -->|"触れない"| N["互いに影響しない"]
@@ -59,6 +61,7 @@ flowchart TB
     C -->|"両方が書く"| W["2 本の書き込みが<br/>どう決着して良いか"]
     R --> S["全体として、直列実行と<br/>同じ結果になる順序が存在するか"]
     W --> S
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 分離レベルが定めるのは、並行実行でどのような観測と結果を許すかです。上記の図に並べた 3 つの問いがその中身です。
@@ -84,6 +87,7 @@ PostgreSQL のドキュメントは、同じ検索条件の問い合わせを実
 1 本のトランザクションの中で、2 種類の読み直しを並べた流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant T1 as T1
     participant D as DB
@@ -124,10 +128,12 @@ sequenceDiagram
 最終行の SERIALIZABLE だけは、この 3 列で定義が尽きるわけではありません。各レベルが 1 つ手前に何を足すのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     RU["READ UNCOMMITTED"] --> RC["READ COMMITTED<br/>未確定の値を読まない"]
     RC --> RR["REPEATABLE READ<br/>読んだ行が自分には変わらない"]
     RR --> SE["SERIALIZABLE<br/>3 つの禁止に加えて<br/>直列実行との一致を求める"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Berenson 氏らの論文は、SQL 標準の 4.28 項が SERIALIZABLE に「commonly known as fully serializable execution」（一般に完全な直列化可能実行として知られるもの）を求めている点を指摘し、3 つの現象を禁止しただけの水準は ANOMALY SERIALIZABLE という別の名前で呼んでいます。3 つを禁止すれば直列化可能になる、という読み方は同じ論文が誤解として名指ししたものです。
@@ -147,6 +153,7 @@ SERIALIZABLE が要求しているのは、並行実行の結果が何らかの�
 スナップショットとは、複数あるバージョンのうちどれをその読み取りから可視とするかを決める基準です。ある論理的な時点を決め、その時点で確定していたバージョンだけを見せます。DB 全体を複製するわけではありません。行の複数のバージョンを保持し、スナップショットに従って可視なバージョンを選ぶ方式が MVCC（Multiversion Concurrency Control）です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant T1 as T1（読み手）
     participant D as 行の複数バージョン
@@ -163,6 +170,7 @@ sequenceDiagram
 時点をいつ決め直すかは、分離レベルと DBMS で変わります。同じ 2 回の読み取りが、2 つの方式でどう分かれるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as T1（文ごとに取り直す）
     participant D as DB
@@ -191,11 +199,13 @@ PostgreSQL の REPEATABLE READ が基準にするのは、トランザクショ�
 もう 1 つの方法がロックです。読み取りの前に共有ロックを取れば、確定していない値を読むことはなくなります。いつ手放すかで段階が分かれます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     R["読み取りで共有ロックを取る"] --> Q{"いつ手放すか"}
     Q -->|"読み終えた時点"| E["読み直すと値が変わり得る"]
     Q -->|"確定まで持つ"| K["他は更新できず<br/>読み直しても同じ値"]
     K --> N["条件に合う行が新しく挿入されるのは<br/>行のロックでは止まらない"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Berenson 氏らの論文は、2 相ロック（two-phase locking）を規律どおりに使えば直列化可能性を保証できると述べています。2 相ロックとは、ロックを取り終えてから解放を始め、解放後は新しいロックを取らない規律です。
@@ -233,11 +243,13 @@ Oracle の serializable も同じ形で、トランザクションの開始後�
 読み取りの可視性と書き込み競合は分けて考えられ、1 つの DBMS が複数の方式を組み合わせます。同じ DBMS の中で操作ごとにどちらが働くのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     Q["1 つの DBMS への操作"] --> R["ロックを伴わない SELECT"]
     Q --> W["SELECT ... FOR UPDATE<br/>UPDATE・DELETE"]
     R --> S["スナップショットから読む"]
     W --> L["行のロックを取る"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の分かれ方は、InnoDB と PostgreSQL のどちらにも当てはまります。MVCC とロックは、DBMS ごとにどちらか一方を選ぶ二択ではありません。どちらが働くかは操作ごとに決まります。

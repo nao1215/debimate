@@ -14,6 +14,7 @@ Bitcoin Script は、取引の出力に「使う条件」を書くための小�
 条件と証明が噛み合う様子を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph OUT["過去の出力"]
         L["ロックスクリプト<br/>使う条件の手順"]
@@ -24,6 +25,7 @@ flowchart LR
     U --> E["検証者が実行"]
     L --> E
     E --> R["真なら使える<br/>偽なら無効"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、条件（ロックスクリプト）と証明データは別の取引に分かれて存在し、使う時に初めて組み合わされて実行されます。[Bitcoin Wiki の Script のページ](https://en.bitcoin.it/wiki/Script)は、実行が失敗せずに終わり、スタックの一番上に真（0 でない値）が残ることを取引の有効条件として説明しています。
@@ -58,10 +60,12 @@ Script は、条件を検証プログラムそのものではなく、出力の�
 従来の形式での検証の実行順は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["アンロックスクリプトを実行<br/>証明データがスタックに積まれる"] --> B["スタックを引き継ぐ"]
     B --> C["ロックスクリプトを実行<br/>条件の手順で証明を検査"]
     C --> D["スタックの一番上が<br/>真なら合格"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、先にアンロックスクリプトを実行して証明データをスタックに積み、その状態を引き継いでロックスクリプトを実行します。スタックは「後に積んだものを先に取り出す」入れ物です。多くの命令は、スタックに値を積んだり、スタックの上の値を取り出して処理したりします。
@@ -114,6 +118,7 @@ Script にはループがありません。[Bitcoin Wiki](https://en.bitcoin.it/
 P2SH での支払いと使用の分担は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph PAY["支払う時の出力"]
         H["条件スクリプトの<br/>ハッシュ値だけ"]
@@ -125,6 +130,7 @@ flowchart LR
     S -->|"ハッシュして一致を確認"| H
     S --> E["本体を実行して検査"]
     P --> E
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、使う時には条件スクリプトの本体と証明の両方を出します。検証者は、本体のハッシュ値が出力の値と一致することを確かめてから、本体を実行します。条件の中身を知り、データとして持ち運ぶ責任が、支払う側から受け取る側（条件を設計した本人）に移ります。多くの公開鍵を並べる multisig のような長い条件は、この形式との組み合わせで使われます。

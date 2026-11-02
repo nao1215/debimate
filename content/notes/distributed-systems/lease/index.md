@@ -14,10 +14,12 @@ Lease（リース）は、ある権利を期限付きで貸し出し、期限が
 登場人物を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     H[Holder<br/>借りる側] -- 取得・更新 --> G[Grantor<br/>貸す側]
     G -- 期限付きの権利 --> H
     H -- 権利を使って操作 --> R[(保護対象<br/>ストレージなど)]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Grantor は権利の管理だけを担当し、保護対象への操作は Holder が行います。権利の貸し借りと実際の操作が別の経路を通るため、保護対象は「操作してきた相手が今も権利を持っているか」を知りません。保護対象が番号を検査できるなら、権利を貸すたびに大きくなる番号（fencing token）でこの点を補うことができます。なお、Grantor 自身が落ちると権利の記録ごと失われるため、実際の実装では Grantor を複数ノードで複製します（後述の etcd は Raft で記録を揃える）。
@@ -33,6 +35,7 @@ flowchart LR
 保持者の同意なしにロックを強制解放し、次のノードが取得した場合に何が起きるかは、以下の通りです。図中の GC（Garbage Collection）は、使われなくなったメモリを回収する処理で、実行中はプロセスが数秒から数十秒止まることがあります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as Node A（旧保持者）
     participant M as 管理側
@@ -61,6 +64,7 @@ Lease は、この認識のずれを縮めます。権利に期限が入って�
 操作は、取得・更新・返却・失効の 4 つです。権利を貸す長さを生存時間（TTL、Time To Live）と呼びます。4 つの操作が状態をどう動かすかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     [*] --> Granted: 取得（期限 = 現在 + 生存時間）
     Granted --> Granted: 期限内に更新（期限を延長）
@@ -93,6 +97,7 @@ Lease の安全性は、貸す側と借りる側の時計が同じ時刻を指�
 失効に気付かないまま書き込んだ操作が、番号の比較で拒否される流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as Node A（token 33）
     participant G as Grantor

@@ -16,9 +16,11 @@ Bitcoin は、ブロックに入った取引（transaction、以下の図では 
 受け取る側が置かれる状況を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["代金を受け取る側<br/>（携帯端末のウォレット）"] -->|"自分宛の取引は<br/>ブロックに入ったか"| F["ブロック全体を持つ参加者"]
     F -.->|"「入っている」という返事"| C
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の「入っている」という返事は、そのままでは証拠になりません。返事の裏を取ろうにも、ブロックチェーン全体は数百 GB あり、携帯端末のウォレットには収まりません。ルートハッシュと包含証明の組は、この返事を手元で検算できる証拠に置き換えます。
@@ -32,6 +34,7 @@ flowchart LR
 ヘッダとブロック本体の大きさの関係は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph Body["ブロック本体（数 MB）"]
         TX["取引 数千件<br/>Tx0, Tx1, Tx2, ..."]
@@ -41,6 +44,7 @@ flowchart LR
         O["バージョン・直前のブロックのハッシュ<br/>時刻・bits・nonce"]
     end
     TX -->|"全件から計算"| R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、ヘッダ側の 32 バイトが本体の数千件を代表します。ブロックと取引を自力で完全に検証する参加者をフルノード、ブロックヘッダだけを保持して取引の有効性の検証をフルノードに任せる参加者を軽量クライアントと呼びます。フルノードの条件は検証を自分で行うことで、検証を終えた古いブロックのデータを削除して動いているフルノードもあります。軽量クライアントは、携帯端末のように全件を保持し続けられない環境で使われます。
@@ -58,6 +62,7 @@ witness データは、そのコインを使う資格を満たしていること
 取引と 2 つの識別子の関係は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph Tx["1 つの取引"]
         Base["取引本体<br/>入力（どのコインを使うか）<br/>出力（どこにいくら送るか）"]
@@ -66,6 +71,7 @@ flowchart LR
     Base -->|"SHA-256 を 2 回"| TXID["txid<br/>ブロックヘッダ側の木の葉"]
     Base --> WTXID["wtxid<br/>witness commitment 側の木の葉"]
     W --> WTXID
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、ブロックヘッダ側の木に witness は入りません。仕様変更の提案文書である BIP（Bitcoin Improvement Proposal）の [141 番](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)は、witness まで含めた識別子である wtxid で別の木を作り、そのルートをコインベース取引（ブロックの先頭に置かれる、ブロック作成者が報酬を受け取る取引）の出力に埋め込む witness commitment を定めています。witness が改竄されていないことは、wtxid の木で保証します。
@@ -79,6 +85,7 @@ flowchart LR
 取引 3 件のブロックでの複製は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     H0["Hash0"] --> H01["Hash01"]
     H1["Hash1"] --> H01
@@ -86,6 +93,7 @@ flowchart BT
     H2d["Hash2 の複製"] --> H22
     H01 --> R["ルートハッシュ"]
     H22 --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の Hash22 は、Hash2 を 2 つ連結した組のハッシュです。この木は、4 件目の取引として Tx2 をもう一度並べた場合と同じ形になります。
@@ -103,11 +111,13 @@ flowchart BT
 取引 4 件のブロックで、Tx2 の包含を示す時に何が渡るかは、以下の通りです。木と証明の読み方は [Merkle Tree](../merkle-tree/) の包含証明と同じです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     H2["Hash2<br/>検証者が計算する"] --> H23["Hash23<br/>検証者が計算する"]
     H3["Hash3<br/>証明に含まれる"] --> H23
     H01["Hash01<br/>証明に含まれる"] --> R["ルートハッシュ<br/>検証者が計算する"]
     H23 --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で証明として渡るのは Hash3 と Hash01 の 2 個で、検証者は Tx2 から Hash2 を求め、根まで再計算して手元のルートハッシュと照合します。左右をどう知るかは証明の形式ごとに決まっており、Bitcoin では各段での番号から決まります。0 から数えると Hash2 は番号 2 で、偶数なので相手は右の Hash3 です。1 つ上の段で Hash23 は番号 1 になり、奇数なので相手は左の Hash01 です。
@@ -162,6 +172,7 @@ func doubleSHA256(left, right []byte) [32]byte {
 軽量クライアントとフルノードのやり取りは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as 軽量クライアント
     participant F as フルノード
@@ -207,6 +218,7 @@ sequenceDiagram
 どの取引に関心があるかが伝わる問題に対して、BIP 37 は、関係の無い取引もいくらか混ぜて受け取る仕組みを定めました。BIP 37 は、精度の高い絞り込みを使うと自分のウォレットに関係する取引だけが届く代わりに、相手のノードが取引と IP アドレスを結び付けられると書かれています。通信量と匿名性のどちらを取るかの選択になります。以下がこの駆け引きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant C as 軽量クライアント
     participant F as フルノード

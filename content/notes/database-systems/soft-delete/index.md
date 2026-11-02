@@ -14,12 +14,14 @@ weight: 2
 本記事では、RDB（リレーショナルデータベース）の表に削除フラグを置く設計を説明します。分散 DB（データベース）が複製の間で消去を伝えるために置く tombstone のような内部的な印には触れません。注文した時点の氏名や住所を残すかどうかも、会員の行を消すかどうかとは別の設計課題なので扱いません。業務の上で使われなくなった行に対して取れる手は、代表的には以下の 5 つの方向で考えられます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     S["業務の上で<br/>使われなくなった行"] --> A["物理削除<br/>行を表から取り除く"]
     S --> B["削除フラグ<br/>is_deleted / deleted_at"]
     S --> C["状態の遷移<br/>退会済み・販売終了・失効"]
     S --> D["アーカイブ<br/>別の表・別の保管先に移す"]
     S --> E["匿名化<br/>行は残し個人データだけ消す"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 5 つは排他的な分類ではなく、抽象度も揃っていません。状態を遷移させた行を後からアーカイブに移す、行を残したまま個人データだけを匿名化する、といった組み合わせが実際には現れます。以降では、削除フラグが何を解決し、代わりに何を持ち込むのかを見た上で、状態の遷移・履歴・アーカイブがそれぞれどの部分を引き受けるのかを整理します。
@@ -33,6 +35,7 @@ flowchart TD
 会員の行を消した時に何が起きるかを以下に示します。外部キー制約に `ON DELETE CASCADE` を指定した場合の例です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant OP as 運用担当
     participant M as members 表
@@ -82,12 +85,14 @@ CREATE TABLE members (
 `deleted_at` が `NULL` なら有効、日時が入っていれば削除済み、という約束です。この約束は DDL（Data Definition Language、表や索引を定義する SQL）のどこにも書かれておらず、`members` を読む全てのコードが `WHERE deleted_at IS NULL` を守ることで成り立ちます。守る場所は 1 箇所ではありません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["会員一覧の画面"] -->|"deleted_at IS NULL あり"| M[(members)]
     B["名前での検索"] -->|"deleted_at IS NULL あり"| M
     C["月次のレポート"] -->|"deleted_at IS NULL あり"| M
     D["別サービスからの参照"] -->|"絞り込み条件を<br/>書き忘れた経路"| M
     M -->|"D の結果にだけ"| X["退会済みの会員が<br/>混ざる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図で絞り込み条件を持たないのは `別サービスからの参照` だけです。書き漏れは構文の誤りではないため実行時にエラーにならず、返る行数が多いことも正常な結果と区別が付きません。`JOIN` の先の表にも同じ絞り込み条件が必要なので、削除フラグを持つ表が増えるほど守る箇所も増えていきます。
@@ -141,6 +146,7 @@ CREATE UNIQUE INDEX members_email_active_idx
 呼び名が決まると、その状態から次にどこに動けるのかも決まります。以下が会員を例に取った遷移です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
     [*] --> 仮登録: 申込
     仮登録 --> 有効: メールアドレスの確認
@@ -180,11 +186,13 @@ CREATE TABLE member_status_changes (
 この表は追記だけを行う運用にします。DDL は書き換えを禁止しないので、追記だけに保ちたいなら、`UPDATE` と `DELETE` の権限をアプリケーションの利用者から外すといった手当てが別に必要です。1 回の退会処理が何を書くのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     U["退会の処理"] --> M["members<br/>status を 有効 → 退会済み に更新"]
     U --> H["member_status_changes<br/>遷移を 1 行追記"]
     M --> Q1["今の状態を知りたい問い合わせ"]
     H --> Q2["いつ・誰が・なぜ変えたかを<br/>知りたい問い合わせ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の `members` への更新と `member_status_changes` への追記は、同じトランザクション（複数の書き込みをまとめて、成功か失敗かのどちらかにする単位）で行います。片方だけが成功すると、現在の状態と遷移の記録が食い違ったまま残るからです。
@@ -204,6 +212,7 @@ flowchart TB
 以下が移す前と移した後の構成です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph before["移す前"]
         M1[(members<br/>有効・退会済みが同居)]
@@ -214,6 +223,7 @@ flowchart LR
     end
     M1 -->|"1. 退会から 1 年経過した行を複写"| AR
     M1 -->|"2. 複写を確かめてから DELETE"| M2
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の移送は、複写してから消すという順序で行います。物理削除だけを行う場合と違い、退会済みの会員の行は `members_archive` に残るので、過去の注文からその会員を参照する経路を残せます。ただし、保持期間を置いている間は退会済みの行が `members` に残ります。絞り込み条件が不要になるわけではなく、守る対象が直近 1 年に退会した会員だけに縮む、という効果です。退会と同時に移す設計にすれば、`members` から絞り込み条件を外せます。
@@ -243,11 +253,13 @@ flowchart LR
 消去の対象は個人データであって、行そのものではありません。行に何を残すかで、取れる手が分かれます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     R["個人データの消去を求められた"] --> D{"行に何を残すか"}
     D -->|"行も個人データも残す"| F["削除フラグ<br/>見えなくするだけで<br/>要件を満たさない"]
     D -->|"行を残し個人データを消す"| A["匿名化<br/>取引の記録を残せる"]
     D -->|"行ごと消す"| E["消去<br/>バックアップ・ログ・集計表・<br/>検索エンジンの複製まで洗い出す"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の匿名化を選べるかどうかは、要件を満たす形で不可逆にできるかで決まります。どこまで匿名化すれば足りるのかは、扱うデータと法的な要件によって変わります。

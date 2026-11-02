@@ -14,6 +14,7 @@ weight: 4
 署名を作る側と検証する側の関係を以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph Signer["署名する側"]
         SK["秘密鍵（隠す）"] --> S["署名の作成"]
@@ -26,6 +27,7 @@ flowchart LR
         PK["公開鍵"] --> V
         V --> R["合格 / 不合格"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のとおり、検証する側が使うのはメッセージ・署名・公開鍵の 3 つだけで、全て公開して差し支えない情報です。秘密鍵は署名の作成にだけ必要で、検証には登場しません。この非対称が、世界中の参加者がそれぞれ検証する Bitcoin の構成と噛み合います。
@@ -39,6 +41,7 @@ Bitcoin の取引は、誰でも作ってネットワークに流せます。出
 この案は、検証者が世界中に居る環境では成立しません。合言葉を添えた取引はネットワーク全体に転送されるので、検証した参加者の全員が合言葉を知ります。合言葉が使い回せる情報である限り、見た人はそれを使って残りのコインを奪う取引を作れます。合言葉方式が壊れる流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as Alice
     participant N as ネットワークの参加者
@@ -65,10 +68,12 @@ Bitcoin の秘密鍵は 256 ビットの整数なので、取り得る値はお�
 代表的な形式での、鍵とアドレスの導出の流れは以下の通りです。図の矢印は導出の向きで、逆向きの計算は現実的にできません。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     RND["乱数"] --> SK["秘密鍵<br/>大きな整数"]
     SK -->|"一方向の演算"| PK["公開鍵"]
     PK -->|"ハッシュ関数"| AD["アドレスの元になる値"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 秘密鍵から公開鍵を計算するのは一瞬で、公開鍵から秘密鍵を求める問題は楕円曲線離散対数問題（Elliptic Curve Discrete Logarithm Problem、ECDLP）と呼ばれ、現実的な計算量では解けないと考えられています。逆向きが困難という見た目は [Hash Function](../hash-function/) の一方向性と似ているものの、根拠になっている問題は別です。ここで使う曲線と演算の具体は、後半の「Bitcoin での署名」で触れます。
@@ -84,6 +89,7 @@ flowchart LR
 署名の対象は、メッセージそのものではなくメッセージのハッシュ値です。署名の計算は決まった大きさの数を相手にするので、どんな大きさのメッセージも、まず固定長のハッシュ値に要約してから署名します。署名の作成は「メッセージのハッシュ値と秘密鍵から署名を計算する」処理で、検証は「メッセージのハッシュ値・署名・公開鍵の 3 つが対応しているかを確かめる」処理です。流れは以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant S as 署名する側
     participant V as 検証する側
@@ -114,6 +120,7 @@ P2PKH（Pay to Public Key Hash）や P2WPKH（Pay to Witness Public Key Hash）�
 これらの形式では、出力の条件に公開鍵のハッシュ値が置かれ、使う側は公開鍵と署名の 2 つを出します。証明の出し方は形式ごとに違い、公開鍵を入力側で示さない形式もあります。以下が検証の噛み合わせです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph OUT["過去の出力（条件）"]
         PH["公開鍵のハッシュ値"]
@@ -124,6 +131,7 @@ flowchart LR
     end
     PK2 -->|"ハッシュして一致を確認"| PH
     SG -->|"この公開鍵で検証"| PK2
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の検証者は、入力の公開鍵をハッシュして出力の値と一致することと、署名がその公開鍵での検証に合格することの 2 つを確かめます。条件の書き方の仕組みは [Bitcoin Script](../bitcoin-script/) で扱います。

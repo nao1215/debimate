@@ -26,6 +26,7 @@ Merkle Tree（マークルツリー、ハッシュ木）は、データの並び
 4 件のデータ A・B・C・D からルートハッシュがどう決まるかを以下に示します。図の矢印は、下の値から上の値を計算する向きです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     A["データ A"] --> HA["HA"]
     B["データ B"] --> HB["HB"]
@@ -37,6 +38,7 @@ flowchart BT
     HD --> HCD
     HAB --> R["ルートハッシュ"]
     HCD --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 作り方は 3 手順です。各データをハッシュして HA から HD を作る。隣同士を左から組にし、HA と HB をこの順にバイト列として繋げてハッシュした値 HAB を 1 段上に置く（HC と HD から作る HCD も同様）。値が 1 つになるまで同じ操作を繰り返し、最後に残った値がルートハッシュです。
@@ -52,6 +54,7 @@ flowchart BT
 登場人物は 2 者です。全件を持つ配布側と、C を 1 件だけ持つ検証者です。検証者は、正しいルートハッシュを信頼できる経路で入手済みとします（証明を送ってくる相手からルートハッシュも受け取ると、両方を偽造できるため検証になりません）。確かめたいのは、手元の C が、そのルートハッシュの表す並びに確かに含まれていたことです。以下が 2 者のやり取りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant V as 検証者（C だけ持つ）
     participant P as 配布側（全件を持つ）
@@ -65,12 +68,14 @@ sequenceDiagram
 上記の図で配布側が渡すのは、HD と HAB の 2 個だけです。この並びが、冒頭で名前を挙げた包含証明です。証明に入るのは、C から根まで登る道の各段で連結相手になるハッシュ 1 個ずつなので、証明の個数は段の数と一致します。以下が検証者の計算です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     HC["HC<br/>検証者が C から計算"] --> HCD["HCD<br/>検証者が計算"]
     HD["HD<br/>証明として受け取る"] --> HCD
     HAB["HAB<br/>証明として受け取る"] --> R2["再計算した<br/>ルートハッシュ"]
     HCD --> R2
     R2 -.->|"一致するか照合"| R1["手元の<br/>ルートハッシュ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 検証者の手順は 3 つです。手元の C をハッシュして HC を作る。HC の右に受け取った HD を繋げてハッシュし、HCD を得る。HCD の左に受け取った HAB を繋げてハッシュし、出てきた値を手元のルートハッシュと照合する。一致すれば、C はルートハッシュが代表する 4 件の中に確かに入っていました。連結する順序で結果が変わるため、証明の各ハッシュには「左右どちら側に置くか」の情報も添えられています。
@@ -99,11 +104,13 @@ A・B・D の元データは 1 件も受け取っていません。A と B は H
 以下が 4 番目の性質です。A と B を使い終わって削除しても、HAB さえ残せば C や D の包含証明はそのまま作れます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     HAB["HAB だけ保存<br/>（A・B は削除済み）"] --> R["ルートハッシュ"]
     HC["HC"] --> HCD["HCD"]
     HD["HD"] --> HCD
     HCD --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 ---

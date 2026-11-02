@@ -32,6 +32,7 @@ note.txt は 1 byte、disk.img は 64 MiB ですが、SHA-256 の出力はどち
 固定長に縮めるだけなら、先頭 32 byte を取り出す、全 byte を 1 byte の枠の中で足し合わせる、といった方法でも実現できます。しかし、どちらの方法でも、同じ値になる別のデータを手で作れます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     A["元のデータ"] --> T["先頭 32 byte を取り出す"]
     B["33 byte 目から先を<br/>書き換えたデータ"] --> T
@@ -39,6 +40,7 @@ flowchart LR
     C["元のデータ"] --> S["全 byte を足し合わせる"]
     D["ある byte を 1 増やし<br/>別の byte を 1 減らす"] --> S
     S --> SV["同じ合計"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 配布物の検証では、値の一致だけを根拠に同じデータだと判断します。攻撃者が、手元のファイルと同じ値を持つ別のファイルを作れる時点で、この判断は成り立ちません。検証に必要なのは、与えられたデータと同じハッシュ値を持つ別のデータを見つけにくいことです。
@@ -52,6 +54,7 @@ SHA-256 の内部にある圧縮処理は、512 bit 単位でブロックを受�
 この手順は padding（詰め物）と呼ばれ、[FIPS 180-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf) §5.1.1 が定めています。メッセージの長さを l bit として、まず 1 の bit を 1 個加え、続けて `l + 1 + k ≡ 448 (mod 512)`（512 で割った余りが 448）を満たす最小の非負の k だけ 0 の bit を加え、最後に l 自身を 64 bit で書きます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     M["メッセージ<br/>l bit"] --> J["この順に連結する"]
     O["1 の bit を 1 個"] --> J
@@ -61,6 +64,7 @@ flowchart LR
     B --> B1["ブロック 1<br/>32 bit の word 16 個"]
     B --> B2["ブロック 2"]
     B --> BN["ブロック N"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 1 ブロックは、32 bit のまとまりを 1 つの word（語）として、16 個に分けて読みます（同 §5.2.1）。先に加える 1 の bit があるので、元のデータの終わりと 0 埋めの始まりを区別できます。
@@ -76,6 +80,7 @@ SHA-256 は 32 bit の word 8 個、合わせて 256 bit の値を持ち、ブ�
 512 bit のブロックと 256 bit の内部状態から次の 256 bit を作るので、この処理を圧縮関数と呼びます（同 §6.2.2）。圧縮関数は、8 個の作業変数 a〜h を内部状態で初期化して 64 ラウンド回します。回し終えた作業変数と、更新前の内部状態を word ごとに足した結果が、次の内部状態です。この足し算は `2^32` で割った余りを取り、32 bit に収まらない上位の桁を捨てます。これを `2^32` を法とする加算と呼びます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     B1["ブロック 1"] --> U1
     B2["ブロック 2"] --> U2
@@ -84,6 +89,7 @@ flowchart LR
     U1 --> U2["圧縮関数<br/>64 ラウンド"]
     U2 --> UN["圧縮関数<br/>64 ラウンド"]
     UN --> O["ハッシュ値<br/>256 bit"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 ブロックを N 個読み終えた時の内部状態が、そのままハッシュ値です。入力が長くなると増えるのは更新の回数だけで、更新される領域は 256 bit のまま変わりません。長さの決まっていないデータから固定長のハッシュ値ができるのは、固定サイズの内部状態をブロックごとに繰り返し更新し、最後の状態を出力するからです。
@@ -105,6 +111,7 @@ message schedule は、64 ラウンドが使う word `W_t` を用意する手順
 各ラウンドは、`Σ0`・`Σ1`・`Ch`・`Maj` の出力・ラウンドごとに決まる定数・message schedule の word を `2^32` を法とする加算で混ぜます。回転とシフトが 1 つの word の中で bit の位置を動かし、加算の桁上がりが下の桁の違いを上の桁に伝えます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     D["入力の 1 bit"] --> W["ブロックの 1 word"]
     W --> WS["message schedule<br/>後ろの word へ次々と入る"]
@@ -113,6 +120,7 @@ flowchart LR
     R --> R64["64 ラウンド繰り返す"]
     R64 --> S["作業変数 a〜h<br/>256 bit の全体"]
     S --> NB["更新前の内部状態と<br/>足して次の内部状態へ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 32 byte の入力で 1 bit だけ違う組を 2000 件作り、ハッシュ値で異なる bit の数を数えました。

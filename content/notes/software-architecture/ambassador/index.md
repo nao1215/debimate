@@ -18,6 +18,7 @@ Ambassador という名前は、この論文より前に Brendan Burns 氏が 20
 ブログが挙げる Redis の例を以下に示します。Redis は主にメモリ上でデータを扱うデータストアで、書き込みを受け付ける 1 台と、読み取り専用の複製を複数台という構成を組めます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph UNIT["同じ実行単位"]
         A["main<br/>アプリケーション"]
@@ -27,6 +28,7 @@ flowchart LR
     B -- 書き込み --> M[("write master")]
     B -- 読み取り --> R1[("read replica 1")]
     B -- 読み取り --> R2[("read replica 2")]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図のアプリケーションが知っているのは、localhost の 1 つの宛先だけです。書き込みを master に、読み取りを replica に振り分けるのは ambassador で、replica が 2 台から 5 台に増えた時に構成を追いかける責任も ambassador に移ります。
@@ -46,6 +48,7 @@ Adapter と比べると、単純化して見せる相手が逆です。Ambassado
 書き込みを受け付ける 1 台が障害で切り替わった場合に何が起きうるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as アプリケーション
     participant M1 as 旧 master
@@ -106,6 +109,7 @@ Ambassador が localhost という接点で成り立つのは、同じ実行単�
 本番と開発で何が変わるのかは、以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph P["本番"]
         A1["アプリケーション"] -- localhost:6379 --> X["ambassador"]
@@ -114,6 +118,7 @@ flowchart LR
     subgraph D["開発"]
         A2["アプリケーション"] -- localhost:6379 --> S[("1 台の Redis")]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 6379 は Redis が既定で使うポートで、2 つの構成でアプリケーションが繋ぐ先は同じです。アプリケーションのコードも設定も変えずに、ポートの先に居る相手だけを差し替えられます。テストのたびに複数台の Redis を用意せずに済むので、準備が軽くなります。

@@ -22,6 +22,7 @@ TLS 証明書の発行記録を追記専用のログに残す仕組みを定め�
 葉 3 件での違いを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     subgraph BTC["Bitcoin: 最後の葉を複製する"]
         a1["Hash0"] --> p1["Hash01"]
@@ -37,6 +38,7 @@ flowchart BT
         q1 --> r2["ルートハッシュ"]
         b3["Hash2"] --> r2
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の 2 つは、同じ 3 件の葉から別のルートハッシュを導きます。Bitcoin の木は全ての葉が同じ深さに揃い、RFC 9162 の木は Hash2 だけが浅い位置に付きます。どちらかが正しいという話ではなく、作る実装と検証する実装が同じ規則を使わない限り証明が成立しない、という点が設計事項たる理由です。
@@ -52,6 +54,7 @@ flowchart BT
 以下が接頭辞の有無による違いです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph NG["接頭辞が無い設計"]
         A1["長さ 64 バイトの葉"] -->|ハッシュ化| S["同じ値になり得る"]
@@ -61,6 +64,7 @@ flowchart LR
         B1["0x00 + 葉のデータ"] -->|ハッシュ化| V1["葉のハッシュ"]
         B2["0x01 + 子 2 つ"] -->|ハッシュ化| V2["内部ノードのハッシュ"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 RFC 自身が、接頭辞で入力空間を分ける目的を「this domain separation is required to give second preimage resistance」（この domain separation は second preimage resistance を与えるために必要だ）と書かれています。second preimage resistance（第 2 原像計算困難性）は、ある値と同じハッシュになる別の入力を見つけられない性質です。
@@ -78,6 +82,7 @@ Bitcoin のブロックは、ブロック作成者が選んで決めた取引の
 キー順に葉を並べると、不在を対数サイズで示せるようになります。探しているキーの前後に来る 2 件の包含を証明し、その 2 件の位置が隣り合っていることを示せば、間に別の葉が入る余地はありません。キー順に並べた木で、キー 25 の不在を示す例は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
     K10["キー 10"] --> HA["Hash"]
     K20["キー 20<br/>位置 1 の包含を証明"] --> HA
@@ -85,6 +90,7 @@ flowchart BT
     K40["キー 40"] --> HB
     HA --> R["ルートハッシュ"]
     HB --> R
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 キー 20 が位置 1 に、キー 30 が位置 2 に入っていることを 2 つの包含証明で示せば、位置が隣り合っているため、20 と 30 の間に 25 が入る余地はありません。

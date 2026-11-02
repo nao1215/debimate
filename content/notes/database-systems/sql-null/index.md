@@ -16,11 +16,13 @@ weight: 5
 同じ条件が、値の入った行と `NULL` の行でどう分かれるのかを以下に示します。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     V["email が suzuki@example.com の行"] --> C1["email &lt;&gt; 'sato@example.com'"]
     C1 --> T["TRUE<br/>結果に残る"]
     N["email が NULL の行"] --> C2["email &lt;&gt; 'sato@example.com'"]
     C2 --> U["UNKNOWN<br/>結果から落ちる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 ---
@@ -122,11 +124,13 @@ SELECT * FROM users u
 上の `NOT IN` は 1 行も返しません。`blocked_users.user_id` に `NULL` が 1 つ混ざっただけで、ブロックされていない 3 人も消えます。理由は、`NOT IN` が等値比較の OR に展開されるからです。id が 1 の行では、式が次のように畳まれます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     A["1 NOT IN (2, NULL)"] --> B["NOT (1 = 2 OR 1 = NULL)"]
     B --> C["NOT (FALSE OR UNKNOWN)"]
     C --> D["NOT UNKNOWN"]
     D --> E["UNKNOWN<br/>WHERE で落ちる"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 分かれ目は 3 段目です。一致する値が 1 つも無くても、`FALSE OR UNKNOWN` は FALSE ではなく UNKNOWN になり、`NOT` を通しても UNKNOWN のまま残ります。id が 2 の行は `2 = 2` が TRUE なので、`NOT` を通した結果は FALSE になります。つまり、集合に `NULL` が 1 つでも入ると、`NOT IN` が TRUE を返す行は無くなります。
@@ -196,6 +200,7 @@ PostgreSQL 自身も、15 以降は `NULLS NOT DISTINCT` を付ければ `NULL` 
 押し込んだ場合と分けた場合は以下の通りです。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph a["1 つの NULL に押し込む"]
         A1["未入力"] --> AN["age = NULL"]
@@ -208,6 +213,7 @@ flowchart TB
         B3["age_status = 'not_asked'"]
     end
     AN -.->|"区別が必要なら"| b
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図の「状態を列で持つ」では、`age` を `NULL` のまま残しつつ、なぜ `NULL` なのかを `age_status` で持ちます。集計から除く条件を状態ごとに変えられるので、「拒否した人を除いた平均」のような問い合わせが書けます。分ける先は列に限らず、回答そのものを別の表に移す形も選べます。

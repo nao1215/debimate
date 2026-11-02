@@ -14,11 +14,13 @@ Plugin Architecture が特に効くのは、対応する宛先や形式が増え
 Plugin Architecture では、境界の設計に加えて、拡張を同一プロセスに載せるか（in-process）、別プロセスに分けるか（out-of-process）も設計上の選択になります。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     C["コア"] --> IF{{"境界<br/>（共通の契約）"}}
     P1["拡張 A"] -.実装.-> IF
     P2["拡張 B"] -.実装.-> IF
     P3["拡張 C"] -.実装.-> IF
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 上記の図でコアが依存するのは境界だけで、拡張 A・B・C の実装の中身には依存しません。in-process の Go 実装なら、この境界をインターフェースで表せます。
@@ -32,6 +34,7 @@ flowchart LR
 問題は、宛先が増えるたびにコアの分岐と依存が両方とも増える点です。Elasticsearch 用のクライアントと S3 用の SDK が同じ関数に並び、使わない宛先の依存まで抱えます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph D["直接 if を足す形"]
         direction LR
@@ -47,6 +50,7 @@ flowchart LR
         I2 -.実装.-> P2["S3 拡張"]
         I2 -.実装.-> P3["標準出力拡張"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 境界で受ける形なら、宛先を 1 つ足してもコアの処理と依存は変わりません。増えるのは拡張だけです。
@@ -60,11 +64,13 @@ Go の in-process 実装なら、コアがインターフェースを宣言し�
 『Patterns of Enterprise Application Architecture』の David Rice 氏と Matt Foemmel 氏は、Plugin を「[Links classes during configuration rather than compilation.](https://martinfowler.com/eaaCatalog/plugin.html)」（結び付けるのはコンパイル時ではなく設定の時点である）と説明しています。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     B1["コンパイル"] --> B2["リンク<br/>候補が確定する（Go の場合）"]
     B2 --> B3["起動<br/>拡張が自分を登録する"]
     B3 --> B4["設定を読み<br/>名前で 1 つ選び構築する"]
     B4 --> B5["コアが呼び出す"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 同書が問題として挙げているのは 2 つで、どの実装を使うかの決定があちこちに散ることと、設定を変えるのに再ビルドや再デプロイが必要なことです。インターフェースを実装とは別のパッケージに置く [Separated Interface](https://martinfowler.com/eaaCatalog/separatedInterface.html) は、前者を解きません。境界と実装を切り離しても、どの実装を選ぶかをファクトリメソッドで書けば、その分岐は呼び出し側に散らばったままです。
@@ -142,6 +148,7 @@ func New(name string, cfg Config) (Exporter, error) {
 既定実装を持てないインターフェース（Go など）で境界を表している限り、メソッドの追加も破壊的変更です。追加したメソッドを持たない既存の実装は、その時点でインターフェースを満たさなくなり、ビルドが落ちます。安全なのは「メソッドを足すこと」ではなく「既存のインターフェースを触らないこと」です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph K["ビルドで気付ける"]
         direction LR
@@ -153,6 +160,7 @@ flowchart LR
         direction LR
         A3["引数や返り値の<br/>意味を変える"] --> R2["型は満たしたまま<br/>結果だけが変わる"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 厄介なのは実行するまで気付けない側で、型検査もビルドも通るため、誤りが表面化するのは拡張が動いた後になります。メソッドを消した場合は実装が壊れず、そのメソッドを呼んでいたコードだけが落ちます。互換を保ったまま境界を育てる手は、既存のインターフェースを触らず、新しいメソッドを別のインターフェースとして定義することです。
@@ -182,6 +190,7 @@ flowchart LR
 拡張にできることを絞る話は、プロセスを分ける話とは別です。`fork` して `exec` しただけの子プロセスは、親と同じ利用者の資格で動くので、渡していないファイルでも自分で開けます。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph N["別プロセスにしただけ"]
         direction LR
@@ -193,6 +202,7 @@ flowchart LR
         C2["コア"] -- "ファイルの一覧" --> P2["拡張<br/>mount namespace や<br/>コンテナ、sandbox で<br/>見える範囲を削る"]
         P2 -.届かない.-> X2["渡していない<br/>ファイル"]
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 mount namespace で見えるファイルの木を組み替える、コンテナや sandbox で可視範囲や権限を制限する、といった操作を経てから渡すと、拡張にできることを渡したものの周辺まで狭められます。namespace にも種類があり、新しい namespace を作ること自体はファイルシステムへのアクセス制限になりません。実行する利用者を分けるだけでも、他人が読めるファイルは開けたままです。
@@ -208,6 +218,7 @@ mount namespace で見えるファイルの木を組み替える、コンテナ�
 違うのは、組み合わせる主体です。
 
 ```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     subgraph U["Unix のパイプ"]
         direction LR
@@ -220,6 +231,7 @@ flowchart LR
         Co["コア"] --> Bd{{"境界"}}
         Ex["拡張"] -.実装.-> Bd
     end
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
 Unix のパイプでプログラムを繋いでいるのはシェルで、`cmd1` は `cmd2` を知りません。Plugin Architecture で組み合わせを決めているのはコアです。
