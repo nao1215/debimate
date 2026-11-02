@@ -4,6 +4,7 @@ const pendingDiagrams = new Set();
 const watchedDiagrams = new WeakSet();
 let renderer;
 let rendering = false;
+let renderedCount = 0;
 const nearViewport = node => {
   if (!node.isConnected || !node.getClientRects().length) return false;
   const bounds = node.getBoundingClientRect();
@@ -33,7 +34,12 @@ const renderPending = async () => {
         const mermaid = await loadRenderer();
         // The reader may have scrolled away during the module download.
         if (observer && !nearViewport(node)) continue;
-        await mermaid.run({ nodes: [node] });
+        // mermaid.run() restarts its ID counter on every call, so diagrams rendered one by one
+        // all became "mermaid-0" and a later diagram was drawn into an earlier SVG. Give each a unique ID.
+        const { svg, bindFunctions } = await mermaid.render(`mermaid-lazy-${++renderedCount}`, source);
+        node.innerHTML = svg;
+        node.dataset.processed = 'true';
+        bindFunctions?.(node);
         observer?.unobserve(node);
       } catch (error) {
         // Keep the definition readable and let unrelated diagrams render.
