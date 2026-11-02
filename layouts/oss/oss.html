@@ -1,0 +1,45 @@
+{{ define "main" }}
+{{ $catalog := hugo.Data.oss_catalog }}
+{{ $ranked := sort $catalog.projects "stars" "desc" }}
+<div class="oss-directory">
+<header class="page-header oss-intro">
+  {{ partial "breadcrumbs.html" . }}
+  <div class="oss-title-row"><h1>OSS</h1><a class="oss-sponsor-link" href="https://github.com/sponsors/nao1215"><span aria-hidden="true">♡</span>GitHub Sponsors</a></div>
+  <p class="oss-page-description">{{ .Description }}</p>
+</header>
+<section aria-labelledby="oss-all">
+  <h2 id="oss-all">用途から探す</h2>
+  <div class="oss-categories" role="group" aria-label="OSS の用途" data-oss-tabs hidden>
+    <button type="button" data-category="popular" aria-pressed="true" aria-controls="oss-results">人気のある OSS</button>
+    <button type="button" data-category="all" aria-pressed="false" aria-controls="oss-results">すべて</button>
+    {{ range $catalog.categories }}<button type="button" data-category="{{ .id }}" aria-pressed="false" aria-controls="oss-results">{{ .title }}</button>{{ end }}
+  </div>
+  <form class="oss-filters" data-oss-filters hidden role="search" aria-label="OSS の絞り込み">
+    <label class="oss-search">キーワード<input type="search" name="query" placeholder="名前・用途で検索（例: SQL、画像）" autocomplete="off" aria-controls="oss-results"></label>
+    <label>言語<select aria-label="言語" name="language" aria-controls="oss-results"><option value="">すべての言語</option>{{ range sort (uniq (collections.Apply $catalog.projects "index" "." "language")) }}<option>{{ . }}</option>{{ end }}</select></label>
+    <button type="reset">リセット</button>
+    <p class="oss-result-count" role="status" aria-live="polite" aria-atomic="true" data-oss-count></p>
+  </form>
+  <p class="oss-games-link" data-oss-games hidden><a href="{{ "games/" | relURL }}">プレイ動画とブラウザ版は Games へ →</a></p>
+  <div class="oss-grid" id="oss-results">
+  {{ range $index, $project := $ranked }}
+    <article class="oss-card" id="project-{{ .name }}" data-oss-project data-language="{{ .language }}" data-category="{{ .category }}" data-popular="{{ lt $index 4 }}">
+      <div class="oss-card-header">
+        <h3 class="oss-card-name"><a href="https://github.com/nao1215/{{ .name }}">{{ .name }}</a></h3>
+        <div class="oss-card-meta">
+          {{ $colors := dict "Go" "#00ADD8" "Gleam" "#ffaff3" "Rust" "#dea584" "TypeScript" "#3178c6" "Shell" "#89e051" "JavaScript" "#f1e05a" }}
+          <span class="oss-card-lang"><i class="oss-lang-dot" style="background:{{ index $colors .language }}"></i>{{ .language }}</span>
+          <span class="oss-stars" aria-label="{{ .stars }} GitHub stars"><span aria-hidden="true">★</span><span>{{ .stars }}</span></span>
+        </div>
+      </div>
+      <p class="oss-card-desc">{{ .description }}</p>
+      <div class="oss-links"><a href="https://github.com/nao1215/{{ .name }}#readme">README ↗</a>{{ with .website }}<a href="{{ . }}">公式サイト ↗</a>{{ end }}{{ with .article }}{{ with site.GetPage . }}<a href="{{ .RelPermalink }}">紹介記事 →</a>{{ end }}{{ end }}{{ if eq .category "games" }}<a href="{{ "games/" | relURL }}">Games →</a>{{ end }}</div>
+    </article>
+  {{ end }}
+  </div>
+  <p class="oss-empty" data-oss-empty hidden>該当する OSS はありません。キーワードや言語を変えてみてください。</p>
+</section>
+</div>
+{{ $script := resources.Get "js/oss-directory.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>
+{{ end }}

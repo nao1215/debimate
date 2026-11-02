@@ -2,6 +2,7 @@
   "pages": {
     "index.html": {"bytes": 131072, "gzip_bytes": 40960},
     "search/index.html": {"bytes": 32768, "gzip_bytes": 12288},
+    "oss/index.html": {"bytes": 98304, "gzip_bytes": 24576},
     "games/index.html": {"bytes": 65536, "gzip_bytes": 24576},
     "post/index.html": {"bytes": 131072, "gzip_bytes": 40960},
     "post/ja/index.html": {"bytes": 131072, "gzip_bytes": 40960},

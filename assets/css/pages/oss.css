@@ -1,0 +1,38 @@
+body:has(.oss-directory) { --main-width: 1100px; }
+.oss-directory { font-size: 14px; line-height: 1.7; padding-bottom: 24px; }
+.oss-directory [hidden] { display: none !important; }
+.oss-directory :is(a, input, select, button):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.oss-directory a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.oss-intro { padding: 12px 0 16px; margin-bottom: 8px; }
+.oss-title-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.oss-intro h1 { font-size: 32px; }
+.oss-page-description { margin-top: 12px; color: var(--secondary); font-size: 14px; }
+.oss-sponsor-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 7px 14px; border: 1px solid #d98ab4; border-radius: 6px; background: #fff0f7; color: #a02c6c; font-size: 13px; font-weight: 600; white-space: nowrap; }
+.oss-directory .oss-sponsor-link:hover { background: #fce0ef; border-color: #bf3989; text-decoration: none; }
+.oss-directory .oss-sponsor-link:focus-visible { outline-color: #bf3989; }
+[data-theme="dark"] .oss-sponsor-link { background: #33212d; border-color: #945276; color: #f0a6cf; }
+[data-theme="dark"] .oss-directory .oss-sponsor-link:hover { background: #492b3e; border-color: #db61a2; }
+#oss-all { font-size: 18px; margin-bottom: 12px; }
+.oss-categories { display: flex; flex-wrap: wrap; gap: 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+.oss-categories button { font: inherit; font-size: 13px; color: var(--secondary); padding: 10px 0; border-bottom: 2px solid transparent; cursor: pointer; }
+.oss-categories button[aria-pressed="true"] { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+.oss-filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin-bottom: 16px; }
+.oss-filters label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.oss-search { flex: 1; min-width: 200px; }
+.oss-filters input, .oss-filters select { font: inherit; font-size: 13px; color: var(--primary); background: var(--entry); border: 1px solid var(--border); border-radius: 4px; padding: 8px; min-height: 40px; width: 100%; }
+.oss-filters button { font-size: 12px; padding: 10px 6px; min-height: 40px; cursor: pointer; text-decoration: underline; }
+.oss-result-count { width: 100%; font-size: 12px; color: var(--secondary); }
+.oss-result-count:empty { display: none; }
+.oss-directory .oss-card-name { font-size: 16px; margin: 0; overflow-wrap: anywhere; }
+.oss-directory .oss-card-desc { color: var(--secondary); font-size: 13px; line-height: 1.65; margin: 0; }
+.oss-stars { display: inline-flex; overflow: hidden; border-radius: 3px; font: 11px/20px sans-serif; color: #fff; white-space: nowrap; }
+.oss-stars > span:first-child { background: #555; padding: 0 5px; }
+.oss-stars > span:last-child { background: #1672a5; padding: 0 6px; }
+.oss-links { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 0; padding-top: 0; font-size: 12px; }
+.oss-links a, .oss-games-link a { text-decoration: underline; text-underline-offset: 3px; }
+.oss-games-link { margin-bottom: 12px; }
+.oss-empty { padding: 24px 0; }
+@media (max-width: 600px) {
+  .oss-search { min-width: 100%; }
+  .oss-categories { gap: 0 12px; }
+}

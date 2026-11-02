@@ -71,6 +71,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/fetch_bbs.py
 
+      # 週次 schedule / 手動実行 / 通常デプロイ時に更新。閲覧時の API 通信は不要。
+      - name: Refresh OSS star counts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/fetch_oss_stars.py
+
       - name: Build site
         # 不要になった変換結果を削除してからキャッシュを保存する。
         run: hugo --minify --gc

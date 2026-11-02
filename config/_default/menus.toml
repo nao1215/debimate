@@ -19,14 +19,19 @@
   weight = 4
 
 [[main]]
+  name = "OSS"
+  url = "oss/"
+  weight = 5
+
+[[main]]
   name = "Games"
   url = "games/"
-  weight = 5
+  weight = 6
 
 [[main]]
   name = "BBS"
   url = "bbs/"
-  weight = 6
+  weight = 7
 
 [[main]]
   name = "Search"

@@ -1,0 +1,476 @@
+{
+  "asOf": "2026-11-03",
+  "source": "https://github.com/nao1215/nao1215",
+  "categories": [
+    {
+      "id": "data",
+      "title": "データ整形・分析",
+      "description": "ファイルを SQL で読む、JSON に変える、型を付けて扱う。"
+    },
+    {
+      "id": "dev",
+      "title": "開発環境・テスト",
+      "description": "道具の更新から CLI の動作検証、性能の回帰検知まで。"
+    },
+    {
+      "id": "create",
+      "title": "文章・画像生成",
+      "description": "ドキュメント、画像、グラフ。出力をつくるための道具。"
+    },
+    {
+      "id": "network",
+      "title": "通信・セキュリティ",
+      "description": "API、暗号化、Tor、機密情報。境界をつなぎ、確かめる。"
+    },
+    {
+      "id": "games",
+      "title": "ゲーム・制作基盤",
+      "description": "Ebitengine でつくったゲームと制作フレームワーク。"
+    }
+  ],
+  "projects": [
+    {
+      "name": "gup",
+      "category": "dev",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "Go 製ツールをまとめて更新",
+      "description": "go install で入れたツールを並行更新。バージョン固定やエクスポート／インポートで、別のマシンにも同じ環境を用意できます。",
+      "stars": 619,
+      "article": "/post/ja/2022-02-20-【golang】go-installで取得したgopath-bin以下のバイナリを一括更新",
+      "website": "https://nao1215.github.io/gup/"
+    },
+    {
+      "name": "filesql",
+      "category": "data",
+      "language": "Go",
+      "kind": "Library",
+      "tagline": "ファイルを SQL で読む部品",
+      "description": "CSV・JSON・Parquet・Excel などを SQLite に読み込み、Go の database/sql から問い合わせ。圧縮ファイルにも対応します。",
+      "stars": 383,
+      "article": "/post/ja/2025-08-28-【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話"
+    },
+    {
+      "name": "sqly",
+      "category": "data",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "手元のファイルがデータベースに",
+      "description": "CSV・JSON・Excel・Parquet を SQL で集計。形式をまたぐ JOIN と、編集結果のファイルへの書き戻しも対話シェルから。",
+      "stars": 193,
+      "article": "/post/ja/2026-08-09-【golang】csv／json／excel／parquetにsqlを実行するsqlyをv1.0.0にする話",
+      "website": "https://nao1215.github.io/sqly/"
+    },
+    {
+      "name": "markdown",
+      "category": "create",
+      "language": "Go",
+      "kind": "Library",
+      "tagline": "コードから Markdown と図を生成",
+      "description": "メソッドチェーンで Markdown と Mermaid 図を組み立てる Go ライブラリ。レポートやドキュメント生成に。",
+      "stars": 144,
+      "article": "/post/ja/2026-08-13-【golang】markdownとmermaidを生成するmarkdownパッケージをv1.0.0にした話"
+    },
+    {
+      "name": "jsonize",
+      "category": "data",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "次のコマンドへ JSON を渡す",
+      "description": "コマンド出力・ファイル・引数を jz で JSON に変換。jq などにつなぐ Unix パイプラインの入口に。",
+      "stars": 21,
+      "article": "/post/ja/2026-09-16-jsonizeでJSONをUnixパイプラインの共通言語にする",
+      "website": "https://nao1215.github.io/jsonize/"
+    },
+    {
+      "name": "mimixbox",
+      "category": "dev",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "Linux の道具をひとまとめに",
+      "description": "BusyBox に着想を得た、複数の Linux コマンドを1つのバイナリで提供するツールボックス。",
+      "stars": 39
+    },
+    {
+      "name": "atago",
+      "category": "dev",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "CLI の振る舞いを YAML で検証",
+      "description": "終了コード・出力・ファイル差分・スナップショットを実際のバイナリで検証。PTY を使った対話端末や TUI のテストにも。",
+      "stars": 18,
+      "article": "/post/ja/2026-07-04-CLIにブラックボックステストE2Eを行うatagoを作った話",
+      "website": "https://nao1215.github.io/atago/"
+    },
+    {
+      "name": "himorime",
+      "category": "dev",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "CLI の性能劣化を CI で見つける",
+      "description": "レイテンシ・スループット・CPU 時間・メモリを YAML で計測。性能予算と Git の基準との差分で回帰を検知します。",
+      "stars": 3,
+      "website": "https://nao1215.github.io/himorime/"
+    },
+    {
+      "name": "prompt",
+      "category": "dev",
+      "language": "Go",
+      "kind": "Library",
+      "tagline": "対話シェルをアプリに組み込む",
+      "description": "補完と履歴を備えたプロンプト／REPL ライブラリ。go-prompt の後継を目指して開発しています。",
+      "stars": 12
+    },
+    {
+      "name": "block",
+      "category": "dev",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "開発と CI で同じ CLI を使う",
+      "description": "ブロックチェーン開発で使う CLI のバージョンをロックファイルで固定します。",
+      "stars": 2,
+      "website": "https://nao1215.github.io/block/"
+    },
+    {
+      "name": "metamon",
+      "category": "dev",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "性質を確かめるテストを書く",
+      "description": "Property Based Testing とメタモルフィックテストを Gleam で記述するライブラリ。",
+      "stars": 7
+    },
+    {
+      "name": "automata",
+      "category": "dev",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "繰り返し・状態・イベントを扱う",
+      "description": "Cron、RRULE、リトライ、ファイルシステムイベント、有限オートマトンを提供します。",
+      "stars": 4
+    },
+    {
+      "name": "mobilepkg",
+      "category": "dev",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "SDK なしでモバイルアプリを調べる",
+      "description": "APK・XAPK・APKS・AAB・IPA のメタデータ、署名情報、差分やセキュリティ上の問題を検査します。",
+      "stars": 6
+    },
+    {
+      "name": "omokage",
+      "category": "create",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "自分の文体との近さを測る",
+      "description": "過去の文章から文体を学習し、草稿との一致度を評価。日本語・英語に対応し、ローカルで動作します。",
+      "stars": 17,
+      "article": "/post/ja/2026-06-02-文体の一致度を評価するomokageを作った話"
+    },
+    {
+      "name": "career",
+      "category": "create",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "1つの YAML から履歴書をつくる",
+      "description": "履歴書・職務経歴書と英語 CV を PDF として生成します。",
+      "stars": 4
+    },
+    {
+      "name": "truss",
+      "category": "create",
+      "language": "Rust",
+      "kind": "CLI / Library",
+      "tagline": "CLI・HTTP・WASM で画像変換",
+      "description": "共通の Rust コアで画像を処理。AVIF・WebP・SVG に対応し、HTTP サーバーには署名付き URL や SSRF 対策を備えます。",
+      "stars": 10,
+      "article": "/post/ja/2026-03-14-画像処理ツールtrussを作った話",
+      "website": "https://nao1215.github.io/truss/"
+    },
+    {
+      "name": "imaging",
+      "category": "create",
+      "language": "Go",
+      "kind": "Library",
+      "tagline": "画像処理を Go に組み込む",
+      "description": "リサイズ・切り抜き・回転・ぼかしなど。disintegration/imaging の保守を引き継いだフォークです。",
+      "stars": 10
+    },
+    {
+      "name": "qrkit",
+      "category": "create",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "QR コードをさまざまな出力へ",
+      "description": "QR コードを生成し、端末・SVG・PNG に描画します。",
+      "stars": 11
+    },
+    {
+      "name": "sparklinekit",
+      "category": "create",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "小さなグラフで推移を伝える",
+      "description": "スパークラインを端末の文字列・SVG・PNG として描画します。",
+      "stars": 1
+    },
+    {
+      "name": "textmetrics",
+      "category": "create",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "テキストの違いを計算する",
+      "description": "編集距離・類似度・最長共通部分列（LCS）・差分を扱います。",
+      "stars": 5
+    },
+    {
+      "name": "sqlode",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Codegen",
+      "tagline": "SQL から型安全なコードを生成",
+      "description": "スキーマとクエリから Gleam コードを生成する sqlc スタイルのツール。PostgreSQL・MySQL・SQLite に対応します。",
+      "stars": 5
+    },
+    {
+      "name": "dataprep",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "前処理と検証を組み立てる",
+      "description": "小さな型付きの部品を組み合わせて、データの前処理とバリデーションを記述します。",
+      "stars": 5
+    },
+    {
+      "name": "datastream",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "データを遅延ストリームで処理",
+      "description": "Erlang・JavaScript で動く、合成可能でリソースを安全に扱うストリームライブラリ。",
+      "stars": 5
+    },
+    {
+      "name": "geokit",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "地理座標を計算する",
+      "description": "距離・方位・geohash・polyline・Web Mercator・バウンディングボックスを扱います。",
+      "stars": 7
+    },
+    {
+      "name": "finanza",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "金額・通貨・決済の計算を支える",
+      "description": "十進数演算、通貨の整形、貨幣の時間価値、決済カードの検証を提供します。",
+      "stars": 5
+    },
+    {
+      "name": "iso8583tool",
+      "category": "data",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "決済メッセージを調べる",
+      "description": "ISO 8583 メッセージをコマンドラインで検査・デバッグするツール。",
+      "stars": 6
+    },
+    {
+      "name": "packkit",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "圧縮・アーカイブを扱う",
+      "description": "gzip・zstd・xz などの圧縮と、tar・zip・7z などのアーカイブをランタイム依存なしで扱います。",
+      "stars": 2
+    },
+    {
+      "name": "yabase",
+      "category": "data",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "バイナリとテキストを変換する",
+      "description": "Base64・Base32 などのエンコーディングを、共通の型安全な API で扱います。",
+      "stars": 4
+    },
+    {
+      "name": "oaspec",
+      "category": "network",
+      "language": "Gleam",
+      "kind": "Codegen",
+      "tagline": "OpenAPI からサーバーと SDK を生成",
+      "description": "OpenAPI 3.x 仕様から、型付きサーバースタブとクライアント SDK を生成します。",
+      "stars": 10
+    },
+    {
+      "name": "multipartkit",
+      "category": "network",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "ファイルアップロードを扱う",
+      "description": "multipart ボディのパースと組み立てを行うライブラリ。",
+      "stars": 3
+    },
+    {
+      "name": "mimetype",
+      "category": "network",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "ファイルの種類を判定する",
+      "description": "拡張子から MIME タイプを検索し、マジックナンバーからファイル形式を検出します。",
+      "stars": 4
+    },
+    {
+      "name": "ssevents",
+      "category": "network",
+      "language": "Gleam",
+      "kind": "Library",
+      "tagline": "サーバーからイベントを届ける",
+      "description": "Server-Sent Events（SSE）の生成とパースを行います。",
+      "stars": 3
+    },
+    {
+      "name": "onionscan",
+      "category": "network",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "Onion サービスの設定を検査する",
+      "description": "Tor の Onion サービスを調査し、設定ミスや情報漏えいを見つけるためのツール。",
+      "stars": 19
+    },
+    {
+      "name": "tornago",
+      "category": "network",
+      "language": "Go",
+      "kind": "Library",
+      "tagline": "Tor を Go のアプリから使う",
+      "description": "Tor クライアントとサーバーを実装するための Go ライブラリ。",
+      "stars": 9
+    },
+    {
+      "name": "jose",
+      "category": "network",
+      "language": "Go",
+      "kind": "CLI",
+      "tagline": "鍵・署名・暗号をシェルで扱う",
+      "description": "JWK の鍵生成、JWS の署名・検証、JWE の暗号化・復号を行います。",
+      "stars": 15,
+      "website": "https://nao1215.github.io/jose/"
+    },
+    {
+      "name": "horcrux",
+      "category": "network",
+      "language": "TypeScript",
+      "kind": "Library",
+      "tagline": "ファイルを暗号化して分割する",
+      "description": "ファイルを暗号化した断片に分割し、復元する Node.js／React Native 向けライブラリ。",
+      "stars": 11
+    },
+    {
+      "name": "sensitive",
+      "category": "network",
+      "language": "Go",
+      "kind": "Library",
+      "tagline": "テキスト中の機密情報を見つける",
+      "description": "クレジットカード番号やメールアドレスなどを検出し、必要に応じてマスクします。",
+      "stars": 2
+    },
+    {
+      "name": "bluesky-terminal-client",
+      "category": "network",
+      "language": "Rust",
+      "kind": "CLI",
+      "tagline": "ターミナルから Bluesky を使う",
+      "description": "画像や動画も表示する非公式クライアント。kitty graphics・sixel・iTerm2 に対応します。",
+      "stars": 6
+    },
+    {
+      "name": "rabbitrun",
+      "category": "games",
+      "language": "Go",
+      "kind": "Game",
+      "tagline": "ウサギを走らせ、壁を壊す",
+      "description": "Ebitengine 製のランゲーム。ブラウザや Windows・macOS・Linux で遊べます。",
+      "stars": 1,
+      "website": "https://nao1215.github.io/rabbitrun/"
+    },
+    {
+      "name": "succubus-live",
+      "category": "games",
+      "language": "Go",
+      "kind": "Game",
+      "tagline": "サキュバス VTuber の配信を楽しむ",
+      "description": "仮想ライブ配信を聞きながらチャットを楽しむゲーム。ブラウザやデスクトップで動作します。",
+      "stars": 1,
+      "website": "https://nao1215.github.io/succubus-live/"
+    },
+    {
+      "name": "gozen",
+      "category": "games",
+      "language": "Go",
+      "kind": "Framework",
+      "tagline": "YAML で RPG・ADV・SLG をつくる",
+      "description": "YAML と CLI で2Dゲームを制作。画像や音声を組み合わせて、コードを書かずにゲームをつくれます。",
+      "stars": 4,
+      "website": "https://nao1215.github.io/gozen/"
+    },
+    {
+      "name": "setup-atago",
+      "category": "dev",
+      "language": "Shell",
+      "kind": "GitHub Action",
+      "tagline": "GitHub Actions に atago を導入",
+      "description": "ビルド済みの atago を取得し、CLI の E2E テスト環境を用意する GitHub Action。Go のセットアップは不要です。",
+      "stars": 3
+    },
+    {
+      "name": "setup-block",
+      "category": "dev",
+      "language": "Shell",
+      "kind": "GitHub Action",
+      "tagline": "CI のツールチェーンを再現",
+      "description": "block の導入とツールチェーンのキャッシュを行う GitHub Action。ロックファイルに基づく環境を CI でも再現します。",
+      "stars": 0,
+      "website": "https://nao1215.github.io/setup-block/"
+    },
+    {
+      "name": "setup-ebitengine",
+      "category": "dev",
+      "language": "Shell",
+      "kind": "GitHub Action",
+      "tagline": "Ebitengine の CI 環境構築",
+      "description": "Ebitengine に必要な Linux パッケージを導入する GitHub Action。Xvfb を使うヘッドレステストや cgo ビルドの準備にも対応します。",
+      "stars": 3
+    },
+    {
+      "name": "setup-gozen",
+      "category": "dev",
+      "language": "Shell",
+      "kind": "GitHub Action",
+      "tagline": "ゲーム制作 CLI のバージョン統一",
+      "description": "go.mod に合わせた gozen CLI を導入する GitHub Action。ビルド済みバイナリを利用し、ゲームの検証・ビルドを支えます。",
+      "stars": 0
+    },
+    {
+      "name": "setup-himorime",
+      "category": "dev",
+      "language": "JavaScript",
+      "kind": "GitHub Action",
+      "tagline": "CI の性能計測環境構築",
+      "description": "himorime を導入する GitHub Action。CLI の性能計測・回帰検知を準備し、同一リポジトリの PR には問題点のレポートを投稿できます。",
+      "stars": 0
+    },
+    {
+      "name": "setup-iso8583tool",
+      "category": "dev",
+      "language": "Shell",
+      "kind": "GitHub Action",
+      "tagline": "決済メッセージ検証環境の準備",
+      "description": "ビルド済みの iso8583tool を GitHub Actions に導入。CI から ISO 8583 メッセージの検査・デバッグを行えます。",
+      "stars": 1
+    }
+  ]
+}

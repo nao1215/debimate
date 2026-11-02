@@ -3,3 +3,8 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5850634964503982"
      crossorigin="anonymous"></script>
 {{- end }}
+
+{{- if eq .Layout "oss" }}
+{{- $ossStyle := resources.Get "css/pages/oss.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $ossStyle.RelPermalink }}" integrity="{{ $ossStyle.Data.Integrity }}" crossorigin="anonymous">
+{{- end }}
