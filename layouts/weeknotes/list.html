@@ -70,6 +70,7 @@
                 <h3>{{ .page.Title }}</h3>
                 <time datetime="{{ .week.Date.Format "2006-01-02" }}">{{ .week.Date.Format "2006/01/02" }} の週</time>
               </div>
+              {{ partial "new_badge.html" (dict "date" .week.Date "days" 21) }}
             </a>
           </article>
           {{- end }}

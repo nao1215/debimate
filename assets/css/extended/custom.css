@@ -1668,3 +1668,33 @@ html[data-theme="dark"] .game-pick { background: #36343a; color: #fff5fa; }
 .archive-scroll-status { min-height: 24px; margin: 24px 0; text-align: center; color: var(--secondary); font-size: 14px; overflow-anchor: none; }
 .archive-scroll-status button { margin-left: 12px; padding: 8px 16px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; }
 [data-archive-list] { overflow-anchor: none; }
+
+/* Shared by homepage, Posts and Weeknotes cards. */
+.new-badge {
+  display: inline-block;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  pointer-events: none;
+  padding: 0.15em 0.45em;
+  border-radius: 4px;
+  background: #ffdf9e;
+  color: #743d00;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.4;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.new-badge[hidden] { display: none; }
+
+:root[data-theme="dark"] .new-badge {
+  background: #694319;
+  color: #ffe0a6;
+}
+
+.post-entry, .first-entry, .listing-card { position: relative; }
+.post-entry:has(.new-badge:not([hidden])) .entry-footer,
+.first-entry:has(.new-badge:not([hidden])) .entry-footer,
+.listing-card:has(.new-badge:not([hidden])) time { padding-right: 48px; }

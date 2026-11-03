@@ -58,6 +58,7 @@
         <h3>{{ .Title }}</h3>
         <time datetime="{{ .PublishDate.Format "2006-01-02" }}">{{ .PublishDate.Format "2006/01/02" }}</time>
       </div>
+      {{ partial "new_badge.html" .Date }}
     </a>
   </article>
   {{- $loading = "lazy" }}

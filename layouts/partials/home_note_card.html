@@ -3,4 +3,5 @@
     <header class="entry-header"><h3>{{ .Title }}</h3></header>
     <footer class="entry-footer"><span>{{ .CurrentSection.Title }} · {{ .Date.Format "2006/01/02" }}</span></footer>
     <a class="entry-link" href="{{ .RelPermalink }}" aria-label="{{ .Title }}"></a>
+    {{ partial "new_badge.html" .Date }}
   </article>

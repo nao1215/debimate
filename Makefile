@@ -86,7 +86,7 @@ lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビ�
 	python3 scripts/check_home_delivery.py
 	python3 scripts/check_archive_delivery.py
 	python3 scripts/check_performance_budgets.py
-	node --test scripts/check_home_lists.mjs scripts/check_mermaid_lazy.mjs scripts/check_search_loading.mjs
+	node --test scripts/check_home_lists.mjs scripts/check_mermaid_lazy.mjs scripts/check_search_loading.mjs scripts/check_new_badges.mjs
 	python3 scripts/check_asset_delivery.py
 	python3 scripts/check_image_delivery.py
 	python3 scripts/check_links.py

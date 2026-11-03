@@ -29,4 +29,5 @@
     <header class="entry-header"><h3>{{ .page.Title }}</h3></header>
     <footer class="entry-footer"><a class="weeknote-week-link" href="{{ .week.RelPermalink }}">{{ .week.Date.Format "2006/01/02" }} の週から</a></footer>
     <a class="entry-link" href="{{ .page.RelPermalink }}" aria-label="Weeknotesの話題：{{ .page.Title }}"></a>
+    {{ partial "new_badge.html" (dict "date" .week.Date "days" 21) }}
   </article>

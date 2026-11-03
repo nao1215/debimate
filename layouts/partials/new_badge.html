@@ -1,0 +1,10 @@
+{{- /* The browser expires badges without rebuilding. Never use Lastmod. */ -}}
+{{- $date := . -}}
+{{- $days := 14 -}}
+{{- if reflect.IsMap . -}}
+  {{- $date = .date -}}
+  {{- $days = .days -}}
+{{- end -}}
+{{- if not $date.IsZero -}}
+<span class="new-badge" data-new-date="{{ (time.In "Asia/Tokyo" $date).Format "2006-01-02" }}" data-new-days="{{ $days }}" title="作成日から{{ $days }}日以内の記事" hidden>NEW</span>
+{{- end -}}

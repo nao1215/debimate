@@ -41,5 +41,6 @@
   </footer>
   {{- end }}
   <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+  {{- if or $home (eq .Section "post") }}{{ partial "new_badge.html" .Date }}{{ end }}
 </article>
 {{- end -}}

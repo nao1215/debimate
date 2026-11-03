@@ -28,7 +28,8 @@
     {{- $hasMermaid := .Store.Get "hasMermaid" | default false -}}
     {{- $hasTwitterEmbed := .Store.Get "hasTwitterEmbed" | default false -}}
     {{- $hasGameDemo := .Store.Get "hasGameDemo" | default false -}}
-    {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") $hasMermaid $hasTwitterEmbed $hasGameDemo -}}
+    {{- $hasNewBadges := or .IsHome (and (not .IsPage) (in (slice "post" "weeknotes") .Section)) -}}
+    {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") $hasMermaid $hasTwitterEmbed $hasGameDemo $hasNewBadges -}}
 </body>
 
 </html>
