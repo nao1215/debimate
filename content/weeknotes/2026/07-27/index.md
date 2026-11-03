@@ -34,7 +34,7 @@ X に比べると、ブログはほぼ無風だ。誰が読んでいるか分か
 
 #### sqly が複数の SQL 方言に対応できることに気づく
 
-仕事で [goccy/bigquery-emulator](https://github.com/goccy/bigquery-emulator) を眺めていた時、大雑把な仕様が「BigQuery の SQL 方言（ZetaSQL クエリ）を受け付け、SQLite 方言に変換して SQLite（DB）にクエリする」だと知った。この仕様を自作 OSS へ横展開できることに気づいた。「[nao1215/filesql](https://github.com/nao1215/filesql) と [nao1215/sqly](https://github.com/nao1215/sqly)  を同じ仕様で拡張して、任意の SQL 方言でクエリを実行できるのでは？」と。
+仕事で [goccy/bigquery-emulator](https://github.com/goccy/bigquery-emulator) を眺めていた時、大雑把な仕様が「BigQuery の SQL 方言（ZetaSQL クエリ）を受け付け、SQLite 方言に変換して SQLite（DB）にクエリする」だと知った。この仕様を自作 OSS へ横展開できることに気づいた。「[nao1215/filesql](https://github.com/nao1215/filesql) と [nao1215/sqly](https://github.com/nao1215/sqly) を同じ仕様で拡張して、任意の SQL 方言でクエリを実行できるのでは？」と。
 
 知らない読者向けに説明すると、filesql は任意のファイルフォーマットを SQLite3 に取り込むライブラリであり、sqly は filesql を用いてファイルに SQL を実行するコマンドである。sqly（filesql）は、SQL パーサーの実装が難易度高かったので、SQLite3 にパースを委譲している（[詳細は実装当時の記事を参照してください](https://debimate.jp/post/ja/2022-12-02-golangcsvtsvltsvjson%E3%81%ABsql%E3%82%92%E5%AE%9F%E8%A1%8C%E3%81%99%E3%82%8Bsqly%E3%82%B3%E3%83%9E%E3%83%B3%E3%83%89%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F/)）。sqly は実装当初から [noborus/trdsql](https://github.com/noborus/trdsql) などの先発ツールに負けており、trdsql は MySQL や PostgreSQL とも接続できる強みがあった。安易に真似すると RDBMS サーバーをセットアップする労力がかかるので、私は避けていた。しかし、SQL 方言間の変換であれば、環境構築の労力が増えないので許容でき、ユーザーは使い慣れた SQL を実行できるメリットがあると判断した。現在、お試し実装中である。
 

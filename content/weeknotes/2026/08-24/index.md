@@ -13,7 +13,7 @@ Debimate（本ブログ）に、[BBS](/bbs/) を導入した。技術的には�
 
 Weeknotes と BBS の構成は、私が10代の頃の個人サイトから強い影響を受けている。当時は、雑多な近況を公開して、BBS で好き勝手に交流していた。SNS が流行る前のインターネット文化だ。X（旧 Twitter）に比べれば、牧歌的な交流スタイルだった。
 
-今回は、狙って Weeknotes と BBS を導入したわけではない。点が線になる感じだ。WordPress から GitHub Pages への移行、ブログを自己ブランディングの道具として再活用、X への拒否反応、LLM によるサイト構成変更の容易化......色んなものが重なって、段階的に BBS へ辿り着いた。果てして書き込みが増えるのだろうか。
+今回は、狙って Weeknotes と BBS を導入したわけではない。点が線になる感じだ。WordPress から GitHub Pages への移行、ブログを自己ブランディングの道具として再活用、X への拒否反応、LLM によるサイト構成変更の容易化......色んなものが重なって、段階的に BBS へ辿り着いた。果たして書き込みが増えるのだろうか。
 
 ---
 
@@ -63,7 +63,7 @@ gup は `go install`したバイナリを更新するツールであり、私が
 
 {{< figure src="vowwow-press.webp" link="https://prtimes.jp/main/html/rd/p/000000271.000112870.html" alt="VOW WOW のライブ写真" caption="VOW WOW のライブ写真<br>出典：[BS朝日の公演発表](https://prtimes.jp/main/html/rd/p/000000271.000112870.html)（2026年9月公開）" width="600" align="center" >}}
 
-私は二つの虹（もう一つは L'Arc～en～Ciel だ）を聴き込んでおり、VOW WOW 初期の三作はキーボードとギターから Rainbow や Deep Purple の影響を感じ取れる。"MASK OF FLESH (Masquerade)"にいたっては、「Rainbow のカーボンコピー」と評されるレビューがあるぐらいだった。この事実に気づいてから、VOW WOW をリピートし続けている。不思議なことに、日本人がギターとキーボードの掛け合いを行うと、演奏に遊びがあるはずなのにタイトさを感じる。日本人らしさを感じるプレイといれば、Who do They think We are ? -A Tribute to Deep Purple From Japan に収録されている Burn であり、色んな元ネタを踏まえた完コピ演奏である。
+私は二つの虹（もう一つは L'Arc～en～Ciel だ）を聴き込んでおり、VOW WOW 初期の三作はキーボードとギターから Rainbow や Deep Purple の影響を感じ取れる。"MASK OF FLESH (Masquerade)"にいたっては、「Rainbow のカーボンコピー」と評されるレビューがあるぐらいだった。この事実に気づいてから、VOW WOW をリピートし続けている。不思議なことに、日本人がギターとキーボードの掛け合いを行うと、演奏に遊びがあるはずなのにタイトさを感じる。日本人らしさを感じるプレイといえば、Who do They think We are ? -A Tribute to Deep Purple From Japan に収録されている Burn であり、色んな元ネタを踏まえた完コピ演奏である。
 
 今回は、音の捉え方を変えただけで、VOW WOW への評価が大きく変わった。評価軸、大事だね！
 
@@ -75,7 +75,7 @@ truss は、端的に説明すれば、画像変換 CLI・サーバー・WASM �
 
 {{< figure src="2026-truss-logo.webp" link="https://nao1215.github.io/truss/" alt="truss：画像変換 CLI・HTTP サーバー・WASM" caption="[truss：画像変換 CLI・HTTP サーバー・WASM](https://nao1215.github.io/truss/)" width="600" align="center" >}}
 
-[機能追加の依頼者](https://drupal-govcon-2026.sessionize.com/speaker/72cf0f63-b3c8-466a-9401-5b0c610ee0b4)は Drupal GovCon（2026年）で発表しており、「Drupal モジュールが高速な Rust 製 CLI を 管理して直接起動し、結果を静的成果物として保存すればよい」旨の考えを示していた。truss も Rust 製 CLI であるため、この方の戦略とマッチしていたのだろう。ImageMagick は機能的に圧倒的に優れているが、配布が少し面倒だ。単一バイナリではなく、かつランタイム環境によって考慮すべき事柄があるため、ユーザーが戸惑う場面が増える。Rust 製 CLI であれば、バイナリﾎﾟﾝｯが簡単にできる。
+[機能追加の依頼者](https://drupal-govcon-2026.sessionize.com/speaker/72cf0f63-b3c8-466a-9401-5b0c610ee0b4)は Drupal GovCon（2026年）で発表しており、「Drupal モジュールが高速な Rust 製 CLI を管理して直接起動し、結果を静的成果物として保存すればよい」旨の考えを示していた。truss も Rust 製 CLI であるため、この方の戦略とマッチしていたのだろう。ImageMagick は機能的に圧倒的に優れているが、配布が少し面倒だ。単一バイナリではなく、かつランタイム環境によって考慮すべき事柄があるため、ユーザーが戸惑う場面が増える。Rust 製 CLI であれば、バイナリﾎﾟﾝｯが簡単にできる。
 
 .....というゲスパーをする必要も実はなく、具体的な説明が truss を利用しているライブラリの説明に書かれていた。
 

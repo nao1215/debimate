@@ -60,7 +60,7 @@ GitHub Release からバイナリダウンロードする人など居ないと�
 
 #### ラズパイクラスタの存在を思い出す
 
-フラー時代の知人が[自宅で Kubernetes 環境を建てて](https://blog.zitaku.net/2026/07/12/index.html/)おり、この記事を読んでから暫くして自分も[2020年頃にラズパイクラスタを組んでたこと](https://debimate.jp/post/ja/2020-09-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi-4%E5%8F%B0%E3%81%A7%E4%BD%9C%E3%82%8Bkubernetes%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF/)を思い出した。完全に余談だが、フラー時代の知人とは8/1に飲む予定。
+フラー時代の知人が[自宅で Kubernetes 環境を立てて](https://blog.zitaku.net/2026/07/12/index.html/)おり、この記事を読んでから暫くして自分も[2020年頃にラズパイクラスタを組んでたこと](https://debimate.jp/post/ja/2020-09-27-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi-4%E5%8F%B0%E3%81%A7%E4%BD%9C%E3%82%8Bkubernetes%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%BF/)を思い出した。完全に余談だが、フラー時代の知人とは8/1に飲む予定。
 
 {{< figure src="raspberry-pi-cluster.webp" link="/post/ja/2020-09-27-環境構築raspberry-pi-4台で作るkubernetesクラスタ/" alt="2020年に組んだ Raspberry Pi クラスタ" caption="[2020年のクラスタ構築記事](/post/ja/2020-09-27-環境構築raspberry-pi-4台で作るkubernetesクラスタ/)から再掲" width="350" align="center" >}}
 
