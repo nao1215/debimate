@@ -69,29 +69,75 @@ flowchart BT
 
 そのため、子 2 つを連結した 64 バイトを「1 件の葉」だと偽って差し出すと、検証者は同じルートハッシュに辿り着きます。木に無いデータの包含証明が通ってしまうわけです。
 
+左右の子のハッシュを `hL`、`hR` とすると、入力の読み方だけが変わり、計算する内容は変わりません。
+
+{{< hash-input-comparison >}}
+
+同じ H から先の経路も同じなら、ルートハッシュまで一致します。
+
 Bitcoin の木には接頭辞が無く、曖昧さが残っています。葉の txid（取引の識別子）は取引から、内部ノードは子 2 つの 64 バイトから同じ手順で計算するため、署名データ（witness）を除いた大きさがちょうど 64 バイトの取引は内部ノードとしても読めます。取引を内部ノードに見立てて子の位置に偽の txid を置くと、ブロックに無い取引の包含証明が、ブロック全体を持たない検証者に通り得ます。2018 年に [CVE-2017-12842](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2017-12842) として公表され、[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) が 64 バイトちょうどの取引を無効にする規則を提案しています。
 
-RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列の先頭を変えて、この曖昧さを消しています。RFC の式では、MTH は葉の並びからルートハッシュを求める関数、`||` はバイト列の連結、k は前節の「n 未満で最大の 2 の冪」です。葉は `MTH({d[0]}) = HASH(0x00 || d[0])`、内部ノードは `MTH(D_n) = HASH(0x01 || MTH(D[0:k]) || MTH(D[k:n]))` と定義されており、入力の先頭 1 バイトが違うため 2 つのハッシュは一致しません。
+RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列の先頭を変えて、この曖昧さを消しています。RFC の式では、MTH は葉の並びからルートハッシュを求める関数、`||` はバイト列の連結、k は前節の「n 未満で最大の 2 の冪」です。葉は `MTH({d[0]}) = HASH(0x00 || d[0])`、内部ノードは `MTH(D_n) = HASH(0x01 || MTH(D[0:k]) || MTH(D[k:n]))` と定義されており、入力の先頭 1 バイトが違うため、同じ入力バイト列を葉と内部ノードの両方に読み替えることはできません。
 
-以下が接頭辞の有無による違いです。
+{{< hash-input-comparison prefix="true" >}}
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph NG["接頭辞が無い設計"]
-        A1["長さ 64 バイトの葉"] -->|ハッシュ化| S["同じ値になり得る"]
-        A2["32 バイトの子 2 つを<br/>連結した 64 バイト"] -->|ハッシュ化| S
-    end
-    subgraph OK["RFC 9162 の設計"]
-        B1["0x00 + 葉のデータ"] -->|ハッシュ化| V1["葉のハッシュ"]
-        B2["0x01 + 子 2 つ"] -->|ハッシュ化| V2["内部ノードのハッシュ"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+上記は [RFC 9162 §2.1.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1) の規則です。同じ64バイトを使っても、先頭が `0x01` と `0x00` なので、ハッシュ関数への入力が異なります。
+
+異なる入力のハッシュ値が偶然一致する可能性まで消すものではなく、その発見の難しさはハッシュ関数の衝突耐性に依存します。
 
 用途ごとに入力の先頭を変えるこの工夫は、domain separation と呼ばれます。これが無いと、木全体として second preimage resistance（第 2 原像計算困難性。ある入力と同じハッシュになる別の入力を見つけられない性質）が失われます。
 
 新しく Merkle Tree を設計するなら、接頭辞で葉と内部ノードを分ける方が安全だと考えられます。
+
+---
+
+### 異なる木が同じ値になる実験
+
+葉を1件追加したのにルートハッシュが変わらないことと、内部ノードを葉として読み替えられることを短いデータで確かめます。[compare_rules.py](lab/compare_rules.py) は Python 標準ライブラリだけで動きます。
+
+比較するのは、末尾を複製し、葉と内部ノードを区別せず SHA-256 に渡す単純な木と、[RFC 9162 §2.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) の分割規則・接頭辞を使う木です。前者は Bitcoin と同じ末尾複製の性質を示す教材ですが、実際の txid や二重 SHA-256 を使う Bitcoin の実装ではありません。
+
+まず、葉を `A, B, C` とした場合と、`A, B, C, C` とした場合を比較します。次に、2つの子のハッシュを連結した64バイトをそのまま1件の葉として渡します。
+
+```python
+children = h(b'A') + h(b'B')
+assert len(children) == 64
+assert duplicate_root([b'A', b'B']) == duplicate_root([children])
+assert ct_root([b'A', b'B']) != ct_root([children])
+```
+
+`h` は SHA-256、`duplicate_root` は末尾を複製する木、`ct_root` は RFC 9162 の構築規則を使う関数です。接頭辞がない場合、次の2つはまったく同じ64バイトを最後のハッシュ計算に渡します。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
+flowchart TD
+    A["葉Aと葉Bの木"] --> X["SHA256(A)とSHA256(B)を連結"]
+    B["連結した64バイトを<br/>1件の葉として渡す"] --> Y["同じ64バイト"]
+    X --> H["SHA256に同じ入力が渡る"]
+    Y --> H
+    H --> R["同じルートハッシュ"]
+```
+
+実行コマンドと、実際の[出力](lab/output.txt)は次の通りです。
+
+```bash
+python3 content/notes/blockchain-systems/merkle-tree-design/lab/compare_rules.py
+```
+
+```text
+duplicate-last: root(A,B,C) == root(A,B,C,C): True
+duplicate root: 420940ee1c7a73de80cfa2554efb4e6cec7ea745fed73108ccb06886054df8c6
+RFC9162: root(A,B,C) == root(A,B,C,C): False
+RFC9162 root(A,B,C):   961d2e2be20f538ffdf56962a86d1bd165498f222684ee4c5e02c1e9f852adc5
+RFC9162 root(A,B,C,C): 9725a8cf4154eb2b9fc5722dc2e65536eb09eba37150859f97132466815de2ae
+no prefix: root(A,B) == root(single 64-byte leaf): True
+RFC9162: root(A,B) == root(single 64-byte leaf): False
+Assertions: PASS
+```
+
+`True` の2例では、ハッシュ関数の衝突を探索していません。入力の解釈が違うだけで、最後には同じバイト列をハッシュしているからです。ルートハッシュだけを比較する検証者には、その解釈の違いが分かりません。
+
+RFC 9162 の規則を使った例では、3件と4件の木の組み方が変わり、葉と内部ノードの入力にも異なる接頭辞が付くため、この2つの読み替えでは同じルートになりません。この実験は、実際の Bitcoin 取引を使った攻撃の再現ではなく、構築規則が必要になる理由を切り出したものです。
 
 ---
 

@@ -15,14 +15,28 @@ weight: 5
 
 監視対象は粒度の違う 4 つのレイヤに整理できます。それぞれ「気づきたい問題」「責任者」「使う指標」が違います。
 
-![4 つの監視レイヤと責任者](./monitoring_layers.svg)
-
-| レイヤ | 監視内容 | 主な指標 | 主担当 |
-|---|---|---|---|
-| ビジネス KPI | エンドツーエンドの効果 | revenue、conversion、NPS | プロダクト / ビジネス |
-| モデル性能 | 予測品質そのもの | accuracy、F1、回帰誤差、PR-AUC | ML エンジニア |
-| データ品質 | 入力データの健全性 | schema、range、null 率、drift | データエンジニア |
-| インフラ | 配信基盤の健全性 | latency、error rate、CPU、メモリ | SRE / DevOps |
+{{< note-panels caption="4 つの監視対象。それぞれ指標と担当を決めます。" >}}
+- title: ビジネス KPI
+  body: エンドツーエンドの効果
+  items:
+  - 指標：revenue / conversion / NPS
+  - 担当：プロダクト / ビジネス
+- title: モデル性能
+  body: 予測品質そのもの
+  items:
+  - 指標：accuracy / F1 / 回帰誤差 / PR-AUC
+  - 担当：ML エンジニア
+- title: データ品質
+  body: 入力データの健全性
+  items:
+  - 指標：schema / range / null 率 / drift
+  - 担当：データエンジニア
+- title: インフラ
+  body: 配信基盤の健全性
+  items:
+  - 指標：latency / error rate / CPU / メモリ
+  - 担当：SRE / DevOps
+{{< /note-panels >}}
 
 「モデルの精度が落ちた」と一口に言っても、原因がモデル本体か、入力データか、配信基盤か、上位のビジネス事情かで対処が違います。4 層を別々に観測しておくと切り分けが速くなる、と考えられます。
 

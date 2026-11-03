@@ -1,0 +1,6 @@
+receipt_kind=succinct; dev_mode=disabled
+verify_expected_image=PASS; public_product=391
+tampered_journal=REJECTED
+wrong_image_id=REJECTED
+elapsed_seconds=8.75
+Assertions: PASS

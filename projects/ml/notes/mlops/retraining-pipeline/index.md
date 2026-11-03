@@ -35,14 +35,28 @@ graph TD
 
 再学習を「いつ起動するか」は 4 つのパターンに分けられます。
 
-![4 つの再学習トリガー](./retraining_triggers.svg)
-
-| トリガー | 起動条件 | 強み | 弱み |
-|---|---|---|---|
-| Scheduled | 毎日 / 毎週 / 毎月 | 予測可能、計画しやすい | ドリフトに反応できない |
-| Drift-based | 入力分布が閾値を超える | 変化に追従 | 誤検知でムダ再学習 |
-| Performance-based | 精度指標が SLO を割る | 実害から逆算 | 後追い、damage 済み |
-| Manual / event-based | 大型リリース、規制変更 | 確実性高い | スケールしない |
+{{< note-panels caption="再学習を起動する 4 つのきっかけ。複数を組み合わせられます。" >}}
+- title: Scheduled
+  body: 毎日 / 毎週 / 毎月
+  items:
+  - 強み：予測可能で計画しやすい
+  - 弱み：ドリフトに反応できない
+- title: Drift-based
+  body: 入力分布の変化が閾値を超える
+  items:
+  - 強み：変化に追従できる
+  - 弱み：誤検知で不要な再学習が起きる
+- title: Performance-based
+  body: 精度指標が SLO を割る
+  items:
+  - 強み：実害から逆算できる
+  - 弱み：性能が落ちてからの対応になる
+- title: Manual / event-based
+  body: 大型リリース、規制変更
+  items:
+  - 強み：人が起動を判断できる
+  - 弱み：人手の判断はスケールしない
+{{< /note-panels >}}
 
 実運用では複数トリガーを組み合わせるのが普通です。例えば「毎月 1 回必ず再学習（schedule）+ ドリフトが検知されたら即時（drift）+ 性能 SLO 割れで緊急（performance）」のような OR 条件で組みます。
 
@@ -104,17 +118,22 @@ plt.savefig("retraining_cost_tradeoff.svg", bbox_inches="tight")
 
 再学習が完了しても、すぐに本番に上げるのは危険です。評価ゲートを段階的に通過させる設計にします。
 
-![7 ステージの評価ゲート](./retraining_evaluation_gates.svg)
-
-| ゲート | チェック内容 | 失敗時の対処 |
-|---|---|---|
-| 1. Schema check | 入出力スキーマが期待通り | パイプライン即停止、データチームに通知 |
-| 2. Smoke test | 100 件のサンプル予測が走るか | 学習コードの bug を疑う |
-| 3. Holdout eval | テスト精度が champion 以上 | 学習データを疑う、特徴量を見直す |
-| 4. Shadow test | 2 日間 mirror traffic で運用 | 推論時の不整合を検出 |
-| 5. Canary 5% | 本番 5% で監視 | metric watcher が異常検知すれば halt |
-| 6. Canary 50% | 段階拡大 | 同上 |
-| 7. 100% rollout | 全展開、champion は archive ではなく fallback として残す | rollback 可能性を担保 |
+{{< note-steps caption="評価ゲートの例。失敗した段階で停止・通知し、必要に応じて現役モデルへ戻します。" >}}
+- title: Schema check
+  body: 入出力スキーマを確認。不一致なら即停止し、データチームに通知。
+- title: Smoke test
+  body: 100 件のサンプル予測を実行。失敗したら学習コードを調べる。
+- title: Holdout eval
+  body: テスト精度が現役モデル（champion）以上かを確認。未達なら学習データ・特徴量を見直す。
+- title: Shadow test
+  body: 2 日間の mirror traffic で運用し、推論時の不整合を検出。
+- title: Canary 5%
+  body: 本番の 5% に適用。監視指標に異常があれば停止。
+- title: Canary 50%
+  body: 段階的に拡大。同様に監視し、異常があれば停止。
+- title: 100% rollout
+  body: 全展開。champion を fallback として残し、ロールバック可能にする。
+{{< /note-steps >}}
 
 「champion-challenger」という名前の通り、現役モデル（champion）に対して挑戦者（challenger）が勝つことを 7 段階で検証します。すべて通過して初めて Production になる、というのが現代的な MLOps の標準デプロイメントフローとなります。
 

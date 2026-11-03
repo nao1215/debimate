@@ -75,20 +75,20 @@ flowchart TD
 
 3 つの違いを図でも示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
-    subgraph C1["原像"]
-        G1["与えられる: ハッシュ値 h"] --> F1["探す: H(m) = h となる m"]
-    end
-    subgraph C2["第二原像"]
-        G2["与えられる: 入力 m1"] --> F2["探す: H(m2) = H(m1) となる m2"]
-    end
-    subgraph C3["衝突"]
-        G3["与えられるものは無し<br/>m1 と m2 を自由に選ぶ"] --> F3["探す: H(m1) = H(m2) となる組"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="何を与えられ、何を探すかで区別します。第二原像と衝突では m1 ≠ m2 が条件です。" >}}
+- title: 原像
+  items:
+  - 与えられる：ハッシュ値 h
+  - 探す：H(m) = h となる m
+- title: 第二原像
+  items:
+  - 与えられる：入力 m1
+  - 探す：H(m2) = H(m1) となる別の入力 m2
+- title: 衝突
+  items:
+  - 与えられる入力は無し。m1 と m2 を自由に選ぶ
+  - 探す：H(m1) = H(m2) となる異なる入力の組
+{{< /note-panels >}}
 
 改竄の検出に直接関わるのは第二原像計算困難性です。攻撃者の手元には書き換えたい正しいデータ（m1）があり、同じハッシュ値を持つ偽データ（m2）を探すからです。例えば、取引の識別子（txid）は取引データのハッシュ値なので、ブロックに取り込まれた他人の取引を同じ txid を持つ別の取引に差し替える攻撃は、第二原像を探す問題になります。原像計算困難性は、ハッシュ値から元のデータを推測させない一方向性で、パスワードの保存などで必要になります。
 

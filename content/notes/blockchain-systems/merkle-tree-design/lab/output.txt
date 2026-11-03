@@ -1,0 +1,8 @@
+duplicate-last: root(A,B,C) == root(A,B,C,C): True
+duplicate root: 420940ee1c7a73de80cfa2554efb4e6cec7ea745fed73108ccb06886054df8c6
+RFC9162: root(A,B,C) == root(A,B,C,C): False
+RFC9162 root(A,B,C):   961d2e2be20f538ffdf56962a86d1bd165498f222684ee4c5e02c1e9f852adc5
+RFC9162 root(A,B,C,C): 9725a8cf4154eb2b9fc5722dc2e65536eb09eba37150859f97132466815de2ae
+no prefix: root(A,B) == root(single 64-byte leaf): True
+RFC9162: root(A,B) == root(single 64-byte leaf): False
+Assertions: PASS

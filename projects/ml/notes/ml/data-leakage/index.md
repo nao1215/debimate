@@ -15,15 +15,16 @@ weight: 11
 
 データリークは混入経路で大きく 2 系統に分かれます。
 
-```mermaid
-graph LR
-    A[Data leakage] --> B[Target leakage]
-    A --> C[Train-test contamination]
-    B --> B1[未来情報の混入]
-    B --> B2[目的変数から派生した特徴]
-    C --> C1[前処理の fit が全データ対象]
-    C --> C2[特徴量選択を分割前に実施]
-```
+{{< note-panels caption="データリークを、目的変数に関わる情報の混入と、学習・評価の分離の不備に分けます。" >}}
+- title: Target leakage
+  items:
+  - 未来情報の混入
+  - 目的変数から派生した特徴
+- title: Train-test contamination
+  items:
+  - 前処理の fit が全データ対象
+  - 特徴量選択を分割前に実施
+{{< /note-panels >}}
 
 ターゲットリーク（target leakage）は「予測したい瞬間にはまだ存在しない情報」を特徴量に入れてしまうパターンです。訓練・テスト汚染（train-test contamination）は「テストデータの情報が前処理経由で学習に染み込む」パターンです。両者は別物です。ただし、症状（学習時の異常な高スコア）は似るため、対処も別々に押さえておく必要があります。
 

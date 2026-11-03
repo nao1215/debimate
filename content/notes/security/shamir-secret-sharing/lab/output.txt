@@ -1,0 +1,5 @@
+all 10 subsets of 3 shares: secret=4
+original [(1, 9), (2, 7), (3, 11)]: secret=4
+modified [(1, 9), (2, 7), (3, 12)]: secret=5 (no error)
+invalid input: at least 3 shares required
+invalid input: x must be nonzero and distinct modulo 13

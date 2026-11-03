@@ -1,0 +1,9 @@
+{{- $data := .Inner | transform.Unmarshal -}}
+<figure class="note-diagram{{ if eq (.Get "border") "slate" }} note-diagram--slate{{ end }}" aria-label="{{ .Get "caption" }}">
+  <ol class="note-diagram__steps" data-count="{{ len $data }}">
+    {{- range $data }}
+    <li><span class="note-diagram__title">{{ .title }}</span>{{ with .body }}<div class="note-diagram__body">{{ . | markdownify }}</div>{{ end }}</li>
+    {{- end }}
+  </ol>
+  <figcaption>{{ .Get "caption" | markdownify }}</figcaption>
+</figure>

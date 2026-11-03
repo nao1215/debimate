@@ -5,6 +5,7 @@ draft: false
 series: ["技術ノート", "Security"]
 tags: ["security", "cryptography"]
 weight: 4
+wrapTables: true
 ---
 
 Shamir's Secret Sharing（SSS）は、1 つの Secret を n 個の Share に分け、そのうち異なる任意の k 個以上で復元できる秘密分散方式です。復元に必要な個数 k を閾値（threshold）と呼び、`(k, n)` threshold scheme と表します。
@@ -44,20 +45,14 @@ flowchart LR
 
 鍵の保管では、失わないことと漏らさないことを両立させる必要があります。1 か所だけに保管すると紛失に弱く、同じ鍵のコピーを増やすと漏洩の入口も増えます。ファイルを順番に切る方法では、1 個の断片から元データの一部がそのまま読めます。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph O["1 か所だけ"]
-        O1["Secret"] --> O2["故障すると復元不能"]
-    end
-    subgraph C["同じものを複製"]
-        C1["Secret のコピー"] --> C2["1 個の漏洩で全体が漏れる"]
-    end
-    subgraph F["単純に分割"]
-        F1["元データを切る"] --> F2["断片から一部が読める"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="単独保管・複製・単純な分割では、それぞれ別の問題が残ります。" >}}
+- title: 1 か所だけに保管
+  body: Secret の保存先が故障すると復元不能。
+- title: 同じものを複製
+  body: Secret のコピーが 1 個漏洩すると、全体が漏れる。
+- title: 元データを単純に分割
+  body: 断片から元データの一部が読める。
+{{< /note-panels >}}
 
 SSS は、n-k 個までの紛失と k-1 個までの漏洩に、別々に耐えられます。
 
@@ -170,26 +165,51 @@ SSS が保証する範囲は、正しく生成された異なる Share の個数
 | k-1 個まで漏洩 | Secret の候補を絞れない |
 | k 個以上漏洩 | 攻撃者も Secret を復元できる |
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph I["SSS が定める範囲"]
-        I1["Share の生成"]
-        I2["個数による復元条件"]
-    end
-    subgraph O["別に設計する範囲"]
-        O1["誰に渡すか"]
-        O2["保持者の Authentication"]
-        O3["保存場所の保護"]
-        O4["復元後の Secret の消去"]
-    end
-    I -.- O
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="SSS の復元条件と、運用時の保護は別に設計します。" >}}
+- title: SSS が定める範囲
+  items:
+  - Share の生成
+  - 個数による復元条件
+- title: 別に設計する範囲
+  items:
+  - 誰に渡すか
+  - 保持者の Authentication
+  - 保存場所の保護
+  - 復元後の Secret の消去
+{{< /note-panels >}}
 
 Share 保持者が誰なのかを確かめる処理は [Authentication](../authentication/) です。Share の配布先は Authorization（認可）や配布ポリシーで決め、配送経路と保存場所は別に保護します。
 
 SSS には Share の改竄検出も含まれません。書き換えられた Share が混ざると別の値が Secret として復元され、復元処理だけではそれが誤りだと分かりません。値を置き換えられる経路があるなら、各 Share が正しいかを確かめられる検証可能秘密分散などを別に検討します。復元時には Secret が 1 か所のメモリに現れ、その端末も攻撃対象になります。
+
+---
+
+### 改変した Share からの復元
+
+正しい Share が 3 個そろった場合と、1 個だけ書き換えた場合を[再現コード](lab/run.py)で比べます。前節の `q(x) = 4 + 2x + 3x^2 mod 13` を使い、5 個から 3 個を選ぶ全 10 通りを復元します。係数と小さな有限体を固定した学習用の計算であり、実際の秘密を保管するコードではありません。
+
+```sh
+python3 lab/run.py
+```
+
+[実行結果](lab/output.txt)は次のとおりです。
+
+```text
+all 10 subsets of 3 shares: secret=4
+original [(1, 9), (2, 7), (3, 11)]: secret=4
+modified [(1, 9), (2, 7), (3, 12)]: secret=5 (no error)
+invalid input: at least 3 shares required
+invalid input: x must be nonzero and distinct modulo 13
+```
+
+| 復元に使う点 | 復元結果 |
+|---|---|
+| `(1, 9), (2, 7), (3, 11)` | 正しい Secret の 4 |
+| `(1, 9), (2, 7), (3, 12)` | 誤った Secret の 5 |
+
+変更したのは最後の Share の y 座標だけです。前節で求めた重みは `3, 10, 1` なので、その y 座標を 1 増やすと、復元結果も 1 増えます。変更後の 3 点にも 2 次以下の多項式は存在するため、補間の計算はエラーになりません。
+
+末尾の 2 行は、Share の個数不足と x 座標の重複をサンプルが拒否した結果です。この入力検査は、正しい形をした偽の Share を見抜く検査にはなりません。Share の真正性を確かめる仕組みは別に必要です。Share を検証する拡張は、[ZKDocs の Feldman 方式の解説](https://www.zkdocs.com/docs/zkdocs/protocol-primitives/verifiable-secret-sharing/)で説明されています。
 
 ---
 

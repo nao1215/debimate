@@ -5,6 +5,7 @@ draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 2
+wrapTables: true
 ---
 
 Lease（リース）は、ある権利を期限付きで貸し出し、期限が過ぎたら自動的に失効させる仕組みです。貸す側は「これから 10 秒間、あなたがリーダーです」と伝え、借りた側は期限が来る前に更新を続けます。更新が途切れれば、誰の操作も無しに権利は消えます。
@@ -128,6 +129,47 @@ sequenceDiagram
 上記の図のストレージは、権利の期限を知らず、番号の大小だけで判断しています。Lease は時間で、fencing token は順序で権利を守ります。
 
 この 2 つは対等ではありません。番号を検査できる保護対象では、書き込みの正しさを最後に担保しているのは fencing token です。一方で、次に誰が権利を持つかを決めるのは Lease です。
+
+---
+
+### 古い書き込みの再現
+
+停止していた A が復帰した時、保存先が token を調べなければ何が起きるでしょうか。[再現コード](lab/run.py)では、先ほどの図と同じ順序で SQLite に書き込みます。A の token は 33、次の保持者 B は 34 とし、B の書き込み後に A の遅れた要求を届けます。時計や GC の待ち時間は再現せず、問題になる到着順を固定します。
+
+```sh
+python3 lab/run.py
+```
+
+[実行結果](lab/output.txt)は次のとおりです。
+
+```text
+[fencing=off]
+token=33 value=A:first ACCEPT
+token=34 value=B:new ACCEPT
+token=33 value=A:delayed ACCEPT
+final=A:delayed token=33
+[fencing=on]
+token=33 value=A:first ACCEPT
+token=34 value=B:new ACCEPT
+token=33 value=A:delayed REJECT
+final=B:new token=34
+```
+
+| 保存先の処理 | 最後に残った値 |
+|---|---|
+| token を比較しない | 古い A の `A:delayed` |
+| token を比較する | 新しい B の `B:new` |
+
+違いは、保存先の更新条件にあります。`token <= ?` の右辺には要求の token を渡します。同じ保持者による複数回の書き込みを許しつつ、保存済みの番号より小さい要求を拒否します。
+
+```sql
+UPDATE resource SET value = ?, token = ?
+WHERE id = 1 AND token <= ?;
+```
+
+番号の比較と値の更新は、1 つの SQL 文で行います。アプリで番号を読んでから無条件で更新すると、間に別の書き込みが入り得ます。この保存先の検査が、[fencing token で遅れた要求を拒否する仕組み](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html)に相当します。
+
+ここで拒否できるのは、保存先がすでに 34 を受け取った後の 33 です。Lease の期限が切れただけでは、保存先の番号は変わりません。実際のシステムでは、Grantor が再起動しても番号を巻き戻さず発行する仕組みと、すべての書き込みがこの検査を通る設計も必要です。
 
 ---
 

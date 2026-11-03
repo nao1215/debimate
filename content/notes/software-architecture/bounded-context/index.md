@@ -14,22 +14,26 @@ Bounded Context（境界づけられたコンテキスト）とは、あるモ�
 
 EC（Electronic Commerce）サイトを例に、1 件の買い物を扱う 3 つの境界を以下に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph SA["販売コンテキスト"]
-        S1["注文<br/>見積もり・値引き・成立"]
-    end
-    subgraph BI["請求コンテキスト"]
-        B1["請求<br/>支払方法・入金・督促"]
-    end
-    subgraph SH["配送コンテキスト"]
-        H1["出荷<br/>宛先・箱・追跡番号"]
-    end
-    S1 -. "注文 ID で対応付ける" .-> B1
-    S1 -. "注文 ID で対応付ける" .-> H1
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="販売の注文と、請求・配送の情報は注文 ID で対応付けます。" >}}
+- title: 販売コンテキスト
+  body: 注文
+  items:
+  - 見積もり
+  - 値引き
+  - 成立
+- title: 請求コンテキスト
+  body: 請求
+  items:
+  - 支払方法
+  - 入金
+  - 督促
+- title: 配送コンテキスト
+  body: 出荷
+  items:
+  - 宛先
+  - 箱
+  - 追跡番号
+{{< /note-panels >}}
 
 上記の図の 3 つは、どれも 1 件の買い物から始まる業務です。同じ買い物を扱っていても、持つ属性も、状態が変わる条件も違います。この例では対応付けに注文 ID を使い、値引き率や追跡番号のような属性は、それぞれの境界が自分の語で持ちます。境界の間で ID しか渡してはいけないという規則があるわけではなく、相手が必要とする値は変換を通して渡せます。
 

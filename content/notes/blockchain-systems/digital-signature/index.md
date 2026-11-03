@@ -5,6 +5,7 @@ draft: false
 series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 4
+wrapTables: true
 ---
 
 デジタル署名は、秘密鍵の持ち主だけが作れて、対になる公開鍵を持つ誰もが検証できるデータです。メッセージに署名を添えると、受け取った側は「秘密鍵の持ち主がこのメッセージを承認したこと」と「メッセージが署名の後に書き換えられていないこと」を確かめられます。
@@ -27,6 +28,7 @@ flowchart LR
         PK["公開鍵"] --> V
         V --> R["合格 / 不合格"]
     end
+    Signer ~~~ Verifier
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
@@ -121,9 +123,60 @@ sequenceDiagram
 
 ---
 
+### メッセージを変えた時の検証結果
+
+署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/46.0.5/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は SHA-256 です。これは署名の性質を確認する実験で、Bitcoin の取引形式や署名対象の組み立てを再現するものではありません。
+
+以下は、[verify_changes.py](lab/verify_changes.py) の署名と検証の部分です。`alice` は実行時に作る一時的な秘密鍵で、ファイルには保存せず、画面にも出しません。
+
+```python
+alice = ec.generate_private_key(ec.SECP256K1())
+message = b'pay Bob 10'
+signature = alice.sign(message, ec.ECDSA(hashes.SHA256()))
+
+alice.public_key().verify(
+    signature, message, ec.ECDSA(hashes.SHA256())
+)
+```
+
+`verify` は成功すれば通常どおり戻り、署名が一致しなければ `InvalidSignature` という例外になります。公開鍵やメッセージを変え、同じ検証を行います。実行前に、最後の「同じメッセージをもう一度検証する」ケースがどうなるかも考えてみてください。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
+flowchart TD
+    S["pay Bob 10に署名<br/>以降は同じ署名を使用"] --> A["元のメッセージ<br/>Aliceの公開鍵"]
+    S --> B["金額を90に変更<br/>Aliceの公開鍵"]
+    S --> C["元のメッセージ<br/>Bobの公開鍵"]
+    A --> V["検証成功"]
+    B --> F["検証失敗"]
+    C --> F
+```
+
+[再現手順](lab/README.txt)に従って依存ライブラリを用意した後、リポジトリのルートから実行します。
+
+```bash
+python3 content/notes/blockchain-systems/digital-signature/lab/verify_changes.py
+```
+
+以下は、cryptography 46.0.5 で実行した[結果](lab/output.txt)です。
+
+```text
+original: VALID
+amount changed: 10 -> 90: INVALID
+different public key: INVALID
+same message replayed: VALID
+Assertions: PASS
+```
+
+元の文字列は検証を通り、1 バイトだけ変えた `pay Bob 90` と、別の公開鍵での検証は失敗しました。署名を公開しても、金額を変更したメッセージの承認としては使えません。
+
+一方で、元のメッセージと署名をもう一度渡すと、再び成功します。署名の検証は、そのメッセージを以前に処理したかどうかを記憶しません。支払いの二重実行を防ぐには、Bitcoin なら参照先の [UTXO](../utxo/) が未使用かを確認し、Ethereum なら [nonce](../ethereum-account-model/) を確認するなど、状態に基づく検査も必要です。
+
+---
+
 ### Bitcoin での署名 - ECDSA と secp256k1
 
-Bitcoin の署名には、ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式）が使われます。ECDSA は、署名のたびに使い捨ての乱数を混ぜて計算します。楕円曲線には複数の規格があり、Bitcoin は [secp256k1](https://en.bitcoin.it/wiki/Secp256k1) という曲線を使います。秘密鍵は 256 ビットの整数で、この曲線の上の演算で公開鍵を導出します。
+Bitcoin の署名には、ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式）が使われます。ECDSA は、署名ごとに使う秘密の値（nonce）を混ぜて計算します。乱数から生成する方法に加え、秘密鍵とメッセージから決定的に導出する方法もあります。この nonce は、Ethereum の取引に付ける通し番号とは別物です。楕円曲線には複数の規格があり、Bitcoin は [secp256k1](https://en.bitcoin.it/wiki/Secp256k1) という曲線を使います。秘密鍵は 256 ビットの整数で、この曲線の上の演算で公開鍵を導出します。
 
 P2PKH（Pay to Public Key Hash）や P2WPKH（Pay to Witness Public Key Hash）などの代表的な形式（出力に掛ける条件の型）では、署名と公開鍵が「使う資格の証明」として入力側に置かれます。P2PKH では入力の scriptSig という欄に、P2WPKH では [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で説明した witness 領域に置かれます。witness 領域は署名などの証明を取引本体から切り離して置く欄で、取引の識別子である txid の計算に含まれません。
 

@@ -1,0 +1,2 @@
+attempt=1 app: stock=1 orders=0; provider: charges=1
+attempt=2 app: stock=1 orders=0; provider: charges=2

@@ -37,12 +37,13 @@ def save(name: str) -> None:
     path = OUT / name
     plt.savefig(path)
     plt.close()
+    path.write_text("\n".join(line.rstrip() for line in path.read_text().splitlines()) + "\n")
     print(f"wrote {path}")
 
 
 # --- 図1: target の厳しさ k と、合格までの平均試行回数 ---
-# target = 2^256 / 2^k とした時、1 回の試行が合格する確率は 2^-k、
-# 合格までの平均試行回数は 2^k になる。本文の表の 3 行は k = 1, 32, 76 に当たる。
+# target が約 2^256 / 2^k の時、合格確率は約 2^-k（正確には (target+1)/2^256）、
+# 合格までの平均試行回数は約 2^k になる。本文の表の 3 行は k = 1, 32, 76 に当たる。
 k = np.arange(0, 81)
 trials = 2.0 ** k
 
@@ -78,7 +79,7 @@ ax.set_yticks(ticks)
 ax.set_yticklabels([f"2^{e}" for e in (0, 16, 32, 48, 64, 80)])
 ax.set_ylim(2.0 ** -2, 2.0 ** 84)
 ax.set_xlim(0, 80)
-ax.set_xlabel("How strict the target is (k, where target = 2^256 / 2^k)")
+ax.set_xlabel("How strict the target is (k, where target ~ 2^256 / 2^k)")
 ax.set_ylabel("Average trials until a hash passes")
 
 ax2 = ax.twinx()

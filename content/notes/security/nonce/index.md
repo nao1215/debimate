@@ -15,14 +15,16 @@ nonce の値を選ぶのは、多くの場合ライブラリではなく呼び�
 
 しかし、nonce と呼ばれる値に求められる性質は、1 つに揃っていません。AEAD が求めるのは鍵ごとの一意性です。認証で使う challenge（サーバーが毎回出し、利用者が署名して返す値）が求めるのはランダム性と推測の難しさで、そこに有効期限と、1 度使ったら受け付けない扱いが加わります。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    N["nonce<br/>繰り返して使わない値"]
-    N --> A["AEAD の nonce<br/>同じ鍵の中で重複しない<br/>予測されても構わない"]
-    N --> C["認証の challenge<br/>推測できない<br/>期限内に 1 度だけ受け付ける"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="nonce は繰り返して使わない値です。用途によって、予測できないことも必要になります。" >}}
+- title: AEAD の nonce
+  items:
+  - 同じ鍵の中で重複しない
+  - 予測されても構わない
+- title: 認証の challenge
+  items:
+  - 推測できない
+  - 期限内に 1 度だけ受け付ける
+{{< /note-panels >}}
 
 本記事では、その「一度」が何に対する一度なのかと、用途ごとに何が要求されるのかを説明します。扱う疑問は次の 5 つです。
 

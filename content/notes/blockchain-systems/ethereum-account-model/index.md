@@ -13,21 +13,16 @@ weight: 13
 
 1 件の送金がアカウントの状態をどう書き換えるのかを以下に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph S0["取引の前の状態"]
-        A0["Alice<br/>残高 5 ETH<br/>nonce 7"]
-        B0["Bob<br/>残高 2 ETH<br/>nonce 0"]
-    end
-    TX["取引<br/>Alice から Bob に 1 ETH<br/>nonce 7"]
-    subgraph S1["取引の後の状態"]
-        A1["Alice<br/>残高 4 ETH から手数料を引いた値<br/>nonce 8"]
-        B1["Bob<br/>残高 3 ETH<br/>nonce 0"]
-    end
-    S0 --> TX --> S1
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="Alice から Bob に 1 ETH を送る取引（nonce 7）の前後。" >}}
+- title: 取引の前
+  items:
+  - Alice：残高 5 ETH、nonce 7
+  - Bob：残高 2 ETH、nonce 0
+- title: 取引の後
+  items:
+  - Alice：残高は 4 ETH から手数料を引いた値、nonce 8
+  - Bob：残高 3 ETH、nonce 0
+{{< /note-panels >}}
 
 上記の図の Bob のように受け取るだけのアカウントでは、nonce は動きません。送り主の残高からは、送る 1 ETH に加えて手数料も引かれます。手数料は、実行に要した計算量を gas という単位で計り、その量と単価から決まります。
 
@@ -118,19 +113,17 @@ nonce が制約するのは、同じ送り主が出した取引どうしの前�
 
 例えば、同じ送り主の 2 件を含む並びには、次の 2 通りがあります。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
-    subgraph OK["受け入れられる並び"]
-        direction TB
-        O1["Alice nonce 3"] --> O2["Carol の取引"] --> O3["Alice nonce 4"]
-    end
-    subgraph NG["受け入れられない並び"]
-        direction TB
-        N1["Alice nonce 4"] --> N2["Alice nonce 3"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="Alice の取引は nonce の順に実行します。別のアカウントの取引は間に入れられます。" >}}
+- title: 受け入れられる並び
+  steps:
+  - Alice nonce 3
+  - Carol の取引
+  - Alice nonce 4
+- title: 受け入れられない並び
+  steps:
+  - Alice nonce 4
+  - Alice nonce 3
+{{< /note-panels >}}
 
 上記の図の受け入れられない並びの先頭にある nonce 4 は、その時点の Alice の nonce（3）と一致しないため、取引として有効になりません。
 

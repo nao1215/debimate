@@ -13,14 +13,16 @@ Authentication（認証）は、アクセスしてきた相手が、登録済み
 
 以下は、1 回のログインの流れです。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    R["登録<br/>利用者と authenticator を<br/>結び付ける"] --> P["提示<br/>authenticator を使う"]
-    P --> V["検証<br/>登録済みのものかを確かめる"]
-    V --> S["結果の持ち回り<br/>以降の要求に認証結果を運ぶ"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-steps caption="登録から、以降の要求で認証結果を使うまで。" >}}
+- title: 登録
+  body: 利用者と authenticator を結び付ける。
+- title: 提示
+  body: authenticator を使う。
+- title: 検証
+  body: 登録済みのものかを確かめる。
+- title: 結果の持ち回り
+  body: 以降の要求に認証結果を運ぶ。
+{{< /note-steps >}}
 
 上記の図の登録が、後の全ての判断の土台になります。ここで結び付ける相手を誤ると、以降の検証をどれだけ厳密にしても別人を通し続けます。
 

@@ -1,0 +1,10 @@
+[fencing=off]
+token=33 value=A:first ACCEPT
+token=34 value=B:new ACCEPT
+token=33 value=A:delayed ACCEPT
+final=A:delayed token=33
+[fencing=on]
+token=33 value=A:first ACCEPT
+token=34 value=B:new ACCEPT
+token=33 value=A:delayed REJECT
+final=B:new token=34

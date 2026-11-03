@@ -1,0 +1,27 @@
+{{- $prefix := eq (.Get "prefix") "true" -}}
+<figure class="hash-input" aria-label="{{ if $prefix }}接頭辞で内部ノードと葉の入力を区別{{ else }}内部ノードと葉が同じハッシュ入力になる例{{ end }}">
+  <div class="hash-input__label">内部ノードとして読む</div>
+  <div class="hash-input__chain">
+    <div class="hash-input__bytes">
+      {{ if $prefix }}<span class="hash-input__prefix">0x01</span>{{ end }}
+      <span class="hash-input__part">hL<small>32バイト</small></span>
+      <span class="hash-input__part">hR<small>32バイト</small></span>
+    </div>
+    <span class="hash-input__arrow" aria-label="をハッシュする">→</span>
+    <span class="hash-input__hash">HASH</span>
+    <span class="hash-input__arrow" aria-label="結果">→</span>
+    <span class="hash-input__result">{{ if $prefix }}内部用{{ else }}H{{ end }}</span>
+  </div>
+  <div class="hash-input__label">同じ64バイトを、葉1件として読む</div>
+  <div class="hash-input__chain">
+    <div class="hash-input__bytes">
+      {{ if $prefix }}<span class="hash-input__prefix">0x00</span>{{ end }}
+      <span class="hash-input__part">hL と hR を連結したデータ<small>64バイト</small></span>
+    </div>
+    <span class="hash-input__arrow" aria-label="をハッシュする">→</span>
+    <span class="hash-input__hash">HASH</span>
+    <span class="hash-input__arrow" aria-label="結果">→</span>
+    <span class="hash-input__result">{{ if $prefix }}葉用{{ else }}H{{ end }}</span>
+  </div>
+  <figcaption>{{ if $prefix }}先頭の1バイトが異なるため、ハッシュへの入力は別になります。接頭辞の幅は、バイト数の比率ではありません。{{ else }}上段の中央の区切りは、解釈上の境界です。入力の64バイトは上下で同じなので、ハッシュ値 H も同じです。{{ end }}</figcaption>
+</figure>

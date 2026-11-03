@@ -1,0 +1,14 @@
+{{- $data := .Inner | transform.Unmarshal -}}
+<figure class="note-diagram" aria-label="{{ .Get "caption" }}">
+  <div class="note-diagram__panels" data-count="{{ len $data }}">
+    {{- range $data }}
+    <div class="note-diagram__panel">
+      <p class="note-diagram__title">{{ .title }}</p>
+      {{- with .body }}<div class="note-diagram__body">{{ . | markdownify }}</div>{{ end }}
+      {{- with .items }}<ul>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ul>{{ end }}
+      {{- with .steps }}<ol>{{ range . }}<li>{{ . | markdownify }}</li>{{ end }}</ol>{{ end }}
+    </div>
+    {{- end }}
+  </div>
+  <figcaption>{{ .Get "caption" | markdownify }}</figcaption>
+</figure>

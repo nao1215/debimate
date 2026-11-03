@@ -72,13 +72,18 @@ plt.savefig("featimp_mdi.svg", bbox_inches="tight")
 
 Permutation importance（並べ替え重要度）の手順:
 
-```mermaid
-graph LR
-    A["1. 学習済みモデルで<br/>baseline score を計算"] --> B["2. 1 つの列をランダムに<br/>シャッフル"]
-    B --> C["3. シャッフル後のデータで<br/>同じスコアを再計算"]
-    C --> D["4. baseline - shuffled_score<br/>= その特徴量の重要度"]
-    D --> E["5. n_repeats 回繰り返し平均"]
-```
+{{< note-steps caption="Permutation importance：学習済みモデルを固定し、列を崩したときのスコア低下を測ります。" >}}
+- title: 基準を測る
+  body: 元のデータで baseline score を計算。
+- title: 列を崩す
+  body: 1 つの列をランダムにシャッフル。
+- title: 再評価する
+  body: シャッフル後のデータで同じスコアを計算。
+- title: 差を求める
+  body: baseline − shuffled_score が、その特徴量の重要度。
+- title: 繰り返す
+  body: n_repeats 回繰り返し、平均を取る。
+{{< /note-steps >}}
 
 「その特徴量を壊したらどれだけスコアが落ちるか」を測る、というシンプルな発想です。
 

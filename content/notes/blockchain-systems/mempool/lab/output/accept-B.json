@@ -1,0 +1,7 @@
+{
+  "txid": "329716e9f693b88e1f0fe51cd80dec819a07877d7780b70535f8af6ba155eeee",
+  "wtxid": "4fa66cb97f016f7e43ee1b839731688ea70a46ac094e7072d6f3c7c9f7123fdd",
+  "allowed": false,
+  "reject-reason": "min relay fee not met",
+  "reject-details": "min relay fee not met, 282 < 1410"
+}

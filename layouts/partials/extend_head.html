@@ -8,3 +8,13 @@
 {{- $ossStyle := resources.Get "css/pages/oss.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $ossStyle.RelPermalink }}" integrity="{{ $ossStyle.Data.Integrity }}" crossorigin="anonymous">
 {{- end }}
+
+{{- if .HasShortcode "hash-input-comparison" }}
+{{- $hashInputStyle := resources.Get "css/pages/hash-input-comparison.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $hashInputStyle.RelPermalink }}" integrity="{{ $hashInputStyle.Data.Integrity }}" crossorigin="anonymous">
+{{- end }}
+
+{{- if or (.HasShortcode "note-panels") (.HasShortcode "note-steps") }}
+{{- $noteDiagramStyle := resources.Get "css/pages/note-diagrams.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $noteDiagramStyle.RelPermalink }}" integrity="{{ $noteDiagramStyle.Data.Integrity }}" crossorigin="anonymous">
+{{- end }}

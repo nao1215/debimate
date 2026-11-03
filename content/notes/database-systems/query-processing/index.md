@@ -14,19 +14,16 @@ Query Processing（問い合わせ処理）は、DB（データベース）が�
 
 この木を読めるようになると、遅い問い合わせのどの部分が原因なのかを絞り込めます。昨日まで速かった SQL が今日から遅い、という現象の理由も、木を見比べれば見当が付きます。以下は、SQL 文が結果の行になるまでの流れです。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    S["SQL 文"] --> P["構文解析"]
-    P --> T1["構文を表す木"]
-    T1 --> N["名前・型などの解決"]
-    N --> T["問い合わせの木"]
-    T --> O["書き換え・実行方法を選ぶ"]
-    O --> Q["実行計画"]
-    Q --> E["実行"]
-    E --> R["結果の行"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-steps border="slate" caption="SQL 文から結果の行を返すまで。番号順に読みます。" >}}
+- title: 構文解析
+  body: SQL 文を読み、構文を表す木を作る。
+- title: 名前・型などの解決
+  body: 問い合わせの木を作る。
+- title: 書き換え・実行方法の選択
+  body: 実行計画を作る。
+- title: 実行
+  body: 計画に従って処理し、結果の行を返す。
+{{< /note-steps >}}
 
 同じ SQL 文でも、表の大きさや索引（インデックス）の有無が変われば、「実行方法を選ぶ」段階から出てくる実行計画は変わります。
 
@@ -56,18 +53,17 @@ SQL は、欲しい結果の条件を書く言語です。どの表をどの順�
 
 素朴に考えても、次の 2 つの手順が思い付きます。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph A["手順 1：注文から始める"]
-        A1["注文 100 万件を読む"] --> A2["1 件ごとに<br/>利用者を引く"]
-        A2 --> A3["日本の利用者だけ残す"]
-    end
-    subgraph B["手順 2：利用者から始める"]
-        B1["利用者 1 万件から<br/>日本の 100 件を取り出す"] --> B2["100 件それぞれについて<br/>索引で注文を引く"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="同じ結果でも、読み始める対象によって処理する件数が変わります。" >}}
+- title: 手順 1：注文から始める
+  steps:
+  - 注文 100 万件を読む
+  - 1 件ごとに利用者を引く
+  - 日本の利用者だけ残す
+- title: 手順 2：利用者から始める
+  steps:
+  - 利用者 1 万件から日本の 100 件を取り出す
+  - 100 件それぞれについて、索引で注文を引く
+{{< /note-panels >}}
 
 どちらの手順も同じ行の集まりを返します。しかし、突き合わせの起点になるのは、手順 1 では最後に捨てる行まで含めた 100 万件、手順 2 では 100 件で、4 桁の差があります。手順 2 も日本の 100 件を選ぶために利用者 1 万件を読むので、読む総量の差はこれより小さくなります。
 

@@ -1,0 +1,10 @@
+header_bytes=80
+bits=1d00ffff
+target=00000000ffff0000000000000000000000000000000000000000000000000000
+nonce=2083236893
+hash=000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+hash <= target: PASS
+changed_nonce=2083236894
+changed_hash=9b227a4a5daa0cbae6874144bc5d7797d0513e320aceadeb3b06304971a41b1c
+changed_hash <= target: FAIL
+Assertions: PASS

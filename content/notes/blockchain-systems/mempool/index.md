@@ -14,19 +14,16 @@ mempool（memory pool）は、まだブロックに入っていない取引を�
 
 2 台のノードが別の中身を持つ様子を以下に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph X["Node X の mempool"]
-        X1["取引 a"]
-        X2["取引 b"]
-    end
-    subgraph Y["Node Y の mempool"]
-        Y1["取引 a"]
-        Y2["取引 c"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="同じ時点でも、ノードごとに保持している取引は異なります。" >}}
+- title: Node X の mempool
+  items:
+  - 取引 a
+  - 取引 b
+- title: Node Y の mempool
+  items:
+  - 取引 a
+  - 取引 c
+{{< /note-panels >}}
 
 上記の図の取引 b と取引 c は、片方のノードだけが持っています。ネットワーク全体で 1 つの mempool を共有する仕組みは無く、どのノードから見るかで中身が変わります。
 
@@ -38,7 +35,7 @@ flowchart LR
 - 競合する取引は、どのような時に置き換わるのか。
 - 送った取引は、なぜ見えなくなることがあるのか。
 
-取引と手数料の表し方は [UTXO](../utxo/)、ブロックへの取り込みと確認数は [Bitcoin Block](../bitcoin-block/)、1 件の送金の流れは [Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で説明しています。設定項目の一覧と既定値は本記事では扱いません。
+取引と手数料の表し方は [UTXO](../utxo/)、ブロックへの取り込みと確認数は [Bitcoin Block](../bitcoin-block/)、1 件の送金の流れは [Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で説明しています。実験では方針の差が見える設定値を使います。設定項目の全一覧は扱いません。
 
 ---
 
@@ -85,6 +82,67 @@ flowchart LR
 未確認の取引も consensus rule を満たしていることが前提で、policy はその上に足される確認です。policy を満たさない取引でも、ブロックに入った時点のチェーンの状態に照らして consensus rule を満たしていれば、有効な取引として受け入れられます。中継されにくいだけで、マイナーに直接届いて取り込まれる経路は残っています。形式の面で policy を満たさない取引は「非標準な取引」と呼ばれますが、「無効な取引」とは別物です。
 
 方針が緩いノードだけが持っている取引も、ブロックに取り込まれると共有された履歴の一部になり、そこから先は policy の違いで持つ・持たないが分かれることはありません。
+
+---
+
+### 拒否した取引を含むブロックの受け入れ
+
+自分の mempool では拒否した取引をブロックに入ってからは受け入れることを2 台のローカルノードで確かめます。使うのは Bitcoin Core 30.4 の regtest です。regtest は、開発者が手元でブロックを生成できる専用のテスト環境で、実際の BTC は使いません。
+
+2 台には、同じ 101 ブロックを読み込ませます。違いは、単独の未確認取引を受け入れる最低手数料率（`minrelaytxfee`）だけです。取引は 2 sat/vB の手数料率で作成します。sat は BTC の最小単位 satoshi、vB は witness の割引を反映した仮想サイズの単位です。
+
+| 対象 | 最低手数料率または設定した手数料率 |
+| --- | --- |
+| Node A | 最低 1 sat/vB |
+| Node B | 最低 10 sat/vB |
+| 今回の取引 | 2 sat/vB |
+
+まず、[`testmempoolaccept`](https://bitcoincore.org/en/doc/30.0.0/rpc/rawtransactions/testmempoolaccept/) という RPC（ノードの機能を呼び出す API）で、同じ署名済み取引を試します。この API は受け入れられるかを調べるだけで、mempool には追加しません。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
+sequenceDiagram
+    participant R as 実験スクリプト
+    participant A as Node A：最低1 sat/vB
+    participant B as Node B：最低10 sat/vB
+    R->>A: 同じ取引をtestmempoolaccept
+    A-->>R: allowed=true
+    R->>B: 同じ取引をtestmempoolaccept
+    B-->>R: allowed=false<br/>min relay fee not met
+    R->>A: 取引を送信してブロックを生成
+    A-->>R: 取引を含むブロック
+    R->>B: そのブロックをsubmitblock
+    B-->>R: 受け入れ成功
+```
+
+[compare_policy.py](lab/compare_policy.py)は、2 台の起動、テスト用資金の準備、取引の署名、各結果の検査まで行います。公開ネットワークと P2P 接続は無効にし、同じブロックを RPC で渡して状態を揃えます。秘密鍵を含む一時的なウォレットは終了時に削除し、結果だけを保存します。[README](lab/README.txt)に実行条件をまとめています。
+
+`bitcoind` を PATH に置いた環境で、リポジトリのルートから実行します。
+
+```bash
+python3 content/notes/blockchain-systems/mempool/lab/compare_policy.py
+```
+
+以下は、実際の[出力](lab/output/summary.txt)です。
+
+```text
+A minrelaytxfee: 1 sat/vB
+B minrelaytxfee: 10 sat/vB
+transaction fee_rate: 2 sat/vB
+testmempoolaccept A: allowed=true
+testmempoolaccept B: allowed=false; min relay fee not met
+after preflight: mempool A=0 B=0
+after send to A: mempool A=1 B=0
+after mining on A and submitting block to B: same_tip=true
+B block contains transaction: true
+Assertions: PASS
+```
+
+Node B が返した `min relay fee not met` は、自分の最低手数料率を満たさないという意味です。取引の署名が不正だったわけではありません。事前確認では両方の mempool が空のままで、その後 Node A だけに送信すると、A に 1 件、B に 0 件となりました。
+
+Node A がこの取引をブロックに取り込み、そのブロックを Node B に渡すと、B も同じ末尾のブロックを採用しました。スクリプトでは、B が採用したブロックの中に対象の txid があることも検査しています。手数料率の方針は未確認取引の保持・中継に対する条件で、ブロックの有効性の条件ではないことが分かります。
+
+この実験は、同じ状態の2台で手数料の方針だけを変えた例です。実ネットワークでの伝播速度や、どのマイナーが取引を採るかを測ったものではありません。
 
 ---
 

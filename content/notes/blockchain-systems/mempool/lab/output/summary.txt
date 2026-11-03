@@ -1,0 +1,10 @@
+A minrelaytxfee: 1 sat/vB
+B minrelaytxfee: 10 sat/vB
+transaction fee_rate: 2 sat/vB
+testmempoolaccept A: allowed=true
+testmempoolaccept B: allowed=false; min relay fee not met
+after preflight: mempool A=0 B=0
+after send to A: mempool A=1 B=0
+after mining on A and submitting block to B: same_tip=true
+B block contains transaction: true
+Assertions: PASS

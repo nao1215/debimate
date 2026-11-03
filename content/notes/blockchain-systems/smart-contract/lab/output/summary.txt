@@ -1,0 +1,4 @@
+eth_call increment: count=0; block unchanged
+increment: status=1; count=1; logs=1; nonce_delta=1; fee_wei=89652000000000
+revert: status=0; count=1; logs=0; nonce_delta=1; fee_wei=55922000000000
+Assertions: PASS

@@ -1,0 +1,12 @@
+.hash-input{max-width:680px;margin:1.5em auto;font-size:.85em;line-height:1.5;color:var(--content)}
+.hash-input__label{margin:0 0 .4em}
+.hash-input__chain{display:grid;grid-template-columns:minmax(0,1fr) 1em 3.4em 1em 3.5em;align-items:center;gap:.4em;margin-bottom:1.2em}
+.hash-input__bytes{display:flex;min-width:0;border:1px solid var(--secondary);background:var(--code-bg)}
+.hash-input__part{flex:1;min-width:0;text-align:center;padding:.7em .2em}
+.hash-input__part+.hash-input__part{border-left:1px solid var(--secondary)}
+.hash-input__part small{display:block;font-size:.85em;color:var(--secondary)}
+.hash-input__prefix{flex:0 0 3.2em;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--secondary);font-family:monospace}
+.hash-input__hash{padding:.5em 0;text-align:center;border:1px solid var(--secondary)}
+.hash-input__arrow,.hash-input__result{text-align:center}
+.post-content .hash-input figcaption{font-size:.9em;font-weight:400;text-align:left;color:var(--secondary)}
+@media(max-width:480px){.hash-input__chain{gap:.2em;grid-template-columns:minmax(0,1fr) .8em 3em .8em 3em}.hash-input__prefix{flex-basis:2.7em}}

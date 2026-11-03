@@ -1,0 +1,5 @@
+original: VALID
+amount changed: 10 -> 90: INVALID
+different public key: INVALID
+same message replayed: VALID
+Assertions: PASS

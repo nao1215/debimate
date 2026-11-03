@@ -94,7 +94,26 @@ EDA（探索的データ分析）の最初の段階で「データの性質に�
 
 代表的な分布は孤立しているわけではなく、互いに変換・極限で繋がる「分布族」を成しています。
 
-![代表的な確率分布間の関係](./distributions_family_tree.svg)
+```mermaid
+%%{init: {"flowchart":{"nodeSpacing":18,"rankSpacing":18,"padding":8,"diagramPadding":4}}}%%
+flowchart LR
+    B["Bernoulli"] -->|"独立な<br/>n 回の和"| BI["Binomial"]
+    BI -->|"正規近似"| N["Normal"]
+    BI -->|"n → ∞<br/>np → λ"| P["Poisson"]
+```
+
+```mermaid
+%%{init: {"flowchart":{"nodeSpacing":18,"rankSpacing":18,"padding":8,"diagramPadding":4}}}%%
+flowchart LR
+    P["Poisson<br/>事象数"] -->|"到着間隔"| E["Exponential"]
+    E -->|"同じ率・独立<br/>n 個の和"| G["Gamma<br/>累積待ち時間"]
+```
+
+```mermaid
+%%{init: {"flowchart":{"nodeSpacing":18,"rankSpacing":18,"padding":8,"diagramPadding":4}}}%%
+flowchart LR
+    B["Bernoulli<br/>成功確率 p"] -->|"p の共役事前分布"| BE["Beta"]
+```
 
 主要な関係:
 

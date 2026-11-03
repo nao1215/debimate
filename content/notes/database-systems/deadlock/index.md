@@ -74,19 +74,18 @@ flowchart LR
 
 デッドロックの検出と、ロック待ちのタイムアウトは別の仕組みです。InnoDB は検出を設定で止めることもでき、止めた場合はロック待ちのタイムアウトが循環待ちを解く役目を引き受けます。[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph WHOLE["PostgreSQL と InnoDB のデッドロック検出"]
-        direction LR
-        W1["文 1<br/>巻き戻す"] --> W2["文 2<br/>巻き戻す"] --> W3["待っていた文<br/>巻き戻す"]
-    end
-    subgraph ONE["InnoDB のロック待ちタイムアウト（既定）と<br/>Oracle Database のデッドロック"]
-        direction LR
-        O1["文 1<br/>残る"] --> O2["文 2<br/>残る"] --> O3["待っていた文<br/>巻き戻す"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< note-panels caption="同じエラー処理でも、どの文まで巻き戻るかを区別します。" >}}
+- title: PostgreSQL / InnoDB のデッドロック検出
+  steps:
+  - 文 1：巻き戻す
+  - 文 2：巻き戻す
+  - 待っていた文：巻き戻す
+- title: InnoDB のロック待ちタイムアウト（既定）/ Oracle Database のデッドロック
+  steps:
+  - 文 1：残る
+  - 文 2：残る
+  - 待っていた文：巻き戻す
+{{< /note-panels >}}
 
 上記の図の下側の Oracle Database では、通知を受けたトランザクションを通常は明示的に巻き戻し、待ってから巻き戻された文だけを再試行することもできます。
 
