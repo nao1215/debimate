@@ -1,8 +1,8 @@
 {{/*
   週報 1 週分のページ。
 
-  週報は書き散らしなので、古い記事の注意書き・関連記事・広告は出さない。
-  日付と話題タグ、本文、前後の週へのリンクだけを置く。
+  週報は書き散らしなので、古い記事の注意書き・関連記事は出さない。
+  日付と話題タグ、本文、本文直後の広告、前後の週へのリンクを置く。
 */}}
 {{- define "main" }}
 
@@ -26,6 +26,8 @@
     {{ partial "weeknotes/content.html" . }}
   </div>
   {{- end }}
+
+  {{- partial "post_adsense.html" . }}
 
   <footer class="post-footer">
     {{/* テーマの post_nav_links.html は mainSections (post) だけを対象にするため、

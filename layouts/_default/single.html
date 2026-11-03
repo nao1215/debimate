@@ -49,6 +49,8 @@
   </div>
   {{- end }}
 
+  {{- partial "post_adsense.html" . }}
+
   <footer class="post-footer">
     {{/* タグ無しの記事が 38 本あり、そのまま range すると空の <ul> が残る */}}
     {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
@@ -69,21 +71,6 @@
     {{- partial "share_icons.html" . -}}
     {{- end }}
   </footer>
-
-  {{/* Google AdSense - 記事下広告 */}}
-  {{- if not .Params.disableAdsense }}
-  <div class="post-adsense" style="margin-top: 2em; text-align: center;">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-5850634964503982"
-         data-ad-slot="7574390420"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  </div>
-  {{- end }}
 
   {{- if (.Param "comments") }}
   {{- partial "comments.html" . }}
