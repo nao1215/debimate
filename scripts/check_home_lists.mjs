@@ -6,7 +6,7 @@ import { runInNewContext } from 'node:vm';
 
 const source = readFileSync(new URL('../assets/js/home-lists.js', import.meta.url), 'utf8');
 const tick = () => new Promise((resolve) => setImmediate(resolve));
-function mount({ state = {}, fetcher, observer = true, brokenHistory = false } = {}) {
+function mount({ state = {}, fetcher, observer = true, brokenHistory = false, latestNext } = {}) {
   const observers = [];
   const requests = [];
   const events = {};
@@ -38,11 +38,17 @@ function mount({ state = {}, fetcher, observer = true, brokenHistory = false } =
   }
   const window = {
     ...(observer ? { IntersectionObserver } : {}), scrollY: 0,
+    location: { href: 'https://example.test/', reload() { this.reloaded = true; } },
     addEventListener: (name, fn) => { events[name] = fn; },
     scrollTo: (_, y) => { window.scrollY = y; },
   };
   runInNewContext(source, {
-    history, window, IntersectionObserver,
+    history, window, IntersectionObserver, AbortController,
+    DOMParser: class {
+      parseFromString() {
+        return { querySelector: () => ({ querySelector: () => ({ dataset: { next: latestNext } }) }) };
+      }
+    },
     setTimeout: (callback) => callback(), clearTimeout() {},
     document: {
       querySelectorAll: () => sections,
@@ -53,9 +59,9 @@ function mount({ state = {}, fetcher, observer = true, brokenHistory = false } =
       },
     },
     requestAnimationFrame: (callback) => callback(),
-    fetch: async (url) => {
+    fetch: async (url, options) => {
       requests.push(url);
-      if (fetcher) return fetcher(url);
+      if (fetcher) return fetcher(url, options);
       const [, key, page] = url.split('/');
       const batch = key === 'posts' ? 6 : 3;
       return { ok: true, json: async () => ({ html: String(batch), next: Number(page) * batch < 60 ? `/${key}/${Number(page) + 1}` : '' }) };
@@ -124,4 +130,53 @@ test('stale/invalid saved counts are bounded; user interaction prevents scroll j
   assert.deepEqual(page.counts(), [60, 3, 3]);
   assert.equal(page.window.scrollY, 0);
   assert.equal(page.sections[0].button.hidden, true);
+});
+
+
+test('leaving during note loading does not retain an error after back navigation', async () => {
+  let attempts = 0;
+  const page = mount({ fetcher: (url, { signal }) => {
+    attempts++;
+    if (attempts > 1) return { ok: true, json: async () => ({ html: '3', next: '/notes/3' }) };
+    return new Promise((resolve, reject) => {
+      signal.addEventListener('abort', () => reject(new Error('Navigation cancelled request')));
+    });
+  } });
+  const pending = page.approachEnd(2);
+  page.events.pagehide({ persisted: true });
+  // Resume before the cancelled request's rejection is processed.
+  page.events.pageshow({ persisted: true });
+  await pending;
+  await tick();
+  assert.equal(attempts, 2);
+  assert.equal(page.counts()[2], 6);
+  assert.equal(page.sections[2].button.textContent, 'もっと見る');
+  assert.equal(page.observers[2].observing, true);
+});
+
+
+test('back to an old deployment refreshes only when the homepage batch URL changed', async () => {
+  for (const latestNext of ['/notes/2', '/notes/new-deployment']) {
+    const page = mount({ latestNext, fetcher: async (url) => url === 'https://example.test/'
+      ? { ok: true, text: async () => '<html></html>' }
+      : { ok: false, status: 404 } });
+    await page.approachEnd(2);
+    assert.equal(Boolean(page.window.location.reloaded), latestNext !== '/notes/2');
+    assert.deepEqual(page.requests, ['/notes/2', 'https://example.test/']);
+    if (latestNext === '/notes/2') assert.equal(page.sections[2].button.textContent, '再試行');
+  }
+});
+
+test('a freshness check finishing after navigation must not reload the hidden document', async () => {
+  let finish;
+  const page = mount({ latestNext: '/notes/new-deployment', fetcher: async (url) => url === 'https://example.test/'
+    ? { ok: true, text: () => new Promise(resolve => { finish = resolve; }) }
+    : { ok: false, status: 404 } });
+  const pending = page.approachEnd(2);
+  await tick();
+  page.events.pagehide({ persisted: true });
+  finish('<html></html>');
+  await pending;
+  assert.equal(page.window.location.reloaded, undefined);
+  assert.notEqual(page.sections[2].button.textContent, '再試行');
 });

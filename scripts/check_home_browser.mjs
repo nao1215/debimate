@@ -70,6 +70,28 @@ try {
   assert.equal(urls.length, total);
   assert.equal(new Set(urls).size, urls.length);
   console.log(`PASS failed request/retry and all ${total} posts without duplicates`);
+  // A cached homepage may still point at batches removed by a new deployment.
+  let homeRequests = 0;
+  await context.route(origin + '/', async route => {
+    homeRequests++;
+    const response = await route.fetch();
+    let body = await response.text();
+    if (homeRequests === 1) {
+      const original = body;
+      body = body.replace(/\/assets\/home\/notes-2\.[a-f0-9]+\.json/g, '/assets/home/obsolete-notes.json');
+      assert.notEqual(body, original, 'Expected homepage note batch URL');
+    }
+    await route.fulfill({ response, body });
+  });
+  await context.route('**/assets/home/obsolete-notes.json', route => route.fulfill({ status: 404, body: 'Removed' }));
+  await page.goto(origin);
+  await page.locator('.home-notes').getByRole('button', { name: 'もっと見る' }).click();
+  await page.waitForFunction(() => !document.querySelector('.home-notes .home-list-status').dataset.next.includes('obsolete'));
+  assert.equal(homeRequests, 3, 'Old document, freshness check, then one reload');
+  await page.locator('.home-notes').getByRole('button', { name: 'もっと見る' }).click();
+  await page.waitForFunction(() => document.querySelectorAll('.home-notes .post-entry').length === 6);
+  console.log('PASS stale note batch after deployment: refresh and successful loading');
+
   await context.close();
 } catch (error) {
   await saveFailure(browser, 'home');

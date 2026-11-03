@@ -2,6 +2,18 @@
 const homeListState = { ...history.state?.homeLists };
 const restorations = [];
 let userMoved = false;
+let pageActive = true;
+const suspendLists = [];
+const resumeLists = [];
+window.addEventListener('pagehide', () => {
+  pageActive = false;
+  clearTimeout(scrollTimer);
+  suspendLists.forEach(suspend => suspend());
+});
+window.addEventListener('pageshow', () => {
+  pageActive = true;
+  resumeLists.forEach(resume => resume());
+});
 for (const event of ['wheel', 'touchstart', 'keydown', 'pointerdown']) {
   window.addEventListener(event, () => { userMoved = true; }, { once: true, passive: true });
 }
@@ -20,6 +32,28 @@ window.addEventListener('scroll', () => {
   scrollTimer = setTimeout(remember, 100);
 }, { passive: true });
 
+// Content-addressed batch URLs can disappear after deployment while the
+// browser still holds the old homepage. Reload only when its list has changed.
+let latestHome;
+const refreshChangedList = async (key, originalNext, signal) => {
+  try {
+    latestHome ??= fetch(window.location.href, { cache: 'no-cache' }).then(async response => {
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return new DOMParser().parseFromString(await response.text(), 'text/html');
+    });
+    const latest = (await latestHome).querySelector(`[aria-labelledby="${key}"]`);
+    if (!latest || !pageActive || signal.aborted) return false;
+    const latestNext = latest.querySelector('.home-list-status')?.dataset.next;
+    if (latestNext === originalNext) return false;
+    remember();
+    window.location.reload();
+    return true;
+  } catch (_) {
+    latestHome = undefined;
+    return false;
+  }
+};
+
 document.querySelectorAll('.home-columns > section').forEach((section) => {
   const status = section.querySelector('.home-list-status');
   if (!status) return;
@@ -33,18 +67,27 @@ document.querySelectorAll('.home-columns > section').forEach((section) => {
   let next = status.dataset.next;
   let loading = false;
   let observer;
+  let controller;
+  let interrupted = false;
   button.hidden = false;
 
   const load = async () => {
-    if (loading || !next) return false;
+    if (!pageActive || loading || !next) return false;
     loading = true;
+    const request = new AbortController();
+    controller = request;
     observer?.unobserve(status);
     button.disabled = true;
     message.textContent = '読み込み中…';
     try {
-      const response = await fetch(next);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const response = await fetch(next, { signal: request.signal });
+      if (!response.ok) {
+        if ((response.status === 404 || response.status === 410) &&
+            !request.signal.aborted && await refreshChangedList(key, status.dataset.next, request.signal)) return false;
+        throw new Error(`HTTP ${response.status}`);
+      }
       const payload = await response.json();
+      if (request.signal.aborted) return false;
       if (typeof payload.html !== 'string' || typeof payload.next !== 'string') throw new Error('Invalid batch');
       const template = document.createElement('template');
       template.innerHTML = payload.html;
@@ -60,18 +103,46 @@ document.querySelectorAll('.home-columns > section').forEach((section) => {
       button.textContent = 'もっと見る';
       return true;
     } catch (_) {
+      if (request.signal.aborted) return false;
       message.textContent = '読み込めませんでした。再試行するか、上の一覧リンクをご利用ください。';
       button.textContent = '再試行';
       return false;
     } finally {
       loading = false;
       button.disabled = false;
+      if (request.signal.aborted) {
+        message.textContent = `${total} 件中 ${visible} 件`;
+        button.textContent = 'もっと見る';
+      }
+      resume();
     }
   };
   const observe = () => {
-    if (next) requestAnimationFrame(() => observer?.observe(status));
+    if (next && pageActive) requestAnimationFrame(() => { if (pageActive) observer?.observe(status); });
     else observer?.disconnect();
   };
+  // A navigation-cancelled fetch is not a network failure. Resume it when
+  // the same document returns from the back/forward cache, even if its
+  // rejection settles after pageshow.
+  const resume = () => {
+    if (!pageActive || loading || !interrupted) return;
+    interrupted = false;
+    void (async () => {
+      do { if (!await load()) return; } while (visible < target && next);
+      observe();
+    })();
+  };
+  suspendLists.push(() => {
+    observer?.disconnect();
+    if (loading) {
+      interrupted = true;
+      controller.abort();
+    }
+  });
+  resumeLists.push(() => {
+    if (interrupted) resume();
+    else observe();
+  });
   button.addEventListener('click', async () => { if (await load()) observe(); });
   if ('IntersectionObserver' in window) {
     observer = new IntersectionObserver(async (entries) => {
