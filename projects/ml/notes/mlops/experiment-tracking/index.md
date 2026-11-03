@@ -13,6 +13,8 @@ weight: 1
 
 [ハイパーパラメータ](../../ml/hyperparameter/) 探索や [交差検証](../../ml/cross-validation/) と組み合わせると効果が大きく、ベイズ最適化や `Optuna` の study も実験管理ツールに保存できます。
 
+---
+
 ### 実験管理の全体像
 
 ```mermaid
@@ -105,6 +107,8 @@ plt.savefig("experiment_sweep_heatmap.svg", bbox_inches="tight")
 
 赤丸が最良の組み合わせで、`lr=1e-3, batch_size=64` が最適です。色の濃淡は val_acc を直接表します。25 回の実験を 1 枚で見渡せるのは、トラッキングがあって初めて成立します。表計算ソフトに手打ちで管理していたら、`lr` を変えた 5 回の結果を `batch_size` 別に並べ替えるだけでかなり大変な作業になると考えられます。
 
+---
+
 ### 複数 run の学習曲線比較
 
 異なる設定の学習曲線を 1 枚に重ねれば、「過学習しているか」「学習が早すぎたか」が一目で分かります。
@@ -121,6 +125,8 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 ![複数 run の学習曲線比較](./experiment_compare_runs.svg)
 
 run #23（緑）が最も高い val_acc に収束しており、run #12（灰色）は学習率が大きすぎて早期に頭打ちです。run #27（青）は学習率が小さすぎて 50 epoch では伸びきっていません。「次は run #23 の周辺をさらに細かく探索する」「run #27 はもっと epoch を回す」といった次のアクションを可視化された結果から決められます。
+
+---
 
 ### 多次元ハイパーパラメータの俯瞰
 

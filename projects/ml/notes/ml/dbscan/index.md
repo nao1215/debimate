@@ -11,6 +11,8 @@ DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点
 
 代表的な使い分けの判断軸: クラスタが「球形に近く `k` が分かっている」なら [k-means](../k-means/)、「密度の濃淡が手がかりで `k` 不明 + 外れ値あり」なら DBSCAN、「階層関係を見たい」なら [階層的クラスタリング](../hierarchical-clustering/)。
 
+---
+
 ### k-means との対比
 
 非凸データ（三日月型）に対する両者の挙動です。
@@ -108,6 +110,8 @@ plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 - 2D データなら `min_samples ≥ 4`、3D 以上なら `min_samples = 2 × n_features`
 - ノイズが多いデータほど大きく
 - 「最小限のクラスタサイズ」と捉えて、ドメイン的に意味のある最小サンプル数で
+
+---
 
 ### 数学での使いどころ
 

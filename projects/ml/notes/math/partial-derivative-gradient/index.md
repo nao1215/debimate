@@ -11,6 +11,8 @@ weight: 18
 
 機械学習では損失関数 `L(w_1, w_2, ..., w_n)` をモデルのパラメータで偏微分し、勾配の逆向きにパラメータを少しずつ動かして損失を下げる、という枠組みが繰り返し出てきます。線形回帰の正規方程式は勾配を 0 と置いて解いたもので、ロジスティック回帰の最尤推定やニューラルネットの誤差逆伝播は勾配の逆向きに進んで解を探します。いずれも損失の勾配を求めるところから始まります。
 
+---
+
 ### 1 変数の微分から始める
 
 1 変数関数 `f(x)` の微分 `f'(x)` は、`x` を少しだけ動かしたときに `f` が動く比率を表します。グラフ上では、点 `(x, f(x))` での接線の傾きと同じものとなります。
@@ -134,6 +136,8 @@ plt.savefig("gradient_field.svg", bbox_inches="tight")
 
 とするのが最急降下法そのものです。
 
+以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/partial-derivative-gradient_gen.py)はGitHubで確認できます。
+
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
@@ -148,7 +152,7 @@ WW, BB = np.meshgrid(w_grid, b_grid)
 LL = np.array([[np.mean((y_data - (w * x_data + b)) ** 2)
                 for w in w_grid] for b in b_grid])
 
-# 描画と勾配ベクトルは略 (スクリプト側で生成)
+# 描画処理は省略
 plt.savefig("mse_gradient.png", bbox_inches="tight")
 ```
 
@@ -167,6 +171,8 @@ plt.savefig("mse_gradient.png", bbox_inches="tight")
 `∂L/∂w = (∂L/∂z) × (∂z/∂w)`
 
 のように偏微分の積で書けます。「外側の損失の勾配」と「内側の関数のヤコビ行列」を順に掛け合わせる構造で、深いネットワークでも 1 層ずつ局所的に勾配を計算できる仕組みになります。
+
+---
 
 ### 数学での使いどころ
 

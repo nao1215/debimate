@@ -11,6 +11,8 @@ weight: 36
 
 backprop 自体は学習則ではなく、`勾配を計算するだけ` の手続きです。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や Adam に渡してパラメータを更新する、という分業構造になっています。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなります。
 
+---
+
 ### 全体像: forward と backward の対
 
 ```mermaid
@@ -182,6 +184,8 @@ backprop の計算量は「forward と同じオーダー」です。その一方
 - Activation offloading: 中間値を CPU や別 GPU に退避
 
 これらは PyTorch / DeepSpeed / Megatron 等のフレームワークが標準サポートしています。
+
+---
 
 ### 数学での使いどころ
 

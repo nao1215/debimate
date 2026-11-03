@@ -7,128 +7,149 @@ tags: ["machine-learning", "scikit-learn", "metrics"]
 weight: 4
 ---
 
-確率の校正（probability calibration）は、分類モデルが出す `predict_proba` の値を「実際の正例比率」と一致させる後処理です。多くのモデルは「分類は正しいが確率値は信用できない」状態で出てきます。例えば「0.9 の確率で陽性」と予測した 100 件のうち、実際の陽性が 70 件しかないなら、確率出力は校正されていない（過信、overconfidence）と言えます。
+確率の校正（probability calibration）は、モデルが出す予測確率と、その確率を付けた集団での実際の正例割合が合うように調整する処理です。例えば「確率0.9」と予測した件数をまとめた時、正例が約90%なら、その集団では予測確率と観測結果が対応しています。
 
-校正が必要な代表モデル: [サポートベクターマシン](../svm/) のスコア、[ランダムフォレスト](../random-forest/)、ナイーブベイズです。[ロジスティック回帰](../logistic-regression/) は損失関数（交差エントロピー）の性質上、比較的校正されています。それでも [クラス不均衡](../class-imbalance/) があれば再校正が必要となります。確率出力をそのまま意思決定に使うとき（しきい値判定、損益計算、リスク評価）は、校正のステップが事実上必須となります。
+確率を使って期待損失や判断の閾値を決める時は、この対応が重要です。ただし、校正の処理を追加すれば必ず良くなるわけではありません。本記事では同じ分類モデルを固定し、校正前後の確率と評価値を比べます。
 
-### 校正の有無を見る: 信頼性プロット
+{{< note-panels caption="分類の正解と、確率の対応は異なる観点です。" >}}
+- title: 分類の正解率
+  body: 閾値で正例・負例を決めた時に、ラベルが何件当たったか。
+- title: 確率の校正
+  body: 似た予測確率を付けた集団で、正例の割合がその確率に対応するか。
+{{< /note-panels >}}
 
-信頼性プロット（reliability diagram）は「予測確率を `0.0〜0.1, 0.1〜0.2, ..., 0.9〜1.0` の 10 ビンに分け、各ビンでの実測正例比率を縦軸に描く」ものです。理想的な校正なら対角線（`predicted = observed`）に乗ります。
+---
+
+### 信頼性プロット
+
+信頼性プロット（reliability diagram）は、予測確率を区間に分け、横軸に区間内の予測確率の平均、縦軸に実際の正例割合を置く図です。両者が等しければ対角線上に並びます。点が対角線より下なら、その区間では予測確率が実測の正例割合より高くなっています。
+
+[scikit-learnの校正機能](https://scikit-learn.org/stable/modules/calibration.html)を使い、合成データを学習用1500件、校正用750件、テスト用750件に分けます。学習用でGaussianNBを作り、校正前の確率を確認します。GaussianNBは、各クラス内で特徴量がそれぞれ正規分布に従い、互いに独立であると仮定するナイーブベイズ分類器です。ここでは予測確率の幅が0.1の区間を10個使います。空の区間はプロットされません。
+
+以下はscikit-learn 1.8.0、[NumPy](https://numpy.org/) 2.4.1で確認した結果です。[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/probability-calibration_gen.py)はGitHubで公開しています。本文のコードは抜粋で、[Matplotlib](https://matplotlib.org/)の描画設定や保存処理を省略しています。
 
 ```python
-from sklearn.calibration import calibration_curve
-from sklearn.linear_model import LogisticRegression
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.calibration import CalibratedClassifierCV, calibration_curve
+from sklearn.datasets import make_classification
+from sklearn.frozen import FrozenEstimator
+from sklearn.metrics import brier_score_loss, roc_auc_score
+from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.svm import SVC
 
-models = {
-    "Logistic Regression": LogisticRegression(),
-    "Naive Bayes": GaussianNB(),
-    "Random Forest": RandomForestClassifier(n_estimators=100),
-    "SVM (rbf)": SVC(probability=True),
-}
-for name, clf in models.items():
-    clf.fit(X_tr, y_tr)
-    proba = clf.predict_proba(X_te)[:, 1]
-    fop, mpv = calibration_curve(y_te, proba, n_bins=10)
-    plt.plot(mpv, fop, "o-", label=name)
-plt.savefig("calib_reliability_diagram.svg", bbox_inches="tight")
-```
-
-![4 分類器の信頼性プロット](./calib_reliability_diagram.svg)
-
-理想は対角線（黒い破線）。各モデルが対角線からどう外れるかで「校正の癖」が分かります。
-
-- ロジスティック回帰: ほぼ対角線に沿う（交差エントロピー損失で訓練したため）
-- Random Forest: S 字型に歪む（中央が下凸、両端が上凸の典型）
-- Naive Bayes: 確率を 0 や 1 に押し付ける（特徴量間の独立性仮定が崩れると過信になる）
-- SVM: スコアが確率ではないため、対角線から大きく外れる
-
-「分類精度は高いが確率出力は信用できない」モデルが多数派、と覚えておくと良いです。
-
----
-
-### 主要な校正手法
-
-| 手法 | 仕組み | 特徴 |
-|---|---|---|
-| Platt scaling (sigmoid) | スコアにロジスティック回帰を当てて確率に変換 | 軽量、滑らか、データ少でも安定 |
-| Isotonic regression | 単調増加な区分線形関数で確率を校正 | 柔軟、データ多めでないと overfit |
-| Beta calibration | Beta 分布ベースの校正 | Platt と Isotonic の中間的な柔軟性 |
-| Temperature scaling | softmax の logits を温度 `T` で割る | 深層学習で標準 |
-
-scikit-learn では `CalibratedClassifierCV(base_estimator, method="sigmoid")` で Platt、`method="isotonic"` で Isotonic が使えます。両方とも内部で CV（cross validation、[交差検証](../cross-validation/)）を回して校正パラメータを推定します。
-
-```python
-from sklearn.calibration import CalibratedClassifierCV
-
+X, y = make_classification(n_samples=3000, n_features=10,
+                          n_informative=5, n_redundant=2, random_state=0)
+X_tr, X_rest, y_tr, y_rest = train_test_split(
+    X, y, test_size=0.5, stratify=y, random_state=0)
+X_cal, X_te, y_cal, y_te = train_test_split(
+    X_rest, y_rest, test_size=0.5, stratify=y_rest, random_state=0)
 base = GaussianNB().fit(X_tr, y_tr)
-platt = CalibratedClassifierCV(GaussianNB(), method="sigmoid", cv=3).fit(X_tr, y_tr)
-iso = CalibratedClassifierCV(GaussianNB(), method="isotonic", cv=3).fit(X_tr, y_tr)
-plt.savefig("calib_before_after.svg", bbox_inches="tight")
+raw = base.predict_proba(X_te)[:, 1]
+observed, predicted = calibration_curve(y_te, raw, n_bins=10, strategy="uniform")
+fig, ax = plt.subplots(figsize=(5, 4))
+ax.plot([0, 1], [0, 1], "--", color="#777777", label="Ideal")
+ax.plot(predicted, observed, "o-", color=BLUE, label="Before calibration")
+ax.set(xlabel="Mean predicted probability", ylabel="Observed positive fraction",
+       xlim=(0, 1), ylim=(0, 1))
+ax.legend(loc="upper left")
+plt.tight_layout()
+save("calib_reliability_diagram.svg")
 ```
 
-![校正前と Platt / Isotonic 後の比較](./calib_before_after.svg)
+![校正前の予測確率と実測正例割合](./calib_reliability_diagram.svg)
 
-校正前の Naive Bayes は信頼性プロットが大きく歪んでいます（左、Brier score 0.27）。Platt scaling 適用後（中央、Brier 0.17）と Isotonic 後（右、Brier 0.15）はいずれも対角線に近づき、Brier スコアも改善しています。
-
-Brier スコア `(1/n) Σ (p_pred - y)²` は「予測確率と正解の平均二乗誤差」で、校正の良さを 1 つの数で表す指標です。低いほど良いです。
+各点は有限個のサンプルから計算しているため、対角線からのずれには標本のばらつきも含まれます。区間の切り方で形も変わるので、1本の線だけでモデル全体の性質を決めないようにします。後のヒストグラムで、どの区間に何件あるかも確認します。
 
 ---
 
-### 確率分布の形が変わる
+### 校正用のデータと変換
 
-校正によって出力確率の分布形そのものが変わります。
+校正器は、元モデルのスコアや予測確率を入力とし、正例の確率へ写す関数を学習します。ここでは元モデルの学習に使っていない750件を渡し、元モデルを学習し直さずに確率の変換だけを比較します。
+
+{{< note-steps caption="モデルの学習、校正器の学習、評価に使うデータを分離します。" >}}
+- title: 学習用1500件
+  body: 分類モデルを学習し、そのパラメータを固定。
+- title: 校正用750件
+  body: 固定したモデルの出力と正解から、確率の変換を学習。
+- title: テスト用750件
+  body: どちらの学習にも使わず、校正前後の出力を比較。
+{{< /note-steps >}}
+
+比較する変換は次の2つです。
+
+- Sigmoid（Platt scaling）: 入力スコア `f` を `1 / (1 + exp(Af + B))` で変換し、係数A・Bを学習する。滑らかな曲線で表現できる範囲に限られる
+- Isotonic regression: スコアが増えた時に出力確率が下がらない制約の下で、柔軟に変換を学習する。scikit-learnは学習した点の間を線形補間し、平らな区間もできる。少ない校正データでは過学習しやすい
+
+[`CalibratedClassifierCV`](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html)に通常の未学習モデルを渡すと、交差検証を使って元モデルと校正器を学習できます。一方で、ここでは `FrozenEstimator` で学習済みモデルを固定し、別に用意した校正データだけを渡します。この使い方では、学習用データと校正用データを利用者が分離する必要があります。`FrozenEstimator` はscikit-learn 1.6以降で利用できます。
 
 ```python
-for name, clf in [("Uncalibrated NB", base), ("Platt", platt), ("Isotonic", iso)]:
-    plt.hist(clf.predict_proba(X_te)[:, 1], bins=25)
-plt.savefig("calib_probability_histogram.svg", bbox_inches="tight")
+models = {"Before": base}
+for name, method in [("Sigmoid", "sigmoid"), ("Isotonic", "isotonic")]:
+    models[name] = CalibratedClassifierCV(
+        FrozenEstimator(base), method=method).fit(X_cal, y_cal)
+probabilities = {name: model.predict_proba(X_te)[:, 1] for name, model in models.items()}
+fig, ax = plt.subplots(figsize=(5.5, 4.3))
+ax.plot([0, 1], [0, 1], "--", color="#777777", label="Ideal")
+for (name, proba), color in zip(probabilities.items(), [BLUE, BROWN, GREEN]):
+    brier = brier_score_loss(y_te, proba)
+    auc = roc_auc_score(y_te, proba)
+    print(f"{name:8s} Brier={brier:.4f} ROC AUC={auc:.4f}")
+    observed, predicted = calibration_curve(y_te, proba, n_bins=10, strategy="uniform")
+    ax.plot(predicted, observed, "o-", color=color, label=name, markersize=4)
+ax.set(xlabel="Mean predicted probability", ylabel="Observed positive fraction",
+       xlim=(0, 1), ylim=(0, 1))
+ax.legend(loc="upper left")
+plt.tight_layout()
+save("calib_before_after.svg")
 ```
 
-![校正前後の確率ヒストグラム](./calib_probability_histogram.svg)
+![固定したモデルにSigmoidとIsotonicを適用した信頼性プロット](./calib_before_after.svg)
 
-校正前の Naive Bayes は確率を `0` と `1` の両端に押し付けます（過信）。Platt 後は中央寄りに山ができ、Isotonic 後は中央付近に集中します。「中央寄りで微妙な確率」が出るようになる、というのが校正の効果です。
+```text
+Before   Brier=0.0783 ROC AUC=0.9612
+Sigmoid  Brier=0.0804 ROC AUC=0.9612
+Isotonic Brier=0.0788 ROC AUC=0.9597
+```
 
-過信の確率出力を意思決定にそのまま使うと、リスクを過小評価しやすいです。例として、不正検知で「99% の確率で不正」と判定したケースの実際の不正率が 70% なら、自動却下の閾値設計が崩れます。
+Brierスコアは、正解 `y` を0か1として計算する `mean((予測確率 - y)²)` です。小さいほど確率予測の二乗誤差が少ないことを表します。今回はSigmoidもIsotonicも、校正前よりBrierスコアがわずかに悪くなりました。校正用データに合わせた変換が、別のテストデータでも改善するとは限らない例です。
 
-### 校正のタイミング
+この1回の結果から、どちらの手法が常に劣るかは判断できません。
 
-- 訓練データで校正してテストデータで評価: 過学習する。`CalibratedClassifierCV` は内部 CV で校正データを分離してくれる
-- [クラス不均衡](../class-imbalance/) の resampling 後: 確率出力が訓練と本番で乖離する。校正で補正
-- 本番運用中: ドリフトで校正が崩れる ([データドリフト](../../mlops/data-drift/) 参照)。定期的に再校正
-
-### 数学での使いどころ
-
-- 真の確率分布 `P(y=1 | x)` の推定: 校正は予測値をこの真値に近づける操作
-- [情報理論](../../math/information-theory/) の交差エントロピー: 校正されていれば cross-entropy が最小化される
-- Brier スコアの分解: Reliability - Resolution + Uncertainty（Murphy 分解）
-- ベイズ推論: 事後確率の校正は事前分布の妥当性に依存
-- Reliability diagram は分位点を使う ([四分位点](../../math/quantile/) 参照)
+Brierスコアは校正のずれだけでなく、正例と負例をどれだけ区別できるかなどにも影響されます。値が下がったことだけで、校正が改善したとは断定できません。[ROC AUC](../roc-pr-auc/)は予測の順位を見る指標なので、信頼性プロットやBrierスコアと併せて違いを確認します。今回のSigmoidでは順位が保たれ、Isotonicでは同じ確率になる点が生じ、ROC AUCも変わりました。
 
 ---
 
-### 機械学習での使いどころ
+### 出力確率の分布
 
-- リスクスコアリング: 与信スコア、保険料、医療リスク（確率値そのものを業務に使う）
-- 閾値の最適化: PR 曲線上で適切な閾値を選ぶ前提として校正が必須
-- アンサンブル: 異なるモデルの確率出力を平均するとき、校正されていないと偏る
-- アクティブラーニング: 不確実なサンプル（`p ≈ 0.5`）を選んで人手ラベリング → 校正されていないと選択が歪む
-- 意思決定理論: 期待損失最小化に確率値を使う場合
-- A/B test での確率予測: 「予測 CTR（Click Through Rate、クリック率）」を業務指標に変換する場合
-- LLM の confidence: token-level の確率を信頼度として使う場面
+校正前後で同じ750件にどんな確率が付いたかを確認します。横軸の区間は、信頼性プロットと同じ10区間です。
+
+```python
+fig, ax = plt.subplots(figsize=(5.5, 3.5))
+for (name, proba), color in zip(probabilities.items(), [BLUE, BROWN, GREEN]):
+    ax.hist(proba, bins=np.linspace(0, 1, 11), histtype="step", linewidth=1.5,
+            color=color, label=name)
+ax.set(xlabel="Predicted probability", ylabel="Number of test samples")
+ax.legend(loc="upper center")
+plt.tight_layout()
+save("calib_probability_histogram.svg")
+```
+
+![同じテストデータに付けた予測確率の分布](./calib_probability_histogram.svg)
+
+校正によって確率が必ず中央へ寄るわけではありません。この例でもSigmoid後は0付近の件数が増えています。確率が0や1に近いこと自体が問題なのではなく、その値を付けた集団の正例割合と合っているかが判断の対象です。
+
+例えば、予測確率0.9の区間に100件ある場合と、3件しかない場合では、同じ正例割合のずれでも判断の確かさが異なります。区間を細かくすれば詳細が見える一方で、各区間の件数が減って値が不安定になります。`strategy="quantile"` で件数が近くなる区切りを使う方法もありますが、確率の区間幅は揃わなくなります。
 
 ---
 
-### 適さないケース / 落とし穴
+### 使いどころと限界
 
-- 校正と精度を混同: 校正は確率の正確性、精度はクラス予測の正解率。両者は別物
-- 訓練データで校正: 過学習する。`CalibratedClassifierCV` を使うか、別 fold を確保
-- データが少なすぎる: Isotonic は overfit しやすい。`n < 500` 程度なら Platt の方が安全
-- 不均衡データで校正後の閾値を 0.5 のまま: 校正は確率を正しくするだけで、閾値の意味は変わる。PR 曲線で再選定
-- 校正後にスコアの順位が変わる: Platt は単調変換なので順位が保たれる。一方、isotonic は段階的なので隣接サンプルの順位が同じになることがある
-- 校正の頻度を決めない: ドリフトで時間とともに崩れる。定期的に reliability diagram を確認
-- 多クラス分類で one-vs-rest 校正: クラス間の整合性が崩れることがある（合計確率が 1 にならない）。multinomial 校正を使う
-- LightGBM / XGBoost のデフォルト出力: 比較的校正されている。ただし、深いブースティングだと過信気味。Platt や isotonic を当てる価値あり
-- 「校正したから安心」: 校正は分布シフト下では崩れる。本番でも reliability diagram を継続監視する
+予測確率から期待損失を計算したり、モデル間で確率を比較したりする時に、校正の確認が役立ちます。ただし、校正が良いだけで個々の入力を正確に識別できるとは限りません。例えば正例率が50%の集団に常に0.5を返すモデルは、集団全体では確率が合っていても、誰が正例かを区別できません。
+
+- 閾値を評価データ上で調整すること自体に、校正は必須ではない。閾値を「この確率以上」という意味で使う時には、確率と実測割合の対応が必要
+- 校正器を元モデルの訓練データで学習すると、学習済みの点に対する過度に良い予測へ合わせてしまう。専用データか交差検証で分離する
+- Isotonicに必要な件数はデータ分布やスコアの広がりで変わる。固定の件数だけで適否を決めず、未使用データで比較する
+- [クラス不均衡](../class-imbalance/)を補う再サンプリングをしても、校正用と評価用は適用先のクラス比率を反映させる。校正だけで任意の分布差を解消できるわけではない
+- ロジスティック回帰でも、モデルの仮定や正則化、適用先の分布によって校正は崩れる。モデル名だけで追加の校正が必要かは決まらない
+- [データドリフト](../../mlops/data-drift/)が起きたら、過去に校正した確率が今も合うかを再確認する。学習時の校正は将来の保証ではない

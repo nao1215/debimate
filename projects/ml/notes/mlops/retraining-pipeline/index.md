@@ -11,6 +11,8 @@ weight: 6
 
 [実験管理](../experiment-tracking/) で新モデルを記録し、[モデルレジストリ](../model-registry/) で版管理し、[推論サービング](../inference-serving/) でデプロイし、[モデル性能劣化の監視](../model-performance-monitoring/) で次の再学習タイミングを判断する、という全工程をつなぐパイプ役とも言えます。
 
+---
+
 ### 再学習パイプラインの全体像
 
 ```mermaid
@@ -137,6 +139,8 @@ plt.savefig("retraining_cost_tradeoff.svg", bbox_inches="tight")
 
 「champion-challenger」という名前の通り、現役モデル（champion）に対して挑戦者（challenger）が勝つことを 7 段階で検証します。すべて通過して初めて Production になる、というのが現代的な MLOps の標準デプロイメントフローとなります。
 
+---
+
 ### コード例: Airflow DAG での再学習スケジュール
 
 Airflow / Prefect / Dagster などのワークフローエンジンで実装するのが典型です。Airflow の例:
@@ -178,6 +182,8 @@ Feature store（Feast、Tecton、Vertex AI Feature Store など）を導入す�
 - 同じ Python 関数で両方の経路に書き出す → train/serve skew が原理的に発生しない
 
 Feature store は規模が小さいうちはオーバーキルです。ただし、特徴量数 100 を超え、複数モデルで共有する段階になると無いと苦しい、と考えられます。
+
+---
 
 ### 数学での使いどころ
 

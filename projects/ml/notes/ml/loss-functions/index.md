@@ -11,6 +11,8 @@ weight: 5
 
 回帰では平均二乗誤差（mean squared error, MSE）と平均絶対誤差（mean absolute error, MAE）が標準で、外れ値の扱いやすさで使い分けます。分類では交差エントロピー（cross-entropy）が標準で、確率分布の差を測る尺度として定式化されています。両者とも [最急降下法・SGD](../../math/gradient-descent-sgd/) と組み合わせてパラメータを更新する設計が前提となります。
 
+---
+
 ### 損失関数が決めるもの
 
 損失関数の選び方は次の 3 点を直接決めます。
@@ -152,6 +154,8 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 
 実装上は数値安定性のため `log(p + 1e-15)` のように小さな下駄を履かせるか、`logits` の段階でソフトマックスと組み合わせた `logsumexp` ベースの計算が標準です。詳細は [対数・指数関数と log-odds](../../math/log-exp-logodds/) のノートで触れた数値安定性の話と同じ流れになります。
 
+---
+
 ### 多クラスへの拡張: ソフトマックス + 交差エントロピー
 
 多クラス分類（クラス数 `K`）では、出力 `K` 次元の `logits z = (z_1, ..., z_K)` をソフトマックスで確率に変換します。
@@ -163,6 +167,8 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 `L = -log p_c = -z_c + log(Σ_j exp(z_j))`
 
 の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を引く形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス（Kullback-Leibler divergence、2 つの確率分布のずれを測る量）」の特殊形でもあり、情報理論との繋がりも明確です。
+
+---
 
 ### 数学での使いどころ
 

@@ -24,6 +24,8 @@ GradientBoosting（勾配ブースティング）は、浅い [決定木](../dec
 
 表形式データ（テーブルデータ）のコンペや実運用では、Kaggle 系を中心に GradientBoosting 系（特に LightGBM / XGBoost）が最強クラスのモデルとして使われることが多いと言えます。一方でハイパーパラメータの感度が高く、調整なしでは [RandomForest](../random-forest/) に負けることもあるため、`learning_rate` と `n_estimators` と `max_depth` のバランス取りが運用上の中核となります。
 
+---
+
 ### 用語の整理
 
 - アンサンブル手法: 複数モデルの出力をまとめて、単体より安定・高精度を狙う方法

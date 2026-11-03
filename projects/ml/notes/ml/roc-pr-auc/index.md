@@ -11,6 +11,8 @@ ROC-AUC（Receiver Operating Characteristic - Area Under the Curve）と PR-AUC�
 
 結論を先に置くと、不均衡データでは ROC-AUC は楽観的に出るため、PR-AUC を主指標にした方が良いです。理由は順を追って示します。詳しい対処手段は [クラス不均衡](../class-imbalance/) のノートで扱います。
 
+---
+
 ### 何を測っているか
 
 ROC-AUC と PR-AUC は、いずれもモデルが出した「陽性である確率」 (`y_score`) を真のラベル (`y_true`, 0/1) と突き合わせて、閾値 `t` を 1.0 から 0.0 まで動かしながら点を打って描いた曲線の下の面積です。閾値 1 つにつき次の 4 つの値が決まります。

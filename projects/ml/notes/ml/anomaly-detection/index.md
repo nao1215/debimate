@@ -11,6 +11,8 @@ weight: 32
 
 [クラス不均衡](../class-imbalance/) の極端なケースとも見なせます。ただし、不均衡分類は「正例と負例の両方にラベルがある」状況、異常検知は「正常データだけ（または僅かな異常ラベル）から学ぶ」状況、という違いがあります。代表的なアルゴリズムは 4 つで、データの形状と分布の前提によって使い分けます。
 
+---
+
 ### 4 つの代表アルゴリズム
 
 | 手法 | 仕組み | 強み | 弱み |
@@ -79,6 +81,8 @@ iForest の長所:
 - 解釈しやすい（木構造）
 - 学習データに異常が含まれていてもロバスト
 
+---
+
 ### しきい値の選び方
 
 `contamination` パラメータ（異常の予測比率）は重要な hyperparameterです。
@@ -127,6 +131,8 @@ plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
 - LSTM autoencoder の再構成誤差
 - Matrix Profile（部分列同士の距離を総当たりで求め、繰り返しパターンと異常部分列を同時に見つける手法）
 - Spectral residual（Microsoft Azure Anomaly Detector）
+
+---
 
 ### 数学での使いどころ
 

@@ -11,6 +11,8 @@ weight: 16
 
 欠損値処理は [標準化](../standardization/) や [カテゴリ変数のエンコーディング](../categorical-encoding/) と並ぶ前処理の基本で、`scikit-learn` では `sklearn.impute` モジュールに `SimpleImputer / KNNImputer / IterativeImputer` の 3 系統が提供されています。
 
+---
+
 ### 欠損のメカニズム: MCAR / MAR / MNAR
 
 欠損は「なぜ欠損したか」で 3 種類に分かれます。これが対処方針を決める最初のステップです。
@@ -112,6 +114,8 @@ plt.savefig("missing_indicator_pattern.svg", bbox_inches="tight")
 
 scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加されます。
 
+---
+
 ### 列ごとの戦略
 
 欠損率に応じた対処方針の目安:
@@ -136,6 +140,8 @@ scikit-learn では `SimpleImputer(add_indicator=True)` で自動的に追加さ
 - テキスト: 空文字列、`"<missing>"`、専用トークン
 
 [カテゴリ変数のエンコーディング](../categorical-encoding/) のノートで触れたように、CatBoost や LightGBM など一部の勾配ブースティング実装は、欠損値を専用の分岐先へ自動で振り分けます。ここでも「欠損値の発生源」を捉えるため、一般的には別の手法（imputation）を経由する方が透明性は高いと考えられます。
+
+---
 
 ### 数学での使いどころ
 

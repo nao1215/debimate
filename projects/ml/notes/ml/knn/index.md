@@ -20,6 +20,8 @@ graph LR
     D --> E[予測]
 ```
 
+---
+
 ### 前提・注意
 
 - 特徴量が数値であることが前提（カテゴリは数値化が必要）
@@ -65,7 +67,7 @@ query = np.array([1.5, 1.5])
 dists = np.linalg.norm(X - query, axis=1)
 nearest_idx = np.argsort(dists)[:5]
 
-# (描画コードは省略 / 生成スクリプトは /tmp/knn_gen.py 参照)
+# 描画処理は省略
 ```
 
 出力:

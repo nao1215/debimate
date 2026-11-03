@@ -10,6 +10,7 @@
 .post-content .note-diagram .note-diagram__steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;list-style:none;counter-reset:note-step;padding:0;margin:0}
 .post-content .note-diagram__steps>li{counter-increment:note-step;margin:0;padding:12px;min-width:0;border:1px solid var(--border);overflow-wrap:anywhere}
 .post-content .note-diagram--slate .note-diagram__steps>li{border-color:#8a9ba5}
+.post-content .note-diagram--slate-divider .note-diagram__title{border-bottom-color:#8a9ba5}
 .note-diagram__steps>li::before{content:counter(note-step,decimal-leading-zero);display:block;color:var(--secondary);font-size:.85em;font-variant-numeric:tabular-nums;margin-bottom:.4em}
 .post-content .note-diagram figcaption{margin:.7em 0 0;font-size:.9em;font-weight:400;text-align:left;color:var(--secondary)}
 @media(min-width:700px){.note-diagram__panels[data-count="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}.post-content .note-diagram .note-diagram__steps[data-count="5"]{grid-template-columns:repeat(3,minmax(0,1fr))}}

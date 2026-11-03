@@ -13,6 +13,8 @@ weight: 35
 
 [パーセプトロン](../perceptron/) の step function を皮切りに、sigmoid → tanh → ReLU → GELU と歴史的に進化してきた経緯があります。現代の深層学習では ReLU 系（ReLU、Leaky ReLU、GELU、Swish）が標準で、sigmoid・tanh は出力層や特殊用途に限定されています。
 
+---
+
 ### 代表的な活性化関数の形
 
 6 つの主要な活性化関数の入力 → 出力の対応を並べます。
@@ -155,6 +157,8 @@ graph TD
 | ピクセル値生成 | tanh / sigmoid | MSE / cross-entropy |
 
 これらは [損失関数](../loss-functions/) の選び方とセットで決まります。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、フレームワークでは `BCEWithLogitsLoss` や `CrossEntropyLoss` が「activation + loss」を内部で融合してくれます。
+
+---
 
 ### 数学での使いどころ
 

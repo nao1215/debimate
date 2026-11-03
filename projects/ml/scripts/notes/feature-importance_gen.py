@@ -1,160 +1,125 @@
-"""feature-importance ノート用の図を生成するスクリプト。
+"""Reproduce the feature importance experiments and figures.
 
-実行: cd projects/ml && uv run python scripts/notes/feature-importance_gen.py
+Run from projects/ml: uv run python scripts/notes/feature-importance_gen.py
+Outputs are relative to this file, so a checkout or draft remains isolated.
 """
-import os
+from pathlib import Path
+import json
 
+import matplotlib
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.datasets import make_classification, load_breast_cancer
+import sklearn
+from sklearn.datasets import load_breast_cancer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
 from sklearn.model_selection import train_test_split
 
-COLOR_BLUE = "#7aa6c2"
-COLOR_RED = "#e15759"
-COLOR_GREEN = "#59a14f"
-COLOR_ORANGE = "#f28e2b"
-COLOR_GRAY = "#999999"
-
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/feature-importance"
-)
-os.makedirs(NOTE_DIR, exist_ok=True)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes/ml/feature-importance"
+NOTE_DIR.mkdir(parents=True, exist_ok=True)
+BLUE, GREEN, BROWN = "#537c91", "#5f8075", "#9a6d46"
+plt.rcParams.update({"font.size": 10, "axes.titlesize": 11, "axes.spines.top": False,
+                     "axes.spines.right": False, "svg.hashsalt": "feature-importance"})
+results = {"sklearn": sklearn.__version__, "numpy": np.__version__}
 
 
-def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+def save(name):
+    plt.savefig(NOTE_DIR / name, bbox_inches="tight", metadata={"Date": None})
     plt.close()
 
 
-# ============================================================
-# Fig 1: MDI (built-in tree importance) on breast cancer
-# ============================================================
+# BEGIN breast-cancer
+# label 1 means benign in this dataset; this example explains the model, not diagnosis.
 data = load_breast_cancer()
-X, y = data.data, data.target
-feature_names = data.feature_names
-X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, random_state=0,
-                                            stratify=y)
-
+X_tr, X_te, y_tr, y_te = train_test_split(
+    data.data, data.target, test_size=0.3, stratify=data.target, random_state=0)
 rf = RandomForestClassifier(n_estimators=200, random_state=0).fit(X_tr, y_tr)
 mdi = rf.feature_importances_
-order = np.argsort(mdi)[::-1][:15]
-
-plt.figure(figsize=(8, 5.5))
-plt.barh(range(len(order)), mdi[order][::-1], color=COLOR_BLUE, edgecolor="white")
-plt.yticks(range(len(order)), feature_names[order][::-1])
-plt.xlabel("MDI (mean decrease in impurity)")
-plt.title("Built-in feature importance (top 15) on breast cancer dataset")
+perm = permutation_importance(
+    rf, X_te, y_te, scoring="accuracy", n_repeats=20, random_state=0, n_jobs=1)
+print(f"breast cancer: train={rf.score(X_tr, y_tr):.4f}, test={rf.score(X_te, y_te):.4f}")
+order = np.argsort(mdi)[-8:]
+fig, ax = plt.subplots(figsize=(6, 3.5))
+ax.barh(data.feature_names[order], mdi[order], color=BLUE)
+ax.set_xlabel("MDI (normalized impurity decrease)")
 plt.tight_layout()
 save("featimp_mdi.svg")
+# END breast-cancer
 
-
-# ============================================================
-# Fig 2: Permutation importance vs MDI
-# ============================================================
-perm = permutation_importance(rf, X_te, y_te, n_repeats=20, random_state=0,
-                               n_jobs=-1)
-perm_mean = perm.importances_mean
-perm_std = perm.importances_std
-order_perm = np.argsort(perm_mean)[::-1][:15]
-
-fig, axes = plt.subplots(1, 2, figsize=(13, 5.5))
-ax = axes[0]
-ax.barh(range(len(order)), mdi[order][::-1], color=COLOR_BLUE, edgecolor="white")
-ax.set_yticks(range(len(order))); ax.set_yticklabels(feature_names[order][::-1],
-                                                       fontsize=8)
-ax.set_xlabel("MDI"); ax.set_title("MDI (built-in)")
-
-ax = axes[1]
-ax.barh(range(len(order_perm)), perm_mean[order_perm][::-1],
-        xerr=perm_std[order_perm][::-1], color=COLOR_GREEN, edgecolor="white",
-        ecolor="black", capsize=2)
-ax.set_yticks(range(len(order_perm))); ax.set_yticklabels(feature_names[order_perm][::-1],
-                                                             fontsize=8)
-ax.set_xlabel("decrease in test accuracy after shuffling")
-ax.set_title("Permutation importance (test set)")
-
+# Use the same feature order: changes in ranking must remain visible.
+fig, ax = plt.subplots(figsize=(6, 3.5))
+ax.barh(data.feature_names[order], perm.importances_mean[order],
+        xerr=perm.importances_std[order], color=GREEN, capsize=2)
+ax.axvline(0, color="#555555", linewidth=0.7)
+ax.set_xlabel("Decrease in test accuracy (mean ± SD)")
 plt.tight_layout()
 save("featimp_mdi_vs_permutation.svg")
+results["breast_cancer"] = {"train_accuracy": rf.score(X_tr, y_tr),
+    "test_accuracy": rf.score(X_te, y_te), "features": data.feature_names.tolist(),
+    "mdi": mdi.tolist(), "permutation_mean": perm.importances_mean.tolist(),
+    "permutation_std": perm.importances_std.tolist()}
 
-
-# ============================================================
-# Fig 3: MDI bias on high-cardinality features (noise feature ID)
-# ============================================================
-rng = np.random.default_rng(0)
-X_base, y_base = make_classification(n_samples=2000, n_features=4, n_informative=3,
-                                       n_redundant=0, n_classes=2, random_state=0)
-
-# Inject a noise high-cardinality column (random IDs)
-noise_id = rng.integers(0, 2000, size=2000).reshape(-1, 1).astype(float)
-X_full = np.hstack([X_base, noise_id])
-feat_names = ["x1", "x2", "x3", "x4", "random_id"]
-
-X_tr, X_te, y_tr, y_te = train_test_split(X_full, y_base, test_size=0.3,
-                                            random_state=0, stratify=y_base)
-rf2 = RandomForestClassifier(n_estimators=200, random_state=0).fit(X_tr, y_tr)
-mdi2 = rf2.feature_importances_
-perm2 = permutation_importance(rf2, X_te, y_te, n_repeats=20, random_state=0,
-                                n_jobs=-1).importances_mean
-
-x_pos = np.arange(len(feat_names))
-width = 0.35
-
-fig, ax = plt.subplots(figsize=(8, 4.5))
-ax.bar(x_pos - width / 2, mdi2, width, color=COLOR_BLUE, edgecolor="white",
-       label="MDI (training, biased toward high-cardinality)")
-ax.bar(x_pos + width / 2, perm2, width, color=COLOR_GREEN, edgecolor="white",
-       label="Permutation (test, honest)")
-ax.set_xticks(x_pos); ax.set_xticklabels(feat_names)
-ax.set_ylabel("importance")
-ax.set_title("MDI inflates importance of useless 'random_id' (high cardinality)")
-ax.legend(fontsize=9)
-ax.grid(True, alpha=0.25, axis="y")
+# BEGIN noise
+rng = np.random.default_rng(7)
+n = 3000
+signal = rng.integers(0, 2, n)
+y = signal.copy()
+flip = rng.random(n) < 0.15
+y[flip] = 1 - y[flip]
+X = np.column_stack([signal, rng.integers(0, 2, n), rng.normal(size=n)])
+names = ["signal", "noise_binary", "noise_continuous"]
+X_tr, X_te, y_tr, y_te = train_test_split(
+    X, y, test_size=0.4, stratify=y, random_state=7)
+rf_noise = RandomForestClassifier(n_estimators=200, random_state=7).fit(X_tr, y_tr)
+p = permutation_importance(
+    rf_noise, X_te, y_te, scoring="accuracy", n_repeats=20, random_state=7, n_jobs=1)
+print(f"noise: train={rf_noise.score(X_tr, y_tr):.4f}, test={rf_noise.score(X_te, y_te):.4f}")
+for name, mdi_value, pi in zip(names, rf_noise.feature_importances_, p.importances_mean):
+    print(f"{name:16s} MDI={mdi_value:.4f} permutation={pi:.4f}")
+fig, axes = plt.subplots(2, 1, figsize=(6, 4.8), sharex=True)
+axes[0].bar(names, rf_noise.feature_importances_, color=BLUE)
+axes[0].set_ylabel("MDI")
+axes[1].bar(names, p.importances_mean, yerr=p.importances_std, color=GREEN, capsize=3)
+axes[1].set_ylabel("Test accuracy drop")
+axes[1].axhline(0, color="#555555", linewidth=0.7)
 plt.tight_layout()
 save("featimp_mdi_bias.svg")
+# END noise
+results["noise"] = {"train_accuracy": rf_noise.score(X_tr, y_tr),
+    "test_accuracy": rf_noise.score(X_te, y_te), "features": names,
+    "mdi": rf_noise.feature_importances_.tolist(),
+    "permutation_mean": p.importances_mean.tolist(), "permutation_std": p.importances_std.tolist()}
 
-
-# ============================================================
-# Fig 4: Permutation importance procedure schematic
-# ============================================================
-rng4 = np.random.default_rng(0)
-data4 = rng4.normal(0, 1, (8, 4))
-shuffled = data4.copy()
-shuffled[:, 1] = rng4.permutation(shuffled[:, 1])  # shuffle column 1
-
-fig, axes = plt.subplots(1, 3, figsize=(15, 4.5))
-
-ax = axes[0]
-ax.imshow(data4, cmap="Blues", aspect="auto")
-for i in range(8):
-    for j in range(4):
-        ax.text(j, i, f"{data4[i,j]:+.1f}", ha="center", va="center", fontsize=8)
-ax.set_xticks([0, 1, 2, 3]); ax.set_xticklabels(["x1", "x2", "x3", "x4"])
-ax.set_yticks(range(8))
-ax.set_title("1. Original X\nbaseline score = 0.92")
-
-ax = axes[1]
-im = ax.imshow(shuffled, cmap="Blues", aspect="auto")
-for i in range(8):
-    for j in range(4):
-        color = "white" if j == 1 else "black"
-        ax.text(j, i, f"{shuffled[i,j]:+.1f}", ha="center", va="center",
-                fontsize=8, color=color,
-                bbox=dict(boxstyle="round,pad=0.05", fc="#e15759", alpha=0.5) if j == 1 else None)
-ax.set_xticks([0, 1, 2, 3]); ax.set_xticklabels(["x1", "x2 (shuffled)", "x3", "x4"])
-ax.set_yticks(range(8))
-ax.set_title("2. Shuffle x2 column → break its signal\nnew score = 0.65")
-
-ax = axes[2]
-ax.barh(["x1", "x2", "x3", "x4"], [0.03, 0.27, 0.05, 0.08],
-        color=[COLOR_BLUE, COLOR_RED, COLOR_BLUE, COLOR_BLUE], edgecolor="white")
-ax.set_xlabel("baseline - score after shuffle")
-ax.set_title("3. Importance = score drop\nrepeat n_repeats times, average")
-ax.grid(True, alpha=0.25, axis="x")
-
+# BEGIN correlated
+# Each column is a perfect copy. A shallow forest can use either column.
+rng = np.random.default_rng(12)
+x = rng.normal(size=2000)
+y = (x > 0).astype(int)
+X = np.column_stack([x, x])
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.4, random_state=12)
+rf_pair = RandomForestClassifier(
+    n_estimators=200, max_depth=1, max_features=1, random_state=12).fit(X_tr, y_tr)
+baseline = rf_pair.score(X_te, y_te)
+drops = []
+for columns in ([0], [1], [0, 1]):
+    values = []
+    for _ in range(20):
+        shuffled = X_te.copy()
+        rows = rng.permutation(len(X_te))
+        shuffled[:, columns] = X_te[rows][:, columns]
+        values.append(baseline - rf_pair.score(shuffled, y_te))
+    drops.append(values)
+drops = np.array(drops)
+for name, value in zip(["A only", "B only", "A + B"], drops.mean(axis=1)):
+    print(f"{name}: accuracy drop={value:.4f}")
+fig, ax = plt.subplots(figsize=(5, 3.2))
+ax.bar(["A only", "B only", "A + B"], drops.mean(axis=1),
+       yerr=drops.std(axis=1), color=[BLUE, BLUE, BROWN], capsize=3)
+ax.set_ylabel("Decrease in test accuracy")
 plt.tight_layout()
-save("featimp_permutation_steps.svg")
-
-
-print("done:", sorted(os.listdir(NOTE_DIR)))
+save("featimp_correlated.svg")
+# END correlated
+results["correlated"] = {"baseline": baseline, "mean": drops.mean(axis=1).tolist(),
+                         "std": drops.std(axis=1).tolist()}
+(NOTE_DIR / "results.json").write_text(json.dumps(results, indent=2) + "\n")

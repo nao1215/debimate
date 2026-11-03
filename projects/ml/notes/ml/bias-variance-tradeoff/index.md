@@ -11,6 +11,8 @@ weight: 7
 
 [過学習（overfitting）](../overfitting/) は high variance 側の症状、その対概念である未学習（underfitting）は high bias 側の症状にあたります。バイアス-バリアンス分解は両者を同じ式で扱えるようにする道具で、学習曲線や検証誤差の読み解きと組み合わせると、現状のモデルがどちらの方向に偏っているかを判定できます。
 
+---
+
 ### 数式での分解
 
 回帰の二乗誤差で書くと、未知の入力 `x` に対する期待誤差は次の 3 項に分かれます。
@@ -74,6 +76,8 @@ degree=3 の真ん中は、真の関数の波を捉えつつも訓練点の個�
 
 横軸にモデル複雑度（多項式の次数）、縦軸に「期待される 2 乗誤差」を取り、Bias^2・Variance・Total を分けて描きます。実際の数値は、訓練セットを 200 回再サンプリングしてその都度モデルを学習し、テスト点での予測の平均と分散から計算したものです。
 
+以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py)はGitHubで確認できます。
+
 ```python
 import numpy as np
 from sklearn.linear_model import LinearRegression
@@ -97,7 +101,7 @@ for d in range(1, 16):
     bias_sq.append(np.mean((preds.mean(axis=0) - y_true) ** 2))
     variance.append(np.mean(preds.var(axis=0)))
 
-# (描画コード省略、配色は #7aa6c2 / #e15759 / #59a14f を使用)
+# 描画処理は省略
 plt.savefig("decomposition_curve.svg", bbox_inches="tight")
 ```
 
