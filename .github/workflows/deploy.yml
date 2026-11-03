@@ -78,7 +78,7 @@ jobs:
         run: python3 scripts/fetch_oss_stars.py
 
       - name: Setup Node for browser checks
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: npm
