@@ -44,7 +44,7 @@ plt.savefig("anomaly_methods_compare.png", bbox_inches="tight")
 
 ![4 つの異常検知アルゴリズムの判定領域](./anomaly_methods_compare.png)
 
-正常クラスタが 2 つ + 散在する真の異常点（緑の枠）で 4 アルゴリズムを比較です。
+2 つの正常クラスタと、その周囲に異常点（緑の枠）を配置し、4 つのアルゴリズムを比較しました。
 
 - Isolation Forest: 境界が「軸に平行な階段状」（決定木ベースなので）
 - LOF: 「境界線」なし。点ごとに異常判定（プロットには色付き領域は出せない）
@@ -57,7 +57,7 @@ plt.savefig("anomaly_methods_compare.png", bbox_inches="tight")
 
 ### Isolation Forest: 「孤立しやすい点」が異常
 
-Isolation Forest（iForest）は最も実用的な異常検知アルゴリズムの 1 つ。アイデアは「データを再帰的にランダムに分割して、何ステップで点を孤立させられるか」を測ることです。
+Isolation Forest（iForest）は、データを再帰的にランダム分割し、点を孤立させるまでに必要な分割回数を測ります。
 
 ```mermaid
 graph TD
@@ -172,7 +172,7 @@ scikit-learn では `sklearn.ensemble.IsolationForest`、`sklearn.neighbors.Loca
 - スケールが揃っていない: 距離ベース手法（LOF、One-Class SVM、Elliptic）が崩れる。[標準化](../standardization/) を必ず先に
 - 高次元データで Elliptic Envelope: 共分散行列の推定が困難に。Isolation Forest や LOF へ
 - 学習データの異常を放置: 異常を含むデータで学習すると境界が歪む。最初の数イテレーションで除外する 2 段階アプローチが有効
-- 異常検知の評価指標: accuracy は不均衡で意味なし。Precision @ k、ROC-AUC、PR-AUC を使う
+- 異常検知の評価指標: 異常が少ないデータでは、全件を正常と予測しても accuracy が高くなる。Precision @ k、ROC-AUC、PR-AUC を使う
 - 時系列で過去の異常パターンが未来と違う: 攻撃や故障モードは進化する。定期的な再学習が必要
 - 「異常を検出しても処理しない」運用: 検出後のアクション（人手レビュー、自動ブロック）まで含めて設計する
 - アラート疲労: 異常を出しすぎると現場が無視するようになる。閾値調整 + Precision の確保

@@ -7,9 +7,9 @@ tags: ["machine-learning", "mlops"]
 weight: 6
 ---
 
-再学習パイプライン（retraining pipeline）は、本番のモデルを「新しいデータで再学習 → 評価 → デプロイ」の流れを自動化した仕組みです。一度学習したモデルを永遠に使い続けることはできないため（[データドリフト](../data-drift/) のノート参照）、定期的に新しいデータで作り直す必要があります。これを人手でやらずにパイプラインとして組むのが MLOps の中核作業の 1 つとなります。
+再学習パイプライン（retraining pipeline）は、本番のモデルを新しいデータで再学習し、評価してデプロイするまでを自動化する仕組みです。一度学習したモデルを永遠に使い続けることはできないため（[データドリフト](../data-drift/) のノート参照）、定期的に新しいデータで作り直す必要があります。
 
-[実験管理](../experiment-tracking/) で新モデルを記録し、[モデルレジストリ](../model-registry/) で版管理し、[推論サービング](../inference-serving/) でデプロイし、[モデル性能劣化の監視](../model-performance-monitoring/) で次の再学習タイミングを判断する、という全工程をつなぐパイプ役とも言えます。
+[実験管理](../experiment-tracking/)で新モデルの学習結果を記録し、[モデルレジストリ](../model-registry/)で版を管理します。[推論サービング](../inference-serving/)でデプロイした後は、[モデル性能劣化の監視](../model-performance-monitoring/)で次の再学習のタイミングを判断します。再学習パイプラインは、これらの工程をつなぎます。
 
 ---
 
@@ -29,7 +29,7 @@ graph TD
     H --> I["8. Archive previous champion"]
 ```
 
-工程ごとにテストポイントとロールバックポイントを設けるのが鍵です。「再学習が完了 = デプロイ」ではなく、評価ゲートを順に通過してから初めて本番反映する設計にします。
+工程ごとに、テストする項目と、失敗した時に戻す状態を決めます。「再学習が完了 = デプロイ」ではなく、評価ゲートを順に通過してから初めて本番反映する設計にします。
 
 ---
 
@@ -86,7 +86,7 @@ plt.savefig("retraining_decay_vs_retrain.svg", bbox_inches="tight")
 
 赤い線が再学習無し、緑が 30 日ごとに再学習したケースです。1 年後には再学習無しは accuracy 0.55、再学習あり 0.88 前後で 30% 以上の差がつきます。黒い破線が SLO（service level objective）の 0.85 で、再学習無しは 2 か月で SLO を割り、再学習ありはギリギリ維持できています。
 
-「精度劣化はコストの問題」と捉えると、再学習はそのコストを回避するための投資、と読めます。
+再学習にかかる費用と、精度低下による損失を比較して実行頻度を決めます。
 
 ---
 
@@ -104,7 +104,7 @@ plt.savefig("retraining_cost_tradeoff.svg", bbox_inches="tight")
 
 ![再学習頻度とコストのトレードオフ](./retraining_cost_tradeoff.svg)
 
-青が再学習自体のコスト（compute + engineering）、赤がモデルが古いことによる損失（誤予測 × 影響規模）、緑が合計です。U 字を描き、ある頻度で総コストが最小になります。図の例では 14 日周期がスイートスポットです。
+青が再学習自体のコスト（compute + engineering）、赤がモデルが古いことによる損失（誤予測 × 影響規模）、緑が合計です。U 字を描き、ある頻度で総コストが最小になります。図の例では、14 日周期で合計コストが最小になります。
 
 各ビジネスで「stale_cost」がいくらかは違うため、再学習頻度は一意に決まりません。EDA の段階で:
 
@@ -137,7 +137,7 @@ plt.savefig("retraining_cost_tradeoff.svg", bbox_inches="tight")
   body: 全展開。champion を fallback として残し、ロールバック可能にする。
 {{< /note-steps >}}
 
-「champion-challenger」という名前の通り、現役モデル（champion）に対して挑戦者（challenger）が勝つことを 7 段階で検証します。すべて通過して初めて Production になる、というのが現代的な MLOps の標準デプロイメントフローとなります。
+上記の例では、既存モデル（champion）と新しいモデル（challenger）を比較し、7 段階の評価を通った後に本番へ反映します。
 
 ---
 
@@ -167,13 +167,13 @@ with DAG(
     fetch >> validate >> train >> evaluate >> register >> canary
 ```
 
-各タスクは冪等（idempotent, 何回実行しても結果が同じ）に書くのがコツです。失敗時の再実行で副作用が累積しないようにします。
+各タスクは冪等（idempotent, 何回実行しても結果が同じ）にします。失敗時の再実行で副作用が累積しないようにします。
 
 ---
 
 ### Feature store との連携
 
-再学習を回すうえで地味に難しいのが「訓練時の特徴量と推論時の特徴量を完全に一致させる」ことです。同じ生データから feature engineering をしているはずなのに、わずかな実装差で `train/serve skew` が生まれることがあります（[データリーク](../../ml/data-leakage/) の派生問題）。
+再学習では、訓練時と推論時で特徴量の作り方を一致させる必要があります。同じ生データから feature engineering をしているはずなのに、わずかな実装差で `train/serve skew` が生まれることがあります（[データリーク](../../ml/data-leakage/) の派生問題）。
 
 Feature store（Feast、Tecton、Vertex AI Feature Store など）を導入すると、特徴量の定義を 1 箇所に集約できます。
 
@@ -181,7 +181,7 @@ Feature store（Feast、Tecton、Vertex AI Feature Store など）を導入す�
 - オンライン取り込み: 最新の特徴量を Redis に書く（推論用）
 - 同じ Python 関数で両方の経路に書き出す → train/serve skew が原理的に発生しない
 
-Feature store は規模が小さいうちはオーバーキルです。ただし、特徴量数 100 を超え、複数モデルで共有する段階になると無いと苦しい、と考えられます。
+Feature store を導入する場合は、特徴量の定義を複数モデルで共有できる利点と、運用負担を比較します。
 
 ---
 

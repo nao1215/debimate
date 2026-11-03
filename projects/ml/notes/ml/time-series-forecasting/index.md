@@ -45,7 +45,7 @@ plt.savefig("ts_decomposition.svg", bbox_inches="tight")
 
 ### 時系列の train/test 分割: forward-only
 
-最も基本的で最もよく忘れられるルールは、時系列を時間順に分割する事です。
+時系列の予測性能を評価するときは、データを時間順に分割します。
 
 ```python
 # 詳細は scripts 側を参照
@@ -131,7 +131,7 @@ ML 回帰アプローチで時系列を扱うとき、次の特徴量を作る�
 | Cyclical encoding | `sin(2π·month/12)`、`cos(2π·month/12)` | 周期性を連続的に表現 |
 | External regressors | 気温、イベント、競合価格 | 外生要因の取り込み |
 
-これらを作ってから [勾配ブースティング](../gradient-boosting/) （LightGBM、XGBoost）に突っ込むのが、Kaggle 時系列コンペでも実務でも定番の組み合わせとなります。
+作成した特徴量を [勾配ブースティング](../gradient-boosting/)（LightGBM、XGBoost）の入力にして学習します。
 
 ---
 
@@ -141,7 +141,7 @@ ML 回帰アプローチで時系列を扱うとき、次の特徴量を作る�
 - ETS (Exponential Smoothing): 指数平滑法、Holt-Winters
 - Prophet: Facebook 製、トレンド + 季節 + 祝日効果を自動分解
 - DeepAR / N-BEATS / Temporal Fusion Transformer: 深層学習ベース
-- LightGBM / XGBoost + lag features: 表データ系の万能解
+- LightGBM / XGBoost + lag features: 過去の値を特徴量にした表形式データで学習
 
 短期予測 (1〜数ステップ先) と長期予測（数十〜数百ステップ先）で適する手法が違います。短期は ARIMA や ML 回帰で十分、長期は Prophet や深層学習が候補です。
 

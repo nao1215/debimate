@@ -10,7 +10,7 @@ wrapTables: true
 
 Passkey は、手元の端末（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバーが対になる公開鍵で署名を検証する認証の方式です。FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだとしています。
 
-この方式が必要な場面の代表は、ログイン画面をそのまま真似た偽サイトへの入力です。Password は利用者が読み書きできる文字列なので、相手を間違えればそのまま攻撃者の手に渡り、本物のサイトで使われます。署名は、宛先のドメインと 1 回限りの乱数に結び付いた値になるので、覗き見ても別のサイトや次回のログインでは通りません。
+Passkey は、ログイン画面を真似た偽サイトに認証情報を盗まれる攻撃への対策になります。Password は利用者が読み書きできる文字列なので、相手を間違えればそのまま攻撃者の手に渡り、本物のサイトで使われます。署名は、宛先のドメインと 1 回限りの乱数に結び付いた値になるので、覗き見ても別のサイトや次回のログインでは通りません。
 
 以下は、2 つの方式で何がどこに置かれるかを比べた図です。
 
@@ -61,7 +61,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の偽サイトに向かう経路が phishing です。利用者が相手のドメインを見誤ると、認証に必要な材料がそろった形で攻撃者に渡ります。別のサービスに同じ文字列を使い回していれば、1 か所の漏洩が他のサービスに波及します。
+上記の図の偽サイトに向かう経路が phishing です。利用者が相手のドメインを見誤ると、Password が攻撃者に渡ります。別のサービスに同じ文字列を使い回していれば、1 か所の漏洩が他のサービスに波及します。
 
 本物のサーバーから hash が漏れた場合も、利用者が選ぶ文字列は候補が限られるので、候補を片端から hash に掛けて元の文字列を割り出されます。
 
@@ -103,7 +103,7 @@ flowchart LR
 
 ### Registration と公開鍵の保存
 
-登録は、サーバーが 1 回限りの乱数である challenge を作る所から始まります。ブラウザは `navigator.credentials.create()` を呼び、Authenticator が鍵ペアを作ります。図には RP ID と clientDataJSON も出てきます。前者は資格情報を紐づける対象を表す識別子、後者は Client が組み立てる要求のデータです。登録の流れは以下の通りです。
+登録は、サーバーが 1 回限りの乱数である challenge を作る所から始まります。ブラウザは `navigator.credentials.create()` を呼び、Authenticator が鍵ペアを作ります。RP IDは資格情報を紐づけるサービスの識別子で、clientDataJSONはClientが組み立てる要求データです。登録の流れは以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -291,4 +291,4 @@ Passkey は、利用者が覚えて入力する材料をなくし、鍵の保管
 - 別の系列の端末やブラウザに移る際に、同期の仕組みが引き継がれるとは限らない
 - 代替の認証手段を用意すると、それが攻撃者に狙われる経路になる
 
-復旧の設計は、Passkey を導入しても消えない課題です。端末の紛失に備えて複数の Authenticator を登録しておく方法と、サーバー側の復旧手続きを用意する方法があります。後者を Password やメールの確認コードで組むと、アカウントの強さはその手続きの強さで頭打ちになり、phishing に強い経路を作った意味が薄れます。
+復旧の設計は、Passkey を導入しても消えない課題です。端末の紛失に備えて複数の Authenticator を登録しておく方法と、サーバー側の復旧手続きを用意する方法があります。復旧手続きに Password やメールの確認コードを使う場合は、その手続きの安全性がアカウント全体の安全性を制限します。通常のログインを phishing に強くしても、復旧手続きは別に攻撃される可能性があります。

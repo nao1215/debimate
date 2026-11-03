@@ -113,9 +113,9 @@ puzzle が指定できるのは 2 乗の回数 t だけで、それが何秒に�
 
 <br>
 
-図の faster hardware の線が実際に現れたのが、Rivest 氏が 1999 年に MIT の LCS（Laboratory for Computer Science）の 35 周年に合わせて作った [LCS35](https://people.csail.mit.edu/rivest/pubs/Riv19f.pdf) の puzzle です。約 80 兆回の逐次 2 乗を求める問題で、35 年かかる想定でしたが、2019 年 4 月に Bernard Fabrot 氏が家庭用 PC の CPU で 3 年あまり計算を続けて解きました。続いて、FPGA（回路を書き換えられる半導体）を使ったチームも 2 か月で解いています。
+想定より速く計算された実例は、Rivest 氏が 1999 年に MIT の LCS（Laboratory for Computer Science）の 35 周年に合わせて作った [LCS35](https://people.csail.mit.edu/rivest/pubs/Riv19f.pdf) の puzzle です。約 80 兆回の逐次 2 乗を求める問題で、35 年かかる想定でしたが、2019 年 4 月に Bernard Fabrot 氏が家庭用 PC の CPU で 3 年あまり計算を続けて解きました。続いて、FPGA（回路を書き換えられる半導体）を使ったチームも 2 か月で解いています。
 
-2 乗の回数を減らす近道は見つかっておらず、Rivest 氏は [1 回の 2 乗に要る資源が予想よりはるかに減った](https://www.csail.mit.edu/news/belgian-programmer-solves-mits-20-year-old-cryptographic-puzzle)と述べています。t は破られず、秒数だけが 35 年から 3 年あまりに縮みました。
+2 乗の回数を減らす近道は見つかっておらず、Rivest 氏は [1 回の 2 乗に要る資源が予想よりはるかに減った](https://www.csail.mit.edu/news/belgian-programmer-solves-mits-20-year-old-cryptographic-puzzle)と述べています。必要な 2 乗の回数は変わらず、計算時間が想定の 35 年から 3 年あまりに短縮されました。
 
 ---
 

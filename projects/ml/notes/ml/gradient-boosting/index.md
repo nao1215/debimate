@@ -9,7 +9,7 @@ weight: 24
 
 GradientBoosting（勾配ブースティング）は、浅い [決定木](../decision-tree/) のような弱い学習器を 1 本ずつ順番に足していき、前のモデルが取りこぼした「誤差（残差）」を次の木で説明させることで予測精度を高める教師あり学習の手法です。最終的な予測は、これまで足したすべての木の出力を足し合わせた加法モデル `F(x) = f_1(x) + f_2(x) + ... + f_M(x)` として表されます。
 
-[RandomForest](../random-forest/) と並ぶ [アンサンブル学習](../ensemble-learning/) の代表です。ただし、考え方の方向が逆になっています。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取ります。RandomForest が「多様な意見を平均して安定させる」のに対し、GradientBoosting は「直前の誤りを少しずつ削っていく」発想と言えます。
+[RandomForest](../random-forest/) と並ぶ [アンサンブル学習](../ensemble-learning/) の代表です。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取ります。
 
 「残差」は厳密には [損失関数](../loss-functions/) の負の勾配で、回帰なら MSE の勾配（= 残差そのもの）、分類なら交差エントロピーの勾配が使われます。損失関数を切り替えれば回帰・分類・分位回帰・ランキングなど多用途に適用できる柔軟さが、勾配ブースティングの強みの 1 つとなります。
 
@@ -22,7 +22,7 @@ GradientBoosting（勾配ブースティング）は、浅い [決定木](../dec
 | 学習の並列化 | 容易（木同士が独立） | 木単位では困難（依存関係あり） |
 | 代表実装 | scikit-learn `RandomForestClassifier` | scikit-learn `HistGradientBoostingClassifier`、LightGBM、XGBoost、CatBoost |
 
-表形式データ（テーブルデータ）のコンペや実運用では、Kaggle 系を中心に GradientBoosting 系（特に LightGBM / XGBoost）が最強クラスのモデルとして使われることが多いと言えます。一方でハイパーパラメータの感度が高く、調整なしでは [RandomForest](../random-forest/) に負けることもあるため、`learning_rate` と `n_estimators` と `max_depth` のバランス取りが運用上の中核となります。
+表形式データ（テーブルデータ）では、GradientBoosting系のLightGBMやXGBoostなどが使われます。ハイパーパラメータによって性能が変わるため、`learning_rate`、`n_estimators`、`max_depth` を調整して [RandomForest](../random-forest/) などと比較します。
 
 ---
 
@@ -53,7 +53,7 @@ graph TD
     F -- はい --> G[最終モデル]
 ```
 
-「勾配」という名前は、損失関数を最小化する方向（勾配方向）に予測を更新していくことから来ています。回帰での二乗誤差なら勾配は単純な残差そのものになります。一方、分類のロジスティック損失では勾配がもう少し複雑な形になります。詳細はライブラリが自動で扱うので、利用側は「残差を埋めていく」と理解しておけば十分と考えられます。
+「勾配」という名前は、損失関数を最小化する方向（勾配方向）に予測を更新していくことから来ています。回帰での二乗誤差なら勾配は単純な残差そのものになります。一方、分類のロジスティック損失では勾配がもう少し複雑な形になります。
 
 ---
 
@@ -70,7 +70,7 @@ graph TD
 ![Residual fitting step by step](./gradient-boosting_residual.svg)
 
 左図: 1 本目の木は元データを粗く近似します。残差（真値 - 予測）が残っています。
-右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習します。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなります。これを繰り返すのが GradientBoosting の本質です。
+右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習します。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなります。GradientBoostingでは、この補正を繰り返します。
 
 ---
 
@@ -159,7 +159,6 @@ GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を
 
 ### 利点
 
-- 表形式データで実質的に最強クラスの精度（Kaggle 系で常勝）
 - 非線形・特徴量の相互作用を自然に捉える
 - 前処理コストが低い（標準化・外れ値処理がほぼ不要、欠損も実装によっては対応）
 - [特徴量重要度](/ml/ml/feature-importance/)を出せる（ただし [RandomForest](../random-forest/) と同様にバイアスがあるので `permutation_importance` 推奨）
@@ -218,7 +217,7 @@ print("Trees actually used:", model.n_iter_)
 | 実装 | 特徴 |
 |---|---|
 | `HistGradientBoostingClassifier` (sklearn) | 標準で入っている。中規模データなら十分速い |
-| LightGBM | Microsoft 製。葉単位の成長で非常に高速。Kaggle 系で最も使われる |
+| LightGBM | Microsoft 製。葉単位の成長で非常に高速。Kaggle系でも使われる |
 | XGBoost | 老舗。安定性が高く、GPU 対応も成熟 |
 | CatBoost | Yandex 製。カテゴリ変数を生のまま扱える点が強み |
 
@@ -226,19 +225,18 @@ print("Trees actually used:", model.n_iter_)
 
 ### 機械学習での使いどころ
 
-表形式データの分類・回帰では、まず [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) でベースラインを取り、その後 GradientBoosting 系で本命を狙う、という流れが定番になっていると言えます。
+表形式データでは、タスクに応じて [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) などでベースラインを作り、その後GradientBoosting系と比較します。
 
-- 高精度が必要な分類・回帰: Kaggle のテーブルコンペで上位常連
 - 特徴量が多く複雑な関係を含むデータ: 非線形・相互作用に強い
 - 不正検知・与信スコア・需要予測など、表形式データを扱う実運用
 - `predict_proba` の確率を使いたいタスク（ROC-AUC / PR-AUC で評価する場面）
 
 具体的な利用例:
 
-- 不正取引検知で [PR-AUC](../roc-pr-auc/) を最大化する本命モデル
+- 不正取引検知で [PR-AUC](../roc-pr-auc/) を評価指標にするモデル
 - 与信スコアリングで線形モデルの精度上限を超えたい場合
 - ECサイトのクリック率予測（CTR）で大規模データを扱う場面
-- 医療データで非線形な閾値効果を取りに行く場面
+- 医療データの非線形な閾値効果をモデル化する場合
 
 ---
 

@@ -63,7 +63,7 @@ Recall   = 0.000
 F1       = 0.000
 ```
 
-評価データ300件のうち正例は17件です。全て負例と予測すれば283件が当たり、Accuracyは約94.3%になりますが、正例は1件も検出できません。正解率が計算違いなのではなく、見逃しを数える目的にはそれだけでは不足するという例です。
+評価データ300件のうち正例は17件です。全て負例と予測すれば283件が当たり、Accuracyは約94.3%になりますが、正例は1件も検出できません。このように、正解率だけでは正例の見逃しを評価できません。
 
 Precision・Recall・F1に加え、確率やスコアの順位を見る指標も使います。以下では[Average Precision（AP）](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html)を使います。APはRecallの増分でPrecisionを重み付けした値で、PR曲線を台形で積分するPR-AUCとは計算法が異なります。
 
@@ -85,7 +85,7 @@ weighted = LogisticRegression(class_weight="balanced", max_iter=2000).fit(X, y)
 
 この図はデータ全体へ当てはめた境界の説明用です。重み付け後は正例と予測する領域が広がります。未知のデータでの指標は、後の節で学習用と評価用を分けて比較します。
 
-`balanced` は自動的に `n_samples / (n_classes × bincount(y))` で重みを計算します。損失（誤検出と見逃しのコスト）が分かるなら、明示的に `class_weight={0: 1, 1: 20}` のように与える方が筋がよいです。
+`balanced` は自動的に `n_samples / (n_classes × bincount(y))` で重みを計算します。損失（誤検出と見逃しのコスト）が分かるなら、`class_weight={0: 1, 1: 20}` のように、コストに応じた重みを指定できます。
 
 ---
 

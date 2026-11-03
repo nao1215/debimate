@@ -10,7 +10,7 @@ wrapTables: true
 
 ERC-20は、Ethereum上のトークンについて、残高の照会や送金などの呼び出し方を揃える規格です。同じ種類のトークンを数量で扱い、1枚ごとに異なる識別子は付けません。ウォレットや交換サービスは、この共通の呼び出し方を使って複数のトークンに対応できます。
 
-トークンを使うアプリでは、送金の前にApproveという操作を求められることがあります。これは、別のアドレスにトークンを使う権限を与える操作です。送金そのものとは、変更する記録が異なります。
+トークンを使うアプリでは、送金の前にApproveという操作を求められることがあります。これは、別のアドレスにトークンを使う権限を与える操作です。Approveでは承認額を設定し、送金では残高を変更します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
@@ -71,7 +71,7 @@ flowchart TD
 
 名前を返す `name`、略称を返す `symbol`、表示上の小数桁数を返す `decimals` もよく使われますが、ERC-20では任意の項目です。すべてのトークンにあるとは限りません。
 
-トークンの内部の数量は整数です。例えば `decimals = 6` なら、内部の1,000,000を画面では1枚と表示します。[OpenZeppelinのERC-20解説](https://docs.openzeppelin.com/contracts/5.x/erc20)でも、`decimals` は表示のための情報で、コントラクト内部の計算を小数演算に変えるものではないと説明しています。
+トークンの内部の数量は整数です。例えば `decimals = 6` なら、内部の1,000,000を画面では1枚と表示します。`decimals` は表示のための情報で、コントラクト内部の計算を小数演算に変えるものではありません（[OpenZeppelinのERC-20解説](https://docs.openzeppelin.com/contracts/5.x/erc20)）。
 
 本記事のサンプルは変化を追いやすくするため、`decimals = 0` にします。内部の数量と表示上の枚数が一致するので、30という値はそのまま30枚です。
 

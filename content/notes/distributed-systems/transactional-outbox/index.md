@@ -67,7 +67,7 @@ flowchart LR
 
 2 つの書き込みを 1 つの操作にまとめる手段としては、[2PC](../two-phase-commit/) があります。関わった全員の最終的な判断を確定か中止のどちらか一方に揃えるプロトコルで、DB とブローカーを 2 つの参加者として並べれば、片方だけが成立した状態を避けられます。
 
-しかし、[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)は、DB とブローカーの一方または両方が 2PC に対応していない場合があることと、サービスを両方に結合させるのは望ましくないことが多い点を挙げています。Transactional Outboxは、こうした依存を避けるため、DBとブローカーを2PCで結ぶ方法を取りません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
+しかし、DB とブローカーの一方または両方が 2PC に対応していない場合があります。[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)では、サービスを両方に依存させることも望ましくない場合が多いとしています。Transactional Outboxは、こうした依存を避けるため、DBとブローカーを2PCで結ぶ方法を取りません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
 
 ---
 
@@ -93,7 +93,7 @@ flowchart LR
 
 上記の図では、メッセージを送る側を Sender と呼んでいます。Sender はブローカーと直接やり取りしないため、ブローカーが停止しても、直ちに注文の受け付けが止まるわけではありません。
 
-commit が成立すれば、配送すべきメッセージが outbox に残り、rollback すれば業務データもろとも消えます。トランザクションが決めるのはここまでです。
+commit すると業務データとメッセージが DB に保存され、rollback すると両方の変更が取り消されます。ブローカーへの送信は、このトランザクションには含まれません。
 
 この例では、以下の 2 つの INSERT を同じトランザクションに入れます（PostgreSQL の例）。
 

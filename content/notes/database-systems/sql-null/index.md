@@ -12,7 +12,7 @@ wrapTables: true
 
 `=` や `<>` で `NULL` と比べると、結果は TRUE でも FALSE でもない UNKNOWN になります。`WHERE` は条件が TRUE になったレコードだけを残すので、`column = NULL` と書いても 1 件も返りません。
 
-この扱いが問題になる場面の代表は、任意入力のカラムを持つ表の検索です。会員登録でメールアドレスを任意にすると、未入力の会員は `email` が `NULL` になります。「佐藤さん以外の会員」を出すつもりで `WHERE email <> 'sato@example.com'` と書くと、未入力の会員は結果に入りません。エラーにはならず、レコード数が少ないことも正常な結果と区別が付きません。
+例えば、任意入力のカラムを持つ表では、検索結果から未入力のレコードが抜けることがあります。会員登録でメールアドレスを任意にすると、未入力の会員は `email` が `NULL` になります。「佐藤さん以外の会員」を出すつもりで `WHERE email <> 'sato@example.com'` と書くと、未入力の会員は結果に入りません。エラーにはならず、レコード数が少ないことも正常な結果と区別が付きません。
 
 同じ条件が、値の入ったレコードと `NULL` のレコードでどう分かれるのかを以下に示します。
 
@@ -37,7 +37,7 @@ flowchart LR
 - 年齢の分からない会員が「最年長」として返る DBMS があるのはなぜか。
 - カラムの `NULL` に何を意味させるべきか。sentinel value で代用すると何が起きるのか。
 
-プログラミング言語の null 参照や JSON の null には触れません。`NULL` の扱いには SQL 標準が定めている部分と、DBMS（Database Management System）ごとに決めて良い部分があるので、標準の規則を軸に置き、実装で割れる所は都度断ります。
+プログラミング言語の null 参照や JSON の null には触れません。`NULL` の扱いには SQL 標準が定めている部分と、DBMS（Database Management System）ごとに決めて良い部分があるので、SQL 標準の規則を説明し、DBMS ごとの違いを補足します。
 
 ---
 
@@ -178,7 +178,7 @@ PostgreSQL が汎用の集約関数として挙げる `count`・`sum`・`avg` �
 
 #### 一意制約での NULL の重複
 
-同じ値を 2 件に入れられなくする一意制約も、`NULL` に対しては直感と違う動きをします。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても、`email` が `NULL` の会員は何件でも入ります。
+同じ値の重複を防ぐ一意制約でも、`NULL` の扱いには注意が必要です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても、`email` が `NULL` の会員は何件でも入ります。
 
 ここは DBMS ごとに割れます。PostgreSQL のドキュメントには「[The default null treatment in unique constraints is implementation-defined according to the SQL standard](https://www.postgresql.org/docs/current/ddl-constraints.html)」（一意制約における null の既定の扱いは、SQL 標準では実装定義である）とあります。PostgreSQL 自身も、15 以降は `NULLS NOT DISTINCT` を付ければ `NULL` どうしを重複として扱えます。「`NULL` は一意制約に引っかからない」を SQL 全体の規則として覚えると、移植した先で別の結果になります。
 
@@ -225,7 +225,7 @@ PostgreSQL では、年齢が分からない高橋さんが最年長として返
 
 ### カラムの NULL に持たせる意味 {#列の-null-に持たせる意味}
 
-ここまでの扱いを踏まえると、設計側の問いは「`NULL` を使うかどうか」ではなく「このカラムの `NULL` が何を意味するのか」になります。意味が 1 つに決まっていれば、`NULL` は素直な表現です。`deleted_at` が `NULL` なら有効、日時が入っていれば削除済み、という [Soft Delete](../soft-delete/) の使い方はその例で、`NULL` は「まだ削除されていない」の 1 つだけを表します。
+カラムを設計する時は、`NULL` が表す状態を決めます。意味が 1 つに決まっていれば、`NULL` は素直な表現です。`deleted_at` が `NULL` なら有効、日時が入っていれば削除済み、という [Soft Delete](../soft-delete/) の使い方はその例で、`NULL` は「まだ削除されていない」の 1 つだけを表します。
 
 問題が起きるのは、違う状態を 1 つの `NULL` に押し込んだ時です。`age` が `NULL` の会員について、回答を拒否したのか、入力欄を飛ばしたのか、設問自体が無かったのかは、カラムからは読み取れません。
 

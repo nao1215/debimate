@@ -8,7 +8,7 @@ weight: 12
 wrapTables: true
 ---
 
-Plugin Architecture は、コア（core、常に動く中心部分）に手を入れずに機能を追加できるようにする設計です。コアが持つのは、拡張を呼び出す処理の流れと、拡張が満たすべき境界だけです。エディタに拡張機能を入れると、本体を差し替えずに機能が増えます。Go の `database/sql` がデータベースドライバを `Register` 関数で受け取るのも、同じ形です。
+Plugin Architecture は、コア（core、常に動く中心部分）に手を入れずに機能を追加できるようにする設計です。コアが持つのは、拡張を呼び出す処理の流れと、拡張とのやり取りを定める規約だけです。エディタに拡張機能を入れると、本体を差し替えずに機能が増えます。Go の `database/sql` がデータベースドライバを `Register` 関数で受け取るのも、同じ形です。
 
 Plugin Architecture が特に役に立つのは、対応する宛先や形式が増え続けるプログラムです。ログ収集ツールの出力先が 3 つで始まっても、半年後には別の宛先を求められます。
 
@@ -206,7 +206,7 @@ flowchart LR
 
 厄介なのは実行するまで気付けない側で、型検査もビルドも通るため、誤りが表面化するのは拡張が動いた後になります。
 
-互換を保ったまま境界を育てる手は、既存のインターフェースを触らず、新しいメソッドを別のインターフェースとして定義することです。コアは、受け取った拡張が新しいインターフェースを満たすかを実行時に（Go なら型アサーションで）確かめ、満たす拡張にだけ新しい呼び出しを行います。Go の標準ライブラリでは、`http.ResponseWriter` に対する `http.Flusher` や `http.Pusher` がこの形です。
+互換性を保って機能を追加するには、既存のインターフェースを変更せず、新しいメソッドを別のインターフェースで定義します。コアは、受け取った拡張が新しいインターフェースを満たすかを実行時に（Go なら型アサーションで）確かめ、満たす拡張にだけ新しい呼び出しを行います。Go の標準ライブラリでは、`http.ResponseWriter` に対する `http.Flusher` や `http.Pusher` がこの形です。
 
 拡張を別プロセスに分けても、公開した境界が API になる点は変わりません。互換を保つ対象が Go のインターフェースではなく、JSON や Protocol Buffers、RPC の呼び出し形式に移るだけです。フィールドを必須にする、意味を変えるといった変更が何を壊すかは、その形式の規約で決まります。
 
@@ -237,7 +237,7 @@ exit status 2
 
 表の in-process は、拡張をコアに直接リンクする形に限った話です。WebAssembly のランタイムを挟めば、同一プロセスのまま隔離もできます。代わりに、値の受け渡しに変換が必要です。
 
-拡張にできることを絞る話は、プロセスを分ける話とは別です。`fork` して `exec` しただけの子プロセスは、親と同じ利用者の資格で動くので、渡していないファイルでも自分で開けます。
+拡張が使える資源や権限の制限は、プロセスを分けるかどうかとは別に設計します。`fork` して `exec` しただけの子プロセスは、親と同じ利用者の資格で動くので、渡していないファイルでも自分で開けます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

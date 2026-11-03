@@ -38,7 +38,7 @@ plt.savefig("tsne_umap_compare.png", bbox_inches="tight")
 - t-SNE（中央）: 数字ごとに明確に分かれた島ができる。形は自由
 - UMAP（右）: t-SNE と同程度のクラスタ分離。t-SNE より大局的な構造（クラスタ同士の距離）も保たれやすい
 
-「分類しやすそうに見えるか」「クラスタが明瞭か」を目視で判断する用途には、PCA より圧倒的に t-SNE / UMAP が強いです。
+この例では、PCA より t-SNE / UMAP の方が数字ごとの点の集まりを区別しやすくなっています。
 
 ---
 
@@ -63,7 +63,7 @@ plt.savefig("tsne_perplexity_sensitivity.png", bbox_inches="tight")
 - perplexity = 5: 局所的すぎる。各クラスタが微細に断片化
 - perplexity = 30: バランスが良い。デフォルト推奨
 - perplexity = 100: 大局的すぎる。クラスタ境界が曖昧
-- perplexity = 500: ほぼ意味を失う。クラスタが融解
+- perplexity = 500: この例では、クラスタの境界が不明瞭になる
 
 公式推奨は 5〜50 の範囲で `5, 30, 50` などを試します。データセットサイズ `n` に対して `perplexity < n/3` を目安に。
 
@@ -76,7 +76,7 @@ UMAP は数学的にはトポロジカルデータ解析の理論に基づく手
 - 計算が速い（t-SNE の数倍）
 - 新しいデータの埋め込みもできる（`umap.transform()` で）
 - 大局的な構造もある程度保たれる
-- 次元削減の出力次元を 3 以上にしてもまともに動く
+- 次元削減の出力を 3 次元以上に指定できる
 
 という実用上の利点があります。主要ハイパーパラメータは `n_neighbors`（局所 vs 大局）と `min_dist`（クラスタの密度）。
 
@@ -92,9 +92,9 @@ plt.savefig("umap_param_grid.png", bbox_inches="tight")
 - `n_neighbors` を小さく: 局所構造重視（クラスタが細かく断片化）
 - `n_neighbors` を大きく: 大局構造重視（クラスタ間の関係も保たれる）
 - `min_dist` を小さく: クラスタが密にまとまる
-- `min_dist` を大きく: クラスタがふんわり広がる
+- `min_dist` を大きく: クラスタ内の点が広く分布する
 
-実用デフォルトは `n_neighbors=15, min_dist=0.1`です。EDA で複数試して目視判断するのが現実的です。
+実用デフォルトは `n_neighbors=15, min_dist=0.1`です。EDA では複数の設定を試し、点のまとまり方を比較します。
 
 ---
 
@@ -114,7 +114,7 @@ plt.savefig("tsne_umap_swissroll.png", bbox_inches="tight")
 
 PCA は線形射影しかできないので Swiss Roll を「上から見下ろす」だけで、巻かれた構造が潰れます。UMAP は manifold を「ほぐして」展開し、巻かれていた螺旋を直線的に並べます。
 
-「データが本質的に低次元の manifold 上に乗っている」場合、非線形手法は劇的に効きます。深層学習で抽出した embedding（512〜2048 次元）の可視化も同様で、`PCA → 直接 plot` より `PCA で 50 次元程度 → UMAP で 2 次元` というパイプラインが定番です。
+低次元の manifold 上に分布するデータでは、非線形手法でその構造を表せる場合があります。深層学習で抽出した embedding（512〜2048 次元）の可視化も同様で、`PCA → 直接 plot` より `PCA で 50 次元程度 → UMAP で 2 次元` というパイプラインが定番です。
 
 ---
 

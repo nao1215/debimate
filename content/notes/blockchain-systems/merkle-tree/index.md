@@ -75,7 +75,7 @@ sequenceDiagram
     V->>V: 手元のルートハッシュと照合
 ```
 
-上記の図で配布側が渡すのは、HD と HAB の 2 個だけです。この並びが、冒頭で名前を挙げた包含証明です。証明に入るのは、C からルートハッシュまで上る各回で連結相手になるハッシュ 1 個ずつです。4 件なら HC から HCD、HCD からルートハッシュと 2 回上るので、証明に入るハッシュの個数は木の高さと同じ 2 個です。以下が検証者の計算です。
+上記の図で配布側が渡すのは、HD と HAB の 2 個だけです。HDとHABを並べたものが、この例の包含証明です。証明に入るのは、C からルートハッシュまで上る各回で連結相手になるハッシュ 1 個ずつです。4 件なら HC から HCD、HCD からルートハッシュと 2 回上るので、証明に入るハッシュの個数は木の高さと同じ 2 個です。以下が検証者の計算です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -90,7 +90,7 @@ flowchart BT
 
 検証者の手順は 3 つです。手元の C をハッシュして HC を作る。HC の右に受け取った HD を繋げてハッシュし、HCD を得る。HCD の左に受け取った HAB を繋げてハッシュし、出てきた値を手元のルートハッシュと照合する。一致すれば、C はルートハッシュが代表する 4 件の中に確かに入っていると分かります。連結する順序で結果が変わるため、証明の各ハッシュには「左右どちら側に置くか」の情報も添えられています。
 
-A・B・D の元データは 1 件も受け取っていません。A と B は HAB の中に畳み込まれています。元データが無くてもハッシュ値だけで上の段を計算できる点が、Merkle Tree の核心です。
+A・B・D の元データは 1 件も受け取っていません。A と B は HAB の中に畳み込まれています。Merkle Tree では、元データを受け取らずに、ハッシュ値だけで上の段を計算できます。
 
 偽造は、安全なハッシュ関数を使う限り現実的にできません。攻撃者は C の代わりの偽データも、証明側のハッシュも自由に選べます。どう選んでも、再計算した値を手元のルートハッシュに一致させるには、同じ値に辿り着く別の入力を見つける必要があります。ただし、この保証は木の構築規則の決め方にも依存します。「欠点」の 4 番目と [Merkle Tree Design](../merkle-tree-design/) で扱います。
 
@@ -120,7 +120,7 @@ verify tx-777777x: False
 - 1 件でも書き換わると上の段の値とルートハッシュが変わり、改竄を検出できる
 - 元データを削除しても、その枝をまとめたハッシュを残せば、残りの葉の包含証明を作り続けられる
 
-4 番目は、使い終わった古いデータを消して保存量を減らしたい時に効く性質です。A と B を削除した場合を図にすると、以下のようになります。
+この性質を使うと、古いデータを削除して保存量を減らせます。A と B を削除した場合を図にすると、以下のようになります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

@@ -10,7 +10,7 @@ wrapTables: true
 
 Tor は、通信を複数のリレー（中継役のサーバー）に順に通し、経路のどの 1 台からも接続元と接続先の両方が見えないようにする通信の仕組みです。通常の Web サイトに接続する場合は、Guard・Middle・Exit という 3 台のリレーを経由します。
 
-この仕組みが必要な場面の代表は、素性を明かさずに行いたい調査です。例えば、自社の情報が無断で転載されていないかを Web サイトで確かめたい時、普通の HTTP クライアントで接続すると、相手のサーバーには調査する側の IP アドレスが残ります。
+例えば、自社の情報が無断で転載されていないかを Web サイトで確かめたい時、普通の HTTP クライアントで接続すると、相手のサーバーには調査する側の IP アドレスが残ります。
 
 以下は、直接つないだ場合と、Tor を経由した場合の違いです。
 
@@ -248,10 +248,10 @@ Application layer leak について、Tor Project の案内は「[Tor only prote
 
 ### tornago が使っている Tor の機能
 
-ここまでの仕組みを踏まえると、Tor を利用するプログラムが触る部分は限られます。[nao1215/tornago](https://github.com/nao1215/tornago) は、Go から Tor 経由の通信と Onion Service の作成を扱うためのライブラリで、Tor のロジックを実装し直したものではありません。tor コマンド（デーモン）に 2 つの口から指示を出します。デーモンは自分で起動することも、既に動いているものに繋ぐこともできます。
+[nao1215/tornago](https://github.com/nao1215/tornago) は、Go から Tor 経由の通信と Onion Service の作成を扱うためのライブラリで、Tor のロジックを実装し直したものではありません。torコマンド（デーモン）と、SOCKS5プロキシとControlPortを通じて通信します。デーモンは自分で起動することも、既に動いているものに繋ぐこともできます。
 
-- SOCKS5 プロキシ: アプリケーションの TCP / HTTP 通信を Tor の経路に流す口
-- ControlPort: tor デーモンに命令を送る口。Onion Service の作成や経路の作り直しで使う
+- SOCKS5 プロキシ: アプリケーションのTCP / HTTP通信をTorの経路に中継するプロキシ
+- ControlPort: torデーモンに命令を送るインターフェース。Onion Service の作成や経路の作り直しで使う
 
 以下が役割の分かれ方です。
 
@@ -265,9 +265,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago が扱うのは構築済みの経路を使うための口です。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、その 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。
+上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornagoは、これらのインターフェースを使って構築済みの経路を利用します。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、その 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。
 
-ControlPort は tor デーモンを操作する管理用の口です。Onion Service の作成や経路の制御まで行えるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
+ControlPortはtorデーモンを操作する管理用のインターフェースです。Onion Service の作成や経路の制御まで行えるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
 
 [Tor の control 仕様](https://spec.torproject.org/control-spec/implementation-notes.html)も、ControlPort が開いていて認証が無効な場合は、接続してきたローカルの利用者を誰でも信頼すると書き、この状態を勧めていません。
 
@@ -287,7 +287,7 @@ ControlPort は tor デーモンを操作する管理用の口です。Onion Ser
 
 ### 欠点
 
-Tor は、遅延を小さく保ったまま、通信を複数のリレーに分けて経路を隠します。そのために受け入れている制約は次の通りです。
+Torを利用する場合は、通信の遅延や経路の外に出る情報など、次の制約があります。
 
 - 複数のリレーを経由し、経路が地理的に遠回りになることもあるため、直接つなぐ場合より遅延が大きい
 - リレーの一覧に署名するディレクトリ権威への信頼は残る

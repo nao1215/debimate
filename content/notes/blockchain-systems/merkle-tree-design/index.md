@@ -24,7 +24,7 @@ flowchart LR
 
 <br>
 
-本記事では、Merkle Tree の規則のうち、プロトコルごとに分かれる 3 つの設計事項を説明します。設計事項ごとに、次の疑問へ答えていきます。
+本記事では、Merkle Treeの3つの設計事項について、次の疑問を具体例で説明します。
 
 - 奇数の葉の扱いで、木の形とルートハッシュはどう変わるのか。
 - 葉と内部ノードを区別しない Bitcoin の木には、どんな穴があるのか。
@@ -37,7 +37,7 @@ flowchart LR
 
 葉が奇数になった時の扱いは、大きく 2 つの流儀に分かれます。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。複製すると、葉 [A, B, C] と [A, B, C, C] が同じルートハッシュになります。この副作用の検出は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で扱っています。
 
-Certificate Transparency を定めた [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)（Certificate Transparency Version 2.0）は複製しません。葉が n 件なら、n 未満で最大の 2 の冪で 2 つに分ける規則を再帰的に当てはめて木の形を決めます。
+Certificate Transparency の木では、最後の葉を複製しません。構築規則は [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)（Certificate Transparency Version 2.0）で定められています。葉が n 件なら、n 未満で最大の 2 の冪で 2 つに分ける規則を再帰的に当てはめて木の形を決めます。
 
 葉 3 件での違いを以下に示します。
 
@@ -61,7 +61,7 @@ flowchart BT
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の 2 つの規則では、同じ 3 件の葉から別のルートハッシュが得られます。Bitcoin の木は全ての葉が同じ深さに揃い、RFC 9162 の木は Hash2 だけが浅い位置に付きます。どちらかが正しいという話ではなく、作る側と検証する側で規則を揃えることが要点です。
+上記の図の 2 つの規則では、同じ 3 件の葉から別のルートハッシュが得られます。Bitcoin の木は全ての葉が同じ深さに揃い、RFC 9162 の木は Hash2 だけが浅い位置に付きます。証明を作成するプログラムと検証するプログラムでは、同じ構築規則を使う必要があります。
 
 ---
 

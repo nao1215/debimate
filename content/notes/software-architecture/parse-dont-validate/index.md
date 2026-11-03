@@ -8,7 +8,7 @@ weight: 13
 wrapTables: true
 ---
 
-Parse, don't validate は、「外部から来たデータを検査したら、その検査で分かった事実を型として持ち運ぶ」という設計方針です。Alexis King 氏が 2019 年に公開した「[Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)」で示しました。ここでの parse は、検査に通った入力を `Email` のような別の型の値に変換し、通らなければ失敗を返す処理です。validate は検査の結果だけを返し、値の型は変えません。
+Parse, don't validate は、「外部から来たデータを検査し、条件を満たす値を専用の型に変換して後続処理に渡す」という設計方針です。Alexis King 氏が 2019 年に公開した「[Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)」で示しました。ここでの parse は、検査に通った入力を `Email` のような別の型の値に変換し、通らなければ失敗を返す処理です。validate は検査の結果だけを返し、値の型は変えません。
 
 この方針が役に立つのは、外部からの入力を複数の関数に渡しながら処理を進めるコードです。注文データなら、注文 ID・商品コード・数量・メールアドレスがそのまま後段の関数に流れていき、各関数は同じ検査を繰り返すか、検査済みだと暗黙に信じるかのどちらかになります。
 
@@ -30,7 +30,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の右では、検査で分かった事実を `Email` という型に載せて後段に渡しています。Go では、宣言しただけの変数に入る初期値（ゼロ値）が、この保証の抜け道になります。
+上記の図の右では、検査済みのメールアドレスを `Email` 型の値に変換して後段に渡しています。Go では、宣言しただけの変数に入る初期値（ゼロ値）が、この保証の抜け道になります。
 
 <br>
 
@@ -48,7 +48,7 @@ flowchart LR
 
 ### validate で失われる事実
 
-`validate` という名前の関数は多くの場合、`bool` か `error` を返します。`error` なら失敗の理由や種類まで運べます。ただし、検査対象の型は前後で変わりません。`string` は `string` のままなので、検査によって得た「この値は条件を満たしている」という事実は、後段に型として引き継がれません。値を受け取った関数は、それが検査済みかどうかを型から判断できません。
+`validate` という名前の関数は多くの場合、`bool` か `error` を返します。`error` なら、失敗の理由や種類も返せます。ただし、検査対象の型は前後で変わりません。`string` は `string` のままなので、検査によって得た「この値は条件を満たしている」という事実は、後段に型として引き継がれません。値を受け取った関数は、それが検査済みかどうかを型から判断できません。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -93,7 +93,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-入口に寄せるのは変換の場所で、回数ではありません。避けるのは、解析を終える前にその入力に基づく処理を始めることです。分岐が決まってから更に条件の多い型が必要なら、その時点で追加の解析をして構いません。例えば注文を解析した後で支払い方法がカードだと決まったら、その段でカード番号を専用の型に解析します。
+入口で型に変換した後も、必要に応じて追加の変換を行えます。避けるのは、解析を終える前にその入力に基づく処理を始めることです。分岐が決まってから更に条件の多い型が必要なら、その時点で追加の解析をして構いません。例えば注文を解析した後で支払い方法がカードだと決まったら、その段でカード番号を専用の型に解析します。
 
 ---
 
@@ -143,7 +143,7 @@ func (e Email) String() string { return e.value }
 
 `NewEmail` から得た値は、その時点で `NewEmail` の検査条件を満たしています。`Email` という型であること自体が検査を通ったことを示すわけではなく、検査の厳密さも `NewEmail` の実装が決めます。上の実装なら `"@"` という 1 文字も通ります。
 
-この形でも塞げない経路が 2 つあります。Go の変数は宣言しただけで初期化されるので、`var e Email` はコンパイルを通り、空の `Email` が出来上がります。同じパッケージの中なら `Email{value: "bogus"}` も書けます。
+ただし、Goではこのコンストラクタを使わずに値を作る方法が2つあります。Go の変数は宣言しただけで初期化されるので、`var e Email` はコンパイルを通り、空の `Email` が出来上がります。同じパッケージの中なら `Email{value: "bogus"}` も書けます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -215,14 +215,14 @@ JSONを受け取る入力用の型から業務処理用の型へ変換する際�
 
 ### 利点
 
-- 検査した事実を型で運べるため、コンストラクタを通った値については後段の再検査が必要ない
+- コンストラクタで検査した値を専用の型で渡すため、その値については後段の再検査が必要ない
 - 不正な状態が生じ得る箇所は、外部入力の変換境界・ゼロ値・同一パッケージ内の直接生成に整理できる
 
 ---
 
 ### 欠点
 
-Parse, don't validate は、検査の結果を型で保証する方に寄せます。その分、次の制約が加わります。
+専用の型と変換処理を追加するため、実装には次の制約があります。
 
 - 型を増やすたびに、コンストラクタと入出力の実装が定型的に増える
 - Go ではゼロ値を止められず、任意の内部値の直接構築を防げるのもパッケージの外に対してだけになる

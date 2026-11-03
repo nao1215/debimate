@@ -111,7 +111,7 @@ flowchart LR
 
 x 座標が異なる k 個の点があると、次数 k-1 以下で全ての点を通る多項式は 1 本に定まります。
 
-ラグランジュ補間（Lagrange interpolation）は、集めた各点について「自分の x 座標では 1、ほかの x 座標では 0」になる基底多項式を作り、Share の y 値を掛けて足します。Secret だけが目的なら多項式の全係数を求めず、`x = 0` の値 `q(0)` を直接計算できます。
+ラグランジュ補間（Lagrange interpolation）は、集めた各点について「自分の x 座標では 1、ほかの x 座標では 0」になる基底多項式を作り、Share の y 値を掛けて足します。Secret を復元するだけなら、多項式の全係数を求めずに、`x = 0` の値 `q(0)` を直接計算できます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -219,7 +219,7 @@ invalid input: x must be nonzero and distinct modulo 13
 
 ### 単純分割・暗号化との違い
 
-単純分割は元データの区間を各ファイルに保存します。暗号化は鍵を持つ相手に復号を許し、SSS は threshold 以上の Share を集められる人たちに復元を許します。暗号化だけでは、復号鍵をどこに置くかという問題が残ります。
+単純分割は元データの区間を各ファイルに保存します。暗号化は鍵を持つ相手に復号を許し、SSS では、閾値以上の Share を集めると Secret を復元できます。暗号化だけでは、復号鍵をどこに置くかという問題が残ります。
 
 大きなファイルを SSS で直接分けると、元データと同じくらいの大きさの Share を n 個保管することになります。そのためファイルを共通鍵で暗号化し、小さな共通鍵だけを SSS で分ける構成があります。
 

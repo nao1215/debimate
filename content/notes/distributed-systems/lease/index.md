@@ -10,9 +10,9 @@ wrapTables: true
 
 Lease（リース）は、ある権利を期限付きで貸し出し、期限が過ぎたら自動的に失効させる仕組みです。貸す側は「これから 10 秒間、あなたがリーダーです」と伝え、借りた側は期限が来る前に更新を続けます。更新が途切れれば、誰の操作も無しに権利は消えます。
 
-権利を渡す時に困るのは、渡した相手が黙って消える場合です。相手が落ちたのか、ネットワークが詰まっているのかを外から確定できないため、「返してもらう」という手順は当てにできません。Lease は権利の回収を相手の行動に頼らず、時間の経過だけで済ませます。ここでは、[書き込みを1台に集約する構成](../leader-and-followers/)でのリーダーの座や、1 台だけが触って良い資源の使用権（ロック）を貸す用途を扱います。
+権利を取得したノードが停止すると、そのノードから権利を返却できません。停止とネットワークの遅延を外から区別できないため、Leaseでは期限が切れた時点で権利を失効させます。ここでは、[書き込みを1台に集約する構成](../leader-and-followers/)でのリーダーの座や、1 台だけが触って良い資源の使用権（ロック）を貸す用途を扱います。
 
-登場人物を以下に示します。
+権利を管理する側と保持する側の関係を以下に示します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -66,7 +66,7 @@ sequenceDiagram
 
 Lease は、この認識のずれを縮めます。権利に期限が入っているので、Node A は復帰した時点で「自分の権利は既に切れている」と自分で判断できます。判断の材料は自分の時計で数えた経過時間だけなので、管理側と連絡が取れない状態でも成立します。
 
-ただし、期限を確かめた直後に止まると失効後に書き込む隙間が残り、これは後述の fencing token が塞ぎます。
+ただし、保持者が期限を確認した直後に停止すると、復帰後に期限切れのまま書き込む場合があります。保存先でこの書き込みを拒否するために、fencing tokenを使います。
 
 ---
 
@@ -179,7 +179,7 @@ WHERE id = 1 AND token <= ?;
 
 分散 KVS（Key-Value Store、キーと値を複数ノードで保持する DB）の [etcd](https://etcd.io/docs/v3.5/learning/api/) が lease を API として持っています。生存時間を指定して lease を作り（実際の長さはサーバーが決める）、キーをその lease に紐付けると、更新が途絶えた後にそれらのキーがまとめて削除されます。更新は `LeaseKeepAlive`、明示的な返却は `LeaseRevoke` です。リーダーの座を表すキーを lease に紐付けておけば、保持者が落ちた後にキーが消え、次の候補が取得できるようになります。
 
-Google の分散ロックサービス [Chubby](https://research.google/pubs/pub27897/) も同じ考え方を実装しています。Chubby はクライアントとの間でセッションを維持し、期限が切れたセッションのロックを解放します。fencing token に当たる番号として、ロックの世代番号を含む sequencer も渡し、受け取ったサーバーが検査します。検査できないサーバー向けには、障害で空いたロックを一定時間ほかに渡さない lock-delay で、遅れて届く書き込みを時間で逃がします。
+Google の分散ロックサービス [Chubby](https://research.google/pubs/pub27897/) も同じ考え方を実装しています。Chubby はクライアントとの間でセッションを維持し、期限が切れたセッションのロックを解放します。fencing token に当たる番号として、ロックの世代番号を含む sequencer も渡し、受け取ったサーバーが検査します。検査できないサーバー向けには、障害で空いたロックを一定時間ほかに渡さない lock-delay で、遅れた書き込みが次の保持者の処理と重なる可能性を下げます。
 
 ---
 

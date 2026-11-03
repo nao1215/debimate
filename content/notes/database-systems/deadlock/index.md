@@ -10,7 +10,7 @@ wrapTables: true
 
 Deadlock（デッドロック）は、2 本以上のトランザクションが互いのロックの解放を待ち、どれも先に進めなくなる状態です。レコードを更新すると DBMS（Database Management System）はそのレコードにロックを取り、通常はトランザクションが終わるまで解放しません。
 
-開発者がこの名前を目にするのは、エラーログの中ではないでしょうか。PostgreSQL は `deadlock detected`、MySQL は `Deadlock found when trying to get lock; try restarting transaction` を返します。手元で 1 本ずつ動かしている間は出ず、同じ処理が同時に走る本番環境で遭遇しやすいです。
+デッドロックを検出すると、PostgreSQL は `deadlock detected`、MySQL は `Deadlock found when trying to get lock; try restarting transaction` を返します。手元で 1 本ずつ動かしている間は出ず、同じ処理が同時に走る本番環境で遭遇しやすいです。
 
 1 件目を更新した後に 2 件目を待っている間も、1 件目のロックは握ったままです。例えば、2 本が同じ 2 件を逆の順で触ると、次の図のようになります。
 
@@ -74,7 +74,7 @@ flowchart LR
 
 デッドロックで中止される範囲は、PostgreSQL と MySQL の [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)（MySQL のストレージエンジン）ではトランザクション全体、Oracle Database ではデッドロックに関わった 1 文だけです。[Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html) で解放されるのはその文に伴うロックの一部で、それ以前の文で取得したロックや変更はトランザクションの中に残ります。
 
-デッドロックの検出と、ロック待ちのタイムアウトは別の仕組みです。InnoDB は検出を設定で止めることもでき、止めた場合はロック待ちのタイムアウトが循環待ちを解く役目を引き受けます。[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
+デッドロックの検出と、ロック待ちのタイムアウトは別の仕組みです。InnoDB は検出を設定で止めることもでき、止めた場合はロック待ちのタイムアウトで待機を中止します。[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
 
 {{< note-panels caption="同じエラー処理でも、どの文まで巻き戻るかを区別します。" >}}
 - title: PostgreSQL / InnoDB のデッドロック検出

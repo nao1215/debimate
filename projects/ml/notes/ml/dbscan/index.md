@@ -7,9 +7,9 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 29
 ---
 
-DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムです。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、形状が不規則だったりノイズが混じるデータで威力を発揮します。
+DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムです。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、不規則な形のクラスタや、クラスタに属さない点を検出できます。
 
-代表的な使い分けの判断軸: クラスタが「球形に近く `k` が分かっている」なら [k-means](../k-means/)、「密度の濃淡が手がかりで `k` 不明 + 外れ値あり」なら DBSCAN、「階層関係を見たい」なら [階層的クラスタリング](../hierarchical-clustering/)。
+球形に近いクラスタで数 `k` を指定できる場合は [k-means](../k-means/) が候補になります。DBSCAN は密集した点をまとめ、外れ値も区別したい場合に使います。クラスタ同士の階層関係は [階層的クラスタリング](../hierarchical-clustering/) で調べます。
 
 ---
 
@@ -135,7 +135,7 @@ plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 - 形状認識（非凸オブジェクトの抽出）
 - ストリーミング応用: streaming-DBSCAN、ST-DBSCAN
 
-scikit-learn では `sklearn.cluster.DBSCAN`、密度が異なるクラスタ向けに `HDBSCAN`（階層型 DBSCAN、scikit-learn 1.3 以降は `sklearn.cluster.HDBSCAN`）があります。HDBSCAN は複数の密度でのクラスタから安定したものを選ぶため、`eps` の調整が要りません。
+scikit-learn では `sklearn.cluster.DBSCAN`、密度が異なるクラスタ向けに `HDBSCAN`（階層型 DBSCAN、scikit-learn 1.3 以降は `sklearn.cluster.HDBSCAN`）があります。HDBSCAN は複数の密度でのクラスタから安定したものを選ぶため、`eps` を調整する必要がありません。
 
 ---
 

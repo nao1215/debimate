@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/bayes-theorem_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,14 +15,14 @@ COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 COLOR_PURPLE = "#b07aa1"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/bayes-theorem"
-)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes/math/bayes-theorem"
+plt.rcParams.update({"svg.hashsalt": "bayes-theorem", "font.size": 11})
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(NOTE_DIR / name, bbox_inches="tight",
+                metadata={"Date": None} if name.endswith(".svg") else None)
     plt.close()
 
 
@@ -65,8 +66,8 @@ cmap = ListedColormap(["#e6eff5", "#f1a340", COLOR_RED, COLOR_GREEN])
 fig, ax = plt.subplots(figsize=(7.5, 7))
 ax.imshow(grid, cmap=cmap, vmin=0, vmax=3, aspect="equal")
 ax.set_xticks([]); ax.set_yticks([])
-ax.set_title(f"10,000 people · prevalence 1% · sensitivity 95% · specificity 95%\n"
-             f"P(sick | positive test) = TP / (TP + FP) = {tp} / ({tp} + {fp}) = {tp/(tp+fp):.2%}")
+ax.set_title(f"10,000 hypothetical people · prevalence 1%\n"
+             f"Sensitivity / specificity: 95% · P(sick | +) = {tp/(tp+fp):.1%}")
 # Legend
 from matplotlib.patches import Patch
 legend_elements = [
@@ -94,8 +95,10 @@ likelihood = stats.binom.pmf(n_heads, n_total, hyps)
 # Posterior
 unnorm = prior * likelihood
 posterior = unnorm / unnorm.sum()
+assert np.isclose(posterior.sum(), 1)
+print("posterior:", np.round(posterior, 3))
 
-fig, axes = plt.subplots(1, 4, figsize=(14, 4))
+fig, axes = plt.subplots(4, 1, figsize=(6, 13))
 labels = [f"p={h}" for h in hyps]
 
 axes[0].bar(labels, prior, color=COLOR_BLUE, edgecolor="white")
@@ -117,7 +120,7 @@ axes[3].bar(labels, posterior, color=COLOR_RED, edgecolor="white")
 axes[3].set_ylim(0, 1)
 axes[3].set_title("Posterior P(H|D)\nafter data")
 for i, v in enumerate(posterior):
-    axes[3].text(i, v + 0.02, f"{v:.2f}", ha="center", fontsize=9)
+    axes[3].text(i, v + 0.02, f"{v:.3f}", ha="center", fontsize=9)
 
 plt.tight_layout()
 save("bayes_components.svg")
@@ -134,7 +137,7 @@ data_seq = rng.binomial(1, true_p, size=200)
 p_grid = np.linspace(0, 1, 400)
 # Start with uniform prior = Beta(1, 1)
 stages = [0, 5, 20, 80, 200]
-fig, axes = plt.subplots(1, len(stages), figsize=(15, 3.5), sharey=True)
+fig, axes = plt.subplots(len(stages), 1, figsize=(6, 16), sharey=True)
 for ax, n in zip(axes, stages):
     if n == 0:
         a, b = 1, 1
@@ -143,6 +146,7 @@ for ax, n in zip(axes, stages):
         tails = n - heads
         a = 1 + heads
         b = 1 + tails
+    print(f"n={n}: heads={int(data_seq[:n].sum())}, Beta({a}, {b}), mean={a/(a+b):.4f}")
     pdf = stats.beta.pdf(p_grid, a, b)
     ax.plot(p_grid, pdf, color=COLOR_BLUE, lw=2)
     ax.fill_between(p_grid, pdf, alpha=0.3, color=COLOR_BLUE)
@@ -174,12 +178,13 @@ priors = [
     ("Strong prior: Beta(100, 100)", 100, 100),
 ]
 
-fig, axes = plt.subplots(1, 3, figsize=(14, 4.5), sharex=True)
+fig, axes = plt.subplots(3, 1, figsize=(6, 12), sharex=True)
 for ax, (title, a_prior, b_prior) in zip(axes, priors):
     prior_pdf = stats.beta.pdf(p_grid, a_prior, b_prior)
     a_post = a_prior + heads_obs
     b_post = b_prior + tails_obs
     post_pdf = stats.beta.pdf(p_grid, a_post, b_post)
+    print(f"prior Beta({a_prior}, {b_prior}): posterior mean={a_post/(a_post+b_post):.4f}")
 
     ax.plot(p_grid, prior_pdf, color=COLOR_BLUE, lw=2, label=f"prior Beta({a_prior},{b_prior})")
     ax.fill_between(p_grid, prior_pdf, alpha=0.2, color=COLOR_BLUE)
@@ -193,7 +198,7 @@ for ax, (title, a_prior, b_prior) in zip(axes, priors):
     ax.legend(fontsize=8, loc="upper left")
     ax.grid(True, alpha=0.25)
 axes[0].set_ylabel("density")
-plt.suptitle(f"Same data ({heads_obs} heads / {n_data} tosses), different priors → different posteriors",
+plt.suptitle(f"Prior comparison: {heads_obs} heads / {n_data} tosses",
              y=1.02)
 plt.tight_layout()
 save("bayes_prior_strength.svg")

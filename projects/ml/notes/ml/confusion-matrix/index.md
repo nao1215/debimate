@@ -9,7 +9,7 @@ weight: 1
 
 混同行列（confusion matrix）は、分類結果を「正解/不正解」と「陽性/陰性」の組み合わせで整理した 2×2 の表です。偽陽性（False Positive, FP）と偽陰性（False Negative, FN）のバランスを見ることで、誤りの種類を把握できます。
 
-陽性が極端に少ない [クラス不均衡](../class-imbalance/) のデータでは、Accuracy 1 つだけ見ると「全部陰性と予測するだけのモデル」が高スコアを取ってしまうため、Precision・Recall・F1 のように混同行列の各セル比から計算される指標を併用するのが必須となります。確率出力の閾値を動かしたときの軌跡は [ROC-AUC / PR-AUC](../roc-pr-auc/) で連続的に見えます。
+陽性が極端に少ない [クラス不均衡](../class-imbalance/) のデータでは、Accuracy 1 つだけ見ると「全部陰性と予測するだけのモデル」が高スコアを取ってしまうため、Precision・Recall・F1 のように混同行列の各セル比から計算される指標を併用するのが必須となります。閾値ごとの真陽性率と偽陽性率はROC曲線、PrecisionとRecallはPR曲線で確認できます（[ROC-AUC / PR-AUC](../roc-pr-auc/)）。
 
 ---
 
