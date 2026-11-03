@@ -26,6 +26,8 @@ nonce の値を選ぶのは、多くの場合ライブラリではなく呼び�
   - 期限内に 1 度だけ受け付ける
 {{< /note-panels >}}
 
+<br>
+
 本記事では、その「一度」が何に対する一度なのかと、用途ごとに何が要求されるのかを説明します。扱う疑問は次の 5 つです。
 
 - 同じ鍵と nonce の組を再利用すると、なぜ暗号文と認証タグの両方が壊れるのか。
@@ -103,6 +105,8 @@ AEAD が求めるのは、nonce の値そのものがどこでも重複しない
 TLS（Transport Layer Security）1.3 がこの性質を使っています。レコードごとの 64 bit の sequence number を読み取りと書き込みで別々に持ち、接続の開始時と鍵を替えた時に 0 に戻します。ある traffic key（レコードの暗号化に使う鍵）で最初に送るレコードの sequence number は 0 です（[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446.txt) §5.3）。
 
 64 bit は使い切ることを想定していない大きさですが、wrap しそうな実装は rekey（使っている鍵を新しい鍵に入れ替える処理）か接続の切断を求められます。番号を 0 に巻き戻して同じ鍵で使い続けることは、規格が認めていません。
+
+<br>
 
 Wi-Fi の規格は、この巻き戻しを自分の手順の中で起こしていました。2017 年に公表された [KRACK](https://www.krackattacks.com/)（Key Reinstallation Attacks）です。Wi-Fi の WPA2 は、接続時に鍵を取り決める 4-way handshake で端末に鍵を設定し、送るたびに増える packet number を nonce に使います。取り決めのメッセージが再送されると、端末は使用中の鍵を設定し直し、そのたびに nonce が初期値に戻りました。
 
@@ -261,6 +265,8 @@ flowchart TD
 AES-GCM の鍵ストリームは鍵と nonce だけから決まるので、nonce が同じなら平文が違っても同じ鍵ストリームが出ます。AES-GCM-SIV では平文と AAD が POLYVAL を通ってタグに入り、そのタグが初期カウンタを決めるので、入力が違えば鍵ストリームも変わります。
 
 その結果、同じ nonce で 2 通を暗号化しても平文の XOR は漏れません。nonce ごとに認証鍵と暗号鍵を導出するため、ある nonce で漏れた情報は、別の nonce で使う内部鍵には及びません。漏れるのは、2 通の入力が同じだったかどうかだけです。決定的な方式では、nonce・AAD・平文が全て一致すれば暗号文とタグも一致するので、この 1 bit は隠せません。
+
+<br>
 
 RFC 8452 は Internet Standards Track の仕様ではなく、IRTF（Internet Research Task Force）の研究グループである CFRG（Crypto Forum Research Group）の consensus として公開された Informational RFC です。その §9 は、同じ nonce を繰り返す回数に応じて鍵あたりのメッセージ数と 1 通の平文の大きさに上限を置き、実装がタグを確かめる前の平文を外に出すことを MUST NOT で禁じています。
 

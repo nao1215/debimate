@@ -69,7 +69,7 @@ plt.savefig("dbscan_core_border_noise.svg", bbox_inches="tight")
 
 ### eps と min_samples の選び方
 
-DBSCAN の 2 つのハイパーパラメータ:
+DBSCAN の 2 つの[ハイパーパラメータ](/ml/ml/hyperparameter/):
 
 - `eps`（半径）: クラスタの「密度しきい値」を間接的に決める
 - `min_samples`（最小サンプル数）: コア点の判定基準

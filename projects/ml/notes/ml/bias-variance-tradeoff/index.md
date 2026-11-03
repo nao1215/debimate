@@ -113,7 +113,7 @@ plt.savefig("decomposition_curve.svg", bbox_inches="tight")
 - Variance（赤）: 次数を上げると単調に上がる。複雑なモデルほど訓練セットの個別ノイズに反応するため
 - Total（緑）: U 字を描く。Bias^2 と Variance の和にノイズ床（点線）を足したもので、最小値の位置が「最適な複雑度」になる
 
-逆に言うと、Bias を下げると Variance が上がるトレードオフ関係が、複雑度というハイパーパラメータの背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
+逆に言うと、Bias を下げると Variance が上がるトレードオフ関係が、複雑度という[ハイパーパラメータ](/ml/ml/hyperparameter/)の背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
 
 ---
 

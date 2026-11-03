@@ -25,6 +25,8 @@ flowchart LR
 
 `latest` を読むコードは最も早く反応できます。その代わり、読んだ内容が覆る確率も最も高くなります。
 
+<br>
+
 本記事では、アプリケーションが取引をいつ確定済みとして扱えるのかを説明します。ブロックに入った所から段階を追って、次の疑問に答えます。
 
 - なぜ「ブロックに入った」と「確定した」を分けるのか。
@@ -259,6 +261,8 @@ sequenceDiagram
 destination chain に裏付けのない資産が残るのは、bridge が預け入れを確定と扱うのが早すぎたからです。
 
 取引がブロックに入っていることは、[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) の包含証明で確かめられます。しかし、包含証明が示すのはブロックの中にあることまでで、そのブロックが canonical chain に残るかどうかは別です。確率的な finality を相手にする bridge は、何ブロック待つかを自分で決めます。
+
+<br>
 
 相手が Casper FFG のような finality gadget を持つチェーンなら、確認数を自分で決める代わりに、プロトコルが finalized とした状態を検証する方法があります。Ethereum には、finalized としたヘッダを追跡できる Light Client Protocol があり、[その仕様](https://github.com/ethereum/consensus-specs/blob/master/specs/altair/light-client/sync-protocol.md)には、想定する利用先の 1 つとして cross-chain bridge を動かす環境が挙げられています。
 

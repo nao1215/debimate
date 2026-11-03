@@ -31,6 +31,8 @@ flowchart TB
 
 Tor の名前は The Onion Router に由来し、リレーごとに別の鍵で通信を包む構造から付いています。
 
+<br>
+
 本記事では、Tor クライアントが経路を作って通信する部分と、`.onion` のアドレスに接続する部分について、以下の疑問に沿って説明します。
 
 - 通常の接続では、誰が何を観測できるのか。
@@ -231,6 +233,8 @@ flowchart TB
 descriptor を預かる役は、descriptor を載せに来た経路と取りに来た経路に、relay と relay early という 2 種類の cell の並びで Onion Service の名前を書き込みました。relay early の cell は通常クライアントの方向には流れないので、同じ攻撃者の Guard Relay はこの印を見付けられます。その結果、接続元の IP アドレスと、その人が載せた、または探した Onion Service が結び付きました。
 
 表の Traffic correlation が両端の時刻と通信量を見比べるのに対し、この攻撃は片方の端で印を付け、もう片方の端で読む能動的な形でした。Tor Project は 7 月 4 日にこれらのリレーを外し、relay early の cell を印に使えなくするバージョン（0.2.4.23 など）を出しました。さらに、十分なクライアントが更新した後に、使う Guard を 3 台から 1 台に減らす計画も示しています。1 人のクライアントが接するリレーを減らし、攻撃者のリレーに当たる機会を時間をかけて減らすためです。
+
+<br>
 
 Browser fingerprinting と Application layer leak は、経路の外側で起きます。
 

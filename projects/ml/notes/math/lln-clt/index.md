@@ -117,7 +117,7 @@ spread は `n = 1` の 2.14 から `n = 200` の 0.15 へ、おおむね `1/√n
 
 ### 標準誤差は 1/√n で縮む
 
-サンプル平均 `X̄_n` の標準偏差を標準誤差（standard error, SE）と呼びます。
+サンプル平均 `X̄_n` の[標準偏差](/ml/math/stddev/)を標準誤差（standard error, SE）と呼びます。
 
 `SE(X̄_n) = σ / √n`
 

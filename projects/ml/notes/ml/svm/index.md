@@ -81,7 +81,7 @@ plt.savefig("svm_soft_margin_C.svg", bbox_inches="tight")
 
 ![C 値による境界とマージン幅の変化](./svm_soft_margin_C.svg)
 
-`C = 0.05` ではマージンが極端に広く、多くの点がマージン内に入り込んでも気にしていません。`C = 100` ではマージンが狭く、ほぼ全点がマージン外に押し出されます（誤分類は減るが境界が動きやすい）。`C = 1` 付近が「ほどよいバランス」で、ハイパーパラメータ探索ではこの周辺を [交差検証](../cross-validation/) で詰めるのが定石となります。
+`C = 0.05` ではマージンが極端に広く、多くの点がマージン内に入り込んでも気にしていません。`C = 100` ではマージンが狭く、ほぼ全点がマージン外に押し出されます（誤分類は減るが境界が動きやすい）。`C = 1` 付近が「ほどよいバランス」で、[ハイパーパラメータ](/ml/ml/hyperparameter/)探索ではこの周辺を [交差検証](../cross-validation/) で詰めるのが定石となります。
 
 `C` は [ロジスティック回帰](../logistic-regression/) や [線形回帰](../linear-regression/) の [正則化](../regularization/) 強さ `α` とは逆向きの解釈（`C` 大 = 正則化弱、`C` 小 = 正則化強）になる点に注意が必要です。
 
@@ -155,7 +155,7 @@ plt.savefig("svm_rbf_gamma.png", bbox_inches="tight")
 - 中規模データの分類: 数千 〜 数万サンプルで強い性能を出す
 - 高次元疎データ: テキスト分類、文書分類（線形 SVM が定番）
 - 画像分類のベースライン: 深層学習以前は SVM + HOG（Histogram of Oriented Gradients）/ SIFT（Scale-Invariant Feature Transform）といった画像特徴量の組み合わせが標準
-- 異常検知: One-class SVM で「正常データ範囲」を学習し、外れる点を異常と判定
+- [異常検知](/ml/ml/anomaly-detection/): One-class SVM で「正常データ範囲」を学習し、外れる点を異常と判定
 - 構造化予測: structured SVM で系列ラベリング・木構造予測
 - バイオインフォマティクス: タンパク質分類、遺伝子発現データの解析
 - カーネル PCA: SVM の双子的手法として非線形次元削減

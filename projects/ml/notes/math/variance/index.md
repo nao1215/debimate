@@ -211,9 +211,9 @@ Cov(X, Y) = E[(X - mu_x)(Y - mu_y)]
 
 具体的な利用例:
 
-- 特徴量選択の初手: `VarianceThreshold(threshold=0.01)` でほぼ定数の特徴量を捨てる
+- [特徴量選択](/ml/ml/feature-selection/)の初手: `VarianceThreshold(threshold=0.01)` でほぼ定数の特徴量を捨てる
 - A/B テストの効果検定: 群間平均の差を群内分散で割って t 値を計算する
-- アンサンブル学習: 個別モデルの予測の分散を平均で抑える
+- [アンサンブル学習](/ml/ml/ensemble-learning/): 個別モデルの予測の分散を平均で抑える
 
 ---
 

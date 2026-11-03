@@ -31,6 +31,8 @@ sequenceDiagram
 
 この 1 回の停止で、注文は確定したのに外には知らされていない、という食い違いが生じます。在庫を担うサービスは注文の存在を知りません。一方、アプリケーションから見ると、失敗した処理は 1 つもありません。
 
+<br>
+
 本記事では、この食い違いを防ぐ方法を説明します。答えていく疑問は 5 つです。
 
 - なぜ送信と commit の順序を入れ替えても、食い違いを防げないのか。
@@ -65,7 +67,7 @@ flowchart LR
 
 2 つの書き込みを 1 つの操作にまとめる手段としては、[2PC](../two-phase-commit/) があります。関わった全員の最終的な判断を確定か中止のどちらか一方に揃えるプロトコルで、DB とブローカーを 2 つの参加者として並べれば、片方だけが成立した状態を避けられます。
 
-しかし、[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)は、DB とブローカーの一方または両方が 2PC に対応していない場合があることと、サービスを両方に結合させるのは望ましくないことが多い点を挙げ、この手を選びません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
+しかし、[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)は、DB とブローカーの一方または両方が 2PC に対応していない場合があることと、サービスを両方に結合させるのは望ましくないことが多い点を挙げています。Transactional Outboxは、こうした依存を避けるため、DBとブローカーを2PCで結ぶ方法を取りません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
 
 ---
 
@@ -108,7 +110,7 @@ VALUES ('01J8Z4', '01J8Z3', 'OrderConfirmed',
 COMMIT;
 ```
 
-outbox の 3 つの列は、どの注文についての出来事かを指す `aggregate_id`、出来事の種類を表す `event_type`、受け取る側が読む中身の `payload` です。列の設計と relay のコードは [Domain Event](../../software-architecture/domain-event/) が、トランザクションに何を入れるかは [Transaction Scope](../../database-systems/transaction-scope/) が扱っています。
+`id` はメッセージの識別子です。outboxの残る3列は、どの注文についての出来事かを指す `aggregate_id`、出来事の種類を表す `event_type`、受け取る側が読む中身の `payload` です。列の設計と relay のコードは [Domain Event](../../software-architecture/domain-event/) が、トランザクションに何を入れるかは [Transaction Scope](../../database-systems/transaction-scope/) が扱っています。
 
 2 つ目の INSERT の前にプロセスが停止すると、commit に達していないので、1 つ目の変更も確定しません。
 
@@ -133,9 +135,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、パターンの説明は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
+トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、Transactional Outboxの解説は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
 
-パターンの説明が挙げている主な性質を整理すると、以下の通りです。
+Transactional Outboxの解説で挙げられている主な性質を整理すると、以下の通りです。
 
 | 観点 | Polling publisher | Transaction log tailing |
 |---|---|---|
@@ -154,7 +156,9 @@ flowchart LR
 
 先に採番された A が、B の後に発行されています。読んだ位置を最後の id で覚える relay なら、2 回目は id 2 より後ろしか探さないので、A は一度も発行されません。
 
-NoSQL の DB の中には、未送信の行を条件で探す問い合わせが苦手なものがあります。log tailing の重複は、ログのどこまで読んだかの記録と発行が別の書き込みになることから生じます。
+Polling publisherでは、未送信の行を条件で探す必要もあります。NoSQLのDBの中には、この問い合わせが苦手なものがあります。
+
+一方、Transaction log tailingで同じメッセージが再発行されるのは、ログのどこまで読んだかの記録と、ブローカーへの発行が別々の書き込みだからです。
 
 読む先が違っても、outbox に書く側の処理は変わりません。変わるのは、メッセージがどの順序で何回ブローカーに発行されるかです。
 

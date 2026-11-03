@@ -8,18 +8,18 @@ weight: 11
 wrapTables: true
 ---
 
-Deadlock（デッドロック）は、2 本以上のトランザクションが互いのロックの解放を待ち、どれも先に進めなくなる状態です。行を更新すると DBMS（Database Management System）はその行にロックを取り、通常はトランザクションが終わるまで解放しません。
+Deadlock（デッドロック）は、2 本以上のトランザクションが互いのロックの解放を待ち、どれも先に進めなくなる状態です。レコードを更新すると DBMS（Database Management System）はそのレコードにロックを取り、通常はトランザクションが終わるまで解放しません。
 
 開発者がこの名前を目にするのは、エラーログの中ではないでしょうか。PostgreSQL は `deadlock detected`、MySQL は `Deadlock found when trying to get lock; try restarting transaction` を返します。手元で 1 本ずつ動かしている間は出ず、同じ処理が同時に走る本番環境で遭遇しやすいです。
 
-1 行目を更新した後に 2 行目を待っている間も、1 行目のロックは握ったままです。例えば、2 本が同じ 2 行を逆の順で触ると、次の図のようになります。
+1 件目を更新した後に 2 件目を待っている間も、1 件目のロックは握ったままです。例えば、2 本が同じ 2 件を逆の順で触ると、次の図のようになります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 送金 A
-    participant R1 as 口座 1 の行
-    participant R2 as 口座 2 の行
+    participant R1 as 口座 1 のレコード
+    participant R2 as 口座 2 のレコード
     participant B as 送金 B
     A->>R1: 更新してロックを取る
     B->>R2: 更新してロックを取る
@@ -30,11 +30,13 @@ sequenceDiagram
 
 上記の図の送金 A と送金 B は、互いに相手を待っています。誰が誰を待っているのかを辿ると出発点に戻るため、この関係を循環待ち（circular wait）と呼びます。2 本とは限りません。A が B を待ち、B が C を待ち、C が A を待つ形でも同じく循環します。
 
+<br>
+
 本記事では、PostgreSQL の挙動を基本に、デッドロックの終わり方と防ぎ方を説明します。挙動が違う箇所では MySQL と Oracle Database の例も示します。検出の仕組みから再試行まで、次の疑問に答えます。
 
 - DBMS は、デッドロックをどう見付けて終わらせるのか。
 - ロックの取得順序を揃えるには、何が必要なのか。
-- 同じ 1 行を同じ順序で触る 2 本が、なぜデッドロックするのか。
+- 同じ 1 件を同じ順序で触る 2 本が、なぜデッドロックするのか。
 - 中止されたトランザクションは、どう再試行すれば良いのか。
 
 トランザクションに何を入れるかの判断は [Transaction Scope](../transaction-scope/)、分離レベルは [Transaction Isolation](../transaction-isolation/) の題材とします。
@@ -95,14 +97,14 @@ flowchart LR
 
 ### ロックの取得順序の統一
 
-冒頭の例で循環待ちを作っているのは、2 本が同じ 2 行を逆の順で取得していることです。代表的な防ぎ方は、ロックを取る順序を全ての経路で揃えることです。以下は、冒頭の 2 本が同じ順でロックを取る場合です。
+冒頭の例で循環待ちを作っているのは、2 本が同じ 2 件を逆の順で取得していることです。代表的な防ぎ方は、ロックを取る順序を全ての経路で揃えることです。以下は、冒頭の 2 本が同じ順でロックを取る場合です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 送金 A
-    participant R1 as 口座 1 の行
-    participant R2 as 口座 2 の行
+    participant R1 as 口座 1 のレコード
+    participant R2 as 口座 2 のレコード
     participant B as 送金 B
     A->>R1: ロックを取る
     B->>R1: A の解放を待つ
@@ -114,17 +116,17 @@ sequenceDiagram
 
 上記の図の送金 B は待ちますが、待つ先を辿っても出発点に戻らないので循環待ちになりません。
 
-行へのロックには種類があります。[PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html) の行レベルロックは、`FOR KEY SHARE`、`FOR SHARE`、`FOR NO KEY UPDATE`、`FOR UPDATE` の 4 つのモードを持ちます。同じ行に複数のトランザクションが同時にロックを持てるかどうかは、モードの組み合わせで決まります。共存できる組み合わせがある一方、`FOR UPDATE` は他の行レベルロックと競合します。
+レコードへのロックには種類があります。[PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html) の行レベルロックは、`FOR KEY SHARE`、`FOR SHARE`、`FOR NO KEY UPDATE`、`FOR UPDATE` の 4 つのモードを持ちます。同じレコードに複数のトランザクションが同時にロックを持てるかどうかは、モードの組み合わせで決まります。共存できる組み合わせがある一方、`FOR UPDATE` は他の行レベルロックと競合します。
 
 もう 1 つの条件は、トランザクションの中で 1 つのオブジェクトに最初に取るロックが、そのオブジェクトに必要になる最も制限の強いモードであることです。
 
-以下は、`FOR SHARE` のような競合しにくいモードで同じ行を押さえた 2 本が、更新のために両方とも `FOR UPDATE` に上げようとする場合です。
+以下は、`FOR SHARE` のような競合しにくいモードで同じレコードを押さえた 2 本が、更新のために両方とも `FOR UPDATE` に上げようとする場合です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 送金 A
-    participant R as 口座 1 の行
+    participant R as 口座 1 のレコード
     participant B as 送金 B
     A->>R: 競合しにくい<br/>モードで取る
     B->>R: 競合しにくい<br/>モードで取る
@@ -133,7 +135,7 @@ sequenceDiagram
     Note over A,B: 順序が揃っていても<br/>循環待ちになる
 ```
 
-後で更新する行は、最初の読み取りから `SELECT ... FOR UPDATE` のように必要なモードで取っておくと、この引き上げ待ちを避けられます。
+後で更新するレコードは、最初の読み取りから `SELECT ... FOR UPDATE` のように必要なモードで取っておくと、この引き上げ待ちを避けられます。
 
 順序を揃える方法として、更新対象を主キーの昇順に並べ替えてから適用する形があります。プレースホルダは PostgreSQL の記法です。
 
@@ -176,7 +178,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 }
 ```
 
-更新した行が 1 件でない場合にエラーを返しているのは、口座が見付からない更新を黙って飛ばすと、片側だけ適用された送金が確定するからです。この関数は 1 回の試行しか行いません。デッドロックで中止された時は、呼び出し側が関数ごと実行し直します。
+更新したレコードが 1 件でない場合にエラーを返しているのは、口座が見付からない更新を黙って飛ばすと、片側だけ適用された送金が確定するからです。この関数は 1 回の試行しか行いません。デッドロックで中止された時は、呼び出し側が関数ごと実行し直します。
 
 途中の `UPDATE` で失敗した場合は `defer` に置いた `tx.Rollback()` が走り、それまでに適用した更新も残りません。
 
@@ -193,7 +195,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 - 競合するロックを取り始める前に、対象と取得順序を決められる
 - 同じロック対象を共有する全ての経路が、同じ規則を守っている
 
-3 つ目は、競合するロックを取り始める前に順序が定まっていれば足り、トランザクションを始める前に対象が分かっている必要はありません。`WHERE status = 'pending'` のように 1 文で複数行を更新する形が難しいのは、どの順序で対象行に到達するかが、DBMS の選ぶ実行の手順（実行計画。索引を使うか表を順に読むかなど）で変わるからです。`SELECT ... ORDER BY id FOR UPDATE` で対象と順序を確定してから更新するか、決められない処理と割り切って再試行に任せます。
+3 つ目は、競合するロックを取り始める前に順序が定まっていれば足り、トランザクションを始める前に対象が分かっている必要はありません。`WHERE status = 'pending'` のように 1 文で複数のレコードを更新する形が難しいのは、どの順序で対象レコードに到達するかが、DBMS の選ぶ実行の手順（実行計画。索引を使うか表を順に読むかなど）で変わるからです。`SELECT ... ORDER BY id FOR UPDATE` で対象と順序を確定してから更新するか、決められない処理と割り切って再試行に任せます。
 
 抜けやすいのは 4 つ目です。1 箇所でも別の順序でロックを取る経路が残っていると、その経路と他の経路の間で循環待ちができます。同じ表の中だけの話ではありません。`accounts` から `transfers` の順で触る経路と、`transfers` から `accounts` の順で触る経路があれば、それだけで循環します。バッチ処理や管理画面のように、通常の経路と別に書かれたコードが該当します。
 
@@ -201,7 +203,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 
 ### 順序を揃えても残る原因
 
-アプリケーションが取得順序を直接決めやすいのは、自分で明示的にロックする行です。DBMS はそれ以外にも、外部キーの検査や索引の走査に伴ってロックを取るため、その全てを SQL の並べ替えだけで制御できるわけではありません。
+アプリケーションが取得順序を直接決めやすいのは、自分で明示的にロックするレコードです。DBMS はそれ以外にも、外部キーの検査や索引の走査に伴ってロックを取るため、その全てを SQL の並べ替えだけで制御できるわけではありません。
 
 1 つのトランザクションが取るロックを分けると、以下のようになります。
 
@@ -211,20 +213,20 @@ flowchart LR
     T["トランザクションが取るロック"] --> A
     T --> B
     subgraph A["順序を直接決めやすい"]
-        R["明示的にロックする行"]
+        R["明示的にロックするレコード"]
     end
     subgraph B["DBMS の処理に伴って取られる"]
-        F["外部キーの検査が触る行"]
+        F["外部キーの検査が触るレコード"]
         G["索引レコードの隙間<br/>InnoDB の場合"]
     end
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の下側は、書いた SQL の並べ替えからは順序を制御しにくい部分です。外部キーの検査は、子側の `INSERT` と `UPDATE` に加えて、親側の `DELETE` と親キーの `UPDATE` でも走ります。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)によれば、制約の検査が必要な操作は、検査のために見た行に共有のレコードロック（読み取りどうしは共存し、更新とは競合する行のロック）を設定します。
+上記の図の下側は、書いた SQL の並べ替えからは順序を制御しにくい部分です。外部キーの検査は、子側の `INSERT` と `UPDATE` に加えて、親側の `DELETE` と親キーの `UPDATE` でも走ります。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)によれば、制約の検査が必要な操作は、検査のために見たレコードに共有のレコードロック（読み取りどうしは共存し、更新とは競合するレコードのロック）を設定します。
 
-親を消す経路と子を挿入する経路は、SQL の上では別の表を触っています。しかし [Foreign Key](../foreign-key/) を張っていると、ロックの上では同じ行で交わるので、順序を決める時に見落としやすくなります。
+親を消す経路と子を挿入する経路は、SQL の上では別の表を触っています。しかし [Foreign Key](../foreign-key/) を張っていると、ロックの上では同じレコードで交わるので、順序を決める時に見落としやすくなります。
 
-同じ処理どうしでも交わります。PostgreSQL 17.10 で、口座 `accounts` を参照する外部キーを持つ `transfers` に 1 行を挿入し、その 1 秒後に口座 1 を `SELECT ... FOR UPDATE` で押さえる処理を 2 本用意し、0.5 秒ずらして走らせました。2 本のロックが重なるのは口座 1 の行だけで、順序も同じです。
+同じ処理どうしでも交わります。PostgreSQL 17.10 で、口座 `accounts` を参照する外部キーを持つ `transfers` に 1 件を挿入し、その 1 秒後に口座 1 を `SELECT ... FOR UPDATE` で押さえる処理を 2 本用意し、0.5 秒ずらして走らせました。2 本のロックが重なるのは口座 1 のレコードだけで、順序も同じです。
 
 ```text
 -- 中止された側
@@ -237,9 +239,9 @@ CONTEXT:  while locking tuple (0,1) in relation "accounts"
    10000
 ```
 
-`INSERT` は外部キーの検査で、親である口座 1 の行に `FOR KEY SHARE` を取ります。2 本がこのロックを共有したまま `FOR UPDATE` に上げようとしたので、前に見た引き上げの図と同じ循環になりました。`FOR UPDATE` を書いていても、その前の `INSERT` が先に弱いモードを取っています。口座を `FOR UPDATE` で押さえてから `INSERT` する順にするか、通常の `UPDATE` で口座を更新すると（取るモードが `FOR KEY SHARE` と競合しない `FOR NO KEY UPDATE` になる）、デッドロックは起きませんでした。
+`INSERT` は外部キーの検査で、親である口座 1 のレコードに `FOR KEY SHARE` を取ります。2 本がこのロックを共有したまま `FOR UPDATE` に上げようとしたので、前に見た引き上げの図と同じ循環になりました。`FOR UPDATE` を書いていても、その前の `INSERT` が先に弱いモードを取っています。口座を `FOR UPDATE` で押さえてから `INSERT` する順にするか、通常の `UPDATE` で口座を更新すると（取るモードが `FOR KEY SHARE` と競合しない `FOR NO KEY UPDATE` になる）、デッドロックは起きませんでした。
 
-索引に並んだキーとキーの間（隙間）へのロックは MySQL の InnoDB の機構で、PostgreSQL には同じ仕組みがありません。隙間にもロックを掛けるのは、条件に合う行が後から挿入されるのを防ぐためです。InnoDB の既定である REPEATABLE READ では、索引を走査する `UPDATE` や `SELECT ... FOR UPDATE` に、索引レコードとその手前の隙間をまとめた [next-key lock](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html) が使われます。以下は、その範囲です。キーの値は説明用です。
+索引に並んだキーとキーの間（隙間）へのロックは MySQL の InnoDB の機構で、PostgreSQL には同じ仕組みがありません。隙間にもロックを掛けるのは、条件に合うレコードが後から挿入されるのを防ぐためです。InnoDB の既定である REPEATABLE READ では、索引を走査する `UPDATE` や `SELECT ... FOR UPDATE` に、索引レコードとその手前の隙間をまとめた [next-key lock](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html) が使われます。以下は、その範囲です。キーの値は説明用です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -295,7 +297,7 @@ sequenceDiagram
 | 対処 | 効く範囲 | 残る問題 |
 | --- | --- | --- |
 | 取得順序を揃える | 明示的に順序を決められるロック | 外部キーの検査や隙間など、SQL から順序を制御しにくいロックまでは防ぎ切れない |
-| 最初から必要なモードで取る | 同じ行でのモードの引き上げ | 競合しにくいモードで足りる読み取りまで待たせる |
+| 最初から必要なモードで取る | 同じレコードでのモードの引き上げ | 競合しにくいモードで足りる読み取りまで待たせる |
 | トランザクションを短くする | ロックを持つ時間と、競合が重なる確率 | 逆順で取得する経路が残っていれば、原因自体は消えない |
 | 再試行する | 中止された全てのデッドロック | 応答時間が伸びる。上限に達した時の扱いを決める |
 

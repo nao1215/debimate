@@ -28,6 +28,8 @@ flowchart TB
 
 上記の図の Passkey では、秘密鍵が Authenticator の管理下に留まり、サーバーに渡るのは署名です。秘密鍵で作った署名は、対になる公開鍵で検証できます。公開鍵から秘密鍵を導くことはできないため、検証する側は署名を作れません。署名を作る鍵と確かめる鍵が別なので、サーバーは秘密鍵を預からずに「相手が秘密鍵を持っていること」を確かめられます。
 
+<br>
+
 本記事では、Web ブラウザから Passkey を使う場合の処理の流れを追い、以下の疑問に答えます。
 
 - Password を共有する方式は、どこから狙われるのか。
@@ -156,6 +158,8 @@ sequenceDiagram
 上記の図の authenticatorData には、RP ID のハッシュ・利用者の確認結果を表すフラグ・signCount が入ります。署名の対象は、この authenticatorData と clientDataJSON のハッシュを繋いだ値です。その結果、challenge も origin も署名の範囲に入ります。
 
 [署名の検証](https://www.w3.org/TR/webauthn-3/#sctn-sample-scenarios)で分かるのは、署名の対象が書き換えられていないことと、登録済みの公開鍵に対応する秘密鍵で署名されたことです。署名が正しくても、その中の challenge や origin がサーバーの期待した値だったとは限りません。そのためサーバーは、署名の検証とは別に、challenge が自分の出した値か、origin が期待する相手か、RP ID のハッシュが自分のものかを 1 つずつ突き合わせます。
+
+<br>
 
 signCount は、対応する Authenticator が実装している場合に、認証に伴って増える署名カウンタです。資格情報が複製されると、複製した Authenticator と元の Authenticator がそれぞれ独立に数えるので、サーバーから見た増え方が乱れます。
 

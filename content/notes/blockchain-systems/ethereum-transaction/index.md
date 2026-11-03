@@ -25,6 +25,8 @@ flowchart LR
 
 上記の図で秘密鍵を使うのは、署名の段階だけです。中継するノードが中身を書き換えること自体はできます。書き換えた取引がどう扱われるのかは、「署名からの送り主の復元」で扱います。
 
+<br>
+
 本記事では、1 件の取引に何が書かれ、送り主がどう確かめられ、手数料がどう決まるのかを説明します。手掛かりにするのは次の疑問です。
 
 - 取引には、なぜ gas の上限を書くのか。
@@ -71,6 +73,8 @@ Bitcoin の取引は、消費する出力と作る出力を並べたデータで
 nonce が何を防ぎ、どの範囲の順序を縛るのかは [Ethereum Account Model](../ethereum-account-model/) で扱っています。value と data は独立していて、`value` が 0 でも `data` を渡してコントラクトを呼べます。
 
 accessList は、列挙するだけで安くなる項目ではありません。列挙した分にも gas が掛かります。その代わりに、申告したアドレスと storage key は最初から触ったことのある扱い（warm）になり、実行中のアクセスが安く済みます。EIP-2930 にも、一覧に無い所へのアクセスは「[possible, but become more expensive](https://eips.ethereum.org/EIPS/eip-2930)」（可能。ただし、より高くつく）と書かれています。実行中に触らない項目まで並べると、申告の分だけ gas が増えます。
+
+<br>
 
 項目の並びは 1 通りではありません。EIP-2718 は「[`TransactionType || TransactionPayload` is a valid transaction](https://eips.ethereum.org/EIPS/eip-2718)」（TransactionType と TransactionPayload を繋いだものが有効な取引になる）と書いており、先頭の 1 バイトで中身の読み方が切り替わります。
 
@@ -202,6 +206,8 @@ flowchart LR
 2016 年 2 月のゲーム King of the Ether Throne（新しい王が座を買うと、前の王に補償金が送られる）では、[中の送金の失敗が見落とされました](https://www.kingoftheether.com/postmortem.html)。補償金の送り先が Ethereum のウォレットアプリ Mist の作るコントラクト型のウォレットだった時、Solidity の `send` が渡す 2,300 gas では足りず、送金が失敗しています。コントラクトは結果を確かめずに処理を続けたため、取引は成功として進み、補償金は送り元のコントラクトに残りました。
 
 内側の失敗は `REVERT` ではなく gas 切れですが、呼び出し元が受け流せば取引が成功になる点は同じです。当時のレシートに status はありませんでしたが、今の規則なら 1 になります。
+
+<br>
 
 `REVERT` 命令が導入される前は、失敗した取引は必ず gas を使い切るので、消費した量から成否を推測できました。`REVERT` は gas を残して失敗するため、この推測は使えません。[同じ EIP](https://eips.ethereum.org/EIPS/eip-658) は、これを status を入れた理由の 1 つに挙げています。
 

@@ -85,7 +85,7 @@ iForest の長所:
 
 ### しきい値の選び方
 
-`contamination` パラメータ（異常の予測比率）は重要な hyperparameterです。
+`contamination` パラメータ（異常の予測比率）は重要な [hyperparameter](/ml/ml/hyperparameter/)です。
 
 ```python
 clf = IsolationForest(contamination="auto").fit(X)
@@ -122,7 +122,7 @@ plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
 
 ![時系列の rolling z-score 異常検知](./anomaly_time_series.svg)
 
-具体的には、過去 30 ステップの平均と標準偏差を計算し、現在値が `|z| > 3` を超えたら異常と判定します。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出しています。
+具体的には、過去 30 ステップの平均と[標準偏差](/ml/math/stddev/)を計算し、現在値が `|z| > 3` を超えたら異常と判定します。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出しています。
 
 時系列専用の手法は他にも:
 
@@ -139,7 +139,7 @@ plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
 - ロバスト統計の breakdown point（[中央値](../../math/median/) 参照）
 - Mahalanobis distance（Elliptic Envelope の基盤）
 - カーネル密度推定（[KDE](../../math/kde/)）と異常検知
-- 情報理論的アプローチ: KL ダイバージェンスで分布変化を検出
+- [情報理論](/ml/math/information-theory/)的アプローチ: KL ダイバージェンスで分布変化を検出
 - 確率モデル: Gaussian Mixture Model で「低尤度の点」を異常とする
 - 統計検定: Grubbs 検定、Tukey の IQR ルール ([四分位点](../../math/quantile/) 参照)
 
@@ -178,4 +178,4 @@ scikit-learn では `sklearn.ensemble.IsolationForest`、`sklearn.neighbors.Loca
 - アラート疲労: 異常を出しすぎると現場が無視するようになる。閾値調整 + Precision の確保
 - 季節性・トレンドを考慮しない: 時系列データでは「いつもの周期パターン」を異常と誤検出する。先に [時系列分解](../time-series-forecasting/)
 - One-Class SVM の gamma 調整: 大きすぎると過学習、小さすぎると検出力なし。クロスバリデーションが効きにくい教師なしなので、可視化で判定
-- 「異常」と「データ収集の問題」を混同: NULL の混入、欠損 (../missing-values/)、計測ノイズは異常検知ではなくデータ品質チェックの対象
+- 「異常」と「データ収集の問題」を混同: NULL の混入、[欠損](../missing-values/)、計測ノイズは異常検知ではなくデータ品質チェックの対象

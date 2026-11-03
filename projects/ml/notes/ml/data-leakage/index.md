@@ -25,7 +25,7 @@ weight: 11
 - title: Train-test contamination
   items:
   - 前処理の fit が全データ対象
-  - 特徴量選択を分割前に実施
+  - "[特徴量選択](/ml/ml/feature-selection/)を分割前に実施"
 {{< /note-panels >}}
 
 ターゲットリーク（target leakage）は「予測したい瞬間にはまだ存在しない情報」を特徴量に入れてしまうパターンです。訓練・テスト汚染（train-test contamination）は「テストデータの情報が前処理経由で学習に染み込む」パターンです。両者は別物です。ただし、症状（学習時の異常な高スコア）は似るため、対処も別々に押さえておく必要があります。
@@ -75,7 +75,7 @@ CV leak:   1.000 +/- 0.000
 
 ![CV score comparison](./data-leakage_cv_score.svg)
 
-CV スコアだけでなく、[RandomForest](../random-forest/) の特徴量重要度を出すとリーク列に重要度が集中する傾向も観察できます。
+CV スコアだけでなく、[RandomForest](../random-forest/) の[特徴量重要度](/ml/ml/feature-importance/)を出すとリーク列に重要度が集中する傾向も観察できます。
 
 ```python
 rf_leak = RandomForestClassifier(n_estimators=100, random_state=0).fit(X_leak, y)

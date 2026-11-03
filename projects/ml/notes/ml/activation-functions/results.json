@@ -1,0 +1,10 @@
+{
+  "seed": 0,
+  "learning_rate_init": 0.01,
+  "epochs": 80,
+  "final_train_mse": {
+    "sigmoid": 0.05242509026619224,
+    "tanh": 0.011602551425061454,
+    "relu": 0.011913927116407614
+  }
+}

@@ -194,17 +194,17 @@ big:   MAE = 3431.21, MAPE = 4.79%
 ### 数学での使いどころ
 
 - 推定量の精度評価: 不偏推定量・最尤推定量の比較
-- 統計モデルの当てはまりの良さ: 線形回帰の R²、一般化線形モデルの疑似 R²
+- 統計モデルの当てはまりの良さ: [線形回帰](/ml/ml/linear-regression/)の R²、一般化線形モデルの疑似 R²
 - 残差分析: RMSE と MAE の比で分布の特性を診断
 - ベイズ予測の評価: 事後予測分布からの RMSE
-- 時系列予測: RMSE / MAE / MAPE / SMAPE / MASE（時系列専用）の使い分け
+- [時系列予測](/ml/ml/time-series-forecasting/): RMSE / MAE / MAPE / SMAPE / MASE（時系列専用）の使い分け
 
 ---
 
 ### 機械学習での使いどころ
 
 - モデル選択: 同じテストデータで複数モデルの RMSE / MAE / R² を比較
-- ハイパーパラメータ探索: [交差検証](../cross-validation/) で `cv_results_` の `mean_test_score` を比較
+- [ハイパーパラメータ](/ml/ml/hyperparameter/)探索: [交差検証](../cross-validation/) で `cv_results_` の `mean_test_score` を比較
 - 学習曲線: 訓練と検証の RMSE を訓練データ量に対してプロット（[バイアス-バリアンス分解](../bias-variance-tradeoff/)）
 - 早期停止: 検証 RMSE が下がらなくなった時点で学習を打ち切る
 - 異常検知: 「予測 ± `k × RMSE`」を正常範囲として、外れる予測を要注意としてフラグ

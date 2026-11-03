@@ -9,7 +9,7 @@ weight: 13
 
 次元の呪い（curse of dimensionality）は、特徴量の次元が高くなるにつれて距離・体積・サンプル密度の常識的な感覚が崩れ、距離ベースのアルゴリズムが機能しなくなる現象群の総称です。1961 年に Bellman が制御理論の文脈で命名した古い用語です。機械学習の文脈では、「特徴量を増やすほど精度が上がるとは限らない、むしろ kNN や RBF（Radial Basis Function）カーネルがほぼ動かなくなる」という現実問題として現れます。
 
-[kNN](../knn/) を 5000 次元のデータに使うと精度が大きく落ち、[ロジスティック回帰](../logistic-regression/) や [RandomForest](../random-forest/) は耐えられる、というような差が出る背景にこの現象があります。対処としては [PCA](../pca/) などの次元削減、[L1 正則化](../regularization/) による特徴量選択、距離指標の見直しがあります。
+[kNN](../knn/) を 5000 次元のデータに使うと精度が大きく落ち、[ロジスティック回帰](../logistic-regression/) や [RandomForest](../random-forest/) は耐えられる、というような差が出る背景にこの現象があります。対処としては [PCA](../pca/) などの次元削減、[L1 正則化](../regularization/) による[特徴量選択](/ml/ml/feature-selection/)、距離指標の見直しがあります。
 
 ---
 
@@ -209,7 +209,7 @@ plt.savefig("curse-of-dimensionality_knn_decay.svg", bbox_inches="tight")
 2. 特徴量選択で意味のある列だけ残す
     - [L1 正則化](../regularization/)（Lasso）: 不要な係数を 0 にする副作用で特徴量選択になる
     - 相互情報量や F 値: 目的変数との関連度で上位を選ぶ
-    - SHAP / 特徴量重要度: 学習後に効いている特徴を抽出して再学習
+    - SHAP / [特徴量重要度](/ml/ml/feature-importance/): 学習後に効いている特徴を抽出して再学習
 3. 距離指標を見直す
     - コサイン距離: スパースな高次元ベクトル（テキスト埋め込み、bag-of-words）で有効
     - マハラノビス距離: 特徴量の共分散を考慮した距離

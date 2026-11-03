@@ -16,7 +16,7 @@ weight: 10
 
 両者は「いつ・誰が決めるか」で分かれます。
 
-- パラメータ (parameter): 学習の結果としてデータから決まる値。線形回帰の係数 `w_i`、ニューラルネットの重み、決定木の分岐条件など。人間は直接いじらない
+- パラメータ (parameter): 学習の結果としてデータから決まる値。[線形回帰](/ml/ml/linear-regression/)の係数 `w_i`、ニューラルネットの重み、決定木の分岐条件など。人間は直接いじらない
 - ハイパーパラメータ (hyperparameter): 学習を始める前に人間が決めて固定する値。[正則化](../regularization/)の `alpha`、[kNN](../knn/) の `k`、[RandomForest](../random-forest/) の `max_depth`、[GradientBoosting](../gradient-boosting/) の学習率 `learning_rate` など
 
 scikit-learn の API で言うと、`Ridge(alpha=1.0).fit(X, y)` の `alpha=1.0` がハイパーパラメータ、`.fit()` した後にモデルが内部に持つ `.coef_` がパラメータです。

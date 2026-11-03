@@ -162,7 +162,7 @@ GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を
 - 表形式データで実質的に最強クラスの精度（Kaggle 系で常勝）
 - 非線形・特徴量の相互作用を自然に捉える
 - 前処理コストが低い（標準化・外れ値処理がほぼ不要、欠損も実装によっては対応）
-- 特徴量重要度を出せる（ただし [RandomForest](../random-forest/) と同様にバイアスがあるので `permutation_importance` 推奨）
+- [特徴量重要度](/ml/ml/feature-importance/)を出せる（ただし [RandomForest](../random-forest/) と同様にバイアスがあるので `permutation_importance` 推奨）
 - `predict_proba` で確率出力もそれなりに校正された値が出る
 - LightGBM / XGBoost / CatBoost など最適化実装が豊富で、規模が大きくなっても動く
 

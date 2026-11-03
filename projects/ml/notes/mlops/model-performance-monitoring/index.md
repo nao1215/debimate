@@ -198,7 +198,7 @@ Grafana のダッシュボードで「過去 24 時間の P99 latency」「予�
 - ベイズ的変化検出: 事後確率の変化で検出（[ベイズの定理](../../math/bayes-theorem/)）
 - 移動統計（rolling mean, rolling std）: ノイズを抑えてトレンドを見る
 - [仮説検定](../../math/hypothesis-test/): KS 検定、`χ²` 検定、Mann-Whitney U 検定
-- 情報理論: KL ダイバージェンス、Jensen-Shannon ダイバージェンスで分布距離
+- [情報理論](/ml/math/information-theory/): KL ダイバージェンス、Jensen-Shannon ダイバージェンスで分布距離
 
 ---
 

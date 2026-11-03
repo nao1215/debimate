@@ -127,13 +127,13 @@ plt.savefig("decision_tree_moons.png", bbox_inches="tight")
 - max_depth=5: 月の輪郭をうまく捉えている
 - max_depth=None（制限なし）: 訓練ノイズの 1 点 1 点に張り付く（明らかな過学習）
 
-過学習を防ぐには `max_depth`、`min_samples_split`、`min_samples_leaf`、`ccp_alpha`（コスト複雑性枝刈り）などのハイパーパラメータを [交差検証](../cross-validation/) で選びます。あるいは [ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) のように多数の木を平均化することで過学習を抑える方向もあります。
+過学習を防ぐには `max_depth`、`min_samples_split`、`min_samples_leaf`、`ccp_alpha`（コスト複雑性枝刈り）などの[ハイパーパラメータ](/ml/ml/hyperparameter/)を [交差検証](../cross-validation/) で選びます。あるいは [ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) のように多数の木を平均化することで過学習を抑える方向もあります。
 
 ---
 
 ### 数学での使いどころ
 
-- 情報理論との対応: 情報利得（IG, information gain）はエントロピーの減少量。決定木は ID3・C4.5（Quinlan が提案した初期の決定木学習アルゴリズム）の直系
+- [情報理論](/ml/math/information-theory/)との対応: 情報利得（IG, information gain）はエントロピーの減少量。決定木は ID3・C4.5（Quinlan が提案した初期の決定木学習アルゴリズム）の直系
 - 階段関数による分割: 入力空間を矩形領域に分割し、各領域で定数を予測する近似器
 - 関数空間での貪欲法: 各分割は局所最適。全体最適を求めるのは NP 困難
 - 弱学習器: PAC（Probably Approximately Correct）学習・boosting 理論で「弱学習器」の定義そのものを満たす
@@ -162,6 +162,6 @@ plt.savefig("decision_tree_moons.png", bbox_inches="tight")
 - 訓練データの極端な小変化で木が変わる: 学習が高分散。アンサンブルで吸収する
 - 連続値の細かい数値を予測する: 葉ノードでの予測は定数なので、滑らかな関数を当てるのは苦手。回帰木より [線形回帰](../linear-regression/) や勾配ブースティング回帰の方が良いことが多い
 - 外挿: 訓練データの範囲外では「最も近い葉の値」を返すだけで、傾向の外挿はできない。時系列の傾向予測には不向き
-- 多重共線性の特徴量: 似た特徴量が複数あると、貪欲な分割選択が不安定になる。事前の特徴量選択や PCA を検討
+- 多重共線性の特徴量: 似た特徴量が複数あると、貪欲な分割選択が不安定になる。事前の[特徴量選択](/ml/ml/feature-selection/)や PCA を検討
 - 連続変数を含むカテゴリ変数の扱い: scikit-learn は数値しか受け付けないので [カテゴリ変数のエンコーディング](../categorical-encoding/) が必要（LightGBM などは内部で扱える）
 - 不純度ベースの特徴量重要度を過信する: 連続値・高カーディナリティの特徴量に重要度がバイアスする。[permutation importance](../feature-importance/) で再検証する

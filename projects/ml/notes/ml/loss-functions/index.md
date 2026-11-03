@@ -98,7 +98,7 @@ plt.savefig("loss_gradient_behavior.svg", bbox_inches="tight")
 
 ### 外れ値が支配する学習結果
 
-理論ではなく実際の挙動として、MSE と MAE で当てた線形回帰の傾きを比較します。
+理論ではなく実際の挙動として、MSE と MAE で当てた[線形回帰](/ml/ml/linear-regression/)の傾きを比較します。
 
 ```python
 from sklearn.linear_model import LinearRegression, QuantileRegressor
@@ -166,7 +166,7 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 
 `L = -log p_c = -z_c + log(Σ_j exp(z_j))`
 
-の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を引く形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス（Kullback-Leibler divergence、2 つの確率分布のずれを測る量）」の特殊形でもあり、情報理論との繋がりも明確です。
+の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を引く形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス（Kullback-Leibler divergence、2 つの確率分布のずれを測る量）」の特殊形でもあり、[情報理論](/ml/math/information-theory/)との繋がりも明確です。
 
 ---
 

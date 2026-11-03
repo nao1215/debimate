@@ -45,3 +45,6 @@ projects/**/datasets/**/*.json
 # Local Lighthouse reports
 /reports/lighthouse/
 /reports/browser/
+
+# Local note review history, cache, and drafts
+/.note-review/

@@ -34,6 +34,8 @@ flowchart LR
 
 上記の図の監視基盤が知っているのは 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。JMX（Java Management Extensions）は Java の管理と監視のための仕様で、アプリケーションが登録した情報を外から読み書きする窓口です。StatsD は、メトリクスを短いテキスト 1 行で送るプロトコルと、それを受けて集約するデーモンを指します。どちらも監視基盤が直接読める形とは限りません。
 
+<br>
+
 本記事では、Adapter で外向きの形を揃える理由と、変換が起きる場所を説明します。扱う疑問は以下です。
 
 - 出力の形式を揃えるのに、なぜアプリケーションの外で変換するのか。
@@ -48,8 +50,10 @@ flowchart LR
 
 Brendan Burns 氏と David Oppenheimer 氏の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」は、4.3 節で Adapter を「複数のコンテナにまたがって出力とインターフェースを標準化すること」とし、外の世界に「単純化され均質にされたアプリケーションの姿」を見せるものとしています。
 
-名前は、論文より前の Brendan Burns 氏のブログ「[The Distributed System ToolKit](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で Sidecar・Ambassador と並べて紹介されました。冒頭の監視の図は、論文とブログが挙げる例です。3 つのパターンの関係と名前の経緯は、[Sidecar](../sidecar/) のノートにまとめています。
+名前は、論文より前の Brendan Burns 氏のブログ「[The Distributed System ToolKit](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で Sidecar・[Ambassador](/notes/software-architecture/ambassador/) と並べて紹介されました。冒頭の監視の図は、論文とブログが挙げる例です。3 つのパターンの関係と名前の経緯は、[Sidecar](../sidecar/) のノートにまとめています。
 論文の 4.3 節では Adapter が Ambassador との対比で定義され、2 つは単純化して見せる相手が逆です。Ambassador は外の世界を単純化してアプリケーションに見せ、Adapter はアプリケーションを揃えて外の世界に見せます。
+
+<br>
 
 書籍『オブジェクト指向における再利用のためのデザインパターン』にも同じ名前のパターンがあります。書籍の Adapter は、クライアントが期待する形に既存のクラスのインターフェースを変換するパターンで、形を合わせる境界はコンテナではなくクラスです。
 
@@ -125,6 +129,8 @@ sequenceDiagram
 上記の図で変換が起きるのは adapter の中だけで、取りに来る形であれば、アプリケーションは自分がどの形式で監視されているのかを知りません。監視基盤を入れ替える場合も、アプリケーションは変えずに済みます。adapter が OpenMetrics（Prometheus の形式を元にした標準の形式）のような標準の形式で出していて、新しい監視基盤も同じ形式を読めるなら、adapter も変えずに済みます。
 
 新しい監視基盤が adapter の出す形式を読めない場合も、合わせるのは adapter か監視基盤の設定です。
+
+<br>
 
 exporter を必ず同居させるわけではありません。exporter は、メトリクスの取得元のマシンで[動く必要がありません](https://prometheus.io/docs/guides/multi-target-exporter/)。1 台の exporter が多数の対象を担当する構成もあり、それは変換のコードを 1 箇所に集める形なので、ここで扱う Adapter とは配置が違います。
 

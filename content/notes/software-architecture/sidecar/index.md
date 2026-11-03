@@ -10,7 +10,11 @@ wrapTables: true
 
 Sidecar とは、主となるアプリケーションのコンテナと同じ実行単位に置かれ、そのアプリケーションに機能を足す補助コンテナです。ログの転送や設定の取得のような、業務ロジックと直交する処理を担当します。ここで言う実行単位とは、同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まりで、Kubernetes の Pod や Amazon ECS の Task が当たります。
 
-コンテナの配置とライフサイクルを管理する基盤は、本記事では実行基盤と呼びます。Kubernetes や Amazon ECS がその例です。
+コンテナの配置とライフサイクルを管理する基盤は、
+
+<br>
+
+本記事では実行基盤と呼びます。Kubernetes や Amazon ECS がその例です。
 
 以下は、Web サーバーのログを転送する構成の例です。
 
@@ -50,6 +54,8 @@ Brendan Burns 氏と David Oppenheimer 氏が 2016 年に発表した論文「[D
 Sidecar という名前は、Brendan Burns 氏が 2015 年 6 月 29 日に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、[Ambassador](../ambassador/)・[Adapter](../adapter/) と並ぶ 3 つのパターンの 1 つ目として紹介されました。上記の論文は、このブログのパターンを体系化したものです。
 
 ブログでも論文でも 3 つは並列に置かれ、メインのコンテナを拡張するのが Sidecar、メインのコンテナに出入りする通信を仲介するのが Ambassador、出力とインターフェースを標準化するのが Adapter です。
+
+<br>
 
 一方で、現在の Kubernetes 周辺では、同居する補助コンテナ全般を sidecar と呼ぶ用法も広まっています。この用法では、通信を仲介するプロキシも sidecar に含まれます。以降の節では、この広い意味で sidecar と書き、論文の分類と区別が必要な所だけ Ambassador・Adapter の名前を出します。
 

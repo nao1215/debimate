@@ -8,9 +8,9 @@ weight: 7
 wrapTables: true
 ---
 
-Snapshot Isolation は、トランザクションごとに 1 つのスナップショットを固定して読み、書き込みが重なった時に片方を中止する分離の方式です。分離とは、同時に走るトランザクションどうしが互いの途中の変更をどこまで見るかを決めることを指します。スナップショットは、ある時点までに確定した変更だけを含むデータの見え方です。DB は行の古いバージョンを残しておき、読む側が基準の時点に合うバージョンを選びます。
+Snapshot Isolation は、トランザクションごとに 1 つのスナップショットを固定して読み、書き込みが重なった時に片方を中止する分離の方式です。分離とは、同時に走るトランザクションどうしが互いの途中の変更をどこまで見るかを決めることを指します。スナップショットは、ある時点までに確定した変更だけを含むデータの見え方です。DB はレコードの古いバージョンを残しておき、読む側が基準の時点に合うバージョンを選びます。
 
-この方式が必要になる場面の代表は、長い集計と更新が同時に走る業務です。締め日の売上を集計する処理が数分走っている間も、注文の登録は止めたくないとします。読み取りをロックで守る作りでは、集計が読んだ行は集計が終わるまで更新できません。スナップショットから読めば、集計は最後まで同じ時点の値を読み続けられ、注文の登録も止めずに済みます。
+この方式が必要になる場面の代表は、長い集計と更新が同時に走る業務です。締め日の売上を集計する処理が数分走っている間も、注文の登録は止めたくないとします。読み取りをロックで守る作りでは、集計が読んだレコードは集計が終わるまで更新できません。スナップショットから読めば、集計は最後まで同じ時点の値を読み続けられ、注文の登録も止めずに済みます。
 
 1 本のトランザクションが、読みと書きで何を基準にするのかを以下に示します。
 
@@ -29,15 +29,17 @@ sequenceDiagram
 
 上記の図の Start-Timestamp（読み取りの基準になる時点）は、最初の読み取りより前に決まります。以降の読み取りは全部この 1 つの時点を基準にし、判定が入るのは書き込みの可否だけです。
 
+<br>
+
 本記事では、Snapshot Isolation が何を防いで何を防がないのか、その境目が他の実現方式とどう違うのかを説明します。読み取りの作りから順に、次の疑問を取り上げます。
 
 - スナップショットから読むと、なぜ読み手が書き手を待たずに済むのか。
 - 同じデータへの書き込みが重なった時、どちらが中止されるのか。
-- 別々の行を書く 2 本は、なぜ両方とも確定して合計を負にできるのか（write skew）。
+- 別々のレコードを書く 2 本は、なぜ両方とも確定して合計を負にできるのか（write skew）。
 - locking REPEATABLE READ や PostgreSQL の REPEATABLE READ とは、何が違うのか。
 - write skew は、Serializable Snapshot Isolation や明示的なロックでどこまで止められるのか。
 
-分離レベルの意味と、dirty read・nonrepeatable read・phantom read・lost update という異常の名前は [Transaction Isolation](../transaction-isolation/) で扱っているので、本記事では繰り返しません。行のバージョンを併存させる MVCC の仕組みも同じノートにあります。
+分離レベルの意味と、dirty read・nonrepeatable read・phantom read・lost update という異常の名前は [Transaction Isolation](../transaction-isolation/) で扱っているので、本記事では繰り返しません。レコードのバージョンを併存させる MVCC の仕組みも同じノートにあります。
 
 ---
 
@@ -61,13 +63,13 @@ Snapshot Isolation は、Berenson 氏らが 1995 年に発表した論文「[A C
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
     participant A as 注文 A
-    participant D as 在庫の行
+    participant D as 在庫のレコード
     participant B as 注文 B
     A->>D: スナップショットから残数 1 を読む
     B->>D: スナップショットから残数 1 を読む
     A->>D: 0 を書いて確定
     B->>D: 0 を書こうとする
-    D-->>B: 同じ行を A が先に確定済み
+    D-->>B: 同じレコードを A が先に確定済み
     Note over B: B は中止される
 ```
 
@@ -75,11 +77,13 @@ commit の時点で検査するこの形は論文の概念モデルで、実装�
 
 ---
 
-### 別々の行を書く write skew
+### 別々のレコードを書く write skew {#別々の行を書く-write-skew}
 
-first-committer-wins が見ているのは、同じデータへの書き込みが重なったかどうかです。2 本が別々の行を書けば、この検査には掛かりません。論文が write skew と名付けた異常で、読んだ結果に基づいて別々の行を書き、その組み合わせで初めて破れる制約がある場合に現れます。
+first-committer-wins が見ているのは、同じデータへの書き込みが重なったかどうかです。2 本が別々のレコードを書けば、この検査には掛かりません。論文が write skew と名付けた異常で、読んだ結果に基づいて別々のレコードを書き、その組み合わせで初めて破れる制約がある場合に現れます。
 
-例えば、2 つの口座に掛かる制約は次のように破れます。
+引き出しには「2口座の合計が100以上なら指定口座から100を引き、それ未満なら更新しない」という規則を設けます。個別口座が負になることは許し、2口座の合計を0以上に保つ例です。この条件なら、直列に処理した時は2本目が残高不足に気付き、合計が負になる引き出しを止められます。
+
+この規則を並行して実行すると、次のように制約が破れます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -90,33 +94,38 @@ sequenceDiagram
     Note over T1,T2: 残高は x も y も 50<br/>合計は 0 以上という制約
     T1->>D: x と y を読む。合計は 100
     T2->>D: x と y を読む。合計は 100
-    T1->>D: x から 100 引いて確定
-    T2->>D: y から 100 引いて確定
-    Note over T1,T2: 書いた行が違うため<br/>合計は -100 になる
+    T1->>D: 合計が100以上なので<br/>xから100引いて確定
+    T2->>D: 合計が100以上なので<br/>yから100引いて確定
+    Note over T1,T2: 書いたレコードが違うため<br/>合計は -100 になる
 ```
 
-上記の図の 2 本は同じスナップショットを見て、別の行を書きます。書き込みが重なっていないので first-committer-wins は働かず、両方とも確定します。
+上記の図の 2 本は同じスナップショットを見て、別のレコードを書きます。書き込みが重なっていないので first-committer-wins は働かず、両方とも確定します。
 
-上記の図と同じ順序の操作を PostgreSQL 17.10 の 2 本の接続で実際に動かすと、以下のようになります。分離レベルは REPEATABLE READ で、T2 は T1 が確定する前に読みます（出力は抜粋）。
+次の疑似コードを、xとyそれぞれの口座に対して実行します。読み取り、条件判断、更新を同じトランザクションに含めます。
 
 ```text
--- T1
-BEGIN ISOLATION LEVEL REPEATABLE READ;
-SELECT sum(balance) FROM accounts;   -- 100
--- T2
-BEGIN ISOLATION LEVEL REPEATABLE READ;
-SELECT sum(balance) FROM accounts;   -- 100
--- T1
-UPDATE accounts SET balance = balance - 100 WHERE id = 'x';
-COMMIT;
--- T2
-UPDATE accounts SET balance = balance - 100 WHERE id = 'y';
-COMMIT;
--- 2 本が確定した後
-SELECT sum(balance) FROM accounts;   -- -100
+BEGIN ISOLATION LEVEL REPEATABLE READ
+合計 = SELECT sum(balance) FROM accounts
+if 合計 >= 100:
+    UPDATE accounts SET balance = balance - 100 WHERE id = 対象口座
+    COMMIT
+else:
+    ROLLBACK  # 残高不足。更新しない
 ```
 
-エラーも待ちも起きず、2 本とも `COMMIT` を通りました。どちらも自分のスナップショットの中では合計 0 を残す計算をしており、制約を破っているのは確定した後の状態だけです。既にある行を書き換える場合に限らず、条件に合う行を数える制約も、2 本がそれぞれ別の行を挿入することで壊れます。
+[実験コード](./lab/run.py)では、初期値をx=50、y=50に揃え、同じ条件付き処理を3通りの順序・分離レベルで実行します。並行のケースは2接続の読み取りを先に終え、T1を確定してからT2を更新します。直列のケースはT1の確定後にT2を開始します。
+
+Python 3と[Docker](https://docs.docker.com/)が使える環境で `python3 run.py` を実行できます。専用のPostgreSQLコンテナを使い、外部ポートや永続ボリュームを作らず、実験後に停止します。以下はPostgreSQL 17.11での出力です。
+
+```text
+serial RR: seen=[100, 0], decisions=['committed', 'insufficient'], total=0
+parallel RR: seen=[100, 100], decisions=['committed', 'committed'], total=-100
+parallel SERIALIZABLE: seen=[100, 100], decisions=['committed', 'serialization_failure'], total=0
+```
+
+`seen` は各接続が読んだ合計、`decisions` は確定・残高不足・直列化失敗、`total` は実行後の合計です。直列実行では2本目が0を読み、引き出しを止めます。一方、並行のREPEATABLE READでは両方が100を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が−100になりました。
+
+既にあるレコードを書き換える場合だけでなく、条件に合うレコード数を制約にした処理でも、各接続が別のレコードを追加することで制約を破る場合があります。
 
 ---
 
@@ -128,10 +137,10 @@ SELECT sum(balance) FROM accounts;   -- -100
 
 | | locking REPEATABLE READ | Snapshot Isolation |
 | --- | --- | --- |
-| 読み取りの作り | 読んだ行のロックを確定まで持つ | 固定したスナップショットから読む |
-| 同じデータで競合した時 | 読んだ行への書き込みが待たされる | 読み取りと書き込みは待ち合わせない |
-| write skew | 読んだ行を相手が書けないので起きない | 起きる |
-| 同じ条件で読み直した時 | 条件に合う行が新しく挿入されると結果が変わる | スナップショットが動かないので結果は変わらない |
+| 読み取りの作り | 読んだレコードのロックを確定まで持つ | 固定したスナップショットから読む |
+| 同じデータで競合した時 | 読んだレコードへの書き込みが待たされる | 読み取りと書き込みは待ち合わせない |
+| write skew | 読んだレコードを相手が書けないので起きない | 起きる |
+| 同じ条件で読み直した時 | 条件に合うレコードが新しく挿入されると結果が変わる | スナップショットが動かないので結果は変わらない |
 
 上記の表の下 2 行では、防ぐ異常が逆になっています。片方が防ぐ異常をもう片方が許すので、どちらが強いとは決まりません。
 
@@ -145,17 +154,15 @@ REPEATABLE READ という名前が Snapshot Isolation を意味するわけで�
 
 ---
 
-### Serializable Snapshot Isolation が足す検査
+### Serializable Snapshot Isolation による直列化異常の検査
 
 トランザクションを 1 本ずつ順に実行した場合（直列）のどの順序とも一致しない結果を直列化異常と呼びます。口座の例は、T1→T2 でも T2→T1 でも 2 本目が残高不足に気付くので、合計 -100 は直列では起きません。
 
-Snapshot Isolation に直列化異常の検査を足し、write skew のような異常を防ぐ方式の 1 つが Serializable Snapshot Isolation（SSI）です。
+Snapshot Isolation は、別々のレコードを更新して全体の制約を壊す write skew を防げません。Serializable Snapshot Isolation（SSI）は、トランザクション間の読み書きの依存関係を監視し、直列化異常につながり得る組み合わせを検出すると、トランザクションを中止する方式です。PostgreSQL の SERIALIZABLE は、この [SSI](https://www.postgresql.org/docs/current/transaction-iso.html) で実装されています。
 
-PostgreSQL の SERIALIZABLE は「[Serializable Snapshot Isolation](https://www.postgresql.org/docs/current/transaction-iso.html)」（SSI）で実装されています。
+依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。口座の例なら、T1 が x と y を読んだことを記録しておき、T2 が y を書いた時に、T1 が読んだものを T2 が書き換えたという依存を見付けます。
 
-足されるのは、トランザクションの間の読み書きの依存関係を追う仕組みです。PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。口座の例なら、T1 が x と y を読んだことを記録しておき、T2 が y を書いた時に、T1 が読んだものを T2 が書き換えたという依存を見付けます。
-
-記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、そのトランザクションは直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 の `UPDATE` が `could not serialize access due to read/write dependencies among transactions` で中止され、T1 だけが確定した合計は 0 で止まりました。
+記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験をSERIALIZABLEで動かすと、T2は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1だけが確定しました。合計は0です。一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を再試行できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -168,19 +175,15 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-述語ロックは名前にロックが付いていても待ちを起こさず、デッドロックの原因にもなりません。
-
-この検査が効くのは、相手も SERIALIZABLE の場合だけです。
+述語ロックは読み取りを記録する仕組みで、他のトランザクションを待たせるロックではありません。そのため、述語ロック自体は[デッドロック](/notes/database-systems/deadlock/)を起こしません。SSIによる直列化の保証を得るには、制約に関わる各トランザクションを SERIALIZABLE で実行します。
 
 ---
 
 ### 明示的なロックで押さえられる範囲
 
-アプリケーション側で write skew を止める手もあります。`SELECT ... FOR UPDATE` のように、読む時点で行にロックを取る書き方です。ロックを取れば、その行は自分のトランザクションが終わるまで他から更新されません。
+アプリケーション側で write skew を止める手もあります。`SELECT ... FOR UPDATE` のように、読む時点でレコードにロックを取る書き方です。ロックを取れば、そのレコードは自分のトランザクションが終わるまで他から更新されません。
 
-口座の例なら、T1 と T2 の両方が x と y の 2 行を同じ規則でロックして読む必要があり、片方だけでは防げません。
-
-押さえられるのは、壊れる制約に関わる行を全部ロックできる場合です。まだ存在しない行が制約に関わるなら、行ロックには掴む対象がありません。
+口座の例なら、T1 と T2 の両方が x と y の 2 件を同じ規則でロックして読む必要があり、片方だけでは防げません。この方法で制約を守れるのは、制約に関わるレコードを全部ロックできる場合です。まだ存在しないレコードの追加が制約を壊す場合は、行ロックだけでは防げません。
 
 加えて、`LOCK TABLE` のような明示的なロックで書き込みを止めて最新の確定状態を検査する場合は、スナップショットが固定される前にロックを取る必要があります。アプリケーション側での整合性の検査を扱う[ページ](https://www.postgresql.org/docs/current/applevel-consistency.html)にも、REPEATABLE READ では問い合わせより先にロックを取るようにとあります。順序が逆でスナップショットが先に固定されていると、ロックを取って以降の書き込みを止めても、その前に別のトランザクションが確定した変更は見えないままです。
 
@@ -201,7 +204,7 @@ flowchart TB
 
 Snapshot Isolation は、読み取りを待たせない代わりに、書き込みの重なりしか検査しません。そのため、次の制約があります。
 
-- 別々の行を書く write skew が残り、壊れたことは結果の値としてだけ現れる
+- 別々のレコードを書く write skew が残り、壊れたことは結果の値としてだけ現れる
 - 書き込みが重なったトランザクションは中止されるので、再試行の処理が必要
 - 古いバージョンを保持する領域が必要で、長いトランザクションがあるほど溜まる
 - SQL 標準に Snapshot Isolation という分離レベル名が無く、標準のレベル名だけからは実現方式を判別できない

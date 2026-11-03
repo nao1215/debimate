@@ -8,7 +8,7 @@ weight: 8
 ---
 
 正則化（regularization）は、[過学習](../overfitting/)を抑えるためにモデルの「複雑さ」へペナルティを課す仕組みです。  
-学習時に最小化する損失関数に、パラメータの大きさを表す項を足すことで、極端に大きな重みを持つモデルが選ばれにくくなります。
+学習時に最小化する[損失関数](/ml/ml/loss-functions/)に、パラメータの大きさを表す項を足すことで、極端に大きな重みを持つモデルが選ばれにくくなります。
 
 ペナルティの形によって主に L2（リッジ）、L1（ラッソ）、L1 と L2 の組み合わせ（Elastic Net）に分かれます。
 
@@ -90,7 +90,7 @@ Lasso だけが係数の多くを 0 に潰し、実質 5 個の特徴量で同�
 
 正則化が組み込まれている代表的なモデル:
 
-- 線形回帰: Ridge（L2）、Lasso（L1）、Elastic Net
+- [線形回帰](/ml/ml/linear-regression/): Ridge（L2）、Lasso（L1）、Elastic Net
 - [ロジスティック回帰](../logistic-regression/): `penalty='l1'` / `'l2'` / `'elasticnet'`
 - [SVM](../svm/)（support vector machine、サポートベクターマシン）: `C` パラメータ（C が小さいほど正則化が強い）
 - ニューラルネット: weight decay（L2 と同じ）、dropout、batch normalization

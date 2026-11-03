@@ -26,6 +26,8 @@ weight: 13
 
 上記の図の Bob のように受け取るだけのアカウントでは、nonce は動きません。送り主の残高からは、送る 1 ETH に加えて手数料も引かれます。手数料は、実行に要した計算量を gas という単位で計り、その量と単価から決まります。
 
+<br>
+
 本記事では、nonce を中心に、アカウントが持つ状態と、取引がその状態をどう変えるのかを説明します。軸になるのは次の疑問です。
 
 - アカウントは、どのような状態を持つのか。
@@ -77,6 +79,8 @@ sequenceDiagram
 
 上記の図でコントラクト A から B への呼び出しは、EOA が出した取引の実行の中で起きます。
 
+<br>
+
 従来は、コードの有無を 2 種類の見分けの手掛かりにできました。公式ドキュメントにも、EOA について「[the codeHash field is the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（codeHash の項目は空文字列のハッシュになる）と書かれています。
 
 今の Ethereum では、コードが空なら EOA という判定は成り立ちません。2025 年に実施された Pectra というプロトコルの更新で [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA は指定したコントラクトのコードに自分の取引の実行を委ねられるようになりました。例えば、複数の操作を 1 件の取引にまとめたり、手数料を別のアカウントに払ってもらったりできます。EIP は Ethereum Improvement Proposal の略で、仕様変更の提案を指します。
@@ -92,6 +96,8 @@ sequenceDiagram
 [UTXO](../utxo/) では、データの構造そのものがこの再生を防ぎます。取引が消費する出力は outpoint で名指しされており、一度消費された出力は集合から消えるため、同じ取引は 2 度成立しません。アカウントモデルには消費される対象が無く、更新される残高があるだけです。
 
 アカウントモデルで再生を止める役割を担うのが [nonce](https://masteringethereum.xyz/chapter_6.html) です。以下では、通常の EOA が取引を送る場合を扱い、EIP-7702 の委任コードの実行で nonce が追加で変わる場合は除きます。取引には送り主の nonce を書く項目があり、その値は、送り主のアカウントが今持っている nonce と一致している必要があります。取り込まれると 1 増えるため、同じ取引をもう一度流しても古い番号として弾かれます。
+
+<br>
 
 nonce で防げるのは、同じチェーンでの再送です。別のチェーンへの再生は、chain ID を署名の対象に含めることで防ぎます。この仕組みを旧来の形式の取引（legacy transaction）に導入したのが [EIP-155](https://eips.ethereum.org/EIPS/eip-155) で、先頭に型を表すバイトを持つ現在の形式（typed transaction）も chain ID を署名の対象に含みます。
 
@@ -168,6 +174,8 @@ nonce 0 を再送: nonce too low: next nonce 3, tx nonce 0
 全アカウントの現在の状態をまとめたものを世界状態（world state）と呼びます。公式ドキュメントには「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書かれています。取引は、この状態を次の状態に移す入力です。そのため、同じ送金の取引でも、先に別の取引が残高を減らしていれば失敗します。
 
 世界状態は、アドレスを `keccak256` でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。現在の Ethereum の本番ネットワーク（Mainnet）では、modified Merkle Patricia Trie が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
+
+<br>
 
 現在の Ethereum のブロックは、取引を実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。取引の並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。consensus layer のブロックにある同名の `state_root` は、EVM の状態を指しません。
 

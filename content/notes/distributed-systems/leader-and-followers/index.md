@@ -28,6 +28,8 @@ sequenceDiagram
     Note over F1,F2: 更新の順序は Leader が決めた 1 つに定まる
 ```
 
+<br>
+
 本記事では、更新を 1 台に集約して複製する方法を説明します。話は次の順に進めます。
 
 - なぜ全ノードが対等に更新を受け付けると、値が食い違うのか。
@@ -298,6 +300,8 @@ func (n *node) handleAppendEntries(args appendEntriesArgs) appendEntriesReply {
 Leader から読んでも、古い値が返る場合があります。2014 年、Kyle Kingsbury 氏は故障を注入して DB の正しさを調べる Jepsen で、etcd（Raft で複製する Key-Value ストア）の[読み取りが古い値を返す](https://aphyr.com/posts/316-call-me-maybe-etcd-and-consul)ことを示しました。当時の etcd は、`consistent` を指定した読み取りでも、自分を Leader と考えているノードが手元の状態をそのまま返していました。分断で孤立した旧 Leader も、交代に気付くまでは自分を Leader と考えているので、新しい Leader の下で確定した値を知らないまま応答します。
 
 Kingsbury 氏はこの問題を [issue #741](https://github.com/etcd-io/etcd/issues/741)「Consistent reads are not consistent」（一貫性のある読み取りが一貫していない）として報告し、読み取りもログに追記して確定させる `quorum=true` が etcd に足されました。ログを通せば確実ですが、読み取りのたびに複製と確定の往復が掛かります。
+
+<br>
 
 Raft は、ログに追記せずに最新の値を返すため、2 つの手順を要求しています（論文 8 節）。1 つ目は、Leader が就任した直後に自分の任期の空エントリを確定させることです。`advanceCommitIndex` は現在の任期のエントリしか複製の数で数えないので、自分の任期のエントリを 1 つ確定させるまで、就任した Leader はどこまでが確定済みなのかを把握できません。
 

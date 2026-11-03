@@ -128,7 +128,7 @@ plt.savefig("ensemble_boosting_rounds.svg", bbox_inches="tight")
 Boosting には複数の変種があります。
 
 - AdaBoost: 誤分類サンプルに高い重みを付けて次のラウンドを学習（古典）
-- 勾配ブースティング: 損失関数の勾配を残差として扱う（任意の微分可能損失に対応）
+- 勾配ブースティング: [損失関数](/ml/ml/loss-functions/)の勾配を残差として扱う（任意の微分可能損失に対応）
 - XGBoost / LightGBM / CatBoost: 勾配ブースティングの高速・実用版
 
 詳細は [勾配ブースティング](../gradient-boosting/) のノートで取り上げています。
@@ -218,7 +218,7 @@ stacking: 0.923
 
 - 解釈性が必要: アンサンブルは個別の決定木より大幅に解釈しにくい。[特徴量重要度](../feature-importance/) や SHAP 値で間接的に説明する
 - データが極めて少ない（n < 100）: アンサンブルの効果が出にくく、過学習する
-- 線形関係が支配的: 線形回帰や [ロジスティック回帰](../logistic-regression/) で十分な場合、アンサンブルは過剰
+- 線形関係が支配的: [線形回帰](/ml/ml/linear-regression/)や [ロジスティック回帰](../logistic-regression/) で十分な場合、アンサンブルは過剰
 - リアルタイム推論で厳しいレイテンシ: 100 本の木の平均は遅い。木の本数を減らすか、別アルゴリズムを検討
 - Stacking の交差検証ミス: base learners をテストデータも含めて学習させると深刻なデータリーク（[data leakage](../data-leakage/) 参照）。out-of-fold 予測の生成は厳密に交差検証で行う
 - Boosting で学習率を 1.0 のまま: 過学習しやすい。`learning_rate=0.01〜0.1` + `n_estimators` を多めにする

@@ -22,6 +22,8 @@ flowchart TD
     B --> SB["自分の保持する状態を更新"]
 ```
 
+<br>
+
 本記事では、[Ethereum Transaction](../ethereum-transaction/)で扱った「実行の依頼」が、どのようにプログラムの実行に繋がるのかを説明します。
 
 - コードとデータはどこに保存されるのか。
@@ -51,7 +53,7 @@ Ethereum向けの開発では、[Solidity](https://docs.soliditylang.org/en/v0.8
 
 コントラクト作成の取引では、初期化用のコードを実行します。その結果として実行用のコードを配置し、必要な初期状態を設定します。ソースファイルをそのままノードにアップロードして実行する仕組みではありません。
 
-以下は、本記事のカウンターをデプロイした直後の構成です。storageは、呼び出しが終わった後も保持する保存領域です。アカウントの状態全体は[Ethereum Account Model](../ethereum-account-model/)で説明しています。
+以下は、整数 `count` を保存し、`increment()` を呼ぶたびに1増やすカウンターをデプロイした直後の構成です。storageは、呼び出しが終わった後も保持する保存領域です。アカウントの状態全体は[Ethereum Account Model](../ethereum-account-model/)で説明しています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
@@ -75,6 +77,8 @@ flowchart TD
 ### 実行するノードと取引の順序
 
 Ethereumのノードは、実行を担当する実行クライアントと、ブロックの合意を担当する合意クライアントを組み合わせて動きます。[ノード構成の公式解説](https://ethereum.org/en/developers/docs/nodes-and-clients/node-architecture/)にあるように、取引の実行と、採用するチェーンを決める処理は役割が異なります。
+
+取引の処理量を表す単位をgasと呼び、取引として実行する場合はgasに応じた手数料を払います。手数料の仕組みは [Ethereum Transaction](../ethereum-transaction/) で説明しています。
 
 以下は、ウォレットから送った取引がブロックに入り、検証されるまでを簡略化した図です。
 
@@ -179,7 +183,7 @@ Assertions: PASS
 
 次の行では、同じ関数を取引として送っています。`count` が1になり、レシートの `status` は成功を表す1、ログは1件になりました。
 
-最後の取引は、増やした後に失敗する関数です。`count` は1のままで、ログも0件です。[REVERTの仕様](https://eips.ethereum.org/EIPS/eip-140)に従い、実行中の変更とログが取り消されました。一方で、取引の通し番号であるnonceは1進み、手数料も払っています。表示した金額はwei単位で、1 ETHは10の18乗weiです。
+最後は、`count` を増やした後に失敗する `incrementAndFail()` を取引として実行した結果です。`count` は1のままで、ログも0件です。[REVERTの仕様](https://eips.ethereum.org/EIPS/eip-140)に従い、実行中の変更とログが取り消されました。一方で、取引の通し番号であるnonceは1進み、手数料も払っています。表示した金額はwei単位で、1 ETHは10の18乗weiです。
 
 この実験はgasの上限を明示し、失敗する取引も意図的に送っています。通常のウォレットでは、事前のgas見積もりで失敗を検出すると送信前に止まる場合があります。その場合と、ブロック内で実行して失敗した場合を混同しないことが大切です。
 
@@ -189,7 +193,7 @@ Assertions: PASS
 
 [EIP-658](https://eips.ethereum.org/EIPS/eip-658)で定められたレシートの `status` は、取引全体の実行が成功したかを表します。コントラクトが内部で別のコントラクトを呼び、その失敗を受け止めて処理を続けた場合、外側の取引は成功することがあります。本実験では失敗を受け止める処理がないため、`revert` が取引全体の失敗になります。
 
-スマートコントラクトは、同じコードを他のアプリから呼び出せる点でも便利です。例えば、トークンの管理と決済処理を別のコントラクトに分け、組み合わせて使えます。その具体例が、次の[ERC-20](../erc-20/)です。
+スマートコントラクトは、同じコードを他のアプリから呼び出せる点でも便利です。例えば、トークンの管理と決済処理を別のコントラクトに分け、組み合わせて使えます。トークンの残高と利用承認を管理するコントラクトの例は、[ERC-20](../erc-20/)で扱います。
 
 一方で、設計時には次の制約があります。
 

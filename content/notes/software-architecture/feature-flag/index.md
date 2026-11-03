@@ -8,7 +8,11 @@ weight: 11
 wrapTables: true
 ---
 
-Feature Flag は、デプロイしたコードの振る舞いを設定や実行時の情報によって切り替える仕組みで、Feature Toggle とも呼ばれます。この実践を体系的に整理した Pete Hodgson 氏の「[Feature Toggles (aka Feature Flags)](https://martinfowler.com/articles/feature-toggles.html)」でも 2 つは同じ意味で、本記事では Feature Flag と書きます。例えば、`if isNewCheckoutEnabled { ... }` で新機能を出し分ける分岐が、この仕組みの最小の形です。
+Feature Flag は、デプロイしたコードの振る舞いを設定や実行時の情報によって切り替える仕組みで、Feature Toggle とも呼ばれます。この実践を体系的に整理した Pete Hodgson 氏の「[Feature Toggles (aka Feature Flags)](https://martinfowler.com/articles/feature-toggles.html)」でも 2 つは同じ意味で、
+
+<br>
+
+本記事では Feature Flag と書きます。例えば、`if isNewCheckoutEnabled { ... }` で新機能を出し分ける分岐が、この仕組みの最小の形です。
 
 Feature Flag が役に立つのは、デプロイとリリースを別のタイミングにしたいチームです。コードを本番環境に置く作業がデプロイ、その機能がユーザーに見え始めることがリリースで、Feature Flag はこの 2 つを切り離します。決済処理を差し替えるなら、Off のまま先にデプロイし、まず社内ユーザーだけに有効化し、問題がなければ一般ユーザーに広げられます。
 
@@ -209,6 +213,8 @@ Feature Flag は放っておくと増え、コードの分岐も積み上がり�
 残った分岐は、flag を別の用途に使い回した時に再び動き出します。2012 年 8 月 1 日、米国の証券会社 Knight Capital は、注文を市場に送るシステムに新機能を載せる際、2003 年から使っていなかった Power Peg という機能を起動する flag を新機能用に流用しました。8 台のサーバーの 1 台にだけ新しいコードが配られず、その 1 台は flag の付いた注文で Power Peg を動かしました。約 45 分で 400 万回の約定（売買の成立）が生じ、Knight は 4 億 6,000 万ドルを超える[損失](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)を出しました。
 
 この flag は設定ではなく注文ごとに付く値でしたが、使わなくなった分岐を 9 年残し、それを起動する flag を再利用した点は Feature Flag の消し忘れと同じです。Power Peg を使わなくなった 2003 年の時点で消していれば、配り漏れた 1 台にも古い分岐は無く、flag を流用しても届く先はありませんでした。
+
+<br>
 
 Hodgson 氏は、flag を追加した時点で削除タスクもバックログに積む運用を紹介しています。flag が残っている間は、本番で使う予定の構成だけでなく、問題が起きた時に切り戻す構成も[検証しておきます](https://martinfowler.com/articles/feature-toggles.html)。
 

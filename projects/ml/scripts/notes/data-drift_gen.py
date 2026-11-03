@@ -3,22 +3,23 @@
 実行: cd projects/ml && uv run python scripts/notes/data-drift_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+plt.rcParams.update({"font.size": 12, "svg.hashsalt": "debimate"})
 
 COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/mlops/data-drift"
-)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes/mlops/data-drift"
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight", metadata={"Date": None} if name.endswith(".svg") else None)
     plt.close()
 
 
@@ -31,7 +32,7 @@ rng = np.random.default_rng(0)
 train_x = rng.normal(loc=30, scale=10, size=2000).clip(0, 100)
 prod_x = rng.normal(loc=50, scale=10, size=2000).clip(0, 100)
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 3.5), sharex=True, sharey=True)
+fig, axes = plt.subplots(2, 1, figsize=(6, 7), sharex=True, sharey=True)
 axes[0].hist(train_x, bins=30, color=COLOR_BLUE, edgecolor="white")
 axes[0].set_title("Train data: age distribution")
 axes[0].set_xlabel("age")
@@ -39,7 +40,7 @@ axes[0].set_ylabel("count")
 axes[1].hist(prod_x, bins=30, color=COLOR_RED, edgecolor="white")
 axes[1].set_title("Production data (3 months later)")
 axes[1].set_xlabel("age")
-fig.suptitle("Covariate shift: P(x) shifts, P(y|x) unchanged", fontsize=11)
+fig.suptitle("Synthetic input shift: P(y|x) is not measured", fontsize=11)
 plt.tight_layout()
 save("data-drift_covariate.svg")
 
@@ -50,7 +51,7 @@ x_common = rng.uniform(0, 10, 200)
 y_t0 = 2.0 * x_common + rng.normal(0, 1, 200)
 y_t1 = -1.5 * x_common + 20 + rng.normal(0, 1, 200)
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 3.5), sharex=True, sharey=True)
+fig, axes = plt.subplots(2, 1, figsize=(6, 7), sharex=True, sharey=True)
 axes[0].scatter(x_common, y_t0, alpha=0.5, color=COLOR_BLUE, s=15)
 axes[0].set_title("Train (t=0): y is positively related to x")
 axes[0].set_xlabel("feature x")
@@ -76,16 +77,16 @@ for w in [4, 8, 12, 16, 20]:
         0, 0.003, size=len(retrained) - w
     )
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(6, 5))
 ax.plot(weeks, baseline, color=COLOR_RED, marker="o", markersize=4,
-        label="No retraining (drift)")
+        label="Assumed decline (illustration)")
 ax.plot(weeks, retrained, color=COLOR_GREEN, marker="s", markersize=4,
-        label="Periodic retraining (every 4 weeks)")
+        label="Assumed reset every 4 weeks")
 ax.axhline(0.70, color="gray", linestyle="--", alpha=0.6,
-           label="SLA threshold")
+           label="Example threshold")
 ax.set_xlabel("Weeks in production")
 ax.set_ylabel("Precision")
-ax.set_title("Drift impact: production precision over time")
+ax.set_title("Illustration only:\nno model was trained or evaluated")
 ax.set_ylim(0.55, 0.92)
 ax.legend()
 plt.tight_layout()

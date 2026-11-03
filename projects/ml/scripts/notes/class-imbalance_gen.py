@@ -3,6 +3,8 @@
 実行: cd projects/ml && uv run python scripts/notes/class-imbalance_gen.py
 """
 import os
+import json
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,20 +14,20 @@ from sklearn.metrics import (accuracy_score, precision_score, recall_score,
                              f1_score, average_precision_score)
 from sklearn.model_selection import train_test_split
 
+plt.rcParams.update({"font.size": 12, "svg.hashsalt": "debimate"})
+
 COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/class-imbalance"
-)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes/ml/class-imbalance"
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight", metadata={"Date": None} if name.endswith(".svg") else None)
     plt.close()
 
 
@@ -65,7 +67,7 @@ ylim = (X[:, 1].min() - 0.5, X[:, 1].max() + 0.5)
 plain = LogisticRegression(max_iter=2000).fit(X, y)
 weighted = LogisticRegression(class_weight="balanced", max_iter=2000).fit(X, y)
 
-fig, axes = plt.subplots(1, 2, figsize=(13, 5.5))
+fig, axes = plt.subplots(2, 1, figsize=(6, 10))
 plot_boundary(axes[0], plain, X, y, "Vanilla LR\n(boundary drifts toward minority)",
               xlim, ylim)
 plot_boundary(axes[1], weighted, X, y,
@@ -91,7 +93,7 @@ samplers = {
         SMOTE(random_state=0).fit_resample(X, y),
 }
 
-fig, axes = plt.subplots(1, 4, figsize=(17, 4.5))
+fig, axes = plt.subplots(4, 1, figsize=(6, 16))
 for ax, (title, (Xr, yr)) in zip(axes, samplers.items()):
     minority = yr == 1
     ax.scatter(Xr[~minority, 0], Xr[~minority, 1], color=COLOR_BLUE, alpha=0.35, s=15)
@@ -109,7 +111,7 @@ save("imbalance_resampling.png")
 # ============================================================
 # Fig 3: Decision boundaries from resampling
 # ============================================================
-fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+fig, axes = plt.subplots(3, 1, figsize=(6, 12))
 for ax, (title, (Xr, yr)) in zip(axes, [
     ("Original (LR)", (X, y)),
     ("After random over-sampling",
@@ -157,10 +159,10 @@ for name, (pred, proba) in scenarios.items():
 
 xpos = np.arange(len(names))
 width = 0.16
-fig, ax = plt.subplots(figsize=(11, 5))
+fig, ax = plt.subplots(figsize=(6, 5))
 for i, (vals, label, color) in enumerate(zip(
     [acc_v, prec_v, rec_v, f1_v, pr_v],
-    ["Accuracy", "Precision", "Recall", "F1", "PR-AUC"],
+    ["Accuracy", "Precision", "Recall", "F1", "AP"],
     [COLOR_GRAY, COLOR_BLUE, COLOR_GREEN, COLOR_ORANGE, COLOR_RED],
 )):
     bars = ax.bar(xpos + (i - 2) * width, vals, width, label=label, color=color,
@@ -168,11 +170,17 @@ for i, (vals, label, color) in enumerate(zip(
 ax.set_xticks(xpos); ax.set_xticklabels(names, fontsize=8)
 ax.set_ylabel("score")
 ax.set_ylim(0, 1.05)
-ax.set_title("Same imbalanced data — 'predict all majority' gets 95% accuracy but 0 on everything else")
-ax.legend(loc="upper left", ncol=5, fontsize=9)
+ax.set_title("Same test set: higher recall,\nlower precision and F1")
+ax.legend(loc="upper left", ncol=3, fontsize=9)
 ax.grid(True, alpha=0.25, axis="y")
 plt.tight_layout()
 save("imbalance_metrics_breakdown.svg")
 
 
-print("done:", sorted(os.listdir(NOTE_DIR)))
+results = {name.replace("\n", " "): dict(zip(["accuracy", "precision", "recall", "f1", "ap"], values))
+           for name, values in zip(names, zip(acc_v, prec_v, rec_v, f1_v, pr_v))}
+results["test_positive_rate"] = float(y_test.mean())
+results["thresholds"] = {str(th): {"precision": precision_score(y_test, plain_lr.predict_proba(X_test)[:, 1] >= th, zero_division=0),
+                                  "recall": recall_score(y_test, plain_lr.predict_proba(X_test)[:, 1] >= th)} for th in [0.5, 0.3, 0.1]}
+(NOTE_DIR / "results.json").write_text(json.dumps(results, indent=2) + "\n")
+print(json.dumps(results, indent=2))
