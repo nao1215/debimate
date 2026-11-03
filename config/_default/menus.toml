@@ -29,11 +29,6 @@
   weight = 6
 
 [[main]]
-  name = "BBS"
-  url = "bbs/"
-  weight = 7
-
-[[main]]
   name = "Search"
   url = "search/"
   weight = 25
