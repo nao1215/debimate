@@ -16,7 +16,7 @@ const ready = new Promise((resolve, reject) => {
 server.stderr.on('data', chunk => { void appendFile('reports/browser/server.log', chunk); });
 try {
   await ready;
-  for (const suite of ['home_scroll', 'home', 'archives', 'search', 'home_media', 'oss']) {
+  for (const suite of ['archive_scroll', 'home_scroll', 'home', 'archives', 'search', 'home_media', 'oss']) {
     const child = spawn(process.execPath, [`scripts/check_${suite}_browser.mjs`, origin], { stdio: ['ignore', 'pipe', 'pipe'] });
     for (const [stream, output] of [[child.stdout, process.stdout], [child.stderr, process.stderr]]) {
       stream.on('data', chunk => {

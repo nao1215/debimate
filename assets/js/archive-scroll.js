@@ -4,6 +4,8 @@
   if (!content) return;
   const nav = document.querySelector('.archive-pagination');
   const annual = content.dataset.archiveList === 'annual';
+  // Match homepage preloading: leave room for Space/PageDown and network latency.
+  const preloadDistance = Math.max(1200, innerHeight * 2);
   const current = location.pathname;
   let next = nav?.querySelector('[rel="next"]')?.getAttribute('href') || '';
   let loaded = [current];
@@ -140,7 +142,14 @@
     } finally { busy = false; }
   };
   const observe = () => {
-    if (next) requestAnimationFrame(() => observer?.observe(status));
+    if (next) requestAnimationFrame(() => {
+      if (busy || restoring || !retry.hidden) return;
+      const bounds = status.getBoundingClientRect();
+      // A short page can leave the sentinel in the preload area after appending.
+      // Continue filling the buffer without waiting for another intersection.
+      if (bounds.bottom >= 0 && bounds.top <= innerHeight + preloadDistance) advance();
+      else observer?.observe(status);
+    });
     else observer?.disconnect();
   };
   const advance = async () => {
@@ -151,10 +160,10 @@
   if ('IntersectionObserver' in window) {
     observer = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) advance();
-    }, { rootMargin: '0px 0px 500px 0px' });
+    }, { rootMargin: `0px 0px ${preloadDistance}px 0px` });
   } else {
     window.addEventListener('scroll', () => {
-      if (retry.hidden && status.getBoundingClientRect().top < innerHeight + 500) advance();
+      if (retry.hidden && status.getBoundingClientRect().top < innerHeight + preloadDistance) advance();
     }, { passive: true });
   }
   retry.addEventListener('click', () => { retry.hidden = true; retryAction?.(); });
