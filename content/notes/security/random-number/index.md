@@ -138,6 +138,7 @@ sequenceDiagram
 90A の DRBG 機構は、いずれもこの性質を持つように設計されています。prediction resistance の方は、要求のたびに新しいエントロピーで reseed して初めて得られる性質で、reseed しない限り、攻撃者は漏れた内部状態から先の出力を計算できます。
 
 どちらも、実装が名乗る security strength に見合う計算量を攻撃者が実行できない、という仮定の下の話です（[NIST SP 800-90A Rev. 1](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final) §8.8）。
+
 ---
 
 ### OS の乱数の呼び出し
