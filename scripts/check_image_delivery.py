@@ -4,6 +4,7 @@
 from html.parser import HTMLParser
 from pathlib import Path
 import re
+from urllib.parse import urlparse
 
 
 class HomePage(HTMLParser):
@@ -47,6 +48,38 @@ class HomePage(HTMLParser):
         if tag == "figure":
             self.in_cover = False
             self.in_note_cover = False
+
+
+class SocialImages(HTMLParser):
+    def __init__(self, html):
+        super().__init__()
+        self.images = {}
+        self.feed(html)
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        key = attrs.get("property", attrs.get("name"))
+        if tag == "meta" and key in ("og:image", "twitter:image"):
+            self.images[key] = attrs.get("content", "")
+
+
+def check_note_ogp(root):
+    count = 0
+    for page in root.rglob("index.html"):
+        images = SocialImages(page.read_text()).images
+        url = images.get("og:image", "")
+        if "/assets/note-ogp/" not in url:
+            continue
+        assert images.get("twitter:image") == url, f"Social images differ: {page}"
+        assert url.startswith("https://"), f"OGP requires an absolute URL: {page}"
+        image = root / urlparse(url).path.lstrip("/")
+        png = image.read_bytes()
+        assert png[:8] == b"\x89PNG\r\n\x1a\n", image
+        assert int.from_bytes(png[16:20], "big") == 960, image
+        assert int.from_bytes(png[20:24], "big") == 540, image
+        count += 1
+    assert count > 0, "No note OGP images found"
+    print(f"Note OGP verified: {count} pages")
 
 
 def check(root: Path) -> None:
@@ -111,3 +144,4 @@ def check(root: Path) -> None:
 
 if __name__ == "__main__":
     check(Path("public"))
+    check_note_ogp(Path("public"))

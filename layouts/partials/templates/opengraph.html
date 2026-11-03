@@ -35,7 +35,7 @@
   <meta property="og:type" content="website">
 {{- end }}
 
-{{- $noteBanner := partial "note_banner_url.html" . -}}
+{{- $noteBanner := partial "note_ogp_url.html" . -}}
 {{- if $noteBanner -}}
     <meta property="og:image" content="{{ $noteBanner }}">
 {{- else if .Params.cover.image -}}

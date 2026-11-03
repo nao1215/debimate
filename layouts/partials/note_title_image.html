@@ -4,8 +4,8 @@
 {{- $heading := (index $parts 0) | truncate 54 -}}
 {{- $lines := findRE `.{1,18}` $heading -}}
 {{- $subtitle := delimit (after 1 $parts) " - " | truncate 52 -}}
-{{- $size := 56 -}}
-{{- if gt (len $lines) 3 }}{{ $size = 40 }}{{ $lines = findRE `.{1,22}` $heading }}{{ end -}}
+{{- $size := 44 -}}
+{{- if gt (len $lines) 3 }}{{ $size = 36 }}{{ $lines = findRE `.{1,22}` $heading }}{{ end -}}
 {{- $text := "" -}}
 {{- range $i, $line := $lines -}}
   {{- $text = printf "%s<text x=\"64\" y=\"%d\" font-size=\"%d\" font-weight=\"600\">%s</text>" $text (add 175 (mul $i (add $size 10))) $size ($line | htmlEscape) -}}

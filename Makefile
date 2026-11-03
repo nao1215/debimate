@@ -41,6 +41,7 @@ serve: ## 使用中のポートを解放してローカル開発サーバ起動 
 
 build: redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
+	node scripts/generate_note_ogp.mjs
 
 .PHONY: check-browser
 check-browser: ## ビルド済み public/ をブラウザ検証（初回は npm ci と npx playwright install chromium）
@@ -80,6 +81,7 @@ redirects-check: ## 移行前URL向けのリダイレクトが最新か検証
 
 lint-links: ## サイト内リンク切れ・localhostリンクを検査（ビルドから実施）
 	$(HUGO) --minify
+	node scripts/generate_note_ogp.mjs
 	python3 scripts/check_adsense.py
 	python3 scripts/check_home_delivery.py
 	python3 scripts/check_archive_delivery.py

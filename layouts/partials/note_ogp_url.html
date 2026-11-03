@@ -1,0 +1,11 @@
+{{- $url := "" -}}
+{{- if and .IsPage (in (slice "notes" "ml") .Section) -}}
+  {{- $cover := partial "note_cover.html" . -}}
+  {{- $html := printf `<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="robots" content="noindex"><style>html,body{margin:0;width:960px;height:540px}.note-title-cover{margin:0;width:960px;height:540px;background-size:cover;background-position:center;background-color:#f6f5f1;overflow:hidden}.note-title-cover svg{display:block;width:100%%;height:auto}</style>%s</html>` $cover -}}
+  {{- $name := printf "assets/note-ogp/%s" (crypto.SHA256 $html) -}}
+  {{- $resource := resources.FromString (printf "%s.html" $name) $html -}}
+  {{- $url = replace $resource.Permalink ".html" ".png" -}}
+{{- else -}}
+  {{- $url = partial "note_banner_url.html" . -}}
+{{- end -}}
+{{- return $url -}}
