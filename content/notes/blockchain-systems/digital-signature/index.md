@@ -129,16 +129,49 @@ sequenceDiagram
 
 署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/46.0.5/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列にECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。これは署名の性質を確認する実験で、Bitcoin の取引形式や署名対象の組み立てを再現するものではありません。
 
-以下は、[verify_changes.py](lab/verify_changes.py) の署名と検証の部分です。`alice` は実行時に作る一時的な秘密鍵で、ファイルには保存せず、画面にも出しません。
+以下が [verify_changes.py](lab/verify_changes.py) の全体です。`alice` は実行時に作る一時的な秘密鍵で、ファイルには保存せず、画面にも出しません。
 
 ```python
+"""ECDSA/secp256k1 message experiment, not Bitcoin transaction signing.
+Requires cryptography==46.0.5. Keys are ephemeral and never saved or printed.
+"""
+
+from pathlib import Path
+import cryptography
+from cryptography.exceptions import InvalidSignature
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import ec
+
 alice = ec.generate_private_key(ec.SECP256K1())
+bob = ec.generate_private_key(ec.SECP256K1())
 message = b'pay Bob 10'
 signature = alice.sign(message, ec.ECDSA(hashes.SHA256()))
 
-alice.public_key().verify(
-    signature, message, ec.ECDSA(hashes.SHA256())
-)
+
+def valid(public_key, data):
+    try:
+        public_key.verify(signature, data, ec.ECDSA(hashes.SHA256()))
+        return True
+    except InvalidSignature:
+        return False
+
+
+cases = [
+    ('original', alice.public_key(), message, True),
+    ('amount changed: 10 -> 90', alice.public_key(), b'pay Bob 90', False),
+    ('different public key', bob.public_key(), message, False),
+    ('same message replayed', alice.public_key(), message, True),
+]
+lines = []
+for label, public_key, data, expected in cases:
+    result = valid(public_key, data)
+    assert result == expected
+    lines.append(f'{label}: {"VALID" if result else "INVALID"}')
+lines.append('Assertions: PASS')
+output = '\n'.join(lines) + '\n'
+Path(__file__).with_name('output.txt').write_text(output)
+Path(__file__).with_name('versions.txt').write_text(f'cryptography {cryptography.__version__}\n')
+print(output, end='')
 ```
 
 `verify` は成功すれば通常どおり戻り、署名が一致しなければ `InvalidSignature` という例外になります。公開鍵やメッセージを変え、同じ検証を行います。実行前に、最後の「同じメッセージをもう一度検証する」ケースがどうなるかも考えてみてください。
@@ -157,7 +190,9 @@ flowchart TD
 [再現手順](lab/README.txt)に従って依存ライブラリを用意した後、リポジトリのルートから実行します。
 
 ```bash
-python3 content/notes/blockchain-systems/digital-signature/lab/verify_changes.py
+python3 -m venv .venv
+.venv/bin/pip install cryptography==46.0.5
+.venv/bin/python content/notes/blockchain-systems/digital-signature/lab/verify_changes.py
 ```
 
 以下は、cryptography 46.0.5 で実行した[結果](lab/output.txt)です。

@@ -170,6 +170,61 @@ function transferFrom(address from, address to, uint256 amount)
 
 再現用のファイルは[lab/README.txt](lab/README.txt)にまとめています。`anvil`、`cast`、`solc`をPATHに置き、リポジトリのルートから実行します。
 
+以下は、残高と承認額を順に変えて検査する部分の抜粋です。`owner`・`spender`・`receiver` はテスト用アカウント、`address` はデプロイ済みの `StudyToken` のアドレスです。`data` は関数呼び出しの符号化、`send` は取引送信と receipt の取得、`read` は値の照会、`status` は取引の成否を返します。`lines` は出力をためるリストです。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
+
+```python
+lines.append('stage | owner | receiver | allowance | status')
+
+
+def snapshot(label, expected, receipt=None):
+    values = (
+        read('balanceOf(address)', owner),
+        read('balanceOf(address)', receiver),
+        read('allowance(address,address)', owner, spender),
+    )
+    assert values == expected and read('totalSupply()') == 100
+    lines.append(
+        f'{label} | {values[0]} | {values[1]} | {values[2]} | {status(receipt) if receipt else "-"}'
+    )
+
+
+snapshot('initial', (100, 0, 0))
+cases = [
+    ('transfer 5', owner, 'transfer(address,uint256)', (receiver, 5), (95, 5, 0), 1),
+    ('approve 30', owner, 'approve(address,uint256)', (spender, 30), (95, 5, 30), 1),
+    (
+        'spend 10',
+        spender,
+        'transferFrom(address,address,uint256)',
+        (owner, receiver, 10),
+        (85, 15, 20),
+        1,
+    ),
+    (
+        'overspend 21',
+        spender,
+        'transferFrom(address,address,uint256)',
+        (owner, receiver, 21),
+        (85, 15, 20),
+        0,
+    ),
+    ('revoke', owner, 'approve(address,uint256)', (spender, 0), (85, 15, 0), 1),
+    (
+        'spend after revoke',
+        spender,
+        'transferFrom(address,address,uint256)',
+        (owner, receiver, 1),
+        (85, 15, 0),
+        0,
+    ),
+]
+for i, (label, sender, signature, args, expected, ok) in enumerate(cases):
+    receipt = send(f'step-{i}', sender, data(signature, *args), address)
+    assert status(receipt) == ok
+    assert len(receipt['logs']) == ok
+    snapshot(label, expected, receipt)
+```
+
 ```bash
 bash content/notes/blockchain-systems/erc-20/lab/run.sh
 ```

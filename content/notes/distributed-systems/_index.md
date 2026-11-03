@@ -34,6 +34,12 @@ description: ""
 | 2 | [Quorum - 過半数で決定を成立させる仕組み](/notes/distributed-systems/quorum/) | 協調 |
 | 3 | [Leader and Followers - 更新を 1 台へ集約する複製の型](/notes/distributed-systems/leader-and-followers/) | 協調 |
 
+#### Partitioning
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Consistent Hashing - サーバーを増やす時のデータ移動を減らす](/notes/distributed-systems/consistent-hashing/) | データ分割 |
+
 #### Durability
 
 | No. | 項目 | カテゴリ |

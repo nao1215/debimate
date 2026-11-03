@@ -195,6 +195,30 @@ sequenceDiagram
 
 ![ローカルチェーン A の送金前後。送金者は数量と手数料を失い、受取人は数量を受け取る。別チェーン B の残高は変わらない](images/local-transfer.svg#center)
 
+残高照会と送金のコードは以下の通りです。Anvil のチェーン A・B を上記の設定で起動した後に実行します。`cast balance` の出力単位は wei で、後述の表では ETH に換算しています。アカウント一覧からアドレスを取り出すために JSON を加工する [jq](https://jqlang.org/) を使います。ノードの起動・終了と結果の検査を含む全体は [run.sh](lab/run.sh)、環境の用意は [README](lab/README.txt) にあります。
+
+```shell
+rpc_a=http://127.0.0.1:18545
+rpc_b=http://127.0.0.1:18546
+accounts=$(cast rpc eth_accounts --rpc-url "$rpc_a")
+sender=$(printf '%s' "$accounts" | jq -r '.[0]')
+receiver=$(printf '%s' "$accounts" | jq -r '.[1]')
+
+balances() {
+  for rpc in "$rpc_a" "$rpc_b"; do
+    printf 'chain=%s\n' "$(cast chain-id --rpc-url "$rpc")"
+    cast balance "$sender" --rpc-url "$rpc"
+    cast balance "$receiver" --rpc-url "$rpc"
+  done
+}
+
+balances
+cast send "$receiver" --value 1ether \
+  --from "$sender" --unlocked --legacy \
+  --gas-price 1gwei --gas-limit 21000 --rpc-url "$rpc_a" --json
+balances
+```
+
 各アカウントには、初期残高として 10,000 ETH を設定しました。送金前後の残高は次の通りです。
 
 ```text
@@ -209,13 +233,7 @@ B (31338) | receiver | 10000 | 10000
 
 <br>
 
-送金に使ったコマンドは次の通りです。`receiver` は受取人、`sender` は送金者のアドレス、`rpc_a` はチェーン A の接続先です。RPC は、残高照会や取引送信をノードに依頼するための API です。
-
-```shell
-cast send "$receiver" --value 1ether \
-  --from "$sender" --unlocked --legacy \
-  --gas-price 1gwei --gas-limit 21000 --rpc-url "$rpc_a" --json
-```
+上記のコードでは、`cast send` で送金しています。`receiver` は受取人、`sender` は送金者のアドレス、`rpc_a` はチェーン A の接続先です。RPC は、残高照会や取引送信をノードに依頼するための API です。
 
 `--unlocked` は、開発用ノードの Anvil に署名を依頼する指定です。今回は Anvil が用意した開発用アカウントを使い、cast に秘密鍵を渡さずに送金しています。
 

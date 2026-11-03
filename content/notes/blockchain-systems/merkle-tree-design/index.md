@@ -101,13 +101,64 @@ RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列�
 
 比較するのは、末尾を複製し、葉と内部ノードを区別せず [SHA-256](/notes/security/sha-256/) に渡す単純な木と、[RFC 9162 §2.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) の分割規則・接頭辞を使う木です。前者は Bitcoin と同じ末尾複製の性質を示す教材ですが、実際の txid や二重 SHA-256 を使う Bitcoin の実装ではありません。
 
-まず、葉を `A, B, C` とした場合と、`A, B, C, C` とした場合を比較します。次に、2つの子のハッシュを連結した64バイトをそのまま1件の葉として渡します。
+まず、葉を `A, B, C` とした場合と、`A, B, C, C` とした場合を比較します。次に、2つの子のハッシュを連結した64バイトをそのまま1件の葉として渡します。以下が `compare_rules.py` の全体です。
 
 ```python
+"""Demonstrate Merkle construction ambiguity using SHA-256.
+Bitcoin-style duplication ONLY: not Bitcoin txid/byte-order/double-SHA rules.
+ct_root implements RFC 9162 section 2.1's hash construction on sample bytes;
+this is not a complete Certificate Transparency protocol implementation.
+"""
+
+from hashlib import sha256
+from pathlib import Path
+
+
+def h(value):
+    return sha256(value).digest()
+
+
+def duplicate_root(values):
+    nodes = [h(value) for value in values]
+    assert nodes
+    while len(nodes) > 1:
+        if len(nodes) % 2:
+            nodes.append(nodes[-1])
+        nodes = [h(nodes[i] + nodes[i + 1]) for i in range(0, len(nodes), 2)]
+    return nodes[0]
+
+
+def ct_root(values):
+    if not values:
+        return h(b'')
+    if len(values) == 1:
+        return h(b'\x00' + values[0])
+    split = 1 << ((len(values) - 1).bit_length() - 1)
+    return h(b'\x01' + ct_root(values[:split]) + ct_root(values[split:]))
+
+
+abc = [b'A', b'B', b'C']
+abcc = abc + [b'C']
+assert duplicate_root(abc) == duplicate_root(abcc)
+assert ct_root(abc) != ct_root(abcc)
+# The very same 64-byte input can be interpreted as a leaf or two child hashes.
 children = h(b'A') + h(b'B')
 assert len(children) == 64
 assert duplicate_root([b'A', b'B']) == duplicate_root([children])
 assert ct_root([b'A', b'B']) != ct_root([children])
+lines = [
+    'duplicate-last: root(A,B,C) == root(A,B,C,C): True',
+    f'duplicate root: {duplicate_root(abc).hex()}',
+    'RFC9162: root(A,B,C) == root(A,B,C,C): False',
+    f'RFC9162 root(A,B,C):   {ct_root(abc).hex()}',
+    f'RFC9162 root(A,B,C,C): {ct_root(abcc).hex()}',
+    'no prefix: root(A,B) == root(single 64-byte leaf): True',
+    'RFC9162: root(A,B) == root(single 64-byte leaf): False',
+    'Assertions: PASS',
+]
+output = '\n'.join(lines) + '\n'
+Path(__file__).with_name('output.txt').write_text(output)
+print(output, end='')
 ```
 
 `h` は SHA-256、`duplicate_root` は末尾を複製する木、`ct_root` は RFC 9162 の構築規則を使う関数です。接頭辞がない場合、次の2つはまったく同じ64バイトを最後のハッシュ計算に渡します。

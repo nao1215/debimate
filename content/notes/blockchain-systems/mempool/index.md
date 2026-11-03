@@ -119,6 +119,31 @@ sequenceDiagram
 
 [compare_policy.py](lab/compare_policy.py)は、2 台の起動、テスト用資金の準備、取引の署名、各結果の検査まで行います。公開ネットワークと P2P 接続は無効にし、同じブロックを RPC で渡して状態を揃えます。秘密鍵を含む一時的なウォレットは終了時に削除し、結果だけを保存します。[README](lab/README.txt)に実行条件をまとめています。
 
+以下は、同じ取引を 2 台で検査し、ブロックとして受け入れるところまでの抜粋です。`a` と `b` は起動済みのノード、`rpc` は各ノードの RPC を呼ぶメソッドです。先に A でテスト用の資金を用意し、B に同じブロックを渡しています。`address` は採掘報酬の受取先、`out` は検査結果の保存ディレクトリです。ノードの起動・終了と RPC 通信の補助処理を含む全体は [compare_policy.py](lab/compare_policy.py) に残しています。
+
+```python
+recipient = a.rpc('getnewaddress', wallet=True)
+raw = a.rpc('createrawtransaction', [], {recipient: 1})
+funded = a.rpc('fundrawtransaction', raw, {'fee_rate': 2}, wallet=True)
+signed = a.rpc('signrawtransactionwithwallet', funded['hex'], wallet=True)
+assert signed['complete']
+checks = {}
+for name, node in [('A', a), ('B', b)]:
+    checks[name] = node.rpc('testmempoolaccept', [signed['hex']])[0]
+    (out / f'accept-{name}.json').write_text(json.dumps(checks[name], indent=2) + '\n')
+assert checks['A']['allowed'] and not checks['B']['allowed']
+assert checks['B']['reject-reason'] == 'min relay fee not met'
+assert a.rpc('getrawmempool') == [] and b.rpc('getrawmempool') == []
+txid = a.rpc('sendrawtransaction', signed['hex'])
+assert a.rpc('getrawmempool') == [txid] and b.rpc('getrawmempool') == []
+new_block = a.rpc('generatetoaddress', 1, address)[0]
+decoded = a.rpc('getblock', new_block)
+assert txid in decoded['tx']
+assert b.rpc('submitblock', a.rpc('getblock', new_block, 0)) is None
+assert a.rpc('getbestblockhash') == b.rpc('getbestblockhash') == new_block
+assert txid in b.rpc('getblock', new_block)['tx']
+```
+
 `bitcoind` を PATH に置いた環境で、リポジトリのルートから実行します。
 
 ```bash

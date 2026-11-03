@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="340" height="340" viewBox="0 0 340 340">
+<rect width="340" height="340" fill="#fafbf9"/>
+<g font-family="sans-serif" font-size="14" fill="#28343b" text-anchor="middle">
+<text x="170" y="25">Before: A, B, C</text>
+<circle cx="170" cy="165" r="104" fill="none" stroke="#7f8f99" stroke-width="2"/>
+<path d="M268.909877694696,132.86223258500547 A104,104 0 0,1 231.1296662384172,249.13776741499453" fill="none" stroke="#338573" stroke-width="9"/>
+<circle cx="268.909877694696" cy="132.86223258500547" r="5" fill="#28343b"/>
+<text x="298.3926296998457" y="128.2827057593821">A: 20</text>
+<circle cx="108.8703337615828" cy="249.13776741499453" r="5" fill="#28343b"/>
+<text x="90.64899094051614" y="279.2172942406179">B: 60</text>
+<circle cx="108.87033376158278" cy="80.86223258500547" r="5" fill="#28343b"/>
+<text x="90.64899094051611" y="60.78270575938211">C: 90</text>
+<circle cx="268.909877694696" cy="197.13776741499453" r="5" fill="#b47721"/>
+<text x="170" y="51">0 / 100</text>
+<text x="170" y="151">Clockwise</text>
+<text x="170" y="176">key: 30 → B</text>
+<text x="170" y="310">(20, 40] → B</text>
+</g></svg>

@@ -138,6 +138,35 @@ sequenceDiagram
 
 停止していた A が復帰した時、保存先が token を調べなければ何が起きるでしょうか。[再現コード](lab/run.py)では、先ほどの図と同じ順序で SQLite に書き込みます。A の token は 33、次の保持者 B は 34 とし、B の書き込み後に A の遅れた要求を届けます。時計や GC の待ち時間は再現せず、問題になる到着順を固定します。
 
+以下が `run.py` の全体です。
+
+```python
+"""Replay delayed writes; this is not a lease grantor implementation."""
+
+import sqlite3
+
+
+def replay(fenced):
+    with sqlite3.connect(":memory:") as db:
+        db.execute("CREATE TABLE resource (id INTEGER PRIMARY KEY, value TEXT, token INTEGER)")
+        db.execute("INSERT INTO resource VALUES (1, 'initial', 0)")
+        for token, value in [(33, "A:first"), (34, "B:new"), (33, "A:delayed")]:
+            sql = "UPDATE resource SET value = ?, token = ? WHERE id = 1"
+            if fenced:
+                sql += " AND token <= ?"
+            args = (value, token, token) if fenced else (value, token)
+            accepted = db.execute(sql, args).rowcount == 1
+            print(f"token={token} value={value} {'ACCEPT' if accepted else 'REJECT'}")
+        value, token = db.execute("SELECT value, token FROM resource").fetchone()
+        print(f"final={value} token={token}")
+        assert value == ("B:new" if fenced else "A:delayed")
+
+
+for fenced in (False, True):
+    print(f"[fencing={'on' if fenced else 'off'}]")
+    replay(fenced)
+```
+
 ```sh
 python3 lab/run.py
 ```

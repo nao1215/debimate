@@ -183,6 +183,56 @@ func readError(err error) error {
 
 [実行可能なサンプル](lab/main.go)では、3件のログを作り、末尾を1バイト切った場合と、2件目を書き換えた場合を比較します。元のファイルは残し、コピーしたバイト列に対して操作します。
 
+以下は、前述の `Append` と `Replay` を呼び出す実験部分の抜粋です。`must` はエラーがあれば実験を停止する補助関数です。インポートと各関数をまとめた全体は [main.go](lab/main.go) にあります。
+
+```go
+func must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func main() {
+	dir, err := os.MkdirTemp("", "wal-lab-")
+	must(err)
+	defer os.RemoveAll(dir)
+	f, err := os.OpenFile(filepath.Join(dir, "wal"), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
+	must(err)
+	defer f.Close()
+	for i := 1; i <= 3; i++ {
+		must(Append(f, Entry{uint64(i), []byte("set balance=500")}))
+	}
+	raw, err := os.ReadFile(f.Name())
+	must(err)
+	printReplay := func(label string, data []byte) {
+		entries, err := Replay(bytes.NewReader(data))
+		fmt.Printf("%s: entries=%d error=%v\n", label, len(entries), err)
+	}
+	printReplay("complete", raw)
+	printReplay("truncated tail", raw[:len(raw)-1])
+	corrupt := bytes.Clone(raw)
+	corrupt[len(raw)/3+16] ^= 1
+	printReplay("corrupt middle", corrupt)
+	boundary, err := os.OpenFile(filepath.Join(dir, "boundary"), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
+	must(err)
+	defer boundary.Close()
+	data := bytes.Repeat([]byte{0x5a}, maxEntrySize-8)
+	must(Append(boundary, Entry{1, data}))
+	_, err = boundary.Seek(0, 0)
+	must(err)
+	entries, err := Replay(boundary)
+	must(err)
+	fmt.Printf("maximum data: bytes=%d entries=%d equal=%t\n", len(data), len(entries), len(entries) == 1 && bytes.Equal(entries[0].Data, data))
+	oversized, err := os.OpenFile(filepath.Join(dir, "oversized"), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
+	must(err)
+	defer oversized.Close()
+	err = Append(oversized, Entry{1, make([]byte, maxEntrySize-7)})
+	info, statErr := oversized.Stat()
+	must(statErr)
+	fmt.Printf("oversized data: rejected=%t file_bytes=%d\n", err != nil, info.Size())
+}
+```
+
 ```sh
 cd lab
 go run .

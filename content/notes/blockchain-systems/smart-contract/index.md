@@ -166,6 +166,31 @@ flowchart TD
 
 再現用の[run.py](lab/run.py)は、コンパイル、ノード起動、デプロイ、各操作、結果の検査を行います。`anvil`、`cast`、`solc`をPATHに置き、リポジトリのルートで次を実行します。必要なバージョンと実行条件は[README](lab/README.txt)にも記載しています。
 
+以下は、実験コードの抜粋です。デプロイ後に `eth_call`・成功する取引・失敗する取引を比較します。`rpc` はローカルノードへの呼び出し、`data` は関数呼び出しの符号化、`send` は取引送信と receipt の取得、`read` は `eth_call` による値の照会、`status` は receipt の成否を整数に直す関数です。`lines` は出力をためるリストです。`owner` はテスト用アカウント、`address` はデプロイ済みの `Counter` のアドレスです。コンパイルとノード起動を含む全体は [run.py](lab/run.py) にあります。
+
+```python
+assert read('count()') == 0
+before_block = rpc('eth_blockNumber')
+rpc('eth_call', {'from': owner, 'to': address, 'data': data('increment()')}, 'latest')
+assert read('count()') == 0 and rpc('eth_blockNumber') == before_block
+lines.append('eth_call increment: count=0; block unchanged')
+for label, signature, expected in [
+    ('increment', 'increment()', 1),
+    ('revert', 'incrementAndFail()', 0),
+]:
+    nonce = int(rpc('eth_getTransactionCount', owner, 'latest'), 16)
+    balance = int(rpc('eth_getBalance', owner, 'latest'), 16)
+    receipt = send(label, owner, data(signature), address)
+    fee = int(receipt['gasUsed'], 16) * int(receipt['effectiveGasPrice'], 16)
+    assert status(receipt) == expected and read('count()') == 1
+    assert int(rpc('eth_getTransactionCount', owner, 'latest'), 16) == nonce + 1
+    assert balance - int(rpc('eth_getBalance', owner, 'latest'), 16) == fee
+    assert len(receipt['logs']) == expected
+    lines.append(
+        f'{label}: status={status(receipt)}; count=1; logs={len(receipt["logs"])}; nonce_delta=1; fee_wei={fee}'
+    )
+```
+
 ```bash
 python3 content/notes/blockchain-systems/smart-contract/lab/run.py
 ```

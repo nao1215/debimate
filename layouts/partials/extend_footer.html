@@ -2,7 +2,7 @@
 {{- $mermaid := resources.Get "js/mermaid-lazy.js" | minify | fingerprint }}
 <script type="module" src="{{ $mermaid.RelPermalink }}"></script>
 <style>
-  .mermaid { background: #ffffff !important; padding: 10px; border-radius: 5px; }
+  .mermaid { background: #ffffff !important; padding: 10px; border-radius: 5px; overflow-x: auto; }
 </style>
 {{- end }}
 {{- if or (.Store.Get "hasTwitterEmbed") (eq .Layout "year") }}

@@ -130,6 +130,54 @@ SegWit の署名などの witness データは txid に含まれません。そ�
 
 ブロック 0 とブロック 1 を使って、ヘッダのハッシュを計算します。Bitcoin Core の[ソースコード](https://github.com/bitcoin/bitcoin/blob/master/src/kernel/chainparams.cpp)に書かれた最初のブロック（ブロック 0）と、[Blockstream の公開台帳データ](https://blockstream.info/api/block/00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048/header)から取得した次のブロック 1 のヘッダを 80 バイトに並べ、Python 3.14 で SHA-256 を 2 回適用しました。最後の行は、ブロック 0 の時刻だけを 1 秒進めた値です。[再現用コード](./verify-headers.py)には入力のヘッダも含めているため、ネットワークへ接続せずに計算できます。
 
+以下が `verify-headers.py` の全体です。保存して `python3 verify-headers.py` で実行できます。出力には実行環境とヘッダのバイト列も含まれます。
+
+```python
+"""Reproduce the four header values without network access.
+Run: python3 verify-headers.py
+Genesis: https://github.com/bitcoin/bitcoin/blob/master/src/kernel/chainparams.cpp
+Block 1: https://blockstream.info/api/block/00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048/header
+"""
+
+from hashlib import sha256
+import struct, sys
+
+
+def block_hash(header):
+    assert len(header) == 80
+    return sha256(sha256(header).digest()).digest()[::-1].hex()
+
+
+# Genesis fields from Bitcoin Core src/kernel/chainparams.cpp.
+merkle = bytes.fromhex("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b")[::-1]
+genesis = (
+    struct.pack("<I", 1)
+    + bytes(32)
+    + merkle
+    + struct.pack("<III", 1231006505, 0x1D00FFFF, 2083236893)
+)
+block1 = bytes.fromhex(
+    '010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744bbbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299'
+)
+changed = genesis[:68] + struct.pack("<I", 1231006506) + genesis[72:]
+actual = [block_hash(genesis), block1[4:36][::-1].hex(), block_hash(block1), block_hash(changed)]
+expected = [
+    "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+    "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+    "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048",
+    "775212d740bc3900e6c050f43c2cb2db9218b3981e5d11bb0abadf9d9f164b69",
+]
+assert actual == expected
+print(sys.version)
+print('genesis_header:', genesis.hex())
+print('block1_header:', block1.hex())
+for value in actual:
+    print(value)
+print('PASS: all 4 article values match')
+```
+
+以下は、上記のコードで確認した 4 つの値です。
+
 ```text
 ブロック 0 のハッシュ         000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
 ブロック 1 の直前のハッシュ   000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
