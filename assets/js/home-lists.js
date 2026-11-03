@@ -1,6 +1,8 @@
 // Fetch only the next small batch. Archive links also work without JavaScript.
 const homeListState = { ...history.state?.homeLists };
 const restorations = [];
+// Space/PageDown advances almost a viewport. Reserve two viewports ahead.
+const preloadDistance = Math.max(1200, window.innerHeight * 2);
 let userMoved = false;
 let pageActive = true;
 const suspendLists = [];
@@ -118,7 +120,15 @@ document.querySelectorAll('.home-columns > section').forEach((section) => {
     }
   };
   const observe = () => {
-    if (next && pageActive) requestAnimationFrame(() => { if (pageActive) observer?.observe(status); });
+    if (next && pageActive) requestAnimationFrame(async () => {
+      if (!pageActive || loading || !observer) return;
+      // Adding a short batch can leave the sentinel inside the preload area.
+      // Fill that area explicitly instead of waiting for another intersection.
+      const bounds = status.getBoundingClientRect();
+      if (bounds.bottom >= 0 && bounds.top <= window.innerHeight + preloadDistance) {
+        if (await load()) observe();
+      } else observer.observe(status);
+    });
     else observer?.disconnect();
   };
   // A navigation-cancelled fetch is not a network failure. Resume it when
@@ -147,7 +157,7 @@ document.querySelectorAll('.home-columns > section').forEach((section) => {
   if ('IntersectionObserver' in window) {
     observer = new IntersectionObserver(async (entries) => {
       if (entries.some((entry) => entry.isIntersecting) && await load()) observe();
-    }, { rootMargin: '0px 0px 400px 0px' });
+    }, { rootMargin: `0px 0px ${preloadDistance}px 0px` });
   }
   restorations.push((async () => {
     while (visible < target && next) {

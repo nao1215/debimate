@@ -6,7 +6,7 @@ import { runInNewContext } from 'node:vm';
 
 const source = readFileSync(new URL('../assets/js/home-lists.js', import.meta.url), 'utf8');
 const tick = () => new Promise((resolve) => setImmediate(resolve));
-function mount({ state = {}, fetcher, observer = true, brokenHistory = false, latestNext } = {}) {
+function mount({ state = {}, fetcher, observer = true, brokenHistory = false, latestNext, bounds } = {}) {
   const observers = [];
   const requests = [];
   const events = {};
@@ -21,6 +21,7 @@ function mount({ state = {}, fetcher, observer = true, brokenHistory = false, la
     const message = {};
     const status = {
       dataset: { total: '60', next: `/${key}/2` },
+      getBoundingClientRect: () => bounds ? bounds(key, cards.length) : ({ top: 10000, bottom: 10030 }),
       querySelector: (selector) => selector === 'button' ? button : message,
     };
     return { cards, status, button, message,
@@ -37,7 +38,7 @@ function mount({ state = {}, fetcher, observer = true, brokenHistory = false, la
     disconnect() { this.observing = false; }
   }
   const window = {
-    ...(observer ? { IntersectionObserver } : {}), scrollY: 0,
+    ...(observer ? { IntersectionObserver } : {}), scrollY: 0, innerHeight: 900,
     location: { href: 'https://example.test/', reload() { this.reloaded = true; } },
     addEventListener: (name, fn) => { events[name] = fn; },
     scrollTo: (_, y) => { window.scrollY = y; },
@@ -179,4 +180,13 @@ test('a freshness check finishing after navigation must not reload the hidden do
   await pending;
   assert.equal(page.window.location.reloaded, undefined);
   assert.notEqual(page.sections[2].button.textContent, '再試行');
+});
+
+
+test('short batches fill the preload area without another intersection event', async () => {
+  const page = mount({ bounds: (key, count) => ({ top: key === 'notes' && count < 9 ? 2000 : 10000, bottom: 10030 }) });
+  await tick();
+  assert.deepEqual(page.counts(), [6, 3, 9]);
+  assert.deepEqual(page.requests, ['/notes/2', '/notes/3']);
+  assert.equal(page.observers[2].observing, true);
 });

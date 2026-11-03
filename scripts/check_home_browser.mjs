@@ -14,11 +14,12 @@ try {
     await page.goto(origin);
     await page.waitForTimeout(300);
     const section = page.locator('.home-posts');
-    assert.equal(await section.locator('.post-entry').count(), 6);
+    const initial = await section.locator('.post-entry').count();
+    assert.ok(initial >= 6 && initial <= 36, `Initial preload must be bounded: ${initial}`);
     const buttons = section.locator('button');
     // Scroll to the end of the first list; automatic fetch must add cards.
     await buttons.scrollIntoViewIfNeeded();
-    await page.waitForFunction(() => document.querySelectorAll('.home-posts .post-entry').length >= 12);
+    await page.waitForFunction(count => document.querySelectorAll('.home-posts .post-entry').length > count, initial);
     const before = await section.locator('.post-entry').count();
     await page.evaluate(() => window.scrollTo(0, 1000));
     await page.waitForTimeout(200);
