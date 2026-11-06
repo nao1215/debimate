@@ -1,6 +1,7 @@
 ---
 title: "2026/11/02週"
 date: 2026-11-02T00:00:00+09:00
+wrapTables: true
 ---
 
 #### Ebitengine（Hajime Hoshi 氏）のスポンサーになった
@@ -144,3 +145,43 @@ sequenceDiagram
 Hey! Listen! ちょっとハイラルを救ってくる。
 
 {{< figure src="zelda-remake.webp" alt="Nintendo Switch 2 ゼルダの伝説 40周年 アニバーサリーエディションの箱と、時のオカリナ柄のクリーニングクロスが付いた液晶保護フィルム" caption="Nintendo Switch 2 ゼルダの伝説 40周年 アニバーサリーエディションと液晶保護フィルム" width="500" align="center" >}}
+
+---
+
+#### ゲームフレームワークのgozenにスマホアプリ表示とPC表示を追加
+
+{{< figure src="phone-call.webp" alt="夜間オンコールの着信" caption="心臓に悪い着信画面" width="720" align="center" >}}
+
+開発中のゲームが IT 系プロジェクト管理をテーマにしているので、スマホや PC の画面を [gozen](https://github.com/nao1215/gozen) で作れるようにした。スマホアプリ表示は、背景画像の上にスマホを縦向きまたは横向きで重ねて表示する機能。ノベルだけでなく、それ以外のゲームでも使える。
+
+| フィード画面 | チャット画面 |
+|:--|:--|
+| ![写真と動画の投稿が並ぶフィード](phone-feed.webp) | ![画像や動画を送れるチャット](phone-chat.webp) |
+| 動画画面 | チャット画面（動画） |
+| ![横向きで流れる戦闘の動画](phone-video.webp) | ![ダンス練習の動画が届くチャット](phone-puppet.webp) |
+| ショップ画面 | 銀行画面 |
+| ![服屋のサイト](phone-shop.webp) | ![振込の確認](phone-bank.webp) |
+| ロック画面 | サインイン承認画面 |
+| ![通知が届くロック画面](phone-lock.webp) | ![本番コンソールへのサインイン承認](phone-sso.webp) |
+| タイムライン画面 | プッシュ通知 |
+| ![障害についての投稿が並ぶタイムライン](phone-timeline.webp) | ![場面の上に降りてくる通知](phone-banner.webp) |
+| 支援サイト画面 | 連絡先追加画面 |
+| ![鍵付き投稿のある支援ページ](phone-support.webp) | ![QR コード付きの連絡先追加](phone-contact.webp) |
+
+<br>
+
+PC（オフィス系）表示は、ワークスペース・通話・カレンダー・タイムラインの画面と、1日の流れを組み合わせて、経営・マネジメント系のゲームを作るための機能。
+
+| 朝会画面 | メンバー詳細画面 |
+|:--|:--|
+| ![メンバーのカードと進捗](workboard-cards.webp) | ![押すと出るメンバーの詳細](workboard-peek.webp) |
+| 仕事の割り振り画面 | チケット画面 |
+| ![ドラッグで仕事を渡す](workboard-drag.webp) | ![依存関係でつながるチケット](workboard-carousel.webp) |
+| メッセージ画面 | ビデオ通話画面 |
+| ![判断を求めるメッセージ](workboard-message.webp) | ![チームの通話](workboard-call.webp) |
+| 画面共有 | ガイド画面 |
+| ![通話中の画面共有](workboard-share.webp) | ![初回に出るガイド](workboard-guide.webp) |
+| カレンダー画面 | タイムライン画面 |
+| ![予定入りのカレンダー](workboard-calendar.webp) | ![スプリントの計画](workboard-timeline.webp) |
+| キャラクター一覧画面 | ガラスパネル |
+| ![キャラクター名鑑](workboard-profiles.webp) | ![オフィスに重なるパネル](workboard-materials.webp) |
