@@ -6,9 +6,13 @@ import { launchBrowser, saveFailure } from './browser_support.mjs';
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8138').origin;
 const browser = await launchBrowser();
 const results = [];
+const viewports = [{ width: 1440, height: 900 }, { width: 1440, height: 1200 }, { width: 390, height: 844 }];
+const paths = ['/post/', '/post/ja/', '/weeknotes/', '/weeknotes/2026/'];
 try {
-  for (const viewport of [{ width: 1440, height: 900 }, { width: 1440, height: 1200 }, { width: 390, height: 844 }]) {
-    for (const path of ['/post/', '/post/ja/', '/weeknotes/', '/weeknotes/2026/']) {
+  // 待ち時間が大半なので viewport ごとに同時に流す。各ケースは別の context で、
+  // 互いの状態を共有しない。results は最後に元の順へ並べ直す
+  await Promise.all(viewports.map(async viewport => {
+    for (const path of paths) {
       const context = await browser.newContext({ viewport });
       await context.route('**/*', async route => {
         const url = new URL(route.request().url());
@@ -58,12 +62,14 @@ try {
       console.log(`PASS ${path} ${viewport.width}×${viewport.height}: ${fetchedPages.size} additional pages, 200ms latency, no shortened Space scrolls`);
       await context.close();
     }
-  }
+  }));
 } catch (error) {
   await saveFailure(browser, 'archive_scroll');
   throw error;
 } finally {
   await mkdir('reports/browser', { recursive: true });
+  const order = result => viewports.indexOf(result.viewport) * paths.length + paths.indexOf(result.path);
+  results.sort((a, b) => order(a) - order(b));
   await writeFile('reports/browser/archive-scroll.json', JSON.stringify(results, null, 2) + '\n');
   await browser.close();
 }
