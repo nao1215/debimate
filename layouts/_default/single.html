@@ -52,15 +52,7 @@
   {{- partial "post_adsense.html" . }}
 
   <footer class="post-footer">
-    {{/* タグ無しの記事が 38 本あり、そのまま range すると空の <ul> が残る */}}
-    {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
-    {{- with ($.GetTerms $tags) }}
-    <ul class="post-tags">
-      {{- range . }}
-      <li><a href="{{ .Permalink }}">{{ .LinkTitle }}</a></li>
-      {{- end }}
-    </ul>
-    {{- end }}
+    {{/* 読了後は記事へ直接案内する。tags/categories は関連記事の選定用に保持する。 */}}
     {{- if not .Params.disableRelatedPosts }}
     {{- partial "related_posts.html" . }}
     {{- end }}
