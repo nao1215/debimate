@@ -185,3 +185,38 @@ PC（オフィス系）表示は、ワークスペース・通話・カレンダ
 | ![予定入りのカレンダー](workboard-calendar.webp) | ![スプリントの計画](workboard-timeline.webp) |
 | キャラクター一覧画面 | ガラスパネル |
 | ![キャラクター名鑑](workboard-profiles.webp) | ![オフィスに重なるパネル](workboard-materials.webp) |
+
+
+---
+
+#### 行き着いた先はバーモントカレー甘口とカレープラスココナッツミルク
+
+2020年前後から本格的に自炊し始めた。自作カレーが美味しくなかった。食べられる味ではあった。しかし、味がペラくてコクがなかった。レトルトの[銀座カリー](https://www.meiji.co.jp/foods/curry/ginza/)ばかり食べてきた弊害で味の基準値が高かった点を差し引いても、実家カレーよりイマイチであった。なお、母親は調理系の資格を持っているので、料理は上手い。
+
+家族に玉ねぎ嫌いがいるので玉ねぎを使っておらず、最初はそれが原因だと予想していた。しかし、玉ねぎを使っても、隠し味的なサムシングを投入しても、カレールー2種類（例：[ジャワカレー](https://housefoods.jp/products/catalog/cat_1,curry,roux,java.html)、[ゴールデンカレー](https://www.sbfoods.co.jp/products/detail/18517.html)）を使っても、全く味が改善されなかった。
+
+結論としては、カレールーと水の比率が問題であった。この結論にたどり着くのに、6年もかかった。原因究明中に幼児向けの甘口を探す必要があったこと、家族に不評でカレーを作らなくなったことが、調査を長引かせた。
+
+<br>
+
+以下の内容を踏まえて調理すると、家族全員が食べられるカレーとなる。
+- [バーモントカレー甘口](https://housefoods.jp/products/catalog/cat_1,curry,roux,vmt.html) 1箱
+- [カレープラスココナッツミルク（S&B）](https://www.sbfoods.co.jp/products/detail/18288.html) 1袋
+- じゃがいも 4個
+- 人参 1本
+- 豚肉ブロック（肩ロース） 400〜500g
+- 豚肉（モモ） 300g　※ 消費期限の都合で投入したが、味に影響あるか不明
+- 水 1.2リットル
+- 具材は小さめに切る ※ 味に影響ないと思うが、幼児を意識したサイズ調整
+- ルー、じゃがいも、人参、豚肉、水の順番で投入
+- [T-Fal 電気圧力鍋（CY3518JPA）](https://www.amazon.co.jp/dp/B0BBM6R6DR?th=1&linkCode=ll2&tag=debimate07-22&linkId=818f7919ef6f2a9f8deb2ac498f435d3&ref_=as_li_ss_tl)のカレーモードで15分調理
+- 圧力鍋の調理が終わった後、ココナッツミルクパウダーを投入してよく混ぜる
+
+{{< figures height="12rem" columns="2" >}}
+{{< figure src="vermont-curry-mild.webp" link="https://housefoods.jp/products/catalog/cd_1,091398,curry,roux,vmt.html" alt="バーモントカレー甘口 230gの製品パッケージ" caption="バーモントカレー甘口<br>画像出典：ハウス食品" >}}
+{{< figure src="curry-plus-coconut-milk.webp" link="https://www.sbfoods.co.jp/products/detail/18288.html" alt="S&B カレープラス ココナッツミルクの製品パッケージ" caption="カレープラス ココナッツミルク<br>画像出典：エスビー食品" >}}
+{{< /figures >}}
+
+<br>
+
+豚肉（と豚肉に含まれる脂）の量が多かったことが勝因の可能性がある。あと数回作って、確度を上げたい。鶏肉、牛肉で味が安定するのかが疑問である。

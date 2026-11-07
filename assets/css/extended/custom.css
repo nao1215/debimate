@@ -1224,6 +1224,17 @@ body.home .post-entry .entry-header h2 {
   }
 }
 
+.figure-row.figure-row-two-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.post-content .figure-row-two-columns figure img {
+  width: 100%;
+  height: min(30vw, var(--figure-row-height, 16rem));
+  object-fit: contain;
+}
+
 /* ==========================================================
    Mobile layout
 
@@ -1588,7 +1599,6 @@ body.games-page { --main-width: 1100px; }
   .home-section-heading a { font-size: 12px; }
 }
 
-.home-weeknotes-links { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 4px 12px; }
 
 /* Compact game artwork sits beside the text instead of cropping an entire OGP. */
 .game-pick-wrap { min-width: 0; container-type: inline-size; }

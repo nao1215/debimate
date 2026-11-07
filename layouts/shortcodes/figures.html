@@ -9,7 +9,8 @@
   中の figure は縦横比がまちまちなので、幅ではなく高さを揃えて並べる。
   高さは height 引数 (CSS の長さ) で変えられる。既定は 16rem。
   画面が狭い時は CSS 側で縦積みへ落とす。
+  columns="2" を指定すると、狭い画面でも2列を維持する。
 */}}
-<div class="figure-row"{{ with .Get "height" }} style="--figure-row-height: {{ . }}"{{ end }}>
+<div class="figure-row{{ if eq (.Get "columns") "2" }} figure-row-two-columns{{ end }}"{{ with .Get "height" }} style="--figure-row-height: {{ . }}"{{ end }}>
 {{ .Inner }}
 </div>
