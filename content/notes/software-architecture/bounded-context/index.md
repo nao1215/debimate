@@ -186,7 +186,7 @@ func ToShipment(o sales.Order, addr shipping.Address) shipping.Shipment {
 }
 ```
 
-このパッケージで重要なのは依存の向きです。`adapter` は `sales` と `shipping` の両方を import し、`sales` と `shipping` はどちらも `adapter` を知りません。相手を知っているパッケージが 1 つに限られるため、2 つの境界のモデルは相手の語を持たずに済みます。片方が一方的に自分を守る場合は、この変換を守る側の内側に置きます。それが後述の Anticorruption Layer です。
+このパッケージで重要なのは依存の向きです。`adapter` は `sales` と `shipping` の両方を import し、`sales` と `shipping` はどちらも `adapter` を知りません。相手を知っているパッケージが 1 つに限られるため、2 つの境界のモデルは相手の語を持たずに済みます。片方が一方的に自分を守る場合は、この変換を守る側の内側に置きます。それが後述の Anticorruption Layer です。サービスを分けてもこの境界を保てない状態は、[Distributed Monolith](../distributed-monolith/) で扱います。
 
 境界と境界の関係は、変換の有無だけでは決まりません。関係を一覧にしたものを Context Map（コンテキストマップ）と呼びます。以下の表で「立場」と書いたのは、モデルを提供する側を上流、それを受け取って使う側を下流とした時に、どちらがそのパターンを選ぶかです。
 

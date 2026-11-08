@@ -10,7 +10,7 @@ wrapTables: true
 
 ゼロ知識証明（Zero-Knowledge Proof）は、ある主張が正しいことをその主張の成立以外の知識を相手に与えずに確かめてもらうための技術です。例えば、秘密の入力を使った計算について、入力そのものを渡さずに、公開した結果が計算の条件を満たすことを示せます。
 
-[Smart Contract](../smart-contract/) では、ノードがコードを実行して結果を確かめました。入力を公開したくない場合や、別の場所で行った計算を検証したい場合には、証明を作って渡す方法が使えます。
+[Smart Contract](../smart-contract/) では、ノードがコードを実行して結果を確かめました。入力を公開したくない場合や、別の場所で行った計算を検証したい場合には、証明を作って渡す方法が使えます。後者を L1 で利用する構成の一つが [Rollup](../rollup/) です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
