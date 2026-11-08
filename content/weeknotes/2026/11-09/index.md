@@ -3,6 +3,126 @@ title: "2026/11/09週"
 date: 2026-11-09T00:00:00+09:00
 ---
 
+#### READMEにOSSカードやStar Historyを並べるGitHub Actionを作った
+
+{{< figure src="readme-showcase-ogp.webp" alt="action-readme-showcase がダークモードで生成した Star History" caption="action-readme-showcase が README に生成する Star History" width="800" align="center" >}}
+
+GitHub Profile README（例：nao1215/README.md）に、OSS カードとスター数の推移を生成する [nao1215/action-readme-showcase](https://github.com/nao1215/action-readme-showcase) を作った。README を賑やかすスクリプトをシュッと作った後、「GitHub Actions 化すれば、色んな人が使えるのでは？」と考えて、専用リポジトリで公開した。ライトモードとダークモードの両方に対応している（以下は、ダークモード）
+
+<figure class="align-center">
+  <a href="https://github.com/nao1215/gup"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/nao1215/nao1215/master/cards/dark/nao1215__gup.svg"><img src="/weeknotes/2026-11-09/readme-showcase-gup.webp" width="400" alt="featured にした nao1215/gup の紹介カード"></picture></a>
+  <figcaption><p>featured を付けた gup のカード</p></figcaption>
+</figure>
+
+<figure class="align-center">
+  <a href="https://github.com/nao1215/sqly"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/nao1215/nao1215/master/cards/dark/nao1215__sqly.svg"><img src="https://raw.githubusercontent.com/nao1215/nao1215/master/cards/light/nao1215__sqly.svg" width="400" alt="通常の nao1215/sqly の紹介カード"></picture></a>
+  <figcaption><p>featured を付けない sqly の通常カード</p></figcaption>
+</figure>
+
+action-readme-showcase は、外部の画像サービスに依存せず、GitHub API から取得した情報を SVG にする。GitHub Actions の実行フロー中に、更新された README と SVG をリポジトリにコミットする。以下が大まかなシーケンスである。
+
+```mermaid
+sequenceDiagram
+    box rgb(231, 245, 255) 自分が管理するリポジトリ
+        participant C as readme-showcase.yml
+        participant R as README と cards/
+    end
+    box rgb(245, 245, 245) GitHub
+        participant W as GitHub Actions
+        participant A as action-readme-showcase
+        participant G as GitHub API
+    end
+
+    W->>A: 設定ファイルを渡して実行
+    A->>G: リポジトリの情報を取得
+    G-->>A: 説明・言語・スター数
+    A->>R: SVG カードと README を更新
+    W->>R: 差分があればコミットして push
+```
+
+<br>
+
+使い方は、README に更新範囲を示すマーカーを書き、設定ファイルとワークフローを置くだけである。まず README に以下を書いておく。この範囲だけを Action が更新する。
+
+```markdown
+<!-- showcase:start -->
+<!-- showcase:end -->
+```
+
+次に、README に表示したい OSS リポジトリ情報を `.github/readme-showcase.yml` に設定する。カードを特別に目立たせたい場合は、`featured`フラグを使う。
+
+```yaml
+# リポジトリ名を owner/repository と書かない場合の所有者
+owner: nao1215
+
+# カードの featured とは独立して、スター履歴の個別線を指定する。
+# total は owner が所有する全公開リポジトリ（fork・archive を含む）の合計線を追加する。
+starHistory:
+  repos: [gup, sqly]
+  total: true
+
+sections:
+  - groups:
+      - title: Go CLI tools
+        repos:
+          # featured は金色の枠とバッジを付ける。
+          - name: gup
+            featured: true
+          # featured を指定しない場合は通常のカードになる。
+          - name: sqly
+      - title: Libraries
+        repos:
+          - name: markdown
+          - name: golang/go
+```
+
+最後に `.github/workflows/readme-showcase.yml` を置く。スケジュール実行か手動実行によって README と SVG が更新され、差分がある場合だけコミットされる。初回は Actions の画面から手動実行すればよい。公開リポジトリの Star History には、GitHub Actions が標準で渡す `${{ github.token }}` を使うため、シークレット `STARS_TOKEN` は不要である。空のシークレットを `with.token` に渡すと既定トークンを上書きして失敗するので、下の設定には書かない。
+
+```yaml
+name: README showcase
+
+on:
+  schedule:
+    # 毎日 12:17（JST）に更新する。
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  showcase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - id: showcase
+        uses: nao1215/action-readme-showcase@v0
+
+      - if: steps.showcase.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md cards
+          git commit -m "docs: update showcase"
+          git push
+```
+
+Fine-grained personal access token を使いたい場合は、GitHub の [Settings] > [Developer settings] > [Fine-grained tokens] で発行する。Resource owner は自分のアカウント、Repository access は履歴を読む全リポジトリを対象にする。`starHistory.repos` の個別線だけなら列挙したリポジトリを選べばよいが、上のように `total: true` を使う場合は owner が所有する公開リポジトリ全体を読めるようにする。Repository permissions は `Metadata: Read-only` のままでよく、Contents の書き込み権限は不要である。
+
+発行した `github_pat_...` を、ワークフローを動かすリポジトリの [Settings] > [Secrets and variables] > [Actions] で、`STARS_TOKEN` という Repository secret として登録する。その場合だけ、Action にトークンを渡す。
+
+```yaml
+      - id: showcase
+        uses: nao1215/action-readme-showcase@v0
+        with:
+          token: ${{ secrets.STARS_TOKEN }}
+```
+
+PAT はスター履歴を読むだけで、生成したファイルのコミットには使わない。コミットは workflow の `permissions: contents: write` と `actions/checkout` が持つ既定トークンで行う。
+
+----
+
 #### Linterとテストが全て。スキルやADRはコードを守らない
 
 Linter やテストなどの機械的な検証で、コードを守る必要性を感じた一週間だった。
