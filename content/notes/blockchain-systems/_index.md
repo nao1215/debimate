@@ -55,6 +55,7 @@ description: ""
 | 1 | [Smart Contract - チェーン上のプログラムは誰が実行するのか](/notes/blockchain-systems/smart-contract/) | 実行 / EVM / 状態更新 |
 | 2 | [ERC-20 - トークンの残高と利用承認の仕組み](/notes/blockchain-systems/erc-20/) | トークン / 残高 / 利用承認 |
 | 3 | [Oracle - チェーンの外の情報をスマートコントラクトへ渡す](/notes/blockchain-systems/oracle/) | 外部情報 / 価格フィード |
+| 4 | [Rollup - 実行を外へ出し、結果をチェーンで確定する](/notes/blockchain-systems/rollup/) | Layer 2 / data availability / proof |
 
 #### Data Structure
 

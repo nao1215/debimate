@@ -52,6 +52,12 @@ description: ""
 | --- | --- | --- |
 | 1 | [Strangler Fig - 古いシステムを段階的に置き換える](/notes/software-architecture/strangler-fig/) | 設計パターン |
 
+#### Service Boundaries
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Distributed Monolith - サービスを分けても独立して変更できない構造](/notes/software-architecture/distributed-monolith/) | サービス境界 / マイクロサービス |
+
 #### Boundaries and Lifecycle
 
 | No. | 項目 | カテゴリ |

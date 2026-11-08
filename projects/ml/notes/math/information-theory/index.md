@@ -7,7 +7,7 @@ tags: ["machine-learning", "math", "statistics", "information-theory"]
 weight: 15
 ---
 
-情報理論（information theory）は、Claude Shannon が 1948 年に創始した「情報を定量化する」枠組みです。中核となる量がエントロピー（entropy, 不確実性）、KL ダイバージェンス（2 分布の距離）、相互情報量（mutual information, 2 変数の依存性）の 3 つで、機械学習の損失関数・特徴量選択・決定木の分割基準・変分推論などに直接現れます。
+情報理論（information theory）は、Claude Shannon が 1948 年に創始した「情報を定量化する」枠組みです。中核となる量は、エントロピー（entropy、不確実性）、KL ダイバージェンス（2 分布の隔たり）、相互情報量（mutual information、2 変数の依存性）です。機械学習では、損失関数・特徴量選択・決定木の分割基準・変分推論などに現れます。
 
 本記事では、[ベイズの定理](../bayes-theorem/) と [対数・指数関数](../log-exp-logodds/) の知識を前提に、確率分布から情報量を計算する方法を説明します。[損失関数](../../ml/loss-functions/) の交差エントロピー、[決定木](../../ml/decision-tree/) の情報利得、[特徴量重要度](../../ml/feature-importance/) の MDI など、ML の多くの場面で前提として登場します。
 

@@ -124,7 +124,7 @@ model = HistGradientBoostingClassifier(
 )
 ```
 
-`HistGradientBoostingClassifier` は scikit-learn 0.21 から導入された高速実装で、ヒストグラム化により大規模データでも実用的に動きます。`GradientBoostingClassifier` より一桁速いことが多いので、特別な理由がなければこちらを使うのが標準的と考えられます。
+`HistGradientBoostingClassifier` は scikit-learn 0.21 から導入された高速実装で、ヒストグラム化により大規模データでも実用的に動きます。`GradientBoostingClassifier` より一桁速いことが多いため、特別な理由がなければ `HistGradientBoostingClassifier` を使うのが標準的です。
 
 ---
 

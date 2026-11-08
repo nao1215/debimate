@@ -7,7 +7,7 @@ tags: ["machine-learning", "deep-learning"]
 weight: 36
 ---
 
-誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて損失の勾配を効率的に計算するアルゴリズムです。[偏微分と勾配](../../math/partial-derivative-gradient/) で扱った連鎖律（chain rule）を、計算グラフに沿って適用します。ネットワークの深さや幅によらず、全パラメータの勾配を `O(forward の計算量)` で求められます。
+誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて損失の勾配を効率的に計算するアルゴリズムです。[偏微分と勾配](../../math/partial-derivative-gradient/) で扱った連鎖律（chain rule）を計算グラフに沿って適用します。ネットワークの深さや幅によらず、全パラメータの勾配を `O(forward の計算量)` で求められます。
 
 backprop 自体は学習則ではなく、`勾配を計算するだけ` の手続きです。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や Adam に渡してパラメータを更新する、という分業構造になっています。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなります。
 

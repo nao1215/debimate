@@ -7,7 +7,7 @@ tags: ["machine-learning", "scikit-learn", "loss-function"]
 weight: 5
 ---
 
-損失関数（loss function, あるいは cost function, objective function）は、モデルの予測 `ŷ` と正解 `y` のずれを「1 つの数」に変換する関数です。学習はこの損失関数の値を最小化する操作で、モデル設計の選択肢の中で「どの損失関数を選ぶか」は「どのモデルを選ぶか」と同じくらい結果に効きます。
+損失関数（loss function、cost function、objective function）は、モデルの予測 `ŷ` と正解 `y` のずれを 1 つの数に変換する関数です。学習はこの損失関数の値を最小化する操作で、どの損失関数を選ぶかは学習結果に大きく影響します。
 
 回帰では平均二乗誤差（mean squared error, MSE）と平均絶対誤差（mean absolute error, MAE）が標準で、外れ値の扱いやすさで使い分けます。分類では交差エントロピー（cross-entropy）が標準で、確率分布の差を測る尺度として定式化されています。両者とも [最急降下法・SGD](../../math/gradient-descent-sgd/) と組み合わせてパラメータを更新する設計が前提となります。
 

@@ -26,7 +26,8 @@ description: ""
 | --- | --- | --- |
 | 1 | [Authentication - ログインした相手を本人として扱う根拠](/notes/security/authentication/) | 技術ノート / 認証 |
 | 2 | [Passkey - 秘密鍵をサーバーに渡さない認証](/notes/security/passkey/) | 技術ノート / 認証 |
-| 3 | [Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)](/post/ja/2019-03-26-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi3%E5%90%91%E3%81%91%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2ssh%E6%8E%A5%E7%B6%9A%E8%A8%AD%E5%AE%9A%E5%85%AC%E9%96%8B%E9%8D%B5%E8%AA%8D/) | 既存記事 / SSH・公開鍵認証 |
+| 3 | [PKI - 公開鍵と証明書を信頼の連鎖へつなぐ](/notes/security/pki/) | 技術ノート / 公開鍵基盤・証明書 |
+| 4 | [Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)](/post/ja/2019-03-26-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi3%E5%90%91%E3%81%91%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2ssh%E6%8E%A5%E7%B6%9A%E8%A8%AD%E5%AE%9A%E5%85%AC%E9%96%8B%E9%8D%B5%E8%AA%8D/) | 既存記事 / SSH・公開鍵認証 |
 
 ---
 

@@ -16,7 +16,7 @@ Event Sourcing は、現在の状態に加えて、そこに至るまでの操�
 
 本記事で扱うのは、全ての状態変更を集約（まとめて一貫性を保つオブジェクトの集まり。ここでは 1 件の注文）が発する Domain Event（業務上起きた出来事を表すオブジェクト）として記録し、そのイベントの並びを一次記録（system of record。状態を作り直す元になり、食い違った時に正しいと見なす記録）とする構成です。Domain Event を使っていても、上書きで保存した状態の方を一次記録にするなら、この構成にはなりません。
 
-以下は、本記事で扱う構成です。
+状態を上書きする保存と、出来事を追記する保存の違いを、この構成で確認します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -244,7 +244,7 @@ sequenceDiagram
 
 ### 利点
 
-- 状態が変わった理由を、イベントの記録から確認できる
+- 状態が変わった理由をイベントの記録から確認できる
 - イベントを漏れなく保持している限り、任意の時点の状態を再生で復元できる
 - 読み取りモデルを後から何種類でも追加・再構築できる
 - 書き込みを追記中心にでき、単純な RDB 実装なら `(stream_id, version)` の一意制約を使って同一ストリームへの競合を検出できる

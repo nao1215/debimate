@@ -98,7 +98,7 @@ sequenceDiagram
 
 ウォレットで暗号資産を操作するのは、支払いに使ったり、チェーン上のアプリに資産を預けたりするためです。その前提として、暗号資産がどのような目的で使われているかを整理します。
 
-暗号資産が選ばれる理由には、自分で資産を管理して送る事、チェーン上のアプリを利用する事、投資として保有する事があります。これらは別の動機です。英国 FCA の[消費者調査](https://www.fca.org.uk/publication/research-notes/cryptoasset-consumer-research-2025-wave-6.pdf)でも、投資の一部、短期的な利益への期待、商品やサービスの支払いなどが購入理由として挙がっています。
+暗号資産が選ばれる理由には、自分で資産を管理して送ること、チェーン上のアプリを利用すること、投資として保有することがあります。これらは別の動機です。英国 FCA の[消費者調査](https://www.fca.org.uk/publication/research-notes/cryptoasset-consumer-research-2025-wave-6.pdf)でも、投資の一部、短期的な利益への期待、商品やサービスの支払いなどが購入理由として挙がっています。
 
 <br>
 
@@ -110,7 +110,7 @@ sequenceDiagram
 
 {{< figure align="center" src="images/gods-unchained-decks.webp" link="images/gods-unchained-decks.webp" width="640" alt="Gods Unchained のデッキ選択画面。カードを組み合わせた複数のデッキが並ぶ" caption="Gods Unchained のデッキ選択画面（公式ガイドから引用）<br>出典：[Gods Unchained — Getting started](https://portal.godsunchained.com/getting-started)（WebP に変換）" >}}
 
-ただし、直接送れる事と、安く安全に支払える事は別です。価格変動やネットワーク手数料があり、取引所や交換サービスを使う場合は、その事業者にも依存します。通常の送金を一律に取り消す窓口もありません。自分で操作できる範囲が広がる分、何を承認したか、復元に必要な情報を保管しているかが重要になります。
+ただし、直接送れることと、安く安全に支払えることは別です。価格変動やネットワーク手数料があり、取引所や交換サービスを使う場合は、その事業者にも依存します。通常の送金を一律に取り消す窓口もありません。自分で操作できる範囲が広がる分、何を承認したか、復元に必要な情報を保管しているかが重要になります。
 
 ---
 
@@ -118,7 +118,7 @@ sequenceDiagram
 
 [ブロックチェーン](../blockchain-basics/)は、複数のコンピュータが共通の規則で取引を検証し、履歴を共有する仕組みです。参加するコンピュータを「ノード」、送金などの変更要求を「取引（トランザクション）」と呼びます。取引をまとめて履歴に追加する単位が「ブロック」です。Bitcoin と Ethereum は、それぞれ異なる規則と履歴を持つネットワークです。
 
-資産の記録を共有するチェーンと、ユーザが操作するアプリを分けるのは、特定のアプリに資産の記録を閉じ込めず、同じ規則に従う別の製品からも操作できるようにするためです。例えば、Sparrow を使う人が、Electrum を使う人の Bitcoin アドレスへ送金すると、Bitcoin ネットワーク上の共通の記録が更新されます。開発者は、この共通の規則に従いながら、画面や追加機能を工夫できます。
+資産の記録を共有するチェーンと、ユーザーが操作するアプリを分けるのは、特定のアプリに資産の記録を閉じ込めず、同じ規則に従う別の製品からも操作できるようにするためです。例えば、Sparrow を使う人が、Electrum を使う人の Bitcoin アドレスへ送金すると、Bitcoin ネットワーク上の共通の記録が更新されます。開発者は、この共通の規則に従いながら、画面や追加機能を工夫できます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -133,7 +133,7 @@ sequenceDiagram
     Note over A,B: 別のウォレット同士でも送受信できる
 ```
 
-実際にアプリが全履歴を自分で検証するか、検索サービスに問い合わせるかは製品と設定によって異なります。通常のチェーン上の送金では、受取人がアプリを終了していても入金できます。後から記録を読めば確認できるからです。アプリを再インストールした後に以前の資産を動かすには、送金に使う鍵も必要です。残高を読める事と、送金の権限を持つ事は別です。
+実際にアプリが全履歴を自分で検証するか、検索サービスに問い合わせるかは製品と設定によって異なります。通常のチェーン上の送金では、受取人がアプリを終了していても入金できます。後から記録を読めば確認できるからです。アプリを再インストールした後に以前の資産を動かすには、送金に使う鍵も必要です。残高を読めることと、送金の権限を持つことは別です。
 
 ---
 
@@ -141,11 +141,11 @@ sequenceDiagram
 
 誰でも参加できるネットワークでは、「このアドレスから送ります」という申告だけで送金を認めると、他人の資産も使えてしまいます。一方、ノードに秘密情報を渡して本人確認をすると、受け取ったノードも同じ操作ができるようになります。必要なのは、次の条件を満たす承認方法です。
 
-- 資産を使う権限に対応した証拠を提示できる事。
-- 証拠が、今回の送金先や数量などの内容に結び付いている事。
-- 承認に必要な秘密情報を渡さずに、他の参加者が検証できる事。
+- 資産を使う権限に対応した証拠を提示できること。
+- 証拠が、今回の送金先や数量などの内容に結び付いていること。
+- 承認に必要な秘密情報を渡さずに、他の参加者が検証できること。
 
-このために使うのが、秘密鍵と[デジタル署名](../digital-signature/)です。秘密鍵は署名を作るための秘密の数値であり、対応する公開鍵を使うと、その署名が正しいか検証できます。秘密鍵から公開鍵は容易に計算できます。一方、公開鍵から秘密鍵を求めるには、現在知られている計算方法では膨大な計算量が必要となり、現在の計算機で現実的な時間内に求める事は困難です。
+このために使うのが、秘密鍵と[デジタル署名](../digital-signature/)です。秘密鍵は署名を作るための秘密の数値であり、対応する公開鍵を使うと、その署名が正しいか検証できます。秘密鍵から公開鍵は容易に計算できます。一方、公開鍵から秘密鍵を求めるには、現在知られている計算方法では膨大な計算量が必要となり、現在の計算機で現実的な時間内に求めることは困難です。
 
 | 情報 | 役割 | 取り扱い |
 | --- | --- | --- |
@@ -156,18 +156,18 @@ sequenceDiagram
 
 ノードは、署名の正しさに加えて、その鍵が対象の資産を使う条件を満たすかも検証します。攻撃者が自分の鍵で正しい署名を作っても、他人の資産を使う権限にはなりません。また、承認の対象となった内容を変更すれば、その署名の検証に失敗します。アドレスは公開鍵そのものとは限らず、複数人の署名を要求する条件などに対応する場合もあります。
 
-署名は内容を隠す暗号化ではありません。Bitcoin や Ethereum では、送金先や金額などを他の参加者も確認できます。また、署名が正しくても、送金先が信頼できるとは限りません。ユーザが意図した操作かどうかは、署名する前に確認する必要があります。
+署名は内容を隠す暗号化ではありません。Bitcoin や Ethereum では、送金先や金額などを他の参加者も確認できます。また、署名が正しくても、送金先が信頼できるとは限りません。ユーザーが意図した操作かどうかは、署名する前に確認する必要があります。
 
 <br>
 
 ウォレットは、秘密鍵を保管するだけでは送金できません。現在の記録を読み、送金額と手数料を計算し、チェーンの規則に合う取引を組み立てる必要があります。
 
-送金処理をユーザ・ウォレット・ネットワークに分けると以下のようになります。
+送金処理をユーザー・ウォレット・ネットワークに分けると以下のようになります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant U as ユーザ
+    participant U as ユーザー
     participant W as ウォレット
     participant N as ノード
     U->>W: 送金先と数量を入力
@@ -181,7 +181,7 @@ sequenceDiagram
     Note over W,N: 秘密鍵は送らない
 ```
 
-また、ノードが取引を受け付けても、その時点で送金が確定した訳ではありません。取引がブロックに入るまで待つ必要があり、ブロックに入った後も、その履歴が後から別の履歴に置き換わる可能性を考慮します。どの段階で確定したと扱うかは、チェーンの規則によって異なります。ウォレットの「送信済み」「確認中」「完了」は、この途中経過を表しています。[Bitcoin の取引の流れ](../bitcoin-transaction-lifecycle/)と [Finality](../finality/) で扱っている区別です。
+また、ノードが取引を受け付けても、その時点で送金が確定したわけではありません。取引がブロックに入るまで待つ必要があり、ブロックに入った後も、その履歴が後から別の履歴に置き換わる可能性を考慮します。どの段階で確定したと扱うかは、チェーンの規則によって異なります。ウォレットの「送信済み」「確認中」「完了」は、この途中経過を表しています。[Bitcoin の取引の流れ](../bitcoin-transaction-lifecycle/)と [Finality](../finality/) で扱っている区別です。
 
 手数料が不足している時やネットワークが混雑している時は、確認が進まない場合があります。そこで、手数料を上げて取引を置き換える機能などが必要になります。置き換え操作の可否や方法は、チェーンごとに異なります。
 
@@ -291,7 +291,7 @@ sequenceDiagram
 
 <br>
 
-図の追加パスフレーズは任意です。設定しない場合は空文字を使います。復元には元と同じ方式が必要であり、BIP39 の追加パスフレーズは、アプリのパスワードと違い、変えると別のシードを作ります。入力ミスも別のウォレットとして成立するので、エラーで気付けるとは限りません。導出パスや対象チェーンが違う場合も、残高がゼロに見える事があります。
+図の追加パスフレーズは任意です。設定しない場合は空文字を使います。復元には元と同じ方式が必要であり、BIP39 の追加パスフレーズは、アプリのパスワードと違い、変えると別のシードを作ります。入力ミスも別のウォレットとして成立するので、エラーで気付けるとは限りません。導出パスや対象チェーンが違う場合も、残高がゼロに見えることがあります。
 
 また、[Electrum が新規生成するフレーズ](https://electrum.readthedocs.io/en/latest/seedphrase.html)は独自方式です。単語数だけでアプリ間の互換性を判断できません。送金先の名前、取引のメモ、複数人で承認する設定なども鍵だけからは再現できない場合があり、製品が案内するバックアップを残す必要があります。
 
@@ -318,9 +318,9 @@ flowchart TB
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-手数料に相当する UTXO を作る訳ではなく、入力の合計と出力の合計の差が手数料です。同じ送金額でも、細かい UTXO を多数使うと取引のデータ量が増え、必要な手数料が高くなる場合があります。
+手数料に相当する UTXO を作るわけではなく、入力の合計と出力の合計の差が手数料です。同じ送金額でも、細かい UTXO を多数使うと取引のデータ量が増え、必要な手数料が高くなる場合があります。
 
-使う UTXO をユーザが選ぶ機能を「coin control」と呼びます。どの入金同士を一つの取引にまとめるかによって、手数料や、公開履歴から推測されるアドレス同士の関係が変わります。Bitcoin 専用ウォレットが UTXO の一覧や取引の入出力図を持つのは、この判断を支援するためです。
+使う UTXO をユーザーが選ぶ機能を「coin control」と呼びます。どの入金同士を一つの取引にまとめるかによって、手数料や、公開履歴から推測されるアドレス同士の関係が変わります。Bitcoin 専用ウォレットが UTXO の一覧や取引の入出力図を持つのは、この判断を支援するためです。
 
 取引を組み立てる端末と署名する端末を分けるために、[PSBT（Partially Signed Bitcoin Transaction）](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki)という交換形式もあります。署名前の取引、署名に必要な情報、集めた署名をやり取りする形式であり、完成した取引をチェーンに送る形式とは区別されます。複数人の署名や、ネットワークから切り離した端末での署名にも利用できます。
 
@@ -426,20 +426,20 @@ flowchart TB
 
 チェーンへの対応と、鍵の管理方法は独立しています。同じ Bitcoin のウォレットでも、自分で鍵を管理するタイプと、事業者に預けるタイプでは、失敗した時の対処が違います。
 
-「セルフカストディ型（self-custody）」は、ユーザが資産を操作する鍵を自分で管理するタイプです。事業者の出金承認を待たずに取引を作れますが、鍵を失った時に、本人確認だけで取り戻せるとは限りません。
+「セルフカストディ型（self-custody）」は、ユーザーが資産を操作する鍵を自分で管理するタイプです。事業者の出金承認を待たずに取引を作れますが、鍵を失った時に、本人確認だけで取り戻せるとは限りません。
 
-「カストディ型（custodial）」は、事業者などが鍵を管理するタイプです。ユーザはサービスにログインして送金を依頼し、事業者が取引に署名します。パスワードの再設定は容易でも、出金可否や事業継続に依存します。
+「カストディ型（custodial）」は、事業者などが鍵を管理するタイプです。ユーザーはサービスにログインして送金を依頼し、事業者が取引に署名します。パスワードの再設定は容易でも、出金可否や事業継続に依存します。
 
 <br>
 
-例えば、Sparrow では、画面の `New or Imported Software Wallet` から自分で鍵を管理するウォレットを作れます。一方、Lightning 向けの OSS である [LNbits](https://github.com/lnbits/lnbits) を他者のサーバで使う場合は、[運営者が資金を操作できる構成](https://docs.lnbits.com/guide/faq/general#is-lnbits-custodial)になります。
+例えば、Sparrow では、画面の `New or Imported Software Wallet` から自分で鍵を管理するウォレットを作れます。一方、Lightning 向けの OSS である [LNbits](https://github.com/lnbits/lnbits) を他者のサーバーで使う場合は、[運営者が資金を操作できる構成](https://docs.lnbits.com/guide/faq/general#is-lnbits-custodial)になります。
 
 {{< figures height="14rem" >}}
 {{< figure align="center" src="images/sparrow-keystore.webp" link="images/sparrow-keystore.webp" alt="Sparrow の設定画面。ソフトウェアウォレットやハードウェアウォレットなど、鍵の保管先を選べる" caption="自分で鍵を管理する設定の例：Sparrow<br>出典：[公式 Quick Start Guide](https://sparrowwallet.com/docs/quick-start.html)" >}}
-{{< figure align="center" src="images/lnbits-wallet.webp" link="images/lnbits-wallet.webp" alt="LNbits の公式デモ画面。複数のウォレット、残高、送受信ボタン、履歴が表示されている" caption="他者運営のサーバを使う場合の例：LNbits<br>画像は公式デモの管理者画面。出典：[公式 README](https://github.com/lnbits/lnbits)" >}}
+{{< figure align="center" src="images/lnbits-wallet.webp" link="images/lnbits-wallet.webp" alt="LNbits の公式デモ画面。複数のウォレット、残高、送受信ボタン、履歴が表示されている" caption="他者運営のサーバーを使う場合の例：LNbits<br>画像は公式デモの管理者画面。出典：[公式 README](https://github.com/lnbits/lnbits)" >}}
 {{< /figures >}}
 
-LNbits も、自分のサーバと自分の Lightning ノードで運用すれば、自分で管理できます。鍵の管理主体は、画面の見た目や OSS かどうかでは判断できません。誰が資金を操作できるかを確認する必要があります。
+LNbits も、自分のサーバーと自分の Lightning ノードで運用すれば、自分で管理できます。鍵の管理主体は、画面の見た目や OSS かどうかでは判断できません。誰が資金を操作できるかを確認する必要があります。
 
 ---
 
@@ -456,7 +456,7 @@ LNbits も、自分のサーバと自分の Lightning ノードで運用すれ�
 sequenceDiagram
     participant P as PC のウォレット
     participant H as ハードウェアウォレット
-    participant U as ユーザ
+    participant U as ユーザー
     P->>H: 未署名の取引
     H-->>U: 端末の画面に送信先と金額を表示
     U->>H: 端末で承認
@@ -465,11 +465,11 @@ sequenceDiagram
     Note over P,H: 秘密鍵は PC に渡さない
 ```
 
-専用端末の画面で確認する理由は、PC の表示だけが改竄されている可能性があるからです。PC に正しい送信先が表示されていても、署名対象が違う場合があります。端末が確認対象の情報を表示し、ユーザが照合して初めて、この分離が役に立ちます。[Trezor の Trusted Display](https://trezor.io/guides/trezor-devices/trezor-fundamentals/trezor-s-trusted-display-verify-every-address-on-your-device) も、この確認を目的としています。
+専用端末の画面で確認する理由は、PC の表示だけが改竄されている可能性があるからです。PC に正しい送信先が表示されていても、署名対象が違う場合があります。端末が確認対象の情報を表示し、ユーザーが照合して初めて、この分離が役に立ちます。[Trezor の Trusted Display](https://trezor.io/guides/trezor-devices/trezor-fundamentals/trezor-s-trusted-display-verify-every-address-on-your-device) も、この確認を目的としています。
 
 <br>
 
-なお、残高を見るだけなら秘密鍵は不要です。アドレスや、複数の公開鍵を生成できる拡張公開鍵（xpub）を登録する「watch-only ウォレット」は、入金と残高を確認できますが、単独では署名できません。xpub は支払い権限を与えない一方、関連する多数のアドレスを追跡する手掛かりになるため、公開情報だから無制限に共有して良いという訳でもありません。
+なお、残高を見るだけなら秘密鍵は不要です。アドレスや、複数の公開鍵を生成できる拡張公開鍵（xpub）を登録する「watch-only ウォレット」は、入金と残高を確認できますが、単独では署名できません。xpub は支払い権限を与えない一方、関連する多数のアドレスを追跡する手掛かりになるため、公開情報だから無制限に共有して良いというわけでもありません。
 
 ---
 
@@ -483,7 +483,7 @@ sequenceDiagram
 
 {{< figure align="center" src="images/safe-threshold.webp" link="images/safe-threshold.webp" width="520" alt="Safe の必要署名数の変更画面。従来の1人から、2人中2人の署名を必要とする設定に変更する" caption="Safe の必要署名数の設定<br>出典：[Managing Safe Owners and Signatures](https://help.safe.global/articles/9629761095)（公式 GIF の一場面を切り出し、WebP に変換）" >}}
 
-[MPC（Multi-Party Computation）](https://www.fireblocks.com/report/what-is-mpc)を使う方式では、秘密情報を分散して持つ複数の参加者が、協力して計算する事で署名を作ります。複数の署名を提示するマルチシグと、分散した秘密情報から協力して一つの署名を作る方式の違いです。ただし、MPC という名前だけでセルフカストディ型と判断する事はできません。どの参加者が揃えば署名できるか、事業者が停止した時に復旧できるかを確認する必要があります。
+[MPC（Multi-Party Computation）](https://www.fireblocks.com/report/what-is-mpc)を使う方式では、秘密情報を分散して持つ複数の参加者が、協力して計算することで署名を作ります。複数の署名を提示するマルチシグと、分散した秘密情報から協力して一つの署名を作る方式の違いです。ただし、MPC という名前だけでセルフカストディ型と判断することはできません。どの参加者が揃えば署名できるか、事業者が停止した時に復旧できるかを確認する必要があります。
 
 ---
 
@@ -508,7 +508,7 @@ Bitcoin の入金を選ぶ機能は UTXO の管理に、Rabby の実行結果の
 
 ### ウォレットの内部構成
 
-多くのウォレットは、ローカル送金の例で使った RPC（Remote Procedure Call）を通してノードに問い合わせます。履歴検索には、取引を検索しやすいように整理する「インデクサ」を使う事もあります。全履歴を自分で検証するノードと、必要な情報を検索して返すサービスは、同じ役割ではありません。
+多くのウォレットは、ローカル送金の例で使った RPC（Remote Procedure Call）を通してノードに問い合わせます。履歴検索には、取引を検索しやすいように整理する「インデクサ」を使うこともあります。全履歴を自分で検証するノードと、必要な情報を検索して返すサービスは、同じ役割ではありません。
 
 ウォレットは、秘密鍵を使う小さなプログラムだけで完結しません。画面、取引を組み立てる処理、鍵の保管、チェーンとの通信、履歴の保存などを組み合わせます。価格表示やトークンの画像には、チェーンの外にある API も使われます。例えば、「日本円換算だけ表示されない」と「取引に署名できない」では、調べるべき処理が異なります。
 
@@ -516,7 +516,7 @@ Bitcoin の入金を選ぶ機能は UTXO の管理に、Rabby の実行結果の
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph W["ウォレットのアプリ"]
-        U["画面・ユーザの操作"] --> T["取引の構築・解析・確認"]
+        U["画面・ユーザーの操作"] --> T["取引の構築・解析・確認"]
         T --- R["通信処理：RPC / API"]
         T --- K["鍵保管・署名"]
         T --- D["ローカル DB：履歴・ラベルなど"]
@@ -527,11 +527,11 @@ flowchart TB
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-履歴を保存する DB（データベース）は、ネットワークの履歴を検索しやすくするためのローカルデータです。鍵のバックアップ、ローカル履歴の再同期、価格 API の復旧は、それぞれ別の処理となります。価格 API が止まって日本円換算が表示されなくても、チェーン上の資産が失われた訳ではありません。
+履歴を保存する DB（データベース）は、ネットワークの履歴を検索しやすくするためのローカルデータです。鍵のバックアップ、ローカル履歴の再同期、価格 API の復旧は、それぞれ別の処理となります。価格 API が止まって日本円換算が表示されなくても、チェーン上の資産が失われたわけではありません。
 
 <br>
 
-ブラウザ拡張のウォレットには、さらに Web サイトとの接続が加わります。チェーン上のプログラムを利用する Web アプリを dApp（Decentralized Application）と呼び、Ethereum 系では [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193) の Provider API が接続の基礎となります。dApp はウォレットにアカウントの公開や取引を要求し、ウォレットはユーザに確認を求めます。
+ブラウザ拡張のウォレットには、さらに Web サイトとの接続が加わります。チェーン上のプログラムを利用する Web アプリを dApp（Decentralized Application）と呼び、Ethereum 系では [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193) の Provider API が接続の基礎となります。dApp はウォレットにアカウントの公開や取引を要求し、ウォレットはユーザーに確認を求めます。
 
 Web サイトから取引を受け取ったウォレットは、署名対象のデータを検証する必要があります。サイトの説明文と、実際のデータが一致しているとは限らないからです。拡張機能の画面やバックグラウンド処理を分離するだけでなく、どのサイトから来た要求かを管理し、署名対象をウォレット自身が解析・表示する必要があります。
 
@@ -567,28 +567,28 @@ Web サイトから取引を受け取ったウォレットは、署名対象の�
 
 ### 過去のセキュリティ事件
 
-ウォレットの安全性は、暗号方式と鍵の保管だけでは決まりません。外部から届いた情報を画面に出す処理、アプリが読み込むライブラリ、署名対象を組み立てる Web 画面も攻撃の対象になります。次の 3 件は、それぞれ異なる部分が攻撃された事例です。
+ウォレットの安全性は、暗号方式と鍵の保管だけでは決まりません。外部から届いた情報を画面に出す処理、アプリが読み込むライブラリ、署名対象を組み立てる Web 画面も攻撃の対象になります。次の 3 件は、それぞれ異なる部分が攻撃された例です。
 
 #### Electrum の偽更新誘導
 
-[2018 年 12 月の Electrum](https://github.com/spesmilo/electrum/issues/4968) では、悪意あるサーバが取引送信時のエラーに偽更新の案内を混ぜ、ユーザを偽ソフトウェアの導入に誘導しました。旧クライアントは、サーバから届いた任意の文章を HTML の装飾を含むリッチテキストとして表示していました。
+[2018 年 12 月の Electrum](https://github.com/spesmilo/electrum/issues/4968) では、悪意あるサーバーが取引送信時のエラーに偽更新の案内を混ぜ、ユーザーを偽ソフトウェアの導入に誘導しました。旧クライアントは、サーバーから届いた任意の文章を HTML の装飾を含むリッチテキストとして表示していました。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant U as ユーザ
+    participant U as ユーザー
     participant W as 正規の旧 Electrum
-    participant S as 攻撃者のサーバ
+    participant S as 攻撃者のサーバー
     participant M as 偽の更新ソフトウェア
     U->>W: 送金を依頼
     W->>S: 取引を送信
     S-->>W: エラー文に偽更新の案内を埋め込む
     W-->>U: アプリ内のエラー画面として表示
     U->>M: 案内を信じて取得・実行
-    Note over U,M: メッセージの表示だけで<br/>コードが実行された訳ではない
+    Note over U,M: メッセージの表示だけで<br/>コードが実行されたわけではない
 ```
 
-問題は、「取引を中継するサーバが返した文章」が「ウォレットの開発元による更新指示」のように読めた事です。開発者は 3.3.3 より前の表示を問題として説明し、更新は公式サイトから行うよう案内しています。
+問題は、「取引を中継するサーバーが返した文章」が「ウォレットの開発元による更新指示」のように読めたことです。開発者は 3.3.3 より前の表示を問題として説明し、更新は公式サイトから行うよう案内しています。
 
 この原因から考えると、通信エラーの表示と、アプリが判断した更新案内は分ける必要があります。利用者も、エラー画面内のリンクを配布元の確認なしに信用しない必要があります。
 
@@ -606,20 +606,20 @@ sequenceDiagram
     participant A as 攻撃者
     participant P as パッケージの配布経路
     participant D as 正規の dApp
-    participant W as ユーザのウォレット
+    participant W as ユーザーのウォレット
     A->>P: 不正に得た権限で<br/>改竄パッケージを公開
     D->>P: 実行時に Connect Kit を取得
     P-->>D: 改竄された JavaScript
     D->>W: 不正な取引への署名を要求
     Note over D,W: 正規サイトを開いていても<br/>読み込む依存コードが改竄済み
-    W->>W: ユーザが承認すると署名
+    W->>W: ユーザーが承認すると署名
 ```
 
-当時の読み込み用コンポーネントは、配布サーバから実行時にライブラリを取得する仕組みでした。そのため、dApp 自体を攻撃者が書き換えなくても、依存ライブラリを通じて不正なコードが動きました。製品が依存する配布経路を攻撃する「サプライチェーン攻撃」の例です。[検知に関わった Blockaid の解析](https://blockaid.io/blog/attack-report-ledger-connect-kit)でも、この経路が説明されています。
+当時の読み込み用コンポーネントは、配布サーバーから実行時にライブラリを取得する仕組みでした。そのため、dApp 自体を攻撃者が書き換えなくても、依存ライブラリを通じて不正なコードが動きました。製品が依存する配布経路を攻撃する「サプライチェーン攻撃」の例です。[検知に関わった Blockaid の解析](https://blockaid.io/blog/attack-report-ledger-connect-kit)でも、この経路が説明されています。
 
 <br>
 
-Ledger は、この事件でハードウェアや管理アプリの Ledger Live は[改竄されていないと報告しています](https://www.ledger.com/blog/a-letter-from-ledger-chairman-ceo-pascal-gauthier-regarding-ledger-connect-kit-exploit)。機器から秘密鍵を抜き取る代わりに、ユーザに不正な取引を承認させたのです。
+Ledger は、この事件でハードウェアや管理アプリの Ledger Live は[改竄されていないと報告しています](https://www.ledger.com/blog/a-letter-from-ledger-chairman-ceo-pascal-gauthier-regarding-ledger-connect-kit-exploit)。機器から秘密鍵を抜き取る代わりに、ユーザーに不正な取引を承認させたのです。
 
 この攻撃経路からは、不要になった配布権限の失効、依存バージョンの固定、読み込むファイルの改竄を検知する仕組みが対策として考えられます。ただし、検証に使う情報の取得経路を信頼できるかも確認する必要があります。特定の対策一つで防げたとは断定できません。
 
@@ -673,7 +673,7 @@ Safe は、資産や設定を持つ「プロキシ」と、署名検証や送金
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant U as ユーザのウォレット
+    participant U as ユーザーのウォレット
     participant S as 利用するサービス
     participant T as トークンのコントラクト
     U->>T: サービスへの使用許可を記録

@@ -1,0 +1,125 @@
+---
+title: "PKI - 公開鍵と証明書を信頼の連鎖につなぐ"
+date: 2026-11-08
+draft: false
+series: ["技術ノート", "Security"]
+tags: ["security", "pki", "x.509", "tls"]
+weight: 10
+wrapTables: true
+---
+
+PKI（Public Key Infrastructure、公開鍵基盤）は、公開鍵と名前や組織の結び付きを証明書と信頼の連鎖で検証する仕組みです。公開鍵だけでは、接続先が本当にその鍵の持ち主か分かりません。Web ブラウザで `https://example.com` を開く時は、接続先が示した公開鍵と `example.com` の関係を確かめる必要があります。これは、利用者を確認する [Authentication](../authentication/) とは別に、接続先のサーバーを認証する処理です。
+
+この関係を記録するデータが X.509 証明書です。証明書と失効リストのプロファイル、および証明書パス検証の手順は、[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) で定められています。証明書を発行する CA（Certification Authority、認証局）は、証明書ポリシーに従って申請者と識別子を確認し、証明書に署名します。検証する側は、あらかじめ信頼する CA の証明書を trust store に持ち、その署名をたどります。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
+flowchart LR
+    R["Trust store<br/>信頼する Root CA"] --> I["Intermediate CA<br/>発行を委任された CA"]
+    I --> S["Server certificate<br/>example.test と公開鍵"]
+    S --> V["ブラウザ・クライアント<br/>名前・期限・用途・署名を検証"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```
+
+上記の図で信頼の起点になる Root CA は、接続先から受け取るものではありません。OS、ブラウザ、組織の端末管理などがあらかじめ trust store に入れた証明書です。Intermediate CA は Root CA の秘密鍵を日常的な発行に使わずに済むよう、発行権限を分けます。
+
+<br>
+
+本記事では、TLS（Transport Layer Security）でサーバー証明書を検証する流れを取り上げ、次の疑問に答えます。
+
+- CA の署名だけで、なぜ接続先を信頼できるのか。
+- hostname、期限、証明書チェーンは、それぞれ何を防ぐのか。
+- CA が発行できる範囲は、どの拡張で制限されるのか。
+- 失効、Certificate Transparency、ACME は、どの問題を受け持つのか。
+- Public CA と Private CA は、どの名前と利用者に使い分けるのか。
+
+クライアント証明書による利用者認証、TLS の暗号スイート、証明書の署名アルゴリズムの計算は扱いません。署名が秘密鍵の保持をどう証明するかは [Digital Signature](../../blockchain-systems/digital-signature/) のノートを参照してください。
+
+---
+
+### 証明書と trust store
+
+X.509 証明書は、subject（識別される主体）、公開鍵、有効期間、発行者、拡張、発行者による署名を持つデータです。サーバー証明書の場合、接続先の DNS 名は通常 `subjectAltName` 拡張に入ります。subject の distinguished name を使う場面もありますが、TLS で DNS 名を照合する時は [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) の規則に従います。
+
+CA の仕事は、公開鍵をただ登録することではありません。どの識別子について、どの種類の確認を済ませ、どの用途・期限で証明書を発行するかを決めます。公開 Web PKI の CA は、[CA/Browser Forum Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/) に従い、DNS 名などの domain name を検証します。これはサイトの運営者の法人格や、通信内容の安全性を保証するものではありません。
+
+trust store に Root CA を入れる行為は、その CA が定めた検証と発行の方針を受け入れることです。CA は [RFC 3647](https://www.rfc-editor.org/rfc/rfc3647) の枠組みに沿って、Certificate Policy と Certification Practice Statement に方針と実務を記述します。したがって、署名の検証に成功しても、利用者が信頼したのは任意の CA ではなく、手元の trust store にある CA です。
+
+Public CA は不特定のインターネット利用者が検証する公開 DNS 名に向きます。一方、Private CA は社内の端末、サービスメッシュ、閉じた環境のホスト名に使えます。Private CA の Root 証明書は利用する端末すべてに配布し、更新・削除を管理する必要があります。社内名の証明書を Public CA で発行しても、外部の端末がその名前に安全に到達できるとは限りません。
+
+---
+
+### 証明書パスの検証
+
+サーバーは通常、サーバー証明書と Intermediate CA 証明書をクライアントに送ります。クライアントはこれらをつなぎ、trust store にある Root CA までの証明書パスを構築します。Root CA 自身は trust store から得られるため、サーバーが送らないこともあります。
+
+パスを構築できた後も、署名をたどるだけでは十分ではありません。TLS クライアントは、少なくとも次の条件を個別に確認します。
+
+| 確認する条件 | 失敗した時に防ぎたいこと |
+| --- | --- |
+| 署名と発行者の連鎖 | 攻撃者が作った証明書を CA 発行と見なすこと |
+| 有効期間 | 期限切れ、または開始前の証明書を使うこと |
+| hostname と `subjectAltName` | 別の DNS 名向けの証明書を接続先に使うこと |
+| `basicConstraints` | 終端の証明書を CA として使い、さらに証明書を発行すること |
+| `keyUsage` と `extendedKeyUsage` | 鍵を許可されていない用途で使うこと |
+| trust anchor | 端末が信頼していない CA だけで連鎖を作ること |
+
+`basicConstraints` の `CA:TRUE` は、その証明書が CA として扱われ得ることを示します。`pathLenConstraint` があれば、その下に置ける CA の数も制限します。CA 証明書の `keyUsage` には通常 `keyCertSign` が必要です。サーバー証明書は `extendedKeyUsage` の `serverAuth` を持つことがあり、クライアントは TLS サーバー認証に使ってよいかを判断します。これらは RFC 5280 の証明書パス検証で確認する制約です。
+
+hostname の照合には、接続しようとした名前そのものを使います。例えば `api.example.test` に接続する時、`www.example.test` だけを含む証明書は通りません。ワイルドカードを使う場合も、RFC 9525 が許す位置と 1 つのラベルに限られます。IP アドレスに接続する場合は、DNS 名ではなく IP address 型の `subjectAltName` と照合します。
+
+<br>
+
+以下は、ローカルで作った Root CA とサーバー証明書を OpenSSL で検証する最小例です。`example.test` は説明用の予約済み名前であり、実在の公開サービスには接続しません。OpenSSL の [verify](https://docs.openssl.org/3.0/man1/openssl-verify/) は証明書パスを検証し、`-verify_hostname` は hostname も照合します。
+
+```sh
+mkdir pki-lab && cd pki-lab
+
+openssl req -x509 -newkey rsa:2048 -nodes -days 7 \
+  -keyout root.key -out root.pem -subj '/CN=Local Root' \
+  -addext 'basicConstraints=critical,CA:TRUE' \
+  -addext 'keyUsage=critical,keyCertSign,cRLSign'
+
+openssl req -newkey rsa:2048 -nodes -keyout server.key -out server.csr \
+  -subj '/CN=ignored.example.test'
+
+openssl x509 -req -in server.csr -CA root.pem -CAkey root.key -CAcreateserial \
+  -out server.pem -days 7 \
+  -extfile <(printf 'basicConstraints=critical,CA:FALSE\nkeyUsage=critical,digitalSignature\nextendedKeyUsage=serverAuth\nsubjectAltName=DNS:example.test')
+
+openssl verify -CAfile root.pem -purpose sslserver \
+  -verify_hostname example.test server.pem
+openssl verify -CAfile root.pem -purpose sslserver \
+  -verify_hostname other.example.test server.pem
+```
+
+出力の前者は成功し、後者は hostname が一致しないため失敗します。
+
+```text
+server.pem: OK
+CN = ignored.example.test
+error 62 at 0 depth lookup: hostname mismatch
+error server.pem: verification failed
+```
+
+この実験で `root.pem` を `-CAfile` に渡すことは、ローカルの検証器がその Root CA を trust store として受け入れることに相当します。実際のブラウザは、OS やブラウザが管理する複数の trust anchor と、より多くのポリシーを使います。
+
+---
+
+### 失効と可視化
+
+証明書の期限が残っていても、対応する秘密鍵の漏洩や誤発行を後から知ることがあります。失効（revocation）はこのような証明書を有効期限より前に無効にする仕組みです。CRL（Certificate Revocation List）は RFC 5280 で定義され、OCSP（Online Certificate Status Protocol）は [RFC 6960](https://www.rfc-editor.org/rfc/rfc6960) で定義された、特定の証明書の状態を問い合わせる方式です。
+
+ただし、クライアントが失効情報を取得できなかった時に接続を止めるかは、可用性とのトレードオフになります。OCSP 応答を TLS ハンドシェイクでサーバーが添える OCSP stapling は、クライアントが CA に直接問い合わせる回数を減らします。それでも失効の確認が常に成功する保証はありません。証明書を短期間で更新し、秘密鍵の保護と監視を併用する必要があります。
+
+Certificate Transparency（CT）は、公開 Web PKI の証明書を追記専用ログに記録し、誤発行を監視可能にする仕組みです。CT v2.0 は [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162) で定義されています。CT は DNS 名の所有を確認する仕組みでも、失効情報でもありません。証明書がログに登録されたことを示す SCT（Signed Certificate Timestamp）を利用して、発行を第三者が観測できるようにします。
+
+ACME（Automatic Certificate Management Environment）は、CA と証明書利用者の間で証明書の発行・更新・失効を自動化するプロトコルです。[RFC 8555](https://www.rfc-editor.org/rfc/rfc8555) では、HTTP-01 や DNS-01 の challenge で識別子の制御を検証します。ACME は証明書の配布と更新を自動化しますが、サーバーで更新済みの証明書を実際に読み込む設定まで自動で正しくするものではありません。
+
+---
+
+### 境界と運用
+
+PKI が検証するのは、指定した名前に対する公開鍵の結び付きと、その結び付きを発行した CA までの連鎖です。証明書が有効でも、接続先のアプリケーションが安全であること、取得したデータが正しいこと、サイト運営者が利用者の期待する組織であることまでは導けません。
+
+Public CA を使う場合は、公開 DNS 名、CA の発行要件、利用者の trust store をそろえて考えます。Private CA を使う場合は、Root 証明書の配布対象を最小にし、不要になった trust anchor を端末から除去できる状態を保ちます。どちらも、秘密鍵の保管、証明書の更新、失効・CT の監視を分けずに扱うことが必要です。
