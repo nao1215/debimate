@@ -7,186 +7,92 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 23
 ---
 
-RandomForest は、複数の[決定木](../decision-tree/)を組み合わせて予測する[アンサンブル学習](../ensemble-learning/) の代表的手法（Bagging）。  
-アンサンブル手法は、複数のモデルの出力をまとめて、単体より安定・高精度を狙う方法です。
-Bagging（Bootstrap Aggregating）は、ブートストラップで作った複数の学習セットで別々のモデルを学習し、予測を平均/多数決で集約する考え方です。
-それぞれの木は「ブートストラップサンプル」と「特徴量のランダム選択」で多様性を持たせ、分類は多数決、回帰は平均でまとめます。
+RandomForest は、少しずつ異なるデータで学習した多数の[決定木](../decision-tree/)を平均または多数決で束ねる手法です。単体の深い木は学習データの違いで予測が変わりやすいため、その揺れを平均して安定させます。
 
-[決定木](../decision-tree/) 単体は過学習しやすく不安定（高 Variance）です。独立に近い多数の木を平均することで Variance を縮めます（[バイアス-バリアンス分解](../bias-variance-tradeoff/) の bagging 側）。学習後は `feature_importances_`（MDI）で各特徴量の寄与が取れます。ただし、高カーディナリティバイアスがあるため [特徴量重要度](../feature-importance/) で説明する方法でも確認します。
+各木を異ならせる仕組みは二つあります。復元抽出した行で木を学習する bootstrap と、各分岐で見る列を一部に絞る `max_features` です。本記事では、単体木との安定性の違い、木数の決め方、重要度を読む際の限界を確認します。
 
----
+<br>
 
-### 決定木の分岐例（しきい値）
+### 予測を安定させる仕組み
+
+1. 学習データの行を復元抽出し、木ごとに少し違う学習集合を作ります。
+2. 各分岐では全列ではなく、一部の列だけを候補にします。
+3. 分類なら各木の予測を多数決、回帰なら平均して最終予測にします。
+
+bootstrap は列を入れ替える処理ではありません。同じ列を持つまま、行の重複と欠落を許して標本を作る処理です。列の候補もランダムに減らすことで、強い列だけを使う似た木が増えるのを抑えます。
 
 ```mermaid
-graph TD
-    X["ルート: 年齢 ≤ 30?"] -->|Yes| Y["購入 ≤ 2回?"]
-    X -->|No| Z["年収 ≤ 500万?"]
-    Y -->|Yes| A["クラス: 0"]
-    Y -->|No| B["クラス: 1"]
-    Z -->|Yes| C["クラス: 0"]
-    Z -->|No| D["クラス: 1"]
+flowchart LR
+    data[学習データ] --> sample1[bootstrap 標本 1]
+    data --> sample2[bootstrap 標本 2]
+    data --> sample3[bootstrap 標本 3]
+    sample1 --> tree1[決定木 1]
+    sample2 --> tree2[決定木 2]
+    sample3 --> tree3[決定木 3]
+    tree1 --> vote[多数決 / 平均]
+    tree2 --> vote
+    tree3 --> vote
 ```
 
 ---
 
-### ブートストラップは「行の再サンプリング」
+### 単体の木と比べる
 
-ブートストラップは、特徴量の種類を変えるのではなく、同じ列を持つまま行（サンプル）を復元抽出で取り直すことです。  
-そのため「別の学習セット」とは、行の並びと重複が違うデータを指します。
-
----
-
-### 例（元データが 5 行の場合）
-
-- 元データ: [1, 2, 3, 4, 5]
-- ブートストラップ 1: [2, 2, 3, 5, 1]
-- ブートストラップ 2: [4, 1, 5, 5, 2]
-
-特徴量をランダムに選ぶのは別の仕組みで、各分岐で一部の特徴量だけを見ることで木同士の違いをさらに増やします。
-
----
-
-### 仕組み（概要）
-
-1. データを復元抽出（ブートストラップ）して複数の学習セットを作る
-2. 各決定木は分割のたびに一部の特徴量だけを見る（max_features）
-3. 予測時は木の出力を平均/多数決で集約する
-
-一部の特徴量だけを見る理由は、木同士の相関を下げて多様性を増やし、[過学習](../overfitting/)を抑えるためです。
-
-```mermaid
-graph TD
-    A[元データ] --> B[ブートストラップ1]
-    A --> C[ブートストラップ2]
-    A --> D[ブートストラップ3]
-    B --> E[決定木1]
-    C --> F[決定木2]
-    D --> G[決定木3]
-    E --> H[予測1]
-    F --> I[予測2]
-    G --> J[予測3]
-    H --> K[多数決/平均]
-    I --> K
-    J --> K
-```
-
----
-
-### ブートストラップと「予測」の捉え方
-
-
-予測は「各木が出す答え」。  
-分類なら「クラス 1/0」や「陽性確率」、回帰なら数値です。RandomForest はそれらを集めて、分類は多数決、回帰は平均で最終予測にします。
-
----
-
-### 標準化が不要な理由
-
-RandomForest（および決定木一般）では、[標準化](../standardization/)を行っても結果がほぼ変わりません。各ノードでの分割が「特徴量 X が閾値 t 以下か」という順序判定で完結するためで、値が `1000` でも `0.001` でも、その特徴量内での順序が同じなら閾値が連動して動くだけで分割結果は同じになります。距離ベースの [kNN](../knn/) や正則化付きの [LogisticRegression](../logistic-regression/) とは異なる性質です。
-
-そのため前処理パイプラインで「とりあえず StandardScaler を挟む」という慣習を木系モデルにそのまま持ち込むのは不要で、計算コストの無駄になりやすいです。ただし [PCA](../pca/) のような前処理を併用する場合は、PCA 側がスケーリングを要求するので結果として標準化が必要になる、というように「他の前処理との関係で間接的に必要になる」場合はあります。
-
----
-
-### 前提・注意
-
-- スケーリングは必須ではない（木の分割は順序にのみ依存する）
-- 高次元でも動く。ただし、木数 `n_estimators` を増やすと計算コストが線形に増える
-- 重要度は `feature_importances_` で取れる。ただし、相関の強い特徴量同士で重要度が分散する性質がある（後述）
-- 外れ値に対しては、距離ベースのモデルほど敏感ではない。それでも、極端な値が分岐基準を引っ張ることはある
-- 多数の木を平均する性質上、単一の決定木に比べて解釈性は下がる
-
----
-
-### 特徴量重要度の使い方と落とし穴
-
-`model.feature_importances_` で各特徴量の重要度（Gini importance / Mean Decrease in Impurity）が出ます。0〜1 に正規化されており、大きいほど分岐に寄与した特徴量です。
-
-ただし注意点が 2 つあります。
-
-- 相関の強い特徴量があると、重要度が分散する。例えば「身長」と「体重」のように相関 0.9 を超える特徴量を両方入れると、本来 1 つの特徴量で出せる重要度が 2 つに割れて、それぞれ「半分の重要度の特徴量」として現れる。読み手が「両方とも中程度に重要」と誤読すると、[特徴量選択](/ml/ml/feature-selection/)を誤る
-- カーディナリティ（ユニーク値の数）の多い数値特徴量は、構造的に重要度が高く出やすい。分岐の選択肢が多いため、純度向上の余地が大きく見えてしまうため
-
-より信頼度の高い重要度を求める場合は、scikit-learn の `permutation_importance` を使います。各特徴量の値をランダムにシャッフルしたときの精度低下を測る方式で、上記 2 つのバイアスを受けにくいと考えられます。
-
----
-
-### 利点
-
-- 過学習しにくく安定しやすい（複数木の平均で分散が抑えられる）
-- 非線形関係や特徴量間の相互作用を自然に捉えられる
-- 欠損や外れ値に比較的強く、前処理コストが低い
-- 特徴量重要度を出せるため、簡易的な特徴量選択や説明に使える
-- [ハイパーパラメータ](/ml/ml/hyperparameter/)感度が低く、初期パラメータでも一定の精度が出るので強いベースラインになる
-- 並列学習が可能で、`n_jobs=-1` で全 CPU を使える
-
----
-
-### 欠点
-
-- モデルサイズが大きくなりがちで、例えば `n_estimators=300` を超えると数十 MB〜数百 MB になることもある
-- 推論時間も木数に比例するので、リアルタイム推論には不向きな場面がある
-- 決定境界が階段状になり、滑らかな関係（連続値の補間など）は苦手
-- 高い再現性には `random_state` の固定が必須
-- 多数の木の平均なので、単一の決定木のようなルール抽出（IF-THEN）は直接できない
-- 線形構造が強いデータでは、シンプルな[線形回帰](/ml/ml/linear-regression/)や [LogisticRegression](../logistic-regression/) より精度が落ちることがある
-
----
-
-## Python での実例
+次の実験では、同じ分類データから 24 種類の bootstrap 標本を作り、単体の深い木と 200 本の木からなる RandomForest を比べます。横軸の箱は標本ごとのテスト精度の分布です。
 
 ```python
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import roc_auc_score
-
-X = df.drop(columns=["target"])
-y = df["target"]
-
-X_train, X_valid, y_train, y_valid = train_test_split(
-    X, y, test_size=0.2, random_state=0, stratify=y
-)
-
-model = RandomForestClassifier(
-    n_estimators=300,
-    max_depth=None,
-    max_features="sqrt",
-    random_state=0,
-    n_jobs=-1,
-)
-model.fit(X_train, y_train)
-proba = model.predict_proba(X_valid)[:, 1]
-print("ROC-AUC:", roc_auc_score(y_valid, proba))
+for seed in range(24):
+    indices = np.random.default_rng(seed).choice(len(X_train), len(X_train), replace=True)
+    tree = DecisionTreeClassifier(random_state=seed).fit(X_train[indices], y_train[indices])
+    forest = RandomForestClassifier(
+        n_estimators=200, max_features="sqrt", random_state=seed, n_jobs=1
+    ).fit(X_train[indices], y_train[indices])
+    tree_scores.append(accuracy_score(y_test, tree.predict(X_test)))
+    forest_scores.append(accuracy_score(y_test, forest.predict(X_test)))
 ```
 
+![bootstrap 標本を変えた時の単体木と RandomForest のテスト精度](./random-forest_stability.svg)
+
+この乱数列では、単体木より RandomForest の箱が狭くなります。常に精度が上がる保証ではありませんが、木の誤りが完全に同じでなければ平均化で分散を下げられます。[バイアス-バリアンス分解](../bias-variance-tradeoff/) でいう bagging 側の効果です。
+
 ---
+
+### 木数を決める
+
+各木の bootstrap 標本に入らなかった行は out-of-bag（OOB）行と呼ばれます。OOB 精度は学習中の木数を増やす目安にできます。ただし最終的な性能を報告する時は、選択に使わなかったテスト集合を別に残します。
+
+```python
+model = RandomForestClassifier(
+    n_estimators=n_estimators, max_features="sqrt", bootstrap=True,
+    oob_score=True, random_state=12, n_jobs=1,
+).fit(X_train, y_train)
+oob_scores.append(model.oob_score_)
+test_scores.append(model.score(X_test, y_test))
+```
+
+![木数による OOB 精度と独立テスト精度の変化](./random-forest_oob.svg)
+
+OOB 精度が安定しても、その値を何度も見て木数を選べば楽観的になります。OOB や [交差検証](../cross-validation/) は開発中の候補選びに使い、最後に一度だけ別のテスト集合で確認します。
+
+---
+
+### 前処理と重要度
+
+木の分岐は「ある列が閾値以下か」という順序比較なので、列内の順序を保つ標準化は通常不要です。[kNN](../knn/) のような距離ベースの手法や、正則化付き線形モデルとは異なります。ただし PCA など別の前処理を組み合わせるなら、その前処理側の要件で[標準化](../standardization/)が必要になります。
+
+`feature_importances_` は分岐で不純度をどれだけ下げたかから作る MDI です。値の種類が多い列は分岐候補も多く、高く見えやすいという偏りがあります。また相関する列は一方だけが分岐に使われ、もう一方が低く見える場合があります。列を崩した時のテスト性能低下を見る permutation importance も併読します。具体的な反例は[特徴量重要度](../feature-importance/)を参照してください。
 
 ### 機械学習での使いどころ
 
-表形式データでは、最初にランダムフォレストを学習し、他のモデルと比較する基準にできます。
+- 非線形な境界や列同士の相互作用がある表形式データのベースライン
+- 単体木より安定した予測が必要で、推論時間とモデルサイズを許容できる場合
+- 重要な列の候補を探し、別の検証で確かめる出発点
 
-- 表形式データの分類・回帰の最初のベースライン
-- 特徴量の相互作用が強いタスク（年齢 × 収入 のような積の効果がある場合）
-- 前処理を最小化したいとき（[標準化](../standardization/)・外れ値処理がほぼ不要）
-- 特徴量重要度で「どの変数が効いているか」の当たりを付けたいとき
-- カテゴリ変数が多いタスク（GBDT（[Gradient Boosting](/ml/ml/gradient-boosting/) Decision Tree、勾配ブースティング木）系と並んで、表形式データで強い）
-- 欠損が多いデータ（scikit-learn 1.4 以降は `HistGradientBoosting` 系と同様に欠損対応が改善されている）
+### 適さないケース / 落とし穴
 
-具体的な利用例:
+- 数百本の木は推論時間とモデルサイズを増やすため、低遅延の用途には向きません。
+- scikit-learn の `RandomForestClassifier` はバージョンによって欠損値の扱いが異なります。欠損をそのまま渡せると決め付けず、使用するバージョンの仕様を確認します。
+- 多数の木を平均しても、因果関係や単純な IF-THEN 規則を説明できるわけではありません。
+- 時系列ではランダムな bootstrap で未来の行を混ぜないよう、分割方法を別途設計します。
 
-- 顧客の離脱予測: 多数の行動特徴量の交互作用を自動で捉える
-- 不正取引検知のベースライン: [PR-AUC](../roc-pr-auc/) で勾配ブースティングと比較する起点
-- 医療データの予後予測: 線形モデルで取りこぼす非線形な閾値効果を補足
-- Kaggle の Tabular コンペで GBDT と組み合わせるアンサンブル要員
-
----
-
-### 適さないケース
-
-- 推論速度やモデルサイズが厳しい制約になる場合（IoT デバイス、リアルタイム広告入札など）
-- 高い説明性が必要な場合（単純なルール 1 本を提示したい用途）
-- 線形性の強いデータ（[LogisticRegression](../logistic-regression/) のほうがシンプルで精度も近い）
-- 系列性が本質的なデータ（時系列・テキスト・画像）: 木は系列構造を直接扱わないため、専用モデルに劣る
-- 滑らかな関数を当てたい場合: 階段状の境界では補間が粗くなる
+図の再現用コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/random-forest_gen.py) にあります。

@@ -79,7 +79,7 @@ flowchart TB
 
 上記の図の `sku` は SKU（Stock Keeping Unit、在庫管理の最小単位）で、在庫を数える単位ごとに振る番号です。合計 19,000 円は、`unitPrice` と `quantity` を明細 2 件分だけ掛けて足した値です。
 
-`OrderLine` は自分の `sku` と `quantity` しか知らないため、合計が上限を超えたかどうかを 1 件では判定できません。判定できるのは、`lines` に 2 件とも持っている `Order` です。集約の外から `OrderLine` に直接届く経路があると、この判定を通らずに `quantity` が変わります。
+`OrderLine` は自分の `sku`、`quantity`、`unitPrice` しか知らないため、合計が上限を超えたかどうかを 1 件では判定できません。判定できるのは、`lines` に 2 件とも持っている `Order` です。集約の外から `OrderLine` に直接届く経路があると、この判定を通らずに `quantity` や `unitPrice` が変わります。
 
 ユースケースが直接 SQL を書くと、その経路ができます。次の 1 文は `Order` を経由しません。
 
@@ -160,8 +160,8 @@ func saveLines(ctx context.Context, tx *sql.Tx, o *order.Order) error {
 	}
 	for _, l := range o.Lines() {
 		if _, err := tx.ExecContext(ctx,
-			"INSERT INTO order_lines (order_id, sku, quantity) VALUES (?, ?, ?)",
-			string(o.Identity()), l.SKU, l.Quantity); err != nil {
+			"INSERT INTO order_lines (order_id, sku, quantity, unit_price) VALUES (?, ?, ?, ?)",
+			string(o.Identity()), l.SKU, l.Quantity, l.UnitPrice); err != nil {
 			return err
 		}
 	}
@@ -169,7 +169,7 @@ func saveLines(ctx context.Context, tx *sql.Tx, o *order.Order) error {
 }
 ```
 
-`o.Identity()` は集約ルートの ID を返し、`o.Lines()` は明細のコピーを返します。例えば、次の条件ではこのやり方が使えません。
+`o.Identity()` は集約ルートの ID を返し、`o.Lines()` は明細のコピーを返します。明細を復元する側も `sku`、`quantity`、`unit_price` を読み、同じ `OrderLine` を組み立てます。これで、図の 3,000 円と 8,000 円の単価を保存・復元の途中で失わず、`Order` が合計を検査できます。例えば、次の条件ではこのやり方が使えません。
 
 - 明細の行が他のテーブルから外部キーで参照されている
 - 行ごとの更新履歴やバージョン列を持っている。DB から見た記録が 1 回の更新ではなく削除と挿入になり、行の連続性が切れる

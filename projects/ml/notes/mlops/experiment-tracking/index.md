@@ -9,7 +9,7 @@ weight: 1
 
 実験管理（experiment tracking）は、機械学習モデルの学習を「再現可能な記録」として残す仕組みです。1 回の学習を「実験（experiment）」と捉え、そこに入った設定（hyperparameter、データセット、コードバージョン）、出てきた結果（metric、可視化、学習曲線）、副産物（学習済み weight、前処理後データ、評価レポート）を 1 セットで保存します。
 
-何百回も `train.py --lr 0.001` を回した記憶を頼りに「あのとき lr いくつだったっけ」を探す事態を避けるための運用基盤で、(1) 再現性、(2) モデル比較、(3) ステークホルダー説明、(4) 監査、の 4 つの目的を同時に達成します。代表的なツールに MLflow、Weights & Biases（W&B）、Neptune、Comet、TensorBoard、ClearML などがあります。
+何百回も `train.py --lr 0.001` を回した記憶を頼りに「あのとき lr いくつだったっけ」を探す事態を避けるための運用基盤で、(1) 再現性、(2) モデル比較、(3) ステークホルダー説明、(4) 監査、の 4 つの目的を同時に達成します。代表的なツールに [MLflow](https://mlflow.org/)、[Weights & Biases](https://wandb.ai/)（W&B）、Neptune、Comet、TensorBoard、ClearML などがあります。
 
 [ハイパーパラメータ](../../ml/hyperparameter/) 探索や [交差検証](../../ml/cross-validation/) と組み合わせると効果が大きく、ベイズ最適化や `Optuna` の study も実験管理ツールに保存できます。
 
@@ -52,12 +52,24 @@ graph LR
 
 ### コード例: MLflow
 
-MLflow を例にした最小限のトラッキングコードです。
+MLflow を例にした最小限のトラッキングコードです。`mlflow` をインストールしてから実行すると、ローカルの `mlruns/` に Iris 分類の run、モデル、混同行列、評価レポートが残ります。実データの精度を示す例ではなく、何を同じ run に結び付けるかを確認するための最小例です。
 
 ```python
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import mlflow
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score, f1_score
+from sklearn.datasets import load_iris
+from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, f1_score
+from sklearn.model_selection import train_test_split
+
+X, y = load_iris(return_X_y=True)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=0, stratify=y
+)
+artifact_dir = Path("artifacts")
+artifact_dir.mkdir(exist_ok=True)
 
 mlflow.set_experiment("churn-prediction")
 with mlflow.start_run(run_name="rf-baseline"):
@@ -75,12 +87,17 @@ with mlflow.start_run(run_name="rf-baseline"):
 
     # 4. artifacts を記録 (model 自体、可視化、レポート)
     mlflow.sklearn.log_model(model, "model")
-    mlflow.log_artifact("confusion_matrix.png")
-    mlflow.log_dict(classification_report_dict, "report.json")
+    fig, ax = plt.subplots()
+    ConfusionMatrixDisplay.from_predictions(y_test, pred, ax=ax)
+    figure_path = artifact_dir / "confusion_matrix.png"
+    fig.savefig(figure_path, bbox_inches="tight")
+    plt.close(fig)
+    mlflow.log_artifact(str(figure_path))
+    mlflow.log_dict({"test_size": len(y_test)}, "report.json")
 
     # 5. environment / lineage
-    mlflow.log_text(open("requirements.txt").read(), "requirements.txt")
-    mlflow.set_tag("git_commit", git_sha)
+    mlflow.log_text("scikit-learn", "environment.txt")
+    mlflow.set_tag("dataset", "sklearn.datasets.load_iris")
 ```
 
 `with mlflow.start_run()` のコンテキストで `log_*` を呼ぶだけで、ID が振られた run としてサーバーに記録されます。後でダッシュボードから実験を 1 行ずつ確認できます。
@@ -89,42 +106,62 @@ with mlflow.start_run(run_name="rf-baseline"):
 
 ### ハイパーパラメータ探索の可視化
 
-実験管理の最も典型的な利用は、ハイパーパラメータ探索の結果比較です。グリッドサーチ・ランダムサーチ・ベイズ最適化のどれを使っても、各試行を個別の run として記録すれば、後で 1 つのダッシュボードで一覧できます。
+実験管理の最も典型的な利用は、ハイパーパラメータ探索の結果比較です。グリッドサーチ・ランダムサーチ・ベイズ最適化のどれを使っても、各試行を個別の run として記録すれば、後で 1 つのダッシュボードで一覧できます。次の図は、比較の読み方を示すために生成した仮想の 25 run です。実測値ではありません。
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 
-# 25 通りの (lr, batch_size) を試して val_acc を取った例
+# 表示用の仮想結果。実際は tracking server から取得する
 lrs = [1e-4, 3e-4, 1e-3, 3e-3, 1e-2]
 batches = [16, 32, 64, 128, 256]
-val_acc = np.array([...])  # 5x5 の結果行列
-# 詳細は scripts 側を参照
-plt.savefig("experiment_sweep_heatmap.svg", bbox_inches="tight")
+val_acc = np.array([
+    [0.71, 0.74, 0.76, 0.73, 0.68],
+    [0.78, 0.82, 0.85, 0.82, 0.76],
+    [0.81, 0.87, 0.92, 0.88, 0.80],
+    [0.77, 0.84, 0.88, 0.83, 0.74],
+    [0.66, 0.70, 0.75, 0.69, 0.61],
+])
+fig, ax = plt.subplots()
+im = ax.imshow(val_acc, cmap="viridis", vmin=0.60, vmax=0.95)
+ax.set_xticks(range(len(batches)), batches)
+ax.set_yticks(range(len(lrs)), [f"{lr:.0e}" for lr in lrs])
+ax.set_xlabel("batch_size")
+ax.set_ylabel("learning_rate")
+best = np.unravel_index(np.argmax(val_acc), val_acc.shape)
+ax.scatter(best[1], best[0], s=220, facecolors="none", edgecolors="#e15759")
+fig.colorbar(im, ax=ax, label="val_acc")
+fig.savefig("experiment_sweep_heatmap.svg", bbox_inches="tight")
 ```
 
 ![ハイパーパラメータ sweep のヒートマップ](./experiment_sweep_heatmap.svg)
 
-赤丸が最良の組み合わせで、`lr=1e-3, batch_size=64` が最適です。色の濃淡は val_acc を直接表します。各 run に `lr`、`batch_size`、`val_acc` を記録しておくと、この形式の表や図をまとめて作成できます。
+この仮想例では、赤丸の `lr=1e-3, batch_size=64` が最良です。色の濃淡は val_acc を表します。実データでは、各 run に `lr`、`batch_size`、`val_acc` を記録し、データ分割と乱数 seed も同時に比較します。
 
 ---
 
 ### 複数 run の学習曲線比較
 
-異なる設定の学習曲線を 1 枚に重ねれば、「過学習しているか」「学習が早すぎたか」が一目で分かります。
+異なる設定の学習曲線を 1 枚に重ねると、学習の速さや検証指標の差を比較できます。以下の値も読み方を示す仮想 run であり、トラッキングサーバーから取得した実測値ではありません。
 
 ```python
-# トラッキングサーバーから複数 run の epoch ごと val_acc を取得して描画
+# tracking server から取得した配列を想定する仮想曲線
+epochs = np.arange(1, 51)
+run_12_curve = 0.55 * (1 - np.exp(-0.020 * epochs))
+run_18_curve = 0.82 * (1 - np.exp(-0.045 * epochs))
+run_23_curve = 0.91 * (1 - np.exp(-0.060 * epochs))
+run_27_curve = 0.79 * (1 - np.exp(-0.015 * epochs))
 plt.plot(epochs, run_12_curve, label="run #12 lr=1e-2 bs=128")
 plt.plot(epochs, run_18_curve, label="run #18 lr=3e-3 bs=64")
 plt.plot(epochs, run_23_curve, label="run #23 lr=1e-3 bs=64")
 plt.plot(epochs, run_27_curve, label="run #27 lr=1e-4 bs=32")
+plt.legend()
 plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 ```
 
 ![複数 run の学習曲線比較](./experiment_compare_runs.svg)
 
-run #23（緑）が最も高い val_acc に収束しており、run #12（灰色）は学習率が大きすぎて早期に頭打ちです。run #27（青）は学習率が小さすぎて 50 epoch では伸びきっていません。「次は run #23 の周辺をさらに細かく探索する」「run #27 はもっと epoch を回す」といった次のアクションを可視化された結果から決められます。
+この仮想例では、run #23（緑）が最も高い val_acc に収束し、run #27（青）は 50 epoch 時点で伸び切っていません。実際の曲線では、過学習を判断するために train/validation の両方、データ分割、停止条件も記録します。
 
 ---
 

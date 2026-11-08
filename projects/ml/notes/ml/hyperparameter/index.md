@@ -7,74 +7,76 @@ tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 10
 ---
 
-ハイパーパラメータ（hyperparameter）は、機械学習モデルを学習させる前に人間が決める設定値のことです。  
-データから自動で決まる「パラメータ（parameter）」と区別されます。
+ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、`Ridge(alpha=1.0)` の `alpha` や RandomForest の木数は、候補を比べて選びます。
 
----
+重要なのは、候補を選ぶデータと最終性能を測るデータを分けることです。本記事では Ridge の `alpha` を例に、交差検証で候補を選び、最後に触れていないテスト集合で評価する順序を確認します。
+
+<br>
 
 ### パラメータとの違い
 
-両者は「いつ・誰が決めるか」で分かれます。
+- パラメータ: `Ridge.fit()`の後に得られる係数のように、学習データから決まる値です。
+- ハイパーパラメータ: `alpha`、[kNN](../knn/) の `n_neighbors`、RandomForest の `max_depth` のように、学習前に候補を指定する値です。
 
-- パラメータ (parameter): 学習の結果としてデータから決まる値。[線形回帰](/ml/ml/linear-regression/)の係数 `w_i`、ニューラルネットの重み、決定木の分岐条件など。人間は直接いじらない
-- ハイパーパラメータ (hyperparameter): 学習を始める前に人間が決めて固定する値。[正則化](../regularization/)の `alpha`、[kNN](../knn/) の `k`、[RandomForest](../random-forest/) の `max_depth`、[GradientBoosting](../gradient-boosting/) の学習率 `learning_rate` など
-
-scikit-learn の API で言うと、`Ridge(alpha=1.0).fit(X, y)` の `alpha=1.0` がハイパーパラメータ、`.fit()` した後にモデルが内部に持つ `.coef_` がパラメータです。
+パラメータは訓練集合に合わせて更新されます。ハイパーパラメータは、訓練集合をさらに分割する[交差検証](../cross-validation/)で比較してから固定します。
 
 ---
 
-### 同じアルゴリズムでも全然違う挙動になる
+### 候補を選ぶ場所
 
-データとアルゴリズムを固定して、ハイパーパラメータだけ変えた例です。Ridge 回帰の正則化強度 `alpha` を 3 段階に振っています。
+データを訓練用とテスト用に一度だけ分けます。テスト集合は `alpha` の候補を選ぶまで見ません。訓練集合の中を 5 分割し、各 `alpha` の平均 R² と分割間のばらつきを比較します。
 
-![alpha の違いで挙動が変わる](./hyperparameter_compare.svg)
+```mermaid
+flowchart LR
+    data[全データ] --> split[訓練集合 / テスト集合]
+    split --> train[訓練集合]
+    train --> cv[5-fold CVでalphaを選ぶ]
+    cv --> refit[選んだalphaで訓練集合全体に再学習]
+    refit --> test[未使用のテスト集合で一度だけ評価]
+```
 
-- `alpha=0.001`: 弱すぎてノイズまで拾い、訓練点をなぞる暴れた曲線
-- `alpha=0.1`: 緑の真の関数（点線）にほぼ沿う
-- `alpha=1000`: 強すぎて直線に潰れ、データの特徴を捉えきれない
-
-同じデータで Ridge を学習しても、正則化の強さ `alpha` によって予測が変わります。
-
----
-
-### よく出会うハイパーパラメータ
-
-| モデル | 代表的なハイパーパラメータ |
-|---|---|
-| [kNN](../knn/) | `n_neighbors` (k)、`weights`、`metric` |
-| [ロジスティック回帰](../logistic-regression/) | `C` (正則化の逆数)、`penalty` (`l1`/`l2`) |
-| [Ridge / Lasso](../regularization/) | `alpha` |
-| [RandomForest](../random-forest/) | `n_estimators`、`max_depth`、`min_samples_leaf`、`max_features` |
-| [GradientBoosting](../gradient-boosting/) | `learning_rate`、`n_estimators`、`max_depth`、`subsample` |
-| ニューラルネット | 学習率、層の数、ユニット数、`batch_size`、`epochs`、`dropout` 率 |
+探索中にテスト R² を見て `alpha` を選ぶと、テスト集合にも合わせ込んでしまいます。候補数が多い場合や選択自体を評価したい場合は、外側の評価と内側の探索を分ける nested CV を使います。
 
 ---
 
-### 選び方
+### Ridge の探索を実行する
 
-ハイパーパラメータは「データに合わせて選ぶ」もので、決め打ち定数ではありません。教科書的な定番手順は以下の通りです。
+以下の実験では、訓練集合だけで 19 個の `alpha` を 5-fold CV し、最も高い平均 R² を選びます。灰色は訓練 R²、青は CV R²、誤差棒は fold 間の標準偏差です。
 
-1. 候補を絞る (例: `alpha ∈ [0.01, 0.1, 1.0, 10, 100]`)
-2. [交差検証](../cross-validation/)で各候補の平均スコアを出す
-3. 一番良かったものを採用
-4. 必要なら 1 で外した範囲を再探索
+```python
+search = GridSearchCV(
+    make_pipeline(StandardScaler(), Ridge()),
+    param_grid={"ridge__alpha": alphas},
+    cv=KFold(n_splits=5, shuffle=True, random_state=17),
+    scoring="r2",
+    return_train_score=True,
+).fit(X_train, y_train)
 
-scikit-learn では `GridSearchCV`（網羅探索）や `RandomizedSearchCV`（ランダム探索）が用意されています。候補数が多くなる[勾配ブースティング](../gradient-boosting/)系では Optuna のようなベイズ最適化系ツールも使われます。
+test_r2 = search.score(X_test, y_test)
+```
+
+![Ridge の alpha ごとの訓練 R² と CV R²。破線は CV で選んだ alpha](./hyperparameter_search.svg)
+
+訓練 R² だけを見ると弱い正則化が良く見えます。一方、CV R² は過度に小さい `alpha` で下がる場合があり、未知データに対する候補選びの根拠になります。テスト R² は選び終えた後に一度だけ出します。
 
 ---
 
-### 機械学習での使いどころ
+### モデルごとの設定
 
-scikit-learn のコードでは、設定値と学習後の値を区別して確認します。
+| モデル | 主なハイパーパラメータ | 何を変えるか |
+| --- | --- | --- |
+| [kNN](../knn/) | `n_neighbors`、`metric` | 近傍の広さと距離の測り方 |
+| Ridge / Lasso | `alpha` | 正則化の強さ |
+| RandomForest | `n_estimators`、`max_depth`、`max_features` | 木の数・複雑さ・木同士の違い |
+| Gradient Boosting | `learning_rate`、`n_estimators`、`max_depth` | 一回の更新量と木の複雑さ |
+| ニューラルネット | 学習率、層数、batch size | 更新量と表現力 |
 
-- `RandomForestClassifier(max_depth=4, n_estimators=100, random_state=0)` のような呼び出しを見たとき、何が固定で何が学習されるか判断できる
-- 結果が想定と違うとき、データを疑う前にハイパーパラメータの設定を確認できる
-- テスト精度が低い時は、`max_depth=None` のような無制限設定や、極端な `alpha` を指定していないか確認する
+候補は広い範囲から始め、CV の結果を見て狭めます。探索を続けるほど CV への過適合も起きるため、改善幅が小さい場合はデータ・特徴量・評価指標を見直します。
 
----
+### 適さないケース / 落とし穴
 
-### よくある混乱
+- `random_state`は乱数を再現する設定であり、性能を良くするための探索対象ではありません。
+- 時系列や同一ユーザーの複数行には、通常の KFold を使いません。TimeSeriesSplit や GroupKFold のようにデータの構造を保つ分割を使います。
+- テスト集合を繰り返し見た場合は、すでに独立したテストではありません。新しい評価集合を用意するか、評価が楽観的になり得ることを明記します。
 
-- ハイパーパラメータと「[過学習](../overfitting/)対策」を分けて考えてしまう: 多くの場合、両者は一体（`max_depth` を絞る = 過学習対策、かつハイパーパラメータ調整）
-- `random_state` をハイパーパラメータと混同する: `random_state` は再現性のための乱数シードであって、性能に系統的な影響は与えない（探索対象に含めない）
-- ハイパーパラメータ調整に固執しすぎる: 多くの問題ではデータの質や特徴量設計の方が効く。チューニングは効果が頭打ちになりやすい
+図の再現用コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hyperparameter_gen.py) にあります。

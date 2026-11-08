@@ -20,8 +20,13 @@ os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    path = os.path.join(NOTE_DIR, name)
+    plt.savefig(path, bbox_inches="tight")
     plt.close()
+    with open(path, encoding="utf-8") as file:
+        content = file.read()
+    with open(path, "w", encoding="utf-8") as file:
+        file.write("\n".join(line.rstrip() for line in content.splitlines()) + "\n")
 
 
 # ============================================================
@@ -33,10 +38,10 @@ log1p_vals = np.log1p(raw)
 
 fig, axes = plt.subplots(1, 2, figsize=(9, 3.5))
 axes[0].hist(raw, bins=30, color=COLOR_BLUE, edgecolor="white")
-axes[0].set_title(f"Original (skewness={stats.skew(raw):.2f})")
+axes[0].set_title(f"Example: original (skewness={stats.skew(raw):.2f})")
 axes[0].set_xlabel("value")
 axes[1].hist(log1p_vals, bins=30, color=COLOR_ORANGE, edgecolor="white")
-axes[1].set_title(f"After log1p (skewness={stats.skew(log1p_vals):.2f})")
+axes[1].set_title(f"Example: after log1p (skewness={stats.skew(log1p_vals):.2f})")
 axes[1].set_xlabel("log1p(value)")
 plt.tight_layout()
 save("skewness_log1p.svg")
@@ -130,8 +135,7 @@ ax.set_xlabel("fitted value"); ax.set_ylabel("residual")
 ax.set_title("Residuals on log1p(y): roughly uniform")
 ax.grid(True, alpha=0.25)
 
-plt.suptitle("log1p variable transformation flattens residual pattern (a common reason to use it)",
-             y=1.02, fontsize=11)
+plt.suptitle("Synthetic example: log1p changes the residual pattern", y=1.02, fontsize=11)
 plt.tight_layout()
 save("skewness_residual_diag.svg")
 
