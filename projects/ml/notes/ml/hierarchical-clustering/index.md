@@ -22,18 +22,18 @@ weight: 30
 
 ```python
 import numpy as np
-from scipy.spatial import ConvexHull
-import matplotlib.pyplot as plt
+from scipy.cluster.hierarchy import linkage
 
+# 図と同じ 7 点。single linkage では k=3 になるまで 4 回結合する。
 points = np.array([[0.5, 1.0], [0.7, 0.9], [3.0, 3.0], [3.2, 2.8],
-                    [3.1, 3.2], [1.5, 3.5], [1.7, 3.3]])
-# 各ステップで最も近い 2 クラスタを merge してゆく
-plt.savefig("hierarchical_steps.svg", bbox_inches="tight")
+                   [3.1, 3.2], [1.5, 3.5], [1.7, 3.3]])
+Z = linkage(points, method="single")
+print(Z[:4, :2].astype(int))  # 最初の 4 回に結合したクラスタ
 ```
 
 ![凝集型クラスタリングのステップ進行](./hierarchical_steps.svg)
 
-ステップ 0 では各点が独立したクラスタです。ステップ 1 で最も近い 2 点（左下のペア）をマージ、ステップ 2 では別の点群がまとまり、ステップ 3 で `k = 3` の状態に到達です。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムです。ただし、最近接の定義（リンク方法）で結果が変わります。
+ステップ 0 では各点が独立したクラスタです。7 点から `k = 3` にするには、クラスタ数を 4 つ減らすため 4 回の結合が必要です。この図ではステップ 1 から 3 で 3 組の近い点を結合し、ステップ 4 で右上の 3 点を 1 クラスタにして `k = 3` へ到達します。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムですが、最近接の定義（リンク方法）で結果が変わります。
 
 ---
 
@@ -43,6 +43,7 @@ plt.savefig("hierarchical_steps.svg", bbox_inches="tight")
 
 ```python
 from scipy.cluster.hierarchy import linkage, dendrogram, fcluster
+import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 
 X, _ = make_blobs(n_samples=40, centers=3, cluster_std=0.8, random_state=0)
@@ -77,7 +78,11 @@ plt.savefig("hierarchical_dendrogram.svg", bbox_inches="tight")
 | ward | マージ前後の分散増加 | 球形 + クラスタサイズ均等 |
 
 ```python
+from scipy.cluster.hierarchy import linkage
 from sklearn.cluster import AgglomerativeClustering
+from sklearn.datasets import make_blobs
+
+X, _ = make_blobs(n_samples=40, centers=3, cluster_std=0.8, random_state=0)
 
 for method in ["single", "complete", "average", "ward"]:
     Z = linkage(X, method=method)
@@ -105,6 +110,9 @@ plt.savefig("hierarchical_linkage_compare.png", bbox_inches="tight")
 ```python
 from scipy.cluster.hierarchy import linkage, cophenet
 from scipy.spatial.distance import pdist
+from sklearn.datasets import make_blobs
+
+X, _ = make_blobs(n_samples=40, centers=3, cluster_std=0.8, random_state=0)
 
 dist_orig = pdist(X)
 for method in ["single", "complete", "average", "ward"]:
@@ -116,10 +124,10 @@ for method in ["single", "complete", "average", "ward"]:
 出力例:
 
 ```text
-single: cophenetic r = 0.683
-complete: cophenetic r = 0.762
-average: cophenetic r = 0.844
-ward: cophenetic r = 0.751
+single: cophenetic r = 0.739
+complete: cophenetic r = 0.798
+average: cophenetic r = 0.801
+ward: cophenetic r = 0.776
 ```
 
 この場合 average が最も距離関係を保存している、と分かります。この指標が測るのは距離関係の保存度です。得られたクラスタが分析目的に合うかは、別に確認します。

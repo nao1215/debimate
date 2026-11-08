@@ -1,5 +1,6 @@
 """dbscan ノート用の図を生成するスクリプト。"""
 import os
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import DBSCAN, KMeans
@@ -14,8 +15,12 @@ os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name):
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    path = os.path.join(NOTE_DIR, name)
+    plt.savefig(path, bbox_inches="tight")
     plt.close()
+    if path.endswith(".svg"):
+        svg = Path(path).read_text()
+        Path(path).write_text("\n".join(line.rstrip() for line in svg.splitlines()) + "\n")
 
 
 # ============================================================
@@ -57,8 +62,10 @@ save("dbscan_vs_kmeans.svg")
 rng = np.random.default_rng(0)
 # Generate 1 cluster of 20 points + a few noise points
 cluster = rng.normal([0, 0], 0.4, (30, 2))
+# この点はコア点の近傍にはあるが、自身の近傍数は min_samples 未満になる。
+border_pt = np.array([[1.0, 0.0]])
 noise_pts = np.array([[2.5, 1.5], [-2.5, 2.0], [2.0, -2.0]])
-X = np.vstack([cluster, noise_pts])
+X = np.vstack([cluster, border_pt, noise_pts])
 
 eps = 0.6
 min_samples = 5
@@ -143,12 +150,7 @@ plt.plot(k_distances, color=COLOR_BLUE, lw=2)
 plt.xlabel(f"points sorted by {k}-NN distance")
 plt.ylabel(f"distance to {k}th neighbor")
 plt.title(f"k-distance plot: look for the elbow → suggested eps")
-# Find elbow approximation (max curvature)
-# Simple: pick at 95th percentile
-elbow = np.percentile(k_distances, 95)
-plt.axhline(elbow, color=COLOR_RED, ls="--", lw=1.5,
-            label=f"suggested eps ≈ {elbow:.3f}")
-plt.legend()
+# 図は候補を読む補助であり、固定パーセンタイルで eps を決めない。
 plt.grid(True, alpha=0.25)
 plt.tight_layout()
 save("dbscan_k_distance_elbow.svg")

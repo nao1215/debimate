@@ -90,7 +90,7 @@ D を追加しても、既存のトークンを動かさなければ、D に保�
 2. 1 台にトークンを 1 個だけ置く。
 3. 1 台にトークンを 128 個置く。
 
-[Python の hashlib](https://docs.python.org/3/library/hashlib.html)で SHA-256 を計算し、キーには `key:0` から `key:99999`、トークンには `node:A:0` のような文字列を使います。全ての入力が固定されているため、同じコードで同じ結果を確認できます。SHA-256 は実験で使うハッシュ関数として選んでおり、Consistent Hashing が暗号学的ハッシュ関数を必須とするわけではありません。
+[Python の hashlib](https://docs.python.org/3/library/hashlib.html) で SHA-256 を計算し、キーには `key:0` から `key:99999`、トークンには `node:A:0` のような文字列を使います。全ての入力が固定されているため、同じコードで同じ結果を確認できます。SHA-256 は実験で使うハッシュ関数として選んでおり、Consistent Hashing が暗号学的ハッシュ関数を必須とするわけではありません。
 
 [実験コード](experiment.py)を保存し、次のコマンドで実行できます。追加パッケージは不要です。
 
@@ -205,7 +205,7 @@ ring-v128: changed=26510 (26.51%), A=23047 B=25048 C=25395 D=26510
 
 <br>
 
-複製先が決まっても、停止中に更新を受け取れなかったノードには古いデータが残ります。[Amazon Dynamo の論文](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf)では、Consistent Hashing による分割と、Merkle Tree を使った複製間の修復を組み合わせています。[Merkle Tree](/notes/blockchain-systems/merkle-tree/)は、データを階層的なハッシュで比較し、不一致のある部分を絞るために使えます。
+複製先が決まっても、停止中に更新を受け取れなかったノードには古いデータが残ります。[Amazon Dynamo の論文](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf)では、Consistent Hashing による分割と、Merkle Tree を使った複製間の修復を組み合わせています。[Merkle Tree](/notes/blockchain-systems/merkle-tree/) は、データを階層的なハッシュで比較し、不一致のある部分を絞るために使えます。
 
 ノード追加時にも、新しい保存先を計算するだけではデータは届きません。対象範囲のコピー中に受け付けた更新を反映し、切り替え前後の要求をどこに送るかを決める必要があります。Consistent Hashing は移す範囲を小さくしますが、移行中の更新を失わない仕組みまでは提供しません。
 

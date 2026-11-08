@@ -1,0 +1,13 @@
+fresh: ACCEPT 2000.00 USD
+age 300s: ACCEPT 2000.00 USD
+age 301s: REJECT stale price
+no update: REJECT invalid timestamp
+future: REJECT invalid timestamp
+zero: REJECT non-positive price
+negative: REJECT non-positive price
+6 decimals: ACCEPT 2000.00 USD
+bad decimals: REJECT unsupported decimals
+wrong pair: REJECT wrong pair
+huge price: REJECT price outside application bounds
+plausible wrong: ACCEPT 1800.00 USD
+Assertions: PASS (12 cases)

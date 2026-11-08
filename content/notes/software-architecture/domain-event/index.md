@@ -80,13 +80,17 @@ func (u *usecase) confirmOrder(ctx context.Context, id OrderID) error {
 		if err := order.Confirm(time.Now()); err != nil {
 			return err
 		}
+		quantities := make(map[SKU]int)
 		for _, line := range order.Lines() {
+			quantities[line.SKU] += line.Quantity
+		}
+		for sku, quantity := range quantities {
 			// SKU（Stock Keeping Unit）は在庫を数える単位で、Stock は別の Aggregate
-			stock, err := u.stocks.Find(tx, line.SKU)
+			stock, err := u.stocks.Find(tx, sku)
 			if err != nil {
 				return err
 			}
-			if err := stock.Reserve(line.Quantity); err != nil {
+			if err := stock.Reserve(quantity); err != nil {
 				return err
 			}
 			if err := u.stocks.Save(tx, stock); err != nil {
@@ -98,7 +102,7 @@ func (u *usecase) confirmOrder(ctx context.Context, id OrderID) error {
 }
 ```
 
-このコードは 1 台の DB（データベース）の上では動きますが、`Order` と行ごとの `Stock` を同じトランザクションで更新する、原則からの明示的な例外です。同じ SKU が注文行に重複していれば同じ `Stock` を二度読んで保存し得るため、先に SKU ごとに数量を集約するか、Aggregate 側で同じ SKU の予約を一度に検査する必要があります。途中の SKU で失敗した時はトランザクション全体を巻き戻し、配送後の重複は処理済みイベントの一意制約で抑えます。問題は、同じ商品を含む注文が同時に届いた時に現れます。`Stock` は商品ごとに1つしかなく、その商品を含む注文は同じ在庫レコードを更新するため、競合します。
+このコードは 1 台の DB（データベース）の上では動きますが、`Order` と SKU ごとの `Stock` を同じトランザクションで更新する、原則からの明示的な例外です。最初に SKU ごとに数量を集約しているのは、同じ SKU が複数の注文行にある時も `Stock` を一度だけ読み、合計数量を一度だけ検査・保存するためです。途中の SKU で失敗した時はトランザクション全体を巻き戻します。問題は、同じ商品を含む注文が同時に届いた時に現れます。`Stock` は商品ごとに 1 つしかなく、その商品を含む注文は同じ在庫レコードを更新するため、競合します。
 
 以下は、人気商品への注文が 2 件同時に届いた場合です。`Stock` をバージョン列で守る楽観的ロックの実装を想定しています。
 
@@ -164,7 +168,7 @@ func (e OrderConfirmed) Name() string { return "order.confirmed" }
 
 ### イベントを作る主体
 
-イベントを Aggregate に作らせると扱いやすくなります。状態を変更するAggregate内で、対応するイベントも記録できるからです。呼び出し側で作ると、状態の変更とイベントの発行が別々の場所に散らばり、片方だけを直した時にずれます。Aggregate の状態変更に対応しないイベントは、呼び出し側で作ります。
+イベントを Aggregate に作らせると扱いやすくなります。状態を変更する Aggregate 内で、対応するイベントも記録できるからです。呼び出し側で作ると、状態の変更とイベントの発行が別々の場所に散らばり、片方だけを直した時にずれます。Aggregate の状態変更に対応しないイベントは、呼び出し側で作ります。
 
 ```go
 // Confirm は注文を確定し、確定したという事実をイベントとして記録します。
@@ -208,7 +212,7 @@ func (o *Order) PullEvents() []DomainEvent {
 
 <br>
 
-[Transactional Outbox](https://microservices.io/patterns/data/transactional-outbox.html)では、業務データと送信予定のイベントを同じDBトランザクションで保存します。以下は、その構成です。
+[Transactional Outbox](https://microservices.io/patterns/data/transactional-outbox.html) では、業務データと送信予定のイベントを同じ DB トランザクションで保存します。以下は、その構成です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -284,13 +288,17 @@ func (h *stockHandler) Handle(ctx context.Context, ev OrderConfirmed) error {
 		if !inserted {
 			return nil
 		}
-		reserved := make([]*Stock, 0, len(ev.Lines))
+		quantities := make(map[SKU]int)
 		for _, line := range ev.Lines {
-			stock, err := h.stocks.Find(tx, line.SKU)
+			quantities[line.SKU] += line.Quantity
+		}
+		reserved := make([]*Stock, 0, len(quantities))
+		for sku, quantity := range quantities {
+			stock, err := h.stocks.Find(tx, sku)
 			if err != nil {
 				return err
 			}
-			if err := stock.Reserve(line.Quantity); err != nil {
+			if err := stock.Reserve(quantity); err != nil {
 				// 在庫不足なら在庫を 1 件も保存せず、失敗のイベントを残してコミットする
 				return h.outbox.Append(tx, newReservationFailed(ev, line))
 			}
@@ -330,7 +338,7 @@ sequenceDiagram
 
 <br>
 
-保存を明細のループの外に出しているのは、ループの中で保存すると、3 件目で在庫が足りなかった場合に、1 件目と 2 件目の引き当てだけが残ったままコミットされるからです。
+最初に SKU ごとの数量へまとめているので、同じ商品が複数行にあっても、別々に読み込んだ `Stock` を後から上書きしません。保存を SKU ごとの検査の後にまとめているのは、在庫が足りなかった場合に、先に検査した商品の引き当てだけが残ったままコミットされるのを防ぐためです。この例は引き当て対象を複数の `Stock` Aggregate にまたがって扱うので、ここでもトランザクション内での原子性に頼っています。別 DB や別 Bounded Context に分けるなら、各 SKU の予約を別イベントにし、失敗時の補償を業務として設計します。
 
 `Reserve` の失敗をエラーとして返さないのは、ハンドラがエラーを返すとトランザクションが巻き戻り、処理済みの記録も消えて、同じイベントが再び配送されるからです。在庫不足は再試行しても解消しないので、配送が止まらなくなります。エラーを返すのはデッドロックのように再試行で解消する失敗に限り、在庫不足のような業務上の失敗は別のイベントとして残します。
 

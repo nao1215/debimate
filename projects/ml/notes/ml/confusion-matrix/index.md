@@ -9,7 +9,7 @@ weight: 1
 
 混同行列（confusion matrix）は、分類結果を「正解/不正解」と「陽性/陰性」の組み合わせで整理した 2×2 の表です。偽陽性（False Positive, FP）と偽陰性（False Negative, FN）のバランスを見ることで、誤りの種類を把握できます。
 
-陽性が極端に少ない [クラス不均衡](../class-imbalance/) のデータでは、Accuracy 1 つだけ見ると「全部陰性と予測するだけのモデル」が高スコアを取ってしまうため、Precision・Recall・F1 のように混同行列の各セル比から計算される指標を併用するのが必須となります。閾値ごとの真陽性率と偽陽性率はROC曲線、PrecisionとRecallはPR曲線で確認できます（[ROC-AUC / PR-AUC](../roc-pr-auc/)）。
+陽性が極端に少ない [クラス不均衡](../class-imbalance/) のデータでは、Accuracy 1 つだけ見ると「全部陰性と予測するだけのモデル」が高スコアを取ってしまうため、Precision・Recall・F1 のように混同行列の各セル比から計算される指標を併用するのが必須となります。閾値ごとの真陽性率と偽陽性率は ROC 曲線、Precision と Recall は PR 曲線で確認できます（[ROC-AUC / PR-AUC](../roc-pr-auc/)）。
 
 ---
 
@@ -24,7 +24,7 @@ weight: 1
 
 ### 閾値調整の考え方
 
-多くの分類モデルは「陽性である確率（スコア）」を出力します。このスコアに対してしきい値を動かすと、FP と FN のバランスが変わります。
+多くの分類モデルは「陽性である確率（スコア）」を出力します。このスコアに対してしきい値を動かすと、FP と FN のバランスが変わります。確率そのものではなく順位だけを返すモデルでも、同じように境界値を決めて陽性・陰性へ分けます。
 
 しきい値は「陽性/陰性に分ける境界値」で、例えば 0.5 ならスコアが 0.5 以上を陽性と判定します。しきい値を変えることで、誤検知（FP）と見逃し（FN）のどちらを重視するかを調整できます。
 
@@ -35,35 +35,33 @@ weight: 1
 
 ## Python での実例
 
-しきい値 0.5 で混同行列を作り、可視化する例です。
+同じ 8 件のスコアを 3 つのしきい値で比べます。表はコードの出力から作るため、数値と説明を別々に直す必要がありません。
 
 ```python
-import matplotlib.pyplot as plt
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import confusion_matrix, precision_score, recall_score
 
 y_true = [0, 0, 0, 0, 1, 1, 1, 1]
 y_score = [0.1, 0.3, 0.4, 0.8, 0.2, 0.6, 0.7, 0.9]
-y_pred = [1 if s >= 0.5 else 0 for s in y_score]
-
-cm = confusion_matrix(y_true, y_pred)
-print(cm)  # [[3, 1], [1, 3]]。行は正解、列は予測
-plt.imshow(cm, cmap="Blues")
-plt.xticks([0, 1], ["Negative", "Positive"])
-plt.yticks([0, 1], ["Negative", "Positive"])
-plt.title("Confusion Matrix (threshold=0.5)")
-plt.colorbar()
-plt.tight_layout()
-plt.show()
+for threshold in [0.3, 0.5, 0.7]:
+    y_pred = [int(score >= threshold) for score in y_score]
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+    precision = precision_score(y_true, y_pred, zero_division=0)
+    recall = recall_score(y_true, y_pred, zero_division=0)
+    print(
+        f"{threshold:.1f}: TN={tn} FP={fp} FN={fn} TP={tp} "
+        f"precision={precision:.2f} recall={recall:.2f}"
+    )
 ```
 
 出力:
 
 ```text
-[[3, 1],
- [1, 3]]
+0.3: TN=1 FP=3 FN=1 TP=3 precision=0.50 recall=0.75
+0.5: TN=3 FP=1 FN=1 TP=3 precision=0.75 recall=0.75
+0.7: TN=3 FP=1 FN=2 TP=2 precision=0.67 recall=0.50
 ```
 
-この 8 件では行が正解、列が予測です。したがって `[[3, 1], [1, 3]]` の左上は TN、右上は FP、左下は FN、右下は TP です。実務では閾値を 1 つだけ選ばず、同じ `y_true` と `y_score` から複数の閾値で Precision と Recall を並べ、偽陽性・偽陰性のコストで決めます。
+各行で混同行列の行は正解、列は予測です。例えば 0.5 の `[[3, 1], [1, 3]]` では、左上が TN、右上が FP、左下が FN、右下が TP です。実務ではしきい値を 1 つだけ選ばず、同じ `y_true` と `y_score` から複数のしきい値で Precision と Recall を並べ、偽陽性・偽陰性のコストで決めます。
 
 | 閾値 | TN | FP | FN | TP | Precision | Recall |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -71,7 +69,7 @@ plt.show()
 | 0.5 | 3 | 1 | 1 | 3 | 0.75 | 0.75 |
 | 0.7 | 3 | 1 | 2 | 2 | 0.67 | 0.50 |
 
-この小さな例では、しきい値を下げると Recall が上がる代わりに FP が増え、上げると Precision を保ちやすい代わりに FN が増えます。どの行を選ぶかは、誤検知と見逃しのコストで決めます。
+この例では 0.3 から 0.5 へ上げると FP が 3 件から 1 件に減り、Precision は 0.50 から 0.75 に上がります。一方、Recall はどちらも 0.75 のままです。0.7 まで上げると FN が 1 件から 2 件に増え、Recall は 0.50 へ下がります。一般にしきい値を下げれば FN が増えない、上げれば FP が増えないという単調さはありますが、Precision や Recall が毎回変化するとは限りません。どの行を選ぶかは、誤検知と見逃しのコストで決めます。
 
 ---
 

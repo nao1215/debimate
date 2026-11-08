@@ -8,7 +8,7 @@ weight: 4
 wrapTables: true
 ---
 
-Shamir's Secret Sharing（SSS）は、1つの秘密情報（Secret）をn個の分散片（Share）に分け、そのうち異なる任意の k 個以上で復元できる秘密分散方式です。復元に必要な個数 k を閾値（threshold）と呼び、`(k, n)` threshold scheme と表します。
+Shamir's Secret Sharing（SSS）は、1 つの秘密情報（Secret）を n 個の分散片（Share）に分け、そのうち異なる任意の k 個以上で復元できる秘密分散方式です。復元に必要な個数 k を閾値（threshold）と呼び、`(k, n)` threshold scheme と表します。
 
 例えば、サービスの署名鍵を 1 台に置けば、その端末の故障で鍵を失います。鍵を 5 人全員にコピーすると、1 人分のコピーが漏洩しただけで鍵全体が知られます。`(3, 5)` の SSS なら、Share を 2 個失っても復元でき、2 個まで漏れても Secret の候補は絞れません。
 
@@ -29,7 +29,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-SSSの復元処理は、Shareを持つ人の身元を判定しません。閾値以上の数の Share を集められる主体なら、正規の管理者でも攻撃者でも Secret を復元できます。
+SSS の復元処理は、Share を持つ人の身元を判定しません。閾値以上の数の Share を集められる主体なら、正規の管理者でも攻撃者でも Secret を復元できます。
 
 <br>
 
@@ -152,9 +152,9 @@ k-1 個では、Secret の候補ごとに条件を満たす多項式を 1 本ず
 
 <br>
 
-x 座標が 0 でないことも、有限体の中で確かめます。セキュリティ監査の会社Trail of Bitsが2021年12月に[公表した脆弱性](https://blog.trailofbits.com/2021/12/21/disclosing-shamirs-secret-sharing-vulnerabilities-and-announcing-zkdocs/)は、各参加者が自分の多項式でdealerを務め合う、閾値署名の鍵生成処理で見つかりました。1人のdealerが1つのSecretを分ける構成とは異なります。
+x 座標が 0 でないことも、有限体の中で確かめます。セキュリティ監査の会社 Trail of Bits が 2021 年 12 月に[公表した脆弱性](https://blog.trailofbits.com/2021/12/21/disclosing-shamirs-secret-sharing-vulnerabilities-and-announcing-zkdocs/)は、各参加者が自分の多項式で dealer を務め合う、閾値署名の鍵生成処理で見つかりました。1 人の dealer が 1 つの Secret を分ける構成とは異なります。
 
-暗号資産取引所Binanceのtss-libなどは、参加者が自分で選べるIDをx座標に使い、0かどうかを整数のまま判定していました。13を法とする例なら、x=13は判定を通りますが、有限体の中では0と同じです。その参加者に届くy座標は各dealerの `q(0)` となり、他の参加者のSecretが漏れます。悪意のある参加者は、この不備を使って他の参加者の秘密鍵を盗めました。
+暗号資産取引所 Binance の tss-lib などは、参加者が自分で選べる ID を x 座標に使い、0 かどうかを整数のまま判定していました。13 を法とする例なら、x=13 は判定を通りますが、有限体の中では 0 と同じです。その参加者に届く y 座標は各 dealer の `q(0)` となり、他の参加者の Secret が漏れます。悪意のある参加者は、この不備を使って他の参加者の秘密鍵を盗めました。
 
 ---
 

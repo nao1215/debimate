@@ -173,7 +173,7 @@ nonce は 4 バイトなので、全て試しても約 43 億通り（2^32 通�
 
 ### 実際のヘッダによる合格判定
 
-採掘で合格する値を探す代わりに、すでに見つかっている値を検証してみます。対象は Bitcoin メインネットの最初のブロック（genesis block）です。[Bitcoin Core の chainparams.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/kernel/chainparams.cpp)に、ヘッダを作る値と期待されるハッシュ値が記載されています。
+採掘で合格する値を探す代わりに、すでに見つかっている値を検証してみます。対象は Bitcoin メインネットの最初のブロック（genesis block）です。[Bitcoin Core の chainparams.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/kernel/chainparams.cpp) に、ヘッダを作る値と期待されるハッシュ値が記載されています。
 
 ヘッダの材料は次の通りです。ルートハッシュの全桁は、後述のコードに記載しています。
 
@@ -200,7 +200,7 @@ flowchart TD
     C -->|"いいえ"| N["PoW条件を満たさない"]
 ```
 
-[verify_genesis.py](lab/verify_genesis.py)は、80 バイトのヘッダを組み立て、上記の比較を行う Python 標準ライブラリだけのスクリプトです。ネットワークには接続しません。リポジトリのルートから実行できます。
+[verify_genesis.py](lab/verify_genesis.py) は、80 バイトのヘッダを組み立て、上記の比較を行う Python 標準ライブラリだけのスクリプトです。ネットワークには接続しません。リポジトリのルートから実行できます。
 
 以下が `verify_genesis.py` の全体です。
 

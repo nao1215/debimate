@@ -85,7 +85,7 @@ iForest の長所:
 
 ### しきい値の選び方
 
-`contamination` パラメータ（異常の予測比率）は重要な [hyperparameter](/ml/ml/hyperparameter/)です。
+`contamination` パラメータ（異常の予測比率）は重要な [hyperparameter](/ml/ml/hyperparameter/) です。
 
 ```python
 clf = IsolationForest(contamination="auto").fit(X)

@@ -26,7 +26,7 @@ weight: 2
   body: どの条件で学習したか
   items:
   - 学習データ、パラメータ、評価結果
-  - 学習の1回の試行を識別するID（run ID）
+  - 学習の 1 回の試行を識別する ID（run ID）
 - title: モデルレジストリ
   body: どのバージョンを選ぶか
   items:
@@ -181,7 +181,7 @@ rollback alias only: alias=v1, prediction=8.0
 after rollback reload: alias=v1, prediction=4.0
 ```
 
-別名を戻しただけでは、バージョン 2 を読み込んでいた `resident` は 8 を返します。再ロード後に初めて 4 へ戻ります。[MLflow のモデル読み込み API](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.pyfunc.html#mlflow.pyfunc.load_model)は、指定先のモデルを読み込んで返します。そのオブジェクトが以後の別名変更を監視するわけではありません。
+別名を戻しただけでは、バージョン 2 を読み込んでいた `resident` は 8 を返します。再ロード後に初めて 4 へ戻ります。[MLflow のモデル読み込み API](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.pyfunc.html#mlflow.pyfunc.load_model) は、指定先のモデルを読み込んで返します。そのオブジェクトが以後の別名変更を監視するわけではありません。
 
 実際の推論サービスでは、起動時に読み込む、変更を検知して再ロードする、新しいバージョンのプロセスへ通信を切り替える、といった更新方法を決めます。この実験は 1 プロセスでの読み替えを確かめたものであり、複数サーバーへの無停止デプロイを再現したものではありません。
 

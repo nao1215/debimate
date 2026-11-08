@@ -103,7 +103,7 @@ flowchart LR
 
 ### Registration と公開鍵の保存
 
-登録は、サーバーが 1 回限りの乱数である challenge を作る所から始まります。ブラウザは `navigator.credentials.create()` を呼び、Authenticator が鍵ペアを作ります。RP IDは資格情報を紐づけるサービスの識別子で、clientDataJSONはClientが組み立てる要求データです。登録の流れは以下の通りです。
+登録は、サーバーが 1 回限りの乱数である challenge を作る所から始まります。ブラウザは `navigator.credentials.create()` を呼び、Authenticator が鍵ペアを作ります。RP ID は資格情報を紐づけるサービスの識別子で、clientDataJSON は Client が組み立てる要求データです。登録の流れは以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

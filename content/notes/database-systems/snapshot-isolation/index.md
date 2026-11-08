@@ -49,7 +49,7 @@ Snapshot Isolation は、Berenson 氏らが 1995 年に発表した論文「[A C
 
 スナップショットが固定されるといっても、見えなくなるのは他のトランザクションが後から確定した変更だけです。自分がそのトランザクションの中で書いた変更は、後の読み取りから見えます。
 
-Snapshot Isolationでは、Start-Timestampのスナップショットに必要な古いバージョンを保持できる限り、読み取りが書き込みの完了を待つことはありません。
+Snapshot Isolation では、Start-Timestamp のスナップショットに必要な古いバージョンを保持できる限り、読み取りが書き込みの完了を待つことはありません。
 
 ---
 
@@ -81,7 +81,7 @@ commit の時点で検査するこの形は論文の概念モデルで、実装�
 
 first-committer-wins が見ているのは、同じデータへの書き込みが重なったかどうかです。2 本が別々のレコードを書けば、この検査には掛かりません。論文が write skew と名付けた異常で、読んだ結果に基づいて別々のレコードを書き、その組み合わせで初めて破れる制約がある場合に現れます。
 
-引き出しには「2口座の合計が100以上なら指定口座から100を引き、それ未満なら更新しない」という規則を設けます。個別口座が負になることは許し、2口座の合計を0以上に保つ例です。この条件なら、直列に処理した時は2本目が残高不足に気付き、合計が負になる引き出しを止められます。
+引き出しには「2 口座の合計が 100 以上なら指定口座から 100 を引き、それ未満なら更新しない」という規則を設けます。個別口座が負になることは許し、2 口座の合計を 0 以上に保つ例です。この条件なら、直列に処理した時は 2 本目が残高不足に気付き、合計が負になる引き出しを止められます。
 
 この規則を並行して実行すると、次のように制約が破れます。
 
@@ -101,7 +101,7 @@ sequenceDiagram
 
 上記の図の 2 本は同じスナップショットを見て、別のレコードを書きます。書き込みが重なっていないので first-committer-wins は働かず、両方とも確定します。
 
-次の疑似コードを、xとyそれぞれの口座に対して実行します。読み取り、条件判断、更新を同じトランザクションに含めます。
+次の疑似コードを、x と y それぞれの口座に対して実行します。読み取り、条件判断、更新を同じトランザクションに含めます。
 
 ```text
 BEGIN ISOLATION LEVEL REPEATABLE READ
@@ -113,7 +113,7 @@ else:
     ROLLBACK  # 残高不足。更新しない
 ```
 
-[実験コード](./lab/run.py)では、初期値をx=50、y=50に揃え、同じ条件付き処理を3通りの順序・分離レベルで実行します。並行のケースは2接続の読み取りを先に終え、T1を確定してからT2を更新します。直列のケースはT1の確定後にT2を開始します。
+[実験コード](./lab/run.py)では、初期値を x=50、y=50 に揃え、同じ条件付き処理を 3 通りの順序・分離レベルで実行します。並行のケースは 2 接続の読み取りを先に終え、T1 を確定してから T2 を更新します。直列のケースは T1 の確定後に T2 を開始します。
 
 以下が `run.py` の全体です。`Session` は接続を開いたまま SQL を実行し、`scenario` は読み取りと更新の順序を変えて比較します。
 
@@ -271,7 +271,7 @@ finally:
     subprocess.run(['docker', 'stop', name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 ```
 
-Python 3と[Docker](https://docs.docker.com/)が使える環境で `python3 run.py` を実行できます。専用のPostgreSQLコンテナを使い、外部ポートや永続ボリュームを作らず、実験後に停止します。以下はPostgreSQL 17.11での出力です。
+Python 3 と [Docker](https://docs.docker.com/) が使える環境で `python3 run.py` を実行できます。専用の PostgreSQL コンテナを使い、外部ポートや永続ボリュームを作らず、実験後に停止します。以下は PostgreSQL 17.11 での出力です。
 
 ```text
 serial RR: seen=[100, 0], decisions=['committed', 'insufficient'], total=0
@@ -279,7 +279,7 @@ parallel RR: seen=[100, 100], decisions=['committed', 'committed'], total=-100
 parallel SERIALIZABLE: seen=[100, 100], decisions=['committed', 'serialization_failure'], total=0
 ```
 
-`seen` は各接続が読んだ合計、`decisions` は確定・残高不足・直列化失敗、`total` は実行後の合計です。直列実行では2本目が0を読み、引き出しを止めます。一方、並行のREPEATABLE READでは両方が100を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が−100になりました。
+`seen` は各接続が読んだ合計、`decisions` は確定・残高不足・直列化失敗、`total` は実行後の合計です。直列実行では 2 本目が 0 を読み、引き出しを止めます。一方、並行の REPEATABLE READ では両方が 100 を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が−100 になりました。
 
 既にあるレコードを書き換える場合だけでなく、条件に合うレコード数を制約にした処理でも、各接続が別のレコードを追加することで制約を破る場合があります。
 
@@ -287,7 +287,7 @@ parallel SERIALIZABLE: seen=[100, 100], decisions=['committed', 'serialization_f
 
 ### locking REPEATABLE READ との違い
 
-論文で比較するSnapshot IsolationとREPEATABLE READは、それぞれ防止できる異常が異なり、包含関係にはありません。ここで論文が指す REPEATABLE READ は、読み取りのロックを確定まで持つ形で実現したものです。比べているのは 2 つの実現方式であって、標準のレベル名ではありません。
+論文で比較する Snapshot Isolation と REPEATABLE READ は、それぞれ防止できる異常が異なり、包含関係にはありません。ここで論文が指す REPEATABLE READ は、読み取りのロックを確定まで持つ形で実現したものです。比べているのは 2 つの実現方式であって、標準のレベル名ではありません。
 
 2 つの性質を整理すると、以下の通りです。
 
@@ -318,7 +318,7 @@ Snapshot Isolation は、別々のレコードを更新して全体の制約を�
 
 依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。口座の例なら、T1 が x と y を読んだことを記録しておき、T2 が y を書いた時に、T1 が読んだものを T2 が書き換えたという依存を見付けます。
 
-記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験をSERIALIZABLEで動かすと、T2は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1だけが確定しました。合計は0です。一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を再試行できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
+記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1 だけが確定しました。合計は 0 です。一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を再試行できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -331,7 +331,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-述語ロックは読み取りを記録する仕組みで、他のトランザクションを待たせるロックではありません。そのため、述語ロック自体は[デッドロック](/notes/database-systems/deadlock/)を起こしません。SSIによる直列化の保証を得るには、制約に関わる各トランザクションを SERIALIZABLE で実行します。
+述語ロックは読み取りを記録する仕組みで、他のトランザクションを待たせるロックではありません。そのため、述語ロック自体は[デッドロック](/notes/database-systems/deadlock/)を起こしません。SSI による直列化の保証を得るには、制約に関わる各トランザクションを SERIALIZABLE で実行します。
 
 ---
 

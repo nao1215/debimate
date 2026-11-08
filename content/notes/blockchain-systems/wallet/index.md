@@ -181,7 +181,7 @@ sequenceDiagram
     Note over W,N: 秘密鍵は送らない
 ```
 
-また、ノードが取引を受け付けても、その時点で送金が確定した訳ではありません。取引がブロックに入るまで待つ必要があり、ブロックに入った後も、その履歴が後から別の履歴に置き換わる可能性を考慮します。どの段階で確定したと扱うかは、チェーンの規則によって異なります。ウォレットの「送信済み」「確認中」「完了」は、この途中経過を表しています。[Bitcoin の取引の流れ](../bitcoin-transaction-lifecycle/)と [Finality](../finality/)で扱っている区別です。
+また、ノードが取引を受け付けても、その時点で送金が確定した訳ではありません。取引がブロックに入るまで待つ必要があり、ブロックに入った後も、その履歴が後から別の履歴に置き換わる可能性を考慮します。どの段階で確定したと扱うかは、チェーンの規則によって異なります。ウォレットの「送信済み」「確認中」「完了」は、この途中経過を表しています。[Bitcoin の取引の流れ](../bitcoin-transaction-lifecycle/)と [Finality](../finality/) で扱っている区別です。
 
 手数料が不足している時やネットワークが混雑している時は、確認が進まない場合があります。そこで、手数料を上げて取引を置き換える機能などが必要になります。置き換え操作の可否や方法は、チェーンごとに異なります。
 
@@ -268,7 +268,7 @@ sunrise meadow lantern acorn velvet pebble
 starlight willow drizzle sailboat seashell moonbeam
 ```
 
-一つの元データから複数の鍵を階層的に生成する方式をHD（Hierarchical Deterministic）ウォレットと呼びます。[BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) は復元フレーズとシードという計算用の値、[BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)は階層的な鍵生成を定める仕様です。生成する鍵の位置は、導出パスという番号の列で指定します。
+一つの元データから複数の鍵を階層的に生成する方式を HD（Hierarchical Deterministic）ウォレットと呼びます。[BIP39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) は復元フレーズとシードという計算用の値、[BIP32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki) は階層的な鍵生成を定める仕様です。生成する鍵の位置は、導出パスという番号の列で指定します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -465,7 +465,7 @@ sequenceDiagram
     Note over P,H: 秘密鍵は PC に渡さない
 ```
 
-専用端末の画面で確認する理由は、PC の表示だけが改竄されている可能性があるからです。PC に正しい送信先が表示されていても、署名対象が違う場合があります。端末が確認対象の情報を表示し、ユーザが照合して初めて、この分離が役に立ちます。[Trezor の Trusted Display](https://trezor.io/guides/trezor-devices/trezor-fundamentals/trezor-s-trusted-display-verify-every-address-on-your-device)も、この確認を目的としています。
+専用端末の画面で確認する理由は、PC の表示だけが改竄されている可能性があるからです。PC に正しい送信先が表示されていても、署名対象が違う場合があります。端末が確認対象の情報を表示し、ユーザが照合して初めて、この分離が役に立ちます。[Trezor の Trusted Display](https://trezor.io/guides/trezor-devices/trezor-fundamentals/trezor-s-trusted-display-verify-every-address-on-your-device) も、この確認を目的としています。
 
 <br>
 
@@ -477,9 +477,9 @@ sequenceDiagram
 
 一つの鍵に送金の権限が集中すると、その鍵を盗まれた時に資産を動かされてしまいます。複数の鍵や参加者の協力を必要とする構成で、この集中を避けられます。
 
-「マルチシグ（multisig）」は、例えば 3 個の鍵のうち 2 個の署名を要求する方式です。「スマートアカウント」は、操作を認める条件をコントラクトのコードとして定義するアカウントであり、[Safe](https://docs.safe.global/advanced/smart-account-overview)では複数人の承認などを構成できます。例えば、所有者として登録した EOA のウォレットで署名し、Safe のコントラクトが必要数の署名を検証する構成があります。画面を操作するウォレットと、資産を管理するスマートアカウントを組み合わせて使うのです。
+「マルチシグ（multisig）」は、例えば 3 個の鍵のうち 2 個の署名を要求する方式です。「スマートアカウント」は、操作を認める条件をコントラクトのコードとして定義するアカウントであり、[Safe](https://docs.safe.global/advanced/smart-account-overview) では複数人の承認などを構成できます。例えば、所有者として登録した EOA のウォレットで署名し、Safe のコントラクトが必要数の署名を検証する構成があります。画面を操作するウォレットと、資産を管理するスマートアカウントを組み合わせて使うのです。
 
-以下は、Safe で必要な署名数を変更する画面です。`2 out of 2 signers` は、登録した2人の署名者の両方が承認する設定を表します。
+以下は、Safe で必要な署名数を変更する画面です。`2 out of 2 signers` は、登録した 2 人の署名者の両方が承認する設定を表します。
 
 {{< figure align="center" src="images/safe-threshold.webp" link="images/safe-threshold.webp" width="520" alt="Safe の必要署名数の変更画面。従来の1人から、2人中2人の署名を必要とする設定に変更する" caption="Safe の必要署名数の設定<br>出典：[Managing Safe Owners and Signatures](https://help.safe.global/articles/9629761095)（公式 GIF の一場面を切り出し、WebP に変換）" >}}
 
@@ -502,7 +502,7 @@ Bitcoin の入金を選ぶ機能は UTXO の管理に、Rabby の実行結果の
 | [Safe](https://docs.safe.global/advanced/smart-account-overview) | EVM 系、スマートアカウント | 複数の所有者と承認数、コントラクトによる操作条件 | 所有者の承認方法と構成を確認。コントラクトと設定の安全性も関わる |
 | [Trezor Suite](https://github.com/trezor/trezor-suite) | 複数チェーン、Trezor 端末と組み合わせるアプリ | 残高確認・送受信と、専用端末での確認・署名を連携 | 対応資産は端末とアプリの組み合わせによる。端末は有償 |
 
-[MetaMask](https://github.com/MetaMask/metamask-extension) と [Phantom](https://help.phantom.com/articles/41372840389651)も、複数チェーンで使われる代表的なウォレットです。MetaMask は Ethereum 系のアプリとの接続、Phantom は Solana を含む複数チェーンの操作を考える際の比較対象となります。
+[MetaMask](https://github.com/MetaMask/metamask-extension) と [Phantom](https://help.phantom.com/articles/41372840389651) も、複数チェーンで使われる代表的なウォレットです。MetaMask は Ethereum 系のアプリとの接続、Phantom は Solana を含む複数チェーンの操作を考える際の比較対象となります。
 
 ---
 
@@ -654,7 +654,7 @@ Safe は、資産や設定を持つ「プロキシ」と、署名検証や送金
    ```
 
 4. 差し替えた実装で資産を移転する。
-   以後、プロキシは攻撃者の実装を使います。元のマルチシグの署名条件が適用されなくなり、追加承認なしで資産が移転されました。この実装は、手順3の書き換え用コントラクトとは別です。
+   以後、プロキシは攻撃者の実装を使います。元のマルチシグの署名条件が適用されなくなり、追加承認なしで資産が移転されました。この実装は、手順 3 の書き換え用コントラクトとは別です。
 
 この事件では、署名の検証は通っていました。複数人の承認があっても、署名する取引の内容が不正なら実行される、という問題が表れています。
 

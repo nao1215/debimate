@@ -68,7 +68,7 @@ plt.savefig("polyfit_compare.svg", bbox_inches="tight")
 
 左端の直線（degree=1）は、波打つ真の関数を 1 次式で押さえ込もうとして全域で外しています。これがバイアスの正体で、訓練セットをいくら入れ替えても直線は直線のままなので「平均しても真の関数からずれる」性質を持ちます。一方の右端（degree=15）は訓練点の 1 つ 1 つに張り付き、観測点が少し変わるだけで形が大きく揺れます。この揺れがバリアンスです。
 
-中央のdegree=3では、真の関数の波に沿い、訓練点の個別ノイズによる変動も小さくなっています。BiasとVarianceの和も小さくなっています。
+中央の degree=3 では、真の関数の波に沿い、訓練点の個別ノイズによる変動も小さくなっています。Bias と Variance の和も小さくなっています。
 
 ---
 
@@ -76,7 +76,7 @@ plt.savefig("polyfit_compare.svg", bbox_inches="tight")
 
 横軸にモデル複雑度（多項式の次数）、縦軸に「期待される 2 乗誤差」を取り、Bias^2・Variance・Total を分けて描きます。実際の数値は、訓練セットを 200 回再サンプリングしてその都度モデルを学習し、テスト点での予測の平均と分散から計算したものです。
 
-以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py)はGitHubで確認できます。
+以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py)は GitHub で確認できます。
 
 ```python
 import numpy as np
@@ -175,13 +175,13 @@ graph TD
     E --> E1["さらなる改善は限界に近い"]
 ```
 
-ギャップが大きく訓練だけ高い場合はhigh variance、ギャップが小さく両方低い場合はhigh biasを疑います。フローでは「両方低くてギャップも大きい」というケースを省いています。この場合は両方への対処を検討します。まずモデル容量を上げてhigh biasを減らし、その後で訓練スコアと検証スコアの差を確認します。
+ギャップが大きく訓練だけ高い場合は high variance、ギャップが小さく両方低い場合は high bias を疑います。フローでは「両方低くてギャップも大きい」というケースを省いています。この場合は両方への対処を検討します。まずモデル容量を上げて high bias を減らし、その後で訓練スコアと検証スコアの差を確認します。
 
 ---
 
 ### 各シナリオの打ち手
 
-学習曲線の状態と対処法を表で比較します。symptom列は学習曲線の状態、effective列は有効な対処法、ineffective列は効果がないか悪化させる対処法です。
+学習曲線の状態と対処法を表で比較します。symptom 列は学習曲線の状態、effective 列は有効な対処法、ineffective 列は効果がないか悪化させる対処法です。
 
 | 症状 (symptom) | 診断 | 改善方法 (effective) | 改善しにくい・悪化させる方法 (ineffective) |
 |---|---|---|---|

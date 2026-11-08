@@ -75,7 +75,7 @@ sequenceDiagram
     V->>V: 手元のルートハッシュと照合
 ```
 
-上記の図で配布側が渡すのは、HD と HAB の 2 個だけです。HDとHABを並べたものが、この例の包含証明です。証明に入るのは、C からルートハッシュまで上る各回で連結相手になるハッシュ 1 個ずつです。4 件なら HC から HCD、HCD からルートハッシュと 2 回上るので、証明に入るハッシュの個数は木の高さと同じ 2 個です。以下が検証者の計算です。
+上記の図で配布側が渡すのは、HD と HAB の 2 個だけです。HD と HAB を並べたものが、この例の包含証明です。証明に入るのは、C からルートハッシュまで上る各回で連結相手になるハッシュ 1 個ずつです。4 件なら HC から HCD、HCD からルートハッシュと 2 回上るので、証明に入るハッシュの個数は木の高さと同じ 2 個です。以下が検証者の計算です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

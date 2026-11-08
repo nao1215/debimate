@@ -24,7 +24,7 @@ flowchart LR
 
 <br>
 
-本記事では、Merkle Treeの3つの設計事項について、次の疑問を具体例で説明します。
+本記事では、Merkle Tree の 3 つの設計事項について、次の疑問を具体例で説明します。
 
 - 奇数の葉の扱いで、木の形とルートハッシュはどう変わるのか。
 - 葉と内部ノードを区別しない Bitcoin の木には、どんな穴があるのか。
@@ -85,7 +85,7 @@ RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列�
 
 {{< hash-input-comparison prefix="true" >}}
 
-上記は [RFC 9162 §2.1.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1) の規則です。同じ64バイトを使っても、先頭が `0x01` と `0x00` なので、ハッシュ関数への入力が異なります。
+上記は [RFC 9162 §2.1.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1) の規則です。同じ 64 バイトを使っても、先頭が `0x01` と `0x00` なので、ハッシュ関数への入力が異なります。
 
 異なる入力のハッシュ値が偶然一致する可能性まで消すものではなく、その発見の難しさはハッシュ関数の衝突耐性に依存します。
 
@@ -97,11 +97,11 @@ RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列�
 
 ### 異なる木が同じ値になる実験
 
-葉を1件追加したのにルートハッシュが変わらないことと、内部ノードを葉として読み替えられることを短いデータで確かめます。[compare_rules.py](lab/compare_rules.py) は Python 標準ライブラリだけで動きます。
+葉を 1 件追加したのにルートハッシュが変わらないことと、内部ノードを葉として読み替えられることを短いデータで確かめます。[compare_rules.py](lab/compare_rules.py) は Python 標準ライブラリだけで動きます。
 
 比較するのは、末尾を複製し、葉と内部ノードを区別せず [SHA-256](/notes/security/sha-256/) に渡す単純な木と、[RFC 9162 §2.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) の分割規則・接頭辞を使う木です。前者は Bitcoin と同じ末尾複製の性質を示す教材ですが、実際の txid や二重 SHA-256 を使う Bitcoin の実装ではありません。
 
-まず、葉を `A, B, C` とした場合と、`A, B, C, C` とした場合を比較します。次に、2つの子のハッシュを連結した64バイトをそのまま1件の葉として渡します。以下が `compare_rules.py` の全体です。
+まず、葉を `A, B, C` とした場合と、`A, B, C, C` とした場合を比較します。次に、2 つの子のハッシュを連結した 64 バイトをそのまま 1 件の葉として渡します。以下が `compare_rules.py` の全体です。
 
 ```python
 """Demonstrate Merkle construction ambiguity using SHA-256.
@@ -161,7 +161,7 @@ Path(__file__).with_name('output.txt').write_text(output)
 print(output, end='')
 ```
 
-`h` は SHA-256、`duplicate_root` は末尾を複製する木、`ct_root` は RFC 9162 の構築規則を使う関数です。接頭辞がない場合、次の2つはまったく同じ64バイトを最後のハッシュ計算に渡します。
+`h` は SHA-256、`duplicate_root` は末尾を複製する木、`ct_root` は RFC 9162 の構築規則を使う関数です。接頭辞がない場合、次の 2 つはまったく同じ 64 バイトを最後のハッシュ計算に渡します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -190,9 +190,9 @@ RFC9162: root(A,B) == root(single 64-byte leaf): False
 Assertions: PASS
 ```
 
-`True` の2例では、ハッシュ関数の衝突を探索していません。入力の解釈が違うだけで、最後には同じバイト列をハッシュしているからです。ルートハッシュだけを比較する検証者には、その解釈の違いが分かりません。
+`True` の 2 例では、ハッシュ関数の衝突を探索していません。入力の解釈が違うだけで、最後には同じバイト列をハッシュしているからです。ルートハッシュだけを比較する検証者には、その解釈の違いが分かりません。
 
-RFC 9162 の規則を使った例では、3件と4件の木の組み方が変わり、葉と内部ノードの入力にも異なる接頭辞が付くため、この2つの読み替えでは同じルートになりません。この実験は、実際の Bitcoin 取引を使った攻撃の再現ではなく、構築規則が必要になる理由を切り出したものです。
+RFC 9162 の規則を使った例では、3 件と 4 件の木の組み方が変わり、葉と内部ノードの入力にも異なる接頭辞が付くため、この 2 つの読み替えでは同じルートになりません。この実験は、実際の Bitcoin 取引を使った攻撃の再現ではなく、構築規則が必要になる理由を切り出したものです。
 
 ---
 

@@ -43,9 +43,17 @@ build: redirects ## 本番用ビルド（最小化あり）
 	$(HUGO) --minify
 	node scripts/generate_note_ogp.mjs
 
-.PHONY: check-browser
+.PHONY: check-browser check-note-style check-notes
 check-browser: ## ビルド済み public/ をブラウザ検証（初回は npm ci と npx playwright install chromium）
 	npm run test:browser
+
+NOTE ?=
+check-note-style: ## 技術ノートの日本語と英数字の空白を検査（例: make check-note-style NOTE=content/notes/.../index.md）
+	python3 scripts/check_note_spacing.py $(if $(NOTE),$(NOTE),content/notes projects/ml/notes)
+
+check-notes: check-note-style ## 技術ノートの表記・差分・Hugoビルドを検査
+	git diff --check
+	$(HUGO) --quiet
 
 weeknote: ## 新しい週報を作成 (例: make weeknote 20260810。省略時は今週の月曜)
 	@set -eu; \

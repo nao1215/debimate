@@ -108,7 +108,7 @@ TLS（Transport Layer Security）1.3 がこの性質を使っています。レ�
 
 <br>
 
-Wi-Fiの鍵交換でも、nonceが初期値に戻る問題がありました。2017 年に公表された [KRACK](https://www.krackattacks.com/)（Key Reinstallation Attacks）です。Wi-Fi の WPA2 は、接続時に鍵を取り決める 4-way handshake で端末に鍵を設定し、送るたびに増える packet number を nonce に使います。取り決めのメッセージが再送されると、端末は使用中の鍵を設定し直し、そのたびに nonce が初期値に戻りました。
+Wi-Fi の鍵交換でも、nonce が初期値に戻る問題がありました。2017 年に公表された [KRACK](https://www.krackattacks.com/)（Key Reinstallation Attacks）です。Wi-Fi の WPA2 は、接続時に鍵を取り決める 4-way handshake で端末に鍵を設定し、送るたびに増える packet number を nonce に使います。取り決めのメッセージが再送されると、端末は使用中の鍵を設定し直し、そのたびに nonce が初期値に戻りました。
 
 TLS 1.3 は鍵を替えてから 0 に戻しますが、KRACK では同じ鍵のまま番号だけが 0 に戻りました。鍵も Wi-Fi のパスワードも漏れていませんが、同じ組が繰り返されたので、通常使われる CCMP でも暗号文を復号できました。AES-GCM を使う GCMP では、上記の H の関係式からパケットの偽造まで可能になりました。
 
@@ -215,7 +215,7 @@ sequenceDiagram
 
 厳密には、署名の対象は authenticatorData と、challenge を含む clientDataJSON のハッシュを繋いだ値です（[Passkey](../passkey/)）。
 
-仕様では、challengeがランダムで推測できないことを要求しています。
+仕様では、challenge がランダムで推測できないことを要求しています。
 
 記録した応答をそのまま送り直す攻撃は、サーバー側の運用で弾きます。発行した値との照合と有効期限、そして成功した challenge を保存から消す扱いです。
 

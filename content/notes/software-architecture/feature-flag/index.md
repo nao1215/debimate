@@ -124,7 +124,7 @@ func (r *Router) UseNewCheckout(ctx context.Context) bool {
 
 変更後の `Checkout` は、`UseNewCheckout` の戻り値で処理を切り替えます。そのため、設定ファイルから値を読む方式を外部の flag 管理サービスに変えても、`Checkout` 側の分岐はそのままにできます。
 
-`EnabledOrDefault` の第3引数 false は、flag を評価できなかった場合の fallback です。この例では既存の `Checkout` 処理に戻すために false を選んでいますが、常に false が安全とは限りません。例えば On で重い機能を止める flag では、評価に失敗した時に false（止めない）が返ると、高負荷の時に機能を止められません。
+`EnabledOrDefault` の第 3 引数 false は、flag を評価できなかった場合の fallback です。この例では既存の `Checkout` 処理に戻すために false を選んでいますが、常に false が安全とは限りません。例えば On で重い機能を止める flag では、評価に失敗した時に false（止めない）が返ると、高負荷の時に機能を止められません。
 
 Toggle Router は、flag の設定（Toggle Configuration）と、ユーザー ID などの評価対象の情報（Toggle Context）を使って判断します。
 

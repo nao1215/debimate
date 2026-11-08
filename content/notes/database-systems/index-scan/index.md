@@ -9,7 +9,7 @@ weight: 4
 
 Index Scan は、索引（インデックス）を辿って条件に一致するレコードの在り処を求め、そこから表のレコードを読み出す方法です。DB（データベース）が 1 つの表からレコードを取り出す手段の 1 つで、表を先頭から順に読む全走査（sequential scan）と対になります。
 
-遅いSQLの実行計画を確認すると、Index Scanという処理名が出てくることがあります。実行計画とは、DB がその問い合わせをどの手順で処理すると決めたのかを表す出力で、その手順を選ぶ DB の部品をプランナと呼びます。一覧画面の表示に数秒かかるので索引を足したのに応答時間が戻らない、という場面で開くのがこの出力です。
+遅い SQL の実行計画を確認すると、Index Scan という処理名が出てくることがあります。実行計画とは、DB がその問い合わせをどの手順で処理すると決めたのかを表す出力で、その手順を選ぶ DB の部品をプランナと呼びます。一覧画面の表示に数秒かかるので索引を足したのに応答時間が戻らない、という場面で開くのがこの出力です。
 
 索引が存在することと、問い合わせがその索引で速くなることは別です。DB は索引を辿った後で表のレコードを読みに行くことが多く、そこで読むページの枚数が応答時間を大きく左右します。
 
@@ -42,17 +42,17 @@ flowchart LR
 
 ### 前提
 
-前提を3つ置きます。1 つ目は、DB が表も索引もページという固定長の区画に区切って管理し、ストレージとの読み書きもページ単位で行うことです。1 枚のページには複数のレコードが載り、一度読んだページはバッファキャッシュというメモリ上の控えにしばらく残ります。
+前提を 3 つ置きます。1 つ目は、DB が表も索引もページという固定長の区画に区切って管理し、ストレージとの読み書きもページ単位で行うことです。1 枚のページには複数のレコードが載り、一度読んだページはバッファキャッシュというメモリ上の控えにしばらく残ります。
 
 2 つ目は、B-Tree 系の索引がキーの順に並んだ木で、一番上のノードを根、一番下に並ぶノードを葉と呼ぶことです。探索は根から葉に 1 段ずつ進むので、以降ではこの動きを「降りる」と書きます。木の構造は [B-Tree](/notes/database-systems/b-tree/) のノートで扱っています。
 
-3つ目は、索引と表が別々に置かれる構成です。InnoDB の主キー索引のように葉がレコードそのものを持つクラスタ化索引では、表を読みに行く段が最初からありません。
+3 つ目は、索引と表が別々に置かれる構成です。InnoDB の主キー索引のように葉がレコードそのものを持つクラスタ化索引では、表を読みに行く段が最初からありません。
 
 <br>
 
-`EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。例えば、PostgreSQL の `EXPLAIN` では `Index Scan`、SQLite の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQLの `Seq Scan` は表の順次走査です。一方、SQLiteの `SCAN` は索引順の全走査も含むため、その語だけでは索引の使用を判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。本記事では索引と表を別々に読む構成を説明し、DBMSごとの差も補足します。
+`EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。例えば、PostgreSQL の `EXPLAIN` では `Index Scan`、SQLite の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` は表の順次走査です。一方、SQLite の `SCAN` は索引順の全走査も含むため、その語だけでは索引の使用を判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。本記事では索引と表を別々に読む構成を説明し、DBMS ごとの差も補足します。
 
-例えば、次のSQLiteの実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
+例えば、次の SQLite の実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
 
 ```sql
 CREATE TABLE scan_demo (id INTEGER PRIMARY KEY, v INTEGER);
@@ -65,13 +65,13 @@ EXPLAIN QUERY PLAN SELECT v FROM scan_demo ORDER BY v;
 SCAN scan_demo USING COVERING INDEX scan_demo_v
 ```
 
-これは[SQLiteのSCANとSEARCHの区別](https://www.sqlite.org/eqp.html)を確かめる例です。実行計画の表示形式はバージョンで変わる場合があります。
+これは [SQLite の SCAN と SEARCH の区別](https://www.sqlite.org/eqp.html)を確かめる例です。実行計画の表示形式はバージョンで変わる場合があります。
 
 ---
 
 ### 索引を降りて表のレコードを読む流れ {#索引を降りて表の行を読む流れ}
 
-Index Scanの処理は、索引を降りる、葉を読み進める、表のレコードを読む、という3つに分かれます。条件を外れるキーに当たった所で、葉を読み進める段が終わります。
+Index Scan の処理は、索引を降りる、葉を読み進める、表のレコードを読む、という 3 つに分かれます。条件を外れるキーに当たった所で、葉を読み進める段が終わります。
 
 この 3 つを動かすのは実行器です。実行器とは、実行計画の各段を実際に走らせる部分を指します。以下は、最初の 2 件を取り出すまでの往復です。
 
@@ -211,9 +211,9 @@ flowchart TB
 
 表を読まずに済むかどうかは、カラムが揃っているかだけでは決まりません。PostgreSQL はレコードを更新・削除しても古いレコードをしばらく残すので、索引の項目が指すレコードを今のトランザクションが読んでよいとは限りません。PostgreSQL の索引は、この「見えるかどうか」の情報を持ちません。
 
-そこで使うのが、ページ内のレコードが全トランザクションから見えるかなどを記録する [visibility map](https://www.postgresql.org/docs/current/storage-vm.html) です。ヒープページ1枚につき2ビットを持ちます。`all-visible` は全てのレコードが各トランザクションから見えると分かっていること、`all-frozen` は全てのレコードがfreeze済みであることを記録します。freezeは、古いトランザクションIDの周回に備える処理です。
+そこで使うのが、ページ内のレコードが全トランザクションから見えるかなどを記録する [visibility map](https://www.postgresql.org/docs/current/storage-vm.html) です。ヒープページ 1 枚につき 2 ビットを持ちます。`all-visible` は全てのレコードが各トランザクションから見えると分かっていること、`all-frozen` は全てのレコードが freeze 済みであることを記録します。freeze は、古いトランザクション ID の周回に備える処理です。
 
-[index-only scan](https://www.postgresql.org/docs/current/indexes-index-only-scans.html) でヒープを読まずに済むかの判断に使うのは、`all-visible` のビットです。`all-frozen` は主にVACUUMの処理で使われ、索引だけで返すための追加条件ではありません。以下は `all-visible` を確認してからの分かれ道です。
+[index-only scan](https://www.postgresql.org/docs/current/indexes-index-only-scans.html) でヒープを読まずに済むかの判断に使うのは、`all-visible` のビットです。`all-frozen` は主に VACUUM の処理で使われ、索引だけで返すための追加条件ではありません。以下は `all-visible` を確認してからの分かれ道です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -303,7 +303,7 @@ flowchart LR
 
 先頭カラムの条件が無くても、索引を読むこと自体はできます。ただし、上記の図の `amount = 42` のように項目が散ると、多くの場合は索引の全体を読む形になり、走査する範囲が絞られません。何を読むのが安いかはそこで改めて見積もられ、表の全走査が選ばれることもあります。
 
-例外として、PostgreSQLの複合索引のドキュメントは skip scan にも触れています。skip scan は、先頭カラムの取り得る値がごく少ないとプランナが見積もった場合に、その値ごとの等値の条件を内部で作り、「[skip over most of the index](https://www.postgresql.org/docs/current/indexes-multicolumn.html)」（索引の大半を読み飛ばす）形で走査する範囲を減らす方法です。
+例外として、PostgreSQL の複合索引のドキュメントは skip scan にも触れています。skip scan は、先頭カラムの取り得る値がごく少ないとプランナが見積もった場合に、その値ごとの等値の条件を内部で作り、「[skip over most of the index](https://www.postgresql.org/docs/current/indexes-multicolumn.html)」（索引の大半を読み飛ばす）形で走査する範囲を減らす方法です。
 
 ---
 

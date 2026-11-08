@@ -54,6 +54,7 @@ description: ""
 | --- | --- | --- |
 | 1 | [Smart Contract - チェーン上のプログラムは誰が実行するのか](/notes/blockchain-systems/smart-contract/) | 実行 / EVM / 状態更新 |
 | 2 | [ERC-20 - トークンの残高と利用承認の仕組み](/notes/blockchain-systems/erc-20/) | トークン / 残高 / 利用承認 |
+| 3 | [Oracle - チェーンの外の情報をスマートコントラクトへ渡す](/notes/blockchain-systems/oracle/) | 外部情報 / 価格フィード |
 
 #### Data Structure
 
@@ -70,6 +71,7 @@ description: ""
 | --- | --- | --- |
 | 1 | [Proof of Work - 計算作業をブロック追加の条件にする](/notes/blockchain-systems/proof-of-work/) | 作業証明 |
 | 2 | [Finality - ブロックチェーンの取引はいつ確定したと言えるのか](/notes/blockchain-systems/finality/) | 確定性 / reorg |
+| 3 | [Proof of Stake - 預け入れた資産を担保に合意を形成する](/notes/blockchain-systems/proof-of-stake/) | 合意 / バリデータ / 罰則 |
 
 #### Node Policy
 

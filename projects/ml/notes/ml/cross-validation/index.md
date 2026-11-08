@@ -44,7 +44,7 @@ weight: 9
 
 ### Python での実例
 
-scikit-learn は `cross_val_score` と `GridSearchCV` が主要 APIです。
+scikit-learn は `cross_val_score` と `GridSearchCV` が主要 API です。
 
 ```python
 import numpy as np

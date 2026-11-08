@@ -22,7 +22,7 @@ GradientBoosting（勾配ブースティング）は、浅い [決定木](../dec
 | 学習の並列化 | 容易（木同士が独立） | 木単位では困難（依存関係あり） |
 | 代表実装 | scikit-learn `RandomForestClassifier` | scikit-learn `HistGradientBoostingClassifier`、LightGBM、XGBoost、CatBoost |
 
-表形式データ（テーブルデータ）では、GradientBoosting系のLightGBMやXGBoostなどが使われます。ハイパーパラメータによって性能が変わるため、`learning_rate`、`n_estimators`、`max_depth` を調整して [RandomForest](../random-forest/) などと比較します。
+表形式データ（テーブルデータ）では、GradientBoosting 系の LightGBM や XGBoost などが使われます。ハイパーパラメータによって性能が変わるため、`learning_rate`、`n_estimators`、`max_depth` を調整して [RandomForest](../random-forest/) などと比較します。
 
 ---
 
@@ -70,7 +70,7 @@ graph TD
 ![Residual fitting step by step](./gradient-boosting_residual.svg)
 
 左図: 1 本目の木は元データを粗く近似します。残差（真値 - 予測）が残っています。
-右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習します。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなります。GradientBoostingでは、この補正を繰り返します。
+右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習します。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなります。GradientBoosting では、この補正を繰り返します。
 
 ---
 
@@ -217,7 +217,7 @@ print("Trees actually used:", model.n_iter_)
 | 実装 | 特徴 |
 |---|---|
 | `HistGradientBoostingClassifier` (sklearn) | 標準で入っている。中規模データなら十分速い |
-| LightGBM | Microsoft 製。葉単位の成長で非常に高速。Kaggle系でも使われる |
+| LightGBM | Microsoft 製。葉単位の成長で非常に高速。Kaggle 系でも使われる |
 | XGBoost | 老舗。安定性が高く、GPU 対応も成熟 |
 | CatBoost | Yandex 製。カテゴリ変数を生のまま扱える点が強み |
 
@@ -225,7 +225,7 @@ print("Trees actually used:", model.n_iter_)
 
 ### 機械学習での使いどころ
 
-表形式データでは、タスクに応じて [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) などでベースラインを作り、その後GradientBoosting系と比較します。
+表形式データでは、タスクに応じて [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) などでベースラインを作り、その後 GradientBoosting 系と比較します。
 
 - 特徴量が多く複雑な関係を含むデータ: 非線形・相互作用に強い
 - 不正検知・与信スコア・需要予測など、表形式データを扱う実運用
@@ -235,7 +235,7 @@ print("Trees actually used:", model.n_iter_)
 
 - 不正取引検知で [PR-AUC](../roc-pr-auc/) を評価指標にするモデル
 - 与信スコアリングで線形モデルの精度上限を超えたい場合
-- ECサイトのクリック率予測（CTR）で大規模データを扱う場面
+- EC サイトのクリック率予測（CTR）で大規模データを扱う場面
 - 医療データの非線形な閾値効果をモデル化する場合
 
 ---

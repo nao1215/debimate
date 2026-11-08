@@ -136,7 +136,7 @@ plt.savefig("gradient_field.svg", bbox_inches="tight")
 
 とするのが最急降下法そのものです。
 
-以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/partial-derivative-gradient_gen.py)はGitHubで確認できます。
+以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/partial-derivative-gradient_gen.py)は GitHub で確認できます。
 
 ```python
 import numpy as np

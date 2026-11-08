@@ -112,7 +112,7 @@ flowchart LR
 
 Go でも `type NonEmpty[T any] struct { head T; tail []T }` として同じ形を書けます。
 
-一方、値として取り得る候補を「AかBのどちらか」に限定する直和型（代数的データ型の一種）は、Goにはありません。ジェネリクスの type constraint には `A | B` という union type term があります。これは型引数が満たすべき条件を書くための記法で、値がどちらか一方であることを保持する型ではありません。
+一方、値として取り得る候補を「A か B のどちらか」に限定する直和型（代数的データ型の一種）は、Go にはありません。ジェネリクスの type constraint には `A | B` という union type term があります。これは型引数が満たすべき条件を書くための記法で、値がどちらか一方であることを保持する型ではありません。
 
 直和型の代わりには、interface と型スイッチで近い形を組みます。interface に未公開のマーカーメソッドを置けば、パッケージ外からそのメソッドを直接実装することは防げます。ただし既存の実装型を埋め込んだ型は、メソッドが外側の型に昇格（promote）して interface を満たすため、排除できません。Go の interface を完全な直和型として閉じることはできず、型スイッチが全ての場合を尽くしているかもコンパイラは保証しません。
 
@@ -143,7 +143,7 @@ func (e Email) String() string { return e.value }
 
 `NewEmail` から得た値は、その時点で `NewEmail` の検査条件を満たしています。`Email` という型であること自体が検査を通ったことを示すわけではなく、検査の厳密さも `NewEmail` の実装が決めます。上の実装なら `"@"` という 1 文字も通ります。
 
-ただし、Goではこのコンストラクタを使わずに値を作る方法が2つあります。Go の変数は宣言しただけで初期化されるので、`var e Email` はコンパイルを通り、空の `Email` が出来上がります。同じパッケージの中なら `Email{value: "bogus"}` も書けます。
+ただし、Go ではこのコンストラクタを使わずに値を作る方法が 2 つあります。Go の変数は宣言しただけで初期化されるので、`var e Email` はコンパイルを通り、空の `Email` が出来上がります。同じパッケージの中なら `Email{value: "bogus"}` も書けます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -203,7 +203,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-JSONを受け取る入力用の型から業務処理用の型へ変換する際に、必須のEmailが設定されているかを確認します。
+JSON を受け取る入力用の型から業務処理用の型へ変換する際に、必須の Email が設定されているかを確認します。
 
 | 保ちたいこと | Go にあるもの | 無いもの | 代わりに使う手 |
 |---|---|---|---|

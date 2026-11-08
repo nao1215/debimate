@@ -210,7 +210,7 @@ Time-lock Puzzle と tlock では、予定より早く復号される障害と�
 | 暗号仮定が破られる | 素因数分解、または逐次性に関する仮定が破られると近道を得られる | いずれかの暗号方式が破られると秘匿性を失う |
 | 量子計算機 | RSA 型の仮定が崩れる | BLS と IBE が依拠するペアリング暗号の仮定が崩れる |
 
-[drand の Security Model](https://docs.drand.love/docs/security-model/)は、threshold 未満のノードからは将来の beacon を導出できず、threshold 以上を侵害すると導出できると区別しています。後者の場合、攻撃者は乱数を好きな値に変えられなくても、tlock の暗号文を予定より早く開けます。
+[drand の Security Model](https://docs.drand.love/docs/security-model/) は、threshold 未満のノードからは将来の beacon を導出できず、threshold 以上を侵害すると導出できると区別しています。後者の場合、攻撃者は乱数を好きな値に変えられなくても、tlock の暗号文を予定より早く開けます。
 
 停止しても早期復号は起きず、ネットワークが復旧して対象 round の署名を出せば復号できます。公開済みの署名は保持または取得できる限り使えますが、drand が対象の署名を作らないまま秘密鍵 Share も失われれば、その round の暗号文は復号できません。
 

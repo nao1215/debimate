@@ -123,23 +123,23 @@ sequenceDiagram
 
 ### checkpoint への投票による finality
 
-Ethereum のバリデータ（validator）は、ether をプロトコルに預けて、ブロックの提案と検証と投票を行う参加者です。規則に反する投票を残すと、預けた ether が減らされます。
+Ethereum のバリデータ（validator）は、ether をプロトコルに預けて、ブロックの提案と検証と投票を行う参加者です。規則に反する投票を残すと、預けた ether が減らされます。参加の仕組みと報酬・罰則の違いは、[Proof of Stake](../proof-of-stake/) で説明しています。
 
-この投票を finality に変える仕組みが Casper FFG（Casper the Friendly Finality Gadget）です。Ethereum の時間は 12 秒の slot に区切られ、32 slot で 1 epoch（6 分 24 秒）になります。[finality のための投票が対象にするのは全てのブロックではなく、epoch の境界にあるブロックだけ](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/gasper/)で、これを checkpoint と呼びます。
+この投票を finality に変える仕組みが Casper FFG（Casper the Friendly Finality Gadget）です。Ethereum の時間は 12 秒の slot に区切られ、32 slot で 1 epoch（6 分 24 秒）になります。finality の投票が対象にするのは全てのブロックではなく、各 epoch の先頭 slot に対応する checkpoint です。先頭 slot にブロックがあればそのブロックを指しますが、空 slot なら、直前までに作られた最新のブロックを指します。[Consensus Specifications の `get_block_root`](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#get_block_root) が、指定 slot より前へ戻ってブロックルートを探すためです。したがって checkpoint は「境界 slot で必ず新しく作られるブロック」ではありません。
 
 checkpoint は 2 段階で確定します。1 票には、起点と行き先の 2 つの checkpoint を書きます。起点は既に justified な checkpoint で、最初の起点はチェーンの最初のブロックです。預けられた ether の 2/3 が同じ起点と行き先の組に投票すると、行き先の checkpoint が justified になります。justified になった checkpoint を起点に、直後の checkpoint へ同じように 2/3 の投票が集まると、その起点が finalized に変わります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 stateDiagram-v2
-    [*] --> 投票待ち: epoch の境界のブロックとして作られる
+    [*] --> 投票待ち: epoch 先頭 slot の checkpoint に対応する
     投票待ち --> justified: justified な checkpoint から<br/>2/3 の投票が張られる
     justified --> finalized: 次の checkpoint へ<br/>もう 1 本張られる
     投票待ち --> 破棄: 別の列が canonical chain になる
     justified --> 破棄: 別の列が canonical chain になる<br/>（finalized ほど固定されていない）
 ```
 
-ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。確定が投票より 1 epoch 遅れるのは、この 2 段階を踏むためです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
+ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。空 slot があれば、異なる epoch の checkpoint が同じブロックを指すこともあります。確定が投票より 1 epoch 遅れるのは、この 2 段階を踏むためです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -159,7 +159,7 @@ finalized な checkpoint と矛盾する別の checkpoint を finalized にす�
 
 ### finalized と「十分安全」の判断の違い
 
-finalizedはプロトコルが定める確定状態です。一方、十分な確認数の閾値は、アプリケーションの運用者が決めます。
+finalized はプロトコルが定める確定状態です。一方、十分な確認数の閾値は、アプリケーションの運用者が決めます。
 
 `finalized` という保証には、例外が書き添えられています。ブロックタグを定義している [Ethereum 実行層 API の schema](https://github.com/ethereum/execution-apis/blob/main/src/schemas/block.yaml) には、「cannot be re-orged outside of manual intervention driven by community coordination」（コミュニティの調整による手動の介入を除いて、reorg され得ない）とあります。
 
@@ -192,7 +192,7 @@ finalizedはプロトコルが定める確定状態です。一方、十分な�
 
 Casper FFG が証明しているのは、先に触れた accountable safety と、plausible liveness の 2 つです。plausible liveness は、過去に何が起きていても、2/3 のバリデータが規則に従っている限り、誰も処罰されずに次の checkpoint を finalize できるという性質です。
 
-投票が2/3に届かない場合に確定を再開する仕組みとして、同じ論文では inactivity leak を示しています。Ethereum では finality の遅れが一定の epoch 数を超えると leak に入り、投票している側が全体の 2/3 を占めるまで、多数派の列に投票していないバリデータの残高を減らし続けます。ネットワークが 2 つに分かれ続けると、両側でそれぞれ相手側の残高が減り、両側が別々に 2/3 に届いて finalize し得ます。
+投票が 2/3 に届かない場合に確定を再開する仕組みとして、同じ論文では inactivity leak を示しています。Ethereum では finality の遅れが一定の epoch 数を超えると leak に入り、投票している側が全体の 2/3 を占めるまで、多数派の列に投票していないバリデータの残高を減らし続けます。ネットワークが 2 つに分かれ続けると、両側でそれぞれ相手側の残高が減り、両側が別々に 2/3 に届いて finalize し得ます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

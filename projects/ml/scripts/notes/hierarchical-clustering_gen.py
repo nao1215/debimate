@@ -1,5 +1,6 @@
 """hierarchical-clustering ノート用の図を生成するスクリプト。"""
 import os
+from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
@@ -15,8 +16,12 @@ os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name):
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    path = os.path.join(NOTE_DIR, name)
+    plt.savefig(path, bbox_inches="tight")
     plt.close()
+    if path.endswith(".svg"):
+        svg = Path(path).read_text()
+        Path(path).write_text("\n".join(line.rstrip() for line in svg.splitlines()) + "\n")
 
 
 # ============================================================
@@ -90,12 +95,13 @@ points = np.array([
     [1.5, 3.5], [1.7, 3.3],
 ])
 
-fig, axes = plt.subplots(1, 4, figsize=(15, 4))
+fig, axes = plt.subplots(1, 5, figsize=(18, 4))
 stages = [
     ("Step 0: each point is a cluster", [[0], [1], [2], [3], [4], [5], [6]]),
-    ("Step 1: merge closest pair", [[0, 1], [2], [3], [4], [5], [6]]),
-    ("Step 2", [[0, 1], [2, 3, 4], [5], [6]]),
-    ("Step 3: end with k=3", [[0, 1], [2, 3, 4], [5, 6]]),
+    ("Step 1: merge points 0 and 1", [[0, 1], [2], [3], [4], [5], [6]]),
+    ("Step 2: merge points 2 and 4", [[0, 1], [2, 4], [3], [5], [6]]),
+    ("Step 3: merge points 5 and 6", [[0, 1], [2, 4], [3], [5, 6]]),
+    ("Step 4: end with k=3", [[0, 1], [2, 3, 4], [5, 6]]),
 ]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
 for ax, (title, clusters) in zip(axes, stages):
@@ -117,7 +123,7 @@ for ax, (title, clusters) in zip(axes, stages):
     ax.set_title(title, fontsize=10)
     ax.grid(True, alpha=0.25)
 
-plt.suptitle("Agglomerative clustering: each step merges the 2 closest clusters",
+plt.suptitle("Agglomerative clustering: four merges reduce seven clusters to three",
              y=1.02)
 plt.tight_layout()
 save("hierarchical_steps.svg")

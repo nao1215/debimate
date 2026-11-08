@@ -56,14 +56,16 @@ graph LR
 ```python
 from sklearn.cluster import DBSCAN
 db = DBSCAN(eps=0.6, min_samples=5).fit(X)
-print(f"core: {len(db.core_sample_indices_)}, "
+core = set(db.core_sample_indices_)
+border = [i for i, label in enumerate(db.labels_) if i not in core and label != -1]
+print(f"core: {len(core)}, border: {len(border)}, "
       f"noise: {sum(db.labels_ == -1)}")
 plt.savefig("dbscan_core_border_noise.svg", bbox_inches="tight")
 ```
 
 ![赤がコア、橙がボーダー、×がノイズ](./dbscan_core_border_noise.svg)
 
-赤い円が各 core 点の `eps` 範囲です。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられます。ボーダー点はコアではないがクラスタの縁に属し、ノイズ点は外れ値として `label = -1` で返されます。
+この図では `core: 30, border: 1, noise: 3` と出力されます。赤い円が各 core 点の `eps` 範囲です。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられます。橙の 1 点は近傍数が `min_samples` 未満でも、core 点の近傍にあるためボーダー点になります。ノイズ点は外れ値として `label = -1` で返されます。
 
 ---
 
@@ -84,9 +86,9 @@ plt.savefig("dbscan_eps_sensitivity.png", bbox_inches="tight")
 
 ![eps による結果の劇的変化](./dbscan_eps_sensitivity.png)
 
-- `eps = 0.3`: 密度しきい値が高すぎる。多くの点が noise に
-- `eps = 0.8`: 適切。3 つのクラスタが正しく分離される
-- `eps = 2.0`: 密度しきい値が低すぎる。すべてが 1 つの大クラスタに
+- `eps = 0.3`: 半径が小さく、10 個の断片と 166 件の noise に分かれる
+- `eps = 0.8`: このデータでは 2 クラスタと 25 件の noise になる。右上の点群が 1 つにまとまる
+- `eps = 2.0`: 半径が大きく、ほぼ全てが 1 つの大クラスタになる（noise は 2 件）
 
 `eps` の選び方の定石として「k-distance プロット」があります。各点の `k` 番目近傍までの距離をソートしてグラフ化し、曲がり角（elbow）の高さを `eps` の目安にします。
 
@@ -101,9 +103,9 @@ plt.plot(k_distances)
 plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 ```
 
-![k-distance プロット: 曲がり角を eps として採用](./dbscan_k_distance_elbow.svg)
+![k-distance プロット: 曲がり角を eps の候補として読む](./dbscan_k_distance_elbow.svg)
 
-横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」です。急に立ち上がる位置があれば、その高さを候補にして結果を確認します。95 パーセンタイルのような固定規則ではありません。特徴量の尺度、`min_samples`、期待するノイズ率を変えると候補も変わります。
+横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」です。急に立ち上がる位置があれば、その高さを候補にして結果を確認します。この図には自動で選んだ水平線を引いていません。95 パーセンタイルのような固定規則で決めるのではなく、候補ごとにクラスタ数とノイズ点を確認します。特徴量の尺度、`min_samples`、期待するノイズ率を変えると候補も変わります。
 
 `min_samples` は次の目安で選ぶ:
 
