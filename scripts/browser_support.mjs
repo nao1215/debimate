@@ -15,6 +15,22 @@ export function localURL(href, origin) {
   return origin + url.pathname + url.search + url.hash;
 }
 
+export async function waitForImage(image) {
+  // Lazy images with sizes="auto" may select a new srcset candidate after
+  // scrolling/layout. That cancels an in-flight decode(), even for valid images.
+  // Retry the current source; broken images still fail within the time limit.
+  await image.page().waitForFunction(async img => {
+    if (!img.complete || img.naturalWidth === 0) return false;
+    const source = img.currentSrc;
+    try {
+      await img.decode();
+      return img.currentSrc === source && img.complete && img.naturalWidth > 0;
+    } catch {
+      return false;
+    }
+  }, await image.elementHandle(), { timeout: 10_000 });
+}
+
 export async function saveFailure(browser, suite) {
   await mkdir('reports/browser', { recursive: true });
   let index = 0;

@@ -1,6 +1,6 @@
 // Usage: PLAYWRIGHT_MODULE=/path/to/playwright/index.mjs node scripts/check_archives_browser.mjs http://127.0.0.1:8141
 import assert from 'node:assert/strict';
-import { launchBrowser, saveFailure, localURL } from './browser_support.mjs';
+import { launchBrowser, saveFailure, localURL, waitForImage } from './browser_support.mjs';
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8141').origin;
 const browser = await launchBrowser();
 const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
@@ -127,7 +127,7 @@ try {
   assert.equal(await demos.count(), 3);
   for (const demo of await demos.all()) {
     await demo.scrollIntoViewIfNeeded();
-    await demo.evaluate(img => img.decode());
+    await waitForImage(demo);
     assert.ok(await demo.evaluate(img => img.naturalWidth > 0));
   }
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);

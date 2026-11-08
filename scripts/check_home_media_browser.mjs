@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { launchBrowser, saveFailure } from './browser_support.mjs';
+import { launchBrowser, saveFailure, waitForImage } from './browser_support.mjs';
 
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8138').origin;
 const browser = await launchBrowser();
@@ -29,7 +29,7 @@ try {
     assert.ok(count > 0, 'No animated demo images found in weeknote cards');
     for (const demo of await demos.all()) {
       await demo.scrollIntoViewIfNeeded();
-      await demo.evaluate(img => img.decode());
+      await waitForImage(demo);
       const first = await demo.screenshot();
       let changed = false;
       for (let attempt = 0; attempt < 8 && !changed; attempt++) {
