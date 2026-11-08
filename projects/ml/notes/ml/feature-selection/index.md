@@ -9,33 +9,26 @@ weight: 17
 
 特徴量選択（feature selection）は、使える特徴量の中からモデルにとって有用な部分集合を選び出し、それ以外を捨てる前処理です。目的は (1) [過学習](../overfitting/) の抑制、(2) 学習・推論コストの削減、(3) モデルの説明性向上、(4) [次元の呪い](../curse-of-dimensionality/) の緩和、の 4 点に集約されます。
 
-手法は 3 系統に分かれます。
+[特徴量重要度](../feature-importance/) は、各特徴量をモデルがどれだけ利用しているかを調べます。特徴量選択では、その重要度などを手掛かりに、実際に残す列を決めます。
 
-- フィルタ法（filter）: モデルに依存せず、統計的指標（分散、相関、相互情報量、F 値）で特徴量をランク付け
-- ラッパー法（wrapper）: モデルを実際に学習・評価しながら、特徴量を入れたり外したりを繰り返す（RFE、forward / backward selection）
-- 埋め込み法（embedded）: 学習アルゴリズム自身が特徴量選択を兼ねる（Lasso、決定木の重要度）
+<br>
 
-[特徴量重要度](../feature-importance/) と密接に関連します。ただし、重要度は「学習済みモデルの解釈」、特徴量選択は「学習前の特徴量の絞り込み」という違いがあります（実際には重要度ベースの選択もあるので境界はあいまい）。
+本記事では、選択の根拠が異なる 3 系統を実例で比べます。
 
 ---
 
 ### 3 系統の使い分け
 
-```mermaid
-graph TD
-    A["特徴量選択が必要"]
-    A --> B{"モデルを学習する前に<br/>削れるか?"}
-    B -->|"統計だけで判定可能"| C["Filter<br/>VarianceThreshold / 相関 / F検定 / MI"]
-    B -->|"モデル評価が必要"| D{"計算予算は?"}
-    D -->|"潤沢"| E["Wrapper<br/>RFE / SFS / SBS"]
-    D -->|"限られる"| F["Embedded<br/>Lasso / Tree importance"]
-```
+{{< note-panels caption="選択方法は、何を根拠に残すかと、検証コストで選びます。" >}}
+- title: Filter（フィルタ法）
+  body: 分散や F 値など、各列の統計量で選びます。
+- title: Wrapper（ラッパー法）
+  body: 列の組み合わせを変え、モデルを繰り返し評価します。
+- title: Embedded（埋め込み法）
+  body: 正則化や木の分割など、学習の仕組みを使います。
+{{< /note-panels >}}
 
-判断軸:
-
-- 速度優先・特徴量が大量 → Filter
-- 精度優先・特徴量数が中程度（数十〜数百） → Wrapper
-- 中規模で線形 or 木モデルを使う → Embedded（Lasso / Tree）
+Filter は候補を手早く減らせますが、列どうしの相互作用を見落とします。Wrapper はモデルの評価を繰り返す分だけ計算コストが増え、Embedded の結果は学習器に依存します。どの手法でも、未知データでの性能は別に確認します。
 
 ---
 
@@ -65,7 +58,7 @@ plt.savefig("featsel_variance_threshold.svg", bbox_inches="tight")
 出力:
 
 ```text
-shape: (1000, 5) -> (1000, 3)
+shape: (1000, 5) -> (1000, 2)
 ```
 
 ![分散の小さい特徴量を閾値で除外する](./featsel_variance_threshold.svg)
@@ -80,7 +73,7 @@ shape: (1000, 5) -> (1000, 3)
 
 統計的な指標で「目的変数との関係が強い」上位 `k` 個を残します。代表的なスコアは次の通りです。
 
-- ANOVA F 値（`f_classif`）: 分類で各特徴量と目的変数の分散比。線形関係を測る
+- ANOVA F 値（`f_classif`）: 分類でクラス間とクラス内の平均差を分散比で見る単変量検定。特徴量単独での有用性を測る
 - 相互情報量（`mutual_info_classif`）: 非線形依存も含めた一般的な依存性
 - カイ二乗（`chi2`）: 非負特徴量とカテゴリ目的変数（テキスト分類で頻出）
 
@@ -98,7 +91,7 @@ plt.savefig("featsel_filter_scores.svg", bbox_inches="tight")
 
 ![F 検定と相互情報量で各特徴量のランクを並べる](./featsel_filter_scores.svg)
 
-F 検定（青）と相互情報量（MI、緑）は、どちらも「予測に効く特徴量を上位に出す」点では共通します。その一方で、F 検定は線形関係に特化し、MI は非線形依存も拾います。両者がほぼ一致するなら関係が線形的、大きく食い違うなら非線形成分が強い、と読めます。
+F 検定（青）と相互情報量（MI、緑）は、どちらも特徴量を単独で順位付けします。F 値はクラス間の平均差に感度が高く、MI はより広い依存を拾えます。ただし順位の一致だけから線形性を断定できません。相関した特徴量や相互作用も見落とすため、最終的な選択は交差検証のパイプライン内で評価します。
 
 `SelectKBest(score_func=f_classif, k=10).fit_transform(X, y)` のように 1 行で上位 `k` 個を取り出せます。
 
@@ -139,7 +132,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-X, y = make_classification(n_samples=2000, n_features=30, n_informative=8, random_state=0)
+X, y = make_classification(n_samples=2000, n_features=30, n_informative=8,
+                           shuffle=False, random_state=0)
 lasso = make_pipeline(StandardScaler(),
                       LogisticRegression(penalty="l1", solver="liblinear", C=0.5,
                                           max_iter=5000)).fit(X, y)

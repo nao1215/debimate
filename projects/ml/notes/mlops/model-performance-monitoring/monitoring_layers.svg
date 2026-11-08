@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2026-05-26T11:35:10.948887</dc:date>
+    <dc:date>2026-11-08T15:18:27.598802</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -43,7 +43,7 @@ L 739.08 76.066125
 L 739.08 11.568525 
 L 45.72 11.568525 
 z
-" clip-path="url(#pa2a876e4ac)" style="fill: #e15759; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pcae3cfbe29)" style="fill: #e15759; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
     <path d="M 45.72 154.896525 
@@ -51,7 +51,7 @@ L 739.08 154.896525
 L 739.08 90.398925 
 L 45.72 90.398925 
 z
-" clip-path="url(#pa2a876e4ac)" style="fill: #f28e2b; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pcae3cfbe29)" style="fill: #f28e2b; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_5">
     <path d="M 45.72 233.726925 
@@ -59,7 +59,7 @@ L 739.08 233.726925
 L 739.08 169.229325 
 L 45.72 169.229325 
 z
-" clip-path="url(#pa2a876e4ac)" style="fill: #59a14f; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pcae3cfbe29)" style="fill: #59a14f; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_6">
     <path d="M 45.72 312.557325 
@@ -67,7 +67,7 @@ L 739.08 312.557325
 L 739.08 248.059725 
 L 45.72 248.059725 
 z
-" clip-path="url(#pa2a876e4ac)" style="fill: #7aa6c2; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pcae3cfbe29)" style="fill: #7aa6c2; opacity: 0.6; stroke: #000000; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="matplotlib.axis_1"/>
    <g id="matplotlib.axis_2"/>
@@ -2207,7 +2207,7 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="pa2a876e4ac">
+  <clipPath id="pcae3cfbe29">
    <rect x="7.2" y="22.318125" width="770.4" height="358.32"/>
   </clipPath>
  </defs>

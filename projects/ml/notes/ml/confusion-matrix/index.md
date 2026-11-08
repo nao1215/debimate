@@ -46,6 +46,7 @@ y_score = [0.1, 0.3, 0.4, 0.8, 0.2, 0.6, 0.7, 0.9]
 y_pred = [1 if s >= 0.5 else 0 for s in y_score]
 
 cm = confusion_matrix(y_true, y_pred)
+print(cm)  # [[3, 1], [1, 3]]。行は正解、列は予測
 plt.imshow(cm, cmap="Blues")
 plt.xticks([0, 1], ["Negative", "Positive"])
 plt.yticks([0, 1], ["Negative", "Positive"])
@@ -57,7 +58,20 @@ plt.show()
 
 出力:
 
-![confusion_matrix](./confusion_matrix.svg)
+```text
+[[3, 1],
+ [1, 3]]
+```
+
+この 8 件では行が正解、列が予測です。したがって `[[3, 1], [1, 3]]` の左上は TN、右上は FP、左下は FN、右下は TP です。実務では閾値を 1 つだけ選ばず、同じ `y_true` と `y_score` から複数の閾値で Precision と Recall を並べ、偽陽性・偽陰性のコストで決めます。
+
+| 閾値 | TN | FP | FN | TP | Precision | Recall |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 0.3 | 1 | 3 | 1 | 3 | 0.50 | 0.75 |
+| 0.5 | 3 | 1 | 1 | 3 | 0.75 | 0.75 |
+| 0.7 | 3 | 1 | 2 | 2 | 0.67 | 0.50 |
+
+この小さな例では、しきい値を下げると Recall が上がる代わりに FP が増え、上げると Precision を保ちやすい代わりに FN が増えます。どの行を選ぶかは、誤検知と見逃しのコストで決めます。
 
 ---
 

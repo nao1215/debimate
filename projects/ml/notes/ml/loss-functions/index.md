@@ -118,12 +118,12 @@ plt.savefig("loss_mse_vs_mae_fit.svg", bbox_inches="tight")
 出力:
 
 ```text
-true slope = 1.5, MSE slope = 2.30, MAE slope = 1.53
+true slope = 1.5, MSE slope = 1.29, MAE slope = 1.58
 ```
 
 ![同じデータでも損失関数で当てはまる線が大きく変わる](./loss_mse_vs_mae_fit.svg)
 
-外れ値を 10% 含むデータで、MSE は傾きを `2.30` と過大評価する一方、MAE は `1.53` で真の値 `1.5` をほぼ言い当てています。同じデータでも、損失関数を変えると推定する傾きが変わりました。回帰問題で予測精度が低いときは、外れ値の有無と損失関数の組み合わせを確認します。
+外れ値を 10% 含むこの乱数列では、MSE の傾きは `1.29`、MAE は `1.58` でした。MSE が常に一方向へ傾くわけではなく、外れ値の位置と符号に強く引かれます。同じデータでも、損失関数を変えると推定する線が変わります。回帰問題で予測精度が低いときは、外れ値の有無と損失関数の組み合わせを確認します。
 
 ---
 
@@ -166,7 +166,7 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 
 `L = -log p_c = -z_c + log(Σ_j exp(z_j))`
 
-の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を引く形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス（Kullback-Leibler divergence、2 つの確率分布のずれを測る量）」の特殊形でもあり、[情報理論](/ml/math/information-theory/)との繋がりも明確です。
+の形になります。第 1 項は「正解クラスの logit を上げる方向」、第 2 項は「すべてのクラスの logit の log-sum-exp」を加える形で、確率の正規化を担っています。これは「One-hot 表現 vs 確率分布の KL ダイバージェンス（Kullback-Leibler divergence、2 つの確率分布のずれを測る量）」の特殊形でもあり、[情報理論](/ml/math/information-theory/)との繋がりも明確です。
 
 ---
 

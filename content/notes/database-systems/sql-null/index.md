@@ -47,13 +47,15 @@ flowchart LR
 
 ```sql
 CREATE TABLE users (
-    id         BIGINT PRIMARY KEY,
+    id         BIGINT PRIMARY KEY NOT NULL,
     name       VARCHAR(100) NOT NULL,
     email      VARCHAR(255),
     age        INTEGER,
     deleted_at TIMESTAMP
 );
 ```
+
+ここでは主キーを「欠けない識別子」として使いたいため、`NOT NULL` を明示しています。SQLite の通常の rowid table では、`INTEGER PRIMARY KEY` 以外の `PRIMARY KEY` は歴史的な互換性のため `NULL` を許します。SQL 標準や他の DBMS と同じつもりで `BIGINT PRIMARY KEY` だけを書かず、移植する DDL では必要な制約を明記します。
 
 入っているデータは次の 4 件とします。
 
@@ -63,6 +65,15 @@ CREATE TABLE users (
 | 2 | 鈴木 | suzuki@example.com | 31 | `NULL` |
 | 3 | 高橋 | `NULL` | `NULL` | `NULL` |
 | 4 | 田中 | `NULL` | 45 | 2026-03-01 10:00 |
+
+{{< note-panels caption="この表では、同じ `NULL` でも「どの問いに答えられないか」が異なります。" >}}
+- title: email が NULL
+  body: 連絡先が未登録です。
+- title: age が NULL
+  body: 年齢が不明です。
+- title: deleted_at が NULL
+  body: この教材では、まだ削除されていない状態です。
+{{< /note-panels >}}
 
 ---
 
@@ -153,7 +164,17 @@ flowchart TB
 
 主な対策は、副問い合わせに `WHERE user_id IS NOT NULL` を加える、`user_id` を `NOT NULL` にする、`NOT EXISTS` で書く、の 3 つです。カラムが `NOT NULL` だと分かっている場合を除けば、`NOT EXISTS` の方が結果を読み違えにくいと考えられます。
 
-ただし、外側のカラムが `NULL` のレコードでも、`NOT IN` と `NOT EXISTS` の結果は分かれます。例えば `WHERE email NOT IN (SELECT email FROM blocked_emails)` では、`email` が `NULL` の高橋さんと田中さんは、副問い合わせが 1 件以上返す限り落ちます。`NOT EXISTS` なら副問い合わせが 0 件を返すので、2 人は残ります。上記の例の `id` は主キーなので、この差は出ません。
+ただし、外側のカラムが `NULL` のレコードでも、`NOT IN` と `NOT EXISTS` の結果は分かれます。例えば `WHERE email NOT IN (SELECT email FROM blocked_emails)` では、`email` が `NULL` の高橋さんと田中さんは、副問い合わせが 1 件以上返す限り落ちます。`NOT EXISTS` なら副問い合わせが 0 件を返すので、2 人は残ります。上記の例の `id` は、この教材では `NOT NULL` を明示した主キーなので、この差は出ません。
+
+SQLite 固有の違いは、最小の DDL でも確かめられます。`BIGINT PRIMARY KEY` を「NULL を拒否する制約」とは読めません。
+
+```sql
+CREATE TABLE sqlite_legacy_key (id BIGINT PRIMARY KEY);
+INSERT INTO sqlite_legacy_key VALUES (NULL), (NULL); -- SQLite の通常表では通る
+
+CREATE TABLE portable_key (id BIGINT PRIMARY KEY NOT NULL);
+INSERT INTO portable_key VALUES (NULL); -- NOT NULL constraint failed
+```
 
 ---
 

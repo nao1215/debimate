@@ -60,7 +60,7 @@ true_acc[75:] -= 0.05
 observed = true_acc + rng.normal(0, 0.006, len(days))
 
 # 7 日移動平均
-ma = np.array([observed[max(0, i - 7):i + 1].mean() for i in range(len(days))])
+ma = np.array([observed[max(0, i - 7 + 1):i + 1].mean() for i in range(len(days))])
 plt.scatter(days, observed, alpha=0.4, label="daily")
 plt.plot(days, ma, lw=2, label="7-day MA")
 plt.axhline(0.88, color="#f28e2b", ls="--", label="warning")
@@ -125,7 +125,7 @@ plt.savefig("monitoring_input_drift.svg", bbox_inches="tight")
 
 ![KS と PSI の時系列。60 日目から徐々に上昇](./monitoring_input_drift.svg)
 
-左の KS 統計量と右の PSI が、60 日目あたりから上昇を始めています。前章の accuracy 監視では 75 日目まで影響が見えなかったのに対し、入力ドリフトはおよそ 15 日早く兆候を検知できています。
+左の KS 統計量と右の PSI は、この合成データでは 60 日目あたりから上昇します。accuracy の図とは独立に作った模式データなので、「15 日早く検知できた」という実測比較にはなりません。実運用では、同じ時系列・同じ窓・正解ラベルが届く時刻を揃えて、ドリフト検知から性能悪化までの遅れを評価します。
 
 ただし入力ドリフトと精度劣化は必ずしも 1:1 対応しません。`P(x)` が変わっても `P(y|x)` が安定なら精度は維持されます（covariate shift, 詳細は [データドリフト](../data-drift/) 参照）。入力ドリフトを検知したら、予測精度への影響も確認します。
 
@@ -144,7 +144,7 @@ PREDICTION_LATENCY = Histogram("prediction_latency_seconds", "Latency",
                                 buckets=[0.01, 0.05, 0.1, 0.2, 0.5, 1.0])
 PREDICTION_SCORE = Histogram("prediction_score", "Output score distribution",
                               buckets=[0.0, 0.1, 0.2, 0.5, 0.8, 0.9, 1.0])
-INPUT_FEATURE_MEAN = Gauge("input_feature_mean", "Mean of input feature",
+INPUT_FEATURE_VALUE = Gauge("input_feature_value", "Latest input feature value",
                             ["feature_name"])
 
 def predict_with_metrics(req):
@@ -156,12 +156,12 @@ def predict_with_metrics(req):
     PREDICTION_LATENCY.observe(elapsed)
     PREDICTION_SCORE.observe(pred)
     for name, val in zip(feature_names, req.features):
-        INPUT_FEATURE_MEAN.labels(feature_name=name).set(val)
+        INPUT_FEATURE_VALUE.labels(feature_name=name).set(val)
 
     return {"prediction": pred}
 ```
 
-Grafana のダッシュボードで「過去 24 時間の P99 latency」「予測スコアの分布の変化」「入力特徴量の平均推移」を並べておけば、各指標の変化を比較できます。アラートルール（PromQL: `histogram_quantile(0.99, ...) > 0.2`）を設定すると、自動通知できます。
+`Gauge.set()` が保存するのは直近の値です。平均を監視するなら、集計用の Histogram/Summary を観測するか、時刻窓を明示したクエリで集約します。Grafana のダッシュボードで「過去 24 時間の P99 latency」「予測スコアの分布の変化」「入力特徴量の平均推移」を並べておけば、各指標の変化を比較できます。アラートルール（PromQL: `histogram_quantile(0.99, ...) > 0.2`）を設定すると、自動通知できます。
 
 ---
 

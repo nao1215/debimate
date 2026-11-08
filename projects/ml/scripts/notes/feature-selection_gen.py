@@ -21,9 +21,9 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/feature-selection"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -127,7 +127,7 @@ save("featsel_rfe_cv.svg")
 # Fig 4: Lasso vs RF importance for embedded feature selection
 # ============================================================
 X_emb, y_emb = make_classification(n_samples=2000, n_features=30, n_informative=8,
-                                     n_redundant=4, random_state=0)
+                                     n_redundant=4, shuffle=False, random_state=0)
 true_informative = np.zeros(30, dtype=bool)
 # scikit-learn make_classification puts informative features first
 true_informative[:8] = True

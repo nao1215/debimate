@@ -15,9 +15,9 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/mlops/model-performance-monitoring"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -38,7 +38,7 @@ observed = true_acc + rng.normal(0, 0.006, len(days))
 
 # 7-day moving average
 window = 7
-ma = np.array([observed[max(0, i - window):i + 1].mean() for i in range(len(days))])
+ma = np.array([observed[max(0, i - window + 1):i + 1].mean() for i in range(len(days))])
 
 plt.figure(figsize=(11, 4.5))
 plt.scatter(days, observed, color=COLOR_GRAY, alpha=0.45, s=18, label="daily metric")
@@ -111,7 +111,7 @@ ax.set_title("Population Stability Index")
 ax.legend(fontsize=9)
 ax.grid(True, alpha=0.25)
 
-plt.suptitle("Input drift monitoring picks up the shift before accuracy collapses",
+plt.suptitle("Synthetic input drift: a leading signal, not a measured lead time",
              y=1.02)
 plt.tight_layout()
 save("monitoring_input_drift.svg")

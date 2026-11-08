@@ -8,9 +8,9 @@ from sklearn.cluster import AgglomerativeClustering
 
 COLOR_BLUE, COLOR_RED, COLOR_GREEN, COLOR_ORANGE = "#7aa6c2", "#e15759", "#59a14f", "#f28e2b"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/hierarchical-clustering"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -30,7 +30,7 @@ fig, axes = plt.subplots(1, 2, figsize=(14, 5))
 ax = axes[0]
 dendrogram(Z, ax=ax, color_threshold=8)
 ax.axhline(8, color=COLOR_RED, ls="--", lw=1.5, label="cut at h=8 → 3 clusters")
-ax.axhline(15, color=COLOR_GREEN, ls="--", lw=1.5, label="cut at h=15 → 2 clusters")
+ax.axhline(12, color=COLOR_GREEN, ls="--", lw=1.5, label="cut at h=12 → 2 clusters")
 ax.set_title("Dendrogram: tree of merges from bottom up")
 ax.set_xlabel("sample index")
 ax.set_ylabel("merge distance")

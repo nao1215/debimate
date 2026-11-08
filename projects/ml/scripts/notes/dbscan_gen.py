@@ -7,9 +7,9 @@ from sklearn.datasets import make_moons, make_blobs
 
 COLOR_BLUE, COLOR_RED, COLOR_GREEN, COLOR_ORANGE = "#7aa6c2", "#e15759", "#59a14f", "#f28e2b"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/dbscan"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -34,7 +34,7 @@ ax.set_xlabel("x1"); ax.set_ylabel("x2")
 ax.grid(True, alpha=0.25)
 
 # DBSCAN
-db = DBSCAN(eps=0.2, min_samples=5).fit(X_moons)
+db = DBSCAN(eps=0.17, min_samples=5).fit(X_moons)
 ax = axes[1]
 # Color noise (-1) gray, clusters by label
 mask_noise = db.labels_ == -1
@@ -67,7 +67,8 @@ min_samples = 5
 from sklearn.neighbors import NearestNeighbors
 nbrs = NearestNeighbors(radius=eps).fit(X)
 distances, indices = nbrs.radius_neighbors(X)
-n_neighbors = np.array([len(i) - 1 for i in indices])  # exclude self
+# scikit-learn の min_samples には点自身も含まれる。
+n_neighbors = np.array([len(i) for i in indices])
 
 # Classify: core if n_neighbors >= min_samples
 # Border: not core but in eps of a core point

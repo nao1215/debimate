@@ -12,9 +12,9 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/log-exp-logodds"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -119,8 +119,8 @@ save("sigmoid_logit.svg")
 # ============================================================
 # Fig 4: Numerical stability - product of small probabilities
 # ============================================================
-n_steps = np.arange(1, 800)
-p_each = 0.99  # 1 サンプルあたりの尤度
+n_steps = np.arange(1, 1800)
+p_each = 0.5  # 1 サンプルあたりの尤度
 # Direct multiplication
 prod = np.cumprod(np.full_like(n_steps, p_each, dtype=float))
 # Log-sum equivalent
@@ -128,7 +128,7 @@ log_sum = np.cumsum(np.full_like(n_steps, np.log(p_each), dtype=float))
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
 
-axes[0].plot(n_steps, prod, color=COLOR_RED, lw=2, label="cumulative product (underflows)")
+axes[0].plot(n_steps, prod, color=COLOR_RED, lw=2, label="cumulative product (underflows near n=1075)")
 axes[0].set_xlabel("number of samples")
 axes[0].set_ylabel("product of likelihoods")
 axes[0].set_title("Direct product: underflows to 0 for many samples")

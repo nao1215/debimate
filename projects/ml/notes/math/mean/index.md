@@ -113,8 +113,8 @@ plt.savefig("mean_outlier_drift.svg", bbox_inches="tight")
 出力:
 
 ```text
-clean:        mean = 50.31, median = 50.10
-with outlier: mean = 59.13, median = 50.10
+clean:        mean = 50.63, median = 50.67
+with outlier: mean = 59.44, median = 50.71
 ```
 
 ![外れ値 1 つで平均が動き、中央値は動かない](./mean_outlier_drift.svg)

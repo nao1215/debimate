@@ -13,9 +13,9 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_PURPLE = "#b07aa1"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/information-theory"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 

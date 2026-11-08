@@ -23,13 +23,13 @@ from sklearn.datasets import make_moons
 
 X, _ = make_moons(n_samples=400, noise=0.08, random_state=0)
 km = KMeans(n_clusters=2, random_state=0).fit(X)
-db = DBSCAN(eps=0.2, min_samples=5).fit(X)
+db = DBSCAN(eps=0.17, min_samples=5).fit(X)
 plt.savefig("dbscan_vs_kmeans.svg", bbox_inches="tight")
 ```
 
 ![k-means は分離失敗、DBSCAN は月を正しく抽出](./dbscan_vs_kmeans.svg)
 
-k-means（左）はクラスタを「球形」で近似するため、三日月型データを縦に分けてしまい間違えます。DBSCAN（右）は「密につながった点同士は同じクラスタ」と判定するので、月の形をそのまま 2 クラスタに分けられます。さらに端の数点が「noise」として `×` 印で別扱いされています。
+k-means（左）はクラスタを「球形」で近似するため、三日月型データを縦に分けてしまいます。DBSCAN（右）は「密につながった点同士は同じクラスタ」と判定します。この乱数・`eps=0.17`・`min_samples=5` では 2 クラスタ、noise は 0 件です。`eps=0.2` にすると両方の月がつながり 1 クラスタになるため、図の条件を本文にも残します。
 
 ---
 
@@ -37,7 +37,7 @@ k-means（左）はクラスタを「球形」で近似するため、三日月�
 
 DBSCAN は各点を 3 種類に分類します。
 
-- core point（コア点）: 半径 `eps` 以内に `min_samples` 個以上の点を持つ
+- core point（コア点）: 自分自身を含め、半径 `eps` 以内に `min_samples` 個以上の点を持つ
 - border point（ボーダー点）: コア点ではないものの、コア点の近傍 `eps` に入る
 - noise point（ノイズ点）: どちらでもない外れ値
 
@@ -103,7 +103,7 @@ plt.savefig("dbscan_k_distance_elbow.svg", bbox_inches="tight")
 
 ![k-distance プロット: 曲がり角を eps として採用](./dbscan_k_distance_elbow.svg)
 
-横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」。曲がり角（多くの場合 95 パーセンタイル付近）が「ここから先は外れ値」の境界で、その高さを `eps` の初期値にします。
+横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」です。急に立ち上がる位置があれば、その高さを候補にして結果を確認します。95 パーセンタイルのような固定規則ではありません。特徴量の尺度、`min_samples`、期待するノイズ率を変えると候補も変わります。
 
 `min_samples` は次の目安で選ぶ:
 

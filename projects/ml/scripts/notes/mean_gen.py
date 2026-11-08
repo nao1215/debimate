@@ -12,9 +12,9 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
     "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/mean"
-)
+))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
