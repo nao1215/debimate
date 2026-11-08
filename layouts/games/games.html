@@ -4,7 +4,6 @@
   <h1>{{ .Title }}</h1>
   <p><a href="https://ebitengine.org/ja/">Ebitengine</a>{{ strings.TrimPrefix "Ebitengine" .Description }}</p>
 </header>
-<noscript><style>.game-demo video { display: none; }</style></noscript>
 {{- $firstDemo := true -}}
 {{- range $group := slice "games" "tools" }}
 {{- if eq $group "tools" }}<hr class="games-divider">{{ end }}
@@ -15,10 +14,10 @@
   {{- if or (and (eq $group "games") .play) (and (eq $group "tools") (not .play)) }}
   <article class="game-card" aria-labelledby="game-{{ .name | anchorize }}">
     <figure class="game-demo">
-      {{- $video := $.Resources.Get .video | fingerprint }}
-      {{- $poster := partial "game_poster.html" ($.Resources.Get .poster) }}
-      <video width="{{ .videoWidth }}" height="{{ .videoHeight }}" {{ if $firstDemo }}poster="{{ $poster.RelPermalink }}"{{ else }}data-poster="{{ $poster.RelPermalink }}"{{ end }} data-src="{{ $video.RelPermalink }}" muted loop playsinline preload="none" aria-label="{{ .name }}のプレイ動画" data-game-demo></video>
-      <noscript><img src="{{ $poster.RelPermalink }}" width="{{ $poster.Width }}" height="{{ $poster.Height }}" loading="lazy" alt="{{ .name }}のプレイ画面"></noscript>
+      {{- $demo := $.Resources.Get .demo }}
+      {{- $attrs := partialCached "weeknotes/image_delivery.html" (dict "image" $demo "width" 720) $demo.RelPermalink 720 }}
+      {{- if $firstDemo }}{{ $attrs = merge $attrs (dict "loading" "eager" "fetchpriority" "high" "sizes" (strings.TrimPrefix "auto, " $attrs.sizes)) }}{{ end }}
+      <img alt="{{ .name }}のプレイ画面"{{ range $key, $value := $attrs }} {{ printf "%s=%q" $key (printf "%v" $value) | safeHTMLAttr }}{{ end }}>
       {{- $firstDemo = false -}}
       <figcaption>{{ .name }}の{{ if .play }}プレイ動画{{ else }}サンプルゲーム{{ end }}</figcaption>
     </figure>
@@ -39,6 +38,4 @@
   </div>
 </section>
 {{- end }}
-{{- $script := resources.Get "js/game-demos.js" | minify | fingerprint }}
-<script src="{{ $script.RelPermalink }}" defer></script>
 {{- end }}

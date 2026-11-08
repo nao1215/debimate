@@ -23,7 +23,7 @@ class Images(HTMLParser):
             self.images.append(attrs)
         if tag == "iframe":
             self.frames.append(attrs)
-        if tag == "video" and "data-game-demo" in attrs:
+        if tag == "video":
             self.videos.append(attrs)
         if tag == "script":
             self.scripts.append(attrs.get("src", ""))
@@ -33,15 +33,7 @@ def check(root: Path) -> None:
     count = 0
     for path in (root / "weeknotes").rglob("index.html"):
         page = Images(path)
-        if page.videos:
-            assert any("/js/game-demos." in src for src in page.scripts), path
-        for video in page.videos:
-            assert video.get("preload") == "none", (path, video)
-            assert "src" not in video, (path, video)
-            assert all(key in video for key in ("muted", "loop", "playsinline")), (path, video)
-            for key in ("data-src", "data-poster"):
-                target = root / unquote(urlparse(video[key]).path).lstrip("/")
-                assert target.is_file(), (path, target)
+        assert not page.videos, f"Use animated WebP images instead of video: {path}"
         for image in page.images:
             assert int(image.get("width", 0)) > 0, (path, image)
             assert int(image.get("height", 0)) > 0, (path, image)

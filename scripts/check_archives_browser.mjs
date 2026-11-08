@@ -121,22 +121,17 @@ try {
   await noJS.close();
   console.log('PASS no-JavaScript fallback links');
 
-  const mediaRequests = [];
-  page.on('request', request => { if (request.url().endsWith('.mp4')) mediaRequests.push(request.url()); });
-  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(`${origin}/games/`);
-  await page.waitForTimeout(400);
-  assert.equal(mediaRequests.length, 0);
-  assert.equal(await page.locator('video[src]').count(), 0);
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.waitForFunction(() => !document.querySelector('video').paused);
-  assert.equal(await page.locator('video[src]').count(), 1);
-  assert.equal(await page.locator('video').last().getAttribute('poster'), null);
-  await page.locator('video').nth(1).scrollIntoViewIfNeeded();
-  await page.waitForFunction(() => !document.querySelectorAll('video')[1].paused && document.querySelector('video').paused);
-  assert.equal(await page.locator('video[src]').count(), 2);
+  assert.equal(await page.locator('video').count(), 0);
+  const demos = page.locator('.game-demo img');
+  assert.equal(await demos.count(), 3);
+  for (const demo of await demos.all()) {
+    await demo.scrollIntoViewIfNeeded();
+    await demo.evaluate(img => img.decode());
+    assert.ok(await demo.evaluate(img => img.naturalWidth > 0));
+  }
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);
-  console.log('PASS Games: visible autoplay, offscreen pause, deferred media, reduced-motion');
+  console.log('PASS Games: responsive animated images without video players');
   assert.deepEqual(errors, []);
 } catch (error) {
   await saveFailure(browser, 'archives');

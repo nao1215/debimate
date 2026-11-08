@@ -1,22 +1,26 @@
 #!/usr/bin/env python3
 """Validate page-specific CSS bundles and lightweight favicon declarations."""
 
+import json
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urlparse
 
 
 class Assets(HTMLParser):
-    def __init__(self, path: Path):
+    def __init__(self, path: Path, *, html=None):
         super().__init__(convert_charrefs=True)
         self.classes = set()
         self.element_ids = set()
         self.icons = []
         self.stylesheets = []
-        self.feed(path.read_text())
+        self.feed(path.read_text() if html is None else html)
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        assert tag != "video", f"Use animated WebP instead of a video element: {attrs}"
+        for value in attrs.values():
+            assert not value or ".mp4" not in value.lower(), f"MP4 reference is prohibited: {value}"
         self.classes.update(attrs.get("class", "").split())
         if attrs.get("id"):
             self.element_ids.add(attrs["id"])
@@ -35,6 +39,11 @@ def local_path(root: Path, url: str) -> Path:
 
 
 def check(root: Path) -> None:
+    assert not [p for p in root.rglob("*") if p.suffix.lower() == ".mp4"], "MP4 files must not be published"
+    for path in root.rglob("*.html"):
+        Assets(path)
+    for path in (root / "assets/home").glob("*.json"):
+        Assets(path, html=json.loads(path.read_text()).get("html", ""))
     article_path = next(root.glob("post/ja/*/index.html"))
     pages = {
         "home": Assets(root / "index.html"),

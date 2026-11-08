@@ -68,14 +68,6 @@
 <link rel="preload" as="image" type="image/webp" href="{{ .RelPermalink }}" fetchpriority="high">
   {{- end -}}
 {{- end -}}
-{{- if eq .Layout "games" -}}
-  {{- with index .Params.games 0 -}}
-    {{- with $.Resources.Get .poster -}}
-      {{- $poster := partial "game_poster.html" . -}}
-<link rel="preload" as="image" type="image/webp" href="{{ $poster.RelPermalink }}" fetchpriority="high">
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
 {{- if site.Params.analytics.google.SiteVerificationTag }}
 <meta name="google-site-verification" content="{{ site.Params.analytics.google.SiteVerificationTag }}">
 {{- end }}

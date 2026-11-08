@@ -1,42 +1,39 @@
 # Games page demo media
 
-Existing demo GIFs converted to muted H.264 MP4 (CRF 25, slow preset,
-yuv420p, faststart, metadata stripped). Odd dimensions are padded to even
-pixels for H.264 compatibility. Posters are the first frame encoded as WebP.
+All published demos are animated WebP images. Do not add MP4 files or video
+players: articles, home cards, archives, and Games share native image delivery.
+The existing GIF articles remain supported. Animated WebP avoids GIF's indexed
+palette; lossy WebP compression is used without palette reduction.
 
 Sources in sibling repositories:
 
-- rabbitrun: newly recorded with the built-in `--record-demo` command
-- succubus-live: newly recorded from the published browser game in Japanese
+- rabbitrun: recorded with the built-in `--record-demo` command
+- succubus-live: recorded from the published browser game in Japanese
 - gozen: `gozen/docs/images/go-zen.gif`
 
-Output: `content/games/media/{name}.mp4` and `{name}-poster.webp`.
+Output: `content/games/media/{name}-demo.webp`.
 
 ```sh
-ffmpeg -i "$source" -vf 'pad=ceil(iw/2)*2:ceil(ih/2)*2' -an \
-  -c:v libx264 -preset slow -crf 25 -pix_fmt yuv420p \
-  -movflags +faststart -map_metadata -1 "$video"
-ffmpeg -i "$source" -frames:v 1 -quality 82 -map_metadata -1 "$poster"
+ffmpeg -i "$source" -an -vf fps=15 -c:v libwebp_anim -quality 85 \
+  -compression_level 4 -loop 0 "$animation"
 ```
+
+Long animations must fit Hugo's 384 MiB per-image frame-buffer limit.
+The migrated sources use 8 fps at 720 px width for Death March work,
+8 fps at 640 px for Succubus Live, 10 fps for Rabbit Run and kube-prompt,
+and 15 fps for the phone demos and Gozen. Timing and looping are retained;
+no indexed-color palette is introduced.
+
+Keep temporary recordings outside the content tree. Hugo's existing image
+pipeline creates responsive animated WebP derivatives with native lazy loading.
+`check_asset_delivery.py` rejects published MP4 files and video elements;
+`check_home_media_browser.mjs` checks that card images actually animate.
 
 Rabbit Run was re-recorded with its built-in automatic demo: 60 seconds each of
 `cool`, `cute`, `gyal`, and `street`, plus 25 seconds of `gyal` on stage 4.
 The edit uses seconds 14–20 in the order `gyal`, `cool`, `cute`, `street`,
 then seconds 8–14 of stage 4: exactly 30 seconds in total.
-The secret bunny is excluded. Example recording:
-
-```sh
-go build -o /tmp/rabbitrun-demo .
-xvfb-run -a /tmp/rabbitrun-demo --record-demo /tmp/rabbitrun-long.mp4 \
-  --record-char cute --record-seconds 60
-ffmpeg -i /tmp/rabbitrun-long.mp4 -vf 'scale=480:-2' -an -c:v libx264 \
-  -preset slow -crf 26 -pix_fmt yuv420p -movflags +faststart \
-  -map_metadata -1 rabbitrun.mp4
-```
-
-The Games page uses GIF-like previews without playback controls. Visible videos
-loop silently; scrolling offscreen or hiding the tab pauses them. Reduced-motion
-preferences, unavailable autoplay, or disabled JavaScript leave the poster visible.
+The secret bunny is excluded.
 
 Succubus Live uses a 1280×720 browser viewport, Japanese language, a viewer named
 ゲスト, and the game's fullscreen view. The video combines the lobby and six solo
@@ -52,4 +49,4 @@ without resizing or the GIF's palette reduction.
 
 The Rabbit Run edit uses `trim` + `setpts=PTS-STARTPTS` on each input before
 concatenation, so keyframe seeking cannot add repeated or overlapping segments.
-Videos and posters have content-hashed URLs to avoid stale browser caches.
+Hugo image derivatives have content-hashed URLs to avoid stale browser caches.

@@ -13,7 +13,7 @@ class Page(HTMLParser):
         super().__init__()
         self.cards, self.weeks, self.entries = [], 0, []
         self.next, self.prev = None, None
-        self.videos, self.posters, self.anchor_index = [], [], None
+        self.videos, self.demos, self.anchor_index = [], [], None
         self.feed(path.read_text())
 
     def handle_starttag(self, tag, attrs):
@@ -32,8 +32,8 @@ class Page(HTMLParser):
             self.entries.append(attrs['id'])
         if tag == 'video':
             self.videos.append(attrs)
-        if tag == 'link' and attrs.get('as') == 'image':
-            self.posters.append(attrs.get('href'))
+        if tag == 'img' and '-demo' in attrs.get('src', ''):
+            self.demos.append(attrs)
 
 
 def traversal(root, path):
@@ -86,18 +86,12 @@ def check(root, baseline=None):
             report[path]['before_bytes'] = len(old_data)
             report[path]['before_gzip_bytes'] = len(gzip.compress(old_data, mtime=0))
     games = Page(root / 'games/index.html')
-    assert games.videos
-    for i, video in enumerate(games.videos):
-        assert not video.get('src'), 'Videos must wait until visible'
-        assert video.get('preload') == 'none'
-        assert 'muted' in video and 'loop' in video and 'playsinline' in video
-        assert (root / unquote(video['data-src']).lstrip('/')).is_file()
-        poster = video.get('poster') if i == 0 else video.get('data-poster')
-        assert poster and (root / unquote(poster).lstrip('/')).is_file()
-        if i == 0:
-            assert poster in games.posters, 'First poster must be preloaded'
-        else:
-            assert not video.get('poster'), 'Offscreen posters must not load eagerly'
+    assert not games.videos, 'Games must use animated images, not video players'
+    assert len(games.demos) == 3
+    for i, demo in enumerate(games.demos):
+        assert demo['loading'] == ('eager' if i == 0 else 'lazy')
+        assert demo.get('srcset') and demo.get('sizes')
+        assert (root / unquote(demo['src']).lstrip('/')).is_file()
     print(json.dumps(report, ensure_ascii=False, indent=2))
 
 

@@ -12,24 +12,34 @@ try {
     page.on('pageerror', error => errors.push(error.message));
     await page.goto(origin);
     const section = page.locator('.home-weeknotes');
-    // The video may move into an older batch as new weeknotes are published.
-    while (!await section.locator('video').count()) {
-      const status = section.locator('.home-list-status');
-      assert.ok(await status.locator('button:visible').count(), 'No video found in weeknote batches');
+    // Include deferred home cards when checking image animation.
+    const status = section.locator('.home-list-status');
+    const total = Number(await status.getAttribute('data-total'));
+    while (await section.locator('.post-entry').count() < total) {
       const count = await section.locator('.post-entry').count();
-      await status.scrollIntoViewIfNeeded();
+      // Scroll-triggered loading may finish between locating and clicking.
+      await status.locator('button').evaluate(button => {
+        if (!button.hidden && !button.disabled) button.click();
+      });
       await page.waitForFunction(n => document.querySelectorAll('.home-weeknotes .post-entry').length > n, count);
     }
-    const video = section.locator('video').first();
-    await video.scrollIntoViewIfNeeded();
-    await page.waitForFunction(() => {
-      const video = document.querySelector('.home-weeknotes video');
-      return !video.paused && video.currentTime > 0 && video.videoWidth > 0;
-    });
-    await page.evaluate(() => scrollTo({ top: 0, behavior: 'instant' }));
-    await page.waitForFunction(() => document.querySelector('.home-weeknotes video').paused);
+    assert.equal(await page.locator('video').count(), 0);
+    const demos = section.locator('img[src*="-demo"]');
+    const count = await demos.count();
+    assert.ok(count > 0, 'No animated demo images found in weeknote cards');
+    for (const demo of await demos.all()) {
+      await demo.scrollIntoViewIfNeeded();
+      await demo.evaluate(img => img.decode());
+      const first = await demo.screenshot();
+      let changed = false;
+      for (let attempt = 0; attempt < 8 && !changed; attempt++) {
+        await page.waitForTimeout(500);
+        changed = !first.equals(await demo.screenshot());
+      }
+      assert.ok(changed, `Card image does not animate: ${await demo.getAttribute('src')}`);
+    }
     assert.deepEqual(errors, []);
-    console.log(`PASS ${width}px: home weeknote video loads, plays frames in viewport, pauses offscreen`);
+    console.log(`PASS ${width}px: all ${count} home demo images load and animate without video players`);
     await context.close();
   }
 } catch (error) {

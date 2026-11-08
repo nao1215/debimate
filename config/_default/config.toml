@@ -10,6 +10,9 @@ env = "production"
 images = ["images/default-ogp.webp"]
 publishDir = "public"
 enableGitInfo = true
+# Publish future-dated content, including next week's Weeknotes, on the next deploy.
+# Unfinished content must use draft = true.
+buildFuture = true
 
 [services]
   [services.googleAnalytics]

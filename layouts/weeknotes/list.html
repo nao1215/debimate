@@ -35,17 +35,14 @@
         <div class="listing-cards weeknotes-topic-cards">
           {{- range . }}
           {{- $topic := . }}
-          {{- $game := partial "weeknotes/topic_game.html" . }}
           {{- $image := "" }}
           {{- $attrs := dict "src" $image "loading" "lazy" "decoding" "async" }}
-          {{- if not $game }}
           {{- with partial "weeknotes/topic_image_resource.html" . }}
             {{- $attrs = partialCached "weeknotes/image_delivery.html" (dict "image" . "width" 360 "thumbnail" true) .RelPermalink 360 "thumbnail" }}
             {{- $image = $attrs.src }}
           {{- else }}
             {{- $image = partial "weeknotes/topic_image.html" $topic }}
             {{- $attrs = merge $attrs (dict "src" $image) }}
-          {{- end }}
           {{- end }}
           {{- $sizes := "(min-width: 1488px) 274px, (min-width: 901px) calc((100vw - 120px) / 5), (min-width: 541px) calc((100vw - 72px) / 2), calc(100vw - 48px)" }}
           {{- $attrs = merge $attrs (dict "width" 960 "height" 540 "sizes" (printf "auto, %s" $sizes)) }}
@@ -55,16 +52,8 @@
           {{- $cardIndex = add $cardIndex 1 }}
           <article class="listing-card">
             <a class="listing-card-link" href="{{ .page.RelPermalink }}">
-              {{- if $game }}
-              {{- $games := site.GetPage "/games" }}
-              {{- $video := $games.Resources.Get $game.video | fingerprint }}
-              {{- $poster := partial "game_poster.html" ($games.Resources.Get $game.poster) }}
-              <video width="{{ $game.videoWidth }}" height="{{ $game.videoHeight }}" data-poster="{{ $poster.RelPermalink }}" data-src="{{ $video.RelPermalink }}" muted loop playsinline preload="none" aria-label="{{ $game.name }}のプレイ動画" data-game-demo></video>
-              <noscript><img src="{{ $poster.RelPermalink }}" width="{{ $poster.Width }}" height="{{ $poster.Height }}" loading="lazy" alt="{{ $game.name }}のプレイ画面"></noscript>
-              {{- else }}
               {{- with $image }}
               <img data-card-optional alt=""{{ range $key, $value := $attrs }} {{ printf "%s=%q" $key (printf "%v" $value) | safeHTMLAttr }}{{ end }}>
-              {{- end }}
               {{- end }}
               <div class="listing-card-body">
                 <h3>{{ .page.Title }}</h3>
@@ -85,9 +74,6 @@
 {{ partial "archive_pagination.html" $pager }}
 {{- $script := resources.Get "js/list-cards.js" | minify | fingerprint }}
 <script src="{{ $script.RelPermalink }}" defer></script>
-{{- $demos := resources.Get "js/game-demos.js" | minify | fingerprint }}
-<script src="{{ $demos.RelPermalink }}" defer></script>
-<noscript><style>.weeknotes-index video { display: none; }</style></noscript>
 {{/* Preserve old links to weekly anchors on the former full-text index. */}}
 <script>
 (() => {
