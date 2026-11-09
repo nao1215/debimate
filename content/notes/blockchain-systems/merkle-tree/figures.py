@@ -47,7 +47,7 @@ def proof_size(n):
 
 
 # --- 図1: 葉の数に対する証明のハッシュの個数 ---
-n = np.logspace(np.log10(2), np.log10(4e6), 6000)
+n = np.logspace(np.log10(2), np.log10(1e6), 6000)
 plt.plot(n, proof_size(n), color=COLOR_BLUE, linewidth=1.8)
 
 marks = [(4, "4"), (8, "8"), (1024, "1,024"), (1_000_000, "1,000,000")]
@@ -65,7 +65,7 @@ for leaves, _ in marks:
     )
 
 plt.xscale("log")
-plt.xlim(2, 1.2e7)
+plt.xlim(2, 3e6)
 plt.ylim(0, 24)
 plt.xticks([leaves for leaves, _ in marks], [label for _, label in marks])
 plt.minorticks_off()

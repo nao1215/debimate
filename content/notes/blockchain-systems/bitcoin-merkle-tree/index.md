@@ -9,7 +9,9 @@ weight: 9
 
 Bitcoin は、ブロックに入った取引（transaction、以下の図では Tx と略します）の並びを Merkle Tree で 1 つのルートハッシュに畳み込み、80 バイトのブロックヘッダに収めています。[Bitcoin の白書](https://bitcoin.org/bitcoin.pdf)も、取引を Merkle Tree でハッシュ化し、ブロックのハッシュに入れるのはルートだけとしています。
 
-Bitcoin で支払いを受け取る場合を考えます。送金の取引は、作られてネットワークに流れただけでは、まだどのブロックにも入っていません。どこかのブロックに取り込まれて初めて、共有された履歴に載ります。そのため、代金を受け取る側は、自分宛の取引がブロックに入ったことを確認してから商品を渡します。厳密には、取引を含むブロック自身と後続のブロックを合わせた確認数（[Bitcoin Block](../bitcoin-block/) で説明）まで見て判断します。ここで扱うのは、その前段の「入ったこと」の確認です。
+Bitcoin で支払いを受け取る場合を考えます。送金の取引は、作られてネットワークに流れただけでは、まだどのブロックにも入っていません。どこかのブロックに取り込まれて初めて、共有された履歴に載ります。そのため、代金を受け取る側は、自分宛の取引がブロックに入ったことを確認してから商品を渡します。
+
+厳密には、取引を含むブロック自身と後続のブロックを合わせた確認数（[Bitcoin Block](../bitcoin-block/) で説明）まで見て判断します。ここで扱うのは、その前段の「入ったこと」の確認です。
 
 受け取る側が置かれる状況を以下に示します。
 
@@ -63,7 +65,9 @@ flowchart LR
 
 ### 葉になる txid
 
-葉は、各取引の txid です。txid は、取引から witness データ（そのコインを使う資格を示す署名や公開鍵など）を除いた形式に、[SHA-256](/notes/security/sha-256/)（Secure Hash Algorithm 256、出力が 32 バイトのハッシュ関数）を 2 回適用した値です。葉が並んだら、隣同士を左から順に組にして連結し、その組に SHA-256 を 2 回適用した値を 1 段上のノードにします。1 つになるまで繰り返した結果が、ブロックヘッダに入るルートハッシュです。
+葉は、各取引の txid です。txid は、取引から witness データ（そのコインを使う資格を示す署名や公開鍵など）を除いた形式に、[SHA-256](/notes/security/sha-256/)（Secure Hash Algorithm 256、出力が 32 バイトのハッシュ関数）を 2 回適用した値です。
+
+葉が並んだら、隣同士を左から順に組にして連結し、その組に SHA-256 を 2 回適用した値を 1 段上のノードにします。1 つになるまで繰り返した結果が、ブロックヘッダに入るルートハッシュです。
 
 取引を並べる順序を決めるのはブロックを作った参加者（マイナー）で、順序が変われば別のルートハッシュになります。
 
@@ -94,7 +98,7 @@ flowchart LR
 
 ### 奇数の葉の複製
 
-木の組み立て方は Merkle Tree で 1 通りに決まっておらず、Bitcoin の作り方は数ある流儀の 1 つです。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
+Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
 
 例えば、取引 3 件のブロックでは、次のように複製します。
 
@@ -114,7 +118,9 @@ flowchart BT
 
 複製規則の副作用として、異なる取引の並びが同じルートハッシュになる場合があります。SHA-256 の衝突ではなく、木の構築規則に由来する一致です。
 
-この一致を放置すると、[CVE-2012-2459](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2012-2459) の攻撃が成り立ちます。ノードは無効と判定したブロックをハッシュで覚え、同じハッシュのブロックを以後受け取りません。攻撃者が取引を複製した無効なブロックを先に送ると、同じヘッダを持つ正当なブロックまで拒まれます。そのため Bitcoin Core は、段の末尾で同じハッシュ 2 つを組にする箇所を検出し、そのブロックを棄却しています。
+この一致を放置すると、[CVE-2012-2459](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2012-2459) の攻撃が成り立ちます。ノードは無効と判定したブロックをハッシュで覚え、同じハッシュのブロックを以後受け取りません。攻撃者が取引を複製した無効なブロックを先に送ると、同じヘッダを持つ正当なブロックまで拒まれます。
+
+そのため Bitcoin Core は、各段で組にする 2 つのハッシュが同じになる箇所を探し、見つかったブロックはヘッダとデータが一致しないものとして棄却します。ヘッダ自体を無効として覚えないため、後から届く正当なブロックは受け入れられます。
 
 複製しない流儀もあります。Certificate Transparency の [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) は、葉の件数から木の形を決める分割規則を使っており、奇数の扱いを含む構築規則の違いは [Merkle Tree Design](../merkle-tree-design/) で扱います。
 
@@ -134,14 +140,27 @@ flowchart BT
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図で証明として渡るのは Hash3 と Hash01 の 2 個で、検証者は Tx2 から Hash2 を求め、根まで再計算して手元のルートハッシュと照合します。左右の知り方は証明の形式によって異なり、Bitcoin では各段での番号から判断します。0 から数えると Hash2 は番号 2 で、偶数なので相手は右の Hash3 です。1 つ上の段で Hash23 は番号 1 になり、奇数なので相手は左の Hash01 です。
+上記の図で証明として渡るのは Hash3 と Hash01 の 2 個で、検証者は Tx2 から Hash2 を求め、ルートまで再計算して手元のルートハッシュと照合します。
 
-この情報を受け取って検証する関数は以下の通りです。ハッシュは内部のバイト順のまま渡します。txid をチェーンの中身を表示する Web サービス（ブロックエクスプローラ）からコピーすると、慣習で逆順の 16 進表記になっており、そのままでは一致しません。
+左右の知り方は証明の形式によって異なり、Bitcoin では各段での番号から判断します。0 から数えると Hash2 は番号 2 で、偶数なので相手は右の Hash3 です。1 つ上の段で Hash23 は番号 1 になり、奇数なので相手は左の Hash01 です。
+
+取引 4 件の実際のブロック（[ブロック 100000](https://mempool.space/block/000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506)）で、この情報を受け取って検証する関数を動かすプログラムが以下です。チェーンの中身を表示する Web サービス（ブロックエクスプローラ）に表示される 4 つの txid とルートハッシュを使い、図と同じ形で Tx2 の包含を確かめます。
+
+ハッシュは内部のバイト順で渡す必要があります。ブロックエクスプローラの txid は慣習で逆順の 16 進表記になっているため、`fromHex` で反転してから渡します。
 
 ```go
+package main
+
+import (
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"slices"
+)
+
 // verifyMerkleProof は、葉のハッシュと包含証明からルートハッシュを再計算し、
 // 期待するルートハッシュと一致するかを返します。
-// path は葉に近い段から並べ、siblingIsRight[i] は path[i] が右側にあった事を表します。
+// path は葉に近い段から並べ、siblingIsRight[i] は path[i] が右側にあったことを表します。
 func verifyMerkleProof(leaf [32]byte, path [][32]byte, siblingIsRight []bool, root [32]byte) bool {
 	if len(path) != len(siblingIsRight) {
 		return false
@@ -167,37 +186,66 @@ func doubleSHA256(left, right []byte) [32]byte {
 	first := sha256.Sum256(buf)
 	return sha256.Sum256(first[:])
 }
+
+// fromHex は 16 進表記を 32 バイトに変換します。reverse が true なら
+// ブロックエクスプローラの表記（逆順）を内部のバイト順に戻します。
+func fromHex(s string, reverse bool) [32]byte {
+	b, err := hex.DecodeString(s)
+	if err != nil || len(b) != 32 {
+		panic("bad hash: " + s)
+	}
+	if reverse {
+		slices.Reverse(b)
+	}
+	return [32]byte(b)
+}
+
+func main() {
+	// ブロック 100000 の txid とルートハッシュ（ブロックエクスプローラの表記）
+	txids := []string{
+		"8c14f0db3df150123e6f3dbbf30f8b955a8249b62ac1d1ff16284aefa3d06d87",
+		"fff2525b8931402dd09222c50775608f75787bd2b87e56995a7bdd30f79702c4",
+		"6359f0868171b1d194cbee1af2f16ea598ae8fad666d9b012c8ed2b79a236ec4",
+		"e9a66845e05d5abc0ad04ec80f774a7e585c6e8db975962d069a522137b80c1d",
+	}
+	root := "f3e94742aca4b5ef85488dc37c06c3282295ffec960994b2c0d5ac2a25a95766"
+
+	for _, reverse := range []bool{true, false} {
+		tx0, tx1 := fromHex(txids[0], reverse), fromHex(txids[1], reverse)
+		hash01 := doubleSHA256(tx0[:], tx1[:])
+		path := [][32]byte{fromHex(txids[3], reverse), hash01}
+		ok := verifyMerkleProof(fromHex(txids[2], reverse), path, []bool{true, false}, fromHex(root, reverse))
+		if reverse {
+			fmt.Println("内部のバイト順に戻した場合:", ok)
+		} else {
+			fmt.Println("表記のまま渡した場合:", ok)
+		}
+	}
+}
 ```
 
-取引 4 件の実際のブロック（[ブロック 100000](https://mempool.space/block/000000000003ba27aa200b1cecaad478d2b00432346c3f1f3986da1afd33e506)）で上記の関数を動かした結果が以下です。ブロックエクスプローラに表示される 4 つの txid とルートハッシュを使い、図と同じ形で Tx2 の包含を確かめました（Go 1.26）。Hash3 は Tx3 の txid で、Hash01 は Tx0 と Tx1 から計算しています。
+Go 1.26 で実行した結果が以下です。
 
 ```text
 内部のバイト順に戻した場合: true
 表記のまま渡した場合: false
 ```
 
-1 行目のとおり、渡したハッシュ 2 個でヘッダのルートハッシュに辿り着きました。2 行目は、表記を逆順に戻さずに渡した場合です。手順が正しくても、バイト順を取り違えると検証は通りません。
+1 行目のとおり、渡したハッシュ 2 個でヘッダのルートハッシュに辿り着きました。2 行目は、同じ計算を表記のまま行った場合です。手順が正しくても、バイト順を取り違えると検証は通りません。
 
-上記のコードで繰り返す回数は `path` の長さです。奇数のノードを複製する Bitcoin の作り方では、葉の件数を 2 の冪に切り上げた木と同じ深さになるため、葉が n 件なら段数は `ceil(log2 n)` です。例えば、取引が 3000 件のブロックなら段数は 12 で、32 バイトのハッシュを 12 個、合わせて 384 バイトです。そのブロック本体が 1 MB だとすると、384 バイトは 1/2000 以下に収まります。
+`verifyMerkleProof` で繰り返す回数は `path` の長さです。奇数のノードを複製する Bitcoin の作り方では、葉の件数を 2 の冪に切り上げた木と同じ深さになるため、葉が n 件なら段数は `ceil(log2 n)` です。例えば、取引が 3000 件のブロックなら段数は 12 で、32 バイトのハッシュを 12 個、合わせて 384 バイトです。そのブロック本体が 1 MB だとすると、384 バイトは 1/2000 以下に収まります。
 
 <br>
 
-上記のコードは、左右のハッシュを連結する、SHA-256 を 2 回適用する、根まで再計算する、の 3 つだけを抜き出したもので、Bitcoin が実際に送る証明の形式ではありません。
+`verifyMerkleProof` は、左右のハッシュを連結する、SHA-256 を 2 回適用する、ルートまで再計算する、の 3 つだけを抜き出したもので、Bitcoin が実際に送る証明の形式ではありません。
 
-[BIP 37](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki) が定める `merkleblock` メッセージは、partial Merkle tree と呼ばれる形式で、`total_transactions`・`hashes`・`flags` の 3 つを送ります。受け取った側は取引の総数から木の形を復元し、どの節点で下に降りるかを表す `flags` のビットを深さ優先で読みながら `hashes` を消費して、根まで計算します。
+[BIP 37](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki) が定める `merkleblock` メッセージは、partial Merkle tree と呼ばれる形式で、`total_transactions`・`hashes`・`flags` の 3 つを送ります。受け取った側は取引の総数から木の形を復元し、どのノードで下に降りるかを表す `flags` のビットを深さ優先で読みながら `hashes` を消費して、ルートまで計算します。
 
 ---
 
 ### SPV - ヘッダだけによる取引の確認
 
 軽量クライアントが持っているのは、ブロックヘッダの列だけです。ヘッダはルートハッシュを含むため、包含証明を受け取れば、その取引がヘッダの指すブロックに入っていたことを自力で確かめられます。Bitcoin の白書はこの手順を Simplified Payment Verification（簡易支払い検証）と呼んでおり、一般には SPV と略されます。
-
-この照合の安全性は、ハッシュ関数の衝突困難性だけでは決まりません。Bitcoin は葉と内部ノードに同じ二重 SHA-256 を使うため、入力の読み方にも注意が必要です。
-
-- 葉の入力：取引をシリアライズしたバイト列
-- 内部ノードの入力：左右の 32 バイトのハッシュを連結した 64 バイトのバイト列
-
-64 バイトの取引では、この二つの入力を読み替える曖昧性が生じます。BIP 37 の取引数は相手から送られる値であり、ヘッダだけから信頼できるとは限りません。ルートの一致だけで、取引の有効性まで検証できるわけではありません。この構造上の問題は [BIP 54](https://bips.dev/54/) でも扱われています。
 
 軽量クライアントとフルノードのやり取りは以下の通りです。
 
@@ -215,6 +263,17 @@ sequenceDiagram
 ```
 
 上記の図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていたことだけです。Tx2 が有効な取引であることまでは確かめていません。署名が正しいか、使おうとしている残高が既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
+
+<br>
+
+包含の確認そのものにも、木の構造に由来する弱点があります。Bitcoin は葉と内部ノードに同じ二重 SHA-256 を使い、入力の長さでも区別していません。
+
+- 葉の入力：取引をシリアライズしたバイト列
+- 内部ノードの入力：左右の 32 バイトのハッシュを連結した 64 バイトのバイト列
+
+witness を除いた大きさがちょうど 64 バイトの取引は、葉としても内部ノードとしても読めます。ブロックに入った 64 バイトの取引を内部ノードと偽り、その下にもう 1 段の証明を付け足すと、ブロックに入っていない取引が入っているように見せかけた包含証明を作れる場合があります。木の段数は取引の総数で決まりますが、BIP 37 の総数は相手が送る値で、ヘッダには入っていません。
+
+[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) は、witness を除いた大きさが 64 バイトの取引を無効にする規則で、この脆弱性を防ぐ案を示しています。
 
 <br>
 
@@ -240,8 +299,9 @@ Bitcoin の Merkle Tree は、証明を小さく保つ代わりに、渡す情�
 - 素朴に証明を要求すると、どの取引に関心があるかが相手のノードに伝わる
 - SPV が確かめるのはブロックへの包含だけで、取引の有効性までは確かめない
 - 複製規則の副作用として、同じルートハッシュになる別の取引の並びが存在する（検出して棄却する）
+- 葉と内部ノードを入力の長さで区別しないため、64 バイトの取引を使って包含証明を偽れる余地がある
 
-どの取引に関心があるかが伝わる問題に対して、BIP 37 は、関係の無い取引もいくらか混ぜて受け取る仕組みを定めました。同じ文書の説明では、絞り込みの精度を上げれば自分のウォレットに関係する取引だけが届く一方で、相手のノードは取引と IP アドレスを結び付けられます。通信量と匿名性のどちらを取るかの選択になります。
+どの取引に関心があるかが伝わる問題に対して、BIP 37 は、誤検出を許す集合の判定である Bloom filter を使い、関係の無い取引もいくらか混ぜて受け取る仕組みを定めました。同じ文書の説明では、絞り込みの精度を上げれば自分のウォレットに関係する取引だけが届く一方で、相手のノードに取引と IP アドレスを結び付けられる場合があります。通信量と匿名性のどちらを取るかの選択になります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -254,4 +314,4 @@ sequenceDiagram
     Note over C: 条件が粗いほど、無関係の取引まで<br/>受け取り通信量が増える
 ```
 
-なお [Bitcoin Core 0.19.0.1](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.19.0.1.md) は、サービス拒否攻撃の経路を断つ目的で、この絞り込みを受け付ける設定を既定で無効にしました。現在は、ブロックごとに作った要約をクライアントが取得し、手元で照合する compact block filters（形式は [BIP 158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki)、取得の手順は [BIP 157](https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki)）に寄っています。
+なお [Bitcoin Core 0.19.0.1](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.19.0.1.md) は、サービス拒否攻撃の経路を断つ目的で、この絞り込みを受け付ける設定を既定で無効にしました。代わりの仕組みとして、ブロックごとに作った要約をクライアントが取得し、手元で照合する compact block filters（形式は [BIP 158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki)、取得の手順は [BIP 157](https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki)）があります。
