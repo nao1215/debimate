@@ -33,7 +33,7 @@ E[(y - f_hat(x))^2] = Bias[f_hat(x)]^2 + Var[f_hat(x)] + sigma^2
 
 ### Bias と Variance を視覚化する
 
-同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から多項式回帰を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。
+同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から多項式回帰を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。本記事のコードは軸の範囲や凡例などの体裁を省いています。図の生成コードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
 
 ```python
 import numpy as np
@@ -68,58 +68,86 @@ plt.savefig("polyfit_compare.svg", bbox_inches="tight")
 
 左端の直線（degree=1）は、波打つ真の関数を 1 次式で押さえ込もうとして全域で外しています。これがバイアスの正体で、訓練セットをいくら入れ替えても直線は直線のままなので「平均しても真の関数からずれる」性質を持ちます。一方の右端（degree=15）は訓練点の 1 つ 1 つに張り付き、観測点が少し変わるだけで形が大きく揺れます。この揺れがバリアンスです。
 
-中央の degree=3 では、真の関数の波に沿い、訓練点の個別ノイズによる変動も小さくなっています。Bias と Variance の和も小さくなっています。
+中央の degree=3 は真の関数の波に沿っています。ただし 1 回の当てはめでは Bias と Variance は測れないので、次の節で訓練セットを入れ替えて測ります。
 
 ---
 
 ### モデル複雑度との関係
 
-横軸にモデル複雑度（多項式の次数）、縦軸に「期待される 2 乗誤差」を取り、Bias^2・Variance・Total を分けて描きます。実際の数値は、訓練セットを 200 回再サンプリングしてその都度モデルを学習し、テスト点での予測の平均と分散から計算したものです。
-
-以下は計算部分の抜粋です。[描画を含むコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py)は GitHub で確認できます。
+次数ごとに 25 点の訓練セットを 200 回作り直し、そのつど学習したモデルのテスト点 50 個での予測から Bias^2 と Variance を計算します。次数 9 では、誤差が最も大きかった訓練セットを 1 つだけ除いた値も出します。
 
 ```python
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import PolynomialFeatures
-import matplotlib.pyplot as plt
 
 rng = np.random.default_rng(0)
 x_test = np.linspace(0.05, 0.95, 50)
 y_true = np.sin(2 * np.pi * x_test) + 0.4 * x_test
 
-bias_sq, variance = [], []
 for d in range(1, 16):
     preds = np.zeros((200, len(x_test)))
+    x_sets = np.zeros((200, 25))
     for t in range(200):
         x_tr = rng.uniform(0.0, 1.0, 25)
         y_tr = np.sin(2 * np.pi * x_tr) + 0.4 * x_tr + rng.normal(0.0, 0.25, 25)
         m = make_pipeline(PolynomialFeatures(d), LinearRegression())
         m.fit(x_tr.reshape(-1, 1), y_tr)
         preds[t] = m.predict(x_test.reshape(-1, 1))
-    bias_sq.append(np.mean((preds.mean(axis=0) - y_true) ** 2))
-    variance.append(np.mean(preds.var(axis=0)))
-
-# 描画処理は省略
-plt.savefig("decomposition_curve.svg", bbox_inches="tight")
+        x_sets[t] = x_tr
+    bias_sq = np.mean((preds.mean(axis=0) - y_true) ** 2)
+    variance = np.mean(preds.var(axis=0))
+    total = bias_sq + variance + 0.25**2
+    print(f"degree={d:2d} bias^2={bias_sq:.4f} variance={variance:.4f} total={total:.4f}")
+    if d == 9:
+        # 誤差が最も大きかった訓練セットを 1 つだけ除いて計算し直す
+        worst = ((preds - y_true) ** 2).mean(axis=1).argmax()
+        rest = np.delete(preds, worst, axis=0)
+        print(f"  worst set: x in [{x_sets[worst].min():.3f}, {x_sets[worst].max():.3f}]")
+        print(f"  without it: bias^2={np.mean((rest.mean(axis=0) - y_true) ** 2):.4f}"
+              f" variance={np.mean(rest.var(axis=0)):.4f}")
 ```
 
-![Bias-variance decomposition vs polynomial degree](./decomposition_curve.svg)
+```text
+degree= 1 bias^2=0.1529 variance=0.0209 total=0.2363
+degree= 2 bias^2=0.1484 variance=0.0497 total=0.2607
+degree= 3 bias^2=0.0029 variance=0.0107 total=0.0761
+degree= 4 bias^2=0.0026 variance=0.0203 total=0.0854
+degree= 5 bias^2=0.0001 variance=0.0363 total=0.0989
+degree= 6 bias^2=0.0005 variance=0.1222 total=0.1852
+degree= 7 bias^2=0.0019 variance=0.5441 total=0.6085
+degree= 8 bias^2=0.0096 variance=1.8263 total=1.8983
+degree= 9 bias^2=0.6058 variance=122.4722 total=123.1405
+  worst set: x in [0.394, 0.994]
+  without it: bias^2=0.0011 variance=0.1459
+degree=10 bias^2=0.0154 variance=1.6657 total=1.7436
+degree=11 bias^2=0.0034 variance=1.2578 total=1.3237
+degree=12 bias^2=0.5198 variance=76.8490 total=77.4314
+degree=13 bias^2=5.1113 variance=954.5296 total=959.7034
+degree=14 bias^2=0.1151 variance=20.2059 total=20.3834
+degree=15 bias^2=9.4015 variance=1967.1729 total=1976.6370
+```
 
-3 本の曲線の関係:
+この値を対数軸で描いたものが次の図です。Total は Bias^2 と Variance の和にノイズ（点線の 0.0625）を足したものです。
 
-- Bias^2（青）: 次数を上げると単調に下がる。複雑なモデルほど真の関数を表現できるため
-- Variance（赤）: 次数を上げると単調に上がる。複雑なモデルほど訓練セットの個別ノイズに反応するため
-- Total（緑）: U 字を描く。Bias^2 と Variance の和にノイズ床（点線）を足したもので、最小値の位置が「最適な複雑度」になる
+![Bias-variance decomposition vs polynomial degree (log scale)](./decomposition_curve.svg)
 
-逆に言うと、Bias を下げると Variance が上がるトレードオフ関係が、複雑度という[ハイパーパラメータ](/ml/ml/hyperparameter/)の背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
+次数 8 までは、おおむね教科書どおりの動きです。Bias^2 は次数 1〜2 の 0.15 前後から次数 5 の 0.0001 まで下がり、Variance は次数 3 の 0.011 から次数 8 の 1.83 まで上がります。Total は次数 3 の 0.0761 が最小です。
+
+ただし、どちらの曲線も単調ではありません。Variance は次数 2→3 で 0.050 から 0.011 に下がっています。放物線は波の形に合わないので、25 点がどこに落ちたかで当てはめ方が大きく変わるからです。上のコードの `rng.normal(0.0, 0.25, 25)` を `rng.normal(0.0, 0.0, 25)` にしてノイズを消しても、Variance は次数 2 で 0.044、次数 3 で 0.001 でした。
+
+次数 9 以降の Bias^2 と Variance は大きく跳ねます。原因は 200 回のうちの 1 回です。次数 9 で誤差が最大だった訓練セットは x が 0.394〜0.994 にしかなく、0〜0.39 の範囲に点が 1 つもありません。9 次の多項式はその空白を外挿で埋めて暴れました。この 1 セットを除くと、Bias^2 は 0.606 から 0.0011、Variance は 122 から 0.146 に下がります。
+
+Bias^2 まで跳ねるのは、Bias^2 を 200 個の予測の平均から計算しているためです。平均そのものも揺れ、その 2 乗の期待値は Variance / 200 になるので、その分が Bias^2 に上乗せされます。次数 9・13・15 の Variance を 200 で割ると 0.61、4.77、9.84 で、Bias^2 の 0.606、5.11、9.40 とほぼ一致します。次数 6〜8 で Bias^2 が少しずつ増えるのも同じ理由です。高い次数の Bias^2 が大きいのは、表現力が下がったからではありません。
+
+大きく見ると、Bias を下げると Variance が上がるトレードオフ関係が、複雑度という[ハイパーパラメータ](/ml/ml/hyperparameter/)の背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
 
 ---
 
 ### 学習曲線で診断する
 
-実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの）で両者の正解率を比較します。max_depth を変えた決定木 3 つで、典型的な 3 パターンを並べてみます。
+実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの）で両者の正解率を比較します。max_depth を 1・6・制限なしと変えた決定木 3 つで、曲線の形を並べてみます。
 
 ```python
 import numpy as np
@@ -133,7 +161,7 @@ X, y = make_classification(n_samples=1500, n_features=20, n_informative=10,
 
 models = [
     ("high bias (depth=1)", DecisionTreeClassifier(max_depth=1, random_state=0)),
-    ("just right (depth=6)", DecisionTreeClassifier(max_depth=6, random_state=0)),
+    ("middle (depth=6)", DecisionTreeClassifier(max_depth=6, random_state=0)),
     ("high variance (depth=None)", DecisionTreeClassifier(max_depth=None, random_state=0)),
 ]
 
@@ -148,15 +176,15 @@ plt.tight_layout()
 plt.savefig("learning_curves_diagnose.svg", bbox_inches="tight")
 ```
 
-![Learning curves for high bias / just right / high variance](./learning_curves_diagnose.svg)
+![Learning curves for high bias / middle / high variance](./learning_curves_diagnose.svg)
 
 3 つの図に現れるパターンの読み方:
 
-- 左（high bias）: 訓練・検証ともに低い水準で並走し、データを増やしても上昇しない。モデルが表現力不足
-- 中央（just right）: 訓練が少し高い位置に張り、検証はやや下で追随する。ギャップが小さく、両方とも十分高い水準
-- 右（high variance）: 訓練は 1.0 近くに張り付き、検証は伸び切らずに下に開く。差（汎化ギャップ）が大きい
+- 左（high bias）: 訓練・検証ともに 0.685 前後で並走し、データを増やしても上がらない。モデルが表現力不足
+- 中央（depth=6）: 1200 件で訓練 0.907、検証 0.817。差は 0.09 まで縮む
+- 右（high variance）: 訓練は 1.0 に張り付き、検証は 0.834。差（汎化ギャップ）は 0.17 と大きいが、検証はデータを増やすほど上がっている
 
-この学習曲線の形が、診断の入口となります。訓練・検証ともに正解率が低い場合と、訓練だけ高い場合では、試す改善方法が異なります。
+depth=None の検証正解率が depth=6 より高い点に注意してください。ギャップの大きさは「どちらへ動かすか」の手がかりで、モデルの良し悪しは検証スコアそのもので比べます。同じコードで max_depth を 6 から 15 まで変えると、1200 件での検証正解率は 0.817〜0.837 で大差がありません。
 
 ---
 
@@ -181,7 +209,7 @@ graph TD
 
 ### 各シナリオの打ち手
 
-学習曲線の状態と対処法を表で比較します。symptom 列は学習曲線の状態、effective 列は有効な対処法、ineffective 列は効果がないか悪化させる対処法です。
+学習曲線の状態と対処法を表にまとめます。
 
 | 症状 (symptom) | 診断 | 改善方法 (effective) | 改善しにくい・悪化させる方法 (ineffective) |
 |---|---|---|---|
@@ -189,7 +217,7 @@ graph TD
 | 訓練 ≫ 検証、ギャップが顕著、訓練は十分高い | High variance (過学習) | 訓練データ追加 ／ 正則化強化 ／ Early stopping ／ 容量を下げる ／ ドロップアウト | 容量をさらに上げる ／ 特徴量をさらに増やす |
 | 訓練 ≈ 検証、両方とも十分高い | Just right | そのまま運用 ／ 別軸の改善（推論速度・解釈性）に切り替え | 過剰なチューニング（過学習に振れるリスク） |
 
-原因に合わない方法を選ぶと、スコアが改善しなかったり、悪化したりします。例として high bias の状態で訓練データを大量に追加しても、モデルの表現力が変わらないので Total error は下がりません。一方で high variance の状態でモデルを大きくすると、Variance がさらに膨らんで検証スコアは下がる方向に動くと考えられます。
+原因に合わない方法を選ぶと、スコアが改善しなかったり、悪化したりします。例として、上の depth=1 の木は訓練データを 120 件から 1200 件に増やしても検証正解率が 0.674 から 0.685 にしか上がりません。データ追加で減るのは主に Variance で、表現力不足による Bias はほとんど減らないからです。一方で high variance の状態でモデルを大きくすると、多項式の次数 7 以降のように Variance が膨らみやすくなります。表は目安で、どの方法がどれだけ効くかは学習曲線を描き直して確かめます。
 
 ---
 
@@ -201,8 +229,6 @@ graph TD
 - アンサンブル（[ランダムフォレスト](../random-forest/) / [勾配ブースティング](../gradient-boosting/)）が「なぜ素の決定木より強いか」を理解する枠組みとして。バギングは Variance を平均で打ち消し、ブースティングは弱学習器の Bias を逐次補正する操作と読める
 - [kNN](../knn/) のハイパーパラメータ `k` の選び方（`k` が小さい = high variance、`k` が大きい = high bias）
 
-データを追加するかモデル容量を増やすかは、訓練スコアと検証スコアを比較して検討します。
-
 ---
 
 ### 適さないケース / 限界
@@ -210,6 +236,6 @@ graph TD
 バイアス-バリアンス分解を適用する場合には、次の制約があります。
 
 - 二乗誤差以外への素直な拡張は難しい。Bias-Variance の閉じた分解は MSE で綺麗に成り立つ。一方、0-1 損失や交差エントロピーへの拡張は厳密には別の式が必要になる。実用上は「同じ直感を分類タスクの学習曲線で読む」運用で代用する
-- 「Bias と Variance の値」を 1 つの訓練セットから直接出すことはできない。上の図 2 のように複数訓練セットの再サンプリングが必要で、学習曲線の形による定性診断で代用するのが普通である
-- 深層学習の過剰パラメータ領域では、複雑度を上げるほど Variance が下がる「double descent」現象が報告されている。古典的な U 字曲線の枠から外れる挙動なので、超大規模モデルにはそのまま適用しにくい
+- 「Bias と Variance の値」を 1 つの訓練セットから直接出すことはできない。上の多項式の実験のように複数訓練セットの再サンプリングが必要で、学習曲線の形による定性診断で代用するのが普通である
+- 深層学習の過剰パラメータ領域では、訓練データを完全に再現できる規模を超えてパラメータを増やすと、テスト誤差が再び下がる [double descent](https://arxiv.org/abs/1812.11118) が報告されている。古典的な U 字曲線の枠から外れる挙動なので、超大規模モデルにはそのまま適用しにくい
 - 分布シフト下では「訓練と検証が同じ分布から来る」という前提が崩れるため、ギャップの原因が Variance なのか [データドリフト](../../mlops/data-drift/) なのかを別途切り分ける必要がある

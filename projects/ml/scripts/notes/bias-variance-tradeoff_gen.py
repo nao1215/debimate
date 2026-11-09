@@ -6,6 +6,7 @@
 日本語解説は記事本文側で補う。
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,9 +22,7 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/bias-variance-tradeoff"
-)
+NOTE_DIR = str(Path(__file__).resolve().parents[2] / "notes" / "ml" / "bias-variance-tradeoff")
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -77,6 +76,8 @@ save("polyfit_compare.svg")
 # ============================================================
 # Fig 2: Bias-Variance decomposition curve
 # ============================================================
+# 本文の計算コードと同じ乱数列にするため、図 2 は乱数生成器を作り直す
+rng = np.random.default_rng(0)
 n_trials = 200
 n_samples_inner = 25
 x_test = np.linspace(0.05, 0.95, 50)
@@ -101,20 +102,22 @@ for d in degree_range:
 bias_sq = np.array(bias_sq)
 variance = np.array(variance)
 total = bias_sq + variance + noise_var
+for d, b, v, tot in zip(degree_range, bias_sq, variance, total):
+    print(f"degree={d:2d} bias^2={b:.4f} variance={v:.4f} total={tot:.4f}")
 
-display_cap = 1.5
-
+# 高次では 1 回の外れた訓練セットで値が数百倍に跳ねるので、切り捨てずに対数軸で描く
 fig, ax = plt.subplots(figsize=(7.5, 4.5))
-ax.plot(degree_range, np.minimum(bias_sq, display_cap), color=COLOR_BLUE, lw=2, marker="o", label="Bias^2 (under-fit error)")
-ax.plot(degree_range, np.minimum(variance, display_cap), color=COLOR_RED, lw=2, marker="s", label="Variance (sensitivity to training noise)")
-ax.plot(degree_range, np.minimum(total, display_cap), color=COLOR_GREEN, lw=2.2, marker="^", label="Total = Bias^2 + Var + Noise")
-ax.axhline(noise_var, color=COLOR_GRAY, ls=":", lw=1.2, label=f"Noise floor = {noise_var:.3f}")
+ax.plot(degree_range, bias_sq, color=COLOR_BLUE, lw=2, marker="o", label="Bias^2")
+ax.plot(degree_range, variance, color=COLOR_RED, lw=2, marker="s", label="Variance")
+ax.plot(degree_range, total, color=COLOR_GREEN, lw=2.2, marker="^", label="Total = Bias^2 + Var + Noise")
+ax.axhline(noise_var, color=COLOR_GRAY, ls=":", lw=1.2, label=f"Noise floor = {noise_var:.4f}")
+ax.set_yscale("log")
 ax.set_xlabel("Model complexity (polynomial degree)")
-ax.set_ylabel("Expected test error (MSE)")
-ax.set_title("Bias-Variance decomposition: complexity raises Var, lowers Bias")
-ax.set_ylim(0, display_cap * 1.02)
-ax.grid(True, alpha=0.25)
-ax.legend(fontsize=9, loc="upper center")
+ax.set_ylabel("Expected test error (MSE, log scale)")
+ax.set_title("Bias-variance decomposition (200 training sets of 25 points)")
+ax.set_xticks(degree_range)
+ax.grid(True, alpha=0.25, which="both")
+ax.legend(fontsize=9, loc="upper left")
 plt.tight_layout()
 save("decomposition_curve.svg")
 
@@ -133,7 +136,7 @@ X, y = make_classification(
 
 models = [
     ("high bias (depth=1)", DecisionTreeClassifier(max_depth=1, random_state=0)),
-    ("just right (depth=6)", DecisionTreeClassifier(max_depth=6, random_state=0)),
+    ("middle (depth=6)", DecisionTreeClassifier(max_depth=6, random_state=0)),
     ("high variance (depth=None)", DecisionTreeClassifier(max_depth=None, random_state=0)),
 ]
 

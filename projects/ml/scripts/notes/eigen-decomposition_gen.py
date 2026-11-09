@@ -12,8 +12,8 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/eigen-decomposition"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "math", "eigen-decomposition"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -28,6 +28,7 @@ def save(name: str) -> None:
 # ============================================================
 A = np.array([[2.0, 1.0], [0.0, 3.0]])
 eigvals, eigvecs = np.linalg.eig(A)
+eigvals, eigvecs = eigvals.real, eigvecs.real  # NumPy 2.5.4 returns complex128 here
 
 angles = np.linspace(0, np.pi, 18, endpoint=False)
 vs = np.column_stack([np.cos(angles), np.sin(angles)])
@@ -147,45 +148,49 @@ save("eigen_spectrum.svg")
 # Fig 4: Diagonalization as 'rotate-scale-rotate-back'
 # ============================================================
 A = np.array([[3.0, 1.0], [1.0, 2.0]])  # symmetric
-eigvals, eigvecs = np.linalg.eigh(A)
-# Sort descending
-order = np.argsort(eigvals)[::-1]
-eigvals = eigvals[order]
-eigvecs = eigvecs[:, order]
+eigvals, Q = np.linalg.eigh(A)
+eigvals, Q = eigvals[::-1], Q[:, ::-1]  # descending
+Q = Q * np.sign(Q[0])  # first component of each column positive
+if np.linalg.det(Q) < 0:  # make Q a rotation (det = +1), not a reflection
+    Q[:, 1] *= -1
+Lambda = np.diag(eigvals)
+assert np.allclose(Q @ Lambda @ Q.T, A)
 
-# Make a circle
 theta = np.linspace(0, 2 * np.pi, 100)
 circle = np.array([np.cos(theta), np.sin(theta)])
 
-# Stage 1: original circle
-# Stage 2: after rotating into eigenbasis (Q^T)
-Q = eigvecs
-QT_circle = Q.T @ circle
-# Stage 3: after applying Λ (scale)
-Lambda = np.diag(eigvals)
-scaled = Lambda @ QT_circle
-# Stage 4: rotate back
-final = Q @ scaled
-# Verify: final == A @ circle
-true_final = A @ circle
-
-fig, axes = plt.subplots(1, 4, figsize=(15, 4.2), sharex=True, sharey=True)
-stages = [
-    (circle, "1. Original unit circle", COLOR_BLUE),
-    (QT_circle, "2. Rotate to eigenbasis (Q^T)", COLOR_GREEN),
-    (scaled, "3. Scale by eigenvalues (Λ)", COLOR_RED),
-    (final, "4. Rotate back (Q)\n= same as A·x", COLOR_BLUE),
+# Track the two eigenvectors (red: q1, green: q2) through each stage
+stage_maps = [
+    np.eye(2),          # 1. original
+    Q.T,                # 2. rotate into eigenbasis
+    Lambda @ Q.T,       # 3. scale
+    Q @ Lambda @ Q.T,   # 4. rotate back (= A)
 ]
-for ax, (data, title, color) in zip(axes, stages):
-    ax.plot(data[0], data[1], color=color, lw=2)
-    ax.fill(data[0], data[1], color=color, alpha=0.2)
+titles = [
+    "1. Original unit circle",
+    "2. Rotate to eigenbasis (Q^T)\nq1, q2 move onto the axes",
+    "3. Scale by eigenvalues (Λ)",
+    "4. Rotate back (Q)\n= same as A·x",
+]
+assert np.allclose(stage_maps[3] @ circle, A @ circle)
+
+fig, axes = plt.subplots(1, 4, figsize=(15, 4.4), sharex=True, sharey=True)
+for ax, M, title in zip(axes, stage_maps, titles):
+    shape = M @ circle
+    ax.plot(shape[0], shape[1], color=COLOR_BLUE, lw=2)
+    ax.fill(shape[0], shape[1], color=COLOR_BLUE, alpha=0.15)
+    for j, (c, name) in enumerate([(COLOR_RED, "q1"), (COLOR_GREEN, "q2")]):
+        tip = M @ Q[:, j]
+        ax.quiver(0, 0, *tip, angles="xy", scale_units="xy", scale=1, color=c, width=0.014,
+                  label=name)
     ax.axhline(0, color=COLOR_GRAY, lw=0.5)
     ax.axvline(0, color=COLOR_GRAY, lw=0.5)
     ax.set_aspect("equal")
     ax.set_xlim(-4, 4); ax.set_ylim(-4, 4)
     ax.grid(True, alpha=0.25)
     ax.set_title(title, fontsize=9)
-plt.suptitle("Spectral decomposition: A = Q Λ Q^T as rotate-scale-rotate-back", y=1.02)
+axes[0].legend(loc="lower left", fontsize=8)
+plt.suptitle(f"A = Q Λ Q^T  (λ1={eigvals[0]:.2f}, λ2={eigvals[1]:.2f}, det Q = +1)", y=1.02)
 plt.tight_layout()
 save("diagonalization_steps.svg")
 

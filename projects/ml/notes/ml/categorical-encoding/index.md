@@ -7,9 +7,9 @@ tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 15
 ---
 
-カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称です。機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / ニューラルネット / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とするため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。
+カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称です。機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / ニューラルネット / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とします。そのため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。
 
-選び方を間違えると、列数の爆発で計算不能になる、順序を勝手に持ち込んでしまう、[データリーク](../data-leakage/) を起こすといった事故につながります。方式を選ぶときは、カテゴリの種類数（cardinality）、順序の有無、目的変数を変換に使うかを確認します。
+選び方を間違えると、列数が膨れてメモリに載らない、順序を勝手に持ち込んでしまう、[データリーク](../data-leakage/) を起こすといった事故につながります。方式を選ぶ時は、カテゴリの種類数（cardinality、基数）、順序の有無、目的変数を変換に使うかを確認します。
 
 ---
 
@@ -21,22 +21,22 @@ graph LR
     B -- Yes --> C["Ordinal encoding"]
     B -- No --> D{"基数 cardinality"}
     D -- "〜20" --> E["One-hot encoding"]
-    D -- "20〜10k" --> F["Target encoding<br/>or One-hot"]
+    D -- "20〜10k" --> F["Target encoding<br/>or One-hot（疎行列）"]
     D -- "10k〜" --> G["Hashing / Embedding<br/>または集約特徴量"]
 ```
 
-順序がある場合は Ordinal、ない場合は基数に応じて方式を選びます。基数が極端に多いとき（ユーザー ID、商品 ID、URL など）は「カテゴリ」として扱うのではなく集約特徴量への変換を検討すべきで、これは後述します。
+順序がある場合は Ordinal、ない場合は基数に応じて方式を選びます。境界の 20 や 1 万は目安で、行数・モデル・メモリの上限と合わせて決めます。ユーザー ID のような識別子は、多くの場合で集約特徴量に変えます（後半の節）。
 
 ---
 
 ### 4 種類のエンコーディングを並べて見る
 
-同じ入力 `["A", "B", "C", "A", "B", "C"]` に対して、4 つの方式がどんな出力を返すかを並べます。`scikit-learn` で簡単に確認できます。
+同じ入力 `["A", "B", "C", "A", "B", "C"]` に対して、4 つの方式がどんな出力を返すかを並べます。以下は [scikit-learn](https://scikit-learn.org/) 1.9.1、[pandas](https://pandas.pydata.org/) 3.1.1 で実行したコードです。
 
 ```python
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.feature_extraction import FeatureHasher
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
 
 data = pd.DataFrame({
@@ -44,47 +44,43 @@ data = pd.DataFrame({
     "target":   [10,  20,  30,  12,  18,  32],
 })
 
-# 4 方式の出力
 oh = OneHotEncoder(sparse_output=False).fit_transform(data[["category"]])
 ord_enc = OrdinalEncoder().fit_transform(data[["category"]])
 target_map = data.groupby("category")["target"].mean()
-te = data["category"].map(target_map).values.reshape(-1, 1)
-hash_dim = 2
-hash_result = np.zeros((len(data), hash_dim))
-for i, c in enumerate(data["category"]):
-    hash_result[i, hash(c) % hash_dim] = 1
+te = data["category"].map(target_map).to_numpy().reshape(-1, 1)
+hasher = FeatureHasher(n_features=2, input_type="string")
+hash_result = hasher.transform([[c] for c in data["category"]]).toarray()
 
-fig = plt.figure(figsize=(14, 3.5))
-gs = fig.add_gridspec(1, 4, width_ratios=[3, 1, 1.4, 2])
-axes = [fig.add_subplot(gs[0, i]) for i in range(4)]
-for ax, arr, title, cmap in zip(
-    axes,
-    [oh, ord_enc, te, hash_result],
-    ["One-hot (3 cols)", "Ordinal (1 col)",
-     "Target encoding (1 col)", "Hashing (fixed 2 cols)"],
-    ["Blues", "Greens", "Reds", "Purples"],
-):
-    ax.imshow(arr, cmap=cmap, aspect="auto")
-    ax.set_title(title)
-fig.suptitle("Same input column, four encoding outputs")
-plt.tight_layout()
-plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
+for name, arr in [("one-hot", oh), ("ordinal", ord_enc),
+                  ("target", te), ("hashing", hash_result)]:
+    print(f"{name:8s}", arr[:3].tolist())  # A, B, C の 3 行だけ表示
 ```
+
+```text
+one-hot  [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+ordinal  [[0.0], [1.0], [2.0]]
+target   [[11.0], [19.0], [31.0]]
+hashing  [[1.0, 0.0], [-1.0, 0.0], [0.0, -1.0]]
+```
+
+6 行全ての出力を並べると次の図になります。描画部分は上のコードから省いています（[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/categorical-encoding_gen.py)）。
 
 ![4 つのエンコーディング方式の出力比較](./categorical-encoding_methods.svg)
 
-入力 6 行が共通で、出力の「列数」と「値の意味」が方式ごとに違うのが見て取れます。One-hot は基数と同じ列数になります。一方、Ordinal は 1 列、Target encoding も 1 列、Hashing は事前に決めた固定列数で押し込みます。
+One-hot は基数と同じ 3 列、Ordinal と Target encoding は 1 列、Hashing は事前に決めた 2 列です。Hashing では A と B が同じ列 h0 に入り、符号だけが違います（衝突）。
 
 ---
 
 ### One-hot encoding
 
-各カテゴリに対して 0/1 の独立した列を割り当てます。最も基本で、解釈が明確で、順序を勝手に持ち込みません。
+各カテゴリに対して 0/1 の独立した列を割り当てます。
 
-- 利点: 順序を導入しない（モデルが「A < B」のような誤解釈をしない）、解釈が明確、ほぼ全ての ML モデルに使える
-- 欠点: 基数と同じだけ列数が増える。基数が大きいと列爆発する
-- scikit-learn: `OneHotEncoder` または `pd.get_dummies`
-- 適切な使用場面: 基数が 20 程度以下、順序なし
+- 利点: 順序を持ち込まない（モデルが「A < B」と解釈しない）、解釈が明確、ほぼ全てのモデルに使える
+- 欠点: 基数と同じだけ列数が増える。密行列にするとメモリを食う
+- scikit-learn: [`OneHotEncoder`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html) または `pd.get_dummies`
+- 適切な使用場面: 順序なしで、基数が 20 程度以下。疎行列のまま扱えるモデルなら数千〜数万でも使える
+
+`OneHotEncoder` の既定の出力は、0 以外の値だけを持つ疎行列（CSR 形式）です。
 
 ---
 
@@ -92,29 +88,32 @@ plt.savefig("categorical-encoding_methods.svg", bbox_inches="tight")
 
 各カテゴリに整数を割り当てて 1 列で済まします。
 
-- 利点: 1 列で完結する、ストレージ・計算が軽い
+- 利点: 1 列で済み、メモリ・計算が軽い
 - 欠点: 整数の大小関係に意味を持たせてしまう（`'electronics'=0` `'food'=1` `'books'=2` だと「electronics と food は近く、books は遠い」と線形モデルが解釈する）
 - scikit-learn: `OrdinalEncoder`
 - 適切な使用場面: 順序があるカテゴリ（`low < medium < high`、星評価、学年など）。順序なしには使ってはならない
 
-決定木系（[RandomForest](../random-forest/) / [GradientBoosting](../gradient-boosting/)）は順序ベース判定なので Ordinal でも崩壊しません。ただし、それでも「順序の意味付け」の罠は残る（カテゴリ A, B, C の順番がアルファベット順なだけで、モデルが C を A の上位とみなしてしまう）と考えられます。
+決定木系（[RandomForest](../random-forest/) / [GradientBoosting](../gradient-boosting/)）は「値が 0.5 以下か」のような閾値で分割するので、Ordinal の整数でも学習できます。ただし、整数の並びは分割の形を縛ります。A=0、B=1、C=2 で {A, C} と {B} に分けたい時は、閾値 1 回では分けられず 2 回の分割が要ります。
 
 ---
 
 ### Target encoding
 
-各カテゴリを「そのカテゴリでの目的変数の集約値」に置き換えます。1 列で目的変数との関係を埋め込めるため、高基数カテゴリで効きやすいです。
+各カテゴリを「そのカテゴリでの目的変数の集約値」に置き換えます。1 列で目的変数との関係を埋め込めるので、高基数カテゴリで効きやすいです。
 
-- 利点: 1 列で完結、目的変数との関係を直接エンコード、高基数に強い
-- 欠点: [データリーク](../data-leakage/) のリスクが極めて高い。素朴に全データで集約してから CV すると、テスト fold の目的変数情報が訓練 fold に漏れる
-- 必須の防御: `cross_val_score` / `GridSearchCV` の中で `TargetEncoder` を `Pipeline` に組み込む。scikit-learn の `TargetEncoder` （1.3 以降）は内部で cross-fitting を行ってリークを抑える設計になっている
+- 欠点: [データリーク](../data-leakage/) を起こしやすい。全データで集約してから CV（交差検証）すると、テスト fold の目的変数が訓練 fold の特徴量に混ざる
+- 防御: 変換と学習をまとめる `Pipeline` に [`TargetEncoder`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html)（scikit-learn 1.3 以降）を入れ、`cross_val_score` などに渡す。`TargetEncoder` の `fit_transform` は、各行を自分以外の fold の平均で置き換える cross fitting を行う
 - 適切な使用場面: 基数が 20〜数万のカテゴリ（都道府県、商品カテゴリ、ユーザーセグメントなど）
 
-真の信号が無いランダムデータで、リークが入るとどう見えるかを確認します。50 個のランダムカテゴリ × 二値ランダムラベルなら、正しく CV 内で集約すれば accuracy は chance level（0.5）付近になるはずです。しかし、全データで集約してから CV すると 0.6 を超える「見せかけの精度」が出ます。
+<br>
+
+真の信号が無いランダムデータで、リークが入るとどう見えるかを確認します。50 個のランダムカテゴリ × 二値ランダムラベルなら、正しく CV 内で集約すれば accuracy は 0.5 付近になるはずです。
 
 ```python
+import numpy as np
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import TargetEncoder
 
@@ -133,73 +132,83 @@ cv_wrong = cross_val_score(
 
 # Correct: Pipeline で TargetEncoder を CV fold 内に閉じる
 pipe = Pipeline([
-    ("te", TargetEncoder(target_type="binary", smooth="auto", random_state=0)),
+    ("te", TargetEncoder(target_type="binary",
+                         cv=StratifiedKFold(5, shuffle=True, random_state=0))),
     ("clf", LogisticRegression(max_iter=2000)),
 ])
 cv_correct = cross_val_score(pipe, df[["cat"]], y, cv=5).mean()
 
-fig, ax = plt.subplots(figsize=(6.5, 4))
-ax.bar(["Wrong\n(fit on full data)", "Correct\n(Pipeline + CV folds)"],
-       [cv_wrong, cv_correct],
-       color=["#e15759", "#7aa6c2"], edgecolor="white")
-ax.axhline(0.5, color="gray", linestyle="--", label="chance level (0.5)")
-ax.set_ylim(0, 1.0); ax.set_ylabel("CV accuracy (5-fold)")
-ax.set_title("Target encoding leaks if fit before CV split")
-ax.legend(loc="lower right")
-plt.tight_layout()
-plt.savefig("categorical-encoding_leak.svg", bbox_inches="tight")
+print(f"Wrong (full-data fit): CV accuracy = {cv_wrong:.3f}")
+print(f"Correct (Pipeline):    CV accuracy = {cv_correct:.3f}")
 ```
-
-出力例:
 
 ```text
 Wrong (full-data fit): CV accuracy = 0.618
-Correct (Pipeline):    CV accuracy = 0.534  (≈ chance level)
+Correct (Pipeline):    CV accuracy = 0.534
 ```
 
 ![Target encoding はリークすると性能を過大評価する](./categorical-encoding_leak.svg)
 
-全データで集約した場合の accuracy は 0.618、Pipeline 内で集約した場合は 0.534 でした。後者はランダムな予測の 0.5 に近い値です。Target encoding を使う場面では「集約は CV fold の中だけで行う」が絶対条件と言えます。
+全データで集約すると 0.618、Pipeline 内で集約すると 0.534 でした。後者は、多い方のラベルを常に答えた時の 0.524 とほぼ同じです。乱数のシードを 0〜5 に変えても、前者は 0.604〜0.654、後者は 0.480〜0.548 でした。
+
+前者が当たる理由は、各行の特徴量に自分自身のラベルが入っているからです。1 カテゴリは平均 10 行なので、自分のラベルだけで平均が約 0.1 動きます。モデルはこのずれを手がかりに当てています。Target encoding の集約は、CV の訓練 fold の中だけで行います。
 
 ---
 
 ### Hashing trick と Embedding
 
-基数が極端に大きい場面（URL、商品 ID、トークンなど）では、One-hot は不可能、Target encoding もカテゴリごとのサンプル数が少なすぎて機能しないことがあります。
+基数が極端に大きい場面（URL、商品 ID、トークンなど）では、One-hot の列が膨れ、Target encoding もカテゴリごとの行数が少なすぎて平均値が安定しないことがあります。
 
-- Hashing trick: ハッシュ関数で「固定次元のビット列」に押し込む。例: `dim=16` なら基数が 100 万でも 16 列に収まる。代償として「衝突」（別カテゴリが同じビン）が起きる。ただし、線形モデルなら衝突の影響は平均的に小さい
-- Embedding: 深層学習で密ベクトル表現を学習する。意味的に近いカテゴリが近いベクトルになる利点がある。ただし、ニューラルネットの訓練が前提
+- Hashing trick: カテゴリ名をハッシュ関数で列番号に変え、固定長のベクトルに押し込む。例えば `n_features=16` なら基数が 100 万でも 16 列に収まる。代償として、別カテゴリが同じ列に入る衝突が起きる。scikit-learn の [`FeatureHasher`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.FeatureHasher.html) は既定で 2<sup>20</sup> 列を使い、衝突しても内積がおおよそ保たれるように、ハッシュ値で決めた符号を付ける（上の例の A の +1 と B の −1）
+- Embedding: ニューラルネットでカテゴリごとの密ベクトルを学習する。似た振る舞いのカテゴリが近いベクトルになる。ただし、ニューラルネットの訓練が前提になる。[PyTorch の `nn.Embedding`](https://docs.pytorch.org/docs/stable/generated/torch.nn.Embedding.html) や [Keras の `Embedding`](https://keras.io/api/layers/core_layers/embedding/) 層を使う
 
-scikit-learn なら `FeatureHasher`、TensorFlow / PyTorch なら `Embedding` 層を使います。
+Hashing を手で書く時は、Python 組み込みの `hash()` を使わないでください。文字列の `hash()` は [`PYTHONHASHSEED`](https://docs.python.org/3/using/cmdline.html#envvar-PYTHONHASHSEED) を指定しない限りプロセスごとに乱数で変わります。`hash(c) % 2` で A, B, C の列を決めるコードを 3 回実行すると、列は `[1, 0, 0]`、`[1, 0, 1]`、`[0, 1, 1]` と毎回変わりました。学習時と推論時で列がずれるので、`FeatureHasher` のように固定のハッシュ関数（MurmurHash3）を使います。
 
 ---
 
 ### 基数で選ぶ判断軸
 
-基数が増えると、One-hot の列数は比例して増えます。一方で、この例の Target encoding と Hashing の列数は一定です。
+基数が増えると One-hot の列数は比例して増えますが、Target encoding と Hashing の列数は一定です。
 
 ![基数増加に対する各方式の列数挙動](./categorical-encoding_cardinality.svg)
 
-判断軸の整理:
+ただし、列が増えても疎行列なら問題にならない場合があります。10 万行 × 1 万カテゴリで比べます。
+
+```python
+import numpy as np
+from sklearn.preprocessing import OneHotEncoder
+
+rng = np.random.default_rng(0)
+cats = rng.integers(0, 10_000, 100_000).astype(str).reshape(-1, 1)
+sp = OneHotEncoder().fit_transform(cats)  # 既定は CSR 形式の疎行列
+dense_gb = sp.shape[0] * sp.shape[1] * 8 / 1e9
+sparse_mb = (sp.data.nbytes + sp.indices.nbytes + sp.indptr.nbytes) / 1e6
+print(f"shape={sp.shape}, nonzero={sp.nnz}")
+print(f"dense float64: {dense_gb:.1f} GB, sparse CSR: {sparse_mb:.1f} MB")
+```
+
+```text
+shape=(100000, 10000), nonzero=100000
+dense float64: 8.0 GB, sparse CSR: 1.6 MB
+```
+
+密行列なら 8 GB ですが、疎行列なら 1.6 MB です。scikit-learn のロジスティック回帰や kNN は疎行列をそのまま受け取れます。問題は、密行列を要求する処理に渡した時と、カテゴリごとの行数が少なく係数が学習できない時です。
 
 | 基数（種類数） | 第一候補 | 注意点 |
 |---|---|---|
 | 〜20 | One-hot | 順序があれば Ordinal |
-| 20〜10,000 | One-hot または Target encoding | Target は CV 内で集約必須 |
-| 10,000〜 | Hashing trick / Embedding / 集約特徴量 | One-hot は実質不可能 |
-
-数値はあくまで目安で、サンプル数・モデル種別・メモリ予算と合わせて決めます。木系モデルなら One-hot より Ordinal の方が分割効率が良いこともある、といった例外もあります。
+| 20〜10,000 | One-hot（疎行列）または Target encoding | Target は CV 内で集約必須 |
+| 10,000〜 | Hashing trick / Embedding / 集約特徴量 | カテゴリあたりの行数を確認する |
 
 ---
 
-### ID 系は「カテゴリ」ではなく「集約特徴量」にする
+### ID 系は集約特徴量にする
 
-ユーザー ID（100 万種類）、商品 ID（数十万種類）、注文 ID といった「識別子」を One-hot や Target encoding でそのままエンコードすると次の問題が起きます。
+ユーザー ID や商品 ID のような識別子を One-hot や Target encoding でそのまま変換すると、次の問題が起きます。
 
-- メモリ・計算量が破綻する（100 万列の sparse 行列を作っても後段モデルに渡せない）
-- 推論時に新規 ID が来ると OOV（out of vocabulary, 未知カテゴリ）になり予測不能
-- ID ごとの「個性」を学習しているだけで汎化能力がほぼゼロ
-- 個人情報保護の観点でも好ましくない（モデルに ID 自体が乗る）
+- ID ごとの行が数件しかないと、係数や平均値がほぼノイズになる
+- 推論時の新規 ID は学習時に無いカテゴリ（OOV、out of vocabulary）になり、学んだことが使えない
+- 個人を指す ID をモデルに持たせることになる
 
 打ち手は「ID をやめて、その ID に紐づく行動を集約した数値特徴量に変換する」ことです。例:
 
@@ -207,27 +216,14 @@ scikit-learn なら `FeatureHasher`、TensorFlow / PyTorch なら `Embedding` �
 - 商品 ID → 過去 7 日の販売数、平均レビュー点、在庫日数
 - 注文 ID → 特徴量化しない（識別子は集計の主キーとして使う）
 
-ID は「識別子」であって「カテゴリ」ではない、という区別をつけるのが定石となります。
+ただし、推薦システムのように同じ ID が大量の行に繰り返し現れる場合は、ID ごとの Embedding を学習する方法もよく使われます。ID の扱いは、ID あたりの行数と新規 ID の多さで決めます。
 
 ---
 
 ### 機械学習での使いどころ
 
-カテゴリ列を前処理するときは、変換後の列数、値の意味、目的変数を使う範囲を確認します。
+カテゴリ列を前処理する時は、変換後の列数、値の意味、目的変数を使う範囲を確認します。
 
-- 受領したテーブルの各列に対して、エンコーディング方法と理由を明示する
 - 高基数カテゴリ（ID 系を含む）の扱い方を最初に決める
-- Target encoding を使うなら必ず `Pipeline` + CV と組み合わせて [データリーク](../data-leakage/) を回避する
-- One-hot の列数が数千を超えそうなときは [次元の呪い](../curse-of-dimensionality/) を意識して方式を変える
-- 新規カテゴリが来る前提のサービスでは Hashing trick / Embedding を選ぶ
-- 木系モデルなら One-hot / Ordinal で十分、線形・距離ベースモデルなら One-hot か Target encoding を優先する
-
----
-
-### よくある誤解
-
-- 「Ordinal encoding が一番コンパクトで効率的」とは限らない: 順序のないカテゴリに整数を割り当てると、線形モデルや距離ベース手法は「整数の大小」を関係性として解釈してしまう。木系以外ではほぼ NG
-- 「Target encoding は便利、無条件で使える」ではない: 単純に全データで集約すれば必ず [リーク](../data-leakage/) する。`Pipeline` 必須
-- 「One-hot encoding はカテゴリ数が多くても sparse 行列で乗り切れる」とは限らない: メモリには載っても、後段モデルが密行列を要求する場合（kNN, ニューラルネット）は実質不可能。たとえ通っても [次元の呪い](../curse-of-dimensionality/) でモデル性能が落ちる
-- 「ユーザー ID をエンコードするのが普通」ではない: ID は識別子であってカテゴリ変数ではない。集約特徴量に変換するのが特徴量設計の定石
-- 「encoding は精度に影響しない」ではない: 同じデータ・同じモデルでもエンコーディング選択次第で精度が大きく変わる。前処理コードでは、方式と基数を確認する
+- 学習時に無いカテゴリが来た時の扱いを決める（`OneHotEncoder` は既定でエラー、`handle_unknown="ignore"` なら全列 0、`TargetEncoder` は全体の平均値、`FeatureHasher` はそのままハッシュする）
+- One-hot の列数が数千を超えそうな時は、疎行列のまま扱えるモデルかを確認し、[次元の呪い](../curse-of-dimensionality/) も意識する

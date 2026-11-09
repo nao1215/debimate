@@ -1,14 +1,15 @@
-"""categorical-encoding ノート用の図を生成するスクリプト。
+"""categorical-encoding ノート用の図と本文の数値を生成するスクリプト。
 
 実行: cd projects/ml && uv run python scripts/notes/categorical-encoding_gen.py
 """
-import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score
+from sklearn.feature_extraction import FeatureHasher
+from sklearn.model_selection import StratifiedKFold, cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, TargetEncoder
 
@@ -16,14 +17,13 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/categorical-encoding"
-)
-os.makedirs(NOTE_DIR, exist_ok=True)
+NOTE_DIR = (Path(__file__).resolve().parents[2]
+            / "notes" / "ml" / "categorical-encoding")
+NOTE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(NOTE_DIR / name, bbox_inches="tight")
     plt.close()
 
 
@@ -36,12 +36,17 @@ data = pd.DataFrame({
 oh = OneHotEncoder(sparse_output=False).fit_transform(data[["category"]])
 ord_enc = OrdinalEncoder().fit_transform(data[["category"]])
 target_map = data.groupby("category")["target"].mean()
-te = data["category"].map(target_map).values.reshape(-1, 1)
+te = data["category"].map(target_map).to_numpy().reshape(-1, 1)
 
+# Python 組み込みの hash() は文字列のハッシュ値が実行ごとに変わるため、
+# MurmurHash3 で固定の FeatureHasher を使う。A と B は同じ列に入り、符号だけが違う。
 hash_dim = 2
-hash_result = np.zeros((len(data), hash_dim))
-for i, c in enumerate(data["category"]):
-    hash_result[i, hash(c) % hash_dim] = 1
+hasher = FeatureHasher(n_features=hash_dim, input_type="string")
+hash_result = hasher.transform([[c] for c in data["category"]]).toarray()
+
+for name, arr in [("one-hot", oh), ("ordinal", ord_enc),
+                  ("target", te), ("hashing", hash_result)]:
+    print(f"{name:8s}", arr[:3].tolist())
 
 fig = plt.figure(figsize=(14, 3.5))
 gs = fig.add_gridspec(1, 4, width_ratios=[3, 1, 1.4, 2])
@@ -78,21 +83,34 @@ axes[2].set_yticks(range(len(data)))
 axes[2].set_yticklabels(data["category"])
 axes[2].set_title("Target encoding\n(1 column)")
 
-axes[3].imshow(hash_result, cmap="Purples", aspect="auto", vmin=0, vmax=1)
+axes[3].imshow(np.abs(hash_result), cmap="Purples", aspect="auto",
+               vmin=0, vmax=1)
 for i in range(hash_result.shape[0]):
     for j in range(hash_result.shape[1]):
-        axes[3].text(j, i, str(int(hash_result[i, j])),
+        v = hash_result[i, j]
+        axes[3].text(j, i, f"{int(v):+d}" if v else "0",
                      ha="center", va="center",
-                     color="black" if hash_result[i, j] < 0.5 else "white")
+                     color="black" if abs(v) < 0.5 else "white")
 axes[3].set_xticks(range(hash_dim))
 axes[3].set_xticklabels([f"h{i}" for i in range(hash_dim)])
 axes[3].set_yticks(range(len(data)))
 axes[3].set_yticklabels(data["category"])
-axes[3].set_title("Hashing trick\n(fixed 2 columns)")
+axes[3].set_title("Hashing trick\n(fixed 2 columns, A/B collide)")
 
 fig.suptitle("Same input column, four encoding outputs", fontsize=11)
 plt.tight_layout()
 save("categorical-encoding_methods.svg")
+
+
+# --- 本文の数値: 10 万行 x 1 万カテゴリの One-hot を密行列と疎行列で比べる ---
+rng = np.random.default_rng(0)
+n_rows, n_cats = 100_000, 10_000
+cats = rng.integers(0, n_cats, n_rows).astype(str).reshape(-1, 1)
+sp = OneHotEncoder().fit_transform(cats)  # 既定は CSR 形式の疎行列
+dense_gb = sp.shape[0] * sp.shape[1] * 8 / 1e9
+sparse_mb = (sp.data.nbytes + sp.indices.nbytes + sp.indptr.nbytes) / 1e6
+print(f"shape={sp.shape}, nonzero={sp.nnz}")
+print(f"dense float64: {dense_gb:.1f} GB, sparse CSR: {sparse_mb:.1f} MB")
 
 
 # --- 図2: 基数増加に伴う列数の挙動 ---
@@ -107,12 +125,12 @@ ax.loglog(cardinalities, onehot_cols, "o-", color=COLOR_RED, linewidth=2,
 ax.loglog(cardinalities, target_cols, "s-", color=COLOR_GREEN, linewidth=2,
           label="Target encoding (1 column)")
 ax.loglog(cardinalities, hash_cols, "^-", color=COLOR_BLUE, linewidth=2,
-          label="Hashing trick (fixed)")
+          label="Hashing trick (fixed 16 columns)")
 ax.axvspan(10_000, 1_000_000, alpha=0.15, color=COLOR_RED,
-           label="One-hot infeasible zone")
+           label="dense one-hot >= 8 GB at 100k rows (use sparse)")
 ax.set_xlabel("Cardinality (number of unique categories)")
 ax.set_ylabel("Resulting feature columns")
-ax.set_title("One-hot column count explodes with cardinality")
+ax.set_title("One-hot column count grows with cardinality")
 ax.legend(loc="upper left")
 ax.grid(True, which="both", alpha=0.3)
 plt.tight_layout()
@@ -136,7 +154,8 @@ cv_wrong = cross_val_score(
 ).mean()
 
 pipe = Pipeline([
-    ("te", TargetEncoder(target_type="binary", smooth="auto", random_state=0)),
+    ("te", TargetEncoder(target_type="binary",
+                         cv=StratifiedKFold(5, shuffle=True, random_state=0))),
     ("clf", LogisticRegression(max_iter=2000)),
 ])
 cv_correct = cross_val_score(pipe, df[["cat"]], y, cv=5).mean()
@@ -158,6 +177,6 @@ save("categorical-encoding_leak.svg")
 
 
 print("Saved figures to:", NOTE_DIR)
-print(f"Target leak demo:")
+print("Target leak demo:")
 print(f"  Wrong (full-data fit): CV accuracy = {cv_wrong:.3f}")
 print(f"  Correct (Pipeline):    CV accuracy = {cv_correct:.3f}")

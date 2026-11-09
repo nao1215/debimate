@@ -17,7 +17,7 @@ weight: 11
 
 データリークは混入経路で大きく 2 系統に分かれます。
 
-{{< note-panels caption="データリークを、目的変数に関わる情報の混入と、学習・評価の分離の不備に分けます。" >}}
+{{< note-panels caption="データリークは、目的変数に関わる情報の混入と、学習・評価の分離の不備に分けられます。" >}}
 - title: Target leakage
   items:
   - 未来情報の混入
@@ -34,7 +34,9 @@ weight: 11
 
 ### 典型症状: 学習時のスコアが不当に高い
 
-リークが入った状態では、 [交差検証](../cross-validation/)（CV, cross-validation です。データを `k` 個の fold に分けて、`k-1` 個で学習・1 個で評価を回しながら平均スコアを取る検証手法）のスコアが現実離れした水準（Accuracy 0.99 以上、ROC-AUC ほぼ 1.0 など）に達することが多いです。普段の精度感を 0.05〜0.10 上回るスコアが急に出たら、リークの有無を確認します。以降、本文では「CV」と表記します。以下では、scikit-learn の `make_classification` で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで CV スコアを比較します。リーク列は推論時には手に入らない情報を意図的に流し込んだもので、これがあると CV Accuracy が 1.000 まで貼り付きます。
+リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、ROC-AUC ほぼ 1.0 など）に達することが多いです。普段の精度感を 0.05〜0.10 上回るスコアが急に出たら、リークの有無を確認します。
+
+試しに、scikit-learn の `make_classification` で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで貼り付きます。
 
 ```python
 import matplotlib.pyplot as plt
@@ -53,6 +55,8 @@ X_leak = np.column_stack([X, leak_feature])
 
 cv_clean = cross_val_score(RandomForestClassifier(random_state=0), X, y, cv=5)
 cv_leak = cross_val_score(RandomForestClassifier(random_state=0), X_leak, y, cv=5)
+print(f"CV clean:  {cv_clean.mean():.3f} +/- {cv_clean.std():.3f}")
+print(f"CV leak:   {cv_leak.mean():.3f} +/- {cv_leak.std():.3f}")
 
 fig, ax = plt.subplots(figsize=(6, 4))
 ax.bar(["Clean", "With leak"],
@@ -85,6 +89,7 @@ names = [f"x{i}" for i in range(10)] + ["leak"]
 fig, ax = plt.subplots(figsize=(7, 4))
 colors = ["#7aa6c2"] * 10 + ["#e15759"]
 ax.bar(names, importances, color=colors, edgecolor="white")
+ax.set_xticks(range(len(names)))
 ax.set_xticklabels(names, rotation=45, ha="right")
 ax.set_ylabel("Feature importance")
 ax.set_title("RF importance: leak column dominates")
@@ -113,7 +118,7 @@ plt.savefig("data-leakage_importance.svg", bbox_inches="tight")
 
 各特徴量について「予測したい時点 `t` に、その値は本当に観測可能か」を機械的に問うことで検出できます。すべての特徴量に as-of timestamp（その値が確定した時点）を明示し、`as_of <= t` を満たすものだけを使う設計が安全と言えます。
 
-ターゲットリークは時系列が絡まなくても起きます。例として、与信スコアの説明変数に「最終承認担当者の経験年数」が入っていたケースが報告されています。承認担当者の割当ては与信判定の難易度に応じて変わるため、結果ラベルと相関します。しかし、申込時点では未確定です。「対象タスクの結果が決まる過程で生まれる量」は、それが時間的に未来でなくても疑った方が良いです。
+ターゲットリークは時系列が絡まなくても起きます。例えば、与信スコアの説明変数に「最終承認担当者の経験年数」を入れる場合を考えます。承認担当者の割当ては審査の難易度に応じて変わるため、結果ラベルと相関します。しかし、申込時点では未確定です。「対象タスクの結果が決まる過程で生まれる量」は、それが時間的に未来でなくても疑った方が良いです。
 
 ---
 
@@ -144,6 +149,8 @@ pipe = Pipeline([
     ("clf", LogisticRegression(max_iter=2000)),
 ])
 cv_correct = cross_val_score(pipe, X_noise, y_noise, cv=5)
+print(f"Wrong CV (contamination):  {cv_wrong.mean():.3f}")
+print(f"Correct CV (pipeline):     {cv_correct.mean():.3f}")
 
 fig, ax = plt.subplots(figsize=(6, 4))
 ax.bar(["Wrong\n(fit before split)", "Correct\n(Pipeline)"],
@@ -161,8 +168,8 @@ plt.savefig("data-leakage_contamination.svg", bbox_inches="tight")
 出力:
 
 ```text
-Wrong CV (contamination):  0.805
-Correct CV (pipeline):     0.505
+Wrong CV (contamination):  0.795
+Correct CV (pipeline):     0.510
 ```
 
 ![Wrong way over-reports vs Pipeline correct way at chance level](./data-leakage_contamination.svg)
@@ -226,5 +233,5 @@ CV の分割だけでなく、前処理の fit 対象と各特徴量の as-of ti
 - 「CV で評価しているからリークは起きない」とは限らない: 前処理を分割前に fit していれば CV を回しても情報が漏れる
 - 「目的変数と相関が高い特徴量を入れるとリーク」ではない: 強相関でも、推論時刻に観測可能で、目的変数から派生していなければリークではない（むしろ良い特徴量）
 - 「テスト精度が高ければ本番でも当たる」とは限らない: テストデータも訓練データと同じ前処理パイプラインを通過しているなら、その前処理に汚染がある時点でテスト精度も信頼できない
-- 「リークは個人開発の小さい問題」ではない: 医療画像で病院ごとに撮影機材が違い、機材由来のメタデータ（解像度・コントラスト）が病名と相関する、といった大型事例が論文で複数報告されている
+- 「リークは個人開発の小さい問題」ではない: 胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 95% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
 - [過学習](../overfitting/) と同じ現象ではない: 過学習はモデルの複雑さが原因、データリークは特徴量・前処理の設計が原因。リークがあると過学習対策（正則化・early stopping）は効かない

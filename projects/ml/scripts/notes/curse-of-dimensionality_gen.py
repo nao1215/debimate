@@ -18,8 +18,9 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/curse-of-dimensionality"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "..", "..", "notes", "ml", "curse-of-dimensionality",
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 

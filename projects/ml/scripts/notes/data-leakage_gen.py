@@ -18,8 +18,9 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/data-leakage"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "..", "..", "notes", "ml", "data-leakage",
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -133,6 +134,8 @@ save("data-leakage_timeline.svg")
 #   Wrong: 全データで SelectKBest を fit してから cross_val_score
 #   Correct: Pipeline で SelectKBest を train fold 内に閉じる
 # chance level 0.5 を Correct は守る、Wrong は不当に高くなる。
+# 本文のコードと同じく、ここで乱数を初期化し直す。
+rng = np.random.default_rng(0)
 X_noise = rng.standard_normal((200, 5000))
 y_noise = rng.integers(0, 2, 200)
 
