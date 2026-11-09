@@ -7,9 +7,13 @@ tags: ["machine-learning", "math", "statistics"]
 weight: 8
 ---
 
-カーネル密度推定（Kernel Density Estimation, KDE）は、ヒストグラムの代わりに「滑らかな分布曲線」を推定するノンパラメトリックな手法です。各データ点に「その点の近くほど確率が高い」という小さな分布（カーネル）を置き、全点のカーネルを足し合わせて全体の形を作ります。曲線の面積が 1 になるように正規化されており、出力は確率密度関数として読めます。
+カーネル密度推定（Kernel Density Estimation, KDE）は、データ点の集まりから滑らかな分布曲線を推定するノンパラメトリックな手法です。各データ点に小さな山（カーネル）を置き、全点の山を足し合わせて全体の形を作ります。曲線の面積は 1 になるように正規化されるので、出力は確率密度関数として読めます。
 
-ヒストグラムが「離散的なビンに分けて棒で表す」のに対し、KDE は「連続的な曲線で表す」。同じデータでもヒストグラムはビン幅の取り方で形がガラッと変わってしまうのに対し、KDE はバンド幅という連続的なパラメータで滑らかさを調整できます。EDA（探索的データ分析）で分布の癖を素早く掴むのに向いた手法と言えます。
+ヒストグラムはビン幅と区切りの位置で形が変わります。KDE はビンを使わず、バンド幅という連続的なパラメータで滑らかさを調整します。EDA（探索的データ分析）で分布の山の数や偏りを掴む時によく使います。
+
+<br>
+
+本記事では、KDE の式を 1 点ずつのカーネルの和として確かめた後、バンド幅の選び方、クラスごとの分布の比較、適さないケースを説明します。コードは図の計算部分です。描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/kde_gen.py)も保存しています。
 
 ---
 
@@ -22,20 +26,105 @@ f(x) = (1 / (n * h)) * Σ K((x - x_i) / h)
 ```
 
 - `n`: データ点の数
-- `h`: バンド幅（bandwidth）
-- `K`: カーネル関数（ガウス関数が最も一般的）
 - `x_i`: 各データ点
+- `h`: バンド幅（bandwidth）。個々のカーネルの広がり
+- `K`: カーネル関数。面積が 1 の山で、ガウス関数が最も一般的
 
-直感的には、各データ点 `x_i` に「中心が `x_i` のガウス分布」を置き、それらを全部足してから `n` で割る、という操作になっています。バンド幅 `h` は個々のカーネルの広がりを決め、`h` が大きいほど各点の影響が広い範囲に滑らかに広がります。
+ガウスカーネルなら、各データ点 `x_i` に中心が `x_i`、標準偏差が `h` の正規分布を置き、それらを全部足してから `n` で割る操作です。サンプル 15 点、`h = 0.5` で計算します。
+
+```python
+import numpy as np
+
+sample = np.random.default_rng(5).normal(0, 1, 15)
+xs = np.linspace(-4, 4, 400)
+h = 0.5
+kde = np.zeros_like(xs)
+for xi in sample:
+    k = np.exp(-0.5 * ((xs - xi) / h) ** 2) / (h * np.sqrt(2 * np.pi))
+    kde += k / len(sample)  # 1 点分のカーネルを n で割って足す
+print(f"面積: {np.trapezoid(kde, xs):.3f}")
+```
+
+```text
+面積: 1.000
+```
+
+![1 点ごとのガウスカーネルとその総和としての KDE 曲線](./kde_per_point_intuition.svg)
+
+黒い点がデータ点、青い細い曲線が各点のカーネル（`n` で割った後）で、その総和が赤い曲線です。点が密集している所では青いカーネルが重なるため、赤い曲線が高くなります。
+
+同じ計算を標準正規分布の 500 点に `h = 0.4` で当て、ヒストグラムと重ねると次の通りです。
+
+![500 点のヒストグラムと KDE（h=0.4）](./kde_example.svg)
 
 ---
 
-### イメージ
+### バンド幅の選び方
 
-- ヒストグラムはビン幅に強く依存し、形がギザギザになりやすい
-- KDE はビンではなく「滑らかな曲線」で分布の形を見やすくする
-- 滑らかさは バンド幅（bandwidth, `h`） で決まり、広いほど平滑で細部が消える
-- 同じデータでも `h` を変えると見た目が大きく変わるため、複数の `h` で並べて見るのが安全
+KDE の見え方を最も大きく変えるのはバンド幅 `h` です。2 峰性のデータ（中心 -2 と 2 に 200 点ずつ）で、`h` を 3 通りに変え、曲線の山の数を数えます。[scipy.stats.gaussian_kde](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html) の `bw_method` はデータの標準偏差に掛ける倍率なので、`h` を標準偏差で割って渡します。
+
+```python
+import numpy as np
+from scipy import stats
+from scipy.signal import find_peaks
+
+rng = np.random.default_rng(0)
+data = np.concatenate([rng.normal(-2.0, 0.8, 200), rng.normal(2.0, 0.8, 200)])
+xs = np.linspace(-5, 5, 400)
+for h in [0.1, 0.5, 2.0]:
+    kde = stats.gaussian_kde(data, bw_method=h / data.std())
+    peaks, _ = find_peaks(kde(xs))
+    print(f"h={h}: 山の数 {len(peaks)}")
+```
+
+```text
+h=0.1: 山の数 15
+h=0.5: 山の数 2
+h=2.0: 山の数 1
+```
+
+![h が小さすぎるとノイズだらけ、大きすぎると 2 峰が消える](./kde_bandwidth.svg)
+
+- `h=0.1`: 個々の点の小山が残り、元の分布に無い山が 15 個現れる（過小平滑、under-smoothing）
+- `h=0.5`: 2 つの山が分かれて見える
+- `h=2.0`: 山が 1 つに潰れ、2 峰性が分からない（過剰平滑、over-smoothing）
+
+<br>
+
+`h` を決める代表的な方法は次の通りです。
+
+- Scott の規則: `h = σ * n^(-1/(d+4))`（`σ` はデータの標準偏差、`d` は次元数）。`gaussian_kde` の既定
+- 正規分布を仮定した目安: 1 次元で `h = 1.06 * σ * n^(-1/5)`。`gaussian_kde` の `"silverman"` は 1 次元でこの値になる。Silverman が勧める `0.9 * min(σ, IQR / 1.34) * n^(-1/5)`（IQR は四分位範囲）とは別物
+- [交差検証](../../ml/cross-validation/): 学習に使わなかったデータの対数尤度が最も大きくなる `h` を選ぶ
+
+同じ 2 峰性データで、規則による値と、[scikit-learn の KernelDensity](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html) を 5 分割の交差検証で選んだ値を比べます（上のコードの続き）。
+
+```python
+from sklearn.model_selection import GridSearchCV, KFold
+from sklearn.neighbors import KernelDensity
+
+for rule in ["scott", "silverman"]:
+    kde = stats.gaussian_kde(data, bw_method=rule)
+    h = kde.factor * data.std(ddof=1)
+    print(f"{rule}: h={h:.2f}, 山の数 {len(find_peaks(kde(xs))[0])}")
+
+grid = GridSearchCV(
+    KernelDensity(),
+    {"bandwidth": np.arange(0.05, 2.01, 0.05)},
+    cv=KFold(5, shuffle=True, random_state=0),
+).fit(data[:, None])
+print(f"交差検証: h={grid.best_params_['bandwidth']:.2f}")
+```
+
+```text
+scott: h=0.64, 山の数 2
+silverman: h=0.68, 山の数 2
+交差検証: h=0.25
+```
+
+規則の値は交差検証の約 2.5 倍です。規則が使う σ には 2 つの山の間の距離も含まれるからです。scipy のドキュメントも、自動の選び方は単峰の分布向けで、多峰の分布は平滑しすぎる傾向があると書いています。今回は規則の値でも山は 2 つ残りました。交差検証の値も分割で変わり、`random_state` を 0〜2 にすると 0.20〜0.30 でした。
+
+既定値もライブラリで異なり、`KernelDensity` は `bandwidth=1.0` の固定値、[seaborn の kdeplot](https://seaborn.pydata.org/generated/seaborn.kdeplot.html) は Scott の規則です。1 枚だけ描いて判断せず、複数の `h` で山の数と位置を比べます。
 
 ---
 
@@ -46,186 +135,57 @@ f(x) = (1 / (n * h)) * Σ K((x - x_i) / h)
 | カーネル | 特徴 |
 |---|---|
 | ガウス（Gaussian） | 最も標準的。滑らかで微分可能 |
-| Epanechnikov | 理論的に最適性が示されている。ガウスより計算が軽い |
-| Tophat（uniform） | 単純な箱型。隣接点だけ等重みで使う |
-| Triangular | 三角形。線形に重みが減少 |
+| Epanechnikov | 平均積分二乗誤差の意味で最適。範囲が有限なので遠い点を計算から外せる |
+| Tophat（uniform） | 箱型。距離 `h` 未満の点だけを等しい重みで数える |
+| Triangular（linear） | 三角形。距離に比例して重みが減る |
 
-実用上はガウスカーネルがデフォルトで、特別な理由が無ければそれで十分と考えられます。カーネルの選択よりもバンド幅の選択の方が結果への影響が大きい、という経験則があります。
-
----
-
-### バンド幅の選び方
-
-バンド幅 h を変えると、推定した曲線の滑らかさが大きく変わります。代表的な手法は次の通りです。
-
-- Silverman's rule of thumb: `h = 1.06 * sigma * n^(-1/5)`（簡便でよく使われる）
-- Scott's rule: `h = sigma * n^(-1/(d+4))`（`d` は次元数。多次元 KDE 向け）
-- [交差検証](../../ml/cross-validation/) による選択: 最尤推定でデータの尤度を最大化する `h` を探す
-- 経験的調整: 複数の `h` で描いて、過剰平滑（ピークが消える）と過小平滑（ノイズが残る）の中間を選ぶ
-
-scikit-learn の `KernelDensity` はデフォルトが `bandwidth=1.0` の固定値で、seaborn の `kdeplot` はデフォルトで Scott の規則を使います。複数の `h` で描画し、ピークが消えていないか、細かな変動を拾いすぎていないかを確認します。
+scipy のドキュメントにも、推定結果への影響はカーネルの形よりバンド幅の方がはるかに大きいとあります。特別な理由が無ければガウスカーネルで十分です。
 
 ---
 
-### 読み方のポイント
+### クラスごとの KDE
 
-- 山が高いほど、その値付近にデータが多い
-- ピークの位置と数で、分布の中心や多峰性を確認できる
-- 右に長い尾や非対称性も曲線で把握しやすい
-- バンド幅が大きすぎると特徴が潰れ、小さすぎるとノイズが残る
-
----
-
-### 前提・注意
-
-- バンド幅（bandwidth）の設定で見え方が大きく変わる
-- 境界付近（0 未満が存在しないなど）で密度が歪むことがある
-- サンプル数が少ないと形が不安定になる
-
----
-
-### 利点
-- 分布形状を滑らかに可視化できる
-- 多峰性や歪みを掴みやすい
-
----
-
-### 欠点
-- バンド幅に依存する
-- ヒストグラムより解釈が難しい場合がある
-
----
-
-## Python での実例
+クラスごとに KDE を重ね描きすると、ある特徴量がクラスをどの程度分けているかが分かります。非解約 420 人（平均 35 歳）と解約 180 人（平均 48 歳）の年齢を作り、2 本の曲線が交わる年齢を求めます。
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
+from scipy import stats
 
-rng = np.random.default_rng(0)
-data = rng.normal(loc=0, scale=1, size=500)
-
-plt.hist(data, bins=20, density=True, alpha=0.4, color="#4C78A8", label="hist")
-
-# 簡易KDE（ガウスカーネル）
-xs = np.linspace(-4, 4, 200)
-bandwidth = 0.4
-kernel = np.exp(-0.5 * ((xs[:, None] - data[None, :]) / bandwidth) ** 2)
-kde = kernel.mean(axis=1) / (bandwidth * (2 * np.pi) ** 0.5)
-
-plt.plot(xs, kde, color="#F58518", label="kde")
-plt.legend()
-plt.tight_layout()
-plt.show()
+rng = np.random.default_rng(2)
+class0 = rng.normal(35, 8, 420)   # 非解約
+class1 = rng.normal(48, 10, 180)  # 解約
+kde0, kde1 = stats.gaussian_kde(class0), stats.gaussian_kde(class1)
+ages = np.linspace(10, 80, 701)
+diff_density = kde1(ages) - kde0(ages)
+diff_count = len(class1) * kde1(ages) - len(class0) * kde0(ages)
+print("密度が逆転する年齢:", ages[np.flatnonzero(np.diff(np.sign(diff_density)))])
+print("人数が逆転する年齢:", ages[np.flatnonzero(np.diff(np.sign(diff_count)))])
 ```
 
-出力:
-
-![kde_example](./kde_example.svg)
-
----
-
-### 1 点ずつのカーネルの足し合わせとして見る
-
-サンプル 15 点で、KDE の式 `f(x) = (1/(n h)) Σ K((x - x_i) / h)` がそのまま何をやっているかを可視化します。
-
-```python
-sample = rng.normal(0, 1, 15)
-xs = np.linspace(-4, 4, 400)
-h = 0.5
-total = np.zeros_like(xs)
-for xi in sample:
-    k = np.exp(-0.5 * ((xs - xi) / h) ** 2) / (h * np.sqrt(2 * np.pi))
-    total += k / len(sample)
-    plt.plot(xs, k / len(sample), alpha=0.5)
-plt.plot(xs, total, color="#e15759", lw=2.5)
-plt.savefig("kde_per_point_intuition.svg", bbox_inches="tight")
-```
-
-![1 点ごとのガウスカーネルとその総和としての KDE 曲線](./kde_per_point_intuition.svg)
-
-青い細い曲線がそれぞれ 1 つのデータ点に対応するガウスカーネルで、`n` で割って正規化済みです。その全部を足し上げた赤い曲線が KDE となります。点が密集している領域では青いカーネルが重なるため、足し合わせた赤い曲線が高くなります。
-
----
-
-### バンド幅で見え方が変わる
-
-2 峰性データで、`h` の選び方による見え方の違いを確認します。
-
-```python
-data = np.concatenate([rng.normal(-2.0, 0.8, 200), rng.normal(2.0, 0.8, 200)])
-for h in [0.1, 0.5, 2.0]:
-    kde = stats.gaussian_kde(data, bw_method=h / data.std())
-    # 描画は scripts 側を参照
-plt.savefig("kde_bandwidth.svg", bbox_inches="tight")
-```
-
-![h が小さすぎるとノイズだらけ、大きすぎると 2 峰が消える](./kde_bandwidth.svg)
-
-3 つのパネルを左から見ていきます。
-
-- `h=0.1`: 個々の点の小山がそのまま残り、データには無いピークが多数現れる（under-smoothing, 過小平滑）
-- `h=0.5`: 2 つの山がはっきり分かれて見える。データの本来の構造が見えている
-- `h=2.0`: 山が 1 つに潰れて、もはや 2 峰性が分からない（over-smoothing, 過剰平滑）
-
-Silverman の規則で自動選択した場合も、複数の `h` で描画し、推定したピークの数や位置を比較します。
-
----
-
-### クラスごとの KDE で「特徴量がクラスを分けているか」を見る
-
-EDA で頻出の使い方として、クラスごとに KDE を重ね描きすると「この特徴量がクラスをどれくらい分けているか」が一目で分かります。
-
-```python
-class0 = rng.normal(35, 8, 420)  # non-churn customers
-class1 = rng.normal(48, 10, 180)  # churn customers
-kde0 = stats.gaussian_kde(class0)
-kde1 = stats.gaussian_kde(class1)
-# 描画は scripts 側を参照
-plt.savefig("kde_class_conditional.svg", bbox_inches="tight")
+```text
+密度が逆転する年齢: [40.5]
+人数が逆転する年齢: [46.8]
 ```
 
 ![クラスごとの age 分布を KDE で重ね描き](./kde_class_conditional.svg)
 
-非解約（青）と解約（赤）顧客の年齢分布を KDE で見たもので、解約者の方が高齢側に分布が寄っている様子が一目で分かります。重なりの大きさが「この特徴量だけではクラスを完全に分けられない」程度を示し、後段で `age + 他の特徴量` を組み合わせる必要性の判断材料になります。
+解約者の分布は高齢側に寄っていますが、重なりも大きく、年齢だけではクラスを分けられません。
 
-ナイーブベイズ分類器・ガウス判別分析の確率モデルも、各クラスの特徴量分布を確率密度として扱う点で KDE と発想が同じです。
-
----
-
-### 数学での使いどころ
-
-- 分布形状のノンパラメトリック推定（事前に分布族を仮定しない）
-- ヒストグラムの補助としての可視化
-- 確率密度関数の推定: 連続値の密度を直接出せる
-- [異常検知](/ml/ml/anomaly-detection/)における正常分布の推定（外れた点を低密度として検出。[平均](../mean/) ± 3σ ベースの単純な異常検知より分布の癖を反映できる）
-- ベイズ推論の事前分布・事後分布の可視化
-- 多峰性分布で [平均](../mean/) や [標準偏差](../stddev/) だけでは見えない構造を補足
+2 本の曲線は、それぞれのクラスの中で面積を 1 にしています。赤が青を上回るのは 40.5 歳からですが、解約者の人数が上回るのは 46.8 歳からでした。解約者が全体の 3 割だからです。曲線はクラスを条件とした密度 `P(x | y)` で、解約する確率 `P(y | x)` を読むにはクラスの比率 `P(y)` を掛けます（[ベイズの定理](../bayes-theorem/)）。
 
 ---
 
 ### 機械学習での使いどころ
 
-EDA から異常検知まで、確率密度を扱う多くの場面で使われます。
-
-- EDA での特徴量分布の把握: ヒストグラムより滑らかで判断しやすい
-- クラスごとの分布比較: クラス 0 / クラス 1 の特徴量分布を重ね描きして識別可能性を確認
-- 異常検知: 学習データの密度を KDE で推定し、低密度の点を異常としてフラグ
-- 生成モデルの簡易ベースライン: 1 次元の密度推定として、より複雑な GAN / VAE と比較
-- 特徴量の前処理判断: [歪度](../skewness/) と組み合わせて変換の必要性を判断
-- 連続値ターゲットの分布確認: 回帰問題で目的変数 `y` の分布を見て、対数変換などの前処理を検討
-
-具体的な利用例:
-
-- 不正検知で「正常取引の金額分布」を KDE で推定し、それから大きく外れた取引を検出
-- 顧客のクラスタリング前にクラスタ候補ごとの特徴量分布を KDE で比較
-- A/B テスト後の効果量分布の可視化（平均だけでは見えない差を確認）
+- EDA: 特徴量や回帰の目的変数の分布を見て、多峰性や[歪度](../skewness/)から対数変換などの前処理を検討する。[平均](../mean/)や[標準偏差](../stddev/)だけでは多峰性は見えない
+- [異常検知](/ml/ml/anomaly-detection/): 正常データの密度を推定し、密度の低い点を異常とする。平均 ± 3σ より分布の形を反映できる
+- サンプルの生成: 推定した密度から新しいデータを引く。[scikit-learn の例](https://scikit-learn.org/stable/auto_examples/neighbors/plot_digits_kde_sampling.html)は、64 次元の手書き数字を [PCA](../../ml/pca/) で 15 次元にしてから KDE を当てている
 
 ---
 
 ### 適さないケース
 
-- サンプル数が極端に少ないデータ（数十件以下）: バンド幅の選定が不安定
-- 境界（`x ≥ 0` のように下限がある）付近で密度が歪むケース: 境界補正付き KDE（reflection KDE）を使う
-- 高次元データ（3 次元以上）: [次元の呪い](/ml/ml/curse-of-dimensionality/)でカーネルが希薄化し、密度推定が不安定。代わりに [PCA](../../ml/pca/) で次元削減してから KDE を当てるなどの工夫が必要
-- 計算速度が重要な場面: データ点数に比例した計算量がかかるので、大規模データには不向き
+- サンプル数が少ない（数十件以下）: 曲線の形もバンド幅の選び方も不安定になる
+- 下限がある値（金額など `x ≥ 0` のもの）: カーネルが 0 未満にはみ出し、境界付近の密度が低く出る。境界で折り返す反射法などで補正する
+- 次元に対してサンプルが少ないデータ: 次元が増えると各点の近くに入る点が急に減り（[次元の呪い](/ml/ml/curse-of-dimensionality/)）、同じ精度に必要なサンプル数が急増する。PCA などで次元を減らしてから当てる
+- 大規模データの高速な評価: 素朴な実装では 1 点の評価に全データ点との計算が要る。scikit-learn は木構造と許容誤差で計算を減らしている

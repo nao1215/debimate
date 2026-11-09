@@ -70,7 +70,7 @@ graph TD
 ![Residual fitting step by step](./gradient-boosting_residual.svg)
 
 左図: 1 本目の木は元データを粗く近似します。残差（真値 - 予測）が残っています。
-右図: 2 本目の木は、その残差を入力にして「残差を説明する木」を学習します。これを元の予測に足し合わせると、組み合わさった予測は元データにより近くなります。GradientBoosting では、この補正を繰り返します。
+右図: 2 本目の木の入力は 1 本目と同じ特徴量 x で、予測する目的値を y から残差に置き換えて学習します（分類などでは損失関数の負の勾配に置き換えます。[scikit-learn のドキュメント](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)）。この木の予測を元の予測に足すと、組み合わさった予測は元データにより近くなります。GradientBoosting では、この補正を繰り返します。
 
 ---
 
@@ -100,41 +100,27 @@ GradientBoosting の挙動を決める主要なハイパーパラメータは 3 
 - `n_estimators` （木の本数、典型値 100〜2000）: 何本まで足すか
 - `max_depth` （各木の深さ、典型値 3〜8）: 個々の木の複雑さ
 
-`learning_rate` と `n_estimators` は「ほぼ反比例」の関係にあります。具体的には、`learning_rate=0.5` なら 50 本で十分です。`learning_rate=0.01` では 500〜1000 本必要になります。下の図は同じデータで `learning_rate` だけ変えた 3 ケースの test log loss を `n_estimators` ごとに描いたものです。
+`learning_rate` を小さくするほど、同じ loss に届くまでに必要な木の本数は増えます。下の図は `learning_rate` だけ変えた 3 ケースについて、検証データ（学習に使わず、本数などを選ぶために取り分けたデータ）の log loss を本数ごとに描いたものです。
 
 ![learning_rate trade-off](./gradient-boosting_learning_rate.svg)
 
-- `learning_rate=0.5` は速く下がる。ただし、底に達した後に上へ跳ね始める（過学習）
-- `learning_rate=0.1` はバランスが良く、安定して低い loss に届く
-- `learning_rate=0.01` はゆっくり下がる。300 本ではまだ底に届いていない
+- `learning_rate=0.5` は 40 本で最小（0.283）になった後に上がり続け、300 本で 0.445 になる（過学習）
+- `learning_rate=0.1` は 182 本で最小（0.273）になり、300 本でも 0.280 に留まる
+- `learning_rate=0.01` は 300 本でもまだ下がり続けている（0.315）
 
-経験則として、`learning_rate=0.05〜0.1` に固定し、`n_estimators` を大きめに取って early stopping で打ち切る、というやり方が安定します。
-
-```python
-from sklearn.ensemble import HistGradientBoostingClassifier
-
-model = HistGradientBoostingClassifier(
-    learning_rate=0.05,
-    max_iter=1000,           # 最大の木数
-    max_depth=6,
-    early_stopping=True,      # 自動で early stopping
-    validation_fraction=0.2,  # 内部 validation 用に 20% を切り出す
-    n_iter_no_change=20,     # 検証 loss が 20 回改善しなければ停止
-    random_state=0,
-)
-```
-
-`HistGradientBoostingClassifier` は scikit-learn 0.21 から導入された高速実装で、ヒストグラム化により大規模データでも実用的に動きます。`GradientBoostingClassifier` より一桁速いことが多いため、特別な理由がなければ `HistGradientBoostingClassifier` を使うのが標準的です。
+必要な本数はデータと `max_depth` で変わるため、この本数は他のデータには当てはまりません。実務では `learning_rate` を 0.05〜0.1 程度に固定し、`n_estimators` を大きめに取って、次節の early stopping で本数を決めるやり方がよく使われます。
 
 ---
 
 ### 過学習と早期停止
 
-GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を増やすほど訓練誤差は下がり続けます。一方でテスト誤差はある時点で底を打ち、その後上昇に転じます。これが GradientBoosting の典型的な過学習パターンです。
+GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を増やすほど訓練誤差は下がり続けます。一方で検証データの誤差はある時点で底を打ち、その後上昇に転じます。これが GradientBoosting の典型的な過学習パターンです。
 
-![Train vs test loss with early stopping](./gradient-boosting_early_stopping.svg)
+early stopping（早期停止）は、この検証データの loss を木を 1 本足すごとに測り、改善しなくなったら学習を打ち切る仕組みです。scikit-learn の `GradientBoostingClassifier` では、`validation_fraction=0.2` で訓練データの 20% を検証データとして取り分け、`n_iter_no_change=20` で「20 本続けて改善しなければ停止」を指定します。test データは停止の判断に使わず、止めたモデルの最終評価にだけ使います。test の loss で本数を選ぶと、未知のデータでの性能を楽観的に見積もってしまうからです。
 
-このデータでは test log loss は 89 イテレーション付近で最小（0.291）に到達し、その後 500 イテレーションまで進めると 0.371 まで悪化します。500 本も学習させると 27% も loss が悪化する勘定で、early stopping を入れないと無駄な計算をしながら過学習を進めることになります。
+![Train vs validation loss with early stopping](./gradient-boosting_early_stopping.svg)
+
+このデータでは検証 loss は 89 本で最小（0.266）になり、そこから 20 本改善しなかったため 107 本で学習が止まりました。scikit-learn は最小の 89 本に戻さず、止まった時点の 107 本のモデルを返します。このモデルの test log loss は 0.302 で、500 本まで学習させたモデルの 0.403 より小さい値でした（[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/gradient-boosting_gen.py)）。
 
 [過学習](../overfitting/)対策として、GradientBoosting 系では次の手段が標準的に用意されています。
 
@@ -162,14 +148,14 @@ GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を
 - 非線形・特徴量の相互作用を自然に捉える
 - 前処理コストが低い（標準化・外れ値処理がほぼ不要、欠損も実装によっては対応）
 - [特徴量重要度](/ml/ml/feature-importance/)を出せる（ただし [RandomForest](../random-forest/) と同様にバイアスがあるので `permutation_importance` 推奨）
-- `predict_proba` で確率出力もそれなりに校正された値が出る
+- `predict_proba` で確率を出せる。log loss を最小化して学習するため確率として扱いやすい値になりやすいが、そのまま信頼してよいかは[確率の校正](../probability-calibration/)で確認する
 - LightGBM / XGBoost / CatBoost など最適化実装が豊富で、規模が大きくなっても動く
 
 ---
 
 ### 欠点
 
-- [ハイパーパラメータ](../hyperparameter/) 調整が事実上必須で、`learning_rate` × `n_estimators` × `max_depth` のグリッドサーチや Optuna によるベイズ最適化が必要
+- 既定値のままでは性能を引き出せないことが多く、`learning_rate` × `n_estimators` × `max_depth` の[ハイパーパラメータ](../hyperparameter/)調整に手間がかかる（グリッドサーチや [Optuna](https://optuna.org/) によるベイズ最適化など）
 - 学習に時間がかかる（早期停止しないと特に）
 - 外れ値の影響を受けやすい（残差を追うため、外れ値が次の木で取り上げられる）
 - モデルのサイズが大きくなりがちで、`n_estimators=1000`、`max_depth=8` だと数百 MB に達することもある
@@ -180,18 +166,20 @@ GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を
 
 ## Python での実例
 
-scikit-learn には 2 種類の実装があります。新しめのプロジェクトでは `HistGradientBoostingClassifier` を選ぶのが標準的です。
+scikit-learn には `GradientBoostingClassifier` と [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html) の 2 種類の実装があります。後者は scikit-learn 0.21 で導入された実装で、特徴量をヒストグラム化して大規模データでも速く学習できるため、特別な理由がなければこちらを使うのが標準的です。以下は、説明用の人工データで early stopping 付きの学習を行う例です。
 
 ```python
-import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.datasets import make_classification
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import train_test_split
 
-X = df.drop(columns=["target"])
-y = df["target"]
-
-X_train, X_valid, y_train, y_valid = train_test_split(
+X, y = make_classification(
+    n_samples=5000, n_features=10, n_informative=6, n_redundant=2,
+    flip_y=0.05, random_state=0,
+)
+# test は最後の評価だけに使う
+X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=0, stratify=y
 )
 
@@ -200,17 +188,22 @@ model = HistGradientBoostingClassifier(
     max_iter=1000,
     max_depth=6,
     early_stopping=True,
-    validation_fraction=0.2,
+    validation_fraction=0.2,  # X_train の 20% を検証データとして切り出す
     n_iter_no_change=20,
     random_state=0,
 )
 model.fit(X_train, y_train)
-proba = model.predict_proba(X_valid)[:, 1]
-print("ROC-AUC:", roc_auc_score(y_valid, proba))
+proba = model.predict_proba(X_test)[:, 1]
+print("ROC-AUC:", round(roc_auc_score(y_test, proba), 3))
 print("Trees actually used:", model.n_iter_)
 ```
 
-`n_iter_` で実際に学習された木の本数を確認できます。`max_iter=1000` でも early stopping で 100〜300 本で止まることが多いです。
+```text
+ROC-AUC: 0.97
+Trees actually used: 276
+```
+
+`n_iter_` は実際に学習された木の本数です。`max_iter=1000` でも、このデータでは 276 本で止まりました。
 
 より高速・高性能が必要な場合は LightGBM / XGBoost / CatBoost への乗り換えを検討します。インターフェースは scikit-learn 互換のラッパーがあるので、置き換えは小さな差分で済みます。
 

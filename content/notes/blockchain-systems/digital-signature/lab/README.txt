@@ -1,5 +1,5 @@
 ECDSA message verification experiment
-Python 3 and cryptography==46.0.5.
+Python 3 and cryptography==50.0.0.
 Create a virtual environment and install requirements.txt, for example:
   python3 -m venv /tmp/debimate-signature-venv
   /tmp/debimate-signature-venv/bin/pip install -r requirements.txt

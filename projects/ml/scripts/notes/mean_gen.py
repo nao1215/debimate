@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/mean_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -20,6 +21,10 @@ os.makedirs(NOTE_DIR, exist_ok=True)
 
 def save(name: str) -> None:
     plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    # Remove trailing whitespace so `git diff --check` passes.
+    _svg_path = Path(os.path.join(NOTE_DIR, name))
+    if _svg_path.suffix == ".svg":
+        _svg_path.write_text("\n".join(line.rstrip() for line in _svg_path.read_text().splitlines()) + "\n")
     plt.close()
 
 
@@ -85,15 +90,18 @@ save("mean_outlier_drift.svg")
 
 
 # ============================================================
-# Fig 3: Mean as the minimizer of squared error
+# Fig 3: Mean / median as the minimizers of L2 / L1 loss
+#        (same contaminated sample as Fig 2, so the two minimizers differ)
 # ============================================================
-data = rng.normal(5.0, 1.5, 50)
+data = contaminated
 mean_val = data.mean()
 median_val = np.median(data)
 
-cs = np.linspace(0, 10, 400)
+cs = np.linspace(40, 70, 601)  # candidate centers, step 0.05
 mse = np.array([np.mean((data - c) ** 2) for c in cs])
 mae = np.array([np.mean(np.abs(data - c)) for c in cs])
+print(f"argmin MSE: c = {cs[mse.argmin()]:.2f} (mean = {mean_val:.2f})")
+print(f"argmin MAE: c = {cs[mae.argmin()]:.2f} (median = {median_val:.2f})")
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
 ax = axes[0]
@@ -101,6 +109,7 @@ ax.plot(cs, mse, color=COLOR_BLUE, lw=2, label="MSE(c) = mean((x - c)^2)")
 ax.axvline(mean_val, color=COLOR_RED, ls="--", lw=2,
            label=f"argmin = mean = {mean_val:.2f}")
 ax.scatter([mean_val], [np.mean((data - mean_val) ** 2)], color=COLOR_RED, s=60, zorder=5)
+ax.axvline(median_val, color=COLOR_GRAY, ls=":", lw=1.5, label=f"median = {median_val:.2f}")
 ax.set_xlabel("candidate center c")
 ax.set_ylabel("loss")
 ax.set_title("Mean minimizes squared-error loss (L2)")
@@ -112,6 +121,7 @@ ax.plot(cs, mae, color=COLOR_BLUE, lw=2, label="MAE(c) = mean(|x - c|)")
 ax.axvline(median_val, color=COLOR_GREEN, ls="--", lw=2,
            label=f"argmin = median = {median_val:.2f}")
 ax.scatter([median_val], [np.mean(np.abs(data - median_val))], color=COLOR_GREEN, s=60, zorder=5)
+ax.axvline(mean_val, color=COLOR_GRAY, ls=":", lw=1.5, label=f"mean = {mean_val:.2f}")
 ax.set_xlabel("candidate center c")
 ax.set_ylabel("loss")
 ax.set_title("Median minimizes absolute-error loss (L1)")

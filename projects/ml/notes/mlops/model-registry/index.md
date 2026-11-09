@@ -67,12 +67,12 @@ MLflow では、同じモデル名へ登録するたびにバージョン番号�
 
 [実験コード](./lab/run.py)は、DB（データベース）に [SQLite](https://www.sqlite.org/) を使い、モデルファイルも一時ディレクトリへ保存します。[scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) で学習したモデルを実験記録へ保存し、レジストリへ登録した後、別名と読み込み済みのモデルを操作します。外部の MLflow サーバーは使いません。
 
-[依存ファイル](./lab/requirements.txt)と実験コードを同じディレクトリへ保存し、Python 3.12 で実行します。検証に使った MLflow は 3.1.4、scikit-learn は 1.7.2 です。
+[依存ファイル](./lab/requirements.txt)と実験コードを同じディレクトリへ保存し、Python 3.12 で実行します。検証に使った MLflow は 3.17.2、scikit-learn は 1.7.2 です。
 
 `requirements.txt` の内容は次の通りです。
 
 ```text
-mlflow==3.1.4
+mlflow==3.17.2
 scikit-learn==1.7.2
 numpy==2.5.4
 cloudpickle==3.1.2

@@ -1,5 +1,5 @@
 """ECDSA/secp256k1 message experiment, not Bitcoin transaction signing.
-Requires cryptography==46.0.5. Keys are ephemeral and never saved or printed.
+Requires cryptography==50.0.0. Keys are ephemeral and never saved or printed.
 """
 from pathlib import Path
 import cryptography

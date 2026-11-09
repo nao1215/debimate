@@ -91,33 +91,40 @@ degree=15 のモデルは訓練データ上では誤差ほぼゼロです。し�
 
 ### Python での実例
 
-scikit-learn で訓練誤差と検証誤差を出して汎化ギャップを見る最小例です。
+ノイズの多いデータで、深い木・浅い木・深い RandomForest の精度を比べる最小例です。
 
 ```python
 from sklearn.datasets import make_classification
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
 
-X, y = make_classification(n_samples=500, n_features=20, random_state=0)
+# flip_y=0.3: 3 割のサンプルのラベルをランダムに付け直す（ノイズの多いデータ）
+X, y = make_classification(n_samples=500, n_features=20, flip_y=0.3, random_state=0)
 X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, random_state=0)
 
-# 木の深さを制限せず、葉が1サンプルになるまで分割 → 過学習しやすい設定
-deep = RandomForestClassifier(max_depth=None, min_samples_leaf=1, random_state=0).fit(X_tr, y_tr)
-print("deep  train:", deep.score(X_tr, y_tr), "test:", deep.score(X_te, y_te))
-
-# 木の深さを抑えた版 → 汎化ギャップが縮む
-shallow = RandomForestClassifier(max_depth=4, min_samples_leaf=10, random_state=0).fit(X_tr, y_tr)
-print("shallow train:", shallow.score(X_tr, y_tr), "test:", shallow.score(X_te, y_te))
+models = {
+    # 深さを制限せず、葉が 1 サンプルになるまで分割 → ノイズまで覚える
+    "deep tree": DecisionTreeClassifier(random_state=0),
+    # 深さと葉のサンプル数を絞る → 細かいノイズを覚えられない
+    "shallow tree": DecisionTreeClassifier(max_depth=4, min_samples_leaf=10, random_state=0),
+    # 深い木を 100 本平均する
+    "deep forest": RandomForestClassifier(random_state=0),
+}
+for name, m in models.items():
+    m.fit(X_tr, y_tr)
+    print(f"{name:12} train: {m.score(X_tr, y_tr):.3f} test: {m.score(X_te, y_te):.3f}")
 ```
 
-出力の例（実行のたびに小さくぶれる）:
+scikit-learn 1.9.1 での出力です（random_state 固定のため毎回同じ値）。
 
 ```text
-deep  train: 1.000 test: 0.847
-shallow train: 0.911 test: 0.880
+deep tree    train: 1.000 test: 0.553
+shallow tree train: 0.806 test: 0.653
+deep forest  train: 1.000 test: 0.713
 ```
 
-deep モデルは訓練 1.00 / テスト 0.85 で汎化ギャップが大きい一方、shallow モデルはギャップが縮みテスト精度も上がっています。
+深い木は訓練を全問正解しますが、テストは当て推量に近い 0.553 です。深さを絞るとテストは 0.653 に上がります。深い森も訓練は 1.000 ですが、木ごとに違うノイズを覚えるので平均すると打ち消し合い、テストは最も高い 0.713 です。採るモデルはギャップでなく検証の精度で決めます。
 
 ---
 

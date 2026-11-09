@@ -1,8 +1,10 @@
 """quantile ノート用の図を生成するスクリプト。
 
-実行: cd projects/ml && uv run python scripts/notes/quantile_gen.py
+実行: cd projects/ml && uv run --frozen python scripts/notes/quantile_gen.py
+（QUANTILE_OUT_DIR で出力先を変えられる）
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,14 +15,19 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/quantile"
+# このスクリプトから見た Page Bundle（projects/ml/notes/math/quantile）に書き出す
+NOTE_DIR = os.environ.get(
+    "QUANTILE_OUT_DIR",
+    str(Path(__file__).resolve().parents[2] / "notes" / "math" / "quantile"),
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
+plt.rcParams["svg.hashsalt"] = "quantile"
+
+
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight", metadata={"Date": None})
     plt.close()
 
 
@@ -30,6 +37,7 @@ def save(name: str) -> None:
 rng = np.random.default_rng(0)
 values = rng.lognormal(mean=1.0, sigma=0.6, size=500)
 q1, q2, q3 = np.quantile(values, [0.25, 0.5, 0.75])
+print(f"Q1={q1:.2f} Q2={q2:.2f} Q3={q3:.2f} mean={values.mean():.2f}")
 
 plt.figure(figsize=(6, 4))
 plt.hist(values, bins=30, color=COLOR_BLUE, edgecolor="white")
@@ -48,7 +56,7 @@ save("quartile_hist.svg")
 # Fig 2: Boxplot (existing)
 # ============================================================
 plt.figure(figsize=(6, 2.5))
-plt.boxplot(values, vert=False, showmeans=True)
+plt.boxplot(values, orientation="horizontal", showmeans=True)
 plt.title("Boxplot (Q1, median, Q3)")
 plt.xlabel("Value")
 plt.tight_layout()
@@ -58,15 +66,28 @@ save("quartile_box.svg")
 # ============================================================
 # Fig 3: IQR-based outlier rule visualization
 # ============================================================
-data_with_outliers = np.concatenate([
-    rng.normal(50, 8, 200),
-    [10, 15, 95, 110, 130]
-])
+base = rng.normal(50, 8, 200)
+data_with_outliers = np.concatenate([base, [10, 15, 95, 110, 130]])
+
+for name, d in [("before", base), ("after", data_with_outliers)]:
+    a, b = np.quantile(d, [0.25, 0.75])
+    print(f"{name}: IQR={b - a:.2f} std={d.std():.2f}")
+
 q1, q3 = np.quantile(data_with_outliers, [0.25, 0.75])
 iqr = q3 - q1
+for k in (1.5, 3.0):
+    lo, hi = q1 - k * iqr, q3 + k * iqr
+    flagged = data_with_outliers[(data_with_outliers < lo) | (data_with_outliers > hi)]
+    print(f"k={k}: fence=[{lo:.1f}, {hi:.1f}] flagged={np.sort(flagged).tolist()}")
+
+# 右に長い values に同じルールを当てる
+v1, v3 = np.quantile(values, [0.25, 0.75])
+v_iqr = v3 - v1
+print(f"lognormal: lower={(values < v1 - 1.5 * v_iqr).sum()} "
+      f"upper={(values > v3 + 1.5 * v_iqr).sum()} of {len(values)}")
+
 lo = q1 - 1.5 * iqr
 hi = q3 + 1.5 * iqr
-
 is_outlier = (data_with_outliers < lo) | (data_with_outliers > hi)
 
 plt.figure(figsize=(9, 4.5))
@@ -113,6 +134,16 @@ q_high = GradientBoostingRegressor(loss="quantile", alpha=0.9, n_estimators=100,
                                    max_depth=3, random_state=0).fit(X, y)
 x_grid = np.linspace(0, 10, 400).reshape(-1, 1)
 
+# 80% 区間に収まった割合: 学習データと、同じ式で新しく作ったデータ
+inside = (q_low.predict(X) <= y) & (y <= q_high.predict(X))
+print(f"train coverage: {inside.mean():.0%}")
+rng3 = np.random.default_rng(99)
+x_new = rng3.uniform(0, 10, 5000)
+y_new = np.sin(x_new) * 3 + 0.5 * x_new + rng3.normal(0, 0.2 + 0.3 * x_new)
+X_new = x_new.reshape(-1, 1)
+inside_new = (q_low.predict(X_new) <= y_new) & (y_new <= q_high.predict(X_new))
+print(f"new data coverage: {inside_new.mean():.0%}")
+
 plt.figure(figsize=(8, 4.5))
 plt.scatter(x, y, color=COLOR_BLUE, alpha=0.4, s=20, label="data")
 plt.plot(x_grid, q_med.predict(x_grid), color=COLOR_RED, lw=2, label="median (q=0.5)")
@@ -126,4 +157,4 @@ plt.tight_layout()
 save("quantile_regression_bands.svg")
 
 
-print("done:", sorted(os.listdir(NOTE_DIR)))
+print("done:", sorted(f for f in os.listdir(NOTE_DIR) if f.endswith(".svg")))

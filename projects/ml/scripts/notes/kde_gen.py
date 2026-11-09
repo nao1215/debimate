@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/kde_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,14 +14,12 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/kde"
-)
-os.makedirs(NOTE_DIR, exist_ok=True)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes/math/kde"
+NOTE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(NOTE_DIR / name, bbox_inches="tight")
     plt.close()
 
 

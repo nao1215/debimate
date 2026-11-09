@@ -52,7 +52,7 @@ graph LR
 
 ### コード例: MLflow
 
-MLflow を例にした最小限のトラッキングコードです。`mlflow` をインストールしてから実行すると、ローカルの `mlruns/` に Iris 分類の run、モデル、混同行列、評価レポートが残ります。実データの精度を示す例ではなく、何を同じ run に結び付けるかを確認するための最小例です。
+MLflow を例にした最小限のトラッキングコードです。MLflow 3.18.0 と scikit-learn 1.9.1 で実行すると、params と metrics はカレントディレクトリの `mlflow.db`（SQLite）に、モデル・混同行列・評価レポートは `mlruns/` に残ります。
 
 ```python
 from pathlib import Path
@@ -61,7 +61,9 @@ import matplotlib.pyplot as plt
 import mlflow
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import load_iris
-from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, f1_score
+from sklearn.metrics import (
+    ConfusionMatrixDisplay, accuracy_score, classification_report, f1_score
+)
 from sklearn.model_selection import train_test_split
 
 X, y = load_iris(return_X_y=True)
@@ -71,7 +73,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 artifact_dir = Path("artifacts")
 artifact_dir.mkdir(exist_ok=True)
 
-mlflow.set_experiment("churn-prediction")
+mlflow.set_experiment("iris-classification")
 with mlflow.start_run(run_name="rf-baseline"):
     # 1. params を記録
     params = {"n_estimators": 200, "max_depth": 8, "random_state": 0}
@@ -81,26 +83,30 @@ with mlflow.start_run(run_name="rf-baseline"):
     model = RandomForestClassifier(**params).fit(X_train, y_train)
     pred = model.predict(X_test)
 
-    # 3. metrics を記録
+    # 3. metrics を記録（3 クラスなので F1 はクラスごとの値を平均する）
     mlflow.log_metric("accuracy", accuracy_score(y_test, pred))
-    mlflow.log_metric("f1", f1_score(y_test, pred))
+    mlflow.log_metric("f1_macro", f1_score(y_test, pred, average="macro"))
 
     # 4. artifacts を記録 (model 自体、可視化、レポート)
-    mlflow.sklearn.log_model(model, "model")
+    mlflow.sklearn.log_model(
+        model, name="model", skops_trusted_types=["sklearn.tree._tree.Tree"]
+    )
     fig, ax = plt.subplots()
     ConfusionMatrixDisplay.from_predictions(y_test, pred, ax=ax)
     figure_path = artifact_dir / "confusion_matrix.png"
     fig.savefig(figure_path, bbox_inches="tight")
     plt.close(fig)
     mlflow.log_artifact(str(figure_path))
-    mlflow.log_dict({"test_size": len(y_test)}, "report.json")
+    report = classification_report(y_test, pred, output_dict=True)
+    mlflow.log_dict(report, "report.json")
 
-    # 5. environment / lineage
-    mlflow.log_text("scikit-learn", "environment.txt")
+    # 5. lineage (環境の requirements.txt は log_model がモデルと一緒に残す)
     mlflow.set_tag("dataset", "sklearn.datasets.load_iris")
 ```
 
-`with mlflow.start_run()` のコンテキストで `log_*` を呼ぶだけで、ID が振られた run としてサーバーに記録されます。後でダッシュボードから実験を 1 行ずつ確認できます。
+手元の実行では accuracy が 0.947、f1_macro が 0.946 でした。Iris は 3 クラスなので、[`f1_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) を既定の `average="binary"` のまま呼ぶと ValueError で止まります。`average="macro"` はクラスごとの F1 を単純平均します。`skops_trusted_types` を外すと、MLflow 3 系の既定の保存形式である [skops](https://skops.readthedocs.io/) が RandomForest の内部型を拒み、保存の時点で例外になります。
+
+`with mlflow.start_run()` の中で `log_*` を呼ぶと、ID が振られた 1 つの run にまとまります。チームではこれをトラッキングサーバーに送り、ダッシュボードで比較します。
 
 ---
 
@@ -167,11 +173,11 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 
 ### 多次元ハイパーパラメータの俯瞰
 
-5 個以上のハイパーパラメータを同時に変えると、heatmap や散布図では限界が来ます。Parallel coordinates plot は多次元探索を 1 枚にまとめる定番の可視化で、W&B のダッシュボードでも標準機能になっています。
+4 個以上のハイパーパラメータを同時に変えると、heatmap や散布図では限界が来ます。Parallel coordinates plot は多次元探索を 1 枚にまとめる定番の可視化で、[W&B のダッシュボード](https://docs.wandb.ai/models/app/features/panels/parallel-coordinates)でも標準機能になっています。次の図も、読み方を示すために乱数で作った仮想の 40 run です（[生成元](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/experiment-tracking_gen.py)）。
 
 ![Parallel coordinates plot で 4 次元探索を一望](./experiment_parallel_coords.svg)
 
-各線が 1 つの run、色がスコア（val_acc）に対応です。高スコア（黄緑）の線がどの値を経由しているかを目で追うと、「`lr` は -3 近辺、`dropout` は 0.2 近辺、`weight_decay` は -4 近辺が良さそう」のような仮説を立てやすいです。
+各線が 1 つの run で、色が val_acc を表し、上位 5 run を太線にしています。各軸の目盛りは元の値です。この仮想例の上位 5 run は、`lr` が 6e-4〜3.5e-3、`batch_size` が 64 か 128 に集まる一方、`dropout` は 0.09〜0.38、`weight_decay` は 1e-5〜7e-4 に散らばっています。ここから「`lr` と `batch_size` は効きが大きく、残り 2 つは小さそう」と仮説を立て、次の探索範囲を絞ります。
 
 ---
 

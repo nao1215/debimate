@@ -127,13 +127,13 @@ sequenceDiagram
 
 ### メッセージを変えた時の検証結果
 
-署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/46.0.5/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。これは署名の性質を確認する実験で、Bitcoin の取引形式や署名対象の組み立てを再現するものではありません。
+署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。これは署名の性質を確認する実験で、Bitcoin の取引形式や署名対象の組み立てを再現するものではありません。
 
 以下が [verify_changes.py](lab/verify_changes.py) の全体です。`alice` は実行時に作る一時的な秘密鍵で、ファイルには保存せず、画面にも出しません。
 
 ```python
 """ECDSA/secp256k1 message experiment, not Bitcoin transaction signing.
-Requires cryptography==46.0.5. Keys are ephemeral and never saved or printed.
+Requires cryptography==50.0.0. Keys are ephemeral and never saved or printed.
 """
 
 from pathlib import Path
@@ -191,11 +191,11 @@ flowchart TD
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install cryptography==46.0.5
+.venv/bin/pip install cryptography==50.0.0
 .venv/bin/python content/notes/blockchain-systems/digital-signature/lab/verify_changes.py
 ```
 
-以下は、cryptography 46.0.5 で実行した[結果](lab/output.txt)です。
+以下は、cryptography 50.0.0 で実行した[結果](lab/output.txt)です。
 
 ```text
 original: VALID
