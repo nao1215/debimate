@@ -5,8 +5,8 @@
   <p><a href="https://ebitengine.org/ja/">Ebitengine</a>{{ strings.TrimPrefix "Ebitengine" .Description }}</p>
 </header>
 {{- $firstDemo := true -}}
-{{- range $group := slice "games" "tools" }}
-{{- if eq $group "tools" }}<hr class="games-divider">{{ end }}
+{{- range $group := slice "tools" "games" }}
+{{- if eq $group "games" }}<hr class="games-divider">{{ end }}
 <section class="games-section" aria-labelledby="{{ $group }}-heading">
   <h2 id="{{ $group }}-heading">{{ if eq $group "games" }}ブラウザで遊べるゲーム{{ else }}ゲーム制作フレームワーク{{ end }}</h2>
   <div class="games-list">
