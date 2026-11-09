@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/information-theory_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,8 +14,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_PURPLE = "#b07aa1"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/information-theory"
+NOTE_DIR = os.environ.get("NOTE_DIR", str(
+    Path(__file__).resolve().parents[2] / "notes" / "math" / "information-theory"
 ))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -155,9 +156,34 @@ ax.text(1.0, 0, "H(Y|X)", ha="center", fontsize=11, fontweight="bold")
 ax.set_xlim(-2.5, 2.5); ax.set_ylim(-2, 2)
 ax.set_aspect("equal")
 ax.axis("off")
-ax.set_title("Information diagram: H(X), H(Y), and their mutual information")
+ax.set_title("Information diagram for discrete X, Y: H(X), H(Y), and I(X;Y)")
 plt.tight_layout()
 save("info_mutual_information.svg")
+
+
+# ============================================================
+# Fig 6: Differential entropy of a Gaussian can be negative
+# ============================================================
+sigmas = np.linspace(0.05, 2, 400)
+h = 0.5 * np.log2(2 * np.pi * np.e * sigmas**2)
+sigma0 = 1 / np.sqrt(2 * np.pi * np.e)
+
+plt.figure(figsize=(7.5, 4.5))
+plt.plot(sigmas, h, color=COLOR_BLUE, lw=2.5)
+plt.axhline(0, color="gray", lw=1)
+plt.axvline(sigma0, color=COLOR_RED, ls="--", lw=1.5,
+            label=f"h = 0 at sigma = 1/sqrt(2*pi*e) = {sigma0:.3f}")
+h01 = 0.5 * np.log2(2 * np.pi * np.e * 0.1**2)
+plt.scatter([0.1], [h01], color=COLOR_RED, s=80, zorder=5)
+plt.annotate(f"sigma = 0.1\nh = {h01:.2f} bits", (0.1, h01),
+             xytext=(0.3, h01 - 0.3), fontsize=9)
+plt.xlabel("sigma (standard deviation)")
+plt.ylabel("Differential entropy h(X) (bits)")
+plt.title("Gaussian differential entropy: negative for small sigma")
+plt.legend(loc="lower right")
+plt.grid(True, alpha=0.25)
+plt.tight_layout()
+save("info_differential_entropy.svg")
 
 
 print("done:", sorted(os.listdir(NOTE_DIR)))

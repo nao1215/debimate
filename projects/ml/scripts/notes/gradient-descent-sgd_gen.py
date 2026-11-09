@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/gradient-descent-sgd_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,8 +14,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 COLOR_ORANGE = "#f1a340"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/gradient-descent-sgd"
+NOTE_DIR = str(
+    Path(__file__).resolve().parents[2] / "notes" / "math" / "gradient-descent-sgd"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -45,6 +46,7 @@ for _ in range(8):
     x_cur = x_cur - lr * df(x_cur)
     history.append(x_cur)
 history = np.array(history)
+print("1d:", np.round(history, 2))
 plt.plot(history, f(history), "o-", color=COLOR_RED, lw=1.5, label=f"GD steps (lr={lr})")
 for i, xi in enumerate(history[:5]):
     plt.annotate(f"step {i}", (xi, f(xi) + 0.4), fontsize=8,
@@ -60,28 +62,28 @@ save("gd_1d.svg")
 # ============================================================
 # Fig 2: Learning rate effect (too small / just right / too large)
 # ============================================================
-fig, axes = plt.subplots(1, 3, figsize=(13, 4), sharey=True)
 lrs = [0.05, 0.3, 1.05]
-titles = ["lr too small (slow)", "lr just right", "lr too large (overshoots & diverges)"]
-
-for ax, lr, title in zip(axes, lrs, titles):
-    ax.plot(x_grid, f(x_grid), color=COLOR_BLUE, lw=2)
+histories = []
+for lr in lrs:
     x_cur = -0.5
     history = [x_cur]
     for _ in range(12):
         x_cur = x_cur - lr * df(x_cur)
-        if abs(x_cur) > 50:
-            history.append(np.clip(x_cur, -1, 7))
-            break
         history.append(x_cur)
-    history = np.array(history)
-    history_clip = np.clip(history, x_grid.min(), x_grid.max())
-    ax.plot(history_clip, f(history_clip), "o-", color=COLOR_RED, lw=1.4,
+    histories.append(np.array(history))
+    print(f"lr={lr}:", np.round(history, 2))
+
+fig, axes = plt.subplots(1, 3, figsize=(13, 4))
+titles = ["lr too small (slow)", "lr just right", "lr too large (overshoots & diverges)"]
+for ax, lr, title, history in zip(axes, lrs, titles, histories):
+    # 発散する右のパネルは x の範囲を広げ、軌跡を切り詰めずに全点を描く
+    grid = np.linspace(min(-1, history.min() - 1), max(7, history.max() + 1), 300)
+    ax.plot(grid, f(grid), color=COLOR_BLUE, lw=2)
+    ax.plot(history, f(history), "o-", color=COLOR_RED, lw=1.4,
             markersize=5, alpha=0.8)
     ax.scatter([3.0], [1.0], color="black", marker="*", s=140, zorder=5)
     ax.set_title(f"{title}\n(lr={lr})")
     ax.set_xlabel("x")
-    ax.set_ylim(0, 30)
     ax.grid(True, alpha=0.25)
 axes[0].set_ylabel("f(x)")
 plt.tight_layout()
@@ -115,9 +117,12 @@ for _ in range(20):
     b_cur = b_cur - lr * gb
     hist_w.append(w_cur)
     hist_b.append(b_cur)
+for t in [0, 3, 20]:
+    print(f"step {t}: w={hist_w[t]:.3f} b={hist_b[t]:.3f}")
 plt.plot(hist_w, hist_b, "o-", color=COLOR_RED, lw=1.5, markersize=4,
          label=f"GD trajectory (lr={lr})")
 plt.scatter([2.0], [0.5], color="black", marker="*", s=180, zorder=5, label="optimum")
+plt.gca().set_aspect("equal")
 plt.title("Gradient descent on 2D loss surface\n(steps perpendicular to contours)")
 plt.xlabel("w"); plt.ylabel("b")
 plt.legend()
@@ -168,6 +173,13 @@ steps = 80
 traj_full = run("full", lr=0.1, steps=steps)
 traj_sgd = run("sgd", lr=0.05, steps=steps)
 traj_mini = run("mini", lr=0.1, steps=steps, batch=32)
+
+# 本文に載せる数値: 80 ステップ後の (w, b)、全データでの損失、勾配計算に使ったサンプル数
+for name, traj, per_step in [("full", traj_full, n_data), ("sgd", traj_sgd, 1),
+                             ("mini", traj_mini, 32)]:
+    w_end, b_end = traj[-1]
+    print(f"{name:4s} w={w_end:.3f} b={b_end:.3f} "
+          f"loss={loss_full(w_end, b_end):.4f} samples={steps * per_step}")
 
 w_grid = np.linspace(-1.5, 3.5, 200)
 b_grid = np.linspace(-2, 2.5, 200)

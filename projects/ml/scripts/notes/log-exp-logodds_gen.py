@@ -12,8 +12,8 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/log-exp-logodds"
+NOTE_DIR = os.environ.get("NOTE_DIR", os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "math", "log-exp-logodds"
 ))
 os.makedirs(NOTE_DIR, exist_ok=True)
 

@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/expectation_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,9 +14,7 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/expectation"
-)
+NOTE_DIR = str(Path(__file__).resolve().parents[2] / "notes" / "math" / "expectation")
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
