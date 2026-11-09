@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/model-performance-monitoring_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
@@ -15,9 +16,7 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/mlops/model-performance-monitoring"
-))
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes" / "mlops" / "model-performance-monitoring"
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 

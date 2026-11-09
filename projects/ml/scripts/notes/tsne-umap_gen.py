@@ -1,5 +1,6 @@
 """tsne-umap ノート用の図を生成するスクリプト。"""
 import os
+from pathlib import Path
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -12,9 +13,7 @@ import umap
 
 COLOR_BLUE, COLOR_RED, COLOR_GREEN = "#7aa6c2", "#e15759", "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/tsne-umap"
-)
+NOTE_DIR = str(Path(__file__).resolve().parents[2] / "notes" / "ml" / "tsne-umap")
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -37,7 +36,7 @@ pca = PCA(n_components=2, random_state=0)
 X_pca = pca.fit_transform(X)
 ax = axes[0]
 sc = ax.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap="tab10", s=12, alpha=0.7)
-ax.set_title("PCA (linear)\nexplained variance: 0.30")
+ax.set_title(f"PCA (linear)\nexplained variance: {pca.explained_variance_ratio_.sum():.2f}")
 ax.set_xlabel("PC1"); ax.set_ylabel("PC2")
 
 # t-SNE
@@ -119,18 +118,54 @@ ax.set_xlabel("x"); ax.set_ylabel("y"); ax.set_zlabel("z")
 ax = fig.add_subplot(1, 3, 2)
 X_pca_sr = PCA(n_components=2).fit_transform(X_sr)
 ax.scatter(X_pca_sr[:, 0], X_pca_sr[:, 1], c=color, cmap="viridis", s=8)
-ax.set_title("PCA: collapses, can't unroll")
+ax.set_title("PCA: spiral kept, roll width (y) dropped")
 ax.set_xlabel("PC1"); ax.set_ylabel("PC2")
 
 # UMAP - unrolls
 ax = fig.add_subplot(1, 3, 3)
 X_um_sr = umap.UMAP(n_components=2, n_neighbors=15, random_state=0).fit_transform(X_sr)
 ax.scatter(X_um_sr[:, 0], X_um_sr[:, 1], c=color, cmap="viridis", s=8)
-ax.set_title("UMAP: unrolls the manifold")
+ax.set_title("UMAP: color order kept, but torn")
 ax.set_xlabel("dim 1"); ax.set_ylabel("dim 2")
 
 plt.tight_layout()
 save("tsne_umap_swissroll.png")
 
+from sklearn.manifold import trustworthiness
+
+# シートの本当の座標（巻き方向の位置 color と幅 y）に対する近傍の保ち方
+T = np.c_[color, X_sr[:, 1]]
+for name, Z in [("PCA", X_pca_sr), ("UMAP", X_um_sr)]:
+    print(f"{name:4s} trustworthiness={trustworthiness(T, Z, n_neighbors=10):.3f}")
+
+
+# ============================================================
+# 本文の数値: クラスタ間距離の順位と、予測の前処理としての UMAP
+# ============================================================
+from scipy.spatial.distance import pdist
+from scipy.stats import spearmanr
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+
+def centroids(Z):
+    return np.array([Z[y == k].mean(axis=0) for k in range(10)])
+
+d_orig = pdist(centroids(X))  # 64 次元での数字の重心間距離（45 組）
+for name, Z in [("PCA", X_pca), ("t-SNE", X_tsne), ("UMAP", X_umap)]:
+    rho = spearmanr(d_orig, pdist(centroids(Z))).statistic
+    tw = trustworthiness(X, Z, n_neighbors=10)
+    print(f"{name:5s} 重心間距離の順位相関={rho:.2f} trustworthiness={tw:.3f}")
+
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, random_state=0, stratify=y)
+
+def knn_acc(A, B):
+    return KNeighborsClassifier(n_neighbors=5).fit(A, y_tr).score(B, y_te)
+
+print(f"64 次元のまま : {knn_acc(X_tr, X_te):.3f}")
+for k in [2, 10]:
+    p = PCA(n_components=k, random_state=0).fit(X_tr)
+    print(f"PCA  {k:2d} 次元 : {knn_acc(p.transform(X_tr), p.transform(X_te)):.3f}")
+    r = umap.UMAP(n_components=k, random_state=0).fit(X_tr)
+    print(f"UMAP {k:2d} 次元 : {knn_acc(r.embedding_, r.transform(X_te)):.3f}")
 
 print("done:", sorted(os.listdir(NOTE_DIR)))

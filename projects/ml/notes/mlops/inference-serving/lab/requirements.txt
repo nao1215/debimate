@@ -1,0 +1,9 @@
+mlflow==3.17.2
+scikit-learn==1.7.2
+fastapi==0.162.2
+httpx==0.28.1
+pyspark==3.5.7
+setuptools==84.2.1
+pandas==3.1.1
+pyarrow==25.0.1
+numpy==2.5.4

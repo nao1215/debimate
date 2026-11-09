@@ -7,8 +7,8 @@ import pandas as pd
 COLOR_BLUE, COLOR_RED, COLOR_GREEN, COLOR_ORANGE, COLOR_GRAY = \
     "#7aa6c2", "#e15759", "#59a14f", "#f28e2b", "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/time-series-forecasting"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "ml", "time-series-forecasting"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -28,21 +28,36 @@ noise = rng.normal(0, 4, n_months)
 y = trend + season + noise
 
 # ============================================================
-# Fig 1: Decomposition (trend / seasonal / residual)
+# Fig 1: Classical decomposition (estimated vs true components)
 # ============================================================
+# 本文のコードと同じ古典的分解: 2x12 の中心化移動平均でトレンド、
+# トレンドを引いた値の月ごとの平均で季節性、残りを残差とする
+w = np.r_[0.5, np.ones(11), 0.5] / 12
+trend_hat = np.full(n_months, np.nan)
+trend_hat[6:-6] = np.convolve(y, w, mode="valid")
+detrended = y - trend_hat
+seasonal_by_month = np.array([np.nanmean(detrended[m::12]) for m in range(12)])
+seasonal_by_month -= seasonal_by_month.mean()
+seasonal_hat = seasonal_by_month[t % 12]
+resid_hat = y - trend_hat - seasonal_hat
+
 fig, axes = plt.subplots(4, 1, figsize=(11, 8), sharex=True)
 axes[0].plot(t, y, color=COLOR_BLUE, lw=1.5)
-axes[0].set_title("Observed = trend + seasonal + residual")
+axes[0].set_title("Observed")
 axes[0].set_ylabel("y")
-axes[1].plot(t, trend, color=COLOR_GREEN, lw=2)
-axes[1].set_title("Trend (long-term direction)")
+axes[1].plot(t, trend, color=COLOR_GRAY, lw=1.5, ls="--", label="true")
+axes[1].plot(t, trend_hat, color=COLOR_GREEN, lw=2, label="estimated (moving average)")
+axes[1].set_title("Trend")
 axes[1].set_ylabel("trend")
-axes[2].plot(t, season, color=COLOR_ORANGE, lw=2)
+axes[1].legend(loc="upper left", fontsize=9)
+axes[2].plot(t, season, color=COLOR_GRAY, lw=1.5, ls="--", label="true")
+axes[2].plot(t, seasonal_hat, color=COLOR_ORANGE, lw=2, label="estimated (monthly mean)")
 axes[2].set_title("Seasonal (repeats every 12 months)")
 axes[2].set_ylabel("seasonal")
-axes[3].plot(t, noise, color=COLOR_RED, lw=1, alpha=0.6)
+axes[2].legend(loc="upper left", fontsize=9)
+axes[3].plot(t, resid_hat, color=COLOR_RED, lw=1, alpha=0.8)
 axes[3].axhline(0, color="black", lw=0.5)
-axes[3].set_title("Residual (random noise)")
+axes[3].set_title("Residual (estimated; first and last 6 months are undefined)")
 axes[3].set_ylabel("residual")
 axes[3].set_xlabel("month")
 for ax in axes:
@@ -58,8 +73,10 @@ fig, axes = plt.subplots(1, 2, figsize=(13, 4))
 
 # Wrong: random split
 ax = axes[0]
-rng_split = np.random.default_rng(42)
-is_test = rng_split.random(n_months) < 0.3
+# 本文のコードと同じ train_test_split(test_size=12, random_state=0) の分割
+from sklearn.model_selection import train_test_split
+_, test_idx = train_test_split(t, test_size=12, random_state=0)
+is_test = np.isin(t, test_idx)
 ax.scatter(t[~is_test], y[~is_test], color=COLOR_BLUE, label="train", s=25)
 ax.scatter(t[is_test], y[is_test], color=COLOR_RED, label="test", s=40, marker="x")
 ax.set_title("WRONG: random split\n(future leaks into training)")

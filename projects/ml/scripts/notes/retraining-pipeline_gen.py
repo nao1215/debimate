@@ -1,150 +1,122 @@
 """retraining-pipeline ノート用の図を生成するスクリプト。
 
 実行: cd projects/ml && uv run python scripts/notes/retraining-pipeline_gen.py
+
+実験と費用のモデルは本文のコードと同じです。図の描画だけを足しています。
 """
-import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
+from sklearn.linear_model import LogisticRegression
 
-COLOR_BLUE = "#7aa6c2"
-COLOR_RED = "#e15759"
-COLOR_GREEN = "#59a14f"
-COLOR_ORANGE = "#f28e2b"
-COLOR_GRAY = "#bbbbbb"
+COLOR_GRAY = "#888888"
+COLOR_ORANGE = "#d9822b"
+COLOR_BLUE = "#4c78a8"
+COLOR_BLACK = "#333333"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/mlops/retraining-pipeline"
-)
-os.makedirs(NOTE_DIR, exist_ok=True)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes" / "mlops" / "retraining-pipeline"
 
 
 def save(name: str) -> None:
-    plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    plt.savefig(NOTE_DIR / name, bbox_inches="tight")
     plt.close()
 
 
 # ============================================================
-# Fig 1: Trigger types comparison
+# Fig 1: 再学習の方法ごとの accuracy の推移（本文の実験と同じ）
 # ============================================================
-fig, axes = plt.subplots(1, 4, figsize=(16, 4))
-
-trigger_types = [
-    ("Scheduled\n(daily / weekly / monthly)",
-     COLOR_BLUE, "predictable\nblind to drift"),
-    ("Drift-based\n(input distribution change)",
-     COLOR_ORANGE, "responsive to drift\nfalse-positive risk"),
-    ("Performance-based\n(metric drop)",
-     COLOR_RED, "reactive: damage\nis already done"),
-    ("Manual / event-based\n(release, policy change)",
-     COLOR_GREEN, "human-in-the-loop\nnot scalable"),
-]
-
-for ax, (name, color, comment) in zip(axes, trigger_types):
-    ax.set_xlim(0, 1); ax.set_ylim(0, 1)
-    ax.set_xticks([]); ax.set_yticks([])
-    rect = patches.Rectangle((0.05, 0.4), 0.9, 0.3, facecolor=color, alpha=0.7,
-                              edgecolor="black", linewidth=1.5)
-    ax.add_patch(rect)
-    ax.text(0.5, 0.55, name, ha="center", va="center", fontsize=10, color="white",
-            fontweight="bold")
-    ax.text(0.5, 0.2, comment, ha="center", va="center", fontsize=9, style="italic")
-plt.suptitle("4 retraining triggers: when to start retraining?", y=1.02)
-plt.tight_layout()
-save("retraining_triggers.svg")
-
-
-# ============================================================
-# Fig 2: Model decay over time WITH vs WITHOUT retraining
-# ============================================================
-days = np.arange(0, 365)
-# No retraining: gradual decay due to drift
 rng = np.random.default_rng(0)
-acc_no_retrain = 0.91 - 0.001 * days + rng.normal(0, 0.005, len(days))
-# Periodic retraining (every 30 days): saw-tooth pattern
-acc_retrain = np.zeros_like(days, dtype=float)
-for i in range(len(days)):
-    days_since_retrain = i % 30
-    acc_retrain[i] = 0.91 - 0.001 * days_since_retrain + rng.normal(0, 0.005)
+DAYS, N_PER_DAY, NOISE = 365, 500, 0.05
+DEG_PER_DAY = 0.2  # 正解の境界が 1 日に 0.2 度ずつ回る
 
-plt.figure(figsize=(10, 4.5))
-plt.plot(days, acc_no_retrain, color=COLOR_RED, lw=2, label="No retraining")
-plt.plot(days, acc_retrain, color=COLOR_GREEN, lw=2, label="Retrain every 30 days")
-# Mark retrain events
-for d in range(0, 365, 30):
-    plt.axvline(d, color=COLOR_GREEN, ls=":", lw=0.6, alpha=0.6)
-plt.axhline(0.85, color="black", lw=1, ls="--", label="SLO threshold (0.85)")
-plt.xlabel("days in production")
-plt.ylabel("test accuracy")
-plt.title("Retraining keeps the model above SLO; no-retrain drifts below")
-plt.legend(loc="lower left")
+
+def make_day(day):
+    x = rng.normal(size=(N_PER_DAY, 2))
+    theta = np.deg2rad(DEG_PER_DAY * day)
+    w = np.array([np.cos(theta), np.sin(theta)])
+    y = (x @ w > 0).astype(int)
+    flip = rng.random(N_PER_DAY) < NOISE  # ラベルの 5% は誤り
+    y[flip] = 1 - y[flip]
+    return x, y
+
+
+data = [make_day(d) for d in range(DAYS)]
+
+
+def fit(days):
+    x = np.vstack([data[d][0] for d in days])
+    y = np.concatenate([data[d][1] for d in days])
+    return LogisticRegression().fit(x, y)
+
+
+def run(policy):
+    model = fit(range(30))  # 最初の 30 日分で学習し、30 日目から本番で使う
+    acc = []
+    for day in range(30, DAYS):
+        if policy != "none" and day % 30 == 0 and day > 30:
+            past = range(day) if policy == "all" else range(day - 30, day)
+            model = fit(past)
+        x, y = data[day]
+        acc.append(model.score(x, y))
+    return np.array(acc)
+
+
+results = {p: run(p) for p in ["none", "all", "window"]}
+for policy, acc in results.items():
+    print(f"{policy:6s} 平均 {acc.mean():.3f}  最後の 30 日 {acc[-30:].mean():.3f}"
+          f"  0.85 未満の日数 {np.sum(acc < 0.85)}")
+print("再学習なしの 1 日あたりの傾き:",
+      round(np.polyfit(np.arange(30, DAYS), results["none"], 1)[0], 5))
+
+days = np.arange(30, DAYS)
+plt.figure(figsize=(9, 4))
+plt.plot(days, results["none"], color=COLOR_GRAY, lw=1.2, label="no retraining")
+plt.plot(days, results["all"], color=COLOR_ORANGE, lw=1.2,
+         label="retrain every 30 days (all past data)")
+plt.plot(days, results["window"], color=COLOR_BLUE, lw=1.2,
+         label="retrain every 30 days (last 30 days)")
+plt.axhline(0.85, color=COLOR_BLACK, lw=1, ls="--", label="SLO (0.85)")
+plt.xlabel("day")
+plt.ylabel("accuracy of the day")
+plt.ylim(0.5, 1.0)
+plt.legend(loc="lower left", fontsize=9)
 plt.grid(True, alpha=0.25)
 plt.tight_layout()
 save("retraining_decay_vs_retrain.svg")
 
 
 # ============================================================
-# Fig 3: Pipeline cost vs degradation cost tradeoff
+# Fig 2: 再学習の間隔と 1 か月あたりの費用（本文のコードと同じ）
 # ============================================================
-intervals = [1, 3, 7, 14, 30, 60, 90, 180]
-# Cost of retraining itself (compute + engineering)
-retrain_cost = [50_000, 20_000, 10_000, 5_500, 3_000, 1_700, 1_200, 700]
-# Cost of degraded predictions per day (depends on how stale the model is)
-# Approximation: stale_cost grows roughly quadratically with interval
-stale_cost = [200, 600, 1_400, 2_500, 5_000, 12_000, 25_000, 60_000]
-total_cost = [r + s for r, s in zip(retrain_cost, stale_cost)]
+C = 2_000   # 再学習 1 回の費用（計算資源と確認の人件費、ドル）
+N = 10_000  # 1 日の予測件数
+L = 5       # 予測を 1 件誤った時の損失（ドル）
+r = 0.001   # 再学習から 1 日経つごとに下がる accuracy（前節の実験）
 
-plt.figure(figsize=(9, 4.5))
-plt.plot(intervals, retrain_cost, "o-", color=COLOR_BLUE, lw=2, label="Retraining cost")
-plt.plot(intervals, stale_cost, "s-", color=COLOR_RED, lw=2, label="Stale-model cost")
-plt.plot(intervals, total_cost, "^-", color=COLOR_GREEN, lw=2.5, label="Total cost")
-# Find min
-min_idx = np.argmin(total_cost)
-plt.axvline(intervals[min_idx], color="black", ls="--", lw=1,
-            label=f"sweet spot: {intervals[min_idx]} days")
+
+def monthly_cost(T, C=C):
+    retrain = 30 * C / T            # 30 日で 30 / T 回の再学習
+    stale = 30 * N * L * r * T / 2  # 周期内の accuracy 低下は平均 r * T / 2
+    return retrain, stale
+
+
+T = np.arange(1, 91)
+retrain, stale = monthly_cost(T)
+total = retrain + stale
+best = T[np.argmin(total)]
+print("費用が最小になる間隔:", best, "日")
+
+plt.figure(figsize=(9, 4))
+plt.plot(T, retrain, color=COLOR_BLUE, lw=2, label="retraining cost")
+plt.plot(T, stale, color=COLOR_ORANGE, lw=2, label="cost of wrong predictions")
+plt.plot(T, total, color=COLOR_BLACK, lw=2.5, label="total")
+plt.axvline(best, color=COLOR_GRAY, ls="--", lw=1, label=f"minimum: {best} days")
 plt.xscale("log")
-plt.xlabel("retraining interval (days, log scale)")
-plt.ylabel("monthly cost (USD)")
-plt.title("Tradeoff: too often = expensive retraining, too rare = expensive staleness")
-plt.legend()
+plt.ylim(0, 80_000)
+plt.xlabel("retraining interval T (days, log scale)")
+plt.ylabel("cost per 30 days (USD)")
+plt.legend(loc="upper center", fontsize=9)
 plt.grid(True, alpha=0.25)
 plt.tight_layout()
 save("retraining_cost_tradeoff.svg")
-
-
-# ============================================================
-# Fig 4: Champion-challenger evaluation gates
-# ============================================================
-fig, ax = plt.subplots(figsize=(11, 5))
-
-gates = [
-    (1, "1. Schema check\n(input/output columns)", COLOR_BLUE, True),
-    (2.3, "2. Smoke test\n(predict 100 samples)", COLOR_BLUE, True),
-    (3.6, "3. Holdout eval\n(test acc ≥ champion?)", COLOR_BLUE, True),
-    (5.0, "4. Shadow test\n(2 days mirror traffic)", COLOR_ORANGE, True),
-    (6.3, "5. Canary 5% \n(metric watch)", COLOR_ORANGE, True),
-    (7.7, "6. Canary 50%\n(metric watch)", COLOR_ORANGE, True),
-    (9.0, "7. 100% rollout\n+ keep champion as fallback", COLOR_GREEN, True),
-]
-
-ax.axhline(0.5, color="black", lw=1, alpha=0.4)
-for x, label, color, passed in gates:
-    marker = "o" if passed else "X"
-    ax.scatter([x], [0.5], s=600, color=color, marker=marker,
-               edgecolor="black", linewidth=1.5, zorder=5)
-    ax.annotate(label, (x, 0.5), xytext=(x, 0.85 if x % 2 == 0 else 0.15),
-                ha="center", fontsize=9,
-                arrowprops=dict(arrowstyle="-", color="gray", lw=0.6))
-
-ax.text(10.2, 0.5, "→ Promote\nto Production",
-        fontsize=10, color=COLOR_GREEN, fontweight="bold")
-ax.set_xlim(0, 11)
-ax.set_ylim(0, 1)
-ax.set_xticks([]); ax.set_yticks([])
-ax.set_title("7-gate evaluation: any failure → halt + alert + rollback")
-plt.tight_layout()
-save("retraining_evaluation_gates.svg")
-
-
-print("done:", sorted(os.listdir(NOTE_DIR)))

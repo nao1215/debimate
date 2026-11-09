@@ -46,46 +46,40 @@ weight: 5
 
 ### モデル性能指標の時系列監視
 
-精度を時系列で記録し、移動平均（moving average, MA）と閾値を使って変化を確認します。日々の変動を平滑化すると、継続的な低下を確認しやすくなります。
+精度を時系列で記録し、移動平均（moving average, MA）と閾値を使って変化を確認します。日々の変動を平滑化すると、継続的な低下が見やすくなります。次のコードは 120 日分の精度を合成し、7 日移動平均が閾値を下回る日を求めます。[NumPy](https://numpy.org/) 2.5.4 で実行した計算部分で、描画を含むコード全体は[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/model-performance-monitoring_gen.py)にあります。
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
 rng = np.random.default_rng(0)
 days = np.arange(0, 120)
-# 緩やかなドリフト + 75日目に外的要因でジャンプ
+# 緩やかなドリフト + 75 日目に外的要因でジャンプ
 true_acc = 0.92 - 0.0008 * days
 true_acc[75:] -= 0.05
 observed = true_acc + rng.normal(0, 0.006, len(days))
 
 # 7 日移動平均
 ma = np.array([observed[max(0, i - 7 + 1):i + 1].mean() for i in range(len(days))])
-plt.scatter(days, observed, alpha=0.4, label="daily")
-plt.plot(days, ma, lw=2, label="7-day MA")
-plt.axhline(0.88, color="#f28e2b", ls="--", label="warning")
-plt.axhline(0.85, color="#e15759", ls="--", label="critical")
-plt.savefig("monitoring_accuracy_alert.svg", bbox_inches="tight")
+print("warning (0.88) を下回った日:", np.argmax(ma < 0.88))
+print("critical (0.85) を下回った日:", np.argmax(ma < 0.85))
+```
+
+```text
+warning (0.88) を下回った日: 55
+critical (0.85) を下回った日: 76
 ```
 
 ![Accuracy の時系列と warning/critical 閾値](./monitoring_accuracy_alert.svg)
 
-灰色の点が日次の生値、青線が 7 日移動平均です。橙の破線（warning, 0.88）と赤の破線（critical, 0.85）が SLO（Service Level Objective、満たすべき品質目標）の閾値で、移動平均が critical を下回った時点で on-call にページが飛びます。この例では、最初の 75 日は緩やかなドリフト、その後は外的要因（例: 新キャンペーンによるユーザー層変化）による急な劣化を想定しています。閾値超過まで約 80 日かかっています。
+灰色の点が日次の生値、青線が 7 日移動平均です。橙の破線（warning, 0.88）と赤の破線（critical, 0.85）が SLO（Service Level Objective、満たすべき品質目標）の閾値で、移動平均が critical を下回った時点で on-call にページが飛びます。
 
-critical に達する前に warning を通知します。warning で再学習や原因調査を開始すれば、critical に達する前に手が打てます。
+移動平均が warning を下回ったのは 55 日目、critical を下回ったのは 76 日目でした。76 日目は、外的要因（例: 新キャンペーンによるユーザー層変化）で精度が 0.05 落ちた翌日です。warning から 21 日あるので、その間に再学習や原因調査を始めれば、critical に達する前に手が打てます。
 
 ---
 
 ### Ground truth が遅れる問題と proxy metrics
 
 精度を測るには ground truth（実際の正解）が必要です。ただし、現実には数時間〜数週間遅れて到着することが多いです。例として、レコメンドの「クリックの有無」は数秒で分かります。一方、「購入したかどうか」は数日後、「リテンションに寄与したか」は数週間後にしか確定しません。
-
-```mermaid
-graph LR
-    A["t=0<br/>予測を返す"] --> B["t+1d<br/>proxy: click数"]
-    B --> C["t+3d<br/>proxy: 購入率"]
-    C --> D["t+7d<br/>actual: 7日後 retention"]
-```
 
 ![Ground truth lag と proxy metrics](./monitoring_ground_truth_lag.svg)
 
@@ -96,7 +90,7 @@ ground truth を待っていたら検知が遅すぎるので、proxy metrics（
 - 数日で取れる指標: 部分的な ground truth（早期に確定するもの）
 - 最終的な指標: 完全な ground truth（最終評価）
 
-複数の代理指標を監視し、いずれかが通知条件を満たしたらアラートを出します。
+複数の proxy metrics を監視し、いずれかが通知条件を満たしたらアラートを出します。
 
 ---
 
@@ -107,25 +101,46 @@ ground truth がほぼ取れないケースでも、入力データの分布変�
 - KS 検定: 訓練分布と本番分布の累積分布関数の最大差を測る。`0` で完全一致、`1` で完全不一致
 - PSI: 分布を 10 ビンに分けて、訓練分布と本番分布の KL ダイバージェンスを両方向で計算して足し合わせる。`< 0.1` で安定、`0.1〜0.25` でやや変化、`> 0.25` で大きく変化
 
+次のコードは、訓練分布 5,000 件と 1 日 200 件の本番データを 120 日分比べます。60 日目から平均と標準偏差が少しずつずれる設定です。KS 統計量は [SciPy の ks_2samp](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html)（SciPy 1.18.1）で求め、描画は[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/model-performance-monitoring_gen.py)にあります。
+
 ```python
+import numpy as np
 from scipy import stats
 
+rng = np.random.default_rng(1)
 ref = rng.normal(50, 10, 5000)  # 訓練分布
+bins = np.quantile(ref, np.linspace(0, 1, 11))  # 訓練分布の 10 分位でビンを切る
+bins[0] -= 1; bins[-1] += 1
+ref_pct = np.clip(np.histogram(ref, bins=bins)[0] / len(ref), 1e-6, 1)
+
 ks_stats, psi_values = [], []
 for d in range(120):
     if d < 60:
-        live = rng.normal(50, 10, 200)
+        live = rng.normal(50, 10, 200)  # 1 日 200 件
     else:
-        live = rng.normal(50 + (d - 60) * 0.15, 10, 200)  # 徐々にずれる
-    ks, _ = stats.ks_2samp(ref, live)
-    ks_stats.append(ks)
-    # PSI 計算は scripts 側
-plt.savefig("monitoring_input_drift.svg", bbox_inches="tight")
+        shift = (d - 60) * 0.15  # 60 日目から徐々にずれる
+        live = rng.normal(50 + shift, 10 + shift * 0.1, 200)
+    ks_stats.append(stats.ks_2samp(ref, live).statistic)
+    live_pct = np.clip(np.histogram(live, bins=bins)[0] / len(live), 1e-6, 1)
+    psi_values.append(((live_pct - ref_pct) * np.log(live_pct / ref_pct)).sum())
+
+ks, psi = np.array(ks_stats), np.array(psi_values)
+print(f"0〜59 日目の最大: KS {ks[:60].max():.3f}, PSI {psi[:60].max():.3f}")
+print(f"KS > 0.2 の初日: {np.argmax(ks > 0.2)}, PSI > 0.25 の初日: {np.argmax(psi > 0.25)}")
+print(f"119 日目: KS {ks[-1]:.3f}, PSI {psi[-1]:.3f}")
+```
+
+```text
+0〜59 日目の最大: KS 0.123, PSI 0.132
+KS > 0.2 の初日: 88, PSI > 0.25 の初日: 84
+119 日目: KS 0.331, PSI 0.659
 ```
 
 ![KS と PSI の時系列。60 日目から徐々に上昇](./monitoring_input_drift.svg)
 
-左の KS 統計量と右の PSI は、この合成データでは 60 日目あたりから上昇します。accuracy の図とは独立に作った模式データなので、「15 日早く検知できた」という実測比較にはなりません。実運用では、同じ時系列・同じ窓・正解ラベルが届く時刻を揃えて、ドリフト検知から性能悪化までの遅れを評価します。
+KS 統計量と PSI は 60 日目あたりから上昇します。ただし分布が変わっていない 0〜59 日目でも KS は 0.123、PSI は 0.132 まで振れ、0.1 の線を KS で 2 日、PSI で 4 日超えました。1 日 200 件では標本のばらつきだけでこの程度動くので、0.1 で通知すると誤警報になります。件数に合わせて閾値を決めるか、後述の連続違反数と組み合わせます。
+
+この図は accuracy の図とは別の模式データなので、ドリフト検知が精度低下より何日早いかは読み取れません。実運用では同じ時系列で、ドリフト検知から性能悪化までの遅れを評価します。
 
 ただし入力ドリフトと精度劣化は必ずしも 1:1 対応しません。`P(x)` が変わっても `P(y|x)` が安定なら精度は維持されます（covariate shift, 詳細は [データドリフト](../data-drift/) 参照）。入力ドリフトを検知したら、予測精度への影響も確認します。
 
@@ -133,10 +148,10 @@ plt.savefig("monitoring_input_drift.svg", bbox_inches="tight")
 
 ### コード例: Prometheus + Grafana で監視メトリクスを公開
 
-推論サーバー側で predict のたびにメトリクスを記録し、Prometheus がスクレイプして Grafana で可視化する標準パターンです。
+推論サーバー側で predict のたびにメトリクスを記録し、[Prometheus](https://prometheus.io/) がスクレイプして [Grafana](https://grafana.com/) で可視化する標準パターンです。次のコードは [prometheus_client](https://github.com/prometheus/client_python)（0.26.0）を使った推論関数の例で、`model`、`model_version`、`feature_names` は推論サーバー側で定義済みの前提です。
 
 ```python
-from prometheus_client import Counter, Histogram, Gauge
+from prometheus_client import Counter, Histogram, Summary
 import time
 
 PREDICTIONS_TOTAL = Counter("predictions_total", "Total predictions", ["model_version"])
@@ -144,8 +159,7 @@ PREDICTION_LATENCY = Histogram("prediction_latency_seconds", "Latency",
                                 buckets=[0.01, 0.05, 0.1, 0.2, 0.5, 1.0])
 PREDICTION_SCORE = Histogram("prediction_score", "Output score distribution",
                               buckets=[0.0, 0.1, 0.2, 0.5, 0.8, 0.9, 1.0])
-INPUT_FEATURE_VALUE = Gauge("input_feature_value", "Latest input feature value",
-                            ["feature_name"])
+INPUT_FEATURE = Summary("input_feature", "Input feature value", ["feature_name"])
 
 def predict_with_metrics(req):
     start = time.time()
@@ -156,12 +170,18 @@ def predict_with_metrics(req):
     PREDICTION_LATENCY.observe(elapsed)
     PREDICTION_SCORE.observe(pred)
     for name, val in zip(feature_names, req.features):
-        INPUT_FEATURE_VALUE.labels(feature_name=name).set(val)
+        INPUT_FEATURE.labels(feature_name=name).observe(val)
 
     return {"prediction": pred}
 ```
 
-`Gauge.set()` が保存するのは直近の値です。平均を監視するなら、集計用の Histogram/Summary を観測するか、時刻窓を明示したクエリで集約します。Grafana のダッシュボードで「過去 24 時間の P99 latency」「予測スコアの分布の変化」「入力特徴量の平均推移」を並べておけば、各指標の変化を比較できます。アラートルール（PromQL: `histogram_quantile(0.99, ...) > 0.2`）を設定すると、自動通知できます。
+入力特徴量を Gauge（最後に `set()` した値だけを持つメトリクス）で記録すると、平均の推移は見られません。Prometheus は設定した間隔（[既定は 1 分](https://prometheus.io/docs/prometheus/latest/configuration/configuration/)）でスクレイプするので、その間の要求のうち最後の 1 件の値しか残りません。Gauge を時刻窓で平均しても、要求ごとの入力値の平均にはなりません。
+
+そこで上のコードは [Summary](https://prometheus.io/docs/concepts/metric_types/#summary) に `observe()` します。Summary は観測値の合計 `_sum` と件数 `_count` を持ちます。常に 0.7 を返すダミーのモデルに年齢 20、30、40、90 の要求を 4 件流すと、age の `_count` は 4.0、`_sum` は 180.0 になり、平均 45 が求まります。Gauge なら残るのは最後の 90 だけです。
+
+時間帯ごとの平均は [`rate(input_feature_sum[1h]) / rate(input_feature_count[1h])`](https://prometheus.io/docs/practices/histograms/) で求めます。分布の形まで見たい特徴量は Histogram で記録します。
+
+Grafana のダッシュボードで「過去 24 時間の P99 latency」「予測スコアの分布の変化」「入力特徴量の平均推移」を並べておけば、各指標の変化を比較できます。アラートルール（PromQL: `histogram_quantile(0.99, sum by (le) (rate(prediction_latency_seconds_bucket[5m]))) > 0.2`）を設定すると、自動通知できます。
 
 ---
 
@@ -198,16 +218,13 @@ def predict_with_metrics(req):
 - ベイズ的変化検出: 事後確率の変化で検出（[ベイズの定理](../../math/bayes-theorem/)）
 - 移動統計（rolling mean, rolling std）: ノイズを抑えてトレンドを見る
 - [仮説検定](../../math/hypothesis-test/): KS 検定、`χ²` 検定、Mann-Whitney U 検定
-- [情報理論](/ml/math/information-theory/): KL ダイバージェンス、Jensen-Shannon ダイバージェンスで分布距離
+- [情報理論](../../math/information-theory/): KL ダイバージェンス、Jensen-Shannon ダイバージェンスで分布距離
 
 ---
 
 ### 機械学習での使いどころ
 
 - 推論精度の時系列監視（日次・週次レポート）
-- 入力ドリフトの自動検知（KS、PSI、Wasserstein 距離）
-- 予測スコア分布の監視（偏り、極端値の急増）
-- ground truth lag を見越した proxy metrics の設計
 - model fairness の継続監視（属性別の精度差）
 - データパイプライン健全性（schema check、null rate、duplicate）
 - A/B test と組み合わせた champion-challenger の継続評価
@@ -225,14 +242,10 @@ def predict_with_metrics(req):
 
 ### 適さないケース / 落とし穴
 
-- accuracy だけ見て他指標を無視: ground truth が遅延するときに気づくのが遅れる。proxy metrics と組み合わせる
-- ground truth を待ってから対応: 重要な障害は数時間で広がる。入力ドリフトと proxy で早期検知
-- アラートが鳴りすぎる: 麻痺して無視されるようになる。閾値・連続違反数・ウィンドウの調整で false alarm を抑える
 - 集約指標だけ見て segment 別を見ない: 全体精度は維持されていても、特定セグメント（新規ユーザー、特定地域）での精度低下を見落とす
 - ログを sampling せず全件保存: 保存量と保存コストが増える。必要な記録を残せるようにサンプリング率を決める
-- モデル version を予測結果に紐付けない: 後から予測に使った版を確認できない。logs に version を記録する
+- モデルのバージョンを予測結果に紐付けない: 後から予測に使ったバージョンを確認できない。logs にバージョンを記録する
 - 監視対象が増えすぎる: 担当者が確認しきれない。障害の検知や対応に必要な指標を選ぶ
-- データドリフトを精度劣化と混同: 入力分布が変わっても精度が落ちないケースがある（covariate shift）。両方独立に監視する
 - alert 受信者の負担を考えない: 全アラートが同じ重さで PagerDuty に行くと on-call が疲弊。重要度別ルーティング
 - runbook が無いアラート: 「鳴ったがどう対処するか分からない」と意味が無い。アラートと対処手順をセットで作る
 - 監視自身の monitoring を忘れる: 監視システムが落ちていてもアラートが鳴らない。canary metric（常に true を返す）を 1 つ用意して、それが消えたら監視が止まったと検知

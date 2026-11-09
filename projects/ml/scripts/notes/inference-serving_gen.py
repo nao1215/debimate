@@ -2,7 +2,9 @@
 
 実行: cd projects/ml && uv run python scripts/notes/inference-serving_gen.py
 """
+import heapq
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,10 +15,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/mlops/inference-serving"
-)
-os.makedirs(NOTE_DIR, exist_ok=True)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes" / "mlops" / "inference-serving"
+NOTE_DIR.mkdir(parents=True, exist_ok=True)
 
 
 def save(name: str) -> None:
@@ -108,66 +108,72 @@ save("serving_modes_compare.svg")
 
 
 # ============================================================
-# Fig 3: Replica scaling - throughput vs latency
+# Fig 3: Replica scaling under a fixed load (M/M/c simulation)
 # ============================================================
-replicas = np.arange(1, 17)
-# Throughput grows linearly (approximation); latency grows mildly per replica
-# Modeling each replica has ~150 req/s capacity, but request queue adds tail latency
-capacity = 150
-total_throughput = capacity * replicas
-# Single-replica P99 around 80ms, drops to 60 then plateaus
-p99_per_load = 60 + 40 * np.exp(-replicas / 4)
+def simulate(replicas, arrival_rate=500, service_rate=150, n=200_000, seed=0):
+    sim_rng = np.random.default_rng(seed)
+    arrivals = np.cumsum(sim_rng.exponential(1 / arrival_rate, n))
+    services = sim_rng.exponential(1 / service_rate, n)
+    free_at = [0.0] * replicas
+    latency = np.empty(n)
+    for i in range(n):
+        start = max(arrivals[i], heapq.heappop(free_at))
+        end = start + services[i]
+        heapq.heappush(free_at, end)
+        latency[i] = end - arrivals[i]
+    return latency[n // 10:] * 1000
 
-fig, ax1 = plt.subplots(figsize=(8.5, 4.5))
-color = COLOR_BLUE
-ax1.set_xlabel("number of replicas")
-ax1.set_ylabel("max throughput (req/s)", color=color)
-ax1.plot(replicas, total_throughput, "o-", color=color, lw=2, markersize=6)
-ax1.tick_params(axis="y", labelcolor=color)
-ax1.grid(True, alpha=0.25)
 
-ax2 = ax1.twinx()
-color = COLOR_RED
-ax2.set_ylabel("P99 latency under full load (ms)", color=color)
-ax2.plot(replicas, p99_per_load, "s-", color=color, lw=2, markersize=6)
-ax2.tick_params(axis="y", labelcolor=color)
-ax2.set_ylim(40, 110)
+replicas = np.arange(4, 13)
+p50s, p99s = [], []
+for c in replicas:
+    lat = simulate(int(c))
+    p50s.append(np.percentile(lat, 50))
+    p99s.append(np.percentile(lat, 99))
+floor = np.log(100) / 150 * 1000  # P99 of the service time itself
 
-plt.title("Horizontal scaling: throughput is linear, latency improves up to a knee point")
+fig, ax = plt.subplots(figsize=(8.5, 4.5))
+ax.plot(replicas, p99s, "s-", color=COLOR_RED, lw=2, markersize=6, label="P99")
+ax.plot(replicas, p50s, "o-", color=COLOR_BLUE, lw=2, markersize=6, label="P50")
+ax.axhline(floor, color=COLOR_GRAY, ls="--", lw=1.5,
+           label=f"P99 of inference itself = {floor:.1f}ms")
+ax.set_xticks(replicas)
+ax.set_xticklabels([f"{c}\n({500 / (150 * c):.0%})" for c in replicas])
+ax.set_xlabel("number of replicas (utilization)")
+ax.set_ylabel("latency (ms)")
+ax.set_ylim(0, 60)
+ax.set_title("500 req/s to replicas of 150 req/s each: the tail flattens after 5-6 replicas")
+ax.legend()
+ax.grid(True, alpha=0.25)
 plt.tight_layout()
 save("serving_replica_scaling.svg")
 
 
 # ============================================================
-# Fig 4: Caching effect on tail latency
+# Fig 4: Caching effect (same code as the note)
 # ============================================================
-# Compare 3 strategies: no cache, in-memory cache 30% hit, in-memory 70% hit
-no_cache = rng.gamma(shape=2.0, scale=20, size=20000) + 5
-# 30% hit -> 30% latency = 2-5ms, 70% miss = normal
-hit_30 = np.where(rng.random(20000) < 0.30,
-                   rng.uniform(1, 5, 20000),
-                   rng.gamma(shape=2.0, scale=20, size=20000) + 5)
-hit_70 = np.where(rng.random(20000) < 0.70,
-                   rng.uniform(1, 5, 20000),
-                   rng.gamma(shape=2.0, scale=20, size=20000) + 5)
-
+rng = np.random.default_rng(1)
+n = 20_000
 fig, ax = plt.subplots(figsize=(8, 5))
-for arr, label, color in [(no_cache, "No cache", COLOR_RED),
-                            (hit_30, "Cache 30% hit", COLOR_ORANGE),
-                            (hit_70, "Cache 70% hit", COLOR_GREEN)]:
-    p99 = np.percentile(arr, 99)
-    sorted_arr = np.sort(arr)
-    cdf = np.arange(1, len(arr) + 1) / len(arr)
-    ax.plot(sorted_arr, cdf, color=color, lw=2,
-            label=f"{label} (P99 = {p99:.0f}ms)")
+for hit_rate, color in [(0.0, COLOR_RED), (0.3, COLOR_ORANGE), (0.7, COLOR_GREEN)]:
+    hit = rng.random(n) < hit_rate
+    latency = np.where(hit,
+                       rng.uniform(1, 5, n),
+                       rng.gamma(shape=2, scale=20, size=n) + 5)
+    p50 = np.percentile(latency, 50)
+    p99 = np.percentile(latency, 99)
+    cdf = np.arange(1, n + 1) / n
+    ax.plot(np.sort(latency), cdf, color=color, lw=2,
+            label=f"hit {hit_rate:.0%} (P50 = {p50:.0f}ms, P99 = {p99:.0f}ms)")
+ax.axhline(0.99, color=COLOR_GRAY, ls=":", lw=1)
 ax.set_xscale("log")
 ax.set_xlabel("latency (ms, log scale)")
 ax.set_ylabel("cumulative fraction of requests")
-ax.set_title("Caching dramatically improves the tail (P99)")
+ax.set_title("Caching moves the median a lot, the P99 only a little")
 ax.legend(loc="lower right")
 ax.grid(True, alpha=0.25)
 plt.tight_layout()
 save("serving_cache_effect.svg")
 
 
-print("done:", sorted(os.listdir(NOTE_DIR)))
+print("done:", sorted(p.name for p in NOTE_DIR.iterdir()))
