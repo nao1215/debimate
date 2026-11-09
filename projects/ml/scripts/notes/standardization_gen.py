@@ -16,8 +16,8 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/standardization"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "ml", "standardization"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -58,16 +58,13 @@ save("standardization_hist.svg")
 
 
 # --- 図2: kNN の決定境界がスケールで変わる ---
-# 2 つの特徴量を、片方は ~10 倍のスケールにして混ぜる。
-n = 300
-class0 = rng.normal(loc=[0, 0], scale=[1, 1], size=(n // 2, 2))
-class1 = rng.normal(loc=[2.5, 2.5], scale=[1, 1], size=(n // 2, 2))
-X = np.vstack([class0, class1])
-y = np.array([0] * (n // 2) + [1] * (n // 2))
-
-# 片方の特徴量のスケールを 50 倍に
-X_scaled_input = X.copy()
-X_scaled_input[:, 0] *= 50.0
+# 本文「Python での実例」のコードと同じデータ。2 クラスの点を 150 個ずつ作り、
+# 特徴量 1 だけを 50 倍にした版も用意する。
+rng = np.random.default_rng(0)
+X = np.vstack([rng.normal([0, 0], 1, size=(150, 2)),
+               rng.normal([2.5, 2.5], 1, size=(150, 2))])
+y = np.repeat([0, 1], 150)
+X_scaled_input = X * [50, 1]
 
 
 def draw_boundary(ax, X_data, y_data, model, title):
@@ -107,6 +104,7 @@ coefs = []
 for X_data in [X, X_scaled_input, StandardScaler().fit_transform(X_scaled_input)]:
     lr = LogisticRegression(C=1.0, max_iter=1000).fit(X_data, y)
     coefs.append(lr.coef_[0])
+    print(f"LR coef  {labels[len(coefs) - 1]:<30s}  w1={lr.coef_[0][0]:.3f}  w2={lr.coef_[0][1]:.3f}")
 
 coefs = np.array(coefs)
 xpos = np.arange(len(labels))
@@ -141,28 +139,27 @@ plt.tight_layout()
 save("standardization_rf_boundary.png")
 
 
-# --- 数値で確かめる: kNN の精度がスケールで激変 ---
+# --- 数値で確かめる: 本文「Python での実例」のコードと同じ ---
+# 標準化は Pipeline に入れ、各 fold の訓練データだけで fit する。
 from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import make_pipeline
 
-results = []
-for name, X_data in [
-    ("kNN balanced", (X, y)),
-    ("kNN raw x50", (X_scaled_input, y)),
-    ("kNN standardized", (StandardScaler().fit_transform(X_scaled_input), y)),
-    ("RandomForest balanced", (X, y)),
-    ("RandomForest raw x50", (X_scaled_input, y)),
-    ("RandomForest standardized",
-     (StandardScaler().fit_transform(X_scaled_input), y)),
-]:
-    Xd, yd = X_data
-    if "kNN" in name:
-        model = KNeighborsClassifier(n_neighbors=15)
-    else:
-        model = RandomForestClassifier(n_estimators=50, random_state=0)
-    score = cross_val_score(model, Xd, yd, cv=5, scoring="accuracy").mean()
-    results.append((name, score))
-
-
+models = {
+    "kNN": lambda: KNeighborsClassifier(n_neighbors=15),
+    "RandomForest": lambda: RandomForestClassifier(n_estimators=50, random_state=0),
+}
 print("Accuracy by model and scaling:")
-for name, score in results:
-    print(f"  {name:<32s}  acc={score:.3f}")
+for name, make in models.items():
+    for case, X_data, model in [
+        ("balanced", X, make()),
+        ("raw x50", X_scaled_input, make()),
+        ("standardized", X_scaled_input, make_pipeline(StandardScaler(), make())),
+    ]:
+        acc = cross_val_score(model, X_data, y, cv=5).mean()
+        print(f"  {name + ' ' + case:<26s}  acc={acc:.3f}")
+
+# 参考: 全データで fit_transform してから CV した場合（リーケージあり）
+for name, make in models.items():
+    leak = StandardScaler().fit_transform(X_scaled_input)
+    acc = cross_val_score(make(), leak, y, cv=5).mean()
+    print(f"  (leaky) {name:<18s}  acc={acc:.3f}")

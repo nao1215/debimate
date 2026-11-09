@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/joint-marginal-conditional_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -11,8 +12,8 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/joint-marginal-conditional"
+NOTE_DIR = str(
+    Path(__file__).resolve().parents[2] / "notes" / "math" / "joint-marginal-conditional"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -144,38 +145,6 @@ print(f"P(y | x=high) = {conditionals[2]}")
 
 
 # ============================================================
-# 図4: 独立 vs 従属の同時分布
-# ============================================================
-n_pts = 800
-indep_x = rng.normal(0, 1, n_pts)
-indep_y = rng.normal(0, 1, n_pts)
-mean_dep = [0, 0]
-cov_dep = [[1.0, 0.85], [0.85, 1.0]]
-dep = rng.multivariate_normal(mean_dep, cov_dep, size=n_pts)
-dep_x, dep_y = dep[:, 0], dep[:, 1]
-
-fig, axes = plt.subplots(1, 2, figsize=(11, 5))
-
-for ax, (xv, yv), title in [
-    (axes[0], (indep_x, indep_y), "Independent: P(x, y) = P(x) P(y)"),
-    (axes[1], (dep_x, dep_y), "Dependent: P(x, y) ≠ P(x) P(y)"),
-]:
-    ax.scatter(xv, yv, s=10, alpha=0.4, color=COLOR_BLUE)
-    r = np.corrcoef(xv, yv)[0, 1]
-    ax.axhline(0, color="gray", lw=0.5)
-    ax.axvline(0, color="gray", lw=0.5)
-    ax.set_xlim(-4, 4); ax.set_ylim(-4, 4)
-    ax.set_aspect("equal")
-    ax.set_title(f"{title}\nr = {r:+.2f}", fontsize=10)
-    ax.set_xlabel("x"); ax.set_ylabel("y")
-    ax.grid(True, alpha=0.25)
-plt.suptitle("Independence test: independent → marginals factor; dependent → they don't",
-             y=1.02, fontsize=11)
-plt.tight_layout()
-save("joint-marginal-conditional_independence.svg")
-
-
-# ============================================================
 # 図5: 連続分布から条件付き分布を切り出す
 # ============================================================
 mean_c = [0, 0]
@@ -209,10 +178,50 @@ for c, color in zip(slice_centers, colors_slice):
     rho = 0.7
     expected_mean = rho * c
     ax2.hist(y_subset, bins=30, alpha=0.5, color=color, density=True,
-             label=f"P(y | x≈{c}), E[y|x]={expected_mean:+.1f}")
+             label=f"P(y | x≈{c}), theory E[y|x]={expected_mean:+.2f}")
+    print(f"x≈{c:+.1f}: E[y|x] ≈ {y_subset.mean():+.2f}  (theory: {expected_mean:+.2f})")
 ax2.set_xlabel("y"); ax2.set_ylabel("density")
 ax2.set_title("Conditional distributions P(y | x = c)")
 ax2.legend(fontsize=8)
 ax2.grid(True, alpha=0.25)
 plt.tight_layout()
 save("joint-marginal-conditional_slicing.svg")
+
+
+# ============================================================
+# 図4: 独立・線形の従属・非線形の従属の同時分布
+# ============================================================
+n_pts = 800
+indep_x = rng.normal(0, 1, n_pts)
+indep_y = rng.normal(0, 1, n_pts)
+mean_dep = [0, 0]
+cov_dep = [[1.0, 0.85], [0.85, 1.0]]
+dep = rng.multivariate_normal(mean_dep, cov_dep, size=n_pts)
+dep_x, dep_y = dep[:, 0], dep[:, 1]
+# y = x^2 + ノイズ: Pearson 相関はほぼ 0 だが、x を知ると y の分布が大きく動く
+nl_x = rng.normal(0, 1, n_pts)
+nl_y = nl_x**2 + rng.normal(0, 0.3, n_pts)
+
+fig, axes = plt.subplots(1, 3, figsize=(13, 4.6))
+panels = [
+    (axes[0], indep_x, indep_y, "Independent", (-4, 4)),
+    (axes[1], dep_x, dep_y, "Linear dependence", (-4, 4)),
+    (axes[2], nl_x, nl_y, "Nonlinear dependence: y = x^2 + noise", (-2, 9)),
+]
+for ax, xv, yv, title, ylim in panels:
+    ax.scatter(xv, yv, s=10, alpha=0.4, color=COLOR_BLUE)
+    r = np.corrcoef(xv, yv)[0, 1]
+    print(f"{title:<40s} r = {r:+.2f}")
+    ax.axhline(0, color="gray", lw=0.5)
+    ax.axvline(0, color="gray", lw=0.5)
+    ax.set_xlim(-4, 4); ax.set_ylim(*ylim)
+    ax.set_title(f"{title}\nr = {r:+.2f}", fontsize=10)
+    ax.set_xlabel("x"); ax.set_ylabel("y")
+    ax.grid(True, alpha=0.25)
+for c in [0.0, 1.5]:
+    band = np.abs(nl_x - c) < 0.25
+    axes[2].axvspan(c - 0.25, c + 0.25, alpha=0.2, color=COLOR_RED)
+    print(f"nonlinear: E[y | x≈{c:.1f}] = {nl_y[band].mean():.2f}")
+plt.suptitle("Shape of the joint: independent vs. dependent", fontsize=11)
+plt.tight_layout()
+save("joint-marginal-conditional_independence.svg")

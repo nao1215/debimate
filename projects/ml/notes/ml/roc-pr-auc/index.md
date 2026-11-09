@@ -9,13 +9,13 @@ weight: 2
 
 ROC-AUC（Receiver Operating Characteristic - Area Under the Curve）と PR-AUC（Precision-Recall - Area Under the Curve）は、二値分類モデルの性能を「閾値に依存せず」 1 つの数で比較するための指標です。両者は同じ予測スコアから計算できます。ただし、不均衡データ（陽性クラスが極端に少ないデータ）における振る舞いが大きく違うため、目的によって使い分けます。
 
-不均衡データでは ROC-AUC は楽観的に出るため、PR-AUC を主指標にした方が良いです。詳しい対処手段は [クラス不均衡](../class-imbalance/) のノートで扱います。
+ROC-AUC は、陽性と陰性の比率が変わっても値がほとんど変わりません。そのため、陽性が少ないデータで「陽性と判定した中に誤検知がどれだけ混ざるか」は ROC-AUC から読み取れず、PR-AUC を併用します。詳しい対処手段は [クラス不均衡](../class-imbalance/) のノートで扱います。
 
 ---
 
 ### 何を測っているか
 
-ROC-AUC と PR-AUC は、いずれもモデルが出した「陽性である確率」 (`y_score`) を真のラベル (`y_true`, 0/1) と突き合わせて、閾値 `t` を 1.0 から 0.0 まで動かしながら点を打って描いた曲線の下の面積です。閾値 1 つにつき次の 4 つの値が決まります。
+ROC-AUC と PR-AUC は、いずれもモデルが出した「陽性である確率」 (`y_score`) を真のラベル (`y_true`, 0/1) と突き合わせて、閾値 `t` を 1.0 から 0.0 まで動かしながら点を打って描いた曲線を 1 つの数にまとめたものです。閾値 1 つにつき次の 4 つの値が決まります。
 
 - `TPR(t) = TP / (TP + FN)` ＝ 真陽性率（Recall とも呼ぶ）。陽性のうち捕まえた割合
 - `FPR(t) = FP / (FP + TN)` ＝ 偽陽性率。陰性のうち誤って陽性と判定した割合
@@ -38,7 +38,14 @@ ROC-AUC と PR-AUC は、いずれもモデルが出した「陽性である確�
 - `t = 1.0`（誰も陽性と判定しない）: ROC は原点 (0, 0)、PR は左上 (0, 1) 付近
 - `t = 0.0`（全員陽性と判定）: ROC は右上 (1, 1)、PR は右下 (1, 陽性比率)
 
-ROC は左上に寄るほど良く（TPR が高く FPR が低い）、PR は右上に寄るほど良いです（Recall と Precision の両方が高い）。AUC（曲線下面積）はその「平均的な良さ」を 1 つの数にしたものです。
+ROC は左上に寄るほど良く（TPR が高く FPR が低い）、PR は右上に寄るほど良いです（Recall と Precision の両方が高い）。ROC-AUC は ROC 曲線の下の面積で、陽性と陰性を 1 件ずつ無作為に選んだ時に陽性の方が高いスコアを持つ確率に等しくなります（[Fawcett 2006](https://doi.org/10.1016/j.patrec.2005.10.010)）。
+
+PR-AUC と呼ばれる値には、計算方法が 2 通りあります。
+
+- 平均適合率（AP: Average Precision）: 閾値ごとに Recall の増分とその閾値の Precision を掛けて足す。`AP = Σ (R_n − R_{n−1}) P_n`。scikit-learn の [`average_precision_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) が計算するのは AP
+- 台形則: `precision_recall_curve` の点を直線でつなぎ、`auc(recall, precision)` で面積を出す
+
+scikit-learn のドキュメントは、直線で補間する台形則は楽観的な値になり得ると説明しています。2 つの値は一致せず、後述の実験の陽性 2% のデータでは AP が 0.178、台形則が 0.175 でした。4 件のサンプル（`y_true=[0, 0, 1, 1]`、`y_score=[0.1, 0.4, 0.35, 0.8]`）では 0.833 と 0.792 まで開きます。本記事の PR-AUC は AP を指します。値を比べる時は計算方法を揃えます。
 
 ---
 
@@ -47,9 +54,9 @@ ROC は左上に寄るほど良く（TPR が高く FPR が低い）、PR は右�
 ランダム予測の基準値は、ROC-AUC と PR-AUC で異なります。
 
 - ROC-AUC のランダム基準: 常に `0.5`。クラス比率に依存しない
-- PR-AUC のランダム基準: 陽性比率に等しい。陽性が 2% なら 0.02、50% なら 0.5
+- PR-AUC（AP）のランダム基準: 陽性比率に等しい。陽性が 2% なら 0.02、50% なら 0.5
 
-つまり、PR-AUC の絶対値は陽性比率と一緒に動きます。例えば、陽性 2% のデータで PR-AUC=0.2 が出たら、ランダム (0.02) の 10 倍だから優秀である一方、陽性 50% のデータで PR-AUC=0.2 だとランダム (0.5) を下回るため、そのモデルは採用できません。同じ数字でも意味が変わります。
+つまり、PR-AUC の値は陽性比率を添えないと読めません。陽性 2% のデータで PR-AUC=0.2 ならランダム (0.02) を上回り、スコアが陽性を上位へ寄せていることは分かります。陽性 50% のデータで同じ 0.2 なら、無作為に並べる (0.5) より悪い順位付けです。ただし、ランダムの何倍かは採用の基準になりません。採用できるかは、運用で必要な Recall での Precision や、今使っているモデルとの比較で決めます。
 
 以下の図は両者のランダム基準を陽性比率の関数として描いたものです。ROC-AUC が常に 0.5 で水平なのに対し、PR-AUC は陽性比率に沿って斜めに動きます。
 
@@ -57,19 +64,17 @@ ROC は左上に寄るほど良く（TPR が高く FPR が低い）、PR は右�
 
 ---
 
-### 不均衡データで PR-AUC を優先する理由
+### 陽性比率だけを変える実験
 
-不正検知（陽性 1〜2%）や稀少疾患診断（陽性 0.1% 未満）のようなクラス不均衡の強い場面では、ROC-AUC は楽観的に高い値を出します。原因は FPR の分母にあります。
+不正検知（陽性 1〜2%）や稀少疾患診断（陽性 0.1% 未満）のように陽性が少ない場面でも、モデルの順位付けが同じなら ROC-AUC は同じ値になります。FPR の分母は陰性の総数 `(FP + TN)` なので、陰性が増えると FP も陰性の件数に比例して増え、FPR は変わらないからです。一方 Precision `TP / (TP + FP)` は TP と FP の件数を直接比べるので、陰性が増えて FP の件数が増えれば下がります。
 
-`FPR = FP / (FP + TN)` の分母は陰性の総数 `(FP + TN)`です。陰性が 98% を占めるデータでは TN が圧倒的に大きく、FP が多少増えても FPR がほとんど動きません。具体的には、陰性 9800 件のうち 100 件を誤って陽性と判定しても FPR は 0.01 にしかなりません。つまり ROC 曲線は小さな FPR の範囲で大きな TPR を稼ぐ形になり、曲線が左上に張り付いて AUC が高くなります。
-
-一方 PR-AUC の構成要素である Precision は `TP / (TP + FP)` で、分母に陰性総数が入りません。FP が 100 件出れば、本当の陽性が 100 件しかない場面では Precision が 0.5 になり、PR-AUC は急に悪化します。Precision と Recall のいずれも陽性クラスに直接関係する量なので、陽性クラスの取り逃し感度を素直に反映できると言えます。
-
-このコントラストは図で見ると分かりやすいです。以下は、陽性比率だけ変えた 3 種類のデータで同じ判別性能を持つモデル（モデルそのものは固定）を評価した結果です。
+これを確かめるため、50:50 のデータで学習した[ロジスティック回帰](../logistic-regression/)のスコアから、陽性比率 50%・10%・2% の 3 種類のデータを 10,000 件ずつ取り直します。モデルとスコアは同じで、変えたのは陽性比率だけです。図の凡例の 90:10 は陰性 90%・陽性 10% を表します。
 
 ![ROC across class ratios](./roc-pr-auc_roc_imbalance.svg)
 
-ROC 曲線は 3 本ともほぼ重なり、ROC-AUC はすべて 0.91 前後で「変化なし」に見えます。モデルの判別性能が変わっていないので、これは当然です。
+ROC 曲線は 3 本ともほぼ重なり、ROC-AUC はすべて 0.91 前後です。モデルの判別性能が変わっていないので、これは当然です。
+
+以下は [scikit-learn](https://scikit-learn.org/) 1.9.1、[NumPy](https://numpy.org/) 2.5.4 で実行したコードです。図は軸ラベルとタイトルを足した[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/roc-pr-auc_gen.py)で描いています。
 
 ```python
 import numpy as np
@@ -114,11 +119,11 @@ plt.legend(); plt.tight_layout()
 plt.savefig("roc-pr-auc_roc_imbalance.svg", bbox_inches="tight")
 ```
 
-同じデータに対する PR 曲線が次の図です。
+同じデータに対する PR 曲線が次の図です。点線は各陽性比率のランダム基準です。
 
 ![PR across class ratios](./roc-pr-auc_pr_imbalance.svg)
 
-PR-AUC は 50:50 で 0.89、90:10 で 0.51、98:2 で 0.18 と大きく下がります。点線は各陽性比率のランダム基準を示しています。PR-AUC が「陽性クラスを見つける難しさ」をモデルの判別性能とは別に反映していることが視覚的に分かります。
+PR-AUC は 50:50 で 0.887、90:10 で 0.509、98:2 で 0.178 と大きく下がります。
 
 ```python
 from sklearn.metrics import precision_recall_curve, average_precision_score
@@ -136,45 +141,47 @@ plt.legend(); plt.tight_layout()
 plt.savefig("roc-pr-auc_pr_imbalance.svg", bbox_inches="tight")
 ```
 
-実行結果のテキストは以下のようになります。
+PR-AUC が下がる理由は、陽性の 80% を拾う閾値で件数を数えると分かります。
 
-```text
-ROC-AUC vs PR-AUC across class ratios:
-  Balanced 50:50 (positive=50.0%):  ROC-AUC=0.907  PR-AUC=0.887
-  Mild 90:10 (positive=10.0%):      ROC-AUC=0.910  PR-AUC=0.509
-  Extreme 98:2 (positive=2.0%):     ROC-AUC=0.908  PR-AUC=0.178
+```python
+for ratio in [0.5, 0.1, 0.02]:
+    y, s = subsample(y_all, scores_all, ratio)
+    t = np.quantile(s[y == 1], 0.2)  # 陽性の 80% がこの値以上
+    pred = s >= t
+    tp = (pred & (y == 1)).sum()
+    fp = (pred & (y == 0)).sum()
+    print(f"{ratio:.0%}: t={t:.3f} TP={tp} FP={fp} "
+          f"FPR={fp / (y == 0).sum():.3f} Precision={tp / (tp + fp):.3f}")
 ```
 
-ROC-AUC だけ見ると「ほぼ同じ性能のモデル」に見えます。しかし、現実には陽性 2% のデータで運用すると Precision が低く、運用に耐えないということが起こり得ます。PR-AUC も併用して確認します。
+```text
+50%: t=0.564 TP=4000 FP=739 FPR=0.148 Precision=0.844
+10%: t=0.562 TP=800 FP=1347 FPR=0.150 Precision=0.373
+2%: t=0.553 TP=160 FP=1501 FPR=0.153 Precision=0.096
+```
+
+FPR は 3 つとも 0.15 前後で、ROC 曲線上ではほぼ同じ点です。しかし陽性 2% のデータでは、陽性と判定した 1,661 件のうち本当の陽性は 160 件しかなく、Precision は 0.096 です。陽性と判定した 10 件のうち 9 件は誤検知で、判定結果を人が 1 件ずつ確認する運用なら作業の大半が空振りになります。ROC-AUC は不均衡だから高く出るのではなく、陽性比率で変わらないので、この Precision の低下が値に出ません。PR-AUC は同じ低下を 0.887 → 0.178 として示します。
 
 ---
 
-### 使い分けの判断フロー
+### 使い分けの判断
 
-実際の指標選定は次の 2 ステップで進めます。
+主指標は、陽性比率の数字で機械的に決めるより、何を知りたいかで決めます。
 
-1. `y.mean()` や `value_counts(normalize=True)` で陽性比率を確認する。
-2. 陽性比率に応じて主指標を決める。
-    - 陽性が 5% 未満（強い不均衡）: PR-AUC を主指標、ROC-AUC は補助で見る
-    - 陽性が 5〜30%（中程度）: PR-AUC と ROC-AUC を両方見る。乖離があれば PR-AUC を優先
-    - 陽性が 30〜70%（ほぼ均衡）: ROC-AUC が標準。PR-AUC も値が安定しているので併用してよい
+- 陽性と判定した中にどれだけ誤検知が混ざるかが問題になる（不正検知で判定結果を人が確認する、など）: PR-AUC を見る。評価データと運用で陽性比率が同じかも確かめる
+- 陽性比率が違うデータどうしで、モデルの順位付けの良さを比べたい（期間や地域で陽性比率が変わる、など）: ROC-AUC を見る
+- どちらも 1 つの数への要約なので、最後は運用で使う閾値での Precision と Recall を確認する
 
-見逃しと誤検知のコストに応じて、補助指標を選びます。
-
-- 「見逃しを徹底的に減らしたい」（不正検知・癌診断など）: Recall を最大化しつつ Precision の下限を決める
-- 「誤検知のコストが高い」（顧客への自動アクション）: Precision を高めに固定して Recall を見る
-- 「両者をバランスさせたい」: F1 / F-beta
-
-PR 曲線の「肘」付近を見て、ビジネス制約に合うしきい値を選ぶのが実用的な手順となります。
+陽性比率は `y.mean()` で確かめ、PR-AUC を報告する時は陽性比率を添えます。[Saito & Rehmsmeier (2015)](https://doi.org/10.1371/journal.pone.0118432) も、不均衡データの評価では PR 曲線の方が ROC 曲線より多くの情報を与えると報告しています。
 
 ---
 
 ### AUC と曲線の役割の違い
 
-AUC（数字）と曲線（形）は目的が違うので混同しないようにします。
+AUC（数値）と曲線（形）は目的が違うので混同しないようにします。
 
-- AUC（数字）はモデルどうしを比較するための指標。「モデル A と B のどちらが全閾値で平均的に強いか」を 1 つの数で表す。しきい値の選定には使わない
-- 曲線そのものは、運用上のしきい値を決めるために使う。「誤検知 (FPR) を 5% までに抑えたい」のような制約があるとき、曲線上で制約を満たす点を探し、その点に対応するしきい値を採用する
+- AUC はモデルどうしを比較するための指標。「モデル A と B のどちらが全閾値で平均的に強いか」を 1 つの数で表す。閾値の選定には使わない
+- 曲線そのものは、運用上の閾値を決めるために使う。「誤検知 (FPR) を 5% までに抑えたい」のような制約がある時、曲線上で制約を満たす点を探し、その点に対応する閾値を採用する。見逃しを減らしたいなら Precision の下限を決めて Recall を最大化し、誤検知のコストが高いなら Precision を高めに固定して Recall を見る
 
 つまり、「モデル選定 → AUC」「閾値選定 → 曲線」と覚えると整理しやすいです。
 
@@ -182,10 +189,9 @@ AUC（数字）と曲線（形）は目的が違うので混同しないよう�
 
 ## Python での実例
 
-実装そのものは scikit-learn の関数で完結します。基本的な ROC 曲線と PR 曲線の描画は次の通りです。
+実装そのものは scikit-learn の関数で完結します。基本的な ROC 曲線と PR 曲線の描画は次の通りです。`y_true` と `y_score` には、陽性比率を変える実験の `subsample` で作った 50:50 のデータを使います。
 
 ```python
-import matplotlib.pyplot as plt
 from sklearn.metrics import (
     roc_auc_score,
     average_precision_score,
@@ -193,10 +199,12 @@ from sklearn.metrics import (
     precision_recall_curve,
 )
 
+y_true, y_score = subsample(y_all, scores_all, 0.5)
+
 roc = roc_auc_score(y_true, y_score)
 pr = average_precision_score(y_true, y_score)
-print("ROC-AUC:", roc)
-print("PR-AUC:", pr)
+print(f"ROC-AUC: {roc:.3f}")
+print(f"PR-AUC: {pr:.3f}")
 
 fpr, tpr, _ = roc_curve(y_true, y_score)
 precision, recall, _ = precision_recall_curve(y_true, y_score)
@@ -217,9 +225,14 @@ plt.savefig("roc-pr-auc_curves.svg", bbox_inches="tight")
 
 出力:
 
+```text
+ROC-AUC: 0.907
+PR-AUC: 0.887
+```
+
 ![ROC and PR basic](./roc-pr-auc_curves.svg)
 
-`y_score` はモデルが出す確率（あるいは確率に変換できるスコア）で、scikit-learn なら `model.predict_proba(X)[:, 1]` で得られます。`model.predict(X)` ではなく確率を渡すのが要点で、`predict` の結果は閾値を 0.5 で打ち切った 0/1 ラベルなので曲線が描けません。
+`y_score` はモデルが出す確率（あるいは確率に変換できるスコア）で、scikit-learn なら `model.predict_proba(X)[:, 1]` で得られます。`model.predict(X)` ではなく確率を渡すのが要点です。`predict` の結果は閾値 0.5 で打ち切った 0/1 ラベルなので、ROC 曲線は (0, 0)・閾値 0.5 の点・(1, 1) の 3 点を結んだ折れ線になります。上記のデータで 0/1 ラベルを渡すと ROC-AUC は 0.836 で、確率を渡した時の 0.907 より低く出ます。
 
 ---
 
@@ -235,16 +248,8 @@ plt.savefig("roc-pr-auc_curves.svg", bbox_inches="tight")
 
 二値分類では、用途に応じて ROC-AUC と PR-AUC のどちらを主指標にするかを選びます。
 
-- 不正取引検知（陽性 1〜2%）: PR-AUC を主、ROC-AUC は補助
-- スパムフィルタ（陽性 30%〜）: ROC-AUC を主、PR-AUC も併用
-- 稀少疾患診断（陽性 0.1% 未満）: PR-AUC を主、Recall の下限制約も併用
-- レコメンドの「クリックされる/されない」予測: PR-AUC が標準的に使われる
-- A/B テストで複数モデルを比較: ROC-AUC のばらつきを[交差検証](../cross-validation/)で押さえる
-
-具体的な利用例:
-
-- 不正取引検知（陽性 2%）で PR-AUC=0.4、ランダム基準 0.02 → 20 倍良いので採用候補
-- 同データで ROC-AUC=0.85 だけ見て採用すると、Precision が低くて運用に乗らない事故が起こり得る
+- 不正取引検知・稀少疾患診断のように陽性が少なく、陽性と判定した後に人が確認する用途: PR-AUC を主に見て、必要な Recall での Precision も確認する
+- 複数モデルのオフライン比較: AUC のばらつきを[交差検証](../cross-validation/)で押さえる
 
 ---
 

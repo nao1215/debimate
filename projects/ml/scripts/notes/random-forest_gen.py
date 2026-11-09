@@ -7,7 +7,7 @@ import numpy as np
 from sklearn.datasets import make_classification
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold, cross_val_score, train_test_split
 from sklearn.tree import DecisionTreeClassifier
 
 NOTE_DIR = Path(__file__).resolve().parents[2] / "notes/ml/random-forest"
@@ -64,3 +64,18 @@ print(f"tree accuracy: mean={np.mean(tree_scores):.3f} sd={np.std(tree_scores):.
 print(f"forest accuracy: mean={np.mean(forest_scores):.3f} sd={np.std(forest_scores):.3f}")
 for size, oob, test in zip(sizes, oob_scores, test_scores):
     print(f"trees={size:3d} oob={oob:.3f} test={test:.3f}")
+print(f"tree range={min(tree_scores):.3f}-{max(tree_scores):.3f} "
+      f"forest range={min(forest_scores):.3f}-{max(forest_scores):.3f} "
+      f"forest wins={sum(f > t for f, t in zip(forest_scores, tree_scores))}/24")
+print(f"OOB trees per row (200 trees): {(1 - 1 / len(X_train)) ** len(X_train) * 200:.1f}")
+cv_scores = cross_val_score(
+    RandomForestClassifier(n_estimators=200, max_features="sqrt", random_state=12, n_jobs=1),
+    X_train, y_train, cv=StratifiedKFold(5, shuffle=True, random_state=12),
+)
+print(f"5-fold CV on train: {cv_scores.mean():.3f}")
+for split_seed in range(5):
+    a_train, a_test, b_train, b_test = train_test_split(
+        X, y, test_size=0.35, stratify=y, random_state=split_seed)
+    model = RandomForestClassifier(n_estimators=200, max_features="sqrt", oob_score=True,
+                                   random_state=12, n_jobs=1).fit(a_train, b_train)
+    print(f"split={split_seed} oob={model.oob_score_:.3f} test={model.score(a_test, b_test):.3f}")

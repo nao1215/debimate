@@ -12,6 +12,7 @@ from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     average_precision_score,
+    auc as trapezoid_auc,
     precision_recall_curve,
     roc_auc_score,
     roc_curve,
@@ -21,8 +22,8 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/roc-pr-auc"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "ml", "roc-pr-auc"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -148,3 +149,31 @@ for (y, ys), name, _, ratio in datasets:
         f"ROC-AUC={roc_auc_score(y, ys):.3f}  "
         f"PR-AUC={average_precision_score(y, ys):.3f}"
     )
+
+# 本文の表: 陽性の 80% を拾う閾値での FPR と Precision
+print("At recall 0.80:")
+for (y, s), _, _, ratio in datasets:
+    t = np.quantile(s[y == 1], 0.2)
+    pred = s >= t
+    tp = (pred & (y == 1)).sum()
+    fp = (pred & (y == 0)).sum()
+    print(f"{ratio:.0%}: t={t:.3f} TP={tp} FP={fp} "
+          f"FPR={fp / (y == 0).sum():.3f} Precision={tp / (tp + fp):.3f}")
+
+# 本文の比較: AP と台形則の PR-AUC
+print("AP vs trapezoid:")
+for (y, s), name, _, _ in datasets:
+    precision, recall, _ = precision_recall_curve(y, s)
+    print(f"  {name}: AP={average_precision_score(y, s):.3f} "
+          f"trapezoid={trapezoid_auc(recall, precision):.3f}")
+y_t = np.array([0, 0, 1, 1])
+s_t = np.array([0.1, 0.4, 0.35, 0.8])
+precision, recall, _ = precision_recall_curve(y_t, s_t)
+print(f"  4 samples: AP={average_precision_score(y_t, s_t):.3f} "
+      f"trapezoid={trapezoid_auc(recall, precision):.3f}")
+
+# 本文の比較: predict の 0/1 ラベルを渡した場合
+(y, s), _, _, _ = datasets[0]
+labels = (s >= 0.5).astype(int)
+print(f"0/1 labels: ROC points={len(roc_curve(y, labels)[0])} "
+      f"ROC-AUC={roc_auc_score(y, labels):.3f} (scores: {roc_auc_score(y, s):.3f})")

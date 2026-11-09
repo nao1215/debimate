@@ -9,7 +9,7 @@ weight: 11
 
 確率変数が複数あるとき、それらの関係を表す分布には 3 種類あります。同時分布（joint distribution, `P(x, y)`）、周辺分布（marginal distribution, `P(x)` や `P(y)`）、条件付き分布（conditional distribution, `P(y|x)`）の 3 つで、機械学習の本や論文で繰り返し出てくる基本概念です。
 
-[データドリフト](../../mlops/data-drift/)の分類、[ベイズの定理](/ml/math/bayes-theorem/)、分類器の確率出力を扱う時に、これらの分布を区別します。周辺分布と条件付き分布は、同時分布から計算できます。
+[データドリフト](../../mlops/data-drift/)の分類、[ベイズの定理](../bayes-theorem/)、分類器の確率出力を扱う時に、これらの分布を区別します。周辺分布と条件付き分布は、同時分布から計算できます。
 
 ---
 
@@ -73,6 +73,8 @@ ax_right.set_yticks([]); ax_right.invert_yaxis()
 ax_right.set_xlabel("P(x)\nmarginal")
 fig.suptitle("Joint P(x,y) and marginals P(x), P(y)")
 plt.savefig("joint-marginal-conditional_discrete.svg", bbox_inches="tight")
+print(f"P(x) = {p_x}")
+print(f"P(y) = {p_y}")
 ```
 
 出力:
@@ -104,7 +106,7 @@ P(y) = [0.4 0.6]
 
 ### 条件付き分布（conditional distribution）
 
-片方の変数をある値に固定したときの、もう片方の分布です。同時分布の「特定の行」または「特定の列」を取り出して、それが確率分布として 1 に正規化されるよう全体を割る操作で得られます。
+片方の変数をある値に固定したときの、もう片方の分布です。同時分布の特定の行（または列）を取り出し、その行の合計で割って和を 1 にすると得られます。
 
 `P(y|x) = P(x, y) / P(x)`
 
@@ -124,19 +126,21 @@ axes[0].set_ylabel("Conditional probability")
 fig.suptitle("Conditional distributions: each row of the joint normalized")
 plt.tight_layout()
 plt.savefig("joint-marginal-conditional_conditional.svg", bbox_inches="tight")
+for xlbl, row in zip(x_labels, conditionals):
+    print(f"P(y | {xlbl}) = {row.round(2)}")
 ```
 
 出力:
 
 ```text
-P(y | x=low)  = [0.07, 0.93]
-P(y | x=mid)  = [0.27, 0.73]
-P(y | x=high) = [0.75, 0.25]
+P(y | clouds=low) = [0.07 0.93]
+P(y | clouds=mid) = [0.27 0.73]
+P(y | clouds=high) = [0.75 0.25]
 ```
 
 ![Conditional distributions sliced from the joint](./joint-marginal-conditional_conditional.svg)
 
-雲量が多い時に雨が降る確率は 75%、雲量が少ない時は 7% です。分類器の `predict_proba` が出すスコアは、 `P(y=1 | x)`（入力 `x` が与えられたとき、ラベルが 1 である確率）の推定値です。
+雲量が多い時に雨が降る確率は 75%、雲量が少ない時は 7% です。分類器の [`predict_proba`](https://scikit-learn.org/stable/glossary.html#term-predict_proba) が出すスコアは、`P(y=1 | x)`（入力 `x` が与えられたとき、ラベルが 1 である確率）の推定値です。
 
 ---
 
@@ -147,7 +151,8 @@ P(y | x=high) = [0.75, 0.25]
 ```python
 mean = [0, 0]
 cov = [[1.0, 0.7], [0.7, 1.0]]
-samples = np.random.default_rng(0).multivariate_normal(mean, cov, size=1000)
+rng = np.random.default_rng(0)  # 以降の乱数はすべてこの rng から引く
+samples = rng.multivariate_normal(mean, cov, size=1000)
 
 fig = plt.figure(figsize=(7, 5))
 gs = fig.add_gridspec(2, 2, width_ratios=[3, 1], height_ratios=[1, 3],
@@ -174,61 +179,83 @@ plt.savefig("joint-marginal-conditional_continuous.svg", bbox_inches="tight")
 
 ---
 
-### 独立 vs 従属を視覚的に区別する
-
-独立性（independence）の数学的定義は `P(x, y) = P(x) × P(y)` で、これが成り立つときに限り「`X` を知っても `Y` の予測には何も寄与しない」となります。同時分布の散布図を見れば、独立か従属かは形からほぼ判定できます。
-
-```python
-indep_x = rng.normal(0, 1, 800)
-indep_y = rng.normal(0, 1, 800)
-dep = rng.multivariate_normal([0, 0], [[1.0, 0.85], [0.85, 1.0]], size=800)
-print(f"independent r = {np.corrcoef(indep_x, indep_y)[0,1]:+.2f}")
-print(f"dependent   r = {np.corrcoef(dep[:,0], dep[:,1])[0,1]:+.2f}")
-plt.savefig("joint-marginal-conditional_independence.svg", bbox_inches="tight")
-```
-
-出力:
-
-```text
-independent r = -0.02
-dependent   r = +0.84
-```
-
-![独立な散布図は円形、従属（高相関）な散布図は楕円に伸びる](./joint-marginal-conditional_independence.svg)
-
-左の独立な散布図は円形に近く、どの `x` の帯を切ってもその中の `y` の分布形はほぼ同じになります（= `P(y|x)` が `x` に依存しない = `P(y|x) = P(y)`）。右の従属な散布図は楕円形に細長く伸び、`x` の小さい領域では `y` も小さく、`x` の大きい領域では `y` も大きい、という関係が見えます。これが「`X` を知ると `Y` の分布が動く」、つまり従属性を視覚的に示しています。
-
-注意点として、Pearson 相関 `r ≈ 0` は「線形関係が無い」ことしか示さず、独立性とは別物です。`y = x^2` のような非線形依存があると `r ≈ 0` でも完全に従属であり、独立性は相互情報量（mutual information）や [相関係数](../correlation/) のノートで触れた他の指標で確認する必要があります。
-
----
-
 ### 条件付き分布をスライスとして見る
 
-散布図の「縦の帯」として、連続変数での条件付き分布 `P(y|x=c)` を直接取り出してヒストグラムにします。
+散布図の縦の帯に入る点を取り出し、条件付き分布 `P(y|x=c)` をヒストグラムにします。
 
 ```python
 samples = rng.multivariate_normal([0, 0], [[1.0, 0.7], [0.7, 1.0]], size=5000)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 5))
+ax1.scatter(samples[:, 0], samples[:, 1], s=4, alpha=0.25, color="#7aa6c2")
 # x ≈ -1.5, 0, +1.5 の 3 帯を取り出して y の分布を比較
-for c in [-1.5, 0.0, 1.5]:
+for c, color in zip([-1.5, 0.0, 1.5], ["#59a14f", "#e15759", "#b07aa1"]):
     in_slice = np.abs(samples[:, 0] - c) < 0.25
     y_in_slice = samples[in_slice, 1]
+    ax1.axvspan(c - 0.25, c + 0.25, alpha=0.25, color=color)
+    ax2.hist(y_in_slice, bins=30, alpha=0.5, color=color, density=True,
+             label=f"P(y | x≈{c})")
     print(f"x≈{c:+.1f}: E[y|x] ≈ {y_in_slice.mean():+.2f}  (theory: {0.7*c:+.2f})")
+ax2.legend()
 plt.savefig("joint-marginal-conditional_slicing.svg", bbox_inches="tight")
 ```
 
 出力:
 
 ```text
-x≈-1.5: E[y|x] ≈ -0.99  (theory: -1.05)
-x≈+0.0: E[y|x] ≈ +0.04  (theory: +0.00)
-x≈+1.5: E[y|x] ≈ +1.07  (theory: +1.05)
+x≈-1.5: E[y|x] ≈ -1.05  (theory: -1.05)
+x≈+0.0: E[y|x] ≈ +0.02  (theory: +0.00)
+x≈+1.5: E[y|x] ≈ +1.03  (theory: +1.05)
 ```
 
 ![同時分布から x の値ごとに条件付き分布 P(y|x) を取り出す](./joint-marginal-conditional_slicing.svg)
 
-左の散布図で 3 つの縦の色帯がそれぞれ `x ≈ -1.5`, `0`, `+1.5` 付近の点を取り出した範囲で、その中の `y` 値だけを集めてヒストグラム化したのが右の図です。条件 `x` が動くと条件付き分布 `P(y|x)` の中心が動く（`x` の増加とともに右に移動）のが見て取れます。
+左の 3 本の色帯が `x ≈ -1.5`, `0`, `+1.5` 付近の範囲で、帯の中の `y` だけを集めたのが右のヒストグラムです。`x` が大きくなると `P(y|x)` の中心も右へ動きます。理論値の `0.7c` は、相関 0.7・分散 1 の 2 次元正規分布で `E[y|x=c] = 0.7c` になることから来ています。
 
-`f(x) = E[y|x]` を学習する回帰モデルは、`x` を固定した時の `y` の期待値を推定します。`predict_proba` も同じく `P(y=1|x)` を推定します。
+`f(x) = E[y|x]` を学習する回帰モデルは、この帯ごとの平均（`x` を固定した時の `y` の期待値）を推定しています。
+
+---
+
+### 独立と従属
+
+独立性（independence）の定義は `P(x, y) = P(x) × P(y)` です。言い換えると `P(y|x) = P(y)` で、`x` の値を知っても `y` の分布が変わらない状態を指します。散布図の形からある程度は読み取れますが、相関係数だけでは判定できません。独立な 2 変数、線形に従属する 2 変数、`y = x^2 + ノイズ` で非線形に従属する 2 変数を比べます。
+
+```python
+indep_x = rng.normal(0, 1, 800)
+indep_y = rng.normal(0, 1, 800)
+dep = rng.multivariate_normal([0, 0], [[1.0, 0.85], [0.85, 1.0]], size=800)
+nl_x = rng.normal(0, 1, 800)
+nl_y = nl_x**2 + rng.normal(0, 0.3, 800)  # y = x^2 + ノイズ
+
+panels = [("Independent", indep_x, indep_y),
+          ("Linear dependence", dep[:, 0], dep[:, 1]),
+          ("Nonlinear dependence: y = x^2 + noise", nl_x, nl_y)]
+fig, axes = plt.subplots(1, 3, figsize=(13, 4.6))
+for ax, (title, xv, yv) in zip(axes, panels):
+    r = np.corrcoef(xv, yv)[0, 1]
+    ax.scatter(xv, yv, s=10, alpha=0.4, color="#7aa6c2")
+    ax.set_title(f"{title}\nr = {r:+.2f}")
+    print(f"{title:<40s} r = {r:+.2f}")
+for c in [0.0, 1.5]:
+    band = np.abs(nl_x - c) < 0.25
+    print(f"nonlinear: E[y | x≈{c:.1f}] = {nl_y[band].mean():.2f}")
+plt.savefig("joint-marginal-conditional_independence.svg", bbox_inches="tight")
+```
+
+出力:
+
+```text
+Independent                              r = -0.05
+Linear dependence                        r = +0.85
+Nonlinear dependence: y = x^2 + noise    r = -0.07
+nonlinear: E[y | x≈0.0] = 0.04
+nonlinear: E[y | x≈1.5] = 2.13
+```
+
+![左から独立（円形）、線形の従属（楕円）、y = x^2 の非線形の従属（放物線）。右端は r がほぼ 0 でも従属している](./joint-marginal-conditional_independence.svg)
+
+左の独立な散布図は円形に近く、どの `x` の帯を切っても中の `y` の分布はほぼ同じです。中央の線形の従属は右上がりの楕円に伸び、`x` が大きい帯ほど `y` も大きくなります。
+
+右の `y = x^2 + ノイズ` は、Pearson の[相関係数](../correlation/)が `r = -0.07` でほぼ 0 です。それでも赤く塗った 2 本の帯を比べると、`x ≈ 0` の帯では `y` の平均が 0.04、`x ≈ 1.5` の帯では 2.13 で、`x` を知ると `y` の分布が大きく動きます。相関係数が測るのは線形の関係だけなので、`r ≈ 0` から独立とは言えません。非線形の依存まで調べるなら、同時分布と周辺分布の積の差を測る[相互情報量](../information-theory/)（mutual information）などを使います。
 
 ---
 
@@ -244,7 +271,7 @@ x≈+1.5: E[y|x] ≈ +1.07  (theory: +1.05)
 
 これがベイズの定理です。読み方は「事後分布 `P(y|x)` は、尤度 `P(x|y)` と事前分布 `P(y)` の積を証拠 `P(x)` で正規化したもの」となります。
 
-機械学習では `P(y|x)`（入力から出力を予測）を直接学習するモデル（識別モデル: ロジスティック回帰、決定木、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: Naive Bayes、LDA、GAN、Diffusion）の 2 系統があり、3 つの分布のどれを直接モデル化するかで設計思想が分かれます。
+分類では、`P(y|x)` を直接学習するモデル（識別モデル: ロジスティック回帰、決定木、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: Naive Bayes、線形判別分析（LDA））の 2 系統があります。画像などを作る GAN（Generative Adversarial Network）や拡散モデルも生成モデルと呼ばれます。ただし GAN や拡散モデルは `P(x)`（条件付きなら `P(x|y)`）に従う新しいサンプルを作るのが目的で、ベイズの定理で分類するモデルではありません。
 
 ---
 
@@ -254,7 +281,6 @@ x≈+1.5: E[y|x] ≈ +1.07  (theory: +1.05)
 - 独立性の判定（`P(x, y) = P(x) × P(y)` なら独立）
 - 条件付き期待値（`E[Y|X=x] = Σ_y y P(y|x)`）
 - 相関と共分散の定義（同時分布から計算する量）
-- 大数の法則・中心極限定理の議論（周辺分布の漸近的性質）
 
 ---
 
@@ -262,9 +288,7 @@ x≈+1.5: E[y|x] ≈ +1.07  (theory: +1.05)
 
 数式やモデルの出力を読む時は、どの分布を表しているか確認します。
 
-- 分類器の出力解釈: `predict_proba` は `P(y|x)` の推定値
 - データドリフト分析: covariate shift は `P(x)`、concept drift は `P(y|x)`、label shift は `P(y)` が動くので、3 分類が直接判断軸になる
-- 生成モデルと識別モデルの違い: 何を直接モデル化しているかで分類できる
 - ベイズ推論: 事前分布 `P(θ)`、尤度 `P(D|θ)`、事後分布 `P(θ|D)` の関係をベイズの定理でつなぐ
 - Naive Bayes 分類器: 特徴量間の条件付き独立 `P(x1, x2, ..., xn | y) = Π_i P(xi | y)` を仮定して計算量を抑える
 - 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違うときの確率出力の再校正
@@ -275,5 +299,5 @@ x≈+1.5: E[y|x] ≈ +1.07  (theory: +1.05)
 
 - 「周辺分布と同時分布は同じもの」ではない: 同時分布は 2 変数を保ったまま、周辺分布は片方を捨てた要約。情報量が減るので、周辺分布から同時分布は復元できない（独立な場合を除く）
 - 「`P(y|x)` と `P(x|y)` は同じ」ではない: 条件と被条件を入れ替えると意味も値も変わる。雨の例では `P(雨|雲量=多) = 0.30 / 0.40 = 0.75` と `P(雲量=多|雨) = 0.30 / 0.40 = 0.75` がたまたま同じ値になるものの、問いも意味も違う。混同するとベイズの定理の意味も失われる
-- 「条件付き分布の和が 1 にならない」: 各 `x` の値で固定したときの `y` の分布として 1 に正規化されている（行ごとに合計 1）。同時分布のように全マスを足すと 1 ではなく、行数分（条件の数だけ）足し上がる
+- 「条件付き分布の表も全マスを足すと 1 になる」わけではない: 1 になるのは `x` を固定した各行の合計で、雲量の例では 3 行あるので全マスの合計は 3 になる
 - 「離散と連続で別の公式を使う必要がある」とは限らない: 足し合わせるか積分するかの違いだけで、関係式 `P(x, y) = P(y|x) × P(x)` は同じ形をしている
