@@ -29,7 +29,11 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の 2 つのコンテナは、共有 volume だけで繋がっています。volume とは、コンテナの外に置かれ、同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場です。マウントとは、volume が自分のファイルシステムの一部として見えるように指定する操作です。Web サーバーはログをファイルに書くだけで、転送先も転送の再試行も知りません。logsaver はログの形式を知っていれば動くので、Web サーバーが何語で書かれていても同じコンテナイメージを使い回せます。
+上記の図の 2 つのコンテナは、共有 volume だけで繋がっています。volume とは、コンテナの外に置かれ、同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場です。マウントとは、volume が自分のファイルシステムの一部として見えるように指定する操作です。
+
+Web サーバーはログをファイルに書くだけで、転送先も転送の再試行も知りません。logsaver はログの形式を知っていれば動くので、Web サーバーが何語で書かれていても同じコンテナイメージを使い回せます。
+
+<br>
 
 本記事では、Sidecar で機能を足す理由と、同居させる時に決める事柄を説明します。扱う疑問は次の 5 つです。
 
@@ -125,7 +129,9 @@ Sidecar が成り立つのは、同じ実行単位のコンテナが一部の資
 | イメージのバージョン | コンテナごとに分けて管理できる |
 | 再起動と障害の波及 | 実行基盤の設定によってコンテナごとに分かれる |
 
-表の上の 3 行が 2 つのコンテナを結ぶ経路で、残りの行がコンテナごとに分けられるものです。ログの転送のようにファイルを介する用途では volume で繋ぎ、通信を仲介する用途では localhost で繋ぎます。何をどこまで分けられるのかは実行基盤ごとに違い、既定が分離とは限りません。ネットワークを共有しない設定では、sidecar を localhost ではなく別のアドレスで呼ぶ必要があります。
+表の上の 3 行が 2 つのコンテナを結ぶ経路で、残りの行がコンテナごとに分けられるものです。ログの転送のようにファイルを介する用途では volume で繋ぎ、通信を仲介する用途では localhost で繋ぎます。
+
+何をどこまで分けられるのかは実行基盤ごとに違い、既定が分離とは限りません。例えば、ネットワークを共有しない設定では、sidecar を localhost ではなく別のアドレスで呼ぶ必要があります。
 
 Amazon ECS には、コンテナの停止を実行単位の全体に波及させるかどうかを決める `essential` という設定があります。[公式ドキュメント](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html)によると、`essential` が true のコンテナが何らかの理由で停止した場合、同じ Task の他のコンテナも全て停止します。既定は true なので、sidecar の停止をアプリケーションから切り離すには、この値を明示的に false にします。
 
@@ -159,7 +165,7 @@ Kubernetes の Job（完了したら終わるバッチ処理を Pod で実行す
 
 2023 年の Kubernetes 1.28 で試験的に入った [Sidecar Containers](https://kubernetes.io/blog/2023/08/25/native-sidecar-containers/) では、Pod の終了は main のコンテナだけで決まり、sidecar が動いていても Job は完了します。この仕組みは 1.29 で既定で有効になり、1.33 で[正式な機能](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/)になりました。
 
-以下は、望ましい順序です。実行基盤が sidecar のライフサイクルを扱う役目を持ちます。
+以下は、実行基盤が sidecar のライフサイクルを扱う場合の望ましい順序です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -177,9 +183,11 @@ sequenceDiagram
     S-->>R: 停止完了
 ```
 
-上記の図では、sidecar の起動と、利用可能になったことの報告が別の段になっています。プロセスが動き出しただけでは待ち受けは始まっていません。実行基盤が待ち受けのポートへの接続や health check の応答で利用可能かどうかを検査できないと、メインのコンテナに待つ処理を書く必要があります。停止では向きが逆になり、メインが完全に止まってから sidecar を止めます。この順序と検査を宣言で表現できる実行基盤を選ぶと、アプリケーションのコードに待ち合わせの処理を持たずに済みます。
+上記の図では、sidecar の起動と、利用可能になったことの報告が別の段になっています。プロセスが動き出しただけでは待ち受けは始まっていません。実行基盤が待ち受けのポートへの接続や health check の応答で利用可能かどうかを検査できないと、メインのコンテナに待つ処理を書く必要があります。
 
-main と sidecar を同じ実行単位に置くには、実行基盤に渡す設定の中に両方のコンテナを定義します。順序と依存関係の表し方は実行基盤ごとに違います。Kubernetes では前述の Sidecar Containers を使い、Amazon ECS では Task の中に補助コンテナを並べます。
+停止では向きが逆になり、メインが完全に止まってから sidecar を止めます。この順序と検査を宣言で表現できる実行基盤を選ぶと、アプリケーションのコードに待ち合わせの処理を持たずに済みます。
+
+順序と依存関係の表し方は実行基盤ごとに違います。Kubernetes では前述の Sidecar Containers を使います。Amazon ECS では Task 定義の `dependsOn` で、補助コンテナの起動や health check の通過を待ってからメインを起動させます。停止はその逆順です。
 
 ---
 
@@ -198,7 +206,9 @@ main と sidecar を同じ実行単位に置くには、実行基盤に渡す設
 
 通信を仲介する sidecar は、service mesh のデータプレーンに使われています。service mesh とは、サービス間の通信の制御をアプリケーションのコードから切り離し、独立した層で扱う構成です。データプレーンとは、その層のうち実際に通信を運ぶ部分で、設定を配る部分をコントロールプレーンと呼んで分けます。
 
-service mesh の実装の 1 つである Istio の sidecar mode は、Envoy というプロキシをアプリケーションごとに sidecar として配置し、サービス間の通信を経由させます。Istio の[アーキテクチャの説明](https://istio.io/latest/docs/ops/deployment/architecture/)では、この配置の利点として「sidecar プロキシのモデルによって、再設計やコードの書き直しを求めずに、既存のデプロイに Istio の機能を追加できる」ことが挙げられています。Envoy が担うのは、例えば宛先の探索・負荷分散・TLS（Transport Layer Security）終端・メトリクスの収集です。
+service mesh の実装の 1 つである Istio の sidecar mode は、Envoy というプロキシをアプリケーションごとに sidecar として配置し、サービス間の通信を経由させます。Envoy が担うのは、例えば宛先の探索・負荷分散・TLS（Transport Layer Security）終端・メトリクスの収集です。
+
+Istio の[アーキテクチャの説明](https://istio.io/latest/docs/ops/deployment/architecture/)では、この配置の利点として「sidecar プロキシのモデルによって、再設計やコードの書き直しを求めずに、既存のデプロイに Istio の機能を追加できる」ことが挙げられています。
 
 ---
 

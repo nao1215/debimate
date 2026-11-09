@@ -10,7 +10,7 @@ wrapTables: true
 
 Adapter とは、アプリケーションと同じ実行単位に置かれ、外から見える出力とインターフェースを統一する補助コンテナです。アプリケーションのコードには手を入れず、外から見た形だけを揃えます。手を入れられないミドルウェアと自作のサービスが混ざった環境で、監視やログを 1 か所に揃えたい時に使います。
 
-実行単位（同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まり。Kubernetes の Pod や Amazon ECS の Task）・実行基盤（コンテナの配置とライフサイクルを管理する基盤）・volume（同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場）は、[Sidecar](../sidecar/) と同じ意味で使います。同じ実行単位のコンテナはネットワークを共有する設定にできるため、隣のコンテナに localhost で届きます。
+実行単位とは、同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まりで、Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の [Task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html) が当たります（[Sidecar](../sidecar/) のノートと同じ意味です）。同じ実行単位のコンテナはネットワークを共有する設定にできるため、隣のコンテナに localhost で届きます。
 
 以下は、複数のアプリケーションのメトリクスを監視基盤に集める例です。
 
@@ -32,7 +32,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の監視基盤が知っているのは 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。JMX（Java Management Extensions）は Java の管理と監視のための仕様で、アプリケーションが登録した情報を外から読み書きする窓口です。StatsD は、メトリクスを短いテキスト 1 行で送るプロトコルと、それを受けて集約するデーモンを指します。どちらも監視基盤が直接読める形とは限りません。
+上記の図の監視基盤が知っているのは 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。
+
+[JMX](https://docs.oracle.com/javase/8/docs/technotes/guides/jmx/)（Java Management Extensions）は Java の管理と監視のための仕様で、アプリケーションが登録した情報を外から読み書きする窓口です。[StatsD](https://github.com/statsd/statsd) は、メトリクスを短いテキスト 1 行で送るプロトコルと、それを受けて集約するデーモンを指します。どちらも監視基盤が直接読める形とは限りません。
 
 <br>
 
@@ -50,8 +52,9 @@ flowchart LR
 
 Brendan Burns 氏と David Oppenheimer 氏の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」は、4.3 節で Adapter を「複数のコンテナにまたがって出力とインターフェースを標準化すること」とし、外の世界に「単純化され均質にされたアプリケーションの姿」を見せるものとしています。
 
-名前は、論文より前の Brendan Burns 氏のブログ「[The Distributed System ToolKit](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で Sidecar・[Ambassador](/notes/software-architecture/ambassador/) と並べて紹介されました。冒頭の監視の図は、論文とブログが挙げる例です。3 つのパターンの関係と名前の経緯は、[Sidecar](../sidecar/) のノートにまとめています。
-論文の 4.3 節では Adapter が Ambassador との対比で定義され、2 つは単純化して見せる相手が逆です。Ambassador は外の世界を単純化してアプリケーションに見せ、Adapter はアプリケーションを揃えて外の世界に見せます。
+この定義は [Ambassador](../ambassador/) との対比になっていて、2 つは単純化して見せる相手が逆です。Ambassador は外の世界を単純化してアプリケーションに見せ、Adapter はアプリケーションを揃えて外の世界に見せます。
+
+名前は、論文より前の Brendan Burns 氏のブログ「[The Distributed System ToolKit](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で Sidecar・Ambassador と並べて紹介されました。冒頭の監視の図は、論文とブログが挙げる例です。3 つのパターンの関係と名前の経緯は、[Sidecar](../sidecar/) のノートにまとめています。
 
 <br>
 
@@ -87,7 +90,7 @@ flowchart LR
 
 ### 接点と変換の向き
 
-論文の 4.3 節によると、メインのコンテナは localhost または共有のローカルボリュームを通じて adapter と通信できます。どちらを使うかは、アプリケーションが出力を何で出しているかで決まります。
+論文の 4.3 節によると、メインのコンテナは localhost または共有の volume（同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場）を通じて adapter と通信できます。どちらを使うかは、アプリケーションが出力を何で出しているかで決まります。
 
 | アプリケーションの出し方 | 接点 | adapter が行うこと |
 |---|---|---|
@@ -109,7 +112,7 @@ flowchart LR
 
 監視の用途では、監視基盤が一定間隔でメトリクスを取りに来る形が多くなります。Prometheus の exporter をアプリケーションと同じ実行単位に同居させる使い方が、この形です。
 
-Prometheus はメトリクスを取りに来て蓄える監視基盤です。[exporter](https://prometheus.io/docs/instrumenting/exporters/) は、サードパーティのシステムが持つ既存のメトリクスを Prometheus のメトリクスとして書き出すライブラリとサーバーで、「HAProxy や Linux のシステム統計のように、対象のシステムに直接 Prometheus のメトリクスを組み込むことが現実的でない場合に有用」なものです。
+[Prometheus](https://prometheus.io/) はメトリクスを取りに来て蓄える監視基盤です。[exporter](https://prometheus.io/docs/instrumenting/exporters/) は、サードパーティのシステムが持つ既存のメトリクスを Prometheus のメトリクスとして書き出すライブラリとサーバーで、「HAProxy や Linux のシステム統計のように、対象のシステムに直接 Prometheus のメトリクスを組み込むことが現実的でない場合に有用」なものです。
 
 以下は、監視基盤が取りに来る形での往復です。
 
@@ -126,13 +129,13 @@ sequenceDiagram
     D-->>M: 応答
 ```
 
-上記の図で変換が起きるのは adapter の中だけで、取りに来る形であれば、アプリケーションは自分がどの形式で監視されているのかを知りません。監視基盤を入れ替える場合も、アプリケーションは変えずに済みます。adapter が OpenMetrics（Prometheus の形式を元にした標準の形式）のような標準の形式で出していて、新しい監視基盤も同じ形式を読めるなら、adapter も変えずに済みます。
+上記の図で変換が起きるのは adapter の中だけで、取りに来る形であれば、アプリケーションは自分がどの形式で監視されているのかを知りません。
 
-新しい監視基盤が adapter の出す形式を読めない場合も、合わせるのは adapter か監視基盤の設定です。
+そのため、監視基盤を入れ替える場合もアプリケーションには手を入れません。adapter が [OpenMetrics](https://prometheus.io/docs/specs/om/open_metrics_spec/)（Prometheus の形式を元にした標準の形式）で出していて、新しい監視基盤も同じ形式を読めるなら、adapter も変えずに済みます。読めない場合も、合わせるのは adapter か監視基盤の設定です。
 
 <br>
 
-exporter を必ず同居させるわけではありません。exporter は、メトリクスの取得元のマシンで[動く必要がありません](https://prometheus.io/docs/guides/multi-target-exporter/)。1 台の exporter が多数の対象を担当する構成もあり、それは変換のコードを 1 箇所に集める形なので、ここで扱う Adapter とは配置が違います。
+exporter を必ず同居させるわけではありません。exporter は、メトリクスの取得元のマシンで[動く必要がありません](https://prometheus.io/docs/guides/multi-target-exporter/)。1 台の exporter が多数の対象を担当する構成もあり、それは変換のコードを 1 か所に集める形なので、ここで扱う Adapter とは配置が違います。
 
 同居させる場合でも、対象によっては設定が必要です。Java のアプリケーションの JMX を別のコンテナから読むには、リモート接続を有効にする起動オプションが必要です。[jmx_exporter](https://prometheus.github.io/jmx_exporter/) は、リモート JMX の設定を避けられるので、同じ JVM（Java の実行環境）の中で動く Java Agent として使う形が大半の利用者に勧められています。
 
@@ -145,7 +148,6 @@ Java Agent はアプリケーションと同じプロセスに読み込ませる
 - アプリケーションを改変せずに、外から見た形を揃えられる
 - 変換のコードが監視基盤から出て実行単位の中に閉じるため、アプリケーションが増えても監視基盤に固有の変換コードを足さずに済み、監視基盤の更新とも切り離せる
 - 同じ形式で出力する複数のアプリケーションに、同じ adapter を使い回せる
-- ソースコードを変更できないオープンソースや既存システムも、同じ形式で扱える
 
 ---
 
@@ -159,11 +161,46 @@ Adapter は、アプリケーションを改変しない代わりに、外向き
 - 業務と関係のない変換の対応表が、アプリケーションの数だけ保守の対象として残る
 - 変換を挟む分だけ、値が外から見えるまでに追加の遅延が生じる
 
-3 番目は、アプリケーションと adapter を別々に更新する構成の弱点です。PostgreSQL の統計を Prometheus の形式に変換する [postgres_exporter](https://github.com/prometheus-community/postgres_exporter)（DB と同じ実行単位に置けば adapter になる）は、PostgreSQL 17（報告時はベータ）に上げた環境で、bgwriter の統計（checkpoint の回数など）を[まとめて取れなくなりました](https://github.com/prometheus-community/postgres_exporter/issues/1060)。
+3 番目は、アプリケーションと adapter を別々に更新する構成の弱点です。[postgres_exporter](https://github.com/prometheus-community/postgres_exporter) は、DB（データベース）の [PostgreSQL](https://www.postgresql.org/) の統計を Prometheus の形式に変換する exporter で、DB と同じ実行単位に置けば adapter になります。
 
-PostgreSQL 17 が checkpoint（メモリ上の変更をディスクに書き出す処理）の列を `pg_stat_bgwriter` から新しい `pg_stat_checkpointer` に移し、exporter の問い合わせが「列が存在しない」というエラーになったからです。[修正](https://github.com/prometheus-community/postgres_exporter/pull/1072)が取り込まれたのは、報告から 4 か月半後の 2025 年 1 月でした。
+この exporter は、PostgreSQL 17（報告時はベータ）に上げた環境で、bgwriter の統計（checkpoint の回数など）を[まとめて取れなくなりました](https://github.com/prometheus-community/postgres_exporter/issues/1060)。PostgreSQL 17 が checkpoint（メモリ上の変更をディスクに書き出す処理）のカラムを `pg_stat_bgwriter` から新しい `pg_stat_checkpointer` に[移し](https://www.postgresql.org/docs/17/release-17.html)、exporter の問い合わせが消えたカラムを読みに行ったからです。
 
-壊れたのは変換を受け持つ exporter だけです。PostgreSQL 自体は正常に動き続け、exporter も他の統計は返し続けます。失敗が見えるのは exporter のログと、collector（統計を集める単位）ごとの成否を表す値（`pg_scrape_collector_success`）だけで、この値を監視していないと監視の一部だけが静かに止まります。
+[修正](https://github.com/prometheus-community/postgres_exporter/pull/1072)が取り込まれたのは報告から 4 か月半後の 2025 年 1 月で、リリースは 2 月の v0.17.0 でした。以下は、PostgreSQL 17 と修正前の v0.15.0 を [Docker](https://docs.docker.com/) で動かし、exporter が返すメトリクスとログを確かめる手順です。
+
+```bash
+docker network create pgnet
+docker run -d --name pg --network pgnet \
+  -e POSTGRES_PASSWORD=pw postgres:17-alpine
+sleep 5
+docker run -d --name exporter --network pgnet \
+  -e DATA_SOURCE_NAME="postgresql://postgres:pw@pg:5432/postgres?sslmode=disable" \
+  prometheuscommunity/postgres-exporter:v0.15.0
+sleep 5
+docker run --rm --network pgnet curlimages/curl:8.10.1 -s http://exporter:9187/metrics \
+  | grep -E '^pg_up|^pg_scrape_collector_success'
+docker logs exporter 2>&1 | grep 'collector failed'
+# 後始末: docker rm -f pg exporter && docker network rm pgnet
+```
+
+PostgreSQL 17.10 で実行した結果です（`docker run -d` が出すコンテナ ID の行は省きました）。
+
+```text
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+ts=2026-11-09T10:42:20.778Z caller=collector.go:202 level=error msg="collector failed" name=stat_bgwriter duration_seconds=0.007986937 err="pq: column \"checkpoints_timed\" does not exist"
+```
+
+`pg_up` は 1 で、PostgreSQL への接続は成功しています。0 になったのは collector（統計を集める単位）ごとの成否を表す `pg_scrape_collector_success` の `stat_bgwriter` だけで、他の collector は値を返し続けます。失敗はこの値と exporter のログにしか現れないため、この値を監視していないと監視の一部だけが静かに止まります。
+
+exporter のコンテナイメージを v0.17.0 に替えて同じ手順を実行すると、`stat_bgwriter` も 1 になりました。
 
 ---
 
