@@ -12,7 +12,14 @@ body:has(.oss-directory) { --main-width: 1100px; }
 .oss-directory .oss-sponsor-link:focus-visible { outline-color: #bf3989; }
 [data-theme="dark"] .oss-sponsor-link { background: #33212d; border-color: #945276; color: #f0a6cf; }
 [data-theme="dark"] .oss-directory .oss-sponsor-link:hover { background: #492b3e; border-color: #db61a2; }
-#oss-all { font-size: 18px; margin-bottom: 12px; }
+#oss-stars, #oss-all { font-size: 18px; margin-bottom: 12px; }
+.oss-star-history { margin-bottom: 28px; }
+.oss-star-history figure { margin: 0; }
+.oss-star-history img { display: block; width: 100%; max-width: 808px; height: auto; margin: 0 auto; }
+.oss-star-history .oss-star-history-dark, [data-theme="dark"] .oss-star-history .oss-star-history-light { display: none; }
+[data-theme="dark"] .oss-star-history .oss-star-history-dark { display: block; }
+.oss-star-history figcaption { margin-top: 6px; text-align: center; color: var(--secondary); font-size: 12px; }
+.oss-star-history figcaption a { text-decoration: underline; text-underline-offset: 3px; }
 .oss-categories { display: flex; flex-wrap: wrap; gap: 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 .oss-categories button { font: inherit; font-size: 13px; color: var(--secondary); padding: 10px 0; border-bottom: 2px solid transparent; cursor: pointer; }
 .oss-categories button[aria-pressed="true"] { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
