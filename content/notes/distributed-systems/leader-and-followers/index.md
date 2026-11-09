@@ -38,7 +38,7 @@ sequenceDiagram
 - 分断から復帰した古い Leader は、どう締め出されるのか。
 - Leader から読んでも古い値が返るのは、どんな時か。
 
-想定する故障は、ノードの停止とネットワークの分断の 2 つです。誤った値を返す故障（ビザンチン障害）には触れません。仕組みの説明には Raft を使います。Raft は、複製したログ（受け付けた更新を順に追記した記録）を全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
+想定する故障は、ノードの停止とネットワークの分断の 2 つです。誤った値を返す故障（ビザンチン障害）には触れません。仕組みの説明には [Raft](https://raft.github.io/) を使います。Raft は、複製したログ（受け付けた更新を順に追記した記録）を全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
 
 ---
 
@@ -92,7 +92,9 @@ stateDiagram-v2
     Leader --> Follower: より新しい任期を検知
 ```
 
-上記の図で Candidate から Candidate に戻る経路は、複数のノードが同時に Candidate になって票が割れた場合を表します。全ノードが同じ待ち時間を使うと、票の割れが繰り返されます。そのため、Raft は待ち時間をランダムな幅で散らし、選出を始めるたびに引き直します。Leader から Follower に戻る経路は、分断から復帰した旧 Leader が通るので、「古い Leader の締め出し」で改めて扱います。
+上記の図で Candidate から Candidate に戻る経路は、複数のノードが同時に Candidate になって票が割れた場合を表します。全ノードが同じ待ち時間を使うと、票の割れが繰り返されます。そのため、Raft は待ち時間をランダムな幅で散らし、選出を始めるたびに引き直します。
+
+Leader から Follower に戻る経路は、分断から復帰した旧 Leader などが通るので、「古い Leader の締め出し」で改めて扱います。
 
 投票を求められた側の処理は短く書けます。Leader が 2 台立つのを防いでいるのは、1 つの任期で 2 票を投じないことと、当選に過半数を要求することの組み合わせです。過半数の集合はどの 2 つを取っても 1 台以上を共有するので、共有するノードが 1 票しか出さなければ、同じ任期に 2 台が過半数に届くことはありません。
 
@@ -117,13 +119,13 @@ func (n *node) handleRequestVote(term int, candidateID string) bool {
 }
 ```
 
-上記のコードは `currentTerm` と `votedFor` をメモリ上で書き換えるだけで、実装には不足があります。Raft は、この 2 つとログを RPC（Remote Procedure Call、遠隔手続き呼び出し）に応答する前に安定ストレージ（再起動や電源断の後も内容が残る記憶装置）に書くことを要求しています。投票した直後に再起動して `votedFor` を失うと、同じ任期でもう 1 台に投票してしまい、Leader が 2 台立ちます。
+上記のコードは `currentTerm` と `votedFor` をメモリ上で書き換えるだけで、実装には不足があります。Raft は、この 2 つとログを RPC（Remote Procedure Call、遠隔手続き呼び出し）に応答する前に安定ストレージ（再起動や電源断の後も内容が残る記憶装置）に書くことを要求しています。投票した直後に再起動して `votedFor` を失うと、同じ任期でもう 1 台に投票してしまい、Leader が 2 台立つ場合があります。
 
 <br>
 
-省略したログの新しさの検査は、確定済みのエントリ（Leader が過半数への複製を確かめ、以後取り消されないと判断したログの 1 件）を守るためのものです。Raft では、Candidate より新しいログを持つノードは投票を拒否します。新しさは末尾のエントリの任期で比べ、任期が同じならログが長い方を新しいとします（論文 5.4.1 節）。確定済みのエントリは過半数が持っており、票を集めるにも過半数が必要なので、エントリを持つ過半数と票を出す過半数は必ず重なります。
+省略したログの新しさの検査は、確定済みのエントリ（Leader が過半数への複製を確かめ、以後取り消されないと判断したログの 1 件）を守るためのものです。Raft では、Candidate より新しいログを持つノードは投票を拒否します。新しさは末尾のエントリの任期で比べ、任期が同じならログが長い方を新しいとします（論文 5.4.1 節）。
 
-以下は、確定済みのエントリを持たないノードが Candidate になった例で、台数と配置は説明用の値です。
+確定済みのエントリは過半数が持っており、票を集めるにも過半数が必要なので、エントリを持つ過半数と票を出す過半数は必ず重なります。以下は、確定済みのエントリを持たないノードが Candidate になった例で、台数と配置は説明用の値です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -151,7 +153,9 @@ flowchart TB
 
 <br>
 
-更新の並びを決める役を 1 台に固定しない解き方もあり、その代表が Leslie Lamport 氏の合意アルゴリズム Paxos です。合意アルゴリズムの役目は、提案された値のうち 1 つだけが選ばれることを保証することです（[Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf)）。Paxos では、提案を出すノードが値に番号（提案番号）を付けて過半数の受け入れを求めます。受け入れる側は、より大きな番号を見たら、それより小さい番号の提案を以後受け入れないと約束します。1 つの値だけが選ばれるという保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。
+更新の並びを決める役を 1 台に固定しない解き方もあり、その代表が Leslie Lamport 氏の合意アルゴリズム Paxos です。合意アルゴリズムの役目は、提案された値のうち 1 つだけが選ばれることを保証することです（[Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf)）。
+
+Paxos では、提案を出すノードが値に番号（提案番号）を付けて過半数の受け入れを求めます。受け入れる側は、より大きな番号を見たら、それより小さい番号の提案を以後受け入れないと約束します。1 つの値だけが選ばれるという保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。
 
 しかし、提案を出すノードが複数居ると、互いに大きな番号を出し合い、何も選ばれないまま進まなくなる場合があります。以下はその例で、番号は説明用の値です。
 
@@ -210,7 +214,7 @@ Leader は、Follower ごとに「どこまで複製できたか」の位置を 
 // advanceCommitIndex は、過半数に複製できた位置まで commitIndex を進めます。
 // Leader を務めているノードだけが呼びます。
 // n.log は Raft 論文に合わせて添字 1 から使い、log[0] は番兵です。
-// commitIndex の初期値 0 は、まだ何も確定していない事を表します。
+// commitIndex の初期値 0 は、まだ何も確定していないことを表します。
 func (n *node) advanceCommitIndex() {
 	total := len(n.matchIndex) + 1 // Follower の数と、Leader 自身の 1 台
 	for i := len(n.log) - 1; i > n.commitIndex; i-- {
@@ -233,9 +237,18 @@ func (n *node) advanceCommitIndex() {
 
 複製の数で確定させるのは現在の任期で作られたエントリだけ、という条件が入っています。Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件です。
 
-過去の任期のエントリは、過半数に複製されていても、後の Leader に上書きされる場合があります。そのエントリを持たないノードでも、ログの末尾により新しい任期のエントリがあれば、ログの新しさの検査を通って Leader に選ばれることがあるからです（論文の Figure 8）。
+過去の任期のエントリは、過半数に複製されていても、後の Leader に上書きされる場合があります。そのエントリを持たないノードでも、ログの末尾の任期が新しければ Leader に選ばれる場合があるからです（論文の Figure 8）。
 
-例えば 5 台の構成で、任期 2 の Leader が 1 件を自分ともう 1 台に配って落ち、任期 3 の Leader が同じ位置に別のエントリを自分だけに書いて落ちたとします。任期 4 で最初の Leader が復帰し、任期 2 のエントリを 3 台目に配って過半数に届かせても、ここで落ちれば、任期 3 のエントリを末尾に持つノードが当選して任期 2 のエントリを上書きします。
+例えば 5 台の構成で、次の順に Leader が入れ替わったとします。表の値はログの同じ位置に入ったエントリの任期で、「-」はエントリが無いことを表します。
+
+| 段階 | A | B | C | D | E |
+|---|---|---|---|---|---|
+| 1. 任期 2 の Leader A が B に配って落ちる | 2 | 2 | - | - | - |
+| 2. 任期 3 の Leader E が自分だけに書いて落ちる | 2 | 2 | - | - | 3 |
+| 3. 任期 4 で A が復帰し、C に配る | 2 | 2 | 2 | - | 3 |
+| 4. A が落ち、E が当選して上書きする | 3 | 3 | 3 | 3 | 3 |
+
+段階 3 で任期 2 のエントリは過半数の 3 台に届いています。それでも段階 4 で E は B・C・D の票を集めて当選できます。E の末尾の任期 3 が、B・C の末尾の任期 2 より新しいためです。
 
 現在の任期のエントリが過半数に複製されると、そのエントリを持たないノードは検査に落ち、Leader になれません。Raft は、2 つのログの同じ位置に同じ任期のエントリがあれば、そこまでの内容が全て一致するように保っています。そのため、Leader が `commitIndex` を現在の任期のエントリの位置まで進めると、その手前にある過去の任期のエントリも確定済みの範囲に入ります。
 
@@ -246,7 +259,6 @@ func (n *node) advanceCommitIndex() {
 ネットワークが分断されると、Leader が生きているのに Follower がその信号を受け取れない状態になります。多数派（過半数が残った側）のノードは新しい Leader を選び、少数派に取り残された旧 Leader は自分が Leader のつもりで動き続けます。1 台に集約したはずの更新の受け口が、一時的に 2 台に増えます。
 
 以下は、分断が起きてから旧 Leader が締め出されるまでの流れです。
-
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -297,7 +309,9 @@ func (n *node) handleAppendEntries(args appendEntriesArgs) appendEntriesReply {
 
 読み取りを Follower に分散させると、Leader の負荷は下がります。その代わり、確定した更新がまだ届いていない Follower は古い値を返します。更新の直後に自分の書いた値を読み返す用途では、この遅れが表に出ます。
 
-Leader から読んでも、古い値が返る場合があります。2014 年、Kyle Kingsbury 氏は故障を注入して DB の正しさを調べる Jepsen で、etcd（Raft で複製する Key-Value ストア）の[読み取りが古い値を返す](https://aphyr.com/posts/316-call-me-maybe-etcd-and-consul)ことを示しました。当時の etcd は、`consistent` を指定した読み取りでも、自分を Leader と考えているノードが手元の状態をそのまま返していました。分断で孤立した旧 Leader も、交代に気付くまでは自分を Leader と考えているので、新しい Leader の下で確定した値を知らないまま応答します。
+Leader から読んでも、古い値が返る場合があります。2014 年、Kyle Kingsbury 氏は故障を注入して DB（データベース）の正しさを調べる [Jepsen](https://jepsen.io/) で、[etcd](https://etcd.io/)（Raft で複製する Key-Value ストア）の[読み取りが古い値を返す](https://aphyr.com/posts/316-call-me-maybe-etcd-and-consul)ことを示しました。
+
+当時の etcd は、`consistent` を指定した読み取りでも、自分を Leader と考えているノードが手元の状態をそのまま返していました。分断で孤立した旧 Leader も、交代に気付くまでは自分を Leader と考えているので、新しい Leader の下で確定した値を知らないまま応答します。
 
 Kingsbury 氏はこの問題を [issue #741](https://github.com/etcd-io/etcd/issues/741)「Consistent reads are not consistent」（一貫性のある読み取りが一貫していない）として報告し、読み取りもログに追記して確定させる `quorum=true` が etcd に足されました。ログを通せば確実ですが、読み取りのたびに複製と確定の往復が掛かります。
 
@@ -356,6 +370,6 @@ Leader 1 台に更新を集める構成には、次の制約があります。
 ### 適さないケース
 
 - 書き込みが多く、1 台では捌けないワークロード。データを分割して Leader を複数立てる構成を検討する
-- 分断中も両側で更新を受け付けたいシステム。CRDT（Conflict-free Replicated Data Type）を検討する。CRDT は、並行な更新の順序を決めなくても、同じ更新を受け取ったノード同士が同じ状態に揃うデータ型である。ただし扱えるデータの形は限られる
+- 分断中も両側で更新を受け付けたいシステム。[CRDT](https://crdt.tech/)（Conflict-free Replicated Data Type）を検討する。CRDT は、並行な更新の順序を決めなくても、同じ更新を受け取ったノード同士が同じ状態に揃うデータ型で、扱えるデータの形は限られる
 - 数百台のノードを 1 つの合意グループに参加させる構成。1 つのグループは数台に絞るのが前提で、システム全体の台数が多いことは問題にならない
 - 更新が稀で、1 台の停止による短い中断を許容できるシステム

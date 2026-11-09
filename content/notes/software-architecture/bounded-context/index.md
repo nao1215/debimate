@@ -57,15 +57,15 @@ EC（Electronic Commerce）サイトを例に、1 件の買い物を扱う 3 つ
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    C["配送からの要求<br/>1 件の注文を分割して送りたい"] --> M["全社共通の注文モデル<br/>明細に配送先を追加"]
+flowchart LR
+    C["配送からの要求<br/>1 件の注文を分割して送りたい"] --> M["全社共通の注文モデル<br/>状態に「一部出荷済み」を追加"]
     M --> SH["配送の機能<br/>要求どおりに動く"]
-    M --> SA["販売の機能<br/>値引きの計算が明細単位に変わる"]
-    M --> BI["請求の機能<br/>請求書の明細行が増える"]
+    M --> SA["販売の機能<br/>「出荷前ならキャンセル可」の判定を見直す"]
+    M --> BI["請求の機能<br/>「出荷したら請求」の判定を見直す"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の左端にある要求は、配送の業務だけから出ています。それでも、モデルを共有している販売と請求の 2 つが影響を受けます。共有されたモデルに手を入れる限り、変更のたびに 3 つ全部の検証が必要になり、変更を出せる速さは最も慎重な業務に合わせて落ちます。
+上記の図の左端にある要求は、配送の業務だけから出ています。それでも、販売と請求のコードは同じ注文の状態を見て分岐しているので、状態が 1 つ増えると、その分岐を全部読み直す必要があります。共有されたモデルに手を入れる限り、変更のたびに 3 つ全部の検証が必要になり、変更を出せる速さは最も慎重な業務に合わせて落ちます。
 
 <br>
 
@@ -95,11 +95,13 @@ Evans 氏は、境界を表す観点として、チームの分け方、アプ�
 
 ### 境界の中で守ること
 
-境界の中では、ユビキタス言語を 1 つに保ちます。先に用語集を作って語を揃えるのとは逆で、ここでは語とモデルが一体です。語を変えれば、モデルも変わります。Evans 氏の DDD Reference は、境界に名前を付けてその名前をユビキタス言語の一部にすることと、境界の中では継続的インテグレーション（コードを頻繁に統合し、チームで用語とモデルの解釈を突き合わせ続けること）によって用語とモデルの概念を厳密に一致させ続けることを求めています。
+境界の中では、ユビキタス言語を 1 つに保ちます。語を揃える場所は用語集ではなくモデルそのもので、語を変えれば、モデルも変わります。
+
+境界そのものにも名前を付け、その名前をユビキタス言語の一部にします。境界の中では、継続的インテグレーション（コードを頻繁に統合し、チームで用語とモデルの解釈を突き合わせ続けること）で、用語とモデルの概念を厳密に一致させ続けます。どちらも DDD Reference が挙げる手段です。
 
 同じ資料では、モジュール（パッケージ）もモデルの一部として扱われ、その名前もユビキタス言語の一部にするとされています。そのため、モデルを表すコードでは、パッケージ名と型名がそのまま業務の語になります。
 
-販売の境界を Go で書くと次のようになります。
+例えば、販売の境界を [Go](https://go.dev/) で書くと次の通りです。
 
 ```go
 // Package sales は販売コンテキストで、注文が成立するまでを扱います。
@@ -155,7 +157,7 @@ type Item struct {
 
 `shipping` が `sales.OrderID` を使わず、自分で `OrderRef` を定義しているところに、境界が現れています。参照として渡るのは ID の値だけで、型は共有していません。`shipping` が `sales` を import しないので、後から `sales.Order` を直接使うコードも書きにくくなります。
 
-ID の型を共有する選択もあります。後述の Shared Kernel がそれで、共有する部分を小さく保つことと、相手の同意なしに変えないことが条件になります。同意の仕組みが無いまま共有すると、型を変えるたびに 2 つの境界が同時に動きます。
+ID の型を共有する選択もあります。後述の Shared Kernel がそれで、共有する部分を小さく保つことと、相手の同意なしに変えないことが条件です。同意の仕組みが無いまま共有すると、型を変えるたびに 2 つの境界が同時に動きます。
 
 どちらを選んでも変わらないのは、ID を受け取る配送が、ID を不透明な値（中身を解釈せず、比較と受け渡しだけに使う値）として扱うことです。配送側が ID の書式を解析したり自分で採番したりすると、配送の実装も販売側の採番規則に依存します。
 
@@ -170,6 +172,11 @@ ID の型を共有する選択もあります。後述の Shared Kernel がそ�
 ```go
 // Package adapter は 2 つのコンテキストの間の変換だけを担当します。
 package adapter
+
+import (
+	"example.com/shop/sales"
+	"example.com/shop/shipping"
+)
 
 // ToShipment は販売の注文を配送の荷物に翻訳します。
 // 値引きや成立の状態は配送に意味が無いため、ここで捨てます。
@@ -186,7 +193,9 @@ func ToShipment(o sales.Order, addr shipping.Address) shipping.Shipment {
 }
 ```
 
-このパッケージで重要なのは依存の向きです。`adapter` は `sales` と `shipping` の両方を import し、`sales` と `shipping` はどちらも `adapter` を知りません。相手を知っているパッケージが 1 つに限られるため、2 つの境界のモデルは相手の語を持たずに済みます。片方が一方的に自分を守る場合は、この変換を守る側の内側に置きます。それが後述の Anticorruption Layer です。サービスを分けてもこの境界を保てない状態は、[Distributed Monolith](../distributed-monolith/) で扱います。
+このパッケージで重要なのは依存の向きです。`adapter` は `sales` と `shipping` の両方を import し、`sales` と `shipping` はどちらも `adapter` を知りません。相手を知っているパッケージが 1 つに限られるため、2 つの境界のモデルは相手の語を持たずに済みます。
+
+片方が一方的に自分を守る場合は、この変換を守る側の内側に置きます。それが後述の Anticorruption Layer です。サービスを分けてもこの境界を保てない状態は、[Distributed Monolith](../distributed-monolith/) で扱います。
 
 境界と境界の関係は、変換の有無だけでは決まりません。関係を一覧にしたものを Context Map（コンテキストマップ）と呼びます。以下の表で「立場」と書いたのは、モデルを提供する側を上流、それを受け取って使う側を下流とした時に、どちらがそのパターンを選ぶかです。
 
@@ -205,7 +214,9 @@ func ToShipment(o sales.Order, addr shipping.Address) shipping.Shipment {
 
 選び方は排他ではありません。上流が Open-host Service を出しつつ Published Language を定め、下流の一部は Conformist として従い、残りは Anticorruption Layer を作る、という組み合わせもよくあります。
 
-上流を動かせるなら、Customer/Supplier Development のように下流の要求を上流の計画に組み込めます。動かせない下流が自分だけで選ぶのは、Conformist か Anticorruption Layer です。DDD Reference の 2 つの説明を並べると、上流のモデルに合わせる窮屈さを受け入れて統合の単純さを取るなら Conformist、上流のモデルが自分のプロジェクトの必要に合わず、合わせることが現実的でないなら Anticorruption Layer になります。
+上流を動かせるなら、Customer/Supplier Development のように下流の要求を上流の計画に組み込めます。動かせない下流が自分だけで選ぶのは、Conformist か Anticorruption Layer です。
+
+DDD Reference の 2 つの説明を並べると、上流のモデルに合わせる窮屈さを受け入れて統合の単純さを取るなら Conformist です。上流のモデルが自分のプロジェクトの必要に合わず、合わせることが現実的でないなら Anticorruption Layer を挟みます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -226,9 +237,9 @@ flowchart LR
 
 注意点として、Bounded Context はプロセスやサービスの単位ではありません。1 つのプロセスの中に、複数の境界をパッケージやモジュールとして置けます。逆に、1 つの境界を複数のサービスに分けて実装する構成も取れます。
 
-配置と無関係という意味ではありません。Evans 氏が境界を表す観点にコードベースと DB スキーマを含めている通り、物理的な分かれ方は境界の材料に入ります。ただし、境界の材料にはなっても、境界とプロセスが 1 対 1 に対応するとは限りません。
+ただし、配置と無関係というわけでもなく、前述の通りコードベースや DB スキーマの分かれ方は境界の材料に入ります。材料にはなっても、境界とプロセスが 1 対 1 に対応するとは限りません。
 
-境界を引くこと自体が目的になると、名前だけが増えて用語の一貫性は得られません。境界が機能しているかどうかは、境界の中で 1 つの語が 1 つの意味に定まっているか、境界をまたぐ経路に変換が置かれているかで判定できます。名前を配置に合わせて付け替えても、この 2 つが満たされるわけではありません。
+境界を引くこと自体が目的になると、名前だけが増えて用語の一貫性は得られません。境界が機能しているかどうかは、境界の中で 1 つの語が 1 つの意味に定まっているか、境界をまたぐ経路に変換が置かれているかで判定できます。
 
 ---
 
