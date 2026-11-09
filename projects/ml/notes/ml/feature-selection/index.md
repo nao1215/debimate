@@ -13,7 +13,7 @@ weight: 17
 
 <br>
 
-本記事では、選択の根拠が異なる 3 系統を実例で比べます。
+本記事では、正解の列が分かる人工データで、選択の根拠が異なる 3 系統を比べます。コードは [scikit-learn](https://scikit-learn.org/stable/modules/feature_selection.html) 1.9.1、[NumPy](https://numpy.org/) 2.5.4、[pandas](https://pandas.pydata.org/) 3.1.1 で実行しました。本文のコードは計算部分で、[Matplotlib](https://matplotlib.org/) の描画を含む[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/feature-selection_gen.py)は GitHub で公開しています。
 
 ---
 
@@ -38,21 +38,21 @@ Filter は候補を手早く減らせますが、列どうしの相互作用を�
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 from sklearn.feature_selection import VarianceThreshold
 
 # 各列の分散が異なる 5 つの特徴量
+rng = np.random.default_rng(0)
+n = 1000
 X = np.column_stack([
-    np.zeros(1000) + np.random.normal(0, 0.001, 1000),  # ほぼ定数
-    np.random.normal(0, 0.01, 1000),                     # 小分散
-    np.random.normal(0, 0.1, 1000),
-    np.random.normal(0, 1.0, 1000),
-    np.random.normal(0, 5.0, 1000),
+    np.zeros(n) + rng.normal(0, 0.001, n),  # ほぼ定数
+    rng.normal(0, 0.01, n),                 # 小分散
+    rng.normal(0, 0.1, n),
+    rng.normal(0, 1.0, n),
+    rng.normal(0, 5.0, n),
 ])
 vt = VarianceThreshold(threshold=0.05)
 X_reduced = vt.fit_transform(X)
 print(f"shape: {X.shape} -> {X_reduced.shape}")
-plt.savefig("featsel_variance_threshold.svg", bbox_inches="tight")
 ```
 
 出力:
@@ -63,9 +63,9 @@ shape: (1000, 5) -> (1000, 2)
 
 ![分散の小さい特徴量を閾値で除外する](./featsel_variance_threshold.svg)
 
-赤い棒（分散 < 0.05）が閾値以下で除外される特徴量、緑が保持される特徴量です。`VarianceThreshold(threshold=0.0)` で「全く動かない定数列」だけ落とすのが安全です。閾値を厳しくすると予測に役立つ特徴量も除外される可能性があるため、低めの値から試します。
+赤い棒（分散 < 0.05）が除外される特徴量、緑が保持される特徴量です。3 列目は標準偏差 0.1 なので分散は約 0.01 で、閾値 0.05 で落ちます。
 
-注意点: 標準化していない生のスケールに依存するので、[標準化](../standardization/) との順序で結果が変わります。普通は VarianceThreshold を先に当てます。
+分散は列の単位に依存します。同じ長さでも km で記録した列は m で記録した列の 100 万分の 1 の分散になり、単位だけで捨てられます。[標準化](../standardization/) の後では全列の分散が 1 になり、閾値が意味を失います。そのため VarianceThreshold は標準化の前に当て、閾値は `threshold=0.0`（全く動かない定数列だけ落とす）から試します。
 
 ---
 
@@ -77,21 +77,55 @@ shape: (1000, 5) -> (1000, 2)
 - 相互情報量（`mutual_info_classif`）: 非線形依存も含めた一般的な依存性
 - カイ二乗（`chi2`）: 非負特徴量とカテゴリ目的変数（テキスト分類で頻出）
 
-```python
-from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif
-from sklearn.datasets import make_classification
+データは [make_classification](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作ります。20 列のうち 5 列が予測に効く informative、2 列が informative の線形結合である redundant、残り 13 列がノイズです。
 
-X, y = make_classification(n_samples=1500, n_features=20, n_informative=5, random_state=0)
+make_classification は既定で列を並べ替えるので、どの列が informative かは生成コードで `shuffle=False` の同じデータと突き合わせて調べました（informative は 1・7・10・12・17、redundant は 3・13）。
+
+```python
+from sklearn.datasets import make_classification
+from sklearn.feature_selection import f_classif, mutual_info_classif
+
+X, y = make_classification(n_samples=1500, n_features=20, n_informative=5,
+                           n_redundant=2, random_state=0)
 f_scores, _ = f_classif(X, y)
 mi_scores = mutual_info_classif(X, y, random_state=0)
 print(f"top-5 by F-test: {np.argsort(f_scores)[::-1][:5]}")
 print(f"top-5 by MI:     {np.argsort(mi_scores)[::-1][:5]}")
-plt.savefig("featsel_filter_scores.svg", bbox_inches="tight")
+print(f"column 1: F = {f_scores[1]:.2f}, MI = {mi_scores[1]:.3f}")
 ```
 
-![F 検定と相互情報量で各特徴量のランクを並べる](./featsel_filter_scores.svg)
+出力:
 
-F 検定（青）と相互情報量（MI、緑）は、どちらも特徴量を単独で順位付けします。F 値はクラス間の平均差に感度が高く、MI はより広い依存を拾えます。ただし順位の一致だけから線形性を断定できません。相関した特徴量や相互作用も見落とすため、最終的な選択は交差検証のパイプライン内で評価します。
+```text
+top-5 by F-test: [10  7 17 12  3]
+top-5 by MI:     [10  7  3 13 12]
+column 1: F = 0.11, MI = 0.000
+```
+
+![F 検定と相互情報量の正規化スコア。横軸の inf が informative、red が redundant](./featsel_filter_scores.svg)
+
+F 検定（青）と相互情報量（MI、橙）は、どちらも特徴量を 1 列ずつ単独で採点します。上位 5 列には redundant が F で 1 列、MI で 2 列入りました。redundant は informative と同じ情報を持つので、単独で見ると高い点が付きます。
+
+informative の列 1 は F = 0.11、MI = 0 で、単独ではほぼ無関係に見えます。ランダムフォレストに残りの informative と一緒に渡すと、効き目が分かります。
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
+
+rf = RandomForestClassifier(n_estimators=200, random_state=0)
+for cols in ([7, 10, 12, 17], [1, 7, 10, 12, 17]):
+    acc = cross_val_score(rf, X[:, cols], y, cv=5).mean()
+    print(f"{cols}: {acc:.3f}")
+```
+
+出力:
+
+```text
+[7, 10, 12, 17]: 0.889
+[1, 7, 10, 12, 17]: 0.914
+```
+
+列 1 は他の列と組み合わせて初めて効く列で、足すと 5-fold CV 正解率が 0.025 上がりました。Filter はこの種の列を落とすので、最終的な選択は交差検証で評価します。
 
 `SelectKBest(score_func=f_classif, k=10).fit_transform(X, y)` のように 1 行で上位 `k` 個を取り出せます。
 
@@ -108,12 +142,21 @@ from sklearn.linear_model import LogisticRegression
 estimator = LogisticRegression(max_iter=2000)
 rfecv = RFECV(estimator, step=1, cv=5, scoring="accuracy").fit(X, y)
 print(f"optimal n_features: {rfecv.n_features_}")
-plt.savefig("featsel_rfe_cv.svg", bbox_inches="tight")
+print(f"selected: {np.flatnonzero(rfecv.support_)}")
+```
+
+出力:
+
+```text
+optimal n_features: 5
+selected: [ 3 10 13 15 17]
 ```
 
 ![RFE-CV: 特徴量数とスコアの関係](./featsel_rfe_cv.svg)
 
-横軸が「残した特徴量数」、縦軸が CV スコアの平均（青の帯は[標準偏差](/ml/math/stddev/)）。少ない特徴量だと表現力不足で under-fit、増やすと頭打ちになり、最終的にノイズが入ってわずかに下がります。赤い破線が CV スコアが最大の点で、ここを「最適な特徴量数」として採用します。
+横軸が残した特徴量数、縦軸が 5-fold CV 正解率の平均（青の帯は[標準偏差](/ml/math/stddev/)）です。赤い破線は平均が最大の 5 列（0.815）ですが、4 列以上はどれも 0.809〜0.815 で、差は標準偏差（0.015〜0.021）より小さい値でした。5 列が 20 列より確かに良いとは言えません。
+
+選ばれた 5 列も正解と一致しません。informative は 10・17 の 2 列で、redundant の 3・13 とノイズの 15 が入りました。学習器が線形なロジスティック回帰なので、組み合わせで効く列 1 も拾えていません。
 
 RFE は特徴量を減らすたびに学習と評価を繰り返すため、特徴量が増えると計算量も増えます。実行時間と検証スコアを確認して、使うかどうかを判断します。
 
@@ -123,35 +166,43 @@ RFE は特徴量を減らすたびに学習と評価を繰り返すため、特�
 
 学習自体が特徴量選択を兼ねるアプローチです。代表は Lasso（L1 [正則化](../regularization/)）と木系モデルの組み込み重要度です。
 
-- Lasso: L1 正則化で重要でない特徴量の係数を厳密に 0 にする
+- Lasso: L1 正則化で、効きの弱い特徴量の係数をちょうど 0 にする
 - Tree importance: 分割で使われなかった特徴量は重要度 0
 
+分類では、L1 正則化付きのロジスティック回帰を Lasso として使います。データは 30 列で、`shuffle=False` なので列 0〜7 が informative、8〜11 が redundant、12〜29 がノイズです。
+
 ```python
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
 X, y = make_classification(n_samples=2000, n_features=30, n_informative=8,
-                           shuffle=False, random_state=0)
-lasso = make_pipeline(StandardScaler(),
-                      LogisticRegression(penalty="l1", solver="liblinear", C=0.5,
-                                          max_iter=5000)).fit(X, y)
+                           n_redundant=4, shuffle=False, random_state=0)
+for C in (0.5, 0.03):
+    lasso = make_pipeline(StandardScaler(),
+                          LogisticRegression(l1_ratio=1, solver="liblinear", C=C,
+                                             max_iter=5000)).fit(X, y)
+    print(f"Lasso C={C}: non-zero {np.flatnonzero(lasso[-1].coef_[0])}")
 rf = RandomForestClassifier(n_estimators=200, random_state=0).fit(X, y)
-print(f"Lasso non-zero: {(np.abs(lasso[-1].coef_[0]) > 1e-6).sum()} of 30")
-plt.savefig("featsel_embedded_compare.svg", bbox_inches="tight")
+print(f"RF top-12: {np.argsort(rf.feature_importances_)[::-1][:12]}")
 ```
 
-![Lasso 係数と RF 重要度。緑が真の informative、灰色がノイズ](./featsel_embedded_compare.svg)
+出力:
 
-左の Lasso は L1 で多くの係数を 0 に潰し、真の informative 特徴量（緑、最初の 8 つ）を中心に残しています。右の RF は重要度が連続値で、informative はおおむね高く出るがノイズの一部にも値が入ります。
+```text
+Lasso C=0.5: non-zero [ 0  1  3  4  5  7 11 12 14 15 16 17 18 19 20 21 22 24 25 26 27 28 29]
+Lasso C=0.03: non-zero [ 0  1  3  4  5  7 11]
+RF top-12: [10  0 11  1  4  7  9  8  6  3  5  2]
+```
 
-両者の使い分け:
+![Lasso（C = 0.5 と 0.03）の係数と RF 重要度。緑が informative、橙が redundant、灰色がノイズ](./featsel_embedded_compare.svg)
 
-- Lasso: 線形関係が支配的、係数の解釈が欲しい
-- Tree importance: 非線形・相互作用が重要、ロバスト性が欲しい
+C は正則化の強さの逆数で、小さいほど係数を 0 に寄せます。C = 0.5 では 30 列中 23 列が残り、ノイズ 18 列のうち 16 列に小さな係数が付きました。C = 0.03 にするとノイズは全て 0 になり、残りは 7 列です。
 
-実装上は `SelectFromModel(LassoCV()).fit_transform(X, y)` や `SelectFromModel(RandomForestClassifier(), threshold="median").fit_transform(X, y)` のように、しきい値で自動的に切ることができます。
+ただし informative の列 2・6 は、どちらの C でも 0 でした。残った redundant の列 11 は列 0〜7 の線形結合で、列 2・6 の成分も含みます。相関した列のどれを残すかは Lasso 任せになり、真の列が消えることもあります。
+
+RF の重要度は上位 12 列が informative と redundant で占められ、最上位は redundant の列 10 です。ノイズ 18 列にも 0.008〜0.013 の値が付き、ちょうど 0 になる列はありませんでした。重要度を見れば効く列とノイズは分かれますが、redundant を informative と区別できません。
+
+線形関係が支配的で係数を解釈したいなら Lasso、非線形や相互作用が効くなら木の重要度が向きます。どちらも `SelectFromModel(LassoCV())` や `SelectFromModel(RandomForestClassifier(), threshold="median")` のように包めば、しきい値で自動的に列を切れます。
 
 ---
 
@@ -164,9 +215,20 @@ import pandas as pd
 
 corr = pd.DataFrame(X).corr().abs()
 upper = corr.where(np.triu(np.ones(corr.shape), k=1).astype(bool))
-to_drop = [col for col in upper.columns if any(upper[col] > 0.9)]
+for th in (0.9, 0.7):
+    to_drop = [col for col in upper.columns if any(upper[col] > th)]
+    print(f"|r| > {th}: drop {to_drop}")
 X_reduced = pd.DataFrame(X).drop(columns=to_drop)
 ```
+
+出力:
+
+```text
+|r| > 0.9: drop []
+|r| > 0.7: drop [10, 11]
+```
+
+前の節の 30 列のデータに当てると、`|r| > 0.9` では 1 列も落ちません。redundant の列は 8 列の informative の線形結合なので、2 列間の相関は最大でも 0.894（列 9 と 10）に留まります。0.7 まで下げると列 10・11 が落ちますが、redundant の列 8・9 は残ります。相関係数は 2 列ずつしか見ないので、3 列以上にまたがる線形従属は見逃します。
 
 [PCA](../pca/) は相関のある特徴量を線形結合で集約して新しい軸を作ります。一方、特徴量選択では元の特徴量から代表を 1 つ残します。元の特徴量を残せば、その特徴量の意味で結果を解釈できます。
 
@@ -174,45 +236,27 @@ X_reduced = pd.DataFrame(X).drop(columns=to_drop)
 
 ### 数学での使いどころ
 
-- 分散ベース指標: VarianceThreshold、PCA の分散基準
-- [情報理論](/ml/math/information-theory/)的指標: 相互情報量 `I(X; Y) = Σ_xy P(x,y) log(P(x,y) / (P(x) P(y)))`
-- 統計的検定: ANOVA F、`χ²`、t 検定
-- L1 正則化の幾何: Lasso の制約集合が `|w|_1 ≤ c` で頂点を持つため、頂点で `w_k = 0` が選ばれやすい
-- マルコフブランケット: 確率モデルで「目的変数の予測に必要十分な特徴量集合」
-- 部分集合選択の組合せ爆発: `2^d` の選択肢から最適を探すのは NP 困難（greedy で近似）
+- 統計的検定と情報量: ANOVA F、`χ²`、[情報理論](/ml/math/information-theory/)の相互情報量 `I(X; Y) = Σ_xy P(x,y) log(P(x,y) / (P(x) P(y)))`
+- L1 正則化の幾何: 制約集合 `|w|_1 ≤ c` は座標軸上に頂点を持ち、頂点では一部の `w_k` が 0 になる
+- 部分集合選択の組合せ爆発: `d` 列の部分集合は `2^d` 通りあり、最適な組を探すのは NP 困難なので、RFE のような貪欲法で近似する
 
 ---
 
 ### 機械学習での使いどころ
 
-- 高次元データ（テキスト、ゲノム、画像）: 予測に役立つ特徴量を選び、入力次元を減らす
-- 計算資源が限られた推論: 入力次元を減らしてレイテンシを下げる
-- ステークホルダー説明: 「これらの 10 個の特徴量で予測している」と提示
-- 過学習が疑われるとき: 特徴量を絞ることで [バイアス-バリアンス](../bias-variance-tradeoff/) のバリアンス側を抑える
-- データ品質改善の優先順位: 重要度の高い特徴量のクリーニングに投資
-- A/B テスト後の特徴量効果検証: 新しい特徴量がモデルに採用されるか
-- 特徴量エンジニアリングの反復: 追加した特徴量が予測に役立つか評価する
-- データ収集コスト削減: 効かない特徴量の収集を止める
+- 高次元データ（テキスト、ゲノム）: 入力次元を減らし、[バイアス-バリアンス](../bias-variance-tradeoff/) のバリアンス側を抑える
+- 推論のレイテンシやデータ収集のコストを下げる: 効かない列の計算と収集を止める
+- 特徴量エンジニアリングの反復: 追加した列が予測に役立つかを評価する
 
-scikit-learn の主要 API:
-
-- `VarianceThreshold`
-- `SelectKBest` / `SelectPercentile` + `f_classif` / `mutual_info_classif` / `chi2`
-- `RFE` / `RFECV`
-- `SelectFromModel`（Lasso、Tree などをラップ）
-- `SequentialFeatureSelector`（forward / backward selection）
+scikit-learn には上記の他に、列を 1 つずつ足す・引く `SequentialFeatureSelector` もあります。
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- データリーク: テストデータも含めて特徴量選択すると、テストの情報が訓練に流れ込む（[data leakage](../data-leakage/)）。CV の中で fold ごとに選択する
-- 解釈性のための選択 vs 精度のための選択を混同: 「説明しやすい少数特徴量」と「精度最高の特徴量集合」は別物
-- Filter で削った特徴量がモデル特有に重要だった: filter は単変量で評価するので、相互作用で効く特徴量を見落とす
-- RFE をデータが少ない状態で使う: 削除の判断が不安定になる。CV を必ず併用する
-- Lasso で重要だが相関した特徴量の片方が消える: ペアのうちどちらが残るかは恣意的。グループ Lasso か事前の相関ベース選択を併用する
-- 木系の組み込み重要度を信じすぎる: 高カーディナリティバイアスがある（[特徴量重要度](../feature-importance/) 参照）
-- 特徴量選択後に評価指標を再評価しない: 特徴量を減らした後に精度が下がる場合がある。CV で必ず確認する
-- 特徴量設計を諦めて特徴量選択に頼る: 元データに情報が無ければ、いくら選択しても精度は上がらない。データ品質と特徴量エンジニアリングが先
-- カテゴリ変数のダミー化前に選択: ダミーの個別列ごとに選ばれると、カテゴリの一部だけ残るような奇妙な結果になる。グループ単位で扱うか、ダミー化前にカテゴリ全体で評価する
-- 次元削減（PCA）と混同: PCA は新しい軸を作るので元の特徴量が消える。一方、特徴量選択は元のまま部分集合を残す。説明性目的なら特徴量選択、情報集約目的なら PCA、と用途が違う
+- データリーク: テストデータも含めて選択すると、テストの情報が訓練に流れ込む（[data leakage](../data-leakage/)）。`Pipeline` に入れて CV の fold ごとに選択する
+- Filter・相関・Lasso の結果をそのまま正解の列と見なす: 本記事の例では、どれも組み合わせで効く列や相関した列を取り違えた
+- 木の組み込み重要度を信じすぎる: 値の種類が多い列ほど重要度が高く出る（[特徴量重要度](../feature-importance/) 参照）
+- カテゴリ変数をダミー化してから列単位で選ぶ: カテゴリの一部の列だけ残る。グループ単位で扱う
+- 特徴量設計の代わりに使う: 元データに情報が無ければ、選択しても精度は上がらない
+- PCA と混同する: PCA は新しい軸を作り、特徴量選択は元の列を残す。説明性が目的なら特徴量選択を使う

@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/feature-selection_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -21,8 +22,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/feature-selection"
+NOTE_DIR = os.environ.get("NOTE_DIR", str(
+    Path(__file__).resolve().parents[2] / "notes" / "ml" / "feature-selection"
 ))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -69,9 +70,20 @@ save("featsel_variance_threshold.svg")
 X, y = make_classification(n_samples=1500, n_features=20, n_informative=5,
                             n_redundant=2, random_state=0)
 
+# shuffle=True で列が並べ替わるので、shuffle=False の同じデータと値の集合で突き合わせ、
+# 各列が informative / redundant / noise のどれかを調べる
+X_plain, _ = make_classification(n_samples=1500, n_features=20, n_informative=5,
+                                 n_redundant=2, shuffle=False, random_state=0)
+plain_index = {tuple(np.sort(X_plain[:, j])): j for j in range(20)}
+orig_col = np.array([plain_index[tuple(np.sort(X[:, j]))] for j in range(20)])
+kind = np.where(orig_col < 5, "inf", np.where(orig_col < 7, "red", ""))
+print("informative:", np.where(kind == "inf")[0], "redundant:", np.where(kind == "red")[0])
+
 # Top-K with ANOVA F-test and mutual info
 f_scores, _ = f_classif(X, y)
 mi_scores = mutual_info_classif(X, y, random_state=0)
+print("top-5 by F-test:", np.argsort(f_scores)[::-1][:5])
+print("top-5 by MI:    ", np.argsort(mi_scores)[::-1][:5])
 
 idx = np.argsort(f_scores)[::-1]
 x_pos = np.arange(20)
@@ -84,13 +96,14 @@ mi_norm = mi_scores[idx] / mi_scores[idx].max()
 fig, ax = plt.subplots(figsize=(11, 4.5))
 ax.bar(x_pos - width / 2, f_norm, width, color=COLOR_BLUE, edgecolor="white",
        label="ANOVA F-test (normalized)")
-ax.bar(x_pos + width / 2, mi_norm, width, color=COLOR_GREEN, edgecolor="white",
+ax.bar(x_pos + width / 2, mi_norm, width, color=COLOR_ORANGE, edgecolor="white",
        label="Mutual information (normalized)")
-ax.set_xticks(x_pos); ax.set_xticklabels([f"x{i+1}" for i in idx], fontsize=8,
-                                            rotation=45)
-ax.set_ylabel("normalized importance score")
-ax.set_title("Filter methods rank features independently from any model\n"
-             "(20 features, 5 informative + 2 redundant + 13 noise)")
+ax.set_xticks(x_pos)
+ax.set_xticklabels([f"{i}\n{kind[i]}" for i in idx], fontsize=8)
+ax.set_xlabel("feature index (inf = informative, red = redundant, blank = noise)")
+ax.set_ylabel("normalized score")
+ax.set_title("Filter methods score each feature alone\n"
+             "(20 features: 5 informative + 2 redundant + 13 noise)")
 ax.legend(fontsize=9)
 ax.grid(True, alpha=0.25, axis="y")
 plt.tight_layout()
@@ -104,6 +117,7 @@ estimator = LogisticRegression(max_iter=2000)
 rfecv = RFECV(estimator, step=1, cv=StratifiedKFold(5), scoring="accuracy",
               min_features_to_select=1, n_jobs=-1)
 rfecv.fit(X, y)
+print("RFECV:", rfecv.n_features_, np.where(rfecv.support_)[0])
 mean_scores = rfecv.cv_results_["mean_test_score"]
 std_scores = rfecv.cv_results_["std_test_score"]
 n_features_grid = np.arange(1, len(mean_scores) + 1)
@@ -128,42 +142,47 @@ save("featsel_rfe_cv.svg")
 # ============================================================
 X_emb, y_emb = make_classification(n_samples=2000, n_features=30, n_informative=8,
                                      n_redundant=4, shuffle=False, random_state=0)
-true_informative = np.zeros(30, dtype=bool)
-# scikit-learn make_classification puts informative features first
-true_informative[:8] = True
+# shuffle=False なので、列 0-7 が informative、8-11 が redundant（informative の線形結合）、
+# 12-29 がノイズ
+colors = [COLOR_GREEN] * 8 + [COLOR_ORANGE] * 4 + [COLOR_GRAY] * 18
 
-# Lasso (LogisticRegression L1)
-lasso = make_pipeline(StandardScaler(),
-                      LogisticRegression(penalty="l1", solver="liblinear",
-                                          C=0.5, max_iter=5000))
-lasso.fit(X_emb, y_emb)
-lasso_coef = np.abs(lasso[-1].coef_[0])
 
-# RF importance
+def lasso_coef(C: float) -> np.ndarray:
+    model = make_pipeline(StandardScaler(),
+                          LogisticRegression(l1_ratio=1, solver="liblinear",
+                                             C=C, max_iter=5000))
+    return np.abs(model.fit(X_emb, y_emb)[-1].coef_[0])
+
+
 rf = RandomForestClassifier(n_estimators=200, random_state=0).fit(X_emb, y_emb)
 rf_imp = rf.feature_importances_
 
-fig, axes = plt.subplots(1, 2, figsize=(13, 4.5))
+panels = []
+for C in (0.5, 0.03):
+    coef = lasso_coef(C)
+    print(f"Lasso C={C}: non-zero {np.where(coef > 0)[0]}")
+    panels.append((coef, "|Lasso coefficient|",
+                   f"Lasso (L1), C = {C}: {(coef > 0).sum()} non-zero of 30"))
+print("RF top-12:", np.argsort(rf_imp)[::-1][:12])
+panels.append((rf_imp, "RF importance",
+               "Random Forest feature_importances_ (no exact zeros)"))
 
-ax = axes[0]
-colors = [COLOR_GREEN if true_informative[i] else COLOR_GRAY for i in range(30)]
-ax.bar(range(30), lasso_coef, color=colors, edgecolor="white")
-ax.set_xlabel("feature index")
-ax.set_ylabel("|Lasso coefficient|")
-ax.set_title(f"Lasso (L1): {(lasso_coef > 0).sum()} non-zero of 30")
-ax.grid(True, alpha=0.25, axis="y")
-
-ax = axes[1]
-ax.bar(range(30), rf_imp, color=colors, edgecolor="white")
-ax.set_xlabel("feature index")
-ax.set_ylabel("RF feature_importances_")
-ax.set_title("Random Forest importances (gray = noise feature)")
-ax.grid(True, alpha=0.25, axis="y")
+fig, axes = plt.subplots(3, 1, figsize=(9, 8.5), sharex=True)
+for ax, (vals, ylabel, title) in zip(axes, panels):
+    ax.bar(range(30), vals, color=colors, edgecolor="white")
+    ax.axvline(7.5, color="black", ls=":", lw=0.8)
+    ax.axvline(11.5, color="black", ls=":", lw=0.8)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title, fontsize=10)
+    ax.grid(True, alpha=0.25, axis="y")
+axes[-1].set_xlabel("feature index")
+axes[-1].set_xticks(range(0, 30, 2))
 
 from matplotlib.patches import Patch
 legend_elems = [
-    Patch(facecolor=COLOR_GREEN, label="truly informative (first 8)"),
-    Patch(facecolor=COLOR_GRAY, label="redundant or noise (22)"),
+    Patch(facecolor=COLOR_GREEN, label="informative (0-7)"),
+    Patch(facecolor=COLOR_ORANGE, label="redundant (8-11)"),
+    Patch(facecolor=COLOR_GRAY, label="noise (12-29)"),
 ]
 axes[0].legend(handles=legend_elems, fontsize=9, loc="upper right")
 

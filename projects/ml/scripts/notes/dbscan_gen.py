@@ -8,8 +8,8 @@ from sklearn.datasets import make_moons, make_blobs
 
 COLOR_BLUE, COLOR_RED, COLOR_GREEN, COLOR_ORANGE = "#7aa6c2", "#e15759", "#59a14f", "#f28e2b"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/dbscan"
+NOTE_DIR = os.environ.get("NOTE_DIR", str(
+    Path(__file__).resolve().parents[2] / "notes" / "ml" / "dbscan"
 ))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -126,10 +126,11 @@ for ax, eps in zip(axes, [0.3, 0.8, 2.0]):
     ax.scatter(X[~mask_noise, 0], X[~mask_noise, 1], c=db.labels_[~mask_noise],
                 cmap="tab10", s=20, edgecolor="white")
     ax.scatter(X[mask_noise, 0], X[mask_noise, 1], color="gray", marker="x", s=30)
-    ax.set_title(f"eps={eps}: {n_clusters} clusters, {mask_noise.sum()} noise")
+    unit = "cluster" if n_clusters == 1 else "clusters"
+    ax.set_title(f"eps={eps}: {n_clusters} {unit}, {mask_noise.sum()} noise")
     ax.set_xlabel("x1"); ax.set_ylabel("x2")
     ax.grid(True, alpha=0.25)
-plt.suptitle("eps controls density threshold: too small → all noise, too big → 1 mega-cluster", y=1.02)
+plt.suptitle("eps controls density threshold: too small → fragments and noise, too big → 1 mega-cluster", y=1.02)
 plt.tight_layout()
 save("dbscan_eps_sensitivity.png")
 
@@ -139,18 +140,23 @@ save("dbscan_eps_sensitivity.png")
 # ============================================================
 from sklearn.neighbors import NearestNeighbors
 
-X2, _ = make_blobs(n_samples=500, centers=3, cluster_std=0.6, random_state=0)
+# Fig 3 と同じ X（3 つの塊 + 一様ノイズ 30 点）を使う。
+# kneighbors(X) は点自身を距離 0 の 1 番目に含むので、min_samples=5 と数え方が揃う。
 k = 5
-nbrs = NearestNeighbors(n_neighbors=k).fit(X2)
-distances, _ = nbrs.kneighbors(X2)
+nbrs = NearestNeighbors(n_neighbors=k).fit(X)
+distances, _ = nbrs.kneighbors(X)
 k_distances = np.sort(distances[:, -1])
 
 plt.figure(figsize=(8, 4.5))
 plt.plot(k_distances, color=COLOR_BLUE, lw=2)
 plt.xlabel(f"points sorted by {k}-NN distance")
 plt.ylabel(f"distance to {k}th neighbor")
-plt.title(f"k-distance plot: look for the elbow → suggested eps")
-# 図は候補を読む補助であり、固定パーセンタイルで eps を決めない。
+# 水平線は Fig 3 で試した eps。自動で選んだ値ではない。
+for eps, ls in [(0.3, ":"), (0.8, "--"), (2.0, "-.")]:
+    n_core = int((k_distances <= eps).sum())
+    plt.axhline(eps, color="gray", ls=ls, lw=1, label=f"eps={eps}: {n_core} points at or below")
+plt.title("k-distance plot of the Fig 3 data: read the elbow height as an eps candidate")
+plt.legend(loc="upper left", fontsize=9)
 plt.grid(True, alpha=0.25)
 plt.tight_layout()
 save("dbscan_k_distance_elbow.svg")

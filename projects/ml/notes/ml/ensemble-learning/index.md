@@ -7,13 +7,17 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 25
 ---
 
-アンサンブル学習（ensemble learning）は、複数の弱いモデル（weak learner）を組み合わせて 1 つの強いモデルを作る一般的な枠組みです。アプローチは大きく 3 系統に分かれます。
+アンサンブル学習（ensemble learning）は、複数のモデルを学習して予測をまとめ、単体のモデルより安定した、または精度の高い予測を作る手法です。まとめ方は大きく bagging（bootstrap aggregating）、boosting、stacking の 3 系統に分かれます。
 
-- bagging（bootstrap aggregating）: 独立に学習した多数のモデルを平均（または多数決）
-- boosting: 前のモデルの誤りを補正するように、次のモデルを逐次的に追加
-- stacking: 異なる種類の複数モデルを学習し、その出力をメタ学習器で結合
+[ランダムフォレスト](../random-forest/) は bagging の代表、[勾配ブースティング](../gradient-boosting/) は boosting の代表で、いずれも単体の [決定木](../decision-tree/) を構成要素として使います。
 
-[ランダムフォレスト](../random-forest/) は bagging の代表、[勾配ブースティング](../gradient-boosting/) は boosting の代表で、いずれも単体の [決定木](../decision-tree/) を構成要素として使います。アンサンブルは [バイアス-バリアンス分解](../bias-variance-tradeoff/) の枠組みで「Variance を抑える」「Bias を抑える」の両軸から理解できます。
+<br>
+
+本記事では、3 系統の違いを [バイアス-バリアンス分解](../bias-variance-tradeoff/) の「Variance を抑える」「Bias を抑える」の軸で整理し、[scikit-learn](https://scikit-learn.org/stable/modules/ensemble.html) での実験で次の疑問を確かめます。
+
+- 木を 100 本平均すると、予測の分散は 1/100 になるのか
+- 残差を追い続ける boosting は、どこから過学習に入るのか
+- 複数のモデルを stacking すれば、一番良い単体モデルを必ず超えるのか
 
 ---
 
@@ -40,66 +44,107 @@ weight: 25
 | 系統 | 並列性 | 抑えるもの | 代表 |
 |---|---|---|---|
 | Bagging | 完全並列（独立学習） | Variance | [ランダムフォレスト](../random-forest/) |
-| Boosting | 逐次的（前の結果に依存） | Bias | [勾配ブースティング](../gradient-boosting/) (XGBoost / LightGBM / CatBoost) |
-| Stacking | 階層的（base + meta） | 各モデルの弱点を相互補完 | VotingClassifier、StackingClassifier |
+| Boosting | 逐次的（前の結果に依存） | Bias | [勾配ブースティング](../gradient-boosting/)（XGBoost / LightGBM / CatBoost） |
+| Stacking | 階層的（base + meta） | 各モデルの弱点を相互補完 | [StackingClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.StackingClassifier.html) |
+
+似た手法の [VotingClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html) は、異なるモデルの予測を多数決か確率の平均でまとめるだけで、メタ学習器を持ちません。Stacking はまとめ方そのものを学習する点が異なります。
 
 ---
 
 ### 決定境界で見る違い
 
-同じデータに 3 つのアプローチを適用して、決定境界の形を見ます。
+同じデータに単一の決定木、Bagging、Boosting を適用して、決定境界の形と精度を比べます。データは 2 つの三日月が重なる合成データ（[make_moons](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html)）で、半分の 200 点で学習し、残り 200 点で測ります。
+
+以下は scikit-learn 1.9.1、[NumPy](https://numpy.org/) 2.5.4 で実行したコードです。本記事のコードは計算部分で、図の描画を省いています。描画を含む[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/ensemble-learning_gen.py)は GitHub で公開しています。
 
 ```python
 from sklearn.datasets import make_moons
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
+from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 
 X, y = make_moons(n_samples=400, noise=0.3, random_state=0)
+X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.5, random_state=0)
 models = {
     "tree": DecisionTreeClassifier(max_depth=4, random_state=0),
     "bagging": RandomForestClassifier(n_estimators=100, max_depth=4, random_state=0),
     "boosting": GradientBoostingClassifier(n_estimators=100, max_depth=4, random_state=0),
 }
 for name, m in models.items():
-    m.fit(X, y)
-# 描画は scripts 側を参照
-plt.savefig("ensemble_boundary_compare.png", bbox_inches="tight")
+    m.fit(X_tr, y_tr)
+    print(f"{name:8s} train={m.score(X_tr, y_tr):.3f} test={m.score(X_te, y_te):.3f}")
 ```
 
-![単一決定木 / Bagging / Boosting の決定境界](./ensemble_boundary_compare.png)
+出力:
 
-左の単一決定木は階段状で粗い境界です。中央の Bagging（ランダムフォレスト）は階段の段差が平均化されてやや滑らかになります。右の Boosting はさらにデータに合致した曲線的な境界を作っています。同じノイズの多いデータでも、アンサンブルにすると境界の安定性と精度の両方が向上する傾向が見えます。
+```text
+tree     train=0.900 test=0.890
+bagging  train=0.910 test=0.890
+boosting train=1.000 test=0.885
+```
+
+![単一決定木 / Bagging / Boosting の決定境界と、訓練・テストの精度](./ensemble_boundary_compare.png)
+
+単一決定木は数本の直線で区切った粗い境界で、Bagging（ランダムフォレスト）は段差が細かくなります。Boosting は訓練点を 1 つ残らず正しく分ける入り組んだ境界を作り、訓練精度は 1.000 です。
+
+ところがテスト精度は 3 つとも 0.89 前後で、Boosting が一番低い値でした。ノイズの多いデータでは、境界を訓練点に合わせるほど良くなるとは限りません。この差の理由を Bagging と Boosting の仕組みから順に見ます。
 
 ---
 
 ### Bagging: Variance を平均で打ち消す
 
-Bagging（bootstrap aggregating）は、訓練データから [bootstrap サンプリング](../cross-validation/)（重複ありの復元抽出）でデータセットを `B` 個作り、それぞれで別々にモデルを学習し、最終予測は全モデルの出力の平均（回帰）か多数決（分類）にします。
+[Bagging](https://doi.org/10.1007/BF00058655)（bootstrap aggregating）は、訓練データから bootstrap サンプリング（重複を許す復元抽出）でデータセットを `B` 個作り、それぞれでモデルを学習します。最終予測は全モデルの出力の平均（回帰）か多数決（分類）です。bootstrap の詳しい手順は [ランダムフォレスト](../random-forest/) のノートで扱っています。
 
-[分散](../../math/variance/) のノートで触れた通り、独立な `B` 個の予測値を平均すると分散は `1/B` に縮みます。Bagging はこの性質を使って、過学習しがちな深い決定木の予測分散を抑える設計となります。
+[分散](../../math/variance/) のノートで触れた通り、独立な `B` 個の予測値を平均すると分散は `1/B` に縮みます。Bagging はこの性質を使って、過学習しがちな深い決定木の予測分散を抑えます。
+
+次のコードは、40 点の訓練データを 20 回引き直し、毎回「深い決定木 1 本」と「深い決定木 100 本の [BaggingRegressor](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html)」を学習します。各 `x` で 20 本の予測の分散を求め、`x` について平均します。
 
 ```python
-# 20 個の深い決定木（個別）と 20 個の Bagging 予測器を 1 次元データで比較
-for seed in range(20):
+import numpy as np
+from sklearn.ensemble import BaggingRegressor
+from sklearn.tree import DecisionTreeRegressor
+
+def true_f(x):
+    return np.sin(x) + 0.3 * x
+
+x_grid = np.linspace(0, 10, 200).reshape(-1, 1)
+single, bagged = [], []
+for seed in range(20):  # 訓練データを 20 回引き直す
     rng = np.random.default_rng(seed)
-    x_tr = rng.uniform(0, 10, 40)
-    y_tr = np.sin(x_tr) + 0.3 * x_tr + rng.normal(0, 0.5, 40)
-    DecisionTreeRegressor(max_depth=8).fit(...)        # 個別
-    BaggingRegressor(n_estimators=100).fit(...)        # 100 個の平均
-plt.savefig("ensemble_bagging_variance.svg", bbox_inches="tight")
+    x_tr = rng.uniform(0, 10, 40).reshape(-1, 1)
+    y_tr = true_f(x_tr.ravel()) + rng.normal(0, 0.5, 40)
+    tree = DecisionTreeRegressor(max_depth=8).fit(x_tr, y_tr)
+    bag = BaggingRegressor(estimator=DecisionTreeRegressor(max_depth=8),
+                           n_estimators=100, random_state=seed).fit(x_tr, y_tr)
+    single.append(tree.predict(x_grid))
+    bagged.append(bag.predict(x_grid))
+
+print(f"single tree: {np.var(single, axis=0).mean():.3f}")
+print(f"bagging:     {np.var(bagged, axis=0).mean():.3f}")
 ```
 
-![個別の深い決定木は予測がバラつき、Bagging で平均化すると安定する](./ensemble_bagging_variance.svg)
+出力:
 
-左の薄い青い線が「異なる訓練データで学習した 20 個の単一決定木の予測」で、それぞれが大きく異なる曲線を描きます（高 Variance）。右の緑の線が「同じ 20 通りで Bagging（各 100 本の木の平均）した予測」で、20 本の曲線がほぼ重なります（低 Variance）。
+```text
+single tree: 0.238
+bagging:     0.119
+```
 
-ランダムフォレストは Bagging に「特徴量サンプリング」を加えた手法で、木同士の相関をさらに下げて Variance 削減効果を強めます。詳細は [ランダムフォレスト](../random-forest/) のノートで触れています。
+![訓練データを変えて 20 本ずつ重ねた、個別の深い決定木と Bagging の予測](./ensemble_bagging_variance.svg)
+
+左の単一決定木はノイズに合わせて細かく上下し、右の Bagging は真の関数（破線）の周りに集まります。
+
+ただし分散は 0.238 から 0.119 で、半分にしかなっていません。100 本の木は同じ 40 点から復元抽出したデータで学習するので、予測が互いに似ており、独立ではないからです。木 1 本の予測の分散を `σ²`、木同士の相関を `ρ` とすると、`B` 本の平均の分散は次の式になります（[The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) 15.2 節の式 (15.1)）。
+
+`ρσ² + (1 − ρ)σ² / B`
+
+`B` を増やして消えるのは第 2 項だけで、`ρσ²` は残ります。`B = 100` では第 2 項がほぼ消えるので、残った 0.119 の大半は相関による分です。ランダムフォレストは各分岐で見る特徴量を一部に絞り、`ρ` そのものを下げます。
 
 ---
 
 ### Boosting: Bias を逐次補正する
 
-Boosting は弱学習器（典型的には浅い決定木 = stump や `max_depth=3` 程度）を 1 つずつ追加していきます。各ラウンドで「これまでの予測の残差（または誤分類されたサンプル）」を補正する方向に新しい学習器を学習します。
+Boosting は弱学習器（単体ではランダムな予測より少しだけ良いモデル）を 1 つずつ追加していきます。典型的には深さ 1 の決定木（stump）から深さ 3 前後の浅い木を使います。各ラウンドで「これまでの予測の残差（または誤分類されたサンプル）」を補正する方向に新しい学習器を学習します。
 
 `F_m(x) = F_{m-1}(x) + ν · h_m(x)`
 
@@ -107,40 +152,57 @@ Boosting は弱学習器（典型的には浅い決定木 = stump や `max_depth
 - `h_m(x)`: ラウンド `m` で学習した弱学習器
 - `ν`: 学習率（shrinkage）。0.01〜0.3 程度
 
+次のコードは、二乗誤差の勾配ブースティングを手で書いたものです。各ラウンドで深さ 2 の木を残差に当て、`ν = 0.3` を掛けて足します。比較用に、真の関数 `sin(x) + 0.3x` で予測した時の訓練 MSE（平均二乗誤差）も出します。
+
 ```python
+import numpy as np
 from sklearn.tree import DecisionTreeRegressor
 
-x = np.linspace(0, 10, 200)
-y = np.sin(x) + 0.3 * x + np.random.default_rng(0).normal(0, 0.4, 200)
+x = np.linspace(0, 10, 200).reshape(-1, 1)
+f = np.sin(x.ravel()) + 0.3 * x.ravel()
+y = f + np.random.default_rng(0).normal(0, 0.4, 200)
+print(f"true f:   train MSE = {np.mean((y - f) ** 2):.3f}")
 
-preds = np.zeros_like(x)
-for r in range(30):
-    resid = y - preds
-    weak = DecisionTreeRegressor(max_depth=2).fit(x.reshape(-1, 1), resid)
-    preds += 0.3 * weak.predict(x.reshape(-1, 1))
-plt.savefig("ensemble_boosting_rounds.svg", bbox_inches="tight")
+pred = np.zeros(200)
+for r in range(1, 31):
+    weak = DecisionTreeRegressor(max_depth=2).fit(x, y - pred)  # 残差に当てる
+    pred += 0.3 * weak.predict(x)                                # ν = 0.3
+    if r in (1, 5, 10, 30):
+        print(f"round {r:2d}: train MSE = {np.mean((y - pred) ** 2):.3f}")
+```
+
+出力:
+
+```text
+true f:   train MSE = 0.148
+round  1: train MSE = 2.131
+round  5: train MSE = 0.305
+round 10: train MSE = 0.144
+round 30: train MSE = 0.088
 ```
 
 ![Boosting のラウンド進行に伴う予測曲線の変化と訓練 MSE の推移](./ensemble_boosting_rounds.svg)
 
-左の図でラウンド 1 では浅い決定木 1 本の粗い予測、ラウンド 5 で形が見えてきて、ラウンド 30 でデータに沿った曲線になります。右の図で訓練 MSE はラウンドが進むほど単調に減少します。これを止めずに続けると過学習するため、early stopping（検証スコアが改善しなくなった時点で止める）が必須となります。
+予測曲線はラウンド 1 の粗い段差から、ラウンド 30 でデータに沿った形になり、訓練 MSE は単調に下がります。
+
+右の図の破線 0.148 は真の関数で予測した時の訓練 MSE で、データに入れたノイズの大きさに当たります。Boosting は 10 ラウンド目（0.144）でこの線を下回りました。真の関数より訓練データに合っているのは、ノイズまで覚え始めた証拠です。決定境界の実験で Boosting だけ訓練精度が 1.000 になったのも同じ現象です。
+
+そのため、検証データのスコアが改善しなくなった時点で追加を止めます（early stopping）。止め方は [勾配ブースティング](../gradient-boosting/) のノートで扱っています。
 
 Boosting には複数の変種があります。
 
-- AdaBoost: 誤分類サンプルに高い重みを付けて次のラウンドを学習（古典）
-- 勾配ブースティング: [損失関数](/ml/ml/loss-functions/)の勾配を残差として扱う（任意の微分可能損失に対応）
-- XGBoost / LightGBM / CatBoost: 勾配ブースティングの高速・実用版
-
-詳細は [勾配ブースティング](../gradient-boosting/) のノートで取り上げています。
+- [AdaBoost](https://doi.org/10.1006/jcss.1997.1504): 誤分類サンプルに高い重みを付けて次のラウンドを学習（古典）
+- [勾配ブースティング](https://doi.org/10.1214/aos/1013203451): [損失関数](../loss-functions/)の負の勾配を残差として扱う（微分可能な損失なら使える）
+- [XGBoost](https://xgboost.readthedocs.io/) / [LightGBM](https://lightgbm.readthedocs.io/) / [CatBoost](https://catboost.ai/): 勾配ブースティングの高速な実装
 
 ---
 
 ### Stacking: 異なるモデルを組み合わせる
 
-Stacking は「異なる種類のモデル」を組み合わせます。基本モデル（base learners）を [交差検証](../cross-validation/) で学習し、その out-of-fold 予測をメタ学習器（meta learner）の入力として使います。
+[Stacking](https://doi.org/10.1016/S0893-6080(05)80023-1)（stacked generalization）は、異なる種類のモデルを組み合わせます。基本モデル（base learners）の予測を [交差検証](../cross-validation/) で作り、その out-of-fold 予測（そのサンプルを学習に使わなかったモデルの予測）をメタ学習器（meta learner）の入力にします。
 
 ```mermaid
-graph LR
+flowchart LR
     A["訓練データ"] --> B["base 1: LR"]
     A --> C["base 2: SVM"]
     A --> D["base 3: RF"]
@@ -151,77 +213,88 @@ graph LR
     F --> G["最終予測"]
 ```
 
-3 つのアプローチの精度を実データで比較します。
+scikit-learn の StackingClassifier は、既定で 5 分割の交差検証から out-of-fold 予測を作り、別に全データで base を学習し直します。base ごとに 6 回学習する計算です。
+
+単一決定木、3 系統のアンサンブル、Stacking の base を単体で使った場合の 5 分割交差検証の正解率を比べます。データは [make_classification](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作った合成データ（1500 サンプル、15 特徴量）です。
 
 ```python
-from sklearn.ensemble import StackingClassifier
+from sklearn.datasets import make_classification
+from sklearn.ensemble import (GradientBoostingClassifier, RandomForestClassifier,
+                              StackingClassifier)
 from sklearn.linear_model import LogisticRegression
-from sklearn.svm import SVC
 from sklearn.model_selection import cross_val_score
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
-X, y = make_classification(n_samples=1500, n_features=15, n_informative=8, random_state=0)
+X, y = make_classification(n_samples=1500, n_features=15, n_informative=8,
+                           n_redundant=3, random_state=0)
+base = [
+    ("lr", LogisticRegression(max_iter=2000)),
+    ("svc", SVC(random_state=0)),
+    ("rf", RandomForestClassifier(n_estimators=50, random_state=0)),
+]
 models = {
-    "single tree": DecisionTreeClassifier(max_depth=5),
-    "bagging": RandomForestClassifier(n_estimators=100),
-    "boosting": GradientBoostingClassifier(n_estimators=100),
-    "stacking": StackingClassifier(
-        estimators=[("lr", LogisticRegression()), ("svc", SVC(probability=True)),
-                    ("rf", RandomForestClassifier(n_estimators=50))],
-        final_estimator=LogisticRegression()),
+    "single tree": DecisionTreeClassifier(max_depth=5, random_state=0),
+    "bagging (RF)": RandomForestClassifier(n_estimators=100, random_state=0),
+    "boosting (GB)": GradientBoostingClassifier(n_estimators=100, max_depth=3,
+                                                random_state=0),
+    "stacking": StackingClassifier(estimators=base,
+                                   final_estimator=LogisticRegression(max_iter=2000)),
 }
+models.update({f"base only: {n}": m for n, m in base})
+
 for name, m in models.items():
-    s = cross_val_score(m, X, y, cv=5).mean()
-    print(f"{name}: {s:.3f}")
-plt.savefig("ensemble_accuracy_compare.svg", bbox_inches="tight")
+    s = cross_val_score(m, X, y, cv=5)
+    print(f"{name:16s} {s.mean():.3f} (±{s.std():.3f})")
 ```
 
-出力:
+出力（括弧内は 5 分割の標準偏差）:
 
 ```text
-single tree: 0.851
-bagging: 0.917
-boosting: 0.924
-stacking: 0.923
+single tree      0.888 (±0.020)
+bagging (RF)     0.939 (±0.010)
+boosting (GB)    0.937 (±0.006)
+stacking         0.951 (±0.005)
+base only: lr    0.912 (±0.013)
+base only: svc   0.954 (±0.006)
+base only: rf    0.937 (±0.008)
 ```
 
-![単一決定木と 3 種類のアンサンブルの精度比較](./ensemble_accuracy_compare.svg)
+![単一決定木、3 種類のアンサンブル、Stacking の base 単体の正解率](./ensemble_accuracy_compare.svg)
 
-単一決定木の 85% から、いずれのアンサンブルも 92% 前後まで精度が上がります。Boosting と Stacking が拮抗しており、Stacking は base learner の多様性（線形 + 非線形カーネル + 木系）で互いの弱点を補完する効果が出ています。
+単一決定木の 0.888 から、どのアンサンブルも 0.94〜0.95 まで上がり、Stacking が 0.951 で最も高い値でした。
 
-ただし Stacking では複数の基本モデルとメタ学習器を使うため、訓練時間・推論時間・メンテナンスコストがすべて増えます。単一の勾配ブースティングモデルとも比較し、性能とコストを確認します。
+一方で、base に入れた SVM（RBF カーネルの [SVC](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)）は単体で 0.954 です。このデータでは SVM 1 つでほぼ足りており、ロジスティック回帰とランダムフォレストを足しても上積みはありませんでした。Stacking を採用する前に base を単体でも評価し、6 倍の学習と保守の手間に見合うかを確認します。
 
 ---
 
 ### 数学での使いどころ
 
-- 分散縮小と平均化: 独立な `B` 個の推定量の平均は、分散が元の `1/B` 倍（[分散](../../math/variance/) 参照）
+- 分散縮小と平均化: 相関 `ρ` を持つ `B` 個の推定量の平均は、分散が `ρσ² + (1 − ρ)σ² / B`
 - バイアス補正: Boosting は損失関数の関数空間での勾配降下（functional gradient descent）
-- 弱学習器の理論: PAC（Probably Approximately Correct）学習の枠組みで「弱学習器を集めれば強学習器を作れる」事が証明されており、AdaBoost はその代表的な実現方法
-- マージン理論: AdaBoost は学習に従ってマージンを拡大することが知られている
-- 多目的最適化: Stacking は base learner の出力を特徴量とした再学習で、メタ学習の一例
+- 弱学習器の理論: PAC（Probably Approximately Correct）学習の枠組みで、弱学習器を組み合わせれば強学習器を作れることが[証明されています](https://doi.org/10.1007/BF00116037)。AdaBoost はその実用的な実現方法
+- マージン理論: AdaBoost は訓練誤差が 0 になった後もマージンが広がり、テスト誤差が下がり続ける場合がある（[Schapire ら 1998](https://doi.org/10.1214/aos/1024691352)）
+- 2 段階の学習: Stacking は base learner の out-of-fold 予測を特徴量として、もう 1 段のモデルを学習する
 
 ---
 
 ### 機械学習での使いどころ
 
-- 表データの分類・回帰: 勾配ブースティング（XGBoost、LightGBM、CatBoost）が現代の標準
-- 高分散モデルの安定化: 決定木の集合をランダムフォレストで平均化
-- Kaggle / 表データ競技: 勾配ブースティング + Stacking が定番解法
-- アノマリ検知: 多数の弱検知器の voting で偽陽性を抑える（Isolation Forest など）
-- レコメンド: 多様な推薦アルゴリズム（協調フィルタリング、コンテンツベース、行列分解）の出力を Stacking で結合
-- 不確実性推定: Bagging のばらつきから予測区間を作る（quantile random forest、Bayesian random forest）
-- モデル更新: 既存モデルの予測を base として、補正用の新モデルを追加（Boosting 的に）
+- 表データの分類・回帰: 勾配ブースティング（XGBoost、LightGBM、CatBoost）が定番
+- 高分散モデルの安定化: 深い決定木をランダムフォレストで平均化
+- Kaggle などのコンペティション: 勾配ブースティングと Stacking の組み合わせが定番
+- [異常検知](../anomaly-detection/): Isolation Forest は、ランダムに分割する木を多数作り、孤立までの分割回数を平均して異常度にする
+- 予測区間: ランダムフォレストの葉に入った訓練データの分布から分位点を求める（[quantile regression forests](https://jmlr.org/papers/v7/meinshausen06a.html)）
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- 解釈性が必要: アンサンブルは個別の決定木より大幅に解釈しにくい。[特徴量重要度](../feature-importance/) や SHAP 値で間接的に説明する
-- データが極めて少ない（n < 100）: アンサンブルの効果が出にくく、過学習する
-- 線形関係が支配的: [線形回帰](/ml/ml/linear-regression/)や [ロジスティック回帰](../logistic-regression/) で十分な場合、アンサンブルは過剰
-- リアルタイム推論で厳しいレイテンシ: 100 本の木の平均は遅い。木の本数を減らすか、別アルゴリズムを検討
-- Stacking の交差検証ミス: base learners をテストデータも含めて学習させると深刻なデータリーク（[data leakage](../data-leakage/) 参照）。out-of-fold 予測の生成は厳密に交差検証で行う
-- Boosting で学習率を 1.0 のまま: 過学習しやすい。`learning_rate=0.01〜0.1` + `n_estimators` を多めにする
-- 個別モデルが似すぎている Bagging: 多様性が無いと分散縮小効果が出ない。ランダムフォレストの特徴量サンプリングが効くのはこのため
+- 解釈性が必要: アンサンブルは単体の決定木より大幅に解釈しにくい。[特徴量重要度](../feature-importance/) や [SHAP](https://shap.readthedocs.io/) 値で間接的に説明する
+- 線形関係が支配的: [線形回帰](../linear-regression/)や [ロジスティック回帰](../logistic-regression/) で十分な場合、アンサンブルは過剰
+- 推論のレイテンシが厳しい: 推論時間は木の本数に比例して増える。木の本数を減らすか、別アルゴリズムを検討する
+- Stacking の交差検証ミス: 同じサンプルで学習した base の予測をメタ学習器に渡すと過学習し、テストデータまで混ぜると深刻なデータリークになる（[データリーク](../data-leakage/) 参照）。手で組む時も out-of-fold 予測を使う
+- Boosting で学習率が大きい: 少ないラウンドで訓練データに合わせ込む。`learning_rate` を 0.01〜0.1 に下げて `n_estimators` を増やし、early stopping で止める
+- 個別モデルが似すぎている Bagging: 相関 `ρ` が高いと `ρσ²` が残り、本数を増やしても分散が下がらない
 - メタ学習器に複雑なモデルを使う Stacking: 過学習しやすい。線形モデルや浅い決定木が一般的
-- アンサンブルでも防げない問題: [データリーク](../data-leakage/)、不均衡データ、[特徴量設計](../feature-selection/) の不備は、いくらモデルを重ねても解消しない。これらが先決
+- アンサンブルでも防げない問題: データリーク、不均衡データ、[特徴量設計](../feature-selection/) の不備は、いくらモデルを重ねても解消しない。これらが先決

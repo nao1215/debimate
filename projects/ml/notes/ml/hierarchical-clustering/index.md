@@ -7,9 +7,7 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 30
 ---
 
-階層的クラスタリング（hierarchical clustering）は、データ点を徐々にマージしていく（または分割していく）ことで、樹形図（dendrogram）として全階層のクラスタ構造を可視化するアルゴリズムです。[k-means](../k-means/) や [DBSCAN](../dbscan/) のように「事前に `k` やパラメータを決める」必要がなく、樹形図を見てから「どこで切るか」で粒度を選べます。
-
-階層的クラスタリングは、樹形図でデータの構造を確認し、後からクラスタ数を決めたい場合に使います。ただし計算量 `O(n²)` 〜 `O(n³)` で大規模データには不向きです。
+階層的クラスタリング（hierarchical clustering）は、データ点を徐々にマージしていく（または分割していく）ことで、樹形図（dendrogram）として全階層のクラスタ構造を可視化するアルゴリズムです。[k-means](../k-means/) や [DBSCAN](../dbscan/) のように「事前に `k` やパラメータを決める」必要がなく、樹形図を見てから「どこで切るか」で粒度を選べます。ただし計算量が `O(n²)` 〜 `O(n³)` なので、大規模データには向きません。
 
 ---
 
@@ -18,22 +16,36 @@ weight: 30
 - 凝集型（agglomerative, bottom-up）: 各点を 1 クラスタとして始め、最も近い 2 クラスタを順にマージ
 - 分割型（divisive, top-down）: 全データを 1 クラスタとして始め、繰り返し 2 分割
 
-実装はほぼ凝集型が標準（scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy`）。分割型は計算量が大きく、scikit-learn の `BisectingKMeans` のように k-means を再帰的に適用する実装が使われる程度です。
+ライブラリの実装はほぼ凝集型です（[scikit-learn](https://scikit-learn.org/) の [`AgglomerativeClustering`](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html)、[SciPy](https://scipy.org/) の [`scipy.cluster.hierarchy`](https://docs.scipy.org/doc/scipy/reference/cluster.hierarchy.html)）。分割型は計算量が大きく、scikit-learn の [`BisectingKMeans`](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.BisectingKMeans.html) のように k-means で 2 分割を繰り返す実装が使われる程度です。
+
+次のコードは、7 点を SciPy の single linkage（最も近い 2 点の距離をクラスタ間の距離にする方法。後述）で凝集し、最初の 4 回の結合を表示します。
 
 ```python
 import numpy as np
 from scipy.cluster.hierarchy import linkage
 
-# 図と同じ 7 点。single linkage では k=3 になるまで 4 回結合する。
+# 図と同じ 7 点（番号 0〜6）
 points = np.array([[0.5, 1.0], [0.7, 0.9], [3.0, 3.0], [3.2, 2.8],
                    [3.1, 3.2], [1.5, 3.5], [1.7, 3.3]])
 Z = linkage(points, method="single")
-print(Z[:4, :2].astype(int))  # 最初の 4 回に結合したクラスタ
+for a, b, dist, size in Z[:4]:  # 最初の 4 回の結合
+    print(f"{int(a)} + {int(b)}: 距離 {dist:.3f}, 点の数 {int(size)}")
 ```
+
+```text
+0 + 1: 距離 0.224, 点の数 2
+2 + 4: 距離 0.224, 点の数 2
+5 + 6: 距離 0.283, 点の数 2
+3 + 8: 距離 0.283, 点の数 3
+```
+
+[`linkage`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html) の戻り値 `Z` は 1 行が 1 回の結合で、2 つのクラスタの番号、距離、結合後の点の数を持ちます。7 以降の番号は結合で作られたクラスタで、4 行目の 8 は 2 回目に作った {2, 4} です。
 
 ![凝集型クラスタリングのステップ進行](./hierarchical_steps.svg)
 
-ステップ 0 では各点が独立したクラスタです。7 点から `k = 3` にするには、クラスタ数を 4 つ減らすため 4 回の結合が必要です。この図ではステップ 1 から 3 で 3 組の近い点を結合し、ステップ 4 で右上の 3 点を 1 クラスタにして `k = 3` へ到達します。各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムですが、最近接の定義（リンク方法）で結果が変わります。
+7 点から `k = 3` にするには、クラスタ数を 4 つ減らすため 4 回の結合が必要です。図のステップ 1 から 3 で 3 組の近い点を結合し、ステップ 4 で点 3 を {2, 4} に加えて右上の 3 点を 1 クラスタにします。ステップ 1 と 2（0.224）、ステップ 3 と 4（0.283）はそれぞれ同じ距離なので結合の順は実装次第ですが、4 回後のクラスタは変わりません。
+
+各ステップで「最近接の 2 クラスタ」を選ぶ単純なアルゴリズムですが、最近接の定義（リンク方法）で結果が変わります。
 
 ---
 
@@ -54,7 +66,9 @@ labels = fcluster(Z, t=8, criterion="distance")  # 高さ 8 で切ってクラ�
 plt.savefig("hierarchical_dendrogram.svg", bbox_inches="tight")
 ```
 
-![Dendrogram と高さによる切り分け](./hierarchical_dendrogram.svg)
+次の図は、このコードに高さ 8 と 12 の線と、`labels` で色分けした散布図を足した[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hierarchical-clustering_gen.py)で描いています。
+
+![樹形図と高さによる切り分け](./hierarchical_dendrogram.svg)
 
 左の樹形図は「下からマージしていく階層」を表します。高さ `h` で水平に切ると、その時点での「未マージのサブツリー数」がクラスタ数になります。
 
@@ -74,38 +88,48 @@ plt.savefig("hierarchical_dendrogram.svg", bbox_inches="tight")
 |---|---|---|
 | single | 最近接 2 点 | チェーン状にくっつく |
 | complete | 最遠接 2 点 | コンパクトな球形クラスタ |
-| average | 全ペアの平均距離 | balanced |
-| ward | マージ前後の分散増加 | 球形 + クラスタサイズ均等 |
+| average | 全ペアの平均距離 | single と complete の中間 |
+| ward | マージ前後の分散増加 | 球形で大きさの近いクラスタ |
+
+次のコードは、前節と同じ 40 点に 4 種類の linkage を適用し、上段に樹形図、下段に `k = 3` の結果と各クラスタの点の数を描きます。
 
 ```python
-from scipy.cluster.hierarchy import linkage
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.cluster.hierarchy import dendrogram, linkage
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.datasets import make_blobs
 
 X, _ = make_blobs(n_samples=40, centers=3, cluster_std=0.8, random_state=0)
 
-for method in ["single", "complete", "average", "ward"]:
-    Z = linkage(X, method=method)
+fig, axes = plt.subplots(2, 4, figsize=(16, 8))
+for col, method in enumerate(["single", "complete", "average", "ward"]):
+    # 上段: 樹形図
+    dendrogram(linkage(X, method=method), ax=axes[0, col], no_labels=True)
+    axes[0, col].set_title(f"linkage = {method}")
+    # 下段: k = 3 で切った結果と、各クラスタの点の数
     ac = AgglomerativeClustering(n_clusters=3, linkage=method).fit(X)
+    axes[1, col].scatter(X[:, 0], X[:, 1], c=ac.labels_, cmap="tab10")
+    sizes = sorted(np.bincount(ac.labels_).tolist(), reverse=True)
+    axes[1, col].set_title(f"k=3 cluster sizes: {sizes}")
+plt.tight_layout()
 plt.savefig("hierarchical_linkage_compare.png", bbox_inches="tight")
 ```
 
-![Linkage 4 種類の dendrogram と決定結果](./hierarchical_linkage_compare.png)
+![linkage 4 種類の樹形図と k = 3 の結果](./hierarchical_linkage_compare.png)
 
-上段が樹形図、下段が `k = 3` で切った結果のクラスタです。
+- single: 樹形図がチェーン状に伸び、2 つの塊が 1 つにつながりました。離れた 2 点だけが別クラスタです（26 / 12 / 2）
+- complete: まとまった塊を作りやすい反面、外れ値の影響を受けやすい方法です（15 / 13 / 12）
+- average: このデータでは complete と同じ分け方です（15 / 13 / 12）
+- ward: 大きさの近い球形のクラスタを作りやすく、`AgglomerativeClustering` のデフォルトです（16 / 13 / 11）
 
-- single: 樹形図が縦に長いチェーン構造。ノイズに弱く、しばしば「巨大な 1 クラスタ + 小クラスタ」に
-- complete: コンパクトな樹形図。外れ値の影響を受けやすい
-- average: 安定的に動く、中庸の選択
-- ward: 最も「均等な大きさのクラスタ」を作る。scikit-learn のデフォルト
-
-実用ではまず ward から試すのが定石です。データに非凸な構造（チェーン状の伸び）があれば single も試す価値があります。
+最初は ward で試し、細長く伸びた非凸の塊があれば single も比べます。比べる時は次節の指標を使えます。
 
 ---
 
 ### コフェネティック相関係数で linkage を選ぶ
 
-「どの linkage が今のデータに合うか」を客観的に評価する指標がコフェネティック相関係数（cophenetic correlation coefficient）。元の距離行列と樹形図上の距離行列の相関で、1 に近いほど樹形図がデータの距離関係をよく保存しています。
+linkage を比べる指標の 1 つが、コフェネティック相関係数（cophenetic correlation coefficient）です。樹形図上の 2 点の距離（2 点が初めて同じクラスタに入る結合の高さ）と元の距離の相関で、1 に近いほど樹形図が元の距離関係を保っています。SciPy では [`cophenet`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.cophenet.html) で計算します。
 
 ```python
 from scipy.cluster.hierarchy import linkage, cophenet
@@ -121,8 +145,6 @@ for method in ["single", "complete", "average", "ward"]:
     print(f"{method}: cophenetic r = {c:.3f}")
 ```
 
-出力例:
-
 ```text
 single: cophenetic r = 0.739
 complete: cophenetic r = 0.798
@@ -130,7 +152,7 @@ average: cophenetic r = 0.801
 ward: cophenetic r = 0.776
 ```
 
-この場合 average が最も距離関係を保存している、と分かります。この指標が測るのは距離関係の保存度です。得られたクラスタが分析目的に合うかは、別に確認します。
+このデータでは average が最も高く、2 つの塊をつないだ single が最も低い値でした。ただし、この指標が測るのは距離関係の保存度です。得られたクラスタが分析目的に合うかは、別に確認します。
 
 ---
 
@@ -146,34 +168,25 @@ ward: cophenetic r = 0.776
 
 ### 機械学習での使いどころ
 
-- 遺伝子発現データのクラスタリング: heatmap + dendrogram の組み合わせ
-- 顧客のセグメンテーション: 階層的な親和性
+- 遺伝子発現データのクラスタリング: heatmap と樹形図を並べ、似た発現パターンをまとめる
+- 顧客・市場のセグメンテーション: 切る高さを変えて、顧客層を 2 / 5 / 20 区分で切り替える
 - 文書のトピック階層化（NLP）
-- 画像のセグメンテーション
-- ネットワークのコミュニティ階層
+- 動物・植物や言語の系統分類
 - データ探索（EDA）: 「とりあえず構造を見たい」
-- 動物・植物の系統分類
-- 言語の系統分類
-- マーケットセグメンテーション（顧客層を 2 / 5 / 20 階層で切り替え）
-- レコメンドのアイテム類似性ツリー
-- 質的データの分類（カテゴリ間の距離）
 
-scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy` の `linkage / dendrogram / fcluster` がメインです。seaborn の `clustermap` は heatmap + dendrogram を同時に描けるので EDA で重宝します。
+scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy` の `linkage / dendrogram / fcluster` がメインです。[seaborn](https://seaborn.pydata.org/) の [`clustermap`](https://seaborn.pydata.org/generated/seaborn.clustermap.html) は heatmap と樹形図を同時に描けるので、EDA で重宝します。
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- 大規模データ（n > 10⁴ 〜 10⁵）: 計算量 `O(n²)` でメモリ・時間が破綻。`MiniBatchKMeans` か `BIRCH` を検討
+- 大規模データ（n > 10⁴ 〜 10⁵）: 計算量 `O(n²)` でメモリ・時間が破綻。`MiniBatchKMeans` か `Birch` を検討
 - 一度マージしたら撤回できない: greedy なので、初期の誤りが最後まで残る
 - ノイズに弱い（特に single linkage）: 外れ値が「chain effect」で他のクラスタを橋渡しすることがある
 - スケールが揃っていない: 距離が歪む。[標準化](../standardization/) を必ず先に
-- 樹形図を読み間違える: x 軸の点の並び順は意味を持たない（垂直方向の高さだけが重要）
-- linkage 選択を考えずに ward を使う: データ構造によって最適は変わる。コフェネティック相関で複数比較
-- ward は euclidean 距離のみ: 他の距離（manhattan、cosine）では single / complete / average を使う
-- 樹形図の縦軸の単位を無視: linkage によって意味が異なる（average なら平均距離、ward なら分散増加）
-- 「自然な切れ目」が無い: gap が見えない場合は別のクラスタリング（[DBSCAN](../dbscan/)、k-means + silhouette）を検討
+- 樹形図を読み間違える: x 軸の点の並び順は意味を持たない（左右の枝を入れ替えても同じ木で、重要なのは高さだけ）
+- ward はユークリッド距離が前提: 他の距離（manhattan、cosine）では single / complete / average を使う
+- 樹形図の縦軸の単位を無視: linkage によって意味が異なる（average なら平均距離、ward なら分散の増加量から計算した値）
+- 「自然な切れ目」が無い: 別のクラスタリング（[DBSCAN](../dbscan/)、k-means + silhouette）を検討。切る高さは silhouette score や gap statistic で複数候補を比較できる
 - 階層構造が無いデータに無理やり適用: フラットなクラスタなら [k-means](../k-means/) で十分
 - カテゴリ変数を含む: 距離が定義しにくい。Gower 距離、または one-hot 後にコサイン類似度
-- 切る高さを自動決定: silhouette score、Calinski-Harabasz index、gap statistic などで複数候補を比較
-- 解釈時の罠: dendrogram の左右の枝の並びは恣意的（同じ高さで枝を入れ替えても木は変わらない）

@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/decision-tree_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,9 +15,7 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/decision-tree"
-)
+NOTE_DIR = Path(__file__).resolve().parents[2] / "notes" / "ml" / "decision-tree"
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -28,7 +27,6 @@ def save(name: str) -> None:
 # ============================================================
 # Fig 1: Decision boundary at increasing max_depth (axis-aligned splits)
 # ============================================================
-rng = np.random.default_rng(0)
 X, y = make_classification(n_samples=300, n_features=2, n_informative=2,
                             n_redundant=0, n_clusters_per_class=1,
                             class_sep=0.9, random_state=0)
@@ -60,7 +58,7 @@ plot_tree(clf3,
           feature_names=["x1", "x2"],
           class_names=["class 0", "class 1"],
           filled=True, rounded=True, fontsize=9)
-plt.title("Decision tree (max_depth=3): each node = a 'if feature < threshold' split")
+plt.title("Decision tree (max_depth=3): each node = a 'if feature <= threshold' split")
 plt.tight_layout()
 save("decision_tree_structure.svg")
 
@@ -95,7 +93,7 @@ xx_m, yy_m = np.meshgrid(np.linspace(-1.5, 2.5, 250),
                           np.linspace(-1.2, 1.7, 250))
 
 depths_m = [2, 5, None]
-titles_m = ["max_depth=2 (under-fit)", "max_depth=5", "max_depth=None (fully grown, over-fit)"]
+titles_m = ["max_depth=2 (under-fit)", "max_depth=5", "max_depth=None (fully grown)"]
 
 fig, axes = plt.subplots(1, 3, figsize=(13, 4.3))
 for ax, d, title in zip(axes, depths_m, titles_m):

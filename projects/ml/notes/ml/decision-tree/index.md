@@ -7,161 +7,220 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 21
 ---
 
-決定木（decision tree）は、入力空間を「if-then-else」の分割で繰り返し切り分け、葉ノードに到達した時点でクラス（分類）または値（回帰）を出すモデルです。学習は「分割すると不純度が最も下がる特徴量と閾値」を貪欲的に選ぶことを再帰的に繰り返すアルゴリズムで、最終的には軸に平行な階段状の決定境界を作ります。
+決定木（decision tree）は、「特徴量 `x_j` が閾値 `t` 以下か」という質問を繰り返してデータを分け、たどり着いた葉ノードでクラス（分類）または値（回帰）を返すモデルです。学習では、各ノードで最も良い質問を 1 つずつ貪欲に選びます。分岐条件を読めば予測の根拠を追えますし、特徴量のスケーリングも要りません。
 
-決定木は分岐条件を読んで予測の根拠を確認でき、特徴量のスケーリングも不要です。また、[ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) など、表形式のデータに使うアルゴリズムの構成要素にもなっています。素の決定木は過学習しやすいので、アンサンブルで使うか正則化（depth 制限、leaf サイズ下限）を効かせる運用が標準となります。
+単体の決定木は過学習しやすいので、深さや葉のサンプル数を制限して使うか、[ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) の部品として使うのが一般的です。
+
+<br>
+
+本記事では、scikit-learn の [`DecisionTreeClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) を使って次の疑問を確かめます。
+
+- 各ノードで、どの特徴量・閾値をどう選んでいるのか
+- Gini 不純度とエントロピーで、選ばれる分割は変わるのか
+- 木を深くすると、学習データと未知のデータでの精度はどう変わるのか
 
 ---
 
-### 決定木の学習アルゴリズム
+### 分割の選び方
 
-学習はトップダウンに次の手順を再帰的に繰り返します。
+学習はトップダウンに次の手順を繰り返します。scikit-learn は [CART](https://doi.org/10.1201/9781315139470)（Classification And Regression Trees）を最適化した実装で、どのノードも左右 2 つに分けます。
 
 ```mermaid
-graph TD
-    A["現在のノードのデータ"] --> B{"停止条件を満たす?<br/>(深さ上限・最小サンプル数・全部同じクラス)"}
-    B -->|"Yes"| C["葉ノードとして<br/>多数決クラスを記録"]
-    B -->|"No"| D["全特徴量・全閾値を試して<br/>不純度減少が最大の分割を選ぶ"]
-    D --> E["左の子: x_j < threshold"]
-    D --> F["右の子: x_j ≥ threshold"]
-    E --> A
-    F --> A
+flowchart LR
+    A["ノードのデータ"] --> B{"停止条件を満たす?<br/>深さ上限・最小サンプル数<br/>1 クラスのみ"}
+    B -->|"Yes"| C["葉: 多数決のクラス<br/>(回帰なら平均)"]
+    B -->|"No"| D["全特徴量・全閾値から<br/>不純度の減少が最大の分割"]
+    D --> E["左の子: x_j ≤ t"]
+    D --> F["右の子: x_j > t"]
+    E -.->|"同じ手順"| A
+    F -.->|"同じ手順"| A
 ```
 
-分割の良し悪しは「不純度（impurity）の減少量」で測ります。分割前のノードの不純度から、分割後の 2 つのノードの不純度（サンプル数で重み付け平均）を引いたものを「情報利得（information gain）」と呼びます。各ノードでは、情報利得が最大になる `(特徴量, 閾値)` の組を選びます。
+分割の良し悪しは不純度（impurity）の減少量で測ります。不純度は、ノード内のクラスがどれだけ混ざっているかを表す値です。分割前の不純度から、左右の子の不純度をサンプル数で重み付けして平均したものを引いた値が減少量で、これが最大になる `(特徴量, 閾値)` を選びます。閾値の候補は、各特徴量の値を並べた時の隣り合う 2 値の中点です。
 
 ---
 
-### 不純度の指標: Gini と Entropy
+### 不純度: Gini とエントロピー
 
-分類木の不純度として最もよく使われるのが Gini 不純度と交差エントロピーです。
+分類木の不純度には、Gini 不純度と[エントロピー](/ml/math/information-theory/)がよく使われます。`p_k` はノード内でクラス `k` が占める割合です。
 
 - Gini: `G(p) = Σ_k p_k (1 - p_k) = 1 - Σ_k p_k^2`
-- Entropy: `H(p) = -Σ_k p_k log_2 p_k`
+- エントロピー: `H(p) = -Σ_k p_k log_2 p_k`
 
-二値分類（`p_1 = p, p_0 = 1 - p`）の場合、両者は次の形をしています。
+エントロピーの減少量は情報利得（information gain）と呼ばれ、[ID3](https://doi.org/10.1007/BF00116251) や C4.5 などの決定木で使われてきました。二値分類（`p_1 = p`）では、どちらも `p` だけの関数です（エントロピーは比較のため 1/2 倍）。
+
+![Gini とエントロピーはいずれも p=0.5 で最大、p=0 や 1 で 0](./decision_tree_impurity.svg)
+
+どちらも `p = 0.5`（クラスが半々）で最大、`p = 0` または `p = 1`（1 クラスだけ）で 0 になり、形はよく似ています。違いは、エントロピーが端の近くで急に立ち上がり、クラスが少し混ざっただけのノードをより重く数える点です。Gini は対数を使わないので計算が軽く、scikit-learn の既定（`criterion="gini"`）になっています。
+
+<br>
+
+形が似ていても、選ばれる分割が同じとは限りません。次のコードは、2 特徴量・300 点の分類データで最初の分割を総当たりで探し、scikit-learn が選んだ根ノードの分割と比べます。
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
-
-p = np.linspace(0.001, 0.999, 400)
-gini = 2 * p * (1 - p)
-entropy = -(p * np.log2(p) + (1 - p) * np.log2(1 - p))
-
-plt.plot(p, gini, color="#7aa6c2", lw=2, label="Gini")
-plt.plot(p, entropy / 2, color="#e15759", lw=2, ls="--", label="Entropy / 2")
-plt.savefig("decision_tree_impurity.svg", bbox_inches="tight")
-```
-
-![Gini と Entropy はいずれも p=0.5 で最大、p=0 や 1 で 0](./decision_tree_impurity.svg)
-
-両者とも `p = 0.5`（クラスが半々で最も予測しにくい）で最大値を取り、`p = 0` または `p = 1`（全部同じクラス = 不純度ゼロ）で 0 になります。形はよく似ています。ただし、Entropy の方が `p = 0` 付近でわずかに尖っており、Gini の方が計算が軽いです（log 計算が要らない）。実用上は両者で性能差はほぼ無く、scikit-learn のデフォルトは Gini です。
-
-回帰木では不純度の代わりに「分散」を最小化します（分割後のグループ内の `y` の分散の和が最小になるように分割する）。これは MSE（Mean Squared Error、平均二乗誤差）損失で OLS（Ordinary Least Squares、最小二乗法）をやっているのと同じ発想で、[損失関数](../loss-functions/) の選び方の話と直結します。
-
----
-
-### 軸に平行な決定境界
-
-決定木の決定境界は必ず「軸に平行（axis-aligned）」になります。これは各分割が単一特徴量の閾値で決まるため、境界が `x_1 = c` や `x_2 = c` のような直線でしか引けないことに起因します。
-
-```python
 from sklearn.datasets import make_classification
 from sklearn.tree import DecisionTreeClassifier
 
-X, y = make_classification(n_samples=300, n_features=2, n_informative=2,
-                           n_redundant=0, class_sep=0.9, random_state=0)
-for depth in [1, 3, 10]:
-    clf = DecisionTreeClassifier(max_depth=depth, random_state=0).fit(X, y)
-    # 描画は scripts 側を参照
-plt.savefig("decision_tree_boundary.png", bbox_inches="tight")
+X, y = make_classification(n_samples=300, n_features=2, n_informative=2, n_redundant=0,
+                           n_clusters_per_class=1, class_sep=0.9, random_state=0)
+
+
+def gini(t):
+    p = np.bincount(t, minlength=2) / len(t)
+    return 1 - np.sum(p**2)
+
+
+def entropy(t):
+    p = np.bincount(t, minlength=2) / len(t)
+    p = p[p > 0]
+    return -np.sum(p * np.log2(p))
+
+
+def best_split(X, y, impurity):
+    best = (0.0, None, None)
+    for j in range(X.shape[1]):
+        v = np.unique(X[:, j])
+        for t in (v[:-1] + v[1:]) / 2:  # 隣り合う値の中点を閾値の候補にする
+            left = X[:, j] <= t
+            n_l, n_r = left.sum(), (~left).sum()
+            gain = impurity(y) - (n_l * impurity(y[left]) + n_r * impurity(y[~left])) / len(y)
+            if gain > best[0]:
+                best = (gain, j, t)
+    return best
+
+
+for name, f in [("gini", gini), ("entropy", entropy)]:
+    gain, j, t = best_split(X, y, f)
+    root = DecisionTreeClassifier(max_depth=1, criterion=name, random_state=0).fit(X, y).tree_
+    print(f"{name:7s} 手計算: x{j + 1} <= {t:.3f} (減少量 {gain:.3f})"
+          f"  scikit-learn: x{root.feature[0] + 1} <= {root.threshold[0]:.3f}")
 ```
 
-![max_depth を変えたときの決定境界の階段状の進化](./decision_tree_boundary.png)
+```text
+gini    手計算: x2 <= 0.203 (減少量 0.269)  scikit-learn: x2 <= 0.203
+entropy 手計算: x2 <= -0.148 (減少量 0.451)  scikit-learn: x2 <= -0.148
+```
 
-- depth=1: 1 本の縦線か横線でしか分けられない（最も単純な決定）
-- depth=3: 階段状の境界が複雑になり、データの構造を捉えられる
-- depth=10: 各サンプルに張り付く形で過学習している（小さな「島」が大量に生まれる）
+手計算の閾値は scikit-learn と一致しました。一方で、同じデータでも Gini は `x2 <= 0.203`、エントロピーは `x2 <= -0.148` を選んでいます。ただし次節の深さ 3 の木で比べると、交差検証の精度は 0.897 と 0.883 で、差は 0.014 でした。
 
-軸に平行な境界しか作れない、という制約は線形回帰の「直線しか作れない」と対称的な構造で、両者を組み合わせるアプローチもあります（決定木で領域を切ってから各領域内で線形回帰、など）。
+回帰木（`DecisionTreeRegressor`）は、既定で子ノードの二乗誤差の合計が最小になる分割を選びます。葉の予測値は葉内の `y` の平均で、平均は二乗誤差を最小にする定数なので、分散の減少量で分割を選ぶことと同じです。
 
 ---
 
-### 木構造を直接見る
+### 深さと決定境界
 
-決定木のもう一つの強みは「学習結果そのものを人間が読める」点です。scikit-learn の `plot_tree` でツリーをそのまま図にできます。
+各分割は 1 つの特徴量と閾値で決まるため、決定境界は座標軸に平行な線分をつないだ階段状になります。次の図は、前節と同じデータで `max_depth` を 1・3・10 にした時の決定境界です。本記事のコードは計算部分だけで、描画を含む[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/decision-tree_gen.py)は GitHub にあります。
+
+![max_depth を変えたときの決定境界](./decision_tree_boundary.png)
+
+深さ 1 は `x2 = 0.203` の横線 1 本だけで分けます。深さ 3 では赤のクラスを囲む階段ができ、深さ 10 では数点だけを囲む細い帯が何本も現れます。この帯が未知のデータで役に立つかは、図を見ても分かりません。そこで、学習データの精度と、5 分割の交差検証を 10 回繰り返した平均精度（CV）を並べます。前節のコードの `X`、`y` を使います。
+
+```python
+from sklearn.model_selection import RepeatedStratifiedKFold, cross_val_score
+
+cv = RepeatedStratifiedKFold(n_splits=5, n_repeats=10, random_state=0)
+for criterion in ["gini", "entropy"]:
+    for depth in [1, 3, 10]:
+        clf = DecisionTreeClassifier(max_depth=depth, criterion=criterion, random_state=0)
+        train = clf.fit(X, y).score(X, y)
+        valid = cross_val_score(clf, X, y, cv=cv).mean()
+        print(f"{criterion:7s} depth={depth:2d} 葉={clf.get_n_leaves():2d}"
+              f"  学習={train:.3f}  CV={valid:.3f}")
+```
+
+```text
+gini    depth= 1 葉= 2  学習=0.863  CV=0.847
+gini    depth= 3 葉= 8  学習=0.923  CV=0.897
+gini    depth=10 葉=35  学習=1.000  CV=0.868
+entropy depth= 1 葉= 2  学習=0.850  CV=0.841
+entropy depth= 3 葉= 7  学習=0.897  CV=0.883
+entropy depth=10 葉=32  学習=0.987  CV=0.871
+```
+
+Gini の深さ 10 は葉が 35 個まで増え、学習データを全て当てました（1.000）。しかし CV は 0.868 で、葉 8 個の深さ 3（0.897）より低くなっています。学習データにだけ合う帯を作った分、未知のデータで外れたわけです。これが決定木の過学習です。
+
+---
+
+### 木構造を読む
+
+決定木は、学習結果をそのまま人間が読めます。scikit-learn の [`plot_tree`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.plot_tree.html) に深さ 3（Gini）の木を渡すと、ノードごとの分岐条件と内訳を描きます。
 
 ```python
 from sklearn.tree import plot_tree
+
 clf3 = DecisionTreeClassifier(max_depth=3, random_state=0).fit(X, y)
 plot_tree(clf3, feature_names=["x1", "x2"], class_names=["class 0", "class 1"],
           filled=True, rounded=True)
-plt.savefig("decision_tree_structure.svg", bbox_inches="tight")
 ```
 
 ![max_depth=3 で学習した決定木の構造](./decision_tree_structure.svg)
 
-各ノードに `(特徴量, 閾値)` と Gini 値、サンプル数、クラス分布が書かれます。葉ノードの色の濃さがクラスの偏りに対応し、濃いほど純粋なクラスの集まりです。新しいサンプルがどの葉に落ちるかを追えば、予測の根拠を文章で説明できます（「もし x1 が xxx 以下なら…」のように）。
+各ノードには、分岐条件、Gini 不純度、サンプル数、クラスごとのサンプル数（`value`）、多数決のクラスが書かれます。条件を満たすサンプルは左の子へ進みます。色はそのノードで多いクラスを表し、濃いほど 1 クラスに偏っています。
 
-金融・医療・保険などでモデルの判断根拠を顧客に示す必要がある場合は、分岐の条件を使って説明できます。一方、木が深くなるほど分岐が増えて読み取りにくくなるため、可視化した木を見て `max_depth` を調整します。
+例えば根ノードは `x2 <= 0.203` で、前節の手計算と同じ分割です。`x2 > 0.203` かつ `x1 <= 2.198` かつ `x2 > 0.976` の葉には 76 点が落ち、そのうち 75 点が class 1 です。新しいサンプルの予測は「x2 が 0.203 より大きく、x1 が 2.198 以下で、x2 が 0.976 より大きいので class 1」のように文章で説明できます。
+
+ただし、深さ 10 の木は葉が 35 個あり、全ての経路を人が読むのは現実的ではありません。説明に使うなら、読める深さで精度が足りるかを交差検証で確かめます。
 
 ---
 
-### 非線形・非凸データへの強さ
+### 曲がった境界と深さの選び方
 
-線形モデルが苦手とする「曲がった境界」や「クラスタが入り組んだ配置」も、決定木は階段状の境界で覆えます。
-
-```python
-from sklearn.datasets import make_moons
-X_m, y_m = make_moons(n_samples=300, noise=0.15, random_state=0)
-for depth in [2, 5, None]:
-    clf = DecisionTreeClassifier(max_depth=depth, random_state=0).fit(X_m, y_m)
-    # 描画は scripts 側を参照
-plt.savefig("decision_tree_moons.png", bbox_inches="tight")
-```
+曲がった境界も、決定木は階段を細かくすれば覆えます。三日月型のデータ（[`make_moons`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html)）で深さを変えた結果が次の図です。
 
 ![三日月型データへの決定木の当てはめ](./decision_tree_moons.png)
 
-- max_depth=2: 階段が粗すぎて月の形を表現できない（under-fit）
-- max_depth=5: 月の輪郭をうまく捉えている
-- max_depth=None（制限なし）: 訓練ノイズの 1 点 1 点に張り付く（明らかな過学習）
+深さ 2 は階段が粗く、月の内側の凹みを表現できません。深さを制限しない木（`max_depth=None`）は、葉が全て 1 クラスになるまで分けます。精度は前節と同じ方法で測ります。
 
-過学習を防ぐには `max_depth`、`min_samples_split`、`min_samples_leaf`、`ccp_alpha`（コスト複雑性枝刈り）などの[ハイパーパラメータ](/ml/ml/hyperparameter/)を [交差検証](../cross-validation/) で選びます。あるいは [ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) のように多数の木を平均化することで過学習を抑える方向もあります。
+```python
+from sklearn.datasets import make_moons
+
+X_m, y_m = make_moons(n_samples=300, noise=0.15, random_state=0)
+for depth in [2, 5, None]:
+    clf = DecisionTreeClassifier(max_depth=depth, random_state=0)
+    train = clf.fit(X_m, y_m).score(X_m, y_m)
+    valid = cross_val_score(clf, X_m, y_m, cv=cv).mean()
+    print(f"depth={str(depth):4s} 葉={clf.get_n_leaves():2d}  学習={train:.3f}  CV={valid:.3f}")
+```
+
+```text
+depth=2    葉= 4  学習=0.913  CV=0.902
+depth=5    葉=15  学習=0.990  CV=0.957
+depth=None 葉=20  学習=1.000  CV=0.972
+```
+
+前節とは逆に、制限なしの木の CV（0.972）が最も高くなりました。このデータはノイズが小さく、2 つの月がほとんど重ならないので、学習データを全て当てても葉は 20 個で済み、余計な帯がほとんどできません。学習精度が 1.000 であること自体は過学習の証拠ではなく、未知のデータでの精度と並べて初めて判断できます。
+
+深さなどの[ハイパーパラメータ](/ml/ml/hyperparameter/)は、図の見た目ではなく[交差検証](../cross-validation/)で選びます。候補は `max_depth`、`min_samples_split`、`min_samples_leaf`、`ccp_alpha`（コスト複雑度枝刈りの強さ）です。木そのものを安定させたい場合は、多数の木の多数決や平均を取るランダムフォレストや、前の木の誤差を次の木で順に補う勾配ブースティングに進みます。
 
 ---
 
-### 数学での使いどころ
+### 数学での位置付け
 
-- [情報理論](/ml/math/information-theory/)との対応: 情報利得（IG, information gain）はエントロピーの減少量。決定木は ID3・C4.5（Quinlan が提案した初期の決定木学習アルゴリズム）の直系
-- 階段関数による分割: 入力空間を矩形領域に分割し、各領域で定数を予測する近似器
-- 関数空間での貪欲法: 各分割は局所最適。全体最適を求めるのは NP 困難
-- 弱学習器: PAC（Probably Approximately Correct）学習・boosting 理論で「弱学習器」の定義そのものを満たす
-- 情報幾何: クラス確率分布の集合上での KL ダイバージェンス減少と見ることもできる
+- 区分定数近似: 入力空間を軸に平行な直方体に分け、各領域で定数を予測する関数
+- 情報理論: 情報利得は、分岐の結果とクラスラベルの相互情報量に等しい
+- 貪欲法: 各ノードの分割は局所最適で、最適な二分木を求める問題は [NP 完全](https://doi.org/10.1016/0020-0190(76)90095-8) と示されている
+- boosting: 深さ 1 の木（決定株）など浅い木は、boosting の弱学習器としてよく使われる
 
 ---
 
 ### 機械学習での使いどころ
 
-- 説明性が必須の分類・回帰: 1 本の決定木をそのまま運用するケース（医療判断補助、信用スコアの簡易モデル）
-- [アンサンブル学習](../ensemble-learning/) の構成要素: [ランダムフォレスト](../random-forest/) は決定木を bagging、[勾配ブースティング](../gradient-boosting/) は決定木を boosting で組み合わせる
-- 特徴量重要度の取得: 各分割で減らした不純度の合計でランキング（[特徴量重要度](../feature-importance/)）
-- ルールベースの抽出: 学習済み木を if-then 規則に変換して別システムに移植
-- 多クラス分類: [標準化](../standardization/) なしでそのまま扱える。カテゴリ変数は実装によっては直接扱えるが、scikit-learn の DecisionTree では数値へのエンコードが必要
-- 欠損値対応: 一部実装（XGBoost、LightGBM、CatBoost）では欠損値を自動的に良い分岐に振り分ける
-- 不均衡データ: `class_weight="balanced"` で重み付き不純度を使える（[クラス不均衡](../class-imbalance/) 参照）
-
-scikit-learn では、`DecisionTreeClassifier` / `DecisionTreeRegressor` を使えます。複数の木を組み合わせる場合は、[ランダムフォレスト](../random-forest/)や[勾配ブースティング](../gradient-boosting/)を使います。XGBoost、LightGBM、CatBoost は勾配ブースティングの実装です。
+- 説明性が必須の分類・回帰で、浅い木 1 本をそのまま使う
+- [アンサンブル学習](../ensemble-learning/) の部品にする。ランダムフォレストは bagging、勾配ブースティングは boosting で木を組み合わせる
+- 分割で減らした不純度の合計から[特徴量重要度](../feature-importance/)を得る
+- 不均衡データでは `class_weight="balanced"` で少数クラスの重みを上げる（[クラス不均衡](../class-imbalance/)）
+- 欠損値は、scikit-learn の決定木が [1.3](https://scikit-learn.org/stable/auto_examples/release_highlights/plot_release_highlights_1_3_0.html) から扱える。勾配ブースティングの [XGBoost](https://xgboost.readthedocs.io/en/stable/faq.html)、[LightGBM](https://lightgbm.readthedocs.io/en/stable/Advanced-Topics.html)、[CatBoost](https://catboost.ai/docs/en/concepts/algorithm-missing-values-processing) も欠損値の振り分け先を学習する
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- 1 本の決定木で高精度を狙う: 単体は過学習しやすい上に不安定。原則アンサンブル前提で使う
-- 軸に対して傾いた線形境界が本質: 階段状の境界では非効率になる。線形モデルや SVM の方が適切
-- 訓練データの極端な小変化で木が変わる: 学習が高分散。アンサンブルで吸収する
-- 連続値の細かい数値を予測する: 葉ノードでの予測は定数なので、滑らかな関数を当てるのは苦手。回帰木より [線形回帰](../linear-regression/) や勾配ブースティング回帰の方が良いことが多い
-- 外挿: 訓練データの範囲外では「最も近い葉の値」を返すだけで、傾向の外挿はできない。時系列の傾向予測には不向き
-- 多重共線性の特徴量: 似た特徴量が複数あると、貪欲な分割選択が不安定になる。事前の[特徴量選択](/ml/ml/feature-selection/)や PCA を検討
-- 連続変数を含むカテゴリ変数の扱い: scikit-learn は数値しか受け付けないので [カテゴリ変数のエンコーディング](../categorical-encoding/) が必要（LightGBM などは内部で扱える）
-- 不純度ベースの特徴量重要度を過信する: 連続値・高カーディナリティの特徴量に重要度がバイアスする。[permutation importance](../feature-importance/) で再検証する
+- 不安定: 学習データが少し変わるだけで、根に近い分割が変わり木全体が変わる。安定性が要るならアンサンブルを使う
+- 斜めの境界: 軸に対して傾いた直線が本質の問題では、階段で近似するために多くの葉が要る。[ロジスティック回帰](../logistic-regression/)や SVM（サポートベクターマシン）の方が少ないパラメータで済む
+- 滑らかな回帰・外挿: 予測は区分定数なので滑らかな関数は苦手で、学習データの範囲外では端の葉の値を返し続ける。傾向を伸ばす予測には[線形回帰](../linear-regression/)などを検討する
+- カテゴリ変数: [scikit-learn の決定木](https://scikit-learn.org/stable/modules/tree.html)はカテゴリ変数を直接扱えないので、[エンコーディング](../categorical-encoding/)が必要（LightGBM や CatBoost は内部で扱える）
+- 相関の強い特徴量: どちらで分けても同程度なら片方だけが選ばれ、もう片方の重要度が低く見える
+- 不純度ベースの重要度: 値の種類が多い特徴量ほど分割候補が多く、重要度が高く出やすい。permutation importance でも確かめる
+
+図の生成コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/decision-tree_gen.py) にあります。

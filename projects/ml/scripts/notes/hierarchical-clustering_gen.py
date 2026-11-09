@@ -9,8 +9,9 @@ from sklearn.cluster import AgglomerativeClustering
 
 COLOR_BLUE, COLOR_RED, COLOR_GREEN, COLOR_ORANGE = "#7aa6c2", "#e15759", "#59a14f", "#f28e2b"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/hierarchical-clustering"
+# 出力先はこのスクリプトから見た Page Bundle（projects/ml/notes/ml/hierarchical-clustering）。
+NOTE_DIR = os.environ.get("NOTE_DIR", str(
+    Path(__file__).resolve().parents[2] / "notes" / "ml" / "hierarchical-clustering"
 ))
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -78,6 +79,8 @@ for col, method in enumerate(methods):
     ac = AgglomerativeClustering(n_clusters=3, linkage=method).fit(X)
     axes[1, col].scatter(X[:, 0], X[:, 1], c=ac.labels_, cmap="tab10", s=40,
                           edgecolor="white")
+    sizes = sorted(np.bincount(ac.labels_), reverse=True)
+    axes[1, col].set_title("k=3 cluster sizes: " + " / ".join(str(n) for n in sizes))
     axes[1, col].set_xlabel("x1")
     axes[1, col].set_ylabel("x2" if col == 0 else "")
     axes[1, col].grid(True, alpha=0.25)
@@ -95,36 +98,46 @@ points = np.array([
     [1.5, 3.5], [1.7, 3.3],
 ])
 
-fig, axes = plt.subplots(1, 5, figsize=(18, 4))
+fig, axes = plt.subplots(1, 5, figsize=(15, 3.6))
+# 距離は single linkage の結合距離。Step 1/2 と Step 3/4 はそれぞれ同じ距離で、
+# SciPy は同距離の候補を先に見つけた順に結合する。
 stages = [
-    ("Step 0: each point is a cluster", [[0], [1], [2], [3], [4], [5], [6]]),
-    ("Step 1: merge points 0 and 1", [[0, 1], [2], [3], [4], [5], [6]]),
-    ("Step 2: merge points 2 and 4", [[0, 1], [2, 4], [3], [5], [6]]),
-    ("Step 3: merge points 5 and 6", [[0, 1], [2, 4], [3], [5, 6]]),
-    ("Step 4: end with k=3", [[0, 1], [2, 3, 4], [5, 6]]),
+    ("Step 0: 7 clusters", [[0], [1], [2], [3], [4], [5], [6]]),
+    ("Step 1: 0 + 1 (d=0.224)", [[0, 1], [2], [3], [4], [5], [6]]),
+    ("Step 2: 2 + 4 (d=0.224)", [[0, 1], [2, 4], [3], [5], [6]]),
+    ("Step 3: 5 + 6 (d=0.283)", [[0, 1], [2, 4], [3], [5, 6]]),
+    ("Step 4: 3 + {2, 4} (d=0.283)", [[0, 1], [2, 3, 4], [5, 6]]),
 ]
 colors = ["tab:blue", "tab:orange", "tab:green", "tab:red", "tab:purple", "tab:brown", "tab:pink"]
+from scipy.spatial import ConvexHull
+# 点番号を置く向き（点同士が近いので、重ならない側へずらす）
+label_offset = {0: (-0.22, 0), 1: (0.22, 0), 2: (-0.22, 0), 3: (0.22, -0.05),
+                4: (0, 0.25), 5: (-0.22, 0), 6: (0.22, 0)}
 for ax, (title, clusters) in zip(axes, stages):
-    for ci, cluster in enumerate(clusters):
+    for cluster in clusters:
+        # クラスタの色は含まれる最小の点番号で決め、ステップをまたいでも変えない
+        color = colors[min(cluster)]
         for idx in cluster:
-            ax.scatter(points[idx, 0], points[idx, 1], color=colors[ci], s=200,
-                        edgecolor="black", linewidth=0.8)
+            ax.scatter(points[idx, 0], points[idx, 1], color=color, s=90,
+                        edgecolor="black", linewidth=0.8, zorder=3)
+            dx, dy = label_offset[idx]
+            ax.text(points[idx, 0] + dx, points[idx, 1] + dy, str(idx), ha="center",
+                    va="center", fontsize=11, zorder=4)
         if len(cluster) > 1:
-            # Draw convex hull-ish (just lines)
             pts = points[cluster]
-            from scipy.spatial import ConvexHull
             try:
                 hull = ConvexHull(pts)
                 for simplex in hull.simplices:
-                    ax.plot(pts[simplex, 0], pts[simplex, 1], color=colors[ci], alpha=0.5)
+                    ax.plot(pts[simplex, 0], pts[simplex, 1], color=color, alpha=0.5)
             except Exception:
-                ax.plot(pts[:, 0], pts[:, 1], color=colors[ci], alpha=0.5)
-    ax.set_xlim(0, 4); ax.set_ylim(0, 4.5)
-    ax.set_title(title, fontsize=10)
+                ax.plot(pts[:, 0], pts[:, 1], color=color, alpha=0.5)
+    ax.set_xlim(0, 4); ax.set_ylim(0, 4.2)
+    ax.set_title(title, fontsize=11)
+    ax.tick_params(labelsize=8)
     ax.grid(True, alpha=0.25)
 
-plt.suptitle("Agglomerative clustering: four merges reduce seven clusters to three",
-             y=1.02)
+plt.suptitle("Agglomerative clustering (single linkage): four merges reduce seven clusters to three",
+             y=1.02, fontsize=12)
 plt.tight_layout()
 save("hierarchical_steps.svg")
 
