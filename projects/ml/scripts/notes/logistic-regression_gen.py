@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/logistic-regression_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,8 +14,8 @@ COLOR_BLUE = "#7aa6c2"
 COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/logistic-regression"
+NOTE_DIR = str(
+    Path(__file__).resolve().parents[2] / "notes" / "ml" / "logistic-regression"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -22,6 +23,10 @@ os.makedirs(NOTE_DIR, exist_ok=True)
 def save(name):
     plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
     plt.close()
+    # Remove trailing whitespace so `git diff --check` passes.
+    _svg_path = Path(NOTE_DIR) / name
+    if _svg_path.suffix == ".svg":
+        _svg_path.write_text("\n".join(l.rstrip() for l in _svg_path.read_text().splitlines()) + "\n")
 
 
 # --- 図1: シグモイド関数 ---
@@ -92,18 +97,34 @@ plt.tight_layout()
 save("logistic-regression_regularization.svg")
 
 
-# --- 図4: 確率出力の校正イメージ ---
-np.random.seed(0)
-true_p = np.linspace(0.05, 0.95, 10)
-counts = np.random.binomial(100, true_p)
-observed_p = counts / 100.0
+# --- 図4: C=1.0 と C=0.001 の確率の校正（本文のコードと同じ計算） ---
+from sklearn.calibration import calibration_curve
+from sklearn.metrics import log_loss, roc_auc_score
 
-plt.figure(figsize=(5.5, 5))
-plt.plot([0, 1], [0, 1], "k--", alpha=0.5, label="perfectly calibrated")
-plt.scatter(true_p, observed_p, color=COLOR_RED, s=60, label="bin")
-plt.xlabel("Predicted probability")
-plt.ylabel("Observed positive rate")
-plt.title("Calibration plot (illustrative)")
-plt.legend()
-plt.tight_layout()
+rng = np.random.default_rng(0)
+n = 20000
+X = rng.normal(size=(n, 2))
+z = 2.0 * X[:, 0] - 1.0 * X[:, 1] + 0.5
+y = (rng.random(n) < 1 / (1 + np.exp(-z))).astype(int)
+X_train, X_test = X[:10000], X[10000:]
+y_train, y_test = y[:10000], y[10000:]
+
+fig, ax = plt.subplots(figsize=(5.5, 5))
+ax.plot([0, 1], [0, 1], "k--", alpha=0.5, label="perfectly calibrated")
+for C in (1.0, 0.001):
+    model = LogisticRegression(C=C).fit(X_train, y_train)
+    p = model.predict_proba(X_test)[:, 1]
+    w = model.coef_[0]
+    print(f"C={C}: w={np.round(w, 3)}, b={model.intercept_[0]:.3f}, "
+          f"odds ratio={np.round(np.exp(w), 2)}, "
+          f"AUC={roc_auc_score(y_test, p):.3f}, "
+          f"log loss={log_loss(y_test, p):.3f}")
+    frac_pos, mean_pred = calibration_curve(y_test, p, n_bins=10)
+    print("  mean_pred", np.round(mean_pred, 3), "frac_pos", np.round(frac_pos, 3))
+    ax.plot(mean_pred, frac_pos, "o-", label=f"C={C}")
+ax.set_xlabel("Predicted probability")
+ax.set_ylabel("Observed positive rate")
+ax.set_title("Calibration on test data")
+ax.legend()
+fig.tight_layout()
 save("logistic-regression_calibration.svg")

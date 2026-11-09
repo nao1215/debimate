@@ -20,7 +20,8 @@ def save(name):
     plt.close()
     path.write_text("\n".join(line.rstrip() for line in path.read_text().splitlines()) + "\n")
 
-X, y = make_regression(n_samples=360, n_features=30, n_informative=8, noise=35, random_state=17)
+# 150 rows x 60 features (10 informative): few rows per feature, so weak regularization overfits.
+X, y = make_regression(n_samples=150, n_features=60, n_informative=10, noise=40, random_state=17)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=17)
 alphas = np.logspace(-3, 3, 19)
 search = GridSearchCV(make_pipeline(StandardScaler(), Ridge()),
@@ -39,6 +40,8 @@ ax.set_ylabel("R²")
 ax.legend(frameon=False, fontsize=8)
 plt.tight_layout()
 save("hyperparameter_search.svg")
-print(f"selected alpha={search.best_params_['ridge__alpha']:.6g}")
-print(f"best CV R²={search.best_score_:.3f}")
-print(f"held-out test R²={test_r2:.3f}")
+for i in range(0, len(alphas), 3):
+    print(f"alpha={alphas[i]:>7g}  train R²={result['mean_train_score'][i]:.3f}  "
+          f"CV R²={result['mean_test_score'][i]:.3f} ± {result['std_test_score'][i]:.3f}")
+print(f"selected alpha={search.best_params_['ridge__alpha']:g}")
+print(f"test R²={test_r2:.3f}")

@@ -7,171 +7,211 @@ tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 19
 ---
 
-LogisticRegression（ロジスティック回帰）は、[線形回帰](../linear-regression/) の出力をシグモイド関数で 0〜1 の確率に押し込めることで二値分類を可能にしたモデルです。線形回帰の枠組みをほぼそのまま使いつつ、「実数の予測値」を「クラスに属する確率」に変換する点だけが異なります。名前に「回帰」と付いています。ただし、実用上は二値分類の代表的なベースラインモデルとして使われます。
+LogisticRegression（ロジスティック回帰）は、特徴量の重み付き和をシグモイド関数で 0〜1 の確率に変換し、二値分類に使うモデルです。名前に「回帰」と付いていますが、実用上は二値分類の代表的なベースラインモデルです。
 
-特徴量の線形和を [log-odds](../../math/log-exp-logodds/) と見なし、シグモイドで確率に変換します。損失関数は二値交差エントロピー（[損失関数](../loss-functions/) のノート参照）を使います。確率に直接フィットさせると `(0, 1)` の制約があり、線形和と相性が悪くなります。log-odds の値域は実数全体なので、特徴量の線形和で表せます。
-
-「線形」と呼ばれるのは、決定境界（クラス 0 とクラス 1 の境目）が 2 次元なら直線、高次元なら超平面になるためです。逆に言うと、円形・XOR・スイス・ロールのような曲がった境界が必要なデータは素のままでは扱えません。非線形な決定境界が必要なら、後述の多項式特徴量・[RandomForest](../random-forest/)・[勾配ブースティング](../gradient-boosting/)・SVM（Support Vector Machine、[サポートベクターマシン](/ml/ml/svm/)）の RBF（Radial Basis Function、動径基底関数）カーネル・ニューラルネットワークなどに切り替えます。
-
-<br>
-
-他モデルとの位置づけを整理しておくと次のようになります。
-
-- [kNN](../knn/) より高速で確率出力を持つ。その一方で、非線形には弱い（確率出力の信頼性については [確率の校正](../probability-calibration/) 参照）
-- [RandomForest](../random-forest/) / [勾配ブースティング](../gradient-boosting/) より精度は劣ることが多い。その代わり、係数の解釈性が高く軽量
-- ニューラルネットワークの最終層（二値なら sigmoid、多クラスなら softmax）は、本質的に LogisticRegression と同じ
-
-二値分類では、まず LogisticRegression でベースラインを作り、より複雑なモデルと比較します。確率出力が直接出ること、係数 `w` から「どの特徴量がどちらのクラスに引き寄せるか」を読めること、学習が高速で大規模データでもスケールすることが、ベースラインとして使う利点です。
-
-主要な用語:
-
-- 線形結合: 入力特徴の重み付き和（`w^T x + b`）。回帰の y そのもの
-- シグモイド関数: 数値を 0〜1 の確率に変換する S 字曲線（後述）
-- 閾値: 確率をクラスに変換する境界（例: 0.5 以上を陽性）。ビジネス制約に応じて 0.3 や 0.7 に動かせる
-
----
-
-### 仕組み（概要）
-
-- 線形スコア: `z = w^T x + b`
-- 確率: `p = 1 / (1 + exp(-z))`
-- 損失: 対数損失（交差エントロピー、`-y log p - (1-y) log (1-p)`）を最小化する
+[線形回帰](../linear-regression/) と同じく重み付き和 `w^T x + b` を計算しますが、その値の意味と学習方法は異なります。重み付き和は [log-odds](../../math/log-exp-logodds/)（確率 p のオッズ `p / (1 - p)` の対数）と見なします。確率は `(0, 1)` に収まる必要があるので重み付き和で直接表しにくく、値域が実数全体の log-odds なら表せます。学習では二乗誤差ではなく対数損失（[損失関数](../loss-functions/) のノート参照）を最小化し、線形回帰のような閉じた式の解は無いので、反復計算で係数を求めます。
 
 ```mermaid
-graph TD
-    A[特徴量 x] --> B[線形結合 z = w^T x + b]
+flowchart LR
+    A[特徴量 x] --> B[重み付き和 z = w^T x + b]
     B --> C[シグモイドで確率 p]
     C --> D{閾値で判定}
     D -->|p >= 0.5| E[クラス 1]
     D -->|p < 0.5| F[クラス 0]
 ```
 
-シグモイド関数は線形スコア `z` を 0〜1 の確率に押し込める単調増加関数で、`z=0` で `p=0.5` を通ります。`z` が +∞ に近づくと `p` は 1 に、-∞ に近づくと 0 に漸近します。
+閾値は 0.5 に限らず、見逃しを減らしたい場面では 0.3 に下げるなど、業務の制約に合わせて動かせます。
 
-![Sigmoid function](./logistic-regression_sigmoid.svg)
+<br>
 
-2 次元の特徴量に対して LogisticRegression を学習させると、確率の等高線は直線の集まりになり、`p=0.5` の境界線が「決定境界」となります。下の図は学習データに対して、`predict_proba` の確率を色塗りで重ねたものです。
+本記事では、次の疑問を順に扱います。
 
-![Decision boundary and probability contours](./logistic-regression_boundary.png)
-
-確率の等高線が直線になることが、LogisticRegression が「線形分類器」と呼ばれる理由です。非線形な境界が欲しい場合は、後述のように多項式特徴量を追加するか、別モデル（[RandomForest](../random-forest/), SVM RBF カーネル、ニューラルネットワーク）を選びます。
+- 確率と決定境界はどう作られるのか
+- 正則化の強さ `C` を変えると、係数と確率はどう変わるのか
+- 学習した係数から何が読めるのか
+- 標準化をしないと何が起きるのか
 
 ---
 
-### 損失と正則化の捉え方
+### 確率と決定境界
 
-対数損失（交差エントロピー）は、正解クラスの確率が高いほど小さくなる損失です。例えば真のクラスが 1 で `p=0.9` なら `-log(0.9) ≈ 0.105`、`p=0.5` なら `-log(0.5) ≈ 0.693` と、確信度が低いほどペナルティが大きい設計になっています。
+LogisticRegression の計算は次の 3 つです。
 
-[正則化](../regularization/)（L1/L2）は損失に `||w||` 系のペナルティを加えて、係数 `w` を小さく保つ仕組みです。
+- 重み付き和（線形スコア）: `z = w^T x + b`
+- 確率: `p = 1 / (1 + exp(-z))`
+- 損失: 対数損失（交差エントロピー、`-y log p - (1-y) log (1-p)`）を最小化する
 
-- L2 正則化（Ridge 系）: ペナルティ `λ ||w||^2`。すべての係数を均等に縮める。最も一般的
+シグモイド関数は線形スコア `z` を 0〜1 の確率に押し込める単調増加関数で、`z=0` で `p=0.5` を通ります。`z` が +∞ に近づくと `p` は 1 に、-∞ に近づくと 0 に漸近します。
+
+![シグモイド関数](./logistic-regression_sigmoid.svg)
+
+2 次元の特徴量に対して LogisticRegression を学習させると、確率の等高線は平行な直線の集まりになり、`p=0.5` の線が決定境界（クラス 0 とクラス 1 の境目）になります。下の図は学習データに `predict_proba` の確率を色塗りで重ねたものです。
+
+![決定境界と確率の等高線](./logistic-regression_boundary.png)
+
+決定境界が 2 次元なら直線、高次元なら超平面になることが、線形分類器と呼ばれる理由です。逆に言うと、円形や XOR のような曲がった境界が必要なデータは素のままでは扱えません。その場合は多項式特徴量を追加するか、[RandomForest](../random-forest/)・[勾配ブースティング](../gradient-boosting/)・SVM（Support Vector Machine、[サポートベクターマシン](/ml/ml/svm/)）の RBF（Radial Basis Function、動径基底関数）カーネル・ニューラルネットワークに切り替えます。
+
+---
+
+### 損失と正則化
+
+対数損失は、正解クラスの確率が高いほど小さくなる損失です。例えば真のクラスが 1 で `p=0.9` なら `-log(0.9) ≈ 0.105`、`p=0.5` なら `-log(0.5) ≈ 0.693` と、確信度が低いほどペナルティが大きくなります。
+
+[正則化](../regularization/) は損失に係数の大きさのペナルティを加えて、係数 `w` を小さく保つ仕組みです。
+
+- L2 正則化（Ridge 系）: ペナルティ `λ ||w||^2`。すべての係数を 0 に向けて縮めるが、ちょうど 0 にはしない。scikit-learn の既定
 - L1 正則化（Lasso 系）: ペナルティ `λ ||w||_1`。一部の係数を完全に 0 にする（[特徴量選択](/ml/ml/feature-selection/)になる）
 - Elastic Net: L1 と L2 を混ぜたもの
 
-scikit-learn の `LogisticRegression` では正則化強度を `C`（正則化強度の逆数）で指定します。`C` が小さいほど強い正則化となり、係数は 0 に近づきます。下の図は `C` を変化させたときの 8 つの係数の挙動です。
+[scikit-learn の `LogisticRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) では、正則化の強さを `C`（正則化強度の逆数）で指定します。`C` が小さいほど正則化が強くなり、係数は 0 に近づきます。下の図は `C` を変えた時の 8 つの係数の動きです。
 
-![L2 regularization coefficient paths](./logistic-regression_regularization.svg)
+![C による L2 正則化の係数の変化](./logistic-regression_regularization.svg)
 
-`C` を 0.001 に近づけると、すべての係数が 0 へ収束していくのが見えます。逆に `C` を 100 に大きくすると正則化がほぼ効かなくなり、係数の絶対値が大きくなって[過学習](../overfitting/)しやすくなります。実際の運用では `C` を [交差検証](../cross-validation/) で選ぶことが多いです。
+`C` を 0.001 に近づけると、すべての係数が 0 へ縮んでいきます。逆に `C` を 100 まで大きくすると正則化がほぼ効かなくなり、係数の絶対値が大きくなって[過学習](../overfitting/)しやすくなります。実際の運用では `C` を [交差検証](../cross-validation/) で選びます。
+
+---
+
+### 係数の復元と確率の校正
+
+正解の係数が分かっているデータで、係数から何が読めるかを確かめます。次のコードは `z = 2.0*x1 - 1.0*x2 + 0.5` から確率を作り、その確率でラベルを引いた 2 万件のデータを使います。前半の 1 万件で `C=1.0` と `C=0.001` のモデルを学習し、後半の 1 万件で確率の当たり具合を比べます。
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.calibration import calibration_curve
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import log_loss, roc_auc_score
+
+# 正解の係数が分かっているデータを作る: z = 2.0*x1 - 1.0*x2 + 0.5
+rng = np.random.default_rng(0)
+n = 20000
+X = rng.normal(size=(n, 2))
+z = 2.0 * X[:, 0] - 1.0 * X[:, 1] + 0.5
+y = (rng.random(n) < 1 / (1 + np.exp(-z))).astype(int)
+X_train, X_test = X[:10000], X[10000:]
+y_train, y_test = y[:10000], y[10000:]
+
+fig, ax = plt.subplots(figsize=(5.5, 5))
+ax.plot([0, 1], [0, 1], "k--", alpha=0.5, label="perfectly calibrated")
+for C in (1.0, 0.001):
+    model = LogisticRegression(C=C).fit(X_train, y_train)
+    p = model.predict_proba(X_test)[:, 1]
+    w = model.coef_[0]
+    print(f"C={C}: w={np.round(w, 3)}, b={model.intercept_[0]:.3f}, "
+          f"odds ratio={np.round(np.exp(w), 2)}, "
+          f"AUC={roc_auc_score(y_test, p):.3f}, "
+          f"log loss={log_loss(y_test, p):.3f}")
+    frac_pos, mean_pred = calibration_curve(y_test, p, n_bins=10)
+    ax.plot(mean_pred, frac_pos, "o-", label=f"C={C}")
+ax.set_xlabel("Predicted probability")
+ax.set_ylabel("Observed positive rate")
+ax.set_title("Calibration on test data")
+ax.legend()
+fig.tight_layout()
+fig.savefig("logistic-regression_calibration.svg")
+```
+
+実行結果:
+
+```text
+C=1.0: w=[ 1.99  -0.997], b=0.505, odds ratio=[7.32 0.37], AUC=0.884, log loss=0.421
+C=0.001: w=[ 0.919 -0.464], b=0.350, odds ratio=[2.51 0.63], AUC=0.884, log loss=0.475
+```
+
+`C=1.0` の係数は 1.99・-0.997・0.505 で、データを作った時の 2.0・-1.0・0.5 をほぼ取り戻しています。係数を `exp` で戻した値はオッズ比です。`x1` が 1 増えるとオッズが約 7.3 倍、`x2` が 1 増えるとオッズが約 0.37 倍になる、と読めます。係数の符号でクラス 1 に引き寄せるか遠ざけるかが、大きさでその強さが分かります。
+
+`C=0.001` では係数が半分以下に縮みました。2 つの係数が同じ割合で縮んだので確率の大小の順番は変わらず、順番だけを見る AUC は 0.884 のままです。一方で、確率の値そのものを評価する対数損失は 0.421 から 0.475 に悪化しました。下の図は [`calibration_curve`](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.calibration_curve.html) で、予測確率を 10 区間に分け、各区間で実際に陽性だった割合を描いたものです。予測確率と実際の頻度が一致していれば対角線に乗ります。
+
+![C=1.0 と C=0.001 の確率の校正](./logistic-regression_calibration.svg)
+
+`C=1.0` はほぼ対角線に乗ります。`C=0.001` は予測が約 0.16 の区間で実際の陽性は 1.5% しかなく、0.75 の区間では約 90% が陽性です。強い正則化は確率を 0.5 側へ寄せ、自信の無いモデルにします。AUC だけを見ているとこのずれには気付けないので、確率をそのまま使う場面では校正も確認します（詳しくは[確率の校正](../probability-calibration/) のノート参照）。
 
 ---
 
 ### スケーリングが必要な理由
 
-LogisticRegression は[標準化](../standardization/)が事実上必須の前処理となります。理由は 2 つあります。
+LogisticRegression では[標準化](../standardization/)が事実上必須の前処理です。理由は 2 つあります。
 
-1. 正則化項 `||w||^2` がスケールに依存する: スケールの大きい特徴量は「小さい係数で同じ影響を出せる」ため、正則化のペナルティが軽い。一方スケールの小さい特徴量に大きな係数を当てると正則化で罰せられる。結果、本来重要な特徴量の係数が不当に縮められる
-2. 最適化（勾配降下系のソルバー）の収束が安定する: 特徴量のスケールが大きく違うと、損失曲面が引き伸ばされて勾配の方向が歪み、収束が遅くなる
+1. 正則化のペナルティが特徴量の単位に依存する: 値の幅が小さい特徴量は、同じ影響を出すのに大きな係数が必要になり、その分だけ正則化で強く罰せられる
+2. ソルバーの収束が安定する: 特徴量のスケールが大きく違うと損失の曲面が細長くなり、収束が遅くなる
 
-特徴量の係数を「重要度」として解釈したい場合は、標準化なしの係数を直接比較しても無意味であることに特に注意したい。`C` を小さくして正則化を強める運用では、標準化の有無で結果が大きく変わると考えられます。
+1 つ目を確かめます。次のコードは、同じ重さで効く 2 つの特徴量のうち 2 列目だけを 100 分の 1 にして（cm で記録していた値を m で記録し直すのと同じ）、`C=0.01` で学習します。
+
+```python
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+rng = np.random.default_rng(0)
+n = 2000
+X = rng.normal(size=(n, 2))
+z = 1.5 * X[:, 0] + 1.5 * X[:, 1]
+y = (rng.random(n) < 1 / (1 + np.exp(-z))).astype(int)
+X_train, X_test, y_train, y_test = X[:1500], X[1500:], y[:1500], y[1500:]
+
+for unit in (1.0, 0.01):
+    s = np.array([1.0, unit])  # 2 列目の単位だけを変える
+    for scaled in (False, True):
+        steps = [StandardScaler()] if scaled else []
+        model = make_pipeline(*steps, LogisticRegression(C=0.01))
+        model.fit(X_train * s, y_train)
+        auc = roc_auc_score(y_test, model.predict_proba(X_test * s)[:, 1])
+        print(f"unit={unit}, scaled={scaled}: "
+              f"w={np.round(model[-1].coef_[0], 3)}, AUC={auc:.3f}")
+```
+
+実行結果:
+
+```text
+unit=1.0, scaled=False: w=[0.832 0.846], AUC=0.896
+unit=1.0, scaled=True: w=[0.834 0.84 ], AUC=0.895
+unit=0.01, scaled=False: w=[0.748 0.032], AUC=0.765
+unit=0.01, scaled=True: w=[0.834 0.84 ], AUC=0.895
+```
+
+単位を変えただけで、標準化しないモデルは 2 列目の係数が 0.846 から 0.032 になり、AUC は 0.896 から 0.765 に落ちました。2 列目で元と同じ影響を出すには係数を 100 倍にする必要があり、L2 のペナルティは係数の 2 乗なので 1 万倍に効きます。モデルは罰を避けて 2 列目をほぼ捨てたわけです。`StandardScaler` を挟むと、単位を変える前と同じ係数と AUC に戻ります。係数を重要度として比べる時も、標準化していない係数は単位で値が変わるので比べられません。
 
 ---
 
 ### 前提・注意
 
-- 特徴量のスケールが違うと学習が不安定になるため[標準化](../standardization/)が基本（理由は前節）
 - クラス不均衡では `class_weight="balanced"` や閾値調整、[PR-AUC](../roc-pr-auc/) の併用が重要
-- 正則化（L1/L2）と `C` の選定で[過学習](../overfitting/)・未学習のトレードオフを取る
 - 多重共線性（相関の強い特徴量同士）があると、係数が不安定になる。L1 正則化で片方を 0 に潰すか、事前に[相関係数](../../math/correlation/)で除外する
-- ソルバーは `lbfgs`（デフォルト、L2 のみ）、`liblinear`（L1/L2、小規模データ向け）、`saga`（L1/L2/Elastic Net、大規模対応）を使い分ける
+- ソルバーの既定は `lbfgs`（L2 のみ）。L1 なら `liblinear` か `saga`、Elastic Net なら `saga` を使う。scikit-learn 1.8 から `penalty` 引数は非推奨になり、`l1_ratio`（0 なら L2、1 なら L1、その間なら Elastic Net）で指定する
+- 3 クラス以上では、`liblinear` 以外のソルバーが多項ロジスティック回帰（ソフトマックス）として学習する。以前の `multi_class` 引数は 1.9.1 で指定するとエラーになる
 
 ---
 
 ### 利点
 
-- 学習が速く、データ量が増えてもスケールしやすい
-- 出力が確率として解釈できる（`predict_proba` で確率値が直接出る）
-- 係数 `w` が線形な重みとして読みやすく、説明可能性が高い
-- 正則化と組み合わせやすく、過学習対策が単純（`C` を下げるだけ）
-- ロジット `z = w^T x + b` の符号と大きさで「クラス 1 への引き寄せ強度」を読める
-- 多クラス分類への自然な拡張がある（多項ロジスティック回帰、`multi_class="multinomial"`）
+- 学習が速く、データ量や特徴量が増えてもスケールしやすい
+- `predict_proba` で確率が直接出る
+- 係数がオッズ比として読め、説明可能性が高い。[RandomForest](../random-forest/) や[勾配ブースティング](../gradient-boosting/)より精度は劣ることが多いが、軽量で解釈しやすい
+- 正則化と組み合わせやすく、過学習対策は `C` を下げるだけで済む
+- ニューラルネットワークの最終層（二値なら sigmoid、多クラスなら softmax）と同じ形なので、考え方がそのまま使える
 
 ---
 
 ### 欠点
 
-- 線形分離できないデータに弱い（XOR のような境界は素のままでは描けない）
-- 非線形な特徴量効果は自分で作る必要がある（多項式特徴量、交互作用項を手動で追加）
+- 線形分離できないデータ（XOR など）に弱く、非線形な効果や相互作用は多項式特徴量・交互作用項として自分で作る必要がある
 - 多重共線性が強いと係数が不安定になり、解釈が崩れる
-- 確率出力は校正されていない場合がある（`predict_proba` の値と実際の頻度がずれることがある）
-- 外れ値の影響を受けやすい（線形回帰ほどではない。シグモイドが飽和する点で起きる）
-
-確率の校正度合いを確認したい場合は、Calibration Plot（予測確率と観測頻度の対応図）を使います。完全に校正されていれば対角線に乗ります。
-
-![Calibration plot](./logistic-regression_calibration.svg)
-
----
-
-## Python での実例
-
-```python
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.pipeline import make_pipeline
-from sklearn.metrics import roc_auc_score
-
-X = df.drop(columns=["target"])
-y = df["target"]
-
-X_train, X_valid, y_train, y_valid = train_test_split(
-    X, y, test_size=0.2, random_state=0, stratify=y
-)
-
-model = make_pipeline(
-    StandardScaler(),
-    LogisticRegression(max_iter=1000, class_weight="balanced")
-)
-model.fit(X_train, y_train)
-proba = model.predict_proba(X_valid)[:, 1]
-print("ROC-AUC:", roc_auc_score(y_valid, proba))
-```
+- 正則化が強いと、前の実験のように確率が 0.5 側へ寄り、実際の頻度とずれる
+- ラベルの誤りや大きく外れた点に係数が引っ張られる。対数損失は誤分類の度合いにほぼ比例して増えるので、二乗誤差を使う線形回帰よりは影響が小さい
 
 ---
 
 ### 機械学習での使いどころ
 
+二値分類では、まず LogisticRegression でベースラインを作り、より複雑なモデルと比べます。
 
-- 二値分類のベースライン: [RandomForest](../random-forest/) や[勾配ブースティング](../gradient-boosting/) と比較する起点
-- スパムフィルタ、CTR（Click Through Rate、クリック率）予測のような線形仮説が当てはまるタスク
-- 医療診断: 確率の校正と係数解釈の両方が重要な場面
-- A/B テストの結果分析: 効果の方向と大きさを係数で読む
-- 多クラス分類のソフトマックス出力（多項ロジスティック回帰）
-- ニューラルネットワークの最終層: 二値分類は logistic、多クラスは softmax で、本質的に LogisticRegression と同じ
+- スパムフィルタ: 語の出現有無を特徴量に取って線形に重ね合わせる
+- CTR（Click Through Rate、クリック率）予測や購買確率の予測: 確率をそのまま使い、係数で効いている要因を説明する
+- 医療診断や信用スコアリング: 確率の校正と係数の説明の両方が求められる場面
 
-具体的な利用例:
+逆に、次のデータには向きません。
 
-- メール分類で語の出現有無を特徴量に取って線形に重ね合わせる
-- マーケティングで顧客属性から購買確率を出し、係数で「効いている要因」を説明する
-- 信用スコアリングで「年収・年齢・職業」の係数から審査の透明性を担保する
-
----
-
-### 適さないケース
-
-- 非線形な境界が必要な場合（XOR、円形クラスタなど）: 多項式特徴量を追加するか、[RandomForest](../random-forest/) / [勾配ブースティング](../gradient-boosting/) / SVM RBF / ニューラルネットワークを使う
-- 特徴量間の強い相互作用が本質の場合: 交互作用項を手動で追加するか、木系モデルへ切り替える
-- 系列性が本質的なデータ（時系列・テキスト・画像）: 専用モデル（RNN/Transformer/CNN）の方が適切
-- 確率分布が極端に複雑な場合: ロジスティック関数の S 字に当てはまらず、性能が頭打ちになる
-- 特徴量が極端に高次元（数万〜数百万）で sparsity も低い場合: L1 正則化で削るか、別の sparse-friendly な手法を検討する
+- 非線形な境界や特徴量間の強い相互作用が本質の場合: 木系モデルや SVM の RBF カーネルを使う
+- 画像・音声のように生の値から特徴を学習する必要がある場合: CNN（畳み込みニューラルネットワーク）などの専用モデルを使う
