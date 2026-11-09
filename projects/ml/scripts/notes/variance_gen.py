@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/variance_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,14 +14,16 @@ COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 COLOR_ORANGE = "#f28e2b"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/variance"
-)
+NOTE_DIR = str(Path(__file__).resolve().parents[2] / "notes" / "math" / "variance")
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
 def save(name: str) -> None:
     plt.savefig(os.path.join(NOTE_DIR, name), bbox_inches="tight")
+    # Remove trailing whitespace so `git diff --check` passes.
+    _svg_path = Path(os.path.join(NOTE_DIR, name))
+    if _svg_path.suffix == ".svg":
+        _svg_path.write_text("\n".join(line.rstrip() for line in _svg_path.read_text().splitlines()) + "\n")
     plt.close()
 
 
@@ -60,13 +63,16 @@ grand_mean = all_data.mean()
 total_var = all_data.var()
 within_vars = [v.var() for v in data_by_group.values()]
 within_var_avg = np.mean(within_vars)
-between_var = np.mean([(m - grand_mean) ** 2 for m in group_means])
+# 群間分散は標本の群平均で計算する（生成に使った 3, 6, 9 ではない）。
+# 群の大きさが等しく ddof=0 なら Total = Within + Between が厳密に成り立つ。
+sample_means = [v.mean() for v in data_by_group.values()]
+between_var = np.mean([(m - grand_mean) ** 2 for m in sample_means])
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
 
 ax = axes[0]
 colors = [COLOR_BLUE, COLOR_GREEN, COLOR_ORANGE]
-for (g, data), m, c in zip(data_by_group.items(), group_means, colors):
+for (g, data), m, c in zip(data_by_group.items(), sample_means, colors):
     ax.scatter(np.full_like(data, ord(g) - ord("A")), data, alpha=0.5, color=c, s=20)
     ax.axhline(m, xmin=(ord(g) - ord("A")) / 3 + 0.05,
                xmax=(ord(g) - ord("A")) / 3 + 0.28, color=c, lw=2.5)
@@ -87,7 +93,7 @@ for b, h in zip(bars, heights):
     ax.text(b.get_x() + b.get_width() / 2, h + 0.1, f"{h:.2f}",
             ha="center", fontsize=10)
 ax.set_ylabel("variance")
-ax.set_title(f"Total ≈ Within + Between\n{total_var:.2f} ≈ {within_var_avg:.2f} + {between_var:.2f}")
+ax.set_title(f"Total = Within + Between\n{total_var:.2f} = {within_var_avg:.2f} + {between_var:.2f}")
 ax.grid(True, alpha=0.25, axis="y")
 
 plt.tight_layout()

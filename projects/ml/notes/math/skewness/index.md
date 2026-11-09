@@ -11,7 +11,7 @@ weight: 7
 
 - 正の歪度（右に長い尾）: 大半の値が小さく、少数の大きな値が裾を伸ばす
 - 負の歪度（左に長い尾）: 大半の値が大きく、少数の小さな値が裾を伸ばす
-- 歪度 ≈ 0: 左右対称（正規分布など）
+- 歪度 0: 左右対称な分布（正規分布など）は 0。ただし逆は成り立たず、非対称でも 0 になる分布がある
 
 実用上は正の歪度を持つデータが多いです。給与・取引金額・アクセス回数・待ち時間・株価のような「下限はあるが上限は無い」量は、構造的に右に裾を引きやすいです。
 
@@ -43,9 +43,9 @@ weight: 7
 歪度と並んで分布の形を測る指標に「尖度（kurtosis）」があります。
 
 - 歪度（3 次モーメント）: 左右の非対称さ
-- 尖度（4 次モーメント）: 裾の重さ（中心の尖り方、外れ値の出やすさ）
+- 尖度（4 次モーメント）: 裾の重さ（外れ値の出やすさ）
 
-正規分布の尖度は 3（または 0、定義による）。尖度が高いと「中心が尖って裾が重い」分布になり、外れ値が出やすい性質を持ちます。歪度と尖度を組み合わせると、平均・分散だけでは見えない「分布の癖」が定量化できます。
+正規分布の尖度は 3（3 を引いた超過尖度では 0）です。尖度が高い分布は裾が重く、外れ値が出やすいです。名前から中心の尖り具合を表すと誤解されやすいですが、尖度は山の形をほとんど表しません（[Westfall, 2014](https://pmc.ncbi.nlm.nih.gov/articles/PMC4321753/)）。歪度と尖度を組み合わせると、平均・分散だけでは見えない「分布の癖」が定量化できます。
 
 ---
 
@@ -58,9 +58,9 @@ weight: 7
 
 ---
 
-## log1p (plus) 変換
+## log1p 変換
 
-log1p 変換は `log(1 + x)` を適用する変換です。右に歪んだ分布（長い右尾）を圧縮し、極端な値の影響を和らげるのが目的です。`log(x)` は `x=0` で定義できないため、0 を含むデータでは扱いにくいです。`log1p` は `log(1 + x)` を使うことで 0 を含めても安全に変換でき、`x` が小さいときは `log(1 + x) ≈ x` となるため、0 付近の値をあまり変えず、大きな値を圧縮できます。
+log1p 変換は `log(1 + x)` を適用する変換で、右に長い裾を圧縮して極端な値の影響を和らげます。`log(x)` は `x=0` で定義できませんが、`log1p` は 0 を含むデータもそのまま変換できます。`x` が小さいときは `log(1 + x) ≈ x` なので、0 付近の値はあまり変わらず、大きな値ほど強く縮みます。
 
 ---
 
@@ -74,34 +74,35 @@ log1p 変換は `log(1 + x)` を適用する変換です。右に歪んだ分布
 
 ### 注意点
 
-- 数学的な定義域は `x > -1`。ただし件数や金額のように `x >= 0` の量で使うと、元の単位と変換後の意味を追いやすい
-- 0 を含む場合でも `log1p` なら安全に扱える
-- 変換後の解釈（単位）が変わる点に注意
+- 数学的な定義域は `x > -1`。件数や金額のような `x >= 0` の量で使うと、変換後の意味を追いやすい
 
 ---
 
 ## Python での実例
 
+以下は計算部分の抜粋で、各ブロックは単独で実行できます。描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/skewness_gen.py)は GitHub にあります。歪度は [scipy.stats.skew](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.skew.html) の既定（`bias=True`）で計算します。
+
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
+from scipy import stats
 
 rng = np.random.default_rng(0)
 raw = rng.lognormal(mean=1.0, sigma=0.8, size=1000)
 log1p = np.log1p(raw)
-
-fig, axes = plt.subplots(1, 2, figsize=(8, 3))
-axes[0].hist(raw, bins=30, color="#4C78A8", edgecolor="white")
-axes[0].set_title("Original (right-skewed)")
-axes[1].hist(log1p, bins=30, color="#F58518", edgecolor="white")
-axes[1].set_title("After log1p")
-plt.tight_layout()
-plt.savefig("skewness_log1p.svg", bbox_inches="tight")
+print(f"raw:   skew={stats.skew(raw):.2f}")
+print(f"log1p: skew={stats.skew(log1p):.2f}")
 ```
 
 出力:
 
-![skewness_log1p](./skewness_log1p.svg)
+```text
+raw:   skew=2.79
+log1p: skew=0.58
+```
+
+![対数正規分布のデータと log1p 変換後のヒストグラム](./skewness_log1p.svg)
+
+右に長く伸びていた裾が縮み、歪度は 2.79 から 0.58 に下がります。
 
 ---
 
@@ -110,51 +111,62 @@ plt.savefig("skewness_log1p.svg", bbox_inches="tight")
 3 種類のデータで、歪度の符号と分布形の対応を並べて見ます。
 
 ```python
+import numpy as np
 from scipy import stats
 
+rng = np.random.default_rng(0)
 right = rng.lognormal(0.0, 0.6, 5000)
 sym = rng.normal(2.0, 0.8, 5000)
 left = -rng.lognormal(0.0, 0.6, 5000) + np.exp(2)
 for name, data in [("right", right), ("sym", sym), ("left", left)]:
-    print(f"{name}: skew={stats.skew(data):+.2f}, mean={data.mean():.2f}, median={np.median(data):.2f}")
-plt.savefig("skewness_sign_compare.svg", bbox_inches="tight")
+    print(f"{name + ':':6} skew={stats.skew(data):+.2f}, mean={data.mean():.2f}, median={np.median(data):.2f}")
 ```
 
 出力:
 
 ```text
-right: skew=+2.05, mean=1.27, median=1.01
-sym:   skew=+0.00, mean=2.00, median=2.00
-left:  skew=-2.05, mean=6.12, median=6.38
+right: skew=+1.85, mean=1.19, median=0.98
+sym:   skew=-0.09, mean=2.01, median=2.02
+left:  skew=-2.25, mean=6.18, median=6.39
 ```
 
 ![右歪み・対称・左歪みでの mean と median の位置](./skewness_sign_compare.svg)
 
-3 つのヒストグラムで、赤線が平均、緑線が中央値です。この人工データでは、左の図で平均が中央値より右に、中央では同じ位置に、右の図では左にあります。ただし、この位置関係だけから歪度の符号や分布の形を判定することはできません。歪度は三次モーメント、中央値は順位に基づく別の統計量なので、図と歪度の値を併読します。
+3 つのヒストグラムで、赤線が平均、緑線が中央値です。この人工データでは、左の図で平均が中央値より右に、中央ではほぼ同じ位置に、右の図では左にあります。正規分布から引いた標本でも歪度はちょうど 0 にならず、-0.09 です。ただし、この位置関係だけから歪度の符号や分布の形を判定することはできません。歪度は 3 次モーメント、中央値は順位に基づく別の統計量なので、図と歪度の値を併読します。
 
 ---
 
 ### 回帰の残差プロットで効く log 変換
 
-右に歪んだ目的変数では、元の尺度での残差が予測値とともに広がる場合があります。以下は乗法的なノイズを加えた人工データの例です。`log1p(y)` で学習するとこの例では残差の広がりが小さくなりますが、変換は等分散性や予測性能を保証しません。元の尺度へ戻した予測値と残差も評価します。
+右に歪んだ目的変数では、元の尺度での残差が予測値とともに広がる場合があります。以下は乗法的なノイズを加えた人工データの例です。`log1p(y)` で学習するとこの例では残差の広がりが小さくなりますが、変換は等分散性や予測性能を保証しません。元の尺度へ戻した予測値と残差も評価します。次のコードは、予測値の小さい半分と大きい半分で残差の標準偏差を比べます。
 
 ```python
+import numpy as np
 from sklearn.linear_model import LinearRegression
 
+rng = np.random.default_rng(3)
 area = rng.uniform(30, 200, 300)
 price = np.exp(1.0 + 0.015 * area + rng.normal(0, 0.25, 300))  # right-skewed
 X = area.reshape(-1, 1)
-ols_raw = LinearRegression().fit(X, price)
-ols_log = LinearRegression().fit(X, np.log1p(price))
-# 詳細は scripts 側を参照
-plt.savefig("skewness_residual_diag.svg", bbox_inches="tight")
+for name, y in [("raw", price), ("log1p", np.log1p(price))]:
+    pred = LinearRegression().fit(X, y).predict(X)
+    resid = y - pred
+    low = pred < np.median(pred)
+    print(f"{name + ':':6} resid std low={resid[low].std():.2f}, high={resid[~low].std():.2f}")
 ```
 
-![生の y で学習すると残差がファン型、log1p 変換で均一に](./skewness_residual_diag.svg)
+出力:
 
-上段が生の `y` での回帰と残差プロット、下段が `log1p(y)` での回帰と残差プロットです。このデータでは右上の残差が予測値の大きい側で広がり、右下は比較的一様に見えます。実データでは、変換の前後でホールドアウト誤差、元の尺度へ戻した予測、残差プロットを比べます。
+```text
+raw:   resid std low=4.08, high=8.26
+log1p: resid std low=0.22, high=0.23
+```
 
-なお木系モデル（ランダムフォレスト・勾配ブースティング）は分割点で特徴量の順序しか見ないため、特徴量への単調変換では予測が変わりません。目的変数の変換は分割の評価に使う損失そのものを変えるため、木系モデルでも結果は変わります。歪度補正は線形モデル・距離ベース・ベイズモデルで主に効く前処理となります。
+![この人工データでは、生の y の残差は予測値とともに広がり、log1p(y) の残差は広がりがほぼ揃う](./skewness_residual_diag.svg)
+
+上段が生の `y` での回帰と残差プロット、下段が `log1p(y)` での回帰と残差プロットです。生の `y` では予測値の大きい側で残差の標準偏差が約 2 倍（4.08 → 8.26）になり、右上の図は扇形に広がります。`log1p(y)` では 0.22 と 0.23 でほぼ揃い、右下の図は比較的一様に見えます。
+
+なお木系モデル（[RandomForest](../../ml/random-forest/)・[勾配ブースティング](../../ml/gradient-boosting/)）は分割点で特徴量の順序しか見ないため、特徴量への単調変換では予測が変わりません。一方、目的変数の変換は分割の評価に使う損失を変えるため、木系モデルでも結果が変わります。
 
 ---
 
@@ -167,24 +179,16 @@ plt.savefig("skewness_residual_diag.svg", bbox_inches="tight")
 
 ### 機械学習での使いどころ
 
-歪度の高い特徴量は、線形モデルや距離ベースのモデルで学習を不安定にしやすいです。前処理として変換を入れる判断に歪度を使います。
+歪度の高い特徴量は、線形モデルや距離ベースのモデルで学習を不安定にしやすいため、変換を入れるかの判断に歪度を使います。
 
-- 特徴量の分布形状の把握（EDA（Exploratory Data Analysis、探索的データ分析）で歪度をスキャンして変換対象を絞る）
-- log1p 変換・Box-Cox 変換の候補出し: 歪度、値域、ヒストグラム、残差を併せて確認
-- 線形回帰・[LogisticRegression](../../ml/logistic-regression/) の入力前処理: 右に長い特徴量を圧縮して残差の歪みを減らす
+- EDA（Exploratory Data Analysis、探索的データ分析）: 歪度をスキャンして変換対象を絞る
+- log1p 変換・Box-Cox 変換（正の値向けの冪変換）の候補出し: 歪度、値域、ヒストグラム、残差を併せて確認
+- 線形回帰・[LogisticRegression](../../ml/logistic-regression/) の入力前処理: 右に長い特徴量を圧縮して極端な値の影響を抑える
 - 目的変数の前処理: 価格予測などで目的変数が右に歪んでいる場合、`log1p(y)` で学習してから `expm1(y_pred)` で戻す
-- 異常検知での「正常分布からの逸脱度」評価
-- 木系モデル（[RandomForest](../../ml/random-forest/), [勾配ブースティング](../../ml/gradient-boosting/)）では順序判定なので歪度の影響は小さく、変換不要なことが多い
-
-具体的な利用例:
-
-- 不動産価格予測で価格が右に長く `skewness ≈ 1.5` → `log1p(price)` を目的変数にして学習
-- 待ち時間予測で `skewness ≈ 2.0` → Box-Cox 変換で λ を最適化して正規化
-- 顧客生涯価値（LTV）の予測で右に長い分布を log1p で圧縮
 
 ---
 
 ### 適さないケース
 
 - 負の値を多く含む変数（別の変換が必要）
-- 変換後の解釈が重要な場面（ログ変換で意味が変わる）
+- 元の単位での解釈が重要な場面（変換で単位の意味が変わる）
