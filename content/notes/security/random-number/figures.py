@@ -87,18 +87,18 @@ save("random_number_min_entropy.svg")
 
 # --- 図3: modulo bias ---
 raw = np.arange(256)
-mapped = raw % 200 + 1
+mapped = raw % 200
 values, counts = np.unique(mapped, return_counts=True)
 
 plt.figure(figsize=(7, 3.6))
 plt.bar(values, counts, width=1.0,
         color=[COLOR_RED if c == 2 else COLOR_BLUE for c in counts])
-plt.xlabel("Value returned by (byte % 200) + 1")
+plt.xlabel("Value returned by byte % 200")
 plt.ylabel("Number of source bytes")
 plt.yticks([0, 1, 2])
-plt.xlim(0, 201)
-plt.text(6, 2.18, "1-56: two source bytes each", color=COLOR_RED, fontsize=9)
-plt.text(100, 1.18, "57-200: one source byte each", color=COLOR_GRAY, fontsize=9)
+plt.xlim(-1, 200)
+plt.text(5, 2.18, "0-55: two source bytes each", color=COLOR_RED, fontsize=9)
+plt.text(99, 1.18, "56-199: one source byte each", color=COLOR_GRAY, fontsize=9)
 plt.ylim(0, 2.6)
 save("random_number_modulo_bias.svg")
 

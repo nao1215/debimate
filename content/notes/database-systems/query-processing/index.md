@@ -75,18 +75,27 @@ SQL は、欲しい結果の条件を書く言語です。どの表をどの順�
 
 <br>
 
-どちらが選ばれるかは、アプリケーションに組み込んで使う DB である SQLite の実行計画で分かります。以下は、注文の表を `FROM` の先頭に書いた問い合わせです。
+どちらが選ばれるかは、アプリケーションに組み込んで使う DB である SQLite の実行計画で分かります。以下は、利用者 1 万件（うち日本は 100 件）と注文 100 万件を作り、注文の表を `FROM` の先頭に書いて実行計画を表示する SQL です。索引は `orders.user_id` にだけ張ります。
 
 ```sql
--- users は 1 万件（うち country が 'JP' の行は 100 件）、orders は 100 万件。
--- orders.user_id には索引を張ってあり、users.country には索引が無い。
+CREATE TABLE users (id INTEGER PRIMARY KEY, country TEXT);
+CREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER, amount INTEGER);
+CREATE INDEX idx_orders_user_id ON orders(user_id);
+
+-- id が 1〜100 の利用者だけを日本にする。
+WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < 10000)
+INSERT INTO users SELECT n, CASE WHEN n <= 100 THEN 'JP' ELSE 'US' END FROM s;
+-- 注文は 1 人あたり 100 件ずつ割り振る。
+WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < 1000000)
+INSERT INTO orders SELECT n, n % 10000 + 1, n % 1000 FROM s;
+
 EXPLAIN QUERY PLAN
 SELECT u.id, o.amount
   FROM orders o JOIN users u ON o.user_id = u.id
  WHERE u.country = 'JP';
 ```
 
-返ってきた実行計画は次の通りです。
+SQLite 3.45.3 の `sqlite3 :memory:` に流すと、実行計画は次の通りです。
 
 ```text
 QUERY PLAN
@@ -122,7 +131,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-PostgreSQL の構文解析は、DB が自身のスキーマを格納したカタログを一切引きません（[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/parser-stage.html)）。そのため、上記の図の木に `users` という名前が有っても、それがどの表を指すのかはまだ確かめていません。木には読む順序も使う索引も入っておらず、実行計画に進む前に、名前と型の解決と、書き換えが行われます。
+PostgreSQL の構文解析は、DB が自身のスキーマを格納したカタログを一切引きません（[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/parser-stage.html)）。そのため、上記の図の木に `users` という名前があっても、それがどの表を指すのかはまだ確かめていません。木には読む順序も使う索引も入っておらず、実行計画に進む前に、名前と型の解決と、書き換えが行われます。
 
 名前と型の解決では、カタログを引いて、`users` という表と `country` というカラムが本当にあるのか、`country` の型が何なのかを確かめます。PostgreSQL はこの処理を transformation process と呼び、構文だけを表す木（parse tree）とは別に、意味を解決し終えた問い合わせの木（query tree）を作ります。
 
@@ -179,13 +188,15 @@ flowchart TB
 | merge join | 結合に使うカラムで両方の入力を整列してから、並行に読んで突き合わせる | 結合カラムの順序が索引で得られるか、整列してでも各入力を 1 回ずつの走査で済ませたい |
 | hash join | 片方の入力を先に読んでハッシュ表を作り、もう片方を読みながら突き合わせる | 等値の結合で、ハッシュ表が作業用のメモリに収まる |
 
-上記の表に書いた外側・内側や片方・もう片方は、実行時にどちらの入力から読むかを指し、SQL 文で先に書いた表とは限りません。選ばれやすい場面の列は、その場面で必ず選ばれるという意味ではありません。
+上記の表に書いた外側・内側や片方・もう片方は、実行時にどちらの入力から読むかを指し、SQL 文で先に書いた表とは限りません。
 
 <br>
 
 どの候補を選ぶかを決める材料が、統計情報です。PostgreSQL は、表と索引のレコード数とディスクブロック数を `pg_class` に、カラムの値の分布を `pg_statistic` に持ちます。どちらも問い合わせのたびには更新されず、`ANALYZE` などを実行した時点の値が使われます。`pg_class` を更新するのは `ANALYZE` や `CREATE INDEX` などの一部の命令で、`pg_statistic` の項目は更新した直後でも「[always approximate](https://www.postgresql.org/docs/current/planner-stats.html)」（常に近似）です。
 
-統計からコストが決まるまでには、間に 1 段挟まります。DB はまず統計から、条件を通るレコードの割合である選択性（selectivity）を見積もり、各条件を通った後に何件残るかを出します。このレコード数の見積もりが推定レコード数（cardinality estimate）で、実際に残るレコード数（cardinality）とは別の値です。`country = 'JP'` が全体の 1% を通す条件だと推定できれば、1 万件の表からは 100 件が残る、という具合です。以下は、統計からコストまでの流れをこの例で示した図です。
+統計からコストが決まるまでには、間に 1 段挟まります。DB はまず統計から、条件を通るレコードの割合である選択性（selectivity）を見積もり、各条件を通った後に何件残るかを出します。
+
+このレコード数の見積もりが推定レコード数（cardinality estimate）で、実際に残るレコード数（cardinality）とは別の値です。`country = 'JP'` が全体の 1% を通す条件だと推定できれば、1 万件の表からは 100 件が残る、という具合です。以下は、統計からコストまでの流れをこの例で示した図です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -196,7 +207,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の最後の段で求める候補ごとのコストは、推定レコード数を基に、そのレコードを読むのに何ページ触るか、突き合わせに何回比較するかを換算した値です。先ほどの例で候補を 3 つ挙げると、注文を全走査して hash join する候補 1、手順 2 と同じく利用者を絞ってから索引で注文を引く候補 2、両方を整列して merge join する候補 3 です。以下は、この 3 つに説明のためのコストを置いた例です。
+上記の図の最後の段で求める候補ごとのコストは、推定レコード数を基に、そのレコードを読むのに何ページ触るか、突き合わせに何回比較するかを換算した値です。
+
+先ほどの例で候補を 3 つ挙げると、注文を全走査して hash join する候補 1、手順 2 と同じく利用者を絞ってから索引で注文を引く候補 2、両方を整列して merge join する候補 3 です。以下は、この 3 つに説明のためのコストを置いた例です。
 
 ![3 つの候補の見積もりコストを横棒で比べた図。利用者を絞ってから索引で注文を引く候補 2 が 480 で最も安く、注文を全走査して hash join する候補 1 は 12,300、両方を整列して merge join する候補 3 は 51,000。最小の候補 2 が選ばれる](images/query_processing_plan_cost.svg)
 
@@ -225,16 +238,34 @@ flowchart LR
 
 計画の中で見積もりと実際が大きく開いている箇所を探すと、遅さの原因を絞り込めます。なお、`EXPLAIN ANALYZE` は問い合わせを動かすので、更新を伴う文で使う時は影響に注意が必要です。
 
-選択性の図と同じ偏りを持つ利用者 1 万件（`country` と `city` はどの値も 1%、東京の 100 件は全て `JP`）を PostgreSQL 17.10 に入れ、`EXPLAIN ANALYZE` を実行した結果（抜粋）は以下の通りです。
+選択性の図と同じ偏りを持つ利用者 1 万件を PostgreSQL 17.11 に入れて、`EXPLAIN ANALYZE` を実行しました。`country` と `city` はどの値も 1% で、東京の 100 件は全て `JP` です。
+
+```sql
+CREATE TABLE users (id int PRIMARY KEY, country text, city text);
+-- id が 1〜100 の利用者は日本の東京、残りは 99 組の国と都市に 100 件ずつ。
+INSERT INTO users
+SELECT n,
+       CASE WHEN n <= 100 THEN 'JP' ELSE 'C' || (n % 99) END,
+       CASE WHEN n <= 100 THEN '東京' ELSE 'T' || (n % 99) END
+  FROM generate_series(1, 10000) AS n;
+ANALYZE users;
+
+-- 時間の表示を省き、レコード数だけを比べる。
+EXPLAIN (ANALYZE, TIMING OFF, SUMMARY OFF)
+SELECT * FROM users WHERE country = 'JP' AND city = '東京';
+```
+
+結果は以下の通りです。
 
 ```text
- Seq Scan on users  (cost=0.00..214.00 rows=1 width=13) (actual rows=100 loops=1)
+ Seq Scan on users  (cost=0.00..205.00 rows=1 width=10) (actual rows=100 loops=1)
    Filter: ((country = 'JP'::text) AND (city = '東京'::text))
+   Rows Removed by Filter: 9900
 ```
 
 括弧の 1 つ目の `rows` が推定レコード数、2 つ目の `actual rows` が実際のレコード数です。掛け合わせた 0.01% から 1 件と見積もり、実際には 100 件が残りました。表を 1 つ読むだけの問い合わせなので計画は変わりませんが、このレコード数が結合の材料になれば、前の節の 3 つの候補のコストがずれ、順位が入れ替わる原因になります。
 
-PostgreSQL では、`CREATE STATISTICS ... (dependencies) ON country, city FROM users` で片方のカラムからもう片方がどれだけ決まるかを集め、`ANALYZE` し直すと、同じ問い合わせの推定が `rows=100` になりました。
+PostgreSQL では、`CREATE STATISTICS users_dep (dependencies) ON country, city FROM users;` で片方のカラムからもう片方がどれだけ決まるかを集め、`ANALYZE` し直すと、同じ問い合わせの推定が `rows=100` になりました。
 
 ---
 
@@ -314,4 +345,6 @@ Query Processing では、手順の決定を DB に預け、データの分布�
 - 結合する表が増えるほど候補が増え、広く探索する DBMS では実行計画を作る処理に時間が掛かる
 - データ量や統計の更新をきっかけに手順が変わり、同じ SQL の応答時間が動く
 
-多くの DBMS は、選ばれる手順に人が介入する手段を別に用意しています。特定のアルゴリズムを避けさせる設定、特定の索引を優先させる指定、探索する候補の範囲を狭める設定、実行方法をより強く指定するヒントなど、形はさまざまです。例えば [SQLite](https://www.sqlite.org/optoverview.html) は、`CROSS JOIN` と書いた結合の順序を並べ替えないので、書き手がループの入れ子の順序を固定できます。どこまで強制できるかは DBMS と機能によって違い、あくまで選ばれやすさを変えるだけのものもあります。
+多くの DBMS は、選ばれる手順に人が介入する手段を別に用意しています。特定のアルゴリズムを避けさせる設定、特定の索引を優先させる指定、探索する候補の範囲を狭める設定、実行方法をより強く指定するヒントなど、形はさまざまです。
+
+例えば [SQLite](https://www.sqlite.org/optoverview.html) は、`CROSS JOIN` と書いた結合の順序を並べ替えないので、書き手がループの入れ子の順序を固定できます。どこまで強制できるかは DBMS と機能によって違い、あくまで選ばれやすさを変えるだけのものもあります。

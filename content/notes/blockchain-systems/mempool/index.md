@@ -12,7 +12,7 @@ mempool（memory pool）は、まだブロックに入っていない取引を�
 
 送った取引がなかなかブロックに入らず、取引の状況を表示する Web サイト（ブロックエクスプローラ）によって「未確認」（まだブロックに入っていない状態）の表示が違うことがあります。しばらく待つと取引が消える場合もあります。こうした違いが起きる主な理由は、各ノードが別々の mempool を持つからです。
 
-2 台のノードが別の中身を持つ様子を以下に示します。
+以下は、2 台のノードが別の中身を持つ例です。
 
 {{< note-panels caption="同じ時点でも、ノードごとに保持している取引は異なります。" >}}
 - title: Node X の mempool
@@ -70,7 +70,7 @@ flowchart LR
 
 ### consensus rule と policy の違い
 
-有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。Bitcoin の代表的な実装である [Bitcoin Core のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)は、policy が、consensus に加えて未確認の取引に課す検証規則であり、ノードごとに設定できるものだと説明しています。ブロックに入った取引の判定に使われるのは、consensus rule だけです。
+有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。Bitcoin の代表的な実装である [Bitcoin Core](https://github.com/bitcoin/bitcoin) では、policy は consensus rule に加えて未確認の取引に課す検証規則で、ノードごとに設定できます（[policy のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)）。ブロックに入った取引の判定に使われるのは、consensus rule だけです。
 
 2 つの違いを整理すると、以下の通りです。
 
@@ -81,7 +81,9 @@ flowchart LR
 | ブロックを検証する時 | 適用する | 適用しない |
 | ノードごとの差 | 同じ規則に従う必要がある | ノードごとに違い得る |
 
-未確認の取引も consensus rule を満たしていることが前提で、policy はその上に足される確認です。policy を満たさない取引でも、ブロックに入った時点のチェーンの状態に照らして consensus rule を満たしていれば、有効な取引として受け入れられます。中継されにくいだけで、マイナーに直接届いて取り込まれる経路は残っています。形式の面で policy を満たさない取引は「非標準な取引」と呼ばれますが、「無効な取引」とは別物です。
+未確認の取引も consensus rule を満たしていることが前提で、policy はその上に足される確認です。形式の面で policy を満たさない取引は「非標準な取引」と呼ばれますが、「無効な取引」とは別物です。
+
+policy を満たさない取引でも、ブロックに入った時点のチェーンの状態に照らして consensus rule を満たしていれば、有効な取引として受け入れられます。中継されにくいだけで、マイナーに直接届いて取り込まれる経路は残っています。
 
 方針が緩いノードだけが持っている取引も、ブロックに取り込まれると共有された履歴の一部になり、そこから先は policy の違いで持つ・持たないが分かれることはありません。
 
@@ -119,7 +121,7 @@ sequenceDiagram
 
 [compare_policy.py](lab/compare_policy.py) は、2 台の起動、テスト用資金の準備、取引の署名、各結果の検査まで行います。公開ネットワークと P2P 接続は無効にし、同じブロックを RPC で渡して状態を揃えます。秘密鍵を含む一時的なウォレットは終了時に削除し、結果だけを保存します。[README](lab/README.txt) に実行条件をまとめています。
 
-以下は、同じ取引を 2 台で検査し、ブロックとして受け入れるところまでの抜粋です。`a` と `b` は起動済みのノード、`rpc` は各ノードの RPC を呼ぶメソッドです。先に A でテスト用の資金を用意し、B に同じブロックを渡しています。`address` は採掘報酬の受取先、`out` は検査結果の保存ディレクトリです。ノードの起動・終了と RPC 通信の補助処理を含む全体は [compare_policy.py](lab/compare_policy.py) に残しています。
+以下は、同じ取引を 2 台で検査し、ブロックとして受け入れるところまでの抜粋です。`a` と `b` は起動済みのノード、`rpc` は各ノードの RPC を呼ぶメソッドです。先に A でテスト用の資金を用意し、B に同じブロックを渡しています。`address` は採掘報酬の受取先、`out` は検査結果の保存ディレクトリです。
 
 ```python
 recipient = a.rpc('getnewaddress', wallet=True)
@@ -190,7 +192,9 @@ Node A がこの取引をブロックに取り込み、そのブロックを Nod
 
 3 つ目の上限は、最初の節で挙げた資源の使い切りへの備えです。2016 年 2 月の [Bitcoin Core 0.12](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.12.0.md) より前は mempool の大きさに上限が無く、最低の手数料率をわずかに上回る取引を大量に送り付ければ、メモリの少ないノードを落とせました。
 
-0.12 は上限（既定 300 MB）を設け、溢れそうになると、手数料率の最も低い取引を依存する取引ごと取り除くようにしました。同時に、そのノードが受け入れる最低の手数料率も、取り除いた取引の手数料率を基準に上がります。この仕組みは現在の[設計のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)にも引き継がれており、判定を通った取引も追い出しの対象です。取り除かれる様子を以下に示します。
+0.12 は上限（既定 300 MB）を設け、溢れそうになると、手数料率の最も低い取引を依存する取引ごと取り除くようにしました。同時に、そのノードが受け入れる最低の手数料率も、取り除いた取引の手数料率を基準に上がります。
+
+現在の[設計のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)では、mempool の取引を手数料率の高い順に並べ、溢れた時はその末尾から取り除きます。判定を通った取引も追い出しの対象です。以下は、上限に達した mempool で取引が入れ替わる流れです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -227,7 +231,9 @@ sequenceDiagram
     Note over N: t を取り除き<br/>t' を mempool に入れる
 ```
 
-上記の図の取引 t は、置き換えが成立した時点でそのノードの mempool から消えます。手数料を低く付けすぎた送金をやり直す手段として使われる一方、受け取る側から見れば、未確認の取引の内容が変わり得ます。Bitcoin の仕様提案である [BIP（Bitcoin Improvement Proposal）125](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki) も、置き換えられる取引の受取人が、確認されるまで支払いとして扱わない選択を取れるとしています。
+上記の図の取引 t は、置き換えが成立した時点でそのノードの mempool から消えます。手数料を低く付けすぎた送金は、この置き換えでやり直せます。
+
+一方で、受け取る側から見れば、未確認の取引の内容が変わり得ます。Bitcoin の仕様提案である [BIP（Bitcoin Improvement Proposal）125](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki) も、置き換えられる取引の受取人が、確認されるまで支払いとして扱わない選択を取れるとしています。
 
 置き換えの条件が手数料の総額の増加を求めるのは、置き換えを繰り返す送り付けを防ぐためです。手数料率だけを条件にすると、取引を少しずつ小さくして率だけを上げ、総額を増やさないまま何度も中継させられます（Bitcoin Core の置き換えのドキュメント）。置き換えのたびに帯域ぶんの手数料を求めておけば、繰り返す側にコストが積み上がります。
 
@@ -245,7 +251,7 @@ sequenceDiagram
 | しばらく待つと取引が消えた | 手数料の面での優先度が低く容量の制限で取り除かれたか、期限切れで削除された可能性がある |
 | 同じ資金を使う別の取引が見えている | 競合する取引が受け入れられ、既存の取引が置き換えられた可能性がある |
 
-見え方の違いと追い出しの場合は、手数料を上げた取引を作り直して送ることもできます。置き換えられた取引は、置き換えた側がブロックに入った時点で入力が使われ、成立しなくなります。確定するのはブロックに取り込まれた後で、そこから先は、取引の入ったブロックの後ろに積まれたブロックの数（確認数）の話になります（[Bitcoin Block](../bitcoin-block/)）。
+表の 1 行目と 2 行目の場合は、手数料を上げた取引を作り直して送ることもできます。置き換えられた取引は、置き換えた側がブロックに入った時点で入力が使われ、成立しなくなります。ブロックに取り込まれた後は確認数の話になり、取引を含むブロック自身を 1 つ目として、その後ろに積まれたブロックまで数えます（[Bitcoin Block](../bitcoin-block/)）。
 
 ---
 

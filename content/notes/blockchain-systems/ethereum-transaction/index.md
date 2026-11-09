@@ -9,7 +9,7 @@ weight: 14
 
 取引（transaction）は、EOA（Externally Owned Account、外部所有アカウント）が秘密鍵で署名した指示のデータです。[公式ドキュメント](https://ethereum.org/en/developers/docs/transactions/)も、取引はアカウントが暗号で署名して出す指示だと定義しています。送金も、コントラクト（コードを持つアカウント）の呼び出しも、コントラクトの作成も、この 1 つの形で表されます。
 
-ウォレットの確認画面には、金額のほかに「ガスの上限」や「最大手数料」が表示されます。gas は実行の計算量を測る単位です。また、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなるためです。2 つの欄の意味は「使った gas と単価による手数料」で、失敗しても手数料が引かれる理由は「レシートに残る実行の結果」で説明します。
+ウォレットの確認画面には、金額のほかに「ガスの上限」や「最大手数料」が表示されます。gas は実行の計算量を測る単位です。また、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなるためです。
 
 取引が作られてから結果が残るまでを以下に示します。
 
@@ -61,7 +61,7 @@ Bitcoin の取引は、消費する出力と作る出力を並べたデータで
 | --- | --- |
 | nonce | 送り主のアカウントの通し番号 |
 | to | 宛先のアドレス。空のバイト列にすると新しいコントラクトの作成になる |
-| value | 宛先に送る wei の量 |
+| value | 宛先に送る ETH（Ethereum の通貨）の量。単位は最小単位の wei で、1 ETH は 10 の 18 乗 wei |
 | data | 宛先のコードに渡す任意の長さのデータ |
 | gasLimit | この取引が使って良い gas の上限 |
 | maxFeePerGas | 1 gas あたりに払う額の上限 |
@@ -93,15 +93,17 @@ flowchart TD
 
 型はほかにもあります。legacy transaction は、maxFeePerGas と maxPriorityFeePerGas の代わりに gasPrice を 1 つ持ちます。chain ID を独立した項目としては持たず、含める場合は署名の中に埋め込みます。
 
-[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) の blob transaction は、blob と呼ばれる大きなデータを伴い、実行用の gas とは別に blob gas という単位で課金されます。EIP-7702 の型もあります。EOA が指定したコントラクトのコードに自分の実行を委ねる委任（delegation）の仕組みで、この型を使った EOA はコントラクトのようにコードを動かせます。
+[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) の blob transaction は、blob と呼ばれる大きなデータを伴い、実行用の gas とは別に blob gas という単位で課金されます。
+
+[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) の型もあります。EOA が指定したコントラクトのコードに自分の実行を委ねる委任（delegation）の仕組みです。この型の取引に載せた承認に署名した EOA は、送り主でなくても、以後コントラクトのようにコードを動かせます。
 
 ---
 
 ### 署名からの送り主の復元
 
-上記の表に、送り主のアドレスを書く項目がありません。取引のデータには送り主が入っておらず、署名から復元します。[『Mastering Ethereum』第 2 版の第 6 章](https://masteringethereum.xyz/chapter_6.html)にも、legacy transaction の形を説明する中で、EOA の公開鍵が ECDSA 署名の `v`、`r`、`s` の 3 つの値から導けると書かれています。公開鍵からアドレスが決まるため、送り主も決まります。
+上記の表に、送り主のアドレスを書く項目がありません。取引のデータには送り主が入っておらず、署名から復元します。EOA の公開鍵は、楕円曲線を使う署名方式である ECDSA の署名の `v`、`r`、`s` から導けます（[『Mastering Ethereum』第 2 版の第 6 章](https://masteringethereum.xyz/chapter_6.html)）。復元した公開鍵からアドレスを計算すれば、送り主が分かります。
 
-ここでの復元は、手元の公開鍵で署名を検証する操作とは別です。楕円曲線を使う署名方式である ECDSA では、署名と対象のデータから公開鍵の候補が求まり、legacy transaction の `v` や typed transaction の `yParity` が、どれを使うのかを指します。署名の計算は [Digital Signature](../digital-signature/) で扱っています。
+ここでの復元は、手元の公開鍵で署名を検証する操作とは別です。ECDSA では、署名と対象のデータから公開鍵の候補が求まり、legacy transaction の `v` や typed transaction の `yParity` が、どれを使うのかを指します。署名の計算は [Digital Signature](../digital-signature/) で扱っています。
 
 署名から送り主が決まるまでの流れを図にすると、以下のようになります。
 
@@ -117,13 +119,17 @@ flowchart LR
 
 上記の図で、取引のデータを 1 バイトでも書き換えると、署名の対象が変わります。元の署名をそのまま付けても、復元されるのは元の送り主とは別のアドレスになるか、復元そのものが失敗します。どちらにしても、元の送り主が承認した取引としては成立しません。
 
-署名済みの取引をそのまま別のチェーンに流されると、送り主が承認していない送金が成立してしまいます。これを防ぐために、署名の対象に chain ID を入れます。入るかどうかは取引の形で変わります。typed transaction と、[EIP-155 に従う legacy transaction](https://eips.ethereum.org/EIPS/eip-155) では、署名のためのハッシュを計算する対象に chain ID を含めます。同じ EIP は、chain ID を含めない以前の署名も引き続き有効だと書いており、その形の取引に chain ID は入りません。
+署名済みの取引をそのまま別のチェーンに流されると、送り主が承認していない送金が成立してしまいます。これを防ぐために、署名の対象に chain ID を入れます。
+
+chain ID が署名の対象に入るかどうかは、取引の形で変わります。typed transaction と、[EIP-155 に従う legacy transaction](https://eips.ethereum.org/EIPS/eip-155) では、署名のためのハッシュを計算する対象に chain ID を含めます。同じ EIP は、chain ID を含めない以前の署名も引き続き有効だと書いており、その形の取引に chain ID は入りません。
 
 ---
 
 ### 使った gas と単価による手数料
 
-送り主が払う額は、`使った gas × (base fee + priority fee)` で決まります。base fee はブロックごとに決まる 1 gas あたりの最低額で、priority fee はブロックを作る参加者に渡す上乗せ分です。[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)には、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。base fee がブロックごとにどう調整されるのかは、本記事では扱いません。
+送り主が払う額は、`使った gas × (base fee + priority fee)` で決まります。base fee はブロックごとに決まる 1 gas あたりの最低額で、priority fee はブロックを作る参加者に渡す上乗せ分です。
+
+[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)には、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。base fee がブロックごとにどう上下するのかは扱いません。
 
 取引に書く 2 つの上限は、この式の別々の箇所を制限します。gasLimit は使う量の上限で、maxFeePerGas は 1 gas あたりの額の上限です。委任を設定していない EOA に data 無しで ETH を送るだけなら 21,000 gas で、data を付けたりコードが動いたりすると増えます。
 
@@ -140,9 +146,21 @@ flowchart TD
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-実行が gasLimit に届かずに終われば、使わずに済んだ分は手数料になりません。それでも取引を出す時点では、`gasLimit × maxFeePerGas + value` の残高が必要です。ウォレットの確認画面に出る「最大手数料」は、実際に引かれる額ではなく、この `gasLimit × maxFeePerGas` を指します。
+例えば、1 ETH を送る単純な送金に、gasLimit 21,000、maxFeePerGas 30 gwei、maxPriorityFeePerGas 2 gwei を書いたとします。gwei は 10 億 wei です。以下は、ブロックの base fee ごとの支払いです。
 
-つまり、送り主が取引に書けるのは上限までで、払う額は、使った gas と、取り込まれたブロックの base fee が分かるまで確定しません。Bitcoin の手数料は、入力が参照する出力の合計と作る出力の合計の差なので、出来上がった取引のデータで額が決まっています（[UTXO](../utxo/)）。
+| base fee | 渡る priority fee | 1 gas あたりの単価 | 手数料 |
+| --- | --- | --- | --- |
+| 10 gwei | 2 gwei | 12 gwei | 252,000 gwei（0.000252 ETH） |
+| 29 gwei | 1 gwei | 30 gwei | 630,000 gwei（0.00063 ETH） |
+| 31 gwei | なし | なし | 取り込まれない |
+
+base fee が 10 gwei なら、0.00021 ETH が焼却され、0.000042 ETH が参加者に渡ります（公式ドキュメントの例と同じ数値です）。base fee が 29 gwei に上がると、上乗せは maxFeePerGas までの残りの 1 gwei に削られます。
+
+実行が gasLimit に届かずに終われば、使わずに済んだ分は手数料になりません。それでも取引がブロックに入るには、`gasLimit × maxFeePerGas + value` の残高が必要で、上記の例では 1.00063 ETH です。
+
+ウォレットの確認画面に出る「最大手数料」は、実際に引かれる額ではなく、この `gasLimit × maxFeePerGas`（上記の例では 0.00063 ETH）を指します。
+
+送り主が取引に書けるのは上限までで、払う額は、使った gas と、取り込まれたブロックの base fee が分かるまで確定しません。
 
 取引には、実行を始める前に必ず掛かる intrinsic gas があります。上に挙げた単純な送金なら 21,000 で、data や accessList を付ければ、その内容に応じて増えます。
 
@@ -160,9 +178,7 @@ flowchart TD
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図のうち、手数料を払わずに済むのは、検証の段階で拒否される経路だけです。
-
-[gas の公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)の例では、単純な送金に 20,000 の gasLimit を付けた取引は、検証の段階で拒否されます。
+上記の図のうち、手数料を払わずに済むのは、検証の段階で拒否される経路だけです。[gas の公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)の例では、単純な送金に 20,000 の gasLimit を付けた取引は、検証の段階で拒否されます。
 
 ---
 
@@ -197,13 +213,15 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-ノードに問い合わせる時に見るのは、上記の図の左側の形そのものではありません。[JSON-RPC のドキュメント](https://ethereum.org/en/developers/docs/apis/json-rpc/)によれば、`eth_getTransactionReceipt` は、1 件が使った量の `gasUsed` や、実際に払った単価の `effectiveGasPrice` も含めて返します。
+ノードに問い合わせて見るのは、上記の図の右側です。[JSON-RPC のドキュメント](https://ethereum.org/en/developers/docs/apis/json-rpc/)によれば、`eth_getTransactionReceipt` は `gasUsed` と `effectiveGasPrice` も含めて返します。
 
 `REVERT` で中止した取引も、gas を使い切った取引も、成否はレシートの中の status という 1 つの値で表されます。EIP-658 はこの項目を「[a status code, 0 indicating failure ... and 1 indicating success](https://eips.ethereum.org/EIPS/eip-658)」（0 が失敗、1 が成功を示す状態コード）と定めています。
 
 この値が表すのは、取引のトップレベルの実行（取引の宛先として最初に呼ばれた実行）が成功したかどうかです。コントラクトが別のコントラクトを呼び、その中で `REVERT` が起きても、呼び出し元がその失敗を受け止めて最後まで進めば、取引としては成功になります。そのため、status が 1 でも、中の処理が失敗していることがあります。
 
-2016 年 2 月のゲーム King of the Ether Throne（新しい王が座を買うと、前の王に補償金が送られる）では、[中の送金の失敗が見落とされました](https://www.kingoftheether.com/postmortem.html)。補償金の送り先が Ethereum のウォレットアプリ Mist の作るコントラクト型のウォレットだった時、Solidity の `send` が渡す 2,300 gas では足りず、送金が失敗しています。コントラクトは結果を確かめずに処理を続けたため、取引は成功として進み、補償金は送り元のコントラクトに残りました。
+2016 年 2 月のゲーム King of the Ether Throne（新しい王が座を買うと、前の王に補償金が送られる）では、[中の送金の失敗が見落とされました](https://www.kingoftheether.com/postmortem.html)。
+
+補償金の送り先が Ethereum のウォレットアプリ Mist の作るコントラクト型のウォレットだった時、Solidity の `send` が渡す 2,300 gas では足りず、送金が失敗しています。コントラクトは結果を確かめずに処理を続けたため、取引は成功として進み、補償金は送り元のコントラクトに残りました。
 
 内側の失敗は `REVERT` ではなく gas 切れですが、呼び出し元が受け流せば取引が成功になる点は同じです。当時のレシートに status はありませんでしたが、今の規則なら 1 になります。
 
@@ -250,4 +268,4 @@ Ethereum は、実行の量が読めないコードを取引から動かせる�
 - 実行時の状態によって結果が変わるため、送った時点では成否が決まらない
 - 取引のデータだけでは何が起きるか読み取れず、data の中身の解釈が必要
 
-1 つ目と 2 つ目は、実行の量を事前に決められないコードを扱えるようにしたことの裏返しです。見積もりを外した時の損失を小さくするため、ウォレットはノードに依頼し、ブロックに入れずに同じ取引を試してもらって、使われた gas の量を見積もります。試した時点と実行される時点で状態が違えば、必要な量も変わります。
+見積もりを外した時の損失を小さくするため、ウォレットはノードに依頼し、ブロックに入れずに同じ取引を試してもらって、使われた gas の量を見積もります。試した時点と実行される時点で状態が違えば、必要な量も変わります。

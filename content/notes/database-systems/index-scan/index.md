@@ -50,9 +50,9 @@ flowchart LR
 
 <br>
 
-`EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。例えば、PostgreSQL の `EXPLAIN` では `Index Scan`、SQLite の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` は表の順次走査です。一方、SQLite の `SCAN` は索引順の全走査も含むため、その語だけでは索引の使用を判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。本記事では索引と表を別々に読む構成を説明し、DBMS ごとの差も補足します。
+`EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。例えば、PostgreSQL の `EXPLAIN` では `Index Scan`、SQLite の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` は表の順次走査です。
 
-例えば、次の SQLite の実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
+一方、SQLite の `SCAN` は索引順の全走査も含むので、その語だけでは索引を使ったかどうかを判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。次の SQLite の実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
 
 ```sql
 CREATE TABLE scan_demo (id INTEGER PRIMARY KEY, v INTEGER);
@@ -136,25 +136,47 @@ correlation は、カラムの値の順と表の中でのレコードの並び�
 
 <br>
 
-PostgreSQL 17.10 で、100 万件の注文を `user_id` の順に並べた表 `orders_sorted` と、同じレコードをランダムな順に並べた表 `orders_random` を作り、どちらにも `user_id` の索引を張りました。`correlation` は 1 とほぼ 0 です。
+PostgreSQL 17.11 で、100 万件の注文を `user_id` の順に並べた表 `orders_sorted` と、同じレコードをランダムな順に並べた表 `orders_random` を作り、どちらにも `user_id` の索引を張りました。1 つの `user_id` につき 100 件です。
 
-`user_id = 4242` に一致する 100 件の、索引に無いカラム `status` を取り出した結果（抜粋）は以下の通りです。散らばった表ではプランナが bitmap scan（表をページの順に読む取り出し方）を選ぶので、`enable_bitmapscan` を off にして両方とも Index Scan に揃えています。
+```sql
+CREATE TABLE orders_sorted AS
+  SELECT g AS id, (g - 1) / 100 + 1 AS user_id, g % 1000 AS amount,
+         (ARRAY['paid', 'new', 'sent'])[g % 3 + 1] AS status
+  FROM generate_series(1, 1000000) AS g;
+CREATE TABLE orders_random AS SELECT * FROM orders_sorted ORDER BY random();
+CREATE INDEX orders_sorted_user_id_idx ON orders_sorted(user_id);
+CREATE INDEX orders_random_user_id_idx ON orders_random(user_id);
+VACUUM ANALYZE;
+
+-- サーバーを再起動して共有バッファを空にしてから実行する
+SET enable_bitmapscan = off;
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF, TIMING OFF, SUMMARY OFF)
+  SELECT status FROM orders_sorted WHERE user_id = 4242;
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF, TIMING OFF, SUMMARY OFF)
+  SELECT status FROM orders_random WHERE user_id = 4242;
+```
+
+`pg_stats` の `correlation` は、`orders_sorted` が 1、`orders_random` がほぼ 0（4 回作り直して -0.009〜0.004）でした。
+
+散らばった表ではプランナが bitmap scan（表をページの順に読む取り出し方）を選ぶので、`enable_bitmapscan` を off にして両方とも Index Scan に揃えています。索引に無いカラム `status` を取り出した結果（抜粋）は以下の通りです。
 
 ```text
  Index Scan using orders_sorted_user_id_idx on orders_sorted (actual rows=100 loops=1)
-   Buffers: shared hit=1 read=3
+   Buffers: shared read=4
 
  Index Scan using orders_random_user_id_idx on orders_random (actual rows=100 loops=1)
-   Buffers: shared hit=39 read=64
+   Buffers: shared read=103
 ```
 
-`Buffers` は、その走査で触ったページの延べ枚数です（hit はバッファキャッシュにあった枚数、read はストレージから読んだ枚数）。同じ 100 件を返すのに、並んだ表では 4 枚、散らばった表では 103 枚を読んでいます。索引を降りる分は数枚なので、前に書いた表の 100 枚がほぼそのまま出ています。
+`Buffers` は、その走査で触ったページの延べ枚数です。同じ 100 件を返すのに、並んだ表では 4 枚、散らばった表では 103 枚を読んでいます。索引を降りる分は数枚なので、前に書いた表の 100 枚がほぼそのまま出ています。ランダムな並びは作り直すたびに変わり、4 回のうち 2 回は 102 枚でした。
+
+同じ問い合わせをもう一度流すと、`orders_random` は `shared hit=103` に変わりました。hit はバッファキャッシュにあった枚数、read はその外から読んだ枚数です（OS のキャッシュから返る場合もあります）。2 回目は速く返りますが、触るページは同じ 103 枚です。
 
 一致するレコードが増えるほど、表のページの読み出しは積み上がります。一方、全走査が読むページの枚数は、条件で絞れた割合、つまり選択性（selectivity）では動きません。そのため、2 つの経路が読む枚数はどこかで入れ替わります。
 
 ![選択性を横軸に取った概念図。全走査が読むページ枚数は水平のまま変わらず、Index Scan は右上がりに増えて途中で交わる。一致したレコードがページに散っている場合は交点が左へ、表の並びとキーの順序が揃っている場合は交点が右へ動く](images/index_scan_crossover.svg)
 
-上記の図に目盛りを置いていないのは、実測ではない概念図で、交点の位置も表の大きさとレコードの散らばり具合（scattered／clustered）で動くためです。表が小さいほど全走査の読む枚数そのものが少ないので、交点は左へ寄ります。PostgreSQL のドキュメントには、100 件から 1 件を選ぶ例について、その 100 件がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読むことに勝てる計画は無い）とあります。
+上記の図に目盛りを置いていないのは、実測ではない概念図で、交点の位置も表の大きさとレコードの散らばり具合（scattered／clustered）で動くためです。表が小さいほど全走査が読む枚数も少ないので、交点は左へ寄ります。PostgreSQL のドキュメントには、100 件から 1 件を選ぶ例について、その 100 件がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読むことに勝てる計画は無い）とあります。
 
 Index Scan で読む量を整理すると、およそ「索引で読むページ + 表で読むページ」で、選択性と correlation で決まります。読む量を減らす手段は次の 3 つです。
 
@@ -170,23 +192,37 @@ Index Scan で読む量を整理すると、およそ「索引で読むページ
 
 ある問い合わせに必要なカラムが全て入っている索引は、その問い合わせに対する [covering index](https://dev.mysql.com/doc/refman/8.4/en/glossary.html) と呼ばれます。covering index に当たるかどうかは、索引の種類ではなく問い合わせとの組み合わせで決まります。
 
-取り出すカラムだけを変えると実行計画がどう動くのかは、手元の SQLite（3.44.4）で確かめられます。張ってある索引は 1 本で、`user_id` と `amount` の 2 カラムをこの順に並べた複合索引です。
+取り出すカラムだけを変えると実行計画がどう動くのかは、Python 標準の `sqlite3` から SQLite 3.46.1 を使って確かめられます。`orders` は 100 万件で、`user_id` は 1 万種類（1 つの値につきおよそ 100 件）です。張ってある索引は 1 本で、`user_id` と `amount` の 2 カラムをこの順に並べた複合索引です。
 
-```sql
--- orders は 100 万件。user_id は 1 万種類で、1 つの値につきおよそ 100 行。
--- CREATE INDEX idx_orders_user_amount ON orders(user_id, amount);
-EXPLAIN QUERY PLAN SELECT status FROM orders WHERE user_id = 42;
-EXPLAIN QUERY PLAN SELECT amount FROM orders WHERE user_id = 42;
+```python
+import random
+import sqlite3
+
+random.seed(0)
+db = sqlite3.connect(":memory:")
+db.execute("CREATE TABLE orders (id INTEGER PRIMARY KEY, user_id INTEGER, amount INTEGER, status TEXT)")
+db.executemany(
+    "INSERT INTO orders (user_id, amount, status) VALUES (?, ?, 'paid')",
+    ((random.randint(1, 10000), random.randint(1, 1000)) for _ in range(1_000_000)),
+)
+db.execute("CREATE INDEX idx_orders_user_amount ON orders(user_id, amount)")
+queries = [
+    "SELECT status FROM orders WHERE user_id = 42",
+    "SELECT amount FROM orders WHERE user_id = 42",
+    "SELECT status FROM orders WHERE user_id + 0 = 42",
+    "SELECT status FROM orders WHERE amount = 42",
+]
+for q in queries:
+    print(db.execute("EXPLAIN QUERY PLAN " + q).fetchone()[3])
+db.execute("ANALYZE")
+print("ANALYZE 後:", db.execute("EXPLAIN QUERY PLAN " + queries[3]).fetchone()[3])
 ```
 
-返ってきた実行計画は次の通りです。
+最初の 2 つの問い合わせの実行計画は次の通りです（抜粋）。
 
 ```text
-QUERY PLAN
-`--SEARCH orders USING INDEX idx_orders_user_amount (user_id=?)
-
-QUERY PLAN
-`--SEARCH orders USING COVERING INDEX idx_orders_user_amount (user_id=?)
+SEARCH orders USING INDEX idx_orders_user_amount (user_id=?)
+SEARCH orders USING COVERING INDEX idx_orders_user_amount (user_id=?)
 ```
 
 条件も索引も同じで、違うのは取り出すカラムだけです。`status` は索引に入っていないので表を読む必要があり、`amount` は索引に入っているので `USING COVERING INDEX` に変わりました。SQLite のドキュメントには、この最適化の効果として「[saves one binary search for each row](https://www.sqlite.org/optoverview.html)」（1 件ごとに二分探索を 1 回節約する）とあります。
@@ -209,9 +245,11 @@ flowchart TB
 
 <br>
 
-表を読まずに済むかどうかは、カラムが揃っているかだけでは決まりません。PostgreSQL はレコードを更新・削除しても古いレコードをしばらく残すので、索引の項目が指すレコードを今のトランザクションが読んでよいとは限りません。PostgreSQL の索引は、この「見えるかどうか」の情報を持ちません。
+表を読まずに済むかどうかは、カラムが揃っているかだけでは決まりません。PostgreSQL はレコードを更新・削除しても古いレコードをしばらく残すので、索引の項目が指すレコードを今のトランザクションが読んで良いとは限りません。PostgreSQL の索引は、この「見えるかどうか」の情報を持ちません。
 
-そこで使うのが、ページ内のレコードが全トランザクションから見えるかなどを記録する [visibility map](https://www.postgresql.org/docs/current/storage-vm.html) です。ヒープページ 1 枚につき 2 ビットを持ちます。`all-visible` は全てのレコードが各トランザクションから見えると分かっていること、`all-frozen` は全てのレコードが freeze 済みであることを記録します。freeze は、古いトランザクション ID の周回に備える処理です。
+そこで使うのが、ページ内のレコードが全トランザクションから見えるかなどを記録する [visibility map](https://www.postgresql.org/docs/current/storage-vm.html) です。ヒープページ 1 枚につき 2 ビットを持ちます。
+
+`all-visible` は全てのレコードが各トランザクションから見えると分かっていること、`all-frozen` は全てのレコードが freeze 済みであることを記録します。freeze は、古いトランザクション ID の周回に備える処理です。
 
 [index-only scan](https://www.postgresql.org/docs/current/indexes-index-only-scans.html) でヒープを読まずに済むかの判断に使うのは、`all-visible` のビットです。`all-frozen` は主に VACUUM の処理で使われ、索引だけで返すための追加条件ではありません。以下は `all-visible` を確認してからの分かれ道です。
 
@@ -220,7 +258,7 @@ flowchart TB
 flowchart TB
     F["索引で候補の項目を見つける"] --> V{"対応するヒープページの<br/>all-visible ビット"}
     V -->|"立っている"| A["索引から取り出した値を<br/>そのまま返す"]
-    V -->|"立っていない"| B["ヒープのレコードそのものを読む"]
+    V -->|"立っていない"| B["ヒープのレコードを読む"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
@@ -265,7 +303,13 @@ flowchart LR
 | カラムに関数や演算を掛けている | 通常のカラム索引に入っているのは元の値なので、計算後の値では葉を辿れない |
 | 複合索引の先頭カラムに条件が無い | 一般には走査する範囲を狭めにくい |
 
-この型は、先ほどの SQLite で再現できます。取り出すカラムを `SELECT status` に固定したまま条件だけを変えると、`WHERE user_id + 0 = 42` も `WHERE amount = 42` も `SCAN orders` になりました。
+この型は、先ほどの SQLite のコードの 3 つ目と 4 つ目の問い合わせで再現できます。取り出すカラムを `SELECT status` に固定したまま条件だけを変えると、どちらも全走査になりました。
+
+```text
+SCAN orders
+SCAN orders
+ANALYZE 後: SEARCH orders USING INDEX idx_orders_user_amount (ANY(user_id) AND amount=?)
+```
 
 `SCAN` は索引の順に辿る場合も含めて全てのレコードを訪れること、`SEARCH` は表のレコードの一部だけを訪れることを表します（[SQLite のドキュメント](https://www.sqlite.org/eqp.html)）。絞り込めているかどうかは、この 2 語の差に出ます。
 
@@ -303,7 +347,11 @@ flowchart LR
 
 先頭カラムの条件が無くても、索引を読むこと自体はできます。ただし、上記の図の `amount = 42` のように項目が散ると、多くの場合は索引の全体を読む形になり、走査する範囲が絞られません。何を読むのが安いかはそこで改めて見積もられ、表の全走査が選ばれることもあります。
 
-例外として、PostgreSQL の複合索引のドキュメントは skip scan にも触れています。skip scan は、先頭カラムの取り得る値がごく少ないとプランナが見積もった場合に、その値ごとの等値の条件を内部で作り、「[skip over most of the index](https://www.postgresql.org/docs/current/indexes-multicolumn.html)」（索引の大半を読み飛ばす）形で走査する範囲を減らす方法です。
+例外として、PostgreSQL 18 の複合索引のドキュメントは skip scan にも触れています。skip scan は、先頭カラムの取り得る値がごく少ないとプランナが見積もった場合に、その値ごとの等値の条件を内部で作り、「[skip over most of the index](https://www.postgresql.org/docs/current/indexes-multicolumn.html)」（索引の大半を読み飛ばす）形で走査する範囲を減らす方法です。
+
+SQLite にも同じ名前の[最適化](https://www.sqlite.org/optoverview.html#the_skip_scan_optimization)があります。先頭カラムの 1 つの値に重複がおよそ 18 件以上あると分かった時だけ使われ、それを知る手段は `ANALYZE` の統計だけです。
+
+先ほどの `orders` は 1 つの `user_id` に約 100 件あるので、`ANALYZE` の後に `amount = 42` が `ANY(user_id) AND amount=?` の `SEARCH` に変わりました。統計が無いと、同じ索引と同じ条件でも全走査になります。
 
 ---
 
@@ -316,9 +364,9 @@ flowchart LR
 | 一致するレコードが表の大部分を占める | 索引を使う候補より、全走査の方が安いと見積もられる |
 | 統計情報が古い | 推定レコード数が実際とずれ、全走査の方が安いと見積もられる |
 
-上記の表のどちらの行も、見積もりの結果として現れます。実際のレコード数そのものではなく、統計から見積もった推定レコード数を材料にコストが計算されるからです。
+コストは実際のレコード数ではなく、統計から見積もった推定レコード数で計算されます。
 
-索引が使われない理由を調べたい時は、PostgreSQL の `enable_seqscan` のような設定を使い、全走査を選びにくくして別の計画が成立するかを確かめます。[ドキュメント](https://www.postgresql.org/docs/current/indexes-examine.html)を踏まえると、それでも全走査が選ばれるなら、条件が索引と噛み合っていないなどのより根本的な理由がある可能性が高いと考えられます。
+索引が使われない理由を調べたい時は、PostgreSQL の `enable_seqscan` を off にして全走査を選びにくくし、別の計画が成立するかを確かめます。それでも全走査が選ばれるなら、条件が索引と噛み合っていないなどの根本的な理由がある可能性が高いと[ドキュメント](https://www.postgresql.org/docs/current/indexes-examine.html)は説明しています。
 
 ---
 

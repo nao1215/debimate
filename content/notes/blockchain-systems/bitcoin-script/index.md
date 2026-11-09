@@ -10,21 +10,21 @@ wrapTables: true
 
 Bitcoin Script は、受け取ったビットコインを次に送金する時、どのような条件を満たす必要があるかを記述するプログラミング言語です。例えば「この公開鍵に対応する秘密鍵で署名できること」という条件を設けると、その秘密鍵を持たない人が勝手に送金することを防げます。
 
-Alice から Bob に送金する場面を考えます。Alice の取引には、Bob に渡す金額と、Bob がそのビットコインを次に送金するための条件を記録します。取引の出力とは、この「金額と条件」のまとまりです。Bob は次の送金時に、この出力を指定し、条件を満たす署名などを提出します。
+Alice から Bob に送金する場面を考えます。Alice の取引には、Bob に渡す金額と、Bob がそのビットコインを次に送金するための条件を記録します。[取引の出力](https://developer.bitcoin.org/devguide/transactions.html)とは、この「金額と条件」のまとまりです。Bob は次の送金時に、この出力を指定し、条件を満たす署名などを提出します。
 
-Bitcoin のノードは、出力に記録された条件と Bob が提出したデータを照合します。その照合手順を命令として書いたものが Script です。[Bitcoin の開発者向け資料](https://developer.bitcoin.org/devguide/transactions.html)でも、受け取り時の出力と、次の送金時に提出する署名を分けて説明しています。
+取引を検証する Bitcoin のノード（参加者のコンピュータ）は、出力に記録された条件と Bob が提出したデータを照合します。その照合手順を命令として書いたものが Script です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
+flowchart LR
     subgraph OUT["Alice から Bob への送金"]
         L["Bob 宛の出力<br/>金額と、次の送金に必要な条件"]
     end
     subgraph IN["Bob から次の相手への送金"]
         U["受け取った出力を指定<br/>署名などを提出"]
     end
-    U --> E["ノードが Script を実行<br/>条件を満たしているか検査"]
-    L --> E
+    L --> E["ノードが Script を実行<br/>条件を満たしているか検査"]
+    U --> E
     E --> R["条件を満たさなければ<br/>Bob の取引は無効"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
@@ -38,7 +38,7 @@ flowchart TD
 - なぜ送金の条件をプログラムで記述するのか。
 - 受け取り時の条件と、次の送金時の署名は、どこに記録されるのか。
 - Script の命令は、公開鍵と署名をどのように検査するのか。
-- 検査を飛ばされたり、実行が終わらなくなったりすることを、どう防ぐのか。
+- 検査の飛ばしや、終わらない実行をどう防ぐのか。
 - 条件が長い場合に使う P2SH は、出力に何を記録するのか。
 
 命令（opcode）の全一覧や、手数料・サイズの上限の規則は本記事では扱いません。
@@ -57,8 +57,8 @@ Script は、条件を検証プログラムそのものではなく、出力の�
 | --- | --- |
 | P2PK（Pay to Public Key） | 指定した公開鍵に対応する署名 |
 | P2PKH（Pay to Public Key Hash） | ハッシュ値が一致する公開鍵と、その署名 |
-| multisig | n 個の公開鍵のうち m 個ぶんの署名 |
-| タイムロック付きの条件 | 指定した時刻やブロック高（最初のブロックから数えた番号）より後であること |
+| [multisig](https://github.com/bitcoin/bips/blob/master/bip-0011.mediawiki) | n 個の公開鍵のうち m 個ぶんの署名 |
+| [タイムロック](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki)付きの条件 | 指定した時刻やブロック高（最初のブロックから数えた番号）より後であること |
 
 ---
 
@@ -72,7 +72,7 @@ Script の実行では、後に積んだ値を先に取り出す入れ物（ス�
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
+flowchart LR
     A["アンロックスクリプトを実行<br/>証明データがスタックに積まれる"] --> B["スタックを引き継ぐ"]
     B --> C["ロックスクリプトを実行<br/>条件の手順で証明を検査"]
     C --> D["スタックの一番上が<br/>真なら合格"]
@@ -83,9 +83,7 @@ flowchart TD
 
 実行が失敗せずに終わり、スタックの一番上に真と解釈される値が残れば、その入力はスクリプトの条件を満たします（[Bitcoin Core の VerifyScript](https://github.com/bitcoin/bitcoin/blob/v30.0/src/script/interpreter.cpp)）。取引全体の有効性には、指定した出力が未使用か、金額が正しいかなどの検査も必要です。
 
-支払う側が取引を作り、その出力にロックスクリプトを書き込みます。
-
-条件の中身は、受け取る側が示すアドレスで決まります。[UTXO](../utxo/) で触れたとおり、アドレスは条件を組み立てるための情報を符号化した文字列で、P2PKH なら公開鍵のハッシュ値を運んでいます。支払う側はそれをロックスクリプトの形に組み立て、受け取った側は次に使う時、その条件を満たすアンロックスクリプトを用意します。
+支払う側が取引を作り、その出力にロックスクリプトを書き込みます。条件の中身は、受け取る側が示すアドレスで決まります。[UTXO](../utxo/) で触れたとおり、アドレスは条件を組み立てるための情報を符号化した文字列で、P2PKH なら公開鍵のハッシュ値を運んでいます。支払う側はそれをロックスクリプトの形に組み立て、受け取った側は次に使う時、その条件を満たすアンロックスクリプトを用意します。
 
 ---
 
@@ -98,7 +96,7 @@ flowchart TD
 アンロックスクリプト: <署名> <公開鍵>
 ```
 
-命令は 4 つだけです。OP_DUP はスタックの一番上を複製します。OP_HASH160 は一番上の値に [SHA-256](/notes/security/sha-256/) と RIPEMD-160 を順に適用します（[Hash Function](../hash-function/) で触れた 20 バイトへの短縮です）。OP_EQUALVERIFY は上の 2 つを比べ、一致しなければ実行を失敗させます。
+命令は 4 つだけです。OP_DUP はスタックの一番上を複製します。OP_HASH160 は一番上の値に [SHA-256](/notes/security/sha-256/) と [RIPEMD-160](https://homes.esat.kuleuven.be/~bosselae/ripemd160.html) を順に適用します（[Hash Function](../hash-function/) で触れた 20 バイトへの短縮です）。OP_EQUALVERIFY は上の 2 つを比べ、一致しなければ実行を失敗させます。
 
 OP_CHECKSIG は、今検証している取引の内容に対する署名かどうかを公開鍵で検証し、結果の真偽をスタックに残します。署名の対象に含めた内容を変えると、同じ署名では検証を通りません。対象に含める入力・出力の範囲は sighash type という指定で変わり、詳しくは [Digital Signature](../digital-signature/) で説明しています。
 
@@ -147,9 +145,9 @@ scriptSig と scriptPubKey を単純に連結すると、使う側が用意し�
 
 ### ループの無い言語と実行の停止
 
-Script にはループがありません。[Bitcoin Wiki](https://en.bitcoin.it/wiki/Script) は、Script を意図的に（intentionally）チューリング完全にしていない、ループの無い言語だと説明しています。命令は左から右に 1 度ずつ実行されるだけなので、実行される命令の数はスクリプトに書かれた数を超えず、どんなスクリプトも必ず停止します。
+Script にはループがありません。[Bitcoin Wiki の Script の項](https://en.bitcoin.it/wiki/Script)にあるとおり、ループなどで任意の計算を書ける性質（チューリング完全）を意図的に持たせていません。命令は左から右に 1 度ずつ実行されるだけなので、実行される命令の数はスクリプトに書かれた数を超えず、どんなスクリプトも必ず停止します。
 
-この性質は、全参加者が全取引を検証するという Bitcoin の構成に合っています。検証者は、見知らぬ相手が書いたスクリプトを無条件で実行する立場にあります。停止しないスクリプトや、実行コストが際限なく膨らむスクリプトを作れてしまうと、取引の検証そのものが攻撃の入り口になります。実際の検証コストは、命令数の上限や署名検証の回数の上限といった別の制限とあわせて、予測できる範囲に保たれています。
+この性質は、全参加者が全取引を検証するという Bitcoin の構成に合っています。検証者は、見知らぬ相手が書いたスクリプトを無条件で実行する立場にあります。停止しないスクリプトや、実行コストが際限なく膨らむスクリプトを作れてしまうと、取引の検証が攻撃の入り口になります。実際の検証コストは、命令数の上限や署名検証の回数の上限といった別の制限とあわせて、予測できる範囲に保たれています。
 
 条件分岐（OP_IF）はあるので、「期限前なら 2 人の署名、期限後なら 1 人の署名」のような場合分けは書けます。書けないのは、繰り返しと、実行をまたいで残る状態（前の検証で書き換えて次の検証で読み出す値）です。この制限で何が書けなくなるかは、欠点の節で扱います。
 
@@ -163,7 +161,7 @@ P2SH での支払いと使用の分担は以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
+flowchart LR
     subgraph PAY["支払う時の出力"]
         H["OP_HASH160<br/>条件スクリプトのハッシュ値<br/>OP_EQUAL"]
     end
@@ -177,7 +175,9 @@ flowchart TD
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図のとおり、使う時には条件スクリプトの本体と証明の両方を出します。検証者は、本体のハッシュ値が出力の値と一致することを確かめてから、本体を実行します。[BIP-16](https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki) の出力は、ハッシュ値と、それを照合する短い命令列です。条件の本体は使う時に提示するため、条件そのものを消してデータを圧縮する仕組みではありません。長い条件を知って持ち運ぶのも、その分の手数料を払うのも、使う時の受け取る側（条件を設計した本人）です。多くの公開鍵を並べる multisig のような長い条件は、この形式との組み合わせで使われます。
+図のとおり、使う時には条件スクリプトの本体と証明の両方を出します。検証者は、本体のハッシュ値が出力の値と一致することを確かめてから、本体を実行します。P2SH を定めた [BIP-16](https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki)（Bitcoin Improvement Proposal、仕様変更の提案文書）では、出力はハッシュ値と、それを照合する短い命令列だけです。
+
+条件の本体は使う時に提示するため、P2SH は条件を消してデータを圧縮する仕組みではありません。長い条件を知って持ち運ぶのも、その分の手数料を払うのも、使う時の受け取る側（条件を設計した本人）です。多くの公開鍵を並べる multisig のような長い条件は、この形式との組み合わせで使われます。
 
 P2SH のアドレスは、公開鍵のハッシュ値ではなく条件スクリプトのハッシュ値を運んでいます。
 

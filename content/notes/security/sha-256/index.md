@@ -10,9 +10,11 @@ wrapTables: true
 
 Hash Function（ハッシュ関数）とは、長さの異なるデータを固定長の値へ変換する関数です。変換後の値をハッシュ値と呼びます。
 
-SHA-256（Secure Hash Algorithm 256）はハッシュ関数の 1 つで、仕様上扱える範囲であれば、入力の長さに関係なく 256 bit のハッシュ値を返します。1 byte のファイルと、0 で埋めた 64 MiB のファイルで、このことを確かめます。
+SHA-256（Secure Hash Algorithm 256）はハッシュ関数の 1 つで、仕様上扱える範囲であれば、入力の長さに関係なく 256 bit のハッシュ値を返します。中身が `a` の 1 文字だけの 1 byte のファイルと、0 で埋めた 64 MiB のファイルで、このことを確かめます。
 
 ```console
+$ printf 'a' > note.txt
+$ head -c 67108864 /dev/zero > disk.img
 $ wc -c note.txt disk.img
        1 note.txt
 67108864 disk.img
@@ -86,7 +88,9 @@ flowchart LR
 
 SHA-256 は 32 bit の word 8 個、合わせて 256 bit の値を持ち、ブロックを 1 つ読むごとにこの値を更新します。ここではこの 256 bit を内部状態と呼びます。初期値は FIPS 180-4 §5.3.3 が定数として定めているので、どんな入力でも計算は同じ所から始まります。
 
-512 bit のブロックと 256 bit の内部状態から次の 256 bit を作るので、この処理を圧縮関数と呼びます（同 §6.2.2）。圧縮関数は、8 個の作業変数 a〜h を内部状態で初期化し、同じ混ぜ方を 64 回（64 ラウンド）施します。回し終えた作業変数と、更新前の内部状態を word ごとに足した結果が、次の内部状態です。この足し算は `2^32` で割った余りを取り、32 bit に収まらない上位の桁を捨てます。これを `2^32` を法とする加算と呼びます。
+512 bit のブロックと 256 bit の内部状態から次の 256 bit を作るので、この処理を圧縮関数と呼びます（同 §6.2.2）。圧縮関数は、8 個の作業変数 a〜h を内部状態で初期化し、同じ混ぜ方を 64 回（64 ラウンド）施します。回し終えた作業変数と、更新前の内部状態を word ごとに足した結果が、次の内部状態です。
+
+この足し算は `2^32` で割った余りを取り、32 bit に収まらない上位の桁を捨てます。これを `2^32` を法とする加算と呼びます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -109,11 +113,13 @@ flowchart LR
 
 1 bit だけ違う 2 つの入力から、共通点の見えない 2 つのハッシュ値が出ます。この広がりを雪崩効果（avalanche effect）と呼びます。SHA-256 では、1 ブロック内の message schedule（メッセージスケジュール）とラウンド処理によって、入力の変化が複数の出力 bit に影響します。
 
-SHA-256 が使う論理関数は 6 個です（FIPS 180-4 §4.1.2）。message schedule が使う `σ0`・`σ1` と、ラウンド処理が使う `Σ0`・`Σ1` は、右回転（ROTR）や右シフト（SHR）と XOR（2 つの bit が違えば 1 を返す演算）を組み合わせ、1 つの word の中で bit の位置を混ぜます。ラウンド処理の `Ch` は、1 つ目の word の bit で残り 2 つの word のどちらの bit を採るかを選び、`Maj` は 3 つの word の bit の多数決を取ります。
+SHA-256 が使う論理関数は 6 個です（FIPS 180-4 §4.1.2）。message schedule が使う `σ0`・`σ1` と、ラウンド処理が使う `Σ0`・`Σ1` は、右回転（ROTR）や右シフト（SHR）と XOR（2 つの bit が違えば 1 を返す演算）を組み合わせ、1 つの word の中で bit の位置を混ぜます。
+
+ラウンド処理の `Ch` は、1 つ目の word の bit で残り 2 つの word のどちらの bit を採るかを選び、`Maj` は 3 つの word の bit の多数決を取ります。
 
 message schedule は、64 ラウンドが使う word `W_t` を用意する手順です（同 §6.2.2）。t が 0 から 15 なら `W_t` はブロックの word そのままですが、16 から 63 では、前に決まっている 4 つの word を `σ1(W_{t-2}) + W_{t-7} + σ0(W_{t-15}) + W_{t-16}` の形で、`2^32` を法として加算します。そのため、ある word の違いは、それより後ろの word に次々と伝わります。
 
-各ラウンドは、`Σ0`・`Σ1`・`Ch`・`Maj` の出力と、ラウンドごとに決まる定数と、message schedule の word を `2^32` を法とする加算で混ぜて a と e の新しい値を作り、残りの作業変数を 1 つずつ後ろへずらします。回転とシフトが 1 つの word の中で bit の位置を動かし、加算の桁上がりが下の桁の違いを上の桁に伝えます。
+各ラウンドは、`Σ0`・`Σ1`・`Ch`・`Maj` の出力、作業変数 h と d、ラウンドごとに決まる定数、message schedule の word を `2^32` を法とする加算で混ぜて a と e の新しい値を作り、残りの作業変数を 1 つずつ後ろへずらします。回転とシフトが 1 つの word の中で bit の位置を動かし、加算の桁上がりが下の桁の違いを上の桁に伝えます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -128,11 +134,35 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-出力の各 bit が 1/2 の確率で独立に反転するなら、違う bit の数は平均 128 になります。32 byte の入力で 1 bit だけ違う組を 2000 件作り、ハッシュ値で異なる bit の数を数えました。
+出力の各 bit が 1/2 の確率で独立に反転するなら、違う bit の数は平均 128 になります。32 byte の入力で 1 bit だけ違う組を 2000 件作り、ハッシュ値で異なる bit の数を数えました。以下は、その計算部分です（図の描画を含む全体は[生成元の figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/sha-256/figures.py)）。
+
+```python
+import hashlib
+
+import numpy as np
+
+rng = np.random.default_rng(20260904)  # seed を固定して同じ結果を出す
+counts = []
+for _ in range(2000):
+    msg = bytearray(rng.integers(0, 256, size=32, dtype=np.uint8).tolist())
+    flipped = bytearray(msg)
+    pos = int(rng.integers(0, 32 * 8))
+    flipped[pos // 8] ^= 1 << (pos % 8)  # 1 bit だけ反転する
+    h1 = hashlib.sha256(bytes(msg)).digest()
+    h2 = hashlib.sha256(bytes(flipped)).digest()
+    counts.append(sum(bin(x ^ y).count("1") for x, y in zip(h1, h2)))
+
+counts = np.array(counts)
+print(f"mean={counts.mean():.2f} min={counts.min()} max={counts.max()}")
+```
+
+```console
+mean=127.90 min=103 max=155
+```
 
 ![32 byte の入力で 1 bit だけ違う 2000 組について、SHA-256 のハッシュ値で異なる bit 数を数えたヒストグラム。平均は 127.9 で、256 bit の半分である 128 の周りに山が立つ。最小は 103、最大は 155](images/hash_function_avalanche.svg)
 
-2000 組の平均は 127.9 bit で、最も少ない組でも 103 bit、最も多い組で 155 bit が違いました。ただし、bit がよく混ざることは、狙ったハッシュ値になる入力を効率よく作れないことの証明にはなりません。
+平均は 127.9 bit で、最も少ない組でも 103 bit、最も多い組で 155 bit が違いました。ただし、bit がよく混ざることは、狙ったハッシュ値になる入力を効率よく作れないことの証明にはなりません。
 
 ---
 
@@ -146,7 +176,9 @@ flowchart LR
 | 第二原像探索 | 与えられた入力と同じハッシュ値になる、別の入力 | 約 `2^256` |
 | 衝突探索 | 同じハッシュ値になる入力の組（両方とも攻撃者が選べる） | 約 `2^128` |
 
-衝突探索だけが `2^128` で済むのは、攻撃者が 2 つの入力をどちらも選べるからです。原像探索は与えられた 1 つのハッシュ値に当てる必要がありますが、衝突探索は自分で計算したハッシュ値を溜めていき、溜めた中のどれか 2 つが一致すれば成功します。一致し得る組の数は溜めた個数の 2 乗に比例して増えるため、出力が `2^256` 通りあっても `2^128` 個ほど溜めた時点で一致が起こります。これは、23 人集まれば誕生日の同じ組が約 50% の確率で現れるのと同じ数え方です。この探し方を誕生日攻撃と呼びます。
+衝突探索だけが `2^128` で済むのは、攻撃者が 2 つの入力をどちらも選べるからです。原像探索は与えられた 1 つのハッシュ値に当てる必要がありますが、衝突探索は自分で計算したハッシュ値を溜めていき、溜めた中のどれか 2 つが一致すれば成功します。一致し得る組の数は溜めた個数の 2 乗に比例して増えるため、出力が `2^256` 通りあっても `2^128` 個ほど溜めた時点で一致が起こります。
+
+23 人集まれば誕生日の同じ組が約 50% の確率で現れるのも、同じ数え方です。この探し方を誕生日攻撃と呼びます。
 
 3 つの性質がそれぞれどの場面で必要になるかは、Blockchain Systems セクションの [Hash Function](../../blockchain-systems/hash-function/) のノートで扱っています。
 
@@ -154,8 +186,8 @@ flowchart LR
 
 <br>
 
-SHA-1 では、この前提が 2017 年 2 月に崩れました。Google とオランダの研究機関 CWI が公表した [SHA-1 の衝突](https://shattered.io/)では、160 bit の SHA-1 の総当たりに約 `2^80` 回の計算が必要なところ、実際はその 10 万分の 1 ほどの約 `2^63.1` 回で済み、内容の違う 2 つの PDF が同じハッシュ値になりました。
+SHA-1 では、2017 年 2 月にこの前提が実際の衝突で崩れました。Google とオランダの研究機関 CWI が公表した [SHA-1 の衝突](https://shattered.io/)は、160 bit の SHA-1 で誕生日攻撃に約 `2^80` 回の計算が必要なのに対し、その 10 万分の 1 ほどの約 `2^63.1` 回で、内容の違う 2 つの PDF を同じハッシュ値にしました。
 
 見つかったのは、2 つの入力をどちらも攻撃者が作れる衝突で、既にあるファイルと同じ値を後から作る第二原像ではありません。それでも、2 つを用意した攻撃者が片方を配ってハッシュ値を掲載させ、後で差し替えれば、ダウンロードページの値と一致したままです。
 
-SHA-256 の安全性に数学的な証明はありません。根拠になっているのは、64 ラウンドすべてを実行する SHA-256 に対して、原像・第二原像・衝突を現実的な計算量で求める攻撃がこれまで見つかっていない、という事実です。ラウンド数を減らした SHA-256 については、攻撃手法の解析が公表されています。
+SHA-256 の安全性に数学的な証明はありません。根拠になっているのは、64 ラウンドすべてを実行する SHA-256 に対して、原像・第二原像・衝突を現実的な計算量で求める攻撃がこれまで見つかっていない、という事実です。一方で、ラウンド数を減らした SHA-256 は攻撃されています。例えば、[Li らの 2024 年の論文](https://eprint.iacr.org/2024/349)は、39 ラウンドに減らし、2 つの入力に共通の初期値を攻撃者が選べる条件で、衝突する組を実際に示しました。

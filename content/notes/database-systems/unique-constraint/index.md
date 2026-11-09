@@ -10,21 +10,21 @@ wrapTables: true
 
 [一意制約](https://www.postgresql.org/docs/current/ddl-constraints.html)（unique constraint）は、あるカラム、または複数のカラムの組に入っている値が表の中で重複しないことを DB（データベース）に保証させる仕組みです。SQL では、カラムの定義に `UNIQUE` を書くか、表に対して `UNIQUE (列名, ...)` を書いて宣言します。
 
-例えば、会員登録では同じメールアドレスの重複を防ぐために使います。同じアドレスで 2 件のアカウントができると、パスワード再設定のメールがどちらに届くのかが決まらず、問い合わせを受けた時にどちらが本人のものかも判定できません。重複を消して片方に寄せる作業は、後になるほど難しくなります。
+例えば、会員登録では同じメールアドレスの重複を防ぐために使います。同じアドレスで 2 件のアカウントができると、パスワード再設定を求められた時にどちらのアカウントを再設定するのかが決まらず、問い合わせを受けた時にどちらが本人のものかも判定できません。重複を消して片方に寄せる作業は、後になるほど難しくなります。
 
 重複を止められる場所を以下に示します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
-    R["登録の要求"] --> I["入力時の事前確認<br/>必要なら利用者に案内する"]
+    R["登録の要求"] --> I["入力時の事前確認<br/>必要ならユーザーに案内する"]
     I --> A["アプリケーションでの確認<br/>SELECT で存在を見る"]
     A --> D["一意制約<br/>重複した書き込みを止める"]
     D --> T[("users 表")]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の前の 2 つは、重複を早く見付けるために使えます。一意制約は、並行する書き込みを含めて、重複した状態が表に確定するのを最後に止めます。
+上記の図の前の 2 つは、重複を早く見つけるために使えます。一意制約は、並行する書き込みを含めて、重複した状態が表に確定するのを最後に止めます。
 
 <br>
 
@@ -36,7 +36,7 @@ flowchart LR
 - 衝突した時の動作は、ON CONFLICT でどう決めるのか。
 - UNIQUE を張らない場合、誰が重複を止めるのか。
 
-以降の SQL は PostgreSQL の構文で書き、実行結果は PostgreSQL 17.10 のものです。
+以降の SQL は PostgreSQL の構文で書き、実行結果は PostgreSQL 17.11 のものです。
 
 ---
 
@@ -61,7 +61,7 @@ sequenceDiagram
     Note over A,B: どちらの確認も正しく<br/>結果は 2 件の重複
 ```
 
-確認した時点ではまだ相手のレコードが無く、`INSERT` を出す時点では相手が入っています。確認した時点と書き込んだ時点がずれているので、アプリケーションはその間に入った相手の挿入に気付けません。
+確認した時点ではまだ相手のレコードが無く、`INSERT` を出す時点では相手が入っています。アプリケーションは、確認と書き込みの間に入った相手の挿入に気づけません。
 
 一意制約の無い `users` 表に対して、上記の図の順序で 2 本の接続を実際に動かした結果は以下の通りです。2 本とも `SELECT` で 0 件を確かめてから `INSERT` しています。
 
@@ -76,13 +76,15 @@ SELECT id, email FROM users ORDER BY id;
 
 分離レベルという設定を上げれば、この競合を止められる場合もあります。ただし、止まるかどうかは設定と実装で変わり、表の定義を見ただけでは分かりません。「`users.email` は表の中で重複しない」という業務上の要求を宣言するものでもありません。分離レベルは [Transaction Isolation](../transaction-isolation/) のノートで扱っています。
 
-`SELECT` による確認を消す必要はありません。利用者に早く案内する、重複の理由を業務の言葉で説明する、といった役割はこの確認が担います。しかし、それは利用者への案内であって、一意性の保証ではありません。
+`SELECT` による確認を消す必要はありません。ユーザーに早く案内する、重複の理由を業務の言葉で説明する、といった役割はこの確認が担います。しかし、それはユーザーへの案内であって、一意性の保証ではありません。
 
 ---
 
 ### 一意制約による競合の絞り込み
 
-一意制約は、書き込みそのものを検査の対象にします。PostgreSQL では、一意制約を足すと、対象のカラムまたはカラムの組に対する一意索引が自動で作られます。索引とは、カラムの値と、その値を持つレコードの位置を並べて持つ補助の構造です。以降は、一意性の検査を `COMMIT` まで遅らせる指定（`DEFERRABLE`）を付けない、PostgreSQL の既定の形を前提にします。この場合、検査は書き込みの時点で行われます。
+一意制約は、書き込みそのものを検査の対象にします。PostgreSQL では、一意制約を足すと、対象のカラムまたはカラムの組に対する一意索引が自動で作られます。索引とは、カラムの値と、その値を持つレコードの位置を並べて持つ補助の構造です。
+
+以降は、一意性の検査を `COMMIT` まで遅らせる指定（`DEFERRABLE`）を付けない、PostgreSQL の既定の形を前提にします。この場合、検査は書き込みの時点で行われます。
 
 一意索引は、同じキー（制約を張ったカラムの値）を持つレコードが 2 件以上確定しないよう検査します。`INSERT` の際に一意索引を使って競合するレコードを検査し、相手の状態に応じて待機するか、一意制約違反として書き込みを止めます。アプリケーションが書く `SELECT` は値を読むだけで、その値を自分のために取っておくわけではありません。索引の構造は [B-Tree](../b-tree/) のノートで扱っています。
 
@@ -107,7 +109,7 @@ flowchart LR
 INSERT INTO users VALUES (2, 'taro@example.com');
 ERROR:  23505: duplicate key value violates unique constraint "users_email_key"
 DETAIL:  Key (email)=(taro@example.com) already exists.
-Time: 1004.212 ms (00:01.004)
+Time: 1001.301 ms (00:01.001)
 ```
 
 上記の `23505` は SQLSTATE（SQL のエラーに付く 5 文字の符号）で、PostgreSQL は一意制約違反に [`23505`（`unique_violation`）](https://www.postgresql.org/docs/current/errcodes-appendix.html)を割り当てています。アプリケーションは、この符号を見て「メールアドレスの重複」という業務上のエラーに変換できます。
@@ -118,7 +120,7 @@ Time: 1004.212 ms (00:01.004)
 
 ### 組み合わせで一意にする複合 UNIQUE
 
-一意にしたい単位は、1 つのカラムとは限りません。外部の認証サービスと利用者を結び付ける表では、「同じ利用者が同じサービスを 2 回登録できない」という制約になります。カラムを並べて書くと、その組み合わせに対して一意性が掛かります。以下の `identities` の `provider` は認証サービスの名前（github など）、`subject` はそのサービスが利用者に振った ID です。
+一意にしたい単位は、1 つのカラムとは限りません。外部の認証サービスとユーザーを結び付ける表では、「同じユーザーが同じサービスを 2 回登録できない」という制約になります。カラムを並べて書くと、その組み合わせに対して一意性が掛かります。以下の `identities` の `provider` は認証サービスの名前（github など）、`subject` はそのサービスがユーザーに振った ID です。
 
 ```sql
 CREATE TABLE users (
@@ -143,21 +145,21 @@ CREATE TABLE identities (
 | 2 | github | 入る。`user_id` が違う |
 | 1 | github | 弾かれる。組み合わせが 1 件目と同じ |
 
-制約を `UNIQUE (user_id)` にすると、1 人の利用者は 1 つのサービスしか登録できなくなります。逆に `UNIQUE (provider)` にすると、そのサービスを使えるのが全体で 1 人だけになります。一意性の制約として決めるのは、どのカラムの組を 1 つの単位と見なすかです。
+制約を `UNIQUE (user_id)` にすると、1 人のユーザーは 1 つのサービスしか登録できなくなります。逆に `UNIQUE (provider)` にすると、そのサービスを使えるのが全体で 1 人だけになります。一意性の制約として決めるのは、どのカラムの組を 1 つの単位と見なすかです。
 
 カラムを並べる順序は、重複と見なすレコードを変えません。順序が意味を持つのは、自動で作られた複合索引を検索にも使う場合で、どのカラムを先頭に置くのが良いかは検索の条件との組み合わせで決まります。
 
-同じ表に別の一意制約を重ねることもできます。`identities` に `UNIQUE (provider, subject)` を足せば、外部のサービスが持つ利用者の識別子 1 つに対して、`users` のレコードを 1 つに限定できます。
+同じ表に別の一意制約を重ねることもできます。`identities` に `UNIQUE (provider, subject)` を足せば、外部のサービスが持つユーザーの識別子 1 つに対して、`users` のレコードを 1 つに限定できます。
 
 ---
 
 ### 一意性に穴が空く NULL と論理削除
 
-1 つ目の穴は `NULL` です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても `email` が `NULL` のレコードは何件でも入ります。`NULLS NOT DISTINCT` を付ければ重複として扱えます。この扱いは DBMS（Database Management System）ごとに割れるので、[NULL](../sql-null/) のノートで扱っています。
+1 つ目の穴は `NULL` です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても `email` が `NULL` のレコードは何件でも入ります。PostgreSQL 15 以降は、`NULLS NOT DISTINCT` を付ければ重複として扱えます。この扱いは DBMS（Database Management System）ごとに割れるので、[NULL](../sql-null/) のノートで扱っています。
 
 もう 1 つの穴は、レコードを消さずに「削除済み」の印を付ける設計です。例えば `deleted_at` というカラムを足し、退会した時に日時を入れて、有効な会員は `NULL` のままにします。制約は削除済みのレコードにも掛かるので、一度退会した会員と同じアドレスでは再登録できません。設計の是非は [Soft Delete](../soft-delete/) のノートで扱っています。
 
-どちらも、一意性を掛けたい範囲と、制約が実際に掛かる範囲がずれる形です。
+どちらも、一意性を掛けたい範囲（下記の図の内側）と、制約が実際に掛かる範囲（外側）がずれる形です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -171,7 +173,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の内側が掛けたい範囲で、外側が実際に掛かる範囲です。有効な会員だけに一意性を掛けたい場合、PostgreSQL では索引に載せるレコードを条件で絞れます。カラムに書いた `UNIQUE` には、PostgreSQL が `users_email_key` という名前を自動で付けています。この制約を外し、退会した日時を持つカラムを足した上で、一意性を次の部分索引に置き換えます。
+有効な会員だけに一意性を掛けたい場合、PostgreSQL では索引に載せるレコードを条件で絞れます。カラムに書いた `UNIQUE` には、PostgreSQL が `users_email_key` という名前を自動で付けています。この制約を外し、退会した日時を持つカラムを足した上で、一意性を次の部分索引に置き換えます。
 
 ```sql
 ALTER TABLE users DROP CONSTRAINT users_email_key;
@@ -188,7 +190,9 @@ CREATE UNIQUE INDEX users_email_active_idx
 
 ### ON CONFLICT による衝突時の動作の指定
 
-一意制約に違反した `INSERT` は、既定ではエラーになります。エラーを受けてから、衝突した既存のレコードに改めて `UPDATE` を送る方法も考えられます。ただし PostgreSQL では、トランザクションの中で 1 文がエラーになると、以降の文を受け付けなくなります。続けるには、事前に途中の戻り先（SAVEPOINT）を置いてそこまで戻すか、トランザクションを分け直す必要があります。分け直せば、その 2 文の間にまた競合が入ります。PostgreSQL の `ON CONFLICT` 句は、この往復を避けて、衝突した時の動作を `INSERT` の中で決める書き方です。
+一意制約に違反した `INSERT` は、既定ではエラーになります。エラーを受けてから、衝突した既存のレコードに改めて `UPDATE` を送る方法も考えられます。ただし PostgreSQL では、トランザクションの中で 1 文がエラーになると、以降の文を受け付けなくなります。
+
+続けるには、事前に途中の戻り先（SAVEPOINT）を置いてそこまで戻すか、トランザクションを分け直す必要があります。分け直せば、その 2 文の間にまた競合が入ります。PostgreSQL の `ON CONFLICT` 句は、この往復を避けて、衝突した時の動作を `INSERT` の中で決める書き方です。
 
 `ON CONFLICT` は、一意制約違反や排他制約違反でエラーにする代わりに、どう動くかを[指定する句](https://www.postgresql.org/docs/current/sql-insert.html)で、書ける動作は 2 つです。
 
@@ -211,7 +215,9 @@ ON CONFLICT (user_id, provider) DO UPDATE
 
 この指定は `DO UPDATE` では必要で、`DO NOTHING` では省けます。省いた場合は、一意制約や一意索引など `ON CONFLICT` が競合判定に使える全ての対象について、衝突したレコードを挿入しません。
 
-`EXCLUDED` は挿入しようとしたレコードを指す名前で、上記の例では新しい `subject` を既存のレコードに書き戻しています。`users` の一意性は部分索引に置き換えてあるので、`ON CONFLICT` にも索引と同じ条件を添えます。条件を落とすと、どの索引との衝突なのかが決まらず、`INSERT` はエラーになります。
+`EXCLUDED` は挿入しようとしたレコードを指す名前で、上記の例では新しい `subject` を既存のレコードに書き戻しています。
+
+`users` の一意性は部分索引に置き換えてあるので、`ON CONFLICT` にも索引と同じ条件を添えます。条件を落とすと部分索引が判定に使われず、一致する一意制約が無いという意味のエラー（`there is no unique or exclusion constraint matching ...`）になります。
 
 どちらを選ぶかは、その競合を業務としてどう解釈するかで決まります。競合を異常と見なし、エラーのまま扱う方が正しい場合もあります。
 
@@ -264,4 +270,6 @@ flowchart LR
 - 制約に違反した時のエラーは、アプリケーションが業務の言葉に変換する必要がある
 - 表をまたぐ重複や、表記ゆれを含んだ重複には掛からない
 
-4 つ目は、一意制約が DB の比較した結果だけを見ることから来ます。通常の `text` に張った一意制約では、`Taro@example.com` と `taro@example.com` を別の値として扱う構成になります。一意制約は DB の比較規則に従うため、業務上は同じ値でも重複と判定されない場合があります。必要なら、保存する前に `lower()` で小文字にそろえるか、`lower(email)` に一意索引を張るなどして、比較する値をそろえます。
+4 つ目は、一意制約が DB の比較規則で値を比べることから来ます。通常の `text` に張った一意制約では、`Taro@example.com` と `taro@example.com` が 2 件とも入りました。業務上は同じアドレスでも、DB には別の値です。
+
+必要なら、保存する前に `lower()` で小文字にそろえるか、`lower(email)` に一意索引を張るなどして、比較する値をそろえます。

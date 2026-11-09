@@ -1,7 +1,7 @@
-"""Hash Function - なぜ任意長のデータを固定長に変換できるのか の図を生成する。
+"""SHA-256 - なぜ任意長のデータを固定長に変換できるのか の図を生成する。
 
 再生成:
-    uv run --with matplotlib --with numpy python content/notes/security/hash-function/figures.py
+    uv run --with matplotlib --with numpy python content/notes/security/sha-256/figures.py
 """
 
 import hashlib

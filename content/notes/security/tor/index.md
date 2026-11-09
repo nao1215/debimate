@@ -99,11 +99,13 @@ flowchart TB
 | Exit Relay | 見えない | 見える | HTTPS でなければ見える |
 | Web サーバー | 見えない | ー | 見える |
 
-契約している回線業者からも、Guard Relay への接続そのものは見えるので、Tor を使っている事実までは隠せません。
+契約している回線業者からも、公開されたリレーへの接続そのものは見えるので、Tor を使っている事実までは隠せません。これを補うのが、一覧に載らない [bridge](https://support.torproject.org/tor-browser/circumvention/unblocking-tor/) と、通信を別物に見せる pluggable transport です。
 
 <br>
 
-1 台目は、ほかの 2 台と違い、経路を作るたびにネットワーク全体から選び直すことはせず、[Tor の guard 仕様](https://spec.torproject.org/guard-spec/index.html)に従って少数の候補を使い続けます。1 台目と、接続先に近い端（通常は Exit Relay）の両方を攻撃者が持つと、時刻と通信量を突き合わせて接続元と接続先を結び付けられます（後述の Traffic correlation）。毎回選び直す構成では、作り直すたびにこの組み合わせを引く機会が生まれます。そのため、候補を使い続ければ、最初に攻撃者のリレーを引かなかった利用者が観測される機会は増えません。候補は永久に固定されず、入れ替えも起こります。
+1 台目は、ほかの 2 台と違い、経路を作るたびにネットワーク全体から選び直すことはせず、[Tor の guard 仕様](https://spec.torproject.org/guard-spec/index.html)に従って少数の候補を使い続けます。1 台目と、接続先に近い端（通常は Exit Relay）の両方を攻撃者が持つと、時刻と通信量を突き合わせて接続元と接続先を結び付けられます（後述の Traffic correlation）。
+
+毎回選び直す構成では、作り直すたびにこの組み合わせを引く機会が生まれます。候補を使い続ければ、最初に攻撃者のリレーを引かなかった利用者は、その後も 1 台目で観測されません。候補は永久に固定されず、入れ替えも起こります。
 
 ---
 
@@ -159,7 +161,9 @@ Tor だけを使う場合と、HTTPS を併用する場合の違いを次に示�
 
 [Tor Project の解説](https://community.torproject.org/onion-services/overview/)によると、サービスはまず複数のリレーに長期の経路を張り、自分への取り次ぎ役（introduction point）になってもらいます。この経路も Tor の経路なので、サービスは取り次ぎ役に自分の所在を明かしません。
 
-サービスは取り次ぎ役の一覧を署名付きの descriptor としてまとめ、Tor ネットワーク上の分散ハッシュ表（複数のリレーが descriptor を分担して持つ仕組み）に載せます。クライアントは `.onion` のアドレスから保持しているリレーを求めて descriptor を取得し、アドレスに含まれる公開鍵を起点として descriptor の正当性を[検証](../../blockchain-systems/digital-signature/)し、取り次ぎ役の情報を取り出します。アドレス自体がサービスの公開鍵から作られているので、別のサービスが用意した descriptor は検証を通りません。接続の流れは以下の通りです。
+サービスは取り次ぎ役の一覧を署名付きの descriptor としてまとめ、Tor ネットワーク上の分散ハッシュ表（複数のリレーが descriptor を分担して持つ仕組み）に載せます。
+
+クライアントは `.onion` のアドレスから descriptor の置き場所を割り出して取得し、アドレスに含まれる公開鍵を起点として descriptor の正当性を[検証](../../blockchain-systems/digital-signature/)し、取り次ぎ役の情報を取り出します。別のサービスが用意した descriptor は、この検証を通りません。接続の流れは以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -181,7 +185,9 @@ sequenceDiagram
     R-->>S: 中身を読まずに転送
 ```
 
-上記の図の Rendezvous Point は、クライアントが選んだ待ち合わせ役で、クライアント側の経路の 3 台目です。クライアントとサービスがそれぞれ自分の経路を張った先で落ち合うので、Rendezvous Point が接するのは両方の経路の終端だけで、どちらの IP アドレスも分かりません。接続はクライアント側 3 台とサービス側 3 台の、合計 6 台を経由します。既定の構成では、クライアントとサービスも互いの IP アドレスを知らないまま通信できます。
+上記の図の Rendezvous Point は、クライアントが選んだ待ち合わせ役で、クライアント側の経路の 3 台目です。クライアントとサービスはそれぞれ自分の経路を張った先で落ち合うので、Rendezvous Point から見えるのは両方の経路で自分の直前にいるリレーだけです。どちらの IP アドレスも分かりません。
+
+接続はクライアント側 3 台とサービス側 3 台の、合計 6 台を経由します。既定の構成では、クライアントとサービスも互いの IP アドレスを知らないまま通信できます。
 
 通信が Tor の外に出ない点も、通常の Web アクセスとの違いになります。[Tor Project の案内](https://support.torproject.org/tor-browser/features/onion-services/)によると、Tor ユーザーと onion service の間の通信は全て End-to-End に暗号化されるので、HTTPS で接続するかどうかを気にする必要はありません。
 
@@ -228,11 +234,15 @@ flowchart TB
 
 上記の図の Traffic correlation は、経路の中身を解読しない攻撃で、両端を観測できれば global passive adversary でなくても行えます。論文も「Tor only minimally hides such correlations」（Tor がこの相関を隠せるのは最小限にとどまる）と認めています。
 
-この形の攻撃が起きたのが、2014 年の [relay early traffic confirmation attack](https://blog.torproject.org/tor-security-advisory-relay-early-traffic-confirmation-attack/) です。2014 年 1 月 30 日に約 115 台のリレーが加わり、Guard になれるリレー全体の通信容量の約 6.4% を占めました。これらは Guard に加えて、Onion Service の descriptor を預かる役にも就いています。Exit Relay を運用した形跡はなく、接続先に近い端に立ったのは descriptor を預かる役でした。
+この形の攻撃が起きたのが、2014 年の [relay early traffic confirmation attack](https://blog.torproject.org/tor-security-advisory-relay-early-traffic-confirmation-attack/) です。2014 年 1 月 30 日に約 115 台のリレーが加わり、Guard になれるリレー全体の通信容量の約 6.4% を占めました。
+
+これらは Guard に加えて、Onion Service の descriptor を預かる役にも就いています。Exit Relay を運用した形跡はなく、接続先に近い端に立ったのは descriptor を預かる役でした。
 
 descriptor を預かる役は、descriptor を載せに来た経路と取りに来た経路に、relay と relay early という 2 種類の cell の並びで Onion Service の名前を書き込みました。relay early の cell は通常クライアントの方向には流れないので、同じ攻撃者の Guard Relay はこの印を見付けられます。その結果、接続元の IP アドレスと、その人が載せた、または探した Onion Service が結び付きました。
 
-表の Traffic correlation が両端の時刻と通信量を見比べるのに対し、この攻撃は片方の端で印を付け、もう片方の端で読む能動的な形でした。Tor Project は 7 月 4 日にこれらのリレーを外し、relay early の cell を印に使えなくするバージョン（0.2.4.23 など）を出しました。さらに、十分なクライアントが更新した後に、使う Guard を 3 台から 1 台に減らす計画も示しています。1 人のクライアントが接するリレーを減らし、攻撃者のリレーに当たる機会を時間をかけて減らすためです。
+表の Traffic correlation が両端の時刻と通信量を見比べるのに対し、この攻撃は片方の端で印を付け、もう片方の端で読む能動的な形でした。Tor Project は 7 月 4 日にこれらのリレーを外し、relay early の cell を印に使えなくするバージョン（0.2.4.23 など）を出しました。
+
+さらに、十分なクライアントが更新した後に、使う Guard を 3 台から 1 台に減らす計画も示しています。1 人のクライアントが接するリレーを減らし、攻撃者のリレーに当たる機会を時間をかけて減らすためです。
 
 <br>
 
@@ -265,9 +275,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago は、これらのインターフェースを使って構築済みの経路を利用します。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、その 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。
+上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago は、これらのインターフェースを使って構築済みの経路を利用します。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、例えばその 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。
 
-ControlPort は tor デーモンを操作する管理用のインターフェースです。Onion Service の作成や経路の制御まで行えるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
+ControlPort からは Onion Service の作成や経路の制御まで行えるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
 
 [Tor の control 仕様](https://spec.torproject.org/control-spec/implementation-notes.html)も、ControlPort が開いていて認証が無効な場合は、接続してきたローカルの利用者を誰でも信頼すると書き、この状態を勧めていません。
 
@@ -278,7 +288,7 @@ ControlPort は tor デーモンを操作する管理用のインターフェー
 ### 利点
 
 - 経路上の 1 台からは、接続元と接続先の両方を観測できない
-- 入口に使う候補を少数に絞るので、経路を作り直すたびに攻撃者のリレーに当たる機会が増えていくことを避けられる
+- 入口の候補を少数に絞るので、経路を作り直すたびに攻撃者のリレーを引く機会が増えることを避けられる
 - Onion Service では、双方が相手の IP アドレスを知らないまま通信できる
 - リレーの一覧が公開されており、単一の事業者を信頼する前提を置かずに済む
 - TCP の通信を SOCKS5 プロキシに向け、名前解決も Tor 側に委ねれば、既存のアプリケーションを通せる
@@ -287,7 +297,7 @@ ControlPort は tor デーモンを操作する管理用のインターフェー
 
 ### 欠点
 
-Tor を利用する場合は、通信の遅延や経路の外に出る情報など、次の制約があります。
+Tor を使う場合の制約は次の通りです。
 
 - 複数のリレーを経由し、経路が地理的に遠回りになることもあるため、直接つなぐ場合より遅延が大きい
 - リレーの一覧に署名するディレクトリ権威への信頼は残る

@@ -8,7 +8,9 @@ weight: 20
 wrapTables: true
 ---
 
-ブロックチェーンの[オラクル（oracle）](https://ethereum.org/en/developers/docs/oracles/)は、外部の情報を取得し、スマートコントラクトが使える形でチェーンに渡す仕組みです。例えば、暗号資産を預けて別の資産を借りるアプリでは、預けた暗号資産が担保になります。10 ETH を預けた、という「担保の枚数」だけでは、その担保が何ドル分の価値を持つのかは分かりません。1 ETH が市場で 2,000 ドルなら 10 ETH は 20,000 ドル、1,500 ドルなら 15,000 ドルです。借りられる上限や清算の判定には、この「1 枚あたりの市場価格」が必要になります。
+ブロックチェーンの[オラクル（oracle）](https://ethereum.org/en/developers/docs/oracles/)は、外部の情報を取得し、スマートコントラクトが使える形でチェーンに渡す仕組みです。例えば、暗号資産を預けて別の資産を借りるアプリでは、預けた暗号資産が担保になります。
+
+10 ETH（[Ethereum](https://ethereum.org/en/developers/docs/intro-to-ethereum/) の暗号資産）を預けた、という「担保の枚数」だけでは、その担保が何ドル分の価値を持つのかは分かりません。1 ETH が市場で 2,000 ドルなら 10 ETH は 20,000 ドル、1,500 ドルなら 15,000 ドルです。借りられる上限や清算の判定には、この「1 枚あたりの市場価格」が必要になります。
 
 ```mermaid
 %%{init: {"theme":"base","flowchart":{"nodeSpacing":12,"rankSpacing":20,"padding":10,"diagramPadding":4},"themeVariables":{"fontSize":"14px","primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
@@ -19,7 +21,7 @@ flowchart LR
 
 <br>
 
-本記事では、[Smart Contract](../smart-contract/) で触れた外部情報の取り込みを、価格データの例で説明します。
+本記事では、[Smart Contract](../smart-contract/) で触れた外部情報の取り込みについて、価格データを例に説明します。
 
 - なぜコントラクトから直接 Web API を呼ばないのか。
 - 価格を集める側と、チェーン上で利用する側は何をするのか。
@@ -32,11 +34,11 @@ flowchart LR
 
 ### 外部情報が必要な理由
 
-トークンの残高や送金履歴は、チェーン上の状態から取得できます。しかし、トークン 1 枚が市場で何ドルで売買されているかは、残高だけでは分かりません。例えば、10 枚の担保に対する借り入れ上限をドルで計算するには、「枚数」と「1 枚あたりの価格」を組み合わせる必要があります。残高の管理は [ERC-20](../erc-20/)、外部価格の提供はオラクルが担当します。
+ETH や [ERC-20](../erc-20/) トークンの残高、送金履歴は、チェーン上の状態から取得できます。一方で、冒頭の 1 ETH あたりの市場価格は、チェーンの外の取引所で決まる値です。チェーン上の状態だけでは分からないので、オラクルが外から届けます。
 
-通常のサーバーなら、計算する時に価格 API を呼べます。一方で、[Ethereum](https://ethereum.org/en/developers/docs/intro-to-ethereum/) では、ブロックを検証するノードが同じ取引を再実行します。ノード A が API から 2,000 ドルを取得し、その後に検証したノード B が 1,900 ドルを取得すると、同じ取引でも計算結果が変わってしまいます。過去のブロックを検証する時に、当時と同じ応答を得られる保証もありません。
+通常のサーバーなら、計算する時に価格 API を呼べます。一方で、Ethereum では、ブロックを検証するノードが同じ取引を再実行します。ノード A が API から 2,000 ドルを取得し、その後に検証したノード B が 1,900 ドルを取得すると、同じ取引でも計算結果が変わってしまいます。過去のブロックを検証する時に、当時と同じ応答を得られる保証もありません。
 
-そのため、[Ethereum Virtual Machine（EVM）](https://ethereum.org/en/developers/docs/evm/)という実行環境には、任意の Web API に接続する命令がありません。外部で取得した値を取引の入力や保存状態として渡し、ノードが共通の値から計算できるようにします。オラクルを使っても、各ノードが外部 API を個別に呼ぶわけではありません。
+そのため、[Ethereum Virtual Machine（EVM）](https://ethereum.org/en/developers/docs/evm/)という実行環境には、任意の Web API に接続する命令がありません。外部で取得した値を取引の入力や保存状態として渡し、ノードが共通の値から計算できるようにします。オラクルを使う場合も、外部 API を呼ぶのはオラクル側で、各ノードは取引に入った値を使います。
 
 この構成で揃えられるのは「どの値を入力にしたか」です。全ノードが 2,000 ドルを使って同じ計算結果を出しても、実際の市場価格が 2,000 ドルだったことまでは証明できません。
 
@@ -109,7 +111,7 @@ Chainlink の [Offchain Reporting（OCR）](https://docs.chain.link/architecture
 
 ### 価格と更新時刻の読み方
 
-Chainlink の EVM 向け価格フィードは、[`AggregatorV3Interface`](https://docs.chain.link/data-feeds/api-reference)を通して値を取得できます。`latestRoundData()` は最新の報告の価格や更新時刻を返し、`decimals()` は価格の小数桁数を返します。価格は小数点を含まない整数なので、次のように解釈します。
+Chainlink の EVM 向け価格フィードは、[`AggregatorV3Interface`](https://docs.chain.link/data-feeds/api-reference) を通して値を取得できます。`latestRoundData()` は最新の報告の価格や更新時刻を返し、`decimals()` は価格の小数桁数を返します。価格は小数点を含まない整数なので、次のように解釈します。
 
 | 項目 | 説明用の値 |
 | --- | --- |
@@ -133,11 +135,11 @@ Chainlink Data Feeds は、価格の変化が設定した閾値を超えた時�
 
 ### 模擬価格フィードの実験
 
-架空の資産 DEMO の USD 価格を、[Python](https://www.python.org/) の小さなデータ構造で表します。検証対象はフィードを使うアプリの判定処理です。Chainlink の集計や署名、EVM の実行は再現せず、外部サービスにも接続しません。
+[Python](https://www.python.org/) の小さなデータ構造で、架空の資産 DEMO の USD 価格を表します。検証対象はフィードを使うアプリの判定処理です。Chainlink の集計や署名、EVM の実行は再現せず、外部サービスにも接続しません。
 
 実験では、経過時間が 300 秒以内、価格が 1〜5,000 ドルの範囲なら受け入れます。この数値は挙動を比較するために置いた実験用の設定です。小数桁は 0〜18 に制限し、許容範囲内なら取得した桁数で換算します。`pair` は対象の組み合わせを表す実験用ラベルで、実際のフィード選択ではネットワークとコントラクトのアドレスも確認します。
 
-以下が実験コードの全体です。[price_feed.py](lab/price_feed.py) にも保存しています。時刻は固定し、価格の換算には組み込みの`float`の代わりに、10 進数を扱う標準ライブラリの[`Decimal`](https://docs.python.org/3/library/decimal.html)を使います。
+以下が実験コードの全体です。[price_feed.py](lab/price_feed.py) にも保存しています。時刻は固定し、価格の換算には組み込みの `float` の代わりに、10 進数を扱う標準ライブラリの [`Decimal`](https://docs.python.org/3/library/decimal.html) を使います。
 
 ```python
 """Run with Python 3.10+: python3 price_feed.py (no external dependencies)."""

@@ -81,11 +81,11 @@ sequenceDiagram
 
 <br>
 
-従来は、コードの有無を 2 種類の見分けの手掛かりにできました。公式ドキュメントにも、EOA について「[the codeHash field is the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（codeHash の項目は空文字列のハッシュになる）と書かれています。
+従来は、コードの有無で 2 種類を見分けられました。公式ドキュメントでも、EOA の codeHash は「[the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（空文字列のハッシュ）です。
 
-今の Ethereum では、コードが空なら EOA という判定は成り立ちません。2025 年に実施された Pectra というプロトコルの更新で [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA は指定したコントラクトのコードに自分の取引の実行を委ねられるようになりました。例えば、複数の操作を 1 件の取引にまとめたり、手数料を別のアカウントに払ってもらったりできます。EIP は Ethereum Improvement Proposal の略で、仕様変更の提案を指します。
+今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の Pectra というプロトコルの更新で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA のコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
 
-委任先を指す短いデータがコードの項目に書かれるので、EOA でもコードを持つことがあります。委任先のコードは EOA のアドレスで動くため、読み書きする記憶領域も EOA のものになります。概念上の違いは、EOA が秘密鍵による認証を起点に取引を送り出せるのに対し、コントラクトアカウントはコードの実行によって動く点にあります。
+この EOA を呼び出すと、委任先のコードが EOA のアドレスで動き、読み書きする記憶領域も EOA のものになります。例えば、複数の操作を 1 件の取引にまとめたり、手数料を別のアカウントに払ってもらったりできます。2 種類の違いはコードの有無ではなく、EOA が秘密鍵による認証を起点に取引を送り出せるのに対し、コントラクトアカウントはコードの実行によって動く点にあります。
 
 ---
 
@@ -95,7 +95,9 @@ sequenceDiagram
 
 [UTXO](../utxo/) では、データの構造そのものがこの再生を防ぎます。取引が消費する出力は outpoint で名指しされており、一度消費された出力は集合から消えるため、同じ取引は 2 度成立しません。アカウントモデルには消費される対象が無く、更新される残高があるだけです。
 
-アカウントモデルで再生を止める役割を担うのが [nonce](https://masteringethereum.xyz/chapter_6.html) です。以下では、通常の EOA が取引を送る場合を扱い、EIP-7702 の委任コードの実行で nonce が追加で変わる場合は除きます。取引には送り主の nonce を書く項目があり、その値は、送り主のアカウントが今持っている nonce と一致している必要があります。取り込まれると 1 増えるため、同じ取引をもう一度流しても古い番号として弾かれます。
+アカウントモデルで再生を止める役割を担うのが [nonce](https://masteringethereum.xyz/chapter_6.html) です。取引には送り主の nonce を書く項目があり、その値は、送り主のアカウントが今持っている nonce と一致している必要があります。取り込まれると 1 増えるため、同じ取引をもう一度流しても古い番号として弾かれます。
+
+nonce が 1 ずつ増えるのは、通常の EOA が取引を送る場合です。EIP-7702 の委任を設定する取引では、委任を許可した EOA の nonce も増えます。
 
 <br>
 
@@ -137,7 +139,9 @@ nonce が制約するのは、同じ送り主が出した取引どうしの前�
 
 番号が飛んだ取引も、欠けた番号が取り込まれるまでは有効になりません。
 
-送り主が通常の EOA の場合、多くのクライアント（ノードが動かす Ethereum の実装ソフトウェア）はこの取引を mempool に置いて待ちます。保持するかどうかはコンセンサス規則（全ノードが守り、破るとブロックが拒否される規則）ではなくクライアントの方針で決まり、件数や時間の上限を超えると捨てられます。未確認の取引の置き場の性質は、Bitcoin を例に [Mempool](../mempool/) で扱っています。
+送り主が通常の EOA の場合、多くのクライアント（ノードが動かす Ethereum の実装ソフトウェア）はこの取引を mempool に置いて待ちます。
+
+保持するかどうかはコンセンサス規則（全ノードが守り、破るとブロックが拒否される規則）ではなくクライアントの方針で決まり、件数や時間の上限を超えると捨てられます。未確認の取引の置き場の性質は、Bitcoin を例に [Mempool](../mempool/) で扱っています。
 
 以下は、届いた取引の nonce と、送り主のアカウントの nonce を比べた結果の行き先です。
 
@@ -151,7 +155,9 @@ flowchart TD
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の行き先は、外部と接続しないローカルのチェーン（geth 1.17.10 の開発用モード）で確かめられます。開発用モードは取引が届くとすぐブロックを作ります。geth は、mempool を txpool と呼び、すぐ実行できる取引を pending、番号の欠けで待つ取引を queued と数えます。nonce 0 のアカウントから nonce 2・0・1 の順に送り、最後に nonce 0 の取引を流し直した結果が以下です。
+上記の図の行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確かめられます。開発用モードは取引が届くとすぐブロックを作ります。
+
+geth は、mempool を txpool と呼び、すぐ実行できる取引を pending、番号の欠けで待つ取引を queued と数えます。nonce 0 のアカウントから nonce 2・0・1 の順に送り、最後に nonce 0 の取引を流し直した結果が以下です。
 
 ```text
 アカウントの nonce: 0
@@ -171,13 +177,19 @@ nonce 0 を再送: nonce too low: next nonce 3, tx nonce 0
 
 ### 世界状態と execution layer の `state_root`
 
-全アカウントの現在の状態をまとめたものを世界状態（world state）と呼びます。公式ドキュメントには「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書かれています。取引は、この状態を次の状態に移す入力です。そのため、同じ送金の取引でも、先に別の取引が残高を減らしていれば失敗します。
+全アカウントの現在の状態をまとめたものを世界状態（world state）と呼びます。公式ドキュメントには「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書かれています。
 
-世界状態は、アドレスを `keccak256` でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。現在の Ethereum の本番ネットワーク（Mainnet）では、modified Merkle Patricia Trie が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
+取引は、この状態を次の状態に移す入力です。そのため、同じ送金の取引でも、先に別の取引が残高を減らしていれば失敗します。
+
+世界状態は、アドレスを `keccak256` でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。
+
+現在の Ethereum の本番ネットワーク（Mainnet）では、[modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
 
 <br>
 
-現在の Ethereum のブロックは、取引を実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。取引の並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。consensus layer のブロックにある同名の `state_root` は、EVM の状態を指しません。
+現在の Ethereum のブロックは、取引を実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。取引の並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。
+
+consensus layer のブロックにある同名の `state_root` は、EVM ではなく consensus layer 自身の状態を指します。
 
 ブロックに入るのは状態そのものではありません。以下は、実行した後の状態と、そこから書かれる値の関係です。
 
@@ -193,7 +205,7 @@ flowchart LR
 
 上記の図の S' は各ノードが手元に保持します。
 
-[公式ドキュメント](https://ethereum.org/en/developers/docs/blocks/)には、全てのクライアントが execution payload の取引を実行し直し、得られた状態が `state_root` の示す状態と一致することを確かめると書かれています。一致しなければ、そのブロックは受け入れられません。
+全てのクライアントは execution payload の取引を実行し直し、得られた状態が `state_root` の示す状態と一致するかを[確かめます](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
 
 [Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入った取引の並びを代表する値を持っていました。Ethereum の execution layer では、取引の並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。
 

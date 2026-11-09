@@ -10,7 +10,7 @@ wrapTables: true
 
 `NULL` は、値が存在しないことや不明であることを表すために SQL が特別扱いする印です。数値の 0、真偽値の `false`、要素が 0 個の配列は、どれも通常の値なので `NULL` とは別に扱われます。
 
-`=` や `<>` で `NULL` と比べると、結果は TRUE でも FALSE でもない UNKNOWN になります。`WHERE` は条件が TRUE になったレコードだけを残すので、`column = NULL` と書いても 1 件も返りません。
+`=` や `<>` で `NULL` と比べると、結果は TRUE でも FALSE でもない UNKNOWN です。`WHERE` は条件が TRUE になったレコードだけを残すので、`column = NULL` と書いても 1 件も返りません。
 
 例えば、任意入力のカラムを持つ表では、検索結果から未入力のレコードが抜けることがあります。会員登録でメールアドレスを任意にすると、未入力の会員は `email` が `NULL` になります。「佐藤さん以外の会員」を出すつもりで `WHERE email <> 'sato@example.com'` と書くと、未入力の会員は結果に入りません。エラーにはならず、レコード数が少ないことも正常な結果と区別が付きません。
 
@@ -43,7 +43,7 @@ flowchart LR
 
 ### 前提
 
-例には次の表を使います。動かして確かめた結果は SQLite 3.50.6 のもので、並べ替えの例だけは PostgreSQL 17.10 でも動かしています。
+例には次の表を使います。動かして確かめた結果は SQLite 3.50.4 のもので、並べ替えの例だけは PostgreSQL 17.11 と MySQL 8.4.11 でも動かしています。
 
 ```sql
 CREATE TABLE users (
@@ -55,7 +55,15 @@ CREATE TABLE users (
 );
 ```
 
-ここでは主キーを「欠けない識別子」として使いたいため、`NOT NULL` を明示しています。SQLite の通常の rowid table では、`INTEGER PRIMARY KEY` 以外の `PRIMARY KEY` は歴史的な互換性のため `NULL` を許します。SQL 標準や他の DBMS と同じつもりで `BIGINT PRIMARY KEY` だけを書かず、移植する DDL では必要な制約を明記します。
+主キーには `NOT NULL` を明示しています。SQL 標準では `PRIMARY KEY` が `NOT NULL` を含みますが、SQLite は初期のバージョンの不具合を互換性のために残しています。`INTEGER PRIMARY KEY`・`WITHOUT ROWID` の表・`STRICT` の表・`NOT NULL` を宣言したカラムを除くと、`PRIMARY KEY` のカラムにも `NULL` が入ります（[SQLite の CREATE TABLE](https://www.sqlite.org/lang_createtable.html#the_primary_key)）。
+
+```sql
+CREATE TABLE legacy_key (id BIGINT PRIMARY KEY);
+INSERT INTO legacy_key VALUES (NULL), (NULL);   -- 2 件とも入る
+
+CREATE TABLE portable_key (id BIGINT PRIMARY KEY NOT NULL);
+INSERT INTO portable_key VALUES (NULL);         -- NOT NULL constraint failed
+```
 
 入っているデータは次の 4 件とします。
 
@@ -72,7 +80,7 @@ CREATE TABLE users (
 - title: age が NULL
   body: 年齢が不明です。
 - title: deleted_at が NULL
-  body: この教材では、まだ削除されていない状態です。
+  body: 本記事の例では、まだ削除されていない状態です。
 {{< /note-panels >}}
 
 ---
@@ -122,7 +130,7 @@ SELECT * FROM users WHERE email = NULL;    -- 0 行
 SELECT * FROM users WHERE email IS NULL;   -- id = 3, 4
 ```
 
-2 番目の「20 歳ではない会員」では、`age` が `NULL` の高橋さんが落ちます。`NULL <> 20` が FALSE ではなく UNKNOWN になり、`WHERE` の結果から外れるからです。3 番目が 0 件なのも同じ理由で、`email = NULL` は全てのレコードで UNKNOWN になります。
+2 番目の「20 歳ではない会員」では、`age` が `NULL` の高橋さんが落ちます。`NULL <> 20` が FALSE ではなく UNKNOWN になり、`WHERE` の結果から外れるからです。3 番目が 0 件なのも同じ理由で、`email = NULL` は全てのレコードで UNKNOWN です。
 
 `email` が `NULL` のレコードを探すなら、4 番目の `IS NULL` で書きます。未入力のレコードも含めて「20 歳ではない会員」を出したいなら、`WHERE age <> 20 OR age IS NULL` と書きます。
 
@@ -158,23 +166,13 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-分かれ目は 3 段目です。一致する値が 1 つも無くても、`FALSE OR UNKNOWN` は FALSE ではなく UNKNOWN になり、`NOT` を通しても UNKNOWN のまま残ります。id が 2 のレコードは `2 = 2` が TRUE なので、`NOT` を通した結果は FALSE になります。つまり、集合に `NULL` が 1 つでも入ると、`NOT IN` が TRUE を返すレコードは無くなります。
+分かれ目は 3 段目です。一致する値が 1 つも無くても、`FALSE OR UNKNOWN` は FALSE ではなく UNKNOWN になり、`NOT` を通しても UNKNOWN のまま残ります。id が 2 のレコードは `2 = 2` が TRUE なので、`NOT` を通した結果は FALSE です。つまり、集合に `NULL` が 1 つでも入ると、`NOT IN` が TRUE を返すレコードは無くなります。
 
 `NOT EXISTS` が 3 件を返すのは、判定の形が違うからです。`EXISTS` は、括弧の中に書いた副問い合わせ（別の `SELECT` を入れ子にしたもの）が 1 件以上返したかどうかだけを見て、TRUE か FALSE を返します。副問い合わせの中で `b.user_id = u.id` が UNKNOWN になったレコードは、その `WHERE` で落ちるだけで、外側には UNKNOWN として伝わりません。
 
-主な対策は、副問い合わせに `WHERE user_id IS NOT NULL` を加える、`user_id` を `NOT NULL` にする、`NOT EXISTS` で書く、の 3 つです。カラムが `NOT NULL` だと分かっている場合を除けば、`NOT EXISTS` の方が結果を読み違えにくいと考えられます。
+主な対策は、副問い合わせに `WHERE user_id IS NOT NULL` を加える、`user_id` を `NOT NULL` にする、`NOT EXISTS` で書く、の 3 つです。カラムが `NOT NULL` だと分かっている場合を除けば、`NOT EXISTS` の方が結果を読み違えにくくなります。
 
-ただし、外側のカラムが `NULL` のレコードでも、`NOT IN` と `NOT EXISTS` の結果は分かれます。例えば `WHERE email NOT IN (SELECT email FROM blocked_emails)` では、`email` が `NULL` の高橋さんと田中さんは、副問い合わせが 1 件以上返す限り落ちます。`NOT EXISTS` なら副問い合わせが 0 件を返すので、2 人は残ります。上記の例の `id` は、この教材では `NOT NULL` を明示した主キーなので、この差は出ません。
-
-SQLite 固有の違いは、最小の DDL でも確かめられます。`BIGINT PRIMARY KEY` を「NULL を拒否する制約」とは読めません。
-
-```sql
-CREATE TABLE sqlite_legacy_key (id BIGINT PRIMARY KEY);
-INSERT INTO sqlite_legacy_key VALUES (NULL), (NULL); -- SQLite の通常表では通る
-
-CREATE TABLE portable_key (id BIGINT PRIMARY KEY NOT NULL);
-INSERT INTO portable_key VALUES (NULL); -- NOT NULL constraint failed
-```
+ただし、外側のカラムが `NULL` のレコードでも、`NOT IN` と `NOT EXISTS` の結果は分かれます。例えば `WHERE email NOT IN (SELECT email FROM blocked_emails)` では、`email` が `NULL` の高橋さんと田中さんは、副問い合わせが 1 件以上返す限り落ちます。`NOT EXISTS` なら副問い合わせが 0 件を返すので、2 人は残ります。上記の例の `id` は `NOT NULL` を明示した主キーなので、この差は出ません。
 
 ---
 
@@ -240,7 +238,9 @@ PostgreSQL では、年齢が分からない高橋さんが最年長として返
 
 高橋さんの `email` は表に保存された `NULL` で、値が入力されていないことを表します。同じレコードの `o.id` と `o.amount` は結合が埋めた `NULL` で、注文が 1 件も無いことを表します。鈴木さんの `o.amount` は、注文はあるが金額が未入力の `NULL` です。
 
-生成された `NULL` は条件の書き方にも影響します。注文の無い会員を探すなら、結合を終えた結果に対して `WHERE o.id IS NULL` と書きます。この時に見るカラムには、`o.id` のような `NOT NULL` のカラムを選びます。`o.amount` で同じことをすると、鈴木さんのように注文はあるが金額が未入力のレコードまで混ざります。同じ条件を `ON o.user_id = u.id AND o.id IS NULL` のように `ON` 句に書くと、結合の相手を選ぶ段階で使われます。どの注文もこの条件に合わないので、4 人全員が注文のカラムを `NULL` で埋めた形で残り、絞り込みになりません。
+生成された `NULL` は条件の書き方にも影響します。注文の無い会員を探すなら、結合を終えた結果に対して `WHERE o.id IS NULL` と書きます。この時に見るカラムには、`o.id` のような `NOT NULL` のカラムを選びます。`o.amount` で同じことをすると、鈴木さんのように注文はあるが金額が未入力のレコードまで混ざります。
+
+同じ条件を `ON o.user_id = u.id AND o.id IS NULL` のように `ON` 句に書くと、結合の相手を選ぶ段階で使われます。どの注文もこの条件に合わないので、4 人全員が注文のカラムを `NULL` で埋めた形で残り、絞り込みになりません。
 
 ---
 
@@ -271,7 +271,7 @@ flowchart TB
 
 上記の図の「状態をカラムで持つ」では、`age` を `NULL` のまま残しつつ、なぜ `NULL` なのかを `age_status` で持ちます。集計から除く条件を状態ごとに変えられるので、「拒否した人を除いた平均」のような問い合わせが書けます。
 
-判断の基準は、その違いで処理が変わる場面があるかどうかです。変わらないなら、状態カラムは読む側の負担を増やすだけになります。
+判断の基準は、その違いで処理が変わる場面があるかどうかです。変わらないなら、状態カラムは読む側の負担を増やすだけです。
 
 値が必ず入るカラムには、`NOT NULL` を付けた方が良いです。格納値に `NULL` が無ければ、そのカラムを条件に使っても、カラム自身の `NULL` が原因で UNKNOWN になることはありません。読み出すコードからも `NULL` の分岐が減ります。
 
@@ -296,11 +296,13 @@ flowchart TB
 
 表の中で最も影響が大きいのは最終行です。例えば、年齢に 0 を入れる設計では、0 歳の会員が現れた時点で意味が衝突します。日付の `9999-12-31` も、期限の比較でそのまま最大値として扱われるので、「期限が最も遠い契約」を求めた結果に紛れ込みます。
 
-とはいえ、sentinel value が常に誤りというわけではありません。使ってよい条件は 2 つで、その値が本物の値として入り得ないことと、集約・並べ替え・範囲の比較に混ざっても意味が壊れないことです。`9999-12-31` は 1 つ目を満たしても、2 つ目で外れます。
+とはいえ、sentinel value が常に誤りというわけではありません。使って良い条件は 2 つで、その値が本物の値として入り得ないことと、集約・並べ替え・範囲の比較に混ざっても意味が壊れないことです。`9999-12-31` は 1 つ目を満たしても、2 つ目で外れます。
 
 ---
 
 ### NULL が自然に現れるケース
+
+ここまでを踏まえると、`NULL` を素直に使える代表例は次の通りです。
 
 - 後から埋まる値を持つカラム（退会日時、配送完了日時、承認日時）
 - 条件によっては永久に埋まらないカラム（解約理由、備考）

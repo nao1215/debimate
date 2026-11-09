@@ -28,13 +28,13 @@ sequenceDiagram
     Note over A,B: 互いの解放を待ち<br/>どちらも進まない
 ```
 
-上記の図の送金 A と送金 B は、互いに相手を待っています。誰が誰を待っているのかを辿ると出発点に戻るため、この関係を循環待ち（circular wait）と呼びます。2 本とは限りません。A が B を待ち、B が C を待ち、C が A を待つ形でも同じく循環します。
+上記の図の送金 A と送金 B は、互いに相手を待っています。誰が誰を待っているのかを辿ると出発点に戻るため、この関係を循環待ち（circular wait）と呼びます。A が B、B が C、C が A を待つ 3 本の形でも同じく循環します。
 
 <br>
 
 本記事では、PostgreSQL の挙動を基本に、デッドロックの終わり方と防ぎ方を説明します。挙動が違う箇所では MySQL と Oracle Database の例も示します。検出の仕組みから再試行まで、次の疑問に答えます。
 
-- DBMS は、デッドロックをどう見付けて終わらせるのか。
+- DBMS は、デッドロックをどう見つけて終わらせるのか。
 - ロックの取得順序を揃えるには、何が必要なのか。
 - 同じ 1 件を同じ順序で触る 2 本が、なぜデッドロックするのか。
 - 中止されたトランザクションは、どう再試行すれば良いのか。
@@ -45,9 +45,9 @@ sequenceDiagram
 
 ### DBMS によるデッドロックの検出と中止
 
-循環待ちができても、結果が壊れるわけではありません。多くの DBMS はこの循環を検出し、関わっているどれかを巻き戻します。
+循環待ちができると、多くの DBMS はこの循環を検出し、関わっているどれかを巻き戻します。
 
-どれが巻き戻されるかは、アプリケーションからは選べず、PostgreSQL でも予測して当てにできるものではありません。
+どれを巻き戻すかは、アプリケーションからは選べません。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-DEADLOCKS)も、どのトランザクションが中止されるかは予測しにくく、当てにしてはいけないとしています。
 
 以下は、待ちが起きてから処置に至るまでの流れです。
 
@@ -64,7 +64,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の検査は、待つたびに走るわけではありません。PostgreSQL で検査の契機になるのは、待ち時間が `deadlock_timeout` を超えた時です。検査のコストが高いため、[一定時間待ってから調べる設計](https://www.postgresql.org/docs/current/runtime-config-locks.html)で、既定は 1 秒です。
+PostgreSQL が上記の図の検査を始めるのは、待つたびではなく、待ち時間が `deadlock_timeout` を超えた時です。検査のコストが高いため、[一定時間待ってから調べる設計](https://www.postgresql.org/docs/current/runtime-config-locks.html)で、既定は 1 秒です。
 
 `deadlock_timeout` は検査を始めるまでの時間で、待ちを打ち切る時間ではありません。循環していない待ちは検出の対象外で、別の打ち切り設定が無ければ待ち続けます。[PostgreSQL](https://www.postgresql.org/docs/current/runtime-config-client.html) の `lock_timeout` は既定が 0 で、この打ち切りは無効です。
 
@@ -74,7 +74,9 @@ flowchart LR
 
 デッドロックで中止される範囲は、PostgreSQL と MySQL の [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-deadlocks.html)（MySQL のストレージエンジン）ではトランザクション全体、Oracle Database ではデッドロックに関わった 1 文だけです。[Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html) で解放されるのはその文に伴うロックの一部で、それ以前の文で取得したロックや変更はトランザクションの中に残ります。
 
-デッドロックの検出と、ロック待ちのタイムアウトは別の仕組みです。InnoDB は検出を設定で止めることもでき、止めた場合はロック待ちのタイムアウトで待機を中止します。[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
+デッドロックの検出と、ロック待ちのタイムアウトは別の仕組みです。InnoDB は `innodb_deadlock_detect` で検出を止めることもでき、止めた場合はロック待ちのタイムアウトで待機を中止します。
+
+[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
 
 {{< note-panels caption="同じエラー処理でも、どの文まで巻き戻るかを区別します。" >}}
 - title: PostgreSQL / InnoDB のデッドロック検出
@@ -89,9 +91,9 @@ flowchart LR
   - 待っていた文：巻き戻す
 {{< /note-panels >}}
 
-上記の図の下側の Oracle Database では、通知を受けたトランザクションを通常は明示的に巻き戻し、待ってから巻き戻された文だけを再試行することもできます。
+上記の図の下側の Oracle Database は、文を巻き戻したトランザクションにエラーを返します。ドキュメントによれば、そのトランザクションは通常、明示的に巻き戻します。トランザクションを続けたまま、少し待ってから巻き戻された文だけを再試行することもできます。
 
-アプリケーション側では、デッドロックのエラーを受けたトランザクションを明示的に巻き戻しておけば、DBMS ごとに巻き戻す範囲が違っても影響を受けません。
+アプリケーション側では、デッドロックのエラーを受けたトランザクションを明示的に巻き戻すと、どの DBMS でも同じ状態から再試行できます。
 
 ---
 
@@ -118,7 +120,7 @@ sequenceDiagram
 
 レコードへのロックには種類があります。[PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html) の行レベルロックは、`FOR KEY SHARE`、`FOR SHARE`、`FOR NO KEY UPDATE`、`FOR UPDATE` の 4 つのモードを持ちます。同じレコードに複数のトランザクションが同時にロックを持てるかどうかは、モードの組み合わせで決まります。共存できる組み合わせがある一方、`FOR UPDATE` は他の行レベルロックと競合します。
 
-もう 1 つの条件は、トランザクションの中で 1 つのオブジェクトに最初に取るロックが、そのオブジェクトに必要になる最も制限の強いモードであることです。
+PostgreSQL のドキュメントは、取得順序の統一に加えて、トランザクションの中で 1 つのオブジェクトに最初に取るロックが、そのオブジェクトに必要になる最も制限の強いモードであることも求めています。
 
 以下は、`FOR SHARE` のような競合しにくいモードで同じレコードを押さえた 2 本が、更新のために両方とも `FOR UPDATE` に上げようとする場合です。
 
@@ -146,7 +148,7 @@ type accountUpdate struct {
 }
 
 // applyUpdates は、口座 ID の昇順で残高を更新する。
-// accounts の対象行について、どの呼び出しも同じ順序でロックを取る。
+// accounts の対象レコードについて、どの呼び出しも同じ順序でロックを取る。
 func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) error {
 	sorted := slices.Clone(updates)
 	slices.SortFunc(sorted, func(a, b accountUpdate) int {
@@ -178,11 +180,9 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 }
 ```
 
-更新したレコードが 1 件でない場合にエラーを返しているのは、口座が見付からない更新を黙って飛ばすと、片側だけ適用された送金が確定するからです。この関数は 1 回の試行しか行いません。デッドロックで中止された時は、呼び出し側が関数ごと実行し直します。
+更新したレコードが 1 件でない場合にエラーを返しているのは、口座が見つからない更新を黙って飛ばすと、片側だけ適用された送金が確定するからです。途中の `UPDATE` で失敗すると `defer` の `tx.Rollback()` が走り、それまでの更新も残りません。この関数は 1 回しか試行せず、デッドロックで中止された時は呼び出し側が関数ごと実行し直します。
 
-途中の `UPDATE` で失敗した場合は `defer` に置いた `tx.Rollback()` が走り、それまでに適用した更新も残りません。
-
-並べ替えのキーが主キーである必要はありません。条件は、全ての対象に対して決定的な順序を作れること、その順序に使う値がロック取得中に変わらないこと、全ての経路が同じ規則で並べることです。同順位があり得るキーを使うなら、`priority ASC, id ASC` のように、主キーのような一意な値を最後の比較キーに加えます。
+並べ替えのキーは主キー以外でも構いません。条件は、全ての対象に対して決定的な順序を作れること、その順序に使う値がロック取得中に変わらないこと、全ての経路が同じ規則で並べることです。同順位があり得るキーを使うなら、`priority ASC, id ASC` のように、主キーのような一意な値を最後の比較キーに加えます。
 
 ---
 
@@ -195,9 +195,11 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 - 競合するロックを取り始める前に、対象と取得順序を決められる
 - 同じロック対象を共有する全ての経路が、同じ規則を守っている
 
-3 つ目は、競合するロックを取り始める前に順序が定まっていれば足り、トランザクションを始める前に対象が分かっている必要はありません。`WHERE status = 'pending'` のように 1 文で複数のレコードを更新する形が難しいのは、どの順序で対象レコードに到達するかが、DBMS の選ぶ実行の手順（実行計画。索引を使うか表を順に読むかなど）で変わるからです。`SELECT ... ORDER BY id FOR UPDATE` で対象と順序を確定してから更新するか、決められない処理と割り切って再試行に任せます。
+3 つ目は、競合するロックを取り始める前に順序が定まっていれば足り、トランザクションの開始時点で対象が分かっていなくても構いません。
 
-抜けやすいのは 4 つ目です。1 箇所でも別の順序でロックを取る経路が残っていると、その経路と他の経路の間で循環待ちができます。同じ表の中だけの話ではありません。`accounts` から `transfers` の順で触る経路と、`transfers` から `accounts` の順で触る経路があれば、それだけで循環します。バッチ処理や管理画面のように、通常の経路と別に書かれたコードが該当します。
+`WHERE status = 'pending'` のように 1 文で複数のレコードを更新する形が難しいのは、どの順序で対象レコードに到達するかが、DBMS の選ぶ実行の手順（実行計画。索引を使うかテーブルを先頭から読むかなど）で変わるからです。`SELECT ... ORDER BY id FOR UPDATE` で対象と順序を確定してから更新するか、決められない処理と割り切って再試行に任せます。
+
+抜けやすいのは 4 つ目です。1 箇所でも別の順序でロックを取る経路が残っていると、その経路と他の経路の間で循環待ちができます。テーブルをまたいでも同じです。`accounts` から `transfers` の順で触る経路と、`transfers` から `accounts` の順で触る経路があれば、それだけで循環します。バッチ処理や管理画面のように、通常の経路と別に書かれたコードが該当します。
 
 ---
 
@@ -224,9 +226,29 @@ flowchart LR
 
 上記の図の下側は、書いた SQL の並べ替えからは順序を制御しにくい部分です。外部キーの検査は、子側の `INSERT` と `UPDATE` に加えて、親側の `DELETE` と親キーの `UPDATE` でも走ります。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-locks-set.html)によれば、制約の検査が必要な操作は、検査のために見たレコードに共有のレコードロック（読み取りどうしは共存し、更新とは競合するレコードのロック）を設定します。
 
-親を消す経路と子を挿入する経路は、SQL の上では別の表を触っています。しかし [Foreign Key](../foreign-key/) を張っていると、ロックの上では同じレコードで交わるので、順序を決める時に見落としやすくなります。
+親を消す経路と子を挿入する経路は、SQL の上では別のテーブルを触っています。しかし [Foreign Key](../foreign-key/) を張っていると、ロックの上では同じレコードで交わるので、順序を決める時に見落としやすくなります。
 
-同じ処理どうしでも交わります。PostgreSQL 17.10 で、口座 `accounts` を参照する外部キーを持つ `transfers` に 1 件を挿入し、その 1 秒後に口座 1 を `SELECT ... FOR UPDATE` で押さえる処理を 2 本用意し、0.5 秒ずらして走らせました。2 本のロックが重なるのは口座 1 のレコードだけで、順序も同じです。
+同じ処理どうしでも交わります。PostgreSQL 17.11 で、口座 `accounts` を参照する外部キーを持つ `transfers` に 1 件を挿入し、その 1 秒後に口座 1 を `SELECT ... FOR UPDATE` で押さえるトランザクションを 2 本、`psql` から 0.5 秒ずらして走らせました。2 本のロックが重なるのは口座 1 のレコードだけで、順序も同じです。
+
+```sql
+-- 準備
+CREATE TABLE accounts (id int PRIMARY KEY, balance int NOT NULL);
+CREATE TABLE transfers (
+  id serial PRIMARY KEY,
+  account_id int NOT NULL REFERENCES accounts(id),
+  amount int NOT NULL
+);
+INSERT INTO accounts VALUES (1, 10000), (2, 10000);
+
+-- 2 本とも同じ内容
+BEGIN;
+INSERT INTO transfers (account_id, amount) VALUES (1, 100);
+SELECT pg_sleep(1);
+SELECT balance FROM accounts WHERE id = 1 FOR UPDATE;
+COMMIT;
+```
+
+結果は次の通りです（抜粋）。
 
 ```text
 -- 中止された側
@@ -239,9 +261,13 @@ CONTEXT:  while locking tuple (0,1) in relation "accounts"
    10000
 ```
 
-`INSERT` は外部キーの検査で、親である口座 1 のレコードに `FOR KEY SHARE` を取ります。2 本がこのロックを共有したまま `FOR UPDATE` に上げようとしたので、前に見た引き上げの図と同じ循環になりました。`FOR UPDATE` を書いていても、その前の `INSERT` が先に弱いモードを取っています。口座を `FOR UPDATE` で押さえてから `INSERT` する順にするか、通常の `UPDATE` で口座を更新すると（取るモードが `FOR KEY SHARE` と競合しない `FOR NO KEY UPDATE` になる）、デッドロックは起きませんでした。
+`INSERT` は外部キーの検査で、親である口座 1 のレコードに `FOR KEY SHARE` を取ります。2 本がこのロックを共有したまま `FOR UPDATE` に上げようとしたので、前に見た引き上げの図と同じ循環になりました。`FOR UPDATE` を書いていても、その前の `INSERT` が先に弱いモードを取っています。
 
-索引に並んだキーとキーの間（隙間）へのロックは MySQL の InnoDB の機構で、PostgreSQL には同じ仕組みがありません。隙間にもロックを掛けるのは、条件に合うレコードが後から挿入されるのを防ぐためです。InnoDB の既定である REPEATABLE READ では、索引を走査する `UPDATE` や `SELECT ... FOR UPDATE` に、索引レコードとその手前の隙間をまとめた [next-key lock](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html) が使われます。以下は、その範囲です。キーの値は説明用です。
+口座を `FOR UPDATE` で押さえてから `INSERT` する順にするか、通常の `UPDATE` で口座を更新すると（取るモードが `FOR KEY SHARE` と競合しない `FOR NO KEY UPDATE` になる）、デッドロックは起きませんでした。
+
+索引に並んだキーとキーの間（隙間）へのロックは MySQL の InnoDB の機構で、PostgreSQL には同じ仕組みがありません。隙間にもロックを掛けるのは、条件に合うレコードが後から挿入されるのを防ぐためです。
+
+InnoDB の既定の分離レベルである REPEATABLE READ では、索引を走査する `UPDATE` や `SELECT ... FOR UPDATE` に、索引レコードとその手前の隙間をまとめた [next-key lock](https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html) が使われます。以下は、その範囲です。キーの値は説明用です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -263,13 +289,15 @@ flowchart LR
 
 ### 再試行まで含めた設計
 
-順序をどれだけ揃えても、中止されたトランザクションを再試行する処理は省けません。再試行を組む時に決めることは 3 つあります。
+順序をどれだけ揃えても、中止されたトランザクションを再試行する処理は必要です。再試行を組む時に決めることは 3 つあります。
 
 - 再試行して良い中止かどうかの判別
 - 再試行する単位
 - 上限の回数と、試行の間隔
 
-判別には、DBMS が返すエラーの識別子を使います。やり直すと通ることがあるのは、デッドロックによる中止と直列化の失敗（SERIALIZABLE などの分離レベルで、同時に走った結果を順に並べ直せないと DBMS が判断した中止）です。PostgreSQL は SQLSTATE の `40P01` をデッドロックに、`40001` を直列化の失敗に割り当てています。MySQL はサーバーのエラー番号 `1213` をデッドロックに割り当てており、その SQLSTATE は `40001` です。SQLSTATE だけで横断的に判定すると、2 つの DBMS で別の事象が同じ値に見えます。
+判別には、DBMS が返すエラーの識別子を使います。やり直すと通ることがあるのは、デッドロックによる中止と直列化の失敗（SERIALIZABLE などの分離レベルで、同時に走った結果を順に並べ直せないと DBMS が判断した中止）です。
+
+PostgreSQL は SQLSTATE の `40P01` をデッドロックに、`40001` を直列化の失敗に割り当てています。MySQL はサーバーのエラー番号 `1213` をデッドロックに割り当てており、その SQLSTATE は `40001` です。SQLSTATE だけで横断的に判定すると、2 つの DBMS で別の事象が同じ値に見えます。
 
 文法の誤りや、入力値に原因がある `NOT NULL` 違反・`CHECK` 違反のような失敗は、同じ入力をそのまま再試行しても解消しません。中止の理由を見ずに一律で再試行すると、こうした失敗を上限まで繰り返します。
 
@@ -280,7 +308,7 @@ flowchart LR
 sequenceDiagram
     participant C as 呼び出し側
     participant F as applyUpdates
-    participant D as DB
+    participant D as PostgreSQL
     C->>F: 1 回目
     F->>D: トランザクション
     D-->>F: 40P01 で中止
@@ -290,7 +318,7 @@ sequenceDiagram
     F->>D: 新しいトランザクションを<br/>先頭から
 ```
 
-上記の図の 2 回目は先頭からやり直すので、1 回目に読んだ値も読み直します。待ち時間にずれを入れるのは、高負荷の時ほど多くの処理が同時に失敗しやすく、全てが同じ長さだけ待つと揃って再試行して、また同じロック競合を起こすからです。上限まで試して成功しなかった処理は、業務としての失敗として扱い、利用者にエラーを返すか、後で処理するためのキューに移します。
+上記の図の 2 回目は先頭からやり直すので、1 回目に読んだ値も読み直します。待ち時間にずれを入れるのは、高負荷の時ほど多くの処理が同時に失敗しやすく、全てが同じ長さだけ待つと揃って再試行して、また同じロック競合を起こすからです。上限まで試して成功しなかった処理は、業務としての失敗として扱い、ユーザーにエラーを返すか、後で処理するためのキューに移します。
 
 対処ごとに効く範囲と残る問題を整理すると、以下の通りです。
 
@@ -301,4 +329,4 @@ sequenceDiagram
 | トランザクションを短くする | ロックを持つ時間と、競合が重なる確率 | 逆順で取得する経路が残っていれば、原因自体は消えない |
 | 再試行する | 中止された全てのデッドロック | 応答時間が伸びる。上限に達した時の扱いを決める |
 
-再試行はトランザクションを丸ごとやり直す処理なので、[Transaction Scope](../transaction-scope/) で扱った範囲の決め方がそのまま当てはまります。外部 API の呼び出しが範囲の中にあると、再試行のたびに要求が飛びます。範囲を DB の更新だけに絞っておけば、再試行の副作用は DB の中に閉じます。
+再試行はトランザクションを丸ごとやり直す処理なので、[Transaction Scope](../transaction-scope/) で扱った範囲の決め方がそのまま当てはまります。外部 API の呼び出しが範囲の中にあると、再試行のたびに要求が飛びます。範囲を DB（データベース）の更新だけに絞っておけば、再試行の副作用は DB の中に閉じます。

@@ -29,7 +29,7 @@ flowchart LR
 
 上記の図の DRBG が予測できる値を返すなら、その生成器に依存する用途は同時に影響を受けます。予測できないことを要求するのは、暗号鍵・challenge・署名の k・session ID です。IV と nonce に必要な性質は暗号方式によって違うので、後の節で扱います。ただし、用途ごとに別の生成器や独立した状態を持つ実装もあります。
 
-例えば [Passkey](../passkey/) の認証でサーバーが出す challenge を予測できると、将来使われる challenge への正規の応答を利用者の端末に先に作らせておく preplay が成り立ちます。秘密鍵を持たない攻撃者が署名を作れるようになる、という意味ではありません。
+例えば [Passkey](../passkey/) の認証でサーバーが出す challenge を予測できると、攻撃者は将来使われる challenge への正規の応答を利用者の端末に先に作らせておき、後でサーバーへ送れます。[WebAuthn の仕様](https://www.w3.org/TR/webauthn-3/#sctn-cryptographic-challenges)は、この種の replay attack を防ぐために、推測できないだけのエントロピーを challenge に求め、長さは 16 byte 以上を推奨しています。
 
 <br>
 
@@ -90,15 +90,15 @@ min-entropy は、最も出やすい値の確率を `p_max` とした時の `-lo
 
 <br>
 
-統計テストを通ることと予測できないことは別です。計算機が無かった時代には、乱数を印刷した数表が統計の標本抽出に使われていました。この数表に並ぶ値は、分布や離れた位置どうしの相関を見る Knuth 氏の統計テストを全て通ります。しかし、攻撃者も同じ数表を持っていると考えるべきです。出力を数個見れば数表のどこから読んでいるかが分かり、その先の値は数表から読み取れます（[RFC 4086](https://www.rfc-editor.org/rfc/rfc4086.txt) §6.1.3）。
+統計テストを通ることと予測できないことは別です。数学の公式集 CRC Standard Mathematical Tables には、乱数を印刷した表が載っています。この表に並ぶ値は、分布や離れた位置どうしの相関を見る Knuth 氏の統計テストを全て通ります。しかし、攻撃者も同じ表を持っていると考えるべきです。出力を数個見れば表のどこから読んでいるかが分かり、その先の値は表から読み取れます（[RFC 4086](https://www.rfc-editor.org/rfc/rfc4086.txt) §6.1.3）。
 
 ---
 
-### エントロピー源と DRBG の分担
+### entropy source と DRBG の分担
 
 NIST の文書では、90A が DRBG mechanism、90B が entropy source を定め、両者を組み合わせた RBG（random bit generator）の構成は [SP 800-90C](https://csrc.nist.gov/pubs/sp/800/90/c/final) が定めています。
 
-[NIST SP 800-90B](https://csrc.nist.gov/pubs/sp/800/90/b/final) §2.2 が定めるエントロピー源（entropy source）は、3 つの部品でできています。予測できない bit を集める noise source、偏りを減らす決定的な関数の conditioning component（省略可）、壊れていないかを検査する health test です。
+[NIST SP 800-90B](https://csrc.nist.gov/pubs/sp/800/90/b/final) §2.2 が定める entropy source は、3 つの部品でできています。予測できない bit を集める noise source、偏りを減らす決定的な関数の conditioning component（省略可）、壊れていないかを検査する health test です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -120,11 +120,13 @@ flowchart LR
 
 noise source は、entropy source と乱数生成器全体にとっての root of security（安全性の根）です。ここが予測できる出力しか作らない場合、後ろのどの部品もその不足を補えないので、この生成器を使うアプリケーションの安全性は担保できません（[NIST SP 800-90B](https://csrc.nist.gov/pubs/sp/800/90/b/final) §2.2.1）。
 
-出力の予測できなさは seed のエントロピーを超えません。90A は、seed に入れるエントロピーが、名乗る security strength（想定する攻撃者の計算量の上限。128 bit なら 2^128 回）以上であることを求めています。DRBG は、ハッシュ関数やブロック暗号といった暗号学的プリミティブを使い、出力から内部状態を効率よく復元できないように構成されます（[NIST SP 800-90A Rev. 1](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)）。ハッシュ関数を使う構成は、出力から入力を復元する計算が困難であることを利用します（[Hash Function](../../blockchain-systems/hash-function/)）。
+出力の予測できなさは seed のエントロピーを超えません。90A は、seed に入れるエントロピーが、名乗る security strength（破るのに必要な計算量を bit で表した値。128 bit なら約 2^128 回の演算）以上であることを求めています。
+
+DRBG は、ハッシュ関数やブロック暗号といった暗号学的プリミティブを使い、出力から内部状態を効率よく復元できないように構成されます（[NIST SP 800-90A Rev. 1](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final)）。ハッシュ関数を使う構成は、出力から入力を復元する計算が困難であることを利用します（[Hash Function](../../blockchain-systems/hash-function/)）。
 
 <br>
 
-backtracking resistance は、ある時点より後で内部状態を知った攻撃者が、それより前の出力と本物の乱数列を並べても、どちらがどちらか判定できない性質です。prediction resistance は、それより後の出力について同じことが言える性質です。内部状態が漏れた後は、reseed によってこの性質を回復します。
+backtracking resistance は、ある時点より後で内部状態を知った攻撃者が、それより前の出力と本物の乱数列を並べても、どちらがどちらか判定できない性質です。prediction resistance は、それより後の出力について同じことが言える性質です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -141,7 +143,7 @@ sequenceDiagram
     Note over D,A: reseed 後の出力は<br/>新しいエントロピーに依存
 ```
 
-90A の DRBG 機構は、いずれもこの性質を持つように設計されています。prediction resistance の方は、要求のたびに新しいエントロピーで reseed して初めて得られる性質で、reseed しない限り、攻撃者は漏れた内部状態から先の出力を計算できます。
+90A の DRBG 機構は、いずれも backtracking resistance を持つように設計されています。prediction resistance の方は、要求のたびに新しいエントロピーで reseed して初めて得られる性質で、reseed しない限り、攻撃者は漏れた内部状態から先の出力を計算できます。
 
 どちらも、実装が名乗る security strength に見合う計算量を攻撃者が実行できない、という仮定の下の話です（[NIST SP 800-90A Rev. 1](https://csrc.nist.gov/pubs/sp/800/90/a/r1/final) §8.8）。
 
@@ -151,7 +153,9 @@ sequenceDiagram
 
 実際の OS がこの構成をそのまま採用しているとは限りません。以降は Linux と Go を例に取ります。noise source を自分で集めるアプリケーションはほとんどありません。カーネルが割り込みなどから bit を集めてプールに入れ、その出力を配っているからです。Linux の入口は 2 つあります。
 
-`getrandom(2)` はカーネルの乱数生成器（urandom source）から読んだ値でバッファを埋めるシステムコールで、乱数生成器の seed としても暗号の用途としても使えます。要求どおりの長さが埋まる保証があるのは、プールが初期化済みで、かつ 256 byte 以下を読む場合だけです。それより大きい要求は途中で返ることがあるので、戻り値を確かめて残りを読みます。`/dev/urandom` は同じ source から読み出せるデバイスファイルです。違いは、プールが初期化されるまでの振る舞いに出ます。
+[`getrandom(2)`](https://man7.org/linux/man-pages/man2/getrandom.2.html) はカーネルの乱数生成器（urandom source）から読んだ値でバッファを埋めるシステムコールで、乱数生成器の seed としても暗号の用途としても使えます。要求どおりの長さが埋まる保証があるのは、プールが初期化済みで、かつ 256 byte 以下を読む場合だけです。それより大きい要求は途中で返ることがあるので、戻り値を確かめて残りを読みます。
+
+`/dev/urandom` は同じ source から読み出せるデバイスファイルです。違いは、プールが初期化されるまでの振る舞いに出ます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -168,13 +172,13 @@ stateDiagram-v2
 
 初期化前の `/dev/urandom` はエントロピーの低い値を返す場合があり、`getrandom()` は `GRND_NONBLOCK` 無しならそこで block します。初期化後は、どちらを読んでも同じ質の値が得られます（[random(7)](https://man7.org/linux/man-pages/man7/random.7.html)）。ここで質と呼んでいるのは、min-entropy が用途に対して十分かどうかです。
 
-起動直後には、プールの初期化に使える材料が集まりきっていない時間帯があります。組み込み機器や、起動直後に鍵を作る仮想マシンは、この時間帯に鍵を作ることがあります。
+組み込み機器や、起動直後に鍵を作る仮想マシンは、プールの初期化に使える材料が集まりきる前に鍵を作ることがあります。
 
 <br>
 
 初期化前のプールから作られた鍵は、実際に出回っていました。2012 年に TLS と SSH の公開鍵をインターネット全体から集めた [Mining Your Ps and Qs](https://factorable.net/) の調査では、TLS のホストの 0.50% が RSA の公開鍵に含まれる素数を別の機器と共有していて、公開鍵だけから秘密鍵を計算できました。SSH のホストの 1.03% では、署名ごとの k が別の署名と重なり、署名方式の DSA の秘密鍵を求められました。
 
-弱い鍵を持つホストのほとんどは、キーボードなどの入力装置を持たないことが多いネットワーク機器などの組み込み機器でした。調査チームが計測した Linux の起動では、`/dev/urandom` にエントロピーが混ざり始めるのは起動から 66 秒後で、OpenSSH はそれより前に seed を読んでいました。初期化前でも値を返す `/dev/urandom` の振る舞いが、そのまま鍵の弱さになりました。
+弱い鍵を持つホストのほとんどは、キーボードなどの入力装置を持たないことが多いネットワーク機器などの組み込み機器でした。調査チームが計測した Ubuntu Server 10.04 の起動では、`/dev/urandom` にエントロピーが混ざり始めるのは起動から 66 秒後で、OpenSSH はそれより前に seed を読んでいました。初期化前でも値を返す `/dev/urandom` の振る舞いが、そのまま鍵の弱さになりました。
 
 起動時の不足を seed ファイルで補う OS にも、別の落とし穴があります。停止時にプールから作った値を seed ファイルに保存して次の起動で読んでも、同じディスクイメージから複製したホストは同じ seed ファイルから始まります。
 
@@ -193,12 +197,17 @@ sequenceDiagram
 
 複製先が同じ値を出さないように、初回起動で seed ファイルを新しい値で作り直す手当てが必要です。
 
-予測できる生成器と予測できない生成器の区別は、言語のライブラリにも出ます。Go の `math/rand` は、seed の与え方によらず出力を予測される場合があり、シミュレーション向けです（[math/rand](https://pkg.go.dev/math/rand)）。暗号の用途で呼ぶのは `crypto/rand` で、これは OS の乱数源を読む層です。Go 1.24 以降の `Read` はエラーを返さず、渡したスライスを最後まで埋めます（[crypto/rand](https://pkg.go.dev/crypto/rand)）。それより前のバージョンではエラーを返し得るので、戻り値を確かめます。
+予測できる生成器と予測できない生成器の区別は、言語のライブラリにも出ます。Go の `math/rand` は、seed の与え方によらず出力を予測される場合があり、シミュレーション向けです（[math/rand](https://pkg.go.dev/math/rand)）。暗号の用途で呼ぶのは `crypto/rand` で、これは OS の乱数源を読む層です。
+
+Go 1.24 以降の `Read` はエラーを返さず、渡したスライスを最後まで埋めます（[crypto/rand](https://pkg.go.dev/crypto/rand)）。それより前のバージョンではエラーを返し得るので、戻り値を確かめます。
 
 ```go
 package main
 
-import "crypto/rand"
+import (
+	"crypto/rand"
+	"fmt"
+)
 
 // newKey は 32 byte の鍵を作る。OS の乱数を読み、渡したスライスを最後まで埋める
 func newKey() []byte {
@@ -206,6 +215,16 @@ func newKey() []byte {
 	rand.Read(key)
 	return key
 }
+
+func main() {
+	fmt.Printf("%x\n", newKey())
+}
+```
+
+実行するたびに別の 32 byte が出ます。
+
+```text
+448fc21fc9c83d968c1b0607fdff05054c1882e77fa6e297b044ef0ff613c7e3
 ```
 
 ---
@@ -214,24 +233,43 @@ func newKey() []byte {
 
 生成器が返すのは bit 列で、必要なのはある範囲の整数です。1 byte を読んで 200 通りへ落とすために剰余を取ると、値ごとの出現回数が揃いません。
 
-![横軸が剰余で得た 1 から 200 の値、縦軸が元の byte の個数の棒グラフ。1 から 56 は 2 個の byte から作られ、57 から 200 は 1 個からしか作られない](images/random_number_modulo_bias.svg)
+![横軸が剰余で得た 0 から 199 の値、縦軸が元の byte の個数の棒グラフ。0 から 55 は 2 個の byte から作られ、56 から 199 は 1 個からしか作られない](images/random_number_modulo_bias.svg)
 
-1 から 56 の値は 2 倍出やすく、この偏りは modulo bias と呼ばれます。具体的には、最頻値の確率が 2/256 なので min-entropy は 7 bit になり、一様に選べた場合の 7.64 bit を下回ります。
+0 から 55 の値は 2 倍出やすく、この偏りは modulo bias と呼ばれます。具体的には、最頻値の確率が 2/256 なので min-entropy は 7 bit になり、一様に選べた場合の 7.64 bit を下回ります。
 
-偏りを消すのは、範囲に収まらない値を捨てて引き直す rejection sampling です。0 から 255 のうち 200 以上の 56 個を捨てれば、残る 200 通りが同じ確率で出ます。Go の `crypto/rand` の `Int` がこの引き直しを行います。
+偏りを消すのは、範囲に収まらない値を捨てて引き直す rejection sampling です。0 から 255 のうち 200 以上の 56 個を捨てれば、残る 200 通りが同じ確率で出ます。Go の `crypto/rand` の `Int` がこの引き直しを行います。以下は、剰余と `Int` で 0 から 199 を 100 万回ずつ選び、0 と 100 が出た回数を比べるコードです。
 
 ```go
 package main
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 )
 
-// pick は 0 以上 200 未満の値を一様に選ぶ。範囲外の値は捨てて引き直される
-func pick() (*big.Int, error) {
-	return rand.Int(rand.Reader, big.NewInt(200))
+func main() {
+	const n = 1_000_000
+	var mod, rej [200]int
+	b := make([]byte, 1)
+	limit := big.NewInt(200)
+	for range n {
+		rand.Read(b)
+		mod[int(b[0])%200]++ // 剰余で 0 から 199 へ落とす
+
+		v, _ := rand.Int(rand.Reader, limit) // 200 以上は捨てて引き直す
+		rej[v.Int64()]++
+	}
+	fmt.Printf("剰余:     0 が %d 回、100 が %d 回\n", mod[0], mod[100])
+	fmt.Printf("引き直し: 0 が %d 回、100 が %d 回\n", rej[0], rej[100])
 }
+```
+
+回数は実行ごとに揺れますが、剰余では 0 が 100 のおよそ 2 倍出ます。期待値は、剰余が約 7813 回と約 3906 回、引き直しがどちらも 5000 回です。
+
+```text
+剰余:     0 が 7943 回、100 が 3895 回
+引き直し: 0 が 4920 回、100 が 4938 回
 ```
 
 偏りを残した実装が特に問題になるのは、署名方式で使う場合です。DSA と ECDSA（楕円曲線を使う DSA）は電子署名の方式で、この 2 つは署名ごとに k を選びます。k の選び方にわずかな偏りがあるだけで、それを署名方式への攻撃に使える場合があります（[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979.txt) §1）。
@@ -320,9 +358,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-統計テストが見ているのは出力の分布で、どれだけの候補から選ばれた値かは見ていません。
-
-署名の生成のように乱数が結果から読み取れない処理では、生成器の異常はさらに見付けにくくなります（[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979.txt) §1）。
+統計テストが見ているのは出力の分布で、どれだけの候補から選ばれた値かは見ていません。DSA と ECDSA では、乱数の質の不足が配備後に攻撃されて初めて見付かることが多いです（[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979.txt) §1）。
 
 ---
 
@@ -334,4 +370,4 @@ flowchart LR
 - 決定的 ECDSA のように、必要な値を秘密鍵とメッセージから導出する署名
 - 公開されても損害が出ず、一意性だけが必要な識別子
 
-[Timelock Encryption](../timelock-encryption/) が使う drand の乱数ビーコン（一定間隔で誰でも読める乱数を公開する仕組み）は、出力を公開して誰でも検証できることを求めるので、予測できなさに加えて、単独の参加者が値を選べないことが要求されます。
+一方で、公開される乱数でも質が問われる場合があります。[Timelock Encryption](../timelock-encryption/) が使う [drand](https://drand.love/) の乱数ビーコン（一定間隔で誰でも読める乱数を公開する仕組み）は、出力を公開して誰でも検証できることを求めるので、予測できなさに加えて、単独の参加者が値を選べないことが要求されます。

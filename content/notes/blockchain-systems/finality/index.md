@@ -125,7 +125,11 @@ sequenceDiagram
 
 Ethereum のバリデータ（validator）は、ether をプロトコルに預けて、ブロックの提案と検証と投票を行う参加者です。規則に反する投票を残すと、預けた ether が減らされます。参加の仕組みと報酬・罰則の違いは、[Proof of Stake](../proof-of-stake/) で説明しています。
 
-この投票を finality に変える仕組みが Casper FFG（Casper the Friendly Finality Gadget）です。Ethereum の時間は 12 秒の slot に区切られ、32 slot で 1 epoch（6 分 24 秒）になります。finality の投票が対象にするのは全てのブロックではなく、各 epoch の先頭 slot に対応する checkpoint です。先頭 slot にブロックがあればそのブロックを指しますが、空 slot なら、直前までに作られた最新のブロックを指します。[Consensus Specifications の `get_block_root`](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#get_block_root) が、指定 slot より前へ戻ってブロックルートを探すためです。したがって checkpoint は「境界 slot で必ず新しく作られるブロック」ではありません。
+この投票を finality に変える仕組みが Casper FFG（Casper the Friendly Finality Gadget）です。Ethereum の時間は 12 秒の slot に区切られ、32 slot で 1 epoch（6 分 24 秒）になります。finality の投票が対象にするのは全てのブロックではなく、各 epoch の先頭 slot に対応する checkpoint です。
+
+先頭 slot にブロックがあればそのブロックを指しますが、空 slot なら、直前までに作られた最新のブロックを指します。そのため、ブロックが 1 epoch 分（32 slot）続けて出なければ、隣り合う epoch の checkpoint は同じブロックを指します。
+
+[Consensus Specifications](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#beacon-chain-state-transition-function) では、slot を進める `process_slot` が slot ごとにブロックのルート（ブロックを識別するハッシュ）を記録し、空 slot には直前のブロックのルートを書き込みます。checkpoint を求める [`get_block_root`](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#get_block_root) は、この記録を引くだけです。
 
 checkpoint は 2 段階で確定します。1 票には、起点と行き先の 2 つの checkpoint を書きます。起点は既に justified な checkpoint で、最初の起点はチェーンの最初のブロックです。預けられた ether の 2/3 が同じ起点と行き先の組に投票すると、行き先の checkpoint が justified になります。justified になった checkpoint を起点に、直後の checkpoint へ同じように 2/3 の投票が集まると、その起点が finalized に変わります。
 
@@ -139,7 +143,7 @@ stateDiagram-v2
     justified --> 破棄: 別の列が canonical chain になる<br/>（finalized ほど固定されていない）
 ```
 
-ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。空 slot があれば、異なる epoch の checkpoint が同じブロックを指すこともあります。確定が投票より 1 epoch 遅れるのは、この 2 段階を踏むためです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
+ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。確定が投票より 1 epoch 遅れるのは、この 2 段階を踏むためです。2 つの checkpoint を繋ぐ 2/3 の投票は supermajority link と呼ばれ、これが途切れずに続く限り、justified は 1 つずつ先へ延びていきます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

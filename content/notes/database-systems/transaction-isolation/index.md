@@ -12,7 +12,7 @@ Transaction Isolation（分離）は、複数のトランザクションを同�
 
 トランザクションは複数の読み書きを 1 つのまとまりとして扱う単位で、まとまりを全部反映して終えることを確定（commit）、全部無かったことにして終えることを中止（abort）と言います。
 
-分離レベルは、接続ライブラリの設定や `SET TRANSACTION ISOLATION LEVEL` で指定します。例えば、在庫を引き当てる処理を考えます。残り 1 個の商品に 2 件の注文がほぼ同時に届くと、どちらの処理も残数として 1 を読み、そこから 1 を引いた 0 を書きます。読んだ値をアプリケーション側で計算して書き戻す形なので、DB から見れば 2 件とも正しい更新です。
+例えば、在庫を引き当てる処理を考えます。残り 1 個の商品に 2 件の注文がほぼ同時に届くと、どちらの処理も残数として 1 を読み、そこから 1 を引いた 0 を書きます。読んだ値をアプリケーション側で計算して書き戻す形なので、DB（データベース）から見れば 2 件とも正しい更新です。
 
 同じレコードを読んでから書く 2 本のトランザクションを以下に示します。
 
@@ -31,13 +31,13 @@ sequenceDiagram
     Note over A,B: 2 件売れたのに<br/>減ったのは 1 個
 ```
 
-上記の図で注文 B が読んだ 1 は、注文 A が書き込む前の値です。この異常は lost update と呼ばれます。DBMS は、こうした異常をどこまで許すかを段階で選ばせており、この段階を分離レベルと呼びます。SQL 標準は 4 段階を定めています。
+上記の図で注文 B が読んだ 1 は、注文 A が書き込む前の値です。この異常は lost update と呼ばれます。2 件目が中止されなければ、エラーは出ないまま在庫が 0 になり、後の棚卸しで初めて数が合わないと分かります。
 
-2 件目が中止されなければ、エラーは出ないまま在庫が 0 になり、後の棚卸しで初めて数が合わないと分かります。
+DBMS（Database Management System）は、こうした異常をどこまで許すかを段階で選ばせており、この段階を分離レベルと呼びます。SQL 標準は 4 段階を定めています。どのレベルで動かすかは、接続ライブラリの設定や `SET TRANSACTION ISOLATION LEVEL` でトランザクションごとに指定します。
 
 <br>
 
-本記事では、1 台の DBMS（Database Management System）の中で複数のトランザクションが同時に走る場合を例に、こうした異常の型と、分離レベルという段階がそれをどこまで防ぐのかを説明します。段階がある理由から始めて、次の疑問に答えます。
+本記事では、1 台の DBMS の中で複数のトランザクションが同時に走る場合を例に、こうした異常の型と、分離レベルという段階がそれをどこまで防ぐのかを説明します。段階がある理由から始めて、次の疑問に答えます。
 
 - なぜ分離レベルという段階があるのか。
 - 同時実行では、どんな異常が現れるのか。
@@ -52,7 +52,9 @@ sequenceDiagram
 
 ### 分離レベルという段階がある理由
 
-正しさだけを求めるなら、トランザクションを 1 本ずつ順に実行すれば済みます。同時に 1 本しか走っていなければ、互いの途中経過を読むことも、自分が読んだ値を横から書き換えられることもありません。ただし、この方式では接続を増やしても処理量が伸びず、1 本の長いトランザクションが後続を全部待たせます。そこで DBMS は、複数のトランザクションを重ねて実行しつつ、1 本ずつ実行した場合と同じ結果に近づけます。SQL 標準の最も強いレベルは、この一致そのものを要求しています。
+正しさだけを求めるなら、トランザクションを 1 本ずつ順に実行すれば済みます。同時に 1 本しか走っていなければ、互いの途中経過を読むことも、自分が読んだ値を横から書き換えられることもありません。
+
+ただし、この方式では接続を増やしても処理量が伸びず、1 本の長いトランザクションが後続を全部待たせます。そこで DBMS は、複数のトランザクションを重ねて実行しつつ、1 本ずつ実行した場合と同じ結果に近づけます。SQL 標準の最も強いレベルは、この一致そのものを要求しています。
 
 残りの 3 レベルは、同時実行で起きる異常（標準の言葉では現象）のうち、各レベルで起きてはならないものによって定義されています。全部を直列実行と一致させる代わりに許す現象を増やし、DBMS が並行して処理しやすいようにしています。減るコストが待ちなのか、中止と再試行なのか、検査なのかは実現方式で変わるので、レベルを下げれば必ず速くなるとは限りません。
 
@@ -148,23 +150,60 @@ SERIALIZABLE が要求しているのは、並行実行の結果が何らかの�
 
 同じレベル名でも、DBMS による差があります。PostgreSQL は 4 つ全部を指定として受け付けるものの、内部では 3 つしか実装しておらず、ドキュメントには「[PostgreSQL's Read Uncommitted mode behaves like Read Committed](https://www.postgresql.org/docs/current/transaction-iso.html)」（PostgreSQL の Read Uncommitted モードは Read Committed と同じように動く）と書かれています。
 
-[Oracle Database のドキュメント](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)は、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードを挙げており、read uncommitted と repeatable read は挙げていません。MySQL の [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
+[Oracle Database のドキュメント](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)は、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードを挙げており、read uncommitted と repeatable read は挙げていません。
 
-例えば、冒頭の在庫の取り合いを PostgreSQL 17.10 と MySQL 8.4.11 の InnoDB で再現した結果は以下の通りです。2 本の接続は REPEATABLE READ で、残数 1 を読んだ後に注文のレコードを 1 件足し、残数に 0 を書きます。注文 B は、注文 A が確定する前に読みます（出力は抜粋）。
+MySQL の既定のストレージエンジンである [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
 
-```text
--- PostgreSQL：注文 B の UPDATE
-ERROR:  could not serialize access due to concurrent update
+例えば、冒頭の在庫の取り合いを PostgreSQL 17.11 と MySQL 8.4.11 の InnoDB で再現します。在庫のテーブルに残数 1 のレコードを置き、2 本の接続（注文 A・注文 B）を開いて、以下の SQL を上から順に打ちます。注文 B は、注文 A が確定する前に残数を読みます。
 
--- MySQL：2 本が終わった後の残数と注文の件数
-+------+--------+
-| qty  | orders |
-+------+--------+
-|    0 |      2 |
-+------+--------+
+```sql
+-- 準備（PostgreSQL・MySQL 共通）
+CREATE TABLE stock (id INT PRIMARY KEY, qty INT NOT NULL);
+CREATE TABLE orders (id INT PRIMARY KEY, item_id INT NOT NULL);
+INSERT INTO stock VALUES (1, 1);
+
+-- 手順 1：注文 A
+-- MySQL では BEGIN の行を次の 2 文にする
+-- SET TRANSACTION ISOLATION LEVEL REPEATABLE READ; START TRANSACTION;
+BEGIN ISOLATION LEVEL REPEATABLE READ;
+SELECT qty FROM stock WHERE id = 1;   -- 1 が返る
+
+-- 手順 2：注文 B（手順 1 と同じ BEGIN の後）
+SELECT qty FROM stock WHERE id = 1;   -- 1 が返る
+
+-- 手順 3：注文 A
+INSERT INTO orders VALUES (1, 1);
+UPDATE stock SET qty = 0 WHERE id = 1;
+COMMIT;
+
+-- 手順 4：注文 B
+INSERT INTO orders VALUES (2, 1);
+UPDATE stock SET qty = 0 WHERE id = 1;
+COMMIT;
+
+-- 手順 5：どちらかの接続で結果を見る
+SELECT qty, (SELECT count(*) FROM orders) AS orders FROM stock WHERE id = 1;
 ```
 
-PostgreSQL では注文 B が中止されました。MySQL では 2 本ともエラー無しで確定し、冒頭の図のとおり 2 件売れて減ったのは 1 個になりました。この差がどこから来るかは、書き込みの競合の処理で見ます。
+手順 4 の `UPDATE` と手順 5 の結果は以下の通りです（出力は抜粋）。
+
+```text
+-- PostgreSQL
+ERROR:  could not serialize access due to concurrent update
+ qty | orders
+-----+--------
+   0 |      1
+
+-- MySQL
+Query OK, 0 rows affected (0.00 sec)
++-----+--------+
+| qty | orders |
++-----+--------+
+|   0 |      2 |
++-----+--------+
+```
+
+PostgreSQL では注文 B が中止され、B が足した注文のレコードも取り消されました（B の `COMMIT` は `ROLLBACK` として扱われます）。MySQL では 2 本ともエラー無しで確定し、冒頭の図のとおり 2 件売れて減ったのは 1 個になりました。この差がどこから来るかは、書き込みの競合の処理で見ます。
 
 ---
 
@@ -172,7 +211,9 @@ PostgreSQL では注文 B が中止されました。MySQL では 2 本ともエ
 
 DBMS は、読み取りに使う値の選択と、競合する書き込みの制御を組み合わせます。何を可視にするかを制御する代表的な方法として、スナップショットとロックがあります。
 
-スナップショットとは、レコードに複数のバージョンがある時に、その読み取りにどれを見せるかを決める基準です。ここでのバージョンは、レコードを更新しても古い内容を消さずに残した、レコードの各時点の内容を指します。ある論理的な時点を決め、その時点で確定していたバージョンだけを見せます。DB 全体を複製するわけではありません。レコードの複数のバージョンを保持し、スナップショットに従って可視なバージョンを選ぶ方式が MVCC（Multiversion Concurrency Control）です。
+スナップショットとは、レコードに複数のバージョンがある時に、その読み取りにどれを見せるかを決める基準です。ここでのバージョンは、レコードを更新しても古い内容を消さずに残した、レコードの各時点の内容を指します。ある論理的な時点を決め、その時点で確定していたバージョンだけを見せます。DB 全体を複製するわけではありません。
+
+レコードの複数のバージョンを保持し、スナップショットに従って可視なバージョンを選ぶ方式が MVCC（Multiversion Concurrency Control）です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -228,7 +269,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-Berenson 氏らの論文は、2 相ロック（two-phase locking）を規律どおりに使えば直列化可能性を保証できると述べています。2 相ロックとは、ロックを取り終えてから解放を始め、解放後は新しいロックを取らない規律です。
+ロックだけで SERIALIZABLE を実現する代表が 2 相ロック（two-phase locking）です。ロックを取り終えてから解放を始め、解放後は新しいロックを取らない規律です。検索条件の範囲まで含めてロックし、この規律を守れば、並行実行の結果が直列実行と一致します。
 
 範囲をロックして phantom read を防ぐ実装では、条件に合うレコードが後から入り得る、索引に並んだキーとキーの間（隙間）までロックする必要があります。MySQL の InnoDB はこの方法を使い、単位になるのは [Index Scan](../index-scan/) で見た索引の範囲です。ドキュメントには、一意索引を一意な条件で引く場合、見付けたレコードだけをロックして隙間はロックしないと書かれています。
 
@@ -262,7 +303,7 @@ PostgreSQL の REPEATABLE READ は 3 番目です。先ほどの実験では注�
 
 Oracle の serializable も同じ形で、トランザクションの開始後に確定した更新に当たると `ORA-08177` を返します。待たせる方式ならデッドロックへの備え、中止させる方式なら再試行の処理が必要です。
 
-読み取りの可視性と書き込み競合は分けて考えられ、1 つの DBMS が複数の方式を組み合わせます。同じ DBMS の中で操作ごとにどちらが働くのかは、以下の通りです。
+読み取りの可視性と書き込みの競合は分けて考えられ、1 つの DBMS が複数の方式を組み合わせます。操作ごとにどちらが働くのかは以下の通りで、この分かれ方は InnoDB と PostgreSQL のどちらにも当てはまります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -274,9 +315,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の分かれ方は、InnoDB と PostgreSQL のどちらにも当てはまります。
+MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方から来ます。InnoDB の[スナップショットが効くのはロックを伴わない `SELECT`](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html) で、`UPDATE` や `DELETE` は他のトランザクションが確定したばかりのレコードにも及びます。
 
-MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方から来ます。InnoDB の[スナップショットが効くのはロックを伴わない `SELECT`](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html) で、`UPDATE` や `DELETE` は他のトランザクションが確定したばかりのレコードにも及びます。B はスナップショットから 1 を読み、A の確定を検査されないまま 0 を書きます。実験でも B の `UPDATE` は A が確定した 0 のレコードに当たり、`0 rows affected` のまま通りました。
+実験の B はスナップショットから 1 を読みましたが、`UPDATE` は A が確定した 0 のレコードに当たりました。値が既に 0 なので結果は `0 rows affected` で、B が読んだ 1 と食い違うことは検査されないまま確定しています。
 
 読み取りをトランザクション単位のスナップショットで固定し、書き込みは同じデータへの競合を検出して捌く、という組み方が Snapshot Isolation です。冒頭の在庫の例のような競合は防げる一方、別々のレコードを書き換えて制約を壊す write skew は残ります。[Snapshot Isolation](../snapshot-isolation/) で扱います。
 
@@ -309,4 +350,6 @@ MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方�
 - 複数の DB やサービスにまたがる更新
 - 同じレコードへの更新が集中していて、中止と再試行が積み上がる場合
 
-1 つ目が分離レベルで解けないのは、トランザクションを開いたまま人の操作を待つと、その間ロックと接続を握り続けるからです。読んだ時のバージョン番号を更新条件に入れ、値が変わっていたら弾く方法（楽観ロック）が使われます。2 つ目と 3 つ目は、DB のロックやスナップショットが届かない状態を含むためで、複数の DB にまたがる確定は [2PC](../../distributed-systems/two-phase-commit/) の題材になります。4 つ目は、レベルを上げるほど中止が増える形なので、同じレコードに更新が集中しないよう、更新するレコードの分け方を変える必要があります。
+1 つ目が分離レベルで解けないのは、トランザクションを開いたまま人の操作を待つと、その間ロックと接続を握り続けるからです。そのため、読んだ時のバージョン番号を更新条件に入れ、値が変わっていたら弾く方法（楽観ロック）が使われます。
+
+2 つ目と 3 つ目は、DB のロックやスナップショットが届かない状態を含むためで、複数の DB にまたがる確定は [2PC](../../distributed-systems/two-phase-commit/) の題材になります。4 つ目は、レベルを上げるほど中止が増える形なので、同じレコードに更新が集中しないよう、更新するレコードの分け方を変える必要があります。
