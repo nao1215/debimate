@@ -10,8 +10,8 @@ from sklearn.covariance import EllipticEnvelope
 
 COLOR_BLUE, COLOR_RED, COLOR_GREEN, COLOR_ORANGE = "#7aa6c2", "#e15759", "#59a14f", "#f28e2b"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/anomaly-detection"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "ml", "anomaly-detection"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -82,22 +82,24 @@ save("anomaly_methods_compare.png")
 fig, ax = plt.subplots(figsize=(9, 7))
 
 # Show: normal point needs many splits to isolate, anomaly needs few
+# 本文の深さの実測と同じデータ（図ごとに乱数を作り直す）
+rng_small = np.random.default_rng(0)
 X_small = np.vstack([
-    rng.normal([0, 0], 0.5, (50, 2)),
+    rng_small.normal([0, 0], 0.5, (50, 2)),
     np.array([[3, 3]]),  # anomaly
 ])
 
 ax.scatter(X_small[:-1, 0], X_small[:-1, 1], color=COLOR_BLUE, s=40, alpha=0.7,
            label="normal")
 ax.scatter(X_small[-1, 0], X_small[-1, 1], color=COLOR_RED, s=200, marker="*",
-           label="anomaly (isolated in 2 splits)")
+           label="anomaly")
 
 # Random splits to isolate the anomaly
+# 分割の一例（手で選んだ 1 本。実際の木は特徴量と閾値をランダムに選ぶ）
 splits = [
-    (1.5, "vertical", 0.5),   # x=1.5
-    (1.8, "horizontal", 0.5), # y=1.8
+    (1.5, "vertical"),    # x=1.5
 ]
-for thresh, axis, dummy in splits:
+for thresh, axis in splits:
     if axis == "vertical":
         ax.axvline(thresh, color=COLOR_GREEN, lw=2)
     else:
@@ -105,7 +107,7 @@ for thresh, axis, dummy in splits:
 
 ax.set_xlim(-2, 4); ax.set_ylim(-2, 4)
 ax.set_aspect("equal")
-ax.set_title("Isolation Forest: anomalies are isolated in fewer random splits")
+ax.set_title("Isolation Forest: one split (x1 = 1.5) isolates the anomaly")
 ax.set_xlabel("x1"); ax.set_ylabel("x2")
 ax.legend(loc="upper left")
 ax.grid(True, alpha=0.25)
@@ -141,37 +143,52 @@ save("anomaly_threshold_tuning.svg")
 
 
 # ============================================================
-# Fig 4: Time-series anomaly detection
+# Fig 4: Time-series anomaly detection (本文のコードと同じ計算)
 # ============================================================
-n_t = 500
-t = np.arange(n_t)
-y_ts = 10 + 0.02 * t + 5 * np.sin(2 * np.pi * t / 50) + rng.normal(0, 0.8, n_t)
-# Inject anomalies
+import pandas as pd
+
+rng_ts = np.random.default_rng(0)
+t = np.arange(500)
+y_ts = 10 + 0.02 * t + 5 * np.sin(2 * np.pi * t / 50) + rng_ts.normal(0, 0.8, 500)
 anom_idx = [120, 200, 320, 420]
-for i in anom_idx:
-    y_ts[i] += 8
+y_ts[anom_idx] += 8
+s_ts = pd.Series(y_ts)
 
-# Detect with rolling z-score
-window = 30
-roll_mean = np.array([y_ts[max(0, i - window):i].mean() if i >= 5 else np.nan
-                       for i in range(n_t)])
-roll_std = np.array([y_ts[max(0, i - window):i].std() if i >= 5 else np.nan
-                      for i in range(n_t)])
-z = (y_ts - roll_mean) / (roll_std + 1e-6)
+
+def rolling_z(x, window=30):
+    past = x.shift(1).rolling(window)
+    return ((x - past.mean()) / past.std()).abs()
+
+
+trend = s_ts.rolling(50, center=True, min_periods=1).median()
+season = (s_ts - trend).groupby(t % 50).transform("median")
+resid = s_ts - trend - season
+z_raw = rolling_z(s_ts)
+z_resid = rolling_z(resid)
 threshold = 3
-detected = np.where(np.abs(z) > threshold)[0]
+detected = np.where(z_raw > threshold)[0]
 
-plt.figure(figsize=(13, 4.5))
-plt.plot(t, y_ts, color=COLOR_BLUE, lw=1, alpha=0.7, label="time series")
-plt.scatter(anom_idx, y_ts[anom_idx], facecolors="none", edgecolors=COLOR_GREEN,
-            s=200, linewidths=2, label="true anomalies")
-plt.scatter(detected, y_ts[detected], color=COLOR_RED, marker="x", s=80,
-            label=f"detected (|z|>{threshold})")
-plt.xlabel("time")
-plt.ylabel("value")
-plt.title("Time-series anomaly detection: rolling z-score with threshold")
-plt.legend()
-plt.grid(True, alpha=0.25)
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(13, 7.5), sharex=True)
+ax1.plot(t, y_ts, color=COLOR_BLUE, lw=1, alpha=0.8, label="time series")
+ax1.scatter(anom_idx, y_ts[anom_idx], facecolors="none", edgecolors=COLOR_GREEN,
+            s=200, linewidths=2, label="true anomaly (+8)")
+ax1.scatter(detected, y_ts[detected], color=COLOR_RED, marker="x", s=80,
+            label=f"detected on raw series (|z|>{threshold})")
+ax1.set_ylabel("value")
+ax1.set_title("Rolling z-score on the raw series")
+ax1.legend(loc="upper left", fontsize=9)
+ax1.grid(True, alpha=0.25)
+
+ax2.plot(t, z_raw, color="#999999", lw=1, label="|z| on raw series")
+ax2.plot(t, z_resid, color="#333333", lw=1, label="|z| on residual (trend and season removed)")
+ax2.axhline(threshold, color=COLOR_RED, ls="--", lw=1, label=f"|z| = {threshold}")
+for i in anom_idx:
+    ax2.axvline(i, color=COLOR_GREEN, ls=":", lw=1.5)
+ax2.set_xlabel("time")
+ax2.set_ylabel("|z|")
+ax2.set_title("Same detector after removing trend and season (green dotted: true anomalies)")
+ax2.legend(loc="upper left", fontsize=9)
+ax2.grid(True, alpha=0.25)
 plt.tight_layout()
 save("anomaly_time_series.svg")
 

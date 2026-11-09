@@ -152,7 +152,7 @@ for i in range(n):
     for j in range(d):
         ax.text(j, i, f"{X[i, j]:.1f}", ha="center", va="center",
                 fontsize=9, color="black")
-ax.set_title(f"X ({n} x {d})\nrows = samples, cols = features")
+ax.set_title(f"X: shape ({n}, {d})\nrows = samples, cols = features")
 ax.set_xticks(range(d)); ax.set_xticklabels([f"x{j+1}" for j in range(d)])
 ax.set_yticks(range(n)); ax.set_yticklabels([f"sample {i+1}" for i in range(n)])
 

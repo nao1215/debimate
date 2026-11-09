@@ -14,8 +14,9 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_PURPLE = "#b07aa1"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/probability-distributions"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)),
+    "..", "..", "notes", "math", "probability-distributions",
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 

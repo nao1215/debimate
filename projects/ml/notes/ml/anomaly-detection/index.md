@@ -7,26 +7,49 @@ tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 32
 ---
 
-異常検知（anomaly detection, outlier detection）は、「正常データから外れた点」を検出する教師なし学習の一系統です。不正検知、故障予測、ネットワーク侵入検知、品質管理、医療診断など、「興味のあるクラスのサンプルが極端に少ない / 事前にラベルが取れない」場面で使われます。
+異常検知（anomaly detection、outlier detection）は、大多数の正常データから外れた点を見つける手法です。クレジットカードの不正利用、設備の故障の予兆、ネットワークへの侵入のように、見つけたい側のサンプルが極端に少なく、事前にラベルを付けられない場面で使います。
 
-[クラス不均衡](../class-imbalance/) の極端なケースとも見なせます。ただし、不均衡分類は「正例と負例の両方にラベルがある」状況、異常検知は「正常データだけ（または僅かな異常ラベル）から学ぶ」状況、という違いがあります。代表的なアルゴリズムは 4 つで、データの形状と分布の前提によって使い分けます。
+[クラス不均衡](../class-imbalance/)の極端なケースとも見なせます。ただし、不均衡分類は正例と負例の両方にラベルがある状況で、異常検知は正常データだけ（または僅かな異常ラベル）から学ぶ状況です。
+
+<br>
+
+本記事では、[scikit-learn](https://scikit-learn.org/stable/modules/outlier_detection.html) の 4 つの手法を同じデータに当てて、次の疑問を順に扱います。
+
+- 4 つの手法は、どんな異常を見つけ、どんな異常を見逃すか
+- Isolation Forest は、なぜ分割の回数で異常を判定できるのか
+- 異常と判定する割合（contamination）は、どう決めるか
+- 時系列の異常検知で、季節変動をどう扱うか
+
+コードは scikit-learn 1.9.1、[NumPy](https://numpy.org/) 2.5.4、[pandas](https://pandas.pydata.org/) 3.1.1 で実行しました。本文のコードは計算部分で、[Matplotlib](https://matplotlib.org/) の描画を含む[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/anomaly-detection_gen.py)は GitHub で公開しています。
 
 ---
 
-### 4 つの代表アルゴリズム
+### 4 つの代表的な手法
 
 | 手法 | 仕組み | 強み | 弱み |
 |---|---|---|---|
-| Isolation Forest | ランダム分割木で「孤立しやすい点」を異常とする | 高次元 OK、計算速い、解釈しやすい | パラメータ contamination 要設定 |
-| Local Outlier Factor (LOF) | 局所密度に対する逸脱度 | 密度の異なるクラスタ混在に強い | 計算重い、新規データに使いにくい |
-| One-Class SVM | 正常データを囲む境界を学習 | 高次元 + 非線形カーネル | スケール感度高、調整重い |
-| Elliptic Envelope | 正常データを多変量正規分布で fit | シンプル、理論的 | 正規分布前提、外れ値に弱い |
+| [Isolation Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html) | ランダムな分割で、少ない回数で孤立する点を異常とする | 木を最大 256 点の部分標本で作るので、データが多くても軽い | 分割が軸に平行なので、境界が角ばる |
+| [LOF](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html)（Local Outlier Factor） | 近傍の点と比べて、局所的な密度が低い点を異常とする | 密度の違うクラスタが混ざっていても使える | 近傍探索が重い。新しいデータの判定には `novelty=True` が要る |
+| [One-Class SVM](https://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html) | 正常データを囲む境界を[カーネル](../svm/)で学ぶ | 非線形な境界を引ける | 特徴量のスケールと `gamma` に敏感 |
+| [Elliptic Envelope](https://scikit-learn.org/stable/modules/generated/sklearn.covariance.EllipticEnvelope.html) | 正常データを 1 つの多変量正規分布とみなし、楕円の外を異常とする | 外れ値の混入に強い共分散推定（MCD）を使う | クラスタが複数あるデータや、正規分布から遠いデータに合わない |
+
+次のコードは、正常データ 300 点（2 つのクラスタ）と、広い範囲に一様乱数で置いた異常データ 20 点に、4 つの手法を当てます。異常の割合は全て 7% に揃えました。
 
 ```python
+import numpy as np
+from sklearn.datasets import make_blobs
 from sklearn.ensemble import IsolationForest
-from sklearn.neighbors import LocalOutlierFactor
+from sklearn.neighbors import LocalOutlierFactor, NearestNeighbors
 from sklearn.svm import OneClassSVM
 from sklearn.covariance import EllipticEnvelope
+
+rng = np.random.default_rng(0)
+# 正常: 2 つのクラスタに 300 点。異常: 広い範囲に一様乱数で 20 点
+X_normal, _ = make_blobs(n_samples=300, centers=[(0, 0), (3, 3)],
+                         cluster_std=0.6, random_state=0)
+X_anom = rng.uniform([-3, -3], [6, 6], (20, 2))
+X = np.vstack([X_normal, X_anom])
+y_true = np.r_[np.ones(300), -np.ones(20)]  # 1 = 正常、-1 = 異常
 
 algorithms = {
     "Isolation Forest": IsolationForest(contamination=0.07, random_state=0),
@@ -35,147 +58,198 @@ algorithms = {
     "Elliptic Envelope": EllipticEnvelope(contamination=0.07, random_state=0),
 }
 for name, clf in algorithms.items():
-    if isinstance(clf, LocalOutlierFactor):
-        pred = clf.fit_predict(X)
-    else:
-        pred = clf.fit(X).predict(X)
-plt.savefig("anomaly_methods_compare.png", bbox_inches="tight")
+    pred = clf.fit_predict(X)  # 1 = 正常、-1 = 異常
+    hit = ((pred == -1) & (y_true == -1)).sum()
+    false_alarm = ((pred == -1) & (y_true == 1)).sum()
+    print(f"{name}: 異常と判定 {(pred == -1).sum()} 点"
+          f"（本物の異常 {hit} 点、誤検知 {false_alarm} 点）")
+
+# 正常点のすぐ近くに落ちた異常点を数える
+dist, _ = NearestNeighbors(n_neighbors=1).fit(X_normal).kneighbors(X_anom)
+print("最寄りの正常点まで 0.15 未満の異常点:", (dist.ravel() < 0.15).sum())
+```
+
+実行結果:
+
+```text
+Isolation Forest: 異常と判定 23 点（本物の異常 14 点、誤検知 9 点）
+LOF: 異常と判定 23 点（本物の異常 16 点、誤検知 7 点）
+One-Class SVM: 異常と判定 30 点（本物の異常 10 点、誤検知 20 点）
+Elliptic Envelope: 異常と判定 23 点（本物の異常 12 点、誤検知 11 点）
+最寄りの正常点まで 0.15 未満の異常点: 4
 ```
 
 ![4 つの異常検知アルゴリズムの判定領域](./anomaly_methods_compare.png)
 
-2 つの正常クラスタと、その周囲に異常点（緑の枠）を配置し、4 つのアルゴリズムを比較しました。
+緑の丸が本物の異常、赤い × が異常と判定した点、薄い青が正常と判定する領域です（LOF は点ごとの判定なので領域なし）。
 
-- Isolation Forest: 境界が「軸に平行な階段状」（決定木ベースなので）
-- LOF: 「境界線」なし。点ごとに異常判定（プロットには色付き領域は出せない）
-- One-Class SVM: RBF（Radial Basis Function）カーネルによる非線形で滑らかな境界
-- Elliptic Envelope: 楕円形の境界（多変量正規分布の等密度面）
+同じ 7% でも結果は手法ごとに違います。LOF は密度を近傍で測るので、2 つのクラスタを別々に扱えて、本物の異常を最も多い 16 点見つけました。Elliptic Envelope は 2 つのクラスタを 1 つの細長い楕円で囲み、楕円の両端にある異常を正常と判定します。
 
-それぞれが微妙に違う異常を検出します。実用では「データの形」「外れ値の性質」「計算コスト」のトレードオフで選びます。
+One-Class SVM は `nu=0.07` でも 30 点を異常とし、右下の異常点 2 つの周りにも正常の領域を作りました。`gamma` が大きいほど、境界は個々の点に合わせて細かく曲がります。
+
+逆に、20 点のうち 4 点は正常クラスタの中（最寄りの正常点まで 0.15 未満）に落ちていて、4 つの手法が全て正常と判定しました。特徴量の上で正常と区別できない異常は、手法を変えても見つかりません。
 
 ---
 
-### Isolation Forest: 「孤立しやすい点」が異常
+### Isolation Forest の考え方
 
-Isolation Forest（iForest）は、データを再帰的にランダム分割し、点を孤立させるまでに必要な分割回数を測ります。
-
-```mermaid
-graph TD
-    A["全データ"] --> B["ランダムに特徴量と閾値を選んで2分割"]
-    B --> C{"各分岐の点数 1 ?"}
-    C -->|"Yes"| D["孤立: 経路長を記録"]
-    C -->|"No"| B
-    D --> E["平均経路長が短い = 異常"]
-```
-
-直感: 異常点は他の点から離れているので、ランダムな分割でも少数ステップで「単独」になりやすいです。逆に正常点は密集地帯にいるので、何度も分割しないと孤立しません。
+[Isolation Forest](https://doi.org/10.1109/ICDM.2008.17)（iForest）は、特徴量と閾値をランダムに選んでデータを 2 つに分け、点が 1 つになるまで分割を繰り返します。離れた異常点は少ない分割で孤立し、密集した正常点は何度も分けないと孤立しません。
 
 ![Isolation Forest の概念図](./anomaly_isolation_concept.svg)
 
-赤い星（異常点）は緑線 2 本の分割だけで他の点と分離されます。青い正常点を 1 つだけ取り出すには、はるかに多くの分割が必要です。これを多数の木で平均化して anomaly score を計算します。
+上の図では、x1 = 1.5 の分割 1 本で異常点（赤い星）が孤立します。この線は手で選んだ一例なので、実際の木で分割の回数を数えます。
 
-iForest の長所:
+```python
+import numpy as np
+from sklearn.ensemble import IsolationForest
 
-- 計算量が `O(n log n)` で大規模データに強い
-- 高次元データでも比較的安定
-- 解釈しやすい（木構造）
-- 学習データに異常が含まれていてもロバスト
+rng = np.random.default_rng(0)
+# 原点付近に正常点 50 個、(3, 3) に異常点 1 個
+X_small = np.vstack([rng.normal([0, 0], 0.5, (50, 2)), [[3, 3]]])
+clf = IsolationForest(random_state=0).fit(X_small)  # 木は 100 本
+
+depths = []
+for tree, features in zip(clf.estimators_, clf.estimators_features_):
+    path = tree.decision_path(X_small[:, features])
+    depths.append(np.asarray(path.sum(axis=1)).ravel() - 1)  # 通ったノード数 - 1 = 分割回数
+depth = np.mean(depths, axis=0)
+print(f"異常点の平均の深さ: {depth[-1]:.2f}")
+print(f"正常点 50 個の平均の深さ: {depth[:-1].mean():.2f}")
+print(f"木の高さの上限: {clf.estimators_[0].max_depth}")
+```
+
+実行結果:
+
+```text
+異常点の平均の深さ: 1.59
+正常点 50 個の平均の深さ: 5.78
+木の高さの上限: 6
+```
+
+異常点は平均 1.59 回の分割で孤立し、正常点は 5.78 回かかりました。正常点の値は、木の高さの上限 6 にほぼ張り付いています。scikit-learn は木を作る点の数（ここでは 51）の log2 を切り上げた高さで分割を打ち切り、葉に残った点の数から残りの深さを推定します。異常かどうかは浅い所で分かるので、深くまで木を伸ばしません。
 
 ---
 
-### しきい値の選び方
+### 異常と判定する割合（contamination）
 
-`contamination` パラメータ（異常の予測比率）は重要な [hyperparameter](/ml/ml/hyperparameter/) です。
+`contamination` は、学習データのうち何割を異常と判定するかを決める[ハイパーパラメータ](../hyperparameter/)です。scikit-learn の Isolation Forest では、この値で変わるのはしきい値（`offset_`）だけなので、1 回学習したスコアに線を引き直せば比べられます。次のコードは、前節の `X` と `y_true` を使います。
 
 ```python
-clf = IsolationForest(contamination="auto").fit(X)
-scores = clf.decision_function(X)  # 高い = 正常
+clf = IsolationForest(contamination="auto", random_state=0).fit(X)
+scores = clf.decision_function(X)  # 0 未満を異常と判定する。低いほど異常
+flagged = scores < 0
+print(f'"auto": offset_={clf.offset_}、異常と判定 {flagged.sum()} 点'
+      f"（本物の異常 {(flagged & (y_true == -1)).sum()} 点）")
+
 for contam in [0.03, 0.07, 0.15]:
-    thr = np.percentile(scores, contam * 100)
-plt.savefig("anomaly_threshold_tuning.svg", bbox_inches="tight")
+    thr = np.percentile(scores, contam * 100)  # 下から contam の割合で線を引く
+    flagged = scores < thr
+    hit = (flagged & (y_true == -1)).sum()
+    print(f"contamination={contam}: 異常と判定 {flagged.sum()} 点"
+          f"（本物の異常 {hit} 点、誤検知 {flagged.sum() - hit} 点）")
 ```
 
-![Score の分布と異なる contamination 値のしきい値](./anomaly_threshold_tuning.svg)
+実行結果:
 
-正常データ（青）と異常データ（赤）のスコア分布が描かれ、3 つの異なる contamination でのしきい値が縦線で示されています。
+```text
+"auto": offset_=-0.5、異常と判定 40 点（本物の異常 16 点）
+contamination=0.03: 異常と判定 10 点（本物の異常 10 点、誤検知 0 点）
+contamination=0.07: 異常と判定 23 点（本物の異常 14 点、誤検知 9 点）
+contamination=0.15: 異常と判定 48 点（本物の異常 16 点、誤検知 32 点）
+```
 
-- `contamination = 0.03`: しきい値が厳しい → 誤検知少だが見逃しが増える
-- `contamination = 0.07`: バランスの良い設定
-- `contamination = 0.15`: しきい値が緩い → 異常を捕まえやすいが誤検知も増える
+![スコアの分布と 3 つの contamination のしきい値](./anomaly_threshold_tuning.svg)
 
-業務上のコスト（誤検知 vs 見逃し）に応じて選びます。`contamination="auto"` を指定するとアルゴリズムが自動推定します。ただし、ドメイン知識で `0.01〜0.10` 程度の範囲から選ぶのが標準です。
+青が正常、赤が本物の異常のスコアの分布で、縦線より左を異常と判定します。
+
+0.03 では判定した 10 点が全て本物の異常ですが、残り 10 点を見逃します。0.15 まで緩めると本物の異常は 16 点に増え、誤検知も 32 点に増えます。0.15 でも残る 4 点は、前節で正常クラスタの中に落ちていた 4 点です。
+
+`contamination="auto"` は、異常の割合をデータから推定する設定ではありません。原論文のしきい値（`offset_ = -0.5`）を使う設定で、異常が 6.25%（20/320）のこのデータでは 40 点（12.5%）を異常と判定しました。誤検知と見逃しのどちらが高くつくかは業務で決まるので、ラベルの付いた少数の事例で上のように数えるか、[PR 曲線](../roc-pr-auc/)を見て決めます。
 
 ---
 
 ### 時系列の異常検知
 
-時系列特化の異常検知では、シンプルな rolling z-score がよく使われます。
+時系列では、直前の一定区間（窓）の平均と[標準偏差](../../math/stddev/)で現在値を標準化し、|z| が 3 を超えたら異常とする rolling z-score がよく使われます。ただし、季節変動のある系列にそのまま当てると、変動そのものが標準偏差を膨らませます。
+
+次のコードは、周期 50 の季節変動と右肩上がりのトレンドを持つ系列に +8 の異常を 4 か所足し、元の系列と、トレンドと季節変動を引いた残差の両方で |z| を計算します。
 
 ```python
-window = 30
-roll_mean = pd.Series(y).rolling(window).mean()
-roll_std = pd.Series(y).rolling(window).std()
-z = (y - roll_mean) / (roll_std + 1e-6)
-anomalies = np.abs(z) > 3
-plt.savefig("anomaly_time_series.svg", bbox_inches="tight")
+import numpy as np
+import pandas as pd
+
+rng = np.random.default_rng(0)
+t = np.arange(500)
+# トレンド + 周期 50 の季節変動 + ノイズに、+8 の異常を 4 か所足す
+y = 10 + 0.02 * t + 5 * np.sin(2 * np.pi * t / 50) + rng.normal(0, 0.8, 500)
+anomalies = [120, 200, 320, 420]
+y[anomalies] += 8
+s = pd.Series(y)
+
+
+def rolling_z(x, window=30):
+    past = x.shift(1).rolling(window)  # 現在値を含まない直前 30 点
+    return ((x - past.mean()) / past.std()).abs()
+
+
+# 周期 50 の移動中央値でトレンドを、位相ごとの中央値で季節変動を推定して引く
+trend = s.rolling(50, center=True, min_periods=1).median()
+season = (s - trend).groupby(t % 50).transform("median")
+resid = s - trend - season
+
+is_normal = ~np.isin(t, anomalies)
+for name, z in [("元の系列", rolling_z(s)), ("残差", rolling_z(resid))]:
+    print(f"{name}: 異常 4 点の |z| = {z[anomalies].round(2).tolist()}")
+    print(f"  正常点の |z| の最大 = {z[is_normal].max():.2f}")
+    print(f"  |z| > 3 の時刻 = {np.where(z > 3)[0].tolist()}")
+```
+
+実行結果:
+
+```text
+元の系列: 異常 4 点の |z| = [2.83, 3.97, 2.74, 2.4]
+  正常点の |z| の最大 = 3.49
+  |z| > 3 の時刻 = [200, 478]
+残差: 異常 4 点の |z| = [11.12, 11.79, 10.15, 6.73]
+  正常点の |z| の最大 = 4.34
+  |z| > 3 の時刻 = [120, 159, 200, 303, 320, 403, 420, 470, 481]
 ```
 
 ![時系列の rolling z-score 異常検知](./anomaly_time_series.svg)
 
-具体的には、過去 30 ステップの平均と[標準偏差](/ml/math/stddev/)を計算し、現在値が `|z| > 3` を超えたら異常と判定します。緑の枠が真の異常、赤い × が検出された点で、4 つの真の異常のうち 4 つを検出しています。
+上段は元の系列と |z| > 3 になった点、下段は 2 通りの |z| で、緑の点線が異常を足した時刻です。
 
-時系列専用の手法は他にも:
+元の系列で見つかった異常は時刻 200 の 1 点だけで、時刻 478 の正常点を誤検知しました。窓の 30 点に振幅 5 の季節変動が入って標準偏差が大きくなり、+8 の異常でも |z| は 2.4〜3.97 です。正常点の最大 3.49 より小さい異常が 3 点あるので、しきい値をどう動かしても分けられません。
 
-- ARIMA + 残差検定（[時系列予測](../time-series-forecasting/) 参照）
-- 周期性を考慮した STL 分解 + 残差検定
-- LSTM autoencoder の再構成誤差
-- Matrix Profile（部分列同士の距離を総当たりで求め、繰り返しパターンと異常部分列を同時に見つける手法）
-- Spectral residual（Microsoft Azure Anomaly Detector）
+残差では、異常 4 点の |z| が 6.73〜11.79 まで上がり、正常点の最大 4.34 との間に差が開きます。|z| > 3 のままでは正常点も 5 点拾うので、しきい値を 5 程度に上げると 4 点だけが残ります。
 
----
+上のコードは [STL 分解](https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.STL.html)を簡略化したものです。他にも次の手法があります。
 
-### 数学での使いどころ
-
-- ロバスト統計の breakdown point（[中央値](../../math/median/) 参照）
-- Mahalanobis distance（Elliptic Envelope の基盤）
-- カーネル密度推定（[KDE](../../math/kde/)）と異常検知
-- [情報理論](/ml/math/information-theory/)的アプローチ: KL ダイバージェンスで分布変化を検出
-- 確率モデル: Gaussian Mixture Model で「低尤度の点」を異常とする
-- 統計検定: Grubbs 検定、Tukey の IQR ルール ([四分位点](../../math/quantile/) 参照)
+- ARIMA などの予測モデルの残差を見る（[時系列予測](../time-series-forecasting/)）
+- [Matrix Profile](https://www.cs.ucr.edu/~eamonn/MatrixProfile.html): 部分列同士の距離を総当たりで求め、似た部分列が他に無い区間を異常とする
+- [Spectral Residual](https://arxiv.org/abs/1906.03821): Microsoft の異常検知サービスの論文で提案された手法。[Azure AI Anomaly Detector](https://learn.microsoft.com/azure/ai-services/anomaly-detector/) は 2026 年 10 月 1 日に提供を終えた
+- LSTM の autoencoder で、再構成誤差の大きい区間を異常とする
 
 ---
 
-### 機械学習での使いどころ
+### 関連する統計の道具とライブラリ
 
-- 不正検知: クレジットカード、ログイン、不正出金
-- 故障予測: 製造業の設備異常検知
-- ネットワーク侵入検知: トラフィックパターンの逸脱
-- 品質管理: 生産ラインの欠陥検出
-- 医療診断: 心電図の異常パターン、レントゲン画像の異常
-- IoT センサーの異常値検知
-- ログ監視（DevOps）: エラーパターンの自動検出
-- 推薦システムの異常購買検知
-- 監視カメラ映像の異常行動検出
-- 金融市場の異常取引検知
-- データ品質チェック: 入力データ自体の異常を発見
-- A/B test 中の異常値除去（[時系列予測](../time-series-forecasting/) の前処理）
+- 四分位範囲（IQR）で外れ値を決める Tukey のルール（[四分位点](../../math/quantile/)）
+- 外れ値に引きずられにくい[中央値](../../math/median/)や MCD。Elliptic Envelope は MCD の平均と共分散からマハラノビス距離を測る
+- [カーネル密度推定](../../math/kde/)や混合ガウス分布で、密度の低い点を異常とする
+- [KL ダイバージェンス](../../math/information-theory/)で、点ではなく分布全体の変化を検出する
 
-scikit-learn では `sklearn.ensemble.IsolationForest`、`sklearn.neighbors.LocalOutlierFactor`、`sklearn.svm.OneClassSVM`、`sklearn.covariance.EllipticEnvelope` が標準です。深層学習系は `pyod`（Python Outlier Detection、20+ アルゴリズム）、`anomalib`（画像特化）、`tsod`（時系列特化）。
+scikit-learn 以外では、[PyOD](https://github.com/yzhao062/pyod) が 60 を超える検出器を同じ API で提供しています。画像の異常検知には [Anomalib](https://github.com/open-edge-platform/anomalib)、時系列には [tsod](https://github.com/DHI/tsod) があります。
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- 異常の定義が不明確: 「何が異常か」をビジネス側と擦り合わせないと、技術的に検出しても価値がない
-- 教師あり問題を異常検知で解こうとする: ラベルがあるなら [class-imbalance](../class-imbalance/) の不均衡分類の方が精度が出ることが多い
-- contamination を当てずっぽうで決める: ドメイン知識または PR（Precision-Recall）曲線で根拠を持って選ぶ
-- スケールが揃っていない: 距離ベース手法（LOF、One-Class SVM、Elliptic）が崩れる。[標準化](../standardization/) を必ず先に
-- 高次元データで Elliptic Envelope: 共分散行列の推定が困難に。Isolation Forest や LOF へ
-- 学習データの異常を放置: 異常を含むデータで学習すると境界が歪む。最初の数イテレーションで除外する 2 段階アプローチが有効
-- 異常検知の評価指標: 異常が少ないデータでは、全件を正常と予測しても accuracy が高くなる。Precision @ k、ROC-AUC、PR-AUC を使う
-- 時系列で過去の異常パターンが未来と違う: 攻撃や故障モードは進化する。定期的な再学習が必要
-- 「異常を検出しても処理しない」運用: 検出後のアクション（人手レビュー、自動ブロック）まで含めて設計する
-- アラート疲労: 異常を出しすぎると現場が無視するようになる。閾値調整 + Precision の確保
-- 季節性・トレンドを考慮しない: 時系列データでは「いつもの周期パターン」を異常と誤検出する。先に [時系列分解](../time-series-forecasting/)
-- One-Class SVM の gamma 調整: 大きすぎると過学習、小さすぎると検出力なし。クロスバリデーションが効きにくい教師なしなので、可視化で判定
-- 「異常」と「データ収集の問題」を混同: NULL の混入、[欠損](../missing-values/)、計測ノイズは異常検知ではなくデータ品質チェックの対象
+- 異常の定義が決まっていない: 何を見つけたいかを業務側と擦り合わせないと、検出しても使われない
+- 異常のラベルが十分にある: [不均衡分類](../class-imbalance/)として教師あり学習で解いた方が精度が出ることが多い
+- 特徴量のスケールが揃っていない: LOF・One-Class SVM・Elliptic Envelope が単位の大きい特徴量に引きずられる。先に[標準化](../standardization/)する
+- 高次元で Elliptic Envelope を使う: 共分散行列の推定が不安定になる。scikit-learn はサンプル数を特徴量の数の 2 乗より多くするよう勧めている
+- accuracy で評価する: 異常が 6.25% のデータでは、全て正常と答えても accuracy は 93.75% になる。Precision@k や [PR-AUC](../roc-pr-auc/) を使う
+- 異常の傾向が変わる: 不正の手口や故障の起き方は変わるので、定期的に再学習する
+- アラートを出しすぎる: 誤検知が多いと現場が通知を見なくなる。誤検知の数を数えてからしきい値を決める
+- データ品質の問題と混同する: NULL の混入や[欠損](../missing-values/)は、異常検知より前のデータ品質チェックで扱う

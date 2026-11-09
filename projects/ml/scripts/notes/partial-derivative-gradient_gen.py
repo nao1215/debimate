@@ -5,6 +5,7 @@
 軸ラベル・タイトルは英語で統一（matplotlib の日本語フォントは環境依存のため）。
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,8 +15,8 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/math/partial-derivative-gradient"
+NOTE_DIR = str(
+    Path(__file__).resolve().parents[2] / "notes" / "math" / "partial-derivative-gradient"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -112,37 +113,61 @@ save("gradient_field.svg")
 
 
 # ============================================================
-# Fig 4: ML example - MSE loss surface and its gradient direction
+# Fig 4: ML example - MSE loss surface, its negative gradient and a GD path
 # ============================================================
-# Linear model y = w * x with MSE loss, data y = 2x + noise
+# Linear model y = w * x + b with MSE loss, data y = 2x + noise
+# (the block from here to the GD loop is the excerpt shown in the note)
 rng = np.random.default_rng(0)
 x_data = np.linspace(-1, 1, 30)
 y_data = 2.0 * x_data + rng.normal(0.0, 0.3, 30)
 
+
+def loss(w, b):
+    return np.mean((y_data - (w * x_data + b)) ** 2)
+
+
+def grad(w, b):
+    r = y_data - (w * x_data + b)
+    return np.array([-2 * np.mean(x_data * r), -2 * np.mean(r)])
+
+
+w_opt, b_opt = np.polyfit(x_data, y_data, 1)  # least-squares optimum
+print(f"optimum: w={w_opt:.3f}, b={b_opt:.3f}")
+
+w0, b0 = -0.5, 2.5
+h = 1e-6
+numeric = [(loss(w0 + h, b0) - loss(w0 - h, b0)) / (2 * h),
+           (loss(w0, b0 + h) - loss(w0, b0 - h)) / (2 * h)]
+print("grad   :", np.round(grad(w0, b0), 4))
+print("numeric:", np.round(numeric, 4))
+
+d = -grad(w0, b0)
+to_opt = np.array([w_opt - w0, b_opt - b0])
+cos = d @ to_opt / (np.linalg.norm(d) * np.linalg.norm(to_opt))
+print(f"angle between -grad and optimum: {np.degrees(np.arccos(cos)):.1f} deg")
+
+eta = 0.3
+p = np.array([w0, b0])
+path = [p]
+for t in range(1, 21):
+    p = p - eta * grad(*p)
+    path.append(p)
+    if t in (1, 5, 20):
+        print(f"step {t:2d}: w={p[0]:.3f}, b={p[1]:.3f}, L={loss(*p):.4f}")
+path = np.array(path)
+
+# --- drawing (omitted in the note) ---
 w_grid = np.linspace(-1, 5, 80)
 b_grid = np.linspace(-3, 3, 80)
 WW, BB = np.meshgrid(w_grid, b_grid)
-# Loss L(w, b) = mean((y - (w x + b))^2)
-LL = np.zeros_like(WW)
-for i in range(WW.shape[0]):
-    for j in range(WW.shape[1]):
-        pred = WW[i, j] * x_data + BB[i, j]
-        LL[i, j] = np.mean((y_data - pred) ** 2)
+LL = np.array([[loss(w, b) for w in w_grid] for b in b_grid])
 
-# Gradient of MSE: d L / d w = -2 mean(x (y - (w x + b)))
-#                  d L / d b = -2 mean((y - (w x + b)))
 w_q = np.linspace(-0.5, 4.5, 8)
 b_q = np.linspace(-2.5, 2.5, 8)
 WQ, BQ = np.meshgrid(w_q, b_q)
-GW = np.zeros_like(WQ)
-GB = np.zeros_like(BQ)
-for i in range(WQ.shape[0]):
-    for j in range(WQ.shape[1]):
-        pred = WQ[i, j] * x_data + BQ[i, j]
-        GW[i, j] = -2 * np.mean(x_data * (y_data - pred))
-        GB[i, j] = -2 * np.mean(y_data - pred)
+G = np.array([[grad(w, b) for w in w_q] for b in b_q])
+GW, GB = G[..., 0], G[..., 1]
 mag = np.sqrt(GW ** 2 + GB ** 2)
-# Show descent direction (negative gradient) since that's what matters for training
 GWn = -GW / (mag + 1e-9)
 GBn = -GB / (mag + 1e-9)
 
@@ -151,11 +176,16 @@ cs = plt.contourf(WW, BB, LL, levels=25, cmap="Blues_r")
 plt.colorbar(cs, label="MSE loss")
 plt.quiver(WQ, BQ, GWn, GBn, color=COLOR_RED, scale=22, width=0.005,
            label="-grad L (descent direction)")
-plt.scatter([2.0], [0.0], color="black", marker="*", s=200, zorder=5,
-            label="optimum (true w=2, b=0)")
-plt.title("MSE loss surface for y = w x + b\nNegative gradient points to the optimum")
+plt.plot([w0, w_opt], [b0, b_opt], color=COLOR_GRAY, ls="--", lw=1.2,
+         label="straight line to optimum")
+plt.plot(path[:, 0], path[:, 1], color="black", marker="o", ms=3, lw=1.2,
+         label=f"gradient descent (eta={eta}, 20 steps)")
+plt.scatter([w_opt], [b_opt], color="black", marker="*", s=200, zorder=5,
+            label=f"optimum (w={w_opt:.2f}, b={b_opt:.2f})")
+plt.title("MSE loss surface for y = w x + b\n"
+          "-grad L points downhill, not straight at the optimum")
 plt.xlabel("w"); plt.ylabel("b")
-plt.legend(loc="upper right", fontsize=9)
+plt.legend(loc="upper right", fontsize=8)
 plt.tight_layout()
 save("mse_gradient.png")
 

@@ -25,7 +25,7 @@ graph LR
     F --> A
 ```
 
-forward と backward は逆方向に走り、forward で計算した中間値（activations）を backward で使うため、メモリは forward の中間値全部を保持する必要があります。「深いネット = 大量メモリ」と言われるのは、この backward 用の中間値保持が主因です。
+forward と backward は逆方向に走ります。backward は forward で計算した中間値（activations）を使うので、forward の中間値を全部メモリに保持しておく必要があります。
 
 ---
 
@@ -74,7 +74,7 @@ L = 0.25
 
 ![小さな NN の forward と backward の全体](./backprop_tiny_network.svg)
 
-青い矢印が forward、各ノードに「値」と「勾配 `∂L/∂node`」が並びます。forward を 1 回回せば、backward で各パラメータの勾配が「右から左」に向かって連鎖律で計算できます。計算済みの勾配を再利用するため、同じ計算を繰り返さずに済みます。
+青い矢印が forward で、各ノードの中に値、右上に赤で勾配 `∂L/∂node` を書いています。backward は L から左へ進み、各ノードの勾配を 1 つ右のノードの勾配から求めます。たとえば `∂L/∂w2` と `∂L/∂a1` はどちらも `∂L/∂z2 = -1` を使うので、z2 より右の計算を繰り返さずに済みます。
 
 ---
 
@@ -84,13 +84,15 @@ L = 0.25
 
 `dL/dx = (dL/df) × (df/dg) × (dg/dh) × (dh/dx)`
 
-と「各段階の微分の積」になります。これが連鎖律で、深いネットでは「層数 ぶんの微分の積」を計算することに対応します。
+と「各段階の微分の積」になります。これが連鎖律で、深いネットでは層の数だけ微分を掛け合わせることに対応します。
 
 ![連鎖律: 各段階の微分を順に掛け合わせる](./backprop_chain_rule.svg)
 
-青の forward 矢印が「値の計算」、赤の backward 矢印が「勾配の伝播」です。各段階で必要なのは「直前のノードの値」と「そのノードの微分」だけなので、深さ N に対して N 回の掛け算で全勾配が取れます。
+青の forward 矢印が値の計算、赤の backward 矢印が勾配の伝播です。各段階で必要なのは forward で求めた値とその段階の微分だけなので、深さ N に対して N 回の掛け算で全勾配が取れます。
 
-backprop は計算グラフに沿って勾配を求めるため、パラメータごとに微分の式を手で展開する必要がありません。連鎖律自体は Newton の時代からあります。それを「グラフ上で機械的に適用するアルゴリズム」として定式化したのが Rumelhart, Hinton, Williams（1986）の論文で、これが深層学習のスタート地点となりました。
+図の例は `L = log(exp(sin²x)) = sin²x` なので、4 つの微分を掛けると `(1/f) × exp(g) × 2h × cos(x) = 2 sin(x) cos(x)` になり、`sin²x` を直接微分した結果と一致します。
+
+連鎖律自体は 17 世紀の Leibniz の頃からあります。それを多層のニューラルネットの学習に使い、隠れ層が有用な表現を学べることを示して広めたのが Rumelhart, Hinton, Williams（1986）の論文 [Learning representations by back-propagating errors](https://www.nature.com/articles/323533a0) です。
 
 ---
 
@@ -100,7 +102,9 @@ backprop は計算グラフに沿って勾配を求めるため、パラメー�
 
 ![Forward は左→右、backward は右→左](./backprop_computational_graph.svg)
 
-各ノードは「演算」、エッジは「データの流れ」を表します。forward では入力から損失まで値を計算して保持し、backward では損失から始めて各ノードの勾配を上流に伝播していきます。PyTorch / TensorFlow / JAX といったフレームワークは、内部でこの計算グラフを自動構築し、`loss.backward()` 1 行で全勾配を取得できる仕組み（automatic differentiation, autograd）を提供しています。
+各ノードは「演算」、エッジは「データの流れ」を表します。forward では入力から損失まで値を計算して保持し、backward では損失から始めて各ノードの勾配を上流に伝播していきます。
+
+[PyTorch](https://pytorch.org/) / [TensorFlow](https://www.tensorflow.org/) / [JAX](https://github.com/jax-ml/jax) といったフレームワークは、内部でこの計算グラフを自動構築し、`loss.backward()` 1 行で全勾配を取得できる仕組み（automatic differentiation, autograd）を提供しています。
 
 ```python
 # PyTorch での例
@@ -119,50 +123,86 @@ z2 = w2 * a1 + b2
 L = (z2 - y) ** 2
 
 L.backward()  # 自動で全パラメータの勾配を計算
-print(f"∂L/∂w1 = {w1.grad}")  # tensor(-1.)
-print(f"∂L/∂w2 = {w2.grad}")  # tensor(-5.)
+print(f"∂L/∂w1 = {w1.grad}")  # ∂L/∂w1 = -1.0
+print(f"∂L/∂w2 = {w2.grad}")  # ∂L/∂w2 = -5.0
 ```
 
-`requires_grad=True` を付けたテンソルは autograd の追跡対象になり、`backward()` で勾配が `.grad` 属性に書き込まれます。ネットワーク構造が複雑になっても、勾配を計算する backward の処理を手書きする必要はありません。
+`requires_grad=True` を付けたテンソルは [autograd](https://docs.pytorch.org/docs/stable/autograd.html) の追跡対象になり、`backward()` で勾配が `.grad` 属性に書き込まれます。手計算と同じ -1 と -5 が得られます。ネットワーク構造が複雑になっても、勾配を計算する backward の処理を手書きする必要はありません。
 
 ---
 
 ### 勾配消失問題: なぜ深いと学習が遅いのか
 
-連鎖律で勾配を掛け合わせるとき、各層の活性化関数の微分が `< 1` なら、層を重ねるほど勾配が指数的に小さくなります。これが [活性化関数](../activation-functions/) のノートでも触れた「勾配消失（vanishing gradient）」問題です。
+連鎖律で勾配を掛け合わせる時、1 層ごとに掛かる係数（活性化関数の微分と重み）が 1 より小さいと、入力側の層ほど勾配が指数的に小さくなります。これが [活性化関数](../activation-functions/) のノートでも触れた勾配消失（vanishing gradient）問題です。
+
+実際に 10 層の全結合ネット（各層 64 ユニット）を NumPy で組み、forward と backward を手で書いて、初期化直後の各層の重みの勾配の大きさ `‖∂L/∂W_i‖` を測ります。活性化関数だけを sigmoid・tanh・ReLU で入れ替え、重み・入力・正解は同じ乱数で揃えます。
 
 ```python
-# 各層の勾配の attenuation (近似)
 import numpy as np
 
-def gradient_magnitudes(activation, n_layers=10):
-    factor = {"sigmoid": 0.25, "tanh": 1.0, "relu": 0.5}[activation]
-    grads = [1.0]
-    for _ in range(n_layers - 1):
-        grads.append(grads[-1] * factor)
-    return np.array(grads)
+ACTS = {
+    "sigmoid": (lambda z: 1 / (1 + np.exp(-z)),
+                lambda z: (s := 1 / (1 + np.exp(-z))) * (1 - s)),
+    "tanh": (np.tanh, lambda z: 1 - np.tanh(z) ** 2),
+    "relu": (lambda z: np.maximum(z, 0), lambda z: (z > 0).astype(float)),
+}
+
+
+def layer_grad_norms(act, n_layers=10, width=64, batch=256, seed=0):
+    rng = np.random.default_rng(seed)
+    f, df = ACTS[act]
+    # 重みは平均 0、標準偏差 1/√width の正規分布で初期化する
+    Ws = [rng.normal(0, 1 / np.sqrt(width), (width, width)) for _ in range(n_layers)]
+    x = rng.normal(size=(batch, width))
+    t = rng.normal(size=(batch, width))
+
+    # forward: 各層の入力 h と活性化前の z を保持する
+    hs, zs = [x], []
+    for W in Ws:
+        zs.append(hs[-1] @ W)
+        hs.append(f(zs[-1]))
+
+    # L は二乗誤差の和をバッチ数で割ったもの。g は ∂L/∂(最終層の出力)
+    g = 2 * (hs[-1] - t) / batch
+
+    # backward: 出力側から 1 層ずつ連鎖律を適用する
+    norms = [0.0] * n_layers
+    for i in reversed(range(n_layers)):
+        g = g * df(zs[i])                       # ∂L/∂z_i
+        norms[i] = np.linalg.norm(hs[i].T @ g)  # ||∂L/∂W_i||
+        g = g @ Ws[i].T                         # ∂L/∂h_i（1 つ入力側の層へ渡す）
+    return norms
+
 
 for act in ["sigmoid", "tanh", "relu"]:
-    print(f"{act}: layer 10 gradient ≈ {gradient_magnitudes(act, 10)[-1]:.2e}")
+    n = layer_grad_norms(act)
+    print(f"{act:7s} 10層目={n[-1]:.2e}  1層目={n[0]:.2e}  1層目/10層目={n[0] / n[-1]:.1e}")
 ```
 
-出力例:
+出力:
 
 ```text
-sigmoid: layer 10 gradient ≈ 3.81e-06
-tanh:    layer 10 gradient ≈ 1.00e+00
-relu:    layer 10 gradient ≈ 1.95e-03
+sigmoid 10層目=7.72e+00  1層目=4.16e-06  1層目/10層目=5.4e-07
+tanh    10層目=3.00e+00  1層目=2.52e+00  1層目/10層目=8.4e-01
+relu    10層目=1.44e-01  1層目=1.97e-01  1層目/10層目=1.4e+00
 ```
 
-![10 層 NN での勾配の減衰](./backprop_vanishing.svg)
+![10 層の全結合ネットで、各層の勾配の大きさを 10 層目との比で表した図](./backprop_vanishing.svg)
 
-sigmoid を 10 層積むと、出力層からの勾配が下位層に届く頃には `10^-6` まで縮みます。これでは下位層の重みがほぼ更新されず、学習が止まります。対策が:
+図は各層の勾配を 10 層目（出力側）との比で表しています。sigmoid は入力側へ 1 層進むごとにおよそ 5 分の 1 になり、1 層目では 10 層目の `5.4e-07` 倍しか残りません。
 
-- ReLU 系の [活性化関数](../activation-functions/) を使う（飽和域がなく勾配が消えにくい）
-- Residual connection（ResNet）: 勾配を skip 接続で直接下位層に届ける
-- Batch normalization: 各層の入力分布を正規化して活性化関数の飽和域を回避
-- 適切な重み初期化（Xavier / He）: 初期勾配が極端にならないように調整
-- 勾配クリッピング: 勾配爆発の逆問題に対する対策
+sigmoid の微分は最大でも 0.25（z = 0 の時）なので、重みの標準偏差を `1/√64` にして信号の大きさを保つ初期化でも、1 層ごとに 4 分の 1 以下に縮みます。これでは入力側の重みがほぼ更新されず、学習が進みません。
+
+tanh と ReLU は、この条件では 1 層目まで同じ桁の勾配が届きます。tanh は 0 付近の微分が 1 に近く、ReLU は正の領域で微分がちょうど 1 だからです。ただし tanh も入力が大きくなって飽和すると、微分が 0 に近づいて勾配が消えます。
+
+seed を 1〜3 に変えても、sigmoid の比は `4e-07`〜`6e-07` に収まりました。上記の backward は、同じ重みで PyTorch の autograd が計算した勾配とも相対誤差 `1e-15` 以下で一致しています。
+
+勾配消失への主な対策は次のとおりです。
+
+- ReLU 系の [活性化関数](../activation-functions/) を使う（正の領域で飽和しない）
+- Residual connection（[ResNet](https://arxiv.org/abs/1512.03385)）: 勾配を skip 接続で直接下位層に届ける
+- [Batch normalization](https://arxiv.org/abs/1502.03167): 各層の入力分布を正規化して活性化関数の飽和域を回避
+- 適切な重み初期化（[Xavier](https://proceedings.mlr.press/v9/glorot10a.html) / [He](https://arxiv.org/abs/1502.01852)）: 層を通るたびに信号と勾配が縮んだり膨らんだりしないように分散を揃える
 
 これらが組み合わさって、現代の 100 層 / 1000 層の超深層モデルが学習可能になっています。
 
@@ -170,20 +210,20 @@ sigmoid を 10 層積むと、出力層からの勾配が下位層に届く頃�
 
 ### Forward / backward のメモリと計算量
 
-backprop の計算量は「forward と同じオーダー」です。その一方で、メモリ使用は「全中間値を保持」する必要があるため大きくなります。
+backprop の計算量は forward と同じオーダーですが、全層の中間値を保持する分だけメモリが大きくなります。深いネットほどメモリを消費する主因はここです。
 
 | 量 | forward だけ | backprop |
 |---|---|---|
 | 計算量 | `O(N)` | `O(N)`（実質 2-3 倍） |
 | メモリ | `O(layer width)`（前層のみ保持） | `O(N × layer width)`（全層保持） |
 
-大規模モデル（LLM 等）でメモリが厳しいときの対処:
+大規模モデル（LLM 等）でメモリが厳しい時の対処:
 
-- Gradient checkpointing: 中間値を保存せず、必要時に再計算（メモリ↓、計算量↑）
+- [Gradient checkpointing](https://docs.pytorch.org/docs/stable/checkpoint.html): 中間値を保存せず、必要時に再計算（メモリ↓、計算量↑）
 - Mixed precision（fp16, bf16）: 中間値の精度を下げてメモリ半減
 - Activation offloading: 中間値を CPU や別 GPU に退避
 
-これらは PyTorch / DeepSpeed / Megatron 等のフレームワークが標準サポートしています。
+これらは PyTorch / [DeepSpeed](https://github.com/deepspeedai/DeepSpeed) / [Megatron-LM](https://github.com/NVIDIA/Megatron-LM) 等のフレームワークが標準サポートしています。
 
 ---
 
@@ -192,8 +232,8 @@ backprop の計算量は「forward と同じオーダー」です。その一方
 - 連鎖律の機械的適用: [偏微分と勾配](../../math/partial-derivative-gradient/) のノートで扱った合成関数の微分そのもの
 - 自動微分（automatic differentiation）の理論: forward mode と reverse mode、後者が backprop に対応
 - ヤコビ行列の計算: NN の各層は線形変換 + 非線形なので、層ごとにヤコビ行列を計算して掛け合わせる
-- 微分可能プログラミング: backprop は NN だけでなく「微分可能な任意の計算」（物理シミュレーション、レンダリング、最適化）に応用される
-- 計算複雑性: forward / backward が同じオーダーであることは Baur-Strassen の定理の系として知られる
+- 微分可能プログラミング: NN 以外の微分可能な計算（物理シミュレーション、レンダリング）にも backprop を使う
+- 計算複雑性: 勾配全体を関数の計算量の定数倍で求められることは [Baur-Strassen の定理（1983）](https://doi.org/10.1016/0304-3975(83)90110-X) で示されている
 
 ---
 
@@ -204,13 +244,9 @@ backprop はニューラルネット学習のあらゆる場面で使われま�
 - 教師あり学習: CNN / RNN / Transformer の全モデル
 - 強化学習: ポリシー勾配法（REINFORCE）、Actor-Critic
 - 生成モデル: VAE、GAN、Diffusion Model
-- 自然言語処理: BERT / GPT などの pre-training と fine-tuning
-- 画像認識: ResNet, EfficientNet, Vision Transformer
-- 音声: WaveNet, Whisper
-- 強化学習の世界モデル: backprop through time (BPTT)
+- 大規模言語モデル: BERT / GPT などの pre-training と fine-tuning
+- RNN: 時間方向に展開して backprop を適用する backprop through time (BPTT)
 - メタ学習: MAML 等の二階微分を含むアルゴリズム
-- 微分可能な物理シミュレーション・ニューラル ODE
-- 微分可能なレンダリング（NeRF、3D Gaussian Splatting）
 
 すべて「微分可能な計算をグラフ化 → backward で勾配取得 → optimizer で更新」の同じパターンで動いています。
 
@@ -220,13 +256,11 @@ backprop はニューラルネット学習のあらゆる場面で使われま�
 
 - 微分不可能な演算（argmax、サンプリング、整数演算）: 勾配が定義されない。straight-through estimator、Gumbel-Softmax、REINFORCE 等で代用
 - 計算グラフが極端に深い（RNN を 1000 step 展開等）: メモリ使用量が増え、勾配消失も起こりやすくなる。truncated BPTT、Transformer への切り替え
-- forward と backward の不整合: ライブラリ実装のバグや eager mode の中間値破棄でズレが起きる。`torch.autograd.gradcheck` で検証
+- forward と backward の不整合: 独自の演算で backward を手書きすると、forward の微分とずれることがある。[torch.autograd.gradcheck](https://docs.pytorch.org/docs/stable/generated/torch.autograd.gradcheck.gradcheck.html) で数値微分と照合する
 - 勾配爆発: 連鎖律の積で勾配が指数的に大きくなる現象（消失の逆）。gradient clipping で対処
-- バッチサイズが小さすぎる: 勾配の分散が大きく学習が不安定。勾配のばらつきとメモリ使用量を見て調整する
 - detach し忘れ: 「教師信号として固定したいテンソル」を `.detach()` せずに使うと、そこから勾配が流れて学習が壊れる
-- in-place 演算: PyTorch で `x += 1` のような in-place 操作は autograd を壊すことがある。`x = x + 1` の方が安全
-- 重み初期化を既定値のまま使う: backprop の最初の数 epoch が極端に遅い / 速い。He / Xavier 初期化が標準
+- in-place 演算: backward に必要な中間値を `a += 1` のように書き換えると、PyTorch は `backward()` の時点で RuntimeError を出す。`a = a + 1` なら新しいテンソルになる
+- 重みの初期値の大きさが不適切: 層を通るたびに勾配が縮むか膨らみ、学習の最初から勾配消失・爆発が起きる。活性化関数に合わせた He / Xavier 初期化が標準
 - 勾配の数値精度: fp16 で計算すると勾配がアンダーフローする。loss scaling や bf16 で対処
-- 勾配消失・爆発・NaN・メモリ不足の調査: autograd を使う場合も、勾配の計算経路と中間値の保持を確認する
 - backprop と勾配降下を混同: backprop は勾配を計算するだけ、勾配降下（SGD / Adam）は計算した勾配を使ってパラメータを更新する別ステップ。両者は分業
-- backprop の代替を検討する: forward-forward など実験的な手法が提案されている。ただし、勾配計算の効率と実績の面で、backprop を置き換えるには至っていない
+- backprop の代替を検討する: [forward-forward](https://arxiv.org/abs/2212.13345) など実験的な手法が提案されている。ただし、勾配計算の効率と実績の面で、backprop を置き換えるには至っていない
