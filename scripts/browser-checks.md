@@ -15,7 +15,7 @@ make check-browser
 
 既存の Chrome を使う場合は `CHROME_PATH=/usr/bin/google-chrome make check-browser`。
 `BROWSER_TEST_PORT`（既定値 8138）で HTTP サーバーのポートを変更できる。
-スイートは既定で最大 4 本を同時に流す。`BROWSER_CHECK_JOBS=1` で 1 本ずつに戻せる（失敗の切り分け用）。
+スイートは既定で最大 4 本を同時に流す。`BROWSER_CHECK_JOBS=1` で 1 本ずつに戻せる（失敗の切り分け用）。キー入力の間隔で合否が決まる archive_scroll と home_scroll は、CPU の取り合いで誤って落ちるため、並列の分が終わった後に 1 本ずつ流す。
 サーバーは検査終了時に停止する。ポート使用中なら既存サーバーを流用せず失敗する。
 
 検査対象:

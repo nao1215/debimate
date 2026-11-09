@@ -9,9 +9,9 @@ const results = [];
 const viewports = [{ width: 1440, height: 900 }, { width: 1440, height: 1200 }, { width: 390, height: 844 }];
 const paths = ['/post/', '/post/ja/', '/weeknotes/', '/weeknotes/2026/'];
 try {
-  // 待ち時間が大半なので viewport ごとに同時に流す。各ケースは別の context で、
-  // 互いの状態を共有しない。results は最後に元の順へ並べ直す
-  await Promise.all(viewports.map(async viewport => {
+  // スペースキーの間隔（350ms）と応答の遅延（200ms）の間に追加読み込みが間に合うかを見るので、
+  // viewport を同時に流すと描画の遅れで誤って落ちる。1 つずつ順に流す
+  for (const viewport of viewports) {
     for (const path of paths) {
       const context = await browser.newContext({ viewport });
       await context.route('**/*', async route => {
@@ -62,7 +62,7 @@ try {
       console.log(`PASS ${path} ${viewport.width}×${viewport.height}: ${fetchedPages.size} additional pages, 200ms latency, no shortened Space scrolls`);
       await context.close();
     }
-  }));
+  }
 } catch (error) {
   await saveFailure(browser, 'archive_scroll');
   throw error;

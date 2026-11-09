@@ -10,7 +10,11 @@ const origin = `http://127.0.0.1:${port}`;
 // スイートはそれぞれ別のブラウザを起動し、書き出すファイル名も別なので同時に流せる。
 // スクロールや動画の時間を見るスイートがあるため、CPU を取り合わない数に抑える
 const jobs = Math.max(1, Number(process.env.BROWSER_CHECK_JOBS) || Math.min(4, availableParallelism()));
-const suites = ['new_badges', 'archive_scroll', 'home_scroll', 'home', 'archives', 'search', 'home_media', 'oss'];
+const suites = ['new_badges', 'home', 'archives', 'search', 'home_media', 'oss'];
+// キー入力の間隔と読み込みの遅延で合否が決まるスイートは、他と CPU を取り合うと
+// 描画が遅れて誤って落ちる（2026-11-08・11-09 に archive_scroll が 622px・685px で失敗）。
+// 並列のプールが終わってから 1 つずつ流す
+const exclusiveSuites = ['archive_scroll', 'home_scroll'];
 
 const server = spawn('python3', ['-u', '-m', 'http.server', port, '--bind', '127.0.0.1', '--directory', 'public'], { stdio: ['ignore', 'pipe', 'pipe'] });
 const stopped = once(server, 'exit');
@@ -54,6 +58,10 @@ try {
       if (failure) failures.push(failure);
     }
   }));
+  for (const suite of exclusiveSuites) {
+    const failure = await runSuite(suite);
+    if (failure) failures.push(failure);
+  }
   if (failures.length) throw new Error(failures.join('\n'));
 } finally {
   server.kill('SIGTERM');
