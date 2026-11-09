@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="250" viewBox="0 0 640 250" role="img"><title>1 日分の範囲条件で読んだ row group。ts 順のファイルは 2 個、順序を崩したファイルは 33 個</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="640" height="250" fill="#ffffff"/>
+<text x="20" y="32" font-size="19" font-weight="bold" text-anchor="start">ts の順に書いた sales.parquet</text>
+<rect x="20" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="38" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="56" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="74" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="92" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="110" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="128" y="44" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="146" y="44" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="164" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="182" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="200" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="218" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="236" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="254" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="272" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="290" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="308" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="326" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="344" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="362" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="380" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="398" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="416" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="434" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="452" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="470" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="488" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="506" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="524" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="542" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="560" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="578" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="596" y="44" width="16" height="34" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="20" y="102" font-size="17" font-weight="normal" text-anchor="start" class="sub">6 と 7 の 2 個だけを読む</text>
+<text x="20" y="140" font-size="19" font-weight="bold" text-anchor="start">行の順序を崩した sales_shuffled.parquet</text>
+<rect x="20" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="38" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="56" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="74" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="92" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="110" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="128" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="146" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="164" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="182" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="200" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="218" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="236" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="254" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="272" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="290" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="308" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="326" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="344" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="362" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="380" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="398" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="416" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="434" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="452" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="470" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="488" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="506" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="524" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="542" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="560" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="578" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<rect x="596" y="152" width="16" height="34" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="20" y="210" font-size="17" font-weight="normal" text-anchor="start" class="sub">33 個全部を読む</text>
+<rect x="380" y="222" width="16" height="16" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="402" y="236" font-size="17" font-weight="normal" text-anchor="start">読んだ</text>
+<rect x="480" y="222" width="16" height="16" fill="#ffffff" stroke="#666666" stroke-width="1.2" stroke-dasharray="4 3"/>
+<text x="502" y="236" font-size="17" font-weight="normal" text-anchor="start">飛ばした</text>
+</svg>

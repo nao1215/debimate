@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 500" role="img" aria-label="デプロイ単位の数と境界の強さで 4 つの構成を並べた図">
+<rect width="720" height="500" fill="#ffffff" />
+<rect x="70" y="20" width="310" height="190" rx="3" fill="#ffffff" stroke="#f2f2f2" />
+<text x="225.0" y="48" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="17" fill="#7aa6c2" text-anchor="middle" font-weight="bold">Modular Monolith</text>
+<rect x="152.0" y="66" width="146" height="58" rx="3" fill="#ffffff" stroke="#7aa6c2" stroke-width="2"  />
+<rect x="160.0" y="78" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666"  />
+<text x="177.0" y="100" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">注</text>
+<rect x="202.0" y="78" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666"  />
+<text x="219.0" y="100" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">請</text>
+<rect x="244.0" y="78" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666"  />
+<text x="261.0" y="100" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">在</text>
+<text x="225.0" y="154" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">デプロイは 1 回</text>
+<text x="225.0" y="176" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">モジュール間は公開 API だけ</text>
+<rect x="400" y="20" width="310" height="190" rx="3" fill="#ffffff" stroke="#f2f2f2" />
+<text x="555.0" y="48" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="17" fill="#1f1f1f" text-anchor="middle" font-weight="bold">Microservices</text>
+<rect x="468.0" y="66" width="50" height="58" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="2"  />
+<rect x="476.0" y="78" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666"  />
+<text x="493.0" y="100" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">注</text>
+<rect x="530.0" y="66" width="50" height="58" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="2"  />
+<rect x="538.0" y="78" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666"  />
+<text x="555.0" y="100" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">請</text>
+<rect x="592.0" y="66" width="50" height="58" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="2"  />
+<rect x="600.0" y="78" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666"  />
+<text x="617.0" y="100" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">在</text>
+<text x="555.0" y="154" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">サービスごとにデプロイ</text>
+<text x="555.0" y="176" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">呼び出しはネットワーク越し</text>
+<rect x="70" y="230" width="310" height="190" rx="3" fill="#ffffff" stroke="#f2f2f2" />
+<text x="225.0" y="258" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="17" fill="#666666" text-anchor="middle" font-weight="bold">モノリス（境界なし）</text>
+<rect x="152.0" y="276" width="146" height="58" rx="3" fill="#ffffff" stroke="#666666" stroke-width="2"  />
+<rect x="160.0" y="288" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666" stroke-dasharray="4 3" />
+<text x="177.0" y="310" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">注</text>
+<rect x="202.0" y="288" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666" stroke-dasharray="4 3" />
+<text x="219.0" y="310" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">請</text>
+<rect x="244.0" y="288" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666" stroke-dasharray="4 3" />
+<text x="261.0" y="310" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">在</text>
+<text x="225.0" y="364" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">デプロイは 1 回</text>
+<text x="225.0" y="386" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">どこからでも内部を呼べる</text>
+<rect x="400" y="230" width="310" height="190" rx="3" fill="#ffffff" stroke="#f2f2f2" />
+<text x="555.0" y="258" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="17" fill="#e15759" text-anchor="middle" font-weight="bold">Distributed Monolith</text>
+<rect x="468.0" y="276" width="50" height="58" rx="3" fill="#ffffff" stroke="#e15759" stroke-width="2" stroke-dasharray="7 4" />
+<rect x="476.0" y="288" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666" stroke-dasharray="4 3" />
+<text x="493.0" y="310" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">注</text>
+<rect x="530.0" y="276" width="50" height="58" rx="3" fill="#ffffff" stroke="#e15759" stroke-width="2" stroke-dasharray="7 4" />
+<rect x="538.0" y="288" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666" stroke-dasharray="4 3" />
+<text x="555.0" y="310" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">請</text>
+<rect x="592.0" y="276" width="50" height="58" rx="3" fill="#ffffff" stroke="#e15759" stroke-width="2" stroke-dasharray="7 4" />
+<rect x="600.0" y="288" width="34" height="34" rx="2" fill="#f2f2f2" stroke="#666666" stroke-dasharray="4 3" />
+<text x="617.0" y="310" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#1f1f1f" text-anchor="middle" font-weight="normal">在</text>
+<text x="555.0" y="364" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">デプロイ単位は複数</text>
+<text x="555.0" y="386" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">変更は同時に出す必要がある</text>
+<line x1="70" y1="434" x2="710" y2="434" stroke="#666666" />
+<text x="225.0" y="456" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">デプロイ単位 1 つ</text>
+<text x="555.0" y="456" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" font-weight="normal">デプロイ単位 複数</text>
+<line x1="56" y1="20" x2="56" y2="420" stroke="#666666" />
+<text x="44" y="115.0" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" transform="rotate(-90 44 115.0)">境界を機械が検査</text>
+<text x="44" y="325.0" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="14" fill="#666666" text-anchor="middle" transform="rotate(-90 44 325.0)">境界は約束だけ</text>
+<text x="390" y="490" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">注=注文 請=請求 在=在庫、破線の小箱=内部のコードや表に外から触れられるモジュール</text>
+</svg>

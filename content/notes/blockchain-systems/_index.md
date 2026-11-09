@@ -79,6 +79,13 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Mempool - 未確認取引の置き場とノードごとの受け入れ方針](/notes/blockchain-systems/mempool/) | 未確認取引 / policy |
+| 2 | [MEV - 取引の並び順から生まれる価値と利用者の損失](/notes/blockchain-systems/mev/) | 取引順序 / DEX / PBS |
+
+#### Payment Channel
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Lightning Network - 2 者の残高表をチェーンの外で書き換える支払い](/notes/blockchain-systems/lightning-network/) | Layer 2 / 支払いチャネル / HTLC |
 
 ---
 

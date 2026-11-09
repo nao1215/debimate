@@ -57,6 +57,14 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Distributed Monolith - サービスを分けても独立して変更できない構造](/notes/software-architecture/distributed-monolith/) | サービス境界 / マイクロサービス |
+| 2 | [Modular Monolith - デプロイ単位を 1 つに保ったまま境界を作る](/notes/software-architecture/modular-monolith/) | サービス境界 / モノリス |
+| 3 | [Cell-based Architecture - 顧客ごとにシステム一式を分けて障害を閉じ込める](/notes/software-architecture/cell-based-architecture/) | サービス境界 / 障害の影響範囲 |
+
+#### Resilience Patterns
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Circuit Breaker - 失敗が続く呼び出しを止めて速く失敗させる](/notes/software-architecture/circuit-breaker/) | 設計パターン / 信頼性 |
 
 #### Boundaries and Lifecycle
 

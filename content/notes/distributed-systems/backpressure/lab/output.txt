@@ -1,0 +1,4 @@
+mode        sent rejected  done  left max_wait_s last_wait_s  peak_MB
+unbounded    800        0   376   423       2.12        4.23      4.4
+block        430        0   379    50       0.54        0.50      0.6
+reject       800      372   377    50       0.54        0.50      0.6

@@ -1,0 +1,10 @@
+go version go1.26.4 linux/amd64
+--- go build ---
+1dfe5dbb213d0753e01b73abd9c601336a83c2d3fb986a01463c90b0656e6bef  alice/src/hello
+eb9e27c26fb06a0c22b703bf0c964e86bf130a8c8d70c2367b74b21fd8520694  bob/work/hello/hello
+--- 埋め込まれたパス ---
+<WORK>/alice/src/main.go
+--- go build -trimpath ---
+b0b7333aafe28d335b8f477b910e651e350d68d253c379ddd04b9f64f6fd477d  alice/src/hello-trim
+b0b7333aafe28d335b8f477b910e651e350d68d253c379ddd04b9f64f6fd477d  bob/work/hello/hello-trim
+example.com/hello/main.go

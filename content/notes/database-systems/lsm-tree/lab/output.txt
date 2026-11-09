@@ -1,0 +1,4 @@
+style   write visited read space(load) space(end) runs stored  live full
+leveled  3.70    4.05 1.00        1.05       3.05    5  30333  9932  9932
+tiered   2.64    4.96 1.01        2.15       5.27    8  52387  9932  9932
+none     0.97   17.05 1.10        4.88      10.77  107 107000  9932  9932

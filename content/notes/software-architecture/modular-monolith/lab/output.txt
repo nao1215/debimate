@@ -1,0 +1,19 @@
+== [0] 変更前
+go build: 成功
+OK: モジュール間の import は全て許可された向きです
+depcheck.sh の終了コード: 0
+== [1] billing が orders の internal を import する
+package example.com/shop/billing
+	billing/markpaid.go:3:8: use of internal package example.com/shop/orders/internal/store not allowed
+== [2] orders のパッケージが billing を直接 import する（パッケージの循環）
+package example.com/shop/billing
+	imports example.com/shop/orders from billing.go
+	imports example.com/shop/billing from charge.go: import cycle not allowed
+== [3] orders の下に billing を呼ぶパッケージを足す（モジュール間の循環）
+go build: 成功
+NG example.com/shop/orders/notify -> example.com/shop/billing
+depcheck.sh の終了コード: 1
+== [4] モジュールの外の internal に orders の表を読む SQL を置く
+go build: 成功
+NG example.com/shop/billing -> example.com/shop/internal/ordersql
+depcheck.sh の終了コード: 1

@@ -1,0 +1,132 @@
+== (a) 元の表と materialized view の問い合わせ時間
+    sum     
+------------
+ 1946604062
+(1 row)
+
+Time: 1044.028 ms (00:01.044)
+    sum     
+------------
+ 1946604062
+(1 row)
+
+Time: 0.653 ms
+    sum     
+------------
+ 1946604062
+(1 row)
+
+Time: 1188.581 ms (00:01.189)
+    sum     
+------------
+ 1946604062
+(1 row)
+
+Time: 0.559 ms
+    sum     
+------------
+ 1946604062
+(1 row)
+
+Time: 1210.134 ms (00:01.210)
+    sum     
+------------
+ 1946604062
+(1 row)
+
+Time: 0.685 ms
+== 表の大きさ
+   relname   | pg_size_pretty 
+-------------+----------------
+ orders      | 249 MB
+ daily_sales | 32 kB
+(2 rows)
+
+== (b) INSERT した後の materialized view
+   source    |  total   
+-------------+----------
+ orders      | 63629336
+ daily_sales | 62629336
+(2 rows)
+
+          source          |  total   
+--------------------------+----------
+ daily_sales (refresh 後) | 63629336
+(1 row)
+
+== (c-1) REFRESH の実行中に別の接続から SELECT
+-- reader は refresh の開始から約 154 ms 後に開始（docker exec の起動時間を含む）
+-- pg_locks
+ application_name |        mode         | granted 
+------------------+---------------------+---------
+ reader           | AccessShareLock     | f
+ refresher        | AccessExclusiveLock | t
+ refresher        | ExclusiveLock       | t
+(3 rows)
+
+-- refresher
+Time: 2961.600 ms (00:02.962)
+-- reader
+  total   
+----------
+ 63629337
+(1 row)
+
+Time: 2824.188 ms (00:02.824)
+-- refresh の完了後
+  total   
+----------
+ 63629337
+(1 row)
+
+== (d) UNIQUE 索引が無い状態で CONCURRENTLY
+ERROR:  cannot refresh materialized view "public.daily_sales" concurrently
+HINT:  Create a unique index with no WHERE clause on one or more columns of the materialized view.
+== (c-2) UNIQUE 索引を作ってから CONCURRENTLY
+-- reader は refresh の開始から約 154 ms 後に開始（docker exec の起動時間を含む）
+-- pg_locks
+ application_name |     mode      | granted 
+------------------+---------------+---------
+ refresher        | ExclusiveLock | t
+(1 row)
+
+-- refresher
+Time: 2663.952 ms (00:02.664)
+-- reader
+  total   
+----------
+ 63629337
+(1 row)
+
+Time: 1.077 ms
+-- refresh の完了後
+  total   
+----------
+ 63629338
+(1 row)
+
+== (e) refresh と最終更新時刻を同じトランザクションで記録
+    day     |  total   |         refreshed_at          
+------------+----------+-------------------------------
+ 2026-03-01 | 63629338 | 2026-11-09 23:10:47.811151+00
+(1 row)
+
+== (f) refresh の前後で、表と索引の格納先ファイルが変わるか
+   at   |     relname     | relfilenode 
+--------+-----------------+-------------
+ before | daily_sales     |       16465
+ before | daily_sales_day |       16468
+(2 rows)
+
+         at         |     relname     | relfilenode 
+--------------------+-----------------+-------------
+ after CONCURRENTLY | daily_sales     |       16465
+ after CONCURRENTLY | daily_sales_day |       16468
+(2 rows)
+
+     at      |     relname     | relfilenode 
+-------------+-----------------+-------------
+ after plain | daily_sales     |       16506
+ after plain | daily_sales_day |       16509
+(2 rows)
+

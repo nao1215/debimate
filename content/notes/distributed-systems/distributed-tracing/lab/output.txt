@@ -1,0 +1,26 @@
+# inventory clock offset = +0ms
+trace_id=4bf92f3577b34da6a3ce929d0e0e4736 spans=10
+POST /checkout [gateway] start=+0ms dur=56ms OK
+  create order [gateway] start=+0ms dur=56ms OK
+    POST /orders [orders] start=+1ms dur=55ms OK
+      reserve [orders] start=+1ms dur=22ms ERROR
+        POST /reserve [inventory] start=+2ms dur=21ms ERROR
+      reserve [orders] start=+34ms dur=22ms OK http.request.resend_count=1
+        POST /reserve [inventory] start=+35ms dur=20ms OK
+      publish order.created [orders] start=+56ms dur=0ms OK
+        process order.created [mailer] start=+57ms dur=10ms ERROR app.delivery_attempt=1
+        process order.created [mailer] start=+67ms dur=10ms OK app.delivery_attempt=2
+{"trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "70cb5ef4d3511c27", "parent_id": "829d45d021a44c64", "flags": "01", "name": "POST /reserve", "service": "inventory", "start": 1794265371612.1865, "attrs": {}, "status": "ERROR", "end": 1794265371632.7566}
+
+# inventory clock offset = -100ms
+trace_id=4bf92f3577b34da6a3ce929d0e0e4736 spans=10
+POST /checkout [gateway] start=+0ms dur=62ms OK
+  create order [gateway] start=+0ms dur=62ms OK
+    POST /orders [orders] start=+2ms dur=60ms OK
+      reserve [orders] start=+2ms dur=22ms ERROR
+        POST /reserve [inventory] start=-97ms dur=20ms ERROR  <-- starts 99ms before parent
+      reserve [orders] start=+38ms dur=23ms OK http.request.resend_count=1
+        POST /reserve [inventory] start=-60ms dur=21ms OK  <-- starts 99ms before parent
+      publish order.created [orders] start=+61ms dur=0ms OK
+        process order.created [mailer] start=+61ms dur=10ms ERROR app.delivery_attempt=1
+        process order.created [mailer] start=+72ms dur=14ms OK app.delivery_attempt=2

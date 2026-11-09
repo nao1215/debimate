@@ -27,7 +27,16 @@ description: ""
 | 1 | [Authentication - ログインした相手を本人として扱う根拠](/notes/security/authentication/) | 技術ノート / 認証 |
 | 2 | [Passkey - 秘密鍵をサーバーに渡さない認証](/notes/security/passkey/) | 技術ノート / 認証 |
 | 3 | [PKI - 公開鍵と証明書を信頼の連鎖へつなぐ](/notes/security/pki/) | 技術ノート / 公開鍵基盤・証明書 |
-| 4 | [Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)](/post/ja/2019-03-26-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi3%E5%90%91%E3%81%91%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2ssh%E6%8E%A5%E7%B6%9A%E8%A8%AD%E5%AE%9A%E5%85%AC%E9%96%8B%E9%8D%B5%E8%AA%8D/) | 既存記事 / SSH・公開鍵認証 |
+| 4 | [OAuth 2.0 / OpenID Connect - アクセスの委譲とログインの証明を分ける](/notes/security/oauth-openid-connect/) | 技術ノート / 認可・認証 |
+| 5 | [Raspberry Pi3向けのセキュアSSH接続設定(公開鍵認証、rootアクセス禁止、ログインユーザ設定など)](/post/ja/2019-03-26-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi3%E5%90%91%E3%81%91%E3%81%AE%E3%82%BB%E3%82%AD%E3%83%A5%E3%82%A2ssh%E6%8E%A5%E7%B6%9A%E8%A8%AD%E5%AE%9A%E5%85%AC%E9%96%8B%E9%8D%B5%E8%AA%8D/) | 既存記事 / SSH・公開鍵認証 |
+
+---
+
+#### Authorization
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Capability-based Security - 誰が頼んだかではなく、何を持っているかで権限を決める](/notes/security/capability-based-security/) | 技術ノート / アクセス制御 |
 
 ---
 
@@ -38,6 +47,7 @@ description: ""
 | 1 | [Random Number - 暗号で乱数がなぜ重要なのか](/notes/security/random-number/) | 技術ノート / 乱数 |
 | 2 | [Nonce - 用途によって異なる「一度」の意味](/notes/security/nonce/) | 技術ノート / 乱数 |
 | 3 | [SHA-256 - なぜ任意長のデータを固定長に変換できるのか](/notes/security/sha-256/) | 技術ノート / ハッシュ関数 |
+| 4 | [Side-Channel Attack - 計算にかかった時間から秘密を読む](/notes/security/side-channel-attack/) | 技術ノート / 実装への攻撃 |
 
 ---
 
@@ -64,7 +74,8 @@ description: ""
 
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
-| 1 | [DependabotでGitHub ActionsのActionを最新に保つ方法](/post/ja/2023-09-30-dependabot%E3%81%A7github-actions%E3%81%AEaction%E3%82%92%E6%9C%80%E6%96%B0%E3%81%AB%E4%BF%9D%E3%81%A4%E6%96%B9%E6%B3%95/) | 既存記事 / 依存関係管理 |
+| 1 | [Reproducible Builds - 配布物がそのソースから作られたことを第三者が確かめる](/notes/security/reproducible-builds/) | 技術ノート / 再現可能なビルド |
+| 2 | [DependabotでGitHub ActionsのActionを最新に保つ方法](/post/ja/2023-09-30-dependabot%E3%81%A7github-actions%E3%81%AEaction%E3%82%92%E6%9C%80%E6%96%B0%E3%81%AB%E4%BF%9D%E3%81%A4%E6%96%B9%E6%B3%95/) | 既存記事 / 依存関係管理 |
 
 ---
 

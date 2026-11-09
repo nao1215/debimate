@@ -1,0 +1,15 @@
+1. path name SYSX/BILL
+  compiler: wrote debug output
+  BILL: debug: compiled main.f
+2. fd of alice/debug.txt
+  compiler: wrote debug output
+  alice reads debug.txt: debug: compiled main.f
+  BILL: alice 3h 1200yen
+3. fd of SYSX/BILL
+  alice: cannot open BILL: Permission denied
+  BILL: alice 3h 1200yen
+4. read-only fd of alice/notes.txt
+  compiler: OSError: Bad file descriptor
+  alice reads notes.txt: (empty)
+  BILL: alice 3h 1200yen
+STAT: 3 lines written with the compiler's own authority

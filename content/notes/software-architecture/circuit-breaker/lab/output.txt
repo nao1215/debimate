@@ -1,0 +1,28 @@
+== no breaker
+  downstream calls during outage: 600
+  B (local) served during outage: 619/1567
+  A: ok=1494 failed=600 fast_fail=0 rejected=972
+== breaker
+  downstream calls during outage: 60
+  B (local) served during outage: 1499/1567
+  A: ok=1239 failed=60 fast_fail=1707 rejected=60
+  transitions: 12.28s OPEN, 17.33s HALF_OPEN, 45.50s CLOSED (11 total)
+== breaker, timeout 30 s
+  downstream calls during outage: 40
+  B (local) served during outage: 42/1567
+  A: ok=1254 failed=40 fast_fail=259 rejected=1513
+  transitions: 40.39s OPEN, 45.44s HALF_OPEN, 45.50s CLOSED (3 total)
+== 3 attempts, no breaker
+  downstream calls during outage: 600
+  B (local) served during outage: 205/1567
+  A: ok=1507 failed=200 fast_fail=0 rejected=1359
+== Retry(CircuitBreaker), 3 attempts
+  downstream calls during outage: 61
+  B (local) served during outage: 1492/1567
+  A: ok=1239 failed=0 fast_fail=1759 rejected=68
+  transitions: 12.28s OPEN, 17.33s HALF_OPEN, 45.50s CLOSED (11 total)
+== CircuitBreaker(Retry), 3 attempts
+  downstream calls during outage: 165
+  B (local) served during outage: 1275/1567
+  A: ok=1353 failed=55 fast_fail=1393 rejected=265
+  transitions: 16.28s OPEN, 21.29s HALF_OPEN, 43.39s CLOSED (7 total)

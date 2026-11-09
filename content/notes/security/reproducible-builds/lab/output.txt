@@ -1,0 +1,23 @@
+stage 0  A=35766f8b998f6ddd  B=e44dd8355fd054b6  DIFFERENT
+stage 1  A=5387d3683c52a63d  B=dfd94911154696c0  DIFFERENT
+stage 2  A=12276888995da47f  B=be7564dab1402cec  DIFFERENT
+stage 3  A=ff068a3fd506c1d1  B=3730f617a591ac57  DIFFERENT
+stage 4  A=1ac65de158344e38  B=c2f5016c54f06759  DIFFERENT
+stage 5  A=1ac65de158344e38  B=1ac65de158344e38  same
+
+--- stage 0 の中身 (A) ---
+drwxr-xr-x root/root         0 2026-11-10 07:50:57 project/
+-rwxr-xr-x root/root        21 2026-11-10 07:50:57 project/hello.sh
+-rw-r--r-- root/root         6 2026-11-10 07:50:57 project/README
+drwxr-xr-x root/root         0 2026-11-10 07:50:57 project/docs/
+-rw-r--r-- root/root         6 2026-11-10 07:50:57 project/docs/usage.txt
+--- stage 0 の中身 (B) ---
+drwxrwxr-x 1000/1000         0 2026-11-10 07:50:59 project/
+-rw-rw-r-- 1000/1000         6 2026-11-10 07:50:59 project/README
+-rwxrwxr-x 1000/1000        21 2026-11-10 07:50:59 project/hello.sh
+drwxrwxr-x 1000/1000         0 2026-11-10 07:50:59 project/docs/
+-rw-rw-r-- 1000/1000         6 2026-11-10 07:50:59 project/docs/usage.txt
+--- stage 0 の gzip ヘッダー (A, 先頭 24 byte) ---
+0000000 1f 8b 08 08 51 4e f2 6a 00 03 70 72 6f 6a 65 63
+0000016 74 2e 74 61 72 00 ed d6
+0000024

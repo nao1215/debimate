@@ -1,0 +1,161 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+#### 01_delete_vs_drop.sql
+== (1) 9 月分を DELETE で消す
+Time: 2128.682 ms (00:02.129)
+== (2) 10 月分をパーティションごと DROP で消す
+Time: 29.028 ms
+== (3) DELETE の後に残った、回収待ちのレコード
+      relname       | n_live_tup | n_dead_tup |  size  
+--------------------+------------+------------+--------
+ access_log_2026_09 |          0 |    5000000 | 211 MB
+(1 row)
+
+#### 02_pruning.sql
+== (1) 範囲で書いた条件
+                                                                         QUERY PLAN                                                                         
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1 loops=1)
+   ->  Seq Scan on events_2026_03 events (actual rows=44640 loops=1)
+         Filter: ((created_at >= '2026-03-01 00:00:00'::timestamp without time zone) AND (created_at < '2026-04-01 00:00:00'::timestamp without time zone))
+(3 rows)
+
+== (2) 関数で包んだ条件
+                                                     QUERY PLAN                                                     
+--------------------------------------------------------------------------------------------------------------------
+ Aggregate (actual rows=1 loops=1)
+   ->  Append (actual rows=44640 loops=1)
+         ->  Seq Scan on events_2026_01 events_1 (actual rows=0 loops=1)
+               Filter: (date_trunc('month'::text, created_at) = '2026-03-01 00:00:00'::timestamp without time zone)
+               Rows Removed by Filter: 44640
+         ->  Seq Scan on events_2026_02 events_2 (actual rows=0 loops=1)
+               Filter: (date_trunc('month'::text, created_at) = '2026-03-01 00:00:00'::timestamp without time zone)
+               Rows Removed by Filter: 40320
+         ->  Seq Scan on events_2026_03 events_3 (actual rows=44640 loops=1)
+               Filter: (date_trunc('month'::text, created_at) = '2026-03-01 00:00:00'::timestamp without time zone)
+         ->  Seq Scan on events_2026_04 events_4 (actual rows=0 loops=1)
+               Filter: (date_trunc('month'::text, created_at) = '2026-03-01 00:00:00'::timestamp without time zone)
+               Rows Removed by Filter: 43200
+         ->  Seq Scan on events_2026_05 events_5 (actual rows=0 loops=1)
+               Filter: (date_trunc('month'::text, created_at) = '2026-03-01 00:00:00'::timestamp without time zone)
+               Rows Removed by Filter: 44640
+         ->  Seq Scan on events_2026_06 events_6 (actual rows=0 loops=1)
+               Filter: (date_trunc('month'::text, created_at) = '2026-03-01 00:00:00'::timestamp without time zone)
+               Rows Removed by Filter: 43200
+(19 rows)
+
+== (3) パラメータを後から渡す generic plan
+                                 QUERY PLAN                                  
+-----------------------------------------------------------------------------
+ Aggregate (actual rows=1 loops=1)
+   ->  Append (actual rows=44640 loops=1)
+         Subplans Removed: 5
+         ->  Seq Scan on events_2026_03 events_1 (actual rows=44640 loops=1)
+               Filter: ((created_at >= $1) AND (created_at < $2))
+(5 rows)
+
+#### 03_hot_partition.sql
+== (1) パーティションごとに入った件数
+   partition   | inserted 
+---------------+----------
+ logs_hash_0   |    29032
+ logs_hash_1   |    28937
+ logs_hash_2   |    28431
+ logs_range_10 |        0
+ logs_range_11 |    86400
+ logs_range_12 |        0
+(6 rows)
+
+== (2) hash で分けた表を時刻の範囲で読む
+                                                                            QUERY PLAN                                                                            
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate
+   ->  Append
+         ->  Seq Scan on logs_hash_0 logs_hash_1
+               Filter: ((created_at >= '2026-11-10 09:00:00'::timestamp without time zone) AND (created_at < '2026-11-10 10:00:00'::timestamp without time zone))
+         ->  Seq Scan on logs_hash_1 logs_hash_2
+               Filter: ((created_at >= '2026-11-10 09:00:00'::timestamp without time zone) AND (created_at < '2026-11-10 10:00:00'::timestamp without time zone))
+         ->  Seq Scan on logs_hash_2 logs_hash_3
+               Filter: ((created_at >= '2026-11-10 09:00:00'::timestamp without time zone) AND (created_at < '2026-11-10 10:00:00'::timestamp without time zone))
+(8 rows)
+
+== (3) hash で分けた表をキーの等値で読む
+            QUERY PLAN             
+-----------------------------------
+ Seq Scan on logs_hash_0 logs_hash
+   Filter: (id = 42)
+(2 rows)
+
+#### 04_unique.sql
+== (1) id だけの主キー
+ERROR:  unique constraint on partitioned table must include all partitioning columns
+DETAIL:  PRIMARY KEY constraint on table "orders" lacks column "created_at" which is part of the partition key.
+== (2) パーティションキーを含めた主キー
+== (3) 同じ id を別の月に入れる
+   partition    | id |     created_at      
+----------------+----+---------------------
+ orders_2026_10 |  1 | 2026-10-31 23:59:00
+ orders_2026_11 |  1 | 2026-11-01 00:00:00
+(2 rows)
+
+== (4) 親表の索引と、各パーティションの索引
+        index        |    on_table    
+---------------------+----------------
+ orders_pkey         | orders
+ orders_2026_10_pkey | orders_2026_10
+ orders_2026_11_pkey | orders_2026_11
+(3 rows)
+
+#### 05_attach_detach.sql
+== (1) CHECK 制約なしで ATTACH
+DEBUG:  verifying table "metrics_2026_12"
+Time: 345.987 ms
+== (2) CHECK 制約ありで ATTACH
+DEBUG:  partition constraint for table "metrics_2027_01" is implied by existing constraints
+Time: 5.982 ms
+== (3) DEFAULT パーティションに入ったレコードと、後から作る月
+    partition    | id |     created_at      
+-----------------+----+---------------------
+ metrics_default |  1 | 2027-02-03 10:00:00
+(1 row)
+
+ERROR:  updated partition constraint for default partition "metrics_default" would be violated by some row
+== (4) DEFAULT パーティションがある間の DETACH CONCURRENTLY
+ERROR:  cannot detach partitions concurrently when a default partition exists
+== (5) トランザクションの中での DETACH CONCURRENTLY
+ERROR:  ALTER TABLE ... DETACH CONCURRENTLY cannot run inside a transaction block
+== (6) DETACH CONCURRENTLY の後に残る CHECK 制約
+             conname              |                                                                              pg_get_constraintdef                                                                               
+----------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ metrics_2026_11_created_at_check | CHECK (((created_at IS NOT NULL) AND (created_at >= '2026-11-01 00:00:00'::timestamp without time zone) AND (created_at < '2026-12-01 00:00:00'::timestamp without time zone)))
+(1 row)
+
+#### 06_lock_queue.sh
+== (1) CREATE TABLE ... PARTITION OF
+ application_name | wait_event_type |             query              
+------------------+-----------------+--------------------------------
+ B_ddl            | Lock            | CREATE TABLE q_events_2026_12 
+ C_select         | Lock            | SELECT count(*) FROM q_events;
+(2 rows)
+
+C_select finished after 4.1 s
+B_ddl    finished after 5.1 s
+== (2) ATTACH PARTITION
+B_ddl    finished after 0.1 s
+C_select finished after 0.1 s
+ application_name | wait_event_type | query 
+------------------+-----------------+-------
+(0 rows)
+
+#### 07_default_lock.sh
+== ATTACH PARTITION（DEFAULT パーティションあり、両方に CHECK 制約あり）
+ application_name | wait_event_type |             query              
+------------------+-----------------+--------------------------------
+ B_ddl            | Lock            | ALTER TABLE d_events ATTACH PA
+ C_select         | Lock            | SELECT count(*) FROM d_events;
+(2 rows)
+
+C_select finished after 4.1 s
+B_ddl    finished after 5.2 s
+== 走査を省けたか（DEBUG）
+DEBUG:  partition constraint for table "d_events_2027_01" is implied by existing constraints
+DEBUG:  updated partition constraint for default partition "d_events_default" is implied by existing constraints

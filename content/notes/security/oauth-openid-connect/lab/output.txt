@@ -1,0 +1,12 @@
+(a) no PKCE, stolen code:   token 200 -> userinfo {'sub': 'alice'}
+(b) PKCE, stolen code:      token 400 {'error': 'invalid_grant'}
+    legitimate client:      logged in as alice
+(c) pkce=0 state=0 nonce=0: logged in as mallory
+(c) pkce=0 state=1 nonce=0: rejected: state mismatch
+(c) pkce=1 state=0 nonce=0: rejected: invalid_grant
+(c) pkce=0 state=0 nonce=1: rejected: nonce mismatch
+(c) pkce=1 state=0 nonce=0 challenge=0 as_check=0: logged in as mallory
+(c) pkce=1 state=0 nonce=0 challenge=0 as_check=1: rejected: invalid_grant
+(c) empty victim session:   rejected: no login in progress
+(d) access token -> photo-app: logged in as alice
+    ID Token     -> photo-app: rejected: aud=quiz-app

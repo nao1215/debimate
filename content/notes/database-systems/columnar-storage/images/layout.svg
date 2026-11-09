@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="350" viewBox="0 0 720 350" role="img"><title>同じ表を行ごとに並べた場合と列ごとに並べた場合のバイトの並び</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="720" height="350" fill="#ffffff"/>
+<text x="20" y="30" font-size="19" font-weight="bold" text-anchor="start">Row Store（行ごとに連続）</text>
+<text x="20" y="75" font-size="17" font-weight="normal" text-anchor="start" class="sub">ファイル</text>
+<rect x="100" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="133.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">1</text>
+<rect x="166" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="199.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">tokyo</text>
+<rect x="232" y="48" width="66" height="40" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="265.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">120</text>
+<text x="199.0" y="110" font-size="16" font-weight="normal" text-anchor="middle" class="sub">行 1</text>
+<rect x="298" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="331.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">2</text>
+<rect x="364" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="397.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">osaka</text>
+<rect x="430" y="48" width="66" height="40" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="463.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">80</text>
+<text x="397.0" y="110" font-size="16" font-weight="normal" text-anchor="middle" class="sub">行 2</text>
+<rect x="496" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="529.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">3</text>
+<rect x="562" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="595.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">tokyo</text>
+<rect x="628" y="48" width="66" height="40" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="661.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">450</text>
+<text x="595.0" y="110" font-size="16" font-weight="normal" text-anchor="middle" class="sub">行 3</text>
+<text x="20" y="136" font-size="17" font-weight="normal" text-anchor="start" class="sub">amount は 3 か所に散る</text>
+<text x="20" y="192" font-size="19" font-weight="bold" text-anchor="start">Column Store（列ごとに連続）</text>
+<text x="20" y="237" font-size="17" font-weight="normal" text-anchor="start" class="sub">ファイル</text>
+<rect x="100" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="133.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">1</text>
+<rect x="166" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="199.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">2</text>
+<rect x="232" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="265.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">3</text>
+<text x="199.0" y="272" font-size="16" font-weight="normal" text-anchor="middle" class="sub">id 列</text>
+<rect x="298" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="331.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">tokyo</text>
+<rect x="364" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="397.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">osaka</text>
+<rect x="430" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
+<text x="463.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">tokyo</text>
+<text x="397.0" y="272" font-size="16" font-weight="normal" text-anchor="middle" class="sub">region 列</text>
+<rect x="496" y="210" width="66" height="40" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="529.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">120</text>
+<rect x="562" y="210" width="66" height="40" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="595.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">80</text>
+<rect x="628" y="210" width="66" height="40" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="661.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">450</text>
+<text x="595.0" y="272" font-size="16" font-weight="normal" text-anchor="middle" class="sub">amount 列</text>
+<text x="20" y="298" font-size="17" font-weight="normal" text-anchor="start" class="sub">amount は 1 か所に続く</text>
+<rect x="420" y="322" width="18" height="16" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.2"/>
+<text x="446" y="336" font-size="17" font-weight="normal" text-anchor="start">sum(amount) が必要とする値</text>
+</svg>

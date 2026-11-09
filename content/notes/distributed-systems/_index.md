@@ -34,6 +34,13 @@ description: ""
 | 2 | [Quorum - 過半数で決定を成立させる仕組み](/notes/distributed-systems/quorum/) | 協調 |
 | 3 | [Leader and Followers - 更新を 1 台へ集約する複製の型](/notes/distributed-systems/leader-and-followers/) | 協調 |
 
+#### Consensus
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [FLP Impossibility - 非同期の合意が必ず終わるとは限らない理由](/notes/distributed-systems/flp-impossibility/) | 合意 / 理論 |
+| 2 | [Byzantine Fault Tolerance - 嘘をつくノードがいても合意する](/notes/distributed-systems/byzantine-fault-tolerance/) | 合意 / 耐障害性 |
+
 #### Partitioning
 
 | No. | 項目 | カテゴリ |
@@ -58,6 +65,13 @@ description: ""
 | --- | --- | --- |
 | 1 | [Idempotency - 同じ要求を何度受け取っても結果を 1 回分に保つ](/notes/distributed-systems/idempotency/) | 信頼性 |
 | 2 | [Transactional Outbox - DB 更新とイベント送信を食い違わせない](/notes/distributed-systems/transactional-outbox/) | 信頼性 |
+| 3 | [Backpressure - 下流の詰まりを上流に伝えて流量を合わせる](/notes/distributed-systems/backpressure/) | 信頼性 / 流量制御 |
+
+#### Observability
+
+| No. | 項目 | カテゴリ |
+| --- | --- | --- |
+| 1 | [Distributed Tracing - 要求が通った経路と時間を因果関係付きで記録する](/notes/distributed-systems/distributed-tracing/) | 可観測性 |
 
 ---
 

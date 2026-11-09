@@ -1,0 +1,378 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+=== 1. 準備: 1 店舗が 99% を占める注文の表 ===
+CREATE TABLE orders (
+  id      bigint PRIMARY KEY,
+  shop_id int    NOT NULL,
+  amount  int    NOT NULL
+) WITH (autovacuum_enabled = off);
+CREATE TABLE
+INSERT INTO orders
+  SELECT g,
+         CASE WHEN g % 100 = 0 THEN 2 + (g / 100) % 1000 ELSE 1 END,
+         g % 1000
+  FROM generate_series(1, 1000000) AS g;
+INSERT 0 1000000
+CREATE INDEX orders_shop_id_idx ON orders (shop_id);
+CREATE INDEX
+VACUUM ANALYZE orders;
+VACUUM
+SELECT shop_id, count(*) FROM orders GROUP BY shop_id ORDER BY count(*) DESC LIMIT 3;
+ shop_id | count  
+---------+--------
+       1 | 990000
+       3 |     10
+       2 |     10
+(3 rows)
+
+SELECT n_distinct, most_common_vals, most_common_freqs
+  FROM pg_stats WHERE schemaname = 'public' AND tablename = 'orders' AND attname = 'shop_id';
+ n_distinct | most_common_vals | most_common_freqs 
+------------+------------------+-------------------
+        261 | {1}              | {0.9902}
+(1 row)
+
+=== 2. 同じ大口店舗 (shop_id = 1) で 7 回実行する ===
+PREPARE q(int) AS SELECT sum(amount) FROM orders WHERE shop_id = $1;
+PREPARE
+--- 1 回目
+EXPLAIN (ANALYZE) EXECUTE q(1);
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=12646.01..12646.02 rows=1 width=8) (actual time=79.791..83.610 rows=1 loops=1)
+   ->  Gather  (cost=12645.79..12646.00 rows=2 width=8) (actual time=78.118..83.594 rows=3 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Partial Aggregate  (cost=11645.79..11645.80 rows=1 width=8) (actual time=74.712..74.714 rows=1 loops=3)
+               ->  Parallel Seq Scan on orders  (cost=0.00..10614.33 rows=412583 width=4) (actual time=0.011..47.983 rows=330000 loops=3)
+                     Filter: (shop_id = 1)
+                     Rows Removed by Filter: 3333
+ Planning Time: 0.118 ms
+ Execution Time: 83.648 ms
+(10 rows)
+
+--- 2〜5 回目
+EXECUTE q(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE q(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE q(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE q(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+--- 6 回目
+EXPLAIN (ANALYZE) EXECUTE q(1);
+                                                                 QUERY PLAN                                                                  
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=554.00..554.01 rows=1 width=8) (actual time=159.640..159.641 rows=1 loops=1)
+   ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..544.42 rows=3831 width=4) (actual time=0.069..103.671 rows=990000 loops=1)
+         Index Cond: (shop_id = $1)
+ Planning Time: 0.151 ms
+ Execution Time: 159.670 ms
+(5 rows)
+
+--- 7 回目
+EXPLAIN (ANALYZE) EXECUTE q(1);
+                                                                 QUERY PLAN                                                                 
+--------------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=554.00..554.01 rows=1 width=8) (actual time=103.433..103.434 rows=1 loops=1)
+   ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..544.42 rows=3831 width=4) (actual time=0.016..67.857 rows=990000 loops=1)
+         Index Cond: (shop_id = $1)
+ Planning Time: 0.008 ms
+ Execution Time: 103.461 ms
+(5 rows)
+
+SELECT name, generic_plans, custom_plans FROM pg_prepared_statements WHERE name = 'q';
+ name | generic_plans | custom_plans 
+------+---------------+--------------
+ q    |             2 |            5
+(1 row)
+
+=== 3. 同じ generic plan で小さい店舗 (shop_id = 500) を引く ===
+EXPLAIN (ANALYZE) EXECUTE q(500);
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=554.00..554.01 rows=1 width=8) (actual time=0.043..0.044 rows=1 loops=1)
+   ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..544.42 rows=3831 width=4) (actual time=0.031..0.041 rows=10 loops=1)
+         Index Cond: (shop_id = $1)
+ Planning Time: 0.009 ms
+ Execution Time: 0.063 ms
+(5 rows)
+
+=== 4. force_custom_plan で値ごとの計画に戻す ===
+SET plan_cache_mode = force_custom_plan;
+SET
+EXPLAIN (ANALYZE) EXECUTE q(1);
+                                                                QUERY PLAN                                                                
+------------------------------------------------------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=12646.01..12646.02 rows=1 width=8) (actual time=31.985..36.383 rows=1 loops=1)
+   ->  Gather  (cost=12645.79..12646.00 rows=2 width=8) (actual time=31.886..36.375 rows=3 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         ->  Partial Aggregate  (cost=11645.79..11645.80 rows=1 width=8) (actual time=30.447..30.448 rows=1 loops=3)
+               ->  Parallel Seq Scan on orders  (cost=0.00..10614.33 rows=412583 width=4) (actual time=0.005..18.588 rows=330000 loops=3)
+                     Filter: (shop_id = 1)
+                     Rows Removed by Filter: 3333
+ Planning Time: 0.061 ms
+ Execution Time: 36.400 ms
+(10 rows)
+
+RESET plan_cache_mode;
+RESET
+=== 5. 小さい店舗で 6 回実行すると、generic plan に切り替わらない ===
+PREPARE small(int) AS SELECT sum(amount) FROM orders WHERE shop_id = $1;
+PREPARE
+EXECUTE small(2);
+ sum 
+-----
+   0
+(1 row)
+
+EXECUTE small(3);
+ sum  
+------
+ 1000
+(1 row)
+
+EXECUTE small(4);
+ sum  
+------
+ 2000
+(1 row)
+
+EXECUTE small(5);
+ sum  
+------
+ 3000
+(1 row)
+
+EXECUTE small(6);
+ sum  
+------
+ 4000
+(1 row)
+
+EXPLAIN EXECUTE small(7);
+                                       QUERY PLAN                                        
+-----------------------------------------------------------------------------------------
+ Aggregate  (cost=14.91..14.92 rows=1 width=8)
+   ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..14.82 rows=38 width=4)
+         Index Cond: (shop_id = 7)
+(3 rows)
+
+SELECT name, generic_plans, custom_plans FROM pg_prepared_statements WHERE name = 'small';
+ name  | generic_plans | custom_plans 
+-------+---------------+--------------
+ small |             0 |            6
+(1 row)
+
+=== 6. 索引を消す・作ると、generic plan が作り直される ===
+EXPLAIN (COSTS OFF) EXECUTE q(1);
+                     QUERY PLAN                      
+-----------------------------------------------------
+ Aggregate
+   ->  Index Scan using orders_shop_id_idx on orders
+         Index Cond: (shop_id = $1)
+(3 rows)
+
+DROP INDEX orders_shop_id_idx;
+DROP INDEX
+EXPLAIN (COSTS OFF) EXECUTE q(1);
+                  QUERY PLAN                   
+-----------------------------------------------
+ Finalize Aggregate
+   ->  Gather
+         Workers Planned: 2
+         ->  Partial Aggregate
+               ->  Parallel Seq Scan on orders
+                     Filter: (shop_id = $1)
+(6 rows)
+
+CREATE INDEX orders_shop_id_idx ON orders (shop_id);
+CREATE INDEX
+EXPLAIN (COSTS OFF) EXECUTE q(1);
+                     QUERY PLAN                      
+-----------------------------------------------------
+ Aggregate
+   ->  Index Scan using orders_shop_id_idx on orders
+         Index Cond: (shop_id = $1)
+(3 rows)
+
+=== 7. 列を足すと、SELECT * の prepared statement はエラーになる ===
+PREPARE one(bigint) AS SELECT * FROM orders WHERE id = $1;
+PREPARE
+EXECUTE one(100);
+ id  | shop_id | amount 
+-----+---------+--------
+ 100 |       3 |    100
+(1 row)
+
+ALTER TABLE orders ADD COLUMN note text;
+ALTER TABLE
+EXECUTE one(100);
+psql:/tmp/experiment.sql:67: ERROR:  cached plan must not change result type
+DEALLOCATE one;
+DEALLOCATE
+PREPARE one(bigint) AS SELECT * FROM orders WHERE id = $1;
+PREPARE
+EXECUTE one(100);
+ id  | shop_id | amount | note 
+-----+---------+--------+------
+ 100 |       3 |    100 | 
+(1 row)
+
+ALTER TABLE orders DROP COLUMN note;
+ALTER TABLE
+=== 8. search_path を変えると、表の名前が解決し直される ===
+CREATE SCHEMA archive;
+CREATE SCHEMA
+CREATE TABLE archive.orders (id bigint, shop_id int, amount int);
+CREATE TABLE
+INSERT INTO archive.orders VALUES (1, 1, 100);
+INSERT 0 1
+PREPARE cnt AS SELECT count(*) FROM orders;
+PREPARE
+EXECUTE cnt;
+  count  
+---------
+ 1000000
+(1 row)
+
+SET search_path = archive;
+SET
+EXECUTE cnt;
+ count 
+-------
+     1
+(1 row)
+
+RESET search_path;
+RESET
+=== 9. 統計を更新しても、作り直されない場合がある ===
+ALTER TABLE orders ALTER COLUMN shop_id SET (n_distinct = 2);
+ALTER TABLE
+PREPARE st(int) AS SELECT sum(amount) FROM orders WHERE shop_id = $1;
+PREPARE
+EXECUTE st(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE st(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE st(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE st(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+EXECUTE st(1);
+    sum    
+-----------
+ 495000000
+(1 row)
+
+--- ANALYZE 前の generic plan
+EXPLAIN EXECUTE st(1);
+                                         QUERY PLAN                                         
+--------------------------------------------------------------------------------------------
+ Aggregate  (cost=554.00..554.01 rows=1 width=8)
+   ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..544.42 rows=3831 width=4)
+         Index Cond: (shop_id = $1)
+(3 rows)
+
+SELECT relpages, reltuples FROM pg_class WHERE oid = 'public.orders'::regclass;
+ relpages | reltuples 
+----------+-----------
+     5406 |     1e+06
+(1 row)
+
+ANALYZE orders;
+ANALYZE
+SELECT n_distinct FROM pg_stats WHERE schemaname = 'public' AND tablename = 'orders' AND attname = 'shop_id';
+ n_distinct 
+------------
+          2
+(1 row)
+
+SELECT relpages, reltuples FROM pg_class WHERE oid = 'public.orders'::regclass;
+ relpages | reltuples 
+----------+-----------
+     5406 |     1e+06
+(1 row)
+
+--- 行数もページ数も変わらない ANALYZE の後
+EXPLAIN EXECUTE st(1);
+                                         QUERY PLAN                                         
+--------------------------------------------------------------------------------------------
+ Aggregate  (cost=554.00..554.01 rows=1 width=8)
+   ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..544.42 rows=3831 width=4)
+         Index Cond: (shop_id = $1)
+(3 rows)
+
+--- 新しく PREPARE した文の generic plan
+PREPARE st_new(int) AS SELECT sum(amount) FROM orders WHERE shop_id = $1;
+PREPARE
+SET plan_cache_mode = force_generic_plan;
+SET
+EXPLAIN EXECUTE st_new(1);
+                                        QUERY PLAN                                        
+------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=12135.38..12135.39 rows=1 width=8)
+   ->  Gather  (cost=12135.17..12135.38 rows=2 width=8)
+         Workers Planned: 2
+         ->  Partial Aggregate  (cost=11135.17..11135.18 rows=1 width=8)
+               ->  Parallel Seq Scan on orders  (cost=0.00..10614.33 rows=208333 width=4)
+                     Filter: (shop_id = $1)
+(6 rows)
+
+RESET plan_cache_mode;
+RESET
+--- 1 件足してから ANALYZE した後
+INSERT INTO orders VALUES (1000001, 1, 1);
+INSERT 0 1
+ANALYZE orders;
+ANALYZE
+SELECT relpages, reltuples FROM pg_class WHERE oid = 'public.orders'::regclass;
+ relpages |  reltuples   
+----------+--------------
+     5406 | 1.000001e+06
+(1 row)
+
+EXPLAIN EXECUTE st(1);
+                                        QUERY PLAN                                        
+------------------------------------------------------------------------------------------
+ Finalize Aggregate  (cost=12135.39..12135.40 rows=1 width=8)
+   ->  Gather  (cost=12135.17..12135.38 rows=2 width=8)
+         Workers Planned: 2
+         ->  Partial Aggregate  (cost=11135.17..11135.18 rows=1 width=8)
+               ->  Parallel Seq Scan on orders  (cost=0.00..10614.34 rows=208333 width=4)
+                     Filter: (shop_id = $1)
+(6 rows)
+

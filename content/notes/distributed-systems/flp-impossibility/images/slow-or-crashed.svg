@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="330" viewBox="0 0 800 330" role="img"><title>From p0, a crashed p2 and a slow p2 look the same until the timeout</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#596b76"/></marker></defs>
+<style>text{font-family:"Noto Sans CJK JP","Noto Sans JP",sans-serif;fill:#28343b}</style>
+<rect width="800" height="330" fill="white"/>
+<rect x="230" y="40" width="265.0" height="270" rx="6" fill="#f7f1e5" stroke="#c5b99b"/>
+<text x="362.5" y="30" font-size="13" text-anchor="middle" fill="#28343b" font-weight="normal">p0 sees the same thing: nothing from p2</text>
+<line x1="495.0" y1="36" x2="495.0" y2="312" stroke="#28343b" stroke-width="1.5" stroke-dasharray="6 4"/>
+<text x="501.0" y="30" font-size="13" text-anchor="start" fill="#28343b" font-weight="normal">timeout (100 ms)</text>
+<text x="20" y="112" font-size="14" text-anchor="start" fill="#28343b" font-weight="bold">World A:</text>
+<text x="20" y="132" font-size="14" text-anchor="start" fill="#28343b" font-weight="bold">p2 crashed</text>
+<text x="216" y="95" font-size="14" text-anchor="end" fill="#28343b" font-weight="normal">p0</text>
+<line x1="230" y1="90" x2="760" y2="90" stroke="#9cabb5" stroke-width="2"/>
+<text x="216" y="145" font-size="14" text-anchor="end" fill="#28343b" font-weight="normal">p2</text>
+<line x1="230" y1="140" x2="760" y2="140" stroke="#9cabb5" stroke-width="2"/>
+<line x1="249.5" y1="133" x2="263.5" y2="147" stroke="#28343b" stroke-width="2.5"/>
+<line x1="249.5" y1="147" x2="263.5" y2="133" stroke="#28343b" stroke-width="2.5"/>
+<text x="270.5" y="162" font-size="13" text-anchor="start" fill="#5f6b73" font-weight="normal">stops at 10 ms, sends nothing</text>
+<line x1="256.5" y1="140.1" x2="760" y2="140.1" stroke="white" stroke-width="3"/>
+<line x1="256.5" y1="140" x2="760" y2="140" stroke="#9cabb5" stroke-width="2" stroke-dasharray="3 5"/>
+<text x="20" y="242" font-size="14" text-anchor="start" fill="#28343b" font-weight="bold">World B:</text>
+<text x="20" y="262" font-size="14" text-anchor="start" fill="#28343b" font-weight="bold">p2 is only slow</text>
+<text x="216" y="225" font-size="14" text-anchor="end" fill="#28343b" font-weight="normal">p0</text>
+<line x1="230" y1="220" x2="760" y2="220" stroke="#9cabb5" stroke-width="2"/>
+<text x="216" y="275" font-size="14" text-anchor="end" fill="#28343b" font-weight="normal">p2</text>
+<line x1="230" y1="270" x2="760" y2="270" stroke="#9cabb5" stroke-width="2"/>
+<line x1="256.5" y1="270" x2="627.5" y2="224" stroke="#596b76" stroke-width="1.8" marker-end="url(#arrow)"/>
+<text x="635.5" y="240" font-size="13" text-anchor="start" fill="#5f6b73" font-weight="normal">value arrives at 150 ms</text>
+</svg>

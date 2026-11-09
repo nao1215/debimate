@@ -1,0 +1,14 @@
+[check] agreement holds: 8 states x 64 schedules
+[fair] start x=(0, 1, 1) reachable=[0, 1]
+  round 1: x=(1, 1, 1) decided={}
+  round 2: x=(1, 1, 1) decided={0: (1, 2), 1: (1, 2), 2: (1, 2)}
+  10000 seeds: undecided=0 max_round=9
+[adversary] start x=(0, 1, 1) reachable=[0, 1]
+  round 1: x=(0, 1, 1) decided={}
+  round 2: x=(0, 1, 1) decided={}
+  round 3: x=(0, 1, 1) decided={}
+  ... round 1000: x=(0, 1, 1) decided={} reachable=[0, 1]
+[timeout] values=(0, 1, 1) timeout=100ms
+  p0: heard=[0, 1] suspected=[2] -> decide 0
+  p1: heard=[1, 0, 1] suspected=[] -> decide 1
+  p2: heard=[1, 0, 1] suspected=[] -> decide 1

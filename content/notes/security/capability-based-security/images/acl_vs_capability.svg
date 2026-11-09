@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 420" width="460" height="420" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif">
+  <rect width="460" height="420" fill="#ffffff"/>
+  <text x="17.0" y="26" font-size="16" fill="#1f1f1f" text-anchor="start" font-weight="bold">ACL 型</text>
+  <text x="17.0" y="48" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">誰が頼んだかで判断する</text>
+  <rect x="17.0" y="70" width="196" height="52" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="115.0" y="92" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">利用者</text>
+  <text x="115.0" y="112" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">BILL には書けない</text>
+  <rect x="17.0" y="162" width="196" height="52" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="115.0" y="184" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">コンパイラ</text>
+  <text x="115.0" y="204" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">SYSX に書ける</text>
+  <rect x="17.0" y="254" width="196" height="52" rx="3" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="115.0" y="276" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">OS</text>
+  <text x="115.0" y="296" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">主体の名前で ACL を引く</text>
+  <rect x="17.0" y="346" width="196" height="52" rx="3" fill="#ffffff" stroke="#e15759" stroke-width="1.5"/>
+  <text x="115.0" y="368" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">SYSX/BILL</text>
+  <text x="115.0" y="388" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">課金情報が消える</text>
+  <line x1="45.0" y1="122" x2="45.0" y2="154" stroke="#1f1f1f" stroke-width="1.6"/>
+  <path d="M45.0 162 L40.0 153 L50.0 153 Z" fill="#1f1f1f"/>
+  <text x="55.0" y="147.0" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">名前 SYSX/BILL</text>
+  <line x1="45.0" y1="214" x2="45.0" y2="246" stroke="#1f1f1f" stroke-width="1.6"/>
+  <path d="M45.0 254 L40.0 245 L50.0 245 Z" fill="#1f1f1f"/>
+  <text x="55.0" y="239.0" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">open(名前)</text>
+  <line x1="45.0" y1="306" x2="45.0" y2="338" stroke="#e15759" stroke-width="1.6"/>
+  <path d="M45.0 346 L40.0 337 L50.0 337 Z" fill="#e15759"/>
+  <text x="55.0" y="331.0" font-size="13" fill="#e15759" text-anchor="start" font-weight="normal">許可</text>
+  <line x1="230" y1="12" x2="230" y2="408" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="247.0" y="26" font-size="16" fill="#1f1f1f" text-anchor="start" font-weight="bold">capability 型</text>
+  <text x="247.0" y="48" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">何を持っているかで判断する</text>
+  <rect x="247.0" y="70" width="196" height="52" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="345.0" y="92" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">利用者</text>
+  <text x="345.0" y="112" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">自分で debug.txt を開く</text>
+  <rect x="247.0" y="162" width="196" height="52" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="345.0" y="184" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">コンパイラ</text>
+  <text x="345.0" y="204" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">STAT の fd は自前</text>
+  <rect x="247.0" y="254" width="196" height="52" rx="3" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="1.5"/>
+  <text x="345.0" y="276" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">OS</text>
+  <text x="345.0" y="296" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">fd が指す先に書く</text>
+  <rect x="247.0" y="346" width="196" height="52" rx="3" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+  <text x="345.0" y="368" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">debug.txt</text>
+  <text x="345.0" y="388" font-size="13" fill="#666666" text-anchor="middle" font-weight="normal">BILL の fd は誰も渡さない</text>
+  <line x1="275.0" y1="122" x2="275.0" y2="154" stroke="#1f1f1f" stroke-width="1.6"/>
+  <path d="M275.0 162 L270.0 153 L280.0 153 Z" fill="#1f1f1f"/>
+  <text x="285.0" y="147.0" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">fd を渡す</text>
+  <line x1="275.0" y1="214" x2="275.0" y2="246" stroke="#1f1f1f" stroke-width="1.6"/>
+  <path d="M275.0 254 L270.0 245 L280.0 245 Z" fill="#1f1f1f"/>
+  <text x="285.0" y="239.0" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">write(fd)</text>
+  <line x1="275.0" y1="306" x2="275.0" y2="338" stroke="#7aa6c2" stroke-width="1.6"/>
+  <path d="M275.0 346 L270.0 337 L280.0 337 Z" fill="#7aa6c2"/>
+  <text x="285.0" y="331.0" font-size="13" fill="#7aa6c2" text-anchor="start" font-weight="normal">書き込み</text>
+</svg>

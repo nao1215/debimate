@@ -1,0 +1,13 @@
+== quorum intersection (quorum = n - f)
+n=3 f=1 quorum=2 min honest in overlap=0 counterexample Q1=(0, 1) Q2=(0, 2) faulty=(0,)
+n=4 f=1 quorum=3 min honest in overlap=1 ok
+n=5 f=1 quorum=4 min honest in overlap=2 ok
+n=6 f=2 quorum=4 min honest in overlap=0 counterexample Q1=(0, 1, 2, 3) Q2=(0, 1, 4, 5) faulty=(0, 1)
+n=7 f=2 quorum=5 min honest in overlap=1 ok
+== one round, equivocating or silent node
+n=3 quorum=2 faulty=primary cases= 9 split= 2 nobody_prepared= 1 e.g. {1: 'commit', 2: 'abort'}
+n=3 quorum=2 faulty=backup  cases= 9 split= 0 nobody_prepared= 0
+n=3 quorum=3 faulty=primary cases= 9 split= 0 nobody_prepared= 7
+n=3 quorum=3 faulty=backup  cases= 9 split= 0 nobody_prepared= 4
+n=4 quorum=3 faulty=primary cases=27 split= 0 nobody_prepared=13
+n=4 quorum=3 faulty=backup  cases=27 split= 0 nobody_prepared= 0

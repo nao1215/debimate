@@ -26,6 +26,9 @@ description: ""
 | --- | --- | --- |
 | 1 | [B-Tree - ページ単位の入出力に合わせた索引の木](/notes/database-systems/b-tree/) | 索引 / 探索木 |
 | 2 | [Index Scan - 索引から表のレコードへ届くまでに何が起きるか](/notes/database-systems/index-scan/) | 索引 / アクセス方法 |
+| 3 | [LSM-Tree - 上書きせずに追記する索引と compaction](/notes/database-systems/lsm-tree/) | ストレージエンジン |
+| 4 | [Columnar Storage - 列ごとに並べて、読まない列と塊を増やす](/notes/database-systems/columnar-storage/) | ストレージエンジン / 分析 |
+| 5 | [Partitioning - 1 つの表をキーで複数の表に分ける](/notes/database-systems/partitioning/) | 物理設計 / パーティション |
 
 #### Durability / Storage
 
@@ -47,6 +50,8 @@ description: ""
 | No. | 項目 | カテゴリ |
 | --- | --- | --- |
 | 1 | [Query Processing - SQL から実行計画を作り、動かすまで](/notes/database-systems/query-processing/) | 問い合わせ処理 |
+| 2 | [Query Plan Cache - 実行計画を作り直さずに使い回す](/notes/database-systems/query-plan-cache/) | 問い合わせ処理 / 実行計画 |
+| 3 | [Materialized View - 問い合わせの結果を表として保存する](/notes/database-systems/materialized-view/) | 問い合わせ処理 / 事前計算 |
 
 #### Transaction / Concurrency Control
 

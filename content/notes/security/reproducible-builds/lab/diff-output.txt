@@ -1,0 +1,17 @@
+diffoscope 297
+--- /w/a3.tar.gz
++++ /w/b3.tar.gz
+│   --- a3.tar
+├── +++ b3.tar
+│ ├── file list
+│ │ @@ -1,5 +1,5 @@
+│ │ -drwxr-xr-x   0 root         (0) root         (0)        0 2025-11-10 00:00:00.000000 project/
+│ │ --rw-r--r--   0 root         (0) root         (0)        6 2025-11-10 00:00:00.000000 project/README
+│ │ -drwxr-xr-x   0 root         (0) root         (0)        0 2025-11-10 00:00:00.000000 project/docs/
+│ │ --rw-r--r--   0 root         (0) root         (0)        6 2025-11-10 00:00:00.000000 project/docs/usage.txt
+│ │ --rwxr-xr-x   0 root         (0) root         (0)       21 2025-11-10 00:00:00.000000 project/hello.sh
+│ │ +drwxrwxr-x   0     1000     1000        0 2025-11-10 00:00:00.000000 project/
+│ │ +-rw-rw-r--   0     1000     1000        6 2025-11-10 00:00:00.000000 project/README
+│ │ +drwxrwxr-x   0     1000     1000        0 2025-11-10 00:00:00.000000 project/docs/
+│ │ +-rw-rw-r--   0     1000     1000        6 2025-11-10 00:00:00.000000 project/docs/usage.txt
+│ │ +-rwxrwxr-x   0     1000     1000       21 2025-11-10 00:00:00.000000 project/hello.sh

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="334" viewBox="0 0 740 334" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="12">
+<rect width="740" height="334" fill="#ffffff"/>
+<line x1="250.0" y1="28" x2="250.0" y2="304" stroke="#d0d0d0" stroke-width="1"/>
+<text x="250.0" y="320" fill="#666666" text-anchor="middle">+0 ms</text>
+<line x1="367.5" y1="28" x2="367.5" y2="304" stroke="#d0d0d0" stroke-width="1"/>
+<text x="367.5" y="320" fill="#666666" text-anchor="middle">+20 ms</text>
+<line x1="485.0" y1="28" x2="485.0" y2="304" stroke="#d0d0d0" stroke-width="1"/>
+<text x="485.0" y="320" fill="#666666" text-anchor="middle">+40 ms</text>
+<line x1="602.5" y1="28" x2="602.5" y2="304" stroke="#d0d0d0" stroke-width="1"/>
+<text x="602.5" y="320" fill="#666666" text-anchor="middle">+60 ms</text>
+<line x1="720.0" y1="28" x2="720.0" y2="304" stroke="#d0d0d0" stroke-width="1"/>
+<text x="720.0" y="320" fill="#666666" text-anchor="middle">+80 ms</text>
+<text x="250" y="18" fill="#666666">time from the root span start (each host records its own clock)</text>
+<text x="10" y="50" fill="#1f1f1f">POST /checkout</text>
+<text x="242" y="50" fill="#666666" text-anchor="end">gateway</text>
+<rect x="250.0" y="39" width="329.0" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+<text x="24" y="76" fill="#1f1f1f">create order</text>
+<text x="242" y="76" fill="#666666" text-anchor="end">gateway</text>
+<rect x="250.0" y="65" width="329.0" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+<text x="38" y="102" fill="#1f1f1f">POST /orders</text>
+<text x="242" y="102" fill="#666666" text-anchor="end">orders</text>
+<rect x="255.9" y="91" width="323.1" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+<text x="52" y="128" fill="#1f1f1f">reserve</text>
+<text x="242" y="128" fill="#666666" text-anchor="end">orders</text>
+<rect x="255.9" y="117" width="129.2" height="14" fill="#e15759" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8" stroke-dasharray="4 2"/>
+<text x="389.1" y="128" fill="#e15759">error</text>
+<text x="66" y="154" fill="#1f1f1f">POST /reserve</text>
+<text x="242" y="154" fill="#666666" text-anchor="end">inventory</text>
+<rect x="261.8" y="143" width="123.4" height="14" fill="#e15759" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8" stroke-dasharray="4 2"/>
+<text x="389.1" y="154" fill="#e15759">error</text>
+<text x="52" y="180" fill="#1f1f1f">reserve (resend 1)</text>
+<text x="242" y="180" fill="#666666" text-anchor="end">orders</text>
+<rect x="449.8" y="169" width="129.2" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+<text x="66" y="206" fill="#1f1f1f">POST /reserve</text>
+<text x="242" y="206" fill="#666666" text-anchor="end">inventory</text>
+<rect x="455.6" y="195" width="117.5" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+<text x="52" y="232" fill="#1f1f1f">publish order.created</text>
+<text x="242" y="232" fill="#666666" text-anchor="end">orders</text>
+<rect x="579.0" y="221" width="2.0" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+<text x="66" y="258" fill="#1f1f1f">process (attempt 1)</text>
+<text x="242" y="258" fill="#666666" text-anchor="end">mailer</text>
+<rect x="584.9" y="247" width="58.8" height="14" fill="#e15759" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8" stroke-dasharray="4 2"/>
+<text x="647.6" y="258" fill="#e15759">error</text>
+<text x="66" y="284" fill="#1f1f1f">process (attempt 2)</text>
+<text x="242" y="284" fill="#666666" text-anchor="end">mailer</text>
+<rect x="643.6" y="273" width="58.8" height="14" fill="#7aa6c2" fill-opacity="0.85" stroke="#1f1f1f" stroke-width="0.8"/>
+</svg>
