@@ -16,8 +16,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/linear-regression"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "ml", "linear-regression"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -61,8 +61,8 @@ save("linreg_simple_fit.svg")
 # Fig 2: Polynomial degree comparison (underfit/just/overfit)
 # ============================================================
 rng2 = np.random.default_rng(0)
-x_train = np.sort(rng2.uniform(0, 1, 25))
-y_train = np.sin(2 * np.pi * x_train) + rng2.normal(0, 0.25, 25)
+x_train = np.sort(rng2.uniform(0, 1, 20))
+y_train = np.sin(2 * np.pi * x_train) + rng2.normal(0, 0.25, 20)
 x_grid = np.linspace(0, 1, 400)
 y_true = np.sin(2 * np.pi * x_grid)
 

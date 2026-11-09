@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/regression-metrics_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,8 +14,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/regression-metrics"
+NOTE_DIR = str(
+    Path(__file__).resolve().parents[2] / "notes" / "ml" / "regression-metrics"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 

@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/loss-functions_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,9 +14,10 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.environ.get("NOTE_DIR", os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/loss-functions"
-))
+NOTE_DIR = os.environ.get(
+    "NOTE_DIR",
+    str(Path(__file__).resolve().parents[2] / "notes" / "ml" / "loss-functions"),
+)
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -127,7 +129,7 @@ plt.plot(x_grid, ols.predict(x_grid), color=COLOR_RED, lw=2,
 plt.plot(x_grid, mae.predict(x_grid), color=COLOR_GREEN, lw=2,
          label=f"MAE fit: slope={mae.coef_[0]:.2f} (robust)")
 plt.xlabel("x"); plt.ylabel("y")
-plt.title("Loss choice changes the model: MSE bends toward outliers, MAE ignores them")
+plt.title("Loss choice changes the model: MSE bends toward outliers, MAE barely moves")
 plt.legend(fontsize=9)
 plt.grid(True, alpha=0.25)
 plt.tight_layout()

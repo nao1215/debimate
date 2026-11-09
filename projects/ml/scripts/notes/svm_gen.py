@@ -3,6 +3,7 @@
 実行: cd projects/ml && uv run python scripts/notes/svm_gen.py
 """
 import os
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -14,9 +15,7 @@ COLOR_RED = "#e15759"
 COLOR_GREEN = "#59a14f"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/svm"
-)
+NOTE_DIR = str(Path(__file__).resolve().parents[2] / "notes" / "ml" / "svm")
 os.makedirs(NOTE_DIR, exist_ok=True)
 
 
@@ -48,7 +47,6 @@ def plot_svc_decision(ax, model, X, y, title):
 # ============================================================
 # Fig 1: Linear SVM - hyperplane, margin, support vectors
 # ============================================================
-rng = np.random.default_rng(0)
 X, y = make_blobs(n_samples=80, centers=2, cluster_std=1.1, random_state=6)
 
 model = SVC(kernel="linear", C=1.0).fit(X, y)
@@ -65,21 +63,22 @@ save("svm_linear_margin.svg")
 # ============================================================
 # Fig 2: Hard vs soft margin (effect of C)
 # ============================================================
-# Slightly overlapping classes
+# Slightly overlapping classes (same data as the article's C comparison code)
 rng2 = np.random.default_rng(0)
 X2 = np.vstack([
     rng2.normal([0, 0], 1.0, (40, 2)),
     rng2.normal([3, 3], 1.0, (40, 2)),
 ])
 y2 = np.array([0] * 40 + [1] * 40)
-# Inject a couple of "wrong-side" points
-X2[5] = [3.0, 2.5]; y2[5] = 0
-X2[55] = [0.5, 0.5]; y2[55] = 1
 
 fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 for ax, C in zip(axes, [0.05, 1.0, 100.0]):
     m = SVC(kernel="linear", C=C).fit(X2, y2)
-    plot_svc_decision(ax, m, X2, y2, f"C = {C}")
+    width = 2 / np.linalg.norm(m.coef_[0])
+    errors = (m.predict(X2) != y2).sum()
+    print(f"C={C:>6}: support vectors={len(m.support_vectors_):2d}, "
+          f"margin width={width:.2f}, train errors={errors}")
+    plot_svc_decision(ax, m, X2, y2, f"C = {C} (margin width {width:.2f})")
 plt.suptitle("Soft-margin SVM: small C = wide margin, lots of violations | large C = narrow margin, fewer violations", y=1.02)
 plt.tight_layout()
 save("svm_soft_margin_C.svg")

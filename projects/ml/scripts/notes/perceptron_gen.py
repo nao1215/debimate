@@ -14,8 +14,8 @@ COLOR_GREEN = "#59a14f"
 COLOR_ORANGE = "#f28e2b"
 COLOR_GRAY = "#999999"
 
-NOTE_DIR = os.path.expanduser(
-    "~/ghq/github.com/nao1215/debimate/projects/ml/notes/ml/perceptron"
+NOTE_DIR = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "..", "notes", "ml", "perceptron"
 )
 os.makedirs(NOTE_DIR, exist_ok=True)
 
@@ -80,32 +80,37 @@ save("perceptron_separability.svg")
 # Fig 2: Perceptron update rule - weights moving with each misclassified point
 # ============================================================
 rng = np.random.default_rng(0)
-# Generate linearly separable 2D data
+# Generate linearly separable 2D data (not centered at the origin, so the bias must be learned)
 n = 50
-X1 = rng.normal([-1.5, -1.5], 0.7, (n, 2))
-X2 = rng.normal([1.5, 1.5], 0.7, (n, 2))
+X1 = rng.normal([0.5, 0.5], 0.5, (n, 2))
+X2 = rng.normal([2.5, 2.5], 0.5, (n, 2))
 X = np.vstack([X1, X2])
 y = np.array([0] * n + [1] * n)
 
 # Add bias term (1) to X
 X_aug = np.hstack([X, np.ones((len(X), 1))])
-w = np.array([0.0, 0.0, 0.0])
-lr = 0.1
-weights_history = [w.copy()]
+w = np.zeros(3)
+eta = 0.1
+weights_history = [w.copy()]  # weights after every update
+mistakes = []
 
 # Perceptron training
 for epoch in range(15):
+    m = 0
     for i in range(len(X)):
         pred = 1 if X_aug[i] @ w > 0 else 0
         if pred != y[i]:
-            w = w + lr * (y[i] - pred) * X_aug[i]
-    weights_history.append(w.copy())
+            w += eta * (y[i] - pred) * X_aug[i]
+            weights_history.append(w.copy())
+            m += 1
+    mistakes.append(m)
+print("mistakes per epoch:", mistakes, "updates:", sum(mistakes), "w:", np.round(w, 3))
 
 # Plot every-N weight boundary
 fig, ax = plt.subplots(figsize=(8, 6))
 ax.scatter(X[y == 0, 0], X[y == 0, 1], color=COLOR_BLUE, s=30, alpha=0.6, label="class 0")
 ax.scatter(X[y == 1, 0], X[y == 1, 1], color=COLOR_RED, s=30, alpha=0.6, label="class 1")
-xs = np.linspace(-4, 4, 100)
+xs = np.linspace(-1.5, 4.5, 100)
 for i, w_ in enumerate(weights_history):
     if w_[1] != 0:
         ys = -(w_[0] * xs + w_[2]) / w_[1]
@@ -115,10 +120,10 @@ for i, w_ in enumerate(weights_history):
         label = "final boundary" if i == len(weights_history) - 1 else None
         ax.plot(xs, ys, color=color, alpha=alpha, lw=lw, label=label)
 
-ax.set_xlim(-4, 4); ax.set_ylim(-4, 4)
+ax.set_xlim(-1.5, 4.5); ax.set_ylim(-1.5, 4.5)
 ax.set_aspect("equal")
 ax.set_xlabel("x1"); ax.set_ylabel("x2")
-ax.set_title("Perceptron learning: boundary moves with each epoch\n(thin gray = early, thick green = converged)")
+ax.set_title(f"Perceptron learning: boundary after each of {len(weights_history) - 1} updates\n(thin gray = intermediate, thick green = final)")
 ax.legend()
 ax.grid(True, alpha=0.25)
 plt.tight_layout()
