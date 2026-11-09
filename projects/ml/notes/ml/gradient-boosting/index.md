@@ -108,7 +108,7 @@ GradientBoosting の挙動を決める主要なハイパーパラメータは 3 
 - `learning_rate=0.1` は 182 本で最小（0.273）になり、300 本でも 0.280 に留まる
 - `learning_rate=0.01` は 300 本でもまだ下がり続けている（0.315）
 
-必要な本数はデータと `max_depth` で変わるため、この本数は他のデータには当てはまりません。実務では `learning_rate` を 0.05〜0.1 程度に固定し、`n_estimators` を大きめに取って、次節の early stopping で本数を決めるやり方がよく使われます。
+必要な本数はデータと `max_depth` で変わるため、この本数は他のデータには当てはまりません。`learning_rate` は 0.05〜0.1 程度に固定し、`n_estimators` を大きめに取って、次節の early stopping で本数を決めるやり方がよく使われます。
 
 ---
 
@@ -166,7 +166,7 @@ early stopping（早期停止）は、この検証データの loss を木を 1 
 
 ## Python での実例
 
-scikit-learn には `GradientBoostingClassifier` と [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html) の 2 種類の実装があります。後者は scikit-learn 0.21 で導入された実装で、特徴量をヒストグラム化して大規模データでも速く学習できるため、特別な理由がなければこちらを使うのが標準的です。以下は、説明用の人工データで early stopping 付きの学習を行う例です。
+scikit-learn には `GradientBoostingClassifier` と [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html) の 2 種類の実装があります。後者は scikit-learn 0.21 で導入された実装で、特徴量をヒストグラム化して大規模データでも速く学習できるため、特別な理由がなければ `HistGradientBoostingClassifier` を使うのが標準的です。以下は、説明用の人工データで early stopping 付きの学習を行う例です。
 
 ```python
 from sklearn.datasets import make_classification
