@@ -1,0 +1,13 @@
+$ systemd-run --user --scope -p MemoryMax=200M -p MemorySwapMax=0 python3 lab/eat_memory.py
+Running as unit: run-p818544-i46937880.scope; invocation ID: 9127f4fce77c4f7592101997820cc9af
+100 MB allocated
+/bin/bash: 16 行: 818544 強制終了               systemd-run --user --scope -p MemoryMax=200M -p MemorySwapMax=0 python3 lab/eat_memory.py
+$ echo $?
+137
+
+$ journalctl -k --since "-2min" | grep -iE 'oom-kill|Killed process|Memory cgroup'
+11月 10 23:14:16 EVO-X2 kernel: python3 invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=200
+11月 10 23:14:16 EVO-X2 kernel: Memory cgroup stats for /user.slice/user-1000.slice/user@1000.service/app.slice/run-p818544-i46937880.scope:
+11月 10 23:14:16 EVO-X2 kernel: Memory cgroup min protection 0kB -- low protection 0kB
+11月 10 23:14:16 EVO-X2 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=user.slice,mems_allowed=0,oom_memcg=/user.slice/user-1000.slice/user@1000.service/app.slice/run-p818544-i46937880.scope,task_memcg=/user.slice/user-1000.slice/user@1000.service/app.slice/run-p818544-i46937880.scope,task=python3,pid=818544,uid=1000
+11月 10 23:14:16 EVO-X2 kernel: Memory cgroup out of memory: Killed process 818544 (python3) total-vm:221812kB, anon-rss:204308kB, file-rss:6880kB, shmem-rss:0kB, UID:1000 pgtables:468kB oom_score_adj:200
