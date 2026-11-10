@@ -1,0 +1,11 @@
+{{- /* 技術ノートのカテゴリ: content/notes の各セクションと、別の場所から取り込んだ機械学習（/ml）。weight 順。 */ -}}
+{{- $groups := slice -}}
+{{- with site.GetPage "/notes" -}}
+  {{- range .Sections -}}
+    {{- $groups = $groups | append (dict "page" . "key" .File.ContentBaseName "weight" .Weight "label" .Params.cardLabel) -}}
+  {{- end -}}
+{{- end -}}
+{{- with site.GetPage "/ml" -}}
+  {{- $groups = $groups | append (dict "page" . "key" "ml" "weight" 65 "label" "機械学習") -}}
+{{- end -}}
+{{- return sort $groups "weight" -}}

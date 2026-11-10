@@ -1,0 +1,29 @@
+{{- /* 文字列を幅 .width で折り返した行のリストを返す。英数字の語は途中で切らない（幅より長い語だけ切る）。
+     .units が true なら、和文など ASCII 以外の文字を 2、ASCII を 1 として幅を数える（既定は文字数）。 */ -}}
+{{- $width := .width -}}
+{{- $units := .units | default false -}}
+{{- $lines := slice -}}
+{{- $line := "" -}}
+{{- $used := 0 -}}
+{{- range findRE `[!-~]+|\s+|.` .text -}}
+  {{- $token := . -}}
+  {{- $w := strings.RuneCount $token -}}
+  {{- if $units }}{{ $w = sub (mul 2 $w) (len (findRE `[ -~]` $token)) }}{{ end -}}
+  {{- if eq (trim $token " ") "" -}}
+    {{- if ne $line "" }}{{ $line = printf "%s " $line }}{{ $used = add $used 1 }}{{ end -}}
+  {{- else -}}
+    {{- if and (ne $line "") (gt (add $used $w) $width) -}}
+      {{- $lines = $lines | append (trim $line " ") -}}{{- $line = "" -}}{{- $used = 0 -}}
+    {{- end -}}
+    {{- if gt $w $width -}}
+      {{- range findRE (printf `.{1,%d}` (cond $units (div $width 2) $width)) $token -}}
+        {{- if ne $line "" }}{{ $lines = $lines | append (trim $line " ") }}{{ end -}}
+        {{- $line = . -}}{{- $used = strings.RuneCount . -}}
+      {{- end -}}
+    {{- else -}}
+      {{- $line = printf "%s%s" $line $token -}}{{- $used = add $used $w -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- with trim $line " " }}{{ $lines = $lines | append . }}{{ end -}}
+{{- return $lines -}}

@@ -1,0 +1,18 @@
+{{- /* 一覧カードの表紙にする画像を、Page Bundle の画像リソースとして返す。無ければ false。
+     既定は本文で最初に出てくる画像（Markdown の ![](...) か figure ショートコードの src）。
+     最初の画像が箱だけの模式図の時は、front matter の cardImage で差し替える（図のパス、または false でバナーの表紙）。 */ -}}
+{{- $found := false -}}
+{{- if isset .Params "cardimage" -}}
+  {{- with .Params.cardImage }}{{ $found = $.Resources.GetMatch . }}{{ if not $found }}{{ warnf "notes: cardImage not found: %s %s" $.Path . }}{{ end }}{{ end -}}
+{{- else -}}
+  {{- range findRESubmatch `!\[[^\]]*\]\(\s*<?([^)\s>]+)|\{\{<\s*figure\s[^>]*?src="([^"]+)"` .RawContent -}}
+    {{- if not $found -}}
+      {{- $src := index . 1 | default (index . 2) -}}
+      {{- $src = index (split (strings.TrimPrefix "./" $src) "#") 0 -}}
+      {{- if not (or (hasPrefix $src "http") (hasPrefix $src "/")) -}}
+        {{- with $.Resources.GetMatch $src }}{{ if eq .ResourceType "image" }}{{ $found = . }}{{ end }}{{ end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return $found -}}

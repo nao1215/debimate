@@ -40,7 +40,8 @@ try {
   await noJS.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.abort());
   const staticPage = await noJS.newPage();
   await staticPage.goto(origin);
-  assert.equal(await staticPage.locator('.home-columns .post-entry').count(), 12);
+  // 記事 6・技術ノート 6（2 段）・Weeknotes 3 の初期表示
+  assert.equal(await staticPage.locator('.home-columns .post-entry').count(), 15);
   assert.equal(await staticPage.getByRole('link', { name: '全記事 →' }).count(), 1);
   assert.equal(await staticPage.locator('.home-list-status button:visible').count(), 0);
   await noJS.close();

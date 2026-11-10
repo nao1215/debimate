@@ -1,0 +1,20 @@
+{{- /* 一覧カードの表紙。. はページか、dict（title・label・section）。
+     ノート本文で最初に出てくる画像があれば、それを表紙にする（SNS の OGP 画像はバナーのまま）。
+     無ければ、カテゴリのバナーを背景に card_title_image.html の文字を描く。
+     別カテゴリのタブに並べたカード（dict）は、そのカテゴリの表紙にするため画像を使わない。 */ -}}
+{{- $image := false -}}
+{{- if not (reflect.IsMap .) }}{{ $image = partial "notes/first_image.html" . }}{{ end -}}
+{{- if $image }}
+{{- /* 図はカード幅（最大 360px 前後）で見せるので、ラスター画像は 640px の WebP に縮める。SVG はそのまま。
+     クラスに entry-cover を付けない（その検査は表紙の SVG を文字だけの小さなものと前提にしている）。 */ -}}
+{{- $src := $image.RelPermalink -}}{{- $size := "" -}}
+{{- if reflect.IsImageResourceProcessable $image }}
+  {{- $small := $image.Resize (printf "%dx webp q75" (int (math.Min 640 $image.Width))) -}}
+  {{- $src = $small.RelPermalink -}}{{- $size = printf ` width="%d" height="%d"` $small.Width $small.Height -}}
+{{- end }}
+<figure class="note-card-figure"><img src="{{ $src }}" alt="" loading="lazy" decoding="async"{{ $size | safeHTMLAttr }}></figure>
+{{- else }}
+{{- $source := . -}}
+{{- if reflect.IsMap . }}{{ $source = .section }}{{ end -}}
+<figure class="entry-cover note-title-cover note-card-cover" style="background-image: linear-gradient(rgba(246,245,241,.78), rgba(246,245,241,.78)), url('{{ partial "home_note_banner.html" $source }}');">{{ partial "notes/card_title_image.html" . }}</figure>
+{{- end }}

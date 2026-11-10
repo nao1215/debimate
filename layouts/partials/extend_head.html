@@ -18,3 +18,12 @@
 {{- $noteDiagramStyle := resources.Get "css/pages/note-diagrams.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ $noteDiagramStyle.RelPermalink }}" integrity="{{ $noteDiagramStyle.Data.Integrity }}" crossorigin="anonymous">
 {{- end }}
+
+{{- /* 技術ノートのカテゴリのページ（/notes/<section>/、/ml/）は、一覧のタブへ転送する。 */ -}}
+{{- if and (eq .Kind "section") (or (and (eq .Section "notes") (not .Parent.IsHome)) (eq .Section "ml")) }}
+{{- $key := cond (eq .Section "ml") "ml" .File.ContentBaseName }}
+{{- $target := printf "/notes/#%s" $key | relURL }}
+<meta http-equiv="refresh" content="0; url={{ $target }}">
+<meta name="robots" content="noindex">
+<script>location.replace({{ $target }});</script>
+{{- end }}

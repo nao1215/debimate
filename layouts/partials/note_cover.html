@@ -1,1 +1,4 @@
-<figure class="entry-cover note-title-cover" style="background-image: linear-gradient(rgba(246,245,241,.78), rgba(246,245,241,.78)), url('{{ partial "home_note_banner.html" . }}');">{{ partial "note_title_image.html" . }}</figure>
+{{- /* ノートの表紙。外部記事や別カテゴリに並べたノートは dict（title・label・section）で渡し、背景はそのカテゴリのバナーにする。 */ -}}
+{{- $source := . -}}
+{{- if reflect.IsMap . }}{{ $source = .section }}{{ end -}}
+<figure class="entry-cover note-title-cover" style="background-image: linear-gradient(rgba(246,245,241,.78), rgba(246,245,241,.78)), url('{{ partial "home_note_banner.html" $source }}');">{{ partial "note_title_image.html" . }}</figure>

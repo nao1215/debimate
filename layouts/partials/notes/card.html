@@ -1,0 +1,50 @@
+{{- /* 技術ノート一覧のカード。.page がノートかブログ記事、無ければ .url と .title の外部リンク（種類は .kind、既定は「外部記事」）。
+     .section を渡すと、別カテゴリのタブに並べたノートとして扱う（表紙は本文の図。図が無い時だけそのカテゴリの表紙）。 */ -}}
+{{- $page := .page -}}
+{{- $loading := .loading | default "lazy" -}}
+{{- $kind := .kind | default "外部記事" -}}
+<article class="listing-card{{ if not $page }} external-listing-card{{ end }}">
+{{- if not $page }}
+  <a class="listing-card-link" href="{{ .url }}" rel="noopener">
+    {{- /* 外部リンクも、リンク先の記事の画像を _index.md の related の image に取り込んでいれば、それを表紙にする。 */ -}}
+    {{- $ext := false -}}{{- with .image }}{{ $ext = $.section.Resources.GetMatch . }}{{ if not $ext }}{{ warnf "notes: related image not found: %s" . }}{{ end }}{{ end -}}
+    {{- with $ext }}
+    {{- $small := .Resize (printf "%dx webp q75" (int (math.Min 640 .Width))) }}
+    <figure class="note-card-figure"><img src="{{ $small.RelPermalink }}" alt="" loading="lazy" decoding="async" width="{{ $small.Width }}" height="{{ $small.Height }}"></figure>
+    {{- else }}
+    {{ partial "notes/card_cover.html" (dict "title" $.title "label" (printf "%s / %s" $.section.Title $kind) "section" $.section) }}
+    {{- end }}
+    <div class="listing-card-body">
+      <h3>{{ .title }}</h3>
+      <time><span class="listing-card-kind">{{ $kind }}</span></time>
+    </div>
+  </a>
+{{- else if eq $page.Section "post" }}
+  {{- $fallback := partial "list_title_image.html" (dict "title" $page.Title "label" "記事") }}
+  {{- $image := partial "cover_url.html" $page | default $fallback }}
+  {{- $cover := false }}
+  {{- with $page.Params.cover.image }}{{ $cover = $page.Resources.GetMatch (printf "*%s*" .) }}{{ end }}
+  <a class="listing-card-link" href="{{ $page.RelPermalink }}">
+    {{ partial "card_image.html" (dict "loading" $loading "resource" $cover "src" $image "fallback" $fallback "sizes" "(min-width: 1488px) 272px, (min-width: 901px) calc((100vw - 120px) / 5), (min-width: 541px) calc((100vw - 72px) / 2), calc(100vw - 32px)") }}
+    <div class="listing-card-body">
+      <h3>{{ $page.Title }}</h3>
+      <time datetime="{{ $page.PublishDate.Format "2006-01-02" }}"><span class="listing-card-kind">ブログ記事</span><br>{{ $page.PublishDate.Format "2006/01/02" }}</time>
+    </div>
+  </a>
+{{- else }}
+  <a class="listing-card-link" href="{{ $page.RelPermalink }}">
+    {{- /* 別カテゴリのタブに並べたカードも、本文の図があればそれを表紙にする（2026-11-10 ユーザー「基本的に記事内画像を使いたい」）。
+         図が無い時だけ、並べた先のカテゴリの表紙で描く。 */ -}}
+    {{- if and .section (not (partial "notes/first_image.html" $page)) }}
+    {{ partial "notes/card_cover.html" (dict "title" $page.Title "label" .section.Title "section" .section) }}
+    {{- else }}
+    {{ partial "notes/card_cover.html" $page }}
+    {{- end }}
+    <div class="listing-card-body">
+      <h3>{{ $page.Title }}</h3>
+      <time datetime="{{ $page.Date.Format "2006-01-02" }}"><span class="listing-card-kind">{{ with .section }}{{ .Title }}（{{ $page.CurrentSection.Title }} のノート）{{ else }}{{ $page.CurrentSection.Title }}{{ with $page.Params.topics }} / {{ delimit . " · " }}{{ end }}{{ end }}</span><br>{{ $page.Date.Format "2006/01/02" }}</time>
+    </div>
+    {{ partial "new_badge.html" $page.Date }}
+  </a>
+{{- end }}
+</article>

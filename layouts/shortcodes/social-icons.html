@@ -1,0 +1,21 @@
+{{- /*
+  config/_default/params.toml の socialIcons をアイコンで並べる（About の「各種リンク」用、2026-11-10）。
+  names="github,twitter" のように名前を渡すと、その順でそれだけを出す。省略すると全部。
+  socialIcons は著者の URL のメモも兼ねているので、使っていないものも消さずに残す。
+*/ -}}
+{{- $names := slice -}}
+{{- with .Get "names" }}{{ range split . "," }}{{ $names = $names | append (trim . " ") }}{{ end }}{{ end -}}
+{{- $icons := slice -}}
+{{- if $names -}}
+  {{- range $names }}{{ $n := . }}{{ range site.Params.socialIcons }}{{ if eq .name $n }}{{ $icons = $icons | append . }}{{ end }}{{ end }}{{ end -}}
+{{- else -}}
+  {{- $icons = site.Params.socialIcons -}}
+{{- end -}}
+<div class="social-icons about-social-icons">
+  {{- range $icons }}
+  {{- $u := trim .url " " }}{{ if not (or (hasPrefix $u "http") (hasPrefix $u "mailto:")) }}{{ $u = $u | relURL }}{{ end }}
+  <a href="{{ $u | safeURL }}"{{ if not (hasPrefix .url "mailto:") }} target="_blank" rel="noopener noreferrer me"{{ end }} title="{{ (.title | default .name) | title }}">
+    {{ partial "svg.html" . }}
+  </a>
+  {{- end }}
+</div>

@@ -1,18 +1,22 @@
 {{- /* Inline home cover lettering: render with the document, without a lazy image request. */ -}}
-{{- $title := .Title | plainify | htmlUnescape -}}
+{{- /* ページか、ページを持たない外部記事の dict（title・label）を受け取る。 */ -}}
+{{- $title := "" -}}{{- $label := "" -}}
+{{- if reflect.IsMap . }}{{ $title = .title }}{{ $label = .label }}{{ else }}{{ $title = .Title }}{{ $label = .CurrentSection.Title }}{{ end -}}
+{{- $title = $title | plainify | htmlUnescape -}}
 {{- $parts := split $title " - " -}}
-{{- $heading := (index $parts 0) | truncate 54 -}}
-{{- $lines := findRE `.{1,18}` $heading -}}
-{{- $subtitle := delimit (after 1 $parts) " - " | truncate 52 -}}
+{{- /* truncate は HTML エスケープした文字列を返すので、戻してから行ごとに 1 回だけエスケープする。 */ -}}
+{{- $heading := (index $parts 0) | truncate 54 | htmlUnescape -}}
+{{- $lines := partial "notes/wrap.html" (dict "text" $heading "width" 18) -}}
+{{- $subtitle := delimit (after 1 $parts) " - " | truncate 52 | htmlUnescape -}}
 {{- $size := 44 -}}
-{{- if gt (len $lines) 3 }}{{ $size = 36 }}{{ $lines = findRE `.{1,22}` $heading }}{{ end -}}
+{{- if gt (len $lines) 3 }}{{ $size = 36 }}{{ $lines = partial "notes/wrap.html" (dict "text" $heading "width" 22) }}{{ end -}}
 {{- $text := "" -}}
 {{- range $i, $line := $lines -}}
   {{- $text = printf "%s<text x=\"64\" y=\"%d\" font-size=\"%d\" font-weight=\"600\">%s</text>" $text (add 175 (mul $i (add $size 10))) $size ($line | htmlEscape) -}}
 {{- end -}}
 {{- $y := add 187 (mul (len $lines) (add $size 10)) -}}
-{{- range $i, $line := findRE `.{1,26}` $subtitle -}}
+{{- range $i, $line := partial "notes/wrap.html" (dict "text" $subtitle "width" 26) -}}
   {{- $text = printf "%s<text x=\"64\" y=\"%d\" font-size=\"30\" fill=\"#52616b\">%s</text>" $text (add $y (mul $i 44)) ($line | htmlEscape) -}}
 {{- end -}}
-{{- $svg := printf `<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><path d="M64 116H896" stroke="#b3bfc4"/><g font-family="'Noto Sans CJK JP','Hiragino Kaku Gothic ProN',sans-serif" fill="#25353e"><text x="64" y="80" font-size="25" letter-spacing="2">%s</text>%s<text x="64" y="493" font-size="20" fill="#65757d">debimate / 技術ノート</text></g></svg>` (.CurrentSection.Title | htmlEscape) $text -}}
+{{- $svg := printf `<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><path d="M64 116H896" stroke="#b3bfc4"/><g font-family="'Noto Sans CJK JP','Hiragino Kaku Gothic ProN',sans-serif" fill="#25353e"><text x="64" y="80" font-size="25" letter-spacing="2">%s</text>%s<text x="64" y="493" font-size="20" fill="#65757d">debimate / 技術ノート</text></g></svg>` ($label | htmlEscape) $text -}}
 {{- return ($svg | safeHTML) -}}

@@ -17,6 +17,8 @@ class HomePage(HTMLParser):
         self.in_cover = False
         self.in_note_cover = False
         self.note_covers = 0
+        self.in_note_figure = False
+        self.note_figures = []
         self.inline_note_titles = 0
         self.oss_style = ""
         self.feed(path.read_text())
@@ -30,6 +32,10 @@ class HomePage(HTMLParser):
             self.in_cover = True
             self.in_note_cover = "note-title-cover" in attrs.get("class", "").split()
             self.note_covers += int(self.in_note_cover)
+        if tag == "figure" and "note-card-figure" in attrs.get("class", "").split():
+            self.in_note_figure = True
+        if tag == "img" and self.in_note_figure:
+            self.note_figures.append(attrs)
         if tag == "svg" and self.in_note_cover:
             self.inline_note_titles += 1
         if tag == "img" and self.in_cover:
@@ -48,6 +54,7 @@ class HomePage(HTMLParser):
         if tag == "figure":
             self.in_cover = False
             self.in_note_cover = False
+            self.in_note_figure = False
 
 
 class SocialImages(HTMLParser):
@@ -84,7 +91,13 @@ def check_note_ogp(root):
 
 def check(root: Path) -> None:
     home = HomePage(root / "index.html")
-    assert home.note_covers > 0, "Missing note cover art"
+    # Notes show either inline lettering or one of the note's own figures (cardImage).
+    assert home.note_covers + len(home.note_figures) > 0, "Missing note cover art"
+    for image in home.note_figures:
+        assert image.get("loading") == "lazy", f"Note figure must load lazily: {image.get('src')}"
+        if not image.get("src", "").endswith(".svg"):
+            for attribute in ("width", "height"):
+                assert image.get(attribute), f"Missing {attribute}: {image.get('src')}"
     assert home.inline_note_titles == home.note_covers, "Note lettering must render inline, without lazy image loading"
     assert home.cover_images, "No cover images found on the homepage"
     for image in home.cover_images:

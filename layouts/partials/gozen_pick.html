@@ -1,0 +1,28 @@
+{{- /*
+  トップの右の帯: ゲーム制作フレームワーク Gozen を固定で出す（2026-11-10 ユーザー
+  「Featured OSS（ランダム、左）と Gozen（右）固定」）。見た目は game_pick と同じ枠で、
+  絵は Gozen のサンプルの機能別の場面（RPG の地図・戦闘とカットイン、多層マップ、人物の関係図、ビデオ通話、スマホ画面）を
+  つないだアニメーション WebP（gozen の docs/images の mp4 から 420px・8fps で作成、各場面に日本語の札）。
+  枠全体は GitHub、「ドキュメントを見る」はサイトへ。
+*/ -}}
+{{- $p := dict -}}
+{{- range hugo.Data.oss_catalog.projects }}{{ if eq .name "gozen" }}{{ $p = . }}{{ end }}{{ end -}}
+<div class="game-pick-wrap">
+  <div class="game-pick game-pick-gozen">
+    <a class="game-pick-cover" href="https://github.com/nao1215/gozen" target="_blank" rel="noopener noreferrer" aria-label="Gozen の GitHub リポジトリ"></a>
+    <span class="game-pick-body">
+      <span class="game-pick-label">ゲーム制作フレームワーク</span>
+      <span class="game-pick-head">
+        <span class="game-pick-name">Gozen</span>
+        <img class="oss-card-badge" src="https://img.shields.io/github/stars/nao1215/gozen?style=flat-square&label=%E2%98%85&color=blue" width="52" height="20" alt="Gozen の star 数" loading="lazy">
+      </span>
+      <span class="game-pick-desc">YAML で RPG・ADV・SLG を制作</span>
+      <span class="game-pick-action"><a class="game-pick-play" href="{{ $p.website | default "https://nao1215.github.io/gozen/" }}">ドキュメントを見る <span aria-hidden="true">→</span></a><a class="game-pick-play game-pick-more" href="{{ "games/" | relURL }}">ゲーム一覧 <span aria-hidden="true">→</span></a></span>
+    </span>
+    <span class="game-pick-art" aria-hidden="true">
+      {{- with resources.Get "images/game-picks/gozen-demo.webp" }}
+      <img src="{{ .RelPermalink }}" width="420" height="236" alt="" decoding="async" loading="lazy">
+      {{- end }}
+    </span>
+  </div>
+</div>

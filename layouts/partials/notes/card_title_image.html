@@ -1,0 +1,23 @@
+{{- /* 一覧カード用の表紙の文字。OGP 用の note_title_image.html と同じ構図で、カードの幅（230px 前後）でも読めるよう各文字を約 1.25 倍にする。
+     幅は ASCII を 1、和文を 2 として数え、英単語の途中では折り返さない。. はページか、dict（title・label）。 */ -}}
+{{- $title := "" -}}{{- $label := "" -}}
+{{- if reflect.IsMap . }}{{ $title = .title }}{{ $label = .label }}{{ else }}{{ $title = .Title }}{{ $label = .CurrentSection.Title }}{{ end -}}
+{{- $title = $title | plainify | htmlUnescape -}}
+{{- $parts := split $title " - " -}}
+{{- $heading := index $parts 0 | truncate 54 | htmlUnescape -}}
+{{- $subtitle := delimit (after 1 $parts) " - " | truncate 40 | htmlUnescape -}}
+{{- $size := 56 -}}
+{{- $lines := partial "notes/wrap.html" (dict "text" $heading "width" 28 "units" true) -}}
+{{- if gt (len $lines) 2 }}{{ $size = 46 }}{{ $lines = partial "notes/wrap.html" (dict "text" $heading "width" 34 "units" true) }}{{ end -}}
+{{- if gt (len $lines) 3 }}{{ $lines = first 3 $lines }}{{ end -}}
+{{- $text := "" -}}
+{{- range $i, $line := $lines -}}
+  {{- $text = printf "%s<text x=\"64\" y=\"%d\" font-size=\"%d\" font-weight=\"600\">%s</text>" $text (add 196 (mul $i (add $size 12))) $size ($line | htmlEscape) -}}
+{{- end -}}
+{{- $y := add 214 (mul (len $lines) (add $size 12)) -}}
+{{- $sub := partial "notes/wrap.html" (dict "text" $subtitle "width" 44 "units" true) -}}
+{{- range $i, $line := first (cond (gt (len $lines) 2) 1 2) $sub -}}
+  {{- $text = printf "%s<text x=\"64\" y=\"%d\" font-size=\"36\" fill=\"#52616b\">%s</text>" $text (add $y (mul $i 50)) ($line | htmlEscape) -}}
+{{- end -}}
+{{- $svg := printf `<svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><path d="M64 120H896" stroke="#b3bfc4"/><g font-family="'Noto Sans CJK JP','Hiragino Kaku Gothic ProN',sans-serif" fill="#25353e"><text x="64" y="84" font-size="30" letter-spacing="2">%s</text>%s<text x="64" y="496" font-size="24" fill="#65757d">debimate / 技術ノート</text></g></svg>` ($label | htmlEscape) $text -}}
+{{- return ($svg | safeHTML) -}}

@@ -40,7 +40,7 @@
 </script>
 {{- end }}
 
-{{- if or .IsHome (and (not .IsPage) (in (slice "post" "weeknotes") .Section)) }}
+{{- if or .IsHome (and (not .IsPage) (in (slice "post" "weeknotes" "notes" "ml") .Section)) }}
 {{- $badges := resources.Get "js/new-badges.js" | minify | fingerprint }}
 <script src="{{ $badges.RelPermalink }}" defer></script>
 {{- end }}

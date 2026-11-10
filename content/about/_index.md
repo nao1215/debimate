@@ -16,11 +16,9 @@ Linux カーネルから決済バックエンドまで、レイヤーを縦断�
 
 ### 各種リンク
 
-- GitHub: [nao1215](https://github.com/nao1215)
-- X (Twitter): [@ARC_AED](https://x.com/ARC_AED)
-- Bluesky: [@nchika.bsky.social](https://bsky.app/profile/nchika.bsky.social)　※ 殆ど利用していません
+{{< social-icons >}}
 
-Qiita、Zenn、Dev.to、note、Kaggle、HackerOne アカウントは、数年以上利用停止しています。
+Bluesky はほとんど利用していません。Dev.to、Kaggle、HackerOne と、アイコンに無い Qiita、Zenn、note のアカウントは、数年以上利用停止しています。
 
 ---
 

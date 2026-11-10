@@ -22,9 +22,4 @@
   langColor: "#00ADD8"
   awesome: true
   desc: Markdown と Mermaid 図を組み立てるための Go ライブラリ
-
-- name: gozen
-  repo: https://github.com/nao1215/gozen
-  lang: Go
-  langColor: "#00ADD8"
-  desc: YAML と画像・音声で RPG、ADV、SLG を作るためのゲーム制作フレームワーク
+# gozen は右の帯で固定表示するので、左のランダムの候補から外した（2026-11-10）。

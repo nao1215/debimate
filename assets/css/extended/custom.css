@@ -1385,7 +1385,10 @@ body.home { --main-width: 1440px; overflow-anchor: none; }
 body.home .home-columns {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* 記事 2 段・技術ノート 2 段・Weeknotes 1 段の 5 段。技術ノートを 1 段にすると
+     件数（172）が多く、最後まで読み込んだ時に技術ノートだけが大きく下へ伸びる
+     （2026-11-10 ユーザー「技術ノートが末尾で凄い飛び抜けるので、5 段にすべきか」）。 */
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: start;
   gap: 18px;
 }
@@ -1396,8 +1399,8 @@ body.home .home-columns {
   align-content: start;
 }
 .home-columns .home-posts { grid-column: span 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.home-columns .home-weeknotes,
-.home-columns .home-notes { grid-template-columns: minmax(0, 1fr); }
+.home-columns .home-notes { grid-column: span 2; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.home-columns .home-weeknotes { grid-template-columns: minmax(0, 1fr); }
 .home-posts .post-entry { background: #fff; }
 .home-weeknotes .post-entry { background: #f5f8f9; }
 html[data-theme="dark"] .home-weeknotes .post-entry { background: #2c3035; }
@@ -1439,13 +1442,16 @@ body.home .home-columns .entry-cover img { aspect-ratio: 16 / 9; }
 @media (min-width: 701px) and (max-width: 900px) {
   body.home .home-columns { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .home-columns .home-posts { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
+  .home-columns .home-notes { grid-column: auto; grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 700px) {
   body.home .home-columns { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .home-columns .home-posts { grid-column: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-columns .home-notes { grid-column: auto; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 480px) {
-  .home-columns .home-posts { grid-template-columns: minmax(0, 1fr); }
+  .home-columns .home-posts,
+  .home-columns .home-notes { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* Reserve identical text areas so both lists keep the same row height. */
@@ -1681,3 +1687,76 @@ html[data-theme="dark"] .game-pick { background: #36343a; color: #fff5fa; }
 .post-entry:has(.new-badge:not([hidden])) .entry-footer,
 .first-entry:has(.new-badge:not([hidden])) .entry-footer,
 .listing-card:has(.new-badge:not([hidden])) time { padding-right: 48px; }
+
+/* Notes directory: same tabs and filters as the OSS page. */
+.notes-directory [hidden] { display: none !important; }
+.notes-intro { margin-bottom: 8px; }
+.notes-directory .oss-categories { display: flex; flex-wrap: wrap; gap: 0 16px; border-bottom: 1px solid var(--border); margin: 16px 0; }
+.notes-directory .oss-categories button { font: inherit; font-size: 14px; color: var(--secondary); padding: 10px 0; border-bottom: 2px solid transparent; cursor: pointer; }
+.notes-directory .oss-categories button[aria-pressed="true"] { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
+.notes-directory .oss-filters { display: flex; gap: 10px; flex-wrap: wrap; align-items: end; margin-bottom: 16px; }
+.notes-directory .oss-filters label { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+.notes-directory .oss-search { flex: 1; min-width: 200px; }
+.notes-directory .oss-filters :is(input, select) { font: inherit; font-size: 13px; color: var(--primary); background: var(--entry); border: 1px solid var(--border); border-radius: 4px; padding: 8px; min-height: 40px; width: 100%; }
+.notes-directory .oss-filters button { font-size: 12px; padding: 10px 6px; min-height: 40px; cursor: pointer; text-decoration: underline; }
+.notes-directory .oss-result-count { width: 100%; font-size: 12px; color: var(--secondary); margin: 0; }
+.notes-directory .oss-result-count:empty { display: none; }
+.notes-select { display: none !important; }
+@media (max-width: 540px) {
+  .notes-directory .notes-tabs { display: none !important; }
+  .notes-select { display: flex !important; width: 100%; }
+  .notes-directory .oss-search { min-width: 0; }
+}
+.notes-item { display: contents; }
+.notes-category-head { margin: 8px 0 8px; }
+.notes-category-head h2 { font-size: 24px; margin: 0 0 4px; }
+.notes-category-head .post-content { margin: 0; padding: 0; font-size: 15px; color: var(--secondary); }
+.notes-category-head .post-content p { margin-bottom: 8px; }
+.notes-topic { margin-top: 24px; }
+.notes-topic > h3 { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-size: 18px; }
+.notes-topic > h3 span { font-size: 12px; font-weight: 400; color: var(--secondary); }
+.notes-empty { color: var(--secondary); font-size: 14px; }
+.listing-card-link > .note-title-cover { margin: 0; border-radius: 0; }
+.listing-card-kind { font-size: 12px; color: var(--secondary); }
+
+/* Note cards that use one of the note's own figures as the cover. */
+.note-card-figure { margin: 0; aspect-ratio: 16 / 9; display: flex; align-items: center; justify-content: center; padding: 8px; background: #fff; border-bottom: 1px solid var(--border); overflow: hidden; }
+.note-card-figure img { display: block; width: 100%; height: 100%; object-fit: contain; margin: 0; }
+.note-entry .note-card-figure { margin-bottom: 10px; border-radius: 8px; border: 1px solid var(--border); }
+
+/* 技術ノート・ML ノートの出力（```text）のブロックは、構文の色が付かず黒い塊に
+   見えるので、薄い地に灰色の文字で表示してコードと区別する（2026-11-10 ユーザー
+   「ログのようなコードブロックは…黒黒しく見えてしまう」）。 */
+.note-page .post-content .highlight:has(code[data-lang="text"]) pre,
+.note-page .post-content .highlight pre:has(code[data-lang="text"]) {
+  background-color: #f2f2f2 !important;
+  color: #3a3a3a !important;
+  border: 1px solid #e0e0e0;
+}
+.note-page .post-content .highlight:has(code[data-lang="text"]),
+.note-page .post-content .highlight code[data-lang="text"] {
+  background: transparent !important;
+  color: inherit !important;
+}
+html[data-theme="dark"] .note-page .post-content .highlight:has(code[data-lang="text"]) pre,
+html[data-theme="dark"] .note-page .post-content .highlight pre:has(code[data-lang="text"]) {
+  background-color: #2a2d33 !important;
+  color: #c9ccd1 !important;
+  border-color: #3a3e45;
+}
+
+/* 右の帯の Gozen（2026-11-10）。戦闘画面を絵の欄いっぱいに敷く。 */
+.game-pick-gozen { background: #f4f8fa; color: #1f2a30; }
+html[data-theme="dark"] .game-pick-gozen { background: #263038; color: #eef4f7; }
+.game-pick.game-pick-gozen .game-pick-art img { width: 100%; left: 0; height: 100%; object-fit: cover; object-position: center; }
+.home-info-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.home-cards-links { display: flex; gap: 16px; margin: 0; font-size: 13px; }
+.home-cards-links a { color: var(--secondary); }
+/* 動画の上の札が切れないよう、絵の欄を動画と同じ 16:9 にして切り抜かずに見せる（2026-11-10）。 */
+.game-pick.game-pick-gozen { grid-template-columns: minmax(0, 1fr) auto; }
+.game-pick.game-pick-gozen .game-pick-art { height: 100%; aspect-ratio: 16 / 9; }
+.game-pick.game-pick-gozen .game-pick-art img { object-fit: contain; }
+/* 帯の中の一覧へのリンク（2026-11-10）。OSS はカード全体がリンクなので右下に重ねる。 */
+.oss-pick-wrap { position: relative; }
+.oss-pick-more { position: absolute; right: 14px; bottom: 10px; z-index: 4; font-size: .78rem; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.game-pick-more { margin-left: 1rem; }

@@ -38,6 +38,8 @@
     </span>
   </a>
   {{- end }}
+  {{- /* カード全体が <a> なので、一覧へのリンクはカードの外に重ねる（2026-11-10） */}}
+  <a class="oss-pick-more" href="{{ "oss/" | relURL }}">OSS 一覧 <span aria-hidden="true">→</span></a>
 </div>
 <script>
   (function () {

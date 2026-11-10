@@ -1,83 +1,87 @@
 {{- define "main" }}
-
-{{- if .Title }}
+{{- if and (eq .Kind "section") .Parent.IsHome }}
+{{/* 技術ノートの一覧。OSS ページと同じく、タブで「すべて（新しい順）・カテゴリ」を切り替え、キーワードで絞り込む。
+     カテゴリのタブでは、セクションの _index.md の topics の順に小分類の見出しを立て、
+     ノートは front matter の topics、ブログ記事と外部記事は _index.md の topics[].related で並べる。 */}}
+{{- $groups := partial "notes/categories.html" . }}
 <header class="page-header">
   {{- partial "breadcrumbs.html" . }}
-  <h1>
-    {{ .Title }}
-    {{- if and (or (eq .Kind `term`) (eq .Kind `section`)) (.Param "ShowRssButtonInSectionTermList") }}
-    {{- with .OutputFormats.Get "rss" }}
-    <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" height="23">
-        <path d="M4 11a9 9 0 0 1 9 9" />
-        <path d="M4 4a16 16 0 0 1 16 16" />
-        <circle cx="5" cy="19" r="1" />
-      </svg>
-    </a>
-    {{- end }}
-    {{- end }}
-  </h1>
-  {{- if .Description }}
-  <div class="post-description">
-    {{ .Description | markdownify }}
-  </div>
-  {{- end }}
+  <h1>{{ .Title }}{{ with .OutputFormats.Get "rss" }} <a class="weeknotes-rss" href="{{ .RelPermalink }}" aria-label="RSS">RSS</a>{{ end }}</h1>
 </header>
-{{- end }}
-
-{{- if .Content }}
-<div class="post-content">
-  {{- if not (.Param "disableAnchoredHeadings") }}
-  {{- partial "anchored_headings.html" .Content -}}
-  {{- else }}{{ .Content }}{{ end }}
+<div class="notes-directory">
+{{- with .Content }}<div class="post-content notes-intro">{{ . }}</div>{{ end }}
+<div class="oss-categories notes-tabs" role="group" aria-label="カテゴリ" data-notes-tabs hidden>
+  <button type="button" data-category="all" aria-pressed="true" aria-controls="notes-results">すべて</button>
+  {{- range $groups }}<button type="button" data-category="{{ .key }}" aria-pressed="false" aria-controls="notes-results">{{ .label }}</button>{{ end }}
+</div>
+<form class="oss-filters" data-notes-filters hidden role="search" aria-label="ノートの絞り込み">
+  <label class="notes-select">カテゴリ<select name="category" aria-controls="notes-results">
+    <option value="all">すべて</option>
+    {{- range $groups }}<option value="{{ .key }}">{{ .label }}</option>{{ end }}
+  </select></label>
+  <label class="oss-search">キーワード<input type="search" name="query" placeholder="タイトル・分類で検索（例: 合意、索引、鍵）" autocomplete="off" aria-controls="notes-results"></label>
+  <button type="reset">リセット</button>
+  <p class="oss-result-count" role="status" aria-live="polite" aria-atomic="true" data-notes-count></p>
+</form>
+{{- range $groups }}
+<div class="notes-category-head" data-notes-head="{{ .key }}" hidden>
+  <h2>{{ .page.Title }}</h2>
+  <script type="application/json" data-notes-topics>{{ collections.Apply (.page.Params.topics | default slice) "index" "." "name" | jsonify | safeJS }}</script>
 </div>
 {{- end }}
-
-{{/* セクション一覧は、トップページと同じ画像付きカードで並べる。
-     バナー画像は content/notes/image/<セクション名>-card-banner.webp を使う */}}
-{{- if and (eq .Kind "section") .Parent.IsHome }}
-{{- $notesPage := . }}
-{{- $cards := slice }}
-{{- range .Sections.ByWeight }}
-{{- $banner := "" }}
-{{- with $notesPage.Resources.GetMatch (printf "image/%s-card-banner.webp" .File.ContentBaseName) }}
-{{- $banner = .RelPermalink }}
-{{- end }}
-{{- $cards = $cards | append (dict
-  "url" .RelPermalink
-  "label" (.Params.cardLabel | default "")
-  "title" .Title
-  "note" (.Params.cardNote | default "")
-  "banner" $banner) }}
-{{- end }}
-{{- with site.GetPage "/ml" }}
-{{- $banner := "" }}
-{{- with $notesPage.Resources.GetMatch "image/machine-learning-card-banner.webp" }}
-{{- $banner = .RelPermalink }}
-{{- end }}
-{{- $cards = $cards | append (dict
-  "url" .RelPermalink
-  "label" "機械学習"
-  "title" .Title
-  "note" "機械学習の基礎と実践を学ぶノート"
-  "banner" $banner) }}
-{{- end }}
-{{- with $cards }}
-<div class="notes-cards">
-  {{- range . }}
-  <a class="latest-weeknotes notes-card{{ if not .banner }} latest-weeknotes-plain{{ end }}" href="{{ .url }}"{{ with .banner }} style="--latest-weeknotes-bg: url('{{ . }}');"{{ end }}>
-    {{- with .label }}
-    <span class="latest-weeknotes-label">{{ . }}</span>
-    {{- end }}
-    <span class="latest-weeknotes-title">{{ .title }}</span>
-    {{- with .note }}
-    <span class="latest-weeknotes-note">{{ . }}</span>
-    {{- end }}
-  </a>
+{{- $notes := slice }}
+{{- range $groups }}{{ $key := .key }}{{ range where .page.RegularPagesRecursive "Params.hiddenInHomeList" "ne" true }}{{ $notes = $notes | append (dict "page" . "key" $key "date" .Date) }}{{ end }}{{ end }}
+{{- $notes = sort $notes "date" "desc" }}
+<div class="listing-cards" id="notes-results">
+  {{- $sectionOf := dict }}
+  {{- range $groups }}{{ $sectionOf = merge $sectionOf (dict .key .page) }}{{ end }}
+  {{- range $i, $n := $notes }}
+  <div class="notes-item" data-notes-item data-category="{{ $n.key }}" data-weight="{{ $n.page.Weight }}" data-topics="{{ $n.page.Params.topics | default slice | jsonify }}">
+    {{ partial "notes/card.html" (dict "page" $n.page "loading" (cond (lt $i 5) "eager" "lazy")) }}
+  </div>
+  {{- /* カテゴリまたぎ: front matter の crossTopics（カテゴリ: [小分類]）に従い、そのカテゴリのタブにも並べる。
+         表紙はまたいだ先のカテゴリの絵と名前にする。「すべて」には出さない。 */}}
+  {{- range $key, $topics := $n.page.Params.crossTopics }}
+  {{- with index $sectionOf $key }}
+  <div class="notes-item" data-notes-item data-category="{{ $key }}" data-related="true" data-cross="true" data-weight="{{ $n.page.Weight }}" data-topics="{{ $topics | jsonify }}" hidden>
+    {{ partial "notes/card.html" (dict "page" $n.page "section" .) }}
+  </div>
+  {{- else }}{{ warnf "notes: unknown category %q in crossTopics of %s" $key $n.page.Path }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
+  {{- range $groups }}
+  {{- $key := .key }}
+  {{- $section := .page }}
+  {{- range .page.Params.topics }}
+  {{- $topic := .name }}
+  {{- range .related }}
+  {{- $page := false }}{{ with .path }}{{ $page = site.GetPage . }}{{ end }}
+  {{- if or $page .url }}
+  <div class="notes-item" data-notes-item data-category="{{ $key }}" data-related="true" data-weight="9999" data-topics="{{ slice $topic | jsonify }}" hidden>
+    {{ partial "notes/card.html" (dict "page" $page "url" .url "title" .title "kind" .kind "image" .image "section" $section) }}
+  </div>
+  {{- else }}{{ warnf "notes: related page not found: %s (%s)" .path $key }}
+  {{- end }}
+  {{- end }}
+  {{- end }}
   {{- end }}
 </div>
-{{- end }}
-{{- end }}
+<div data-notes-groups></div>
+<p class="notes-empty" data-notes-empty hidden>該当するノートはありません。キーワードやカテゴリを変えてみてください。</p>
+</div>
+{{- $dir := resources.Get "js/notes-directory.js" | minify | fingerprint }}
+<script src="{{ $dir.RelPermalink }}" defer></script>
+{{- $script := resources.Get "js/list-cards.js" | minify | fingerprint }}
+<script src="{{ $script.RelPermalink }}" defer></script>
 
+{{- else }}
+{{/* カテゴリのページは一覧のタブへ転送する（転送先は extend_head の meta refresh と、この案内リンク）。 */}}
+{{- $key := cond (eq .Section "ml") "ml" .File.ContentBaseName }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>{{ .Title }}</h1>
+</header>
+<p><a href="{{ printf "/notes/#%s" $key | relURL }}">技術ノートの一覧（{{ .Title }}）へ移動します →</a></p>
+{{- end }}
 {{- end }}{{/* end main */}}

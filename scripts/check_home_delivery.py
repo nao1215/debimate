@@ -46,7 +46,8 @@ def check(root, baseline=None):
     summary = {}
     assert len(home.sections) == 3
     for name, section in home.sections.items():
-        batch = 6 if name == 'home-posts-title' else 3
+        # 記事と技術ノートは 2 段なので 1 回に 6 件、Weeknotes は 1 段なので 3 件
+        batch = 6 if name in ('home-posts-title', 'home-notes-title') else 3
         assert len(section['links']) <= batch, f'{name}: too many inline cards'
         links = list(section['links'])
         next_url = section['next']

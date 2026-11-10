@@ -1,7 +1,20 @@
+{{- /* ノートの OGP 画像（960x540 の PNG）の URL を返す。PNG は scripts/generate_note_ogp.mjs がビルド後に HTML から描き出す。
+     技術ノートは、一覧のカードと同じ画像（本文の最初の画像か cardImage）を白地に収める。
+     機械学習ノートと、画像の無いノートは、カテゴリのバナーに名前を描いた表紙にする。 */ -}}
 {{- $url := "" -}}
 {{- if and .IsPage (in (slice "notes" "ml") .Section) -}}
-  {{- $cover := partial "note_cover.html" . -}}
-  {{- $html := printf `<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="robots" content="noindex"><style>html,body{margin:0;width:960px;height:540px}.note-title-cover{margin:0;width:960px;height:540px;background-size:cover;background-position:center;background-color:#f6f5f1;overflow:hidden}.note-title-cover svg{display:block;width:100%%;height:auto}</style>%s</html>` $cover -}}
+  {{- $image := false -}}
+  {{- if eq .Section "notes" }}{{ $image = partial "notes/first_image.html" . }}{{ end -}}
+  {{- $body := "" -}}
+  {{- $style := "" -}}
+  {{- if $image -}}
+    {{- $body = printf `<figure class="note-ogp-figure"><img src="%s" alt=""></figure>` $image.RelPermalink -}}
+    {{- $style = `.note-ogp-figure{margin:0;width:960px;height:540px;box-sizing:border-box;padding:28px;background:#fff;display:flex;align-items:center;justify-content:center}.note-ogp-figure img{max-width:100%;max-height:100%;object-fit:contain}` -}}
+  {{- else -}}
+    {{- $body = partial "note_cover.html" . -}}
+    {{- $style = `.note-title-cover{margin:0;width:960px;height:540px;background-size:cover;background-position:center;background-color:#f6f5f1;overflow:hidden}.note-title-cover svg{display:block;width:100%;height:auto}` -}}
+  {{- end -}}
+  {{- $html := printf `<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="robots" content="noindex"><style>html,body{margin:0;width:960px;height:540px}%s</style>%s</html>` $style $body -}}
   {{- $name := printf "assets/note-ogp/%s" (crypto.SHA256 $html) -}}
   {{- $resource := resources.FromString (printf "%s.html" $name) $html -}}
   {{- $url = replace $resource.Permalink ".html" ".png" -}}

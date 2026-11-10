@@ -17,9 +17,12 @@
 </head>
 
 {{- if (or (ne .Kind `page` ) (eq .Layout `archives`) (eq .Layout `search`)) }}
-<body class="list{{ if .IsHome }} home{{ end }}{{ if and .IsSection (ne .Layout "year") (in (slice "post" "weeknotes") .Section) }} card-list-page{{ end }}" id="top">
+<body class="list{{ if .IsHome }} home{{ end }}{{ if and .IsSection (ne .Layout "year") (in (slice "post" "weeknotes" "notes" "ml") .Section) }} card-list-page{{ end }}" id="top">
 {{- else }}
-<body{{ if eq .Layout "games" }} class="games-page"{{ end }} id="top">
+{{- $bodyClass := slice }}
+{{- if eq .Layout "games" }}{{ $bodyClass = $bodyClass | append "games-page" }}{{ end }}
+{{- if in (slice "notes" "ml") .Section }}{{ $bodyClass = $bodyClass | append "note-page" }}{{ end }}
+<body{{ with $bodyClass }} class="{{ delimit . " " }}"{{ end }} id="top">
 {{- end }}
     {{ partialCached "header.html" . .Page -}}
     <main class="main">
@@ -27,7 +30,7 @@
     </main>
     {{- $hasMermaid := .Store.Get "hasMermaid" | default false -}}
     {{- $hasTwitterEmbed := .Store.Get "hasTwitterEmbed" | default false -}}
-    {{- $hasNewBadges := or .IsHome (and (not .IsPage) (in (slice "post" "weeknotes") .Section)) -}}
+    {{- $hasNewBadges := or .IsHome (and (not .IsPage) (in (slice "post" "weeknotes" "notes" "ml") .Section)) -}}
     {{ partialCached "footer.html" . .Layout .Kind (.Param "hideFooter") (.Param "ShowCodeCopyButtons") $hasMermaid $hasTwitterEmbed $hasNewBadges -}}
 </body>
 

@@ -8,12 +8,11 @@
     <div class="entry-content">
         {{ .Content | markdownify }}
     </div>
-    <footer class="entry-footer">
-        {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
-    </footer>
+    {{- /* SNS などのアイコンは About の「各種リンク」へ移した（2026-11-10） */}}
     <div class="home-cards">
         {{- partial "oss_pick.html" . }}
-        {{- partial "game_pick.html" . }}
+        {{- /* 右は Gozen で固定（2026-11-10）。ブラウザゲームの帯（game_pick.html）は外した */}}
+        {{- partial "gozen_pick.html" . }}
     </div>
 </article>
 {{- end -}}

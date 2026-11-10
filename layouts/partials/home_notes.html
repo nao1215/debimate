@@ -6,5 +6,5 @@
   {{- range $notes.ByDate.Reverse }}
   {{- $cards = $cards | append (partial "home_note_card.html" .) -}}
   {{- end }}
-{{ partial "home_list.html" (dict "cards" $cards "batch" 3 "key" "notes") }}
+{{ partial "home_list.html" (dict "cards" $cards "batch" 6 "key" "notes") }}
 </section>
