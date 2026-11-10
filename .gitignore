@@ -48,3 +48,6 @@ projects/**/datasets/**/*.json
 
 # Local note review history, cache, and drafts
 /.note-review/
+
+# Local research records and drafts
+/research/
