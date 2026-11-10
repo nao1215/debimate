@@ -56,7 +56,9 @@ flowchart LR
 
 ### Onion Routing と各リレーに見える範囲
 
-Onion Routing は、通信を複数の中継役に順に通し、どの 1 台も[直前と直後しか知らない](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)状態を作る方式です。Tor クライアントは、まずリレーの一覧を取得します。一覧はディレクトリ権威（directory authority）と呼ばれる複数の運用者が署名した文書として配られ、クライアントはその中から選んだリレーを繋いで経路（circuit）を作ります。経路上の位置には呼び名が付きます。
+Onion Routing は、通信を複数の中継役に順に通し、どの 1 台も[直前と直後しか知らない](https://svn-archive.torproject.org/svn/projects/design-paper/tor-design.html)状態を作る方式です。
+
+Tor クライアントは、まずリレーの一覧を取得します。一覧はディレクトリ権威（directory authority）と呼ばれる複数の運用者が署名した文書として配られ、クライアントはその中から選んだリレーを繋いで経路（circuit）を作ります。経路上の位置には呼び名が付きます。
 
 - Guard Relay: クライアントが直接つなぐ 1 台目
 - Middle Relay: 2 台目。Tor の内部だけと通信する

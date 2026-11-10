@@ -48,7 +48,9 @@ flowchart LR
 
 プログラムの時間は、実行した命令の数と、命令が触ったメモリの場所で変わります。秘密がこの 2 つに影響すると、時間が秘密の情報を運びます。
 
-1 つ目は、秘密に依存した分岐です。冒頭の比較では、一致した文字数だけループが回るので、時間が一致した長さに比例します。RSA の古典的な実装も、秘密の指数のビットが 1 の時だけ乗算をするので、1 のビットの位置によって乗算の回数と時間が変わります。1996 年の [Kocher 氏の論文](https://www.paulkocher.com/doc/TimingAttacks.pdf)は、こうした時間の差から Diffie-Hellman の指数や RSA の鍵を求められることを示しました。
+1 つ目は、秘密に依存した分岐です。冒頭の比較では、一致した文字数だけループが回るので、時間が一致した長さに比例します。
+
+RSA の古典的な実装も、秘密の指数のビットが 1 の時だけ乗算をするので、1 のビットの位置によって乗算の回数と時間が変わります。1996 年の [Kocher 氏の論文](https://www.paulkocher.com/doc/TimingAttacks.pdf)は、こうした時間の差から Diffie-Hellman の指数や RSA の鍵を求められることを示しました。
 
 2 つ目は、秘密に依存したメモリアクセスです。命令の数が同じでも、読むアドレスが CPU のキャッシュに載っていれば速く、載っていなければ遅くなります。表を秘密で引く実装では、どの行を引いたかがキャッシュの状態として残ります。この経路は後半の節で説明します。
 
@@ -202,7 +204,7 @@ Python では、[hmac.compare_digest](https://docs.python.org/3/library/hmac.htm
 
 分岐を無くしても、秘密で表を引くと時間が漏れます。代表例が、AES の高速な実装で使われてきた T-table です。T-table は、AES の 1 ラウンドの計算を前もって表にしたもので、平文のバイト p と鍵のバイト k の XOR を添字に表を読みます。添字は秘密の鍵に依存するので、どの行を読んだかが分かれば鍵の情報が漏れます。
 
-[Bernstein 氏の論文](https://cr.yp.to/antiforgery/cachetiming-20050414.pdf)（2005 年）は、OpenSSL の AES を使うサーバーに別のコンピュータから平文を送り、サーバーが応答に付けたサイクル数の時刻と、鍵が分かっている同じ構成で集めた時間の傾向との相関から、AES の鍵を全て復元しました。
+[Bernstein 氏の論文](https://cr.yp.to/antiforgery/cachetiming-20050414.pdf)（2005 年）は、OpenSSL の AES を使うサーバーに別のコンピュータから平文を送り、サーバーが応答に添えた処理時間（CPU のサイクル数）と、鍵が分かっている同じ構成で集めた時間の傾向との相関から、AES の鍵を全て復元しました。
 
 どの行を読んだかは、キャッシュの状態として残ります。キャッシュはメモリを 64 バイト単位の行（キャッシュライン）で持ち、一度読んだ行は次に速く読めます。[Flush+Reload](https://www.usenix.org/conference/usenixsecurity14/technical-sessions/presentation/yarom)（Yarom・Falkner、USENIX Security 2014）は、被害者と共有しているメモリの行を追い出してから、被害者の処理の後に読み直し、速く読めた行を被害者が触った行と判断する手法です。
 
@@ -234,7 +236,9 @@ Spectre は、正しい実行経路では決して起きない、範囲外の値
 
 ### ネットワーク越しの計測
 
-ネットワーク越しでは、往復の遅延が数百 µs あり、その揺らぎも比較の差より何桁も大きくなります。それでも、同じ要求を何度も送り、統計を取ると差が浮かび上がります。[Brumley・Boneh の論文](https://www.usenix.org/conference/12th-usenix-security-symposium/remote-timing-attacks-are-practical)（USENIX Security 2003）は、同じ LAN にある OpenSSL を使った Web サーバーから、約 143 万回の問い合わせ（約 2 時間）で RSA の秘密鍵を取り出しました。
+ネットワーク越しでは、往復の遅延が数百 µs あり、その揺らぎも比較の差より何桁も大きくなります。それでも、同じ要求を何度も送り、統計を取ると差が浮かび上がります。
+
+[Brumley・Boneh の論文](https://www.usenix.org/conference/12th-usenix-security-symposium/remote-timing-attacks-are-practical)（USENIX Security 2003）は、同じ LAN にある OpenSSL を使った Web サーバーから、約 143 万回の問い合わせ（約 2 時間）で RSA の秘密鍵を取り出しました。
 
 どの統計を使うかで、必要な回数が変わります。ネットワークの遅延は、ほとんどの応答が下限の近くに集まり、たまに大きく遅れる右に長い分布になります。
 

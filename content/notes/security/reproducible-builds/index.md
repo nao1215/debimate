@@ -195,7 +195,9 @@ drwxrwxr-x 1000/1000         0 2026-11-10 07:50:59 project/
 
 ### Go のビルドに埋まるパス
 
-コンパイラの出力にも同じ種類の差が入ります。[lab/go-build.sh](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/go-build.sh) は、`hello` と表示するだけの `main.go` を 2 つのディレクトリでビルドして、[`-trimpath`](https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies) の有無でハッシュを比べます。`-buildvcs=false` は VCS（Version Control System）の情報を埋め込まない指定で、`CGO_ENABLED=0` は C のツールチェーンを使わない指定です。
+コンパイラの出力にも同じ種類の差が入ります。[lab/go-build.sh](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/go-build.sh) は、`hello` と表示するだけの `main.go` を 2 つのディレクトリでビルドして、[`-trimpath`](https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies) の有無でハッシュを比べます。
+
+`-buildvcs=false` は VCS（Version Control System）の情報を埋め込まない指定で、`CGO_ENABLED=0` は C のツールチェーンを使わない指定です。
 
 <details>
 <summary>go-build.sh の全体</summary>

@@ -222,7 +222,7 @@ random 192-bit (expected)        8.0e-51     8.0e-49     8.0e-47     8.0e-45
 
 乱数で作る時に確かめるのは、nonce の長さに対して何本発行すると衝突の確率がどこまで上がるかです。
 
-具体的には、[NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) は 96 bit の IV を乱数から作る構成について、その鍵を使う全ての暗号化主体を合わせた呼び出しを 2^32 回以下に収めることを求めています。2^32 本を発行した時点で 96 bit の値のどれか 2 本が重なる確率は、2^-33 程度です（Random Number のノート）。
+具体的には、[NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) は 96 bit の IV を乱数から作る構成について、その鍵を使う全ての暗号化主体を合わせた呼び出しを 2^32 回以下に収めることを求めています。2^32 本を発行した時点で 96 bit の値のどれか 2 本が重なる確率は、2^-33 程度です（計算は [Random Number](../random-number/) のノート）。
 
 以下は、96 bit の乱数の nonce を 1 つの鍵で発行した本数と、そのどれか 2 本が重なる確率を式から描いたグラフです。
 

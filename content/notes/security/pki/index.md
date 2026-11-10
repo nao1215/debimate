@@ -20,6 +20,7 @@ Web ブラウザで `https://example.test` を開く時は、接続先が示し�
 以下は、trust store から署名をたどる検証と、検証で拒否される箇所を示した図です。
 
 {{< figure src="images/pki_concept.svg" alt="端末の trust store の枠の中には Root CA だけがあり、サーバーが送る Intermediate とサーバー証明書は署名の矢印で外側につながる。サーバー証明書の名前・期限・用途は黄土色の枠で確かめ、合わなければ拒否される。サーバー証明書を CA として使った場合は、赤い × の所で拒否される。" caption="trust store の Root CA から署名をたどる検証と、拒否される箇所" align="center" >}}
+
 上記の図で信頼の起点になる Root CA は、接続先から受け取るものではありません。OS、ブラウザ、組織の端末管理などがあらかじめ trust store に入れた証明書です。Intermediate CA は Root CA の秘密鍵を日常的な発行に使わずに済むよう、発行権限を分けます。
 
 <br>
@@ -77,6 +78,7 @@ Public CA は不特定のインターネット利用者が検証する公開 DNS
 例えば、Intermediate CA に `permitted;DNS:example.test` を入れると、その CA が発行した `www.other.test` の証明書は検証で拒否されます（OpenSSL 3.5.5 では error 47 permitted subtree violation）。
 
 {{< figure src="images/pki_name_constraints.svg" alt="Root CA の下に、permitted;DNS:example.test を持つ Intermediate CA。そこから署名の矢印が 2 本出る。灰色の点線で囲んだ example.test の下の範囲にある www.example.test は通り、範囲の外の www.other.test には赤い×と「error 47 で拒否」" caption="nameConstraints が Intermediate CA の発行範囲を絞る" align="center" >}}
+
 hostname の照合には、接続しようとした名前そのものを使います。例えば `api.example.test` に接続する時、`www.example.test` だけを含む証明書は通りません。ワイルドカードを使う場合も、RFC 9525 が許す位置と 1 つのラベルに限られます。IP アドレスに接続する場合は、DNS 名ではなく IP address 型の `subjectAltName` と照合します。
 
 ---
@@ -153,7 +155,7 @@ error 79 は `CA:FALSE`、error 26 は TLS サーバー用の CA として使え
 
 CRL（Certificate Revocation List）は RFC 5280 で定義され、OCSP（Online Certificate Status Protocol）は [RFC 6960](https://www.rfc-editor.org/rfc/rfc6960) で定義された、特定の証明書の状態を問い合わせる方式です。
 
-現在の BR では CRL の公開が必須で、OCSP は任意です。例えば、Let's Encrypt は 2025 年 8 月に [OCSP の応答を停止](https://letsencrypt.org/2024/12/05/ending-ocsp/)しました。
+2026 年 11 月時点の BR では CRL の公開が必須で、OCSP は任意です。例えば、Let's Encrypt は 2025 年 8 月に [OCSP の応答を停止](https://letsencrypt.org/2024/12/05/ending-ocsp/)しました。
 
 しかし、クライアントが失効情報を取得できなかった時に接続を止めるかは、可用性とのトレードオフになります。OCSP 応答を TLS ハンドシェイクでサーバーが添える OCSP stapling も、失効の確認を常に成功させるものではありません。そのため、証明書を短期間で更新し、秘密鍵の保護と監視を併用します。
 
@@ -164,6 +166,7 @@ Certificate Transparency（CT）は、公開 Web PKI の証明書を追記専用
 以下は、1 枚の証明書の発行から有効期限までの間に、失効・CT・後述の ACME が受け持つ位置を並べた図です。
 
 {{< figure src="images/pki_lifecycle.svg" alt="横長の帯が 1 枚の証明書の発行から有効期限まで。左端の発行に「ACME で自動化」と「発行時に CT ログへ記録（SCT）、誤発行を第三者が観測できる」。途中で鍵の漏洩や誤発行が分かり、その後の失効（CRL / OCSP）から有効期限までの帯は黄土色の「期限は残るが失効済み」。失効の下に「取れない時に止めるかはクライアント次第」" caption="証明書の一生と、ACME・CT・失効の受け持ち" align="center" >}}
+
 ACME（Automatic Certificate Management Environment）は、CA と証明書利用者の間で証明書の発行・更新・失効を自動化するプロトコルです。[RFC 8555](https://www.rfc-editor.org/rfc/rfc8555) では、HTTP-01 や DNS-01 の challenge で識別子の制御を検証します。ただし、更新済みの証明書をサーバーが読み込み直す設定は、ACME とは別に用意します。
 
 ---

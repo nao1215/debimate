@@ -37,7 +37,9 @@ refresh token と、利用者のいない client credentials grant の詳細は�
 
 ### 認可と認証の違い
 
-OAuth 2.0 の access token は、resource server に対して「この client に、この範囲の操作を許した」ことを示す値です。[Authentication](../authentication/) のノートで見た通り、相手が誰かを確かめる認証と、その相手に操作を許すかを決める認可は別の処理です。OAuth 2.0 が標準化したのは後者で、[RFC 6749](https://www.rfc-editor.org/rfc/rfc6749.html) には、ログインした利用者を client に伝える仕組みがありません（[OAuth.net の解説](https://oauth.net/articles/authentication/)）。
+OAuth 2.0 の access token は、resource server に対して「この client に、この範囲の操作を許した」ことを示す値です。[Authentication](../authentication/) のノートで見た通り、相手が誰かを確かめる認証と、その相手に操作を許すかを決める認可は別の処理です。
+
+OAuth 2.0 が標準化したのは後者で、[RFC 6749](https://www.rfc-editor.org/rfc/rfc6749.html) には、ログインした利用者を client に伝える仕組みがありません（[OAuth.net の解説](https://oauth.net/articles/authentication/)）。
 
 access token は [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750.html) の Bearer Token として使われることが多く、持っている相手なら誰でも使えます。持っていることが権限になるという点で、[Capability-based Security](../capability-based-security/) の capability と同じ性質です。そのため、token を受け取った側（写真アプリ）からは「誰がこの token を持ち込んだか」は分かりません。冒頭の事故の流れは以下の通りです。
 
@@ -85,7 +87,9 @@ sequenceDiagram
     C->>RS: access token を添えて API を呼ぶ
 ```
 
-上記の図で、code はブラウザの URL に載って client に届きます。ブラウザを経由する経路をフロントチャネルと呼び、URL は履歴やログなどから外に出ることがあります。一方で、`/token` への要求は client から authorization server への直接の HTTPS 通信で、バックチャネルと呼びます。token をバックチャネルだけに載せるために、フロントチャネルには code という引換券だけを流すわけです。
+上記の図で、code はブラウザの URL に載って client に届きます。ブラウザを経由する経路をフロントチャネルと呼び、URL は履歴やログなどから外に出ることがあります。
+
+一方で、`/token` への要求は client から authorization server への直接の HTTPS 通信で、バックチャネルと呼びます。token をバックチャネルだけに載せるために、フロントチャネルには code という引換券だけを流すわけです。
 
 code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.2) は、code の有効期限を短くし（最大 10 分を推奨）、1 度しか使えないようにすることを求めています。さらに、client が自分の秘密を持てる場合は、交換の時に client 認証を行います。
 
@@ -111,7 +115,9 @@ PKCE では、client がログインを始めるたびに code_verifier（43〜1
 
 ### code の横取りと login CSRF の実験
 
-PKCE・state・nonce と ID Token の `aud` の効き目は、[ローカルで実行するコード](lab/run.py)で確かめられます。Python 標準ライブラリで、127.0.0.1 の空きポートに `/authorize`・`/token`・`/userinfo` を持つ authorization server を立て、client を同じプロセスの中の関数として書きました。client は全て public client で、client 認証はありません。
+PKCE・state・nonce と ID Token の `aud` の効き目は、[ローカルで実行するコード](lab/run.py)で確かめられます。Python 標準ライブラリで、127.0.0.1 の空きポートに `/authorize`・`/token`・`/userinfo` を持つ authorization server を立て、client を同じプロセスの中の関数として書きました。
+
+client は全て public client で、client 認証はありません。
 
 この実験は説明用で、本番の実装ではありません。ID Token の署名は公開鍵暗号ではなく、共通鍵で改竄検出の値を作る HMAC で代用し、ログイン画面と同意画面を省いて利用者名をクエリで渡しています。code と token の有効期限、`exp` などの検証も省き、`scope=openid` も送っていません（[lab/README.md](https://github.com/nao1215/debimate/blob/main/content/notes/security/oauth-openid-connect/lab/README.md)）。
 
@@ -231,9 +237,13 @@ RFC 9700 §2.1 は、OIDC のフローでは nonce が CSRF 対策になると�
 | API に送るか | `Authorization: Bearer` で送る | 送らない |
 | 形式 | 意味を持たない文字列でも JWT でも良い | 署名付きの JWT |
 
-access token を JWT で発行する場合の形式は、[RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html) が定めています。§6 は client が access token の中身を読むことを MUST NOT で禁じ、§4 は resource server に、`typ` ヘッダが `at+jwt` または `application/at+jwt` であることの確認を MUST で求めています。`typ` は、形の似た ID Token を access token として受け入れないための区別です。
+access token を JWT で発行する場合の形式は、[RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html) が定めています。§6 は client が access token の中身を読むことを MUST NOT で禁じ、§4 は resource server に、`typ` ヘッダが `at+jwt` または `application/at+jwt` であることの確認を MUST で求めています。
 
-逆向きに、ID Token を API に送って認可に使うと、resource server は「ログインした」という結果を「操作を許された」と読むことになります。ID Token の署名の検証には、authorization server が公開する鍵を使います。公開鍵と署名の関係は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノートにあります。その鍵は TLS（通信路を暗号化し、相手のサーバーを証明書で確かめる規約）で取得するので、[PKI](../pki/) が前提になります。
+`typ` は、形の似た ID Token を access token として受け入れないための区別です。
+
+逆向きに、ID Token を API に送って認可に使うと、resource server は「ログインした」という結果を「操作を許された」と読むことになります。
+
+ID Token の署名の検証には、authorization server が公開する鍵を使います。公開鍵と署名の関係は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノートにあります。その鍵は TLS（通信路を暗号化し、相手のサーバーを証明書で確かめる規約）で取得するので、[PKI](../pki/) が前提になります。
 
 ---
 

@@ -139,7 +139,7 @@ k-1 個では、Secret の候補ごとに条件を満たす多項式を 1 本ず
 
 乱数係数を独立かつ一様に選ぶので、k-1 個の Share と整合する多項式は、Secret の候補ごとに同じ本数あります。そのため、k-1 個以下の Share を観測しても、Secret の事前分布（Share を見る前の候補ごとの確率）は変わりません。
 
-[Shamir 氏の 1979 年の論文](https://people.cs.pitt.edu/~litman/courses/cs2001/lectures/lecture-02-p612-shamir.pdf)は、候補が事前に等確率なら Share を得た後も確率が変わらないことを `(k, n)` threshold scheme の条件にしています。この安全性は総当たりの計算量に頼るものではなく、Share から情報が得られないことによるものです。
+[Shamir 氏の 1979 年の論文](https://doi.org/10.1145/359168.359176)は、候補が事前に等確率なら Share を得た後も確率が変わらないことを `(k, n)` threshold scheme の条件にしています。この安全性は総当たりの計算量に頼るものではなく、Share から情報が得られないことによるものです。
 
 ---
 

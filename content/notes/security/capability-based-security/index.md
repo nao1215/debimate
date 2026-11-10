@@ -9,7 +9,9 @@ wrapTables: true
 topics: ["Authorization"]
 ---
 
-1970 年代後半の Tymshare のタイムシェアリングシステムで、コンパイラが課金情報のファイルを上書きしました。コンパイラは利用統計を書くために、SYSX ディレクトリに書ける権限を持っていました。同じディレクトリには課金ファイル `SYSX/BILL`（原文の表記は `(SYSX)BILL`）もありました。ある利用者がデバッグ出力の書き込み先に `SYSX/BILL` を指定すると、OS はコンパイラの権限で書き込みを許し、課金情報が消えました。
+1970 年代後半の Tymshare のタイムシェアリングシステムで、コンパイラが課金情報のファイルを上書きしました。コンパイラは利用統計を書くために、SYSX ディレクトリに書ける権限を持っていました。
+
+同じディレクトリには課金ファイル `SYSX/BILL`（原文の表記は `(SYSX)BILL`）もありました。ある利用者がデバッグ出力の書き込み先に `SYSX/BILL` を指定すると、OS はコンパイラの権限で書き込みを許し、課金情報が消えました。
 
 Norm Hardy 氏が 1988 年に [The Confused Deputy](http://cap-lore.com/CapTheory/ConfusedDeputy.html) として発表した話です（本人は細部を変えた「ほぼ実話」としています）。依頼者の指定で自分の権限を使ってしまうこの種の問題は、Confused Deputy（混乱した代理人）と呼ばれます。
 
@@ -332,7 +334,9 @@ Linux の fd にも、渡した後に送り手が取り上げる汎用の仕組�
 
 実験のコンパイラが capability mode で動いていれば、`open("SYSX/BILL")` も失敗します。Unix の API を残したまま capability を足す設計で、man ページは hybrid capability system と呼んでいます。
 
-[wasi-filesystem](https://github.com/WebAssembly/wasi-filesystem) も、グローバルな名前空間を暗黙に参照せず、渡されたディレクトリのハンドルの中だけでパスを解決します。[Wasmtime](https://docs.wasmtime.dev/cli-options.html) なら `wasmtime --dir . foo.wasm` のように、渡すディレクトリを起動時に指定します。OAuth の Access Token の発行までの流れは、[OAuth 2.0 / OpenID Connect](/notes/security/oauth-openid-connect/) のノートで説明しています。
+[wasi-filesystem](https://github.com/WebAssembly/wasi-filesystem) も、グローバルな名前空間を暗黙に参照せず、渡されたディレクトリのハンドルの中だけでパスを解決します。[Wasmtime](https://docs.wasmtime.dev/cli-options.html) なら `wasmtime --dir . foo.wasm` のように、渡すディレクトリを起動時に指定します。
+
+OAuth の Access Token の発行までの流れは、[OAuth 2.0 / OpenID Connect](/notes/security/oauth-openid-connect/) のノートで説明しています。
 
 <br>
 
