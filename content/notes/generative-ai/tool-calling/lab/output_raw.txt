@@ -1,0 +1,84 @@
+--- request (1)
+{
+  "model": "qwen3:8b",
+  "messages": [
+    {
+      "role": "user",
+      "content": "東京の今の気温は何度ですか。"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "get_weather",
+        "description": "Get the current temperature (Celsius) and condition of a city.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "enum": [
+                "Tokyo",
+                "Osaka",
+                "Sapporo",
+                "Naha",
+                "Fukuoka"
+              ]
+            }
+          },
+          "required": [
+            "city"
+          ],
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}
+--- response (1): message
+{
+  "role": "assistant",
+  "content": "",
+  "tool_calls": [
+    {
+      "id": "call_upi26ll2",
+      "function": {
+        "index": 0,
+        "name": "get_weather",
+        "arguments": {
+          "city": "Tokyo"
+        }
+      }
+    }
+  ]
+}
+--- request (2): appended messages
+[
+  {
+    "role": "assistant",
+    "content": "",
+    "tool_calls": [
+      {
+        "id": "call_upi26ll2",
+        "function": {
+          "index": 0,
+          "name": "get_weather",
+          "arguments": {
+            "city": "Tokyo"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "role": "tool",
+    "tool_name": "get_weather",
+    "content": "{\"city\": \"Tokyo\", \"temperature_c\": 18, \"condition\": \"clear\"}"
+  }
+]
+--- response (2): message
+{
+  "role": "assistant",
+  "content": "東京の現在の気温は18度で、天気は晴れです。"
+}

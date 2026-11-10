@@ -1,0 +1,56 @@
+## qwen3:1.7b-q8_0 num_ctx=None
+  ps before: qwen3:1.7b-q8_0 size=3.24GB vram=3.24GB ctx=8192; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=7.07GB vram=7.07GB ctx=40960; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 40960, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "4.4 GiB", "compute graph ROCm0": "147.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "6.6 GiB"}
+  long prompt 1779 tok -> size 7.071 GB
+## qwen3:1.7b-q8_0 num_ctx=2048
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=2.52GB vram=2.52GB ctx=2048; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 2048, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "224.0 MiB", "compute graph ROCm0": "61.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "2.3 GiB"}
+  long prompt 1779 tok -> size 2.518 GB
+## qwen3:1.7b-q8_0 num_ctx=4096
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=2.75GB vram=2.75GB ctx=4096; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 4096, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "448.0 MiB", "compute graph ROCm0": "63.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "2.6 GiB"}
+  long prompt 1779 tok -> size 2.755 GB
+## qwen3:1.7b-q8_0 num_ctx=8192
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=3.24GB vram=3.24GB ctx=8192; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 8192, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "896.0 MiB", "compute graph ROCm0": "75.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "3.0 GiB"}
+  long prompt 1779 tok -> size 3.237 GB
+## qwen3:1.7b-q8_0 num_ctx=16384
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=4.19GB vram=4.19GB ctx=16384; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 16384, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "1.8 GiB", "compute graph ROCm0": "87.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "3.9 GiB"}
+  long prompt 1779 tok -> size 4.189 GB
+## qwen3:1.7b-q8_0 num_ctx=32768
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 32768, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "3.5 GiB", "compute graph ROCm0": "123.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "5.7 GiB"}
+  long prompt 1779 tok -> size 6.106 GB
+## qwen3:1.7b-q8_0 num_ctx=40960
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q8_0 size=7.07GB vram=7.07GB ctx=40960; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 40960, "KvCacheType": "(empty)", "model weights ROCm0": "1.8 GiB", "model weights CPU": "315.3 MiB", "kv cache ROCm0": "4.4 GiB", "compute graph ROCm0": "147.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "6.6 GiB"}
+  long prompt 1779 tok -> size 7.071 GB
+## qwen3:1.7b-fp16 num_ctx=4096
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-fp16 size=4.61GB vram=4.61GB ctx=4096; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 4096, "KvCacheType": "(empty)", "model weights ROCm0": "3.2 GiB", "model weights CPU": "593.5 MiB", "kv cache ROCm0": "448.0 MiB", "compute graph ROCm0": "64.6 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "4.3 GiB"}
+  long prompt 1779 tok -> size 4.605 GB
+## qwen3:1.7b-fp16 num_ctx=32768
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-fp16 size=7.96GB vram=7.96GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 32768, "KvCacheType": "(empty)", "model weights ROCm0": "3.2 GiB", "model weights CPU": "593.5 MiB", "kv cache ROCm0": "3.5 GiB", "compute graph ROCm0": "124.6 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "7.4 GiB"}
+  long prompt 1779 tok -> size 7.957 GB
+## qwen3:1.7b-q4_K_M num_ctx=None
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q4_K_M size=6.21GB vram=6.21GB ctx=40960; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 40960, "KvCacheType": "(empty)", "model weights ROCm0": "1.1 GiB", "model weights CPU": "166.9 MiB", "kv cache ROCm0": "4.4 GiB", "compute graph ROCm0": "147.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "5.8 GiB"}
+  long prompt 1779 tok -> size 6.210 GB
+## qwen3:1.7b-q4_K_M num_ctx=4096
+  ps before: qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  ps after : qwen3:1.7b-q4_K_M size=1.89GB vram=1.89GB ctx=4096; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+  log      : {"KvSize": 4096, "KvCacheType": "(empty)", "model weights ROCm0": "1.1 GiB", "model weights CPU": "166.9 MiB", "kv cache ROCm0": "448.0 MiB", "compute graph ROCm0": "63.7 MiB", "compute graph CPU": "4.0 MiB", "total memory -": "1.8 GiB"}
+  long prompt 1779 tok -> size 1.894 GB
+EXIT 0

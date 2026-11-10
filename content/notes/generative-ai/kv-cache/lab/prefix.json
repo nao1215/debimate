@@ -1,0 +1,347 @@
+[
+ {
+  "round": 1,
+  "case": "1 first send",
+  "prompt_eval_count": 8330,
+  "prompt_eval_s": 3.22441849,
+  "load_s": 0.089018296,
+  "thinking_chars": 0,
+  "response": "Sensor S08.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 1,
+  "case": "2 same prompt again",
+  "prompt_eval_count": 8330,
+  "prompt_eval_s": 0.015627048,
+  "load_s": 0.072661942,
+  "thinking_chars": 0,
+  "response": "Sensor S08.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 1,
+  "case": "3 same prefix, new question",
+  "prompt_eval_count": 8330,
+  "prompt_eval_s": 0.033313019,
+  "load_s": 0.066223641,
+  "thinking_chars": 0,
+  "response": "Sensor S69 appears in Record 9.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 1,
+  "case": "4 one line edited in the middle",
+  "prompt_eval_count": 8313,
+  "prompt_eval_s": 1.59584739,
+  "load_s": 0.075034784,
+  "thinking_chars": 0,
+  "response": "Sensor S08.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 1,
+  "case": "5 one char added at the head",
+  "prompt_eval_count": 8331,
+  "prompt_eval_s": 2.647628881,
+  "load_s": 0.071555007,
+  "thinking_chars": 0,
+  "response": "Sensor S08.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 2,
+  "case": "1 first send",
+  "prompt_eval_count": 8326,
+  "prompt_eval_s": 2.608602634,
+  "load_s": 0.076881763,
+  "thinking_chars": 0,
+  "response": "Sensor S81.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 2,
+  "case": "2 same prompt again",
+  "prompt_eval_count": 8326,
+  "prompt_eval_s": 0.015959137,
+  "load_s": 0.083091498,
+  "thinking_chars": 0,
+  "response": "Sensor S81.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 2,
+  "case": "3 same prefix, new question",
+  "prompt_eval_count": 8326,
+  "prompt_eval_s": 0.033247641,
+  "load_s": 0.07905079,
+  "thinking_chars": 0,
+  "response": "Sensor S45.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 2,
+  "case": "4 one line edited in the middle",
+  "prompt_eval_count": 8309,
+  "prompt_eval_s": 1.566956561,
+  "load_s": 0.068057951,
+  "thinking_chars": 0,
+  "response": "Sensor S81.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 2,
+  "case": "5 one char added at the head",
+  "prompt_eval_count": 8327,
+  "prompt_eval_s": 2.617844884,
+  "load_s": 0.07572608,
+  "thinking_chars": 0,
+  "response": "Sensor S81.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 3,
+  "case": "1 first send",
+  "prompt_eval_count": 8325,
+  "prompt_eval_s": 2.60376923,
+  "load_s": 0.07447444,
+  "thinking_chars": 0,
+  "response": "Sensor S57.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 3,
+  "case": "2 same prompt again",
+  "prompt_eval_count": 8325,
+  "prompt_eval_s": 0.015616258,
+  "load_s": 0.080085875,
+  "thinking_chars": 0,
+  "response": "Sensor S57.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 3,
+  "case": "3 same prefix, new question",
+  "prompt_eval_count": 8325,
+  "prompt_eval_s": 0.033153504,
+  "load_s": 0.072830533,
+  "thinking_chars": 0,
+  "response": "Sensor S21.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 3,
+  "case": "4 one line edited in the middle",
+  "prompt_eval_count": 8307,
+  "prompt_eval_s": 1.572821874,
+  "load_s": 0.074327684,
+  "thinking_chars": 0,
+  "response": "Sensor S57.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ },
+ {
+  "round": 3,
+  "case": "5 one char added at the head",
+  "prompt_eval_count": 8326,
+  "prompt_eval_s": 2.607346846,
+  "load_s": 0.073066986,
+  "thinking_chars": 0,
+  "response": "Sensor S57.",
+  "ps": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ]
+ }
+]

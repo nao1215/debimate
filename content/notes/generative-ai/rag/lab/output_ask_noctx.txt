@@ -1,0 +1,6 @@
+=== Q21: 同じ表を CSV と Parquet で保存すると、大きさは何分の 1 になった？  (正解: columnar-storage)
+--- qwen3:4b (k=0, chunks=200, thinking 4,775 chars, 1,575 tokens generated)
+同じデータを CSV と Parquet で保存すると、Parquet のファイルサイズは CSV の約 1/10 になる。  
+これは、列ストレージと効率的な圧縮技術が活用されているためである。  
+したがって、データのサイズが大幅に削減される。
+

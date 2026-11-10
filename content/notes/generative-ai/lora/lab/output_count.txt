@@ -1,0 +1,27 @@
+[LoRA] example_style_lora.safetensors
+  file size       : 170,570,692 bytes (header 339,480 bytes)
+  tensors         : 2,166
+  dtype           : {'BF16': 2166}
+  network_dim (r) : 32
+  network_alpha   : 16.0
+  trained on      : waiIllustriousSDXL_v170.safetensors
+  base SHA-256    : f116b0c78ff441467b0cdc8f1936e1ed18ea31e9997c7b132b1b8db533f0bd04
+  target layers   : 722 {'unet': 722}
+  ranks           : {32: 722}
+  LoRA params     : 85,114,880
+  W of targets    : 2,207,744,000 (same layers, full matrices)
+
+[Base] waiIllustriousSDXL_v170.safetensors
+  file size       : 6,938,040,682 bytes (header 364,784 bytes)
+  tensors         : 2,515
+  UNet                              : 2,567,463,684
+  Text encoder 2 (OpenCLIP ViT-bigG):   694,659,841
+  Text encoder 1 (CLIP ViT-L)       :   123,060,557
+  VAE                               :    83,653,863
+  total                             : 3,468,837,945
+
+[Ratio]
+  LoRA / UNet          : 3.315%
+  LoRA / text encoders : 10.409%
+  LoRA / whole model   : 2.454%
+  LoRA / W of targets  : 3.855%

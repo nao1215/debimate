@@ -1,0 +1,42 @@
+[
+ {
+  "seed": 20261190,
+  "size_1x": [
+   768,
+   1344
+  ],
+  "size_hires": [
+   1152,
+   2016
+  ],
+  "white_pixels": 47000,
+  "white_b_1x": 1.25,
+  "white_b_hires": 0.76,
+  "sharp_1x_up": 46.6,
+  "sharp_hires": 118.7,
+  "face_px": 140,
+  "face_sharp_1x_up": 183.1,
+  "face_sharp_hires": 332.6,
+  "face_mean_abs_diff": 17.45
+ },
+ {
+  "seed": 20261193,
+  "size_1x": [
+   768,
+   1344
+  ],
+  "size_hires": [
+   1152,
+   2016
+  ],
+  "white_pixels": 5768,
+  "white_b_1x": -1.99,
+  "white_b_hires": -0.67,
+  "sharp_1x_up": 57.4,
+  "sharp_hires": 116.3,
+  "face_px": 150,
+  "face_sharp_1x_up": 342.2,
+  "face_sharp_hires": 628.7,
+  "face_mean_abs_diff": 17.27
+ }
+]

@@ -1,0 +1,4 @@
+NAME                          ID              SIZE      MODIFIED       
+qwen3:1.7b-fp16               e9354f6174db    4.1 GB    13 minutes ago    
+qwen3:1.7b-q8_0               29b6a7a420a4    2.2 GB    14 minutes ago    
+qwen3:1.7b-q4_K_M             8f68893c685c    1.4 GB    15 minutes ago    

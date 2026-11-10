@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>モデルが返した要求を呼ぶ側が実行し、結果を戻して次を決めさせるループ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .mono{font-family:'DejaVu Sans Mono','Noto Sans Mono',monospace}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8fae86"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="30" y="150" width="220" height="210" rx="14" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="140" y="232" font-size="32" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">モデル</text>
+<text x="140" y="276" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">要求を返すだけ</text>
+<text x="140" y="310" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">実行はしない</text>
+<rect x="370" y="150" width="250" height="210" rx="14" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="495" y="196" font-size="32" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">呼ぶ側</text>
+<rect x="395" y="216" width="200" height="36" rx="6" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="495" y="243" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">スキーマ検証</text>
+<rect x="395" y="260" width="200" height="36" rx="6" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="495" y="287" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">許可リスト</text>
+<rect x="395" y="304" width="200" height="36" rx="6" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="495" y="331" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">回数の上限</text>
+<text x="830" y="128" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">ツール</text>
+<rect x="730" y="150" width="200" height="58" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="830" y="188" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f" class="mono">calculate</text>
+<rect x="730" y="224" width="200" height="58" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="830" y="262" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f" class="mono">get_weather</text>
+<rect x="730" y="298" width="200" height="58" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="830" y="336" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f" class="mono">read_file</text>
+<rect x="150" y="22" width="470" height="84" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<text x="168" y="56" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f" class="mono">{&quot;name&quot;: &quot;get_weather&quot;,</text>
+<text x="168" y="90" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f" class="mono"> &quot;arguments&quot;: {&quot;city&quot;: &quot;Tokyo&quot;}}</text>
+<path d="M200,150 C200,118 250,118 290,118 L470,118 C490,118 495,130 495,146" fill="none" stroke="#1f1f1f" stroke-width="3.5" marker-end="url(#arrow-ink)"/>
+<path d="M495,360 C495,392 470,398 440,398 L230,398 C200,398 140,392 140,364" fill="none" stroke="#1f1f1f" stroke-width="3.5" marker-end="url(#arrow-ink)"/>
+<rect x="180" y="410" width="340" height="44" rx="8" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<text x="350" y="441" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f" class="mono">{&quot;temperature_c&quot;: 18}</text>
+<path d="M620,236 L724,236" fill="none" stroke="#1f1f1f" stroke-width="3" marker-end="url(#arrow-ink)"/>
+<text x="672" y="224" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">実行</text>
+<path d="M726,270 L626,270" fill="none" stroke="#1f1f1f" stroke-width="3" marker-end="url(#arrow-ink)"/>
+<text x="676" y="302" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">結果</text>
+<path d="M30,255 L10,255 L10,505 L60,505" fill="none" stroke="#8fae86" stroke-width="3.5" marker-end="url(#arrow-green)"/>
+<rect x="70" y="480" width="300" height="50" rx="8" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<text x="220" y="514" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">要求なし → 最終回答</text>
+<path d="M620,325 C660,330 680,380 690,470" fill="none" stroke="#666666" stroke-width="2.5" stroke-dasharray="7 5" marker-end="url(#arrow-sub)"/>
+<rect x="600" y="478" width="330" height="50" rx="8" fill="#fbe3e3" stroke="#e15759" stroke-width="2.5"/>
+<text x="765" y="512" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">8 回で打ち切り</text>
+</svg>

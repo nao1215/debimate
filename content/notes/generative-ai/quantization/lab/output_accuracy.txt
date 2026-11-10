@@ -1,0 +1,11 @@
+qwen3:1.7b-q4_K_M    math       36 / 40
+qwen3:1.7b-q4_K_M    knowledge  53 / 60
+qwen3:1.7b-q4_K_M    total      89 / 100   (replies with thinking: 0)
+qwen3:1.7b-q8_0      math       36 / 40
+qwen3:1.7b-q8_0      knowledge  59 / 60
+qwen3:1.7b-q8_0      total      95 / 100   (replies with thinking: 0)
+qwen3:1.7b-fp16      math       37 / 40
+qwen3:1.7b-fp16      knowledge  59 / 60
+qwen3:1.7b-fp16      total      96 / 100   (replies with thinking: 0)
+same reply as fp16: qwen3:1.7b-q4_K_M    79 / 100
+same reply as fp16: qwen3:1.7b-q8_0      95 / 100

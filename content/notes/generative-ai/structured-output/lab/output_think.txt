@@ -1,0 +1,17 @@
+qwen3:1.7b-q4_K_M think=false format=none   thinking=    0 chars  tokens=  46  eval=   1.1 s  wall=  12.0 s  done=stop
+    content: ```json { "person": "松本彩", "date": "2024-03-19", "amount_yen": 120000 
+qwen3:1.7b-q4_K_M think=false format=schema thinking=    0 chars  tokens=  37  eval=   0.9 s  wall=   1.1 s  done=stop
+    content: {"person": "松本彩", "date": "2024-03-19", "amount_yen": 120000}
+qwen3:1.7b-q4_K_M think=true  format=none   thinking= 1168 chars  tokens= 463  eval=   7.4 s  wall=   7.7 s  done=stop
+    content: { "person": "松本彩", "date": "2024-03-19", "amount_yen": 120000 }
+qwen3:1.7b-q4_K_M think=true  format=schema thinking= 1116 chars  tokens=  42  eval=   1.7 s  wall=  13.6 s  done=stop
+    content: { "person": "松本彩", "date": "2024-03-19", "amount_yen": 120000 }
+qwen3:4b think=false format=none   thinking=    0 chars  tokens=2387  eval=  89.7 s  wall= 301.4 s  done=stop
+    content: Okay, let's tackle this problem. So, I need to extract the names of th
+    ...末尾: </think> {"person": "松本彩", "date": "2024-03-19", "amount_yen": 120000}
+qwen3:4b think=false format=schema thinking=    0 chars  tokens=  42  eval=   1.3 s  wall=  16.5 s  done=stop
+    content: { "person": "松本彩", "date": "2024-03-19", "amount_yen": 120000 }
+qwen3:4b think=true  format=none   thinking= 7964 chars  tokens=2387  eval=  80.7 s  wall=  83.1 s  done=stop
+    content: {"person": "松本彩", "date": "2024-03-19", "amount_yen": 120000}
+qwen3:4b think=true  format=schema thinking= 7964 chars  tokens=  37  eval=   1.4 s  wall=  89.1 s  done=stop
+    content: {"person": "松本彩", "date": "2024-03-19", "amount_yen": 120000}

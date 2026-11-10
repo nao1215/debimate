@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>同じ意味の文を文字・バイト・トークンで区切った図</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .mono{font-family:'DejaVu Sans Mono','Menlo','Consolas',monospace}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="930" y="24" font-size="24" text-anchor="end" class="sub">cl100k_base</text>
+<text x="30" y="24" font-size="24" text-anchor="start">日本語</text>
+<text x="150" y="73" font-size="24" text-anchor="end" class="sub">文字</text>
+<text x="150" y="143" font-size="24" text-anchor="end" class="sub">バイト</text>
+<text x="150" y="199" font-size="24" text-anchor="end" class="sub">トークン</text>
+<rect x="170.0" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="201.8181818181818" y="74" font-size="26" text-anchor="middle">秘</text>
+<rect x="233.6" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="265.45454545454544" y="74" font-size="26" text-anchor="middle">密</text>
+<rect x="297.3" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="329.0909090909091" y="74" font-size="26" text-anchor="middle">鍵</text>
+<rect x="360.9" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="392.72727272727275" y="74" font-size="26" text-anchor="middle">を</text>
+<rect x="424.5" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="456.3636363636364" y="74" font-size="26" text-anchor="middle">安</text>
+<rect x="488.2" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="520.0" y="74" font-size="26" text-anchor="middle">全</text>
+<rect x="551.8" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="583.6363636363636" y="74" font-size="26" text-anchor="middle">に</text>
+<rect x="615.5" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="647.2727272727273" y="74" font-size="26" text-anchor="middle">保</text>
+<rect x="679.1" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="710.9090909090909" y="74" font-size="26" text-anchor="middle">管</text>
+<rect x="742.7" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="774.5454545454545" y="74" font-size="26" text-anchor="middle">す</text>
+<rect x="806.4" y="40" width="63.6" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="838.1818181818181" y="74" font-size="26" text-anchor="middle">る</text>
+<rect x="172.0" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="191.2" y1="116" x2="191.2" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="212.4" y1="116" x2="212.4" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="235.6" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="254.8" y1="116" x2="254.8" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="276.1" y1="116" x2="276.1" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="299.3" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="318.5" y1="116" x2="318.5" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="339.7" y1="116" x2="339.7" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="362.9" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="382.1" y1="116" x2="382.1" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="403.3" y1="116" x2="403.3" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="426.5" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="445.8" y1="116" x2="445.8" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="467.0" y1="116" x2="467.0" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="490.2" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="509.4" y1="116" x2="509.4" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="530.6" y1="116" x2="530.6" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="553.8" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="573.0" y1="116" x2="573.0" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="594.2" y1="116" x2="594.2" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="617.5" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="636.7" y1="116" x2="636.7" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="657.9" y1="116" x2="657.9" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="681.1" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="700.3" y1="116" x2="700.3" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="721.5" y1="116" x2="721.5" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="744.7" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="763.9" y1="116" x2="763.9" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="785.2" y1="116" x2="785.2" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="808.4" y="116" width="59.6" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<line x1="827.6" y1="116" x2="827.6" y2="144" stroke="#666666" stroke-width="1"/>
+<line x1="848.8" y1="116" x2="848.8" y2="144" stroke="#666666" stroke-width="1"/>
+<rect x="172.0" y="166" width="38.4" height="48" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="214.4" y="166" width="17.2" height="48" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="235.6" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="265.45454545454544" y="200" font-size="24" text-anchor="middle">密</text>
+<rect x="299.3" y="166" width="17.2" height="48" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="320.5" y="166" width="17.2" height="48" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="341.7" y="166" width="17.2" height="48" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="362.9" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="392.72727272727275" y="200" font-size="24" text-anchor="middle">を</text>
+<rect x="426.5" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="456.3636363636364" y="200" font-size="24" text-anchor="middle">安</text>
+<rect x="490.2" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="520.0" y="200" font-size="24" text-anchor="middle">全</text>
+<rect x="553.8" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="583.6363636363636" y="200" font-size="24" text-anchor="middle">に</text>
+<rect x="617.5" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="647.2727272727273" y="200" font-size="24" text-anchor="middle">保</text>
+<rect x="681.1" y="166" width="59.6" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="710.9090909090909" y="200" font-size="24" text-anchor="middle">管</text>
+<rect x="744.7" y="166" width="123.3" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="806.3636363636364" y="200" font-size="24" text-anchor="middle">する</text>
+<text x="930" y="73" font-size="26" text-anchor="end">11</text>
+<text x="930" y="143" font-size="26" text-anchor="end">33</text>
+<text x="930" y="199" font-size="26" text-anchor="end">13</text>
+<line x1="30" y1="266" x2="930" y2="266" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<text x="30" y="294" font-size="24" text-anchor="start">英語</text>
+<text x="150" y="343" font-size="24" text-anchor="end" class="sub">文字</text>
+<text x="150" y="413" font-size="24" text-anchor="end" class="sub">バイト</text>
+<text x="150" y="469" font-size="24" text-anchor="end" class="sub">トークン</text>
+<rect x="170.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="182.5" y="344" font-size="26" text-anchor="middle" class="mono">S</text>
+<rect x="195.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="207.5" y="344" font-size="26" text-anchor="middle" class="mono">t</text>
+<rect x="220.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="232.5" y="344" font-size="26" text-anchor="middle" class="mono">o</text>
+<rect x="245.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="257.5" y="344" font-size="26" text-anchor="middle" class="mono">r</text>
+<rect x="270.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="282.5" y="344" font-size="26" text-anchor="middle" class="mono">e</text>
+<rect x="295.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<rect x="320.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="332.5" y="344" font-size="26" text-anchor="middle" class="mono">t</text>
+<rect x="345.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="357.5" y="344" font-size="26" text-anchor="middle" class="mono">h</text>
+<rect x="370.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="382.5" y="344" font-size="26" text-anchor="middle" class="mono">e</text>
+<rect x="395.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<rect x="420.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="432.5" y="344" font-size="26" text-anchor="middle" class="mono">p</text>
+<rect x="445.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="457.5" y="344" font-size="26" text-anchor="middle" class="mono">r</text>
+<rect x="470.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="482.5" y="344" font-size="26" text-anchor="middle" class="mono">i</text>
+<rect x="495.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="507.5" y="344" font-size="26" text-anchor="middle" class="mono">v</text>
+<rect x="520.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="532.5" y="344" font-size="26" text-anchor="middle" class="mono">a</text>
+<rect x="545.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="557.5" y="344" font-size="26" text-anchor="middle" class="mono">t</text>
+<rect x="570.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="582.5" y="344" font-size="26" text-anchor="middle" class="mono">e</text>
+<rect x="595.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<rect x="620.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="632.5" y="344" font-size="26" text-anchor="middle" class="mono">k</text>
+<rect x="645.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="657.5" y="344" font-size="26" text-anchor="middle" class="mono">e</text>
+<rect x="670.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="682.5" y="344" font-size="26" text-anchor="middle" class="mono">y</text>
+<rect x="695.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<rect x="720.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="732.5" y="344" font-size="26" text-anchor="middle" class="mono">s</text>
+<rect x="745.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="757.5" y="344" font-size="26" text-anchor="middle" class="mono">a</text>
+<rect x="770.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="782.5" y="344" font-size="26" text-anchor="middle" class="mono">f</text>
+<rect x="795.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="807.5" y="344" font-size="26" text-anchor="middle" class="mono">e</text>
+<rect x="820.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="832.5" y="344" font-size="26" text-anchor="middle" class="mono">l</text>
+<rect x="845.0" y="310" width="25.0" height="48" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="857.5" y="344" font-size="26" text-anchor="middle" class="mono">y</text>
+<rect x="172.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="197.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="222.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="247.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="272.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="297.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="322.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="347.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="372.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="397.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="422.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="447.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="472.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="497.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="522.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="547.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="572.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="597.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="622.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="647.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="672.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="697.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="722.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="747.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="772.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="797.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="822.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="847.0" y="386" width="21.0" height="28" rx="2" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<rect x="172.0" y="436" width="121.0" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="232.5" y="470" font-size="24" text-anchor="middle" class="mono">Store</text>
+<rect x="297.0" y="436" width="96.0" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="345.0" y="470" font-size="24" text-anchor="middle" class="mono">the</text>
+<rect x="397.0" y="436" width="196.0" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="495.0" y="470" font-size="24" text-anchor="middle" class="mono">private</text>
+<rect x="597.0" y="436" width="96.0" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="645.0" y="470" font-size="24" text-anchor="middle" class="mono">key</text>
+<rect x="697.0" y="436" width="171.0" height="48" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="782.5" y="470" font-size="24" text-anchor="middle" class="mono">safely</text>
+<text x="930" y="343" font-size="26" text-anchor="end">28</text>
+<text x="930" y="413" font-size="26" text-anchor="end">28</text>
+<text x="930" y="469" font-size="26" text-anchor="end">5</text>
+</svg>

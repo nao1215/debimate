@@ -1,0 +1,118 @@
+{
+ "1": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "waiIllustriousSDXL_v170.safetensors"
+  }
+ },
+ "2": {
+  "class_type": "CLIPSetLastLayer",
+  "inputs": {
+   "clip": [
+    "1",
+    1
+   ],
+   "stop_at_clip_layer": -2
+  }
+ },
+ "3": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "2",
+    0
+   ],
+   "text": "masterpiece, best quality, no humans, still life, wooden table, indoors"
+  }
+ },
+ "4": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "2",
+    0
+   ],
+   "text": "lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature, watermark, logo, 1girl, 1boy, person"
+  }
+ },
+ "5": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "debimate_img2img/coins_base.png"
+  }
+ },
+ "10": {
+  "class_type": "ImageScaleBy",
+  "inputs": {
+   "image": [
+    "5",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "scale_by": 1.5
+  }
+ },
+ "11": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "10",
+    0
+   ],
+   "vae": [
+    "1",
+    2
+   ]
+  }
+ },
+ "12": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "positive": [
+    "3",
+    0
+   ],
+   "negative": [
+    "4",
+    0
+   ],
+   "latent_image": [
+    "11",
+    0
+   ],
+   "seed": 20261110,
+   "steps": 28,
+   "cfg": 5.5,
+   "sampler_name": "euler_ancestral",
+   "scheduler": "normal",
+   "denoise": 0.6
+  }
+ },
+ "13": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "12",
+    0
+   ],
+   "vae": [
+    "1",
+    2
+   ]
+  }
+ },
+ "14": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "13",
+    0
+   ],
+   "filename_prefix": "debimate_img2img/coins_redraw"
+  }
+ }
+}

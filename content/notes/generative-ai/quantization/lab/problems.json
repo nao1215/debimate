@@ -1,0 +1,809 @@
+[
+ {
+  "id": "math00",
+  "kind": "math",
+  "question": "What is 406 + 760?",
+  "answers": [
+   "1166"
+  ]
+ },
+ {
+  "id": "math01",
+  "kind": "math",
+  "question": "What is 278 + 679?",
+  "answers": [
+   "957"
+  ]
+ },
+ {
+  "id": "math02",
+  "kind": "math",
+  "question": "What is 959 + 835?",
+  "answers": [
+   "1794"
+  ]
+ },
+ {
+  "id": "math03",
+  "kind": "math",
+  "question": "What is 841 + 582?",
+  "answers": [
+   "1423"
+  ]
+ },
+ {
+  "id": "math04",
+  "kind": "math",
+  "question": "What is 844 + 777?",
+  "answers": [
+   "1621"
+  ]
+ },
+ {
+  "id": "math05",
+  "kind": "math",
+  "question": "What is 482 + 426?",
+  "answers": [
+   "908"
+  ]
+ },
+ {
+  "id": "math06",
+  "kind": "math",
+  "question": "What is 284 + 673?",
+  "answers": [
+   "957"
+  ]
+ },
+ {
+  "id": "math07",
+  "kind": "math",
+  "question": "What is 435 + 334?",
+  "answers": [
+   "769"
+  ]
+ },
+ {
+  "id": "math08",
+  "kind": "math",
+  "question": "What is 925 + 435?",
+  "answers": [
+   "1360"
+  ]
+ },
+ {
+  "id": "math09",
+  "kind": "math",
+  "question": "What is 644 + 658?",
+  "answers": [
+   "1302"
+  ]
+ },
+ {
+  "id": "math10",
+  "kind": "math",
+  "question": "What is 7595 - 646?",
+  "answers": [
+   "6949"
+  ]
+ },
+ {
+  "id": "math11",
+  "kind": "math",
+  "question": "What is 3301 - 460?",
+  "answers": [
+   "2841"
+  ]
+ },
+ {
+  "id": "math12",
+  "kind": "math",
+  "question": "What is 8336 - 847?",
+  "answers": [
+   "7489"
+  ]
+ },
+ {
+  "id": "math13",
+  "kind": "math",
+  "question": "What is 7565 - 932?",
+  "answers": [
+   "6633"
+  ]
+ },
+ {
+  "id": "math14",
+  "kind": "math",
+  "question": "What is 4650 - 278?",
+  "answers": [
+   "4372"
+  ]
+ },
+ {
+  "id": "math15",
+  "kind": "math",
+  "question": "What is 9140 - 654?",
+  "answers": [
+   "8486"
+  ]
+ },
+ {
+  "id": "math16",
+  "kind": "math",
+  "question": "What is 4370 - 257?",
+  "answers": [
+   "4113"
+  ]
+ },
+ {
+  "id": "math17",
+  "kind": "math",
+  "question": "What is 3659 - 311?",
+  "answers": [
+   "3348"
+  ]
+ },
+ {
+  "id": "math18",
+  "kind": "math",
+  "question": "What is 5334 - 859?",
+  "answers": [
+   "4475"
+  ]
+ },
+ {
+  "id": "math19",
+  "kind": "math",
+  "question": "What is 2085 - 174?",
+  "answers": [
+   "1911"
+  ]
+ },
+ {
+  "id": "math20",
+  "kind": "math",
+  "question": "What is 50 * 72?",
+  "answers": [
+   "3600"
+  ]
+ },
+ {
+  "id": "math21",
+  "kind": "math",
+  "question": "What is 17 * 21?",
+  "answers": [
+   "357"
+  ]
+ },
+ {
+  "id": "math22",
+  "kind": "math",
+  "question": "What is 34 * 60?",
+  "answers": [
+   "2040"
+  ]
+ },
+ {
+  "id": "math23",
+  "kind": "math",
+  "question": "What is 94 * 41?",
+  "answers": [
+   "3854"
+  ]
+ },
+ {
+  "id": "math24",
+  "kind": "math",
+  "question": "What is 71 * 34?",
+  "answers": [
+   "2414"
+  ]
+ },
+ {
+  "id": "math25",
+  "kind": "math",
+  "question": "What is 22 * 38?",
+  "answers": [
+   "836"
+  ]
+ },
+ {
+  "id": "math26",
+  "kind": "math",
+  "question": "What is 80 * 70?",
+  "answers": [
+   "5600"
+  ]
+ },
+ {
+  "id": "math27",
+  "kind": "math",
+  "question": "What is 66 * 21?",
+  "answers": [
+   "1386"
+  ]
+ },
+ {
+  "id": "math28",
+  "kind": "math",
+  "question": "What is 90 * 27?",
+  "answers": [
+   "2430"
+  ]
+ },
+ {
+  "id": "math29",
+  "kind": "math",
+  "question": "What is 14 * 21?",
+  "answers": [
+   "294"
+  ]
+ },
+ {
+  "id": "math30",
+  "kind": "math",
+  "question": "A shop has 20 boxes with 17 apples in each box. It sells 84 apples. How many apples are left?",
+  "answers": [
+   "256"
+  ]
+ },
+ {
+  "id": "math31",
+  "kind": "math",
+  "question": "A shop has 40 boxes with 12 apples in each box. It sells 388 apples. How many apples are left?",
+  "answers": [
+   "92"
+  ]
+ },
+ {
+  "id": "math32",
+  "kind": "math",
+  "question": "A shop has 37 boxes with 21 apples in each box. It sells 321 apples. How many apples are left?",
+  "answers": [
+   "456"
+  ]
+ },
+ {
+  "id": "math33",
+  "kind": "math",
+  "question": "A shop has 16 boxes with 8 apples in each box. It sells 37 apples. How many apples are left?",
+  "answers": [
+   "91"
+  ]
+ },
+ {
+  "id": "math34",
+  "kind": "math",
+  "question": "A shop has 13 boxes with 24 apples in each box. It sells 156 apples. How many apples are left?",
+  "answers": [
+   "156"
+  ]
+ },
+ {
+  "id": "math35",
+  "kind": "math",
+  "question": "A shop has 30 boxes with 6 apples in each box. It sells 169 apples. How many apples are left?",
+  "answers": [
+   "11"
+  ]
+ },
+ {
+  "id": "math36",
+  "kind": "math",
+  "question": "A shop has 22 boxes with 6 apples in each box. It sells 122 apples. How many apples are left?",
+  "answers": [
+   "10"
+  ]
+ },
+ {
+  "id": "math37",
+  "kind": "math",
+  "question": "A shop has 26 boxes with 12 apples in each box. It sells 137 apples. How many apples are left?",
+  "answers": [
+   "175"
+  ]
+ },
+ {
+  "id": "math38",
+  "kind": "math",
+  "question": "A shop has 36 boxes with 20 apples in each box. It sells 404 apples. How many apples are left?",
+  "answers": [
+   "316"
+  ]
+ },
+ {
+  "id": "math39",
+  "kind": "math",
+  "question": "A shop has 39 boxes with 11 apples in each box. It sells 415 apples. How many apples are left?",
+  "answers": [
+   "14"
+  ]
+ },
+ {
+  "id": "know00",
+  "kind": "knowledge",
+  "question": "What is the capital city of Australia?",
+  "answers": [
+   "canberra"
+  ]
+ },
+ {
+  "id": "know01",
+  "kind": "knowledge",
+  "question": "What is the capital city of Canada?",
+  "answers": [
+   "ottawa"
+  ]
+ },
+ {
+  "id": "know02",
+  "kind": "knowledge",
+  "question": "What is the capital city of Brazil?",
+  "answers": [
+   "brasilia",
+   "brasília"
+  ]
+ },
+ {
+  "id": "know03",
+  "kind": "knowledge",
+  "question": "What is the capital city of Turkey?",
+  "answers": [
+   "ankara"
+  ]
+ },
+ {
+  "id": "know04",
+  "kind": "knowledge",
+  "question": "What is the capital city of Egypt?",
+  "answers": [
+   "cairo"
+  ]
+ },
+ {
+  "id": "know05",
+  "kind": "knowledge",
+  "question": "What is the capital city of Kenya?",
+  "answers": [
+   "nairobi"
+  ]
+ },
+ {
+  "id": "know06",
+  "kind": "knowledge",
+  "question": "What is the capital city of Peru?",
+  "answers": [
+   "lima"
+  ]
+ },
+ {
+  "id": "know07",
+  "kind": "knowledge",
+  "question": "What is the capital city of Norway?",
+  "answers": [
+   "oslo"
+  ]
+ },
+ {
+  "id": "know08",
+  "kind": "knowledge",
+  "question": "What is the capital city of Vietnam?",
+  "answers": [
+   "hanoi",
+   "ha noi"
+  ]
+ },
+ {
+  "id": "know09",
+  "kind": "knowledge",
+  "question": "What is the capital city of New Zealand?",
+  "answers": [
+   "wellington"
+  ]
+ },
+ {
+  "id": "know10",
+  "kind": "knowledge",
+  "question": "What is the capital city of Morocco?",
+  "answers": [
+   "rabat"
+  ]
+ },
+ {
+  "id": "know11",
+  "kind": "knowledge",
+  "question": "What is the capital city of Argentina?",
+  "answers": [
+   "buenos aires"
+  ]
+ },
+ {
+  "id": "know12",
+  "kind": "knowledge",
+  "question": "What is the capital city of South Korea?",
+  "answers": [
+   "seoul"
+  ]
+ },
+ {
+  "id": "know13",
+  "kind": "knowledge",
+  "question": "What is the capital city of Thailand?",
+  "answers": [
+   "bangkok"
+  ]
+ },
+ {
+  "id": "know14",
+  "kind": "knowledge",
+  "question": "What is the capital city of Nigeria?",
+  "answers": [
+   "abuja"
+  ]
+ },
+ {
+  "id": "know15",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for gold?",
+  "answers": [
+   "au"
+  ]
+ },
+ {
+  "id": "know16",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for silver?",
+  "answers": [
+   "ag"
+  ]
+ },
+ {
+  "id": "know17",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for sodium?",
+  "answers": [
+   "na"
+  ]
+ },
+ {
+  "id": "know18",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for potassium?",
+  "answers": [
+   "k"
+  ]
+ },
+ {
+  "id": "know19",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for iron?",
+  "answers": [
+   "fe"
+  ]
+ },
+ {
+  "id": "know20",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for tungsten?",
+  "answers": [
+   "w"
+  ]
+ },
+ {
+  "id": "know21",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for lead?",
+  "answers": [
+   "pb"
+  ]
+ },
+ {
+  "id": "know22",
+  "kind": "knowledge",
+  "question": "What is the chemical symbol for mercury?",
+  "answers": [
+   "hg"
+  ]
+ },
+ {
+  "id": "know23",
+  "kind": "knowledge",
+  "question": "Which chemical element has atomic number 1?",
+  "answers": [
+   "hydrogen"
+  ]
+ },
+ {
+  "id": "know24",
+  "kind": "knowledge",
+  "question": "Which chemical element has atomic number 6?",
+  "answers": [
+   "carbon"
+  ]
+ },
+ {
+  "id": "know25",
+  "kind": "knowledge",
+  "question": "Which chemical element has atomic number 10?",
+  "answers": [
+   "neon"
+  ]
+ },
+ {
+  "id": "know26",
+  "kind": "knowledge",
+  "question": "Which planet is the largest in the Solar System?",
+  "answers": [
+   "jupiter"
+  ]
+ },
+ {
+  "id": "know27",
+  "kind": "knowledge",
+  "question": "Which planet is closest to the Sun?",
+  "answers": [
+   "mercury"
+  ]
+ },
+ {
+  "id": "know28",
+  "kind": "knowledge",
+  "question": "Which planet is known as the Red Planet?",
+  "answers": [
+   "mars"
+  ]
+ },
+ {
+  "id": "know29",
+  "kind": "knowledge",
+  "question": "How many legs does a spider have?",
+  "answers": [
+   "8",
+   "eight"
+  ]
+ },
+ {
+  "id": "know30",
+  "kind": "knowledge",
+  "question": "How many sides does a hexagon have?",
+  "answers": [
+   "6",
+   "six"
+  ]
+ },
+ {
+  "id": "know31",
+  "kind": "knowledge",
+  "question": "At sea level, what is the boiling point of water in degrees Celsius?",
+  "answers": [
+   "100"
+  ]
+ },
+ {
+  "id": "know32",
+  "kind": "knowledge",
+  "question": "What is the freezing point of water in degrees Fahrenheit?",
+  "answers": [
+   "32"
+  ]
+ },
+ {
+  "id": "know33",
+  "kind": "knowledge",
+  "question": "Who wrote the play Romeo and Juliet?",
+  "answers": [
+   "shakespeare"
+  ]
+ },
+ {
+  "id": "know34",
+  "kind": "knowledge",
+  "question": "Who wrote the novel Pride and Prejudice?",
+  "answers": [
+   "austen"
+  ]
+ },
+ {
+  "id": "know35",
+  "kind": "knowledge",
+  "question": "Who wrote the novel Nineteen Eighty-Four?",
+  "answers": [
+   "orwell"
+  ]
+ },
+ {
+  "id": "know36",
+  "kind": "knowledge",
+  "question": "Who painted the Mona Lisa?",
+  "answers": [
+   "leonardo",
+   "da vinci"
+  ]
+ },
+ {
+  "id": "know37",
+  "kind": "knowledge",
+  "question": "Who painted The Starry Night?",
+  "answers": [
+   "van gogh"
+  ]
+ },
+ {
+  "id": "know38",
+  "kind": "knowledge",
+  "question": "Who composed the Moonlight Sonata?",
+  "answers": [
+   "beethoven"
+  ]
+ },
+ {
+  "id": "know39",
+  "kind": "knowledge",
+  "question": "What is the largest ocean on Earth?",
+  "answers": [
+   "pacific"
+  ]
+ },
+ {
+  "id": "know40",
+  "kind": "knowledge",
+  "question": "What is the longest river in South America?",
+  "answers": [
+   "amazon"
+  ]
+ },
+ {
+  "id": "know41",
+  "kind": "knowledge",
+  "question": "What is the tallest mountain on Earth above sea level?",
+  "answers": [
+   "everest"
+  ]
+ },
+ {
+  "id": "know42",
+  "kind": "knowledge",
+  "question": "What is the largest hot desert in the world?",
+  "answers": [
+   "sahara"
+  ]
+ },
+ {
+  "id": "know43",
+  "kind": "knowledge",
+  "question": "What is the hardest natural mineral?",
+  "answers": [
+   "diamond"
+  ]
+ },
+ {
+  "id": "know44",
+  "kind": "knowledge",
+  "question": "Which gas do plants absorb from the air for photosynthesis?",
+  "answers": [
+   "carbon dioxide",
+   "co2"
+  ]
+ },
+ {
+  "id": "know45",
+  "kind": "knowledge",
+  "question": "How many days are in a leap year?",
+  "answers": [
+   "366"
+  ]
+ },
+ {
+  "id": "know46",
+  "kind": "knowledge",
+  "question": "What is the smallest prime number?",
+  "answers": [
+   "2",
+   "two"
+  ]
+ },
+ {
+  "id": "know47",
+  "kind": "knowledge",
+  "question": "What is the main language spoken in Brazil?",
+  "answers": [
+   "portuguese"
+  ]
+ },
+ {
+  "id": "know48",
+  "kind": "knowledge",
+  "question": "What is the currency of Japan?",
+  "answers": [
+   "yen"
+  ]
+ },
+ {
+  "id": "know49",
+  "kind": "knowledge",
+  "question": "Who developed the theory of general relativity?",
+  "answers": [
+   "einstein"
+  ]
+ },
+ {
+  "id": "know50",
+  "kind": "knowledge",
+  "question": "Who formulated the three laws of motion published in the Principia?",
+  "answers": [
+   "newton"
+  ]
+ },
+ {
+  "id": "know51",
+  "kind": "knowledge",
+  "question": "Which organ pumps blood through the human body?",
+  "answers": [
+   "heart"
+  ]
+ },
+ {
+  "id": "know52",
+  "kind": "knowledge",
+  "question": "How many bones are in the adult human body?",
+  "answers": [
+   "206"
+  ]
+ },
+ {
+  "id": "know53",
+  "kind": "knowledge",
+  "question": "In which year did humans first land on the Moon?",
+  "answers": [
+   "1969"
+  ]
+ },
+ {
+  "id": "know54",
+  "kind": "knowledge",
+  "question": "In which year did the Berlin Wall fall?",
+  "answers": [
+   "1989"
+  ]
+ },
+ {
+  "id": "know55",
+  "kind": "knowledge",
+  "question": "What is the fastest land animal?",
+  "answers": [
+   "cheetah"
+  ]
+ },
+ {
+  "id": "know56",
+  "kind": "knowledge",
+  "question": "Which programming language was created by Guido van Rossum?",
+  "answers": [
+   "python"
+  ]
+ },
+ {
+  "id": "know57",
+  "kind": "knowledge",
+  "question": "What is the largest country in the world by area?",
+  "answers": [
+   "russia"
+  ]
+ },
+ {
+  "id": "know58",
+  "kind": "knowledge",
+  "question": "How many keys does a standard piano have?",
+  "answers": [
+   "88"
+  ]
+ },
+ {
+  "id": "know59",
+  "kind": "knowledge",
+  "question": "What is the longest bone in the human body?",
+  "answers": [
+   "femur"
+  ]
+ }
+]

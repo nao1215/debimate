@@ -1,0 +1,16 @@
+{
+  "rank": [
+    32
+  ],
+  "alpha": "16.0",
+  "target_layers": 722,
+  "lora_params": 85114880,
+  "target_full_params": 2207744000,
+  "base_groups": {
+    "Text encoder 1 (CLIP ViT-L)": 123060557,
+    "Text encoder 2 (OpenCLIP ViT-bigG)": 694659841,
+    "VAE": 83653863,
+    "UNet": 2567463684
+  },
+  "base_total": 3468837945
+}

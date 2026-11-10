@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>denoise 0.6 は 46 段のノイズの列の 19 段目から描き始める</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="61.0" y="150.6" width="16.3" height="249.4" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="79.3" y="150.8" width="16.3" height="249.2" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="97.5" y="151.0" width="16.3" height="249.0" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="115.8" y="151.3" width="16.3" height="248.7" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="134.0" y="151.6" width="16.3" height="248.4" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="152.3" y="152.0" width="16.3" height="248.0" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="170.6" y="152.5" width="16.3" height="247.5" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="188.8" y="153.1" width="16.3" height="246.9" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="207.1" y="153.8" width="16.3" height="246.2" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="225.3" y="154.7" width="16.3" height="245.3" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="243.6" y="155.7" width="16.3" height="244.3" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="261.9" y="156.8" width="16.3" height="243.2" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="280.1" y="158.2" width="16.3" height="241.8" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="298.4" y="159.7" width="16.3" height="240.3" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="316.7" y="161.5" width="16.3" height="238.5" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="334.9" y="163.5" width="16.3" height="236.5" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="353.2" y="165.7" width="16.3" height="234.3" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="371.4" y="168.3" width="16.3" height="231.7" fill="#f2f2f2" stroke="#bbbbbb" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="389.7" y="171.1" width="16.3" height="228.9" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="408.0" y="174.1" width="16.3" height="225.9" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="426.2" y="177.5" width="16.3" height="222.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="444.5" y="181.3" width="16.3" height="218.7" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="462.7" y="185.3" width="16.3" height="214.7" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="481.0" y="189.6" width="16.3" height="210.4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="499.3" y="194.3" width="16.3" height="205.7" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="517.5" y="199.4" width="16.3" height="200.6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="535.8" y="204.7" width="16.3" height="195.3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="554.0" y="210.4" width="16.3" height="189.6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="572.3" y="216.5" width="16.3" height="183.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="590.6" y="222.8" width="16.3" height="177.2" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="608.8" y="229.5" width="16.3" height="170.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="627.1" y="236.5" width="16.3" height="163.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="645.3" y="243.8" width="16.3" height="156.2" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="663.6" y="251.4" width="16.3" height="148.6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="681.9" y="259.3" width="16.3" height="140.7" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="700.1" y="267.5" width="16.3" height="132.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="718.4" y="276.0" width="16.3" height="124.0" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="736.7" y="284.8" width="16.3" height="115.2" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="754.9" y="294.0" width="16.3" height="106.0" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="773.2" y="303.5" width="16.3" height="96.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="791.4" y="313.5" width="16.3" height="86.5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="809.7" y="324.1" width="16.3" height="75.9" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="828.0" y="335.6" width="16.3" height="64.4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="846.2" y="348.4" width="16.3" height="51.6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="864.5" y="364.0" width="16.3" height="36.0" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="882.7" y="392.7" width="16.3" height="7.3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<line x1="60" y1="400" x2="900" y2="400" stroke="#666666" stroke-width="2"/>
+<text x="60" y="70" font-size="26" text-anchor="start">txt2img</text>
+<text x="60" y="102" font-size="24" text-anchor="start" class="sub">ノイズだけから</text>
+<line x1="68" y1="112" x2="68" y2="142" stroke="#666666" stroke-width="2"/>
+<path d="M61,132 L68,146 L75,132 Z" fill="#666666"/>
+<rect x="382.695652173913" y="40" width="88" height="88" fill="#ded8ca" stroke="#d4a24c" stroke-width="4"/>
+<rect x="382.695652173913" y="94.6" width="88" height="33.4" fill="#b08a66"/>
+<circle cx="437.3" cy="92.8" r="14.1" fill="#cf6a5e"/>
+<rect x="393.3" y="88.4" width="26.4" height="14.1" fill="#6f86c6"/>
+<line x1="396.695652173913" y1="132" x2="396.695652173913" y2="161.1" stroke="#d4a24c" stroke-width="3"/>
+<path d="M388.695652173913,149.1 L396.695652173913,165.1 L404.695652173913,149.1 Z" fill="#d4a24c"/>
+<text x="486.695652173913" y="74" font-size="26" text-anchor="start">denoise 0.6</text>
+<text x="486.695652173913" y="108" font-size="24" text-anchor="start" class="sub">下絵 + ノイズから</text>
+<path d="M62.0,422 L62.0,434 L384.7,434 L384.7,422" fill="none" stroke="#999999" stroke-width="2.5"/>
+<text x="223.3478260869565" y="470" font-size="26" text-anchor="middle">飛ばす 18 段</text>
+<path d="M390.7,422 L390.7,434 L898.0,434 L898.0,422" fill="none" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="644.3478260869565" y="470" font-size="26" text-anchor="middle">描く 28 段</text>
+<text x="60" y="520" font-size="24" text-anchor="start" class="sub">ノイズが多い</text>
+<text x="900" y="520" font-size="24" text-anchor="end" class="sub">ノイズなし</text>
+</svg>

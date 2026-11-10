@@ -1,0 +1,23 @@
+$ uv run --with transformers python token_chunks.py <sd1_tokenizer> "<front のプロンプト>"
+chunk 1: 75 tokens, weights [1.0]
+  masterpiece , best quality , no humans , still life , red background , white ceramic teapot , lemons , glass bottle , white tablecloth , wooden table , window , indoors , intricate details , highly detailed , sharp focus , depth of field , soft shadows , centered composition , ceramic texture , glass reflection , fabric texture , wood grain , clean lines , balanced composition , calm atmosphere ,
+chunk 2: 74 tokens, weights [1.0]
+  quiet mood , simple arrangement , cup , spoon , saucer , folded napkin , small plate , bread , knife , jar , cork , sugar bowl , teacup , wooden tray , kitchen , curtain , shelf , picture frame , books , vase , pottery , still life painting , traditional media , illustration , scenery , no text , tidy , neat , symmetrical , quiet , still
+$ uv run --with transformers python token_chunks.py <sd1_tokenizer> "<chunk1_end のプロンプト>"
+chunk 1: 75 tokens, weights [1.0]
+  masterpiece , best quality , no humans , still life , white ceramic teapot , lemons , glass bottle , white tablecloth , wooden table , window , indoors , intricate details , highly detailed , sharp focus , depth of field , soft shadows , centered composition , ceramic texture , glass reflection , fabric texture , wood grain , clean lines , balanced composition , calm atmosphere , red background ,
+chunk 2: 74 tokens, weights [1.0]
+  quiet mood , simple arrangement , cup , spoon , saucer , folded napkin , small plate , bread , knife , jar , cork , sugar bowl , teacup , wooden tray , kitchen , curtain , shelf , picture frame , books , vase , pottery , still life painting , traditional media , illustration , scenery , no text , tidy , neat , symmetrical , quiet , still
+$ uv run --with transformers python token_chunks.py <sd1_tokenizer> "<chunk2_start のプロンプト>"
+chunk 1: 75 tokens, weights [1.0]
+  masterpiece , best quality , no humans , still life , white ceramic teapot , lemons , glass bottle , white tablecloth , wooden table , window , indoors , intricate details , highly detailed , sharp focus , depth of field , soft shadows , centered composition , ceramic texture , glass reflection , fabric texture , wood grain , clean lines , balanced composition , calm atmosphere , quiet mood ,
+chunk 2: 74 tokens, weights [1.0]
+  red background , simple arrangement , cup , spoon , saucer , folded napkin , small plate , bread , knife , jar , cork , sugar bowl , teacup , wooden tray , kitchen , curtain , shelf , picture frame , books , vase , pottery , still life painting , traditional media , illustration , scenery , no text , tidy , neat , symmetrical , quiet , still
+$ uv run --with transformers python token_chunks.py <sd1_tokenizer> "<chunk2_end のプロンプト>"
+chunk 1: 75 tokens, weights [1.0]
+  masterpiece , best quality , no humans , still life , white ceramic teapot , lemons , glass bottle , white tablecloth , wooden table , window , indoors , intricate details , highly detailed , sharp focus , depth of field , soft shadows , centered composition , ceramic texture , glass reflection , fabric texture , wood grain , clean lines , balanced composition , calm atmosphere , quiet mood ,
+chunk 2: 74 tokens, weights [1.0]
+  simple arrangement , cup , spoon , saucer , folded napkin , small plate , bread , knife , jar , cork , sugar bowl , teacup , wooden tray , kitchen , curtain , shelf , picture frame , books , vase , pottery , still life painting , traditional media , illustration , scenery , no text , tidy , neat , symmetrical , quiet , still , red background
+$ uv run --with transformers python token_chunks.py <sd1_tokenizer> "((blue teapot)), (red cup:1.3), ((green bottle:1.3))"
+chunk 1:  8 tokens, weights [1.0, 1.2100000000000002, 1.3]
+  blue teapot , red cup , green bottle

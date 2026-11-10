@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>aqua の語が目だけでなく髪の一部にも色を付ける</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<defs><marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker><marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="170" y="62" font-size="28" font-weight="normal" text-anchor="middle" class="sub">prompt</text>
+<rect x="70" y="100" width="200" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="170" y="145" font-size="32" font-weight="normal" text-anchor="middle">black</text>
+<rect x="70" y="200" width="200" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="170" y="245" font-size="32" font-weight="normal" text-anchor="middle">hair</text>
+<rect x="70" y="300" width="200" height="68" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="170" y="345" font-size="32" font-weight="normal" text-anchor="middle">aqua</text>
+<rect x="70" y="400" width="200" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="170" y="445" font-size="32" font-weight="normal" text-anchor="middle">eyes</text>
+<text x="700" y="62" font-size="28" font-weight="normal" text-anchor="middle" class="sub">image</text>
+<path d="M550,480 C510,250 550,90 700,85 C850,90 890,250 850,480 Z" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M812,230 C840,310 845,400 838,475 L800,475 C808,400 800,310 786,250 Z" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<ellipse cx="700" cy="300" rx="92" ry="118" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<ellipse cx="662" cy="295" rx="20" ry="26" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<ellipse cx="738" cy="295" rx="20" ry="26" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<path d="M605,260 C620,150 780,150 795,260 C740,220 660,220 605,260 Z" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M272,234 C380,234 470,140 580,170" fill="none" stroke="#666666" stroke-width="2.5" marker-end="url(#ag)"/>
+<path d="M272,334 C400,334 520,295 638,295" fill="none" stroke="#7aa6c2" stroke-width="4" marker-end="url(#ab)"/>
+<path d="M272,342 C420,484 640,470 810,450" fill="none" stroke="#d4a24c" stroke-width="4" stroke-dasharray="10 7" marker-end="url(#ao)"/>
+<circle cx="520" cy="452" r="22" fill="#fbe3e3" stroke="#e15759" stroke-width="3"/>
+<path d="M510,442 L530,462 M530,442 L510,462" stroke="#e15759" stroke-width="4"/>
+<text x="875" y="515" font-size="26" font-weight="normal" text-anchor="end">aqua が髪にも</text>
+</svg>

@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>結合の回数ごとに「秘密鍵を安全に保管する」を区切った図</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="130" y="40" font-size="24" text-anchor="end" class="sub">結合の回数</text>
+<text x="930" y="40" font-size="24" text-anchor="end" class="sub">トークン数</text>
+<text x="130" y="92" font-size="24" text-anchor="end">0 回</text>
+<text x="930" y="92" font-size="26" text-anchor="end">33</text>
+<rect x="151.5" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="172.4" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="193.3" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="214.2" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="235.1" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="256.0" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="277.0" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="297.9" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="318.8" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="339.7" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="360.6" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="381.5" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="402.4" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="423.3" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="444.2" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="465.1" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="486.0" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="507.0" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="527.9" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="548.8" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="569.7" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="590.6" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="611.5" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="632.4" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="653.3" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="674.2" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="695.1" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="716.0" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="737.0" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="757.9" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="778.8" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="799.7" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="820.6" y="58" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="130" y="166" font-size="24" text-anchor="end">10 回</text>
+<text x="930" y="166" font-size="26" text-anchor="end">27</text>
+<rect x="151.5" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="172.4" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="193.3" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="214.2" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="235.1" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="256.0" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="277.0" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="297.9" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="318.8" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="339.7" y="132" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="369.54545454545456" y="166" font-size="24" text-anchor="middle">を</text>
+<rect x="402.4" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="423.3" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="444.2" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="465.1" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="486.0" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="507.0" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="527.9" y="132" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="569.7" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="590.6" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="611.5" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="632.4" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="653.3" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="674.2" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="695.1" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="716.0" y="132" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="745.909090909091" y="166" font-size="24" text-anchor="middle">す</text>
+<rect x="778.8" y="132" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="820.6" y="132" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="130" y="240" font-size="24" text-anchor="end">50 回</text>
+<text x="930" y="240" font-size="26" text-anchor="end">23</text>
+<rect x="151.5" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="172.4" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="193.3" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="214.2" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="235.1" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="256.0" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="277.0" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="297.9" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="318.8" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="339.7" y="206" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="369.54545454545456" y="240" font-size="24" text-anchor="middle">を</text>
+<rect x="402.4" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="423.3" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="444.2" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="465.1" y="206" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="507.0" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="527.9" y="206" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="557.7272727272727" y="240" font-size="24" text-anchor="middle">に</text>
+<rect x="590.6" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="611.5" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="632.4" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="653.3" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="674.2" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="695.1" y="206" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="716.0" y="206" width="122.5" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="777.2727272727273" y="240" font-size="24" text-anchor="middle">する</text>
+<text x="130" y="314" font-size="24" text-anchor="end">100 回</text>
+<text x="930" y="314" font-size="26" text-anchor="end">19</text>
+<rect x="151.5" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="172.4" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="193.3" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="214.2" y="280" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="256.0" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="277.0" y="280" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="306.8181818181818" y="314" font-size="24" text-anchor="middle">鍵</text>
+<rect x="339.7" y="280" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="369.54545454545456" y="314" font-size="24" text-anchor="middle">を</text>
+<rect x="402.4" y="280" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="444.2" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="465.1" y="280" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="507.0" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="527.9" y="280" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="557.7272727272727" y="314" font-size="24" text-anchor="middle">に</text>
+<rect x="590.6" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="611.5" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="632.4" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="653.3" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="674.2" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="695.1" y="280" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="716.0" y="280" width="122.5" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="777.2727272727273" y="314" font-size="24" text-anchor="middle">する</text>
+<text x="130" y="388" font-size="24" text-anchor="end">300 回</text>
+<text x="930" y="388" font-size="26" text-anchor="end">13</text>
+<rect x="151.5" y="354" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="172.4" y="354" width="101.5" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="277.0" y="354" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="306.8181818181818" y="388" font-size="24" text-anchor="middle">鍵</text>
+<rect x="339.7" y="354" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="369.54545454545456" y="388" font-size="24" text-anchor="middle">を</text>
+<rect x="402.4" y="354" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="444.2" y="354" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="465.1" y="354" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="507.0" y="354" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="527.9" y="354" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="557.7272727272727" y="388" font-size="24" text-anchor="middle">に</text>
+<rect x="590.6" y="354" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="620.4545454545455" y="388" font-size="24" text-anchor="middle">保</text>
+<rect x="653.3" y="354" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="674.2" y="354" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="716.0" y="354" width="122.5" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="777.2727272727273" y="388" font-size="24" text-anchor="middle">する</text>
+<text x="130" y="462" font-size="24" text-anchor="end">1,000 回</text>
+<text x="930" y="462" font-size="26" text-anchor="end">8</text>
+<rect x="151.5" y="428" width="185.2" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="244.0909090909091" y="462" font-size="24" text-anchor="middle">秘密鍵</text>
+<rect x="339.7" y="428" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="369.54545454545456" y="462" font-size="24" text-anchor="middle">を</text>
+<rect x="402.4" y="428" width="38.8" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="444.2" y="428" width="17.9" height="48" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="465.1" y="428" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="495.0" y="462" font-size="24" text-anchor="middle">全</text>
+<rect x="527.9" y="428" width="59.7" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="557.7272727272727" y="462" font-size="24" text-anchor="middle">に</text>
+<rect x="590.6" y="428" width="122.5" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="651.8181818181819" y="462" font-size="24" text-anchor="middle">保管</text>
+<rect x="716.0" y="428" width="122.5" height="48" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="777.2727272727273" y="462" font-size="24" text-anchor="middle">する</text>
+<text x="480" y="528" font-size="24" text-anchor="middle" class="sub">黄土色は文字の途中で切れたトークン（幅はバイト数）</text>
+</svg>

@@ -1,0 +1,35 @@
+{
+  "common": "masterpiece, best quality, general, solo, adult, standing, full body, looking at viewer, white background, simple background",
+  "conditions": {
+    "plain": "daylight",
+    "neon": "night, neon lights, dramatic lighting",
+    "pose": "daylight, walking, holding smartphone, waving, from side, wide shot"
+  },
+  "designs": {
+    "A": {
+      "subject": "1girl",
+      "outfit": "long black hair, red jacket, white shirt, blue jeans, brown boots"
+    },
+    "B": {
+      "subject": "1girl",
+      "outfit": "long blonde hair, green sweater, black long skirt, black shoes"
+    },
+    "C": {
+      "subject": "1boy",
+      "outfit": "brown hair, navy blue suit, white shirt, red necktie, black shoes"
+    },
+    "D": {
+      "subject": "1girl",
+      "outfit": "silver hair, ponytail, yellow raincoat, grey pants, white sneakers"
+    }
+  },
+  "reference_seed": 20261100,
+  "seeds": [
+    20261110,
+    20261111,
+    20261112,
+    20261113,
+    20261114,
+    20261115
+  ]
+}

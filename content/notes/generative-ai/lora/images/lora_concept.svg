@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>凍結した W と同じ大きさの差分を細長い B と A の積で作る</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="480" y="56" font-size="34" font-weight="normal" text-anchor="middle">W&#x27; = W + (α/r)·BA</text>
+<rect x="70" y="100" width="320" height="320" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="230.0" y="254.0" font-size="64" font-weight="normal" text-anchor="middle">W</text>
+<text x="230.0" y="300.0" font-size="26" font-weight="normal" text-anchor="middle" class="sub">1280 × 1280</text>
+<text x="230.0" y="470" font-size="26" font-weight="normal" text-anchor="middle">凍結（学習しない）</text>
+<text x="230.0" y="506" font-size="26" font-weight="normal" text-anchor="middle" class="sub">1,638,400 個</text>
+<text x="445" y="274.0" font-size="56" font-weight="normal" text-anchor="middle">+</text>
+<rect x="534.0" y="100" width="320" height="320" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="694.0" y="254.0" font-size="40" font-weight="normal" text-anchor="middle">ΔW = BA</text>
+<text x="694.0" y="300.0" font-size="24" font-weight="normal" text-anchor="middle" class="sub">1280 × 1280（保存しない）</text>
+<rect x="520" y="100" width="8.0" height="320" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.5"/>
+<rect x="534.0" y="86.0" width="320" height="8.0" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="1.5"/>
+<text x="506" y="270.0" font-size="32" font-weight="normal" text-anchor="end">B</text>
+<text x="868.0" y="98.0" font-size="32" font-weight="normal" text-anchor="start">A</text>
+<text x="694.0" y="470" font-size="26" font-weight="normal" text-anchor="middle">学習するのは B と A（r = 32）</text>
+<text x="694.0" y="506" font-size="26" font-weight="normal" text-anchor="middle" class="sub">81,920 個（W の 5%）</text>
+</svg>

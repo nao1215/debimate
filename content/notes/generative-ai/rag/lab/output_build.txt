@@ -1,0 +1,6 @@
+notes: 84, characters after cleaning: 575,605
+strategy     200: 2,918 chunks, chars median   200 max   200
+strategy     500: 1,188 chunks, chars median   500 max   500
+strategy    1000:   614 chunks, chars median 1,000 max 1,000
+strategy    2000:   325 chunks, chars median 2,000 max 2,000
+strategy section:   771 chunks, chars median   703 max 3,774

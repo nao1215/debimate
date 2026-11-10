@@ -1,0 +1,56 @@
+# python3 run_sweep.py <dir>
+queued sampler=euler_ancestral weight=0.00 prompt_id=d0a482b2-6465-4902-99f1-2ac193e44081
+queued sampler=euler_ancestral weight=0.25 prompt_id=0fa0c802-ad78-400f-b693-a9c9705ae39a
+queued sampler=euler_ancestral weight=0.50 prompt_id=d637bc1b-ad99-4e11-bc95-3ab5a39115f6
+queued sampler=euler_ancestral weight=0.75 prompt_id=52e8746d-186a-4aea-9296-47ef0b1b0f5f
+queued sampler=euler_ancestral weight=1.00 prompt_id=751663f6-ceec-4c37-be2f-966849286cea
+saved <dir>/weight_0.00.png (weight=0.00, 24.6s)
+saved <dir>/weight_0.25.png (weight=0.25, 26.0s)
+saved <dir>/weight_0.50.png (weight=0.50, 23.6s)
+saved <dir>/weight_0.75.png (weight=0.75, 23.5s)
+saved <dir>/weight_1.00.png (weight=1.00, 23.6s)
+
+# python3 run_sweep.py <dir> euler
+queued sampler=euler weight=0.00 prompt_id=3bd5246d-f30a-47f9-a5af-50d4128aecc8
+queued sampler=euler weight=0.25 prompt_id=6b76f915-f042-485e-ac4c-9da57490ac7a
+queued sampler=euler weight=0.50 prompt_id=794f9c04-bdd9-4c42-9a9d-0e30d5253d2e
+queued sampler=euler weight=0.75 prompt_id=6d000fee-6796-46fe-8d29-cab07492f279
+queued sampler=euler weight=1.00 prompt_id=da3112b8-0608-4831-a976-79ac760016eb
+saved <dir>/weight_0.00.png (weight=0.00, 23.9s)
+saved <dir>/weight_0.25.png (weight=0.25, 23.7s)
+saved <dir>/weight_0.50.png (weight=0.50, 23.6s)
+saved <dir>/weight_0.75.png (weight=0.75, 23.5s)
+saved <dir>/weight_1.00.png (weight=1.00, 23.5s)
+
+# python3 to_webp.py <dir> ../images ancestral（上の 5 行）と euler（下の 5 行）
+weight=0.00  diff_from_0=  0.00  diff_from_prev=  0.00  brightness=  83.3
+weight=0.25  diff_from_0= 53.77  diff_from_prev= 53.77  brightness= 108.8
+weight=0.50  diff_from_0= 66.86  diff_from_prev= 38.68  brightness= 122.9
+weight=0.75  diff_from_0= 74.48  diff_from_prev= 47.37  brightness= 134.3
+weight=1.00  diff_from_0= 87.87  diff_from_prev= 46.65  brightness= 141.9
+weight=0.00  diff_from_0=  0.00  diff_from_prev=  0.00  brightness=  82.5
+weight=0.25  diff_from_0= 40.35  diff_from_prev= 40.35  brightness= 104.8
+weight=0.50  diff_from_0= 57.36  diff_from_prev= 34.05  brightness= 120.3
+weight=0.75  diff_from_0= 65.44  diff_from_prev= 36.86  brightness= 121.1
+weight=1.00  diff_from_0= 60.45  diff_from_prev= 28.11  brightness= 115.8
+
+# python3 seed_baseline.py <dir>
+seed 20261110 vs 20261111:  60.32
+seed 20261110 vs 20261112:  65.88
+seed 20261110 vs 20261113:  71.23
+seed 20261110 vs 20261114:  79.04
+seed 20261111 vs 20261112:  64.44
+seed 20261111 vs 20261113:  60.35
+seed 20261111 vs 20261114:  79.00
+seed 20261112 vs 20261113:  72.08
+seed 20261112 vs 20261114:  66.06
+seed 20261113 vs 20261114:  73.54
+min=60.32  mean=69.20  max=79.04
+
+# 同じ設定で euler_ancestral の 5 枚をもう一度生成し、1 回目と比べた結果
+# weight  画素の差の平均  画素の差の最大
+0 0.0 0
+0.25 0.0 0
+0.5 0.0 0
+0.75 0.0 0
+1.0 0.0 0

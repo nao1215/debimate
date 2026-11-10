@@ -1,0 +1,223 @@
+{
+  "qwen3:1.7b-q4_K_M": {
+    "prompt": {
+      "n": 40,
+      "parse": 15,
+      "schema": 15,
+      "value": 13,
+      "fenced": 25,
+      "person": 14,
+      "date": 14,
+      "amount_yen": 15,
+      "tokens": 44.5,
+      "sec_median": 0.929319786,
+      "sec_reps": [
+        1.9094639290000002,
+        0.929319786,
+        0.7946001759999999
+      ],
+      "tok_per_s": 46.61726837820739,
+      "same": 13,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "json": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 31,
+      "fenced": 0,
+      "person": 36,
+      "date": 35,
+      "amount_yen": 40,
+      "tokens": 37.0,
+      "sec_median": 0.7639537605,
+      "sec_reps": [
+        1.4636958315,
+        0.7639537605,
+        0.7187413155
+      ],
+      "tok_per_s": 48.64042906640937,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "schema": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 31,
+      "fenced": 0,
+      "person": 36,
+      "date": 35,
+      "amount_yen": 40,
+      "tokens": 37.0,
+      "sec_median": 0.7653628315000001,
+      "sec_reps": [
+        1.6572055815,
+        0.7653628315000001,
+        0.693484644
+      ],
+      "tok_per_s": 49.20017862478545,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "schema_bare": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 23,
+      "fenced": 0,
+      "person": 28,
+      "date": 32,
+      "amount_yen": 40,
+      "tokens": 38.0,
+      "sec_median": 0.873056101,
+      "sec_reps": [
+        0.873056101
+      ],
+      "tok_per_s": 52.46951636153668,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    }
+  },
+  "qwen3:4b": {
+    "prompt": {
+      "n": 20,
+      "parse": 0,
+      "schema": 0,
+      "value": 0,
+      "fenced": 0,
+      "person": 0,
+      "date": 0,
+      "amount_yen": 0,
+      "tokens": 512.0,
+      "sec_median": 11.5177630705,
+      "sec_reps": [
+        11.5177630705
+      ],
+      "tok_per_s": 44.797499736301035,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 20
+    },
+    "json": {
+      "n": 20,
+      "parse": 20,
+      "schema": 20,
+      "value": 18,
+      "fenced": 0,
+      "person": 20,
+      "date": 18,
+      "amount_yen": 20,
+      "tokens": 42.0,
+      "sec_median": 1.1610082135,
+      "sec_reps": [
+        1.1610082135
+      ],
+      "tok_per_s": 42.32750582184113,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "schema": {
+      "n": 20,
+      "parse": 20,
+      "schema": 20,
+      "value": 18,
+      "fenced": 0,
+      "person": 20,
+      "date": 18,
+      "amount_yen": 20,
+      "tokens": 42.0,
+      "sec_median": 0.816696538,
+      "sec_reps": [
+        0.816696538
+      ],
+      "tok_per_s": 56.623581455238664,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    }
+  },
+  "qwen3:8b": {
+    "prompt": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 36,
+      "fenced": 0,
+      "person": 40,
+      "date": 38,
+      "amount_yen": 37,
+      "tokens": 42.0,
+      "sec_median": 1.840991666,
+      "sec_reps": [
+        1.840991666
+      ],
+      "tok_per_s": 23.77626669319124,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "json": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 36,
+      "fenced": 0,
+      "person": 40,
+      "date": 38,
+      "amount_yen": 37,
+      "tokens": 42.0,
+      "sec_median": 1.9309968505,
+      "sec_reps": [
+        1.9309968505
+      ],
+      "tok_per_s": 22.927999334427035,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "schema": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 36,
+      "fenced": 0,
+      "person": 40,
+      "date": 38,
+      "amount_yen": 37,
+      "tokens": 42.0,
+      "sec_median": 1.7610641855,
+      "sec_reps": [
+        1.7610641855
+      ],
+      "tok_per_s": 25.531681183389082,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    },
+    "schema_bare": {
+      "n": 40,
+      "parse": 40,
+      "schema": 40,
+      "value": 24,
+      "fenced": 0,
+      "person": 27,
+      "date": 36,
+      "amount_yen": 40,
+      "tokens": 42.0,
+      "sec_median": 1.8161583829999999,
+      "sec_reps": [
+        1.8161583829999999
+      ],
+      "tok_per_s": 25.35973535717327,
+      "same": 20,
+      "n_timed": 20,
+      "length_stop": 0
+    }
+  }
+}

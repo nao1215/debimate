@@ -1,0 +1,39 @@
+[eyes_last] '1girl, black hair, aqua eyes' vs '1girl, black hair, brown eyes'
+   # token          CLIP-L  bigG
+   0 <|startoftext|> 0.0000  0.0000
+   1 1</w>          0.0000  0.0000
+   2 girl</w>       0.0000  0.0000
+   3 ,</w>          -0.0000  -0.0000
+   4 black</w>      0.0000  -0.0000
+   5 hair</w>       0.0000  0.0000
+   6 ,</w>          -0.0000  -0.0000
+   7 aqua</w>       0.4297  0.2769
+   8 eyes</w>       0.2219  0.1267
+   9 <|endoftext|>  0.0117  0.1077
+  padding 67 tokens: CLIP-L max 0.0127, bigG max 0.0135
+[eyes_first] '1girl, aqua eyes, black hair' vs '1girl, brown eyes, black hair'
+   # token          CLIP-L  bigG
+   0 <|startoftext|> 0.0000  0.0000
+   1 1</w>          0.0000  0.0000
+   2 girl</w>       0.0000  0.0000
+   3 ,</w>          -0.0000  -0.0000
+   4 aqua</w>       0.4575  0.2537
+   5 eyes</w>       0.2277  0.1300
+   6 ,</w>          0.1395  0.0636
+   7 black</w>      0.0074  0.0063
+   8 hair</w>       0.0007  0.0044
+   9 <|endoftext|>  0.0036  0.1088
+  padding 67 tokens: CLIP-L max 0.0063, bigG max 0.0114
+[hair_self] '1girl, brown eyes, aqua hair' vs '1girl, brown eyes, black hair'
+   # token          CLIP-L  bigG
+   0 <|startoftext|> 0.0000  0.0000
+   1 1</w>          0.0000  0.0000
+   2 girl</w>       0.0000  0.0000
+   3 ,</w>          -0.0000  -0.0000
+   4 brown</w>      -0.0000  0.0000
+   5 eyes</w>       0.0000  0.0000
+   6 ,</w>          0.0000  0.0000
+   7 aqua</w>       0.4130  0.2374
+   8 hair</w>       0.2414  0.2534
+   9 <|endoftext|>  0.0130  0.1560
+  padding 67 tokens: CLIP-L max 0.0136, bigG max 0.0197

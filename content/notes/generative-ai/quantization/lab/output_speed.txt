@@ -1,0 +1,31 @@
+round 0 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   1705.9 tok/s | gen  128 tok   33.8 tok/s | thinking 0 chars | load   12.3 | other models: qwen3:4b, qwen3:8b
+round 0 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   1238.1 tok/s | gen  128 tok   36.3 tok/s | thinking 0 chars | load   10.4 | other models: qwen3:4b, qwen3:8b
+round 0 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   1474.9 tok/s | gen  128 tok   16.5 tok/s | thinking 0 chars | load    6.5 | other models: qwen3:4b, qwen3:8b
+round 1 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   2025.9 tok/s | gen  128 tok   21.1 tok/s | thinking 0 chars | load   14.6 | other models: qwen3:4b, qwen3:8b
+round 1 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   1885.0 tok/s | gen  128 tok   35.2 tok/s | thinking 0 chars | load   12.5 | other models: qwen3:4b, qwen3:8b
+round 1 qwen3:1.7b-fp16    prompt  950 tok (cached   0)    904.3 tok/s | gen  128 tok   14.4 tok/s | thinking 0 chars | load   10.9 | other models: qwen3:4b, qwen3:8b
+round 2 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   1759.2 tok/s | gen  128 tok   29.0 tok/s | thinking 0 chars | load   14.5 | other models: qwen3:4b, qwen3:8b
+round 2 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   1666.7 tok/s | gen  128 tok   28.7 tok/s | thinking 0 chars | load   12.9 | other models: qwen3:4b, qwen3:8b
+round 2 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   1365.7 tok/s | gen  128 tok   14.4 tok/s | thinking 0 chars | load   11.2 | other models: qwen3:4b, qwen3:8b
+round 3 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   1675.4 tok/s | gen  128 tok   30.6 tok/s | thinking 0 chars | load   21.7 | other models: qwen3:4b, qwen3:8b
+round 3 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)    941.8 tok/s | gen  128 tok   23.5 tok/s | thinking 0 chars | load   16.5 | other models: qwen3:4b, qwen3:8b
+round 3 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   2304.9 tok/s | gen  128 tok   20.7 tok/s | thinking 0 chars | load   15.8 | other models: qwen3:4b, qwen3:8b
+round 4 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   3822.6 tok/s | gen  128 tok   62.4 tok/s | thinking 0 chars | load   19.2 | other models: qwen3:4b, qwen3:8b
+round 4 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   1362.5 tok/s | gen  128 tok   24.0 tok/s | thinking 0 chars | load   14.1 | other models: qwen3:4b
+round 4 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   1354.2 tok/s | gen  128 tok   15.4 tok/s | thinking 0 chars | load   15.5 | other models: qwen3:4b
+round 5 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   2720.7 tok/s | gen  128 tok   45.4 tok/s | thinking 0 chars | load   16.9 | other models: qwen3:4b, qwen3:8b
+round 5 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   1504.5 tok/s | gen  128 tok   44.4 tok/s | thinking 0 chars | load    8.1 | other models: qwen3:4b, qwen3:8b
+round 5 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   1690.3 tok/s | gen  128 tok   16.5 tok/s | thinking 0 chars | load    5.4 | other models: qwen3:4b, qwen3:8b
+round 6 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   2573.2 tok/s | gen  128 tok   59.0 tok/s | thinking 0 chars | load    8.7 | other models: qwen3:4b, qwen3:8b
+round 6 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   2692.8 tok/s | gen  128 tok   41.8 tok/s | thinking 0 chars | load    8.7 | other models: qwen3:4b
+round 6 qwen3:1.7b-fp16    prompt  950 tok (cached   0)    948.0 tok/s | gen  128 tok   11.7 tok/s | thinking 0 chars | load    9.0 | other models: qwen3:4b
+round 7 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   1425.0 tok/s | gen  128 tok   31.4 tok/s | thinking 0 chars | load    9.3 | other models: qwen3:4b
+round 7 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   1191.7 tok/s | gen  128 tok   41.2 tok/s | thinking 0 chars | load    4.6 | other models: qwen3:4b
+round 7 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   1132.8 tok/s | gen  128 tok   22.7 tok/s | thinking 0 chars | load    5.4 | other models: qwen3:4b
+round 8 qwen3:1.7b-q4_K_M  prompt  950 tok (cached   0)   2486.1 tok/s | gen  128 tok   33.9 tok/s | thinking 0 chars | load    8.1 | other models: qwen3:4b
+round 8 qwen3:1.7b-q8_0    prompt  950 tok (cached   0)   2748.8 tok/s | gen  128 tok   49.2 tok/s | thinking 0 chars | load   10.9 | other models: qwen3:4b
+round 8 qwen3:1.7b-fp16    prompt  950 tok (cached   0)   1245.5 tok/s | gen  128 tok   36.0 tok/s | thinking 0 chars | load   11.2 | other models: qwen3:4b
+
+qwen3:1.7b-q4_K_M  prompt median  2025.9 tok/s (1425.0-3822.6) | gen median  33.8 tok/s (21.1-62.4)
+qwen3:1.7b-q8_0    prompt median  1504.5 tok/s (941.8-2748.8) | gen median  36.3 tok/s (23.5-49.2)
+qwen3:1.7b-fp16    prompt median  1354.2 tok/s (904.3-2304.9) | gen median  16.5 tok/s (11.7-36.0)

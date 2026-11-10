@@ -1,0 +1,967 @@
+{
+ "eye_aqua/1000": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1001": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1002": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua/1003": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua/1004": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1005": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua/1006": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1007": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua/1008": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1009": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1010": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua/1011": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1000": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1001": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1002": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1003": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1004": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1005": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1006": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1007": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1008": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1000": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1001": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1002": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_rev/1003": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_rev/1004": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1005": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_rev/1006": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1007": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_rev/1008": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_none/1009": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1009": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1010": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1010": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_none/1011": {
+  "hair_aqua": false,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_rev/1011": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_concat/1000": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_concat/1001": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_concat/1002": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_concat/1003": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_concat/1004": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_concat/1005": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_concat/1006": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_concat/1007": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false,
+  "note": "縮小表示の 1 回目は色移り無しと判定。機械の判定と食い違ったので拡大して見直し、前髪の青緑の光沢を確認して直した"
+ },
+ "eye_aqua_concat/1008": {
+  "hair_aqua": true,
+  "earring_aqua": true,
+  "exposed": false
+ },
+ "eye_aqua_concat/1009": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_concat/1010": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "eye_aqua_concat/1011": {
+  "hair_aqua": true,
+  "earring_aqua": false,
+  "exposed": false
+ },
+ "tone_two/1000": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_parts/1000": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_two/1001": {
+  "split_lr": true,
+  "exposed": false
+ },
+ "tone_parts/1001": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_two/1002": {
+  "split_lr": true,
+  "exposed": false
+ },
+ "tone_parts/1002": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_two/1003": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_parts/1003": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_two/1004": {
+  "split_lr": true,
+  "exposed": false
+ },
+ "tone_parts/1004": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "tone_two/1005": {
+  "split_lr": true,
+  "exposed": false
+ },
+ "tone_parts/1005": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "s_eye_none/1000": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "blue",
+  "skirt": "navy",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1000": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1001": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": true
+ },
+ "s_eye_aqua/1001": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": true
+ },
+ "s_eye_none/1002": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": true
+ },
+ "s_eye_aqua/1002": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": true
+ },
+ "s_eye_none/1003": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "navy",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1003": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1004": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "blue",
+  "skirt": "blue",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1004": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1005": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1005": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1006": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1006": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1007": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1007": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1008": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1008": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1009": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "other",
+  "skirt": "other",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1009": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "other",
+  "skirt": "white",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1010": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "white",
+  "skirt": "navy",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1010": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "blue",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_none/1011": {
+  "hair_aqua": false,
+  "eyes_open": false,
+  "shirt": "blue",
+  "skirt": "navy",
+  "exposed": false,
+  "multi": false
+ },
+ "s_eye_aqua/1011": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "blue",
+  "exposed": false,
+  "multi": false
+ },
+ "s_ar_832x1216/1000": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_ar_1024x1024/1000": {
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_ar_832x1216/1001": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_ar_1024x1024/1001": {
+  "multi": true,
+  "exposed": false,
+  "note": ""
+ },
+ "s_ar_832x1216/1002": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_ar_1024x1024/1002": {
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_ar_832x1216/1003": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_ar_1024x1024/1003": {
+  "multi": true,
+  "exposed": false,
+  "note": ""
+ },
+ "s_ar_832x1216/1004": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_ar_1024x1024/1004": {
+  "multi": false,
+  "exposed": false,
+  "note": "1004 は全身ではなく胸元までの大写し"
+ },
+ "s_ar_832x1216/1005": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_ar_1024x1024/1005": {
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_light_sunset/1000": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_light_sunset/1001": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_light_sunset/1002": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_light_sunset/1003": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_light_night/1000": {
+  "exposed": false,
+  "background_changed": false
+ },
+ "s_light_night/1001": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_light_night/1002": {
+  "exposed": false,
+  "background_changed": false
+ },
+ "s_light_night/1003": {
+  "exposed": false,
+  "background_changed": false
+ },
+ "s_tone_two/1000": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_parts/1000": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_two/1001": {
+  "split_lr": true,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_parts/1001": {
+  "split_lr": false,
+  "multi": true,
+  "exposed": false
+ },
+ "s_tone_two/1002": {
+  "split_lr": false,
+  "multi": true,
+  "exposed": false
+ },
+ "s_tone_parts/1002": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_two/1003": {
+  "split_lr": true,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_parts/1003": {
+  "split_lr": false,
+  "multi": true,
+  "exposed": false
+ },
+ "s_tone_two/1004": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_parts/1004": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_two/1005": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_tone_parts/1005": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_none/1000": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "navy",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1000": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "multi": false,
+  "exposed": false,
+  "note": "機械は髪の領域に重なった水色のシャツを青緑と数えた"
+ },
+ "s_rep_none/1001": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_aqua/1001": {
+  "hair_aqua": true,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "blue",
+  "multi": true,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1002": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_aqua/1002": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": true,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1003": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1003": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": true,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1004": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "blue",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1004": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "multi": false,
+  "exposed": false,
+  "note": "機械は髪の領域に重なった水色のシャツを青緑と数えた"
+ },
+ "s_rep_none/1005": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1005": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1006": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1006": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1007": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1007": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1008": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_aqua/1008": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "multi": false,
+  "exposed": false,
+  "note": "機械は髪の領域に重なった水色のシャツを青緑と数えた"
+ },
+ "s_rep_none/1009": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "other",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1009": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "white",
+  "multi": false,
+  "exposed": false,
+  "note": ""
+ },
+ "s_rep_none/1010": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "white",
+  "skirt": "navy",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1010": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "white",
+  "multi": false,
+  "exposed": false,
+  "note": "機械は髪の領域に重なった水色のシャツを青緑と数えた"
+ },
+ "s_rep_none/1011": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "navy",
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_aqua/1011": {
+  "hair_aqua": false,
+  "eyes_open": true,
+  "shirt": "blue",
+  "skirt": "blue",
+  "multi": false,
+  "exposed": false,
+  "note": "機械は髪の領域に重なった水色のシャツを青緑と数えた"
+ },
+ "s_rep_ar_832x1216/1000": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_1024x1024/1000": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_tone_two/1000": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "s_rep_tone_parts/1000": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_832x1216/1001": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_1024x1024/1001": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_tone_two/1001": {
+  "split_lr": true,
+  "exposed": false
+ },
+ "s_rep_tone_parts/1001": {
+  "split_lr": false,
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_ar_832x1216/1002": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_1024x1024/1002": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_tone_two/1002": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "s_rep_tone_parts/1002": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_832x1216/1003": {
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_ar_1024x1024/1003": {
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_tone_two/1003": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "s_rep_tone_parts/1003": {
+  "split_lr": false,
+  "multi": true,
+  "exposed": false
+ },
+ "s_rep_ar_832x1216/1004": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_1024x1024/1004": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_tone_two/1004": {
+  "split_lr": false,
+  "exposed": false
+ },
+ "s_rep_tone_parts/1004": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_832x1216/1005": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_ar_1024x1024/1005": {
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_tone_two/1005": {
+  "split_lr": true,
+  "exposed": false
+ },
+ "s_rep_tone_parts/1005": {
+  "split_lr": false,
+  "multi": false,
+  "exposed": false
+ },
+ "s_rep_light_sunset/1000": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_rep_light_night/1000": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_rep_light_sunset/1001": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_rep_light_night/1001": {
+  "exposed": false,
+  "background_changed": false
+ },
+ "s_rep_light_sunset/1002": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_rep_light_night/1002": {
+  "exposed": false,
+  "background_changed": false
+ },
+ "s_rep_light_sunset/1003": {
+  "exposed": false,
+  "background_changed": true
+ },
+ "s_rep_light_night/1003": {
+  "exposed": false,
+  "background_changed": false
+ }
+}

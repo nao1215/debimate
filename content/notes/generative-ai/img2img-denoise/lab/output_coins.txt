@@ -1,0 +1,7 @@
+coins_base   gold= 3.03%  ssim_vs_base=1.000
+coins_g_030  gold= 2.16%  ssim_vs_base=0.850
+coins_g_045  gold= 1.26%  ssim_vs_base=0.740
+coins_g_050  gold= 0.43%  ssim_vs_base=0.689
+coins_g_060  gold= 0.07%  ssim_vs_base=0.611
+coins_g_075  gold= 0.08%  ssim_vs_base=0.406
+coins_c_060  gold= 1.86%  ssim_vs_base=0.620

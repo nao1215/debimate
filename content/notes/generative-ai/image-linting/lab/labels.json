@@ -1,0 +1,368 @@
+{
+ "C_plain_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_plain_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_plain_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_plain_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_plain_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_plain_20261115": {
+  "ok": false,
+  "reasons": [
+   "形の崩れた持ち物(頼んでいない板状の物)"
+  ]
+ },
+ "C_neon_20261110": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "C_neon_20261111": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "C_neon_20261112": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "C_neon_20261113": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "C_neon_20261114": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "C_neon_20261115": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "D_plain_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_plain_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_plain_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_plain_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_plain_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_plain_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_neon_20261110": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "D_neon_20261111": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "D_neon_20261112": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "D_neon_20261113": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "D_neon_20261114": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "D_neon_20261115": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "C_pose_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_pose_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_pose_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_pose_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_pose_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "C_pose_20261114": {
+  "ok": false,
+  "reasons": [
+   "手とスマートフォンが重なって崩れている"
+  ]
+ },
+ "D_pose_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_pose_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_pose_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_pose_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_pose_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "D_pose_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_plain_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_plain_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_plain_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_plain_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_plain_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_plain_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_neon_20261110": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "A_neon_20261111": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "A_neon_20261112": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "A_neon_20261113": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "A_neon_20261114": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "A_neon_20261115": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "B_plain_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_plain_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_plain_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_plain_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_plain_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_plain_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_neon_20261110": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "B_neon_20261111": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "B_neon_20261112": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "B_neon_20261113": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "B_neon_20261114": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "B_neon_20261115": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(夜の路地)",
+   "看板の文字"
+  ]
+ },
+ "A_pose_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_pose_20261111": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_pose_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_pose_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_pose_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "A_pose_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_pose_20261110": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_pose_20261112": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_pose_20261113": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_pose_20261114": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_pose_20261115": {
+  "ok": true,
+  "reasons": []
+ },
+ "B_pose_20261111": {
+  "ok": false,
+  "reasons": [
+   "背景が白ではない(灰色の壁と斜めの影)"
+  ]
+ }
+}

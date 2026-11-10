@@ -1,0 +1,5 @@
+$ curl -s $OLLAMA_HOST/api/version
+{"version":"0.22.1"}
+$ ollama list (qwen3:4b, qwen3:8b)
+qwen3:4b 359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7 4.0B Q4_K_M
+qwen3:8b 500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41 8.2B Q4_K_M

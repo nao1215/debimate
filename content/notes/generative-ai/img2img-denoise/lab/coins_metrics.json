@@ -1,0 +1,37 @@
+[
+ {
+  "name": "coins_base",
+  "gold": 0.0303,
+  "ssim_vs_base": 1.0
+ },
+ {
+  "name": "coins_g_030",
+  "gold": 0.0216,
+  "ssim_vs_base": 0.85
+ },
+ {
+  "name": "coins_g_045",
+  "gold": 0.0126,
+  "ssim_vs_base": 0.74
+ },
+ {
+  "name": "coins_g_050",
+  "gold": 0.0043,
+  "ssim_vs_base": 0.689
+ },
+ {
+  "name": "coins_g_060",
+  "gold": 0.0007,
+  "ssim_vs_base": 0.611
+ },
+ {
+  "name": "coins_g_075",
+  "gold": 0.0008,
+  "ssim_vs_base": 0.406
+ },
+ {
+  "name": "coins_c_060",
+  "gold": 0.0186,
+  "ssim_vs_base": 0.62
+ }
+]

@@ -1,0 +1,343 @@
+[
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": null,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 7070831488,
+   "size_vram": 7070831488,
+   "context_length": 40960
+  },
+  "log": {
+   "KvSize": 40960,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "4.4 GiB",
+   "compute graph ROCm0": "147.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "6.6 GiB"
+  },
+  "load_duration_s": 0.718750905,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 7070831488,
+   "size_vram": 7070831488,
+   "context_length": 40960
+  },
+  "long_load_duration_s": 0.081846262
+ },
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": 2048,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 2517914496,
+   "size_vram": 2517914496,
+   "context_length": 2048
+  },
+  "log": {
+   "KvSize": 2048,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "224.0 MiB",
+   "compute graph ROCm0": "61.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "2.3 GiB"
+  },
+  "load_duration_s": 0.599579214,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 2517914496,
+   "size_vram": 2517914496,
+   "context_length": 2048
+  },
+  "long_load_duration_s": 0.10214338
+ },
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": 4096,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 2754892672,
+   "size_vram": 2754892672,
+   "context_length": 4096
+  },
+  "log": {
+   "KvSize": 4096,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "448.0 MiB",
+   "compute graph ROCm0": "63.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "2.6 GiB"
+  },
+  "load_duration_s": 0.882367288,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 2754892672,
+   "size_vram": 2754892672,
+   "context_length": 4096
+  },
+  "long_load_duration_s": 0.077376757
+ },
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": 8192,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 3237237632,
+   "size_vram": 3237237632,
+   "context_length": 8192
+  },
+  "log": {
+   "KvSize": 8192,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "896.0 MiB",
+   "compute graph ROCm0": "75.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "3.0 GiB"
+  },
+  "load_duration_s": 0.613890817,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 3237237632,
+   "size_vram": 3237237632,
+   "context_length": 8192
+  },
+  "long_load_duration_s": 0.075355282
+ },
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": 16384,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 4189344640,
+   "size_vram": 4189344640,
+   "context_length": 16384
+  },
+  "log": {
+   "KvSize": 16384,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "1.8 GiB",
+   "compute graph ROCm0": "87.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "3.9 GiB"
+  },
+  "load_duration_s": 0.621901911,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 4189344640,
+   "size_vram": 4189344640,
+   "context_length": 16384
+  },
+  "long_load_duration_s": 0.083445298
+ },
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": 32768,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 6106141568,
+   "size_vram": 6106141568,
+   "context_length": 32768
+  },
+  "log": {
+   "KvSize": 32768,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "3.5 GiB",
+   "compute graph ROCm0": "123.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "5.7 GiB"
+  },
+  "load_duration_s": 0.681662227,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 6106141568,
+   "size_vram": 6106141568,
+   "context_length": 32768
+  },
+  "long_load_duration_s": 0.076648158
+ },
+ {
+  "model": "qwen3:1.7b-q8_0",
+  "num_ctx": 40960,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 7070831488,
+   "size_vram": 7070831488,
+   "context_length": 40960
+  },
+  "log": {
+   "KvSize": 40960,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.8 GiB",
+   "model weights CPU": "315.3 MiB",
+   "kv cache ROCm0": "4.4 GiB",
+   "compute graph ROCm0": "147.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "6.6 GiB"
+  },
+  "load_duration_s": 0.703577616,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q8_0",
+   "size": 7070831488,
+   "size_vram": 7070831488,
+   "context_length": 40960
+  },
+  "long_load_duration_s": 0.076770844
+ },
+ {
+  "model": "qwen3:1.7b-fp16",
+  "num_ctx": 4096,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-fp16",
+   "size": 4605426560,
+   "size_vram": 4605426560,
+   "context_length": 4096
+  },
+  "log": {
+   "KvSize": 4096,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "3.2 GiB",
+   "model weights CPU": "593.5 MiB",
+   "kv cache ROCm0": "448.0 MiB",
+   "compute graph ROCm0": "64.6 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "4.3 GiB"
+  },
+  "load_duration_s": 0.851781602,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-fp16",
+   "size": 4605426560,
+   "size_vram": 4605426560,
+   "context_length": 4096
+  },
+  "long_load_duration_s": 0.074561985
+ },
+ {
+  "model": "qwen3:1.7b-fp16",
+  "num_ctx": 32768,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-fp16",
+   "size": 7956675456,
+   "size_vram": 7956675456,
+   "context_length": 32768
+  },
+  "log": {
+   "KvSize": 32768,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "3.2 GiB",
+   "model weights CPU": "593.5 MiB",
+   "kv cache ROCm0": "3.5 GiB",
+   "compute graph ROCm0": "124.6 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "7.4 GiB"
+  },
+  "load_duration_s": 0.917821178,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-fp16",
+   "size": 7956675456,
+   "size_vram": 7956675456,
+   "context_length": 32768
+  },
+  "long_load_duration_s": 0.076275659
+ },
+ {
+  "model": "qwen3:1.7b-q4_K_M",
+  "num_ctx": null,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q4_K_M",
+   "size": 6210022272,
+   "size_vram": 6210022272,
+   "context_length": 40960
+  },
+  "log": {
+   "KvSize": 40960,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.1 GiB",
+   "model weights CPU": "166.9 MiB",
+   "kv cache ROCm0": "4.4 GiB",
+   "compute graph ROCm0": "147.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "5.8 GiB"
+  },
+  "load_duration_s": 0.713218754,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q4_K_M",
+   "size": 6210022272,
+   "size_vram": 6210022272,
+   "context_length": 40960
+  },
+  "long_load_duration_s": 0.07468454
+ },
+ {
+  "model": "qwen3:1.7b-q4_K_M",
+  "num_ctx": 4096,
+  "unloaded_first": true,
+  "ps": {
+   "name": "qwen3:1.7b-q4_K_M",
+   "size": 1894083456,
+   "size_vram": 1894083456,
+   "context_length": 4096
+  },
+  "log": {
+   "KvSize": 4096,
+   "KvCacheType": "(empty)",
+   "model weights ROCm0": "1.1 GiB",
+   "model weights CPU": "166.9 MiB",
+   "kv cache ROCm0": "448.0 MiB",
+   "compute graph ROCm0": "63.7 MiB",
+   "compute graph CPU": "4.0 MiB",
+   "total memory -": "1.8 GiB"
+  },
+  "load_duration_s": 0.643477256,
+  "thinking_chars": 0,
+  "long_prompt_eval_count": 1779,
+  "ps_after_long": {
+   "name": "qwen3:1.7b-q4_K_M",
+   "size": 1894083456,
+   "size_vram": 1894083456,
+   "context_length": 4096
+  },
+  "long_load_duration_s": 0.078433017
+ }
+]

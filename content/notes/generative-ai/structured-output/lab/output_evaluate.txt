@@ -1,0 +1,17 @@
+[qwen3:1.7b-q4_K_M]
+  method      fence  parse  schema  value  person  date  amount  tokens sec/call  tok/s  rep spread  same
+  prompt         25  15/40   15/40  13/40      14    14      15      44     0.93   46.6   0.79-1.91  13/20
+  json            0  40/40   40/40  31/40      36    35      40      37     0.76   48.6   0.72-1.46  20/20
+  schema          0  40/40   40/40  31/40      36    35      40      37     0.77   49.2   0.69-1.66  20/20
+  schema_bare     0  40/40   40/40  23/40      28    32      40      38     0.87   52.5           -  -
+[qwen3:4b]
+  method      fence  parse  schema  value  person  date  amount  tokens sec/call  tok/s  rep spread  same
+  prompt          0   0/20    0/20   0/20       0     0       0     512    11.52   44.8           -  -
+  json            0  20/20   20/20  18/20      20    18      20      42     1.16   42.3           -  -
+  schema          0  20/20   20/20  18/20      20    18      20      42     0.82   56.6           -  -
+[qwen3:8b]
+  method      fence  parse  schema  value  person  date  amount  tokens sec/call  tok/s  rep spread  same
+  prompt          0  40/40   40/40  36/40      40    38      37      42     1.84   23.8           -  -
+  json            0  40/40   40/40  36/40      40    38      37      42     1.93   22.9           -  -
+  schema          0  40/40   40/40  36/40      40    38      37      42     1.76   25.5           -  -
+  schema_bare     0  40/40   40/40  24/40      27    36      40      42     1.82   25.4           -  -

@@ -1,0 +1,12 @@
+qwen3:1.7b-q4_K_M
+  quiz, think=False      thinking     0 chars | <think> in content: False | eval_count    4 | content: "São Paulo"
+  quiz, think=True       thinking   404 chars | <think> in content: False | eval_count   99 | content: "Rio de Janeiro"
+  bench, think=False     thinking     0 chars | <think> in content: False | eval_count  128 | content: "The lighthouse keeper, a man of steady hands and u"
+qwen3:1.7b-q8_0
+  quiz, think=False      thinking     0 chars | <think> in content: False | eval_count    4 | content: "Brasília"
+  quiz, think=True       thinking   606 chars | <think> in content: False | eval_count  160 | content: "The capital city of Brazil is Brasília."
+  bench, think=False     thinking     0 chars | <think> in content: False | eval_count  128 | content: "The lighthouse keeper, known as \"The Watcher,\" has"
+qwen3:1.7b-fp16
+  quiz, think=False      thinking     0 chars | <think> in content: False | eval_count    4 | content: "Brasília"
+  quiz, think=True       thinking   606 chars | <think> in content: False | eval_count  160 | content: "The capital city of Brazil is Brasília."
+  bench, think=False     thinking     0 chars | <think> in content: False | eval_count  128 | content: "The lighthouse keeper, known as \"The Keeper,\" has "

@@ -1,0 +1,186 @@
+{
+ "1": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "waiIllustriousSDXL_v170.safetensors"
+  }
+ },
+ "2": {
+  "class_type": "CLIPSetLastLayer",
+  "inputs": {
+   "clip": [
+    "20",
+    1
+   ],
+   "stop_at_clip_layer": -2
+  }
+ },
+ "3": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "2",
+    0
+   ],
+   "text": "<trigger>, masterpiece, best quality, rating:general, 1girl, solo, adult woman, mature female, 20s, black hair, long hair, parted bangs, open eyes, visible eyes, forehead, detailed eyes, sharp eyes, almond-shaped eyes, long eyelashes, eye highlights, calm dignified expression, lips, earrings, jewelry, nail polish, white blouse, long sleeves, black wide-leg pants, black loafers, full body, standing, standing straight, arms at sides, front view, simple background, grey background, looking at viewer"
+  }
+ },
+ "4": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "2",
+    0
+   ],
+   "text": "lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, bad anatomy, bad hands, extra fingers, missing fingers, extra limbs, deformed, text, signature, watermark, logo, multiple views, 2girls, multiple girls, character sheet, reference sheet, child, loli, aged down, nude, nipples, nsfw, cleavage, midriff, navel, underwear, swimsuit, school uniform, serafuku, blunt bangs, multicolored hair, streaked hair, two-tone hair, gradient hair, colored inner hair, hair over eyes, hair over one eye, covered eyes, closed eyes, half-closed eyes, sleepy eyes, sultry, bare shoulders, off-shoulder, leaning forward"
+  }
+ },
+ "5": {
+  "class_type": "EmptyLatentImage",
+  "inputs": {
+   "width": 768,
+   "height": 1344,
+   "batch_size": 1
+  }
+ },
+ "7": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "20",
+    0
+   ],
+   "positive": [
+    "3",
+    0
+   ],
+   "negative": [
+    "4",
+    0
+   ],
+   "latent_image": [
+    "5",
+    0
+   ],
+   "seed": 20261190,
+   "steps": 28,
+   "cfg": 5.5,
+   "sampler_name": "euler_ancestral",
+   "scheduler": "normal",
+   "denoise": 1.0
+  }
+ },
+ "8": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "7",
+    0
+   ],
+   "vae": [
+    "1",
+    2
+   ]
+  }
+ },
+ "9": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "8",
+    0
+   ],
+   "filename_prefix": "debimate_img2img/person_1x"
+  }
+ },
+ "10": {
+  "class_type": "ImageScaleBy",
+  "inputs": {
+   "image": [
+    "8",
+    0
+   ],
+   "upscale_method": "lanczos",
+   "scale_by": 1.5
+  }
+ },
+ "11": {
+  "class_type": "VAEEncode",
+  "inputs": {
+   "pixels": [
+    "10",
+    0
+   ],
+   "vae": [
+    "1",
+    2
+   ]
+  }
+ },
+ "12": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "20",
+    0
+   ],
+   "positive": [
+    "3",
+    0
+   ],
+   "negative": [
+    "4",
+    0
+   ],
+   "latent_image": [
+    "11",
+    0
+   ],
+   "seed": 20261190,
+   "steps": 20,
+   "cfg": 5.5,
+   "sampler_name": "euler_ancestral",
+   "scheduler": "normal",
+   "denoise": 0.45
+  }
+ },
+ "13": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "12",
+    0
+   ],
+   "vae": [
+    "1",
+    2
+   ]
+  }
+ },
+ "14": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "13",
+    0
+   ],
+   "filename_prefix": "debimate_img2img/person_hires"
+  }
+ },
+ "20": {
+  "class_type": "LoraLoader",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "clip": [
+    "1",
+    1
+   ],
+   "lora_name": "example_style_lora.safetensors",
+   "strength_model": 1.0,
+   "strength_clip": 1.0
+  }
+ }
+}

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>生成では読んだ重みを 1 本のベクトルにしか掛けず、プロンプト処理では数百本に掛ける</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="250" y="60" font-size="28" text-anchor="middle">生成（1 トークンずつ）</text>
+<rect x="60" y="110" width="220" height="220" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="87.5" y1="110" x2="87.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="137.5" x2="280" y2="137.5" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="115.0" y1="110" x2="115.0" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="165.0" x2="280" y2="165.0" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="142.5" y1="110" x2="142.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="192.5" x2="280" y2="192.5" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="170.0" y1="110" x2="170.0" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="220.0" x2="280" y2="220.0" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="197.5" y1="110" x2="197.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="247.5" x2="280" y2="247.5" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="225.0" y1="110" x2="225.0" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="275.0" x2="280" y2="275.0" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="252.5" y1="110" x2="252.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="60" y1="302.5" x2="280" y2="302.5" stroke="#7aa6c2" stroke-width="1"/>
+<text x="170.0" y="366" font-size="24" text-anchor="middle">重み行列</text>
+<text x="306" y="230.0" font-size="34" text-anchor="middle">×</text>
+<rect x="332" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="339.0" y="366" font-size="24" text-anchor="middle">ベクトル 1 本</text>
+<text x="250" y="440" font-size="26" text-anchor="middle">読んだ重み 1 個で計算 1 回</text>
+<text x="250" y="484" font-size="26" text-anchor="middle" class="sub">読み出しの速さで決まる</text>
+<text x="710" y="60" font-size="28" text-anchor="middle">プロンプト処理（まとめて）</text>
+<rect x="520" y="110" width="220" height="220" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="547.5" y1="110" x2="547.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="137.5" x2="740" y2="137.5" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="575.0" y1="110" x2="575.0" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="165.0" x2="740" y2="165.0" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="602.5" y1="110" x2="602.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="192.5" x2="740" y2="192.5" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="630.0" y1="110" x2="630.0" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="220.0" x2="740" y2="220.0" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="657.5" y1="110" x2="657.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="247.5" x2="740" y2="247.5" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="685.0" y1="110" x2="685.0" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="275.0" x2="740" y2="275.0" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="712.5" y1="110" x2="712.5" y2="330" stroke="#7aa6c2" stroke-width="1"/>
+<line x1="520" y1="302.5" x2="740" y2="302.5" stroke="#7aa6c2" stroke-width="1"/>
+<text x="630.0" y="366" font-size="24" text-anchor="middle">重み行列</text>
+<text x="766" y="230.0" font-size="34" text-anchor="middle">×</text>
+<rect x="792" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="806" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="820" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="834" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="848" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="862" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="876" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="890" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="904" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="918" y="110" width="14" height="220" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="862.0" y="366" font-size="24" text-anchor="middle">数百本</text>
+<text x="710" y="440" font-size="26" text-anchor="middle">読んだ重み 1 個で計算 数百回</text>
+<text x="710" y="484" font-size="26" text-anchor="middle" class="sub">計算の速さで決まる</text>
+<line x1="480" y1="40" x2="480" y2="500" stroke="#f2f2f2" stroke-width="3"/>
+</svg>

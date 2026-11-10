@@ -1,0 +1,8 @@
+eye_aqua {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0459, "hair_aqua_share_range": [0.0146, 0.1047], "tagger_hair_tags": 4, "lab_all_mean": [70.43, 1.04, 0.02], "lab_face_mean": [78.73, 8.44, 9.19]}
+eye_aqua_concat {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0344, "hair_aqua_share_range": [0.0092, 0.0836], "tagger_hair_tags": 2, "lab_all_mean": [70.59, 1.17, 0.1], "lab_face_mean": [81.14, 8.57, 8.78]}
+eye_aqua_rev {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0394, "hair_aqua_share_range": [0.0135, 0.0995], "tagger_hair_tags": 2, "lab_all_mean": [70.52, 1.08, 0.16], "lab_face_mean": [80.33, 8.59, 9.51]}
+eye_none {"n": 12, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0, "hair_aqua_share_range": [0.0, 0.0001], "tagger_hair_tags": 0, "lab_all_mean": [71.16, 1.55, 0.58], "lab_face_mean": [77.28, 9.52, 10.55]}
+tone_parts {"n": 6, "split_lr": 0}
+tone_two {"n": 6, "split_lr": 3}
+agreement with eye labels [hair_aqua]: 48/48
+agreement with eye labels [split_lr]: 9/12

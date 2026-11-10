@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>色の検査は、明るい黄色の服を蛍光色とみなして正しい絵を捨てた</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="229" y="70" width="671" height="330" fill="#f2f2f2"/>
+<text x="564.5454545454545" y="106" font-size="24" text-anchor="middle" class="sub">不合格にする側（2% を超える）</text>
+<line x1="229" y1="70" x2="229" y2="400" stroke="#666666" stroke-width="2" stroke-dasharray="7 5"/>
+<line x1="80" y1="400" x2="900" y2="400" stroke="#1f1f1f" stroke-width="2"/>
+<line x1="80" y1="400" x2="80" y2="410" stroke="#1f1f1f" stroke-width="2"/>
+<text x="80.0" y="440" font-size="24" text-anchor="middle">0</text>
+<line x1="229" y1="400" x2="229" y2="410" stroke="#1f1f1f" stroke-width="2"/>
+<text x="229.0909090909091" y="440" font-size="24" text-anchor="middle">0.02</text>
+<line x1="453" y1="400" x2="453" y2="410" stroke="#1f1f1f" stroke-width="2"/>
+<text x="452.72727272727275" y="440" font-size="24" text-anchor="middle">0.05</text>
+<line x1="825" y1="400" x2="825" y2="410" stroke="#1f1f1f" stroke-width="2"/>
+<text x="825.4545454545455" y="440" font-size="24" text-anchor="middle">0.10</text>
+<text x="480" y="492" font-size="24" text-anchor="middle" class="sub">彩度と明るさがともに 0.85 を超える画素の割合</text>
+<circle cx="83" cy="160" r="11" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="108.98181818181818" y="169" font-size="24" text-anchor="start">服装 D の基準の絵  0.0004</text>
+<rect x="460" y="236" width="403" height="28" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="442.1818181818182" y="259" font-size="24" text-anchor="end">seed を変えた服装 D の 12 枚</text>
+<text x="661.4545454545454" y="306" font-size="24" text-anchor="middle">0.051〜0.105</text>
+<circle cx="266" cy="345" r="11" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="292.3636363636364" y="354" font-size="24" text-anchor="start">服装 A の 1 枚  0.025</text>
+</svg>

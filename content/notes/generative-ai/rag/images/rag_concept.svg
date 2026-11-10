@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>文書をチャンクに切ってベクトル空間の点にし、質問の点に近いチャンクだけを LLM に渡す</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="125" y="52" font-size="26" text-anchor="middle">文書</text>
+<rect x="45" y="76" width="160" height="88" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="62" y1="96" x2="182" y2="96" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="113" x2="182" y2="113" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="130" x2="182" y2="130" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="147" x2="132" y2="147" stroke="#666666" stroke-width="3"/>
+<rect x="45" y="180" width="160" height="88" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="62" y1="200" x2="182" y2="200" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="217" x2="182" y2="217" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="234" x2="182" y2="234" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="251" x2="132" y2="251" stroke="#666666" stroke-width="3"/>
+<rect x="45" y="284" width="160" height="88" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="62" y1="304" x2="182" y2="304" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="321" x2="182" y2="321" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="338" x2="182" y2="338" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="355" x2="132" y2="355" stroke="#666666" stroke-width="3"/>
+<rect x="45" y="388" width="160" height="88" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="62" y1="408" x2="182" y2="408" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="425" x2="182" y2="425" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="442" x2="182" y2="442" stroke="#666666" stroke-width="3"/>
+<line x1="62" y1="459" x2="132" y2="459" stroke="#666666" stroke-width="3"/>
+<text x="125" y="512" font-size="24" text-anchor="middle" class="sub">チャンクに切る</text>
+<rect x="300" y="40" width="400" height="400" rx="10" fill="#ffffff" stroke="#666666" stroke-width="1.5"/>
+<text x="500.0" y="512" font-size="24" text-anchor="middle" class="sub">埋め込みのベクトル空間</text>
+<line x1="214" y1="240" x2="274.0" y2="240.0" stroke="#1f1f1f" stroke-width="3"/>
+<polygon points="290.0,240.0 274.0,231.0 274.0,249.0" fill="#1f1f1f"/>
+<circle cx="520" cy="250" r="92" fill="#f8eed8" stroke="#d4a24c" stroke-width="2" stroke-dasharray="7 5"/>
+<circle cx="345" cy="110" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="410" cy="170" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="360" cy="215" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="395" cy="330" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="340" cy="400" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="450" cy="395" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="620" cy="120" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="665" cy="185" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="640" cy="380" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="560" cy="410" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="470" cy="125" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="680" cy="300" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="600" cy="345" r="11" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<circle cx="555" cy="195" r="13" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="2"/>
+<circle cx="585" cy="262" r="13" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="2"/>
+<circle cx="500" cy="310" r="13" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="2"/>
+<polygon points="520,234 536,250 520,266 504,250" fill="#d4a24c" stroke="#1f1f1f" stroke-width="2"/>
+<text x="520" y="74" font-size="24" text-anchor="middle">質問の近く = 意味が近い</text>
+<text x="494" y="259" font-size="24" text-anchor="end">質問</text>
+<line x1="569" y1="195" x2="770.2" y2="226.1" stroke="#7aa6c2" stroke-width="3"/>
+<polygon points="786.0,228.5 771.6,217.2 768.8,235.0" fill="#7aa6c2"/>
+<line x1="599" y1="262" x2="770.0" y2="249.7" stroke="#7aa6c2" stroke-width="3"/>
+<polygon points="786.0,248.6 769.4,240.8 770.7,258.7" fill="#7aa6c2"/>
+<line x1="514" y1="310" x2="770.2" y2="265.7" stroke="#7aa6c2" stroke-width="3"/>
+<polygon points="786.0,263.0 768.7,256.9 771.8,274.6" fill="#7aa6c2"/>
+<rect x="790" y="190" width="140" height="110" rx="12" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="860.0" y="256" font-size="32" text-anchor="middle">LLM</text>
+<line x1="860.0" y1="306" x2="860.0" y2="364.0" stroke="#1f1f1f" stroke-width="3"/>
+<polygon points="860.0,380.0 869.0,364.0 851.0,364.0" fill="#1f1f1f"/>
+<text x="860.0" y="412" font-size="26" text-anchor="middle">回答</text>
+<text x="860.0" y="156" font-size="24" text-anchor="middle" class="sub">近い 3 個だけ</text>
+</svg>

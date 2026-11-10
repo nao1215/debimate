@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>同じ前置きを送り直した時に、キャッシュを使えた範囲と処理の時間</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="330.0" y="32.0" width="28.0" height="28.0" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="368.0" y="54.0" font-size="24" text-anchor="start">キャッシュから使う</text>
+<rect x="600.0" y="32.0" width="28.0" height="28.0" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="638.0" y="54.0" font-size="24" text-anchor="start">計算し直す</text>
+<text x="30.0" y="132.0" font-size="24" text-anchor="start">1 初回</text>
+<rect x="330.0" y="100.0" width="420.0" height="44.0" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="930.0" y="132.0" font-size="26" text-anchor="end">2.609 秒</text>
+<text x="30.0" y="212.0" font-size="24" text-anchor="start">2 同じ入力をもう一度</text>
+<rect x="330.0" y="180.0" width="420.0" height="44.0" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="930.0" y="212.0" font-size="26" text-anchor="end">0.016 秒</text>
+<text x="30.0" y="292.0" font-size="24" text-anchor="start">3 同じ前置き・別の質問</text>
+<rect x="330.0" y="260.0" width="413.7" height="44.0" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="743.7" y="260.0" width="6.3" height="44.0" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="930.0" y="292.0" font-size="26" text-anchor="end">0.033 秒</text>
+<text x="30.0" y="372.0" font-size="24" text-anchor="start">4 真ん中の 1 行を変更</text>
+<rect x="330.0" y="340.0" width="210.0" height="44.0" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="540.0" y="340.0" width="210.0" height="44.0" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="930.0" y="372.0" font-size="26" text-anchor="end">1.573 秒</text>
+<text x="30.0" y="452.0" font-size="24" text-anchor="start">5 先頭に 1 文字を追加</text>
+<rect x="330.0" y="420.0" width="420.0" height="44.0" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="930.0" y="452.0" font-size="26" text-anchor="end">2.618 秒</text>
+<text x="540.0" y="520.0" font-size="24" text-anchor="middle" class="sub">約 8,300 トークンの前置き、3 巡の中央値</text>
+</svg>

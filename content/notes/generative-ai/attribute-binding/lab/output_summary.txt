@@ -1,0 +1,39 @@
+eye_aqua {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0459, "hair_aqua_share_range": [0.0146, 0.1047], "tagger_hair_tags": 4, "lab_all_mean": [70.43, 1.04, 0.02], "lab_face_mean": [78.73, 8.44, 9.19]}
+eye_aqua_concat {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0344, "hair_aqua_share_range": [0.0092, 0.0836], "tagger_hair_tags": 2, "lab_all_mean": [70.59, 1.17, 0.1], "lab_face_mean": [81.14, 8.57, 8.78]}
+eye_aqua_rev {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0394, "hair_aqua_share_range": [0.0135, 0.0995], "tagger_hair_tags": 2, "lab_all_mean": [70.52, 1.08, 0.16], "lab_face_mean": [80.33, 8.59, 9.51]}
+eye_none {"n": 12, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0, "hair_aqua_share_range": [0.0, 0.0001], "tagger_hair_tags": 0, "lab_all_mean": [71.16, 1.55, 0.58], "lab_face_mean": [77.28, 9.52, 10.55]}
+s_ar_1024x1024 {"n": 6, "multi": 2}
+s_ar_832x1216 {"n": 6, "multi": 0}
+s_eye_aqua {"n": 12, "hair_aqua_rate": 12, "hair_aqua_share_mean": 0.0677, "hair_aqua_share_range": [0.0119, 0.2389], "tagger_hair_tags": 1, "lab_all_mean": [81.07, 0.27, -0.22], "shirt_blue_mean": 0.0358, "skirt_blue_mean": 0.0007, "lab_face_mean": [70.24, 7.16, 7.28]}
+s_eye_none {"n": 12, "hair_aqua_rate": 2, "hair_aqua_share_mean": 0.0023, "hair_aqua_share_range": [0.0, 0.0087], "tagger_hair_tags": 0, "lab_all_mean": [74.05, 0.54, -1.29], "shirt_blue_mean": 0.1226, "skirt_blue_mean": 0.1444, "lab_face_mean": [71.84, 7.75, 7.89]}
+s_light_night {"n": 4, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0013, "hair_aqua_share_range": [0.0, 0.0043], "tagger_hair_tags": 0, "lab_all_mean": [55.03, 1.54, -1.36], "shirt_blue_mean": 0.3517, "skirt_blue_mean": 0.3262, "lab_face_mean": [69.7, 9.03, 9.18]}
+s_light_sunset {"n": 4, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0, "hair_aqua_share_range": [0.0, 0.0001], "tagger_hair_tags": 0, "lab_all_mean": [62.54, 5.5, 8.34], "shirt_blue_mean": 0.0061, "skirt_blue_mean": 0.092, "lab_face_mean": [64.22, 12.72, 11.62]}
+s_rep_aqua {"n": 12, "hair_aqua_rate": 6, "hair_aqua_share_mean": 0.0443, "hair_aqua_share_range": [0.0, 0.2028], "tagger_hair_tags": 0, "lab_all_mean": [76.91, 0.81, 0.3], "shirt_blue_mean": 0.0161, "skirt_blue_mean": 0.002, "lab_face_mean": [70.16, 8.13, 7.85]}
+s_rep_ar_1024x1024 {"n": 6, "hair_aqua_rate": 1, "hair_aqua_share_mean": 0.0044, "hair_aqua_share_range": [0.0, 0.0264], "tagger_hair_tags": 0, "lab_all_mean": [57.48, 0.7, 0.02], "shirt_blue_mean": 0.0313, "skirt_blue_mean": 0.1771, "lab_face_mean": [70.37, 8.71, 7.87]}
+s_rep_ar_832x1216 {"n": 6, "hair_aqua_rate": 1, "hair_aqua_share_mean": 0.0023, "hair_aqua_share_range": [0.0, 0.0118], "tagger_hair_tags": 0, "lab_all_mean": [57.83, -2.67, 1.67], "shirt_blue_mean": 0.1108, "skirt_blue_mean": 0.2131, "lab_face_mean": [71.03, 8.09, 7.92]}
+s_rep_light_night {"n": 4, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0011, "hair_aqua_share_range": [0.0, 0.0039], "tagger_hair_tags": 0, "lab_all_mean": [48.99, 1.2, -2.26], "shirt_blue_mean": 0.3338, "skirt_blue_mean": 0.2986, "lab_face_mean": [68.64, 8.98, 7.4]}
+s_rep_light_sunset {"n": 4, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0, "hair_aqua_share_range": [0.0, 0.0001], "tagger_hair_tags": 0, "lab_all_mean": [57.35, 4.87, 4.27], "shirt_blue_mean": 0.0061, "skirt_blue_mean": 0.3018, "lab_face_mean": [61.56, 11.72, 9.58]}
+s_rep_none {"n": 12, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0002, "hair_aqua_share_range": [0.0, 0.0019], "tagger_hair_tags": 0, "lab_all_mean": [67.29, 1.42, 0.3], "shirt_blue_mean": 0.1161, "skirt_blue_mean": 0.2519, "lab_face_mean": [71.42, 8.91, 8.27]}
+s_rep_tone_parts {"n": 6, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0, "hair_aqua_share_range": [0.0, 0.0], "tagger_hair_tags": 0, "lab_all_mean": [60.22, 0.69, 0.52], "shirt_blue_mean": 0.0002, "skirt_blue_mean": 0.0, "lab_face_mean": [72.58, 7.62, 7.48]}
+s_rep_tone_two {"n": 6, "hair_aqua_rate": 0, "hair_aqua_share_mean": 0.0, "hair_aqua_share_range": [0.0, 0.0], "tagger_hair_tags": 0, "lab_all_mean": [62.04, 0.8, 0.03], "shirt_blue_mean": 0.0, "skirt_blue_mean": 0.0, "lab_face_mean": [74.5, 7.37, 6.42]}
+s_tone_parts {"n": 6, "split_lr": 1}
+s_tone_two {"n": 6, "split_lr": 0}
+labels eye_aqua {"hair_aqua": 12}
+labels eye_aqua_concat {"hair_aqua": 12}
+labels eye_aqua_rev {"hair_aqua": 12}
+labels s_ar_1024x1024 {"multi": 2}
+labels s_eye_aqua {"hair_aqua": 12, "multi": 2, "shirt=blue": 6, "shirt=other": 1, "shirt=white": 5, "skirt=blue": 2, "skirt=other": 6, "skirt=white": 4}
+labels s_eye_none {"multi": 2, "shirt=blue": 4, "shirt=other": 1, "shirt=white": 7, "skirt=blue": 1, "skirt=navy": 4, "skirt=other": 7}
+labels s_rep_aqua {"hair_aqua": 1, "multi": 3, "shirt=blue": 5, "shirt=white": 7, "skirt=blue": 2, "skirt=other": 5, "skirt=white": 5}
+labels s_rep_ar_1024x1024 {"multi": 1}
+labels s_rep_ar_832x1216 {"multi": 1}
+labels s_rep_none {"multi": 3, "shirt=blue": 2, "shirt=white": 10, "skirt=blue": 1, "skirt=navy": 3, "skirt=other": 8}
+labels s_rep_tone_parts {"multi": 2}
+labels s_rep_tone_two {"split_lr": 2}
+labels s_tone_parts {"multi": 2}
+labels s_tone_two {"multi": 1, "split_lr": 2}
+labels tone_two {"split_lr": 4}
+s_light_control {"n": 4, "lab_all_mean": [65.59, 0.81, -1.34], "lab_face_mean": [80.3, 7.95, 7.95]}
+agreement with eye labels [hair_aqua]: 89/96
+agreement with eye labels [multi]: 78/78
+agreement with eye labels [split_lr]: 9/12

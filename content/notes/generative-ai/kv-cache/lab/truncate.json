@@ -1,0 +1,20 @@
+[
+ {
+  "num_ctx": 2048,
+  "prompt_eval_count": 2048,
+  "done_reason": "stop",
+  "thinking_chars": 0,
+  "response": "1234567890",
+  "server_log": [
+   "runner.go:187 msg=\"truncating input prompt\" limit=2048 prompt=3084 keep=4 new=2048"
+  ]
+ },
+ {
+  "num_ctx": 8192,
+  "prompt_eval_count": 3084,
+  "done_reason": "stop",
+  "thinking_chars": 0,
+  "response": "BLUE-FALCON-42",
+  "server_log": []
+ }
+]

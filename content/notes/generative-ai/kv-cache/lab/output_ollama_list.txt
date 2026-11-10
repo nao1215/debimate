@@ -1,0 +1,10 @@
+NAME                          ID              SIZE      MODIFIED    
+qwen3:1.7b-fp16               e9354f6174db    4.1 GB    2 hours ago    
+qwen3:1.7b-q8_0               29b6a7a420a4    2.2 GB    2 hours ago    
+qwen3:1.7b-q4_K_M             8f68893c685c    1.4 GB    2 hours ago    
+
+ollama version is 0.22.1
+{"version":"0.22.1"}
+qwen3:1.7b-q8_0 manifest sha256:29b6a7a420a42b7d58a17334049721746c35aec6084209ceed327e78a124d15f
+qwen3:1.7b-fp16 manifest sha256:e9354f6174db6aa7af338e75b9087e3f4364c255ff96eb20c1805a2f786ed763
+qwen3:1.7b-q4_K_M manifest sha256:8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7

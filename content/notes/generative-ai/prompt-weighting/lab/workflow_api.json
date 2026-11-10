@@ -1,0 +1,21 @@
+{
+  "1": {"class_type": "CheckpointLoaderSimple",
+        "inputs": {"ckpt_name": "waiIllustriousSDXL_v170.safetensors"}},
+  "3": {"class_type": "CLIPSetLastLayer",
+        "inputs": {"clip": ["1", 1], "stop_at_clip_layer": -2}},
+  "4": {"class_type": "CLIPTextEncode",
+        "inputs": {"clip": ["3", 0], "text": "<positive>"}},
+  "5": {"class_type": "CLIPTextEncode",
+        "inputs": {"clip": ["3", 0], "text": "<negative>"}},
+  "6": {"class_type": "EmptyLatentImage",
+        "inputs": {"width": 1024, "height": 1024, "batch_size": 1}},
+  "7": {"class_type": "KSampler",
+        "inputs": {"model": ["1", 0], "positive": ["4", 0], "negative": ["5", 0],
+                   "latent_image": ["6", 0], "seed": 0, "steps": 24,
+                   "cfg": 5.5, "sampler_name": "euler",
+                   "scheduler": "normal", "denoise": 1.0}},
+  "8": {"class_type": "VAEDecode",
+        "inputs": {"samples": ["7", 0], "vae": ["1", 2]}},
+  "9": {"class_type": "SaveImage",
+        "inputs": {"images": ["8", 0], "filename_prefix": "debimate_prompt_weighting/img"}}
+}

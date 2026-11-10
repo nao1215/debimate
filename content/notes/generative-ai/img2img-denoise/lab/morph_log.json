@@ -1,0 +1,114 @@
+[
+ {
+  "prompt_id": "792299df-5a92-4b55-b917-1d20d884c3b1",
+  "seconds": 22.93,
+  "cached_nodes": [
+   "1",
+   "2",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 61,
+   "loadavg_1m": 5.28662109375
+  },
+  "name": "base"
+ },
+ {
+  "prompt_id": "baf7fd6f-62f9-4abf-b5e6-0c53d6441c55",
+  "seconds": 70.46,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 75,
+   "loadavg_1m": 7.134765625
+  },
+  "name": "redraw_g",
+  "denoise": 0.3
+ },
+ {
+  "prompt_id": "1f41b5ce-7aba-491f-9824-f9305feb703b",
+  "seconds": 65.56,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 72,
+   "loadavg_1m": 37.984375
+  },
+  "name": "redraw_g",
+  "denoise": 0.45
+ },
+ {
+  "prompt_id": "6dbc7515-05f7-4ac9-ba1b-1992756ad4c1",
+  "seconds": 60.45,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 56,
+   "loadavg_1m": 30.65869140625
+  },
+  "name": "redraw_g",
+  "denoise": 0.5
+ },
+ {
+  "prompt_id": "fc33d912-2362-4a03-8a09-7265d3aac693",
+  "seconds": 59.25,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 82,
+   "loadavg_1m": 11.37255859375
+  },
+  "name": "redraw_g",
+  "denoise": 0.6
+ },
+ {
+  "prompt_id": "f5679798-059c-4e22-8f8e-455c0e6e3bce",
+  "seconds": 59.48,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 82,
+   "loadavg_1m": 5.0224609375
+  },
+  "name": "redraw_g",
+  "denoise": 0.75
+ },
+ {
+  "prompt_id": "e7228ad3-5977-41c4-a047-34799049e56e",
+  "seconds": 59.86,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 83,
+   "loadavg_1m": 5.09228515625
+  },
+  "name": "redraw_c",
+  "denoise": 0.6
+ }
+]

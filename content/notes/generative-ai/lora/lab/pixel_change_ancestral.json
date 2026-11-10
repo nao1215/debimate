@@ -1,0 +1,32 @@
+[
+  {
+    "weight": 0.0,
+    "mad_vs_0": 0.0,
+    "mad_vs_prev": 0.0,
+    "brightness": 83.3
+  },
+  {
+    "weight": 0.25,
+    "mad_vs_0": 53.77,
+    "mad_vs_prev": 53.77,
+    "brightness": 108.8
+  },
+  {
+    "weight": 0.5,
+    "mad_vs_0": 66.86,
+    "mad_vs_prev": 38.68,
+    "brightness": 122.9
+  },
+  {
+    "weight": 0.75,
+    "mad_vs_0": 74.48,
+    "mad_vs_prev": 47.37,
+    "brightness": 134.3
+  },
+  {
+    "weight": 1.0,
+    "mad_vs_0": 87.87,
+    "mad_vs_prev": 46.65,
+    "brightness": 141.9
+  }
+]

@@ -1,0 +1,7 @@
+text: 佐藤花子さんから2025年6月1日に、先月の請求書について問い合わせの電話があった。
+qwen3:1.7b-q4_K_M  integer           -> {"person": "佐藤花子さん", "date": "2025-06-01", "amount_yen": 0}
+qwen3:1.7b-q4_K_M  integer|null      -> {"person": "佐藤花子さん", "date": "2025-06-01", "amount_yen": 0}
+qwen3:1.7b-q4_K_M  integer|null+ask  -> {"person": "佐藤花子さん", "date": "2025-06-01", "amount_yen": null}
+qwen3:8b           integer           -> {"person": "佐藤花子", "date": "2025-06-01", "amount_yen": 0}
+qwen3:8b           integer|null      -> {"person": "佐藤花子", "date": "2025-06-01", "amount_yen": 0}
+qwen3:8b           integer|null+ask  -> { "person": "佐藤花子", "date": "2025-06-01", "amount_yen": null }

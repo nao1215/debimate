@@ -1,0 +1,2110 @@
+{
+ "models": {
+  "qwen3:1.7b-q4_K_M": [
+   {
+    "id": "math00",
+    "kind": "math",
+    "reply": "1166",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math01",
+    "kind": "math",
+    "reply": "957",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math02",
+    "kind": "math",
+    "reply": "1794",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math03",
+    "kind": "math",
+    "reply": "1423",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math04",
+    "kind": "math",
+    "reply": "1621",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math05",
+    "kind": "math",
+    "reply": "908",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math06",
+    "kind": "math",
+    "reply": "284 + 673 = 957",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math07",
+    "kind": "math",
+    "reply": "769",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math08",
+    "kind": "math",
+    "reply": "1360",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math09",
+    "kind": "math",
+    "reply": "1302",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math10",
+    "kind": "math",
+    "reply": "7595 - 646 = 6949",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math11",
+    "kind": "math",
+    "reply": "2841",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math12",
+    "kind": "math",
+    "reply": "7489",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math13",
+    "kind": "math",
+    "reply": "6633",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math14",
+    "kind": "math",
+    "reply": "4372",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math15",
+    "kind": "math",
+    "reply": "8486",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math16",
+    "kind": "math",
+    "reply": "4113",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math17",
+    "kind": "math",
+    "reply": "3348",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math18",
+    "kind": "math",
+    "reply": "4475",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math19",
+    "kind": "math",
+    "reply": "1911",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math20",
+    "kind": "math",
+    "reply": "3600",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math21",
+    "kind": "math",
+    "reply": "357",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math22",
+    "kind": "math",
+    "reply": "2040",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math23",
+    "kind": "math",
+    "reply": "3834",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math24",
+    "kind": "math",
+    "reply": "2414",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math25",
+    "kind": "math",
+    "reply": "836",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math26",
+    "kind": "math",
+    "reply": "5600",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math27",
+    "kind": "math",
+    "reply": "1386",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math28",
+    "kind": "math",
+    "reply": "2430",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math29",
+    "kind": "math",
+    "reply": "294",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math30",
+    "kind": "math",
+    "reply": "17 * 20 - 84 = 340 - 84 = 256",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math31",
+    "kind": "math",
+    "reply": "12 apples × 40 boxes = 480 apples  \n480 - 388 = 92 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math32",
+    "kind": "math",
+    "reply": "37 boxes × 21 apples = 777 apples  \n777 - 321 = 456 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math33",
+    "kind": "math",
+    "reply": "16 boxes × 8 apples = 128 apples  \n128 apples - 37 apples = 91 apples  \nAnswer: 91",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math34",
+    "kind": "math",
+    "reply": "13 boxes × 24 apples = 312 apples  \n312 - 156 = 156 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math35",
+    "kind": "math",
+    "reply": "169",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math36",
+    "kind": "math",
+    "reply": "166",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math37",
+    "kind": "math",
+    "reply": "137",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math38",
+    "kind": "math",
+    "reply": "36 boxes × 20 apples = 720 apples  \n720 - 404 = 316 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math39",
+    "kind": "math",
+    "reply": "39 boxes × 11 apples = 429 apples  \n429 - 415 = 14 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know00",
+    "kind": "knowledge",
+    "reply": "Canberra",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know01",
+    "kind": "knowledge",
+    "reply": "Ottawa",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know02",
+    "kind": "knowledge",
+    "reply": "São Paulo",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know03",
+    "kind": "knowledge",
+    "reply": "Ankara",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know04",
+    "kind": "knowledge",
+    "reply": "Cairo",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know05",
+    "kind": "knowledge",
+    "reply": "The capital city of Kenya is Nairobi.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know06",
+    "kind": "knowledge",
+    "reply": "Cusco",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know07",
+    "kind": "knowledge",
+    "reply": "Oslo",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know08",
+    "kind": "knowledge",
+    "reply": "Hanoi",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know09",
+    "kind": "knowledge",
+    "reply": "Wellington",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know10",
+    "kind": "knowledge",
+    "reply": "Tangier",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know11",
+    "kind": "knowledge",
+    "reply": "Buenos Aires",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know12",
+    "kind": "knowledge",
+    "reply": "Seoul",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know13",
+    "kind": "knowledge",
+    "reply": "Bangkok",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know14",
+    "kind": "knowledge",
+    "reply": "Abuja",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know15",
+    "kind": "knowledge",
+    "reply": "Au",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know16",
+    "kind": "knowledge",
+    "reply": "Ag",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know17",
+    "kind": "knowledge",
+    "reply": "Na",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know18",
+    "kind": "knowledge",
+    "reply": "K",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know19",
+    "kind": "knowledge",
+    "reply": "Fe",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know20",
+    "kind": "knowledge",
+    "reply": "W",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know21",
+    "kind": "knowledge",
+    "reply": "Pb",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know22",
+    "kind": "knowledge",
+    "reply": "Hg",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know23",
+    "kind": "knowledge",
+    "reply": "Hydrogen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know24",
+    "kind": "knowledge",
+    "reply": "Carbon",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know25",
+    "kind": "knowledge",
+    "reply": "Neon",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know26",
+    "kind": "knowledge",
+    "reply": "Jupiter",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know27",
+    "kind": "knowledge",
+    "reply": "Mercury",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know28",
+    "kind": "knowledge",
+    "reply": "Mars",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know29",
+    "kind": "knowledge",
+    "reply": "Eight",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know30",
+    "kind": "knowledge",
+    "reply": "6",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know31",
+    "kind": "knowledge",
+    "reply": "100",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know32",
+    "kind": "knowledge",
+    "reply": "32",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know33",
+    "kind": "knowledge",
+    "reply": "William Shakespeare",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know34",
+    "kind": "knowledge",
+    "reply": "Jane Austen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know35",
+    "kind": "knowledge",
+    "reply": "George Orwell",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know36",
+    "kind": "knowledge",
+    "reply": "Leonardo da Vinci",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know37",
+    "kind": "knowledge",
+    "reply": "Vincent van Gogh",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know38",
+    "kind": "knowledge",
+    "reply": "Franz Liszt",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know39",
+    "kind": "knowledge",
+    "reply": "The largest ocean on Earth is the Pacific Ocean.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know40",
+    "kind": "knowledge",
+    "reply": "The longest river in South America is the Amazon River.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know41",
+    "kind": "knowledge",
+    "reply": "Mount Everest",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know42",
+    "kind": "knowledge",
+    "reply": "The largest hot desert in the world is the Sahara Desert, located in North Africa.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know43",
+    "kind": "knowledge",
+    "reply": "The hardest natural mineral is diamond.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know44",
+    "kind": "knowledge",
+    "reply": "Oxygen",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know45",
+    "kind": "knowledge",
+    "reply": "69",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know46",
+    "kind": "knowledge",
+    "reply": "3",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know47",
+    "kind": "knowledge",
+    "reply": "Portuguese",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know48",
+    "kind": "knowledge",
+    "reply": "Yen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know49",
+    "kind": "knowledge",
+    "reply": "Albert Einstein",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know50",
+    "kind": "knowledge",
+    "reply": "Isaac Newton",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know51",
+    "kind": "knowledge",
+    "reply": "Heart",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know52",
+    "kind": "knowledge",
+    "reply": "206",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know53",
+    "kind": "knowledge",
+    "reply": "1969",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know54",
+    "kind": "knowledge",
+    "reply": "1989",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know55",
+    "kind": "knowledge",
+    "reply": "The fastest land animal is the cheetah.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know56",
+    "kind": "knowledge",
+    "reply": "Python",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know57",
+    "kind": "knowledge",
+    "reply": "The largest country in the world by area is Russia.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know58",
+    "kind": "knowledge",
+    "reply": "88",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know59",
+    "kind": "knowledge",
+    "reply": "The longest bone in the human body is the femur, also known as the thigh bone.",
+    "thinking_chars": 0,
+    "correct": true
+   }
+  ],
+  "qwen3:1.7b-q8_0": [
+   {
+    "id": "math00",
+    "kind": "math",
+    "reply": "1166",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math01",
+    "kind": "math",
+    "reply": "957",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math02",
+    "kind": "math",
+    "reply": "1794",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math03",
+    "kind": "math",
+    "reply": "1423",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math04",
+    "kind": "math",
+    "reply": "1621",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math05",
+    "kind": "math",
+    "reply": "908",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math06",
+    "kind": "math",
+    "reply": "957",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math07",
+    "kind": "math",
+    "reply": "769",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math08",
+    "kind": "math",
+    "reply": "1360",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math09",
+    "kind": "math",
+    "reply": "1302",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math10",
+    "kind": "math",
+    "reply": "7595 - 646 = 6949",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math11",
+    "kind": "math",
+    "reply": "2841",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math12",
+    "kind": "math",
+    "reply": "7489",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math13",
+    "kind": "math",
+    "reply": "6633",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math14",
+    "kind": "math",
+    "reply": "4372",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math15",
+    "kind": "math",
+    "reply": "8486",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math16",
+    "kind": "math",
+    "reply": "4113",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math17",
+    "kind": "math",
+    "reply": "3348",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math18",
+    "kind": "math",
+    "reply": "4475",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math19",
+    "kind": "math",
+    "reply": "1911",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math20",
+    "kind": "math",
+    "reply": "3600",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math21",
+    "kind": "math",
+    "reply": "357",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math22",
+    "kind": "math",
+    "reply": "2040",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math23",
+    "kind": "math",
+    "reply": "3834",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math24",
+    "kind": "math",
+    "reply": "2414",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math25",
+    "kind": "math",
+    "reply": "836",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math26",
+    "kind": "math",
+    "reply": "5600",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math27",
+    "kind": "math",
+    "reply": "1386",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math28",
+    "kind": "math",
+    "reply": "2430",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math29",
+    "kind": "math",
+    "reply": "294",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math30",
+    "kind": "math",
+    "reply": "17 × 20 = 340  \n340 − 84 = 256  \n\n256 apples are left.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math31",
+    "kind": "math",
+    "reply": "12 apples × 40 boxes = 480 apples  \n480 - 388 = 92 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math32",
+    "kind": "math",
+    "reply": "21*37 - 321 = 777 - 321 = 456",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math33",
+    "kind": "math",
+    "reply": "16 boxes × 8 apples = 128 apples  \n128 - 37 = 91 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math34",
+    "kind": "math",
+    "reply": "13 boxes × 24 apples = 312 apples  \n312 - 156 = 156 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math35",
+    "kind": "math",
+    "reply": "The shop has 30 boxes × 6 apples = 180 apples.  \nIt sells 169 apples.  \nApples left = 180 - 169 = 11.  \n\nAnswer: 11",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math36",
+    "kind": "math",
+    "reply": "138",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math37",
+    "kind": "math",
+    "reply": "12 * 26 = 312  \n312 - 137 = 175  \n\n175 apples are left.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math38",
+    "kind": "math",
+    "reply": "1456 apples are left.",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math39",
+    "kind": "math",
+    "reply": "246 apples are left.",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know00",
+    "kind": "knowledge",
+    "reply": "Canberra",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know01",
+    "kind": "knowledge",
+    "reply": "Ottawa",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know02",
+    "kind": "knowledge",
+    "reply": "Brasília",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know03",
+    "kind": "knowledge",
+    "reply": "Ankara",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know04",
+    "kind": "knowledge",
+    "reply": "Cairo",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know05",
+    "kind": "knowledge",
+    "reply": "Nairobi",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know06",
+    "kind": "knowledge",
+    "reply": "Lima",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know07",
+    "kind": "knowledge",
+    "reply": "Oslo",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know08",
+    "kind": "knowledge",
+    "reply": "Hanoi",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know09",
+    "kind": "knowledge",
+    "reply": "Wellington",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know10",
+    "kind": "knowledge",
+    "reply": "Rabat",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know11",
+    "kind": "knowledge",
+    "reply": "Buenos Aires",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know12",
+    "kind": "knowledge",
+    "reply": "Seoul",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know13",
+    "kind": "knowledge",
+    "reply": "Thailand's capital city is Bangkok.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know14",
+    "kind": "knowledge",
+    "reply": "Abuja",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know15",
+    "kind": "knowledge",
+    "reply": "Au",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know16",
+    "kind": "knowledge",
+    "reply": "Ag",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know17",
+    "kind": "knowledge",
+    "reply": "Na",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know18",
+    "kind": "knowledge",
+    "reply": "K",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know19",
+    "kind": "knowledge",
+    "reply": "Fe",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know20",
+    "kind": "knowledge",
+    "reply": "W",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know21",
+    "kind": "knowledge",
+    "reply": "Pb",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know22",
+    "kind": "knowledge",
+    "reply": "Hg",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know23",
+    "kind": "knowledge",
+    "reply": "Hydrogen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know24",
+    "kind": "knowledge",
+    "reply": "Carbon",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know25",
+    "kind": "knowledge",
+    "reply": "Neon",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know26",
+    "kind": "knowledge",
+    "reply": "Jupiter",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know27",
+    "kind": "knowledge",
+    "reply": "Mercury",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know28",
+    "kind": "knowledge",
+    "reply": "Mars",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know29",
+    "kind": "knowledge",
+    "reply": "Eight",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know30",
+    "kind": "knowledge",
+    "reply": "6",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know31",
+    "kind": "knowledge",
+    "reply": "100°C",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know32",
+    "kind": "knowledge",
+    "reply": "32",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know33",
+    "kind": "knowledge",
+    "reply": "William Shakespeare",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know34",
+    "kind": "knowledge",
+    "reply": "Jane Austen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know35",
+    "kind": "knowledge",
+    "reply": "George Orwell",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know36",
+    "kind": "knowledge",
+    "reply": "Leonardo da Vinci",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know37",
+    "kind": "knowledge",
+    "reply": "Vincent van Gogh",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know38",
+    "kind": "knowledge",
+    "reply": "Pyotr Ilyich Tchaikovsky",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know39",
+    "kind": "knowledge",
+    "reply": "The largest ocean on Earth is the Pacific Ocean.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know40",
+    "kind": "knowledge",
+    "reply": "The longest river in South America is the Amazon River.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know41",
+    "kind": "knowledge",
+    "reply": "Mount Everest",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know42",
+    "kind": "knowledge",
+    "reply": "The largest hot desert in the world is the Sahara Desert, located in Africa.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know43",
+    "kind": "knowledge",
+    "reply": "The hardest natural mineral is diamond.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know44",
+    "kind": "knowledge",
+    "reply": "Carbon dioxide",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know45",
+    "kind": "knowledge",
+    "reply": "366",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know46",
+    "kind": "knowledge",
+    "reply": "2",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know47",
+    "kind": "knowledge",
+    "reply": "Portuguese",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know48",
+    "kind": "knowledge",
+    "reply": "The currency of Japan is the Japanese yen (JPY).",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know49",
+    "kind": "knowledge",
+    "reply": "Albert Einstein",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know50",
+    "kind": "knowledge",
+    "reply": "Isaac Newton",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know51",
+    "kind": "knowledge",
+    "reply": "Heart",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know52",
+    "kind": "knowledge",
+    "reply": "206",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know53",
+    "kind": "knowledge",
+    "reply": "1969",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know54",
+    "kind": "knowledge",
+    "reply": "1989",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know55",
+    "kind": "knowledge",
+    "reply": "Cheetah",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know56",
+    "kind": "knowledge",
+    "reply": "Python",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know57",
+    "kind": "knowledge",
+    "reply": "The largest country in the world by area is Russia.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know58",
+    "kind": "knowledge",
+    "reply": "88",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know59",
+    "kind": "knowledge",
+    "reply": "The longest bone in the human body is the femur, also known as the thigh bone.",
+    "thinking_chars": 0,
+    "correct": true
+   }
+  ],
+  "qwen3:1.7b-fp16": [
+   {
+    "id": "math00",
+    "kind": "math",
+    "reply": "1166",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math01",
+    "kind": "math",
+    "reply": "957",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math02",
+    "kind": "math",
+    "reply": "1794",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math03",
+    "kind": "math",
+    "reply": "1423",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math04",
+    "kind": "math",
+    "reply": "1621",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math05",
+    "kind": "math",
+    "reply": "908",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math06",
+    "kind": "math",
+    "reply": "957",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math07",
+    "kind": "math",
+    "reply": "769",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math08",
+    "kind": "math",
+    "reply": "1360",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math09",
+    "kind": "math",
+    "reply": "1302",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math10",
+    "kind": "math",
+    "reply": "7595 - 646 = 6949",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math11",
+    "kind": "math",
+    "reply": "2841",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math12",
+    "kind": "math",
+    "reply": "7489",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math13",
+    "kind": "math",
+    "reply": "6633",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math14",
+    "kind": "math",
+    "reply": "4372",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math15",
+    "kind": "math",
+    "reply": "8486",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math16",
+    "kind": "math",
+    "reply": "4113",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math17",
+    "kind": "math",
+    "reply": "3348",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math18",
+    "kind": "math",
+    "reply": "4475",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math19",
+    "kind": "math",
+    "reply": "1911",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math20",
+    "kind": "math",
+    "reply": "3600",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math21",
+    "kind": "math",
+    "reply": "357",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math22",
+    "kind": "math",
+    "reply": "2040",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math23",
+    "kind": "math",
+    "reply": "3834",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math24",
+    "kind": "math",
+    "reply": "2414",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math25",
+    "kind": "math",
+    "reply": "836",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math26",
+    "kind": "math",
+    "reply": "5600",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math27",
+    "kind": "math",
+    "reply": "1386",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math28",
+    "kind": "math",
+    "reply": "2430",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math29",
+    "kind": "math",
+    "reply": "294",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math30",
+    "kind": "math",
+    "reply": "17 × 20 = 340  \n340 − 84 = 256  \n\n256 apples are left.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math31",
+    "kind": "math",
+    "reply": "12 apples × 40 boxes = 480 apples  \n480 - 388 = 92 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math32",
+    "kind": "math",
+    "reply": "21*37 - 321 = 777 - 321 = 456",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math33",
+    "kind": "math",
+    "reply": "16 boxes × 8 apples = 128 apples  \n128 - 37 = 91 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math34",
+    "kind": "math",
+    "reply": "13 boxes × 24 apples = 312 apples  \n312 - 156 = 156 apples left",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math35",
+    "kind": "math",
+    "reply": "The shop has 30 boxes × 6 apples = 180 apples.  \nIt sells 169 apples.  \nApples left = 180 - 169 = 11.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math36",
+    "kind": "math",
+    "reply": "134 apples are left.",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math37",
+    "kind": "math",
+    "reply": "12*26 - 137 = 312 - 137 = 175",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "math38",
+    "kind": "math",
+    "reply": "1456 apples are left.",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "math39",
+    "kind": "math",
+    "reply": "There are 39 boxes with 11 apples each, so the total number of apples is $ 39 \\times 11 = 429 $ apples. After selling 415 apples, the number of apples left is $ 429 - 415 = 14 $ apples.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know00",
+    "kind": "knowledge",
+    "reply": "Canberra",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know01",
+    "kind": "knowledge",
+    "reply": "Ottawa",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know02",
+    "kind": "knowledge",
+    "reply": "Brasília",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know03",
+    "kind": "knowledge",
+    "reply": "Ankara",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know04",
+    "kind": "knowledge",
+    "reply": "Cairo",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know05",
+    "kind": "knowledge",
+    "reply": "Nairobi",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know06",
+    "kind": "knowledge",
+    "reply": "Lima",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know07",
+    "kind": "knowledge",
+    "reply": "Oslo",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know08",
+    "kind": "knowledge",
+    "reply": "Hanoi",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know09",
+    "kind": "knowledge",
+    "reply": "Wellington",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know10",
+    "kind": "knowledge",
+    "reply": "Rabat",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know11",
+    "kind": "knowledge",
+    "reply": "Buenos Aires",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know12",
+    "kind": "knowledge",
+    "reply": "Seoul",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know13",
+    "kind": "knowledge",
+    "reply": "Bangkok",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know14",
+    "kind": "knowledge",
+    "reply": "Abuja",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know15",
+    "kind": "knowledge",
+    "reply": "Au",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know16",
+    "kind": "knowledge",
+    "reply": "Ag",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know17",
+    "kind": "knowledge",
+    "reply": "Na",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know18",
+    "kind": "knowledge",
+    "reply": "K",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know19",
+    "kind": "knowledge",
+    "reply": "Fe",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know20",
+    "kind": "knowledge",
+    "reply": "W",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know21",
+    "kind": "knowledge",
+    "reply": "Pb",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know22",
+    "kind": "knowledge",
+    "reply": "Hg",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know23",
+    "kind": "knowledge",
+    "reply": "Hydrogen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know24",
+    "kind": "knowledge",
+    "reply": "Carbon",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know25",
+    "kind": "knowledge",
+    "reply": "Neon",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know26",
+    "kind": "knowledge",
+    "reply": "Jupiter",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know27",
+    "kind": "knowledge",
+    "reply": "Mercury",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know28",
+    "kind": "knowledge",
+    "reply": "Mars",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know29",
+    "kind": "knowledge",
+    "reply": "Eight",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know30",
+    "kind": "knowledge",
+    "reply": "6",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know31",
+    "kind": "knowledge",
+    "reply": "100°C",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know32",
+    "kind": "knowledge",
+    "reply": "32",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know33",
+    "kind": "knowledge",
+    "reply": "William Shakespeare",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know34",
+    "kind": "knowledge",
+    "reply": "Jane Austen",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know35",
+    "kind": "knowledge",
+    "reply": "George Orwell",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know36",
+    "kind": "knowledge",
+    "reply": "Leonardo da Vinci",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know37",
+    "kind": "knowledge",
+    "reply": "Vincent van Gogh",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know38",
+    "kind": "knowledge",
+    "reply": "Pyotr Ilyich Tchaikovsky",
+    "thinking_chars": 0,
+    "correct": false
+   },
+   {
+    "id": "know39",
+    "kind": "knowledge",
+    "reply": "The largest ocean on Earth is the Pacific Ocean.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know40",
+    "kind": "knowledge",
+    "reply": "The longest river in South America is the Amazon River.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know41",
+    "kind": "knowledge",
+    "reply": "Mount Everest",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know42",
+    "kind": "knowledge",
+    "reply": "The largest hot desert in the world is the Sahara Desert, located in Africa.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know43",
+    "kind": "knowledge",
+    "reply": "The hardest natural mineral is diamond.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know44",
+    "kind": "knowledge",
+    "reply": "Carbon dioxide",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know45",
+    "kind": "knowledge",
+    "reply": "366",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know46",
+    "kind": "knowledge",
+    "reply": "2",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know47",
+    "kind": "knowledge",
+    "reply": "Portuguese",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know48",
+    "kind": "knowledge",
+    "reply": "The currency of Japan is the Japanese yen (JPY).",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know49",
+    "kind": "knowledge",
+    "reply": "Albert Einstein",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know50",
+    "kind": "knowledge",
+    "reply": "Isaac Newton",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know51",
+    "kind": "knowledge",
+    "reply": "Heart",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know52",
+    "kind": "knowledge",
+    "reply": "206",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know53",
+    "kind": "knowledge",
+    "reply": "1969",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know54",
+    "kind": "knowledge",
+    "reply": "1989",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know55",
+    "kind": "knowledge",
+    "reply": "Cheetah",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know56",
+    "kind": "knowledge",
+    "reply": "Python",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know57",
+    "kind": "knowledge",
+    "reply": "The largest country in the world by area is Russia.",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know58",
+    "kind": "knowledge",
+    "reply": "88",
+    "thinking_chars": 0,
+    "correct": true
+   },
+   {
+    "id": "know59",
+    "kind": "knowledge",
+    "reply": "The longest bone in the human body is the femur, also known as the thigh bone.",
+    "thinking_chars": 0,
+    "correct": true
+   }
+  ]
+ }
+}

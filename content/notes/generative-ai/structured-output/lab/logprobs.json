@@ -1,0 +1,68 @@
+{
+  "model": "qwen3:1.7b-q4_K_M",
+  "input": 3,
+  "candidates": [
+    {
+      "token": "```",
+      "p": 0.7618574058332908,
+      "allowed": false,
+      "shown": "```"
+    },
+    {
+      "token": "{\"",
+      "p": 0.2255209784676788,
+      "allowed": true,
+      "shown": "{\""
+    },
+    {
+      "token": "{\n",
+      "p": 0.01225438797148788,
+      "allowed": true,
+      "shown": "{\\n"
+    },
+    {
+      "token": "{",
+      "p": 0.000240997786578375,
+      "allowed": true,
+      "shown": "{"
+    },
+    {
+      "token": "{'",
+      "p": 7.092088901446855e-05,
+      "allowed": false,
+      "shown": "{'"
+    },
+    {
+      "token": "``",
+      "p": 5.291999683290035e-05,
+      "allowed": false,
+      "shown": "``"
+    },
+    {
+      "token": "[\n",
+      "p": 9.952798051635978e-07,
+      "allowed": false,
+      "shown": "[\\n"
+    },
+    {
+      "token": "`",
+      "p": 7.798879945597864e-07,
+      "allowed": false,
+      "shown": "`"
+    },
+    {
+      "token": "以下",
+      "p": 1.8349999843534514e-07,
+      "allowed": false,
+      "shown": "以下"
+    },
+    {
+      "token": "以下の",
+      "p": 3.9040799373577844e-08,
+      "allowed": false,
+      "shown": "以下の"
+    }
+  ],
+  "prefix_shown": "1 トークン目",
+  "caption": "点線はスキーマの文法に合わない候補（qwen3:1.7b-q4_K_M、入力 3）"
+}

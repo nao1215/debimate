@@ -1,0 +1,28 @@
+text    chars bytes    o200k_base cl100k_base       Qwen3    LLM-jp-3
+ja        108   290            66          95          64          43
+en        209   209            41          41          41          43
+code      232   232            57          58          58          76
+digits     78    78            36          36          58          35
+emoji      15    46            19          29          19          34
+
+chars per token
+ja             1.64        1.14        1.69        2.51
+en             5.10        5.10        5.10        4.86
+
+split of short sentences ('|' = token boundary, \xNN = part of a char)
+ja o200k_base    8  秘密|鍵|を|安全|に|保|管|する
+ja cl100k_base  13  \xe7\xa7|\x98|密|\xe9|\x8d|\xb5|を|安|全|に|保|管|する
+ja Qwen3         8  秘密|\xe9\x8d|\xb5|を|安全|に|保管|する
+ja LLM-jp-3      7   秘密|鍵|を|安全|に|保管|する
+en o200k_base    5  Store| the| private| key| safely
+en cl100k_base   5  Store| the| private| key| safely
+en Qwen3         5  Store| the| private| key| safely
+en LLM-jp-3      5   Store| the| private| key| safely
+digits o200k_base    4  693|804|068|2
+digits cl100k_base   4  693|804|068|2
+digits Qwen3        10  6|9|3|8|0|4|0|6|8|2
+digits LLM-jp-3      6   6|93|80|40|68|2
+emoji o200k_base   11  👍|\xf0\x9f\x8f|\xbd|\xf0\x9f\x91|\xa8|‍|\xf0\x9f\x91|\xa9|‍|\xf0\x9f\x91|\xa7
+emoji cl100k_base  19  \xf0\x9f|\x91|\x8d|\xf0\x9f|\x8f|\xbd|\xf0\x9f|\x91|\xa8|\xe2\x80|\x8d|\xf0\x9f|\x91|\xa9|\xe2\x80|\x8d|\xf0\x9f|\x91|\xa7
+emoji Qwen3         9  👍|🏽|👨|\xe2\x80|\x8d|👩|\xe2\x80|\x8d|👧
+emoji LLM-jp-3     17   |👍|🏽|\xf0|\x9f|\x91|\xa8|‍|\xf0|\x9f|\x91|\xa9|‍|\xf0|\x9f|\x91|\xa7

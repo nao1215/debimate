@@ -1,0 +1,16 @@
+blk.0.ffn_gate.weight: 12,582,912 weights, first block (32 weights), last 8 shown
+  FP16        : [-0.0034  0.0422 -0.0659 -0.0288 -0.0198  0.0025 -0.0334 -0.0898]
+  Q8_0  d=0.000708  ints: [-5, 60, -93, -41, -28, 4, -47, -127]
+        restored: [-0.0035  0.0425 -0.0658 -0.0290 -0.0198  0.0028 -0.0333 -0.0899]
+  Q4_0  d=0.011230  ints: [0, 4, -6, -3, -2, 0, -3, -8]
+        restored: [ 0.0000  0.0449 -0.0674 -0.0337 -0.0225  0.0000 -0.0337 -0.0898]
+  max |error| in this block: Q8_0 0.00033, Q4_0 0.00537  (max |w| 0.08984)
+
+whole matrix (12,582,912 weights), error relative to FP16
+  Q8_0 (mine)                 relative RMSE  0.549 %   max |error| 0.00251
+  Q8_0 (Ollama q8_0 file)     relative RMSE  0.549 %   max |error| 0.00251
+  Q4_0 (mine)                 relative RMSE  8.796 %   max |error| 0.03833
+  Q4 scale+min (mine)         relative RMSE  7.943 %   max |error| 0.03284
+  Q4_K (Ollama q4_K_M file)   relative RMSE  7.255 %   max |error| 0.03423
+
+Q8_0 mine vs Ollama: 12,582,912 / 12,582,912 weights identical (100.0000 %)

@@ -1,0 +1,40 @@
+corpus: 37,097 chars, 67,916 bytes
+first merges (new symbol <- pair, count)
+  #1   [\xe3\x81] <- [\xe3] + [\x81]  (4631)
+  #2   [\xe3\x82] <- [\xe3] + [\x82]  (2324)
+  #3   [\xe3\x83] <- [\xe3] + [\x83]  (1718)
+  #4   [\xe3\x80] <- [\xe3] + [\x80]  (929)
+  #5   [の] <- [\xe3\x81] + [\xae]  (687)
+  #6   [、] <- [\xe3\x80] + [\x81]  (487)
+  #7   [す] <- [\xe3\x81] + [\x99]  (477)
+  #8   [  ] <- [ ] + [ ]  (448)
+  #9   [を] <- [\xe3\x82] + [\x92]  (437)
+  #10  [or] <- [o] + [r]  (380)
+  #11  [。] <- [\xe3\x80] + [\x82]  (374)
+  #12  [で] <- [\xe3\x81] + [\xa7]  (349)
+
+after 0 merges
+  ja  33  \xe7|\xa7|\x98|\xe5|\xaf|\x86|\xe9|\x8d|\xb5|\xe3|\x82|\x92|\xe5|\xae|\x89|\xe5|\x85|\xa8|\xe3|\x81|\xab|\xe4|\xbf|\x9d|\xe7|\xae|\xa1|\xe3|\x81|\x99|\xe3|\x82|\x8b
+  en  28  S|t|o|r|e| |t|h|e| |p|r|i|v|a|t|e| |k|e|y| |s|a|f|e|l|y
+
+after 10 merges
+  ja  27  \xe7|\xa7|\x98|\xe5|\xaf|\x86|\xe9|\x8d|\xb5|を|\xe5|\xae|\x89|\xe5|\x85|\xa8|\xe3\x81|\xab|\xe4|\xbf|\x9d|\xe7|\xae|\xa1|す|\xe3\x82|\x8b
+  en  27  S|t|or|e| |t|h|e| |p|r|i|v|a|t|e| |k|e|y| |s|a|f|e|l|y
+
+after 50 merges
+  ja  23  \xe7|\xa7|\x98|\xe5|\xaf|\x86|\xe9|\x8d|\xb5|を|\xe5|\xae|\x89|\xe5\x85|\xa8|に|\xe4|\xbf|\x9d|\xe7|\xae|\xa1|する
+  en  27  S|t|or|e| |t|h|e| |p|r|i|v|a|t|e| |k|e|y| |s|a|f|e|l|y
+
+after 100 merges
+  ja  19  \xe7|\xa7|\x98|\xe5\xaf|\x86|鍵|を|\xe5\xae|\x89|\xe5\x85|\xa8|に|\xe4|\xbf|\x9d|\xe7|\xae|\xa1|する
+  en  26  S|t|or|e| |t|h|e| |p|r|i|v|a|te| |k|e|y| |s|a|f|e|l|y
+
+after 300 merges
+  ja  13  \xe7|\xa7\x98密|鍵|を|\xe5\xae|\x89|\xe5\x85|\xa8|に|保|\xe7|\xae\xa1|する
+  en  23  S|t|or|e| |th|e| |pr|i|v|a|te| |k|e|y| |s|af|e|l|y
+
+after 1000 merges
+  ja   8  秘密鍵|を|\xe5\xae|\x89|全|に|保管|する
+  en  19  S|t|or|e| |the| |pr|i|v|a|te| |ke|y| |safe|l|y
+
+Wallet passage: ja 290 -> 66 tokens, en 209 -> 136 tokens

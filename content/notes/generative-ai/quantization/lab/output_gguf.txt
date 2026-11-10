@@ -1,0 +1,33 @@
+[q4_K_M] sha256-3d0b790534fe...
+  file size        : 1,359,279,776 bytes
+  GGUF version     : 3, metadata keys: 27, tensors: 311
+  general.file_type: 15
+  params           : 2,031,739,904
+  weight bytes     : 1,353,328,640 (5.33 bits/param)
+  header + padding : 5,951,136 bytes
+    Q4_K  tensors  155  params 1,485,570,048  bytes   835,633,152  (4.5000 bits/param)
+    Q6_K  tensors   15  params   487,325,696  bytes   399,759,360  (6.5625 bits/param)
+    F16   tensors   28  params    58,720,256  bytes   117,440,512  (16.0000 bits/param)
+    F32   tensors  113  params       123,904  bytes       495,616  (32.0000 bits/param)
+
+[q8_0] sha256-48bffa1478e6...
+  file size        : 2,220,088,992 bytes
+  GGUF version     : 3, metadata keys: 27, tensors: 311
+  general.file_type: 7
+  params           : 2,031,739,904
+  weight bytes     : 2,214,137,856 (8.72 bits/param)
+  header + padding : 5,951,136 bytes
+    Q8_0  tensors  170  params 1,972,895,744  bytes 2,096,201,728  (8.5000 bits/param)
+    F16   tensors   28  params    58,720,256  bytes   117,440,512  (16.0000 bits/param)
+    F32   tensors  113  params       123,904  bytes       495,616  (32.0000 bits/param)
+
+[fp16] sha256-ac95b7f076ba...
+  file size        : 4,069,678,752 bytes
+  GGUF version     : 3, metadata keys: 27, tensors: 311
+  general.file_type: 1
+  params           : 2,031,739,904
+  weight bytes     : 4,063,727,616 (16.00 bits/param)
+  header + padding : 5,951,136 bytes
+    F16   tensors  198  params 2,031,616,000  bytes 4,063,232,000  (16.0000 bits/param)
+    F32   tensors  113  params       123,904  bytes       495,616  (32.0000 bits/param)
+

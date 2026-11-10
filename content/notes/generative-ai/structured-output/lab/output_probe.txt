@@ -1,0 +1,12 @@
+input 3: 2024年3月19日に開かれた勉強会で、幹事の松本彩さんが参加者12名分の会場費12万円を立て替えた。
+greedy first token: '```'
+         '```'  p=0.7619  rejected
+          '{"'  p=0.2255  allowed
+         '{\n'  p=0.0123  allowed
+           '{'  p=0.0002  allowed
+          "{'"  p=0.0001  rejected
+          '``'  p=0.0001  rejected
+         '[\n'  p=0.0000  rejected
+           '`'  p=0.0000  rejected
+          '以下'  p=0.0000  rejected
+         '以下の'  p=0.0000  rejected

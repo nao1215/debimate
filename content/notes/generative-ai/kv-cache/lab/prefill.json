@@ -1,0 +1,821 @@
+[
+ {
+  "round": 1,
+  "lines": 19,
+  "prompt_eval_count": 545,
+  "prompt_eval_s": 0.121740804,
+  "eval_count": 64,
+  "eval_s": 0.696569565,
+  "load_s": 0.081313464,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:09:52"
+ },
+ {
+  "round": 1,
+  "lines": 39,
+  "prompt_eval_count": 1041,
+  "prompt_eval_s": 0.27635496,
+  "eval_count": 64,
+  "eval_s": 0.782500649,
+  "load_s": 0.078396328,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:09:53"
+ },
+ {
+  "round": 1,
+  "lines": 79,
+  "prompt_eval_count": 2046,
+  "prompt_eval_s": 0.45036865,
+  "eval_count": 64,
+  "eval_s": 0.754494644,
+  "load_s": 0.076611866,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:09:55"
+ },
+ {
+  "round": 1,
+  "lines": 159,
+  "prompt_eval_count": 4129,
+  "prompt_eval_s": 1.034993116,
+  "eval_count": 64,
+  "eval_s": 0.835332699,
+  "load_s": 0.100896013,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:09:57"
+ },
+ {
+  "round": 1,
+  "lines": 319,
+  "prompt_eval_count": 8303,
+  "prompt_eval_s": 2.666063626,
+  "eval_count": 64,
+  "eval_s": 0.962517567,
+  "load_s": 0.072676821,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:00"
+ },
+ {
+  "round": 1,
+  "lines": 639,
+  "prompt_eval_count": 16689,
+  "prompt_eval_s": 7.904691288,
+  "eval_count": 64,
+  "eval_s": 1.233783589,
+  "load_s": 0.073797574,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:10"
+ },
+ {
+  "round": 1,
+  "lines": 1170,
+  "prompt_eval_count": 30755,
+  "prompt_eval_s": 20.625627081,
+  "eval_count": 64,
+  "eval_s": 1.769923324,
+  "load_s": 0.075327063,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:32"
+ },
+ {
+  "round": 2,
+  "lines": 19,
+  "prompt_eval_count": 542,
+  "prompt_eval_s": 0.120077832,
+  "eval_count": 64,
+  "eval_s": 0.695372854,
+  "load_s": 0.07183169,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:33"
+ },
+ {
+  "round": 2,
+  "lines": 39,
+  "prompt_eval_count": 1047,
+  "prompt_eval_s": 0.236088316,
+  "eval_count": 64,
+  "eval_s": 0.724045351,
+  "load_s": 0.090597344,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:34"
+ },
+ {
+  "round": 2,
+  "lines": 79,
+  "prompt_eval_count": 2049,
+  "prompt_eval_s": 0.435068028,
+  "eval_count": 64,
+  "eval_s": 0.747977846,
+  "load_s": 0.081018213,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:35"
+ },
+ {
+  "round": 2,
+  "lines": 159,
+  "prompt_eval_count": 4127,
+  "prompt_eval_s": 1.04785596,
+  "eval_count": 64,
+  "eval_s": 0.830306397,
+  "load_s": 0.086428428,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:37"
+ },
+ {
+  "round": 2,
+  "lines": 319,
+  "prompt_eval_count": 8307,
+  "prompt_eval_s": 2.632194465,
+  "eval_count": 64,
+  "eval_s": 0.968558565,
+  "load_s": 0.072812997,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:41"
+ },
+ {
+  "round": 2,
+  "lines": 639,
+  "prompt_eval_count": 16692,
+  "prompt_eval_s": 7.549732867,
+  "eval_count": 64,
+  "eval_s": 1.226918196,
+  "load_s": 0.07735893,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:10:50"
+ },
+ {
+  "round": 2,
+  "lines": 1170,
+  "prompt_eval_count": 30761,
+  "prompt_eval_s": 21.029799262,
+  "eval_count": 64,
+  "eval_s": 1.642558708,
+  "load_s": 0.073923009,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:13"
+ },
+ {
+  "round": 3,
+  "lines": 19,
+  "prompt_eval_count": 535,
+  "prompt_eval_s": 0.122234168,
+  "eval_count": 64,
+  "eval_s": 0.687004779,
+  "load_s": 0.079714307,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:14"
+ },
+ {
+  "round": 3,
+  "lines": 39,
+  "prompt_eval_count": 1047,
+  "prompt_eval_s": 0.235422459,
+  "eval_count": 64,
+  "eval_s": 0.701741732,
+  "load_s": 0.079014069,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:15"
+ },
+ {
+  "round": 3,
+  "lines": 79,
+  "prompt_eval_count": 2044,
+  "prompt_eval_s": 0.435100736,
+  "eval_count": 64,
+  "eval_s": 0.751015033,
+  "load_s": 0.077066401,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:16"
+ },
+ {
+  "round": 3,
+  "lines": 159,
+  "prompt_eval_count": 4130,
+  "prompt_eval_s": 1.067315357,
+  "eval_count": 64,
+  "eval_s": 0.846591315,
+  "load_s": 0.075983847,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:18"
+ },
+ {
+  "round": 3,
+  "lines": 319,
+  "prompt_eval_count": 8305,
+  "prompt_eval_s": 2.646717799,
+  "eval_count": 64,
+  "eval_s": 0.975363485,
+  "load_s": 0.075491022,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:22"
+ },
+ {
+  "round": 3,
+  "lines": 639,
+  "prompt_eval_count": 16692,
+  "prompt_eval_s": 7.58127072,
+  "eval_count": 64,
+  "eval_s": 1.345428391,
+  "load_s": 0.073812816,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:31"
+ },
+ {
+  "round": 3,
+  "lines": 1170,
+  "prompt_eval_count": 30759,
+  "prompt_eval_s": 21.253293303,
+  "eval_count": 64,
+  "eval_s": 1.650590842,
+  "load_s": 0.157487008,
+  "thinking_chars": 0,
+  "ps_before": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "ps_after": [
+   {
+    "name": "qwen3:1.7b-q8_0",
+    "size": 6106141568,
+    "size_vram": 6106141568,
+    "context_length": 32768
+   },
+   {
+    "name": "qwen3:4b",
+    "size": 42312878976,
+    "size_vram": 42312878976,
+    "context_length": 262144
+   }
+  ],
+  "time": "16:11:54"
+ }
+]

@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>KV キャッシュは num_ctx の枠を先に確保し、プロンプトと生成で前から埋める</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="88" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="126" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="164" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="202" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="240" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="278" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="316" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="354" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="392" y="142" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="430" y="142" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="468" y="142" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="506" y="142" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="544" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="582" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="620" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="658" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="696" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="734" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="772" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="810" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="848" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="886" y="142" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="74" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="112" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="150" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="188" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="226" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="264" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="302" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="340" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="378" y="156" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="416" y="156" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="454" y="156" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="492" y="156" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="530" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="568" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="606" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="644" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="682" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="720" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="758" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="796" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="834" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="872" y="156" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="5 4"/>
+<rect x="60" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="64" y1="245.0" x2="90" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="98" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="102" y1="245.0" x2="128" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="136" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="140" y1="245.0" x2="166" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="174" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="178" y1="245.0" x2="204" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="212" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="216" y1="245.0" x2="242" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="250" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="254" y1="245.0" x2="280" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="288" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="292" y1="245.0" x2="318" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="326" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="330" y1="245.0" x2="356" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="364" y="170" width="34" height="150" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="368" y1="245.0" x2="394" y2="245.0" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="402" y="170" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<line x1="406" y1="245.0" x2="432" y2="245.0" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="440" y="170" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<line x1="444" y1="245.0" x2="470" y2="245.0" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="478" y="170" width="34" height="150" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<line x1="482" y1="245.0" x2="508" y2="245.0" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="516" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="554" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="592" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="630" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="668" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="706" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="744" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="782" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="820" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<rect x="858" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 4"/>
+<text x="30" y="220" font-size="26" text-anchor="middle">K</text>
+<text x="30" y="295" font-size="26" text-anchor="middle">V</text>
+<text x="916" y="370" font-size="24" text-anchor="end" class="sub">奥の帯: 層ごとの K と V（28 層）</text>
+<path d="M60,130 V118 H398 V130" fill="none" stroke="#7aa6c2" stroke-width="3"/>
+<text x="229.0" y="106" font-size="26" text-anchor="middle">プロンプト（まとめて計算）</text>
+<path d="M402,130 V118 H512 V130" fill="none" stroke="#d4a24c" stroke-width="3"/>
+<text x="457.0" y="106" font-size="26" text-anchor="middle">生成</text>
+<text x="704" y="106" font-size="24" text-anchor="middle" class="sub">空き（確保済み）</text>
+<rect x="516" y="170" width="34" height="150" rx="4" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<path d="M533.0,340 C493.0,410 120,410 77,346" fill="none" stroke="#1f1f1f" stroke-width="3"/>
+<polygon points="77,340 67,360 89,356" fill="#1f1f1f"/>
+<text x="296.5" y="430" font-size="24" text-anchor="middle">次のトークンは、埋まった枠の K と V を全部読む</text>
+<path d="M60,458 V470 H892 V458" fill="none" stroke="#666666" stroke-width="2"/>
+<text x="476.0" y="504" font-size="24" text-anchor="middle" class="sub">読み込んだ時に num_ctx 個の枠を全部確保する</text>
+</svg>

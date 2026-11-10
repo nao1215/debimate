@@ -1,0 +1,18 @@
+[
+ {
+  "prompt_id": "a8d85148-ff33-485f-bdb7-357019f1deaf",
+  "seconds": 22.94,
+  "cached_nodes": [
+   "1",
+   "2",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 2,
+   "gpu_busy_percent": 87,
+   "loadavg_1m": 3.24853515625
+  },
+  "name": "control"
+ }
+]

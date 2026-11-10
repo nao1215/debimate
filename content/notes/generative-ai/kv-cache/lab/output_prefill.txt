@@ -1,0 +1,52 @@
+round 1 prompt    545 tok prefill   0.122 s ( 4476.7 tok/s) | gen 64 tok  91.9 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 1 prompt   1041 tok prefill   0.276 s ( 3766.9 tok/s) | gen 64 tok  81.8 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 1 prompt   2046 tok prefill   0.450 s ( 4542.9 tok/s) | gen 64 tok  84.8 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 1 prompt   4129 tok prefill   1.035 s ( 3989.4 tok/s) | gen 64 tok  76.6 tok/s | load 0.10 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 1 prompt   8303 tok prefill   2.666 s ( 3114.3 tok/s) | gen 64 tok  66.5 tok/s | load 0.07 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 1 prompt  16689 tok prefill   7.905 s ( 2111.3 tok/s) | gen 64 tok  51.9 tok/s | load 0.07 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 1 prompt  30755 tok prefill  20.626 s ( 1491.1 tok/s) | gen 64 tok  36.2 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt    542 tok prefill   0.120 s ( 4513.7 tok/s) | gen 64 tok  92.0 tok/s | load 0.07 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt   1047 tok prefill   0.236 s ( 4434.8 tok/s) | gen 64 tok  88.4 tok/s | load 0.09 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt   2049 tok prefill   0.435 s ( 4709.6 tok/s) | gen 64 tok  85.6 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt   4127 tok prefill   1.048 s ( 3938.5 tok/s) | gen 64 tok  77.1 tok/s | load 0.09 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt   8307 tok prefill   2.632 s ( 3155.9 tok/s) | gen 64 tok  66.1 tok/s | load 0.07 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt  16692 tok prefill   7.550 s ( 2210.9 tok/s) | gen 64 tok  52.2 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 2 prompt  30761 tok prefill  21.030 s ( 1462.7 tok/s) | gen 64 tok  39.0 tok/s | load 0.07 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt    535 tok prefill   0.122 s ( 4376.8 tok/s) | gen 64 tok  93.2 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt   1047 tok prefill   0.235 s ( 4447.3 tok/s) | gen 64 tok  91.2 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt   2044 tok prefill   0.435 s ( 4697.8 tok/s) | gen 64 tok  85.2 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt   4130 tok prefill   1.067 s ( 3869.5 tok/s) | gen 64 tok  75.6 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt   8305 tok prefill   2.647 s ( 3137.8 tok/s) | gen 64 tok  65.6 tok/s | load 0.08 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt  16692 tok prefill   7.581 s ( 2201.7 tok/s) | gen 64 tok  47.6 tok/s | load 0.07 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+round 3 prompt  30759 tok prefill  21.253 s ( 1447.3 tok/s) | gen 64 tok  38.8 tok/s | load 0.16 s | thinking 0 chars
+    ps after: qwen3:1.7b-q8_0 size=6.11GB vram=6.11GB ctx=32768; qwen3:4b size=42.31GB vram=42.31GB ctx=262144
+
+# median (min - max) over rounds
+prompt    542 tok  prefill   0.122 s (0.120-0.122)  gen  92.0 tok/s (91.9-93.2)
+prompt   1047 tok  prefill   0.236 s (0.235-0.276)  gen  88.4 tok/s (81.8-91.2)
+prompt   2046 tok  prefill   0.435 s (0.435-0.450)  gen  85.2 tok/s (84.8-85.6)
+prompt   4129 tok  prefill   1.048 s (1.035-1.067)  gen  76.6 tok/s (75.6-77.1)
+prompt   8305 tok  prefill   2.647 s (2.632-2.666)  gen  66.1 tok/s (65.6-66.5)
+prompt  16692 tok  prefill   7.581 s (7.550-7.905)  gen  51.9 tok/s (47.6-52.2)
+prompt  30759 tok  prefill  21.030 s (20.626-21.253)  gen  38.8 tok/s (36.2-39.0)
+EXIT 0

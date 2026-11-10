@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>次のトークンの候補から、スキーマの文法に合わない候補が外され、残りから選ばれる</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .mono{font-family:'DejaVu Sans Mono','Menlo','Consolas',monospace}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="66" font-size="24" text-anchor="start" style="fill:#666666">1 トークン目</text>
+<rect x="300" y="34" width="80" height="44" rx="6" fill="#eaf1f5" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="40" y="160" font-size="24" text-anchor="start" style="fill:#666666">候補</text>
+<text x="40" y="192" font-size="24" text-anchor="start" style="fill:#666666">(確率)</text>
+<line x1="130" y1="330" x2="934" y2="330" stroke="#666666" stroke-width="1.5"/>
+<rect x="172.0" y="130.0" width="68" height="200.0" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="6 4"/>
+<rect x="172.0" y="422" width="68" height="46" rx="6" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="206.0" y="454" font-size="26" text-anchor="middle" class="mono" style="fill:#666666">```</text>
+<line x1="206.0" y1="338" x2="206.0" y2="414" stroke="#666666" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="206.0" y="370" font-size="26" text-anchor="middle" style="fill:#1f1f1f"></text>
+<text x="206.0" y="120.0" font-size="24" text-anchor="middle" style="fill:#666666">76%</text>
+<rect x="284.0" y="270.7970634029573" width="68" height="59.20293659704272" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="3"/>
+<text x="318.0" y="370" font-size="26" text-anchor="middle" class="mono" style="fill:#1f1f1f">{&quot;</text>
+<text x="318.0" y="260.7970634029573" font-size="24" text-anchor="middle" style="fill:#1f1f1f">23%</text>
+<rect x="396.0" y="324" width="68" height="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="430.0" y="370" font-size="26" text-anchor="middle" class="mono" style="fill:#1f1f1f">{\n</text>
+<text x="430.0" y="314" font-size="24" text-anchor="middle" style="fill:#1f1f1f">1%</text>
+<rect x="508.0" y="324" width="68" height="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="542.0" y="370" font-size="26" text-anchor="middle" class="mono" style="fill:#1f1f1f">{</text>
+<text x="542.0" y="314" font-size="24" text-anchor="middle" style="fill:#1f1f1f">&lt;1%</text>
+<rect x="620.0" y="324" width="68" height="6" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="6 4"/>
+<rect x="620.0" y="422" width="68" height="46" rx="6" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="654.0" y="454" font-size="26" text-anchor="middle" class="mono" style="fill:#666666">{&#x27;</text>
+<line x1="654.0" y1="338" x2="654.0" y2="414" stroke="#666666" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="654.0" y="370" font-size="26" text-anchor="middle" style="fill:#1f1f1f"></text>
+<text x="654.0" y="314" font-size="24" text-anchor="middle" style="fill:#666666">&lt;1%</text>
+<rect x="732.0" y="324" width="68" height="6" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="6 4"/>
+<rect x="732.0" y="422" width="68" height="46" rx="6" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="766.0" y="454" font-size="26" text-anchor="middle" class="mono" style="fill:#666666">``</text>
+<line x1="766.0" y1="338" x2="766.0" y2="414" stroke="#666666" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="766.0" y="370" font-size="26" text-anchor="middle" style="fill:#1f1f1f"></text>
+<text x="766.0" y="314" font-size="24" text-anchor="middle" style="fill:#666666">&lt;1%</text>
+<rect x="844.0" y="324" width="68" height="6" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="6 4"/>
+<rect x="844.0" y="422" width="68" height="46" rx="6" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="878.0" y="454" font-size="26" text-anchor="middle" class="mono" style="fill:#666666">[\n</text>
+<line x1="878.0" y1="338" x2="878.0" y2="414" stroke="#666666" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="878.0" y="370" font-size="26" text-anchor="middle" style="fill:#1f1f1f"></text>
+<text x="878.0" y="314" font-size="24" text-anchor="middle" style="fill:#666666">&lt;1%</text>
+<text x="40" y="454" font-size="24" text-anchor="start" style="fill:#666666">外す</text>
+<text x="40" y="370" font-size="24" text-anchor="start" style="fill:#666666">残す</text>
+<text x="340" y="66" font-size="26" text-anchor="middle" class="mono" style="fill:#1f1f1f">{&quot;</text>
+<path d="M318.0 230.7970634029573 C 318.0 150, 340 150, 340 96" fill="none" stroke="#1f1f1f" stroke-width="3"/>
+<polygon points="340,82 330,100 350,100" fill="#1f1f1f"/>
+<text x="410" y="66" font-size="24" text-anchor="start" style="fill:#666666">残りの中では 95%</text>
+<text x="930" y="516" font-size="24" text-anchor="end" style="fill:#666666">点線はスキーマの文法に合わない候補（qwen3:1.7b-q4_K_M、入力 3）</text>
+</svg>
