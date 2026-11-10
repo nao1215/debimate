@@ -1756,6 +1756,11 @@ html[data-theme="dark"] .game-pick-gozen { background: #263038; color: #eef4f7; 
 .game-pick.game-pick-gozen { grid-template-columns: minmax(0, 1fr) auto; }
 .game-pick.game-pick-gozen .game-pick-art { height: 100%; aspect-ratio: 16 / 9; }
 .game-pick.game-pick-gozen .game-pick-art img { object-fit: contain; }
+@container (max-width: 560px) {
+  .game-pick.game-pick-gozen { grid-template-columns: minmax(0, 1fr); }
+  .game-pick.game-pick-gozen .game-pick-body { padding-bottom: .9rem; }
+  .game-pick.game-pick-gozen .game-pick-art { position: relative; height: auto; aspect-ratio: 16 / 9; }
+}
 /* 帯の中の一覧へのリンク（2026-11-10）。OSS はカード全体がリンクなので右下に重ねる。 */
 .oss-pick-wrap { position: relative; }
 .oss-pick-more { position: absolute; right: 14px; bottom: 10px; z-index: 4; font-size: .78rem; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
