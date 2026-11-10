@@ -65,7 +65,9 @@ PostgreSQL が上記の図の検査を始めるのは、待つたびではなく
 
 デッドロックの検出と、ロック待ちのタイムアウトは別の仕組みです。InnoDB は `innodb_deadlock_detect` で検出を止めることもでき、止めた場合はロック待ちのタイムアウトで待機を中止します。
 
-[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
+[MySQL](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html) の `innodb_lock_wait_timeout`（既定は 50 秒）を超えた時に巻き戻されるのは、既定では待っていたその 1 文だけで、トランザクション自体は続きます。[MySQL のドキュメント](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_rollback_on_timeout)によれば、`innodb_rollback_on_timeout` を有効にした場合に限り、トランザクション全体が巻き戻ります。
+
+以下は、1 本のトランザクションの中で巻き戻る範囲を並べた図です。
 
 {{< note-panels caption="同じエラー処理でも、どの文まで巻き戻るかを区別します。" >}}
 - title: PostgreSQL / InnoDB のデッドロック検出

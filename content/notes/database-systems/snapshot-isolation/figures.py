@@ -83,7 +83,7 @@ def band(f, y, start, commit, name, fill, stroke):
 
 
 def concept_figure():
-    f = Svg(960, 540, "write skew: 同じ時点を読み、別々の行を書く 2 本")
+    f = Svg(960, 540, "write skew: 同じ時点を読み、別々のレコードを書く 2 本")
     f.text(R, 75, "時間 →", 24, SUB, anchor="end")
     lane(f, XY, "x", C1, PALE, ACCENT)
     lane(f, YY, "y", C2, OCHRE_PALE, OCHRE)
@@ -102,7 +102,7 @@ def concept_figure():
     # Only the verdict "-100" is red; the rest of the sentence stays black.
     f.parts.append(
         '<text x="480" y="506" font-size="26" font-weight="normal" text-anchor="middle" '
-        f'style="fill:{INK}">書く行が違うので両方確定し、合計は '
+        f'style="fill:{INK}">書くレコードが違うので両方確定し、合計は '
         f'<tspan style="fill:{RED}">-100</tspan></text>')
     f.save(HERE / "images" / "snapshot-isolation_concept.svg")
 

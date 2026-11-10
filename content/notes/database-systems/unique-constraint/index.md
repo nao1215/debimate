@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Data Modeling"]
 ---
 
-[一意制約](https://www.postgresql.org/docs/current/ddl-constraints.html)（unique constraint）は、あるカラム、または複数のカラムの組に入っている値が表の中で重複しないことを DB（データベース）に保証させる仕組みです。SQL では、カラムの定義に `UNIQUE` を書くか、表に対して `UNIQUE (列名, ...)` を書いて宣言します。
+[一意制約](https://www.postgresql.org/docs/current/ddl-constraints.html)（unique constraint）は、あるカラム、または複数のカラムの組に入っている値が表の中で重複しないことを DB（データベース）に保証させる仕組みです。SQL では、カラムの定義に `UNIQUE` を書くか、表に対して `UNIQUE (カラム名, ...)` を書いて宣言します。
 
 例えば、会員登録では同じメールアドレスの重複を防ぐために使います。同じアドレスで 2 件のアカウントができると、パスワード再設定を求められた時にどちらのアカウントを再設定するのかが決まらず、問い合わせを受けた時にどちらが本人のものかも判定できません。重複を消して片方に寄せる作業は、後になるほど難しくなります。
 
@@ -29,7 +29,7 @@ topics: ["Data Modeling"]
 - 衝突した時の動作は、ON CONFLICT でどう決めるのか。
 - UNIQUE を張らない場合、誰が重複を止めるのか。
 
-以降の SQL は PostgreSQL の構文で書き、実行結果は PostgreSQL 17.11 のものです。
+以降の SQL は [PostgreSQL](https://www.postgresql.org/) の構文で書き、実行結果は PostgreSQL 17.11 のものです。
 
 ---
 
@@ -109,7 +109,7 @@ Time: 1001.301 ms (00:01.001)
 
 <br>
 
-同じアドレスの要求が 2 件より多く重なった時の結果は、PostgreSQL 付属の負荷試験の道具である pgbench で測りました。c 本の接続が user1 から user1000 までを同じ順に登録するので、各アドレスに c 件の要求がほぼ同時に届きます。
+同じアドレスの要求が 2 件より多く重なった時の結果は、PostgreSQL 付属の負荷試験の道具である [pgbench](https://www.postgresql.org/docs/current/pgbench.html) で測りました。c 本の接続が user1 から user1000 までを同じ順に登録するので、各アドレスに c 件の要求がほぼ同時に届きます。
 
 1 回の登録は、以下のように `SELECT` で 0 件を確かめてから `INSERT` します。`register_unique()` は `INSERT` を実行し、`23505` を受け取ったら回数を記録する関数です。
 
@@ -183,7 +183,9 @@ CREATE TABLE identities (
 
 ### 一意性に穴が空く NULL と論理削除
 
-1 つ目の穴は `NULL` です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても `email` が `NULL` のレコードは何件でも入ります。PostgreSQL 15 以降は、`NULLS NOT DISTINCT` を付ければ重複として扱えます。この扱いは DBMS（Database Management System）ごとに割れるので、[NULL](../sql-null/) のノートで扱っています。
+1 つ目の穴は `NULL` です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても `email` が `NULL` のレコードは何件でも入ります。
+
+PostgreSQL 15 以降は、`NULLS NOT DISTINCT` を付ければ重複として扱えます。この扱いは DBMS（Database Management System）ごとに割れるので、[NULL](../sql-null/) のノートで扱っています。
 
 もう 1 つの穴は、レコードを消さずに「削除済み」の印を付ける設計です。例えば `deleted_at` というカラムを足し、退会した時に日時を入れて、有効な会員は `NULL` のままにします。制約は削除済みのレコードにも掛かるので、一度退会した会員と同じアドレスでは再登録できません。設計の是非は [Soft Delete](../soft-delete/) のノートで扱っています。
 
@@ -222,7 +224,7 @@ CREATE UNIQUE INDEX users_email_active_idx
 
 続けるには、事前に途中の戻り先（SAVEPOINT）を置いてそこまで戻すか、トランザクションを分け直す必要があります。分け直せば、その 2 文の間にまた競合が入ります。PostgreSQL の `ON CONFLICT` 句は、この往復を避けて、衝突した時の動作を `INSERT` の中で決める書き方です。
 
-`ON CONFLICT` は、一意制約違反や排他制約違反でエラーにする代わりに、どう動くかを[指定する句](https://www.postgresql.org/docs/current/sql-insert.html)で、書ける動作は 2 つです。
+`ON CONFLICT` は、一意制約違反や排他制約違反でエラーにする代わりに、どう動くかを[指定する句](https://www.postgresql.org/docs/current/sql-insert.html)で、PostgreSQL 18 までに書ける動作は 2 つです。
 
 | 指定 | 衝突したレコードへの動作 | 使う場面 |
 | --- | --- | --- |

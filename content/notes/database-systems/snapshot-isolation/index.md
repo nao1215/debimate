@@ -17,9 +17,9 @@ DB はレコードの古いバージョンを残しておき、読む側が基�
 
 2 本のトランザクションが、口座 x と y の残高（どちらも 50）を読んでから書く場合を以下に示します。
 
-{{< figure src="images/snapshot-isolation_concept.svg" alt="横軸は時間。T1 と T2 はそれぞれの開始時点（縦線）で x と y を読み、どちらも 50 を見る。T1 は x、T2 は y に書いて確定し、書いた行が重ならないので両方とも確定して合計は -100 になる。" caption="同じ時点から読んだ 2 本が、別の口座を書いて両方確定する" align="center" >}}
+{{< figure src="images/snapshot-isolation_concept.svg" alt="横軸は時間。T1 と T2 はそれぞれの開始時点（縦線）で x と y を読み、どちらも 50 を見る。T1 は x、T2 は y に書いて確定し、書いたレコードが重ならないので両方とも確定して合計は -100 になる。" caption="同じ時点から読んだ 2 本が、別の口座を書いて両方確定する" align="center" >}}
 
-上記の図の縦線が Start-Timestamp（読み取りの基準になる時点）で、最初の読み取りより前に決まります。以降の読み取りは全部この 1 つの時点を基準にし、判定が入るのは書き込みの重なりだけです。書いた行が違う 2 本は両方とも確定し、2 口座の合計は -100 になります。この異常を write skew と呼びます。
+上記の図の縦線が Start-Timestamp（読み取りの基準になる時点）で、最初の読み取りより前に決まります。以降の読み取りは全部この 1 つの時点を基準にし、判定が入るのは書き込みの重なりだけです。書いたレコードが違う 2 本は両方とも確定し、2 口座の合計は -100 になります。この異常を write skew と呼びます。
 
 <br>
 
@@ -37,7 +37,9 @@ DB はレコードの古いバージョンを残しておき、読む側が基�
 
 ### スナップショットを固定した読み取り
 
-Snapshot Isolation は、Berenson 氏らが 1995 年に発表した論文「[A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf)」が定義した方式です。SQL 標準が名前を付けた 4 つの分離レベルとは別の方式で、標準の表には出てきません。論文には、各トランザクションが Start-Timestamp で確定済みだったデータのスナップショットから読む方式だと説明されています。
+Snapshot Isolation は、Berenson 氏らが 1995 年に発表した論文「[A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf)」が定義した方式です。SQL 標準が名前を付けた 4 つの分離レベルとは別の方式で、標準の表には出てきません。
+
+論文には、各トランザクションが Start-Timestamp で確定済みだったデータのスナップショットから読む方式だと説明されています。
 
 スナップショットが固定されるといっても、見えなくなるのは他のトランザクションが後から確定した変更だけです。自分がそのトランザクションの中で書いた変更は、後の読み取りから見えます。
 
@@ -49,7 +51,9 @@ Snapshot Isolation では、Start-Timestamp のスナップショットに必要
 
 読み取りが待たないだけでは、[Transaction Isolation](../transaction-isolation/) の冒頭で見た在庫の取り合いは止まりません。2 本とも同じ残数 1 を読み、両方が 0 を書けてしまいます。Snapshot Isolation は、書き込みに検査を置いてこれを止めます。
 
-論文が定めた条件では、T1 が確定できるのは、T1 の実行区間 [Start-Timestamp, Commit-Timestamp] の中に Commit-Timestamp を持つ別のトランザクションが、T1 と同じデータを書いていない場合に限られます。満たさなければ T1 は中止されます。論文はこの規律を first-committer-wins と呼び、lost update を防ぐと説明しています。
+論文が定めた条件では、T1 が確定できるのは、T1 の実行区間 [Start-Timestamp, Commit-Timestamp] の中に Commit-Timestamp を持つ別のトランザクションが、T1 と同じデータを書いていない場合に限られます。満たさなければ T1 は中止されます。
+
+論文はこの規律を first-committer-wins と呼び、lost update を防ぐと説明しています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -65,7 +69,7 @@ sequenceDiagram
     Note over B: B は中止される
 ```
 
-commit の時点で検査するこの形は論文の概念モデルで、実装が同じ形を取るとは限りません。PostgreSQL の REPEATABLE READ は、書き込みの時点で先に更新した相手を待ち、相手が確定していれば、順に実行したとはみなせないとして中止します（直列化の失敗）。待ちが入る点が違い、片方が中止される結果は同じです。
+commit の時点で検査するこの形は論文の概念モデルで、実装が同じ形を取るとは限りません。[PostgreSQL の REPEATABLE READ](https://www.postgresql.org/docs/current/transaction-iso.html#XACT-REPEATABLE-READ) は、書き込みの時点で先に更新した相手を待ち、相手が確定していれば、順に実行したとはみなせないとして中止します（直列化の失敗）。待ちが入る点が違い、片方が中止される結果は同じです。
 
 ---
 
@@ -278,7 +282,7 @@ parallel SERIALIZABLE: seen=[100, 100], decisions=['committed', 'serialization_f
 
 `seen` は各接続が読んだ合計、`decisions` は確定・残高不足・直列化失敗、`total` は実行後の合計です。直列実行では 2 本目が 0 を読み、引き出しを止めます。
 
-一方で、並行の REPEATABLE READ では両方が 100 を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が−100 になりました。
+一方で、並行の REPEATABLE READ では両方が 100 を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が -100 になりました。
 
 既にあるレコードを書き換える場合だけでなく、条件に合うレコード数を制約にした処理でも、各接続が別のレコードを追加することで制約を破る場合があります。
 
@@ -313,7 +317,9 @@ REPEATABLE READ という名前が Snapshot Isolation を意味するわけで�
 
 トランザクションを 1 本ずつ順に実行した場合（直列）のどの順序とも一致しない結果を直列化異常と呼びます。口座の例は、T1→T2 でも T2→T1 でも 2 本目が残高不足に気付くので、合計 -100 は直列では起きません。
 
-Snapshot Isolation は、別々のレコードを更新して全体の制約を壊す write skew を防げません。Serializable Snapshot Isolation（SSI）は、トランザクション間の読み書きの依存関係を監視し、直列化異常につながり得る組み合わせを検出すると、トランザクションを中止する方式です。PostgreSQL の SERIALIZABLE は、この [SSI](https://www.postgresql.org/docs/current/transaction-iso.html) で実装されています。
+Snapshot Isolation は、別々のレコードを更新して全体の制約を壊す write skew を防げません。Serializable Snapshot Isolation（SSI）は、トランザクション間の読み書きの依存関係を監視し、直列化異常につながり得る組み合わせを検出すると、トランザクションを中止する方式です。
+
+SSI は、Cahill 氏らが 2008 年の論文「[Serializable Isolation for Snapshot Databases](https://doi.org/10.1145/1376616.1376690)」で示しました。PostgreSQL の SERIALIZABLE は、この [SSI](https://www.postgresql.org/docs/current/transaction-iso.html) で実装されています。
 
 依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。
 

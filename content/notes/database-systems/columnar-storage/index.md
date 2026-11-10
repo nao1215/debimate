@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Storage Engine"]
 ---
 
-Columnar Storage（列指向ストレージ）は、表のデータを行ごとではなく列ごとに連続して格納する方式です。この方式で格納する DB（データベース）を Column Store、行ごとに格納する一般的な RDB（リレーショナル DB）を Row Store と呼びます。分析用の DB や、[Apache Parquet](https://parquet.apache.org/) のようなファイル形式がこの方式を使っています。
+Columnar Storage（列指向ストレージ）は、表のデータを行（レコード）ごとではなく列（カラム）ごとに連続して格納する方式です。この方式で格納する DB（データベース）を Column Store、行ごとに格納する一般的な RDB（リレーショナル DB）を Row Store と呼びます。分析用の DB や、[Apache Parquet](https://parquet.apache.org/) のようなファイル形式がこの方式を使っています。
 
 例えば、売上の表から `SELECT sum(amount) FROM sales` を実行する場合、必要なのは `amount` 列だけです。同じ表の 3 行を 2 つの方式で並べると、以下のようになります。
 
@@ -202,7 +202,7 @@ zone map が効くのは、条件に使う列の値が塊ごとにまとまっ�
 
 読む量を減らしても、読んだ値を CPU で計算する時間は掛かります。多くの RDB の実行器は、上の演算子が下の演算子に次の 1 行を要求する形で動きます（[Query Processing](/notes/database-systems/query-processing/#実行計画から行を引き出す実行器)）。1 行ごとに関数を呼ぶので、400 万行の合計なら、足し算 1 回のために関数呼び出しが 400 万回起きます。
 
-Boncz 氏らの論文 [MonetDB/X100: Hyper-Pipelining Query Execution](https://www.cidrdb.org/cidr2005/papers/P19.pdf)（CIDR 2005）は、[MySQL](https://www.mysql.com/) で TPC-H（分析処理のベンチマーク）の Query 1 を実行し、1 行ずつの処理のコストを計測しています。
+Boncz 氏らの論文 [MonetDB/X100: Hyper-Pipelining Query Execution](https://www.cidrdb.org/cidr2005/papers/P19.pdf)（CIDR 2005）は、[MySQL](https://www.mysql.com/) で [TPC-H](https://www.tpc.org/tpch/)（分析処理のベンチマーク）の Query 1 を実行し、1 行ずつの処理のコストを計測しています。
 
 足し算 1 回に約 20 サイクルの呼び出しのコストが掛かり、1 回分の計算では呼び出しのコストを薄められません。また、1 回の呼び出しで依存し合う命令しか実行しないので、CPU のパイプラインに空きが出ます。
 
@@ -248,6 +248,8 @@ flowchart LR
 - row group ごとの最小値と最大値で、条件に合わない塊を読まずに飛ばせる
 - 列の値を配列のまま処理でき、Vectorized Execution と組み合わせやすい
 
+---
+
 ### 欠点
 
 Column Store は、大量の行の少数の列を読む処理に合わせて、値を列ごとに詰めて格納します。その代わりに、次の制約があります。
@@ -256,6 +258,8 @@ Column Store は、大量の行の少数の列を読む処理に合わせて、�
 - 圧縮した塊の一部を書き換えられず、更新は別の場所に貯めてまとめる仕組みが必要になる
 - zone map の効き方が行の順序に左右され、並べ替える列の選び方で他の列の圧縮率も変わる
 - 1 行ずつの小さな挿入が続くと、小さな塊やファイルが増えて読む効率が落ちる
+
+---
 
 ### Columnar Storage の効果が小さくなりやすいケース
 

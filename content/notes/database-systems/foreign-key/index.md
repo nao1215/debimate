@@ -68,7 +68,7 @@ flowchart TB
 どちらの経路でも、`INSERT` や `DELETE` はエラーを返しません。制約が無いので、DB にとっては正常な書き込みです。孤児が生まれた瞬間には何も起きず、後から読む時に影響が出ます。
 
 ```sql
--- 外部キー制約を張っていない orders の場合。members に id = 999 の行は無い
+-- 外部キー制約を張っていない orders の場合。members に id = 999 のレコードは無い
 INSERT INTO orders (id, member_id, amount) VALUES (1001, 999, 3000);
 ```
 
@@ -246,7 +246,9 @@ WHERE o.member_id IS NOT NULL
 
 欠点の 2 つ目に挙げた子のカラムの索引は、DBMS によって扱いが違います。PostgreSQL のドキュメントには「[the declaration of a foreign key constraint does not automatically create an index on the referencing columns](https://www.postgresql.org/docs/current/ddl-constraints.html)」（外部キー制約の宣言は、参照するカラムに索引を自動では作らない）とあります。
 
-DBMS によっては自動で作るものもあります。索引の有無で親の削除がどう変わるのかを以下の図に示します。
+DBMS によっては自動で作るものもあります。例えば [MySQL の InnoDB](https://dev.mysql.com/doc/refman/8.4/en/create-table-foreign-keys.html) は、外部キーの検査で表を走査しないように、参照する側に使える索引が無ければ自動で作ります。
+
+索引の有無で親の削除がどう変わるのかを以下の図に示します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -290,4 +292,4 @@ child_rows  index  delete_ms  fk_check_ms   scan of orders in the FK lookup
 
 上記の図の通り、索引が無いと親 1 件の削除にかかる時間は子の件数にほぼ比例し、400 万件では約 240 ms でした。時間のほとんどは外部キーの検査（測定値の `fk_check_ms`）です。索引があれば、どの件数でも 1 ms 未満でした。
 
-欠点の 3 つ目に挙げた、親と子が別のノードに分かれる構成についても、分散を前提に作られた DBMS には外部キーを支援するものがあります。
+欠点の 3 つ目に挙げた、親と子が別のノードに分かれる構成についても、分散を前提に作られた DBMS には、[CockroachDB](https://docs.cockroachlabs.com/docs/stable/foreign-key) のように外部キー制約を支援するものがあります。

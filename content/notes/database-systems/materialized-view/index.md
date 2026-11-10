@@ -59,7 +59,9 @@ materialized view は、この計算を `REFRESH` の時に 1 回だけ行い、
 
 ### 元の表と写しの役割
 
-materialized view では、元の表が唯一の書き込み先で、materialized view は読むためだけの写しです。PostgreSQL の materialized view には `INSERT` も `UPDATE` もできず、中身を変える方法は `REFRESH MATERIALIZED VIEW` だけです。`REFRESH` は、作成時に保存した定義の問い合わせを実行し直し、その結果で中身を置き換えます。
+materialized view では、元の表が唯一の書き込み先で、materialized view は読むためだけの写しです。PostgreSQL の materialized view には `INSERT` も `UPDATE` もできず、中身を変える方法は `REFRESH MATERIALIZED VIEW` だけです。
+
+`REFRESH` は、作成時に保存した定義の問い合わせを実行し直し、その結果で中身を置き換えます。
 
 そのため、2 つの値が食い違った時に正しいのは、常に元の表です。materialized view は消しても、定義さえあれば `REFRESH` で作り直せます。逆に、materialized view にしか無い情報を持たせることはできません。
 
@@ -71,11 +73,13 @@ materialized view では、元の表が唯一の書き込み先で、materialize
 
 結果を作り直す方法は、何を入力にして作り直すかと、作り直している間に読み手を止めるかで分かれます。以下は、本記事で取り上げる 3 つの方法について、元の表から読む量・materialized view に書く量・実行中の読み手を並べた図です。
 
-{{< figure src="images/refresh_methods.svg" alt="3 段の比較。full refresh（PostgreSQL の REFRESH）は元の表を全件読み、view を全て入れ替え、読み手は待つ。incremental refresh（Oracle の fast refresh、pg_ivm）は変更分だけを読み、影響する行だけを書き、読み手への影響は製品による。concurrent refresh（CONCURRENTLY）は元の表を全件読むが、view には変わった行だけを書き、読み手は止まらない" caption="3 つの REFRESH の読む量・書く量・読み手" align="center" >}}
+{{< figure src="images/refresh_methods.svg" alt="3 段の比較。full refresh（PostgreSQL の REFRESH）は元の表を全件読み、view を全て入れ替え、読み手は待つ。incremental refresh（Oracle の fast refresh、pg_ivm）は変更分だけを読み、影響するレコードだけを書き、読み手への影響は製品による。concurrent refresh（CONCURRENTLY）は元の表を全件読むが、view には変わったレコードだけを書き、読み手は止まらない" caption="3 つの REFRESH の読む量・書く量・読み手" align="center" >}}
 
 full refresh は、元の表を全て読み直して結果を作り、中身を丸ごと入れ替えます。PostgreSQL の `REFRESH MATERIALIZED VIEW` は、開始からコミットまで、materialized view に対して全てのロックと衝突する `ACCESS EXCLUSIVE` ロックを取ります（[ロックモードの一覧](https://www.postgresql.org/docs/17/explicit-locking.html)）。
 
-一方で、Oracle の complete refresh は、[DBMS_MVIEW.REFRESH](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/DBMS_MVIEW.html) の既定（`atomic_refresh => true`）では 1 つのトランザクションで中身を入れ替えます。Oracle は[読み手と書き手が互いを待たない](https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/data-concurrency-and-consistency.html)作りなので、読み手は止まらず、確定するまで古い結果を読みます。`atomic_refresh` を `false` にすると、中身を `TRUNCATE` で消してから入れ直します。
+一方で、Oracle の complete refresh は、[DBMS_MVIEW.REFRESH](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/DBMS_MVIEW.html) の既定（`atomic_refresh => true`）では 1 つのトランザクションで中身を入れ替えます。
+
+Oracle は[読み手と書き手が互いを待たない](https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/data-concurrency-and-consistency.html)作りなので、読み手は止まらず、確定するまで古い結果を読みます。`atomic_refresh` を `false` にすると、中身を `TRUNCATE` で消してから入れ直します。
 
 incremental refresh は、元の表に入った変更から、結果のどこが変わるかを計算して反映します。Oracle Database の fast refresh は、元の表の変更を materialized view log という表に記録しておき、それを使って反映します。
 
@@ -85,13 +89,15 @@ PostgreSQL 17 の標準機能には incremental refresh がありません。拡
 
 <br>
 
-変更分だけの反映は、常に速いわけではありません。view の保守を整理した Gupta 氏と Mumick 氏の論文「[Maintenance of Materialized Views: Problems, Techniques, and Applications](http://sites.computer.org/debull/95JUN-CD.pdf)」（IEEE Data Engineering Bulletin, Vol. 18, No. 2, 1995）は、変更分だけを計算する方が安いという考えは経験則に過ぎず、元の表を全件消した場合のように、作り直した方が安い場合もあると指摘しています。
+変更分だけの反映は、常に速いわけではありません。
 
-concurrent refresh は名前が紛らわしいのですが、PostgreSQL の `CONCURRENTLY` は incremental refresh ではありません。[PostgreSQL の実装](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/commands/matview.c)では、定義の問い合わせを全て実行して一時的な表に新しい結果を作り、今の中身と全列で突き合わせて、変わった行だけを `DELETE` と `INSERT` で書きます。
+view の保守を整理した Gupta 氏と Mumick 氏の論文「[Maintenance of Materialized Views: Problems, Techniques, and Applications](http://sites.computer.org/debull/95JUN-CD.pdf)」（IEEE Data Engineering Bulletin, Vol. 18, No. 2, 1995）は、変更分だけを計算する方が安いという考えは経験則に過ぎず、元の表を全件消した場合のように、作り直した方が安い場合もあると指摘しています。
+
+concurrent refresh は名前が紛らわしいのですが、PostgreSQL の `CONCURRENTLY` は incremental refresh ではありません。[PostgreSQL の実装](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/commands/matview.c)では、定義の問い合わせを全て実行して一時的な表に新しい結果を作り、今の中身と全カラムで突き合わせて、変わったレコードだけを `DELETE` と `INSERT` で書きます。
 
 元の表を読む量は full refresh と同じで、変わるのは置き換え方です。この間のロックは `EXCLUSIVE` で、`SELECT` が取る `ACCESS SHARE` ロックとは衝突しません。
 
-突き合わせには行を一意に特定できる列が必要なので、`CONCURRENTLY` を使うには、式や `WHERE` 句を含まない [UNIQUE](../unique-constraint/) 索引が materialized view に 1 つ以上必要です（[REFRESH MATERIALIZED VIEW](https://www.postgresql.org/docs/17/sql-refreshmaterializedview.html)）。
+突き合わせにはレコードを一意に特定できるカラムが必要なので、`CONCURRENTLY` を使うには、式や `WHERE` 句を含まない [UNIQUE](../unique-constraint/) 索引が materialized view に 1 つ以上必要です（[REFRESH MATERIALIZED VIEW](https://www.postgresql.org/docs/17/sql-refreshmaterializedview.html)）。
 
 ---
 
@@ -140,9 +146,9 @@ GROUP BY 1;
 
 </details>
 
-注文表は 249 MB、`daily_sales` は 365 行で 32 kB になりました。注文表から集計した場合と `daily_sales` から読んだ場合で、3 月の売上合計を 3 回ずつ測った時間は、以下の通りです（[run.sh の出力](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/materialized-view/lab/output.txt)の (c-1)・(c-2)）。
+注文表は 249 MB、`daily_sales` は 365 件で 32 kB になりました。注文表から集計した場合と `daily_sales` から読んだ場合で、3 月の売上合計を 3 回ずつ測った時間は、以下の通りです（[run.sh の出力](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/materialized-view/lab/output.txt)の (c-1)・(c-2)）。
 
-{{< figure src="images/materialized-view_query_times.svg" alt="対数軸の横棒グラフ。500 万件の注文表から集計すると 1,044〜1,210 ms、365 行の daily_sales から読むと 0.56〜0.69 ms で、約 1,800 分の 1 になった" caption="注文表から集計した時間と daily_sales から読んだ時間" align="center" >}}
+{{< figure src="images/materialized-view_query_times.svg" alt="対数軸の横棒グラフ。500 万件の注文表から集計すると 1,044〜1,210 ms、365 件の daily_sales から読むと 0.56〜0.69 ms で、約 1,800 分の 1 になった" caption="注文表から集計した時間と daily_sales から読んだ時間" align="center" >}}
 
 1〜1.2 秒かかっていた集計が、1 ミリ秒を切り、およそ 1,800 分の 1 になりました。次に、3 月 1 日に 100 万円の注文を 1 件足し、同じ日の売上を注文表と `daily_sales` の両方から読みました（`run.sh` の (b)）。
 
@@ -245,7 +251,7 @@ Time: 1.077 ms
 
 どちらも `REFRESH` の所要時間は 2.7〜3 秒で、`CONCURRENTLY` だから速くなるわけではありません。
 
-読み手が古い行を読み続けられるのは、PostgreSQL が行の古いバージョンを残しておく仕組み（MVCC、Multi-Version Concurrency Control）の働きで、詳しくは [Snapshot Isolation](../snapshot-isolation/) で扱っています。
+読み手が古い結果を読み続けられるのは、PostgreSQL がレコードの古いバージョンを残しておく仕組み（MVCC、Multi-Version Concurrency Control）の働きで、詳しくは [Snapshot Isolation](../snapshot-isolation/) で扱っています。
 
 ---
 
@@ -270,7 +276,7 @@ materialized view は、前回の `REFRESH` の時点の結果を返します。
   - 一覧画面の目安の表示に留める
 {{< /note-panels >}}
 
-古さを読み手に伝えるには、結果と一緒に最終更新時刻を出します。PostgreSQL 17 の `pg_matviews` には最終更新時刻の列がありません。そこで、`REFRESH` と時刻の記録を同じトランザクションに入れると、記録だけが先に進む状態を避けられます。`CONCURRENTLY` もトランザクションの中で実行できました（`run.sh` の (e)）。
+古さを読み手に伝えるには、結果と一緒に最終更新時刻を出します。PostgreSQL 17 の [`pg_matviews`](https://www.postgresql.org/docs/17/view-pg-matviews.html) には最終更新時刻のカラムがありません。そこで、`REFRESH` と時刻の記録を同じトランザクションに入れると、記録だけが先に進む状態を避けられます。`CONCURRENTLY` もトランザクションの中で実行できました（`run.sh` の (e)）。
 
 ```sql
 CREATE TABLE IF NOT EXISTS mv_refresh_log (
@@ -284,15 +290,15 @@ ON CONFLICT (name) DO UPDATE SET refreshed_at = EXCLUDED.refreshed_at;
 COMMIT;
 ```
 
-`now()` はトランザクションの開始時刻を返すので、記録されるのは `REFRESH` を始めた時刻です。画面には「2026-11-10 08:10 時点の集計」のように出せます。ドキュメントの売上の例が当日の分を `WHERE invoice_date < CURRENT_DATE` で除いているのも、途中までの数字を確定した数字と並べないための工夫と読めます。
+`now()` はトランザクションの開始時刻を返すので、記録されるのは `REFRESH` を始めた時刻です。画面には「2026-11-10 08:10 時点の集計」のように出せます。PostgreSQL のドキュメントの売上の例が当日の分を `WHERE invoice_date < CURRENT_DATE` で除いているのも、途中までの数字を確定した数字と並べないための工夫と読めます。
 
 ---
 
 ### 索引と組み合わせる条件
 
-materialized view は中身を表として持つので、普通の表と同じく索引を張れます。索引が効くのは、materialized view の行が多く、その一部だけを条件で取り出す場合です。例えば、顧客ごと・日ごとに集計した数百万行の materialized view から 1 人分を読むなら、索引で行の在り処を直接求められます（[Index Scan](../index-scan/)）。
+materialized view は中身を表として持つので、普通の表と同じく索引を張れます。索引が効くのは、materialized view のレコードが多く、その一部だけを条件で取り出す場合です。例えば、顧客ごと・日ごとに集計した数百万件の materialized view から 1 人分を読むなら、索引でレコードの在り処を直接求められます（[Index Scan](../index-scan/)）。
 
-今回の 365 行の `daily_sales` なら、全件を読んでも 1 ミリ秒を切ります。
+今回の 365 件の `daily_sales` なら、全件を読んでも 1 ミリ秒を切ります。
 
 その代わり、索引も `REFRESH` の度に作り直しのコストがかかります。`REFRESH` の前後で、`daily_sales` と UNIQUE 索引の格納先ファイルの番号（`relfilenode`）を比べた結果が以下です（抜粋）。
 
@@ -307,9 +313,9 @@ materialized view は中身を表として持つので、普通の表と同じ�
  after plain        | daily_sales_day |       16509
 ```
 
-`CONCURRENTLY` を付けない `REFRESH` では、表と索引の両方が新しいファイルに変わりました。新しい結果を別のファイルに作って差し替え、索引も全て作り直すので、索引が多いほど `REFRESH` は長くなります。`CONCURRENTLY` ではファイルは同じままで、変わった行を書く度に索引も更新されます。変わる行が少なければ索引の更新も少なく済みます。
+`CONCURRENTLY` を付けない `REFRESH` では、表と索引の両方が新しいファイルに変わりました。新しい結果を別のファイルに作って差し替え、索引も全て作り直すので、索引が多いほど `REFRESH` は長くなります。`CONCURRENTLY` ではファイルは同じままで、変わったレコードを書く度に索引も更新されます。変わるレコードが少なければ索引の更新も少なく済みます。
 
-しかし、変わる行が多い場合は、`CONCURRENTLY` を付けない方が速く、使う資源も少ない傾向があります（[REFRESH MATERIALIZED VIEW](https://www.postgresql.org/docs/17/sql-refreshmaterializedview.html)）。実装の作りからすると、差分を求める突き合わせと行の削除・挿入が重くなるからです。
+しかし、変わるレコードが多い場合は、`CONCURRENTLY` を付けない方が速く、使う資源も少ない傾向があります（[REFRESH MATERIALIZED VIEW](https://www.postgresql.org/docs/17/sql-refreshmaterializedview.html)）。実装の作りからすると、差分を求める突き合わせとレコードの削除・挿入が重くなるからです。
 
 ---
 
@@ -340,6 +346,8 @@ materialized view は、計算を読む時から `REFRESH` の時に移して、
 - 元の表の変更が頻繁で、読む頻度より `REFRESH` すべき頻度の方が高い場合
 - 定義の問い合わせが重く、`REFRESH` が次の `REFRESH` の予定時刻までに終わらない場合
 
-直前の書き込みまで反映した集計が必要なら、集計用の表を自分で作り、元の表のトリガーかアプリケーションの書き込みと同じトランザクションで更新する方法があります。この場合は結果が古くなりませんが、書き込みの度に集計の行を更新するので、同じ日の行に更新が集中し、行ロックの待ちが起きやすくなります。
+直前の書き込みまで反映した集計が必要なら、集計用の表を自分で作り、元の表のトリガーかアプリケーションの書き込みと同じトランザクションで更新する方法があります。この場合は結果が古くなりませんが、書き込みの度に集計のレコードを更新するので、同じ日のレコードに更新が集中し、行ロックの待ちが起きやすくなります。
 
-古さを許容できず、元の表から毎回集計する場合は、集計に必要な列だけを読める [Columnar Storage](../columnar-storage/) も候補です。逆に、数秒から数分の古さが許容でき、同じ結果を何度も読むだけなら、アプリケーション側のキャッシュでも足ります。materialized view が向いているのは、その中間で、結果が DB の中で `JOIN` や索引の対象になり、古さを `REFRESH` の時刻で説明できる場合です。
+古さを許容できず、元の表から毎回集計する場合は、集計に必要なカラムだけを読める [Columnar Storage](../columnar-storage/) も候補です。逆に、数秒から数分の古さが許容でき、同じ結果を何度も読むだけなら、アプリケーション側のキャッシュでも足ります。
+
+materialized view が向いているのは、その中間で、結果が DB の中で `JOIN` や索引の対象になり、古さを `REFRESH` の時刻で説明できる場合です。

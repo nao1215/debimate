@@ -4,7 +4,7 @@
 <rect width="960" height="540" fill="#ffffff"/>
 <rect x="40" y="40" width="420" height="104" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
 <text x="250" y="84" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">DDL・search_path</text>
-<text x="250" y="122" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">行数が変わる ANALYZE</text>
+<text x="250" y="122" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">レコード数が変わる ANALYZE</text>
 <line x1="250" y1="146" x2="250" y2="206" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
 <rect x="80" y="212" width="340" height="70" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
 <text x="250" y="256" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">pg_class などを更新</text>

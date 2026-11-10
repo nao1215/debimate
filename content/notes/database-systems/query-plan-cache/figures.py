@@ -148,7 +148,7 @@ def times_figure():
 
 def invalidation_figure():
     f = Svg(960, 540, "保存した計画を捨てる合図が出る変更と、出ない変更")
-    cols = [(40, "DDL・search_path", "行数が変わる ANALYZE", "pg_class などを更新"),
+    cols = [(40, "DDL・search_path", "レコード数が変わる ANALYZE", "pg_class などを更新"),
             (500, "値の分布だけが変わる", "ANALYZE", "pg_statistic を更新")]
     for i, (x, a, b, c) in enumerate(cols):
         cx = x + 210

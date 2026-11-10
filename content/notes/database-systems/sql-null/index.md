@@ -38,7 +38,7 @@ topics: ["Data Modeling"]
 
 ### 前提
 
-例には次の表を使います。動かして確かめた結果は SQLite 3.50.4 のもので、並べ替えの例だけは PostgreSQL 17.11 と MySQL 8.4.11 でも動かしています。
+例には次の表を使います。動かして確かめた結果は [SQLite](https://www.sqlite.org/) 3.50.4 のもので、並べ替えの例だけは [PostgreSQL](https://www.postgresql.org/) 17.11 と [MySQL](https://www.mysql.com/) 8.4.11 でも動かしています。
 
 ```sql
 CREATE TABLE users (
@@ -50,7 +50,9 @@ CREATE TABLE users (
 );
 ```
 
-主キーには `NOT NULL` を明示しています。SQL 標準では `PRIMARY KEY` が `NOT NULL` を含みますが、SQLite は初期のバージョンの不具合を互換性のために残しています。`INTEGER PRIMARY KEY`・`WITHOUT ROWID` の表・`STRICT` の表・`NOT NULL` を宣言したカラムを除くと、`PRIMARY KEY` のカラムにも `NULL` が入ります（[SQLite の CREATE TABLE](https://www.sqlite.org/lang_createtable.html#the_primary_key)）。
+主キーには `NOT NULL` を明示しています。SQL 標準では `PRIMARY KEY` が `NOT NULL` を含みますが、SQLite は初期のバージョンの不具合を互換性のために残しています。
+
+`INTEGER PRIMARY KEY`・`WITHOUT ROWID` の表・`STRICT` の表・`NOT NULL` を宣言したカラムを除くと、`PRIMARY KEY` のカラムにも `NULL` が入ります（[SQLite の CREATE TABLE](https://www.sqlite.org/lang_createtable.html#the_primary_key)）。
 
 ```sql
 CREATE TABLE legacy_key (id BIGINT PRIMARY KEY);
@@ -153,7 +155,7 @@ SELECT * FROM users u
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
+flowchart LR
     A["1 NOT IN (2, NULL)"] --> B["NOT (1 = 2 OR 1 = NULL)"]
     B --> C["NOT (FALSE OR UNKNOWN)"]
     C --> D["NOT UNKNOWN"]
@@ -167,7 +169,9 @@ flowchart TB
 
 主な対策は、副問い合わせに `WHERE user_id IS NOT NULL` を加える、`user_id` を `NOT NULL` にする、`NOT EXISTS` で書く、の 3 つです。カラムが `NOT NULL` だと分かっている場合を除けば、`NOT EXISTS` の方が結果を読み違えにくくなります。
 
-ただし、外側のカラムが `NULL` のレコードでも、`NOT IN` と `NOT EXISTS` の結果は分かれます。例えば `WHERE email NOT IN (SELECT email FROM blocked_emails)` では、`email` が `NULL` の高橋さんと田中さんは、副問い合わせが 1 件以上返す限り落ちます。`NOT EXISTS` なら副問い合わせが 0 件を返すので、2 人は残ります。上記の例の `id` は `NOT NULL` を明示した主キーなので、この差は出ません。
+ただし、外側のカラムが `NULL` のレコードでも、`NOT IN` と `NOT EXISTS` の結果は分かれます。例えば `WHERE email NOT IN (SELECT email FROM blocked_emails)` では、`email` が `NULL` の高橋さんと田中さんは、副問い合わせが 1 件以上返す限り落ちます。`NOT EXISTS` なら副問い合わせが 0 件を返すので、2 人は残ります。
+
+上記の例の `id` は `NOT NULL` を明示した主キーなので、この差は出ません。
 
 ---
 

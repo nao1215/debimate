@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Transaction / Concurrency Control"]
 ---
 
-Transaction Scope（トランザクションの範囲）は、`BEGIN` から `COMMIT` までの間にどの処理を入れるかの決め方です。DB のトランザクションが巻き戻せるのは、その DB 内の更新です。外部 API の呼び出しまで取り消せるわけではありません。
+Transaction Scope（トランザクションの範囲）は、`BEGIN` から `COMMIT` までの間にどの処理を入れるかの決め方です。DB（データベース）のトランザクションが巻き戻せるのは、その DB 内の更新です。外部 API の呼び出しまで取り消せるわけではありません。
 
 レコードを更新すると、DB はそのレコードに他からの更新を待たせるロック（行ロック）を取り、通常はトランザクションが終わるまで外しません。そのため、範囲を広げるほど、DB 接続と早い段階で取った行ロックを長く保持します。
 
@@ -18,11 +18,12 @@ Transaction Scope（トランザクションの範囲）は、`BEGIN` から `CO
 3 つの処理を 1 つのトランザクションに入れた形（上）と、DB の更新だけを入れて決済を確定の後に回した形（下）を以下に示します。
 
 {{< figure src="images/transaction-scope_concept.svg" alt="上は引き当て・決済 API の応答待ち・注文作成の 3 つを 1 つのトランザクションに入れた形で、行ロックを持つ時間が決済の応答待ちの分だけ長い。下はトランザクションに引き当てと注文・依頼の記録だけを入れ、決済 API はその後に呼ぶ形で、行ロックを持つ時間が短い。" caption="トランザクションの範囲と、行ロックを持つ時間" align="center" >}}
+
 上の形では、決済 API の応答時間がそのままロックの保持時間に足されます。下の形ではロックが短く済む代わりに、決済の呼び出しを確定と別に管理する必要があります。
 
 <br>
 
-本記事では、PostgreSQL の挙動を基本に、ロックを保持している間に何が起きるのかと、外部の呼び出しをどこに出すのかを説明します。ロック待ちの実験には PostgreSQL 17.10、外部 API とロールバックの実験には SQLite を使います。範囲を広げた時の困り事から始めて、次の疑問に答えます。
+本記事では、[PostgreSQL](https://www.postgresql.org/) の挙動を基本に、ロックを保持している間に何が起きるのかと、外部の呼び出しをどこに出すのかを説明します。ロック待ちの実験には PostgreSQL 17.10、外部 API とロールバックの実験には [SQLite](https://www.sqlite.org/) を使います。範囲を広げた時の困り事から始めて、次の疑問に答えます。
 
 - なぜトランザクションを広げると困るのか。
 - 決済の応答を待つ間、DB の中のトランザクションは何をしているのか。
@@ -56,7 +57,7 @@ sequenceDiagram
     D-->>B: ここで更新が進む
 ```
 
-上記の図を 2 本の接続で実際に動かし、決済 API の応答待ちをアプリケーション側の 5 秒の待ちに置き換えた結果は以下の通りです。注文 B は、注文 A が在庫のレコードを `UPDATE` した 1 秒後に同じレコードを `UPDATE` します。A の `UPDATE` から 3 秒後には、接続ごとの状態を返す `pg_stat_activity` も読みました。
+上記の図を 2 本の接続で実際に動かし、決済 API の応答待ちをアプリケーション側の 5 秒の待ちに置き換えた結果は以下の通りです。注文 B は、注文 A が在庫のレコードを `UPDATE` した 1 秒後に同じレコードを `UPDATE` します。A の `UPDATE` から 3 秒後には、接続ごとの状態を返す [`pg_stat_activity`](https://www.postgresql.org/docs/current/monitoring-stats.html#MONITORING-PG-STAT-ACTIVITY-VIEW) も読みました。
 
 ```text
 -- 注文 B
@@ -73,13 +74,14 @@ Time: 4005.503 ms (00:04.006)
 以下は、上記の実行を時間軸に並べた図です。
 
 {{< figure src="images/transaction-scope_lock_wait.svg" alt="時間軸 0〜6 秒。注文 A は 0 秒の UPDATE から 5 秒の COMMIT まで青い枠の「決済の応答待ち（5 秒）」で、その下に行ロックの青い帯が同じ長さで続く。注文 B は 1 秒の UPDATE から 5 秒まで黄土色の「ロック待ち 4,006 ms」で、5 秒の点で更新が進む。3 秒の位置の破線から「3 秒後: A は idle in transaction、B は Lock で待つ」の注記" caption="PostgreSQL 17.10 で測った、注文 B のロック待ち" align="center" >}}
-在庫数を 1 減らすだけの注文 B の `UPDATE` に、4 秒掛かりました。この間の注文 A は `idle in transaction`、つまり開いたまま次の文を待つ状態で、DB の中では何も処理していません。それでも行ロックは A が持ち続けます。ロック待ちを打ち切る `lock_timeout` は既定で無効なので、B の待ちは A の応答待ちに合わせて伸びます。
+
+在庫数を 1 減らすだけの注文 B の `UPDATE` に、4 秒掛かりました。この間の注文 A は `idle in transaction`、つまり開いたまま次の文を待つ状態で、DB の中では何も処理していません。それでも行ロックは A が持ち続けます。ロック待ちを打ち切る [`lock_timeout`](https://www.postgresql.org/docs/current/runtime-config-client.html#GUC-LOCK-TIMEOUT) は既定で無効なので、B の待ちは A の応答待ちに合わせて伸びます。
 
 <br>
 
-ロックに加えて、トランザクションを開いている間は DB への接続も 1 本占有します。Go の `database/sql` のドキュメントは、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書いており、その接続がプールに戻るのは `Commit` か `Rollback` の後です。
+ロックに加えて、トランザクションを開いている間は DB への接続も 1 本占有します。Go の `database/sql` のドキュメントは、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書いています。
 
-上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
+その接続がプールに戻るのは `Commit` か `Rollback` の後です。上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
 
 開いたままのトランザクションがあると、更新前の古い行バージョンを `VACUUM` という掃除の処理で回収できず、表が膨らみ続けることがあります（[`VACUUM` による回収](https://www.postgresql.org/docs/current/routine-vacuuming.html)、[`idle_in_transaction_session_timeout` の説明](https://www.postgresql.org/docs/current/runtime-config-client.html)）。
 

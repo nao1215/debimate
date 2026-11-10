@@ -99,7 +99,9 @@ flowchart LR
     N -->|"もう無い"| E["無いと返す"]
 ```
 
-上記の図で、SSTable を開く前に確かめている Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。[RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter) では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
+上記の図で、SSTable を開く前に確かめている Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。
+
+[RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter) では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
 
 しかし、キー全体で作った Bloom filter は、キー 1 つを指定した読み取りにしか効きません。RocksDB には、キーの先頭部分で作る [prefix Bloom filter](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) もあり、先頭が揃った範囲の検索に限って SSTable を飛ばせます。
 
@@ -111,13 +113,15 @@ flowchart LR
 
 LSM-Tree の削除は、「このキーは削除した」という印の追記です。この印を tombstone（墓石）と呼びます。古い SSTable にある値は書き換えられないので、印で隠すしかありません。O'Neil 氏らの論文では delete node entry と呼ばれます。
 
-そのため、削除しても保存している件数は減らず、印の分だけ増えます。印と古い値が消えるのは、compaction で両者が同じ併合に入った時です。LevelDB の実装メモには、[compaction は上書きされた値を捨て、tombstone は、より古いレベルに同じキーの範囲を持つファイルが無い時だけ捨てる](https://github.com/google/leveldb/blob/main/doc/impl.md)とあります。古い値がどこかに残っているうちに印を捨てると、削除したはずの値が読めるようになるからです。
+そのため、削除しても保存している件数は減らず、印の分だけ増えます。印と古い値が消えるのは、compaction で両者が同じ併合に入った時です。
+
+LevelDB の実装メモには、[compaction は上書きされた値を捨て、tombstone は、より古いレベルに同じキーの範囲を持つファイルが無い時だけ捨てる](https://github.com/google/leveldb/blob/main/doc/impl.md)とあります。古い値がどこかに残っているうちに印を捨てると、削除したはずの値が読めるようになるからです。
 
 ---
 
 ### compaction の 2 つのやり方
 
-compaction は、複数の SSTable を読んで 1 つの並びに併合し、古いバージョンと不要な tombstone を落として書き直す処理です。キーの順に並んだ 1 本の列を sorted run と呼びます。どの SSTable をいつ併合するかで、大きく 2 つのやり方に分かれます。
+compaction は、複数の SSTable を読んで 1 つの並びに併合し、古いバージョンと不要な tombstone を落として書き直す処理です。キーの順に並び、同じキーが 1 回しか現れない 1 本の並びを sorted run と呼びます。どの SSTable をいつ併合するかで、大きく 2 つのやり方に分かれます。
 
 - size-tiered: 大きさが近い sorted run が一定数揃ったら、まとめて 1 本にする。[Cassandra の STCS](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/stcs.html) は既定で 4 本
 - leveled: レベルごとに上限の大きさを決め、各レベルを重なりの無い 1 本の sorted run に保つ。上限を超えたら、溢れた分を次のレベルの重なる範囲と併合する
@@ -144,7 +148,9 @@ compaction のやり方で変わるコストは、3 種類の増幅で比べま�
 
 前節の size-tiered と leveled は、3 つのうち抑えるものが逆になっており、3 つを同時に小さくすることは難しいと考えられます。
 
-この関係は、[Athanassoulis 氏らの論文（EDBT 2016）](https://openproceedings.org/2016/conf/edbt/paper-12.pdf)で索引全般の性質として整理され、RUM 予想と名付けられました。R・U・M は読み取り（Read）、更新（Update）、メモリ・記憶領域（Memory）の頭文字で、論文は RUM 予想を「Read, Update, Memory – Optimize Two at the Expense of the Third」（2 つを最適化すると、残りの 1 つが犠牲になる）とまとめています。証明された定理ではなく、予想です。
+この関係は、[Athanassoulis 氏らの論文（EDBT 2016）](https://openproceedings.org/2016/conf/edbt/paper-12.pdf)で索引全般の性質として整理され、RUM 予想と名付けられました。
+
+R・U・M は読み取り（Read）、更新（Update）、メモリ・記憶領域（Memory）の頭文字で、論文は RUM 予想を「Read, Update, Memory – Optimize Two at the Expense of the Third」（2 つを最適化すると、残りの 1 つが犠牲になる）とまとめています。証明された定理ではなく、予想です。
 
 ---
 
@@ -254,7 +260,9 @@ Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後�
 
 {{< figure src="images/lsm-tree_space_timeline.svg" alt="操作回数に対する、ディスク上の件数と生きているキーの数。10 万回目から削除を始めると、生きているキーは 2 万から 1 万に減るが、ディスク上の件数は leveled で約 2 万から 3 万に、size-tiered で約 4.2 万から 5.2 万に増える" caption="保存している件数と、生きているキーの数の推移" align="center" >}}
 
-上記の図の右端では、生きているキーが 1 万件に減ったのに、leveled の保存件数は約 3 万件まで増えています。最下段に削除前の約 2 万件（うち約 1 万件は削除済みキーの古い値）が残り、その上に約 1 万件の tombstone が積まれたからです。全てを 1 本に併合すると、`full` の列の通り 9,932 件まで減ります。削除した容量は、compaction が最下段まで届いた時に初めて戻ります。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/lsm-tree/figures.py) です。
+上記の図の右端では、生きているキーが 1 万件に減ったのに、leveled の保存件数は約 3 万件まで増えています。最下段に削除前の約 2 万件（うち約 1 万件は削除済みキーの古い値）が残り、その上に約 1 万件の tombstone が積まれたからです。
+
+全てを 1 本に併合すると、`full` の列の通り 9,932 件まで減ります。削除した容量は、compaction が最下段まで届いた時に初めて戻ります。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/lsm-tree/figures.py) です。
 
 ---
 
@@ -308,6 +316,6 @@ LSM-Tree は、書き込みの時に済ませるはずの整理を compaction �
 
 書き込みが少ないなら、B-Tree の方が素直です。[B-Tree](/notes/database-systems/b-tree/) なら、根から葉まで数ページを降りれば値に届きます。LSM-Tree は Bloom filter で読む SSTable を絞れても、各レベルを確かめる処理が残ります。
 
-範囲の読み取りが中心の場合は、平均の速さより、compaction の I/O が重なった時の遅れが問題になります。大きな併合の I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量の行を集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が効く場合があります。
+範囲の読み取りが中心の場合は、平均の速さより、compaction の I/O が重なった時の遅れが問題になります。大きな併合の I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量のレコードを集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が効く場合があります。
 
 削除と挿入の繰り返しで典型的なのは、先頭から順に取り出して消すキューのような使い方です。消したキーの tombstone が最下段に届くまで残るので、先頭を範囲で読むたびに、既に消した分の印を読み飛ばすことになります。

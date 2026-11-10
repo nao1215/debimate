@@ -23,7 +23,7 @@ Query Plan Cache（実行計画のキャッシュ）は、DB（データベー�
 
 - 解析・計画・実行のうち、どこを使い回しているのか。
 - custom plan と generic plan は、どう選ばれるのか。
-- 値の偏った列では、なぜ同じ計画が遅くなるのか。
+- 値の偏ったカラムでは、なぜ同じ計画が遅くなるのか。
 - 表の定義や統計情報を変えた時、計画はいつ作り直されるのか。
 - 接続プールやドライバは、知らないうちに何をしているのか。
 
@@ -47,7 +47,9 @@ Query Plan Cache（実行計画のキャッシュ）は、DB（データベー�
 
 [PREPARE](https://www.postgresql.org/docs/17/sql-prepare.html) で作った文は、そのセッションが終わると消え、他の接続からは使えません。
 
-アプリが `PREPARE` と書かなくても、ドライバが [拡張問い合わせプロトコル](https://www.postgresql.org/docs/17/protocol-flow.html#PROTOCOL-FLOW-EXT-QUERY)（extended query protocol）の Parse・Bind・Execute の 3 つのメッセージで同じことをしています。Parse で解析し、Bind で値を渡し、多くの場合 Bind の処理の中で計画が作られます。PostgreSQL の手続き言語 PL/pgSQL で書いた関数の中の SQL も、同じ仕組みで計画を使い回します。
+アプリが `PREPARE` と書かなくても、ドライバが [拡張問い合わせプロトコル](https://www.postgresql.org/docs/17/protocol-flow.html#PROTOCOL-FLOW-EXT-QUERY)（extended query protocol）の Parse・Bind・Execute の 3 つのメッセージで同じことをしています。Parse で解析し、Bind で値を渡し、多くの場合 Bind の処理の中で計画が作られます。
+
+PostgreSQL の手続き言語 [PL/pgSQL](https://www.postgresql.org/docs/17/plpgsql-implementation.html#PLPGSQL-PLAN-CACHING) で書いた関数の中の SQL も、同じ仕組みで計画を使い回します。
 
 以下は、ドキュメントで確認できる範囲での比較です（2026 年 11 月時点）。
 
@@ -77,7 +79,7 @@ PostgreSQL のプリペアドステートメントは、2 種類の計画のど�
 
 custom plan の平均には、計画を作る手間の見積もりも足されます。そのため、計画の中身が同じなら generic plan が選ばれやすくなります。判定は実行のたびに [GetCachedPlan](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L1176) から呼ばれる [choose_custom_plan](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L1054-L1100) にあり、「5 回」はソースのコメントでも「arbitrary」（任意の値）と書かれた固定値です。
 
-問題は、generic plan が値を知らない状態で件数を見積もる点です。`shop_id = $1` のような等号の条件では、PostgreSQL はおおむね 1 / n_distinct（列の値の種類数の推定）を選択性（条件を通るレコードの割合）として使います（[selfuncs.c の var_eq_non_const](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/adt/selfuncs.c#L468)）。つまり、どの値も同じ件数を持つと仮定した、平均的な値の計画になります。
+問題は、generic plan が値を知らない状態で件数を見積もる点です。`shop_id = $1` のような等号の条件では、PostgreSQL はおおむね 1 / n_distinct（カラムの値の種類数の推定）を選択性（条件を通るレコードの割合）として使います（[selfuncs.c の var_eq_non_const](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/adt/selfuncs.c#L468)）。つまり、どの値も同じ件数を持つと仮定した、平均的な値の計画になります。
 
 ちなみに、パーティションを持つ表では、generic plan でも実行開始時に `$1` の値で[不要なパーティションを外せます](/notes/database-systems/partitioning/#partition-pruning)。
 
@@ -85,7 +87,7 @@ custom plan の平均には、計画を作る手間の見積もりも足され�
 
 ### 6 回目に計画が変わる実験
 
-値の偏った列で、6 回目の切り替えを起こします。100 万件の注文のうち 99% を 1 つの大口店舗（`shop_id = 1`）が占め、残りの 1 万件を 1,000 店舗で 10 件ずつ分けた表です。PostgreSQL 17.11 の [Docker](https://docs.docker.com/) コンテナで実行し、設定は既定のままです。以下は、[実験用の SQL](lab/experiment.sql) から切り替えに関わる部分を抜き出したものです。
+値の偏ったカラムで、6 回目の切り替えを起こします。100 万件の注文のうち 99% を 1 つの大口店舗（`shop_id = 1`）が占め、残りの 1 万件を 1,000 店舗で 10 件ずつ分けた表です。PostgreSQL 17.11 の [Docker](https://docs.docker.com/) コンテナで実行し、設定は既定のままです。以下は、[実験用の SQL](lab/experiment.sql) から切り替えに関わる部分を抜き出したものです。
 
 ```sql
 CREATE TABLE orders (
@@ -160,7 +162,7 @@ EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 
 上記の実験から、同じ計画が遅くなる条件は次の 3 つが重なった時だと分かります。
 
-- 列の値の件数が大きく偏っている（大口顧客、`status` の大半が完了、など）
+- カラムの値の件数が大きく偏っている（大口顧客、`status` の大半が完了、など）
 - 件数によって最適な計画が変わる（索引か全走査か、結合の順序や方法など）
 - 使い回す計画が、件数の違う値を前提に作られている
 
@@ -168,7 +170,9 @@ SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relati
 
 そのため、SQL Server や Oracle では、たまたま最初に来た値で 1 日の性能が変わる、という形で表に出ます。
 
-これに対して、SQL Server 2022 以降の [Parameter Sensitive Plan optimization](https://learn.microsoft.com/en-us/sql/relational-databases/performance/parameter-sensitive-plan-optimization)（PSP、互換性レベル 160 以上）は、統計のヒストグラムから偏った等号の条件を見つけ、件数の範囲ごとに別の計画を持ちます。Oracle の adaptive cursor sharing も、値によって計画を分ける機能です。PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
+これに対して、SQL Server 2022 以降の [Parameter Sensitive Plan optimization](https://learn.microsoft.com/en-us/sql/relational-databases/performance/parameter-sensitive-plan-optimization)（PSP、互換性レベル 160 以上）は、統計のヒストグラムから偏った等号の条件を見つけ、件数の範囲ごとに別の計画を持ちます。Oracle の adaptive cursor sharing も、値によって計画を分ける機能です。
+
+PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
 
 ---
 
@@ -184,10 +188,10 @@ SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relati
 | `CREATE INDEX` | 次の `EXECUTE` で Index Scan に戻った |
 | `ALTER TABLE ... ADD COLUMN` | `SELECT *` の文が `cached plan must not change result type` で失敗した |
 | `SET search_path = archive` | 同じ文が `archive.orders` を数えた（100 万件 → 1 件） |
-| 行数とページ数が変わらない `ANALYZE` | 作り直されなかった |
+| レコード数とページ数が変わらない `ANALYZE` | 作り直されなかった |
 | 1 件足してからの `ANALYZE` | 作り直された |
 
-`ADD COLUMN` のエラーは、文を解析し直した結果、`*` の展開で返す列が増えたからです。PostgreSQL は、プリペアドステートメントの結果の形が途中で変わることを許しません。実験では、`DEALLOCATE` して `PREPARE` し直すと、4 列の結果で動きました。
+`ADD COLUMN` のエラーは、文を解析し直した結果、`*` の展開で返すカラムが増えたからです。PostgreSQL は、プリペアドステートメントの結果の形が途中で変わることを許しません。実験では、`DEALLOCATE` して `PREPARE` し直すと、4 カラムの結果で動きました。
 
 統計の更新は、ドキュメントの説明より条件が狭い結果になりました。`n_distinct = 2` を設定して `ANALYZE` すると、`pg_stats` の値は 2 に変わり、新しく作った generic plan は 50 万件（並列の走査の表示では 2.4 で割った 208,333 件）と見積もります。しかし、元からあった文は 3,891 件の計画のままでした。
 
@@ -195,21 +199,21 @@ SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relati
 --- ANALYZE の前後で、pg_class の値は同じ
  relpages | reltuples
      5406 |     1e+06
---- 行数もページ数も変わらない ANALYZE の後（元からあった文）
+--- レコード数もページ数も変わらない ANALYZE の後（元からあった文）
    ->  Index Scan using orders_shop_id_idx on orders  (cost=0.42..569.47 rows=3891 width=4)
 --- 1 件足してから ANALYZE した後（元からあった文）
                ->  Parallel Seq Scan on orders  (cost=0.00..10614.34 rows=208333 width=4)
 ```
 
-ソースを読むと、理由が分かります。計画を捨てる合図は `pg_class`（表の行数やページ数を持つカタログ）などの更新から出ます（[inval.c](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/inval.c#L1383)）。列の値の分布を持つ `pg_statistic` の更新には、保存した計画は反応しません（[plancache.c のコールバック登録](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L162-L172)）。
+ソースを読むと、理由が分かります。計画を捨てる合図は `pg_class`（表のレコード数やページ数を持つカタログ）などの更新から出ます（[inval.c](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/inval.c#L1383)）。カラムの値の分布を持つ `pg_statistic` の更新には、保存した計画は反応しません（[plancache.c のコールバック登録](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L162-L172)）。
 
-`ANALYZE` は、行数やページ数などが前と同じなら `pg_class` を書き換えません（[vacuum.c の vac_update_relstats](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/commands/vacuum.c#L1545)）。以下は、合図が出る変更と出ない変更を並べた図です。
+`ANALYZE` は、レコード数やページ数などが前と同じなら `pg_class` を書き換えません（[vacuum.c の vac_update_relstats](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/commands/vacuum.c#L1545)）。以下は、合図が出る変更と出ない変更を並べた図です。
 
-{{< figure src="images/query-plan-cache_invalidation.svg" alt="左の列は、DDL・search_path の変更と行数が変わる ANALYZE が pg_class などを更新し、青い矢印の無効化の通知で、次の実行の前に計画を作り直す。右の列は、値の分布だけが変わる ANALYZE が pg_statistic を更新するが、点線で通知は無く、黄土色の箱の古い計画のまま（rows=3891 の見積もり）" caption="計画を捨てる合図が出る更新と出ない更新" align="center" >}}
+{{< figure src="images/query-plan-cache_invalidation.svg" alt="左の列は、DDL・search_path の変更とレコード数が変わる ANALYZE が pg_class などを更新し、青い矢印の無効化の通知で、次の実行の前に計画を作り直す。右の列は、値の分布だけが変わる ANALYZE が pg_statistic を更新するが、点線で通知は無く、黄土色の箱の古い計画のまま（rows=3891 の見積もり）" caption="計画を捨てる合図が出る更新と出ない更新" align="center" >}}
 
 上記の図の右の列が、実験で元からあった文が 3,891 件の計画のまま残った経路です。
 
-書き込みのある表では、`ANALYZE` のたびに行数やページ数が少しずつ動くので、作り直されることが多い筈です。しかし、値の分布だけが変わった時に古い計画が残る経路があることは、覚えておくと調査の役に立ちます。
+書き込みのある表では、`ANALYZE` のたびにレコード数やページ数が少しずつ動くので、作り直されることが多い筈です。しかし、値の分布だけが変わった時に古い計画が残る経路があることは、覚えておくと調査の役に立ちます。
 
 ---
 
@@ -221,7 +225,9 @@ SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relati
 
 接続プールを挟むと、もう 1 つ問題が出ます。[PgBouncer](https://www.pgbouncer.org/) の transaction mode は、トランザクションが終わるたびにサーバー接続をプールに返します。プリペアドステートメントはサーバー側のセッションにあるので、次のトランザクションが別の接続に割り当てられると、その文は存在しません。
 
-PgBouncer は [1.21.0](https://www.pgbouncer.org/changelog.html)（2023 年 10 月）で、プロトコルの名前付きプリペアドステートメントに対応しました。[max_prepared_statements](https://www.pgbouncer.org/config.html#max_prepared_statements) が 0 以外なら、クライアントが作った文を追跡し、割り当てた接続に無ければその場で prepare します。1.24.0 からは既定値が 200 になり、最初から有効です。ただし、SQL の `PREPARE` と `EXECUTE` はそのまま転送され、追跡されません。
+PgBouncer は [1.21.0](https://www.pgbouncer.org/changelog.html)（2023 年 10 月）で、プロトコルの名前付きプリペアドステートメントに対応しました。[max_prepared_statements](https://www.pgbouncer.org/config.html#max_prepared_statements) が 0 以外なら、クライアントが作った文を追跡し、割り当てた接続に無ければその場で prepare します。
+
+1.24.0（2025 年 1 月）からは既定値が 200 になり、最初から有効です。ただし、SQL の `PREPARE` と `EXECUTE` はそのまま転送され、追跡されません。
 
 以下は、1.21 の前と後で、別の接続に割り当てられたトランザクションが同じ文を使う時の動きです。
 
@@ -245,18 +251,18 @@ PgBouncer は文を接続ごとに prepare し直すので、「5 回」もサ�
 
 実行計画のキャッシュは、計画を作る時間を省くために、計画を値に合わせる機会を手放します。その代わりに、次の制約があります。
 
-- 値の件数が偏った列では、使い回した計画が一部の値で大きく遅くなる
+- 値の件数が偏ったカラムでは、使い回した計画が一部の値で大きく遅くなる
 - 切り替わるかどうかが最初の数回の値で変わり、再現しにくい
 - PostgreSQL では接続ごとに計画を持つので、接続数の分だけメモリと計画の手間がかかる
-- 列の追加で `cached plan must not change result type` が出るなど、スキーマ変更とぶつかる
+- カラムの追加で `cached plan must not change result type` が出るなど、スキーマ変更とぶつかる
 - 統計だけが変わった時に、古い計画が残る場合がある
 
 ### Query Plan Cache の効果が小さくなりやすいケース
 
 - 1 回に大量のレコードを読む集計やバッチで、計画の時間が実行時間に比べて無視できる場合
 - 同じ文を 1 接続で数回しか流さず、使い回す前に接続が切れる場合
-- 値によって件数が何桁も変わる列を条件に持ち、毎回 custom plan が必要になる場合
+- 値によって件数が何桁も変わるカラムを条件に持ち、毎回 custom plan が必要になる場合
 
-3 つ目は、キャッシュを使わない方が良いという意味ではありません。解析は使い回し、計画だけを毎回作る `force_custom_plan` も選べます。値の偏りが無い列なら、generic plan で計画を省く利点の方が大きくなります。
+3 つ目は、キャッシュを使わない方が良いという意味ではありません。解析は使い回し、計画だけを毎回作る `force_custom_plan` も選べます。値の偏りが無いカラムなら、generic plan で計画を省く利点の方が大きくなります。
 
 実験の SQL・実行用のスクリプト・出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/database-systems/query-plan-cache/lab) にあります。

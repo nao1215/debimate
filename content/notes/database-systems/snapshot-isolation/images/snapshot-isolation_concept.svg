@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>write skew: 同じ時点を読み、別々の行を書く 2 本</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>write skew: 同じ時点を読み、別々のレコードを書く 2 本</title>
 <style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
 <defs><marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-ochre" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
 <rect width="960" height="540" fill="#ffffff"/>
@@ -26,5 +26,5 @@
 <line x1="540" y1="90" x2="540" y2="144" stroke="#7aa6c2" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-blue)"/>
 <line x1="740" y1="355" x2="740" y2="301" stroke="#d4a24c" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-ochre)"/>
 <text x="480" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">縦線の時点で読むので、どちらも x = 50、y = 50 を見る</text>
-<text x="480" y="506" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">書く行が違うので両方確定し、合計は <tspan style="fill:#e15759">-100</tspan></text>
+<text x="480" y="506" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">書くレコードが違うので両方確定し、合計は <tspan style="fill:#e15759">-100</tspan></text>
 </svg>

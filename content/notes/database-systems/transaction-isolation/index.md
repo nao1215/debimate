@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Transaction / Concurrency Control"]
 ---
 
-Transaction Isolation（分離）は、複数のトランザクションを同時に実行した時に、互いの読み書きがどのように観測され、どのような結果まで許されるかを定める規則です。ACID（Atomicity、Consistency、Isolation、Durability。原子性・一貫性・分離・耐久性）の I です。
+Transaction Isolation（分離）は、複数のトランザクションを同時に実行した時に、互いの読み書きがどのように観測され、どのような結果まで許されるかを定める規則です。[ACID](https://doi.org/10.1145/289.291)（Atomicity、Consistency、Isolation、Durability。原子性・一貫性・分離・耐久性）の I です。
 
 トランザクションは複数の読み書きを 1 つのまとまりとして扱う単位で、まとまりを全部反映して終えることを確定（commit）、全部無かったことにして終えることを中止（abort）と言います。
 
@@ -63,7 +63,7 @@ SQL 標準の 4 段階と、それぞれで起き得る異常を以下に示し�
 
 ただし、この方式では接続を増やしても処理量が伸びず、1 本の長いトランザクションが後続を全部待たせます。そこで DBMS は、複数のトランザクションを重ねて実行しつつ、1 本ずつ実行した場合と同じ結果に近づけます。SQL 標準の最も強いレベルは、この一致そのものを要求しています。
 
-残りの 3 レベルは、同時実行で起きる異常（標準の言葉では現象）のうち、各レベルで起きてはならないものによって定義されています。全部を直列実行と一致させる代わりに許す現象を増やし、DBMS が並行して処理しやすいようにしています。減るコストが待ちなのか、中止と再試行なのか、検査なのかは実現方式で変わるので、レベルを下げれば必ず速くなるとは限りません。
+残りの 3 レベルは、同時実行で起きる異常（標準の言葉では現象、phenomena）のうち、各レベルで起きてはならないものによって定義されています。全部を直列実行と一致させる代わりに許す現象を増やし、DBMS が並行して処理しやすいようにしています。減るコストが待ちなのか、中止と再試行なのか、検査なのかは実現方式で変わるので、レベルを下げれば必ず速くなるとは限りません。
 
 2 本のトランザクションが重なった時、分離レベルが何を定めるのかを以下の図に示します。
 
@@ -87,7 +87,7 @@ flowchart TB
 
 ### 同時実行で現れる異常
 
-標準が名前を付けた異常は 3 つで、どれも 1 本のトランザクションの読み書きの間に、別のトランザクションの書き込みが入り込む形をしています。標準はこれらを現象（phenomena）と呼びます。
+標準が名前を付けた異常は 3 つで、どれも 1 本のトランザクションの読み書きの間に、別のトランザクションの書き込みが入り込む形をしています。
 
 | 異常 | 何が起きるか |
 | --- | --- |
@@ -140,7 +140,7 @@ sequenceDiagram
 | REPEATABLE READ | 起きない | 起きない | 起き得る |
 | SERIALIZABLE | 起きない | 起きない | 起きない |
 
-上記の表の「起き得る」は、その現象を標準が禁止していないという意味で、実装がそれより強く保証しても標準には反しません。PostgreSQL のドキュメントは、自身の REPEATABLE READ が phantom read を許さないことに触れた上で、「[higher guarantees are acceptable](https://www.postgresql.org/docs/current/transaction-iso.html)」（より強い保証は許容される）としています。
+上記の表の「起き得る」は、その現象を標準が禁止していないという意味で、実装がそれより強く保証しても標準には反しません。[PostgreSQL](https://www.postgresql.org/) のドキュメントは、自身の REPEATABLE READ が phantom read を許さないことに触れた上で、「[higher guarantees are acceptable](https://www.postgresql.org/docs/current/transaction-iso.html)」（より強い保証は許容される）としています。
 
 最終行の SERIALIZABLE だけは、この 3 列だけでは定義し切れません。各レベルが 1 つ手前に何を足すのかを以下の図に示します。
 
@@ -157,11 +157,13 @@ SERIALIZABLE が要求しているのは、並行実行の結果が何らかの�
 
 <br>
 
-同じレベル名でも、DBMS による差があります。PostgreSQL は 4 つ全部を指定として受け付けるものの、内部では 3 つしか実装しておらず、ドキュメントには「[PostgreSQL's Read Uncommitted mode behaves like Read Committed](https://www.postgresql.org/docs/current/transaction-iso.html)」（PostgreSQL の Read Uncommitted モードは Read Committed と同じように動く）と書かれています。
+同じレベル名でも、DBMS による差があります。
+
+PostgreSQL は 4 つ全部を指定として受け付けるものの、内部では 3 つしか実装しておらず、ドキュメントには「[PostgreSQL's Read Uncommitted mode behaves like Read Committed](https://www.postgresql.org/docs/current/transaction-iso.html)」（PostgreSQL の Read Uncommitted モードは Read Committed と同じように動く）と書かれています。
 
 [Oracle Database のドキュメント](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)は、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードを挙げており、read uncommitted と repeatable read は挙げていません。
 
-MySQL の既定のストレージエンジンである [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
+[MySQL](https://www.mysql.com/) の既定のストレージエンジンである [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
 
 例えば、冒頭の在庫の取り合いを PostgreSQL 17.11 と MySQL 8.4.11 の InnoDB で再現します。在庫のテーブルに残数 1 のレコードを置き、2 本の接続（注文 A・注文 B）を開いて、以下の SQL を上から順に打ちます。注文 B は、注文 A が確定する前に残数を読みます。
 
@@ -222,7 +224,7 @@ DBMS は、読み取りに使う値の選択と、競合する書き込みの制
 
 スナップショットとは、レコードに複数のバージョンがある時に、その読み取りにどれを見せるかを決める基準です。ここでのバージョンは、レコードを更新しても古い内容を消さずに残した、レコードの各時点の内容を指します。ある論理的な時点を決め、その時点で確定していたバージョンだけを見せます。DB 全体を複製するわけではありません。
 
-レコードの複数のバージョンを保持し、スナップショットに従って可視なバージョンを選ぶ方式が MVCC（Multiversion Concurrency Control）です。
+レコードの複数のバージョンを保持し、スナップショットに従って可視なバージョンを選ぶ方式が [MVCC](https://doi.org/10.1145/319996.319998)（Multiversion Concurrency Control）です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -280,7 +282,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-ロックだけで SERIALIZABLE を実現する代表が 2 相ロック（two-phase locking）です。ロックを取り終えてから解放を始め、解放後は新しいロックを取らない規律です。検索条件の範囲まで含めてロックし、この規律を守れば、並行実行の結果が直列実行と一致します。
+ロックだけで SERIALIZABLE を実現する代表が [2 相ロック](https://doi.org/10.1145/360363.360369)（two-phase locking）です。ロックを取り終えてから解放を始め、解放後は新しいロックを取らない規律です。検索条件の範囲まで含めてロックし、この規律を守れば、並行実行の結果が直列実行と一致します。
 
 範囲をロックして phantom read を防ぐ実装では、条件に合うレコードが後から入り得る、索引に並んだキーとキーの間（隙間）までロックする必要があります。MySQL の InnoDB はこの方法を使い、単位になるのは [Index Scan](../index-scan/) で見た索引の範囲です。ドキュメントには、一意索引を一意な条件で引く場合、見付けたレコードだけをロックして隙間はロックしないと書かれています。
 
@@ -360,7 +362,7 @@ MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方�
 - 中止されたトランザクションを再試行する処理が、アプリケーション側に必要
 - 弱いレベルで起きる異常はエラーにならず結果の値としてだけ現れるため、テストで気付きにくい
 
-冒頭の在庫の引き当てで、最後の 2 つを数えました。PostgreSQL 17.11 で、残数を読んでから自分で計算した値を書き戻すトランザクションを pgbench から並行に流し、READ COMMITTED と SERIALIZABLE で比べます。
+冒頭の在庫の引き当てで、最後の 2 つを数えました。PostgreSQL 17.11 で、残数を読んでから自分で計算した値を書き戻すトランザクションを [pgbench](https://www.postgresql.org/docs/current/pgbench.html) から並行に流し、READ COMMITTED と SERIALIZABLE で比べます。
 
 各クライアントが 200 件ずつ注文し、直列化の失敗で中止された時は先頭から再試行します（上限 10,000 回）。失われた更新は「確定した注文の数 − 在庫が減った数」です。
 
