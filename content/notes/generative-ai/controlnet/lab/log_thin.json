@@ -1,0 +1,54 @@
+{
+ "raise_openposethin_20261111": {
+  "prompt_id": "38a18f98-dff6-47be-95f0-a221b4c4e1ed",
+  "seconds": 41.27,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 70,
+   "loadavg_1m": 3.61474609375
+  },
+  "pose": "raise",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "openpose",
+   "image": "debimate_controlnet/openpose_raise_thin.png",
+   "strength": 1.0,
+   "start": 0.0,
+   "end": 1.0
+  }
+ },
+ "lunge_openposethin_20261111": {
+  "prompt_id": "9e193b4b-43dc-4bf2-bd3f-f0e7c34bf34f",
+  "seconds": 36.67,
+  "cached_nodes": [
+   "1",
+   "2",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 50,
+   "loadavg_1m": 3.7763671875
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "openpose",
+   "image": "debimate_controlnet/openpose_lunge_thin.png",
+   "strength": 1.0,
+   "start": 0.0,
+   "end": 1.0
+  }
+ }
+}

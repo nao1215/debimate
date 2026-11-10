@@ -1,0 +1,6 @@
+end_percent  sigma_end  active_steps  (start_percent=0)
+        0.2     5.0924   6 / 28  (step 1..6)
+        0.4     2.2797  11 / 28  (step 1..11)
+        0.6     1.1629  17 / 28  (step 1..17)
+        0.8     0.5712  22 / 28  (step 1..22)
+        1.0     0.0000  28 / 28  (step 1..28)

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="150" y="75.0" width="62" height="150" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="245" y="95.0" width="62" height="110" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="340" y="112.0" width="62" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="450" y="122.0" width="62" height="56" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="750" y="75.0" width="62" height="150" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="655" y="95.0" width="62" height="110" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="560" y="112.0" width="62" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<line x1="212" y1="150" x2="245" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="307" y1="150" x2="340" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="402" y1="150" x2="450" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="512" y1="150" x2="560" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="622" y1="150" x2="655" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="717" y1="150" x2="750" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="812" y1="150" x2="875" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="910" y="150" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">出力</text>
+<text x="60" y="132" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">ノイズを</text>
+<text x="60" y="164" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">含む潜在</text>
+<line x1="105" y1="150" x2="150" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<path d="M181.0,75.0 L181.0,40 L781.0,40 L781.0,71.0" fill="none" stroke="#666666" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M276.0,95.0 L276.0,58 L686.0,58 L686.0,91.0" fill="none" stroke="#666666" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M371.0,112.0 L371.0,76 L591.0,76 L591.0,108.0" fill="none" stroke="#666666" stroke-width="2" marker-end="url(#arrow)"/>
+<text x="260" y="258" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">SDXL の U-Net（固定）</text>
+<rect x="750" y="325.0" width="62" height="150" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="655" y="345.0" width="62" height="110" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="560" y="362.0" width="62" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="450" y="372.0" width="62" height="56" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<line x1="750" y1="400" x2="717" y2="400" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="655" y1="400" x2="622" y2="400" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="560" y1="400" x2="512" y2="400" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="640" y="510" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">学習するコピー（縮める段と中央）</text>
+<rect x="860" y="340" width="80" height="120" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="900" y="382" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">条件の</text>
+<text x="900" y="414" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">画像</text>
+<line x1="860" y1="400" x2="812" y2="400" stroke="#7aa6c2" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="781.0" y1="325.0" x2="781.0" y2="294" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="765.0" y="262" width="32" height="32" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="781.0" y="279" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">0</text>
+<path d="M781.0,262 L781.0,231.0" fill="none" stroke="#d4a24c" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="686.0" y1="345.0" x2="686.0" y2="294" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="670.0" y="262" width="32" height="32" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="686.0" y="279" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">0</text>
+<path d="M686.0,262 L686.0,211.0" fill="none" stroke="#d4a24c" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="591.0" y1="362.0" x2="591.0" y2="294" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="575.0" y="262" width="32" height="32" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="591.0" y="279" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">0</text>
+<path d="M591.0,262 L591.0,194.0" fill="none" stroke="#d4a24c" stroke-width="2.5" marker-end="url(#arrow)"/>
+<line x1="481.0" y1="372.0" x2="481.0" y2="294" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="465.0" y="262" width="32" height="32" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="481.0" y="279" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="middle" dominant-baseline="middle">0</text>
+<path d="M481.0,262 L481.0,184.0" fill="none" stroke="#d4a24c" stroke-width="2.5" marker-end="url(#arrow)"/>
+<text x="420" y="330" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#1f1f1f" text-anchor="end" dominant-baseline="middle">ゼロ畳み込みを通して足す</text>
+<text x="420" y="362" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#666666" text-anchor="end" dominant-baseline="middle">（重みを 0 から学習する）</text>
+</svg>

@@ -1,0 +1,160 @@
+{
+ "lunge_depth_s030_e060_20261111": {
+  "prompt_id": "7e2637fd-9d67-4d71-bb83-429bb2406da0",
+  "seconds": 34.43,
+  "cached_nodes": [
+   "1",
+   "2",
+   "4",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 32,
+   "loadavg_1m": 6.94580078125
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "depth",
+   "image": "debimate_controlnet/depth_lunge.png",
+   "strength": 0.3,
+   "start": 0.0,
+   "end": 0.6
+  }
+ },
+ "lunge_depth_s050_e060_20261111": {
+  "prompt_id": "223b969e-e737-4cec-bc0e-f5b94da16b95",
+  "seconds": 37.08,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 70,
+   "loadavg_1m": 6.37548828125
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "depth",
+   "image": "debimate_controlnet/depth_lunge.png",
+   "strength": 0.5,
+   "start": 0.0,
+   "end": 0.6
+  }
+ },
+ "lunge_depth_s100_e060_20261111": {
+  "prompt_id": "16681037-1693-4d72-879a-f8aeb987c021",
+  "seconds": 36.61,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 68,
+   "loadavg_1m": 6.40771484375
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "depth",
+   "image": "debimate_controlnet/depth_lunge.png",
+   "strength": 1.0,
+   "start": 0.0,
+   "end": 0.6
+  }
+ },
+ "lunge_depth_s070_e020_20261111": {
+  "prompt_id": "ab58b4be-fc1d-4a42-9897-eaf97f412555",
+  "seconds": 31.95,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 38,
+   "loadavg_1m": 4.81787109375
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "depth",
+   "image": "debimate_controlnet/depth_lunge.png",
+   "strength": 0.7,
+   "start": 0.0,
+   "end": 0.2
+  }
+ },
+ "lunge_depth_s070_e040_20261111": {
+  "prompt_id": "3b0e42e8-1ee1-4bfa-92a2-35123e7b28ca",
+  "seconds": 29.92,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 5.08984375
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "depth",
+   "image": "debimate_controlnet/depth_lunge.png",
+   "strength": 0.7,
+   "start": 0.0,
+   "end": 0.4
+  }
+ },
+ "lunge_depth_s070_e100_20261111": {
+  "prompt_id": "9736d9bd-bf65-43ef-8978-9b8c24ce6a7a",
+  "seconds": 36.45,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 60,
+   "loadavg_1m": 4.201171875
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "depth",
+   "image": "debimate_controlnet/depth_lunge.png",
+   "strength": 0.7,
+   "start": 0.0,
+   "end": 1.0
+  }
+ }
+}

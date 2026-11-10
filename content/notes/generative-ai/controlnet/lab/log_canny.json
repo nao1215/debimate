@@ -1,0 +1,74 @@
+{
+ "raise_canny_20261111": {
+  "prompt_id": "992d03dd-1365-4655-82b9-04380a784e16",
+  "seconds": 36.51,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 70,
+   "loadavg_1m": 3.03857421875
+  },
+  "pose": "raise",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "canny/lineart/anime_lineart/mlsd",
+   "image": "debimate_controlnet/canny_raise.png",
+   "strength": 0.7,
+   "start": 0.0,
+   "end": 0.6
+  }
+ },
+ "lunge_canny_20261111": {
+  "prompt_id": "c4fe8f1f-df71-44af-8510-f02a57de3355",
+  "seconds": 36.86,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 61,
+   "loadavg_1m": 3.70654296875
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "canny/lineart/anime_lineart/mlsd",
+   "image": "debimate_controlnet/canny_lunge.png",
+   "strength": 0.7,
+   "start": 0.0,
+   "end": 0.6
+  }
+ },
+ "lookback_canny_20261111": {
+  "prompt_id": "4bc63794-e45c-43f1-9467-c0c0899123fa",
+  "seconds": 36.64,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 65,
+   "loadavg_1m": 5.45947265625
+  },
+  "pose": "lookback",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_union_promax_sdxl.safetensors",
+   "type": "canny/lineart/anime_lineart/mlsd",
+   "image": "debimate_controlnet/canny_lookback.png",
+   "strength": 0.7,
+   "start": 0.0,
+   "end": 0.6
+  }
+ }
+}

@@ -1,0 +1,77 @@
+{
+ "raise_openposeded_20261111": {
+  "prompt_id": "f7117553-72e6-4095-a9f7-0347133c43af",
+  "seconds": 39.88,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 1,
+   "gpu_busy_percent": 99,
+   "loadavg_1m": 6.61865234375
+  },
+  "pose": "raise",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_openpose_sdxl.safetensors",
+   "type": null,
+   "image": "debimate_controlnet/openpose_raise.png",
+   "strength": 1.0,
+   "start": 0.0,
+   "end": 1.0
+  }
+ },
+ "lunge_openposeded_20261111": {
+  "prompt_id": "b563e3d0-f8d6-4107-afab-4d00e52bd25e",
+  "seconds": 43.13,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 98,
+   "loadavg_1m": 8.0732421875
+  },
+  "pose": "lunge",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_openpose_sdxl.safetensors",
+   "type": null,
+   "image": "debimate_controlnet/openpose_lunge.png",
+   "strength": 1.0,
+   "start": 0.0,
+   "end": 1.0
+  }
+ },
+ "lookback_openposeded_20261111": {
+  "prompt_id": "8e3c461c-d91a-406c-83e0-8f636391508c",
+  "seconds": 36.88,
+  "cached_nodes": [
+   "1",
+   "2",
+   "4",
+   "5",
+   "11"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 46,
+   "loadavg_1m": 10.9599609375
+  },
+  "pose": "lookback",
+  "seed": 20261111,
+  "control": {
+   "model": "xinsir_openpose_sdxl.safetensors",
+   "type": null,
+   "image": "debimate_controlnet/openpose_lookback.png",
+   "strength": 1.0,
+   "start": 0.0,
+   "end": 1.0
+  }
+ }
+}
