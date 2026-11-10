@@ -85,7 +85,7 @@ flowchart LR
 
 {{< figure src="images/cell_reroute.svg" alt="2 つの格子。左の hash(id) % N では、ほとんどのマスが黄土色で、行き先が変わった顧客は 1 万人の 91%。右の consistent hashing（cell ごとに仮想ノード 100 個）では、ほとんどのマスが青のままで、行き先が変わったのは 10%" caption="cell を 10 個から 11 個に増やした時に行き先が変わる顧客" align="center" >}}
 
-それでも、ルーターの計算が軽く状態も少ないことから、[AWS のガイドの Cell routing](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-routing.html)は暗号学的ハッシュと剰余の組み合わせを勧めています。この場合、cell を足す時は、行き先が変わる顧客をデータごと移す仕組みを前提にします。
+それでも、ルーターの計算が軽く状態も少ないことから、[AWS のガイドの Cell routing](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-routing.html) は暗号学的ハッシュと剰余の組み合わせを勧めています。この場合、cell を足す時は、行き先が変わる顧客をデータごと移す仕組みを前提にします。
 
 また、どの決め方でも、テストや重い顧客の隔離のために、特定の顧客を特定の cell に固定する上書き用の表を併せて持ちます。
 
@@ -127,7 +127,7 @@ flowchart LR
 
 上記の図で wave 1 の後に異常が見つかれば、影響したのは社内用の cell と、顧客の cell 1 個分だけです。次の wave に進む前に待つ時間は、問題が表に出るまでの時間に合わせます。例えば、1 日 1 回の集計処理で初めて落ちる不具合は、数分の待ち時間では見つかりません。
 
-段階的に公開する仕組みには [Feature Flag](/notes/software-architecture/feature-flag/) もあります。Feature Flag は同じバージョンのコードの中で機能を一部の顧客に有効にします。一方、wave はバージョンを cell ごとに出し分けるので、フラグで囲めない変更（ライブラリの更新、DB のスキーマ変更、ランタイムの設定）にも効きます。
+段階的に公開する仕組みには [Feature Flag](/notes/software-architecture/feature-flag/) もあります。Feature Flag は同じバージョンのコードの中で機能を一部の顧客に有効にします。一方で、wave はバージョンを cell ごとに出し分けるので、フラグで囲めない変更（ライブラリの更新、DB のスキーマ変更、ランタイムの設定）にも効きます。
 
 ---
 

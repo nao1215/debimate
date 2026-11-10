@@ -107,7 +107,7 @@ sequenceDiagram
 
 上記の図の送金 B は待ちますが、待つ先を辿っても出発点に戻らないので循環待ちになりません。
 
-レコードへのロックには種類があります。[PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html) の行レベルロックは、`FOR KEY SHARE`、`FOR SHARE`、`FOR NO KEY UPDATE`、`FOR UPDATE` の 4 つのモードを持ちます。同じレコードに複数のトランザクションが同時にロックを持てるかどうかは、モードの組み合わせで決まります。共存できる組み合わせがある一方、`FOR UPDATE` は他の行レベルロックと競合します。
+レコードへのロックには種類があります。[PostgreSQL](https://www.postgresql.org/docs/current/explicit-locking.html) の行レベルロックは、`FOR KEY SHARE`、`FOR SHARE`、`FOR NO KEY UPDATE`、`FOR UPDATE` の 4 つのモードを持ちます。同じレコードに複数のトランザクションが同時にロックを持てるかどうかは、モードの組み合わせで決まります。共存できる組み合わせがある一方で、`FOR UPDATE` は他の行レベルロックと競合します。
 
 PostgreSQL のドキュメントは、取得順序の統一に加えて、トランザクションの中で 1 つのオブジェクトに最初に取るロックが、そのオブジェクトに必要になる最も制限の強いモードであることも求めています。
 

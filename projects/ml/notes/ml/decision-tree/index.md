@@ -113,7 +113,7 @@ entropy 手計算: x2 <= -0.148 (減少量 0.451)  scikit-learn: x2 <= -0.148
 
 各分割は 1 つの特徴量と閾値で決まるため、決定境界は座標軸に平行な線分をつないだ階段状になります。次の図は、前節と同じデータで `max_depth` を 1・3・10 にした時の決定境界です。本記事のコードは計算部分だけで、描画を含む[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/decision-tree_gen.py)は GitHub にあります。
 
-![max_depth を変えたときの決定境界](./decision_tree_boundary.png)
+![max_depth を変えた時の決定境界](./decision_tree_boundary.png)
 
 深さ 1 は `x2 = 0.203` の横線 1 本だけで分けます。深さ 3 では赤のクラスを囲む階段ができ、深さ 10 では数点だけを囲む細い帯が何本も現れます。この帯が未知のデータで役に立つかは、図を見ても分かりません。そこで、学習データの精度と、5 分割の交差検証を 10 回繰り返した平均精度（CV）を並べます。前節のコードの `X`、`y` を使います。
 

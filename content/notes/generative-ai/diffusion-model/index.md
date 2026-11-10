@@ -9,9 +9,9 @@ wrapTables: true
 topics: ["Image Generation"]
 ---
 
-拡散モデル（diffusion model）は、画像に少しずつノイズを足していく過程を、逆向きにたどるように学習したモデルです。生成の時は、ノイズだけの状態から少しずつノイズを取り除いて画像を作ります。[DDPM の論文](https://arxiv.org/abs/2006.11239)（Denoising Diffusion Probabilistic Models、2020 年）がこの方法で高い品質の画像を示し、[SDXL](https://arxiv.org/abs/2307.01952)（Stable Diffusion XL）もこの仕組みで動いています。
+拡散モデル（diffusion model）は、画像に少しずつノイズを足していく過程の逆向きをたどるように学習したモデルです。生成の時は、ノイズだけの状態から少しずつノイズを取り除いて画像を作ります。[DDPM の論文](https://arxiv.org/abs/2006.11239)（Denoising Diffusion Probabilistic Models、2020 年）がこの方法で高い品質の画像を示し、[SDXL](https://arxiv.org/abs/2307.01952)（Stable Diffusion XL）もこの仕組みで動いています。
 
-[ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）のプレビューを見ていると、拡散モデルは下書きに少しずつ絵を描き足しているように見えます。しかし、モデルが各ステップで出しているのは「今の状態に含まれるノイズはこれだ」という予測です。サンプラーがその予測を使ってノイズを引き、次のステップの状態を作ります。以下は、28 ステップの生成を途中で止めた状態（上段）と、そのステップでモデルの予測から計算した完成図（下段）を、画像に戻して並べたものです。
+[ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）のプレビューを見ていると、拡散モデルは下書きに少しずつ絵を描き足しているように見えます。しかし、モデルが各ステップで出しているのは「今の状態に含まれるノイズはこれだ」という予測です。サンプラーがその予測を使ってノイズを引き、次のステップの状態を作ります。以下は、28 ステップの生成を途中で止めた状態（上段）と、そのステップでモデルの予測から計算した完成図（下段）を画像に戻して並べたものです。
 
 {{< figure src="images/diffusion_trajectory.webp" alt="上段は 0、2、4、7、10、14、20、28 ステップ目の潜在を画像に戻したもの。14 ステップ目まで画面の大半が色の粒のノイズで、20 ステップ目で雲と崖が粒の中に見え、28 ステップ目で灯台と夕焼けの海の絵になる。下段はモデルの予測から計算した完成図で、2 ステップ目で既に夕焼けの空と水平線がぼやけて現れ、7 ステップ目で崖と灯台、10 ステップ目以降は完成図とほぼ同じ配置になる" caption="途中の潜在（上段）と、各ステップの予測から計算した画像（下段）" align="center" >}}
 
@@ -270,7 +270,7 @@ CFG 1.0 は、時間がほぼ半分でした。一方で、夕焼けの色は薄
 
 seed は、最初のノイズを決める値です。ComfyUI は、seed で初期化した CPU の乱数からノイズを作ります（[comfy/sample.py の prepare_noise](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/sample.py#L22-L27) と、[11 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/sample.py#L11) の `device="cpu"`）。euler は、その後に乱数を使いません。
 
-同じ設定の 28 ステップを、間に別の依頼を挟んでもう一度送ると、PNG の画素は完全に一致しました。`KSampler` で描いた画像と、冒頭の図を作った `SamplerCustom` の 28 ステップ目も一致しています（[lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/run.py) の `rerun`）。
+間に別の依頼を挟んで同じ設定の 28 ステップをもう一度送ると、PNG の画素は完全に一致しました。`KSampler` で描いた画像と、冒頭の図を作った `SamplerCustom` の 28 ステップ目も一致しています（[lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/run.py) の `rerun`）。
 
 ```text
 $ python3 run.py rerun <PNG の保存先>      # 実行時間をまとめた output_runs.txt の該当行

@@ -8,7 +8,7 @@ weight: 11
 topics: ["Mathematics（数学の基礎）"]
 ---
 
-確率変数が複数あるとき、それらの関係を表す分布には 3 種類あります。同時分布（joint distribution, `P(x, y)`）、周辺分布（marginal distribution, `P(x)` や `P(y)`）、条件付き分布（conditional distribution, `P(y|x)`）の 3 つで、機械学習の本や論文で繰り返し出てくる基本概念です。
+確率変数が複数ある時、それらの関係を表す分布には 3 種類あります。同時分布（joint distribution, `P(x, y)`）、周辺分布（marginal distribution, `P(x)` や `P(y)`）、条件付き分布（conditional distribution, `P(y|x)`）の 3 つで、機械学習の本や論文で繰り返し出てくる基本概念です。
 
 [データドリフト](../../mlops/data-drift/)の分類、[ベイズの定理](../bayes-theorem/)、分類器の確率出力を扱う時に、これらの分布を区別します。周辺分布と条件付き分布は、同時分布から計算できます。
 
@@ -23,9 +23,9 @@ graph LR
     A --> D["条件付き分布 P(y|x) = P(x, y) / P(x)"]
 ```
 
-- 同時分布: `x` と `y` を同時に観測したときの確率
+- 同時分布: `x` と `y` を同時に観測した時の確率
 - 周辺分布: 片方の変数だけに注目した分布。もう片方を足し合わせる（または積分する）操作で得られる
-- 条件付き分布: 片方の変数を固定したときの、もう片方の分布
+- 条件付き分布: 片方の変数を固定した時の、もう片方の分布
 
 関係式を 1 行で書くと次の通りです。これは「乗法定理」とも呼ばれ、ベイズの定理の出発点になります。
 
@@ -107,7 +107,7 @@ P(y) = [0.4 0.6]
 
 ### 条件付き分布（conditional distribution）
 
-片方の変数をある値に固定したときの、もう片方の分布です。同時分布の特定の行（または列）を取り出し、その行の合計で割って和を 1 にすると得られます。
+片方の変数をある値に固定した時の、もう片方の分布です。同時分布の特定の行（または列）を取り出し、その行の合計で割って和を 1 にすると得られます。
 
 `P(y|x) = P(x, y) / P(x)`
 
@@ -141,7 +141,7 @@ P(y | clouds=high) = [0.75 0.25]
 
 ![Conditional distributions sliced from the joint](./joint-marginal-conditional_conditional.svg)
 
-雲量が多い時に雨が降る確率は 75%、雲量が少ない時は 7% です。分類器の [`predict_proba`](https://scikit-learn.org/stable/glossary.html#term-predict_proba) が出すスコアは、`P(y=1 | x)`（入力 `x` が与えられたとき、ラベルが 1 である確率）の推定値です。
+雲量が多い時に雨が降る確率は 75%、雲量が少ない時は 7% です。分類器の [`predict_proba`](https://scikit-learn.org/stable/glossary.html#term-predict_proba) が出すスコアは、`P(y=1 | x)`（入力 `x` が与えられた時、ラベルが 1 である確率）の推定値です。
 
 ---
 

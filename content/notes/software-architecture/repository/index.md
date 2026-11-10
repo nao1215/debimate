@@ -250,7 +250,7 @@ def save(con, version, lines, check_version):
 
 ### 検索条件の渡し方
 
-Evans 氏は、ドメイン専門家にとって意味のある条件でオブジェクトを選ぶメソッドを用意することを求めています。「出荷が済んでいない注文」は業務で使う語で、`FindUnshipped` はその語をそのままメソッド名にしたものです。一方、`FindByCustomerIDAndStatusAndCreatedAfter` は SQL の `WHERE` 句を写しただけで、業務の語にはなっていません。
+Evans 氏は、ドメイン専門家にとって意味のある条件でオブジェクトを選ぶメソッドを用意することを求めています。「出荷が済んでいない注文」は業務で使う語で、`FindUnshipped` はその語をそのままメソッド名にしたものです。一方で、`FindByCustomerIDAndStatusAndCreatedAfter` は SQL の `WHERE` 句を写しただけで、業務の語にはなっていません。
 
 条件の組み合わせが増えれば、メソッドも増えます。対処の方向は 3 つあります。
 

@@ -99,7 +99,7 @@ flowchart LR
     N -->|"もう無い"| E["無いと返す"]
 ```
 
-上記の図で、SSTable を開く前に確かめている Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。[RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter)では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
+上記の図で、SSTable を開く前に確かめている Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。[RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter) では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
 
 しかし、キー全体で作った Bloom filter は、キー 1 つを指定した読み取りにしか効きません。RocksDB には、キーの先頭部分で作る [prefix Bloom filter](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) もあり、先頭が揃った範囲の検索に限って SSTable を飛ばせます。
 

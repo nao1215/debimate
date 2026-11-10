@@ -178,7 +178,7 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 
 ![Parallel coordinates plot で 4 次元探索を一望](./experiment_parallel_coords.svg)
 
-各線が 1 つの run で、色が val_acc を表し、上位 5 run を太線にしています。各軸の目盛りは元の値です。この仮想例の上位 5 run は、`lr` が 6e-4〜3.5e-3、`batch_size` が 64 か 128 に集まる一方、`dropout` は 0.09〜0.38、`weight_decay` は 1e-5〜7e-4 に散らばっています。ここから「`lr` と `batch_size` は効きが大きく、残り 2 つは小さそう」と仮説を立て、次の探索範囲を絞ります。
+各線が 1 つの run で、色が val_acc を表し、上位 5 run を太線にしています。各軸の目盛りは元の値です。この仮想例の上位 5 run は、`lr` が 6e-4〜3.5e-3、`batch_size` が 64 か 128 に集まる一方で、`dropout` は 0.09〜0.38、`weight_decay` は 1e-5〜7e-4 に散らばっています。ここから「`lr` と `batch_size` は効きが大きく、残り 2 つは小さそう」と仮説を立て、次の探索範囲を絞ります。
 
 ---
 
@@ -195,7 +195,7 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 
 - ハイパーパラメータ探索: GridSearchCV / RandomizedSearchCV / Optuna の各試行を 1 run として記録
 - モデル比較: 異なるアルゴリズム（[ロジスティック回帰](../../ml/logistic-regression/) vs [勾配ブースティング](../../ml/gradient-boosting/) vs ニューラル）を同じ評価指標で並べる
-- アブレーション: 特徴量 1 つを外したときの精度変化を run として残す
+- アブレーション: 特徴量 1 つを外した時の精度変化を run として残す
 - データセット version 管理: 同じコードで「v1 のデータ」「v2 のデータ」を別 run として記録
 - チームコラボ: 誰がいつ何を試したかが共有できる（休暇明けでも追える）
 - 監査・規制対応: 「このモデルがどう作られたか」の証跡として
@@ -219,6 +219,6 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 - 巨大なファイルを毎回 artifact に保存: ストレージコストが爆発。weights は最良 run だけ残す等の運用ルールを決める
 - 実験名がカオス（"test1", "final", "final_v2"）: 命名規約（`{date}_{algo}_{purpose}`）を最初に決める
 - 個人開発で「自分しか使わないから」と省略: 3 か月後の自分にも他人と思って記録する
-- トラッキングサーバーが壊れたときの復旧計画なし: DB とモデルファイルを定期的にバックアップする。例えば、バックアップ用スクリプトを cron で実行する
+- トラッキングサーバーが壊れた時の復旧計画なし: DB とモデルファイルを定期的にバックアップする。例えば、バックアップ用スクリプトを cron で実行する
 - メトリクスのスケールがバラバラ: `loss` と `accuracy` を同じ軸で比較すると判断を誤る。グループ化と単位を意識する
 - 失敗 run を消す: 「効かなかった設定」も貴重な情報。失敗 run も残して後から検索できるようにする

@@ -860,7 +860,7 @@ Assertions: PASS
 
 2 段目では、期限の 46 秒前のブロックでシミュレーションが通り、期限ちょうどのブロックで `handleOps` が revert しました。Bundler の EOA は 36,926 gas × 2 gwei = 73,852 gwei を払い、アカウントの deposit は 1 gwei も減っていません。
 
-一方、DeadlineAccount では trace から `validUntil` が読めるので、Bundler は期限を過ぎる前にバンドルから外せます。期限の後に送れば EntryPoint が `AA22` で拒否するので、期限を守らせる仕組みはチェーンの上にも残ります。
+一方で、DeadlineAccount では trace から `validUntil` が読めるので、Bundler は期限を過ぎる前にバンドルから外せます。期限の後に送れば EntryPoint が `AA22` で拒否するので、期限を守らせる仕組みはチェーンの上にも残ります。
 
 <br>
 

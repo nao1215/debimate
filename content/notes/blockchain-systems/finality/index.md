@@ -172,13 +172,13 @@ finalized な checkpoint と矛盾する別の checkpoint を finalized にす�
 
 ### finalized と「十分安全」の判断の違い
 
-finalized はプロトコルが定める確定状態です。一方、十分な確認数の閾値は、アプリケーションの運用者が決めます。
+finalized はプロトコルが定める確定状態です。一方で、十分な確認数の閾値は、アプリケーションの運用者が決めます。
 
 `finalized` という保証には、例外が書き添えられています。ブロックタグを定義している [Ethereum 実行層 API の schema](https://github.com/ethereum/execution-apis/blob/main/src/schemas/block.yaml) には、「cannot be re-orged outside of manual intervention driven by community coordination」（コミュニティの調整による手動の介入を除いて、reorg され得ない）とあります。
 
 手動の介入がどう働くかは、Bitcoin で起きた分岐が参考になります。
 
-2013 年 3 月、実装の間で規則が食い違ってチェーンが 2 本に分かれました。片方が当時のハッシュ計算能力の約 60% を持っていた一方、もう片方の実装はそのブロックを規則違反として拒み続けたため、分岐は自動では解消しませんでした。マイニングプール（採掘を共同で行うマイナーの集まり）が古いバージョンへ切り替えたことで、チェーンは 1 本に戻りました。[BIP 50](https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki) には、実験として行われた二重支払いが成立したことも記録されています。
+2013 年 3 月、実装の間で規則が食い違ってチェーンが 2 本に分かれました。片方が当時のハッシュ計算能力の約 60% を持っていた一方で、もう片方の実装はそのブロックを規則違反として拒み続けたため、分岐は自動では解消しませんでした。マイニングプール（採掘を共同で行うマイナーの集まり）が古いバージョンへ切り替えたことで、チェーンは 1 本に戻りました。[BIP 50](https://github.com/bitcoin/bips/blob/master/bip-0050.mediawiki) には、実験として行われた二重支払いが成立したことも記録されています。
 
 チェーンの選択を決めたのは、プロトコルではなく、外にいる人の調整です。Bitcoin には Ethereum の finalized checkpoint に相当する宣言がないため、これは finality が覆った例ではありません。
 

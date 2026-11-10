@@ -286,7 +286,7 @@ sequenceDiagram
 
 イベントストアに書き込み、投影で作った読み取りモデルで検索に答える構成は、[CQRS](../cqrs/)（Command Query Responsibility Segregation、更新と読み取りでモデルを分ける考え方）の形です。
 
-CQRS はイベントを保存しなくても成立する一方、Event Sourcing は横断する検索に読み取りモデルを必要とします。Greg Young 氏の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) は、この点を CQRS と組み合わせる理由に挙げています。
+CQRS はイベントを保存しなくても成立する一方で、Event Sourcing は横断する検索に読み取りモデルを必要とします。Greg Young 氏の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) は、この点を CQRS と組み合わせる理由に挙げています。
 
 ---
 

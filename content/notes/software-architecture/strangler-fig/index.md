@@ -128,7 +128,7 @@ flowchart LR
 
 CDC（Change Data Capture。DB の変更ログを順に読み、確定した変更を外に流す仕組み）も、レガシーシステムのコードを変えずに DB の変更を新システムへ届けられます。ただし、Event Interception の解説では、更新を途中で受け取るやり方とは区別しています。
 
-一方、注文の確定処理が請求書を作る関数を直接呼んでいる場合は、途中で受け取れる場所がありません。この場合は、呼び出し側のコードを変えて、注文が確定したことをメッセージで外に知らせるようにします。
+一方で、注文の確定処理が請求書を作る関数を直接呼んでいる場合は、途中で受け取れる場所がありません。この場合は、呼び出し側のコードを変えて、注文が確定したことをメッセージで外に知らせるようにします。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

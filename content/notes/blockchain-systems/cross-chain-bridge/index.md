@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Interoperability"]
 ---
 
-[Cross-chain bridge](https://ethereum.org/en/developers/docs/bridges/)（以下、bridge）は、あるブロックチェーンで起きた預け入れや焼却を、別のブロックチェーンに伝えて資産を移す仕組みです。よく使われるタイプでは、送り出す側の source chain で資産を金庫にロックし、受け取る側の destination chain で同じ量の wrapped token（金庫の中身への引換券にあたるトークン）を発行します。
+[Cross-chain bridge](https://ethereum.org/en/developers/docs/bridges/)（以下、bridge）は、あるブロックチェーンで起きた預け入れや焼却の事実を別のブロックチェーンに伝えて、資産を移す仕組みです。よく使われるタイプでは、送り出す側の source chain で資産を金庫にロックし、受け取る側の destination chain で同じ量の wrapped token（金庫の中身への引換券にあたるトークン）を発行します。
 
 例えば、Alice が [Ethereum](https://ethereum.org/) の 100 ETH を別のチェーンのアプリケーションで使いたいとします。Ethereum の ETH は Ethereum の外へ出られないため、bridge のコントラクトに 100 ETH をロックし、destination chain で 100 wrapped ETH を受け取ります。Alice が Ethereum に戻す時は、wrapped ETH を焼却して金庫から ETH を払い出してもらいます。
 
@@ -71,7 +71,7 @@ sequenceDiagram
 
 2 つ目の burn and mint は、同じ発行者が複数のチェーンでトークンを発行している場合に使えます。例えば、[Circle](https://www.circle.com/) の [CCTP（Cross-Chain Transfer Protocol）](https://developers.circle.com/cctp) は、source chain で [USDC](https://www.circle.com/usdc) を焼却し、Circle の attestation（焼却を確かめた証明）を受けて destination chain で USDC を発行します。金庫に資産が残らないため、wrapped token のような引換券は生まれません。その代わりに、焼却を確かめて attestation を出す Circle を信頼します。USDC の利用者は既に発行者として Circle を信頼しているため、新しく加わる信頼の相手はいません。
 
-3 つ目の atomic swap は、資産を移すのではなく、source chain の自分の資産を、交換相手が持つ destination chain の資産と交換します。[Lightning Network](../lightning-network/) の HTLC（[Hash Time-Locked Contract](https://github.com/lightning/bolts/blob/master/03-transactions.md)）と同じく、同じハッシュの原像を明かした時だけ両方の支払いが成立する条件を両方のチェーンに置きます。交換相手が見つかる範囲でしか使えず、コントラクトの呼び出しのような任意のメッセージは運べません。
+3 つ目の atomic swap は、資産を移すのではなく、source chain の自分の資産と、交換相手が持つ destination chain の資産を交換します。[Lightning Network](../lightning-network/) の HTLC（[Hash Time-Locked Contract](https://github.com/lightning/bolts/blob/master/03-transactions.md)）と同じく、同じハッシュの原像を明かした時だけ両方の支払いが成立する条件を両方のチェーンに置きます。交換相手が見つかる範囲でしか使えず、コントラクトの呼び出しのような任意のメッセージは運べません。
 
 ---
 
@@ -109,7 +109,7 @@ optimistic な bridge は、提出されたメッセージをすぐには受け�
 
 #### 有効性の証明
 
-[Zero-Knowledge Proof](../zero-knowledge-proof/) の技術を使い、source chain のヘッダの署名の検証や合意の規則の確認を回路で行い、その正しさを短い proof にして destination chain で検証します。軽量クライアントの検証を、destination chain が安く確かめられる形に変えたものと考えると分かりやすいです。信頼の相手は source chain の合意に加えて、証明系と回路の実装です。
+[Zero-Knowledge Proof](../zero-knowledge-proof/) の技術を使い、source chain のヘッダの署名の検証や合意の規則の確認を回路で行い、その正しさを示す短い proof を destination chain で検証します。軽量クライアントの検証を destination chain が安く確かめられる形に変えたものと考えると分かりやすいです。信頼の相手は source chain の合意に加えて、証明系と回路の実装です。
 
 ---
 
@@ -220,7 +220,7 @@ wrapped coins without backing: 360
 
 ### 実際に起きた事故
 
-以下は、2022 年に起きた bridge の大きな事故を、前節までのどの部分が破られたかで並べた表です。金額は当時の公式発表と報道によるもので、ドル換算は当時の価格です。
+以下は、2022 年に起きた bridge の大きな事故で、前節までのどの部分が破られたかを並べた表です。金額は当時の公式発表と報道によるもので、ドル換算は当時の価格です。
 
 | 事故 | 時期 | 破られた部分 |
 | --- | --- | --- |
@@ -249,7 +249,7 @@ wrapped coins without backing: 360
 
 [Wormhole](https://wormhole.com/) は、[19 の guardian のうち 13 の署名](https://wormhole.com/docs/protocol/infrastructure/guardians/)でメッセージを受け入れる bridge です。2022 年 2 月 2 日、[Solana](https://solana.com/) 側のコントラクトで署名の検証が回避されました。[Halborn の分析](https://www.halborn.com/blog/post/explained-the-wormhole-hack-february-2022)によると、流れは次の通りです。
 
-1. Solana の `verify_signatures` は、同じ取引の中で署名の検証が実行済みかを、命令の一覧を持つ特別なアカウント（[Instructions sysvar](https://docs.anza.xyz/runtime/sysvars#instructions)）から読んで確かめていた。
+1. Solana の `verify_signatures` は、同じ取引の中で署名の検証が実行済みかどうか、命令の一覧を持つ特別なアカウント（[Instructions sysvar](https://docs.anza.xyz/runtime/sysvars#instructions)）から読んで確かめていた。
 2. 渡されたアカウントが本物の sysvar かを確かめていなかったため、攻撃者は検証済みに見える偽のアカウントを渡した。
 3. guardian の署名が揃ったと扱われたメッセージで、Ethereum に預け入れの無い 120,000 wETH を Solana 上で発行した。
 
@@ -311,7 +311,7 @@ bridge の wrapped token は、名前に元の資産の名前が入っていて�
 
 - 預け入れを誰が、どの方法で確かめているか。外部の署名者なら、署名者の人数と閾値、鍵を誰が持っているか。
 - コントラクトを更新できる管理者がいるか。更新の権限を持つ鍵は、検証の方法を丸ごと差し替えられます（[ERC-1967 / ERC-7201](../upgradeable-proxy/)）。
-- source chain の取引を、どの時点で確定と見なしているか。[Finality](../finality/) より前に発行する bridge は、末尾の組み替えで裏付けを失います。
+- source chain の取引をどの時点で確定と見なしているか。[Finality](../finality/) より前に発行する bridge は、末尾の組み替えで裏付けを失います。
 - 受け取るトークンが発行者の発行したものか、bridge の wrapped token か。CCTP の USDC のように発行者自身が発行するトークンなら、金庫の裏付けに依存しません。
 
 2026 年 11 月時点の CCTP の公式ドキュメントでは、Ethereum とその L2 からの標準の転送に 15〜19 分、Fast Transfer では 8〜20 秒かかると記載しています。速さの違いは、source chain の取引を確定と見なす時点の違いです。Fast Transfer は確定前に attestation を出し、末尾の組み替えで生じる損失は Circle が用意した [Fast Transfer Allowance](https://developers.circle.com/cctp/concepts/fast-transfer-allowance) が引き受けます。どの bridge でも、速さと引き換えに何を信頼しているかを分けて確認する必要があります。

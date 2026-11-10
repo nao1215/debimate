@@ -102,7 +102,7 @@ plt.savefig("info_differential_entropy.svg", bbox_inches="tight")
 
 ### KL ダイバージェンス: 2 分布の隔たり
 
-`P` と `Q` の 2 つの確率分布があるとき、[KL ダイバージェンス](https://doi.org/10.1214/aoms/1177729694)（Kullback-Leibler divergence）は次の式で定義されます。
+`P` と `Q` の 2 つの確率分布がある時、[KL ダイバージェンス](https://doi.org/10.1214/aoms/1177729694)（Kullback-Leibler divergence）は次の式で定義されます。
 
 `KL(P || Q) = Σ_x P(x) log (P(x) / Q(x))`
 

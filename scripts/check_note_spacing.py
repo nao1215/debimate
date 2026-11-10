@@ -36,13 +36,16 @@ def prose_lines(path: Path) -> list[tuple[int, str]]:
             continue
         if fenced:
             continue
+        # Quotations keep the original spacing of the quoted text.
+        if re.match(r"^\s*>", line):
+            continue
 
         # Keep link labels, but remove link targets, bare URLs, inline code,
         # and HTML tags so syntax and addresses are never checked as prose.
         text = re.sub(r"\]\([^)]*\)", "]()", line)
         text = re.sub(r"https?://\S+", "", text)
         text = re.sub(r"`[^`]*`", "", text)
-        text = re.sub(r"<[^>]*>", "", text)
+        text = re.sub(r"<[^>]*>", " ", text)
         result.append((number, text))
     return result
 
