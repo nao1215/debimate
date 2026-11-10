@@ -1,0 +1,66 @@
+[
+ {
+  "tag": "steps_08",
+  "steps": 8,
+  "prompt_id": "0a38123d-0387-48e7-b9fa-5c589c8427e8",
+  "seconds": 8.5,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 14,
+   "loadavg_1m": 6.68
+  }
+ },
+ {
+  "tag": "steps_16",
+  "steps": 16,
+  "prompt_id": "65fced25-cd66-4de9-8b5c-1f158f8148ab",
+  "seconds": 15.56,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 90,
+   "loadavg_1m": 6.93
+  }
+ },
+ {
+  "tag": "steps_28",
+  "steps": 28,
+  "prompt_id": "4978b388-79a3-45b9-8000-2df587f80ea6",
+  "seconds": 26.72,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 1,
+   "gpu_busy_percent": 58,
+   "loadavg_1m": 7.37
+  }
+ },
+ {
+  "tag": "steps_50",
+  "steps": 50,
+  "prompt_id": "a341089e-5a1c-4942-9d68-e3e60dac6ad1",
+  "seconds": 46.43,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 1,
+   "gpu_busy_percent": 15,
+   "loadavg_1m": 7.07
+  }
+ }
+]

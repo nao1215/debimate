@@ -1,0 +1,39 @@
+[
+ {
+  "js": [
+   27,
+   24,
+   20,
+   14,
+   10,
+   4,
+   1
+  ],
+  "sigmas": [
+   0.029167158151720367,
+   0.36865774541485086,
+   0.7193796203058821,
+   1.5192168028813953,
+   2.5388342492013836,
+   6.5063978375308205,
+   11.743405265296637
+  ],
+  "latent_file": {
+   "filename": "final_00001_.latent",
+   "subfolder": "debimate_diffusion",
+   "type": "output"
+  },
+  "prompt_id": "809fb90e-5b98-4a69-a6c0-a9b4c2ba4cfd",
+  "seconds": 32.83,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 94,
+   "loadavg_1m": 8.48
+  }
+ }
+]

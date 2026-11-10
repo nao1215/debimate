@@ -1,0 +1,37 @@
+[
+ {
+  "tag": "sampler_euler_ancestral",
+  "steps": 28,
+  "sampler": "euler_ancestral",
+  "prompt_id": "ec6452c1-a83c-46b0-8883-c390ff7f541f",
+  "seconds": 26.59,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 74,
+   "loadavg_1m": 6.59
+  }
+ },
+ {
+  "tag": "sampler_dpmpp_2m_karras",
+  "steps": 28,
+  "sampler": "dpmpp_2m",
+  "scheduler": "karras",
+  "prompt_id": "712e1a66-f3fb-46da-a557-c068bc6d1036",
+  "seconds": 26.44,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 15,
+   "loadavg_1m": 8.26
+  }
+ }
+]

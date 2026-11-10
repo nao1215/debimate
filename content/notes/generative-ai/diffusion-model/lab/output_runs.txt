@@ -1,0 +1,18 @@
+experiment  condition                        seconds  load_before(gpu%, load1m)
+trajectory  k= 0 sigma=14.6146               1.65  99, 8.35
+trajectory  k= 2 sigma= 9.5436               4.66  31, 10.76
+trajectory  k= 4 sigma= 6.5064               5.65  20, 12.7
+trajectory  k= 7 sigma= 3.9291               8.51  52, 12.0
+trajectory  k=10 sigma= 2.5388              11.16  93, 13.28
+trajectory  k=14 sigma= 1.5192              15.10  55, 12.16
+trajectory  k=20 sigma= 0.7194              20.50  20, 14.34
+trajectory  k=28 sigma= 0.0000              27.58  53, 9.38
+steps       steps_08                           8.50  14, 6.68
+steps       steps_16                          15.56  90, 6.93
+steps       steps_28                          26.72  58, 7.37
+steps       steps_50                          46.43  15, 7.07
+samplers    sampler_euler_ancestral           26.59  74, 6.59
+samplers    sampler_dpmpp_2m_karras           26.44  15, 8.26
+cfg         cfg_1.0                           13.53  21, 10.1
+cfg         cfg_9.0                           26.08  60, 6.32
+rerun       rerun_steps_28                    26.17  14, 6.73  identical_to_steps_28=True identical_to_trajectory_x_28=True

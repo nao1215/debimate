@@ -1,0 +1,36 @@
+[
+ {
+  "tag": "cfg_1.0",
+  "steps": 28,
+  "cfg": 1.0,
+  "prompt_id": "d3ea1754-cb8e-40a7-abf0-86319edfa5cc",
+  "seconds": 13.53,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 21,
+   "loadavg_1m": 10.1
+  }
+ },
+ {
+  "tag": "cfg_9.0",
+  "steps": 28,
+  "cfg": 9.0,
+  "prompt_id": "14109cb0-35db-4fb7-95d8-fc2ca18110af",
+  "seconds": 26.08,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 60,
+   "loadavg_1m": 6.32
+  }
+ }
+]

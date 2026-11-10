@@ -33,7 +33,7 @@ denoise は「何割を描き直すか」の割合ではなく、ノイズを取
 
 ### 前提: ノイズから絵を作る段の列
 
-[Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)（SDXL）系の画像生成モデルは、ノイズ（ノイズ）だけの画像から、少しずつノイズを取り除いて絵を作る拡散モデルです。1 回の除去をステップと呼び、例えば 28 ステップなら 28 回除去します。各ステップでノイズがどれだけ残っているかは、スケジューラーが決める数の列（sigma の列）で与えます。sigma はノイズの大きさで、列の先頭が最大、末尾が 0 です。
+[Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)（SDXL）系の画像生成モデルは、ノイズだけの画像から、少しずつノイズを取り除いて絵を作る拡散モデルです。1 回の除去をステップと呼び、例えば 28 ステップなら 28 回除去します。各ステップでノイズがどれだけ残っているかは、スケジューラーが決める数の列（sigma の列）で与えます。sigma はノイズの大きさで、列の先頭が最大、末尾が 0 です。
 
 SDXL は画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画素を縦横 8 分の 1 に縮めた潜在（latent）と呼ばれる数の配列の上でノイズを取り除きます。プロンプトだけから描く txt2img（text-to-image）は、空の潜在に最大のノイズを掛けて列の先頭から始めます。img2img は、下絵を VAE で潜在に変え、列の途中の大きさのノイズを足して、その段から始めます。
 
