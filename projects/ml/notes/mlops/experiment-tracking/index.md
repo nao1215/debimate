@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "MLOps"]
 tags: ["machine-learning", "mlops"]
 weight: 1
+topics: ["MLOps"]
 ---
 
 実験管理（experiment tracking）は、機械学習モデルの学習を「再現可能な記録」として残す仕組みです。1 回の学習を「実験（experiment）」と捉え、そこに入った設定（hyperparameter、データセット、コードバージョン）、出てきた結果（metric、可視化、学習曲線）、副産物（学習済み weight、前処理後データ、評価レポート）を 1 セットで保存します。

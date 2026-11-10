@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 8
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 正則化（regularization）は、[過学習](../overfitting/)を抑えるためにモデルの「複雑さ」へペナルティを課す仕組みです。

@@ -6,31 +6,19 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 10
 wrapTables: true
+topics: ["Transaction / Concurrency Control"]
 ---
 
-Transaction Scope（トランザクションの範囲）は、`BEGIN` から `COMMIT` までの間にどの処理を入れるかの決め方です。DB のトランザクションが巻き戻せるのは、その DB 内の更新です。外部 API の呼び出しまで取り消せるわけではありません。レコードを更新すると、DB はそのレコードに他からの更新を待たせるロック（行ロック）を取り、通常はトランザクションが終わるまで外しません。そのため、範囲を広げるほど、DB 接続と早い段階で取った行ロックを長く保持します。
+Transaction Scope（トランザクションの範囲）は、`BEGIN` から `COMMIT` までの間にどの処理を入れるかの決め方です。DB のトランザクションが巻き戻せるのは、その DB 内の更新です。外部 API の呼び出しまで取り消せるわけではありません。
 
+レコードを更新すると、DB はそのレコードに他からの更新を待たせるロック（行ロック）を取り、通常はトランザクションが終わるまで外しません。そのため、範囲を広げるほど、DB 接続と早い段階で取った行ロックを長く保持します。
 
 外部システムを呼ぶ処理では、DB 内の更新と外部の処理をどこで分けるかが問題になります。在庫を引き当て、決済 API を呼び、注文のレコードを作る、という 3 つの処理があるとします。どれかが失敗した時に全て取り消すつもりで、3 つを 1 つのトランザクションに入れた場合を考えます。
 
-3 つの処理を 1 つのトランザクションに入れた形を以下に示します。
+3 つの処理を 1 つのトランザクションに入れた形（上）と、DB の更新だけを入れて決済を確定の後に回した形（下）を以下に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant A as アプリケーション
-    participant D as DB
-    participant P as 決済 API
-    A->>D: BEGIN
-    A->>D: 在庫を引き当てる<br/>行ロックを取る
-    A->>P: 決済を要求する
-    Note over A,P: 応答を待つ間も<br/>行ロックと接続は保持されたまま
-    P-->>A: 応答を返す
-    A->>D: 注文のレコードを作る
-    A->>D: COMMIT<br/>ロックを解放
-```
-
-この形では、決済 API の応答時間がそのままロックの保持時間に足されます。
+{{< figure src="images/transaction-scope_concept.svg" alt="上は引き当て・決済 API の応答待ち・注文作成の 3 つを 1 つのトランザクションに入れた形で、行ロックを持つ時間が決済の応答待ちの分だけ長い。下はトランザクションに引き当てと注文・依頼の記録だけを入れ、決済 API はその後に呼ぶ形で、行ロックを持つ時間が短い。" caption="トランザクションの範囲と、行ロックを持つ時間" align="center" >}}
+上の形では、決済 API の応答時間がそのままロックの保持時間に足されます。下の形ではロックが短く済む代わりに、決済の呼び出しを確定と別に管理する必要があります。
 
 <br>
 
@@ -82,11 +70,16 @@ Time: 4005.503 ms (00:04.006)
  order_b          | active              | Lock
 ```
 
-在庫数を 1 減らすだけの注文 B の `UPDATE` に、4 秒掛かりました。この間の注文 A は `idle in transaction`、つまり開いたまま次の文を待つ状態で、DB の中では何も処理していません。それでも行ロックは A が持ち続け、B はロック待ち（`Lock`）で止まります。ロック待ちを打ち切る `lock_timeout` は既定で無効なので、B の待ちは A の応答待ちに合わせて伸びます。
+以下は、上記の実行を時間軸に並べた図です。
+
+{{< figure src="images/transaction-scope_lock_wait.svg" alt="時間軸 0〜6 秒。注文 A は 0 秒の UPDATE から 5 秒の COMMIT まで青い枠の「決済の応答待ち（5 秒）」で、その下に行ロックの青い帯が同じ長さで続く。注文 B は 1 秒の UPDATE から 5 秒まで黄土色の「ロック待ち 4,006 ms」で、5 秒の点で更新が進む。3 秒の位置の破線から「3 秒後: A は idle in transaction、B は Lock で待つ」の注記" caption="PostgreSQL 17.10 で測った、注文 B のロック待ち" align="center" >}}
+在庫数を 1 減らすだけの注文 B の `UPDATE` に、4 秒掛かりました。この間の注文 A は `idle in transaction`、つまり開いたまま次の文を待つ状態で、DB の中では何も処理していません。それでも行ロックは A が持ち続けます。ロック待ちを打ち切る `lock_timeout` は既定で無効なので、B の待ちは A の応答待ちに合わせて伸びます。
 
 <br>
 
-ロックに加えて、トランザクションを開いている間は DB への接続も 1 本占有します。Go の `database/sql` のドキュメントは、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書いており、その接続がプールに戻るのは `Commit` か `Rollback` の後です。上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
+ロックに加えて、トランザクションを開いている間は DB への接続も 1 本占有します。Go の `database/sql` のドキュメントは、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書いており、その接続がプールに戻るのは `Commit` か `Rollback` の後です。
+
+上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
 
 開いたままのトランザクションがあると、更新前の古い行バージョンを `VACUUM` という掃除の処理で回収できず、表が膨らみ続けることがあります（[`VACUUM` による回収](https://www.postgresql.org/docs/current/routine-vacuuming.html)、[`idle_in_transaction_session_timeout` の説明](https://www.postgresql.org/docs/current/runtime-config-client.html)）。
 
@@ -221,7 +214,9 @@ attempt=2 app: stock=1 orders=0; provider: charges=2
 
 `COMMIT` がエラーを返しても、DB 側では確定していることがあります。DB サーバーが確定を終えた後、成功の応答を返す途中で接続が切れることがあり、アプリケーションからは確定できたのかどうかを判断できません。
 
-そのため、`COMMIT` のエラーを未確定と決め付けて処理をやり直すと、確定済みの更新が二重に反映される場合があります。確かめるには、注文 ID や処理 ID のように、トランザクションを始める前に生成した一意なキーで結果を読み直し、この試行が確定しているかを見ます。既存のレコードを `UPDATE` するだけの処理では、レコードの有無を見ても判断できません。その場合は、同じトランザクションで処理 ID を記録用の表に 1 件挿入しておき、やり直す前にその ID があるかを読みます。
+そのため、`COMMIT` のエラーを未確定と決め付けて処理をやり直すと、確定済みの更新が二重に反映される場合があります。
+
+確かめるには、注文 ID や処理 ID のように、トランザクションを始める前に生成した一意なキーで結果を読み直し、この試行が確定しているかを見ます。既存のレコードを `UPDATE` するだけの処理では、レコードの有無を見ても判断できません。その場合は、同じトランザクションで処理 ID を記録用の表に 1 件挿入しておき、やり直す前にその ID があるかを読みます。
 
 ---
 
@@ -229,7 +224,9 @@ attempt=2 app: stock=1 orders=0; provider: charges=2
 
 トランザクションを DB の更新だけに絞り、決済の呼び出しを確定の後に置くと、行ロックと DB 接続の保持時間は DB 内の処理で決まります。代わりに、確定した直後にプロセスが落ちると呼び出しが漏れます。在庫は引き当てられ、注文のレコードもあるのに、決済だけが行われていない状態になります。
 
-処理されていない依頼を後から実行するために、決済 API への依頼を DB のレコードとして残し、別のプロセスに読ませます。このプロセスは依頼のレコードを定期的に読んで外部 API を呼ぶ常駐プログラムで、以降は中継プロセスと呼びます。注文を `pending_payment` の状態で作り、在庫を引き当て、「決済を呼ぶ」という依頼のレコードを書くところまでを 1 つのトランザクションにします。中継プロセスがその依頼を読んで決済 API を呼び、成立したら注文を `paid` に進めます。
+処理されていない依頼を後から実行するために、決済 API への依頼を DB のレコードとして残し、別のプロセスに読ませます。このプロセスは依頼のレコードを定期的に読んで外部 API を呼ぶ常駐プログラムで、以降は中継プロセスと呼びます。
+
+注文を `pending_payment` の状態で作り、在庫を引き当て、「決済を呼ぶ」という依頼のレコードを書くところまでを 1 つのトランザクションにします。中継プロセスがその依頼を読んで決済 API を呼び、成立したら注文を `paid` に進めます。
 
 DB の更新と同じトランザクションで配送すべきメッセージを記録し、後から別プロセスが配送する形は [Transactional Outbox](../../distributed-systems/transactional-outbox/) と呼ばれ、ここではその配送先を決済 API にしています。
 

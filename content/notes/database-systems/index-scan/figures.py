@@ -1,84 +1,108 @@
 """Index Scan ノートの図を生成する。
 
+lab/selectivity_pg_output.txt（PostgreSQL 17 での実測。lab/selectivity_pg.py の出力）から、
+選択性ごとに seq scan と index scan が触ったページ数と時間を描く。
+
 再生成:
-    uv run --with matplotlib --with numpy python content/notes/database-systems/index-scan/figures.py
+    uv run --with matplotlib python content/notes/database-systems/index-scan/figures.py
 """
 
-import pathlib
+from pathlib import Path
 
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt  # noqa: E402
 
-COLOR_BLUE = "#7aa6c2"
-COLOR_RED = "#e15759"
-COLOR_GREEN = "#59a14f"
-COLOR_GRAY = "#666666"
-
+HERE = Path(__file__).resolve().parent
+INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
 plt.rcParams.update({
-    "figure.figsize": (6, 4),
-    "font.size": 11,
-    "axes.spines.top": False,
-    "axes.spines.right": False,
-    "axes.grid": True,
-    "grid.alpha": 0.3,
-    "grid.linewidth": 0.5,
-    "savefig.bbox": "tight",
-    "savefig.dpi": 144,
+    "font.size": 11, "axes.edgecolor": SUB, "axes.labelcolor": INK,
+    "xtick.color": INK, "ytick.color": INK, "text.color": INK,
+    "svg.fonttype": "path", "svg.hashsalt": "index-scan",
+    "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
 })
 
-OUT = pathlib.Path(__file__).parent / "images"
-OUT.mkdir(exist_ok=True)
+
+def load():
+    rows = {}
+    for line in (HERE / "lab" / "selectivity_pg_output.txt").read_text().splitlines():
+        f = line.split()
+        if len(f) >= 6 and f[0].startswith("orders_") and f[1] in ("seq", "index"):
+            rows.setdefault((f[0], f[1]), []).append((float(f[2]), int(f[4]), float(f[5])))
+    return rows
 
 
-def save(name: str) -> None:
-    path = OUT / name
-    plt.savefig(path)
-    plt.close()
-    print(f"wrote {path}")
+def selectivity_figure():
+    rows = load()
+    series = [
+        (("orders_random", "seq"), SUB, "--", "^", "Seq scan"),
+        (("orders_sorted", "index"), ACCENT, "-", "s", "Index scan, rows in key order"),
+        (("orders_random", "index"), RED, "-", "o", "Index scan, rows scattered"),
+    ]
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 4.0))
+    for col, (ax, ylabel) in enumerate(zip(axes, ("Pages touched", "Time (ms, warm cache)"))):
+        for key, color, ls, mk, label in series:
+            xs = [r[0] for r in rows[key]]
+            ys = [r[1 + col] for r in rows[key]]
+            ax.plot(xs, ys, color=color, ls=ls, marker=mk, lw=2.4, ms=5, label=label)
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xticks([0.01, 0.1, 1, 10, 100], ["0.01", "0.1", "1", "10", "100"])
+        ax.set_xlabel("Rows matched (%)")
+        ax.set_ylabel(ylabel)
+        ax.spines[["top", "right"]].set_visible(False)
+    axes[0].set_yticks([10, 1_000, 100_000], ["10", "1k", "100k"])
+    axes[1].set_yticks([0.1, 1, 10, 100], ["0.1", "1", "10", "100"])
+    axes[0].legend(loc="upper left", frameon=False, fontsize=10)
+    fig.tight_layout()
+    fig.savefig(HERE / "images" / "index-scan_selectivity.svg", metadata={"Date": None})
+    plt.close(fig)
 
 
-# --- 図1: 選択性と、読むページ枚数の逆転 ---
-# 本文は具体的な枚数を持たないので、目盛りを置かない概念図にする。
-#   全走査          : 選択性によらず表の全ページ (水平)
-#   Index Scan      : 索引のページ + 一致した行が載る表のページ (右上がり)
-#                     散らばっているほど 1 行あたりのページが増えるので傾きが立つ
-# 縦軸の 1.0 が「表の全ページ」に当たる任意単位である。
-s = np.linspace(0.0, 1.0, 200)
-seq = np.ones_like(s)
-index_pages = 0.05  # 木を降りる分。選択性によらずほぼ一定
-scattered = index_pages + 3.0 * s   # 一致した行がページに散っている場合
-clustered = index_pages + 1.05 * s   # 表の並びとキーの順序が揃っている場合
+FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+PALE, FILL, OCHRE, OCHRE_PALE = "#eaf1f5", "#f2f2f2", "#d4a24c", "#f8eed8"
 
-fig, ax = plt.subplots()
-ax.plot(s, seq, color=COLOR_RED, linewidth=1.8, label="Sequential scan (whole table)")
-ax.plot(s, scattered, color=COLOR_BLUE, linewidth=1.8, label="Index scan (rows scattered)")
-ax.plot(s, clustered, color=COLOR_GREEN, linewidth=1.8, label="Index scan (rows clustered)")
 
-for line, color, dx in ((scattered, COLOR_BLUE, 0.04), (clustered, COLOR_GREEN, -0.30)):
-    i = int(np.argmin(np.abs(line - seq)))
-    ax.plot([s[i]], [seq[i]], marker="o", markersize=7, color=color, zorder=3)
-    ax.annotate(
-        "crossover",
-        xy=(s[i], seq[i]),
-        xytext=(s[i] + dx, 1.45),
-        color=color,
-        fontsize=9,
-        arrowprops={"arrowstyle": "-", "color": color, "linewidth": 0.8},
-    )
+def pages_figure():
+    """Pages touched by the same 100-row Index Scan (Buffers: shared read=4 / 103).
 
-ax.set_xlim(0, 1)
-ax.set_ylim(0, 2.2)
-ax.set_xticks([])
-ax.set_yticks([])
-ax.grid(False)
-ax.set_xlabel("Selectivity: fraction of rows matched  →")
-ax.set_ylabel("Pages read  →")
-ax.text(
-    0.99, 0.02, "Conceptual: axes have no scale",
-    transform=ax.transAxes, ha="right", va="bottom", color=COLOR_GRAY, fontsize=9,
-)
-ax.legend(loc="upper left", fontsize=9)
-save("index_scan_crossover.svg")
+    One square is one page. The numbers are the EXPLAIN output in the note body.
+    Hand-written SVG (stdlib only).
+    """
+    parts = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" '
+        'viewBox="0 0 960 540" role="img"><title>同じ 100 件を返す Index Scan が触った'
+        'ページの枚数</title>',
+        f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
+        '<rect width="960" height="540" fill="#ffffff"/>',
+    ]
+
+    def text(x, y, t, size=24, color=INK):
+        parts.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="middle" '
+                     f'style="fill:{color}">{t}</text>')
+
+    def grid(x0, y0, n, fill, stroke):
+        cell, gap, cols = 28, 6, 11
+        for i in range(n):
+            x = x0 + (i % cols) * (cell + gap)
+            y = y0 + (i // cols) * (cell + gap)
+            parts.append(f'<rect x="{x}" y="{y}" width="{cell}" height="{cell}" rx="4" '
+                         f'fill="{fill}" stroke="{stroke}" stroke-width="2"/>')
+
+    panels = [(40, "user_id の順に並んだ表", 4, PALE, ACCENT),
+              (500, "ランダムに並んだ表", 103, OCHRE_PALE, OCHRE)]
+    for x0, title, n, fill, stroke in panels:
+        text(x0 + 210, 44, title, 26)
+        parts.append(f'<rect x="{x0}" y="64" width="420" height="376" rx="12" '
+                     f'fill="#ffffff" stroke="#d6d6d6" stroke-width="2"/>')
+        grid(x0 + 23, 84, n, fill, stroke)
+        text(x0 + 210, 480, f"{n} 枚", 28)
+    text(480, 524, "1 マスが 1 ページ。どちらも返したのは同じ 100 件", 24, SUB)
+    parts.append("</svg>")
+    (HERE / "images" / "index-scan_pages.svg").write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+if __name__ == "__main__":
+    selectivity_figure()
+    pages_figure()

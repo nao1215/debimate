@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 10
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 期待値（expected value, `E[X]`）は、確率変数 `X` が取る値をその確率で重み付けして足し合わせた量です。離散の場合は `E[X] = Σ_x x P(x)`、連続の場合は確率密度 `f(x)` を使って `E[X] = ∫ x f(x) dx` と書きます。物理で言う質量分布の重心と同じ構造です。同じ分布から何度もサンプリングして平均を取ると、その平均は期待値に近づきます。

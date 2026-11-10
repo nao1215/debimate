@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>Repository の置き場所と依存の向き</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<ellipse cx="360" cy="278" rx="356" ry="252" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<ellipse cx="360" cy="278" rx="222" ry="182" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<ellipse cx="360" cy="278" rx="176" ry="112" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="360" y="72" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">インフラストラクチャ</text>
+<text x="360" y="132" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">アプリケーション</text>
+<text x="360" y="202" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ドメイン</text>
+<rect x="216" y="222" width="120.0" height="96.0" rx="8" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<rect x="228.0" y="234.0" width="96.0" height="26.0" rx="4" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="0"/>
+<rect x="228.0" y="272.0" width="44.0" height="32.0" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<rect x="280.0" y="272.0" width="44.0" height="32.0" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="276.0" y="348.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Order 集約</text>
+<rect x="370" y="250" width="156" height="58" rx="10" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<text x="448" y="288" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Repository</text>
+<rect x="270" y="402" width="180" height="48" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="360" y="434" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ユースケース</text>
+<line x1="400" y1="400" x2="430" y2="318" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<line x1="320" y1="400" x2="296" y2="356" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<rect x="596" y="250" width="112" height="58" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="652" y="288" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">SQL 実装</text>
+<line x1="592" y1="279" x2="538" y2="279" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" stroke-dasharray="9 7" marker-end="url(#arrow-accent)"/>
+<path d="M810.0,214 v120 a60.0,14 0 0 0 120,0 v-120" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<ellipse cx="870" cy="214" rx="60.0" ry="14" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="870" y="292.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">DB</text>
+<line x1="714" y1="242" x2="798" y2="242" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-ink)"/>
+<line x1="798" y1="316" x2="714" y2="316" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-ink)"/>
+<rect x="726" y="255" width="60.0" height="48.0" rx="8" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<rect x="732.0" y="261.0" width="48.0" height="13.0" rx="4" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="0"/>
+<rect x="732.0" y="280.0" width="22.0" height="16.0" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<rect x="758.0" y="280.0" width="22.0" height="16.0" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="870" y="396" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">集約ごと</text>
+<text x="870" y="428" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">保存・復元</text>
+</svg>

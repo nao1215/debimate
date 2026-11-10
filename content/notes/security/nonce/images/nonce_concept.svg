@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>1 つの鍵の nonce の範囲と、重なって再使用される区間</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="60" y="66" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">送信者ごとに範囲を分ける</text>
+<text x="900" y="66" font-size="24" font-weight="normal" text-anchor="end" style="fill:#666666">帯 1 本 = 1 つの鍵</text>
+<rect x="60" y="84" width="840" height="60" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="60.0" y="84" width="245.0" height="60" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="182.5" y="123.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">送信者 A</text>
+<rect x="480.0" y="84" width="245.0" height="60" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="602.5" y="123.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">送信者 B</text>
+<line x1="480.0" y1="76" x2="480.0" y2="152" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<text x="60" y="210" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">再起動でカウンタが 0 に戻る</text>
+<rect x="60" y="228" width="840" height="84" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="60.0" y="230" width="210.0" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="165.0" y="259.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">再起動前</text>
+<rect x="60.0" y="270" width="140.0" height="40" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="130.0" y="299.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">再起動後</text>
+<rect x="56.0" y="224" width="148.0" height="92" rx="6" fill="none" stroke="#e15759" stroke-width="4"/>
+<text x="230.0" y="299" font-size="24" font-weight="normal" text-anchor="start" style="fill:#e15759">同じ nonce を 2 度使う</text>
+<text x="60" y="384" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">使う前に先の番号を保存する</text>
+<text x="760.0" y="384" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">保存値 200</text>
+<rect x="60" y="402" width="840" height="84" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="60.0" y="404" width="210.0" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="165.0" y="433.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">再起動前</text>
+<rect x="270.0" y="404" width="490.0" height="40" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="515.0" y="433.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">予約したが使わずに捨てる</text>
+<rect x="760.0" y="444" width="140.0" height="40" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="830.0" y="473.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">再起動後</text>
+<line x1="760.0" y1="396" x2="760.0" y2="492" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+</svg>

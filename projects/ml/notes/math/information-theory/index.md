@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "information-theory"]
 weight: 15
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 情報理論（information theory）は、Claude Shannon が 1948 年の論文 [A Mathematical Theory of Communication](https://doi.org/10.1002/j.1538-7305.1948.tb01338.x) で築いた、情報の量を数値化する枠組みです。中核となる量は、エントロピー（entropy、不確実性）、KL ダイバージェンス（2 分布の隔たり）、相互情報量（mutual information、2 変数の依存性）です。機械学習では、損失関数・特徴量選択・決定木の分割基準・変分推論などに現れます。

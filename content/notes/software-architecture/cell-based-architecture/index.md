@@ -6,13 +6,17 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "resilience", "multi-tenancy"]
 weight: 18
 wrapTables: true
+topics: ["Service Boundaries"]
+crossTopics:
+  distributed-systems: ["Reliability"]
+cardImage: "images/cell_shuffle_overlap.svg"
 ---
 
 Cell-based Architecture（セルベースアーキテクチャ）は、アプリ・DB（データベース）・キャッシュまで含めたシステム一式を複数用意し、顧客やテナントをそのどれか 1 つに割り当てる構成です。1 つ 1 つの独立した複製を cell と呼びます。cell 同士は状態を共有しないので、ある cell で起きた障害は、その cell に割り当てた顧客の範囲に閉じます。
 
 設定ファイルの 1 行の誤りを本番に出すと、全てのサーバーが同じ設定を読むので、全顧客の要求が一斉に失敗します。同じ誤りでも、10 個の cell に 1 つずつ出していけば、最初の cell の顧客、つまり全体の 1/10 で止められます。cell の分け方は、機能ごとにサービスを分ける [Microservice Architecture](https://martinfowler.com/articles/microservices.html)（マイクロサービスアーキテクチャ）とは軸が違います。
 
-![左は注文・決済・検索の機能ごとに横に分けたサービスで、どのサービスも全顧客の要求を処理する。右は顧客を A-D、E-H、I-L の 3 組に分け、組ごとに注文・決済・検索の全機能を持つ cell を縦に置いている](images/cell_split_axis.svg)
+{{< figure src="images/cell_split_axis.svg" alt="左は注文・決済・検索の機能ごとに横に分けたサービスで、どのサービスも全顧客の要求を処理する。右は顧客を A-D、E-H、I-L の 3 組に分け、組ごとに注文・決済・検索の全機能を持つ cell を縦に置いている" caption="機能で分けたサービスと、顧客で分けた cell" align="center" >}}
 
 上記の図の左では、決済サービスが止まると全顧客の決済が止まります。右では、cell 2 が止まっても影響するのは顧客 E-H だけです。2 つの軸は排他的ではなく、1 つの cell の中身がマイクロサービスの集まりでも、1 つのモノリスでも構いません。
 
@@ -45,7 +49,9 @@ cell の考え方は、浸水を 1 区画に留める船の[隔壁（bulkhead）
 
 <br>
 
-cell の単位は、顧客の部分集合とは限りません。チャットサービスの [Slack の移行の記事](https://slack.engineering/slacks-migration-to-a-cellular-architecture/)では、AWS の AZ（Availability Zone、同じリージョン内で電源やネットワークを分けたデータセンター群）を 1 つの cell として扱っています。2021 年 6 月 30 日に、1 つの AZ と他の AZ を結ぶネットワークが断続的に故障し、1 つの AZ の不調が利用者に見えるエラーになりました。その後、主要なユーザー向けのサービスを同じ AZ の中だけで通信するように直し、AZ 単位で通信を外せるようにしています。
+cell の単位は、顧客の部分集合とは限りません。チャットサービスの [Slack の移行の記事](https://slack.engineering/slacks-migration-to-a-cellular-architecture/)では、AWS の AZ（Availability Zone、同じリージョン内で電源やネットワークを分けたデータセンター群）を 1 つの cell として扱っています。
+
+2021 年 6 月 30 日に、1 つの AZ と他の AZ を結ぶネットワークが断続的に故障し、1 つの AZ の不調が利用者に見えるエラーになりました。その後、主要なユーザー向けのサービスを同じ AZ の中だけで通信するように直し、AZ 単位で通信を外せるようにしています。
 
 ---
 
@@ -73,11 +79,21 @@ flowchart LR
 | ハッシュの剰余 | `hash(id) % N` | 状態を持たない | cell を足すと大半の顧客の行き先が変わる |
 | [Consistent Hashing](/notes/distributed-systems/consistent-hashing/) | ハッシュリング上の位置 | cell を足しても移る顧客が少ない | 特定の顧客を動かすには、別に上書き用の表が必要 |
 
-剰余の欠点は、cell の数を 10 から 11 に増やすと、`hash(id) % 10` と `hash(id) % 11` が一致する約 1/11 の顧客を除いて行き先が変わることです。cell は DB を持つので、行き先が変わった顧客のデータも移す必要があります。それでも、ルーターの計算が軽く状態も少ないことから、[AWS のガイドの Cell routing](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-routing.html)は暗号学的ハッシュと剰余の組み合わせを勧めています。この場合、cell を足す時は、行き先が変わる顧客をデータごと移す仕組みを前提にします。また、どの決め方でも、テストや重い顧客の隔離のために、特定の顧客を特定の cell に固定する上書き用の表を併せて持ちます。
+剰余の欠点は、cell の数を 10 から 11 に増やすと、`hash(id) % 10` と `hash(id) % 11` が一致する約 1/11 の顧客を除いて行き先が変わることです。cell は DB を持つので、行き先が変わった顧客のデータも移す必要があります。
+
+以下は、顧客 1 万人の ID のハッシュで、cell を 10 個から 11 個に増やした時の行き先を数えた図です（先頭の 110 人を並べています）。
+
+{{< figure src="images/cell_reroute.svg" alt="2 つの格子。左の hash(id) % N では、ほとんどのマスが黄土色で、行き先が変わった顧客は 1 万人の 91%。右の consistent hashing（cell ごとに仮想ノード 100 個）では、ほとんどのマスが青のままで、行き先が変わったのは 10%" caption="cell を 10 個から 11 個に増やした時に行き先が変わる顧客" align="center" >}}
+
+それでも、ルーターの計算が軽く状態も少ないことから、[AWS のガイドの Cell routing](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-routing.html)は暗号学的ハッシュと剰余の組み合わせを勧めています。この場合、cell を足す時は、行き先が変わる顧客をデータごと移す仕組みを前提にします。
+
+また、どの決め方でも、テストや重い顧客の隔離のために、特定の顧客を特定の cell に固定する上書き用の表を併せて持ちます。
 
 <br>
 
-ルーターは全ての cell の対応を持つ共有部品なので、顧客を cell に分けるのと同じ方法では分けられません。ルーターが止まれば全顧客が止まります。そのため、ルーターには業務ロジックを入れず、できる限り単純にし、1 つの cell に届かない時も他の cell への振り分けを続けられるように作ります。ルーター自体も、冗長化したうえで[複数の独立した単位に分けて作る](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/about-resilience-of-the-cell-router.html)ことが勧められています。例えば、対応表をルーターのメモリに持ち、表の保存先が止まっても手元の表で振り分けを続ければ、保存先の障害が全顧客の障害になりません。
+ルーターは全ての cell の対応を持つ共有部品なので、顧客を cell に分けるのと同じ方法では分けられません。ルーターが止まれば全顧客が止まります。そのため、ルーターには業務ロジックを入れず、できる限り単純にし、1 つの cell に届かない時も他の cell への振り分けを続けられるように作ります。ルーター自体も、冗長化したうえで[複数の独立した単位に分けて作る](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/about-resilience-of-the-cell-router.html)ことが勧められています。
+
+例えば、対応表をルーターのメモリに持ち、表の保存先が止まっても手元の表で振り分けを続ければ、保存先の障害が全顧客の障害になりません。
 
 1 人の顧客が 1 つの cell に収まらないほど大きくなる場合もあります。パーティションキーを顧客 ID だけにしていると、その顧客を 2 つの cell に分けられません。顧客 ID にワークスペース ID のような業務上の単位を足した複合キーにすると、大きな顧客を複数の cell に分けられます。
 
@@ -85,7 +101,9 @@ flowchart LR
 
 ### 切り離しと段階的なデプロイ
 
-cell の障害を検知した時に取れる手は、その cell の構成によって変わります。例外として、cell が状態を持たず、データを cell の外の複製された DB に置く構成なら、ルーターがその cell への振り分けを止め、他の cell に送れます。Slack は、エッジのロードバランサーが AZ ごとの重みを 1% 刻みで変えられるようにし、重みを 0 にした AZ でも処理中の要求は最後まで処理しています。
+cell の障害を検知した時に取れる手は、その cell の構成によって変わります。例外として、cell が状態を持たず、データを cell の外の複製された DB に置く構成なら、ルーターがその cell への振り分けを止め、他の cell に送れます。
+
+Slack は、エッジのロードバランサーが AZ ごとの重みを 1% 刻みで変えられるようにし、重みを 0 にした AZ でも処理中の要求は最後まで処理しています。
 
 しかし、顧客のデータを cell の DB に置く構成では、その顧客を別の cell に送ってもデータがありません。止まった cell の顧客は、cell が直るまで止まったままです。この構成の cell は、障害を止める装置ではなく、障害の範囲を 1 つの cell に限る装置です。どの cell が止まっているかは、[Heartbeat](/notes/distributed-systems/heartbeat/) のような死活監視に加えて、cell ごとのエラー率で判断します。
 
@@ -115,9 +133,32 @@ flowchart LR
 
 ### 毒入り顧客の巻き込みの実験
 
-cell に分けても、毒入り顧客と同じ cell の顧客は全員巻き込まれます。この巻き込みを減らす方法に、shuffle sharding があります。ワーカー（要求を処理するサーバー）を固定の組に分けず、顧客ごとに n 台から k 台の組み合わせをランダムに選んで割り当てます。AWS が設計の知見を公開している [Builders' Library の記事](https://builder.aws.com/content/3F06NpJ8YeoIGP8VHTw4n81pFn8/workload-isolation-using-shuffle-sharding)は、DNS サービスの [Amazon Route 53](https://aws.amazon.com/route53/) で 2,048 台の仮想ネームサーバーから 4 台ずつを各ドメインに割り当て、約 7,300 億通りの組を作っている例を紹介しています。
+cell に分けても、毒入り顧客と同じ cell の顧客は全員巻き込まれます。この巻き込みを減らす方法に、shuffle sharding があります。ワーカー（要求を処理するサーバー）を固定の組に分けず、顧客ごとに n 台から k 台の組み合わせをランダムに選んで割り当てます。
 
-毒入り顧客が自分の組のワーカーを全て止めても、他の顧客の組と完全に重なっていなければ、その顧客は残ったワーカーで処理を続けられます。ただし、クライアントが失敗したワーカーを避けて再試行することが前提です。以下のコードは、ワーカー 8 台と顧客 1 万人で、2 台ずつの固定の cell と shuffle sharding を比べます。
+AWS が設計の知見を公開している [Builders' Library の記事](https://builder.aws.com/content/3F06NpJ8YeoIGP8VHTw4n81pFn8/workload-isolation-using-shuffle-sharding)は、DNS サービスの [Amazon Route 53](https://aws.amazon.com/route53/) で 2,048 台の仮想ネームサーバーから 4 台ずつを各ドメインに割り当て、約 7,300 億通りの組を作っている例を紹介しています。
+
+毒入り顧客が自分の組のワーカーを全て止めても、他の顧客の組と完全に重なっていなければ、その顧客は残ったワーカーで処理を続けられます。ただし、クライアントが失敗したワーカーを避けて再試行することが前提です。
+
+[lab/blast_radius.py](lab/blast_radius.py) は、ワーカー 8 台と顧客 1 万人で、2 台ずつの固定の cell と shuffle sharding を比べます。以下は、毒入り顧客の組と比べて人数を数える部分の抜粋です。
+
+```python
+def classify(shards, poison):
+    """毒入り顧客の組と比べて、全滅・一部停止・無傷の人数を返す。"""
+    dead = set(shards[poison])
+    full = part = 0
+    for c, shard in enumerate(shards):
+        if c == poison:
+            continue
+        hit = len(dead & set(shard))
+        if hit == K:
+            full += 1  # 使えるワーカーが残らない
+        elif hit > 0:
+            part += 1  # 残りのワーカーへ再試行すれば動く
+    return full, part
+```
+
+<details>
+<summary>blast_radius.py の全体</summary>
 
 ```python
 """1 人の毒入り顧客が、他の顧客をどれだけ巻き込むかを数える。
@@ -181,7 +222,9 @@ for n, k in [(8, 2), (16, 4), (100, 5), (2048, 4)]:
           f"確率 {1 / comb(n, k):.2e}  （通常の cell なら {k / n:.2%}）")
 ```
 
-[lab/blast_radius.py](lab/blast_radius.py) を `python3 blast_radius.py` で実行した結果は次の通りです。
+</details>
+
+`python3 blast_radius.py` で実行した結果は次の通りです。
 
 ```text
 [1] ワーカー 8 台、顧客 10,000 人、1 人あたり 2 台
@@ -198,15 +241,19 @@ for n, k in [(8, 2), (16, 4), (100, 5), (2048, 4)]:
    2048 台から 4 台: 組み合わせ   730,862,190,080 通り  確率 1.37e-12  （通常の cell なら 0.20%）
 ```
 
-[1] の通常の cell では、毒入り顧客と同じ cell に入った約 1/4 の顧客が全滅し、残りは無傷です。shuffle sharding では、全滅は組が完全に重なる 1/28（約 3.6%）まで下がります。その代わりに、ワーカーを 1 台だけ共有して一部が止まる顧客が約 43% 出ます。この 43% は、再試行で残りの 1 台に届けば影響を受けません。しかし、再試行の分だけ応答は遅れ、生き残ったワーカーに負荷が集まります。
+[1] の通常の cell では、毒入り顧客と同じ cell に入った約 1/4 の顧客が全滅し、残りは無傷です。shuffle sharding では、全滅は組が完全に重なる 1/28（約 3.6%）まで下がります。
+
+その代わりに、ワーカーを 1 台だけ共有して一部が止まる顧客が約 43% 出ます。この 43% は、再試行で残りの 1 台に届けば影響を受けません。しかし、再試行の分だけ応答は遅れ、生き残ったワーカーに負荷が集まります。
 
 [2] の理論値は、組み合わせの数から求めています。2 台の組は C(8,2) = 28 通りあり、毒入り顧客と同じ組を引く確率は 1/28 です。毒入り顧客の 2 台を含まない組は残り 6 台から選ぶ C(6,2) = 15 通りなので、一部が止まる確率は (28 - 15 - 1) / 28 = 12/28 です。[3] の最終行は、Route 53 の約 7,300 億通りと一致します。
 
 台数を 100 台に固定し、1 人あたりの台数 k を変えると、3 つの割合は次のように動きます。
 
-![ワーカー 100 台で 1 人あたりの台数 k を 1 から 10 に変えた時の、他の顧客が巻き込まれる割合。縦軸は対数。通常の cell の全滅は k/100 で 1% から 10% に増える。shuffle sharding の全滅は k=5 で約 1e-8、k=10 で約 6e-14 まで下がる。一部停止は k=2 の約 4% から k=10 の約 67% まで増える](images/cell_shuffle_overlap.svg)
+{{< figure src="images/cell_shuffle_overlap.svg" alt="ワーカー 100 台で 1 人あたりの台数 k を 1 から 10 に変えた時の、他の顧客が巻き込まれる割合。縦軸は対数。通常の cell の全滅は k/100 で 1% から 10% に増える。shuffle sharding の全滅は k=5 で約 1e-8、k=10 で約 6e-14 まで下がる。一部停止は k=2 の約 4% から k=10 の約 67% まで増える" caption="1 人あたりの台数 k と、他の顧客が巻き込まれる割合" align="center" >}}
 
-凡例の Cell は k 台ずつの固定の cell、Shuffle sharding は k 台をランダムに選ぶ割り当てです。fully down は全滅、partly down は一部停止を指します。k を増やすと全滅の確率は桁で下がり、一部停止の割合は上がります。つまり shuffle sharding は、全停止する顧客を減らす代わりに、部分的に劣化する顧客を増やしています。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/cell-based-architecture/figures.py) です。
+凡例の Cell は k 台ずつの固定の cell、Shuffle sharding は k 台をランダムに選ぶ割り当てです。fully down は全滅、partly down は一部停止を指します。
+
+k を増やすと全滅の確率は桁で下がり、一部停止の割合は上がります。つまり shuffle sharding は、全停止する顧客を減らす代わりに、部分的に劣化する顧客を増やしています。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/cell-based-architecture/figures.py) です。
 
 ---
 
@@ -265,7 +312,9 @@ sequenceDiagram
 
 <br>
 
-2 人の顧客にまたがる更新は、さらに難しくなります。例えば、cell 1 の顧客から cell 3 の顧客にポイントを移すなら、2 つの cell の DB を 1 つのトランザクションで更新できません。[2PC](/notes/distributed-systems/two-phase-commit/)（2 相コミット）でまとめれば、2 つの cell が互いの停止を待つ関係になり、障害を 1 つの cell に閉じるという目的と衝突します。各 cell でローカルに確定し、失敗したら補償する [Saga](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) のような手順を選ぶことになります。
+2 人の顧客にまたがる更新は、さらに難しくなります。例えば、cell 1 の顧客から cell 3 の顧客にポイントを移すなら、2 つの cell の DB を 1 つのトランザクションで更新できません。
+
+[2PC](/notes/distributed-systems/two-phase-commit/)（2 相コミット）でまとめれば、2 つの cell が互いの停止を待つ関係になり、障害を 1 つの cell に閉じるという目的と衝突します。各 cell でローカルに確定し、失敗したら補償する [Saga](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) のような手順を選ぶことになります。
 
 全顧客で一意にしたい値も同じ問題を持ちます。メールアドレスやユーザー名の一意制約は、各 cell の DB の一意索引では cell の中でしか効きません。cell 1 と cell 2 で同じユーザー名を同時に登録すると、両方とも成功します。
 

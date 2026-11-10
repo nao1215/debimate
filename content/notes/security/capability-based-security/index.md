@@ -6,6 +6,7 @@ series: ["技術ノート", "Security"]
 tags: ["security", "authorization", "access-control"]
 weight: 12
 wrapTables: true
+topics: ["Authorization"]
 ---
 
 1970 年代後半の Tymshare のタイムシェアリングシステムで、コンパイラが課金情報のファイルを上書きしました。コンパイラは利用統計を書くために、SYSX ディレクトリに書ける権限を持っていました。同じディレクトリには課金ファイル `SYSX/BILL`（原文の表記は `(SYSX)BILL`）もありました。ある利用者がデバッグ出力の書き込み先に `SYSX/BILL` を指定すると、OS はコンパイラの権限で書き込みを許し、課金情報が消えました。
@@ -14,7 +15,13 @@ Norm Hardy 氏が 1988 年に [The Confused Deputy](http://cap-lore.com/CapTheor
 
 Capability-based Security（ケイパビリティベースのセキュリティ）は、対象を指す参照と、その対象への権限を 1 つにまとめた capability を持っている時だけ操作を許す設計です。OS やサーバーは「誰が頼んだか」ではなく、「どの capability を提示したか」で判断します。上記の事故に当てはめると、コンパイラがデバッグ出力を書けるのは、利用者が自分で開いて渡したファイルだけです。
 
-以下は、課金ファイルの事故を 2 つの設計で比べた図です。左の ACL（Access Control List）型は、ファイルごとに「誰が何をして良いか」の表を持ち、要求した主体の名前で表を引きます。
+以下は、主体と対象の間の権限を 1 つの表にしたアクセス行列で、ACL（Access Control List）と capability がそれぞれどこを切り出したものかを示した図です。
+
+{{< figure src="images/capability-based-security_concept.svg" alt="行に alice とコンパイラ、列に debug.txt・STAT・BILL を並べたアクセス行列。BILL の列を黄土色の帯で囲んで ACL、コンパイラの行を青い帯で囲んで capability と示し、2 つの帯はコンパイラが BILL に書き込める 1 つのセルで重なる" caption="アクセス行列の列が ACL、行が capability" align="center" >}}
+
+ACL は列を対象に付け、capability は行を主体に持たせます。
+
+次は、課金ファイルの事故を 2 つの設計で比べた図です。左の ACL 型は、ファイルごとに「誰が何をして良いか」の表を持ち、要求した主体の名前で表を引きます。
 
 {{< figure align="center" src="images/acl_vs_capability.svg" link="images/acl_vs_capability.svg" width="460" alt="左は ACL 型。利用者がファイル名 SYSX/BILL をコンパイラに渡し、コンパイラが open すると、OS は主体であるコンパイラの名前で BILL の ACL を引き、書き込みを許して課金情報が消える。右は capability 型。利用者が自分で debug.txt を開いて fd を渡し、コンパイラは write(fd) で debug.txt にだけ書く。BILL を指す fd は誰も渡していないので、コンパイラは BILL に届かない" caption="課金ファイルの事故を ACL 型と capability 型で比べた図" >}}
 
@@ -44,11 +51,15 @@ ACL と capability の違いは、[Lampson 氏の Protection](https://www.bwlamp
 
 列を切り出してオブジェクトに付けると ACL になり、OS は要求した主体を確かめてからこの表を引きます。行を切り出して主体に持たせると capability の一覧（C-list）になります。1966 年の [Dennis 氏と Van Horn 氏の論文](https://doi.org/10.1145/365230.365252)は、計算が使って良い対象と操作の一覧を C-list として表しました。
 
-Miller 氏らの [Capability Myths Demolished](https://papers.agoric.com/papers/capability-myths-demolished/full-text/)（2003 年）は、2 つを等価とみなす考えを「Equivalence Myth」と呼んで否定しています。ACL 型では、対象の名前と、それを使って良いかの判断が別々に流れます。capability 型（論文の言う object-capability）では、1 つの参照が対象の指定と権限を兼ねるので、権限を持たずに対象だけを指せません。論文は、使う権限を要求の中で選ぶ性質が Confused Deputy を避けるのに役立つとしています。
+Miller 氏らの [Capability Myths Demolished](https://papers.agoric.com/papers/capability-myths-demolished/full-text/)（2003 年）は、2 つを等価とみなす考えを「Equivalence Myth」と呼んで否定しています。ACL 型では、対象の名前と、それを使って良いかの判断が別々に流れます。
+
+capability 型（論文の言う object-capability）では、1 つの参照が対象の指定と権限を兼ねるので、権限を持たずに対象だけを指せません。論文は、使う権限を要求の中で選ぶ性質が Confused Deputy を避けるのに役立つとしています。
 
 [RBAC](https://csrc.nist.gov/projects/role-based-access-control)（Role-Based Access Control）は、主体と権限の間に役割（role）を挟みます。権限の管理は楽になりますが、判断の入口は「この主体はどの役割を持つか」で、誰が頼んだかで判断する点は ACL と変わりません。
 
-capability が権限として成り立つには、持ち主が勝手に作れないことが前提です。Unix のファイルディスクリプタ（fd）はカーネルの表を指す番号で、数字を書き換えても自分の表にない対象には届きません。ただし、Capability Myths Demolished は fd を「nearly, but not quite」（ほぼ同じだが完全ではない）object capability と評価しています。fd を運ぶ Unix ドメインソケット自体は、ファイルのパーミッション（ACL）で守られているからです（後の実験でもソケットを `0o666` にしています）。
+capability が権限として成り立つには、持ち主が勝手に作れないことが前提です。Unix のファイルディスクリプタ（fd）はカーネルの表を指す番号で、数字を書き換えても自分の表にない対象には届きません。
+
+ただし、Capability Myths Demolished は fd を「nearly, but not quite」（ほぼ同じだが完全ではない）object capability と評価しています。fd を運ぶ Unix ドメインソケット自体は、ファイルのパーミッション（ACL）で守られているからです（後の実験でもソケットを `0o666` にしています）。
 
 ---
 
@@ -90,7 +101,23 @@ Unix の fd は、身近な capability の例です。`open()` は、パスと�
 
 fd は、Unix ドメインソケットの `SCM_RIGHTS` で別のプロセスに渡せます。受け取ったプロセスには、`dup()` と同じく同じ開いたファイルを指す fd が増えます（[unix(7)](https://man7.org/linux/man-pages/man7/unix.7.html)）。Python では 3.9 で追加された [socket.send_fds と socket.recv_fds](https://docs.python.org/3/library/socket.html#socket.send_fds) で扱えます。
 
-実験では、UID 2001 をコンパイラ、UID 2002 を利用者 alice にして事故を再現しました。`SYSX/` はコンパイラだけ、`alice/` は alice だけが読み書きできます。以下が [run.py](lab/run.py) の全体です。
+実験では、UID 2001 をコンパイラ、UID 2002 を利用者 alice にして事故を再現しました。`SYSX/` はコンパイラだけ、`alice/` は alice だけが読み書きできます。以下は、[run.py](lab/run.py) のコンパイラ側で、名前を受け取るか fd を受け取るかを分ける部分です。
+
+```python
+    if mode == "path":
+        name = conn.recv(1024).decode()
+        out = os.open(name, WRITE, 0o644)  # opened with the compiler's authority
+    else:
+        _, fds, _, _ = socket.recv_fds(conn, 1024, 1)
+        if not fds:
+            return
+        out = fds[0]  # only what the caller handed over
+```
+
+名前を受け取った時はコンパイラ自身の権限で `open()` し、fd を受け取った時は渡されたものをそのまま使います。
+
+<details>
+<summary>run.py の全体（2 つの UID でコンパイラと alice を動かし、4 つのケースを順に実行する）</summary>
 
 ```python
 """Confused deputy: passing a path name vs. passing an open file descriptor.
@@ -208,7 +235,25 @@ if __name__ == "__main__":
         user(*sys.argv[2:])
 ```
 
-UID を切り替えるために root で起動するので、使い捨てのコンテナで動かします。`lab/` で実行すると、Python 3.13.18 で以下の[結果](lab/output.txt)になりました。
+</details>
+
+UID を切り替えるために root で起動するので、使い捨てのコンテナで動かします。`lab/` で次のように実行します。
+
+```bash
+docker run --rm --network none -v "$PWD":/lab:ro python:3.13-slim python3 /lab/run.py
+```
+
+Python 3.13.18 での結果をケースごとにまとめると、以下の通りです。
+
+| ケース | 何を渡したか | 結果 |
+| --- | --- | --- |
+| 1 | 名前 `SYSX/BILL` | コンパイラの権限で開かれ、課金情報が上書きされた |
+| 2 | alice が書き込み用に開いた `debug.txt` の fd | `debug.txt` にだけ書かれ、BILL は無傷 |
+| 3 | alice が `SYSX/BILL` を開こうとした | alice の権限で開けず、渡すものが作れない |
+| 4 | alice が読み取り専用で開いた fd | コンパイラの `write()` が `EBADF` で失敗 |
+
+<details>
+<summary>run.py の出力</summary>
 
 ```text
 $ docker run --rm --network none -v "$PWD":/lab:ro python:3.13-slim python3 /lab/run.py
@@ -229,12 +274,9 @@ $ docker run --rm --network none -v "$PWD":/lab:ro python:3.13-slim python3 /lab
 STAT: 3 lines written with the compiler's own authority
 ```
 
-| ケース | 何を渡したか | 結果 |
-| --- | --- | --- |
-| 1 | 名前 `SYSX/BILL` | コンパイラの権限で開かれ、課金情報が上書きされた |
-| 2 | alice が書き込み用に開いた `debug.txt` の fd | `debug.txt` にだけ書かれ、BILL は無傷 |
-| 3 | alice が `SYSX/BILL` を開こうとした | alice の権限で開けず、渡すものが作れない |
-| 4 | alice が読み取り専用で開いた fd | コンパイラの `write()` が `EBADF` で失敗 |
+</details>
+
+出力は [output.txt](lab/output.txt) にもあります。
 
 ケース 1 では、alice 自身は BILL を開けないのに、コンパイラを通すと書けました。fd を渡す設計では、権限の確認は alice が `open()` した時点で alice の権限で行われます。ケース 4 のように、fd は「読み取りだけ」という範囲も運びます。`STAT` は、要求が届かなかったケース 3 以外の 3 回分が記録されています。
 
@@ -252,7 +294,9 @@ capability は、持っている者が使える権限です。実験の alice �
 
 <br>
 
-取り消しは、ACL より工夫が必要です。ACL なら主体の項目を消せば終わりますが、capability は持ち主の手元にあり、発行した側が取り上げることはできません。Capability Myths Demolished は、間に転送役を挟めばアクセスを取り消せることを示しています。1974 年の Redell 氏の方式で、Miller 氏の[博士論文](http://www.erights.org/talks/thesis/)では caretaker（世話役）パターンと呼ばれています。
+取り消しは、ACL より工夫が必要です。ACL なら主体の項目を消せば終わりますが、capability は持ち主の手元にあり、発行した側が取り上げることはできません。
+
+Capability Myths Demolished は、間に転送役を挟めばアクセスを取り消せることを示しています。1974 年の Redell 氏の方式で、Miller 氏の[博士論文](http://www.erights.org/talks/thesis/)では caretaker（世話役）パターンと呼ばれています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%

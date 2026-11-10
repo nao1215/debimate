@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>上限なしのキューとバックプレッシャー</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="936" y="34" font-size="26" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">上限なし</text>
+<rect x="24" y="96.0" width="160" height="80" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="104" y="144.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Producer</text>
+<rect x="752" y="148" width="184" height="80" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="844" y="196" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Consumer</text>
+<rect x="380" y="68" width="180" height="148" fill="#f8eed8"/>
+<line x1="380" y1="68" x2="560" y2="68" stroke="#d4a24c" stroke-width="4" stroke-linecap="round"/>
+<path d="M380,48 V216 H560 V48" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linejoin="round"/>
+<path d="M186,88.0 H352 V78.0 L376,106 L352,134.0 V124.0 H186 z" fill="#666666"/>
+<text x="282" y="160.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">200 件/秒</text>
+<path d="M564,179.0 H724 V169.0 L748,188 L724,207.0 V197.0 H564 z" fill="#666666"/>
+<text x="656" y="160" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">100 件/秒</text>
+<line x1="470" y1="96" x2="470" y2="22" stroke="#e15759" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-red)"/>
+<text x="470" y="248" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">差の 100 件/秒が溜まり続ける</text>
+<text x="936" y="306" font-size="26" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">上限あり（バックプレッシャー）</text>
+<rect x="24" y="368.0" width="160" height="80" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="104" y="416.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Producer</text>
+<rect x="752" y="420" width="184" height="80" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="844" y="468" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Consumer</text>
+<rect x="380" y="384" width="180" height="104" fill="#eaf1f5"/>
+<line x1="380" y1="384" x2="560" y2="384" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round"/>
+<path d="M380,320 V488 H560 V320" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linejoin="round"/>
+<path d="M186,369.0 H352 V359.0 L376,378 L352,397.0 V387.0 H186 z" fill="#666666"/>
+<text x="282" y="423.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">100 件/秒</text>
+<path d="M564,451.0 H724 V441.0 L748,460 L724,479.0 V469.0 H564 z" fill="#666666"/>
+<text x="656" y="432" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">100 件/秒</text>
+<line x1="364" y1="384" x2="576" y2="384" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 6"/>
+<text x="470" y="372" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">上限</text>
+<line x1="372" y1="332" x2="196" y2="332" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 8" marker-end="url(#arrow-accent)"/>
+<text x="282" y="316" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">待って</text>
+<text x="470" y="520" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">満杯を上流に伝え、流入を処理に合わせる</text>
+</svg>

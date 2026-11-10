@@ -6,9 +6,13 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "index", "storage-engine"]
 weight: 12
 wrapTables: true
+topics: ["Storage Engine"]
+cardImage: "images/lsm-tree_space_timeline.svg"
 ---
 
-LSM-Tree（Log-Structured Merge-Tree）は、更新をメモリに貯めてから、キーの順に並べたファイルとしてディスクにまとめて書く索引です。同じキーを更新すると新しいバージョンを別のファイルに足し、古いバージョンは後から行う併合（compaction）で捨てます。キーと値を保存する組み込みの KVS（Key-Value Store）である [RocksDB](https://rocksdb.org/) や [LevelDB](https://github.com/google/leveldb)、分散 DB（データベース）の [Apache Cassandra](https://cassandra.apache.org/) が、この考え方でデータを保存しています。
+LSM-Tree（Log-Structured Merge-Tree）は、更新をメモリに貯めてから、キーの順に並べたファイルとしてディスクにまとめて書く索引です。同じキーを更新すると新しいバージョンを別のファイルに足し、古いバージョンは後から行う併合（compaction）で捨てます。
+
+キーと値を保存する組み込みの KVS（Key-Value Store）である [RocksDB](https://rocksdb.org/) や [LevelDB](https://github.com/google/leveldb)、分散 DB（データベース）の [Apache Cassandra](https://cassandra.apache.org/) が、この考え方でデータを保存しています。
 
 上書きしない設計なので、直感に反する現象が起きます。例えば、本記事の実験では、1 万件のキーを削除すると、ディスク上に保存している件数が約 1 万件増えました。書き込みが速いはずの DB が、ある時点から書き込みを絞り、最後には止めることもあります。どちらも、後回しにした併合の作業が溜まった結果です。
 
@@ -48,7 +52,9 @@ LSM-Tree は書く位置を探さず、どのバージョンが新しいかは�
 
 B-Tree の更新は、ディスク上の決まった位置にあるページを読み、書き換えて戻す処理です。キーがランダムに届くと、書き換えるページもランダムな位置に散らばります。HDD ではヘッドの移動が、SSD でも小さな書き換えが積み重なります。
 
-LSM-Tree を示した [O'Neil 氏らの論文（1996 年）](https://www.cs.umb.edu/~poneil/lsmtree.pdf)は、取引の履歴表のように挿入が絶えず続く表を題材にしています。論文の見積もりでは、こうした表に B-tree の索引をリアルタイムに保つと、取引 1 件あたりの I/O コストが実質的に 2 倍になります。なお、論文の LSM-Tree はメモリ上の木 C0 とディスク上の木 C1 を少しずつ併合（rolling merge）する形で、本記事で説明する Memtable・SSTable・flush の形は Bigtable や LevelDB の系統です。
+LSM-Tree を示した [O'Neil 氏らの論文（1996 年）](https://www.cs.umb.edu/~poneil/lsmtree.pdf)は、取引の履歴表のように挿入が絶えず続く表を題材にしています。論文の見積もりでは、こうした表に B-tree の索引をリアルタイムに保つと、取引 1 件あたりの I/O コストが実質的に 2 倍になります。
+
+なお、論文の LSM-Tree はメモリ上の木 C0 とディスク上の木 C1 を少しずつ併合（rolling merge）する形で、本記事で説明する Memtable・SSTable・flush の形は Bigtable や LevelDB の系統です。
 
 そこで LSM-Tree は、索引の変更を後回しにして束ねます。メモリに貯めた変更をキーの順に並べ、大きな塊としてディスクに順に書くので、書く位置を 1 件ごとに探しません。その代わりに、同じキーの新旧のバージョンがディスク上に複数並び、読む処理と併合の処理が増えます。
 
@@ -95,7 +101,9 @@ flowchart LR
 
 上記の図で、SSTable を開く前に確かめている Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。[RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter)では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
 
-しかし、キー全体で作った Bloom filter は、キー 1 つを指定した読み取りにしか効きません。RocksDB には、キーの先頭部分で作る [prefix Bloom filter](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) もあり、先頭が揃った範囲の検索に限って SSTable を飛ばせます。`user100` から `user199` までのような範囲の読み取りでは、範囲に掛かる全ての SSTable を開き、キーの順に突き合わせながら最新のバージョンを選びます。SSTable の数が増えるほど、範囲の読み取りは重くなります。
+しかし、キー全体で作った Bloom filter は、キー 1 つを指定した読み取りにしか効きません。RocksDB には、キーの先頭部分で作る [prefix Bloom filter](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) もあり、先頭が揃った範囲の検索に限って SSTable を飛ばせます。
+
+`user100` から `user199` までのような範囲の読み取りでは、範囲に掛かる全ての SSTable を開き、キーの順に突き合わせながら最新のバージョンを選びます。SSTable の数が増えるほど、範囲の読み取りは重くなります。
 
 ---
 
@@ -116,7 +124,7 @@ compaction は、複数の SSTable を読んで 1 つの並びに併合し、古
 
 2 つのやり方で、ディスク上の並びは以下のようになります。横軸はキーの範囲で、1 行が 1 本の sorted run です。
 
-![size-tiered と leveled のディスク上の並び。size-tiered は全てのキー範囲に掛かる sorted run が tier ごとに複数本並ぶ。leveled は L0 だけが範囲の重なるファイルを持ち、L1 と L2 はそれぞれ範囲で分割された 1 本の sorted run になる](images/lsm-tree_compaction_shapes.svg)
+{{< figure src="images/lsm-tree_compaction_shapes.svg" alt="size-tiered と leveled のディスク上の並び。size-tiered は全てのキー範囲に掛かる sorted run が tier ごとに複数本並ぶ。leveled は L0 だけが範囲の重なるファイルを持ち、L1 と L2 はそれぞれ範囲で分割された 1 本の sorted run になる" caption="size-tiered と leveled のディスク上の sorted run" align="center" >}}
 
 size-tiered は、同じキーのバージョンが複数の sorted run に散らばったまま残ります。読む時に確かめる本数が多く、容量も多く使います。leveled は L1 以降の各レベルでキーが 1 回しか現れないので、読む本数と容量は抑えられます。しかし、上のレベルから 1 本降ろすたびに次のレベルの重なる部分を書き直すため、同じデータを何度も書きます。
 
@@ -229,16 +237,22 @@ none     0.97   17.05 1.10        4.88      10.77  107 107000  9932  9932
 |---|---|
 | write | ディスクに書いた件数 ÷ ユーザーが書いた件数（Write Amplification） |
 | visited / read | `get` 1 回で確かめた SSTable / Bloom filter を通過して読んだ SSTable（Read Amplification） |
-| space(load) / space(end) | 保存件数 ÷ 生きているキーの数。`put` 後と `delete` 後（Space Amplification） |
+| space(load) / space(end) | 保存件数 ÷ 生きているキーの数（Space Amplification）。左は `put` の終わり、右は `delete` の終わり |
 | full | 全ての SSTable を 1 本に併合した後の件数 |
 
-書き込みの増幅は leveled が最も大きく、容量の増幅は size-tiered が leveled の約 2 倍です。[Compaction の wiki](https://github.com/facebook/rocksdb/wiki/Compaction) にも、書き込みの増幅は通常 leveled の方が tiered より悪いとあります。レベルが増えるほど差は開き、[チューニングガイド](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide)の 500GB・5 レベルの例では leveled が約 33 です。この実験の差が小さいのは、データが L2 までしか育たないからです。`none` の書き込みが 1 を下回るのは、Memtable 上で上書きされた分と、最後に Memtable に残った分をディスクに書いていないからです。
+以下は、3 つの増幅を compaction のやり方ごとに並べた図です。容量の増幅は `delete` の後の値です。
+
+{{< figure src="images/lsm-tree_amplification.svg" alt="3 つの横棒グラフ。書き込みの増幅は leveled 3.70、size-tiered 2.64、compaction なし 0.97。get 1 回で確かめる SSTable は 4.05、4.96、17.05 本。削除後の容量の増幅は 3.05、5.27、10.77" caption="compaction のやり方ごとの 3 つの増幅" align="center" >}}
+
+書き込みの増幅は leveled が最も大きく、容量の増幅は size-tiered が leveled の約 2 倍です。[Compaction の wiki](https://github.com/facebook/rocksdb/wiki/Compaction) にも、書き込みの増幅は通常 leveled の方が tiered より悪いとあります。
+
+レベルが増えるほど差は開き、[チューニングガイド](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide)の 500GB・5 レベルの例では leveled が約 33 です。この実験の差が小さいのは、データが L2 までしか育たないからです。`none` の書き込みが 1 を下回るのは、Memtable 上で上書きされた分と、最後に Memtable に残った分をディスクに書いていないからです。
 
 Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後です。しかし `none` は `get` 1 回ごとに平均 17 本の Bloom filter を確かめ、偽陽性の分だけ無駄な読み出しも増えています。
 
 下記の図は、保存している件数（実線）と生きているキーの数（破線）の推移です。
 
-![操作回数に対する、ディスク上の件数と生きているキーの数。10 万回目から削除を始めると、生きているキーは 2 万から 1 万に減るが、ディスク上の件数は leveled で約 2 万から 3 万に、size-tiered で約 4.2 万から 5.2 万に増える](images/lsm-tree_space_timeline.svg)
+{{< figure src="images/lsm-tree_space_timeline.svg" alt="操作回数に対する、ディスク上の件数と生きているキーの数。10 万回目から削除を始めると、生きているキーは 2 万から 1 万に減るが、ディスク上の件数は leveled で約 2 万から 3 万に、size-tiered で約 4.2 万から 5.2 万に増える" caption="保存している件数と、生きているキーの数の推移" align="center" >}}
 
 上記の図の右端では、生きているキーが 1 万件に減ったのに、leveled の保存件数は約 3 万件まで増えています。最下段に削除前の約 2 万件（うち約 1 万件は削除済みキーの古い値）が残り、その上に約 1 万件の tombstone が積まれたからです。全てを 1 本に併合すると、`full` の列の通り 9,932 件まで減ります。削除した容量は、compaction が最下段まで届いた時に初めて戻ります。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/lsm-tree/figures.py) です。
 
@@ -248,7 +262,7 @@ Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後�
 
 compaction は flush と同じく裏のスレッドで動きます。書き込みの量が compaction の処理能力を上回ると、併合されない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確かめるしかありません。下記の図は、compaction を止めた `none` と、他の 2 つの SSTable の本数の推移です。
 
-![操作回数に対する SSTable の本数。compaction を行わないと flush のたびに 1 本ずつ増え、11 万回の操作で 107 本になる。leveled と size-tiered は 10 本未満で上下を繰り返す](images/lsm-tree_runs_timeline.svg)
+{{< figure src="images/lsm-tree_runs_timeline.svg" alt="操作回数に対する SSTable の本数。compaction を行わないと flush のたびに 1 本ずつ増え、11 万回の操作で 107 本になる。leveled と size-tiered は 10 本未満で上下を繰り返す" caption="compaction のやり方ごとの SSTable の本数" align="center" >}}
 
 本数は flush の回数に比例して増え、前節の通り `get` 1 回で確かめる SSTable は 4〜5 本から 17 本に、容量の増幅は 10 倍を超えました。このまま書き込みを受け付け続けると、読み取りは遅くなり続け、ディスクも溢れます。
 

@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 6
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 標準偏差（standard deviation）は[分散](../variance/)の平方根で、データが[平均](../mean/)の周りにどれくらい散らばっているかを元データと同じ単位で表す指標です。身長（cm）のデータなら、分散は `cm²` という解釈しにくい単位になりますが、標準偏差は `cm` のまま扱えます。分散が `25 cm²` なら標準偏差は `5 cm` です。

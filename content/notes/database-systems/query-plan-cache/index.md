@@ -6,25 +6,16 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "query-processing"]
 weight: 14
 wrapTables: true
+topics: ["Query Processing"]
 ---
 
 Query Plan Cache（実行計画のキャッシュ）は、DB（データベース）が同じ形の SQL を受け取るたびに構文解析と実行計画の作成をやり直さず、前に作った結果を使い回す仕組みです。実行計画（query plan）は、どの表をどの順に読み、どの索引を使うかという DB 内部の手順で、作り方は [Query Processing](/notes/database-systems/query-processing/) のノートで説明しています。
 
-使い回しの単位になるのが、プリペアドステートメント（prepared statement）です。`$1` のような値の穴を残した SQL を先に DB に渡しておき、実行時には値だけを送ります。以下は、[PostgreSQL](https://www.postgresql.org/) で `PREPARE` した文を `EXECUTE` する時に、どの段階を飛ばせるかを示した図です。
+使い回しの単位になるのが、プリペアドステートメント（prepared statement）です。`$1` のような値の穴を残した SQL を先に DB に渡しておき、実行時には値だけを送ります。以下は、[PostgreSQL](https://www.postgresql.org/) で `PREPARE` した文を繰り返し `EXECUTE` する時に、解析と計画を何回目に行うかを示した図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
-flowchart LR
-    P["PREPARE<br/>構文解析・名前の解決"] --> T[("保存した<br/>問い合わせの木")]
-    T --> C{"EXECUTE<br/>どちらの計画か"}
-    C -->|"custom plan"| PL["値を入れて<br/>計画を作る"]
-    PL --> EX["実行"]
-    C -->|"generic plan"| G[("保存した<br/>計画")]
-    G --> EX
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/query-plan-cache_concept.svg" alt="PREPARE の時に 1 回だけ解析する。計画は 1〜5 回目の EXECUTE では値ごとに作り、6 回目からは保存した計画 1 つを使い回す。generic plan の方が安く見積もられた場合の流れ" caption="PREPARE した文の解析と計画が行われる回" align="center" >}}
 
-上記の図の左側（解析）は `PREPARE` の時に 1 回だけ行われます。右側の計画は 2 通りで、値を見て毎回作るのが custom plan、値を見ずに作った計画を使い回すのが generic plan です。どちらを使うかを DB が途中で切り替えるので、同じ SQL が 6 回目から急に別の計画で動く、という現象が起こります。
+上記の図の解析は `PREPARE` の時に 1 回だけ行われます。計画は 2 通りで、1〜5 回目のように値を見て毎回作るのが custom plan、6 回目からのように値を見ずに作った計画を使い回すのが generic plan です。どちらを使うかを DB が途中で切り替えるので、同じ SQL が 6 回目から急に別の計画で動く、という現象が起こります。
 
 <br>
 
@@ -54,7 +45,9 @@ flowchart LR
 
 使い回す単位は、DBMS（Database Management System）で違います。PostgreSQL は接続（セッション）ごとに文を保存し、[SQL Server](https://learn.microsoft.com/en-us/sql/sql-server/) と [Oracle Database](https://www.oracle.com/database/) は、サーバー全体で共有する領域に計画を置きます。
 
-[PREPARE](https://www.postgresql.org/docs/17/sql-prepare.html) で作った文は、そのセッションが終わると消え、他の接続からは使えません。アプリが `PREPARE` と書かなくても、ドライバが [拡張問い合わせプロトコル](https://www.postgresql.org/docs/17/protocol-flow.html#PROTOCOL-FLOW-EXT-QUERY)（extended query protocol）の Parse・Bind・Execute の 3 つのメッセージで同じことをしています。Parse で解析し、Bind で値を渡し、多くの場合 Bind の処理の中で計画が作られます。PostgreSQL の手続き言語 PL/pgSQL で書いた関数の中の SQL も、同じ仕組みで計画を使い回します。
+[PREPARE](https://www.postgresql.org/docs/17/sql-prepare.html) で作った文は、そのセッションが終わると消え、他の接続からは使えません。
+
+アプリが `PREPARE` と書かなくても、ドライバが [拡張問い合わせプロトコル](https://www.postgresql.org/docs/17/protocol-flow.html#PROTOCOL-FLOW-EXT-QUERY)（extended query protocol）の Parse・Bind・Execute の 3 つのメッセージで同じことをしています。Parse で解析し、Bind で値を渡し、多くの場合 Bind の処理の中で計画が作られます。PostgreSQL の手続き言語 PL/pgSQL で書いた関数の中の SQL も、同じ仕組みで計画を使い回します。
 
 以下は、ドキュメントで確認できる範囲での比較です（2026 年 11 月時点）。
 
@@ -142,7 +135,13 @@ EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 
 1 回目は `Filter: (shop_id = 1)` と値が埋め込まれた custom plan で、99% を読むので表全体を並列に走査しています。6 回目は条件が `$1` のままの generic plan に変わりました。推定は 1,000,000 / 257 ≒ 3,891 件で、実際の 990,000 件の約 250 分の 1 です。少数と見積もったので、[Index Scan](/notes/database-systems/index-scan/) を選んでいます。
 
-値も SQL も変えていないのに、実行時間は 40 ms から 117 ms に延びました。推定コストで見ると、custom plan の 12,646 に対して generic plan は 579 で、比較の時点では generic plan の方が 20 倍以上安く見えています。同じ実験を 3 回流すと、custom plan（1 回目と後述の force_custom_plan）は 36〜84 ms、generic plan（6・7 回目）は 103〜169 ms で、どの回も generic plan の方が遅くなりました（[2 回目](lab/output-2.txt)・[3 回目](lab/output-3.txt)の出力）。
+値も SQL も変えていないのに、実行時間は 40 ms から 117 ms に延びました。推定コストで見ると、custom plan の 12,646 に対して generic plan は 579 で、比較の時点では generic plan の方が 20 倍以上安く見えています。
+
+同じ実験を 3 回流すと、custom plan（1 回目と後述の force_custom_plan）は 36〜84 ms、generic plan（6・7 回目）は 103〜169 ms でした（[2 回目](lab/output-2.txt)・[3 回目](lab/output-3.txt)の出力）。以下は、3 回の実験の 1・6・7 回目の実行時間を並べた図です。
+
+{{< figure src="images/query-plan-cache_times.svg" alt="3 回の実験とも、1 回目の custom plan は 41〜84 ms、6 回目と 7 回目の generic plan は 103〜169 ms。2〜5 回目は EXPLAIN を付けずに実行したので時間を測っていない" caption="3 回の実験での q(1) の実行時間" align="center" >}}
+
+ばらつきはあっても、どの実験でも 6 回目に generic plan に切り替わった所から遅くなっています。2〜5 回目は `EXPLAIN` を付けずに実行したので、時間を測っていません。
 
 | 実行 | 計画 | 推定件数 | 実際の件数 | 実行時間 |
 |---|---|---|---|---|
@@ -153,7 +152,9 @@ EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 
 並列の走査の `rows` は、全体の件数をワーカー数に応じた係数（ここでは 2.4）で割った推定で、全体では約 99 万件です。上記の表の 3 行目の通り、同じ generic plan でも小さい店舗には向いています。`plan_cache_mode = force_custom_plan` にすると、毎回値を見て計画を作るので、大口店舗は元の並列走査に戻りました。
 
-反対に、最初の 5 回を小さい店舗の値で実行すると、手順の 4 の通り 6 回目も custom plan のままでした（[pg_prepared_statements](https://www.postgresql.org/docs/17/view-pg-prepared-statements.html) の `generic_plans` が 0、`custom_plans` が 6）。custom plan の推定コストは約 15（計画の手間を足して約 20）で、generic plan の 579 より安かったからです。つまり、切り替わるかどうかは、最初の 5 回にどの値が来たかで変わります。
+反対に、最初の 5 回を小さい店舗の値で実行すると、手順の 4 の通り 6 回目も custom plan のままでした（[pg_prepared_statements](https://www.postgresql.org/docs/17/view-pg-prepared-statements.html) の `generic_plans` が 0、`custom_plans` が 6）。custom plan の推定コストは約 15（計画の手間を足して約 20）で、generic plan の 579 より安かったからです。
+
+つまり、切り替わるかどうかは、最初の 5 回にどの値が来たかで変わります。
 
 ### パラメータの偏りで遅くなる条件
 
@@ -165,13 +166,17 @@ EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 
 SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relational-databases/query-processing-architecture-guide#parameter-sensitivity) も同じ構図です。違いは、どの値を前提にするかです。PostgreSQL の generic plan は値を見ない平均的な計画で、SQL Server はコンパイル（または再コンパイル）した時に渡された値を見て作った計画を使い回します。Oracle Database の bind peeking も、ハード解析の時だけ値を見ます。
 
-そのため、SQL Server や Oracle では、たまたま最初に来た値で 1 日の性能が変わる、という形で表に出ます。これに対して、SQL Server 2022 以降の [Parameter Sensitive Plan optimization](https://learn.microsoft.com/en-us/sql/relational-databases/performance/parameter-sensitive-plan-optimization)（PSP、互換性レベル 160 以上）は、統計のヒストグラムから偏った等号の条件を見つけ、件数の範囲ごとに別の計画を持ちます。Oracle の adaptive cursor sharing も、値によって計画を分ける機能です。PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
+そのため、SQL Server や Oracle では、たまたま最初に来た値で 1 日の性能が変わる、という形で表に出ます。
+
+これに対して、SQL Server 2022 以降の [Parameter Sensitive Plan optimization](https://learn.microsoft.com/en-us/sql/relational-databases/performance/parameter-sensitive-plan-optimization)（PSP、互換性レベル 160 以上）は、統計のヒストグラムから偏った等号の条件を見つけ、件数の範囲ごとに別の計画を持ちます。Oracle の adaptive cursor sharing も、値によって計画を分ける機能です。PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
 
 ---
 
 ### 計画が作り直される条件
 
-保存した計画は、表の定義や統計が変わると古くなります。PostgreSQL は、文が参照する表や関数を覚えておき、それらが変わったという通知（キャッシュの無効化）を受けると、次の実行の前に解析と計画をやり直します。[PREPARE のドキュメント](https://www.postgresql.org/docs/17/sql-prepare.html)には、DDL（Data Definition Language、表や索引を定義する SQL）による定義の変更、統計の更新、`search_path` の変更が挙げられています。実験で確かめた結果は以下の通りです。
+保存した計画は、表の定義や統計が変わると古くなります。PostgreSQL は、文が参照する表や関数を覚えておき、それらが変わったという通知（キャッシュの無効化）を受けると、次の実行の前に解析と計画をやり直します。
+
+[PREPARE のドキュメント](https://www.postgresql.org/docs/17/sql-prepare.html)には、DDL（Data Definition Language、表や索引を定義する SQL）による定義の変更、統計の更新、`search_path` の変更が挙げられています。実験で確かめた結果は以下の通りです。
 
 | 変更 | 実験での結果 |
 |---|---|
@@ -196,7 +201,13 @@ SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relati
                ->  Parallel Seq Scan on orders  (cost=0.00..10614.34 rows=208333 width=4)
 ```
 
-ソースを読むと、理由が分かります。計画を捨てる合図は `pg_class`（表の行数やページ数を持つカタログ）などの更新から出ます（[inval.c](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/inval.c#L1383)）。列の値の分布を持つ `pg_statistic` の更新には、保存した計画は反応しません（[plancache.c のコールバック登録](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L162-L172)）。`ANALYZE` は、行数やページ数などが前と同じなら `pg_class` を書き換えません（[vacuum.c の vac_update_relstats](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/commands/vacuum.c#L1545)）。
+ソースを読むと、理由が分かります。計画を捨てる合図は `pg_class`（表の行数やページ数を持つカタログ）などの更新から出ます（[inval.c](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/inval.c#L1383)）。列の値の分布を持つ `pg_statistic` の更新には、保存した計画は反応しません（[plancache.c のコールバック登録](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L162-L172)）。
+
+`ANALYZE` は、行数やページ数などが前と同じなら `pg_class` を書き換えません（[vacuum.c の vac_update_relstats](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/commands/vacuum.c#L1545)）。以下は、合図が出る変更と出ない変更を並べた図です。
+
+{{< figure src="images/query-plan-cache_invalidation.svg" alt="左の列は、DDL・search_path の変更と行数が変わる ANALYZE が pg_class などを更新し、青い矢印の無効化の通知で、次の実行の前に計画を作り直す。右の列は、値の分布だけが変わる ANALYZE が pg_statistic を更新するが、点線で通知は無く、黄土色の箱の古い計画のまま（rows=3891 の見積もり）" caption="計画を捨てる合図が出る更新と出ない更新" align="center" >}}
+
+上記の図の右の列が、実験で元からあった文が 3,891 件の計画のまま残った経路です。
 
 書き込みのある表では、`ANALYZE` のたびに行数やページ数が少しずつ動くので、作り直されることが多い筈です。しかし、値の分布だけが変わった時に古い計画が残る経路があることは、覚えておくと調査の役に立ちます。
 
@@ -204,13 +215,23 @@ SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relati
 
 ### 接続プールとドライバ
 
-アプリが `PREPARE` を書かなくても、ドライバが自動でプリペアドステートメントを使うことがあります。Go の [pgx](https://pkg.go.dev/github.com/jackc/pgx/v5#QueryExecMode) は、既定（`QueryExecModeCacheStatement`）で文を自動的に prepare してキャッシュします。Java の [PgJDBC](https://jdbc.postgresql.org/documentation/server-prepare/) は、`prepareThreshold`（既定 5）に達した 5 回目の実行から名前付きの文に切り替えます。サーバー側の 5 回はそこから数えるので、generic plan への切り替えはさらに後になる筈です（本記事では未検証）。どちらも、ORM（Object-Relational Mapping）越しに SQL を発行するアプリで起こり得ます。
+アプリが `PREPARE` を書かなくても、ドライバが自動でプリペアドステートメントを使うことがあります。Go の [pgx](https://pkg.go.dev/github.com/jackc/pgx/v5#QueryExecMode) は、既定（`QueryExecModeCacheStatement`）で文を自動的に prepare してキャッシュします。Java の [PgJDBC](https://jdbc.postgresql.org/documentation/server-prepare/) は、`prepareThreshold`（既定 5）に達した 5 回目の実行から名前付きの文に切り替えます。
+
+サーバー側の 5 回はそこから数えるので、generic plan への切り替えはさらに後になる筈です（本記事では未検証）。どちらも、ORM（Object-Relational Mapping）越しに SQL を発行するアプリで起こり得ます。
 
 接続プールを挟むと、もう 1 つ問題が出ます。[PgBouncer](https://www.pgbouncer.org/) の transaction mode は、トランザクションが終わるたびにサーバー接続をプールに返します。プリペアドステートメントはサーバー側のセッションにあるので、次のトランザクションが別の接続に割り当てられると、その文は存在しません。
 
 PgBouncer は [1.21.0](https://www.pgbouncer.org/changelog.html)（2023 年 10 月）で、プロトコルの名前付きプリペアドステートメントに対応しました。[max_prepared_statements](https://www.pgbouncer.org/config.html#max_prepared_statements) が 0 以外なら、クライアントが作った文を追跡し、割り当てた接続に無ければその場で prepare します。1.24.0 からは既定値が 200 になり、最初から有効です。ただし、SQL の `PREPARE` と `EXECUTE` はそのまま転送され、追跡されません。
 
-PgBouncer は文を接続ごとに prepare し直すので、「5 回」もサーバー接続ごと・文ごとに数えられる筈です。そのため、同じ API が時々だけ遅いという症状になり得ます（本記事では未検証）。対策として `plan_cache_mode` を `force_custom_plan` にする場合、transaction mode ではセッションの `SET` が別の接続に残るので、トランザクション内の `SET LOCAL` か、`ALTER ROLE ... SET` を使います。後者は新しいサーバー接続にしか効かず、PgBouncer が保持している既存の接続は張り直すまで古い値のままです。
+以下は、1.21 の前と後で、別の接続に割り当てられたトランザクションが同じ文を使う時の動きです。
+
+{{< figure src="images/query-plan-cache_pgbouncer.svg" alt="上段の 1.21 より前では、tx 1 の Parse s1 が接続 A に s1 を作り、tx 2 の Execute s1 は接続 B に割り当てられて、赤い箱の s1 が無く失敗になる。下段の 1.21 以降（max_prepared_statements が 0 以外）では、同じ割り当てでも接続 B に s1 を作ってから実行する" caption="PgBouncer の transaction mode で文が別の接続に渡る時" align="center" >}}
+
+上記の図の tx 1 と tx 2 は、同じクライアントが続けて流したトランザクションです。
+
+PgBouncer は文を接続ごとに prepare し直すので、「5 回」もサーバー接続ごと・文ごとに数えられる筈です。そのため、同じ API が時々だけ遅いという症状になり得ます（本記事では未検証）。
+
+対策として `plan_cache_mode` を `force_custom_plan` にする場合、transaction mode ではセッションの `SET` が別の接続に残るので、トランザクション内の `SET LOCAL` か、`ALTER ROLE ... SET` を使います。後者は新しいサーバー接続にしか効かず、PgBouncer が保持している既存の接続は張り直すまで古い値のままです。
 
 ---
 

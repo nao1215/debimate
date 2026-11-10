@@ -5,6 +5,8 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised", "deep-learning"]
 weight: 34
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
+cardImage: "perceptron_learning_trajectory.svg"
 ---
 
 パーセプトロン（perceptron）は、1958 年に Frank Rosenblatt が[論文](https://doi.org/10.1037/h0042519)で提案した 2 クラス分類器です。入力特徴量に重みを掛けて足し合わせ、その和が 0 を超えれば 1、超えなければ 0 と判定します。

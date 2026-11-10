@@ -2,6 +2,8 @@
 
 再生成:
     uv run --with matplotlib --with numpy python content/notes/blockchain-systems/hash-function/figures.py
+
+概念図 (hash_function_concept.svg) は標準ライブラリだけで SVG を手書きする。
 """
 
 import pathlib
@@ -88,3 +90,86 @@ ax.set_ylabel("Trials needed by brute force")
 ax.legend(loc="upper left", fontsize=9)
 
 save("hash_function_attack_cost.svg")
+
+
+# --- 概念図: 大きさの違う入力が、どれも同じ大きさの 32 バイトに入る ---
+# 標準ライブラリだけで SVG を手書きする。入力の正方形の面積は模式で、
+# 1 文字 < 数 MB < 数 GB の順に大きくし、出力の箱は全て同じ大きさにする。
+from html import escape
+
+HERE = pathlib.Path(__file__).resolve().parent
+INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
+FILL, PALE = "#f2f2f2", "#eaf1f5"
+OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
+GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
+FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+
+
+class Svg:
+    def __init__(self, width, height, title):
+        self.parts = [
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
+            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
+            '<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" '
+            'markerWidth="4" markerHeight="4" orient="auto">'
+            f'<path d="M0,0 L10,5 L0,10 z" fill="{SUB}"/></marker>'
+            '<marker id="arrowred" viewBox="0 0 10 10" refX="8" refY="5" '
+            'markerWidth="4" markerHeight="4" orient="auto">'
+            f'<path d="M0,0 L10,5 L0,10 z" fill="{RED}"/></marker></defs>',
+            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
+        ]
+
+    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle"):
+        self.parts.append(
+            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
+            f'text-anchor="{anchor}" style="fill:{color}">{escape(s)}</text>')
+
+    def circle(self, cx, cy, r, fill, stroke, sw=3, dash=""):
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        self.parts.append(
+            f'<circle cx="{cx}" cy="{cy}" r="{r:.1f}" fill="{fill}" '
+            f'stroke="{stroke}" stroke-width="{sw}"{d}/>')
+
+    def box(self, x, y, w, h, fill, stroke, sw=3, rx=14):
+        self.parts.append(
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
+            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
+
+    def arrow(self, x1, y1, x2, y2, color=SUB, sw=4):
+        m = "arrowred" if color == RED else "arrow"
+        self.parts.append(
+            f'<line x1="{x1}" y1="{y1}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{color}" '
+            f'stroke-width="{sw}" stroke-linecap="round" marker-end="url(#{m})"/>')
+
+    def save(self, path):
+        path.parent.mkdir(exist_ok=True)
+        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+
+
+def concept_figure():
+    f = Svg(960, 540, "大きさの違う入力が、どれも 32 バイトのハッシュ値になる")
+    right = 370  # right edge of the input squares
+    rows = [("1 文字", 14, 92), ("数 MB", 96, 200), ("数 GB", 236, 392)]
+
+    f.box(465, 40, 140, 480, PALE, ACCENT, rx=14)
+    f.text(535, 290, "SHA-256", 26, weight="normal")
+
+    for label, side, cy in rows:
+        x, y = right - side, cy - side / 2
+        f.box(x, y, side, side, FILL, SUB, sw=2.5, rx=3 if side < 30 else 6)
+        if side > 200:
+            f.text(x + side / 2, cy + 9, label, 28)
+        else:
+            f.text(60, cy + 9, label, 28, anchor="start")
+        f.arrow(right + 10, cy, 455, cy)
+        f.arrow(615, cy, 682, cy)
+        f.box(690, cy - 34, 200, 68, GREEN_PALE, GREEN, rx=8)
+        f.text(790, cy + 9, "32 バイト", 26, INK, weight="normal")
+
+    f.text(790, 495, "どれも同じ長さ", 26, SUB)
+    f.text(60, 34, "入力の大きさは模式", 24, SUB, anchor="start")
+    f.save(OUT / "hash_function_concept.svg")
+
+
+concept_figure()

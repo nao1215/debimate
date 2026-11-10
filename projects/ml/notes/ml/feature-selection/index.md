@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 17
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 特徴量選択（feature selection）は、使える特徴量の中からモデルにとって有用な部分集合を選び出し、それ以外を捨てる前処理です。目的は (1) [過学習](../overfitting/) の抑制、(2) 学習・推論コストの削減、(3) モデルの説明性向上、(4) [次元の呪い](../curse-of-dimensionality/) の緩和、の 4 点に集約されます。

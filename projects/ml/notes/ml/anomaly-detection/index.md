@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 32
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 異常検知（anomaly detection、outlier detection）は、大多数の正常データから外れた点を見つける手法です。クレジットカードの不正利用、設備の故障の予兆、ネットワークへの侵入のように、見つけたい側のサンプルが極端に少なく、事前にラベルを付けられない場面で使います。

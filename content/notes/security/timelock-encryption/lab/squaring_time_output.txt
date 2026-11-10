@@ -1,0 +1,15 @@
+ 12:28:54 up 7 days, 22:39,  1 user,  load average: 20.38, 13.06, 8.78
+n: 2048 bits, logical CPUs: 32, repeat: 5 (fastest kept)
+part 1: one chain, one core
+  t= 50,000    0.41 s   122,454 squarings/s  match=True
+  t=100,000    0.82 s   121,808 squarings/s  match=True
+  t=200,000    1.93 s   103,460 squarings/s  match=True
+  t=400,000    3.58 s   111,728 squarings/s  match=True
+  t=800,000    6.45 s   123,990 squarings/s  match=True
+part 2: t=200,000, wall time until one result
+  workers= 1  chain: first done  1.57 s (all  1.58 s, match=True)  independent squarings:  1.81 s
+  workers= 2  chain: first done  1.38 s (all  1.40 s, match=True)  independent squarings:  0.89 s
+  workers= 4  chain: first done  1.39 s (all  1.47 s, match=True)  independent squarings:  0.45 s
+  workers= 8  chain: first done  1.38 s (all  1.44 s, match=True)  independent squarings:  0.22 s
+  workers=16  chain: first done  1.46 s (all  1.93 s, match=True)  independent squarings:  0.19 s
+ 12:31:20 up 7 days, 22:42,  1 user,  load average: 20.00, 15.63, 10.37

@@ -6,6 +6,7 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "wallet", "security", "oss"]
 weight: 17
 wrapTables: true
+topics: ["Transaction / Wallet"]
 ---
 
 ウォレット（wallet）は、Bitcoin などの暗号資産を受け取り、残高を確認し、他の相手に送るためのソフトウェアです。PC やスマートフォンの画面で操作するタイプと、コマンドを入力して操作するタイプがあります。
@@ -76,8 +77,8 @@ sequenceDiagram
 同じ送金先と数量は、CLI でも指定できます。GUI は一件ずつ内容を確認する用途に、CLI は送金テストや残高照会の自動化に向いています。
 
 {{< figures height="12rem" >}}
-{{< figure src="images/gui-input.svg" alt="GUI では送金先と数量を入力欄に指定する" >}}
-{{< figure src="images/cli-input.svg" alt="CLI では同じ送金先と数量をコマンドの引数に指定する。実行用ではない模式例" >}}
+{{< figure src="images/gui-input.svg" alt="GUI では送金先と数量を入力欄に指定する" caption="GUI での指定" align="center" >}}
+{{< figure src="images/cli-input.svg" alt="CLI では同じ送金先と数量をコマンドの引数に指定する。実行用ではない模式例" caption="CLI での指定（模式例）" align="center" >}}
 {{< /figures >}}
 
 <br>
@@ -193,7 +194,7 @@ sequenceDiagram
 
 [Foundry](https://getfoundry.sh/anvil/overview/) に含まれる Anvil でチェーンを起動し、cast コマンドで送金します。独立したチェーン A・B を用意し、A だけで送金して、B の残高も確認しました。接続先はどちらも自分の PC を表す `127.0.0.1` です。
 
-![ローカルチェーン A の送金前後。送金者は数量と手数料を失い、受取人は数量を受け取る。別チェーン B の残高は変わらない](images/local-transfer.svg#center)
+{{< figure src="images/local-transfer.svg" alt="ローカルチェーン A の送金前後。送金者は数量と手数料を失い、受取人は数量を受け取る。別チェーン B の残高は変わらない" caption="チェーン A での送金の前後と、チェーン B の残高" align="center" >}}
 
 残高照会と送金のコードは以下の通りです。Anvil のチェーン A・B を上記の設定で起動した後に実行します。`cast balance` の出力単位は wei で、後述の表では ETH に換算しています。アカウント一覧からアドレスを取り出すために JSON を加工する [jq](https://jqlang.org/) を使います。ノードの起動・終了と結果の検査を含む全体は [run.sh](lab/run.sh)、環境の用意は [README](lab/README.txt) にあります。
 

@@ -6,29 +6,18 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 11
 wrapTables: true
+topics: ["Transaction / Concurrency Control"]
 ---
 
 Deadlock（デッドロック）は、2 本以上のトランザクションが互いのロックの解放を待ち、どれも先に進めなくなる状態です。レコードを更新すると DBMS（Database Management System）はそのレコードにロックを取り、通常はトランザクションが終わるまで解放しません。
 
 デッドロックを検出すると、PostgreSQL は `deadlock detected`、MySQL は `Deadlock found when trying to get lock; try restarting transaction` を返します。手元で 1 本ずつ動かしている間は出ず、同じ処理が同時に走る本番環境で遭遇しやすいです。
 
-1 件目を更新した後に 2 件目を待っている間も、1 件目のロックは握ったままです。例えば、2 本が同じ 2 件を逆の順で触ると、次の図のようになります。
+1 件目を更新した後に 2 件目を待っている間も、1 件目のロックは握ったままです。例えば、2 本が同じ 2 件を逆の順で触った場合（左）と、同じ順で触った場合（右）を次の図に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant A as 送金 A
-    participant R1 as 口座 1 のレコード
-    participant R2 as 口座 2 のレコード
-    participant B as 送金 B
-    A->>R1: 更新してロックを取る
-    B->>R2: 更新してロックを取る
-    A->>R2: 更新したい<br/>B の解放を待つ
-    B->>R1: 更新したい<br/>A の解放を待つ
-    Note over A,B: 互いの解放を待ち<br/>どちらも進まない
-```
+{{< figure src="images/deadlock_concept.svg" alt="左は送金 A が口座 1、送金 B が口座 2 のロックを持ったまま互いに相手の口座を待ち、待ちの矢印と保持の線が一周する。右は送金 A が両方の口座を持ち、送金 B は口座 1 を待つだけで、辿っても出発点に戻らない。" caption="待ちが一周するデッドロックと、一周しない待ち" align="center" >}}
 
-上記の図の送金 A と送金 B は、互いに相手を待っています。誰が誰を待っているのかを辿ると出発点に戻るため、この関係を循環待ち（circular wait）と呼びます。A が B、B が C、C が A を待つ 3 本の形でも同じく循環します。
+上記の図の左では、送金 A と送金 B が互いに相手を待っています。誰が誰を待っているのかを辿ると出発点に戻るため、この関係を循環待ち（circular wait）と呼びます。A が B、B が C、C が A を待つ 3 本の形でも同じく循環します。右のように取る順序を揃えると、送金 B は待つだけで環になりません。
 
 <br>
 
@@ -183,6 +172,34 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 更新したレコードが 1 件でない場合にエラーを返しているのは、口座が見つからない更新を黙って飛ばすと、片側だけ適用された送金が確定するからです。途中の `UPDATE` で失敗すると `defer` の `tx.Rollback()` が走り、それまでの更新も残りません。この関数は 1 回しか試行せず、デッドロックで中止された時は呼び出し側が関数ごと実行し直します。
 
 並べ替えのキーは主キー以外でも構いません。条件は、全ての対象に対して決定的な順序を作れること、その順序に使う値がロック取得中に変わらないこと、全ての経路が同じ規則で並べることです。同順位があり得るキーを使うなら、`priority ASC, id ASC` のように、主キーのような一意な値を最後の比較キーに加えます。
+
+<br>
+
+順序を揃えた効き目は、件数で確かめられます。PostgreSQL 17.11 で、2 つの口座の間で 1 円を動かす送金を pgbench から並行に流し、デッドロックで中止された割合を数えました。
+
+送金元と送金先は口座の中から一様に選び、2 本の `UPDATE` の間に 5 ms の処理を挟みます。受け付けた順（送金元が先）でロックを取る場合と、口座 ID の昇順で取る場合を比べます。`deadlock_timeout` は実験を早く終えるために 100 ms に縮め、中止した送金は再試行しません。
+
+```sql
+-- 受け付けた順
+BEGIN;
+UPDATE accounts SET balance = balance - 1 WHERE id = :a;
+SELECT pg_sleep(0.005);
+UPDATE accounts SET balance = balance + 1 WHERE id = :b;
+END;
+
+-- ID の昇順。:lo と :hi は :a と :b の小さい方と大きい方、:dlo は :lo 側の増減
+BEGIN;
+UPDATE accounts SET balance = balance + :dlo WHERE id = :lo;
+SELECT pg_sleep(0.005);
+UPDATE accounts SET balance = balance - :dlo WHERE id = :hi;
+END;
+```
+
+各クライアントが 200 件ずつ流した結果が以下の図です（全体は [lab/deadlock_rate.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/deadlock/lab/deadlock_rate.py) の出力）。
+
+{{< figure src="images/deadlock_rate.svg" alt="左は口座 10 件、右は口座 100 件で、並列度を 1 から 32 に増やした時のデッドロックによる中止の割合。受け付けた順では並列度とともに増え、10 件・32 並列で 55% に達する。ID の昇順はどちらも全ての並列度で 0。" caption="ロックの取得順と並列度ごとの、デッドロックによる中止の割合" align="center" >}}
+
+上記の図の通り、受け付けた順では並列度が上がるほど中止が増え、口座が少なく送金が同じ口座に集まるほど急に増えます。ID の昇順では、2 回流した測定のどちらでも、全ての条件で 0 件でした。受け付けた順の割合は流すたびに少し動きます（10 件・32 並列で 55.4% と 54.4%）。
 
 ---
 

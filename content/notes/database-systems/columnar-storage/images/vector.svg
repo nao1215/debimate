@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>1 行ずつ渡す実行器と、vector ずつ渡す実行器の呼び出し回数</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="70" font-size="26" font-weight="normal" text-anchor="start">1 行ずつ</text>
+<text x="40" y="108" font-size="24" font-weight="normal" text-anchor="start" class="sub">呼び出し 約 400 万回</text>
+<text x="40" y="142" font-size="24" font-weight="normal" text-anchor="start" class="sub">1 回の中身: 足し算 1 回</text>
+<rect x="380" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M400.0 140 L400.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="400.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="434" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M454.0 140 L454.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="454.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="488" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M508.0 140 L508.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="508.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="542" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M562.0 140 L562.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="562.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="596" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M616.0 140 L616.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="616.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="650" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M670.0 140 L670.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="670.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="704" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M724.0 140 L724.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="724.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="758" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M778.0 140 L778.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="778.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="812" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M832.0 140 L832.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="832.0" cy="96" r="6" fill="#d4a24c"/>
+<rect x="866" y="150" width="40" height="48" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<path d="M886.0 140 L886.0 100" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="886.0" cy="96" r="6" fill="#d4a24c"/>
+<text x="906" y="230" font-size="24" font-weight="normal" text-anchor="end" class="sub">…</text>
+<text x="40" y="330" font-size="26" font-weight="normal" text-anchor="start">vector ずつ</text>
+<text x="40" y="368" font-size="24" font-weight="normal" text-anchor="start" class="sub">呼び出し 約 2,000 回</text>
+<text x="40" y="402" font-size="24" font-weight="normal" text-anchor="start" class="sub">1 回の中身: 配列を回すループ</text>
+<rect x="372" y="412" width="542" height="64" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="380" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="434" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="488" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="542" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="596" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="650" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="704" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="758" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="812" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<rect x="866" y="420" width="40" height="48" fill="#ffffff" stroke="#7aa6c2" stroke-width="1.5"/>
+<path d="M643.0 404 L643.0 330" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="643.0" cy="326" r="6" fill="#d4a24c"/>
+<text x="643.0" y="512" font-size="24" font-weight="normal" text-anchor="middle" class="sub">2,048 件を 1 回で渡す</text>
+<rect x="560" y="34" width="22" height="22" fill="#ffffff" stroke="#d4a24c" stroke-width="0"/>
+<circle cx="571" cy="45" r="6" fill="#d4a24c"/>
+<text x="592" y="54" font-size="24" font-weight="normal" text-anchor="start">演算子間の呼び出し 1 回</text>
+</svg>

@@ -6,28 +6,18 @@ series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "failure-detection"]
 weight: 1
 wrapTables: true
+topics: ["Replication / Coordination"]
 ---
 
 ハートビート（heartbeat）は、ノードが「自分は生きている」という短い信号を一定間隔で送り続け、受け取る側がその途絶をもって障害と判断する仕組みです。
 
 分散システムでは、あるノードが応答しない理由を外から確定できません。監視側は、一定時間内に信号を受信したかどうかでノードの状態を判定します。
 
-登場人物と信号の向きを以下に示します。監視される側から送る形が基本です。
+以下は、Monitor が 3 台のノードから受け取った信号を時間に沿って並べた図です。各ノードは 1 秒ごとに信号を送り、Monitor は 5 秒間受信が無ければ故障とみなします。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    N1[Node 1] -- heartbeat --> M[Monitor]
-    N2[Node 2] -- heartbeat --> M
-    N3[Node 3] -. 途絶 .-> M
-    M --> D
-    subgraph Monitor の内部判断
-        D[一定時間 受信なし] --> F[Node 3 を故障とみなす]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/heartbeat_concept.svg" alt="横軸は経過秒数で、ノードごとに受信した信号の目盛りが並ぶ。Node 1 は途切れない。Node 3 は 3 秒で途絶え、5 秒後の 8 秒で故障とみなされる。GC で 8 秒止まった Node 2 も 7 秒で故障とみなされ、10 秒から信号が戻るので誤検知になる" caption="Monitor が受け取る信号と、5 秒の途絶で故障とみなす時点" align="center" >}}
 
-上記の図の点線部分が途絶えた信号です。落ちたノードは自分の停止を報告できないので、Monitor は「何も届かないこと」から Node 3 の故障を判断します。
+落ちたノードは自分の停止を報告できないので、Monitor は「何も届かないこと」から Node 3 の故障を判断します。上記の図の Node 2 は止まっていただけですが、Monitor からは Node 3 と同じに見えます。
 
 <br>
 
@@ -80,7 +70,11 @@ sequenceDiagram
 
 構成要素は、送信間隔・タイムアウト・状態遷移の 3 つだけです。ノードは間隔 `T` ごとに信号を送り、監視側は最後に受信した時刻からの経過が閾値を超えたら故障とみなします。閾値は間隔の数倍に取るのが通常で、1 回や 2 回の取りこぼしで故障扱いにしないための余裕を持たせます。具体的には、1 秒ごとに信号を送り、5 秒間受信が無ければ故障とみなす設定です。
 
-監視の形は 2 通りあります。1 台の監視役が全ノードを見る中央集約型（central monitoring）と、各ノードが互いを見る相互監視型（mutual monitoring）です。ノード数を `n` とすると、1 周期に流れるメッセージは中央集約型で `n` 本、相互監視型で `n × (n-1)` 本になります。中央集約型は通信量が少ない代わりに、監視役に負荷が集中し、そこが落ちると誰も故障を検知できません。相互監視型は特定の監視役に依存しません。
+監視の形は 2 通りあります。1 台の監視役が全ノードを見る中央集約型（central monitoring）と、各ノードが互いを見る相互監視型（mutual monitoring）です。ノード数を `n` とすると、1 周期に流れるメッセージは中央集約型で `n` 本、相互監視型で `n × (n-1)` 本になります。
+
+{{< figure src="images/heartbeat_topology.svg" alt="左の中央集約型は、黄土色の監視役の円に 5 つのノードから 1 本ずつ矢印が入り、1 周期に n = 5 本。右の相互監視型は、5 つのノードの全ての組が両向きの矢印で結ばれ、1 周期に n × (n−1) = 20 本" caption="ノードが 5 台の時の、監視の形ごとの信号の本数" align="center" >}}
+
+中央集約型は通信量が少ない代わりに、監視役に負荷が集中し、そこが落ちると誰も故障を検知できません。相互監視型は特定の監視役に依存しません。
 
 <br>
 
@@ -136,6 +130,45 @@ SWIM では、各ノードが自分の世代番号（incarnation number）を持
 | 短い（間隔の 2〜3 倍） | 速い | 増える | 同一データセンタ内、遅延が安定している |
 | 長い（間隔の 5〜10 倍） | 遅い | 減る | 拠点をまたぐ、遅延のばらつきが大きい |
 
+この表の傾きをシミュレーションで確かめました。1 秒間隔の信号を約 116 日分（1,000 万回）送り、一定の確率で信号が失われ、遅延は対数正規分布でばらつき、時々送信が止まる（GC などを想定）という前提を置きます。
+
+遅延の安定した stable と、ばらつきの大きい jittery の 2 通りで、閾値を間隔 `T` の 2〜10 倍に変えて誤検知の回数を数え、ランダムな時刻に 10 万回停止させて検知までの時間を測りました。パラメータは説明用に決めた値で、実測ではありません。
+
+以下は計算の抜粋です。計算の全体は [sim.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/heartbeat/lab/sim.py)、stable を含む全ての出力は [sim_output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/heartbeat/lab/sim_output.txt) にあります。
+
+```python
+send = np.arange(N) * T
+# 停止中に送るはずだった信号は、停止が明けてから出る
+send = np.where(inside, end[np.maximum(j, 0)], send)
+arrive = send + base + rng.lognormal(np.log(median), sigma, N)
+arrive[rng.random(N) < loss] = -np.inf  # 失われた信号
+gaps = np.diff(np.sort(arrive[np.isfinite(arrive)]))
+false_per_day = np.count_nonzero(gaps > k * T) / DAYS
+```
+
+以下は、閾値ごとに検知の遅れと誤検知の回数を並べたグラフです。
+
+{{< figure src="images/heartbeat_timeout_tradeoff.svg" alt="横軸は停止から検知までの平均秒数、縦軸は 1 日あたりの誤検知の回数（対数）。stable は 2T の 43 回から 4T の 0.009 回まで急に下がり、8T 以上は 0 回で点が無い。jittery は 2T の 688 回から 3T で 17 回に下がった後は緩やかで、10T でも 0.67 回残る" caption="閾値を 2T〜10T に変えた時の検知の遅れと誤検知（シミュレーション）" align="center" >}}
+
+<details>
+<summary>jittery の出力（グラフの元の数値）</summary>
+
+```text
+[jittery] loss=0.01 delay=80ms+lognormal(median=50ms, sigma=1.2) stalls=1/h lognormal(median=2s, sigma=0.8)
+timeout  false/day  mean_delay_s  p99_delay_s
+   2xT    687.891          1.68         2.64
+   3xT     16.641          2.68         3.64
+   4xT      5.676          3.68         4.64
+   5xT      3.413          4.68         5.64
+   6xT      2.402          5.68         6.64
+   8xT      1.054          7.68         8.64
+  10xT      0.674          9.68        10.64
+```
+
+</details>
+
+検知の遅れは閾値にほぼ比例して延びます。一方で、誤検知は 2T から 3T で 1 桁以上減った後、jittery では数秒の停止が残るため、閾値を伸ばしても減り方が鈍ります。
+
 閾値を短くしすぎると、誤検知そのものより、それをきっかけに走る再選出が問題になります。生きているリーダーを故障とみなして再選出を始めると、旧リーダーが応答を再開した直後にまた別の再選出が走り、選出を繰り返すだけでクラスタが仕事を進められなくなります。
 
 リーダーはノードの投票で選ばれます。過半数の票を必要としない構成では、分断の両側でそれぞれリーダーが立つ split brain（二重リーダー）も、誤検知がきっかけで起こります。
@@ -164,7 +197,11 @@ Raft では、リーダーが読み取りに応答する前に過半数とハー
 
 Phi Accrual Failure Detector は、Hayashibara 氏らが 2004 年に発表した論文「[The φ accrual failure detector](https://dspace.jaist.ac.jp/dspace/handle/10119/4784)」で提案された方式です。直近のハートビート到着間隔を記録して分布を推定し、「最後の受信からの経過時間が、その分布から見てどれだけ外れているか」を `phi` という 1 つの数値で表します。定義は `phi = -log10(P)` です。
 
-最後の受信から `t` 秒が経ったとして、`P` は「到着間隔に当てはめた確率モデルの上で、間隔が `t` 秒より長くなる確率」を表します。`phi` が 1 増えるたびに `P` は 1/10 になり、`phi = 1` はモデル上の `P` が 10%、`phi = 2` は 1%、`phi = 3` は 0.1% であることに対応します。これはモデルが実際の遅延分布と一致する場合の値で、現実の障害確率や誤検知率を直接表す値ではありません。
+最後の受信から `t` 秒が経ったとして、`P` は「到着間隔に当てはめた確率モデルの上で、間隔が `t` 秒より長くなる確率」を表します。`phi` が 1 増えるたびに `P` は 1/10 になり、`phi = 1` はモデル上の `P` が 10%、`phi = 2` は 1%、`phi = 3` は 0.1% であることに対応します。
+
+{{< figure src="images/heartbeat_phi.svg" alt="横軸は最後の受信からの経過時間 t、青い曲線はこれまでの到着間隔の分布。t が右へ進むほど、曲線の右側の裾の面積 P が小さくなる。点線の位置で φ = 1 は P = 10%、φ = 2 は P = 1%、φ = 3 は P = 0.1%。φ = 1 より右の裾を黄土色で塗っている" caption="到着間隔の分布の裾の面積 P と phi の対応（正規分布の例）" align="center" >}}
+
+この値はモデルが実際の遅延分布と一致する場合の値で、現実の障害確率や誤検知率を直接表す値ではありません。
 
 当てはめる分布は実装によって違い、上記の論文と分散アプリ用のライブラリ [Akka](https://doc.akka.io/libraries/akka-core/current/typed/failure-detector.html) は正規分布、分散 DB（データベース）の [Cassandra](https://github.com/apache/cassandra/blob/trunk/src/java/org/apache/cassandra/gms/FailureDetector.java) は指数分布を使います。どの分布を選んでも、到着間隔の傾向が急に変わった直後は推定が追いつきません。
 

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>WAL のセグメントと、低位・高位ウォーターマークとログ末尾の位置</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .red{fill:#e15759}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="40" y="196" width="190" height="100" fill="#f2f2f2" stroke="#666666" stroke-width="2" stroke-dasharray="9 6"/>
+<text x="135.0" y="238" font-size="24" font-weight="normal" text-anchor="middle" class="sub">segment 1</text>
+<text x="135.0" y="274" font-size="24" font-weight="normal" text-anchor="middle" class="sub">1〜100</text>
+<rect x="230" y="196" width="190" height="100" fill="#f2f2f2" stroke="#666666" stroke-width="2" stroke-dasharray="9 6"/>
+<text x="325.0" y="238" font-size="24" font-weight="normal" text-anchor="middle" class="sub">segment 2</text>
+<text x="325.0" y="274" font-size="24" font-weight="normal" text-anchor="middle" class="sub">101〜200</text>
+<rect x="420" y="196" width="270" height="100" fill="#e9f1e6" stroke="#8fae86" stroke-width="3"/>
+<text x="555.0" y="238" font-size="24" font-weight="normal" text-anchor="middle">segment 3</text>
+<text x="555.0" y="274" font-size="24" font-weight="normal" text-anchor="middle">201〜240</text>
+<rect x="690" y="196" width="170" height="100" fill="#f8eed8" stroke="#d4a24c" stroke-width="4"/>
+<text x="775.0" y="258" font-size="24" font-weight="normal" text-anchor="middle">241〜250</text>
+<rect x="860" y="196" width="60" height="100" fill="#ffffff" stroke="#666666" stroke-width="1.5" stroke-dasharray="4 5"/>
+<line x1="420" y1="156" x2="420" y2="310" stroke="#1f1f1f" stroke-width="5" stroke-linecap="round"/>
+<text x="420" y="106" font-size="26" font-weight="normal" text-anchor="middle">低位</text>
+<text x="420" y="142" font-size="24" font-weight="normal" text-anchor="middle">L = 201</text>
+<line x1="690" y1="156" x2="690" y2="310" stroke="#1f1f1f" stroke-width="5" stroke-linecap="round"/>
+<text x="690" y="106" font-size="26" font-weight="normal" text-anchor="middle">高位</text>
+<text x="690" y="142" font-size="24" font-weight="normal" text-anchor="middle">H = 240</text>
+<line x1="860" y1="156" x2="860" y2="310" stroke="#1f1f1f" stroke-width="5" stroke-linecap="round"/>
+<text x="860" y="106" font-size="26" font-weight="normal" text-anchor="middle">末尾</text>
+<text x="860" y="142" font-size="24" font-weight="normal" text-anchor="middle">T = 250</text>
+<text x="230.0" y="360" font-size="26" font-weight="normal" text-anchor="middle" class="sub">削除して良い</text>
+<text x="230.0" y="398" font-size="24" font-weight="normal" text-anchor="middle" class="sub">スナップショットに反映済み</text>
+<text x="555.0" y="360" font-size="26" font-weight="normal" text-anchor="middle">確定済み</text>
+<text x="775.0" y="360" font-size="26" font-weight="normal" text-anchor="middle">見せない</text>
+<text x="775.0" y="398" font-size="24" font-weight="normal" text-anchor="middle" class="sub">未確定</text>
+<line x1="40" y1="490" x2="910" y2="490" stroke="#666666" stroke-width="2"/>
+<polygon points="920,490 904,482 904,498" fill="#666666"/>
+<text x="920" y="524" font-size="24" font-weight="normal" text-anchor="end" class="sub">追記する向き</text>
+</svg>

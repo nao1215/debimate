@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>6 つの構成で、停止中に処理できた要求 B と下流に届いた呼び出し</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="340" y="52" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">処理できた要求 B</text>
+<text x="670" y="52" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">下流に届いた呼び出し</text>
+<text x="20" y="114" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">ブレーカーなし</text>
+<rect x="340" y="88" width="79.0044671346522" height="36" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="429.0044671346522" y="115" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">619</text>
+<rect x="670" y="88" width="180.0" height="36" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="860.0" y="115" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">600</text>
+<text x="20" y="178" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">ブレーカー</text>
+<rect x="340" y="152" width="191.32099553286534" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="541.3209955328654" y="179" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">1,499</text>
+<rect x="670" y="152" width="18.0" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="698.0" y="179" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">60</text>
+<text x="20" y="242" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">ブレーカー、timeout 30 秒</text>
+<rect x="340" y="216" width="5.360561582641991" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="355.360561582642" y="243" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">42</text>
+<rect x="670" y="216" width="12.0" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="692.0" y="243" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">40</text>
+<text x="20" y="330" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">試行 3 回、ブレーカーなし</text>
+<rect x="340" y="304" width="26.164645820038288" height="36" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="376.1646458200383" y="331" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">205</text>
+<rect x="670" y="304" width="180.0" height="36" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="860.0" y="331" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">600</text>
+<text x="20" y="394" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Retry(CircuitBreaker)</text>
+<rect x="340" y="368" width="190.42756860242503" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="540.427568602425" y="395" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">1,492</text>
+<rect x="670" y="368" width="18.3" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="698.3" y="395" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">61</text>
+<text x="20" y="458" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">CircuitBreaker(Retry)</text>
+<rect x="340" y="432" width="162.73133375877472" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="512.7313337587748" y="459" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">1,275</text>
+<rect x="670" y="432" width="49.5" height="36" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="729.5" y="459" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">165</text>
+<path d="M20,286 H940" fill="none" stroke="#d9d9d9" stroke-width="2" stroke-linecap="butt"/>
+<text x="480" y="524" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">下流が黙っていた 30 秒間の件数（要求 B は 1,567 件中）。青はブレーカーあり</text>
+</svg>

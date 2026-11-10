@@ -6,6 +6,7 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 1
 wrapTables: true
+topics: ["Domain-Driven Design"]
 ---
 
 EC サイトの注文に「代金引換で支払う注文は、明細の合計金額が引換の上限額を超えない」という規則を置いたとします。明細を書き換えられる経路が複数あると、規則を検査しない経路から上限を超えた注文ができます。同姓同名の顧客を同じ人として扱う取り違えも、値の比べ方を決めていないと起きます。
@@ -18,28 +19,9 @@ Value Object は属性だけで決まる値、Entity は同一性を表す ID �
 
 以下は、注文（`Order`）と明細（`OrderLine`）を例にした 3 つの関係です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
-    subgraph AG["Order 集約"]
-        R["Order<br/>集約ルート（Entity）"]
-        L["OrderLine<br/>Entity"]
-        M["Money<br/>Value Object"]
-        R --> L
-        L --> M
-    end
-    subgraph CG["Customer 集約"]
-        CR["Customer<br/>集約ルート（Entity）"]
-        AD["Address<br/>Value Object"]
-        CR --> AD
-    end
-    EX["集約の外側のコード"] --> R
-    EX -. "参照を保持しない" .-> L
-    R -. "CustomerID で参照する" .-> CR
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/value-object-entity-aggregate_concept.svg" alt="Order 集約と Customer 集約がそれぞれ枠で描かれ、枠の入口は縁に置かれた集約ルートだけになっている。ID 札を持つ Entity の Order と OrderLine、札だけの Value Object の Money と Address が中に入る。外のコードが OrderLine に直接向かう赤い矢印は枠で止められ、Order は Customer を CustomerID だけで指す" caption="注文の集約と顧客の集約。入口は集約ルートだけ" align="center" >}}
 
-上記の図の点線が制約を表しています。集約の外側が参照を保持して良いのは、集約ルートである `Order` だけです。`Customer` 集約に向かう点線は、ルート同士を結んでいます。Entity は ID を持つので、他の集約からはその ID で指せます。
+上記の図で ID 札を付けた箱が Entity、札だけのものが Value Object です。集約の外側が参照を保持して良いのは、枠の縁にある集約ルートの `Order` だけで、`OrderLine` に直接向かう経路は枠で止まります。`Customer` 集約に向かう点線は、ルート同士を結んでいます。Entity は ID を持つので、他の集約からはその ID で指せます。
 
 <br>
 
@@ -94,7 +76,11 @@ Value Object と Entity のどちらにするかは、属性が同じ 2 つを�
 
 Value Object とは、属性の組み合わせだけで意味が決まり、同一性を持たないオブジェクトです。属性が全て等しければ等価です。[DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf)（Eric Evans 氏が DDD のパターンをまとめた文書）に従って不変なものとして扱うので、変更が必要な場合は属性を書き換えずに新しい値を作ります。
 
-数値だけを渡して単位を落とすと、受け取った側は取り違えに気付けません。1999 年 9 月 23 日、NASA の火星探査機 Mars Climate Orbiter は、予定より約 170 km 低い軌道で火星に近づき、失われました。地上のソフトウェアが推進装置の噴射のデータ（力積）をポンド秒で書き出し、軌道を計算する側は、ファイルの仕様に定めたニュートン秒として[読んでいました](https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf)。1 ポンド重は約 4.45 ニュートンなので、値は 4.45 分の 1 に読まれていました。
+数値だけを渡して単位を落とすと、受け取った側は取り違えに気付けません。1999 年 9 月 23 日、NASA の火星探査機 Mars Climate Orbiter は、予定より約 170 km 低い軌道で火星に近づき、失われました。
+
+地上のソフトウェアが推進装置の噴射のデータ（力積）をポンド秒で書き出し、軌道を計算する側は、ファイルの仕様に定めたニュートン秒として[読んでいました](https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf)。1 ポンド重は約 4.45 ニュートンなので、値は 4.45 分の 1 に読まれていました。
+
+{{< figure src="images/value-object-entity-aggregate_units.svg" alt="上段は Mars Climate Orbiter の受け渡し。青い地上のソフトウェアがポンド秒で書き出し、灰色のファイルには数値の 100 だけが入り、黄土色の軌道の計算がそれをニュートン秒として読む。下に「100 ポンド秒は約 445 ニュートン秒。ファイルに単位は無い」。下段は Value Object にした金額で、Money の枠の中に amount 1999 と currency JPY が並び、右に「組のまま渡る」" caption="数値だけの受け渡しと、単位を組で持つ Money" align="center" >}}
 
 この事故の受け渡しはファイルでしたが、数値と単位を組で持たなかった点は、プログラムの中で金額から通貨が落ちる場合と同じです。例えば、金額と通貨を組にした `Money` を Value Object にすれば、通貨の落ちた金額は作れなくなります。足し算は元の値を書き換えずに新しい `Money` を返します。
 
@@ -112,7 +98,9 @@ Entity とは、属性が変化しても同じものとして追跡する対象�
 
 Aggregate とは、1 つの単位として扱う一群のドメインオブジェクトで、その中の 1 つを集約ルートに選びます。[Martin Fowler 氏の説明](https://martinfowler.com/bliki/DDD_Aggregate.html)では、集約の外からの参照は集約ルートに向かい、ルートが集約全体の整合性を保証します。読み書きの単位も集約になり、トランザクションも集約の境界をまたがないようにします。
 
-集約の外側は、内側の `OrderLine` を `Order` から受け取って 1 回の操作の中で読むことができます。禁じられているのは、受け取った参照をフィールドに格納したり他のオブジェクトに渡したりして、その操作が終わった後も使える状態にすることです。`Order` から `OrderLine`、`OrderLine` から `Money` への参照にこの制約がかからないのは、集約の内側でオブジェクトがどう繋がっているかが、外側から見えないからです。
+集約の外側は、内側の `OrderLine` を `Order` から受け取って 1 回の操作の中で読むことができます。禁じられているのは、受け取った参照をフィールドに格納したり他のオブジェクトに渡したりして、その操作が終わった後も使える状態にすることです。
+
+`Order` から `OrderLine`、`OrderLine` から `Money` への参照にこの制約がかからないのは、集約の内側でオブジェクトがどう繋がっているかが、外側から見えないからです。
 
 境界は、オブジェクトの近さではなく不変条件で決めます。合計金額の上限という規則が注文と明細にまたがるなら、その 2 つは同じ集約に入ります。規則がまたがらない顧客は別の集約になり、`Order` からは `CustomerID` で参照します。
 

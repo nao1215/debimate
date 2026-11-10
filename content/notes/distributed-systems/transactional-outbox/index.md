@@ -6,30 +6,20 @@ series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "messaging"]
 weight: 8
 wrapTables: true
+topics: ["Distributed Transactions"]
+crossTopics:
+  software-architecture: ["CQRS / Event Sourcing"]
 ---
 
 Transactional Outbox は、送るべきメッセージを業務データの更新と同じトランザクションで DB の outbox テーブルに書き、別のプロセス（message relay）がそれを後からメッセージブローカー（メッセージを預かって受信側に配る仕組み）に送るパターンです。書き込み先を DB の 1 箇所に寄せることで、2 つの書き込みが食い違う余地を減らします。
 
 例えば、注文を確定する処理には書き込み先が 2 つあります。1 つは注文を記録する DB、もう 1 つは在庫や配送を担う別のサービスに「注文が確定した」と伝えるためのメッセージブローカーです。
 
-以下は、注文を確定した直後にプロセスが停止した場合の流れです。
+以下は、DB とブローカーに別々に書く二重書き込み（左）と、Transactional Outbox（右）を比べた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant A as アプリケーション
-    participant D as DB
-    participant B as メッセージブローカー
-    A->>D: BEGIN
-    A->>D: 注文の行を書く
-    A->>D: COMMIT
-    D-->>A: 確定した
-    Note over A,B: この間に<br/>プロセスが停止する
-    A--xB: 「注文が確定した」を送る
-    Note over D,B: 注文は DB に残り<br/>メッセージは出ない
-```
+{{< figure src="images/transactional-outbox_concept.svg" alt="左の二重書き込みでは、注文の行だけがトランザクションの中にあり、ブローカーへの送信はその外にある。右の Transactional Outbox では、注文と outbox の 2 つのテーブルを 1 つのトランザクションで書き、relay が commit の後で outbox の行をブローカーに送る" caption="二重書き込みと Transactional Outbox の書き込み先" align="center" >}}
 
-この 1 回の停止で、注文は確定したのに外には知らされていない、という食い違いが生じます。在庫を担うサービスは注文の存在を知りません。一方、アプリケーションから見ると、失敗した処理は 1 つもありません。
+左の構成で COMMIT の直後にプロセスが停止すると、注文は確定したのに外には知らされていない、という食い違いが生じます。在庫を担うサービスは注文の存在を知りません。一方、アプリケーションから見ると、失敗した処理は 1 つもありません。
 
 <br>
 
@@ -67,7 +57,9 @@ flowchart LR
 
 2 つの書き込みを 1 つの操作にまとめる手段としては、[2PC](../two-phase-commit/) があります。関わった全員の最終的な判断を確定か中止のどちらか一方に揃えるプロトコルで、DB とブローカーを 2 つの参加者として並べれば、片方だけが成立した状態を避けられます。
 
-しかし、DB とブローカーの一方または両方が 2PC に対応していない場合があります。[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)では、サービスを両方に依存させることも望ましくない場合が多いとしています。Transactional Outbox は、こうした依存を避けるため、DB とブローカーを 2PC で結ぶ方法を取りません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
+しかし、DB とブローカーの一方または両方が 2PC に対応していない場合があります。[Pattern: Transactional outbox の説明](https://microservices.io/patterns/data/transactional-outbox.html)では、サービスを両方に依存させることも望ましくない場合が多いとしています。
+
+Transactional Outbox は、こうした依存を避けるため、DB とブローカーを 2PC で結ぶ方法を取りません。両方が対応していても、2PC では参加者全員の応答が揃うまで判断を待つので、ブローカーの停止や遅延が DB 側の処理まで止めます。
 
 ---
 
@@ -135,7 +127,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、Transactional Outbox の解説は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
+トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、Transactional Outbox の解説は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。
+
+DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
 
 Transactional Outbox の解説で挙げられている主な性質を整理すると、以下の通りです。
 
@@ -145,7 +139,13 @@ Transactional Outbox の解説で挙げられている主な性質を整理す�
 | 利点 | 特定のトランザクションログ機構に依存しにくい | commit 済みの変更をトランザクションログから追跡できる |
 | 欠点 | 順序通りに発行するのが難しい。この方式に対応していない NoSQL の DB もある | DB 固有の解決策が必要。重複した発行を避けるのが難しい |
 
-順序が崩れるのは、outbox の行の ID の順と commit の順がずれ、読んだ時点でまだ commit されていなかった行を後から拾う場合です。PostgreSQL 17 で、注文 A の行を INSERT して commit を 3 秒遅らせ、その間に注文 B の行を INSERT して commit しました。B の commit 直後と A の commit 後に、relay が未送信の行を id の順に読んで送信済みにした結果は以下の通りです。
+順序が崩れるのは、outbox の行の ID の順と commit の順がずれ、読んだ時点でまだ commit されていなかった行を後から拾う場合です。
+
+PostgreSQL 17 で、注文 A の行を INSERT して commit を 3 秒遅らせ、その間に注文 B の行を INSERT して commit しました。B の commit 直後と A の commit 後に、relay が未送信の行を id の順に読んで送信済みにしています。
+
+{{< figure src="images/transactional-outbox_order.svg" alt="時間軸の図。tx A は id 1 の行を INSERT し、commit を 3 秒遅らせる。その間に tx B が id 2 の行を INSERT して commit する。relay の 1 回目の読み取りは B の commit 直後で id 2 を送り、2 回目は A の commit の後で id 1 を送る" caption="id の順と commit の順がずれた 2 つのトランザクション" align="center" >}}
+
+relay の出力は以下の通りです。
 
 ```text
 -- relay 1 回目

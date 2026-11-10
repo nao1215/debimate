@@ -6,30 +6,18 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 8
 wrapTables: true
+topics: ["Data Modeling"]
 ---
 
 外部キー制約（foreign key constraint）は、ある表のカラムに入っている値が、別の表に実在するレコードを指していることを DB（データベース）に保証させる仕組みです。[PostgreSQL](https://www.postgresql.org/docs/current/ddl-constraints.html) の定義では、1 つのカラムまたは複数のカラムの組の値が、別の表のいずれかのレコードに現れる値と一致する必要があります。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
 
 注文の一覧に存在しない会員の ID が混ざると、会員別の集計と注文表全体の合計が食い違います。その ID が `INSERT` の時に入ったのか、会員を消した時に生まれたのかも、後からは辿れません。
 
-例えば、会員（`members`）と注文（`orders`）の関係は以下のようになります。
+例えば、会員（`members`）と注文（`orders`）で、会員 42 を消した時の違いは以下のようになります。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-erDiagram
-    members ||--o{ orders : "member_id が参照する"
-    members {
-        bigint id PK
-        text name
-    }
-    orders {
-        bigint id PK
-        bigint member_id FK
-        int amount
-    }
-```
+{{< figure src="images/foreign-key_concept.svg" alt="左は外部キーの無い表で、会員 42 を DELETE すると成功し、42 を指していた 2 件の注文が参照先の無い孤児レコードとして残る。右は外部キーのある表で、同じ DELETE がエラーで止まり、会員 42 は消えない" caption="外部キーの有無で、会員 42 の DELETE の結果が分かれる" align="center" >}}
 
-上記の図の `||--o{` は、`members` の 1 件に対して `orders` が 0 件以上ぶら下がる関係を表します。PK は主キー（その表でレコードを一意に決めるカラム）、FK は外部キーです。参照される `members` を親、参照する `orders` を子と呼びます。
+上記の図の左右の表で、参照される `members` を親、参照する `orders` を子と呼びます。子の `member_id` が外部キーで、制約が無い左では親だけが消えます。
 
 <br>
 
@@ -47,7 +35,9 @@ erDiagram
 
 ### 外部キーが無い時に生まれる孤児レコード
 
-制約は子の表に書きます。参照先のカラムは、値から 1 件に決まる（重複しない）ことを DB が保証している必要があります。PostgreSQL でこの保証に当たるのは、主キー・一意制約・一意索引（部分索引を除く）のどれかです。索引は、カラムの値から該当するレコードの位置を引ける補助の構造です。参照する値が参照先で一意に特定できないと、この `CREATE TABLE` 自体が失敗します。
+制約は子の表に書きます。参照先のカラムは、値から 1 件に決まる（重複しない）ことを DB が保証している必要があります。PostgreSQL でこの保証に当たるのは、主キー（その表でレコードを一意に決めるカラム）・一意制約・一意索引（部分索引を除く）のどれかです。
+
+索引は、カラムの値から該当するレコードの位置を引ける補助の構造です。参照する値が参照先で一意に特定できないと、この `CREATE TABLE` 自体が失敗します。
 
 ```sql
 CREATE TABLE members (
@@ -134,7 +124,9 @@ sequenceDiagram
 
 上記の図の注文 API は、自分の見た結果に従って正しく動いています。確認した時点では会員 42 が実在し、`INSERT` を出す時点では実在しません。
 
-競合した時にどう振る舞うかは、分離レベル（同時に走るトランザクションどうしが互いの変更をどこまで見るかの設定）・ロックの取り方・DBMS（Database Management System）の実装方式で変わります。これらを工夫して競合を防げても、「`orders.member_id` は必ず `members.id` を指す」という規則を守り続ける責任は、注文を `INSERT` する処理にも会員を `DELETE` する処理にも残ります。分離レベルは [Transaction Isolation](../transaction-isolation/) のノートで扱っています。
+競合した時にどう振る舞うかは、分離レベル（同時に走るトランザクションどうしが互いの変更をどこまで見るかの設定）・ロックの取り方・DBMS（Database Management System）の実装方式で変わります。
+
+これらを工夫して競合を防げても、「`orders.member_id` は必ず `members.id` を指す」という規則を守り続ける責任は、注文を `INSERT` する処理にも会員を `DELETE` する処理にも残ります。分離レベルは [Transaction Isolation](../transaction-isolation/) のノートで扱っています。
 
 外部キー制約を書けば、確認と書き込みを DB が 1 つの操作として扱います。PostgreSQL 17.10 で外部キー制約を張った表に、上記の図の 2 本を流しました。図と違い、退会処理は `DELETE` から `COMMIT` までを 3 秒空け、その途中で注文 API が `INSERT` を出しています。
 
@@ -151,7 +143,9 @@ DETAIL:  Key (member_id)=(42) is not present in table "members".
 
 ### 制約を書いても検査されないレコード {#制約を書いても検査されない行}
 
-外部キー制約を書いても、全てのレコードが検査されるとは限りません。まず、制約が有効になっていることが必要です。SQLite のドキュメントには「[Foreign key constraints are disabled by default (for backwards compatibility), so must be enabled separately for each database connection.](https://www.sqlite.org/foreignkeys.html)」（外部キー制約は既定で無効で、接続ごとに有効にする必要がある）とあります。
+外部キー制約を書いても、全てのレコードが検査されるとは限りません。まず、制約が有効になっていることが必要です。
+
+SQLite のドキュメントには「[Foreign key constraints are disabled by default (for backwards compatibility), so must be enabled separately for each database connection.](https://www.sqlite.org/foreignkeys.html)」（外部キー制約は既定で無効で、接続ごとに有効にする必要がある）とあります。
 
 制約を後から張る場合は、検査の範囲に注意が必要です。PostgreSQL で `NOT VALID` を付けると、制約を足す前からあるレコードの一括検査を省けます。以降の `INSERT` と `UPDATE` には制約が掛かり、既存のレコードは後から `VALIDATE CONSTRAINT` で検証できます。
 
@@ -163,17 +157,17 @@ DETAIL:  Key (member_id)=(42) is not present in table "members".
 
 ### ON DELETE の指定と親子の所有関係
 
-外部キー制約を張ると、親のレコードを消す操作の意味を決める必要が出ます。`ON DELETE` に何を書くかで、削除が子にどう及ぶのかが変わります。制約の検査は通常は文ごとに行われ、`DEFERRABLE` を付けた制約では `COMMIT` まで遅らせられます。PostgreSQL が用意している指定を整理すると、以下の通りです。
+外部キー制約を張ると、親のレコードを消す操作の意味を決める必要が出ます。`ON DELETE` に何を書くかで、削除が子にどう及ぶのかが変わります。制約の検査は通常は文ごとに行われ、`DEFERRABLE` を付けた制約では `COMMIT` まで遅らせられます。PostgreSQL が用意している指定で、会員 42 を消した後に残るものは以下の通りです。
 
-| 指定 | 親を `DELETE` した時 | 注意する点 |
-| --- | --- | --- |
-| `NO ACTION` | 子が残っていればエラー | 既定。`DEFERRABLE` を付けた制約でだけ検査を遅らせられる |
-| `RESTRICT` | 子が残っていればエラー | 検査を遅らせられない。事後の状態が違反にならない操作も拒否する |
-| `CASCADE` | 子も一緒に消える | 連鎖は子の子にも続く |
-| `SET NULL` | 子は残り、参照のカラムが `NULL` になる | 参照のカラムが `NOT NULL` なら、その `DELETE` は失敗する |
-| `SET DEFAULT` | 子は残り、参照のカラムが既定値になる | 既定値が `NULL` 以外なら、その値を持つ親のレコードが必要 |
+{{< figure src="images/foreign-key_on_delete.svg" alt="ON DELETE の指定ごとの 4 列。NO ACTION と RESTRICT は会員 42 が残り、注文は member_id = 42 のまま会員を指し、DELETE はエラーになる。CASCADE は会員も注文も点線で消える。SET NULL は会員が消え、注文は member_id = NULL で残る。SET DEFAULT は会員が消え、注文は member_id = 既定値で残る" caption="ON DELETE の指定ごとの、親を消した後の子" align="center" >}}
 
-`NO ACTION` と `RESTRICT` は、どちらも子が残っていれば親を消せません。検査を遅らせられると、親と子をまとめて差し替える処理を書けます。例えば、親のレコードをいったん消して同じ ID で入れ直す処理は、途中で一時的に参照先が欠けても、`COMMIT` の時点でそろっていれば違反になりません。`RESTRICT` はこうした操作も拒否します。既定は `NOT DEFERRABLE` なので、上の DDL のままでは検査を遅らせられません。利用できる指定と検査のタイミングは DBMS で違います。
+`CASCADE` の連鎖は、子の子にも続きます。`SET NULL` は、参照のカラムが `NOT NULL` ならその `DELETE` が失敗します。`SET DEFAULT` は、既定値が `NULL` 以外なら、その値を持つ親のレコードが必要です。
+
+<br>
+
+既定の `NO ACTION` と `RESTRICT` は、どちらも子が残っていれば親を消せません。違いは、`NO ACTION` だけが `DEFERRABLE` を付けた制約で検査を遅らせられることです。ただし既定は `NOT DEFERRABLE` なので、上の DDL のままでは検査を遅らせられません。
+
+検査を遅らせられると、親と子をまとめて差し替える処理を書けます。例えば、親のレコードをいったん消して同じ ID で入れ直す処理は、途中で一時的に参照先が欠けても、`COMMIT` の時点でそろっていれば違反になりません。`RESTRICT` はこうした操作も拒否します。利用できる指定と検査のタイミングは DBMS で違います。
 
 どれを選ぶかは、性能や書きやすさではなく、子のレコードが親なしで意味を持つかどうかで決まります。以下が判断の分かれ目です。
 
@@ -187,7 +181,9 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の注文明細は、注文 1 件に含まれる商品ごとのレコードです。注文が消えれば残す理由が無く、所有している側が消える時に一緒に消える関係なので `CASCADE` が合います。会員と注文は違い、退会しても過去の売上の記録として残す必要があります。案件から担当者への参照のように、相手が居なくなってもレコードそのものは残したい関係では `SET NULL` が合います。
+上記の図の注文明細は、注文 1 件に含まれる商品ごとのレコードです。注文が消えれば残す理由が無く、所有している側が消える時に一緒に消える関係なので `CASCADE` が合います。
+
+会員と注文は違い、退会しても過去の売上の記録として残す必要があります。案件から担当者への参照のように、相手が居なくなってもレコードそのものは残したい関係では `SET NULL` が合います。
 
 `CASCADE` を「親を消す時に子を消す手間が省ける指定」として選ぶと、子が親なしで意味を持つかという判断を飛ばしてしまいます。連鎖は子の子にも続くので、会員を 1 件消した結果として、注文と注文明細がまとめて消える構成にもなります。レコードを残したい要求は、[Soft Delete](../soft-delete/) のノートで扱う設計課題です。
 
@@ -262,5 +258,36 @@ flowchart LR
 ```
 
 上記の図の索引が無い経路では、子の表が大きくなるほど親を 1 件消す操作が重くなります。索引の構造は [B-Tree](../b-tree/) のノートで扱っています。
+
+PostgreSQL 17.11 で、この差を測りました。`members` は 10 万件で、`orders` の `member_id` には 1〜50,000 を一様に入れます。注文を持たない会員を 1 件 `DELETE` し、外部キーの検査を含む実行時間を `EXPLAIN ANALYZE` で読みました。`BEGIN` と `ROLLBACK` で挟んで表を変えずに 21 回繰り返し、中央値を取っています。表は全て共有バッファに載った状態です。
+
+```python
+# 抜粋。全体は lab/fk_delete.py
+for i in range(REPEAT + 1):
+    out = psql("BEGIN;\n"
+               f"EXPLAIN (ANALYZE, COSTS OFF) DELETE FROM members WHERE id = {60_000 + i};\n"
+               "ROLLBACK;\n")
+```
+
+全体は [lab/fk_delete.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/foreign-key/lab/fk_delete.py) にあります。結果は次の通りです。
+
+{{< figure src="images/foreign-key_delete_time.svg" alt="子の表の件数を横軸、親 1 件の DELETE の時間を縦軸に取った両対数のグラフ。索引が無いと時間は件数にほぼ比例して 400 万件で約 240 ms に伸び、索引があると件数によらず 1 ms 未満に留まる。" caption="子の件数と、親 1 件の DELETE にかかる時間" align="center" >}}
+
+<details>
+<summary>測定値（抜粋）</summary>
+
+```text
+child_rows  index  delete_ms  fk_check_ms   scan of orders in the FK lookup
+     10000  no         0.800        0.635   Seq Scan
+     10000  yes        0.430        0.257   Index Scan using orders_member_id_idx
+   1000000  no        61.545       61.222   Seq Scan
+   1000000  yes        0.684        0.433   Bitmap Heap Scan
+   4000000  no       238.153      237.964   Seq Scan
+   4000000  yes        0.768        0.527   Bitmap Heap Scan
+```
+
+</details>
+
+上記の図の通り、索引が無いと親 1 件の削除にかかる時間は子の件数にほぼ比例し、400 万件では約 240 ms でした。時間のほとんどは外部キーの検査（測定値の `fk_check_ms`）です。索引があれば、どの件数でも 1 ms 未満でした。
 
 欠点の 3 つ目に挙げた、親と子が別のノードに分かれる構成についても、分散を前提に作られた DBMS には外部キーを支援するものがあります。

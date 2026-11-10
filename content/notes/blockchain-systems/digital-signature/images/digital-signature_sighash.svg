@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>sighash type で署名の範囲に入る入力と出力が変わる</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrowred" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="20" y="30" width="440" height="420" rx="18" fill="none" stroke="#666666" stroke-width="3"/>
+<text x="240" y="76" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">通常の指定（ALL）</text>
+<text x="130" y="124" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">入力</text>
+<text x="350" y="124" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">出力</text>
+<rect x="45" y="150" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="130" y="195" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">自分の入力</text>
+<rect x="45" y="242" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="130" y="287" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">他の入力</text>
+<rect x="45" y="334" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="130" y="379" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">他の入力</text>
+<rect x="265" y="196" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="350" y="241" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">出力 1</text>
+<rect x="265" y="288" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="350" y="333" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">出力 2</text>
+<rect x="500" y="30" width="440" height="420" rx="18" fill="none" stroke="#666666" stroke-width="3"/>
+<text x="720" y="76" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ALL | ANYONECANPAY</text>
+<text x="610" y="124" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">入力</text>
+<text x="830" y="124" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">出力</text>
+<rect x="525" y="150" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="610" y="195" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">自分の入力</text>
+<rect x="525" y="242" width="170" height="70" rx="12" fill="#f2f2f2" stroke="#666666" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="610" y="287" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">後から足せる</text>
+<rect x="525" y="334" width="170" height="70" rx="12" fill="#f2f2f2" stroke="#666666" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="610" y="379" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">後から足せる</text>
+<rect x="745" y="196" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="830" y="241" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">出力 1</text>
+<rect x="745" y="288" width="170" height="70" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="830" y="333" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">出力 2</text>
+<rect x="270" y="478" width="34" height="34" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="316" y="504" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">署名の範囲（書き換えると検証が落ちる）</text>
+</svg>

@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "metrics"]
 weight: 3
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 回帰モデルの予測 `ŷ` と正解 `y` のずれを定量化する指標として、RMSE（root mean squared error）、MAE（mean absolute error）、R²（決定係数, coefficient of determination）の 3 つが標準的に使われます。外れ値の扱いや単位、平均値を返すベースラインとの比較方法が異なるため、評価結果には複数の指標を併記します。

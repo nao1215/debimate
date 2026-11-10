@@ -101,7 +101,7 @@ ax.add_patch(Rectangle((-3.0, 0.25), 3.0, 0.55,
                        facecolor=COLOR_GREEN, alpha=0.7,
                        edgecolor=COLOR_GREEN))
 ax.text(-1.5, 0.52, "Aggregate over past 30 days (OK)",
-        ha="center", fontsize=9, color="white", fontweight="bold")
+        ha="center", fontsize=9, color="white", fontweight="normal")
 ax.text(-1.5, 1.0, "observable at t", ha="center",
         fontsize=8, color=COLOR_GREEN)
 
@@ -110,7 +110,7 @@ ax.add_patch(Rectangle((0.0, -0.85), 1.5, 0.55,
                        facecolor=COLOR_RED, alpha=0.7,
                        edgecolor=COLOR_RED))
 ax.text(0.75, -0.58, "Support contacts in t+72h (NG)",
-        ha="center", fontsize=9, color="white", fontweight="bold")
+        ha="center", fontsize=9, color="white", fontweight="normal")
 ax.text(0.75, -1.18, "does not exist at t (future info)",
         ha="center", fontsize=8, color=COLOR_RED)
 

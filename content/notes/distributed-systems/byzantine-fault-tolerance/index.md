@@ -6,13 +6,16 @@ series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "consensus", "fault-tolerance"]
 weight: 10
 wrapTables: true
+topics: ["Consensus"]
+crossTopics:
+  blockchain-systems: ["Consensus / Finality"]
 ---
 
 ビザンチン障害耐性（Byzantine Fault Tolerance、BFT）は、一部のノードが嘘をついても、正直なノード同士の決定を揃える性質です。ここで言う嘘は、誤った値を返すことに加えて、相手ごとに違う値を言うこと（equivocation、二枚舌）も含みます。止まったノードだけを想定する合意の仕組みは、この種の故障に耐えられません。
 
 以下は、止まる故障と嘘をつく故障の違いです。
 
-![左は停止したノード A が何も送らず、B と C に届く値は食い違わない。右はノード A が B に commit、C に abort を送り、B と C が別々の値を正しいと信じる](images/bft_crash_vs_byzantine.svg)
+{{< figure src="images/bft_crash_vs_byzantine.svg" alt="左は停止したノード A が何も送らず、B と C に届く値は食い違わない。右はノード A が B に commit、C に abort を送り、B と C が別々の値を正しいと信じる" caption="止まる故障（左）と嘘をつく故障（右）" align="center" >}}
 
 上記の図の右側の B と C は、手元の情報だけでは、どちらの値が嘘なのかを判定できません。このような故障を前提にしなければならないのは、運営者の違うノードが同じ台帳を持つブロックチェーンや、攻撃者に乗っ取られる可能性を想定する複製です。[PBFT の論文](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)は、攻撃に加えてソフトウェアのバグも、このような故障の原因に挙げています。
 
@@ -63,7 +66,7 @@ wrapTables: true
 
 以下は、f=1 で 3 台と 4 台を比べた図です。赤い A が嘘つきで、実線と破線の括弧が 2 つの quorum を表します。
 
-![3 台で quorum が 2 台の場合、Q1 と Q2 の重なりは嘘つきの A だけになる。4 台で quorum が 3 台の場合、重なりは A と C の 2 台で、A が嘘をついても C が残る](images/bft_quorum_overlap.svg)
+{{< figure src="images/bft_quorum_overlap.svg" alt="3 台で quorum が 2 台の場合、Q1 と Q2 の重なりは嘘つきの A だけになる。4 台で quorum が 3 台の場合、重なりは A と C の 2 台で、A が嘘をついても C が残る" caption="f=1 での、3 台と 4 台の quorum の重なり" align="center" >}}
 
 上記の図の左では、A が Q1 には commit、Q2 には abort と言えば、2 つの quorum が別の決定に同意します。右では、重なりにいる正直な C が両方に同じ値を言うので、2 つの決定は同時に成立しません。
 
@@ -78,6 +81,8 @@ wrapTables: true
 前半の `quorum_intersection` は、quorum の全ての組と嘘つきの全ての選び方について、重なりに残る正直なノードの最小数を数えます。後半の `one_round` は、PBFT の最初の 2 段階だけの 1 ラウンドです。ノード 0 が値を提案する primary で、残りの backup は受け取った値を全員に伝え直します。各ノードは提案と伝え直された値を 1 票ずつ数え、quorum の台数分だけ同じ値が揃ったら、その値で prepared になるものとします。
 
 単純化として commit と View Change は含めず、メッセージは全て届くものとします。嘘つき 1 台が送り先ごとに commit・abort・沈黙を選ぶ全通りを試します。
+
+<details><summary>bft_quorum.py の全体</summary>
 
 ```python
 """Check quorum intersection and an equivocating primary by exhaustive search."""
@@ -157,6 +162,8 @@ if __name__ == "__main__":
     main()
 ```
 
+</details>
+
 `python3 lab/bft_quorum.py` の[実行結果](lab/output.txt)は以下の通りです（Python 3.14 で実行）。
 
 ```text
@@ -177,11 +184,7 @@ n=4 quorum=3 faulty=backup  cases=27 split= 0 nobody_prepared= 0
 
 前半では、quorum を n−f 台とした場合に反例が出るのは n=3f の 3 台と 6 台だけで、3f+1 の 4 台と 7 台では重なりに正直なノードが必ず残ります。後半では、3 台のまま quorum を 3 台に上げた場合も試しています。結果を整理すると、以下の通りです。
 
-| 構成 | 嘘をつく primary | 黙る・嘘をつく backup |
-|---|---|---|
-| 3 台・2 票で判断 | 9 通り中 2 通りで、ノード 1 が commit、ノード 2 が abort で prepared | 全通りで進む |
-| 3 台・3 票で判断 | 割れない | primary が正直でも、9 通り中 4 通りで誰も prepared にならない |
-| 4 台・3 票で判断 | 割れない。13 通りで誰も prepared にならない | 全通りで進む |
+{{< figure src="images/bft_one_round.svg" alt="縦に 3 台・2 票、3 台・3 票、4 台・3 票で判断する構成、横に嘘をつく primary と、黙る・嘘をつく backup が並ぶ。3 台・2 票は primary が嘘をつくと 9 通り中 2 通りで割れ、backup なら全通りで進む。3 台・3 票は primary では割れないが、backup が黙ると primary が正直でも 9 通り中 4 通りで止まる。4 台・3 票は primary では割れず、誰も prepared にならない 13 通りは View Change に回し、backup なら全通りで進む" caption="構成と嘘つきの位置ごとに、1 ラウンドの全通りをまとめた結果" align="center" >}}
 
 つまり 3 台では、2 票で判断すると割れ、quorum を 3 票に上げると割れない代わりに嘘つきが黙るだけで止まります。4 台で primary が嘘をついて誰も prepared にならない 13 通りは、後述の View Change で primary を交代させて進めます。
 
@@ -292,7 +295,7 @@ PBFT は、参加するノードが n 台に決まっていて、互いを認証
 
 <br>
 
-メッセージの数も、参加者を絞る理由になります。PBFT の prepare と commit では各ノードが他の全員に送るので、要求 1 つあたりのメッセージ数はノード数の 2 乗（O(n²)）で増えます。100 台なら、1 段階で約 1 万通です。Tendermint は全員への直接の送信ではなくゴシップ（隣接するノード同士でメッセージを中継する方式）で配りますが、全員の票を全員に届け、2/3 を超える重みの票を集める点は変わりません。
+メッセージの数も、参加者を絞る理由になります。PBFT の prepare と commit では各ノードが他の全員に送るので、要求 1 つあたりのメッセージ数はノード数の 2 乗（O(n²)）で増えます。100 台なら、1 段階で約 1 万通です。Tendermint は全員への直接の送信ではなくゴシップ（隣接するノード同士でメッセージを中継する方式）で配りますが、全員の票を全員に届け、2/3 を超える重みの票を集める点は変わりません。全員の票を集めずに、無作為に選んだ少数への問い合わせを繰り返して通信量を抑える方式は [Snowman](/notes/blockchain-systems/snowman/) のノートで説明しています。
 
 ---
 

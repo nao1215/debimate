@@ -6,31 +6,17 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 13
 wrapTables: true
+topics: ["Boundaries and Lifecycle"]
 ---
 
-Parse, don't validate は、「外部から来たデータを検査し、条件を満たす値を専用の型に変換して後続処理に渡す」という設計方針です。Alexis King 氏が 2019 年に公開した「[Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)」で示しました。ここでの parse は、検査に通った入力を `Email` のような別の型の値に変換し、通らなければ失敗を返す処理です。validate は検査の結果だけを返し、値の型は変えません。
+Parse, don't validate は、「外部から来たデータを検査し、条件を満たす値を専用の型に変換して後続処理に渡す」という設計方針です。Alexis King 氏が 2019 年に公開した「[Parse, don't validate](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/)」で示しました。
 
-この方針が役に立つのは、外部からの入力を複数の関数に渡しながら処理を進めるコードです。注文データなら、注文 ID・商品コード・数量・メールアドレスがそのまま後段の関数に流れていき、各関数は同じ検査を繰り返すか、検査済みだと暗黙に信じるかのどちらかになります。
+ここでの parse は、検査に通った入力を `Email` のような別の型の値に変換し、通らなければ失敗を返す処理です。validate は検査の結果だけを返し、値の型は変えません。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph D["検査結果を捨てる形"]
-        direction LR
-        I1["string"] --> V1["validate(s) bool"]
-        V1 --> S1["string<br/>（型は変わらない）"]
-        S1 -.->|"後段は再検査<br/>するか信じるか"| U1["後段の処理"]
-    end
-    subgraph K["検査した事実を型に載せる形"]
-        direction LR
-        I2["string"] --> P2["parse(s) (Email, error)"]
-        P2 --> E2["Email<br/>（検査済みの型）"]
-        E2 --> U2["後段の処理<br/>（再検査は不要）"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+この方針が役に立つのは、外部からの入力を複数の関数に渡しながら処理を進めるコードです。注文データなら、注文 ID・商品コード・数量・メールアドレスがそのまま後段の関数に流れていき、各関数は同じ検査を繰り返すか、検査済みだと暗黙に信じるかのどちらかになります。以下は、string と `Email` を値の集合として描き、parse と validate の違いを比べた図です。
 
-上記の図の右では、検査済みのメールアドレスを `Email` 型の値に変換して後段に渡しています。Go では、宣言しただけの変数に入る初期値（ゼロ値）が、この保証の抜け道になります。
+{{< figure src="images/parse-dont-validate_concept.svg" alt=`string 全体の大きな領域の中に、Email の小さな領域がある。入力 "a@b.jp" は parse を通ると Email の領域に移って後段の処理に渡り、validate を通った値は true でも string の領域に残る。後段の処理は Email の領域の中にある` caption="値の集合の上で比べた parse と validate" align="center" >}}
+上記の図で parse を通った値は `Email` の領域に移り、後段の処理はその領域の値だけを受け取ります。validate は true を返しても、値を string の領域に残します。Go では、宣言しただけの変数に入る初期値（ゼロ値）が、この保証の抜け道になります。
 
 <br>
 
@@ -65,9 +51,12 @@ flowchart LR
 
 <br>
 
-検査した値と、後段が使う値が別物になることもあります。文書指向の DB（データベース）である Apache CouchDB は、ユーザーの登録情報の文書（`_users`）を Erlang で書かれた本体で解析し、重複したキーも両方残したまま JavaScript の検査関数に渡していました。検査関数のパーサーは後に現れた `roles` だけを残し、本体が権限を判定する時は前に現れた `roles` を使います。この差を突いて、検査を通った文書で管理者の役割を得られたのが [CVE-2017-12635](https://docs.couchdb.org/en/stable/cve/2017-12635.html) です。
+検査した値と、後段が使う値が別物になることもあります。文書指向の DB（データベース）である Apache CouchDB は、ユーザーの登録情報の文書（`_users`）を Erlang で書かれた本体で解析し、重複したキーも両方残したまま JavaScript の検査関数に渡していました。
 
-前の図とは違い、検査は 1 回でした。検査関数が返したのは可否だけで、権限の判定には同じ文書の別の読み方が使われました。問題は権限そのものではなく、同じ JSON の読み方が 2 つあったことです。検査で得た値を後段に渡す形なら、読み方は 1 つで済みます。
+検査関数のパーサーは後に現れた `roles` だけを残し、本体が権限を判定する時は前に現れた `roles` を使います。この差を突いて、検査を通った文書で管理者の役割を得られたのが [CVE-2017-12635](https://docs.couchdb.org/en/stable/cve/2017-12635.html) です。以下は、1 つの文書にある 2 つの `roles` と、それぞれを読んだ側の図です。
+
+{{< figure src="images/parse-dont-validate_couchdb.svg" alt=`左に _users の文書の抜粋。"name": "oper" の下に、黄土色の "roles": ["_admin"] と、青い "roles": [] が続く。黄土色の行から右上の本体（Erlang）へ線が伸び「前の roles で権限を判定」。青い行から右の検査関数（JavaScript）へ線が伸び「後の roles だけを見て通す」。下に「検査を通った同じ文書で、管理者の役割を得られる」` caption="CVE-2017-12635 の文書（抜粋）と、2 つの読み方" align="center" >}}
+検査を 3 箇所に複製した図とは違い、ここでの検査は 1 回でした。検査関数が返したのは可否だけで、権限の判定には同じ文書の別の読み方が使われました。問題は権限そのものではなく、同じ JSON の読み方が 2 つあったことです。検査で得た値を後段に渡す形なら、読み方は 1 つで済みます。
 
 ---
 
@@ -114,7 +103,9 @@ Go でも `type NonEmpty[T any] struct { head T; tail []T }` として同じ形�
 
 一方、値として取り得る候補を「A か B のどちらか」に限定する直和型（代数的データ型の一種）は、Go にはありません。ジェネリクスの type constraint には `A | B` という union type term があります。これは型引数が満たすべき条件を書くための記法で、値がどちらか一方であることを保持する型ではありません。
 
-直和型の代わりには、interface と型スイッチで近い形を組みます。interface に未公開のマーカーメソッドを置けば、パッケージ外からそのメソッドを直接実装することは防げます。ただし既存の実装型を埋め込んだ型は、メソッドが外側の型に昇格（promote）して interface を満たすため、排除できません。Go の interface を完全な直和型として閉じることはできず、型スイッチが全ての場合を尽くしているかもコンパイラは保証しません。
+直和型の代わりには、interface と型スイッチで近い形を組みます。interface に未公開のマーカーメソッドを置けば、パッケージ外からそのメソッドを直接実装することは防げます。
+
+ただし既存の実装型を埋め込んだ型は、メソッドが外側の型に昇格（promote）して interface を満たすため、排除できません。Go の interface を完全な直和型として閉じることはできず、型スイッチが全ての場合を尽くしているかもコンパイラは保証しません。
 
 ---
 

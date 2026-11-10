@@ -6,24 +6,20 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 14
 wrapTables: true
+topics: ["Release / Migration"]
 ---
 
 Strangler Fig は、古いシステムの外側に新しいシステムを作り、請求や配送のような業務の機能を 1 つずつ移しながら、最終的に古いシステムを置き換える進め方です。
 
 例えば、長年動いている注文管理のモノリス（全ての機能を 1 つのプログラムとしてデプロイするシステム）から、請求の機能を新しい請求サービスに移したいチームがあるとします。注文の受付や配送はモノリスで動かし続けます。取引先のシステムはこのチームが改修できないので、URL と応答の形は変えられません。
 
-このチームは最初の一歩として、モノリスの手前に要求を振り分ける入口を置きます。この移行用の入口は、以降ではファサード（façade）と呼びます。
+このチームは最初の一歩として、モノリスの手前に要求を振り分ける入口を置きます。この移行用の入口は、以降ではファサード（façade）と呼びます。下の図は、ファサードを置いてから機能を移し終えるまでの 3 段階です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    C[クライアント] --> F[ファサード]
-    F -->|"GET /orders/{id}/invoice"| N["請求サービス<br/>（新システム）"]
-    F -->|その他の要求| L["注文管理のモノリス<br/>（レガシーシステム）"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/strangler-fig_concept.svg" alt="ファサードを置いた後、請求の機能だけを新システムに移し、受付と配送はモノリスに残す。全ての機能を新システムに移すと、ファサードはモノリスに要求を送らなくなり、モノリスを止められる" caption="ファサードを置いてから機能を移し終えるまでの 3 段階" align="center" >}}
 
-請求サービスは同じ URL と応答の形で答えるので、クライアントからは、どちらのシステムが応答したのかが分かりません。請求の後も同じように機能を移し、モノリス宛ての要求と、ファサードを通らない依存（モノリスの中の関数呼び出しや、モノリスの DB（データベース）を直接読む他のシステム）が無くなった時点で、モノリスを止められます。
+2 段目では、ファサードが請求の要求（`GET /orders/{id}/invoice`）だけを請求サービスに送ります。請求サービスは同じ URL と応答の形で答えるので、クライアントからは、どちらのシステムが応答したのかが分かりません。
+
+請求の後も同じように機能を移し、モノリス宛ての要求と、ファサードを通らない依存（モノリスの中の関数呼び出しや、モノリスの DB（データベース）を直接読む他のシステム）が無くなった時点で、モノリスを止められます。
 
 名前は、宿主の木の上で芽を出し、根を地面まで伸ばして自分で育つようになる絞め殺しの木（strangler fig。イチジクの仲間）から来ています。当初の呼び名だった Strangler Application には暴力的な含みがあるので、Martin Fowler 氏は[ブログ記事](https://martinfowler.com/bliki/StranglerFigApplication.html)で呼び名を Strangler Fig Application に改めています。
 
@@ -61,7 +57,9 @@ flowchart LR
 
 レガシーシステムの機能を新システムで全て作り直し、ある日に一斉に切り替える進め方をビッグバン移行と呼びます。作り直しの間もレガシーシステムは業務で使われるので、税率の変更や不具合の修正が入り続けます。新システムはその変更も取り込み続けなければならず、完成の日が遠ざかります。切替日までは、新システムの成果は利用者に 1 つも届きません。
 
-英国の銀行 TSB は 2018 年 4 月 22 日、元の親会社 Lloyds Banking Group が提供していたシステムから、新しく作ったシステムに約 520 万人の顧客を移しました。一部の機能は前年から段階的に移していたものの、データの大半は週末 1 回で移し、[旧システムには戻せない移行](https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/regulatory-action/final-notice-from-pra-to-tsb-bank.pdf)でした。切り替えの直後から支店・電話・オンラインで障害が続き、通常の運営に戻ったのは同年 12 月 10 日です。
+英国の銀行 TSB は 2018 年 4 月 22 日、元の親会社 Lloyds Banking Group が提供していたシステムから、新しく作ったシステムに約 520 万人の顧客を移しました。一部の機能は前年から段階的に移していたものの、データの大半は週末 1 回で移し、[旧システムには戻せない移行](https://www.bankofengland.co.uk/-/media/boe/files/prudential-regulation/regulatory-action/final-notice-from-pra-to-tsb-bank.pdf)でした。
+
+切り替えの直後から支店・電話・オンラインで障害が続き、通常の運営に戻ったのは同年 12 月 10 日です。
 
 データの移行そのものは成功しており、止まったのは移行先のシステムの方でした。影響は全 550 支店と顧客の大きな割合に及び、下の図の「全体を戻す」手段もありませんでした。
 
@@ -84,7 +82,7 @@ flowchart LR
 
 Strangler Fig では 1 回に切り替えるのは 1 機能なので、問題が出てもその機能の振り分けだけを戻せます。ただし、新旧が DB を共有していれば、その DB を通じて影響は移した機能の外にも広がり得ます。
 
-段階的に移す分、並行運用の期間は長くなり、ファサードや同期のように最後に捨てるコードも書きます。それでも、リスクを下げ、早くから価値を届けられる利点の方が大きい、というのが Fowler 氏の考え方です。
+並行運用や最後に捨てるコードの負担は増えますが、リスクを下げ、早くから価値を届けられる利点の方が大きい、というのが Fowler 氏の考え方です。
 
 ---
 
@@ -177,7 +175,9 @@ sequenceDiagram
 
 内部までレガシーシステムの項目名や表し方に合わせると、移行が終わった後もその設計が新システムに残ります。そのため、変換は新システムの入口に置きます。相手の表し方を入口で自分の表し方に変換する点で、[Anticorruption Layer](../anti-corruption-layer/) に近い考え方です。
 
-移行の途中は、請求サービスがモノリスに残る注文の明細を問い合わせるように、新旧が互いを呼び出す箇所も残ります。この時は、新システムとモノリスの間に、モノリスが元々期待している呼び方とデータの形でやり取りする変換の部品を挟みます。レガシーシステムに変更を気付かせずにやり取りするこのやり方を [Legacy Mimic](https://martinfowler.com/articles/patterns-legacy-displacement/legacy-mimic.html) と呼びます。この部品も、移行の間だけ置く Transitional Architecture です。
+移行の途中は、請求サービスがモノリスに残る注文の明細を問い合わせるように、新旧が互いを呼び出す箇所も残ります。この時は、新システムとモノリスの間に、モノリスが元々期待している呼び方とデータの形でやり取りする変換の部品を挟みます。
+
+レガシーシステムに変更を気付かせずにやり取りするこのやり方を [Legacy Mimic](https://martinfowler.com/articles/patterns-legacy-displacement/legacy-mimic.html) と呼びます。この部品も、移行の間だけ置く Transitional Architecture です。
 
 全ての機能を移し終えた後は、ファサードを外してクライアントを新システムに直接繋ぐか、古いクライアントのためのアダプターとしてファサードを残すかを選べます（[Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/patterns/strangler-fig)）。
 
@@ -205,7 +205,9 @@ sequenceDiagram
 
 4 回の書き込みは全て成功するため、2 つの DB の値を比較するまで不一致に気付けません。2 回目の書き込みの前にプロセスが止まった場合も、片方の DB だけが更新されます。
 
-どちらの値が正しいか分からなくなる状態を避けるには、請求書や注文のようなデータの集合ごとに、書き込みを受け付け、その値を正しいものとして扱う DB を 1 つ決めます。以降は、この DB を「所有者」と呼びます。もう一方の DB には、所有者で確定した変更を後から流します。流す手段には、CDC や、後で送るメッセージを変更と同じトランザクションで書いておく [Transactional Outbox](../../distributed-systems/transactional-outbox/) があります。
+どちらの値が正しいか分からなくなる状態を避けるには、請求書や注文のようなデータの集合ごとに、書き込みを受け付け、その値を正しいものとして扱う DB を 1 つ決めます。以降は、この DB を「所有者」と呼びます。
+
+もう一方の DB には、所有者で確定した変更を後から流します。流す手段には、CDC や、後で送るメッセージを変更と同じトランザクションで書いておく [Transactional Outbox](../../distributed-systems/transactional-outbox/) があります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -248,7 +250,13 @@ Azure の例と違い、二重書き込みを避けるために、追従の段�
 
 <br>
 
-更新番号で順序を守っている場合、所有者を切り替えると番号を振る DB も変わります。レガシーの DB の請求書には、切り替え前にレガシーの DB が振った大きな番号が残っています。新しい DB が 1 番から振ると、その番号の方が小さいので、古い変更と判定されて捨てられます。所有者を切り替える度に 1 つ増やす番号（epoch）を先に比べれば、新しい epoch の小さい番号の方を新しいと判定できます。切り替えをまたいで 1 つの採番元から番号を振る方法もあります。
+更新番号で順序を守っている場合、所有者を切り替えると番号を振る DB も変わります。レガシーの DB の請求書には、切り替え前にレガシーの DB が振った大きな番号が残っています。新しい DB が 1 番から振ると、その番号の方が小さいので、古い変更と判定されて捨てられます。
+
+所有者を切り替える度に 1 つ増やす番号（epoch）を先に比べれば、新しい epoch の小さい番号の方を新しいと判定できます。以下は、2 つの比べ方を並べた模式図です。
+
+{{< figure src="images/strangler-fig_epoch.svg" alt="上段は番号だけで比べる場合で、黄土色の旧 #1000 が青い新 #1 より大きいので、赤い×と「新しい変更を捨てる」。下段は epoch を先に比べる場合で、旧 e1 · #1000 より新 e2 · #1 が大きいので、青いチェックと「新しい変更を残す」。下に「e: 所有者を切り替える度に 1 つ増やす番号（epoch）」" caption="所有者の切り替えをまたぐ更新番号の比べ方（模式図）" align="center" >}}
+
+番号の値は説明用です。切り替えをまたいで 1 つの採番元から番号を振る方法もあります。
 
 逆方向の同期があっても、次のような変更は戻せないことがあります。
 
@@ -293,7 +301,40 @@ flowchart TB
 | 意味の無い差 | 生成時刻・要求 ID・JSON の項目の順序のように、正しくても新旧で違う値は、比べる前に揃える |
 | 新システムの遅延と障害 | 比較は利用者への応答と切り離して非同期で行い、複製の要求には上限時間を設ける |
 
-段階を進めるか戻すかは、経路ごと・新旧ごとのエラー率と遅延、並行稼働で応答が食い違った割合、同期の遅れ、突き合わせの不一致件数で判断します。エラー率を経路ごと・新旧ごとに分けるのは、合計だけでは移した経路の悪化が他の経路の数字に紛れるからです。レガシーシステムの経路を廃止する前には、ファサードに届く要求数だけでなく、モノリスの中の呼び出しや DB を直接読む他のシステムからのアクセスも数えます。
+段階を進めるか戻すかは、経路ごと・新旧ごとのエラー率と遅延、並行稼働で応答が食い違った割合、同期の遅れ、突き合わせの不一致件数で判断します。レガシーシステムの経路を廃止する前には、ファサードに届く要求数だけでなく、モノリスの中の呼び出しや DB を直接読む他のシステムからのアクセスも数えます。
+
+エラー率を合計だけで見ると、移した経路の悪化は他の経路の数字に紛れます。
+
+シミュレーションでは、20 本の経路のトラフィックを Zipf 分布（s = 1、合計で毎分 1,000 件）とし、全体の 2.8% を占める 10 番目の経路だけを 30 分の時点で新システムに移しました。エラー率はレガシーシステムが 0.5%、新システムが 8%（後半では 0.5〜30% と変える）です。
+
+警報は直近 5 分のエラー率で判定し、閾値は全経路の合計が 1%、移した経路の新システム側が 3% です。以下は [lab/route_alert.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/strangler-fig/lab/route_alert.py) から警報を判定する部分の抜粋です。
+
+```python
+    for t in range(MINUTES):
+        lo = max(0, t - WINDOW + 1)
+        tr = sum(tot_err[lo:t + 1]) / sum(tot_req[lo:t + 1])
+        n = sum(rt_req[lo:t + 1])
+        rr = sum(rt_err[lo:t + 1]) / n if n else None
+        ...
+        if tr > TOTAL_LIMIT and first["total"] is None:
+            first["total"] = t
+        if n >= MIN_REQ and rr > ROUTE_LIMIT and first["route"] is None:
+            first["route"] = t
+```
+
+`lab/` で `python3 route_alert.py` を実行した結果のうち、新システムのエラー率が 8% の時の時系列です。seed を変えた 200 回の試行で 60 分以内に警報が鳴った割合（`sweep` の表）は、次の図の右に描きました。全体の出力は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/strangler-fig/lab/output.txt) にあります。
+
+```text
+routes=20 total=1000 req/min migrated=rank 10 (2.8% of traffic, 28 req/min)
+time series (new error 8%, seed 0):
+  total error rate after switch: max 0.96%
+  total alert: never, failed requests until then: None
+  route alert: minute 2 after switch, failed requests until then: 8
+```
+
+{{< figure src="images/strangler-fig_route_alert.svg" alt="新システムのエラー率が 8% の時、移した経路の新システム側のエラー率は 3% の警報線を大きく超えるが、全経路の合計は 1% の警報線の下に留まる。新システムのエラー率を変えると、経路ごとの警報は 2% 以上でほぼ必ず鳴り、合計の警報が 60 分以内にほぼ必ず鳴るのは 16% 以上から" caption="合計の警報と経路ごとの警報の鳴り方（シミュレーション）" align="center" >}}
+
+新システムのエラー率が 8% の左の図では、合計は最大 0.96% に留まり、経路ごとの警報は切り替えから 2 分で鳴りました。200 回の試行では、8% で合計の警報が鳴ったのは 26.5% で、経路ごとの警報は 2% 以上なら 99% 以上鳴っています。ただし欠陥の無い 0.5% でも 4.5% の試行で鳴るので、件数の少ない経路では閾値の調整が必要です。
 
 ---
 

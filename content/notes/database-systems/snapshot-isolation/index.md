@@ -6,28 +6,20 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 7
 wrapTables: true
+topics: ["Transaction / Concurrency Control"]
 ---
 
-Snapshot Isolation は、トランザクションごとに 1 つのスナップショットを固定して読み、書き込みが重なった時に片方を中止する分離の方式です。分離とは、同時に走るトランザクションどうしが互いの途中の変更をどこまで見るかを決めることを指します。スナップショットは、ある時点までに確定した変更だけを含むデータの見え方です。DB はレコードの古いバージョンを残しておき、読む側が基準の時点に合うバージョンを選びます。
+Snapshot Isolation は、トランザクションごとに 1 つのスナップショットを固定して読み、書き込みが重なった時に片方を中止する分離の方式です。分離とは、同時に走るトランザクションどうしが互いの途中の変更をどこまで見るかを決めることを指します。スナップショットは、ある時点までに確定した変更だけを含むデータの見え方です。
+
+DB はレコードの古いバージョンを残しておき、読む側が基準の時点に合うバージョンを選びます。
 
 締め日の売上を集計する処理が数分走っている間も、注文の登録は止めたくないとします。読み取りをロックで守る作りでは、集計が読んだレコードは集計が終わるまで更新できません。スナップショットから読めば、集計は最後まで同じ時点の値を読み続けられ、注文の登録も止めずに済みます。
 
-1 本のトランザクションが、読みと書きで何を基準にするのかを以下に示します。
+2 本のトランザクションが、口座 x と y の残高（どちらも 50）を読んでから書く場合を以下に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant T as トランザクション T
-    participant D as DB
-    Note over T,D: 最初の読み取りより前に<br/>Start-Timestamp が決まる
-    T->>D: 読み取り
-    D-->>T: Start-Timestamp の時点で<br/>確定済みだったバージョン
-    T->>D: 書き込み
-    T->>D: 確定を要求
-    D-->>T: 書き込みが他と重なっていなければ確定
-```
+{{< figure src="images/snapshot-isolation_concept.svg" alt="横軸は時間。T1 と T2 はそれぞれの開始時点（縦線）で x と y を読み、どちらも 50 を見る。T1 は x、T2 は y に書いて確定し、書いた行が重ならないので両方とも確定して合計は -100 になる。" caption="同じ時点から読んだ 2 本が、別の口座を書いて両方確定する" align="center" >}}
 
-上記の図の Start-Timestamp（読み取りの基準になる時点）は、最初の読み取りより前に決まります。以降の読み取りは全部この 1 つの時点を基準にし、判定が入るのは書き込みの可否だけです。
+上記の図の縦線が Start-Timestamp（読み取りの基準になる時点）で、最初の読み取りより前に決まります。以降の読み取りは全部この 1 つの時点を基準にし、判定が入るのは書き込みの重なりだけです。書いた行が違う 2 本は両方とも確定し、2 口座の合計は -100 になります。この異常を write skew と呼びます。
 
 <br>
 
@@ -115,7 +107,10 @@ else:
 
 [実験コード](./lab/run.py)では、初期値を x=50、y=50 に揃え、同じ条件付き処理を 3 通りの順序・分離レベルで実行します。並行のケースは 2 接続の読み取りを先に終え、T1 を確定してから T2 を更新します。直列のケースは T1 の確定後に T2 を開始します。
 
-以下が `run.py` の全体です。`Session` は接続を開いたまま SQL を実行し、`scenario` は読み取りと更新の順序を変えて比較します。
+`Session` は接続を開いたまま SQL を実行し、`scenario` は読み取りと更新の順序を変えて比較します。
+
+<details>
+<summary>run.py の全体（Docker で PostgreSQL 17 を起動し、3 通りを実行して停止する）</summary>
 
 ```python
 """条件付き引き出しを直列・並行で比較する。Python 3とDocker、postgres:17が必要。
@@ -271,6 +266,8 @@ finally:
     subprocess.run(['docker', 'stop', name], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 ```
 
+</details>
+
 Python 3 と [Docker](https://docs.docker.com/) が使える環境で `python3 run.py` を実行できます。専用の PostgreSQL コンテナを使い、外部ポートや永続ボリュームを作らず、実験後に停止します。以下は PostgreSQL 17.11 での出力です。
 
 ```text
@@ -279,7 +276,9 @@ parallel RR: seen=[100, 100], decisions=['committed', 'committed'], total=-100
 parallel SERIALIZABLE: seen=[100, 100], decisions=['committed', 'serialization_failure'], total=0
 ```
 
-`seen` は各接続が読んだ合計、`decisions` は確定・残高不足・直列化失敗、`total` は実行後の合計です。直列実行では 2 本目が 0 を読み、引き出しを止めます。一方、並行の REPEATABLE READ では両方が 100 を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が−100 になりました。
+`seen` は各接続が読んだ合計、`decisions` は確定・残高不足・直列化失敗、`total` は実行後の合計です。直列実行では 2 本目が 0 を読み、引き出しを止めます。
+
+一方、並行の REPEATABLE READ では両方が 100 を読むため、条件を満たしたと判断して別々のレコードを更新し、合計が−100 になりました。
 
 既にあるレコードを書き換える場合だけでなく、条件に合うレコード数を制約にした処理でも、各接続が別のレコードを追加することで制約を破る場合があります。
 
@@ -316,9 +315,13 @@ REPEATABLE READ という名前が Snapshot Isolation を意味するわけで�
 
 Snapshot Isolation は、別々のレコードを更新して全体の制約を壊す write skew を防げません。Serializable Snapshot Isolation（SSI）は、トランザクション間の読み書きの依存関係を監視し、直列化異常につながり得る組み合わせを検出すると、トランザクションを中止する方式です。PostgreSQL の SERIALIZABLE は、この [SSI](https://www.postgresql.org/docs/current/transaction-iso.html) で実装されています。
 
-依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。口座の例なら、T1 が x と y を読んだことを記録しておき、T2 が y を書いた時に、T1 が読んだものを T2 が書き換えたという依存を見付けます。
+依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。
 
-記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1 だけが確定しました。合計は 0 です。一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を再試行できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
+口座の例なら、T1 が x と y を読んだことを記録しておき、T2 が y を書いた時に、T1 が読んだものを T2 が書き換えたという依存を見付けます。
+
+記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1 だけが確定しました。合計は 0 です。
+
+一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を再試行できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -341,7 +344,9 @@ flowchart TB
 
 口座の例なら、T1 と T2 の両方が x と y の 2 件を同じ規則でロックして読む必要があり、片方だけでは防げません。この方法で制約を守れるのは、制約に関わるレコードを全部ロックできる場合です。まだ存在しないレコードの追加が制約を壊す場合は、行ロックだけでは防げません。
 
-加えて、`LOCK TABLE` のような明示的なロックで書き込みを止めて最新の確定状態を検査する場合は、スナップショットが固定される前にロックを取る必要があります。アプリケーション側での整合性の検査を扱う[ページ](https://www.postgresql.org/docs/current/applevel-consistency.html)にも、REPEATABLE READ では問い合わせより先にロックを取るようにとあります。順序が逆でスナップショットが先に固定されていると、ロックを取って以降の書き込みを止めても、その前に別のトランザクションが確定した変更は見えないままです。
+加えて、`LOCK TABLE` のような明示的なロックで書き込みを止めて最新の確定状態を検査する場合は、スナップショットが固定される前にロックを取る必要があります。アプリケーション側での整合性の検査を扱う[ページ](https://www.postgresql.org/docs/current/applevel-consistency.html)にも、REPEATABLE READ では問い合わせより先にロックを取るようにとあります。
+
+順序が逆でスナップショットが先に固定されていると、ロックを取って以降の書き込みを止めても、その前に別のトランザクションが確定した変更は見えないままです。
 
 [Soft Delete](../soft-delete/) のノートでも、状態の遷移を 1 本ずつ順に処理させる手当てとして同じ書き方を挙げています。
 

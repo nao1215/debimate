@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 420" width="460" height="420" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif">
   <rect width="460" height="420" fill="#ffffff"/>
-  <text x="17.0" y="26" font-size="16" fill="#1f1f1f" text-anchor="start" font-weight="bold">ACL 型</text>
+  <text x="17.0" y="26" font-size="16" fill="#1f1f1f" text-anchor="start" font-weight="normal">ACL 型</text>
   <text x="17.0" y="48" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">誰が頼んだかで判断する</text>
   <rect x="17.0" y="70" width="196" height="52" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.5"/>
   <text x="115.0" y="92" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">利用者</text>
@@ -24,7 +24,7 @@
   <path d="M45.0 346 L40.0 337 L50.0 337 Z" fill="#e15759"/>
   <text x="55.0" y="331.0" font-size="13" fill="#e15759" text-anchor="start" font-weight="normal">許可</text>
   <line x1="230" y1="12" x2="230" y2="408" stroke="#bdbdbd" stroke-width="1"/>
-  <text x="247.0" y="26" font-size="16" fill="#1f1f1f" text-anchor="start" font-weight="bold">capability 型</text>
+  <text x="247.0" y="26" font-size="16" fill="#1f1f1f" text-anchor="start" font-weight="normal">capability 型</text>
   <text x="247.0" y="48" font-size="13" fill="#666666" text-anchor="start" font-weight="normal">何を持っているかで判断する</text>
   <rect x="247.0" y="70" width="196" height="52" rx="3" fill="#ffffff" stroke="#1f1f1f" stroke-width="1.5"/>
   <text x="345.0" y="92" font-size="15" fill="#1f1f1f" text-anchor="middle" font-weight="normal">利用者</text>

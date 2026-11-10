@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>更新番号と epoch の比べ方</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="100" font-size="26" font-weight="normal" text-anchor="start">番号だけで比べる</text>
+<rect x="40" y="140" width="270" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="175" y="188" font-size="26" font-weight="normal" text-anchor="middle">旧  #1000</text>
+<text x="350" y="190" font-size="34" font-weight="normal" text-anchor="middle">&gt;</text>
+<rect x="390" y="140" width="270" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="525" y="188" font-size="26" font-weight="normal" text-anchor="middle">新  #1</text>
+<text x="718" y="187" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">新しい変更を捨てる</text>
+<path d="M682,168 l20,20 M702,168 l-20,20" stroke="#e15759" stroke-width="5" stroke-linecap="round"/>
+<text x="40" y="330" font-size="26" font-weight="normal" text-anchor="start">epoch を先に比べる</text>
+<rect x="40" y="370" width="270" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="175" y="418" font-size="26" font-weight="normal" text-anchor="middle">旧  e1 · #1000</text>
+<text x="350" y="420" font-size="34" font-weight="normal" text-anchor="middle">&lt;</text>
+<rect x="390" y="370" width="270" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="525" y="418" font-size="26" font-weight="normal" text-anchor="middle">新  e2 · #1</text>
+<text x="718" y="417" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">新しい変更を残す</text>
+<path d="M680,408 l8,9 l16,-20" fill="none" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round"/>
+<text x="480" y="520" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">e: 所有者を切り替える度に 1 つ増やす番号（epoch）</text>
+</svg>

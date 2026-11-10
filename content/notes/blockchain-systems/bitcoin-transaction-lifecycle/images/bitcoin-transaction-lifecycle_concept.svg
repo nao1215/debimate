@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>同じ取引がウォレットから mempool を経てブロックへ移る</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="110" y="70" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ウォレット</text>
+<rect x="30" y="110" width="160" height="310" rx="14" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="76" y="222" width="68" height="42" rx="5" fill="#7aa6c2" stroke="none" stroke-width="0"/>
+<text x="110" y="310" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">作成・署名</text>
+<line x1="200" y1="265" x2="252" y2="265" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<text x="226" y="244" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">送信</text>
+<text x="390" y="70" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">各ノードの mempool</text>
+<rect x="262" y="110" width="256" height="90" rx="12" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="276" y="141" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="323" y="141" width="38" height="28" rx="5" fill="#7aa6c2" stroke="none" stroke-width="0"/>
+<rect x="370" y="141" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="417" y="141" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="464" y="141" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="262" y="216" width="256" height="90" rx="12" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="276" y="247" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="323" y="247" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="370" y="247" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="417" y="247" width="38" height="28" rx="5" fill="#7aa6c2" stroke="none" stroke-width="0"/>
+<rect x="464" y="247" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="262" y="322" width="256" height="90" rx="12" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="276" y="353" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="323" y="353" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="370" y="353" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="417" y="353" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="464" y="353" width="38" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="390" y1="202" x2="390" y2="214" stroke="#666666" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 5"/>
+<line x1="390" y1="308" x2="390" y2="320" stroke="#666666" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 5"/>
+<line x1="528" y1="265" x2="606" y2="265" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<text x="567" y="244" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">取り込み</text>
+<text x="775" y="70" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ブロック</text>
+<rect x="620" y="170" width="90" height="190" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<rect x="629" y="182" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="667" y="182" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="629" y="225" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="667" y="225" width="34" height="30" rx="5" fill="#7aa6c2" stroke="none" stroke-width="0"/>
+<rect x="629" y="268" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="667" y="268" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="629" y="311" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="667" y="311" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="710" y1="265" x2="730" y2="265" stroke="#8fae86" stroke-width="4" stroke-linecap="round"/>
+<rect x="730" y="170" width="90" height="190" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<rect x="739" y="182" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="777" y="182" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="739" y="225" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="777" y="225" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="739" y="268" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="777" y="268" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="739" y="311" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="777" y="311" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="820" y1="265" x2="840" y2="265" stroke="#8fae86" stroke-width="4" stroke-linecap="round"/>
+<rect x="840" y="170" width="90" height="190" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<rect x="849" y="182" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="887" y="182" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="849" y="225" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="887" y="225" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="849" y="268" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="887" y="268" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="849" y="311" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="887" y="311" width="34" height="30" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="620" y1="384" x2="930" y2="384" stroke="#1f1f1f" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="620" y1="376" x2="620" y2="392" stroke="#1f1f1f" stroke-width="2.5" stroke-linecap="round"/>
+<line x1="930" y1="376" x2="930" y2="392" stroke="#1f1f1f" stroke-width="2.5" stroke-linecap="round"/>
+<text x="775" y="420" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">確認数 3</text>
+<line x1="30" y1="470" x2="518" y2="470" stroke="#d4a24c" stroke-width="6" stroke-linecap="round"/>
+<text x="274" y="512" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#666666">未確認</text>
+<line x1="620" y1="470" x2="930" y2="470" stroke="#8fae86" stroke-width="6" stroke-linecap="round"/>
+<text x="775" y="512" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">確認済み</text>
+</svg>

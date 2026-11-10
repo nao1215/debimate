@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>実験で足した 4 つの import と、それを止めた検査</title>
+<defs><marker id="a-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="a-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="a-ochre" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="40" y="150" width="300" height="200" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<text x="190" y="190" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">請求モジュール</text>
+<rect x="85" y="215" width="210" height="70" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="190.0" y="259.0" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">billing</text>
+<rect x="520" y="40" width="400" height="390" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<text x="720" y="412" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">注文モジュール</text>
+<rect x="580" y="70" width="280" height="66" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="720.0" y="112.0" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">orders</text>
+<rect x="580" y="180" width="280" height="66" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="720.0" y="222.0" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">orders/internal/store</text>
+<rect x="580" y="290" width="280" height="66" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="720.0" y="332.0" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">orders/notify</text>
+<rect x="60" y="420" width="300" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="210" y="462" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">internal/ordersql</text>
+<text x="210" y="500" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">Go モジュールの根</text>
+<path d="M297,232 L574,108" fill="none" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#a-sub)"/>
+<text x="430" y="150" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">許可</text>
+<path d="M297,262 L574,213" fill="none" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#a-blue)"/>
+<text x="440" y="262" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">[1]</text>
+<path d="M600,66 C 520,0 220,40 190,206" fill="none" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#a-blue)"/>
+<text x="360" y="50" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">[2]</text>
+<path d="M574,322 L301,276" fill="none" stroke="#d4a24c" stroke-width="4" stroke-linecap="round" marker-end="url(#a-ochre)"/>
+<text x="440" y="330" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">[3]</text>
+<path d="M190,291 L198,412" fill="none" stroke="#d4a24c" stroke-width="4" stroke-linecap="round" marker-end="url(#a-ochre)"/>
+<text x="214" y="392" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="start" font-weight="normal">[4]</text>
+<line x1="600" y1="462" x2="650" y2="462" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round"/>
+<text x="664" y="470" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="start" font-weight="normal">go build が止める</text>
+<line x1="600" y1="502" x2="650" y2="502" stroke="#d4a24c" stroke-width="4" stroke-linecap="round"/>
+<text x="664" y="510" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="24" fill="#1f1f1f" text-anchor="start" font-weight="normal">depcheck.sh が止める</text>
+</svg>

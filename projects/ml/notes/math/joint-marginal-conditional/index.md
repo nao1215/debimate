@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 11
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 確率変数が複数あるとき、それらの関係を表す分布には 3 種類あります。同時分布（joint distribution, `P(x, y)`）、周辺分布（marginal distribution, `P(x)` や `P(y)`）、条件付き分布（conditional distribution, `P(y|x)`）の 3 つで、機械学習の本や論文で繰り返し出てくる基本概念です。

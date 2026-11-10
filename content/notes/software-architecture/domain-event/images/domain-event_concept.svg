@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>Domain Event でトランザクションを分けた時の時間の流れ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-ochre" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<line x1="20" y1="484" x2="924" y2="484" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-ink)"/>
+<text x="926" y="522" font-size="24" font-weight="normal" text-anchor="end" style="fill:#666666">時間</text>
+<path d="M286,108 V96 H384 V108" fill="none" stroke="#d4a24c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="335" y="80" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">状態がずれている時間</text>
+<rect x="20" y="120" width="260" height="230" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="150.0" y="166" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">トランザクション 1</text>
+<text x="150.0" y="236" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Order を確定</text>
+<text x="150.0" y="280" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">イベント E1 を記録</text>
+<rect x="390" y="120" width="260" height="230" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="520.0" y="166" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">トランザクション 2</text>
+<text x="520.0" y="236" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">在庫を引き当て</text>
+<text x="520.0" y="280" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">E1 を処理済みに</text>
+<rect x="700" y="120" width="236" height="230" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="3"/>
+<text x="818.0" y="166" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">2 回目の受信</text>
+<text x="818.0" y="236" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">E1 は処理済み</text>
+<text x="818.0" y="280" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">何もしない</text>
+<line x1="280" y1="236" x2="384" y2="236" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<rect x="301" y="178" width="68" height="44" rx="22" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="0"/>
+<text x="335" y="209" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">E1</text>
+<path d="M150,350 V412 H818 V358" fill="none" stroke="#d4a24c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 8" marker-end="url(#arrow-ochre)"/>
+<rect x="486" y="390" width="68" height="44" rx="22" fill="#d4a24c" stroke="#d4a24c" stroke-width="0"/>
+<text x="520" y="421" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">E1</text>
+<text x="520" y="466" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">同じ E1 がもう一度届く</text>
+</svg>

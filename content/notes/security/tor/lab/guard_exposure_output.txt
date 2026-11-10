@@ -1,0 +1,5 @@
+users=20,000  circuits per user=1,000  seed=20261110
+c=0.05 rotate guard  C=    1:  0.27% (exact  0.25%)  C=   10:  2.62% (exact  2.47%)  C=  100: 22.43% (exact 22.14%)  C=1,000: 91.97% (exact 91.82%)
+c=0.05 fixed guard   C=    1:  0.24% (exact  0.25%)  C=   10:  1.86% (exact  2.01%)  C=  100:  4.79% (exact  4.97%)  C=1,000:  4.84% (exact  5.00%)
+c=0.10 rotate guard  C=    1:  0.99% (exact  1.00%)  C=   10:  9.37% (exact  9.56%)  C=  100: 63.13% (exact 63.40%)  C=1,000: 100.00% (exact 100.00%)
+c=0.10 fixed guard   C=    1:  0.94% (exact  1.00%)  C=   10:  6.49% (exact  6.51%)  C=  100:  9.80% (exact 10.00%)  C=1,000:  9.80% (exact 10.00%)

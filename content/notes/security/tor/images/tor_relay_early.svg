@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>relay early の cell で付けた印を Guard が読む</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<text x="340" y="134" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">攻撃者のリレー</text>
+<text x="820" y="134" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">攻撃者のリレー</text>
+<line x1="174" y1="185.0" x2="264" y2="185.0" stroke="#666666" stroke-width="3" marker-end="url(#arr)"/>
+<line x1="414" y1="185.0" x2="494" y2="185.0" stroke="#666666" stroke-width="3" marker-end="url(#arr)"/>
+<line x1="644" y1="185.0" x2="744" y2="185.0" stroke="#666666" stroke-width="3" marker-end="url(#arr)"/>
+<rect x="30" y="150" width="140" height="70" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="3"/>
+<text x="100" y="194.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">利用者</text>
+<rect x="270" y="150" width="140" height="70" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="340" y="194.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Guard</text>
+<rect x="500" y="150" width="140" height="70" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="570" y="194.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Middle</text>
+<rect x="750" y="150" width="140" height="70" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="820" y="194.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">HSDir</text>
+<text x="820" y="256" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">descriptor を預かる役</text>
+<text x="40" y="60" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">descriptor を載せる・取りに来る経路</text>
+<path d="M820,272 L820,340 L340,340 L340,226" fill="none" stroke="#d4a24c" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#arro)"/>
+<rect x="470" y="323" width="34" height="34" rx="4" fill="#d4a24c" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="512" y="323" width="34" height="34" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="554" y="323" width="34" height="34" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="596" y="323" width="34" height="34" rx="4" fill="#d4a24c" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="638" y="323" width="34" height="34" rx="4" fill="#d4a24c" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="680" y="323" width="34" height="34" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="722" y="323" width="34" height="34" rx="4" fill="#d4a24c" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="764" y="323" width="34" height="34" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="605" y="392" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">relay と relay early の並びで名前を書く</text>
+<rect x="470" y="448" width="34" height="34" rx="4" fill="#d4a24c" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="514" y="474" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">relay early</text>
+<rect x="680" y="448" width="34" height="34" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="724" y="474" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">relay</text>
+<text x="358" y="292" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">印を読む</text>
+<rect x="30" y="420" width="380" height="76" rx="10" fill="#ffffff" stroke="#e15759" stroke-width="2.5"/>
+<text x="220" y="452" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">接続元の IP アドレスと</text>
+<text x="220" y="484" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Onion Service が結び付く</text>
+</svg>

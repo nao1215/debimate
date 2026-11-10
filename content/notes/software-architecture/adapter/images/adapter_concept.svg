@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>各アプリの形の違う出力が adapter を通って同じ形になり監視基盤に届く</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="30" y="38" font-size="26" font-weight="normal" text-anchor="start" style="fill:#666666">実行単位</text>
+<rect x="20" y="54" width="560" height="140" rx="20" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<rect x="40" y="72" width="220" height="104" rx="14" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<text x="150" y="118" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">アプリ A</text>
+<text x="150" y="154" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">JMX</text>
+<line x1="262" y1="124" x2="470" y2="124" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<circle cx="360" cy="124" r="22" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="470" y="76" width="180" height="96" rx="14" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="560" y="133" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">adapter</text>
+<line x1="652" y1="124" x2="782" y2="210" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<polygon points="712,141.69230769230768 734,163.69230769230768 712,185.69230769230768 690,163.69230769230768" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="3" stroke-linejoin="round"/>
+<rect x="20" y="214" width="560" height="140" rx="20" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<rect x="40" y="232" width="220" height="104" rx="14" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<text x="150" y="278" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">アプリ B</text>
+<text x="150" y="314" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">StatsD</text>
+<line x1="262" y1="284" x2="470" y2="284" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<polygon points="360,262 384.2,301.6 335.8,301.6" fill="#f8eed8" stroke="#d4a24c" stroke-width="3" stroke-linejoin="round"/>
+<rect x="470" y="236" width="180" height="96" rx="14" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="560" y="293" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">adapter</text>
+<line x1="652" y1="284" x2="782" y2="280" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<polygon points="712,260.15384615384613 734,282.15384615384613 712,304.15384615384613 690,282.15384615384613" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="3" stroke-linejoin="round"/>
+<rect x="20" y="374" width="560" height="140" rx="20" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<rect x="40" y="392" width="220" height="104" rx="14" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<text x="150" y="438" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">アプリ C</text>
+<text x="150" y="474" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">独自の形式</text>
+<line x1="262" y1="444" x2="470" y2="444" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<rect x="341.3" y="425.3" width="37.4" height="37.4" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="470" y="396" width="180" height="96" rx="14" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="560" y="453" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">adapter</text>
+<line x1="652" y1="444" x2="782" y2="350" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<polygon points="712,378.61538461538464 734,400.61538461538464 712,422.61538461538464 690,400.61538461538464" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="3" stroke-linejoin="round"/>
+<rect x="790" y="150" width="150" height="260" rx="14" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<text x="865.0" y="194" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">監視基盤</text>
+<polygon points="865.0,232 883.0,250 865.0,268 847.0,250" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="865.0,284 883.0,302 865.0,320 847.0,302" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="865.0,336 883.0,354 865.0,372 847.0,354" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="3" stroke-linejoin="round"/>
+<text x="865.0" y="450" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">形式は 1 つ</text>
+</svg>

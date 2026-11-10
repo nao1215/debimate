@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 7
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 歪度（skewness、わいど）は、分布の「左右の非対称さ」を 1 つの数で表す指標です。[平均](../mean/) が分布の中心、[分散](../variance/) と[標準偏差](../stddev/) が広がりを表すのに対して、歪度は「形のバランス」を表します。

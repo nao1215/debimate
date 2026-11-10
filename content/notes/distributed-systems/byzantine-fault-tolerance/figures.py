@@ -97,6 +97,42 @@ def quorum_overlap():
     write_svg("bft_quorum_overlap.svg", 720, 290, body)
 
 
+def one_round():
+    """3 nodes split or halt, 4 nodes neither: the one-round results of lab/output.txt."""
+    import re
+    out = (pathlib.Path(__file__).parent / "lab" / "output.txt").read_text(encoding="utf-8")
+    res = {}
+    for n, q, who, cases, split, halt in re.findall(
+            r"n=(\d) quorum=(\d) faulty=(\w+)\s+cases=\s*(\d+) split=\s*(\d+) nobody_prepared=\s*(\d+)", out):
+        res[(int(n), int(q), who)] = (int(cases), int(split), int(halt))
+    ochre, ochre_pale, red_pale = "#d4a24c", "#f8eed8", "#fbe3e3"
+    body = [text(420, 70, "嘘をつく primary", 26), text(770, 70, "黙る・嘘をつく backup", 26)]
+    rows = [(3, 2, "3 台・2 票で判断"), (3, 3, "3 台・3 票で判断"), (4, 3, "4 台・3 票で判断")]
+    for r, (n, q, label) in enumerate(rows):
+        y = 100 + r * 130
+        body.append(text(20, y + 66, label, 26, anchor="start"))
+        for c, who in enumerate(("primary", "backup")):
+            cases, split, halt = res[(n, q, who)]
+            x = 260 + c * 340
+            if split:
+                fill, stroke, main, sub = red_pale, RED, "割れる", f"{cases} 通り中 {split} 通り"
+            elif who == "backup" and halt:
+                fill, stroke, main, sub = ochre_pale, ochre, "止まる", f"{cases} 通り中 {halt} 通り"
+            elif who == "primary":
+                fill, stroke, main = "#ffffff", SUB, "割れない"
+                sub = f"{halt} 通りは View Change へ" if n == 4 else ""
+            else:
+                fill, stroke, main, sub = "#ffffff", SUB, "全通りで進む", ""
+            body.append(f'<rect x="{x}" y="{y}" width="320" height="110" rx="8" fill="{fill}" '
+                        f'stroke="{stroke}" stroke-width="2.5"/>')
+            body.append(text(x + 160, y + (48 if sub else 64), main, 28))
+            if sub:
+                body.append(text(x + 160, y + 86, sub, 24, SUB))
+    body.append(text(480, 518, "嘘つきは 1 台で、送り先ごとの振る舞いを全通り試した結果", 24, SUB))
+    write_svg("bft_one_round.svg", 960, 540, body)
+
+
 if __name__ == "__main__":
     crash_vs_byzantine()
     quorum_overlap()
+    one_round()

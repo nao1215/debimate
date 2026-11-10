@@ -6,21 +6,17 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 10
 wrapTables: true
+topics: ["Data Structure"]
 ---
 
 Merkle Tree の構築方法は 1 通りに決まっていません。奇数の葉をどう組むか、葉と内部ノードをどうハッシュするか、葉をどう並べるかは、それぞれのプロトコルが決める設計事項です。ルートハッシュが何を保証しているのかは、この規則を決めて初めて確定します。木の作り方と包含証明の仕組みは [Merkle Tree](../merkle-tree/) を前提とします。
 
 この規則が問題になるのは、新しいプロトコルに Merkle Tree を組み込む時と、既存プロトコルの証明を検証する実装を書く時です。同じ名前で呼ばれていても、Bitcoin と、TLS 証明書の発行記録を公開ログに残す Certificate Transparency と、Ethereum では規則が違い、証明を作る規則と検証する規則が違えば一致しません。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    D["同じ葉の並び"] --> X["規則 X で構築"] --> RX["ルートハッシュ X"]
-    D --> Y["規則 Y で構築"] --> RY["ルートハッシュ Y"]
-    N["規則 X で作った証明を<br/>規則 Y で検証しても一致しない"]:::note
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-    classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
-```
+規則が保証の範囲を決める例として、Bitcoin の規則では、次の 2 つの葉の並びから同じ木ができます。
+
+{{< figure src="images/merkle-tree-design_concept.svg" alt="左は葉 A, B, C の木で、末尾の C を複製した黄土色の破線の葉を足して 4 件にしている。右は葉 A, B, C, C の木で、左右とも同じ形になり、ルートハッシュの間に赤い等号がある" caption="Bitcoin の規則で、葉 3 件と 4 件が同じ木になる例" align="center" >}}
+上記の図の左では、葉が奇数なので末尾の C を複製して組を作ります。結果は右の 4 件の木と同じで、ルートハッシュだけでは 2 つの並びを区別できません。
 
 <br>
 
@@ -35,7 +31,7 @@ flowchart LR
 
 ### 奇数の葉の扱いと木の形
 
-葉が奇数になった時の扱いは、大きく 2 つの流儀に分かれます。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。複製すると、葉 [A, B, C] と [A, B, C, C] が同じルートハッシュになります。この副作用の検出は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で扱っています。
+葉が奇数になった時の扱いは、大きく 2 つの流儀に分かれます。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。冒頭の図のとおり、複製すると葉 [A, B, C] と [A, B, C, C] が同じルートハッシュになります。この副作用の検出は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で扱っています。
 
 Certificate Transparency の木では、最後の葉を複製しません。構築規則は [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)（Certificate Transparency Version 2.0）で定められています。葉が n 件なら、n 未満で最大の 2 の冪で 2 つに分ける規則を再帰的に当てはめて木の形を決めます。
 
@@ -77,11 +73,15 @@ flowchart BT
 
 同じ H から先の経路も同じなら、ルートハッシュまで一致します。
 
-Bitcoin の木には接頭辞が無く、曖昧さが残っています。葉の txid（取引の識別子）は取引から、内部ノードは子 2 つの 64 バイトから同じ手順で計算するため、署名データ（witness）を除いた大きさがちょうど 64 バイトの取引は内部ノードとしても読めます。取引を内部ノードに見立てて子の位置に偽の txid を置くと、ブロックに無い取引の包含証明が、ブロック全体を持たない検証者に通り得ます。2018 年に [CVE-2017-12842](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2017-12842) として公表され、[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) が 64 バイトちょうどの取引を無効にする規則を提案しています。
+Bitcoin の木には接頭辞が無く、曖昧さが残っています。葉の txid（取引の識別子）は取引から、内部ノードは子 2 つの 64 バイトから同じ手順で計算するため、署名データ（witness）を除いた大きさがちょうど 64 バイトの取引は内部ノードとしても読めます。
+
+取引を内部ノードに見立てて子の位置に偽の txid を置くと、ブロックに無い取引の包含証明が、ブロック全体を持たない検証者に通り得ます。2018 年に [CVE-2017-12842](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2017-12842) として公表され、[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) が 64 バイトちょうどの取引を無効にする規則を提案しています。
 
 <br>
 
-RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列の先頭を変えて、この曖昧さを消しています。RFC の式では、MTH は葉の並びからルートハッシュを求める関数、`||` はバイト列の連結、k は前節の「n 未満で最大の 2 の冪」です。葉は `MTH({d[0]}) = HASH(0x00 || d[0])`、内部ノードは `MTH(D_n) = HASH(0x01 || MTH(D[0:k]) || MTH(D[k:n]))` と定義されており、入力の先頭 1 バイトが違うため、同じ入力バイト列を葉と内部ノードの両方に読み替えることはできません。
+RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列の先頭を変えて、この曖昧さを消しています。
+
+RFC の式では、MTH は葉の並びからルートハッシュを求める関数、`||` はバイト列の連結、k は前節の「n 未満で最大の 2 の冪」です。葉は `MTH({d[0]}) = HASH(0x00 || d[0])`、内部ノードは `MTH(D_n) = HASH(0x01 || MTH(D[0:k]) || MTH(D[k:n]))` と定義されており、入力の先頭 1 バイトが違うため、同じ入力バイト列を葉と内部ノードの両方に読み替えることはできません。
 
 {{< hash-input-comparison prefix="true" >}}
 
@@ -173,7 +173,7 @@ flowchart TD
     H --> R["同じルートハッシュ"]
 ```
 
-実行コマンドと、実際の[出力](lab/output.txt)は次の通りです。
+実行コマンドと、出力のうち比較の結果の行です。ルートハッシュの値を含む全体は[出力](lab/output.txt)にあります。
 
 ```bash
 python3 content/notes/blockchain-systems/merkle-tree-design/lab/compare_rules.py
@@ -181,10 +181,7 @@ python3 content/notes/blockchain-systems/merkle-tree-design/lab/compare_rules.py
 
 ```text
 duplicate-last: root(A,B,C) == root(A,B,C,C): True
-duplicate root: 420940ee1c7a73de80cfa2554efb4e6cec7ea745fed73108ccb06886054df8c6
 RFC9162: root(A,B,C) == root(A,B,C,C): False
-RFC9162 root(A,B,C):   961d2e2be20f538ffdf56962a86d1bd165498f222684ee4c5e02c1e9f852adc5
-RFC9162 root(A,B,C,C): 9725a8cf4154eb2b9fc5722dc2e65536eb09eba37150859f97132466815de2ae
 no prefix: root(A,B) == root(single 64-byte leaf): True
 RFC9162: root(A,B) == root(single 64-byte leaf): False
 Assertions: PASS
@@ -202,7 +199,9 @@ RFC 9162 の規則を使った例では、3 件と 4 件の木の組み方が変
 
 Bitcoin のブロックはブロック作成者が決めた順に、RFC 9162 のログは追加された順に葉が並び、どちらもキーから葉の位置は絞れません。
 
-キー順に葉を並べると、不在を対数サイズで示せるようになります。探しているキーの前後に来る 2 件の包含を証明し、その 2 件の位置が隣り合っていることを示せば、間に別の葉が入る余地はありません。葉の位置は、包含証明の各ハッシュが左右どちらに付くかで分かります。ただし、木を作る側がキー順に並べる規則を守るよう、プロトコルで決めておく必要があります。例えば、キー順に並べた木でキー 25 の不在を示すと、次のようになります。
+キー順に葉を並べると、不在を対数サイズで示せるようになります。探しているキーの前後に来る 2 件の包含を証明し、その 2 件の位置が隣り合っていることを示せば、間に別の葉が入る余地はありません。
+
+葉の位置は、包含証明の各ハッシュが左右どちらに付くかで分かります。ただし、木を作る側がキー順に並べる規則を守るよう、プロトコルで決めておく必要があります。例えば、キー順に並べた木でキー 25 の不在を示すと、次のようになります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -218,7 +217,9 @@ flowchart BT
 
 上記の図では、キー 20 の位置 1 とキー 30 の位置 2 が隣り合うため、25 は木にありません。
 
-trie を使う方法もあります。trie は、キーを 16 進の 1 桁などの単位で先頭から辿り、枝を選んでいく木です。キーが決まれば経路も決まるので、途中で枝が無いことを示せば不在の証明になります。Ethereum はこの型の Merkle Patricia Trie を使っており、アカウントのアドレスを Ethereum のハッシュ関数 keccak256 でハッシュした値を経路として状態を引きます（[公式ドキュメント](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)）。不在の証明も同じ経路で行い、[EIP-1186](https://eips.ethereum.org/EIPS/eip-1186) は、アカウントや値が存在しない場合もその事実を検証できるだけのデータを返すと定めています。
+trie を使う方法もあります。trie は、キーを 16 進の 1 桁などの単位で先頭から辿り、枝を選んでいく木です。キーが決まれば経路も決まるので、途中で枝が無いことを示せば不在の証明になります。
+
+Ethereum はこの型の Merkle Patricia Trie を使っており、アカウントのアドレスを Ethereum のハッシュ関数 keccak256 でハッシュした値を経路として状態を引きます（[公式ドキュメント](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)）。不在の証明も同じ経路で行い、[EIP-1186](https://eips.ethereum.org/EIPS/eip-1186) は、アカウントや値が存在しない場合もその事実を検証できるだけのデータを返すと定めています。
 
 ---
 

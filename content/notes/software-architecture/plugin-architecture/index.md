@@ -6,23 +6,16 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 12
 wrapTables: true
+topics: ["Boundaries and Lifecycle"]
 ---
 
 Plugin Architecture は、コア（core、常に動く中心部分）に手を入れずに機能を追加できるようにする設計です。コアが持つのは、拡張を呼び出す処理の流れと、拡張とのやり取りを定める規約だけです。エディタに拡張機能を入れると、本体を差し替えずに機能が増えます。Go の `database/sql` がデータベースドライバを `Register` 関数で受け取るのも、同じ形です。
 
-Plugin Architecture が特に役に立つのは、対応する宛先や形式が増え続けるプログラムです。ログ収集ツールの出力先が 3 つで始まっても、半年後には別の宛先を求められます。
+Plugin Architecture が特に役に立つのは、対応する宛先や形式が増え続けるプログラムです。ログ収集ツールの出力先が 3 つで始まっても、半年後には別の宛先を求められます。以下は、宛先を 1 つ足した時のコアの変化を 2 つの形で比べた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    C["コア"] --> IF{{"境界<br/>（共通の契約）"}}
-    P1["拡張 A"] -.実装.-> IF
-    P2["拡張 B"] -.実装.-> IF
-    P3["拡張 C"] -.実装.-> IF
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/plugin-architecture_concept.svg" alt="左のコアに if を足す形では、ES・S3・stdout の分岐がコアの中に並び、新しい宛先の分岐が加わるとコアの箱が縦に伸びる。右の境界で受ける形では、コアの大きさは変わらず、縁の境界に ES・S3・stdout の拡張が刺さり、新しい宛先も外から縁に差し込まれる" caption="宛先を 1 つ足した時のコアの変化" align="center" >}}
 
-上記の図でコアが依存するのは境界だけで、拡張 A・B・C の実装の中身には依存しません。同一プロセスに載せる Go 実装なら、この境界をインターフェースで表せます。
+上記の図の右でコアが依存するのは縁の境界だけで、各拡張の実装の中身には依存しません。同一プロセスに載せる Go 実装なら、この境界をインターフェースで表せます。
 
 <br>
 
@@ -114,7 +107,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-書籍『Patterns of Enterprise Application Architecture』で Plugin の項を書いた David Rice 氏と Matt Foemmel 氏が問題として挙げているのは 2 つで、どの実装を使うかの決定があちこちに散ることと、設定を変えるのに再ビルドや再デプロイが必要なことです。インターフェースを実装とは別のパッケージに置く [Separated Interface](https://martinfowler.com/eaaCatalog/separatedInterface.html) だけでは、`if name == "s3"` のような選択の分岐が Exporter を使う箇所ごとに残ります。
+書籍『Patterns of Enterprise Application Architecture』で Plugin の項を書いた David Rice 氏と Matt Foemmel 氏が問題として挙げているのは 2 つで、どの実装を使うかの決定があちこちに散ることと、設定を変えるのに再ビルドや再デプロイが必要なことです。
+
+インターフェースを実装とは別のパッケージに置く [Separated Interface](https://martinfowler.com/eaaCatalog/separatedInterface.html) だけでは、`if name == "s3"` のような選択の分岐が Exporter を使う箇所ごとに残ります。
 
 同書には、この 2 つについて「[Plugin solves both problems by providing centralized, runtime configuration.](https://martinfowler.com/eaaCatalog/plugin.html)」（集中管理された実行時の設定を用意することで解決する）とあります。集中管理の実体は、名前と実装を対応付ける 1 つのレジストリです。選択はそこに集まり、コアは設定から読んだ名前でレジストリを引きます。
 
@@ -225,7 +220,9 @@ panic: bug in goroutine
 exit status 2
 ```
 
-`direct` の panic は error として返りました。`background` の呼び出しは `nil` を返して成功に見えましたが、その後に goroutine の panic でプロセスごと終了し、コアが続けて出すはずの `core is still running` は表示されませんでした。Go では、`recover` が止められるのは同じ goroutine の panic だけで、止められなかった panic は[プログラムを終了させます](https://go.dev/ref/spec#Handling_panics)。
+`direct` の panic は error として返りました。`background` の呼び出しは `nil` を返して成功に見えましたが、その後に goroutine の panic でプロセスごと終了し、コアが続けて出すはずの `core is still running` は表示されませんでした。
+
+Go では、`recover` が止められるのは同じ goroutine の panic だけで、止められなかった panic は[プログラムを終了させます](https://go.dev/ref/spec#Handling_panics)。
 
 | | in-process（直接リンク） | out-of-process |
 |---|---|---|
@@ -234,6 +231,47 @@ exit status 2
 | 拡張がハングした時 | 呼び出した側が返らず、コアから安全に強制終了する手段を持ちにくい | タイムアウトの後にプロセスを kill して回収できる |
 | 言語の制約 | コアと ABI（Application Binary Interface。関数の呼び方やデータの並びを機械語の水準で決めた取り決め）を共有できる言語に限る（Go の `plugin` はビルド条件や共通依存まで強く揃える必要がある） | 拡張を別の言語で書ける |
 | 直列化の要否 | 不要 | 必要 |
+
+表の 1 行目の差は、Go 1.26（Linux、AMD Ryzen AI Max+ 395）で測りました。比べたのは、前述の `Exporter` をレジストリから引いてインターフェース経由で呼ぶ形と、子プロセスに標準入出力のパイプで送る形、標準ライブラリの `net/rpc` で Unix ドメインソケット越しに呼ぶ形の 3 つです。
+
+どの形も応答を待ってから次を送り、1 回あたりの平均を 9 回測った中央値を出しました。以下は、パイプで送る側の実装です（[全体](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/plugin-architecture/lab/callcost/main.go)からの抜粋）。
+
+```go
+// pipeExporter は Export を子プロセスの標準入力に送り、1 バイトの応答を待ちます。
+func (p *pipeExporter) Export(data []byte) error {
+	binary.LittleEndian.PutUint32(p.hdr[:], uint32(len(data)))
+	if _, err := p.w.Write(p.hdr[:]); err != nil {
+		return err
+	}
+	if _, err := p.w.Write(data); err != nil {
+		return err
+	}
+	if err := p.w.Flush(); err != nil {
+		return err
+	}
+	_, err := p.r.ReadByte()
+	return err
+}
+```
+
+以下が、データの大きさごとの 1 回あたりの時間です。
+
+{{< figure src="images/plugin-architecture_call_cost.svg" alt="1 回の呼び出しにかかる時間を対数軸で比べた棒グラフ。in-process はデータ量によらず 2 ns 前後、パイプは 7 から 28 マイクロ秒、net/rpc は 20 から 53 マイクロ秒で、別プロセスの呼び出しは 3 桁から 4 桁遅い" caption="1 回の呼び出しにかかる時間（9 回の中央値）" align="center" >}}
+
+<details>
+<summary>計測の出力（ns per call、9 回の中央値。<a href="https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/plugin-architecture/lab/callcost_output.txt">callcost_output.txt</a>）</summary>
+
+```text
+ns per call (median of 9 runs)
+payload      in-process           pipe   net/rpc+unix
+16                  2.4           6873          20476
+1024                2.5           7529          21647
+65536               1.7          28491          52527
+```
+
+</details>
+
+別プロセスの呼び出しは、16 バイトでも in-process の約 3,000 倍かかりました。他の処理と同じマシンで測ったため値は実行ごとに 2 倍程度ぶれますが、桁の差は変わりません。
 
 表の in-process は、拡張をコアに直接リンクする形に限った話です。WebAssembly のランタイムを挟めば、同一プロセスのまま隔離もできます。代わりに、値の受け渡しに変換が必要です。
 

@@ -6,18 +6,18 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum", "smart-contract", "oracle"]
 weight: 20
 wrapTables: true
+topics: ["Smart Contract"]
 ---
 
 ブロックチェーンの[オラクル（oracle）](https://ethereum.org/en/developers/docs/oracles/)は、外部の情報を取得し、スマートコントラクトが使える形でチェーンに渡す仕組みです。例えば、暗号資産を預けて別の資産を借りるアプリでは、預けた暗号資産が担保になります。
 
 10 ETH（[Ethereum](https://ethereum.org/en/developers/docs/intro-to-ethereum/) の暗号資産）を預けた、という「担保の枚数」だけでは、その担保が何ドル分の価値を持つのかは分かりません。1 ETH が市場で 2,000 ドルなら 10 ETH は 20,000 ドル、1,500 ドルなら 15,000 ドルです。借りられる上限や清算の判定には、この「1 枚あたりの市場価格」が必要になります。
 
-```mermaid
-%%{init: {"theme":"base","flowchart":{"nodeSpacing":12,"rankSpacing":20,"padding":10,"diagramPadding":4},"themeVariables":{"fontSize":"14px","primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
-flowchart LR
-    S["市場<br/>価格を観測"] -->|"取得"| O["オラクル<br/>収集・報告"]
-    O -->|"取引"| C["利用側<br/>価格を利用"]
-```
+以下は、市場の価格がチェーンの境界を越えてアプリに届くまでと、どこを信頼する必要があるのかを示した図です。
+
+{{< figure src="images/oracle_concept.svg" alt="左の黄土色の点線の枠がチェーンの外で、市場（取引所）と複数の報告者が並ぶ。報告者からの黄土色の矢印が境界を越え、右の青い枠のチェーンの中の価格フィードに届き、アプリがその値を使う。外側は信頼する範囲で、内側では全ノードが同じ値で計算する" caption="チェーンの外の市場・報告者と、チェーンの中の価格フィード" align="center" >}}
+
+上記の図のチェーンの中で確かめられるのは、届いた報告の署名までです。値が市場の価格と合っているかは、外側の情報源と報告者を信頼するしかありません。
 
 <br>
 
@@ -123,7 +123,11 @@ USD 建てのフィードなら、この例は 1 枚あたり 2,000 ドルです
 
 `updatedAt` は、報告が更新された時刻です。「最新の報告を読めた」と「十分に新しい価格を読めた」は同じではなく、更新が止まっていても最後の値が取得できる場合があります。利用側では、[更新時刻の確認](https://docs.chain.link/data-feeds/overview#check-the-timestamp-of-the-latest-answer)を行い、現在時刻との差がアプリの許容する時間以内かを判定します。
 
-Chainlink Data Feeds は、価格の変化が設定した閾値を超えた時や、heartbeat と呼ぶ更新間隔に達した時に更新を始めます。heartbeat は、その秒数以内に必ず取引が取り込まれるという保証ではありません。ネットワークの混雑によって、更新が届くまでに時間がかかる場合があります。
+Chainlink Data Feeds は、価格の変化が設定した閾値を超えた時や、heartbeat と呼ぶ更新間隔に達した時に更新を始めます。heartbeat は、その秒数以内に必ず取引が取り込まれるという保証ではありません。ネットワークの混雑によって、更新が届くまでに時間がかかる場合があります。以下は、2 つの更新条件と、利用側が判定する経過時間を並べた図です。
+
+{{< figure src="images/oracle_update_triggers.svg" alt="横軸が時間。灰色の市場価格はほぼ横ばいの後に急に下がり、青い保存された価格は階段状に追う。横ばいの途中に黄土色の丸があり「heartbeat に達した（値が同じでも更新）」。急落の後の段差に黄土色の丸があり「ずれが閾値を超えた」。時間軸の下では、最後の updatedAt から現在までが黄土色の経過時間の区間で、「経過時間がアプリの許容時間以内かを利用側で判定する」" caption="価格フィードの 2 つの更新条件と経過時間" align="center" >}}
+
+図の経過時間は、更新が止まっている間も伸び続けます。最後の値を読めても、この長さを見なければ古さは分かりません。
 
 <br>
 
@@ -215,27 +219,62 @@ Python 3.10 以降で、保存したファイルを次のように実行でき�
 python3 price_feed.py
 ```
 
-Python 3.14.4 で実行した[出力](lab/output.txt)は以下の通りです。
+Python 3.14.4 で実行した[出力](lab/output.txt)から、以下で取り上げる行を抜き出しました。
 
 ```text
 fresh: ACCEPT 2000.00 USD
 age 300s: ACCEPT 2000.00 USD
 age 301s: REJECT stale price
-no update: REJECT invalid timestamp
-future: REJECT invalid timestamp
-zero: REJECT non-positive price
-negative: REJECT non-positive price
 6 decimals: ACCEPT 2000.00 USD
-bad decimals: REJECT unsupported decimals
-wrong pair: REJECT wrong pair
-huge price: REJECT price outside application bounds
 plausible wrong: ACCEPT 1800.00 USD
 Assertions: PASS (12 cases)
 ```
 
+残りの 7 ケース（0 以下の価格・未来の時刻・誤った組み合わせなど）は、期待どおり拒否されました。
+
 `age 300s` は許容時間と同じなので受け入れ、1 秒古い `age 301s` は拒否しました。`6 decimals` では、整数と小数桁を両方変えています。8 桁のケースと同じ 2,000 ドルに換算できることを確認しています。
 
 最後の `plausible wrong` は、実験で正解とした 2,000 ドルに対して、1,800 ドルという誤った値を渡したケースです。更新時刻が新しく、価格も設定範囲内なので検査を通ります。入力の形式や鮮度を確かめても、その価格が市場を正しく表しているかまでは検証できないことが分かります。
+
+<br>
+
+もう 1 つ、フィードの更新条件によって、保存された価格が市場からどれだけ離れるのかをシミュレーションしました。
+
+偏差閾値は 0.5%、heartbeat は 3,600 秒とし、更新の報告は始まってから 12 秒後（混雑を想定した場合は 60 秒後）にチェーンへ届くとします。いずれも実験用の設定で、実在のフィードの値ではありません。市場価格は seed を固定した乱数の系列で、2,000 ドルから始め、90 分目から 5 分間で 15% 下落させています。
+
+```python
+# lab/deviation_heartbeat.py から抜粋（38〜53 行目）
+def feed(prices, lag):
+    """Return stored price, age of the stored answer, and update times."""
+    stored, updated_at = prices[0], 0
+    pending = None  # (arrival time, observed price)
+    stored_s, age_s, updates = [], [], []
+    for t, p in enumerate(prices):
+        if pending and t >= pending[0]:
+            stored, updated_at = pending[1], t
+            updates.append(t)
+            pending = None
+        if pending is None and (abs(p / stored - 1) > DEVIATION
+                                or t - updated_at >= HEARTBEAT):
+            pending = (t + lag, p)
+        stored_s.append(stored)
+        age_s.append(t - updated_at)
+    return stored_s, age_s, updates
+```
+
+コード全体は [lab/deviation_heartbeat.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/oracle/lab/deviation_heartbeat.py) にあります。`python3 deviation_heartbeat.py` の[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/oracle/lab/deviation_heartbeat_output.txt)は以下の通りです。
+
+```text
+market: 1999.96 -> min 1686.14 USD
+lag 12 s: updates  28 (crash window 25), max gap before crash 0.53 %, during crash 1.34 %, answer older than 300 s before crash 89 % of time
+lag 60 s: updates   9 (crash window 6), max gap before crash 0.57 %, during crash 6.82 %, answer older than 300 s before crash 89 % of time
+```
+
+{{< figure src="images/oracle_deviation_heartbeat.svg" alt="上段は 85〜105 分目の市場価格と、保存された価格の推移。市場が 2,000 ドルから 1,700 ドル前後まで 5 分で下がる間、12 秒で届くフィードは細かい階段で追い、60 秒かかるフィードは大きな階段で遅れて追う。下段は市場とのずれで、平常時は 0.5% の点線より下にあり、急落中は 12 秒の場合で最大約 1.3%、60 秒の場合で最大約 6.8% まで開く" caption="急落時の市場価格と、保存された価格のずれ（シミュレーション）" align="center" >}}
+
+落ち着いた相場では、ずれは閾値の 0.5% 前後に収まりました。急落中は、12 秒で届く場合でも最大 1.34%、60 秒かかる場合は最大 6.82% まで開いています。報告がチェーンに届いた時点で、載っている価格がもう古いからです。
+
+一方で、急落前の 90 分間は、89% の時間で保存された価格が 300 秒より古いままでした。前の実験の `MAX_AGE = 300` で判定すると、ずれが 0.5% 前後でも `stale price` として拒否されます。
 
 ---
 

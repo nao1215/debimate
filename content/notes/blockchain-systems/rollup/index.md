@@ -6,23 +6,18 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum", "rollup", "layer-2"]
 weight: 23
 wrapTables: true
+topics: ["Scaling"]
 ---
 
 [Rollup](https://ethereum.org/en/developers/docs/scaling/rollups/) は、取引の実行と状態の更新を Layer 2（L2）でまとめ、Layer 1（L1）に検証に必要なデータまたは証明を送るスケーリング手法です。Ethereum を L1 とする rollup では、L2 の利用者が送った取引を sequencer（シーケンサー）が順に実行し、まとまりごとの結果を Ethereum に提出します。
 
-例えば、Alice が 1 ETH を Ethereum から L2 の一つである OP Mainnet に預け、L2 上で Bob に 0.3 ETH を送ったとします。L2 の送金は数秒で残高に反映され、手数料も L1 より安くなります。しかし、Bob が受け取った ETH を Ethereum に戻す時は、[OP Mainnet の出金手順](https://docs.optimism.io/stack/transactions/withdrawal-flow) に従い、L1 で出金を証明してから 7 日間の challenge 期間を待ちます。L2 では数秒で済んだ送金が、L1 に戻す時は 1 週間かかります。
+例えば、Alice が 1 ETH を Ethereum から L2 の一つである OP Mainnet に預け、L2 上で Bob に 0.3 ETH を送ったとします。L2 の送金は数秒で残高に反映され、手数料も L1 より安くなります。
 
-```mermaid
-%%{init: {"theme":"base","flowchart":{"nodeSpacing":22,"rankSpacing":24,"padding":8},"themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","fontSize":"16px"}}}%%
-flowchart LR
-    U["L2 の利用者<br/>署名付き取引"] --> S["sequencer<br/>順序付け・実行"]
-    S --> B["batch<br/>取引のまとまり"]
-    B --> R["L2 の state root<br/>結果に対するコミットメント"]
-    B --> D["取引データ<br/>calldata または blob"]
-    R --> L1["L1 の rollup contract<br/>コミットメントを記録"]
-    D --> L1
-    P["validity proof<br/>または challenge"] --> L1
-```
+しかし、Bob が受け取った ETH を Ethereum に戻す時は、[OP Mainnet の出金手順](https://docs.optimism.io/stack/transactions/withdrawal-flow) に従い、L1 で出金を証明してから 7 日間の challenge 期間を待ちます。L2 では数秒で済んだ送金が、L1 に戻す時は 1 週間かかります。
+
+以下は、L2 で実行した多数の取引のうち、L1 に何が届くかを示した図です。
+
+{{< figure src="images/rollup_concept.svg" alt="上の L2 では、利用者の多数の取引を sequencer が順に実行し、1 つの batch に詰める。下の L1 の rollup contract に届くのは小さな state root と取引データだけで、証明または challenge がその更新を確かめる" caption="L2 の多数の取引のうち、L1 に届くもの" align="center" >}}
 
 この待ち時間は、L2 の運営者を無条件に信用しないための仕組みから生まれます。L1 は公開された取引データを元に、challenge または証明で L2 の結果を確かめ、不正な更新を拒否します。
 
@@ -129,7 +124,9 @@ L1 にデータがあっても、状態を復元するには、データを取�
 
 ### Optimistic Rollup の challenge
 
-Optimistic Rollup は、L1 に提出された状態更新を直ちに全て再実行して検証するのではなく、challenge 期間中に異議がなければ受け入れる設計を取ります。不正な state root を提出したと考える参加者は、取引実行に関する fault proof（不正を示す証明）を提出して争えます。OP Mainnet の [fault proof の仕様](https://specs.optimism.io/fault-proof/index.html) では、この争いを L1 上の dispute game として定めています。
+Optimistic Rollup は、L1 に提出された状態更新を直ちに全て再実行して検証するのではなく、challenge 期間中に異議がなければ受け入れる設計を取ります。
+
+不正な state root を提出したと考える参加者は、取引実行に関する fault proof（不正を示す証明）を提出して争えます。OP Mainnet の [fault proof の仕様](https://specs.optimism.io/fault-proof/index.html) では、この争いを L1 上の dispute game として定めています。
 
 challenge では、「誰かが不正だと主張した」だけで状態を巻き戻さず、L1 の規則が proof を検証してどちらの主張が正しいかを決めます。前節の例でいえば、検証者が `txs` を再実行して得た root と提出された root の食い違いを L1 が判定できる形で示す処理です。
 
@@ -141,7 +138,9 @@ challenge では、「誰かが不正だと主張した」だけで状態を巻�
 
 ### ZK Rollup の validity proof
 
-[Zero-Knowledge Proof](../zero-knowledge-proof/) を使う ZK Rollup は、batch の実行が規則に従ったことを示す validity proof（有効性証明）を L1 の verifier contract（検証コントラクト）に提出します。L1 は proof を検証し、受け入れた batch の state root を更新します。名称に ZK とありますが、rollup で使う証明が常に取引内容を隠すためのものとは限りません。ここで重要なのは、L1 が短い証明から状態遷移の正しさを検証できる点です。
+[Zero-Knowledge Proof](../zero-knowledge-proof/) を使う ZK Rollup は、batch の実行が規則に従ったことを示す validity proof（有効性証明）を L1 の verifier contract（検証コントラクト）に提出します。L1 は proof を検証し、受け入れた batch の state root を更新します。
+
+名称に ZK とありますが、rollup で使う証明が常に取引内容を隠すためのものとは限りません。ここで重要なのは、L1 が短い証明から状態遷移の正しさを検証できる点です。
 
 proof が検証されてから L1 上の出金を受け付ける構成では、Optimistic Rollup のように不正を待ち受ける challenge 期間は必要ありません。ただし、proof を作る時間、batch の提出間隔、L1 のブロックへの取り込み、L1 の finality は残ります。「ZK Rollup なら即時に出金できる」とは限りません。
 
@@ -158,11 +157,72 @@ proof が検証されてから L1 上の出金を受け付ける構成では、O
 
 ### blob と EIP-4844
 
-EIP-4844 は、blob-carrying transaction（blob を運ぶ取引）を Ethereum に追加しました。blob は 1 個 128 KiB（32 バイト × 4096 要素）のバイト列で、EVM からは中身を読めず、コミットメントの versioned hash（バージョン付きハッシュ）だけを参照できます。rollup は batch の取引データを blob に置き、L1 上の検証コントラクトには versioned hash を渡します。
+EIP-4844 は、blob-carrying transaction（blob を運ぶ取引）を Ethereum に追加しました。blob は 1 個 128 KiB（32 バイト × 4096 要素）のバイト列で、EVM からは中身を読めず、コミットメントの versioned hash（バージョン付きハッシュ）だけを参照できます。
+
+rollup は batch の取引データを blob に置き、L1 上の検証コントラクトには versioned hash を渡します。
 
 この仕組みは、rollup が L1 に公開するデータのために使うブロックスペースを通常の calldata と分けます。EIP-4844 は blob 用の手数料市場を定め、1 ブロックあたり target 3 個・最大 6 個の blob を割り当てました。この上限は後の [EIP-7691](https://eips.ethereum.org/EIPS/eip-7691) で target 6 個・最大 9 個に引き上げられています。
 
-blob を保存するのは実行層ではなく consensus 層（beacon ノード）で、仕様上の保持期間は少なくとも 4096 epoch です。1 epoch は 32 slot、1 slot は 12 秒なので、4096 × 32 × 12 秒で約 18 日です。過去の blob を 18 日より後に取得する用途では、アーカイブや別の保存手段が必要になります。OP Mainnet の 7 日の challenge 期間は、この 18 日の内側に収まります。
+blob を保存するのは実行層ではなく consensus 層（beacon ノード）で、仕様上の保持期間は少なくとも 4096 epoch です。1 epoch は 32 slot、1 slot は 12 秒なので、4096 × 32 × 12 秒で約 18 日です。過去の blob を 18 日より後に取得する用途では、アーカイブや別の保存手段が必要になります。
+
+{{< figure src="images/rollup_retention.svg" alt="横棒グラフ。blob の保持は約 18 日（4096 epoch）、OP Mainnet の challenge 期間は 7 日、Arbitrum One は約 6.4 日で、2 本の黄土色の棒は青い棒の半分にも届かない" caption="blob の保持期間と、出金の challenge 期間" align="center" >}}
+
+OP Mainnet の 7 日の challenge 期間は、この 18 日の内側に収まります。
+
+blob の手数料は 1 個単位で掛かり、EIP-4844 では 1 個あたり 2 の 17 乗（131,072）blob gas です。中身が少なくても 1 個分を払うため、batch に詰める取引の数で 1 件あたりの負担が変わります。
+
+L2 の取引 1 件を圧縮後 150 バイトと仮定し、1 件あたりの L1 の gas を計算しました。batch を出す L1 の取引には、blob gas とは別に 21,000 の execution gas が毎回掛かります（rollup のコントラクトの実行分は含めていません）。2 種類の gas は別々の base fee で値段が付くため、足さずに並べています。
+
+```python
+GAS_PER_BLOB = 2**17
+BLOB_BYTES = 4096 * 32
+TX_GAS = 21_000
+TX_BYTES = 150  # 仮定した L2 の取引 1 件の大きさ
+
+
+def blobs_for(n):
+    return -(-n * TX_BYTES // BLOB_BYTES)  # 切り上げ
+
+
+def per_tx(n):
+    """n 件の batch での、1 件あたりの execution gas と blob gas"""
+    return TX_GAS / n, GAS_PER_BLOB * blobs_for(n) / n
+```
+
+上記は [lab/batch_cost.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/rollup/lab/batch_cost.py) からの抜粋で、[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/rollup/lab/batch_cost_output.txt)の末尾は以下の通りです。
+
+```text
+txs that fill one blob: 873
+target 6 blobs per block: 5238 txs per slot, 436 txs/s for all rollups together
+max 9 blobs per block: 7857 txs per slot, 655 txs/s for all rollups together
+```
+
+<details>
+<summary>件数ごとの値（グラフの元）</summary>
+
+```text
+   txs blobs  exec gas/tx  blob gas/tx
+     1     1      21000.0     131072.0
+    10     1       2100.0      13107.2
+   100     1        210.0       1310.7
+   500     1         42.0        262.1
+   873     1         24.1        150.1
+   874     2         24.0        299.9
+  1000     2         21.0        262.1
+  2000     3         10.5        196.6
+  5000     6          4.2        157.3
+txs that fill one blob: 873
+target 6 blobs per block: 5238 txs per slot, 436 txs/s for all rollups together
+max 9 blobs per block: 7857 txs per slot, 655 txs/s for all rollups together
+```
+
+</details>
+
+{{< figure src="images/rollup_batch_cost.svg" alt="両対数の折れ線グラフ。横軸は batch の取引数、縦軸は L2 の取引 1 件あたりの L1 の gas。blob gas は 1 件の 131,072 から件数に反比例して下がり、blob が 1 個埋まる 873 件で約 150 に達した後は、blob が増える度に跳ねながら 150 前後に留まる。execution gas は 21,000 から件数に反比例して下がり続ける" caption="batch の件数と、取引 1 件あたりの L1 の gas" align="center" >}}
+
+blob が 1 個埋まる 873 件までは、1 件あたりの blob gas が件数に反比例して下がり、その先は 1 バイトあたり 1 blob gas、つまり 1 件 150 前後で下げ止まります。874 件目で 2 個目の blob が要り、一時的に 300 に跳ねます。
+
+target の 6 個を全て使っても、この大きさの取引なら 1 slot で 5,238 件、全ての rollup を合わせて毎秒 436 件分です。
 
 blob が下げるのは、L1 にデータを公開するコストです。sequencer による取引の検閲、rollup のコードの欠陥、利用者が出金できる時点は、blob を使っても変わりません。L1 にデータを出す方法が calldata から blob に変わっても、Optimistic Rollup では challenge の条件、ZK Rollup では proof の条件を満たす必要があります。
 

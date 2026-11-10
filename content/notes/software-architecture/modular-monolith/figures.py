@@ -1,7 +1,7 @@
 """Modular Monolith のノートの図を生成する（Python 標準ライブラリだけを使う）。
 
 実行: python3 figures.py
-出力: images/modular_monolith_map.svg
+出力: images/modular_monolith_map.svg, images/modular_monolith_violations.svg
 """
 
 from pathlib import Path
@@ -19,7 +19,7 @@ def cell(x, y, w, h, title, lines, stroke=INK, dash="", fill="#ffffff", modules=
     """1 つの象限。外枠はデプロイ単位、中の小箱はモジュールを表す。"""
     out = [f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="3" fill="{fill}" '
            f'stroke="{LIGHT}" />']
-    out.append(text(x + w / 2, y + 28, title, size=17, color=stroke, weight="bold"))
+    out.append(text(x + w / 2, y + 28, title, size=17, color=stroke, weight="normal"))
     # デプロイ単位とモジュールの絵
     total = sum(u["w"] for u in modules) + 12 * (len(modules) - 1)
     bx, by = x + (w - total) / 2, y + 46
@@ -75,10 +75,75 @@ def map_figure():
     return "\n".join(parts)
 
 
+OCHRE, OCHRE_PALE, PALE = "#d4a24c", "#f8eed8", "#eaf1f5"
+
+
+def violation_figure():
+    """実験の 4 つの変更を、どの検査が止めたかで塗り分けた依存の図。"""
+    w, h = 960, 540
+    p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
+         f'viewBox="0 0 {w} {h}" role="img"><title>実験で足した 4 つの import と、'
+         f'それを止めた検査</title>',
+         '<defs>' + "".join(
+             f'<marker id="a-{n}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" '
+             f'markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
+             for n, c in (("sub", SUB), ("blue", ACCENT), ("ochre", OCHRE))) + '</defs>',
+         f'<rect width="{w}" height="{h}" fill="#ffffff"/>']
+
+    def box(x, y, bw, bh, label, fill="#ffffff", stroke=INK, dash=""):
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        p.append(f'<rect x="{x}" y="{y}" width="{bw}" height="{bh}" rx="10" fill="{fill}" '
+                 f'stroke="{stroke}" stroke-width="2.5"{d}/>')
+        if label:
+            p.append(text(x + bw / 2, y + bh / 2 + 9, label, size=24))
+
+    def path(d, color, name, dash=""):
+        ds = f' stroke-dasharray="{dash}"' if dash else ""
+        p.append(f'<path d="{d}" fill="none" stroke="{color}" stroke-width="4" '
+                 f'stroke-linecap="round"{ds} marker-end="url(#a-{name})"/>')
+
+    # 2 つのモジュールと、Go モジュールの根の internal。
+    box(40, 150, 300, 200, "", LIGHT, SUB, "10 7")
+    p.append(text(190, 190, "請求モジュール", size=24, color=SUB))
+    box(85, 215, 210, 70, "billing")
+    box(520, 40, 400, 390, "", LIGHT, SUB, "10 7")
+    p.append(text(720, 412, "注文モジュール", size=24, color=SUB))
+    box(580, 70, 280, 66, "orders")
+    box(580, 180, 280, 66, "orders/internal/store")
+    box(580, 290, 280, 66, "orders/notify")
+    box(60, 420, 300, 100, "", "#ffffff", SUB)
+    p.append(text(210, 462, "internal/ordersql", size=24))
+    p.append(text(210, 500, "Go モジュールの根", size=24, color=SUB))
+
+    # 許可した向き（灰）と、足した 4 つの import。
+    path("M297,232 L574,108", SUB, "sub")
+    p.append(text(430, 150, "許可", size=24, color=SUB))
+    path("M297,262 L574,213", ACCENT, "blue")
+    p.append(text(440, 262, "[1]", size=24))
+    path("M600,66 C 520,0 220,40 190,206", ACCENT, "blue")
+    p.append(text(360, 50, "[2]", size=24))
+    path("M574,322 L301,276", OCHRE, "ochre")
+    p.append(text(440, 330, "[3]", size=24))
+    path("M190,291 L198,412", OCHRE, "ochre")
+    p.append(text(214, 392, "[4]", size=24, anchor="start"))
+
+    # 凡例。
+    for i, (color, label) in enumerate(((ACCENT, "go build が止める"),
+                                        (OCHRE, "depcheck.sh が止める"))):
+        y = 470 + i * 40
+        p.append(f'<line x1="600" y1="{y - 8}" x2="650" y2="{y - 8}" stroke="{color}" '
+                 f'stroke-width="4" stroke-linecap="round"/>')
+        p.append(text(664, y, label, size=24, anchor="start"))
+    p.append("</svg>")
+    return "\n".join(p)
+
+
 def main():
     out = Path(__file__).parent / "images"
     out.mkdir(exist_ok=True)
     (out / "modular_monolith_map.svg").write_text(map_figure() + "\n", encoding="utf-8")
+    (out / "modular_monolith_violations.svg").write_text(violation_figure() + "\n",
+                                                          encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "transaction"]
 weight: 6
 wrapTables: true
+topics: ["Transaction / Concurrency Control"]
 ---
 
 Transaction Isolation（分離）は、複数のトランザクションを同時に実行した時に、互いの読み書きがどのように観測され、どのような結果まで許されるかを定める規則です。ACID（Atomicity、Consistency、Isolation、Durability。原子性・一貫性・分離・耐久性）の I です。
@@ -34,6 +35,12 @@ sequenceDiagram
 上記の図で注文 B が読んだ 1 は、注文 A が書き込む前の値です。この異常は lost update と呼ばれます。2 件目が中止されなければ、エラーは出ないまま在庫が 0 になり、後の棚卸しで初めて数が合わないと分かります。
 
 DBMS（Database Management System）は、こうした異常をどこまで許すかを段階で選ばせており、この段階を分離レベルと呼びます。SQL 標準は 4 段階を定めています。どのレベルで動かすかは、接続ライブラリの設定や `SET TRANSACTION ISOLATION LEVEL` でトランザクションごとに指定します。
+
+SQL 標準の 4 段階と、それぞれで起き得る異常を以下に示します。
+
+{{< figure src="images/transaction-isolation_concept.svg" alt="SQL 標準の 4 つの分離レベルを行、dirty read・nonrepeatable read・phantom read を列にした格子。起き得る組み合わせを黄土色で塗っており、READ UNCOMMITTED の 3 つから SERIALIZABLE の 0 個まで、段階が上がるほど塗った範囲が階段状に減る。" caption="SQL 標準の分離レベルごとに、起き得る現象" align="center" >}}
+
+上記の図の通り、段階を上げるほど起き得る異常が減ります。各異常の中身は後の節で説明します。
 
 <br>
 
@@ -112,7 +119,9 @@ sequenceDiagram
 
 <br>
 
-標準の 3 つの現象だけでは、商用の DBMS が実装している分離レベルを区別できません。Berenson 氏らが 1995 年に発表した論文「[A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf)」はこの点を指摘し、異常を足しました。足した異常には、確定していない書き込みを別のトランザクションが上書きする dirty write と、冒頭の在庫の例で挙げた lost update が入ります。
+標準の 3 つの現象だけでは、商用の DBMS が実装している分離レベルを区別できません。Berenson 氏らが 1995 年に発表した論文「[A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf)」はこの点を指摘し、異常を足しました。
+
+足した異常には、確定していない書き込みを別のトランザクションが上書きする dirty write と、冒頭の在庫の例で挙げた lost update が入ります。
 
 論文には、nonrepeatable read の意味を広げ、読んだレコードを他のトランザクションが書き換えること自体まで含めて禁止すれば、lost update も併せて防げると書かれています。これは論文が採る広い解釈での話であって、標準の表で REPEATABLE READ を選べばどの DBMS でも lost update が防がれる、という意味にはなりません。
 
@@ -253,7 +262,9 @@ sequenceDiagram
 
 どちらの方式になるかはレベルで決まり、PostgreSQL と InnoDB はどちらも READ COMMITTED が文ごと、REPEATABLE READ が固定です。
 
-同じ REPEATABLE READ でも、固定の基準になるのは PostgreSQL が最初の文、InnoDB が最初の読み取りです。InnoDB のドキュメントには、ロックを伴わない通常の `SELECT`（consistent read）が「[the snapshot established by the first such read in that transaction](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)」（そのトランザクションの中で最初のそうした読み取りで確立されたスナップショット）を読み続けるとあります。
+同じ REPEATABLE READ でも、固定の基準になるのは PostgreSQL が最初の文、InnoDB が最初の読み取りです。
+
+InnoDB のドキュメントには、ロックを伴わない通常の `SELECT`（consistent read）が「[the snapshot established by the first such read in that transaction](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html)」（そのトランザクションの中で最初のそうした読み取りで確立されたスナップショット）を読み続けるとあります。
 
 PostgreSQL の REPEATABLE READ が基準にするのは、`BEGIN` などのトランザクション制御の文を除いて、トランザクションの中で最初に実行した文の開始時点です。
 
@@ -273,7 +284,13 @@ flowchart LR
 
 範囲をロックして phantom read を防ぐ実装では、条件に合うレコードが後から入り得る、索引に並んだキーとキーの間（隙間）までロックする必要があります。MySQL の InnoDB はこの方法を使い、単位になるのは [Index Scan](../index-scan/) で見た索引の範囲です。ドキュメントには、一意索引を一意な条件で引く場合、見付けたレコードだけをロックして隙間はロックしないと書かれています。
 
-それ以外の検索条件では、ロックを伴う読み取りと `UPDATE`・`DELETE` が、走査した索引の範囲を「[using gap locks or next-key locks to block insertions by other sessions into the gaps covered by the range](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)」（gap lock か next-key lock で、その範囲に含まれる隙間への他セッションからの挿入を防ぐ）形でロックします。gap lock は隙間へのロック、next-key lock はレコードとその手前の隙間をまとめたロックです。
+それ以外の検索条件では、ロックを伴う読み取りと `UPDATE`・`DELETE` が、走査した索引の範囲を「[using gap locks or next-key locks to block insertions by other sessions into the gaps covered by the range](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html)」（gap lock か next-key lock で、その範囲に含まれる隙間への他セッションからの挿入を防ぐ）形でロックします。
+
+gap lock は隙間へのロック、next-key lock はレコードとその手前の隙間をまとめたロックです。キーが 10・20・30・40 の索引に 15 を挿入する場合は、以下のようになります。
+
+{{< figure src="images/transaction-isolation_gap_lock.svg" alt="索引のキー 10・20・30・40 を並べた 3 行。レコードのロックはキー 20 だけを塗り、15 の挿入は通る。gap lock は 10 と 20 の間の隙間だけを塗り、15 の挿入は待つ。next-key lock は隙間とキー 20 をまとめて塗り、15 の挿入は待つ" caption="3 種類のロックが覆う、索引の範囲" align="center" >}}
+
+15 は 10 と 20 の間の隙間に入るので、キー 20 のレコードだけをロックしても挿入は止まりません。
 
 <br>
 
@@ -299,7 +316,9 @@ flowchart LR
 - 競合を検査して片方を中止する。確定の時点で判定する形が代表になる
 - 待たせた上で中止する。相手の確定を待ち、確定していたら自分を中止する
 
-PostgreSQL の REPEATABLE READ は 3 番目です。先ほどの実験では注文 A が既に確定していたので、注文 B は待たずに中止されました。ドキュメントには、先に更新した側が確定していれば「[rolled back with the message ERROR: could not serialize access due to concurrent update](https://www.postgresql.org/docs/current/transaction-iso.html)」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）とあります。
+PostgreSQL の REPEATABLE READ は 3 番目です。先ほどの実験では注文 A が既に確定していたので、注文 B は待たずに中止されました。
+
+ドキュメントには、先に更新した側が確定していれば「[rolled back with the message ERROR: could not serialize access due to concurrent update](https://www.postgresql.org/docs/current/transaction-iso.html)」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）とあります。
 
 Oracle の serializable も同じ形で、トランザクションの開始後に確定した更新に当たると `ORA-08177` を返します。待たせる方式ならデッドロックへの備え、中止させる方式なら再試行の処理が必要です。
 
@@ -340,6 +359,39 @@ MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方�
 - 同じレベル名でも DBMS ごとに保証が違い、移す時に挙動が変わる
 - 中止されたトランザクションを再試行する処理が、アプリケーション側に必要
 - 弱いレベルで起きる異常はエラーにならず結果の値としてだけ現れるため、テストで気付きにくい
+
+冒頭の在庫の引き当てで、最後の 2 つを数えました。PostgreSQL 17.11 で、残数を読んでから自分で計算した値を書き戻すトランザクションを pgbench から並行に流し、READ COMMITTED と SERIALIZABLE で比べます。
+
+各クライアントが 200 件ずつ注文し、直列化の失敗で中止された時は先頭から再試行します（上限 10,000 回）。失われた更新は「確定した注文の数 − 在庫が減った数」です。
+
+```sql
+BEGIN;
+SELECT qty FROM stock WHERE id = 1 \gset
+INSERT INTO orders (item_id) VALUES (1);
+UPDATE stock SET qty = :qty - 1 WHERE id = 1;
+END;
+```
+
+全体は [lab/lost_update.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/transaction-isolation/lab/lost_update.py) にあります。結果は次の通りです。
+
+{{< figure src="images/transaction-isolation_lost_update.svg" alt="並列度を 1 から 32 に増やした時の、失われた更新の割合（左）と注文 1 件あたりの再試行回数（右）。READ COMMITTED は 2 並列で 48%、32 並列で 97% の更新を失い、再試行は 0。SERIALIZABLE は失われた更新が 0 で、再試行は 32 並列で 1 件あたり 27 回に増える。" caption="並列度と、失われた更新・再試行の回数" align="center" >}}
+
+<details>
+<summary>測定値（抜粋）</summary>
+
+```text
+level           clients  orders  stock_decrease  lost_updates  retried_tx  retries  gave_up
+read committed        2     400             207           193           0        0        0
+read committed       32    6400             200          6200           0        0        0
+serializable          2     400             400             0          72      353        0
+serializable         32    6400            6400             0        1556   171923        0
+```
+
+</details>
+
+READ COMMITTED はエラーを 1 件も返さないまま、32 並列では 6,400 件の注文に対して在庫が 200 個しか減りませんでした。SERIALIZABLE では失われた更新が 0 件になった代わりに、32 並列で注文 1 件あたり平均 27 回の再試行が起きています。
+
+2 回流すと再試行の回数は少し動き（32 並列で 171,923 回と 163,073 回）、SERIALIZABLE の失われた更新は 2 回とも 0 件でした。同じ 1 件に更新が集中する形なので、次の節の 4 つ目にも当たります。
 
 ---
 

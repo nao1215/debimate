@@ -1,0 +1,115 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+== selectivity: no extended statistics
+-- country only
+                                     QUERY PLAN                                     
+------------------------------------------------------------------------------------
+ Seq Scan on users  (cost=0.00..180.00 rows=100 width=10) (actual rows=100 loops=1)
+   Filter: (country = 'JP'::text)
+   Rows Removed by Filter: 9900
+(3 rows)
+
+-- city only
+                                     QUERY PLAN                                     
+------------------------------------------------------------------------------------
+ Seq Scan on users  (cost=0.00..180.00 rows=100 width=10) (actual rows=100 loops=1)
+   Filter: (city = '東京'::text)
+   Rows Removed by Filter: 9900
+(3 rows)
+
+-- country AND city
+                                    QUERY PLAN                                    
+----------------------------------------------------------------------------------
+ Seq Scan on users  (cost=0.00..205.00 rows=1 width=10) (actual rows=100 loops=1)
+   Filter: ((country = 'JP'::text) AND (city = '東京'::text))
+   Rows Removed by Filter: 9900
+(3 rows)
+
+== selectivity: with CREATE STATISTICS (dependencies)
+-- country AND city
+                                     QUERY PLAN                                     
+------------------------------------------------------------------------------------
+ Seq Scan on users  (cost=0.00..205.00 rows=100 width=10) (actual rows=100 loops=1)
+   Filter: ((country = 'JP'::text) AND (city = '東京'::text))
+   Rows Removed by Filter: 9900
+(3 rows)
+
+== plan: default (planner choice)
+                                        QUERY PLAN                                         
+-------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.42..1277.50 rows=9985 width=8)
+   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+         Filter: (country = 'JP'::text)
+   ->  Index Scan using idx_orders_user_id on orders o  (cost=0.42..9.98 rows=100 width=8)
+         Index Cond: (user_id = u.id)
+(5 rows)
+
+== plan 1: seq scan orders, hash join
+                               QUERY PLAN                               
+------------------------------------------------------------------------
+ Hash Join  (cost=181.25..18213.36 rows=9985 width=8)
+   Hash Cond: (o.user_id = u.id)
+   ->  Seq Scan on orders o  (cost=0.00..15406.00 rows=1000000 width=8)
+   ->  Hash  (cost=180.00..180.00 rows=100 width=4)
+         ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+               Filter: (country = 'JP'::text)
+(6 rows)
+
+   plan    | total_cost | median_ms 
+-----------+------------+-----------
+ Hash Join |   18213.36 |     149.0
+(1 row)
+
+== plan 2: filter users, index lookup (nested loop)
+                                        QUERY PLAN                                         
+-------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.42..1277.50 rows=9985 width=8)
+   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+         Filter: (country = 'JP'::text)
+   ->  Index Scan using idx_orders_user_id on orders o  (cost=0.42..9.98 rows=100 width=8)
+         Index Cond: (user_id = u.id)
+(5 rows)
+
+    plan     | total_cost | median_ms 
+-------------+------------+-----------
+ Nested Loop |    1277.50 |       3.4
+(1 row)
+
+== plan 3: sort both, merge join
+                                  QUERY PLAN                                  
+------------------------------------------------------------------------------
+ Merge Join  (cost=128921.66..134022.01 rows=9985 width=8)
+   Merge Cond: (o.user_id = u.id)
+   ->  Sort  (cost=128738.34..131238.34 rows=1000000 width=8)
+         Sort Key: o.user_id
+         ->  Seq Scan on orders o  (cost=0.00..15406.00 rows=1000000 width=8)
+   ->  Sort  (cost=183.32..183.57 rows=100 width=4)
+         Sort Key: u.id
+         ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+               Filter: (country = 'JP'::text)
+(9 rows)
+
+    plan    | total_cost | median_ms 
+------------+------------+-----------
+ Merge Join |  134022.01 |     223.6
+(1 row)
+
+== orders_scattered: default (planner choice), then plan 2 forced
+                                    QUERY PLAN                                    
+----------------------------------------------------------------------------------
+ Hash Join  (cost=181.25..18213.36 rows=10000 width=8)
+   Hash Cond: (o.user_id = u.id)
+   ->  Seq Scan on orders_scattered o  (cost=0.00..15406.00 rows=1000000 width=8)
+   ->  Hash  (cost=180.00..180.00 rows=100 width=4)
+         ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+               Filter: (country = 'JP'::text)
+(6 rows)
+
+                                                   QUERY PLAN                                                    
+-----------------------------------------------------------------------------------------------------------------
+ Nested Loop  (cost=0.42..21654.68 rows=10000 width=8)
+   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+         Filter: (country = 'JP'::text)
+   ->  Index Scan using idx_orders_scattered_user_id on orders_scattered o  (cost=0.42..213.75 rows=100 width=8)
+         Index Cond: (user_id = u.id)
+(5 rows)
+

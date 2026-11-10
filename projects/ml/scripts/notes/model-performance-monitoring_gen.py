@@ -125,7 +125,7 @@ fig, ax = plt.subplots(figsize=(11, 4.5))
 ax.axhline(2, color=COLOR_BLUE, lw=3, alpha=0.7)
 ax.axhline(1, color=COLOR_ORANGE, lw=3, alpha=0.7)
 ax.axhline(0, color=COLOR_GREEN, lw=3, alpha=0.7)
-ax.text(-3, 2, "Prediction\n(now)", ha="right", va="center", fontsize=10, fontweight="bold", color=COLOR_BLUE)
+ax.text(-3, 2, "Prediction\n(now)", ha="right", va="center", fontsize=10, fontweight="normal", color=COLOR_BLUE)
 ax.text(-3, 1, "Proxy signals\n(clicks, errors)", ha="right", va="center", fontsize=10, color=COLOR_ORANGE)
 ax.text(-3, 0, "Ground truth\n(actual label)", ha="right", va="center", fontsize=10, color=COLOR_GREEN)
 
@@ -173,7 +173,7 @@ for i, (name, examples, owner, color) in enumerate(layers):
                               facecolor=color, alpha=0.6,
                               edgecolor="black", linewidth=1.5)
     ax.add_patch(rect)
-    ax.text(0.08, 0.94 - i * 0.22, name, fontsize=12, fontweight="bold")
+    ax.text(0.08, 0.94 - i * 0.22, name, fontsize=12, fontweight="normal")
     ax.text(0.08, 0.89 - i * 0.22, examples, fontsize=10)
     ax.text(0.95, 0.91 - i * 0.22, f"owner: {owner}", fontsize=10,
             ha="right", style="italic")

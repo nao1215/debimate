@@ -5,6 +5,7 @@ draft: false
 series: ["技術ノート", "Security"]
 tags: ["security", "cryptography"]
 weight: 6
+topics: ["Cryptography"]
 ---
 
 暗号の安全性は、攻撃者が鍵などの値を当てられないことに支えられていて、当てられない値を作るのが乱数の役目です。鍵の長さを 256 bit にしても、その鍵を作った seed（種。生成器に最初に与える値）の取り得る値が 15 bit 分しかないなら、攻撃者が試す鍵は 32768 通りです。
@@ -47,7 +48,7 @@ flowchart LR
 
 探索の量を決めるのは、鍵の長さではなく seed が持つ情報量です。128 bit の鍵でも、8 bit の seed で初期化した擬似乱数生成器で作れば、攻撃者が試すのは 256 個です（[RFC 4086](https://www.rfc-editor.org/rfc/rfc4086.txt) §2）。
 
-![縦軸を対数にした棒グラフ。到達できる鍵は seed が 8 bit なら 256 個、15 bit なら 32768 個で、256 bit 鍵の鍵空間 2^256 を示す水平線に届くのは seed が 256 bit の棒だけである](images/random_number_seed_space.svg)
+{{< figure src="images/random_number_seed_space.svg" alt="縦軸を対数にした棒グラフ。到達できる鍵は seed が 8 bit なら 256 個、15 bit なら 32768 個で、256 bit 鍵の鍵空間 2^256 を示す水平線に届くのは seed が 256 bit の棒だけである" caption="seed の bit 数と、到達できる鍵の個数" align="center" >}}
 
 8 bit と 15 bit の棒は、256 bit 鍵の水平線から 70 桁以上、下にあります。鍵長を 512 bit へ伸ばしても、seed から到達できる鍵の個数は 256 個と 32768 個のままです。
 
@@ -84,13 +85,15 @@ min-entropy は、最も出やすい値の確率を `p_max` とした時の `-lo
 
 つまり min-entropy が H bit なら、どの値が観測される確率も `2^-H` 以下で、1 回目で当たる確率も `2^-H` を超えません。k 通りの値を取る変数では min-entropy の上限が `log2 k` で、この上限に届くのは分布が一様な場合だけです。
 
-![縦軸を揃えた 2 枚の棒グラフ。8 通りが全て確率 0.125 の一様な分布は min-entropy 3.0 bit、1 つだけ確率 0.500 で残りが 0.071 の分布は 1.0 bit](images/random_number_min_entropy.svg)
+{{< figure src="images/random_number_min_entropy.svg" alt="縦軸を揃えた 2 枚の棒グラフ。8 通りが全て確率 0.125 の一様な分布は min-entropy 3.0 bit、1 つだけ確率 0.500 で残りが 0.071 の分布は 1.0 bit" caption="一様な分布と偏った分布の min-entropy" align="center" >}}
 
 候補はどちらも 8 通りです。しかし 1 回目で当たる確率は 12.5% と 50% で 4 倍違います。平均ではなく最頻値を見るので、確率の偏りがそのまま数値に出ます。
 
 <br>
 
-統計テストを通ることと予測できないことは別です。数学の公式集 CRC Standard Mathematical Tables には、乱数を印刷した表が載っています。この表に並ぶ値は、分布や離れた位置どうしの相関を見る Knuth 氏の統計テストを全て通ります。しかし、攻撃者も同じ表を持っていると考えるべきです。出力を数個見れば表のどこから読んでいるかが分かり、その先の値は表から読み取れます（[RFC 4086](https://www.rfc-editor.org/rfc/rfc4086.txt) §6.1.3）。
+統計テストを通ることと予測できないことは別です。数学の公式集 CRC Standard Mathematical Tables には、乱数を印刷した表が載っています。この表に並ぶ値は、分布や離れた位置どうしの相関を見る Knuth 氏の統計テストを全て通ります。
+
+しかし、攻撃者も同じ表を持っていると考えるべきです。出力を数個見れば表のどこから読んでいるかが分かり、その先の値は表から読み取れます（[RFC 4086](https://www.rfc-editor.org/rfc/rfc4086.txt) §6.1.3）。
 
 ---
 
@@ -178,7 +181,9 @@ stateDiagram-v2
 
 初期化前のプールから作られた鍵は、実際に出回っていました。2012 年に TLS と SSH の公開鍵をインターネット全体から集めた [Mining Your Ps and Qs](https://factorable.net/) の調査では、TLS のホストの 0.50% が RSA の公開鍵に含まれる素数を別の機器と共有していて、公開鍵だけから秘密鍵を計算できました。SSH のホストの 1.03% では、署名ごとの k が別の署名と重なり、署名方式の DSA の秘密鍵を求められました。
 
-弱い鍵を持つホストのほとんどは、キーボードなどの入力装置を持たないことが多いネットワーク機器などの組み込み機器でした。調査チームが計測した Ubuntu Server 10.04 の起動では、`/dev/urandom` にエントロピーが混ざり始めるのは起動から 66 秒後で、OpenSSH はそれより前に seed を読んでいました。初期化前でも値を返す `/dev/urandom` の振る舞いが、そのまま鍵の弱さになりました。
+弱い鍵を持つホストのほとんどは、キーボードなどの入力装置を持たないことが多いネットワーク機器などの組み込み機器でした。
+
+調査チームが計測した Ubuntu Server 10.04 の起動では、`/dev/urandom` にエントロピーが混ざり始めるのは起動から 66 秒後で、OpenSSH はそれより前に seed を読んでいました。初期化前でも値を返す `/dev/urandom` の振る舞いが、そのまま鍵の弱さになりました。
 
 起動時の不足を seed ファイルで補う OS にも、別の落とし穴があります。停止時にプールから作った値を seed ファイルに保存して次の起動で読んでも、同じディスクイメージから複製したホストは同じ seed ファイルから始まります。
 
@@ -233,7 +238,7 @@ func main() {
 
 生成器が返すのは bit 列で、必要なのはある範囲の整数です。1 byte を読んで 200 通りへ落とすために剰余を取ると、値ごとの出現回数が揃いません。
 
-![横軸が剰余で得た 0 から 199 の値、縦軸が元の byte の個数の棒グラフ。0 から 55 は 2 個の byte から作られ、56 から 199 は 1 個からしか作られない](images/random_number_modulo_bias.svg)
+{{< figure src="images/random_number_modulo_bias.svg" alt="横軸が剰余で得た 0 から 199 の値、縦軸が元の byte の個数の棒グラフ。0 から 55 は 2 個の byte から作られ、56 から 199 は 1 個からしか作られない" caption="1 byte の剰余で 200 通りに落とした時の偏り" align="center" >}}
 
 0 から 55 の値は 2 倍出やすく、この偏りは modulo bias と呼ばれます。具体的には、最頻値の確率が 2/256 なので min-entropy は 7 bit になり、一様に選べた場合の 7.64 bit を下回ります。
 
@@ -293,9 +298,11 @@ flowchart LR
 
 CBC と CFB は予測できない IV を求め、OFB は一意な IV を求めます（[NIST SP 800-38A](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf) §5.3）。以降は、一意性を求める例として AES-GCM を扱います。IV の作り方は、カウンタなどで決める deterministic construction と、乱数で作る RBG-based construction の 2 通りです。
 
-AES-GCM（認証付き暗号の方式）は、同じ鍵での暗号化の呼び出しを 2^32 回以下に収めることを求めます。この制約が適用されないのは、96 bit の IV を deterministic construction だけで生成する実装です（[NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) §8.3）。RBG-based construction では、96 bit 以上を乱数にした上でこの回数に収めます。衝突の確率がゼロになるわけではなく、NIST はこの 2 つを満たせば一意性の要求を満たすのに十分だとしています。
+AES-GCM（認証付き暗号の方式）は、同じ鍵での暗号化の呼び出しを 2^32 回以下に収めることを求めます。
 
-![1 つの鍵で発行した nonce の本数と衝突確率を両対数で描いた 3 本の線。64 bit・96 bit・128 bit を並べ、2^32 本の位置に縦の破線がある](images/random_number_nonce_collision.svg)
+この制約が適用されないのは、96 bit の IV を deterministic construction だけで生成する実装です（[NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) §8.3）。RBG-based construction では、96 bit 以上を乱数にした上でこの回数に収めます。衝突の確率がゼロになるわけではなく、NIST はこの 2 つを満たせば一意性の要求を満たすのに十分だとしています。
+
+{{< figure src="images/random_number_nonce_collision.svg" alt="1 つの鍵で発行した nonce の本数と衝突確率を両対数で描いた 3 本の線。64 bit・96 bit・128 bit を並べ、2^32 本の位置に縦の破線がある" caption="nonce の長さごとの、発行本数と衝突確率" align="center" >}}
 
 2^32 本を発行した時点の衝突確率は、96 bit なら 2^-33 程度、128 bit ならさらに 9 桁以上小さくなります。64 bit では同じ本数で 4 割近くに達し、発行数が増えるほど長さの差が無視できなくなります。
 

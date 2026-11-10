@@ -12,72 +12,13 @@ hidemeta: false
 disableShare: true
 ShowBreadCrumbs: true
 description: ""
+topics:
+  - name: "Replication / Coordination"
+  - name: "Consensus"
+  - name: "Partitioning"
+  - name: "Distributed Transactions"
+  - name: "Reliability"
+  - name: "Observability"
 ---
 
 分散システムに関する技術ノートです。障害検知・合意・複製・整合性を中心に整理しています。
-
----
-
-### コンテンツ一覧
-
-#### Failure Detection
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Heartbeat - ノードの死活監視](/notes/distributed-systems/heartbeat/) | 障害検知 |
-
-#### Coordination
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Lease - 期限付きで権利を貸す仕組み](/notes/distributed-systems/lease/) | 協調 |
-| 2 | [Quorum - 過半数で決定を成立させる仕組み](/notes/distributed-systems/quorum/) | 協調 |
-| 3 | [Leader and Followers - 更新を 1 台へ集約する複製の型](/notes/distributed-systems/leader-and-followers/) | 協調 |
-
-#### Consensus
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [FLP Impossibility - 非同期の合意が必ず終わるとは限らない理由](/notes/distributed-systems/flp-impossibility/) | 合意 / 理論 |
-| 2 | [Byzantine Fault Tolerance - 嘘をつくノードがいても合意する](/notes/distributed-systems/byzantine-fault-tolerance/) | 合意 / 耐障害性 |
-
-#### Partitioning
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Consistent Hashing - サーバーを増やす時のデータ移動を減らす](/notes/distributed-systems/consistent-hashing/) | データ分割 |
-
-#### Durability
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [WAL - 書き込み先行ログと 2 つのウォーターマーク](/notes/distributed-systems/write-ahead-log/) | 耐久性 |
-
-#### Distributed Transactions
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [2PC - 確定か中止を全参加者で揃える](/notes/distributed-systems/two-phase-commit/) | 分散トランザクション |
-
-#### Reliability
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Idempotency - 同じ要求を何度受け取っても結果を 1 回分に保つ](/notes/distributed-systems/idempotency/) | 信頼性 |
-| 2 | [Transactional Outbox - DB 更新とイベント送信を食い違わせない](/notes/distributed-systems/transactional-outbox/) | 信頼性 |
-| 3 | [Backpressure - 下流の詰まりを上流に伝えて流量を合わせる](/notes/distributed-systems/backpressure/) | 信頼性 / 流量制御 |
-
-#### Observability
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Distributed Tracing - 要求が通った経路と時間を因果関係付きで記録する](/notes/distributed-systems/distributed-tracing/) | 可観測性 |
-
----
-
-### 参考文献（手元にある書籍）
-
-- [分散システムのためのデザインパターン](https://www.maruzen-publishing.co.jp/book/b10134955.html)
-- [分散システムデザインパターン―コンテナを使ったスケーラブルなサービスの設計](https://www.oreilly.co.jp/books/9784873118758/)
-- [ソフトウェアアーキテクチャ・ハードパーツ―分散アーキテクチャのためのトレードオフ分析](https://www.oreilly.co.jp//books/9784814400065/)
-- [データ指向アプリケーションデザイン―信頼性、拡張性、保守性の高い分散システム設計の原理](https://www.oreilly.co.jp/books/9784873118703/)

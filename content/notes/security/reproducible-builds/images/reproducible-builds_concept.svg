@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>段階ごとに残る差の要因と、A と B のハッシュ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="558.0" y="44" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">固定する項目を 1 つずつ増やす</text>
+<text x="248.0" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">段階 0</text>
+<text x="372.0" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">段階 1</text>
+<text x="496.0" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">段階 2</text>
+<text x="620.0" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">段階 3</text>
+<text x="744.0" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">段階 4</text>
+<text x="868.0" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">段階 5</text>
+<text x="172" y="146.0" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">gzip の時刻</text>
+<rect x="191.5" y="115.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="314.0" y="114" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="438.0" y="114" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="562.0" y="114" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="686.0" y="114" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="810.0" y="114" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<text x="172" y="202.0" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">更新時刻</text>
+<rect x="191.5" y="171.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="315.5" y="171.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="438.0" y="170" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="562.0" y="170" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="686.0" y="170" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="810.0" y="170" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<text x="172" y="258.0" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">並び順</text>
+<rect x="191.5" y="227.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="315.5" y="227.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="439.5" y="227.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="562.0" y="226" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="686.0" y="226" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="810.0" y="226" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<text x="172" y="314.0" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">所有者</text>
+<rect x="191.5" y="283.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="315.5" y="283.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="439.5" y="283.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="563.5" y="283.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="686.0" y="282" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<rect x="810.0" y="282" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<text x="172" y="370.0" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">権限</text>
+<rect x="191.5" y="339.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="315.5" y="339.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="439.5" y="339.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="563.5" y="339.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="687.5" y="339.5" width="113" height="45" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<rect x="810.0" y="338" width="116" height="48" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<text x="172" y="456" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">ハッシュ</text>
+<rect x="190.0" y="412" width="116" height="68" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="248.0" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">不一致</text>
+<rect x="314.0" y="412" width="116" height="68" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="372.0" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">不一致</text>
+<rect x="438.0" y="412" width="116" height="68" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="496.0" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">不一致</text>
+<rect x="562.0" y="412" width="116" height="68" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="620.0" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">不一致</text>
+<rect x="686.0" y="412" width="116" height="68" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="744.0" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">不一致</text>
+<rect x="810.0" y="412" width="116" height="68" rx="8" fill="#e9f1e6" stroke="#8fae86" stroke-width="4"/>
+<text x="868.0" y="458" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">一致</text>
+<rect x="191.5" y="503.5" width="27" height="23" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="230" y="524" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">残っている差</text>
+<rect x="420" y="502" width="30" height="26" rx="8" fill="#f2f2f2" stroke="none" stroke-width="2.5"/>
+<text x="460" y="524" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">固定した</text>
+</svg>

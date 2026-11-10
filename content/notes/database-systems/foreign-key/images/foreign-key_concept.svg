@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>外部キーの有無と、親を消した時の子のレコード</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="240" y="66" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">外部キーなし</text>
+<text x="110.0" y="132" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">members（親）</text>
+<text x="345.0" y="132" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">orders（子）</text>
+<rect x="40" y="170" width="140" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="110.0" y="210" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">id 41</text>
+<rect x="40" y="254" width="140" height="60" rx="8" fill="#ffffff" stroke="#666666" stroke-width="3" stroke-dasharray="9 6"/>
+<text x="110.0" y="294" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">削除済み</text>
+<rect x="40" y="338" width="140" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="110.0" y="378" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">id 43</text>
+<line x1="270" y1="188" x2="186" y2="200" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="270" y="160" width="150" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="345.0" y="197" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 41</text>
+<line x1="270" y1="254" x2="186" y2="284" stroke="#e15759" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-red)"/>
+<rect x="270" y="226" width="150" height="54" rx="8" fill="#fbe3e3" stroke="#e15759" stroke-width="3"/>
+<text x="345.0" y="263" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 42</text>
+<line x1="270" y1="320" x2="186" y2="284" stroke="#e15759" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-red)"/>
+<rect x="270" y="292" width="150" height="54" rx="8" fill="#fbe3e3" stroke="#e15759" stroke-width="3"/>
+<text x="345.0" y="329" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 42</text>
+<line x1="270" y1="386" x2="186" y2="368" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="270" y="358" width="150" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="345.0" y="395" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 43</text>
+<text x="240" y="460" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">DELETE は成功し、子だけが残る</text>
+<text x="240" y="500" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">参照先の無い注文（孤児レコード）</text>
+<line x1="480" y1="40" x2="480" y2="510" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/>
+<text x="720" y="66" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">外部キーあり</text>
+<text x="590.0" y="132" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">members（親）</text>
+<text x="825.0" y="132" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">orders（子）</text>
+<rect x="520" y="170" width="140" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="590.0" y="210" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">id 41</text>
+<rect x="520" y="254" width="140" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="590.0" y="294" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">id 42</text>
+<rect x="520" y="338" width="140" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="590.0" y="378" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">id 43</text>
+<line x1="750" y1="188" x2="666" y2="200" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="750" y="160" width="150" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="825.0" y="197" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 41</text>
+<line x1="750" y1="254" x2="666" y2="284" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="750" y="226" width="150" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="825.0" y="263" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 42</text>
+<line x1="750" y1="320" x2="666" y2="284" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="750" y="292" width="150" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="825.0" y="329" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 42</text>
+<line x1="750" y1="386" x2="666" y2="368" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="750" y="358" width="150" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="825.0" y="395" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">→ 43</text>
+<text x="720" y="460" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">DELETE はエラーで止まる</text>
+<text x="720" y="500" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">子が残る限り親は消えない</text>
+</svg>

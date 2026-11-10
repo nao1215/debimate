@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 14
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 特徴量スケーリングは、複数の特徴量のスケール（値の取り得る範囲・分散）を揃える前処理です。代表は標準化（standardization, Z-score）と正規化（normalization, Min-Max）の 2 つで、[scikit-learn](https://scikit-learn.org/stable/) ではそれぞれ [`StandardScaler`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html) と [`MinMaxScaler`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.MinMaxScaler.html) が対応します。前処理では、[欠損値処理](../missing-values/) で `NaN` を埋めてからスケーリングします。

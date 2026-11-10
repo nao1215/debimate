@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>同じ実行単位の main と sidecar が共有するものと分けるもの</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="180" y="40" width="560" height="470" rx="24" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<text x="204" y="82" font-size="26" font-weight="normal" text-anchor="start" style="fill:#666666">実行単位</text>
+<rect x="200" y="100" width="340" height="360" rx="18" fill="#eaf1f5" stroke="#1f1f1f" stroke-width="0"/>
+<rect x="380" y="140" width="340" height="360" rx="18" fill="#f8eed8" stroke="#1f1f1f" stroke-width="0"/>
+<rect x="380" y="140" width="160" height="320" rx="0" fill="#ffffff" stroke="#7aa6c2" stroke-width="0"/>
+<rect x="200" y="100" width="340" height="360" rx="18" fill="none" stroke="#7aa6c2" stroke-width="3"/>
+<rect x="380" y="140" width="340" height="360" rx="18" fill="none" stroke="#d4a24c" stroke-width="3"/>
+<text x="290" y="142" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">main</text>
+<text x="290" y="178" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">Web サーバー</text>
+<text x="630" y="190" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">sidecar</text>
+<text x="630" y="226" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">logsaver</text>
+<text x="460" y="186" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">共有</text>
+<path d="M405.0,230 v60 a55.0,10 0 0 0 110,0 v-60" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<ellipse cx="460" cy="230" rx="55.0" ry="10" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="460" y="276" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">volume</text>
+<rect x="400" y="326" width="120" height="56" rx="8" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="460" y="363" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">network</text>
+<text x="460" y="438" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">1 つ</text>
+<rect x="215" y="240" width="150" height="52" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="290" y="275" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">イメージ</text>
+<rect x="215" y="308" width="150" height="52" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="290" y="343" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">資源の上限</text>
+<text x="290" y="408" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">別々</text>
+<rect x="555" y="280" width="150" height="52" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="630" y="315" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">イメージ</text>
+<rect x="555" y="348" width="150" height="52" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="630" y="383" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">資源の上限</text>
+<text x="630" y="448" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">別々</text>
+<rect x="6" y="175" width="160" height="70" rx="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="86" y="219" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">クライアント</text>
+<line x1="168" y1="210" x2="214" y2="210" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<path d="M785.0,230 v80 a75.0,10 0 0 0 150,0 v-80" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<ellipse cx="860" cy="230" rx="75.0" ry="10" fill="#ffffff" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="860" y="290" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ストレージ</text>
+<line x1="706" y1="265" x2="768" y2="265" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+</svg>

@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "MLOps"]
 tags: ["machine-learning", "mlops", "monitoring"]
 weight: 5
+topics: ["MLOps"]
 ---
 
 モデル性能劣化の監視（model performance monitoring）は、本番運用しているモデルの予測品質を継続的に観測し、劣化を早期に検知する仕組みです。学習時の精度は本番でずっと維持されるわけではなく、[データドリフト](../data-drift/)や仕様変更で低下する場合があります。予測品質の低下は、ユーザー体験やビジネス指標にも影響します。

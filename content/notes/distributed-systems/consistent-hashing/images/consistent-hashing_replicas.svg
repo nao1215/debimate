@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>複製先を選ぶ時の進み方</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<circle cx="270" cy="285" r="175" fill="none" stroke="#c8c8c8" stroke-width="3"/>
+<path d="M334.4,122.3 A175,175 0 1,1 103.6,230.9" fill="none" stroke="#7aa6c2" stroke-width="8"/>
+<circle cx="411.6" cy="182.1" r="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="411.6" y="191.1" font-size="24" text-anchor="middle">1</text>
+<text x="453.6" y="160.6" font-size="26" text-anchor="middle" style="fill:#1f1f1f">A:0</text>
+<circle cx="428.3" cy="359.5" r="12" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 5"/>
+<text x="475.4" y="390.7" font-size="26" text-anchor="middle" style="fill:#666666">A:1</text>
+<circle cx="291.9" cy="458.6" r="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="291.9" y="467.6" font-size="24" text-anchor="middle">2</text>
+<text x="298.5" y="519.2" font-size="26" text-anchor="middle" style="fill:#1f1f1f">B:0</text>
+<circle cx="135.2" cy="396.5" r="12" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 5"/>
+<text x="95.1" y="438.7" font-size="26" text-anchor="middle" style="fill:#666666">A:2</text>
+<circle cx="103.6" cy="230.9" r="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="103.6" y="239.9" font-size="24" text-anchor="middle">3</text>
+<text x="54.1" y="223.9" font-size="26" text-anchor="middle" style="fill:#1f1f1f">C:0</text>
+<circle cx="195.5" cy="126.7" r="12" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="173.3" y="88.6" font-size="26" text-anchor="middle" style="fill:#666666">B:1</text>
+<circle cx="334.4" cy="122.3" r="11" fill="#d4a24c"/>
+<text x="356.4" y="100.3" font-size="24">key</text>
+<text x="270" y="294" font-size="24" text-anchor="middle" style="fill:#666666">時計回り</text>
+<circle cx="610" cy="141" r="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="610" y="150" font-size="24" text-anchor="middle">1</text>
+<text x="650" y="150" font-size="26">A:0 → A</text>
+<text x="650" y="212" font-size="24" style="fill:#666666">A:1 は A なので飛ばす</text>
+<circle cx="610" cy="265" r="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="610" y="274" font-size="24" text-anchor="middle">2</text>
+<text x="650" y="274" font-size="26">B:0 → B</text>
+<text x="650" y="336" font-size="24" style="fill:#666666">A:2 は A なので飛ばす</text>
+<circle cx="610" cy="389" r="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="610" y="398" font-size="24" text-anchor="middle">3</text>
+<text x="650" y="398" font-size="26">C:0 → C</text>
+<text x="590" y="480" font-size="24" style="fill:#666666">3 台に複製する場合</text>
+</svg>

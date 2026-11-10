@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>使わなくなったレコードの扱いごとに、どこに何が残るか</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="315.0" y="58" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">使っている間</text>
+<text x="680.0" y="58" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">使わなくなった後</text>
+<text x="30" y="121" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">物理削除</text>
+<rect x="210" y="88" width="204" height="48" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="426" y="88" width="514" height="48" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="9 6"/>
+<text x="683.0" y="121" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">何も残らない</text>
+<text x="30" y="193" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">削除フラグ</text>
+<rect x="210" y="160" width="204" height="48" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="426" y="160" width="514" height="48" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="683.0" y="193" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">deleted_at を付けて残る</text>
+<text x="30" y="265" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">状態の遷移</text>
+<rect x="210" y="232" width="204" height="48" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="426" y="232" width="514" height="48" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="683.0" y="265" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">「退会済み」として残る</text>
+<text x="30" y="337" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">アーカイブ</text>
+<rect x="210" y="304" width="204" height="48" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="426" y="304" width="174" height="48" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="513.0" y="337" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">保持期間</text>
+<rect x="618" y="304" width="322" height="48" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="9 6"/>
+<text x="779.0" y="337" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">別の表に移る</text>
+<text x="30" y="409" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">匿名化</text>
+<rect x="210" y="376" width="204" height="48" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="426" y="376" width="514" height="48" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="683.0" y="409" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">個人データだけ消して残る</text>
+<line x1="420" y1="76" x2="420" y2="448" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-dasharray="2 7"/>
+<rect x="64" y="476" width="40" height="28" rx="5" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="116" y="499" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">使っている</text>
+<rect x="266" y="476" width="40" height="28" rx="5" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="318" y="499" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">同じ表に残る</text>
+<rect x="492" y="476" width="40" height="28" rx="5" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="9 6"/>
+<text x="544" y="499" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">別の表に残る</text>
+<rect x="718" y="476" width="40" height="28" rx="5" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="9 6"/>
+<text x="770" y="499" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">残らない</text>
+</svg>

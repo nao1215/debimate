@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "linear-algebra"]
 weight: 16
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 機械学習では、1 件のデータを特徴量ベクトル、複数件のデータを行列として扱います。線形回帰の `X @ w` は、各データと重みの内積をまとめて計算する式です。各行を 1 件のデータ、各列を 1 種類の特徴量として並べると、全データの予測値を一度に計算できます。

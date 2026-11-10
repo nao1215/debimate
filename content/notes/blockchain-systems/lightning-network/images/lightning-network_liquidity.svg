@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>片側の残高が、その向きに送れる上限になる</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-ochre" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="480" y="60" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">capacity 1,000,000 sat</text>
+<rect x="80" y="100" width="720.0" height="70" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="800.0" y="100" width="80.0" height="70" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="100" y="145" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Alice 900,000</text>
+<text x="880" y="208" font-size="26" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">Bob 100,000</text>
+<line x1="80" y1="300" x2="800.0" y2="300" stroke="#7aa6c2" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<text x="80" y="280" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Alice → Bob</text>
+<text x="80" y="345" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">up to 900,000 sat</text>
+<line x1="880" y1="430" x2="800.0" y2="430" stroke="#d4a24c" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-ochre)"/>
+<text x="880" y="410" font-size="26" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">Bob → Alice</text>
+<text x="880" y="475" font-size="24" font-weight="normal" text-anchor="end" style="fill:#666666">up to 100,000 sat</text>
+<text x="80" y="520" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">fees and reserve are left out</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>預け入れ額を重みにした投票と、矛盾する署名への罰則</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="337" y="62" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">バリデータ（円の面積 = 有効残高）</text>
+<rect x="40" y="120" width="594" height="280" rx="16" fill="none" stroke="#7aa6c2" stroke-width="3" stroke-dasharray="10 7"/>
+<circle cx="100" cy="262" r="46" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<path d="M80.7,262.0 L95.2,275.5 L119.3,249.4" fill="none" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="228" cy="262" r="72" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<path d="M197.8,262.0 L220.4,283.2 L258.2,242.3" fill="none" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="344" cy="262" r="36" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<path d="M328.9,262.0 L340.2,272.6 L359.1,252.2" fill="none" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="448" cy="262" r="56" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<path d="M424.5,262.0 L442.1,278.5 L471.5,246.7" fill="none" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="566" cy="262" r="56" fill="none" stroke="#666666" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="337" y="470" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">規則どおりの提案・投票 → 報酬</text>
+<text x="806" y="62" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">矛盾する署名</text>
+<line x1="630" y1="262" x2="728" y2="262" stroke="#666666" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<circle cx="806" cy="262" r="56" fill="none" stroke="#666666" stroke-width="3" stroke-dasharray="8 6"/>
+<circle cx="806" cy="262" r="38" fill="#e15759" stroke="none" stroke-width="2.5"/>
+<rect x="694" y="118" width="96" height="46" rx="10" fill="#ffffff" stroke="#d4a24c" stroke-width="3"/>
+<line x1="742" y1="164" x2="783.6" y2="222" stroke="#d4a24c" stroke-width="3" stroke-linecap="round"/>
+<rect x="824" y="118" width="96" height="46" rx="10" fill="#ffffff" stroke="#d4a24c" stroke-width="3"/>
+<line x1="872" y1="164" x2="829.1" y2="222" stroke="#d4a24c" stroke-width="3" stroke-linecap="round"/>
+<text x="742" y="150" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">投票 1</text>
+<text x="872" y="150" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">投票 2</text>
+<text x="807" y="152" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#e15759">≠</text>
+<text x="806" y="470" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">担保の減額・強制退出</text>
+</svg>

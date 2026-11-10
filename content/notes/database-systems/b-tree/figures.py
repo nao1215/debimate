@@ -70,3 +70,39 @@ plt.xlabel("Number of keys in the index (n)")
 plt.ylabel("Levels from root to leaf")
 plt.legend(loc="upper left", frameon=False, fontsize=9)
 save("b-tree_levels_by_fanout.svg")
+
+
+# --- 図2: 昇順とランダムな順で挿入した索引の葉ページ（本文の pgstatindex() の出力） ---
+# (index, insert order, leaf_pages, avg_leaf_density)
+FILL_RUNS = [
+    ("seq_ins_k", "ascending", 2733, 90.06),
+    ("rnd_ins_k", "random", 3701, 66.58),
+]
+with plt.rc_context({
+    "font.size": 10, "axes.grid": False, "svg.fonttype": "path",
+    "svg.hashsalt": "b-tree", "figure.facecolor": "#ffffff",
+    "axes.facecolor": "#ffffff", "axes.edgecolor": COLOR_GRAY,
+}):
+    fig, (left, right) = plt.subplots(1, 2, figsize=(7.2, 3.2))
+    labels = [f"{order}\n({name})" for name, order, _, _ in FILL_RUNS]
+    colors = [COLOR_BLUE, COLOR_RED]
+    for ax, col, title, fmt, top in [
+        (left, 2, "Leaf pages", "{:,.0f}", 4300),
+        (right, 3, "Average leaf density (%)", "{:.1f}%", 115),
+    ]:
+        values = [run[col] for run in FILL_RUNS]
+        ax.bar([0, 1], values, color=colors, width=0.6)
+        for x, v in enumerate(values):
+            ax.text(x, v + top * 0.02, fmt.format(v), ha="center", va="bottom",
+                    fontsize=10)
+        ax.set_xticks([0, 1], labels, fontsize=9.5)
+        ax.set_ylim(0, top)
+        ax.set_title(title, fontsize=10.5)
+    right.axhline(90, color=COLOR_GRAY, linestyle="--", linewidth=1)
+    right.text(1.45, 92, "fillfactor 90", ha="right", va="bottom",
+               color=COLOR_GRAY, fontsize=9)
+    fig.tight_layout()
+    path = OUT / "b-tree_insert_order_fill.svg"
+    fig.savefig(path, metadata={"Date": None})
+    plt.close(fig)
+    print(f"wrote {path}")

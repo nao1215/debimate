@@ -4,42 +4,24 @@ date: 2026-08-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
-weight: 2
+weight: 3
 wrapTables: true
+topics: ["Introduction"]
 ---
 
 Bitcoin の送金は、ウォレット（鍵を管理し、取引を組み立てるソフトウェア）が取引を作り、ネットワークに流し、マイナー（取引をまとめた単位であるブロックを作る参加者）がブロックに取り込むまでの段階を通ります。取引が共有された履歴に載るのは最後の段階で、送信した直後の取引は、ウォレットと各ノードの手元に置かれているだけです。以下では、Alice が Bob に 0.1 BTC（BTC は Bitcoin の通貨単位）を送る 1 件の取引で、作成からブロックへの取り込みまでを順に追います。
 
 ウォレットで送信を終えても、画面にはしばらく「未確認」と表示され、その後で確認済みに変わります。「未確認」は取引がまだどのブロックにも入っていない状態で、確認済みはブロックに入った後の状態です。その間に取引がどこを通り、誰が何を確かめているのかは、ウォレットの画面からは見えません。
 
-以下は、送信から取り込みまでの流れです。図に出てくるノードは Bitcoin のソフトウェアを動かしてネットワークに参加する計算機、[UTXO](../utxo/) は過去の取引で受け取り、まだ使っていないコインの単位、[mempool](../mempool/) はブロックに入る前の取引を溜める場所です。
+以下は、同じ取引が送信から取り込みまでに置かれる場所です。ノードは Bitcoin のソフトウェアを動かしてネットワークに参加する計算機、[UTXO](../utxo/) は過去の取引で受け取り、まだ使っていないコインの単位、[mempool](../mempool/) はブロックに入る前の取引を溜める場所です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant W as Alice のウォレット
-    participant N as ネットワークのノード
-    participant M as マイナー
-    W->>W: UTXO を選ぶ
-    W->>W: Transaction を作る
-    W->>W: 秘密鍵で署名する
-    W->>N: ネットワークに送信する
-    N->>N: 取引を検証する
-    Note over N: mempool に入る
-    N->>M: 取引が中継される
-    M->>M: 取引を選ぶ
-    M->>M: Block を作る
-    M->>M: proof of work
-    M->>N: Block を配る
-    N->>N: Block を検証する
-    Note over N,M: Blockchain に追加される
-```
+{{< figure src="images/bitcoin-transaction-lifecycle_concept.svg" alt="左から、ウォレット、3 台のノードの mempool、3 個並んだブロックの順に場所が並ぶ。青く塗った四角の取引は上 2 台の mempool を経て最初のブロックに入り、そこまでが未確認、ブロックに入った後が確認済みと書かれている" caption="送信からブロックに入るまでに取引が置かれる場所" align="center" >}}
 
-上記の図のうち、Alice のウォレットが行うのは、取引の組み立てから署名を経て、ネットワークに送信するまでです。以降は、受け取ったノードとマイナーの作業になります。
+上記の図の青く塗った四角が Alice の取引です。Alice のウォレットが行うのは、取引の組み立てから署名を経て、ネットワークに送信するまでです。以降は、受け取ったノードとマイナーの作業になります。mempool の中身はノードごとに異なり、図の下のノードにはまだ届いていません。
 
 <br>
 
-本記事では、各段階で何が起きるのかと、どの仕組みが登場するのかを説明します。節は図の段階に合わせ、次の疑問に答えます。
+本記事では、各段階で何が起きるのかと、どの仕組みが登場するのかを説明します。節は取引が移る順に並べ、次の疑問に答えます。
 
 - ウォレットは、どのように UTXO を選んで取引を組み立てるのか。
 - 署名は、取引に何を証明として加えるのか。
@@ -184,7 +166,7 @@ flowchart RL
 
 上記の図の状態で、Alice の取引の確認数は 3 です。取引を含むブロック自身を 1 個目として数え、後ろに 2 個積まれています。ウォレットが表示する確認数は、この数です。後ろに積まれるブロックが増えるほど、この取引を履歴から外すのに必要な計算量は大きくなります。
 
-手数料と確認数の見え方は、外部と接続しないローカルのチェーン（[Bitcoin Core](https://github.com/bitcoin/bitcoin) 32.1 の regtest）で確かめられます。regtest は合格条件が緩く、ブロックをコマンド 1 つで作れます。
+手数料と確認数の見え方は、外部と接続しない[ローカルのチェーン](../mainnet-and-testnet/)（[Bitcoin Core](https://github.com/bitcoin/bitcoin) 32.1 の regtest）で確かめられます。regtest は合格条件が緩く、ブロックをコマンド 1 つで作れます。
 
 ブロックを 101 個作って最初のブロック報酬 50 BTC を使えるようにした Alice から、手数料率 10 sat/vB（1 vB あたり 10 satoshi。satoshi は 1 億分の 1 BTC）で Bob に 0.1 BTC を送り、ブロックを 1 個、さらに 2 個作った時の表示は以下の通りです。
 

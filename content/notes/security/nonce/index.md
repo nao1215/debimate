@@ -5,13 +5,22 @@ draft: false
 series: ["技術ノート", "Security"]
 tags: ["security", "cryptography"]
 weight: 7
+topics: ["Cryptography"]
 ---
 
-nonce（number used once）は、プロトコルがやり取りするデータに含める、繰り返して使わない値です。[RFC 4949](https://www.rfc-editor.org/rfc/rfc4949.txt) は「A random or non-repeating value that is included in data exchanged by a protocol, usually for the purpose of guaranteeing liveness and thus detecting and protecting against replay attacks」（プロトコルがやり取りするデータに含める、ランダムまたは繰り返さない値。多くは liveness、つまり相手がその場で応答していることを保証し、それによって replay 攻撃を検出して防ぐ目的で使う）と定義しています。replay は、過去のやり取りを記録して後から送り直す攻撃です。
+nonce（number used once）は、プロトコルがやり取りするデータに含める、繰り返して使わない値です。[RFC 4949](https://www.rfc-editor.org/rfc/rfc4949.txt) は「A random or non-repeating value that is included in data exchanged by a protocol」（プロトコルがやり取りするデータに含める、ランダムまたは繰り返さない値）と定義しています。
+
+同じ定義は、その目的を「usually for the purpose of guaranteeing liveness and thus detecting and protecting against replay attacks」（多くは liveness、つまり相手がその場で応答していることを保証し、それによって replay 攻撃を検出して防ぐ目的で使う）と続けます。replay は、過去のやり取りを記録して後から送り直す攻撃です。
 
 nonce の値を選ぶのは、多くの場合ライブラリではなく呼び出す側です。暗号化と改竄の検出を 1 つの操作で行う方式を AEAD（authenticated encryption with associated data）と言います。その 1 つである AES-GCM を低レベルな API から使うと、鍵とは別に nonce という値を渡します。nonce を内部で作る高レベルな API もあります。
 
 同じ鍵と同じ nonce で、内容の違う 2 通のメッセージを暗号化すると、攻撃者は 2 通の平文の関係を計算できます。改竄の検出のために暗号文に添える認証タグも、その鍵で作ったものは信用できなくなります。鍵は漏れておらず、暗号文の形式も普段通りで、受信側の復号も成功します。
+
+以下は、1 つの鍵で使う nonce の範囲を帯で表し、送信者ごとに範囲を分けた場合と、再起動でカウンタが戻った場合を比べた図です。
+
+{{< figure src="images/nonce_concept.svg" alt="上段は送信者 A と B に範囲を分け、下段は先の番号 200 を保存してから再開するので、どちらも重ならない。中段は再起動でカウンタが 0 に戻り、使用済みの区間を再び使う所を赤い枠で囲む。" caption="1 つの鍵の nonce の範囲と、重なって再使用される区間" align="center" >}}
+
+赤い枠の区間では、同じ鍵と nonce の組が 2 度使われます。
 
 しかし、nonce と呼ばれる値に求められる性質は、1 つに揃っていません。AEAD が求めるのは鍵ごとの一意性です。認証で使う challenge（サーバーが毎回出し、利用者が署名して返す値）が求めるのはランダム性と推測の難しさで、そこに有効期限と、1 度使ったら受け付けない扱いが加わります。
 
@@ -74,7 +83,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-タグを nonce に結び付けているのは `AES_K(J0)` です。タグ全体は nonce にも依存するので、同じ鍵と同じ nonce を 2 度使えば `AES_K(J0)` も同じ値になります。2 つのタグを XOR すると共通の `AES_K(J0)` が消え、`H` を未知数とする関係式が残ります。1 組では `H` の候補が複数残りますが、同じ鍵と同じ nonce で作られた暗号文とタグの組を集めるほど、候補は減ります。
+タグを nonce に結び付けているのは `AES_K(J0)` です。タグ全体は nonce にも依存するので、同じ鍵と同じ nonce を 2 度使えば `AES_K(J0)` も同じ値になります。
+
+2 つのタグを XOR すると共通の `AES_K(J0)` が消え、`H` を未知数とする関係式が残ります。1 組では `H` の候補が複数残りますが、同じ鍵と同じ nonce で作られた暗号文とタグの組を集めるほど、候補は減ります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -92,7 +103,9 @@ sequenceDiagram
 
 候補が 1 つに絞れると、攻撃者は観測した暗号文・AAD・タグからその nonce の `AES_K(J0)` を復元し、改変した暗号文と AAD に合うタグを計算できます。観測していない nonce では `AES_K(J0)` が分からないので、何も見ずに任意のタグを作れるわけではありません。
 
-しかし `H` はその鍵に 1 つなので、影響は再利用した nonce だけに閉じません。[RFC 5116](https://www.rfc-editor.org/rfc/rfc5116.txt) §5.1.1 は、内容の違う 2 通で nonce を再利用すると「undermines all of the authenticity and integrity protection provided by that key」（その鍵が与える認証と完全性の保護の全てを損なう）と述べています。完全性は、データが書き換えられていないことです。そのため、その鍵で作ったタグは以後も信用できないものとして扱い、鍵ごと交換します。
+しかし `H` はその鍵に 1 つなので、影響は再利用した nonce だけに閉じません。[RFC 5116](https://www.rfc-editor.org/rfc/rfc5116.txt) §5.1.1 は、内容の違う 2 通で nonce を再利用すると「undermines all of the authenticity and integrity protection provided by that key」（その鍵が与える認証と完全性の保護の全てを損なう）と述べています。
+
+完全性は、データが書き換えられていないことです。そのため、その鍵で作ったタグは以後も信用できないものとして扱い、鍵ごと交換します。
 
 「毎回違う値を入れれば良い」で済まないのは、この失敗が暗号ライブラリの外で起きるからです。重複するかどうかは、誰が番号を割り当てるのかと、その状態が再起動をまたいで残るのかの 2 つで決まります。
 
@@ -108,7 +121,9 @@ TLS（Transport Layer Security）1.3 がこの性質を使っています。レ�
 
 <br>
 
-Wi-Fi の鍵交換でも、nonce が初期値に戻る問題がありました。2017 年に公表された [KRACK](https://www.krackattacks.com/)（Key Reinstallation Attacks）です。Wi-Fi の WPA2 は、接続時に鍵を取り決める 4-way handshake で端末に鍵を設定し、送るたびに増える packet number を nonce に使います。取り決めのメッセージが再送されると、端末は使用中の鍵を設定し直し、そのたびに nonce が初期値に戻りました。
+Wi-Fi の鍵交換でも、nonce が初期値に戻る問題がありました。2017 年に公表された [KRACK](https://www.krackattacks.com/)（Key Reinstallation Attacks）です。Wi-Fi の WPA2 は、接続時に鍵を取り決める 4-way handshake で端末に鍵を設定し、送るたびに増える packet number を nonce に使います。
+
+取り決めのメッセージが再送されると、端末は使用中の鍵を設定し直し、そのたびに nonce が初期値に戻りました。
 
 TLS 1.3 は鍵を替えてから 0 に戻しますが、KRACK では同じ鍵のまま番号だけが 0 に戻りました。鍵も Wi-Fi のパスワードも漏れていませんが、同じ組が繰り返されたので、通常使われる CCMP でも暗号文を復号できました。AES-GCM を使う GCMP では、上記の H の関係式からパケットの偽造まで可能になりました。
 
@@ -120,27 +135,15 @@ TLS 1.3 は鍵を替えてから 0 に戻しますが、KRACK では同じ鍵の
 
 カウンタの状態を保存できるなら、番号を 1 ずつ進めるのが確実です。確率に頼らず、同じ値が 2 度出ないことを手順で決められます。
 
-RFC 5116 §3.2 が推奨する形式は、Fixed field と Counter field の連結です。Fixed field は送信者ごとに違う固定値、Counter field は呼び出しごとに進む部分で、12 octet（96 bit。octet は 8 bit）の nonce で Counter field を 4 octet とする組み合わせを実装が扱えることを SHOULD で求めています（MUST・SHOULD は、仕様で必須と推奨を表す語です）。
+RFC 5116 §3.2 が推奨する形式は、Fixed field と Counter field の連結です。Fixed field は送信者ごとに違う固定値、Counter field は呼び出しごとに進む部分です。
+
+同じ §3.2 は、12 octet（96 bit。octet は 8 bit）の nonce で Counter field を 4 octet とする組み合わせを実装が扱えることを SHOULD で求めています（MUST・SHOULD は、仕様で必須と推奨を表す語です）。
 
 TLS 1.3 の作り方は、この推奨形とは別です。sequence number をネットワークバイト順（上位の byte が先）で書き、IV（initialization vector。暗号化の入力に添える初期値）の長さまで左を 0 で埋めてから、クライアントとサーバーの送信方向ごとに導かれる static IV と XOR します。その結果がレコードごとの nonce です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph R["RFC 5116 の推奨形"]
-        F["Fixed field<br/>送信者ごとに違う固定値"]
-        C["Counter field<br/>呼び出しごとに 1 進む"]
-    end
-    subgraph T["TLS 1.3 のレコードごとの nonce"]
-        Q["64 bit の sequence number<br/>鍵を替えると 0 に戻る"]
-        I["static IV<br/>送信の役割ごとに決まる"]
-    end
-    F --> U1["同じ鍵を使う送信者どうしで重複しない"]
-    C --> U2["1 つの送信者の中で重複しない"]
-    Q --> V["0 で埋めて XOR した結果が nonce"]
-    I --> V
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+以下は、12 octet の nonce を 1 octet ずつのマスに分け、2 つの作り方を並べた図です。
+
+{{< figure src="images/nonce_layout.svg" alt="上段は RFC 5116 の推奨形で、12 マスのうち左の 8 マスが送信者ごとに違う Fixed field、右の 4 マスが 1 ずつ進む Counter。下段は TLS 1.3 で、左の 4 マスを 0 で埋め、右の 8 マスに 64 bit の sequence number を置き、12 マスの static IV と XOR した結果が nonce になる" caption="12 octet の nonce の組み立て。RFC 5116 の推奨形と TLS 1.3" align="center" >}}
 
 Fixed field は暗号文に添えて送れますが、static IV は traffic key と一緒に導かれる固定値で、外には出ません。復号側が nonce を得られれば良いので、nonce の一部を保存された位置のような文脈から組み立てる形も認められています（RFC 5116 §3.2.1）。
 
@@ -169,13 +172,63 @@ sequenceDiagram
 
 予約を先に保存すれば、保存の完了を待つ間も番号を使えます。予約した範囲を使い切っても保存が終わっていなければ、完了するまで新しい nonce の発行を止めます。番号が飛ぶことは問題になりませんが、同じ番号を 2 度使うことは問題になります。順序を逆にして使ってから保存すると、保存が間に合わなかった分は必ずもう一度使われます。
 
+保存の順序で生じる差をシミュレーションで確かめます。1 つの鍵で 1,000 万通を送り、平均 1 万通に 1 回（seed 固定の乱数で決めた間隔）プロセスが落ちるとします。
+
+使ってから k 本ごとに保存する場合、落ちた時点で最後の保存より後の番号は、再起動後にもう一度使われます。比較として、96 bit と 192 bit の乱数の nonce で重なる組の期待値も、同じ通数で計算しました（抜粋。全体は [lab/counter_restart.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/nonce/lab/counter_restart.py)）。
+
+```python
+for stop in events:                      # 次に落ちるまで送り続ける
+    while sent < stop:
+        if reserve and counter >= saved:
+            saved = counter + k          # 使う前に予約を保存する
+        if counter <= max_used:
+            reused += 1                  # 使用済みの番号をもう一度使った
+        max_used = max(max_used, counter)
+        counter += 1
+        sent += 1
+        if not reserve and counter % k == 0:
+            saved = counter              # 使ってから保存する
+    counter = saved                      # 落ちて、保存値から再開する
+```
+
+<details>
+<summary>lab/counter_restart.py の出力</summary>
+
+```console
+$ python3 lab/counter_restart.py
+messages=10,000,000  crashes=1,002  mean gap=10,000  seed=20261110
+messages sent                     10,000     100,000   1,000,000  10,000,000
+save after use, k=10                   6          40         424       4,488
+reserve ahead, k=10                    0           0           0           0
+save after use, k=1,000            1,466       9,290      54,924     508,998
+reserve ahead, k=1,000                 0           0           0           0
+random 96-bit (expected)         6.3e-22     6.3e-20     6.3e-18     6.3e-16
+random 192-bit (expected)        8.0e-51     8.0e-49     8.0e-47     8.0e-45
+```
+
+</details>
+
+以下は、この出力のうち 96 bit の乱数と、2 つの間隔で使ってから保存するカウンタを描いたグラフです。
+
+{{< figure src="images/nonce_counter_restart.svg" alt="送った通数を横軸、再利用した鍵と nonce の組の数を縦軸にした両対数のグラフ。使ってから保存するカウンタは最初に落ちた時点から重複が出て、1,000 万通で 10 本ごとの保存は 4,488 組、1,000 本ごとの保存は約 51 万組に達する。予約を先に保存するカウンタは常に 0 で、96 bit の乱数の期待値は 1,000 万通でも 10 の -15 乗を下回る" caption="再起動をまたいで再利用した鍵と nonce の組の数" align="center" >}}
+
+使ってから保存すると、1 回落ちるたびに平均で k/2 本前後の番号が重なり、保存の間隔を 10 本に縮めても 0 にはなりません。予約を先に保存すれば、同じ落ち方でも重複は 0 です。この通数なら、96 bit の乱数で重なる確率の方が、使ってから保存するカウンタよりはるかに小さくなります。
+
 ---
 
 ### 乱数で作る nonce の管理
 
 カウンタの状態を安全に保存できない場合、nonce を乱数で作る選択肢があります。ただし、カウンタは手順で重複を排除しますが、乱数では衝突の確率が残るので、鍵あたりの発行回数と、許容する確率を管理します。
 
-乱数で作る時に確かめるのは、nonce の長さに対して何本発行すると衝突の確率がどこまで上がるかです。具体的には、[NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) は 96 bit の IV を乱数から作る構成について、その鍵を使う全ての暗号化主体を合わせた呼び出しを 2^32 回以下に収めることを求めています。2^32 本を発行した時点で 96 bit の値のどれか 2 本が重なる確率は、2^-33 程度です（Random Number のノート）。
+乱数で作る時に確かめるのは、nonce の長さに対して何本発行すると衝突の確率がどこまで上がるかです。
+
+具体的には、[NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) は 96 bit の IV を乱数から作る構成について、その鍵を使う全ての暗号化主体を合わせた呼び出しを 2^32 回以下に収めることを求めています。2^32 本を発行した時点で 96 bit の値のどれか 2 本が重なる確率は、2^-33 程度です（Random Number のノート）。
+
+以下は、96 bit の乱数の nonce を 1 つの鍵で発行した本数と、そのどれか 2 本が重なる確率を式から描いたグラフです。
+
+{{< figure src="images/nonce_birthday.svg" alt="横軸は 2 の 20 乗から 56 乗までの発行本数、縦軸は対数の衝突確率。確率は本数が 2 倍になるたびに約 4 倍になる直線で、2 の 32 乗の点線の位置では約 2 の -33 乗、2 の 48 乗を過ぎると 1 に張り付く" caption="96 bit の乱数の nonce で、どれか 2 本が重なる確率" align="center" >}}
+
+本数が 2 倍になると確率は約 4 倍になるので、上限の 2^32 回を超えて使い続けると、確率は急速に上がります。
 
 判断の順序を整理すると、以下の通りです。
 
@@ -197,7 +250,9 @@ AEAD の nonce は、一意でありさえすれば予測されて構いませ�
 
 一方、replay を防ぐための nonce には、予測できないことが求められます。この用途では、サーバーが毎回違う値を出し、利用者が手元の秘密鍵でその値を含むデータに署名して返します。次に出る値を予測できると、攻撃者は将来の値に対する利用者の署名を先に手に入れておき、本物のサーバーがその値を出した時に提出できます。
 
-challenge は、この目的でサーバーが出す 1 回限りの値です。[W3C Web Authentication Level 3](https://www.w3.org/TR/webauthn-3/) §13.4.3 は、Relying Party（認証を求める側のサービス）が信頼できる環境、つまり通常はサーバー側でランダムに生成すること、返ってきた challenge が発行した値と一致すること、推測が現実的でなくなるだけのエントロピー（予測の難しさの量）を含むことを MUST で求めています。16 byte 以上の長さ、ceremony が終わるまでの一時保存、ceremony の timeout の推奨上限と同程度の有効期限は、SHOULD で求めています。
+challenge は、この目的でサーバーが出す 1 回限りの値です。[W3C Web Authentication Level 3](https://www.w3.org/TR/webauthn-3/) §13.4.3 は、Relying Party（認証を求める側のサービス）が信頼できる環境、つまり通常はサーバー側でランダムに生成すること、返ってきた challenge が発行した値と一致すること、推測が現実的でなくなるだけのエントロピー（予測の難しさの量）を含むことを MUST で求めています。
+
+16 byte 以上の長さ、ceremony が終わるまでの一時保存、ceremony の timeout の推奨上限と同程度の有効期限は、SHOULD で求めています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -268,6 +323,8 @@ AES-GCM の鍵ストリームは鍵と nonce だけから決まるので、nonce
 
 <br>
 
-RFC 8452 は Internet Standards Track の仕様ではなく、IRTF（Internet Research Task Force）の研究グループである CFRG（Crypto Forum Research Group）の consensus として公開された Informational RFC です。その §9 は、同じ nonce を繰り返す回数に応じて鍵あたりのメッセージ数と 1 通の平文の大きさに上限を置き、実装がタグを確かめる前の平文を外に出すことを MUST NOT で禁じています。
+RFC 8452 は Internet Standards Track の仕様ではなく、IRTF（Internet Research Task Force）の研究グループである CFRG（Crypto Forum Research Group）の consensus として公開された Informational RFC です。
+
+その §9 は、同じ nonce を繰り返す回数に応じて鍵あたりのメッセージ数と 1 通の平文の大きさに上限を置き、実装がタグを確かめる前の平文を外に出すことを MUST NOT で禁じています。
 
 再利用に耐える方式に移しても、nonce を毎回変える設計は残ります。§9 は nonce をランダムに生成することを RECOMMENDED とし、固定の nonce を方針として使うことは勧めていません。同じ nonce を使い続ければ、同じ入力を 2 度送ったことが観測者に見え続けるからです。

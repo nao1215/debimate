@@ -1,0 +1,41 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2)
+table pages: 6080
+correlation orders_random 0.009
+correlation orders_sorted 1.000
+table          plan   selectivity(%)  rows     pages  time_ms   node
+orders_sorted  seq              0.01      100     6080     60.68   Seq Scan
+orders_sorted  seq              0.03      300     6080     65.04   Seq Scan
+orders_sorted  seq              0.10     1000     6080     63.81   Seq Scan
+orders_sorted  seq              0.30     3000     6080     64.18   Seq Scan
+orders_sorted  seq              1.00    10000     6080     64.04   Seq Scan
+orders_sorted  seq              3.00    30000     6080     67.14   Seq Scan
+orders_sorted  seq             10.00   100000     6080     72.19   Seq Scan
+orders_sorted  seq             30.00   300000     6080     74.67   Seq Scan
+orders_sorted  seq            100.00  1000000     6080    105.43   Seq Scan
+orders_sorted  index            0.01      100        4      0.06   Index Scan
+orders_sorted  index            0.03      300        5      0.08   Index Scan
+orders_sorted  index            0.10     1000       10      0.17   Index Scan
+orders_sorted  index            0.30     3000       24      0.41   Index Scan
+orders_sorted  index            1.00    10000       72      1.30   Index Scan
+orders_sorted  index            3.00    30000      209      3.85   Index Scan
+orders_sorted  index           10.00   100000      693     13.32   Index Scan
+orders_sorted  index           30.00   300000     2071     40.90   Index Scan
+orders_sorted  index          100.00  1000000     6897    125.08   Index Scan
+orders_random  seq              0.01      100     6080     64.02   Seq Scan
+orders_random  seq              0.03      300     6080     69.66   Seq Scan
+orders_random  seq              0.10     1000     6080     64.82   Seq Scan
+orders_random  seq              0.30     3000     6080     65.31   Seq Scan
+orders_random  seq              1.00    10000     6080     66.44   Seq Scan
+orders_random  seq              3.00    30000     6080     65.96   Seq Scan
+orders_random  seq             10.00   100000     6080     72.68   Seq Scan
+orders_random  seq             30.00   300000     6080     83.63   Seq Scan
+orders_random  seq            100.00  1000000     6080     79.81   Seq Scan
+orders_random  index            0.01      100      101      0.74   Index Scan
+orders_random  index            0.03      300      298      1.53   Index Scan
+orders_random  index            0.10     1000      992      3.45   Index Scan
+orders_random  index            0.30     3000     2977      6.83   Index Scan
+orders_random  index            1.00    10000     9912     12.95   Index Scan
+orders_random  index            3.00    30000    29773     25.51   Index Scan
+orders_random  index           10.00   100000    99305     64.80   Index Scan
+orders_random  index           30.00   300000   297883    201.58   Index Scan
+orders_random  index          100.00  1000000   992858    609.74   Index Scan

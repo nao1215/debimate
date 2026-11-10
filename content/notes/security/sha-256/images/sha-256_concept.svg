@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>ブロックの数と内部状態の大きさ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="60" y="40" width="34" height="34" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="106" y="66" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">ブロック 512 bit</text>
+<rect x="340" y="40" width="34" height="34" rx="4" fill="#d4a24c" stroke="none" stroke-width="2.5"/>
+<text x="386" y="66" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">padding</text>
+<rect x="560" y="40" width="34" height="34" rx="4" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<text x="606" y="66" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">内部状態 256 bit</text>
+<text x="60" y="184" font-size="28" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">1 byte</text>
+<text x="60" y="218" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">note.txt</text>
+<rect x="636" y="162.0" width="56" height="56" rx="4" fill="#7aa6c2" stroke="none" stroke-width="3"/>
+<line x1="696" y1="190" x2="707" y2="190" stroke="#666666" stroke-width="3"/>
+<path d="M714 190 L704 184 L704 196 Z" fill="#666666"/>
+<rect x="718" y="162.0" width="100" height="56" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="726" y="162.0" width="92" height="56" rx="4" fill="#d4a24c" stroke="none" stroke-width="2.5"/>
+<line x1="822" y1="190" x2="833" y2="190" stroke="#666666" stroke-width="3"/>
+<path d="M840 190 L830 184 L830 196 Z" fill="#666666"/>
+<rect x="844" y="162.0" width="56" height="56" rx="4" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="3"/>
+<text x="60" y="324" font-size="28" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">64 MiB</text>
+<text x="60" y="358" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">disk.img</text>
+<rect x="220" y="302.0" width="56" height="56" rx="4" fill="#7aa6c2" stroke="none" stroke-width="3"/>
+<line x1="280" y1="330" x2="291" y2="330" stroke="#666666" stroke-width="3"/>
+<path d="M298 330 L288 324 L288 336 Z" fill="#666666"/>
+<rect x="302" y="302.0" width="100" height="56" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<line x1="406" y1="330" x2="417" y2="330" stroke="#666666" stroke-width="3"/>
+<path d="M424 330 L414 324 L414 336 Z" fill="#666666"/>
+<rect x="428" y="302.0" width="56" height="56" rx="4" fill="#7aa6c2" stroke="none" stroke-width="3"/>
+<line x1="488" y1="330" x2="499" y2="330" stroke="#666666" stroke-width="3"/>
+<path d="M506 330 L496 324 L496 336 Z" fill="#666666"/>
+<rect x="510" y="302.0" width="100" height="56" rx="4" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="6 6"/>
+<text x="560.0" y="338" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#666666">…</text>
+<line x1="614" y1="330" x2="625" y2="330" stroke="#666666" stroke-width="3"/>
+<path d="M632 330 L622 324 L622 336 Z" fill="#666666"/>
+<rect x="636" y="302.0" width="56" height="56" rx="4" fill="#7aa6c2" stroke="none" stroke-width="3"/>
+<line x1="696" y1="330" x2="707" y2="330" stroke="#666666" stroke-width="3"/>
+<path d="M714 330 L704 324 L704 336 Z" fill="#666666"/>
+<rect x="718" y="302.0" width="100" height="56" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="718" y="302.0" width="100" height="56" rx="4" fill="#d4a24c" stroke="none" stroke-width="2.5"/>
+<line x1="822" y1="330" x2="833" y2="330" stroke="#666666" stroke-width="3"/>
+<path d="M840 330 L830 324 L830 336 Z" fill="#666666"/>
+<rect x="844" y="302.0" width="56" height="56" rx="4" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="3"/>
+<text x="220" y="400" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">データ 1,048,576 ブロック ＋ padding 1 ブロック</text>
+<text x="920" y="490" font-size="26" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">どちらも最後の 256 bit がハッシュ値</text>
+<line x1="872.0" y1="358.0" x2="872.0" y2="455" stroke="#1f1f1f" stroke-width="2"/>
+</svg>

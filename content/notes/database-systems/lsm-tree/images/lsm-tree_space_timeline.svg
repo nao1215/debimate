@@ -1153,7 +1153,7 @@ L 400.978261 40.13136
 L 404.003282 36.307912 
 L 407.028303 32.484463 
 L 410.053324 28.661015 
-" clip-path="url(#pce969cf157)" style="fill: none; stroke: #e15759; stroke-width: 1.8; stroke-linecap: square"/>
+" clip-path="url(#pce969cf157)" style="fill: none; stroke: #666666; stroke-width: 1.8; stroke-linecap: square"/>
    </g>
    <g id="line2d_27">
     <path d="M 80.326051 225.235961 
@@ -1266,7 +1266,7 @@ L 400.978261 179.561048
 L 404.003282 183.365379 
 L 407.028303 187.16971 
 L 410.053324 190.985512 
-" clip-path="url(#pce969cf157)" style="fill: none; stroke-dasharray: 5.55,2.4; stroke-dashoffset: 0; stroke: #666666; stroke-width: 1.5"/>
+" clip-path="url(#pce969cf157)" style="fill: none; stroke-dasharray: 4.44,1.92; stroke-dashoffset: 0; stroke: #1f1f1f; stroke-width: 1.2"/>
    </g>
    <g id="line2d_28">
     <path d="M 379.803115 228.96 
@@ -1391,7 +1391,7 @@ z
      <path d="M 71.939687 32.198906 
 L 80.939687 32.198906 
 L 89.939687 32.198906 
-" style="fill: none; stroke: #e15759; stroke-width: 1.8; stroke-linecap: square"/>
+" style="fill: none; stroke: #666666; stroke-width: 1.8; stroke-linecap: square"/>
     </g>
     <g id="text_17">
      <!-- Size-tiered: entries on disk -->
@@ -1483,7 +1483,7 @@ z
      <path d="M 71.939687 45.409219 
 L 80.939687 45.409219 
 L 89.939687 45.409219 
-" style="fill: none; stroke-dasharray: 5.55,2.4; stroke-dashoffset: 0; stroke: #666666; stroke-width: 1.5"/>
+" style="fill: none; stroke-dasharray: 4.44,1.92; stroke-dashoffset: 0; stroke: #1f1f1f; stroke-width: 1.2"/>
     </g>
     <g id="text_18">
      <!-- Live keys -->

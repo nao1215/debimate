@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 28
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 PCA（Principal Component Analysis、主成分分析）は、多次元データの「ばらつき（分散）が大きい方向」を見つけ、座標軸をその方向へ回転させてから、重要な軸だけ残す方法です。

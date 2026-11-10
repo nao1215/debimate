@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>ファサードの裏で機能を 1 つずつ新システムへ移し、最後にモノリスを止める 3 段階</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="162.0" y="44" font-size="28" font-weight="normal" text-anchor="middle">1. 入口を置く</text>
+<line x1="162.0" y1="62" x2="162.0" y2="98" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="24" y="102" width="276" height="58" rx="10" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="162.0" y="141" font-size="26" font-weight="normal" text-anchor="middle">ファサード</text>
+<line x1="91.0" y1="160" x2="91.0" y2="230" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="24" y="236" width="134" height="284" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="91.0" y="272" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">モノリス</text>
+<rect x="40.0" y="292" width="102" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="91.0" y="331" font-size="24" font-weight="normal" text-anchor="middle">受付</text>
+<rect x="40.0" y="364" width="102" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="91.0" y="403" font-size="24" font-weight="normal" text-anchor="middle">配送</text>
+<rect x="40.0" y="436" width="102" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="91.0" y="475" font-size="24" font-weight="normal" text-anchor="middle">請求</text>
+<text x="321.0" y="390.0" font-size="64" font-weight="normal" text-anchor="middle" style="fill:#666666">›</text>
+<text x="480.0" y="44" font-size="28" font-weight="normal" text-anchor="middle">2. 請求を移す</text>
+<line x1="480.0" y1="62" x2="480.0" y2="98" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="342" y="102" width="276" height="58" rx="10" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="480.0" y="141" font-size="26" font-weight="normal" text-anchor="middle">ファサード</text>
+<line x1="409.0" y1="160" x2="409.0" y2="230" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<line x1="551.0" y1="160" x2="551.0" y2="230" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="342" y="236" width="134" height="284" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="409.0" y="272" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">モノリス</text>
+<rect x="484" y="236" width="134" height="284" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="551.0" y="272" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">新システム</text>
+<rect x="358.0" y="292" width="102" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="409.0" y="331" font-size="24" font-weight="normal" text-anchor="middle">受付</text>
+<rect x="358.0" y="364" width="102" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2"/>
+<text x="409.0" y="403" font-size="24" font-weight="normal" text-anchor="middle">配送</text>
+<rect x="500.0" y="436" width="102" height="60" rx="8" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="551.0" y="475" font-size="24" font-weight="normal" text-anchor="middle">請求</text>
+<rect x="358.0" y="436" width="102" height="60" rx="8" fill="none" stroke="#666666" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="639.0" y="390.0" font-size="64" font-weight="normal" text-anchor="middle" style="fill:#666666">›</text>
+<text x="798.0" y="44" font-size="28" font-weight="normal" text-anchor="middle">3. モノリスを止める</text>
+<line x1="798.0" y1="62" x2="798.0" y2="98" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="660" y="102" width="276" height="58" rx="10" fill="#f2f2f2" stroke="#1f1f1f" stroke-width="2.5"/>
+<text x="798.0" y="141" font-size="26" font-weight="normal" text-anchor="middle">ファサード</text>
+<line x1="869.0" y1="160" x2="869.0" y2="230" stroke="#666666" stroke-width="3" marker-end="url(#arrow)"/>
+<rect x="660" y="236" width="134" height="284" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="727.0" y="272" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">モノリス</text>
+<rect x="802" y="236" width="134" height="284" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="869.0" y="272" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">新システム</text>
+<rect x="818.0" y="292" width="102" height="60" rx="8" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="869.0" y="331" font-size="24" font-weight="normal" text-anchor="middle">受付</text>
+<rect x="818.0" y="364" width="102" height="60" rx="8" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="869.0" y="403" font-size="24" font-weight="normal" text-anchor="middle">配送</text>
+<rect x="818.0" y="436" width="102" height="60" rx="8" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="869.0" y="475" font-size="24" font-weight="normal" text-anchor="middle">請求</text>
+<text x="727.0" y="390.0" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">停止</text>
+</svg>

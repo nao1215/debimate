@@ -5,6 +5,7 @@ draft: false
 series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 6
+topics: ["Container Patterns"]
 ---
 
 Ambassador とは、アプリケーションのコンテナと同じ実行単位に置かれ、外部との通信を代わりに引き受ける補助コンテナです。実行単位（同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まり。Kubernetes の Pod や Amazon ECS の Task）と実行基盤（コンテナの配置とライフサイクルを管理する基盤）は、[Sidecar](../sidecar/) と同じ意味で使います。
@@ -13,19 +14,7 @@ Ambassador とは、アプリケーションのコンテナと同じ実行単位
 
 以下は、[Redis](https://redis.io/) に接続する例です。Redis は主にメモリ上でデータを扱うデータストアで、書き込みを受け付ける 1 台の master と、読み取り専用の複製である複数台の replica という構成を組めます。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph UNIT["同じ実行単位"]
-        A["main<br/>アプリケーション"]
-        B["ambassador<br/>プロキシ"]
-        A -- localhost に接続 --> B
-    end
-    B -- 書き込み --> M[("write master")]
-    B -- 読み取り --> R1[("read replica 1")]
-    B -- 読み取り --> R2[("read replica 2")]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/ambassador_concept.svg" alt="実行単位の中の main は localhost の扉 1 つにだけ接続し、その扉を持つ ambassador が実行単位の縁に立つ。main から見えない外側で、ambassador からの線が書き込みの master 1 台と読み取りの replica 2 台に分かれる" caption="main から見える宛先は localhost の 1 つだけ" align="center" >}}
 
 上記の図のアプリケーションが知っているのは、localhost の 1 つの宛先だけです。書き込みを master に、読み取りを replica に振り分けるのは ambassador で、replica が 2 台から 5 台に増えた時に接続先の一覧を更新する責任も、ambassador に移ります。
 
@@ -77,7 +66,9 @@ sequenceDiagram
 
 上記の図のアプリケーションは、旧 master の宛先を静的な設定として持っているため、切り替わりを検出できません。旧 master が停止していれば応答が返らず、読み取り専用の複製に降格していれば、接続はできても書き込みだけが拒否されます。どちらでも、設定を書き換えるまで書き込みは失敗し続けます。
 
-アプリケーションやクライアントライブラリが DNS の再解決（名前から IP アドレスを引き直すこと）や構成の問い合わせ（監視役に現在の master を尋ねること）を持っていれば、Ambassador が無くても切り替わりに追随できます。ただし、その仕組みは言語ごとに必要です。ambassador に任せれば追随をアプリケーションの外で済ませられ、追随できるかどうかは ambassador の実装に依存します。
+アプリケーションやクライアントライブラリが DNS の再解決（名前から IP アドレスを引き直すこと）や構成の問い合わせ（監視役に現在の master を尋ねること）を持っていれば、Ambassador が無くても切り替わりに追随できます。
+
+ただし、その仕組みは言語ごとに必要です。ambassador に任せれば追随をアプリケーションの外で済ませられ、追随できるかどうかは ambassador の実装に依存します。
 
 論文は ambassador の例に、[memcached](https://memcached.org/) の前に置く [twemproxy](https://github.com/twitter/twemproxy) を挙げています。memcached はメモリ上にデータを置くキャッシュで、twemproxy は memcached と Redis のプロトコルを扱い、要求を複数台に分散させるプロキシです。
 
@@ -91,7 +82,9 @@ twemproxy が行うのは複数台への振り分けで、master の切り替わ
 
 2 つのコンテナはネットワーク名前空間（コンテナごとに分けられたネットワークの区画）を共有し、同じ IP アドレスを持ちます。そのため、アプリケーションは localhost に接続するだけでプロキシに届き、宛先を探す仕組みは必要ありません。宛先を探すとは、接続先の IP アドレスとポートを実行時に調べることです。
 
-ネットワークを共有するかどうかは、実行基盤によって異なります。[Kubernetes の Pod](https://kubernetes.io/docs/concepts/workloads/pods/) は、同じ Pod の中のコンテナがネットワーク名前空間を共有するので、localhost がそのまま使えます。どのコンテナ実行基盤でも共有されるわけではありません。
+ネットワークを共有するかどうかは、実行基盤によって異なります。[Kubernetes の Pod](https://kubernetes.io/docs/concepts/workloads/pods/) は、同じ Pod の中のコンテナがネットワーク名前空間を共有するので、localhost がそのまま使えます。どのコンテナ実行基盤でも共有されるわけではありません。以下は、共有する場合としない場合の比較です。
+
+{{< figure src="images/ambassador_network.svg" alt="左は Kubernetes の Pod で、main と ambassador が IP アドレス 1 つのネットワークの区画に入り、localhost で届く。右は ECS の bridge モードで、main と ambassador が 172.17.0.2 と 172.17.0.3 の別々の区画に入り、main は相手のアドレスを探して持つ必要がある" caption="ネットワークの区画を共有する場合としない場合" align="center" >}}
 
 例えば、Amazon ECS の EC2 上の Linux コンテナで既定の [bridge モード](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-networking.html)（コンテナごとに別のネットワークの区画を持つ設定）では、同じ Task のコンテナがそれぞれ別のアドレスを持ちます。共有しない設定では、アプリケーションは ambassador を別のアドレスで呼ぶ必要があり、同じマシンの中とはいえ、その宛先を探して設定に持つ手間が再び生じます。
 
@@ -167,6 +160,8 @@ Ambassador は、宛先を選ぶ責任をアプリケーションの外に移し
 Pod ごとにプロキシを同居させる構成（sidecar モード）の [Istio](https://istio.io/) は、アプリケーションの外向きの通信を[横取りしてプロキシに通します](https://docs.cloud.google.com/service-mesh/docs/troubleshooting/troubleshoot-proxy)。localhost で呼ぶ本記事の ambassador とは繋ぎ方が違いますが、通信がプロキシを通る点は同じです。
 
 その Istio で、アプリケーションのコンテナがプロキシより先に動き出すと、GitHub からファイルを取得するような単純な通信も[失敗しました](https://github.com/istio/istio/issues/11130)。後からコンテナに入って試すと繋がるため、気付くまで数日掛かるユーザーもいました。当時の回避策は、アプリケーションの起動時に 20〜30 秒待たせることでした。
+
+{{< figure src="images/ambassador_startup.svg" alt="上段は起動の順序を決めない場合で、プロキシがまだ起動中のうちにアプリケーションが動き出し、最初の通信は失敗する。プロキシの準備が整った後の通信は届く。下段はプロキシの準備を待つ場合で、アプリケーションはプロキシの準備完了の後に動き出し、最初の通信から届く。下に holdApplicationUntilProxyStarts・Sidecar Containers と添えている" caption="アプリケーションとプロキシの起動の順序" align="center" >}}
 
 Istio 1.7 は、プロキシの準備が整うまで同じ Pod の他のコンテナを起動させない設定（holdApplicationUntilProxyStarts、既定は無効）を[追加しました](https://istio.io/latest/news/releases/1.7.x/announcing-1.7/change-notes/)。その後、Kubernetes にも sidecar を先に起動させる [Sidecar Containers](https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/) が入り、Istio も[対応しました](https://github.com/istio/istio/pull/45959)。
 

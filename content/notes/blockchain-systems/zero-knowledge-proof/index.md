@@ -6,22 +6,18 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "zero-knowledge-proof", "risc0", "rust"]
 weight: 20
 wrapTables: true
+topics: ["Cryptography"]
+crossTopics:
+  security: ["Cryptography"]
 ---
 
 ゼロ知識証明（Zero-Knowledge Proof）は、ある主張が正しいことをその主張の成立以外の知識を相手に与えずに確かめてもらうための技術です。例えば、秘密の入力を使った計算について、入力そのものを渡さずに、公開した結果が計算の条件を満たすことを示せます。
 
 [Smart Contract](../smart-contract/) では、ノードがコードを実行して結果を確かめました。入力を公開したくない場合や、別の場所で行った計算を検証したい場合には、証明を作って渡す方法が使えます。後者を L1 で利用する構成の一つが [Rollup](../rollup/) です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
-flowchart TD
-    W["秘密の入力"] --> P["証明する側<br/>プログラムを実行して証明を生成"]
-    C["合意したプログラム"] --> P
-    P --> O["公開する結果と証明"]
-    O --> V["検証する側"]
-    C --> V
-    V --> R["条件を満たす実行結果か確認"]
-```
+以下は、証明する側と検証する側の間で何が渡るかを示した図です。
+
+{{< figure src="images/zero-knowledge-proof_concept.svg" alt="左の証明する側の枠の中で、秘密の入力と合意したプログラムから証明を作る。枠を越えて右の検証する側に渡るのは結果と小さな証明だけで、検証する側は同じプログラムで条件を確認する。秘密の入力は枠の外に出ない" caption="証明する側から検証する側へ渡るもの" align="center" >}}
 
 <br>
 
@@ -186,7 +182,9 @@ fn main() {
 
 本サンプルでは、実行区間の証明を再帰的にまとめた succinct receipt を生成します。再帰的にまとめる前の形式は composite receipt です。さらに Groth16 という別の証明形式に変換する経路もありますが、今回はローカルでの生成と検証に絞ります。これらの種類は[証明システムの構成図](https://dev.risczero.com/proof-system/)で確認できます。
 
-[公式の Security Model](https://dev.risczero.com/api/security-model#zero-knowledge-proving) では、再帰証明を通す前は実行長の情報が漏れ、再帰証明を通すとこの漏れを解消すると説明しています。本サンプルでは、実行長の情報を隠すために succinct receipt を生成します。同資料は、目標とする完全なゼロ知識性について数学的な証明をまだ提示していないことも明記しています。一般的なゼロ知識性の定義と、この実装について示されている保証範囲は区別する必要があります。
+[公式の Security Model](https://dev.risczero.com/api/security-model#zero-knowledge-proving) では、再帰証明を通す前は実行長の情報が漏れ、再帰証明を通すとこの漏れを解消すると説明しています。本サンプルでは、実行長の情報を隠すために succinct receipt を生成します。
+
+同資料は、目標とする完全なゼロ知識性について数学的な証明をまだ提示していないことも明記しています。一般的なゼロ知識性の定義と、この実装について示されている保証範囲は区別する必要があります。
 
 ---
 

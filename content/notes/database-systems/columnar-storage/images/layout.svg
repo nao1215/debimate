@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="720" height="350" viewBox="0 0 720 350" role="img"><title>同じ表を行ごとに並べた場合と列ごとに並べた場合のバイトの並び</title>
 <style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
 <rect width="720" height="350" fill="#ffffff"/>
-<text x="20" y="30" font-size="19" font-weight="bold" text-anchor="start">Row Store（行ごとに連続）</text>
+<text x="20" y="30" font-size="19" font-weight="normal" text-anchor="start">Row Store（行ごとに連続）</text>
 <text x="20" y="75" font-size="17" font-weight="normal" text-anchor="start" class="sub">ファイル</text>
 <rect x="100" y="48" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
 <text x="133.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">1</text>
@@ -25,7 +25,7 @@
 <text x="661.0" y="75" font-size="18" font-weight="normal" text-anchor="middle">450</text>
 <text x="595.0" y="110" font-size="16" font-weight="normal" text-anchor="middle" class="sub">行 3</text>
 <text x="20" y="136" font-size="17" font-weight="normal" text-anchor="start" class="sub">amount は 3 か所に散る</text>
-<text x="20" y="192" font-size="19" font-weight="bold" text-anchor="start">Column Store（列ごとに連続）</text>
+<text x="20" y="192" font-size="19" font-weight="normal" text-anchor="start">Column Store（列ごとに連続）</text>
 <text x="20" y="237" font-size="17" font-weight="normal" text-anchor="start" class="sub">ファイル</text>
 <rect x="100" y="210" width="66" height="40" fill="#f2f2f2" stroke="#666666" stroke-width="1.2"/>
 <text x="133.0" y="237" font-size="18" font-weight="normal" text-anchor="middle">1</text>

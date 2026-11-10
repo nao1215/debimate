@@ -6,30 +6,18 @@ series: ["技術ノート", "Security"]
 tags: ["security", "privacy"]
 weight: 3
 wrapTables: true
+topics: ["Privacy"]
 ---
 
 Tor は、通信を複数のリレー（中継役のサーバー）に順に通し、経路のどの 1 台からも接続元と接続先の両方が見えないようにする通信の仕組みです。通常の Web サイトに接続する場合は、Guard・Middle・Exit という 3 台のリレーを経由します。
 
 例えば、自社の情報が無断で転載されていないかを Web サイトで確かめたい時、普通の HTTP クライアントで接続すると、相手のサーバーには調査する側の IP アドレスが残ります。
 
-以下は、直接つないだ場合と、Tor を経由した場合の違いです。
+以下は、各リレーが知る範囲と、リレーを通るたびに暗号の層が 1 枚ずつ剥がれる様子を示した図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph D["直接つなぐ場合"]
-        C1["Client"] --> S1["Web サーバー"]
-        S1 -.- N1["接続元 IP と接続先 IP を<br/>1 つの接続から観測できる"]
-    end
-    subgraph T["Tor を経由する場合"]
-        C2["Client"] --> G["Guard Relay"] --> M["Middle Relay"] --> E["Exit Relay"] --> S2["Web サーバー"]
-        G -.- N2["接続元は分かる<br/>接続先は分からない"]
-        E -.- N3["接続先は分かる<br/>接続元は分からない"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/tor_concept.svg" alt="各リレーが知る範囲は前後の隣だけを覆う帯で、どの帯も Client と Web サーバーの両方には届かない。通信は Client を出る時に 3 層で包まれ、リレーごとに 1 層ずつ剥がれて、Exit から Web サーバーまでは Tor の層が無い。" caption="各リレーが知る範囲と、リレーごとに剥がれる暗号化の層" align="center" >}}
 
-Tor の名前は The Onion Router に由来し、リレーごとに別の鍵で通信を包む構造から付いています。
+上記の図のどの帯も、Client と Web サーバーの両方には届きません。Tor の名前は The Onion Router に由来し、リレーごとに別の鍵で通信を包む構造から付いています。
 
 <br>
 
@@ -106,6 +94,44 @@ flowchart TB
 1 台目は、ほかの 2 台と違い、経路を作るたびにネットワーク全体から選び直すことはせず、[Tor の guard 仕様](https://spec.torproject.org/guard-spec/index.html)に従って少数の候補を使い続けます。1 台目と、接続先に近い端（通常は Exit Relay）の両方を攻撃者が持つと、時刻と通信量を突き合わせて接続元と接続先を結び付けられます（後述の Traffic correlation）。
 
 毎回選び直す構成では、作り直すたびにこの組み合わせを引く機会が生まれます。候補を使い続ければ、最初に攻撃者のリレーを引かなかった利用者は、その後も 1 台目で観測されません。候補は永久に固定されず、入れ替えも起こります。
+
+この差をシミュレーションで確かめます。攻撃者が Guard と Exit の帯域のそれぞれ割合 c を持ち、リレーは帯域に比例して選ばれるとします。
+
+Guard を選び直す場合、1 本の経路の両端が攻撃者になる確率は c^2 で、C 本作ると [guard 仕様](https://spec.torproject.org/guard-spec/index.html)の冒頭が示す `1-(1-F)^C`（F = c^2）になります。Guard を固定する場合は、最初に攻撃者の Guard を引いた割合 c の利用者だけが対象です。
+
+期間中に Guard は入れ替えないと仮定し、利用者 20,000 人を seed 固定の乱数で動かしました（抜粋。全体は [lab/guard_exposure.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/tor/lab/guard_exposure.py)）。
+
+```python
+for i in range(1, CIRCUITS + 1):
+    g = guard_bad if fixed_guard else rng.random() < c
+    if g and rng.random() < c:  # Guard と Exit の両方が攻撃者
+        hit = i
+        break
+    if fixed_guard and not g:
+        break  # 正直な Guard を固定した利用者は期間中に観測されない
+```
+
+以下は、利用者ごとに作った経路の本数と、両端を握られた利用者の割合です。
+
+{{< figure src="images/tor_guard_exposure.svg" alt="経路を作った本数を横軸、両端を攻撃者に握られた経路が 1 本以上ある利用者の割合を縦軸にしたグラフ。Guard を毎回選び直すと c = 0.05 でも 1,000 本で 92% に達するが、Guard を固定すると c = 0.05 で 5%、c = 0.10 で 10% の所で頭打ちになる" caption="Guard を選び直す場合と固定する場合の、両端を握られた利用者の割合（シミュレーション）" align="center" >}}
+
+<details>
+<summary>実行結果（グラフの元の数値）</summary>
+
+同じ出力は [guard_exposure_output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/tor/lab/guard_exposure_output.txt) にもあります。
+
+```console
+$ python3 lab/guard_exposure.py
+users=20,000  circuits per user=1,000  seed=20261110
+c=0.05 rotate guard  C=    1:  0.27% (exact  0.25%)  C=   10:  2.62% (exact  2.47%)  C=  100: 22.43% (exact 22.14%)  C=1,000: 91.97% (exact 91.82%)
+c=0.05 fixed guard   C=    1:  0.24% (exact  0.25%)  C=   10:  1.86% (exact  2.01%)  C=  100:  4.79% (exact  4.97%)  C=1,000:  4.84% (exact  5.00%)
+c=0.10 rotate guard  C=    1:  0.99% (exact  1.00%)  C=   10:  9.37% (exact  9.56%)  C=  100: 63.13% (exact 63.40%)  C=1,000: 100.00% (exact 100.00%)
+c=0.10 fixed guard   C=    1:  0.94% (exact  1.00%)  C=   10:  6.49% (exact  6.51%)  C=  100:  9.80% (exact 10.00%)  C=1,000:  9.80% (exact 10.00%)
+```
+
+</details>
+
+選び直す構成では、経路を作り続けるほど、ほぼ全員がいつかは両端を握られます。固定すると割合は c で止まります。ただし、攻撃者の Guard を引いた c の利用者は、Exit も攻撃者になった経路を繰り返し観測されます。
 
 ---
 
@@ -238,7 +264,11 @@ flowchart TB
 
 これらは Guard に加えて、Onion Service の descriptor を預かる役にも就いています。Exit Relay を運用した形跡はなく、接続先に近い端に立ったのは descriptor を預かる役でした。
 
-descriptor を預かる役は、descriptor を載せに来た経路と取りに来た経路に、relay と relay early という 2 種類の cell の並びで Onion Service の名前を書き込みました。relay early の cell は通常クライアントの方向には流れないので、同じ攻撃者の Guard Relay はこの印を見付けられます。その結果、接続元の IP アドレスと、その人が載せた、または探した Onion Service が結び付きました。
+descriptor を預かる役は、descriptor を載せに来た経路と取りに来た経路に、relay と relay early という 2 種類の cell の並びで Onion Service の名前を書き込みました。
+
+{{< figure src="images/tor_relay_early.svg" alt="利用者から Guard、Middle、HSDir（descriptor を預かる役）へ経路が伸び、Guard と HSDir は黄土色の攻撃者のリレー。HSDir から利用者の方向へ点線が戻り、その上に relay と relay early の cell が並んだ印が乗る。点線は Guard に届き、Guard が印を読む。左下の赤い枠に、接続元の IP アドレスと Onion Service が結び付く" caption="2014 年の攻撃で、cell の並びに書いた印が Guard に届くまで" align="center" >}}
+
+relay early の cell は通常クライアントの方向には流れないので、同じ攻撃者の Guard Relay はこの印を見付けられます。その結果、接続元の IP アドレスと、その人が載せた、または探した Onion Service が結び付きました。
 
 表の Traffic correlation が両端の時刻と通信量を見比べるのに対し、この攻撃は片方の端で印を付け、もう片方の端で読む能動的な形でした。Tor Project は 7 月 4 日にこれらのリレーを外し、relay early の cell を印に使えなくするバージョン（0.2.4.23 など）を出しました。
 

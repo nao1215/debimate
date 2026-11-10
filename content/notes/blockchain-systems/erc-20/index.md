@@ -6,20 +6,18 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum", "erc-20", "smart-contract"]
 weight: 19
 wrapTables: true
+topics: ["Smart Contract"]
 ---
 
 ERC-20 は、Ethereum 上のトークンについて、残高の照会や送金などの呼び出し方を揃える規格です。同じ種類のトークンを数量で扱い、1 枚ごとに異なる識別子は付けません。ウォレットや交換サービスは、この共通の呼び出し方を使って複数のトークンに対応できます。
 
 トークンを使うアプリでは、送金の前に Approve という操作を求められることがあります。これは、別のアドレスにトークンを使う権限を与える操作です。Approve では承認額を設定し、送金では残高を変更します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
-flowchart TD
-    A["所有者の操作"] --> T["transfer<br/>今、トークンを送る"]
-    A --> P["approve<br/>指定した相手の利用額を設定"]
-    T --> B["残高が変わる"]
-    P --> L["承認額が変わる<br/>残高はそのまま"]
-```
+以下は、送金（transfer）と Approve が、トークンコントラクトの中のどの値を変えるのかを示した図です。
+
+{{< figure src="images/erc-20_concept.svg" alt="トークンコントラクトの枠の中に balanceOf と allowance の 2 つの表がある。transfer 5 では balanceOf の所有者 100 → 95 と受取人 0 → 5 の 2 行が青く、approve 30 では allowance の spender 0 → 30 の 1 行だけが黄土色に変わる。ETH の残高はコントラクトの枠の外のアカウントの状態にある" caption="transfer と approve が書き換える、トークンコントラクトの値" align="center" >}}
+
+上記の図の通り、Approve で残高は動かず、ETH の残高はコントラクトの外にあります。
 
 <br>
 
@@ -170,7 +168,9 @@ function transferFrom(address from, address to, uint256 amount)
 
 再現用のファイルは [lab/README.txt](lab/README.txt) にまとめています。`anvil`、`cast`、`solc`を PATH に置き、リポジトリのルートから実行します。
 
-以下は、残高と承認額を順に変えて検査する部分の抜粋です。`owner`・`spender`・`receiver` はテスト用アカウント、`address` はデプロイ済みの `StudyToken` のアドレスです。`data` は関数呼び出しの符号化、`send` は取引送信と receipt の取得、`read` は値の照会、`status` は取引の成否を返します。`lines` は出力をためるリストです。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
+以下は、残高と承認額を順に変えて検査する部分の抜粋です。`owner`・`spender`・`receiver` はテスト用アカウント、`address` はデプロイ済みの `StudyToken` のアドレスです。
+
+`data` は[関数呼び出しの符号化](../evm/#コントラクトからの見え方abi)、`send` は取引送信と receipt の取得、`read` は値の照会、`status` は取引の成否を返します。`lines` は出力をためるリストです。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
 
 ```python
 lines.append('stage | owner | receiver | allowance | status')
@@ -243,6 +243,12 @@ spend after revoke | 85 | 15 | 0 | 0
 Assertions: PASS
 ```
 
+以下は、上記の出力の 3 つの値を段階ごとに並べたグラフです。
+
+{{< figure src="images/erc-20_stages.svg" alt="所有者の残高は 100 から 95、85 と下がり、受取人の残高は 0 から 5、15 と上がる。承認額は approve 30 で 30、spend 10 で 20、revoke で 0 になる。失敗した overspend 21 と spend after revoke の段には赤い × が付き、どの値も前の段から変わっていない" caption="実験の段階ごとの残高と承認額" align="center" >}}
+
+失敗した 2 回（赤い ×）の段では、残高も承認額も前の段のままです。
+
 最初に、所有者本人が `transfer` で 5 枚送っています。その後で 30 枚を承認しても、所有者の残高 95 と受取人の残高 5 は変わりません。
 
 spender が 10 枚を送ると、所有者の残高は 85、受取人は 15、残りの承認額は 20 になります。次に 21 枚を使おうとした取引は失敗しました。所有者の残高は足りていますが、承認額を超えているからです。
@@ -281,6 +287,8 @@ ERC-20 が揃えるのは、アプリが呼び出す基本的な操作です。�
 
 一方で、同じ関数名があっても、発行権限、停止権限、送金時の手数料、実装の更新権限などは異なります。ERC-20 への対応は、価値の裏付けや管理者の行動を保証するものではありません。
 
-呼び出し側の実装にも注意が必要です。ERC-20 は送金などの結果として `false` を返す場合を想定しています。本サンプルは失敗時に revert しますが、すべてのトークンが同じとは限りません。呼び出しが revert しなかっただけで、送金が成功したと判断してはいけません。[OpenZeppelin の SafeERC20](https://docs.openzeppelin.com/contracts/5.x/api/token/erc20#SafeERC20) は、返り値が false のケースや返り値のないトークンなどの差を扱うためのライブラリです。
+呼び出し側の実装にも注意が必要です。ERC-20 は送金などの結果として `false` を返す場合を想定しています。本サンプルは失敗時に revert しますが、すべてのトークンが同じとは限りません。呼び出しが revert しなかっただけで、送金が成功したと判断してはいけません。
+
+[OpenZeppelin の SafeERC20](https://docs.openzeppelin.com/contracts/5.x/api/token/erc20#SafeERC20) は、返り値が false のケースや返り値のないトークンなどの差を扱うためのライブラリです。
 
 利用時には、残高だけでなく、利用を認めた相手と承認額も資産管理の対象になります。秘密鍵を守ることと、コントラクトに渡す権限を確かめることの両方が必要です。

@@ -4,13 +4,16 @@ date: 2026-09-02
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "consensus"]
-weight: 15
+weight: 17
 wrapTables: true
+topics: ["Consensus / Finality"]
 ---
 
 finality（ファイナリティ、確定性）は、一度確定したと扱った取引が後から覆らない性質です。この性質を注意深く扱う必要があるのは、入金を検知して商品を発送したり、[アカウントの残高](../ethereum-account-model/)を加算したりするアプリケーションを書く時です。取引が後で履歴から消えても、渡したものは戻ってきません。
 
-取引がブロックに入ったことと、その取引をもう覆らないものとして扱えることは、別です。ブロックに入った後、外れにくくなる段階を経て、覆らないと扱える段階に至ります。Bitcoin は確認数で、Ethereum は投票でこの最後の段階を作ります。Ethereum のノードは段階を `latest`・`safe`・`finalized` の 3 つに分けます。この 3 つはブロック番号を使わずにブロックを指す文字列で、ブロックタグと呼びます。残高を尋ねる `eth_getBalance` にも、アドレスと一緒に渡します。
+取引がブロックに入ったことと、その取引をもう覆らないものとして扱えることは、別です。ブロックに入った後、外れにくくなる段階を経て、覆らないと扱える段階に至ります。Bitcoin は確認数で、Ethereum は投票でこの最後の段階を作ります。
+
+Ethereum のノードは段階を `latest`・`safe`・`finalized` の 3 つに分けます。この 3 つはブロック番号を使わずにブロックを指す文字列で、ブロックタグと呼びます。残高を尋ねる `eth_getBalance` にも、アドレスと一緒に渡します。
 
 1 件の取引が通る段階と、3 つのタグの対応は以下の通りです。
 
@@ -35,7 +38,7 @@ flowchart LR
 - finalized と「十分安全」は、どう違う判断なのか。
 - 確認数をいくつ待つかは、何を材料に決めるのか。
 
-1 件の送金がどの段階を通るのかは、[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で追っています。
+1 件の送金がどの段階を通るのかは、[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で追っています。Bitcoin と Ethereum 以外のチェーンが確定を作る方法は、[CometBFT](../cometbft/)・[Snowman](../snowman/)・[Proof of Authority](../proof-of-authority/)・[Proof of History](../proof-of-history/) のノートで説明しています。
 
 ---
 
@@ -100,7 +103,7 @@ sequenceDiagram
 
 [Bitcoin の白書](https://bitcoin.org/bitcoin.pdf)は、支払った本人が攻撃者になる場合を想定しています。攻撃者はハッシュ計算能力の割合 `q` を握り、取引を送った時点から、支払いを取り消した列を公開せずに伸ばして追い付こうとします。次のブロックを正直な側と攻撃者のどちらが先に作るかの賭けを繰り返す形になるため、追い付ける確率は Gambler's Ruin（賭博者の破産問題）として計算できます。`q` が大きいほど、同じ確率まで下げるのに必要な `z` は増えます。
 
-![後ろに積むブロック数 z と攻撃の成功確率。縦軸は対数で、q が 0.10 の線は z が 5 で 0.1% を下回る。q が 0.45 では z を 25 まで積んでも 0.1% に届かない](images/finality_success_rate.svg)
+{{< figure src="images/finality_success_rate.svg" alt="後ろに積むブロック数 z と攻撃の成功確率。縦軸は対数で、q が 0.10 の線は z が 5 で 0.1% を下回る。q が 0.45 では z を 25 まで積んでも 0.1% に届かない" caption="後ろに積むブロック数 z と、攻撃者が追い付く確率" align="center" >}}
 
 攻撃者が過半のハッシュ計算能力を握っていない限り、確率は `z` に対して指数的に下がります。一方で、0 には届きません。この性質を probabilistic finality（確率的な確定性）と呼びます。
 
@@ -131,7 +134,9 @@ Ethereum のバリデータ（validator）は、ether をプロトコルに預�
 
 [Consensus Specifications](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#beacon-chain-state-transition-function) では、slot を進める `process_slot` が slot ごとにブロックのルート（ブロックを識別するハッシュ）を記録し、空 slot には直前のブロックのルートを書き込みます。checkpoint を求める [`get_block_root`](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#get_block_root) は、この記録を引くだけです。
 
-checkpoint は 2 段階で確定します。1 票には、起点と行き先の 2 つの checkpoint を書きます。起点は既に justified な checkpoint で、最初の起点はチェーンの最初のブロックです。預けられた ether の 2/3 が同じ起点と行き先の組に投票すると、行き先の checkpoint が justified になります。justified になった checkpoint を起点に、直後の checkpoint へ同じように 2/3 の投票が集まると、その起点が finalized に変わります。
+checkpoint は 2 段階で確定します。1 票には、起点と行き先の 2 つの checkpoint を書きます。起点は既に justified な checkpoint で、最初の起点はチェーンの最初のブロックです。
+
+預けられた ether の 2/3 が同じ起点と行き先の組に投票すると、行き先の checkpoint が justified になります。justified になった checkpoint を起点に、直後の checkpoint へ同じように 2/3 の投票が集まると、その起点が finalized に変わります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -155,7 +160,11 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-finalized な checkpoint と矛盾する別の checkpoint を finalized にするには、2/3 の投票が 2 つ必要です。2 つの 2/3 は必ず 1/3 以上重なるので、預けられた ether の 1/3 以上を占めるバリデータが、処罰の対象になる投票を証拠として残し、その ether を失います。[Casper FFG](https://arxiv.org/abs/1710.09437) は、この性質を accountable safety と呼びます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
+finalized な checkpoint と矛盾する別の checkpoint を finalized にするには、2/3 の投票が 2 つ必要です。以下は、2 つの 2/3 が全体の中でどう重なるかを示した図です。
+
+{{< figure src="images/finality_overlap.svg" alt="上に、バリデータの預け入れ全体を表す横長の帯があり、下に 0・1/3・2/3・1 の目盛りがある。checkpoint A への 2/3 の投票は 0 から 2/3 まで、矛盾する checkpoint B への 2/3 の投票は 1/3 から 1 までを占める。1/3 から 2/3 の区間は両方に投票した分で、slashed と書かれている" caption="矛盾する 2 つの checkpoint への 2/3 の重なり" align="center" >}}
+
+2 つの 2/3 は必ず 1/3 以上重なるので、預けられた ether の 1/3 以上を占めるバリデータが、処罰の対象になる投票を証拠として残し、その ether を失います。[Casper FFG](https://arxiv.org/abs/1710.09437) は、この性質を accountable safety と呼びます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
 
 ただし、この保証が効くのはバリデータの預け入れが動かない間です。後で触れる inactivity leak が働くと、誰も処罰されないまま両方の checkpoint が finalized になり得ます。
 
@@ -196,7 +205,9 @@ finalized はプロトコルが定める確定状態です。一方、十分な�
 
 Casper FFG が証明しているのは、先に触れた accountable safety と、plausible liveness の 2 つです。plausible liveness は、過去に何が起きていても、2/3 のバリデータが規則に従っている限り、誰も処罰されずに次の checkpoint を finalize できるという性質です。
 
-投票が 2/3 に届かない場合に確定を再開する仕組みとして、同じ論文では inactivity leak を示しています。Ethereum では finality の遅れが一定の epoch 数を超えると leak に入り、投票している側が全体の 2/3 を占めるまで、多数派の列に投票していないバリデータの残高を減らし続けます。ネットワークが 2 つに分かれ続けると、両側でそれぞれ相手側の残高が減り、両側が別々に 2/3 に届いて finalize し得ます。
+投票が 2/3 に届かない場合に確定を再開する仕組みとして、同じ論文では inactivity leak を示しています。
+
+Ethereum では finality の遅れが一定の epoch 数を超えると leak に入り、投票している側が全体の 2/3 を占めるまで、多数派の列に投票していないバリデータの残高を減らし続けます。ネットワークが 2 つに分かれ続けると、両側でそれぞれ相手側の残高が減り、両側が別々に 2/3 に届いて finalize し得ます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -208,7 +219,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-2023 年 5 月 11 日と 12 日には、Ethereum のメインネットで finalize が実際に 2 回止まり、合意層を動かすソフトウェア（クライアント）の 1 つである Prysm の開発元が[事後報告](https://prysm.offchainlabs.com/docs/misc/mainnet-postmortems/)を公開しています。古い checkpoint を行き先とする投票が大量に届き、Prysm などは、その投票を検証するために過去の状態を計算し直して資源を使い果たしました。処理が追い付かなくなると、ブロックと投票が欠けて、投票が 2/3 に届かない epoch が続きました。
+2023 年 5 月 11 日と 12 日には、Ethereum のメインネットで finalize が実際に 2 回止まり、合意層を動かすソフトウェア（クライアント）の 1 つである Prysm の開発元が[事後報告](https://prysm.offchainlabs.com/docs/misc/mainnet-postmortems/)を公開しています。
+
+古い checkpoint を行き先とする投票が大量に届き、Prysm などは、その投票を検証するために過去の状態を計算し直して資源を使い果たしました。処理が追い付かなくなると、ブロックと投票が欠けて、投票が 2/3 に届かない epoch が続きました。
 
 1 回目は約 25 分、2 回目は約 1 時間止まり、2 回目は途中から inactivity leak の処罰が掛かりました。回復を助けたのは影響を受けなかった別のクライアントで、誰も介入しないまま finalize が再開しました。その間もブロックは作られ続け、ユーザーの取引への影響はわずかでした。
 

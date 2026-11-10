@@ -6,6 +6,7 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 6
 wrapTables: true
+topics: ["Transaction / Wallet"]
 ---
 
 Bitcoin Script は、受け取ったビットコインを次に送金する時、どのような条件を満たす必要があるかを記述するプログラミング言語です。例えば「この公開鍵に対応する秘密鍵で署名できること」という条件を設けると、その秘密鍵を持たない人が勝手に送金することを防げます。
@@ -14,20 +15,10 @@ Alice から Bob に送金する場面を考えます。Alice の取引には、
 
 取引を検証する Bitcoin のノード（参加者のコンピュータ）は、出力に記録された条件と Bob が提出したデータを照合します。その照合手順を命令として書いたものが Script です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph OUT["Alice から Bob への送金"]
-        L["Bob 宛の出力<br/>金額と、次の送金に必要な条件"]
-    end
-    subgraph IN["Bob から次の相手への送金"]
-        U["受け取った出力を指定<br/>署名などを提出"]
-    end
-    L --> E["ノードが Script を実行<br/>条件を満たしているか検査"]
-    U --> E
-    E --> R["条件を満たさなければ<br/>Bob の取引は無効"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+以下は、公開鍵と署名で送金を認める P2PKH という形式で、照合に使う値の置き場（スタック）が命令ごとにどう変わるかを並べた図です。
+
+{{< figure src="images/bitcoin-script_concept.svg" alt="P2PKH の実行を 7 つの手順に分け、手順ごとのスタックを積み木で描いた図。アンロックスクリプトが署名 sig と公開鍵 pub を積み、ロックスクリプトが pub の複製、ハッシュ値 h の計算、出力に書かれた H の積み込み、h と H の照合、署名の検証を順に行い、最後に true だけが残る。" caption="P2PKH の命令ごとのスタックの変化" align="center" >}}
+青は Bob が提出した署名と公開鍵（アンロック）、黄土色は出力に書かれた条件（ロック）の命令が積んだ値で、最後に true（緑）が残れば条件を満たします。
 
 条件を記録するのは Alice の取引で、その条件を満たすデータを提出するのは Bob の取引です。本記事で「出力を使う」と書く時は、新しい送金の元手として、過去に受け取った金額を指定することを指します。まだ使われていない出力は [UTXO（Unspent Transaction Output）](../utxo/) と呼ばれます。
 
@@ -138,6 +129,11 @@ scriptSig と scriptPubKey を単純に連結すると、使う側が用意し�
 1. [初期の実装](https://github.com/bitcoin/bitcoin/blob/v0.3.0/script.cpp)は、使う側の scriptSig と、過去の出力の scriptPubKey を連結していました。
 2. scriptSig に当時の OP_RETURN を置くと、条件の検査まで進まずに実行を終えられました。
 3. 真と解釈される値を残しておけば、支払う側の条件を満たさずに出力を使えました。
+
+以下は、連結して 1 回で実行する作りと、現在の 2 回に分けて実行する作りを並べた図です。
+
+{{< figure src="images/bitcoin-script_split.svg" alt="上段は v0.3.0 までの作り。使う側の命令 <1> と OP_RETURN の後に赤い縦線があり、その右の DUP、HASH160、<H>、EQUALVERIFY、CHECKSIG は点線で、条件の命令は実行されない。黄土色の帯に「1（真）が残って合格、条件を満たさずに出力を使える」。下段は現在の作り。1 回目の <sig> <pub> から矢印でスタックを渡し、2 回目の条件の命令が全て実線で並ぶ。下の帯に「条件を満たさなければ、1 回目が何をしても不合格」" caption="連結した実行（v0.3.0 まで）と分けた実行（現在）" align="center" >}}
+上段では使う側の命令が実行の終わりを決められ、下段では条件の命令が必ず最後まで実行されます。
 
 現在の [Bitcoin Core の VerifyScript](https://github.com/bitcoin/bitcoin/blob/v30.0/src/script/interpreter.cpp) は、scriptSig の実行に成功した後、引き継いだスタックで scriptPubKey を別に実行します。現在の OP_RETURN は実行すると失敗する命令で、当時の動作とは異なります。命令の名前だけでなく、2 つの実行を分けて出力の条件を必ず検査する構造が重要です。
 

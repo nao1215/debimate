@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 3
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 中央値（median）は、データを小さい順に並べた時に真ん中に来る値です。データ数 `n` が奇数なら `(n+1)/2` 番目の値、偶数なら `n/2` 番目と `n/2+1` 番目の平均を使います。[平均](../mean/)が値の重心を見るのに対し、中央値は順位の中心だけを見るので、外れ値に引きずられにくい代表値です。[四分位点](../quantile/)の Q2（50% 点）とも同じ値を指します。

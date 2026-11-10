@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 18
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 線形回帰（linear regression）は、入力特徴量の線形和でターゲットを予測する最も基本的な教師あり回帰モデルです。

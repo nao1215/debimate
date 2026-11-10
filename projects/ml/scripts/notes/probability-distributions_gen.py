@@ -191,7 +191,7 @@ for name, (xx, yy) in nodes.items():
                                      facecolor=COLOR_BLUE, alpha=0.6,
                                      edgecolor="black", linewidth=1.2)
     ax.add_patch(circle)
-    ax.text(xx, yy, name, ha="center", va="center", fontsize=9, fontweight="bold")
+    ax.text(xx, yy, name, ha="center", va="center", fontsize=9, fontweight="normal")
 
 edges = [
     ("Bernoulli\n(1 trial)", "Binomial\n(n trials)", "n-fold sum"),

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>レコードのロック・gap lock・next-key lock が覆う索引の範囲</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="575.0" y="62" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">索引に並んだキー</text>
+<text x="880" y="62" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">15 の挿入</text>
+<text x="40" y="150" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">レコードのロック</text>
+<line x1="270" y1="140.0" x2="824" y2="140.0" stroke="#c8c8c8" stroke-width="2.5" stroke-linecap="round"/>
+<rect x="330" y="110" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="365.0" y="149" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">10</text>
+<rect x="470" y="110" width="70" height="60" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="505.0" y="149" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">20</text>
+<rect x="610" y="110" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="645.0" y="149" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">30</text>
+<rect x="750" y="110" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="785.0" y="149" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">40</text>
+<text x="880" y="150" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">通る</text>
+<text x="40" y="280" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">gap lock</text>
+<line x1="270" y1="270.0" x2="824" y2="270.0" stroke="#c8c8c8" stroke-width="2.5" stroke-linecap="round"/>
+<rect x="406" y="244" width="58" height="52" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="330" y="240" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="365.0" y="279" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">10</text>
+<rect x="470" y="240" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="505.0" y="279" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">20</text>
+<rect x="610" y="240" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="645.0" y="279" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">30</text>
+<rect x="750" y="240" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="785.0" y="279" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">40</text>
+<text x="880" y="280" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">待つ</text>
+<text x="40" y="410" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">next-key lock</text>
+<line x1="270" y1="400.0" x2="824" y2="400.0" stroke="#c8c8c8" stroke-width="2.5" stroke-linecap="round"/>
+<rect x="406" y="374" width="58" height="52" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="330" y="370" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="365.0" y="409" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">10</text>
+<rect x="470" y="370" width="70" height="60" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="505.0" y="409" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">20</text>
+<rect x="610" y="370" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="645.0" y="409" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">30</text>
+<rect x="750" y="370" width="70" height="60" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="785.0" y="409" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">40</text>
+<text x="880" y="410" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">待つ</text>
+<text x="480" y="515" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">15 は、キー 10 と 20 の間の隙間に入る</text>
+</svg>

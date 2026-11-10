@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 12
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 確率分布（probability distribution）は、確率変数 `X` がどの値をどれくらいの確率で取るかを表したものです。離散変数では、確率質量関数（PMF, probability mass function）`P(X = k)` が値 `k` を取る確率そのものを返します。連続変数では 1 点ちょうどの値を取る確率が 0 なので、確率密度関数（PDF, probability density function）`f(x)` を使い、区間 `[a, b]` に入る確率を曲線の下の面積 `∫_a^b f(x) dx` で求めます。

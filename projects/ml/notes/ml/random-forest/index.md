@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 23
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 RandomForest は、[Breiman（2001）](https://doi.org/10.1023/A:1010933404324)が提案した、少しずつ異なるデータで学習した多数の[決定木](../decision-tree/)を平均または多数決で束ねる手法です。単体の深い木は学習データの違いで予測が変わりやすいため、その揺れを平均して安定させます。

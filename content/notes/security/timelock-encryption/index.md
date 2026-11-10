@@ -6,6 +6,7 @@ series: ["技術ノート", "Security"]
 tags: ["security", "cryptography"]
 weight: 5
 wrapTables: true
+topics: ["Secret Management"]
 ---
 
 Timelock Encryption は、Timed-release Cryptography（時限公開暗号）とも呼ばれ、将来の条件が成立するまで、あらかじめ作成した暗号文を復号できないようにする仕組みです。方式の前提が守られ、平文や鍵を手元に残さなければ、暗号化した本人も条件成立前には復号できません。
@@ -153,6 +154,56 @@ LCS35 の t を同じ速度で解くと: 30.1 年
 
 最後の 2 行は、この速度のまま LCS35 を解くと 30 年かかるという外挿です。同じ PC で再実行すると 40.4 年になり、他の処理の負荷で揺れます。
 
+### コアを増やしても縮まないことの実測
+
+コアを増やしても 1 つの puzzle が早く解けないことも実測します。各ワーカーを別の物理コアに固定し、200,000 回の 2 乗の鎖を解かせて、最初の 1 つが解けるまでの時間を測りました。比較として、互いに依存しない 200,000 回の 2 乗をワーカーに等分した時間も測っています。他の処理が動いている PC なので、5 回のうち最速の値を採りました。
+
+以下は、測った 2 つの計算の抜粋です（全体は [lab/squaring_time.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/timelock-encryption/lab/squaring_time.py)）。
+
+```python
+def chain(args):  # 鎖は分けられないので、ワーカーごとに別の puzzle を解く
+    a, t, cpu = args
+    os.sched_setaffinity(0, {cpu})
+    x = a
+    for _ in range(t):
+        x = x * x % n
+    return x
+
+def independent(args):  # 依存の無い 2 乗を count 回
+    seed, count, cpu = args
+    os.sched_setaffinity(0, {cpu})
+    x = pow(seed, 65537, n)
+    for i in range(count):
+        _ = (x + i) * (x + i) % n
+```
+
+以下が実行結果のグラフです。
+
+{{< figure src="images/timelock_squaring_measured.svg" alt="左は 2 乗の回数を横軸、1 コアでの時間を縦軸にした実測で、点は毎秒約 12 万回の直線に乗る。右はワーカー数を横軸にした実測で、2 乗の鎖は 16 コアでも約 1.4 秒から縮まないが、依存の無い 2 乗は 1.81 秒から 0.19 秒まで縮む" caption="2 乗の回数・ワーカー数と時間（1 台の PC での実測）" align="center" >}}
+
+<details>
+<summary>squaring_time.py の出力（<code>lab/squaring_time_output.txt</code>）</summary>
+
+```console
+$ uv run --with sympy python lab/squaring_time.py
+part 1: one chain, one core
+  t= 50,000    0.41 s   122,454 squarings/s  match=True
+  t=100,000    0.82 s   121,808 squarings/s  match=True
+  t=200,000    1.93 s   103,460 squarings/s  match=True
+  t=400,000    3.58 s   111,728 squarings/s  match=True
+  t=800,000    6.45 s   123,990 squarings/s  match=True
+part 2: t=200,000, wall time until one result
+  workers= 1  chain: first done  1.57 s (all  1.58 s, match=True)  independent squarings:  1.81 s
+  workers= 2  chain: first done  1.38 s (all  1.40 s, match=True)  independent squarings:  0.89 s
+  workers= 4  chain: first done  1.39 s (all  1.47 s, match=True)  independent squarings:  0.45 s
+  workers= 8  chain: first done  1.38 s (all  1.44 s, match=True)  independent squarings:  0.22 s
+  workers=16  chain: first done  1.46 s (all  1.93 s, match=True)  independent squarings:  0.19 s
+```
+
+</details>
+
+時間は t に比例し、鎖はコアを 16 個使っても 1.4 秒前後のままでした。増えたコアは別の puzzle を同時に解くのに使えるだけです。前述の Python より速いのは、プロセスを物理コアに固定したためと考えられます。固定しないプログラムを同じ PC で動かした時は、毎秒約 7 万回でした。
+
 [LCS35](https://people.csail.mit.edu/rivest/pubs/Riv99b.lcs35-puzzle-description.txt) は、Rivest 氏が 1999 年に MIT の LCS（Laboratory for Computer Science）の 35 周年に合わせて作った puzzle です。1999 年に毎秒 3,000 回の 2 乗から始め、毎年最速の計算機に買い替えて 35 年かかるように、t を約 80 兆回に決めていました。
 
 実際には、2019 年 4 月に Bernard Fabrot 氏が家庭用 PC の CPU（Intel Core i7-6700）と多倍長演算ライブラリの [GMP](https://gmplib.org/) で解きました。想定より 15 年早い解読です。計算期間は [3 年 3 か月](https://people.csail.mit.edu/rivest/pubs/Riv19f.pdf)で、t をこの期間で割ると毎秒 78 万回ほどになり、上記の Python より 1 桁速い計算です。
@@ -163,7 +214,7 @@ LCS35 の t を同じ速度で解くと: 30.1 年
 
 一般化すると、puzzle が指定できるのは 2 乗の回数 t だけで、それが何秒に相当するかは、解く人の計算速度（図の faster hardware）と、計算を始めた時刻（later start）で決まります。
 
-![横軸が公開からの経過時間、縦軸が終えた 2 乗の回数を表す概念図。想定した速度で公開直後に始めた線は T の位置で必要な回数 t に届き、速いハードウェアの線はそれより手前で、開始が遅れた線はそれより後ろで t に届く。軸には絶対的な目盛りが無い](images/timelock_puzzle_unlock_time.svg)
+{{< figure src="images/timelock_puzzle_unlock_time.svg" alt="横軸が公開からの経過時間、縦軸が終えた 2 乗の回数を表す概念図。想定した速度で公開直後に始めた線は T の位置で必要な回数 t に届き、速いハードウェアの線はそれより手前で、開始が遅れた線はそれより後ろで t に届く。軸には絶対的な目盛りが無い" caption="計算の速さと開始時刻で、解ける時刻がずれる（概念図）" align="center" >}}
 
 上記の図は傾向だけを示す概念図で、傾きの比も含めて数値には意味がありません。つまり Time-lock Puzzle は絶対時刻を保証せず、できるのは、公開直後から計算を始める想定で「およそ何時間後」を狙う所までです。
 

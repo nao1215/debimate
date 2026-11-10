@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 19
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 LogisticRegression（ロジスティック回帰）は、特徴量の重み付き和をシグモイド関数で 0〜1 の確率に変換し、二値分類に使うモデルです。名前に「回帰」と付いていますが、実用上は二値分類の代表的なベースラインモデルです。

@@ -1,0 +1,13 @@
+   txs blobs  exec gas/tx  blob gas/tx
+     1     1      21000.0     131072.0
+    10     1       2100.0      13107.2
+   100     1        210.0       1310.7
+   500     1         42.0        262.1
+   873     1         24.1        150.1
+   874     2         24.0        299.9
+  1000     2         21.0        262.1
+  2000     3         10.5        196.6
+  5000     6          4.2        157.3
+txs that fill one blob: 873
+target 6 blobs per block: 5238 txs per slot, 436 txs/s for all rollups together
+max 9 blobs per block: 7857 txs per slot, 655 txs/s for all rollups together

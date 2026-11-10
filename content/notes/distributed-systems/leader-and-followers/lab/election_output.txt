@@ -1,0 +1,8 @@
+5 servers, leader crashed at t=0, 10000 trials per spread, message delay U(2.0, 8.0) ms
+timeout_ms   split_vote  median_ms  p99_ms  max_ms  max_terms  stuck
+150-150         93.6%        462    7510    9912         66   7874
+150-151         93.2%       2418    9791    9947         66   4142
+150-155         84.0%        623    3972    7318         48      0
+150-175         25.8%        171     646    1124          7      0
+150-200         12.0%        174     498     871          5      0
+150-300          3.6%        190     412     960          5      0

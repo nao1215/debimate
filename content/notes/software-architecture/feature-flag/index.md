@@ -6,22 +6,16 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 11
 wrapTables: true
+topics: ["Release / Migration"]
 ---
 
 Feature Flag は、デプロイしたコードの振る舞いを設定や実行時の情報によって切り替える仕組みで、Feature Toggle とも呼ばれます。例えば、`if isNewCheckoutEnabled { ... }` という条件分岐で、新しい決済処理を呼び出すかどうかを切り替えます。
 
 Feature Flag を使うと、コードのデプロイと機能の公開を別々のタイミングで行えます。コードを本番環境に置く作業がデプロイ、その機能がユーザーに見え始めることがリリースで、Feature Flag はこの 2 つを切り離します。決済処理を差し替えるなら、Off のまま先にデプロイし、まず社内ユーザーだけに有効化し、問題がなければ一般ユーザーに広げられます。
 
-以下は、1 つのデプロイ済みビルドから、Off と On でユーザーに見えるものが変わる様子です。
+以下は、同じビルドのまま flag の Off と On でユーザーに届く処理が変わる様子です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    B["1 つのビルド<br/>（デプロイ済み）"] --> F{"Feature Flag"}
-    F -->|Off| U1["ユーザーに見えるのは<br/>これまでの決済処理"]
-    F -->|On| U2["ユーザーに見えるのは<br/>新しい決済処理"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/feature-flag_concept.svg" alt="同じビルドに旧決済と新決済の両方が入っている。flag が Off なら全ユーザーが旧決済に、On なら全ユーザーが新決済に届く" caption="flag で切り替える、1 つのビルドに入った旧決済と新決済" align="center" >}}
 
 Off の分岐にこれまでの実装を置く方法は、Pete Hodgson 氏の「[Feature Toggles (aka Feature Flags)](https://martinfowler.com/articles/feature-toggles.html)」でも推奨されています。Off で既存の処理を選ぶようにしておくと、問題が起きた時に戻す処理が明確になります。ただし、共通コードの変更も影響し得るため、Off 側も新しいビルドで動作確認が必要です。検証では、本番で使う設定と、問題が起きた時に切り戻す設定を重点的に確認します。
 
@@ -184,6 +178,37 @@ Feature Flag は、使用する期間と、実行中に評価結果を変える�
 
 Release Toggle では、起動時に読み込んだ値を使い続ける構成も可能です。ただし、冒頭の例のように社内ユーザーだけに先に公開するなら、ユーザーごとの判断が必要です。
 
+公開する割合を段階的に上げる時は、ユーザー ID のハッシュ値から 0〜9999 のバケットを作り、バケットが閾値未満のユーザーだけを On にする方法があります。
+
+以下は、この方法とリクエストごとに乱数で On を選ぶ方法を比べたシミュレーション（[lab/rollout.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/feature-flag/lab/rollout.py)）から、判断の部分を抜粋したものです。ユーザーは 10 万人で、公開割合を 1% → 5% → 25% → 100% と上げ、各段階で 1 人が 10 回リクエストを送ります。新機能には不具合がある前提で、不具合に 1 回でも当たったユーザーを数えました。
+
+```python
+# lab/rollout.py から抜粋
+def bucket(user_id):
+    digest = hashlib.sha256(f"{FLAG}:{user_id}".encode()).digest()
+    return int.from_bytes(digest[:8], "big") % 10_000
+
+# ハッシュ: ユーザーが同じなら、何回リクエストしても同じ結果になる
+h_hits = sum(buckets[u] < pct * 100 for _ in range(REQUESTS))
+# 乱数: リクエストごとに pct% の確率で On を選ぶ
+hits = sum(rng.random() < pct / 100 for _ in range(REQUESTS))
+```
+
+実行結果は以下です。`exposed` は不具合に当たったユーザー数、`mixed` は同じ段階で新旧の両方を見たユーザー数、`keeps_previous` はハッシュで On になったユーザーが前の段階の On のユーザーを全て含むかどうかです。
+
+```text
+users=100000 requests_per_user_per_stage=10
+stage  hash_exposed  hash_mixed  keeps_previous  random_exposed  random_mixed
+   1%           985           0            True            9518          9518
+   5%          4938           0            True           40194         40194
+  25%         24913           0            True           94370         94370
+ 100%        100000           0            True          100000             0
+```
+
+{{< figure src="images/feature-flag_rollout.svg" alt="公開割合 1% の段階で不具合に当たったユーザーは、ユーザー ID のハッシュで決めると約 1%、リクエストごとの乱数で決めると約 9.5% になる。乱数では 25% の段階で約 94% のユーザーが新旧の両方を見るが、ハッシュでは各段階とも 0 人" caption="公開割合の段階ごとの、不具合に当たった人数と新旧を行き来した人数" align="center" >}}
+
+1% の段階で不具合に当たったユーザーは、ハッシュでは 985 人ですが、乱数では 9,518 人です。乱数ではリクエストの回数だけ抽選が繰り返されるので、公開割合より広い範囲に影響が出ます。また、25% の段階では 94,370 人が新旧の決済処理を行き来しました。ハッシュではバケットの値が変わらず閾値だけが上がるので、前の段階で On だったユーザーは次の段階でも On のままです。
+
 短期間で削除する flag なら、単純な条件分岐で実装できます。長期間使う場合は、分岐をインターフェースなどで抽象化すると、変更時に複数の処理を修正せずに済みます。
 
 運用中に値を切り替えるなら、Toggle Configuration の置き場所も問題になります。コードに値を固定するか、起動時に読むか、実行中に更新するかで、変更の反映方法が変わります。設定ファイルでも再読込の仕組みがあれば実行中に更新できるので、保存場所だけでは決まりません。
@@ -212,7 +237,9 @@ A/B テストではユーザーごとに評価結果を変えますが、実験�
 
 新機能の追加時に flag を作り、公開後も削除しないと、使わなくなった分岐がコードに残ります。特に Release Toggle は、全体公開が終われば削除できます。残った分岐は、flag を別の用途に使い回した時に再び動き出します。
 
-2012 年 8 月 1 日、米国の証券会社 Knight Capital は、注文を市場に送るシステムに新機能を載せる際、2003 年から使っていなかった Power Peg という機能を起動する flag を新機能用に流用しました。8 台のサーバーの 1 台にだけ新しいコードが配られず、その 1 台は flag の付いた注文で Power Peg を動かしました。約 45 分で 400 万回の約定（売買の成立）が生じ、Knight は 4 億 6,000 万ドルを超える[損失](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)を出しました。
+2012 年 8 月 1 日、米国の証券会社 Knight Capital は、注文を市場に送るシステムに新機能を載せる際、2003 年から使っていなかった Power Peg という機能を起動する flag を新機能用に流用しました。
+
+8 台のサーバーの 1 台にだけ新しいコードが配られず、その 1 台は flag の付いた注文で Power Peg を動かしました。約 45 分で 400 万回の約定（売買の成立）が生じ、Knight は 4 億 6,000 万ドルを超える[損失](https://www.sec.gov/litigation/admin/2013/34-70694.pdf)を出しました。
 
 この flag は設定ではなく注文ごとに付く値でしたが、使わなくなった分岐を 9 年残し、それを起動する flag を再利用した点は Feature Flag の消し忘れと同じです。不要な分岐を削除していれば、この古いコードを再起動する経路は残りません。ただし、配布漏れや監視・停止手段の不備まで解消するものではなく、flag の削除だけで事故全体を防げるという話ではありません。
 

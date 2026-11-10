@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "MLOps"]
 tags: ["machine-learning", "mlops"]
 weight: 6
+topics: ["MLOps"]
 ---
 
 再学習パイプライン（retraining pipeline）は、本番のモデルを新しいデータで学習し直し、評価してからデプロイするまでを自動化する仕組みです。入力データの分布や入力と正解の関係は時間とともに変わるので（[データドリフト](../data-drift/)）、一度学習したモデルの精度は少しずつ落ちていきます。

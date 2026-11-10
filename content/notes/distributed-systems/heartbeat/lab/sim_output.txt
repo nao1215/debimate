@@ -1,0 +1,21 @@
+T=1s heartbeats=10000000 (~116 days) crashes=100000
+
+[stable] loss=0.001 delay=0.5ms+lognormal(median=0.5ms, sigma=0.5) stalls=0.167/h lognormal(median=0.3s, sigma=0.8)
+timeout  false/day  mean_delay_s  p99_delay_s
+   2xT     43.347          1.50         1.99
+   3xT      0.069          2.50         2.99
+   4xT      0.009          3.50         3.99
+   5xT      0.009          4.50         4.99
+   6xT      0.009          5.50         5.99
+   8xT      0.000          7.50         7.99
+  10xT      0.000          9.50         9.99
+
+[jittery] loss=0.01 delay=80ms+lognormal(median=50ms, sigma=1.2) stalls=1/h lognormal(median=2s, sigma=0.8)
+timeout  false/day  mean_delay_s  p99_delay_s
+   2xT    687.891          1.68         2.64
+   3xT     16.641          2.68         3.64
+   4xT      5.676          3.68         4.64
+   5xT      3.413          4.68         5.64
+   6xT      2.402          5.68         6.64
+   8xT      1.054          7.68         8.64
+  10xT      0.674          9.68        10.64

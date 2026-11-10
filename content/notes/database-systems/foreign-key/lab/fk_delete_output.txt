@@ -1,0 +1,14 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2)
+child_rows  index  delete_ms  fk_check_ms   scan of orders in the FK lookup
+     10000  no         0.800        0.635   Seq Scan
+     10000  yes        0.430        0.257   Index Scan using orders_member_id_idx
+     30000  no         1.641        1.471   Seq Scan
+     30000  yes        0.628        0.409   Index Scan using orders_member_id_idx
+    100000  no         6.585        6.372   Seq Scan
+    100000  yes        0.646        0.410   Bitmap Heap Scan
+    300000  no        18.305       18.095   Seq Scan
+    300000  yes        0.556        0.360   Bitmap Heap Scan
+   1000000  no        61.545       61.222   Seq Scan
+   1000000  yes        0.684        0.433   Bitmap Heap Scan
+   4000000  no       238.153      237.964   Seq Scan
+   4000000  yes        0.768        0.527   Bitmap Heap Scan

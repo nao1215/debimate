@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>要求が届かなかった場合と応答だけ失われた場合</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="162" y="44" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">クライアント</text>
+<text x="788" y="44" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">決済 API</text>
+<rect x="24" y="66" width="276" height="408" rx="14" fill="none" stroke="#7aa6c2" stroke-width="3" stroke-dasharray="10 7"/>
+<rect x="50" y="123" width="224" height="110" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="162" y="187" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">504 が返る</text>
+<text x="470" y="116" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">要求が届かなかった</text>
+<line x1="304" y1="160" x2="456" y2="160" stroke="#666666" stroke-width="4" stroke-linecap="round"/>
+<line x1="468" y1="148" x2="492" y2="172" stroke="#e15759" stroke-width="5" stroke-linecap="round"/>
+<line x1="468" y1="172" x2="492" y2="148" stroke="#e15759" stroke-width="5" stroke-linecap="round"/>
+<rect x="640" y="100" width="296" height="156" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="672" y="142" width="232" height="84" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="788" y="194" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#666666">課金なし</text>
+<rect x="50" y="323" width="224" height="110" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="162" y="387" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">504 が返る</text>
+<text x="470" y="316" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">応答だけ失われた</text>
+<line x1="304" y1="360" x2="632" y2="360" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<line x1="640" y1="404" x2="516" y2="404" stroke="#666666" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 8"/>
+<line x1="482" y1="392" x2="506" y2="416" stroke="#e15759" stroke-width="5" stroke-linecap="round"/>
+<line x1="482" y1="416" x2="506" y2="392" stroke="#e15759" stroke-width="5" stroke-linecap="round"/>
+<rect x="640" y="300" width="296" height="156" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<rect x="672" y="342" width="232" height="84" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="788" y="394" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">課金 1 件</text>
+<text x="162" y="516" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">見えるものは同じ</text>
+<text x="788" y="516" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">違いはサーバー側だけ</text>
+</svg>

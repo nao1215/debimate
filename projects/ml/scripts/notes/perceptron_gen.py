@@ -164,7 +164,7 @@ save("perceptron_mlp_xor.svg")
 fig, ax = plt.subplots(figsize=(10, 5.5))
 
 # Single perceptron (left)
-ax.text(1.5, 4.5, "Single perceptron", ha="center", fontsize=12, fontweight="bold")
+ax.text(1.5, 4.5, "Single perceptron", ha="center", fontsize=12, fontweight="normal")
 # Inputs
 for i, y_pos in enumerate([3.5, 2.5, 1.5]):
     circle = patches.Circle((0.5, y_pos), 0.2, facecolor=COLOR_BLUE, edgecolor="black")
@@ -183,7 +183,7 @@ ax.annotate("", xy=(3.7, 2.5), xytext=(2.8, 2.5),
 ax.text(3.9, 2.5, "ŷ", ha="left", va="center", fontsize=11)
 
 # MLP (right)
-ax.text(7.5, 4.5, "Multilayer perceptron (1 hidden layer)", ha="center", fontsize=12, fontweight="bold")
+ax.text(7.5, 4.5, "Multilayer perceptron (1 hidden layer)", ha="center", fontsize=12, fontweight="normal")
 # Inputs
 for i, y_pos in enumerate([3.5, 2.5, 1.5]):
     circle = patches.Circle((5.5, y_pos), 0.2, facecolor=COLOR_BLUE, edgecolor="black")

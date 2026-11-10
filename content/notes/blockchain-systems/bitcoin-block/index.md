@@ -6,30 +6,20 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 7
 wrapTables: true
+topics: ["Data Structure"]
 ---
 
 Bitcoin のブロックは、複数の取引をまとめたデータです。最初のブロックを除き、各ブロックは直前のブロックを参照しており、チェーン状に繋がっています。ブロックの列がブロックチェーンで、Bitcoin の参加者はこの列を送金の履歴として共有します。
 
 Bitcoin で代金を受け取る場合、送金の通知だけで商品を渡すと、その取引が履歴に残らない可能性があります。受け取りを確認するには、取引がブロックに取り込まれたか、その後に何個のブロックが追加されたかを調べます。
 
-以下の図では、ブロック N+1 がブロック N を参照しています。
+以下の図では、各ブロックが 1 つ前のブロックを参照しています。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart RL
-    subgraph B2["ブロック N+1"]
-        H2["ヘッダ<br/>直前のブロックのハッシュ<br/>ルートハッシュ など"]
-        D2["本体<br/>取引の並び"]
-    end
-    subgraph B1["ブロック N"]
-        H1["ヘッダ<br/>直前のブロックのハッシュ<br/>ルートハッシュ など"]
-        D1["本体<br/>Tx0, Tx1, Tx2, ..."]
-    end
-    H2 -->|"ブロック N の<br/>ヘッダのハッシュを指す"| H1
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/bitcoin-block_concept.svg" alt="4 個のブロックが横に並び、大きい本体が小さいヘッダの root に要約され、各ヘッダの「直前」が 1 つ前を指す。ブロック N+1 の取引を 1 件書き換えると、その取引が赤くなり、root と後ろのブロックの「直前」が黄土色に変わる" caption="ヘッダの「直前」で繋がるブロックの列と、1 件の書き換えが届く範囲" align="center" >}}
 
-上記の図のとおり、各ブロックはヘッダと本体に分かれ、ヘッダの中の「直前のブロックのハッシュ」が 1 つ前のブロックを指します。ここでの[ハッシュ](/notes/blockchain-systems/hash-function/)は、データから計算する固定長の値です。暗号学的ハッシュでは、内容を変えた時に同じ値になる組を見つけることが極めて難しく、内容の照合に使えます。ヘッダのもう 1 つの項目であるルートハッシュは、本体の取引の並び全体を代表する値です。
+上記の図のとおり、各ブロックは小さいヘッダと大きい本体に分かれ、ヘッダの中の「直前」（直前のブロックのハッシュ）が 1 つ前のブロックを指します。ここでの[ハッシュ](/notes/blockchain-systems/hash-function/)は、データから計算する固定長の値です。暗号学的ハッシュでは、内容を変えた時に同じ値になる組を見つけることが極めて難しく、内容の照合に使えます。
+
+ヘッダのもう 1 つの項目である root（ルートハッシュ）は、本体の取引の並び全体を代表する値です。ブロック N+1 の取引を 1 件書き換えると、root が変わってブロック N+2 の「直前」と一致しなくなり、合わせるには後ろのブロックを全て作り直す必要があります。
 
 <br>
 
@@ -71,7 +61,7 @@ sequenceDiagram
 
 ほぼ同時に別のマイナーがブロックを見つける場合もあり、最初に見つけたブロックが全参加者に採用されるとは限りません。条件の厳しさは、新しいブロックがおよそ 10 分に 1 個のペースで列の末尾に追加されるよう自動で調整されます。詳細は [Proof of Work](../proof-of-work/) のノートで扱います。
 
-どのブロックの何番目に入ったかで、履歴全体での取引の順番が決まります。[ブロックへの取り込み](https://bitcoin.org/bitcoin.pdf)は、そのブロックが作られる前に取引が存在したことの証拠になります。ただし、ヘッダの時刻はマイナーが規則の範囲内で申告する値であり、正確な受信時刻を保証するものではありません。
+どのブロックの何番目に入ったかで、履歴全体での取引の順番が決まります。[ブロックへの取り込み](https://bitcoin.org/bitcoin.pdf)は、そのブロックが作られる前に取引が存在したことの証拠になります。ただし、ヘッダの時刻はマイナーが規則の範囲内で申告する値であり、正確な受信時刻を保証するものではありません。時刻の代わりにハッシュの連鎖で経過と順序を示す Solana の方式は [Proof of History](../proof-of-history/) で説明しています。
 
 ---
 

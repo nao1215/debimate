@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>2PC で yes の後に決定を待つ区間</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><pattern id="hatch" patternUnits="userSpaceOnUse" width="14" height="14" patternTransform="rotate(45)"><rect width="14" height="14" fill="#f8eed8"/><rect width="5" height="14" fill="#d4a24c"/></pattern></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="24" y="32" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">決定が届く場合</text>
+<text x="196" y="90" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">コーディネータ</text>
+<text x="196" y="140" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">参加者 A</text>
+<text x="196" y="198" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">参加者 B</text>
+<line x1="210" y1="82" x2="936" y2="82" stroke="#666666" stroke-width="6" stroke-linecap="round"/>
+<circle cx="290" cy="82" r="8" fill="#666666"/>
+<text x="290" y="66" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">prepare</text>
+<circle cx="560" cy="82" r="8" fill="#7aa6c2"/>
+<text x="560" y="66" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">決定</text>
+<rect x="210" y="120" width="120" height="40" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="330" y="120" width="270" height="40" rx="4" fill="url(#hatch)" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="600" y="120" width="336" height="40" rx="4" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="768.0" y="149" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">確定</text>
+<rect x="210" y="178" width="150" height="40" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="360" y="178" width="300" height="40" rx="4" fill="url(#hatch)" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="660" y="178" width="276" height="40" rx="4" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="798.0" y="207" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">確定</text>
+<text x="24" y="278" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">決定の前にコーディネータが停止した場合</text>
+<text x="196" y="336" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">コーディネータ</text>
+<text x="196" y="386" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">参加者 A</text>
+<text x="196" y="444" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">参加者 B</text>
+<line x1="210" y1="328" x2="470" y2="328" stroke="#666666" stroke-width="6" stroke-linecap="round"/>
+<circle cx="290" cy="328" r="8" fill="#666666"/>
+<text x="290" y="312" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">prepare</text>
+<line x1="474" y1="314" x2="502" y2="342" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<line x1="474" y1="342" x2="502" y2="314" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<text x="516" y="336" font-size="24" font-weight="normal" text-anchor="start" style="fill:#e15759">停止</text>
+<rect x="210" y="366" width="120" height="40" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="330" y="366" width="606" height="40" rx="4" fill="url(#hatch)" stroke="#d4a24c" stroke-width="2.5"/>
+<rect x="210" y="424" width="150" height="40" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="360" y="424" width="576" height="40" rx="4" fill="url(#hatch)" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="936" y="336" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">参加者は待ち続ける →</text>
+<rect x="24" y="504" width="60" height="26" rx="4" fill="url(#hatch)" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="96" y="526" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">yes を返してから決定が届くまで（ロックを保持）</text>
+</svg>

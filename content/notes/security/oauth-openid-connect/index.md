@@ -6,6 +6,7 @@ series: ["技術ノート", "Security"]
 tags: ["security", "authentication", "authorization", "oauth"]
 weight: 13
 wrapTables: true
+topics: ["Authentication / Identity", "Authorization"]
 ---
 
 写真アプリが「access token を受け取り、その持ち主としてログインさせる」API を持っていたとします。利用者が以前、同じアカウントでクイズアプリにも連携していた場合、クイズアプリの運営者は手元にある access token を写真アプリに送るだけで、その利用者として写真アプリにログインできます。token は本物で期限も切れていないので、写真アプリのサーバーには攻撃を見分ける材料がありません。
@@ -14,17 +15,11 @@ wrapTables: true
 
 登場するのは、利用者・利用者の代わりに API を呼ぶアプリ（client）・token を発行する authorization server・API を提供する resource server の 4 者です。2 種類の token は、宛先が違います。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
-flowchart LR
-    U["利用者"] -->|"ログインと同意"| AS["authorization server"]
-    AS -->|"ID Token<br/>宛先は client"| C["client"]
-    AS -->|"access token<br/>宛先は resource server"| C
-    C -->|"access token を添えて API を呼ぶ"| RS["resource server"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+以下は、2 種類の token がどこで止まるかを示した図です。
 
-上記の図で、client は access token を運ぶだけで、その宛先ではありません。client が自分宛てとして検証して良いのは ID Token の方です。
+{{< figure src="images/oauth-openid-connect_concept.svg" alt="authorization server が発行した ID Token は client の中で止まり、access token は client を通り抜けて resource server に届く。下段では、クイズアプリが写真アプリに持ち込んだ access token はログインに通り、ID Token は aud の確認で拒否される。" caption="client で止まる ID Token と、resource server まで届く access token" align="center" >}}
+
+上記の図で、client は access token を運ぶだけで、その宛先ではありません。client が自分宛てとして検証して良いのは ID Token の方です。下段は、後半の実験の (d) の結果です。
 
 <br>
 
@@ -60,7 +55,9 @@ sequenceDiagram
     Note over P,AS: token はクイズアプリ向けに<br/>発行されたもの
 ```
 
-上記の図の authorization server は、token の持ち主を正しく答えています。誤りは、写真アプリが「持ち主を教えてもらえた」ことを「alice が今ここでログインした」と読んだ所にあります。access token は refresh token から利用者のいない所で発行し直すこともできるので、持っているだけではログインの証明になりません。前述の解説は、この壊れ方を access token の注入と audience restriction（宛先の制限）の欠如として説明しており、token substitution とも呼ばれます。
+上記の図の authorization server は、token の持ち主を正しく答えています。誤りは、写真アプリが「持ち主を教えてもらえた」ことを「alice が今ここでログインした」と読んだ所にあります。
+
+access token は refresh token から利用者のいない所で発行し直すこともできるので、持っているだけではログインの証明になりません。前述の解説は、この壊れ方を access token の注入と audience restriction（宛先の制限）の欠如として説明しており、token substitution とも呼ばれます。
 
 OIDC の ID Token は、この穴を埋めるために client 宛てに発行される、署名付きの認証結果です。[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) は、ID Token の `aud`（audience、宛先）に client の `client_id` を含めることを必須にしています。クイズアプリ向けの ID Token の `aud` はクイズアプリなので、写真アプリが `aud` を確かめれば、冒頭の事故は起きません。
 
@@ -116,7 +113,9 @@ PKCE では、client がログインを始めるたびに code_verifier（43〜1
 
 PKCE・state・nonce と ID Token の `aud` の効き目は、[ローカルで実行するコード](lab/run.py)で確かめられます。Python 標準ライブラリで、127.0.0.1 の空きポートに `/authorize`・`/token`・`/userinfo` を持つ authorization server を立て、client を同じプロセスの中の関数として書きました。client は全て public client で、client 認証はありません。
 
-この実験は説明用で、本番の実装ではありません。ID Token の署名は公開鍵暗号ではなく、共通鍵で改竄検出の値を作る HMAC で代用し、ログイン画面と同意画面を省いて利用者名をクエリで渡しています。code と token の有効期限、`exp` などの検証も省き、`scope=openid` も送っていません（[lab/README.md](https://github.com/nao1215/debimate/blob/main/content/notes/security/oauth-openid-connect/lab/README.md)）。以下は `run.py` から、`/token` の検証と client の検証を抜き出し、インデントを詰めたものです。全体は 220 行ほどあります。
+この実験は説明用で、本番の実装ではありません。ID Token の署名は公開鍵暗号ではなく、共通鍵で改竄検出の値を作る HMAC で代用し、ログイン画面と同意画面を省いて利用者名をクエリで渡しています。code と token の有効期限、`exp` などの検証も省き、`scope=openid` も送っていません（[lab/README.md](https://github.com/nao1215/debimate/blob/main/content/notes/security/oauth-openid-connect/lab/README.md)）。
+
+以下は `run.py` から、`/token` の検証と client の検証を抜き出し、インデントを詰めたものです。全体は 220 行ほどあります。
 
 ```python
 # AuthorizationServer.do_POST (/token) の抜粋
@@ -159,7 +158,9 @@ def login_with_id_token(self, session, id_token):
 
 `main()` では 4 つの場面を順に試します。callback は、state・nonce・code_verifier のうち使う値がセッションに保存されていなければ拒否します。
 
-(a) と (b) は、alice のログインで返った code を攻撃者が横取りして `/token` に送る場面、(c) は攻撃者 mallory が自分のアカウントで code を取り、交換する前に、ログインを始めた被害者のブラウザにその code を踏ませる場面です。(d) は冒頭の事故で、クイズアプリが受け取った alice の token を写真アプリに持ち込みます。access token を受け付ける `login_with_access_token()` は、`/userinfo` が返した持ち主をそのままログインさせます。
+(a) と (b) は、alice のログインで返った code を攻撃者が横取りして `/token` に送る場面、(c) は攻撃者 mallory が自分のアカウントで code を取り、交換する前に、ログインを始めた被害者のブラウザにその code を踏ませる場面です。
+
+(d) は冒頭の事故で、クイズアプリが受け取った alice の token を写真アプリに持ち込みます。access token を受け付ける `login_with_access_token()` は、`/userinfo` が返した持ち主をそのままログインさせます。
 
 ```sh
 python3 lab/run.py
@@ -206,7 +207,9 @@ python3 lab/run.py
 | state | client | callback と、ログインを始めたブラウザのセッション | 攻撃者の code を被害者のセッションに注入できる |
 | nonce | client | ID Token と、ログインを始めたセッション | 別の場面で発行された ID Token を受け入れる |
 
-redirect URI（code を送り返す先の URL）は、authorization server が完全一致で比べます。[RFC 9700 §2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1) は、登録済みの値との比較に exact string matching を使うことを MUST で求めており、例外はネイティブアプリの localhost の port 番号だけです。例えば、前方一致やワイルドカードを許すと、登録したドメインの別のパスや、そのドメインにある open redirector（任意の URL に転送するページ）を経由して、code が攻撃者の手に渡ります。
+redirect URI（code を送り返す先の URL）は、authorization server が完全一致で比べます。[RFC 9700 §2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1) は、登録済みの値との比較に exact string matching を使うことを MUST で求めており、例外はネイティブアプリの localhost の port 番号だけです。
+
+例えば、前方一致やワイルドカードを許すと、登録したドメインの別のパスや、そのドメインにある open redirector（任意の URL に転送するページ）を経由して、code が攻撃者の手に渡ります。
 
 state は、client がログインの開始時にセッションに保存しておく推測できない値で、callback で戻ってきた値と比べます（[RFC 6749 §10.12](https://www.rfc-editor.org/rfc/rfc6749.html#section-10.12)）。[RFC 9700 §2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1) は、authorization server が PKCE に対応していることを確かめた client なら、PKCE による CSRF 対策に頼って良いとしています。上記の downgrade 対策も、その対応に含まれます。
 

@@ -5,6 +5,8 @@ draft: false
 series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "index"]
 weight: 4
+topics: ["Query Processing"]
+cardImage: "images/index-scan_selectivity.svg"
 ---
 
 Index Scan は、索引（インデックス）を辿って条件に一致するレコードの在り処を求め、そこから表のレコードを読み出す方法です。DB（データベース）が 1 つの表からレコードを取り出す手段の 1 つで、表を先頭から順に読む全走査（sequential scan）と対になります。
@@ -50,7 +52,9 @@ flowchart LR
 
 <br>
 
-`EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。例えば、PostgreSQL の `EXPLAIN` では `Index Scan`、SQLite の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` は表の順次走査です。
+`EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。
+
+例えば、PostgreSQL の `EXPLAIN` では `Index Scan`、SQLite の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` は表の順次走査です。
 
 一方、SQLite の `SCAN` は索引順の全走査も含むので、その語だけでは索引を使ったかどうかを判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。次の SQLite の実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
 
@@ -168,15 +172,42 @@ EXPLAIN (ANALYZE, BUFFERS, COSTS OFF, TIMING OFF, SUMMARY OFF)
    Buffers: shared read=103
 ```
 
-`Buffers` は、その走査で触ったページの延べ枚数です。同じ 100 件を返すのに、並んだ表では 4 枚、散らばった表では 103 枚を読んでいます。索引を降りる分は数枚なので、前に書いた表の 100 枚がほぼそのまま出ています。ランダムな並びは作り直すたびに変わり、4 回のうち 2 回は 102 枚でした。
+`Buffers` は、その走査で触ったページの延べ枚数です。以下は、その枚数を 1 ページ 1 マスで並べた図です。
+
+{{< figure src="images/index-scan_pages.svg" alt="2 つの枠に、触ったページを 1 枚 1 マスで並べた図。左の user_id の順に並んだ表は青いマスが 4 つだけ。右のランダムに並んだ表は黄土色のマスが 103 個で枠をほぼ埋めている。下に「1 マスが 1 ページ。どちらも返したのは同じ 100 件」" caption="同じ 100 件の Index Scan で触ったページ（PostgreSQL 17.11）" align="center" >}}
+索引を降りる分は数枚なので、散らばった表では前に書いた表の 100 枚がほぼそのまま出ています。ランダムな並びは作り直すたびに変わり、4 回のうち 2 回は 102 枚でした。
 
 同じ問い合わせをもう一度流すと、`orders_random` は `shared hit=103` に変わりました。hit はバッファキャッシュにあった枚数、read はその外から読んだ枚数です（OS のキャッシュから返る場合もあります）。2 回目は速く返りますが、触るページは同じ 103 枚です。
 
 一致するレコードが増えるほど、表のページの読み出しは積み上がります。一方、全走査が読むページの枚数は、条件で絞れた割合、つまり選択性（selectivity）では動きません。そのため、2 つの経路が読む枚数はどこかで入れ替わります。
 
-![選択性を横軸に取った概念図。全走査が読むページ枚数は水平のまま変わらず、Index Scan は右上がりに増えて途中で交わる。一致したレコードがページに散っている場合は交点が左へ、表の並びとキーの順序が揃っている場合は交点が右へ動く](images/index_scan_crossover.svg)
+同じ作り方の 2 つの表で条件を `user_id BETWEEN 1 AND k` に変え、一致する割合を 0.01% から 100% まで動かして、全走査と Index Scan が触ったページの延べ枚数と時間を測りました。実行計画は `enable_*` で固定し、並列実行は止めています。時間は全てのページを共有バッファに読み込んだ後の 7 回の中央値です。
 
-上記の図に目盛りを置いていないのは、実測ではない概念図で、交点の位置も表の大きさとレコードの散らばり具合（scattered／clustered）で動くためです。表が小さいほど全走査が読む枚数も少ないので、交点は左へ寄ります。PostgreSQL のドキュメントには、100 件から 1 件を選ぶ例について、その 100 件がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読むことに勝てる計画は無い）とあります。
+```python
+# 抜粋。PLANS[plan] は enable_seqscan などを off にする SET 文
+sql = ("SET max_parallel_workers_per_gather = 0;" + PLANS[plan] +
+       "EXPLAIN (ANALYZE, BUFFERS, COSTS OFF, TIMING OFF) "
+       f"SELECT status FROM {table} WHERE user_id BETWEEN 1 AND {k};")
+```
+
+全体は [lab/selectivity_pg.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/index-scan/lab/selectivity_pg.py) にあります。結果は次の通りです（抜粋）。
+
+```text
+table          plan   selectivity(%)  rows     pages  time_ms   node
+orders_random  seq              1.00    10000     6080     66.44   Seq Scan
+orders_sorted  index            1.00    10000       72      1.30   Index Scan
+orders_random  index            1.00    10000     9912     12.95   Index Scan
+orders_random  seq             30.00   300000     6080     83.63   Seq Scan
+orders_sorted  index           30.00   300000     2071     40.90   Index Scan
+orders_random  index           30.00   300000   297883    201.58   Index Scan
+```
+
+{{< figure src="images/index-scan_selectivity.svg" alt="一致する割合を横軸に取った両対数のグラフ 2 枚。左の触ったページの延べ枚数では、全走査が 6,080 枚で水平、散らばった表の Index Scan は 0.3〜1% の間で全走査を超え、並んだ表の Index Scan は 100% でようやく全走査と並ぶ。右の時間では、散らばった表は 10〜30% の間、並んだ表は 30〜100% の間で全走査より遅くなる。" caption="一致する割合ごとの、触ったページの延べ枚数と時間" align="center" >}}
+上記の図の左の枚数では、散らばった表の Index Scan が一致した 1 件ごとにほぼ 1 枚を触るので、一致が 1% 弱（約 6,000 件）で全走査の 6,080 枚を超えます。並んだ表は 90% 前後まで全走査より少ない枚数で済みます。右の時間は全てのページがメモリにある状態の値で、1 枚を触る手間が安いぶん、散らばった表の交点は 10〜30% と枚数の交点より右に来ました。
+
+表が小さいほど全走査が読む枚数も少ないので、交点は左へ寄ります。
+
+PostgreSQL のドキュメントには、100 件から 1 件を選ぶ例について、その 100 件がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読むことに勝てる計画は無い）とあります。
 
 Index Scan で読む量を整理すると、およそ「索引で読むページ + 表で読むページ」で、選択性と correlation で決まります。読む量を減らす手段は次の 3 つです。
 
@@ -268,7 +299,9 @@ flowchart TB
 
 ### レコードの位置を集めてページ順に読む bitmap scan {#行の位置を集めてページ順に読む-bitmap-scan}
 
-表への読み出しが散らばる問題には、索引から一致したレコードの位置を先に全部集めて印を付け、その後で表をページの順に読む手もあります。これが bitmap scan で、PostgreSQL では索引 1 本の場合にもこの形が選ばれます。複数の索引を組み合わせる際には、必要な索引をそれぞれ走査して「[prepares a bitmap in memory giving the locations of table rows](https://www.postgresql.org/docs/current/indexes-bitmap-scans.html)」（表のレコードの位置を示すビットマップをメモリ上に用意する）と説明されています。
+表への読み出しが散らばる問題には、索引から一致したレコードの位置を先に全部集めて印を付け、その後で表をページの順に読む手もあります。これが bitmap scan で、PostgreSQL では索引 1 本の場合にもこの形が選ばれます。
+
+複数の索引を組み合わせる際には、必要な索引をそれぞれ走査して「[prepares a bitmap in memory giving the locations of table rows](https://www.postgresql.org/docs/current/indexes-bitmap-scans.html)」（表のレコードの位置を示すビットマップをメモリ上に用意する）と説明されています。
 
 このビットマップは、表の中でのレコードの位置の順に並んでいます。どの索引から作っても並び方が同じなので、問い合わせに応じて AND や OR で重ねられます。
 

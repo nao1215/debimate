@@ -16,3 +16,11 @@ on A, and acceptance of the resulting block on B including the target txid.
 No private keys or RPC cookies are printed or copied to output/.
 Node processes stop and temporary wallets/data are removed on normal exit/errors.
 output/ contains actual RPC results and assertions from the recorded run.
+
+Rolling minimum fee simulation (no bitcoind, no network access)
+Python 3.10+ standard library only. The random arrivals use a fixed seed.
+  cd content/notes/blockchain-systems/mempool/lab
+  python3 rolling_min_fee.py > rolling_min_fee_output.txt
+The rules follow Bitcoin Core v30.0 src/txmempool.cpp (TrimToSize, GetMinFee);
+the scaled-down settings are listed at the top of the script. The figure
+images/mempool_rolling_min_fee.svg is drawn by ../figures.py (needs matplotlib).

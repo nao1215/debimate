@@ -6,6 +6,7 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "query-processing"]
 weight: 3
 wrapTables: true
+topics: ["Query Processing"]
 ---
 
 Query Processing（問い合わせ処理）は、DB（データベース）が受け取った SQL 文を実行可能な手順に変換し、その手順を動かして結果のレコードを返すまでの処理です。ここで選ばれた手順を実行計画（クエリプラン、query plan）と呼びます。
@@ -192,7 +193,9 @@ flowchart TB
 
 <br>
 
-どの候補を選ぶかを決める材料が、統計情報です。PostgreSQL は、表と索引のレコード数とディスクブロック数を `pg_class` に、カラムの値の分布を `pg_statistic` に持ちます。どちらも問い合わせのたびには更新されず、`ANALYZE` などを実行した時点の値が使われます。`pg_class` を更新するのは `ANALYZE` や `CREATE INDEX` などの一部の命令で、`pg_statistic` の項目は更新した直後でも「[always approximate](https://www.postgresql.org/docs/current/planner-stats.html)」（常に近似）です。
+どの候補を選ぶかを決める材料が、統計情報です。PostgreSQL は、表と索引のレコード数とディスクブロック数を `pg_class` に、カラムの値の分布を `pg_statistic` に持ちます。どちらも問い合わせのたびには更新されず、`ANALYZE` などを実行した時点の値が使われます。
+
+`pg_class` を更新するのは `ANALYZE` や `CREATE INDEX` などの一部の命令で、`pg_statistic` の項目は更新した直後でも「[always approximate](https://www.postgresql.org/docs/current/planner-stats.html)」（常に近似）です。
 
 統計からコストが決まるまでには、間に 1 段挟まります。DB はまず統計から、条件を通るレコードの割合である選択性（selectivity）を見積もり、各条件を通った後に何件残るかを出します。
 
@@ -209,11 +212,41 @@ flowchart LR
 
 上記の図の最後の段で求める候補ごとのコストは、推定レコード数を基に、そのレコードを読むのに何ページ触るか、突き合わせに何回比較するかを換算した値です。
 
-先ほどの例で候補を 3 つ挙げると、注文を全走査して hash join する候補 1、手順 2 と同じく利用者を絞ってから索引で注文を引く候補 2、両方を整列して merge join する候補 3 です。以下は、この 3 つに説明のためのコストを置いた例です。
+先ほどの例で候補を 3 つ挙げると、注文を全走査して hash join する候補 1、手順 2 と同じく利用者を絞ってから索引で注文を引く候補 2、両方を整列して merge join する候補 3 です。
 
-![3 つの候補の見積もりコストを横棒で比べた図。利用者を絞ってから索引で注文を引く候補 2 が 480 で最も安く、注文を全走査して hash join する候補 1 は 12,300、両方を整列して merge join する候補 3 は 51,000。最小の候補 2 が選ばれる](images/query_processing_plan_cost.svg)
+同じ利用者 1 万件と注文 100 万件を PostgreSQL 17.11 に入れ、他の結合方法を設定で外して、候補ごとの見積もりコストを `EXPLAIN` で表示しました。注文は利用者ごとに連続して入れ、並列実行は切っています。以下は候補 2 を表示する部分の抜粋です（全体は [lab/experiment.sql](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/query-processing/lab/experiment.sql)）。
 
-上記の図の値は、測った時間ではなく見積もりです。統計が実際のデータと離れれば、推定レコード数とコストがずれ、候補の順位も入れ替わります。実行計画が突然変わったように見える現象は、統計の変化が主な原因の 1 つです。
+```sql
+-- hash join と merge join を外し、候補 2 だけを残す。
+SET enable_hashjoin = off; SET enable_mergejoin = off; SET enable_bitmapscan = off;
+EXPLAIN SELECT u.id, o.amount
+  FROM orders o JOIN users u ON o.user_id = u.id
+ WHERE u.country = 'JP';
+```
+
+```text
+ Nested Loop  (cost=0.42..1277.50 rows=9985 width=8)
+   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
+         Filter: (country = 'JP'::text)
+   ->  Index Scan using idx_orders_user_id on orders o  (cost=0.42..9.98 rows=100 width=8)
+         Index Cond: (user_id = u.id)
+```
+
+`cost` の 2 つ目の値が、最後のレコードを返し終えるまでの見積もりコストです。何も外さない既定の設定でも、PostgreSQL はこの候補 2 を選びました。3 つの候補の見積もりコストと、`EXPLAIN ANALYZE` で 5 回測った実行時間の中央値を以下に並べます。
+
+{{< figure src="images/query_processing_plan_cost.svg" alt="左は見積もりコストで、利用者を絞ってから索引で注文を引く候補 2 が 1,278 で最も安く選ばれ、注文を全走査して hash join する候補 1 は 18,213、両方を整列して merge join する候補 3 は 134,022。右は実行時間の中央値で、候補 2 が 3.4 ms、候補 1 が 149 ms、候補 3 が 224 ms" caption="3 つの候補の見積もりコストと実行時間の中央値" align="center" >}}
+
+左の図の値は、測った時間ではなく見積もりです。この例では右の実行時間と順位がそろいましたが、統計が実際のデータと離れれば、推定レコード数とコストがずれ、候補の順位も入れ替わります。実行計画が突然変わったように見える現象は、統計の変化が主な原因の 1 つです。
+
+<br>
+
+データの並びも見積もりを動かします。注文を SQLite の例と同じく利用者に散らして入れた表では、候補 2 の見積もりが 21,655 に上がり、PostgreSQL は候補 1 を選びました。2 つの並びで候補 1 と候補 2 の見積もりコストを比べたのが以下の図です（[lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/query-processing/lab/output.txt) の `orders_scattered`）。
+
+{{< figure src="images/query_processing_order.svg" alt="注文を利用者ごとに連続して入れた表では、候補 1（hash join）が 18,213、候補 2（索引で引く nested loop）が 1,278 で、候補 2 が選ばれる。注文を利用者に散らして入れた表では、候補 1 は 18,213 のままで、候補 2 が 21,655 に上がり、候補 1 が選ばれる" caption="注文の並びで入れ替わる候補 1 と候補 2 の見積もりコスト" align="center" >}}
+
+変わったのは索引で引く候補 2 の見積もりだけで、注文を全走査する候補 1 は、どちらの並びでも 18,213 でした。
+
+<br>
 
 コストで選ぶ作りは PostgreSQL に限りません。[SQLite](https://www.sqlite.org/optoverview.html) も、競合する複数の実行計画について CPU とディスク入出力のコストを見積もります。統計は `ANALYZE` で集めて、`sqlite_stat` で始まる名前の表に格納します。ただし `ANALYZE` を実行するかどうかは任意で、集めていない間は、先の例のように組み込みの既定の推定値が使われます。
 
@@ -230,15 +263,13 @@ flowchart LR
 
 カラムどうしの相関とは、`country = 'JP' AND city = '東京'` のように、片方が決まるともう片方の取り得る値が絞られる関係を指します。カラムごとの分布だけを持っている場合、DB は 2 つの条件が独立だとみなして、それぞれの選択性を掛け合わせます。
 
-例えば `country = 'JP'` を通るレコードが 1%、`city = '東京'` を通るレコードが 1% だとします。東京のレコードがほぼ全て日本である場合、独立とみなして掛け合わせた見積もり（estimated）と、実際に残る割合（actual）は次のように離れます。
-
-![選択性を対数軸で比べた図。country 単独が 1%、city 単独が 1%、独立とみなして掛け合わせた country AND city の見積もりが 0.01%、相関があるため実際に残るのは 1% で、見積もりと実際が 2 桁離れている](images/query_processing_selectivity.svg)
+例えば `country = 'JP'` を通るレコードが 1%、`city = '東京'` を通るレコードが 1% だとします。東京のレコードがほぼ全て日本である場合、独立とみなして掛け合わせた見積もりは 0.01% ですが、実際に残るのは 1% で、2 桁離れます。
 
 見積もりが外れても、結果のレコードが間違うわけではありません。ずれるのは、どの手順が速いかという判断だけです。ずれているかどうかは、計画だけを表示する `EXPLAIN` では分かりません。[PostgreSQL](https://www.postgresql.org/docs/current/using-explain.html) の `EXPLAIN` は、`ANALYZE` を付けると問い合わせを実行し、計画の各部分で数えたレコード数と実行時間を見積もりと並べて表示します。
 
 計画の中で見積もりと実際が大きく開いている箇所を探すと、遅さの原因を絞り込めます。なお、`EXPLAIN ANALYZE` は問い合わせを動かすので、更新を伴う文で使う時は影響に注意が必要です。
 
-選択性の図と同じ偏りを持つ利用者 1 万件を PostgreSQL 17.11 に入れて、`EXPLAIN ANALYZE` を実行しました。`country` と `city` はどの値も 1% で、東京の 100 件は全て `JP` です。
+この偏りを持つ利用者 1 万件を PostgreSQL 17.11 に入れて、`EXPLAIN ANALYZE` を実行しました。`country` と `city` はどの値も 1% で、東京の 100 件は全て `JP` です。
 
 ```sql
 CREATE TABLE users (id int PRIMARY KEY, country text, city text);
@@ -266,6 +297,12 @@ SELECT * FROM users WHERE country = 'JP' AND city = '東京';
 括弧の 1 つ目の `rows` が推定レコード数、2 つ目の `actual rows` が実際のレコード数です。掛け合わせた 0.01% から 1 件と見積もり、実際には 100 件が残りました。表を 1 つ読むだけの問い合わせなので計画は変わりませんが、このレコード数が結合の材料になれば、前の節の 3 つの候補のコストがずれ、順位が入れ替わる原因になります。
 
 PostgreSQL では、`CREATE STATISTICS users_dep (dependencies) ON country, city FROM users;` で片方のカラムからもう片方がどれだけ決まるかを集め、`ANALYZE` し直すと、同じ問い合わせの推定が `rows=100` になりました。
+
+条件ごとの推定レコード数と実際のレコード数は以下の通りです（[lab/experiment.sql](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/query-processing/lab/experiment.sql)）。
+
+{{< figure src="images/query_processing_selectivity.svg" alt="推定と実際のレコード数を対数軸で比べた図。country = 'JP' 単独と city = '東京' 単独は推定も実際も 100 件。country AND city は推定 1 件に対して実際 100 件で 2 桁離れ、CREATE STATISTICS を作って ANALYZE し直すと推定も 100 件になる" caption="条件ごとの推定レコード数と実際のレコード数" align="center" >}}
+
+1 つのカラムの条件では推定と実際が一致し、外れたのは 2 つの条件を掛け合わせた所だけでした。
 
 ---
 
@@ -296,7 +333,9 @@ flowchart TD
 
 PostgreSQL の実行器では、上の演算子が下の演算子に次の 1 件を要求し、要求された演算子が 1 件だけ返します。返すレコードが尽きた演算子は、その旨を呼び出し元に伝えます。この作りは、PostgreSQL のドキュメントで「[demand-pull pipeline mechanism](https://www.postgresql.org/docs/current/executor.html)」（要求で引き出すパイプラインの仕組み）と呼ばれています。
 
-この仕組みでは、各演算子が準備（open）・次の 1 件の生成（next）・後始末（close）の 3 つの手続きを持ち、上の演算子が下の演算子の next を呼びます。Goetz Graefe 氏の論文「[Query Evaluation Techniques for Large Databases](https://cs.uwaterloo.ca/~david/cs848s13/graefe.pdf)」（ACM Computing Surveys 25(2)）も同じ作りを整理していて、この形の演算子（iterator）を組み合わせれば、いくらでも複雑な実行計画を組み立てられるとしています。
+この仕組みでは、各演算子が準備（open）・次の 1 件の生成（next）・後始末（close）の 3 つの手続きを持ち、上の演算子が下の演算子の next を呼びます。
+
+Goetz Graefe 氏の論文「[Query Evaluation Techniques for Large Databases](https://cs.uwaterloo.ca/~david/cs848s13/graefe.pdf)」（ACM Computing Surveys 25(2)）も同じ作りを整理していて、この形の演算子（iterator）を組み合わせれば、いくらでも複雑な実行計画を組み立てられるとしています。
 
 以下は、上記の実行計画の木から `MergeJoin` の下で注文の表を並べ替える枝だけを取り出した、要求と応答の往復です。
 

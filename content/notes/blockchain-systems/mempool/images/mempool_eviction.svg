@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>上限に達した mempool に手数料率の高い取引が入ると、末尾の取引が取り除かれる</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="480" y="42" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">上限に達した mempool（手数料率の高い順）</text>
+<rect x="60" y="110" width="684" height="290" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="80" y="140.0" width="44" height="240.0" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="136" y="164.0" width="44" height="216.0" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="192" y="174.8" width="44" height="205.2" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<rect x="248" y="185.6" width="44" height="194.4" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="304" y="205.03999999999996" width="44" height="174.96000000000004" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="360" y="222.536" width="44" height="157.464" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="416" y="238.2824" width="44" height="141.7176" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="472" y="252.45416" width="44" height="127.54584000000001" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="528" y="265.20874399999997" width="44" height="114.79125600000002" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="584" y="276.6878696" width="44" height="103.31213040000003" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="640" y="287.01908263999997" width="44" height="92.98091736000002" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="696" y="296.31717437599997" width="44" height="83.68282562400002" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="772" y="304.68545693839997" width="44" height="75.31454306160002" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="214" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">新しい取引</text>
+<line x1="214" y1="100" x2="214" y2="164.8" stroke="#7aa6c2" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<line x1="744" y1="100" x2="744" y2="410" stroke="#1f1f1f" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6"/>
+<text x="744" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">上限</text>
+<text x="814" y="280.68545693839997" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">取り除く</text>
+<text x="400" y="440" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">高い　←　手数料率　→　低い</text>
+<text x="480" y="500" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">最低の手数料率は、取り除いた取引の率 + 0.1 sat/vB まで上がる</text>
+</svg>

@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>末尾を複製する規則では [A, B, C] と [A, B, C, C] が同じ木になる</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="480" y="56" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Bitcoin の規則: 奇数なら末尾を複製する</text>
+<text x="240" y="118" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">葉 [A, B, C]</text>
+<text x="720" y="118" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">葉 [A, B, C, C]</text>
+<line x1="105" y1="386" x2="150.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="195" y1="386" x2="150.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="285" y1="386" x2="330.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="375" y1="386" x2="330.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="150.0" y1="276" x2="240" y2="214" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="330.0" y1="276" x2="240" y2="214" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<rect x="71" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="105" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">A</text>
+<rect x="161" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="195" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">B</text>
+<rect x="251" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="285" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">C</text>
+<rect x="341" y="386" width="68" height="48" rx="6" fill="#ffffff" stroke="#d4a24c" stroke-width="3.5" stroke-dasharray="8 6"/>
+<text x="375" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">C</text>
+<rect x="110.0" y="276" width="80" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="150.0" y="309" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">AB</text>
+<rect x="290.0" y="276" width="80" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="330.0" y="309" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">CC</text>
+<rect x="180" y="164" width="120" height="52" rx="8" fill="#7aa6c2" stroke="none" stroke-width="0"/>
+<text x="240" y="199" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">root</text>
+<line x1="585" y1="386" x2="630.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="675" y1="386" x2="630.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="765" y1="386" x2="810.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="855" y1="386" x2="810.0" y2="324" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="630.0" y1="276" x2="720" y2="214" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<line x1="810.0" y1="276" x2="720" y2="214" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<rect x="551" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="585" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">A</text>
+<rect x="641" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="675" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">B</text>
+<rect x="731" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="765" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">C</text>
+<rect x="821" y="386" width="68" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="855" y="419" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">C</text>
+<rect x="590.0" y="276" width="80" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="630.0" y="309" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">AB</text>
+<rect x="770.0" y="276" width="80" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="810.0" y="309" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">CC</text>
+<rect x="660" y="164" width="120" height="52" rx="8" fill="#7aa6c2" stroke="none" stroke-width="0"/>
+<text x="720" y="199" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">root</text>
+<text x="480" y="206" font-size="56" font-weight="normal" text-anchor="middle" style="fill:#e15759">=</text>
+<line x1="480" y1="100" x2="480" y2="150" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/>
+<line x1="480" y1="230" x2="480" y2="440" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/>
+<text x="480" y="500" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">黄土色の破線の葉は複製。どちらも同じルートハッシュになる</text>
+</svg>

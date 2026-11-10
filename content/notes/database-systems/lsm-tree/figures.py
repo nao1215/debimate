@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
 
 COLOR_BLUE = "#7aa6c2"
-COLOR_RED = "#e15759"
+COLOR_OCHRE = "#d4a24c"
 COLOR_GRAY = "#666666"
 COLOR_TEXT = "#1f1f1f"
 COLOR_FILL = "#f2f2f2"
@@ -87,13 +87,13 @@ save("lsm-tree_compaction_shapes.svg")
 # --- 図2: 削除を始めた後も、保存している件数が増える ---
 fig, ax = plt.subplots()
 for style, color, label in (("leveled", COLOR_BLUE, "Leveled"),
-                            ("tiered", COLOR_RED, "Size-tiered")):
+                            ("tiered", COLOR_GRAY, "Size-tiered")):
     t = RESULTS[style]["timeline"]
     ax.plot([e[0] for e in t], [e[1] for e in t], color=color, linewidth=1.8,
             label=f"{label}: entries on disk")
 t = RESULTS["leveled"]["timeline"]
-ax.plot([e[0] for e in t], [e[3] for e in t], color=COLOR_GRAY, linestyle="--",
-        linewidth=1.5, label="Live keys")
+ax.plot([e[0] for e in t], [e[3] for e in t], color=COLOR_TEXT, linestyle="--",
+        linewidth=1.2, label="Live keys")
 ax.axvline(100_000, color=COLOR_GRAY, linestyle=":", linewidth=1)
 ax.text(101_500, 56_000, "deletes\nstart", color=COLOR_GRAY, fontsize=9, va="top")
 ax.set_xlabel("Operations (put, then delete)")
@@ -105,7 +105,7 @@ save("lsm-tree_space_timeline.svg")
 
 # --- 図3: compaction を止めると sorted run が増え続ける ---
 fig, ax = plt.subplots()
-for style, color, ls, label in (("none", COLOR_RED, "-", "No compaction"),
+for style, color, ls, label in (("none", COLOR_OCHRE, "-", "No compaction"),
                                 ("tiered", COLOR_GRAY, "--", "Size-tiered"),
                                 ("leveled", COLOR_BLUE, "-", "Leveled")):
     t = RESULTS[style]["timeline"]
@@ -115,3 +115,26 @@ ax.set_xlabel("Operations")
 ax.set_ylabel("SSTables on disk")
 ax.legend(loc="upper left", fontsize=9, frameon=False)
 save("lsm-tree_runs_timeline.svg")
+
+
+# --- 図4: 3 つの増幅を compaction のやり方ごとに並べる ---
+styles = (("leveled", "Leveled", COLOR_BLUE), ("tiered", "Size-tiered", COLOR_GRAY),
+          ("none", "No compaction", COLOR_OCHRE))
+panels = (("write_amp", "Write amplification"),
+          ("visited", "SSTables checked per get"),
+          ("space_amp", "Space amplification\n(after deletes)"))
+fig, axes = plt.subplots(1, 3, figsize=(8, 2.6), sharey=True)
+for ax, (key, title) in zip(axes, panels):
+    values = [RESULTS[s][key] for s, _, _ in styles]
+    ax.barh([label for _, label, _ in styles], values,
+            color=[c for _, _, c in styles], height=0.6)
+    for y, v in enumerate(values):
+        ax.text(v, y, f" {v:.2f}", va="center", fontsize=10, color=COLOR_TEXT)
+    ax.set_title(title, fontsize=11, color=COLOR_TEXT)
+    ax.set_xlim(0, max(values) * 1.35)
+    ax.invert_yaxis()
+    ax.grid(False)
+    ax.set_xticks([])
+    ax.spines["bottom"].set_visible(False)
+fig.subplots_adjust(wspace=0.15)
+save("lsm-tree_amplification.svg")

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>トランザクションの範囲と行ロックを持つ時間</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="930" y="40" font-size="24" font-weight="normal" text-anchor="end" style="fill:#666666">時間 →</text>
+<text x="100" y="132" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">広い範囲</text>
+<rect x="200" y="70" width="720" height="104" rx="12" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-dasharray="10 7"/>
+<rect x="270" y="192" width="650" height="30" rx="4" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<rect x="212" y="90" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="272.0" y="131.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">引き当て</text>
+<rect x="344" y="90" width="420" height="64" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="554.0" y="131.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">決済 API の応答待ち</text>
+<rect x="776" y="90" width="132" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="842.0" y="131.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">注文作成</text>
+<text x="100" y="362" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">狭い範囲</text>
+<rect x="200" y="300" width="300" height="104" rx="12" fill="none" stroke="#1f1f1f" stroke-width="3" stroke-dasharray="10 7"/>
+<rect x="270" y="422" width="230" height="30" rx="4" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<rect x="212" y="320" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="272.0" y="361.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">引き当て</text>
+<rect x="344" y="320" width="144" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="416.0" y="361.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">注文と依頼</text>
+<rect x="520" y="320" width="400" height="64" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="720.0" y="361.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">決済 API の応答待ち</text>
+<line x1="220" y1="510" x2="270" y2="510" stroke="#1f1f1f" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 7"/>
+<text x="282" y="518" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">トランザクション</text>
+<rect x="540" y="496" width="50" height="28" rx="4" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<text x="602" y="518" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">行ロックを持つ時間</text>
+</svg>

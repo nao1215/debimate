@@ -1,0 +1,5 @@
+ns per call (median of 9 runs)
+payload      in-process           pipe   net/rpc+unix
+16                  2.4           6873          20476
+1024                2.5           7529          21647
+65536               1.7          28491          52527

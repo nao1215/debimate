@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>退会と一時停止を同時に走らせた時の順序</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="60" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">会員 42 の status を 2 つのトランザクションで書き換える</text>
+<text x="40" y="172" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">処理 A</text>
+<text x="40" y="206" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">（退会）</text>
+<line x1="220" y1="184" x2="930" y2="184" stroke="#7aa6c2" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 8"/>
+<text x="40" y="342" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">処理 B</text>
+<text x="40" y="376" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">（一時停止）</text>
+<line x1="220" y1="354" x2="930" y2="354" stroke="#d4a24c" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 8"/>
+<rect x="250" y="134" width="160" height="100" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="330" y="176" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">SELECT で</text>
+<text x="330" y="212" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">有効 を読む</text>
+<rect x="420" y="304" width="160" height="100" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="500" y="346" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">SELECT で</text>
+<text x="500" y="382" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">有効 を読む</text>
+<rect x="590" y="134" width="160" height="100" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="670" y="176" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">退会済み に</text>
+<text x="670" y="212" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">更新・追記</text>
+<rect x="760" y="304" width="160" height="100" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="840" y="346" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">一時停止 に</text>
+<text x="840" y="382" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">更新・追記</text>
+<rect x="760" y="134" width="160" height="100" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="9 6"/>
+<text x="840" y="176" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">退会済み</text>
+<text x="840" y="212" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">が消える</text>
+<line x1="840" y1="304" x2="840" y2="240" stroke="#e15759" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-red)"/>
+<line x1="220" y1="470" x2="930" y2="470" stroke="#666666" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<line x1="330" y1="462" x2="330" y2="478" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="330" y="512" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">手順 1</text>
+<line x1="500" y1="462" x2="500" y2="478" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="500" y="512" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">手順 2</text>
+<line x1="670" y1="462" x2="670" y2="478" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="670" y="512" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">手順 3</text>
+<line x1="840" y1="462" x2="840" y2="478" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="840" y="512" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">手順 4</text>
+<text x="40" y="478" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">時間</text>
+</svg>

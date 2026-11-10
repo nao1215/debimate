@@ -6,6 +6,7 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 5
 wrapTables: true
+topics: ["Transaction / Wallet"]
 ---
 
 UTXO（Unspent Transaction Output、未使用の取引出力）は、取引（transaction）の出力（金額と使う条件が書かれた、コインの置き場）のうち、まだ別の取引に消費されていないものです。まだ消費されていない出力を集めたものは、UTXO 集合（UTXO set）と呼ばれます。
@@ -14,25 +15,13 @@ UTXO（Unspent Transaction Output、未使用の取引出力）は、取引（tr
 
 [ウォレット](../wallet/)が表示する残高も、UTXO から計算します。画面に出る「0.5 BTC」のような数は、どこかに保存された値ではなく、自分宛、つまり自分の鍵で使う条件を満たせる UTXO を集めて合計した結果です。支払いの余りがお釣りの出力になることも、手数料が入力と出力の差として決まることも、この表し方から導かれます。
 
-コインが取引から取引に渡っていく様子を以下に示します。図の矢印は、入力が持つ参照の向きです。
+コインが取引から取引に渡っていく様子を以下に示します。円の面積は金額に比例し、矢印はコインが移る向きです。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart RL
-    subgraph T2["取引 2"]
-        I2["入力<br/>取引 1 の出力 0 を参照"]
-        O2["出力 0<br/>Bob 宛（未使用）"]
-    end
-    subgraph T1["取引 1（コインベース取引）"]
-        O1["出力 0<br/>Alice 宛（使用済み）"]
-    end
-    I2 -->|"参照"| O1
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/utxo_concept.svg" alt="取引 2 が、Alice 宛の 1.0 BTC の出力（灰色、使用済み）を丸ごと消費し、Bob 宛の 0.3 BTC と Alice 宛のお釣り 0.69 BTC の出力（塗り、未使用）を新しく作る図。どの出力にもならない差額 0.01 BTC が手数料になる。" caption="取引 2 が出力を消費し、新しい出力を作る" align="center" >}}
 
-上記の図で、取引 1 の出力は、それを消費する取引 2 がブロックに取り込まれた時点で使用済みになり、コインは Bob 宛の出力に移ります。まだ消費されていない Bob 宛の出力が UTXO で、Bob はこれを参照し、使う資格を証明する取引を作ればコインを使えます。
+上記の図で、取引 1 の出力は、それを消費する取引 2 がブロックに取り込まれた時点で使用済みになり、コインは Bob 宛とお釣りの出力に移ります。まだ消費されていない取引 2 の出力が UTXO で、Bob はこれを参照し、使う資格を証明する取引を作ればコインを使えます。
 
-図の取引 1 はコインベース取引（[Bitcoin Block](../bitcoin-block/) で説明した、ブロックの先頭に置かれる報酬の取引）で、出力の参照をどこまでも遡ると、コインベース取引に行き着きます。
+取引 1 の出力も、それより前の取引が作ったものです。出力の参照をどこまでも遡ると、コインベース取引（[Bitcoin Block](../bitcoin-block/) で説明した、ブロックの先頭に置かれる報酬の取引）に行き着きます。
 
 コインの実体は口座に記録された数値ではなく、取引から取引に連なる出力と、それを使う資格の証明です。前の持ち主が署名して次の持ち主宛の出力を作るため、Bitcoin の白書はコインを「[a chain of digital signatures](https://bitcoin.org/bitcoin.pdf)」（電子署名のチェーン）と定義しています。ただし、取引は複数の入力と複数の出力を持てるため、実際の連なりは 1 本の鎖ではなく、合流と分岐を持つグラフになります。
 
@@ -162,7 +151,7 @@ print(value_out, fee, fee < 0)
 
 入力は出力を丸ごと消費します。出力の一部だけを使う書き方は、取引の形式に存在しません。出力は使用済みか未使用かのどちらかで、金額が減っていく途中の段階はありません。
 
-手元の UTXO の金額が支払いたい額と一致することは稀なので、多くの取引は、余った分を自分宛の出力として戻します。この自分宛の出力がお釣り（change）です。例えば、1.0 BTC の UTXO を 1 つ持つ Alice が、Bob に 0.3 BTC 払う取引は以下の通りです。この図の矢印は、これまでの参照の向きとは逆で、コインが移る向きです。
+手元の UTXO の金額が支払いたい額と一致することは稀なので、多くの取引は、余った分を自分宛の出力として戻します。この自分宛の出力がお釣り（change）です。例えば、1.0 BTC の UTXO を 1 つ持つ Alice が、Bob に 0.3 BTC 払う取引は以下の通りです。この図の矢印は、参照の向きではなく、冒頭の図と同じくコインが移る向きです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

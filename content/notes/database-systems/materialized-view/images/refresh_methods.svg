@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>3 つの REFRESH の、元の表から読む量、view に書く量、実行中の読み手</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="400" y="62" font-size="24" text-anchor="middle" class="sub">reads from orders</text>
+<text x="660" y="62" font-size="24" text-anchor="middle" class="sub">writes to the view</text>
+<text x="870" y="62" font-size="24" text-anchor="middle" class="sub">readers</text>
+<text x="20" y="134" font-size="26" text-anchor="start">full</text>
+<text x="20" y="170" font-size="22" text-anchor="start" class="sub">REFRESH</text>
+<rect x="290" y="108" width="220" height="40" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<rect x="290" y="108" width="220" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="400" y="188" font-size="22" text-anchor="middle" class="sub">all rows</text>
+<rect x="550" y="108" width="220" height="40" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<rect x="550" y="108" width="220" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="660" y="188" font-size="22" text-anchor="middle" class="sub">replace all</text>
+<rect x="800" y="104" width="140" height="48" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="870" y="137" font-size="22" text-anchor="middle">wait</text>
+<text x="20" y="274" font-size="26" text-anchor="start">incremental</text>
+<text x="20" y="310" font-size="22" text-anchor="start" class="sub">Oracle fast, pg_ivm</text>
+<rect x="290" y="248" width="220" height="40" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<rect x="290" y="248" width="26" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="400" y="328" font-size="22" text-anchor="middle" class="sub">changes only</text>
+<rect x="550" y="248" width="220" height="40" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<rect x="550" y="248" width="26" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="660" y="328" font-size="22" text-anchor="middle" class="sub">affected rows</text>
+<rect x="800" y="244" width="140" height="48" rx="6" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="870" y="277" font-size="22" text-anchor="middle">by product</text>
+<text x="20" y="414" font-size="26" text-anchor="start">concurrent</text>
+<text x="20" y="450" font-size="22" text-anchor="start" class="sub">CONCURRENTLY</text>
+<rect x="290" y="388" width="220" height="40" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<rect x="290" y="388" width="220" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="400" y="468" font-size="22" text-anchor="middle" class="sub">all rows</text>
+<rect x="550" y="388" width="220" height="40" rx="4" fill="#ffffff" stroke="#666666" stroke-width="1" stroke-dasharray="4 4"/>
+<rect x="550" y="388" width="26" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="660" y="468" font-size="22" text-anchor="middle" class="sub">changed rows</text>
+<rect x="800" y="384" width="140" height="48" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="870" y="417" font-size="22" text-anchor="middle">not blocked</text>
+<text x="480" y="515" font-size="22" text-anchor="middle" class="sub">readers = SELECT on the view during REFRESH in PostgreSQL 17</text>
+</svg>

@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 21
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 同じ条件でデータを集め直しても、平均値は変動します。データを何件集めれば平均値が安定するかを考える際、大数の法則と中心極限定理が役に立ちます。大数の法則（Law of Large Numbers, LLN）は、平均が期待値に収束することを示します。一方で、中心極限定理（Central Limit Theorem, CLT）は、標準化した平均の分布が正規分布に近づくことを示します。平均値から信頼区間を求める場合も、それぞれの成立条件を確認する必要があります。

@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 26
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 時系列予測（time series forecasting）は、過去の観測値から未来の値を予測するタスクです。需要予測、気温、サーバー負荷、医療モニタリングなど、ビジネスでも研究でも頻出します。

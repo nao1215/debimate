@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>nameConstraints で、Intermediate CA が発行できる名前の範囲を絞る</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<defs><marker id="arrowA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrowS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect x="380" y="24" width="200" height="64" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="480" y="65" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Root CA</text>
+<line x1="480" y1="92" x2="480" y2="132" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowS)"/>
+<rect x="300" y="138" width="360" height="92" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="480" y="176" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Intermediate CA</text>
+<text x="480" y="212" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">permitted;DNS:example.test</text>
+<rect x="40" y="290" width="520" height="220" rx="16" fill="#f2f2f2" stroke="#666666" stroke-width="2.5" stroke-dasharray="10 7"/>
+<text x="64" y="330" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">example.test の下</text>
+<rect x="110" y="380" width="360" height="76" rx="10" fill="#ffffff" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="290" y="427" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">www.example.test</text>
+<rect x="620" y="380" width="300" height="76" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="770" y="427" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">www.other.test</text>
+<line x1="889" y1="356" x2="921" y2="388" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<line x1="889" y1="388" x2="921" y2="356" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<text x="770" y="492" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">error 47 で拒否</text>
+<line x1="420" y1="236" x2="300" y2="372" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowS)"/>
+<line x1="560" y1="236" x2="740" y2="372" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrowS)"/>
+</svg>

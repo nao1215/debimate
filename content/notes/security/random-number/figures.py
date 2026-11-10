@@ -28,6 +28,7 @@ plt.rcParams.update({
     "grid.linewidth": 0.5,
     "savefig.bbox": "tight",
     "savefig.dpi": 144,
+    "svg.hashsalt": "random-number",  # 要素の id を固定する
 })
 
 OUT = pathlib.Path(__file__).parent / "images"
@@ -36,7 +37,7 @@ OUT.mkdir(exist_ok=True)
 
 def save(name: str) -> None:
     path = OUT / name
-    plt.savefig(path)
+    plt.savefig(path, metadata={"Date": None})  # 日付を入れず、再生成で差分を出さない
     plt.close()
     print(f"wrote {path}")
 
@@ -68,6 +69,8 @@ labels = [f"x{i}" for i in range(1, 9)]
 uniform = np.full(8, 1.0 / 8.0)
 biased = np.array([0.50] + [0.50 / 7.0] * 7)
 
+# 2 枚を横に並べた幅の広い図なので、本文の幅（720px）に縮めても 12px 以上になる大きさにする。
+plt.rcParams.update({"font.size": 13})
 fig, axes = plt.subplots(1, 2, figsize=(10, 4), sharey=True)
 for ax, (title, probs, color) in zip(
     axes,
@@ -75,14 +78,15 @@ for ax, (title, probs, color) in zip(
      ("Biased: min-entropy = 1.0 bit", biased, COLOR_RED)],
 ):
     ax.bar(labels, probs, color=color, edgecolor="white", linewidth=0.5)
-    ax.set_title(title, fontsize=11)
+    ax.set_title(title, fontsize=13)
     ax.set_xlabel("Output value")
     top = float(np.max(probs))
     ax.axhline(top, color=COLOR_GRAY, linestyle="--", linewidth=1)
-    ax.text(0.05, top + 0.02, f"max p = {top:.3f}", color=COLOR_GRAY, fontsize=9)
+    ax.text(0.05, top + 0.02, f"max p = {top:.3f}", color=COLOR_GRAY, fontsize=12)
 axes[0].set_ylabel("Probability")
 axes[0].set_ylim(0, 0.62)
 save("random_number_min_entropy.svg")
+plt.rcParams.update({"font.size": 11})
 
 
 # --- 図3: modulo bias ---

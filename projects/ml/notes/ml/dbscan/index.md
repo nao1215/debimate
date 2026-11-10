@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 29
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムです。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、不規則な形のクラスタや、クラスタに属さない点を検出できます。

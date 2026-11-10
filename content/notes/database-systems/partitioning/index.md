@@ -6,22 +6,18 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "partitioning"]
 weight: 13
 wrapTables: true
+topics: ["Partitioning"]
+crossTopics:
+  distributed-systems: ["Partitioning"]
 ---
 
 Partitioning（パーティショニング）は、あるカラムの値によって、1 つの論理的な表を複数の物理的な表に分けて保存する技術です。分ける基準にするカラムをパーティションキー、分けた先の 1 つ 1 つの表をパーティションと呼びます。アプリケーションは今まで通り親の表に SQL を発行し、DB（データベース）がキーの値からレコードの行き先や、読む先のパーティションを選びます。
 
 例えば、アクセスログの表を `created_at` の月ごとに分けると、以下のようになります。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","edgeLabelBackground":"#ffffff"}}}%%
-flowchart LR
-    I["INSERT<br/>created_at = 2026-03-14"] --> P["events（親表）<br/>レコードを持たない"]
-    P -->|"2026-01-01 以上<br/>2026-02-01 未満"| A["events_2026_01"]
-    P -->|"2026-02-01 以上<br/>2026-03-01 未満"| B["events_2026_02"]
-    P -->|"2026-03-01 以上<br/>2026-04-01 未満"| C["events_2026_03<br/>ここに入る"]
-```
+{{< figure src="images/partitioning_concept.svg" alt="親表 events は枠だけでレコードを持たず、1 月から 6 月までの月ごとのパーティションが並ぶ。3 月の条件の問い合わせは 3 月だけを読み、ほかの月は刈り込みで読まない。古い 1 月はパーティションごと DROP で消す" caption="月ごとにパーティションを分けた events 表" align="center" >}}
 
-上記の図の親表 `events` は、どのキーの値がどのパーティションに入るかという定義だけを持ちます。本記事のパーティションは、1 台の DB の中で表を分ける宣言的パーティショニングを指します。分散システムでは、データを複数台のサーバーに振り分ける sharding（シャーディング）の意味で同じ語を使うことがあり、振り分け方の一例は [Consistent Hashing](/notes/distributed-systems/consistent-hashing/) のノートにあります。
+上記の図の親表 `events` は、どのキーの値がどのパーティションに入るかという定義だけを持ちます。3 月の条件で絞る問い合わせは 3 月のパーティションだけを読み、古い月はパーティションごと捨てられます。本記事のパーティションは、1 台の DB の中で表を分ける宣言的パーティショニングを指します。分散システムでは、データを複数台のサーバーに振り分ける sharding（シャーディング）の意味で同じ語を使うことがあり、振り分け方の一例は [Consistent Hashing](/notes/distributed-systems/consistent-hashing/) のノートにあります。
 
 <br>
 
@@ -110,7 +106,11 @@ SET plan_cache_mode = force_generic_plan;
 EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
 ```
 
-以下が出力の抜粋です。Filter の行は省き、(2) は 4〜6 月も同じ形で続きます。
+出力から、3 つの文がそれぞれ読んだパーティションを月ごとに並べると以下のようになります。
+
+{{< figure src="images/partitioning_pruning.svg" alt="横に 1 月から 6 月のパーティション、縦に 3 つの書き方が並ぶ表の形の図。(1) 範囲で書いた条件は 3 月だけを青で読み、ほかは点線で読まない。(2) 関数で包んだ条件は 6 つ全てを読み、3 月以外の 5 つは黄土色で読んで全て捨てる。(3) generic plan は 3 月だけを読み、ほかは実行の開始時に外す" caption="同じ 3 月の条件でも、書き方で読むパーティションが変わる" align="center" >}}
+
+<details><summary>EXPLAIN の出力の抜粋（Filter の行は省き、(2) は 4〜6 月も同じ形で続きます）</summary>
 
 ```text
 == (1) 範囲で書いた条件
@@ -132,6 +132,8 @@ EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
          ->  Seq Scan on events_2026_03 events_1 (actual rows=44640 loops=1)
 ```
 
+</details>
+
 どれも結果は 44,640 件で同じです。しかし、(1) は `events_2026_03` だけを読み、(2) は 6 つ全てを読んで、3 月以外の約 21 万件を `Rows Removed by Filter` で捨てています。プランナが知っているのは「`created_at` が 3/1 以上 4/1 未満」というパーティションの範囲で、`date_trunc('month', created_at)` の値から `created_at` の範囲を逆算しません。そのため、どのパーティションも外せません。
 
 <br>
@@ -146,18 +148,15 @@ EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
 
 Hot Partition（ホットパーティション）は、書き込みや読み出しが 1 つのパーティションに集中する状態です。時刻の Range で分けた表では、新しいレコードは全て最新の月に入るので、この状態が自然に起きます。
 
-以下は、2026-11-10 の 1 日分（1 秒 1 件、86,400 件）の行き先を比べた結果です（[03_hot_partition.sql](lab/03_hot_partition.sql)）。同じレコードを月ごとの Range で分けた表と `id` の Hash で 3 つに分けた表の両方に入れ、パーティションごとの `INSERT` 件数と、刈り込みの効き方を比べました（出力の抜粋）。
+以下は、2026-11-10 の 1 日分（1 秒 1 件、86,400 件）の行き先を比べた結果です（[03_hot_partition.sql](lab/03_hot_partition.sql)）。同じレコードを月ごとの Range で分けた表と `id` の Hash で 3 つに分けた表の両方に入れ、パーティションごとの `INSERT` 件数と、刈り込みの効き方を比べました。
+
+{{< figure src="images/partitioning_hot.svg" alt="左は月ごとの Range で、11 月のパーティションに 86,400 件が入り、10 月と 12 月は 0 件。右は id の Hash で、余り 0・1・2 のパーティションに 29,032 件・28,937 件・28,431 件が入る" caption="1 日分の INSERT が、パーティションごとに入った件数" align="center" >}}
+
+Range は 11 月の 1 つに全件が入り、Hash は 3 つにほぼ均等に散りました。1 台の DB の中なら、1 つに集まる状態は表を分けない場合と同じで、分けたことで悪くなるわけではありません。問題になるのは、パーティションごとに別のディスク（tablespace）に置き、負荷を分けるつもりだった場合です。
+
+次は、Hash で分けた表を 2 通りの条件で読んだ実行計画です（[出力](lab/output.txt)の抜粋）。
 
 ```text
-== (1) パーティションごとに入った件数
-   partition   | inserted
----------------+----------
- logs_hash_0   |    29032
- logs_hash_1   |    28937
- logs_hash_2   |    28431
- logs_range_10 |        0
- logs_range_11 |    86400
- logs_range_12 |        0
 == (2) hash で分けた表を時刻の範囲で読む（Filter の行は省略）
  Aggregate
    ->  Append
@@ -169,9 +168,7 @@ Hot Partition（ホットパーティション）は、書き込みや読み出�
    Filter: (id = 42)
 ```
 
-Range は 11 月の 1 つに全件が入り、Hash は 3 つにほぼ均等に散りました。1 台の DB の中なら、1 つに集まる状態は表を分けない場合と同じで、分けたことで悪くなるわけではありません。問題になるのは、パーティションごとに別のディスク（tablespace）に置き、負荷を分けるつもりだった場合です。
-
-しかし、(2) の通り、Hash で散らすと時刻の範囲で絞る問い合わせが刈り込めません。Hash の値は時刻と無関係なので、9 時台のレコードはどのパーティションにもあり得ます。刈り込めるのは `id = 42` のように、キーの等値で探す場合です。つまり、書き込みを散らすことと、範囲で絞って読む範囲を減らすことは、1 つのキーでは両立しにくいのです。どちらを優先するかは、その表に来る問い合わせで決めます。
+(2) の通り、Hash で散らすと時刻の範囲で絞る問い合わせが刈り込めません。Hash の値は時刻と無関係なので、9 時台のレコードはどのパーティションにもあり得ます。刈り込めるのは `id = 42` のように、キーの等値で探す場合です。つまり、書き込みを散らすことと、範囲で絞って読む範囲を減らすことは、1 つのキーでは両立しにくいのです。どちらを優先するかは、その表に来る問い合わせで決めます。
 
 ---
 
@@ -179,7 +176,7 @@ Range は 11 月の 1 つに全件が入り、Hash は 3 つにほぼ均等に�
 
 パーティションを分けた表の索引には、2 つのタイプがあります。Local Index は、パーティションごとに別々の索引を持つタイプです。Global Index は、全てのパーティションにまたがる 1 つの索引を持つタイプです。
 
-![左は Local index。パーティションごとに索引があり、2026-10 のパーティションを DROP すると索引も一緒に消える。右は Global index。1 つの索引が全パーティションのレコードを指し、2026-10 を外すと、その月を指していた項目の保守が必要になる](images/local-global-index.svg)
+{{< figure src="images/local-global-index.svg" alt="左は Local index。パーティションごとに索引があり、2026-10 のパーティションを DROP すると索引も一緒に消える。右は Global index。1 つの索引が全パーティションのレコードを指し、2026-10 を外すと、その月を指していた項目の保守が必要になる" caption="Local Index と Global Index の違い" align="center" >}}
 
 PostgreSQL の索引は、左側の Local Index のタイプだけです。親表に `CREATE INDEX` や `PRIMARY KEY` を付けると、各パーティションに同じ定義の索引が作られます。パーティションを `DROP` すれば索引も消え、`DETACH` すれば索引は外した表に残ります。[B-Tree](/notes/database-systems/b-tree/) の索引は 1 つのパーティションの中のレコードしか知らないので、主キーや [UNIQUE 制約](/notes/database-systems/unique-constraint/) にはパーティションキーを含める必要があります。以下は、その制約を確かめた SQL と出力です（[04_unique.sql](lab/04_unique.sql)）。
 
@@ -294,6 +291,12 @@ ALTER TABLE metrics DETACH PARTITION metrics_2026_11 CONCURRENTLY;
 ```
 
 `CHECK` 制約の無い表は `verifying table` と出て 346 ミリ秒掛かり、ある表は既存の制約で証明できたので 6 ミリ秒で済みました。走査の間も繋ぐ表には `ACCESS EXCLUSIVE` ロックが掛かり、件数が増えるほど DDL は伸びます。
+
+以下は、この 2 つの `ATTACH` と、前に見た `DELETE` と `DROP TABLE` の時間を対数軸に並べた図です。
+
+{{< figure src="images/partitioning_times.svg" alt="対数軸の横棒グラフ。1 か月分の DELETE は 2,129 ms、パーティションの DROP は 29 ms。CHECK 制約の無い ATTACH は 346 ms、ある ATTACH は 6 ms" caption="レコード単位の操作とパーティション単位の操作の時間" align="center" >}}
+
+どちらの組も、レコードを 1 件ずつ扱う操作とパーティションの単位で済ませる操作で、約 70 倍と約 60 倍の差が出ています。
 
 DEFAULT パーティションには落とし穴があります。2027-02 のレコードが 1 件でも入っていると、2027-02 のパーティションは作れず、先にそのレコードを移す必要があります。
 

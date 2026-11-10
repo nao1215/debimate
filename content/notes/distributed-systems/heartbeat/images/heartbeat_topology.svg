@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>中央集約型と相互監視型で 1 周期に流れる信号の本数</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="240.0" y="52.0" font-size="28" text-anchor="middle">中央集約型</text>
+<line x1="240.0" y1="154.0" x2="240.0" y2="234.0" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="350.3" y1="234.2" x2="274.2" y2="258.9" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="308.2" y1="363.8" x2="261.2" y2="299.1" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="171.8" y1="363.8" x2="218.8" y2="299.1" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="129.7" y1="234.2" x2="205.8" y2="258.9" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<circle cx="240.0" cy="270.0" r="40" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="240.0" y="279.0" font-size="24" text-anchor="middle">監視</text>
+<circle cx="240.0" cy="120.0" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="382.7" cy="223.6" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="328.2" cy="391.4" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="151.8" cy="391.4" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="97.3" cy="223.6" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="240.0" y="500.0" font-size="26" text-anchor="middle" class="sub">1 周期に n = 5 本</text>
+<text x="720.0" y="52.0" font-size="28" text-anchor="middle">相互監視型</text>
+<line x1="747.5" y1="140.0" x2="833.5" y2="202.5" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="730.5" y1="152.3" x2="797.0" y2="357.1" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="709.5" y1="152.3" x2="643.0" y2="357.1" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="692.5" y1="140.0" x2="606.5" y2="202.5" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="852.2" y1="256.0" x2="819.3" y2="357.1" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="835.2" y1="243.6" x2="661.0" y2="370.2" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="828.7" y1="223.6" x2="613.3" y2="223.6" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="774.2" y1="391.4" x2="667.8" y2="391.4" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="780.7" y1="371.4" x2="606.5" y2="244.8" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<line x1="621.3" y1="359.0" x2="588.5" y2="257.9" stroke="#666666" stroke-width="2.5" marker-start="url(#a)" marker-end="url(#a)"/>
+<circle cx="720.0" cy="120.0" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="862.7" cy="223.6" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="808.2" cy="391.4" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="631.8" cy="391.4" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="577.3" cy="223.6" r="30" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="720.0" y="500.0" font-size="26" text-anchor="middle" class="sub">1 周期に n × (n−1) = 20 本</text>
+<line x1="480.0" y1="90.0" x2="480.0" y2="470.0" stroke="#f2f2f2" stroke-width="2"/>
+</svg>

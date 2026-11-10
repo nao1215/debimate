@@ -1,0 +1,6 @@
+code space=1,000,000  code lifetime=600 s
+setting                            1 min         1 h       1 day     30 days
+no limit (10 guesses/s)          0.0600%     3.5464%    57.9623%   100.0000%
+rate limit 5 guesses/min         0.0005%     0.0300%     0.7174%    19.4269%
+lockout after 100 failures       0.0100%     0.0100%     0.0100%     0.0100%
+lockout after 10 failures        0.0010%     0.0010%     0.0010%     0.0010%

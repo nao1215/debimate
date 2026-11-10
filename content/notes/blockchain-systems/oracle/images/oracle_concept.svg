@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>チェーンの境界の外の市場と報告者、内側の価格フィードとアプリ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-ochre" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="470" y="95" width="465" height="320" rx="16" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="702" y="140" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">チェーンの中</text>
+<rect x="25" y="95" width="420" height="320" rx="16" fill="#f8eed8" stroke="#d4a24c" stroke-width="3" stroke-dasharray="10 7"/>
+<text x="235" y="140" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">チェーンの外</text>
+<rect x="45" y="195" width="140" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="115" y="239" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">市場</text>
+<text x="115" y="273" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">取引所</text>
+<rect x="266" y="179" width="170" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="258" y="187" width="170" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<rect x="250" y="195" width="170" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="335" y="239" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">報告者</text>
+<text x="335" y="273" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">観測・署名</text>
+<text x="235" y="375" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ここは信頼する</text>
+<rect x="510" y="195" width="180" height="100" rx="10" fill="#ffffff" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="600" y="239" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">価格フィード</text>
+<text x="600" y="273" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">署名を検証</text>
+<rect x="745" y="195" width="165" height="100" rx="10" fill="#ffffff" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="827" y="239" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">アプリ</text>
+<text x="827" y="273" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">価格を使う</text>
+<text x="702" y="375" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">全ノードが同じ値で計算</text>
+<line x1="187" y1="245.0" x2="246" y2="245.0" stroke="#d4a24c" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-ochre)"/>
+<line x1="422" y1="245.0" x2="506" y2="245.0" stroke="#d4a24c" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-ochre)"/>
+<line x1="692" y1="245.0" x2="741" y2="245.0" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<text x="480" y="478" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">同じ値で計算しても、その値が市場と一致するとは限らない</text>
+</svg>

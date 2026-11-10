@@ -6,23 +6,14 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 1
 wrapTables: true
+topics: ["Introduction"]
 ---
 
-ブロックチェーンは、取引の履歴を参加者がそれぞれ複製して持ち、新しい取引をまとめた塊を順に繋いで追記していく仕組みです。Bitcoin は、この仕組みで送金の履歴を共有します。図にすると、以下のようになります。
+ブロックチェーンは、取引の履歴を参加者がそれぞれ複製して持ち、新しい取引をまとめた塊を順に繋いで追記していく仕組みです。Bitcoin は、この仕組みで送金の履歴を共有します。以下は、5 人の参加者がそれぞれ同じブロックの列を複製して持つ様子です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph PA["参加者 A が持つ複製"]
-        A1["ブロック 1<br/>取引の塊"] --> A2["ブロック 2<br/>取引の塊"] --> A3["ブロック 3<br/>新しい取引の塊"]
-    end
-    subgraph PB["参加者 B が持つ複製"]
-        B1["ブロック 1<br/>取引の塊"] --> B2["ブロック 2<br/>取引の塊"] --> B3["ブロック 3<br/>新しい取引の塊"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/blockchain-basics_concept.svg" alt="参加者 A から E が輪になって並び、それぞれ 3 個の四角を線で繋いだ同じ列を持っている。参加者 C の複製だけは真ん中の四角が赤い枠でずれ、後ろのブロックとの線が赤い破線になっている" caption="参加者ごとに同じブロックの列を複製して持つ" align="center" >}}
 
-上記の図の 1 つの箱がブロックで、矢印で繋がった列がチェーンです。
+上記の図の 1 つの四角がブロックで、線で繋がった列がチェーンです。右端の濃い四角が新しく追記したブロックです。C のように自分の複製だけを書き換えると、後ろのブロックとの繋がりが崩れ、他の参加者の複製とも食い違います。
 
 <br>
 

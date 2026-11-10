@@ -12,69 +12,12 @@ hidemeta: false
 disableShare: true
 ShowBreadCrumbs: true
 description: ""
+topics:
+  - name: "Storage Engine"
+  - name: "Query Processing"
+  - name: "Partitioning"
+  - name: "Data Modeling"
+  - name: "Transaction / Concurrency Control"
 ---
 
 データベースに関する技術ノートです。
-
----
-
-### コンテンツ一覧
-
-#### Index / Storage Engine
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [B-Tree - ページ単位の入出力に合わせた索引の木](/notes/database-systems/b-tree/) | 索引 / 探索木 |
-| 2 | [Index Scan - 索引から表のレコードへ届くまでに何が起きるか](/notes/database-systems/index-scan/) | 索引 / アクセス方法 |
-| 3 | [LSM-Tree - 上書きせずに追記する索引と compaction](/notes/database-systems/lsm-tree/) | ストレージエンジン |
-| 4 | [Columnar Storage - 列ごとに並べて、読まない列と塊を増やす](/notes/database-systems/columnar-storage/) | ストレージエンジン / 分析 |
-| 5 | [Partitioning - 1 つの表をキーで複数の表に分ける](/notes/database-systems/partitioning/) | 物理設計 / パーティション |
-
-#### Durability / Storage
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [WAL - 書き込み先行ログと 2 つのウォーターマーク](/notes/distributed-systems/write-ahead-log/) | 耐久性 |
-
-#### Data Modeling
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Soft Delete - 削除フラグを最初の選択肢にしない](/notes/database-systems/soft-delete/) | データモデリング |
-| 2 | [NULL - 値が無い事の表し方と、三値論理が及ぼす影響](/notes/database-systems/sql-null/) | データモデリング / SQL |
-| 3 | [Foreign Key - 参照先の存在を DB に保証させる](/notes/database-systems/foreign-key/) | データモデリング / 制約 |
-| 4 | [UNIQUE Constraint - 重複を最後に止める場所を決める](/notes/database-systems/unique-constraint/) | データモデリング / 制約 |
-
-#### Query Processing
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Query Processing - SQL から実行計画を作り、動かすまで](/notes/database-systems/query-processing/) | 問い合わせ処理 |
-| 2 | [Query Plan Cache - 実行計画を作り直さずに使い回す](/notes/database-systems/query-plan-cache/) | 問い合わせ処理 / 実行計画 |
-| 3 | [Materialized View - 問い合わせの結果を表として保存する](/notes/database-systems/materialized-view/) | 問い合わせ処理 / 事前計算 |
-
-#### Transaction / Concurrency Control
-
-| No. | 項目 | カテゴリ |
-| --- | --- | --- |
-| 1 | [Transaction Isolation - 同時実行で現れる異常と分離レベル](/notes/database-systems/transaction-isolation/) | トランザクション / 同時実行制御 |
-| 2 | [Snapshot Isolation - 固定したスナップショットで読み、書き込みの重なりを止める](/notes/database-systems/snapshot-isolation/) | トランザクション / 同時実行制御 |
-| 3 | [Transaction Scope - トランザクションに何を入れるか](/notes/database-systems/transaction-scope/) | トランザクション / ロック |
-| 4 | [Deadlock - 更新順序が逆になると何が起きるか](/notes/database-systems/deadlock/) | トランザクション / ロック |
-
----
-
-### 参考文献（手元にある書籍）
-
-- [SQL 第2版 ゼロからはじめるデータベース操作](https://www.shoeisha.co.jp/book/detail/9784798144450)
-- [失敗から学ぶRDBの正しい歩き方](https://gihyo.jp/book/2019/978-4-297-10408-5)
-- [達人に学ぶDB設計 徹底指南書 初級者で終わりたくないあなたへ](https://www.shoeisha.co.jp/book/detail/9784798124704)
-- [達人に学ぶSQL徹底指南書 第2版 初級者で終わりたくないあなたへ](https://www.shoeisha.co.jp/book/detail/9784798157825)
-- [初めてのSQL 第3版](https://www.oreilly.co.jp/books/9784873119588/)
-- [SQLの苦手を克服する本 データの操作がイメージできれば誰でもできる](https://gihyo.jp/book/2019/978-4-297-10717-8)
-- [［改訂3版］内部構造から学ぶPostgreSQL―設計・運用計画の鉄則](https://gihyo.jp/book/2022/978-4-297-13206-4)
-- [Effective SQL](https://www.shoeisha.co.jp/book/detail/9784798153995)
-- [Database Design and Implementation](https://link.springer.com/book/10.1007/978-3-030-33836-7)
-- [詳説 データベース ―ストレージエンジンと分散データシステムの仕組み](https://www.oreilly.co.jp/books/9784873119540/)
-- [データ指向アプリケーションデザイン―信頼性、拡張性、保守性の高い分散システム設計の原理](https://www.oreilly.co.jp/books/9784873118703/)
-- [SQLアンチパターン](https://www.oreilly.co.jp/books/9784873115894/)

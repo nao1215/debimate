@@ -1,0 +1,6 @@
+users=100000 requests_per_user_per_stage=10
+stage  hash_exposed  hash_mixed  keeps_previous  random_exposed  random_mixed
+   1%           985           0            True            9518          9518
+   5%          4938           0            True           40194         40194
+  25%         24913           0            True           94370         94370
+ 100%        100000           0            True          100000             0

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>Push・Pull・Credit-based で、送る量を決める側と、溢れた分が待つ場所</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="20" y="94" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Push</text>
+<text x="20" y="126" font-size="22" font-weight="normal" text-anchor="start" style="fill:#666666">Producer decides</text>
+<rect x="310" y="66" width="140" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="380" y="108" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Producer</text>
+<rect x="770" y="66" width="150" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="845" y="108" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Consumer</text>
+<line x1="454" y1="78" x2="690" y2="78" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<line x1="454" y1="100" x2="690" y2="100" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<line x1="454" y1="122" x2="690" y2="122" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="700" y="144" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="700" y="122" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="700" y="100" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="700" y="78" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="700" y="56" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="700" y="34" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<text x="572" y="162" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">data as fast as made</text>
+<text x="20" y="269" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Pull</text>
+<text x="20" y="301" font-size="22" font-weight="normal" text-anchor="start" style="fill:#666666">Consumer fetches</text>
+<rect x="310" y="241" width="140" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="380" y="283" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Producer</text>
+<rect x="770" y="241" width="150" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="845" y="283" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Consumer</text>
+<line x1="766" y1="257" x2="456" y2="257" stroke="#7aa6c2" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 6" marker-end="url(#arrow-accent)"/>
+<text x="610" y="245" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">fetch</text>
+<line x1="454" y1="293" x2="762" y2="293" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<text x="610" y="325" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">only what was fetched</text>
+<text x="20" y="444" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Credit-based</text>
+<text x="20" y="476" font-size="22" font-weight="normal" text-anchor="start" style="fill:#666666">Consumer grants n</text>
+<rect x="310" y="416" width="140" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="380" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Producer</text>
+<rect x="770" y="416" width="150" height="68" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="845" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Consumer</text>
+<line x1="766" y1="432" x2="456" y2="432" stroke="#7aa6c2" stroke-width="3" stroke-linecap="round" stroke-dasharray="10 6" marker-end="url(#arrow-accent)"/>
+<text x="610" y="420" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">request(n)</text>
+<line x1="454" y1="468" x2="762" y2="468" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<text x="610" y="500" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#666666">at most n items</text>
+<rect x="238" y="472" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="238" y="450" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="238" y="428" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+<rect x="238" y="406" width="56" height="18" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="1.5"/>
+</svg>

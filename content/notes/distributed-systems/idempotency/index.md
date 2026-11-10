@@ -5,26 +5,18 @@ draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "reliability"]
 weight: 7
+topics: ["Reliability"]
 ---
 
 冪等（べきとう、idempotent）は、同じ操作を 1 回実行した時と、繰り返し実行した時とで、要求した側が意図した結果が同じになる性質です。
 
 決済 API に課金の POST を送り、504 Gateway Timeout が返ってきたとします。課金が成立したのか、要求が届かないまま終わったのかは、この応答からは分かりません。この POST が冪等なら、もう一度送っても課金は 1 回分に留まります。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as クライアント
-    participant A as 決済 API
-    participant D as DB
-    C->>A: POST /charges
-    A->>D: 1,000 円の課金を記録
-    D-->>A: 記録できた
-    A--xC: 応答がネットワークで失われる
-    Note over C,A: クライアントから見ると<br/>届かなかった場合と<br/>区別が付かない
-```
+以下は、要求が届かなかった場合と、課金を記録した後で応答だけが失われた場合を並べた図です。
 
-応答が途絶えても相手の状態は分からない構図は、[Heartbeat](../heartbeat/) が扱う「遅いノードと落ちたノードを見分けられない」問題と同じです。
+{{< figure src="images/idempotency_concept.svg" alt="左のクライアントには、要求が届かなかった場合も応答だけが失われた場合も同じ 504 が返る。右の決済 API では、前者は課金なし、後者は課金が 1 件残っている" caption="クライアントから見分けられない 2 つの失敗と、サーバーに残る結果" align="center" >}}
+
+クライアントに見える範囲だけでは、2 つの場合を区別できません。応答が途絶えても相手の状態は分からない構図は、[Heartbeat](../heartbeat/) が扱う「遅いノードと落ちたノードを見分けられない」問題と同じです。
 
 <br>
 
@@ -101,7 +93,9 @@ flowchart TB
 
 HTTP のメソッドにも同じ区別が入っています。例えば PUT は、要求の本文が表す状態で、指定した URL のリソースを作成または置き換えるよう求めるメソッドです。同じ本文で何度送っても、意図している状態は最後の 1 通と変わりません。
 
-HTTP の意味論を定める RFC 9110 は、PUT・DELETE と safe なメソッド（GET、HEAD、OPTIONS、TRACE。クライアントが状態変更を要求しない操作）を冪等なメソッドとして挙げています。定義は、「[the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request](https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods)」（同じ要求を複数回送った時にサーバー上で意図される結果が、1 回送った時と同じ）です。
+HTTP の意味論を定める RFC 9110 は、PUT・DELETE と safe なメソッド（GET、HEAD、OPTIONS、TRACE。クライアントが状態変更を要求しない操作）を冪等なメソッドとして挙げています。
+
+定義は、「[the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request](https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods)」（同じ要求を複数回送った時にサーバー上で意図される結果が、1 回送った時と同じ）です。
 
 揃うのは意図された結果だけなので、要求ごとにログを残すといった副作用は、回数に応じて増えても構いません。応答の中身も揃いません。つまり DELETE の 2 回目が 404 を返しても、削除済みという意図された結果は同じなので、冪等性の定義を満たします。
 
@@ -161,7 +155,9 @@ ON CONFLICT (key) DO NOTHING
 RETURNING id;
 ```
 
-`fingerprint` は要求本文のハッシュで、同じキーが別の本文で使われたことを見分けるために残します（後述）。業務処理の確定と同時に `status` を完了に書き換え、`response` に応答を保存します。処理中と完了を `status` で分けることも、保持期間を 24 時間にすることも、このコードが選んだ設計で、仕様が定めた形ではありません。受信済みのイベント ID を一意制約付きで記録する形も同じ作りで、[Domain Event](../../software-architecture/domain-event/) で扱っています。
+`fingerprint` は要求本文のハッシュで、同じキーが別の本文で使われたことを見分けるために残します（後述）。業務処理の確定と同時に `status` を完了に書き換え、`response` に応答を保存します。
+
+処理中と完了を `status` で分けることも、保持期間を 24 時間にすることも、このコードが選んだ設計で、仕様が定めた形ではありません。受信済みのイベント ID を一意制約付きで記録する形も同じ作りで、[Domain Event](../../software-architecture/domain-event/) で扱っています。
 
 <br>
 

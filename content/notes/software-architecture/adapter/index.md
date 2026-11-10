@@ -6,33 +6,18 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 7
 wrapTables: true
+topics: ["Container Patterns"]
 ---
 
 Adapter とは、アプリケーションと同じ実行単位に置かれ、外から見える出力とインターフェースを統一する補助コンテナです。アプリケーションのコードには手を入れず、外から見た形だけを揃えます。手を入れられないミドルウェアと自作のサービスが混ざった環境で、監視やログを 1 か所に揃えたい時に使います。
 
 実行単位とは、同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まりで、Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の [Task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html) が当たります（[Sidecar](../sidecar/) のノートと同じ意味です）。同じ実行単位のコンテナはネットワークを共有する設定にできるため、隣のコンテナに localhost で届きます。
 
-以下は、複数のアプリケーションのメトリクスを監視基盤に集める例です。
+以下は、複数のアプリケーションのメトリクスを監視基盤に集める例で、出力の形式の違いを図形の違いで描いた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph U1["実行単位 1"]
-        A1["アプリ A<br/>JMX"] --> D1["adapter"]
-    end
-    subgraph U2["実行単位 2"]
-        A2["アプリ B<br/>StatsD"] --> D2["adapter"]
-    end
-    subgraph U3["実行単位 3"]
-        A3["アプリ C<br/>独自の形式"] --> D3["adapter"]
-    end
-    D1 --> M["監視基盤"]
-    D2 --> M
-    D3 --> M
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/adapter_concept.svg" alt="3 つの実行単位で、アプリ A（JMX）は丸、アプリ B（StatsD）は三角、アプリ C（独自の形式）は四角の出力を出す。どれも実行単位の縁の adapter を通ると同じひし形になり、監視基盤には 1 つの形式だけが届く" caption="形式の違う 3 つのアプリと、形式を揃える adapter" align="center" >}}
 
-上記の図の監視基盤が知っているのは 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。
+上記の図の監視基盤が知っているのは、ひし形で描いた 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。
 
 [JMX](https://docs.oracle.com/javase/8/docs/technotes/guides/jmx/)（Java Management Extensions）は Java の管理と監視のための仕様で、アプリケーションが登録した情報を外から読み書きする窓口です。[StatsD](https://github.com/statsd/statsd) は、メトリクスを短いテキスト 1 行で送るプロトコルと、それを受けて集約するデーモンを指します。どちらも監視基盤が直接読める形とは限りません。
 
@@ -163,7 +148,9 @@ Adapter は、アプリケーションを改変しない代わりに、外向き
 
 3 番目は、アプリケーションと adapter を別々に更新する構成の弱点です。[postgres_exporter](https://github.com/prometheus-community/postgres_exporter) は、DB（データベース）の [PostgreSQL](https://www.postgresql.org/) の統計を Prometheus の形式に変換する exporter で、DB と同じ実行単位に置けば adapter になります。
 
-この exporter は、PostgreSQL 17（報告時はベータ）に上げた環境で、bgwriter の統計（checkpoint の回数など）を[まとめて取れなくなりました](https://github.com/prometheus-community/postgres_exporter/issues/1060)。PostgreSQL 17 が checkpoint（メモリ上の変更をディスクに書き出す処理）のカラムを `pg_stat_bgwriter` から新しい `pg_stat_checkpointer` に[移し](https://www.postgresql.org/docs/17/release-17.html)、exporter の問い合わせが消えたカラムを読みに行ったからです。
+この exporter は、PostgreSQL 17（報告時はベータ）に上げた環境で、bgwriter の統計（checkpoint の回数など）を[まとめて取れなくなりました](https://github.com/prometheus-community/postgres_exporter/issues/1060)。
+
+PostgreSQL 17 が checkpoint（メモリ上の変更をディスクに書き出す処理）のカラムを `pg_stat_bgwriter` から新しい `pg_stat_checkpointer` に[移し](https://www.postgresql.org/docs/17/release-17.html)、exporter の問い合わせが消えたカラムを読みに行ったからです。
 
 [修正](https://github.com/prometheus-community/postgres_exporter/pull/1072)が取り込まれたのは報告から 4 か月半後の 2025 年 1 月で、リリースは 2 月の v0.17.0 でした。以下は、PostgreSQL 17 と修正前の v0.15.0 を [Docker](https://docs.docker.com/) で動かし、exporter が返すメトリクスとログを確かめる手順です。
 

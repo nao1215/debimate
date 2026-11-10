@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics", "probability"]
 weight: 13
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 検査の「病気の人が陽性になる確率」と「陽性の人が病気である確率」は異なります。ベイズの定理（Bayes' theorem）は、このように条件を入れ替えたり、観測したデータに基づいて、各仮説が正しいと考える確率を更新したりする規則です。

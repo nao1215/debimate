@@ -6,27 +6,22 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 10
 wrapTables: true
+topics: ["CQRS / Event Sourcing"]
 ---
 
-CQRS（Command Query Responsibility Segregation、コマンドとクエリの責務分離）とは、情報の更新に使うモデルと、読み取りに使うモデルを分けられるという考え方です。ここでのモデルは、要求を受けて処理するコードの型と、それが前提にするデータの形の組で、保存先とは別の概念です。Martin Fowler 氏の [CQRS](https://martinfowler.com/bliki/CQRS.html) は、Greg Young 氏から知ったパターンとしてこの考え方を紹介しています。
+CQRS（Command Query Responsibility Segregation、コマンドとクエリの責務分離）とは、情報の更新に使うモデルと、読み取りに使うモデルを分けられるという考え方です。ここでのモデルは、要求を受けて処理するコードの型と、それが前提にするデータの形の組で、保存先とは別の概念です。
 
-名前にあるコマンドとクエリのうち、コマンドは状態変更の要求で、`order.Cancel(...)` のようなメソッド呼び出しや、要求を表すオブジェクトで表します。クエリは「今日確定した注文の一覧が欲しい」のような読み取りの要求です。
+Martin Fowler 氏の [CQRS](https://martinfowler.com/bliki/CQRS.html) は、Greg Young 氏から知ったパターンとしてこの考え方を紹介しています。名前にあるコマンドとクエリのうち、コマンドは状態変更の要求で、`order.Cancel(...)` のようなメソッド呼び出しや、要求を表すオブジェクトで表します。クエリは「今日確定した注文の一覧が欲しい」のような読み取りの要求です。
 
-更新と読み取りで必要なデータの形が大きく違う場合に、CQRS を使います。例えば EC サイトの注文では、確定やキャンセルは「確定前の注文はキャンセルできない」のような業務規則を守る更新で、明細まで含めた `Order` [集約](../value-object-entity-aggregate/)（業務規則を守るために一緒に読み書きするオブジェクトのまとまり）が担います。同じシステムの管理画面に出すのは「今日確定した注文の一覧」や「注文者ごとの購入金額の合計」で、集約の形とは噛み合わない検索です。以降の例では、[Repository](../repository/) や [Event Sourcing](../event-sourcing/) のノートと同じ注文を使います。
+更新と読み取りで必要なデータの形が大きく違う場合に、CQRS を使います。例えば EC サイトの注文では、確定やキャンセルは「確定前の注文はキャンセルできない」のような業務規則を守る更新で、明細まで含めた `Order` [集約](../value-object-entity-aggregate/)（業務規則を守るために一緒に読み書きするオブジェクトのまとまり）が担います。
 
-2 つのモデルに分けた構成を以下に示します。
+同じシステムの管理画面に出すのは「今日確定した注文の一覧」や「注文者ごとの購入金額の合計」で、集約の形とは噛み合わない検索です。以降の例では、[Repository](../repository/) や [Event Sourcing](../event-sourcing/) のノートと同じ注文を使います。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    UI["画面"] -- "コマンド<br/>（キャンセルせよ）" --> C["更新モデル<br/>（Order 集約）"]
-    UI -- "クエリ<br/>（今日の一覧）" --> Q["読み取りモデル<br/>（一覧・集計の形）"]
-    C -- 書き込み --> DB[("DB")]
-    Q -- 読み出し --> DB
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+以下は、同じ注文を 2 つのモデルで持った時の形の違いです。
 
-上記の図で見てほしいのは、要求の種類で通るモデルが分かれる点です。更新モデルは業務規則の検査に専念し、読み取りモデルは画面や集計に合わせた形を取れます。図の DB は共有しても分けても構いません。
+{{< figure src="images/cqrs_concept.svg" alt="左の更新モデルでは、注文ごとの Order 集約が明細と状態を子に持つ木の形で、それぞれ業務規則を検査する青い破線の枠に収まっている。右の読み取りモデルは、番号・合計・状態の 3 列だけを持つ平らな一覧で、集約 1 つが 1 行に対応し、明細は現れない" caption="同じ注文を更新モデルと読み取りモデルで持った形" align="center" >}}
+
+上記の図で見てほしいのは、要求の種類で通るモデルとその形が分かれる点です。更新モデルは明細まで持つ集約で業務規則の検査に専念し、読み取りモデルは画面や集計に合わせた平らな形を取れます。保存先の DB は共有しても分けても構いません。
 
 <br>
 
@@ -59,7 +54,9 @@ CQRS では更新用と読み取り用のモデルを分け、それぞれに必
 
 <br>
 
-コマンドとクエリという語は、Bertrand Meyer 氏の書籍『Object-Oriented Software Construction』にある [Command Query Separation](https://martinfowler.com/bliki/CommandQuerySeparation.html)（CQS）から借りています。CQS は、状態を変えて値を返さないコマンドと、結果を返して観測可能な状態を変えないクエリにメソッドを分ける規律で、1 つのモデルの中でも守れます。CQRS は同じ語を使いながら、分ける単位をメソッドからモデルに移しています。
+コマンドとクエリという語は、Bertrand Meyer 氏の書籍『Object-Oriented Software Construction』にある [Command Query Separation](https://martinfowler.com/bliki/CommandQuerySeparation.html)（CQS）から借りています。CQS は、状態を変えて値を返さないコマンドと、結果を返して観測可能な状態を変えないクエリにメソッドを分ける規律で、1 つのモデルの中でも守れます。
+
+CQRS は同じ語を使いながら、分ける単位をメソッドからモデルに移しています。
 
 ---
 
@@ -118,7 +115,9 @@ type OrderQueryService interface {
 }
 ```
 
-`OrderSummary` は `Order` 集約と違ってメソッドを持たず、この型を通じて注文の状態を変える手段は用意していません。一覧で得た注文の ID をキャンセルのコマンドに渡すように、読み取りの結果から更新の入力を作ることは問題ありません。避けたいのは、読み取り用のデータを直接 DB に書き戻す使い方です。集約の業務規則を通らずに書き換わってしまうため、状態を変える時は必ずコマンドとして更新モデルに送る、という規律で防ぎます。
+`OrderSummary` は `Order` 集約と違ってメソッドを持たず、この型を通じて注文の状態を変える手段は用意していません。一覧で得た注文の ID をキャンセルのコマンドに渡すように、読み取りの結果から更新の入力を作ることは問題ありません。
+
+避けたいのは、読み取り用のデータを直接 DB に書き戻す使い方です。集約の業務規則を通らずに書き換わってしまうため、状態を変える時は必ずコマンドとして更新モデルに送る、という規律で防ぎます。
 
 窓口のメソッドは画面の数だけ増やせます。一覧には一覧用の、集計には集計用の形を返すので、1 つの型に全画面の都合を詰め込まずに済みます。画面が消えたら、対応するメソッドとデータを消すだけで済みます。
 
@@ -128,9 +127,11 @@ type OrderQueryService interface {
 
 モデルを分けることと、保存先を分けることは別の判断です。
 
-冒頭の図のように保存先を共有する構成では、読み取りモデルは更新モデルが書いたテーブルを SELECT やビュー（SELECT の結果をテーブルのように見せる DB の機能）で読みます。反映の仕組みが要らず、コミットした後の値を同じ書き込み先から直接読むので、反映の遅れもありません。
+保存先を共有する構成では、読み取りモデルは更新モデルが書いたテーブルを SELECT やビュー（SELECT の結果をテーブルのように見せる DB の機能）で読みます。反映の仕組みが要らず、コミットした後の値を同じ書き込み先から直接読むので、反映の遅れもありません。
 
-結果を実体として保存しない通常のビューは、問い合わせのたびに正規化されたテーブルの結合と集計を計算し直します。その負荷は更新と同じ DB に載るため、読み取りが増えるほど更新と資源を取り合います。支えきれなくなったら、保存先を分けます。読み取り用の DB に一覧や集計の結果をあらかじめ表の形で持たせれば、問い合わせのたびの結合と集計が要らず、負荷も更新側と分かれます。以下は、保存先を分けた構成です。
+結果を実体として保存しない通常のビューは、問い合わせのたびに正規化されたテーブルの結合と集計を計算し直します。その負荷は更新と同じ DB に載るため、読み取りが増えるほど更新と資源を取り合います。
+
+支えきれなくなったら、保存先を分けます。読み取り用の DB に一覧や集計の結果をあらかじめ表の形で持たせれば、問い合わせのたびの結合と集計が要らず、負荷も更新側と分かれます。以下は、保存先を分けた構成です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -147,13 +148,21 @@ Fowler 氏は、別々のモデルを持つこと自体が「モデルをどれ�
 
 更新モデルの節で見た「キャンセル後の画面はクエリで取り直す」形も、この影響を受けます。分けた構成では反映前の古い値が返り得るので、受け付け済みと表示して反映を待つなど、遅れを許す画面設計が必要です。形を変えずに写すだけの複製でも、保存先を分ければ同じ遅れが出ます。
 
-Wikipedia を動かす MediaWiki は、書き込みを primary（書き込みを受け付ける DB）に送り、読み取りの大半を primary の複製から返します。複製は少し遅れるため、編集した本人の投稿履歴に、保存したはずの編集がすぐには出ないことがあります。そこで [ChronologyProtector](https://doc.wikimedia.org/mediawiki-core/master/php/classWikimedia_1_1Rdbms_1_1ChronologyProtector.html) は、書き込んだ要求の終わりに primary がどこまで書いたかを記録し、約 10 秒以内に同じユーザーから来た要求では、複製がそこに追い付くまで最大で数秒待ちます。遅れた複製しか無い時は待つのを打ち切り、古い値を返します。
+Wikipedia を動かす MediaWiki は、書き込みを primary（書き込みを受け付ける DB）に送り、読み取りの大半を primary の複製から返します。複製は少し遅れるため、編集した本人の投稿履歴に、保存したはずの編集がすぐには出ないことがあります。
+
+そこで [ChronologyProtector](https://doc.wikimedia.org/mediawiki-core/master/php/classWikimedia_1_1Rdbms_1_1ChronologyProtector.html) は、書き込んだ要求の終わりに primary がどこまで書いたかを記録し、約 10 秒以内に同じユーザーから来た要求では、複製がそこに追い付くまで最大で数秒待ちます。以下は、その待ち方を時間軸に並べた図です。
+
+{{< figure src="images/cqrs_chronology.svg" alt="primary・複製・ユーザーの 3 本の時間軸。① 編集を保存すると primary に書き、書いた位置 P を記録する。複製は黄土色の帯の間 P まで遅れている。② 履歴を開く要求は黄土色の破線の間待ち、複製が P に追い付いてから読むので新しい編集が出る。上に「同じユーザーの約 10 秒以内の要求だけが待つ」、下に「数秒で追い付かなければ打ち切り、古い値を返す」" caption="MediaWiki の ChronologyProtector の待ち方" align="center" >}}
+
+上記の図の②は、複製が追い付いてから読むので、保存した編集が履歴に出ます。遅れた複製しか無い時は待つのを打ち切り、古い値を返します。
 
 <br>
 
 反映の実装には、DB の複製機能や CDC（Change Data Capture、DB の変更を捕捉して外部に流す仕組み）で変更を転送する形と、[Domain Event](../domain-event/) を配送して受け取った側が読み取り用のデータを更新し続ける形があります。イベントの配送を取りこぼさない仕組みは、[Transactional Outbox](../../distributed-systems/transactional-outbox/) のノートで扱っています。
 
-更新モデルの保存先に Event Sourcing のイベントストアを選ぶと、読み取り用のデータはイベントを順に読んで作り続けるものになります。この反映を投影と呼び、Event Sourcing のノートで扱っています。CQRS はイベントを保存しなくても成立します。逆に、現在の状態を保存せずイベントだけを記録する構成では、複数の集約を横断する検索に答えるために読み取りモデルが必要になります。Greg Young 氏の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) は、この点を CQRS と組み合わせる理由に挙げています。
+更新モデルの保存先に Event Sourcing のイベントストアを選ぶと、読み取り用のデータはイベントを順に読んで作り続けるものになります。この反映を投影と呼び、Event Sourcing のノートで扱っています。
+
+CQRS はイベントを保存しなくても成立します。逆に、現在の状態を保存せずイベントだけを記録する構成では、複数の集約を横断する検索に答えるために読み取りモデルが必要になります。Greg Young 氏の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) は、この点を CQRS と組み合わせる理由に挙げています。
 
 ---
 

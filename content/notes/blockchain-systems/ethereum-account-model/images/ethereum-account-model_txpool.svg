@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>nonce 2・0・1 の順に送った取引が txpool とブロックに入る様子</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="20" y="129" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">アカウントの nonce</text>
+<text x="20" y="239" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">queued（待ち）</text>
+<text x="20" y="379" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">ブロック</text>
+<rect x="200" y="180" width="559" height="100" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="200" y="320" width="559" height="100" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="302.5" y="52" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">2 を送信</text>
+<text x="302.5" y="129" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">0</text>
+<rect x="270.5" y="200" width="64" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="302.5" y="239" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="487.5" y="52" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">0 を送信</text>
+<text x="487.5" y="129" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">1</text>
+<rect x="455.5" y="200" width="64" height="60" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="487.5" y="239" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<rect x="455.5" y="340" width="64" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="487.5" y="379" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">0</text>
+<line x1="395" y1="40" x2="395" y2="420" stroke="#d6d6d6" stroke-width="2" stroke-linecap="round"/>
+<text x="672.5" y="52" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">1 を送信</text>
+<text x="672.5" y="129" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<rect x="602.5" y="340" width="64" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="634.5" y="379" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">1</text>
+<rect x="678.5" y="340" width="64" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="710.5" y="379" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<line x1="580" y1="40" x2="580" y2="420" stroke="#d6d6d6" stroke-width="2" stroke-linecap="round"/>
+<text x="857.5" y="52" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">0 を再送</text>
+<text x="857.5" y="129" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<rect x="825.5" y="270" width="64" height="60" rx="8" fill="#ffffff" stroke="#e15759" stroke-width="2.5"/>
+<text x="857.5" y="309" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">0</text>
+<line x1="901.5" y1="278" x2="933.5" y2="310" stroke="#e15759" stroke-width="4" stroke-linecap="round"/>
+<line x1="933.5" y1="278" x2="901.5" y2="310" stroke="#e15759" stroke-width="4" stroke-linecap="round"/>
+<text x="857.5" y="370" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">拒否</text>
+<line x1="765" y1="40" x2="765" y2="420" stroke="#d6d6d6" stroke-width="2" stroke-linecap="round"/>
+<text x="480" y="480" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">1 が届くと、待っていた 2 も続けてブロックに入る</text>
+<text x="480" y="516" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">再送した 0 は nonce too low（次の番号は 3）</text>
+</svg>

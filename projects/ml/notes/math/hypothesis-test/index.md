@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 22
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 仮説検定（hypothesis testing）は、「差が無い」という主張（帰無仮説）が正しいと仮定した時に、観測したデータがどれくらい珍しいかを確率で測り、その主張を退けるかを決める手続きです。p 値はその珍しさを表す確率、信頼区間（confidence interval）は推定値の不確かさを幅で表したものです。

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>ID Token と access token の宛先</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrowA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrowS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrowO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="20" y="40" width="170" height="250" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="3"/>
+<text x="105" y="155" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">authorization</text>
+<text x="105" y="187" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">server</text>
+<rect x="290" y="40" width="330" height="250" rx="14" fill="#ffffff" stroke="#7aa6c2" stroke-width="3" stroke-dasharray="10 7"/>
+<text x="455" y="80" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">client（クイズアプリ）</text>
+<rect x="720" y="40" width="220" height="250" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="830" y="155" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">resource</text>
+<text x="830" y="187" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">server</text>
+<text x="400" y="138" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ID Token</text>
+<line x1="190" y1="160" x2="520" y2="160" stroke="#7aa6c2" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowA)"/>
+<line x1="532" y1="136" x2="532" y2="184" stroke="#7aa6c2" stroke-width="6" stroke-linecap="round"/>
+<text x="400" y="238" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">access token</text>
+<line x1="190" y1="260" x2="712" y2="260" stroke="#d4a24c" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowO)"/>
+<text x="20" y="345" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">クイズアプリが写真アプリに持ち込むと</text>
+<rect x="590" y="370" width="350" height="150" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="3"/>
+<text x="765" y="404" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">写真アプリ</text>
+<text x="310" y="450" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">access token</text>
+<line x1="325" y1="442" x2="700" y2="442" stroke="#d4a24c" stroke-width="6" stroke-linecap="round" marker-end="url(#arrowO)"/>
+<text x="820" y="450" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#e15759">ログイン成功</text>
+<text x="310" y="502" font-size="24" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">ID Token</text>
+<line x1="325" y1="494" x2="560" y2="494" stroke="#7aa6c2" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 8" marker-end="url(#arrowA)"/>
+<line x1="574" y1="480" x2="602" y2="508" stroke="#666666" stroke-width="6" stroke-linecap="round"/>
+<line x1="574" y1="508" x2="602" y2="480" stroke="#666666" stroke-width="6" stroke-linecap="round"/>
+<text x="780" y="502" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">aud で拒否</text>
+</svg>

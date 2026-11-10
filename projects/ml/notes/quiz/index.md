@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート"]
 tags: ["machine-learning", "quiz"]
 weight: 100
+hiddenInHomeList: true
 ---
 
 機械学習の学習ノートで扱った判断軸を自分でも試せる形式にまとめたクイズ集です。問題文と選択肢が先に表示され、解答は折りたたみで隠してあります。`解答を見る` をクリックすると正解と解説が現れる仕組みです。

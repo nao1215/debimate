@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>注文 A の応答待ちの間、注文 B がロック待ちで止まる時間</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="132" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">注文 A</text>
+<rect x="180" y="92" width="625" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="492.5" y="133" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">決済の応答待ち（5 秒）</text>
+<text x="180" y="78" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">UPDATE</text>
+<text x="805" y="78" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">COMMIT</text>
+<rect x="180" y="166" width="625" height="16" rx="4" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<text x="819" y="182" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">行ロック</text>
+<text x="40" y="322" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">注文 B</text>
+<rect x="305" y="282" width="500" height="64" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="555" y="323" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ロック待ち 4,006 ms</text>
+<text x="305" y="268" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">UPDATE</text>
+<circle cx="805" cy="314" r="9" fill="#1f1f1f"/>
+<text x="823" y="322" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">更新が進む</text>
+<line x1="555" y1="200" x2="555" y2="262" stroke="#666666" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 6"/>
+<rect x="325" y="372" width="460" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="555" y="402" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">3 秒後: A は idle in transaction</text>
+<text x="555" y="436" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">B は Lock で待つ</text>
+<line x1="555" y1="356" x2="555" y2="370" stroke="#666666" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 6"/>
+<line x1="180" y1="486" x2="930" y2="486" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<line x1="180" y1="480" x2="180" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="180" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">0 秒</text>
+<line x1="305" y1="480" x2="305" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="305" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">1 秒</text>
+<line x1="430" y1="480" x2="430" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="430" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">2 秒</text>
+<line x1="555" y1="480" x2="555" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="555" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">3 秒</text>
+<line x1="680" y1="480" x2="680" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="680" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">4 秒</text>
+<line x1="805" y1="480" x2="805" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="805" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">5 秒</text>
+<line x1="930" y1="480" x2="930" y2="492" stroke="#666666" stroke-width="2" stroke-linecap="round"/>
+<text x="930" y="522" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">6 秒</text>
+</svg>

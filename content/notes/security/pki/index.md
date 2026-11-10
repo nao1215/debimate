@@ -6,21 +6,20 @@ series: ["技術ノート", "Security"]
 tags: ["security", "pki", "x.509", "tls"]
 weight: 10
 wrapTables: true
+topics: ["Authentication / Identity"]
 ---
 
-PKI（Public Key Infrastructure、公開鍵基盤）は、公開鍵と名前や組織の結び付きを証明書と信頼の連鎖で検証する仕組みです。公開鍵だけでは、接続先が本当にその鍵の持ち主か分かりません。Web ブラウザで `https://example.test` を開く時は、接続先が示した公開鍵と `example.test` の関係を確かめる必要があります。これは、利用者を確認する [Authentication](../authentication/) とは別に、接続先のサーバーを認証する処理です。
+PKI（Public Key Infrastructure、公開鍵基盤）は、公開鍵と名前や組織の結び付きを証明書と信頼の連鎖で検証する仕組みです。公開鍵だけでは、接続先が本当にその鍵の持ち主か分かりません。
 
-この関係を記録するデータが X.509 証明書です。証明書と失効リストのプロファイル、および証明書パス検証の手順は、[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) で定められています。証明書を発行する CA（Certification Authority、認証局）は、証明書ポリシーに従って申請者と識別子を確認し、証明書に署名します。検証する側は、あらかじめ信頼する CA の証明書を trust store に持ち、その署名をたどります。
+Web ブラウザで `https://example.test` を開く時は、接続先が示した公開鍵と `example.test` の関係を確かめる必要があります。これは、利用者を確認する [Authentication](../authentication/) とは別に、接続先のサーバーを認証する処理です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
-flowchart LR
-    R["Trust store<br/>信頼する Root CA"] --> I["Intermediate CA<br/>発行を委任された CA"]
-    I --> S["Server certificate<br/>example.test と公開鍵"]
-    S --> V["ブラウザ・クライアント<br/>名前・期限・用途・署名を検証"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+この関係を記録するデータが X.509 証明書です。証明書と失効リストのプロファイル、および証明書パス検証の手順は、[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) で定められています。
 
+証明書を発行する CA（Certification Authority、認証局）は、証明書ポリシーに従って申請者と識別子を確認し、証明書に署名します。検証する側は、あらかじめ信頼する CA の証明書を trust store に持ち、その署名をたどります。
+
+以下は、trust store から署名をたどる検証と、検証で拒否される箇所を示した図です。
+
+{{< figure src="images/pki_concept.svg" alt="端末の trust store の枠の中には Root CA だけがあり、サーバーが送る Intermediate とサーバー証明書は署名の矢印で外側につながる。サーバー証明書の名前・期限・用途は黄土色の枠で確かめ、合わなければ拒否される。サーバー証明書を CA として使った場合は、赤い × の所で拒否される。" caption="trust store の Root CA から署名をたどる検証と、拒否される箇所" align="center" >}}
 上記の図で信頼の起点になる Root CA は、接続先から受け取るものではありません。OS、ブラウザ、組織の端末管理などがあらかじめ trust store に入れた証明書です。Intermediate CA は Root CA の秘密鍵を日常的な発行に使わずに済むよう、発行権限を分けます。
 
 <br>
@@ -41,7 +40,9 @@ flowchart LR
 
 X.509 証明書は、subject（識別される主体）、公開鍵、有効期間、発行者、拡張、発行者による署名を持つデータです。サーバー証明書の場合、接続先の DNS 名は通常 `subjectAltName` 拡張に入ります。subject の distinguished name を使う場面もありますが、TLS で DNS 名を照合する時は [RFC 9525](https://www.rfc-editor.org/rfc/rfc9525) の規則に従います。
 
-CA の仕事は、公開鍵をただ登録することではありません。どの識別子について、どの種類の確認を済ませ、どの用途・期限で証明書を発行するかを決めます。公開 Web PKI の CA は、[CA/Browser Forum Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/)（以下、BR）に従い、DNS 名などの domain name を検証します。これはサイトの運営者の法人格や、通信内容の安全性を保証するものではありません。
+CA の仕事は、公開鍵をただ登録することではありません。どの識別子について、どの種類の確認を済ませ、どの用途・期限で証明書を発行するかを決めます。
+
+公開 Web PKI の CA は、[CA/Browser Forum Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/)（以下、BR）に従い、DNS 名などの domain name を検証します。これはサイトの運営者の法人格や、通信内容の安全性を保証するものではありません。
 
 trust store に Root CA を入れる行為は、その CA が定めた検証と発行の方針を受け入れることです。CA は [RFC 3647](https://www.rfc-editor.org/rfc/rfc3647) の枠組みに沿って、Certificate Policy と Certification Practice Statement に方針と実務を記述します。したがって、署名の検証に成功しても、利用者が信頼したのは任意の CA ではなく、手元の trust store にある CA です。
 
@@ -67,10 +68,15 @@ Public CA は不特定のインターネット利用者が検証する公開 DNS
 | `keyUsage` と `extendedKeyUsage` | 鍵を許可されていない用途で使うこと |
 | trust anchor | 端末が信頼していない CA だけで連鎖を作ること |
 
-`basicConstraints` の `CA:TRUE` は、その証明書が CA として扱われ得ることを示します。`pathLenConstraint` があれば、その下に置ける CA の数も制限します。CA 証明書の `keyUsage` には通常 `keyCertSign` が必要です。サーバー証明書は `extendedKeyUsage` の `serverAuth` を持つことがあり、クライアントは TLS サーバー認証に使ってよいかを判断します。
+`basicConstraints` の `CA:TRUE` は、その証明書が CA として扱われ得ることを示します。`pathLenConstraint` があれば、その下に置ける CA の数も制限します。CA 証明書の `keyUsage` には通常 `keyCertSign` が必要です。
 
-`basicConstraints` が CA になれるかと深さを決めるのに対し、CA が発行できる名前の範囲は `nameConstraints` で制限します。例えば、Intermediate CA に `permitted;DNS:example.test` を入れると、その CA が発行した `www.other.test` の証明書は検証で拒否されます（OpenSSL 3.5.5 では error 47 permitted subtree violation）。これらは RFC 5280 の証明書パス検証で確認する制約です。
+サーバー証明書は `extendedKeyUsage` の `serverAuth` を持つことがあり、クライアントは TLS サーバー認証に使ってよいかを判断します。
 
+`basicConstraints` が CA になれるかと深さを決めるのに対し、CA が発行できる名前の範囲は `nameConstraints` で制限します。これらは RFC 5280 の証明書パス検証で確認する制約です。
+
+例えば、Intermediate CA に `permitted;DNS:example.test` を入れると、その CA が発行した `www.other.test` の証明書は検証で拒否されます（OpenSSL 3.5.5 では error 47 permitted subtree violation）。
+
+{{< figure src="images/pki_name_constraints.svg" alt="Root CA の下に、permitted;DNS:example.test を持つ Intermediate CA。そこから署名の矢印が 2 本出る。灰色の点線で囲んだ example.test の下の範囲にある www.example.test は通り、範囲の外の www.other.test には赤い×と「error 47 で拒否」" caption="nameConstraints が Intermediate CA の発行範囲を絞る" align="center" >}}
 hostname の照合には、接続しようとした名前そのものを使います。例えば `api.example.test` に接続する時、`www.example.test` だけを含む証明書は通りません。ワイルドカードを使う場合も、RFC 9525 が許す位置と 1 つのラベルに限られます。IP アドレスに接続する場合は、DNS 名ではなく IP address 型の `subjectAltName` と照合します。
 
 ---
@@ -143,7 +149,9 @@ error 79 は `CA:FALSE`、error 26 は TLS サーバー用の CA として使え
 
 ### 失効と可視化
 
-証明書の期限が残っていても、対応する秘密鍵の漏洩や誤発行を後から知ることがあります。失効（revocation）はこのような証明書を有効期限より前に無効にする仕組みです。CRL（Certificate Revocation List）は RFC 5280 で定義され、OCSP（Online Certificate Status Protocol）は [RFC 6960](https://www.rfc-editor.org/rfc/rfc6960) で定義された、特定の証明書の状態を問い合わせる方式です。
+証明書の期限が残っていても、対応する秘密鍵の漏洩や誤発行を後から知ることがあります。失効（revocation）はこのような証明書を有効期限より前に無効にする仕組みです。
+
+CRL（Certificate Revocation List）は RFC 5280 で定義され、OCSP（Online Certificate Status Protocol）は [RFC 6960](https://www.rfc-editor.org/rfc/rfc6960) で定義された、特定の証明書の状態を問い合わせる方式です。
 
 現在の BR では CRL の公開が必須で、OCSP は任意です。例えば、Let's Encrypt は 2025 年 8 月に [OCSP の応答を停止](https://letsencrypt.org/2024/12/05/ending-ocsp/)しました。
 
@@ -153,6 +161,9 @@ Certificate Transparency（CT）は、公開 Web PKI の証明書を追記専用
 
 ブラウザが受け付ける CT ログと SCT は [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)（CT v1）の形式です。v2.0 を定めた [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162) は、公開 Web PKI ではまだ広く運用されていません。
 
+以下は、1 枚の証明書の発行から有効期限までの間に、失効・CT・後述の ACME が受け持つ位置を並べた図です。
+
+{{< figure src="images/pki_lifecycle.svg" alt="横長の帯が 1 枚の証明書の発行から有効期限まで。左端の発行に「ACME で自動化」と「発行時に CT ログへ記録（SCT）、誤発行を第三者が観測できる」。途中で鍵の漏洩や誤発行が分かり、その後の失効（CRL / OCSP）から有効期限までの帯は黄土色の「期限は残るが失効済み」。失効の下に「取れない時に止めるかはクライアント次第」" caption="証明書の一生と、ACME・CT・失効の受け持ち" align="center" >}}
 ACME（Automatic Certificate Management Environment）は、CA と証明書利用者の間で証明書の発行・更新・失効を自動化するプロトコルです。[RFC 8555](https://www.rfc-editor.org/rfc/rfc8555) では、HTTP-01 や DNS-01 の challenge で識別子の制御を検証します。ただし、更新済みの証明書をサーバーが読み込み直す設定は、ACME とは別に用意します。
 
 ---

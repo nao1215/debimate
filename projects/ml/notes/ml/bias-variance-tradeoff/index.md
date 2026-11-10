@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 7
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 バイアス-バリアンス分解（bias-variance decomposition）は、教師あり学習の期待誤差を「Bias の 2 乗」「Variance」「ノイズ（既約誤差）」の 3 項に切り分ける枠組みです。モデルが外す原因を「表現力が足りない（high bias）」と「訓練データの揺らぎに過敏（high variance）」のどちらか（あるいは両方）に診断し、モデルの変更やデータの追加を検討します。

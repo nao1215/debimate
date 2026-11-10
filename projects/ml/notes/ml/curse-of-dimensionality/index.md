@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 13
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 次元の呪い（curse of dimensionality）は、特徴量の次元が高くなるにつれて距離・体積・サンプル密度の常識的な感覚が崩れ、距離ベースのアルゴリズムが機能しなくなる現象群の総称です。[Richard Bellman](https://en.wikipedia.org/wiki/Curse_of_dimensionality) が動的計画法の問題を扱う中で名付けた用語です。

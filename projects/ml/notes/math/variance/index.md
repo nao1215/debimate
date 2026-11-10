@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 5
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 分散（variance）は、データの散らばり具合を「[平均](../mean/) からの差の二乗の平均」として定量化する指標です。平均が分布の中心を表すのに対して、分散は分布の広がりを表します。

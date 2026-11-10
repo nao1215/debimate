@@ -6,26 +6,18 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "bitcoin"]
 weight: 12
 wrapTables: true
+topics: ["Node Policy"]
 ---
 
 mempool（memory pool）は、まだブロックに入っていない取引をノードが一時的に置いておく場所です。ノードは受け取った取引を検証してから mempool に入れ、隣のノードに中継します。ブロックを作る参加者は、この置き場から取り込む取引を選びます。
 
 送った取引がなかなかブロックに入らず、取引の状況を表示する Web サイト（ブロックエクスプローラ）によって「未確認」（まだブロックに入っていない状態）の表示が違うことがあります。しばらく待つと取引が消える場合もあります。こうした違いが起きる主な理由は、各ノードが別々の mempool を持つからです。
 
-以下は、2 台のノードが別の中身を持つ例です。
+以下は、受け入れる最低手数料率が違う 2 台のノードの mempool を重なる集合で描いた例です。
 
-{{< note-panels caption="同じ時点でも、ノードごとに保持している取引は異なります。" >}}
-- title: Node X の mempool
-  items:
-  - 取引 a
-  - 取引 b
-- title: Node Y の mempool
-  items:
-  - 取引 a
-  - 取引 c
-{{< /note-panels >}}
+{{< figure src="images/mempool_concept.svg" alt="Node A（最低 1 sat/vB）と Node B（最低 10 sat/vB）の mempool が 2 つの円として一部だけ重なっている。取引 a は両方に、取引 c は B だけにある。2 sat/vB の取引 b は赤で示され、B の最低手数料率に届かないため A の円にだけ入っている" caption="最低手数料率の違う 2 台の mempool" align="center" >}}
 
-上記の図の取引 b と取引 c は、片方のノードだけが持っています。ネットワーク全体で 1 つの mempool を共有する仕組みは無く、どのノードから見るかで中身が変わります。
+上記の図の取引 b と取引 c は、片方のノードだけが持っています。b は後半の実験で使う手数料率 2 sat/vB の取引で、Node B の最低手数料率を下回るため A だけに入ります。ネットワーク全体で 1 つの mempool を共有する仕組みは無く、どのノードから見るかで中身が変わります。
 
 <br>
 
@@ -91,7 +83,7 @@ policy を満たさない取引でも、ブロックに入った時点のチェ�
 
 ### 拒否した取引を含むブロックの受け入れ
 
-自分の mempool では拒否した取引をブロックに入ってからは受け入れることを 2 台のローカルノードで確かめます。使うのは Bitcoin Core 30.4 の regtest です。regtest は、開発者が手元でブロックを生成できる専用のテスト環境で、実際の BTC は使いません。
+自分の mempool では拒否した取引をブロックに入ってからは受け入れることを 2 台のローカルノードで確かめます。使うのは Bitcoin Core 30.4 の [regtest](../mainnet-and-testnet/#bitcoin-のテストネット) です。regtest は、開発者が手元でブロックを生成できる専用のテスト環境で、実際の BTC は使いません。
 
 2 台には、同じ 101 ブロックを読み込ませます。違いは、単独の未確認取引を受け入れる最低手数料率（`minrelaytxfee`）だけです。取引は 2 sat/vB の手数料率で作成します。sat は BTC の最小単位 satoshi、vB は witness の割引を反映した仮想サイズの単位です。
 
@@ -194,18 +186,87 @@ Node A がこの取引をブロックに取り込み、そのブロックを Nod
 
 0.12 は上限（既定 300 MB）を設け、溢れそうになると、手数料率の最も低い取引を依存する取引ごと取り除くようにしました。同時に、そのノードが受け入れる最低の手数料率も、取り除いた取引の手数料率を基準に上がります。
 
-現在の[設計のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)では、mempool の取引を手数料率の高い順に並べ、溢れた時はその末尾から取り除きます。判定を通った取引も追い出しの対象です。以下は、上限に達した mempool で取引が入れ替わる流れです。
+現在の[設計のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/mempool-design.md)では、mempool の取引を手数料率の高い順に並べ、溢れた時はその末尾から取り除きます。判定を通った取引も追い出しの対象です。以下は、上限に達した mempool に手数料率の高い取引が来た時です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    N["新しい取引<br/>優先度 高"] --> MP["mempool<br/>上限に達している"]
-    MP --> KEEP["優先度の高い取引が残る"]
-    MP --> EV["優先度の低い取引が<br/>取り除かれる"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/mempool_eviction.svg" alt="上限に達した mempool の取引が、手数料率の高い順に左から棒で並ぶ。左から 3 本目に青い新しい取引が入り、上限の点線の外にはみ出した右端の黄土色の取引が取り除かれる。下に、最低の手数料率は取り除いた取引の率 + 0.1 sat/vB まで上がるとある" caption="上限に達した mempool での入れ替わり" align="center" >}}
 
 上記の図で取り除かれた取引は、そのノードから消えます。取引そのものが無効になったわけではなく、別のノードがまだ持っていれば、後から中継されて戻ってくることもあります。容量とは別に、受け入れてから一定の時間が経った取引も取り除かれ、Bitcoin Core の既定ではこの期限が 2 週間です。
+
+<br>
+
+Bitcoin Core v30.0 の [txmempool.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/txmempool.cpp) の規則を写したシミュレーションで、追い出しによって最低の手数料率がどう上がり、どう戻るのかを確かめます。
+
+取り除いた取引の手数料率に incremental relay fee（既定 0.1 sat/vB）を足した値まで最低値を上げ、その後に新しいブロックが来てからは、12 時間の半減期で下げていく規則です。mempool が上限の 4 分の 1 未満なら半減期は 3 時間、2 分の 1 未満なら 6 時間に縮みます。
+
+前提は以下の通りで、どれも実測ではありません。上限はメモリ使用量ではなく仮想サイズで数え、300 万 vB に縮めています。
+
+- 取引は全て 250 vB で依存関係を持たず、手数料率は中央値 3 sat/vB の対数正規分布（seed 固定）
+- ブロックは 600 秒ちょうどに来て、手数料率の高い順に 100 万 vB を取り込む
+- 最初の 6 時間はブロック 1.5 個分、その後はブロック 0.6 個分の取引が 10 分ごとに届く
+
+```python
+# lab/rolling_min_fee.py の Mempool から抜粋（46〜71 行目）
+    def min_fee(self, now):
+        if not self.block_since_bump or self.rolling == 0:
+            return self.rolling
+        if now > self.last_update + 10:
+            half = HALFLIFE
+            if self.size() < LIMIT / 4:
+                half /= 4
+            elif self.size() < LIMIT / 2:
+                half /= 2
+            self.rolling /= 2 ** ((now - self.last_update) / half)
+            self.last_update = now
+            if self.rolling < INCREMENTAL / 2:
+                self.rolling = 0.0
+                return 0.0
+        return max(self.rolling, INCREMENTAL)
+
+    def accept(self, rate, now):
+        if rate < MIN_RELAY or rate < self.min_fee(now):
+            return False
+        bisect.insort(self.rates, rate)
+        while self.size() > LIMIT:
+            removed = self.rates.pop(0) + INCREMENTAL
+            if removed > self.rolling:
+                self.rolling = removed
+                self.block_since_bump = False
+        return True
+```
+
+コード全体は [lab/rolling_min_fee.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/mempool/lab/rolling_min_fee.py) にあります。`python3 rolling_min_fee.py` の[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/mempool/lab/rolling_min_fee_output.txt)の末尾は以下の通りです。
+
+```text
+peak min fee 1.85 sat/vB at hour 6.00
+rejected arrivals below the minimum: 64,102
+```
+
+<details>
+<summary>3 時間ごとの値（グラフの元）</summary>
+
+```text
+hour  mempool_vB  min_fee_sat/vB
+   3   3,000,000            1.70
+   6   3,000,000            1.85
+   9     525,000            1.00
+  12     576,750            0.51
+  15     600,250            0.25
+  18     621,000            0.13
+  21     609,750            0.10
+  24     612,500            0.10
+  27     586,750            0.10
+  30     591,750            0.10
+  33     608,750            0.10
+  36     581,750            0.10
+peak min fee 1.85 sat/vB at hour 6.00
+rejected arrivals below the minimum: 64,102
+```
+
+</details>
+
+{{< figure src="images/mempool_rolling_min_fee.svg" alt="上段は mempool の量、下段は最低の手数料率の推移。混雑した最初の 6 時間は mempool が上限に張り付き、最低の手数料率は 0.1 から 1.85 sat/vB まで上がる。到着が減ると mempool は上限の 2 割ほどに空くが、最低の手数料率は曲線を描いてゆっくり下がり、0.1 に戻るのは約 19 時間目" caption="シミュレーションでの mempool の量と最低の手数料率" align="center" >}}
+
+混雑した 6 時間で、最低の手数料率は 0.1 から 1.85 sat/vB まで上がりました。到着が落ち着いて mempool が上限の 2 割ほどに空いた後も、最低値は半減期に沿って下がるだけで、1 sat/vB を下回るまでに約 3 時間かかっています。その間は、空きがあっても 1 sat/vB 未満の取引を受け入れません。
 
 4 つ目の依存関係は、次の取引が未確認の取引の出力を入力で参照する形で生まれます。繋がりが大きいほど、1 件を取り除いた時に一緒に mempool から取り除く必要のある取引が増えます。
 

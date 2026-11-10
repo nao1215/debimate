@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>同じ 400 万行を 3 つの行の順序で書いた Parquet の、列ごとのバイト数</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="60" font-size="24" font-weight="normal" text-anchor="start">sales.parquet（ts の順）</text>
+<text x="370" y="60" font-size="24" font-weight="normal" text-anchor="start" class="sub">ほぼ 0 の列: ts・id</text>
+<rect x="40" y="76" width="30.94541617021277" height="56" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<rect x="70.94541617021277" y="76" width="15.63124595744681" height="56" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="86.57666212765957" y="76" width="127.73037446808512" height="56" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="150.44184936170214" y="114" font-size="24" font-weight="normal" text-anchor="middle">amount</text>
+<text x="228.3070365957447" y="114" font-size="24" font-weight="normal" text-anchor="start">列の合計 11.4 MB</text>
+<text x="40" y="195" font-size="24" font-weight="normal" text-anchor="start">region の順に並べ替え</text>
+<text x="370" y="195" font-size="24" font-weight="normal" text-anchor="start" class="sub">ほぼ 0 の列: region</text>
+<rect x="40" y="211" width="111.10444085106384" height="56" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="95.55222042553191" y="249" font-size="24" font-weight="normal" text-anchor="middle">ts</text>
+<rect x="151.10444085106383" y="211" width="46.83747063829787" height="56" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="197.9419114893617" y="211" width="15.633620425531916" height="56" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="213.57553191489362" y="211" width="127.7300680851064" height="56" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="277.44056595744684" y="249" font-size="24" font-weight="normal" text-anchor="middle">amount</text>
+<text x="355.3056" y="249" font-size="24" font-weight="normal" text-anchor="start">列の合計 19.7 MB</text>
+<text x="40" y="330" font-size="24" font-weight="normal" text-anchor="start">行の順序を崩す</text>
+<text x="370" y="330" font-size="24" font-weight="normal" text-anchor="start" class="sub">ほぼ 0 の列: なし</text>
+<rect x="40" y="346" width="352.82817191489363" height="56" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="216.41408595744682" y="384" font-size="24" font-weight="normal" text-anchor="middle">ts</text>
+<rect x="392.82817191489363" y="346" width="176.55844595744682" height="56" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="481.107394893617" y="384" font-size="24" font-weight="normal" text-anchor="middle">id</text>
+<rect x="569.3866178723405" y="346" width="30.945262978723406" height="56" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<rect x="600.3318808510639" y="346" width="15.634386382978725" height="56" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="615.9662672340427" y="346" width="127.73065021276597" height="56" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="679.8315923404257" y="384" font-size="24" font-weight="normal" text-anchor="middle">amount</text>
+<text x="757.6969174468086" y="384" font-size="24" font-weight="normal" text-anchor="start">列の合計 45.9 MB</text>
+<rect x="40" y="452" width="22" height="22" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="72" y="471" font-size="24" font-weight="normal" text-anchor="start">ts・id（連番、Delta）</text>
+<rect x="370" y="452" width="22" height="22" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="402" y="471" font-size="24" font-weight="normal" text-anchor="start">region（8 種類、Dictionary）</text>
+<rect x="40" y="496" width="22" height="22" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="72" y="515" font-size="24" font-weight="normal" text-anchor="start">amount と、その左の細い status</text>
+</svg>

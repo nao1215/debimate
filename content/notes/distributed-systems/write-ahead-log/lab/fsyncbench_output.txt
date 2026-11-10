@@ -1,0 +1,28 @@
+go=go1.26.4 os=linux/amd64 cpus=32
+distro=Ubuntu 26.04.1 LTS
+kernel=7.0.0-38-generic
+filesystem=/dev/nvme0n1p2 ext4 rw,relatime
+device=KIOXIA-EXCERIA PLUS G4 SSD
+record=116 bytes (data 100 bytes)
+
+[part 1] back to back, 1 s per batch size, median of 3
+batch  records/s  syncs/s  round_p50_ms  round_p99_ms
+    1       1328     1328         0.699         2.014
+    2       2807     1404         0.691         0.902
+    4       5671     1418         0.692         0.840
+    8      11161     1395         0.691         1.346
+   16      22063     1379         0.704         0.912
+   32      42861     1339         0.729         0.957
+   64      85654     1338         0.732         1.000
+  128     158276     1237         0.758         1.980
+  256     314132     1227         0.769         1.586
+
+[part 2] one record every 1 ms, wait for a full batch, then Sync, median of 3
+batch  latency_p50_ms  latency_p99_ms
+    1           1.394          23.430
+    2           1.787           6.369
+    4           2.828           4.965
+    8           5.005          10.603
+   16           9.453          17.945
+   32          17.258          33.016
+   64          33.667          64.965

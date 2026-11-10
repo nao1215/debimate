@@ -5,6 +5,7 @@ draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 5
+topics: ["Replication / Coordination"]
 ---
 
 Leader and Followers は、同じデータを複製して持つノードのうち 1 台を Leader に決め、更新を全て Leader が受け付けて残りの Follower に配る構成です。更新の受け口が 1 台に絞られるため、同じデータへの更新の順序は Leader が決めた 1 つに定まります。
@@ -13,20 +14,11 @@ Leader and Followers は、同じデータを複製して持つノードのう�
 
 Follower は、Client から更新を受け取っても自分では処理せず、Client を Leader に案内します。Leader が落ちた場合は、残った Follower の中から次の Leader を選び直します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as Client
-    participant F1 as Follower 1
-    participant L as Leader
-    participant F2 as Follower 2
-    C->>F1: 更新
-    F1-->>C: Leader を案内
-    C->>L: 更新
-    L->>F1: 更新を配る
-    L->>F2: 更新を配る
-    Note over F1,F2: 更新の順序は Leader が決めた 1 つに定まる
-```
+以下は、3 台のログ（受け付けた更新を順に追記した記録）を位置を揃えて並べた図です。箱の数字と色は任期（後述）を表します。
+
+{{< figure src="images/leader-and-followers_concept.svg" alt="3 台のログを index の位置を揃えて横に並べた図。index 6 までは Leader と Follower 1 の 2 台に届いて確定し、灰緑の縦線が確定位置を示す。Leader だけが持つ index 7 と 8 は破線の未確定で、Follower 2 は index 4 までしか受け取っていない" caption="3 台のログと、過半数に届いた確定位置" align="center" >}}
+
+上記の図のように、各ノードは Leader と同じ位置に同じ更新を並べ、3 台のうち過半数の 2 台に届いた位置までが確定します。
 
 <br>
 
@@ -38,7 +30,7 @@ sequenceDiagram
 - 分断から復帰した古い Leader は、どう締め出されるのか。
 - Leader から読んでも古い値が返るのは、どんな時か。
 
-想定する故障は、ノードの停止とネットワークの分断の 2 つです。誤った値を返す故障（ビザンチン障害）には触れません。仕組みの説明には [Raft](https://raft.github.io/) を使います。Raft は、複製したログ（受け付けた更新を順に追記した記録）を全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
+想定する故障は、ノードの停止とネットワークの分断の 2 つです。誤った値を返す故障（ビザンチン障害）には触れません。仕組みの説明には [Raft](https://raft.github.io/) を使います。Raft は、複製したログを全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
 
 ---
 
@@ -94,6 +86,30 @@ stateDiagram-v2
 
 上記の図で Candidate から Candidate に戻る経路は、複数のノードが同時に Candidate になって票が割れた場合を表します。全ノードが同じ待ち時間を使うと、票の割れが繰り返されます。そのため、Raft は待ち時間をランダムな幅で散らし、選出を始めるたびに引き直します。
 
+散らす幅の効き目を [Raft の論文](https://raft.github.io/raft.pdf)の Figure 16 と同じ形のシミュレーションで確かめました。5 台のうち Leader が最後の信号を送った直後に落ち、残る 4 台は待ち時間を 150 ミリ秒から上限までの一様分布で引きます。
+
+メッセージの片道は 2〜8 ミリ秒の一様分布で失われず、ログは全台で同じとしました。これは説明用に置いた前提で、論文の数値を再現したものではありません。上限ごとに 1 万回試し、10 秒経っても Leader が決まらない試行は stuck に数えます。コードの全体は [election.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/leader-and-followers/lab/election.py) にあります。
+
+{{< figure src="images/leader-and-followers_election_timeout.svg" alt="左は Leader が決まるまでの時間の累積分布（横軸は対数）。150-300 ミリ秒は 300 ミリ秒前後でほぼ全試行が決まり、150-155 ミリ秒は階段状に数秒まで延び、150-150 ミリ秒は 10 秒でも約 2 割しか決まらない。右は最初の任期で票が割れた割合で、上限 150〜155 ミリ秒では 84〜94%、300 ミリ秒では 3.6%" caption="待ち時間の幅と、Leader が決まるまでの時間" align="center" >}}
+
+<details>
+<summary>測定値（上限ごとに 1 万回）</summary>
+
+```text
+5 servers, leader crashed at t=0, 10000 trials per spread, message delay U(2.0, 8.0) ms
+timeout_ms   split_vote  median_ms  p99_ms  max_ms  max_terms  stuck
+150-150         93.6%        462    7510    9912         66   7874
+150-151         93.2%       2418    9791    9947         66   4142
+150-155         84.0%        623    3972    7318         48      0
+150-175         25.8%        171     646    1124          7      0
+150-200         12.0%        174     498     871          5      0
+150-300          3.6%        190     412     960          5      0
+```
+
+</details>
+
+幅が 5 ミリ秒以下だと、片道の遅延より先に他のノードも Candidate になるため、最初の任期の 8 割以上で票が割れます。150〜300 ミリ秒の幅では票割れが 3.6% に下がり、99% の試行が 412 ミリ秒以内に決まりました。測定値の split_vote は、最初の任期で決まらなかった試行（stuck を含む）の割合で、median_ms から右の列は決まった試行だけの値です。
+
 Leader から Follower に戻る経路は、分断から復帰した旧 Leader などが通るので、「古い Leader の締め出し」で改めて扱います。
 
 投票を求められた側の処理は短く書けます。Leader が 2 台立つのを防いでいるのは、1 つの任期で 2 票を投じないことと、当選に過半数を要求することの組み合わせです。過半数の集合はどの 2 つを取っても 1 台以上を共有するので、共有するノードが 1 票しか出さなければ、同じ任期に 2 台が過半数に届くことはありません。
@@ -119,7 +135,9 @@ func (n *node) handleRequestVote(term int, candidateID string) bool {
 }
 ```
 
-上記のコードは `currentTerm` と `votedFor` をメモリ上で書き換えるだけで、実装には不足があります。Raft は、この 2 つとログを RPC（Remote Procedure Call、遠隔手続き呼び出し）に応答する前に安定ストレージ（再起動や電源断の後も内容が残る記憶装置）に書くことを要求しています。投票した直後に再起動して `votedFor` を失うと、同じ任期でもう 1 台に投票してしまい、Leader が 2 台立つ場合があります。
+上記のコードは `currentTerm` と `votedFor` をメモリ上で書き換えるだけで、実装には不足があります。
+
+Raft は、この 2 つとログを RPC（Remote Procedure Call、遠隔手続き呼び出し）に応答する前に安定ストレージ（再起動や電源断の後も内容が残る記憶装置）に書くことを要求しています。投票した直後に再起動して `votedFor` を失うと、同じ任期でもう 1 台に投票してしまい、Leader が 2 台立つ場合があります。
 
 <br>
 
@@ -235,18 +253,15 @@ func (n *node) advanceCommitIndex() {
 }
 ```
 
-複製の数で確定させるのは現在の任期で作られたエントリだけ、という条件が入っています。Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件です。
+複製の数で確定させるのは現在の任期で作られたエントリだけ、という条件が入っています。
+
+Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件です。
 
 過去の任期のエントリは、過半数に複製されていても、後の Leader に上書きされる場合があります。そのエントリを持たないノードでも、ログの末尾の任期が新しければ Leader に選ばれる場合があるからです（論文の Figure 8）。
 
-例えば 5 台の構成で、次の順に Leader が入れ替わったとします。表の値はログの同じ位置に入ったエントリの任期で、「-」はエントリが無いことを表します。
+例えば 5 台の構成で、次の順に Leader が入れ替わったとします。任期 2 の Leader A が B に配って落ち、任期 3 の Leader E が自分だけに書いて落ちます。任期 4 で A が復帰して C に配り、A が落ちた後に E が当選して上書きします。
 
-| 段階 | A | B | C | D | E |
-|---|---|---|---|---|---|
-| 1. 任期 2 の Leader A が B に配って落ちる | 2 | 2 | - | - | - |
-| 2. 任期 3 の Leader E が自分だけに書いて落ちる | 2 | 2 | - | - | 3 |
-| 3. 任期 4 で A が復帰し、C に配る | 2 | 2 | 2 | - | 3 |
-| 4. A が落ち、E が当選して上書きする | 3 | 3 | 3 | 3 | 3 |
+{{< figure src="images/leader-and-followers_overwrite.svg" alt="段階 1 から 4 までを横に並べ、各段階で A から E の 5 台が、ログの同じ位置に持つエントリの任期を縦に並べた図。段階 1 は A と B が 2。段階 2 は A と B が 2、E が 3。段階 3 は A・B・C が 2 で過半数に届き、E が 3。段階 4 は 5 台とも 3 になり、任期 2 のエントリが消える。エントリが無い所は点線の「-」" caption="過半数に届いた任期 2 のエントリが、上書きされるまで" align="center" >}}
 
 段階 3 で任期 2 のエントリは過半数の 3 台に届いています。それでも段階 4 で E は B・C・D の票を集めて当選できます。E の末尾の任期 3 が、B・C の末尾の任期 2 より新しいためです。
 

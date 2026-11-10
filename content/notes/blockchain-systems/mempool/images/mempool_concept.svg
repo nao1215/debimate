@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>2 台のノードの mempool が重なりつつ中身が異なる様子</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<circle cx="360" cy="280" r="186" fill="#eaf1f5" stroke="none" stroke-width="2.5"/>
+<circle cx="600" cy="280" r="186" fill="#f8eed8" stroke="none" stroke-width="2.5"/>
+<clipPath id="node-a"><circle cx="360" cy="280" r="186"/></clipPath><circle cx="600" cy="280" r="186" fill="#f2f2f2" clip-path="url(#node-a)"/>
+<circle cx="360" cy="280" r="186" fill="none" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="600" cy="280" r="186" fill="none" stroke="#d4a24c" stroke-width="3"/>
+<text x="250" y="60" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Node A：最低 1 sat/vB</text>
+<text x="710" y="60" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Node B：最低 10 sat/vB</text>
+<circle cx="236" cy="190" r="12" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<circle cx="300" cy="380" r="12" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<circle cx="468" cy="200" r="12" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<circle cx="492" cy="372" r="12" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<circle cx="720" cy="196" r="12" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<circle cx="690" cy="380" r="12" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<circle cx="480" cy="286" r="26" fill="#666666" stroke="none" stroke-width="2.5"/>
+<text x="480" y="296" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#ffffff">a</text>
+<circle cx="262" cy="286" r="26" fill="#e15759" stroke="none" stroke-width="2.5"/>
+<text x="262" y="296" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#ffffff">b</text>
+<text x="262" y="344" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">2 sat/vB</text>
+<circle cx="700" cy="286" r="26" fill="#666666" stroke="none" stroke-width="2.5"/>
+<text x="700" y="296" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#ffffff">c</text>
+<text x="480" y="516" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">b は B の最低手数料率に届かず、A だけが持つ</text>
+</svg>

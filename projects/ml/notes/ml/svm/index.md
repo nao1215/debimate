@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 22
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 サポートベクターマシン（SVM, support vector machine）は、2 クラスのデータを「マージン（境界と最も近い点との距離）が最大になる超平面」で分離する分類器です。1990 年代から 2000 年代前半にかけて分類の標準アルゴリズムとして広く使われ、カーネルトリック（kernel trick）により非線形分離まで自然に拡張できる柔軟性を持ちます。

@@ -6,27 +6,20 @@ series: ["技術ノート", "Security"]
 tags: ["security", "supply-chain", "toolchain"]
 weight: 11
 wrapTables: true
+topics: ["Software Supply Chain"]
 ---
 
 Reproducible Builds（再現可能なビルド）は、同じソースコード・同じビルド環境・同じ手順を与えれば、誰がビルドしてもビット単位で同じ成果物が得られる性質です。[reproducible-builds.org の定義](https://reproducible-builds.org/docs/definition/)では、成果物は実行ファイル・配布パッケージ・ファイルシステムのイメージなどを指し、ビルドのログは通常含めません。
 
 この性質があると、配布されたバイナリが公開されているソースから作られたことを配布元以外の人が確かめられます。開発者と独立したビルダーが同じコミットからビルドし、成果物の [SHA-256](/notes/security/sha-256/) を比べるだけです。一致すれば、配布物はそのソースと記録したツールチェーンから作られたものと同じです。一致しなければ、どこかに差があります。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
-flowchart LR
-    S["ソース<br/>同じコミット"] --> D["開発者のビルド<br/>（配布物を作る）"]
-    S --> I["独立したビルダー<br/>（別の人・別のマシン）"]
-    D --> H1["sha256<br/>1ac65de1…"]
-    I --> H2["sha256<br/>1ac65de1…"]
-    H1 --> C{"比較"}
-    H2 --> C
-    C -->|一致| OK["配布物は<br/>このソースから作られた"]
-    C -->|不一致| NG["差分を調べる"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
 しかし、2 つのハッシュは素直には一致しません。ビルドは、ソースに書かれていない現在時刻・ディレクトリのパス・ファイルの所有者などを成果物に混ぜるからです。
+
+以下は、本記事の実験で 2 つのビルダーの差を 1 つずつ固定した結果です。
+
+{{< figure src="images/reproducible-builds_concept.svg" alt="列が段階 0 から 5、行が gzip の時刻・更新時刻・並び順・所有者・権限の 5 つの差。段階が進むごとに黄土色の残りの差が 1 つずつ灰色の固定済みに変わり、全てを固定した段階 5 だけ A と B のハッシュが一致する" caption="固定する項目を段階ごとに増やした時の残りの差" align="center" >}}
+
+黄土色のセルは、その段階でまだ残っている差です。5 つ全てを固定した段階 5 で、初めて 2 つのハッシュが一致しました。
 
 <br>
 
@@ -87,7 +80,10 @@ else
 fi
 ```
 
-2 つのビルダーを動かして比べるのが、次の `run.sh` です（末尾の表示部分を省いた抜粋です。全体は [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/run.sh)）。
+2 つのビルダーを動かして比べるのは [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/run.sh) です。段階ごとに A と B を 1 秒ずらして起動し、成果物の sha256 を比べます。
+
+<details>
+<summary>run.sh の抜粋（末尾の表示部分を省略）</summary>
 
 ```sh
 #!/bin/sh
@@ -126,7 +122,9 @@ done
 # 以降、段階 0 の中身を tar -tv で、gzip ヘッダーを od で表示します（省略）。
 ```
 
-以下が実行結果の抜粋です（全体は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/output.txt)）。ハッシュは先頭 16 文字だけを表示し、tar の一覧の時刻はホストのタイムゾーン（JST）で表示しています。
+</details>
+
+以下が実行結果の抜粋です（全体は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/output.txt)）。ハッシュは先頭 16 文字だけを表示しています。
 
 ```text
 stage 0  A=35766f8b998f6ddd  B=e44dd8355fd054b6  DIFFERENT
@@ -135,7 +133,11 @@ stage 2  A=12276888995da47f  B=be7564dab1402cec  DIFFERENT
 stage 3  A=ff068a3fd506c1d1  B=3730f617a591ac57  DIFFERENT
 stage 4  A=1ac65de158344e38  B=c2f5016c54f06759  DIFFERENT
 stage 5  A=1ac65de158344e38  B=1ac65de158344e38  same
+```
 
+段階 5 だけ、A と B のハッシュが一致しました。何も固定しない段階 0 の tar の一覧は、次の通りです。時刻はホストのタイムゾーン（JST）で表示しています。
+
+```text
 --- stage 0 の中身 (A) ---
 drwxr-xr-x root/root         0 2026-11-10 07:50:57 project/
 -rwxr-xr-x root/root        21 2026-11-10 07:50:57 project/hello.sh
@@ -146,17 +148,25 @@ drwxrwxr-x 1000/1000         0 2026-11-10 07:50:59 project/
 -rw-rw-r-- 1000/1000         6 2026-11-10 07:50:59 project/README
 -rwxrwxr-x 1000/1000        21 2026-11-10 07:50:59 project/hello.sh
 （docs/ の 2 行は省略）
---- stage 0 の gzip ヘッダー (A, 先頭 24 byte) ---
+```
+
+ファイルの中身は 3 つとも同じなのに、段階 0 の一覧には 4 種類の差があります。時刻が 2 秒ずれ、A では `hello.sh` が、B では `README` が先に並び、所有者が `root/root` と `1000/1000` で、権限が `rw-r--r--` と `rw-rw-r--` です。
+
+並び順の差は、tar がディレクトリを読む順番をファイルシステムに任せているからで、A の tmpfs と B のコンテナの領域では順番が違いました。
+
+<br>
+
+さらに、[gzip ヘッダー](https://www.rfc-editor.org/rfc/rfc1952#section-2.3)にもビルドの情報が入っています。以下は、A の段階 0 の先頭 24 byte です。
+
+```text
 0000000 1f 8b 08 08 51 4e f2 6a 00 03 70 72 6f 6a 65 63
 0000016 74 2e 74 61 72 00 ed d6
 0000024
 ```
 
-ファイルの中身は 3 つとも同じなのに、段階 0 の一覧には 4 種類の差があります。時刻が 2 秒ずれ、A では `hello.sh` が、B では `README` が先に並び、所有者が `root/root` と `1000/1000` で、権限が `rw-r--r--` と `rw-rw-r--` です。並び順の差は、tar がディレクトリを読む順番をファイルシステムに任せているからで、A の tmpfs と B のコンテナの領域では順番が違いました。
+4 byte 目の `08` は「ファイル名あり」の印で、続く `51 4e f2 6a` は圧縮した `project.tar` の更新時刻（リトルエンディアンの UNIX 時刻）です。その後ろの `00 03`（圧縮の補助情報と OS の種類）に続くのが、`project.tar` という名前です。
 
-<br>
-
-さらに、[gzip ヘッダー](https://www.rfc-editor.org/rfc/rfc1952#section-2.3)にもビルドの情報が入っています。4 byte 目の `08` は「ファイル名あり」の印で、続く `51 4e f2 6a` は圧縮した `project.tar` の更新時刻（リトルエンディアンの UNIX 時刻）です。その後ろの `00 03`（圧縮の補助情報と OS の種類）に続くのが、`project.tar` という名前です。段階 1 の `gzip -n` は、この 2 つを書きません。なお、`tar -czf` のようにパイプから圧縮すると、今回の環境ではヘッダーに名前も時刻も入りませんでした。
+段階 1 の `gzip -n` は、この 2 つを書きません。なお、`tar -czf` のようにパイプから圧縮すると、今回の環境ではヘッダーに名前も時刻も入りませんでした。
 
 段階 2 で更新時刻を `SOURCE_DATE_EPOCH` に揃え、段階 3 で名前順に並べ、段階 4 で所有者を 0 にし、段階 5 で権限を揃えると、A と B の sha256 が一致しました。
 
@@ -185,7 +195,10 @@ drwxrwxr-x 1000/1000         0 2026-11-10 07:50:59 project/
 
 ### Go のビルドに埋まるパス
 
-コンパイラの出力にも同じ種類の差が入ります。次の `go-build.sh` は、`hello` と表示するだけの `main.go` を 2 つのディレクトリでビルドして、[`-trimpath`](https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies) の有無でハッシュを比べます。`-buildvcs=false` は VCS（Version Control System）の情報を埋め込まない指定で、`CGO_ENABLED=0` は C のツールチェーンを使わない指定です。
+コンパイラの出力にも同じ種類の差が入ります。[lab/go-build.sh](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/go-build.sh) は、`hello` と表示するだけの `main.go` を 2 つのディレクトリでビルドして、[`-trimpath`](https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies) の有無でハッシュを比べます。`-buildvcs=false` は VCS（Version Control System）の情報を埋め込まない指定で、`CGO_ENABLED=0` は C のツールチェーンを使わない指定です。
+
+<details>
+<summary>go-build.sh の全体</summary>
 
 ```sh
 #!/bin/sh
@@ -212,6 +225,10 @@ echo "--- go build -trimpath ---"
 sha256sum "$WORK"/alice/src/hello-trim "$WORK"/bob/work/hello/hello-trim | sed "s|$WORK/||"
 strings "$WORK"/alice/src/hello-trim | grep -m1 "main.go"
 ```
+
+</details>
+
+以下が実行結果です（[lab/go-output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/go-output.txt)）。
 
 ```text
 go version go1.26.4 linux/amd64
@@ -350,13 +367,19 @@ flowchart LR
 
 コンパイラは、さらに厄介です。Ken Thompson 氏は 1984 年の講演録 [Reflections on Trusting Trust](https://dl.acm.org/doi/10.1145/358198.358210) で、`login` をコンパイルする時に裏口を埋め込み、コンパイラ自身をコンパイルする時にはその仕掛けを複製するコンパイラを示しました。仕掛けがバイナリだけに残ると、ソースを読んでも不正は見付からず、同じコンパイラのバイナリを使う全てのビルダーで成果物が一致します。
 
-対策の取り組みとして、[Bootstrappable Builds](https://bootstrappable.org/) は、コンパイラを作るために最初に信頼するバイナリを最小限まで減らす取り組みです。David A. Wheeler 氏の [Diverse Double-Compiling](https://dwheeler.com/trusting-trust/) は、別系統のコンパイラを使ってコンパイラのソースを 2 段階でビルドし、結果が元のバイナリと一致するかで検証する手法です。前提は、検証される側のコンパイラを作ったコンパイラ（自分自身でビルドされたなら同じもの）が決定的に動く（同じ入力から同じ出力を返す）ことで、検証に使う別系統のコンパイラは決定的でなくても構いません。
+対策の取り組みとして、[Bootstrappable Builds](https://bootstrappable.org/) は、コンパイラを作るために最初に信頼するバイナリを最小限まで減らす取り組みです。
+
+David A. Wheeler 氏の [Diverse Double-Compiling](https://dwheeler.com/trusting-trust/) は、別系統のコンパイラを使ってコンパイラのソースを 2 段階でビルドし、結果が元のバイナリと一致するかで検証する手法です。
+
+前提は、検証される側のコンパイラを作ったコンパイラ（自分自身でビルドされたなら同じもの）が決定的に動く（同じ入力から同じ出力を返す）ことで、検証に使う別系統のコンパイラは決定的でなくても構いません。
 
 <br>
 
 図の右側にある CI は、再現性の検証が最も効く場所です。CI のビルドが乗っ取られても、独立したビルダーの結果と比べれば差が出る可能性があります。ただし、作り直す側が全員同じパイプラインのソフトウェアを使っていると、その欠陥を突く 1 度の攻撃で全員が破られることがあります。
 
-[SLSA](https://slsa.dev/spec/v1.2/build-provenance)（Supply-chain Levels for Software Artifacts）の provenance は、成果物を「どこで、いつ、どのように作ったか」を検証可能な形で記録する仕様です。provenance はビルドの基盤を信頼して記録を受け入れる仕組みで、再現性は記録された入力から作り直して確かめる仕組みです。SLSA は provenance の目的の 1 つに作り直しを挙げつつ、[FAQ](https://slsa.dev/spec/v1.2/faq) では検証済みの再現可能なビルドを直接の要件とせず、再現可能なビルドはソース・依存・配布への脅威には対処しないと整理しています。
+[SLSA](https://slsa.dev/spec/v1.2/build-provenance)（Supply-chain Levels for Software Artifacts）の provenance は、成果物を「どこで、いつ、どのように作ったか」を検証可能な形で記録する仕様です。
+
+provenance はビルドの基盤を信頼して記録を受け入れる仕組みで、再現性は記録された入力から作り直して確かめる仕組みです。SLSA は provenance の目的の 1 つに作り直しを挙げつつ、[FAQ](https://slsa.dev/spec/v1.2/faq) では検証済みの再現可能なビルドを直接の要件とせず、再現可能なビルドはソース・依存・配布への脅威には対処しないと整理しています。
 
 CI が使う GitHub Actions の Action も、図の左側の依存パッケージと同じく信頼する入力の 1 つです（更新の運用は [Dependabot で Action を更新する記事](/post/ja/2023-09-30-dependabot%E3%81%A7github-actions%E3%81%AEaction%E3%82%92%E6%9C%80%E6%96%B0%E3%81%AB%E4%BF%9D%E3%81%A4%E6%96%B9%E6%B3%95/)）。
 

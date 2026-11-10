@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math"]
 weight: 14
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 対数関数 `log(x)` と指数関数 `exp(x)` は互いに逆関数の関係にあり、機械学習では「積を和に変換する」「桁の違うスケールを揃える」「確率を log-odds に変換する」といった用途で繰り返し登場します。[ロジスティック回帰](../../ml/logistic-regression/)は、`p / (1 - p)` の対数である log-odds（対数オッズ）を特徴量の線形和で表します。

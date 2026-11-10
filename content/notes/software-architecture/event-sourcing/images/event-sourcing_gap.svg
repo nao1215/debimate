@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>連番の順と commit の順が入れ替わり、projector が 10 を読み飛ばす</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="112" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">11 が先に</text>
+<text x="40" y="144" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">commit</text>
+<rect x="250" y="84" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="310.0" y="126" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">8</text>
+<rect x="386" y="84" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="446.0" y="126" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">9</text>
+<rect x="522" y="84" width="120" height="64" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="582.0" y="126" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">10</text>
+<rect x="658" y="84" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="718.0" y="126" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">11</text>
+<text x="582.0" y="186" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">まだ読めない</text>
+<line x1="718.0" y1="44" x2="718.0" y2="78" stroke="#7aa6c2" stroke-width="3" marker-end="url(#arrow-blue)"/>
+<text x="718.0" y="34" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">読んだ位置 = 11</text>
+<text x="40" y="332" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">10 が遅れて</text>
+<text x="40" y="364" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">commit</text>
+<rect x="250" y="304" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="310.0" y="346" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">8</text>
+<rect x="386" y="304" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="446.0" y="346" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">9</text>
+<rect x="522" y="304" width="120" height="64" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="582.0" y="346" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">10</text>
+<rect x="658" y="304" width="120" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="718.0" y="346" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">11</text>
+<line x1="718.0" y1="264" x2="718.0" y2="298" stroke="#7aa6c2" stroke-width="3" marker-end="url(#arrow-blue)"/>
+<text x="718.0" y="254" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">読んだ位置 = 11</text>
+<path d="M568.0 386 L596.0 414 M596.0 386 L568.0 414" stroke="#e15759" stroke-width="4"/>
+<text x="582.0" y="446" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">位置より前なので読まれない</text>
+<rect x="250" y="484" width="24" height="24" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="284" y="504" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">読み取りモデルに反映済み</text>
+<rect x="560" y="484" width="24" height="24" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="594" y="504" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">遅れて commit</text>
+</svg>

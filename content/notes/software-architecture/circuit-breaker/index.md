@@ -6,6 +6,9 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern", "microservices", "reliability"]
 weight: 19
 wrapTables: true
+topics: ["Resilience Patterns"]
+crossTopics:
+  distributed-systems: ["Reliability"]
 ---
 
 サーキットブレーカー（Circuit Breaker）は、失敗が続いている下流のサービスへの呼び出しを一定時間止め、呼び出し側をすぐに失敗させる仕組みです。配電盤のブレーカーと同じく、異常を検知すると回路を開いて呼び出しを通さなくなり、しばらく経つと少数の呼び出しで回復を確かめます。
@@ -14,7 +17,11 @@ Michael Nygard 氏の書籍『[Release It!](https://pragprog.com/titles/mnee2/re
 
 例えば、注文サービスが呼ぶ在庫サービスが 30 秒間だけ応答を返さなくなると、注文サービスのスレッドは応答待ちで埋まり、在庫と関係の無い注文履歴の表示まで受け付けられなくなります。下流 1 つが黙るだけで、呼び出し側も止まるのです。ブレーカーは、この待ちを「すぐに返るエラー」に置き換えます。
 
-ブレーカーは、Closed・Open・Half-Open の 3 つの状態を行き来します。
+ブレーカーは、Closed・Open・Half-Open の 3 つの状態を行き来します。以下は、状態ごとに下流へ届く呼び出しの量を弁の開き具合で表した図です。
+
+{{< figure src="images/circuit-breaker_concept.svg" alt="左から来る呼び出しの量は 3 つの状態で同じで、Closed では弁が開いて全てが下流に届く。Half-Open では弁がほぼ閉じて細い線だけが下流に届き、残りは赤い矢印ですぐ失敗として呼び出し側に返る。Open では弁が閉じ、下流には何も届かず全てがすぐ失敗として返る" caption="3 つの状態で下流に届く呼び出しの量" align="center" >}}
+
+下流に呼び出しが届くのは Closed と Half-Open の時だけで、弁で止めた呼び出しは下流を待たずに失敗します。状態は次のように移ります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -29,8 +36,6 @@ stateDiagram-v2
     HalfOpen --> Closed: 試しの呼び出しが全て成功
     HalfOpen --> Open: 試しの呼び出しが<br/>1 件でも失敗
 ```
-
-上記の図で、下流に呼び出しが届くのは Closed と Half-Open の時だけです。
 
 <br>
 
@@ -212,6 +217,11 @@ class CircuitBreaker:
   B (local) served during outage: 1499/1567
   A: ok=1239 failed=60 fast_fail=1707 rejected=60
   transitions: 12.28s OPEN, 17.33s HALF_OPEN, 45.50s CLOSED (11 total)
+```
+
+<details><summary>timeout と Retry を変えた残り 4 つの構成の出力</summary>
+
+```text
 == breaker, timeout 30 s
   downstream calls during outage: 40
   B (local) served during outage: 42/1567
@@ -233,9 +243,11 @@ class CircuitBreaker:
   transitions: 16.28s OPEN, 21.29s HALF_OPEN, 43.39s CLOSED (7 total)
 ```
 
+</details>
+
 ブレーカーなしとありを時間に沿って並べると、以下の図になります。上から、使用中のスレッド数、要求 B を処理できた割合、下流に届いた呼び出しの数で、灰色の区間が下流の黙っている 30 秒です。
 
-![ブレーカーなしでは、下流が黙っている 30 秒間スレッド 40 本がほぼ埋まり続け、下流を呼ばない要求 B の処理できた割合は 0〜80% の間を上下する。ブレーカーありでは、最初の約 2 秒だけスレッドが埋まり、Open になった 12.28 秒以降は B を 100% 処理し、下流に届く呼び出しは Half-Open の試行だけになる。下流が 40 秒で回復した後、ブレーカーありは 45.5 秒まで呼び出しを止めたまま](images/outage_simulation.svg)
+{{< figure src="images/outage_simulation.svg" alt="ブレーカーなしでは、下流が黙っている 30 秒間スレッド 40 本がほぼ埋まり続け、下流を呼ばない要求 B の処理できた割合は 0〜80% の間を上下する。ブレーカーありでは、最初の約 2 秒だけスレッドが埋まり、Open になった 12.28 秒以降は B を 100% 処理し、下流に届く呼び出しは Half-Open の試行だけになる。下流が 40 秒で回復した後、ブレーカーありは 45.5 秒まで呼び出しを止めたまま" caption="下流が黙る障害での、ブレーカーなしとあり" align="center" >}}
 
 ブレーカーなしでは、下流を呼ばない要求 B も 1,567 件中 619 件（約 40%）しか処理できませんでした。ブレーカーありでは 1,499 件（約 96%）を処理でき、下流に届いた呼び出しも 600 件から 60 件に減りました。
 
@@ -287,13 +299,13 @@ Retry（失敗した呼び出しをやり直すこと）は、ブレーカーと
 
 Resilience4j を Java のフレームワーク Spring Boot から使う場合、[既定の順序](https://resilience4j.readme.io/docs/getting-started-3)は `Retry ( CircuitBreaker ( RateLimiter ( TimeLimiter ( Bulkhead ( Function ) ) ) ) )` で、Retry が一番外側です。
 
-| 構成 | ブレーカーが数える単位 | Open になった時刻 | 停止中に下流に届いた呼び出し | 停止中に処理できた要求 B |
-|---|---|---|---|---|
-| 試行 3 回（Retry 2 回）、ブレーカーなし | — | — | 600 | 205 / 1,567 |
-| `Retry(CircuitBreaker)` | 下流への試行 1 回ごと | 12.28 秒 | 61 | 1,492 / 1,567 |
-| `CircuitBreaker(Retry)` | 3 回試した後の最終結果 | 16.28 秒 | 165 | 1,275 / 1,567 |
+以下は、実験の 6 つの構成で、下流が黙っていた間に処理できた要求 B と、下流に届いた呼び出しを並べた図です。下の 3 本が Retry を含む構成です。
 
-Retry を外側に置くと、ブレーカーは試行のたびに失敗を数えるので、ブレーカーだけの構成と同じ 12.28 秒で Open になりました。内側に置くと、1 件の失敗が記録されるまでに 2 秒 × 3 回かかり、Open が 4 秒遅れて、下流に届いた呼び出しは約 2.7 倍になりました。
+{{< figure src="images/circuit-breaker_configs.svg" alt="6 つの構成の横棒グラフ。処理できた要求 B と下流に届いた呼び出しは、ブレーカーなしが 619 件と 600 件、ブレーカーが 1,499 件と 60 件、timeout 30 秒のブレーカーが 42 件と 40 件、試行 3 回でブレーカーなしが 205 件と 600 件、Retry(CircuitBreaker) が 1,492 件と 61 件、CircuitBreaker(Retry) が 1,275 件と 165 件" caption="6 つの構成で、停止中に処理できた要求 B と下流への呼び出し" align="center" >}}
+
+Retry を外側に置くと、ブレーカーは試行のたびに失敗を数えるので、ブレーカーだけの構成と同じ 12.28 秒で Open になりました。内側に置くと、1 件の失敗が記録されるまでに 2 秒 × 3 回かかり、Open になったのは 4 秒遅い 16.28 秒で、下流に届いた呼び出しは約 2.7 倍になりました。
+
+Retry だけでブレーカーの無い構成では、処理できた要求 B が 205 件で、ブレーカーなしの 619 件よりも減りました。
 
 外側に置く場合も、Open で断られた呼び出しは、やり直してもすぐに失敗が返るだけなので、やり直しを止めます（[Azure の説明](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker)）。
 

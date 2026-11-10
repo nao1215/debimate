@@ -68,7 +68,7 @@ node_pos = {}
 for name, xx, yy, val, grad in nodes:
     node_pos[name] = (xx, yy)
     ax.add_patch(patches.Circle((xx, yy), R, facecolor="white", edgecolor="black", lw=1.3))
-    ax.text(xx, yy + 0.12, name, ha="center", va="center", fontsize=11, fontweight="bold")
+    ax.text(xx, yy + 0.12, name, ha="center", va="center", fontsize=11, fontweight="normal")
     ax.text(xx, yy - 0.18, f"={fmt(val)}", ha="center", va="center", fontsize=9.5,
             color=COLOR_BLUE)
     if grad is not None:

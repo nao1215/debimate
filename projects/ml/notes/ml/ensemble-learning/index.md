@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 25
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 アンサンブル学習（ensemble learning）は、複数のモデルを学習して予測をまとめ、単体のモデルより安定した、または精度の高い予測を作る手法です。まとめ方は大きく bagging（bootstrap aggregating）、boosting、stacking の 3 系統に分かれます。

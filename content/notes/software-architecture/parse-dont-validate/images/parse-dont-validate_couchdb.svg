@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>重複した roles を、検査関数と本体が別々に読む</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrowa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="50" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">_users の文書（抜粋）</text>
+<rect x="40" y="70" width="440" height="290" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="56" y="182" width="408" height="56" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<rect x="56" y="252" width="408" height="56" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="64" y="116" font-size="26" style="font-family:'DejaVu Sans Mono',monospace;fill:#1f1f1f">{</text>
+<text x="84" y="160" font-size="26" style="font-family:'DejaVu Sans Mono',monospace;fill:#1f1f1f">&quot;name&quot;: &quot;oper&quot;,</text>
+<text x="84" y="220" font-size="26" style="font-family:'DejaVu Sans Mono',monospace;fill:#1f1f1f">&quot;roles&quot;: [&quot;_admin&quot;],</text>
+<text x="84" y="290" font-size="26" style="font-family:'DejaVu Sans Mono',monospace;fill:#1f1f1f">&quot;roles&quot;: []</text>
+<text x="64" y="340" font-size="26" style="font-family:'DejaVu Sans Mono',monospace;fill:#1f1f1f">}</text>
+<line x1="472" y1="280" x2="560" y2="280" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round"/>
+<rect x="570" y="236" width="360" height="92" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="750" y="274" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">検査関数（JavaScript）</text>
+<text x="750" y="310" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">後の roles だけを見て通す</text>
+<line x1="472" y1="210" x2="560" y2="120" stroke="#d4a24c" stroke-width="4" stroke-linecap="round"/>
+<rect x="570" y="72" width="360" height="92" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="750" y="110" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">本体（Erlang）</text>
+<text x="750" y="146" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">前の roles で権限を判定</text>
+<rect x="40" y="420" width="890" height="76" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="485" y="468" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">検査を通った同じ文書で、管理者の役割を得られる</text>
+</svg>

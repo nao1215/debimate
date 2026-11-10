@@ -6,30 +6,18 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "design-pattern"]
 weight: 5
 wrapTables: true
+topics: ["Container Patterns"]
 ---
 
 Sidecar とは、主となるアプリケーションのコンテナと同じ実行単位に置かれ、そのアプリケーションに機能を足す補助コンテナです。ログの転送や設定の取得など、業務ロジックとは別の共通処理を担当します。ここで言う実行単位とは、同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まりで、Kubernetes の Pod や Amazon ECS の Task が当たります。
 
 本記事では、コンテナの配置とライフサイクルを管理する基盤を実行基盤と呼びます。Kubernetes や Amazon ECS がその例です。
 
-以下は、Web サーバーのログを転送する構成の例です。
+以下は、Web サーバーのログを転送する構成で、同じ実行単位の 2 つのコンテナが共有するものと分けるものを描いた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    C["クライアント"] --> W
-    subgraph UNIT["同じ実行単位"]
-        W["main<br/>Web サーバー"]
-        L["sidecar<br/>logsaver"]
-        V[("共有 volume")]
-        W -- ログを書く --> V
-        L -- ログを読む --> V
-    end
-    L -- 転送 --> S[("クラスタのストレージ")]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/sidecar_concept.svg" alt="実行単位の枠の中で main（Web サーバー）と sidecar（logsaver）の 2 つの箱が重なり、重なった領域に共有の volume とネットワークが 1 つずつある。コンテナイメージと資源の上限は重ならない部分にそれぞれ別々に置かれ、クライアントは main を呼び、sidecar はログを外のストレージに送る" caption="main と sidecar が共有するものと分けるもの" align="center" >}}
 
-上記の図の 2 つのコンテナは、共有 volume だけで繋がっています。volume とは、コンテナの外に置かれ、同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場です。マウントとは、volume が自分のファイルシステムの一部として見えるように指定する操作です。
+上記の図の 2 つのコンテナは、重なった領域の volume とネットワーク（共有する設定の場合）を共有し、イメージと資源の上限は別々に持ちます。ログの受け渡しは共有 volume だけで行います。volume とは、コンテナの外に置かれ、同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場です。マウントとは、volume が自分のファイルシステムの一部として見えるように指定する操作です。
 
 Web サーバーはログをファイルに書くだけで、転送先も転送の再試行も知りません。logsaver はログの形式を知っていれば動くので、Web サーバーが何語で書かれていても同じコンテナイメージを使い回せます。
 

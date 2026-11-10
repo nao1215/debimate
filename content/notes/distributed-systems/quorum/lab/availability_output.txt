@@ -1,0 +1,36 @@
+unavailability = 1 - P(at least k replicas up), independent failures
+
+p = 0.001
+config         write unavail  read unavail
+N=3 W=1 R=3        1.000e-09     2.997e-03
+N=3 W=2 R=2        2.998e-06     2.998e-06
+N=3 W=3 R=1        2.997e-03     1.000e-09
+N=5 W=3 R=3        9.985e-09     9.985e-09
+
+p = 0.01
+config         write unavail  read unavail
+N=3 W=1 R=3        1.000e-06     2.970e-02
+N=3 W=2 R=2        2.980e-04     2.980e-04
+N=3 W=3 R=1        2.970e-02     1.000e-06
+N=5 W=3 R=3        9.851e-06     9.851e-06
+
+p = 0.05
+config         write unavail  read unavail
+N=3 W=1 R=3        1.250e-04     1.426e-01
+N=3 W=2 R=2        7.250e-03     7.250e-03
+N=3 W=3 R=1        1.426e-01     1.250e-04
+N=5 W=3 R=3        1.158e-03     1.158e-03
+
+p = 0.1
+config         write unavail  read unavail
+N=3 W=1 R=3        1.000e-03     2.710e-01
+N=3 W=2 R=2        2.800e-02     2.800e-02
+N=3 W=3 R=1        2.710e-01     1.000e-03
+N=5 W=3 R=3        8.560e-03     8.560e-03
+
+p = 0.2
+config         write unavail  read unavail
+N=3 W=1 R=3        8.000e-03     4.880e-01
+N=3 W=2 R=2        1.040e-01     1.040e-01
+N=3 W=3 R=1        4.880e-01     8.000e-03
+N=5 W=3 R=3        5.792e-02     5.792e-02

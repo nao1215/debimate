@@ -1,0 +1,9 @@
+SQLite 3.46.1, seed 20261110, 10,000 events, 1 unit each
+crash rate deliveries | over-reserved units | over-reserved units
+                      |         (no record) |  (processed record)
+      0.0%     10,000 |                   0 |                   0
+      0.1%     10,011 |                  11 |                   0
+      1.0%     10,095 |                  95 |                   0
+      5.0%     10,545 |                 545 |                   0
+     10.0%     11,139 |               1,139 |                   0
+     20.0%     12,502 |               2,502 |                   0

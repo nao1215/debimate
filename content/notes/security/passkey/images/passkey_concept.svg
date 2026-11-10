@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>偽サイトに渡るものの違い</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrowA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrowS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrowO" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<line x1="480" y1="30" x2="480" y2="510" stroke="#dddddd" stroke-width="2" stroke-linecap="round"/>
+<text x="240" y="60" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Password</text>
+<rect x="20" y="220" width="150" height="100" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="3"/>
+<text x="95" y="262" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">利用者</text>
+<text x="95" y="298" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">password</text>
+<rect x="270" y="120" width="190" height="90" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="365" y="174" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">example.com</text>
+<rect x="270" y="330" width="190" height="90" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="365" y="384" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">examp1e.com</text>
+<line x1="170" y1="250" x2="262" y2="175" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowA)"/>
+<line x1="170" y1="290" x2="262" y2="370" stroke="#d4a24c" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowO)"/>
+<line x1="365" y1="326" x2="365" y2="218" stroke="#e15759" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 8" marker-end="url(#arrowR)"/>
+<text x="240" y="490" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">同じ文字列で本物に入れる</text>
+<text x="720" y="60" font-size="30" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Passkey</text>
+<rect x="500" y="150" width="200" height="230" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="3"/>
+<text x="600" y="190" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Authenticator</text>
+<rect x="518" y="220" width="164" height="130" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="600" y="272" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">秘密鍵</text>
+<text x="600" y="312" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">example.com</text>
+<rect x="760" y="120" width="190" height="90" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="855" y="160" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">example.com</text>
+<text x="855" y="194" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">公開鍵</text>
+<rect x="760" y="330" width="190" height="90" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3" stroke-dasharray="8 6"/>
+<text x="855" y="384" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">examp1e.com</text>
+<line x1="682" y1="250" x2="752" y2="180" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowA)"/>
+<text x="726" y="246" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">署名</text>
+<line x1="682" y1="320" x2="730" y2="362" stroke="#666666" stroke-width="5" stroke-linecap="round" stroke-dasharray="8 7" marker-end="url(#arrowS)"/>
+<line x1="731" y1="362" x2="757" y2="388" stroke="#666666" stroke-width="6" stroke-linecap="round"/>
+<line x1="731" y1="388" x2="757" y2="362" stroke="#666666" stroke-width="6" stroke-linecap="round"/>
+<text x="720" y="490" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">偽サイトには署名が出ない</text>
+</svg>

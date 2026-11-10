@@ -1,0 +1,11 @@
+SQLite 3.46.1, seed 20261110, 200 rounds per K
+K = workers that read the same order and each add 1 line
+ K  added | no version: lost | version + retry: lost conflicts
+ 1    200 |                0 |                     0         0
+ 2    400 |               89 |                     0        98
+ 3    600 |              234 |                     0       283
+ 4    800 |              379 |                     0       473
+ 5   1000 |              549 |                     0       736
+ 6   1200 |              718 |                     0      1021
+ 7   1400 |              874 |                     0      1276
+ 8   1600 |             1074 |                     0      1644

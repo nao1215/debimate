@@ -1,4 +1,4 @@
-"""Generate the waterfall SVGs of the distributed-tracing note.
+"""Generate the SVGs of the distributed-tracing note (waterfalls and the ID tree).
 
 The span timings are copied from lab/output.txt (rounded to 1 ms).
 Run: python3 figures.py
@@ -79,11 +79,57 @@ def waterfall(rows, t_min, t_max, path, marks=()):
     path.write_text("\n".join(out) + "\n")
 
 
+def id_tree(path):
+    """Concept figure: one trace ID shared by all spans, parent span IDs build the tree."""
+    w, h = 960, 540
+    blue, blue_bg = ACCENT, "#eaf1f5"
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
+        f'viewBox="0 0 {w} {h}" font-family="{FONT}" role="img">',
+        "<title>同じ trace ID を持つ Span が、parent span ID で木になる</title>",
+        f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
+    ]
+
+    def text(x, y, s, size=24, color=INK, anchor="middle"):
+        out.append(f'<text x="{x}" y="{y}" font-size="{size}" fill="{color}" '
+                   f'text-anchor="{anchor}">{s}</text>')
+
+    # the trace: one shared trace ID around all spans
+    out.append(f'<rect x="20" y="20" width="920" height="500" rx="14" fill="{FILL}" '
+               f'stroke="{LINE}" stroke-width="2"/>')
+    text(44, 60, "Trace（全ての Span が同じ trace ID を持つ）", 24, SUB, "start")
+
+    bw, bh = 300, 118
+    boxes = {  # key: (x, y, name, span ID, parent)
+        "A": (330, 84, "gateway の Span", "A", "なし（root span）"),
+        "B": (330, 236, "orders の Span", "B", "A"),
+        "C": (130, 388, "inventory の Span", "C", "B"),
+        "D": (530, 388, "mailer の Span", "D", "B"),
+    }
+    for child, parent in [("B", "A"), ("C", "B"), ("D", "B")]:
+        cx, cy = boxes[child][0] + bw / 2, boxes[child][1]
+        px, py = boxes[parent][0] + bw / 2, boxes[parent][1] + bh
+        my = (py + cy) / 2           # elbow connector: down, across, down
+        out.append(f'<path d="M{px},{py} L{px},{my} L{cx},{my} L{cx},{cy - 4}" '
+                   f'fill="none" stroke="{SUB}" stroke-width="2.5"/>')
+        out.append(f'<path d="M{cx - 8},{cy - 14} L{cx},{cy - 2} L{cx + 8},{cy - 14}" '
+                   f'fill="none" stroke="{SUB}" stroke-width="2.5"/>')
+    for x, y, name, sid, parent in boxes.values():
+        out.append(f'<rect x="{x}" y="{y}" width="{bw}" height="{bh}" rx="10" '
+                   f'fill="{blue_bg}" stroke="{blue}" stroke-width="3"/>')
+        text(x + bw / 2, y + 36, name, 24)
+        text(x + 24, y + 72, f"span ID: {sid}", 24, SUB, "start")
+        text(x + 24, y + 104, f"親: {parent}", 24, SUB, "start")
+    out.append("</svg>")
+    path.write_text("\n".join(out) + "\n")
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     waterfall(NORMAL, 0, 80, OUT / "distributed_tracing_waterfall.svg")
     waterfall(SKEWED, -110, 60, OUT / "distributed_tracing_skew.svg",
               marks=[(2, "parent starts")])
+    id_tree(OUT / "distributed_tracing_ids.svg")
 
 
 if __name__ == "__main__":

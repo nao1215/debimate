@@ -6,27 +6,18 @@ series: ["技術ノート", "Security"]
 tags: ["security", "authentication"]
 weight: 2
 wrapTables: true
+topics: ["Authentication / Identity"]
 ---
 
-Passkey は、手元の端末（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバーが対になる公開鍵で署名を検証する認証の方式です。FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだとしています。
+Passkey は、手元の端末（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバーが対になる公開鍵で署名を検証する認証の方式です。
+
+FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだとしています。
 
 Passkey は、ログイン画面を真似た偽サイトに認証情報を盗まれる攻撃への対策になります。Password は利用者が読み書きできる文字列なので、相手を間違えればそのまま攻撃者の手に渡り、本物のサイトで使われます。署名は、宛先のドメインと 1 回限りの乱数に結び付いた値になるので、覗き見ても別のサイトや次回のログインでは通りません。
 
-以下は、2 つの方式で何がどこに置かれるかを比べた図です。
+以下は、2 つの方式で、本物の example.com に似せた偽サイト examp1e.com に何が渡るかを比べた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph P["Password 認証"]
-        direction LR
-        U1["User<br/>password を覚える"] -- "password を送る" --> S1["Server<br/>password hash を保存"]
-    end
-    subgraph K["Passkey"]
-        direction LR
-        A["Authenticator<br/>秘密鍵を保持"] -- "署名を送る" --> S2["Server<br/>公開鍵を保存"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/passkey_concept.svg" alt="Password では、利用者が偽サイトに入力した文字列がそのまま本物のサイトで使われる。Passkey では、秘密鍵は example.com 用として Authenticator の中に留まり、署名は本物のサイトにだけ出て、偽サイトには出ない。" caption="偽サイトに渡るもの: Password と Passkey" align="center" >}}
 
 上記の図の Passkey では、秘密鍵が Authenticator の管理下に留まり、サーバーに渡るのは署名です。署名は対になる公開鍵で検証でき、公開鍵から秘密鍵は導けません。そのため、サーバーは秘密鍵を預からずに「相手が秘密鍵を持っていること」を確かめられます。
 
@@ -81,7 +72,9 @@ Passkey という言葉は資格情報を指し、それを扱う仕組みは複
 - Client: ブラウザや OS。WebAuthn の API を実装する
 - Authenticator: 鍵を作り、保持し、署名する部品
 
-Authenticator には、端末に組み込まれた Platform Authenticator と、USB や NFC などで繋ぐ Roaming Authenticator があります。W3C の [Web Authentication 仕様](https://www.w3.org/TR/webauthn-3/)は、この部品を「that can register a user with a given Relying Party and later assert possession of the registered public key credential」（ある Relying Party に対して利用者を登録し、後から登録済みの公開鍵資格情報の保持を主張できるもの）と定義しています。
+Authenticator には、端末に組み込まれた Platform Authenticator と、USB や NFC などで繋ぐ Roaming Authenticator があります。
+
+W3C の [Web Authentication 仕様](https://www.w3.org/TR/webauthn-3/)は、この部品を「that can register a user with a given Relying Party and later assert possession of the registered public key credential」（ある Relying Party に対して利用者を登録し、後から登録済みの公開鍵資格情報の保持を主張できるもの）と定義しています。
 
 定義はこの後に「[and optionally verify the user to the Relying Party](https://www.w3.org/TR/webauthn-3/#authenticator)」（任意で、利用者を Relying Party に確認する）と続きます。後述の User Verification がこの確認に当たります。
 
@@ -101,7 +94,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の WebAuthn は、Web ページのスクリプトが Client を呼び出すための API です。Client と Roaming Authenticator の間は CTAP（Client to Authenticator Protocol）で繋がり、WebAuthn と CTAP はまとめて [FIDO2](https://fidoalliance.org/fido2/) と呼ばれます。Platform Authenticator には端末の中の仕組みで繋がるので、CTAP を通るとは限りません。
+上記の図の WebAuthn は、Web ページのスクリプトが Client を呼び出すための API です。Client と Roaming Authenticator の間は CTAP（Client to Authenticator Protocol）で繋がり、WebAuthn と CTAP はまとめて [FIDO2](https://fidoalliance.org/fido2/) と呼ばれます。
+
+Platform Authenticator には端末の中の仕組みで繋がるので、CTAP を通るとは限りません。
 
 Authenticator が返す署名と付随データの組を assertion と呼び、これがサーバーまで運ばれます。
 
@@ -161,9 +156,15 @@ sequenceDiagram
     S->>S: challenge・origin・RP ID のハッシュ・<br/>フラグを検証してから署名を検証
 ```
 
-上記の図の authenticatorData には、RP ID のハッシュ・利用者の確認結果を表すフラグ・signCount が入ります。署名の対象は、この authenticatorData と clientDataJSON のハッシュを繋いだ値です。その結果、challenge も origin も署名の範囲に入ります。
+上記の図の authenticatorData には、RP ID のハッシュ・利用者の確認結果を表すフラグ・signCount が入ります。署名の対象は、この authenticatorData と clientDataJSON のハッシュを繋いだ値です。その結果、challenge も origin も署名の範囲に入ります。以下が署名の対象です。
 
-[署名の検証](https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion)で分かるのは、署名の対象が書き換えられていないことと、登録済みの公開鍵に対応する秘密鍵で署名されたことです。署名が正しくても、その中の challenge や origin がサーバーの期待した値だったとは限りません。そのためサーバーは、署名の検証とは別に、challenge が自分の出した値か、origin が期待する相手か、RP ID のハッシュが自分のものかを 1 つずつ突き合わせます。
+{{< figure src="images/passkey_signed.svg" alt="上段に、Authenticator が作る authenticatorData の 3 つの区画（RP ID のハッシュ 32 バイト、フラグ 1 バイト、signCount 4 バイト）と、clientDataJSON のハッシュ 32 バイトが並ぶ。フラグからは UP・UV・BE・BS のビットが、clientDataJSON からは type・challenge・origin が引き出されている。全体を括弧でまとめ、秘密鍵で署名して signature になる" caption="authenticatorData と clientDataJSON のハッシュを繋いで署名する" align="center" >}}
+
+青い区画は Authenticator が、黄土色の区画は Client が組み立てた値です。
+
+[署名の検証](https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion)で分かるのは、署名の対象が書き換えられていないことと、登録済みの公開鍵に対応する秘密鍵で署名されたことです。署名が正しくても、その中の challenge や origin がサーバーの期待した値だったとは限りません。
+
+そのためサーバーは、署名の検証とは別に、challenge が自分の出した値か、origin が期待する相手か、RP ID のハッシュが自分のものかを 1 つずつ突き合わせます。
 
 <br>
 
@@ -177,7 +178,9 @@ signCount は、対応する Authenticator が実装している場合に、認�
 
 Passkey が phishing に強いのは、利用者ではなく Client が、要求された RP ID と呼び出し元の origin を照合するからです。判断の材料は画面の見た目ではなく、ブラウザが決める origin です。
 
-見た目に騙された社員がいても、ログインは通りませんでした。2022 年 7 月の [Cloudflare の社員を狙った SMS の phishing](https://blog.cloudflare.com/2022-07-sms-phishing-attacks/) では、少なくとも 76 人に `cloudflare-okta.com` という偽のログイン画面へのリンクが届き、3 人が Password を入力しました。攻撃者は盗んだ Password で本物のサイトに入ろうとしましたが、セキュリティキーの応答を求められて先に進めませんでした。
+見た目に騙された社員がいても、ログインは通りませんでした。2022 年 7 月の [Cloudflare の社員を狙った SMS の phishing](https://blog.cloudflare.com/2022-07-sms-phishing-attacks/) では、少なくとも 76 人に `cloudflare-okta.com` という偽のログイン画面へのリンクが届き、3 人が Password を入力しました。
+
+攻撃者は盗んだ Password で本物のサイトに入ろうとしましたが、セキュリティキーの応答を求められて先に進めませんでした。
 
 偽サイトは TOTP も入力させて攻撃者へ中継する作りで、TOTP を使う組織なら突破されていました。使われたのは同期する Passkey ではなく USB のセキュリティキー（Roaming Authenticator）ですが、照合の仕組みは同じです。仮に偽サイトがキーの応答を求めても、作られるのは偽サイトの origin に結び付いた応答で、本物のサイトでは通りません。
 
@@ -198,7 +201,9 @@ flowchart TB
 
 上記の図の判定は 2 段あります。Client は、スクリプトが指定した RP ID が呼び出し元の origin に対応することを確かめ、対応しない RP ID を渡された要求を拒否します。
 
-対応するとは、RP ID が origin のホスト名と同じか、その親のドメインであることです（login.example.com の origin なら example.com も指定できます）。Level 3 の [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-related-origins) では、RP ID のドメインが `/.well-known/webauthn` で許可した origin も含まれます。偽サイトが本物のドメインを RP ID として名乗っても、ここで止まります。
+対応するとは、RP ID が origin のホスト名と同じか、その親のドメインであることです（login.example.com の origin なら example.com も指定できます）。
+
+Level 3 の [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-related-origins) では、RP ID のドメインが `/.well-known/webauthn` で許可した origin も含まれます。偽サイトが本物のドメインを RP ID として名乗っても、ここで止まります。
 
 偽サイトが自分の origin を RP ID として指定した場合は、Authenticator まで届きます。Authenticator は origin を見ませんが、鍵が RP ID ごとに分かれているので、そこで作れる署名は偽サイト向けの鍵によるものだけです。
 

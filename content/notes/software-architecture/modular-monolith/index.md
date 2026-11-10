@@ -6,13 +6,16 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "modular-monolith", "microservices"]
 weight: 17
 wrapTables: true
+topics: ["Service Boundaries"]
 ---
 
 モジュラーモノリス（Modular Monolith）は、アプリケーションを 1 つのデプロイ単位のまま、内部を注文・請求・在庫のようなモジュールに分け、モジュール間の呼び出しを各モジュールが公開した API だけに限る構成です。実行ファイルもリポジトリも 1 つで構いません。分けるのは実行場所ではなく、コードとデータの持ち主です。
 
-境界の無いモノリスでは、請求のコードに注文の内部パッケージを import する 1 行を足すだけで、注文の表を直接書き換えられます。見落とすと、次に注文の仕様を変える時に請求まで直すことになります。[Distributed Monolith](../distributed-monolith/) は、サービスを分けたのにこの種の結合が残った状態でした。モジュラーモノリスは逆の順序を取り、デプロイを分ける前に境界を作って、境界を破る変更をビルドと CI（Continuous Integration、変更のたびにビルドとテストを自動で回す仕組み）で止めます。
+境界の無いモノリスでは、請求のコードに注文の内部パッケージを import する 1 行を足すだけで、注文の表を直接書き換えられます。見落とすと、次に注文の仕様を変える時に請求まで直すことになります。
 
-![デプロイ単位の数を横軸、境界の強さを縦軸にして 4 つの構成を並べた図。左上がモジュラーモノリス、右上がマイクロサービス、左下が境界の無いモノリス、右下が Distributed Monolith](images/modular_monolith_map.svg)
+[Distributed Monolith](../distributed-monolith/) は、サービスを分けたのにこの種の結合が残った状態でした。モジュラーモノリスは逆の順序を取り、デプロイを分ける前に境界を作って、境界を破る変更をビルドと CI（Continuous Integration、変更のたびにビルドとテストを自動で回す仕組み）で止めます。
+
+{{< figure src="images/modular_monolith_map.svg" alt="デプロイ単位の数を横軸、境界の強さを縦軸にして 4 つの構成を並べた図。左上がモジュラーモノリス、右上がマイクロサービス、左下が境界の無いモノリス、右下が Distributed Monolith" caption="デプロイ単位の数と境界の強さで並べた 4 つの構成" align="center" >}}
 
 上記の図のように、デプロイ単位を増やすことと境界を強くすることは別の軸です。右下の Distributed Monolith は前者だけを進めた結果で、モジュラーモノリスは左上で後者だけを先に進めています。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/modular-monolith/figures.py) にあります。
 
@@ -72,7 +75,9 @@ flowchart LR
 
 ### 境界違反を検出する実験
 
-Go には、境界の一部をツールチェーン（`go build` などの go コマンド）が強制する仕組みがあります。[cmd/go のドキュメント](https://pkg.go.dev/cmd/go#hdr-Internal_Directories)にある通り、`internal` という名前のディレクトリ以下のコードは、`internal` の親ディレクトリを根とするツリーの中からしか import できません。`orders/internal/store` は `orders` の下からは使えますが、`billing` からは使えません。以降、「モジュール」は注文や請求のような業務のまとまりを指し、`go.mod` で定義する単位は「Go モジュール」と呼びます。
+Go には、境界の一部をツールチェーン（`go build` などの go コマンド）が強制する仕組みがあります。[cmd/go のドキュメント](https://pkg.go.dev/cmd/go#hdr-Internal_Directories)にある通り、`internal` という名前のディレクトリ以下のコードは、`internal` の親ディレクトリを根とするツリーの中からしか import できません。`orders/internal/store` は `orders` の下からは使えますが、`billing` からは使えません。
+
+以降、「モジュール」は注文や請求のような業務のまとまりを指し、`go.mod` で定義する単位は「Go モジュール」と呼びます。
 
 以下は、注文と請求の 2 モジュールを持つ実験用のプログラムです。注文の表の代わりにメモリ上の map を持つ `orders/internal/store/store.go`、2 つのモジュールを呼ぶだけの `cmd/shop/main.go`、`go.mod` は省略しました。全てのファイルは [lab/shop](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/modular-monolith/lab/shop) にあります。
 
@@ -174,7 +179,12 @@ echo "OK: モジュール間の import は全て許可された向きです"
 3. 新しい `orders/notify` パッケージが `billing` を import する
 4. Go モジュールの根の `internal/ordersql` に orders 表を読む SQL を置き、`billing` から import する
 
-Go 1.26.4 で `./run.sh` を実行した結果は、以下の通りです。
+Go 1.26.4 で `./run.sh` を実行した結果は、以下の通りです。矢印は足した import の向きで、色はそれを止めた検査です。
+
+{{< figure src="images/modular_monolith_violations.svg" alt="請求モジュールの billing と、注文モジュールの orders・orders/internal/store・orders/notify、Go モジュールの根の internal/ordersql を箱で置いた図。billing から orders への灰色の矢印が許可した向き。[1] billing から orders/internal/store と [2] orders から billing は青で、go build が止める。[3] orders/notify から billing と [4] billing から internal/ordersql は黄土色で、depcheck.sh が止める" caption="実験で足した 4 つの import と、止めた検査" align="center" >}}
+
+<details>
+<summary>run.sh の出力</summary>
 
 ```text
 == [0] 変更前
@@ -198,9 +208,13 @@ NG example.com/shop/billing -> example.com/shop/internal/ordersql
 depcheck.sh の終了コード: 1
 ```
 
+</details>
+
 [1] と [2] は `go build` が止めました。go コマンドはパッケージ同士の import の循環を許さないので、`orders` パッケージ自身が `billing` を import すると、ビルドが通りません。
 
-しかし [3] はビルドが通ります。`orders/notify` → `billing` → `orders` という並びは、パッケージの単位では循環していません。モジュールの単位で見ると注文と請求が互いに依存しているのに、go コマンドには本記事の「モジュール」という単位が無いからです。[4] もビルドが通ります。`internal` の親が Go モジュールの根なので、同じ Go モジュール内の全てのコードから import できます。「共通処理だから」と根の `internal` に置いたパッケージは、どのモジュールからでも使える裏口になります。
+しかし [3] はビルドが通ります。`orders/notify` → `billing` → `orders` という並びは、パッケージの単位では循環していません。モジュールの単位で見ると注文と請求が互いに依存しているのに、go コマンドには本記事の「モジュール」という単位が無いからです。
+
+[4] もビルドが通ります。`internal` の親が Go モジュールの根なので、同じ Go モジュール内の全てのコードから import できます。「共通処理だから」と根の `internal` に置いたパッケージは、どのモジュールからでも使える裏口になります。
 
 [3] と [4] を止めたのは `depcheck.sh` で、終了コード 1 を返しています。CI で `go build ./...` の次に実行すれば、この 1 行はマージ前に落ちます。
 
@@ -300,7 +314,9 @@ Shopify も、2020 年の [Under Deconstruction](https://shopify.engineering/sho
   body: packwerk 3.0 で公開範囲の検査を本体から外し、依存グラフの検査に絞りました。公開範囲の検査は拡張 gem の役割になっています。違反ゼロでも実行時に落ちる例が報告されています。
 {{< /note-steps >}}
 
-2024 年の [A Packwerk Retrospective](https://shopify.engineering/a-packwerk-retrospective) は、公開範囲の検査が packwerk を「本来の目的ではない API 設計の道具」に変えてしまったと振り返っています。また、静的解析では見えない依存があるので、違反ゼロのパッケージでも実行時に名前の解決エラーで落ちることがあります。現在の [USAGE.md](https://github.com/Shopify/packwerk/blob/main/USAGE.md) でも、本体が持つのは依存の境界の検査だけです。機械の検査は、境界を守る最低線であり、境界が正しいことの証明ではありません。
+2024 年の [A Packwerk Retrospective](https://shopify.engineering/a-packwerk-retrospective) は、公開範囲の検査が packwerk を「本来の目的ではない API 設計の道具」に変えてしまったと振り返っています。
+
+静的解析では見えない依存もあるので、違反ゼロのパッケージでも実行時に名前の解決エラーで落ちることがあります。現在の [USAGE.md](https://github.com/Shopify/packwerk/blob/main/USAGE.md) でも、本体が持つのは依存の境界の検査だけです。機械の検査は、境界を守る最低線であり、境界が正しいことの証明ではありません。
 
 <br>
 

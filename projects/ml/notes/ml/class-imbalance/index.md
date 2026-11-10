@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "imbalance"]
 weight: 12
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 クラス不均衡（class imbalance）は、分類問題でクラス間のサンプル数が大きく偏っている状況を指します。例えば、故障の検知で正常な記録が大半を占め、検出したい故障の記録が少数しかない場合です。

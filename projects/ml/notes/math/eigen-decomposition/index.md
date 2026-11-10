@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "linear-algebra"]
 weight: 17
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 固有ベクトル（eigenvector）は、ある正方行列 `A` をかけても同じ直線の上にとどまるベクトルのことで、固有値（eigenvalue）はそのとき長さが何倍になるかを表すスカラーです。式で書くと、

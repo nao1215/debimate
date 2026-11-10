@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 9
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 相関係数は、2 つの変数の関係の強さを -1 から +1 の 1 つの数で要約する指標です。線形関係を測る Pearson 相関係数と、順位の単調関係を見る Spearman / Kendall 相関係数があります。[標準化](../../ml/standardization/) や [PCA](../../ml/pca/)、[特徴量選択](../../ml/feature-selection/)、EDA（探索的データ分析）の起点として広く使われます。

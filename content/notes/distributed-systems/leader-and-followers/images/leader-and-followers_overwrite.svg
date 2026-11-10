@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>過半数に届いた過去の任期のエントリが、後の Leader に上書きされる</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="124" y="40" font-size="24" text-anchor="middle" style="fill:#666666">段階 1</text>
+<text x="124" y="74" font-size="24" text-anchor="middle" style="fill:#1f1f1f">A が B に配る</text>
+<text x="58" y="134" font-size="24" text-anchor="middle" style="fill:#666666">A</text>
+<rect x="90" y="98" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="138" y="134" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="58" y="206" font-size="24" text-anchor="middle" style="fill:#666666">B</text>
+<rect x="90" y="170" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="138" y="206" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="58" y="278" font-size="24" text-anchor="middle" style="fill:#666666">C</text>
+<rect x="90" y="242" width="96" height="54" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="138" y="278" font-size="24" text-anchor="middle" style="fill:#666666">-</text>
+<text x="58" y="350" font-size="24" text-anchor="middle" style="fill:#666666">D</text>
+<rect x="90" y="314" width="96" height="54" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="138" y="350" font-size="24" text-anchor="middle" style="fill:#666666">-</text>
+<text x="58" y="422" font-size="24" text-anchor="middle" style="fill:#666666">E</text>
+<rect x="90" y="386" width="96" height="54" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="138" y="422" font-size="24" text-anchor="middle" style="fill:#666666">-</text>
+<line x1="240" y1="96" x2="240" y2="452" stroke="#d8d8d8" stroke-width="2"/>
+<text x="360" y="40" font-size="24" text-anchor="middle" style="fill:#666666">段階 2</text>
+<text x="360" y="74" font-size="24" text-anchor="middle" style="fill:#1f1f1f">E が自分に書く</text>
+<text x="294" y="134" font-size="24" text-anchor="middle" style="fill:#666666">A</text>
+<rect x="326" y="98" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="374" y="134" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="294" y="206" font-size="24" text-anchor="middle" style="fill:#666666">B</text>
+<rect x="326" y="170" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="374" y="206" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="294" y="278" font-size="24" text-anchor="middle" style="fill:#666666">C</text>
+<rect x="326" y="242" width="96" height="54" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="374" y="278" font-size="24" text-anchor="middle" style="fill:#666666">-</text>
+<text x="294" y="350" font-size="24" text-anchor="middle" style="fill:#666666">D</text>
+<rect x="326" y="314" width="96" height="54" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="374" y="350" font-size="24" text-anchor="middle" style="fill:#666666">-</text>
+<text x="294" y="422" font-size="24" text-anchor="middle" style="fill:#666666">E</text>
+<rect x="326" y="386" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="374" y="422" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<line x1="476" y1="96" x2="476" y2="452" stroke="#d8d8d8" stroke-width="2"/>
+<text x="596" y="40" font-size="24" text-anchor="middle" style="fill:#666666">段階 3</text>
+<text x="596" y="74" font-size="24" text-anchor="middle" style="fill:#1f1f1f">A が C に配る</text>
+<text x="530" y="134" font-size="24" text-anchor="middle" style="fill:#666666">A</text>
+<rect x="562" y="98" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="610" y="134" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="530" y="206" font-size="24" text-anchor="middle" style="fill:#666666">B</text>
+<rect x="562" y="170" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="610" y="206" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="530" y="278" font-size="24" text-anchor="middle" style="fill:#666666">C</text>
+<rect x="562" y="242" width="96" height="54" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="610" y="278" font-size="24" text-anchor="middle" style="fill:#1f1f1f">2</text>
+<text x="530" y="350" font-size="24" text-anchor="middle" style="fill:#666666">D</text>
+<rect x="562" y="314" width="96" height="54" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="6 6"/>
+<text x="610" y="350" font-size="24" text-anchor="middle" style="fill:#666666">-</text>
+<text x="530" y="422" font-size="24" text-anchor="middle" style="fill:#666666">E</text>
+<rect x="562" y="386" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="610" y="422" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<line x1="712" y1="96" x2="712" y2="452" stroke="#d8d8d8" stroke-width="2"/>
+<text x="832" y="40" font-size="24" text-anchor="middle" style="fill:#666666">段階 4</text>
+<text x="832" y="74" font-size="24" text-anchor="middle" style="fill:#1f1f1f">E が上書き</text>
+<text x="766" y="134" font-size="24" text-anchor="middle" style="fill:#666666">A</text>
+<rect x="798" y="98" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="846" y="134" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<text x="766" y="206" font-size="24" text-anchor="middle" style="fill:#666666">B</text>
+<rect x="798" y="170" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="846" y="206" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<text x="766" y="278" font-size="24" text-anchor="middle" style="fill:#666666">C</text>
+<rect x="798" y="242" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="846" y="278" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<text x="766" y="350" font-size="24" text-anchor="middle" style="fill:#666666">D</text>
+<rect x="798" y="314" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="846" y="350" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<text x="766" y="422" font-size="24" text-anchor="middle" style="fill:#666666">E</text>
+<rect x="798" y="386" width="96" height="54" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="846" y="422" font-size="24" text-anchor="middle" style="fill:#1f1f1f">3</text>
+<text x="250" y="500" font-size="24" text-anchor="middle" style="fill:#666666">数字はエントリの任期</text>
+<text x="596" y="500" font-size="24" text-anchor="middle" style="fill:#666666">過半数に届く</text>
+<text x="832" y="500" font-size="24" text-anchor="middle" style="fill:#e15759">任期 2 が消える</text>
+</svg>

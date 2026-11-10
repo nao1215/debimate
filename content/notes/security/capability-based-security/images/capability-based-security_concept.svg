@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" width="960" height="540" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" role="img"><title>アクセス行列の列と行</title>
+  <rect width="960" height="540" fill="#ffffff"/>
+  <rect x="520" y="108" width="150" height="306" rx="10" fill="#f8eed8" stroke="none"/>
+  <rect x="32" y="266" width="690" height="86" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="5"/>
+  <rect x="520" y="108" width="150" height="306" rx="10" fill="none" stroke="#d4a24c" stroke-width="5"/>
+  <line x1="220" y1="116" x2="220" y2="352" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="370" y1="116" x2="370" y2="352" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="520" y1="116" x2="520" y2="352" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="670" y1="116" x2="670" y2="352" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="40" y1="180" x2="670" y2="180" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="40" y1="266" x2="670" y2="266" stroke="#bdbdbd" stroke-width="2"/>
+  <line x1="40" y1="352" x2="670" y2="352" stroke="#bdbdbd" stroke-width="2"/>
+  <text x="40" y="58" font-size="28" fill="#1f1f1f" text-anchor="start" font-weight="normal">アクセス行列</text>
+  <text x="230" y="58" font-size="24" fill="#666666" text-anchor="start" font-weight="normal">行は主体、列は対象</text>
+  <text x="130.0" y="156" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">主体＼対象</text>
+  <text x="295.0" y="158" font-size="26" fill="#1f1f1f" text-anchor="middle" font-weight="normal">debug.txt</text>
+  <text x="445.0" y="158" font-size="26" fill="#1f1f1f" text-anchor="middle" font-weight="normal">STAT</text>
+  <text x="595.0" y="158" font-size="26" fill="#1f1f1f" text-anchor="middle" font-weight="normal">BILL</text>
+  <text x="130.0" y="232.0" font-size="26" fill="#1f1f1f" text-anchor="middle" font-weight="normal">alice</text>
+  <text x="295.0" y="232.0" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">読み書き</text>
+  <text x="445.0" y="232.0" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">なし</text>
+  <text x="595.0" y="232.0" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">なし</text>
+  <text x="130.0" y="318.0" font-size="26" fill="#1f1f1f" text-anchor="middle" font-weight="normal">コンパイラ</text>
+  <text x="295.0" y="318.0" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">なし</text>
+  <text x="445.0" y="318.0" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">書き込み</text>
+  <text x="595.0" y="318.0" font-size="24" fill="#1f1f1f" text-anchor="middle" font-weight="normal">書き込み</text>
+  <text x="595.0" y="456" font-size="28" fill="#1f1f1f" text-anchor="middle" font-weight="normal">列 = ACL</text>
+  <text x="595.0" y="494" font-size="24" fill="#666666" text-anchor="middle" font-weight="normal">対象が持つ</text>
+  <text x="734" y="304" font-size="28" fill="#1f1f1f" text-anchor="start" font-weight="normal">行 = capability</text>
+  <text x="734" y="340" font-size="24" fill="#666666" text-anchor="start" font-weight="normal">主体が持つ</text>
+</svg>

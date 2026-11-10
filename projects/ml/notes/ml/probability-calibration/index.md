@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "metrics"]
 weight: 4
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 確率の校正（probability calibration）は、モデルが出す予測確率と、その確率を付けた集団での実際の正例割合が合うように調整する処理です。例えば「確率 0.9」と予測した件数をまとめた時、正例が約 90%なら、その集団では予測確率と観測結果が対応しています。

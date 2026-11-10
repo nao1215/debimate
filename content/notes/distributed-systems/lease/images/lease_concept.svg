@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>失効に気付かない Node A の遅れた書き込みを、ストレージが token の大小で拒否する</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .red{fill:#e15759}</style>
+<defs><marker id="a-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="a-sub" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="a-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="a-ochre" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="20" y="132" font-size="28" font-weight="normal" text-anchor="start">Node A</text>
+<rect x="180.0" y="70" width="375.0" height="50" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="367.5" y="104" font-size="24" font-weight="normal" text-anchor="middle">lease（token 33）</text>
+<text x="565.0" y="104" font-size="24" font-weight="normal" text-anchor="start" class="sub">失効</text>
+<line x1="555.0" y1="64" x2="555.0" y2="190" stroke="#666666" stroke-width="2" stroke-dasharray="6 5"/>
+<rect x="292.5" y="134" width="450.0" height="50" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="1.5"/>
+<text x="517.5" y="168" font-size="24" font-weight="normal" text-anchor="middle" class="sub">GC で停止（期限切れに気付かない）</text>
+<text x="20" y="310" font-size="28" font-weight="normal" text-anchor="start">ストレージ</text>
+<rect x="180.0" y="262" width="750.0" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<line x1="255.0" y1="262" x2="255.0" y2="338" stroke="#666666" stroke-width="1.5"/>
+<line x1="705.0" y1="262" x2="705.0" y2="338" stroke="#666666" stroke-width="1.5"/>
+<text x="480.0" y="309" font-size="24" font-weight="normal" text-anchor="middle">最新の token 33</text>
+<text x="817.5" y="309" font-size="24" font-weight="normal" text-anchor="middle">最新の token 34</text>
+<text x="20" y="444" font-size="28" font-weight="normal" text-anchor="start">Node B</text>
+<rect x="630.0" y="410" width="300.0" height="50" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="780.0" y="444" font-size="24" font-weight="normal" text-anchor="middle">lease（token 34）</text>
+<line x1="236.25" y1="122" x2="236.25" y2="258" stroke="#7aa6c2" stroke-width="5" marker-end="url(#a-accent)"/>
+<text x="248.25" y="244" font-size="24" font-weight="normal" text-anchor="start">33 受理</text>
+<line x1="686.25" y1="408" x2="686.25" y2="342" stroke="#d4a24c" stroke-width="5" marker-end="url(#a-ochre)"/>
+<text x="674.25" y="386" font-size="24" font-weight="normal" text-anchor="end">34 受理</text>
+<line x1="798.75" y1="186" x2="798.75" y2="232" stroke="#e15759" stroke-width="5"/>
+<path d="M783.75,226 l30,30 M813.75,226 l-30,30" stroke="#e15759" stroke-width="7" stroke-linecap="round"/>
+<text x="824.75" y="250" font-size="24" font-weight="normal" text-anchor="start" class="red">33 を拒否</text>
+<line x1="180" y1="500" x2="930" y2="500" stroke="#666666" stroke-width="2" marker-end="url(#a-sub)"/>
+<text x="180" y="532" font-size="24" font-weight="normal" text-anchor="start" class="sub">時間</text>
+</svg>

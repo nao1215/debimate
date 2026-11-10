@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 4
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 四分位点（quartile）は、データを小さい順に並べて「4 等分する位置」の値を取り出した代表値です。[中央値](../median/) を「2 等分する位置」と捉えると、四分位点はその拡張になっています。

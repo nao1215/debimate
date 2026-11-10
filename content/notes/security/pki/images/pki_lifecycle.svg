@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>1 枚の証明書の発行から有効期限までと、ACME・CT・失効の位置</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="90" y="220" width="470" height="70" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="325.0" y="265" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">有効</text>
+<rect x="560" y="220" width="310" height="70" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="715.0" y="265" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">期限は残るが失効済み</text>
+<line x1="90" y1="120" x2="90" y2="216" stroke="#666666" stroke-width="2.5" stroke-linecap="round"/>
+<text x="80" y="72" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">発行</text>
+<text x="80" y="106" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">ACME で自動化</text>
+<line x1="430" y1="150" x2="430" y2="216" stroke="#666666" stroke-width="2.5" stroke-linecap="round"/>
+<text x="430" y="106" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">鍵の漏洩や</text>
+<text x="430" y="138" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">誤発行が分かる</text>
+<line x1="870" y1="120" x2="870" y2="216" stroke="#666666" stroke-width="2.5" stroke-linecap="round"/>
+<text x="880" y="106" font-size="26" font-weight="normal" text-anchor="end" style="fill:#1f1f1f">有効期限</text>
+<line x1="90" y1="294" x2="90" y2="360" stroke="#666666" stroke-width="2.5" stroke-linecap="round"/>
+<text x="80" y="392" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">発行時に CT ログへ記録（SCT）</text>
+<text x="80" y="424" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">誤発行を第三者が観測できる</text>
+<line x1="560" y1="294" x2="560" y2="360" stroke="#666666" stroke-width="2.5" stroke-linecap="round"/>
+<text x="580" y="392" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">失効（CRL / OCSP）</text>
+<text x="580" y="424" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">取れない時に止めるかは</text>
+<text x="580" y="456" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">クライアント次第</text>
+<text x="480" y="520" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">時間 →</text>
+</svg>

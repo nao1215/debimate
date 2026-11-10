@@ -1,0 +1,14 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2)
+level           clients  orders  stock_decrease  lost_updates  retried_tx  retries  gave_up
+read committed        1     200             200             0           0        0        0
+read committed        2     400             207           193           0        0        0
+read committed        4     800             186           614           0        0        0
+read committed        8    1600             200          1400           0        0        0
+read committed       16    3200             200          3000           0        0        0
+read committed       32    6400             200          6200           0        0        0
+serializable          1     200             200             0           0        0        0
+serializable          2     400             400             0          72      353        0
+serializable          4     800             800             0         133     1946        0
+serializable          8    1600            1600             0         314     9659        0
+serializable         16    3200            3200             0         912    42248        0
+serializable         32    6400            6400             0        1556   171923        0

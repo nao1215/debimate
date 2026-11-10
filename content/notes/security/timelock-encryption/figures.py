@@ -2,6 +2,8 @@
 
 再生成:
     uv run --with matplotlib --with numpy python content/notes/security/timelock-encryption/figures.py
+
+図2 は lab/squaring_time_output.txt を読むだけで、計測はしない（計測は lab/README.txt）。
 """
 
 import pathlib
@@ -75,3 +77,60 @@ ax.set_xlabel("Elapsed time (T = the duration assumed when the puzzle was made)"
 ax.set_ylabel("Squarings done\n(t = the count required)")
 ax.legend(loc="upper left", frameon=False, fontsize=9)
 save("timelock_puzzle_unlock_time.svg")
+
+
+# --- 図2: 2 乗の回数と時間の実測、ワーカー数を増やした時の比較 ---
+#
+# lab/squaring_time_output.txt（lab/squaring_time.py の実測結果）を読んで描く。
+def measured_figure() -> None:
+    import re
+
+    ink, sub, accent, red = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
+    text = (pathlib.Path(__file__).parent / "lab" / "squaring_time_output.txt").read_text()
+    sweep = [(int(t.replace(",", "")), float(s)) for t, s in
+             re.findall(r"t=\s*([\d,]+)\s+([\d.]+) s", text)]
+    par = [(int(w), float(c), float(i)) for w, c, i in re.findall(
+        r"workers=\s*(\d+)\s+chain: first done\s+([\d.]+) s.*independent squarings:\s+([\d.]+) s",
+        text)]
+    rc = {
+        "font.size": 11, "axes.edgecolor": sub, "axes.labelcolor": ink,
+        "xtick.color": ink, "ytick.color": ink, "text.color": ink,
+        "axes.grid": True, "grid.alpha": 0.3, "grid.linewidth": 0.6,
+        "svg.fonttype": "path", "svg.hashsalt": "timelock-measured",
+        "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
+    }
+    with plt.rc_context(rc):
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.2, 4.0))
+        ts = np.array([t for t, _ in sweep], dtype=float)
+        secs = np.array([s for _, s in sweep])
+        slope = (ts @ secs) / (ts @ ts)  # 原点を通る直線の傾き
+        ax1.plot([0, ts.max() / 1e3], [0, ts.max() * slope], color=sub, lw=1.4, ls="--",
+                 label=f"fit: {1 / slope / 1e3:.0f}k squarings/s")
+        ax1.plot(ts / 1e3, secs, "o", color=accent, ms=8, label="measured")
+        ax1.set_xlabel("Squarings t (thousands)")
+        ax1.set_ylabel("Time on one core (s)")
+        ax1.set_xlim(0, ts.max() / 1e3 * 1.05)
+        ax1.set_ylim(0, secs.max() * 1.15)
+        ax1.legend(loc="upper left", frameon=False, fontsize=10)
+
+        ws = [w for w, _, _ in par]
+        ax2.plot(ws, [c for _, c, _ in par], "o-", color=red, lw=2.4, ms=7,
+                 label="one chain of\n200k squarings")
+        ax2.plot(ws, [i for _, _, i in par], "s--", color=accent, lw=2.4, ms=7,
+                 label="200k independent\nsquarings split")
+        ax2.set_xscale("log", base=2)
+        ax2.set_xticks(ws, [str(w) for w in ws])
+        ax2.minorticks_off()
+        ax2.set_xlabel("Worker processes (cores)")
+        ax2.set_ylabel("Wall time (s)")
+        ax2.set_ylim(0, max(c for _, c, i in par) * 1.4)
+        ax2.legend(loc="upper right", frameon=False, fontsize=10)
+        for ax in (ax1, ax2):
+            ax.spines[["top", "right"]].set_visible(False)
+        fig.tight_layout()
+        fig.savefig(OUT / "timelock_squaring_measured.svg", metadata={"Date": None})
+        plt.close(fig)
+        print(f"wrote {OUT / 'timelock_squaring_measured.svg'}")
+
+
+measured_figure()

@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "optimization"]
 weight: 20
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 凸関数（convex function）は、グラフ上の任意の 2 点を結ぶ線分が、グラフの下に入り込まない関数です。凸関数を凸集合の範囲で最小化すると、近くの点と比べて最小になった点は、範囲全体でも最小になります。機械学習では、学習で得た解よりも目的関数の値が小さい解が他にあるかを考える時に使います。

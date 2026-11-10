@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>集約の境界と、Value Object・Entity・集約ルートの関係</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="14" y="110" width="112" height="200" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="70" y="200" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">外の</text>
+<text x="70" y="232" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">コード</text>
+<line x1="126" y1="155" x2="166" y2="155" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<line x1="126" y1="275" x2="180" y2="275" stroke="#e15759" stroke-width="5" stroke-linecap="round" marker-end="url(#arrow-red)"/>
+<rect x="200" y="70" width="410" height="400" rx="16" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="4"/>
+<text x="405" y="452" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">Order 集約</text>
+<path d="M222,200 V375 M222,275 H240 M222,375 H240" fill="none" stroke="#666666" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="240" y="240" width="220" height="70" rx="10" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<rect x="252" y="257.0" width="48" height="36" rx="6" fill="#666666" stroke="#666666" stroke-width="0"/>
+<text x="276" y="284.0" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#ffffff">ID</text>
+<text x="380.0" y="284.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">OrderLine</text>
+<line x1="460" y1="275" x2="478" y2="275" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<rect x="478" y="253" width="118" height="44" rx="22" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="537" y="284" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Money</text>
+<rect x="240" y="340" width="220" height="70" rx="10" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<rect x="252" y="357.0" width="48" height="36" rx="6" fill="#666666" stroke="#666666" stroke-width="0"/>
+<text x="276" y="384.0" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#ffffff">ID</text>
+<text x="380.0" y="384.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">OrderLine</text>
+<line x1="460" y1="375" x2="478" y2="375" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<rect x="478" y="353" width="118" height="44" rx="22" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="537" y="384" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Money</text>
+<rect x="176" y="110" width="234" height="90" rx="10" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<rect x="188" y="137.0" width="48" height="36" rx="6" fill="#666666" stroke="#666666" stroke-width="0"/>
+<text x="212" y="164.0" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#ffffff">ID</text>
+<text x="323.0" y="149.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Order</text>
+<text x="323.0" y="181.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">集約ルート</text>
+<line x1="186" y1="261" x2="214" y2="289" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<line x1="186" y1="289" x2="214" y2="261" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<rect x="680" y="70" width="262" height="400" rx="16" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="4"/>
+<text x="811" y="452" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">Customer 集約</text>
+<line x1="780" y1="200" x2="780" y2="260" stroke="#666666" stroke-width="3" stroke-linecap="round"/>
+<rect x="721" y="260" width="118" height="44" rx="22" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="780" y="291" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Address</text>
+<rect x="656" y="110" width="262" height="90" rx="10" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<rect x="668" y="137.0" width="48" height="36" rx="6" fill="#666666" stroke="#666666" stroke-width="0"/>
+<text x="692" y="164.0" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#ffffff">ID</text>
+<text x="817.0" y="149.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Customer</text>
+<text x="817.0" y="181.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">集約ルート</text>
+<line x1="412" y1="155" x2="646" y2="155" stroke="#666666" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 7" marker-end="url(#arrow-ink)"/>
+<text x="529" y="140" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">CustomerID</text>
+<rect x="140" y="490" width="48" height="36" rx="6" fill="#666666" stroke="#666666" stroke-width="0"/>
+<text x="164" y="517" font-size="22" font-weight="normal" text-anchor="middle" style="fill:#ffffff">ID</text>
+<text x="198" y="517" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Entity</text>
+<rect x="300" y="486" width="60" height="44" rx="22" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="372" y="517" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Value Object</text>
+<line x1="548" y1="496" x2="572" y2="520" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<line x1="548" y1="520" x2="572" y2="496" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<text x="588" y="517" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">外から直接は触れない</text>
+</svg>

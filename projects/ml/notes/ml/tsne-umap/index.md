@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "unsupervised"]
 weight: 31
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 [t-SNE](https://www.jmlr.org/papers/v9/vandermaaten08a.html)（t-distributed Stochastic Neighbor Embedding）と [UMAP](https://arxiv.org/abs/1802.03426)（Uniform Manifold Approximation and Projection）は、高次元データを 2〜3 次元に圧縮する非線形次元削減アルゴリズムです。[PCA](../pca/) が線形の射影に限られるのに対し、t-SNE / UMAP は「元の空間で近い点は、低次元でも近くに置く」ことを優先して配置を決めます。

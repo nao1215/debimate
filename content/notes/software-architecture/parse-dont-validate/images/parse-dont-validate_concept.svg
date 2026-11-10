@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>parse は値を Email の領域に移し、validate は string の領域に残す</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrowa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="20" y="30" width="920" height="480" rx="28" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="50" y="78" font-size="30" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">string</text>
+<circle cx="90" cy="462" r="8" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<text x="108" y="470" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">&quot;&quot;</text>
+<circle cx="300" cy="462" r="8" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<text x="318" y="470" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">&quot;abc&quot;</text>
+<circle cx="300" cy="122" r="8" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<text x="318" y="130" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">&quot;x@&quot;</text>
+<rect x="500" y="100" width="410" height="380" rx="24" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3.5"/>
+<text x="530" y="146" font-size="30" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Email</text>
+<rect x="580" y="330" width="300" height="100" rx="14" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<text x="730" y="390" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">後段の処理</text>
+<circle cx="110" cy="250" r="13" fill="#ffffff" stroke="#1f1f1f" stroke-width="3"/>
+<text x="110" y="216" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">&quot;a@b.jp&quot;</text>
+<path d="M128,250 C260,250 420,220 610,222" fill="none" stroke="#7aa6c2" stroke-width="5" stroke-linecap="round" marker-end="url(#arrowa)"/>
+<text x="330" y="216" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">parse</text>
+<circle cx="630" cy="222" r="13" fill="#7aa6c2" stroke="#1f1f1f" stroke-width="3"/>
+<text x="730" y="230" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">a@b.jp</text>
+<line x1="630" y1="238" x2="630" y2="322" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<line x1="118" y1="266" x2="176" y2="344" stroke="#d4a24c" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="162" y="306" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">validate</text>
+<circle cx="190" cy="362" r="13" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="214" y="370" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">true でも string のまま</text>
+</svg>

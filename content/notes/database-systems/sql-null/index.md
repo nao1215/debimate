@@ -6,6 +6,7 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "sql"]
 weight: 5
 wrapTables: true
+topics: ["Data Modeling"]
 ---
 
 `NULL` は、値が存在しないことや不明であることを表すために SQL が特別扱いする印です。数値の 0、真偽値の `false`、要素が 0 個の配列は、どれも通常の値なので `NULL` とは別に扱われます。
@@ -14,17 +15,11 @@ wrapTables: true
 
 例えば、任意入力のカラムを持つ表では、検索結果から未入力のレコードが抜けることがあります。会員登録でメールアドレスを任意にすると、未入力の会員は `email` が `NULL` になります。「佐藤さん以外の会員」を出すつもりで `WHERE email <> 'sato@example.com'` と書くと、未入力の会員は結果に入りません。エラーにはならず、レコード数が少ないことも正常な結果と区別が付きません。
 
-同じ条件が、値の入ったレコードと `NULL` のレコードでどう分かれるのかを以下に示します。
+以下は、後で使う 4 人の会員が、2 つの条件で TRUE・FALSE・UNKNOWN のどれになるかを並べた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    V["email が suzuki@example.com のレコード"] --> C1["email &lt;&gt; 'sato@example.com'"]
-    C1 --> T["TRUE<br/>結果に残る"]
-    N["email が NULL のレコード"] --> C2["email &lt;&gt; 'sato@example.com'"]
-    C2 --> U["UNKNOWN<br/>結果から落ちる"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/sql-null_concept.svg" alt="email <> 'sato@…' では、値の入った鈴木さんが TRUE、佐藤さんが FALSE、email が NULL の高橋さんと田中さんが UNKNOWN に入る。id NOT IN (2, NULL) では鈴木さんが FALSE、残りの 3 人が UNKNOWN に入り、TRUE は 0 件になる。WHERE で残るのは TRUE の列だけ" caption="2 つの検索条件で、4 人の会員が TRUE・FALSE・UNKNOWN に分かれる様子" align="center" >}}
+
+上記の図で結果に残るのは、左端の TRUE の列だけです。下段の `NOT IN` は、集合に `NULL` が 1 つ混ざっただけで、誰も TRUE に入らなくなります。
 
 <br>
 
@@ -180,6 +175,8 @@ flowchart TB
 
 `NULL` の扱いは、検索条件の外にも及びます。
 
+<br>
+
 #### 集約関数ごとに違う NULL の扱い
 
 複数のレコードの値を 1 つにまとめる関数を集約関数と呼びます。PostgreSQL の[集約関数](https://www.postgresql.org/docs/current/functions-aggregate.html)では、`count(*)` は入力レコードの数を数え、カラムや式を渡した `count` と `sum`・`avg` は `NULL` でない入力値だけを対象にします。先ほどの 4 件に当てた結果は以下の通りです。`age` は 20・31・`NULL`・45 の 4 つです。
@@ -195,11 +192,17 @@ flowchart TB
 
 PostgreSQL が汎用の集約関数として挙げる `count`・`sum`・`avg` などは、レコードが 1 つも選ばれない時、`count` を除いて `NULL` を返します（[同じページ](https://www.postgresql.org/docs/current/functions-aggregate.html)）。例えば `SUM` は 0 ではなく `NULL` を返すので、合計を 0 として扱いたいなら `COALESCE` で包みます。
 
+<br>
+
 #### 一意制約での NULL の重複
 
 同じ値の重複を防ぐ一意制約でも、`NULL` の扱いには注意が必要です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても、`email` が `NULL` の会員は何件でも入ります。
 
-ここは DBMS ごとに割れます。PostgreSQL のドキュメントには「[The default null treatment in unique constraints is implementation-defined according to the SQL standard](https://www.postgresql.org/docs/current/ddl-constraints.html)」（一意制約における null の既定の扱いは、SQL 標準では実装定義である）とあります。PostgreSQL 自身も、15 以降は `NULLS NOT DISTINCT` を付ければ `NULL` どうしを重複として扱えます。「`NULL` は一意制約に引っかからない」を SQL 全体の規則として覚えると、移植した先で別の結果になります。
+ここは DBMS ごとに割れます。PostgreSQL のドキュメントには「[The default null treatment in unique constraints is implementation-defined according to the SQL standard](https://www.postgresql.org/docs/current/ddl-constraints.html)」（一意制約における null の既定の扱いは、SQL 標準では実装定義である）とあります。
+
+PostgreSQL 自身も、15 以降は `NULLS NOT DISTINCT` を付ければ `NULL` どうしを重複として扱えます。「`NULL` は一意制約に引っかからない」を SQL 全体の規則として覚えると、移植した先で別の結果になります。
+
+<br>
 
 #### 並べ替えでの NULL の位置
 
@@ -222,6 +225,8 @@ name|age
 PostgreSQL では、年齢が分からない高橋さんが最年長として返ります。PostgreSQL は既定で `NULL` を[どの値よりも大きいもの](https://www.postgresql.org/docs/current/queries-order.html)として並べるので、`DESC` の先頭に置きます。SQLite は逆に `NULL` を[どの値よりも小さいもの](https://www.sqlite.org/lang_select.html#orderby)として扱い、`DESC` の末尾に回します。
 
 `ORDER BY age DESC NULLS LAST` と書けば、どちらでも鈴木さんが返ります。MySQL 8.4.11 は `NULLS LAST` を構文エラーにしますが、`ORDER BY age IS NULL, age DESC` なら同じ結果です。
+
+<br>
 
 #### OUTER JOIN が作り出す NULL
 

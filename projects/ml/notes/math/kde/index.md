@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 8
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 カーネル密度推定（Kernel Density Estimation, KDE）は、データ点の集まりから滑らかな分布曲線を推定するノンパラメトリックな手法です。各データ点に小さな山（カーネル）を置き、全点の山を足し合わせて全体の形を作ります。曲線の面積は 1 になるように正規化されるので、出力は確率密度関数として読めます。

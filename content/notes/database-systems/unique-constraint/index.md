@@ -6,25 +6,18 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 9
 wrapTables: true
+topics: ["Data Modeling"]
 ---
 
 [一意制約](https://www.postgresql.org/docs/current/ddl-constraints.html)（unique constraint）は、あるカラム、または複数のカラムの組に入っている値が表の中で重複しないことを DB（データベース）に保証させる仕組みです。SQL では、カラムの定義に `UNIQUE` を書くか、表に対して `UNIQUE (列名, ...)` を書いて宣言します。
 
 例えば、会員登録では同じメールアドレスの重複を防ぐために使います。同じアドレスで 2 件のアカウントができると、パスワード再設定を求められた時にどちらのアカウントを再設定するのかが決まらず、問い合わせを受けた時にどちらが本人のものかも判定できません。重複を消して片方に寄せる作業は、後になるほど難しくなります。
 
-重複を止められる場所を以下に示します。
+同じアドレスの登録が 2 件同時に届いた時に、一意制約の有無で何が変わるのかを以下に示します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    R["登録の要求"] --> I["入力時の事前確認<br/>必要ならユーザーに案内する"]
-    I --> A["アプリケーションでの確認<br/>SELECT で存在を見る"]
-    A --> D["一意制約<br/>重複した書き込みを止める"]
-    D --> T[("users 表")]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/unique-constraint_concept.svg" alt="上は一意制約が無い場合で、要求 B が SELECT で存在を確認してから INSERT するまでの隙間に要求 A の INSERT が入り、2 件とも登録される。下は一意制約がある場合で、B の INSERT は A の確定を待ってから弾かれ、1 件だけ残る。" caption="同時に届いた 2 件の登録と、一意制約の有無" align="center" >}}
 
-上記の図の前の 2 つは、重複を早く見つけるために使えます。一意制約は、並行する書き込みを含めて、重複した状態が表に確定するのを最後に止めます。
+入力時の事前確認や `SELECT` での確認は、重複を早く見つけてユーザーに案内するために使えます。ただし、上記の図の黄土色の隙間は塞げません。一意制約は、並行する書き込みを含めて、重複した状態が表に確定するのを最後に止めます。
 
 <br>
 
@@ -113,6 +106,41 @@ Time: 1001.301 ms (00:01.001)
 ```
 
 上記の `23505` は SQLSTATE（SQL のエラーに付く 5 文字の符号）で、PostgreSQL は一意制約違反に [`23505`（`unique_violation`）](https://www.postgresql.org/docs/current/errcodes-appendix.html)を割り当てています。アプリケーションは、この符号を見て「メールアドレスの重複」という業務上のエラーに変換できます。
+
+<br>
+
+同じアドレスの要求が 2 件より多く重なった時の結果は、PostgreSQL 付属の負荷試験の道具である pgbench で測りました。c 本の接続が user1 から user1000 までを同じ順に登録するので、各アドレスに c 件の要求がほぼ同時に届きます。
+
+1 回の登録は、以下のように `SELECT` で 0 件を確かめてから `INSERT` します。`register_unique()` は `INSERT` を実行し、`23505` を受け取ったら回数を記録する関数です。
+
+```sql
+\set i :i + 1
+SELECT count(*) AS n FROM users_unique WHERE email = 'user' || :i \gset
+\if :n = 0
+SELECT register_unique('user' || :i);
+\endif
+```
+
+一意制約の無い表にも同じ手順を流し、c ごとに 3 回繰り返しました（[lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/unique-constraint/lab/run.sh)）。以下は、c ごとに 3 回の平均を描いた図です。3 回分の数値は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/unique-constraint/lab/output.txt) にあります。
+
+{{< figure src="images/unique-constraint_race.svg" alt="左の図では、一意制約の無い表に残るアドレス 1 件あたりのレコード数が、同時の要求 2・8・32 件で約 2・7.9・31.7 件と要求数にほぼ等しく、一意制約のある表では常に 1 件。右の図は一意制約のある表が返した 23505 の回数で、アドレス 1 件あたり要求数の約半分" caption="pgbench で同時の要求を増やした時の結果（3 回の平均）" align="center" >}}
+
+<details>
+<summary>1 回目の出力の抜粋（列はアドレス 1 件あたりのレコード数、2 件以上入ったアドレスの数、23505 を受け取った回数）</summary>
+
+```text
+clients run table rows_per_email emails_with_dup unique_violation
+2 1 plain 1.98 984 0
+2 1 unique 1.00 0 978
+8 1 plain 7.89 997 0
+8 1 unique 1.00 0 4025
+32 1 plain 31.71 1000 0
+32 1 unique 1.00 0 16384
+```
+
+</details>
+
+一意制約の無い表では、同時に届いた要求のほぼ全てが 0 件を確かめて挿入しました。一意制約のある表は常に 1 件で、代わりに要求の約半分が `23505` で失敗しています。残りの要求は、`SELECT` の時点で先行の挿入が確定していたので `INSERT` に進みませんでした。
 
 この経路を想定外の失敗として扱い、HTTP の 500 を返す実装にすると、業務のエラーとして返せる要求まで障害になります。
 

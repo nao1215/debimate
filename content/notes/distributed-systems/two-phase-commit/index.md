@@ -5,6 +5,9 @@ draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "transaction"]
 weight: 6
+topics: ["Distributed Transactions"]
+crossTopics:
+  database-systems: ["Transaction / Concurrency Control"]
 ---
 
 2PC（Two-Phase Commit、2 相コミット）は、複数の DB（データベース）にまたがる 1 つの更新について、関わった全員の最終的な判断が確定（commit）か中止（abort）のどちらか一方に揃うようにする手順です。確定できるかを全員に問い合わせる準備フェーズと、決めた結果を配る決定フェーズの 2 段階で進むことが名前の由来です。
@@ -15,17 +18,13 @@ weight: 6
 
 上記の例では、注文の DB を参加者 A、ポイントの DB を参加者 B とします。コーディネータは、2 つの DB とは別に動くトランザクションマネージャ（複数の DB のトランザクションをまとめて確定させる専用のプロセス）が務めます。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    T["コーディネータ<br/>トランザクションマネージャ"]
-    T -->|"確定できるか問い合わせる<br/>決めた結果を配る"| A["参加者 A<br/>注文の DB"]
-    T -->|"確定できるか問い合わせる<br/>決めた結果を配る"| B["参加者 B<br/>ポイントの DB"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-    classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
-```
+以下は、参加者 A・B の状態を時間に沿って並べた図です。上は決定が届いた場合、下は決定の前にコーディネータが停止した場合です。
 
-2PC は、ある参加者は確定・別の参加者は中止という最終的な判断の分裂を防ぐことを目的にしています。揃うのは最終的な判断であって、複数の DB の変更が同じ瞬間に見え始めることまでは保証しません。決定を配っている途中には、片方が確定済みで、もう片方はまだ決定を待っている、という瞬間があり得ます。
+{{< figure src="images/two-phase-commit_concept.svg" alt="上の段では、参加者 A と B が yes を返してから決定が届くまでの網掛けの区間を経て確定に移り、A が B より先に確定する。下の段では、決定の前にコーディネータが停止し、A と B の網掛けの区間が右端まで続く" caption="決定を待つ参加者と、コーディネータが止まった場合" align="center" >}}
+
+網掛けの区間の参加者は、ロックを持ったまま決定を待ちます。コーディネータが止まると、この区間は終わりません。
+
+2PC は、ある参加者は確定・別の参加者は中止という最終的な判断の分裂を防ぐことを目的にしています。揃うのは最終的な判断であって、複数の DB の変更が同じ瞬間に見え始めることまでは保証しません。決定を配っている途中には、上の段の A と B のように、片方が確定済みで、もう片方はまだ決定を待っている、という瞬間があり得ます。
 
 <br>
 

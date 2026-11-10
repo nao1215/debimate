@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>残高 10 から 8 枚ずつ送る 2 件の取引で、順序が結果を決める様子</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="30" y="130" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">X が先</text>
+<rect x="150" y="70" width="120" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="210.0" y="129" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">残高 10</text>
+<line x1="278" y1="120" x2="316" y2="120" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="326" y="70" width="176" height="100" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<text x="414.0" y="113" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">X が 8 枚送る</text>
+<text x="414.0" y="145" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">成功</text>
+<line x1="510" y1="120" x2="548" y2="120" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="558" y="70" width="120" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="618.0" y="129" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">残高 2</text>
+<line x1="686" y1="120" x2="724" y2="120" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="734" y="70" width="176" height="100" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="822.0" y="113" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Y が 8 枚送る</text>
+<text x="822.0" y="145" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">残高不足</text>
+<text x="30" y="340" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Y が先</text>
+<rect x="150" y="280" width="120" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="210.0" y="339" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">残高 10</text>
+<line x1="278" y1="330" x2="316" y2="330" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="326" y="280" width="176" height="100" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<text x="414.0" y="323" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Y が 8 枚送る</text>
+<text x="414.0" y="355" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">成功</text>
+<line x1="510" y1="330" x2="548" y2="330" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="558" y="280" width="120" height="100" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<text x="618.0" y="339" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">残高 2</text>
+<line x1="686" y1="330" x2="724" y2="330" stroke="#666666" stroke-width="3" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="734" y="280" width="176" height="100" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="822.0" y="323" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">X が 8 枚送る</text>
+<text x="822.0" y="355" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">残高不足</text>
+<text x="480" y="480" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">同じ 2 件でも、先に実行された方だけが成功する</text>
+</svg>

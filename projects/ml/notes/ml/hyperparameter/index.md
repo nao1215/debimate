@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 10
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、[`Ridge(alpha=1.0)`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` や RandomForest の木数は、候補を比べて選びます。

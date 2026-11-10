@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "deep-learning"]
 weight: 35
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 活性化関数（activation function）は、ニューラルネットの各ニューロンで「重み付き和にバイアスを足した結果 `z = w · x + b` を非線形に変換する関数」のことです。層の間に非線形な変換を挟むことで、線形なモデルだけでは表せない入力と出力の関係を学習できます。

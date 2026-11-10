@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>秘密の入力は証明する側に残り、公開する結果と証明だけが検証する側に渡る</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="262" y="62" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">証明する側</text>
+<rect x="40" y="90" width="444" height="360" rx="16" fill="#ffffff" stroke="#666666" stroke-width="3"/>
+<rect x="72" y="136" width="176" height="76" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="160" y="184" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">秘密の入力</text>
+<rect x="72" y="300" width="176" height="76" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="160" y="348" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">プログラム</text>
+<line x1="250" y1="190" x2="300" y2="232" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<line x1="250" y1="322" x2="300" y2="282" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<rect x="306" y="212" width="156" height="90" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="384" y="254" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">実行して</text>
+<text x="384" y="284" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">証明を生成</text>
+<text x="262" y="494" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">秘密は枠の外に出ない</text>
+<rect x="504" y="244" width="112" height="52" rx="8" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<text x="560" y="279" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">結果</text>
+<rect x="522" y="306" width="76" height="44" rx="8" fill="#7aa6c2" stroke="none" stroke-width="2.5"/>
+<text x="560" y="337" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">証明</text>
+<line x1="464" y1="250" x2="498" y2="268" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round"/>
+<line x1="464" y1="286" x2="516" y2="326" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round"/>
+<line x1="620" y1="270" x2="676" y2="270" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<line x1="602" y1="328" x2="676" y2="328" stroke="#7aa6c2" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-accent)"/>
+<text x="790" y="62" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">検証する側</text>
+<rect x="660" y="90" width="260" height="360" rx="16" fill="none" stroke="#666666" stroke-width="3"/>
+<rect x="686" y="120" width="208" height="76" rx="10" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="790" y="168" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">プログラム</text>
+<rect x="686" y="248" width="208" height="100" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="3"/>
+<text x="790" y="308" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">条件を確認</text>
+<line x1="790" y1="198" x2="790" y2="240" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-sub)"/>
+<text x="790" y="494" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">入力を見ずに検証</text>
+</svg>

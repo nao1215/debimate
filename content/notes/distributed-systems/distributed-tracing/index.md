@@ -6,6 +6,7 @@ series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "observability"]
 weight: 12
 wrapTables: true
+topics: ["Observability"]
 ---
 
 ```text
@@ -18,7 +19,7 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 
 以下は、本記事の実験で記録した 1 件の注文確定の処理を時間軸に並べた図です。棒の 1 本が 1 つの処理で、字下げが呼び出しの親子関係を表します。
 
-![注文確定の要求が gateway・orders・inventory・mailer を通った時間の図。inventory の 1 回目の呼び出しと mailer の 1 回目の処理がエラーで、どちらも同じ処理がもう 1 回現れている](images/distributed_tracing_waterfall.svg)
+{{< figure src="images/distributed_tracing_waterfall.svg" alt="注文確定の要求が gateway・orders・inventory・mailer を通った時間の図。inventory の 1 回目の呼び出しと mailer の 1 回目の処理がエラーで、どちらも同じ処理がもう 1 回現れている" caption="実験で記録した 1 件の注文確定の Trace" align="center" >}}
 
 上記の図には、同じ在庫引き当て（`reserve`）と同じメール処理（`process`）が 2 回ずつ現れています。1 回目が失敗し、再試行と再配送で 2 回目が成功したからです。記録を読む側がこの重複を理解していないと、「在庫を 2 回引き当てた」と読み違えます。
 
@@ -46,7 +47,13 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 
 ### Trace・Span・Context
 
-分散トレーシングの記録は、Trace と Span の 2 段でできています。Span は 1 つの処理（1 回の HTTP 呼び出しや、1 件のメッセージの処理）の記録で、Trace は 1 つの要求から派生した Span の集まりです。同じ Trace の Span は同じ trace ID を持ち、Span ごとに自分の span ID と、自分を呼んだ Span の ID（parent span ID）を持ちます。親を持たない Span を root span と呼び、木の根になります。
+分散トレーシングの記録は、Trace と Span の 2 段でできています。Span は 1 つの処理（1 回の HTTP 呼び出しや、1 件のメッセージの処理）の記録で、Trace は 1 つの要求から派生した Span の集まりです。
+
+同じ Trace の Span は同じ trace ID を持ち、Span ごとに自分の span ID と、自分を呼んだ Span の ID（parent span ID）を持ちます。親を持たない Span を root span と呼び、木の根になります。以下は、実験の構成を 4 つの Span に縮めて、ID の関係だけを描いた図です。
+
+{{< figure src="images/distributed_tracing_ids.svg" alt="灰色の枠が 1 つの Trace で、中の Span は全て同じ trace ID を持つ。gateway の Span は span ID が A で親が無い root span。その下に親が A の orders の Span（span ID B）があり、さらにその下に親が B の inventory の Span（C）と mailer の Span（D）が並ぶ" caption="trace ID と parent span ID で組み立てる Span の木" align="center" >}}
+
+各 Span が持つのは親の ID だけで、子の一覧は持ちません。木は、記録を集めた側が parent span ID を辿って組み立てます。
 
 [OpenTelemetry](https://opentelemetry.io/)（CNCF のプロジェクトが公開する計装の仕様と実装）の [Tracing API](https://opentelemetry.io/docs/specs/otel/trace/api/) では、Span は主に次の情報を持ちます。
 
@@ -76,7 +83,9 @@ Context は、サービスの境界を越えて渡す最小限の情報です。
 
 ### Context の伝播
 
-Context を次の処理に渡すことは、伝播（propagation）と呼ばれます。同期的な HTTP 呼び出しでは、呼ぶ側が `traceparent` ヘッダに Context を書き込み、呼ばれた側が読み出します。OpenTelemetry では、この書き込みは inject、読み出しは extract と呼ばれ、[Propagators API](https://opentelemetry.io/docs/specs/otel/context/api-propagators/) で形式を差し替えられるようにしています。W3C Trace Context には、製品ごとの追加情報を載せる `tracestate` ヘッダもあり、最大 32 個のキーと値の組を運べます。
+Context を次の処理に渡すことは、伝播（propagation）と呼ばれます。同期的な HTTP 呼び出しでは、呼ぶ側が `traceparent` ヘッダに Context を書き込み、呼ばれた側が読み出します。
+
+OpenTelemetry では、この書き込みは inject、読み出しは extract と呼ばれ、[Propagators API](https://opentelemetry.io/docs/specs/otel/context/api-propagators/) で形式を差し替えられるようにしています。W3C Trace Context には、製品ごとの追加情報を載せる `tracestate` ヘッダもあり、最大 32 個のキーと値の組を運べます。
 
 キューを挟む非同期処理には HTTP ヘッダがありません。そのため、送る側はメッセージの属性（ヘッダやメタデータ）に Context を入れ、取り出した側がそこから読みます。OpenTelemetry の[メッセージングの規約](https://opentelemetry.io/docs/specs/semconv/messaging/messaging-spans/)（2026 年 11 月時点で状態は Development）は、送る側が各メッセージに作成時の Context を付けることを求めています。
 
@@ -101,7 +110,9 @@ sequenceDiagram
 
 上記の図のキューから先では、mailer がメッセージを取り出した時に、送った側の Span は既に終わっています。HTTP の子は親の時間の内側に収まりますが、キューの先の処理は親より後に始まり、親が終わった後も続きます。この形は異常ではありません。
 
-キューの先の処理は、送った側の子になるとは限りません。1 回の取り出しで 100 件のメッセージをまとめて処理すると、その処理には親が 100 個あることになりますが、Span の親は 1 つしか持てません。このような場合、親子ではなく link で関係を記録します。link は「この Span は、あの Span と関係がある」という参照で、別の Trace の Span も指せます。メッセージングの規約は link を既定にし、1 件だけを処理する場合に限って、作成時の Context を親にしてもよいとしています。実験は 1 件ずつ処理するので、親子で記録しています。
+キューの先の処理は、送った側の子になるとは限りません。1 回の取り出しで 100 件のメッセージをまとめて処理すると、その処理には親が 100 個あることになりますが、Span の親は 1 つしか持てません。このような場合、親子ではなく link で関係を記録します。
+
+link は「この Span は、あの Span と関係がある」という参照で、別の Trace の Span も指せます。メッセージングの規約は link を既定にし、1 件だけを処理する場合に限って、作成時の Context を親にしてもよいとしています。実験は 1 件ずつ処理するので、親子で記録しています。
 
 ---
 
@@ -183,7 +194,9 @@ def call(tracer, parent, url, name, **attrs):
             worker.end(span)
 ```
 
-`call` は、呼び出しごとに新しい Span を作り、その span ID をヘッダに入れて送ります。受け取った側の `parse_traceparent` は、ヘッダの parent-id を親として返すだけで、自分の span ID は `start` が作ります。gateway には、冒頭のヘッダをそのまま付けた要求を送りました。そのため、記録した Trace の trace ID は冒頭の値と一致し、root span の親は記録に無い `00f067aa0ba902b7` になります。
+`call` は、呼び出しごとに新しい Span を作り、その span ID をヘッダに入れて送ります。受け取った側の `parse_traceparent` は、ヘッダの parent-id を親として返すだけで、自分の span ID は `start` が作ります。
+
+gateway には、冒頭のヘッダをそのまま付けた要求を送りました。そのため、記録した Trace の trace ID は冒頭の値と一致し、root span の親は記録に無い `00f067aa0ba902b7` になります。
 
 このコードでは、ID の生成に `os.urandom`、時刻に `time.time()`（壁時計）を使い、span をファイルに直接書いています。実際のトレーサーは Span をバッファに貯めて収集サーバーに送りますが、記録の構造は同じです。`app.delivery_attempt` は、実験のために付けた独自の属性名で、OpenTelemetry の規約にある名前ではありません。
 
@@ -203,8 +216,16 @@ POST /checkout [gateway] start=+0ms dur=56ms OK
       publish order.created [orders] start=+56ms dur=0ms OK
         process order.created [mailer] start=+57ms dur=10ms ERROR app.delivery_attempt=1
         process order.created [mailer] start=+67ms dur=10ms OK app.delivery_attempt=2
-{"trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "70cb5ef4d3511c27", "parent_id": "829d45d021a44c64", "flags": "01", "name": "POST /reserve", "service": "inventory", "start": 1794265371612.1865, "attrs": {}, "status": "ERROR", "end": 1794265371632.7566}
+```
 
+<details>
+<summary>1 回目に --json で出した Span の 1 行と、2 回目の実行（inventory の時計を 100 ms 遅らせた）</summary>
+
+```text
+{"trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "70cb5ef4d3511c27", "parent_id": "829d45d021a44c64", "flags": "01", "name": "POST /reserve", "service": "inventory", "start": 1794265371612.1865, "attrs": {}, "status": "ERROR", "end": 1794265371632.7566}
+```
+
+```text
 $ python3 lab/run.py -0.1
 # inventory clock offset = -100ms
 trace_id=4bf92f3577b34da6a3ce929d0e0e4736 spans=10
@@ -220,17 +241,25 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
         process order.created [mailer] start=+72ms dur=14ms OK app.delivery_attempt=2
 ```
 
+</details>
+
 1 件の注文確定から、10 個の Span ができました。在庫の引き当てとメールの処理は、それぞれ 2 つの Span として現れています。2 回目の実行では、inventory の Span が親の `reserve` より 99 ms 前に始まっています。呼ぶ前に呼ばれた処理が始まることは無いので、この表示は時計のずれが作った見かけです。次の節から、この 2 つの現象を順に読み解きます。
 
 ---
 
 ### 再試行とキューが作る重複 Span
 
-再試行では、試行ごとに別の Span を作ります。OpenTelemetry の [HTTP の規約](https://opentelemetry.io/docs/specs/semconv/http/http-spans/)も、送信の試行ごとに Span を作り、2 回目以降の Span に `http.request.resend_count` を付けるよう求めています。実験の出力では、1 回目の `reserve` が `ERROR`、2 回目が `OK` で `http.request.resend_count=1` を持ちます。読む側は、同じ親の下に同じ名前の Span が並んでいたら、状態と試行回数の属性で失敗した試行と成功した試行を見分けます。
+再試行では、試行ごとに別の Span を作ります。OpenTelemetry の [HTTP の規約](https://opentelemetry.io/docs/specs/semconv/http/http-spans/)も、送信の試行ごとに Span を作り、2 回目以降の Span に `http.request.resend_count` を付けるよう求めています。
 
-ただし、失敗した Span は「何も起きなかった」ことを意味しません。実験の inventory は 503 を返す前に何も変更していませんが、在庫を減らした後で応答だけがタイムアウトする場合もあります。その場合、呼ぶ側の Span は `ERROR` でも、在庫は減っています。Span の状態は呼ぶ側から見た結果で、相手の DB の状態ではありません。2 回目の試行で在庫が二重に減らないことは、記録の仕組みではなく、[Idempotency](../idempotency/) のような受け取る側の設計が保証します。
+実験の出力では、1 回目の `reserve` が `ERROR`、2 回目が `OK` で `http.request.resend_count=1` を持ちます。読む側は、同じ親の下に同じ名前の Span が並んでいたら、状態と試行回数の属性で失敗した試行と成功した試行を見分けます。
 
-キューの再配送も同じ形の記録を作ります。実験の mailer は、1 回目の処理でメールを送った後、ack を返す前に落ちました。キューは処理が終わっていないと判断して同じメッセージを再び渡し、2 回目の処理が成功しました。2 つの `process order.created` は同じ親を持ち、実際にメールを送る処理なら、利用者には同じメールが 2 通届きます。少なくとも 1 回届けるキューでは、この重複を前提にして処理を冪等にします。送る側で DB の更新とメッセージ送信が食い違う問題には、[Transactional Outbox](../transactional-outbox/) で対処します。
+ただし、失敗した Span は「何も起きなかった」ことを意味しません。実験の inventory は 503 を返す前に何も変更していませんが、在庫を減らした後で応答だけがタイムアウトする場合もあります。その場合、呼ぶ側の Span は `ERROR` でも、在庫は減っています。Span の状態は呼ぶ側から見た結果で、相手の DB の状態ではありません。
+
+2 回目の試行で在庫が二重に減らないことは、記録の仕組みではなく、[Idempotency](../idempotency/) のような受け取る側の設計が保証します。
+
+キューの再配送も同じ形の記録を作ります。実験の mailer は、1 回目の処理でメールを送った後、ack を返す前に落ちました。キューは処理が終わっていないと判断して同じメッセージを再び渡し、2 回目の処理が成功しました。
+
+2 つの `process order.created` は同じ親を持ち、実際にメールを送る処理なら、利用者には同じメールが 2 通届きます。少なくとも 1 回届けるキューでは、この重複を前提にして処理を冪等にします。送る側で DB の更新とメッセージ送信が食い違う問題には、[Transactional Outbox](../transactional-outbox/) で対処します。
 
 重複した Span は、件数の集計も狂わせます。Span の数から「在庫引き当ての回数」を数えると、実際の注文の数より多くなります。業務の回数を数えるなら、成功した Span だけを数えるか、業務側の記録から数えます。再試行が増えると下流への要求も増えるので、[Circuit Breaker](/notes/software-architecture/circuit-breaker/) で呼び出しを止める判断と組み合わせて読みます。
 
@@ -245,15 +274,19 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
 | head sampling | Trace の最初の Span を作る時 | 単純で、捨てる Trace の Span を作らずに済む | 後でエラーになる Trace を選んで残せない |
 | tail sampling | Trace の Span が揃った後 | エラーや遅い Trace を選んで残せる | 全ての Span を一度受け取り、判断まで保持する必要がある |
 
-head sampling では、入口のサービスが trace ID などから残すかを決め、その結果を trace-flags の sampled フラグに入れて下流に伝えます。下流はフラグに従うので、1 つの Trace の Span が揃って残るか、揃って捨てられます。しかし、入口の時点では、その要求が後で inventory の 503 に当たるかどうかは分かりません。1/1024 で残すなら、エラーになった要求の Trace も、1,024 件のうち 1,023 件ほどは捨てられます。
+head sampling では、入口のサービスが trace ID などから残すかを決め、その結果を trace-flags の sampled フラグに入れて下流に伝えます。下流はフラグに従うので、1 つの Trace の Span が揃って残るか、揃って捨てられます。
 
-tail sampling は、判断を Trace の終わりまで遅らせることで、この問題を解決します。その代わりに、判断する場所が全ての Span を一度受け取り、Trace が揃うまでメモリなどに保持します。1 つの Trace の Span が別々の収集サーバーに届くと判断できないので、OpenTelemetry Collector の [load balancing exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/loadbalancingexporter/README.md) のように、trace ID で送り先を揃える構成も必要になります。入口で大まかに間引き、残った分に tail sampling を掛ける組み合わせもあります。
+しかし、入口の時点では、その要求が後で inventory の 503 に当たるかどうかは分かりません。1/1024 で残すなら、エラーになった要求の Trace も、1,024 件のうち 1,023 件ほどは捨てられます。
+
+tail sampling は、判断を Trace の終わりまで遅らせることで、この問題を解決します。その代わりに、判断する場所が全ての Span を一度受け取り、Trace が揃うまでメモリなどに保持します。
+
+1 つの Trace の Span が別々の収集サーバーに届くと判断できないので、OpenTelemetry Collector の [load balancing exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/loadbalancingexporter/README.md) のように、trace ID で送り先を揃える構成も必要になります。入口で大まかに間引き、残った分に tail sampling を掛ける組み合わせもあります。
 
 ### Clock Skew
 
 Span の開始・終了時刻は、その Span を記録したホストの時計で測ります。ホストごとの時計は完全には揃わず、このずれを Clock Skew と呼びます。実験の 2 回目では、inventory の時計を 100 ms 遅らせただけで、子が親より前に始まる Trace ができました。
 
-![orders の reserve が +1 ms に始まるのに、子である inventory の POST /reserve が -98 ms に始まって見える図](images/distributed_tracing_skew.svg)
+{{< figure src="images/distributed_tracing_skew.svg" alt="orders の reserve が +2 ms に始まるのに、子である inventory の POST /reserve が -97 ms に始まって見える図" caption="inventory の時計を 100 ms 遅らせた時の Trace" align="center" >}}
 
 上記の図で、`POST /reserve` の棒の長さは 20 ms と 21 ms で、時計をずらさなかった 1 回目の実行（21 ms と 20 ms）と変わりません。同じホストの時計で測った開始と終了の差は、ずれの影響を受けません。狂うのは、別のホストで測った時刻同士を比べた時だけです。
 
@@ -263,7 +296,13 @@ Span の開始・終了時刻は、その Span を記録したホストの時計
 - 呼ぶ側の Span と呼ばれた側の Span の開始時刻の差は、そのままネットワークの遅延とは読めない。差には時計のずれが混ざる
 - 呼ぶ側は呼ばれる側より先に送り、呼ばれる側は応答より先に受け取るので、呼ばれた側の Span は呼ぶ側の Span の内側にある筈である。外にはみ出していたら、時計のずれを疑う
 
-最後の性質は、Dapper の論文でも、サーバー側の時刻の上限と下限を決めるために使われています。表示する側のツールによっては、この性質を使って子の Span の位置を補正します。例えば、[Jaeger](https://www.jaegertracing.io/docs/2.23/deployment/configuration/#clock-skew-adjustment) は問い合わせを受ける側で補正し、補正した Span に画面上で警告を出します。補正の上限は `max_clock_skew_adjust` で決め、`0s` にすると補正しません。そのため、画面の並びが記録された生の時刻と違う場合があります。キューの先の処理は親の外にはみ出すのが通常なので、この判定はそのまま使えません。
+最後の性質は、Dapper の論文でも、サーバー側の時刻の上限と下限を決めるために使われています。表示する側のツールによっては、この性質を使って子の Span の位置を補正します。
+
+例えば、[Jaeger](https://www.jaegertracing.io/docs/2.23/deployment/configuration/#clock-skew-adjustment) は問い合わせを受ける側で補正し、補正した Span に画面上で警告を出します。補正の上限は `max_clock_skew_adjust` で決め、`0s` にすると補正しません。そのため、画面の並びが記録された生の時刻と違う場合があります。
+
+<br>
+
+キューの先の処理は親の外にはみ出すのが通常なので、この判定はそのまま使えません。
 
 ---
 

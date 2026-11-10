@@ -6,6 +6,7 @@ series: ["技術ノート", "Database Systems"]
 tags: ["database-systems", "data-modeling"]
 weight: 2
 wrapTables: true
+topics: ["Data Modeling"]
 ---
 
 削除フラグとは、レコードを `DELETE` する代わりに「削除済み」を表すカラムを足し、通常の問い合わせからそのレコードを除外する設計です。`is_deleted` のような真偽値のカラムや、`deleted_at` のような日時のカラムで表し、論理削除（logical delete、soft delete）とも呼ばれます。レコードそのものを表から取り除く物理削除と対になる語です。
@@ -14,18 +15,9 @@ wrapTables: true
 
 誤った操作を元に戻したい、監査に備えて記録を残したい、という要望も同じ形で現れます。レコードを残したまま無いことにするカラムを 1 つ足せば、これらが一度に片付くように見えます。
 
-業務の上で使われなくなったレコードの扱い方には、主に以下の 5 つがあります。
+業務の上で使われなくなったレコードの扱い方には、主に以下の 5 つがあります。図は、使わなくなった時を境に、どこに何が残るかを並べたものです。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    S["業務の上で<br/>使われなくなったレコード"] --> A["物理削除<br/>レコードを表から取り除く"]
-    S --> B["削除フラグ<br/>is_deleted / deleted_at"]
-    S --> C["状態の遷移<br/>退会済み・販売終了・失効"]
-    S --> D["アーカイブ<br/>別の表・別の保管先に移す"]
-    S --> E["匿名化<br/>レコードは残し個人データだけ消す"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/soft-delete_concept.svg" alt="使わなくなった後、物理削除は何も残らない。削除フラグは deleted_at を付けて、状態の遷移は退会済みとして、同じ表に残る。アーカイブは保持期間の後に別の表へ移り、匿名化は個人データだけを消してレコードが残る" caption="使わなくなったレコードの 5 つの扱いと、残る場所" align="center" >}}
 
 実際の設計では、5 つのどれか 1 つを選ぶより組み合わせる方が普通です。状態を遷移させたレコードを後からアーカイブに移す、レコードを残したまま個人データだけを匿名化する、といった具合です。
 
@@ -183,7 +175,9 @@ stateDiagram-v2
 
 上記の図では、退会済み・強制退会・失効が別々の状態として並んでいます。削除フラグを使うと、この 3 つが `is_deleted = true` という 1 つの値になります。状態をカラムで持てば、再入会を認めるかどうか、返金の対象になるかどうかを状態ごとに決められます。
 
-表としては、`members` から `deleted_at` を落とし、代わりに `status TEXT NOT NULL` のようなカラムを置く形になります。取り得る値を `CHECK` 制約で列挙すれば、想定外の文字列は入りません。ただし `CHECK` が縛れるのは値の集合だけです。上記の図に矢印の無い遷移（退会済みから一時停止に戻す等）まで禁じるなら、アプリケーションで検査するか、トリガーなど別の仕組みが必要です。
+表としては、`members` から `deleted_at` を落とし、代わりに `status TEXT NOT NULL` のようなカラムを置く形になります。取り得る値を `CHECK` 制約で列挙すれば、想定外の文字列は入りません。
+
+ただし `CHECK` が縛れるのは値の集合だけです。上記の図に矢印の無い遷移（退会済みから一時停止に戻す等）まで禁じるなら、アプリケーションで検査するか、トリガーなど別の仕組みが必要です。
 
 ---
 
@@ -223,14 +217,9 @@ flowchart LR
 
 PostgreSQL 17 で、`id` と `status` だけに絞った `members` の会員 42 に、退会の処理 A と一時停止の処理 B を同時に走らせました。どちらも今の `status` を読み、その値を `from_status` にして遷移を 1 件追記します。
 
-| 順 | 処理 A（退会） | 処理 B（一時停止） |
-| --- | --- | --- |
-| 1 | `BEGIN;` `SELECT status FROM members WHERE id = 42;` で `有効` を読む | |
-| 2 | | 同じ `SELECT` で `有効` を読む（A は未確定） |
-| 3 | `status` を `退会済み` に更新し、有効 → 退会済み を追記して `COMMIT;` | |
-| 4 | | `status` を `一時停止` に更新し、有効 → 一時停止 を追記して `COMMIT;` |
+{{< figure src="images/soft-delete_lost_update.svg" alt="横軸が時間で、手順 1 から 4 が並ぶ。上の段の処理 A（退会）は手順 1 で BEGIN の後に SELECT で有効を読み、手順 3 で退会済みに更新して遷移を追記し COMMIT する。下の段の処理 B（一時停止）は手順 2 で A の確定前に同じ SELECT で有効を読み、手順 4 で一時停止に更新して追記し COMMIT する。手順 4 の B から上へ赤い矢印が伸び、A の退会済みが消える" caption="退会 A と一時停止 B を同時に走らせた順序" align="center" >}}
 
-両方の確定後に `members` と `member_status_changes` を読んだ結果は次の通りです。
+A も B も、相手が書く前の `有効` を読んでから書き込みます。両方の確定後に `members` と `member_status_changes` を読んだ結果は次の通りです。
 
 ```text
   status

@@ -6,24 +6,17 @@ series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 2
 wrapTables: true
+topics: ["Replication / Coordination"]
 ---
 
 Lease（リース）は、ある権利を期限付きで貸し出し、期限が過ぎたら自動的に失効させる仕組みです。貸す側は「これから 10 秒間、あなたがリーダーです」と伝え、借りた側は期限が来る前に更新を続けます。更新が途切れれば、誰の操作も無しに権利は消えます。
 
 権利を取得したノードが停止すると、そのノードから権利を返却できません。停止とネットワークの遅延を外から区別できないため、Lease では期限が切れた時点で権利を失効させます。ここでは、[書き込みを 1 台に集約する構成](../leader-and-followers/)でのリーダーの座や、1 台だけが触って良い資源の使用権（ロック）を貸す用途を扱います。
 
-権利を管理する側と保持する側の関係を以下に示します。
+以下は、Node A と Node B が順に権利を借りてストレージに書き込む様子を時間に沿って並べた図です。帯が権利を持つ期間で、番号は後述の fencing token です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    H[Holder<br/>借りる側] -- 取得・更新 --> G[Grantor<br/>貸す側]
-    G -- 期限付きの権利 --> H
-    H -- 権利を使って操作 --> R[(保護対象<br/>ストレージなど)]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の Grantor は権利の管理だけを担当し、保護対象への操作は Holder が行います。権利の貸し借りと実際の操作が別の経路を通るため、保護対象は「操作してきた相手が今も権利を持っているか」を知りません。
+{{< figure src="images/lease_concept.svg" alt="Node A の lease（token 33）が切れた後に Node B が lease（token 34）を借りて書き込む。GC で止まっていた Node A は期限切れに気付かず token 33 で書き込み、token 34 を受け取っていたストレージに拒否される" caption="失効に気付かない Node A の書き込みが token で拒否される流れ" align="center" >}}
+権利を貸す側（Grantor）は権利の管理だけを担当し、ストレージのような保護対象への操作は借りる側（Holder）が行います。権利の貸し借りと実際の操作が別の経路を通るため、保護対象は「操作してきた相手が今も権利を持っているか」を知りません。上記の図のストレージは、番号の大小だけで遅れた書き込みを拒否しています。
 
 <br>
 
@@ -97,6 +90,9 @@ Lease の安全性（同じ時点に権利を持つ者が 2 人にならない�
 
 ずれはゼロではないので、実装では起点をずらすだけでなく、上限までのずれをマージンとして見込みます。Holder は自分の数えた期限よりさらに早く権利を手放し、Grantor はさらに遅く次の相手に貸します。空白の時間を広く取るほど安全側に倒れ、その分だけ切り替えが遅くなります。
 
+以下は、前節の起点のずれとこのマージンを 1 回の貸し出しの時間軸に並べた図です。
+
+{{< figure src="images/lease_margin.svg" alt="上段の Grantor は、Holder の要求を受けて応答した時点から黄土色の帯で貸し、期限の後に点線のマージンを置いてから次に貸す。下段の Holder は、要求を送った時点から青い帯で使い、期限より点線のマージンの分だけ早く手放す。手放してから次に貸すまでの灰色の区間が、誰も持たない空白" caption="起点のずれとマージンで生まれる、誰も持たない空白（目盛りは説明用）" align="center" >}}
 ---
 
 ### fencing token
@@ -105,7 +101,9 @@ Lease は時計の仮定に加えて、Holder が保護対象を操作する時�
 
 分散 DB の HBase では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#ch_zkSessions)（Grantor の役を担う協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
 
-[HBASE-7504](https://issues.apache.org/jira/browse/HBASE-7504) では、どのサーバーがどのデータを持つかを引く時の起点になる [-ROOT- テーブル](https://svn.apache.org/repos/asf/hbase/hbase.apache.org/trunk/0.94/book/arch.catalog.html)の担当サーバーが GC で約 229 秒止まり、その間にセッションが失効しました。ところが、移す前に master が確認すると、GC から戻ったこのサーバーは「まだ担当している」と応えたので、master は移すのをやめました。直後にこのサーバーは故障扱いを知って自ら停止し、-ROOT- は master を再起動するまで誰も担当しない状態になりました。
+[HBASE-7504](https://issues.apache.org/jira/browse/HBASE-7504) では、どのサーバーがどのデータを持つかを引く時の起点になる [-ROOT- テーブル](https://svn.apache.org/repos/asf/hbase/hbase.apache.org/trunk/0.94/book/arch.catalog.html)の担当サーバーが GC で約 229 秒止まり、その間にセッションが失効しました。
+
+ところが、移す前に master が確認すると、GC から戻ったこのサーバーは「まだ担当している」と応えたので、master は移すのをやめました。直後にこのサーバーは故障扱いを知って自ら停止し、-ROOT- は master を再起動するまで誰も担当しない状態になりました。
 
 止まっていたサーバーは、Lease が切れたことを知らないまま古い権利で応えていたわけです。時計の進む速さがずれていなくても起きるため、時計の仮定を強めても防げません。[修正](https://github.com/apache/hbase/commit/f26e14a1b1e2ef51e8bca9132d98ccd29270ec19)後の master は、故障扱いにしたサーバーからのこの応答を採用しません。
 
@@ -206,9 +204,13 @@ WHERE id = 1 AND token <= ?;
 
 ### 実装の例
 
-分散 KVS（Key-Value Store、キーと値を複数ノードで保持する DB）の [etcd](https://etcd.io/docs/v3.5/learning/api/) が lease を API として持っています。生存時間を指定して lease を作り（実際の長さはサーバーが決める）、キーをその lease に紐付けると、更新が途絶えた後にそれらのキーがまとめて削除されます。更新は `LeaseKeepAlive`、明示的な返却は `LeaseRevoke` です。リーダーの座を表すキーを lease に紐付けておけば、保持者が落ちた後にキーが消え、次の候補が取得できるようになります。
+分散 KVS（Key-Value Store、キーと値を複数ノードで保持する DB）の [etcd](https://etcd.io/docs/v3.5/learning/api/) が lease を API として持っています。生存時間を指定して lease を作り（実際の長さはサーバーが決める）、キーをその lease に紐付けると、更新が途絶えた後にそれらのキーがまとめて削除されます。更新は `LeaseKeepAlive`、明示的な返却は `LeaseRevoke` です。
 
-Google の分散ロックサービス [Chubby](https://research.google/pubs/pub27897/) も同じ考え方を実装しています。Chubby はクライアントとの間でセッションを維持し、期限が切れたセッションのロックを解放します。fencing token に当たる番号として、ロックの世代番号を含む sequencer も渡し、受け取ったサーバーが検査します。検査できないサーバー向けには、障害で空いたロックを一定時間ほかに渡さない lock-delay で、遅れた書き込みが次の保持者の処理と重なる可能性を下げます。
+リーダーの座を表すキーを lease に紐付けておけば、保持者が落ちた後にキーが消え、次の候補が取得できるようになります。
+
+Google の分散ロックサービス [Chubby](https://research.google/pubs/pub27897/) も同じ考え方を実装しています。Chubby はクライアントとの間でセッションを維持し、期限が切れたセッションのロックを解放します。fencing token に当たる番号として、ロックの世代番号を含む sequencer も渡し、受け取ったサーバーが検査します。
+
+検査できないサーバー向けには、障害で空いたロックを一定時間ほかに渡さない lock-delay で、遅れた書き込みが次の保持者の処理と重なる可能性を下げます。
 
 ---
 

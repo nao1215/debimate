@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>scriptSig と scriptPubKey を連結して実行する作りと、分けて実行する作り</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrowred" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="30" y="44" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">v0.3.0 まで: 連結して 1 回だけ実行</text>
+<rect x="30" y="64" width="64" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="62.0" y="111.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">&lt;1&gt;</text>
+<rect x="102" y="64" width="104" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="154.0" y="97.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">OP_</text>
+<text x="154.0" y="125.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">RETURN</text>
+<line x1="210" y1="54" x2="210" y2="150" stroke="#e15759" stroke-width="4"/>
+<rect x="218" y="64" width="84" height="76" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="260.0" y="111.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">DUP</text>
+<rect x="310" y="64" width="84" height="76" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="352.0" y="97.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">HASH</text>
+<text x="352.0" y="125.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">160</text>
+<rect x="402" y="64" width="70" height="76" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="437.0" y="111.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">&lt;H&gt;</text>
+<rect x="480" y="64" width="104" height="76" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="532.0" y="97.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">EQUAL</text>
+<text x="532.0" y="125.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">VERIFY</text>
+<rect x="592" y="64" width="90" height="76" rx="8" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="8 6"/>
+<text x="637.0" y="97.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">CHECK</text>
+<text x="637.0" y="125.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">SIG</text>
+<text x="120.0" y="174" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">使う側の命令</text>
+<text x="458" y="174" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">条件の命令は実行されない</text>
+<rect x="30" y="206" width="900" height="52" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="480" y="241" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">1（真）が残って合格、条件を満たさずに出力を使える</text>
+<text x="30" y="326" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">現在: 2 回に分けて実行し、スタックだけ渡す</text>
+<rect x="30" y="346" width="74" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="67.0" y="393.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">&lt;sig&gt;</text>
+<rect x="112" y="346" width="74" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="149.0" y="393.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">&lt;pub&gt;</text>
+<line x1="198" y1="384" x2="256.0" y2="384.0" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="266" y="346" width="84" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="308.0" y="393.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">DUP</text>
+<rect x="358" y="346" width="84" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="400.0" y="379.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">HASH</text>
+<text x="400.0" y="407.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">160</text>
+<rect x="450" y="346" width="70" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="485.0" y="393.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">&lt;H&gt;</text>
+<rect x="528" y="346" width="104" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="580.0" y="379.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">EQUAL</text>
+<text x="580.0" y="407.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">VERIFY</text>
+<rect x="640" y="346" width="90" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="685.0" y="379.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">CHECK</text>
+<text x="685.0" y="407.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">SIG</text>
+<text x="108.0" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">1 回目</text>
+<text x="506" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">2 回目は必ず最後まで実行</text>
+<rect x="30" y="476" width="900" height="52" rx="10" fill="#e9f1e6" stroke="#8fae86" stroke-width="2"/>
+<text x="480" y="511" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">条件を満たさなければ、1 回目が何をしても不合格</text>
+</svg>

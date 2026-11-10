@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>秘密鍵は署名する側の枠を出ず、枠を越えるのは公開してよい 3 つだけ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrowred" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="30" y="30" width="450" height="440" rx="18" fill="none" stroke="#666666" stroke-width="3"/>
+<rect x="520" y="30" width="410" height="440" rx="18" fill="none" stroke="#666666" stroke-width="3"/>
+<text x="200" y="78" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">署名する側</text>
+<text x="800" y="78" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">検証する側</text>
+<rect x="60" y="225" width="190" height="74" rx="12" fill="#d4a24c" stroke="#d4a24c" stroke-width="3"/>
+<text x="155" y="272" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">秘密鍵</text>
+<text x="155" y="340" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">枠の外に出ない</text>
+<rect x="390" y="110" width="220" height="74" rx="37" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="500" y="157" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">メッセージ</text>
+<rect x="390" y="225" width="220" height="74" rx="37" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="500" y="272" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">署名</text>
+<rect x="390" y="380" width="220" height="74" rx="37" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="500" y="427" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">公開鍵</text>
+<line x1="250" y1="262" x2="382.0" y2="262.0" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<line x1="230" y1="299" x2="384.0" y2="400.0" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<line x1="440" y1="184" x2="440.0" y2="217.0" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<rect x="700" y="200" width="200" height="124" rx="12" fill="#f2f2f2" stroke="#666666" stroke-width="3"/>
+<text x="800" y="252" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">検証</text>
+<text x="800" y="292" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">合格 / 不合格</text>
+<line x1="618" y1="147" x2="692.0" y2="227.5" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<line x1="618" y1="262" x2="692.0" y2="262.0" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<line x1="618" y1="417" x2="692.0" y2="308.5" stroke="#666666" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow)"/>
+<text x="480" y="515" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">枠を越えるのは公開してよい 3 つだけ</text>
+</svg>

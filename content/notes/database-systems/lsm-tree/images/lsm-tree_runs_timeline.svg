@@ -946,7 +946,7 @@ L 386.980761 22.932336
 L 390.005782 21.048224 
 L 393.030803 19.164112 
 L 396.055824 17.28 
-" clip-path="url(#p6bf2ab5458)" style="fill: none; stroke: #e15759; stroke-width: 1.8; stroke-linecap: square"/>
+" clip-path="url(#p6bf2ab5458)" style="fill: none; stroke: #d4a24c; stroke-width: 1.8; stroke-linecap: square"/>
    </g>
    <g id="line2d_26">
     <path d="M 66.328551 218.88 
@@ -1189,7 +1189,7 @@ L 412.542187 228.96
      <path d="M 57.942188 18.988594 
 L 66.942188 18.988594 
 L 75.942188 18.988594 
-" style="fill: none; stroke: #e15759; stroke-width: 1.8; stroke-linecap: square"/>
+" style="fill: none; stroke: #d4a24c; stroke-width: 1.8; stroke-linecap: square"/>
     </g>
     <g id="text_15">
      <!-- No compaction -->

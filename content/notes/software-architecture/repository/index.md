@@ -6,6 +6,7 @@ series: ["技術ノート", "Software Architecture"]
 tags: ["software-architecture", "ddd"]
 weight: 3
 wrapTables: true
+topics: ["Domain-Driven Design"]
 ---
 
 Repository とは、Aggregate（集約。規則を一緒に守るオブジェクトのまとまり）を 1 つの単位として保存・復元する仕組みで、呼び出す側からはメモリ上のコレクションのように見えます。注文と明細のように、まとめて検査すべき規則を持つデータを DB（データベース）に保存する時に、明細だけを書き換える経路を塞ぐために使います。
@@ -22,28 +23,9 @@ DDD の Repository は「ユビキタス言語で表現された、集約への�
 
 例には、注文（`Order`）と、その中にある明細を使います。以下は、3 つの層の間の参照の向きを表した図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph APP["アプリケーション層"]
-        U["ユースケース"]
-    end
-    subgraph DOM["ドメイン層"]
-        R["Repository<br/>インターフェース"]
-        A["Order 集約"]
-    end
-    subgraph INF["インフラストラクチャ層"]
-        I["SQL 実装"]
-        DB[("DB")]
-    end
-    U --> R
-    U --> A
-    I -. "インターフェースを満たす" .-> R
-    I --> DB
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+{{< figure src="images/repository_concept.svg" alt="ドメイン層を中心に、アプリケーション層とインフラストラクチャ層が外側を囲む。Repository インターフェースと Order 集約は中心のドメイン層にあり、ユースケースと SQL 実装からの依存の矢印はすべて内側を向く。DB との間は Order 集約が 1 つの塊のまま行き来する" caption="Repository のインターフェースと実装を置く層" align="center" >}}
 
-上記の図の点線は、実装がインターフェースを満たす関係です。ドメイン層は DB の存在を知らないまま「注文を保存する」と書けます。
+上記の図の矢印は、どれも外側の層から内側の層へ向いています。点線は、実装がインターフェースを満たす関係です。ドメイン層は DB の存在を知らないまま「注文を保存する」と書けます。
 
 <br>
 
@@ -190,7 +172,9 @@ ON DELETE RESTRICT
 
 CASCADE では、触っていない X の出荷記録がエラーも無く消えました。RESTRICT では、Y を変えただけの保存が X に付いた出荷記録に阻まれて失敗します。どちらも、`Save` に変更内容が渡されないことから起きています。
 
-差分が必要であれば、方法は 2 つあります。1 つは集約に変更内容を記録させる方法で、集約が自分の変更履歴を持ちます。もう 1 つは、読み込んだ時点の状態を Repository が複製して持っておき、`Save` の時に比較する方法です。例えば明細が X が 1 個・Y が 2 個から、X が 1 個・Y が 3 個・Z が 1 個に変わっていれば、Y だけを UPDATE し、Z を INSERT します。
+差分が必要であれば、方法は 2 つあります。1 つは集約に変更内容を記録させる方法で、集約が自分の変更履歴を持ちます。もう 1 つは、読み込んだ時点の状態を Repository が複製して持っておき、`Save` の時に比較する方法です。
+
+例えば明細が X が 1 個・Y が 2 個から、X が 1 個・Y が 3 個・Z が 1 個に変わっていれば、Y だけを UPDATE し、Z を INSERT します。
 
 ---
 
@@ -204,7 +188,9 @@ CASCADE では、触っていない X の出荷記録がエラーも無く消え
 UPDATE orders SET version = 8 WHERE id = 'A-1' AND version = 7;
 ```
 
-読み込んだ時のバージョンが 7 で、その間に誰も書いていなければ、上の文は 1 行を更新してバージョンを 8 に上げます。先に別の処理が 8 に上げていた場合、`WHERE` に合う行が無く、更新された行は 0 件になります。実装は 0 件を競合として扱い、明細の削除と挿入ごとトランザクションを rollback します。バージョンを集約ルートの行にだけ置くのは、明細しか変わっていない場合も同じ番号を上げて、集約全体を 1 つの単位として守るためです。
+読み込んだ時のバージョンが 7 で、その間に誰も書いていなければ、上の文は 1 行を更新してバージョンを 8 に上げます。先に別の処理が 8 に上げていた場合、`WHERE` に合う行が無く、更新された行は 0 件になります。実装は 0 件を競合として扱い、明細の削除と挿入ごとトランザクションを rollback します。
+
+バージョンを集約ルートの行にだけ置くのは、明細しか変わっていない場合も同じ番号を上げて、集約全体を 1 つの単位として守るためです。
 
 この対処を入れると、`Save` の契約が変わります。「そのまま書き込む」から「読み込んだ後に他の処理が書き換えていなければ書き込む」になるので、失敗をインターフェースに出します。
 
@@ -215,6 +201,46 @@ var ErrConflict = errors.New("order: conflict")
 ```
 
 呼び出す側は `ErrConflict` を受け取ったら、`FindByID` から読み直して同じ操作をやり直すか、利用者に知らせるかを選びます。どちらを選ぶかは操作ごとに変わるため、Repository では決めません。集約を守るのは Repository の仕事で、競合した時にどう振る舞うかはユースケースの判断になります。
+
+先に書いた更新が消える件数は、Python 標準の sqlite3（SQLite 3.46.1）で数えました。K 個の処理が同じ注文 A-1 を `FindByID` で読み、それぞれ明細を 1 件足して `Save` します。
+
+読み込みと保存の順番は seed を固定した乱数で入れ替えるシミュレーションで、SQL は実際の DB で実行し、K ごとに 200 回繰り返しました。バージョンを検査する側は、`ErrConflict` を受けたら読み直してやり直します。以下は `Save` の部分です（[全体](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/repository/lab/lost_update.py)からの抜粋）。
+
+```python
+def save(con, version, lines, check_version):
+    con.execute("BEGIN IMMEDIATE")
+    if check_version:
+        cur = con.execute(
+            "UPDATE orders SET version = ? WHERE id='A-1' AND version = ?",
+            (version + 1, version))
+        if cur.rowcount == 0:  # ErrConflict
+            con.execute("ROLLBACK")
+            return False
+    con.execute("DELETE FROM order_lines WHERE order_id='A-1'")
+    con.executemany("INSERT INTO order_lines VALUES ('A-1', ?, ?)", lines)
+    con.execute("COMMIT")
+    return True
+```
+
+
+{{< figure src="images/repository_lost_update.svg" alt="同じ注文を保存する処理の数を横軸にした 2 枚のグラフ。左は足した明細のうち消えた割合で、バージョンの検査が無いと 2 個で 22%、8 個で 67% が消え、検査があると常に 0%。右は検査がある時に明細 1 件あたりで起きた読み直しの回数で、8 個で約 1 回まで増える" caption="同時に保存する処理の数と、消えた明細・読み直しの回数" align="center" >}}
+
+<details>
+<summary>件数の出力</summary>
+
+全体は [lost_update_output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/repository/lab/lost_update_output.txt) にあります。
+
+```text
+ K  added | no version: lost | version + retry: lost conflicts
+ 1    200 |                0 |                     0         0
+ 2    400 |               89 |                     0        98
+ 4    800 |              379 |                     0       473
+ 8   1600 |             1074 |                     0      1644
+```
+
+</details>
+
+処理が 2 つ重なるだけで、足した明細の 22% がエラーも無く消えました。バージョンを検査すると消える明細は 0 件になり、代わりに読み直しの回数が重なる処理の数とともに増えます。
 
 `Remove` も同じ単位で働き、集約を明細ごと取り除きます。差分の計算とバージョンの管理を実装が引き受ける代わりに、集約を更新する正しい経路が 1 つに定まります。
 
@@ -228,11 +254,20 @@ Evans 氏は、ドメイン専門家にとって意味のある条件でオブ�
 
 条件の組み合わせが増えれば、メソッドも増えます。対処の方向は 3 つあります。
 
-| 方向 | 内容 | 向く場面 |
-|---|---|---|
-| メソッドを増やす | 業務の語になる条件だけをメソッドにする | 条件の種類が少なく、名前が業務の語に収まる |
-| Specification を渡す | 条件そのものをオブジェクトにして組み合わせる | 条件を実行時に組み立てる必要がある |
-| 照会の経路を分ける | 表示のための検索を Repository の外に出す | 検索条件が画面の都合で決まり、更新に使わない |
+{{< note-panels caption="検索条件が増えた時の 3 つの対処の方向。" >}}
+- title: メソッドを増やす
+  body: 業務の語になる条件だけをメソッドにします。
+  items:
+  - 条件の種類が少なく、名前が業務の語に収まる場面に向く
+- title: Specification を渡す
+  body: 条件そのものをオブジェクトにして組み合わせます。
+  items:
+  - 条件を実行時に組み立てる必要がある場面に向く
+- title: 照会の経路を分ける
+  body: 表示のための検索を Repository の外に出します。
+  items:
+  - 検索条件が画面の都合で決まり、更新に使わない場面に向く
+{{< /note-panels >}}
 
 Specification とは、Evans 氏と Fowler 氏が論文「[Specifications](https://martinfowler.com/apsupp/spec.pdf)」で示したパターンで、候補が条件に合うかを判定する規則をオブジェクトにします。論文が中心の考えとして挙げているのは、合致の判定方法の記述と、判定される候補オブジェクトを分離することです。条件を `and` や `or` で組み合わせられるため、メソッド名の組み合わせ爆発は起きません。
 
@@ -244,7 +279,9 @@ Specification とは、Evans 氏と Fowler 氏が論文「[Specifications](https
 
 ### トランザクションの範囲
 
-Evans 氏は、トランザクションと分散（複数のサーバーに分けて置くこと）の単位として、集約の境界を使うことを求めています。1 つの集約は 1 回のトランザクションで更新し、別々の集約は別の DB やサーバーに置いても構わない、という扱いです。1 回の操作で 1 つの集約だけを更新するなら、`Save` の中でトランザクションを開いて閉じる形にできます。この形では `FindByID` と `Save` が別のトランザクションになるため、上で書いたバージョン番号による検査が別途必要です。
+Evans 氏は、トランザクションと分散（複数のサーバーに分けて置くこと）の単位として、集約の境界を使うことを求めています。1 つの集約は 1 回のトランザクションで更新し、別々の集約は別の DB やサーバーに置いても構わない、という扱いです。
+
+1 回の操作で 1 つの集約だけを更新するなら、`Save` の中でトランザクションを開いて閉じる形にできます。この形では `FindByID` と `Save` が別のトランザクションになるため、上で書いたバージョン番号による検査が別途必要です。
 
 複数の集約を 1 回の操作で更新したくなった場合、まず境界が業務と合っていない徴候として疑います。2 つの集約にまたがって守るべき規則があるなら、その規則を検査できるのは両方を持っている場所だけで、境界の引き直しが解になるからです。
 

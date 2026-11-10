@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "preprocessing"]
 weight: 16
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 欠損値（missing values）は、観測や入力がされずに値がない状態です。アンケートの年収欄が空欄だった、センサーが一時的に止まった、といった場面で `NaN` として現れます。欠損値をそのまま学習器に渡すと、多くの実装でエラーになるか、そのサンプルが除外されて学習に使える件数が減ります。

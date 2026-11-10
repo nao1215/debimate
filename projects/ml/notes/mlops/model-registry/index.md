@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "MLOps"]
 tags: ["machine-learning", "mlops"]
 weight: 2
+topics: ["MLOps"]
 ---
 
 モデルレジストリ（model registry）は、学習済みモデルに名前とバージョンを付け、学習時の条件や評価結果と結び付けて管理する仕組みです。新しいモデルを本番へ出す時や、問題が起きて以前のモデルへ戻す時に、どのモデルを使うか指定できます。
@@ -162,15 +163,6 @@ if __name__ == "__main__":
     main()
 ```
 
-{{< note-steps caption="別名の変更と、推論に使うモデルの置き換えを別の操作として観測します。" >}}
-- title: 最初の読み込み
-  body: champion は v1。メモリにも v1 があり、予測は 4。
-- title: 別名を変更
-  body: champion は v2。メモリは v1 のままで、予測は 4。
-- title: 再ロード
-  body: champion から v2 を読み込み直すと、予測は 8。
-{{< /note-steps >}}
-
 コードの後半では、別名をバージョン 1 に戻す操作も行います。以下が実行結果です。MLflow の登録ログを除き、実験が出力した行を載せています。
 
 ```text
@@ -180,6 +172,10 @@ after reload: alias=v2, prediction=8.0
 rollback alias only: alias=v1, prediction=8.0
 after rollback reload: alias=v1, prediction=4.0
 ```
+
+出力を手順ごとに並べると次の図になります。青い線が `champion` の指すバージョン、赤い破線が予測値から分かる `resident` のバージョンで、両者がずれた手順を赤く塗っています。
+
+![別名の参照先と読み込み済みモデルの推移](./model-registry_alias_vs_loaded.svg)
 
 別名を戻しただけでは、バージョン 2 を読み込んでいた `resident` は 8 を返します。再ロード後に初めて 4 へ戻ります。[MLflow のモデル読み込み API](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.pyfunc.html#mlflow.pyfunc.load_model) は、指定先のモデルを読み込んで返します。そのオブジェクトが以後の別名変更を監視するわけではありません。
 

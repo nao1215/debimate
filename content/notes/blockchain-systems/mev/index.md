@@ -6,6 +6,7 @@ series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum", "mev", "defi"]
 weight: 25
 wrapTables: true
+topics: ["Node Policy"]
 ---
 
 取引所のプログラムに、10,000 USDC で ETH を買う取引 A が送られたとします。USDC は米ドルとの連動を目指すトークンです。同じ時に、別の参加者が ETH を買う取引 B と、B で得た ETH を売る取引 C を送りました。3 件の中身は同じでも、ブロックに並べる順番を変えるだけで、A の送り主が受け取る ETH の量が変わります。
@@ -17,19 +18,15 @@ wrapTables: true
 
 上記の表は、後半の実験で計算した値です。2 つ目の順番では、A の受取が 0.033 ETH（1 ETH = 3,000 USDC の換算で約 99 USDC）減り、B と C の送り主が利益を得ています。変えたのは並び順だけです。
 
-MEV（Maximal Extractable Value）は、ブロックを作る時に取引を入れる・外す・並べ替えることで得られる、通常のブロック報酬と手数料を超える価値です。最初は Proof of Work のマイナーが順番を決めていたので Miner Extractable Value と呼ばれていました。[ethereum.org の MEV のページ](https://ethereum.org/en/developers/docs/mev/)では、[Proof of Stake](../proof-of-stake/) への移行に合わせて Maximal と呼ぶようになったと説明しています。
+以下は、同じ 2 通りの順で 3 件を実行した時に、プールの ETH 価格がどう上下するかを描いた図です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
-flowchart LR
-    U["利用者<br/>取引 A"] --> M["公開 mempool<br/>実行前の取引が見える"]
-    S["別の参加者<br/>取引 B・C"] --> M
-    M --> P["ブロックを作る者<br/>並び順を決める"]
-    P --> O1["A → B → C"]
-    P --> O2["B → A → C"]
-```
+{{< figure src="images/mev_concept.svg" alt="上段は A → B → C、下段は B → A → C の順に取引を並べ、その上にプールの ETH 価格の動きを重ねた図。下段では B の買いで価格が上がった後に A が買うため、A の受取は 3.312 ETH から 3.279 ETH に減る。どちらの順でも、C の売りで価格は下がる。" caption="同じ 3 件の取引を 2 通りの順で並べた時のプールの価格" align="center" >}}
 
-上記の図で、送り主が決められるのは取引の中身までです。並び順に値段を付けられるのは、ブロックを作る者です。
+下段では、A は B が押し上げた価格から買い始めます。
+
+MEV（Maximal Extractable Value）は、ブロックを作る時に取引を入れる・外す・並べ替えることで得られる、通常のブロック報酬と手数料を超える価値です。
+
+最初は Proof of Work のマイナーが順番を決めていたので Miner Extractable Value と呼ばれていました。[ethereum.org の MEV のページ](https://ethereum.org/en/developers/docs/mev/)では、[Proof of Stake](../proof-of-stake/) への移行に合わせて Maximal と呼ぶようになったと説明しています。送り主が決められるのは取引の中身までで、並び順に値段を付けられるのは、ブロックを作る者です。
 
 <br>
 
@@ -69,7 +66,9 @@ Ethereum の取引と手数料は [Ethereum Transaction](../ethereum-transaction
 
 例えば、3,000,000 USDC と 1,000 ETH のプールでは 1 ETH が約 3,000 USDC ですが、10,000 USDC で受け取れるのは約 3.312 ETH です。手数料に加えて、買うほど 1 ETH あたりの値段が上がるからです。これを価格インパクト（price impact）と呼びます。
 
-価格インパクトは、自分より前に誰かが同じ向きに買っても起きます。そこで利用者は、受取量が見積もりより一定以上減ったら取引を取り消す下限を付けます。この許容幅を slippage tolerance と呼び、Uniswap v2 の [Router](https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol)（利用者の交換を受け付けるコントラクト）では `amountOutMin` という引数で渡します。受取量がこれを下回ると、取引全体が `INSUFFICIENT_OUTPUT_AMOUNT` で取り消されます。
+価格インパクトは、自分より前に誰かが同じ向きに買っても起きます。
+
+そこで利用者は、受取量が見積もりより一定以上減ったら取引を取り消す下限を付けます。この許容幅を slippage tolerance と呼び、Uniswap v2 の [Router](https://github.com/Uniswap/v2-periphery/blob/master/contracts/UniswapV2Router02.sol)（利用者の交換を受け付けるコントラクト）では `amountOutMin` という引数で渡します。受取量がこれを下回ると、取引全体が `INSUFFICIENT_OUTPUT_AMOUNT` で取り消されます。
 
 ---
 
@@ -78,6 +77,32 @@ Ethereum の取引と手数料は [Ethereum Transaction](../ethereum-transaction
 sandwich attack は、利用者の買いの直前に同じ向きの買い（front-run）、直後に売り（back-run）を入れる手口です。利用者は値上がり後の価格で買わされ、攻撃者はさらに上がった価格で売り抜けます。冒頭の取引 B が front-run、C が back-run です。
 
 [計算用のコード](lab/sandwich.py)は、前節の式を整数で再現し、同じ 3 件を 2 通りの順で実行します。攻撃者は、利用者の取引が取り消されない範囲で最も大きい front-run を二分探索で選びます。gas 代は含めていません。
+
+以下は抜粋です。`amount_out` が前節の式、`largest_front` が front-run の大きさを決める二分探索です。
+
+```python
+def amount_out(amount_in, reserve_in, reserve_out):
+    """UniswapV2Library.getAmountOut と同じ式。入力の 0.3% が手数料になる。"""
+    amount_in_with_fee = amount_in * 997
+    return amount_in_with_fee * reserve_out // (reserve_in * 1000 + amount_in_with_fee)
+
+
+def largest_front(victim_usdc, min_eth):
+    """利用者の取引が取り消されない範囲で、最も大きい先回りの買いを二分探索する。"""
+    lo, hi = 0, 3_000_000 * USDC
+    while lo < hi:
+        mid = (lo + hi + 1) // 2
+        pool = Pool()
+        pool.buy_eth(mid)
+        if amount_out(victim_usdc, pool.usdc, pool.eth) >= min_eth:
+            lo = mid
+        else:
+            hi = mid - 1
+    return lo
+```
+
+<details>
+<summary>sandwich.py の全体</summary>
 
 ```python
 """Uniswap v2 型の定数積プールで、同じ 3 件の取引を並べ替えて結果を比べる。
@@ -194,7 +219,9 @@ if __name__ == "__main__":
               f"{r['profit'] / USDC:>8.2f} USDC")
 ```
 
-以下が Python 3.14 での[実行結果](lab/output.txt)です。
+</details>
+
+以下が Python 3.14 での[実行結果](lab/output.txt)の前半です。
 
 ```text
 pool: 3,000,000 USDC / 1,000 ETH, victim buys with 10,000 USDC
@@ -203,14 +230,6 @@ attacker front-run: 15,161.30 USDC
 
 order A->B->C: victim gets 3.312325 ETH, attacker -90.38 USDC
 order B->A->C: victim gets 3.279202 ETH, attacker +9.35 USDC
-
-tolerance  front-run  victim loss        attacker profit
-    0.10%      1,506  0.003312 ETH (  9 USDC)      0.96 USDC
-    0.50%      7,552  0.016562 ETH ( 49 USDC)      4.73 USDC
-    1.00%     15,161  0.033123 ETH ( 99 USDC)      9.35 USDC
-    2.00%     30,554  0.066247 ETH (198 USDC)     18.25 USDC
-    3.00%     46,184  0.099370 ETH (298 USDC)     26.68 USDC
-    5.00%     78,182  0.165616 ETH (496 USDC)     42.11 USDC
 ```
 
 slippage tolerance が 1% の時、利用者の受取は `amountOutMin` の 3.279202 ETH に一致しています。攻撃者が取り消しの直前まで front-run を大きくしたので、損失は許容幅の上限に達しています。つまり、slippage tolerance は「この額までなら取られてもよい」という上限としても働きます。
@@ -219,9 +238,9 @@ A → B → C の順では、攻撃者は 90.38 USDC を失っています。約
 
 <br>
 
-許容幅を 0.1% から 5% まで動かすと、利用者の損失と攻撃者の利益は次のように変わります。
+許容幅を 0.1% から 5% まで動かすと、利用者の損失と攻撃者の利益は次のように変わります。各点の値は、実行結果の後半にあります。
 
-![slippage tolerance を 0.1% から 5% まで動かした時の、利用者の損失（赤い破線）と攻撃者の利益（青い実線）。どちらも許容幅にほぼ比例して増え、損失の大半は攻撃者の 2 回の swap の手数料として流動性提供者に渡る](images/mev_slippage.svg)
+{{< figure src="images/mev_slippage.svg" alt="slippage tolerance を 0.1% から 5% まで動かした時の、利用者の損失（赤い破線）と攻撃者の利益（青い実線）。どちらも許容幅にほぼ比例して増え、損失の大半は攻撃者の 2 回の swap の手数料として流動性提供者に渡る" caption="slippage tolerance ごとの利用者の損失と攻撃者の利益" align="center" >}}
 
 上記の図の 2 本の線の間は、主に攻撃者が 2 回の swap で払うプールの手数料です。この条件では、利用者が失った額のうち攻撃者に残るのは 1 割未満で、残りの大半は流動性提供者に渡ります。実際の攻撃者は、さらに gas 代とブロックを作る者への支払いも負担します。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/mev/figures.py) です。
 
@@ -338,7 +357,7 @@ flowchart LR
 
 builder が少数に集まると、その数社が並び順と取引の選別を握ります。[PBS のロードマップ](https://ethereum.org/en/roadmap/pbs/)は、分散したバリデータが中身を検証できればブロック作りの集中は許容できるとし、builder による検閲には inclusion list という対策を挙げています。
 
-プロトコル自体に PBS を組み込む [EIP-7732](https://eips.ethereum.org/EIPS/eip-7732) は、次のアップグレード Glamsterdam（[EIP-7773](https://eips.ethereum.org/EIPS/eip-7773)）に含まれる予定で、2026 年 11 月時点ではテストネットでのみ有効です。本記事では MEV-Boost の構成を説明しています。
+プロトコル自体に PBS を組み込む [EIP-7732](https://eips.ethereum.org/EIPS/eip-7732) は、次のアップグレード Glamsterdam（[EIP-7773](https://eips.ethereum.org/EIPS/eip-7773)）に含まれる予定で、2026 年 11 月時点では[テストネット](../mainnet-and-testnet/)でのみ有効です。本記事では MEV-Boost の構成を説明しています。
 
 ---
 
@@ -346,10 +365,22 @@ builder が少数に集まると、その数社が並び順と取引の選別を
 
 利用者ができる対策と、その限界は次の通りです。
 
-| 対策 | 防げること | 限界 |
-| --- | --- | --- |
-| slippage tolerance を小さくする | sandwich の上限額を下げる | 小さすぎると価格の変動だけで取り消され、取消でも gas は掛かる |
-| private RPC（公開 mempool に流さずに取引を受け付ける送信先）に送る（例：[Flashbots Protect](https://docs.flashbots.net/flashbots-protect/overview)） | 公開 mempool に載らないので、bot が取引を事前に読めない | 送り先の運営者と builder を信頼する。取引の流れが特定の builder に集まる |
-| batch auction で約定する（例：[CoW Protocol](https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction)。同プロトコルでは fair combinatorial batch auction と呼ぶ） | 同じバッチで同じトークンの組を同じ向きに交換する注文に同じ価格を付け、バッチ内の順番を無意味にする | 対応する取引所でしか使えず、約定を組み立てる別の参加者（solver）に頼る |
+{{< note-panels caption="利用者ができる 3 つの対策と、その限界。" >}}
+- title: slippage tolerance を小さくする
+  body: sandwich で取られる額の上限を下げます。
+  items:
+  - 小さすぎると、価格の変動だけで取り消される
+  - 取り消されても gas は掛かる
+- title: private RPC に送る
+  body: 公開 mempool に流さずに取引を受け付ける送信先に送ります（例：[Flashbots Protect](https://docs.flashbots.net/flashbots-protect/overview)）。bot は取引を事前に読めません。
+  items:
+  - 送り先の運営者と builder を信頼する
+  - 取引の流れが特定の builder に集まる
+- title: batch auction で約定する
+  body: 同じバッチで同じトークンの組を同じ向きに交換する注文に同じ価格を付け、バッチ内の順番を無意味にします（例：[CoW Protocol](https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction)。同プロトコルでは fair combinatorial batch auction と呼ぶ）。
+  items:
+  - 対応する取引所でしか使えない
+  - 約定を組み立てる別の参加者（solver）に頼る
+{{< /note-panels >}}
 
-上記の表の 2 行目は、前節の集中と裏表の関係にあります。取引を private に送るほど、その流れを受け取る builder が有利になります。どの対策も MEV を消すわけではなく、誰が並び順を決め、誰がその価値を受け取るかを変えるだけです。
+上記の 2 つ目の private RPC は、前節の集中と裏表の関係にあります。取引を private に送るほど、その流れを受け取る builder が有利になります。どの対策も MEV を消すわけではなく、誰が並び順を決め、誰がその価値を受け取るかを変えるだけです。

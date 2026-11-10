@@ -5,11 +5,18 @@ draft: false
 series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "ethereum"]
 weight: 14
+topics: ["Transaction / Wallet"]
 ---
 
 取引（transaction）は、EOA（Externally Owned Account、外部所有アカウント）が秘密鍵で署名した指示のデータです。[公式ドキュメント](https://ethereum.org/en/developers/docs/transactions/)も、取引はアカウントが暗号で署名して出す指示だと定義しています。送金も、コントラクト（コードを持つアカウント）の呼び出しも、コントラクトの作成も、この 1 つの形で表されます。
 
 ウォレットの確認画面には、金額のほかに「ガスの上限」や「最大手数料」が表示されます。gas は実行の計算量を測る単位です。また、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなるためです。
+
+以下は、確認画面の「最大手数料」と、実際に払う手数料の関係を面積で示した図です。
+
+{{< figure src="images/ethereum-transaction_concept.svg" alt="横軸が gas の量、縦軸が 1 gas あたりの額の図。gasLimit と maxFeePerGas で囲んだ点線の外枠が最大手数料で、その中の、使った gas の幅で base fee の高さまでが黄土色（焼却）、その上の priority fee の帯が青（参加者へ）に塗られている。使わずに済んだ gas と単価の上限までの余りは塗られていない" caption="最大手数料の枠と、実際に払う手数料" align="center" >}}
+
+上記の図で実際に払うのは塗った部分だけで、詳しくは「使った gas と単価による手数料」で扱います。
 
 取引が作られてから結果が残るまでを以下に示します。
 
@@ -35,7 +42,7 @@ flowchart LR
 - 手数料は、どのように決まるのか。
 - 中の送金が失敗しても、取引が成功として残るのはなぜか。
 
-アカウントが持つ状態と nonce による順序は [Ethereum Account Model](../ethereum-account-model/) で扱っており、EVM（Ethereum Virtual Machine）の命令とコントラクトの書き方は本記事では扱いません。
+アカウントが持つ状態と nonce による順序は [Ethereum Account Model](../ethereum-account-model/) で扱っており、[EVM](../evm/)（Ethereum Virtual Machine）の命令とコントラクトの書き方は本記事では扱いません。
 
 ---
 
@@ -119,7 +126,7 @@ flowchart LR
 
 上記の図で、取引のデータを 1 バイトでも書き換えると、署名の対象が変わります。元の署名をそのまま付けても、復元されるのは元の送り主とは別のアドレスになるか、復元そのものが失敗します。どちらにしても、元の送り主が承認した取引としては成立しません。
 
-署名済みの取引をそのまま別のチェーンに流されると、送り主が承認していない送金が成立してしまいます。これを防ぐために、署名の対象に chain ID を入れます。
+署名済みの取引をそのまま別のチェーンに流されると、送り主が承認していない送金が成立してしまいます。これを防ぐために、署名の対象に [chain ID](../mainnet-and-testnet/#ethereum-の-chain-id-と-network-id) を入れます。
 
 chain ID が署名の対象に入るかどうかは、取引の形で変わります。typed transaction と、[EIP-155 に従う legacy transaction](https://eips.ethereum.org/EIPS/eip-155) では、署名のためのハッシュを計算する対象に chain ID を含めます。同じ EIP は、chain ID を含めない以前の署名も引き続き有効だと書いており、その形の取引に chain ID は入りません。
 
@@ -129,7 +136,7 @@ chain ID が署名の対象に入るかどうかは、取引の形で変わり�
 
 送り主が払う額は、`使った gas × (base fee + priority fee)` で決まります。base fee はブロックごとに決まる 1 gas あたりの最低額で、priority fee はブロックを作る参加者に渡す上乗せ分です。
 
-[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)には、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。base fee がブロックごとにどう上下するのかは扱いません。
+[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)には、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。
 
 取引に書く 2 つの上限は、この式の別々の箇所を制限します。gasLimit は使う量の上限で、maxFeePerGas は 1 gas あたりの額の上限です。委任を設定していない EOA に data 無しで ETH を送るだけなら 21,000 gas で、data を付けたりコードが動いたりすると増えます。
 
@@ -161,6 +168,59 @@ base fee が 10 gwei なら、0.00021 ETH が焼却され、0.000042 ETH が参�
 ウォレットの確認画面に出る「最大手数料」は、実際に引かれる額ではなく、この `gasLimit × maxFeePerGas`（上記の例では 0.00063 ETH）を指します。
 
 送り主が取引に書けるのは上限までで、払う額は、使った gas と、取り込まれたブロックの base fee が分かるまで確定しません。
+
+base fee は、前のブロックの混み具合で決まります。[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) は、使った gas がブロックの gas 上限の半分（target）を超えると次の base fee を上げ、下回ると下げる式を定めており、1 ブロックで動く幅は最大 12.5%（8 分の 1）です。
+
+この式を使い、上記の例の maxFeePerGas 30 gwei で取り込まれる見込みがどれくらい続くのかを計算しました。実際のネットワークには接続していません。base fee は 10 gwei から始め、全てのブロックが同じ使用率で続くと仮定しています。以下が、仕様の式をそのまま写した部分です（[lab/base_fee.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-transaction/lab/base_fee.py) から抜粋）。
+
+```python
+BASE_FEE_MAX_CHANGE_DENOMINATOR = 8
+ELASTICITY_MULTIPLIER = 2
+
+def next_base_fee(base_fee, gas_used, gas_limit=GAS_LIMIT):
+    target = gas_limit // ELASTICITY_MULTIPLIER
+    if gas_used == target:
+        return base_fee
+    if gas_used > target:
+        delta = max(base_fee * (gas_used - target) // target
+                    // BASE_FEE_MAX_CHANGE_DENOMINATOR, 1)
+        return base_fee + delta
+    delta = base_fee * (target - gas_used) // target // BASE_FEE_MAX_CHANGE_DENOMINATOR
+    return base_fee - delta
+```
+
+`python3 base_fee.py` の[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-transaction/lab/base_fee_output.txt)の要点は以下の通りです。
+
+```text
+100% full: base fee exceeds 30 gwei at block 10 (120 s with 12 s slots)
+75% full: base fee exceeds 30 gwei at block 19 (228 s with 12 s slots)
+one full block: x1.125, one empty block: x0.875
+```
+
+{{< figure src="images/ethereum-transaction_base_fee.svg" alt="横軸がブロック数、縦軸が base fee の折れ線グラフ。10 gwei から始まり、満杯のブロックが続くと 10 ブロック目で 30 gwei の点線を超え、使用率 75% では 19 ブロック目で超える。使用率 50% は 10 gwei のまま横ばいで、空のブロックが続くと下がり続ける" caption="ブロックの使用率ごとの base fee の推移" align="center" >}}
+
+<details><summary>使用率ごとの base fee の表（2 ブロックおき、単位は gwei）</summary>
+
+```text
+block    100%     75%     50%     25%      0%
+    0   10.00   10.00   10.00   10.00   10.00
+    2   12.66   11.29   10.00    8.79    7.66
+    4   16.02   12.74   10.00    7.72    5.86
+    6   20.27   14.39   10.00    6.79    4.49
+    8   25.66   16.24   10.00    5.97    3.44
+   10   32.47   18.34   10.00    5.24    2.63
+   12   41.10   20.70   10.00    4.61    2.01
+   14   52.02   23.37   10.00    4.05    1.54
+   16   65.83   26.38   10.00    3.56    1.18
+   18   83.32   29.78   10.00    3.13    0.90
+   20  105.45   33.62   10.00    2.75    0.69
+   22  133.46   37.95   10.00    2.42    0.53
+   24  168.91   42.84   10.00    2.12    0.41
+```
+
+</details>
+
+満杯のブロックが続くと、base fee は 10 ブロック目（約 2 分後）に 30 gwei を超え、上記の例の取引は取り込まれなくなります。送った時点の base fee の 3 倍を上限に書いても、混雑が 2 分続けば足りなくなる計算です。
 
 取引には、実行を始める前に必ず掛かる intrinsic gas があります。上に挙げた単純な送金なら 21,000 で、data や accessList を付ければ、その内容に応じて増えます。
 

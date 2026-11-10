@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>Leader の交代で、高位ウォーターマークより後ろのエントリがどうなるか</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="40" y="122" font-size="26" text-anchor="start" style="fill:#1f1f1f">旧 Leader</text>
+<rect x="300" y="70" width="92" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="346.0" y="118" font-size="26" text-anchor="middle" style="fill:#1f1f1f">40</text>
+<rect x="404" y="70" width="92" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="450.0" y="118" font-size="26" text-anchor="middle" style="fill:#1f1f1f">41</text>
+<rect x="508" y="70" width="92" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="554.0" y="118" font-size="26" text-anchor="middle" style="fill:#1f1f1f">42</text>
+<rect x="612" y="70" width="92" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="658.0" y="118" font-size="26" text-anchor="middle" style="fill:#1f1f1f">43</text>
+<rect x="716" y="70" width="92" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="762.0" y="118" font-size="26" text-anchor="middle" style="fill:#1f1f1f">44</text>
+<rect x="820" y="70" width="92" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="866.0" y="118" font-size="26" text-anchor="middle" style="fill:#1f1f1f">45</text>
+<text x="40" y="244" font-size="26" text-anchor="start" style="fill:#1f1f1f">新 Leader</text>
+<rect x="300" y="210" width="92" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="346.0" y="258" font-size="26" text-anchor="middle" style="fill:#1f1f1f">40</text>
+<rect x="404" y="210" width="92" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="450.0" y="258" font-size="26" text-anchor="middle" style="fill:#1f1f1f">41</text>
+<rect x="508" y="210" width="92" height="76" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="554.0" y="258" font-size="26" text-anchor="middle" style="fill:#1f1f1f">42</text>
+<rect x="612" y="210" width="92" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="658.0" y="258" font-size="26" text-anchor="middle" style="fill:#1f1f1f">43</text>
+<text x="40" y="278" font-size="24" text-anchor="start" style="fill:#666666">（元 Follower 1）</text>
+<line x1="606" y1="40" x2="606" y2="320" stroke="#1f1f1f" stroke-width="5" stroke-linecap="round"/>
+<text x="606" y="30" font-size="24" text-anchor="middle" style="fill:#1f1f1f">H = 42</text>
+<rect x="40" y="380" width="420" height="120" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="250" y="430" font-size="26" text-anchor="middle" style="fill:#1f1f1f">43 は新 Leader にある</text>
+<text x="250" y="470" font-size="24" text-anchor="middle" style="fill:#666666">後から確定する</text>
+<rect x="500" y="380" width="420" height="120" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="710" y="430" font-size="26" text-anchor="middle" style="fill:#1f1f1f">44・45 は新 Leader に無い</text>
+<text x="710" y="470" font-size="24" text-anchor="middle" style="fill:#666666">上書きされて消える</text>
+</svg>

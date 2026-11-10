@@ -1,0 +1,26 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2)
+accounts  order    clients  transfers  deadlocks  rate(%)
+      10  random         1        200          0     0.00
+      10  random         2        400          2     0.50
+      10  random         4        800         25     3.12
+      10  random         8       1600        158     9.88
+      10  random        16       3200        927    28.97
+      10  random        32       6400       3546    55.41
+      10  ordered        1        200          0     0.00
+      10  ordered        2        400          0     0.00
+      10  ordered        4        800          0     0.00
+      10  ordered        8       1600          0     0.00
+      10  ordered       16       3200          0     0.00
+      10  ordered       32       6400          0     0.00
+     100  random         1        200          0     0.00
+     100  random         2        400          0     0.00
+     100  random         4        800          0     0.00
+     100  random         8       1600          1     0.06
+     100  random        16       3200          6     0.19
+     100  random        32       6400         20     0.31
+     100  ordered        1        200          0     0.00
+     100  ordered        2        400          0     0.00
+     100  ordered        4        800          0     0.00
+     100  ordered        8       1600          0     0.00
+     100  ordered       16       3200          0     0.00
+     100  ordered       32       6400          0     0.00

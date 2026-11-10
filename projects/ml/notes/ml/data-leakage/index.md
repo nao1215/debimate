@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "model-evaluation"]
 weight: 11
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 データリーク（data leakage）は、学習時には観測できるはずのない情報がモデルに混入し、評価指標を不当に高く出してしまう現象です。[過学習](../overfitting/) と紛らわしい現象です。過学習が「複雑なモデルが訓練データを覚えすぎる」のに対し、データリークは「特徴量や前処理の組み方が予測対象の情報を漏らしている」点で原因が違います。

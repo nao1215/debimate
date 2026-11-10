@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Mathematics"]
 tags: ["machine-learning", "math", "statistics"]
 weight: 2
+topics: ["Mathematics（数学の基礎）"]
 ---
 
 平均（算術平均, mean）は、データの「中心」を表す代表値の中で最も基本的な指標です。全ての値を足して個数で割るというシンプルな計算式ながら、確率論の期待値・最小二乗推定・大数の法則・中心極限定理の定義に直接現れます。[分散](../variance/)・[標準偏差](../stddev/)・[相関係数](../correlation/) の計算でも平均を使います。

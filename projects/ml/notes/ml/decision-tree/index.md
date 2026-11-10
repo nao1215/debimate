@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "supervised"]
 weight: 21
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 決定木（decision tree）は、「特徴量 `x_j` が閾値 `t` 以下か」という質問を繰り返してデータを分け、たどり着いた葉ノードでクラス（分類）または値（回帰）を返すモデルです。学習では、各ノードで最も良い質問を 1 つずつ貪欲に選びます。分岐条件を読めば予測の根拠を追えますし、特徴量のスケーリングも要りません。

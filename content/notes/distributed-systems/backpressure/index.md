@@ -6,20 +6,20 @@ series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "reliability", "flow-control"]
 weight: 11
 wrapTables: true
+topics: ["Reliability"]
+crossTopics:
+  software-architecture: ["Resilience Patterns"]
 ---
 
 バックプレッシャー（backpressure）は、下流の処理が追い付かない時に、その事実を上流に伝えて送る量を減らさせる仕組みです。データを作って送る側を Producer、受け取って処理する側を Consumer と呼ぶと、要求やデータは Producer から Consumer に流れ、「待って」の信号は逆向きに流れます。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    P[Producer] -- 要求・データ --> Q[(Queue)]
-    Q -- 要求・データ --> C[Consumer]
-    C -. 待って・減らして .-> Q
-    Q -. 待って・減らして .-> P
-```
+例えば、アクセスログを集めて検索用の DB（データベース）に入れる処理を考えます。普段は 1 秒に 100 件を処理できていても、セール開始の瞬間にログが 1 秒 200 件に増えると、差の 100 件は毎秒どこかに溜まります。溜まる場所がメモリ上のキューなら、キューは増え続け、ログが DB に入るまでの遅れも伸び続けます。
 
-例えば、アクセスログを集めて検索用の DB（データベース）に入れる処理を考えます。普段は 1 秒に 100 件を処理できていても、セール開始の瞬間にログが 1 秒 200 件に増えると、差の 100 件は毎秒どこかに溜まります。溜まる場所がメモリ上のキューなら、キューは増え続け、ログが DB に入るまでの遅れも伸び続けます。しかも、キューへの追加はメモリが尽きるまで成功を返し続けるので、送る側からは異常が見えません。
+しかも、キューへの追加はメモリが尽きるまで成功を返し続けるので、送る側からは異常が見えません。
+
+以下は、この例の速度差をキューの水位で表した図です。上は上限のないキュー、下は満杯を Producer に伝えて流入を絞る場合です。
+
+{{< figure src="images/backpressure_concept.svg" alt="上の上限なしでは、200 件/秒の流入と 100 件/秒の流出の差でキューの水位が上がり続ける。下の上限ありでは、水位が上限で止まり、「待って」の信号を Producer に返して流入を 100 件/秒に下げる" caption="上限なしのキューとバックプレッシャーの水位" align="center" >}}
 
 <br>
 
@@ -49,7 +49,24 @@ Producer の到着率（1 秒あたりに届く件数）を λ、Consumer の処
 
 Python 標準ライブラリの [asyncio.Queue](https://docs.python.org/3/library/asyncio-queue.html) で、速度差が溜まる様子を確認します。`asyncio.Queue` は `maxsize=0` で上限なし、正の値で上限ありのキューになり、満杯の時に `await put()` は空きが出るまで待ち、`put_nowait()` は `QueueFull` を送出します。
 
-実験の条件は次の通りです。到着は 5 ms ごと（200 件/秒）、処理は 1 件 10 ms（100 件/秒）で、4 秒間だけ要求を作ります。1 件には 10 KB のデータを持たせ、`tracemalloc` で Python が確保したメモリの最大値を測ります。比べるのは、上限なし（unbounded）、上限 50 件で満杯なら Producer を待たせる（block）、上限 50 件で満杯なら断る（reject）の 3 つです。
+実験の条件は次の通りです。到着は 5 ms ごと（200 件/秒）、処理は 1 件 10 ms（100 件/秒）で、4 秒間だけ要求を作ります。1 件には 10 KB のデータを持たせ、`tracemalloc` で Python が確保したメモリの最大値を測ります。
+
+比べるのは、上限なし（unbounded）、上限 50 件で満杯なら Producer を待たせる（block）、上限 50 件で満杯なら断る（reject）の 3 つです。
+
+以下は [queue_experiment.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/backpressure/lab/queue_experiment.py) の、Producer がキューに入れる部分の抜粋です。3 つの違いは、満杯の時の `put` の呼び方だけです。
+
+```python
+if mode == "reject":
+    try:
+        queue.put_nowait(item)
+    except asyncio.QueueFull:
+        stats["rejected"] += 1
+else:
+    await queue.put(item)  # unbounded は即座に返る。block は空くまで待つ
+```
+
+<details>
+<summary>queue_experiment.py の全体</summary>
 
 ```python
 """到着率 200 件/秒、処理率 100 件/秒で 3 種類のキューを 4 秒間動かす実験。"""
@@ -137,6 +154,8 @@ def main():
 main()
 ```
 
+</details>
+
 Python 3.14.4 で実行した結果です。ローカルのタイマー精度に左右されるので、数値は実行のたびに少し変わります。
 
 ```text
@@ -151,11 +170,13 @@ reject       800      372   377    50       0.54        0.50      0.6
 
 キュー長と待ち時間を時系列で描くと、以下の通りです。グラフの生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/backpressure/figures.py) にあります。
 
-![到着 200 件/秒・処理 100 件/秒で 4 秒動かした結果。上限なしのキューは長さも待ち時間も直線的に伸び、上限 50 件のキューは block と reject のどちらも 50 件と約 0.5 秒で頭打ちになる](images/queue_growth.svg)
+{{< figure src="images/queue_growth.svg" alt="到着 200 件/秒・処理 100 件/秒で 4 秒動かした結果。上限なしのキューは長さも待ち時間も直線的に伸び、上限 50 件のキューは block と reject のどちらも 50 件と約 0.5 秒で頭打ちになる" caption="3 種類のキューのキュー長と待ち時間の推移" align="center" >}}
 
 上限なしのキューは、800 件全てを受け付け、1 件も断っていません。しかし処理できたのは 376 件で、423 件はメモリ上に並んだまま、最後尾は 4 秒以上待つ見込みです。メモリも 4.4 MB と、上限ありの 7 倍に増えました。4 秒で止めたので小さな値ですが、到着が続く限り、この線は伸び続けます。つまり、上限の無いキューは、メモリが尽きるまで「受け付けた」という成功を返し続けます。
 
-上限ありの 2 つは、キュー長が 50 件、待ち時間が約 0.5 秒で止まりました。設定は 100 件/秒ですが、`asyncio.sleep` が指定より少し長く眠るので、1 件は約 10.6 ms かかり、処理率は約 94 件/秒（4 秒で 377 件）に下がりました。満杯の時にキューに入れる率はこの処理率と同じなので、Little の法則から W = 50 ÷ 94 ≒ 0.53 秒となり、測った値とほぼ一致します。上限の長さが、そのまま待ち時間の上限を決めています。
+上限ありの 2 つは、キュー長が 50 件、待ち時間が約 0.5 秒で止まりました。設定は 100 件/秒ですが、`asyncio.sleep` が指定より少し長く眠るので、1 件は約 10.6 ms かかり、処理率は約 94 件/秒（4 秒で 377 件）に下がりました。
+
+満杯の時にキューに入れる率はこの処理率と同じなので、Little の法則から W = 50 ÷ 94 ≒ 0.53 秒となり、測った値とほぼ一致します。上限の長さが、そのまま待ち時間の上限を決めています。
 
 ---
 
@@ -192,15 +213,13 @@ block は、Producer が自分の速度を変えられる時に、何も失わ�
 
 ### 送る量を決める側
 
-キューの外では、Producer と Consumer の間で「どれだけ送って良いか」を誰が決めるかで、方式が 3 つに分かれます。
+キューの外では、Producer と Consumer の間で「どれだけ送って良いか」を誰が決めるかで、方式が 3 つに分かれます。以下の図の黄土色の積み上がりは、送れずに待つ要求の場所です。
 
-| 方式 | 送る量を決める側 | 例 |
-|---|---|---|
-| Push | Producer。作った分だけ送る | Webhook（イベントを相手の URL に POST する仕組み） |
-| Pull | Consumer。取りに行った分だけ届く | [Apache Kafka](https://kafka.apache.org/42/design/design/) のコンシューマ、Transactional Outbox の relay |
-| Credit-based | Consumer が「あと n 件」と許可し、Producer はその範囲で送る | Reactive Streams の `request(n)`、TCP の受信ウィンドウ、HTTP/2 のフロー制御ウィンドウ |
+{{< figure src="images/backpressure_flow_control.svg" alt="3 段の図。Push は Producer が作った分だけ Consumer に送り、Consumer の手前に要求が積み上がる。Pull は Consumer が fetch した分だけが届く。Credit-based は Consumer が request(n) で許可し、Producer は n 件までを送り、残りは Producer の手元で待つ" caption="Push・Pull・Credit-based の送る量の決め方" align="center" >}}
 
-Push は届くまでの遅延が小さい代わりに、Consumer の処理速度が生産速度を下回ると、超過分が Consumer 側に溜まります。Kafka が Consumer に取りに行かせる Pull 型を選んだ理由の 1 つも、Push 型ではこの状態で Consumer が溢れることです。[Transactional Outbox](../transactional-outbox/) の relay も、outbox テーブルを自分の間隔で読みに行く Pull 型です。その代わりに、Pull 型ではデータが無い時も問い合わせを繰り返す無駄が生じます。Kafka は、データが届くまで要求を待たせておく long poll でこの無駄を避けています。
+Push は、Webhook（イベントを相手の URL に POST する仕組み）のように Producer が作った分だけ送る方式です。届くまでの遅延が小さい代わりに、Consumer の処理速度が生産速度を下回ると、超過分が Consumer 側に溜まります。[Apache Kafka](https://kafka.apache.org/42/design/design/) が Consumer に取りに行かせる Pull 型を選んだ理由の 1 つも、Push 型ではこの状態で Consumer が溢れることです。
+
+[Transactional Outbox](../transactional-outbox/) の relay も、outbox テーブルを自分の間隔で読みに行く Pull 型です。その代わりに、Pull 型ではデータが無い時も問い合わせを繰り返す無駄が生じます。Kafka は、データが届くまで要求を待たせておく long poll でこの無駄を避けています。
 
 Credit-based は、Push の速さを残したまま Pull と同じ上限を付ける方式です。[Reactive Streams](https://www.reactive-streams.org/) では、Subscriber が `Subscription.request(n)` で受け取れる件数を伝え、[仕様](https://github.com/reactive-streams/reactive-streams-jvm/blob/v1.0.4/README.md)のルール 1.1 で、Publisher が送る `onNext` の総数はそれまでに要求された総数以下と定めています。
 
@@ -218,7 +237,9 @@ sequenceDiagram
     P->>S: onNext(3)
 ```
 
-上記の図で、Publisher は 3 件目を手元に持っていても、Subscriber の `request(1)` が届くまで送りません。待つ場所が Subscriber のキューではなく Publisher 側になるので、Subscriber のメモリは許可した件数分で頭打ちになります。なお、`request(Long.MAX_VALUE)` は「事実上無制限」とみなして良いとルール 3.17 にあり、これを呼ぶと Push と変わりません。
+上記の図で、Publisher は 3 件目を手元に持っていても、Subscriber の `request(1)` が届くまで送りません。待つ場所が Subscriber のキューではなく Publisher 側になるので、Subscriber のメモリは許可した件数分で頭打ちになります。
+
+なお、`request(Long.MAX_VALUE)` は「事実上無制限」とみなして良いとルール 3.17 にあり、これを呼ぶと Push と変わりません。
 
 TCP も同じ構造です。[RFC 9293](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6) では、受信側が各セグメントで受け取れるシーケンス番号の範囲（受信ウィンドウ）を広告し、送信側はその範囲に収まるように送ります。アプリケーションが受信バッファを読まなければウィンドウは 0 まで縮み、送信側は止まります。
 
@@ -226,7 +247,9 @@ TCP も同じ構造です。[RFC 9293](https://www.rfc-editor.org/rfc/rfc9293#se
 
 [HTTP/2](https://www.rfc-editor.org/rfc/rfc9113#section-5.2) は、1 本の TCP 接続に複数のストリームを載せるので、ストリームごとと接続全体の 2 段でウィンドウを持ちます。初期値はどちらも 65,535 バイトで、対象は DATA フレームだけです。受信側は処理した分を `WINDOW_UPDATE` フレームで返し、送信側の枠を広げます。
 
-この制御は隣り合う 2 点の間だけで閉じています。中継するプロキシは `WINDOW_UPDATE` を次の接続に転送しません（[RFC 9113 の 6.9](https://www.rfc-editor.org/rfc/rfc9113#section-6.9)）。それでも、プロキシの先の受信側が転送を絞れば、プロキシの受信バッファが埋まり、その影響は間接的に元の送信者まで伝わり得ます。つまり、各区間がそれぞれ上限を持っていれば、下流の詰まりは区間ごとの満杯の連鎖として上流に届きます。どこか 1 つの区間に上限の無いバッファがあると、連鎖はそこで止まり、詰まりはそのバッファに溜まります。
+この制御は隣り合う 2 点の間だけで閉じています。中継するプロキシは `WINDOW_UPDATE` を次の接続に転送しません（[RFC 9113 の 6.9](https://www.rfc-editor.org/rfc/rfc9113#section-6.9)）。それでも、プロキシの先の受信側が転送を絞れば、プロキシの受信バッファが埋まり、その影響は間接的に元の送信者まで伝わり得ます。
+
+つまり、各区間がそれぞれ上限を持っていれば、下流の詰まりは区間ごとの満杯の連鎖として上流に届きます。どこか 1 つの区間に上限の無いバッファがあると、連鎖はそこで止まり、詰まりはそのバッファに溜まります。
 
 ---
 
@@ -291,7 +314,15 @@ layers  retry=1  retry=2  retry=3  one-layer(r=3)  budget10%
      5       32      243     1024               4       1.61
 ```
 
-3 層がそれぞれ 3 回再試行すると、1 回の操作が最下層では 64 回の試行になります。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) も、同じ条件の例で 64 回（4³）を挙げています。AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) は、5 層の各層が 3 回再試行すると 243 倍になると説明しています。243 は 3⁵ で、1 層あたり合計 3 回の試行として計算した値なので、上記の出力の retry=2 の列と同じ値です。下流が遅れて失敗している時ほど、この最大値に近づきます。
+上記の出力を層の数ごとに描くと、以下の通りです。縦軸は対数です。
+
+{{< figure src="images/backpressure_retry.svg" alt="各層が再試行する 3 本は層が増えるごとに一定の倍率で増え、5 層で 32 倍・243 倍・1024 倍になる。1 層だけが再試行する場合は 4 倍のまま、retry budget 10% は 5 層でも 1.61 倍に留まる" caption="層の数と最下層に届く試行回数" align="center" >}}
+
+各層が再試行する線は、対数の軸で直線になります。層を 1 つ足すごとに、同じ倍率が掛かるからです。
+
+3 層がそれぞれ 3 回再試行すると、1 回の操作が最下層では 64 回の試行になります。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) も、同じ条件の例で 64 回（4³）を挙げています。
+
+AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) は、5 層の各層が 3 回再試行すると 243 倍になると説明しています。243 は 3⁵ で、1 層あたり合計 3 回の試行として計算した値なので、上記の出力の retry=2 の列と同じ値です。下流が遅れて失敗している時ほど、この最大値に近づきます。
 
 増幅を抑える方法のうち 2 つは、上記の出力の右 2 列に対応します。
 
@@ -303,15 +334,21 @@ layers  retry=1  retry=2  retry=3  one-layer(r=3)  budget10%
 
 ### 下流の遅延を上流に伝える方法
 
-HTTP の API には `request(n)` のような許可の仕組みが無いので、サーバーは断る応答で詰まりを伝えます。[RFC 6585](https://www.rfc-editor.org/rfc/rfc6585#section-4) の 429 Too Many Requests は、クライアントが一定時間に送りすぎた時の応答です。[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#section-15.6.4) の 503 Service Unavailable は、一時的な過負荷や保守で処理できない時の応答です。どちらも `Retry-After` ヘッダで、次に送るまで待つ秒数か日時（例えば `Retry-After: 30`）を付けられます。
+HTTP の API には `request(n)` のような許可の仕組みが無いので、サーバーは断る応答で詰まりを伝えます。[RFC 6585](https://www.rfc-editor.org/rfc/rfc6585#section-4) の 429 Too Many Requests は、クライアントが一定時間に送りすぎた時の応答です。[RFC 9110](https://www.rfc-editor.org/rfc/rfc9110#section-15.6.4) の 503 Service Unavailable は、一時的な過負荷や保守で処理できない時の応答です。
+
+どちらも `Retry-After` ヘッダで、次に送るまで待つ秒数か日時（例えば `Retry-After: 30`）を付けられます。
 
 上限ありのキューが満杯になった時に 503 を返す処理は、load shedding（負荷の一部を意図的に捨てる処理）の一種です。クライアントがタイムアウトする状況では、全部を遅く処理して全部をタイムアウトさせるより、一部を早く断って残りを時間内に返す方が、成功する要求の数は多くなります。しかし、断る処理にもコストがかかります。要求の解析や認証の後で断るなら、その分の CPU は使ってしまいます。
 
-詰まりを判断する基準は、キュー長より待ち時間の方が向いています。100 件のキューでも、1 件 1 ms で捌けるなら 0.1 秒、1 件 1 秒かかるなら 100 秒待つからです。ネットワーク機器のキュー管理アルゴリズム [CoDel（RFC 8289）](https://www.rfc-editor.org/rfc/rfc8289)は、パケットのキュー長ではなくキューに滞在した時間を見て、滞在時間が目標を超えた状態が続いた時に捨て始めます。サーバーのキューでも、取り出した要求の待ち時間が閾値を超えていたら処理せずに断る、という形で応用できます。
+詰まりを判断する基準は、キュー長より待ち時間の方が向いています。100 件のキューでも、1 件 1 ms で捌けるなら 0.1 秒、1 件 1 秒かかるなら 100 秒待つからです。
+
+ネットワーク機器のキュー管理アルゴリズム [CoDel（RFC 8289）](https://www.rfc-editor.org/rfc/rfc8289)は、パケットのキュー長ではなくキューに滞在した時間を見て、滞在時間が目標を超えた状態が続いた時に捨て始めます。サーバーのキューでも、取り出した要求の待ち時間が閾値を超えていたら処理せずに断る、という形で応用できます。
 
 待ち時間の判断は、要求に期限を持たせると層を越えて伝わります。deadline propagation は、最上位の層が期限（deadline）を決めて下の層に渡し、各層が期限を過ぎた要求を処理せずに捨てる方法です（SRE 本の Addressing Cascading Failures）。これにより、呼び出し側が既に諦めた要求をサーバーが処理し続ける状態を避けられます。
 
-似た目的の仕組みに [Circuit Breaker](/notes/software-architecture/circuit-breaker/) があります。Circuit Breaker は、失敗が続いている下流への呼び出しを一定時間止める仕組みで、失敗を検知して呼び出しを遮断します。Backpressure は、下流が処理できる量に流量を合わせる仕組みで、下流が正常に動いていても速度差があれば働きます。そのため 2 つは併用でき、速度差は Backpressure で合わせ、失敗し続ける下流への呼び出しは Circuit Breaker で止める、という分担になります。
+似た目的の仕組みに [Circuit Breaker](/notes/software-architecture/circuit-breaker/) があります。Circuit Breaker は、失敗が続いている下流への呼び出しを一定時間止める仕組みで、失敗を検知して呼び出しを遮断します。Backpressure は、下流が処理できる量に流量を合わせる仕組みで、下流が正常に動いていても速度差があれば働きます。
+
+そのため 2 つは併用でき、速度差は Backpressure で合わせ、失敗し続ける下流への呼び出しは Circuit Breaker で止める、という分担になります。
 
 ---
 

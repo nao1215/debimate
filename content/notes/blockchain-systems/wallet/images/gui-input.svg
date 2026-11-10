@@ -2,7 +2,7 @@
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#596b76" stroke-width="1.5"/></marker></defs>
 <style>text{font-family:"Noto Sans CJK JP","Noto Sans JP",sans-serif;fill:#28343b} .small{fill:#555}</style>
 <rect width="400" height="220" fill="white"/>
-<text x="20" y="32" font-size="22" font-weight="bold" text-anchor="start">GUI：入力欄で指定</text>
+<text x="20" y="32" font-size="22" font-weight="normal" text-anchor="start">GUI：入力欄で指定</text>
 <text x="20" y="79" font-size="19" font-weight="normal" text-anchor="start">送金先</text>
 <rect x="112" y="52" width="266" height="40" fill="#eaf1f5" stroke="#9cabb5" stroke-width="1.3"/>
 <text x="126" y="79" font-size="18" font-weight="normal" text-anchor="start">受取人のアドレス</text>

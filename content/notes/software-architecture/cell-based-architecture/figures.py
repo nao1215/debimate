@@ -99,3 +99,57 @@ fig.subplots_adjust(wspace=0.05)
 plt.savefig(OUT / "cell_split_axis.svg")
 plt.close()
 print("wrote", OUT / "cell_split_axis.svg")
+
+
+# cell を 10 個から 11 個に増やした時、行き先が変わる顧客（標準ライブラリの SVG）。
+# 顧客 ID は "customer-<番号>" の sha256。剰余と、仮想ノード 100 個ずつのハッシュリングを比べる。
+def reroute_figure():
+    import bisect
+    import hashlib
+    from html import escape
+
+    def h(s):
+        return int.from_bytes(hashlib.sha256(s.encode()).digest()[:8], "big")
+
+    def ring(n_cells, vnodes=100):
+        points = sorted((h(f"cell-{c}-vnode-{v}"), c) for c in range(n_cells) for v in range(vnodes))
+        keys = [p for p, _ in points]
+        return lambda x: points[bisect.bisect(keys, x) % len(points)][1]
+
+    ids = [h(f"customer-{i}") for i in range(10_000)]
+    ring10, ring11 = ring(10), ring(11)
+    moved = {
+        "modulo": [x % 10 != x % 11 for x in ids],
+        "ring": [ring10(x) != ring11(x) for x in ids],
+    }
+    blue, blue_pale, ochre, ochre_pale = COLOR_BLUE, "#eaf1f5", "#d4a24c", "#f8eed8"
+    font = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+    w, hgt = 960, 540
+    p = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{hgt}" viewBox="0 0 {w} {hgt}" '
+        f'role="img"><title>{escape("cell を 10 個から 11 個に増やした時に行き先が変わる顧客")}</title>',
+        f"<style>text{{font-family:{font};fill:#1f1f1f}} .sub{{fill:{COLOR_GRAY}}}</style>",
+        f'<rect width="{w}" height="{hgt}" fill="#ffffff"/>',
+    ]
+
+    def text(x, y, s, size=24, cls=""):
+        c = f' class="{cls}"' if cls else ""
+        p.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="middle"{c}>{escape(s)}</text>')
+
+    for j, (key, title) in enumerate((("modulo", "hash(id) % N"), ("ring", "consistent hashing"))):
+        x0 = 52 + 470 * j
+        text(x0 + 198, 46, title, 26)
+        for i in range(110):
+            x, y = x0 + 36 * (i % 11), 72 + 36 * (i // 11)
+            fill, stroke = (ochre_pale, ochre) if moved[key][i] else (blue_pale, blue)
+            p.append(f'<rect x="{x}" y="{y}" width="30" height="30" rx="4" fill="{fill}" '
+                     f'stroke="{stroke}" stroke-width="1.5"/>')
+        share = sum(moved[key]) / len(ids)
+        text(x0 + 198, 474, f"moved: {share:.0%} of 10,000 customers", 24)
+    text(480, 522, "10 → 11 cells.  ochre = goes to another cell,  blue = stays", 22, "sub")
+    p.append("</svg>")
+    (OUT / "cell_reroute.svg").write_text("\n".join(p) + "\n", encoding="utf-8")
+    print("wrote", OUT / "cell_reroute.svg")
+
+
+reroute_figure()

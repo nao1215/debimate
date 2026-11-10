@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>Event Sourcing のイベントの帯と導出物</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="60" y="50" font-size="28" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">イベントストア（追記だけ）</text>
+<rect x="60" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="105.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v1</text>
+<rect x="156" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="201.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v2</text>
+<rect x="252" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="297.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v3</text>
+<rect x="348" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="393.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v4</text>
+<rect x="444" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="489.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v5</text>
+<rect x="540" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="585.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v6</text>
+<rect x="636" y="162" width="90" height="60" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="681.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v7</text>
+<rect x="732" y="162" width="90" height="60" rx="8" fill="#ffffff" stroke="#7aa6c2" stroke-width="3" stroke-dasharray="9 6"/>
+<text x="777.0" y="201" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">v8</text>
+<text x="777.0" y="262" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">追記</text>
+<line x1="777.0" y1="238" x2="777.0" y2="228" stroke="#7aa6c2" stroke-width="3" marker-end="url(#arrow-blue)"/>
+<rect x="770" y="74" width="170" height="64" rx="8" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="855" y="115" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">今の状態</text>
+<line x1="60" y1="106" x2="537" y2="106" stroke="#666666" stroke-width="3" stroke-dasharray="8 7"/>
+<line x1="537" y1="106" x2="766" y2="106" stroke="#666666" stroke-width="6" marker-end="url(#arrow-gray)"/>
+<rect x="525" y="94" width="24" height="24" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="537" y="80" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">スナップショット</text>
+<line x1="537" y1="120" x2="537" y2="158" stroke="#666666" stroke-width="2.5" stroke-dasharray="5 5"/>
+<text x="706" y="92" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">再生</text>
+<line x1="105.0" y1="224" x2="105.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="201.0" y1="224" x2="201.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="297.0" y1="224" x2="297.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="393.0" y1="224" x2="393.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="489.0" y1="224" x2="489.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="585.0" y1="224" x2="585.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="681.0" y1="224" x2="681.0" y2="248" stroke="#666666" stroke-width="2.5"/>
+<line x1="105.0" y1="248" x2="681.0" y2="248" stroke="#666666" stroke-width="4"/>
+<line x1="210" y1="248" x2="210" y2="362" stroke="#666666" stroke-width="4" marker-end="url(#arrow-gray)"/>
+<line x1="530" y1="248" x2="530" y2="362" stroke="#666666" stroke-width="4" marker-end="url(#arrow-gray)"/>
+<text x="370" y="320" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">投影</text>
+<rect x="100" y="372" width="220" height="44" rx="0" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="210.0" y="403" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">一覧</text>
+<rect x="100" y="416" width="220" height="26" rx="0" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="100" y="442" width="220" height="26" rx="0" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="100" y="468" width="220" height="26" rx="0" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<line x1="199.0" y1="416" x2="199.0" y2="494" stroke="#666666" stroke-width="2"/>
+<rect x="420" y="372" width="220" height="44" rx="0" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="530.0" y="403" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">集計</text>
+<rect x="420" y="416" width="220" height="26" rx="0" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="420" y="442" width="220" height="26" rx="0" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<rect x="420" y="468" width="220" height="26" rx="0" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
+<line x1="519.0" y1="416" x2="519.0" y2="494" stroke="#666666" stroke-width="2"/>
+<text x="370" y="528" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">読み取りモデル</text>
+</svg>

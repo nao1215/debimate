@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>サーキットブレーカーの 3 つの状態と下流に届く呼び出し</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerUnits="userSpaceOnUse" markerWidth="22" markerHeight="22" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="330" y="52" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">呼び出し側</text>
+<text x="560" y="52" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">ブレーカー</text>
+<rect x="790" y="80" width="140" height="430" rx="12" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="860" y="310" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">下流</text>
+<text x="30" y="146" font-size="30" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Closed</text>
+<text x="30" y="184" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">全て通す</text>
+<path d="M250,150 H548" fill="none" stroke="#7aa6c2" stroke-width="28" stroke-linecap="butt"/>
+<path d="M546,150.0 H760" fill="none" stroke="#7aa6c2" stroke-width="28" stroke-linecap="butt"/>
+<polygon points="758,127.6 786,150.0 758,172.4" fill="#7aa6c2"/>
+<rect x="545" y="102.0" width="30" height="96" rx="4" fill="none" stroke="#666666" stroke-width="2"/>
+<rect x="550" y="106.0" width="20" height="26" rx="2" fill="#1f1f1f" stroke="#1f1f1f" stroke-width="0"/>
+<text x="30" y="296" font-size="30" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Half-Open</text>
+<text x="30" y="334" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">少数だけ通す</text>
+<path d="M250,300 H548" fill="none" stroke="#7aa6c2" stroke-width="28" stroke-linecap="butt"/>
+<path d="M546,311.0 H760" fill="none" stroke="#7aa6c2" stroke-width="6" stroke-linecap="butt"/>
+<polygon points="758,301.0 786,311.0 758,321.0" fill="#7aa6c2"/>
+<rect x="545" y="252.0" width="30" height="96" rx="4" fill="none" stroke="#666666" stroke-width="2"/>
+<rect x="550" y="256.0" width="20" height="48" rx="2" fill="#1f1f1f" stroke="#1f1f1f" stroke-width="0"/>
+<path d="M538,278.0 C470,222 340,222 280,272.0" fill="none" stroke="#e15759" stroke-width="7.333333333333333" stroke-linecap="butt" marker-end="url(#arrow-red)"/>
+<text x="405.0" y="228" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">すぐ失敗を返す</text>
+<text x="30" y="446" font-size="30" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">Open</text>
+<text x="30" y="484" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">通さない</text>
+<path d="M250,450 H548" fill="none" stroke="#7aa6c2" stroke-width="28" stroke-linecap="butt"/>
+<rect x="545" y="402.0" width="30" height="96" rx="4" fill="none" stroke="#666666" stroke-width="2"/>
+<rect x="550" y="406.0" width="20" height="54" rx="2" fill="#1f1f1f" stroke="#1f1f1f" stroke-width="0"/>
+<path d="M538,428.0 C470,372 340,372 280,422.0" fill="none" stroke="#e15759" stroke-width="9.333333333333334" stroke-linecap="butt" marker-end="url(#arrow-red)"/>
+<text x="405.0" y="378" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">すぐ失敗を返す</text>
+</svg>

@@ -144,14 +144,14 @@ circle_y = patches.Circle((0.5, 0), 1.4, facecolor=COLOR_RED, alpha=0.4,
 ax.add_patch(circle_x)
 ax.add_patch(circle_y)
 
-ax.text(-1.3, 1.5, "H(X)", fontsize=14, color=COLOR_BLUE, fontweight="bold")
-ax.text(1.0, 1.5, "H(Y)", fontsize=14, color=COLOR_RED, fontweight="bold")
+ax.text(-1.3, 1.5, "H(X)", fontsize=14, color=COLOR_BLUE, fontweight="normal")
+ax.text(1.0, 1.5, "H(Y)", fontsize=14, color=COLOR_RED, fontweight="normal")
 
 # Region labels
-ax.text(-1.0, 0, "H(X|Y)", ha="center", fontsize=11, fontweight="bold")
+ax.text(-1.0, 0, "H(X|Y)", ha="center", fontsize=11, fontweight="normal")
 ax.text(0.0, 0, "I(X;Y)\nmutual\ninformation", ha="center", fontsize=10,
-        fontweight="bold")
-ax.text(1.0, 0, "H(Y|X)", ha="center", fontsize=11, fontweight="bold")
+        fontweight="normal")
+ax.text(1.0, 0, "H(Y|X)", ha="center", fontsize=11, fontweight="normal")
 
 ax.set_xlim(-2.5, 2.5); ax.set_ylim(-2, 2)
 ax.set_aspect("equal")

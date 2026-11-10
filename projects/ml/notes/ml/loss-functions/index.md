@@ -5,6 +5,7 @@ draft: false
 series: ["機械学習ノート", "Machine Learning"]
 tags: ["machine-learning", "scikit-learn", "loss-function"]
 weight: 5
+topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
 損失関数（loss function、cost function、objective function）は、モデルの予測 `ŷ` と正解 `y` のずれを 1 つの数に変換する関数です。学習はこの損失関数の値を最小化する操作で、どの損失関数を選ぶかは学習結果に大きく影響します。
