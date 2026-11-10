@@ -1,0 +1,21 @@
+# 2026-11-10, AMD RYZEN AI MAX+ 395 (16 cores / 32 threads), cpufreq governor powersave
+# command: go run poh.go -runs 7
+go go1.26.4, 32 logical CPUs, loadavg 10.24 16.09 19.67
+
+[1] hash rate: 10.5M hashes/s (median of 7, range 9.4-14.8M)
+
+[2] 2048 entries x 8192 hashes, last hash 0751853592b4...
+generate (1 goroutine)   1.987s (range 1.560-2.085)
+verify  1 goroutines     1.748s (range 1.117-1.990)    1.1x faster than generate
+verify  2 goroutines     0.770s (range 0.740-1.015)    2.6x faster than generate
+verify  4 goroutines     0.333s (range 0.301-0.379)    6.0x faster than generate
+verify  8 goroutines     0.179s (range 0.166-0.192)   11.1x faster than generate
+verify 16 goroutines     0.087s (range 0.082-0.091)   22.7x faster than generate
+verify 32 goroutines     0.054s (range 0.053-0.058)   36.7x faster than generate
+
+[3] swap events A and B   -> first bad entry 100
+    entry 10 claims 4096 hashes -> first bad entry 10
+    honest redo of entries 100-400 in the new order: 2465792 hashes = 0.24s at [1]
+
+[4] one 400ms-era slot = 4000000 hashes -> 381 ms on this machine
+loadavg at end 11.75 15.75 19.39

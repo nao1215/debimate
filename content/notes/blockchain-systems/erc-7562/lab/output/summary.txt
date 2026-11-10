@@ -1,0 +1,40 @@
+# 1. validation traced with debug_traceCall (block time 1700000018, deadline 1700000064)
+account              | eth_call | ERC-7562 check
+SimpleAccount v0.9.0 | ok       | accept
+TokenAccount         | ok       | accept
+DeadlineAccount      | ok       | accept
+TimeAccount          | ok       | reject: OP-011 TIMESTAMP
+BalanceAccount       | ok       | reject: OP-080 SELFBALANCE
+GateAccount          | ok       | reject: STO-021 SLOAD
+[SimpleAccount v0.9.0] 385 opcodes executed in the account frames
+  SLOAD SimpleAccount slot 0x360894a13b..: own storage (STO-010)
+  SLOAD SimpleAccount slot 0x0: own storage (STO-010)
+[TokenAccount] 224 opcodes executed in the account frames
+  SLOAD LabToken slot 0x2bdc1ac19b..: associated (STO-021)
+[DeadlineAccount] 89 opcodes executed in the account frames, validUntil 1700000063
+[TimeAccount] 79 opcodes executed in the account frames
+  violation: OP-011 TIMESTAMP in TimeAccount
+[BalanceAccount] 77 opcodes executed in the account frames
+  violation: OP-080 SELFBALANCE in BalanceAccount (unstaked)
+[GateAccount] 209 opcodes executed in the account frames
+  SLOAD Gate slot 0x0: not associated
+  violation: STO-021 SLOAD slot 0x0 of Gate
+# 2. TimeAccount: simulated now, mined at the deadline
+simulation at 1700000018  : ok
+mined at 1700000064       : status 0 (reverted), gasUsed 36926
+bundler balance change : -73852 gwei (= 36926 gas x 2 gwei)
+account deposit change : +0 gwei
+DeadlineAccount now    : op 0: "AA22 expired or not due" (validUntil 1700000063 was visible in the trace)
+# 3. ten GateAccounts and one Gate.close() from the attacker
+first validation  : 10/10 ok, bundle of 10: ok
+same block        : close() index 0 status 1, handleOps index 1 status 0
+attacker paid     : 64287 gwei (21429 gas x 3 gwei)
+bundler paid      : 207780 gwei (103890 gas x 2 gwei)
+10 GateAccounts   : 0 gwei (deposit + balance change)
+second validation : 0/10 ok (op 0: "AA23 reverted")
+# 4. one sender, two UserOperations, ETH for one prefund only
+prefund per op    : 600000 gwei, account balance 900000 gwei
+op(key 0) alone   : ok
+op(key 1) alone   : ok
+both in one bundle: op 1: "AA21 didn't pay prefund"
+Assertions: PASS

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" role="img"><title>プリコンパイル 18 個を導入したフォークごとに並べた図。Frontier の 4 個、Byzantium の 4 個、Istanbul の 1 個、Cancun の 1 個、Prague の BLS12-381 の 7 個、Osaka の P-256 検証</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .mono{font-family:'DejaVu Sans Mono','Menlo','Consolas',monospace}</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="620" fill="#ffffff"/>
+<text x="86.0" y="44" font-size="24" text-anchor="middle" font-weight="normal">Frontier</text>
+<rect x="12" y="66" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="85.0" y="94" font-size="24" text-anchor="middle" class="mono">0x01</text>
+<text x="85.0" y="124" font-size="24" text-anchor="middle">ecrecover</text>
+<rect x="12" y="142" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="85.0" y="170" font-size="24" text-anchor="middle" class="mono">0x02</text>
+<text x="85.0" y="200" font-size="24" text-anchor="middle">sha256</text>
+<rect x="12" y="218" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="85.0" y="246" font-size="24" text-anchor="middle" class="mono">0x03</text>
+<text x="85.0" y="276" font-size="24" text-anchor="middle">ripemd160</text>
+<rect x="12" y="294" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="85.0" y="322" font-size="24" text-anchor="middle" class="mono">0x04</text>
+<text x="85.0" y="352" font-size="24" text-anchor="middle">identity</text>
+<text x="242.0" y="44" font-size="24" text-anchor="middle" font-weight="normal">Byzantium</text>
+<rect x="168" y="66" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="241.0" y="94" font-size="24" text-anchor="middle" class="mono">0x05</text>
+<text x="241.0" y="124" font-size="24" text-anchor="middle">modexp</text>
+<rect x="168" y="142" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="241.0" y="170" font-size="24" text-anchor="middle" class="mono">0x06</text>
+<text x="241.0" y="200" font-size="24" text-anchor="middle">bn254 add</text>
+<rect x="168" y="218" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="241.0" y="246" font-size="24" text-anchor="middle" class="mono">0x07</text>
+<text x="241.0" y="276" font-size="24" text-anchor="middle">bn254 mul</text>
+<rect x="168" y="294" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="241.0" y="322" font-size="24" text-anchor="middle" class="mono">0x08</text>
+<text x="241.0" y="352" font-size="24" text-anchor="middle">bn254 pair</text>
+<text x="398.0" y="44" font-size="24" text-anchor="middle" font-weight="normal">Istanbul</text>
+<rect x="324" y="66" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="397.0" y="94" font-size="24" text-anchor="middle" class="mono">0x09</text>
+<text x="397.0" y="124" font-size="24" text-anchor="middle">blake2f</text>
+<text x="554.0" y="44" font-size="24" text-anchor="middle" font-weight="normal">Cancun</text>
+<rect x="480" y="66" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="553.0" y="94" font-size="24" text-anchor="middle" class="mono">0x0a</text>
+<text x="553.0" y="124" font-size="24" text-anchor="middle">KZG point</text>
+<text x="710.0" y="44" font-size="24" text-anchor="middle" font-weight="normal">Prague</text>
+<rect x="636" y="66" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="94" font-size="24" text-anchor="middle" class="mono">0x0b</text>
+<text x="709.0" y="124" font-size="24" text-anchor="middle">G1 add</text>
+<rect x="636" y="142" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="170" font-size="24" text-anchor="middle" class="mono">0x0c</text>
+<text x="709.0" y="200" font-size="24" text-anchor="middle">G1 MSM</text>
+<rect x="636" y="218" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="246" font-size="24" text-anchor="middle" class="mono">0x0d</text>
+<text x="709.0" y="276" font-size="24" text-anchor="middle">G2 add</text>
+<rect x="636" y="294" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="322" font-size="24" text-anchor="middle" class="mono">0x0e</text>
+<text x="709.0" y="352" font-size="24" text-anchor="middle">G2 MSM</text>
+<rect x="636" y="370" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="398" font-size="24" text-anchor="middle" class="mono">0x0f</text>
+<text x="709.0" y="428" font-size="24" text-anchor="middle">pairing</text>
+<rect x="636" y="446" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="474" font-size="24" text-anchor="middle" class="mono">0x10</text>
+<text x="709.0" y="504" font-size="24" text-anchor="middle">map G1</text>
+<rect x="636" y="522" width="146" height="68" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="709.0" y="550" font-size="24" text-anchor="middle" class="mono">0x11</text>
+<text x="709.0" y="580" font-size="24" text-anchor="middle">map G2</text>
+<text x="866.0" y="44" font-size="24" text-anchor="middle" font-weight="normal">Osaka</text>
+<rect x="792" y="66" width="146" height="68" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="865.0" y="94" font-size="24" text-anchor="middle" class="mono">0x100</text>
+<text x="865.0" y="124" font-size="24" text-anchor="middle">p256verify</text>
+<text x="710.0" y="610" font-size="24" text-anchor="middle" class="sub">BLS12-381</text>
+</svg>

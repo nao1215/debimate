@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>PoW は分岐して長い方に揃うが、CometBFT は 2/3 を超える票で確定し、届かなければ分岐せずに次の高さで待つ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<line x1="480" y1="40" x2="480" y2="500" stroke="#d9d9d9" stroke-width="2"/>
+<text x="240" y="70" font-size="32" text-anchor="middle" font-weight="normal">PoW</text>
+<text x="240" y="108" font-size="24" text-anchor="middle" font-weight="normal" class="sub">branches, longest wins</text>
+<rect x="40" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<rect x="130" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="104" y1="332.0" x2="130" y2="332.0" stroke="#666666" stroke-width="2.5"/>
+<rect x="220" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="194" y1="332.0" x2="220" y2="332.0" stroke="#666666" stroke-width="2.5"/>
+<rect x="310" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<line x1="284" y1="332.0" x2="310" y2="332.0" stroke="#666666" stroke-width="2.5"/>
+<line x1="194" y1="310" x2="220" y2="232.0" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="7 6"/>
+<rect x="220" y="200" width="64" height="64" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="7 6"/>
+<line x1="374" y1="332.0" x2="400" y2="332.0" stroke="#666666" stroke-width="2.5"/>
+<rect x="400" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="252" y="186" font-size="24" text-anchor="middle" font-weight="normal" class="sub">dropped</text>
+<text x="240" y="430" font-size="24" text-anchor="middle" font-weight="normal">reorg can undo blocks</text>
+<text x="720" y="70" font-size="32" text-anchor="middle" font-weight="normal">CometBFT</text>
+<text x="720" y="108" font-size="24" text-anchor="middle" font-weight="normal" class="sub">&gt; 2/3 commits, else waits</text>
+<rect x="510" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3.5"/>
+<rect x="600" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3.5"/>
+<line x1="574" y1="332.0" x2="600" y2="332.0" stroke="#666666" stroke-width="2.5"/>
+<rect x="690" y="300" width="64" height="64" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3.5"/>
+<line x1="664" y1="332.0" x2="690" y2="332.0" stroke="#666666" stroke-width="2.5"/>
+<line x1="754" y1="332.0" x2="800" y2="332.0" stroke="#666666" stroke-width="2.5" stroke-dasharray="7 6"/>
+<rect x="800" y="300" width="64" height="64" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="7 6"/>
+<text x="832.0" y="282" font-size="24" text-anchor="middle" font-weight="normal" class="sub">next</text>
+<rect x="530" y="410" width="380" height="34" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<rect x="530" y="410" width="190.0" height="34" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<line x1="783.3333333333334" y1="398" x2="783.3333333333334" y2="456" stroke="#1f1f1f" stroke-width="3"/>
+<text x="783.3333333333334" y="390" font-size="24" text-anchor="middle" font-weight="normal">2/3</text>
+<text x="625.0" y="436" font-size="24" text-anchor="middle" font-weight="normal">2 of 4 up</text>
+<text x="720" y="500" font-size="26" text-anchor="middle" font-weight="normal">halt, no fork</text>
+<line x1="884" y1="320" x2="908" y2="344" stroke="#e15759" stroke-width="4"/>
+<line x1="908" y1="320" x2="884" y2="344" stroke="#e15759" stroke-width="4"/>
+</svg>

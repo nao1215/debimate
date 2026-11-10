@@ -1,0 +1,12 @@
+Safe proxy: 3 owners (2 EOAs + 1 ERC-1271 contract), threshold = 2
+off-chain SafeTx hash == getTransactionHash: True
+same tx with operation=1 (delegatecall) hash: 0x48bb5c335f58c852.. vs 0xcb3548365f9ffb27..
+== nonce 0
+1 signature              -> execution reverted: GS020
+same owner twice         -> execution reverted: GS026
+descending owners        -> execution reverted: GS026
+ascending owners         -> status 1, receiver +0.1 ETH, nonce now 1
+replay nonce-0 sigs      -> execution reverted: GS026
+== nonce 1 (EOA + ERC-1271 owner)
+before approve(hash)     -> execution reverted: GS024
+after approve(hash)      -> status 1, nonce now 2

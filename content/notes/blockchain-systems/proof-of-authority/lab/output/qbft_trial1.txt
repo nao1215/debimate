@@ -1,0 +1,11 @@
+phase                      blocks first new  proposers / max round / seals
+4/4 running                    16      2.0s  1432143214321432 / 0 / [3]
+node4 stopped (3/4)            13      0.5s  1321321321321 / 1 / [3]
+node3 stopped too (2/4)         0         -   / 0 / []
+node3 restarted (3/4)           7    128.8s  3213213 / 5 / [3]
+node4 restarted (4/4)           9      1.0s  213214321 / 1 / [3]
+heights 1..53: 0 heights differ between nodes
+node1 voted to add node5 at height 66: validators = 4
+node2 voted to add node5 at height 69: validators = 4
+node3 voted to add node5 at height 71: validators = 4
+height 78: validators = 5

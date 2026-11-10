@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="630" viewBox="0 0 960 630" role="img"><title>Osaka の主な命令のガスを対数の目盛りで並べた図。ADD は 3、MUL は 5、JUMPI は 10 の計算の命令に対して、storage やアカウントに触る命令は 100 から 32,000 で、ADD の約 30 倍から 1 万倍</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .mono{font-family:'DejaVu Sans Mono','Menlo','Consolas',monospace}</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="630" fill="#ffffff"/>
+<line x1="330.0" y1="80" x2="330.0" y2="540" stroke="#f2f2f2" stroke-width="2"/>
+<text x="330.0" y="574" font-size="24" text-anchor="middle" class="sub">1</text>
+<line x1="442.0" y1="80" x2="442.0" y2="540" stroke="#f2f2f2" stroke-width="2"/>
+<text x="442.0" y="574" font-size="24" text-anchor="middle" class="sub">10</text>
+<line x1="554.0" y1="80" x2="554.0" y2="540" stroke="#f2f2f2" stroke-width="2"/>
+<text x="554.0" y="574" font-size="24" text-anchor="middle" class="sub">100</text>
+<line x1="666.0" y1="80" x2="666.0" y2="540" stroke="#f2f2f2" stroke-width="2"/>
+<text x="666.0" y="574" font-size="24" text-anchor="middle" class="sub">1,000</text>
+<line x1="778.0" y1="80" x2="778.0" y2="540" stroke="#f2f2f2" stroke-width="2"/>
+<text x="778.0" y="574" font-size="24" text-anchor="middle" class="sub">10,000</text>
+<line x1="890.0" y1="80" x2="890.0" y2="540" stroke="#f2f2f2" stroke-width="2"/>
+<text x="890.0" y="574" font-size="24" text-anchor="middle" class="sub">100,000</text>
+<text x="310" y="122" font-size="24" text-anchor="end">ADD, LT, AND</text>
+<rect x="330" y="98" width="53.43758052860221" height="34" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="393.4375805286022" y="124" font-size="24" text-anchor="start">3</text>
+<text x="310" y="172" font-size="24" text-anchor="end">MUL, DIV</text>
+<rect x="330" y="148" width="78.2846404856341" height="34" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="418.2846404856341" y="174" font-size="24" text-anchor="start">5</text>
+<text x="310" y="222" font-size="24" text-anchor="end">JUMPI</text>
+<rect x="330" y="198" width="112.0" height="34" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="452.0" y="224" font-size="24" text-anchor="start">10</text>
+<text x="310" y="272" font-size="24" text-anchor="end">TLOAD, warm SLOAD</text>
+<rect x="330" y="248" width="224.0" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="564.0" y="274" font-size="24" text-anchor="start">100</text>
+<text x="310" y="322" font-size="24" text-anchor="end">LOG0</text>
+<rect x="330" y="298" width="288.2915019855045" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="628.2915019855045" y="324" font-size="24" text-anchor="start">375</text>
+<text x="310" y="372" font-size="24" text-anchor="end">cold SLOAD</text>
+<rect x="330" y="348" width="372.0885610101989" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="712.0885610101989" y="374" font-size="24" text-anchor="start">2,100</text>
+<text x="310" y="422" font-size="24" text-anchor="end">cold CALL target</text>
+<rect x="330" y="398" width="382.4770149727316" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="722.4770149727316" y="424" font-size="24" text-anchor="start">2,600</text>
+<text x="310" y="472" font-size="24" text-anchor="end">SSTORE 0 → non-zero</text>
+<rect x="330" y="448" width="481.7153595143659" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="821.7153595143659" y="474" font-size="24" text-anchor="start">20,000</text>
+<text x="310" y="522" font-size="24" text-anchor="end">CREATE</text>
+<rect x="330" y="498" width="504.5767975718295" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="844.5767975718295" y="524" font-size="24" text-anchor="start">32,000</text>
+<rect x="330" y="26" width="34" height="26" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="374" y="48" font-size="24" text-anchor="start">computation</text>
+<rect x="560" y="26" width="34" height="26" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="604" y="48" font-size="24" text-anchor="start">state, disk, receipt</text>
+<text x="610.0" y="620" font-size="24" text-anchor="middle" class="sub">gas (log scale)</text>
+</svg>

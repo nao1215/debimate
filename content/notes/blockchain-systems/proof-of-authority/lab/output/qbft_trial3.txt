@@ -1,0 +1,7 @@
+phase                      blocks first new  proposers / max round / seals
+4/4 running                     9      1.0s  143214321 / 0 / [3]
+node4 stopped (3/4)            10     16.7s  4324332132 / 3 / [3]
+node3 stopped too (2/4)         0         -   / 0 / []
+node3 restarted (3/4)           7     64.7s  1321321 / 4 / [3]
+node4 restarted (4/4)          11      5.6s  32143214321 / 1 / [3]
+heights 1..41: 0 heights differ between nodes

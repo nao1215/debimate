@@ -1,0 +1,19 @@
+signet magic computed from the challenge: 0a03cf40
+Bitcoin Core daemon version v32.1.0 bitcoind
+chain     magic     port  pkh                                wpkh                                         tr
+main      f9beb4d9  8333  1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4   bc1pmfr3p9j0…
+          genesis 000000000019d668… blocks=0
+test      0b110907 18333  mrCDrCybB6J1vRfbwM5hemdJz73FwDBC8r tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx   tb1pmfr3p9j0…
+          genesis 000000000933ea01… blocks=0
+testnet4  1c163f28 48333  mrCDrCybB6J1vRfbwM5hemdJz73FwDBC8r tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx   tb1pmfr3p9j0…
+          genesis 00000000da84f2ba… blocks=0
+signet    0a03cf40 38333  mrCDrCybB6J1vRfbwM5hemdJz73FwDBC8r tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx   tb1pmfr3p9j0…
+          genesis 00000008819873e9… blocks=0
+regtest   fabfb5da 18444  mrCDrCybB6J1vRfbwM5hemdJz73FwDBC8r bcrt1qw508d6qejxtdg4y5r3zarvary0c5xw7kygt080 bcrt1pmfr3p9…
+          genesis 0f9188f13cb7b2c7… blocks=0
+== regtest: mine 200 blocks to the same key
+blocks=200 difficulty=4.66e-10
+height   1: coinbase pays 50.0 BTC
+height 149: coinbase pays 50.0 BTC
+height 150: coinbase pays 25.0 BTC
+height 200: coinbase pays 25.0 BTC

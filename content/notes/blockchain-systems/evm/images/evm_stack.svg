@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="400" viewBox="0 0 960 400" role="img"><title>PUSH1 2 と PUSH1 3 で 2 と 3 が積まれ、ADD が 2 つを取り出して 5 を積む。1 要素は 256 ビットで、最大 1,024 要素</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .mono{font-family:'DejaVu Sans Mono','Menlo','Consolas',monospace}</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="400" fill="#ffffff"/>
+<text x="170" y="60" font-size="28" text-anchor="middle" class="mono">PUSH1 2</text>
+<rect x="90" y="230" width="160" height="62" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="170" y="272" font-size="30" text-anchor="middle" class="mono">2</text>
+<line x1="70" y1="306" x2="270" y2="306" stroke="#666666" stroke-width="2.5"/>
+<line x1="274" y1="200" x2="370" y2="200" stroke="#666666" stroke-width="3" marker-end="url(#a)"/>
+<text x="480" y="60" font-size="28" text-anchor="middle" class="mono">PUSH1 3</text>
+<rect x="400" y="230" width="160" height="62" rx="6" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="480" y="272" font-size="30" text-anchor="middle" class="mono">2</text>
+<rect x="400" y="160" width="160" height="62" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="480" y="202" font-size="30" text-anchor="middle" class="mono">3</text>
+<line x1="380" y1="306" x2="580" y2="306" stroke="#666666" stroke-width="2.5"/>
+<line x1="584" y1="200" x2="680" y2="200" stroke="#666666" stroke-width="3" marker-end="url(#a)"/>
+<text x="790" y="60" font-size="28" text-anchor="middle" class="mono">ADD</text>
+<rect x="710" y="230" width="160" height="62" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="790" y="272" font-size="30" text-anchor="middle" class="mono">5</text>
+<line x1="690" y1="306" x2="890" y2="306" stroke="#666666" stroke-width="2.5"/>
+<text x="632" y="180" font-size="24" text-anchor="middle" class="sub">pops 2, 3</text>
+<text x="480" y="360" font-size="24" text-anchor="middle" class="sub">1 slot = one 256-bit word, up to 1,024 slots</text>
+</svg>

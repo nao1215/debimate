@@ -1,0 +1,5 @@
+ghcr.io/foundry-rs/foundry:v1.7.1 ghcr.io/foundry-rs/foundry@sha256:8347b728d5d393dac1c018691b36f506d23b9dcd78341d40ea0fcb11c3a19cdd
+ethereum/solc:0.8.28 ethereum/solc@sha256:b3b83d65e1eae916b58e0c19b9051afa7ffc93e00f8210196639dee794a2a98a
+python:3.13-slim python@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
+anvil Version: 1.7.1
+Version: 0.8.28+commit.7893614a.Linux.g++

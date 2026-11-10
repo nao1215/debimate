@@ -1,0 +1,76 @@
+== memory expansion (MLOAD at the last word of `size` bytes) ==
+size_bytes | 1st MLOAD extra | 2nd MLOAD extra | formula 3a + a*a//512
+        32 |               3 |               0 | 3
+      1024 |              98 |               0 | 98
+     32768 |            5120 |               0 | 5120
+    131072 |           45056 |               0 | 45056
+
+== CALL forwards at most g - floor(g/64) (g = gas left after the CALL costs) ==
+request  | gas before CALL | CALL costs | callee entry | 63/64 limit
+all      |         9946370 |       2603 |      9788396 | 9788396
+10000    |         9946337 |       2603 |        10000 | 9788364
+
+== gasleft() at the entry of the deepest frame (eth_call gas 10,000,000) ==
+depth | gasleft  | ratio to one level up
+    0 |  9978427 | 
+    1 |  9821604 | 0.9843
+    2 |  9667243 | 0.9843
+    3 |  9515294 | 0.9843
+   10 |  8516090 | 0.9843
+   20 |  7266839 | 0.9843
+   30 |  6199616 | 0.9842
+   40 |  5287897 | 0.9842
+deepest down() that succeeds with 10,000,000 gas: 322 (gasleft there: 5487)
+
+== Caller.run(target) sent by the EOA with 7 wei ==
+mode                | ok | msg.sender | address(this) | msg.value
+CALL record         | 1  | Caller     | Target        | 3
+DELEGATECALL record | 1  | EOA        | Caller        | 7
+STATICCALL record   | 0  | -          | -             | 0
+STATICCALL peek     | 1  | Caller     | Target        | 0
+storage slot 0 (count) after: Caller=1, Target=1
+balance after (wei): Caller=4, Target=3
+
+== Dispatcher.set(x): calldata and the gas of each transaction ==
+calldata of set(42): 60fe47b1 000000000000000000000000000000000000000000000000000000000000002a
+topic0 of Changed: 0xb52dda022b6c1a1f40905a85f257f689aa5d69d850e49cf939d688fbe5af5946
+first executed opcodes (pc op gasCost):
+    0 PUSH1        3
+    2 PUSH1        3
+    4 MSTORE       12
+    5 CALLVALUE    2
+    6 DUP1         3
+    7 ISZERO       3
+    8 PUSH2        3
+   11 JUMPI        10
+   15 JUMPDEST     1
+   16 POP          2
+   17 PUSH1        3
+   19 CALLDATASIZE 2
+   20 LT           3
+   21 PUSH2        3
+   24 JUMPI        10
+   25 PUSH0        2
+   26 CALLDATALOAD 3
+   27 PUSH1        3
+   29 SHR          3
+   30 DUP1         3
+   31 PUSH4        3
+   36 EQ           3
+   37 PUSH2        3
+   40 JUMPI        10
+   41 DUP1         3
+   42 PUSH4        3
+   47 EQ           3
+   48 PUSH2        3
+   51 JUMPI        10
+   86 JUMPDEST     1
+set(42): intrinsic=21204 floor=21510 execution=24085 (SSTORE=22100 LOG2=1381) refund=0 gasUsed=45289
+set(43): intrinsic=21204 floor=21510 execution=6985 (SSTORE=5000 LOG2=1381) refund=0 gasUsed=28189
+set(0): intrinsic=21192 floor=21480 execution=6985 (SSTORE=5000 LOG2=1381) refund=4800 gasUsed=23377
+unknown selector 0xdeadbeef: status=0
+
+== precompiles called with eth_call ==
+0x02 sha256("abc") = ba7816bf8f01cfea... matches hashlib: True
+0x01 ecrecover(hash, v=28, r, s) = 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 (the signing test account)
+0x100 p256verify(valid signature) = 0x01 (32 bytes), tampered hash = 0x

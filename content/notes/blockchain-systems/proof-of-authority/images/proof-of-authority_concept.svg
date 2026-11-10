@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>許可された署名者だけが順番にブロックへ署名し、止まった署名者の番は別の署名者が埋める</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="40" y="70" width="300" height="320" rx="14" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="190" y="112" font-size="26" text-anchor="middle">authorized signers</text>
+<circle cx="120" cy="185" r="38" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="120" y="196" font-size="32" text-anchor="middle">A</text>
+<circle cx="260" cy="185" r="38" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="260" y="196" font-size="32" text-anchor="middle">B</text>
+<circle cx="120" cy="295" r="38" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="120" y="306" font-size="32" text-anchor="middle">C</text>
+<circle cx="260" cy="295" r="38" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="260" y="306" font-size="32" text-anchor="middle">D</text>
+<path d="M278 243 l30 30 M308 243 l-30 30" stroke="#e15759" stroke-width="6" stroke-linecap="round"/>
+<text x="260" y="367" font-size="24" text-anchor="middle" class="sub">stopped</text>
+<circle cx="190" cy="482" r="38" fill="#ffffff" stroke="#666666" stroke-width="3" stroke-dasharray="7 6"/>
+<text x="190" y="493" font-size="32" text-anchor="middle">E</text>
+<path d="M190 442 L190 400" stroke="#666666" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#a)"/>
+<text x="248" y="476" font-size="24" text-anchor="start" class="sub">joins only by</text>
+<text x="248" y="508" font-size="24" text-anchor="start" class="sub">majority vote</text>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#666666"/></marker></defs>
+<text x="655" y="112" font-size="26" text-anchor="middle">blocks signed in turn</text>
+<rect x="395" y="230" width="104" height="104" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="447.0" y="294.0" font-size="34" text-anchor="middle">A</text>
+<rect x="533" y="230" width="104" height="104" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="585.0" y="294.0" font-size="34" text-anchor="middle">B</text>
+<path d="M503 282.0 L529 282.0" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="671" y="230" width="104" height="104" rx="10" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="723.0" y="294.0" font-size="34" text-anchor="middle">C</text>
+<path d="M641 282.0 L667 282.0" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="809" y="230" width="104" height="104" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
+<text x="861.0" y="294.0" font-size="34" text-anchor="middle">A</text>
+<path d="M779 282.0 L805 282.0" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<rect x="809" y="134" width="104" height="70" rx="10" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="861.0" y="180" font-size="24" text-anchor="middle" class="sub">D&#x27;s turn</text>
+<text x="585.0" y="380" font-size="24" text-anchor="middle" class="sub">in turn</text>
+<text x="861.0" y="380" font-size="24" text-anchor="middle" class="sub">out of turn</text>
+<text x="655" y="470" font-size="24" text-anchor="middle" class="sub">a signer may sign only 1 of any</text>
+<text x="655" y="502" font-size="24" text-anchor="middle" class="sub">⌊N/2⌋ + 1 consecutive blocks</text>
+</svg>

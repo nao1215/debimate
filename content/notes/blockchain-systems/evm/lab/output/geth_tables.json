@@ -1,0 +1,301 @@
+{
+  "instruction_sets": [
+    {
+      "fork": "Frontier",
+      "defined": 129,
+      "added": [],
+      "changed": []
+    },
+    {
+      "fork": "Homestead",
+      "defined": 130,
+      "added": [
+        "DELEGATECALL"
+      ],
+      "changed": []
+    },
+    {
+      "fork": "Tangerine Whistle",
+      "defined": 130,
+      "added": [],
+      "changed": [
+        "BALANCE",
+        "EXTCODESIZE",
+        "EXTCODECOPY",
+        "SLOAD",
+        "CALL",
+        "CALLCODE",
+        "DELEGATECALL"
+      ]
+    },
+    {
+      "fork": "Spurious Dragon",
+      "defined": 130,
+      "added": [],
+      "changed": [
+        "EXP"
+      ]
+    },
+    {
+      "fork": "Byzantium",
+      "defined": 134,
+      "added": [
+        "RETURNDATASIZE",
+        "RETURNDATACOPY",
+        "STATICCALL",
+        "REVERT"
+      ],
+      "changed": []
+    },
+    {
+      "fork": "Constantinople",
+      "defined": 139,
+      "added": [
+        "SHL",
+        "SHR",
+        "SAR",
+        "EXTCODEHASH",
+        "CREATE2"
+      ],
+      "changed": []
+    },
+    {
+      "fork": "Istanbul",
+      "defined": 141,
+      "added": [
+        "CHAINID",
+        "SELFBALANCE"
+      ],
+      "changed": [
+        "BALANCE",
+        "EXTCODEHASH",
+        "SLOAD",
+        "SSTORE"
+      ]
+    },
+    {
+      "fork": "Berlin",
+      "defined": 141,
+      "added": [],
+      "changed": [
+        "BALANCE",
+        "EXTCODESIZE",
+        "EXTCODECOPY",
+        "EXTCODEHASH",
+        "SLOAD",
+        "SSTORE",
+        "CALL",
+        "CALLCODE",
+        "DELEGATECALL",
+        "STATICCALL",
+        "SELFDESTRUCT"
+      ]
+    },
+    {
+      "fork": "London",
+      "defined": 142,
+      "added": [
+        "BASEFEE"
+      ],
+      "changed": [
+        "SSTORE",
+        "SELFDESTRUCT"
+      ]
+    },
+    {
+      "fork": "Merge",
+      "defined": 142,
+      "added": [],
+      "changed": [
+        "PREVRANDAO"
+      ]
+    },
+    {
+      "fork": "Shanghai",
+      "defined": 143,
+      "added": [
+        "PUSH0"
+      ],
+      "changed": [
+        "CREATE",
+        "CREATE2"
+      ]
+    },
+    {
+      "fork": "Cancun",
+      "defined": 148,
+      "added": [
+        "BLOBHASH",
+        "BLOBBASEFEE",
+        "TLOAD",
+        "TSTORE",
+        "MCOPY"
+      ],
+      "changed": [
+        "SELFDESTRUCT"
+      ]
+    },
+    {
+      "fork": "Prague",
+      "defined": 148,
+      "added": [],
+      "changed": [
+        "CALL",
+        "CALLCODE",
+        "DELEGATECALL",
+        "STATICCALL"
+      ]
+    },
+    {
+      "fork": "Osaka",
+      "defined": 149,
+      "added": [
+        "CLZ"
+      ],
+      "changed": []
+    },
+    {
+      "fork": "Amsterdam",
+      "defined": 153,
+      "added": [
+        "SLOTNUM",
+        "DUPN",
+        "SWAPN",
+        "EXCHANGE"
+      ],
+      "changed": [
+        "BALANCE",
+        "EXTCODESIZE",
+        "EXTCODECOPY",
+        "EXTCODEHASH",
+        "SLOAD",
+        "SSTORE",
+        "CREATE",
+        "CALL",
+        "CALLCODE",
+        "DELEGATECALL",
+        "CREATE2",
+        "STATICCALL",
+        "SELFDESTRUCT"
+      ]
+    },
+    {
+      "fork": "Bogota",
+      "defined": 153,
+      "added": [],
+      "changed": []
+    }
+  ],
+  "precompiles": [
+    {
+      "fork": "Homestead",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy"
+      }
+    },
+    {
+      "fork": "Byzantium",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy",
+        "0x5": "bigModExp",
+        "0x6": "bn256AddByzantium",
+        "0x7": "bn256ScalarMulByzantium",
+        "0x8": "bn256PairingByzantium"
+      }
+    },
+    {
+      "fork": "Istanbul",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy",
+        "0x5": "bigModExp",
+        "0x6": "bn256AddIstanbul",
+        "0x7": "bn256ScalarMulIstanbul",
+        "0x8": "bn256PairingIstanbul",
+        "0x9": "blake2F"
+      }
+    },
+    {
+      "fork": "Berlin",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy",
+        "0x5": "bigModExp",
+        "0x6": "bn256AddIstanbul",
+        "0x7": "bn256ScalarMulIstanbul",
+        "0x8": "bn256PairingIstanbul",
+        "0x9": "blake2F"
+      }
+    },
+    {
+      "fork": "Cancun",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy",
+        "0x5": "bigModExp",
+        "0x6": "bn256AddIstanbul",
+        "0x7": "bn256ScalarMulIstanbul",
+        "0x8": "bn256PairingIstanbul",
+        "0x9": "blake2F",
+        "0xa": "kzgPointEvaluation"
+      }
+    },
+    {
+      "fork": "Prague",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x10": "bls12381MapG1",
+        "0x11": "bls12381MapG2",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy",
+        "0x5": "bigModExp",
+        "0x6": "bn256AddIstanbul",
+        "0x7": "bn256ScalarMulIstanbul",
+        "0x8": "bn256PairingIstanbul",
+        "0x9": "blake2F",
+        "0xa": "kzgPointEvaluation",
+        "0xb": "bls12381G1Add",
+        "0xc": "bls12381G1MultiExp",
+        "0xd": "bls12381G2Add",
+        "0xe": "bls12381G2MultiExp",
+        "0xf": "bls12381Pairing"
+      }
+    },
+    {
+      "fork": "Osaka",
+      "contracts": {
+        "0x1": "ecrecover",
+        "0x10": "bls12381MapG1",
+        "0x100": "p256Verify",
+        "0x11": "bls12381MapG2",
+        "0x2": "sha256hash",
+        "0x3": "ripemd160hash",
+        "0x4": "dataCopy",
+        "0x5": "bigModExp",
+        "0x6": "bn256AddIstanbul",
+        "0x7": "bn256ScalarMulIstanbul",
+        "0x8": "bn256PairingIstanbul",
+        "0x9": "blake2F",
+        "0xa": "kzgPointEvaluation",
+        "0xb": "bls12381G1Add",
+        "0xc": "bls12381G1MultiExp",
+        "0xd": "bls12381G2Add",
+        "0xe": "bls12381G2MultiExp",
+        "0xf": "bls12381Pairing"
+      }
+    }
+  ]
+}

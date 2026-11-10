@@ -1,0 +1,58 @@
+image: cometbft/cometbft:v0.38.26@sha256:08f635fe1eff3bdcbe9d9a57091811351c55de66fbaa80190b28fe436a08356f
+== run 1 timeline (every 5 s): committed height, height/round/step
+   0.0s all 4 up                3 4/0/NewHeight            |    3 4/0/Propose              |    3 4/0/Precommit            |    3 5/0/NewHeight           
+   8.3s all 4 up                9 10/0/Prevote             |    9 11/0/NewHeight           |   10 11/0/NewHeight           |   10 11/0/NewHeight          
+  16.2s all 4 up               15 16/0/Prevote             |   15 17/0/NewHeight           |   16 17/0/NewHeight           |   16 17/0/NewHeight          
+  24.4s node3 stopped          19 20/0/Prevote             |   19 20/0/Precommit           |   19 20/0/Precommit           | -                            
+  31.9s node3 stopped          23 24/0/Propose             |   23 24/0/Propose             |   23 24/0/Propose             | -                            
+  39.4s node3 stopped          26 27/0/NewHeight           |   26 27/0/NewHeight           |   26 27/0/NewHeight           | -                            
+  46.9s node3 stopped          28 29/0/NewHeight           |   28 29/0/Propose             |   28 29/0/Prevote             | -                            
+  57.5s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+  64.3s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+  71.1s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+  78.0s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+  84.8s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+  91.7s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+  98.7s node2,3 stopped        31 32/0/Prevote             |   31 32/0/Prevote             | -                             | -                            
+ 107.1s node2,3 restarted      32 33/0/Propose             |   32 33/0/Precommit           |   32 34/0/NewHeight           |   33 34/0/NewHeight          
+ 115.3s node2,3 restarted      38 39/0/Prevote             |   38 39/0/Precommit           |   39 40/0/NewHeight           |   39 40/0/NewHeight          
+ 123.3s node2,3 restarted      44 45/0/Propose             |   44 45/0/Precommit           |   44 46/0/NewHeight           |   45 46/0/NewHeight          
+ 131.1s node2,3 restarted      50 51/0/NewHeight           |   50 51/0/Propose             |   50 51/0/Prevote             |   50 52/0/NewHeight          
+ 139.2s node2,3 restarted      56 57/0/NewHeight           |   56 57/0/Propose             |   56 57/0/Prevote             |   56 58/0/NewHeight          
+ 147.5s partition 0,1 | 2,3    62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Propose             |   62 63/0/Propose            
+ 155.5s partition 0,1 | 2,3    62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote            
+ 163.8s partition 0,1 | 2,3    62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote            
+ 171.9s partition 0,1 | 2,3    62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote            
+ 179.9s partition 0,1 | 2,3    62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote            
+ 188.0s partition 0,1 | 2,3    62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote            
+ 196.1s partition healed       62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote             |   62 63/0/Prevote            
+ 204.1s partition healed       62 63/1/Propose             |   62 63/1/Propose             |   62 63/1/Precommit           |   62 64/0/NewHeight          
+ 212.0s partition healed       68 69/0/NewHeight           |   68 69/0/NewHeight           |   68 69/0/Prevote             |   68 69/0/Precommit          
+ 219.8s partition healed       74 75/0/NewHeight           |   74 75/0/NewHeight           |   74 75/0/NewHeight           |   74 75/0/Propose            
+ 228.2s partition healed       80 81/0/Propose             |   80 81/0/Prevote             |   80 82/0/NewHeight           |   81 82/0/NewHeight          
+ 236.5s partition healed       86 87/0/Precommit           |   86 87/0/Precommit           |   87 88/0/NewHeight           |   87 88/0/NewHeight          
+== run 1 node0 log while 2 of 4 validators are stopped (last lines)
+(no consensus log lines in the last 25 s)
+note-cometbft-node0 32/0/Prevote prevotes BA{4:_xx_} 2/4 = 0.50  precommits BA{4:____} 0/4 = 0.00
+== run 1 votes during the 2|2 partition
+note-cometbft-node0 63/0/Prevote prevotes BA{4:_xx_} 2/4 = 0.50  precommits BA{4:____} 0/4 = 0.00
+note-cometbft-node2 63/0/Prevote prevotes BA{4:x__x} 2/4 = 0.50  precommits BA{4:____} 0/4 = 0.00
+== run 1 node0 log after restarting node2,3 (up to the first commit)
+I[2026-11-10|09:07:58.007] Timed out dur=1s height=32 round=0 step=RoundStepPrecommitWait
+I[2026-11-10|09:07:58.420] finalizing commit of block height=32 num_txs=1
+I[2026-11-10|09:07:59.420] Timed out dur=980.047506ms height=33 round=0 step=RoundStepNewHeight
+== per phase over 3 runs: blocks committed / max round / s to first block
+all 4 up              15 / r0  /  1.6   14 / r0  /  1.7   14 / r0  /  1.8
+node3 stopped         11 / r1  /  6.0   12 / r1  /  4.6   11 / r1  /  1.9
+node2,3 stopped        0 / r0  / -    0 / r0  / -    0 / r0  / -
+node2,3 restarted     30 / r1  /  6.5   29 / r1  /  6.5   29 / r1  /  1.5
+partition 0,1 | 2,3    0 / r0  / -    0 / r0  / -    0 / r0  / -
+partition healed      26 / r1  / 12.6   25 / r0  / 10.9   26 / r0  /  9.9
+run 1: tx during halt hash=B08723AC684A code=0 query_during_halt=None query_after=eWVz included_at_height=32
+run 1: heights 1..89 identical on 4 nodes: True; heights decided after round 0: [(20, 1), (24, 1), (28, 1), (32, 1), (63, 1)]
+run 2: tx during halt hash=B08723AC684A code=0 query_during_halt=None query_after=eWVz included_at_height=32
+run 2: heights 1..87 identical on 4 nodes: True; heights decided after round 0: [(20, 1), (24, 1), (28, 1), (32, 1), (62, 1)]
+run 3: tx during halt hash=B08723AC684A code=0 query_during_halt=None query_after=eWVz included_at_height=34
+run 3: heights 1..89 identical on 4 nodes: True; heights decided after round 0: [(22, 1), (26, 1), (30, 1), (34, 1), (63, 1)]
+restart -> first block: median 6.5 s (min 1.5, max 6.5, n=3)
+heal -> first block: median 10.9 s (min 9.9, max 12.6, n=3)

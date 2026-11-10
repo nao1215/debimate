@@ -1,0 +1,308 @@
+{
+  "commits": {
+    "EIPs": "542e62eb129517130b7facc52bbb9a1f333c711e",
+    "ERCs": "f94e400afdddaa2625c291f71646bde0ef44df9d"
+  },
+  "seeds": [
+    20,
+    165,
+    191,
+    712,
+    721,
+    1155,
+    1271,
+    2612,
+    4337,
+    7562,
+    155,
+    214,
+    7702
+  ],
+  "nodes": [
+    {
+      "id": "EIP-2",
+      "title": "Homestead Hard-fork Changes",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-2.md#L1-L8"
+    },
+    {
+      "id": "ERC-20",
+      "title": "Token Standard",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-20.md#L1-L8"
+    },
+    {
+      "id": "EIP-155",
+      "title": "Simple replay attack protection",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-155.md#L1-L8"
+    },
+    {
+      "id": "EIP-161",
+      "title": "State trie clearing (invariant-preserving alternative)",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-161.md#L1-L8"
+    },
+    {
+      "id": "ERC-165",
+      "title": "Standard Interface Detection",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [
+        214
+      ],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-165.md#L1-L9"
+    },
+    {
+      "id": "ERC-191",
+      "title": "Signed Data Standard",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-191.md#L1-L9"
+    },
+    {
+      "id": "EIP-214",
+      "title": "New opcode STATICCALL",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-214.md#L1-L8"
+    },
+    {
+      "id": "EIP-712",
+      "title": "Typed structured data hashing and signing",
+      "category": "Interface",
+      "status": "Final",
+      "requires": [
+        155,
+        191
+      ],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-712.md#L1-L11"
+    },
+    {
+      "id": "ERC-721",
+      "title": "Non-Fungible Token Standard",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [
+        165
+      ],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-721.md#L1-L10"
+    },
+    {
+      "id": "EIP-1052",
+      "title": "EXTCODEHASH opcode",
+      "category": "Core",
+      "status": "Final",
+      "requires": [
+        161
+      ],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-1052.md#L1-L10"
+    },
+    {
+      "id": "ERC-1155",
+      "title": "Multi Token Standard",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [
+        165
+      ],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-1155.md#L1-L10"
+    },
+    {
+      "id": "ERC-1271",
+      "title": "Standard Signature Validation Method for Contracts",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-1271.md#L1-L10"
+    },
+    {
+      "id": "ERC-2612",
+      "title": "Permit Extension for EIP-20 Signed Approvals",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [
+        20,
+        712
+      ],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-2612.md#L1-L11"
+    },
+    {
+      "id": "EIP-2718",
+      "title": "Typed Transaction Envelope",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-2718.md#L1-L10"
+    },
+    {
+      "id": "EIP-2929",
+      "title": "Gas cost increases for state access opcodes",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-2929.md#L1-L9"
+    },
+    {
+      "id": "EIP-2930",
+      "title": "Optional access lists",
+      "category": "Core",
+      "status": "Final",
+      "requires": [
+        2718,
+        2929
+      ],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-2930.md#L1-L10"
+    },
+    {
+      "id": "EIP-3541",
+      "title": "Reject new contract code starting with the 0xEF byte",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-3541.md#L1-L9"
+    },
+    {
+      "id": "EIP-3607",
+      "title": "Reject transactions from senders with deployed code",
+      "category": "Core",
+      "status": "Final",
+      "requires": [],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-3607.md#L1-L10"
+    },
+    {
+      "id": "ERC-4337",
+      "title": "Account Abstraction Using Alt Mempool",
+      "category": "ERC",
+      "status": "Final",
+      "requires": [
+        712,
+        7702
+      ],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-4337.md#L1-L11"
+    },
+    {
+      "id": "EIP-4844",
+      "title": "Shard Blob Transactions",
+      "category": "Core",
+      "status": "Final",
+      "requires": [
+        1559,
+        2718,
+        2930,
+        4895
+      ],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-4844.md#L1-L11"
+    },
+    {
+      "id": "ERC-7562",
+      "title": "Account Abstraction Validation Scope Rules",
+      "category": "ERC",
+      "status": "Review",
+      "requires": [],
+      "url": "https://github.com/ethereum/ERCs/blob/f94e400afdddaa2625c291f71646bde0ef44df9d/ERCS/erc-7562.md#L1-L10"
+    },
+    {
+      "id": "EIP-7702",
+      "title": "Set Code for EOAs",
+      "category": "Core",
+      "status": "Final",
+      "requires": [
+        2,
+        161,
+        1052,
+        2718,
+        2929,
+        2930,
+        3541,
+        3607,
+        4844
+      ],
+      "url": "https://github.com/ethereum/EIPs/blob/542e62eb129517130b7facc52bbb9a1f333c711e/EIPS/eip-7702.md#L1-L11"
+    }
+  ],
+  "edges": [
+    {
+      "from": "ERC-165",
+      "to": "EIP-214"
+    },
+    {
+      "from": "EIP-712",
+      "to": "EIP-155"
+    },
+    {
+      "from": "EIP-712",
+      "to": "ERC-191"
+    },
+    {
+      "from": "ERC-721",
+      "to": "ERC-165"
+    },
+    {
+      "from": "ERC-1155",
+      "to": "ERC-165"
+    },
+    {
+      "from": "ERC-2612",
+      "to": "ERC-20"
+    },
+    {
+      "from": "ERC-2612",
+      "to": "EIP-712"
+    },
+    {
+      "from": "ERC-4337",
+      "to": "EIP-712"
+    },
+    {
+      "from": "ERC-4337",
+      "to": "EIP-7702"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-2"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-161"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-1052"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-2718"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-2929"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-2930"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-3541"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-3607"
+    },
+    {
+      "from": "EIP-7702",
+      "to": "EIP-4844"
+    }
+  ]
+}

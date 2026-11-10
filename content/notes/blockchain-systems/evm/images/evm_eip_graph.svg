@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="850" viewBox="0 0 960 850" role="img"><title>EIP と ERC の requires の関係。左は ERC と Interface でフォークが要らない側、右は Core でフォークが要る側。ERC-165 は EIP-214、EIP-712 は EIP-155、ERC-4337 は EIP-7702 を requires に挙げ、境界をまたぐ。ERC-7562 と ERC-4337 は requires ではなく本文の参照</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666} .mono{font-family:'DejaVu Sans Mono','Menlo','Consolas',monospace}</style>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker></defs>
+<rect width="960" height="850" fill="#ffffff"/>
+<rect x="560" y="60" width="390" height="770" rx="12" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="1.5"/>
+<text x="755" y="40" font-size="24" text-anchor="middle">Core: needs a hard fork</text>
+<text x="270" y="40" font-size="24" text-anchor="middle">ERC / Interface: no fork</text>
+<line x1="540" y1="60" x2="540" y2="830" stroke="#666666" stroke-width="2" stroke-dasharray="8 6"/>
+<line x1="480.0" y1="148" x2="686.0" y2="148" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="480.0" y1="452" x2="686.0" y2="452" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="380" y1="414.0" x2="380" y2="394.0" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="220.0" y1="100" x2="276.0" y2="148" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="220.0" y1="196" x2="276.0" y2="148" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="220.0" y1="300" x2="276.0" y2="252" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="220.0" y1="300" x2="276.0" y2="452" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="220.0" y1="500" x2="276.0" y2="452" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="220.0" y1="500" x2="686.0" y2="560" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="120" y1="602.0" x2="120" y2="542.0" stroke="#666666" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#a)"/>
+<line x1="220.0" y1="400" x2="276.0" y2="452" stroke="#666666" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#a)"/>
+<rect x="20.0" y="62.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="120" y="94" font-size="26" text-anchor="middle" font-weight="normal">ERC-721</text>
+<text x="120" y="126" font-size="24" text-anchor="middle" class="sub">NFT</text>
+<rect x="20.0" y="158.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="120" y="190" font-size="26" text-anchor="middle" font-weight="normal">ERC-1155</text>
+<text x="120" y="222" font-size="24" text-anchor="middle" class="sub">multi token</text>
+<rect x="20.0" y="262.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="120" y="294" font-size="26" text-anchor="middle" font-weight="normal">ERC-2612</text>
+<text x="120" y="326" font-size="24" text-anchor="middle" class="sub">permit</text>
+<rect x="20.0" y="362.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="120" y="394" font-size="26" text-anchor="middle" font-weight="normal">ERC-1271</text>
+<text x="120" y="426" font-size="24" text-anchor="middle" class="sub">contract sig</text>
+<rect x="20.0" y="462.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="120" y="494" font-size="26" text-anchor="middle" font-weight="normal">ERC-4337</text>
+<text x="120" y="526" font-size="24" text-anchor="middle" class="sub">AA bundler</text>
+<rect x="20.0" y="602.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5" stroke-dasharray="8 5"/>
+<text x="120" y="634" font-size="26" text-anchor="middle" font-weight="normal">ERC-7562</text>
+<text x="120" y="666" font-size="24" text-anchor="middle" class="sub">AA rules</text>
+<rect x="280.0" y="110.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="380" y="142" font-size="26" text-anchor="middle" font-weight="normal">ERC-165</text>
+<text x="380" y="174" font-size="24" text-anchor="middle" class="sub">interface ID</text>
+<rect x="280.0" y="214.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="380" y="246" font-size="26" text-anchor="middle" font-weight="normal">ERC-20</text>
+<text x="380" y="278" font-size="24" text-anchor="middle" class="sub">token</text>
+<rect x="280.0" y="314.0" width="200" height="76" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="380" y="346" font-size="26" text-anchor="middle" font-weight="normal">ERC-191</text>
+<text x="380" y="378" font-size="24" text-anchor="middle" class="sub">signed data</text>
+<rect x="280.0" y="414.0" width="200" height="76" rx="8" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
+<text x="380" y="446" font-size="26" text-anchor="middle" font-weight="normal">EIP-712</text>
+<text x="380" y="478" font-size="24" text-anchor="middle" class="sub">typed data</text>
+<rect x="690.0" y="110.0" width="200" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="790" y="142" font-size="26" text-anchor="middle" font-weight="normal">EIP-214</text>
+<text x="790" y="174" font-size="24" text-anchor="middle" class="sub">STATICCALL</text>
+<rect x="690.0" y="414.0" width="200" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="790" y="446" font-size="26" text-anchor="middle" font-weight="normal">EIP-155</text>
+<text x="790" y="478" font-size="24" text-anchor="middle" class="sub">chain ID</text>
+<rect x="690.0" y="522.0" width="200" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="790" y="554" font-size="26" text-anchor="middle" font-weight="normal">EIP-7702</text>
+<text x="790" y="586" font-size="24" text-anchor="middle" class="sub">set code</text>
+<rect x="620" y="640" width="320" height="170" rx="8" fill="#ffffff" stroke="#7aa6c2" stroke-width="2"/>
+<text x="780" y="674" font-size="24" text-anchor="middle" font-weight="normal">9 Core EIPs</text>
+<text x="780" y="712" font-size="24" text-anchor="middle" class="mono">2, 161, 1052</text>
+<text x="780" y="746" font-size="24" text-anchor="middle" class="mono">2718, 2929, 2930</text>
+<text x="780" y="780" font-size="24" text-anchor="middle" class="mono">3541, 3607, 4844</text>
+<line x1="790" y1="598.0" x2="790" y2="636" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<line x1="250" y1="730" x2="300" y2="730" stroke="#666666" stroke-width="2.5" marker-end="url(#a)"/>
+<text x="312" y="738" font-size="24" text-anchor="start">requires</text>
+<line x1="250" y1="770" x2="300" y2="770" stroke="#666666" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#a)"/>
+<text x="312" y="778" font-size="24" text-anchor="start">text only</text>
+<rect x="250" y="796" width="50" height="34" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2" stroke-dasharray="8 5"/>
+<text x="312" y="822" font-size="24" text-anchor="start">status Review</text>
+<rect x="20" y="710" width="50" height="30" rx="6" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="82" y="735" font-size="24" text-anchor="start">ERC</text>
+<rect x="20" y="752" width="50" height="30" rx="6" fill="#e9f1e6" stroke="#8fae86" stroke-width="2"/>
+<text x="82" y="777" font-size="24" text-anchor="start">Interface</text>
+<rect x="20" y="794" width="50" height="30" rx="6" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="82" y="819" font-size="24" text-anchor="start">Core</text>
+</svg>

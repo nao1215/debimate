@@ -1,0 +1,37 @@
+== 1. mint and ownerOf
+mint #1 to alice | alice | status=1 | Transfer(zero->alice, id=1) topics=4 data=0x
+mint #2 to alice | alice | status=1 | Transfer(zero->alice, id=2) topics=4 data=0x
+mint #3 to alice | alice | status=1 | Transfer(zero->alice, id=3) topics=4 data=0x
+ownerOf(1..3)=['alice', 'alice', 'alice'] balanceOf(alice)=3
+Transfer topic0 = 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef (same as ERC-20)
+supportsInterface: {'ERC165': True, 'ERC721': True, 'Metadata': True, 'Enumerable': False, 'invalid': False}
+== 2. transfer to contracts
+safeTransferFrom #1 -> Counter | alice | status=0 | execution reverted: receiver rejected
+safeTransferFrom #2 -> StudyReceiver | alice | status=1 | Transfer(alice->StudyReceiver, id=2) topics=4 data=0x
+transferFrom #1 -> Counter | alice | status=1 | Transfer(alice->Counter, id=1) topics=4 data=0x
+alice pulls #1 back from Counter | alice | status=0 | execution reverted: not authorized
+alice approves herself for #1 | alice | status=0 | execution reverted: not owner nor operator
+StudyReceiver.withdraw #2 -> alice | keeper | status=1 | Transfer(StudyReceiver->alice, id=2) topics=4 data=0x
+ownerOf(1)=Counter ownerOf(2)=alice
+== 3. approve vs setApprovalForAll
+mint #4 to alice | alice | status=1 | Transfer(zero->alice, id=4) topics=4 data=0x
+approve carol for #3 | alice | status=1 | Approval(alice, carol, id=3)
+carol moves #4 | carol | status=0 | execution reverted: not authorized
+carol moves #3 | carol | status=1 | Transfer(alice->carol, id=3) topics=4 data=0x
+getApproved(3)=zero after the transfer
+setApprovalForAll(bob, true) | alice | status=1 | ApprovalForAll(alice, bob, True)
+bob moves #2 | bob | status=1 | Transfer(alice->bob, id=2) topics=4 data=0x
+bob moves #4 | bob | status=1 | Transfer(alice->bob, id=4) topics=4 data=0x
+mint #5 to alice (after the approval) | alice | status=1 | Transfer(zero->alice, id=5) topics=4 data=0x
+bob moves #5 | bob | status=1 | Transfer(alice->bob, id=5) topics=4 data=0x
+setApprovalForAll(bob, false) | alice | status=1 | ApprovalForAll(alice, bob, False)
+mint #6 to alice | alice | status=1 | Transfer(zero->alice, id=6) topics=4 data=0x
+bob moves #6 | bob | status=0 | execution reverted: not authorized
+holdings={'alice': [6], 'bob': [2, 4, 5], 'carol': [3]}
+== 4. tokenURI and metadata (token #2)
+initial | block=24 owner=bob | http://127.0.0.1:WEB/v1/2.json -> {'name': 'Study NFT #2', 'image': 'http://127.0.0.1:WEB/img/blue.svg'}
+server edits v1/2.json | block=24 owner=bob | http://127.0.0.1:WEB/v1/2.json -> {'name': 'Study NFT #2', 'image': 'http://127.0.0.1:WEB/img/red.svg'}
+setBaseURI(v2) | alice | status=1 | no event
+after setBaseURI | block=25 owner=bob | http://127.0.0.1:WEB/v2/2.json -> {'name': 'Study NFT #2 (v2)', 'image': 'http://127.0.0.1:WEB/img/green.svg'}
+server deletes v2/2.json | block=25 owner=bob | http://127.0.0.1:WEB/v2/2.json -> HTTP 404
+Assertions: PASS

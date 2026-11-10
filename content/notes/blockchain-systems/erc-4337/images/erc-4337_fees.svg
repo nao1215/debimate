@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>Who pays the fee of each UserOperation, and what the bundler spends</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-ochre" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d4a24c"/></marker></defs>
+<rect width="960" height="540" fill="#ffffff"/>
+<rect x="40" y="30" width="32" height="26" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="84" y="52" font-size="24" text-anchor="start" style="fill:#1f1f1f">account pays</text>
+<rect x="340" y="30" width="32" height="26" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="384" y="52" font-size="24" text-anchor="start" style="fill:#1f1f1f">paymaster pays</text>
+<rect x="640" y="30" width="32" height="26" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="684" y="52" font-size="24" text-anchor="start" style="fill:#1f1f1f">bundler&#x27;s own tx fee</text>
+<text x="30" y="142" font-size="28" text-anchor="start" style="fill:#1f1f1f">op1</text>
+<text x="30" y="180" font-size="24" text-anchor="start" style="fill:#666666">create, self-paid</text>
+<rect x="250" y="118" width="520.0" height="34" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="784.0" y="145" font-size="24" text-anchor="start" style="fill:#1f1f1f">597,632</text>
+<rect x="250" y="162" width="509.4578603555365" height="34" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="773.4578603555365" y="189" font-size="24" text-anchor="start" style="fill:#666666">585,516</text>
+<text x="30" y="278" font-size="28" text-anchor="start" style="fill:#1f1f1f">op2</text>
+<text x="30" y="316" font-size="24" text-anchor="start" style="fill:#666666">self-paid</text>
+<rect x="250" y="254" width="216.30528485757122" height="34" rx="3" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
+<text x="480.3052848575712" y="281" font-size="24" text-anchor="start" style="fill:#1f1f1f">248,598</text>
+<rect x="250" y="298" width="204.15519918612122" height="34" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="468.1551991861212" y="325" font-size="24" text-anchor="start" style="fill:#666666">234,634</text>
+<text x="30" y="414" font-size="28" text-anchor="start" style="fill:#1f1f1f">op3</text>
+<text x="30" y="452" font-size="24" text-anchor="start" style="fill:#666666">paymaster</text>
+<rect x="250" y="390" width="210.04056007710432" height="34" rx="3" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
+<text x="474.0405600771043" y="417" font-size="24" text-anchor="start" style="fill:#1f1f1f">241,398</text>
+<rect x="250" y="434" width="198.8423645320197" height="34" rx="3" fill="#f2f2f2" stroke="#666666" stroke-width="2.5"/>
+<text x="462.8423645320197" y="461" font-size="24" text-anchor="start" style="fill:#666666">228,528</text>
+<text x="930" y="520" font-size="24" text-anchor="end" style="fill:#666666">gwei</text>
+</svg>

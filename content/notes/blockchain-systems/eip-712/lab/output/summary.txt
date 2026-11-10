@@ -1,0 +1,38 @@
+# 1. EIP-712 Mail example, hashed by hand
+encodeType | Mail(Person from,Person to,string contents)Person(string name,address wallet) | matches EIP-712
+typeHash | 0xa0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2 | matches EIP-712
+domainSeparator | 0xf2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f | matches EIP-712
+hashStruct(message) | 0xc52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e | matches EIP-712
+digest | 0xbe609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2 | matches EIP-712
+ecrecover(digest, signature in EIP-712) | 0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826
+
+# 2. permit signature from eth_signTypedData_v4
+token on 31337 | 0x5FbDB2315678afecb367f032d93F642f64180aa3
+token on 31338 | 0x5FbDB2315678afecb367f032d93F642f64180aa3
+2nd token on 31337 | 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512
+DOMAIN_SEPARATOR() == Python | True
+owner | 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+ecrecover(Python digest, wallet signature) | 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+same signature, token on 31338 | revert ERC2612InvalidSigner(recovered=0x099c16B41fFF273062593931BD35cC9F324B9B4A, owner=0x70997970C51812dc3A010C7d01b50e0d17dc79C8)
+same signature, 2nd token on 31337 | revert ERC2612InvalidSigner(recovered=0x0eEA99498227F3E451059ae4d26d00c98b81f2fB, owner=0x70997970C51812dc3A010C7d01b50e0d17dc79C8)
+
+# 3. personal_sign over the same 32-byte digest
+ecrecover(digest, personal_sign) | 0x317EddB3BcF4583bA6C9C7744A4Ded28CAC3DE57
+ecrecover(EIP-191 hash, personal_sign) | 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+
+# 4. owner only signs; spender submits permit and transferFrom
+after signing | owner txs | 0 | owner STK | 100 | spender STK | 0 | allowance | 0
+permit status=1 | owner txs | 0 | owner STK | 100 | spender STK | 0 | allowance | 100
+transferFrom status=1 | owner txs | 0 | owner STK | 0 | spender STK | 100 | allowance | 0
+same permit again (nonce is now 1) | revert ERC2612InvalidSigner(recovered=0x42DDf6111b34C60364e145b18BC71e52dE14fC4B, owner=0x70997970C51812dc3A010C7d01b50e0d17dc79C8)
+
+# 5. contract account (ERC-1271)
+account | 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9 | code bytes | 1367
+account owner EOA | 0x90F79bf6EB2c4f870365E785982E1f101E93b906
+ecrecover(digest, sig) | 0x90F79bf6EB2c4f870365E785982E1f101E93b906
+checkEcrecover(account, ...) | false
+checkWith1271(account, ...) | true
+account.isValidSignature(digest, sig) | 0x1626ba7e
+account.isValidSignature(digest, bad sig) | 0xffffffff
+token.permit(owner=account, ...) | revert ERC2612InvalidSigner(recovered=0x90F79bf6EB2c4f870365E785982E1f101E93b906, owner=0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9)
+another account of the same owner .isValidSignature | 0x1626ba7e

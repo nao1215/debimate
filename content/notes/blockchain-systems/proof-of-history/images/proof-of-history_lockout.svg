@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>積まれた票の数ごとの lockout と、それを覆すのに要る計算の速さ</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<line x1="150" y1="431.8181818181818" x2="900" y2="431.8181818181818" stroke="#e3e3e3" stroke-width="1"/>
+<text x="138" y="439.8181818181818" font-size="24" text-anchor="end" class="sub">1</text>
+<line x1="150" y1="336.3636363636364" x2="900" y2="336.3636363636364" stroke="#e3e3e3" stroke-width="1"/>
+<text x="138" y="344.3636363636364" font-size="24" text-anchor="end" class="sub">32</text>
+<line x1="150" y1="240.9090909090909" x2="900" y2="240.9090909090909" stroke="#e3e3e3" stroke-width="1"/>
+<text x="138" y="248.9090909090909" font-size="24" text-anchor="end" class="sub">1,024</text>
+<line x1="150" y1="145.45454545454544" x2="900" y2="145.45454545454544" stroke="#e3e3e3" stroke-width="1"/>
+<text x="138" y="153.45454545454544" font-size="24" text-anchor="end" class="sub">3.3 万</text>
+<line x1="150" y1="50.0" x2="900" y2="50.0" stroke="#e3e3e3" stroke-width="1"/>
+<text x="138" y="58.0" font-size="24" text-anchor="end" class="sub">105 万</text>
+<line x1="150" y1="470" x2="900" y2="470" stroke="#666666" stroke-width="2"/>
+<line x1="150" y1="470" x2="150" y2="50" stroke="#666666" stroke-width="2"/>
+<text x="187.5" y="502" font-size="24" text-anchor="middle" class="sub">1</text>
+<text x="337.5" y="502" font-size="24" text-anchor="middle" class="sub">5</text>
+<text x="525.0" y="502" font-size="24" text-anchor="middle" class="sub">10</text>
+<text x="712.5" y="502" font-size="24" text-anchor="middle" class="sub">15</text>
+<text x="900.0" y="502" font-size="24" text-anchor="middle" class="sub">20</text>
+<text x="525.0" y="534" font-size="24" text-anchor="middle">積まれた票の数 n</text>
+<polyline points="187.5,412.7 225.0,393.6 262.5,374.5 300.0,355.5 337.5,336.4 375.0,317.3 412.5,298.2 450.0,279.1 487.5,260.0 525.0,240.9 562.5,221.8 600.0,202.7 637.5,183.6 675.0,164.5 712.5,145.5 750.0,126.4 787.5,107.3 825.0,88.2 862.5,69.1 900.0,50.0" fill="none" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="187.5" cy="412.7" r="6" fill="#ffffff" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="262.5" cy="374.5" r="6" fill="#ffffff" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="525.0" cy="240.9" r="6" fill="#ffffff" stroke="#d4a24c" stroke-width="3"/>
+<circle cx="900.0" cy="50.0" r="6" fill="#ffffff" stroke="#d4a24c" stroke-width="3"/>
+<polyline points="187.5,412.7 225.0,412.7 262.5,404.8 300.0,393.6 337.5,380.7 375.0,366.6 412.5,351.8 450.0,336.4 487.5,320.5 525.0,304.3 562.5,287.9 600.0,271.2 637.5,254.3 675.0,237.2 712.5,220.0 750.0,202.7 787.5,185.3 825.0,167.8 862.5,150.2 900.0,132.5" fill="none" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="187.5" cy="412.7" r="6" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="262.5" cy="404.8" r="6" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="525.0" cy="304.3" r="6" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<circle cx="900.0" cy="132.5" r="6" fill="#ffffff" stroke="#7aa6c2" stroke-width="3"/>
+<text x="193.5" y="448.72727272727275" font-size="24" text-anchor="start">2 倍</text>
+<text x="274.5" y="440.8038295592221" font-size="24" text-anchor="start">約 2.7 倍</text>
+<text x="539.0" y="338.32771817512236" font-size="24" text-anchor="start">約 102 倍</text>
+<text x="888.0" y="172.50953635694054" font-size="24" text-anchor="end">約 5 万 2 千倍</text>
+<line x1="180" y1="84" x2="230" y2="84" stroke="#d4a24c" stroke-width="3"/>
+<text x="242" y="92" font-size="24" text-anchor="start">lockout（スロット）= 2^n</text>
+<line x1="180" y1="124" x2="230" y2="124" stroke="#7aa6c2" stroke-width="3"/>
+<text x="242" y="132" font-size="24" text-anchor="start">覆すのに要る速さ（倍）= 2^n / n</text>
+</svg>

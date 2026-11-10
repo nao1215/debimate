@@ -1,0 +1,6 @@
+bitcoind: Bitcoin Core daemon version v32.1.0 bitcoind
+safe-smart-account: v1.5.0 (dc437e8fba8b4805d76bcbd1c668c9fd3d1e83be)
+anvil Version: 1.7.1
+cast Version: 1.7.1
+Version: 0.7.6+commit.7338295f.Linux.g++
+container: python:3.13-slim@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90

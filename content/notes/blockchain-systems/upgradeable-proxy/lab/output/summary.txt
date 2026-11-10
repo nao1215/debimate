@@ -1,0 +1,39 @@
+== 1. naive proxy: implementation address in slot 0 ==
+slot 0 before increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa3
+slot 0 after  increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa4
+count() through the proxy now returns: '0x' (delegates to an address without code)
+
+== 2. ERC-1967 slots: Python vs constants in the spec and OpenZeppelin ==
+implementation  0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc
+admin           0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103
+cast storage / cast implementation / cast admin agree with the computed slots
+
+== 3. layout shift on upgrade ==
+V1      owner()=0x70997970C51812dc3A010C7d01b50e0d17dc79C8 balance()=100
+        slot 0=0x00000000000000000000000070997970c51812dc3a010c7d01b50e0d17dc79c8
+        slot 1=0x0000000000000000000000000000000000000000000000000000000000000064
+Upgraded(address) topic0=0xbc7cd75a20ee27fd9adebab32041f755214dbc6bffa90cc0225b39da2e5c2d3b
+V2Bad   owner()=0x0000000000000000000000000000000000000064 balance()=0
+        fee()=642829559307850963015472508762062935916233390536 [6.428e47]
+        slot 0 and slot 1 are unchanged; only the meaning of each slot changed
+V2Good  owner()=0x0000000000000000000000000000000000000005 balance()=100 (after setFee(5) under V2Bad)
+
+== 4. constructor writes to the implementation, not the proxy ==
+implementation value()=42  proxy value()=0
+
+== 5. ERC-7201 namespace ==
+erc7201:debimate.vault  0xae0e5a2ac921da8c4f0db7a6df576631c5d91fc4de80e3189b369f9d39c30700
+slot 0xae0e5a2a..00 = owner, ..01 = balance 100, slot 0 = 0
+solc storage layout PlainAB  [('a', 0), ('b', 1)]
+solc storage layout PlainBA  [('b', 0), ('a', 1)]
+solc storage layout BoxOpen  []
+
+== 6. uninitialized implementation (OpenZeppelin v5.7.0) ==
+proxy owner()=0x70997970C51812dc3A010C7d01b50e0d17dc79C8 (alice); impl owner()=0x0000000000000000000000000000000000000000
+mallory calls impl.initialize(mallory): impl owner()=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+mallory calls impl.upgradeToAndCall directly: status=0 revert UUPSUnauthorizedCallContext()
+proxy owner() is still 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+BoxLocked.initialize by mallory: status=0 revert InvalidInitialization()
+BoxLocked Initializable slot = 0x000000000000000000000000000000000000000000000000ffffffffffffffff
+
+Assertions: PASS

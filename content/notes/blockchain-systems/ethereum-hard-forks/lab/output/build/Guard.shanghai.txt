@@ -1,0 +1,6 @@
+Error: Transient storage is not supported by EVM versions older than cancun.
+ --> lab/Guard.sol:6:5:
+  |
+6 |     bool transient locked;
+  |     ^^^^^^^^^^^^^^^^^^^^^
+

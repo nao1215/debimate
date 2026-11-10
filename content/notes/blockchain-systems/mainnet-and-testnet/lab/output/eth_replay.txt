@@ -1,0 +1,17 @@
+== 1. labels and state
+chain        1: eth_chainId=0x1 net_version=1 code at USDC mainnet address=0x
+chain 11155111: eth_chainId=0xaa36a7 net_version=11155111 code at USDC mainnet address=0x
+== 2. EIP-1559 transfer signed for chain 1
+raw tx: 0x02f8720180… (117 bytes, type 0x02)
+decoded: chainId=0x1 signer=0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+send to chain        1: accepted 0x236bb1433eca74dd…
+send to chain 11155111: error: Error: server returned an error response: error code -32003: invalid chain id for signer
+== 3. pre-EIP-155 legacy transfer (signed without chain ID)
+raw tx: 0xf86b808477… (109 bytes, v=27)
+send to chain 11155111: accepted 0x49dabd9cf3a78266…
+send to chain        1: error: Error: server returned an error response: error code -32003: nonce too low
+second raw tx (nonce 1): 0xf86b018477…, v=28
+send to chain 11155111: accepted 0xb10284370368f5ef…
+send to chain        1: accepted 0xb10284370368f5ef…
+chain        1: Bob balance 10002.000000000000000000 ETH
+chain 11155111: Bob balance 10002.000000000000000000 ETH

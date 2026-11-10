@@ -1,0 +1,27 @@
+== EOA
+python      0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+chain 31337 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (eth_accounts[0])
+chain 31338 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (eth_accounts[0])
+chain 31339 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 (eth_accounts[0])
+signed for chain A: chainId=0x7a69 tx hash=da4c91867292b5c8…
+signed for chain B: chainId=0x7a6a tx hash=4df3855135732adb…
+chain B rejects the chain A tx: invalid chain id for signer
+== CREATE
+chain A nonce 0 Factory 0x5FbDB231… = python
+chain B 0x5FbDB231… before: 0 bytes of code
+chain B nonce 0 V2      0x5FbDB231… 218 bytes of code
+chain B nonce 1 Factory 0xe7f1725E… = python
+chain C nonce 0 Factory 0x5FbDB231… = python
+== CREATE2 (Child with constructor arg v)
+chain A salt=0 v=1 0x66fAc1bd… = python
+chain A salt=1 v=1 0x7b80d0f0… = python
+chain A salt=0 v=2 0x4a880718… = python
+chain B salt=0 v=1 0xbE75Bf11… = python
+chain C salt=0 v=1 0x66fAc1bd… = python
+chain A salt=0 v=1 again: status=0 (address already used)
+== metamorphic (each step is a separate transaction)
+fork     | 1st target | v | code after kill | redeploy Deployer | 2nd target | v | v at 1st
+shanghai | 0xCB8956e6 | 1 | 0/0 bytes       | status=1          | 0xCB8956e6 | 2 | 2
+cancun   | 0xCB8956e6 | 1 | 218/930 bytes   | status=0          | 0x673a327D | 2 | 1
+prague   | 0xCB8956e6 | 1 | 218/930 bytes   | status=0          | 0x673a327D | 2 | 1
+Assertions: PASS

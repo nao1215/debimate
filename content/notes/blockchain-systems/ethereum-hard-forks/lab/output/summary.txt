@@ -1,0 +1,52 @@
+== opcode probes (eth_call of init code) ==
+fork       | BASEFEE | PUSH0 | TSTORE | MCOPY | CLZ
+petersburg | error | error | error | error | error
+istanbul   | error | error | error | error | error
+berlin     | error | error | error | error | error
+london     | ok=1000000000 | error | error | error | error
+shanghai   | ok=1000000000 | ok=0 | error | error | error
+cancun     | ok=1000000000 | ok=0 | ok=7 | ok=42 | error
+prague     | ok=1000000000 | ok=0 | ok=7 | ok=42 | error
+osaka      | ok=1000000000 | ok=0 | ok=7 | ok=42 | ok=255
+error messages: EVM error NotActivated
+
+== SLOAD of the same slot twice in one call ==
+fork       | 1st SLOAD | 2nd SLOAD
+petersburg |       200 |       200
+istanbul   |       800 |       800
+berlin     |      2100 |       100
+london     |      2100 |       100
+shanghai   |      2100 |       100
+cancun     |      2100 |       100
+prague     |      2100 |       100
+osaka      |      2100 |       100
+
+== transfer(1 wei) to a receiver that reads 3 slots ==
+fork       | plain tx | with access list
+petersburg | 1        | -
+istanbul   | 0        | -
+berlin     | 0        | 1
+london     | 0        | 1
+shanghai   | 0        | 1
+cancun     | 0        | 1
+prague     | 0        | 1
+osaka      | 0        | 1
+
+== SELFDESTRUCT called in a later transaction ==
+fork       | code before | code after | balance after
+petersburg | 0x33ff      | 0x         | 0
+istanbul   | 0x33ff      | 0x         | 0
+berlin     | 0x33ff      | 0x         | 0
+london     | 0x33ff      | 0x         | 0
+shanghai   | 0x33ff      | 0x         | 0
+cancun     | 0x33ff      | 0x33ff     | 0
+prague     | 0x33ff      | 0x33ff     | 0
+osaka      | 0x33ff      | 0x33ff     | 0
+
+== Copy.sol compiled with solc --evm-version ==
+evmVersion | bytes | PUSH0 | MCOPY | deploy: london | shanghai | cancun
+paris      |   900 |     0 |     0 | 1 | 1 | 1
+shanghai   |   869 |    38 |     0 | 0 | 1 | 1
+cancun     |   843 |    37 |     1 | 0 | 1 | 1
+Guard.sol (transient) with shanghai: Error: Transient storage is not supported by EVM versions older than cancun.
+Guard.sol (transient) with cancun: compiled

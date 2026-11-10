@@ -1,0 +1,4 @@
+dave code before: 0x
+safeTransferFrom #1 -> dave (no code): 0x
+dave code after EIP-7702 delegation to Counter: 0xef0100e7f1725e7734ce288f8367e1bb143e90bb3f0512
+safeTransferFrom #1 -> dave (delegated): Error: server returned an error response: error code 3: execution reverted: receiver rejected

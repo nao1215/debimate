@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="410" viewBox="0 0 960 410" role="img"><title>approve は 1 つの tokenId、setApprovalForAll は後から受け取る分も含めた全部</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker></defs>
+<rect width="960" height="410" fill="#ffffff"/>
+<text x="30" y="40" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">approve(carol, 3)</text>
+<text x="30" y="106" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">alice の NFT</text>
+<rect x="245" y="60" width="96" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="293" y="108" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">#2</text>
+<rect x="365" y="60" width="96" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="4"/>
+<text x="413" y="108" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">#3</text>
+<rect x="485" y="60" width="96" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="533" y="108" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">#4</text>
+<text x="640" y="106" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">carol は #3 だけ</text>
+<line x1="25" y1="168" x2="935" y2="168" stroke="#666666" stroke-width="1.5" stroke-dasharray="4 4"/>
+<text x="30" y="212" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">setApprovalForAll(bob, true)</text>
+<rect x="225" y="232" width="380" height="120" rx="14" fill="#f8eed8" stroke="#d4a24c" stroke-width="3.5"/>
+<text x="30" y="300" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">alice の NFT</text>
+<rect x="245" y="254" width="96" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="293" y="302" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">#2</text>
+<rect x="365" y="254" width="96" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2"/>
+<text x="413" y="302" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">#4</text>
+<rect x="490" y="254" width="96" height="76" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="538" y="302" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#666666">#5</text>
+<text x="538" y="388" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">後で受け取る</text>
+<text x="640" y="285" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">bob は全部を動かせる</text>
+<text x="640" y="323" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">取り消すまで続く</text>
+</svg>

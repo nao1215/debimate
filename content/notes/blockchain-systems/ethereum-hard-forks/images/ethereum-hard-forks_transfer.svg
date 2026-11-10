@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>受け取る側の SLOAD 3 回に要るガスと、transfer が渡す 2300 ガス</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<text x="480.0" y="46" font-size="24" text-anchor="middle" class="sub">gas for 3 SLOADs in the receiver</text>
+<text x="214" y="134" font-size="24" text-anchor="end">petersburg</text>
+<rect x="230" y="104" width="45.7" height="44" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="287.7142857142857" y="134" font-size="24" text-anchor="start">600</text>
+<text x="940" y="134" font-size="24" text-anchor="end">success</text>
+<text x="214" y="226" font-size="24" text-anchor="end">istanbul</text>
+<rect x="230" y="196" width="182.9" height="44" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="424.8571428571429" y="226" font-size="24" text-anchor="start">2,400</text>
+<text x="940" y="226" font-size="24" text-anchor="end" class="sub">failed</text>
+<text x="214" y="318" font-size="24" text-anchor="end">berlin–osaka</text>
+<rect x="230" y="288" width="480.0" height="44" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="722.0" y="318" font-size="24" text-anchor="start">6,300</text>
+<text x="940" y="318" font-size="24" text-anchor="end" class="sub">failed</text>
+<text x="214" y="410" font-size="24" text-anchor="end">+ access list</text>
+<rect x="230" y="380" width="22.9" height="44" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
+<text x="264.8571428571429" y="410" font-size="24" text-anchor="start">300</text>
+<text x="940" y="410" font-size="24" text-anchor="end">success</text>
+<line x1="405.2" y1="84" x2="405.2" y2="458" stroke="#1f1f1f" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="405.23809523809524" y="492" font-size="24" text-anchor="middle">2300 = gas that transfer() forwards</text>
+</svg>

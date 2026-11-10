@@ -1,0 +1,11 @@
+in-turn order: n2 n1 n4 n3 (block number % 4)
+4/4 running                   15 blocks  first new   1.0s  n3 n2 n1 n4 n3 n2 n1 n4 n3 n2 n1 n4
+node4 stopped (3/4)           15 blocks  first new   1.5s  n3* n2* n1* n3* n2* n1* n3* n2* n1* n3 n2 n1
+node3 stopped too (2/4)        0 blocks  first new      -  
+node3, node4 restarted        20 blocks  first new   0.5s  n2 n4* n1* n3 n2 n1 n4 n3 n2 n1 n4 n3
+split: node1+node2             1 blocks  first new   2.0s  n1
+split: node3+node4             2 blocks                  n4* n3*
+healed                         0 blocks  first new      -  
+after heal, node1+node2 side: 1 kept, 0 dropped []
+after heal, node3+node4 side: 0 kept, 2 dropped [57, 58]
+heights 1..55: 0 heights differ between nodes

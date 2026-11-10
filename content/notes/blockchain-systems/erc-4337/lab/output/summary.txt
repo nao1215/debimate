@@ -1,0 +1,22 @@
+# 1. counterfactual address
+CREATE2 formula      : 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
+factory.getAddress   : 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
+getSenderAddress     : 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
+code before          : 0x  balance: 0.1 ETH
+# 2. validation failures (eth_call to handleOps, nothing is mined)
+value changed after signing : FailedOp(0, "AA24 signature error")
+signed by another key       : FailedOp(0, "AA24 signature error")
+# 3. handleOps sent by the bundler EOA (beneficiary = bundler)
+code after op1       : 141 bytes at 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
+change in gwei          | sender     | paymaster  | bundler    | bundler    | owner
+                        | ETH+deposit| deposit    | tx fee     | received   | EOA
+op1 initCode, self-paid |  -10597632 |         +0 |    -585516 |    +597632 |         +0
+op2 self-paid           |  -10248598 |         +0 |    -234634 |    +248598 |         +0
+op3 paymaster           |  -10000000 |    -241398 |    -228528 |    +241398 |         +0
+# 4. gas (tx = handleOps receipt gasUsed, op = UserOperationEvent.actualGasUsed)
+case                    | tx gas   | op gas   | create   | validate | pm valid | execute
+op1 initCode, self-paid |   292758 |   298816 |   141089 |    33547 |        0 |    35768
+op2 self-paid           |   117317 |   124299 |        0 |    22929 |        0 |    35768
+op3 paymaster           |   114264 |   120699 |        0 |    11425 |      498 |    35768
+EOA transfer (baseline) |    21000 |
+Assertions: PASS

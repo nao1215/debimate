@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>検証は自分の storage と関連する slot だけを読み、時刻や他のコントラクトの storage は柵の外に置く</title>
+<style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f} .sub{fill:#666666}</style>
+<rect width="960" height="540" fill="#ffffff"/>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker></defs>
+<text x="140" y="92" font-size="24" text-anchor="middle" class="sub">changes before</text>
+<text x="140" y="122" font-size="24" text-anchor="middle" class="sub">the block</text>
+<rect x="30" y="160" width="220" height="64" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="140" y="202" font-size="25" text-anchor="middle">TIMESTAMP</text>
+<rect x="30" y="260" width="220" height="64" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="140" y="302" font-size="25" text-anchor="middle">NUMBER</text>
+<rect x="30" y="360" width="220" height="64" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="140" y="402" font-size="25" text-anchor="middle">other storage</text>
+<line x1="250" y1="192" x2="304" y2="267.0" stroke="#666666" stroke-width="2"/>
+<line x1="250" y1="292" x2="304" y2="292.0" stroke="#666666" stroke-width="2"/>
+<line x1="250" y1="392" x2="304" y2="317.0" stroke="#666666" stroke-width="2"/>
+<g stroke="#e15759" stroke-width="7" stroke-linecap="round"><line x1="298" y1="272" x2="338" y2="312"/><line x1="298" y1="312" x2="338" y2="272"/></g>
+<rect x="340" y="70" width="300" height="400" rx="16" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="3"/>
+<text x="490" y="118" font-size="30" text-anchor="middle">validation</text>
+<text x="490" y="152" font-size="24" text-anchor="middle" class="sub">ERC-7562 rules</text>
+<rect x="370" y="190" width="240" height="76" rx="10" fill="#ffffff" stroke="#7aa6c2" stroke-width="2"/>
+<text x="490" y="237" font-size="26" text-anchor="middle">own storage</text>
+<rect x="370" y="296" width="240" height="76" rx="10" fill="#ffffff" stroke="#7aa6c2" stroke-width="2"/>
+<text x="490" y="343" font-size="26" text-anchor="middle">keccak(A||x)+n</text>
+<text x="490" y="412" font-size="24" text-anchor="middle" class="sub">one write,</text>
+<text x="490" y="444" font-size="24" text-anchor="middle" class="sub">one account</text>
+<line x1="640" y1="270" x2="694" y2="270" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
+<rect x="700" y="170" width="230" height="200" rx="12" fill="#f2f2f2" stroke="#666666" stroke-width="2" stroke-dasharray="8 6"/>
+<text x="815" y="250" font-size="30" text-anchor="middle">execution</text>
+<text x="815" y="300" font-size="26" text-anchor="middle" class="sub">any code</text>
+</svg>

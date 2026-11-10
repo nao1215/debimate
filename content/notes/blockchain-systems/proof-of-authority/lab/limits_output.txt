@@ -1,0 +1,17 @@
+ N | SIGNER_LIMIT | Clique min online | QBFT quorum (min online)
+ 1 |            1 |                 1 |           1
+ 2 |            2 |                 2 |           2
+ 3 |            2 |                 2 |           2
+ 4 |            3 |                 3 |           3
+ 5 |            3 |                 3 |           4
+ 6 |            4 |                 4 |           4
+ 7 |            4 |                 4 |           5
+ 8 |            5 |                 5 |           6
+ 9 |            5 |                 5 |           6
+10 |            6 |                 6 |           7
+
+Clique, N=4: blocks a group of k signers can add on its own
+  k=1: 1
+  k=2: 2
+  k=3: unbounded
+  k=4: unbounded

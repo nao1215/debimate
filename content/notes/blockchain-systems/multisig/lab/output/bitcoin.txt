@@ -1,0 +1,20 @@
+== 2-of-3 P2WSH
+witnessScript: 2 028414.. 022143.. 02b31c.. 3 OP_CHECKMULTISIG
+signed by a only     -> complete = False
+signed by a and b  -> complete = True, mempool = accepted
+signed by a and c  -> complete = True, mempool = accepted
+signed by b and c  -> complete = True, mempool = accepted
+witness items (bytes): [0, 71, 71, 105] | weight = 754
+only sig_a (dummy, sig_a)  -> block rejected: Operation not valid with the current stack size
+sig_b before sig_a         -> block rejected: Script evaluated without error but finished with a false/empty top stack element
+dummy = 0x01               -> block rejected: Dummy CHECKMULTISIG argument must be zero
+no dummy                   -> block rejected: Operation not valid with the current stack size
+== 3-of-3 MuSig2 (tr(musig(...)))
+round 1: pubnonces = 3 , partial sigs = 0
+round 2: partial sigs = 3
+complete = True , mempool = accepted
+witness items (bytes): [64] | weight = 568
+== single-key P2TR for comparison
+witness items (bytes): [64] | weight = 568
+musig2 scriptPubKey: 5120 + 32-byte key
+single scriptPubKey: 5120 + 32-byte key
