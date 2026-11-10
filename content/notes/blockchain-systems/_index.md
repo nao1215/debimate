@@ -21,5 +21,6 @@ topics:
   - name: "Smart Contract"
   - name: "Scaling"
   - name: "Interoperability"
+  - name: "DeFi"
   - name: "Node Policy"
 ---

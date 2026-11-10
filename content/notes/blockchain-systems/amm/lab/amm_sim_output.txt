@@ -1,0 +1,19 @@
+== 1. price impact (pool 3,000,000 USDC / 1,000 ETH) ==
+    3,000 USDC ->    0.996 ETH  avg  3,012 (+  0.40%)  spot after  3,006  k +0.000%
+   30,000 USDC ->    9.872 ETH  avg  3,039 (+  1.30%)  spot after  3,060  k +0.003%
+  150,000 USDC ->   47.483 ETH  avg  3,159 (+  5.30%)  spot after  3,307  k +0.014%
+  300,000 USDC ->   90.661 ETH  avg  3,309 (+ 10.30%)  spot after  3,629  k +0.027%
+  900,000 USDC ->  230.236 ETH  avg  3,909 (+ 30.30%)  spot after  5,066  k +0.069%
+3,000,000 USDC ->  499.249 ETH  avg  6,009 (+100.30%)  spot after 11,982  k +0.150%
+
+== 2. arbitrage, LP vs HODL ==
+up to 2x        price 6,020  pool ETH   707.3  LP vs HODL  -5.72% (no fee  -5.77%)  arb  6,188
+2x and back     price 3,000  pool ETH   999.5  LP vs HODL  +0.10% (no fee  +0.00%)  arb 12,298
+chop +-2% x100  price 3,000  pool ETH  1000.6  LP vs HODL  +0.21% (no fee  +0.00%)  arb 28,910
+down to 1/2     price 1,500  pool ETH  1413.1  LP vs HODL  -5.68% (no fee  -5.72%)  arb  4,363
+
+== 3. pushing the price to 4x: spot vs TWAP (block 12 s) ==
+held   0 blocks  spot  3,000  TWAP 24s  3,000  TWAP 30min  3,000  attacker cost    0.0M USDC
+held   1 blocks  spot 12,018  TWAP 24s  7,509  TWAP 30min  3,060  attacker cost    1.5M USDC
+held  10 blocks  spot 12,036  TWAP 24s 12,036  TWAP 30min  3,602  attacker cost   15.2M USDC
+held 150 blocks  spot 12,036  TWAP 24s 12,036  TWAP 30min 12,036  attacker cost  254.3M USDC
