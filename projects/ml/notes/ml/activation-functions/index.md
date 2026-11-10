@@ -38,7 +38,7 @@ step = np.where(x > 0, 1, 0).astype(float)
 # 描画処理は省略
 ```
 
-![6 つの活性化関数の形状比較](./activations_shapes.svg)
+{{< figure src="activations_shapes.svg" alt="横軸を入力 -5〜5 とした 6 つのグラフ。step は 0 で 0 から 1 へ跳び、sigmoid は 0〜1、tanh は -1〜1 の S 字で両端が平らになる。ReLU は負側が 0 で正側が直線、Leaky ReLU（α=0.1）は負側にも緩い傾きがあり、GELU は原点付近で滑らかに曲がり負側でわずかに 0 を下回る" caption="6 つの活性化関数の形" align="center" >}}
 
 | 関数 | 値域と形 |
 |---|---|
@@ -49,7 +49,7 @@ step = np.where(x > 0, 1, 0).astype(float)
 | Leaky ReLU | `α > 0`なら実数全体。負側にも傾きがある |
 | GELU | 下限は約−0.170、上は有界でない。滑らか |
 
-[GELU の定義](https://docs.pytorch.org/docs/stable/generated/torch.nn.GELU.html)は `z Φ(z)` で、Φは[標準正規分布](../../math/probability-distributions/)の累積分布関数です。図のコードでは tanh による近似式を使っています。厳密式は `z ≈ -0.752` で約−0.170 の最小値を取り、負の無限大では 0 へ近づきます。値域は実数全体ではありません。近似式の最小値も近い値ですが、厳密には異なります。
+[GELU](https://arxiv.org/abs/1606.08415) の[定義](https://docs.pytorch.org/docs/stable/generated/torch.nn.GELU.html)は `z Φ(z)` で、Φは[標準正規分布](../../math/probability-distributions/)の累積分布関数です。図のコードでは tanh による近似式を使っています。厳密式は `z ≈ -0.752` で約−0.170 の最小値を取り、負の無限大では 0 へ近づきます。値域は実数全体ではありません。近似式の最小値も近い値ですが、厳密には異なります。
 
 数式:
 
@@ -63,7 +63,8 @@ step = np.where(x > 0, 1, 0).astype(float)
 
 ### 勾配消失問題と ReLU の登場
 
-[誤差逆伝播法](../backpropagation/)では、活性化関数の微分だけでなく層の重みも掛けながら勾配を伝えます。その積が小さくなり続けると、入力側の層へ十分な勾配が届きにくくなります。これが勾配消失です。下図は、その要因の 1 つである活性化関数の微分を比べています。
+[誤差逆伝播法](../backpropagation/)では、活性化関数の微分だけでなく層の重みも掛けながら勾配を伝えます。その積が小さくなり続けると、入力側の層へ十分な勾配が届きにくくなります。これが勾配消失です。以下の図は、その要因の 1 つである活性化関数の微分を比べています。
+
 ```python
 sigmoid_grad = sigmoid * (1 - sigmoid)        # max = 0.25 at z=0
 tanh_grad = 1 - tanh ** 2                      # max = 1.0 at z=0
@@ -71,7 +72,7 @@ relu_grad = np.where(x > 0, 1, 0)              # 1 or 0
 # 描画処理は省略
 ```
 
-![各活性化関数の勾配。sigmoid と tanh は飽和域で勾配が 0 に近づく](./activations_gradients.svg)
+{{< figure src="activations_gradients.svg" alt="横軸を入力 z とした 5 つの活性化関数の微分。sigmoid の微分は原点で最大 0.25、tanh の微分は原点で 1 になり、どちらも入力の絶対値が大きくなると 0 に近づく。ReLU の微分は負側 0・正側 1 の段差、Leaky ReLU は負側 α・正側 1、GELU の微分は 0 から 1 へ滑らかに上がり、正側でわずかに 1 を超える" caption="活性化関数の微分の比較" align="center" >}}
 
 - sigmoid の微分は最大 0.25。活性化関数の微分だけを 10 個掛けても上限は `0.25^10 ≈ 9.54×10^-7` となる。ただし、これは重みを含めたネットワーク全体の勾配ではない
 - tanh の微分は原点で 1、入力の絶対値が大きい飽和域では 0 に近づく
@@ -98,7 +99,7 @@ for act in ["logistic", "tanh", "relu"]:
 # 描画処理は省略
 ```
 
-![3 種類の活性化関数での決定境界の違い](./activations_decision_boundary.png)
+{{< figure src="activations_decision_boundary.png" alt="make_moons の 2 クラスの点に、隠れ層 8-8 の MLP が引いた決定境界を縦に 3 枚並べた図。logistic（訓練正解率 0.873）と tanh（0.882）はほぼ直線の境界、relu（0.877）は左下で折れ曲がった折れ線の境界になる" caption="活性化関数を変えた MLP の決定境界" align="center" >}}
 
 この図は、活性化関数を変えて学習した境界の違いを示します。境界の滑らかさだけから、学習速度や未知のデータへの性能は判断できません。
 
@@ -110,7 +111,7 @@ for act in ["logistic", "tanh", "relu"]:
 
 隠れ層が 16 ニューロン×5 層の回帰モデルで、活性化関数を変えます。入力は `[-3, 3]` の一様乱数、目的値は `sin(x)` にノイズを加えた値です。学習率 0.01、乱数 seed 0、80 epoch に固定します。epoch は訓練データを一巡する単位で、実時間の速さを示すものではありません。
 
-[`MLPRegressor.partial_fit`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html)で 1 epoch ずつ学習し、重みを更新する最適化手法 Adam の内部状態も継続します。各 epoch の終了後に全訓練データの予測を計算し、[平均二乗誤差（MSE）](../loss-functions/)を測ります。`loss_`をそのまま使うと、二乗誤差の係数や正則化項を含むためです。
+[`MLPRegressor.partial_fit`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html)で 1 epoch ずつ学習し、重みを更新する最適化手法 [Adam](https://arxiv.org/abs/1412.6980) の内部状態も継続します。各 epoch の終了後に全訓練データの予測を計算し、[平均二乗誤差（MSE）](../loss-functions/)を測ります。`loss_`をそのまま使うと、二乗誤差の係数や正則化項を含むためです。
 
 ```python
 from sklearn.neural_network import MLPRegressor
@@ -135,9 +136,9 @@ for act in ["logistic", "tanh", "relu"]:
     print(act, f"{train_curve(act)[-1]:.6f}")
 ```
 
-![同じ学習率と更新回数で比較した訓練 MSE](./activations_training_curves.svg)
+{{< figure src="activations_training_curves.svg" alt="横軸を epoch 0〜80、縦軸を対数目盛の訓練 MSE とした 3 本の曲線。tanh と ReLU は早い epoch で 0.01 付近まで下がり、sigmoid は下がり方が遅く 80 epoch 後も 0.05 付近に留まる" caption="同じ学習率と更新回数で比べた訓練 MSE" align="center" >}}
 
-scikit-learn 1.8.0、NumPy 2.4.1 での 80 epoch 後の結果です。
+scikit-learn 1.8.0、NumPy 2.4.1 での 80 epoch 後の結果です。scikit-learn 1.9.1、NumPy 2.5.4 で再実行しても同じ値でした。
 
 ```text
 logistic 0.052425
@@ -174,7 +175,7 @@ flowchart LR
 | 非負整数のカウント | exp / softplus で平均を出す | Poisson の負の対数尤度 |
 | ピクセル値生成 | tanh / sigmoid | MSE / cross-entropy |
 
-これらは [損失関数](../loss-functions/) の選び方とセットで決まります。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、フレームワークでは [`BCEWithLogitsLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) や [`CrossEntropyLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) が「activation + loss」を内部で融合してくれます。
+これらは [損失関数](../loss-functions/) の選び方とセットで決まります。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、[PyTorch](https://pytorch.org/) では [`BCEWithLogitsLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) や [`CrossEntropyLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) が「activation + loss」を内部で融合してくれます。
 
 ---
 

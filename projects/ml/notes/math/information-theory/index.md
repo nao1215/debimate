@@ -37,7 +37,7 @@ plt.ylabel("I(x) = -log₂ P(x) (bits)")
 plt.savefig("info_self_information.svg", bbox_inches="tight")
 ```
 
-![自己情報量: 珍しい事象ほどビット数が多い](./info_self_information.svg)
+{{< figure src="info_self_information.svg" alt="横軸が事象の確率 P、縦軸が自己情報量 -log₂ P のビット数の曲線。P = 1 で 0 ビット、P = 0.5 で 1 ビット、P が 0 に近づくほど急に大きくなる" caption="自己情報量と確率の関係" align="center" >}}
 
 - `p = 1` の事象（確実に起きる）: `I = 0` ビット（何の情報も得られない）
 - `p = 0.5` の事象（コインの裏表）: `I = 1` ビット（YES/NO 1 つ分）
@@ -65,7 +65,7 @@ plt.plot(ps, H, color="#7aa6c2", lw=2.5)
 plt.savefig("info_bernoulli_entropy.svg", bbox_inches="tight")
 ```
 
-![ベルヌーイ分布のエントロピー: p=0.5 で最大](./info_bernoulli_entropy.svg)
+{{< figure src="info_bernoulli_entropy.svg" alt="ベルヌーイ分布のエントロピーを表の確率 p の関数として描いた山形の曲線。p = 0 と p = 1 で 0、p = 0.5 で最大の 1 ビット" caption="ベルヌーイ分布のエントロピー" align="center" >}}
 
 - `p = 0` または `p = 1`: 結果が決まっているのでエントロピー 0
 - `p = 0.5`: 完全に半々で結果が予測できない。エントロピー最大 = 1 ビット
@@ -90,13 +90,13 @@ plt.axhline(0, color="gray", lw=1)
 plt.savefig("info_differential_entropy.svg", bbox_inches="tight")
 ```
 
-![正規分布の微分エントロピー: σ が小さいと負になる](./info_differential_entropy.svg)
+{{< figure src="info_differential_entropy.svg" alt="正規分布の微分エントロピーを標準偏差 σ の関数として描いた曲線と 0 の横線。σ が約 0.242 を下回ると値が負になる" caption="正規分布の微分エントロピー" align="center" >}}
 
 `σ = 0.1` では約 `-1.27` ビットです。さらに、`x` の単位を cm から mm に変えると、値は `log_2 10 ≈ 3.32` ビット増えます。微分エントロピーは単位の取り方で動く量なので、離散の場合のように「平均ビット数」とは読めません。
 
 <br>
 
-連続分布の中でエントロピーが最大になるのは、(1) 値域が `[a, b]` で固定なら一様分布、(2) 平均と分散が固定なら正規分布です。分かっている制約だけを仮定し、それ以上の情報を仮定しない分布を選ぶ考え方は最大エントロピー原理と呼ばれ、ベイズ統計の事前分布の選択に利用されます。
+連続分布の中でエントロピーが最大になるのは、(1) 値域が `[a, b]` で固定なら一様分布、(2) 平均と分散が固定なら正規分布です。分かっている制約だけを仮定し、それ以上の情報を仮定しない分布を選ぶ考え方は[最大エントロピー原理](https://doi.org/10.1103/PhysRev.106.620)と呼ばれ、ベイズ統計の事前分布の選択に利用されます。
 
 ---
 
@@ -106,7 +106,7 @@ plt.savefig("info_differential_entropy.svg", bbox_inches="tight")
 
 `KL(P || Q) = Σ_x P(x) log (P(x) / Q(x))`
 
-「`Q` を `P` の近似と思って符号化した時に、余分に掛かる平均ビット数」と解釈できます。
+底を 2 にすると、「`P` に従うデータを、`Q` に合わせて作った符号で符号化した時に、余分に掛かる平均ビット数」と解釈できます。
 
 性質:
 
@@ -137,7 +137,7 @@ mild:      KL(P || Q) = 0.154 bits
 strong:    KL(P || Q) = 0.743 bits
 ```
 
-![同じ Q（一様）に対して P が離れるほど KL が増える](./info_kl_divergence.svg)
+{{< figure src="info_kl_divergence.svg" alt="3 枚の棒グラフ。赤の Q は 4 値の一様分布で固定し、青の P を一様・やや偏り・強い偏りと変えると、KL(P || Q) が 0.000・0.154・0.743 ビットと増える" caption="P の偏りと KL ダイバージェンス" align="center" >}}
 
 3 つのパネルで `Q`（赤、一様分布）は固定、`P`（青、真の分布）を徐々に偏らせています。`P` と `Q` が一致する時 KL = 0、`P` が偏るほど KL が増えます。機械学習では、真分布 `P` とモデル `Q` の違いを定量化する尺度として使います。
 
@@ -160,7 +160,7 @@ strong:    KL(P || Q) = 0.743 bits
   body: モデルが出した各クラスの予測確率です。
 {{< /note-panels >}}
 
-![CE = H(P) + KL の積み重ね](./info_cross_entropy_decomp.svg)
+{{< figure src="info_cross_entropy_decomp.svg" alt="交差エントロピーを、緑の H(P) と赤の KL(P || Q) の積み上げ棒で示した図。KL を 0 から 2 まで増やした 7 本の棒で、緑の高さは一定のまま赤の部分だけが伸びる" caption="交差エントロピーの分解" align="center" >}}
 
 図の緑は `H(P)`、赤は `KL(P || Q)` です。真の条件付き分布に不確実性があれば、モデルがその分布を正確に予測しても、期待損失に `H(P)` が残ります。
 
@@ -183,7 +183,7 @@ strong:    KL(P || Q) = 0.743 bits
 
 の形でも書けて、「[同時分布](../joint-marginal-conditional/) が周辺分布の積（= 独立を仮定したもの）からどれだけ離れているか」と読めます。独立なら `I = 0`、少しでも依存があれば `I > 0` です。
 
-![情報ダイアグラム: H(X), H(Y), I(X;Y)](./info_mutual_information.svg)
+{{< figure src="info_mutual_information.svg" alt="H(X) と H(Y) を 2 つの円で描いた情報ダイアグラム。重なりが相互情報量 I(X; Y)、重ならない部分が条件付きエントロピー H(X | Y) と H(Y | X)" caption="エントロピーと相互情報量の関係" align="center" >}}
 
 ベン図的に書くと、`H(X)` と `H(Y)` の重なりが相互情報量で、重なりが大きいほど依存が強くなります。ただし、この読み方は離散変数の場合です。連続変数では微分エントロピーが負にもなるので円の面積としては読めませんが、`I(X; Y)` 自体は 0 以上で、単位の取り方にも依存しません。
 
@@ -205,9 +205,9 @@ Pearson の [相関係数](../correlation/) が測れるのは線形依存だけ
 - [損失関数](../../ml/loss-functions/) の交差エントロピー: 分類タスクの標準損失（softmax + CE）
 - [決定木](../../ml/decision-tree/) の情報利得: 分割によるエントロピー減少量で分岐選択
 - [特徴量選択](../../ml/feature-selection/) の相互情報量: 線形相関では拾えない依存性を検出
-- 変分推論（VAE）: ELBO（Evidence Lower Bound、変分下界）の中で KL ダイバージェンスが事前分布との近さを表す
-- GAN（生成器と識別器を競わせる生成モデル）: 元論文の目的関数は、識別器が最適な時に JS ダイバージェンスの最小化になる
-- 自己教師あり学習: SimCLR などで使う InfoNCE 損失は、相互情報量の下界を最大化する
+- 変分推論（[VAE](https://arxiv.org/abs/1312.6114)）: ELBO（Evidence Lower Bound、変分下界）の中で KL ダイバージェンスが事前分布との近さを表す
+- [GAN](https://arxiv.org/abs/1406.2661)（生成器と識別器を競わせる生成モデル）: 元論文の目的関数は、識別器が最適な時に JS ダイバージェンスの最小化になる
+- 自己教師あり学習: [SimCLR](https://arxiv.org/abs/2002.05709) などで使う [InfoNCE](https://arxiv.org/abs/1807.03748) 損失は、相互情報量の下界を最大化する
 - データドリフト検知: PSI（Population Stability Index）はビンに分けた 2 分布の `Σ (p - q) log(p / q)` で、`KL(P || Q) + KL(Q || P)` と等しい（[モデル性能監視](../../mlops/model-performance-monitoring/) 参照）
 - クラスタリング評価: 相互情報量ベースの NMI（normalized mutual information）
 
@@ -220,5 +220,5 @@ scikit-learn では [mutual_info_score](https://scikit-learn.org/stable/modules/
 - KL を「距離」と呼ぶ: 距離関数ではない。対称な量が欲しい場合は、平均 `M = (P + Q) / 2` を使う JS ダイバージェンス `JS(P, Q) = (KL(P || M) + KL(Q || M)) / 2`
 - `Q(x) = 0` の点で `P(x) > 0`: KL が無限大に発散する。softmax のように `Q(x) > 0` を保つ出力にするか、smoothing（`Q + ε` を正規化し直す）を入れる
 - 少ないサンプルで離散変数の MI を推定: 頻度から作った推定値は正に偏り、独立でも `MI > 0` が出る
-- 連続変数の MI: 密度が分からないと解析的に計算できない。KSG 推定量（Kraskov らによる k 近傍法ベースの推定）や、カーネル密度推定を経由する方法を使う
+- 連続変数の MI: 密度が分からないと解析的に計算できない。[KSG 推定量](https://doi.org/10.1103/PhysRevE.69.066138)（Kraskov らによる k 近傍法ベースの推定）や、カーネル密度推定を経由する方法を使う
 - 情報量の単位を混在: 1 ナット ≈ 1.443 ビット。同じ計算内で対数の底を揃える

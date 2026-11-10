@@ -9,9 +9,9 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-EVM（Ethereum Virtual Machine）は、Ethereum の取引が呼び出したコントラクトのコードについて、全てのノードで同じ結果になるように実行する仮想マシンです。[Solidity](https://www.soliditylang.org/) などで書いたプログラムはバイトコードにコンパイルされ、EVM がその命令を 1 つずつ実行して、残高や保存領域の値を更新します。
+EVM（Ethereum Virtual Machine）は、[Ethereum](https://ethereum.org/) の取引が呼び出したコントラクトのコードについて、全てのノードで同じ結果になるように実行する仮想マシンです。[Solidity](https://www.soliditylang.org/) などで書いたプログラムはバイトコードにコンパイルされ、EVM がその命令を 1 つずつ実行して、残高や保存領域の値を更新します。
 
-EVM の仕様は 1 つですが、実装は複数あります。Go で書かれた [go-ethereum](https://github.com/ethereum/go-ethereum)（geth）や、Rust で書かれ、開発用のローカルノードである Foundry の Anvil が使う [revm](https://github.com/bluealloy/revm) などが、同じブロックから同じ状態を計算します。仕様としては、Python で書かれていてテストとしても動かせる [execution-specs](https://github.com/ethereum/execution-specs) があります。
+EVM の仕様は 1 つですが、実装は複数あります。Go で書かれた [go-ethereum](https://github.com/ethereum/go-ethereum)（geth）や、Rust で書かれ、開発用のローカルノードである [Foundry の Anvil](https://getfoundry.sh/anvil/overview) が使う [revm](https://github.com/bluealloy/revm) などが、同じブロックから同じ状態を計算します。仕様としては、[Python](https://www.python.org/) で書かれていてテストとしても動かせる [execution-specs](https://github.com/ethereum/execution-specs) があります。
 
 以下は、EVM が Ethereum のどこにいるかを示した図です。
 
@@ -39,11 +39,11 @@ Ethereum は、アカウントごとの残高・nonce・コード・storage を�
 
 EVM は、PoS の投票やブロックの選択にも関わると思うかもしれません。しかし、EVM が担うのは、実行層の中でもコードを実行する部分だけです。取引の署名と nonce の検査、手数料の前払いと精算は、EVM を呼ぶ前後の状態遷移の処理が行います。
 
-EIP-7702 の委任を設定していない EOA（秘密鍵で操作する通常のアカウント）に ETH を送るだけの取引なら、宛先にコードが無いので、EVM の命令は 1 つも実行されません。
+[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) の委任を設定していない EOA（秘密鍵で操作する通常のアカウント）に ETH を送るだけの取引なら、宛先にコードが無いので、EVM の命令は 1 つも実行されません。
 
 <br>
 
-EVM の仕様は、数式で書かれた [Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf) から始まりました。しかし、2026 年 11 月時点で公開されている PDF の表紙は「SHANGHAI VERSION（2025-02-04）」で、2024 年の Cancun 以降のハードフォーク（全ノードが同時に規則を切り替える更新）の変更は入っていません。
+EVM の仕様は、数式で書かれた [Yellow Paper](https://ethereum.github.io/yellowpaper/paper.pdf) から始まりました。しかし、2026 年 11 月時点で公開されている PDF の表紙は「SHANGHAI VERSION（2025-02-04）」で、2024 年の [Cancun](https://ethereum.org/en/history/#dencun) 以降のハードフォーク（全ノードが同時に規則を切り替える更新）の変更は入っていません。
 
 最近の規則を確かめるなら、フォークごとにディレクトリが分かれた execution-specs が読みやすく、本記事でも geth と execution-specs のコードはコミットを固定して参照します。
 
@@ -176,7 +176,7 @@ cold と warm は、2021 年の Berlin で [EIP-2929](https://eips.ethereum.org/
 
 #### 実験の環境
 
-実験は、[Foundry の Anvil](https://getfoundry.sh/anvil/overview) 1.7.1 を [Docker](https://www.docker.com/) の専用ネットワークで起動し、`--hardfork osaka` で規則を Osaka に固定して行いました。ホストのポートは公開せず、公開のネットワークにも繋ぎません。使う秘密鍵は、Anvil が既定で用意するテスト用の公開された鍵だけです。
+実験は、Anvil 1.7.1 を [Docker](https://www.docker.com/) の専用ネットワークで起動し、`--hardfork osaka` で規則を Osaka に固定して行いました。ホストのポートは公開せず、公開のネットワークにも繋ぎません。使う秘密鍵は、Anvil が既定で用意するテスト用の公開された鍵だけです。
 
 Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコンパイルしています。コントラクトと手で組み立てたバイトコードは学習用で、監査していません。
 
@@ -428,7 +428,7 @@ Prague の 7 個は BLS12-381 の曲線の演算です（[EIP-2537](https://eips
 
 <br>
 
-3 つのプリコンパイルを `eth_call` で呼びました。0x02 には `abc` を渡して Python の [`hashlib`](https://docs.python.org/3/library/hashlib.html) の SHA-256 と比べ、0x01 の ecrecover には、Anvil のテスト用の鍵で署名したハッシュを渡しました。
+3 つのプリコンパイルを `eth_call` で呼びました。0x02 には `abc` を渡して Python の [`hashlib`](https://docs.python.org/3/library/hashlib.html) の [SHA-256](https://csrc.nist.gov/pubs/fips/180-4/upd1/final) と比べ、0x01 の ecrecover には、Anvil のテスト用の鍵で署名したハッシュを渡しました。
 
 0x100 には、Python で書いた学習用の P-256 の署名（固定の乱数で作るので実際の鍵には使えません）を渡し、ハッシュを 1 ビット変えた場合とも比べています。
 
@@ -567,7 +567,7 @@ contract Dispatcher {
 calldata of set(42): 60fe47b1 000000000000000000000000000000000000000000000000000000000000002a
 ```
 
-コンパイル結果を `cast disassemble` で命令に戻すと、先頭に selector を比べるコードがあります。その部分の抜粋は以下に畳み、全体は [dispatcher.disasm.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/output/build/dispatcher.disasm.txt) に置きました。
+コンパイル結果を Foundry の [cast](https://getfoundry.sh/cast/overview) の `cast disassemble` で命令に戻すと、先頭に selector を比べるコードがあります。その部分の抜粋は以下に畳み、全体は [dispatcher.disasm.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/output/build/dispatcher.disasm.txt) に置きました。
 
 <details>
 <summary>selector を比べる部分の抜粋（左が PC）</summary>

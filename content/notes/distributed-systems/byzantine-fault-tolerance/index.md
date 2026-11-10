@@ -35,7 +35,9 @@ crossTopics:
 
 停止故障（crash fault）は、ノードが動作を止め、以後は何も送らない故障です。[Raft](https://raft.github.io/raft.pdf) のような合意アルゴリズムや、[Quorum](../quorum/) で説明した過半数の考え方は、この故障とネットワークの分断を前提にしています。止まったノードは誤った値を送らないので、届いた値は本物として扱えます。
 
-ビザンチン障害（Byzantine fault）は、ノードが規則に従わず、任意の振る舞いをする故障です。名前は、[Lamport 氏らの 1982 年の論文](https://lamport.azurewebsites.net/pubs/byz.pdf)が、敵に通じた者が混じる将軍たちが攻撃か撤退かを揃える問題として定式化したことに由来します。黙り続けるのも振る舞いの 1 つなので、停止故障はビザンチン障害の特別な場合です。ビザンチン障害に耐える仕組みは停止故障にも耐えますが、逆は成り立ちません。
+ビザンチン障害（Byzantine fault）は、ノードが規則に従わず、任意の振る舞いをする故障です。名前は、[Lamport 氏らの 1982 年の論文](https://lamport.azurewebsites.net/pubs/byz.pdf)が、敵に通じた者が混じる将軍たちが攻撃か撤退かを揃える問題として定式化したことに由来します。
+
+黙り続けるのも振る舞いの 1 つなので、停止故障はビザンチン障害の特別な場合です。ビザンチン障害に耐える仕組みは停止故障にも耐えますが、逆は成り立ちません。
 
 <br>
 
@@ -70,7 +72,9 @@ crossTopics:
 
 上記の図の左では、A が Q1 には commit、Q2 には abort と言えば、2 つの quorum が別の決定に同意します。右では、重なりにいる正直な C が両方に同じ値を言うので、2 つの決定は同時に成立しません。
 
-署名を使えば台数を減らせるかは、条件によります。Lamport 氏らの論文は、署名付きのメッセージなら 3 台でも 1 台の嘘つきに耐えるアルゴリズムを示しています。ただし、メッセージは必ず届き、届かなければ受け手がそれを検知できる、という前提を置いています。PBFT はこの前提を置かず、遅延に上限が無くても安全性が崩れない設計で、その条件では 3f+1 台が最小（論文の言う optimal）です。
+署名を使えば台数を減らせるかは、条件によります。Lamport 氏らの論文は、署名付きのメッセージなら 3 台でも 1 台の嘘つきに耐えるアルゴリズムを示しています。ただし、メッセージは必ず届き、届かなければ受け手がそれを検知できる、という前提を置いています。
+
+PBFT はこの前提を置かず、遅延に上限が無くても安全性が崩れない設計で、その条件では 3f+1 台が最小（論文の言う optimal）です。
 
 ---
 
@@ -78,7 +82,9 @@ crossTopics:
 
 3 台では足りないことは、全ての組み合わせを列挙すると確かめられます。[ローカルで実行するコード](lab/bft_quorum.py)は Python の標準ライブラリだけで動きます。
 
-前半の `quorum_intersection` は、quorum の全ての組と嘘つきの全ての選び方について、重なりに残る正直なノードの最小数を数えます。後半の `one_round` は、PBFT の最初の 2 段階だけの 1 ラウンドです。ノード 0 が値を提案する primary で、残りの backup は受け取った値を全員に伝え直します。各ノードは提案と伝え直された値を 1 票ずつ数え、quorum の台数分だけ同じ値が揃ったら、その値で prepared になるものとします。
+前半の `quorum_intersection` は、quorum の全ての組と嘘つきの全ての選び方について、重なりに残る正直なノードの最小数を数えます。
+
+後半の `one_round` は、PBFT の最初の 2 段階だけの 1 ラウンドです。ノード 0 が値を提案する primary で、残りの backup は受け取った値を全員に伝え直します。各ノードは提案と伝え直された値を 1 票ずつ数え、quorum の台数分だけ同じ値が揃ったら、その値で prepared になるものとします。
 
 単純化として commit と View Change は含めず、メッセージは全て届くものとします。嘘つき 1 台が送り先ごとに commit・abort・沈黙を選ぶ全通りを試します。
 
@@ -192,7 +198,9 @@ n=4 quorum=3 faulty=backup  cases=27 split= 0 nobody_prepared= 0
 
 ### PBFT の通常動作
 
-[PBFT（Practical Byzantine Fault Tolerance）](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)は、Castro 氏と Liskov 氏が 1999 年に OS の学会 OSDI で発表した、状態機械の複製（全ノードが同じ要求を同じ順序で実行する構成）のアルゴリズムです。3f+1 台のうち 1 台が primary として要求に通し番号を振り、残りの backup が番号を検証します。primary を務める期間を view と呼び、view の番号ごとに primary が替わります。
+[PBFT（Practical Byzantine Fault Tolerance）](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)は、Castro 氏と Liskov 氏が 1999 年に OS の学会 OSDI で発表した、状態機械の複製（全ノードが同じ要求を同じ順序で実行する構成）のアルゴリズムです。
+
+3f+1 台のうち 1 台が primary として要求に通し番号を振り、残りの backup が番号を検証します。primary を務める期間を view と呼び、view の番号ごとに primary が替わります。
 
 以下は、4 台（f=1）で 1 つの要求を処理する流れです。R0 が primary で、R3 は故障して何も送らない場合を描いています。
 
@@ -239,13 +247,17 @@ prepare で揃える票は合わせて 2f+1 票で、前節の quorum と同じ�
 
 <br>
 
-しかし、prepared は自分の手元で順序が揃ったことを示すだけで、他のノードが同じ状態にあるかは分かりません。commit の段階で 2f+1 個の一致した commit が揃えば、少なくとも f+1 台の正直なノードがその要求を prepared にしています。この f+1 台の証明が、次の節の View Change で引き継がれます。つまり、prepare が守るのは view の中の順序で、commit が守るのは view をまたいだ確定です。
+しかし、prepared は自分の手元で順序が揃ったことを示すだけで、他のノードが同じ状態にあるかは分かりません。commit の段階で 2f+1 個の一致した commit が揃えば、少なくとも f+1 台の正直なノードがその要求を prepared にしています。この f+1 台の証明が、次の節の View Change で引き継がれます。
+
+つまり、prepare が守るのは view の中の順序で、commit が守るのは view をまたいだ確定です。
 
 ---
 
 ### View Change
 
-View Change は、primary が止まった時や、順序を進めない時に、次の primary に交代する手続きです。backup は、受け取った要求を一定時間内に実行できないとタイマーを切らし、交代を求める VIEW-CHANGE を全員に送ります。[Leader and Followers](../leader-and-followers/) の Raft では、Follower は[ハートビート](../heartbeat/)の途絶で Leader を疑います。PBFT の backup が要求の実行を見張るのは、嘘をつく primary はハートビートを送り続けたまま順序だけを止められるからです。次の view の primary は、投票ではなく view の番号をノード数で割った余りで決まります。
+View Change は、primary が止まった時や、順序を進めない時に、次の primary に交代する手続きです。backup は、受け取った要求を一定時間内に実行できないとタイマーを切らし、交代を求める VIEW-CHANGE を全員に送ります。
+
+[Leader and Followers](../leader-and-followers/) の Raft では、Follower は[ハートビート](../heartbeat/)の途絶で Leader を疑います。PBFT の backup が要求の実行を見張るのは、嘘をつく primary はハートビートを送り続けたまま順序だけを止められるからです。次の view の primary は、投票ではなく view の番号をノード数で割った余りで決まります。
 
 VIEW-CHANGE には、送り主が prepared にした要求の証明を入れます。証明は、pre-prepare と 2f 個の一致した prepare の組です。署名付きのメッセージを束ねているので、嘘つきは存在しない prepared をでっち上げられません。VIEW-CHANGE には古い記録を捨てるためのチェックポイントの情報も入りますが、本記事では省略します。
 
@@ -269,13 +281,19 @@ sequenceDiagram
     Note over R0,R3: VIEW-CHANGE は実際には<br/>全員に送る（図では省略）
 ```
 
-新しい primary は、自分の分と合わせて 2f+1 通の VIEW-CHANGE を集めると、新しい view の開始を告げる NEW-VIEW を送ります。NEW-VIEW には、集めた VIEW-CHANGE と番号ごとの pre-prepare を入れます。prepared の証明がある番号では最も新しい view の証明にある要求を出し直し、証明が無い番号には何もしない要求（null request）を割り当てます。
+新しい primary は、自分の分と合わせて 2f+1 通の VIEW-CHANGE を集めると、新しい view の開始を告げる NEW-VIEW を送ります。NEW-VIEW には、集めた VIEW-CHANGE と番号ごとの pre-prepare を入れます。
 
-証明を引き継ぐ理由は、前の view で確定した要求を消さないためです。ある要求が正直なノードの 1 台でも確定していれば、f+1 台の正直なノードが prepared の証明を持っています。2f+1 通の VIEW-CHANGE には、その中の 1 台が必ず含まれます。NEW-VIEW の中身は添えられた VIEW-CHANGE から計算し直せるので、新しい primary が嘘つきでも、計算と合わない NEW-VIEW は backup に拒否されます。
+prepared の証明がある番号では最も新しい view の証明にある要求を出し直し、証明が無い番号には何もしない要求（null request）を割り当てます。
+
+証明を引き継ぐ理由は、前の view で確定した要求を消さないためです。ある要求が正直なノードの 1 台でも確定していれば、f+1 台の正直なノードが prepared の証明を持っています。2f+1 通の VIEW-CHANGE には、その中の 1 台が必ず含まれます。
+
+NEW-VIEW の中身は添えられた VIEW-CHANGE から計算し直せるので、新しい primary が嘘つきでも、計算と合わない NEW-VIEW は backup に拒否されます。
 
 <br>
 
-View Change を始めるきっかけは、タイマーという時間の仮定です。PBFT は「遅延が時間の経過より速く際限なく伸び続けはしない」という弱い仮定に、処理を進め続ける性質（liveness）でだけ頼ります。タイマーが早く切れすぎても、確定した要求は覆りません。遅延に上限が無いネットワークでは、1 台が止まり得るだけで、必ず終わる決定的な合意アルゴリズムを作れないことが [FLP Impossibility](/notes/distributed-systems/flp-impossibility/) として示されています。
+View Change を始めるきっかけは、タイマーという時間の仮定です。PBFT は「遅延が時間の経過より速く際限なく伸び続けはしない」という弱い仮定に、処理を進め続ける性質（liveness）でだけ頼ります。タイマーが早く切れすぎても、確定した要求は覆りません。
+
+遅延に上限が無いネットワークでは、1 台が止まり得るだけで、必ず終わる決定的な合意アルゴリズムを作れないことが [FLP Impossibility](/notes/distributed-systems/flp-impossibility/) として示されています。
 
 ---
 
@@ -291,11 +309,15 @@ PBFT は、参加するノードが n 台に決まっていて、互いを認証
 | 参加者に票の重みを与える | ステークなどの重みの合計で数える。嘘つきは重みの合計の 1/3 未満 | Tendermint、Ethereum の Casper FFG |
 | 誰でも参加でき、計算量で重みを付ける | 計算量に比例した重み。嘘つきの計算量が過半に届かないこと | [Proof of Work](/notes/blockchain-systems/proof-of-work/) |
 
-[Tendermint の論文](https://arxiv.org/abs/1807.04938)は、ノードごとに voting power（票の重み）を持たせ、嘘つきの重みが全体の 1/3 未満であることを前提に PBFT と同じ 2f+1 の閾値を使います。Ethereum の [Finality](/notes/blockchain-systems/finality/) を決める Casper FFG も、[合意層の仕様](https://github.com/ethereum/consensus-specs/blob/master/specs/phase0/beacon-chain.md)では、バリデータの有効残高（effective balance）の合計の 2/3 以上が投票した checkpoint を justified にします。Proof of Work は投票の代わりに、最も多くの計算を積んだ列を選ぶ規則で順序を揃え、確定は覆る確率が下がっていく形で表されます。
+[Tendermint の論文](https://arxiv.org/abs/1807.04938)は、ノードごとに voting power（票の重み）を持たせ、嘘つきの重みが全体の 1/3 未満であることを前提に PBFT と同じ 2f+1 の閾値を使います。
+
+Ethereum の [Finality](/notes/blockchain-systems/finality/) を決める [Casper FFG](https://arxiv.org/abs/1710.09437) も、[合意層の仕様](https://github.com/ethereum/consensus-specs/blob/master/specs/phase0/beacon-chain.md)では、バリデータの有効残高（effective balance）の合計の 2/3 以上が投票した checkpoint を justified にします。Proof of Work は投票の代わりに、最も多くの計算を積んだ列を選ぶ規則で順序を揃え、確定は覆る確率が下がっていく形で表されます。
 
 <br>
 
-メッセージの数も、参加者を絞る理由になります。PBFT の prepare と commit では各ノードが他の全員に送るので、要求 1 つあたりのメッセージ数はノード数の 2 乗（O(n²)）で増えます。100 台なら、1 段階で約 1 万通です。Tendermint は全員への直接の送信ではなくゴシップ（隣接するノード同士でメッセージを中継する方式）で配りますが、全員の票を全員に届け、2/3 を超える重みの票を集める点は変わりません。全員の票を集めずに、無作為に選んだ少数への問い合わせを繰り返して通信量を抑える方式は [Snowman](/notes/blockchain-systems/snowman/) のノートで説明しています。
+メッセージの数も、参加者を絞る理由になります。PBFT の prepare と commit では各ノードが他の全員に送るので、要求 1 つあたりのメッセージ数はノード数の 2 乗（O(n²)）で増えます。100 台なら、1 段階で約 1 万通です。
+
+Tendermint は全員への直接の送信ではなくゴシップ（隣接するノード同士でメッセージを中継する方式）で配りますが、全員の票を全員に届け、2/3 を超える重みの票を集める点は変わりません。全員の票を集めずに、無作為に選んだ少数への問い合わせを繰り返して通信量を抑える方式は [Snowman](/notes/blockchain-systems/snowman/) のノートで説明しています。
 
 ---
 

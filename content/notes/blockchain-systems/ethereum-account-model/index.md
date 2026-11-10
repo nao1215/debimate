@@ -8,7 +8,7 @@ weight: 13
 topics: ["Transaction / Wallet"]
 ---
 
-アカウントモデル（account model）は、アドレスごとに残高などの状態を保存し、取引がその状態を書き換える形で送金を表すモデルです。Ethereum が採用しています。[UTXO](../utxo/) で説明した Bitcoin の表し方には残高という保存された値が無く、コインは使い切りの出力として存在します。同じ送金でも、アカウントモデルは保存された数値を書き換え、UTXO モデルは出力を作り直します。
+アカウントモデル（account model）は、アドレスごとに残高などの状態を保存し、取引がその状態を書き換える形で送金を表すモデルです。[Ethereum](https://ethereum.org/) が採用しています。[UTXO](../utxo/) で説明した [Bitcoin](https://bitcoin.org/) の表し方には残高という保存された値が無く、コインは使い切りの出力として存在します。同じ送金でも、アカウントモデルは保存された数値を書き換え、UTXO モデルは出力を作り直します。
 
 例えば、2 件の送金を短い間隔で出すと、ウォレットが付けた通し番号（nonce）の小さい方から順に取り込まれ、1 件目が取り込まれないうちは 2 件目も待たされます。同じアカウントから自動で取引を出すサービスを書くなら、この番号を誰が採番するのかを決める必要があります。
 
@@ -74,7 +74,7 @@ sequenceDiagram
 
 従来は、コードの有無で 2 種類を見分けられました。公式ドキュメントでも、EOA の codeHash は「[the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（空文字列のハッシュ）です。
 
-今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の Pectra というプロトコルの更新で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA のコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
+今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の [Pectra](https://ethereum.org/roadmap/pectra/) というプロトコルの更新で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA のコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
 
 この EOA を呼び出すと、委任先のコードが EOA のアドレスで動き、読み書きする記憶領域も EOA のものになります。例えば、複数の操作を 1 件の取引にまとめたり、手数料を別のアカウントに払ってもらったりできます。2 種類の違いはコードの有無ではなく、EOA が秘密鍵による認証を起点に取引を送り出せるのに対し、コントラクトアカウントはコードの実行によって動く点にあります。
 
@@ -179,7 +179,7 @@ nonce 0 が取り込まれても 1 が欠けている間は 2 は動かず、1 �
 
 取引は、この状態を次の状態に移す入力です。そのため、同じ送金の取引でも、先に別の取引が残高を減らしていれば失敗します。
 
-世界状態は、アドレスを `keccak256` でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。
+世界状態は、アドレスを `keccak256`（[Keccak](https://keccak.team/keccak.html) に基づくハッシュ関数）でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。
 
 現在の Ethereum の本番ネットワーク（Mainnet）では、[modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
 

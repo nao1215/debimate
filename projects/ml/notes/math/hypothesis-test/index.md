@@ -67,7 +67,7 @@ p      = 0.0069
 z_crit = 1.645
 ```
 
-![p 値は帰無分布の裾の面積](./p_value_concept.svg)
+{{< figure src="p_value_concept.svg" alt="H0 のもとでの標準正規分布を 2 枚並べた図。左は z_obs = 2.46 より右の裾を赤く塗った p 値の面積、右は z > 1.645 を橙に塗った α = 0.05 の棄却域で、z_obs が棄却域に入る" caption="p 値と棄却域" align="center" >}}
 
 左の図の赤い領域が p 値の面積で、右の図の橙の領域が `α = 0.05` の棄却域（`z > 1.645`）です。`z_obs = 2.46` は棄却域に入るので、`H0` を棄却します。`p < α` と「`z_obs` が棄却域に入る」は同じ判定です。図の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hypothesis-test_gen.py)は GitHub で確認できます。
 
@@ -121,7 +121,7 @@ t_crit = 2.045
 10 万回, t_crit: 0.950
 ```
 
-![100 回の実験での 95% 信頼区間と真値の関係](./confidence_intervals.svg)
+{{< figure src="confidence_intervals.svg" alt="n = 30 の実験 100 回分の 95% 信頼区間を横棒で並べた図。黒い縦線が真値 5 で、真値を含む 94 本を青、含まない 6 本を赤で示す" caption="100 回の実験の 95% 信頼区間" align="center" >}}
 
 上記の図は、最初の 100 回の区間です。青は真値（黒い縦線）を含む区間、赤は含まない区間で、含んだのは 94 本でした。10 万回でも 94.0% で、1.96 を t 分布の 2.045 に替えると 95.0% になります。`n = 30` でも 1 ポイント足りないので、`σ` が分からない時は t 分布を使います。
 
@@ -157,7 +157,7 @@ print(f"crit = {crit:.3f}, β = {1 - pw:.2f}, power = {pw:.2f}")
 crit = 0.300, β = 0.14, power = 0.86
 ```
 
-![H0・H1 の分布と第一種誤り・第二種誤り・検定力](./type1_type2_power.svg)
+{{< figure src="type1_type2_power.svg" alt="H0: μ = 0（青）と H1: μ = 0.5（緑）の xbar の分布と、棄却境界 0.300 の黒い破線。境界の右の青の裾が第一種誤り α = 0.05（赤）、境界の左の緑の部分が第二種誤り β = 0.14（橙）、残りが検定力 0.86" caption="第一種誤り・第二種誤り・検定力" align="center" >}}
 
 青い曲線が `H0: μ = 0` のもとでの `xbar` の分布、緑が `H1: μ = 0.5` のもとでの分布です。黒い破線が棄却境界 `xbar = 0.300` で、その右側が棄却域です。
 
@@ -190,7 +190,7 @@ n=200: power = 0.995, CI 幅 = 0.277
 power 80% に必要な n = 68.7
 ```
 
-![サンプル数と検定力・CI 幅の関係](./sample_size_effect.svg)
+{{< figure src="sample_size_effect.svg" alt="左は真の差 0.3 での検定力をサンプル数に対して描いた S 字の曲線で、赤い破線の 80% を n = 69 付近で超える。右は 95% 信頼区間の幅が 1/√n で狭くなる曲線" caption="サンプル数と検定力・信頼区間の幅" align="center" >}}
 
 `n` を 25 から 100 へ 4 倍にすると、区間の幅は 0.784 から 0.392 へ半分になります。検定力は 0.442 から 0.912 へ上がり、`n = 200` で 0.995 と 1 に張り付きます。検定力は `Φ(√n × μ1 / σ - 1.645)`（`Φ` は標準正規分布の累積分布関数）なので、`√n` に比例して増えるのではなく、`α = 0.05` から 1 へ S 字の曲線で近づきます。
 
@@ -201,10 +201,10 @@ power 80% に必要な n = 68.7
 ### 使いどころ
 
 - A/B テスト: 新しいモデルや機能の効果を検定する。`n` と `α` は事前に決める
-- モデル比較: [交差検証](/ml/ml/cross-validation/)のスコア差に、対応のある t 検定や Wilcoxon 符号順位検定を使う
+- モデル比較: [交差検証](/ml/ml/cross-validation/)のスコア差に、対応のある t 検定や [Wilcoxon 符号順位検定](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html)を使う
 - 回帰係数: ロジスティック回帰や線形回帰の係数が 0 かどうかを Wald 検定で調べる
-- データドリフト: 訓練データと本番データの分布の差を KS 検定や `χ²` 検定で調べる。PSI（Population Stability Index）は検定ではなく、差の大きさの指標
-- 多数の検定: Bonferroni、Holm、Benjamini-Hochberg で多重比較を補正する
+- データドリフト: 訓練データと本番データの分布の差を [KS 検定](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html)や `χ²` 検定で調べる。PSI（Population Stability Index）は検定ではなく、差の大きさの指標
+- 多数の検定: Bonferroni、Holm、[Benjamini-Hochberg](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x) で多重比較を補正する
 - 効果量: Cohen's d や Cramér's V を p 値と一緒に報告する
 
 ---
@@ -237,6 +237,6 @@ print(f"理論値 1 - 0.95**20     : {1 - 0.95**20:.3f}")
 
 - 効果量を見ない: `n` が極端に大きいと、無視できる差でも `p < 0.05` になる
 - 「`p > 0.05` だから差が無い」と結論する: 棄却できなかっただけで、検定力不足の可能性が残る
-- 分散の違いを無視する: Student の t 検定は 2 群の分散が等しいと仮定するので、分散と群のサイズが異なる時は Welch の t 検定を使う。分散の比を調べる F 検定は、正規分布からのずれに弱い
+- 分散の違いを無視する: Student の t 検定は 2 群の分散が等しいと仮定するので、分散と群のサイズが異なる時は Welch の t 検定（[`scipy.stats.ttest_ind`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html) の `equal_var=False`）を使う。分散の比を調べる F 検定は、正規分布からのずれに弱い
 - 独立でないデータ: 同じユーザーからの繰り返し測定には、対応のある t 検定や混合効果モデルを使う
 - 精度差に通常の t 検定をかける: 交差検証の各分割は訓練データを共有して独立ではないので、有意と判定しすぎる。[Nadeau と Bengio の補正](https://doi.org/10.1023/A:1024068626366)や[ベイズ流の比較](https://jmlr.org/papers/v18/16-305.html)を検討する

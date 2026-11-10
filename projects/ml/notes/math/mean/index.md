@@ -49,7 +49,7 @@ flowchart LR
 
 ---
 
-## Python での実例
+### Python での実例
 
 以下は、右に長い対数正規分布から 500 個の値を引き、平均と[中央値](../median/)を比べる例です。[NumPy](https://numpy.org/) と [Matplotlib](https://matplotlib.org/) を使います。
 
@@ -72,12 +72,12 @@ plt.xlabel("Value")
 plt.ylabel("Count")
 plt.legend()
 plt.tight_layout()
-plt.show()
+plt.savefig("mean_hist.svg", bbox_inches="tight")
 ```
 
 出力:
 
-![右に長い分布で平均 3.41 が中央値 2.62 より右に来るヒストグラム](./mean_hist.svg)
+{{< figure src="mean_hist.svg" alt="対数正規分布から引いた 500 個のヒストグラム。右に長い裾があり、平均 3.41 の赤い破線が中央値 2.62 の緑の破線より右に来る" caption="右に長い分布での平均と中央値" align="center" >}}
 
 平均は 3.41、中央値は 2.62 です。最大 23.25 まで伸びる右の裾が、平均だけを中央値より右へ引っ張っています。
 
@@ -102,7 +102,7 @@ clean:        mean = 50.63, median = 50.67
 with outlier: mean = 59.44, median = 50.71
 ```
 
-![外れ値 1 つで平均は 8.8 動き、中央値は 0.05 しか動かない](./mean_outlier_drift.svg)
+{{< figure src="mean_outlier_drift.svg" alt="正規分布の 50 個に 500 を 1 つ足す前後の比較。平均は 50.63 から 59.44 へ 8.8 動き、中央値は 50.67 から 50.71 へ 0.05 しか動かない" caption="外れ値 1 つを足した前後の平均と中央値" align="center" >}}
 
 51 個中 1 個の値で平均は 8.81 増え、元の 50 個のうち 49 個より大きい 59.44 になりました。中央値は約 0.05 しか動いていません。平均は値の重心なので 500 の距離をそのまま受け取り、中央値は順位の中心なので 1 つ分しかずれないからです。収入・取引額・反応時間のように極端な値が混ざり得るデータでは、平均をそのまま典型値として読むと判断を誤ります。
 
@@ -130,7 +130,7 @@ argmin MAE: c = 50.70
 
 候補を 0.05 刻みにしたため、最小点は平均 59.44・中央値 50.71 と 0.01 ずれます。
 
-![L2 損失の最小点が平均 59.44、L1 損失の最小点が中央値 50.71](./mean_l2_vs_median_l1.svg)
+{{< figure src="mean_l2_vs_median_l1.svg" alt="外れ値入りのデータで、左の二乗誤差は平均 59.44 で最小、右の絶対誤差は中央値 50.71 で最小になる。点線はもう一方の代表値の位置" caption="二乗誤差と絶対誤差の最小点" align="center" >}}
 
 左の曲線は二乗誤差 `MSE(c) = mean((x - c)^2)`、右は絶対誤差 `MAE(c) = mean(|x - c|)` を `c` の関数として描いたものです。点線は、もう一方の代表値の位置です。二乗誤差は 500 との距離を二乗で数えるので、最小点が外れ値側の平均へ寄ります。図の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/mean_gen.py)は GitHub で確認できます。
 
@@ -162,7 +162,7 @@ argmin MAE: c = 50.70
 - アンサンブル予測: [RandomForest](../../ml/random-forest/) の回帰は各決定木の予測を平均し、二乗誤差の[勾配ブースティング](../../ml/gradient-boosting/)は目的変数の平均を初期予測にする
 - [交差検証](../../ml/cross-validation/) のスコア集約: 各 fold のスコアを平均して 1 つの推定値にする
 - A/B テスト: 群間の平均比較が基本
-- バッチ正規化（BatchNorm）: ミニバッチ内の平均と分散で各層の出力を正規化する
+- [バッチ正規化（BatchNorm）](https://arxiv.org/abs/1502.03167): ミニバッチ内の平均と分散で各層の出力を正規化する
 - 画像の前処理: 画素値から ImageNet 全体の平均を引く
 
 ---

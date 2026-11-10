@@ -124,18 +124,20 @@ flowchart TD
 
 ### 2 つのスクリプトを分ける理由
 
-scriptSig と scriptPubKey を単純に連結すると、使う側が用意した命令が、支払う側の条件を飛ばしてしまう余地が生まれます。初期の Bitcoin では、こうした検査の回避が可能でした（[CVE-2010-5141](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2010-5141)）。
+scriptSig と scriptPubKey を単純に連結すると、使う側が用意した命令が、支払う側の条件を飛ばしてしまう余地が生まれます。0.3.4 までの Bitcoin では、こうした検査の回避が可能でした（[CVE-2010-5141](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2010-5141)）。
 
 1. [初期の実装](https://github.com/bitcoin/bitcoin/blob/v0.3.0/script.cpp)は、使う側の scriptSig と、過去の出力の scriptPubKey を連結していました。
 2. scriptSig に当時の OP_RETURN を置くと、条件の検査まで進まずに実行を終えられました。
 3. 真と解釈される値を残しておけば、支払う側の条件を満たさずに出力を使えました。
 
+0.3.5 で OP_RETURN を実行すると失敗する命令に変え、[0.3.7](https://github.com/bitcoin/bitcoin/blob/v0.3.7/script.cpp) で 2 つのスクリプトを別々に実行する形に改めました。
+
 以下は、連結して 1 回で実行する作りと、現在の 2 回に分けて実行する作りを並べた図です。
 
-{{< figure src="images/bitcoin-script_split.svg" alt="上段は v0.3.0 までの作り。使う側の命令 <1> と OP_RETURN の後に赤い縦線があり、その右の DUP、HASH160、<H>、EQUALVERIFY、CHECKSIG は点線で、条件の命令は実行されない。黄土色の帯に「1（真）が残って合格、条件を満たさずに出力を使える」。下段は現在の作り。1 回目の <sig> <pub> から矢印でスタックを渡し、2 回目の条件の命令が全て実線で並ぶ。下の帯に「条件を満たさなければ、1 回目が何をしても不合格」" caption="連結した実行（v0.3.0 まで）と分けた実行（現在）" align="center" >}}
+{{< figure src="images/bitcoin-script_split.svg" alt="上段は v0.3.4 までの作り。使う側の命令 <1> と OP_RETURN の後に赤い縦線があり、その右の DUP、HASH160、<H>、EQUALVERIFY、CHECKSIG は点線で、条件の命令は実行されない。黄土色の帯に「1（真）が残って合格、条件を満たさずに出力を使える」。下段は現在の作り。1 回目の <sig> <pub> から矢印でスタックを渡し、2 回目の条件の命令が全て実線で並ぶ。下の帯に「条件を満たさなければ、1 回目が何をしても不合格」" caption="連結した実行（v0.3.4 まで）と分けた実行（現在）" align="center" >}}
 上段では使う側の命令が実行の終わりを決められ、下段では条件の命令が必ず最後まで実行されます。
 
-現在の [Bitcoin Core の VerifyScript](https://github.com/bitcoin/bitcoin/blob/v30.0/src/script/interpreter.cpp) は、scriptSig の実行に成功した後、引き継いだスタックで scriptPubKey を別に実行します。現在の OP_RETURN は実行すると失敗する命令で、当時の動作とは異なります。命令の名前だけでなく、2 つの実行を分けて出力の条件を必ず検査する構造が重要です。
+現在の [Bitcoin Core の VerifyScript](https://github.com/bitcoin/bitcoin/blob/v30.0/src/script/interpreter.cpp) は、scriptSig の実行に成功した後、引き継いだスタックで scriptPubKey を別に実行します。命令の名前だけでなく、2 つの実行を分けて出力の条件を必ず検査する構造が重要です。
 
 ---
 
@@ -197,4 +199,4 @@ Script は、見知らぬ相手のスクリプトを全参加者が実行する�
 - 一度出力に置いた条件は変更できず、誤った条件は修正の手段が無い
 - 常に真を返す条件も書けてしまい、その出力は誰でも使える
 
-[UTXO](../utxo/) でも比較した Ethereum は、実行をまたいで状態を保持します。[Smart Contract](../smart-contract/) で説明するように、状態を持つプログラムを実行できる一方で、実行量を計って上限を課し、手数料を求める仕組みが必要です。
+[UTXO](../utxo/) でも比較した [Ethereum](https://ethereum.org/) は、実行をまたいで状態を保持します。[Smart Contract](../smart-contract/) で説明するように、状態を持つプログラムを実行できる一方で、実行量を計って上限を課し、手数料を求める仕組みが必要です。

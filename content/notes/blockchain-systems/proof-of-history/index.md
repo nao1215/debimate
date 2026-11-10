@@ -61,7 +61,9 @@ Agave の [entry.rs のコメント](https://github.com/anza-xyz/agave/blob/v4.4
 
 実装もこの区別に沿っています。Agave のリーダーは、計算が予定より進んだ時に自分の時計で待ちます（[poh_service.rs](https://github.com/anza-xyz/agave/blob/v4.4.1/poh/src/poh_service.rs#L443-L447) の `poh_wait_target`）。この待ちはリーダーの手元の判断で、検証する側が確かめられるのはハッシュの回数だけです。
 
-プログラムが読む時刻 `Clock.unix_timestamp` は、Tower BFT の時期には、バリデータが投票に添えた時刻の、stake（バリデータに担保として預けられた Solana の通貨 SOL）で重み付けした中央値でした（[Alpenglow のページ](https://solana.com/upgrades/alpenglow)の Clock の節）。この値は、epoch の開始からのスロット数による見積もりの幅（速い側 25%、遅い側 150%）に収められます（[stake_weighted_timestamp.rs](https://github.com/anza-xyz/agave/blob/v4.4.1/runtime/src/stake_weighted_timestamp.rs#L14-L24)）。ハッシュの回数は幅の目安に使われるだけで、時刻は投票から来ていました。
+プログラムが読む時刻 `Clock.unix_timestamp` は、Tower BFT の時期には、バリデータが投票に添えた時刻の、stake（バリデータに担保として預けられた Solana の通貨 SOL）で重み付けした中央値でした（[Alpenglow のページ](https://solana.com/upgrades/alpenglow)の Clock の節）。
+
+この値は、epoch の開始からのスロット数による見積もりの幅（速い側 25%、遅い側 150%）に収められます（[stake_weighted_timestamp.rs](https://github.com/anza-xyz/agave/blob/v4.4.1/runtime/src/stake_weighted_timestamp.rs#L14-L24)）。ハッシュの回数は幅の目安に使われるだけで、時刻は投票から来ていました。
 
 ---
 

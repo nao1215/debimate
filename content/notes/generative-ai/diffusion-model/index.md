@@ -11,7 +11,9 @@ topics: ["Image Generation"]
 
 拡散モデル（diffusion model）は、画像に少しずつノイズを足していく過程の逆向きをたどるように学習したモデルです。生成の時は、ノイズだけの状態から少しずつノイズを取り除いて画像を作ります。[DDPM の論文](https://arxiv.org/abs/2006.11239)（Denoising Diffusion Probabilistic Models、2020 年）がこの方法で高い品質の画像を示し、[SDXL](https://arxiv.org/abs/2307.01952)（Stable Diffusion XL）もこの仕組みで動いています。
 
-[ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）のプレビューを見ていると、拡散モデルは下書きに少しずつ絵を描き足しているように見えます。しかし、モデルが各ステップで出しているのは「今の状態に含まれるノイズはこれだ」という予測です。サンプラーがその予測を使ってノイズを引き、次のステップの状態を作ります。以下は、28 ステップの生成を途中で止めた状態（上段）と、そのステップでモデルの予測から計算した完成図（下段）を画像に戻して並べたものです。
+[ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）のプレビューを見ていると、拡散モデルは下書きに少しずつ絵を描き足しているように見えます。しかし、モデルが各ステップで出しているのは「今の状態に含まれるノイズはこれだ」という予測です。サンプラーがその予測を使ってノイズを引き、次のステップの状態を作ります。
+
+以下は、28 ステップの生成を途中で止めた状態（上段）と、そのステップでモデルの予測から計算した完成図（下段）を画像に戻して並べたものです。
 
 {{< figure src="images/diffusion_trajectory.webp" alt="上段は 0、2、4、7、10、14、20、28 ステップ目の潜在を画像に戻したもの。14 ステップ目まで画面の大半が色の粒のノイズで、20 ステップ目で雲と崖が粒の中に見え、28 ステップ目で灯台と夕焼けの海の絵になる。下段はモデルの予測から計算した完成図で、2 ステップ目で既に夕焼けの空と水平線がぼやけて現れ、7 ステップ目で崖と灯台、10 ステップ目以降は完成図とほぼ同じ配置になる" caption="途中の潜在（上段）と、各ステップの予測から計算した画像（下段）" align="center" >}}
 
@@ -77,7 +79,9 @@ ComfyUI は、この式を [Karras 氏らの論文](https://arxiv.org/abs/2206.0
 
 ### モデルはノイズを予測する
 
-学習では、ランダムに選んだ段 `t` で正解の画像にノイズ `eps` を足し、できた `x_t` から、足した `eps` を当てさせます（DDPM の論文の Algorithm 1）。予測と本当のノイズの差の 2 乗を小さくするように重みを更新するので、モデルの出力は「この中のノイズの推定値 `eps_hat`」です。この形を eps 予測と呼びます。手元のチェックポイントは、ComfyUI が v 予測（ノイズではなく別の量を当てる形）と判定する鍵を持たず、eps 予測として読み込まれます（[supported_models.py の SDXL.model_type](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/supported_models.py#L216-L233)）。
+学習では、ランダムに選んだ段 `t` で正解の画像にノイズ `eps` を足し、できた `x_t` から、足した `eps` を当てさせます（DDPM の論文の Algorithm 1）。予測と本当のノイズの差の 2 乗を小さくするように重みを更新するので、モデルの出力は「この中のノイズの推定値 `eps_hat`」です。この形を eps 予測と呼びます。
+
+手元のチェックポイントは、ComfyUI が v 予測（ノイズではなく別の量を当てる形）と判定する鍵を持たず、eps 予測として読み込まれます（[supported_models.py の SDXL.model_type](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/supported_models.py#L216-L233)）。
 
 ノイズの推定値が分かれば、完成図の推定値も計算できます。ComfyUI の [EPS.calculate_denoised](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L35-L37) は、`x0_hat = x − σ × eps_hat` を返します。冒頭の図の下段は、この `x0_hat` です。
 
@@ -211,7 +215,9 @@ rerun       rerun_steps_28                    26.17  14, 6.73  identical_to_step
 <figure style="margin:0;flex:0 1 200px;min-width:0"><img src="images/sampler_dpmpp_2m_karras.webp" alt="dpmpp_2m と karras。euler とほぼ同じ配置で、雲と灯台の位置がわずかにずれる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">dpmpp_2m・karras</figcaption></figure>
 </div>
 
-`dpmpp_2m`（[DPM-Solver++](https://arxiv.org/abs/2211.01095) の 2 次の多段法）は、前のステップの予測も使って次の状態を計算します。σ の列を `karras` に変えても、配置は euler とほぼ同じでした。出発点のノイズが同じで、どちらも途中でノイズを足さないためと考えられます。一方で、`euler_ancestral` は、各ステップで σ を少し下げすぎてから、新しいノイズを足して戻します（[get_ancestral_step](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/k_diffusion/sampling.py#L68-L75)）。途中で足すノイズの分だけ道筋が変わるので、seed が同じでも崖の形から別の絵になりました。
+`dpmpp_2m`（[DPM-Solver++](https://arxiv.org/abs/2211.01095) の 2 次の多段法）は、前のステップの予測も使って次の状態を計算します。σ の列を `karras` に変えても、配置は euler とほぼ同じでした。出発点のノイズが同じで、どちらも途中でノイズを足さないためと考えられます。
+
+一方で、`euler_ancestral` は、各ステップで σ を少し下げすぎてから、新しいノイズを足して戻します（[get_ancestral_step](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/k_diffusion/sampling.py#L68-L75)）。途中で足すノイズの分だけ道筋が変わるので、seed が同じでも崖の形から別の絵になりました。
 
 ---
 
@@ -246,7 +252,7 @@ shape [4, 128, 128] values 65536 vs pixels 3145728 ratio 48
 
 ### プロンプトと CFG
 
-プロンプトは、ノイズの予測に条件として渡ります。SDXL は、[CLIP](https://arxiv.org/abs/2103.00020)（画像と文章を同じベクトルの空間に対応付けるよう学習したモデル）型の text encoder を 2 つ（CLIP ViT-L と OpenCLIP ViT-bigG）使い、語ごとのベクトルの列を作ります。UNet は各ステップで、画像の各位置からこの列を参照します（cross-attention）。流れの細部は [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/#前提-プロンプトが-unet-に届くまで)で説明しています。
+プロンプトは、ノイズの予測に条件として渡ります。SDXL は、[CLIP](https://arxiv.org/abs/2103.00020)（画像と文章を同じベクトルの空間に対応付けるよう学習したモデル）型の text encoder を 2 つ（CLIP ViT-L と [OpenCLIP](https://github.com/mlfoundations/open_clip) の ViT-bigG）使い、語ごとのベクトルの列を作ります。UNet は各ステップで、画像の各位置からこの列を参照します（cross-attention）。流れの細部は [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/#前提-プロンプトが-unet-に届くまで)で説明しています。
 
 プロンプトを条件にするだけでは、絵は文面に強く従いません。そこで使うのが CFG（[Classifier-Free Guidance](https://arxiv.org/abs/2207.12598)）です。1 ステップごとに、プロンプトありと打ち消し（ネガティブプロンプト）ありの 2 つの予測を計算し、その差を CFG の値の倍率で伸ばします（[samplers.py の 598 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L598)）。論文では打ち消しの代わりに条件なしの予測を使い、ComfyUI の CFG の値は論文の `1 + w` に当たります。
 

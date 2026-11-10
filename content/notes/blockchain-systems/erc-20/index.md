@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-ERC-20 は、Ethereum 上のトークンについて、残高の照会や送金などの呼び出し方を揃える規格です。同じ種類のトークンを数量で扱い、1 枚ごとに異なる識別子は付けません。ウォレットや交換サービスは、この共通の呼び出し方を使って複数のトークンに対応できます。
+ERC-20 は、[Ethereum](https://ethereum.org/) 上のトークンについて、残高の照会や送金などの呼び出し方を揃える規格です。同じ種類のトークンを数量で扱い、1 枚ごとに異なる識別子は付けません。ウォレットや交換サービスは、この共通の呼び出し方を使って複数のトークンに対応できます。
 
 トークンを使うアプリでは、送金の前に Approve という操作を求められることがあります。これは、別のアドレスにトークンを使う権限を与える操作です。Approve では承認額を設定し、送金では残高を変更します。
 
@@ -77,7 +77,7 @@ flowchart TD
 
 ### 所有者からの送金
 
-典型的な実装では、アドレスごとの残高を mapping で持ちます。mapping は、キーから値を引く Solidity のデータ型です。`mapping(address => uint256)` なら、アドレスをキーとして整数の残高を取得できます。
+典型的な実装では、アドレスごとの残高を mapping で持ちます。mapping は、キーから値を引く [Solidity](https://soliditylang.org/) のデータ型です。`mapping(address => uint256)` なら、アドレスをキーとして整数の残高を取得できます。
 
 サンプルの `transfer` は、呼び出した人を表す `msg.sender` の残高から、指定した宛先に数量を移します。以下は [StudyToken.sol](lab/StudyToken.sol) の抜粋です。
 
@@ -109,7 +109,7 @@ flowchart TD
     B -->|"5を足す"| D["受取人の残高 5"]
 ```
 
-本サンプルは、送金の前後で総供給量が変わりません。ファイルが受取人に移動するのではなく、同じコントラクト内で 2 つの残高を更新します。後の処理が失敗して取引全体が revert すれば、片方の残高だけが減った状態は残りません。
+本サンプルは、送金の前後で総供給量が変わりません。受取人の手元に何かが移るのではなく、同じコントラクト内で 2 つの残高を更新します。後の処理が失敗して取引全体が revert すれば、片方の残高だけが減った状態は残りません。
 
 ---
 
@@ -162,7 +162,7 @@ function transferFrom(address from, address to, uint256 amount)
 
 ### ローカルでの残高と承認額の変化
 
-実験では、Anvil 1.7.1 と Solidity コンパイラ 0.8.28 を使い、ローカルチェーンに `StudyToken` をデプロイします。Ethereum の実行規則は Cancun に固定しています。デプロイしたアカウントに 100 枚を発行し、所有者、spender、受取人の 3 つのテスト用アカウントを使います。
+実験では、[Foundry](https://github.com/foundry-rs/foundry) のローカルノードである [Anvil](https://getfoundry.sh/anvil/overview) 1.7.1 と Solidity コンパイラ 0.8.28 を使い、ローカルチェーンに `StudyToken` をデプロイします。Ethereum の実行規則は [Cancun](https://ethereum.org/roadmap/dencun/) に固定しています。デプロイしたアカウントに 100 枚を発行し、所有者、spender、受取人の 3 つのテスト用アカウントを使います。
 
 `StudyToken` は、処理を追うために作成した学習用の実装です。本番の資産管理用として監査されたコードではありません。既存 OSS を利用する場合は、[OpenZeppelin Contracts の ERC20 実装](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/token/ERC20/ERC20.sol)などで、エラー処理や拡張方法を確認できます。
 

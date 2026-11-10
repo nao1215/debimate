@@ -37,7 +37,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、ROC-AUC ほぼ 1.0 など）に達することが多いです。普段の精度感を 0.05〜0.10 上回るスコアが急に出たら、リークの有無を確認します。
 
-試しに、scikit-learn の `make_classification` で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで貼り付きます。
+試しに、[scikit-learn](https://scikit-learn.org/stable/) の [`make_classification`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html) の CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで貼り付きます。
 
 ```python
 import matplotlib.pyplot as plt
@@ -78,7 +78,7 @@ CV clean:  0.963 +/- 0.014
 CV leak:   1.000 +/- 0.000
 ```
 
-![CV score comparison](./data-leakage_cv_score.svg)
+{{< figure src="data-leakage_cv_score.svg" alt="5-fold CV の平均 Accuracy の棒グラフ。リーク列なしは 0.963、目的変数に小さなノイズを足した列を加えると 1.000 に張り付き、ばらつきも 0 になる" caption="リーク列の有無による CV スコアの差" align="center" >}}
 
 CV スコアだけでなく、[RandomForest](../random-forest/) の[特徴量重要度](/ml/ml/feature-importance/)を出すとリーク列に重要度が集中する傾向も観察できます。
 
@@ -98,7 +98,7 @@ plt.tight_layout()
 plt.savefig("data-leakage_importance.svg", bbox_inches="tight")
 ```
 
-![Feature importance concentrates on leak column](./data-leakage_importance.svg)
+{{< figure src="data-leakage_importance.svg" alt="RandomForest の特徴量重要度の棒グラフ。x0〜x9 の 10 本は最大でも 0.2 程度で、赤いリーク列だけが約 0.59 と重要度の過半を占める" caption="リーク列に集中する特徴量重要度" align="center" >}}
 
 スコアが急に改善した場合は、追加した特徴量が予測時点で取得できるかを確認します。
 
@@ -115,7 +115,7 @@ plt.savefig("data-leakage_importance.svg", bbox_inches="tight")
 
 問題は 3 つ目で、「確定後 72 時間以内の問い合わせ」は注文確定時刻にはまだ起きていない事象であり、運用時の推論コードには渡せない量です。加えて「問い合わせ」自体がキャンセル・返品の前兆シグナルなので目的変数と強く相関し、学習データ上ではモデルが超高精度に見えてしまいます。
 
-![Past window is OK, future window leaks](./data-leakage_timeline.svg)
+{{< figure src="data-leakage_timeline.svg" alt="注文確定の時点 t を中心にした時間軸。t の前 30 日の集計は t で観測できるので使ってよく、t から 72 時間後までの問い合わせ回数は t の時点では存在しない未来の情報なので目的変数を漏らす" caption="過去の窓は安全で、未来の窓はリークになる" align="center" >}}
 
 各特徴量について「予測したい時点 `t` に、その値は本当に観測可能か」を機械的に問うことで検出できます。すべての特徴量に as-of timestamp（その値が確定した時点）を明示し、`as_of <= t` を満たすものだけを使う設計が安全と言えます。
 
@@ -125,9 +125,9 @@ plt.savefig("data-leakage_importance.svg", bbox_inches="tight")
 
 ### 訓練・テスト汚染（train-test contamination）
 
-もう 1 系統のリークは、前処理パイプラインの組み方によって生まれます。[標準化](../standardization/) の `StandardScaler.fit` をデータ全体に適用してから train / test に分けると、テストデータの平均・分散の情報が train の前処理に紛れ込みます。同様に、特徴量選択や次元削減（[PCA](../pca/) など）、[欠損値処理](../missing-values/) の imputation 統計計算をデータ全体に対して先に行うと、テストの分布情報が漏れます。
+もう 1 系統のリークは、前処理パイプラインの組み方によって生まれます（scikit-learn の [Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html) にも同じ注意があります）。[標準化](../standardization/) の `StandardScaler.fit` をデータ全体に適用してから train / test に分けると、テストデータの平均・分散の情報が train の前処理に紛れ込みます。同様に、特徴量選択や次元削減（[PCA](../pca/) など）、[欠損値処理](../missing-values/) の imputation 統計計算をデータ全体に対して先に行うと、テストの分布情報が漏れます。
 
-特に分かりやすい例は「ランダムなラベル＋大量の無関係特徴量」で起きる現象です。真の信号が無いにもかかわらず、特徴量選択を分割前に実行すると CV Accuracy が偶然 0.7〜0.8 まで上がります。これは「全データに対して `y` と相関の高い列を 20 本選んだあとで CV」のため、選別の段階で `y` を使った情報がテスト fold にも染み込んでいるためと考えられます。
+特に分かりやすい例は「ランダムなラベル＋大量の無関係特徴量」で、[`SelectKBest`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html) による特徴量選択を使う時に起きる現象です。真の信号が無いにもかかわらず、特徴量選択を分割前に実行すると CV Accuracy が 0.8 近くまで上がります。これは「全データに対して `y` と相関の高い列を 20 本選んだあとで CV」の手順なので、選別の段階で `y` を使った情報がテスト fold にも染み込んでいるためと考えられます。
 
 ```python
 from sklearn.feature_selection import SelectKBest, f_classif
@@ -173,7 +173,7 @@ Wrong CV (contamination):  0.795
 Correct CV (pipeline):     0.510
 ```
 
-![Wrong way over-reports vs Pipeline correct way at chance level](./data-leakage_contamination.svg)
+{{< figure src="data-leakage_contamination.svg" alt="ランダムなラベルと 5000 本のノイズ特徴量での 5-fold CV Accuracy。分割前に特徴量選択した誤った手順は約 0.8、Pipeline で fold 内に閉じた手順は偶然の水準 0.5 の破線付近に留まる" caption="特徴量選択を分割前に行った時の CV の上振れ" align="center" >}}
 
 正解は chance level（ランダム予測の精度）である 0.5 付近である一方で、誤った手順では 0.8 付近まで上振れします。CV を「分割そのもの」だけで信頼するのではなく、「前処理を含めたパイプライン全体を fold ごとに閉じているか」までセットで確認する必要があります。
 
@@ -201,11 +201,11 @@ Correct CV (pipeline):     0.510
     - その値は推論時刻にも観測できるか（as-of timestamp が予測時点以前か）
     - その値は目的変数から派生していないか（過去の解約フラグ、過去のクレーム ID、結果由来の担当者割当てなど）
 2. 前処理を Pipeline 内に閉じ込める
-    - `StandardScaler`、`SelectKBest`、`PCA` のような fit 系操作は `Pipeline` に組み込み、`cross_val_score` / `GridSearchCV` と組み合わせる
+    - `StandardScaler`、`SelectKBest`、`PCA` のような fit 系操作は [`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) に組み込み、`cross_val_score` / `GridSearchCV` と組み合わせる
     - fit を学習 fold だけに閉じることで、テスト fold への情報の混入を防げる
 3. 時系列タスクでは時系列に合わせた CV を使う
-    - 通常の `KFold` ではなく `TimeSeriesSplit` を使い、未来データで過去を予測する漏れを排除する
-    - ラグ特徴量を作るときも、ラグ計算の起点を予測時点に揃える
+    - 通常の `KFold` ではなく [`TimeSeriesSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) を使い、未来データで過去を予測する漏れを排除する
+    - ラグ特徴量を作る時も、ラグ計算の起点を予測時点に揃える
 4. テストデータは最後の最後だけ触る
     - [ハイパーパラメータ](../hyperparameter/) 調整・特徴量選択は train + valid 内で完結させる
     - テストデータでのスコアを見ながら何度も意思決定するのも「テストへのリーク」になる
@@ -223,7 +223,7 @@ Correct CV (pipeline):     0.510
 - CV 結果の解釈: 高スコアが出た時に、特徴量や前処理から情報が漏れていないかを確認する
 - 本番監視: 訓練時と本番で精度差が大きい場合の原因分析の起点
 - データ受領時の確認: 受け取ったテーブルに「将来時点の集計列」が混じっていないかの監査
-- 競技 ML（Kaggle 等）: 不自然に高いスコアの上位解法に「データセット由来のリーク」が含まれることがあり、本番運用に持ち込めない解になりがち
+- 競技 ML（[Kaggle](https://www.kaggle.com/) 等）: 不自然に高いスコアの上位解法に「データセット由来のリーク」が含まれることがあり、本番運用に持ち込めない解になりがち
 
 CV の分割だけでなく、前処理の fit 対象と各特徴量の as-of timestamp も確認します。
 
@@ -234,5 +234,5 @@ CV の分割だけでなく、前処理の fit 対象と各特徴量の as-of ti
 - 「CV で評価しているからリークは起きない」とは限らない: 前処理を分割前に fit していれば CV を回しても情報が漏れる
 - 「目的変数と相関が高い特徴量を入れるとリーク」ではない: 強相関でも、推論時刻に観測可能で、目的変数から派生していなければリークではない（むしろ良い特徴量）
 - 「テスト精度が高ければ本番でも当たる」とは限らない: テストデータも訓練データと同じ前処理パイプラインを通過しているなら、その前処理に汚染がある時点でテスト精度も信頼できない
-- 「リークは個人開発の小さい問題」ではない: 胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 95% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
+- 「リークは個人開発の小さい問題」ではない: 胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 99.9% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
 - [過学習](../overfitting/) と同じ現象ではない: 過学習はモデルの複雑さが原因、データリークは特徴量・前処理の設計が原因。リークがあると過学習対策（正則化・early stopping）は効かない

@@ -8,7 +8,7 @@ weight: 14
 topics: ["Transaction / Wallet"]
 ---
 
-取引（transaction）は、EOA（Externally Owned Account、外部所有アカウント）が秘密鍵で署名した指示のデータです。[公式ドキュメント](https://ethereum.org/en/developers/docs/transactions/)も、取引はアカウントが暗号で署名して出す指示だと定義しています。送金も、コントラクト（コードを持つアカウント）の呼び出しも、コントラクトの作成も、この 1 つの形で表されます。
+[Ethereum](https://ethereum.org/) の取引（transaction）は、EOA（Externally Owned Account、外部所有アカウント）が秘密鍵で署名した指示のデータです。[公式ドキュメント](https://ethereum.org/en/developers/docs/transactions/)も、取引はアカウントが暗号で署名して出す指示だと定義しています。送金も、コントラクト（コードを持つアカウント）の呼び出しも、コントラクトの作成も、この 1 つの形で表されます。
 
 ウォレットの確認画面には、金額のほかに「ガスの上限」や「最大手数料」が表示されます。gas は実行の計算量を測る単位です。また、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなるためです。
 
@@ -50,7 +50,7 @@ flowchart LR
 
 コントラクトとは、アドレスの下にコードと storage（値を保存する領域）を持つアカウントです。取引の宛先がコードを実行するアカウントであれば、そのコードが EVM で実行されます。
 
-Bitcoin の取引は、消費する出力と作る出力を並べたデータで、検証に必要な手間が中身からほぼ決まります（[UTXO](../utxo/)）。Ethereum の取引は宛先のコードを動かせるため、何段階の処理になるのかがデータを見ただけでは分かりません。
+[Bitcoin](https://bitcoin.org/) の取引は、消費する出力と作る出力を並べたデータで、検証に必要な手間が中身からほぼ決まります（[UTXO](../utxo/)）。Ethereum の取引は宛先のコードを動かせるため、何段階の処理になるのかがデータを見ただけでは分かりません。
 
 素朴に「実行が終わるまで動かす」形にすると、終わらない処理を含む取引を 1 件流すだけで、全ノードの計算を占有できます。実行の量を測る単位が [gas](https://ethereum.org/en/developers/docs/gas/) です。
 
@@ -62,7 +62,7 @@ Bitcoin の取引は、消費する出力と作る出力を並べたデータで
 
 取引には複数の型があり、先頭 1 バイトで区別されます。以降は、仕様変更の提案である EIP（Ethereum Improvement Proposal）の 1 つ、[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) が定めた、手数料の上限を 2 つ書く型を中心の例にします。先頭バイトが 0x02 のこの型を Type 2 transaction と呼びます。
 
-扱う手数料は、実行に使う gas（execution gas）の分です。大きなデータを伴う取引のために EIP-4844 が足した blob gas とその手数料は扱いません。以下は、1 件の取引が持つ主な項目です。
+扱う手数料は、実行に使う gas（execution gas）の分です。大きなデータを伴う取引のために [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) が足した blob gas とその手数料は扱いません。以下は、1 件の取引が持つ主な項目です。
 
 | 項目 | 何を決めるか |
 | --- | --- |
@@ -79,7 +79,9 @@ Bitcoin の取引は、消費する出力と作る出力を並べたデータで
 
 nonce が何を防ぎ、どの範囲の順序を縛るのかは [Ethereum Account Model](../ethereum-account-model/) で扱っています。value と data は独立していて、`value` が 0 でも `data` を渡してコントラクトを呼べます。
 
-accessList は、列挙するだけで安くなる項目ではありません。列挙した分にも gas が掛かります。その代わりに、申告したアドレスと storage key は最初から触ったことのある扱い（warm）になり、実行中のアクセスが安く済みます。EIP-2930 にも、一覧に無い所へのアクセスは「[possible, but become more expensive](https://eips.ethereum.org/EIPS/eip-2930)」（可能。ただし、より高くつく）と書かれています。実行中に触らない項目まで並べると、申告の分だけ gas が増えます。
+accessList は、列挙するだけで安くなる項目ではありません。列挙した分にも gas が掛かります。その代わりに、申告したアドレスと storage key は最初から触ったことのある扱い（warm）になり、実行中のアクセスが安く済みます。
+
+EIP-2930 にも、一覧に無い所へのアクセスは「[possible, but become more expensive](https://eips.ethereum.org/EIPS/eip-2930)」（可能。ただし、より高くつく）と書かれています。実行中に触らない項目まで並べると、申告の分だけ gas が増えます。
 
 <br>
 
@@ -100,7 +102,7 @@ flowchart TD
 
 型はほかにもあります。legacy transaction は、maxFeePerGas と maxPriorityFeePerGas の代わりに gasPrice を 1 つ持ちます。chain ID を独立した項目としては持たず、含める場合は署名の中に埋め込みます。
 
-[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) の blob transaction は、blob と呼ばれる大きなデータを伴い、実行用の gas とは別に blob gas という単位で課金されます。
+EIP-4844 の blob transaction は、blob と呼ばれる大きなデータを伴い、実行用の gas とは別に blob gas という単位で課金されます。
 
 [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) の型もあります。EOA が指定したコントラクトのコードに自分の実行を委ねる委任（delegation）の仕組みです。この型の取引に載せた承認に署名した EOA は、送り主でなくても、以後コントラクトのようにコードを動かせます。
 
@@ -248,7 +250,9 @@ flowchart TD
 
 Bitcoin にはこの 2 段の区別が無く、検証を通らない取引はブロックに入らないだけです（[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/)）。Ethereum で実行の結果を読み取る先が、取引ごとに作られる取引レシート（receipt）です。
 
-プロトコルが定めるレシートの中身は 4 つです。[EIP-2718 には legacy receipt が `rlp([status, cumulativeGasUsed, logsBloom, logs])` と書かれています](https://eips.ethereum.org/EIPS/eip-2718)。状態コード、そのブロックでの累計の gas、logs bloom、ログです。typed transaction のレシートには、この 4 つの前に型のバイトが付きます。1 件が使った量はこの中に無く、前の取引の累計との差として求まります。
+プロトコルが定めるレシートの中身は 4 つです。[EIP-2718 には legacy receipt が `rlp([status, cumulativeGasUsed, logsBloom, logs])` と書かれています](https://eips.ethereum.org/EIPS/eip-2718)。状態コード、そのブロックでの累計の gas、logs bloom、ログです。
+
+typed transaction のレシートには、この 4 つの前に型のバイトが付きます。1 件が使った量はこの中に無く、前の取引の累計との差として求まります。
 
 ログはコントラクトが実行中に残す出来事の記録（例えば、トークンが送られた）で、アプリはこれを読んで結果を知ります。logs bloom は、中身を読まずに、あるアドレスや出来事のログが含まれ得るかを判定するための値です。
 
@@ -281,7 +285,7 @@ flowchart LR
 
 2016 年 2 月のゲーム King of the Ether Throne（新しい王が座を買うと、前の王に補償金が送られる）では、[中の送金の失敗が見落とされました](https://www.kingoftheether.com/postmortem.html)。
 
-補償金の送り先が Ethereum のウォレットアプリ Mist の作るコントラクト型のウォレットだった時、Solidity の `send` が渡す 2,300 gas では足りず、送金が失敗しています。コントラクトは結果を確かめずに処理を続けたため、取引は成功として進み、補償金は送り元のコントラクトに残りました。
+補償金の送り先が Ethereum のウォレットアプリ [Mist](https://github.com/ethereum/mist) の作るコントラクト型のウォレットだった時、[Solidity](https://soliditylang.org/) の `send` が渡す 2,300 gas では足りず、送金が失敗しています。コントラクトは結果を確かめずに処理を続けたため、取引は成功として進み、補償金は送り元のコントラクトに残りました。
 
 内側の失敗は `REVERT` ではなく gas 切れですが、呼び出し元が受け流せば取引が成功になる点は同じです。当時のレシートに status はありませんでしたが、今の規則なら 1 になります。
 

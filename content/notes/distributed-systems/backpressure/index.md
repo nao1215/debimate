@@ -217,9 +217,11 @@ block は、Producer が自分の速度を変えられる時に、何も失わ�
 
 {{< figure src="images/backpressure_flow_control.svg" alt="3 段の図。Push は Producer が作った分だけ Consumer に送り、Consumer の手前に要求が積み上がる。Pull は Consumer が fetch した分だけが届く。Credit-based は Consumer が request(n) で許可し、Producer は n 件までを送り、残りは Producer の手元で待つ" caption="Push・Pull・Credit-based の送る量の決め方" align="center" >}}
 
-Push は、Webhook（イベントを相手の URL に POST する仕組み）のように Producer が作った分だけ送る方式です。届くまでの遅延が小さい代わりに、Consumer の処理速度が生産速度を下回ると、超過分が Consumer 側に溜まります。[Apache Kafka](https://kafka.apache.org/42/design/design/) が Consumer に取りに行かせる Pull 型を選んだ理由の 1 つも、Push 型ではこの状態で Consumer が溢れることです。
+Push は、Webhook（イベントを相手の URL に POST する仕組み）のように Producer が作った分だけ送る方式です。届くまでの遅延が小さい代わりに、Consumer の処理速度が生産速度を下回ると、超過分が Consumer 側に溜まります。
 
-[Transactional Outbox](../transactional-outbox/) の relay も、outbox テーブルを自分の間隔で読みに行く Pull 型です。その代わりに、Pull 型ではデータが無い時も問い合わせを繰り返す無駄が生じます。Kafka は、データが届くまで要求を待たせておく long poll でこの無駄を避けています。
+[Apache Kafka](https://kafka.apache.org/42/design/design/) が Consumer に取りに行かせる Pull 型を選んだ理由の 1 つも、Push 型ではこの状態で Consumer が溢れることです。[Transactional Outbox](../transactional-outbox/) の relay も、outbox テーブルを自分の間隔で読みに行く Pull 型です。
+
+その代わりに、Pull 型ではデータが無い時も問い合わせを繰り返す無駄が生じます。Kafka は、データが届くまで要求を待たせておく long poll でこの無駄を避けています。
 
 Credit-based は、Push の速さを残したまま Pull と同じ上限を付ける方式です。[Reactive Streams](https://www.reactive-streams.org/) では、Subscriber が `Subscription.request(n)` で受け取れる件数を伝え、[仕様](https://github.com/reactive-streams/reactive-streams-jvm/blob/v1.0.4/README.md)のルール 1.1 で、Publisher が送る `onNext` の総数はそれまでに要求された総数以下と定めています。
 
@@ -271,7 +273,9 @@ sequenceDiagram
     Note over S: 同じ A を 3 つ<br/>抱えている
 ```
 
-呼び出し側から見ると、遅いだけのサーバーと止まったサーバーは区別が付きません（[Heartbeat](../heartbeat/) と同じ問題です）。呼び出し側がタイムアウトで諦めても、サーバーは 1 回目の要求の処理をやめるとは限りません。そのため、遅いサーバーほど同じ要求を重ねて抱え、さらに遅くなります。再試行で同じ処理が 2 回実行されても結果が壊れないようにする話は [Idempotency](../idempotency/) で説明しており、ここでは量の話だけをします。
+呼び出し側から見ると、遅いだけのサーバーと止まったサーバーは区別が付きません（[Heartbeat](../heartbeat/) と同じ問題です）。呼び出し側がタイムアウトで諦めても、サーバーは 1 回目の要求の処理をやめるとは限りません。そのため、遅いサーバーほど同じ要求を重ねて抱え、さらに遅くなります。
+
+再試行で同じ処理が 2 回実行されても結果が壊れないようにする話は [Idempotency](../idempotency/) で説明しており、ここでは量の話だけをします。
 
 再試行が複数の層で独立に行われると、回数は掛け算で増えます。次のコードは、最下層が失敗し続け、各層が下の層の失敗のたびに再試行する前提で、最下層に届く試行回数の最大値を計算します。
 

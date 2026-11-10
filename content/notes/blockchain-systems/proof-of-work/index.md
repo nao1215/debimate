@@ -13,7 +13,7 @@ proof of work（作業証明）は、条件を満たすハッシュ値の提示�
 
 Bitcoin のブロックは、取引の並びを全参加者で共有するための単位でした。誰かがその並びの末尾に追加する役を担う必要があるものの、Bitcoin には登録も許可も無く、役を任せる相手を選ぶ名簿が存在しません。
 
-Bitcoin は proof of work を使い、計算作業を競わせてブロックの追加を決めます。Bitcoin の設計を述べた[白書](https://bitcoin.org/bitcoin.pdf)は、この仕組みを Adam Back の Hashcash（電子メールの送信に少量の計算を課して大量送信を防ぐ提案）に似たものとして導入しています。
+Bitcoin は proof of work を使い、計算作業を競わせてブロックの追加を決めます。Bitcoin の設計を述べた[白書](https://bitcoin.org/bitcoin.pdf)は、この仕組みを Adam Back の [Hashcash](http://www.hashcash.org/papers/hashcash.pdf)（電子メールの送信に少量の計算を課して大量送信を防ぐ提案）に似たものとして導入しています。
 
 Bitcoin では、ブロックが有効な候補として受け入れられるには proof of work を満たす必要があります。ブロックの候補を作り、合格のハッシュを探す参加者をマイナー（miner）、この探索を採掘（マイニング）と呼びます。マイナーと他の参加者の関係を以下に示します。
 
@@ -104,14 +104,39 @@ target を半分にすれば合格の確率もほぼ半分に、必要な試行�
 
 上記の図のとおり、合格までの平均試行回数は k に対して指数的に増えます。一方で、検証はハッシュを 1 回実行するだけで済みます。
 
-図の値は平均で、1 回ごとの試行回数は大きくばらつきます。k = 16（平均 65,536 回）として、探索を 1,000 回繰り返しました。ヘッダに見立てた乱数の 76 バイトと 4 バイトの nonce に SHA-256 を 2 回適用し、計算には Python 3.14 の hashlib を使っています。合格までの試行回数は次の通りです。
+図の値は平均で、1 回ごとの試行回数は大きくばらつきます。k = 16（平均 65,536 回）として、探索を 1,000 回繰り返しました。ヘッダに見立てた乱数の 76 バイトと 4 バイトの nonce に SHA-256 を 2 回適用し、計算には Python 3.14 の hashlib を使っています。以下が実験コードの全体です（[lab/trials.py](lab/trials.py)）。
+
+```python
+"""Count trials until a double SHA-256 falls at or below target = 2^(256-k). No network access."""
+from hashlib import sha256
+import random
+import statistics
+import struct
+
+K, RUNS = 16, 1000
+target = 2 ** (256 - K) - 1  # about 2^(256-k), so the pass rate is 2^-k
+rng = random.Random(20260810)
+counts = []
+for _ in range(RUNS):
+    header76 = rng.randbytes(76)  # random stand-in for the first 76 bytes of a header
+    for nonce in range(2**32):
+        h = sha256(sha256(header76 + struct.pack('<I', nonce)).digest()).digest()
+        if int.from_bytes(h, 'little') <= target:
+            counts.append(nonce + 1)
+            break
+print(f'k={K} runs={RUNS} expected={2**K}')
+print(f'min={min(counts)} median={statistics.median(counts):.0f} '
+      f'mean={statistics.mean(counts):.0f} max={max(counts)}')
+```
+
+`python3 trials.py` の実行には、手元の PC で約 2 分かかりました。合格までの試行回数は次の通りです。
 
 ```text
 k=16 runs=1000 expected=65536
-min=41 median=43446 mean=61197 max=501305
+min=17 median=47838 mean=67314 max=501149
 ```
 
-最短は 41 回、最長は 50 万回を超え、平均の 7 倍以上掛かりました。合格したハッシュ値からは、41 回で当たったのか 50 万回掛かったのかを区別できず、最初の節で述べたとおり、ネットワークが数えるのは target から求めた期待作業量だけです。
+最短は 17 回、最長は 50 万回を超え、平均の 7 倍以上掛かりました。合格したハッシュ値からは、17 回で当たったのか 50 万回掛かったのかを区別できず、最初の節で述べたとおり、ネットワークが数えるのは target から求めた期待作業量だけです。
 
 ---
 

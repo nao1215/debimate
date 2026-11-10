@@ -110,7 +110,7 @@ COMMIT;
 
 ### relay が outbox を読む 2 つの方法
 
-outbox に溜まった行をブローカーに送る方法は、relay が何を読むかで 2 つに分かれます。Polling publisher は outbox テーブルを繰り返し読み、まだ送っていない行を見つけて発行します。Transaction log tailing は、DB が自分の永続化のために書いているトランザクションログを追い、outbox に挿入された各メッセージを発行します。
+outbox に溜まった行をブローカーに送る方法は、relay が何を読むかで 2 つに分かれます。[Polling publisher](https://microservices.io/patterns/data/polling-publisher.html) は outbox テーブルを繰り返し読み、まだ送っていない行を見つけて発行します。[Transaction log tailing](https://microservices.io/patterns/data/transaction-log-tailing.html) は、DB が自分の永続化のために書いているトランザクションログを追い、outbox に挿入された各メッセージを発行します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -127,11 +127,11 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、Transactional Outbox の解説は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。
+トランザクションログは、[WAL](../write-ahead-log/) のように更新を順に書き足していく記録です。仕組みは DB ごとに違い、Transaction log tailing の解説は MySQL の binlog、PostgreSQL の WAL、AWS DynamoDB の table streams を例に挙げています。
 
 DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Data Capture）と呼ばれ、Transaction log tailing はその 1 つです。
 
-Transactional Outbox の解説で挙げられている主な性質を整理すると、以下の通りです。
+2 つのパターンの解説で挙げられている主な性質を整理すると、以下の通りです。
 
 | 観点 | Polling publisher | Transaction log tailing |
 |---|---|---|

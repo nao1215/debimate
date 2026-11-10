@@ -9,13 +9,14 @@ wrapTables: true
 topics: ["Replication / Coordination"]
 ---
 
-Lease（リース）は、ある権利を期限付きで貸し出し、期限が過ぎたら自動的に失効させる仕組みです。貸す側は「これから 10 秒間、あなたがリーダーです」と伝え、借りた側は期限が来る前に更新を続けます。更新が途切れれば、誰の操作も無しに権利は消えます。
+Lease（リース）は、ある権利を期限付きで貸し出し、期限が過ぎたら自動的に失効させる仕組みです。貸す側は「これから 10 秒間、あなたがリーダーです」と伝え、借りた側は期限が来る前に更新を続けます。更新が途切れれば、誰の操作も無しに権利は消えます。Gray 氏と Cheriton 氏が [1989 年の論文](https://doi.org/10.1145/74850.74870)で、分散ファイルシステムのキャッシュの一貫性を保つ方法として提案しました。
 
 権利を取得したノードが停止すると、そのノードから権利を返却できません。停止とネットワークの遅延を外から区別できないため、Lease では期限が切れた時点で権利を失効させます。ここでは、[書き込みを 1 台に集約する構成](../leader-and-followers/)でのリーダーの座や、1 台だけが触って良い資源の使用権（ロック）を貸す用途を扱います。
 
 以下は、Node A と Node B が順に権利を借りてストレージに書き込む様子を時間に沿って並べた図です。帯が権利を持つ期間で、番号は後述の fencing token です。
 
 {{< figure src="images/lease_concept.svg" alt="Node A の lease（token 33）が切れた後に Node B が lease（token 34）を借りて書き込む。GC で止まっていた Node A は期限切れに気付かず token 33 で書き込み、token 34 を受け取っていたストレージに拒否される" caption="失効に気付かない Node A の書き込みが token で拒否される流れ" align="center" >}}
+
 権利を貸す側（Grantor）は権利の管理だけを担当し、ストレージのような保護対象への操作は借りる側（Holder）が行います。権利の貸し借りと実際の操作が別の経路を通るため、保護対象は「操作してきた相手が今も権利を持っているか」を知りません。上記の図のストレージは、番号の大小だけで遅れた書き込みを拒否しています。
 
 <br>
@@ -93,13 +94,14 @@ Lease の安全性（同じ時点に権利を持つ者が 2 人にならない�
 以下は、前節の起点のずれとこのマージンを 1 回の貸し出しの時間軸に並べた図です。
 
 {{< figure src="images/lease_margin.svg" alt="上段の Grantor は、Holder の要求を受けて応答した時点から黄土色の帯で貸し、期限の後に点線のマージンを置いてから次に貸す。下段の Holder は、要求を送った時点から青い帯で使い、期限より点線のマージンの分だけ早く手放す。手放してから次に貸すまでの灰色の区間が、誰も持たない空白" caption="起点のずれとマージンで生まれる、誰も持たない空白（目盛りは説明用）" align="center" >}}
+
 ---
 
 ### fencing token
 
 Lease は時計の仮定に加えて、Holder が保護対象を操作する時点で Lease がまだ有効であることにも頼っています。Holder が期限を確認した直後に GC で止まると、復帰後には期限を過ぎていても操作を続ける場合があります。
 
-分散 DB の HBase では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#ch_zkSessions)（Grantor の役を担う協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
+分散 DB の [HBase](https://hbase.apache.org/) では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#ch_zkSessions)（Grantor の役を担う協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
 
 [HBASE-7504](https://issues.apache.org/jira/browse/HBASE-7504) では、どのサーバーがどのデータを持つかを引く時の起点になる [-ROOT- テーブル](https://svn.apache.org/repos/asf/hbase/hbase.apache.org/trunk/0.94/book/arch.catalog.html)の担当サーバーが GC で約 229 秒止まり、その間にセッションが失効しました。
 
@@ -169,7 +171,7 @@ for fenced in (False, True):
 python3 lab/run.py
 ```
 
-[実行結果](lab/output.txt)は次のとおりです。
+[実行結果](lab/output.txt)は次の通りです。
 
 ```text
 [fencing=off]

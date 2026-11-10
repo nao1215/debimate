@@ -10,9 +10,9 @@ topics: ["MLOps"]
 
 実験管理（experiment tracking）は、機械学習モデルの学習を「再現可能な記録」として残す仕組みです。1 回の学習を「実験（experiment）」と捉え、そこに入った設定（hyperparameter、データセット、コードバージョン）、出てきた結果（metric、可視化、学習曲線）、副産物（学習済み weight、前処理後データ、評価レポート）を 1 セットで保存します。
 
-何百回も `train.py --lr 0.001` を回した記憶を頼りに「あのとき lr いくつだったっけ」を探す事態を避けるための運用基盤で、(1) 再現性、(2) モデル比較、(3) ステークホルダー説明、(4) 監査、の 4 つの目的を同時に達成します。代表的なツールに [MLflow](https://mlflow.org/)、[Weights & Biases](https://wandb.ai/)（W&B）、Neptune、Comet、TensorBoard、ClearML などがあります。
+何百回も `train.py --lr 0.001` を回した記憶を頼りに「あの時 lr はいくつだったか」を探す事態を避けるための運用基盤で、(1) 再現性、(2) モデル比較、(3) ステークホルダー説明、(4) 監査、の 4 つの目的を同時に達成します。代表的なツールに [MLflow](https://mlflow.org/)、[Weights & Biases](https://wandb.ai/)（W&B）、[Comet](https://www.comet.com/)、[TensorBoard](https://www.tensorflow.org/tensorboard)、[ClearML](https://clear.ml/) などがあります。以前よく名前の挙がった Neptune は、OpenAI による買収に伴い 2026 年 3 月に SaaS を[終了](https://docs.neptune.ai/transition_hub)しました。
 
-[ハイパーパラメータ](../../ml/hyperparameter/) 探索や [交差検証](../../ml/cross-validation/) と組み合わせると効果が大きく、ベイズ最適化や `Optuna` の study も実験管理ツールに保存できます。
+[ハイパーパラメータ](../../ml/hyperparameter/) 探索や [交差検証](../../ml/cross-validation/) と組み合わせると効果が大きく、ベイズ最適化や [Optuna](https://optuna.org/) の study も実験管理ツールに保存できます。
 
 ---
 
@@ -31,7 +31,7 @@ graph LR
     F --> H["Register best model<br/>→ Model Registry"]
 ```
 
-トラッキングサーバーは「全実験のメタデータ DB + アーティファクトストア」の組み合わせで、(1) リレーショナル DB に params/metrics、(2) S3 や MinIO に weights/plots をそれぞれ保存するのが典型です。各 run には一意の ID が振られ、Git の commit SHA、データのハッシュ、Docker イメージ、Python の `requirements.txt` まで紐付ける運用が標準となります。
+トラッキングサーバーは「全実験のメタデータ DB + アーティファクトストア」の組み合わせで、(1) リレーショナル DB に params/metrics、(2) S3 や MinIO に weights/plots をそれぞれ保存するのが典型です。各 run には一意の ID が振られ、Git の commit SHA、データのハッシュ、Docker イメージ、Python の `requirements.txt` まで紐付けておくと、後から環境を再現できます。
 
 ---
 
@@ -105,7 +105,7 @@ with mlflow.start_run(run_name="rf-baseline"):
     mlflow.set_tag("dataset", "sklearn.datasets.load_iris")
 ```
 
-手元の実行では accuracy が 0.947、f1_macro が 0.946 でした。Iris は 3 クラスなので、[`f1_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) を既定の `average="binary"` のまま呼ぶと ValueError で止まります。`average="macro"` はクラスごとの F1 を単純平均します。`skops_trusted_types` を外すと、MLflow 3 系の既定の保存形式である [skops](https://skops.readthedocs.io/) が RandomForest の内部型を拒み、保存の時点で例外になります。
+手元の実行では accuracy が 0.947、f1_macro が 0.946 でした。Iris は 3 クラスなので、[`f1_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) を既定の `average="binary"` のまま呼ぶと ValueError で止まります。`average="macro"` はクラスごとの F1 を単純平均します。`skops_trusted_types` を外すと、MLflow 3.18.0 の既定の保存形式（Databricks 以外）である [skops](https://skops.readthedocs.io/) が RandomForest の内部型を拒み、保存の時点で例外になります。
 
 `with mlflow.start_run()` の中で `log_*` を呼ぶと、ID が振られた 1 つの run にまとまります。チームではこれをトラッキングサーバーに送り、ダッシュボードで比較します。
 
@@ -141,7 +141,7 @@ fig.colorbar(im, ax=ax, label="val_acc")
 fig.savefig("experiment_sweep_heatmap.svg", bbox_inches="tight")
 ```
 
-![ハイパーパラメータ sweep のヒートマップ](./experiment_sweep_heatmap.svg)
+{{< figure src="experiment_sweep_heatmap.svg" alt="縦軸が learning_rate の 5 段階、横軸が batch_size の 5 段階のヒートマップ。色が val_acc を表し、lr=1e-3・batch_size=64 のマスが赤丸で囲まれ最良の 0.92。値は説明用の仮想結果" caption="ハイパーパラメータ探索の結果を並べたヒートマップ（仮想の 25 run）" align="center" >}}
 
 この仮想例では、赤丸の `lr=1e-3, batch_size=64` が最良です。色の濃淡は val_acc を表します。実データでは、各 run に `lr`、`batch_size`、`val_acc` を記録し、データ分割と乱数 seed も同時に比較します。
 
@@ -166,7 +166,7 @@ plt.legend()
 plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 ```
 
-![複数 run の学習曲線比較](./experiment_compare_runs.svg)
+{{< figure src="experiment_compare_runs.svg" alt="横軸 epoch、縦軸 val_acc に 4 つの仮想 run の学習曲線を重ねた図。run #23 が最も高い値へ伸び、run #27 は 50 epoch でも伸び切っていない" caption="設定の異なる 4 run の学習曲線（仮想値）" align="center" >}}
 
 この仮想例では、run #23（緑）が最も高い val_acc に収束し、run #27（青）は 50 epoch 時点で伸び切っていません。実際の曲線では、過学習を判断するために train/validation の両方、データ分割、停止条件も記録します。
 
@@ -176,7 +176,7 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 
 4 個以上のハイパーパラメータを同時に変えると、heatmap や散布図では限界が来ます。Parallel coordinates plot は多次元探索を 1 枚にまとめる定番の可視化で、[W&B のダッシュボード](https://docs.wandb.ai/models/app/features/panels/parallel-coordinates)でも標準機能になっています。次の図も、読み方を示すために乱数で作った仮想の 40 run です（[生成元](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/experiment-tracking_gen.py)）。
 
-![Parallel coordinates plot で 4 次元探索を一望](./experiment_parallel_coords.svg)
+{{< figure src="experiment_parallel_coords.svg" alt="lr、batch_size、dropout、weight_decay の 4 本の縦軸を 40 本の線が結ぶ平行座標プロット。線の色が val_acc を表し、上位 5 run の太線は lr と batch_size の軸で狭い範囲に集まる" caption="4 つのハイパーパラメータと val_acc の平行座標プロット（仮想の 40 run）" align="center" >}}
 
 各線が 1 つの run で、色が val_acc を表し、上位 5 run を太線にしています。各軸の目盛りは元の値です。この仮想例の上位 5 run は、`lr` が 6e-4〜3.5e-3、`batch_size` が 64 か 128 に集まる一方で、`dropout` は 0.09〜0.38、`weight_decay` は 1e-5〜7e-4 に散らばっています。ここから「`lr` と `batch_size` は効きが大きく、残り 2 つは小さそう」と仮説を立て、次の探索範囲を絞ります。
 
@@ -185,7 +185,7 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 ### 数学での使いどころ
 
 - 統計的仮説検定との対応: A/B テスト的に「設定 A が設定 B より有意に良いか」を [仮説検定](../../math/hypothesis-test/) で評価
-- ベイズ最適化: ガウス過程による獲得関数の更新で、過去の run から次の有望候補を選ぶ
+- ベイズ最適化: 過去の run にガウス過程などの代理モデルを当てはめ、獲得関数で次の有望候補を選ぶ
 - メタ学習: 過去実験の結果を「メタ訓練データ」として扱い、新タスクの初期 hyperparameter を予測
 - 多目的最適化: Pareto 最適性の議論（精度 vs 学習時間など複数の指標）
 
@@ -205,8 +205,8 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 ツール選び:
 
 - 個人 / 小規模チーム: MLflow（OSS、self-host 可能）、TensorBoard（深層学習特化）
-- 中規模チーム: Weights & Biases（無料枠あり、UI が秀逸）、Neptune、Comet
-- 大規模・企業: Vertex AI Experiments、SageMaker Experiments、Azure ML、Databricks MLflow
+- 中規模チーム: Weights & Biases（無料枠あり）、Comet
+- 大規模・企業: [Vertex AI Experiments](https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments)、[SageMaker AI の MLflow](https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow.html)、[Azure Machine Learning の MLflow 連携](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-track-experiments-mlflow)、[Databricks の MLflow](https://docs.databricks.com/aws/en/mlflow/)。AWS は以前の SageMaker Experiments を Studio Classic 向けの機能とし、MLflow への移行を案内しています（2026 年 11 月時点）
 
 ---
 
@@ -214,7 +214,7 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 
 - 1 行 1 メトリックで全部 print してログファイルに頼る: run をまたいだ比較・検索ができなくなる。最低限 MLflow を入れる
 - params だけログして artifacts を残さない: モデル本体が再現できなければ意味が薄い
-- 環境（requirements / Docker image）を残さない: 「同じコードで違う結果」が起きたとき原因究明できない
+- 環境（requirements / Docker image）を残さない: 「同じコードで違う結果」が起きた時に原因を調べられない
 - データセット version を tag しない: データが上書きされると過去 run の再現が不可能になる
 - 巨大なファイルを毎回 artifact に保存: ストレージコストが爆発。weights は最良 run だけ残す等の運用ルールを決める
 - 実験名がカオス（"test1", "final", "final_v2"）: 命名規約（`{date}_{algo}_{purpose}`）を最初に決める

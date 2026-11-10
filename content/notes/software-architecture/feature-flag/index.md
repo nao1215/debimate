@@ -17,7 +17,9 @@ Feature Flag を使うと、コードのデプロイと機能の公開を別々�
 
 {{< figure src="images/feature-flag_concept.svg" alt="同じビルドに旧決済と新決済の両方が入っている。flag が Off なら全ユーザーが旧決済に、On なら全ユーザーが新決済に届く" caption="flag で切り替える、1 つのビルドに入った旧決済と新決済" align="center" >}}
 
-Off の分岐にこれまでの実装を置く方法は、Pete Hodgson 氏の「[Feature Toggles (aka Feature Flags)](https://martinfowler.com/articles/feature-toggles.html)」でも推奨されています。Off で既存の処理を選ぶようにしておくと、問題が起きた時に戻す処理が明確になります。ただし、共通コードの変更も影響し得るため、Off 側も新しいビルドで動作確認が必要です。検証では、本番で使う設定と、問題が起きた時に切り戻す設定を重点的に確認します。
+Off の分岐にこれまでの実装を置く方法は、Pete Hodgson 氏の「[Feature Toggles (aka Feature Flags)](https://martinfowler.com/articles/feature-toggles.html)」でも推奨されています。Off で既存の処理を選ぶようにしておくと、問題が起きた時に戻す処理が明確になります。
+
+ただし、共通コードの変更も影響し得るため、Off 側も新しいビルドで動作確認が必要です。検証では、本番で使う設定と、問題が起きた時に切り戻す設定を重点的に確認します。
 
 <br>
 
@@ -140,7 +142,9 @@ flowchart LR
 
 ### OpenFeature の評価 API
 
-Toggle Point や Toggle Router は設計上の役割であり、API の仕様ではありません。[OpenFeature の評価 API](https://openfeature.dev/specification/sections/flag-evaluation/) は、flag 管理サービスの提供会社に依存しない共通の呼び出し方法を定めています。共通の API を使えば、flag 管理サービスを変える時にも呼び出し側を維持しやすくなります。ただし、flag の設定や評価ルール、対応するデータ型まで自動的に移行されるわけではありません。
+Toggle Point や Toggle Router は設計上の役割であり、API の仕様ではありません。[OpenFeature の評価 API](https://openfeature.dev/specification/sections/flag-evaluation/) は、flag 管理サービスの提供会社に依存しない共通の呼び出し方法を定めています。
+
+共通の API を使えば、flag 管理サービスを変える時にも呼び出し側を維持しやすくなります。ただし、flag の設定や評価ルール、対応するデータ型まで自動的に移行されるわけではありません。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

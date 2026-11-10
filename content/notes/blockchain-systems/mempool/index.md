@@ -62,7 +62,9 @@ flowchart LR
 
 ### consensus rule と policy の違い
 
-有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。Bitcoin の代表的な実装である [Bitcoin Core](https://github.com/bitcoin/bitcoin) では、policy は consensus rule に加えて未確認の取引に課す検証規則で、ノードごとに設定できます（[policy のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)）。ブロックに入った取引の判定に使われるのは、consensus rule だけです。
+有効性を決める規則は consensus rule（合意規則）、受け入れと中継の方針は policy（ポリシー）と呼ばれます。
+
+[Bitcoin](https://bitcoin.org/) の代表的な実装である [Bitcoin Core](https://github.com/bitcoin/bitcoin) では、policy は consensus rule に加えて未確認の取引に課す検証規則で、ノードごとに設定できます（[policy のドキュメント](https://github.com/bitcoin/bitcoin/blob/master/doc/policy/README.md)）。ブロックに入った取引の判定に使われるのは、consensus rule だけです。
 
 2 つの違いを整理すると、以下の通りです。
 

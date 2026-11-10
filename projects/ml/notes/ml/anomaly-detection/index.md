@@ -80,7 +80,7 @@ Elliptic Envelope: 異常と判定 23 点（本物の異常 12 点、誤検知 1
 最寄りの正常点まで 0.15 未満の異常点: 4
 ```
 
-![4 つの異常検知アルゴリズムの判定領域](./anomaly_methods_compare.png)
+{{< figure src="anomaly_methods_compare.png" alt="2 つの正常クラスタと散らばった異常 20 点に 4 手法を当てた 2×2 の散布図。Isolation Forest は 2 つのクラスタを角ばった 1 つの領域で囲み、LOF は点ごとに判定するので領域が無く、One-Class SVM はクラスタの間や右下の異常点の周りにも正常の領域を作り、Elliptic Envelope は 2 つのクラスタを 1 つの細長い楕円で囲んで両端の異常を取りこぼす" caption="4 つの異常検知手法の判定結果" align="center" >}}
 
 緑の丸が本物の異常、赤い × が異常と判定した点、薄い青が正常と判定する領域です（LOF は点ごとの判定なので領域なし）。
 
@@ -96,7 +96,7 @@ One-Class SVM は `nu=0.07` でも 30 点を異常とし、右下の異常点 2 
 
 [Isolation Forest](https://doi.org/10.1109/ICDM.2008.17)（iForest）は、特徴量と閾値をランダムに選んでデータを 2 つに分け、点が 1 つになるまで分割を繰り返します。離れた異常点は少ない分割で孤立し、密集した正常点は何度も分けないと孤立しません。
 
-![Isolation Forest の概念図](./anomaly_isolation_concept.svg)
+{{< figure src="anomaly_isolation_concept.svg" alt="原点付近に集まった正常点と、右上に 1 つだけ離れた異常点（赤い星）の散布図。x1 = 1.5 の縦線 1 本で異常点だけが片側に分かれる" caption="分割 1 本で孤立する異常点" align="center" >}}
 
 上の図では、x1 = 1.5 の分割 1 本で異常点（赤い星）が孤立します。この線は手で選んだ一例なので、実際の木で分割の回数を数えます。
 
@@ -159,7 +159,7 @@ contamination=0.07: 異常と判定 23 点（本物の異常 14 点、誤検知 
 contamination=0.15: 異常と判定 48 点（本物の異常 16 点、誤検知 32 点）
 ```
 
-![スコアの分布と 3 つの contamination のしきい値](./anomaly_threshold_tuning.svg)
+{{< figure src="anomaly_threshold_tuning.svg" alt="横軸を Isolation Forest のスコア（高いほど正常）とした 2 つのヒストグラム。正常点の分布は右側に集まり、本物の異常は左側に広がる。contamination 0.03、0.07、0.15 に対応する 3 本の縦線が左から順に並び、右の線ほど正常点の分布に食い込む" caption="スコアの分布と 3 つのしきい値" align="center" >}}
 
 青が正常、赤が本物の異常のスコアの分布で、縦線より左を異常と判定します。
 
@@ -216,7 +216,7 @@ for name, z in [("元の系列", rolling_z(s)), ("残差", rolling_z(resid))]:
   |z| > 3 の時刻 = [120, 159, 200, 303, 320, 403, 420, 470, 481]
 ```
 
-![時系列の rolling z-score 異常検知](./anomaly_time_series.svg)
+{{< figure src="anomaly_time_series.svg" alt="上段は右肩上がりで周期 50 の波を持つ系列と、+8 を足した 4 か所、元の系列で |z| > 3 になった点。下段は元の系列の |z| と残差の |z| を重ねた折れ線で、残差の |z| だけが 4 か所の異常で 6 を超えて大きく跳ねる" caption="元の系列と残差の rolling z-score" align="center" >}}
 
 上段は元の系列と |z| > 3 になった点、下段は 2 通りの |z| で、緑の点線が異常を足した時刻です。
 

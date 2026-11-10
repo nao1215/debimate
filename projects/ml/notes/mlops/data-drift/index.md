@@ -45,7 +45,7 @@ rng = np.random.default_rng(0)
 train_x = rng.normal(loc=30, scale=10, size=2000).clip(0, 100)
 prod_x = rng.normal(loc=50, scale=10, size=2000).clip(0, 100)
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 3.5), sharex=True, sharey=True)
+fig, axes = plt.subplots(2, 1, figsize=(6, 7), sharex=True, sharey=True)
 axes[0].hist(train_x, bins=30, color="#7aa6c2", edgecolor="white")
 axes[0].set_title("Train data: age distribution")
 axes[0].set_xlabel("age"); axes[0].set_ylabel("count")
@@ -57,7 +57,7 @@ plt.tight_layout()
 plt.savefig("data-drift_covariate.svg", bbox_inches="tight")
 ```
 
-![Covariate shift example](./data-drift_covariate.svg)
+{{< figure src="data-drift_covariate.svg" alt="上は学習データの年齢分布で 30 歳前後に山があり、下は 3 か月後の本番データで 50 歳前後に山が移っている。どちらも NumPy で生成した合成データで、正解 y は生成していない" caption="学習時と本番の年齢分布（合成データ）" align="center" >}}
 
 この図は [NumPy](https://numpy.org/) で作った合成の入力分布です。正解 y は生成していないため、図だけでは `P(y|x)` が不変であることや、予測性能への影響は確認できません。Covariate shift と呼ぶには、その条件も必要です。
 
@@ -74,7 +74,7 @@ x_common = rng.uniform(0, 10, 200)
 y_t0 = 2.0 * x_common + rng.normal(0, 1, 200)
 y_t1 = -1.5 * x_common + 20 + rng.normal(0, 1, 200)
 
-fig, axes = plt.subplots(1, 2, figsize=(9, 3.5), sharex=True, sharey=True)
+fig, axes = plt.subplots(2, 1, figsize=(6, 7), sharex=True, sharey=True)
 axes[0].scatter(x_common, y_t0, alpha=0.5, color="#7aa6c2", s=15)
 axes[0].set_title("Train (t=0): y is positively related to x")
 axes[0].set_xlabel("feature x"); axes[0].set_ylabel("target y")
@@ -86,7 +86,7 @@ plt.tight_layout()
 plt.savefig("data-drift_concept.svg", bbox_inches="tight")
 ```
 
-![Concept drift example](./data-drift_concept.svg)
+{{< figure src="data-drift_concept.svg" alt="同じ x の集合に対し、上の学習時は x が大きいほど y が大きく、下の本番では x が大きいほど y が小さい散布図" caption="入力は同じで x と y の関係だけが反転した例" align="center" >}}
 
 ユーザー行動の変化（流行・季節性・社会変化）、競合サービスの動き、業界規制の変更などが原因になりやすいです。例えば、レコメンドモデルで「以前は同ジャンル過去購入が強いシグナルだったところ、最近は価格帯が効くようになった」というケースは典型的な concept drift です。
 
@@ -137,12 +137,12 @@ Concept drift は、入力の統計量だけでは検知できません。予測
     - パイプライン化が前提（学習ジョブ・評価・デプロイの自動化）
 2. しきい値起動の再学習
     - 分布の変化量や性能低下が定めた条件を満たしたら、[再学習パイプライン](../retraining-pipeline/)を起動する
-    - 再学習がコスト高のときに有効
+    - 再学習のコストが高い時に有効
 3. 学習データの更新
     - sliding window（直近 N 日分だけ）で学習データを切り替える
     - 時間減衰重み（古いサンプルほど重みを下げる）で学習する
 4. オンライン学習
-    - 1 サンプルずつ逐次的にモデルを更新する手法（[SGDClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html) の `partial_fit` など）
+    - 届いたデータの小さなまとまりごとにモデルを逐次更新する手法（[SGDClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html) の `partial_fit` など）
     - 連続的に変化するデータには有効。ただし、誤ったラベルや一時的な偏りを取り込み続けないよう、更新後の性能を監視する
 5. アンサンブル切り替え
     - 複数モデル（古いモデル・新しいモデル）を運用し、状況に応じてゲートで重みを切り替える
@@ -162,7 +162,7 @@ for w in [4, 8, 12, 16, 20]:
     retrained[w:] = retrained[w:] + delta + rng.normal(0, 0.003,
                                                        size=len(retrained) - w)
 
-fig, ax = plt.subplots(figsize=(7, 4))
+fig, ax = plt.subplots(figsize=(6, 5))
 ax.plot(weeks, baseline, color="#e15759", marker="o", markersize=4,
         label="Assumed decline (illustration)")
 ax.plot(weeks, retrained, color="#59a14f", marker="s", markersize=4,
@@ -176,7 +176,7 @@ plt.tight_layout()
 plt.savefig("data-drift_decay.svg", bbox_inches="tight")
 ```
 
-![予測性能の低下と定期的な回復を仮定した模式図。再学習の実測ではない](./data-drift_decay.svg)
+{{< figure src="data-drift_decay.svg" alt="赤線は 24 週で precision が 0.85 から下がり続ける仮定の値、緑線は 4 週ごとに 0.85 へ戻す仮定の値、灰色の破線は説明用の閾値 0.70。モデルの学習・評価の実測ではない" caption="性能の低下と再学習による回復を仮定した模式図" align="center" >}}
 
 図の 0.70 も説明用の閾値です。再学習した候補は、学習に使っていない最近のデータで現行モデルと比較します。改善しなければ現行モデルを維持し、ラベルや特徴量の収集方法を見直す場合もあります。[Matplotlib](https://matplotlib.org/) を含む[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/data-drift_gen.py)は GitHub で確認できます。
 

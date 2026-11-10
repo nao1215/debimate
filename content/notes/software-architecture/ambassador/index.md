@@ -8,7 +8,7 @@ weight: 6
 topics: ["Container Patterns"]
 ---
 
-Ambassador とは、アプリケーションのコンテナと同じ実行単位に置かれ、外部との通信を代わりに引き受ける補助コンテナです。実行単位（同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まり。Kubernetes の Pod や Amazon ECS の Task）と実行基盤（コンテナの配置とライフサイクルを管理する基盤）は、[Sidecar](../sidecar/) と同じ意味で使います。
+Ambassador とは、アプリケーションのコンテナと同じ実行単位に置かれ、外部との通信を代わりに引き受ける補助コンテナです。実行単位（同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まり。Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の [Task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html)）と実行基盤（コンテナの配置とライフサイクルを管理する基盤）は、[Sidecar](../sidecar/) と同じ意味で使います。
 
 通信を代わりに受け取って転送するものをプロキシと呼び、Ambassador はその 1 つです。例えば、アプリケーションは localhost の 1 つの宛先へ接続し、実際の接続先が何台あるのか、どれに振り分けるのかは Ambassador が判断します。
 
@@ -82,7 +82,7 @@ twemproxy が行うのは複数台への振り分けで、master の切り替わ
 
 2 つのコンテナはネットワーク名前空間（コンテナごとに分けられたネットワークの区画）を共有し、同じ IP アドレスを持ちます。そのため、アプリケーションは localhost に接続するだけでプロキシに届き、宛先を探す仕組みは必要ありません。宛先を探すとは、接続先の IP アドレスとポートを実行時に調べることです。
 
-ネットワークを共有するかどうかは、実行基盤によって異なります。[Kubernetes の Pod](https://kubernetes.io/docs/concepts/workloads/pods/) は、同じ Pod の中のコンテナがネットワーク名前空間を共有するので、localhost がそのまま使えます。どのコンテナ実行基盤でも共有されるわけではありません。以下は、共有する場合としない場合の比較です。
+ネットワークを共有するかどうかは、実行基盤によって異なります。Kubernetes の Pod は、同じ Pod の中のコンテナがネットワーク名前空間を共有するので、localhost がそのまま使えます。どのコンテナ実行基盤でも共有されるわけではありません。以下は、共有する場合としない場合の比較です。
 
 {{< figure src="images/ambassador_network.svg" alt="左は Kubernetes の Pod で、main と ambassador が IP アドレス 1 つのネットワークの区画に入り、localhost で届く。右は ECS の bridge モードで、main と ambassador が 172.17.0.2 と 172.17.0.3 の別々の区画に入り、main は相手のアドレスを探して持つ必要がある" caption="ネットワークの区画を共有する場合としない場合" align="center" >}}
 

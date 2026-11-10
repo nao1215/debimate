@@ -35,7 +35,7 @@ Filter は候補を手早く減らせますが、列どうしの相互作用を�
 
 ### Filter 法 1: VarianceThreshold
 
-最も軽量な手法です。分散がほぼゼロ（= 全サンプルでほぼ同じ値）の特徴量はモデルへの寄与が薄いので捨てます。
+[`VarianceThreshold`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.VarianceThreshold.html) は最も軽量な手法です。分散がほぼゼロ（= 全サンプルでほぼ同じ値）の特徴量はモデルへの寄与が薄いので捨てます。
 
 ```python
 import numpy as np
@@ -62,7 +62,7 @@ print(f"shape: {X.shape} -> {X_reduced.shape}")
 shape: (1000, 5) -> (1000, 2)
 ```
 
-![分散の小さい特徴量を閾値で除外する](./featsel_variance_threshold.svg)
+{{< figure src="featsel_variance_threshold.svg" alt="5 列の分散を対数軸で並べた横棒グラフ。分散 0.0000、0.0001、0.0096 の 3 列が閾値 0.05 の線より下で赤く除外され、分散 1.0173 と 24.1339 の 2 列が緑で残る" caption="VarianceThreshold で閾値未満の列を除外する" align="center" >}}
 
 赤い棒（分散 < 0.05）が除外される特徴量、緑が保持される特徴量です。3 列目は標準偏差 0.1 なので分散は約 0.01 で、閾値 0.05 で落ちます。
 
@@ -72,11 +72,11 @@ shape: (1000, 5) -> (1000, 2)
 
 ### Filter 法 2: SelectKBest（F 検定・相互情報量）
 
-統計的な指標で「目的変数との関係が強い」上位 `k` 個を残します。代表的なスコアは次の通りです。
+[`SelectKBest`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html) は、統計的な指標で「目的変数との関係が強い」上位 `k` 個を残します。代表的なスコアは次の通りです。
 
-- ANOVA F 値（`f_classif`）: 分類でクラス間とクラス内の平均差を分散比で見る単変量検定。特徴量単独での有用性を測る
-- 相互情報量（`mutual_info_classif`）: 非線形依存も含めた一般的な依存性
-- カイ二乗（`chi2`）: 非負特徴量とカテゴリ目的変数（テキスト分類で頻出）
+- ANOVA F 値（[`f_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html)）: 分類でクラス間とクラス内の平均差を分散比で見る単変量検定。特徴量単独での有用性を測る
+- 相互情報量（[`mutual_info_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_classif.html)）: 非線形依存も含めた一般的な依存性
+- カイ二乗（[`chi2`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html)）: 非負特徴量とカテゴリ目的変数（テキスト分類で頻出）
 
 データは [make_classification](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作ります。20 列のうち 5 列が予測に効く informative、2 列が informative の線形結合である redundant、残り 13 列がノイズです。
 
@@ -103,7 +103,7 @@ top-5 by MI:     [10  7  3 13 12]
 column 1: F = 0.11, MI = 0.000
 ```
 
-![F 検定と相互情報量の正規化スコア。横軸の inf が informative、red が redundant](./featsel_filter_scores.svg)
+{{< figure src="featsel_filter_scores.svg" alt="20 列の F 検定と相互情報量の正規化スコアを、スコア順に並べた棒グラフ。横軸のラベルの inf が informative、red が redundant。上位は列 10、7、17、12 と redundant の 3、13 で、informative の列 1 はどちらのスコアもほぼ 0" caption="F 検定と相互情報量による列ごとのスコア" align="center" >}}
 
 F 検定（青）と相互情報量（MI、橙）は、どちらも特徴量を 1 列ずつ単独で採点します。上位 5 列には redundant が F で 1 列、MI で 2 列入りました。redundant は informative と同じ情報を持つので、単独で見ると高い点が付きます。
 
@@ -134,7 +134,7 @@ for cols in ([7, 10, 12, 17], [1, 7, 10, 12, 17]):
 
 ### Wrapper 法: RFE（recursive feature elimination）
 
-RFE は「全特徴量で学習 → 最も重要度の低い特徴量を 1 つ削除 → 残りで再学習」を繰り返し、最終的に指定した数の特徴量に絞ります。`RFECV` は [交差検証](../cross-validation/)（CV, cross-validation）と組み合わせて「精度が最大になる特徴量数」を自動探索します。
+RFE（[`RFE`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFE.html)、[Guyon et al., 2002](https://doi.org/10.1023/A:1012487302797)）は「全特徴量で学習 → 最も重要度の低い特徴量を 1 つ削除 → 残りで再学習」を繰り返し、最終的に指定した数の特徴量に絞ります。[`RFECV`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.RFECV.html) は [交差検証](../cross-validation/)（CV, cross-validation）と組み合わせて「精度が最大になる特徴量数」を自動探索します。
 
 ```python
 from sklearn.feature_selection import RFECV
@@ -153,7 +153,7 @@ optimal n_features: 5
 selected: [ 3 10 13 15 17]
 ```
 
-![RFE-CV: 特徴量数とスコアの関係](./featsel_rfe_cv.svg)
+{{< figure src="featsel_rfe_cv.svg" alt="横軸が残した特徴量数、縦軸が 5-fold CV 正解率の折れ線と標準偏差の帯。1〜3 列では 0.79〜0.80、4 列以上は 0.809〜0.815 でほぼ平らで、最大の 5 列に赤い破線が引かれている" caption="RFECV の特徴量数と CV 正解率" align="center" >}}
 
 横軸が残した特徴量数、縦軸が 5-fold CV 正解率の平均（青の帯は[標準偏差](/ml/math/stddev/)）です。赤い破線は平均が最大の 5 列（0.815）ですが、4 列以上はどれも 0.809〜0.815 で、差は標準偏差（0.015〜0.021）より小さい値でした。5 列が 20 列より確かに良いとは言えません。
 
@@ -165,7 +165,7 @@ RFE は特徴量を減らすたびに学習と評価を繰り返すため、特�
 
 ### Embedded 法: Lasso と Tree importance
 
-学習自体が特徴量選択を兼ねるアプローチです。代表は Lasso（L1 [正則化](../regularization/)）と木系モデルの組み込み重要度です。
+学習自体が特徴量選択を兼ねるアプローチです。代表は [Lasso](https://doi.org/10.1111/j.2517-6161.1996.tb02080.x)（L1 [正則化](../regularization/)）と木系モデルの組み込み重要度です。
 
 - Lasso: L1 正則化で、効きの弱い特徴量の係数をちょうど 0 にする
 - Tree importance: 分割で使われなかった特徴量は重要度 0
@@ -195,7 +195,7 @@ Lasso C=0.03: non-zero [ 0  1  3  4  5  7 11]
 RF top-12: [10  0 11  1  4  7  9  8  6  3  5  2]
 ```
 
-![Lasso（C = 0.5 と 0.03）の係数と RF 重要度。緑が informative、橙が redundant、灰色がノイズ](./featsel_embedded_compare.svg)
+{{< figure src="featsel_embedded_compare.svg" alt="上から 3 段の棒グラフ。C=0.5 の Lasso は 30 列中 23 列に係数が残り、C=0.03 では 7 列だけになる。下段のランダムフォレストの重要度は informative と redundant の列が高く、ノイズ列も小さいがちょうど 0 にはならない。緑が informative、橙が redundant、灰色がノイズ" caption="Lasso の係数とランダムフォレストの重要度" align="center" >}}
 
 C は正則化の強さの逆数で、小さいほど係数を 0 に寄せます。C = 0.5 では 30 列中 23 列が残り、ノイズ 18 列のうち 16 列に小さな係数が付きました。C = 0.03 にするとノイズは全て 0 になり、残りは 7 列です。
 
@@ -203,7 +203,7 @@ C は正則化の強さの逆数で、小さいほど係数を 0 に寄せます
 
 RF の重要度は上位 12 列が informative と redundant で占められ、最上位は redundant の列 10 です。ノイズ 18 列にも 0.008〜0.013 の値が付き、ちょうど 0 になる列はありませんでした。重要度を見れば効く列とノイズは分かれますが、redundant を informative と区別できません。
 
-線形関係が支配的で係数を解釈したいなら Lasso、非線形や相互作用が効くなら木の重要度が向きます。どちらも `SelectFromModel(LassoCV())` や `SelectFromModel(RandomForestClassifier(), threshold="median")` のように包めば、しきい値で自動的に列を切れます。
+線形関係が支配的で係数を解釈したいなら Lasso、非線形や相互作用が効くなら木の重要度が向きます。どちらも [`SelectFromModel`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFromModel.html)`(`[`LassoCV`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html)`())` や `SelectFromModel(RandomForestClassifier(), threshold="median")` のように包めば、しきい値で自動的に列を切れます。
 
 ---
 
@@ -249,13 +249,13 @@ X_reduced = pd.DataFrame(X).drop(columns=to_drop)
 - 推論のレイテンシやデータ収集のコストを下げる: 効かない列の計算と収集を止める
 - 特徴量エンジニアリングの反復: 追加した列が予測に役立つかを評価する
 
-scikit-learn には上記の他に、列を 1 つずつ足す・引く `SequentialFeatureSelector` もあります。
+scikit-learn には上記の他に、列を 1 つずつ足す・引く [`SequentialFeatureSelector`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SequentialFeatureSelector.html) もあります。
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- データリーク: テストデータも含めて選択すると、テストの情報が訓練に流れ込む（[data leakage](../data-leakage/)）。`Pipeline` に入れて CV の fold ごとに選択する
+- データリーク: テストデータも含めて選択すると、テストの情報が訓練に流れ込む（[data leakage](../data-leakage/)）。[`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) に入れて CV の fold ごとに選択する
 - Filter・相関・Lasso の結果をそのまま正解の列と見なす: 本記事の例では、どれも組み合わせで効く列や相関した列を取り違えた
 - 木の組み込み重要度を信じすぎる: 値の種類が多い列ほど重要度が高く出る（[特徴量重要度](../feature-importance/) 参照）
 - カテゴリ変数をダミー化してから列単位で選ぶ: カテゴリの一部の列だけ残る。グループ単位で扱う

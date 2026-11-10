@@ -118,7 +118,7 @@ sequenceDiagram
 
 ### メッセージを変えた時の検証結果
 
-署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。
+署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式。[FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final) で規格化）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。
 
 これは署名の性質を確認する実験で、Bitcoin の取引形式や署名対象の組み立てを再現するものではありません。
 
@@ -200,15 +200,15 @@ Assertions: PASS
 
 元の文字列は検証を通り、1 バイトだけ変えた `pay Bob 90` と、別の公開鍵での検証は失敗しました。署名を公開しても、金額を変更したメッセージの承認としては使えません。
 
-一方で、元のメッセージと署名をもう一度渡すと、再び成功します。署名の検証は、そのメッセージを以前に処理したかどうかを記憶しません。支払いの二重実行を防ぐには、Bitcoin なら参照先の [UTXO](../utxo/) が未使用かを確認し、Ethereum なら [nonce](../ethereum-account-model/) を確認するなど、状態に基づく検査も必要です。
+一方で、元のメッセージと署名をもう一度渡すと、再び成功します。署名の検証は、そのメッセージを以前に処理したかどうかを記憶しません。支払いの二重実行を防ぐには、Bitcoin なら参照先の [UTXO](../utxo/) が未使用かを確認し、[Ethereum](https://ethereum.org/) なら [nonce](../ethereum-account-model/) を確認するなど、状態に基づく検査も必要です。
 
 ---
 
 ### Bitcoin での署名 - ECDSA と secp256k1
 
-Bitcoin の署名に使われる ECDSA の計算には、楕円曲線を使います。ECDSA は、署名ごとに使う秘密の値（nonce）を混ぜて計算します。[乱数](/notes/security/random-number/)から生成する方法に加え、秘密鍵とメッセージから決定的に導出する方法もあります。この nonce は、Ethereum の取引に付ける通し番号とは別物です。
+Bitcoin の署名に使われる ECDSA の計算には、楕円曲線を使います。ECDSA は、署名ごとに使う秘密の値（nonce）を混ぜて計算します。[乱数](/notes/security/random-number/)から生成する方法に加え、秘密鍵とメッセージから決定的に導出する方法（[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)）もあります。この nonce は、Ethereum の取引に付ける通し番号とは別物です。
 
-楕円曲線には複数の規格があり、Bitcoin は [secp256k1](https://en.bitcoin.it/wiki/Secp256k1) という曲線を使います。秘密鍵は 256 ビットの整数で、この曲線の上の演算で公開鍵を導出します。
+楕円曲線には複数の規格があり、Bitcoin は [secp256k1](https://www.secg.org/sec2-v2.pdf)（SEC 2 で定義）という曲線を使います。秘密鍵は 256 ビットの整数で、この曲線の上の演算で公開鍵を導出します。
 
 <br>
 
@@ -249,7 +249,7 @@ flowchart LR
 
 署名の値だけが変わっても検証は合格し続けるため、署名を含めて txid を計算すると、取引の内容が同じまま識別子だけが変わります。[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で説明した transaction malleability の一因がこれで、witness が txid の計算から外されている背景になっています。
 
-なお、2021 年の Taproot という仕様変更で、ECDSA に加えて Schnorr 署名という別の署名方式も使えるようになりました。役割は同じ「使う資格の証明」で、方式の違いは本記事では扱いません。
+なお、2021 年の [Taproot](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki) という仕様変更で、ECDSA に加えて [Schnorr 署名](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)という別の署名方式も使えるようになりました。役割は同じ「使う資格の証明」で、方式の違いは本記事では扱いません。
 
 ---
 

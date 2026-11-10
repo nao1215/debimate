@@ -11,7 +11,7 @@ cardImage: "backprop_vanishing.svg"
 
 誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて損失の勾配を効率的に計算するアルゴリズムです。[偏微分と勾配](../../math/partial-derivative-gradient/) で扱った連鎖律（chain rule）を計算グラフに沿って適用します。ネットワークの深さや幅によらず、全パラメータの勾配を `O(forward の計算量)` で求められます。
 
-backprop 自体は学習則ではなく、`勾配を計算するだけ` の手続きです。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や Adam に渡してパラメータを更新する、という分業構造になっています。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなります。
+backprop 自体は学習則ではなく、勾配を計算するだけの手続きです。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や [Adam](https://arxiv.org/abs/1412.6980) に渡してパラメータを更新する、という分業構造になっています。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなります。
 
 ---
 
@@ -74,7 +74,7 @@ L = 0.25
 ∂L/∂w2 = -5.0, ∂L/∂b2 = -1.0
 ```
 
-![小さな NN の forward と backward の全体](./backprop_tiny_network.svg)
+{{< figure src="backprop_tiny_network.svg" alt="x=2、w1=3、b1=-1 から z1=5、a1=5、z2=4.5、L=0.25 へ左から右に進む計算グラフ。各ノードの右上に赤で勾配があり、∂L/∂z2=-1、∂L/∂w2=-5、∂L/∂b2=-1、∂L/∂a1=-0.5、∂L/∂z1=-0.5、∂L/∂w1=-1、∂L/∂b1=-0.5 が右から左へ順に求まる" caption="2 層 NN の forward と backward" align="center" >}}
 
 青い矢印が forward で、各ノードの中に値、右上に赤で勾配 `∂L/∂node` を書いています。backward は L から左へ進み、各ノードの勾配を 1 つ右のノードの勾配から求めます。たとえば `∂L/∂w2` と `∂L/∂a1` はどちらも `∂L/∂z2 = -1` を使うので、z2 より右の計算を繰り返さずに済みます。
 
@@ -88,7 +88,7 @@ L = 0.25
 
 と「各段階の微分の積」になります。これが連鎖律で、深いネットでは層の数だけ微分を掛け合わせることに対応します。
 
-![連鎖律: 各段階の微分を順に掛け合わせる](./backprop_chain_rule.svg)
+{{< figure src="backprop_chain_rule.svg" alt="x → h = sin(x) → g = h² → f = exp(g) → L = log(f) と左から右へ進む青い矢印と、その下を右から左へ戻る赤い矢印。赤い矢印には 1/f、exp(g)、2h、cos(x) の各段階の微分が書かれ、最後に 4 つの積が ∂L/∂x になる" caption="連鎖律による微分の掛け合わせ" align="center" >}}
 
 青の forward 矢印が値の計算、赤の backward 矢印が勾配の伝播です。各段階で必要なのは forward で求めた値とその段階の微分だけなので、深さ N に対して N 回の掛け算で全勾配が取れます。
 
@@ -102,7 +102,7 @@ L = 0.25
 
 複雑な NN を「計算グラフ（computational graph）」として捉えると、backward の方向が「グラフを逆向きに辿る」だけになります。
 
-![Forward は左→右、backward は右→左](./backprop_computational_graph.svg)
+{{< figure src="backprop_computational_graph.svg" alt="入力 x1、x2 から重み w11〜w22 で隠れノード h1、h2 へ、重み v1、v2 で出力 ŷ へ進み、正解 y と比べて損失 L を出す計算グラフ。forward は左から右へ h、ŷ、L を計算し、backward は右から左へ連鎖律で重みの勾配を伝える" caption="計算グラフ上の forward と backward" align="center" >}}
 
 各ノードは「演算」、エッジは「データの流れ」を表します。forward では入力から損失まで値を計算して保持し、backward では損失から始めて各ノードの勾配を上流に伝播していきます。
 
@@ -189,7 +189,7 @@ tanh    10層目=3.00e+00  1層目=2.52e+00  1層目/10層目=8.4e-01
 relu    10層目=1.44e-01  1層目=1.97e-01  1層目/10層目=1.4e+00
 ```
 
-![10 層の全結合ネットで、各層の勾配の大きさを 10 層目との比で表した図](./backprop_vanishing.svg)
+{{< figure src="backprop_vanishing.svg" alt="横軸を層の番号 1〜10（1 が入力側）、縦軸を対数目盛で 10 層目との勾配の比とした 3 本の折れ線。tanh と relu は全層で 1 付近に留まり、sigmoid は入力側へ進むほど直線的に下がって 1 層目で 10 のマイナス 6 乗付近になる" caption="初期化直後の層ごとの勾配の大きさ" align="center" >}}
 
 図は各層の勾配を 10 層目（出力側）との比で表しています。sigmoid は入力側へ 1 層進むごとにおよそ 5 分の 1 になり、1 層目では 10 層目の `5.4e-07` 倍しか残りません。
 
@@ -212,7 +212,7 @@ seed を 1〜3 に変えても、sigmoid の比は `4e-07`〜`6e-07` に収ま�
 
 ### Forward / backward のメモリと計算量
 
-backprop の計算量は forward と同じオーダーですが、全層の中間値を保持する分だけメモリが大きくなります。深いネットほどメモリを消費する主因はここです。
+backprop の計算量は forward と同じオーダーですが、全層の中間値を保持する分だけメモリが大きくなります。深いネットほどメモリを消費する主因はここです。以下の表の N は層の数です。
 
 | 量 | forward だけ | backprop |
 |---|---|---|

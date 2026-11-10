@@ -58,7 +58,9 @@ flowchart TB
 
 ### Domain Event が必要な理由
 
-Aggregate は、内部の不変条件（例えば、引き当て数が在庫数を超えないという、常に成り立つべき規則）を保つ単位です。Vaughn Vernon 氏が 2011 年に発表した [Effective Aggregate Design Part I](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf) には、「適切に設計された Bounded Context は、あらゆる場合において 1 トランザクションにつき 1 つの Aggregate インスタンスだけを変更する」とあります。同じ論文は、この原則が経験則（rule of thumb）で、ほとんどの場合に目指すべき目標だとも添えています。
+Aggregate は、内部の不変条件（例えば、引き当て数が在庫数を超えないという、常に成り立つべき規則）を保つ単位です。Vaughn Vernon 氏が 2011 年に発表した [Effective Aggregate Design Part I](https://dddcommunity.org/wp-content/uploads/files/pdf_articles/Vernon_2011_1.pdf) には、「適切に設計された Bounded Context は、あらゆる場合において 1 トランザクションにつき 1 つの Aggregate インスタンスだけを変更する」とあります。
+
+同じ論文は、この原則が経験則（rule of thumb）で、ほとんどの場合に目指すべき目標だとも添えています。
 
 原則を外して 2 つの Aggregate を 1 つのトランザクションで更新すると、次のようなコードになります。注文の確定と在庫の引き当てを同時に行う実装です。
 
@@ -133,7 +135,7 @@ sequenceDiagram
 名前は過去形にします。何を載せるかは、受信側が自分の処理を完結できる分を目安にします。
 
 ```go
-// DomainEvent は、種類名を答えられる物を Domain Event として扱うための
+// DomainEvent は、種類名を答えられるものを Domain Event として扱うための
 // インターフェースです。配送先には Go の型が無いため、種類は文字列で運びます。
 type DomainEvent interface {
 	Name() string
@@ -205,7 +207,7 @@ func (o *Order) PullEvents() []DomainEvent {
 
 どちらの問題も、DB へのコミットと、イベントを受信側に渡す操作（ハンドラの呼び出しや、メッセージを預かって受信側に配るメッセージブローカーへの送信）が別々である限り避けられません。
 
-保存が成功する場合でも、コミットの前に配ると受信側が先に動くことがあります。Ruby のアプリケーションが登録したジョブ（後で実行する処理）を別プロセスで実行する [Sidekiq](https://github.com/sidekiq/sidekiq/wiki/Problems-and-Troubleshooting) は、ジョブがコミットより先に実行されるほど速いので、トランザクションの中でジョブを登録する（本記事のイベントの配送に当たる）と、ジョブがまだコミットされていない行を読みに行き、指定した ID の行が見つからないというエラーで失敗することがあります。
+保存が成功する場合でも、コミットの前に配ると受信側が先に動くことがあります。Ruby のアプリケーションが登録したジョブ（後で実行する処理）を別プロセスで実行する [Sidekiq](https://github.com/sidekiq/sidekiq/wiki/Problems-and-Troubleshooting) が、その例です。Sidekiq はジョブをコミットより先に実行するほど速いので、トランザクションの中でジョブを登録する（本記事のイベントの配送に当たる）と、ジョブがまだコミットされていない行を読みに行き、指定した ID の行が見つからないというエラーで失敗することがあります。
 
 直し方の 1 つは、登録をコミットの後に行うことです。ただし、これは先に挙げた最小の構成と同じで、コミットの直後に落ちるとジョブが消えます。
 
@@ -242,7 +244,9 @@ outbox テーブルに入るのは、以下のような行です。
 | 1 | e1 | order.confirmed | `{"order_id":"o-1", ...}` | 2026-08-07T10:00:00Z | 2026-08-07T10:00:03Z |
 | 2 | e2 | order.confirmed | `{"order_id":"o-2", ...}` | 2026-08-07T10:00:01Z | NULL |
 
-行を追記するのは Repository の `Save` です。`Order` の状態を書いた後、`PullEvents` で取り出したイベントを 1 件ずつ、同じトランザクションの中で outbox に書きます。`payload` には `EventID` を含むイベントの中身を JSON で入れます。送り先には Go の型が無いからです。outbox は配送を取りこぼさないためのテーブルで、イベントの履歴として設計されたものではありません。
+行を追記するのは Repository の `Save` です。`Order` の状態を書いた後、`PullEvents` で取り出したイベントを 1 件ずつ、同じトランザクションの中で outbox に書きます。`payload` には `EventID` を含むイベントの中身を JSON で入れます。送り先には Go の型が無いからです。
+
+outbox は配送を取りこぼさないためのテーブルで、イベントの履歴として設計されたものではありません。
 
 `sent_at` が `NULL` の行が未送信で、relay は次のコードでその行を古い順に送ります。
 

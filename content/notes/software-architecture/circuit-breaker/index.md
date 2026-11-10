@@ -297,7 +297,7 @@ timeout は、ブレーカーが失敗を知るまでの時間の上限です。
 
 Retry（失敗した呼び出しをやり直すこと）は、ブレーカーとの位置関係で効き方が変わります。
 
-Resilience4j を Java のフレームワーク Spring Boot から使う場合、[既定の順序](https://resilience4j.readme.io/docs/getting-started-3)は `Retry ( CircuitBreaker ( RateLimiter ( TimeLimiter ( Bulkhead ( Function ) ) ) ) )` で、Retry が一番外側です。
+Resilience4j を Java のフレームワーク [Spring Boot](https://spring.io/projects/spring-boot) から使う場合、[既定の順序](https://resilience4j.readme.io/docs/getting-started-3)は `Retry ( CircuitBreaker ( RateLimiter ( TimeLimiter ( Bulkhead ( Function ) ) ) ) )` で、Retry が一番外側です。
 
 以下は、実験の 6 つの構成で、下流が黙っていた間に処理できた要求 B と、下流に届いた呼び出しを並べた図です。下の 3 本が Retry を含む構成です。
 
@@ -313,7 +313,7 @@ Retry だけでブレーカーの無い構成では、処理できた要求 B �
 
 呼び出しが何段も重なる構成では、各段の Retry が掛け算になります。5 段の各段で 3 回試すと、最下段の DB への負荷は `3^5 = 243` 倍です（[Amazon Builders' Library](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)）。
 
-ブレーカーは、下流が処理できる速さに送る量を合わせる [Backpressure](/notes/distributed-systems/backpressure/) や、同時に実行する呼び出しの数に上限を置く Bulkhead の代わりにはなりません。
+ブレーカーは、下流が処理できる速さに送る量を合わせる [Backpressure](/notes/distributed-systems/backpressure/) や、同時に実行する呼び出しの数に上限を置く [Bulkhead](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead) の代わりにはなりません。
 
 ---
 

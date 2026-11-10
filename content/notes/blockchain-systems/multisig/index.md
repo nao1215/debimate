@@ -58,7 +58,9 @@ Bitcoin のマルチシグは、出力に付ける条件を [Bitcoin Script](../
 2 <公開鍵A> <公開鍵B> <公開鍵C> 3 OP_CHECKMULTISIG
 ```
 
-先頭の 2 が m、末尾の 3 が n です。使う側は、先頭にダミー（空のバイト列）を置き、続けて m 個の署名を積みます。OP_CHECKMULTISIG は n、公開鍵 n 個、m、署名 m 個を取り出した後、もう 1 個余分に取り出します。初期の実装の不具合がそのまま規則として残ったもので、[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/v32.1/src/script/interpreter.cpp#L1203-L1212)にも「A bug causes CHECKMULTISIG to consume one extra argument」（不具合で 1 個余分に引数を消費する）というコメントがあります。
+先頭の 2 が m、末尾の 3 が n です。使う側は、先頭にダミー（空のバイト列）を置き、続けて m 個の署名を積みます。
+
+OP_CHECKMULTISIG は n、公開鍵 n 個、m、署名 m 個を取り出した後、もう 1 個余分に取り出します。初期の実装の不具合がそのまま規則として残ったもので、[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/v32.1/src/script/interpreter.cpp#L1203-L1212)にも「A bug causes CHECKMULTISIG to consume one extra argument」（不具合で 1 個余分に引数を消費する）というコメントがあります。
 
 | 取り出す順 | 値 | 意味 |
 | --- | --- | --- |
@@ -78,7 +80,9 @@ Bitcoin のマルチシグは、出力に付ける条件を [Bitcoin Script](../
 
 公開鍵 A・B・C に対して署名を B、A の順に積むと、最後に積んだ A の署名が公開鍵 C と B を飛ばしてしまい、B の署名に使える公開鍵が残らずに失敗します。
 
-この条件をそのまま出力に書くと、支払う側が公開鍵 3 個を含む長い条件を扱うことになります。そこで、条件のハッシュ値だけを出力に書き、使う時に条件の本体（redeemScript）を出す [P2SH](../bitcoin-script/) が使われます。P2WSH（Pay to Witness Script Hash）は、同じ考え方を SegWit（Segregated Witness。署名などを witness という別の領域に分けた 2017 年の仕様変更）に合わせた形式です。[BIP-141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) で、出力には条件（witnessScript）の 32 バイトの [SHA-256](/notes/security/sha-256/) を書き、条件の本体と署名は witness に置きます。
+この条件をそのまま出力に書くと、支払う側が公開鍵 3 個を含む長い条件を扱うことになります。そこで、条件のハッシュ値だけを出力に書き、使う時に条件の本体（redeemScript）を出す [P2SH](../bitcoin-script/) が使われます。
+
+P2WSH（Pay to Witness Script Hash）は、同じ考え方を SegWit（Segregated Witness。署名などを witness という別の領域に分けた 2017 年の仕様変更）に合わせた形式です。[BIP-141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) で、出力には条件（witnessScript）の 32 バイトの [SHA-256](/notes/security/sha-256/) を書き、条件の本体と署名は witness に置きます。
 
 ---
 
@@ -86,7 +90,9 @@ Bitcoin のマルチシグは、出力に付ける条件を [Bitcoin Script](../
 
 [Bitcoin Core](https://bitcoincore.org/) 32.1 の regtest（手元だけで動く検証用のチェーン）で、署名が 1 個では本当に通らないのか、並びを逆にすると何で失敗するのかを確かめました。コンテナはネットワークに繋がず、鍵は使い捨てのウォレットで作っています。Bitcoin Core の公式の配布物は実行ファイルなので、[配布元](https://bitcoincore.org/bin/bitcoin-core-32.1/)から取得して SHA-256 を照合しました。
 
-3 個のウォレット a・b・c から公開鍵を 1 個ずつ集め、`wsh(multi(2,a,b,c))` という [descriptor](https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki)（出力の条件を表す記法）で 2-of-3 の P2WSH を作ります。署名の受け渡しには、署名前の取引と途中の署名を運ぶ [PSBT](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki) を使います。RPC の流れは Bitcoin Core の [multisig-tutorial](https://github.com/bitcoin/bitcoin/blob/v32.1/doc/multisig-tutorial.md) と同じです。ただし tutorial は公開鍵を並べ替える `sortedmulti` を使い、本記事は並びを書いた通りに保つ `multi` を使っています。
+3 個のウォレット a・b・c から公開鍵を 1 個ずつ集め、`wsh(multi(2,a,b,c))` という [descriptor](https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki)（出力の条件を表す記法）で 2-of-3 の P2WSH を作ります。
+
+署名の受け渡しには、署名前の取引と途中の署名を運ぶ [PSBT](https://github.com/bitcoin/bips/blob/master/bip-0174.mediawiki) を使います。RPC の流れは Bitcoin Core の [multisig-tutorial](https://github.com/bitcoin/bitcoin/blob/v32.1/doc/multisig-tutorial.md) と同じです。ただし tutorial は公開鍵を並べ替える `sortedmulti` を使い、本記事は並びを書いた通りに保つ `multi` を使っています。
 
 正しく署名した取引の witness を組み替え、各組み合わせをブロックに入れようとした時の判定を記録しました。要点は次の部分です。
 
@@ -406,7 +412,9 @@ SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,
 
 ### anvil で Safe を動かす
 
-Ethereum の開発ツール群 [Foundry](https://getfoundry.sh/) の anvil（手元だけで動く Ethereum のノード）に、2-of-3 の Safe を作りました。所有者は EOA 2 個と、ERC-1271 を実装した学習用のコントラクト `StudySigner` 1 個です。Safe は [safe-smart-account v1.5.0](https://github.com/safe-fndn/safe-smart-account/tree/v1.5.0)（LGPL-3.0-only）をそのままコンパイルしています。鍵は anvil の既定のテスト用の鍵だけで、公開ネットワークには繋いでいません。`StudySigner` は本記事のために書いたもので、監査を受けていません。
+Ethereum の開発ツール群 [Foundry](https://getfoundry.sh/) の anvil（手元だけで動く Ethereum のノード）に、2-of-3 の Safe を作りました。所有者は EOA 2 個と、ERC-1271 を実装した学習用のコントラクト `StudySigner` 1 個です。
+
+Safe は [safe-smart-account v1.5.0](https://github.com/safe-fndn/safe-smart-account/tree/v1.5.0)（LGPL-3.0-only）をそのままコンパイルしています。鍵は anvil の既定のテスト用の鍵だけで、公開ネットワークには繋いでいません。`StudySigner` は本記事のために書いたもので、監査を受けていません。
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -640,7 +648,9 @@ after approve(hash)      -> status 1, nonce now 2
 
 ### MPC・しきい値署名との違い
 
-MPC（Multi-Party Computation）を使うしきい値署名（threshold signature）では、1 本の秘密鍵を作らずに、鍵の断片（share）だけを参加者が持ちます。署名する時も断片を 1 か所に集めず、参加者が計算をやり取りして 1 個の署名を作ります。チェーンに出るのは普通の 1 個の公開鍵と 1 個の署名で、MuSig2 と同じく、マルチシグかどうかはチェーンから分かりません。[Shamir's Secret Sharing](/notes/security/shamir-secret-sharing/) も鍵を断片に分けますが、使う時には断片を集めて鍵を復元します。しきい値署名は、鍵を復元せずに署名を作る点が違います。
+MPC（Multi-Party Computation）を使うしきい値署名（threshold signature）では、1 本の秘密鍵を作らずに、鍵の断片（share）だけを参加者が持ちます。署名する時も断片を 1 か所に集めず、参加者が計算をやり取りして 1 個の署名を作ります。チェーンに出るのは普通の 1 個の公開鍵と 1 個の署名で、MuSig2 と同じく、マルチシグかどうかはチェーンから分かりません。
+
+[Shamir's Secret Sharing](/notes/security/shamir-secret-sharing/) も鍵を断片に分けますが、使う時には断片を集めて鍵を復元します。しきい値署名は、鍵を復元せずに署名を作る点が違います。
 
 MuSig2 との違いは、鍵の作り方です。MuSig2 では各自が独立に作った鍵の公開鍵を集約するため、全員の部分署名が必要な n-of-n になります。しきい値署名では 1 本の鍵の断片を配るので、m 人分の断片で署名できます。断片は参加者が協力して作る方法（DKG）のほか、配布者が鍵を作って分ける方法もあり、後者では一度は鍵の全体が存在します。比べると以下のようになります。
 
@@ -659,7 +669,9 @@ MuSig2 との違いは、鍵の作り方です。MuSig2 では各自が独立に
 
 m 個の署名を要求しても、署名者の全員が同じ偽の内容に署名すれば、検査は通ります。署名の数が守るのは鍵を盗まれる場合で、何に署名したかの確認は守りません。2025 年 2 月の [Bybit の事件](../wallet/#bybitsafe-の承認処理の乗っ取り)は、この例です。
 
-Safe の所有者が署名するのは 32 バイトのハッシュです。実験では、同じ宛先・金額のまま `operation` を 0 から 1（delegatecall）に変えると、ハッシュは `0xcb35…` から `0x48bb…` に変わりました。ハッシュの見た目からは、どちらが危険な取引かを判断できません。内容を読めないまま承認すること（blind signing）を避けるには、ハードウェアウォレットの画面で宛先・金額・`operation`・nonce を読める形で確かめるか、別の端末で内容からハッシュを計算し直して照合します（例: [safe-tx-hashes-util](https://github.com/pcaversaccio/safe-tx-hashes-util)）。
+Safe の所有者が署名するのは 32 バイトのハッシュです。実験では、同じ宛先・金額のまま `operation` を 0 から 1（delegatecall）に変えると、ハッシュは `0xcb35…` から `0x48bb…` に変わりました。ハッシュの見た目からは、どちらが危険な取引かを判断できません。
+
+内容を読めないまま承認すること（blind signing）を避けるには、ハードウェアウォレットの画面で宛先・金額・`operation`・nonce を読める形で確かめるか、別の端末で内容からハッシュを計算し直して照合します（例: [safe-tx-hashes-util](https://github.com/pcaversaccio/safe-tx-hashes-util)）。
 
 <br>
 

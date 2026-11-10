@@ -85,7 +85,7 @@ P(x) = [0.3 0.3 0.4]
 P(y) = [0.4 0.6]
 ```
 
-![Joint distribution with marginals on the edges](./joint-marginal-conditional_discrete.svg)
+{{< figure src="joint-marginal-conditional_discrete.svg" alt="雲量 3 段階と雨の有無の 6 マスのヒートマップ。上端の緑のバーが列の和 P(y)、右端の赤のバーが行の和 P(x)" caption="同時分布と、その端に描いた周辺分布" align="center" >}}
 
 中央のヒートマップ 6 マスが同時分布 `P(x, y)` で、すべての値を足すと 1.0 になります。上端の緑のバーは「各列を縦に足し上げて得た `P(y)`」、右端の赤のバーは「各行を横に足し上げて得た `P(x)`」です。図の端（margin）に合計を書くため、marginal（周辺）と呼びます。
 
@@ -139,7 +139,7 @@ P(y | clouds=mid) = [0.27 0.73]
 P(y | clouds=high) = [0.75 0.25]
 ```
 
-![Conditional distributions sliced from the joint](./joint-marginal-conditional_conditional.svg)
+{{< figure src="joint-marginal-conditional_conditional.svg" alt="雲量が少・中・多の 3 つの棒グラフ。雨が降る確率は 0.07、0.27、0.75 と上がる" caption="同時分布の各行を正規化した条件付き分布" align="center" >}}
 
 雲量が多い時に雨が降る確率は 75%、雲量が少ない時は 7% です。分類器の [`predict_proba`](https://scikit-learn.org/stable/glossary.html#term-predict_proba) が出すスコアは、`P(y=1 | x)`（入力 `x` が与えられた時、ラベルが 1 である確率）の推定値です。
 
@@ -174,7 +174,7 @@ fig.suptitle("Continuous joint and marginals (correlated 2D Gaussian)")
 plt.savefig("joint-marginal-conditional_continuous.svg", bbox_inches="tight")
 ```
 
-![Continuous joint and marginals](./joint-marginal-conditional_continuous.svg)
+{{< figure src="joint-marginal-conditional_continuous.svg" alt="相関 0.7 の 2 次元正規分布から引いた 1000 点の散布図。上端に x、右端に y のヒストグラム" caption="2 次元正規分布の同時分布と周辺分布" align="center" >}}
 
 中央の散布図が同時分布 `P(x, y)` のサンプル可視化で、上端と右端のヒストグラムがそれぞれ `P(x)` と `P(y)` の周辺分布です。連続の場合、条件付き分布 `P(y|x=a)` は「`x=a` 付近の縦の細い帯に入る点だけ取り出した分布」に対応します。`x` と `y` に [相関](../correlation/) があるため、`x` が大きい領域では `y` も大きめ、という関係が見えます。
 
@@ -208,7 +208,7 @@ x≈+0.0: E[y|x] ≈ +0.02  (theory: +0.00)
 x≈+1.5: E[y|x] ≈ +1.03  (theory: +1.05)
 ```
 
-![同時分布から x の値ごとに条件付き分布 P(y|x) を取り出す](./joint-marginal-conditional_slicing.svg)
+{{< figure src="joint-marginal-conditional_slicing.svg" alt="左の散布図に x ≈ -1.5、0、+1.5 の 3 本の色帯。右は各帯に入った点の y のヒストグラムで、x が大きい帯ほど右に寄る" caption="縦の帯で切り出した条件付き分布 P(y|x)" align="center" >}}
 
 左の 3 本の色帯が `x ≈ -1.5`, `0`, `+1.5` 付近の範囲で、帯の中の `y` だけを集めたのが右のヒストグラムです。`x` が大きくなると `P(y|x)` の中心も右へ動きます。理論値の `0.7c` は、相関 0.7・分散 1 の 2 次元正規分布で `E[y|x=c] = 0.7c` になることから来ています。
 
@@ -238,6 +238,7 @@ for ax, (title, xv, yv) in zip(axes, panels):
     print(f"{title:<40s} r = {r:+.2f}")
 for c in [0.0, 1.5]:
     band = np.abs(nl_x - c) < 0.25
+    axes[2].axvspan(c - 0.25, c + 0.25, alpha=0.2, color="#e15759")
     print(f"nonlinear: E[y | x≈{c:.1f}] = {nl_y[band].mean():.2f}")
 plt.savefig("joint-marginal-conditional_independence.svg", bbox_inches="tight")
 ```
@@ -252,7 +253,7 @@ nonlinear: E[y | x≈0.0] = 0.04
 nonlinear: E[y | x≈1.5] = 2.13
 ```
 
-![左から独立（円形）、線形の従属（楕円）、y = x^2 の非線形の従属（放物線）。右端は r がほぼ 0 でも従属している](./joint-marginal-conditional_independence.svg)
+{{< figure src="joint-marginal-conditional_independence.svg" alt="左から独立（円形）、線形の従属（楕円）、y = x^2 の非線形の従属（放物線）。右端は r がほぼ 0 でも従属しており、x ≈ 0 と x ≈ 1.5 の帯を赤く塗っている" caption="独立・線形の従属・非線形の従属の散布図" align="center" >}}
 
 左の独立な散布図は円形に近く、どの `x` の帯を切っても中の `y` の分布はほぼ同じです。中央の線形の従属は右上がりの楕円に伸び、`x` が大きい帯ほど `y` も大きくなります。
 
@@ -272,7 +273,7 @@ nonlinear: E[y | x≈1.5] = 2.13
 
 これがベイズの定理です。読み方は「事後分布 `P(y|x)` は、尤度 `P(x|y)` と事前分布 `P(y)` の積を証拠 `P(x)` で正規化したもの」となります。
 
-分類では、`P(y|x)` を直接学習するモデル（識別モデル: ロジスティック回帰、決定木、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: Naive Bayes、線形判別分析（LDA））の 2 系統があります。画像などを作る GAN（Generative Adversarial Network）や拡散モデルも生成モデルと呼ばれます。ただし GAN や拡散モデルは `P(x)`（条件付きなら `P(x|y)`）に従う新しいサンプルを作るのが目的で、ベイズの定理で分類するモデルではありません。
+分類では、`P(y|x)` を直接学習するモデル（識別モデル: ロジスティック回帰、決定木、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html)、[線形判別分析（LDA）](https://scikit-learn.org/stable/modules/lda_qda.html)）の 2 系統があります。画像などを作る [GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)や[拡散モデル](https://arxiv.org/abs/2006.11239)も生成モデルと呼ばれます。ただし GAN や拡散モデルは `P(x)`（条件付きなら `P(x|y)`）に従う新しいサンプルを作るのが目的で、ベイズの定理で分類するモデルではありません。
 
 ---
 
@@ -292,13 +293,13 @@ nonlinear: E[y | x≈1.5] = 2.13
 - データドリフト分析: covariate shift は `P(x)`、concept drift は `P(y|x)`、label shift は `P(y)` が動くので、3 分類が直接判断軸になる
 - ベイズ推論: 事前分布 `P(θ)`、尤度 `P(D|θ)`、事後分布 `P(θ|D)` の関係をベイズの定理でつなぐ
 - Naive Bayes 分類器: 特徴量間の条件付き独立 `P(x1, x2, ..., xn | y) = Π_i P(xi | y)` を仮定して計算量を抑える
-- 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違うときの確率出力の再校正
+- 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違う時の確率出力の再校正
 
 ---
 
 ### よくある誤解
 
 - 「周辺分布と同時分布は同じもの」ではない: 同時分布は 2 変数を保ったまま、周辺分布は片方を捨てた要約。情報量が減るので、周辺分布から同時分布は復元できない（独立な場合を除く）
-- 「`P(y|x)` と `P(x|y)` は同じ」ではない: 条件と被条件を入れ替えると意味も値も変わる。雨の例では `P(雨|雲量=多) = 0.30 / 0.40 = 0.75` と `P(雲量=多|雨) = 0.30 / 0.40 = 0.75` がたまたま同じ値になるものの、問いも意味も違う。混同するとベイズの定理の意味も失われる
+- 「`P(y|x)` と `P(x|y)` は同じ」ではない: 条件と被条件を入れ替えると意味も値も変わる。雨の例では `P(雨|雲量=少) = 0.02 / 0.30 ≈ 0.07` に対して、`P(雲量=少|雨) = 0.02 / 0.40 = 0.05` になる（雲量=多では、どちらも 0.75 とたまたま一致するが、問いは違う）。混同するとベイズの定理の意味も失われる
 - 「条件付き分布の表も全マスを足すと 1 になる」わけではない: 1 になるのは `x` を固定した各行の合計で、雲量の例では 3 行あるので全マスの合計は 3 になる
 - 「離散と連続で別の公式を使う必要がある」とは限らない: 足し合わせるか積分するかの違いだけで、関係式 `P(x, y) = P(y|x) × P(x)` は同じ形をしている

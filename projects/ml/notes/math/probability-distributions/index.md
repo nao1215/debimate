@@ -28,7 +28,7 @@ topics: ["Mathematics（数学の基礎）"]
 
 値が 0, 1, 2, … のように数えられる時に使う分布です。下の図の縦軸は確率 `P(X=k)` で、棒の高さを全部足すと 1 になります。本記事の図は [生成元のスクリプト](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/probability-distributions_gen.py) で描いています。
 
-![Bernoulli / Binomial / Poisson の PMF](./distributions_discrete.svg)
+{{< figure src="distributions_discrete.svg" alt="ベルヌーイ・二項・ポアソンの確率質量関数を棒グラフで並べた図。縦軸は確率 P(X=k)" caption="ベルヌーイ・二項・ポアソンの PMF" align="center" >}}
 
 | 分布 | PMF | パラメータ | E[X] | Var(X) | 何を表す |
 |---|---|---|---|---|---|
@@ -46,7 +46,7 @@ topics: ["Mathematics（数学の基礎）"]
 
 値が実数の区間を連続的に動く時に使う分布です。下の図の縦軸は確率ではなく密度 `f(x)` です。
 
-![Normal / Exponential / Beta の PDF](./distributions_continuous.svg)
+{{< figure src="distributions_continuous.svg" alt="正規・指数・ベータの確率密度関数を曲線で並べた図。縦軸は確率ではなく密度 f(x)" caption="正規・指数・ベータの PDF" align="center" >}}
 
 | 分布 | PDF | パラメータ | E[X] | Var(X) | 何を表す |
 |---|---|---|---|---|---|
@@ -97,7 +97,7 @@ Normal が負の客数に割り振る確率: 0.0022
 
 連続分布の 2 つは、整数の 2 と 3 の境目に当たる 2.5 までの面積で比べています。図は、同じデータのヒストグラムに 3 つの当てはめを重ねたものです。
 
-![同じデータに正しい・間違った分布族を当てた結果](./distributions_family_choice.svg)
+{{< figure src="distributions_family_choice.svg" alt="平均 8 のポアソン分布から作った 500 時間分の来店客数のヒストグラムに、ポアソン・正規・指数の当てはめを重ねた図。ポアソンは棒に沿い、正規は負の値にもはみ出し、指数は単調に減る形で合わない" caption="同じ来店客数データに 3 つの分布族を当てはめた結果" align="center" >}}
 
 - Poisson: 2 人以下を 0.015 と見積もり、実データの 0.014 とほぼ一致する。平均 7.93 と分散 7.75 が近いのも、`E[X] = Var(X)` の通り
 - Normal: 釣鐘型には沿うが、2 人以下を 0.026 と実データの約 2 倍に見積もる。整数でない値や、あり得ない負の客数（0.22%）にも確率を割り振る
@@ -142,7 +142,7 @@ flowchart LR
 図の矢印は、次の関係を表します。
 
 - Bernoulli × n 回 = Binomial: コイン投げを n 回繰り返した成功数
-- Binomial の極限（`n → ∞, np → λ`）= Poisson: 試行が多くて成功率が低いとき
+- Binomial の極限（`n → ∞, np → λ`）= Poisson: 試行が多くて成功率が低い時
 - Binomial の正規近似: `n` が大きいと `N(np, np(1-p))` で近似できる。二項はベルヌーイの和なので、中心極限定理の特別な場合に当たる（ド・モアブル–ラプラスの定理）
 - Poisson の到着間隔 = Exponential: 単位時間あたり平均 `λ` 回起きる事象の間隔は `Exp(λ)` に従う
 - 同じ `λ` の独立な Exponential n 個の和 = Gamma: n 個目の事象までの累積待ち時間
@@ -155,7 +155,7 @@ flowchart LR
 - 最尤推定（MLE）: 各分布族にパラメータを当てはめる基本テクニック
 - [ベイズの定理](../bayes-theorem/) の事前分布: Beta と二項、Gamma とポアソン、正規と正規のように、事後分布が事前分布と同じ族になる組（共役）がある
 - [大数の法則と中心極限定理](../lln-clt/): 標本平均が期待値に近づくこと（大数の法則）と、そのばらつきが正規分布で近似できること（CLT）
-- 仮説検定: 検定統計量が各分布（t、χ²、F、正規）に従うことを利用（[hypothesis-test](../hypothesis-test/) 参照）
+- 仮説検定: 検定統計量が各分布（t、χ²、F、正規）に従うことを利用（[仮説検定](../hypothesis-test/) 参照）
 - 多変量への拡張: 多変量正規分布、Dirichlet 分布（Beta を 3 つ以上のカテゴリの確率へ広げた分布）
 
 ---
@@ -163,11 +163,11 @@ flowchart LR
 ### 機械学習での使いどころ
 
 - 損失関数の導出: MSE は正規分布尤度、交差エントロピーはベルヌーイ/カテゴリ尤度に対応（[損失関数](../../ml/loss-functions/) 参照）
-- ナイーブベイズ: 各特徴量の分布（Gaussian Naive Bayes、Multinomial Naive Bayes）を仮定
+- [ナイーブベイズ](https://scikit-learn.org/stable/modules/naive_bayes.html): 各特徴量の分布（Gaussian Naive Bayes、Multinomial Naive Bayes）を仮定
 - 確率モデルの基盤: ロジスティック回帰（ベルヌーイ）、ポアソン回帰、Gamma 回帰、ベータ回帰
-- 生成モデル: VAE（Variational Autoencoder）は潜在変数に正規分布、Diffusion は各ステップで加えるノイズに正規分布を仮定し、GAN（Generative Adversarial Network）は明示的な分布を仮定しない
+- 生成モデル: [VAE（Variational Autoencoder）](https://arxiv.org/abs/1312.6114)は潜在変数に正規分布、[拡散モデル（Diffusion）](https://arxiv.org/abs/2006.11239)は各ステップで加えるノイズに正規分布を仮定し、[GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)は明示的な分布を仮定しない
 - A/B テストのベイズ解釈: Beta の事前分布と二項の尤度で「コンバージョン率の事後分布」を推定
-- 多腕バンディット: Thompson sampling は、各候補の成功率の事後分布（Beta）から値を 1 つずつ引き、最大の候補を選ぶ
+- 多腕バンディット: [Thompson sampling](https://doi.org/10.1093/biomet/25.3-4.285) は、各候補の成功率の事後分布（Beta）から値を 1 つずつ引き、最大の候補を選ぶ
 - ベイズ最適化: 目的関数の事前分布にガウス過程（任意の点の組での関数値が多変量正規分布に従うモデル）を置き、次に試すハイパーパラメータを選ぶ
 - [異常検知](/ml/ml/anomaly-detection/): 「正常データの分布」を当てはめ、低密度の点を異常とする
 
@@ -180,7 +180,7 @@ flowchart LR
 - 「とりあえず正規分布」: 多くのデータは右に裾を引いており（給与、価格、待ち時間）、正規仮定が崩れる。[歪度](../skewness/) を見て log 変換 or 別分布へ
 - 二項分布の独立試行仮定: 試行同士が相関していると、分散が `np(1-p)` より大きくなる（ベータ二項分布で対処）
 - ベータの境界: 厳密に 0 や 1 の値があると、値 0 では `a`、値 1 では `b` が 1 以外の時に密度が 0 か無限大になり、最尤推定が破綻する。0 と 1 に別の確率を持たせた 0/1 過剰ベータ分布を使う
-- 多モード（峰が複数）: 単一の標準分布では表現できない。混合分布（Gaussian Mixture）を使う
+- 多モード（峰が複数）: 単一の標準分布では表現できない。混合分布（[Gaussian Mixture](https://scikit-learn.org/stable/modules/mixture.html)）を使う
 - 独立性仮定: 時系列など相関のあるデータには、自己回帰モデルや HMM（隠れマルコフモデル）を使う
 - パラメータ推定の不確実性: 推定値 `λ_hat` を確定値として扱わず、信頼区間や事後分布を併用する
 - 「正規分布なら[標準偏差](/ml/math/stddev/) 3σ で十分」をすべてに適用: 裾の重い分布（t、Pareto、対数正規）では 3σ ルールが極端に楽観的な見積もりになる

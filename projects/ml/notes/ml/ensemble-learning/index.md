@@ -54,7 +54,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 ### 決定境界で見る違い
 
-同じデータに単一の決定木、Bagging、Boosting を適用して、決定境界の形と精度を比べます。データは 2 つの三日月が重なる合成データ（[make_moons](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html)）で、半分の 200 点で学習し、残り 200 点で測ります。
+同じデータに単一の決定木、Bagging（[`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html)）、Boosting（[`GradientBoostingClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)）を適用して、決定境界の形と精度を比べます。データは 2 つの三日月が重なる合成データ（[make_moons](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html)）で、半分の 200 点で学習し、残り 200 点で測ります。
 
 以下は scikit-learn 1.9.1、[NumPy](https://numpy.org/) 2.5.4 で実行したコードです。本記事のコードは計算部分で、図の描画を省いています。描画を含む[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/ensemble-learning_gen.py)は GitHub で公開しています。
 
@@ -84,7 +84,7 @@ bagging  train=0.910 test=0.890
 boosting train=1.000 test=0.885
 ```
 
-![単一決定木 / Bagging / Boosting の決定境界と、訓練・テストの精度](./ensemble_boundary_compare.png)
+{{< figure src="ensemble_boundary_compare.png" alt="ノイズの多い三日月データに、深さ 4 の単一決定木、ランダムフォレスト、勾配ブースティングを当てた 3 枚の決定境界。決定木は数本の直線の粗い境界、ランダムフォレストは段差の細かい境界、ブースティングは訓練点を全て正しく分ける入り組んだ境界で、テスト精度はどれも 0.89 前後" caption="単一決定木・Bagging・Boosting の決定境界" align="center" >}}
 
 単一決定木は数本の直線で区切った粗い境界で、Bagging（ランダムフォレスト）は段差が細かくなります。Boosting は訓練点を 1 つ残らず正しく分ける入り組んだ境界を作り、訓練精度は 1.000 です。
 
@@ -131,7 +131,7 @@ single tree: 0.238
 bagging:     0.119
 ```
 
-![訓練データを変えて 20 本ずつ重ねた、個別の深い決定木と Bagging の予測](./ensemble_bagging_variance.svg)
+{{< figure src="ensemble_bagging_variance.svg" alt="左右 2 枚のグラフ。左は訓練データを変えて学習した深い決定木 20 本の予測で、ノイズに合わせて細かく上下し、20 本の分散の平均は 0.238。右は同じ 20 組で学習した Bagging の予測で、真の関数の破線の周りに集まり、分散の平均は 0.119" caption="深い決定木 1 本と Bagging の予測のばらつき" align="center" >}}
 
 左の単一決定木はノイズに合わせて細かく上下し、右の Bagging は真の関数（破線）の周りに集まります。
 
@@ -182,7 +182,7 @@ round 10: train MSE = 0.144
 round 30: train MSE = 0.088
 ```
 
-![Boosting のラウンド進行に伴う予測曲線の変化と訓練 MSE の推移](./ensemble_boosting_rounds.svg)
+{{< figure src="ensemble_boosting_rounds.svg" alt="左はデータ点に 1、5、30 ラウンド後のブースティングの予測曲線を重ねた図で、粗い段差からデータに沿う形へ変わる。右はラウンドごとの訓練 MSE で、単調に下がり、10 ラウンド目で真の関数の MSE 0.148 の破線を下回る" caption="Boosting のラウンドごとの予測と訓練 MSE" align="center" >}}
 
 予測曲線はラウンド 1 の粗い段差から、ラウンド 30 でデータに沿った形になり、訓練 MSE は単調に下がります。
 
@@ -261,7 +261,7 @@ base only: svc   0.954 (±0.006)
 base only: rf    0.937 (±0.008)
 ```
 
-![単一決定木、3 種類のアンサンブル、Stacking の base 単体の正解率](./ensemble_accuracy_compare.svg)
+{{< figure src="ensemble_accuracy_compare.svg" alt="5 分割 CV の正解率の棒グラフ。単一決定木 0.888、ランダムフォレスト 0.939、勾配ブースティング 0.937、Stacking 0.951、base 単体はロジスティック回帰 0.912、SVM 0.954、50 本のランダムフォレスト 0.937 で、Stacking は SVM 単体を超えない" caption="アンサンブルと base 単体の正解率" align="center" >}}
 
 単一決定木の 0.888 から、どのアンサンブルも 0.94〜0.95 まで上がり、Stacking が 0.951 で最も高い値でした。
 
@@ -284,7 +284,7 @@ base only: rf    0.937 (±0.008)
 - 表データの分類・回帰: 勾配ブースティング（XGBoost、LightGBM、CatBoost）が定番
 - 高分散モデルの安定化: 深い決定木をランダムフォレストで平均化
 - Kaggle などのコンペティション: 勾配ブースティングと Stacking の組み合わせが定番
-- [異常検知](../anomaly-detection/): Isolation Forest は、ランダムに分割する木を多数作り、孤立までの分割回数を平均して異常度にする
+- [異常検知](../anomaly-detection/): [Isolation Forest](https://doi.org/10.1109/ICDM.2008.17)（scikit-learn では [`IsolationForest`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html)）は、ランダムに分割する木を多数作り、孤立までの分割回数を平均して異常度にする
 - 予測区間: ランダムフォレストの葉に入った訓練データの分布から分位点を求める（[quantile regression forests](https://jmlr.org/papers/v7/meinshausen06a.html)）
 
 ---

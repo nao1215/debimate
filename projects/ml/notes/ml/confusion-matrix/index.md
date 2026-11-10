@@ -28,7 +28,7 @@ scikit-learn の [`confusion_matrix`](https://scikit-learn.org/stable/modules/ge
 | 正解: 陰性 | TN = 3 | FP = 1 |
 | 正解: 陽性 | FN = 1 | TP = 3 |
 
-Precision・Recall・F1 は、この 4 つのセルから計算します。
+Precision・Recall・F1 は、この 4 つのセルから計算します。scikit-learn では [`precision_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_score.html)、[`recall_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.recall_score.html)、[`f1_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) で求めます。
 
 - Precision（適合率）= TP / (TP + FP): 陽性と予測したうち、本当に陽性だった割合
 - Recall（再現率）= TP / (TP + FN): 実際の陽性のうち、陽性と予測できた割合
@@ -47,15 +47,15 @@ Precision・Recall・F1 は、この 4 つのセルから計算します。
 - 閾値を下げる: 陽性と判定しやすくなり、FN は減るか変わらず、FP は増えるか変わらない
 - 閾値を上げる: 陽性と判定しづらくなり、FP は減るか変わらず、FN は増えるか変わらない
 
-陽性が 10% の合成データ 4000 件を半分に分け、ロジスティック回帰を学習させて確かめます。左が閾値 0.5、右が 0.2 の時のテストデータ 2000 件（陽性 213 件）の混同行列で、色の濃さは件数の対数です。
+陽性が約 10% の合成データ 4000 件を半分に分け、[ロジスティック回帰](../logistic-regression/)を学習させて確かめます。左が閾値 0.5、右が 0.2 の時のテストデータ 2000 件（陽性 213 件）の混同行列で、色の濃さは件数の対数です。
 
-![閾値 0.5 と 0.2 の混同行列](./confusion-matrix_heatmaps.svg)
+{{< figure src="confusion-matrix_heatmaps.svg" alt="2 つの 2×2 の混同行列を並べた図。閾値 0.5 は TN 1787、FP 0、FN 173、TP 40 で Precision 1.00・Recall 0.19、閾値 0.2 は TN 1699、FP 88、FN 121、TP 92 で Precision 0.51・Recall 0.43" caption="閾値 0.5 と 0.2 の混同行列" align="center" >}}
 
 閾値 0.5 の Accuracy は 0.913 で、全部を陰性と予測した場合の 0.893 とほとんど変わりません。陽性 213 件のうち 173 件を見逃しており、Recall は 0.19 です。閾値を 0.2 へ下げると FN は 121 件に減り、FP は 0 件から 88 件に増えます。
 
 閾値を 0.1 から 0.9 まで動かすと、FP と FN は次のように逆向きに動きます。
 
-![閾値ごとの FP と FN の件数](./confusion-matrix_threshold_sweep.svg)
+{{< figure src="confusion-matrix_threshold_sweep.svg" alt="横軸を閾値 0.1〜0.9、縦軸をテストデータ 2000 件での件数とした 2 本の折れ線。閾値を下げるほど FP（誤検知）が増え、FN（見逃し）が減り、2 本は逆向きに動く" caption="閾値ごとの FP と FN の件数" align="center" >}}
 
 どこで止めるかは、誤検知と見逃しのどちらのコストが高いかで決めます。
 
@@ -95,7 +95,9 @@ for threshold in [0.3, 0.5, 0.7]:
 
 <br>
 
-意外なのは、0.5 から 0.7 へ上げると Precision も 0.75 から 0.67 へ下がることです。陰性なのにスコア 0.8 を持つ 1 件は陽性のまま残り、外れたのは TP だけなので、3 / 4 から 2 / 3 になります。Recall は分母が実際の陽性の件数で固定されているため、閾値を上げると下がるか同じままです。一方で、Precision は分母の TP + FP も一緒に動くため、閾値を上げれば上がるとは限りません。
+意外なのは、0.5 から 0.7 へ上げると Precision も 0.75 から 0.67 へ下がることです。陰性なのにスコア 0.8 を持つ 1 件は陽性のまま残り、外れたのは TP だけなので、3 / 4 から 2 / 3 になります。
+
+Recall は分母が実際の陽性の件数で固定されているため、閾値を上げると下がるか同じままです。一方で、Precision は分母の TP + FP も一緒に動くため、閾値を上げれば上がるとは限りません。
 
 ---
 

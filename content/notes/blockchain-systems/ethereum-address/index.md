@@ -11,7 +11,7 @@ topics: ["Transaction / Wallet"]
 
 `0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266` は、開発用のローカルノードである [Anvil](https://getfoundry.sh/anvil/overview/) が最初に用意するテスト用アカウントのアドレスです。chain ID（チェーンを区別する番号）を 31337 にしても 31338 にしても、このアカウントは同じアドレスで現れます。
 
-Ethereum のアドレスは、アカウントを指す 20 バイトの値です。誰かに申請して払い出してもらう番号ではなく、秘密鍵や作り手の情報から、誰でも同じ計算で求められます。計算の規則は、秘密鍵で操作する EOA（Externally Owned Account）、コントラクトを作る `CREATE`、作る前にアドレスを指定できる `CREATE2` の 3 つです。
+[Ethereum](https://ethereum.org/) のアドレスは、アカウントを指す 20 バイトの値です。誰かに申請して払い出してもらう番号ではなく、秘密鍵や作り手の情報から、誰でも同じ計算で求められます。計算の規則は、秘密鍵で操作する EOA（Externally Owned Account）、コントラクトを作る `CREATE`、作る前にアドレスを指定できる `CREATE2` の 3 つです。
 
 以下は、3 つの規則の材料と、材料に入らない chain ID の関係を示した図です。
 
@@ -107,7 +107,9 @@ nonce が入らないので、デプロイする前にアドレスが分かり�
 
 ### ローカルでの計算と照合
 
-3 つの規則を外部のライブラリ無しの Python で書き、Anvil のデプロイ結果と照合しました。Anvil 1.7.1 と Solidity コンパイラ 0.8.28 は、Docker の公式イメージ（[ghcr.io/foundry-rs/foundry](https://github.com/foundry-rs/foundry/pkgs/container/foundry) の v1.7.1、[ethereum/solc](https://hub.docker.com/r/ethereum/solc) の 0.8.28）で動かします。コンテナはネットワーク無しで起動し、秘密鍵は Anvil が公開している既定のテスト用の鍵だけを使います。
+3 つの規則を外部のライブラリ無しの Python で書き、Anvil のデプロイ結果と照合しました。
+
+Anvil 1.7.1 と Solidity コンパイラ 0.8.28 は、Docker の公式イメージ（[ghcr.io/foundry-rs/foundry](https://github.com/foundry-rs/foundry/pkgs/container/foundry) の v1.7.1、[ethereum/solc](https://hub.docker.com/r/ethereum/solc) の 0.8.28）で動かします。コンテナはネットワーク無しで起動し、秘密鍵は Anvil が公開している既定のテスト用の鍵だけを使います。
 
 以下は [address.py](lab/address.py) の 3 つの規則の抜粋です。`keccak256` と、秘密鍵から公開鍵を求める `public_key` も同じファイルにあります。
 
@@ -191,7 +193,7 @@ EOA の段では、3 つのチェーンで同じアドレスが返りました�
 
 ### 同じアドレスでのコードの置き直し
 
-コントラクトのアドレスにあるコードは、後から差し替えられるのでしょうか。2024 年 3 月 13 日のハードフォーク Cancun より前は、差し替えられました。`CREATE2`、`CREATE`、コントラクトを消す `SELFDESTRUCT` を組み合わせると、同じアドレスに別のコードを置き直せたからです。この手法は metamorphic contract と呼ばれます。手順は以下の通りです。
+コントラクトのアドレスにあるコードは、後から差し替えられるのでしょうか。2024 年 3 月 13 日のハードフォーク [Cancun](https://ethereum.org/en/history/#dencun) より前は、差し替えられました。`CREATE2`、`CREATE`、コントラクトを消す `SELFDESTRUCT` を組み合わせると、同じアドレスに別のコードを置き直せたからです。この手法は metamorphic contract と呼ばれます。手順は以下の通りです。
 
 1. ファクトリが `CREATE2` で、固定の salt と initcode から Deployer を作る。Deployer のアドレスは毎回同じになる。
 2. Deployer が `CREATE` で V1 を作る。アドレスは Deployer と nonce 1 で計算される。
@@ -216,7 +218,7 @@ target2 = returned_address(n, deployer, deploy + abi_bytes(bins['V2']))
 assert ok(n.send(deployer, deploy + abi_bytes(bins['V2']))) == 1
 ```
 
-V1 の `version()` は 1、V2 は 2 を返します。コンパイルは、比べる全てのフォークで動くように、Cancun の 1 つ前の Shanghai 向けにしました。結果は以下の通りです。
+V1 の `version()` は 1、V2 は 2 を返します。コンパイルは、比べる全てのフォークで動くように、Cancun の 1 つ前の [Shanghai](https://ethereum.org/en/history/#shapella) 向けにしました。結果は以下の通りです。
 
 ```text
 fork     | 1st target | v | code after kill | redeploy Deployer | 2nd target | v | v at 1st
@@ -229,7 +231,7 @@ prague   | 0xCB8956e6 | 1 | 218/930 bytes   | status=0          | 0x673a327D | 2
 
 {{< figure src="images/ethereum-address_redeploy.svg" alt="上の段の Shanghai では、0xCB8956e6… のコードが V1 から、消した後の空（0 bytes）を経て V2 に変わる。下の段の Cancun 以降では、消した後も V1 が 218 bytes のまま残り、作り直しの後も V1 のまま。下に赤い × と「Deployer を作り直せない」「V2 は 0x673a327D… へ」" caption="1 つのアドレスにあるコードの移り変わり" align="center" >}}
 
-Shanghai では、`SELFDESTRUCT` の後に V1 も Deployer も 0 バイトになり、同じ `0xCB8956e6…` に V2 が置かれました。Cancun と、次の Prague では、コードが残ったまま Deployer の作り直しが失敗し、V2 は nonce 2 で別のアドレスに作られました。元のアドレスは 1 を返し続けます。
+Shanghai では、`SELFDESTRUCT` の後に V1 も Deployer も 0 バイトになり、同じ `0xCB8956e6…` に V2 が置かれました。Cancun と、次の [Prague](https://ethereum.org/en/history/#pectra) では、コードが残ったまま Deployer の作り直しが失敗し、V2 は nonce 2 で別のアドレスに作られました。元のアドレスは 1 を返し続けます。
 
 フォークごとの `SELFDESTRUCT` の違いは、[Ethereum Hard Forks](../ethereum-hard-forks/) でも確かめています。
 

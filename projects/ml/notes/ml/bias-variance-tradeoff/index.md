@@ -34,7 +34,7 @@ E[(y - f_hat(x))^2] = Bias[f_hat(x)]^2 + Var[f_hat(x)] + sigma^2
 
 ### Bias と Variance を視覚化する
 
-同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から多項式回帰を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。本記事のコードは軸の範囲や凡例などの体裁を省いています。図の生成コードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
+同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から多項式回帰（scikit-learn の [PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) で x のべき乗を特徴量に足し、[LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) で当てはめる）を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。本記事のコードは軸の範囲や凡例などの体裁を省いています。図の生成コードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
 
 ```python
 import numpy as np
@@ -65,7 +65,7 @@ plt.tight_layout()
 plt.savefig("polyfit_compare.svg", bbox_inches="tight")
 ```
 
-![Polynomial fit at 3 complexity levels: high bias, good fit, high variance](./polyfit_compare.svg)
+{{< figure src="polyfit_compare.svg" alt="同じ 30 点に 1 次・3 次・15 次の多項式を当てはめた 3 枚の図。緑の点線が真の関数 sin(2πx) + 0.4x で、1 次は波を無視した直線、3 次は真の関数の波にほぼ沿い、15 次は訓練点に張り付いて点の間で大きく揺れる" caption="次数 1・3・15 の多項式回帰" align="center" >}}
 
 左端の直線（degree=1）は、波打つ真の関数を 1 次式で押さえ込もうとして全域で外しています。これがバイアスの正体で、訓練セットをいくら入れ替えても直線は直線のままなので「平均しても真の関数からずれる」性質を持ちます。一方の右端（degree=15）は訓練点の 1 つ 1 つに張り付き、観測点が少し変わるだけで形が大きく揺れます。この揺れがバリアンスです。
 
@@ -132,23 +132,27 @@ degree=15 bias^2=9.4015 variance=1967.1729 total=1976.6370
 
 この値を対数軸で描いたものが次の図です。Total は Bias^2 と Variance の和にノイズ（点線の 0.0625）を足したものです。
 
-![Bias-variance decomposition vs polynomial degree (log scale)](./decomposition_curve.svg)
+{{< figure src="decomposition_curve.svg" alt="横軸を多項式の次数 1〜15、縦軸を対数目盛の誤差とした Bias^2・Variance・Total の 3 本の線と、ノイズ 0.0625 の点線。Bias^2 は次数 3〜5 で大きく下がり、Variance は次数とともに上がる。Total は次数 3 で最小になり、次数 9 以降は 3 本とも大きく跳ねる" caption="多項式の次数と Bias^2・Variance・Total" align="center" >}}
 
 次数 8 までは、おおむね教科書どおりの動きです。Bias^2 は次数 1〜2 の 0.15 前後から次数 5 の 0.0001 まで下がり、Variance は次数 3 の 0.011 から次数 8 の 1.83 まで上がります。Total は次数 3 の 0.0761 が最小です。
 
-ただし、どちらの曲線も単調ではありません。Variance は次数 2→3 で 0.050 から 0.011 に下がっています。放物線は波の形に合わないので、25 点がどこに落ちたかで当てはめ方が大きく変わるからです。上のコードの `rng.normal(0.0, 0.25, 25)` を `rng.normal(0.0, 0.0, 25)` にしてノイズを消しても、Variance は次数 2 で 0.044、次数 3 で 0.001 でした。
+ただし、どちらの曲線も単調ではありません。Variance は次数 2→3 で 0.050 から 0.011 に下がっています。放物線は波の形に合わないので、25 点がどこに落ちたかで当てはめ方が大きく変わるからです。
+
+上のコードの `rng.normal(0.0, 0.25, 25)` を `rng.normal(0.0, 0.0, 25)` にしてノイズを消しても、Variance は次数 2 で 0.044、次数 3 で 0.001 でした。
 
 次数 9 以降の Bias^2 と Variance は大きく跳ねます。原因は 200 回のうちの 1 回です。次数 9 で誤差が最大だった訓練セットは x が 0.394〜0.994 にしかなく、0〜0.39 の範囲に点が 1 つもありません。9 次の多項式はその空白を外挿で埋めて暴れました。この 1 セットを除くと、Bias^2 は 0.606 から 0.0011、Variance は 122 から 0.146 に下がります。
 
-Bias^2 まで跳ねるのは、Bias^2 を 200 個の予測の平均から計算しているためです。平均そのものも揺れ、その 2 乗の期待値は Variance / 200 になるので、その分が Bias^2 に上乗せされます。次数 9・13・15 の Variance を 200 で割ると 0.61、4.77、9.84 で、Bias^2 の 0.606、5.11、9.40 とほぼ一致します。次数 6〜8 で Bias^2 が少しずつ増えるのも同じ理由です。高い次数の Bias^2 が大きいのは、表現力が下がったからではありません。
+Bias^2 まで跳ねるのは、Bias^2 を 200 個の予測の平均から計算しているためです。平均そのものも揺れ、その 2 乗の期待値は Variance / 200 になるので、その分が Bias^2 に上乗せされます。
 
-大きく見ると、Bias を下げると Variance が上がるトレードオフ関係が、複雑度という[ハイパーパラメータ](/ml/ml/hyperparameter/)の背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
+次数 9・13・15 の Variance を 200 で割ると 0.61、4.77、9.84 で、Bias^2 の 0.606、5.11、9.40 とほぼ一致します。次数 6〜8 で Bias^2 が少しずつ増えるのも同じ理由です。高い次数の Bias^2 が大きいのは、表現力が下がったからではありません。
+
+大きく見ると、Bias を下げると Variance が上がるトレードオフ関係が、複雑度という[ハイパーパラメータ](../hyperparameter/)の背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
 
 ---
 
 ### 学習曲線で診断する
 
-実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの）で両者の正解率を比較します。max_depth を 1・6・制限なしと変えた決定木 3 つで、曲線の形を並べてみます。
+実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの。scikit-learn では [learning_curve](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.learning_curve.html)）で両者の正解率を比較します。max_depth を 1・6・制限なしと変えた決定木 3 つで、曲線の形を並べてみます。
 
 ```python
 import numpy as np
@@ -177,7 +181,7 @@ plt.tight_layout()
 plt.savefig("learning_curves_diagnose.svg", bbox_inches="tight")
 ```
 
-![Learning curves for high bias / middle / high variance](./learning_curves_diagnose.svg)
+{{< figure src="learning_curves_diagnose.svg" alt="横軸を訓練サンプル数 120〜1200、縦軸を正解率とした 3 枚の学習曲線。depth=1 は訓練と検証が 0.68 前後で重なって横ばい、depth=6 は訓練 0.9 前後と検証 0.82 前後の間に差があり、depth=None は訓練が 1.0 に張り付き、検証は 0.75 から 0.83 へ上がる" caption="決定木の深さを変えた学習曲線" align="center" >}}
 
 3 つの図に現れるパターンの読み方:
 
@@ -218,7 +222,9 @@ graph TD
 | 訓練 ≫ 検証、ギャップが顕著、訓練は十分高い | High variance (過学習) | 訓練データ追加 ／ 正則化強化 ／ Early stopping ／ 容量を下げる ／ ドロップアウト | 容量をさらに上げる ／ 特徴量をさらに増やす |
 | 訓練 ≈ 検証、両方とも十分高い | Just right | そのまま運用 ／ 別軸の改善（推論速度・解釈性）に切り替え | 過剰なチューニング（過学習に振れるリスク） |
 
-原因に合わない方法を選ぶと、スコアが改善しなかったり、悪化したりします。例として、上の depth=1 の木は訓練データを 120 件から 1200 件に増やしても検証正解率が 0.674 から 0.685 にしか上がりません。データ追加で減るのは主に Variance で、表現力不足による Bias はほとんど減らないからです。一方で high variance の状態でモデルを大きくすると、多項式の次数 7 以降のように Variance が膨らみやすくなります。表は目安で、どの方法がどれだけ効くかは学習曲線を描き直して確かめます。
+原因に合わない方法を選ぶと、スコアが改善しなかったり、悪化したりします。例として、上の depth=1 の木は訓練データを 120 件から 1200 件に増やしても検証正解率が 0.674 から 0.685 にしか上がりません。データ追加で減るのは主に Variance で、表現力不足による Bias はほとんど減らないからです。
+
+一方で high variance の状態でモデルを大きくすると、多項式の次数 7 以降のように Variance が膨らみやすくなります。表は目安で、どの方法がどれだけ効くかは学習曲線を描き直して確かめます。
 
 ---
 

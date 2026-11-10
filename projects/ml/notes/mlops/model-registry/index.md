@@ -90,9 +90,7 @@ python3 -m venv .venv
 
 ```python
 """Run a local registry experiment; remove the temporary DB/artifacts on exit."""
-
 import os
-
 os.environ.setdefault("MLFLOW_ENABLE_TELEMETRY", "false")
 os.environ.setdefault("MLFLOW_ENABLE_ARTIFACTS_PROGRESS_BAR", "false")
 
@@ -126,11 +124,11 @@ def main():
                 mlflow.log_param("slope", slope)
                 mlflow.set_tag("dataset", f"toy-y-{slope:g}x")
                 info = mlflow.sklearn.log_model(
-                    model,
-                    name="linear-model",
+                    model, name="linear-model",
                     signature=infer_signature(train_x, model.predict(train_x)),
                     input_example=train_x[:1],
-                    pip_requirements=["scikit-learn==1.7.2", "numpy==2.5.4", "cloudpickle==3.1.2"],
+                    pip_requirements=["scikit-learn==1.7.2", "numpy==2.5.4",
+                                      "cloudpickle==3.1.2"],
                 )
                 version = str(mlflow.register_model(info.model_uri, name).version)
                 versions.append(version)
@@ -175,7 +173,7 @@ after rollback reload: alias=v1, prediction=4.0
 
 出力を手順ごとに並べると次の図になります。青い線が `champion` の指すバージョン、赤い破線が予測値から分かる `resident` のバージョンで、両者がずれた手順を赤く塗っています。
 
-![別名の参照先と読み込み済みモデルの推移](./model-registry_alias_vs_loaded.svg)
+{{< figure src="model-registry_alias_vs_loaded.svg" alt="横軸が実験の 5 つの手順、縦軸がバージョン 1 と 2。青い線は champion の指すバージョン、赤い破線は予測値から分かる resident のバージョンで、別名だけを変えた 2 番目と 4 番目の手順で両者がずれ、その手順が赤く塗られている" caption="別名の参照先と読み込み済みモデルのバージョンの推移" align="center" >}}
 
 別名を戻しただけでは、バージョン 2 を読み込んでいた `resident` は 8 を返します。再ロード後に初めて 4 へ戻ります。[MLflow のモデル読み込み API](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.pyfunc.html#mlflow.pyfunc.load_model) は、指定先のモデルを読み込んで返します。そのオブジェクトが以後の別名変更を監視するわけではありません。
 

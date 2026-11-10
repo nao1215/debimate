@@ -8,7 +8,7 @@ weight: 29
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムです。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、不規則な形のクラスタや、クラスタに属さない点を検出できます。
+DBSCAN（Density-Based Spatial Clustering of Applications with Noise、[Ester et al., 1996](https://cdn.aaai.org/KDD/1996/KDD96-037.pdf)）は、点の密度に基づいてクラスタを構成するクラスタリングアルゴリズムです。[k-means](../k-means/) と違い「クラスタ数 `k` を事前に決める必要がない」「非凸（曲がった）形状のクラスタも見つけられる」「外れ値（noise）を別カテゴリとして扱う」という 3 つの強みを持ち、不規則な形のクラスタや、クラスタに属さない点を検出できます。
 
 球形に近いクラスタで数 `k` を指定できる場合は [k-means](../k-means/) が候補になります。DBSCAN は密集した点をまとめ、外れ値も区別したい場合に使います。クラスタ同士の階層関係は [階層的クラスタリング](../hierarchical-clustering/) で調べます。
 
@@ -16,7 +16,7 @@ DBSCAN（Density-Based Spatial Clustering of Applications with Noise）は、点
 
 ### k-means との対比
 
-非凸データ（三日月型）に対する両者の挙動です。本記事のコードは[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/dbscan_gen.py)から描画を除いた抜粋で、scikit-learn 1.9.1 と NumPy 2.5.4 で実行しました。
+非凸データ（[`make_moons`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html) で作る三日月型）に対する両者の挙動です。本記事のコードは[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/dbscan_gen.py)から描画を除いた抜粋で、scikit-learn 1.9.1 と NumPy 2.5.4 で実行しました。
 
 ```python
 from sklearn.cluster import DBSCAN
@@ -33,9 +33,9 @@ eps=0.17: clusters=2, noise=0
 eps=0.2: clusters=1, noise=0
 ```
 
-![k-means は分離失敗、DBSCAN は月を正しく抽出](./dbscan_vs_kmeans.svg)
+{{< figure src="dbscan_vs_kmeans.svg" alt="三日月型の 2 つの塊に対する 2 枚の散布図。左の k-means は 2 つの月を左右の凸な塊に切り分けて月をまたいだクラスタを作り、右の DBSCAN（eps=0.17）は月ごとに色が分かれて noise は 0 件になる" caption="三日月型データでの k-means と DBSCAN" align="center" >}}
 
-k-means（左、`KMeans(n_clusters=2, random_state=0)`）はクラスタを「球形」で近似するため、三日月型データを縦に分けてしまいます。DBSCAN（右、`eps=0.17`）は「密につながった点同士は同じクラスタ」と判定し、2 つの月を noise 0 件で取り出します。ただし `eps=0.2` にすると、月の端同士がつながって 1 クラスタになります。半径を 0.03 広げただけで結果が変わります。
+k-means（左、[`KMeans`](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)`(n_clusters=2, random_state=0)`）はクラスタを「球形」で近似するため、三日月型データを縦に分けてしまいます。DBSCAN（右、`eps=0.17`）は「密につながった点同士は同じクラスタ」と判定し、2 つの月を noise 0 件で取り出します。ただし `eps=0.2` にすると、月の端同士がつながって 1 クラスタになります。半径を 0.03 広げただけで結果が変わります。
 
 ---
 
@@ -82,7 +82,7 @@ print(f"core: {len(core)}, border: {len(border)}, "
 core: 30, border: 1, noise: 3
 ```
 
-![赤がコア、橙がボーダー、×がノイズ](./dbscan_core_border_noise.svg)
+{{< figure src="dbscan_core_border_noise.svg" alt="原点付近の 30 点の塊がすべて core 点で、各点の周りに半径 eps=0.6 の円が描かれる。(1.0, 0.0) の 1 点が border 点、離れた 3 点が × の noise 点になる" caption="core・border・noise の 3 分類（eps=0.6、min_samples=5）" align="center" >}}
 
 赤い円が各 core 点の `eps` 範囲です。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられます。
 
@@ -97,7 +97,7 @@ DBSCAN の 2 つの[ハイパーパラメータ](/ml/ml/hyperparameter/)です�
 - `eps`（半径）: クラスタの「密度しきい値」を間接的に決める
 - `min_samples`（最小サンプル数）: コア点の判定基準
 
-`eps` の効果を見ます。データは中心 `(0, 0)`・`(4, 4)`・`(-3, 3)` の 3 つの塊（計 300 点、右上の `(4, 4)` だけ散らばりが大きい）に、一様ノイズ 30 点を足した 330 点です。
+`eps` の効果を見ます。データは [`make_blobs`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_blobs.html) で作った中心 `(0, 0)`・`(4, 4)`・`(-3, 3)` の 3 つの塊（計 300 点、右上の `(4, 4)` だけ散らばりが大きい）に、一様ノイズ 30 点を足した 330 点です。
 
 ```python
 import numpy as np
@@ -120,7 +120,7 @@ eps=0.8: clusters=2, noise=25
 eps=2.0: clusters=1, noise=2
 ```
 
-![eps による結果の劇的変化](./dbscan_eps_sensitivity.png)
+{{< figure src="dbscan_eps_sensitivity.png" alt="同じ 330 点に eps=0.3、0.8、2.0 で DBSCAN を当てた 3 枚の散布図。0.3 では 10 個の断片と多数の noise、0.8 では右上の塊と併合された左側の塊の 2 クラスタ、2.0 ではほぼ全点が 1 クラスタになる" caption="eps による DBSCAN の結果の変化" align="center" >}}
 
 - `eps = 0.3`: 半径が小さく、10 個の断片と 166 件の noise に分かれる。散らばりの大きい右上の塊はほとんどが noise になる
 - `eps = 0.8`: 2 クラスタと 25 件の noise になる。右上の塊は 1 つのクラスタになるが、左上と中央下の塊は間の点でつながり、1 つのクラスタに併合される
@@ -128,7 +128,7 @@ eps=2.0: clusters=1, noise=2
 
 3 つの塊を 3 つのクラスタとして取り出せる `eps` は、この 3 つの中にありません。右上の疎な塊をまとめられる半径では、密な 2 つの塊の間もつながってしまうからです。
 
-`eps` の選び方の定石として「k-distance プロット」があります。各点の `k` 番目近傍までの距離をソートしてグラフ化し、曲がり角（elbow）の高さを `eps` の目安にします。次のコードは直前のブロックの `X`（330 点）を使います。
+`eps` の選び方の定石として「k-distance プロット」があります。各点の `k` 番目近傍までの距離をソートしてグラフ化し、曲がり角（elbow）の高さを `eps` の目安にします。次のコードは直前のブロックの `X`（330 点）に [`NearestNeighbors`](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.NearestNeighbors.html) を当てます。
 
 ```python
 from sklearn.neighbors import NearestNeighbors
@@ -147,7 +147,7 @@ eps=0.8: 292 点
 eps=2.0: 328 点
 ```
 
-![k-distance プロット: 曲がり角の高さを eps の候補として読む](./dbscan_k_distance_elbow.svg)
+{{< figure src="dbscan_k_distance_elbow.svg" alt="330 点を 5 番目近傍までの距離で並べた曲線。0.6〜0.9 あたりで立ち上がり始め、eps=0.3、0.8、2.0 の水平線以下にそれぞれ 110、292、328 点がある" caption="k-distance プロットと 3 つの eps" align="center" >}}
 
 横軸が「ソートされた点」、縦軸が「k 番目近傍までの距離」です。3 本の水平線は上で試した `eps` で、自動で選んだ値ではありません。この図では 0.6〜0.9 あたりで曲線が立ち上がり始め、`eps = 0.8` はその曲がり角の付近にあります。
 
@@ -191,7 +191,7 @@ scikit-learn では [`sklearn.cluster.DBSCAN`](https://scikit-learn.org/stable/m
 - 密度が大きく異なる複数クラスタ: 単一の `eps` では全部をうまく扱えない。HDBSCAN を検討
 - スケールが揃っていない: 距離計算が歪む。[標準化](../standardization/) を必ず先に
 - 巨大データで `eps` を大きく取る: scikit-learn の実装は近傍を一括で求めるため、最悪でメモリが `O(n²)` になる。近傍グラフを事前計算して `metric="precomputed"` で渡すか、[OPTICS](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.OPTICS.html) を検討
-- カテゴリ変数を含むデータ: ユークリッド距離が意味を持たない。Gower 距離か、別のクラスタリングを検討
+- カテゴリ変数を含むデータ: ユークリッド距離が意味を持たない。[Gower 距離](https://doi.org/10.2307/2528823)か、別のクラスタリングを検討
 - noise を必ず捨てる: 業務によっては noise こそ重要（不正検知、希少事例）
 - `eps` を本番運用中も固定: データ分布が変わると noise 率が変動する。定期的に再校正
 - `min_samples = 1` の罠: 全点がコアになり noise が出ない。結果は単連結法の階層的クラスタリングを高さ `eps` で切ったものと同じになる

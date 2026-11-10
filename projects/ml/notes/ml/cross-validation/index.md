@@ -20,7 +20,7 @@ cardImage: "cross_validation_alpha.svg"
 
 [KFold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.KFold.html) はデータを `k` 等分（fold）し、毎回 1 つを検証用、残り `k-1` 個を訓練用に使います。これを `k` 回繰り返して、各回の検証スコアを平均します。`k=5` または `k=10` が定番です。
 
-![5-fold cross validation の分割](./cross_validation_split.svg)
+{{< figure src="cross_validation_split.svg" alt="横軸をデータの番号 0〜19 とし、fold 1〜5 の 5 行を並べた図。各行で 4 件の赤い検証区間が左から右へ 1 つずつずれ、残りの 16 件が青い訓練データになる" caption="5-fold の分割" align="center" >}}
 
 赤がその回の検証データ、青が訓練データです。検証に回す区間を fold ごとにずらしています。
 
@@ -39,7 +39,7 @@ cardImage: "cross_validation_alpha.svg"
 
 次の図は、特徴量 50 個（予測に効くのはそのうち 10 個）の回帰データで、[Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` を 20 通り変えて 5-fold CV の R² を測った結果です。R²（[決定係数](../regression-metrics/)）は 1 で完全一致、0 で平均値を返すだけの予測と同等、負ならそれより悪いことを表します。データの件数だけを 60 件と 300 件で変えています。
 
-![Ridge の alpha を CV で選ぶ](./cross_validation_alpha.svg)
+{{< figure src="cross_validation_alpha.svg" alt="横軸を Ridge の alpha（0.01〜1000 の対数目盛）、縦軸を 5-fold CV の R² の平均と標準偏差のエラーバーとした 2 本の曲線。60 件の曲線は alpha = 2.34 の縦の点線で最大の山型で、左側ほどエラーバーが長い。300 件の曲線は alpha = 10 付近まで 0.98 で平らで、その先で下がる" caption="Ridge の alpha と 5-fold CV の R²" align="center" >}}
 
 60 件の曲線は山型で、`alpha=2.34`（縦の点線）で最大です。`alpha` が小さすぎると過学習、大きすぎると係数を 0 に寄せすぎた未学習でスコアが下がります。エラーバー（fold 間のばらつき）も `alpha` が小さい側ほど長く、平均だけでなく安定性でも劣ります。
 

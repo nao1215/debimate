@@ -50,19 +50,19 @@ print(f"面積: {np.trapezoid(kde, xs):.3f}")
 面積: 1.000
 ```
 
-![1 点ごとのガウスカーネルとその総和としての KDE 曲線](./kde_per_point_intuition.svg)
+{{< figure src="kde_per_point_intuition.svg" alt="黒い点が 15 個のデータ点、青い細い曲線が各点のガウスカーネル（n で割った後）、赤い曲線がその総和の KDE。点が密集した所で赤い曲線が高い" caption="1 点ごとのカーネルと、その総和の KDE 曲線" align="center" >}}
 
 黒い点がデータ点、青い細い曲線が各点のカーネル（`n` で割った後）で、その総和が赤い曲線です。点が密集している所では青いカーネルが重なるため、赤い曲線が高くなります。
 
 同じ計算を標準正規分布の 500 点に `h = 0.4` で当て、ヒストグラムと重ねると次の通りです。
 
-![500 点のヒストグラムと KDE（h=0.4）](./kde_example.svg)
+{{< figure src="kde_example.svg" alt="標準正規分布から引いた 500 点のヒストグラムに、h = 0.4 の KDE 曲線を重ねた図" caption="500 点のヒストグラムと KDE（h = 0.4）" align="center" >}}
 
 ---
 
 ### バンド幅の選び方
 
-KDE の見え方を最も大きく変えるのはバンド幅 `h` です。2 峰性のデータ（中心 -2 と 2 に 200 点ずつ）で、`h` を 3 通りに変え、曲線の山の数を数えます。[scipy.stats.gaussian_kde](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html) の `bw_method` はデータの標準偏差に掛ける倍率なので、`h` を標準偏差で割って渡します。
+KDE の見え方を最も大きく変えるのはバンド幅 `h` です。2 峰性のデータ（中心 -2 と 2 に 200 点ずつ）で、`h` を 3 通りに変え、曲線の山の数を [scipy.signal.find_peaks](https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html) で数えます。[scipy.stats.gaussian_kde](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html) の `bw_method` はデータの標準偏差に掛ける倍率なので、`h` を標準偏差で割って渡します。
 
 ```python
 import numpy as np
@@ -84,7 +84,7 @@ h=0.5: 山の数 2
 h=2.0: 山の数 1
 ```
 
-![h が小さすぎるとノイズだらけ、大きすぎると 2 峰が消える](./kde_bandwidth.svg)
+{{< figure src="kde_bandwidth.svg" alt="2 峰性のデータに h = 0.1、0.5、2.0 の KDE を重ねた図。h = 0.1 は小さな山が多数残り、h = 0.5 は 2 つの山、h = 2.0 は 1 つの山に潰れる" caption="バンド幅 h による KDE の形の違い" align="center" >}}
 
 - `h=0.1`: 個々の点の小山が残り、元の分布に無い山が 15 個現れる（過小平滑、under-smoothing）
 - `h=0.5`: 2 つの山が分かれて見える
@@ -98,7 +98,7 @@ h=2.0: 山の数 1
 - 正規分布を仮定した目安: 1 次元で `h = 1.06 * σ * n^(-1/5)`。`gaussian_kde` の `"silverman"` は 1 次元でこの値になる。Silverman が勧める `0.9 * min(σ, IQR / 1.34) * n^(-1/5)`（IQR は四分位範囲）とは別物
 - [交差検証](../../ml/cross-validation/): 学習に使わなかったデータの対数尤度が最も大きくなる `h` を選ぶ
 
-同じ 2 峰性データで、規則による値と、[scikit-learn の KernelDensity](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html) を 5 分割の交差検証で選んだ値を比べます（上のコードの続き）。
+同じ 2 峰性データで、規則による値と、[scikit-learn の KernelDensity](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html) を 5 分割の交差検証（[GridSearchCV](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)）で選んだ値を比べます（上のコードの続き）。
 
 ```python
 from sklearn.model_selection import GridSearchCV, KFold
@@ -168,7 +168,7 @@ print("人数が逆転する年齢:", ages[np.flatnonzero(np.diff(np.sign(diff_c
 人数が逆転する年齢: [46.8]
 ```
 
-![クラスごとの age 分布を KDE で重ね描き](./kde_class_conditional.svg)
+{{< figure src="kde_class_conditional.svg" alt="非解約（青、平均 35 歳）と解約（赤、平均 48 歳）の年齢の KDE を重ねた図。2 本の曲線は大きく重なり、40.5 歳付近で交わる" caption="クラスごとの年齢の分布を KDE で重ねた図" align="center" >}}
 
 解約者の分布は高齢側に寄っていますが、重なりも大きく、年齢だけではクラスを分けられません。
 

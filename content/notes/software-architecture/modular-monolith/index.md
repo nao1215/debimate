@@ -36,7 +36,9 @@ topics: ["Service Boundaries"]
 
 サービスに分けてネットワーク越しに呼べば、この結合は断てます。しかし、通信の遅延と失敗、サービスごとの監視とデプロイの仕組みが新しく必要になります。Martin Fowler 氏は、この上乗せされる複雑さを [Microservice Premium](https://martinfowler.com/bliki/MicroservicePremium.html) と呼んでいます。境界が無いまま分ければ、上乗せのコストだけを払って結合は残ります。
 
-モジュラーモノリスは、境界とデプロイ単位を切り離して、境界だけを先に手に入れる方法です。10 年以上・1,000 人を超える開発者が触ってきた Rails のコードを抱えていた Shopify は、2019 年の [Deconstructing the Monolith](https://shopify.engineering/deconstructing-monolith-designing-software-maximizes-developer-productivity) で、サービスに分割する代わりにこの方法を選び、次のように定義しています。
+モジュラーモノリスは、境界とデプロイ単位を切り離して、境界だけを先に手に入れる方法です。
+
+10 年以上・1,000 人を超える開発者が触ってきた Rails のコードを抱えていた Shopify は、2019 年の [Deconstructing the Monolith](https://shopify.engineering/deconstructing-monolith-designing-software-maximizes-developer-productivity) で、サービスに分割する代わりにこの方法を選び、次のように定義しています。
 
 > A modular monolith is a system where all of the code powers a single application and there are strictly enforced boundaries between different domains.
 >
@@ -75,7 +77,9 @@ flowchart LR
 
 ### 境界違反を検出する実験
 
-Go には、境界の一部をツールチェーン（`go build` などの go コマンド）が強制する仕組みがあります。[cmd/go のドキュメント](https://pkg.go.dev/cmd/go#hdr-Internal_Directories)にある通り、`internal` という名前のディレクトリ以下のコードは、`internal` の親ディレクトリを根とするツリーの中からしか import できません。`orders/internal/store` は `orders` の下からは使えますが、`billing` からは使えません。
+Go には、境界の一部をツールチェーン（`go build` などの go コマンド）が強制する仕組みがあります。
+
+[cmd/go のドキュメント](https://pkg.go.dev/cmd/go#hdr-Internal_Directories)にある通り、`internal` という名前のディレクトリ以下のコードは、`internal` の親ディレクトリを根とするツリーの中からしか import できません。`orders/internal/store` は `orders` の下からは使えますが、`billing` からは使えません。
 
 以降、「モジュール」は注文や請求のような業務のまとまりを指し、`go.mod` で定義する単位は「Go モジュール」と呼びます。
 
@@ -310,8 +314,8 @@ Shopify も、2020 年の [Under Deconstruction](https://shopify.engineering/sho
   body: Wedge は CI の実行中に呼び出しの関係を集め、公開 API 以外を通る呼び出しを違反として数えました。2020 年の記事によると、1 回の解析に 1 時間以上かかりました。
 - title: 静的解析で PR を止める（2020 年）
   body: packwerk は定数の参照だけを静的に解析し、最大のコードでも数分で終わるので、PR の段階で違反を止められます。当時は依存の向きと、内部の公開範囲の両方を検査していました。
-- title: 依存の向きに絞る（2024 年）
-  body: packwerk 3.0 で公開範囲の検査を本体から外し、依存グラフの検査に絞りました。公開範囲の検査は拡張 gem の役割になっています。違反ゼロでも実行時に落ちる例が報告されています。
+- title: 依存の向きに絞る（2023 年）
+  body: 2023 年 3 月の packwerk 3.0 で公開範囲の検査を本体から外し、依存グラフの検査に絞りました。公開範囲の検査は拡張 gem の役割になっています。2024 年の振り返りの記事では、違反ゼロでも実行時に落ちる例が報告されています。
 {{< /note-steps >}}
 
 2024 年の [A Packwerk Retrospective](https://shopify.engineering/a-packwerk-retrospective) は、公開範囲の検査が packwerk を「本来の目的ではない API 設計の道具」に変えてしまったと振り返っています。

@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-ERC-721 は、Ethereum 上で 1 つずつ区別できるトークンを扱うための規格です。このトークンは NFT（Non-Fungible Token、代替できないトークン）と呼ばれます。[ERC-20](../erc-20/) がアドレスごとの数量を記録するのに対して、ERC-721 は `tokenId` という番号ごとに所有者を記録します。ゲームのアイテム、会員証、作品の所有証明などに使われます。
+ERC-721 は、[Ethereum](https://ethereum.org/) 上で 1 つずつ区別できるトークンを扱うための規格です。このトークンは NFT（Non-Fungible Token、代替できないトークン）と呼ばれます。[ERC-20](../erc-20/) がアドレスごとの数量を記録するのに対して、ERC-721 は `tokenId` という番号ごとに所有者を記録します。ゲームのアイテム、会員証、作品の所有証明などに使われます。
 
 画面に表示される NFT には、画像や名前が付いています。しかし、ERC-721 のコントラクトが持っているのは、番号と所有者の対応と、説明の置き場所を指す [URI](https://www.rfc-editor.org/rfc/rfc3986)（Uniform Resource Identifier）の文字列です。
 
@@ -112,7 +112,7 @@ function safeTransferFrom(address from, address to, uint256 tokenId, bytes memor
 
 コードの長さで判定することには、ハマりどころもあります。[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で委任を設定した EOA は、委任先を指す 23 バイトのコードを持ちます（[Ethereum Account Model](../ethereum-account-model/) を参照）。そのため `safeTransferFrom` は委任先のコードで `onERC721Received` を呼び、委任先がこの関数を実装していなければ、EOA 宛ての送付でも失敗します。
 
-本記事のサンプルで、テスト用の EOA（dave）のコードを後半の実験と同じ `Counter` に委任すると、次のようになりました（[eip7702.sh](lab/eip7702.sh)、Anvil の Prague の規則で実行）。
+本記事のサンプルで、テスト用の EOA（dave）のコードを後半の実験と同じ `Counter` に委任すると、次のようになりました（[eip7702.sh](lab/eip7702.sh)、[Anvil](https://getfoundry.sh/anvil/overview) の [Prague](https://ethereum.org/roadmap/pectra/) の規則で実行）。
 
 ```text
 dave code before: 0x
@@ -207,7 +207,7 @@ IPFS の場合は、[IPFS の NFT データのベストプラクティス](https
 
 ### ローカルでの確認
 
-実験では、[Foundry](https://github.com/foundry-rs/foundry) のローカル用ノード [Anvil](https://getfoundry.sh/anvil/overview) 1.7.1 と [Solidity](https://soliditylang.org/) コンパイラ 0.8.28 を使い、ローカルのチェーンに学習用の `StudyNFT` をデプロイします。Ethereum の実行規則は Cancun に固定しています。
+実験では、[Foundry](https://github.com/foundry-rs/foundry) のローカル用ノード [Anvil](https://getfoundry.sh/anvil/overview) 1.7.1 と [Solidity](https://soliditylang.org/) コンパイラ 0.8.28 を使い、ローカルのチェーンに学習用の `StudyNFT` をデプロイします。Ethereum の実行規則は [Cancun](https://ethereum.org/roadmap/dencun/) に固定しています。
 
 アカウントは Anvil の既定のテスト用アカウントの先頭 4 つ（alice・bob・carol・keeper）で、公開のネットワークには繋ぎません。メタデータの JSON は、同じ PC の 127.0.0.1 で動かす HTTP サーバーから返します。
 

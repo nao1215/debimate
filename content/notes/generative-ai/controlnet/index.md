@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Image Generation"]
 ---
 
-ControlNet は、学習済みの画像生成モデルに、骨格・奥行き・輪郭などの画像を形の条件として渡す仕組みです。[ControlNet の論文](https://arxiv.org/abs/2302.05543)（2023 年）で提案され、著者の実装は [lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) で公開されています。文面（プロンプト）だけでは決まらない人物の姿勢や構図も、画像で指定できます。
+ControlNet は、学習済みの画像生成モデルに、骨格・奥行き・輪郭などの画像を形の条件として渡す仕組みです。[ControlNet の論文](https://arxiv.org/abs/2302.05543)（2023 年）で提案され、論文の著者による実装は [lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) で公開されています。文面（プロンプト）だけでは決まらない人物の姿勢や構図も、画像で指定できます。
 
 人物の姿勢を指定する時は、関節を点と棒で描いた [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の骨格を渡す使い方がよく知られています。骨格を渡せば、手足も手に持つ物も骨格の通りに描かれると思うかもしれません。しかし、本記事の実験では、骨格を渡すと脚の開きと腕の向きは揃いましたが、両手で前に突き出したはずの棒は縦に立ちました。同じ姿勢の 3D の人形から作った奥行きを渡すと、棒も前を向きます。
 
@@ -60,7 +60,9 @@ ControlNet は、学習済みのモデルの重みを書き換えずに、条件
 
 #### 条件の画像の種類
 
-論文は [Canny エッジ](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)（明るさの勾配から取り出した輪郭）、奥行き（depth）、[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の骨格など、条件ごとに別の ControlNet を学習しています。本記事で使う [xinsir/controlnet-union-sdxl-1.0](https://huggingface.co/xinsir/controlnet-union-sdxl-1.0)（ControlNet++）は、1 つのモデルで 10 種類以上の条件を扱う SDXL 向けのモデルです（2024 年 7 月更新の model card の記述）。ComfyUI では [`SetUnionControlNetType`](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy_extras/nodes_controlnet.py#L7-L33) ノードで、どの種類の画像を渡すかを指定します。
+論文は [Canny エッジ](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)（明るさの勾配から取り出した輪郭）、奥行き（depth）、[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の骨格など、条件ごとに別の ControlNet を学習しています。
+
+本記事で使う [xinsir/controlnet-union-sdxl-1.0](https://huggingface.co/xinsir/controlnet-union-sdxl-1.0)（ControlNet++）は、1 つのモデルで 10 種類以上の条件を扱う SDXL 向けのモデルです（2024 年 7 月更新の model card の記述）。ComfyUI では [`SetUnionControlNetType`](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy_extras/nodes_controlnet.py#L7-L33) ノードで、どの種類の画像を渡すかを指定します。
 
 渡す画像は、画面の座標ごとに何を決めるかが違います。
 
@@ -301,7 +303,9 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 
 脚のずれは、骨格でも奥行きでも 2.0〜8.4% に収まりました。文面だけの突きの 38〜52% と比べると、どちらも脚の位置を十分に縛っています。
 
-腕は、姿勢で分かれました。腕を上げる姿勢では、骨格の 2.2〜2.3% は奥行きの 1.9〜4.9% と同じ水準です。突きでは、骨格の 22.6〜27.8% に対して、奥行きは 12.2〜15.6% で、人形そのものの 14.7% と並びました。差の多くは肘と体の奥側の左手首で、棒を握る右手首は、骨格でも人形から 2.3〜4.9% しか離れていません（関節ごとの値は [lab/pose_metrics.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/pose_metrics.json) の `joints`）。右手の位置が合っていても、棒の向きは決まらなかったことになります。
+腕は、姿勢で分かれました。腕を上げる姿勢では、骨格の 2.2〜2.3% は奥行きの 1.9〜4.9% と同じ水準です。突きでは、骨格の 22.6〜27.8% に対して、奥行きは 12.2〜15.6% で、人形そのものの 14.7% と並びました。
+
+突きの差の多くは肘と体の奥側の左手首で、棒を握る右手首は、骨格でも人形から 2.3〜4.9% しか離れていません（関節ごとの値は [lab/pose_metrics.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/pose_metrics.json) の `joints`）。右手の位置が合っていても、棒の向きは決まらなかったことになります。
 
 振り返る姿勢の腕は、人形そのものが 22.6% で、検出器が後ろから見た腕を正しく拾えていません。この姿勢の腕の値は比べられないので、目で見た棒の向きで判断しています。
 

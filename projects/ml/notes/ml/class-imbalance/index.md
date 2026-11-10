@@ -34,7 +34,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 ### 多数派だけを返す基準
 
-正例が約 5%の合成データを作ります。クラス比率の指定後に既定のラベルノイズも入るため、出来上がる比率は厳密な 95:5 ではありません。以下は [scikit-learn](https://scikit-learn.org/) 1.8.0、[NumPy](https://numpy.org/) 2.4.1、[imbalanced-learn](https://imbalanced-learn.org/) 0.14.1 で確認しました。
+正例が約 5%の合成データを作ります。クラス比率の指定後に既定のラベルノイズも入るため、出来上がる比率は厳密な 95:5 ではありません。以下は [scikit-learn](https://scikit-learn.org/) 1.8.0、[NumPy](https://numpy.org/) 2.4.1、[imbalanced-learn](https://imbalanced-learn.org/) 0.14.1 で確認しました。scikit-learn 1.9.1、NumPy 2.5.4、imbalanced-learn 0.14.2 で再実行しても、本文の出力は同じでした。
 
 本文のコードは計算部分の抜粋です。[Matplotlib](https://matplotlib.org/) の描画処理を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/class-imbalance_gen.py)は GitHub で確認できます。
 
@@ -72,7 +72,7 @@ Precision・Recall・F1 に加え、確率やスコアの順位を見る指標�
 
 ### 対処 1: 損失の重み付け（class_weight）
 
-モデルの学習方法を変える対処の 1 つが、[損失関数](/ml/ml/loss-functions/)に「少数派サンプルの誤りを重く罰する」重みを掛けることです。ここでは[ロジスティック回帰](../logistic-regression/)を使い、重み付けの有無で決定境界を比べます。`scikit-learn` では `class_weight="balanced"` で重みを指定できます。
+モデルの学習方法を変える対処の 1 つが、[損失関数](../loss-functions/)に「少数派サンプルの誤りを重く罰する」重みを掛けることです。ここでは[ロジスティック回帰](../logistic-regression/)を使い、重み付けの有無で決定境界を比べます。scikit-learn の [LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) では `class_weight="balanced"` で重みを指定できます。
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -82,7 +82,7 @@ weighted = LogisticRegression(class_weight="balanced", max_iter=2000).fit(X, y)
 # 描画処理は省略
 ```
 
-![class_weight 無しと balanced の決定境界](./imbalance_class_weight.png)
+{{< figure src="imbalance_class_weight.png" alt="多数派 944 点と少数派 56 点の散布図に、ロジスティック回帰の決定境界を上下 2 枚で重ねた図。上の重み無しでは正例と予測する赤い領域が右端だけに狭く、下の class_weight=balanced では境界が左へ移り、少数派の大半が赤い領域に入る" caption="class_weight の有無による決定境界" align="center" >}}
 
 この図はデータ全体へ当てはめた境界の説明用です。重み付け後は正例と予測する領域が広がります。未知のデータでの指標は、後の節で学習用と評価用を分けて比較します。
 
@@ -106,17 +106,17 @@ samplers = {
 # 描画処理は省略
 ```
 
-![元データと 3 種類のリサンプリング後の分布](./imbalance_resampling.png)
+{{< figure src="imbalance_resampling.png" alt="縦に 4 枚並べた散布図。元データは多数派 944 点と少数派 56 点、Random over-sampling は少数派を複製して 944 点にするので見た目の点は増えず、Random under-sampling は多数派を 56 点まで間引き、SMOTE は少数派の点同士を結ぶ線分上に新しい点を並べて 944 点にする" caption="元データと 3 種類のリサンプリング後の分布" align="center" >}}
 
 3 つのアプローチの違い:
 
 - Random over-sampling: 少数派のサンプルを単純に複製。情報量は増えないが少数派のサンプルが学習時の損失に寄与する割合が増える
 - Random under-sampling: 多数派からランダムに間引く。多数派の情報を失うが計算が軽い
-- SMOTE（Synthetic Minority Over-sampling Technique）: 少数派サンプル同士を結ぶ線分上に「合成サンプル」を作る。同じクラスの近傍点間を補間する。実際に意味のある入力になるかは特徴量に依存する
+- [SMOTE](https://doi.org/10.1613/jair.953)（Synthetic Minority Over-sampling Technique）: 少数派サンプル同士を結ぶ線分上に「合成サンプル」を作る。同じクラスの近傍点間を補間する。実際に意味のある入力になるかは特徴量に依存する
 
 リサンプリングによって分類結果がどう変わるかも確認します。各リサンプリング後のデータへ[ロジスティック回帰](../logistic-regression/)を当て、元のデータ上に決定境界を描きます。
 
-![リサンプリング戦略別の決定境界](./imbalance_boundary_resampling.png)
+{{< figure src="imbalance_boundary_resampling.png" alt="元データの散布図に、リサンプリング無し・Random over-sampling 後・SMOTE 後に学習したロジスティック回帰の境界を縦に 3 枚重ねた図。リサンプリング無しでは赤い正例の領域が右端だけで、2 つのリサンプリング後は境界が x1 = 0 付近まで左へ移る" caption="リサンプリング別の決定境界" align="center" >}}
 
 この例では、リサンプリング後に正例と予測する領域が広がっています。直前のサンプル配置図には合成点も含みますが、この決定境界図の点は元データです。
 
@@ -142,7 +142,7 @@ for name, model in [("LR", plain_lr), ("weighted", balanced_lr), ("SMOTE", smote
           f"AP={average_precision_score(y_te, proba):.3f}")
 ```
 
-![同じ評価集合で測った 5 指標と 4 モデル](./imbalance_metrics_breakdown.svg)
+{{< figure src="imbalance_metrics_breakdown.svg" alt="多数派基準・通常のロジスティック回帰・class_weight・SMOTE の 4 モデルについて、Accuracy・Precision・Recall・F1・AP を並べた棒グラフ。重み付けと SMOTE は Recall が 0.82 に上がる代わりに Precision と F1 が大きく下がる" caption="同じ評価データで測った 4 モデルの 5 指標" align="center" >}}
 
 ```text
 LR precision=1.000 recall=0.588 F1=0.741 AP=0.767
@@ -154,13 +154,15 @@ SMOTE precision=0.237 recall=0.824 F1=0.368 AP=0.755
 
 全て同じスコアを返す多数派基準の AP は `17/300 ≈ 0.0567` で、0 ではありません。正例の順位を付けられないため、評価集合の正例率になります。図では多数派基準の Precision・Recall・F1 と AP を区別して読みます。
 
-用途に応じて、許容できる見逃し数と誤検出数を決めます。F1 や AP など 1 つの値を選ぶ場合も、その値が何を数え、何を数えないかを確認します。Matthews 相関係数（MCC）も、混同行列の 4 要素から計算する指標です。クラス比率の影響を完全に除けるわけではありません。
+用途に応じて、許容できる見逃し数と誤検出数を決めます。F1 や AP など 1 つの値を選ぶ場合も、その値が何を数え、何を数えないかを確認します。[Matthews 相関係数（MCC）](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.matthews_corrcoef.html)も、混同行列の 4 要素から計算する指標です。クラス比率の影響を完全に除けるわけではありません。
 
 ---
 
 ### 閾値調整: 同じモデルで Precision/Recall を動かす
 
-確率出力を持つモデルなら、リサンプリングや重み付けをしなくても、判定閾値を動かすと、正例と判断する件数が変わり、Precision と Recall も変化します。例えば、デフォルト閾値 0.5 を 0.3 に下げれば、少数派を取りこぼしにくくなる（Recall は上がるか同じ）が、負例を誤検出する件数も増えるか同じになります。ただし、有限のデータで Precision が閾値に対して単調に変わるとは限りません。
+確率出力を持つモデルなら、リサンプリングや重み付けをしなくても、判定閾値を動かすと、正例と判断する件数が変わり、Precision と Recall も変化します。
+
+例えば、デフォルト閾値 0.5 を 0.3 に下げれば、少数派を取りこぼしにくくなる（Recall は上がるか同じ）が、負例を誤検出する件数も増えるか同じになります。ただし、有限のデータで Precision が閾値に対して単調に変わるとは限りません。
 
 ```python
 proba = LogisticRegression(max_iter=2000).fit(X_tr, y_tr).predict_proba(X_te)[:, 1]
@@ -183,7 +185,7 @@ thr=0.1: precision=0.33, recall=0.71
 
 ### 数学での使いどころ
 
-- 事前確率の歪み: [ベイズの定理](/ml/math/bayes-theorem/)の `P(y)` が訓練と本番で違うときの補正（label shift）
+- 事前確率の歪み: [ベイズの定理](../../math/bayes-theorem/)の `P(y)` が訓練と本番で違うときの補正（label shift）
 - 期待リスクの再定義: クラスごとの誤分類コストを取り込んだ目的関数
 - F1 / F_β スコアの導出: Precision と Recall の調和平均、`β` でどちらを重視するかを制御
 - ROC 曲線とコスト曲線: 閾値変化に対する FPR / TPR の軌跡

@@ -2,7 +2,7 @@
 <style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
 <defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrowred" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
 <rect width="960" height="540" fill="#ffffff"/>
-<text x="30" y="44" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">v0.3.0 まで: 連結して 1 回だけ実行</text>
+<text x="30" y="44" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">v0.3.4 まで: 連結して 1 回だけ実行</text>
 <rect x="30" y="64" width="64" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
 <text x="62.0" y="111.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">&lt;1&gt;</text>
 <rect x="102" y="64" width="104" height="76" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>

@@ -45,6 +45,8 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 
 分散トレーシングは、ID に加えて「誰に呼ばれたか」と「いつ始まり、いつ終わったか」を記録します。この記録の構造を大規模に運用した例として、Google の [Dapper の論文](https://research.google/pubs/dapper-a-large-scale-distributed-systems-tracing-infrastructure/)（2010 年）が広く参照されています。
 
+---
+
 ### Trace・Span・Context
 
 分散トレーシングの記録は、Trace と Span の 2 段でできています。Span は 1 つの処理（1 回の HTTP 呼び出しや、1 件のメッセージの処理）の記録で、Trace は 1 つの要求から派生した Span の集まりです。
@@ -263,6 +265,8 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
 
 重複した Span は、件数の集計も狂わせます。Span の数から「在庫引き当ての回数」を数えると、実際の注文の数より多くなります。業務の回数を数えるなら、成功した Span だけを数えるか、業務側の記録から数えます。再試行が増えると下流への要求も増えるので、[Circuit Breaker](/notes/software-architecture/circuit-breaker/) で呼び出しを止める判断と組み合わせて読みます。
 
+---
+
 ### Sampling
 
 全ての要求の Span を保存すると、保存と送信のコストが要求の数に比例して増えます。そのため、一部の Trace だけを残す Sampling を行います。Dapper の論文では、要求の多いサービスでは 1/1024 の割合でも分析に十分なデータが集まったと報告しています。
@@ -282,6 +286,8 @@ tail sampling は、判断を Trace の終わりまで遅らせることで、�
 
 1 つの Trace の Span が別々の収集サーバーに届くと判断できないので、OpenTelemetry Collector の [load balancing exporter](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/exporter/loadbalancingexporter/README.md) のように、trace ID で送り先を揃える構成も必要になります。入口で大まかに間引き、残った分に tail sampling を掛ける組み合わせもあります。
 
+---
+
 ### Clock Skew
 
 Span の開始・終了時刻は、その Span を記録したホストの時計で測ります。ホストごとの時計は完全には揃わず、このずれを Clock Skew と呼びます。実験の 2 回目では、inventory の時計を 100 ms 遅らせただけで、子が親より前に始まる Trace ができました。
@@ -294,15 +300,11 @@ Span の開始・終了時刻は、その Span を記録したホストの時計
 
 - Span の長さ（終了 − 開始）は信頼できる。ただし、壁時計の時刻で測っていると、記録の途中で時刻が跳んだ時に長さも狂う。時計を合わせる [NTP](https://www.rfc-editor.org/rfc/rfc5905) の実装は通常、時計の進む速さを変えて少しずつ合わせるが、ずれが大きい時の一括補正（step）や手動の変更では時刻が跳ぶ（[Heartbeat](../heartbeat/) の単調増加する時計の話と同じ）
 - 呼ぶ側の Span と呼ばれた側の Span の開始時刻の差は、そのままネットワークの遅延とは読めない。差には時計のずれが混ざる
-- 呼ぶ側は呼ばれる側より先に送り、呼ばれる側は応答より先に受け取るので、呼ばれた側の Span は呼ぶ側の Span の内側にある筈である。外にはみ出していたら、時計のずれを疑う
+- 呼ぶ側は呼ばれる側より先に送り、呼ばれる側は応答より先に受け取るので、呼ばれた側の Span は呼ぶ側の Span の内側にある筈である。外にはみ出していたら、時計のずれを疑う。ただし、キューの先の処理は親の外にはみ出すのが通常なので、この見方は HTTP のような同期の呼び出しに限る
 
 最後の性質は、Dapper の論文でも、サーバー側の時刻の上限と下限を決めるために使われています。表示する側のツールによっては、この性質を使って子の Span の位置を補正します。
 
 例えば、[Jaeger](https://www.jaegertracing.io/docs/2.23/deployment/configuration/#clock-skew-adjustment) は問い合わせを受ける側で補正し、補正した Span に画面上で警告を出します。補正の上限は `max_clock_skew_adjust` で決め、`0s` にすると補正しません。そのため、画面の並びが記録された生の時刻と違う場合があります。
-
-<br>
-
-キューの先の処理は親の外にはみ出すのが通常なので、この判定はそのまま使えません。
 
 ---
 

@@ -175,7 +175,9 @@ timeout  false/day  mean_delay_s  p99_delay_s
 
 <br>
 
-誤った判定の後始末は、途絶えていた時間より長く掛かる場合があります。2018 年 10 月 21 日の [GitHub の障害](https://github.blog/news-insights/company-news/oct21-post-incident-analysis/)では、機器の交換作業で、米国東海岸のネットワーク拠点と主なデータセンタの間の通信が 43 秒途切れました。その間に、[MySQL](https://www.mysql.com/) のリーダー（primary）の故障を複数の情報から判定して切り替える [Orchestrator](https://github.com/openark/orchestrator) が、書き込み先を西海岸のデータセンタに移し始めました。
+誤った判定の後始末は、途絶えていた時間より長く掛かる場合があります。2018 年 10 月 21 日の [GitHub の障害](https://github.blog/news-insights/company-news/oct21-post-incident-analysis/)では、機器の交換作業で、米国東海岸のネットワーク拠点と主なデータセンタの間の通信が 43 秒途切れました。
+
+その間に、[MySQL](https://www.mysql.com/) のリーダー（primary）の故障を複数の情報から判定して切り替える [Orchestrator](https://github.com/openark/orchestrator) が、書き込み先を西海岸のデータセンタに移し始めました。
 
 止まっていたのは通信だけで、東海岸のリーダーは動いていました。先に示した 3 つの分岐の (b) を (a) のように扱って切り替えたので、通信が戻った時には東西の両方に相手の持たない書き込みがあり、すぐには元に戻せませんでした。サービスの劣化は 24 時間 11 分続き、再発防止策の 1 つは、地域をまたいでリーダーを昇格させない設定です。
 

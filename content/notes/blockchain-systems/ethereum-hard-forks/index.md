@@ -11,7 +11,7 @@ topics: ["Smart Contract"]
 
 [Solidity](https://soliditylang.org/) のコンパイラ（solc）を 0.8.19 から 0.8.20 に上げると、ソースを 1 行も変えていないのに、一部のチェーンでデプロイが失敗することがあります。0.8.20 から、出力するバイトコードに PUSH0 という命令が入るようになったからです。
 
-PUSH0 は 2023 年 4 月の Shanghai というハードフォークで Ethereum に追加された命令で、このフォークの規則に対応していないチェーンでは無効な命令として扱われます。
+PUSH0 は 2023 年 4 月の [Shanghai](https://ethereum.org/en/history/#shapella) というハードフォークで [Ethereum](https://ethereum.org/) に追加された命令で、このフォークの規則に対応していないチェーンでは無効な命令として扱われます。
 
 ハードフォーク（hard fork）は、決めた高さや時刻を境に、ブロックの有効性を判定する規則を変更するプロトコルの更新です。Ethereum では、[EVM](../evm/)（Ethereum Virtual Machine）の命令の追加、ガスの値の変更、命令の意味の変更がハードフォークで入ります。デプロイ済みのコードは書き換わりませんが、そのコードを実行する規則が変わります。
 
@@ -38,7 +38,7 @@ PUSH0 は 2023 年 4 月の Shanghai というハードフォークで Ethereum 
 
 規則を変える時は、切り替える境目を先に決め、その規則を実装したクライアントを全ノードが事前に入れておきます。
 
-境目は、Paris より前は、2022 年 6 月の更新までブロックの高さで、2022 年 9 月の Paris（The Merge）は PoW の累積の難易度でした。Shanghai 以降はブロックの時刻（timestamp）を使います。[execution-specs の更新履歴](https://github.com/ethereum/execution-specs/blob/873ecb3e982ad4311a91cea5aaf2bbb83d306db1/docs/specs/protocol_history.md)には、例えば London が「ブロック 12965000」、Cancun が「timestamp 1710338135」と記録されています。
+境目の決め方は時期によって違います。2022 年 6 月の Gray Glacier まではブロックの高さ、2022 年 9 月の Paris（The Merge）は PoW の累積の難易度、Shanghai 以降はブロックの時刻（timestamp）です。[execution-specs の更新履歴](https://github.com/ethereum/execution-specs/blob/873ecb3e982ad4311a91cea5aaf2bbb83d306db1/docs/specs/protocol_history.md)には、例えば London が「ブロック 12965000」、Cancun が「timestamp 1710338135」と記録されています。
 
 更新前のクライアントは、新しい規則で作られたブロックを無効と判定します。PUSH0 を含む取引は、古い規則では実行に失敗し、状態の計算結果が新しい規則のノードと合いません。そのため、更新しないノードは新しい列についていけません。古い規則のノードとの互換性を保つ更新はソフトフォーク（soft fork）と呼ばれ、ハードフォークと区別されます（[ethereum.org の用語集](https://ethereum.org/glossary/#soft-fork)）。
 
@@ -78,7 +78,7 @@ Ethereum のノードは、取引を実行する実行層（execution layer）�
 | Prague | Electra | Pectra | 2025-05-07 |
 | Osaka | Fulu | Fusaka | 2025-12-03 |
 
-日付は [ethereum.org の更新の一覧](https://ethereum.org/ethereum-forks/)と execution-specs の更新履歴に基づきます。EVM の規則を決めるのは実行層なので、solc や Anvil の設定では Shanghai・Cancun のような実行層の名前を使います。
+日付は [ethereum.org の更新の一覧](https://ethereum.org/ethereum-forks/)と execution-specs の更新履歴に基づきます。EVM の規則を決めるのは実行層なので、solc や [Anvil](https://getfoundry.sh/anvil/overview) の設定では Shanghai・Cancun のような実行層の名前を使います。
 
 ---
 
@@ -104,7 +104,9 @@ Ethereum のノードは、取引を実行する実行層（execution layer）�
 
 #### warm と cold
 
-EIP-2929 は、取引の中で初めて読むストレージの値（cold）を 2100 ガス、同じ取引の中で既に読んだ値（warm）を 100 ガスにしました。ノードのディスクから初めて読み出す処理が重く、ガスの値と実際の負荷が離れていたからです。アカウントの参照にも同じ区別があり、cold は 2600 ガスです。取引の送り主と宛先のアドレス、事前コンパイル済みのコントラクトは、最初から warm として扱われます。
+EIP-2929 は、取引の中で初めて読むストレージの値（cold）を 2100 ガス、同じ取引の中で既に読んだ値（warm）を 100 ガスにしました。ノードのディスクから初めて読み出す処理が重く、ガスの値と実際の負荷が離れていたからです。
+
+アカウントの参照にも同じ区別があり、cold は 2600 ガスです。取引の送り主と宛先のアドレス、事前コンパイル済みのコントラクトは、最初から warm として扱われます。
 
 この変更で、同じコードの同じ SLOAD でも、取引の中で何回目に読むかによってガスが変わるようになりました。EIP-2930 の access list に参照先を書いておくと、取引の開始時点で warm になります。代わりに、access list のアドレス 1 件につき 2400 ガス、ストレージのキー 1 件につき 1900 ガスを取引の開始時に払います。
 
@@ -144,7 +146,7 @@ EVM の命令から見える影響は 2 つあります。委任した EOA に�
 
 同じバイトコードを複数のフォークで実行し、ここまでの変更を確かめます。実験では、開発用のローカルノードである [Foundry の Anvil](https://getfoundry.sh/anvil/overview) 1.7.1 を 8 個起動し、`--hardfork` で petersburg（EIP-1283 を外した Constantinople）から osaka までを 1 つずつ固定しました。
 
-ノードは Docker の専用のネットワークの中だけで動かし、公開のネットワークには接続しません。取引には Anvil の既定のテスト用アカウントだけを使っています。
+ノードは [Docker](https://www.docker.com/) の専用のネットワークの中だけで動かし、公開のネットワークには接続しません。取引には Anvil の既定のテスト用アカウントだけを使っています。
 
 バイトコードは、命令を 1 つずつ確かめるために手で組み立てた学習用のもので、監査していません。新しい命令の確認では、コントラクトを作成する時に実行する初期化用コードとして命令を並べ、[`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-call) で実行しました。`eth_call` は結果を状態に保存しないので、取引を送らずに命令の可否を試せます。
 
@@ -353,7 +355,9 @@ print(summary, end='')
 
 </details>
 
-コンテナの起動から後始末までは [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh) が行います。リポジトリのルートで次を実行すると、約 10 秒で終わり、全てのコンテナとネットワークを削除します。使ったイメージは ghcr.io/foundry-rs/foundry:v1.7.1、ethereum/solc:0.8.28、python:3.13-slim で、digest は [output/versions.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/output/versions.txt) に残しています。
+コンテナの起動から後始末までは [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh) が行います。リポジトリのルートで次を実行すると、約 10 秒で終わり、全てのコンテナとネットワークを削除します。
+
+使ったイメージは ghcr.io/foundry-rs/foundry:v1.7.1、ethereum/solc:0.8.28、python:3.13-slim で、digest は [output/versions.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/output/versions.txt) に残しています。
 
 ```bash
 bash content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh
@@ -399,7 +403,9 @@ osaka      |      2100 |       100
 
 <br>
 
-次に、受け取る側のコードを変えずに、Solidity の `transfer` で 1 wei を送る取引を各フォークで送りました。受け取る側は、ETH を受け取るとストレージを 3 か所読むだけのコードです。送る側の [Sender.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/Sender.sol) は `payable(to).transfer(msg.value)` を呼ぶだけで、全てのフォークで動くように evmVersion を petersburg にしてコンパイルしています。
+次に、受け取る側のコードを変えずに、Solidity の `transfer` で 1 wei を送る取引を各フォークで送りました。受け取る側は、ETH を受け取るとストレージを 3 か所読むだけのコードです。
+
+送る側の [Sender.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/Sender.sol) は `payable(to).transfer(msg.value)` を呼ぶだけで、全てのフォークで動くように evmVersion を petersburg にしてコンパイルしています。
 
 受け取る側が 3 か所を読むのに要るガスは、以下の通りです。棒の長さは、上記で測った SLOAD のガスの 3 倍です。
 
@@ -488,7 +494,7 @@ Guard.sol (transient) with cancun: compiled
 - [EIP-7954](https://eips.ethereum.org/EIPS/eip-7954): コントラクトのコードの上限を 24,576 バイトから 65,536 バイトに拡大
 - [EIP-7928](https://eips.ethereum.org/EIPS/eip-7928): ブロック単位で参照した状態の一覧を持つ Block-Level Access Lists
 
-内容と時期は Meta EIP の更新で変わります。最新の状態は、Meta EIP と [execution-specs の更新履歴](https://github.com/ethereum/execution-specs/blob/873ecb3e982ad4311a91cea5aaf2bbb83d306db1/docs/specs/protocol_history.md)で確かめてください。
+内容と時期は Meta EIP の更新で変わります。その後の変更は、Meta EIP と [execution-specs の更新履歴](https://github.com/ethereum/execution-specs/blob/873ecb3e982ad4311a91cea5aaf2bbb83d306db1/docs/specs/protocol_history.md)で確かめてください。
 
 <br>
 

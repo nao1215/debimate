@@ -9,9 +9,9 @@ wrapTables: true
 topics: ["Scaling"]
 ---
 
-毎朝のコーヒー代を Bitcoin で払うと、1 杯ごとに取引をブロックに入れることになります。ブロックは平均 10 分に 1 つしか作られず、手数料は金額ではなく取引のデータ量で決まるため、数百円の支払いに数十分の確定待ちと見合わない手数料が付く場合があります。
+毎朝のコーヒー代を [Bitcoin](https://bitcoin.org/) で払うと、1 杯ごとに取引をブロックに入れることになります。ブロックは平均 10 分に 1 つしか作られず、手数料は金額ではなく取引のデータ量で決まるため、数百円の支払いに数十分の確定待ちと見合わない手数料が付く場合があります。
 
-Lightning Network は、2 者が共同で管理する Bitcoin を「チャネル」に預け、2 人だけが署名する残高表を何度も書き換えることで支払いを進めるネットワークです。チェーンに記録するのは、原則としてチャネルを開く取引と閉じる取引の 2 つだけです。
+[Lightning Network](https://lightning.network/) は、2 者が共同で管理する Bitcoin を「チャネル」に預け、2 人だけが署名する残高表を何度も書き換えることで支払いを進めるネットワークです。チェーンに記録するのは、原則としてチャネルを開く取引と閉じる取引の 2 つだけです。
 
 複数のチャネルを経由すれば、直接チャネルを持たない相手にも支払えます。プロトコルは [BOLT（Basis of Lightning Technology）](https://github.com/lightning/bolts)という仕様群で定められています。
 
@@ -50,7 +50,9 @@ Lightning Network は、1 つ目をチェーンに書かないことで、残り
 
 ### チャネルの開設・更新・閉鎖
 
-開設では、資金を出す側（BOLT では funder）が funding transaction を作ります。この取引の出力は「2 人とも署名した時だけ使える」2-of-2 のマルチシグで、預けた資金は片方の[デジタル署名](../digital-signature/)だけでは動かせません。funder は funding transaction をチェーンに出す前に、その資金を自分に払い戻す取引への相手の署名を受け取ります。そのため、相手が応答しなくなっても資金は閉じ込められません。
+開設では、資金を出す側（BOLT では funder）が funding transaction を作ります。この取引の出力は「2 人とも署名した時だけ使える」2-of-2 のマルチシグで、預けた資金は片方の[デジタル署名](../digital-signature/)だけでは動かせません。
+
+funder は funding transaction をチェーンに出す前に、その資金を自分に払い戻す取引への相手の署名を受け取ります。そのため、相手が応答しなくなっても資金は閉じ込められません。
 
 更新で書き換える残高表の正体は、funding transaction の出力を入力にし、「Alice に何 sat、Bob に何 sat」という出力を持つ commitment transaction です。sat（satoshi）は Bitcoin の最小単位で、1 BTC の 1 億分の 1 です。
 
@@ -103,15 +105,21 @@ flowchart LR
 
 図は Alice が持つ commitment transaction で、Bob が持つものは 2 人の役割を入れ替えた形です。チェーンに出した本人だけが自分の分を待たされ、相手は to_self_delay を待たずに受け取れます。なお、anchor outputs（option_anchors）を使うチャネルでは、to_remote にも 1 ブロックの待ちが付きます。
 
-取り消しは、更新のたびに行います。新しい commitment transaction に署名し合った後、Alice は古い方に使った per_commitment_secret という秘密を Bob に渡します（BOLT 2 の `revoke_and_ack`）。Bob はこの秘密と自分の秘密を組み合わせて、古い方の取り消し鍵の秘密鍵を計算できるようになります。[鍵の導出](https://github.com/lightning/bolts/blob/master/03-transactions.md#revocationpubkey-derivation)の形から、2 人の秘密が揃うまでは誰もこの秘密鍵を計算できません。
+取り消しは、更新のたびに行います。新しい commitment transaction に署名し合った後、Alice は古い方に使った per_commitment_secret という秘密を Bob に渡します（BOLT 2 の `revoke_and_ack`）。
 
-Alice が取り消し済みの commitment transaction を出すと、Bob は `to_self_delay` の待ちが終わる前に、取り消し鍵で Alice の分を自分に送る penalty transaction を出します。Bob の分はもともと Bob に払われるので、[BOLT 5](https://github.com/lightning/bolts/blob/master/05-onchain.md#revoked-transaction-close-handling) の通り、チャネルの資金は全て Bob が請求できます。[Poon 氏と Dryja 氏の論文](https://lightning.network/lightning-network-paper.pdf)で Breach Remedy Transaction と呼ばれていたものです。
+Bob はこの秘密と自分の秘密を組み合わせて、古い方の取り消し鍵の秘密鍵を計算できるようになります。[鍵の導出](https://github.com/lightning/bolts/blob/master/03-transactions.md#revocationpubkey-derivation)の形から、2 人の秘密が揃うまでは誰もこの秘密鍵を計算できません。
+
+Alice が取り消し済みの commitment transaction を出すと、Bob は `to_self_delay` の待ちが終わる前に、取り消し鍵で Alice の分を自分に送る penalty transaction を出します。
+
+Bob の分はもともと Bob に払われるので、[BOLT 5](https://github.com/lightning/bolts/blob/master/05-onchain.md#revoked-transaction-close-handling) の通り、チャネルの資金は全て Bob が請求できます。[Poon 氏と Dryja 氏の論文](https://lightning.network/lightning-network-paper.pdf)で Breach Remedy Transaction と呼ばれていたものです。
 
 ---
 
 ### チャネルの監視と watchtower
 
-penalty transaction は、Bob が気付いて期限内に出した時だけ働きます。Bob が `to_self_delay` より長くオフラインだった場合、待ちが明けた Alice は古い残高のまま自分の分を持ち出せます。そのため、BOLT 5 は funding transaction を出したか、HTLC を含む commitment transaction に署名したノードに、出力が解決するまでチェーンを監視するよう求めています。
+penalty transaction は、Bob が気付いて期限内に出した時だけ働きます。Bob が `to_self_delay` より長くオフラインだった場合、待ちが明けた Alice は古い残高のまま自分の分を持ち出せます。
+
+そのため、BOLT 5 は funding transaction を出したか、HTLC を含む commitment transaction に署名したノードに、出力が解決するまでチェーンを監視するよう求めています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
@@ -132,7 +140,9 @@ sequenceDiagram
 
 2 つの結末を分けるのは、Bob がチェーンを見ていたかどうかだけです。
 
-常時起動していないノードのために、監視を他者に頼む watchtower があります。ノード実装の 1 つである [LND](https://github.com/lightningnetwork/lnd) の [watchtower](https://github.com/lightningnetwork/lnd/blob/master/docs/watchtower.md) では、クライアントが penalty 用の取引を暗号化して預け、watchtower は取り消し済みの commitment transaction がチェーンに出た時に初めてそれを復号して送信します。預けられるのは to_local と to_remote の分だけで、HTLC（次の節で説明します）の出力は今後の対応とされています。
+常時起動していないノードのために、監視を他者に頼む watchtower があります。ノード実装の 1 つである [LND](https://github.com/lightningnetwork/lnd) の [watchtower](https://github.com/lightningnetwork/lnd/blob/master/docs/watchtower.md) では、クライアントが penalty 用の取引を暗号化して預け、watchtower は取り消し済みの commitment transaction がチェーンに出た時に初めてそれを復号して送信します。
+
+預けられるのは to_local と to_remote の分だけで、HTLC（次の節で説明します）の出力は今後の対応とされています。
 
 監視と同じくらい厄介なのが、自分の状態のバックアップです。古いバックアップから復元したノードが、最新だと思っている commitment transaction を出すと、相手から見ればそれは取り消し済みです。[Core Lightning のバックアップの文書](https://docs.corelightning.org/docs/backup)も、DB（データベース）のスナップショット型のバックアップを推奨していません。鍵を復元できるだけでは足りないのです。
 
@@ -164,7 +174,9 @@ sequenceDiagram
 
 Bob は Carol から preimage を受け取った時点で、Alice からの HTLC を受け取る材料を得ます。Carol が preimage を示さなければ、Bob から Carol への HTLC は期限で Bob に戻り、Bob も Alice からの HTLC を失敗として戻します。ただし、各区間の決済は同時ではなく、Bob が期限内に行動することが前提です。
 
-期限が下流ほど短くないと、Bob は preimage を知った後に、Alice との HTLC をチェーン上で請求する時間を持てません。BOLT 2 の [cltv_expiry_delta の選び方](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection)は、チェーンの組み替え（reorg）・相手の応答待ち・取引がブロックに入るまでの遅れを足し合わせ、迷うなら差を 34 ブロック以上にするよう勧めています。図の 52 は、この 34 と受取人の最小値の既定である 18 を足した説明用の値です。
+期限が下流ほど短くないと、Bob は preimage を知った後に、Alice との HTLC をチェーン上で請求する時間を持てません。
+
+BOLT 2 の [cltv_expiry_delta の選び方](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection)は、チェーンの組み替え（reorg）・相手の応答待ち・取引がブロックに入るまでの遅れを足し合わせ、迷うなら差を 34 ブロック以上にするよう勧めています。図の 52 は、この 34 と受取人の最小値の既定である 18 を足した説明用の値です。
 
 以下は、シーケンス図の 2 つの HTLC の期限をブロック高の軸に並べた図です。
 
@@ -194,7 +206,7 @@ Pickhardt 氏らの 2021 年の論文「[Security and Privacy of Lightning Netwo
 
 #### 支払い額と成功率のシミュレーション
 
-分割の効き方はローカルの Python で確かめます。200 ノードのグラフの各チャネルに容量と内訳を乱数で割り当て、同じ支払いを分割せずに送った場合と、2・4・8 等分した場合を比べます。送り手は容量だけを見て経路を選び、残高の足りない区間で失敗したら、その区間を外して試し直します。コードは [lab/simulate.py](lab/simulate.py) で、全体を以下に畳みました。
+分割の効き方はローカルの [Python](https://www.python.org/) で確かめます。200 ノードのグラフの各チャネルに容量と内訳を乱数で割り当て、同じ支払いを分割せずに送った場合と、2・4・8 等分した場合を比べます。送り手は容量だけを見て経路を選び、残高の足りない区間で失敗したら、その区間を外して試し直します。コードは [lab/simulate.py](lab/simulate.py) で、全体を以下に畳みました。
 
 <details>
 <summary>simulate.py の全体（94 行）</summary>
@@ -337,6 +349,8 @@ out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": boun
 - 支払いの回数が増えても、チェーンに載る取引は開設と閉鎖の分に抑えられる
 - 相手や中継者を信用しなくても、署名済みの取引で自分の残高を取り戻せる
 - 中継の各区間が同じハッシュ値で結ばれ、中継者が片方だけ受け取ることを防げる
+
+---
 
 ### 欠点
 

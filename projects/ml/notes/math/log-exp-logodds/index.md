@@ -10,6 +10,8 @@ topics: ["Mathematics（数学の基礎）"]
 
 対数関数 `log(x)` と指数関数 `exp(x)` は互いに逆関数の関係にあり、機械学習では「積を和に変換する」「桁の違うスケールを揃える」「確率を log-odds に変換する」といった用途で繰り返し登場します。[ロジスティック回帰](../../ml/logistic-regression/)は、`p / (1 - p)` の対数である log-odds（対数オッズ）を特徴量の線形和で表します。
 
+<br>
+
 本記事では、機械学習で出てくる場面に絞って対数・指数の性質を整理します。具体的には、(1) log と exp の対応関係、(2) 「積を和に」変える代数的性質、(3) シグモイドと logit による確率↔log-odds の往復、(4) 浮動小数点で 0 に潰れる確率の積と和を log 空間で計算する方法（`logsumexp`）の 4 点です。
 
 ---
@@ -43,7 +45,7 @@ axes[1].plot(np.linspace(0.05, np.exp(2.5), 200),
 plt.savefig("log_exp_curves.svg", bbox_inches="tight")
 ```
 
-![log と exp のグラフと互いに逆関数の関係](./log_exp_curves.svg)
+{{< figure src="log_exp_curves.svg" alt="左は log(x)、log_2(x)、log_10(x) の 3 本で、どれも x = 1 で 0 を通る。右は exp(x) と log(x) を同じ座標に描き、直線 y = x に対して鏡像になる" caption="log と exp のグラフ" align="center" >}}
 
 左の図は底だけ違う 3 種類の対数曲線で、いずれも `x = 1` で 0 を通り、形は同じです（互いに定数倍の関係）。右の図は `exp(x)` と `log(x)` を同じ座標に描いたもので、直線 `y = x` に対して鏡像になっています。互いに逆関数なので、`exp(log(x)) = x` と `log(exp(x)) = x` が成り立ちます。
 
@@ -75,7 +77,7 @@ axes[1].set_title("Log scale: scaling becomes additive (parallel lines)")
 plt.savefig("log_products_to_sums.svg", bbox_inches="tight")
 ```
 
-![対数を取ると倍率の違いは平行なシフトに変わる](./log_products_to_sums.svg)
+{{< figure src="log_products_to_sums.svg" alt="左の線形スケールでは 5x、10x、50x の 3 本の傾きが違って開いていき、右で log を取ると 3 本が同じ形のまま縦に平行にずれる" caption="対数を取ると倍率の違いが平行移動に変わる" align="center" >}}
 
 左の線形スケールでは「5 倍」「10 倍」「50 倍」が傾きの違いとして発散していくのに対し、右の log スケールでは 3 本が同じ形を保ったまま縦方向に平行にずれています。これは `log(k x) = log(k) + log(x)` の式そのもので、倍率が平行移動に変わります。
 
@@ -113,7 +115,7 @@ axes[1].set_title("Logit: maps probability p back to log-odds\nz = log(p / (1 - 
 plt.savefig("sigmoid_logit.svg", bbox_inches="tight")
 ```
 
-![シグモイドと logit の対応](./sigmoid_logit.svg)
+{{< figure src="sigmoid_logit.svg" alt="左はシグモイドの S 字曲線で z = 0 で p = 0.5 を通る。右は logit で p = 0.5 で 0 を通り、p が 0 や 1 に近づくと発散する" caption="シグモイドと logit の対応" align="center" >}}
 
 左のシグモイドは `z = 0` で `p = 0.5` を通り、`z` が大きくなると `p` は 1 に飽和、`z` が小さくなると 0 に飽和する S 字形となります。右の logit は `p = 0.5` で 0 を通り、`p` が 0 や 1 に近づくと急激に発散します。同じ「確率を 0.1 動かす」操作でも、`0.4` から `0.5` への変化は log-odds で約 +0.41、`0.8` から `0.9` への変化は約 +0.81 であり、`p = 0.5` 付近の方が動かしやすい性質が読み取れます。
 
@@ -142,7 +144,7 @@ axes[1].set_title("Log-sum: stays representable even for huge n")
 plt.savefig("log_numerical_stability.svg", bbox_inches="tight")
 ```
 
-![log 空間で計算すると underflow を回避できる](./log_numerical_stability.svg)
+{{< figure src="log_numerical_stability.svg" alt="左は 0.5 の累積積で、1075 個目で 0.0 に落ちる。右は log(0.5) の累積和で、1800 個近くまで直線的に下がり続ける" caption="確率の積と log の和の比較" align="center" >}}
 
 左の図では、確率の累積積が 1075 個目で `0.0` になります。一方で右の図の累積和は線形に下がり、1500 個でも `1500 × log(0.5) ≈ -1039.7` です。この値は float64 で表せるので、尤度の比較や最大化は log のまま行います。ただし、ここから `exp` で確率に戻すと、元の積と同じく `0.0` になります。
 
@@ -175,7 +177,7 @@ print(np.exp(a - logsumexp(a)))    # softmax
 
 2 行目では `RuntimeWarning: divide by zero encountered in log` の警告も出ます。最大値を括り出した計算と `logsumexp` は同じ値で、`exp(a - logsumexp(a))` は softmax の確率になります。1 つ目の確率は約 0.665 で、log 空間の差 1 が確率の比 `e ≈ 2.72` 倍に対応します。以上は NumPy 2.5.4、SciPy 1.18.1 で実行した結果です。
 
-最尤推定、EM アルゴリズム（Expectation-Maximization、期待値最大化法）、隠れマルコフモデル、ナイーブベイズ、交差エントロピー損失は、いずれも「log を取ってから足し算」で実装され、確率の和が必要な所で `logsumexp` を使います。
+最尤推定、[EM アルゴリズム](https://doi.org/10.1111/j.2517-6161.1977.tb01600.x)（Expectation-Maximization、期待値最大化法）、隠れマルコフモデル、[ナイーブベイズ](https://scikit-learn.org/stable/modules/naive_bayes.html)、交差エントロピー損失は、いずれも「log を取ってから足し算」で実装され、確率の和が必要な所で `logsumexp` を使います。
 
 ---
 
@@ -200,7 +202,7 @@ print(np.exp(a - logsumexp(a)))    # softmax
 
 ### 適さないケース / 落とし穴
 
-- 0 や負の値に log を取れない: `log(0)` は `-∞`、負の値の log は実数で定義されない。`p = 0` の確率を扱うときは `log(p + ε)` のように小さな値 ε を足す
+- 0 や負の値に log を取れない: `log(0)` は `-∞`、負の値の log は実数で定義されない。`p = 0` の確率を扱う時は `log(p + ε)` のように小さな値 ε を足す
 - 解釈が直感的でない: log-odds や対数スコアの値そのものを読み解くのは慣れが必要。提示する時は exp で戻して確率にする方が伝わる
 - 単位の意味が変わる: log で変換した特徴量は元の単位を持たない（`log(売上)` の係数 `0.3` は「売上が 1% 増えると目的変数が約 0.003 動く」という意味で、目的変数も log を取った場合に限り「1% 増えると 0.3% 動く」という弾力性の解釈になる）
 - log 変換は値の差を圧縮する: 外れ値の影響を抑える効果がある一方で、本当に大事な差を見えにくくすることもある。回帰の残差プロットを確認して変換の要否を判断する

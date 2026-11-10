@@ -69,7 +69,9 @@ KV キャッシュの大きさは、モデルの構成から計算できます�
 
 Ollama は KV キャッシュを既定で f16（1 個 2 バイト）で持つので、1 トークンあたり `2 × 28 × 8 × 128 × 2 = 114,688` バイト（112 KiB）になります。num_ctx が 4,096 なら 448 MiB（MiB は 2 の 20 乗バイト）、Qwen3-1.7B の上限の 40,960 なら 4.375 GiB です。
 
-ヘッド（head）は、注意機構を並列に何組持つかの単位です。Qwen3-1.7B は Q を 16 ヘッド持ちますが、K と V は 8 ヘッドしか持ちません。Q ヘッドをいくつかの組に分け、組ごとに 1 組の K・V を共有する方式を GQA（[Grouped-Query Attention](https://arxiv.org/abs/2305.13245)）と呼びます。Qwen3-1.7B では 2 つの Q ヘッドが 1 組を共有します。以下は、通常の注意機構・GQA・MQA で、Q ヘッドと K・V の組の対応を並べた図です。
+ヘッド（head）は、注意機構を並列に何組持つかの単位です。Qwen3-1.7B は Q を 16 ヘッド持ちますが、K と V は 8 ヘッドしか持ちません。
+
+Q ヘッドをいくつかの組に分け、組ごとに 1 組の K・V を共有する方式を GQA（[Grouped-Query Attention](https://arxiv.org/abs/2305.13245)）と呼びます。Qwen3-1.7B では 2 つの Q ヘッドが 1 組を共有します。以下は、通常の注意機構・GQA・MQA で、Q ヘッドと K・V の組の対応を並べた図です。
 
 {{< figure src="images/kv-cache_gqa.svg" alt="3 段の図。どの段も上に 16 個の小さな青い枠（Q ヘッド）が並び、縦の線で下の黄土色の枠（K・V の組）につながる。通常の段は K・V も 16 個で 224 KiB / トークン、GQA（Qwen3）の段は 2 つの Q が 1 つの K・V を共有して 8 個で 112 KiB / トークン、MQA の段は 16 個の Q が 1 つの横長の K・V を共有して 14 KiB / トークン" caption="Q ヘッドと K・V の組の対応（通常・GQA・MQA）" align="center" >}}
 
@@ -352,7 +354,9 @@ num_ctx の既定値は、2026 年 11 月時点の Ollama の[コンテキスト
 
 0.22.1 のコードでも、既定値は GPU のメモリで 4,096・32,768・262,144 から選ばれ（[server/routes.go](https://github.com/ollama/ollama/blob/v0.22.1/server/routes.go#L1887-L1896)）、モデルの上限より大きければ上限に切り詰められます（[llm/server.go](https://github.com/ollama/ollama/blob/v0.22.1/llm/server.go#L165-L171)）。そのため、Qwen3-1.7B は 262,144 を上限の 40,960 に切り詰めた長さで読み込まれました。
 
-上限が 262,144 の qwen3:4b（[Qwen3-4B-Thinking-2507](https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507)）は、同じ時間に他の作業が 262,144 で読み込んでいたものが `/api/ps` に残っており、`size` は 42.31 GB でした。Qwen3-4B は 36 層・KV ヘッド 8 なので、KV キャッシュだけで `262,144 × 147,456 バイト = 36 GiB` になります。ファイルが 2.5 GB のモデルでも、num_ctx を指定しないと 40 GB を超えるメモリを使うことがあります。
+上限が 262,144 の qwen3:4b（[Qwen3-4B-Thinking-2507](https://huggingface.co/Qwen/Qwen3-4B-Thinking-2507)）は、同じ時間に他の作業が 262,144 で読み込んでいたものが `/api/ps` に残っており、`size` は 42.31 GB でした。
+
+Qwen3-4B は 36 層・KV ヘッド 8 なので、KV キャッシュだけで `262,144 × 147,456 バイト = 36 GiB` になります。ファイルが 2.5 GB のモデルでも、num_ctx を指定しないと 40 GB を超えるメモリを使うことがあります。
 
 ---
 

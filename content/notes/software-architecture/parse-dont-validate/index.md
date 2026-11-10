@@ -16,6 +16,7 @@ Parse, don't validate は、「外部から来たデータを検査し、条件�
 この方針が役に立つのは、外部からの入力を複数の関数に渡しながら処理を進めるコードです。注文データなら、注文 ID・商品コード・数量・メールアドレスがそのまま後段の関数に流れていき、各関数は同じ検査を繰り返すか、検査済みだと暗黙に信じるかのどちらかになります。以下は、string と `Email` を値の集合として描き、parse と validate の違いを比べた図です。
 
 {{< figure src="images/parse-dont-validate_concept.svg" alt=`string 全体の大きな領域の中に、Email の小さな領域がある。入力 "a@b.jp" は parse を通ると Email の領域に移って後段の処理に渡り、validate を通った値は true でも string の領域に残る。後段の処理は Email の領域の中にある` caption="値の集合の上で比べた parse と validate" align="center" >}}
+
 上記の図で parse を通った値は `Email` の領域に移り、後段の処理はその領域の値だけを受け取ります。validate は true を返しても、値を string の領域に残します。Go では、宣言しただけの変数に入る初期値（ゼロ値）が、この保証の抜け道になります。
 
 <br>
@@ -47,15 +48,16 @@ flowchart LR
 
 上記の図では同じ検査が 3 箇所に複製されています。問題は重複そのものより、後段の検査で失敗した時には、前段がその入力で既に処理を進めてしまっている点です。例えば確認メールの送信でアドレスの不正が分かった時には、注文は既に保存されています。
 
-解析と検査のコードが処理の各所に散らばるこの状態は、Shotgun parsing と呼ばれるアンチパターンです。King 氏は、この語の定義を 2016 年の論文 The Seven Turrets of Babel から引いています。
+解析と検査のコードが処理の各所に散らばるこの状態は、Shotgun parsing と呼ばれるアンチパターンです。King 氏は、この語の定義を 2016 年の論文「[The Seven Turrets of Babel](http://langsec.org/papers/langsec-cwes-secdev2016.pdf)」から引いています。
 
 <br>
 
-検査した値と、後段が使う値が別物になることもあります。文書指向の DB（データベース）である Apache CouchDB は、ユーザーの登録情報の文書（`_users`）を Erlang で書かれた本体で解析し、重複したキーも両方残したまま JavaScript の検査関数に渡していました。
+検査した値と、後段が使う値が別物になることもあります。文書指向の DB（データベース）である [Apache CouchDB](https://couchdb.apache.org/) は、ユーザーの登録情報の文書（`_users`）を Erlang で書かれた本体で解析し、重複したキーも両方残したまま JavaScript の検査関数に渡していました。
 
 検査関数のパーサーは後に現れた `roles` だけを残し、本体が権限を判定する時は前に現れた `roles` を使います。この差を突いて、検査を通った文書で管理者の役割を得られたのが [CVE-2017-12635](https://docs.couchdb.org/en/stable/cve/2017-12635.html) です。以下は、1 つの文書にある 2 つの `roles` と、それぞれを読んだ側の図です。
 
 {{< figure src="images/parse-dont-validate_couchdb.svg" alt=`左に _users の文書の抜粋。"name": "oper" の下に、黄土色の "roles": ["_admin"] と、青い "roles": [] が続く。黄土色の行から右上の本体（Erlang）へ線が伸び「前の roles で権限を判定」。青い行から右の検査関数（JavaScript）へ線が伸び「後の roles だけを見て通す」。下に「検査を通った同じ文書で、管理者の役割を得られる」` caption="CVE-2017-12635 の文書（抜粋）と、2 つの読み方" align="center" >}}
+
 検査を 3 箇所に複製した図とは違い、ここでの検査は 1 回でした。検査関数が返したのは可否だけで、権限の判定には同じ文書の別の読み方が使われました。問題は権限そのものではなく、同じ JSON の読み方が 2 つあったことです。検査で得た値を後段に渡す形なら、読み方は 1 つで済みます。
 
 ---

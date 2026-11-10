@@ -25,7 +25,7 @@ Image Linting（本記事での呼び名）は、生成した画像を人が見�
 - 人数・露出・服・色の検査は、それぞれ何を止めて何を見逃すのか。
 - 「同じ人物か」は、CLIP の近さとタグの近さのどちらで見分けられるのか。
 
-画像生成の仕組みは [LoRA のノート](/notes/generative-ai/lora/) を参照してください。失敗を減らすプロンプトの書き方は説明しません。
+画像生成の仕組みは [Diffusion Model のノート](/notes/generative-ai/diffusion-model/) を参照してください。失敗を減らすプロンプトの書き方は説明しません。
 
 ---
 
@@ -124,12 +124,12 @@ p = 0.05, n = 10 の時: 0.95^10 = 0.599
 検査に使った道具は、3 つのタイプに分かれます。
 
 - タグ付けのモデル: 画像に付く語（タグ）ごとの確率を返します。[WD ViT Tagger v3](https://huggingface.co/SmilingWolf/wd-vit-tagger-v3)（イラストの投稿サイト Danbooru の画像で学習したモデル。[Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)）は、`1girl`（女性 1 人）や `red_jacket` のような人数・服・髪のタグと、`general` から `explicit` までの 4 段階のレーティングを返してくれます
-- 検出器: 画像の中の顔や人物を矩形で囲み、その数を返します。deepghs の [anime_face_detection](https://huggingface.co/deepghs/anime_face_detection)（v1.4_s）と [anime_person_detection](https://huggingface.co/deepghs/anime_person_detection)（v1.3_s）を使いました。どちらも物体検出のモデルの系統である [YOLOv8](https://docs.ultralytics.com/models/yolov8/) を元にしたもので、[MIT License](https://opensource.org/license/mit) です
+- 検出器: 画像の中の顔や人物を矩形で囲み、その数を返します。deepghs の [anime_face_detection](https://huggingface.co/deepghs/anime_face_detection)（v1.4_s）と [anime_person_detection](https://huggingface.co/deepghs/anime_person_detection)（v1.3_s）を使いました。どちらも物体検出のモデルの系統である [YOLOv8](https://docs.ultralytics.com/models/yolov8/) で学習したもので（[imgutils の説明](https://dghs-imgutils.deepghs.org/main/api_doc/detect/face.html)）、[MIT License](https://opensource.org/license/mit) です
 - 統計と埋め込み: 画素の色を数える計算と、画像を 1 本のベクトル（埋め込み）に変える [CLIP](https://github.com/openai/CLIP)（OpenAI が公開した、画像と文章を同じ空間に置くモデル。MIT License）です。2 枚の埋め込みの cos（向きの近さ。1 に近いほど似ている）で、基準の絵との近さを測ります
 
-重みはどれも [ONNX](https://onnx.ai/) 形式（モデルの計算をフレームワークに依存せず保存する形式）で、[ONNX Runtime](https://onnxruntime.ai/) 1.31.1 の CPU 実行で動かしました。
+重みはどれも [ONNX](https://onnx.ai/) 形式（モデルの計算をフレームワークに依存せず保存する形式）で、[ONNX Runtime](https://onnxruntime.ai/) 1.31.1 の CPU 実行で動かしました。重みはどれも 2026 年 11 月 10 日に取得したもので、バージョンが変わるとタグの確率や検出の結果も変わります。
 
-CLIP は、[openai/clip-vit-base-patch32](https://huggingface.co/openai/clip-vit-base-patch32) を ONNX に変換した [Xenova/clip-vit-base-patch32](https://huggingface.co/Xenova/clip-vit-base-patch32) の画像側だけを使っています。CLIP のモデルカードは、研究以外の実運用での利用を想定外としています。重みは 2026 年 11 月 10 日に取得したバージョンで、バージョンが変わるとタグの確率も変わります。
+CLIP は、[openai/clip-vit-base-patch32](https://huggingface.co/openai/clip-vit-base-patch32) を ONNX に変換した [Xenova/clip-vit-base-patch32](https://huggingface.co/Xenova/clip-vit-base-patch32) の画像側だけを使っています。CLIP のモデルカードは、研究以外の実運用での利用を想定外としています。
 
 これらから、次の 7 つの検査を作りました。タグは確率 0.35 以上を「出ている」とみなします。閾値と必須のタグは、合否のラベルを付ける前に決め、その後は動かしていません。
 
@@ -506,7 +506,7 @@ $ python3 evaluate.py features.json labels.json result.json
 
 人数・崩れ・露出の 4 つは、合格の絵を 1 枚も捨てていません。その代わりに、不合格の絵も 1 枚も止めていません。72 枚の中に、人数が増えた絵や露出のある絵が無かったからです。この 4 つは、このデータでは何の役にも立たずに処理時間だけを使っていました。ただし、失敗が出た時の保険として残す判断はあり得ます。
 
-服の検査は、不合格 27 枚のうち 24 枚を通しました。neon の 24 枚は、夜の路地に看板が並ぶ絵ですが、服と髪の色は基準の絵と同じだからです。服の色とタグだけを見る検査では、背景も文字も見ません。立ち絵を大量に作っていた時に、服の色だけを見て合格にした約 120 枚が人の見直しで外されたのも、同じ形の誤った合格です。
+服の検査は、不合格 27 枚のうち 24 枚を通しました。neon の 24 枚は、夜の路地に看板が並ぶ絵ですが、服と髪の色は基準の絵と同じだからです。服の色とタグだけを見る検査では、背景も文字も見ません。著者が以前に立ち絵を大量に作った時、服の色だけを見て合格にした約 120 枚が人の見直しで外されたのも、同じ形の誤った合格です。
 
 <br>
 

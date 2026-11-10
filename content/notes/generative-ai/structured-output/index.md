@@ -90,7 +90,7 @@ JSON モードは、構文が正しい JSON なら中身を問いません。キ
 
 Ollama では、JSON モードとスキーマの方式は、どちらも制約付きデコードで実現されています。生成の各ステップで、ここまでに出力した文字列に続けても文法に違反しない候補だけを残し、それ以外の確率を 0 にしてから選びます。
 
-Ollama（v0.22.1）は、受け取った `format` を [GBNF](https://github.com/ggml-org/llama.cpp/blob/ec98e2002/grammars/README.md)（llama.cpp の文法の記法）の文法に変換します（[llm/server.go](https://github.com/ollama/ollama/blob/v0.22.1/llm/server.go#L1553-L1572)）。`"json"` の時は固定の JSON の文法を使い、スキーマの時は llama.cpp の変換関数で文法を作ります。固定の文法の開始規則は `root ::= object` なので、JSON モードでも応答は必ずオブジェクト（`{` で始まる形）になります。
+Ollama（v0.22.1）は、受け取った `format` を [GBNF](https://github.com/ggml-org/llama.cpp/blob/ec98e2002/grammars/README.md)（[llama.cpp](https://github.com/ggml-org/llama.cpp) の文法の記法）の文法に変換します（[llm/server.go](https://github.com/ollama/ollama/blob/v0.22.1/llm/server.go#L1553-L1572)）。`"json"` の時は固定の JSON の文法を使い、スキーマの時は llama.cpp の変換関数で文法を作ります。固定の文法の開始規則は `root ::= object` なので、JSON モードでも応答は必ずオブジェクト（`{` で始まる形）になります。
 
 候補を外す処理は、[sample/samplers.go](https://github.com/ollama/ollama/blob/v0.22.1/sample/samplers.go#L39-L67) にあります。以下は、その抜粋です。
 
@@ -782,7 +782,9 @@ Ollama は、`"think": true` の時だけ、応答から `<think>` と `</think>
 | キー名・型・必須項目 | 保証しない | 保証しない | 保証する（文法に変換できた範囲で） |
 | 値が正しい | 保証しない | 保証しない | 保証しない |
 
-制約付きデコードが守るのは、文字列が文法に合うことだけです。文法から見ると、`"2023-05-01"` と `"2026-05-01"` はどちらも正しい日付の形です。どちらを選ぶかはモデルの確率で決まり、和暦を読み違えたモデルは、間違った年を正しい形で書きます。そのため、取り出した値は、アプリケーション側で検証する必要があります。例えば、日付が実在するか、金額が入力の文字列に現れる数と一致するか、といった検証です。
+制約付きデコードが守るのは、文字列が文法に合うことだけです。文法から見ると、`"2023-05-01"` と `"2026-05-01"` はどちらも正しい日付の形です。どちらを選ぶかはモデルの確率で決まり、和暦を読み違えたモデルは、間違った年を正しい形で書きます。
+
+そのため、取り出した値は、アプリケーション側で検証する必要があります。例えば、日付が実在するか、金額が入力の文字列に現れる数と一致するか、といった検証です。
 
 「上限で切れない限り」も重要な条件です。生成の上限のトークン数に達すると、文法の途中で生成が止まり、閉じ括弧の無い JSON が返ります。Ollama の応答では、`done_reason` が `length` になります。[OpenAI のドキュメント](https://developers.openai.com/api/docs/guides/structured-outputs)も、上限に達した場合と、モデルが安全上の理由で答えを拒否した場合は、スキーマに合わない応答が返り得ると断っています。
 
@@ -853,7 +855,9 @@ if __name__ == "__main__":
 
 #### スキーマの全ての機能は使えない
 
-Ollama は、llama.cpp の変換関数でスキーマを文法に変換します。[llama.cpp の文法のドキュメント](https://github.com/ggml-org/llama.cpp/blob/ec98e2002/grammars/README.md)（Ollama v0.22.1 が取り込んでいるコミット）によると、変換できるのは JSON Schema の一部です。例えば、`minimum` と `maximum` は整数にしか効かず、`uniqueItems` や条件分岐（`if` / `then`）は変換されません。変換できない指定は、エラーにならずに無視される場合があります。また、`pattern` は `^` と `$` で囲む必要があります。
+Ollama は、llama.cpp の変換関数でスキーマを文法に変換します。[llama.cpp の文法のドキュメント](https://github.com/ggml-org/llama.cpp/blob/ec98e2002/grammars/README.md)（Ollama v0.22.1 が取り込んでいるコミット）によると、変換できるのは JSON Schema の一部です。例えば、`minimum` と `maximum` は整数にしか効かず、`uniqueItems` や条件分岐（`if` / `then`）は変換されません。
+
+変換できない指定は、エラーにならずに無視される場合があります。また、`pattern` は `^` と `$` で囲む必要があります。
 
 そのため、スキーマに書いた制約が生成で守られたと決め付けず、受け取った後に同じスキーマで検証します。実験の `jsonschema` による検証が、これに当たります。
 

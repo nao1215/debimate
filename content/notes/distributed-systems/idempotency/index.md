@@ -93,7 +93,7 @@ flowchart TB
 
 HTTP のメソッドにも同じ区別が入っています。例えば PUT は、要求の本文が表す状態で、指定した URL のリソースを作成または置き換えるよう求めるメソッドです。同じ本文で何度送っても、意図している状態は最後の 1 通と変わりません。
 
-HTTP の意味論を定める RFC 9110 は、PUT・DELETE と safe なメソッド（GET、HEAD、OPTIONS、TRACE。クライアントが状態変更を要求しない操作）を冪等なメソッドとして挙げています。
+HTTP の意味論を定める [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.html) は、PUT・DELETE と safe なメソッド（GET、HEAD、OPTIONS、TRACE。クライアントが状態変更を要求しない操作）を冪等なメソッドとして挙げています。
 
 定義は、「[the intended effect on the server of multiple identical requests with that method is the same as the effect for a single such request](https://www.rfc-editor.org/rfc/rfc9110.html#name-idempotent-methods)」（同じ要求を複数回送った時にサーバー上で意図される結果が、1 回送った時と同じ）です。
 
@@ -136,7 +136,7 @@ DB（データベース）の一意制約は、同じキーの要求が同時に
 
 この排他が働くのは登録の瞬間で、業務処理との整合は別に設計する必要があります。キーの記録と課金の記録は、同じトランザクションに入れるのが素直です。分けると、キーは登録済みなのに課金が無い（あるいはその逆の）食い違いが残り得ます。どこまでを 1 つのトランザクションに入れるかは [Transaction Scope](../../database-systems/transaction-scope/) の題材です。
 
-PostgreSQL は、`ON CONFLICT` 句で一意制約の衝突を扱えます。以下が、冪等キーのテーブルと登録の一例です。
+[PostgreSQL](https://www.postgresql.org/) は、[`ON CONFLICT` 句](https://www.postgresql.org/docs/current/sql-insert.html#SQL-ON-CONFLICT)で一意制約の衝突を扱えます。以下が、冪等キーのテーブルと登録の一例です。
 
 ```sql
 CREATE TABLE idempotency_keys (
@@ -161,7 +161,9 @@ RETURNING id;
 
 <br>
 
-このキーを運ぶ Idempotency-Key リクエストヘッダは、IETF（インターネットの技術仕様を定める団体）の HTTPAPI ワーキンググループの Internet-Draft（RFC になる前の草案）[The Idempotency-Key HTTP Header Field](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-08) が定義しています。2026 年 11 月時点の最新は 2026 年 10 月 22 日提出の draft-08 で、RFC にはなっていません。以降の 409・422・有効期限の扱いは、draft-08 の記述に従います。
+このキーを運ぶ Idempotency-Key リクエストヘッダは、IETF（インターネットの技術仕様を定める団体）の HTTPAPI ワーキンググループの Internet-Draft（RFC になる前の草案）[The Idempotency-Key HTTP Header Field](https://datatracker.ietf.org/doc/html/draft-ietf-httpapi-idempotency-key-header-08) が定義しています。
+
+2026 年 11 月時点の最新は 2026 年 10 月 22 日提出の draft-08 で、RFC にはなっていません。以降の 409・422・有効期限の扱いは、draft-08 の記述に従います。
 
 完了後に届いた再送への応答は、draft-07 の「前回の結果を返す」から、draft-08 で「要求が意図通りに完了したことと矛盾しない応答を返す」に改められました。保存した応答をそのまま返すのは、この条件を満たす素直な実装の 1 つです。なお draft-08 の改訂履歴では、この文言はまだ議論中とされています。
 

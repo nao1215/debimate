@@ -14,9 +14,9 @@ topics: ["MLOps"]
 
 ---
 
-### 4 つの監視レイヤ
+### 4 つの監視レイヤー
 
-監視対象は粒度の違う 4 つのレイヤに整理できます。それぞれ「気づきたい問題」「責任者」「使う指標」が違います。
+監視対象は粒度の違う 4 つのレイヤーに整理できます。それぞれ「気づきたい問題」「責任者」「使う指標」が違います。
 
 {{< note-panels caption="4 つの監視対象。それぞれ指標と担当を決めます。" >}}
 - title: ビジネス KPI
@@ -70,7 +70,7 @@ warning (0.88) を下回った日: 55
 critical (0.85) を下回った日: 76
 ```
 
-![Accuracy の時系列と warning/critical 閾値](./monitoring_accuracy_alert.svg)
+{{< figure src="monitoring_accuracy_alert.svg" alt="120 日分の accuracy の時系列。灰色の点が日次の値、青線が 7 日移動平均で、0.92 から緩やかに下がり 75 日目に段差で落ちる。橙の破線が warning の 0.88、赤の破線が critical の 0.85 で、76 日目に移動平均が critical を下回り on-call を呼ぶ" caption="accuracy の時系列と warning・critical の閾値（合成データ）" align="center" >}}
 
 灰色の点が日次の生値、青線が 7 日移動平均です。橙の破線（warning, 0.88）と赤の破線（critical, 0.85）が SLO（Service Level Objective、満たすべき品質目標）の閾値で、移動平均が critical を下回った時点で on-call にページが飛びます。
 
@@ -82,7 +82,7 @@ critical (0.85) を下回った日: 76
 
 精度を測るには ground truth（実際の正解）が必要です。ただし、現実には数時間〜数週間遅れて到着することが多いです。例として、レコメンドの「クリックの有無」は数秒で分かります。一方で、「購入したかどうか」は数日後、「リテンションに寄与したか」は数週間後にしか確定しません。
 
-![Ground truth lag と proxy metrics](./monitoring_ground_truth_lag.svg)
+{{< figure src="monitoring_ground_truth_lag.svg" alt="予測時点 t=0 から右へ時間軸を伸ばし、t+1d にクリックなどの代理指標、t+3d にコンバージョン、t+7d に実際の結果（正解ラベル）が届く様子を 3 段で示した図" caption="正解ラベルが届くまでの遅れと代理指標" align="center" >}}
 
 ground truth を待っていたら検知が遅すぎるので、proxy metrics（代理指標）で「劣化の兆候」を早期に捉える設計にします。
 
@@ -137,7 +137,7 @@ KS > 0.2 の初日: 88, PSI > 0.25 の初日: 84
 119 日目: KS 0.331, PSI 0.659
 ```
 
-![KS と PSI の時系列。60 日目から徐々に上昇](./monitoring_input_drift.svg)
+{{< figure src="monitoring_input_drift.svg" alt="左が KS 統計量、右が PSI の 120 日分の時系列。どちらも 0〜59 日目は低い値で振れ、60 日目から徐々に上がる。左には 0.1 と 0.2、右には 0.1 と 0.25 の閾値の線を引いている" caption="KS 統計量と PSI の時系列（合成データ）" align="center" >}}
 
 KS 統計量と PSI は 60 日目あたりから上昇します。ただし分布が変わっていない 0〜59 日目でも KS は 0.123、PSI は 0.132 まで振れ、0.1 の線を KS で 2 日、PSI で 4 日超えました。1 日 200 件では標本のばらつきだけでこの程度動くので、0.1 で通知すると誤警報になります。件数に合わせて閾値を決めるか、後述の連続違反数と組み合わせます。
 
@@ -235,9 +235,9 @@ Grafana のダッシュボードで「過去 24 時間の P99 latency」「予�
 
 ツール選び:
 
-- 汎用: Prometheus + Grafana（自前運用）、Datadog、New Relic
-- ML 特化: Evidently AI、WhyLabs、Arize AI、Fiddler、Vertex AI Model Monitoring、SageMaker Model Monitor
-- ログ基盤: Elastic Stack（ELK）、Loki、Splunk、BigQuery
+- 汎用: Prometheus + Grafana（自前運用）、[Datadog](https://www.datadoghq.com/)、[New Relic](https://newrelic.com/)
+- ML 特化: [Evidently AI](https://www.evidentlyai.com/)、[Arize AI](https://arize.com/)、[Fiddler](https://www.fiddler.ai/)、[Vertex AI Model Monitoring](https://cloud.google.com/vertex-ai/docs/model-monitoring/overview)、[SageMaker Model Monitor](https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor.html)。以前よく挙がった WhyLabs は、[公式サイト](https://whylabs.ai/)で事業の終了とプラットフォームのソースコードの公開を告知しています（2026 年 11 月時点）。データの統計を記録する [whylogs](https://github.com/whylabs/whylogs) は OSS として残っています
+- ログ基盤: [Elastic Stack](https://www.elastic.co/elastic-stack)（ELK）、[Loki](https://grafana.com/oss/loki/)、[Splunk](https://www.splunk.com/)、[BigQuery](https://cloud.google.com/bigquery)
 
 ---
 

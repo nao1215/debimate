@@ -9,11 +9,11 @@ wrapTables: true
 topics: ["Introduction"]
 ---
 
-`bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4` と `tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx` は、同じ公開鍵から作った Bitcoin のアドレスです。先頭の `bc1` はメインネット、`tb1` はテストネットのアドレスであることを示し、途中の文字列は同じです。
+`bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4` と `tb1qw508d6qejxtdg4y5r3zarvary0c5xw7kxpjzsx` は、同じ公開鍵から作った [Bitcoin](https://bitcoin.org/) のアドレスです。先頭の `bc1` はメインネット、`tb1` はテストネットのアドレスであることを示し、途中の文字列は同じです。
 
 メインネット（mainnet）は、市場で価値を持つ通貨が動く本番のネットワークです。テストネット（testnet）は、メインネットとほぼ同じソフトウェアと規則で動く公開のネットワークで、価値を持たない筈の通貨で送金やプログラムを試すために使います。
 
-さらに手元の 1 台だけで動かすローカルのチェーンがあり、Bitcoin のノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の regtest や、Ethereum の開発ツール [Foundry](https://getfoundry.sh/) の [Anvil](https://getfoundry.sh/anvil/overview/)・[Hardhat](https://hardhat.org/) が起動するチェーンが該当します。
+さらに手元の 1 台だけで動かすローカルのチェーンがあり、Bitcoin のノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の regtest や、[Ethereum](https://ethereum.org/) の開発ツール [Foundry](https://getfoundry.sh/) の [Anvil](https://getfoundry.sh/anvil/overview/)・[Hardhat](https://hardhat.org/) が起動するチェーンが該当します。
 
 例えば、スマートコントラクトの開発者は、ローカルのチェーンで試した後にテストネットで公開し、最後にメインネットにデプロイします。ウォレットの開発者も、利用者の資産を動かす前にテストネットで送金を確かめます。以下は、3 種類のネットワークの関係を時間の流れで示した図です。
 
@@ -38,7 +38,7 @@ L2（Ethereum の上に作る別のチェーン）のテストネットと、各
 
 3 種類のネットワークで同じなのは、取引の形式、署名の方法、アドレスの計算の規則です。そのため、ウォレットや開発ツールは、接続先を切り替えるだけで同じ操作ができます。違うのは、そのネットワークに誰が参加し、どの記録を持っているかです。
 
-整理すると、以下の通りです。テストネットの列は、2026 年 11 月時点の Ethereum の Sepolia と Bitcoin の signet を例にしています。
+整理すると、以下の通りです。テストネットの列は、2026 年 11 月時点の Ethereum の [Sepolia](https://github.com/eth-clients/sepolia) と Bitcoin の signet を例にしています。
 
 | 項目 | メインネット | テストネット | ローカルのチェーン |
 | --- | --- | --- | --- |
@@ -52,11 +52,11 @@ L2（Ethereum の上に作る別のチェーン）のテストネットと、各
 
 <br>
 
-ネットワークごとの設定の違いは、ノードのソフトウェアの不具合も生みます。2025 年 2 月 24 日、Ethereum のテストネットの Holesky で更新 [Pectra](https://ethereum.org/roadmap/pectra/) が有効になった直後に、ネットワークが 2 つに分かれました。[事後報告](https://github.com/ethereum/pm/blob/6f1d4cb01d68e07c02ed61e48a9a335f9fb787db/Network-Upgrade-Archive/Pectra/holesky-postmortem.md)によると、経緯は次の通りです。
+ネットワークごとの設定の違いは、ノードのソフトウェアの不具合も生みます。2025 年 2 月 24 日、Ethereum のテストネットの [Holesky](https://github.com/eth-clients/holesky) で更新 [Pectra](https://ethereum.org/roadmap/pectra/) が有効になった直後に、ネットワークが 2 つに分かれました。[事後報告](https://github.com/ethereum/pm/blob/6f1d4cb01d68e07c02ed61e48a9a335f9fb787db/Network-Upgrade-Archive/Pectra/holesky-postmortem.md)によると、経緯は次の通りです。
 
 1. Pectra で、預け入れ（deposit）を記録するコントラクトのイベントは、取引を実行する側のソフトウェア（実行層のクライアント）が読むようになりました。
 2. このコントラクトのアドレスは、メインネットと Holesky で違います。Holesky は `0x4242…4242` です。
-3. 実行層のクライアントの Geth・Nethermind・[Besu](https://github.com/besu-eth/besu) は Holesky のアドレスを正しく設定しておらず、預け入れを含むブロックで他のソフトウェアと違う結果を出しました。
+3. 実行層のクライアントの [Geth](https://geth.ethereum.org/)・[Nethermind](https://github.com/NethermindEth/nethermind)・[Besu](https://github.com/besu-eth/besu) は Holesky のアドレスを正しく設定しておらず、預け入れを含むブロックで他のソフトウェアと違う結果を出しました。
 4. 確定（finality）が約 2 週間止まり、3 月 10 日に回復しました。
 
 メインネットに無い不具合がテストネットだけで起きた例です。逆に、メインネットにだけある設定や状態で失敗することもあります。テストネットで動いたことは、同じ規則・同じソフトウェアで動いたことの確認であって、メインネットの状態と混み具合で動いたことの確認ではありません。
@@ -73,7 +73,9 @@ L2（Ethereum の上に作る別のチェーン）のテストネットと、各
 
 chain ID は、取引の署名に入れる、チェーンを区別する番号です。[EIP-155](https://eips.ethereum.org/EIPS/eip-155)（2016 年の [Spurious Dragon](https://eips.ethereum.org/EIPS/eip-607) で有効）が導入しました。EIP-155 の取引と、型を持つ取引（typed transaction）は、署名の対象に chain ID を含めます。署名の後で chain ID を書き換えると、署名から復元される送り主が別のアドレスになり、取引は成り立ちません。
 
-network ID は、ノード同士の通信で使う番号です。[eth プロトコルの仕様](https://github.com/ethereum/devp2p/blob/88f1c80800d622cc3a542a2125bbe33cc18c9f9c/caps/eth.md)では、接続した直後に送る Status メッセージに network ID・genesis（最初のブロック）のハッシュ・[EIP-2124](https://eips.ethereum.org/EIPS/eip-2124) の fork ID を入れ、相手が同じネットワークかを判断します。ノードに問い合わせる RPC（Remote Procedure Call）では、`eth_chainId` が chain ID、`net_version` が network ID を返します。
+network ID は、ノード同士の通信で使う番号です。[eth プロトコルの仕様](https://github.com/ethereum/devp2p/blob/88f1c80800d622cc3a542a2125bbe33cc18c9f9c/caps/eth.md)では、接続した直後に送る Status メッセージに network ID・genesis（最初のブロック）のハッシュ・[EIP-2124](https://eips.ethereum.org/EIPS/eip-2124) の fork ID を入れ、相手が同じネットワークかを判断します。
+
+ノードに問い合わせる RPC（Remote Procedure Call）では、`eth_chainId` が chain ID、`net_version` が network ID を返します。
 
 多くのネットワークでは 2 つの値が同じです。しかし、同じ仕様には、network ID が chain ID と一致するとは限らないと書かれています。例えば、[ethereum-lists/chains](https://github.com/ethereum-lists/chains/tree/7306cde75380dc59d2a4124d9711de7c52b210e1/_data/chains) の登録では、[Ethereum Classic](https://ethereumclassic.org/) の chain ID は 61、network ID は 1 です。以下は、主なネットワークの chain ID です。
 
@@ -92,7 +94,9 @@ chain ID を割り当てる管理者はいません。上記の一覧は利用�
 
 #### Bitcoin の magic bytes・アドレス・ポート
 
-Bitcoin のノードは、P2P のメッセージの先頭に、ネットワークごとに決まった 4 バイトの magic bytes を付けます。ブロックをディスクに保存する時も、ブロックごとに同じ 4 バイトを付けます。ただし、Bitcoin Core 28.0 以降は保存するファイルに既定で XOR をかけるので、後の実験では `-blocksxor=0` で外して読みます。違うネットワークのノードとは、最初のメッセージで食い違うので通信になりません。
+Bitcoin のノードは、P2P のメッセージの先頭に、ネットワークごとに決まった 4 バイトの magic bytes を付けます。違うネットワークのノードとは、最初のメッセージで食い違うので通信になりません。
+
+ブロックをディスクに保存する時も、ブロックごとに同じ 4 バイトを付けます。ただし、Bitcoin Core 28.0 以降は保存するファイルに既定で XOR をかけるので、後の実験では `-blocksxor=0` で外して読みます。
 
 人が目で見分けるのは、アドレスの接頭辞です。`bc1` で始まる形式のアドレスは [BIP-173](https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki) の形式で、先頭の文字列（HRP、human-readable part）がメインネットは `bc`、テストネットは `tb` です。regtest の `bcrt` は [Bitcoin Core の設定](https://github.com/bitcoin/bitcoin/blob/v32.1/src/kernel/chainparams.cpp)にある値です。末尾の検査用の文字は HRP を含めて計算するので、HRP を書き換えただけのアドレスは誤りとして弾かれます。
 
@@ -160,7 +164,9 @@ signet のブロックには、決められたスクリプト（challenge）を�
 
 ### テストネットの通貨と faucet
 
-テストネットの通貨は、faucet から無料で受け取ります。PoS の Ethereum のテストネットには採掘が無く、faucet の運営者が配れる量には限りがあるので、1 人あたりの量を絞ります。例えば、[Alchemy の Sepolia 向けの faucet](https://www.alchemy.com/faucets/ethereum-sepolia) は 24 時間に 0.1 ETH までで、メインネットに 0.001 ETH 以上の残高と利用の履歴があるアドレスにだけ配ります。[pk910 の faucet](https://sepolia-faucet.pk910.de/) は、受け取る代わりに計算の作業を求めます。
+テストネットの通貨は、faucet から無料で受け取ります。PoS の Ethereum のテストネットには採掘が無く、faucet の運営者が配れる量には限りがあるので、1 人あたりの量を絞ります。
+
+例えば、[Alchemy の Sepolia 向けの faucet](https://www.alchemy.com/faucets/ethereum-sepolia) は 24 時間に 0.1 ETH までで、メインネットに 0.001 ETH 以上の残高と利用の履歴があるアドレスにだけ配ります。[pk910 の faucet](https://sepolia-faucet.pk910.de/) は、受け取る代わりに計算の作業を求めます。
 
 配る量が需要に追いつかないと、テストネットの通貨に値段が付きます。
 
@@ -169,7 +175,9 @@ signet のブロックには、決められたスクリプト（challenge）を�
 
 <br>
 
-価値が無いので扱いを気にしなくてよい、と思うかもしれません。しかし、Ethereum の EOA（秘密鍵で操作するアカウント）のアドレスは、[Ethereum Address](../ethereum-address/) で説明したように、秘密鍵だけから計算され、chain ID は入りません。テストネットで使っている鍵は、そのままメインネットの同じアドレスの鍵です。テストネット用だからと設定ファイルに書いた鍵がリポジトリから漏れると、同じ鍵のメインネットの資産も動かされます。
+価値が無いので扱いを気にしなくてよい、と思うかもしれません。しかし、Ethereum の EOA（秘密鍵で操作するアカウント）のアドレスは、[Ethereum Address](../ethereum-address/) で説明したように、秘密鍵だけから計算され、chain ID は入りません。
+
+テストネットで使っている鍵は、そのままメインネットの同じアドレスの鍵です。テストネット用だからと設定ファイルに書いた鍵がリポジトリから漏れると、同じ鍵のメインネットの資産も動かされます。
 
 ローカルのチェーンの既定の鍵は、もっと危険です。Anvil や Hardhat の既定のアカウントの秘密鍵は公開されており、誰でも知っています。Hardhat のノードは起動時に、公開された鍵のアカウントに本番のネットワークで送った資金は失われる、と[警告を出します](https://github.com/NomicFoundation/hardhat/blob/ed85a936f4b5df0fb371ec6127fdebebf7a88b66/packages/hardhat/src/internal/builtin-plugins/node/helpers.ts#L139-L144)。
 
@@ -215,7 +223,9 @@ chain 11155111: Bob balance 10002.000000000000000000 ETH
 
 1 の結果は、chain ID 1 を名乗るノードがメインネットではないことを示します。メインネットで USDC のコードがあるアドレスに、どちらのノードもコードを持っていません。chain ID は名札で、ネットワークを決めるのは、どの履歴を持ち、どのノードと繋がっているかです。
 
-2 の EIP-1559 の取引は、chain ID 1 のノードだけが受け付けました。3 の EIP-155 より前の取引は、同じバイト列が両方のチェーンで実行され、取引のハッシュも同じです。nonce 0 の取引が chain ID 1 で拒否されたのは、2 で nonce 0 を使った後だからで、chain ID とは関係がありません。つまり、chain ID の無い署名を規則の上で止めるのは、主に送り主の nonce が一致しないことです。
+2 の EIP-1559 の取引は、chain ID 1 のノードだけが受け付けました。3 の EIP-155 より前の取引は、同じバイト列が両方のチェーンで実行され、取引のハッシュも同じです。
+
+nonce 0 の取引が chain ID 1 で拒否されたのは、2 で nonce 0 を使った後だからで、chain ID とは関係がありません。つまり、chain ID の無い署名を規則の上で止めるのは、主に送り主の nonce が一致しないことです。
 
 Anvil 1.7.1 はこの取引を RPC で受け付けました。一方で、Geth は [1.10.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.10.0) から、EIP-155 より前の取引を RPC で既定で拒否しています。ただし、EIP-155 はこの形式の取引も引き続き有効だとしているので、ブロックに入れば実行されます。
 

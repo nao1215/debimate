@@ -25,7 +25,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
   body: ある 1 件の予測値を特徴量ごとの寄与へ分けます。SHAP（予測値を特徴量の寄与へ分配する手法）などで調べます。
 {{< /note-panels >}}
 
-以下は [scikit-learn](https://scikit-learn.org/) 1.8.0、[NumPy](https://numpy.org/) 2.4.1 で実行した結果です。[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/feature-importance_gen.py)は GitHub で公開しています。本文のコードは抜粋で、[Matplotlib](https://matplotlib.org/) の描画設定や保存処理を省略しています。
+以下は [scikit-learn](https://scikit-learn.org/) 1.8.0、[NumPy](https://numpy.org/) 2.4.1 で実行した結果です（scikit-learn 1.9.1、NumPy 2.5.4 でも同じ値になりました）。[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/feature-importance_gen.py)は GitHub で公開しています。本文のコードは抜粋で、[Matplotlib](https://matplotlib.org/) の描画設定や保存処理を省略しています。
 
 ---
 
@@ -33,7 +33,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 [ランダムフォレスト](../random-forest/)では、各分割の不純度の減少をその分割を通るサンプルの割合で重み付けして集計します。これを特徴量ごとにまとめた値が MDI（mean decrease in impurity、不純度減少に基づく重要度）です。`feature_importances_` では全特徴量の合計が 1 になるよう正規化されています。
 
-乳がんの測定データから良性・悪性を分類するモデルで、上位 8 列を確認します。この例はモデルの説明方法を調べるもので、診断への利用を評価しているわけではありません。
+乳がんの測定データ（[`load_breast_cancer`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html)）から良性・悪性を分類するモデルで、上位 8 列を確認します。この例はモデルの説明方法を調べるもので、診断への利用を評価しているわけではありません。
 
 ```python
 from sklearn.datasets import load_breast_cancer
@@ -60,7 +60,7 @@ plt.tight_layout()
 save("featimp_mdi.svg")
 ```
 
-![MDI が高い 8 特徴量](./featimp_mdi.svg)
+{{< figure src="featimp_mdi.svg" alt="乳がんデータのランダムフォレストで MDI が高い 8 特徴量の横棒グラフ。worst radius、worst perimeter、worst concave points、worst area などが上位に並ぶ" caption="MDI が高い 8 特徴量" align="center" >}}
 
 このモデルの正解率は訓練データで 1.0000、テストデータで 0.9532 でした。MDI は学習済みの木から取り出せるため、特徴量ごとに予測をやり直す必要がありません。一方で、学習データにだけ合う分割も集計に含まれます。
 
@@ -81,9 +81,9 @@ Permutation importance（並べ替え重要度）は、モデルを学習し直�
   body: 並べ替えを変え、差の平均とばらつきを求める。
 {{< /note-steps >}}
 
-先ほどのコードでは、`permutation_importance` にテストデータと `scoring="accuracy"` を渡しています。結果を MDI の図と同じ列順で並べると、次のようになります。
+先ほどのコードでは、[`permutation_importance`](https://scikit-learn.org/stable/modules/generated/sklearn.inspection.permutation_importance.html) にテストデータと `scoring="accuracy"` を渡しています。結果を MDI の図と同じ列順で並べると、次のようになります。
 
-![同じ 8 特徴量のテスト正解率の低下](./featimp_mdi_vs_permutation.svg)
+{{< figure src="featimp_mdi_vs_permutation.svg" alt="MDI の図と同じ 8 特徴量について、テストデータで並べ替えた時の正解率の低下を平均と標準偏差で示した横棒グラフ。低下は最大でも 0.02 程度で、0 付近の列や負になる列もある" caption="同じ 8 特徴量の Permutation importance" align="center" >}}
 
 この実験では、MDI は不純度の減少割合、Permutation importance は正解率の差です。Permutation importance が 0.02 なら、並べ替えによって正解率が平均 2 ポイント下がったことを意味します。単位が違うため、MDI と棒の長さを直接比較することはできません。
 
@@ -124,7 +124,7 @@ plt.tight_layout()
 save("featimp_mdi_bias.svg")
 ```
 
-![無関係な二値列と連続値列の MDI と並べ替え重要度](./featimp_mdi_bias.svg)
+{{< figure src="featimp_mdi_bias.svg" alt="上下 2 段の棒グラフ。上の MDI では signal と無関係な連続値の noise_continuous がどちらも約 0.5 で、無関係な二値の noise_binary はほぼ 0。下のテスト正解率の低下では signal だけが約 0.26 で、2 つの乱数列はほぼ 0" caption="無関係な二値列と連続値列の MDI と Permutation importance" align="center" >}}
 
 実行結果は次の通りです。図では単位の違う MDI と正解率の差を上下の別の軸にしています。
 
@@ -177,7 +177,7 @@ plt.tight_layout()
 save("featimp_correlated.svg")
 ```
 
-![同一の値を持つ A と B を別々、または同時に並べ替えた結果](./featimp_correlated.svg)
+{{< figure src="featimp_correlated.svg" alt="同じ値を持つ列 A と B を並べ替えた時のテスト正解率の低下。A だけでは約 0.50、B だけではほぼ 0、A と B を同時に並べ替えると約 0.49 になる" caption="同じ値を持つ A と B を並べ替えた結果" align="center" >}}
 
 ```text
 A only: accuracy drop=0.5019

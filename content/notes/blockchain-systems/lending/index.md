@@ -11,7 +11,9 @@ topics: ["DeFi"]
 
 レンディングプロトコル（lending protocol）は、利用者が預けた暗号資産を[スマートコントラクト](../smart-contract/)のプールに集め、担保を預けた別の利用者に貸し出す仕組みです。代表例は [Aave](https://aave.com/docs/aave-v3/overview) と [Compound](https://docs.compound.xyz/) で、預け手は利息を受け取り、借り手は担保を手放さずに別の資産を使えます。
 
-例えば、Alice が 10 ETH を担保に預け、米ドルとの連動を目指すトークンの [USDC](https://www.circle.com/usdc) を 12,000 USDC 借りたとします。Alice は ETH を売らずに手元資金を得られます。一方で、ETH の価格が下がると、担保の価値が借入に近づきます。担保の価値が決められた線を割ると、誰でも Alice の借入を代わりに返済し、その分の担保を割引価格で受け取れます。この処理が清算（liquidation）です。
+例えば、Alice が 10 ETH を担保に預け、米ドルとの連動を目指すトークンの [USDC](https://www.circle.com/usdc) を 12,000 USDC 借りたとします。Alice は ETH を売らずに手元資金を得られます。
+
+一方で、ETH の価格が下がると、担保の価値が借入に近づきます。担保の価値が決められた線を割ると、誰でも Alice の借入を代わりに返済し、その分の担保を割引価格で受け取れます。この処理が清算（liquidation）です。
 
 {{< figure src="images/lending_concept.svg" alt="3 つの価格での担保と借入の棒。1 ETH が 2,000 ドルの時は担保 20,000 ドルの 80% の点線が借入 12,000 USDC より上にあり HF 1.33。1,600 ドルでは点線が借入に近づき HF 1.07。1,400 ドルでは点線が借入の棒を下回り、赤い × が付いて HF 0.93" caption="ETH の価格が下がり、担保の 80% の線が借入を下回ると清算される" align="center" >}}
 
@@ -44,7 +46,9 @@ topics: ["DeFi"]
 - LTV（Loan to Value）: 担保の価値に対して、新しく借りられる上限の割合。
 - 清算閾値（liquidation threshold）: 借入が担保の価値のこの割合を超えると、清算できるようになる線。
 
-LTV は清算閾値より低く設定します。借りた直後に清算されないよう、2 つの割合の間に余裕を持たせるためです。本記事では説明のために LTV を 75%、清算閾値を 80% とします。10 ETH（1 ETH = 2,000 ドルで 20,000 ドル）を預けると 15,000 USDC まで借りられ、借入が担保の価値の 80% を超えると清算の対象になります。実際の値は資産ごとに異なり、Aave のガバナンスの投票で変更されます。
+LTV は清算閾値より低く設定します。借りた直後に清算されないよう、2 つの割合の間に余裕を持たせるためです。
+
+本記事では説明のために LTV を 75%、清算閾値を 80% とします。10 ETH（1 ETH = 2,000 ドルで 20,000 ドル）を預けると 15,000 USDC まで借りられ、借入が担保の価値の 80% を超えると清算の対象になります。実際の値は資産ごとに異なり、Aave のガバナンスの投票で変更されます。
 
 ---
 
@@ -66,17 +70,23 @@ HF は「担保が借入の何倍あるか」ではありません。担保の�
 
 ### 清算
 
-清算者（liquidator）は、HF が 1 を下回った借り手の借入の一部を代わりに返済し、返済額に清算ボーナス（liquidation bonus）を上乗せした価値の担保を受け取ります。例えば、ETH が 1,455 ドルに下がって HF が 0.97 になった Alice の借入のうち、清算者が 6,000 USDC を返済したとします。ボーナスが 5% なら、清算者は 6,300 ドル分（約 4.33 ETH）の ETH を受け取ります。Alice は 300 ドル分の担保を余分に失い、清算者はその差から gas 代を引いた分を得ます（Aave v3 では、ボーナスの一部をプロトコルが手数料として取る設定もあります）。
+清算者（liquidator）は、HF が 1 を下回った借り手の借入の一部を代わりに返済し、返済額に清算ボーナス（liquidation bonus）を上乗せした価値の担保を受け取ります。
+
+例えば、ETH が 1,455 ドルに下がって HF が 0.97 になった Alice の借入のうち、清算者が 6,000 USDC を返済したとします。ボーナスが 5% なら、清算者は 6,300 ドル分（約 4.33 ETH）の ETH を受け取ります。Alice は 300 ドル分の担保を余分に失い、清算者はその差から gas 代を引いた分を得ます（Aave v3 では、ボーナスの一部をプロトコルが手数料として取る設定もあります）。
 
 Aave v3 の [`_calculateAvailableCollateralToLiquidate`](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/LiquidationLogic.sol#L578-L591) は、返済額に相当する担保に `liquidationBonus`（105% なら 10500）を掛け、借り手の担保が足りなければ担保の全てを渡します。
 
 <br>
 
-1 回の清算で返済できる量の上限を close factor と言います。Aave v3 の [LiquidationLogic.sol](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/LiquidationLogic.sol#L256-L274) では、HF が 0.95 より大きく、対象の資産の担保と借入がどちらも 2,000 ドル（米ドル建ての市場の場合）以上ある時は、借入の合計の 50% までです。HF が 0.95 以下まで下がった時や、対象の資産の担保か借入のどちらかが 2,000 ドル未満の時は、一度に全額を清算できます。なお、Aave は [v4 の清算の解説](https://aave.com/blog/aave-v4-liquidations)で、固定の close factor では借り手が必要以上に清算されやすいと書いています。
+1 回の清算で返済できる量の上限を close factor と言います。Aave v3 の [LiquidationLogic.sol](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/LiquidationLogic.sol#L256-L274) では、HF が 0.95 より大きく、対象の資産の担保と借入がどちらも 2,000 ドル（米ドル建ての市場の場合）以上ある時は、借入の合計の 50% までです。HF が 0.95 以下まで下がった時や、対象の資産の担保か借入のどちらかが 2,000 ドル未満の時は、一度に全額を清算できます。
+
+なお、Aave は [v4 の清算の解説](https://aave.com/blog/aave-v4-liquidations)で、固定の close factor では借り手が必要以上に清算されやすいと書いています。
 
 <br>
 
-清算は運営者が行うと思うかもしれませんが、Aave v3 の `liquidationCall` には呼び出せるアドレスの制限がありません。回収を運営者だけが担う設計では、その運営者が止まると誰も回収できません。Aave は、ボーナスという利益を示して、回収の作業を誰でも引き受けられる形にしています。実際には、HF が 1 に近い借入を監視する bot が同じ機会を取り合い、手数料を上乗せして先に清算しようとします。この競争は [MEV](../mev/) の代表例の 1 つです。
+清算は運営者が行うと思うかもしれませんが、Aave v3 の `liquidationCall` には呼び出せるアドレスの制限がありません。回収を運営者だけが担う設計では、その運営者が止まると誰も回収できません。Aave は、ボーナスという利益を示して、回収の作業を誰でも引き受けられる形にしています。
+
+実際には、HF が 1 に近い借入を監視する bot が同じ機会を取り合い、手数料を上乗せして先に清算しようとします。この競争は [MEV](../mev/) の代表例の 1 つです。
 
 [Compound v2](https://docs.compound.xyz/v2/comptroller/#close-factor) も、close factor と liquidation incentive（清算ボーナスにあたる値）で清算者に報酬を与えます。一方で、[Compound III](https://docs.compound.xyz/liquidation/) では、誰でも呼べる `absorb` でプロトコル自身が担保を引き取って借入を消し、引き取った担保は、プロトコルの準備金が目標を下回っている間、`buyCollateral` で割引価格で売ります。
 
@@ -100,7 +110,7 @@ Aave v3 の [`_calculateAvailableCollateralToLiquidate`](https://github.com/aave
 
 ### 価格の急落と清算の実験
 
-価格の下がり方で清算の結果がどう変わるか、Python で確かめました。3 人の借り手 A・B・C が 10 ETH ずつ預け、8,000・12,000・15,000 USDC を借ります。1 ETH = 2,000 ドルの時点で、担保の 40%・60%・75% です。清算閾値 80%、ボーナス 5%、close factor 50% で、HF が 1 を下回った借り手は、清算者が価格の 1 段ごとに 1 回清算します。
+価格の下がり方で清算の結果がどう変わるか、[Python](https://www.python.org/) で確かめました。3 人の借り手 A・B・C が 10 ETH ずつ預け、8,000・12,000・15,000 USDC を借ります。1 ETH = 2,000 ドルの時点で、担保の 40%・60%・75% です。清算閾値 80%、ボーナス 5%、close factor 50% で、HF が 1 を下回った借り手は、清算者が価格の 1 段ごとに 1 回清算します。
 
 価格の動きは 2 通りです。1 つは 2,000 から 1,200 まで 10 ずつ下がる場合（smooth）、もう 1 つは 1,950 から 1,300 へ一気に飛ぶ場合（gap）です。後者は、オラクルの更新が遅れた後に価格が一度に動く場面や、ネットワークの混雑で清算の取引がしばらく入らない場面に当たります。実際のネットワークや資産は使いません。
 
@@ -177,7 +187,9 @@ for label, prices in (("smooth", smooth), ("gap", gap)):
 
 10 ずつ下がる場合は、C の HF が 1 を割る度に借入の半分が返済され、HF は 1.15 前後に戻りました。B も 1,500 を下回った所で同じように清算されています。担保は減りましたが、借入は全て担保で返済されており、損失は残っていません。
 
-一気に飛ぶ場合は、1,300 の時点で C の担保は 13,000 ドルしかなく、借入の 15,000 USDC を下回っています。清算者は担保を全て受け取る代わりに、ボーナス分を引いた 12,380.95 USDC だけを返済し、残りの 2,619.05 USDC は誰も返済しない借入になりました。これが不良債権（bad debt）です。損をするのは借り手ではなく、プールに預けた貸し手です。B も HF 0.87 まで飛びましたが、担保が借入を上回っていたので全額を清算でき、損失は出ていません。
+一気に飛ぶ場合は、1,300 の時点で C の担保は 13,000 ドルしかなく、借入の 15,000 USDC を下回っています。清算者は担保を全て受け取る代わりに、ボーナス分を引いた 12,380.95 USDC だけを返済し、残りの 2,619.05 USDC は誰も返済しない借入になりました。これが不良債権（bad debt）です。損をするのは借り手ではなく、プールに預けた貸し手です。
+
+B も HF 0.87 まで飛びましたが、担保が借入を上回っていたので全額を清算でき、損失は出ていません。
 
 <br>
 
@@ -193,7 +205,7 @@ Aave v3 は v3.3 から、担保が尽きても残った借入を [`deficit`](ht
 
 [Maker Foundation の報告](https://web.archive.org/web/20201205172925/https://blog.makerdao.com/the-market-collapse-of-march-12-2020-how-it-impacted-makerdao/)によると、事故は次の順序で起きました。
 
-1. 36 時間の間に ETH などの暗号資産が 50% 以上値下がりし、Ethereum の取引が急増して gas 代が跳ね上がった。
+1. 36 時間の間に ETH などの暗号資産が 50% 以上値下がりし、[Ethereum](https://ethereum.org/) の取引が急増して gas 代が跳ね上がった。
 2. Vault の所有者は、混雑のために担保の追加や返済をプロトコルの 1 時間の猶予に間に合わせにくくなった。この猶予は、オラクルが価格を 1 時間遅らせて反映する仕組み（[OSM](https://github.com/sky-ecosystem/osm/blob/master/src/osm.sol) の `hop`）から生まれる。
 3. 多数のオークションが一斉に始まった。清算に参加していた keeper は約 4 者で、1 者は技術的な問題で、1 者は DAI が尽きて、それぞれ数時間入札できなかった。残る 2 者の bot はほぼ 0 DAI の入札を出し、一部のオークションではその入札で担保が落札された。
 4. 担保を売っても借入を埋められず、約 540 万 DAI が不足した。MakerDAO は MKR（ガバナンストークン）を新しく発行して売る debt auction を行い、3 月 29 日までに 20,980 MKR を 530 万 DAI と交換して埋めた。
@@ -206,7 +218,9 @@ Aave v3 は v3.3 から、担保が尽きても残った借入を [`deficit`](ht
 
 flash loan は、担保なしで借り、同じ取引の中で返済する貸し出しです。担保なしで貸せば踏み倒されると思うかもしれませんが、flash loan では返済が無ければ借りたこと自体が取り消されます。Ethereum の取引は、途中で失敗すると全ての状態変更が巻き戻るからです。
 
-Aave v3 の [FlashLoanLogic.sol](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/FlashLoanLogic.sol#L179-L196) は、借り手のコントラクトに資産を送り、そのコントラクトの `executeOperation` を呼び出します。呼び出しが終わると、手数料（premium）を加えた額を借り手から[引き戻し](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/FlashLoanLogic.sol#L239-L243)、足りなければ取引全体が失敗します。`flashLoanSimple` の貸し手から見ると、手数料付きで返ってくるか、最初から貸していなかったかのどちらかです（複数の資産を扱う `flashLoan` には、返済の代わりに通常の借入へ切り替える指定もあります）。
+Aave v3 の [FlashLoanLogic.sol](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/FlashLoanLogic.sol#L179-L196) は、借り手のコントラクトに資産を送り、そのコントラクトの `executeOperation` を呼び出します。呼び出しが終わると、手数料（premium）を加えた額を借り手から[引き戻し](https://github.com/aave-dao/aave-v3-origin/blob/v3.6.0/src/contracts/protocol/libraries/logic/FlashLoanLogic.sol#L239-L243)、足りなければ取引全体が失敗します。
+
+`flashLoanSimple` の貸し手から見ると、手数料付きで返ってくるか、最初から貸していなかったかのどちらかです（複数の資産を扱う `flashLoan` には、返済の代わりに通常の借入へ切り替える指定もあります）。
 
 <br>
 
@@ -231,10 +245,14 @@ sequenceDiagram
     A->>B: 7,500 ETH を返済
 ```
 
-sUSD は、[Synthetix](https://synthetix.io/) が発行する米ドル連動のトークンです。攻撃者が [Uniswap](https://uniswap.org/) と [Kyber](https://kyber.network/) で 540 ETH と 360 ETH を sUSD に替えた結果、両方の取引所で 1 ETH と交換できる sUSD は、本来の 268.30 から約 106〜108 に減りました。sUSD が本来の約 2.5 倍の価値に見える状態です。bZx はこの 2 つの DEX の価格を担保の評価に使っていたので、攻撃者は市場の価格で買った sUSD を担保に、本来より多くの ETH を借りられました。
+sUSD は、[Synthetix](https://synthetix.io/) が発行する米ドル連動のトークンです。攻撃者が [Uniswap](https://uniswap.org/) と [Kyber](https://kyber.network/) で 540 ETH と 360 ETH を sUSD に替えた結果、両方の取引所で 1 ETH と交換できる sUSD は、本来の 268.30 から約 106〜108 に減りました。sUSD が本来の約 2.5 倍の価値に見える状態です。
+
+bZx はこの 2 つの DEX の価格を担保の評価に使っていたので、攻撃者は市場の価格で買った sUSD を担保に、本来より多くの ETH を借りられました。
 
 flash loan を返済した後、攻撃者の手元には 2,381.41 ETH が残りました。分析では、bZx の貸し手の損失を 2,699.97 ETH と見積もっています。
 
 <br>
 
-flash loan は、自己資金の無い攻撃者にも大きな資金での操作を可能にしましたが、原因そのものではありません。原因は、担保の評価に、1 つの取引の中で動かせる DEX のその時点の価格を使ったことです。DEX の価格がプールの残高から決まる仕組みは [AMM](../amm/) で扱っています。レンディングプロトコルにとって、オラクルの価格は HF と清算の全てを左右する入力です。価格の出どころと更新の遅れは、[Oracle](../oracle/) で扱った検査と合わせて確認する必要があります。
+flash loan は、自己資金の無い攻撃者にも大きな資金での操作を可能にしましたが、原因そのものではありません。原因は、担保の評価に、1 つの取引の中で動かせる DEX のその時点の価格を使ったことです。
+
+DEX の価格がプールの残高から決まる仕組みは [AMM](../amm/) で扱っています。レンディングプロトコルにとって、オラクルの価格は HF と清算の全てを左右する入力です。価格の出どころと更新の遅れは、[Oracle](../oracle/) で扱った検査と合わせて確認する必要があります。

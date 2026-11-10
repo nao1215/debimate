@@ -281,8 +281,8 @@ QBFT は、不正な検証者が ⌊(N−1)/3⌋ 人以下なら、ブロック�
 PoA は、署名者を選べる場面で使われてきました。2026 年 11 月時点の状況は次の通りです。
 
 - テストネット: Ethereum の Rinkeby（[geth v1.10.26 の設定](https://github.com/ethereum/go-ethereum/blob/v1.10.26/params/config.go#L179)）と Görli（[geth v1.13.15 の設定](https://github.com/ethereum/go-ethereum/blob/v1.13.15/params/config.go#L115)。後に PoS へ移行）は Clique で動いていましたが、どちらも[終了しています](https://ethereum.org/developers/docs/networks/)。現在の [Sepolia](https://github.com/eth-clients/sepolia) は PoS ですが、検証者はクライアントとテストのチームが管理する許可制です。
-- サイドチェーン: Gnosis Chain（旧 xDai）は AuRa で動いていましたが、[The Merge](https://ethereum.org/roadmap/merge/) で PoS に移りました（[Gnosis Chain のドキュメント](https://docs.gnosischain.com/about/specs/consensus/)）。
-- 私設のチェーン: Besu は QBFT を推奨しています。公開されている PoA のチェーンでは、Nethermind が [JOC Mainnet](https://www.japanopenchain.org/)（Clique）や [Energy Web Chain](https://www.energyweb.org/)（AuRa）の設定を[同梱しています](https://github.com/NethermindEth/nethermind/tree/17b84a019d75ed4a03dfce53b5599ace81026c7b/src/Nethermind/Chains)。
+- サイドチェーン: Gnosis Chain（旧 xDai）は Aura で動いていましたが、Ethereum の [The Merge](https://ethereum.org/roadmap/merge/) と同じ形のハードフォークで Gnosis Beacon Chain と統合し、PoS に移りました（[Gnosis Chain のドキュメント](https://docs.gnosischain.com/about/specs/consensus/)）。
+- 私設のチェーン: Besu は QBFT を推奨しています。公開されている PoA のチェーンでは、Nethermind が [JOC Mainnet](https://www.japanopenchain.org/)（Clique）や [Energy Web Chain](https://www.energyweb.org/)（Aura）の設定を[同梱しています](https://github.com/NethermindEth/nethermind/tree/17b84a019d75ed4a03dfce53b5599ace81026c7b/src/Nethermind/Chains)。
 
 Clique を動かせるクライアントは減っています。geth は [v1.14.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.14.0)（2024 年 4 月）で Clique の署名をやめ、Besu は [26.4.0](https://github.com/besu-eth/besu/releases/tag/26.4.0)（2026 年 4 月）で Clique を削除しました。今回 Clique を Nethermind で動かしたのは、そのためです。今回の実験で、[Nethermind 2.2.2](https://github.com/NethermindEth/nethermind/releases/tag/2.2.2)（2026 年 10 月）が Clique の署名者として動くことを確かめました。
 

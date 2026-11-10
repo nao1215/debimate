@@ -11,7 +11,7 @@ topics: ["Data Structure"]
 
 Merkle Tree の構築方法は 1 通りに決まっていません。奇数の葉をどう組むか、葉と内部ノードをどうハッシュするか、葉をどう並べるかは、それぞれのプロトコルが決める設計事項です。ルートハッシュが何を保証しているのかは、この規則を決めて初めて確定します。木の作り方と包含証明の仕組みは [Merkle Tree](../merkle-tree/) を前提とします。
 
-この規則が問題になるのは、新しいプロトコルに Merkle Tree を組み込む時と、既存プロトコルの証明を検証する実装を書く時です。同じ名前で呼ばれていても、Bitcoin と、TLS 証明書の発行記録を公開ログに残す Certificate Transparency と、Ethereum では規則が違い、証明を作る規則と検証する規則が違えば一致しません。
+この規則が問題になるのは、新しいプロトコルに Merkle Tree を組み込む時と、既存プロトコルの証明を検証する実装を書く時です。同じ名前で呼ばれていても、[Bitcoin](https://bitcoin.org/) と、TLS 証明書の発行記録を公開ログに残す [Certificate Transparency](https://certificate.transparency.dev/) と、[Ethereum](https://ethereum.org/) では規則が違い、証明を作る規則と検証する規則が違えば一致しません。
 
 規則が保証の範囲を決める例として、Bitcoin の規則では、次の 2 つの葉の並びから同じ木ができます。
 
@@ -97,9 +97,9 @@ RFC の式では、MTH は葉の並びからルートハッシュを求める関
 
 ### 異なる木が同じ値になる実験
 
-葉を 1 件追加したのにルートハッシュが変わらないことと、内部ノードを葉として読み替えられることを短いデータで確かめます。[compare_rules.py](lab/compare_rules.py) は Python 標準ライブラリだけで動きます。
+葉を 1 件追加したのにルートハッシュが変わらないことと、内部ノードを葉として読み替えられることを短いデータで確かめます。[compare_rules.py](lab/compare_rules.py) は [Python](https://www.python.org/) の標準ライブラリだけで動きます。
 
-比較するのは、末尾を複製し、葉と内部ノードを区別せず [SHA-256](/notes/security/sha-256/) に渡す単純な木と、[RFC 9162 §2.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) の分割規則・接頭辞を使う木です。前者は Bitcoin と同じ末尾複製の性質を示す教材ですが、実際の txid や二重 SHA-256 を使う Bitcoin の実装ではありません。
+比較するのは、末尾を複製し、葉と内部ノードを区別せず [SHA-256](/notes/security/sha-256/)（[FIPS 180-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)）に渡す単純な木と、[RFC 9162 §2.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) の分割規則・接頭辞を使う木です。前者は Bitcoin と同じ末尾複製の性質を示す教材ですが、実際の txid や二重 SHA-256 を使う Bitcoin の実装ではありません。
 
 まず、葉を `A, B, C` とした場合と、`A, B, C, C` とした場合を比較します。次に、2 つの子のハッシュを連結した 64 バイトをそのまま 1 件の葉として渡します。以下が `compare_rules.py` の全体です。
 
@@ -219,7 +219,7 @@ flowchart BT
 
 trie を使う方法もあります。trie は、キーを 16 進の 1 桁などの単位で先頭から辿り、枝を選んでいく木です。キーが決まれば経路も決まるので、途中で枝が無いことを示せば不在の証明になります。
 
-Ethereum はこの型の Merkle Patricia Trie を使っており、アカウントのアドレスを Ethereum のハッシュ関数 keccak256 でハッシュした値を経路として状態を引きます（[公式ドキュメント](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)）。不在の証明も同じ経路で行い、[EIP-1186](https://eips.ethereum.org/EIPS/eip-1186) は、アカウントや値が存在しない場合もその事実を検証できるだけのデータを返すと定めています。
+Ethereum はこの型の Merkle Patricia Trie を使っており、アカウントのアドレスを Ethereum のハッシュ関数 keccak256（[Keccak](https://keccak.team/keccak.html) に基づく）でハッシュした値を経路として状態を引きます（[公式ドキュメント](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/)）。不在の証明も同じ経路で行い、[EIP-1186](https://eips.ethereum.org/EIPS/eip-1186) は、アカウントや値が存在しない場合もその事実を検証できるだけのデータを返すと定めています。
 
 ---
 

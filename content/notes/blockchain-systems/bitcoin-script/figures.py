@@ -135,7 +135,7 @@ def split_figure():
     lock = [("DUP", 84), ("HASH\n160", 84), ("<H>", 70), ("EQUAL\nVERIFY", 104), ("CHECK\nSIG", 90)]
 
     # Early implementation: one concatenated script.
-    f.text(30, 44, "v0.3.0 まで: 連結して 1 回だけ実行", 26, anchor="start")
+    f.text(30, 44, "v0.3.4 まで: 連結して 1 回だけ実行", 26, anchor="start")
     y = 64
     x = token_row(f, 30, y, [("<1>", 64, PALE, ACCENT, False),
                              ("OP_\nRETURN", 104, PALE, ACCENT, False)])

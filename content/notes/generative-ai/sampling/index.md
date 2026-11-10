@@ -59,7 +59,7 @@ greedy decoding は乱数を使いませんが、毎回同じ出力になると�
 
 上位 2 個のロジットが僅差なら、その差で選ばれるトークンが入れ替わり、以降の文章も変わります。この現象は、AI の研究企業である Thinking Machines Lab の「[Defeating Nondeterminism in LLM Inference](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)」で詳しく調べられています。
 
-乱数を使うサンプリングでは、seed を固定すると同じ乱数の列を再現できます。しかし、計算の順序によるロジットの差は、seed では防げません。
+乱数を使うサンプリングでは、seed（乱数の種）を固定すると同じ乱数の列を再現できます。しかし、計算の順序によるロジットの差は、seed では防げません。
 
 ---
 
@@ -142,7 +142,7 @@ temperature と top-p は、どちらも出力のばらつきを調整します�
 
 決まった形式の出力（JSON、コード、分類のラベル）が欲しい時は、temperature を低くします。形式そのものを守らせたいなら、[構造化出力](/notes/generative-ai/structured-output/)を使います。文章の言い回しに幅が欲しい時は、temperature を 1 前後にし、top-p で確率の低い候補を切ります。
 
-各パラメータの既定値は、API やライブラリで違います。以下は、2026 年 11 月時点の公式ドキュメントと Transformers のソースコード（main ブランチ）を元にした比較です。
+各パラメータの既定値は、API やライブラリで違います。以下は、2026 年 11 月時点の公式ドキュメントと Transformers のソースコード（v5.22.2 と main ブランチ）を元にした比較です。
 
 | | temperature | top_p | top_k | 既定の選び方 |
 |---|---|---|---|---|

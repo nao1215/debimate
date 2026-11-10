@@ -8,7 +8,7 @@ weight: 9
 topics: ["Mathematics（数学の基礎）"]
 ---
 
-相関係数は、2 つの変数の関係の強さを -1 から +1 の 1 つの数で要約する指標です。線形関係を測る Pearson 相関係数と、順位の単調関係を見る Spearman / Kendall 相関係数があります。[標準化](../../ml/standardization/) や [PCA](../../ml/pca/)、[特徴量選択](../../ml/feature-selection/)、EDA（探索的データ分析）の起点として広く使われます。
+相関係数は、2 つの変数の関係の強さを -1 から +1 の 1 つの数で要約する指標です。線形関係を測る Pearson 相関係数と、順位の単調関係を見る [Spearman](https://doi.org/10.2307/1412159) / [Kendall](https://doi.org/10.1093/biomet/30.1-2.81) 相関係数があります。[標準化](../../ml/standardization/) や [PCA](../../ml/pca/)、[特徴量選択](../../ml/feature-selection/)、EDA（探索的データ分析）の起点として広く使われます。
 
 ただし、相関係数が高くても予測に役立つとは限らず、因果関係を示すわけでもありません。0 でも無関係とは限りません。
 
@@ -68,7 +68,7 @@ None     r=-0.05
 Negative r=-0.87
 ```
 
-![正の相関・無関係・負の相関の散布図](./correlation_scatter.svg)
+{{< figure src="correlation_scatter.svg" alt="200 点ずつの散布図を 3 枚並べた図。左は右上がりの r = +0.88、中央は形の無い r = -0.05、右は右下がりの r = -0.87" caption="正の相関・無関係・負の相関の散布図" align="center" >}}
 
 無関係に作った組でも、有限のサンプルでは偶然の偏りが残るので `r` はちょうど 0 にならず -0.05 です。
 
@@ -115,7 +115,7 @@ III without outlier: r=1.0000
 
 数値の要約はほぼ同じですが、散布図の形は全く違います。赤い破線は回帰直線です。
 
-![同じ相関係数を持つ 4 つの異なる散布図](./correlation_anscombe.svg)
+{{< figure src="correlation_anscombe.svg" alt="Anscombe の四つ組の散布図 4 枚。どれも r ≈ 0.816 で同じ回帰直線（赤い破線）を持つが、I は直線的、II は曲線、III は 1 点だけ外れた直線、IV は x = 8 の縦の並びと 1 点の外れ値" caption="Anscombe の四つ組" align="center" >}}
 
 - I: 素直な線形関係で、`r` を信じてよい
 - II: 放物線のような曲線で、直線では表現できない
@@ -136,7 +136,7 @@ III without outlier: r=1.0000
 
 #### 2. 相関係数 ≠ 因果関係
 
-アイスクリームの売上と溺死事故件数、靴のサイズと読解力には正の相関があります。共通の第三因子（前者は気温、後者は年齢）が両方を動かしているだけで、片方を増減させても他方は動きません。因果関係を調べるには、介入実験、操作変数法、DAG（Directed Acyclic Graph、有向非巡回グラフ）、傾向スコアマッチングなどの因果推論の枠組みが必要です。
+アイスクリームの売上と溺死事故件数、子どもの靴のサイズと読解力は、正の相関が出る例としてよく挙げられます。共通の第三因子（前者は気温、後者は年齢）が両方を動かしているだけなら、片方を増減させても他方は動きません。因果関係を調べるには、介入実験、操作変数法、DAG（Directed Acyclic Graph、有向非巡回グラフ）、傾向スコアマッチングなどの因果推論の枠組みが必要です。
 
 <br>
 
@@ -214,7 +214,7 @@ for name, x, y in [("(a) exp(2x)", xa, ya),
 (b) + outlier  Pearson=-0.70 Spearman=+0.67 Kendall=+0.53
 ```
 
-![単調な曲線と外れ値 1 点を足したデータでの 3 つの相関係数](./correlation_spearman_kendall.svg)
+{{< figure src="correlation_spearman_kendall.svg" alt="左は y = exp(2x) の単調な曲線で Pearson 0.70・Spearman と Kendall 1.00。右は直線的な 30 点に (10, -10) の外れ値を足したデータで、Pearson だけが -0.70 に反転する" caption="曲線と外れ値での 3 つの相関係数" align="center" >}}
 
 （a）は x が増えれば y も必ず増えるので Spearman・Kendall とも 1.00 ですが、曲線なので Pearson は 0.70 に留まります。（b）では、`r = +0.83` の 30 点に右下の外れ値（10, -10）を 1 点足しただけで、Pearson は -0.70 と符号が逆転します。順位相関は外れ値も「x が最大で y が最小の 1 点」としてしか扱わないので、Spearman 0.67・Kendall 0.53 と正の向きを保ちます。
 
@@ -228,7 +228,7 @@ for name, x, y in [("(a) exp(2x)", xa, ya),
 
 ### 相関行列の可視化
 
-特徴量が多い場合は、すべての組の相関を並べた相関行列を作り、heatmap にすると相関の強い組を色で確認できます。以下は [scikit-learn の iris データセット](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html)の 4 特徴量（萼片・花弁の長さと幅）で、[pandas の `DataFrame.corr`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html) を使って相関行列を求めるコードです。
+特徴量が多い場合は、すべての組の相関を並べた相関行列を作り、ヒートマップにすると相関の強い組を色で確認できます。以下は [scikit-learn の iris データセット](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html)の 4 特徴量（萼片・花弁の長さと幅）で、[pandas の `DataFrame.corr`](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html) を使って相関行列を求めるコードです。
 
 ```python
 from sklearn.datasets import load_iris
@@ -246,9 +246,9 @@ petal_len       0.87      -0.43       1.00       0.96
 petal_wid       0.82      -0.37       0.96       1.00
 ```
 
-![iris データセットの 4 特徴量の相関行列ヒートマップ](./correlation_matrix_heatmap.svg)
+{{< figure src="correlation_matrix_heatmap.svg" alt="iris データセットの 4 特徴量の相関行列ヒートマップ。赤が正、青が負の相関で、petal_len と petal_wid の 0.96 が最も濃い" caption="iris の相関行列" align="center" >}}
 
-赤が正、青が負の相関で、色の濃さが強さを表します。petal_len と petal_wid の相関は 0.96 と極めて高く、事実上同じ情報です。線形モデルでは [多重共線性](../../ml/regularization/) の原因になるので、片方を落とすか [PCA](../../ml/pca/) で集約する判断材料になります。heatmap は [seaborn の `heatmap`](https://seaborn.pydata.org/generated/seaborn.heatmap.html) でも描けます。
+赤が正、青が負の相関で、色の濃さが強さを表します。petal_len と petal_wid の相関は 0.96 と極めて高く、事実上同じ情報です。線形モデルでは [多重共線性](../../ml/regularization/) の原因になるので、片方を落とすか [PCA](../../ml/pca/) で集約する判断材料になります。ヒートマップは [seaborn の `heatmap`](https://seaborn.pydata.org/generated/seaborn.heatmap.html) でも描けます。
 
 ---
 
