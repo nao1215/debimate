@@ -20,5 +20,6 @@ topics:
   - name: "Consensus / Finality"
   - name: "Smart Contract"
   - name: "Scaling"
+  - name: "Interoperability"
   - name: "Node Policy"
 ---
