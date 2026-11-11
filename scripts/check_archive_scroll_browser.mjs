@@ -2,7 +2,7 @@
 // Space presses from the top to reach the first additional request.
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { launchBrowser, saveFailure } from './browser_support.mjs';
+import { launchBrowser, saveFailure, waitForScrollToSettle } from './browser_support.mjs';
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8138').origin;
 const browser = await launchBrowser();
 const results = [];
@@ -47,6 +47,7 @@ try {
           if (before.remaining < viewport.height && await page.locator('.archive-scroll-status [role="status"]').textContent() === 'すべて読み込みました') break boundaries;
           await page.keyboard.press('Space');
           await page.waitForTimeout(350);
+          await waitForScrollToSettle(page);
           const distance = await page.evaluate(y => scrollY - y, before.y);
           steps.push({ boundary, key, remaining: before.remaining, distance });
           assert.ok(distance >= viewport.height * 0.75,

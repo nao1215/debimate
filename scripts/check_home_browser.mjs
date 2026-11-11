@@ -91,7 +91,13 @@ try {
   await page.waitForFunction(() => !document.querySelector('.home-notes .home-list-status').dataset.next.includes('obsolete'));
   assert.equal(homeRequests, 3, 'Old document, freshness check, then one reload');
   await page.locator('.home-notes').getByRole('button', { name: 'もっと見る' }).click();
-  await page.waitForFunction(() => document.querySelectorAll('.home-notes .post-entry').length === 6);
+  // 再読み込み後は先読みの範囲にある一覧を自動でも読み進めるので、件数は 6 で止まらない。
+  // 6 ちょうどを待つと、自動の読み込みが先に進んだ時に永遠に一致せず落ちる（2026-11-10）。
+  // 新しい束が読めて、失敗の表示が出ていない事を確かめる
+  await page.waitForFunction(() => document.querySelectorAll('.home-notes .post-entry').length >= 6);
+  assert.doesNotMatch(await page.locator('.home-notes .home-list-status [role="status"]').textContent(), /読み込めませんでした/);
+  const noteLinks = await page.locator('.home-notes .entry-link').evaluateAll(links => links.map(a => a.href));
+  assert.equal(new Set(noteLinks).size, noteLinks.length, 'Duplicate notes after stale batch refresh');
   console.log('PASS stale note batch after deployment: refresh and successful loading');
 
   await context.close();

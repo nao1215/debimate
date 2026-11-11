@@ -10,6 +10,17 @@ export function launchBrowser() {
   });
 }
 
+// Space のスクロールはアニメーションで進み、CI では始まりが遅れる事がある。
+// 押してから決まった時間で測ると途中の値を拾う（2026-11-10 に 738px 動く所を
+// 415px・491px と測って archive_scroll が落ちた）。止まってから測る。
+// 末尾に当たって短く止まった場合は、止まった位置がそのまま短い値として残る
+export async function waitForScrollToSettle(page, timeout = 3000) {
+  await page.waitForFunction(() => new Promise(resolve => {
+    const y = scrollY;
+    requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => resolve(scrollY === y), 100)));
+  }), null, { timeout });
+}
+
 export function localURL(href, origin) {
   const url = new URL(href, origin);
   return origin + url.pathname + url.search + url.hash;

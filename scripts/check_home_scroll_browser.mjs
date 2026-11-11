@@ -1,7 +1,7 @@
 // Guard page-scroll continuity, not machine-dependent FPS. Run on the built site.
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
-import { launchBrowser, saveFailure } from './browser_support.mjs';
+import { launchBrowser, saveFailure, waitForScrollToSettle } from './browser_support.mjs';
 const origin = new URL(process.argv[2] || 'http://127.0.0.1:8138').origin;
 const browser = await launchBrowser();
 const results = [];
@@ -26,6 +26,7 @@ try {
       const before = await page.evaluate(() => ({ y: scrollY, remaining: document.documentElement.scrollHeight - innerHeight - scrollY }));
       await page.keyboard.press('Space');
       await page.waitForTimeout(350);
+      await waitForScrollToSettle(page);
       const after = await page.evaluate(() => scrollY);
       const step = { remaining: before.remaining, distance: after - before.y };
       steps.push(step);
