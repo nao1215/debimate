@@ -215,7 +215,7 @@ Python は C で書かれていますが、`print` は C の stdio ではなく 
 
 ここまでの話は、昔から変わらない仕組みです。しかし、Ubuntu では身近なコマンドの実装が変わりました。Ubuntu は 25.10 から、coreutils の既定を GNU から Rust 製の [uutils](https://github.com/uutils/coreutils) に切り替えています（[Ubuntu Discourse の報告](https://discourse.ubuntu.com/t/an-update-on-rust-coreutils/80773)）。
 
-著者の Ubuntu 26.04.1 では、`cat`・`cut`・`sort`・`stdbuf` などが uutils 0.8.0 で、`cp`・`mv`・`rm` は GNU のままでした。GNU 版も `gnucat`・`gnucut` のように `gnu` を頭に付けた名前で入っているので、同じ機械で 2 つの実装を比べられます。
+著者の Ubuntu 26.04.1 では、`cat`・`cut`・`sort`・`stdbuf` などが uutils 0.8.0 で、`cp`・`mv`・`rm` は GNU のままでした。GNU 版も `gnucat`・`gnucut` のように `gnu` を頭に付けた名前で入っているので、同じ機械で 2 つの実装を比べられます。2 つの実装に同じ入力を渡して比べるテストは、[Differential Testing のノート](/notes/software-testing/differential-testing/)で扱っています。
 
 ```console
 $ cat --version | head -1

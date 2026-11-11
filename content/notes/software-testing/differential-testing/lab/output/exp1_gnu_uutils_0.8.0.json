@@ -1,0 +1,482 @@
+[
+ {
+  "case": "ls",
+  "gnu": {
+   "stdout": "attr.txt\ndata.csv\ndata.txt\nnums.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "attr.txt\ndata.csv\ndata.txt\nnums.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "ls -l（xattr 付き）",
+  "gnu": {
+   "stdout": "-rw-rw-r-- 1 user user 2 2001 attr.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "-rw-rw-r--+ 1 user user 2 2001 attr.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": true,
+  "normalized_diff": true
+ },
+ {
+  "case": "ls --bogus",
+  "gnu": {
+   "stdout": "",
+   "stderr": "ls: unrecognized option '--bogus'\nTry 'ls --help' for more information.\n",
+   "exit": 2
+  },
+  "uutils": {
+   "stdout": "",
+   "stderr": "error: unexpected argument '--bogus' found\n\n  tip: to pass '--bogus' as a value, use '-- --bogus'\n\nUsage: ls [OPTION]... [FILE]...\n\nFor more information, try '--help'.\n",
+   "exit": 2
+  },
+  "raw_diff": true,
+  "normalized_diff": false
+ },
+ {
+  "case": "cat 無いファイル",
+  "gnu": {
+   "stdout": "",
+   "stderr": "cat: missing.txt: No such file or directory\n",
+   "exit": 1
+  },
+  "uutils": {
+   "stdout": "",
+   "stderr": "cat: missing.txt: No such file or directory\n",
+   "exit": 1
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "sort",
+  "gnu": {
+   "stdout": "apple\napple\nfig\npear\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "apple\napple\nfig\npear\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "sort -n",
+  "gnu": {
+   "stdout": "9\n10\n100\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "9\n10\n100\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "uniq -c",
+  "gnu": {
+   "stdout": "      1 pear\n      2 apple\n      1 fig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "      1 pear\n      2 apple\n      1 fig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "wc",
+  "gnu": {
+   "stdout": " 4  4 21 data.txt\n 3  3  9 nums.txt\n 7  7 30 total\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": " 4  4 21 data.txt\n 3  3  9 nums.txt\n 7  7 30 total\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "head -n 2",
+  "gnu": {
+   "stdout": "pear\napple\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "pear\napple\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "tail -n 2",
+  "gnu": {
+   "stdout": "apple\nfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "apple\nfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "cut -d, -f2",
+  "gnu": {
+   "stdout": "name\npear\nfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "name\npear\nfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "tr a-z A-Z",
+  "gnu": {
+   "stdout": "PEAR\nAPPLE\nAPPLE\nFIG\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "PEAR\nAPPLE\nAPPLE\nFIG\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "seq 0.1 0.1 0.5",
+  "gnu": {
+   "stdout": "0.1\n0.2\n0.3\n0.4\n0.5\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "0.1\n0.2\n0.3\n0.4\n0.5\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "printf %05.1f",
+  "gnu": {
+   "stdout": "003.1\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "003.1\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "date -d @0",
+  "gnu": {
+   "stdout": "Thu Jan  1 00:00:00 UTC 1970\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "Thu Jan  1 00:00:00 UTC 1970\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "numfmt --to=iec",
+  "gnu": {
+   "stdout": "1.0M\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "1.0M\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "expr 7 / 2",
+  "gnu": {
+   "stdout": "3\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "3\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "basename",
+  "gnu": {
+   "stdout": "c\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "c\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "md5sum",
+  "gnu": {
+   "stdout": "556d1053afef913c72802c41559bf652  data.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "556d1053afef913c72802c41559bf652  data.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "nl",
+  "gnu": {
+   "stdout": "     1\tpear\n     2\tapple\n     3\tapple\n     4\tfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "     1\tpear\n     2\tapple\n     3\tapple\n     4\tfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "fold -w 3",
+  "gnu": {
+   "stdout": "pea\nr\napp\nle\napp\nle\nfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "pea\nr\napp\nle\napp\nle\nfig\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "od -c",
+  "gnu": {
+   "stdout": "0000000   1   0  \\n   9  \\n   1   0   0  \\n\n0000011\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "0000000   1   0  \\n   9  \\n   1   0   0  \\n\n0000011\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "base64",
+  "gnu": {
+   "stdout": "cGVhcgphcHBsZQphcHBsZQpmaWcK\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "cGVhcgphcHBsZQphcHBsZQpmaWcK\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "factor 360",
+  "gnu": {
+   "stdout": "360: 2 2 2 3 3 5\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "360: 2 2 2 3 3 5\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "stat -c %s",
+  "gnu": {
+   "stdout": "21\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "21\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "tac",
+  "gnu": {
+   "stdout": "fig\napple\napple\npear\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "fig\napple\napple\npear\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "paste",
+  "gnu": {
+   "stdout": "pear\t10\napple\t9\napple\t100\nfig\t\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "pear\t10\napple\t9\napple\t100\nfig\t\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "du -b",
+  "gnu": {
+   "stdout": "21\tdata.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "uutils": {
+   "stdout": "21\tdata.txt\n",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": false,
+  "normalized_diff": false
+ },
+ {
+  "case": "ls（/dev/full へ）",
+  "gnu": {
+   "stdout": "",
+   "stderr": "ls: write error: No space left on device\n",
+   "exit": 2
+  },
+  "uutils": {
+   "stdout": "",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": true,
+  "normalized_diff": true
+ },
+ {
+  "case": "printf（/dev/full へ）",
+  "gnu": {
+   "stdout": "",
+   "stderr": "printf: write error: No space left on device\n",
+   "exit": 1
+  },
+  "uutils": {
+   "stdout": "",
+   "stderr": "",
+   "exit": 0
+  },
+  "raw_diff": true,
+  "normalized_diff": true
+ },
+ {
+  "case": "sort（/dev/full へ）",
+  "gnu": {
+   "stdout": "",
+   "stderr": "sort: fflush failed: 'standard output': No space left on device\nsort: write error\n",
+   "exit": 2
+  },
+  "uutils": {
+   "stdout": "",
+   "stderr": "sort: write failed: 'standard output': No space left on device\n",
+   "exit": 1
+  },
+  "raw_diff": true,
+  "normalized_diff": true
+ },
+ {
+  "case": "md5sum（/dev/full へ）",
+  "gnu": {
+   "stdout": "",
+   "stderr": "md5sum: write error\n",
+   "exit": 1
+  },
+  "uutils": {
+   "stdout": "",
+   "stderr": "\nthread 'main' (361) panicked at library/std/src/io/stdio.rs:1165:9:\nfailed printing to stdout: No space left on device (os error 28)\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+   "exit": -6
+  },
+  "raw_diff": true,
+  "normalized_diff": true
+ }
+]

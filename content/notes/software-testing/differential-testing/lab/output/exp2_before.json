@@ -1,0 +1,62 @@
+[
+ {
+  "command": "ip -br link",
+  "rows": 11,
+  "values": 76,
+  "kinds": {},
+  "other": [
+   {
+    "jz": "veth3a8eedd@if2",
+    "native_only": [
+     "2",
+     "veth3a8eedd"
+    ]
+   },
+   {
+    "jz": "vethb23304f@if2",
+    "native_only": [
+     "2",
+     "vethb23304f"
+    ]
+   },
+   {
+    "jz": "veth0067923@if2",
+    "native_only": [
+     "2",
+     "veth0067923"
+    ]
+   }
+  ]
+ },
+ {
+  "command": "ip -br addr",
+  "rows": 11,
+  "values": 40,
+  "kinds": {
+   "アドレスと長さ": 18
+  },
+  "other": [
+   {
+    "jz": "veth3a8eedd@if2",
+    "native_only": [
+     "2",
+     "veth3a8eedd"
+    ]
+   },
+   {
+    "jz": "vethb23304f@if2",
+    "native_only": [
+     "2",
+     "vethb23304f"
+    ]
+   },
+   {
+    "jz": "veth0067923@if2",
+    "native_only": [
+     "2",
+     "veth0067923"
+    ]
+   }
+  ]
+ }
+]

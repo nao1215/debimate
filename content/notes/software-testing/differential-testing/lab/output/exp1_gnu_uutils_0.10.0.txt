@@ -1,0 +1,19 @@
+32 ケース、raw で差 6、normalized で差 4
+[差] ls -l（xattr 付き）
+  GNU    exit=0 stdout='-rw-rw-r-- 1 user user 2 2001 attr.txt\n' stderr=''
+  uutils exit=0 stdout='-rw-rw-r--+ 1 user user 2 2001 attr.txt\n' stderr=''
+[ノイズ] ls --bogus
+  GNU    exit=2 stdout='' stderr="ls: unrecognized option '--bogus'\nTry 'ls --help' for more information"
+  uutils exit=2 stdout='' stderr="error: unexpected argument '--bogus' found\n\n  tip: to pass '--bogus' a"
+[差] ls（/dev/full へ）
+  GNU    exit=2 stdout='' stderr='ls: write error: No space left on device\n'
+  uutils exit=1 stdout='' stderr='ls: write error: No space left on device\n'
+[差] printf（/dev/full へ）
+  GNU    exit=1 stdout='' stderr='printf: write error: No space left on device\n'
+  uutils exit=0 stdout='' stderr=''
+[差] sort（/dev/full へ）
+  GNU    exit=2 stdout='' stderr="sort: fflush failed: 'standard output': No space left on device\nsort: "
+  uutils exit=1 stdout='' stderr="sort: write failed: 'standard output': No space left on device\n"
+[ノイズ] md5sum（/dev/full へ）
+  GNU    exit=1 stdout='' stderr='md5sum: write error\n'
+  uutils exit=1 stdout='' stderr='md5sum: write error: No space left on device\n'

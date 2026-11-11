@@ -1,0 +1,21 @@
+[
+ {
+  "command": "ip -br link",
+  "rows": 11,
+  "values": 79,
+  "kinds": {
+   "ifN と N": 3
+  },
+  "other": []
+ },
+ {
+  "command": "ip -br addr",
+  "rows": 11,
+  "values": 43,
+  "kinds": {
+   "アドレスと長さ": 18,
+   "ifN と N": 3
+  },
+  "other": []
+ }
+]

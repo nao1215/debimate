@@ -1,0 +1,12 @@
+== 修正前（e5f6c12 の 1 つ前、ab5ac30f）
+ip -br link: 11 行、76 値、jz にだけある値 3（アドレスと長さ 0、ifN と N 0、その他 3）
+  その他: jz 'veth3a8eedd@if2'、ip の JSON にだけある値 ['2', 'veth3a8eedd']
+  その他: jz 'vethb23304f@if2'、ip の JSON にだけある値 ['2', 'vethb23304f']
+  その他: jz 'veth0067923@if2'、ip の JSON にだけある値 ['2', 'veth0067923']
+ip -br addr: 11 行、40 値、jz にだけある値 21（アドレスと長さ 18、ifN と N 0、その他 3）
+  その他: jz 'veth3a8eedd@if2'、ip の JSON にだけある値 ['2', 'veth3a8eedd']
+  その他: jz 'vethb23304f@if2'、ip の JSON にだけある値 ['2', 'vethb23304f']
+  その他: jz 'veth0067923@if2'、ip の JSON にだけある値 ['2', 'veth0067923']
+== jz v0.9.1
+ip -br link: 11 行、79 値、jz にだけある値 3（アドレスと長さ 0、ifN と N 3、その他 0）
+ip -br addr: 11 行、43 値、jz にだけある値 21（アドレスと長さ 18、ifN と N 3、その他 0）

@@ -1,0 +1,15 @@
+== SQLite 3.46.1
+> SELECT a, b FROM g GROUP BY b ORDER BY b;
+(1, 10)
+(3, 20)
+> SELECT a, max(b) FROM g;
+(3, 20)
+== postgres (PostgreSQL) 17.11
+> SELECT a, b FROM g GROUP BY b ORDER BY b;
+ERROR:  column "g.a" must appear in the GROUP BY clause or be used in an aggregate function
+LINE 1: SELECT a, b FROM g GROUP BY b ORDER BY b;
+               ^
+> SELECT a, max(b) FROM g;
+ERROR:  column "g.a" must appear in the GROUP BY clause or be used in an aggregate function
+LINE 1: SELECT a, max(b) FROM g;
+               ^
