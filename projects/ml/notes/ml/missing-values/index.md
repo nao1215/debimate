@@ -219,7 +219,7 @@ HistGradientBoosting（NaN のまま）: ROC AUC = 0.887
 
 出力の 1 行目の通り、年収を書かなかった人の契約率（0.62）は、書いた人（0.31）の約 2 倍です。中央値で補完すると、この人たちは「年収が中央値の人」として扱われます。欠損フラグを足すと空欄の意味を学習でき、[ROC AUC](../roc-pr-auc/) が 0.868 から 0.889 に上がりました。
 
-3 行目の [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/ensemble.html#missing-values-support) は、`NaN` を補完せずに受け取ります。学習時に、分割点ごとに欠損値を左右どちらの子に送るかを利得で決めるので、欠損フラグを足した場合と同程度の 0.887 になりました。[決定木](../decision-tree/)系のモデルなら、補完せずに渡す選択肢もあります。
+3 行目の [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/ensemble.html#missing-values-support) は、[勾配ブースティング](../gradient-boosting/)の実装の 1 つで、`NaN` を補完せずに受け取ります。学習時に、分割点ごとに欠損値を左右どちらの子に送るかを利得で決めるので、欠損フラグを足した場合と同程度の 0.887 になりました。[決定木](../decision-tree/)系のモデルなら、補完せずに渡す選択肢もあります。
 
 ---
 

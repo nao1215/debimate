@@ -1,5 +1,5 @@
 ---
-title: "GradientBoosting - 勾配ブースティング"
+title: "Gradient Boosting - 10,000 行では毎回同じ結果が、1 行足すと学習のたびに変わる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
@@ -8,236 +8,329 @@ weight: 24
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-GradientBoosting（勾配ブースティング）は、浅い [決定木](../decision-tree/) のような弱い学習器を 1 本ずつ順番に足していき、前のモデルが取りこぼした「誤差（残差）」を次の木で説明させることで予測精度を高める教師あり学習の手法です。最終的な予測は、これまで足したすべての木の出力を足し合わせた加法モデル `F(x) = f_1(x) + f_2(x) + ... + f_M(x)` として表されます。
+勾配ブースティング（gradient boosting）は、浅い[決定木](../decision-tree/)を 1 本ずつ足し、それまでの予測が外した分を次の木に当てさせる教師あり学習の手法です。Friedman の論文「[Greedy function approximation: A gradient boosting machine](https://doi.org/10.1214/aos/1013203451)」（2001 年）で提案されました。表の形のデータでよく使われ、[scikit-learn](https://scikit-learn.org/stable/) には、素直に実装した [`GradientBoostingRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html) と、計算を速くした [`HistGradientBoostingRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html) があります。分類なら、名前の Regressor を Classifier に変えたものです。
 
-[RandomForest](../random-forest/) と並ぶ [アンサンブル学習](../ensemble-learning/) の代表です。RandomForest は複数の独立な木を並列に作って平均（バギング）するのに対し、GradientBoosting は前の予測の残差を見て次の木を作る「逐次的・依存的」な構造を取ります。
+以下は、scikit-learn に同梱の [California Housing](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html) で、学習に使う行数を変えながら `HistGradientBoostingRegressor` を既定の設定のまま 10 回ずつ学習した結果です。California Housing は、1990 年のアメリカの国勢調査から、カリフォルニア州の区画ごとに住宅価格の中央値と、所得・築年数・緯度・経度など 8 列を並べた 20640 行のデータです。
 
-「残差」は厳密には [損失関数](../loss-functions/) の負の[勾配](/ml/math/partial-derivative-gradient/)で、回帰なら MSE の勾配（= 残差そのもの）、分類なら交差エントロピーの勾配が使われます。損失関数を切り替えれば回帰・分類・分位回帰・ランキングなど多用途に適用できる柔軟さが、勾配ブースティングの強みの 1 つとなります。
+縦軸は、学習に使わずに取り分けたテストデータで測った[決定係数](../regression-metrics/) R² です。1 なら全て当たり、0 なら平均値を返すだけの予測と同じです。
 
-| | RandomForest（Bagging） | GradientBoosting（Boosting） |
-|---|---|---|
-| 木の作り方 | 並列・独立 | 逐次・依存 |
-| 個々の木の深さ | 深め（フル成長まで） | 浅め（depth=3〜8） |
-| 集約方法 | 平均/多数決 | 加法（足し合わせ） |
-| 過学習の傾向 | 起きにくい（平均で抑制） | 起きやすい（残差を追い続ける） |
-| 学習の並列化 | 容易（木同士が独立） | 木単位では困難（依存関係あり） |
-| 代表実装 | scikit-learn `RandomForestClassifier` | scikit-learn `HistGradientBoostingClassifier`、LightGBM、XGBoost、CatBoost |
+{{< figure src="gradient-boosting_cover.webp" alt="横軸は学習に使った行数で、8,000、9,000、10,000、10,001、11,000、12,000、14,000、16,000 の 8 つ。縦軸はテストデータの R²。10,000 行までは 10 回の点が 1 つに重なり、R² は 0.827 前後。10,001 行からは 10 回の点が縦にばらけ、10,001 行では 0.825〜0.830 に散らばる" caption="既定の設定のまま 10 回ずつ学習した時のテストデータの R²（scikit-learn 1.9.1）" align="center" >}}
 
-表形式データ（テーブルデータ）では、GradientBoosting 系の LightGBM や XGBoost などが使われます。ハイパーパラメータによって性能が変わるため、`learning_rate`、`n_estimators`、`max_depth` を調整して [RandomForest](../random-forest/) などと比較します。
+10,000 行までは 10 回とも同じ R² で、1 行足した 10,001 行からは 10 回とも違う値になりました。`HistGradientBoostingRegressor` は、渡された行が 10,000 を超えると、その 10% を学習に使わずに取り分けます。取り分けた行は、木を 1 本足すごとに予測の誤差を測るためだけに使い、誤差が下がらなくなった所で木を足すのを止めます。取り分ける行は、学習のたびに乱数で選ばれます。
 
----
+手元の CSV で試す時も、数千行のサンプルで試した時は何度学習しても同じスコアだったのに、全データで学習し直したら実行のたびに小数点以下 3 桁目が動く、という場面があります。木の本数の上限を `max_iter=1000` と書いたのに、学習した木が数百本しかないこともあります。どちらもバグではなく、既定値どおりの動きです。
 
-### 用語の整理
+<br>
 
-- アンサンブル手法: 複数モデルの出力をまとめて、単体より安定・高精度を狙う方法
-- ブースティング: 前のモデルの誤差を次で補正する「順番に積み上げる」やり方
-- 弱い学習器（weak learner）: 単体だと「ランダムよりちょっと良い」程度のモデル。GradientBoosting では浅い決定木（depth=3〜8）が代表
-- 加法モデル: 各木の予測を足し合わせた合計で最終予測を作る考え方。[線形回帰](../linear-regression/)の係数和と同じ発想
+本記事では、ML を学び始めた人と、scikit-learn の勾配ブースティングを手元のデータに使う人に向けて、次の疑問に答えます。
+
+- 勾配ブースティングは、何を順に足していくのか。
+- learning_rate と木の本数は、どう関係するのか。
+- 学習を途中で止める仕組みは、どの時点のモデルを返すのか。
+- RandomForest と比べ、速さと精度はどう違うのか。
+- 10,000 行を超えると、なぜ結果が学習のたびに変わるのか。
+
+実験は scikit-learn 1.9.1 で行いました。図を描く処理も含めた完全なコードは [gradient-boosting_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/gradient-boosting_gen.py) にあります。
 
 ---
 
-### 仕組み（概要）
+### 残差に木を足していく仕組み
 
-1. 初期モデル（多くの場合「全データの平均値や[対数オッズ](/ml/math/log-exp-logodds/)」のような単純な定数）で予測し、誤差（残差）を計算
-2. 残差を説明する木を学習して、その予測を `learning_rate * tree_prediction` の形で加える
-3. 残差を再計算して、また次の木を学習する
-4. これを `n_estimators` 回繰り返す（あるいは early stopping で打ち切る）
+勾配ブースティングの最初の予測は、全ての行で同じ値です。回帰なら正解 `y` の平均を使います。次に、正解から今の予測を引いた残差を求め、その残差を当てる浅い決定木を 1 本学習します。その木の予測をそのまま足さず、`learning_rate` という係数を掛けてから今の予測に足します。0.5 なら、木が当てた残差の半分だけ予測を動かします。以下は、1 次元の人工データでこの手順の最初の 1 回を描いた図です。
 
-```mermaid
-graph TD
-    A[初期モデル] --> B[予測]
-    B --> C[残差を計算]
-    C --> D[残差を説明する木を学習]
-    D --> E[モデルを更新: F = F + lr * tree]
-    E --> F{停止条件?}
-    F -- まだ --> B
-    F -- はい --> G[最終モデル]
-```
+{{< figure src="gradient-boosting_residual.webp" alt="3 つの図。左は青い点のデータに、y の平均 0.6 ほどの水平な赤い線が重なる。中央はオレンジの点の残差（y − 平均）に、1 本目の木の予測が階段で重なり、残差の上下を追う。右はデータに、平均だけの灰色の破線と、平均に 0.5 倍した 1 本目の予測を足した赤い階段を重ね、赤い方がデータに近い" caption="最初の予測（平均）の残差を 1 本目の木が当て、0.5 倍して足す（learning_rate=0.5、深さ 3 の木）" align="center" >}}
 
-「勾配」という名前は、損失関数を最小化する方向（[勾配方向](/ml/math/gradient-descent-sgd/)）に予測を更新していくことから来ています。回帰での二乗誤差なら勾配は単純な残差そのものになります。一方で、分類のロジスティック損失では勾配がもう少し複雑な形になります。
+木の入力は元の `x` のままで、当てる相手だけが `y` から残差に変わります。右の図のように、平均に 0.5 倍した木の予測を足すと、元のデータに少し近づきます。2 本目の木は、この新しい予測の残差を当てます。これを繰り返し、最終的な予測は、平均に全ての木の出力を `learning_rate` 倍して足した和になります。
 
----
+<br>
 
-### 残差を埋めていく直感
-
-弱い学習器（浅い木）を 1, 3, 10, 50 本と積み上げると、予測曲線が真の関数（緑の点線）に徐々に近づいていきます。
-
-![Progressive fit by GBDT](./gradient-boosting_progressive_fit.svg)
-
-1 本だけだと階段関数のような粗い形にしかなりません。3 本足すと細かい階段が増え、10 本で大まかな形が見えてきます。50 本では真の関数によく一致します。ただし、訓練点のノイズに引っ張られ始めている兆候も見えます（これが過学習の入口）。
-
-各イテレーションで何が起きているかをもう少し細かく見ると、次のような流れになります。
-
-![Residual fitting step by step](./gradient-boosting_residual.svg)
-
-左図: 1 本目の木は元データを粗く近似します。残差（真値 - 予測）が残っています。
-右図: 2 本目の木の入力は 1 本目と同じ特徴量 x で、予測する目的値を y から残差に置き換えて学習します（分類などでは損失関数の負の勾配に置き換えます。[scikit-learn のドキュメント](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)）。この木の予測を元の予測に足すと、組み合わさった予測は元データにより近くなります。GradientBoosting では、この補正を繰り返します。
-
----
-
-### 決定木の分岐例（しきい値）
-
-GradientBoosting で使う弱い学習器は、典型的には深さ 3〜8 の決定木です。決定木は「ある特徴量がしきい値以下か」で分岐を作り、葉に予測値を持ちます。
-
-```mermaid
-graph TD
-    X["ルート: 体温 ≤ 37.5?"] -->|Yes| Y["咳 ≤ 1回?"]
-    X -->|No| Z["脈拍 ≤ 90?"]
-    Y -->|Yes| A["予測: 0"]
-    Y -->|No| B["予測: 1"]
-    Z -->|Yes| C["予測: 0"]
-    Z -->|No| D["予測: 1"]
-```
-
-GradientBoosting は、こうした浅い木を何百本も足し合わせます。1 本の木の表現力は限定的です。それでも、足し合わせることで滑らかな関数や複雑な相互作用を表現できるようになります。
-
----
-
-### ハイパーパラメータのトレードオフ
-
-GradientBoosting の挙動を決める主要なハイパーパラメータは 3 つあり、互いに強く絡み合っています。[ハイパーパラメータ](../hyperparameter/)の選定はこの 3 つから入ります。
-
-- `learning_rate` （学習率、典型値 0.01〜0.3）: 各木の寄与の大きさ。小さいほど慎重に学習する
-- `n_estimators` （木の本数、典型値 100〜2000）: 何本まで足すか
-- `max_depth` （各木の深さ、典型値 3〜8）: 個々の木の複雑さ
-
-`learning_rate` を小さくするほど、同じ loss に届くまでに必要な木の本数は増えます。下の図は `learning_rate` だけ変えた 3 ケースについて、検証データ（学習に使わず、本数などを選ぶために取り分けたデータ）の log loss を本数ごとに描いたものです。
-
-![learning_rate trade-off](./gradient-boosting_learning_rate.svg)
-
-- `learning_rate=0.5` は 40 本で最小（0.283）になった後に上がり続け、300 本で 0.445 になる（過学習）
-- `learning_rate=0.1` は 182 本で最小（0.273）になり、300 本でも 0.280 に留まる
-- `learning_rate=0.01` は 300 本でもまだ下がり続けている（0.315）
-
-必要な本数はデータと `max_depth` で変わるため、この本数は他のデータには当てはまりません。`learning_rate` は 0.05〜0.1 程度に固定し、`n_estimators` を大きめに取って、次節の early stopping で本数を決めるやり方がよく使われます。
-
----
-
-### 過学習と早期停止
-
-GradientBoosting は「残差を追い続ける」性質上、`n_estimators` を増やすほど訓練誤差は下がり続けます。一方で検証データの誤差はある時点で底を打ち、その後上昇に転じます。これが GradientBoosting の典型的な過学習パターンです。
-
-early stopping（早期停止）は、この検証データの loss を木を 1 本足すごとに測り、改善しなくなったら学習を打ち切る仕組みです。scikit-learn の `GradientBoostingClassifier` では、`validation_fraction=0.2` で訓練データの 20% を検証データとして取り分け、`n_iter_no_change=20` で「20 本続けて改善しなければ停止」を指定します。test データは停止の判断に使わず、止めたモデルの最終評価にだけ使います。test の loss で本数を選ぶと、未知のデータでの性能を楽観的に見積もってしまうからです。
-
-![Train vs validation loss with early stopping](./gradient-boosting_early_stopping.svg)
-
-このデータでは検証 loss は 89 本で最小（0.266）になり、そこから 20 本改善しなかったため 107 本で学習が止まりました。scikit-learn は最小の 89 本に戻さず、止まった時点の 107 本のモデルを返します。このモデルの test log loss は 0.302 で、500 本まで学習させたモデルの 0.403 より小さい値でした（[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/gradient-boosting_gen.py)）。
-
-[過学習](../overfitting/)対策として、GradientBoosting 系では次の手段が標準的に用意されています。
-
-- early stopping: 検証 loss が改善しなくなったら学習を打ち切る
-- `learning_rate` を小さく: 1 本あたりの影響を抑えて、慎重に進む
-- `max_depth` を浅く: 個々の木の表現力を制限
-- `min_samples_leaf` / `min_child_samples` を大きく: 葉ノードに最低サンプル数を要求
-- `subsample` を 1 未満に: 各木の学習に使うサンプル比率を絞る（stochastic gradient boosting）
-- `colsample_bytree` / `max_features` を 1 未満に: 各木の学習に使う特徴量比率を絞る
-
----
-
-### 前提・注意
-
-- 学習率と木の数のバランスが性能に強く影響する（前節）
-- 学習は逐次的なので、木単位での並列化はできない。ヒストグラム化や葉単位の並列化で速度を稼ぐ
-- [過学習](../overfitting/)しやすいので early stopping や [交差検証](../cross-validation/) が重要
-- 特徴量のスケーリングは不要（[標準化](../standardization/)の表参照）。[RandomForest](../random-forest/) と同じく順序ベース
-- 木の数が多くなるとモデルが重く、推論時間にも影響する
-
----
-
-### 利点
-
-- 非線形・特徴量の相互作用を自然に捉える
-- 前処理コストが低い（標準化・外れ値処理がほぼ不要、[欠損](../missing-values/)も実装によっては対応）
-- [特徴量重要度](/ml/ml/feature-importance/)を出せる（ただし [RandomForest](../random-forest/) と同様にバイアスがあるので `permutation_importance` 推奨）
-- `predict_proba` で確率を出せる。log loss を最小化して学習するため確率として扱いやすい値になりやすいが、そのまま信頼してよいかは[確率の校正](../probability-calibration/)で確認する
-- LightGBM / XGBoost / CatBoost など最適化実装が豊富で、規模が大きくなっても動く
-
----
-
-### 欠点
-
-- 既定値のままでは性能を引き出せないことが多く、`learning_rate` × `n_estimators` × `max_depth` の[ハイパーパラメータ](../hyperparameter/)調整に手間がかかる（グリッドサーチや [Optuna](https://optuna.org/) によるベイズ最適化など）
-- 学習に時間がかかる（早期停止しないと特に）
-- 外れ値の影響を受けやすい（残差を追うため、外れ値が次の木で取り上げられる）
-- モデルのサイズが大きくなりがちで、`n_estimators=1000`、`max_depth=8` だと数百 MB に達することもある
-- 並列学習が限定的（GPU 対応 LightGBM などはあるが）
-- 線形構造が強いデータでは [LogisticRegression](../logistic-regression/) より複雑なだけでメリットが薄い
-
----
-
-## Python での実例
-
-scikit-learn には `GradientBoostingClassifier` と [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html) の 2 種類の実装があります。後者は scikit-learn 0.21 で導入された実装で、特徴量をヒストグラム化して大規模データでも速く学習できるため、特別な理由がなければ `HistGradientBoostingClassifier` を使うのが標準的です。以下は、説明用の人工データで early stopping 付きの学習を行う例です。
+以下のコードは、この手順を 10 行ほどのループで書き、scikit-learn の `GradientBoostingRegressor` と同じ予測になるかを確かめます。
 
 ```python
-from sklearn.datasets import make_classification
-from sklearn.ensemble import HistGradientBoostingClassifier
-from sklearn.metrics import roc_auc_score
-from sklearn.model_selection import train_test_split
+rng = np.random.default_rng(0)
+x = np.linspace(-3, 3, 200).reshape(-1, 1)
+y_true = np.sin(x.ravel()) * 1.5 + 0.2 * x.ravel() ** 2
+y = y_true + 0.3 * rng.standard_normal(200)
 
-X, y = make_classification(
-    n_samples=5000, n_features=10, n_informative=6, n_redundant=2,
-    flip_y=0.05, random_state=0,
-)
-# test は最後の評価だけに使う
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=0, stratify=y
-)
+learning_rate = 0.5
+F = np.full(len(y), y.mean())  # 最初の予測は、全ての行で y の平均
+for i in range(50):
+    residual = y - F  # ここまでの予測が外した分
+    tree = DecisionTreeRegressor(max_depth=3, random_state=0).fit(x, residual)
+    F = F + learning_rate * tree.predict(x)  # 残差を当てた木の予測に learning_rate を掛けて足す
 
-model = HistGradientBoostingClassifier(
-    learning_rate=0.05,
-    max_iter=1000,
-    max_depth=6,
-    early_stopping=True,
-    validation_fraction=0.2,  # X_train の 20% を検証データとして切り出す
-    n_iter_no_change=20,
-    random_state=0,
-)
-model.fit(X_train, y_train)
-proba = model.predict_proba(X_test)[:, 1]
-print("ROC-AUC:", round(roc_auc_score(y_test, proba), 3))
-print("Trees actually used:", model.n_iter_)
+gbr = GradientBoostingRegressor(n_estimators=50, learning_rate=0.5, max_depth=3, random_state=0).fit(x, y)
+print("手書きのループと GradientBoostingRegressor の予測の差の最大:", np.abs(F - gbr.predict(x)).max())
 ```
 
 ```text
-ROC-AUC: 0.97
-Trees actually used: 276
+手書きのループと GradientBoostingRegressor の予測の差の最大: 0.0
 ```
 
-`n_iter_` は実際に学習された木の本数です。`max_iter=1000` でも、このデータでは 276 本で止まりました。
+差は 0 で、二乗誤差の回帰では、`GradientBoostingRegressor` の中身はこのループそのものです。
 
-より高速・高性能が必要な場合は LightGBM / XGBoost / CatBoost への乗り換えを検討します。インターフェースは scikit-learn 互換のラッパーがあるので、置き換えは小さな差分で済みます。
+勾配という名前は、[損失関数](../loss-functions/)の[勾配](../../math/partial-derivative-gradient/)から来ています。1 行の損失を `(y - F)² / 2` とすると、予測 `F` で微分した勾配は `-(y - F)` で、符号を反転すると残差 `y - F` そのものになります。つまり残差を当てる木は、損失が減る向きを当てる木です。分類では損失関数が交差エントロピーに変わるので、その勾配の符号を反転した値が残差の代わりになります。
 
-| 実装 | 特徴 |
-|---|---|
-| `HistGradientBoostingClassifier` (sklearn) | 標準で入っている。中規模データなら十分速い |
-| LightGBM | Microsoft 製。葉単位の成長で非常に高速。Kaggle 系でも使われる |
-| XGBoost | 老舗。安定性が高く、GPU 対応も成熟 |
-| CatBoost | Yandex 製。[カテゴリ変数](../categorical-encoding/)を生のまま扱える点が強み |
+以下は、同じループで足した木の本数ごとの予測です。
 
----
+{{< figure src="gradient-boosting_progressive_fit.webp" alt="4 つの図。灰色の点のデータと、データを作った関数の緑の破線に、赤い予測を重ねる。木 1 本では粗い階段、3 本で関数に沿い始め、10 本でほぼ重なる。50 本では予測が細かく上下に揺れ、点の雑音まで追っている" caption="足した木の本数ごとの予測（learning_rate=0.5、深さ 3）" align="center" >}}
 
-### 機械学習での使いどころ
+10 本でデータを作った関数にほぼ重なり、50 本では雑音の点まで追って予測が細かく揺れます。足し続けると学習データにだけ合う[過学習](../overfitting/)になるので、何本で止めるかが次の問題になります。
 
-表形式データでは、タスクに応じて [LogisticRegression](../logistic-regression/) と [RandomForest](../random-forest/) などでベースラインを作り、その後 GradientBoosting 系と比較します。
+<br>
 
-- 特徴量が多く複雑な関係を含むデータ: 非線形・相互作用に強い
-- 不正検知・与信スコア・[需要予測](../time-series-forecasting/)など、表形式データを扱う実運用
-- `predict_proba` の確率を使いたいタスク（ROC-AUC / PR-AUC で評価する場面）
-
-具体的な利用例:
-
-- 不正取引検知で [PR-AUC](../roc-pr-auc/) を評価指標にするモデル
-- 与信スコアリングで線形モデルの精度上限を超えたい場合
-- EC サイトのクリック率予測（CTR）で大規模データを扱う場面
-- 医療データの非線形な閾値効果をモデル化する場合
+同じく決定木を何本も使う [RandomForest](../random-forest/) は、深い木を互いに独立に作って予測を平均します。勾配ブースティングは、前の木の結果を見て次の木を作るので、木を並べて同時に作れません。複数のモデルをまとめる手法の全体は、[アンサンブル学習](../ensemble-learning/)で扱っています。
 
 ---
 
-### 適さないケース
+### learning_rate と木の本数
 
-- 学習時間や計算資源が厳しい場合（リアルタイム学習・モバイル端末上の学習など）
-- 強いノイズがあり過学習が支配的な場面: ノイズの残差まで追ってしまうので、[RandomForest](../random-forest/) の方が安定することがある
-- 線形構造が支配的なデータ: [LogisticRegression](../logistic-regression/) で十分。GBDT は過剰
-- 画素の並びや語の並びそのものが本質のデータ（画像・テキスト）: 専用モデル（CNN/Transformer）の方が適切。時系列も、生の値の列をそのまま渡すのには向かない。ただし、ラグや移動平均などの特徴量を作って渡せば、需要予測などでよく使われる（[時系列予測](../time-series-forecasting/)を参照）
-- 非常に小規模なデータ（数百件以下）: 木を 100 本も足す前にデータが足りない。`RandomForest` か線形モデルを選ぶ
+`learning_rate` を小さくすると、1 本の木で動かす量が減るので、同じ所まで届くのに要る木の本数が増えます。ここからは California Housing を使い、テストデータとは別に、学習用のデータから検証データを取り分けます。誤差は平均二乗誤差で測ります。予測と正解の差を二乗して平均した値で、小さいほど当たっています。
+
+検証データは、学習に使わずに本数などの設定を選ぶためのデータで、テストデータは選び終えた後の評価に 1 回だけ使います。テストデータで本数を選ぶと、その分だけ未知のデータでの性能を楽観的に見積もるからです。
+
+<br>
+
+以降の実験は、速い方の `HistGradientBoostingRegressor` を使います。2 つの実装の違いは後の節で比べます。以下のコードは、`learning_rate` を 4 通りに変えて木を 1000 本まで足し、1 本足すごとに検証データの平均二乗誤差を測ります。`early_stopping=False` は、次の節で扱う、学習を途中で止める仕組みを切る指定です。
+
+```python
+X, y = fetch_california_housing(return_X_y=True)
+# テスト用の 2 割は、最後の評価にだけ使う
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+# 学習用の残りから、さらに 2 割を検証用に取り分け、本数や learning_rate の比較に使う
+X_fit, X_val, y_fit, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=0)
+
+curves = {}
+for lr in [1.0, 0.5, 0.1, 0.01]:
+    model = HistGradientBoostingRegressor(learning_rate=lr, max_iter=1000, early_stopping=False,
+                                          random_state=0).fit(X_fit, y_fit)
+    # staged_predict は、木を 1 本足すごとの予測を順に返す
+    mse = np.array([mean_squared_error(y_val, p) for p in model.staged_predict(X_val)])
+    curves[lr] = mse
+    print(f"learning_rate={lr}: 最小は {mse.argmin() + 1} 本で {mse.min():.4f}、"
+          f"100 本で {mse[99]:.4f}、1000 本で {mse[-1]:.4f}")
+```
+
+```text
+learning_rate=1.0: 最小は 13 本で 0.3137、100 本で 0.3614、1000 本で 0.3855
+learning_rate=0.5: 最小は 87 本で 0.2472、100 本で 0.2514、1000 本で 0.2667
+learning_rate=0.1: 最小は 761 本で 0.2039、100 本で 0.2253、1000 本で 0.2043
+learning_rate=0.01: 最小は 1000 本で 0.2236、100 本で 0.5303、1000 本で 0.2236
+```
+
+以下は、この 4 本の曲線です。
+
+{{< figure src="gradient-boosting_learning_rate.webp" alt="横軸は足した木の本数で 1〜1000 の対数目盛、縦軸は検証データの平均二乗誤差。learning_rate 1.0 の赤は 13 本で 0.31 の底を打って上がり続け、0.5 のオレンジは 87 本で 0.25 の底から緩やかに上がる。0.1 の緑は 761 本で 0.204 まで下がり、0.01 の青は 1000 本でもまだ下がっていて 0.224" caption="learning_rate ごとの、足した木の本数と検証データの平均二乗誤差（点は各曲線の最小）" align="center" >}}
+
+`learning_rate=1.0` は 13 本で底を打ち、その後は木を足すほど検証データの誤差が増えます。0.1 は 761 本まで下がり、底の値も 0.2039 と 4 つの中で最も低くなりました。0.01 は 1000 本でもまだ下がり続けています。
+
+小さい `learning_rate` ほど底は低くなりやすい一方で、底に届くまでの木の本数と学習の時間が増えます。そのため、`learning_rate` は 0.05〜0.1 ほどに固定し、本数は検証データの誤差を見て決めるやり方がよく使われます。その本数を自動で決めるのが、次の節の仕組みです。
+
+---
+
+### 学習を途中で止める early stopping
+
+early stopping（早期停止）は、木を 1 本足すごとに検証データの誤差を測り、決めた本数だけ続けて良くならなければ、その時点で学習を止める仕組みです。`HistGradientBoostingRegressor` では、何本続けて良くならなければ止めるかを `n_iter_no_change` で決め、既定は 10 本です。
+
+検証データは、学習用のデータから `validation_fraction` の割合で自動で取り分けます。既定は 10% です。以下のコードでは、前の節と比べられるように、前の節と同じ検証データを `X_val` と `y_val` で渡しています。
+
+止めるかの判定に使った誤差は `validation_score_` に入っていますが、損失として二乗誤差の半分を使い、大きいほど良い値にするため負号を付けています。そのため、コードでは -2 倍して平均二乗誤差に戻しています。
+
+```python
+es = HistGradientBoostingRegressor(max_iter=1000, early_stopping=True, n_iter_no_change=10,
+                                   random_state=0).fit(X_fit, y_fit, X_val=X_val, y_val=y_val)
+# validation_score_ は、0 本目からの検証データの損失に負号を付けた値
+val_mse = -2 * es.validation_score_
+best = int(val_mse.argmin())
+print(f"止まった本数（n_iter_）: {es.n_iter_}、検証データの誤差が最小だった本数: {best}")
+print(f"止まった時点の検証データの平均二乗誤差: {val_mse[es.n_iter_]:.4f}、"
+      f"1000 本まで足した時の最小: {curves[0.1].min():.4f}（{curves[0.1].argmin() + 1} 本）")
+full = HistGradientBoostingRegressor(max_iter=1000, early_stopping=False, random_state=0).fit(X_fit, y_fit)
+print(f"テストデータの平均二乗誤差: {es.n_iter_} 本で止めたモデル "
+      f"{mean_squared_error(y_test, es.predict(X_test)):.4f}、"
+      f"1000 本のモデル {mean_squared_error(y_test, full.predict(X_test)):.4f}")
+```
+
+```text
+止まった本数（n_iter_）: 345、検証データの誤差が最小だった本数: 335
+止まった時点の検証データの平均二乗誤差: 0.2088、1000 本まで足した時の最小: 0.2039（761 本）
+テストデータの平均二乗誤差: 345 本で止めたモデル 0.1977、1000 本のモデル 0.1971
+```
+
+以下は、前の節の `learning_rate=0.1` の曲線に、early stopping で止めた所を重ねた図です。
+
+{{< figure src="gradient-boosting_early_stopping.webp" alt="横軸は足した木の本数 0〜1000、縦軸は検証データの平均二乗誤差。緑の線は early stopping で止めた場合で、345 本の赤い破線で終わる。灰色の線は 1000 本まで足した場合で、345 本の先も 0.209 から緩やかに下がり、761 本で最小の 0.204 になる" caption="early stopping が止めた本数と、1000 本まで足した場合の検証データの平均二乗誤差（learning_rate=0.1）" align="center" >}}
+
+`n_iter_` は、学習した木の本数です。検証データの誤差は 335 本で最小になり、その後 10 本続けて下がらなかったので、345 本で止まりました。scikit-learn は最小だった 335 本に戻さず、止まった時点の 345 本のモデルをそのまま返します。
+
+灰色の線のとおり、345 本の先でも誤差は 761 本まで緩やかに下がります。それでも、テストデータの平均二乗誤差は 345 本で 0.1977、1000 本で 0.1971 と、ほとんど変わりませんでした。このデータでは、木の本数を 3 分の 1 にしても精度はほぼ同じで、学習と予測の時間が減ります。
+
+---
+
+### RandomForest と 2 つの実装の比較
+
+`HistGradientBoostingRegressor` は、各列の値を最大 255 個の区間に分け、分岐の候補を区間の境目だけに絞ります。区間ごとの行の数を数えた表をヒストグラムと呼ぶのが、名前の由来です。`GradientBoostingRegressor` は、全ての値を分岐の候補として調べます。
+
+以下のコードは、California Housing の学習用のデータ全体で 3 つのモデルを既定値のまま学習し、テストデータの R²・保存した時の大きさ・学習の時間を測ります。学習は全て 1 スレッドに揃え、時間は 3 回学習した中央値を取りました。最後の行の `do_early_stopping_` は、その学習で early stopping を使ったかを表す属性です。
+
+```python
+models = {
+    "RandomForestRegressor": lambda: RandomForestRegressor(random_state=0),
+    "GradientBoostingRegressor": lambda: GradientBoostingRegressor(random_state=0),
+    "HistGradientBoostingRegressor": lambda: HistGradientBoostingRegressor(random_state=0),
+}
+results, seconds = {}, {}
+for name, make in models.items():
+    times = []
+    for _ in range(3):  # 3 回学習した時間の中央値を取る
+        model = make()
+        start = time.perf_counter()
+        model.fit(X_train, y_train)
+        times.append(time.perf_counter() - start)
+    seconds[name] = np.median(times)
+    size_mb = len(pickle.dumps(model)) / 1e6  # 保存した時の大きさ
+    results[name] = (model.score(X_test, y_test), size_mb)
+    print(f"{name}: テストの R² {model.score(X_test, y_test):.3f}、大きさ {size_mb:.2f} MB")
+hgb = model
+print("HistGradientBoostingRegressor の early stopping:", hgb.do_early_stopping_, "、木の本数:", hgb.n_iter_)
+for name, sec in seconds.items():
+    print(f"{name}: 学習 {sec:.2f} 秒")
+```
+
+```text
+RandomForestRegressor: テストの R² 0.798、大きさ 144.77 MB
+GradientBoostingRegressor: テストの R² 0.777、大きさ 0.14 MB
+HistGradientBoostingRegressor: テストの R² 0.837、大きさ 0.37 MB
+HistGradientBoostingRegressor の early stopping: True 、木の本数: 100
+```
+
+出力の残りの 3 行は学習の時間で、下の折り畳みに置きました。
+
+{{< figure src="gradient-boosting_models.webp" alt="2 つの横棒グラフ。テストデータの R² は RandomForest 0.798、GradientBoosting 0.777、HistGradientBoosting 0.837。保存した大きさは 144.77 MB、0.14 MB、0.37 MB" caption="California Housing で、3 つのモデルを既定値のまま学習した時の R² と大きさ" align="center" >}}
+
+3 つの中で R² が最も高かったのは `HistGradientBoostingRegressor` で、学習の時間も、何度測っても他の 2 つより 1 桁以上短くなりました。RandomForest は R² 0.798 で、保存すると 145MB ありました。深さを制限しない木を 100 本持つので、`HistGradientBoostingRegressor` の約 400 倍の大きさです。
+
+<br>
+
+<details><summary>学習の時間の測定値と条件</summary>
+
+32 スレッドの機械で、学習を 1 スレッドに制限し、3 回学習した中央値を取りました。同じ機械では他の重い処理も同時に動いていたので、秒数は流し直すたびに大きく動きます。以下は、最後に流した時の出力です。
+
+```text
+RandomForestRegressor: 学習 12.41 秒
+GradientBoostingRegressor: 学習 3.94 秒
+HistGradientBoostingRegressor: 学習 0.29 秒
+```
+
+6 回流した範囲は、RandomForest が 6.64〜12.41 秒、GradientBoosting が 2.22〜5.68 秒、HistGradientBoosting が 0.12〜0.35 秒でした。同じ回の中で比べると、HistGradientBoosting は GradientBoosting の 13〜22 分の 1、RandomForest の 19 分の 1 以下の時間でした。
+
+</details>
+
+<br>
+
+R² の差には、既定値の違いも入っています。以下は、3 つの既定値を並べた表です。
+
+| | RandomForest | GradientBoosting | HistGradientBoosting |
+|---|---|---|---|
+| 木の数 | 100 本を平均 | 100 本を足す | 最大 100 本を足す |
+| 1 本の木の大きさ | 制限なし | 深さ 3 | 葉 31 枚 |
+| early stopping | なし | なし | 10,000 行を超えると入る |
+
+葉は、決定木の分岐の先にある、予測値を持つ末端です。`GradientBoostingRegressor` の深さ 3 の木は、葉が最大 8 枚です。`HistGradientBoostingRegressor` の木は葉が 31 枚まで育つので、1 本で表せる形が多く、同じ 100 本でも R² が高くなったと考えられます。
+
+表の最後の行が、冒頭の図の境目です。学習用のデータは 16512 行なので、出力の最後の行のとおり、この比較の `HistGradientBoostingRegressor` でも early stopping が入っていました。100 本の上限に先に届いたので止まってはいませんが、学習に使ったのは 16512 行の 90% です。
+
+---
+
+### 10,000 行の境目で変わること
+
+`HistGradientBoostingRegressor` の `early_stopping` の既定は `'auto'` で、[scikit-learn 1.9.1 の文書](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html)には「行数が 10,000 より多ければ early stopping を使う」とあります。検証データは `validation_fraction` の既定の 10% で、どの行を選ぶかは `random_state` で決まります。`random_state` の既定は `None` で、学習のたびに違う乱数を使います。
+
+<br>
+
+以下は、冒頭の図を作ったコードです。学習用のデータから同じ順に `n` 行を取り、既定の設定で 10 回学習します。同じ行で `max_iter=1000` も 10 回学習し、木の本数を数えます。
+
+最初の `np.random.seed(0)` は、本記事の数字を再現できるようにするためだけの行です。`random_state` を渡さない学習は NumPy の大域の乱数を順に使うので、10 回の学習は互いに違う乱数を使い、スクリプト全体を流し直した時だけ同じ結果になります。
+
+```python
+np.random.seed(0)
+order = np.random.RandomState(0).permutation(len(X_train))
+sizes = [8000, 9000, 10000, 10001, 11000, 12000, 14000, 16000]
+r2_default, n_iter_1000 = {}, {}
+for n in sizes:
+    rows = order[:n]  # 学習用のデータから、同じ順に n 行を使う
+    fits = [HistGradientBoostingRegressor().fit(X_train[rows], y_train[rows]) for _ in range(10)]
+    r2_default[n] = [m.score(X_test, y_test) for m in fits]
+    long_fits = [HistGradientBoostingRegressor(max_iter=1000).fit(X_train[rows], y_train[rows])
+                 for _ in range(10)]
+    n_iter_1000[n] = [m.n_iter_ for m in long_fits]
+    print(f"{n:>5} 行: early stopping {fits[0].do_early_stopping_}、"
+          f"R² {min(r2_default[n]):.4f}〜{max(r2_default[n]):.4f}、"
+          f"max_iter=1000 の木の本数 {min(n_iter_1000[n])}〜{max(n_iter_1000[n])}")
+```
+
+```text
+ 8000 行: early stopping False、R² 0.8272〜0.8272、max_iter=1000 の木の本数 1000〜1000
+ 9000 行: early stopping False、R² 0.8267〜0.8267、max_iter=1000 の木の本数 1000〜1000
+10000 行: early stopping False、R² 0.8273〜0.8273、max_iter=1000 の木の本数 1000〜1000
+10001 行: early stopping True、R² 0.8253〜0.8295、max_iter=1000 の木の本数 100〜249
+11000 行: early stopping True、R² 0.8264〜0.8331、max_iter=1000 の木の本数 99〜216
+12000 行: early stopping True、R² 0.8260〜0.8332、max_iter=1000 の木の本数 140〜281
+14000 行: early stopping True、R² 0.8315〜0.8370、max_iter=1000 の木の本数 129〜280
+16000 行: early stopping True、R² 0.8331〜0.8366、max_iter=1000 の木の本数 125〜334
+```
+
+10,000 行までは `do_early_stopping_` が `False` で、R² の最小と最大が一致し、`max_iter=1000` の木は 10 回とも 1000 本です。10,001 行からは `True` になり、R² は 10 回とも違い、木の本数は 99〜334 本に散らばりました。以下は、その木の本数を並べた図です。
+
+{{< figure src="gradient-boosting_n_iter.webp" alt="横軸は学習に使った行数で、冒頭の図と同じ 8 つ。縦軸は max_iter=1000 で学習した木の本数。10,000 行までは 10 回とも 1000 本で点が重なる。10,001 行からは 99〜334 本に 10 個の点が散らばる" caption="max_iter=1000 で 10 回ずつ学習した時の木の本数" align="center" >}}
+
+10,001 行では、1 行足しただけで、学習する木が 1000 本から 100〜249 本に減り、学習に使う行は 10,001 行から 9,000 行ほどに減ります。R² が学習のたびに変わるのは、検証データに回る 1,000 行ほどが毎回入れ替わり、学習に使う行と止まる本数が変わるからです。
+
+<br>
+
+10,001 行のまま、`random_state` を固定した場合と、early stopping を切った場合も 10 回ずつ学習しました。
+
+```python
+rows = order[:10001]
+for label, params in [("random_state=0", {"random_state": 0}), ("early_stopping=False", {"early_stopping": False})]:
+    scores = [HistGradientBoostingRegressor(**params).fit(X_train[rows], y_train[rows]).score(X_test, y_test)
+              for _ in range(10)]
+    print(f"10001 行、{label}: R² {min(scores):.4f}〜{max(scores):.4f}")
+```
+
+```text
+10001 行、random_state=0: R² 0.8286〜0.8286
+10001 行、early_stopping=False: R² 0.8272〜0.8272
+```
+
+どちらでも 10 回とも同じ R² になりました。`random_state=0` は検証データの選び方を固定し、`early_stopping=False` は検証データを取り分けずに全ての行で 100 本を学習します。どちらが良いかは、このデータでは決められないほどの差です。
+
+<br>
+
+この境目は、[交差検証](../cross-validation/)でも効きます。データ全体が 12,000 行でも、5 分割の学習側は 9,600 行で、early stopping は入りません。同じ設定で全データを学習し直した本番のモデルだけが、10% を検証に回して途中で止まります。交差検証で測ったモデルと本番のモデルの作り方を揃えるなら、`early_stopping` を `True` か `False` に明示します。
+
+---
+
+### 表のデータで最初に試す時に確かめること
+
+勾配ブースティングを手元の表のデータに使う時は、まず `HistGradientBoostingRegressor` か `HistGradientBoostingClassifier` から始めます。前の節の比較のとおり、California Housing では `GradientBoostingRegressor` より 1 桁以上短い時間で学習し、既定値のままで最も高い R² でした。比べる相手として、[線形回帰](../linear-regression/)か[ロジスティック回帰](../logistic-regression/)、RandomForest のスコアも同じ分け方で測っておきます。数百行ほどの小さいデータでは、木を何百本も足す前にデータが足りなくなるので、これらの方が安定することがあります。
+
+次に、`early_stopping` と `random_state` を明示します。冒頭の図のように、書かなければ行数が 10,000 を超えたかどうかで、検証用に 10% を取り分けるか、学習のたびに結果が変わるかが黙って切り替わります。以下は、本記事の実験と scikit-learn 1.9.1 の文書から、書き方ごとの振る舞いを並べた表です。
+
+| 書き方 | 10,000 行以下 | 10,001 行以上 |
+|---|---|---|
+| 何も書かない | 全ての行で学習し、毎回同じ | 10% を検証に回し、毎回変わる |
+| `early_stopping=False` | 全ての行で学習し、毎回同じ | 全ての行で学習し、毎回同じ |
+| `random_state=0` だけ | 全ての行で学習し、毎回同じ | 10% を検証に回し、毎回同じ |
+
+学習の後には `n_iter_` を見て、`max_iter` の上限まで学習したのか、途中で止まったのかを確かめます。
+
+<br>
+
+`learning_rate` は 0.05〜0.1 ほどに固定し、`max_iter` を大きめにして early stopping に本数を決めさせると、調整する値を減らせます。葉の数のような残りの[ハイパーパラメータ](../hyperparameter/)は、交差検証のスコアで選びます。
+
+列の前処理は、他のモデルより少なく済みます。`HistGradientBoostingClassifier` は欠損値をそのまま受け取れるので、[欠損値](../missing-values/)を補完する前に試せます。カテゴリの列の扱いは[カテゴリ変数のエンコーディング](../categorical-encoding/)で、日付の順に並ぶデータで前の時点の値を列として足す作り方は[時系列予測](../time-series-forecasting/)で扱っています。
+
+学習した後に、どの列が効いたかを見るなら[特徴量重要度](../feature-importance/)を使います。分類で出した確率をそのまま判断に使うなら、その確率が実際の割合と合っているかを[確率の校正](../probability-calibration/)で確かめます。
+
+同じ設定で 2 回学習してスコアが変わったら、冒頭の図のように、学習に渡した行数が 10,000 を超えていないかを最初に見てください。
