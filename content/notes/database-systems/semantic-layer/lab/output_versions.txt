@@ -1,0 +1,5 @@
+sqly v1.7.3
+  - installed: 1.12.6
+  - duckdb: 1.11.1 - Up to date!
+mf, version 0.15.0
+metricflow 0.213.0

@@ -1,0 +1,122 @@
+== 1. 決済で失敗して補償する
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 3  inventory    ReserveStock    saga-A  -> available=2
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=11  inventory    ReleaseStock    saga-A  -> available=3
+t=11  order        CancelOrder     saga-A
+-- 結果: available=3  saga-A=CANCELLED
+
+== 1b. pivot の後の失敗は再試行で進める
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 3  inventory    ReserveStock    saga-A  -> available=2
+t= 9  payment      ChargeCard      saga-A  1000 円 -> charged
+t=11  shipping     ArrangeShipping saga-A  -> timeout
+t=12  orchestrator retry           saga-A  ArrangeShipping
+t=19  shipping     ArrangeShipping saga-A  -> ok
+t=20  orchestrator done            saga-A
+t=21  inventory    ConfirmReservation saga-A  -> available=2
+t=21  order        ConfirmOrder    saga-A
+-- 結果: available=2  saga-A=CONFIRMED
+
+== 2. 補償の前に途中の状態が読まれる（semantic lock なし）
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 3  inventory    ReserveStock    saga-A  -> available=0
+t= 4  page         商品ページ: 在庫切れ
+t= 4  orchestrator start           saga-B  (bob, 1 個)
+t= 5  order        CreateOrder     saga-B
+t= 7  inventory    ReserveStock    saga-B  -> available=0  out_of_stock
+t= 8  orchestrator compensate      saga-B  ReserveStock が out_of_stock
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t= 9  order        CancelOrder     saga-B
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=11  inventory    ReleaseStock    saga-A  -> available=1
+t=11  order        CancelOrder     saga-A
+t=14  page         商品ページ: 在庫あり（1）
+-- 結果: available=1  saga-A=CANCELLED, saga-B=CANCELLED
+
+== 2. 補償の前に途中の状態が読まれる（semantic lock あり）
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 3  inventory    ReserveStock    saga-A  -> available=0
+t= 4  page         商品ページ: 仮押さえ中（確定待ち）
+t= 4  orchestrator start           saga-B  (bob, 1 個)
+t= 5  order        CreateOrder     saga-B
+t= 7  inventory    ReserveStock    saga-B  -> available=0  busy
+t= 8  orchestrator wait            saga-B  在庫が仮押さえ中、6 後に再試行
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=11  inventory    ReleaseStock    saga-A  -> available=1
+t=11  order        CancelOrder     saga-A
+t=14  page         商品ページ: 在庫あり（1）
+t=15  inventory    ReserveStock    saga-B  -> available=0
+t=21  payment      ChargeCard      saga-B  1000 円 -> charged
+t=23  shipping     ArrangeShipping saga-B  -> ok
+t=24  orchestrator done            saga-B
+t=25  inventory    ConfirmReservation saga-B  -> available=0
+t=25  order        ConfirmOrder    saga-B
+-- 結果: available=0  saga-A=CANCELLED, saga-B=CONFIRMED
+
+== 2b. 補償を値の書き戻しで書く
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  orchestrator start           saga-B  (bob, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 2  order        CreateOrder     saga-B
+t= 3  inventory    ReserveStock    saga-A  -> available=1
+t= 4  inventory    ReserveStock    saga-B  -> available=0
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t=10  payment      ChargeCard      saga-B  1000 円 -> charged
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=11  inventory    ReleaseStock    saga-A  -> available=2
+t=11  order        CancelOrder     saga-A
+t=12  shipping     ArrangeShipping saga-B  -> ok
+t=13  orchestrator done            saga-B
+t=14  inventory    ConfirmReservation saga-B  -> available=2
+t=14  order        ConfirmOrder    saga-B
+-- 結果: available=2  saga-A=CANCELLED, saga-B=CONFIRMED
+
+== 2b. 補償を差分で書く
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  orchestrator start           saga-B  (bob, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 2  order        CreateOrder     saga-B
+t= 3  inventory    ReserveStock    saga-A  -> available=1
+t= 4  inventory    ReserveStock    saga-B  -> available=0
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t=10  payment      ChargeCard      saga-B  1000 円 -> charged
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=11  inventory    ReleaseStock    saga-A  -> available=1
+t=11  order        CancelOrder     saga-A
+t=12  shipping     ArrangeShipping saga-B  -> ok
+t=13  orchestrator done            saga-B
+t=14  inventory    ConfirmReservation saga-B  -> available=1
+t=14  order        ConfirmOrder    saga-B
+-- 結果: available=1  saga-A=CANCELLED, saga-B=CONFIRMED
+
+== 3. 補償が 2 回届く（冪等でない）
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 3  inventory    ReserveStock    saga-A  -> available=2
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=10  orchestrator relay が ReleaseStock を送った直後に停止、再起動
+t=11  inventory    ReleaseStock    saga-A  -> available=3
+t=11  inventory    ReleaseStock    saga-A  -> available=4
+t=11  order        CancelOrder     saga-A
+-- 結果: available=4  saga-A=CANCELLED
+
+== 3. 補償が 2 回届く（冪等）
+t= 0  orchestrator start           saga-A  (alice, 1 個)
+t= 1  order        CreateOrder     saga-A
+t= 3  inventory    ReserveStock    saga-A  -> available=2
+t= 9  payment      ChargeCard      saga-A  1000 円 -> card_declined
+t=10  orchestrator compensate      saga-A  ChargeCard が card_declined
+t=10  orchestrator relay が ReleaseStock を送った直後に停止、再起動
+t=11  inventory    ReleaseStock    saga-A  -> available=3
+t=11  inventory    ReleaseStock    saga-A  -> available=3  already released
+t=11  order        CancelOrder     saga-A
+-- 結果: available=3  saga-A=CANCELLED
+

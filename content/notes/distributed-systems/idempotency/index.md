@@ -28,7 +28,7 @@ topics: ["Reliability"]
 - 1 通目の処理が終わる前に再送が届いたら、何を返せるのか。
 - キーの記録をいつ消し、使い回されたキーをどう扱うのか。
 
-誤った値を返す故障（ビザンチン障害）と、複数の要求を跨いだ順序の保証は、本記事では扱いません。
+誤った値を返す故障（[ビザンチン障害](../byzantine-fault-tolerance/)）と、複数の要求を跨いだ順序の保証は、本記事では扱いません。
 
 ---
 
@@ -48,7 +48,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図で再送を選び、成功を確認できるまで再試行すると、同じ要求が複数回届く可能性があります。1 回分の課金を作る要求が 2 通届けば、素朴な実装は 2 回分の課金を作ります。
+上記の図で再送を選び、成功を確認できるまで[再試行](../retry-backoff/)すると、同じ要求が複数回届く可能性があります。1 回分の課金を作る要求が 2 通届けば、素朴な実装は 2 回分の課金を作ります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -109,7 +109,7 @@ HTTP の意味論を定める [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.
 
 最終状態を指定する形に書き直せない場合は、要求に一意な値を付けて見分けます。この値を冪等キー（idempotency key）と呼び、クライアントが要求ごとに生成して添えます。
 
-サーバーはキーのカラムに一意制約（同じ値のレコードを 2 つ作れない制約）を付けてキーを登録してから業務処理（ここでは課金を記録する処理）を行い、同じキーの 2 度目には業務処理を再実行せず、記録済みの応答を返します。
+サーバーはキーのカラムに[一意制約](/notes/database-systems/unique-constraint/)（同じ値のレコードを 2 つ作れない制約）を付けてキーを登録してから業務処理（ここでは課金を記録する処理）を行い、同じキーの 2 度目には業務処理を再実行せず、記録済みの応答を返します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -132,7 +132,7 @@ sequenceDiagram
 
 応答まで保存するのは、冪等の要件ではありません。クライアントは自分の要求が初回か再送かを区別できないので、同じ応答を返しておくと呼び出し側の分岐が不要になります。
 
-DB（データベース）の一意制約は、同じキーの要求が同時に届いても、初回として扱われるのを 1 通だけにします。存在を確認してから記録する順序だと、2 通が両方とも「まだ無い」を読む余地が残ります。
+DB（データベース）の[一意制約](/notes/database-systems/unique-constraint/)は、同じキーの要求が同時に届いても、初回として扱われるのを 1 通だけにします。存在を確認してから記録する順序だと、2 通が両方とも「まだ無い」を読む余地が残ります。
 
 この排他が働くのは登録の瞬間で、業務処理との整合は別に設計する必要があります。キーの記録と課金の記録は、同じトランザクションに入れるのが素直です。分けると、キーは登録済みなのに課金が無い（あるいはその逆の）食い違いが残り得ます。どこまでを 1 つのトランザクションに入れるかは [Transaction Scope](../../database-systems/transaction-scope/) の題材です。
 

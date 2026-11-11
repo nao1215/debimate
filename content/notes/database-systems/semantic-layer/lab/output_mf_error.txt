@@ -1,0 +1,42 @@
+$ mf query --metrics paid_amount --group-by order_item__category
+ERROR: Got error(s) during query resolution.
+
+Error #1:
+  Message:
+
+    The given input does not match any of the available group-by-items for
+    SimpleMetric('paid_amount'). Common issues are:
+
+      * Incorrect names.
+      * No valid join paths exist from the measure to the group-by-item.
+        (fan-out join support is pending).
+      * There are multiple matching join paths.
+        (disambiguation support is pending).
+
+    Suggestions:
+      [
+        'order__customer',
+        'order__customer__region',
+        'order__status',
+        'order__ordered_at__day',
+        'metric_time__day',
+        'order',
+      ]
+
+  Query Input:
+
+    order_item__category
+
+  Issue Location:
+
+    [Resolve Query(['paid_amount'])]
+      -> [Resolve SimpleMetric('paid_amount')]
+
+Log File:: /home/nao/ghq/github.com/nao1215/debimate/content/notes/database-systems/semantic-layer/lab/logs/metricflow.log
+Artifact Path: /home/nao/ghq/github.com/nao1215/debimate/content/notes/database-systems/semantic-layer/lab/target/semantic_manifest.json
+Artifact Modified Time: 2026-11-11T09:40:21.771046
+
+If you think you found a bug, please report it here:
+    https://github.com/dbt-labs/metricflow/issues
+
+

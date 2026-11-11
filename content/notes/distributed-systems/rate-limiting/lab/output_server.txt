@@ -1,0 +1,37 @@
+$ curl -si http://127.0.0.1:18080/   # 1 回目
+HTTP/1.0 200 OK
+RateLimit-Policy: "default";q=5;w=10
+RateLimit: "default";r=4;t=5
+
+ok
+$ curl -si http://127.0.0.1:18080/   # 2 回目
+HTTP/1.0 200 OK
+RateLimit-Policy: "default";q=5;w=10
+RateLimit: "default";r=3;t=5
+
+ok
+$ curl -si http://127.0.0.1:18080/   # 3 回目
+HTTP/1.0 200 OK
+RateLimit-Policy: "default";q=5;w=10
+RateLimit: "default";r=2;t=5
+
+ok
+$ curl -si http://127.0.0.1:18080/   # 4 回目
+HTTP/1.0 200 OK
+RateLimit-Policy: "default";q=5;w=10
+RateLimit: "default";r=1;t=5
+
+ok
+$ curl -si http://127.0.0.1:18080/   # 5 回目
+HTTP/1.0 200 OK
+RateLimit-Policy: "default";q=5;w=10
+RateLimit: "default";r=0;t=5
+
+ok
+$ curl -si http://127.0.0.1:18080/   # 6 回目
+HTTP/1.0 429 Too Many Requests
+RateLimit-Policy: "default";q=5;w=10
+RateLimit: "default";r=0;t=5
+Retry-After: 5
+
+too many requests

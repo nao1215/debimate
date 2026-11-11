@@ -10,7 +10,7 @@ topics: ["Cryptography"]
 
 暗号の安全性は、攻撃者が鍵などの値を当てられないことに支えられていて、当てられない値を作るのが乱数の役目です。鍵の長さを 256 bit にしても、その鍵を作った seed（種。生成器に最初に与える値）の取り得る値が 15 bit 分しかないなら、攻撃者が試す鍵は 32768 通りです。
 
-乱数を必要とするのは、TLS サーバーの鍵を作る処理、ログインで challenge（相手が答えを用意できない 1 回限りの値）を出す処理、電子署名を作る処理などです。作られる値は、暗号鍵・IV（initialization vector。暗号化のたびに変える初期値）・nonce（1 回しか使わない値）・salt（ハッシュに混ぜる公開の値）・署名ごとの秘密の値 k・session ID などです。
+乱数を必要とするのは、TLS サーバーの鍵を作る処理、ログインで challenge（相手が答えを用意できない 1 回限りの値）を出す処理、電子署名を作る処理などです。作られる値は、暗号鍵・IV（initialization vector。暗号化のたびに変える初期値）・[nonce](../nonce/)（1 回しか使わない値）・salt（ハッシュに混ぜる公開の値）・署名ごとの秘密の値 k・session ID などです。
 
 典型的なアプリケーションでは、これらの値の多くを OS や暗号ライブラリが持つ共通の CSPRNG（暗号として安全な擬似乱数生成器）から取得します。
 
@@ -32,7 +32,7 @@ flowchart LR
 
 上記の図の DRBG が予測できる値を返すなら、その生成器に依存する用途は同時に影響を受けます。予測できないことを要求するのは、暗号鍵・challenge・署名の k・session ID です。IV と nonce に必要な性質は暗号方式によって違うので、後の節で扱います。ただし、用途ごとに別の生成器や独立した状態を持つ実装もあります。
 
-例えば [Passkey](../passkey/) の認証でサーバーが出す challenge を予測できると、攻撃者は将来使われる challenge への正規の応答を利用者の端末に先に作らせておき、後でサーバーへ送れます。[WebAuthn の仕様](https://www.w3.org/TR/webauthn-3/#sctn-cryptographic-challenges)は、この種の replay attack を防ぐために、推測できないだけのエントロピーを challenge に求め、長さは 16 byte 以上を推奨しています。
+例えば [Passkey](../passkey/) の認証でサーバーが出す challenge を予測できると、攻撃者は将来使われる challenge への正規の応答を利用者の端末に先に作らせておき、後でサーバーへ送れます。[WebAuthn の仕様](https://www.w3.org/TR/webauthn-3/#sctn-cryptographic-challenges)は、この種の [replay attack](/notes/blockchain-systems/replay-protection/) を防ぐために、推測できないだけのエントロピーを challenge に求め、長さは 16 byte 以上を推奨しています。
 
 <br>
 
@@ -56,9 +56,9 @@ flowchart LR
 
 <br>
 
-seed のエントロピーが落ちる事故は、配布された製品でも起きています。Debian の OpenSSL では、valgrind（メモリの誤用を検査するツール）の警告を消すためにコメントアウトした `md_rand.c` の 2 行のうち 1 行が、エントロピー（entropy。予測できなさを bit で数えた量）をプール（集めたエントロピーをためておく領域）に追加する呼び出しでした（CVE-2008-0166）。
+seed のエントロピーが落ちる事故は、配布された製品でも起きています。Debian の OpenSSL では、valgrind（メモリの誤用を検査するツール）の警告を消すためにコメントアウトした `md_rand.c` の 2 行のうち 1 行が、[エントロピー](/ml/math/information-theory/)（entropy。予測できなさを bit で数えた量）をプール（集めたエントロピーをためておく領域）に追加する呼び出しでした（CVE-2008-0166）。
 
-その結果、seed に残ったのはプロセス ID だけで、範囲は 1 から 32767 です。乱数列はアーキテクチャごとに 32767 通りに収まりました（[Debian Wiki SSLkeys](https://wiki.debian.org/SSLkeys)）。影響は SSH・OpenVPN・DNSSEC の鍵、X.509 証明書で使う鍵材料、SSL/TLS の session key に及んでいます（[DSA-1571-1](https://www.debian.org/security/2008/dsa-1571)）。
+その結果、seed に残ったのはプロセス ID だけで、範囲は 1 から 32767 です。乱数列はアーキテクチャごとに 32767 通りに収まりました（[Debian Wiki SSLkeys](https://wiki.debian.org/SSLkeys)）。影響は SSH・OpenVPN・DNSSEC の鍵、[X.509 証明書](../pki/)で使う鍵材料、SSL/TLS の session key に及んでいます（[DSA-1571-1](https://www.debian.org/security/2008/dsa-1571)）。
 
 攻撃者は、同じ生成器を手元で再現して seed を総当たりします。
 

@@ -21,7 +21,7 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 
 {{< figure src="images/distributed_tracing_waterfall.svg" alt="注文確定の要求が gateway・orders・inventory・mailer を通った時間の図。inventory の 1 回目の呼び出しと mailer の 1 回目の処理がエラーで、どちらも同じ処理がもう 1 回現れている" caption="実験で記録した 1 件の注文確定の Trace" align="center" >}}
 
-上記の図には、同じ在庫引き当て（`reserve`）と同じメール処理（`process`）が 2 回ずつ現れています。1 回目が失敗し、再試行と再配送で 2 回目が成功したからです。記録を読む側がこの重複を理解していないと、「在庫を 2 回引き当てた」と読み違えます。
+上記の図には、同じ在庫引き当て（`reserve`）と同じメール処理（`process`）が 2 回ずつ現れています。1 回目が失敗し、[再試行](../retry-backoff/)（図の resend）と再配送（図の attempt）で 2 回目が成功したからです。記録を読む側がこの重複を理解していないと、「在庫を 2 回引き当てた」と読み違えます。
 
 <br>
 

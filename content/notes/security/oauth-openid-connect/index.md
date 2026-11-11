@@ -219,7 +219,7 @@ redirect URI（code を送り返す先の URL）は、authorization server が�
 
 state は、client がログインの開始時にセッションに保存しておく推測できない値で、callback で戻ってきた値と比べます（[RFC 6749 §10.12](https://www.rfc-editor.org/rfc/rfc6749.html#section-10.12)）。[RFC 9700 §2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1) は、authorization server が PKCE に対応していることを確かめた client なら、PKCE による CSRF 対策に頼って良いとしています。上記の downgrade 対策も、その対応に含まれます。
 
-nonce は OIDC の値で、client が認証要求に入れ、authorization server が ID Token の `nonce` クレームにそのまま写します。nonce の目的は、client のセッションと ID Token を結び付け、replay（過去の値を送り直す攻撃）を緩和することです（[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)）。
+nonce は OIDC の値で、client が認証要求に入れ、authorization server が ID Token の `nonce` クレームにそのまま写します。nonce の目的は、client のセッションと ID Token を結び付け、[replay](/notes/blockchain-systems/replay-protection/)（過去の値を送り直す攻撃）を緩和することです（[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)）。
 
 RFC 9700 §2.1 は、OIDC のフローでは nonce が CSRF 対策になるとしています。nonce はログインを始めたセッションに保存され、ID Token に写った値と比べられるので、他人のログインで発行された ID Token は一致しないからです。replay を防ぐ値として予測できないことが必要になる点は、[Nonce](../nonce/) のノートで見た認証の challenge と同じです。
 

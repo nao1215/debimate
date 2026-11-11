@@ -327,7 +327,7 @@ SSI は、Cahill 氏らが 2008 年の論文「[Serializable Isolation for Snaps
 
 記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1 だけが確定しました。合計は 0 です。
 
-一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を再試行できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
+一般には失敗が更新時に起きるか確定時に起きるかまで決め打ちせず、トランザクション全体を[再試行](/notes/distributed-systems/retry-backoff/)できるようにします。再試行時は合計を読み直すため、この例では残高不足で引き出しを止めます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

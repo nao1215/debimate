@@ -1,0 +1,68 @@
+[
+ {
+  "p": 0.5,
+  "to_server1": 30,
+  "split": 60,
+  "central": 60
+ },
+ {
+  "p": 0.55,
+  "to_server1": 33,
+  "split": 57,
+  "central": 60
+ },
+ {
+  "p": 0.6,
+  "to_server1": 36,
+  "split": 54,
+  "central": 60
+ },
+ {
+  "p": 0.65,
+  "to_server1": 39,
+  "split": 51,
+  "central": 60
+ },
+ {
+  "p": 0.7,
+  "to_server1": 42,
+  "split": 48,
+  "central": 60
+ },
+ {
+  "p": 0.75,
+  "to_server1": 45,
+  "split": 45,
+  "central": 60
+ },
+ {
+  "p": 0.8,
+  "to_server1": 48,
+  "split": 42,
+  "central": 60
+ },
+ {
+  "p": 0.85,
+  "to_server1": 51,
+  "split": 39,
+  "central": 60
+ },
+ {
+  "p": 0.9,
+  "to_server1": 54,
+  "split": 36,
+  "central": 60
+ },
+ {
+  "p": 0.95,
+  "to_server1": 57,
+  "split": 33,
+  "central": 60
+ },
+ {
+  "p": 1.0,
+  "to_server1": 60,
+  "split": 30,
+  "central": 60
+ }
+]

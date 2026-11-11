@@ -1,0 +1,10 @@
+$ mf query --metrics paid_amount,items_sold --group-by order__customer__region
+order__customer__region      paid_amount    items_sold
+-------------------------  -------------  ------------
+大阪                                  3850             5
+東京                                  4400             5
+$ mf query --metrics revenue
+  revenue
+---------
+     5700
+

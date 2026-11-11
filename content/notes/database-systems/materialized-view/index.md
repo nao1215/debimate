@@ -71,7 +71,7 @@ materialized view では、元の表が唯一の書き込み先で、materialize
 
 ### REFRESH の 3 つの方法
 
-結果を作り直す方法は、何を入力にして作り直すかと、作り直している間に読み手を止めるかで分かれます。以下は、本記事で取り上げる 3 つの方法について、元の表から読む量・materialized view に書く量・実行中の読み手を並べた図です。
+結果を作り直す方法は、何を入力にして作り直すかと、作り直している間に読み手を止めるかで分かれます。以下は、本記事で取り上げる 3 つの方法について、元の表から読む量（reads from orders）・materialized view に書く量（writes to the view）・実行中の読み手（readers）を並べた図です。
 
 {{< figure src="images/refresh_methods.svg" alt="3 段の比較。full refresh（PostgreSQL の REFRESH）は元の表を全件読み、view を全て入れ替え、読み手は待つ。incremental refresh（Oracle の fast refresh、pg_ivm）は変更分だけを読み、影響するレコードだけを書き、読み手への影響は製品による。concurrent refresh（CONCURRENTLY）は元の表を全件読むが、view には変わったレコードだけを書き、読み手は止まらない" caption="3 つの REFRESH の読む量・書く量・読み手" align="center" >}}
 

@@ -1,0 +1,65 @@
+🔎 SQL (remove --explain to see data or add --show-dataflow-plan to see the generated dataflow plan):
+
+WITH rss_10003_cte AS (
+  SELECT
+    order_id AS order
+    , customer_id AS customer
+  FROM "shop"."main"."stg_orders" orders_src_10000
+)
+
+, rss_10001_cte AS (
+  SELECT
+    region
+    , customer_id AS customer
+  FROM "shop"."main"."stg_customers" customers_src_10000
+)
+
+SELECT
+  COALESCE(subq_17.order__customer__region, subq_29.order__customer__region) AS order__customer__region
+  , MAX(subq_17.paid_amount) AS paid_amount
+  , MAX(subq_29.items_sold) AS items_sold
+FROM (
+  SELECT
+    subq_12.customer__region AS order__customer__region
+    , SUM(payments_src_10000.amount) AS paid_amount
+  FROM "shop"."main"."stg_payments" payments_src_10000
+  LEFT OUTER JOIN (
+    SELECT
+      rss_10003_cte.order AS order
+      , rss_10001_cte.region AS customer__region
+    FROM rss_10003_cte
+    LEFT OUTER JOIN
+      rss_10001_cte
+    ON
+      rss_10003_cte.customer = rss_10001_cte.customer
+  ) subq_12
+  ON
+    payments_src_10000.order_id = subq_12.order
+  GROUP BY
+    subq_12.customer__region
+) subq_17
+FULL OUTER JOIN (
+  SELECT
+    subq_24.customer__region AS order__customer__region
+    , SUM(order_items_src_10000.quantity) AS items_sold
+  FROM "shop"."main"."stg_order_items" order_items_src_10000
+  LEFT OUTER JOIN (
+    SELECT
+      rss_10003_cte.order AS order
+      , rss_10001_cte.region AS customer__region
+    FROM rss_10003_cte
+    LEFT OUTER JOIN
+      rss_10001_cte
+    ON
+      rss_10003_cte.customer = rss_10001_cte.customer
+  ) subq_24
+  ON
+    order_items_src_10000.order_id = subq_24.order
+  GROUP BY
+    subq_24.customer__region
+) subq_29
+ON
+  subq_17.order__customer__region = subq_29.order__customer__region
+GROUP BY
+  COALESCE(subq_17.order__customer__region, subq_29.order__customer__region)
+

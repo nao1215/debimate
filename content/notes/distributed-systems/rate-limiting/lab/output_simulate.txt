@@ -1,0 +1,21 @@
+# 境目の前後 1 秒に 60 件ずつ（計 120 件）
+method       passed max_60s max_2s
+fixed           120     120    120
+log              60      60     60
+counter          60      60     60
+bucket60         61      61     61
+bucket10         11      11     11
+leaky_queue      12      12      2
+leaky_queue の最大の待ち: 10.00 秒
+
+# 100 秒から 1 秒に 2 件を 120 秒（計 240 件）
+method       passed max_60s max_2s
+fixed           160     100      4
+log             120      60      4
+counter         138      86      4
+bucket60        179     119      4
+bucket10        129      69      4
+leaky_queue     130      60      2
+leaky_queue の最大の待ち: 10.00 秒
+
+# GCRA とトークンバケット: 60000 件中 判定の違い 0 件

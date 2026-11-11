@@ -12,11 +12,11 @@ Ambassador とは、アプリケーションのコンテナと同じ実行単位
 
 通信を代わりに受け取って転送するものをプロキシと呼び、Ambassador はその 1 つです。例えば、アプリケーションは localhost の 1 つの宛先へ接続し、実際の接続先が何台あるのか、どれに振り分けるのかは Ambassador が判断します。
 
-以下は、[Redis](https://redis.io/) に接続する例です。Redis は主にメモリ上でデータを扱うデータストアで、書き込みを受け付ける 1 台の master と、読み取り専用の複製である複数台の replica という構成を組めます。
+以下は、[Redis](https://redis.io/) に接続する例です。Redis は主にメモリ上でデータを扱うデータストアで、[書き込みを受け付ける 1 台の master と、読み取り専用の複製である複数台の replica という構成](/notes/distributed-systems/leader-and-followers/)を組めます。
 
 {{< figure src="images/ambassador_concept.svg" alt="実行単位の中の main は localhost の扉 1 つにだけ接続し、その扉を持つ ambassador が実行単位の縁に立つ。main から見えない外側で、ambassador からの線が書き込みの master 1 台と読み取りの replica 2 台に分かれる" caption="main から見える宛先は localhost の 1 つだけ" align="center" >}}
 
-上記の図のアプリケーションが知っているのは、localhost の 1 つの宛先だけです。書き込みを master に、読み取りを replica に振り分けるのは ambassador で、replica が 2 台から 5 台に増えた時に接続先の一覧を更新する責任も、ambassador に移ります。
+上記の図のアプリケーション（main）が知っているのは、localhost の 1 つの宛先だけです。書き込みを master に、読み取りを replica に振り分けるのは ambassador で、replica が 2 台から 5 台に増えた時に接続先の一覧を更新する責任も、ambassador に移ります。
 
 <br>
 
@@ -103,7 +103,7 @@ twemproxy が行うのは複数台への振り分けで、master の切り替わ
 
 どこまで引き受けるかは実装によって異なり、表の全部を担う実装も、振り分けだけの実装もあります。
 
-4 行目の再試行には条件が付きます。同じ操作を 2 回実行しても結果が変わらない冪等な操作でなければ、ambassador の再試行が二重の書き込みになります。例えば値を 1 増やす操作は、1 回目が実は成功していた場合、再試行で 2 増え、アプリケーションはそれを知りません。ambassador が再試行の可否を判断できないなら、再試行して良い操作かを外から伝える仕組みが必要です。
+4 行目の[再試行](/notes/distributed-systems/retry-backoff/)には条件が付きます。同じ操作を 2 回実行しても結果が変わらない[冪等](/notes/distributed-systems/idempotency/)な操作でなければ、ambassador の再試行が二重の書き込みになります。例えば値を 1 増やす操作は、1 回目が実は成功していた場合、再試行で 2 増え、アプリケーションはそれを知りません。ambassador が再試行の可否を判断できないなら、再試行して良い操作かを外から伝える仕組みが必要です。
 
 ---
 

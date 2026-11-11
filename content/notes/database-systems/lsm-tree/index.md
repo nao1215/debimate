@@ -44,7 +44,7 @@ LSM-Tree は書く位置を探さず、どのバージョンが新しいかは�
 - compaction が遅れると、なぜ書き込みが止まるのか。
 - B-Tree とどう使い分けるのか。
 
-トランザクションと並行制御、複数のサーバーへの複製は、本記事では扱いません。
+トランザクションと並行制御、[複数のサーバーへの複製](/notes/distributed-systems/leader-and-followers/)は、本記事では扱いません。
 
 ---
 
@@ -256,7 +256,7 @@ none     0.97   17.05 1.10        4.88      10.77  107 107000  9932  9932
 
 Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後です。しかし `none` は `get` 1 回ごとに平均 17 本の Bloom filter を確かめ、偽陽性の分だけ無駄な読み出しも増えています。
 
-下記の図は、保存している件数（実線）と生きているキーの数（破線）の推移です。
+下記の図は、保存している件数（entries on disk、実線）と生きているキーの数（Live keys、破線）の推移です。
 
 {{< figure src="images/lsm-tree_space_timeline.svg" alt="操作回数に対する、ディスク上の件数と生きているキーの数。10 万回目から削除を始めると、生きているキーは 2 万から 1 万に減るが、ディスク上の件数は leveled で約 2 万から 3 万に、size-tiered で約 4.2 万から 5.2 万に増える" caption="保存している件数と、生きているキーの数の推移" align="center" >}}
 
@@ -268,13 +268,13 @@ Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後�
 
 ### compaction が遅れた時
 
-compaction は flush と同じく裏のスレッドで動きます。書き込みの量が compaction の処理能力を上回ると、併合されない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確かめるしかありません。下記の図は、compaction を止めた `none` と、他の 2 つの SSTable の本数の推移です。
+compaction は flush と同じく裏のスレッドで動きます。書き込みの量が compaction の処理能力を上回ると、併合されない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確かめるしかありません。下記の図は、compaction を止めた `none`（図の No compaction）と、他の 2 つの SSTable の本数の推移です。
 
 {{< figure src="images/lsm-tree_runs_timeline.svg" alt="操作回数に対する SSTable の本数。compaction を行わないと flush のたびに 1 本ずつ増え、11 万回の操作で 107 本になる。leveled と size-tiered は 10 本未満で上下を繰り返す" caption="compaction のやり方ごとの SSTable の本数" align="center" >}}
 
 本数は flush の回数に比例して増え、前節の通り `get` 1 回で確かめる SSTable は 4〜5 本から 17 本に、容量の増幅は 10 倍を超えました。このまま書き込みを受け付け続けると、読み取りは遅くなり続け、ディスクも溢れます。
 
-そこで RocksDB は、溜まった量に応じて書き込みの速度を落とし（slowdown）、それでも追い付かなければ止めます（stop）。仕組みは [Write Stalls の wiki](https://github.com/facebook/rocksdb/wiki/Write-Stalls) にあります。発動の条件は以下の通りで、既定値は RocksDB の [advanced_options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/advanced_options.h) にある値です。
+そこで RocksDB は、溜まった量に応じて[書き込みの速度を落とし](/notes/distributed-systems/backpressure/)（slowdown）、それでも追い付かなければ止めます（stop）。仕組みは [Write Stalls の wiki](https://github.com/facebook/rocksdb/wiki/Write-Stalls) にあります。発動の条件は以下の通りで、既定値は RocksDB の [advanced_options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/advanced_options.h) にある値です。
 
 | 溜まるもの | 速度を落とす条件 | 書き込みを止める条件 |
 |---|---|---|

@@ -131,7 +131,7 @@ type OrderQueryService interface {
 
 結果を実体として保存しない通常のビューは、問い合わせのたびに正規化されたテーブルの結合と集計を計算し直します。その負荷は更新と同じ DB に載るため、読み取りが増えるほど更新と資源を取り合います。
 
-支えきれなくなったら、保存先を分けます。読み取り用の DB に一覧や集計の結果をあらかじめ表の形で持たせれば、問い合わせのたびの結合と集計が要らず、負荷も更新側と分かれます。以下は、保存先を分けた構成です。
+支えきれなくなったら、保存先を分けます。読み取り用の DB に一覧や集計の結果を[あらかじめ表の形で持たせれば](/notes/database-systems/materialized-view/)、問い合わせのたびの結合と集計が要らず、負荷も更新側と分かれます。以下は、保存先を分けた構成です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -148,7 +148,7 @@ Fowler 氏は、別々のモデルを持つこと自体が「モデルをどれ�
 
 更新モデルの節で見た「キャンセル後の画面はクエリで取り直す」形も、この影響を受けます。分けた構成では反映前の古い値が返り得るので、受け付け済みと表示して反映を待つなど、遅れを許す画面設計が必要です。形を変えずに写すだけの複製でも、保存先を分ければ同じ遅れが出ます。
 
-Wikipedia を動かす MediaWiki は、書き込みを primary（書き込みを受け付ける DB）に送り、読み取りの大半を primary の複製から返します。複製は少し遅れるため、編集した本人の投稿履歴に、保存したはずの編集がすぐには出ないことがあります。
+Wikipedia を動かす MediaWiki は、書き込みを primary（書き込みを受け付ける DB）に送り、読み取りの大半を [primary の複製](/notes/distributed-systems/leader-and-followers/)から返します。複製は少し遅れるため、編集した本人の投稿履歴に、保存したはずの編集がすぐには出ないことがあります。
 
 そこで [ChronologyProtector](https://doc.wikimedia.org/mediawiki-core/master/php/classWikimedia_1_1Rdbms_1_1ChronologyProtector.html) は、書き込んだ要求の終わりに primary がどこまで書いたかを記録し、約 10 秒以内に同じユーザーから来た要求では、複製がそこに追い付くまで最大で数秒待ちます。以下は、その待ち方を時間軸に並べた図です。
 

@@ -31,7 +31,7 @@ Transactional Outbox は、送るべきメッセージを業務データの更�
 - 先に INSERT した行が後から発行されるのは、どんな時か。
 - メッセージが発行される回数と順序は、どこまで保証されるのか。
 
-受け取った側で重複をどう排除するかの実装と、複数サービスにまたがる業務の取り消しは、本記事では扱いません。
+受け取った側で重複をどう排除するかの実装と、[複数サービスにまたがる業務の取り消し](../saga/)は、本記事では扱いません。
 
 ---
 
@@ -141,7 +141,7 @@ DB の変更を捕捉して外部に流す仕組みは一般に CDC（Change Dat
 
 順序が崩れるのは、outbox の行の ID の順と commit の順がずれ、読んだ時点でまだ commit されていなかった行を後から拾う場合です。
 
-PostgreSQL 17 で、注文 A の行を INSERT して commit を 3 秒遅らせ、その間に注文 B の行を INSERT して commit しました。B の commit 直後と A の commit 後に、relay が未送信の行を id の順に読んで送信済みにしています。
+PostgreSQL 17 で、注文 A の行を INSERT して commit を 3 秒遅らせ（図の tx A）、その間に注文 B の行を INSERT して commit しました（図の tx B）。B の commit 直後と A の commit 後に、relay が未送信の行を id の順に読んで送信済みにしています。
 
 {{< figure src="images/transactional-outbox_order.svg" alt="時間軸の図。tx A は id 1 の行を INSERT し、commit を 3 秒遅らせる。その間に tx B が id 2 の行を INSERT して commit する。relay の 1 回目の読み取りは B の commit 直後で id 2 を送り、2 回目は A の commit の後で id 1 を送る" caption="id の順と commit の順がずれた 2 つのトランザクション" align="center" >}}
 
@@ -182,7 +182,7 @@ sequenceDiagram
     R->>B: 同じメッセージを<br/>もう一度発行する
 ```
 
-発行と記録は別の書き込みなので、再起動後の relay は、発行の前に落ちたのか、発行と記録の間で落ちたのかを区別できません。relay が未送信のメッセージを継続して再試行する前提では、取りこぼしを避ける代わりに同じメッセージを複数回発行し得ます。この配送方式を at-least-once と呼びます。
+発行と記録は別の書き込みなので、再起動後の relay は、発行の前に落ちたのか、発行と記録の間で落ちたのかを区別できません。relay が未送信のメッセージを継続して[再試行](../retry-backoff/)する前提では、取りこぼしを避ける代わりに同じメッセージを複数回発行し得ます。この配送方式を at-least-once と呼びます。
 
 relay が決めるのはブローカーへ発行するまでで、受信側のサービスに何回届くかはブローカーの配送保証にも左右されます。どちらの経路でも重複はあり得るので、受け取る側は冪等（べきとう、idempotent）でなければなりません。実現の方法は [Idempotency](../idempotency/) が扱っています。
 

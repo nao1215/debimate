@@ -1,0 +1,5 @@
+policy                          load during outage  crashes after  back to normal at
+no retry                           1.00x (1.00-1.00)        0.0       15.0 s (15-15)
+4 attempts                         3.89x (3.87-3.90)       25.0       40.0 s (40-40)
+4 attempts + gRPC throttling       1.01x (1.01-1.01)        0.0       15.0 s (15-15)
+4 attempts + 10% retry ratio       1.25x (1.23-1.26)        0.0       15.0 s (15-15)

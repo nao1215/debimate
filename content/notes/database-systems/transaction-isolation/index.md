@@ -322,7 +322,7 @@ PostgreSQL の REPEATABLE READ は 3 番目です。先ほどの実験では注�
 
 ドキュメントには、先に更新した側が確定していれば「[rolled back with the message ERROR: could not serialize access due to concurrent update](https://www.postgresql.org/docs/current/transaction-iso.html)」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）とあります。
 
-Oracle の serializable も同じ形で、トランザクションの開始後に確定した更新に当たると `ORA-08177` を返します。待たせる方式ならデッドロックへの備え、中止させる方式なら再試行の処理が必要です。
+Oracle の serializable も同じ形で、トランザクションの開始後に確定した更新に当たると `ORA-08177` を返します。待たせる方式なら[デッドロック](../deadlock/)への備え、中止させる方式なら[再試行](/notes/distributed-systems/retry-backoff/)の処理が必要です。
 
 読み取りの可視性と書き込みの競合は分けて考えられ、1 つの DBMS が複数の方式を組み合わせます。操作ごとにどちらが働くのかは以下の通りで、この分かれ方は InnoDB と PostgreSQL のどちらにも当てはまります。
 
@@ -391,7 +391,7 @@ serializable         32    6400            6400             0        1556   1719
 
 </details>
 
-READ COMMITTED はエラーを 1 件も返さないまま、32 並列では 6,400 件の注文に対して在庫が 200 個しか減りませんでした。SERIALIZABLE では失われた更新が 0 件になった代わりに、32 並列で注文 1 件あたり平均 27 回の再試行が起きています。
+READ COMMITTED はエラーを 1 件も返さないまま、32 並列では 6,400 件の注文に対して在庫が 200 個しか減りませんでした。SERIALIZABLE では失われた更新（Lost updates）が 0 件になった代わりに、32 並列（Concurrent clients）で注文 1 件あたり平均 27 回の再試行（Retries per order）が起きています。
 
 2 回流すと再試行の回数は少し動き（32 並列で 171,923 回と 163,073 回）、SERIALIZABLE の失われた更新は 2 回とも 0 件でした。同じ 1 件に更新が集中する形なので、次の節の 4 つ目にも当たります。
 
@@ -400,7 +400,7 @@ READ COMMITTED はエラーを 1 件も返さないまま、32 並列では 6,40
 ### 分離レベルの引き上げでは解けないケース
 
 - 画面の表示から更新までの間に人の操作を挟む更新
-- DB の外にある処理（メールの送信、外部 API の呼び出し）を含む一連の作業
+- [DB の外にある処理](../transaction-scope/)（メールの送信、外部 API の呼び出し）を含む一連の作業
 - 複数の DB やサービスにまたがる更新
 - 同じレコードへの更新が集中していて、中止と再試行が積み上がる場合
 

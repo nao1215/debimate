@@ -1,0 +1,8 @@
++---------------------+-------+
+|     definition      | value |
++---------------------+-------+
+| items, all          |  7500 |
+| items, completed    |  5700 |
+| payments, all       |  8250 |
+| payments, completed |  6270 |
++---------------------+-------+

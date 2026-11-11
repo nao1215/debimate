@@ -47,7 +47,7 @@ CA の仕事は、公開鍵をただ登録することではありません。�
 
 trust store に Root CA を入れる行為は、その CA が定めた検証と発行の方針を受け入れることです。CA は [RFC 3647](https://www.rfc-editor.org/rfc/rfc3647) の枠組みに沿って、Certificate Policy と Certification Practice Statement に方針と実務を記述します。したがって、署名の検証に成功しても、利用者が信頼したのは任意の CA ではなく、手元の trust store にある CA です。
 
-Public CA は不特定のインターネット利用者が検証する公開 DNS 名に向きます。一方で、Private CA は社内の端末、サービスメッシュ、閉じた環境のホスト名に使えます。Private CA の Root 証明書は利用する端末すべてに配布し、更新・削除を管理する必要があります。
+Public CA は不特定のインターネット利用者が検証する公開 DNS 名に向きます。一方で、Private CA は社内の端末、[サービスメッシュ](/notes/software-architecture/sidecar/)、閉じた環境のホスト名に使えます。Private CA の Root 証明書は利用する端末すべてに配布し、更新・削除を管理する必要があります。
 
 公開 DNS で一意に確認できない社内名（例えば `.local` で終わる名前）には、Public CA の証明書を使えません。BR の 4.2.2 は、このような Internal Name を含む証明書の発行を禁じています。そのため、社内名には Private CA を使うか、社内のホストにも自社の公開ドメインの名前を割り当てて、その名前で証明書を取ります。
 

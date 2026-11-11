@@ -1,0 +1,1 @@
+{'frontend': 3, 'backend': 9, 'db': 27}

@@ -1,0 +1,7 @@
+strategy        finish s (mean, min-max)     requests (mean, min-max)  crashes
+immediate        120.00 (120.00-120.00)    12000000 (12000000-12000000)    119.0 (20 unfinished)
+fixed 1s         120.00 (120.00-120.00)      119000 (119000-119000)    118.0 (20 unfinished)
+exponential      120.00 (120.00-120.00)       17000 ( 17000- 17000)     14.0 (20 unfinished)
+full jitter       12.03 (  9.97- 14.10)        6148 (  6046-  6571)      1.1
+equal jitter      11.99 ( 11.39- 18.75)        6138 (  6084-  6182)      2.0
+decorrelated      12.86 ( 10.41- 15.20)        8151 (  7404-  8500)      2.9

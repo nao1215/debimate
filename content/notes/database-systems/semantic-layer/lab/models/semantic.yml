@@ -1,0 +1,81 @@
+models:
+  - name: metricflow_time_spine
+    time_spine:
+      standard_granularity_column: date_day
+    columns:
+      - name: date_day
+        granularity: day
+
+  - name: stg_customers
+    semantic_model:
+      enabled: true
+      name: customers
+    columns:
+      - name: customer_id
+        entity: {type: primary, name: customer}
+      - name: region
+        dimension: {type: categorical, name: region}
+
+  - name: stg_orders
+    semantic_model:
+      enabled: true
+      name: orders
+    agg_time_dimension: ordered_at
+    columns:
+      - name: order_id
+        entity: {type: primary, name: order}
+      - name: customer_id
+        entity: {type: foreign, name: customer}
+      - name: ordered_at
+        granularity: day
+        dimension: {type: time, name: ordered_at}
+      - name: status
+        dimension: {type: categorical, name: status}
+
+  - name: stg_order_items
+    semantic_model:
+      enabled: true
+      name: order_items
+    agg_time_dimension: ordered_at
+    columns:
+      - name: item_id
+        entity: {type: primary, name: order_item}
+      - name: order_id
+        entity: {type: foreign, name: order}
+      - name: category
+        dimension: {type: categorical, name: category}
+      - name: ordered_at
+        granularity: day
+        dimension: {type: time, name: ordered_at}
+    metrics:
+      - name: items_sold
+        type: simple
+        agg: sum
+        expr: quantity
+      - name: revenue
+        description: "税抜の売上。返品された注文を除く"
+        type: simple
+        agg: sum
+        expr: quantity * price
+        filter: "{{ Dimension('order__status') }} = 'completed'"
+
+  - name: stg_payments
+    semantic_model:
+      enabled: true
+      name: payments
+    agg_time_dimension: paid_at
+    columns:
+      - name: payment_id
+        entity: {type: primary, name: payment}
+      - name: order_id
+        entity: {type: foreign, name: order}
+      - name: method
+        dimension: {type: categorical, name: method}
+      - name: paid_at
+        granularity: day
+        dimension: {type: time, name: paid_at}
+    metrics:
+      - name: paid_amount
+        type: simple
+        agg: sum
+        expr: amount

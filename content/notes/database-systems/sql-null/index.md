@@ -192,7 +192,7 @@ flowchart LR
 | `SUM(age)` | 96 | `NULL` を足し込まない |
 | `AVG(age)` | 32 | 96 を 4 ではなく 3 で割る |
 
-`AVG` の分母はレコード数ではなく、値が入っているレコードの数です。未入力を 0 とみなした平均が欲しいなら、`AVG(COALESCE(age, 0))` のように書き手が指定します。
+`AVG` の分母はレコード数ではなく、値が入っているレコードの数です。[未入力を 0 とみなした平均](/ml/ml/missing-values/)が欲しいなら、`AVG(COALESCE(age, 0))` のように書き手が指定します。
 
 PostgreSQL が汎用の集約関数として挙げる `count`・`sum`・`avg` などは、レコードが 1 つも選ばれない時、`count` を除いて `NULL` を返します（[同じページ](https://www.postgresql.org/docs/current/functions-aggregate.html)）。例えば `SUM` は 0 ではなく `NULL` を返すので、合計を 0 として扱いたいなら `COALESCE` で包みます。
 
@@ -200,7 +200,7 @@ PostgreSQL が汎用の集約関数として挙げる `count`・`sum`・`avg` �
 
 #### 一意制約での NULL の重複
 
-同じ値の重複を防ぐ一意制約でも、`NULL` の扱いには注意が必要です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に一意制約を張っても、`email` が `NULL` の会員は何件でも入ります。
+同じ値の重複を防ぐ一意制約でも、`NULL` の扱いには注意が必要です。PostgreSQL は既定で 2 つの `NULL` を等しいと見なさないので、`email` に[一意制約](../unique-constraint/)を張っても、`email` が `NULL` の会員は何件でも入ります。
 
 ここは DBMS ごとに割れます。PostgreSQL のドキュメントには「[The default null treatment in unique constraints is implementation-defined according to the SQL standard](https://www.postgresql.org/docs/current/ddl-constraints.html)」（一意制約における null の既定の扱いは、SQL 標準では実装定義である）とあります。
 

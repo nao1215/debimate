@@ -249,7 +249,7 @@ class CircuitBreaker:
 
 {{< figure src="images/outage_simulation.svg" alt="ブレーカーなしでは、下流が黙っている 30 秒間スレッド 40 本がほぼ埋まり続け、下流を呼ばない要求 B の処理できた割合は 0〜80% の間を上下する。ブレーカーありでは、最初の約 2 秒だけスレッドが埋まり、Open になった 12.28 秒以降は B を 100% 処理し、下流に届く呼び出しは Half-Open の試行だけになる。下流が 40 秒で回復した後、ブレーカーありは 45.5 秒まで呼び出しを止めたまま" caption="下流が黙る障害での、ブレーカーなしとあり" align="center" >}}
 
-ブレーカーなしでは、下流を呼ばない要求 B も 1,567 件中 619 件（約 40%）しか処理できませんでした。ブレーカーありでは 1,499 件（約 96%）を処理でき、下流に届いた呼び出しも 600 件から 60 件に減りました。
+ブレーカーなし（no breaker）では、下流を呼ばない要求 B も 1,567 件中 619 件（約 40%）しか処理できませんでした。ブレーカーあり（with breaker）では 1,499 件（約 96%）を処理でき、下流に届いた呼び出しも 600 件から 60 件に減りました。
 
 <br>
 
@@ -295,7 +295,7 @@ class CircuitBreaker:
 
 timeout は、ブレーカーが失敗を知るまでの時間の上限です。
 
-Retry（失敗した呼び出しをやり直すこと）は、ブレーカーとの位置関係で効き方が変わります。
+[Retry](/notes/distributed-systems/retry-backoff/)（失敗した呼び出しをやり直すこと）は、ブレーカーとの位置関係で効き方が変わります。
 
 Resilience4j を Java のフレームワーク [Spring Boot](https://spring.io/projects/spring-boot) から使う場合、[既定の順序](https://resilience4j.readme.io/docs/getting-started-3)は `Retry ( CircuitBreaker ( RateLimiter ( TimeLimiter ( Bulkhead ( Function ) ) ) ) )` で、Retry が一番外側です。
 

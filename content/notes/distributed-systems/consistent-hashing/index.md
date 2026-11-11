@@ -95,7 +95,7 @@ D を追加しても、既存のトークンを動かさなければ、D に保�
 2. 1 台にトークンを 1 個だけ置く。
 3. 1 台にトークンを 128 個置く。
 
-[Python の hashlib](https://docs.python.org/3/library/hashlib.html) で SHA-256 を計算し、キーには `key:0` から `key:99999`、トークンには `node:A:0` のような文字列を使います。全ての入力が固定されているため、同じコードで同じ結果を確認できます。SHA-256 は実験で使うハッシュ関数として選んでおり、Consistent Hashing が暗号学的ハッシュ関数を必須とするわけではありません。
+[Python の hashlib](https://docs.python.org/3/library/hashlib.html) で [SHA-256](/notes/security/sha-256/) を計算し、キーには `key:0` から `key:99999`、トークンには `node:A:0` のような文字列を使います。全ての入力が固定されているため、同じコードで同じ結果を確認できます。SHA-256 は実験で使うハッシュ関数として選んでおり、Consistent Hashing が暗号学的ハッシュ関数を必須とするわけではありません。
 
 以下が[実験コード](experiment.py)の全体です。追加パッケージは不要です。
 

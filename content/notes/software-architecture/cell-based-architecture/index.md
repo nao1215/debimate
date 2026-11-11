@@ -18,7 +18,7 @@ Cell-based Architecture（セルベースアーキテクチャ）は、アプリ
 
 {{< figure src="images/cell_split_axis.svg" alt="左は注文・決済・検索の機能ごとに横に分けたサービスで、どのサービスも全顧客の要求を処理する。右は顧客を A-D、E-H、I-L の 3 組に分け、組ごとに注文・決済・検索の全機能を持つ cell を縦に置いている" caption="機能で分けたサービスと、顧客で分けた cell" align="center" >}}
 
-上記の図の左では、決済サービスが止まると全顧客の決済が止まります。右では、cell 2 が止まっても影響するのは顧客 E-H だけです。2 つの軸は排他的ではなく、1 つの cell の中身がマイクロサービスの集まりでも、1 つのモノリスでも構いません。
+上記の図の左（Microservices）では、決済サービス（Payments）が止まると全顧客の決済が止まります。右（Cells）では、cell 2 が止まっても影響するのは顧客 E-H だけです。2 つの軸は排他的ではなく、1 つの cell の中身がマイクロサービスの集まりでも、1 つのモノリスでも構いません。
 
 <br>
 
@@ -43,7 +43,7 @@ cell が範囲を狭められる障害は、主に次の 3 つです。
 | 悪いデプロイ・設定変更 | 全サーバーに同時に入り、全顧客が失敗する | 最初に出した cell で気付けば、残りの cell には出さない |
 | 容量超過 | 1 人の顧客の急増で、共有の DB やキューが詰まる | 詰まるのは同じ cell の DB とキューだけ |
 
-毒入りの要求は、ロードバランサーの再試行と組み合わさると、2 台目、3 台目と再送されて全台を落とします。cell に分けると再送先も同じ cell の中なので、他の cell のサーバーには届きません。
+毒入りの要求は、ロードバランサーの[再試行](/notes/distributed-systems/retry-backoff/)と組み合わさると、2 台目、3 台目と再送されて全台を落とします。cell に分けると再送先も同じ cell の中なので、他の cell のサーバーには届きません。
 
 cell の考え方は、浸水を 1 区画に留める船の[隔壁（bulkhead）](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/what-is-a-cell-based-architecture.html)と同じです。100 件の要求を 10 個の cell で処理していれば、1 つの cell の障害で影響を受けない要求は 90% です。
 
@@ -314,9 +314,9 @@ sequenceDiagram
 
 2 人の顧客にまたがる更新は、さらに難しくなります。例えば、cell 1 の顧客から cell 3 の顧客にポイントを移すなら、2 つの cell の DB を 1 つのトランザクションで更新できません。
 
-[2PC](/notes/distributed-systems/two-phase-commit/)（2 相コミット）でまとめれば、2 つの cell が互いの停止を待つ関係になり、障害を 1 つの cell に閉じるという目的と衝突します。各 cell でローカルに確定し、失敗したら補償する [Saga](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) のような手順を選ぶことになります。
+[2PC](/notes/distributed-systems/two-phase-commit/)（2 相コミット）でまとめれば、2 つの cell が互いの停止を待つ関係になり、障害を 1 つの cell に閉じるという目的と衝突します。各 cell でローカルに確定し、失敗したら補償する [Saga](/notes/distributed-systems/saga/)（[Azure Architecture Center の説明](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga)）のような手順を選ぶことになります。
 
-全顧客で一意にしたい値も同じ問題を持ちます。メールアドレスやユーザー名の一意制約は、各 cell の DB の一意索引では cell の中でしか効きません。cell 1 と cell 2 で同じユーザー名を同時に登録すると、両方とも成功します。
+全顧客で一意にしたい値も同じ問題を持ちます。メールアドレスやユーザー名の[一意制約](/notes/database-systems/unique-constraint/)は、各 cell の DB の一意索引では cell の中でしか効きません。cell 1 と cell 2 で同じユーザー名を同時に登録すると、両方とも成功します。
 
 こうした処理は、cell の外にあるグローバルなサービスに逃がすのが一般的です。
 

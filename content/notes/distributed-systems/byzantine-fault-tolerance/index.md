@@ -17,7 +17,7 @@ crossTopics:
 
 {{< figure src="images/bft_crash_vs_byzantine.svg" alt="左は停止したノード A が何も送らず、B と C に届く値は食い違わない。右はノード A が B に commit、C に abort を送り、B と C が別々の値を正しいと信じる" caption="止まる故障（左）と嘘をつく故障（右）" align="center" >}}
 
-上記の図の右側の B と C は、手元の情報だけでは、どちらの値が嘘なのかを判定できません。このような故障を前提にしなければならないのは、運営者の違うノードが同じ台帳を持つブロックチェーンや、攻撃者に乗っ取られる可能性を想定する複製です。[PBFT の論文](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)は、攻撃に加えてソフトウェアのバグも、このような故障の原因に挙げています。
+上記の図の右側の B と C は、手元の情報だけでは、どちらの値が嘘なのかを判定できません。このような故障を前提にしなければならないのは、運営者の違うノードが同じ台帳を持つ[ブロックチェーン](/notes/blockchain-systems/blockchain-basics/)や、攻撃者に乗っ取られる可能性を想定する複製です。[PBFT の論文](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)は、攻撃に加えてソフトウェアのバグも、このような故障の原因に挙げています。
 
 <br>
 
@@ -306,10 +306,10 @@ PBFT は、参加するノードが n 台に決まっていて、互いを認証
 | 参加の形 | 票の数え方 | 例 |
 |---|---|---|
 | 参加者が決まっている | 1 台 1 票。嘘つきは台数の 1/3 未満 | PBFT |
-| 参加者に票の重みを与える | ステークなどの重みの合計で数える。嘘つきは重みの合計の 1/3 未満 | Tendermint、Ethereum の Casper FFG |
+| 参加者に票の重みを与える | ステークなどの重みの合計で数える。嘘つきは重みの合計の 1/3 未満 | [Tendermint](/notes/blockchain-systems/cometbft/)、Ethereum の Casper FFG |
 | 誰でも参加でき、計算量で重みを付ける | 計算量に比例した重み。嘘つきの計算量が過半に届かないこと | [Proof of Work](/notes/blockchain-systems/proof-of-work/) |
 
-[Tendermint の論文](https://arxiv.org/abs/1807.04938)は、ノードごとに voting power（票の重み）を持たせ、嘘つきの重みが全体の 1/3 未満であることを前提に PBFT と同じ 2f+1 の閾値を使います。
+[Tendermint の論文](https://arxiv.org/abs/1807.04938)（実装は [CometBFT のノート](/notes/blockchain-systems/cometbft/)で扱っています）は、ノードごとに voting power（票の重み）を持たせ、嘘つきの重みが全体の 1/3 未満であることを前提に PBFT と同じ 2f+1 の閾値を使います。
 
 Ethereum の [Finality](/notes/blockchain-systems/finality/) を決める [Casper FFG](https://arxiv.org/abs/1710.09437) も、[合意層の仕様](https://github.com/ethereum/consensus-specs/blob/master/specs/phase0/beacon-chain.md)では、バリデータの有効残高（effective balance）の合計の 2/3 以上が投票した checkpoint を justified にします。Proof of Work は投票の代わりに、最も多くの計算を積んだ列を選ぶ規則で順序を揃え、確定は覆る確率が下がっていく形で表されます。
 

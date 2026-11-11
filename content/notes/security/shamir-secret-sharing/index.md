@@ -11,7 +11,7 @@ topics: ["Secret Management"]
 
 Shamir's Secret Sharing（SSS）は、1 つの秘密情報（Secret）を n 個の分散片（Share）に分け、そのうち異なる任意の k 個以上で復元できる秘密分散方式です。復元に必要な個数 k を閾値（threshold）と呼び、`(k, n)` threshold scheme と表します。
 
-例えば、サービスの署名鍵を 1 台に置けば、その端末の故障で鍵を失います。鍵を 5 人全員にコピーすると、1 人分のコピーが漏洩しただけで鍵全体が知られます。`(3, 5)` の SSS なら、Share を 2 個失っても復元でき、2 個まで漏れても Secret の候補は絞れません。
+例えば、サービスの[署名](/notes/blockchain-systems/digital-signature/)鍵を 1 台に置けば、その端末の故障で鍵を失います。鍵を 5 人全員にコピーすると、1 人分のコピーが漏洩しただけで鍵全体が知られます。`(3, 5)` の SSS なら、Share を 2 個失っても復元でき、2 個まで漏れても Secret の候補は絞れません。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -159,13 +159,13 @@ k-1 個では、Secret の候補ごとに条件を満たす多項式を 1 本ず
 
 <br>
 
-x 座標が 0 でないことも、有限体の中で確かめます。セキュリティ監査の会社 Trail of Bits が 2021 年 12 月に[公表した脆弱性](https://blog.trailofbits.com/2021/12/21/disclosing-shamirs-secret-sharing-vulnerabilities-and-announcing-zkdocs/)は、各参加者が自分の多項式で dealer を務め合う、閾値署名の鍵生成処理で見つかりました。1 人の dealer が 1 つの Secret を分ける構成とは異なります。
+x 座標が 0 でないことも、有限体の中で確かめます。セキュリティ監査の会社 Trail of Bits が 2021 年 12 月に[公表した脆弱性](https://blog.trailofbits.com/2021/12/21/disclosing-shamirs-secret-sharing-vulnerabilities-and-announcing-zkdocs/)は、各参加者が自分の多項式で dealer を務め合う、[閾値署名](/notes/blockchain-systems/multisig/)の鍵生成処理で見つかりました。1 人の dealer が 1 つの Secret を分ける構成とは異なります。
 
 暗号資産取引所 Binance の tss-lib などは、参加者が自分で選べる ID を x 座標に使い、0 かどうかを整数のまま判定していました。13 を法とする例で、x=13 の扱いを描くと次のようになります。
 
 {{< figure src="images/sss_x13_wraps.svg" alt="0 から 12 の目盛りを円に並べた図。12 の次に 1 を足すと黄土色の矢印が 0 に戻り、0 の位置に赤い丸がある。右に「参加者が選んだ ID x = 13」「整数の判定では 13 ≠ 0 なので通る」「GF(13) の中では 13 = 0」「x = 13 の Share は q(0)」と並び、下の赤い枠に「各 dealer の Secret が漏れる」" caption="13 を法とする計算で x = 13 が行き着く位置" align="center" >}}
 
-x=13 は整数の判定を通りますが、有限体の中では 0 と同じです。その参加者に届く y 座標は各 dealer の `q(0)` となり、他の参加者の Secret が漏れます。悪意のある参加者は、この不備を使って他の参加者の秘密鍵を盗めました。
+x=13 は整数の判定（図の integer check）を通りますが、有限体（図の GF(13)）の中では 0 と同じです。その参加者に届く y 座標は各 dealer の `q(0)` となり、他の参加者の Secret が漏れます。悪意のある参加者は、この不備を使って他の参加者の秘密鍵を盗めました。
 
 ---
 

@@ -11,7 +11,7 @@ topics: ["Secret Management"]
 
 Timelock Encryption は、Timed-release Cryptography（時限公開暗号）とも呼ばれ、将来の条件が成立するまで、あらかじめ作成した暗号文を復号できないようにする仕組みです。方式の前提が守られ、平文や鍵を手元に残さなければ、暗号化した本人も条件成立前には復号できません。
 
-例えば封印入札（締切まで入札内容を非公開にする方式）では、締切前に主催者が内容を読むと、後から届く入札に影響します。各入札者が締切を条件に入札を暗号化しておけば、締切後は誰でも復号できるので、入札者が開封の場にいる必要もありません。
+例えば[封印入札](/notes/blockchain-systems/commit-reveal/)（締切まで入札内容を非公開にする方式）では、締切前に主催者が内容を読むと、後から届く入札に影響します。各入札者が締切を条件に入札を暗号化しておけば、締切後は誰でも復号できるので、入札者が開封の場にいる必要もありません。
 
 Timelock Encryption は、利用者が復号鍵を最初から持ち、プログラムだけが待機する構成とは違います。暗号文を受け取った側は、公開後も条件が成立するまで、復号に必要な値や計算結果を得られません。
 
@@ -29,7 +29,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-実現の仕方は 2 通りあります。解く側に逐次計算を課して時間を稼ぐ Time-lock Puzzle と、決まった時刻ごとに署名を公開する [drand](https://drand.love/) という外部のサービスを使う [tlock](https://github.com/drand/tlock) です。2 つを整理すると、以下の通りです。
+実現の仕方は 2 通りあります。解く側に逐次計算を課して時間を稼ぐ Time-lock Puzzle と、決まった時刻ごとに[署名](/notes/blockchain-systems/digital-signature/)を公開する [drand](https://drand.love/) という外部のサービスを使う [tlock](https://github.com/drand/tlock) です。2 つを整理すると、以下の通りです。
 
 | 方式 | 解く側が復号まで得られないもの | 復号条件 |
 | --- | --- | --- |
@@ -202,7 +202,7 @@ part 2: t=200,000, wall time until one result
 
 </details>
 
-時間は t に比例し、鎖はコアを 16 個使っても 1.4 秒前後のままでした。増えたコアは別の puzzle を同時に解くのに使えるだけです。前述の Python より速いのは、プロセスを物理コアに固定したためと考えられます。固定しないプログラムを同じ PC で動かした時は、毎秒約 7 万回でした。
+時間は t に比例し、鎖（図の one chain of 200k squarings）はコアを 16 個使っても 1.4 秒前後のままでした。増えたコアは別の puzzle を同時に解くのに使えるだけです。前述の Python より速いのは、プロセスを物理コアに固定したためと考えられます。固定しないプログラムを同じ PC で動かした時は、毎秒約 7 万回でした。
 
 [LCS35](https://people.csail.mit.edu/rivest/pubs/Riv99b.lcs35-puzzle-description.txt) は、Rivest 氏が 1999 年に MIT の LCS（Laboratory for Computer Science）の 35 周年に合わせて作った puzzle です。1999 年に毎秒 3,000 回の 2 乗から始め、毎年最速の計算機に買い替えて 35 年かかるように、t を約 80 兆回に決めていました。
 
