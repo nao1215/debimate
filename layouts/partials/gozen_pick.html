@@ -3,6 +3,7 @@
   「Featured OSS（ランダム、左）と Gozen（右）固定」）。見た目は game_pick と同じ枠で、
   絵は Gozen のサンプルの機能別の場面（RPG の地図・戦闘とカットイン、多層マップ、人物の関係図、ビデオ通話、スマホ画面）を
   つないだアニメーション WebP（gozen の docs/images の mp4 から 420px・8fps で作成、各場面に日本語の札）。
+  札は狭いカードで中央を切り出しても読めるよう中央寄せに描き直した（scripts/game-demos/gozen_center_labels.py、2026-11-11）。
   枠全体は GitHub、「ドキュメントを見る」はサイトへ。
 */ -}}
 {{- $p := dict -}}
@@ -19,7 +20,10 @@
       <span class="game-pick-desc">YAML で RPG・ADV・SLG を制作</span>
       <span class="game-pick-action"><a class="game-pick-play" href="{{ $p.website | default "https://nao1215.github.io/gozen/" }}">ドキュメントを見る <span aria-hidden="true">→</span></a><a class="game-pick-play game-pick-more" href="{{ "games/" | relURL }}">ゲーム一覧 <span aria-hidden="true">→</span></a></span>
     </span>
-    <span class="game-pick-art" aria-hidden="true">
+    {{- /* 動画（約 900KB）が届くまでの間、最初のコマ（約 20KB）を背景に出しておく（2026-11-11）。
+         背景なので、狭いカードで絵の欄を消した時は読み込まれない */}}
+    {{- $poster := resources.Get "images/game-picks/gozen-demo-poster.webp" }}
+    <span class="game-pick-art" aria-hidden="true"{{ with $poster }} style="background-image: url('{{ .RelPermalink }}');"{{ end }}>
       {{- with resources.Get "images/game-picks/gozen-demo.webp" }}
       <img src="{{ .RelPermalink }}" width="420" height="236" alt="" decoding="async" loading="lazy">
       {{- end }}

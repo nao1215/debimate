@@ -1756,12 +1756,28 @@ html[data-theme="dark"] .game-pick-gozen { background: #263038; color: #eef4f7; 
 .game-pick.game-pick-gozen { grid-template-columns: minmax(0, 1fr) auto; }
 .game-pick.game-pick-gozen .game-pick-art { height: 100%; aspect-ratio: 16 / 9; }
 .game-pick.game-pick-gozen .game-pick-art img { object-fit: contain; }
+.game-pick.game-pick-gozen .game-pick-art { background: center / contain no-repeat; }
+/* 狭いカードでも動画は右に残す。下へ回すと横幅いっぱいの 16:9 になり、隣の OSS
+   カードまで縦に伸びて巨大になった（2026-11-11）。右の欄を細くしてカードの高さに合わせ、
+   切る時は中央を残す。リンクは入らなければ次の行へ送る。 */
 @container (max-width: 560px) {
+  .game-pick.game-pick-gozen { grid-template-columns: minmax(0, 1fr) 42%; }
+  .game-pick.game-pick-gozen .game-pick-body { padding-right: .6rem; padding-bottom: .9rem; }
+  .game-pick.game-pick-gozen .game-pick-art { position: relative; right: auto; bottom: auto; width: auto; height: auto; aspect-ratio: auto; background-size: cover; background-position: center; }
+  .game-pick.game-pick-gozen .game-pick-art img { object-fit: cover; object-position: center; }
+  .game-pick.game-pick-gozen .game-pick-action { display: flex; flex-wrap: wrap; column-gap: 1rem; }
+  .game-pick.game-pick-gozen .game-pick-more { margin-left: 0; }
+}
+/* それでも文字の欄が足りないほど狭い時だけ、動画を消して文字だけにする。 */
+@container (max-width: 300px) {
   .game-pick.game-pick-gozen { grid-template-columns: minmax(0, 1fr); }
-  .game-pick.game-pick-gozen .game-pick-body { padding-bottom: .9rem; }
-  .game-pick.game-pick-gozen .game-pick-art { position: relative; height: auto; aspect-ratio: 16 / 9; }
+  .game-pick.game-pick-gozen .game-pick-art { display: none; }
 }
 /* 帯の中の一覧へのリンク（2026-11-10）。OSS はカード全体がリンクなので右下に重ねる。 */
 .oss-pick-wrap { position: relative; }
 .oss-pick-more { position: absolute; right: 14px; bottom: 10px; z-index: 4; font-size: .78rem; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
 .game-pick-more { margin-left: 1rem; }
+/* 狭い画面では説明文が右下の「OSS 一覧」と重なるので、その分だけ下を空ける（2026-11-11）。 */
+@media (max-width: 640px) {
+  .home-cards .oss-pick { padding-bottom: 2.1rem; }
+}
