@@ -88,7 +88,7 @@ write(1, "line 1\nline 2\nline 3\nline 4\nline"..., 35) = 35
 
 {{< figure src="images/interrupt.webp" alt="経過時間が 0 秒から 2 秒まで進む動画。パイプの行では、0、0.5、1.0 秒に書いた 3 行がバッファの箱に溜まり、1.2 秒の Ctrl-C で取り消し線が付いて強制終了で消えたと表示され、読む側の箱は空のまま。stdbuf -oL を付けたパイプでは、3 行とも書いた直後に読む側の箱へ移っている" caption="1.2 秒で止めると、全バッファでは書いたはずの 3 行が 1 行も届かない" align="center" >}}
 
-全バッファの側では、プログラムは 3 行を書いたつもりでいます。しかし、3 行はプロセスのメモリから出ないまま消えました。`tail -f app.log | grep ERROR | cut -d' ' -f1` を眺めていて Ctrl-C を押すと、途中の `grep` が溜めていた行は `cut` に渡らないまま消えます。最後の数行が画面に出なかった、という現象の正体はこれです。
+全バッファの場合、プログラムは 3 行を書いたつもりでいます。しかし、3 行はプロセスのメモリから出ないまま消えました。`tail -f app.log | grep ERROR | cut -d' ' -f1` を眺めていて Ctrl-C を押すと、途中の `grep` が溜めていた行は `cut` に渡らないまま消えます。最後の数行が画面に出なかった、という現象の正体はこれです。
 
 実験のスクリプトは、Python から起動して、プロセスグループ（パイプラインに並んだプロセスのまとまり）全体にシグナルを送っています（`stamp.py` は、読んだ行に起動からの秒を付けて出す小さなスクリプトで、[lab](https://github.com/nao1215/debimate/tree/main/content/notes/computer-systems/stdout-buffering/lab) にあります）。
 
@@ -124,7 +124,7 @@ for cmd in ["bin/slow_c | python3 stamp.py", "stdbuf -oL bin/slow_c | python3 st
 
 ### 言語ごとの既定
 
-ここまでは C の話でした。バッファを持つのは C の stdio だけではなく、各言語の標準ライブラリがそれぞれのバッファを持ち、既定のモードも違います。同じ実験を Python・Go・Rust でも行いました（各言語の版は [lab の README](https://github.com/nao1215/debimate/tree/main/content/notes/computer-systems/stdout-buffering/lab) にあります）。
+ここまでは C の話でした。バッファを持つのは C の stdio だけではなく、各言語の標準ライブラリがそれぞれのバッファを持ち、既定のモードも違います。同じ実験を Python・Go・Rust でも行いました（各言語のバージョンは [lab の README](https://github.com/nao1215/debimate/tree/main/content/notes/computer-systems/stdout-buffering/lab) にあります）。
 
 {{< figure src="images/arrival_languages.webp" alt="経過時間が 0 秒から 3 秒まで進む動画。C のパイプと Python のパイプ、Python のパイプ+stdbuf -oL では、書いた行がバッファの箱に溜まり、終了時にまとめて読む側の箱へ移る。C のパイプ+stdbuf -oL、Go のパイプ、Rust のパイプでは、書いた行がすぐ読む側の箱へ移る" caption="同じ実験を 4 つの言語で行った結果（パイプの場合）。Python には stdbuf が効かず、Go と Rust はパイプでも 1 行ずつ届く。端末では 4 つとも 1 行ずつ届き、Go と Rust は stdbuf -oL を付けても変わらない" align="center" >}}
 
@@ -149,7 +149,7 @@ done
 
 C と Python は、端末なら行バッファ、パイプなら全バッファです。Python の `sys.stdout` は、対話的な時は行バッファ、それ以外は通常のファイルと同じブロック単位のバッファ（つまり全バッファ）になると[公式の文書](https://docs.python.org/3/library/sys.html#sys.stdout)に書かれています。著者の環境の Python 3.14 では、パイプへの書き出しは 1 回あたり約 120KB でした。
 
-Go は、バッファを持ちません。`os.Stdout` は、ファイル記述子をそのまま包んだ [`*os.File`](https://pkg.go.dev/os#pkg-variables) で、`fmt.Println` は呼ぶたびに `write(2)` まで進みます。速さが要る時は、利用者が `bufio.Writer` で包み、自分で `Flush` を呼びます。
+Go は、バッファを持ちません。`os.Stdout` は、ファイル記述子をそのまま包んだ [`*os.File`](https://pkg.go.dev/os#pkg-variables) で、`fmt.Println` は呼ぶたびに `write(2)` まで進みます。速さが必要な時は、利用者が `bufio.Writer` で包み、自分で `Flush` を呼びます。
 
 Rust の標準出力は、改行で書き出す `LineWriter` です。[公式の文書](https://doc.rust-lang.org/std/io/struct.Stdout.html)は「端末につながっている時は行バッファ」と書いていますが、実装は出力先を見ずに常に `LineWriter` を使うので、パイプでも 1 行ずつ届きます。出力先で全バッファへ切り替える案は [rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673) で議論が続いています。
 
@@ -213,7 +213,7 @@ Python は C で書かれていますが、`print` は C の stdio ではなく 
 
 ### Ubuntu 26.04 の Rust 製 coreutils
 
-ここまでの話は、昔から変わらない仕組みです。しかし、Ubuntu では身近なコマンドの側が変わりました。Ubuntu は 25.10 から、coreutils の既定を GNU から Rust 製の [uutils](https://github.com/uutils/coreutils) に切り替えています（[Ubuntu Discourse の報告](https://discourse.ubuntu.com/t/an-update-on-rust-coreutils/80773)）。
+ここまでの話は、昔から変わらない仕組みです。しかし、Ubuntu では身近なコマンドの実装が変わりました。Ubuntu は 25.10 から、coreutils の既定を GNU から Rust 製の [uutils](https://github.com/uutils/coreutils) に切り替えています（[Ubuntu Discourse の報告](https://discourse.ubuntu.com/t/an-update-on-rust-coreutils/80773)）。
 
 著者の Ubuntu 26.04.1 では、`cat`・`cut`・`sort`・`stdbuf` などが uutils 0.8.0 で、`cp`・`mv`・`rm` は GNU のままでした。GNU 版も `gnucat`・`gnucut` のように `gnu` を頭に付けた名前で入っているので、同じ機械で 2 つの実装を比べられます。
 
@@ -251,7 +251,7 @@ GNU 版は、`stdbuf -oL` を付けると 8 つ全てが 1 行ずつになりま
 
 何も付けなくても 1 行ずつ届いたコマンドは、出力を溜めていません。strace で数えると、GNU の `cat`・`tee` と uutils の `tr` は、上流から 1 行を読むたびに `write(2)` していました。GNU の `tr` は、終了時に 1 回だけです（lab の `output/exp2_strace_rw.txt`）。
 
-効かない原因が `stdbuf` の側かフィルタの側かを確かめるため、組み合わせを入れ替えました。GNU の `stdbuf` は uutils の `cut` に効かず、uutils の `stdbuf` は GNU の `cut` に効きます。原因はフィルタの側です。uutils のコマンドは Rust で書かれているので、前の節の Rust と同じく C の stdio を通らず、`libstdbuf.so` が変える `setvbuf` は出力に関係しません。
+効かない原因が `stdbuf` とフィルタのどちらにあるかを確認するため、組み合わせを入れ替えました。GNU の `stdbuf` は uutils の `cut` に効かず、uutils の `stdbuf` は GNU の `cut` に効きます。原因はフィルタです。uutils のコマンドは Rust で書かれているので、前の節の Rust と同じく C の stdio を通らず、`libstdbuf.so` が変える `setvbuf` は出力に関係しません。
 
 ```console
 $ # GNU の stdbuf + uutils の cut
@@ -268,13 +268,13 @@ $ python3 -u src/slow.py | stdbuf -oL gnucut -c1- | python3 stamp.py
 
 この違いは、uutils の中でも認識されています。`stdbuf` に従うべきかを議論した [uutils/coreutils#7967](https://github.com/uutils/coreutils/issues/7967) では、メンテナーが「GNU と同じにしたいが、とても難しいかもしれない」と返し、Issue は起票者が閉じました。
 
-起票者は後に、Rust の標準ライブラリの側（[rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673)）が変わるまで打つ手は少ない、と補足しています。一方で、`stdbuf -oL cut` が効かないという Ubuntu からの報告 [uutils/coreutils#11581](https://github.com/uutils/coreutils/issues/11581) は、2026 年 11 月時点で未解決です。
+起票者は後に、Rust の標準ライブラリ（[rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673)）が変わるまで打つ手は少ない、と補足しています。一方で、`stdbuf -oL cut` が効かないという Ubuntu からの報告 [uutils/coreutils#11581](https://github.com/uutils/coreutils/issues/11581) は、2026 年 11 月時点で未解決です。
 
 <br>
 
-GNU coreutils を前提に書いたシェルスクリプトや、手に馴染んだ `tail -f ... | stdbuf -oL cut ...` のようなパイプラインは、Ubuntu 26.04 では黙って振る舞いが変わります。エラーは出ず、出力が遅れるだけなので、気付きにくい変化です。
+GNU coreutils を前提に書いたシェルスクリプトや、手に馴染んだ `tail -f ... | stdbuf -oL cut ...` のようなパイプラインは、Ubuntu 26.04 では振る舞いが変わります。エラーは出ず、出力が遅れるだけなので、気付きにくい変化です。
 
-行ごとの出力が要る所では、`gnucut` のように GNU 版を明示するか、GNU の grep の `--line-buffered` や、Ubuntu の既定の `awk`（mawk）の `-W interactive` のように、行単位で書き出すオプションを持つコマンドに寄せる方が確実です。
+行ごとの出力が必要な所では、`gnucut` のように GNU 版を明示するか、GNU の grep の `--line-buffered` や、Ubuntu の既定の `awk`（mawk）の `-W interactive` のように、行単位で書き出すオプションを持つコマンドに寄せる方が確実です。
 
 ---
 
@@ -364,11 +364,11 @@ failed printing to stdout: Broken pipe (os error 32)
 
 C の `printf` は、文字列をバッファに置いた時点で成功を返します。実際の `write(2)` は終了時の後処理で行われ、そこで失敗しても、`main` から `return 0` した後なので誰も気付きません。
 
-Go の `fmt.Println` はバッファを持たないので、失敗はその場で戻り値の `error` として返ります。しかし、`fmt.Println` の戻り値を確かめるコードはほとんど書かれないので、エラーは捨てられます。
+Go の `fmt.Println` はバッファを持たないので、失敗はその場で戻り値の `error` として返ります。しかし、`fmt.Println` の戻り値を確認するコードはほとんど書かれないので、エラーは捨てられます。
 
-GNU coreutils は、書き込みの失敗を自分で確かめます。`cat` は `write(2)` のたびに結果を見て、起動時には標準出力が開いているかも確かめます（[cat.c](https://github.com/coreutils/coreutils/blob/v9.7/src/cat.c)）。
+GNU coreutils は、書き込みの失敗を自分で確認します。`cat` は `write(2)` のたびに結果を見て、起動時には標準出力が開いているかも確認します（[cat.c](https://github.com/coreutils/coreutils/blob/v9.7/src/cat.c)）。
 
-さらに多くのコマンドは、終了時に gnulib（GNU のプログラムが共有する部品集）の [`close_stdout`](https://git.savannah.gnu.org/cgit/gnulib.git/tree/lib/closeout.c) で標準出力を閉じ、その結果も確かめます。そのため、満杯でも閉じた標準出力でも 1 で終わり、エラーを表示します。
+さらに多くのコマンドは、終了時に gnulib（GNU のプログラムが共有する部品集）の [`close_stdout`](https://git.savannah.gnu.org/cgit/gnulib.git/tree/lib/closeout.c) で標準出力を閉じ、その結果も確認します。そのため、満杯でも閉じた標準出力でも 1 で終わり、エラーを表示します。
 
 ```text
 == gnucat hello.txt > /dev/full
@@ -400,7 +400,7 @@ write(1, "hello\n", 6)                  = -1 EBADF (不正なファイル記述�
 
 以下は、閉じた標準出力で 3 通りの 0 がどう生まれるかを並べた図です。
 
-{{< figure src="images/closed_stdout.webp" alt="3 行の流れ図。C は起動時に何もせず、printf がバッファに置き、終了時の 1 番への write(2) が EBADF で失敗するが確かめずに 0。Go・Rust・uutils は起動時に 1 番へ /dev/null を開くので 1 番への write(2) は成功し、出力は /dev/null に捨てられて 0。Python は起動時に sys.stdout を None にするので print は何もせず、どこにも書かれずに 0" caption="閉じた標準出力で 0 になる 3 つの経路。どれも hello は誰にも届かない" align="center" >}}
+{{< figure src="images/closed_stdout.webp" alt="3 行の流れ図。C は起動時に何もせず、printf がバッファに置き、終了時の 1 番への write(2) が EBADF で失敗するが確認せずに 0。Go・Rust・uutils は起動時に 1 番へ /dev/null を開くので 1 番への write(2) は成功し、出力は /dev/null に捨てられて 0。Python は起動時に sys.stdout を None にするので print は何もせず、どこにも書かれずに 0" caption="閉じた標準出力で 0 になる 3 つの経路。どれも hello は誰にも届かない" align="center" >}}
 
 `/dev/null` を開き直すのは、Rust のソースのコメントによると、閉じた番号を放っておくと後で開いた無関係のファイルがその番号を受け取り、標準出力への書き込みがそこへ向かってしまうので、それを防ぐためです。上記の図の通り、C は終了時の `write(2)` の失敗を見逃し、Python は起動時に `sys.stdout` が `None` になるので何も書きません。どの経路でも、出力が誰にも届かない点は同じです。`/dev/null` に書けたとしても、ログとして残したかった行は捨てられています。そのため、前の図では閉じた標準出力の 0 も赤にしています。
 
@@ -410,9 +410,9 @@ uutils の `cat` も Rust 製なので、同じ仕組みで `/dev/null` へ書�
 
 <br>
 
-自分の CLI で書き込みの失敗を報告したい場合は、終了の直前にバッファを書き出し、その結果を確かめます。C なら `fflush(stdout)` と `fclose(stdout)` の戻り値、Go なら `bufio.Writer` の `Flush` と `os.Stdout.Close` の戻り値です。書き込みのたびに確かめなくても、最後に 1 回確かめれば、それまでの失敗も拾えます。
+自分の CLI で書き込みの失敗を報告したい場合は、終了の直前にバッファを書き出し、その結果を確認します。C なら `fflush(stdout)` と `fclose(stdout)` の戻り値、Go なら `bufio.Writer` の `Flush` と `os.Stdout.Close` の戻り値です。書き込みのたびに確認しなくても、最後に 1 回確認すれば、それまでの失敗も拾えます。
 
-以下は、Go で `bufio.Writer` を使い、終了の直前に確かめる例です。`Close` も確かめるのは、ファイルなど、閉じる時に初めて失敗が分かる出力先があるからです。
+以下は、Go で `bufio.Writer` を使い、終了の直前に確認する例です。`Close` も確認するのは、ファイルなど、閉じる時に初めて失敗が分かる出力先があるからです。
 
 ```go
 w := bufio.NewWriter(os.Stdout)
@@ -440,16 +440,16 @@ exit=0
 
 ---
 
-### 出力が来ない時に確かめる順
+### 出力が来ない時に確認する順
 
-パイプラインの出力が来ない時、あるいは自分のプログラムの出力がパイプの先で遅れる時は、次の順に確かめると原因に辿り着きやすくなります。
+パイプラインの出力が来ない時、あるいは自分のプログラムの出力がパイプの先で遅れる時は、次の順に確認すると原因に辿り着きやすくなります。
 
-1. パイプラインの途中のコマンドを後ろから 1 つずつ外し、どれが溜めているかを確かめる。
+1. パイプラインの途中のコマンドを後ろから 1 つずつ外し、どれが溜めているかを確認する。
 2. 溜めているコマンドが C で書かれていれば `stdbuf -oL`、Python なら `-u`、grep・sed・awk なら行ごとに書き出すオプションを使う。
 3. Ubuntu 25.10 以降で `stdbuf` が効かない coreutils のコマンドなら、`gnucut` のように GNU 版を明示する。
 4. どれも使えなければ、`script` や `unbuffer` で出力先を端末に見せかける。
 
-自分でコマンドを書く側なら、パイプの先に何が来るかで既定を選びます。人が `tail -f` の後ろにつなぐコマンドなら行ごとに書き出し、大量の出力を流すコマンドならまとめて書いて、終了時に書き出しの失敗を確かめます。
+自分でコマンドを書く側なら、パイプの先に何が来るかで既定を選びます。人が `tail -f` の後ろにつなぐコマンドなら行ごとに書き出し、大量の出力を流すコマンドならまとめて書いて、終了時に書き出しの失敗を確認します。
 
 どちらを選んでも、`| head -n 1` と `> /dev/full` の 2 つを一度試しておけば、書けない状況での終わり方の図の 1・2 列目の赤いマスに入っていないかが分かります。3 列目は、Go と Rust ではランタイムが先に処理するので、自分のコードでは見つけられません。
 
