@@ -1,0 +1,12 @@
+$ python3 -u src/slow.py | gnustdbuf -oL /usr/lib/cargo/bin/coreutils/cut -c1- | python3 stamp.py   # GNU stdbuf + uutils cut
+2.51 line 1
+2.51 line 2
+2.51 line 3
+2.51 line 4
+2.51 line 5
+$ python3 -u src/slow.py | /usr/lib/cargo/bin/coreutils/stdbuf -oL gnucut -c1- | python3 stamp.py   # uutils stdbuf + GNU cut
+0.01 line 1
+0.51 line 2
+1.01 line 3
+1.51 line 4
+2.01 line 5

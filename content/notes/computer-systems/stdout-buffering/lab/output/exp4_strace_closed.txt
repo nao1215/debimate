@@ -1,0 +1,15 @@
+== bin/hello_rs >&- exit=0
+poll([{fd=0, events=0}, {fd=1, events=0}, {fd=2, events=0}], 3, 0) = 1 ([{fd=1, revents=POLLNVAL}])
+openat(AT_FDCWD, "/dev/null", O_RDWR)   = 1
+write(1, "hello\n", 6)                  = 6
+== bin/hello_go >&- exit=0
+fcntl(1, F_GETFD)                       = -1 EBADF (不正なファイル記述子です)
+openat(AT_FDCWD, "/dev/null", O_RDWR)   = 1
+write(1, "hello\n", 6)                  = 6
+== bin/hello_c >&- exit=0
+write(1, "hello\n", 6)                  = -1 EBADF (不正なファイル記述子です)
+== /usr/lib/cargo/bin/coreutils/cat src/hello.py >&- exit=0
+fcntl(1, F_GETFD)                       = -1 EBADF (不正なファイル記述子です)
+poll([{fd=0, events=0}, {fd=1, events=0}, {fd=2, events=0}], 3, 0) = 1 ([{fd=1, revents=POLLNVAL}])
+openat(AT_FDCWD, "/dev/null", O_RDWR)   = 1
+== gnucat src/hello.py >&- exit=1

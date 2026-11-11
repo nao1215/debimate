@@ -1,0 +1,29 @@
+== bin/loop_c
+exit=141
+
+== python3 src/loop.py
+exit=120
+Traceback (most recent call last):
+  File "/home/nao/ghq/github.com/nao1215/debimate/content/notes/computer-systems/stdout-buffering/lab/src/loop.py", line 3, in <module>
+    print(f"line {i}")
+    ~~~~~^^^^^^^^^^^^^
+BrokenPipeError: [Errno 32] Broken pipe
+Exception ignored while flushing sys.stdout:
+BrokenPipeError: [Errno 32] Broken pipe
+
+== bin/loop_go
+exit=141
+
+== bin/loop_rs
+exit=101
+
+thread 'main' (2491025) panicked at /rustc/88d9e12ae178fab0fb5cc050a94da85685d449ea/library/std/src/io/stdio.rs:1166:9:
+failed printing to stdout: Broken pipe (os error 32)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+== gnuyes
+exit=141
+
+== yes
+exit=141
+

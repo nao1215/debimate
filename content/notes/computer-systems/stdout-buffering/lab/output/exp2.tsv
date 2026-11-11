@@ -1,0 +1,160 @@
+GNU	そのまま	cat	0.01 line 1
+GNU	そのまま	cat	0.51 line 2
+GNU	そのまま	cat	1.01 line 3
+GNU	そのまま	cat	1.51 line 4
+GNU	そのまま	cat	2.01 line 5
+GNU	stdbuf -oL	cat	0.01 line 1
+GNU	stdbuf -oL	cat	0.51 line 2
+GNU	stdbuf -oL	cat	1.01 line 3
+GNU	stdbuf -oL	cat	1.51 line 4
+GNU	stdbuf -oL	cat	2.01 line 5
+uutils	そのまま	cat	0.02 line 1
+uutils	そのまま	cat	0.51 line 2
+uutils	そのまま	cat	1.01 line 3
+uutils	そのまま	cat	1.51 line 4
+uutils	そのまま	cat	2.01 line 5
+uutils	stdbuf -oL	cat	0.02 line 1
+uutils	stdbuf -oL	cat	0.52 line 2
+uutils	stdbuf -oL	cat	1.02 line 3
+uutils	stdbuf -oL	cat	1.52 line 4
+uutils	stdbuf -oL	cat	2.02 line 5
+GNU	そのまま	tee	0.02 line 1
+GNU	そのまま	tee	0.52 line 2
+GNU	そのまま	tee	1.02 line 3
+GNU	そのまま	tee	1.52 line 4
+GNU	そのまま	tee	2.02 line 5
+GNU	stdbuf -oL	tee	0.02 line 1
+GNU	stdbuf -oL	tee	0.52 line 2
+GNU	stdbuf -oL	tee	1.02 line 3
+GNU	stdbuf -oL	tee	1.52 line 4
+GNU	stdbuf -oL	tee	2.02 line 5
+uutils	そのまま	tee	0.02 line 1
+uutils	そのまま	tee	0.52 line 2
+uutils	そのまま	tee	1.02 line 3
+uutils	そのまま	tee	1.52 line 4
+uutils	そのまま	tee	2.02 line 5
+uutils	stdbuf -oL	tee	0.02 line 1
+uutils	stdbuf -oL	tee	0.52 line 2
+uutils	stdbuf -oL	tee	1.02 line 3
+uutils	stdbuf -oL	tee	1.52 line 4
+uutils	stdbuf -oL	tee	2.02 line 5
+GNU	そのまま	head	2.52 line 1
+GNU	そのまま	head	2.52 line 2
+GNU	そのまま	head	2.52 line 3
+GNU	そのまま	head	2.52 line 4
+GNU	そのまま	head	2.52 line 5
+GNU	stdbuf -oL	head	0.01 line 1
+GNU	stdbuf -oL	head	0.51 line 2
+GNU	stdbuf -oL	head	1.01 line 3
+GNU	stdbuf -oL	head	1.51 line 4
+GNU	stdbuf -oL	head	2.01 line 5
+uutils	そのまま	head	2.52 line 1
+uutils	そのまま	head	2.52 line 2
+uutils	そのまま	head	2.52 line 3
+uutils	そのまま	head	2.52 line 4
+uutils	そのまま	head	2.52 line 5
+uutils	stdbuf -oL	head	2.52 line 1
+uutils	stdbuf -oL	head	2.52 line 2
+uutils	stdbuf -oL	head	2.52 line 3
+uutils	stdbuf -oL	head	2.52 line 4
+uutils	stdbuf -oL	head	2.52 line 5
+GNU	そのまま	tr	2.52 LINE 1
+GNU	そのまま	tr	2.52 LINE 2
+GNU	そのまま	tr	2.52 LINE 3
+GNU	そのまま	tr	2.52 LINE 4
+GNU	そのまま	tr	2.52 LINE 5
+GNU	stdbuf -oL	tr	0.02 LINE 1
+GNU	stdbuf -oL	tr	0.52 LINE 2
+GNU	stdbuf -oL	tr	1.02 LINE 3
+GNU	stdbuf -oL	tr	1.52 LINE 4
+GNU	stdbuf -oL	tr	2.02 LINE 5
+uutils	そのまま	tr	0.02 LINE 1
+uutils	そのまま	tr	0.52 LINE 2
+uutils	そのまま	tr	1.02 LINE 3
+uutils	そのまま	tr	1.52 LINE 4
+uutils	そのまま	tr	2.02 LINE 5
+uutils	stdbuf -oL	tr	0.01 LINE 1
+uutils	stdbuf -oL	tr	0.51 LINE 2
+uutils	stdbuf -oL	tr	1.01 LINE 3
+uutils	stdbuf -oL	tr	1.51 LINE 4
+uutils	stdbuf -oL	tr	2.01 LINE 5
+GNU	そのまま	cut	2.52 line 1
+GNU	そのまま	cut	2.52 line 2
+GNU	そのまま	cut	2.52 line 3
+GNU	そのまま	cut	2.52 line 4
+GNU	そのまま	cut	2.52 line 5
+GNU	stdbuf -oL	cut	0.02 line 1
+GNU	stdbuf -oL	cut	0.52 line 2
+GNU	stdbuf -oL	cut	1.02 line 3
+GNU	stdbuf -oL	cut	1.52 line 4
+GNU	stdbuf -oL	cut	2.02 line 5
+uutils	そのまま	cut	2.52 line 1
+uutils	そのまま	cut	2.52 line 2
+uutils	そのまま	cut	2.52 line 3
+uutils	そのまま	cut	2.52 line 4
+uutils	そのまま	cut	2.52 line 5
+uutils	stdbuf -oL	cut	2.52 line 1
+uutils	stdbuf -oL	cut	2.52 line 2
+uutils	stdbuf -oL	cut	2.52 line 3
+uutils	stdbuf -oL	cut	2.52 line 4
+uutils	stdbuf -oL	cut	2.52 line 5
+GNU	そのまま	fold	2.52 line 1
+GNU	そのまま	fold	2.52 line 2
+GNU	そのまま	fold	2.52 line 3
+GNU	そのまま	fold	2.52 line 4
+GNU	そのまま	fold	2.52 line 5
+GNU	stdbuf -oL	fold	0.01 line 1
+GNU	stdbuf -oL	fold	0.51 line 2
+GNU	stdbuf -oL	fold	1.01 line 3
+GNU	stdbuf -oL	fold	1.51 line 4
+GNU	stdbuf -oL	fold	2.01 line 5
+uutils	そのまま	fold	2.52 line 1
+uutils	そのまま	fold	2.52 line 2
+uutils	そのまま	fold	2.52 line 3
+uutils	そのまま	fold	2.52 line 4
+uutils	そのまま	fold	2.52 line 5
+uutils	stdbuf -oL	fold	2.51 line 1
+uutils	stdbuf -oL	fold	2.51 line 2
+uutils	stdbuf -oL	fold	2.51 line 3
+uutils	stdbuf -oL	fold	2.51 line 4
+uutils	stdbuf -oL	fold	2.51 line 5
+GNU	そのまま	uniq	2.51 line 1
+GNU	そのまま	uniq	2.51 line 2
+GNU	そのまま	uniq	2.51 line 3
+GNU	そのまま	uniq	2.51 line 4
+GNU	そのまま	uniq	2.51 line 5
+GNU	stdbuf -oL	uniq	0.01 line 1
+GNU	stdbuf -oL	uniq	0.51 line 2
+GNU	stdbuf -oL	uniq	1.01 line 3
+GNU	stdbuf -oL	uniq	1.51 line 4
+GNU	stdbuf -oL	uniq	2.01 line 5
+uutils	そのまま	uniq	2.51 line 1
+uutils	そのまま	uniq	2.52 line 2
+uutils	そのまま	uniq	2.52 line 3
+uutils	そのまま	uniq	2.52 line 4
+uutils	そのまま	uniq	2.52 line 5
+uutils	stdbuf -oL	uniq	2.52 line 1
+uutils	stdbuf -oL	uniq	2.52 line 2
+uutils	stdbuf -oL	uniq	2.52 line 3
+uutils	stdbuf -oL	uniq	2.52 line 4
+uutils	stdbuf -oL	uniq	2.52 line 5
+GNU	そのまま	nl	2.52      1	line 1
+GNU	そのまま	nl	2.52      2	line 2
+GNU	そのまま	nl	2.52      3	line 3
+GNU	そのまま	nl	2.52      4	line 4
+GNU	そのまま	nl	2.52      5	line 5
+GNU	stdbuf -oL	nl	0.01      1	line 1
+GNU	stdbuf -oL	nl	0.51      2	line 2
+GNU	stdbuf -oL	nl	1.01      3	line 3
+GNU	stdbuf -oL	nl	1.51      4	line 4
+GNU	stdbuf -oL	nl	2.01      5	line 5
+uutils	そのまま	nl	2.52      1	line 1
+uutils	そのまま	nl	2.52      2	line 2
+uutils	そのまま	nl	2.52      3	line 3
+uutils	そのまま	nl	2.52      4	line 4
+uutils	そのまま	nl	2.52      5	line 5
+uutils	stdbuf -oL	nl	2.51      1	line 1
+uutils	stdbuf -oL	nl	2.51      2	line 2
+uutils	stdbuf -oL	nl	2.51      3	line 3
+uutils	stdbuf -oL	nl	2.51      4	line 4
+uutils	stdbuf -oL	nl	2.51      5	line 5

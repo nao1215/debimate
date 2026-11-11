@@ -1,0 +1,60 @@
+C	端末	0.02 line 1
+C	端末	0.51 line 2
+C	端末	1.01 line 3
+C	端末	1.51 line 4
+C	端末	2.01 line 5
+C	パイプ	2.51 line 1
+C	パイプ	2.51 line 2
+C	パイプ	2.51 line 3
+C	パイプ	2.51 line 4
+C	パイプ	2.51 line 5
+C	パイプ+stdbuf -oL	0.02 line 1
+C	パイプ+stdbuf -oL	0.51 line 2
+C	パイプ+stdbuf -oL	1.01 line 3
+C	パイプ+stdbuf -oL	1.51 line 4
+C	パイプ+stdbuf -oL	2.01 line 5
+Python	端末	0.02 line 1
+Python	端末	0.52 line 2
+Python	端末	1.02 line 3
+Python	端末	1.52 line 4
+Python	端末	2.02 line 5
+Python	パイプ	2.52 line 1
+Python	パイプ	2.52 line 2
+Python	パイプ	2.52 line 3
+Python	パイプ	2.52 line 4
+Python	パイプ	2.52 line 5
+Python	パイプ+stdbuf -oL	2.52 line 1
+Python	パイプ+stdbuf -oL	2.52 line 2
+Python	パイプ+stdbuf -oL	2.52 line 3
+Python	パイプ+stdbuf -oL	2.52 line 4
+Python	パイプ+stdbuf -oL	2.52 line 5
+Go	端末	0.02 line 1
+Go	端末	0.51 line 2
+Go	端末	1.01 line 3
+Go	端末	1.51 line 4
+Go	端末	2.01 line 5
+Go	パイプ	0.02 line 1
+Go	パイプ	0.51 line 2
+Go	パイプ	1.01 line 3
+Go	パイプ	1.51 line 4
+Go	パイプ	2.01 line 5
+Go	パイプ+stdbuf -oL	0.02 line 1
+Go	パイプ+stdbuf -oL	0.51 line 2
+Go	パイプ+stdbuf -oL	1.01 line 3
+Go	パイプ+stdbuf -oL	1.51 line 4
+Go	パイプ+stdbuf -oL	2.01 line 5
+Rust	端末	0.02 line 1
+Rust	端末	0.51 line 2
+Rust	端末	1.01 line 3
+Rust	端末	1.51 line 4
+Rust	端末	2.01 line 5
+Rust	パイプ	0.01 line 1
+Rust	パイプ	0.50 line 2
+Rust	パイプ	1.00 line 3
+Rust	パイプ	1.50 line 4
+Rust	パイプ	2.00 line 5
+Rust	パイプ+stdbuf -oL	0.02 line 1
+Rust	パイプ+stdbuf -oL	0.51 line 2
+Rust	パイプ+stdbuf -oL	1.01 line 3
+Rust	パイプ+stdbuf -oL	1.51 line 4
+Rust	パイプ+stdbuf -oL	2.01 line 5

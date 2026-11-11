@@ -1,0 +1,44 @@
+== bin/hello_c > /dev/full
+exit=0
+
+== bin/hello_c > closed
+exit=0
+
+== python3 src/hello.py > /dev/full
+exit=120
+Exception ignored while flushing sys.stdout:
+OSError: [Errno 28] No space left on device
+
+== python3 src/hello.py > closed
+exit=0
+
+== bin/hello_go > /dev/full
+exit=0
+
+== bin/hello_go > closed
+exit=0
+
+== bin/hello_rs > /dev/full
+exit=101
+
+thread 'main' (2321479) panicked at /rustc/88d9e12ae178fab0fb5cc050a94da85685d449ea/library/std/src/io/stdio.rs:1166:9:
+failed printing to stdout: No space left on device (os error 28)
+note: run with
+== bin/hello_rs > closed
+exit=0
+
+== gnucat hello.txt > /dev/full
+exit=1
+gnucat: 書き込みエラー: デバイスに空き領域がありません
+
+== gnucat hello.txt > closed
+exit=1
+gnucat: 標準出力: 不正なファイル記述子です
+
+== cat hello.txt > /dev/full
+exit=1
+cat: hello.txt: No space left on device
+
+== cat hello.txt > closed
+exit=0
+

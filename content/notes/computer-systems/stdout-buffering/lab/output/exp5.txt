@@ -1,0 +1,7 @@
+== bin/slow_c | python3 stamp.py
+届いた行数=0
+== stdbuf -oL bin/slow_c | python3 stamp.py
+届いた行数=3
+0.02 line 1
+0.51 line 2
+1.01 line 3

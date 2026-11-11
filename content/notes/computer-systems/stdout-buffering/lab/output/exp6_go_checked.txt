@@ -1,0 +1,4 @@
+write error: write /dev/stdout: no space left on device
+> /dev/full exit=1
+| head -n 0 exit=0
+>&- exit=0

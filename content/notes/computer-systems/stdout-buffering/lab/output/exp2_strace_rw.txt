@@ -1,0 +1,4 @@
+== /usr/lib/cargo/bin/coreutils/tr a-z A-Z: write(1) 5 回 / read(0) 6 回
+== gnutr a-z A-Z: write(1) 1 回 / read(0) 6 回
+== gnucat: write(1) 5 回 / read(0) 6 回
+== gnutee /dev/null: write(1) 6 回 / read(0) 7 回
