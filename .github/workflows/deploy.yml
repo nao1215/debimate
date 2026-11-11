@@ -99,24 +99,59 @@ jobs:
           key: ${{ runner.os }}-${{ runner.arch }}-playwright-${{ hashFiles('package-lock.json') }}
 
       # apt のミラー待ちで固まった事がある (2026-11-06 に 10 分以上)。1 回ずつに
-      # 時間の上限を付けて、固まったらやり直す
+      # 時間の上限を付けて、固まったらやり直す。
+      # 2026-11-11 には azure.archive.ubuntu.com の名前解決が続けて失敗した。
+      # その時、timeout が止めるのは npx だけで、npx が起動した sudo apt-get は
+      # 残ってロックを持ち続け、2 回目以降が即 "Could not get lock" で落ちていた。
+      # やり直す前に残った apt-get を止め、ミラーを archive.ubuntu.com に替える
       - name: Install browser test dependencies
-        timeout-minutes: 8
+        timeout-minutes: 14
         run: |
           set -eu
-          # 応答の無いミラーで延々と待たず、短く諦めて取り直させる
-          printf 'Acquire::Retries "3";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\n' |
+          # 応答の無いミラーで延々と待たず、短く諦めて取り直させる。
+          # ロックは即諦めずに少し待つ
+          printf 'Acquire::Retries "2";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nDPkg::Lock::Timeout "60";\n' |
             sudo tee /etc/apt/apt.conf.d/99ci-timeouts > /dev/null
           npm ci --ignore-scripts --no-audit --no-fund
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != 'true' ]; then
             npx playwright install chromium
           fi
+
+          # 前の試行が残した apt-get を止め、ロックが外れるまで待つ
+          stop_leftover_apt() {
+            sudo pkill -x apt-get || true
+            for _ in $(seq 1 30); do
+              pgrep -x apt-get > /dev/null || return 0
+              sleep 2
+            done
+            sudo pkill -9 -x apt-get || true
+            sleep 2
+          }
+
+          # 既定の Azure ミラーが引けない時は Ubuntu 本家だけを見るようにする
+          use_fallback_mirror() {
+            if [ -f /etc/apt/apt-mirrors.txt ]; then
+              echo "現在のミラー一覧:"
+              cat /etc/apt/apt-mirrors.txt
+              printf 'http://archive.ubuntu.com/ubuntu/\tpriority:1\n' |
+                sudo tee /etc/apt/apt-mirrors.txt > /dev/null
+            fi
+            sudo find /etc/apt/sources.list /etc/apt/sources.list.d -type f \
+              \( -name '*.list' -o -name '*.sources' -o -name sources.list \) \
+              -exec sudo sed -i 's#http://azure\.archive\.ubuntu\.com/ubuntu#http://archive.ubuntu.com/ubuntu#g' {} + 2> /dev/null || true
+          }
+
           for attempt in 1 2 3; do
-            if timeout 150 npx playwright install-deps chromium &&
-               timeout 120 sudo apt-get install -y --no-install-recommends fonts-noto-cjk; then
+            if timeout --kill-after=10 180 npx playwright install-deps chromium &&
+               timeout --kill-after=10 120 sudo apt-get install -y --no-install-recommends fonts-noto-cjk; then
               exit 0
             fi
-            echo "::warning::apt の導入に失敗した (${attempt} 回目)。やり直す"
+            echo "::warning::apt の導入に失敗した (${attempt} 回目)。残った apt-get を止めてやり直す"
+            stop_leftover_apt
+            if ! getent hosts azure.archive.ubuntu.com > /dev/null; then
+              echo "::warning::azure.archive.ubuntu.com を名前解決できない。archive.ubuntu.com に切り替える"
+              use_fallback_mirror
+            fi
             sleep 5
           done
           exit 1
