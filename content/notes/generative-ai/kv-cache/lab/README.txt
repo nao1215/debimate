@@ -17,13 +17,14 @@ KV キャッシュ（KV Cache）ノートの実験ファイル
   GPU は AMD Radeon 8060S（CPU と共有のメモリ、ROCm）。Ollama 0.22.1 が GPU のメモリと見なした量は
   94.7 GiB（2026-11-10 の journal の sched.go の行 total="94.7 GiB"。lab の出力には無い）。
   num_ctx を指定しない時の既定値はこの量から 262,144 になり、モデルの上限に切り詰められる
-  実験 2・実験 3 の間は、他の作業の qwen3:4b（size 42.31 GB、ctx 262144）が同じ GPU に
-  読み込まれたままだった（output_prefill.txt・output_prefix.txt の ps の行）
+  全ての実験（1〜4）の間、他の作業の qwen3:4b（size 42.31 GB、ctx 262144）が同じ GPU に
+  読み込まれたままだった（output_*.txt の ps の行）
   他の作業が同じ Ollama と GPU を使っており、負荷平均が 10 前後の状態で測った
   思考モード（thinking）は全ての要求で "think": false を指定して無効にした。
   各出力の thinking の文字数は全て 0（output_*.txt の thinking 列、*.json の thinking_chars）
 
-  図の再生成: uv run --with matplotlib==3.11.2 python ../figures.py
+  図の再生成: uv run --with matplotlib==3.11.2 --with pillow python ../figures.py（WebP にするため google-chrome も使う）
+  実験 4 は Ollama の num_ctx のノート（../../ollama-context-length/）で使っている
 
 共通の道具: kvlab.py
 --------------------

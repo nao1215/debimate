@@ -1,4 +1,4 @@
-Prompt Weighting のノートの実験ファイル
+Prompt Weighting のノートと CLIP Token Limit のノート（../../clip-token-limit/）の実験ファイル
 
 前提
 ----
@@ -23,7 +23,7 @@ Prompt Weighting のノートの実験ファイル
   token_chunks.py    プロンプトを CLIP のトークンに分け、ComfyUI と同じ規則で
                      75 トークンの枠に詰める
   to_webp.py         本文に並べる WebP（448 px）を作る
-  result_*.json      analyze.py の結果（../figures.py がグラフに使う）
+  result_*.json      analyze.py の結果（../figures.py と ../../clip-token-limit/figures.py がグラフに使う）
   output_*.txt       analyze.py・token_chunks.py の表示
 
 生成の設定（workflow_api.json と同じ）
@@ -40,9 +40,9 @@ Prompt Weighting のノートの実験ファイル
     negative  : 実験 2。打ち消しの先頭 k 語（k = 1, 6, 12）の重み 1.0〜1.8 と、
                 白黒の 2 語だけ・残りの 10 語だけに重みを付ける切り分け、
                 seed 101〜103（57 枚）
-    position  : 実験 3。red background を置く位置 5 通り、seed 201〜204（20 枚）
-    ablation  : 実験 4。静物の 8 個の品の語を 1 つずつ外す 9 通り、seed 301・302（18 枚）
-    lighting  : 実験 5。照明の語（なし / night / neon light / sunset / dramatic lighting）
+    position  : CLIP Token Limit の実験 1。red background を置く位置 5 通り、seed 201〜204（20 枚）
+    ablation  : CLIP Token Limit の実験 2。静物の 8 個の品の語を 1 つずつ外す 9 通り、seed 301・302（18 枚）
+    lighting  : 実験 3。照明の語（なし / night / neon light / sunset / dramatic lighting）
                 × 打ち消し 12 語の重み（なし / 1.2 / 1.3）、seed 101〜103（45 枚）。
                 照明の語なしの 9 枚は negative と同じ文面なので、negative の
                 w1.0・k12_w1.2・k12_w1.3 の PNG を none_neg1.0・none_neg1.2・none_neg1.3 の
@@ -53,7 +53,8 @@ Prompt Weighting のノートの実験ファイル
   python3 run.py positive <PNG の保存先>      # negative / position / ablation も同じ
   uv run --with numpy --with pillow python analyze.py <PNG の保存先> positive result_positive.json
   uv run --with transformers python token_chunks.py <ComfyUI>/comfy/sd1_tokenizer "<プロンプト>"
-  cd .. && uv run --with matplotlib python figures.py
+  cd .. && uv run --with matplotlib --with pillow python figures.py
+  cd ../clip-token-limit && uv run --with matplotlib --with pillow python figures.py
 
   run.py は 1 枚送るごとに、その prompt_id の完了を /history で待ってから次を送る。
   待ち行列の他の依頼には触れない。保存済みの PNG は送り直さない。
@@ -65,7 +66,7 @@ Prompt Weighting のノートの実験ファイル
   output_lighting.txt
       analyze.py の表示（seed で平均した値）。seed ごとの値は result_*.json
   output_tokens.txt
-      実験 3 の 4 通りのプロンプトと、括弧の入れ子の例を token_chunks.py に通した表示
+      CLIP Token Limit の実験 1 の 4 通りのプロンプトと、括弧の入れ子の例を token_chunks.py に通した表示
   output_again.txt
       全ての生成の後に 3 条件（positive w1.4 / negative k12_w1.8 / ablation
       no_silver_spoon、seed は 101・101・301）を --again で生成し直し、元の PNG と
@@ -77,6 +78,6 @@ Prompt Weighting のノートの実験ファイル
   execution_success まで）。同じ ComfyUI を他の作業も使っていて、待ち行列の
   待ち時間は 1 枚あたり数十秒〜2 分あった（時間は本文の結論に使っていない）。
 
-  人物の題材を試して捨てた絵: 実験 4 は最初、服を着た成人の上半身で試したが、
+  人物の題材を試して捨てた絵: CLIP Token Limit の実験 2 は最初、服を着た成人の上半身で試したが、
   露出のある絵・目元が髪で隠れた絵が出たため、掲載せずに静物に切り替えた
   （試した 20 枚はいずれも掲載していない。本文と result_ablation.json は静物の 18 枚）。

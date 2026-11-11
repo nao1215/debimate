@@ -34,7 +34,7 @@ LLM の API や、手元の PC で LLM を動かす [Ollama](https://ollama.com/
 
 ### ロジットから確率へ
 
-モデルは、語彙にある全トークンについて、次に来るもっともらしさを表す実数を出します。この値をロジット（logit）と呼びます。ロジットは確率ではないので、softmax 関数で合計 1 の確率に変換します。以下では T（temperature）を 0 より大きい値とします。
+モデルは、語彙にある全トークンについて、次に来るもっともらしさを表す実数を出します。この値をロジット（logit）と呼びます。ロジットは確率ではないので、[softmax 関数](/ml/ml/loss-functions/)で合計 1 の確率に変換します。以下では T（temperature）を 0 より大きい値とします。
 
 ```text
 p_i = exp(z_i / T) / (全トークン j についての exp(z_j / T) の合計)
@@ -59,7 +59,7 @@ greedy decoding は乱数を使いませんが、毎回同じ出力になると�
 
 上位 2 個のロジットが僅差なら、その差で選ばれるトークンが入れ替わり、以降の文章も変わります。この現象は、AI の研究企業である Thinking Machines Lab の「[Defeating Nondeterminism in LLM Inference](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)」で詳しく調べられています。
 
-乱数を使うサンプリングでは、seed（乱数の種）を固定すると同じ乱数の列を再現できます。しかし、計算の順序によるロジットの差は、seed では防げません。
+乱数を使うサンプリングでは、[seed（乱数の種）](/notes/security/random-number/)を固定すると同じ乱数の列を再現できます。しかし、計算の順序によるロジットの差は、seed では防げません。
 
 ---
 

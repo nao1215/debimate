@@ -1,0 +1,27 @@
+[qwen3-8b] arch=qwen3 file=5,225,374,496 B  layers=36 experts=0/0 heads=32/8 key_len=128 sliding_window=None
+  embed    params     622,329,856  bytes     350,060,544
+  experts  params               0  bytes               0
+  other    params   7,568,405,504  bytes   4,869,357,568
+  total    params   8,190,735,360  bytes   5,219,418,112
+  active params per token ~ 7,568,409,600
+  bytes read per decoded token (weights only) ~ 4,869,359,872
+  bytes by type: Q4_K 3.66 GB, Q6_K 1.25 GB, F16 0.30 GB, F32 0.00 GB
+
+[qwen3-coder-30b] arch=qwen3moe file=18,556,688,736 B  layers=48 experts=8/128 heads=32/4 key_len=128 sliding_window=None
+  embed    params     311,164,928  bytes     175,030,272
+  experts  params  28,991,029,248  bytes  17,553,162,240
+  other    params   1,229,928,448  bytes     822,523,904
+  total    params  30,532,122,624  bytes  18,550,716,416
+  active params per token ~ 3,041,869,824
+  bytes read per decoded token (weights only) ~ 1,919,597,696
+  bytes by type: Q4_K 14.26 GB, Q6_K 4.24 GB, F32 0.05 GB
+
+[gpt-oss-20b] arch=gpt-oss file=12,109,566,624 B  layers=24 experts=4/32 heads=64/8 key_len=64 sliding_window=128
+  embed    params     579,133,440  bytes     615,329,280
+  experts  params  19,116,933,120  bytes  10,178,887,680
+  other    params   1,218,690,624  bytes   1,302,341,376
+  total    params  20,914,757,184  bytes  12,096,558,336
+  active params per token ~ 3,608,310,144
+  bytes read per decoded token (weights only) ~ 2,574,705,396
+  bytes by type: MXFP4 10.15 GB, Q8_0 1.91 GB, F32 0.04 GB
+

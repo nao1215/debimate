@@ -1,12 +1,15 @@
-"""Prompt Weighting のノートの図を作る。
+"""Prompt Weighting のノートの図を作る（images/ に WebP で書き出す）。
 
-concept_figure() は Python 標準ライブラリだけで SVG を手書きする（冒頭の図）。
-result_figures() は lab/ の集計 JSON から matplotlib でグラフを描く。
+concept_figure() は SVG を手書きし、Chrome の headless で PNG にしてから WebP にする（冒頭の図）。
+result_figures() などは lab/ の集計 JSON から matplotlib でグラフを描く。
+77 トークンの区切りと、語を 1 つずつ外す実験の図は ../clip-token-limit/figures.py にある。
 
 使い方:
-    uv run --with matplotlib python figures.py
+    uv run --with matplotlib --with pillow python figures.py
 """
 import json
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
 
@@ -18,16 +21,41 @@ BLUE, BLUE_PALE = "#7aa6c2", "#eaf1f5"
 OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
 RED = "#e15759"
 NEUTRAL = "#f2f2f2"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+FONT = "'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"
+
+
+def png_to_webp(png, name):
+    """PNG を WebP にして images/ に置く。"""
+    from PIL import Image
+    Image.open(png).convert("RGB").save(IMAGES / name, "WEBP", quality=90, method=6)
+
+
+def svg_to_webp(svg_text, w, h, name):
+    """手書きの SVG を Chrome で 2 倍の解像度に描き、WebP にする。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+        svg.write_text(svg_text, encoding="utf-8")
+        subprocess.run(["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                        "--force-device-scale-factor=2", f"--window-size={w},{h}",
+                        f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
+        png_to_webp(png, name)
+
+
+def save_webp(fig, name):
+    """matplotlib の図を 200 dpi の PNG にしてから WebP にする。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        png = Path(tmp) / "fig.png"
+        fig.savefig(png, dpi=200, facecolor="#ffffff")
+        png_to_webp(png, name)
 
 
 def concept_figure():
-    """左: 重みは空のプロンプトからの距離を伸ばす。右: 75 トークンずつ別々に読む。"""
-    w, h = 960, 540
+    """重みは、空のプロンプトの埋め込みから語の埋め込みまでの差を w 倍に伸ばす。"""
+    w, h = 500, 520
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" role="img"><title>'
-        f'{escape("重みは空のプロンプトの埋め込みから語の埋め込みまでの差を伸ばす。長いプロンプトは 75 トークンずつ別々に読まれる")}'
+        f'{escape("重みは空のプロンプトの埋め込みから語の埋め込みまでの差を伸ばす")}'
         f'</title>',
         f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
         f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
@@ -51,11 +79,12 @@ def concept_figure():
              f'fill="{OCHRE_PALE}" stroke="none"/>')
     p.append(f'<line x1="-10" y1="20" x2="470" y2="580" clip-path="url(#lp)" stroke="{OCHRE}" '
              f'stroke-width="2" stroke-dasharray="7 5"/>')
-    text(395, 130, "w > 1", 26)
+    text(380, 120, "w > 1", 26)
+    text(380, 152, "語を通り越した先", 22, cls="sub")
     ex, ey = 90, 420      # 空のプロンプト
     tx, ty = 230, 300     # 重み 1.0 の語
     p.append(f'<circle cx="{ex}" cy="{ey}" r="12" fill="{NEUTRAL}" stroke="{SUB}" stroke-width="2"/>')
-    text(40, ey + 50, "empty prompt (w = 0)", 24, anchor="start", cls="sub")
+    text(40, ey + 50, "空のプロンプト（w = 0）", 24, anchor="start", cls="sub")
     p.append(f'<line x1="{ex}" y1="{ey}" x2="{tx - 12}" y2="{ty + 10}" stroke="{INK}" '
              f'stroke-width="3" marker-end="url(#ah)"/>')
     for k, (lab, r) in enumerate([("1.3", 1.3), ("1.6", 1.6)]):
@@ -68,43 +97,10 @@ def concept_figure():
     p.append(f'<line x1="{tx}" y1="{ty}" x2="{x16:.0f}" y2="{y16:.0f}" stroke="{OCHRE}" '
              f'stroke-width="3" stroke-dasharray="8 6"/>')
     p.append(f'<circle cx="{tx}" cy="{ty}" r="13" fill="{BLUE_PALE}" stroke="{BLUE}" stroke-width="3"/>')
-    text(tx - 22, ty + 8, "1.0", 26, anchor="end")
-
-    # 区切り線
-    p.append(f'<line x1="485" y1="40" x2="485" y2="500" stroke="#dddddd" stroke-width="2"/>')
-
-    # --- 右: 77 トークンの区切り ---
-    text(725, 52, "77 tokens per chunk", 30)
-
-    def chunk(y, label, fill, stroke):
-        p.append(f'<rect x="520" y="{y}" width="34" height="64" fill="{NEUTRAL}" stroke="{SUB}"/>')
-        p.append(f'<rect x="554" y="{y}" width="300" height="64" fill="{fill}" stroke="{stroke}" '
-                 f'stroke-width="2.5"/>')
-        p.append(f'<rect x="854" y="{y}" width="34" height="64" fill="{NEUTRAL}" stroke="{SUB}"/>')
-        for i in range(1, 15):
-            x = 554 + i * 20
-            p.append(f'<line x1="{x}" y1="{y + 8}" x2="{x}" y2="{y + 56}" stroke="{stroke}" '
-                     f'stroke-width="1" opacity="0.6"/>')
-        text(704, y + 42, label, 26)
-
-    chunk(110, "tokens 1-75", BLUE_PALE, BLUE)
-    chunk(250, "tokens 76-150", OCHRE_PALE, OCHRE)
-    text(537, 100, "S", 24, cls="sub")
-    text(871, 100, "E", 24, cls="sub")
-    text(704, 218, "encoded separately", 24, cls="sub")
-    # 2 つを横に連結して UNet へ
-    p.append(f'<path d="M 704 174 L 704 196" stroke="{SUB}" stroke-width="2"/>')
-    p.append(f'<rect x="560" y="380" width="290" height="64" rx="8" fill="#ffffff" '
-             f'stroke="{INK}" stroke-width="2.5"/>')
-    text(705, 422, "UNet (154 tokens)", 26)
-    p.append(f'<line x1="704" y1="314" x2="704" y2="374" stroke="{INK}" stroke-width="3" '
-             f'marker-end="url(#ah)"/>')
-    p.append(f'<path d="M 530 174 C 470 260 480 360 554 405" fill="none" stroke="{INK}" '
-             f'stroke-width="3" marker-end="url(#ah)"/>')
-    text(705, 490, "pooled vector: chunk 1 only", 24, cls="sub")
+    text(tx - 22, ty + 8, "語（w = 1.0）", 24, anchor="end")
 
     p.append("</svg>")
-    (IMAGES / "prompt-weighting_concept.svg").write_text("\n".join(p) + "\n")
+    svg_to_webp("\n".join(p) + "\n", w, h, "prompt-weighting_concept.webp")
 
 
 def result_figures():
@@ -117,6 +113,7 @@ def result_figures():
         "xtick.color": INK, "ytick.color": INK, "text.color": INK,
         "svg.fonttype": "path", "svg.hashsalt": "prompt-weighting",
         "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
+        "font.family": "Noto Sans CJK JP",
     })
     lab = HERE / "lab"
 
@@ -125,25 +122,25 @@ def result_figures():
     weights = [1.0, 1.2, 1.3, 1.5, 1.8]
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 4.2))
     # 線: (条件名の接頭辞, 凡例, 色, 線種, 印)
-    lines = [("k1", "lowres only", SUB, ":", "s"),
-             ("k12", "all 12 words", OCHRE, "-", "^")]
+    lines = [("k1", "lowres の 1 語だけ", SUB, ":", "s"),
+             ("k12", "12 語すべて", OCHRE, "-", "^")]
     if "mono_w1.3" in neg:
-        lines += [("mono", "monochrome + greyscale only", INK, "-.", "D"),
-                  ("k10", "the other 10 words", BLUE, "--", "o")]
-    for key, ax, ylabel, scale in [("sat", axes[0], "Mean saturation (0-1)", 1),
-                                   ("red", axes[1], "Red pixels (%)", 100)]:
+        lines += [("mono", "monochrome + greyscale だけ", INK, "-.", "D"),
+                  ("k10", "残りの 10 語", BLUE, "--", "o")]
+    for key, ax, ylabel, scale in [("sat", axes[0], "彩度の平均（0〜1）", 1),
+                                   ("red", axes[1], "赤い画素（%）", 100)]:
         for prefix, label, color, ls, mk in lines:
             xs = [wt for wt in weights if wt == 1.0 or f"{prefix}_w{wt:.1f}" in neg]
             ys = [neg["w1.0" if wt == 1.0 else f"{prefix}_w{wt:.1f}"][key] * scale for wt in xs]
             ax.plot(xs, ys, color=color, ls=ls, marker=mk, lw=2, label=label)
-        ax.set_xlabel("Weight of the negative words")
+        ax.set_xlabel("打ち消しの語の重み")
         ax.set_ylabel(ylabel)
         ax.set_xticks(weights)
         ax.spines[["top", "right"]].set_visible(False)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=10, loc="lower center", ncol=2)
     fig.tight_layout(rect=(0, 0.13, 1, 1))
-    fig.savefig(IMAGES / "prompt-weighting_negative.svg", metadata={"Date": None})
+    save_webp(fig, "prompt-weighting_negative.webp")
     plt.close(fig)
 
 
@@ -154,25 +151,25 @@ def lighting_figure():
 
     rows = {r["name"]: r for r in json.loads((HERE / "lab" / "result_lighting.json").read_text())}
     weights = [1.0, 1.2, 1.3]
-    lights = [("none", "no lighting word", SUB, ":", "s"),
+    lights = [("none", "照明の語なし", SUB, ":", "s"),
               ("night", "night", INK, "-", "o"),
               ("neon_light", "neon light", BLUE, "-", "^"),
               ("sunset", "sunset", OCHRE, "-", "D"),
               ("dramatic_lighting", "dramatic lighting", BLUE, "--", "v")]
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 4.2))
-    for key, ax, ylabel, scale in [("white", axes[0], "White pixels (%)", 100),
-                                   ("sat", axes[1], "Mean saturation (0-1)", 1)]:
+    for key, ax, ylabel, scale in [("white", axes[0], "白い画素（%）", 100),
+                                   ("sat", axes[1], "彩度の平均（0〜1）", 1)]:
         for name, label, color, ls, mk in lights:
             ys = [rows[f"{name}_neg{w:.1f}"][key] * scale for w in weights]
             ax.plot(weights, ys, color=color, ls=ls, marker=mk, lw=2, label=label)
-        ax.set_xlabel("Weight of all 12 negative words")
+        ax.set_xlabel("打ち消し 12 語の重み")
         ax.set_ylabel(ylabel)
         ax.set_xticks(weights)
         ax.spines[["top", "right"]].set_visible(False)
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=10, loc="lower center", ncol=3)
     fig.tight_layout(rect=(0, 0.13, 1, 1))
-    fig.savefig(IMAGES / "prompt-weighting_lighting.svg", metadata={"Date": None})
+    save_webp(fig, "prompt-weighting_lighting.webp")
     plt.close(fig)
 
 
@@ -185,6 +182,7 @@ def _plt():
         "xtick.color": INK, "ytick.color": INK, "text.color": INK,
         "svg.fonttype": "path", "svg.hashsalt": "prompt-weighting",
         "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
+        "font.family": "Noto Sans CJK JP",
     })
     return plt
 
@@ -196,48 +194,90 @@ def positive_figure():
     xs = [float(r["name"][1:]) for r in rows]
     fig, ax = plt.subplots(figsize=(6.4, 3.4))
     ax.plot(xs, [r["blue"] * 100 for r in rows], color=BLUE, lw=2.2, marker="o",
-            label="blue pixels (teapot, weighted)")
+            label="青い画素（ポット、重みあり）")
     ax.plot(xs, [r["yellow"] * 100 for r in rows], color=OCHRE, lw=2.2, marker="D",
-            ls="--", label="yellow pixels (lemons, not weighted)")
+            ls="--", label="黄色い画素（主にレモン、重みなし）")
     ax.set_xticks(xs)
-    ax.set_xlabel("Weight of blue ceramic teapot")
-    ax.set_ylabel("Pixels (%)")
+    ax.set_xlabel("blue ceramic teapot の重み")
+    ax.set_ylabel("画素の割合（%）")
     ax.set_ylim(0, 20)
     ax.spines[["top", "right"]].set_visible(False)
     ax.legend(frameon=False, fontsize=10, loc="center right")
     fig.tight_layout()
-    fig.savefig(IMAGES / "prompt-weighting_positive.svg", metadata={"Date": None})
+    save_webp(fig, "prompt-weighting_positive.webp")
     plt.close(fig)
 
 
-def ablation_figure():
-    """実験 4: 語を 1 つずつ外した時の、画素の差と赤・黄色の画素（2 seed の平均）。"""
-    plt = _plt()
-    rows = json.loads((HERE / "lab" / "result_ablation.json").read_text())
-    names = [r["name"].replace("no_", "- ").replace("_", " ") for r in rows]
-    ys = list(range(len(rows)))[::-1]
-    panels = [("diff", "Pixel diff from full (0-255)", 1, None),
-              ("red", "Red pixels (%)", 100, "no_red_apple"),
-              ("yellow", "Yellow pixels (%)", 100, "no_lemons")]
-    fig, axes = plt.subplots(1, 3, figsize=(7.6, 3.8), sharey=True)
-    for ax, (key, label, scale, hit) in zip(axes, panels):
-        colors = [OCHRE if r["name"] == hit else "#c8c8c8" for r in rows]
-        ax.barh(ys, [r[key] * scale for r in rows], color=colors, height=0.66)
-        ax.set_xlabel(label)
-        ax.spines[["top", "right"]].set_visible(False)
-    axes[0].set_yticks(ys, names)
-    fig.tight_layout()
-    fig.savefig(IMAGES / "prompt-weighting_ablation.svg", metadata={"Date": None})
-    plt.close(fig)
+def cfg_figure():
+    """CFG: 打ち消しでの予測からプロンプトでの予測への差を cfg 倍に伸ばす。"""
+    w, h = 960, 260
+    p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img">'
+         f'<title>{escape("CFG は打ち消しでの予測からプロンプトでの予測への差を cfg 倍に伸ばす")}</title>',
+         f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
+         f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
+         '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
+         f'markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{INK}"/></marker></defs>']
+
+    def text(x, y, t, size=20, anchor="middle", cls=""):
+        c = f' class="{cls}"' if cls else ""
+        p.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}"{c}>{escape(t)}</text>')
+
+    nx, py_, y = 90, 220, 150
+    mx = nx + (py_ - nx) * 5.5
+    p.append(f'<line x1="{py_}" y1="{y}" x2="{mx - 14}" y2="{y}" stroke="{OCHRE}" stroke-width="3" '
+             f'stroke-dasharray="9 6"/>')
+    p.append(f'<line x1="{nx + 14}" y1="{y}" x2="{py_ - 14}" y2="{y}" stroke="{INK}" stroke-width="3" marker-end="url(#ah)"/>')
+    p.append(f'<circle cx="{nx}" cy="{y}" r="12" fill="{NEUTRAL}" stroke="{SUB}" stroke-width="2.5"/>')
+    p.append(f'<circle cx="{py_}" cy="{y}" r="12" fill="{BLUE_PALE}" stroke="{BLUE}" stroke-width="2.5"/>')
+    p.append(f'<circle cx="{mx}" cy="{y}" r="13" fill="#ffffff" stroke="{OCHRE}" stroke-width="3"/>')
+    text(nx, y + 50, "打ち消しでの予測", 19)
+    text(py_, y - 30, "プロンプトでの予測", 19)
+    text(mx, y + 50, "混ぜた予測", 19)
+    text(mx, y + 76, "（差の 5.5 倍の位置）", 17, cls="sub")
+    text((nx + py_) / 2, y + 26, "差", 18, cls="sub")
+    text((py_ + mx) / 2, y - 22, "打ち消しから遠ざかる向きに伸ばす", 19, cls="sub")
+    text(w / 2, 50, "予測 = 打ち消しでの予測 + 5.5 ×（プロンプトでの予測 − 打ち消しでの予測）", 20)
+    p.append("</svg>")
+    svg_to_webp("\n".join(p) + "\n", w, h, "prompt-weighting_cfg.webp")
+
+
+def share_figure():
+    """説明用: 画像のある位置が、参照する割合を 3 つの語で分け合う（数値は仮）。"""
+    w, h = 900, 260
+    p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img">'
+         f'<title>{escape("参照する割合は合計 100% を語で分け合う")}</title>',
+         f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
+         f'<rect width="{w}" height="{h}" fill="#ffffff"/>']
+
+    def text(x, y, t, size=20, anchor="middle", cls=""):
+        c = f' class="{cls}"' if cls else ""
+        p.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}"{c}>{escape(t)}</text>')
+
+    x0, bw = 230, 620
+    rows = [("重みなし", [("teapot", 0.4), ("lemons", 0.3), ("glass bottle", 0.3)], 70),
+            ("teapot に重み", [("teapot", 0.7), ("lemons", 0.15), ("glass bottle", 0.15)], 160)]
+    colors = {"teapot": (BLUE_PALE, BLUE), "lemons": (OCHRE_PALE, OCHRE), "glass bottle": (NEUTRAL, SUB)}
+    for label, parts, y in rows:
+        text(x0 - 20, y + 34, label, 20, anchor="end")
+        x = x0
+        for name, r in parts:
+            fill, stroke = colors[name]
+            p.append(f'<rect x="{x}" y="{y}" width="{bw * r}" height="52" fill="{fill}" stroke="{stroke}" stroke-width="2"/>')
+            text(x + bw * r / 2, y + 33, name if r > 0.2 else name.split()[0], 18 if r > 0.2 else 15)
+            x += bw * r
+    text(x0 + bw / 2, 40, "画像のある位置が、各語を参照する割合（合計 100%）", 20)
+    text(x0 + bw / 2, 245, "説明用の例で、数値は測った値ではない", 16, cls="sub")
+    p.append("</svg>")
+    svg_to_webp("\n".join(p) + "\n", w, h, "prompt-weighting_share.webp")
 
 
 if __name__ == "__main__":
     concept_figure()
+    cfg_figure()
+    share_figure()
     if (HERE / "lab" / "result_negative.json").exists():
         result_figures()
     if (HERE / "lab" / "result_lighting.json").exists():
         lighting_figure()
     if (HERE / "lab" / "result_positive.json").exists():
         positive_figure()
-    if (HERE / "lab" / "result_ablation.json").exists():
-        ablation_figure()

@@ -86,7 +86,7 @@
 
 図の再生成
 ----------
-  cd .. && python3 figures.py   # gguf.json・block_error.json・speed.json・accuracy.json から SVG を作る
+  cd .. && python3 figures.py   # gguf.json・block_error.json・speed.json・accuracy.json から WebP を作る（images/）
 
 本文の数値のうち lab の出力に無いもの
 --------------------------------------

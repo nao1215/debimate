@@ -27,13 +27,13 @@ denoise は「何割を描き直すか」の割合ではなく、ノイズを取
 - 全体を描き直すと、なぜ小物が別のものに化けるのか。
 - 拡大してから弱く描き直す [hires fix](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features/fbff21b0d67505cc760904cfab80bc2acfba76b1#hires-fix) は、時間に見合うのか。
 
-部分だけを描き直す [inpaint](https://comfyanonymous.github.io/ComfyUI_examples/inpaint/) と、[ControlNet](https://arxiv.org/abs/2302.05543)（輪郭や姿勢を別の画像で条件として渡す仕組み）のように形を別の経路で渡す方法は説明しません。
+部分だけを描き直す [inpaint](https://comfyanonymous.github.io/ComfyUI_examples/inpaint/) と、[ControlNet](https://arxiv.org/abs/2302.05543)（輪郭や姿勢を別の画像で条件として渡す仕組み）のように[形を別の経路で渡す方法](../controlnet/)は説明しません。
 
 ---
 
 ### 前提: ノイズから絵を作る段の列
 
-[Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)（SDXL）系の画像生成モデルは、ノイズだけの画像から、少しずつノイズを取り除いて絵を作る拡散モデルです。1 回の除去をステップと呼び、例えば 28 ステップなら 28 回除去します。各ステップでノイズがどれだけ残っているかは、スケジューラーが決める数の列（sigma の列）で与えます。sigma はノイズの大きさで、列の先頭が最大、末尾が 0 です。
+[Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)（SDXL）系の画像生成モデルは、ノイズだけの画像から、少しずつノイズを取り除いて絵を作る[拡散モデル](../diffusion-model/)です。1 回の除去をステップと呼び、例えば 28 ステップなら 28 回除去します。各ステップでノイズがどれだけ残っているかは、スケジューラーが決める数の列（sigma の列）で与えます。sigma はノイズの大きさで、列の先頭が最大、末尾が 0 です。
 
 SDXL は画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画素を縦横 8 分の 1 に縮めた潜在（latent）と呼ばれる数の配列の上でノイズを取り除きます。プロンプトだけから描く txt2img（text-to-image）は、空の潜在に最大のノイズを掛けて列の先頭から始めます。img2img は、下絵を VAE で潜在に変え、列の途中の大きさのノイズを足して、その段から始めます。
 
@@ -205,7 +205,7 @@ denoise を 1.0 まで上げれば下絵から自由になる、と思うかも�
 | 指標 | 数え方 | 見るもの |
 |---|---|---|
 | SSIM | 下絵と出力を灰色にし、256 × 256 に縮めて [SSIM](https://scikit-image.org/docs/0.26.x/api/skimage.metrics.html#skimage.metrics.structural_similarity)（Structural Similarity、明るさ・コントラスト・構造の近さ。1 が同一）を計算 | 明暗の配置が下絵に近いか |
-| 輪郭の一致 | crisp の図形の縁と机の線を正解とし、出力の [Canny エッジ](https://scikit-image.org/docs/0.26.x/api/skimage.feature.html#skimage.feature.canny)（明るさの勾配から検出した輪郭）との一致を 256 × 256 上で 4 px の許容で数えた F1（再現率と適合率の調和平均） | 下絵の輪郭が残り、余計な模様が増えていないか |
+| 輪郭の一致 | crisp の図形の縁と机の線を正解とし、出力の [Canny エッジ](https://scikit-image.org/docs/0.26.x/api/skimage.feature.html#skimage.feature.canny)（明るさの勾配から検出した輪郭）との一致を 256 × 256 上で 4 px の許容で数えた [F1](/ml/ml/confusion-matrix/)（再現率と適合率の調和平均） | 下絵の輪郭が残り、余計な模様が増えていないか |
 | 彩度 | 出力を CIELAB に変換し、`a*` と `b*` の長さ（色の鮮やかさ）を平均 | 色がくすんでいないか |
 
 以下は、3 つの指標を下絵ごとに denoise に対して並べたグラフです。
@@ -246,7 +246,7 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 
 </details>
 
-出力には、ほかに 2 つの値も出しています。`dE` は、色の付いた下絵（blurred）と出力を 32 × 32 に縮めた時の色差（[CIEDE2000](https://scikit-image.org/docs/0.26.x/api/skimage.color.html#skimage.color.deltaE_ciede2000)）の平均で、gray から描いた絵も同じ色の配置と比べています。`flat` は、図形の内側の明るさの標準偏差で、0 に近いほど平らな板です。
+出力には、ほかに 2 つの値も出しています。`dE` は、色の付いた下絵（blurred）と出力を 32 × 32 に縮めた時の色差（[CIEDE2000](https://scikit-image.org/docs/0.26.x/api/skimage.color.html#skimage.color.deltaE_ciede2000)）の平均で、gray から描いた絵も同じ色の配置と比べています。`flat` は、図形の内側の明るさの[標準偏差](/ml/math/stddev/)で、0 に近いほど平らな板です。
 
 3 つの指標は、同じ順に下がりませんでした。crisp の SSIM は 0.6 まで 0.96 以上で、0.75 で 0.70、0.86 で 0.44 まで一気に下がっています。0.95 以上の 0.40 は、下絵なしの txt2img（0.400）と同じ水準です。輪郭の一致も、0.95 以上で 0.18〜0.29 と、txt2img（0.232）に近い値になりました。明暗と輪郭で見る限り、下絵の細部は 0.95 でほぼ消えています。
 

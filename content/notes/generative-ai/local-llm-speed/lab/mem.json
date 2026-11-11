@@ -1,0 +1,50 @@
+[
+ {
+  "model": "qwen3:8b",
+  "num_ctx": 4096,
+  "size": 5951000448,
+  "size_vram": 5951000448,
+  "context_length": 4096,
+  "time": "2026-11-11T13:08:06"
+ },
+ {
+  "model": "qwen3:8b",
+  "num_ctx": 36864,
+  "size": 10824781696,
+  "size_vram": 10824781696,
+  "context_length": 36864,
+  "time": "2026-11-11T13:08:14"
+ },
+ {
+  "model": "qwen3-coder:30b",
+  "num_ctx": 4096,
+  "size": 19049415552,
+  "size_vram": 19049415552,
+  "context_length": 4096,
+  "time": "2026-11-11T13:08:26"
+ },
+ {
+  "model": "qwen3-coder:30b",
+  "num_ctx": 36864,
+  "size": 22320972672,
+  "size_vram": 22320972672,
+  "context_length": 36864,
+  "time": "2026-11-11T13:08:38"
+ },
+ {
+  "model": "hf.co/ggml-org/gpt-oss-20b-GGUF:latest",
+  "num_ctx": 4096,
+  "size": 12426857856,
+  "size_vram": 12426857856,
+  "context_length": 4096,
+  "time": "2026-11-11T13:08:48"
+ },
+ {
+  "model": "hf.co/ggml-org/gpt-oss-20b-GGUF:latest",
+  "num_ctx": 36864,
+  "size": 13313428864,
+  "size_vram": 13313428864,
+  "context_length": 36864,
+  "time": "2026-11-11T13:08:57"
+ }
+]

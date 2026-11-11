@@ -1,0 +1,108 @@
+{
+ "qwen3-8b": {
+  "file_size": 5225374496,
+  "arch": "qwen3",
+  "block_count": 36,
+  "context_length": 40960,
+  "expert_count": 0,
+  "expert_used_count": 0,
+  "head_count": 32,
+  "head_count_kv": 8,
+  "key_length": 128,
+  "sliding_window": null,
+  "groups": {
+   "embed": {
+    "params": 622329856,
+    "bytes": 350060544
+   },
+   "experts": {
+    "params": 0,
+    "bytes": 0
+   },
+   "other": {
+    "params": 7568405504,
+    "bytes": 4869357568
+   }
+  },
+  "bytes_by_type": {
+   "Q6_K": 1253683200,
+   "F32": 1232896,
+   "Q4_K": 3662512128,
+   "F16": 301989888
+  },
+  "total_params": 8190735360,
+  "total_bytes": 5219418112,
+  "active_params": 7568409600,
+  "decode_read_bytes": 4869359872
+ },
+ "qwen3-coder-30b": {
+  "file_size": 18556688736,
+  "arch": "qwen3moe",
+  "block_count": 48,
+  "context_length": 262144,
+  "expert_count": 128,
+  "expert_used_count": 8,
+  "head_count": 32,
+  "head_count_kv": 4,
+  "key_length": 128,
+  "sliding_window": null,
+  "groups": {
+   "embed": {
+    "params": 311164928,
+    "bytes": 175030272
+   },
+   "experts": {
+    "params": 28991029248,
+    "bytes": 17553162240
+   },
+   "other": {
+    "params": 1229928448,
+    "bytes": 822523904
+   }
+  },
+  "bytes_by_type": {
+   "Q4_K": 14260027392,
+   "F32": 51175424,
+   "Q6_K": 4239513600
+  },
+  "total_params": 30532122624,
+  "total_bytes": 18550716416,
+  "active_params": 3041869824,
+  "decode_read_bytes": 1919597696
+ },
+ "gpt-oss-20b": {
+  "file_size": 12109566624,
+  "arch": "gpt-oss",
+  "block_count": 24,
+  "context_length": 131072,
+  "expert_count": 32,
+  "expert_used_count": 4,
+  "head_count": 64,
+  "head_count_kv": 8,
+  "key_length": 64,
+  "sliding_window": 128,
+  "groups": {
+   "embed": {
+    "params": 579133440,
+    "bytes": 615329280
+   },
+   "experts": {
+    "params": 19116933120,
+    "bytes": 10178887680
+   },
+   "other": {
+    "params": 1218690624,
+    "bytes": 1302341376
+   }
+  },
+  "bytes_by_type": {
+   "Q8_0": 1907481600,
+   "F32": 36731136,
+   "MXFP4": 10152345600
+  },
+  "total_params": 20914757184,
+  "total_bytes": 12096558336,
+  "active_params": 3608310144,
+  "decode_read_bytes": 2574705396
+ }
+}

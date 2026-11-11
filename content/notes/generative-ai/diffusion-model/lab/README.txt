@@ -76,5 +76,7 @@ sigma の列（ComfyUI も GPU も不要）
 
 図の再生成
 ----------
-  cd .. && uv run --with matplotlib==3.10.7 python figures.py
-  # 全体の流れの図は標準ライブラリだけ、sigma のグラフは matplotlib。lab/schedule.json を読むので ComfyUI は不要
+  cd .. && uv run --with matplotlib==3.10.7 --with pillow==12.0.0 python figures.py
+  # 全体の流れの図は標準ライブラリで SVG を組み、google-chrome の headless で PNG にしてから WebP にする。
+  # sigma のグラフと sigma・係数の図は matplotlib。lab/schedule.json・forward_log.json と images/fwd_*.webp
+  # を読むので ComfyUI は不要。images/ には WebP だけを置く

@@ -1,0 +1,470 @@
+[
+ {
+  "prompt_id": "2bc1addf-2f70-40ed-9a72-69423b0b635b",
+  "seconds": 162.01,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 1,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 72.59130859375
+  },
+  "name": "seed_0",
+  "seed": 20261111
+ },
+ {
+  "prompt_id": "e350b4b5-9f48-4306-ada0-01c40bb5e109",
+  "seconds": 100.36,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 48.55029296875
+  },
+  "name": "seed_1",
+  "seed": 20261112
+ },
+ {
+  "prompt_id": "caa06284-a754-41a4-932b-21e0eab5458d",
+  "seconds": 65.38,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 99,
+   "loadavg_1m": 50.96728515625
+  },
+  "name": "seed_2",
+  "seed": 20261113
+ },
+ {
+  "prompt_id": "d363abd1-e6ec-41a7-8478-b65115b8142e",
+  "seconds": 42.63,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 60,
+   "loadavg_1m": 25.62109375
+  },
+  "name": "seed_3",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "bb94eba3-5afc-42ff-b034-3a4baa6941ca",
+  "seconds": 46.82,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 11.1455078125
+  },
+  "name": "nolora_0",
+  "seed": 20261111
+ },
+ {
+  "prompt_id": "ef286421-a014-4c4e-87a0-1833a49abdf5",
+  "seconds": 63.59,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 97,
+   "loadavg_1m": 10.13623046875
+  },
+  "name": "nolora_1",
+  "seed": 20261112
+ },
+ {
+  "prompt_id": "c2206844-db7a-4670-b3e4-6feb5c7d818c",
+  "seconds": 49.36,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 32.15966796875
+  },
+  "name": "nolora_2",
+  "seed": 20261113
+ },
+ {
+  "prompt_id": "5aeb57b8-27e0-4d24-a071-2d361646d845",
+  "seconds": 50.5,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 17.3251953125
+  },
+  "name": "nolora_3",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "62d608e7-b4c5-45de-831d-4f743f71e76a",
+  "seconds": 70.88,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 20.09423828125
+  },
+  "name": "fixed_smile",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "16a903bc-4b27-45d0-b140-94336606379c",
+  "seconds": 54.33,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 96,
+   "loadavg_1m": 51.89501953125
+  },
+  "name": "newseed_smile",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "57ee8468-ef47-4f38-8fcd-67ee9cfb4314",
+  "seconds": 59.32,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 23.52392578125
+  },
+  "name": "ipa50_smile",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "a93efc62-c214-43c3-a2c0-f14cc07bcb52",
+  "seconds": 67.74,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 95,
+   "loadavg_1m": 10.23779296875
+  },
+  "name": "ipa80_smile",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "c29a81c4-e9e5-4ca6-8f2b-697866fafbca",
+  "seconds": 52.76,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 5.4443359375
+  },
+  "name": "i2i50_smile",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "19c9637b-a562-4351-be67-6e2db351dc12",
+  "seconds": 54.09,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 99,
+   "loadavg_1m": 5.6240234375
+  },
+  "name": "i2i70_smile",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "a4bbe461-05d0-4058-80e5-5ea80ba3e0a7",
+  "seconds": 46.78,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 96,
+   "loadavg_1m": 4.75
+  },
+  "name": "fixed_wave",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "d6176b40-a853-4824-bfe6-8f35e90c3018",
+  "seconds": 49.81,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 6.3056640625
+  },
+  "name": "newseed_wave",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "55ecb285-6322-4a49-a64b-aa9371e9f050",
+  "seconds": 59.58,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 4.79296875
+  },
+  "name": "ipa50_wave",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "633b9437-36d3-44c4-af62-e36fc846dbf2",
+  "seconds": 60.09,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 4.38671875
+  },
+  "name": "ipa80_wave",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "ca8b9d89-69e8-4fcd-9df2-1b64ededbf69",
+  "seconds": 30.49,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 99,
+   "loadavg_1m": 7.3388671875
+  },
+  "name": "i2i50_wave",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "6c6eec91-420a-448e-ab3c-19940e4a0031",
+  "seconds": 28.2,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 50,
+   "loadavg_1m": 5.0048828125
+  },
+  "name": "i2i70_wave",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "82995900-c13e-49e0-927e-83db2cfb82af",
+  "seconds": 30.02,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 53,
+   "loadavg_1m": 3.72802734375
+  },
+  "name": "fixed_cafe",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "418ec91d-d2b5-47e3-90af-cdbe361a5b95",
+  "seconds": 29.33,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 36,
+   "loadavg_1m": 3.42529296875
+  },
+  "name": "newseed_cafe",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "80472c2c-c76a-4f94-a168-bbc5938b4d77",
+  "seconds": 33.23,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 4.25341796875
+  },
+  "name": "ipa50_cafe",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "87e8ed2b-d308-447b-9868-cc17b87a3f5a",
+  "seconds": 34.13,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 22,
+   "loadavg_1m": 7.1298828125
+  },
+  "name": "ipa80_cafe",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "333479c2-bfed-4008-8ef9-0928c0f47514",
+  "seconds": 31.79,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 24,
+   "loadavg_1m": 6.173828125
+  },
+  "name": "i2i50_cafe",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "cdbd56ff-b3a0-4637-88a4-51c48d182ac7",
+  "seconds": 31.97,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 34,
+   "loadavg_1m": 6.7431640625
+  },
+  "name": "i2i70_cafe",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "e025cc07-033e-4a98-936f-c3092f3376e8",
+  "seconds": 27.49,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 33,
+   "loadavg_1m": 6.13037109375
+  },
+  "name": "other_0",
+  "seed": 20261411
+ },
+ {
+  "prompt_id": "8a76c003-8dd1-4fb1-bfbe-1586a80c0e37",
+  "seconds": 27.77,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 27,
+   "loadavg_1m": 9.1845703125
+  },
+  "name": "other_1",
+  "seed": 20261412
+ },
+ {
+  "prompt_id": "767d25f0-6114-4384-974d-a6f3d52efb5f",
+  "seconds": 51.64,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 38,
+   "loadavg_1m": 7.45361328125
+  },
+  "name": "pose_1",
+  "seed": 20261312
+ },
+ {
+  "prompt_id": "87d0452f-c756-407c-bf24-1c5b26db0018",
+  "seconds": 43.23,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 51,
+   "loadavg_1m": 5.08203125
+  },
+  "name": "pose_2",
+  "seed": 20261313
+ },
+ {
+  "prompt_id": "fd49cb8b-1287-4dad-925f-5cfb820326f6",
+  "seconds": 48.39,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 66,
+   "loadavg_1m": 4.25634765625
+  },
+  "name": "ipa35s0_smile",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "a4a183b0-b041-4003-8e40-fa37b5e7ee2d",
+  "seconds": 60.61,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 24,
+   "loadavg_1m": 28.34912109375
+  },
+  "name": "ipa60s3_smile",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "e4fa9178-b42d-4f0f-be03-5d33a51823ba",
+  "seconds": 50.26,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 33,
+   "loadavg_1m": 44.107421875
+  },
+  "name": "i2i85_wave",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "7339797c-7bcd-409d-a457-32645daf1eaa",
+  "seconds": 44.12,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 1,
+   "gpu_busy_percent": 24,
+   "loadavg_1m": 50.24658203125
+  },
+  "name": "i2i85_cafe",
+  "seed": 20261114
+ },
+ {
+  "prompt_id": "766c102a-72f9-44bc-bae9-e0d5a8636285",
+  "seconds": 57.76,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 100,
+   "loadavg_1m": 51.2666015625
+  },
+  "name": "redraw_wave",
+  "seed": 20261211
+ },
+ {
+  "prompt_id": "3eba9aca-4a7e-411f-92d6-3701d2cd592f",
+  "seconds": 61.94,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 25,
+   "loadavg_1m": 52.90966796875
+  },
+  "name": "redraw_cafe",
+  "seed": 20261211
+ }
+]

@@ -1,0 +1,112 @@
+{
+ "1": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "waiIllustriousSDXL_v170.safetensors"
+  }
+ },
+ "2": {
+  "class_type": "CLIPSetLastLayer",
+  "inputs": {
+   "clip": [
+    "20",
+    1
+   ],
+   "stop_at_clip_layer": -2
+  }
+ },
+ "3": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "2",
+    0
+   ],
+   "text": "<trigger>, 1girl, solo, adult woman, mature female, 20s, brown hair, medium hair, low ponytail, parted bangs, forehead, open eyes, visible eyes, green eyes, eye highlights, long eyelashes, lips, earrings, jewelry, nail polish, medium breasts, white collared shirt, navy cardigan, long sleeves, neutral expression, closed mouth, standing, arms at sides, upper body, looking at viewer, simple background, white background, masterpiece, best quality, highly detailed"
+  }
+ },
+ "4": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "2",
+    0
+   ],
+   "text": "lowres, bad quality, bad anatomy, bad hands, extra limbs, text, signature, watermark, logo, collage, (multiple views:1.2), inset, zoom layer, variations, border, frame, heart, hair over eyes, hair over one eye, covered eyes, blunt bangs, closed eyes, half-closed eyes, multicolored hair, streaked hair, two-tone hair, oversaturated, neon colors, nsfw, nude, nipples, cleavage, underwear, child, loli, aged down, 2girls, multiple girls, large breasts, huge breasts, sleepy eyes, sultry"
+  }
+ },
+ "5": {
+  "class_type": "EmptyLatentImage",
+  "inputs": {
+   "width": 832,
+   "height": 1216,
+   "batch_size": 1
+  }
+ },
+ "7": {
+  "class_type": "KSampler",
+  "inputs": {
+   "model": [
+    "20",
+    0
+   ],
+   "positive": [
+    "3",
+    0
+   ],
+   "negative": [
+    "4",
+    0
+   ],
+   "latent_image": [
+    "5",
+    0
+   ],
+   "seed": 20261111,
+   "steps": 28,
+   "cfg": 5.5,
+   "sampler_name": "euler_ancestral",
+   "scheduler": "normal",
+   "denoise": 1.0
+  }
+ },
+ "8": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "7",
+    0
+   ],
+   "vae": [
+    "1",
+    2
+   ]
+  }
+ },
+ "9": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "8",
+    0
+   ],
+   "filename_prefix": "debimate_charcons/seed_0"
+  }
+ },
+ "20": {
+  "class_type": "LoraLoader",
+  "inputs": {
+   "model": [
+    "1",
+    0
+   ],
+   "clip": [
+    "1",
+    1
+   ],
+   "lora_name": "example_style_lora.safetensors",
+   "strength_model": 0.75,
+   "strength_clip": 0.75
+  }
+ }
+}

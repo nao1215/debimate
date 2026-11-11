@@ -1,0 +1,61 @@
+{
+  "static_pixel_ratio": 0.52,
+  "gt_flicker": 0.636,
+  "runs": {
+    "animevideo_clean": {
+      "flicker": 0.99,
+      "excess": 1.422,
+      "psnr": 35.09
+    },
+    "animevideo_denoised": {
+      "flicker": 1.048,
+      "excess": 2.123,
+      "psnr": 34.0
+    },
+    "animevideo_noisy": {
+      "flicker": 1.184,
+      "excess": 2.158,
+      "psnr": 34.21
+    },
+    "bicubic_clean": {
+      "flicker": 0.823,
+      "excess": 1.012,
+      "psnr": 39.89
+    },
+    "bicubic_denoised": {
+      "flicker": 0.977,
+      "excess": 2.107,
+      "psnr": 34.17
+    },
+    "bicubic_noisy": {
+      "flicker": 1.22,
+      "excess": 2.193,
+      "psnr": 35.21
+    },
+    "diffusion_clean": {
+      "flicker": 3.646,
+      "excess": 5.111,
+      "psnr": 25.81
+    },
+    "diffusion_noisy": {
+      "flicker": 3.491,
+      "excess": 5.132,
+      "psnr": 25.29
+    },
+    "gan_clean": {
+      "flicker": 0.988,
+      "excess": 1.603,
+      "psnr": 35.73
+    },
+    "gan_denoised": {
+      "flicker": 1.027,
+      "excess": 2.25,
+      "psnr": 32.92
+    },
+    "gan_noisy": {
+      "flicker": 1.177,
+      "excess": 2.261,
+      "psnr": 33.87
+    }
+  }
+}

@@ -1,0 +1,11 @@
+画風 LoRA あり: 顔の CLIP の近さ 平均 0.944（0.918〜0.975）、顔のタグの一致 平均 0.530（0.412〜0.727）
+画風 LoRA なし: 顔の CLIP の近さ 平均 0.972（0.961〜0.978）、顔のタグの一致 平均 0.949（0.923〜1.000）
+other_0 clip=0.902 tags=0.227 sat=0.123, other_1 clip=0.897 tags=0.211 sat=0.217
+seed_0 clip=0.918 tags=0.412 sat=0.138, seed_1 clip=0.943 tags=0.538 sat=0.153, seed_2 clip=0.975 tags=0.727 sat=0.174
+fixed_smile clip=0.981 tags=0.727 sat=0.343, fixed_wave clip=0.942 tags=0.333 sat=0.302, fixed_cafe clip=0.932 tags=0.375 sat=0.342
+newseed_smile clip=0.951 tags=0.500 sat=0.183, newseed_wave clip=0.946 tags=0.438 sat=0.217, newseed_cafe clip=0.942 tags=0.727 sat=0.375
+pose_1 clip=0.960 tags=0.615 sat=0.239, pose_2 clip=0.939 tags=0.438 sat=0.298
+ipa35s0_smile clip=0.875 tags=0.286 sat=0.324, ipa50_smile clip=0.765 tags=0.286 sat=0.430, ipa50_wave clip=0.800 tags=0.286 sat=0.435, ipa50_cafe clip=0.811 tags=0.250 sat=0.353, ipa60s3_smile clip=0.773 tags=0.294 sat=0.458, ipa80_smile clip=0.737 tags=0.333 sat=0.364, ipa80_wave clip=0.715 tags=0.385 sat=0.579, ipa80_cafe clip=0.692 tags=0.417 sat=0.615, redraw_wave clip=0.789 tags=0.353 sat=0.447, redraw_cafe clip=0.709 tags=0.308 sat=0.678
+i2i50_smile clip=0.962 tags=0.889 sat=0.420, i2i50_wave clip=0.959 tags=0.727 sat=0.419, i2i50_cafe clip=0.962 tags=0.667 sat=0.419, i2i70_smile clip=0.968 tags=0.800 sat=0.423, i2i70_wave clip=0.963 tags=0.800 sat=0.425, i2i70_cafe clip=0.961 tags=0.800 sat=0.421
+i2i85_wave clip=0.981 tags=0.636 sat=0.440, i2i85_cafe clip=0.979 tags=0.533 sat=0.442
+base sat 0.367

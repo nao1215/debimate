@@ -1,0 +1,12 @@
+hf.co/ggml-org/gpt-oss-20b-GGUF:latest   lines   12 n=3 tokens     472 prefill  1418.9 (0.33 s) decode  68.7
+hf.co/ggml-org/gpt-oss-20b-GGUF:latest   lines  110 n=3 tokens    3900 prefill  1362.1 (2.86 s) decode  65.7
+hf.co/ggml-org/gpt-oss-20b-GGUF:latest   lines  450 n=3 tokens   15799 prefill   989.1 (15.97 s) decode  57.4
+hf.co/ggml-org/gpt-oss-20b-GGUF:latest   lines  900 n=3 tokens   31553 prefill   741.7 (42.54 s) decode  50.0
+qwen3-coder:30b                          lines   12 n=3 tokens     519 prefill  1029.2 (0.50 s) decode  61.5
+qwen3-coder:30b                          lines  110 n=3 tokens    4326 prefill   903.6 (4.79 s) decode  54.1
+qwen3-coder:30b                          lines  450 n=3 tokens   17842 prefill   428.8 (41.61 s) decode  38.1
+qwen3-coder:30b                          lines  900 n=3 tokens   35725 prefill   306.7 (116.47 s) decode  30.2
+qwen3:8b                                 lines   12 n=3 tokens     523 prefill  1031.5 (0.51 s) decode  37.8
+qwen3:8b                                 lines  110 n=4 tokens    4333 prefill   978.4 (4.43 s) decode  33.9
+qwen3:8b                                 lines  450 n=4 tokens   17848 prefill   611.0 (29.21 s) decode  26.5
+qwen3:8b                                 lines  900 n=3 tokens   35737 prefill   416.3 (85.85 s) decode  20.5

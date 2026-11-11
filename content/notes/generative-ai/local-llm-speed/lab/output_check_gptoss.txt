@@ -1,0 +1,6 @@
+num_predict   128: eval_count   128 done_reason length | thinking     0 chars | content     0 chars
+  thinking head: ''
+  content head : ''
+num_predict  1024: eval_count  1024 done_reason length | thinking     0 chars | content     0 chars
+  thinking head: ''
+  content head : ''

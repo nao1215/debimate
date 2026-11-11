@@ -19,7 +19,7 @@ def save(src, dst, size=320, quality=80):
 
 
 def cover(png, dst):
-    """上段に途中の潜在 x_k、下段にそのステップでモデルが予測した x0 を並べる。白い背景。"""
+    """上段に途中の潜在 x_k、下段にそのステップでモデルが予測した x0_hat を並べる。白い背景。"""
     cell, gap, left, top = 112, 6, 150, 34
     w = left + len(KS) * (cell + gap) - gap + 12
     h = top + 2 * cell + gap + 12
@@ -42,7 +42,7 @@ def cover(png, dst):
     d.text((10, top + cell / 2 - 12), "途中の潜在", font=f, fill=INK)
     d.text((10, top + cell / 2 + 10), "x_k", font=fs, fill=SUB)
     d.text((10, top + cell + gap + cell / 2 - 12), "予測した画像", font=f, fill=INK)
-    d.text((10, top + cell + gap + cell / 2 + 10), "x0", font=fs, fill=SUB)
+    d.text((10, top + cell + gap + cell / 2 + 10), "x0_hat", font=fs, fill=SUB)
     sheet.save(dst, "WEBP", quality=82, method=6)
 
 
