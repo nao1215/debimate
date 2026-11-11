@@ -9,7 +9,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 cardImage: "backprop_vanishing.svg"
 ---
 
-誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて損失の勾配を効率的に計算するアルゴリズムです。[偏微分と勾配](../../math/partial-derivative-gradient/) で扱った連鎖律（chain rule）を計算グラフに沿って適用します。ネットワークの深さや幅によらず、全パラメータの勾配を `O(forward の計算量)` で求められます。
+誤差逆伝播法（backpropagation, backprop）は、ニューラルネットの全パラメータについて[損失](../loss-functions/)の勾配を効率的に計算するアルゴリズムです。[偏微分と勾配](../../math/partial-derivative-gradient/) で扱った連鎖律（chain rule）を計算グラフに沿って適用します。ネットワークの深さや幅によらず、全パラメータの勾配を `O(forward の計算量)` で求められます。
 
 backprop 自体は学習則ではなく、勾配を計算するだけの手続きです。求めた勾配を [最急降下法・SGD](../../math/gradient-descent-sgd/) や [Adam](https://arxiv.org/abs/1412.6980) に渡してパラメータを更新する、という分業構造になっています。`forward → loss → backward → optimizer.step()` の 1 セットが深層学習の学習ループそのものとなります。
 
@@ -33,7 +33,7 @@ forward と backward は逆方向に走ります。backward は forward で計�
 
 ### 最小例で手計算
 
-2 層 NN を 1 サンプルで動かして、forward と backward を全部書き下します。
+2 層 NN（[多層パーセプトロン](../perceptron/)）を 1 サンプルで動かして、forward と backward を全部書き下します。
 
 ネットワーク:
 
@@ -193,7 +193,7 @@ relu    10層目=1.44e-01  1層目=1.97e-01  1層目/10層目=1.4e+00
 
 図は各層の勾配を 10 層目（出力側）との比で表しています。sigmoid は入力側へ 1 層進むごとにおよそ 5 分の 1 になり、1 層目では 10 層目の `5.4e-07` 倍しか残りません。
 
-sigmoid の微分は最大でも 0.25（z = 0 の時）なので、重みの標準偏差を `1/√64` にして信号の大きさを保つ初期化でも、1 層ごとに 4 分の 1 以下に縮みます。これでは入力側の重みがほぼ更新されず、学習が進みません。
+sigmoid の微分は最大でも 0.25（z = 0 の時）なので、重みの[標準偏差](/ml/math/stddev/)を `1/√64` にして信号の大きさを保つ初期化でも、1 層ごとに 4 分の 1 以下に縮みます。これでは入力側の重みがほぼ更新されず、学習が進みません。
 
 tanh と ReLU は、この条件では 1 層目まで同じ桁の勾配が届きます。tanh は 0 付近の微分が 1 に近く、ReLU は正の領域で微分がちょうど 1 だからです。ただし tanh も入力が大きくなって飽和すると、微分が 0 に近づいて勾配が消えます。
 
@@ -233,7 +233,7 @@ backprop の計算量は forward と同じオーダーですが、全層の中�
 
 - 連鎖律の機械的適用: [偏微分と勾配](../../math/partial-derivative-gradient/) のノートで扱った合成関数の微分そのもの
 - 自動微分（automatic differentiation）の理論: forward mode と reverse mode、後者が backprop に対応
-- ヤコビ行列の計算: NN の各層は線形変換 + 非線形なので、層ごとにヤコビ行列を計算して掛け合わせる
+- ヤコビ行列の計算: NN の各層は[線形変換](/ml/math/vector-matrix-ops/) + 非線形なので、層ごとにヤコビ行列を計算して掛け合わせる
 - 微分可能プログラミング: NN 以外の微分可能な計算（物理シミュレーション、レンダリング）にも backprop を使う
 - 計算複雑性: 勾配全体を関数の計算量の定数倍で求められることは [Baur-Strassen の定理（1983）](https://doi.org/10.1016/0304-3975(83)90110-X) で示されている
 
@@ -245,7 +245,7 @@ backprop はニューラルネット学習のあらゆる場面で使われま�
 
 - 教師あり学習: CNN / RNN / Transformer の全モデル
 - 強化学習: ポリシー勾配法（REINFORCE）、Actor-Critic
-- 生成モデル: VAE、GAN、Diffusion Model
+- 生成モデル: VAE、GAN、[Diffusion Model](/notes/generative-ai/diffusion-model/)
 - 大規模言語モデル: BERT / GPT などの pre-training と fine-tuning
 - RNN: 時間方向に展開して backprop を適用する backprop through time (BPTT)
 - メタ学習: MAML 等の二階微分を含むアルゴリズム

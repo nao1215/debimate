@@ -212,7 +212,7 @@ x≈+1.5: E[y|x] ≈ +1.03  (theory: +1.05)
 
 左の 3 本の色帯が `x ≈ -1.5`, `0`, `+1.5` 付近の範囲で、帯の中の `y` だけを集めたのが右のヒストグラムです。`x` が大きくなると `P(y|x)` の中心も右へ動きます。理論値の `0.7c` は、相関 0.7・分散 1 の 2 次元正規分布で `E[y|x=c] = 0.7c` になることから来ています。
 
-`f(x) = E[y|x]` を学習する回帰モデルは、この帯ごとの平均（`x` を固定した時の `y` の期待値）を推定しています。
+`f(x) = E[y|x]` を学習する回帰モデルは、この帯ごとの平均（`x` を固定した時の `y` の[期待値](../expectation/)）を推定しています。
 
 ---
 
@@ -273,7 +273,7 @@ nonlinear: E[y | x≈1.5] = 2.13
 
 これがベイズの定理です。読み方は「事後分布 `P(y|x)` は、尤度 `P(x|y)` と事前分布 `P(y)` の積を証拠 `P(x)` で正規化したもの」となります。
 
-分類では、`P(y|x)` を直接学習するモデル（識別モデル: ロジスティック回帰、決定木、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html)、[線形判別分析（LDA）](https://scikit-learn.org/stable/modules/lda_qda.html)）の 2 系統があります。画像などを作る [GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)や[拡散モデル](https://arxiv.org/abs/2006.11239)も生成モデルと呼ばれます。ただし GAN や拡散モデルは `P(x)`（条件付きなら `P(x|y)`）に従う新しいサンプルを作るのが目的で、ベイズの定理で分類するモデルではありません。
+分類では、`P(y|x)` を直接学習するモデル（識別モデル: [ロジスティック回帰](../../ml/logistic-regression/)、[決定木](../../ml/decision-tree/)、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html)、[線形判別分析（LDA）](https://scikit-learn.org/stable/modules/lda_qda.html)）の 2 系統があります。画像などを作る [GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)や[拡散モデル](https://arxiv.org/abs/2006.11239)も生成モデルと呼ばれます。ただし GAN や[拡散モデル](/notes/generative-ai/diffusion-model/)は `P(x)`（条件付きなら `P(x|y)`）に従う新しいサンプルを作るのが目的で、ベイズの定理で分類するモデルではありません。
 
 ---
 
@@ -293,7 +293,7 @@ nonlinear: E[y | x≈1.5] = 2.13
 - データドリフト分析: covariate shift は `P(x)`、concept drift は `P(y|x)`、label shift は `P(y)` が動くので、3 分類が直接判断軸になる
 - ベイズ推論: 事前分布 `P(θ)`、尤度 `P(D|θ)`、事後分布 `P(θ|D)` の関係をベイズの定理でつなぐ
 - Naive Bayes 分類器: 特徴量間の条件付き独立 `P(x1, x2, ..., xn | y) = Π_i P(xi | y)` を仮定して計算量を抑える
-- 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違う時の確率出力の再校正
+- 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違う時の確率出力の[再校正](../../ml/probability-calibration/)
 
 ---
 

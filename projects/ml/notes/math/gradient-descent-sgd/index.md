@@ -10,7 +10,7 @@ topics: ["Mathematics（数学の基礎）"]
 
 最急降下法（gradient descent, GD）は、関数 `f(x)` を最小化するために「現在地から見て最も急に下る方向（= 負の勾配 `-∇f`）に少しずつ進む」反復アルゴリズムです。確率的勾配降下法（stochastic gradient descent, SGD）は、勾配を全データではなくランダムな 1 サンプル（または小バッチ）から推定して更新する派生で、大規模データでの学習に欠かせない手法となります。
 
-機械学習で「モデルを訓練する」と言う時、その多くは[損失関数](/ml/ml/loss-functions/) `L(θ)` をパラメータ `θ` について最小化する最適化問題を解いています。線形回帰の閉形式解のように、反復せずに最小値を直接計算できる例外もあります。ニューラルネットは GD / SGD 系のアルゴリズムで重みを更新し、ロジスティック回帰も勾配を使う反復法で解きます（[scikit-learn の LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) の既定は準ニュートン法の一種である L-BFGS）。
+機械学習で「モデルを訓練する」と言う時、その多くは[損失関数](/ml/ml/loss-functions/) `L(θ)` をパラメータ `θ` について最小化する最適化問題を解いています。[線形回帰](../../ml/linear-regression/)の閉形式解のように、反復せずに最小値を直接計算できる例外もあります。ニューラルネットは GD / SGD 系のアルゴリズムで重みを更新し、[ロジスティック回帰](../../ml/logistic-regression/)も勾配を使う反復法で解きます（[scikit-learn の LogisticRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html) の既定は準ニュートン法の一種である L-BFGS）。
 
 前提として [偏微分と勾配](../partial-derivative-gradient/) の概念を使うので、必要なら先に確認しておくとよいです。
 
@@ -32,7 +32,7 @@ topics: ["Mathematics（数学の基礎）"]
 
 ### 1 次元での挙動
 
-最も単純な例として `f(x) = (x - 3)^2 + 1` を最小化します。最適解は `x* = 3, f(x*) = 1` です。微分は `f'(x) = 2(x - 3)` で、これが勾配になります。
+最も単純な例として `f(x) = (x - 3)^2 + 1` を最小化します。最適解（図の optimum）は `x* = 3, f(x*) = 1` です。微分は `f'(x) = 2(x - 3)` で、これが勾配になります。
 
 本記事のコードは [NumPy](https://numpy.org/) 2.5.4 で計算する部分の抜粋です。[Matplotlib](https://matplotlib.org/) の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/gradient-descent-sgd_gen.py)は GitHub で公開しています。
 
@@ -259,7 +259,7 @@ mini w=2.015 b=0.487 loss=0.2197 samples=2560
 
 ### 機械学習での使いどころ
 
-- 線形モデルの大規模学習（scikit-learn の [SGDClassifier / SGDRegressor](https://scikit-learn.org/stable/modules/sgd.html) はロジスティック回帰や線形 SVM を SGD で学習する。カーネル SVM は [LIBSVM](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) の SMO 型の解法など、GD 以外で解くのが一般的）
+- 線形モデルの大規模学習（scikit-learn の [SGDClassifier / SGDRegressor](https://scikit-learn.org/stable/modules/sgd.html) はロジスティック回帰や線形 [SVM](../../ml/svm/) を SGD で学習する。カーネル SVM は [LIBSVM](https://www.csie.ntu.edu.tw/~cjlin/libsvm/) の SMO 型の解法など、GD 以外で解くのが一般的）
 - ニューラルネットの全パラメータ更新（[誤差逆伝播法](../../ml/backpropagation/) で各層の勾配を求めて適用）
 - [勾配ブースティング](../../ml/gradient-boosting/)（損失の負の勾配に決定木を当てはめて足していく、関数空間での GD）
 - 強化学習のポリシー勾配法（報酬の期待値の勾配でポリシーを更新）

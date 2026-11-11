@@ -10,7 +10,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 損失関数（loss function、cost function、objective function）は、モデルの予測 `ŷ` と正解 `y` のずれを 1 つの数に変換する関数です。学習はこの損失関数の値を最小化する操作で、どの損失関数を選ぶかは学習結果に大きく影響します。
 
-回帰では平均二乗誤差（mean squared error, MSE）と平均絶対誤差（mean absolute error, MAE）が標準で、外れ値への感度で使い分けます。分類では確率分布の差を測る交差エントロピー（cross-entropy）が標準です。どの損失関数も、[最急降下法・確率的勾配降下法（SGD）](../../math/gradient-descent-sgd/)でパラメータを更新する時の最小化の対象になります。
+回帰では平均二乗誤差（mean squared error, MSE）と平均絶対誤差（mean absolute error, MAE）が標準で、外れ値への感度で使い分けます。分類では[確率分布](/ml/math/probability-distributions/)の差を測る交差エントロピー（cross-entropy）が標準です。どの損失関数も、[最急降下法・確率的勾配降下法（SGD）](../../math/gradient-descent-sgd/)でパラメータを更新する時の最小化の対象になります。
 
 ---
 
@@ -20,7 +20,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 - どの予測誤差を「重い」と見るか（外れ値への感度、誤分類の重み付け）
 - パラメータの勾配の振る舞い（学習の安定性、収束速度）
-- 学習結果が何を最適化するか（平均的な予測か、中央値的な予測か、確率分布の一致か）
+- 学習結果が何を最適化するか（平均的な予測か、[中央値](/ml/math/median/)的な予測か、確率分布の一致か）
 
 例えば回帰問題で「外れ値を強く罰したい」なら MSE、「外れ値の影響を抑えたい」なら MAE、「その中間」なら Huber 損失を選びます。
 
@@ -80,7 +80,7 @@ plt.savefig("loss_regression_shapes.svg", bbox_inches="tight")
 
 ### 勾配が「学習の動き方」を決める
 
-損失関数の勾配は、SGD の各ステップで「どの方向にどれだけパラメータを動かすか」を決める量です。MSE と MAE では勾配の振る舞いが対照的です。
+損失関数の[勾配](/ml/math/partial-derivative-gradient/)は、SGD の各ステップで「どの方向にどれだけパラメータを動かすか」を決める量です。MSE と MAE では勾配の振る舞いが対照的です。
 
 ```python
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
@@ -200,16 +200,16 @@ plt.savefig("loss_cross_entropy.svg", bbox_inches="tight")
 - [サポートベクターマシン](../svm/): ヒンジ損失 `max(0, 1 - y · ŷ)`（`y ∈ {-1, +1}`）
 - そのほか: 順位学習の ranking loss、メトリック学習の triplet loss、画像のセグメンテーションの Dice loss のように、タスク専用の損失関数がある
 
-実装上、scikit-learn では `LinearRegression`（MSE）、`HuberRegressor`、`QuantileRegressor`、`LogisticRegression`（交差エントロピー）のように、損失関数がモデル名に組み込まれているのが普通です。[PyTorch](https://pytorch.org/) では `nn.MSELoss`、`nn.L1Loss`、`nn.HuberLoss`、`nn.CrossEntropyLoss` を選んで `loss.backward()` で勾配を計算する形になります。
+実装上、scikit-learn では `LinearRegression`（MSE）、`HuberRegressor`、`QuantileRegressor`、`LogisticRegression`（交差エントロピー）のように、損失関数がモデル名に組み込まれているのが普通です。[PyTorch](https://pytorch.org/) では `nn.MSELoss`、`nn.L1Loss`、`nn.HuberLoss`、`nn.CrossEntropyLoss` を選んで `loss.backward()` で勾配を計算する形になります。この勾配の計算方法は[誤差逆伝播法](../backpropagation/)で扱います。
 
 ---
 
 ### 適さないケース / 落とし穴
 
-- 分類にシグモイド出力と MSE を組み合わせる: 勾配が `2(p - y)·p(1 - p)` になり、`y = 1` なのに `p ≈ 0` と自信を持って間違えた時ほど勾配が 0 に近づいて学習が進まない。交差エントロピーなら勾配は `p - y` で残る
+- 分類に[シグモイド](../activation-functions/)出力と MSE を組み合わせる: 勾配が `2(p - y)·p(1 - p)` になり、`y = 1` なのに `p ≈ 0` と自信を持って間違えた時ほど勾配が 0 に近づいて学習が進まない。交差エントロピーなら勾配は `p - y` で残る
 - 交差エントロピーで `p = 0` を出してしまう: `-log 0 = ∞`。`p = clip(p, 1e-7, 1 - 1e-7)` でクリップするか、数値的に安定な実装に切り替える
 - 外れ値が多いデータで MSE: 数件の外れ値が学習を支配する。MAE / Huber を検討するか、[外れ値検出](../../math/quantile/) で前処理する
-- 損失と評価指標の不一致: 学習で MSE を最小化しても、評価指標が MAE だと改善方向が一致しないことがある。[勾配ブースティング](../gradient-boosting/) の `loss="absolute_error"` のように、評価指標に合わせた損失を選ぶ
+- 損失と評価指標の不一致: 学習で MSE を最小化しても、[評価指標](../regression-metrics/)が MAE だと改善方向が一致しないことがある。[勾配ブースティング](../gradient-boosting/) の `loss="absolute_error"` のように、評価指標に合わせた損失を選ぶ
 - [クラス不均衡](../class-imbalance/) で標準の交差エントロピー: 多数クラスに引きずられる。クラスごとに重みを付けた交差エントロピーや Focal loss を使う
-- 損失関数のスケールが極端に大きい / 小さい: 目的変数の単位を円から百万円に変えると MSE は 10^12 分の 1 になり、同じ学習率では発散や収束の遅れを招く。目的変数を標準化する
+- 損失関数のスケールが極端に大きい / 小さい: 目的変数の単位を円から百万円に変えると MSE は 10^12 分の 1 になり、同じ学習率では発散や収束の遅れを招く。目的変数を[標準化](../standardization/)する
 - 微分不可能な損失（accuracy、F1 そのもの）を直接最小化しようとする: 勾配が定義されない。代理損失（surrogate loss）として交差エントロピーを使い、評価は別指標で見る

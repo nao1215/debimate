@@ -8,7 +8,7 @@ weight: 10
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、[`Ridge(alpha=1.0)`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` や RandomForest の木数は、候補を比べて選びます。
+ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、[`Ridge(alpha=1.0)`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` や [RandomForest](../random-forest/) の木数は、候補を比べて選びます。
 
 重要なのは、候補を選ぶデータと最終性能を測るデータを分けることです。本記事では Ridge の `alpha` を例に、交差検証で候補を選び、最後に触れていないテスト集合で評価する順序を確認します。
 
@@ -42,7 +42,7 @@ flowchart LR
 
 ### Ridge の探索を実行する
 
-以下の実験は、[`make_regression`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html) で作った 150 行・60 特徴量（うち予測に効くのは 10 個）の回帰データを使います。訓練集合は 112 行で、各 fold の学習に使えるのは約 90 行です。特徴量に対して行が少ないため、正則化が弱いと訓練データのノイズまで覚えます。[`GridSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html) で、訓練集合だけを使って 19 個の `alpha` を 5-fold CV し、平均 R² が最も高い候補を選びます。
+以下の実験は、[`make_regression`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html) で作った 150 行・60 特徴量（うち予測に効くのは 10 個）の回帰データを使います。訓練集合は 112 行で、各 fold の学習に使えるのは約 90 行です。特徴量に対して行が少ないため、[正則化](../regularization/)が弱いと訓練データのノイズまで覚えます。[`GridSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html) で、訓練集合だけを使って 19 個の `alpha` を 5-fold CV し、平均 R² が最も高い候補を選びます。
 
 ```python
 import numpy as np
@@ -84,11 +84,11 @@ selected alpha=10
 test R²=0.862
 ```
 
-出力は 19 候補のうち 7 個を抜き出したものです。全候補を図にすると次のようになります。灰色は訓練 R²、青は CV R²、誤差棒は fold 間の標準偏差です。
+出力は 19 候補のうち 7 個を抜き出したものです。全候補を図にすると次のようになります。灰色は訓練 R²（train R²）、青は CV R²、誤差棒は fold 間の[標準偏差](/ml/math/stddev/)です。
 
 ![Ridge の alpha ごとの訓練 R² と CV R²。破線は CV で選んだ alpha=10](./hyperparameter_search.svg)
 
-訓練 R² は `alpha` が小さいほど高く、0.001 では 0.979 です。訓練 R² だけで選ぶと最も弱い正則化を選びますが、その CV R² は 0.533 で、fold 間のばらつきも ±0.288 と大きくなります。反対に `alpha` を 100 以上にすると、訓練 R² と CV R² がそろって下がり、係数を縮めすぎた未学習になります。CV R² は両者の間の `alpha=10` で 0.743 と最も高くなり、これを選びます。テスト R² の 0.862 は、選び終えた後に一度だけ出した値です。テスト集合は 38 行と小さいため、CV R² より高く出ることもあります。
+訓練 R² は `alpha` が小さいほど高く、0.001 では 0.979 です。訓練 R² だけで選ぶと最も弱い正則化を選びますが、その CV R² は 0.533 で、fold 間のばらつきも ±0.288 と大きくなります。反対に `alpha` を 100 以上にすると、訓練 R² と CV R² がそろって下がり、係数を縮めすぎた[未学習](../overfitting/)になります。CV R² は両者の間の `alpha=10` で 0.743 と最も高くなり、これを選びます。テスト R² の 0.862 は、選び終えた後に一度だけ出した値です。テスト集合は 38 行と小さいため、CV R² より高く出ることもあります。
 
 ---
 
@@ -99,8 +99,8 @@ test R²=0.862
 | [kNN](../knn/) | `n_neighbors`、`metric` | 近傍の広さと距離の測り方 |
 | Ridge / Lasso | `alpha` | 正則化の強さ |
 | RandomForest | `n_estimators`、`max_depth`、`max_features` | 木の数・複雑さ・木同士の違い |
-| Gradient Boosting | `learning_rate`、`n_estimators`、`max_depth` | 一回の更新量と木の複雑さ |
-| ニューラルネット | 学習率、層数、batch size | 更新量と表現力 |
+| [Gradient Boosting](../gradient-boosting/) | `learning_rate`、`n_estimators`、`max_depth` | 一回の更新量と木の複雑さ |
+| ニューラルネット | [学習率](/ml/math/gradient-descent-sgd/)、層数、batch size | 更新量と表現力 |
 
 候補は広い範囲から始め、CV の結果を見て狭めます。探索を続けるほど CV への過適合も起きるため、改善幅が小さい場合はデータ・特徴量・評価指標を見直します。
 
@@ -109,7 +109,7 @@ test R²=0.862
 ### 適さないケース / 落とし穴
 
 - `random_state` は乱数を再現する設定であり、性能を良くするための探索対象ではありません。
-- 時系列や同一ユーザーの複数行には、通常の KFold を使いません。TimeSeriesSplit や GroupKFold のようにデータの構造を保つ分割を使います。
+- 時系列や同一ユーザーの複数行には、通常の KFold を使いません。[TimeSeriesSplit](../time-series-forecasting/) や GroupKFold のようにデータの構造を保つ分割を使います。
 - テスト集合を繰り返し見た場合は、すでに独立したテストではありません。新しい評価集合を用意するか、評価が楽観的になり得ることを明記します。
 
 図を含む再現用コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hyperparameter_gen.py) にあります。

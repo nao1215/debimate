@@ -40,7 +40,7 @@ flowchart LR
 - 検定統計量: データから計算する 1 つの数で、`H0` のもとでの分布が分かっているもの
 - 有意水準 `α`: 第一種誤り（`H0` が正しいのに棄却する誤り）を起こす確率の上限。慣習的に 0.05 や 0.01
 
-平均の検定では、`z = (xbar - μ_0) / (σ / √n)` を使います。`xbar` はサンプル平均、`μ_0` は `H0` での平均、`σ` は母[標準偏差](/ml/math/stddev/)、`n` はサンプル数です。`H0` のもとで `z` は標準正規分布 `N(0, 1)` に従う（母集団が正規分布でなくても、`n` が大きければ[中心極限定理](../lln-clt/)で近似的に従う）ので、観測した `z` の珍しさを確率に変換できます。
+平均の検定では、`z = (xbar - μ_0) / (σ / √n)` を使います。`xbar` はサンプル平均、`μ_0` は `H0` での平均、`σ` は母[標準偏差](/ml/math/stddev/)、`n` はサンプル数です。`H0` のもとで `z` は[標準正規分布](../probability-distributions/) `N(0, 1)` に従う（母集団が正規分布でなくても、`n` が大きければ[中心極限定理](../lln-clt/)で近似的に従う）ので、観測した `z` の珍しさを確率に変換できます。
 
 ---
 
@@ -69,7 +69,7 @@ z_crit = 1.645
 
 {{< figure src="p_value_concept.svg" alt="H0 のもとでの標準正規分布を 2 枚並べた図。左は z_obs = 2.46 より右の裾を赤く塗った p 値の面積、右は z > 1.645 を橙に塗った α = 0.05 の棄却域で、z_obs が棄却域に入る" caption="p 値と棄却域" align="center" >}}
 
-左の図の赤い領域が p 値の面積で、右の図の橙の領域が `α = 0.05` の棄却域（`z > 1.645`）です。`z_obs = 2.46` は棄却域に入るので、`H0` を棄却します。`p < α` と「`z_obs` が棄却域に入る」は同じ判定です。図の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hypothesis-test_gen.py)は GitHub で確認できます。
+左の図の赤い領域が p 値の面積で、右の図の橙の領域が `α = 0.05` の棄却域（rejection region、`z > 1.645`）です。`z_obs = 2.46` は棄却域に入るので、`H0` を棄却します。`p < α` と「`z_obs` が棄却域に入る」は同じ判定です。図の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hypothesis-test_gen.py)は GitHub で確認できます。
 
 p 値は誤って読まれやすい確率です。[ASA（American Statistical Association、アメリカ統計学会）の声明](https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf)（2016 年）に沿って整理すると、以下のようになります。
 
@@ -202,7 +202,7 @@ power 80% に必要な n = 68.7
 
 - A/B テスト: 新しいモデルや機能の効果を検定する。`n` と `α` は事前に決める
 - モデル比較: [交差検証](/ml/ml/cross-validation/)のスコア差に、対応のある t 検定や [Wilcoxon 符号順位検定](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.wilcoxon.html)を使う
-- 回帰係数: ロジスティック回帰や線形回帰の係数が 0 かどうかを Wald 検定で調べる
+- 回帰係数: [ロジスティック回帰](../../ml/logistic-regression/)や[線形回帰](../../ml/linear-regression/)の係数が 0 かどうかを Wald 検定で調べる
 - データドリフト: 訓練データと本番データの分布の差を [KS 検定](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html)や `χ²` 検定で調べる。PSI（Population Stability Index）は検定ではなく、差の大きさの指標
 - 多数の検定: Bonferroni、Holm、[Benjamini-Hochberg](https://doi.org/10.1111/j.2517-6161.1995.tb02031.x) で多重比較を補正する
 - 効果量: Cohen's d や Cramér's V を p 値と一緒に報告する
@@ -237,6 +237,6 @@ print(f"理論値 1 - 0.95**20     : {1 - 0.95**20:.3f}")
 
 - 効果量を見ない: `n` が極端に大きいと、無視できる差でも `p < 0.05` になる
 - 「`p > 0.05` だから差が無い」と結論する: 棄却できなかっただけで、検定力不足の可能性が残る
-- 分散の違いを無視する: Student の t 検定は 2 群の分散が等しいと仮定するので、分散と群のサイズが異なる時は Welch の t 検定（[`scipy.stats.ttest_ind`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html) の `equal_var=False`）を使う。分散の比を調べる F 検定は、正規分布からのずれに弱い
+- 分散の違いを無視する: Student の t 検定は 2 群の[分散](../variance/)が等しいと仮定するので、分散と群のサイズが異なる時は Welch の t 検定（[`scipy.stats.ttest_ind`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html) の `equal_var=False`）を使う。分散の比を調べる F 検定は、正規分布からのずれに弱い
 - 独立でないデータ: 同じユーザーからの繰り返し測定には、対応のある t 検定や混合効果モデルを使う
 - 精度差に通常の t 検定をかける: 交差検証の各分割は訓練データを共有して独立ではないので、有意と判定しすぎる。[Nadeau と Bengio の補正](https://doi.org/10.1023/A:1024068626366)や[ベイズ流の比較](https://jmlr.org/papers/v18/16-305.html)を検討する

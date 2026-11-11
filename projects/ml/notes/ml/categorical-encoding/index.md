@@ -11,7 +11,7 @@ cardImage: "categorical-encoding_leak.svg"
 
 カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称です。
 
-機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / ニューラルネット / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とします。そのため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。
+機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / [ニューラルネット](../perceptron/) / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とします。そのため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。
 
 選び方を間違えると、列数が膨れてメモリに載らない、順序を勝手に持ち込んでしまう、[データリーク](../data-leakage/) を起こすといった事故につながります。方式を選ぶ時は、カテゴリの種類数（cardinality、基数）、順序の有無、目的変数を変換に使うかを確認します。
 
@@ -93,7 +93,7 @@ One-hot は基数と同じ 3 列、Ordinal と Target encoding は 1 列、Hashi
 各カテゴリに整数を割り当てて 1 列で済まします。
 
 - 利点: 1 列で済み、メモリ・計算が軽い
-- 欠点: 整数の大小関係に意味を持たせてしまう（`'electronics'=0` `'food'=1` `'books'=2` だと「electronics と food は近く、books は遠い」と線形モデルが解釈する）
+- 欠点: 整数の大小関係に意味を持たせてしまう（`'electronics'=0` `'food'=1` `'books'=2` だと「electronics と food は近く、books は遠い」と[線形モデル](../linear-regression/)が解釈する）
 - scikit-learn: [`OrdinalEncoder`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OrdinalEncoder.html)
 - 適切な使用場面: 順序があるカテゴリ（`low < medium < high`、星評価、学年など）。順序なしには使ってはならない
 
@@ -105,7 +105,7 @@ One-hot は基数と同じ 3 列、Ordinal と Target encoding は 1 列、Hashi
 
 各カテゴリを「そのカテゴリでの目的変数の集約値」に置き換えます。1 列で目的変数との関係を埋め込めるので、高基数カテゴリで効きやすいです。
 
-- 欠点: [データリーク](../data-leakage/) を起こしやすい。全データで集約してから CV（交差検証）すると、テスト fold の目的変数が訓練 fold の特徴量に混ざる
+- 欠点: [データリーク](../data-leakage/) を起こしやすい。全データで集約してから CV（[交差検証](../cross-validation/)）すると、テスト fold の目的変数が訓練 fold の特徴量に混ざる
 - 防御: 変換と学習をまとめる [`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) に [`TargetEncoder`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.TargetEncoder.html)（scikit-learn 1.3 以降）を入れ、`cross_val_score` などに渡す。`TargetEncoder` の `fit_transform` は、各行を自分以外の fold の平均で置き換える cross fitting を行う
 - 適切な使用場面: 基数が 20〜数万のカテゴリ（都道府県、商品カテゴリ、ユーザーセグメントなど）
 
@@ -153,7 +153,7 @@ Correct (Pipeline):    CV accuracy = 0.534
 
 {{< figure src="categorical-encoding_leak.svg" alt="ランダムなラベルと 50 個のランダムなカテゴリで 5-fold CV の正解率を比べた棒グラフ。全データで集約した Wrong は 0.618、Pipeline 内で集約した Correct は 0.534 で、点線の偶然の水準 0.5 に近いのは Correct だけ" caption="Target encoding のリークによる正解率の過大評価" align="center" >}}
 
-全データで集約すると 0.618、Pipeline 内で集約すると 0.534 でした。後者は、多い方のラベルを常に答えた時の 0.524 とほぼ同じです。乱数のシードを 0〜5 に変えても、前者は 0.604〜0.654、後者は 0.480〜0.548 でした。
+全データで集約すると（図の Wrong）0.618、Pipeline 内で集約すると（図の Correct）0.534 でした。後者は、多い方のラベルを常に答えた時の 0.524 とほぼ同じです。乱数のシードを 0〜5 に変えても、前者は 0.604〜0.654、後者は 0.480〜0.548 でした。
 
 前者が当たる理由は、各行の特徴量に自分自身のラベルが入っているからです。1 カテゴリは平均 10 行なので、自分のラベルだけで平均が約 0.1 動きます。モデルはこのずれを手がかりに当てています。Target encoding の集約は、CV の訓練 fold の中だけで行います。
 
@@ -161,7 +161,7 @@ Correct (Pipeline):    CV accuracy = 0.534
 
 ### Hashing trick と Embedding
 
-基数が極端に大きい場面（URL、商品 ID、トークンなど）では、One-hot の列が膨れ、Target encoding もカテゴリごとの行数が少なすぎて平均値が安定しないことがあります。
+基数が極端に大きい場面（URL、商品 ID、[トークン](/notes/generative-ai/tokenizer/)など）では、One-hot の列が膨れ、Target encoding もカテゴリごとの行数が少なすぎて平均値が安定しないことがあります。
 
 - Hashing trick: カテゴリ名をハッシュ関数で列番号に変え、固定長のベクトルに押し込む。例えば `n_features=16` なら基数が 100 万でも 16 列に収まる。代償として、別カテゴリが同じ列に入る衝突が起きる。scikit-learn の [`FeatureHasher`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.FeatureHasher.html) は既定で 2<sup>20</sup> 列を使い、衝突しても内積がおおよそ保たれるように、ハッシュ値で決めた符号を付ける（上の例の A の +1 と B の −1）
 - Embedding: ニューラルネットでカテゴリごとの密ベクトルを学習する。似た振る舞いのカテゴリが近いベクトルになる。ただし、ニューラルネットの訓練が前提になる。[PyTorch の `nn.Embedding`](https://docs.pytorch.org/docs/stable/generated/torch.nn.Embedding.html) や [Keras の `Embedding`](https://keras.io/api/layers/core_layers/embedding/) 層を使う

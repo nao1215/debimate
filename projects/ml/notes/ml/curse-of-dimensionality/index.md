@@ -10,7 +10,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 次元の呪い（curse of dimensionality）は、特徴量の次元が高くなるにつれて距離・体積・サンプル密度の常識的な感覚が崩れ、距離ベースのアルゴリズムが機能しなくなる現象群の総称です。[Richard Bellman](https://en.wikipedia.org/wiki/Curse_of_dimensionality) が動的計画法の問題を扱う中で名付けた用語です。
 
-機械学習の文脈では、「特徴量を増やすほど精度が上がるとは限らない、むしろ kNN や RBF（Radial Basis Function）カーネルが先に動かなくなる」という現実問題として現れます。予測に効く特徴量 5 個にノイズ特徴量を足す本記事の実験では、[kNN](../knn/) が 15 次元で崩れ始め、[ロジスティック回帰](../logistic-regression/) と [RandomForest](../random-forest/) は 100 次元前後でも kNN ほどは落ちません。対処としては [PCA](../pca/) などの次元削減、[L1 正則化](../regularization/) による[特徴量選択](/ml/ml/feature-selection/)、距離指標の見直しがあります。
+機械学習の文脈では、「特徴量を増やすほど精度が上がるとは限らない、むしろ kNN や [RBF（Radial Basis Function）カーネル](../svm/)が先に動かなくなる」という現実問題として現れます。予測に効く特徴量 5 個にノイズ特徴量を足す本記事の実験では、[kNN](../knn/) が 15 次元で崩れ始め、[ロジスティック回帰](../logistic-regression/) と [RandomForest](../random-forest/) は 100 次元前後でも kNN ほどは落ちません。対処としては [PCA](../pca/) などの次元削減、[L1 正則化](../regularization/) による[特徴量選択](/ml/ml/feature-selection/)、距離指標の見直しがあります。
 
 ---
 
@@ -242,7 +242,7 @@ plt.savefig("curse-of-dimensionality_knn_decay.svg", bbox_inches="tight")
 ノイズが 10 個増えただけで、kNN は 0.928 から 0.794 に落ちます。LR と RF の低下は 0.02 程度です。この差は、各モデルが何に依存しているかで説明できます。
 
 - kNN: 全特徴量を使った距離計算が核。ノイズの次元も距離に同じ重みで足されるので、信号 5 次元の差が埋もれる
-- LR（ロジスティック回帰）: 各特徴量の係数を学習するので、ノイズ特徴量の係数は小さくなる。ただし 500 件に対して特徴量が数百を超えると、[L2 正則化](../regularization/)があってもノイズに合わせた係数が付き、過学習で落ちる
+- LR（ロジスティック回帰）: 各特徴量の係数を学習するので、ノイズ特徴量の係数は小さくなる。ただし 500 件に対して特徴量が数百を超えると、[L2 正則化](../regularization/)があってもノイズに合わせた係数が付き、[過学習](../overfitting/)で落ちる
 - RF: 各分割は「特徴量 `X` が閾値 `t` 以下か」の 1 次元判定で、距離を使わない。ただし [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) は各分割で既定 `sqrt(特徴量数)` 個の候補しか見ない。5005 次元では候補 70 個に信号特徴量が 1 つでも入る確率が約 7% しかなく、ほとんどの分割がノイズで切られる
 
 kNN が先に崩れるのは距離の集中が原因で、LR と RF が後から落ちるのは、500 件に対してノイズ特徴量が多すぎて、過学習や分割の質の低下が起きるためです。どちらも次元の呪いの症状ですが、効く対処は異なります。
@@ -259,15 +259,15 @@ kNN が先に崩れるのは距離の集中が原因で、LR と RF が後から
     - オートエンコーダー: ニューラルネットで非線形圧縮
 2. 特徴量選択で意味のある列だけ残す
     - [L1 正則化](../regularization/)（Lasso）: 不要な係数を 0 にする副作用で特徴量選択になる
-    - 相互情報量や F 値: 目的変数との関連度で上位を選ぶ
+    - [相互情報量](/ml/math/information-theory/)や F 値: 目的変数との関連度で上位を選ぶ
     - [SHAP](https://github.com/shap/shap) / [特徴量重要度](/ml/ml/feature-importance/): 学習後に効いている特徴を抽出して再学習
 3. 距離指標を見直す
-    - コサイン距離: ベクトルの長さを無視して向きだけ比べる。bag-of-words のようなスパースなベクトルやテキスト埋め込みで使う
-    - マハラノビス距離: 特徴量の共分散を考慮した距離
+    - コサイン距離: ベクトルの長さを無視して向きだけ比べる。bag-of-words のようなスパースなベクトルや[テキスト埋め込み](/notes/generative-ai/rag/)で使う
+    - マハラノビス距離: 特徴量の[共分散](/ml/math/correlation/)を考慮した距離
 4. 距離に頼らないアルゴリズムを選ぶ
     - 線形モデル: LR, Ridge, Lasso
     - 木系: 決定木, [RandomForest](../random-forest/), [GradientBoosting](../gradient-boosting/)
-    - 確率モデル: Naive Bayes
+    - 確率モデル: [Naive Bayes](/ml/math/bayes-theorem/)
 
 前節の実験のようにノイズ特徴量が原因なら、4 の手法も特徴量が増えれば落ちるので、2 の特徴量選択が先です。
 
@@ -277,7 +277,7 @@ kNN が先に崩れるのは距離の集中が原因で、LR と RF が後から
 
 特徴量の数が増えた時は、次の点を確認します。
 
-- アルゴリズム選択: 列が多く本質的な次元も高いデータでは、kNN / 単純な k-means / RBF SVM を第一候補にしない
+- アルゴリズム選択: 列が多く本質的な次元も高いデータでは、kNN / 単純な [k-means](../k-means/) / RBF SVM を第一候補にしない
 - 前処理設計: PCA による次元削減や L1 による特徴量選択を試し、残す次元数ごとの検証スコアで比べる
 - 特徴量設計レビュー: 「特徴量を増やせば精度が上がる」という前提に歯止めをかける
 

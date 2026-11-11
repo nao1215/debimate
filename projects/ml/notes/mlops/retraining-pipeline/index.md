@@ -184,7 +184,7 @@ C を 4 倍: 18 日
 
 {{< figure src="retraining_cost_tradeoff.svg" alt="横軸が再学習の間隔 T（1〜90 日）、縦軸が 30 日あたりのコスト。青の再学習のコストは T に反比例して下がり、橙の誤予測の損失は T に比例して上がり、黒の合計は 9 日で最小になる" caption="再学習の間隔と 30 日あたりのコスト" align="center" >}}
 
-上記の図の青が再学習のコスト、橙が誤予測の損失、黒が合計です。合計は 9 日で最小になり、合計を T で微分して 0 と置いた式 T = √(2C / (N × L × r)) の 8.9 日と一致します。この式は、在庫管理の[経済的発注量（EOQ）](https://en.wikipedia.org/wiki/Economic_order_quantity)と同じ形です。
+上記の図の青が再学習のコスト、橙が誤予測の損失、黒が合計です。合計は 9 日で最小になり、合計を T で[微分して 0 と置いた](/ml/math/convex-functions/)式 T = √(2C / (N × L × r)) の 8.9 日と一致します。この式は、在庫管理の[経済的発注量（EOQ）](https://en.wikipedia.org/wiki/Economic_order_quantity)と同じ形です。
 
 最適な間隔はコストの平方根でしか動かないので、再学習 1 回のコストが 4 倍になっても最適な間隔は 2 倍（18 日）です。また、最小付近の谷は平らで、週次（7 日）でも合計は 9 日の 3% 増しに収まります。次の 3 つを桁が合う程度に見積もれば、運用しやすい週次や月次に寄せて決められます。
 
@@ -249,7 +249,7 @@ with DAG(
 
 `airflow dags test weekly_retrain` で実行すると、`run fetch_data` から `run canary_deploy` まで順に表示され、success で終わりました。Airflow 2 系の記事でよく見る `schedule_interval` は Airflow 3 では受け付けられず、`TypeError` になります。
 
-各タスクは冪等（idempotent、何回実行しても結果が同じ）にし、失敗したタスクを再実行してもデータが二重に登録されないようにします。
+各タスクは[冪等](/notes/distributed-systems/idempotency/)（idempotent、何回実行しても結果が同じ）にし、失敗したタスクを再実行してもデータが二重に登録されないようにします。
 
 ---
 

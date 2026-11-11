@@ -183,7 +183,7 @@ after rollback reload: alias=v1, prediction=4.0
 
 ### 切り替えと切り戻し
 
-新旧モデルを比較する場合、現在使っているモデルを champion、候補を challenger と呼びます。候補へ同じ入力を渡して結果だけ記録する shadow test や、通信の一部を候補へ振り分ける canary deployment は、[推論サービング](../inference-serving/)側で実装します。レジストリの別名は、その対象モデルを指定するために使います。
+新旧モデルを比較する場合、現在使っているモデルを champion、候補を challenger と呼びます。候補へ同じ入力を渡して結果だけ記録する shadow test や、[通信の一部を候補へ振り分ける](/notes/software-architecture/feature-flag/) canary deployment は、[推論サービング](../inference-serving/)側で実装します。レジストリの別名は、その対象モデルを指定するために使います。
 
 {{< note-steps caption="一例です。新旧モデルの比較や通信の切り替えには、レジストリ以外の処理も必要です。" >}}
 - title: 候補を検証

@@ -30,9 +30,9 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 | 手法 | 仕組み | 強み | 弱み |
 |---|---|---|---|
 | [Isolation Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html) | ランダムな分割で、少ない回数で孤立する点を異常とする | 木を最大 256 点の部分標本で作るので、データが多くても軽い | 分割が軸に平行なので、境界が角ばる |
-| [LOF](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html)（Local Outlier Factor） | 近傍の点と比べて、局所的な密度が低い点を異常とする | 密度の違うクラスタが混ざっていても使える | 近傍探索が重い。新しいデータの判定には `novelty=True` が要る |
+| [LOF](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html)（Local Outlier Factor） | [近傍](../knn/)の点と比べて、局所的な密度が低い点を異常とする | 密度の違うクラスタが混ざっていても使える | 近傍探索が重い。新しいデータの判定には `novelty=True` が要る |
 | [One-Class SVM](https://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html) | 正常データを囲む境界を[カーネル](../svm/)で学ぶ | 非線形な境界を引ける | 特徴量のスケールと `gamma` に敏感 |
-| [Elliptic Envelope](https://scikit-learn.org/stable/modules/generated/sklearn.covariance.EllipticEnvelope.html) | 正常データを 1 つの多変量正規分布とみなし、楕円の外を異常とする | 外れ値の混入に強い共分散推定（MCD）を使う | クラスタが複数あるデータや、正規分布から遠いデータに合わない |
+| [Elliptic Envelope](https://scikit-learn.org/stable/modules/generated/sklearn.covariance.EllipticEnvelope.html) | 正常データを 1 つの多変量[正規分布](/ml/math/probability-distributions/)とみなし、楕円の外を異常とする | 外れ値の混入に強い共分散推定（MCD）を使う | クラスタが複数あるデータや、正規分布から遠いデータに合わない |
 
 次のコードは、正常データ 300 点（2 つのクラスタ）と、広い範囲に一様乱数で置いた異常データ 20 点に、4 つの手法を当てます。異常の割合は全て 7% に揃えました。
 
@@ -163,7 +163,7 @@ contamination=0.15: 異常と判定 48 点（本物の異常 16 点、誤検知 
 
 青が正常、赤が本物の異常のスコアの分布で、縦線より左を異常と判定します。
 
-0.03 では判定した 10 点が全て本物の異常ですが、残り 10 点を見逃します。0.15 まで緩めると本物の異常は 16 点に増え、誤検知も 32 点に増えます。0.15 でも残る 4 点は、前節で正常クラスタの中に落ちていた 4 点です。
+0.03 では判定した 10 点が全て本物の異常ですが、残り 10 点を見逃します。0.15 まで緩めると本物の異常は 16 点に増え、[誤検知](../confusion-matrix/)も 32 点に増えます。0.15 でも残る 4 点は、前節で正常クラスタの中に落ちていた 4 点です。
 
 `contamination="auto"` は、異常の割合をデータから推定する設定ではありません。原論文のしきい値（`offset_ = -0.5`）を使う設定で、異常が 6.25%（20/320）のこのデータでは 40 点（12.5%）を異常と判定しました。誤検知と見逃しのどちらが高くつくかは業務で決まるので、ラベルの付いた少数の事例で上のように数えるか、[PR 曲線](../roc-pr-auc/)を見て決めます。
 
@@ -251,6 +251,6 @@ scikit-learn 以外では、[PyOD](https://github.com/yzhao062/pyod) が 60 を�
 - 特徴量のスケールが揃っていない: LOF・One-Class SVM・Elliptic Envelope が単位の大きい特徴量に引きずられる。先に[標準化](../standardization/)する
 - 高次元で Elliptic Envelope を使う: 共分散行列の推定が不安定になる。scikit-learn はサンプル数を特徴量の数の 2 乗より多くするよう勧めている
 - accuracy で評価する: 異常が 6.25% のデータでは、全て正常と答えても accuracy は 93.75% になる。Precision@k や [PR-AUC](../roc-pr-auc/) を使う
-- 異常の傾向が変わる: 不正の手口や故障の起き方は変わるので、定期的に再学習する
+- 異常の傾向が変わる: 不正の手口や故障の起き方は変わるので、[定期的に再学習する](/ml/mlops/retraining-pipeline/)
 - アラートを出しすぎる: 誤検知が多いと現場が通知を見なくなる。誤検知の数を数えてからしきい値を決める
 - データ品質の問題と混同する: NULL の混入や[欠損](../missing-values/)は、異常検知より前のデータ品質チェックで扱う

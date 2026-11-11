@@ -182,7 +182,7 @@ def predict_with_metrics(req):
 
 時間帯ごとの平均は [`rate(input_feature_sum[1h]) / rate(input_feature_count[1h])`](https://prometheus.io/docs/practices/histograms/) で求めます。分布の形まで見たい特徴量は Histogram で記録します。
 
-Grafana のダッシュボードで「過去 24 時間の P99 latency」「予測スコアの分布の変化」「入力特徴量の平均推移」を並べておけば、各指標の変化を比較できます。アラートルール（PromQL: `histogram_quantile(0.99, sum by (le) (rate(prediction_latency_seconds_bucket[5m]))) > 0.2`）を設定すると、自動通知できます。
+Grafana のダッシュボードで「過去 24 時間の [P99](/ml/math/quantile/) latency」「予測スコアの分布の変化」「入力特徴量の平均推移」を並べておけば、各指標の変化を比較できます。アラートルール（PromQL: `histogram_quantile(0.99, sum by (le) (rate(prediction_latency_seconds_bucket[5m]))) > 0.2`）を設定すると、自動通知できます。
 
 ---
 
@@ -207,7 +207,7 @@ Grafana のダッシュボードで「過去 24 時間の P99 latency」「予�
 
 - Metrics: 数値の時系列（accuracy、latency、throughput）。トレンドの俯瞰に強い
 - Logs: 個別イベントの詳細（特定の予測の入力・出力・モデル version）。原因究明に強い
-- Traces: 1 リクエストが複数サービスを通る軌跡（特徴量取得 → 推論 → DB 書き込み）。ボトルネック特定に強い
+- Traces: [1 リクエストが複数サービスを通る軌跡](/notes/distributed-systems/distributed-tracing/)（特徴量取得 → 推論 → DB 書き込み）。ボトルネック特定に強い
 
 予測の根拠を後から確認する場合は、logs にリクエスト ID、モデル version、入力特徴量、予測値、確率を記録します。サンプリングする場合は、記録されない予測があることを踏まえ、調査に必要な範囲を決めます。
 
@@ -230,7 +230,7 @@ Grafana のダッシュボードで「過去 24 時間の P99 latency」「予�
 - データパイプライン健全性（schema check、null rate、duplicate）
 - A/B test と組み合わせた champion-challenger の継続評価
 - セグメント別監視（ユーザー層 / 地域 / デバイス別の精度）
-- 異常入力の検知（外れ値、未知カテゴリ）
+- [異常入力の検知](/ml/ml/anomaly-detection/)（外れ値、未知カテゴリ）
 - predict-then-trace: 個別予測が後でクレームになった時に辿れる仕組み
 
 ツール選び:
@@ -249,5 +249,5 @@ Grafana のダッシュボードで「過去 24 時間の P99 latency」「予�
 - 監視対象が増えすぎる: 担当者が確認しきれない。障害の検知や対応に必要な指標を選ぶ
 - alert 受信者の負担を考えない: 全アラートが同じ重さで PagerDuty に行くと on-call が疲弊。重要度別ルーティング
 - runbook が無いアラート: 「鳴ったがどう対処するか分からない」と意味が無い。アラートと対処手順をセットで作る
-- 監視自身の monitoring を忘れる: 監視システムが落ちていてもアラートが鳴らない。canary metric（常に true を返す）を 1 つ用意して、それが消えたら監視が止まったと検知
+- 監視自身の monitoring を忘れる: 監視システムが落ちていてもアラートが鳴らない。canary metric（常に true を返す）を 1 つ用意して、[それが消えたら監視が止まったと検知](/notes/distributed-systems/heartbeat/)
 - 学習データを忘れる: 学習データ自体に偏りや問題があれば、いくら監視しても根本解決しない。データ品質の上流監視も併せて

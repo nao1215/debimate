@@ -8,9 +8,9 @@ weight: 19
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-LogisticRegression（ロジスティック回帰）は、特徴量の重み付き和をシグモイド関数で 0〜1 の確率に変換し、二値分類に使うモデルです。名前に「回帰」と付いていますが、実用上は二値分類の代表的なベースラインモデルです。
+LogisticRegression（ロジスティック回帰）は、特徴量の重み付き和を[シグモイド関数](../activation-functions/)で 0〜1 の確率に変換し、二値分類に使うモデルです。名前に「回帰」と付いていますが、実用上は二値分類の代表的なベースラインモデルです。
 
-[線形回帰](../linear-regression/) と同じく重み付き和 `w^T x + b` を計算しますが、その値の意味と学習方法は異なります。重み付き和は [log-odds](../../math/log-exp-logodds/)（確率 p のオッズ `p / (1 - p)` の対数）と見なします。確率は `(0, 1)` に収まる必要があるので重み付き和で直接表しにくく、値域が実数全体の log-odds なら表せます。学習では二乗誤差ではなく対数損失（[損失関数](../loss-functions/) のノート参照）を最小化し、線形回帰のような閉じた式の解は無いので、反復計算で係数を求めます。
+[線形回帰](../linear-regression/) と同じく重み付き和 `w^T x + b` を計算しますが、その値の意味と学習方法は異なります。重み付き和は [log-odds](../../math/log-exp-logodds/)（確率 p のオッズ `p / (1 - p)` の対数）と見なします。確率は `(0, 1)` に収まる必要があるので重み付き和で直接表しにくく、値域が実数全体の log-odds なら表せます。学習では二乗誤差ではなく対数損失（[損失関数](../loss-functions/) のノート参照）を最小化し、線形回帰のような閉じた式の解は無いので、[反復計算](/ml/math/gradient-descent-sgd/)で係数を求めます。
 
 ```mermaid
 flowchart LR
@@ -21,7 +21,7 @@ flowchart LR
     D -->|p < 0.5| F[クラス 0]
 ```
 
-閾値は 0.5 に限らず、見逃しを減らしたい場面では 0.3 に下げるなど、業務の制約に合わせて動かせます。
+[閾値](../confusion-matrix/)は 0.5 に限らず、見逃しを減らしたい場面では 0.3 に下げるなど、業務の制約に合わせて動かせます。
 
 <br>
 
@@ -50,7 +50,7 @@ LogisticRegression の計算は次の 3 つです。
 
 ![決定境界と確率の等高線](./logistic-regression_boundary.png)
 
-決定境界が 2 次元なら直線、高次元なら超平面になることが、線形分類器と呼ばれる理由です。逆に言うと、円形や XOR のような曲がった境界が必要なデータは素のままでは扱えません。その場合は多項式特徴量を追加するか、[RandomForest](../random-forest/)・[勾配ブースティング](../gradient-boosting/)・SVM（Support Vector Machine、[サポートベクターマシン](/ml/ml/svm/)）の RBF（Radial Basis Function、動径基底関数）カーネル・ニューラルネットワークに切り替えます。
+決定境界が 2 次元なら直線、高次元なら超平面になることが、線形分類器と呼ばれる理由です。逆に言うと、円形や XOR のような曲がった境界が必要なデータは素のままでは扱えません。その場合は多項式特徴量を追加するか、[RandomForest](../random-forest/)・[勾配ブースティング](../gradient-boosting/)・SVM（Support Vector Machine、[サポートベクターマシン](/ml/ml/svm/)）の RBF（Radial Basis Function、動径基底関数）カーネル・[ニューラルネットワーク](../perceptron/)に切り替えます。
 
 ---
 
@@ -178,7 +178,7 @@ unit=0.01, scaled=True: w=[0.834 0.84 ], AUC=0.895
 
 ### 前提・注意
 
-- クラス不均衡では `class_weight="balanced"` や閾値調整、[PR-AUC](../roc-pr-auc/) の併用が重要
+- [クラス不均衡](../class-imbalance/)では `class_weight="balanced"` や閾値調整、[PR-AUC](../roc-pr-auc/) の併用が重要
 - 多重共線性（相関の強い特徴量同士）があると、係数が不安定になる。L1 正則化で片方を 0 に潰すか、事前に[相関係数](../../math/correlation/)で除外する
 - ソルバーの既定は `lbfgs`（L2 のみ）。L1 なら `liblinear` か `saga`、Elastic Net なら `saga` を使う。scikit-learn 1.8 から `penalty` 引数は非推奨になり、`l1_ratio`（0 なら L2、1 なら L1、その間なら Elastic Net）で指定する
 - 3 クラス以上では、`liblinear` 以外のソルバーが多項ロジスティック回帰（ソフトマックス）として学習する。以前の `multi_class` 引数は 1.9.1 で指定するとエラーになる

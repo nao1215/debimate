@@ -32,9 +32,9 @@ topics: ["Mathematics（数学の基礎）"]
 
 | 分布 | PMF | パラメータ | E[X] | Var(X) | 何を表す |
 |---|---|---|---|---|---|
-| ベルヌーイ | `P(X=1)=p, P(X=0)=1-p` | `p` | `p` | `p(1-p)` | 1 回の試行の成功/失敗 |
-| 二項 | `C(n,k) p^k (1-p)^(n-k)` | `n, p` | `np` | `np(1-p)` | `n` 回の独立試行で `k` 回成功 |
-| ポアソン | `λ^k e^(-λ) / k!` | `λ` | `λ` | `λ` | 単位時間/領域で起きる稀な事象の回数 |
+| ベルヌーイ（Bernoulli） | `P(X=1)=p, P(X=0)=1-p` | `p` | `p` | `p(1-p)` | 1 回の試行の成功/失敗 |
+| 二項（Binomial） | `C(n,k) p^k (1-p)^(n-k)` | `n, p` | `np` | `np(1-p)` | `n` 回の独立試行で `k` 回成功 |
+| ポアソン（Poisson） | `λ^k e^(-λ) / k!` | `λ` | `λ` | `λ` | 単位時間/領域で起きる稀な事象の回数 |
 
 ベルヌーイは「コイン投げ 1 回」の結果で、二項はそれを `n` 回繰り返した時の成功数です。ポアソンは、二項分布で `n` を大きく、成功率 `p = λ/n` を小さくした極限として導かれ、「単位時間あたりに起きる稀な事象（事故・故障・電話）」のモデルとして頻出します。
 
@@ -50,9 +50,9 @@ topics: ["Mathematics（数学の基礎）"]
 
 | 分布 | PDF | パラメータ | E[X] | Var(X) | 何を表す |
 |---|---|---|---|---|---|
-| 正規 | `(1/(σ√(2π))) exp(-(x-μ)²/(2σ²))` | `μ, σ` | `μ` | `σ²` | 多数の独立な要因を足し合わせた量 |
-| 指数 | `λ exp(-λx)` (x ≥ 0) | `λ` | `1/λ` | `1/λ²` | 次の事象までの待ち時間 |
-| ベータ | `x^(a-1)(1-x)^(b-1) / B(a,b)` | `a, b` | `a/(a+b)` | `ab/((a+b)²(a+b+1))` | `(0, 1)` 区間の確率の事前分布 |
+| 正規（Normal） | `(1/(σ√(2π))) exp(-(x-μ)²/(2σ²))` | `μ, σ` | `μ` | `σ²` | 多数の独立な要因を足し合わせた量 |
+| 指数（Exponential） | `λ exp(-λx)` (x ≥ 0) | `λ` | `1/λ` | `1/λ²` | 次の事象までの待ち時間 |
+| ベータ（Beta） | `x^(a-1)(1-x)^(b-1) / B(a,b)` | `a, b` | `a/(a+b)` | `ab/((a+b)²(a+b+1))` | `(0, 1)` 区間の確率の事前分布 |
 
 - 正規分布（ガウス分布）: 統計と ML で最もよく使われる。中心極限定理（CLT, central limit theorem）により、同じ分布に従う独立な確率変数を `n` 個足すと、分散が有限なら元の分布形によらず、和を標準化した値の分布は `n` が大きいほど標準正規分布に近づく。平均も分散も定まらないコーシー分布のように、条件を満たさない分布では成り立たない（[大数の法則と中心極限定理](../lln-clt/) のノート参照）
 - 指数分布: ポアソンで起きる事象の「次まで何秒待つか」。既に `t` 秒待ったことが残りの待ち時間の分布を変えない記憶喪失性（memoryless property）を持ち、この性質を持つ連続分布は指数分布だけ
@@ -164,11 +164,11 @@ flowchart LR
 
 - 損失関数の導出: MSE は正規分布尤度、交差エントロピーはベルヌーイ/カテゴリ尤度に対応（[損失関数](../../ml/loss-functions/) 参照）
 - [ナイーブベイズ](https://scikit-learn.org/stable/modules/naive_bayes.html): 各特徴量の分布（Gaussian Naive Bayes、Multinomial Naive Bayes）を仮定
-- 確率モデルの基盤: ロジスティック回帰（ベルヌーイ）、ポアソン回帰、Gamma 回帰、ベータ回帰
-- 生成モデル: [VAE（Variational Autoencoder）](https://arxiv.org/abs/1312.6114)は潜在変数に正規分布、[拡散モデル（Diffusion）](https://arxiv.org/abs/2006.11239)は各ステップで加えるノイズに正規分布を仮定し、[GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)は明示的な分布を仮定しない
+- 確率モデルの基盤: [ロジスティック回帰](../../ml/logistic-regression/)（ベルヌーイ）、ポアソン回帰、Gamma 回帰、ベータ回帰
+- 生成モデル: [VAE（Variational Autoencoder）](https://arxiv.org/abs/1312.6114)は潜在変数に正規分布、[拡散モデル（Diffusion）](https://arxiv.org/abs/2006.11239)は[各ステップで加えるノイズ](/notes/generative-ai/diffusion-model/)に正規分布を仮定し、[GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)は明示的な分布を仮定しない
 - A/B テストのベイズ解釈: Beta の事前分布と二項の尤度で「コンバージョン率の事後分布」を推定
 - 多腕バンディット: [Thompson sampling](https://doi.org/10.1093/biomet/25.3-4.285) は、各候補の成功率の事後分布（Beta）から値を 1 つずつ引き、最大の候補を選ぶ
-- ベイズ最適化: 目的関数の事前分布にガウス過程（任意の点の組での関数値が多変量正規分布に従うモデル）を置き、次に試すハイパーパラメータを選ぶ
+- ベイズ最適化: 目的関数の事前分布にガウス過程（任意の点の組での関数値が多変量正規分布に従うモデル）を置き、次に試す[ハイパーパラメータ](../../ml/hyperparameter/)を選ぶ
 - [異常検知](/ml/ml/anomaly-detection/): 「正常データの分布」を当てはめ、低密度の点を異常とする
 
 [scikit-learn](https://scikit-learn.org/stable/modules/linear_model.html#generalized-linear-models) では分布族指定を一般化線形モデル（`PoissonRegressor`, `GammaRegressor`, `TweedieRegressor`）で行います。[PyTorch](https://docs.pytorch.org/docs/stable/generated/torch.nn.GaussianNLLLoss.html) では `nn.GaussianNLLLoss`、`nn.PoissonNLLLoss` などの形で損失関数として組み込まれます。
@@ -181,6 +181,6 @@ flowchart LR
 - 二項分布の独立試行仮定: 試行同士が相関していると、分散が `np(1-p)` より大きくなる（ベータ二項分布で対処）
 - ベータの境界: 厳密に 0 や 1 の値があると、値 0 では `a`、値 1 では `b` が 1 以外の時に密度が 0 か無限大になり、最尤推定が破綻する。0 と 1 に別の確率を持たせた 0/1 過剰ベータ分布を使う
 - 多モード（峰が複数）: 単一の標準分布では表現できない。混合分布（[Gaussian Mixture](https://scikit-learn.org/stable/modules/mixture.html)）を使う
-- 独立性仮定: 時系列など相関のあるデータには、自己回帰モデルや HMM（隠れマルコフモデル）を使う
+- 独立性仮定: [時系列](../../ml/time-series-forecasting/)など相関のあるデータには、自己回帰モデルや HMM（隠れマルコフモデル）を使う
 - パラメータ推定の不確実性: 推定値 `λ_hat` を確定値として扱わず、信頼区間や事後分布を併用する
 - 「正規分布なら[標準偏差](/ml/math/stddev/) 3σ で十分」をすべてに適用: 裾の重い分布（t、Pareto、対数正規）では 3σ ルールが極端に楽観的な見積もりになる

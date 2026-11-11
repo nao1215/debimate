@@ -10,7 +10,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 決定木（decision tree）は、「特徴量 `x_j` が閾値 `t` 以下か」という質問を繰り返してデータを分け、たどり着いた葉ノードでクラス（分類）または値（回帰）を返すモデルです。学習では、各ノードで最も良い質問を 1 つずつ貪欲に選びます。分岐条件を読めば予測の根拠を追えますし、特徴量のスケーリングも要りません。
 
-単体の決定木は過学習しやすいので、深さや葉のサンプル数を制限して使うか、[ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) の部品として使うのが一般的です。
+単体の決定木は[過学習](../overfitting/)しやすいので、深さや葉のサンプル数を制限して使うか、[ランダムフォレスト](../random-forest/) や [勾配ブースティング](../gradient-boosting/) の部品として使うのが一般的です。
 
 <br>
 
@@ -105,7 +105,7 @@ entropy 手計算: x2 <= -0.148 (減少量 0.451)  scikit-learn: x2 <= -0.148
 
 手計算の閾値は scikit-learn と一致しました。一方で、同じデータでも Gini は `x2 <= 0.203`、エントロピーは `x2 <= -0.148` を選んでいます。ただし次節の深さ 3 の木で比べると、交差検証の精度は 0.897 と 0.883 で、差は 0.014 でした。
 
-回帰木（[`DecisionTreeRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html)）は、既定で子ノードの二乗誤差の合計が最小になる分割を選びます。葉の予測値は葉内の `y` の平均で、平均は二乗誤差を最小にする定数なので、分散の減少量で分割を選ぶことと同じです。
+回帰木（[`DecisionTreeRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html)）は、既定で子ノードの二乗誤差の合計が最小になる分割を選びます。葉の予測値は葉内の `y` の[平均](/ml/math/mean/)で、平均は二乗誤差を最小にする定数なので、分散の減少量で分割を選ぶことと同じです。
 
 ---
 
@@ -211,7 +211,7 @@ depth=None 葉=20  学習=1.000  CV=0.972
 - [アンサンブル学習](../ensemble-learning/) の部品にする。ランダムフォレストは bagging、勾配ブースティングは boosting で木を組み合わせる
 - 分割で減らした不純度の合計から[特徴量重要度](../feature-importance/)を得る
 - 不均衡データでは `class_weight="balanced"` で少数クラスの重みを上げる（[クラス不均衡](../class-imbalance/)）
-- 欠損値は、scikit-learn の決定木が [1.3](https://scikit-learn.org/stable/auto_examples/release_highlights/plot_release_highlights_1_3_0.html) から扱える。勾配ブースティングの [XGBoost](https://xgboost.readthedocs.io/en/stable/faq.html)、[LightGBM](https://lightgbm.readthedocs.io/en/stable/Advanced-Topics.html)、[CatBoost](https://catboost.ai/docs/en/concepts/algorithm-missing-values-processing) も欠損値の振り分け先を学習する
+- [欠損値](../missing-values/)は、scikit-learn の決定木が [1.3](https://scikit-learn.org/stable/auto_examples/release_highlights/plot_release_highlights_1_3_0.html) から扱える。勾配ブースティングの [XGBoost](https://xgboost.readthedocs.io/en/stable/faq.html)、[LightGBM](https://lightgbm.readthedocs.io/en/stable/Advanced-Topics.html)、[CatBoost](https://catboost.ai/docs/en/concepts/algorithm-missing-values-processing) も欠損値の振り分け先を学習する
 
 ---
 
@@ -221,7 +221,7 @@ depth=None 葉=20  学習=1.000  CV=0.972
 - 斜めの境界: 軸に対して傾いた直線が本質の問題では、階段で近似するために多くの葉が要る。[ロジスティック回帰](../logistic-regression/)や [SVM](../svm/)（サポートベクターマシン）の方が少ないパラメータで済む
 - 滑らかな回帰・外挿: 予測は区分定数なので滑らかな関数は苦手で、学習データの範囲外では端の葉の値を返し続ける。傾向を伸ばす予測には[線形回帰](../linear-regression/)などを検討する
 - カテゴリ変数: [scikit-learn の決定木](https://scikit-learn.org/stable/modules/tree.html)はカテゴリ変数を直接扱えないので、[エンコーディング](../categorical-encoding/)が必要（LightGBM や CatBoost は内部で扱える）
-- 相関の強い特徴量: どちらで分けても同程度なら片方だけが選ばれ、もう片方の重要度が低く見える
+- [相関](/ml/math/correlation/)の強い特徴量: どちらで分けても同程度なら片方だけが選ばれ、もう片方の重要度が低く見える
 - 不純度ベースの重要度: 値の種類が多い特徴量ほど分割候補が多く、重要度が高く出やすい。[permutation importance](https://scikit-learn.org/stable/modules/permutation_importance.html) でも確かめる
 
 図の生成コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/decision-tree_gen.py) にあります。

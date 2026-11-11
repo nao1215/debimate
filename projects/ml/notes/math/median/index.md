@@ -50,7 +50,7 @@ median: 10.10 -> 10.10
 
 {{< figure src="median_outlier_effect.svg" alt="正規分布の 200 個に 95、100、120 の 3 個を足す前後のヒストグラム。平均は 10.03 から 11.43 へ動き、中央値は 10.10 のまま" caption="外れ値 3 個を足す前後の平均と中央値" align="center" >}}
 
-平均は 1.4 上がります。中央値は 203 個中 102 番目の値に変わるだけなので、外れ値が 95 でも 9500 でも結果は同じです。給与や取引金額のように右に長い裾を持つデータでは、典型的な値として中央値の方が実感に合います。
+平均は 1.4 上がります。中央値は 203 個中 102 番目の値に変わるだけなので、外れ値が 95 でも 9500 でも結果は同じです。給与や取引金額のように[右に長い裾](../skewness/)を持つデータでは、典型的な値として中央値の方が実感に合います。
 
 ---
 
@@ -135,7 +135,7 @@ QR : slope=1.42 intercept=2.83
 
 ### 機械学習での使いどころ
 
-- 欠損値の補完: [`SimpleImputer(strategy="median")`](https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html) は、平均補完より外れ値に引きずられにくい
+- [欠損値](../../ml/missing-values/)の補完: [`SimpleImputer(strategy="median")`](https://scikit-learn.org/stable/modules/generated/sklearn.impute.SimpleImputer.html) は、平均補完より外れ値に引きずられにくい
 - ロバストな[標準化](../../ml/standardization/): [`RobustScaler`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.RobustScaler.html) は中央値を引いて IQR（Interquartile Range、四分位範囲）で割る
 - 指標の要約: レイテンシのような右に長い分布は、平均と並べて中央値（p50）を見る
 
@@ -147,4 +147,4 @@ QR : slope=1.42 intercept=2.83
 - 分布の形（裾の重さ・多峰性）や総量は分かりません。形は [KDE](../kde/) やヒストグラム、総量は合計や平均で見ます
 - 10 件程度以下では、真ん中の値がたまたまの 1 個に左右されます
 - 並べ替えると `O(n log n)` ですが、`numpy.median` は `np.partition` で真ん中の位置だけを確定させ、平均的に `O(n)` です
-- L1 損失 `|x - c|` は `x = c` で微分できないので、勾配法では劣勾配を使うか、[`HuberRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.HuberRegressor.html) が使う Huber 損失のように、0 付近だけ二乗にした損失で代用します
+- L1 損失 `|x - c|` は `x = c` で微分できないので、[勾配法](../gradient-descent-sgd/)では劣勾配を使うか、[`HuberRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.HuberRegressor.html) が使う Huber 損失のように、0 付近だけ二乗にした損失で代用します

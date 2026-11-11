@@ -130,7 +130,7 @@ plt.savefig("hierarchical_linkage_compare.png", bbox_inches="tight")
 
 ### コフェネティック相関係数で linkage を選ぶ
 
-linkage を比べる指標の 1 つが、コフェネティック相関係数（cophenetic correlation coefficient）です。樹形図上の 2 点の距離（2 点が初めて同じクラスタに入る結合の高さ）と元の距離の相関で、1 に近いほど樹形図が元の距離関係を保っています。SciPy では [`cophenet`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.cophenet.html) で計算します。
+linkage を比べる指標の 1 つが、コフェネティック相関係数（cophenetic correlation coefficient）です。樹形図上の 2 点の距離（2 点が初めて同じクラスタに入る結合の高さ）と元の距離の[相関](/ml/math/correlation/)で、1 に近いほど樹形図が元の距離関係を保っています。SciPy では [`cophenet`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.cophenet.html) で計算します。
 
 ```python
 from scipy.cluster.hierarchy import linkage, cophenet
@@ -190,4 +190,4 @@ scikit-learn の `AgglomerativeClustering`、`scipy.cluster.hierarchy` の `link
 - 樹形図の縦軸の単位を無視: linkage によって意味が異なる（average なら平均距離、ward なら分散の増加量から計算した値）
 - 「自然な切れ目」が無い: 別のクラスタリング（[DBSCAN](../dbscan/)、k-means + silhouette）を検討。切る高さは silhouette score や gap statistic で複数候補を比較できる
 - 階層構造が無いデータに無理やり適用: フラットなクラスタなら [k-means](../k-means/) で十分
-- カテゴリ変数を含む: 距離が定義しにくい。Gower 距離、または one-hot 後にコサイン類似度
+- [カテゴリ変数](../categorical-encoding/)を含む: 距離が定義しにくい。Gower 距離、または one-hot 後にコサイン類似度

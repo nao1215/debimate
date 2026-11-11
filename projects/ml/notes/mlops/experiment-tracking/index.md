@@ -31,7 +31,7 @@ graph LR
     F --> H["Register best model<br/>→ Model Registry"]
 ```
 
-トラッキングサーバーは「全実験のメタデータ DB + アーティファクトストア」の組み合わせで、(1) リレーショナル DB に params/metrics、(2) S3 や MinIO に weights/plots をそれぞれ保存するのが典型です。各 run には一意の ID が振られ、Git の commit SHA、データのハッシュ、Docker イメージ、Python の `requirements.txt` まで紐付けておくと、後から環境を再現できます。
+トラッキングサーバー（tracking server）は「全実験のメタデータ DB + アーティファクトストア」の組み合わせで、(1) リレーショナル DB に params/metrics、(2) S3 や MinIO に weights/plots をそれぞれ保存するのが典型です。各 run には一意の ID が振られ、Git の commit SHA、データのハッシュ、Docker イメージ、Python の `requirements.txt` まで紐付けておくと、後から環境を再現できます。
 
 ---
 
@@ -53,7 +53,7 @@ graph LR
 
 ### コード例: MLflow
 
-MLflow を例にした最小限のトラッキングコードです。MLflow 3.18.0 と scikit-learn 1.9.1 で実行すると、params と metrics はカレントディレクトリの `mlflow.db`（SQLite）に、モデル・混同行列・評価レポートは `mlruns/` に残ります。
+MLflow を例にした最小限のトラッキングコードです。MLflow 3.18.0 と scikit-learn 1.9.1 で実行すると、params と metrics はカレントディレクトリの `mlflow.db`（SQLite）に、モデル・[混同行列](/ml/ml/confusion-matrix/)・評価レポートは `mlruns/` に残ります。
 
 ```python
 from pathlib import Path
@@ -168,7 +168,7 @@ plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
 
 {{< figure src="experiment_compare_runs.svg" alt="横軸 epoch、縦軸 val_acc に 4 つの仮想 run の学習曲線を重ねた図。run #23 が最も高い値へ伸び、run #27 は 50 epoch でも伸び切っていない" caption="設定の異なる 4 run の学習曲線（仮想値）" align="center" >}}
 
-この仮想例では、run #23（緑）が最も高い val_acc に収束し、run #27（青）は 50 epoch 時点で伸び切っていません。実際の曲線では、過学習を判断するために train/validation の両方、データ分割、停止条件も記録します。
+この仮想例では、run #23（緑）が最も高い val_acc に収束し、run #27（青）は 50 epoch 時点で伸び切っていません。実際の曲線では、[過学習](/ml/ml/overfitting/)を判断するために train/validation の両方、データ分割、停止条件も記録します。
 
 ---
 

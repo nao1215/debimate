@@ -25,7 +25,7 @@ graph LR
 
 ### 前提・注意
 
-- 特徴量が数値であることが前提（カテゴリは数値化が必要）
+- 特徴量が数値であることが前提（カテゴリは[数値化](../categorical-encoding/)が必要）
 - k は奇数にしておくと二値分類で同数票が起きにくい
 - 訓練は点を覚えるだけで軽い。その分の重さは推論に移り、素朴に書くと予測のたびに全訓練点との距離を計算する
 
@@ -45,9 +45,9 @@ graph LR
 - 推論が重い（総当たりでは 1 回の予測が訓練データ数 N に比例する）
 - メモリに訓練データを保持する必要がある
 - 高次元データで距離の意味が薄れる（[次元の呪い](../curse-of-dimensionality/)）
-- 不均衡データに弱い（多数派クラスに引っ張られる）
+- [不均衡データ](../class-imbalance/)に弱い（多数派クラスに引っ張られる）
 
-推論の重さは索引で減らせます。[scikit-learn](https://scikit-learn.org/stable/modules/neighbors.html) は総当たりのほかに kd-tree と ball-tree を持ち、既定の `algorithm='auto'` は 15 次元以下などの条件で木を選びます。低次元なら距離計算は O(log N) 回程度で済み、下の実例（2 次元）も既定のままで kd-tree が選ばれます。ただし次元が 20 程度を超えると、木を使っても総当たりに近い重さに戻ります。大規模・高次元のデータでは、近似最近傍のライブラリ [Faiss](https://github.com/facebookresearch/faiss) のように、厳密な最近傍を諦める代わりに近い点を速く返す方式を使います。
+推論の重さは索引で減らせます。[scikit-learn](https://scikit-learn.org/stable/modules/neighbors.html) は総当たりのほかに kd-tree と ball-tree を持ち、既定の `algorithm='auto'` は 15 次元以下などの条件で木を選びます。低次元なら距離計算は O(log N) 回程度で済み、下の実例（2 次元）も既定のままで kd-tree が選ばれます。ただし次元が 20 程度を超えると、木を使っても総当たりに近い重さに戻ります。大規模・高次元のデータでは、近似最近傍のライブラリ [Faiss](https://github.com/facebookresearch/faiss) のように、厳密な最近傍を諦める代わりに近い点を速く返す方式を使います。文書の埋め込みから質問に近い断片を探す [RAG](/notes/generative-ai/rag/) の検索も、この方式を使う例です。
 
 ---
 

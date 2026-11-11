@@ -10,7 +10,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 活性化関数（activation function）は、ニューラルネットの各ニューロンで「重み付き和にバイアスを足した結果 `z = w · x + b` を非線形に変換する関数」のことです。層の間に非線形な変換を挟むことで、線形なモデルだけでは表せない入力と出力の関係を学習できます。
 
-線形変換だけを何層積んでも、合成は結局 1 つの線形変換に潰れます（`A_2 (A_1 x) = (A_2 A_1) x`）。そのため、層の間に非線形な変換を入れます。その非線形を担うのが活性化関数で、選び方が学習の速さ・最終精度・[勾配消失](#勾配消失問題と-relu-の登場) の起きにくさを大きく左右します。
+[線形変換](/ml/math/vector-matrix-ops/)だけを何層積んでも、合成は結局 1 つの線形変換に潰れます（`A_2 (A_1 x) = (A_2 A_1) x`）。そのため、層の間に非線形な変換を入れます。その非線形を担うのが活性化関数で、選び方が学習の速さ・最終精度・[勾配消失](#勾配消失問題と-relu-の登場) の起きにくさを大きく左右します。
 
 [パーセプトロン](../perceptron/)では step 関数を使い、勾配を使って学習するネットワークでは sigmoid、tanh、ReLU、GELU などを使います。
 
@@ -111,7 +111,7 @@ for act in ["logistic", "tanh", "relu"]:
 
 隠れ層が 16 ニューロン×5 層の回帰モデルで、活性化関数を変えます。入力は `[-3, 3]` の一様乱数、目的値は `sin(x)` にノイズを加えた値です。学習率 0.01、乱数 seed 0、80 epoch に固定します。epoch は訓練データを一巡する単位で、実時間の速さを示すものではありません。
 
-[`MLPRegressor.partial_fit`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html)で 1 epoch ずつ学習し、重みを更新する最適化手法 [Adam](https://arxiv.org/abs/1412.6980) の内部状態も継続します。各 epoch の終了後に全訓練データの予測を計算し、[平均二乗誤差（MSE）](../loss-functions/)を測ります。`loss_`をそのまま使うと、二乗誤差の係数や正則化項を含むためです。
+[`MLPRegressor.partial_fit`](https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html)で 1 epoch ずつ学習し、重みを更新する[最適化手法](/ml/math/gradient-descent-sgd/) [Adam](https://arxiv.org/abs/1412.6980) の内部状態も継続します。各 epoch の終了後に全訓練データの予測を計算し、[平均二乗誤差（MSE）](../loss-functions/)を測ります。`loss_`をそのまま使うと、二乗誤差の係数や正則化項を含むためです。
 
 ```python
 from sklearn.neural_network import MLPRegressor
@@ -148,7 +148,7 @@ relu 0.011914
 
 この条件では sigmoid の訓練 MSE が他の 2 つより大きく、tanh と ReLU は近い値になりました。ただし、勾配自体を測定していないため、曲線の差を勾配消失だけが原因だと断定はできません。同じ乱数 seed でも活性化関数によって初期化の尺度が変わるため、重みが完全に同じ比較でもありません。
 
-また、訓練 MSE が小さいことは未知のデータで良いことを保証しません。手法を選ぶには、複数の seed や学習率、評価用データで比較する必要があります。
+また、訓練 MSE が小さいことは未知のデータで良いことを保証しません（[過学習](../overfitting/)）。手法を選ぶには、複数の seed や学習率、評価用データで比較する必要があります。
 
 ---
 
@@ -197,7 +197,7 @@ flowchart LR
 - 回帰の出力層: なし（linear）+ MSE / MAE
 - LSTM / GRU のゲート: sigmoid（0〜1 を「開ける/閉める」割合として）
 - 自然言語処理 (Transformer): [GELU](https://arxiv.org/abs/1606.08415) などを利用。全てのモデルが同じ関数を使うわけではない
-- 画像生成 (GAN, Diffusion): tanh（出力を -1〜1 に正規化する場合）
+- 画像生成 (GAN, [Diffusion](/notes/generative-ai/diffusion-model/)): tanh（出力を -1〜1 に正規化する場合）
 - 強化学習のポリシー: softmax（離散行動）または tanh（連続行動）
 
 ReLU の問題（dead neuron）が顕在化したケースでは、Leaky ReLU、ELU、Swish、GELU を試します。関数を変える場合も、同じ評価条件で比較します。

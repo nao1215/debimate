@@ -191,8 +191,8 @@ scikit-learn では [`sklearn.cluster.DBSCAN`](https://scikit-learn.org/stable/m
 - 密度が大きく異なる複数クラスタ: 単一の `eps` では全部をうまく扱えない。HDBSCAN を検討
 - スケールが揃っていない: 距離計算が歪む。[標準化](../standardization/) を必ず先に
 - 巨大データで `eps` を大きく取る: scikit-learn の実装は近傍を一括で求めるため、最悪でメモリが `O(n²)` になる。近傍グラフを事前計算して `metric="precomputed"` で渡すか、[OPTICS](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.OPTICS.html) を検討
-- カテゴリ変数を含むデータ: ユークリッド距離が意味を持たない。[Gower 距離](https://doi.org/10.2307/2528823)か、別のクラスタリングを検討
+- [カテゴリ変数](../categorical-encoding/)を含むデータ: ユークリッド距離が意味を持たない。[Gower 距離](https://doi.org/10.2307/2528823)か、別のクラスタリングを検討
 - noise を必ず捨てる: 業務によっては noise こそ重要（不正検知、希少事例）
-- `eps` を本番運用中も固定: データ分布が変わると noise 率が変動する。定期的に再校正
+- `eps` を本番運用中も固定: [データ分布が変わる](/ml/mlops/data-drift/)と noise 率が変動する。定期的に再校正
 - `min_samples = 1` の罠: 全点がコアになり noise が出ない。結果は単連結法の階層的クラスタリングを高さ `eps` で切ったものと同じになる
 - クラスタの「中心」が欲しいケース: DBSCAN は中心を返さない。代わりに各クラスタの centroid を後計算する

@@ -95,7 +95,7 @@ plt.savefig("log_products_to_sums.svg", bbox_inches="tight")
 
 `logit(p) = log(p / (1 - p))`
 
-逆向きに、log-odds `z` から確率 `p` を取り戻す関数がシグモイド（sigmoid, logistic function）です。
+逆向きに、log-odds `z` から確率 `p` を取り戻す関数が[シグモイド](/ml/ml/activation-functions/)（sigmoid, logistic function）です。
 
 `sigmoid(z) = 1 / (1 + exp(-z))`
 
@@ -150,7 +150,7 @@ plt.savefig("log_numerical_stability.svg", bbox_inches="tight")
 
 <br>
 
-log の性質で分解できるのは積だけで、確率の和は分解できません。混合モデルの周辺尤度 `p(x) = Σ_k p(x, z_k)` や softmax の分母では、log 空間で持っている値 `a_k = log p_k` から `log(Σ_k exp(a_k))` を求めます。`a_k` が -1000 程度だと、`exp(a_k)` が全て `0.0` になり、和の log は `-inf` になります。
+log の性質で分解できるのは積だけで、確率の和は分解できません。混合モデルの周辺尤度 `p(x) = Σ_k p(x, z_k)` や [softmax](/notes/generative-ai/sampling/) の分母では、log 空間で持っている値 `a_k = log p_k` から `log(Σ_k exp(a_k))` を求めます。`a_k` が -1000 程度だと、`exp(a_k)` が全て `0.0` になり、和の log は `-inf` になります。
 
 [SciPy](https://scipy.org/) の [`scipy.special.logsumexp`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.special.logsumexp.html) や [`torch.logsumexp`](https://docs.pytorch.org/docs/stable/generated/torch.logsumexp.html) は、この計算を数値安定に行う関数です。考え方は、最大値 `m` を括り出して `log(Σ_k exp(a_k)) = m + log(Σ_k exp(a_k - m))` とすることです。`exp` の引数が 0 以下になり、最大の項は `exp(0) = 1` なので、和が 0 に潰れません。
 
@@ -195,8 +195,8 @@ print(np.exp(a - logsumexp(a)))    # softmax
 
 - 多クラス分類の softmax: クラスごとの線形和 `z_k` を `exp` で正に、和で割って確率にする
 - 最尤推定 / [損失関数](/ml/ml/loss-functions/): 交差エントロピー `-Σ y log(p)`（log-loss）や対数尤度は、すべて log を経由する
-- 学習率スケジュール: 指数減衰 `lr_t = lr_0 × γ^t` で学習率を時間とともに下げる
-- 大規模言語モデルの損失: トークン列の同時確率を `Σ log p(token_t | ...)` で計算
+- [学習率](../gradient-descent-sgd/)スケジュール: 指数減衰 `lr_t = lr_0 × γ^t` で学習率を時間とともに下げる
+- 大規模言語モデルの損失: [トークン](/notes/generative-ai/tokenizer/)列の同時確率を `Σ log p(token_t | ...)` で計算
 
 ---
 

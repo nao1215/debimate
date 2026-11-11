@@ -80,7 +80,7 @@ plt.savefig("info_bernoulli_entropy.svg", bbox_inches="tight")
 
 `h(X) = -∫ f(x) log f(x) dx`
 
-離散のエントロピーと違い、微分エントロピーは負になり得ます。密度 `f(x)` は 1 を超えられるので、`-log f(x)` が負になるからです。正規分布 `N(μ, σ²)` では `h = (1/2) log(2πeσ²)` で、`σ` が `1/√(2πe) ≈ 0.242` を下回ると負になります。
+離散のエントロピーと違い、微分エントロピーは負になり得ます。密度 `f(x)` は 1 を超えられるので、`-log f(x)` が負になるからです。[正規分布](../probability-distributions/) `N(μ, σ²)` では `h = (1/2) log(2πeσ²)` で、`σ` が `1/√(2πe) ≈ 0.242` を下回ると負になります。
 
 ```python
 sigmas = np.linspace(0.05, 2, 400)
@@ -189,7 +189,7 @@ strong:    KL(P || Q) = 0.743 bits
 
 <br>
 
-Pearson の [相関係数](../correlation/) が測れるのは線形依存だけです。一方で、相互情報量は非線形の依存も捉えます。[特徴量選択](../../ml/feature-selection/) で使う scikit-learn の [mutual_info_classif](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_classif.html) は、k 近傍法に基づく推定値を特徴量の有用性スコアにしています。
+Pearson の [相関係数](../correlation/) が測れるのは線形依存だけです。一方で、相互情報量は非線形の依存も捉えます。[特徴量選択](../../ml/feature-selection/) で使う scikit-learn の [mutual_info_classif](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_classif.html) は、[k 近傍法](../../ml/knn/)に基づく推定値を特徴量の有用性スコアにしています。
 
 ---
 
@@ -208,7 +208,7 @@ Pearson の [相関係数](../correlation/) が測れるのは線形依存だけ
 - 変分推論（[VAE](https://arxiv.org/abs/1312.6114)）: ELBO（Evidence Lower Bound、変分下界）の中で KL ダイバージェンスが事前分布との近さを表す
 - [GAN](https://arxiv.org/abs/1406.2661)（生成器と識別器を競わせる生成モデル）: 元論文の目的関数は、識別器が最適な時に JS ダイバージェンスの最小化になる
 - 自己教師あり学習: [SimCLR](https://arxiv.org/abs/2002.05709) などで使う [InfoNCE](https://arxiv.org/abs/1807.03748) 損失は、相互情報量の下界を最大化する
-- データドリフト検知: PSI（Population Stability Index）はビンに分けた 2 分布の `Σ (p - q) log(p / q)` で、`KL(P || Q) + KL(Q || P)` と等しい（[モデル性能監視](../../mlops/model-performance-monitoring/) 参照）
+- [データドリフト](../../mlops/data-drift/)検知: PSI（Population Stability Index）はビンに分けた 2 分布の `Σ (p - q) log(p / q)` で、`KL(P || Q) + KL(Q || P)` と等しい（[モデル性能監視](../../mlops/model-performance-monitoring/) 参照）
 - クラスタリング評価: 相互情報量ベースの NMI（normalized mutual information）
 
 scikit-learn では [mutual_info_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.mutual_info_score.html)、[normalized_mutual_info_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.normalized_mutual_info_score.html)、`mutual_info_classif` などが提供されています。
@@ -218,7 +218,7 @@ scikit-learn では [mutual_info_score](https://scikit-learn.org/stable/modules/
 ### 適さないケース / 落とし穴
 
 - KL を「距離」と呼ぶ: 距離関数ではない。対称な量が欲しい場合は、平均 `M = (P + Q) / 2` を使う JS ダイバージェンス `JS(P, Q) = (KL(P || M) + KL(Q || M)) / 2`
-- `Q(x) = 0` の点で `P(x) > 0`: KL が無限大に発散する。softmax のように `Q(x) > 0` を保つ出力にするか、smoothing（`Q + ε` を正規化し直す）を入れる
+- `Q(x) = 0` の点で `P(x) > 0`: KL が無限大に発散する。[softmax](/notes/generative-ai/sampling/) のように `Q(x) > 0` を保つ出力にするか、smoothing（`Q + ε` を正規化し直す）を入れる
 - 少ないサンプルで離散変数の MI を推定: 頻度から作った推定値は正に偏り、独立でも `MI > 0` が出る
-- 連続変数の MI: 密度が分からないと解析的に計算できない。[KSG 推定量](https://doi.org/10.1103/PhysRevE.69.066138)（Kraskov らによる k 近傍法ベースの推定）や、カーネル密度推定を経由する方法を使う
+- 連続変数の MI: 密度が分からないと解析的に計算できない。[KSG 推定量](https://doi.org/10.1103/PhysRevE.69.066138)（Kraskov らによる k 近傍法ベースの推定）や、[カーネル密度推定](../kde/)を経由する方法を使う
 - 情報量の単位を混在: 1 ナット ≈ 1.443 ビット。同じ計算内で対数の底を揃える

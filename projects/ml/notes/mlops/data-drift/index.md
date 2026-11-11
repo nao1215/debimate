@@ -142,7 +142,7 @@ Concept drift は、入力の統計量だけでは検知できません。予測
     - sliding window（直近 N 日分だけ）で学習データを切り替える
     - 時間減衰重み（古いサンプルほど重みを下げる）で学習する
 4. オンライン学習
-    - 届いたデータの小さなまとまりごとにモデルを逐次更新する手法（[SGDClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html) の `partial_fit` など）
+    - 届いたデータの小さなまとまりごとにモデルを[逐次更新する手法](/ml/math/gradient-descent-sgd/)（[SGDClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDClassifier.html) の `partial_fit` など）
     - 連続的に変化するデータには有効。ただし、誤ったラベルや一時的な偏りを取り込み続けないよう、更新後の性能を監視する
 5. アンサンブル切り替え
     - 複数モデル（古いモデル・新しいモデル）を運用し、状況に応じてゲートで重みを切り替える

@@ -28,13 +28,13 @@ E[(y - f_hat(x))^2] = Bias[f_hat(x)]^2 + Var[f_hat(x)] + sigma^2
 - Variance = `Var[f_hat(x)]`。訓練セットの揺らぎによって予測がどれだけ振れるか。モデルの不安定さを表す
 - ノイズ `sigma^2`。データに本質的に含まれる削れない誤差（irreducible error）
 
-期待値・分散はいずれも「訓練セット集団」に対する統計量である点に注意が必要です。1 つの訓練セットで学習した 1 つの予測値だけを見ても Bias と Variance は直接観察できず、データを変えながら再学習した予測の挙動から測ることになります。
+[期待値](/ml/math/expectation/)・[分散](/ml/math/variance/)はいずれも「訓練セット集団」に対する統計量である点に注意が必要です。1 つの訓練セットで学習した 1 つの予測値だけを見ても Bias と Variance は直接観察できず、データを変えながら再学習した予測の挙動から測ることになります。
 
 ---
 
 ### Bias と Variance を視覚化する
 
-同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から多項式回帰（scikit-learn の [PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) で x のべき乗を特徴量に足し、[LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) で当てはめる）を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。本記事のコードは軸の範囲や凡例などの体裁を省いています。図の生成コードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
+同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から[多項式回帰](../linear-regression/)（scikit-learn の [PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) で x のべき乗を特徴量に足し、[LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) で当てはめる）を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。本記事のコードは軸の範囲や凡例などの体裁を省いています。図の生成コードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
 
 ```python
 import numpy as np
@@ -152,7 +152,7 @@ Bias^2 まで跳ねるのは、Bias^2 を 200 個の予測の平均から計算�
 
 ### 学習曲線で診断する
 
-実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの。scikit-learn では [learning_curve](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.learning_curve.html)）で両者の正解率を比較します。max_depth を 1・6・制限なしと変えた決定木 3 つで、曲線の形を並べてみます。
+実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの。scikit-learn では [learning_curve](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.learning_curve.html)）で両者の正解率を比較します。max_depth を 1・6・制限なしと変えた[決定木](../decision-tree/) 3 つで、曲線の形を並べてみます。
 
 ```python
 import numpy as np
@@ -233,7 +233,7 @@ graph TD
 - モデル選定の初期段階で「もっと大きいモデルを試すべきか、データ追加に投資すべきか」の判断に使う
 - ハイパーパラメータ探索の方向性決め（深さを上げる方向か、正則化係数を上げる方向か）
 - [交差検証](../cross-validation/) で訓練 / 検証スコアを取った後、ギャップの大きさを見て次のサイクルの仮説を立てる
-- アンサンブル（[ランダムフォレスト](../random-forest/) / [勾配ブースティング](../gradient-boosting/)）が「なぜ素の決定木より強いか」を理解する枠組みとして。バギングは Variance を平均で打ち消し、ブースティングは弱学習器の Bias を逐次補正する操作と読める
+- [アンサンブル](../ensemble-learning/)（[ランダムフォレスト](../random-forest/) / [勾配ブースティング](../gradient-boosting/)）が「なぜ素の決定木より強いか」を理解する枠組みとして。バギングは Variance を平均で打ち消し、ブースティングは弱学習器の Bias を逐次補正する操作と読める
 - [kNN](../knn/) のハイパーパラメータ `k` の選び方（`k` が小さい = high variance、`k` が大きい = high bias）
 
 ---
@@ -242,7 +242,7 @@ graph TD
 
 バイアス-バリアンス分解を適用する場合には、次の制約があります。
 
-- 二乗誤差以外への素直な拡張は難しい。Bias-Variance の閉じた分解は MSE で綺麗に成り立つ。一方で、0-1 損失や交差エントロピーへの拡張は厳密には別の式が必要になる。実用上は「同じ直感を分類タスクの学習曲線で読む」運用で代用する
+- 二乗誤差以外への素直な拡張は難しい。Bias-Variance の閉じた分解は MSE で綺麗に成り立つ。一方で、0-1 損失や[交差エントロピー](../loss-functions/)への拡張は厳密には別の式が必要になる。実用上は「同じ直感を分類タスクの学習曲線で読む」運用で代用する
 - 「Bias と Variance の値」を 1 つの訓練セットから直接出すことはできない。上の多項式の実験のように複数訓練セットの再サンプリングが必要で、学習曲線の形による定性診断で代用するのが普通である
 - 深層学習の過剰パラメータ領域では、訓練データを完全に再現できる規模を超えてパラメータを増やすと、テスト誤差が再び下がる [double descent](https://arxiv.org/abs/1812.11118) が報告されている。古典的な U 字曲線の枠から外れる挙動なので、超大規模モデルにはそのまま適用しにくい
 - 分布シフト下では「訓練と検証が同じ分布から来る」という前提が崩れるため、ギャップの原因が Variance なのか [データドリフト](../../mlops/data-drift/) なのかを別途切り分ける必要がある

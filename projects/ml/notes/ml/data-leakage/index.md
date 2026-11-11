@@ -35,7 +35,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 ### 典型症状: 学習時のスコアが不当に高い
 
-リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、ROC-AUC ほぼ 1.0 など）に達することが多いです。普段の精度感を 0.05〜0.10 上回るスコアが急に出たら、リークの有無を確認します。
+リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、[ROC-AUC](../roc-pr-auc/) ほぼ 1.0 など）に達することが多いです。普段の精度感を 0.05〜0.10 上回るスコアが急に出たら、リークの有無を確認します。
 
 試しに、[scikit-learn](https://scikit-learn.org/stable/) の [`make_classification`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html) の CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで貼り付きます。
 
@@ -203,7 +203,7 @@ Correct CV (pipeline):     0.510
 2. 前処理を Pipeline 内に閉じ込める
     - `StandardScaler`、`SelectKBest`、`PCA` のような fit 系操作は [`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) に組み込み、`cross_val_score` / `GridSearchCV` と組み合わせる
     - fit を学習 fold だけに閉じることで、テスト fold への情報の混入を防げる
-3. 時系列タスクでは時系列に合わせた CV を使う
+3. 時系列タスクでは[時系列に合わせた CV](../time-series-forecasting/) を使う
     - 通常の `KFold` ではなく [`TimeSeriesSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) を使い、未来データで過去を予測する漏れを排除する
     - ラグ特徴量を作る時も、ラグ計算の起点を予測時点に揃える
 4. テストデータは最後の最後だけ触る
@@ -221,7 +221,7 @@ Correct CV (pipeline):     0.510
 
 - 特徴量設計レビュー: 各列の as-of timestamp と目的変数との因果関係を確認する観点
 - CV 結果の解釈: 高スコアが出た時に、特徴量や前処理から情報が漏れていないかを確認する
-- 本番監視: 訓練時と本番で精度差が大きい場合の原因分析の起点
+- [本番監視](/ml/mlops/model-performance-monitoring/): 訓練時と本番で精度差が大きい場合の原因分析の起点
 - データ受領時の確認: 受け取ったテーブルに「将来時点の集計列」が混じっていないかの監査
 - 競技 ML（[Kaggle](https://www.kaggle.com/) 等）: 不自然に高いスコアの上位解法に「データセット由来のリーク」が含まれることがあり、本番運用に持ち込めない解になりがち
 
@@ -235,4 +235,4 @@ CV の分割だけでなく、前処理の fit 対象と各特徴量の as-of ti
 - 「目的変数と相関が高い特徴量を入れるとリーク」ではない: 強相関でも、推論時刻に観測可能で、目的変数から派生していなければリークではない（むしろ良い特徴量）
 - 「テスト精度が高ければ本番でも当たる」とは限らない: テストデータも訓練データと同じ前処理パイプラインを通過しているなら、その前処理に汚染がある時点でテスト精度も信頼できない
 - 「リークは個人開発の小さい問題」ではない: 胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 99.9% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
-- [過学習](../overfitting/) と同じ現象ではない: 過学習はモデルの複雑さが原因、データリークは特徴量・前処理の設計が原因。リークがあると過学習対策（正則化・early stopping）は効かない
+- [過学習](../overfitting/) と同じ現象ではない: 過学習はモデルの複雑さが原因、データリークは特徴量・前処理の設計が原因。リークがあると過学習対策（[正則化](../regularization/)・early stopping）は効かない

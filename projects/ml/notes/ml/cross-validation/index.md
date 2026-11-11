@@ -29,7 +29,7 @@ cardImage: "cross_validation_alpha.svg"
 - データ全体を 1 度ずつ検証側に回せる（評価が安定する）
 - 各回でモデルを再学習するので、計算コストは単純評価の `k` 倍
 - データの並びに偏りがある場合は事前に `shuffle=True` でシャッフルする
-- 分類で各クラスの比率を保ちたい時は [StratifiedKFold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html) を使う
+- 分類で[各クラスの比率](../class-imbalance/)を保ちたい時は [StratifiedKFold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedKFold.html) を使う
 
 ---
 
@@ -101,7 +101,7 @@ best CV R^2: 0.860
 - 検証 (validation): ハイパーパラメータを選ぶ。CV はこれを内部で複数回繰り返す仕組み
 - テスト (test): 最終的なモデルの性能を見積もる。最後に 1 回だけ使う
 
-CV を使うと検証データを明示的に分けなくて済みます。ただし、テストデータは必ず別に確保しておきます（CV 内で何度もスコアを見て選んだモデルは、CV スコア自体も少し楽観的に出るため）。
+CV を使うと検証データを明示的に分けなくて済みます。ただし、テストデータは必ず別に確保しておきます（CV 内で何度もスコアを見て選んだモデルは、CV スコア自体も少し楽観的に出るため）。標準化などの前処理を CV の外で全データに fit すると、検証 fold の情報が訓練側に漏れる点にも注意します（[データリーク](../data-leakage/)）。
 
 ---
 

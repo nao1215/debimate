@@ -35,7 +35,7 @@ Filter は候補を手早く減らせますが、列どうしの相互作用を�
 
 ### Filter 法 1: VarianceThreshold
 
-[`VarianceThreshold`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.VarianceThreshold.html) は最も軽量な手法です。分散がほぼゼロ（= 全サンプルでほぼ同じ値）の特徴量はモデルへの寄与が薄いので捨てます。
+[`VarianceThreshold`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.VarianceThreshold.html) は最も軽量な手法です。[分散](/ml/math/variance/)がほぼゼロ（= 全サンプルでほぼ同じ値）の特徴量はモデルへの寄与が薄いので捨てます。
 
 ```python
 import numpy as np
@@ -74,7 +74,7 @@ shape: (1000, 5) -> (1000, 2)
 
 [`SelectKBest`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html) は、統計的な指標で「目的変数との関係が強い」上位 `k` 個を残します。代表的なスコアは次の通りです。
 
-- ANOVA F 値（[`f_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html)）: 分類でクラス間とクラス内の平均差を分散比で見る単変量検定。特徴量単独での有用性を測る
+- ANOVA F 値（[`f_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html)）: 分類でクラス間とクラス内の平均差を分散比で見る単変量[検定](/ml/math/hypothesis-test/)。特徴量単独での有用性を測る
 - 相互情報量（[`mutual_info_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_classif.html)）: 非線形依存も含めた一般的な依存性
 - カイ二乗（[`chi2`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.chi2.html)）: 非負特徴量とカテゴリ目的変数（テキスト分類で頻出）
 
@@ -107,7 +107,7 @@ column 1: F = 0.11, MI = 0.000
 
 F 検定（青）と相互情報量（MI、橙）は、どちらも特徴量を 1 列ずつ単独で採点します。上位 5 列には redundant が F で 1 列、MI で 2 列入りました。redundant は informative と同じ情報を持つので、単独で見ると高い点が付きます。
 
-informative の列 1 は F = 0.11、MI = 0 で、単独ではほぼ無関係に見えます。ランダムフォレストに残りの informative と一緒に渡すと、効き目が分かります。
+informative の列 1 は F = 0.11、MI = 0 で、単独ではほぼ無関係に見えます。[ランダムフォレスト](../random-forest/)に残りの informative と一緒に渡すと、効き目が分かります。
 
 ```python
 from sklearn.ensemble import RandomForestClassifier
@@ -157,7 +157,7 @@ selected: [ 3 10 13 15 17]
 
 横軸が残した特徴量数、縦軸が 5-fold CV 正解率の平均（青の帯は[標準偏差](/ml/math/stddev/)）です。赤い破線は平均が最大の 5 列（0.815）ですが、4 列以上はどれも 0.809〜0.815 で、差は標準偏差（0.015〜0.021）より小さい値でした。5 列が 20 列より確かに良いとは言えません。
 
-選ばれた 5 列も正解と一致しません。informative は 10・17 の 2 列で、redundant の 3・13 とノイズの 15 が入りました。学習器が線形なロジスティック回帰なので、組み合わせで効く列 1 も拾えていません。
+選ばれた 5 列も正解と一致しません。informative は 10・17 の 2 列で、redundant の 3・13 とノイズの 15 が入りました。学習器が線形な[ロジスティック回帰](../logistic-regression/)なので、組み合わせで効く列 1 も拾えていません。
 
 RFE は特徴量を減らすたびに学習と評価を繰り返すため、特徴量が増えると計算量も増えます。実行時間と検証スコアを確認して、使うかどうかを判断します。
 
@@ -258,6 +258,6 @@ scikit-learn には上記の他に、列を 1 つずつ足す・引く [`Sequent
 - データリーク: テストデータも含めて選択すると、テストの情報が訓練に流れ込む（[data leakage](../data-leakage/)）。[`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) に入れて CV の fold ごとに選択する
 - Filter・相関・Lasso の結果をそのまま正解の列と見なす: 本記事の例では、どれも組み合わせで効く列や相関した列を取り違えた
 - 木の組み込み重要度を信じすぎる: 値の種類が多い列ほど重要度が高く出る（[特徴量重要度](../feature-importance/) 参照）
-- カテゴリ変数をダミー化してから列単位で選ぶ: カテゴリの一部の列だけ残る。グループ単位で扱う
+- [カテゴリ変数をダミー化](../categorical-encoding/)してから列単位で選ぶ: カテゴリの一部の列だけ残る。グループ単位で扱う
 - 特徴量設計の代わりに使う: 元データに情報が無ければ、選択しても精度は上がらない
 - PCA と混同する: PCA は新しい軸を作り、特徴量選択は元の列を残す。説明性が目的なら特徴量選択を使う

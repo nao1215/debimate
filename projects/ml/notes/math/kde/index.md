@@ -31,7 +31,7 @@ f(x) = (1 / (n * h)) * Σ K((x - x_i) / h)
 - `h`: バンド幅（bandwidth）。個々のカーネルの広がり
 - `K`: カーネル関数。面積が 1 の山で、ガウス関数が最も一般的
 
-ガウスカーネルなら、各データ点 `x_i` に中心が `x_i`、標準偏差が `h` の正規分布を置き、それらを全部足してから `n` で割る操作です。サンプル 15 点、`h = 0.5` で計算します。
+ガウスカーネルなら、各データ点 `x_i` に中心が `x_i`、標準偏差が `h` の[正規分布](../probability-distributions/)を置き、それらを全部足してから `n` で割る操作です。サンプル 15 点、`h = 0.5` で計算します。
 
 ```python
 import numpy as np
@@ -95,7 +95,7 @@ h=2.0: 山の数 1
 `h` を決める代表的な方法は次の通りです。
 
 - Scott の規則: `h = σ * n^(-1/(d+4))`（`σ` はデータの標準偏差、`d` は次元数）。`gaussian_kde` の既定
-- 正規分布を仮定した目安: 1 次元で `h = 1.06 * σ * n^(-1/5)`。`gaussian_kde` の `"silverman"` は 1 次元でこの値になる。Silverman が勧める `0.9 * min(σ, IQR / 1.34) * n^(-1/5)`（IQR は四分位範囲）とは別物
+- 正規分布を仮定した目安: 1 次元で `h = 1.06 * σ * n^(-1/5)`。`gaussian_kde` の `"silverman"` は 1 次元でこの値になる。Silverman が勧める `0.9 * min(σ, IQR / 1.34) * n^(-1/5)`（IQR は[四分位範囲](../quantile/)）とは別物
 - [交差検証](../../ml/cross-validation/): 学習に使わなかったデータの対数尤度が最も大きくなる `h` を選ぶ
 
 同じ 2 峰性データで、規則による値と、[scikit-learn の KernelDensity](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KernelDensity.html) を 5 分割の交差検証（[GridSearchCV](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html)）で選んだ値を比べます（上のコードの続き）。

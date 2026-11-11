@@ -17,7 +17,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 本記事では、3 系統の違いを [バイアス-バリアンス分解](../bias-variance-tradeoff/) の「Variance を抑える」「Bias を抑える」の軸で整理し、[scikit-learn](https://scikit-learn.org/stable/modules/ensemble.html) での実験で次の疑問を確かめます。
 
 - 木を 100 本平均すると、予測の分散は 1/100 になるのか
-- 残差を追い続ける boosting は、どこから過学習に入るのか
+- 残差を追い続ける boosting は、どこから[過学習](../overfitting/)に入るのか
 - 複数のモデルを stacking すれば、一番良い単体モデルを必ず超えるのか
 
 ---
@@ -135,7 +135,7 @@ bagging:     0.119
 
 左の単一決定木はノイズに合わせて細かく上下し、右の Bagging は真の関数（破線）の周りに集まります。
 
-ただし分散は 0.238 から 0.119 で、半分にしかなっていません。100 本の木は同じ 40 点から復元抽出したデータで学習するので、予測が互いに似ており、独立ではないからです。木 1 本の予測の分散を `σ²`、木同士の相関を `ρ` とすると、`B` 本の平均の分散は次の式になります（[The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) 15.2 節の式 (15.1)）。
+ただし分散は 0.238 から 0.119 で、半分にしかなっていません。100 本の木は同じ 40 点から復元抽出したデータで学習するので、予測が互いに似ており、独立ではないからです。木 1 本の予測の分散を `σ²`、木同士の[相関](/ml/math/correlation/)を `ρ` とすると、`B` 本の平均の分散は次の式になります（[The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/) 15.2 節の式 (15.1)）。
 
 `ρσ² + (1 − ρ)σ² / B`
 
@@ -265,14 +265,14 @@ base only: rf    0.937 (±0.008)
 
 単一決定木の 0.888 から、どのアンサンブルも 0.94〜0.95 まで上がり、Stacking が 0.951 で最も高い値でした。
 
-一方で、base に入れた SVM（RBF カーネルの [SVC](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)）は単体で 0.954 です。このデータでは SVM 1 つでほぼ足りており、ロジスティック回帰とランダムフォレストを足しても上積みはありませんでした。Stacking を採用する前に base を単体でも評価し、6 倍の学習と保守の手間に見合うかを確認します。
+一方で、base に入れた [SVM](../svm/)（RBF カーネルの [SVC](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html)）は単体で 0.954 です。このデータでは SVM 1 つでほぼ足りており、ロジスティック回帰とランダムフォレストを足しても上積みはありませんでした。Stacking を採用する前に base を単体でも評価し、6 倍の学習と保守の手間に見合うかを確認します。
 
 ---
 
 ### 数学での使いどころ
 
 - 分散縮小と平均化: 相関 `ρ` を持つ `B` 個の推定量の平均は、分散が `ρσ² + (1 − ρ)σ² / B`
-- バイアス補正: Boosting は損失関数の関数空間での勾配降下（functional gradient descent）
+- バイアス補正: Boosting は損失関数の関数空間での[勾配降下](/ml/math/gradient-descent-sgd/)（functional gradient descent）
 - 弱学習器の理論: PAC（Probably Approximately Correct）学習の枠組みで、弱学習器を組み合わせれば強学習器を作れることが[証明されています](https://doi.org/10.1007/BF00116037)。AdaBoost はその実用的な実現方法
 - マージン理論: AdaBoost は訓練誤差が 0 になった後もマージンが広がり、テスト誤差が下がり続ける場合がある（[Schapire ら 1998](https://doi.org/10.1214/aos/1024691352)）
 - 2 段階の学習: Stacking は base learner の out-of-fold 予測を特徴量として、もう 1 段のモデルを学習する
@@ -285,7 +285,7 @@ base only: rf    0.937 (±0.008)
 - 高分散モデルの安定化: 深い決定木をランダムフォレストで平均化
 - Kaggle などのコンペティション: 勾配ブースティングと Stacking の組み合わせが定番
 - [異常検知](../anomaly-detection/): [Isolation Forest](https://doi.org/10.1109/ICDM.2008.17)（scikit-learn では [`IsolationForest`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html)）は、ランダムに分割する木を多数作り、孤立までの分割回数を平均して異常度にする
-- 予測区間: ランダムフォレストの葉に入った訓練データの分布から分位点を求める（[quantile regression forests](https://jmlr.org/papers/v7/meinshausen06a.html)）
+- 予測区間: ランダムフォレストの葉に入った訓練データの分布から[分位点](/ml/math/quantile/)を求める（[quantile regression forests](https://jmlr.org/papers/v7/meinshausen06a.html)）
 
 ---
 
@@ -298,4 +298,4 @@ base only: rf    0.937 (±0.008)
 - Boosting で学習率が大きい: 少ないラウンドで訓練データに合わせ込む。`learning_rate` を 0.01〜0.1 に下げて `n_estimators` を増やし、early stopping で止める
 - 個別モデルが似すぎている Bagging: 相関 `ρ` が高いと `ρσ²` が残り、本数を増やしても分散が下がらない
 - メタ学習器に複雑なモデルを使う Stacking: 過学習しやすい。線形モデルや浅い決定木が一般的
-- アンサンブルでも防げない問題: データリーク、不均衡データ、[特徴量設計](../feature-selection/) の不備は、いくらモデルを重ねても解消しない。これらが先決
+- アンサンブルでも防げない問題: データリーク、[不均衡データ](../class-imbalance/)、[特徴量設計](../feature-selection/) の不備は、いくらモデルを重ねても解消しない。これらが先決

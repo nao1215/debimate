@@ -30,7 +30,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 - `alpha=0.1`: 両端を除いて破線の真の関数にほぼ沿う、ちょうど良い状態
 - `alpha=100`: 正則化が強すぎて曲線が平らに潰れ、データの山と谷を捉えきれない = 未学習
 
-`alpha` 自体も[交差検証](../cross-validation/)で選ぶのが基本です。「正則化を入れれば過学習しない」のではなく「適切な `alpha` を選んで初めて効く」点に注意します。
+`alpha` を強めるほどバリアンスが減ってバイアスが増える関係は、[バイアス-バリアンス分解](../bias-variance-tradeoff/)で式として扱えます。`alpha` 自体も[交差検証](../cross-validation/)で選ぶのが基本です。「正則化を入れれば過学習しない」のではなく「適切な `alpha` を選んで初めて効く」点に注意します。
 
 ---
 
@@ -40,10 +40,10 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 ![L1 と L2 の係数の違い](./regularization_l1_l2.svg)
 
-- L1（左, Lasso）: 効かない 15 個は `alpha` が 3 付近までに全て 0 ちょうどになり、効く 5 個だけが残る。「特徴量を選別する」効果がある
+- L1（左, Lasso）: 効かない 15 個は `alpha` が 3 付近までに全て 0 ちょうどになり、効く 5 個だけが残る。「[特徴量を選別する](../feature-selection/)」効果がある
 - L2（右, Ridge）: 係数は 0 ちょうどにはならない。縮み方も係数ごとに違い、下段では `alpha=100` 付近で効かない特徴量の係数が一時的に ±5 近くまで膨らむ
 
-L2 が全ての係数を同じ比率で縮めるのは、特徴量同士が無相関で分散も揃っている特殊な場合だけです。この例では、効く 5 個の係数が縮んで y を説明しきれなくなり、訓練データ上で偶然わずかに相関していた効かない特徴量の係数が代わりに大きくなっています。
+L2 が全ての係数を同じ比率で縮めるのは、特徴量同士が[無相関](/ml/math/correlation/)で分散も揃っている特殊な場合だけです。この例では、効く 5 個の係数が縮んで y を説明しきれなくなり、訓練データ上で偶然わずかに相関していた効かない特徴量の係数が代わりに大きくなっています。
 
 横軸の範囲が左右で違うのは、[scikit-learn の Lasso](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html) だけが誤差を `1 / (2 * n_samples)` 倍してからペナルティを足すためです（[Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) はそのまま）。
 
@@ -109,10 +109,10 @@ Lasso alpha=3    test R^2: 0.990  nonzero coefs:  5/20
 - [線形回帰](/ml/ml/linear-regression/): Ridge（L2）、Lasso（L1）、Elastic Net
 - [ロジスティック回帰](../logistic-regression/): `penalty='l1'` / `'l2'` / `'elasticnet'`
 - [SVM](../svm/)（support vector machine、サポートベクターマシン）: `C` パラメータ（C が小さいほど正則化が強い）
-- ニューラルネット: weight decay（SGD では L2 と同じ。Adam では一致しないため [AdamW](https://arxiv.org/abs/1711.05101) が分けて扱う）、dropout、batch normalization
+- ニューラルネット: weight decay（[SGD](/ml/math/gradient-descent-sgd/) では L2 と同じ。Adam では一致しないため [AdamW](https://arxiv.org/abs/1711.05101) が分けて扱う）、dropout、batch normalization
 - [GradientBoosting](../gradient-boosting/) の実装である [XGBoost](https://xgboost.readthedocs.io/en/stable/parameter.html)・[LightGBM](https://lightgbm.readthedocs.io/en/stable/Parameters.html): `reg_alpha`（L1）、`reg_lambda`（L2）、`min_child_weight` など
 
-決定木そのものに「正則化項」はありません。その代わり、`max_depth` を小さくする、`min_samples_leaf` を大きくするといった木の成長の制限が、事実上の正則化として働きます。[RandomForest](../random-forest/) や GradientBoosting でハイパーパラメータを絞ることは、概念上は正則化と同じことをしています。
+[決定木](../decision-tree/)そのものに「正則化項」はありません。その代わり、`max_depth` を小さくする、`min_samples_leaf` を大きくするといった木の成長の制限が、事実上の正則化として働きます。[RandomForest](../random-forest/) や GradientBoosting でハイパーパラメータを絞ることは、概念上は正則化と同じことをしています。
 
 ---
 
@@ -120,7 +120,7 @@ Lasso alpha=3    test R^2: 0.990  nonzero coefs:  5/20
 
 - 特徴量がスケーリングされているか: L1/L2 はパラメータの大きさにペナルティを課すので、特徴量のスケールが揃っていないと一部の特徴ばかり罰せられる。前段に[標準化](../standardization/)（StandardScaler）を入れるのが基本
 - `alpha` を 1 つ決め打ちで使っていないか: 適切な値はデータ依存。[交差検証](../cross-validation/)で複数候補を試して選ぶ
-- 過学習の原因がモデル側にあるか: データのリークや評価方法の問題（テストデータの使い回し）が原因なら、正則化を強めても解決しない
+- 過学習の原因がモデル側にあるか: [データのリーク](../data-leakage/)や評価方法の問題（テストデータの使い回し）が原因なら、正則化を強めても解決しない
 
 ---
 
