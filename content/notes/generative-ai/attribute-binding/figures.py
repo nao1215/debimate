@@ -1,6 +1,7 @@
 """Generate the figures of the attribute binding note.
 
-The concept figure is hand-written SVG (standard library only). The charts read
+The concept figure is hand-written SVG, rendered to PNG by headless Chrome and
+saved as WebP (Pillow). The charts read
 lab/clip_mix.json (lab/clip_mix.py) and lab/measure.json (lab/measure.py), so
 neither the model files nor ComfyUI are needed to redraw them.
 
@@ -8,90 +9,134 @@ neither the model files nor ComfyUI are needed to redraw them.
 """
 
 import json
+import subprocess
 import sys
+import tempfile
 from html import escape
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 INK, SUB, BLUE, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
 BLUE_PALE, OCHRE, OCHRE_PALE, FILL = "#eaf1f5", "#d4a24c", "#f8eed8", "#f2f2f2"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+FONT = "'Noto Sans CJK JP','Hiragino Sans','Yu Gothic',sans-serif"
+IMAGES = HERE / "images"
+
+
+def png_to_webp(png, name):
+    """PNG を WebP にして images/ に置く。"""
+    from PIL import Image
+    Image.open(png).convert("RGB").save(IMAGES / name, "WEBP", quality=90, method=6)
+
+
+def svg_to_webp(svg_text, w, h, name):
+    """手書きの SVG を Chrome で 2 倍の解像度に描き、WebP にする。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+        svg.write_text(svg_text, encoding="utf-8")
+        subprocess.run(["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                        "--force-device-scale-factor=2", f"--window-size={w},{h}",
+                        f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
+        png_to_webp(png, name)
+
+
+def save_webp(fig, name):
+    """matplotlib の図を 200 dpi の PNG にしてから WebP にする。"""
+    with tempfile.TemporaryDirectory() as tmp:
+        png = Path(tmp) / "fig.png"
+        fig.savefig(png, dpi=200, facecolor="#ffffff")
+        png_to_webp(png, name)
 
 
 def concept_figure():
-    """Tokens on the left, a portrait on the right; 'aqua' paints the eyes and leaks into the hair."""
-    w, h = 960, 540
+    """The two places where a colour word can reach another object.
+
+    Left: prompt tokens. Middle: the text encoder, where each output is built from
+    the token itself and the tokens before it. Right: cross-attention, where each
+    image position chooses which outputs to use; the hair position also uses 'aqua'.
+    """
+    w, h = 1100, 540
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" role="img"><title>'
-        f'{escape("aqua の語が目だけでなく髪の一部にも色を付ける")}</title>',
+        f'{escape("色の語が別の物に届く 2 か所")}</title>',
         f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
         '<defs>'
-        f'<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" '
-        f'markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{BLUE}"/></marker>'
-        f'<marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" '
-        f'markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{OCHRE}"/></marker>'
-        f'<marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" '
-        f'markerHeight="8" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{SUB}"/></marker>'
+        f'<marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
+        f'markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{BLUE}"/></marker>'
+        f'<marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
+        f'markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="{OCHRE}"/></marker>'
         '</defs>',
         f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
     ]
 
-    def text(x, y, s, size=26, anchor="middle", weight="normal", cls=""):
+    def text(x, y, s, size=20, anchor="middle", cls=""):
         c = f' class="{cls}"' if cls else ""
-        p.append(f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
+        p.append(f'<text x="{x}" y="{y}" font-size="{size}" '
                  f'text-anchor="{anchor}"{c}>{escape(s)}</text>')
 
-    # Prompt tokens, top to bottom in prompt order.
-    text(170, 62, "prompt", 28, cls="sub")
-    tokens = [("black", FILL, SUB), ("hair", FILL, SUB),
-              ("aqua", BLUE_PALE, BLUE), ("eyes", FILL, SUB)]
-    ys = {}
-    for i, (t, fill, stroke) in enumerate(tokens):
-        y = 100 + i * 100
-        ys[t] = y + 34
-        sw = 3 if t == "aqua" else 2
-        p.append(f'<rect x="70" y="{y}" width="200" height="68" rx="10" fill="{fill}" '
-                 f'stroke="{stroke}" stroke-width="{sw}"/>')
-        text(170, y + 45, t, 32 if len(t) < 8 else 28)
+    words = ["black", "hair", "aqua", "eyes"]
+    ys = [130 + i * 82 for i in range(4)]          # top of each box
+    bh = 54
 
-    # Portrait: hair behind, face, eyes. Coordinates of the right half.
-    cx, cy = 700, 290
-    text(cx, 62, "image", 28, cls="sub")
-    p.append(f'<path d="M{cx-150},{cy+190} C{cx-190},{cy-40} {cx-150},{cy-200} {cx},{cy-205} '
-             f'C{cx+150},{cy-200} {cx+190},{cy-40} {cx+150},{cy+190} Z" '
+    # Column A: prompt tokens.
+    text(120, 40, "プロンプトの", 20, cls="sub")
+    text(120, 66, "トークン", 20, cls="sub")
+    for wd, y in zip(words, ys):
+        hl = wd == "aqua"
+        p.append(f'<rect x="50" y="{y}" width="140" height="{bh}" rx="8" '
+                 f'fill="{BLUE_PALE if hl else FILL}" stroke="{BLUE if hl else SUB}" '
+                 f'stroke-width="{3 if hl else 1.5}"/>')
+        text(120, y + 35, wd, 24)
+
+    # Column B: text encoder outputs. Lines from token i to output j (j >= i).
+    bx = 330
+    p.append(f'<rect x="{bx - 30}" y="80" width="260" height="{ys[-1] + bh + 30 - 80}" rx="12" '
+             f'fill="none" stroke="{SUB}" stroke-width="1.5" stroke-dasharray="6 5"/>')
+    text(bx + 100, 40, "① 文面を読む", 20)
+    text(bx + 100, 66, "（text encoder）", 18, cls="sub")
+    for i, yi in enumerate(ys):
+        for j, yj in enumerate(ys):
+            if j < i:
+                continue
+            col, sw = (BLUE, 3) if (words[i] == "aqua" and j >= i) else ("#bdbdbd", 1.5)
+            p.append(f'<path d="M190,{yi + bh / 2} C250,{yi + bh / 2} 260,{yj + bh / 2} '
+                     f'{bx},{yj + bh / 2}" fill="none" stroke="{col}" stroke-width="{sw}"/>')
+    for wd, y in zip(words, ys):
+        p.append(f'<rect x="{bx}" y="{y}" width="200" height="{bh}" rx="8" fill="{FILL}" '
+                 f'stroke="{SUB}" stroke-width="1.5"/>')
+        text(bx + 100, y + 35, f"{wd} の出力", 20)
+    text(bx + 100, ys[-1] + bh + 58, "前の語だけが後ろの出力に混ざる", 18, cls="sub")
+
+    # Column C: the image. Hair, face, eyes.
+    cx, cy = 880, 280
+    text(cx, 40, "② 画像の各位置が出力を選ぶ", 20)
+    text(cx, 66, "（cross-attention）", 18, cls="sub")
+    p.append(f'<path d="M{cx-120},{cy+150} C{cx-150},{cy-30} {cx-120},{cy-160} {cx},{cy-165} '
+             f'C{cx+120},{cy-160} {cx+150},{cy-30} {cx+120},{cy+150} Z" '
              f'fill="{FILL}" stroke="{SUB}" stroke-width="2"/>')
-    # Leaked streak in the hair (ochre = the area that should not have the colour).
-    p.append(f'<path d="M{cx+112},{cy-60} C{cx+140},{cy+20} {cx+145},{cy+110} {cx+138},{cy+185} '
-             f'L{cx+100},{cy+185} C{cx+108},{cy+110} {cx+100},{cy+20} {cx+86},{cy-40} Z" '
+    p.append(f'<path d="M{cx+90},{cy-50} C{cx+112},{cy+15} {cx+116},{cy+90} {cx+110},{cy+148} '
+             f'L{cx+80},{cy+148} C{cx+86},{cy+90} {cx+80},{cy+15} {cx+68},{cy-32} Z" '
              f'fill="{OCHRE_PALE}" stroke="{OCHRE}" stroke-width="3"/>')
-    p.append(f'<ellipse cx="{cx}" cy="{cy+10}" rx="92" ry="118" fill="#ffffff" '
+    p.append(f'<ellipse cx="{cx}" cy="{cy+8}" rx="74" ry="95" fill="#ffffff" '
              f'stroke="{SUB}" stroke-width="2"/>')
-    for ex in (cx - 38, cx + 38):
-        p.append(f'<ellipse cx="{ex}" cy="{cy+5}" rx="20" ry="26" fill="{BLUE_PALE}" '
+    for ex in (cx - 30, cx + 30):
+        p.append(f'<ellipse cx="{ex}" cy="{cy+4}" rx="16" ry="21" fill="{BLUE_PALE}" '
                  f'stroke="{BLUE}" stroke-width="3"/>')
-    # Bangs over the forehead.
-    p.append(f'<path d="M{cx-95},{cy-30} C{cx-80},{cy-140} {cx+80},{cy-140} {cx+95},{cy-30} '
-             f'C{cx+40},{cy-70} {cx-40},{cy-70} {cx-95},{cy-30} Z" fill="{FILL}" '
+    p.append(f'<path d="M{cx-76},{cy-24} C{cx-64},{cy-112} {cx+64},{cy-112} {cx+76},{cy-24} '
+             f'C{cx+32},{cy-56} {cx-32},{cy-56} {cx-76},{cy-24} Z" fill="{FILL}" '
              f'stroke="{SUB}" stroke-width="2"/>')
 
-    # Arrows: black/hair -> hair (gray), aqua -> eyes (blue), aqua -> hair streak (ochre, dashed).
-    p.append(f'<path d="M272,{ys["hair"]} C380,{ys["hair"]} 470,140 {cx-120},170" fill="none" '
-             f'stroke="{SUB}" stroke-width="2.5" marker-end="url(#ag)"/>')
-    p.append(f'<path d="M272,{ys["aqua"]} C400,{ys["aqua"]} 520,{cy+5} {cx-62},{cy+5}" '
+    # From the 'aqua' output: to the eyes, and (wrongly) to the hair streak.
+    oy = ys[2] + bh / 2
+    p.append(f'<path d="M{bx + 200},{oy} C640,{oy} 700,{cy+4} {cx-48},{cy+4}" '
              f'fill="none" stroke="{BLUE}" stroke-width="4" marker-end="url(#ab)"/>')
-    p.append(f'<path d="M272,{ys["aqua"]+8} C420,{ys["aqua"]+150} 640,470 {cx+110},{cy+160}" '
+    p.append(f'<path d="M{bx + 200},{oy + 12} C640,{oy + 170} 900,{h - 30} {cx+95},{cy+152}" '
              f'fill="none" stroke="{OCHRE}" stroke-width="4" stroke-dasharray="10 7" '
              f'marker-end="url(#ao)"/>')
-    # The single failure mark.
-    mx, my = 520, 452
-    p.append(f'<circle cx="{mx}" cy="{my}" r="22" fill="#fbe3e3" stroke="{RED}" stroke-width="3"/>')
-    p.append(f'<path d="M{mx-10},{my-10} L{mx+10},{my+10} M{mx+10},{my-10} L{mx-10},{my+10}" '
-             f'stroke="{RED}" stroke-width="4"/>')
-    text(cx + 175, cy + 225, "aqua が髪にも", 26, anchor="end")
+    text(cx + 170, h - 24, "髪の位置も aqua の出力を使う（色移り）", 18, anchor="end")
 
     p.append("</svg>")
-    (HERE / "images" / "attribute-binding_concept.svg").write_text("\n".join(p) + "\n")
+    svg_to_webp("\n".join(p) + "\n", w, h, "attribute-binding_concept.webp")
 
 
 def charts():
@@ -101,7 +146,7 @@ def charts():
     plt.rcParams.update({
         "font.size": 10, "axes.edgecolor": SUB, "axes.labelcolor": INK,
         "xtick.color": INK, "ytick.color": INK, "text.color": INK,
-        "svg.fonttype": "path", "svg.hashsalt": "attribute-binding",
+        "font.family": "Noto Sans CJK JP",
         "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
     })
     token_chart(plt)
@@ -112,9 +157,9 @@ def charts():
 def people_chart(plt):
     """Images with two or more people per resolution (eye labels, seeds 1000-1005 of each prompt)."""
     labels = json.loads((HERE / "lab" / "labels.json").read_text())
-    sets = [("768 x 1344", "s_eye_none", "s_rep_none"),
-            ("832 x 1216", "s_ar_832x1216", "s_rep_ar_832x1216"),
-            ("1024 x 1024", "s_ar_1024x1024", "s_rep_ar_1024x1024")]
+    sets = [("768 × 1344", "s_eye_none", "s_rep_none"),
+            ("832 × 1216", "s_ar_832x1216", "s_rep_ar_832x1216"),
+            ("1024 × 1024", "s_ar_1024x1024", "s_rep_ar_1024x1024")]
 
     def count(cond):
         return sum(labels[f"{cond}/{s}"].get("multi", False) for s in range(1000, 1006))
@@ -123,25 +168,25 @@ def people_chart(plt):
     x = list(range(len(sets)))
     a = [count(c1) for _, c1, _ in sets]
     b = [count(c2) for _, _, c2 in sets]
-    ax.bar([i - 0.18 for i in x], a, 0.36, color=BLUE, label="standing prompt")
-    ax.bar([i + 0.18 for i in x], b, 0.36, color=OCHRE, label="+ eye / single-color hair words")
+    ax.bar([i - 0.18 for i in x], a, 0.36, color=BLUE, label="立ち絵の文面")
+    ax.bar([i + 0.18 for i in x], b, 0.36, color=OCHRE, label="髪の打ち消しを足した文面")
     for i in x:
         ax.text(i - 0.18, a[i] + 0.08, str(a[i]), ha="center", fontsize=10)
         ax.text(i + 0.18, b[i] + 0.08, str(b[i]), ha="center", fontsize=10)
     ax.set_xticks(x, [n for n, _, _ in sets])
-    ax.set_ylabel("Images with 2+ people\n(out of 6)")
+    ax.set_ylabel("2 人以上が描かれた枚数\n（6 枚中）")
     ax.set_ylim(0, 6)
     ax.legend(frameon=False, fontsize=10, loc="upper right")
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-    fig.savefig(HERE / "images" / "attribute-binding_people.svg", metadata={"Date": None})
+    save_webp(fig, "attribute-binding_people.webp")
 
 
 def hair_chart(plt):
     """Share of aqua pixels in the hair region, one dot per image (base model, 12 seeds each)."""
     rows = json.loads((HERE / "lab" / "measure.json").read_text())
-    conds = [("eye_none", "black hair\n(control)"), ("eye_aqua", "black hair,\naqua eyes"),
-             ("eye_aqua_rev", "aqua eyes,\nblack hair"), ("eye_aqua_concat", "split +\nConcat")]
+    conds = [("eye_none", "black hair\n（対照）"), ("eye_aqua", "black hair,\naqua eyes"),
+             ("eye_aqua_rev", "aqua eyes,\nblack hair"), ("eye_aqua_concat", "2 つに分けて\n通す")]
     fig, ax = plt.subplots(figsize=(6.4, 3.2))
     for i, (c, label) in enumerate(conds):
         v = sorted(100 * r["hair_aqua"] for r in rows if r["cond"] == c)
@@ -149,22 +194,22 @@ def hair_chart(plt):
         ax.scatter(xs, v, s=22, color=SUB if c == "eye_none" else BLUE, zorder=3)
         ax.hlines(sum(v) / len(v), i - 0.25, i + 0.25, color=INK, lw=1.5, zorder=4)
     ax.axhline(0.5, color=OCHRE, lw=1.2, ls="--")
-    ax.text(0.3, 0.9, "threshold 0.5%", color=SUB, fontsize=10, ha="left")
+    ax.text(0.3, 0.9, "判定の線 0.5%", color=SUB, fontsize=10, ha="left")
     ax.set_xticks(range(len(conds)), [l for _, l in conds], fontsize=10)
-    ax.set_ylabel("Aqua pixels in hair (%)")
+    ax.set_ylabel("髪に占める青緑の画素（%）")
     ax.set_xlim(-0.5, 3.5)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-    fig.savefig(HERE / "images" / "attribute-binding_hair_share.svg", metadata={"Date": None})
+    save_webp(fig, "attribute-binding_hair_share.webp")
 
 
 def token_chart(plt):
     """Per-token change when only the eye colour word changes, in two word orders."""
     data = json.loads((HERE / "lab" / "clip_mix.json").read_text())
     fig, axes = plt.subplots(1, 3, figsize=(8.5, 4.1), sharey=True)
-    titles = {"eyes_last": "black hair, aqua eyes\n(aqua -> brown)",
-              "eyes_first": "aqua eyes, black hair\n(aqua -> brown)",
-              "hair_self": "brown eyes, aqua hair\n(aqua -> black)"}
+    titles = {"eyes_last": "black hair, aqua eyes\n（目の aqua → brown）",
+              "eyes_first": "aqua eyes, black hair\n（目の aqua → brown）",
+              "hair_self": "brown eyes, aqua hair\n（基準: 髪の aqua → black）"}
     for ax, key in zip(axes, ("eyes_last", "eyes_first", "hair_self")):
         d = data[key]
         toks = [t.replace("</w>", "").replace("<|startoftext|>", "BOS")
@@ -177,11 +222,11 @@ def token_chart(plt):
         ax.set_xticks(x, toks, rotation=60, fontsize=10)
         ax.set_title(f"1girl, {titles[key]}", fontsize=10)
         ax.spines[["top", "right"]].set_visible(False)
-    axes[0].set_ylabel("Change of the token output\n(1 - cosine similarity)")
+    axes[0].set_ylabel("トークンの出力の差\n（1 − コサイン類似度）")
     handles, labels = axes[0].get_legend_handles_labels()
     fig.legend(handles, labels, frameon=False, fontsize=10, loc="upper center", ncol=2)
     fig.tight_layout(rect=(0, 0, 1, 0.93))
-    fig.savefig(HERE / "images" / "attribute-binding_tokens.svg", metadata={"Date": None})
+    save_webp(fig, "attribute-binding_tokens.webp")
 
 
 if __name__ == "__main__":

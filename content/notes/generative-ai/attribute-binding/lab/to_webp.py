@@ -7,6 +7,7 @@
     <条件名>/<seed>                全体を元の解像度のまま（quality 88）
     <条件名>/<seed>@x,y,w,h        元の画像の (x, y) から幅 w・高さ h を等倍で切り抜く
     <条件名>/<seed>%<長い辺>        全体を長い辺の px まで縮める（形や色だけを比べるグリッド用）
+    <項目>+<項目>%<長い辺>          2 枚を長い辺の px まで縮め、白い隙間を挟んで横に並べる（冒頭の図）
 
 出力のファイル名は attribute-binding_<条件名>_<seed>[_crop|_s<長い辺>].webp。Pillow を使う。
 """
@@ -19,6 +20,9 @@ from PIL import Image
 def main():
     src, dst = sys.argv[1], sys.argv[2]
     for item in sys.argv[3:]:
+        if "+" in item:
+            pair(src, dst, item)
+            continue
         box = size = None
         if "@" in item:
             item, b = item.split("@")
@@ -39,6 +43,26 @@ def main():
         out = os.path.join(dst, name + ".webp")
         im.save(out, "WEBP", quality=88, method=6)
         print(f"{out} {im.size[0]}x{im.size[1]} {os.path.getsize(out):,} bytes")
+
+
+def pair(src, dst, item):
+    left, rest = item.split("+")
+    right, size = rest.split("%")
+    ims = []
+    for it in (left, right):
+        cond, seed = it.split("/")
+        im = Image.open(os.path.join(src, cond, f"{seed}.png")).convert("RGB")
+        im.thumbnail((int(size), int(size)), Image.LANCZOS)
+        ims.append(im)
+    gap = 16
+    out_im = Image.new("RGB", (ims[0].width + gap + ims[1].width, ims[0].height), "white")
+    out_im.paste(ims[0], (0, 0))
+    out_im.paste(ims[1], (ims[0].width + gap, 0))
+    lc, ls = left.split("/")
+    rc, _ = right.split("/")
+    out = os.path.join(dst, f"attribute-binding_{lc}_vs_{rc}_{ls}.webp")
+    out_im.save(out, "WEBP", quality=88, method=6)
+    print(f"{out} {out_im.size[0]}x{out_im.size[1]} {os.path.getsize(out):,} bytes")
 
 
 if __name__ == "__main__":

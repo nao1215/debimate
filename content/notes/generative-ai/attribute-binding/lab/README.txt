@@ -10,7 +10,7 @@ Attribute Binding ノートの実験ファイル
                  https://civitai.com/models/827184?modelVersionId=2883731
                  SHA-256 f116b0c78ff441467b0cdc8f1936e1ed18ea31e9997c7b132b1b8db533f0bd04
                  ライセンス: Illustrious License（Fair AI Public License 1.0-SD）
-  画風 LoRA    : example_style_lora.safetensors（強さ 0.75。model だけに当てる）
+  画風 LoRA    : example_style_lora.safetensors（強さ 0.75。LoraLoader の strength_model と strength_clip の両方）
   ComfyUI      : v0.35.0（commit 19e1058f4c445ef74047e77a23f9ca7684c1e4b6）
                  PyTorch 2.12.0a0+rocm7.13、GPU は AMD Radeon 8060S
   領域の切り出し: CIDAS/clipseg-rd64-refined（Apache-2.0、
@@ -28,7 +28,9 @@ Attribute Binding ノートの実験ファイル
     ComfyUI のサーバーには触れない
   - 結果は output_clip_mix.txt と clip_mix.json（figures.py が図に使う）
 
-実験 1〜4: seed を変えて生成し、色と人数を数える
+実験 1〜3 と余談: seed を変えて生成し、色と人数を数える
+（照明の語の条件 *_light_* も生成・集計したが、本文には載せていない。照明の語の色かぶりは
+  Prompt Weighting のノートの実験 3 で扱っている）
 ------------------------------------------------
   前提: ComfyUI が http://127.0.0.1:8188 で動いていて、models/checkpoints に
         waiIllustriousSDXL_v170.safetensors、models/loras に画風 LoRA がある
@@ -63,7 +65,7 @@ Attribute Binding ノートの実験ファイル
   - 結果は output_summary.txt（集計）、summary.json、measure.json（1 枚ごとの値）。
     髪の色移りの機械の判定は目視と 96 枚中 89 枚が一致した。食い違った 7 枚は全て画風 LoRA の
     条件で、髪の領域に重なった水色のシャツ・青い背景・黒髪の青みのある艶を青緑と数えた誤り。
-    人数は 60 枚全てで一致した。two-tone の左右の塗り分けの機械の判定（服の領域を中心で左右に
+    人数は判定した 78 枚全てで一致した。two-tone の左右の塗り分けの機械の判定（服の領域を中心で左右に
     割って黒の割合を比べる）は、目視と 12 枚中 9 枚しか一致しなかったので、本文は目視の値を使う
 
   生成の設定（workflow_api.json。条件ごとに変えるのはプロンプト・解像度・LoRA の有無だけ）
@@ -78,9 +80,16 @@ Attribute Binding ノートの実験ファイル
   画像になった（途中で ComfyUI が再起動した前後をまたいでも同じ）。GPU・ドライバ・PyTorch の
   バージョンが違うと、同じ seed でも画素が一致するとは限らない。
 
-本文に載せた代表の 2 枚
------------------------
-  s_rep_none と s_rep_aqua の seed 1000 を、hires.py で仕上げた（1.5 倍に拡大し、同じプロンプト・
+本文に載せた画像
+----------------
+  冒頭の 2 枚の並び、実験 2 の立ち絵と顔の切り抜きは、集計に使った画像をそのまま WebP にした。
+    python3 to_webp.py <PNG の保存先> ../images "eye_none/1000+eye_aqua/1000%560" \
+      s_rep_none/1000 s_rep_aqua/1000 "s_rep_none/1000@244,10,280,240" "s_rep_aqua/1000@244,10,280,240"
+  「画像の色を数える方法」の図は、measure.py と同じ手順で eye_aqua の seed 1000 を測って描いた
+  （CLIPSeg・matplotlib・SciPy を使う）。
+    python measure_figure.py <PNG の保存先> eye_aqua 1000 ../images/attribute-binding_measure.webp
+
+  以前の版では、s_rep_none と s_rep_aqua の seed 1000 を、hires.py で仕上げて載せていた（1.5 倍に拡大し、同じプロンプト・
   LoRA・seed で denoise 0.4・20 ステップの img2img）。集計には仕上げ前の画像を使っている。
 
     STYLE_LORA=... STYLE_TRIGGER=... python3 hires.py <PNG の保存先> s_rep_none 1000
@@ -110,4 +119,4 @@ Attribute Binding ノートの実験ファイル
 
 図の再生成
 ----------
-  cd .. && python3 figures.py   # clip_mix.json から SVG を作る
+  cd .. && python3 figures.py   # 概念図（SVG を Chrome で PNG にする）とグラフを WebP で作る
