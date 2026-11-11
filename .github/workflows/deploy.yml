@@ -98,26 +98,45 @@ jobs:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-${{ runner.arch }}-playwright-${{ hashFiles('package-lock.json') }}
 
-      # apt のミラー待ちで固まった事がある (2026-11-06 に 10 分以上)。1 回ずつに
-      # 時間の上限を付けて、固まったらやり直す。
-      # 2026-11-11 には azure.archive.ubuntu.com の名前解決が続けて失敗した。
-      # その時、timeout が止めるのは npx だけで、npx が起動した sudo apt-get は
-      # 残ってロックを持ち続け、2 回目以降が即 "Could not get lock" で落ちていた。
-      # やり直す前に残った apt-get を止め、ミラーを archive.ubuntu.com に替える
+      # ブラウザ検査に要るライブラリは runner に最初から入っており、apt で足すのは
+      # フォント 10 個だけ（playwright install-deps の 9 個と fonts-noto-cjk）。
+      # apt は何度も止まった: 2026-11-06 にミラー待ちで 10 分以上、2026-11-11 には
+      # azure.archive.ubuntu.com も archive.ubuntu.com も名前解決できなくなった。
+      # 一度入れた .deb を cache に残し、次からはネットワークを使わずに入れる
+      - name: Restore browser font packages
+        id: font-debs
+        uses: actions/cache/restore@v6
+        with:
+          path: ~/.cache/ci-font-debs
+          key: ${{ runner.os }}-${{ runner.arch }}-font-debs-v1
+
       - name: Install browser test dependencies
+        id: browser-deps
         timeout-minutes: 14
         run: |
           set -eu
-          # 応答の無いミラーで延々と待たず、短く諦めて取り直させる。
-          # ロックは即諦めずに少し待つ
-          printf 'Acquire::Retries "2";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nDPkg::Lock::Timeout "60";\n' |
-            sudo tee /etc/apt/apt.conf.d/99ci-timeouts > /dev/null
           npm ci --ignore-scripts --no-audit --no-fund
           if [ "${{ steps.playwright-cache.outputs.cache-hit }}" != 'true' ]; then
             npx playwright install chromium
           fi
 
-          # 前の試行が残した apt-get を止め、ロックが外れるまで待つ
+          debs="${HOME}/.cache/ci-font-debs"
+          if [ "${{ steps.font-debs.outputs.cache-hit }}" = 'true' ] &&
+             sudo dpkg -i "${debs}"/*.deb > /dev/null; then
+            sudo fc-cache -f > /dev/null
+            echo "cache のフォント $(find "${debs}" -name "*.deb" | wc -l) 個を入れた"
+            exit 0
+          fi
+
+          # 応答の無いミラーで延々と待たず、短く諦めて取り直させる。
+          # ロックは即諦めずに少し待つ
+          printf 'Acquire::Retries "2";\nAcquire::http::Timeout "30";\nAcquire::https::Timeout "30";\nDPkg::Lock::Timeout "60";\n' |
+            sudo tee /etc/apt/apt.conf.d/99ci-timeouts > /dev/null
+          sudo rm -f /var/cache/apt/archives/*.deb
+
+          # timeout が止めるのは npx だけで、npx が起動した sudo apt-get は残って
+          # ロックを持ち続ける（2026-11-11 に 2 回目以降が即 "Could not get lock"）。
+          # やり直す前に止め、消えるまで待つ
           stop_leftover_apt() {
             sudo pkill -x apt-get || true
             for _ in $(seq 1 30); do
@@ -128,33 +147,49 @@ jobs:
             sleep 2
           }
 
-          # 既定の Azure ミラーが引けない時は Ubuntu 本家だけを見るようにする
-          use_fallback_mirror() {
+          # *.ubuntu.com がまとめて引けない時に備え、別ドメインのミラーへ替える
+          use_fallback_mirrors() {
             if [ -f /etc/apt/apt-mirrors.txt ]; then
               echo "現在のミラー一覧:"
               cat /etc/apt/apt-mirrors.txt
-              printf 'http://archive.ubuntu.com/ubuntu/\tpriority:1\n' |
+              printf '%s\tpriority:%s\n' \
+                http://mirrors.edge.kernel.org/ubuntu/ 1 \
+                http://mirror.math.princeton.edu/pub/ubuntu/ 2 \
+                http://ftp.jaist.ac.jp/pub/Linux/ubuntu/ 3 \
+                http://archive.ubuntu.com/ubuntu/ 4 |
                 sudo tee /etc/apt/apt-mirrors.txt > /dev/null
             fi
-            sudo find /etc/apt/sources.list /etc/apt/sources.list.d -type f \
-              \( -name '*.list' -o -name '*.sources' -o -name sources.list \) \
-              -exec sudo sed -i 's#http://azure\.archive\.ubuntu\.com/ubuntu#http://archive.ubuntu.com/ubuntu#g' {} + 2> /dev/null || true
           }
 
+          installed=false
           for attempt in 1 2 3; do
             if timeout --kill-after=10 180 npx playwright install-deps chromium &&
                timeout --kill-after=10 120 sudo apt-get install -y --no-install-recommends fonts-noto-cjk; then
-              exit 0
+              installed=true
+              break
             fi
-            echo "::warning::apt の導入に失敗した (${attempt} 回目)。残った apt-get を止めてやり直す"
+            echo "::warning::apt の導入に失敗した (${attempt} 回目)。残った apt-get を止め、ミラーを替えてやり直す"
             stop_leftover_apt
-            if ! getent hosts azure.archive.ubuntu.com > /dev/null; then
-              echo "::warning::azure.archive.ubuntu.com を名前解決できない。archive.ubuntu.com に切り替える"
-              use_fallback_mirror
-            fi
+            use_fallback_mirrors
             sleep 5
           done
-          exit 1
+
+          if [ "${installed}" = true ]; then
+            mkdir -p "${debs}"
+            cp /var/cache/apt/archives/*.deb "${debs}/" 2> /dev/null || true
+            echo "save=$([ -n "$(ls -A "${debs}")" ] && echo true || echo false)" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+          # ライブラリは揃っているので、フォントが無くても検査は動く。日本語の字形が
+          # 違うまま検査する事になるので、警告を残して先へ進む
+          echo "::warning::apt でフォントを入れられなかった。runner 既定のフォントでブラウザ検査を続ける"
+
+      - name: Save browser font packages
+        if: steps.browser-deps.outputs.save == 'true' && steps.font-debs.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v6
+        with:
+          path: ~/.cache/ci-font-debs
+          key: ${{ steps.font-debs.outputs.cache-primary-key }}
 
       - name: Build site
         # 不要になった変換結果を削除してからキャッシュを保存する。
