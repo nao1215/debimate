@@ -8,7 +8,10 @@ lab/output/exp1_gnu_uutils.json, so rerun
 `python3 lab/exp1_gnu_uutils.py lab/output/exp1_gnu_uutils.json` first when the
 experiment changes.
 
-- gnu_uutils_figure(): 32 cases given to GNU coreutils and uutils. The cover.
+- full_disk_figure(): `ls > list.txt` on a full disk, GNU against uutils. The cover.
+- compare_scope_figure(): what experiment 1 compares (stdout, exit code, stderr).
+- acl_figure(): why uutils 0.8.0 prints + for a user xattr.
+- blind_spot_figure(): two implementations with the same mistake.
 - concept_figure(): Metamorphic Testing (one implementation, two inputs) next to
   Differential Testing (two implementations, one input).
 - sql_figure(): the same SQL given to SQLite and PostgreSQL (lab/output/exp3_group_by.txt).
@@ -78,91 +81,88 @@ class Svg:
         render_svg("".join(self.p), self.w, self.h, name)
 
 
-def describe(r):
-    """One cell of the cover table: exit code and what was printed."""
-    if r["exit"] < 0:
-        return f"panic（シグナル {-r['exit']}）"
-    out = r["stdout"].split("\n")[0]
-    if out:
-        return out.split(" 1 ")[0]
-    if r["stderr"]:
-        return f"{r['exit']}、エラーを表示"
-    return f"{r['exit']}、何も表示しない"
+def full_disk_figure():
+    """The cover: `ls > list.txt` on a full disk, GNU against uutils 0.8.0."""
+    results = {r["case"]: r for r in json.loads((OUT / "exp1_gnu_uutils_0.8.0.json").read_text())}
+    r = results["ls（/dev/full へ）"]
+    g, u = r["gnu"], r["uutils"]
+    s = Svg(880, 240)
+    s.text(20, 32, "ディスクが一杯の時の  ls > list.txt", 17, INK, "start")
+    s.text(20, 56, "/dev/full は、書き込むと必ず「空き容量が無い」エラーを返す", 12, SUB, "start")
+
+    def lane(y, name, stderr, exit_code, result, bad):
+        stroke, fill, color = (RED, RED_PALE, RED) if bad else (ACCENT, PALE, INK)
+        s.text(20, y + 30, name, 14, INK, "start")
+        s.box(150, y + 6, 150, 40, FILL, LINE)
+        s.text(225, y + 31, "書き込みが失敗", 13)
+        s.arrow(300, y + 26, 330, y + 26)
+        s.box(332, y + 6, 250, 40, "#ffffff", LINE)
+        s.text(342, y + 25, "stderr", 10, SUB, "start", mono=True)
+        s.text(342, y + 40, stderr, 12, color, "start", mono=bool(stderr.strip("（）")) and not bad)
+        s.box(592, y + 6, 70, 40, "#ffffff", LINE)
+        s.text(602, y + 25, "終了コード", 10, SUB, "start")
+        s.text(627, y + 41, str(exit_code), 15, color)
+        s.arrow(662, y + 26, 690, y + 26)
+        s.box(692, y + 2, 170, 48, fill, stroke)
+        s.text(777, y + 22, result[0], 12, color)
+        s.text(777, y + 40, result[1], 12, color)
+
+    lane(80, "GNU 9.7", g["stderr"].strip()[:30], g["exit"], ("スクリプトは", "失敗に気付いて止まる"), False)
+    lane(160, "uutils 0.8.0", "（何も出さない）", u["exit"], ("成功とみなして", "欠けた list.txt を使う"), True)
+    s.save("full_disk.webp")
 
 
-def gnu_uutils_figure():
-    results = json.loads((OUT / "exp1_gnu_uutils_0.8.0.json").read_text())
-    n = len(results)
-    same = sum(not r["raw_diff"] for r in results)
-    noise = sum(r["raw_diff"] and not r["normalized_diff"] for r in results)
-    diff = sum(r["normalized_diff"] for r in results)
-    s = Svg(840, 356)
-    s.text(20, 30, f"同じ {n} ケースを GNU coreutils 9.7 と uutils 0.8.0 に渡した結果", 16, INK, "start")
-    # 1 ケース 1 マスの帯
-    x = 20
-    for r in sorted(results, key=lambda r: (r["normalized_diff"], r["raw_diff"])):
-        if r["normalized_diff"]:
-            fill, stroke = RED_PALE, RED
-        elif r["raw_diff"]:
-            fill, stroke = AMBER_PALE, AMBER
-        else:
-            fill, stroke = FILL, LINE
-        s.box(x, 46, 20, 20, fill, stroke, rx=3, width=1.2)
-        x += 24
-    s.text(20, 88, f"一致 {same}", 13, SUB, "start")
-    s.text(110, 88, f"エラーの文面だけ違う {noise}", 13, AMBER, "start")
-    s.text(290, 88, f"出力か終了コードが違う {diff}", 13, RED, "start")
-    # 違いの表
-    cols = [20, 270, 560]
-    y = 124
-    s.text(cols[0], y, "ケース", 13, SUB, "start")
-    s.text(cols[1], y, "GNU 9.7（出力、または終了コード）", 13, SUB, "start")
-    s.text(cols[2], y, "uutils 0.8.0（同）", 13, SUB, "start")
-    s.line(20, y + 10, 820, y + 10, LINE)
-    rows = [r for r in results if r["raw_diff"]]
-    rows.sort(key=lambda r: not r["normalized_diff"])
-    for i, r in enumerate(rows):
-        yy = y + 36 + i * 32
-        if not r["normalized_diff"]:
-            yy += 12
-            s.line(20, yy - 24, 820, yy - 24, LINE, dash=True)
-        color = RED if r["normalized_diff"] else AMBER
-        s.text(cols[0], yy, r["case"], 13, INK, "start")
-        g, u = r["gnu"], r["uutils"]
-        if r["normalized_diff"]:
-            gl, ul = describe(g), describe(u)
-        else:
-            gl, ul = "2、ls: unrecognized option", "2、error: unexpected argument"
-        s.text(cols[1], yy, gl, 13, INK, "start")
-        s.text(cols[2], yy, ul, 13, color, "start")
-    s.save("gnu_uutils.webp")
+def compare_scope_figure():
+    """What experiment 1 compares, with ls --bogus as the example."""
+    results = {r["case"]: r for r in json.loads((OUT / "exp1_gnu_uutils_0.8.0.json").read_text())}
+    r = results["ls --bogus"]
+    g, u = r["gnu"], r["uutils"]
+    s = Svg(880, 300)
+    s.text(20, 30, "ls --bogus の結果を、項目ごとに比べる", 16, INK, "start")
+    s.text(150, 62, "GNU", 13, SUB)
+    s.text(730, 62, "uutils", 13, SUB)
+    rows = [
+        ("stdout", "（空）", "（空）", "そのまま比べる", "一致", INK),
+        ("終了コード", str(g["exit"]), str(u["exit"]), "そのまま比べる", "一致", INK),
+        ("stderr", "ls: unrecognized option …", "error: unexpected argument …",
+         "何か出したかだけ比べる", "どちらも出した → 一致", AMBER),
+    ]
+    for i, (label, gv, uv, how, verdict, color) in enumerate(rows):
+        y = 80 + i * 62
+        s.text(20, y + 26, label, 13, INK, "start")
+        s.box(100, y, 230, 40, FILL, LINE)
+        s.text(110, y + 25, gv, 11, INK, "start", mono=True)
+        s.box(620, y, 240, 40, FILL, LINE)
+        s.text(630, y + 25, uv, 11, INK, "start", mono=True)
+        s.line(330, y + 20, 400, y + 20, LINE)
+        s.line(550, y + 20, 620, y + 20, LINE)
+        s.box(400, y + 2, 150, 36, "#ffffff", color if color != INK else SUB, rx=18)
+        s.text(475, y + 18, how, 11, SUB)
+        s.text(475, y + 32, verdict, 11, color)
+    s.text(20, 288, "raw（全てをそのまま比べる）では stderr の文面で差になり、normalized では差にならない", 12, SUB, "start")
+    s.save("compare_scope.webp")
 
 
-def versions_figure():
-    old = json.loads((OUT / "exp1_gnu_uutils_0.8.0.json").read_text())
-    new = {r["case"]: r for r in json.loads((OUT / "exp1_gnu_uutils_0.10.0.json").read_text())}
-    rows = [r for r in old if r["normalized_diff"]]
-    s = Svg(840, 70 + 32 * len(rows) + 16)
-    cols = [20, 250, 450, 650]
-    y = 30
-    for c, label in zip(cols, ["ケース", "GNU 9.7", "uutils 0.8.0", "uutils 0.10.0"]):
-        s.text(c, y, label, 13, SUB, "start")
-    s.line(20, y + 10, 820, y + 10, LINE)
-    for i, r in enumerate(rows):
-        yy = y + 40 + i * 32
-        n = new[r["case"]]
-        s.text(cols[0], yy, r["case"], 13, INK, "start")
-        s.text(cols[1], yy, describe(r["gnu"]), 13, INK, "start")
-        for c, rr in ((cols[2], r), (cols[3], n)):
-            if rr["normalized_diff"]:
-                color = RED
-            elif rr["raw_diff"]:
-                color = AMBER
-            else:
-                color = INK
-            s.text(c, yy, describe(rr["uutils"]), 13, color, "start")
-    s.text(820, y + 40 + 32 * len(rows) + 2, "赤: GNU と出力か終了コードが違う　黄: エラーの文面だけ違う", 12, SUB, "end")
-    s.save("versions.webp")
+def blind_spot_figure():
+    """What Differential Testing cannot see: the same mistake in both."""
+    s = Svg(880, 230)
+    s.text(20, 30, "2 つの実装が同じ誤りを持つと、差が出ない", 16, INK, "start")
+    s.box(20, 90, 170, 56, FILL, LINE)
+    s.text(105, 113, "仕様書の", 13)
+    s.text(105, 132, "曖昧な記述", 13)
+    for i, name in enumerate(["実装 A", "実装 B"]):
+        y = 60 + i * 90
+        s.arrow(190, 118, 258, y + 22)
+        s.box(260, y, 170, 44, PALE, ACCENT)
+        s.text(345, y + 20, name, 13)
+        s.text(345, y + 36, "同じように解釈", 11, SUB)
+        s.arrow(430, y + 22, 478, y + 22)
+        s.box(480, y, 130, 44, RED_PALE, RED)
+        s.text(545, y + 28, "誤った出力 X", 13, RED)
+    s.text(640, 112, "比べると一致する", 14, INK, "start")
+    s.text(640, 134, "→ テストは通る", 14, RED, "start")
+    s.text(20, 218, "比べて分かるのは「2 つが違うこと」だけで、「2 つが正しいこと」は分からない", 12, SUB, "start")
+    s.save("blind_spot.webp")
 
 
 def sql_figure():
@@ -174,11 +174,9 @@ def sql_figure():
 
     s.text(20, 30, "同じ SQL を 2 つの相手に渡す", 15, INK, "start")
     node(20, 112, "SELECT a, b FROM g GROUP BY b", 270, size=12, mono=True)
-    # 上: filesql が内部で使う SQLite
     node(340, 60, "SQLite（filesql が内部で使う）", 230, PALE, ACCENT, size=13)
     node(610, 60, "(1, 10) と (3, 20) を返す", 230, size=13)
     s.text(725, 124, "a はグループのどれか 1 行の値", 12, SUB)
-    # 下: filesql が書き方を約束した PostgreSQL
     node(340, 170, "PostgreSQL（filesql が約束した相手）", 230, PALE, ACCENT, size=12)
     node(610, 170, "拒否する", 230, RED_PALE, RED, RED, size=13)
     s.text(725, 234, "a は GROUP BY に無く、集約もしていない", 12, SUB)
@@ -188,6 +186,31 @@ def sql_figure():
     s.arrow(570, 192, 608, 192)
     s.text(20, 280, "修正前の filesql は SQLite の答えを返していた。約束した PostgreSQL に合わせて、拒否するように直した", 13, RED, "start")
     s.save("sql.webp")
+
+
+def acl_figure():
+    """Why uutils 0.8.0 prints + for a file that only has a user xattr."""
+    s = Svg(880, 228)
+    s.text(20, 30, "拡張属性 user.note だけを付けたファイルの ls -l", 16, INK, "start")
+    s.box(20, 92, 170, 60, FILL, LINE)
+    s.text(105, 116, "attr.txt", 13, INK, mono=True)
+    s.text(105, 138, "user.note = 1", 12, SUB, mono=True)
+
+    def lane(y, name, question, answer, out, bad):
+        color = RED if bad else INK
+        s.text(230, y - 8, name, 13, SUB, "start")
+        s.box(230, y, 300, 44, PALE, ACCENT)
+        s.text(380, y + 27, question, 13)
+        s.arrow(530, y + 22, 568, y + 22)
+        s.text(590, y + 27, answer, 13, color, "start")
+        s.box(690, y, 170, 44, RED_PALE if bad else FILL, RED if bad else LINE)
+        s.text(775, y + 28, out, 15, color)
+
+    lane(60, "GNU 9.7", "ACL などのアクセス制御があるか", "無い", "-rw-rw-r--", False)
+    lane(160, "uutils 0.8.0（has_acl）", "拡張属性が 1 つでもあるか", "ある", "-rw-rw-r--+", True)
+    s.arrow(190, 112, 228, 86)
+    s.arrow(190, 132, 228, 178)
+    s.save("acl.webp")
 
 
 def concept_figure():
@@ -280,8 +303,10 @@ def native_json_figure():
 
 
 if __name__ == "__main__":
-    gnu_uutils_figure()
-    versions_figure()
+    full_disk_figure()
+    compare_scope_figure()
+    blind_spot_figure()
     concept_figure()
     native_json_figure()
     sql_figure()
+    acl_figure()

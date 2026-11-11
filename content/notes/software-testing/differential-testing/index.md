@@ -15,15 +15,11 @@ Differential Testing（差分テスト）は、同じ仕事をする 2 つ以上
 
 著者の Ubuntu 26.04 には両方が入っていて、`ls` は uutils、`gnuls` は GNU です。シェルスクリプトから見ると、ある日を境に同じ名前のコマンドの中身が入れ替わったことになります。
 
-以下は、同じ 32 ケースの呼び出しを両方の実装に渡して比べた結果です。
+著者はこの 2 つに、同じ 32 ケースの呼び出しを渡して比べました。26 ケースは出力も終了コードも一致し、5 ケースで違いました。違った 5 ケースのうち 4 ケースは、書き込み先のディスクが一杯の時の振る舞いです。`/dev/full` は、書き込むと必ず「空き容量が無い」エラーを返す特殊なファイルで、ディスクが一杯の状況を再現できます。
 
-{{< figure src="images/gnu_uutils.webp" alt="32 ケースのマスのうち 26 個が灰色で一致、1 個が黄色でエラーの文面だけ違う、5 個が赤で出力か終了コードが違う。下の表は違ったケースの一覧。ls -l で xattr 付きのファイルは GNU が -rw-rw-r--、uutils が -rw-rw-r--+。/dev/full へ書かせた ls は GNU が終了コード 2 でエラーを表示、uutils は 0 で何も表示しない。printf は GNU が 1、uutils が 0 で何も表示しない。sort は GNU が 2、uutils が 1。md5sum は GNU が 1、uutils は panic してシグナル 6 で終わる。ls --bogus はどちらも 2 で、エラーの文面だけが違う" caption="同じ 32 ケースを GNU coreutils 9.7 と uutils 0.8.0 に渡した結果" align="center" >}}
+{{< figure src="images/full_disk.webp" alt="ディスクが一杯の時の ls > list.txt。GNU 9.7 は書き込みが失敗すると stderr に ls: write error: No space left を出し、終了コード 2 で終わるので、スクリプトは失敗に気付いて止まる。uutils 0.8.0 は書き込みが失敗しても stderr に何も出さず、終了コード 0 で終わるので、スクリプトは成功とみなして欠けた list.txt を使う" caption="ディスクが一杯の時、uutils 0.8.0 の ls は失敗を報告しない" align="center" >}}
 
-26 ケースは出力も終了コードも一致しました。違った 5 ケースのうち 4 ケースは、書き込み先のディスクが一杯の時の振る舞いです。
-
-`/dev/full` は、書き込むと必ず「空き容量が無い」エラーを返す特殊なファイルです。GNU の `ls` はエラーを表示して終了コード 2 で終わり、uutils の `ls` は何も表示せずに 0 で終わりました。
-
-`ls > list.txt` を実行したスクリプトは、ディスクが一杯でも成功したと判断して、中身の欠けたファイルを次の処理に渡します。残りの 1 ケースは `ls -l` の表示の違いで、後の節で扱います。
+uutils の `ls` は、書き込みに失敗しても何も表示せずに 0 で終わりました。`ls > list.txt` を実行したスクリプトは、ディスクが一杯でも成功したと判断して、中身の欠けたファイルを次の処理に渡します。残りの差は後の節で扱います。
 
 どちらの実装にも「ディスクが一杯の時の正解」は書いてありません。2 つを並べて比べたことで、片方だけが失敗を報告していないと分かります。
 
@@ -115,6 +111,8 @@ for name, argv, redirect in CASES:
 
 全てを比べる `raw` では、32 ケース中 6 ケースに差が出ました。stdout と終了コードを比べ、stderr は「何か表示したか」だけを比べる `normalized` では 5 ケースです。
 
+{{< figure src="images/compare_scope.webp" alt="ls --bogus の結果を項目ごとに比べる図。stdout はどちらも空でそのまま比べて一致。終了コードはどちらも 2 でそのまま比べて一致。stderr は GNU が ls: unrecognized option、uutils が error: unexpected argument で文面が違うが、何か出したかだけを比べるので、どちらも出したとして一致。raw では stderr の文面で差になり、normalized では差にならない" caption="normalized は、stdout と終了コードをそのまま比べ、stderr は何か出したかだけを比べる" align="center" >}}
+
 ```text
 32 ケース、raw で差 6、normalized で差 5
 [ノイズ] ls --bogus
@@ -146,7 +144,11 @@ stderr を比べる前に、両方の stderr から `sort:` のような最初�
 
 ACL（Access Control List）は、ファイルに利用者ごとの権限を付ける仕組みです。実験では、ファイルに名前と値の組を付ける拡張属性（xattr）で、`user.note` という属性を付けました。これはアクセス制御ではないので、GNU の `ls` は `+` を付けません。
 
-uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0/src/uucore/src/lib/features/fsxattr.rs)は、拡張属性が 1 つでもあれば ACL があるとみなすので、`+` を付けました。`ls -l` の 1 列目を正規表現で読んでいるスクリプトは、末尾の `+` で一致しなくなることがあります。
+uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0/src/uucore/src/lib/features/fsxattr.rs)は、拡張属性が 1 つでもあれば ACL があるとみなすので、`+` を付けました。
+
+{{< figure src="images/acl.webp" alt="拡張属性 user.note = 1 だけを付けた attr.txt の ls -l。GNU 9.7 は ACL などのアクセス制御があるかを見て、無いので -rw-rw-r-- を出す。uutils 0.8.0 の has_acl は拡張属性が 1 つでもあるかを見て、あるので -rw-rw-r--+ を出す" caption="uutils 0.8.0 は、拡張属性があるだけで + を付ける" align="center" >}}
+
+`ls -l` の 1 列目を正規表現で読んでいるスクリプトは、末尾の `+` で一致しなくなることがあります。
 
 `sort` の終了コード 1 は、POSIX では `-c`（入力が並んでいるかを確認するオプション）で並んでいなかった時の値です。GNU の 2 は「1 より大きい値」に収まり、uutils の 1 は収まりません。`sort -c` で「並んでいるか」を確認するスクリプトは、終了コード 1 を「並んでいない」と読むので、書き込みの失敗を並びの問題と取り違えます。
 
@@ -162,7 +164,13 @@ uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0
 
 本記事を書いている途中の 2026-11-12 の朝に、著者の Ubuntu 26.04 では unattended-upgrades（更新を自動で入れる仕組み）が uutils を 0.8.0 から 0.10.0 に上げました。同じスクリプトを実行し直すと、normalized の差は 5 から 4 に減りました。0.8.0 の結果は、docker の `ubuntu:26.04` のイメージで同じスクリプトを実行して残しています。
 
-{{< figure src="images/versions.webp" alt="5 つのケースについて GNU 9.7、uutils 0.8.0、uutils 0.10.0 の結果を並べた表。ls -l の + は 0.8.0 も 0.10.0 も赤。ls の /dev/full は 0.8.0 が 0 で何も表示しない、0.10.0 が 1 でエラーを表示、どちらも赤。printf は両方とも 0 で何も表示しない。sort は両方とも 1。md5sum は 0.8.0 が panic で赤、0.10.0 は 1 でエラーを表示し、エラーの文面だけ違う黄色" caption="uutils を 0.10.0 に上げた後の同じ 5 ケース" align="center" >}}
+| ケース | GNU 9.7 | uutils 0.8.0 | uutils 0.10.0 |
+|---|---|---|---|
+| `ls -l`（xattr 付き） | `-rw-rw-r--` | `-rw-rw-r--+` | `-rw-rw-r--+` |
+| `ls`（`/dev/full` へ） | 2、エラーを表示 | 0、何も表示しない | 1、エラーを表示 |
+| `printf`（`/dev/full` へ） | 1、エラーを表示 | 0、何も表示しない | 0、何も表示しない |
+| `sort`（`/dev/full` へ） | 2、エラーを表示 | 1、エラーを表示 | 1、エラーを表示 |
+| `md5sum`（`/dev/full` へ） | 1、エラーを表示 | panic（134） | 1、エラーを表示 |
 
 `md5sum` は panic せずにエラーを表示して 1 を返すようになり、残った差は stderr の文面だけです。`ls` もエラーを表示するようになりましたが、終了コードは GNU の 2 に対して 1 です。
 
@@ -267,7 +275,10 @@ SQLite は答え、PostgreSQL は拒否しました。SQLite の答えは誤り�
 
 ### 比べても見つからないもの
 
-Differential Testing は、2 つの実装が同じ誤りを持っていると、差が出ないので見つけられません。jsonize の定義と `ip -j` は別の人が書いたので、同じ誤りを持つ可能性は低いです。しかし、2 人の開発者が、仕様書の同じ曖昧な記述で、同じ誤った解釈をすることはあります。
+Differential Testing は、2 つの実装が同じ誤りを持っていると、差が出ないので見つけられません。
+
+{{< figure src="images/blind_spot.webp" alt="仕様書の曖昧な記述について、実装 A と実装 B が同じ解釈をし、どちらも誤った出力 X を出す。比べると一致するので、テストは通る。比べて分かるのは 2 つが違うことだけで、2 つが正しいことは分からない" caption="2 つの実装が同じ誤りを持つと、比べても差が出ない" align="center" >}}
+jsonize の定義と `ip -j` は別の人が書いたので、同じ誤りを持つ可能性は低いです。しかし、2 人の開発者が、仕様書の同じ曖昧な記述で、同じ誤った解釈をすることはあります。
 
 また、渡していない入力の差は見つかりません。実験 1 で `/dev/full` の 4 ケースを足したのは、書き込みの失敗が書き直しで壊れやすいと知っていたからです。思い付かなかった入力は、比べようがありません。uutils の uufuzz がランダムな引数と入力を生成しているのは、人が思い付かない入力も比べるためです。入力を機械に作らせる方法は、次の Fuzzing のノートで扱います。
 
