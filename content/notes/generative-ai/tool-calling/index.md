@@ -543,7 +543,7 @@ def grade(answer, check):
 
 どの設定でも、8 回の上限（stopped: 8 turns）や同じ呼び出しの上限（stopped: same call x3）で止まった回はありませんでした。問い合わせは多くても 4 回で、ほとんどは「ツールを呼ぶ → 結果を読んで答える」の 2 回です。複数の都市の天気は、1 回の返事の `tool_calls` に 5 件並べて要求してきました。失敗の多くは、ループが止まらないことではなく、止まった時の回答が間違っていることでした。
 
-なお、seed と `temperature` を固定しても、[回し直した結果は一致しませんでした](../sampling/)。思考なしの `qwen3:8b` で seed 1 の 30 回を回し直すと、回答の文字列が一致したのは 17 回で、正解の数は 26 から 29 に変わっています（[lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/tool-calling/lab/README.txt)）。設定の間の数回の差は、この揺れの範囲として読んでください。
+なお、seed と `temperature` を固定しても、[回し直した結果は一致しませんでした](../sampling/)。思考なしの `qwen3:8b` で seed 1 の 30 回を回し直すと、回答の文字列が一致したのは 17 回で、正解の数は 26 から 29 に変わっています（[lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/tool-calling/lab/README.txt)）。Sampling のノートの実験では、Ollama が直前の問いの計算を使い回すかどうかで、temperature 0 でも 1 回目だけ出力が変わりました。temperature 0.6 と seed のこの実験の条件では確かめていませんが、この使い回しと、同時に流した他の実験の影響が原因の候補です。設定の間の数回の差は、この揺れの範囲として読んでください。
 
 ---
 
