@@ -4,7 +4,7 @@ import random
 
 N = 3  # プロセス数。1 台の停止に備え、自分を含めて N - 1 = 2 通を集めたら先に進む
 OTHERS = [tuple(j for j in range(N) if j != i) for i in range(N)]
-# 配送順の選び方: 各段階で、各プロセスが「自分以外の誰の通知を先に受け取るか」
+# 配送順の選び方: 各段階で、各プロセスが「自分以外の誰のメッセージを先に受け取るか」
 SCHEDULES = list(itertools.product(itertools.product(*OTHERS), repeat=2))
 
 
@@ -56,7 +56,7 @@ def adversary(x, _rng):
 
 
 def fair_random(_x, rng):
-    """遅れる通知をラウンドごとにランダムに選ぶ。"""
+    """遅れるメッセージをラウンドごとにランダムに選ぶ。"""
     return rng.choice(SCHEDULES)
 
 
@@ -98,6 +98,6 @@ if __name__ == "__main__":
     undecided = sum(len(d) < N for d in results)
     print(f"  10000 seeds: undecided={undecided} max_round={max(r for d in results for _, r in d.values())}")
     run("adversary", adversary, start, rounds=1000)
-    # p2 の通知は p1 には 10ms で届くが、p0 には 150ms 掛かる。p2 は止まっていない
+    # p2 のメッセージは p1 には 10ms で届くが、p0 には 150ms 掛かる。p2 は止まっていない
     delay = [[0, 10, 10], [10, 0, 10], [150, 10, 0]]  # delay[送信元][宛先]
     timeout_vote(start, delay, timeout_ms=100)

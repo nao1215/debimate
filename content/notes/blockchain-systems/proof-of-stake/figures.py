@@ -5,11 +5,22 @@ effective balance (the weight in consensus). Validators that follow the rules
 stay in the set; the one that signed two contradicting votes loses part of its
 stake (smaller red circle) and leaves the set.
 
+checkpoint_figure() lays three epochs on a time axis, marks the checkpoint
+(the block at the first slot of each epoch) and shows what one attestation
+carries: head, source and target.
+
+Each SVG is rendered with headless Chrome at 2x and saved as WebP (Pillow).
+Only the WebP files are kept in images/. Needs google-chrome and Pillow.
+
 Run: python3 content/notes/blockchain-systems/proof-of-stake/figures.py
 """
 
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
+
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
@@ -22,6 +33,7 @@ class Svg:
     """A tiny hand-written SVG builder (960x540, white background)."""
 
     def __init__(self, title, width=960, height=540):
+        self.width, self.height = width, height
         self.parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
             f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
@@ -67,9 +79,19 @@ class Svg:
             f'<path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}" '
             'stroke-linecap="round" stroke-linejoin="round"/>')
 
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+    def save(self, name):
+        """SVG text -> PNG (headless Chrome, 2x) -> images/<name> (WebP)."""
+        (HERE / "images").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+            svg.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+            subprocess.run(["google-chrome", "--headless=new", "--disable-gpu",
+                            "--hide-scrollbars", "--force-device-scale-factor=2",
+                            f"--window-size={self.width},{self.height}",
+                            f"--screenshot={png}", svg.as_uri()],
+                           check=True, capture_output=True)
+            Image.open(png).convert("RGB").save(HERE / "images" / name, "WEBP",
+                                                quality=90, method=6)
 
 
 def check(f, cx, cy, r):
@@ -100,7 +122,7 @@ def concept_figure():
     f.text(872, 150, "投票 2", 24)
     f.text(807, 152, "≠", 30, RED, weight="normal")
     f.text(806, 470, "担保の減額・強制退出", 26, SUB)
-    f.save(HERE / "images" / "proof-of-stake_concept.svg")
+    f.save("proof-of-stake_concept.webp")
 
 
 def surround_figure():
@@ -136,9 +158,59 @@ def surround_figure():
         f.line(ex(e), 474, ex(e), 486, SUB, sw=2)
         f.text(ex(e), 518, str(e), 24, SUB)
     f.text(ex(6) + 40, 518, "epoch", 24, SUB, anchor="start")
-    f.save(HERE / "images" / "proof-of-stake_surround.svg")
+    f.save("proof-of-stake_surround.webp")
+
+
+def checkpoint_figure():
+    """Three epochs, their checkpoints, and the three parts of one attestation."""
+    f = Svg("epoch の境界の checkpoint と、attestation が指す head・source・target",
+            height=540)
+    left, ew = 60, 280            # epoch band: x = left + i * ew, width ew
+    by = 210                      # y of the block row
+    f.text(40, 50, "時間（1 epoch = 32 slot。図では slot を 4 つに省略）", 24, SUB,
+           anchor="start")
+    for i, e in enumerate((1, 2, 3)):
+        x = left + i * ew
+        future = i == 2
+        f.box(x, 76, ew - 10, 220, "#ffffff" if future else FILL, SUB, sw=1.5,
+              dash="8 6" if future else "", rx=12)
+        f.text(x + (ew - 10) / 2, 112, f"epoch {e}" + ("（これから）" if future else ""),
+               24, SUB if future else INK)
+    blocks = []
+    for i in range(3):
+        for k in range(4):
+            if i == 2:
+                continue          # epoch 3 has not happened yet
+            blocks.append((i, k, left + i * ew + 22 + k * 62))
+    for (_, _, x), (_, _, nx) in zip(blocks, blocks[1:]):
+        f.line(x + 44, by, nx, by, SUB, sw=2.5)
+    for i, k, x in blocks:
+        cp, head = k == 0, (i, k) == (1, 3)
+        fill = OCHRE if cp else (ACCENT if head else PALE)
+        f.box(x, by - 22, 44, 44, fill, OCHRE if cp else SUB, sw=2, rx=6)
+        if cp:
+            f.text(x + 4, by - 38, "checkpoint", 20, INK, anchor="start")
+
+    # the attestation sent in epoch 2: one cell per field, one arrow per cell
+    src, tgt = left + 22 + 22, left + ew + 22 + 22
+    head_x = left + ew + 22 + 3 * 62 + 22
+    cy, cw, ch = 380, 200, 76
+    cells = (
+        (150, "source（起点）", "直近の justified", src, OCHRE, "sub"),
+        (370, "target（行き先）", "今の epoch", tgt, OCHRE, "sub"),
+        (590, "head（先頭）", "最新のブロック", head_x, ACCENT, "accent"),
+    )
+    f.box(140, cy - 10, 660, ch + 20, "#ffffff", INK, sw=2.5, rx=10)
+    for x, label, sub, to, color, arrow in cells:
+        f.box(x, cy, cw, ch, "#ffffff", color, sw=2, rx=8)
+        f.text(x + cw / 2, cy + 33, label, 22, INK)
+        f.text(x + cw / 2, cy + 62, sub, 18, SUB)
+        f.line(x + cw / 2, cy - 2, to, by + 30, color, sw=3, arrow=arrow)
+    f.text(470, cy + ch + 46, "epoch 2 で送る attestation", 22, INK)
+    f.save("proof-of-stake_checkpoint.webp")
 
 
 if __name__ == "__main__":
     concept_figure()
     surround_figure()
+    checkpoint_figure()

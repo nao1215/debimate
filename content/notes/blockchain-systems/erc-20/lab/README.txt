@@ -1,6 +1,9 @@
 Local ERC-20 experiment
 Requirements: Python 3, Foundry anvil/cast 1.7.1, solc 0.8.28.
 Set PATH or ANVIL, CAST, SOLC to executable paths.
+The runner fixes the Ethereum execution rules to Cancun
+(anvil --hardfork cancun, solc --evm-version cancun).
+Run from the repository root: bash content/notes/blockchain-systems/erc-20/lab/run.sh
 From this directory: bash run.sh
 Requires sibling ../../smart-contract/lab/run.py (shared runner).
 StudyToken.sol is an educational implementation, not audited production code.

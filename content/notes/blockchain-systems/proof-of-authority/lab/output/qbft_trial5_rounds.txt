@@ -1,0 +1,65 @@
+# Besu 26.11.0 の INFO ログから、node3 停止中〜再起動後の最初のブロックまでの round の行を抜き出したもの（2026-11-11 再実行、時刻は UTC）。
+# 0x8186... = node1, 0x582a... = node2, 0xdd1b... = node3。node4 はこの間止まっている。
+
+## node1
+09:42:53.002 RoundTimer Moved to round 2 which will expire in 16 seconds
+09:42:53.004 RoundChangeManager BFT round summary (quorum = 3)
+09:42:53.004 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 2 (Local node)
+09:42:53.004 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 2 
+09:43:09.002 RoundTimer Moved to round 3 which will expire in 32 seconds
+09:43:09.005 RoundChangeManager BFT round summary (quorum = 3)
+09:43:09.005 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 3 (Local node)
+09:43:09.005 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 3 
+09:43:41.003 RoundTimer Moved to round 4 which will expire in 64 seconds
+09:43:41.005 RoundChangeManager BFT round summary (quorum = 3)
+09:43:41.005 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 (Local node)
+09:43:41.005 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 4 
+09:44:23.773 RoundChangeManager BFT round summary (quorum = 3)
+09:44:23.774 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 (Local node)
+09:44:23.774 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 4 
+09:44:23.774 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 4 
+09:44:45.003 RoundTimer Moved to round 5 which will expire in 128 seconds
+09:44:45.006 RoundChangeManager BFT round summary (quorum = 3)
+09:44:45.006 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 5 (Local node)
+09:44:45.006 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 4 
+09:44:45.006 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 5 
+09:45:27.797 RoundChangeManager BFT round summary (quorum = 3)
+09:45:27.798 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 5 (Local node)
+09:45:27.798 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 5 
+09:45:27.798 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 5 
+09:45:27.799 QbftRound Importing proposed block to chain. round=ConsensusRoundIdentifier{Sequence=34, Round=5}, hash=0xd762e276110dbf15f9922f485e12b011bb46980ee
+
+## node3
+09:43:23.763 Runner Ethereum main loop is up.
+09:43:35.768 RoundTimer Moved to round 2 which will expire in 16 seconds
+09:43:41.008 RoundChangeManager BFT round summary (quorum = 3)
+09:43:41.008 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 
+09:43:41.008 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 2 (Local node)
+09:43:41.009 RoundChangeManager BFT round summary (quorum = 3)
+09:43:41.009 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 
+09:43:41.009 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 2 (Local node)
+09:43:41.009 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 4 
+09:43:51.769 RoundTimer Moved to round 3 which will expire in 32 seconds
+09:43:51.770 RoundChangeManager BFT round summary (quorum = 3)
+09:43:51.770 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 
+09:43:51.770 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 3 (Local node)
+09:43:51.770 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 4 
+09:44:23.769 RoundTimer Moved to round 4 which will expire in 64 seconds
+09:44:23.770 RoundChangeManager BFT round summary (quorum = 3)
+09:44:23.770 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 
+09:44:23.770 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 4 (Local node)
+09:44:23.770 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 4 
+09:44:45.007 RoundChangeManager BFT round summary (quorum = 3)
+09:44:45.007 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 4 
+09:44:45.007 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 4 (Local node)
+09:44:45.007 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 5 
+09:44:45.008 RoundChangeManager BFT round summary (quorum = 3)
+09:44:45.008 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 5 
+09:44:45.008 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 4 (Local node)
+09:44:45.008 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 5 
+09:45:27.769 RoundTimer Moved to round 5 which will expire in 128 seconds
+09:45:27.771 RoundChangeManager BFT round summary (quorum = 3)
+09:45:27.771 RoundChangeManager Address: 0x81862026ec94c5c0e2f7605efa55a6bbda0f3b54  Round: 5 
+09:45:27.771 RoundChangeManager Address: 0xdd1b9e989bc812a3e3d863d4140523b774813a84  Round: 5 (Local node)
+09:45:27.771 RoundChangeManager Address: 0x582ae3536d40275ba346915a00918c5c595f3bdf  Round: 5 
+09:45:27.800 QbftRound Importing proposed block to chain. round=ConsensusRoundIdentifier{Sequence=34, Round=5}, hash=0xd762e276110dbf15f9922f485e12b011bb46980ee

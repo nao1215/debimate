@@ -1,7 +1,7 @@
 """Stop Clique signers, split them 2 | 2, and record what the chain does.
 
 Run after `./net.sh up`. Prints one summary per phase, then which side's
-blocks node1 keeps after the split was healed. Usage: python3 scenario.py [--hold]
+blocks node1 keeps after the split was healed. Usage: python3 scenario.py [--hold] [--diag]
 """
 
 import subprocess
@@ -55,6 +55,17 @@ def chain(ip, lo, hi):
     return " ".join(out)
 
 
+def pair_block(nodes, n):
+    """Block n from whichever node of the pair has it (a node may lag or time out)."""
+    for _ in range(5):
+        for i in nodes:
+            b = block(SIDE[i], n)
+            if b:
+                return b
+        time.sleep(1)
+    raise RuntimeError(f"no node of {nodes} returned block {n}")
+
+
 def tip(nodes=(1, 2, 3, 4)):
     return max((head(SIDE[i]) or (0, ""))[0] for i in nodes)
 
@@ -98,8 +109,8 @@ def main():
         time.sleep(0.3)
     net("cut")
     s, _ = watch("split: node1+node2", 30, (1, 2), SIDE[1])
-    left = {n: block(SIDE[1], n)["hash"] for n in range(s + 1, tip((1, 2)) + 1)}
-    right = {n: block(SIDE[3], n)["hash"] for n in range(s + 1, tip((3, 4)) + 1)}
+    left = {n: pair_block((1, 2), n)["hash"] for n in range(s + 1, tip((1, 2)) + 1)}
+    right = {n: pair_block((3, 4), n)["hash"] for n in range(s + 1, tip((3, 4)) + 1)}
     print(f"{'split: node3+node4':28} {len(right):3} blocks  {'':16}"
           f"{chain(SIDE[3], s + 1, tip((3, 4)))}")
     net("heal")
@@ -124,6 +135,29 @@ def main():
     diff = [n for n in range(1, t - 2)
             if len({(block(SIDE[i], n) or {}).get("hash") for i in A}) > 1]
     print(f"heights 1..{t - 3}: {len(diff)} heights differ between nodes {diff}")
+    if "--diag" in sys.argv:
+        diagnose(diff)
+
+
+def diagnose(heights):
+    """For each differing height, show what every node returns, retrying with a
+    longer timeout, and whether the node's next block points back to it."""
+    def get(i, method, arg):
+        for _ in range(3):
+            b = call(SIDE[i], method, [arg, False], timeout=10)
+            if b:
+                return b
+        return None
+    for n in heights:
+        hashes = set()
+        for i in A:
+            b, nxt = get(i, "eth_getBlockByNumber", hex(n)), get(i, "eth_getBlockByNumber", hex(n + 1))
+            hashes.add(b["hash"])
+            print(f"  height {n} node{i}: {b['hash'][:10]} signed by n{signer(SIDE[i], b)} "
+                  f"difficulty {int(b['difficulty'], 16)} | block {n + 1} parent {nxt['parentHash'][:10]}")
+        for i in A:
+            known = [h[:10] for h in sorted(hashes) if get(i, "eth_getBlockByHash", h)]
+            print(f"  node{i} has by hash: {known}")
 
 
 if __name__ == "__main__":

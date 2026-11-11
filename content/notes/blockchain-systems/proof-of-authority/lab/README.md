@@ -28,6 +28,7 @@ cd qbft && ./net.sh up && sleep 15 && python3 scenario.py --vote; ./net.sh down
 # Clique: 上記と同じ停止に加え、node1+node2 と node3+node4 に分断して戻す
 # --hold を付けると、通信を戻した後さらに 5 分待って各ノードの先頭を表示する
 cd clique && ./net.sh up && sleep 20 && python3 scenario.py --hold; ./net.sh down
+# --diag を付けると、ノード間で食い違った高さを各ノードがどう返すかを表示する
 
 # 規則だけのシミュレーション（Docker 不要）
 python3 limits.py   # 出力は limits_output.txt と同じ
@@ -41,6 +42,11 @@ python3 limits.py   # 出力は limits_output.txt と同じ
 `qbft_trial1.txt` は `--vote` 付きです。`clique_trial1〜3.txt` は、各ノードの先頭を表示する行と `--hold` を足す前の
 `scenario.py` の出力で、`clique_trial4.txt` が現在の版（`--hold` 付き）の出力です。
 `after heal ... dropped` は node1 から見た値で、チェーンが止まった試行では node3 と node4 は自分のブロックを保持したままです。
+`clique_trial5.txt` は 2026-11-11 の再実行で、`--diag` を付けて、ノード間で食い違った高さを各ノードがどう返すかを記録しました。
+食い違った高さ 18 では、node3 と node4 が番号の問い合わせ（`eth_getBlockByNumber`）に node4 の 18 を返す一方、
+同じノードの 19 の親は node3 の 18 で、全ノードの 19 以降は一致しました。10 秒の時間切れで問い合わせ直しても（答えが無ければ 3 回まで）、全ノードが答えを返し、同じ食い違いが残りました。
+この実行の後、分断の直後にノードの応答が遅れると落ちる箇所（`pair_block`）を直しています。
+`qbft_trial5.txt` は同じ日の QBFT の再実行（`--vote` なし）で、`qbft_trial5_rounds.txt` はその時の node1 と node3 の Besu の INFO ログから round の行を抜き出したものです（`docker logs` を `net.sh down` の前に保存）。
 
 ## 注意
 

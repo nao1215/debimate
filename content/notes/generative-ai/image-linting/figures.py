@@ -1,17 +1,23 @@
 """Generate the figures of the Image Linting note.
 
-The cover and the color-check figures are hand-written SVG (standard library only).
-The result charts read lab/result.json (lab/evaluate.py), so neither the
-models nor ComfyUI are needed to redraw them.
+The cover and the color-check figures are SVG text built here, rendered with
+headless Chrome at 2x and saved as WebP (Pillow). The result charts read
+lab/result.json (lab/evaluate.py), so neither the models nor ComfyUI are needed
+to redraw them; they are saved as PNG (dpi 200) and converted to WebP.
+Only the WebP files are kept in images/.
 
     python3 figures.py            # cover and the color-check figure only
     python3 figures.py --results  # cover and the result charts (needs matplotlib)
 """
 
 import json
+import subprocess
 import sys
+import tempfile
 from html import escape
 from pathlib import Path
+
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 OUT = HERE / "images"
@@ -21,6 +27,28 @@ OCHRE, OCHRE_BG = "#d4a24c", "#f8eed8"
 RED, RED_BG = "#e15759", "#fbe3e3"
 GREY_BG = "#f2f2f2"
 FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+
+
+def to_webp(png, name):
+    Image.open(png).convert("RGB").save(OUT / name, "WEBP", quality=90, method=6)
+
+
+def render(svg_text, w, h, name):
+    """SVG text -> PNG (headless Chrome, 2x) -> images/<name> (WebP)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+        svg.write_text(svg_text, encoding="utf-8")
+        subprocess.run(["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                        "--force-device-scale-factor=2", f"--window-size={w},{h}",
+                        f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
+        to_webp(png, name)
+
+
+def save_matplotlib(fig, name):
+    with tempfile.TemporaryDirectory() as tmp:
+        png = Path(tmp) / "fig.png"
+        fig.savefig(png, dpi=200, facecolor="#ffffff")
+        to_webp(png, name)
 
 
 def cover_figure():
@@ -41,6 +69,7 @@ def cover_figure():
                  f'text-anchor="{anchor}"{c}>{escape(s)}</text>')
 
     text(480, 52, "検査ごとに正しい絵を 5% 落とすと", 30, weight="normal")
+    text(480, 88, "（各段が互いに独立に誤る場合の計算）", 22, cls="sub")
 
     base, full = 410, 300            # bottom of the bars, height of 100%
     bw, gap = 86, 66
@@ -80,7 +109,7 @@ def cover_figure():
              f'stroke="{OCHRE}" stroke-width="2" stroke-dasharray="6 4"/>')
     text(506, ly + 2, "誤って落とした正しい絵", 24, "start")
     p.append("</svg>")
-    (OUT / "image_linting_cover.svg").write_text("\n".join(p) + "\n")
+    render("\n".join(p) + "\n", w, h, "image_linting_cover.webp")
 
 
 def neon_figure():
@@ -113,8 +142,10 @@ def neon_figure():
     p.append(f'<rect x="{x(0.02):.0f}" y="{top}" width="{x(0.11) - x(0.02):.0f}" '
              f'height="{axis - top}" fill="{GREY_BG}"/>')
     text((x(0.02) + x(0.11)) / 2, top + 36, "不合格にする側（2% を超える）", 24, cls="sub")
-    p.append(f'<line x1="{x(0.02):.0f}" y1="{top}" x2="{x(0.02):.0f}" y2="{axis}" '
-             f'stroke="{SUB}" stroke-width="2" stroke-dasharray="7 5"/>')
+    # the threshold line
+    for y1, y2 in [(top, axis)]:
+        p.append(f'<line x1="{x(0.02):.0f}" y1="{y1}" x2="{x(0.02):.0f}" y2="{y2}" '
+                 f'stroke="{SUB}" stroke-width="2" stroke-dasharray="7 5"/>')
     # axis
     p.append(f'<line x1="{x(0):.0f}" y1="{axis}" x2="{x(0.11):.0f}" y2="{axis}" '
              f'stroke="{INK}" stroke-width="2"/>')
@@ -128,12 +159,14 @@ def neon_figure():
     y = 160
     p.append(f'<circle cx="{x(0.0004):.0f}" cy="{y}" r="11" fill="{BLUE_BG}" '
              f'stroke="{BLUE}" stroke-width="3"/>')
-    text(x(0.0004) + 26, y + 9, "服装 D の基準の絵  0.0004", 24, "start")
+    text(x(0.0004) - 12, y - 56, "服装 D の", 24, "start")
+    text(x(0.0004) - 12, y - 24, "基準の絵", 24, "start")
+    text(x(0.0004) - 12, y + 44, "0.0004", 24, "start")
     # 12 images of outfit D (seed changed): all thrown away
     y = 250
     p.append(f'<rect x="{x(0.051):.0f}" y="{y - 14}" width="{x(0.105) - x(0.051):.0f}" '
              f'height="28" fill="{OCHRE_BG}" stroke="{OCHRE}" stroke-width="3"/>')
-    text(x(0.051) - 18, y + 9, "seed を変えた服装 D の 12 枚", 24, "end")
+    text(x(0.051), y - 30, "seed を変えた服装 D の 12 枚", 24, "start")
     text((x(0.051) + x(0.105)) / 2, y + 56, "0.051〜0.105", 24)
     # one image of outfit A
     y = 345
@@ -141,7 +174,7 @@ def neon_figure():
              f'stroke="{OCHRE}" stroke-width="3"/>')
     text(x(0.025) + 26, y + 9, "服装 A の 1 枚  0.025", 24, "start")
     p.append("</svg>")
-    (OUT / "image_linting_neon.svg").write_text("\n".join(p) + "\n")
+    render("\n".join(p) + "\n", w, h, "image_linting_neon.webp")
 
 
 def _plt():
@@ -171,7 +204,7 @@ def checks_figure(res):
         (axes[0], fr, [r["false_reject"] for r in rows], BLUE_BG, BLUE,
          "誤った棄却（合格の絵を落とした割合）", res["n_good"]),
         (axes[1], fa, [r["false_accept"] for r in rows], OCHRE_BG, OCHRE,
-         "誤った合格（不合格の絵を通した割合）", res["n_bad"]),
+         f"誤った合格（不合格 {res['n_bad']} 枚を通した割合。\n検査の対象外の不良も数に入る）", res["n_bad"]),
     ]:
         ax.barh(names, vals, color=color, edgecolor=edge, linewidth=1.5)
         for y, (v, k) in enumerate(zip(vals, raw)):
@@ -181,7 +214,7 @@ def checks_figure(res):
         ax.set_xticklabels(["0%", "25%", "50%", "75%", "100%"])
         ax.set_title(title, fontsize=11)
     fig.tight_layout()
-    fig.savefig(OUT / "image_linting_checks.svg", metadata={"Date": None})
+    save_matplotlib(fig, "image_linting_checks.webp")
     plt.close(fig)
 
 
@@ -203,7 +236,7 @@ def stages_figure(res):
     ax.set_xticks([0] + k)
     ax.legend(frameon=False, fontsize=10, loc="lower left")
     fig.tight_layout()
-    fig.savefig(OUT / "image_linting_stages.svg", metadata={"Date": None})
+    save_matplotlib(fig, "image_linting_stages.webp")
     plt.close(fig)
 
 
@@ -229,7 +262,7 @@ def identity_figure(res):
         ax.legend(frameon=False, fontsize=9, loc="upper left")
     axes[0].set_ylabel("組の割合（%）")
     fig.tight_layout()
-    fig.savefig(OUT / "image_linting_identity.svg", metadata={"Date": None})
+    save_matplotlib(fig, "image_linting_identity.webp")
     plt.close(fig)
 
 

@@ -11,13 +11,13 @@ topics: ["Smart Contract"]
 
 ERC-20 は、[Ethereum](https://ethereum.org/) 上のトークンについて、残高の照会や送金などの呼び出し方を揃える規格です。同じ種類のトークンを数量で扱い、1 枚ごとに異なる識別子は付けません。ウォレットや交換サービスは、この共通の呼び出し方を使って複数のトークンに対応できます。
 
-トークンを使うアプリでは、送金の前に Approve という操作を求められることがあります。これは、別のアドレスにトークンを使う権限を与える操作です。Approve では承認額を設定し、送金では残高を変更します。
+トークンを使うアプリでは、送金の前に Approve という操作を求められることがあります。これは、別のアドレス（spender と呼びます）にトークンを使う権限を与える操作です。Approve では承認額を設定し、送金では残高を変更します。
 
 以下は、送金（transfer）と Approve が、トークンコントラクトの中のどの値を変えるのかを示した図です。
 
-{{< figure src="images/erc-20_concept.svg" alt="トークンコントラクトの枠の中に balanceOf と allowance の 2 つの表がある。transfer 5 では balanceOf の所有者 100 → 95 と受取人 0 → 5 の 2 行が青く、approve 30 では allowance の spender 0 → 30 の 1 行だけが黄土色に変わる。ETH の残高はコントラクトの枠の外のアカウントの状態にある" caption="transfer と approve が書き換える、トークンコントラクトの値" align="center" >}}
+{{< figure src="images/erc-20_concept.webp" alt="トークンコントラクトの枠の中に balanceOf と allowance の 2 つの表がある。transfer 5 では balanceOf の所有者 100 → 95 と受取人 0 → 5 の 2 行が青く、approve 30 では allowance の spender 0 → 30 の 1 行だけが黄土色に変わる。ETH の残高はコントラクトの枠の外のアカウントの状態にある" caption="transfer と approve が書き換える、トークンコントラクトの値" align="center" >}}
 
-上記の図の通り、Approve で残高は動かず、ETH の残高はコントラクトの外にあります。
+上記の図の通り、Approve で変わるのは承認額（allowance）だけで、残高（balanceOf）は動きません。ETH の残高はコントラクトの外にあります。
 
 <br>
 
@@ -28,13 +28,13 @@ ERC-20 は、[Ethereum](https://ethereum.org/) 上のトークンについて、
 - Approve は、誰に何を許可する操作なのか。
 - 承認額を超えた利用や、承認の取り消し後の利用はどうなるのか。
 
-後半では、ローカルにテスト用トークンを作成し、残高と承認額の変化を追います。価格や投資判断、NFT の規格は扱いません。
+後半では、ローカルにテスト用トークンを作成し、残高と承認額の変化を追います。価格や投資判断、[NFT の規格](../erc-721/)は扱いません。
 
 ---
 
 ### ETH とトークンの保存場所
 
-ETH は Ethereum のネイティブな資産で、アカウントの状態に残高があります。一方で、ERC-20 の残高はトークンコントラクトが管理します。例えば、同じアドレスがトークン A を 100 枚、トークン B を 20 枚持つ場合、それぞれのコントラクトに残高が記録されます。
+ETH は Ethereum のネイティブな資産で、[アカウントの状態](../ethereum-account-model/)に残高があります。一方で、ERC-20 の残高はトークンコントラクトが管理します。例えば、同じアドレスがトークン A を 100 枚、トークン B を 20 枚持つ場合、それぞれのコントラクトに残高が記録されます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
@@ -46,9 +46,9 @@ flowchart TD
 
 図の 3 つの残高は、ウォレットの画面では並んで表示されても、同じ場所から取得しているわけではありません。ETH の残高はノードの API で照会し、ERC-20 の残高は対象コントラクトの `balanceOf(アドレス)` を呼んで取得します。
 
-トークンを識別する時は、名前や略称だけでは不十分です。同じ名前のコントラクトを別の人が作成できるため、チェーンとコントラクトのアドレスを確認します。ウォレットにトークンを追加する操作は、多くの場合、この照会先を登録する操作です。
+トークンを識別する時は、名前や略称だけでは不十分です。同じ名前のコントラクトを別の人が作成できるため、チェーンと[コントラクトのアドレス](../ethereum-address/)を確認します。ウォレットにトークンを追加する操作は、多くの場合、この照会先を登録する操作です。
 
-通常の ERC-20 送金では、取引の宛先は受取人ではなくトークンコントラクトです。受取人のアドレスと数量は `transfer` の引数に入ります。トークンの送金だけなら、取引の `value` に ETH を入れる必要はありません。秘密鍵で操作する通常のアカウント（EOA: Externally Owned Account）が直接取引を送る場合は、gas の手数料を払う ETH は別に必要です。
+残高を変える操作は、コントラクトの関数を呼ぶ取引（トランザクション）として送ります。通常の ERC-20 送金では、取引の宛先は受取人ではなくトークンコントラクトです。受取人のアドレスと数量は `transfer` の引数に入ります。トークンの送金だけなら、取引の `value` に ETH を入れる必要はありません。秘密鍵で操作する通常のアカウント（EOA: Externally Owned Account）が直接取引を送る場合は、[gas の手数料](../gas-eip-1559/)を払う ETH は別に必要です。
 
 ---
 
@@ -109,13 +109,13 @@ flowchart TD
     B -->|"5を足す"| D["受取人の残高 5"]
 ```
 
-本サンプルは、送金の前後で総供給量が変わりません。受取人の手元に何かが移るのではなく、同じコントラクト内で 2 つの残高を更新します。後の処理が失敗して取引全体が revert すれば、片方の残高だけが減った状態は残りません。
+本サンプルは、送金の前後で総供給量が変わりません。受取人の手元に何かが移るのではなく、同じコントラクト内で 2 つの残高を更新します。後の処理が失敗して取引全体が取り消される（revert する）と、片方の残高だけが減った状態は残りません。
 
 ---
 
 ### 利用承認と第三者による送金
 
-交換サービスがユーザーのトークンを受け取り、別のトークンを返す場面では、サービス側のコントラクトからユーザーの残高を動かす必要があります。そのための仕組みが、`approve` と `transferFrom` です。
+[交換サービス](../amm/)がユーザーのトークンを受け取り、別のトークンを返す場面では、サービス側のコントラクトからユーザーの残高を動かす必要があります。そのための仕組みが、`approve` と `transferFrom` です。
 
 所有者は `approve(spender, amount)` を呼びます。`spender` は利用を許すアドレス、`amount` は利用を認める数量です。この操作で変わるのは、所有者と spender の組み合わせに紐づく `allowance` です。残高は移動せず、その分が予約されるわけでもありません。
 
@@ -124,7 +124,7 @@ flowchart TD
 sequenceDiagram
     participant O as 所有者
     participant T as トークンコントラクト
-    participant S as 利用を許された相手
+    participant S as spender
     O->>T: approve(S, 30)
     T->>T: allowance[O][S] = 30
     Note over O,T: 所有者の残高は変わらない
@@ -162,15 +162,17 @@ function transferFrom(address from, address to, uint256 amount)
 
 ### ローカルでの残高と承認額の変化
 
-実験では、[Foundry](https://github.com/foundry-rs/foundry) のローカルノードである [Anvil](https://getfoundry.sh/anvil/overview) 1.7.1 と Solidity コンパイラ 0.8.28 を使い、ローカルチェーンに `StudyToken` をデプロイします。Ethereum の実行規則は [Cancun](https://ethereum.org/roadmap/dencun/) に固定しています。デプロイしたアカウントに 100 枚を発行し、所有者、spender、受取人の 3 つのテスト用アカウントを使います。
+実験では、[Foundry](https://github.com/foundry-rs/foundry) に含まれるローカルノードの [Anvil](https://getfoundry.sh/anvil/overview) を手元だけで起動し、`StudyToken` をデプロイ（チェーンに登録）します。デプロイしたアカウントには、最初に 100 枚の残高を割り当てます（発行）。所有者、spender、受取人の 3 つのテスト用アカウントを使います。
 
 `StudyToken` は、処理を追うために作成した学習用の実装です。本番の資産管理用として監査されたコードではありません。既存 OSS を利用する場合は、[OpenZeppelin Contracts の ERC20 実装](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.0.2/contracts/token/ERC20/ERC20.sol)などで、エラー処理や拡張方法を確認できます。
 
-再現用のファイルは [lab/README.txt](lab/README.txt) にまとめています。`anvil`、`cast`、`solc`を PATH に置き、リポジトリのルートから実行します。
+再現用のファイルは [lab/README.txt](lab/README.txt) にまとめています。使ったツールの版と設定も README に記しています。
 
-以下は、残高と承認額を順に変えて検査する部分の抜粋です。`owner`・`spender`・`receiver` はテスト用アカウント、`address` はデプロイ済みの `StudyToken` のアドレスです。
+試す筋書きは 6 段です。所有者が受取人へ 5 枚送り、spender に 30 枚を承認します。次に spender が 10 枚を使い、続けて承認額を超える 21 枚を使おうとします。最後に所有者が承認を 0 に戻し、その後で spender が 1 枚を使おうとします。
 
-`data` は[関数呼び出しの符号化](../evm/#calldata-と-abi)、`send` は取引送信と receipt の取得、`read` は値の照会、`status` は取引の成否を返します。`lines` は出力をためるリストです。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
+各段の後で、所有者と受取人の残高と承認額を読み、期待した値かを検査します。取引の成否は、取引の実行結果の記録（receipt）にある status で分かります。1 が成功、0 が失敗（revert）です。
+
+以下は、この筋書きを検査する部分の抜粋です。`cases` の 1 行が 1 段で、送る人・関数・引数・期待する 3 つの値・期待する status を並べています。
 
 ```python
 lines.append('stage | owner | receiver | allowance | status')
@@ -225,11 +227,13 @@ for i, (label, sender, signature, args, expected, ok) in enumerate(cases):
     snapshot(label, expected, receipt)
 ```
 
+`owner`・`spender`・`receiver` はテスト用アカウント、`address` はデプロイ済みの `StudyToken` のアドレスです。`data` は[関数呼び出しの符号化](../evm/#calldata-と-abi)、`send` は取引の送信と receipt の取得、`read` は値の照会、`status` は receipt から成否を取り出す補助関数です。receipt の `logs` は発行されたイベントの一覧で、成功した 1 回の操作で 1 件の `Transfer` か `Approval` が入ります。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
+
 ```bash
 bash content/notes/blockchain-systems/erc-20/lab/run.sh
 ```
 
-このスクリプトは、Smart Contract のノートの実験ランナーを共有しています。独自に起動したローカルノードだけを操作し、終了時に停止します。以下は、実際の[出力](lab/output/summary.txt)です。
+このスクリプトは、独自に起動したローカルノードだけを操作し、終了時に停止します。以下は、実際の[出力](lab/output/summary.txt)です。
 
 ```text
 stage | owner | receiver | allowance | status
@@ -245,9 +249,9 @@ Assertions: PASS
 
 以下は、上記の出力の 3 つの値を段階ごとに並べたグラフです。
 
-{{< figure src="images/erc-20_stages.svg" alt="所有者の残高は 100 から 95、85 と下がり、受取人の残高は 0 から 5、15 と上がる。承認額は approve 30 で 30、spend 10 で 20、revoke で 0 になる。失敗した overspend 21 と spend after revoke の段には赤い × が付き、どの値も前の段から変わっていない" caption="実験の段階ごとの残高と承認額" align="center" >}}
+{{< figure src="images/erc-20_stages.webp" alt="所有者の残高は 100 から 95、85 と下がり、受取人の残高は 0 から 5、15 と上がる。承認額は approve 30 で 30、10 枚利用で 20、approve 0 で 0 になる。失敗した「21 枚利用」と「取り消し後に 1 枚利用」の段には赤い × が付き、どの値も前の段から変わっていない" caption="実験の段階ごとの残高と承認額" align="center" >}}
 
-失敗した 2 回（赤い ×）の段では、残高も承認額も前の段のままです。
+失敗した 2 回（赤い ×）の段では、所有者と受取人の残高も承認額も前の段のままです。図の段の名前は、上記の出力の stage 列を日本語にしたものです（spend 10 が「10 枚利用」、revoke が「approve 0」）。
 
 最初に、所有者本人が `transfer` で 5 枚送っています。その後で 30 枚を承認しても、所有者の残高 95 と受取人の残高 5 は変わりません。
 
@@ -273,7 +277,23 @@ flowchart TD
 
 `approve` は、現在の承認額に追加する操作ではありません。新しい値で上書きします。現在 20 なら `approve(spender, 5)` の後は 5 で、25 にはなりません。
 
-承認額を変更する取引がまだブロックに入っていない間は、古い承認が使われる可能性があります。例えば 30 から 10 に変更する前に spender が 30 を使い、その後で新しい 10 の承認が成立すると、合計 40 を使える状況になります。ERC-20 の仕様は、この問題を踏まえて、ユーザーインターフェースでいったん 0 に変更してから新しい値を設定する方法を挙げています。
+承認額を変更する取引が[まだブロックに入っていない](../mempool/)間は、古い承認が使われる可能性があります。例えば 30 から 10 に変更する前に spender が 30 を使い、その後で新しい 10 の承認が成立すると、合計 40 を使える状況になります。ERC-20 の仕様は、この問題を踏まえて、ユーザーインターフェースでいったん 0 に変更してから新しい値を設定する方法を挙げています。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
+sequenceDiagram
+    participant O as 所有者
+    participant T as トークンコントラクト
+    participant S as spender
+    Note over T: 承認額 30
+    O->>T: approve(S, 10) を送信（まだ未処理）
+    S->>T: transferFrom で 30 を使う（先に処理される）
+    Note over T: 承認額 0
+    Note over O,T: 所有者の approve(S, 10) が処理される
+    Note over T: 承認額 10
+    S->>T: transferFrom で 10 を使う
+    Note over O,S: 合計 40 が使われる
+```
 
 0 にする操作も即座には確定しません。取り消しを待つ間に利用される可能性があり、すでに完了した送金を巻き戻すこともできません。実際の利用履歴と取り消しの成立を確認してから、必要な承認を改めて設定します。
 

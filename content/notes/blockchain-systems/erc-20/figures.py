@@ -9,11 +9,19 @@ stages_figure() plots lab/output/summary.txt (owner, receiver, allowance per
 stage) as steps and marks the stages whose transaction failed (status 0).
 It reads the saved output and does not rerun the experiment.
 
+Both are rendered to PNG (the SVG with headless Chrome at 2x, the plot with
+dpi 200) and saved as WebP with Pillow. Only the WebP files are kept in images/.
+Needs google-chrome, matplotlib and Pillow.
+
 Run: python3 content/notes/blockchain-systems/erc-20/figures.py
 """
 
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
+
+from PIL import Image
 
 import matplotlib
 
@@ -29,6 +37,7 @@ OCHRE = "#d4a24c"
 
 class Svg:
     def __init__(self, width, height, title):
+        self.width, self.height = width, height
         self.parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
             f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
@@ -63,12 +72,30 @@ class Svg:
             f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
             f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
 
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+    def save(self, name):
+        to_webp_from_svg("\n".join(self.parts + ["</svg>"]) + "\n",
+                         self.width, self.height, name)
+
+
+def to_webp(png, name):
+    (HERE / "images").mkdir(exist_ok=True)
+    Image.open(png).convert("RGB").save(HERE / "images" / name, "WEBP",
+                                        quality=90, method=6)
+
+
+def to_webp_from_svg(svg_text, w, h, name):
+    """SVG text -> PNG (headless Chrome, 2x) -> images/<name> (WebP)."""
+    with tempfile.TemporaryDirectory() as tmp:
+        svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+        svg.write_text(svg_text, encoding="utf-8")
+        subprocess.run(["google-chrome", "--headless=new", "--disable-gpu",
+                        "--hide-scrollbars", "--force-device-scale-factor=2",
+                        f"--window-size={w},{h}", f"--screenshot={png}",
+                        svg.as_uri()], check=True, capture_output=True)
+        to_webp(png, name)
 
 plt.rcParams.update({
-    "font.size": 10, "axes.edgecolor": SUB, "axes.labelcolor": INK,
+    "font.family": "Noto Sans CJK JP", "font.size": 10, "axes.edgecolor": SUB, "axes.labelcolor": INK,
     "xtick.color": INK, "ytick.color": INK, "text.color": INK,
     "svg.fonttype": "path", "svg.hashsalt": "erc-20",
     "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
@@ -92,8 +119,8 @@ def stages_figure():
     rows = load()
     x = list(range(len(rows)))
     fig, ax = plt.subplots(figsize=(7.2, 4.0))
-    series = [(1, "owner balance", INK, "-"), (2, "receiver balance", ACCENT, "-"),
-              (3, "allowance (owner -> spender)", SUB, "--")]
+    series = [(1, "所有者の残高", INK, "-"), (2, "受取人の残高", ACCENT, "-"),
+              (3, "承認額（所有者 → spender）", SUB, "--")]
     for i, label, color, ls in series:
         ax.step(x, [r[i] for r in rows], where="mid", color=color, lw=2.4,
                 ls=ls, label=label)
@@ -102,17 +129,21 @@ def stages_figure():
     for k in failed:
         ax.axvspan(k - 0.5, k + 0.5, color=RED, alpha=0.12, lw=0)
     ax.plot(failed, [108] * len(failed), "x", color=RED, ms=10, mew=2.6,
-            label="failed tx (status 0)")
-    ax.set_xticks(x, [r[0].replace("spend after revoke", "spend after\nrevoke")
-                      for r in rows], fontsize=9, rotation=25, ha="right")
-    ax.set_ylabel("Tokens")
+            label="失敗した取引（status 0）")
+    names = {"initial": "初期", "spend 10": "10 枚利用", "overspend 21": "21 枚利用",
+             "revoke": "approve 0", "spend after revoke": "取り消し後に\n1 枚利用"}
+    ax.set_xticks(x, [names.get(r[0], r[0]) for r in rows],
+                  fontsize=9, rotation=25, ha="right")
+    ax.set_ylabel("枚数")
     ax.set_ylim(-4, 115)
     ax.set_xlim(-0.5, len(rows) - 0.5)
     ax.legend(loc="center left", bbox_to_anchor=(0.01, 0.55), frameon=False, fontsize=9)
     ax.spines[["top", "right"]].set_visible(False)
     fig.tight_layout()
-    (HERE / "images").mkdir(exist_ok=True)
-    fig.savefig(HERE / "images" / "erc-20_stages.svg", metadata={"Date": None})
+    with tempfile.TemporaryDirectory() as tmp:
+        png = Path(tmp) / "fig.png"
+        fig.savefig(png, dpi=200, facecolor="#ffffff")
+        to_webp(png, "erc-20_stages.webp")
 
 
 def concept_figure():
@@ -164,7 +195,7 @@ def concept_figure():
                            (400, OCHRE, "approve 30 で変わる")):
         f.box(x, ly - 23, 30, 30, fill, fill, sw=2, rx=4)
         f.text(x + 44, ly, label, 26, INK, anchor="start")
-    f.save(HERE / "images" / "erc-20_concept.svg")
+    f.save("erc-20_concept.webp")
 
 
 if __name__ == "__main__":

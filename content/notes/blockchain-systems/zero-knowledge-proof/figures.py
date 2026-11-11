@@ -2,13 +2,20 @@
 
 concept_figure() draws the prover and the verifier as two frames. The secret
 input (ochre) stays inside the prover's frame; only the public result and a small
-proof cross the boundary. Both sides hold the same agreed program.
+proof cross the boundary. The verifier holds only the expected program ID (image ID), not the program run.
+
+The SVG text is rendered with headless Chrome at 2x and saved as WebP (Pillow).
+Only the WebP file is kept in images/. Needs google-chrome and Pillow.
 
 Run: python3 content/notes/blockchain-systems/zero-knowledge-proof/figures.py
 """
 
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
+
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
@@ -22,6 +29,7 @@ class Svg:
     """A tiny hand-written SVG builder (960x540, white background)."""
 
     def __init__(self, title, width=960, height=540):
+        self.width, self.height = width, height
         self.parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
             f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
@@ -67,9 +75,19 @@ class Svg:
             f'<path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}" '
             'stroke-linecap="round" stroke-linejoin="round"/>')
 
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+    def save(self, name):
+        """SVG text -> PNG (headless Chrome, 2x) -> images/<name> (WebP)."""
+        (HERE / "images").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+            svg.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+            subprocess.run(["google-chrome", "--headless=new", "--disable-gpu",
+                            "--hide-scrollbars", "--force-device-scale-factor=2",
+                            f"--window-size={self.width},{self.height}",
+                            f"--screenshot={png}", svg.as_uri()],
+                           check=True, capture_output=True)
+            Image.open(png).convert("RGB").save(HERE / "images" / name, "WEBP",
+                                                quality=90, method=6)
 
 
 def concept_figure():
@@ -102,12 +120,13 @@ def concept_figure():
     f.text(790, 62, "検証する側", 28, weight="normal")
     f.box(660, 90, 260, 360, "none", SUB, sw=3, rx=16)
     f.box(686, 120, 208, 76, FILL, SUB, sw=2.5)
-    f.text(790, 168, "プログラム", 26)
+    f.text(790, 168, "プログラムの ID", 26)
     f.box(686, 248, 208, 100, GREEN_PALE, GREEN, sw=3)
-    f.text(790, 308, "条件を確認", 26)
+    f.text(790, 292, "証明と結果を", 26)
+    f.text(790, 326, "検証", 26)
     f.line(790, 198, 790, 240, SUB, sw=4, arrow="sub")
     f.text(790, 494, "入力を見ずに検証", 26, SUB)
-    f.save(HERE / "images" / "zero-knowledge-proof_concept.svg")
+    f.save("zero-knowledge-proof_concept.webp")
 
 
 if __name__ == "__main__":
