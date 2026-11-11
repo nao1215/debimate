@@ -170,7 +170,7 @@ function transferFrom(address from, address to, uint256 amount)
 
 以下は、残高と承認額を順に変えて検査する部分の抜粋です。`owner`・`spender`・`receiver` はテスト用アカウント、`address` はデプロイ済みの `StudyToken` のアドレスです。
 
-`data` は[関数呼び出しの符号化](../evm/#コントラクトからの見え方abi)、`send` は取引送信と receipt の取得、`read` は値の照会、`status` は取引の成否を返します。`lines` は出力をためるリストです。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
+`data` は[関数呼び出しの符号化](../evm/#calldata-と-abi)、`send` は取引送信と receipt の取得、`read` は値の照会、`status` は取引の成否を返します。`lines` は出力をためるリストです。起動・デプロイを含む[実験ランナー](../smart-contract/lab/run.py)は Smart Contract のノートと共有しています。
 
 ```python
 lines.append('stage | owner | receiver | allowance | status')
