@@ -128,9 +128,9 @@ for p in sorted(src.glob("*.png")):
 
 {{< figure src="images/video-upscale_frames.webp" alt="ドラゴンの顔の拡大。正解は細かい毛と鱗。bicubic はぼやける。Real-ESRGAN は輪郭がくっきりするが、口の周りの形が崩れる。拡散モデルで描き直したものは、ドラゴンの顔がアニメ調の別の顔に描き変わり、目と鱗の形が正解と違う" caption="同じフレームの比較（ノイズ有りの入力、20 フレーム目。Real-ESRGAN は x4plus_anime_6B、拡散モデルで描き直しは 6B + 描き直し）" align="center" >}}
 
-描き直したものは、ドラゴンの顔が別の顔に描き変わっています。denoise 0.35 でも顔の形まで変わりました。描き直しに使ったモデルは、アニメ絵を多く学習した Illustrious 系なので、学習した絵柄に寄せて描くことも効いていると見ています。こうした創作が 48 フレームで少しずつ違うので、再生すると顔の模様が泳ぎます。以下は、4 つを並べて再生した動画です（3 回繰り返します）。
+描き直したものは、ドラゴンの顔が別の顔に描き変わっています。denoise 0.35 でも顔の形まで変わりました。描き直しに使ったモデルは、アニメ絵を多く学習した Illustrious 系なので、学習した絵柄に寄せて描くことも効いていると見ています。こうした創作が 48 フレームで少しずつ違うので、再生すると顔の模様が泳ぎます。以下は、4 つを並べて動かしたアニメーションです（繰り返し再生します）。
 
-<video src="images/video-upscale_compare.webm" controls muted loop playsinline preload="metadata" style="display:block;margin:1.5rem auto;max-width:100%"></video>
+{{< figure src="images/video-upscale_compare.webp" alt="ドラゴンの顔の同じ範囲を 2 行 2 列で同時に動かしたアニメーション。左上が正解、右上が bicubic、左下が Real-ESRGAN、右下が拡散モデルで描き直したもの。どれもノイズ有りの入力から作った。描き直したものだけ、顔の模様がフレームごとに変わって泳ぐ" caption="ノイズ有りの入力から作った 4 つを並べて動かしたもの（24 fps、2 秒で繰り返す）" align="center" >}}
 
 <br>
 

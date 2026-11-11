@@ -201,7 +201,7 @@ def vsr_figure():
 
 
 def video():
-    """正解・bicubic・Real-ESRGAN・拡散モデルで描き直し（いずれもノイズ有りの入力）を 2x2 に並べた WebM。"""
+    """正解・bicubic・Real-ESRGAN・拡散モデルで描き直し（いずれもノイズ有りの入力）を 2x2 に並べた animated WebP。"""
     runs = [("gt", "正解"), ("out/bicubic_noisy", "bicubic"),
             ("out/gan_noisy", "Real-ESRGAN"), ("out/diffusion_noisy", "拡散モデルで描き直し")]
     names = sorted(p.name for p in (WORK / "gt").glob("*.png"))
@@ -214,10 +214,11 @@ def video():
             frame.paste(top, (0, 0))
             frame.paste(bottom, (0, top.height))
             frame.save(Path(tmp) / f"{k:03d}.png")
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", "24", "-stream_loop", "2",
-                        "-i", str(Path(tmp) / "%03d.png"), "-c:v", "libvpx-vp9", "-b:v", "0",
-                        "-crf", "30", "-pix_fmt", "yuv420p", "-an",
-                        str(OUT / "video-upscale_compare.webm")], check=True)
+        # サイトは video 要素を使わず、動く図は animated WebP で配る（scripts/check_asset_delivery.py）。
+        subprocess.run(["ffmpeg", "-v", "error", "-y", "-framerate", "24",
+                        "-i", str(Path(tmp) / "%03d.png"), "-c:v", "libwebp", "-q:v", "70",
+                        "-loop", "0", "-an",
+                        str(OUT / "video-upscale_compare.webp")], check=True)
 
 
 if __name__ == "__main__":
