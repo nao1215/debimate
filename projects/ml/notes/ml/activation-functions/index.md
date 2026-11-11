@@ -175,7 +175,7 @@ flowchart LR
 | 非負整数のカウント | exp / softplus で平均を出す | Poisson の負の対数尤度 |
 | ピクセル値生成 | tanh / sigmoid | MSE / cross-entropy |
 
-これらは [損失関数](../loss-functions/) の選び方とセットで決まります。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、[PyTorch](https://pytorch.org/) では [`BCEWithLogitsLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) や [`CrossEntropyLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) が「activation + loss」を内部で融合してくれます。
+これらは [損失関数](../loss-functions/) の選び方とセットで決まります。sigmoid + binary cross-entropy、softmax + categorical cross-entropy は数値的に安定な実装が標準で、[PyTorch](https://pytorch.org/) では [`BCEWithLogitsLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) や [`CrossEntropyLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.CrossEntropyLoss.html) が「activation + loss」を内部で融合してくれます。確率にしてから log を取ると float32 ではロジット 16.64 で損失が `inf` になる様子は、[対数・指数と log-odds](../../math/log-exp-logodds/) で実測しています。
 
 ---
 
