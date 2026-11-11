@@ -88,6 +88,8 @@ save("calib_reliability_diagram.svg")
 
 [`CalibratedClassifierCV`](https://scikit-learn.org/stable/modules/generated/sklearn.calibration.CalibratedClassifierCV.html)に通常の未学習モデルを渡すと、[交差検証](/ml/ml/cross-validation/)を使って元モデルと校正器を学習できます。一方で、ここでは `FrozenEstimator` で学習済みモデルを固定し、別に用意した校正データだけを渡します。この使い方では、学習用データと校正用データを利用者が分離する必要があります。`FrozenEstimator` は scikit-learn 1.6 以降で利用できます。
 
+SVM の `SVC(probability=True)` も、内部の交差検証で Platt scaling を学習しています。[SVM のノート](../svm/)では、その確率と `predict` の答えが食い違う点を実際に見ています。
+
 ```python
 models = {"Before": base}
 for name, method in [("Sigmoid", "sigmoid"), ("Isotonic", "isotonic")]:
