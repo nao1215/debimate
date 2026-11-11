@@ -102,7 +102,7 @@ jobs:
       # フォント 10 個だけ（playwright install-deps の 9 個と fonts-noto-cjk）。
       # apt は何度も止まった: 2026-11-06 にミラー待ちで 10 分以上、2026-11-11 には
       # azure.archive.ubuntu.com も archive.ubuntu.com も名前解決できなくなった。
-      # 一度入れた .deb を cache に残し、次からはネットワークを使わずに入れる
+      # 入れる順は cache → GitHub Release の同じ .deb → apt → フォント無し
       - name: Restore browser font packages
         id: font-debs
         uses: actions/cache/restore@v6
@@ -113,6 +113,8 @@ jobs:
       - name: Install browser test dependencies
         id: browser-deps
         timeout-minutes: 14
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -eu
           npm ci --ignore-scripts --no-audit --no-fund
@@ -126,6 +128,24 @@ jobs:
             sudo fc-cache -f > /dev/null
             echo "cache のフォント $(find "${debs}" -name "*.deb" | wc -l) 個を入れた"
             exit 0
+          fi
+
+          # cache が無い時は、同じ版の .deb を置いた Release から取る。GitHub から
+          # 取るので Ubuntu のミラーにも DNS にも頼らない。asset は noble の
+          # Packages の SHA256 で照合する。runner の Ubuntu が替わったら apt へ回す
+          release_tag=ci-font-debs-noble-v1
+          if [ "$(. /etc/os-release && echo "${VERSION_CODENAME}")" = noble ]; then
+            rm -rf "${debs}" && mkdir -p "${debs}"
+            if timeout 300 gh release download "${release_tag}" --repo "${GITHUB_REPOSITORY}" --dir "${debs}" &&
+               (cd "${debs}" && sha256sum --quiet -c SHA256SUMS) &&
+               sudo dpkg -i "${debs}"/*.deb > /dev/null; then
+              sudo fc-cache -f > /dev/null
+              echo "Release ${release_tag} のフォント $(find "${debs}" -name "*.deb" | wc -l) 個を入れた"
+              echo "save=true" >> "${GITHUB_OUTPUT}"
+              exit 0
+            fi
+            echo "::warning::Release ${release_tag} からフォントを入れられなかった。apt で入れる"
+            rm -rf "${debs}"
           fi
 
           # 応答の無いミラーで延々と待たず、短く諦めて取り直させる。
