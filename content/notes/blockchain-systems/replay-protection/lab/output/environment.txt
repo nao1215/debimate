@@ -1,0 +1,7 @@
+date: 2026-11-11
+cpu: AMD RYZEN AI MAX+ 395 w/ Radeon 8060S
+memory: 61 GiB visible to OS
+python: Python 3.14.4
+anvil: anvil Version: 1.7.1 Commit SHA: 4072e48705af9d93e3c0f6e29e93b5e9a40caed8 
+solc: Version: 0.8.28+commit.7893614a.Linux.g++
+memory note: 128GB RAM, of which 64GB is assigned to the GPU (the OS sees 61GiB)

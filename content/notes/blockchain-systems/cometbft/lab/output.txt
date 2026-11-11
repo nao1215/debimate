@@ -1,5 +1,5 @@
 image: cometbft/cometbft:v0.38.26@sha256:08f635fe1eff3bdcbe9d9a57091811351c55de66fbaa80190b28fe436a08356f
-== run 1 timeline (every 5 s): committed height, height/round/step
+== run 1 timeline (every 5 samples): committed height, height/round/step
    0.0s all 4 up                3 4/0/NewHeight            |    3 4/0/Propose              |    3 4/0/Precommit            |    3 5/0/NewHeight           
    8.3s all 4 up                9 10/0/Prevote             |    9 11/0/NewHeight           |   10 11/0/NewHeight           |   10 11/0/NewHeight          
   16.2s all 4 up               15 16/0/Prevote             |   15 17/0/NewHeight           |   16 17/0/NewHeight           |   16 17/0/NewHeight          

@@ -1,176 +1,163 @@
 ---
-title: "ERC-1967 / ERC-7201 - プロキシで更新できるコントラクトと storage の配置"
+title: "Upgradeable Proxy - DELEGATECALL でコードを借りて更新するコントラクト"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
-tags: ["blockchain", "ethereum", "smart-contract", "proxy", "erc-1967", "erc-7201"]
+tags: ["blockchain", "ethereum", "smart-contract", "proxy", "delegatecall", "erc-1967", "erc-7201"]
 weight: 22
 wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-カウンターの `increment()` を 1 回呼んだだけで、そのコントラクトが以後まともな値を返さなくなることがあります。後述の実験では、呼び出しの前に保存領域の slot 0 にあった `0x…5fbdb2315678afecb367f032d93f642f64180aa3` が、呼び出しの後に末尾が `aa4` に増えていました。この値は、カウンターの値ではなく、処理を任せる先のコントラクトのアドレスでした。
+アップグレード可能なプロキシ（upgradeable proxy）は、[スマートコントラクト](../smart-contract/)（チェーン上で動くプログラム）について、アドレスとデータを変えずに処理だけを後から差し替えるための構成です。
 
-アップグレード可能なプロキシ（upgradeable proxy）は、利用者が呼ぶアドレスとデータを固定したまま、処理するコードだけを別のコントラクトに差し替える構成です。上記の事故は、プロキシと差し替え先が保存領域の同じ場所を別の意味で使った時に起きます。
+Ethereum では、一度置いたコントラクトのコードを書き換えられません。そこで、利用者が呼ぶ入口のコントラクト（プロキシ）と、処理のコードを持つ別のコントラクト（実装）に分け、プロキシが覚えている「実装のアドレス」だけを書き換えます。
 
-[ERC-1967](https://eips.ethereum.org/EIPS/eip-1967) は、差し替え先のアドレスなどを置く場所を決めた規格です。
+Web の開発に置き換えると、URL を固定したリバースプロキシの裏で、アプリケーションサーバーを新しい版に入れ替える運用に近い形です。ただし、データの置き場所が異なります。コントラクトは、次の取引（トランザクション）にも残る値を storage という自分専用の保存領域に持ちます。Web ではデータは DB（データベース）にありますが、プロキシの構成ではデータもプロキシの storage にあり、実装はコードだけを貸します。
 
-[ERC-7201](https://eips.ethereum.org/EIPS/eip-7201) は、コントラクトの変数をまとめて置く場所の計算式と、その注記の書き方を決めた規格です。
+この構成は、複数人の承認で送金する [Safe](../safe-multisig/) や、コントラクトで作るアカウント（[スマートアカウント](../erc-4337/)）でも使われています。以下は、プロキシと 2 つの実装の関係を示した図です。
 
-資産を預かるコントラクトの開発者は、不具合が見つかっても利用者にアドレスの移行を頼まずに直したいと考えます。一方で、利用者や監査する人は、そのアドレスの中身を誰が差し替えられるのかを確かめる必要があります。以下は、プロキシと 2 つの実装の関係を示した図です。
+{{< figure src="images/upgradeable-proxy_concept.webp" alt="左の利用者は、中央のプロキシだけを呼ぶ。プロキシの中に owner（所有者）、balance（残高）、…、実装のアドレスの欄が縦に並ぶ。実装のアドレスの欄から、右下の実装 V2 へ青い矢印（DELEGATECALL で V2 のコードを借りる）が伸び、右上の差し替え前の実装 V1 へは点線だけが残る" caption="データはプロキシに残し、実装のアドレスだけを差し替える" align="center" >}}
 
-{{< figure src="images/upgradeable-proxy_concept.svg" alt="利用者はプロキシのアドレスだけを呼ぶ。プロキシの中に slot 0 の owner、slot 1 の balance、名前空間、0x3608… の実装のアドレスが並び、実装のアドレスの欄から DELEGATECALL の矢印が実装 V2 に伸びている。差し替え前の実装 V1 へは点線だけが残る" caption="データはプロキシに残し、実装のアドレスだけを差し替える" align="center" >}}
-
-上記の図のように、データはすべてプロキシ側にあり、実装 V1・V2 はコードだけを提供します。差し替えで変わるのは、黄土色の欄にある 1 つのアドレスです。
+上記の図のように、利用者が呼ぶのは常にプロキシです。owner や balance などのデータはプロキシの storage にあり、実装 V1・V2 はコードだけを提供します。差し替えで変わるのは、黄土色の欄にある実装のアドレスだけです。
 
 <br>
 
-本記事では、[Smart Contract](../smart-contract/) で触れた「あらかじめ用意した更新機構」の中身を説明します。
+本記事では、プロキシが他のコントラクトのコードをどう借りるのか（`DELEGATECALL`）と、その借り方のせいで何が壊れ得るのかを中心に説明します。
 
-- コードを変えられないのに、なぜ処理を差し替えられるのか。
-- 差し替えた時に、保存されたデータはどう扱われるのか。
-- ERC-1967 は、なぜハッシュから 1 を引いた場所を使うのか。
-- constructor の代わりに初期化関数を使う理由と、初期化を忘れた事故。
-- ERC-7201 の名前空間は、従来の `__gap` と何が違うのか。
+- なぜ実装のコードがプロキシのデータの上で動くのか。
+- 実装を差し替えた時に、保存されたデータはどう読まれるのか。
+- 壊れないように、値の置き場所をどう決めるのか。
+- 初期化の処理を constructor に書けない理由と、初期化を忘れた事故。
 
-後半では、ローカルの開発用ノードで各現象を再現します。複数の実装を関数ごとに切り替える Diamond（[ERC-2535](https://eips.ethereum.org/EIPS/eip-2535)）や、EOA の委任（[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)）は扱いません。
+後半では、ローカルの開発用ノードで各現象を再現します。
 
 ---
 
 ### プロキシが必要な理由
 
-Ethereum では、コントラクトのアドレスに置いたコードを後から書き換える命令がありません。2024 年 3 月のハードフォーク Cancun より前は、`SELFDESTRUCT` と `CREATE2` を組み合わせて同じアドレスに別のコードを置き直す方法がありましたが、それも塞がれました（[Ethereum Address](../ethereum-address/) の metamorphic contract、[Ethereum Hard Forks](../ethereum-hard-forks/) の SELFDESTRUCT）。
+Ethereum には、コントラクトのアドレスに置いたコードを後から書き換える命令がありません。以前は同じアドレスにコードを置き直す抜け道がありましたが、2024 年 3 月の仕様の更新で塞がれました（経緯は [Metamorphic Contract](../metamorphic-contract/) と [Ethereum Hard Forks](../ethereum-hard-forks/#selfdestruct-の意味) で説明しています）。
 
-不具合を直すために新しいアドレスへ移る方法もあります。しかし、残高や設定は古いアドレスの storage にあり、他のコントラクトや取引所も古いアドレスを登録しています。移行には、データの移し替えと、すべての参照先の変更が必要になります。
+不具合を直すために、新しいアドレスへ移る方法もあります。しかし、残高や設定は古いアドレスの storage にあり、他のコントラクトや取引所も古いアドレスを登録しています。移行には、データの移し替えと、すべての参照先の変更が必要です。
 
-そこで、利用者が呼ぶアドレス（プロキシ）と、処理のコード（実装）を分けます。プロキシは自分のコードをほとんど持たず、届いた呼び出しを実装に任せます。実装のアドレスを書き換えれば、利用者から見たアドレスとデータはそのまま、処理だけが新しくなります。
+そこで、アドレスとデータを持つプロキシと、コードを持つ実装に分けます。入口を固定したまま裏を入れ替える考え方は、Web のシステムを段階的に置き換える [Strangler Fig](../../software-architecture/strangler-fig/) に近いものです。
 
-「ブロックチェーンのコントラクトは、一度デプロイしたら変わらない」と思うかもしれません。しかし、変わらないのはアドレスに置かれたコードのバイト列で、プロキシの振る舞いは参照先の差し替えで変わります。利用者が確かめるべきなのは、誰が参照先を差し替えられるのか、差し替えに待ち時間や複数人の承認があるのか、です。
-
-2025 年 2 月の Bybit の事故では、Safe のプロキシの参照先が攻撃者の実装に差し替えられました（[Wallet の過去のセキュリティ事件](../wallet/#bybitsafe-の承認処理の乗っ取り)）。
+一方で、変わらないのはアドレスに置かれたコードのバイト列だけで、プロキシの振る舞いは参照先の差し替えで変わります。利用者が確かめるべきなのは、誰が参照先を差し替えられるのか、差し替えに待ち時間や複数人の承認があるのか、です。2025 年 2 月の Bybit の事故では、Safe のプロキシの参照先が攻撃者の実装に差し替えられました（[Wallet の過去のセキュリティ事件](../wallet/#bybitsafe-の承認処理の乗っ取り)）。
 
 ---
 
-### DELEGATECALL による委譲
+### DELEGATECALL でコードを借りる
 
-プロキシは、[EVM](../evm/) の `DELEGATECALL` という命令で実装を呼びます。通常の `CALL` は、呼び先のコードを呼び先の storage で実行します。`DELEGATECALL` は、呼び先のコードを呼び出し元の storage で実行します。2016 年のハードフォーク Homestead で [EIP-7](https://eips.ethereum.org/EIPS/eip-7) として追加された命令です。
+コントラクトが別のコントラクトを呼ぶ命令は、Ethereum の取引を実行する仮想マシン [EVM](../evm/#呼び出しの文脈) に複数あります。普通の呼び出しである `CALL` では、呼び先のコードが呼び先の storage を読み書きします。一方で、`DELEGATECALL` では、呼び先のコードが呼び出し元の storage を読み書きします。
 
-| 命令 | 実行するコード | 読み書きする storage | 実行中の `msg.sender` |
-| --- | --- | --- | --- |
-| `CALL` | 呼び先 | 呼び先 | 呼び出し元 |
-| `DELEGATECALL` | 呼び先 | 呼び出し元 | 呼び出し元を呼んだアカウント |
+{{< figure src="images/upgradeable-proxy_call_vs_delegate.webp" alt="左右 2 つの枠。左の CALL では、A（呼び出し元）が B（呼び先）を呼び、B のコード increment() が B 自身の storage を count += 1 にする。A の storage は変わらない。右の DELEGATECALL では、同じく A が B を呼ぶが、B のコードからの矢印は A の storage に向かい、A の storage が count += 1 になり、B の storage は変わらない" caption="CALL と DELEGATECALL で、書き換わる storage が変わる" align="center" >}}
 
-プロキシはこの性質を使い、実装のコードを自分の storage の上で動かします。プロキシに定義の無い関数が呼ばれると、[Solidity](https://www.soliditylang.org/) の [`fallback` 関数](https://docs.soliditylang.org/en/v0.8.28/contracts.html#fallback-function)が受け取り、同じ入力のまま実装へ `DELEGATECALL` します。実装の関数が `count += 1` を実行すると、増えるのはプロキシの storage の値です。
+上記の図の右側では、B の `increment()` が動いたのに、増えたのは A の `count` です。A は B のコードを借りて、自分のデータに適用したことになります。また、`DELEGATECALL` の実行中の `msg.sender`（今の処理を呼んだアカウント）は、A を呼んだアカウントのままです。そのため、実装の中の「呼んだ人は所有者か」という検査は、プロキシを呼んだ利用者に対して働きます。
 
-つまり、実装はコードの置き場所で、データの置き場所はプロキシです。実装のアドレス自身の storage は、通常は使われません。この分担が、後の節の衝突と初期化の問題につながります。
+プロキシは、この図の A の役です。プロキシに定義の無い関数が呼ばれると、コントラクトの言語 [Solidity](https://www.soliditylang.org/) の [`fallback` 関数](https://docs.soliditylang.org/en/v0.8.28/contracts.html#fallback-function)が受け取り、同じ入力のまま実装へ `DELEGATECALL` します。以下は、後述の実験で使った最も単純なプロキシです。
+
+```solidity
+contract NaiveProxy is Delegate { // Delegate は DELEGATECALL して結果を返す部品（Study.sol）
+    address implementation; // 実装のアドレス
+
+    constructor(address impl) {
+        implementation = impl;
+    }
+
+    fallback() external payable {
+        // 受け取った入力のまま実装へ DELEGATECALL し、結果をそのまま返す
+        _delegate(implementation);
+    }
+}
+```
+
+つまり、実装はコードの置き場所で、データの置き場所はプロキシです。実装のアドレス自身の storage は、通常は使われません。この分担から、2 つの問題が生まれます。プロキシと実装が同じ storage を別々の並びで解釈すること（次の節）と、実装のデプロイ時に動く処理がプロキシに届かないこと（[初期化の節](#初期化関数と初期化を忘れた事故)）です。
 
 ---
 
 ### storage の衝突
 
-Solidity は、状態変数を宣言した順に（32 バイトに満たない型は同じ slot に詰めながら）slot 0、1、2 と並べます（[Layout of State Variables in Storage](https://docs.soliditylang.org/en/v0.8.28/internals/layout_in_storage.html)）。親コントラクトの変数は、継承の順に前から並びます。`DELEGATECALL` では、プロキシと実装の両方が、この番号を自分の変数の場所と考えて同じ storage を読みます。ここから、2 種類の衝突が起きます。
+storage は、2 の 256 乗個の番号付きの場所に 32 バイトずつ値を置ける、キーと値の表です。
 
-1 つ目は、プロキシの変数と実装の変数が同じ slot に載る衝突です。冒頭の例では、プロキシが実装のアドレスを slot 0 に置き、実装のカウンター `count` も slot 0 でした。`count += 1` はアドレスの値に 1 を足し、以後の呼び出しはコードの無いアドレスに委譲されます。
+この場所の番号を slot と呼びます。Solidity は、状態変数（コントラクトが storage に持つ変数）を宣言した順に slot 0、1、2 と並べます（[Layout of State Variables in Storage](https://docs.soliditylang.org/en/v0.8.28/internals/layout_in_storage.html)）。32 バイトに満たない型は同じ slot に詰め、親コントラクトの変数は継承の順に前から並べます。
 
-ちなみに、Safe は現在の [v1.5.0](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/common/Singleton.sol) でも実装のアドレスを slot 0 に置いています。実装側の先頭に同じ変数を宣言させ、両者の意味を揃えることで衝突を避けています（[Multisig の Safe](../multisig/)）。
+`DELEGATECALL` では、プロキシの変数と実装の変数が、同じ storage の同じ番号を指します。どちらも自分の宣言の順で番号を決めるので、両者の宣言が食い違うと、同じ slot を別の変数として読み書きします。この衝突には 2 種類あります。
 
-2 つ目は、実装を更新した時に変数の並びがずれる衝突です。例えば、V1 が `owner`、`balance` の順に宣言し、V2 で先頭に `fee` を足すと、V2 は slot 0 を `fee`、slot 1 を `owner` と読みます。後述の実験で V2 に差し替えた直後の値は、以下の通りでした。
+<br>
 
-{{< figure src="images/upgradeable-proxy_layout.svg" alt="中央がプロキシの storage の slot 0・1・2 で、値は 0x7099…79c8、0x…64、0。左の V1 はそれぞれを owner = 0x7099…79c8、balance = 100、未使用と読む。右の V2Bad は fee = 6.43 × 10^47、owner = 0x…0064、balance = 0 と読む" caption="同じ slot の値を V1 と V2Bad が別の変数として読む" align="center" >}}
+#### プロキシと実装の衝突
 
-上記の図の `fee` は、slot 0 のアドレスを 1 つの整数として読んだ 642829559307850963015472508762062935916233390536 です。
+前の節の NaiveProxy は、唯一の変数 `implementation`（実装のアドレス）を slot 0 に置きます。実装がカウンター（`uint256 public count;` だけを持つ CounterV1）なら、`count` も slot 0 です。利用者が `increment()` を呼ぶと、`count += 1` はプロキシの slot 0、つまり実装のアドレスに 1 を足します。後述の実験では、slot 0 の値が次のように変わりました。
 
-slot の値は差し替えの前後で同じです。変わったのは、実装がそれぞれの slot に付ける意味だけです。そのため、実装を更新してもデータは新しい実装に移りません。データはプロキシに残ったまま、新しい実装の並びで読まれます。
+```text
+slot 0 before increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa3
+slot 0 after  increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa4
+```
 
-この状態で V2 の `setFee(5)` を呼ぶと slot 0 が 5 になり、末尾に `fee` を足した別の V2 に差し替えても、`owner` は 0x…05 のままでした。
+末尾が `aa3` から `aa4` に増えたアドレスには、コードがありません。コードの無いアドレスへの `DELEGATECALL` は失敗せず、何も返さずに成功します。以後、プロキシ経由の `count()` は空の返り値（`0x`）で成功し、プロキシ自身はエラーを出さないまま壊れます（呼び出し側が数値として読もうとして、初めて失敗します）。
 
-OpenZeppelin の[ガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)も、状態変数の順序と型を変えず、新しい変数は末尾に足すよう求めています。
+ちなみに、Safe は現在の [v1.5.0](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/common/Singleton.sol) でも実装のアドレスを slot 0 に置いています。実装側の先頭に同じ変数を宣言させ、両者の意味を揃えることで衝突を避けています（[Safe Multisig](../safe-multisig/)）。
+
+<br>
+
+#### 更新で並びがずれる衝突
+
+2 つ目は、実装を更新した時に変数の並びがずれる衝突です。例えば、V1 が `owner`、`balance` の順に宣言し、V2 で先頭に `fee` を足すと、V2 は slot 0 を `fee`、slot 1 を `owner` と読みます。以下は、後述の実験で、先頭に `fee` を足した V2（VaultV2Bad）に差し替えた直後の値です。
+
+{{< figure src="images/upgradeable-proxy_layout.webp" alt="中央がプロキシの storage の slot 0・1・2 で、値は 0x7099…79c8、0x…64、0。左の V1 の読み方では、それぞれ owner = 0x7099…79c8、balance = 100、未使用。右の V2Bad の読み方では、fee = 6.43 × 10^47、owner = 0x…0064、balance = 0。下に「差し替えで変わるのはコードだけで、slot の値はそのまま」" caption="同じ slot の値を V1 と V2Bad が別の変数として読む" align="center" >}}
+
+上記の図の中央にあるプロキシの storage の値は、差し替えの前後で同じです。変わったのは、実装がそれぞれの slot に付ける意味だけです。つまり、実装を更新してもデータは新しい実装に移りません。データはプロキシに残ったまま、新しい実装の並びで読まれます。図の `fee` の値は、slot 0 のアドレスを 1 つの整数として読んだものです。
+
+この状態で V2Bad の `setFee(5)` を呼ぶと slot 0 が 5 になり、末尾に `fee` を足した正しい V2 に差し替え直しても、`owner` は 0x…05 のままでした。読み方を直しても、壊れた間に書き込まれた値は戻りません。
+
+Solidity の部品を集めたライブラリ [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) の[ガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)も、状態変数の順序と型を変えず、新しい変数は末尾に足すよう求めています。
 
 ---
 
-### ERC-1967 の決まった slot
+### 衝突を避ける置き場所
 
-1 つ目の衝突は、プロキシが使う値を実装の変数が並ぶ場所から遠くに置けば避けられます。ERC-1967 は、その場所を次の式で決めています（2019 年作成、状態は Final）。
+1 つ目の衝突は、プロキシが使う値と実装の変数が離れていれば起きません。実装の変数は 0 の近くに並ぶので、プロキシの値は遠い slot に置けば避けられます。2 つ目の衝突は、後で見るように継承でも起きます。継承で親の変数が増えて子の変数がずれる場合は、変数のまとまりごとに名前で決めた場所に置けば避けられます。ただし、まとまりの中の並びは、これまで通り宣言の順で決まります。
+
+Ethereum には、こうした置き場所を決めた規格があります。Ethereum の仕様の改善案は EIP（Ethereum Improvement Proposal）と呼ばれ、そのうちコントラクトどうしの約束事を決めるものを ERC（Ethereum Request for Comments）と呼びます（[EVM Opcode History の EIP と ERC](../evm-opcode-history/#eip-と-erc)）。
+
+本節では、置き場所を決めた 2 つの ERC を必要な範囲で紹介します。以下は、2 つの規格が使う slot の位置を示した図です。
+
+{{< figure src="images/upgradeable-proxy_slot_map.webp" alt="横長の帯が 0 から 2^256 − 1 までの slot の空間。左端の 0 のすぐ近くに「宣言の順に並ぶ変数 slot 0, 1, 2 …」。帯の 2 割ほどの位置に「ERC-1967：実装のアドレス 0x3608…2bbc」、7 割ほどの位置に「ERC-7201：名前空間の起点 0xae0e…0700」。その下に「中のメンバーは起点から宣言の順に並ぶ（起点に owner、次の slot に balance）」。最下部に「ハッシュから決めた番号は、0 の近くの変数と重ならない」" caption="Solidity の変数と、2 つの規格が使う slot の位置" align="center" >}}
+
+上記の図の帯は、slot の番号の全体です。Solidity が宣言の順に並べる変数は、左端の 0 の近くに集まります。2 つの規格は、文字列のハッシュから番号を決めるので、その範囲から遠く離れます。ERC-7201 の名前空間の中では、構造体のメンバーが起点から宣言の順に並びます。図の起点の値と owner・balance は、後述の実験で使う名前空間 `debimate.vault` のものです。
+
+<br>
+
+#### ERC-1967：プロキシの値の置き場所
+
+[ERC-1967](https://eips.ethereum.org/EIPS/eip-1967) は、プロキシが使う値（実装のアドレス、差し替えの権限を持つ管理者のアドレスなど）を置く slot を決めています。実装のアドレスの slot は、次の式で決まります。
 
 ```solidity
 bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1)
 ```
 
-| 値 | 文字列 | slot |
-| --- | --- | --- |
-| 実装のアドレス | `eip1967.proxy.implementation` | `0x3608…2bbc` |
-| 管理者のアドレス | `eip1967.proxy.admin` | `0xb531…6103` |
-| beacon のアドレス | `eip1967.proxy.beacon` | `0xa3f0…3d50` |
+Keccak-256（Ethereum が使う[ハッシュ関数](../hash-function/)）の出力は 2 の 256 乗通りの値に散らばるので、0 から数えた小さい番号と重なる確率は無視できます。管理者のアドレスは、`eip1967.proxy.admin` から同じ式で決めた slot に置きます。
 
-slot は 2 の 256 乗通りあり、Solidity が順に並べる変数は 0 から数えた小さい番号に集まります。Keccak-256（Ethereum が使う[ハッシュ関数](../hash-function/)）の出力は 2 の 256 乗通りの値に散らばるので、その小さい番号の範囲に入る確率は無視できます。
+<details>
+<summary>ハッシュから 1 を引く理由</summary>
 
-では、ハッシュの値をそのまま使わずに 1 を引くのはなぜでしょうか。Solidity も、mapping の値や可変長配列の中身を `keccak256(キーと slot 番号)` や `keccak256(slot 番号)` の場所に置きます。どちらも、ハッシュの入力（前像）が分かっている場所です。
+Solidity は、mapping（キーと値の表）の値を `keccak256(キーと slot 番号)` の場所に置きます。ハッシュの値をそのまま slot にすると、ハッシュの入力（原像）が分かっているので、細工したキーを使った mapping の値と同じ場所になる余地が残ります。仕様は、1 を引いて原像の知られていない場所にすることで、この可能性を減らしたと説明しています。
 
-ERC-1967 は 1 を引くことで、入力が誰にも分からない場所にしています。仕様は、細工したキーを使った mapping の値でこの場所を上書きされないように、前像の無い場所を選んだと説明しています。以下は、実装のアドレスの slot と、その 1 つ隣の slot を並べた図です。
+</details>
 
-{{< figure src="images/upgradeable-proxy_slot_space.svg" alt="横長の帯が 0 から 2 の 256 乗 − 1 までの slot の空間。左端の小さい番号に Solidity の状態変数、帯の途中に mapping の値の場所が散らばる。0x3608… の位置を拡大すると、0x3608…2bbd は keccak256(\"eip1967.proxy.implementation\") で前像は文字列、その 1 つ下の 0x3608…2bbc がハッシュから 1 を引いた ERC-1967 の slot で、前像は知られていない" caption="ERC-1967 の slot と、その元になったハッシュの slot" align="center" >}}
+置き場所が決まっているので、ブロックエクスプローラー（チェーンの中身を見せる Web サービス）などのツールは、コードを解析しなくても、この slot を読むだけで今の実装を見つけられます。開発ツール群 [Foundry](https://getfoundry.sh/) の `cast implementation` も、この slot を読むコマンドです。
 
-上記の図の 2 つの slot は隣どうしです。つまり、slot はランダムな値ではなく、文字列から誰でも計算できる定数です。衝突しにくい理由は、コンパイラが並べる小さい番号から遠いことと、1 を引いて前像の無い値にしたことにあります。
+また、仕様は実装を差し替えた時に `Upgraded(address)` というイベント（取引の記録に残るログ）を出すよう求めている（SHOULD）ので、多くの実装では差し替えの履歴も追えます。
 
-ERC-1967 は、値を変えた時に出すイベントも決めています。`Upgraded(address indexed implementation)`、`AdminChanged(address previousAdmin, address newAdmin)`、`BeaconUpgraded(address indexed beacon)` の 3 つです。
+<br>
 
-置き場所とイベントが決まっているので、外部のツールはコントラクトのコードを解析しなくても、決まった slot を読むだけで実装を見つけられます。仕様も、ブロックエクスプローラーを動機の代表例に挙げています。[Foundry](https://getfoundry.sh/) の `cast implementation` と `cast admin` も、この slot を読むコマンドです。差し替えの履歴は、`Upgraded` のログを追えば分かります。
+#### ERC-7201：実装の変数の置き場所
 
----
+2 つ目の衝突は、継承を使うとさらに起きやすくなります。親コントラクトの変数は子より前に並ぶので、ライブラリの親が新しい版で変数を 1 つ足すと、子の変数が全部ずれます。
 
-### プロキシの型
+以前の [OpenZeppelin Contracts Upgradeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/tree/v4.9.6)（プロキシ向けの版）4.x は、親ごとに [`uint256[49] private __gap;`](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/v4.9.6/contracts/access/OwnableUpgradeable.sol) という未使用の配列を置いて、場所を予約していました。親に変数を 1 つ足す時は、配列を 49 個から 48 個に縮め、子の変数の位置を保ちます。この数合わせは人の手で行うので、間違えると子の変数がずれます。
 
-ERC-1967 は値の置き場所だけを決め、誰がどの関数で差し替えるかは決めていません。その違いで、主に次の 3 つの型があります。
-
-| 型 | 差し替えの関数の場所 | 特徴 |
-| --- | --- | --- |
-| Transparent | プロキシ | 管理者の呼び出しはプロキシの管理機能、それ以外は実装に回す |
-| UUPS（[ERC-1822](https://eips.ethereum.org/EIPS/eip-1822)） | 実装 | プロキシが小さい。差し替えの関数を持たない実装に更新すると、以後は差し替えられない |
-| Beacon | beacon という別のコントラクト | 多数のプロキシが 1 つの beacon から実装のアドレスを読み、まとめて差し替わる |
-
-Transparent が管理者とそれ以外を分けるのは、プロキシの管理用の関数と実装の関数で、関数セレクタ（関数を識別する 4 バイトの値）が重なる問題を避けるためです（[OpenZeppelin の解説](https://www.openzeppelin.com/news/the-transparent-proxy-pattern)）。
-
-Solidity の部品を集めたライブラリ OpenZeppelin Contracts の 5.x にある [TransparentUpgradeableProxy](https://docs.openzeppelin.com/contracts/5.x/api/proxy) は、作成時に管理用のコントラクト ProxyAdmin を専用に作り、そのアドレスを変更できない値にしています。同じ文書は、軽く柔軟な UUPS を推奨する方向に移っているとしています。
-
-[ERC-4337](../erc-4337/) の参照実装の [SimpleAccountFactory](https://github.com/eth-infinitism/account-abstraction/blob/v0.9.0/contracts/accounts/SimpleAccountFactory.sol) も、スマートアカウントのアドレスに OpenZeppelin の `ERC1967Proxy` を置きます。
-
----
-
-### 初期化関数が必要な理由
-
-通常のコントラクトは、constructor で所有者などの初期値を設定します。しかし、constructor は実装をデプロイする取引の中で、実装のアドレスの storage に対して実行されます。プロキシの storage には何も設定されません。後述の実験では、constructor で `value = 42` とした実装を直接読むと 42、プロキシ経由で読むと 0 でした。
-
-そこで、初期化を普通の関数（initializer）にして、プロキシ経由で 1 回だけ呼びます。OpenZeppelin の `ERC1967Proxy` は、作成時に実装のアドレスと初期化関数の呼び出しを受け取り、同じ取引の中で実行します。2 回目以降の呼び出しは、`initializer` 修飾子が拒否します。
-
-問題は、実装のアドレス自身の storage も初期化されていない点です。実装の初期化関数を第三者が直接呼ぶと、その人が実装の所有者になります。実装の storage は通常使われないので無害に見えますが、所有者の権限で実装を壊せる場合、その実装に頼るすべてのプロキシが止まります。
-
-2017 年 11 月 6 日、Ethereum のクライアントを開発していた [Parity](https://www.parity.io/) の multisig ウォレットが共有していたライブラリで、この形の事故が起きました。ウォレットは処理をライブラリに `DELEGATECALL` で任せていました。ライブラリの [`initWallet`](https://github.com/openethereum/parity-ethereum/blob/v1.8.2/js/src/contracts/snippets/enhanced-wallet.sol#L215-L226) は所有者の数が 0 の時だけ呼べる関数で、ライブラリ自身の storage では所有者が 0 人のままでした。
-
-ある利用者がこれを呼んで所有者になり、`kill` を呼んでライブラリを消しました。`kill` の中身は、Solidity の `suicide`（`selfdestruct` の旧名）です。コードを失ったライブラリに頼るウォレットは、資金を動かせなくなりました。当事者は [GitHub の Issue](https://github.com/openethereum/parity-ethereum/issues/6995) に「I accidentally killed it.（うっかり消してしまった）」と書いています。
-
-2021 年 9 月には、OpenZeppelin Contracts 4.1.0〜4.3.1 の `UUPSUpgradeable` に同じ種類の脆弱性が報告されました（[GHSA-5vp3-v4hc-gx76](https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5vp3-v4hc-gx76)）。
-
-[事後報告](https://forum.openzeppelin.com/t/uupsupgradeable-vulnerability-post-mortem/15680)によると、攻撃者は初期化されていない実装を初期化して管理者になり、実装を直接 `upgradeToAndCall` で呼びます。その中の `DELEGATECALL` で `SELFDESTRUCT` を実行すると実装が消え、UUPS では差し替えの関数も実装にあるので、プロキシは直せなくなります。OpenZeppelin は、資金を失ったプロジェクトは把握していないとしています。
-
-対策は 2 つあります。4.3.2 から、差し替えの関数はプロキシ経由の呼び出しだけを受け付けます（`onlyProxy`）。また、[OpenZeppelin のガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)は、実装の constructor で `_disableInitializers()` を呼び、実装の初期化を塞ぐよう勧めています。ちなみに、Cancun 以降の [`SELFDESTRUCT`](https://eips.ethereum.org/EIPS/eip-6780) は、作成と同じ取引の中でなければコードを消しません。
-
----
-
-### ERC-7201 の名前空間
-
-状態変数を末尾に足す規則だけでは、継承を使う時に足りません。親コントラクトの変数は子より前に並ぶので、親の新しいバージョンが変数を 1 つ足すと、子の変数が全部ずれます。
-
-OpenZeppelin Contracts Upgradeable の 4.x は、親ごとに未使用の配列を置いて場所を予約していました。例えば、[v4.9.6 の OwnableUpgradeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/v4.9.6/contracts/access/OwnableUpgradeable.sol) は `uint256[49] private __gap;` を持ちます。変数を足す時は、その分だけ配列を手で縮めます。
-
-ERC-7201（2023 年作成、状態は Final）は、変数を構造体にまとめ、名前から計算した slot を起点に置きます。式は次の通りです。
-
-```solidity
-keccak256(abi.encode(uint256(keccak256(id)) - 1)) & ~bytes32(uint256(0xff))
-```
-
-`keccak256(id) - 1` は、Solidity が使わない場所として選ばれています。しかし、構造体は複数の slot に広がり、`keccak256(id) + n` には Solidity が使う場所が含まれ得ます。そのため、もう一度ハッシュを取ってから起点にします。最後の `& ~0xff` は下位 8 bit を 0 にし、起点を 256 の倍数に揃えます。仕様は、将来の最適化の可能性のための揃えとしています。
-
-名前空間は、構造体に次の注記を付けて示します。
+[ERC-7201](https://eips.ethereum.org/EIPS/eip-7201) は、変数を構造体にまとめ、名前から計算した slot を起点に置く規格です。この名前ごとの置き場所を名前空間（namespace）と呼びます。構造体のメンバーは、起点から通常の変数と同じ規則（宣言の順に並べ、32 バイトに満たない型は詰める）で並びます。名前は、次のように構造体の注記で示します。
 
 ```solidity
 /// @custom:storage-location erc7201:openzeppelin.storage.Ownable
@@ -179,21 +166,106 @@ struct OwnableStorage {
 }
 ```
 
-起点は名前だけから計算するので、親コントラクトの継承の順を入れ替えても、各名前空間の場所は変わりません。後述の実験では、`a` と `b` を持つ 2 つの親の継承の順を入れ替えると slot が入れ替わりました。一方で、名前空間だけを使う実装では、Solidity が並べる変数が 0 個でした。`__gap` のように、親ごとに残りの slot の数を手で数える必要もありません。
+起点は、`openzeppelin.storage.Ownable` という名前のハッシュから計算します（式は下の details）。起点は名前だけで決まるので、継承の順を入れ替えても、親が自分の構造体の末尾に変数を足しても、各名前空間の場所は動きません。OpenZeppelin Contracts Upgradeable は、5.0 からこの形に移りました。
 
-ERC-7201 は、計算式と注記の書き方を決めた規約で、新しい命令もハードフォークも必要ありません。起点は定数として埋め込み、`sload` と `sstore` は既存の命令のままです。
+ただし、ERC-7201 が固定するのは構造体の起点だけです。構造体の中のメンバーは起点から宣言の順に並ぶので、メンバーの順序や型を変えたり、途中にメンバーを挟んだりすると、[更新で並びがずれる衝突](#更新で並びがずれる衝突)と同じことが名前空間の中で起きます。
 
-Solidity は 0.8.29（2025 年 3 月）で storage の起点を移す `layout at` 指定、0.8.35（2026 年 4 月）で `erc7201` の計算をコンパイラが行う組み込み関数を加えました（[Changelog](https://github.com/ethereum/solidity/blob/develop/Changelog.md)）。どちらもコンパイル時に定数を計算するだけです。
+新しいメンバーは構造体の末尾に足します。前述の OpenZeppelin のガイドも、同社の更新用ツール（Upgrades Plugins）は名前空間の中の変更を、通常の変数と同じ規則で検査すると説明しています。
 
-[OpenZeppelin Contracts Upgradeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/tree/v5.7.0) は 5.0 からこの形に移りました。本記事で確かめた v5.7.0 では、`OwnableUpgradeable` が `openzeppelin.storage.Ownable`、`Initializable`（定義は OpenZeppelin Contracts 側）が `openzeppelin.storage.Initializable` の名前空間を使っています。
+<details>
+<summary>ERC-7201 の計算式</summary>
+
+```solidity
+keccak256(abi.encode(uint256(keccak256(id)) - 1)) & ~bytes32(uint256(0xff))
+```
+
+`id` は注記の `erc7201:` の後の名前です。ERC-1967 と同じく 1 を引いた後、構造体が複数の slot に広がっても Solidity の使う場所と重ならないように、もう一度ハッシュを取ります。最後の `& ~0xff` は下位 8 bit を 0 にし、起点を 256 の倍数に揃えます。仕様は、将来の状態の木の移行（Verkle）後に 256 slot がまとめて安く読める可能性を見込んだ揃えとしています。
+
+</details>
 
 ---
 
-### anvil での再現
+### プロキシの型
 
-ここまでの現象は、開発ツール群 Foundry に含まれる開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) で確かめました。公開ネットワークには接続せず、Anvil が用意する公開のテスト用アカウントだけを使います。使用したバージョンは Anvil・cast 1.7.1、solc 0.8.28 で、EVM の規則は 2025 年 5 月のハードフォークである [Prague](https://eips.ethereum.org/EIPS/eip-7600) に固定しています。
+ERC-1967 は値の置き場所だけを決め、誰がどの関数で実装を差し替えるかは決めていません。その違いで、主に次の 3 つの型があります。
 
-コントラクトは 2 つのファイルに分けています。[Study.sol](lab/Study.sol) は本記事のために書いた学習用のコードで、監査していません。[Box.sol](lab/Box.sol) は [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v5.7.0) と Contracts Upgradeable の v5.7.0（どちらも MIT ライセンス）を使います。OpenZeppelin のソースはリポジトリに含めず、[run.sh](lab/run.sh) がタグとコミットを確かめて取得します。
+| 型 | 差し替えの関数の場所 | 特徴 |
+| --- | --- | --- |
+| Transparent | プロキシ | 管理者の呼び出しはプロキシの管理機能、それ以外は実装に回す |
+| UUPS（Universal Upgradeable Proxy Standard。名前は [ERC-1822](https://eips.ethereum.org/EIPS/eip-1822) から。OpenZeppelin の実装は ERC-1967 の slot を使う） | 実装 | プロキシが小さい。誰が差し替えられるかも実装のコードが決める。差し替えの関数を持たない実装に更新すると、以後は差し替えられない |
+| Beacon | beacon という別のコントラクト | 多数のプロキシが 1 つの beacon から実装のアドレスを読み、まとめて差し替わる |
+
+Transparent が管理者とそれ以外を分けるのは、プロキシの管理用の関数と実装の関数で、関数セレクタ（呼び出しの先頭 4 バイトで関数を識別する値）が重なると、利用者が呼んだつもりの実装の関数ではなく管理機能が動いてしまうからです（[OpenZeppelin の解説](https://www.openzeppelin.com/news/the-transparent-proxy-pattern)）。
+
+OpenZeppelin Contracts 5.x の[文書](https://docs.openzeppelin.com/contracts/5.x/api/proxy)は、軽く柔軟な UUPS を推奨する方向に移っているとしています。
+
+---
+
+### 初期化関数と、初期化を忘れた事故
+
+通常のコントラクトは、デプロイ時に 1 回だけ動く constructor で、所有者などの初期値を設定します。しかし、constructor は実装をデプロイする取引の中で、実装のアドレスの storage に対して動きます。プロキシの storage には何も書かれません。後述の実験では、constructor で `value = 42` とした実装を直接読むと 42、プロキシ経由で読むと 0 でした（次の図の ①）。
+
+そこで、初期化を普通の関数（initializer）にして、プロキシ経由で 1 回だけ呼びます。OpenZeppelin の `ERC1967Proxy`（差し替えの関数を持たない器のプロキシで、UUPS の実装と組み合わせる）は、作成時に実装のアドレスと初期化関数の呼び出しを受け取り、同じ取引の中で実行します。2 回目以降の呼び出しは、`initializer` 修飾子（関数の実行前に条件を検査する仕組み）が拒否します。
+
+問題は、実装のアドレス自身の storage も初期化されていない点です。以下は、3 つの操作で、実装とプロキシのどちらの storage に何が書かれるかを並べた図です。① は前の段落の `value = 42` の例で、② と ③ は所有者（owner）を初期化関数で設定する実装の例です。
+
+{{< figure src="images/upgradeable-proxy_initializer.webp" alt="3 行 2 列の図。列は実装の storage とプロキシの storage。① 実装をデプロイ（constructor が動く）では、実装に constructor の値が入り、プロキシは空のまま。② プロキシ経由で initialize(alice) では、実装は変わらず、プロキシは owner = alice。③ 第三者が実装を直接 initialize(mallory) では、実装が赤い owner = mallory になり、プロキシは owner = alice のまま。下に「実装の storage は普段使われないが、初期化しないと誰でも所有者になれる」" caption="constructor と initialize が、それぞれどの storage に書くか" align="center" >}}
+
+上記の図の ③ のように、実装の初期化関数を第三者が直接呼ぶと、その人が実装の所有者になります。実装の storage は普段使われないので無害に見えます。しかし、所有者の権限で実装のコードを消せる場合、その実装を借りているすべてのプロキシが止まります。初期化を忘れるのではなく、更新の時の初期化で渡す値を誤った事故には、bridge の [Nomad](../bridge-incidents/#nomad) があります。
+
+以下の 2 件は、`SELFDESTRUCT`（コントラクトのコードを消す命令）がまだコードを消せた、2024 年 3 月より前の規則の下で起きた事故です。今の規則は事故の後で説明します。
+
+<br>
+
+#### Parity のライブラリ（2017 年）
+
+2017 年 11 月 6 日、Ethereum のクライアント（ノードのソフトウェア）を開発していた [Parity](https://www.parity.io/) の [multisig](../multisig/) ウォレット（複数の鍵の承認で送金するウォレット）が共有していたライブラリが消され、それに頼るウォレットの資金が動かせなくなりました。ウォレットは処理をライブラリに `DELEGATECALL` で任せており、プロキシと実装と同じ関係でした。
+
+1. ライブラリの [`initWallet`](https://github.com/openethereum/parity-ethereum/blob/v1.8.2/js/src/contracts/snippets/enhanced-wallet.sol#L215-L226) は、所有者の数が 0 の時だけ呼べる初期化関数でした。ライブラリ自身の storage では、所有者は 0 人のままでした。
+2. ある利用者が、ライブラリの `initWallet` を直接呼んで、ライブラリの所有者になりました。
+3. 続けて `kill` を呼びました。中身は Solidity の `suicide`（`selfdestruct` の旧名で、EVM の命令 `SELFDESTRUCT` を実行する）で、ライブラリのコードが消えました。
+
+当事者は [GitHub の Issue](https://github.com/openethereum/parity-ethereum/issues/6995) に「I accidentally killed it.（うっかり消してしまった）」と書いています。
+
+<br>
+
+#### OpenZeppelin の UUPS（2021 年）
+
+2021 年 9 月には、OpenZeppelin Contracts 4.1.0〜4.3.1 の `UUPSUpgradeable` に同じ種類の脆弱性が報告されました（[GHSA-5vp3-v4hc-gx76](https://github.com/OpenZeppelin/openzeppelin-contracts/security/advisories/GHSA-5vp3-v4hc-gx76)）。
+
+[事後報告](https://forum.openzeppelin.com/t/uupsupgradeable-vulnerability-post-mortem/15680)によると、攻撃の手順は次の通りです。攻撃者は、初期化されていない実装を初期化して、差し替えの権限を持つ管理者（図の ③ と同じく、多くの実装では所有者）になります。
+
+次に、`SELFDESTRUCT` を実行するだけのコントラクトを新しい実装に指定して、実装の `upgradeToAndCall`（差し替えと同時に新しい実装の関数を呼ぶ関数）を直接呼びます。新しい実装は `DELEGATECALL` で呼ばれるので、`SELFDESTRUCT` は呼び出し元である実装自身の文脈で動き、実装のコードが消えます。以下は、この手順を時間の順に並べた図です。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
+sequenceDiagram
+    participant A as 攻撃者
+    participant I as 実装（UUPS）
+    participant D as 消すだけのコントラクト
+    participant P as プロキシ
+    A->>I: initialize を直接呼び、差し替えの権限を得る
+    A->>I: upgradeToAndCall(D, 呼び出し) を直接呼ぶ
+    I->>D: DELEGATECALL
+    D-->>I: SELFDESTRUCT が実装の文脈で動き、実装のコードが消える
+    P->>I: 以後の DELEGATECALL は空のコードに届く
+```
+
+上記の図の 3 本目の矢印が、[DELEGATECALL の節](#delegatecall-でコードを借りる)の図の右側（借りたコードは呼び出し元のデータと文脈で動く）と同じ形です。UUPS では差し替えの関数も実装にあるので、プロキシは直せなくなります。OpenZeppelin は、資金を失ったプロジェクトは把握していないとしています。
+
+対策は 2 つあります。4.3.2 から、差し替えの関数はプロキシ経由の呼び出しだけを受け付けます（`onlyProxy`）。また、[OpenZeppelin のガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)は、実装の constructor で `_disableInitializers()` を呼び、実装の初期化を塞ぐよう勧めています。
+
+なお、2024 年 3 月の Ethereum の仕様の更新（ハードフォーク Cancun）以降の [`SELFDESTRUCT`](https://eips.ethereum.org/EIPS/eip-6780) は、作成と同じ取引の中でなければコードを消しません。そのため、今の Ethereum では、上記の 2 つの事故と同じ経路で実装を消すことはできません。それでも、第三者が実装の所有者になれる状態は残り、その権限で何ができるかは実装のコード次第です。また、Ethereum と同じ仮想マシンで動く別のチェーンが、同じ規則を採り入れているとは限りません。初期化を塞ぐ対策は、今も勧められています。
+
+---
+
+### Anvil での再現
+
+ここまでの現象は、Foundry に含まれる開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) で確かめました。公開ネットワークには接続せず、Anvil が用意する公開のテスト用アカウントだけを使います。使用したツールのバージョンと実行条件は、[README](lab/README.txt) に記載しています。
+
+コントラクトは 2 つのファイルに分けています。[Study.sol](lab/Study.sol) は本記事のために書いた学習用のコードで、監査していません。[Box.sol](lab/Box.sol) は OpenZeppelin Contracts と Contracts Upgradeable の [v5.7.0](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v5.7.0)（どちらも MIT ライセンス）を使います。
+
+OpenZeppelin のソースはリポジトリに含めず、[run.sh](lab/run.sh) がタグとコミットを確かめて取得します。
 
 以下は、更新で並びがずれる実装と、名前空間を使う実装の抜粋です。
 
@@ -217,20 +289,25 @@ contract NamespacedVault {
 }
 ```
 
-slot の計算は、Python の標準ライブラリだけで書いた [slots.py](lab/slots.py) が行います。[`hashlib.sha3_256`](https://docs.python.org/3/library/hashlib.html) は Ethereum の Keccak-256 とパディングが異なるので、Keccak を手で実装しています。[run.py](lab/run.py) は、計算した slot を `cast storage` で読んだ値と照合します。以下は、run.py の検査の抜粋です。
+slot の計算は、Python の標準ライブラリだけで書いた [slots.py](lab/slots.py) が行います。
+
+[run.py](lab/run.py) は、計算した slot を `cast storage`（指定した slot の値を読むコマンド）で読んだ値と照合します。以下は、run.py の検査の抜粋です。
 
 ```python
+# 2 段目: Python で計算した ERC-1967 の slot に、プロキシ（proxy）の実装 v1 のアドレスがあるか
 impl_slot = erc1967('eip1967.proxy.implementation')
-assert storage(proxy, impl_slot) == word(v1.lower())
+assert storage(proxy, impl_slot) == word(v1.lower())        # storage(): cast storage で slot を読む
 assert cast('implementation', '--rpc-url', URL, proxy).lower() == v1.lower()
 
+# 5 段目: 名前空間を使う実装のプロキシ p3 で、起点に owner、次の slot に balance があるか
 loc = erc7201('debimate.vault')
-tx(alice, p3, 'setUp(address,uint256)', alice, 100)
-assert storage(p3, loc) == word(alice.lower())
+tx(alice, p3, 'setUp(address,uint256)', alice, 100)       # tx(): 取引を送る
+assert storage(p3, loc) == word(alice.lower())              # word(): 32 バイトの値に揃える
 assert int(storage(p3, hex(int(loc, 16) + 1)), 16) == 100
 
-tx(mallory, impl, 'initialize(address)', mallory)   # 第三者が実装を初期化
-assert storage(impl, own_slot) == word(mallory.lower())
+# 6 段目: 第三者（mallory）が実装 impl を直接初期化すると、実装の所有者の slot が mallory になるか
+tx(mallory, impl, 'initialize(address)', mallory)
+assert storage(impl, own_slot) == word(mallory.lower())     # own_slot: Ownable の名前空間の起点
 ```
 
 <details>
@@ -458,20 +535,13 @@ finally:
 
 </details>
 
-anvil・cast・solc を PATH に置き、次のコマンドで実行します。必要なバージョンと実行条件は [README](lab/README.txt) にも記載しています。
+anvil・cast・solc を PATH に置き、次のコマンドで実行します。
 
 ```bash
 bash content/notes/blockchain-systems/upgradeable-proxy/lab/run.sh
 ```
 
-検査は 6 段あり、全て通りました（[出力](lab/output/summary.txt)の末尾が `Assertions: PASS`）。以下は、1 段目の出力です。
-
-```text
-== 1. naive proxy: implementation address in slot 0 ==
-slot 0 before increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa3
-slot 0 after  increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa4
-count() through the proxy now returns: '0x' (delegates to an address without code)
-```
+検査は 6 段あり、全て通りました（[出力](lab/output/summary.txt)の末尾が `Assertions: PASS`）。1 段目（slot 0 の衝突）、3 段目（並びのずれ）、4 段目（constructor）の結果は、前の節で示した通りです。
 
 <details>
 <summary>6 段の出力の全体</summary>
@@ -520,15 +590,38 @@ Assertions: PASS
 
 </details>
 
-1 段目は、slot 0 に実装のアドレスを置いたプロキシです。`increment()` の後、アドレスの末尾が `aa3` から `aa4` に変わり、`count()` は空の返り値（`0x`）を返しました。コードの無いアドレスへの `DELEGATECALL` は失敗せず、何も返さずに成功します。そのため、エラーにならないまま壊れます。
+2 段目では、Python で計算した ERC-1967 の 2 つの slot が仕様の値と一致し、プロキシの storage・`cast implementation`・`cast admin` の結果とも一致しました。3 段目で V2Bad に差し替えた時の `Upgraded` のログには、新しい実装のアドレスが入っていました。
 
-2 段目では、Python で計算した 2 つの slot が仕様の値と一致し、プロキシの storage・`cast implementation`・`cast admin` の結果とも一致しました。3 段目は、前の節の表の元になった結果です。V2Bad に差し替えても slot 0 と slot 1 の値は変わらず、`Upgraded` のログの 2 番目の topic には新しい実装のアドレスが入っていました。
+5 段目は、ERC-7201 の名前空間です。
 
-5 段目では、名前空間の起点 `0xae0e…0700` に `owner`、その次の slot に `balance` の 100 があり、slot 0 は 0 のままでした。solc が出力した storage の配置では、継承の順を入れ替えた `PlainAB` と `PlainBA` で `a` と `b` の slot が入れ替わり、OpenZeppelin の部品だけで作った `BoxOpen` は空でした。
+```text
+erc7201:debimate.vault  0xae0e5a2ac921da8c4f0db7a6df576631c5d91fc4de80e3189b369f9d39c30700
+slot 0xae0e5a2a..00 = owner, ..01 = balance 100, slot 0 = 0
+solc storage layout PlainAB  [('a', 0), ('b', 1)]
+solc storage layout PlainBA  [('b', 0), ('a', 1)]
+solc storage layout BoxOpen  []
+```
 
-6 段目は、OpenZeppelin v5.7.0 で初期化を塞がなかった実装です。テスト用アカウント 2（mallory）が実装の `initialize` を直接呼ぶと、実装の所有者になりました。
+名前空間の起点 `0xae0e…0700` に `owner`、その次の slot に `balance` の 100 があり、slot 0 は 0 のままでした。
 
-一方で、実装を直接 `upgradeToAndCall` で呼ぶと `onlyProxy` の検査で拒否され、プロキシの所有者も alice のままでした。constructor で `_disableInitializers()` を呼んだ実装は `initialize` を拒否し、初期化の状態を表す slot には `uint64` の最大値が入っていました。
+コンパイラ solc が出力した変数の配置を見ると、変数 `a` と `b` を持つ 2 つの親の継承の順だけを変えた `PlainAB` と `PlainBA` では、`a` と `b` の slot が入れ替わりました。一方で、OpenZeppelin の名前空間の部品だけで作った `BoxOpen` は、宣言の順に並ぶ変数が 0 個でした。全ての変数が名前空間にあるので、継承の順や親の変数の追加で slot が動く変数がありません。
+
+ただし、上記の通り名前空間の中は宣言の順に並ぶので、構造体のメンバーの並びは更新の後も保つ必要があります。
+
+<br>
+
+6 段目は、OpenZeppelin v5.7.0 で初期化を塞がなかった実装（`BoxOpen`）と、塞いだ実装（`BoxLocked`）です。
+
+```text
+mallory calls impl.initialize(mallory): impl owner()=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC
+mallory calls impl.upgradeToAndCall directly: status=0 revert UUPSUnauthorizedCallContext()
+proxy owner() is still 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
+BoxLocked.initialize by mallory: status=0 revert InvalidInitialization()
+```
+
+テスト用アカウント 2（mallory）が実装の `initialize` を直接呼ぶと、図の ③ の通り実装の所有者になりました。一方で、実装を直接 `upgradeToAndCall` で呼ぶと `onlyProxy` の検査で拒否され、プロキシの所有者も alice のままでした。
+
+constructor で `_disableInitializers()` を呼んだ `BoxLocked` は `initialize` を拒否し、初期化の状態を表す slot には `uint64` の最大値が入っていました。`_disableInitializers()` は、初期化済みの版数を最大値にして、以後の `initialize` をすべて拒否させます。
 
 ---
 
@@ -536,8 +629,8 @@ Assertions: PASS
 
 - 利用者や他のコントラクトが登録したアドレスを変えずに、不具合を直せる
 - 残高などのデータを移し替えずに、処理だけを更新できる
-- ERC-1967 の slot を読めば、ツールや利用者が今の実装と管理者を確かめられる
-- ERC-7201 で、継承の順や親の変数の追加に左右されない配置にできる
+- ERC-1967 の slot を読めば、ツールや利用者が今の実装を確かめられる（Transparent 型のように管理者の slot を使う型では管理者も）
+- ERC-7201 で、継承の順や親の変数の追加に左右されない配置にできる（名前空間の中のメンバーは末尾に足す）
 
 ### 欠点
 
@@ -546,7 +639,7 @@ Assertions: PASS
 - 管理者の鍵や承認の仕組みが破られると、資産を扱うコードごと差し替えられる
 - storage の並びを壊す更新でも、コンパイラは誤りを報告しない
 - 実装の初期化を忘れると、第三者が実装の所有者になれる
-- 呼び出しごとに `DELEGATECALL` が 1 段増え、その分の gas が掛かる
+- 呼び出しごとに `DELEGATECALL` が 1 段増え、その分の gas（実行の手数料）が掛かる
 - 利用者は、今のコードだけでなく、将来差し替えられる範囲まで信頼する必要がある
 
 ### 適さないケース

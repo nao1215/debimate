@@ -1,0 +1,31 @@
+anvil Version: 1.7.1
+Version: 0.8.28+commit.7893614a.Linux.g++
+
+== (1) open bid: bob reads alice's pending bid and outbids with a higher tip
+  bob sees in txpool: bid(50) from alice
+  block 2:
+    #0 bob   tip 3 gwei  bid(51)  -> ok
+    #1 alice tip 1 gwei  bid(50)  -> reverted (too low)
+  winner bob, highest 51
+
+== (2) commit without salt (salt = 0): bob brute-forces 1..10000
+  bob sees commitment 0xa1c192f5c5b92806.. ; found amount=50 after 50 hashes, 0.029 s
+  block 8:
+    #0 alice tip 1 gwei  reveal(50, 0)  -> ok
+    #1 bob   tip 1 gwei  reveal(51, 0x357b03b9..)  -> ok
+  winner bob, highest 51
+  vote yes/no without salt: found choice=1 after 2 hashes
+
+== (3) commit with a 32-byte random salt
+  bob brute-forces 1..10000 with salt=0: found=None after 10000 hashes, 5.691 s
+  block 10:
+    #0 alice tip 1 gwei  commit(0x66beafdf..)  -> ok
+    #1 bob   tip 1 gwei  commit(0x66beafdf..)  -> ok
+    #2 carol tip 1 gwei  commit(0xba0da769..)  -> ok
+  bob copies alice's pending reveal (amount and salt) with a higher tip
+  block 14:
+    #0 bob   tip 3 gwei  reveal(50, 0x1426f244..)  -> reverted (mismatch)
+    #1 alice tip 1 gwei  reveal(50, 0x1426f244..)  -> ok
+  winner alice, highest 50; deposits left in contract 2 ETH (bob and carol did not reveal)
+
+== hash rate of this pure-Python keccak: 1,536 hashes/s

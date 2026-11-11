@@ -4,5 +4,3 @@ release with 4 stolen keys accepted: False
 release with 5 stolen keys accepted: True
 after forged release                 locked=   0 wrapped= 360
 wrapped coins without backing: 360
-unproved message accepted: True
-unproved message accepted after fix: False

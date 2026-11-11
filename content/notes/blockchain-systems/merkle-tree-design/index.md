@@ -11,12 +11,12 @@ topics: ["Data Structure"]
 
 Merkle Tree の構築方法は 1 通りに決まっていません。奇数の葉をどう組むか、葉と内部ノードをどうハッシュするか、葉をどう並べるかは、それぞれのプロトコルが決める設計事項です。ルートハッシュが何を保証しているのかは、この規則を決めて初めて確定します。木の作り方と包含証明の仕組みは [Merkle Tree](../merkle-tree/) を前提とします。
 
-この規則が問題になるのは、新しいプロトコルに Merkle Tree を組み込む時と、既存プロトコルの証明を検証する実装を書く時です。同じ名前で呼ばれていても、[Bitcoin](https://bitcoin.org/) と、TLS 証明書の発行記録を公開ログに残す [Certificate Transparency](https://certificate.transparency.dev/) と、[Ethereum](https://ethereum.org/) では規則が違い、証明を作る規則と検証する規則が違えば一致しません。
+この規則が問題になるのは、新しいプロトコルに Merkle Tree を組み込む時と、既存プロトコルの証明を検証する実装を書く時です。同じ名前で呼ばれていても、[Bitcoin](https://bitcoin.org/) と、[TLS 証明書](/notes/security/pki/)の発行記録を公開ログに残す [Certificate Transparency](https://certificate.transparency.dev/) と、[Ethereum](https://ethereum.org/) では規則が違い、証明を作る規則と検証する規則が違えば一致しません。
 
 規則が保証の範囲を決める例として、Bitcoin の規則では、次の 2 つの葉の並びから同じ木ができます。
 
 {{< figure src="images/merkle-tree-design_concept.svg" alt="左は葉 A, B, C の木で、末尾の C を複製した黄土色の破線の葉を足して 4 件にしている。右は葉 A, B, C, C の木で、左右とも同じ形になり、ルートハッシュの間に赤い等号がある" caption="Bitcoin の規則で、葉 3 件と 4 件が同じ木になる例" align="center" >}}
-上記の図の左では、葉が奇数なので末尾の C を複製して組を作ります。結果は右の 4 件の木と同じで、ルートハッシュだけでは 2 つの並びを区別できません。
+上記の図の左では、葉が奇数なので末尾の C を複製して組を作ります。結果は右の 4 件の木と同じで、ルートハッシュ（root）だけでは 2 つの並びを区別できません。
 
 <br>
 
@@ -31,7 +31,7 @@ Merkle Tree の構築方法は 1 通りに決まっていません。奇数の�
 
 ### 奇数の葉の扱いと木の形
 
-葉が奇数になった時の扱いは、大きく 2 つの流儀に分かれます。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。冒頭の図のとおり、複製すると葉 [A, B, C] と [A, B, C, C] が同じルートハッシュになります。この副作用の検出は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で扱っています。
+葉が奇数になった時の扱いは、大きく 2 つの流儀に分かれます。Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。冒頭の図のとおり、複製すると葉 [A, B, C] と [A, B, C, C] が同じルートハッシュになります。この副作用を使った攻撃と Bitcoin Core の検出は [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/#正当なブロックを拒ませる攻撃cve-2012-2459) で扱っています。
 
 Certificate Transparency の木では、最後の葉を複製しません。構築規則は [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)（Certificate Transparency Version 2.0）で定められています。葉が n 件なら、n 未満で最大の 2 の冪で 2 つに分ける規則を再帰的に当てはめて木の形を決めます。
 
@@ -75,11 +75,11 @@ flowchart BT
 
 Bitcoin の木には接頭辞が無く、曖昧さが残っています。葉の txid（取引の識別子）は取引から、内部ノードは子 2 つの 64 バイトから同じ手順で計算するため、署名データ（witness）を除いた大きさがちょうど 64 バイトの取引は内部ノードとしても読めます。
 
-取引を内部ノードに見立てて子の位置に偽の txid を置くと、ブロックに無い取引の包含証明が、ブロック全体を持たない検証者に通り得ます。2018 年に [CVE-2017-12842](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2017-12842) として公表され、[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) が 64 バイトちょうどの取引を無効にする規則を提案しています。
+取引を内部ノードに見立てて子の位置に偽の txid を置くと、ブロックに無い取引の包含証明が、ブロック全体を持たない検証者に通り得ます。2018 年に [CVE-2017-12842](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2017-12842) として公表され、[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) が 64 バイトちょうどの取引を無効にする規則を提案しています。攻撃の手順は [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/#64-バイトの取引を内部ノードに見せかける攻撃cve-2017-12842) で扱っています。
 
 <br>
 
-RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列の先頭を変えて、この曖昧さを消しています。
+RFC 9162 は、葉と内部ノードでハッシュ関数に渡すバイト列の先頭を変えて、この曖昧さを消しています。Merkle proof の検証の穴が実際の損失につながった例には、[BSC Token Hub の事故](../bridge-incidents/#bsc-token-hub)があります。
 
 RFC の式では、MTH は葉の並びからルートハッシュを求める関数、`||` はバイト列の連結、k は前節の「n 未満で最大の 2 の冪」です。葉は `MTH({d[0]}) = HASH(0x00 || d[0])`、内部ノードは `MTH(D_n) = HASH(0x01 || MTH(D[0:k]) || MTH(D[k:n]))` と定義されており、入力の先頭 1 バイトが違うため、同じ入力バイト列を葉と内部ノードの両方に読み替えることはできません。
 
@@ -87,7 +87,7 @@ RFC の式では、MTH は葉の並びからルートハッシュを求める関
 
 上記は [RFC 9162 §2.1.1](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1.1) の規則です。同じ 64 バイトを使っても、先頭が `0x01` と `0x00` なので、ハッシュ関数への入力が異なります。
 
-異なる入力のハッシュ値が偶然一致する可能性まで消すものではなく、その発見の難しさはハッシュ関数の衝突耐性に依存します。
+異なる入力のハッシュ値が偶然一致する可能性まで消すものではなく、その発見の難しさはハッシュ関数の[衝突耐性](../hash-function/)に依存します。
 
 用途ごとに入力の先頭を変えるこの工夫は、domain separation と呼ばれます。これが無いと、木全体として second preimage resistance（第 2 原像計算困難性。ある入力と同じハッシュになる別の入力を見つけられない性質）が失われます。
 

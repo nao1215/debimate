@@ -27,13 +27,7 @@ The Solidity files, the hand-assembled bytecode and the small P-256 signer in
 probe.py are educational and not audited. Anvil runs with a fixed timestamp,
 so output/summary.txt is identical across runs.
 
-Data for the figures that need pinned source checkouts (not run by run.sh):
-  GETH_SRC=/path/to/go-ethereum bash count_opcodes.sh
-    -> output/geth_tables.json (opcodes per instruction set, precompiles per fork)
-       needs Go; go-ethereum must be at ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f.
-       zz_count_opcodes_test.go is copied into core/vm, run, and removed.
-  EIPS_SRC=/path/to/EIPs ERCS_SRC=/path/to/ERCs python3 eip_graph.py
-    -> output/eip_graph.json (category, status and requires from the front matter)
-       EIPs at 542e62eb129517130b7facc52bbb9a1f333c711e,
-       ERCs at f94e400afdddaa2625c291f71646bde0ef44df9d.
-Then python3 ../figures.py redraws images/.
+The data and scripts for the fork history figures (opcodes per fork,
+precompiles per fork, EIP requires graph) moved to
+../../evm-opcode-history/lab/.
+python3 ../figures.py redraws images/ (WebP; needs matplotlib, Pillow and google-chrome).

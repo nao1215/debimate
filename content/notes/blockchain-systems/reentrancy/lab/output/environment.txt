@@ -1,0 +1,9 @@
+date: 2026-11-11T03:22Z
+cpu: AMD RYZEN AI MAX+ 395 w/ Radeon 8060S
+memory: 61 GiB visible to OS
+Linux 7.0.0-38-generic
+Python 3.14.4
+anvil Version: 1.7.1
+Version: 0.8.28+commit.7893614a.Linux.g++
+evm version: cancun (solc --evm-version cancun, anvil --hardfork cancun)
+OpenZeppelin Contracts: v5.7.0 (commit cab19933c33c2ad1d4c7a84864a3601dddfd16f3), files copied to oz/

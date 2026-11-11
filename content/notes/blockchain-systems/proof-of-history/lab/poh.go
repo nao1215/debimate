@@ -149,9 +149,11 @@ func main() {
 	short := slices.Clone(es)
 	short[10].NumHashes = per / 2
 	fmt.Printf("    entry 10 claims %d hashes -> first bad entry %d\n", per/2, verify(seed, short, 16))
-	redo := (400 - 100 + 1) * per
-	fmt.Printf("    honest redo of entries 100-400 in the new order: %d hashes = %.2fs at [1]\n",
-		redo, float64(redo)/rate)
+	// Every hash after the mix in entry 100 changes, not only those up to entry 400.
+	// An honest redo starts at that mix (the last hash of entry 100) and runs to the end.
+	redo := 1 + uint64(n-1-100)*per
+	fmt.Printf("    honest redo from the mix in entry 100 to entry %d: %d of %d hashes (%.0f%%)\n",
+		n-1, redo, uint64(n)*per, float64(redo)/float64(uint64(n)*per)*100)
 
 	// 4. Hashes in one slot of the 400 ms era (62,500 hashes/tick x 64 ticks).
 	const slotHashes = 62_500 * 64

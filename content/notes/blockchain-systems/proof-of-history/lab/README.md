@@ -16,9 +16,10 @@ What a rerun reproduces exactly:
 
 - the last hash of the chain (`0751853592b4...`)
 - the first bad entry after swapping events (100) and after shortening `NumHashes` (10)
-- the number of hashes to redo (2,465,792) and per 400 ms-era slot (4,000,000)
+- the number of hashes to redo after the swap (15,949,825, from the mix in entry 100
+  to the last entry) and per 400 ms-era slot (4,000,000)
 
 Timings depend on the CPU and on its load. Each measurement is the median of
 `-runs` repetitions after one warm-up run, with the min-max range.
 
-`../figures.py` reads `output.txt` to draw `images/proof-of-history_verify.svg`.
+`../figures.py` reads `output.txt` to draw `images/proof-of-history_verify.webp`.

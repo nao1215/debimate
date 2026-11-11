@@ -10,15 +10,15 @@ topics: ["Data Structure"]
 
 Bitcoin は、ブロックに入った取引（transaction、以下の図では Tx と略します）の並びを Merkle Tree で 1 つのルートハッシュに畳み込み、80 バイトのブロックヘッダに収めています。[Bitcoin の白書](https://bitcoin.org/bitcoin.pdf)も、取引を Merkle Tree でハッシュ化し、ブロックのハッシュに入れるのはルートだけとしています。
 
-Bitcoin で支払いを受け取る場合を考えます。送金の取引は、作られてネットワークに流れただけでは、まだどのブロックにも入っていません。どこかのブロックに取り込まれて初めて、共有された履歴に載ります。そのため、代金を受け取る側は、自分宛の取引がブロックに入ったことを確認してから商品を渡します。
+Bitcoin で支払いを受け取る場合を考えます。送金の取引は、作られて[ネットワークに流れた](../bitcoin-transaction-lifecycle/)だけでは、まだどのブロックにも入っていません。どこかのブロックに取り込まれて初めて、共有された履歴に載ります。そのため、代金を受け取る側は、自分宛の取引がブロックに入ったことを確認してから商品を渡します。
 
 厳密には、取引を含むブロック自身と後続のブロックを合わせた確認数（[Bitcoin Block](../bitcoin-block/) で説明）まで見て判断します。ここで扱うのは、その前段の「入ったこと」の確認です。
 
 以下は、代金を受け取る側の携帯端末と、ブロック全体を持つ参加者が持つデータです。
 
-{{< figure src="images/bitcoin-merkle-tree_concept.svg" alt="左の携帯端末はブロックヘッダの列だけを持つ。右の参加者が持つ 8 件の取引の木では、Tx2 からルートハッシュまでの経路が青、経路の兄弟にあたる 3 個のハッシュが黄土色、残りが灰色で、ルートハッシュは端末のヘッダの 1 つに繋がっている" caption="端末に渡るのは、経路の兄弟にあたるハッシュだけ" align="center" >}}
+{{< figure src="images/bitcoin-merkle-tree_concept.webp" alt="左の携帯端末はブロックヘッダの列だけを持つ。右の参加者が持つ 8 件の取引の木では、Tx2 からルートハッシュまでの経路が青、経路の兄弟にあたる 3 個のハッシュが黄土色、残りが灰色で、ルートハッシュは端末のヘッダの 1 つに繋がっている" caption="端末に渡るのは、経路の兄弟にあたるハッシュだけ" align="center" >}}
 
-端末がブロック全体を持つ参加者に尋ね、「入っている」という返事を受け取っても、そのままでは証拠になりません。返事の裏を取ろうにも、ブロックチェーン全体は数百 GB あり、携帯端末のウォレットには収まりません。上記の図のように、ヘッダにあるルートハッシュと、その取引のハッシュからルートハッシュを計算するために必要な、少数のハッシュ（包含証明、図の黄土色）を使うと、この返事を手元で検算できます。
+端末がブロック全体を持つ参加者に尋ね、「入っている」という返事を受け取っても、そのままでは証拠になりません。返事の裏を取ろうにも、ブロックチェーン全体は数百 GB（2026 年時点）あり、携帯端末の[ウォレット](../wallet/)には収まりません。上記の図のように、ヘッダにあるルートハッシュと、その取引のハッシュからルートハッシュを計算するために必要な、少数のハッシュ（包含証明、図の黄土色）を使うと、この返事を手元で検算できます。
 
 <br>
 
@@ -30,7 +30,7 @@ Bitcoin で支払いを受け取る場合を考えます。送金の取引は、
 - 包含証明はどのような形で渡り、実際のブロックではどう検証されるのか。
 - ブロックヘッダだけを持つ参加者は、何を確かめられるのか。
 
-前提は 2 つあります。木の作り方と包含証明の仕組みは [Merkle Tree](../merkle-tree/) で、ブロック・ブロックヘッダ・取引の関係は [Bitcoin Block](../bitcoin-block/) で説明しています。
+前提は 2 つあります。木の作り方と包含証明の仕組みは [Merkle Tree](../merkle-tree/) で、ブロック・ブロックヘッダ・取引の関係は [Bitcoin Block](../bitcoin-block/) で説明しています。木の作り方に由来する 2 つの弱点（取引の複製と 64 バイトの取引）は、[Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で扱います。
 
 ---
 
@@ -54,27 +54,13 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図のとおり、ヘッダ側の 32 バイトが本体の数千件を代表します。ブロックと取引を自力で完全に検証する参加者をフルノード、ブロックヘッダだけを保持して取引の有効性の検証をフルノードに任せる参加者を軽量クライアントと呼びます。
+上記の図のとおり、ヘッダ側の 32 バイトが本体の数千件を代表します。
 
 ---
 
 ### 葉になる txid
 
-葉は、各取引の txid です。txid は、取引から witness データ（そのコインを使う資格を示す署名や公開鍵など）を除いた形式に、[SHA-256](/notes/security/sha-256/)（Secure Hash Algorithm 256、出力が 32 バイトのハッシュ関数）を 2 回適用した値です。
-
-葉が並んだら、隣同士を左から順に組にして連結し、その組に SHA-256 を 2 回適用した値を 1 段上のノードにします。1 つになるまで繰り返した結果が、ブロックヘッダに入るルートハッシュです。
-
-取引を並べる順序を決めるのはブロックを作った参加者（マイナー）で、順序が変われば別のルートハッシュになります。
-
-<br>
-
-witness データは、2017 年の Segregated Witness（分離された witness、SegWit）という仕様変更で、取引本体から分離した領域に置かれるようになりました。
-
-署名は、取引の中身を変えないまま第三者が値だけを作り替えられます。署名を txid の計算に含めると、同じ内容の取引の識別子が送金の途中で変わってしまいます。
-
-後続の取引は使うコインを前の取引の txid で指すため、txid が変わると、まだブロックに入っていない後続の取引が使えなくなります。この問題は transaction malleability（取引展性）と呼ばれ、witness を txid の外に出したことが解決策の 1 つでした。
-
-取引と 2 つの識別子の関係は以下の通りです。
+葉は、各取引の txid です。txid は、取引から witness データ（そのコインを使う資格を示す署名や公開鍵など。Bitcoin のコインは前の取引の出力で、[UTXO](../utxo/) で説明）を除いた形式に、[SHA-256](/notes/security/sha-256/)（Secure Hash Algorithm 256、出力が 32 バイトのハッシュ関数）を 2 回適用した値です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -83,21 +69,30 @@ flowchart LR
         Base["取引本体<br/>入力（どのコインを使うか）<br/>出力（どこにいくら送るか）"]
         W["witness<br/>署名・公開鍵など"]
     end
-    Base -->|"SHA-256 を 2 回"| TXID["txid<br/>ブロックヘッダ側の木の葉"]
-    Base --> WTXID["wtxid<br/>witness commitment 側の木の葉"]
-    W --> WTXID
+    Base -->|"SHA-256 を 2 回"| TXID["txid<br/>本記事の木の葉"]
+    W -.->|"txid には入れない"| Other["witness 用の別の木"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図のとおり、ブロックヘッダ側の木に witness は入りません。
+上記の図のとおり、txid の計算に witness は入りません。
 
-仕様変更の提案文書である BIP（Bitcoin Improvement Proposal）の [141 番](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)は、witness まで含めた識別子である wtxid で別の木を作り、そのルートをコインベース取引（ブロックの先頭に置かれる、ブロック作成者が報酬を受け取る取引）の出力に埋め込む witness commitment を定めています。witness が改竄されていないことは、wtxid の木で保証します。
+葉が並んだら、隣同士を左から順に組にして連結し、その組に SHA-256 を 2 回適用した値を 1 段上のノードにします。1 つになるまで繰り返した結果が、ブロックヘッダに入るルートハッシュです。
+
+取引を並べる順序を決めるのはブロックを作った参加者（マイナー）で、順序が変われば別のルートハッシュになります。
+
+<br>
+
+witness データは、2017 年の Segregated Witness（分離された witness、SegWit）という仕様変更で、取引本体から分離した領域に置かれるようになりました。それまでは、署名も txid の計算に含まれていました（SegWit を使わない従来形式の取引では、今も含まれます）。
+
+txid から witness を外したのは、第三者が取引の中身を変えないまま、[署名](../digital-signature/)の値だけを検証に通る別の値へ書き換えられるためです（理由は Digital Signature で説明）。
+
+署名を txid の計算に含めると、同じ内容の取引の識別子が送金の途中で変わってしまいます。後続の取引は使うコインを前の取引の txid で指すため、まだブロックに入っていない後続の取引が使えなくなります。この問題は transaction malleability（取引展性）と呼ばれ、witness を txid の外に出したことが解決策の 1 つでした。witness は[別の木](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)でブロックに結び付けられており（[Bitcoin Block](../bitcoin-block/) で説明）、本記事では扱いません。
 
 ---
 
 ### 奇数の葉の複製
 
-Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
+Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。代表的なノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の[実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
 
 例えば、取引 3 件のブロックでは、次のように複製します。
 
@@ -113,32 +108,24 @@ flowchart BT
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の Hash22 は、Hash2 を 2 つ連結した組のハッシュです。この木は、4 件目の取引として Tx2 をもう一度並べた場合と同じ形になります。
+上記の図の Hash0〜Hash2 は Tx0〜Tx2 の txid で、Hash22 は Hash2 を 2 つ連結した組のハッシュです。この木は、4 件目の取引として Tx2 をもう一度並べた場合と同じ形になります。
 
-複製規則の副作用として、異なる取引の並びが同じルートハッシュになる場合があります。SHA-256 の衝突ではなく、木の構築規則に由来する一致です。以下は、取引 3 件のブロックと、Tx2 を実際に 2 回並べた 4 件のブロックです。
+この規則には副作用があります。3 件の並びと、Tx2 を実際に 2 回並べた 4 件の並びが、同じルートハッシュになります。SHA-256 の[衝突](../hash-function/)ではなく、木の構築規則に由来する一致です。Bitcoin Core はこの一致を検出して棄却しています。放置した場合に成り立つ攻撃と検出の方法は、[Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で説明します。
 
-{{< figure src="images/bitcoin-merkle-tree_duplicate.svg" alt="左は取引 3 件の正当なブロックの木で、Tx2 の隣に点線の Tx2 の複製がある。右は Tx0・Tx1・Tx2・Tx2 の 4 件を並べた無効なブロックの木。左右の木は同じ形で、ルートは同じ値になる。右の木の Tx2 と Tx2 の組を赤い点線で囲み、組の 2 つが同じなので棄却すると書いている" caption="3 件の並びと、Tx2 を 2 回並べた 4 件の並び" align="center" >}}
-
-左の点線は計算の上だけの複製で、右の 2 つ目の Tx2 はブロックに実際に入っている取引です。どちらも同じルートになるため、ヘッダだけでは区別できません。
-
-この一致を放置すると、[CVE-2012-2459](https://en.bitcoin.it/wiki/Common_Vulnerabilities_and_Exposures#CVE-2012-2459) の攻撃が成り立ちます。ノードは無効と判定したブロックをハッシュで覚え、同じハッシュのブロックを以後受け取りません。攻撃者が取引を複製した無効なブロックを先に送ると、同じヘッダを持つ正当なブロックまで拒まれます。
-
-そのため Bitcoin Core は、各段で組にする 2 つのハッシュが同じになる箇所を探し、見つかったブロックはヘッダとデータが一致しないものとして棄却します。ヘッダ自体を無効として覚えないため、後から届く正当なブロックは受け入れられます。
-
-複製しない流儀もあります。Certificate Transparency の [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1) は、葉の件数から木の形を決める分割規則を使っており、奇数の扱いを含む構築規則の違いは [Merkle Tree Design](../merkle-tree-design/) で扱います。
+複製しない規則（Certificate Transparency の仕様 [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1)）を使う仕組みもあり、奇数の扱いを含む構築規則の違いは [Merkle Tree Design](../merkle-tree-design/) で扱います。
 
 ---
 
 ### 包含証明の形式と検証
 
-以下は、取引 4 件のブロックで Tx2 の包含を示す時に渡る値です。木と証明の読み方は [Merkle Tree](../merkle-tree/) の包含証明と同じです。
+以下は、取引 4 件のブロックで Tx2 の包含を示す時に渡る値です。以下では、包含を確かめる側（冒頭の携帯端末）を検証者と呼びます。各ハッシュに添えた番号は、その段の中で左から 0 始まりで数えた位置です。木と証明の読み方は [Merkle Tree](../merkle-tree/) の包含証明と同じです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart BT
-    H2["Hash2<br/>検証者が計算する"] --> H23["Hash23<br/>検証者が計算する"]
-    H3["Hash3<br/>証明に含まれる"] --> H23
-    H01["Hash01<br/>証明に含まれる"] --> R["ルートハッシュ<br/>検証者が計算する"]
+    H2["Hash2（段の中で 2）<br/>検証者が計算する"] --> H23["Hash23（段の中で 1）<br/>検証者が計算する"]
+    H3["Hash3（段の中で 3）<br/>証明に含まれる"] --> H23
+    H01["Hash01（段の中で 0）<br/>証明に含まれる"] --> R["ルートハッシュ<br/>検証者が計算する"]
     H23 --> R
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
@@ -215,6 +202,7 @@ func main() {
 
 	for _, reverse := range []bool{true, false} {
 		tx0, tx1 := fromHex(txids[0], reverse), fromHex(txids[1], reverse)
+		// Hash01 は本来フルノードが証明として渡す値で、ここでは手元で用意する
 		hash01 := doubleSHA256(tx0[:], tx1[:])
 		path := [][32]byte{fromHex(txids[3], reverse), hash01}
 		ok := verifyMerkleProof(fromHex(txids[2], reverse), path, []bool{true, false}, fromHex(root, reverse))
@@ -244,13 +232,13 @@ Go 1.26 で実行した結果が以下です。
 
 `verifyMerkleProof` は、左右のハッシュを連結する、SHA-256 を 2 回適用する、ルートまで再計算する、の 3 つだけを抜き出したもので、Bitcoin が実際に送る証明の形式ではありません。
 
-[BIP 37](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki) が定める `merkleblock` メッセージは、partial Merkle tree と呼ばれる形式で、`total_transactions`・`hashes`・`flags` の 3 つを送ります。受け取った側は取引の総数から木の形を復元し、どのノードで下に降りるかを表す `flags` のビットを深さ優先で読みながら `hashes` を消費して、ルートまで計算します。
+実際の形式は、Bitcoin の仕様変更の提案文書である BIP（Bitcoin Improvement Proposal）の [37 番](https://github.com/bitcoin/bips/blob/master/bip-0037.mediawiki)（以下 BIP 37）が定めています。ハッシュの列と一緒に取引の総数も送り、受け取った側は総数から木の形を復元します。
 
 ---
 
 ### SPV - ヘッダだけによる取引の確認
 
-軽量クライアントが持っているのは、ブロックヘッダの列だけです。ヘッダはルートハッシュを含むため、包含証明を受け取れば、その取引がヘッダの指すブロックに入っていたことを自力で確かめられます。Bitcoin の白書はこの手順を Simplified Payment Verification（簡易支払い検証）と呼んでおり、一般には SPV と略されます。
+ブロックと取引を自力で完全に検証する参加者をフルノード、ブロックヘッダだけを保持して取引の有効性の検証をフルノードに任せる参加者を軽量クライアントと呼びます。冒頭の携帯端末は軽量クライアントです。軽量クライアントが持っているのは、ブロックヘッダの列だけです。ヘッダはルートハッシュを含むため、包含証明を受け取れば、その取引がヘッダの指すブロックに入っていたことを自力で確かめられます。Bitcoin の白書はこの手順を Simplified Payment Verification（簡易支払い検証）と呼んでおり、一般には SPV と略されます。
 
 軽量クライアントとフルノードのやり取りは以下の通りです。
 
@@ -267,22 +255,11 @@ sequenceDiagram
     Note over C,F: 一致すれば Tx2 は<br/>そのブロックに<br/>入っていた
 ```
 
-上記の図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていたことだけです。Tx2 が有効な取引であることまでは確かめていません。署名が正しいか、使おうとしている残高が既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
+上記の図の最後で一致した時に確かめられたのは、Tx2 がそのブロックに入っていたことだけです。Tx2 が有効な取引であることまでは確かめていません。署名が正しいか、使おうとしているコインが既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
 
 <br>
 
-包含の確認そのものにも、木の構造に由来する弱点があります。Bitcoin は葉と内部ノードに同じ二重 SHA-256 を使い、入力の長さでも区別していません。
-
-- 葉の入力：取引をシリアライズしたバイト列
-- 内部ノードの入力：左右の 32 バイトのハッシュを連結した 64 バイトのバイト列
-
-witness を除いた大きさがちょうど 64 バイトの取引は、葉としても内部ノードとしても読めます。
-
-{{< figure src="images/bitcoin-merkle-tree_64byte.svg" alt="左は葉として読む場合で、64 バイトの取引 T を二重 SHA-256 して txid になる。右は内部ノードとして読む場合で、同じ 64 バイトを左 32 バイトと右 32 バイトに分け、二重 SHA-256 して内部ノードのハッシュになる。2 つの値は同じ。右 32 バイトの下には、ハッシュが一致する点線の偽の取引がぶら下がっている" caption="同じ 64 バイトの 2 通りの読み方" align="center" >}}
-
-ブロックに入った 64 バイトの取引を内部ノードと偽り、その下にもう 1 段の証明を付け足すと、ブロックに入っていない取引が入っているように見せかけた包含証明を作れる場合があります。木の段数は取引の総数で決まりますが、BIP 37 の総数は相手が送る値で、ヘッダには入っていません。
-
-[BIP 54](https://github.com/bitcoin/bips/blob/master/bip-0054.md) は、witness を除いた大きさが 64 バイトの取引を無効にする規則で、この脆弱性を防ぐ案を示しています。
+包含の確認そのものにも、木の作り方に由来する弱点があり、特定の取引を使うと包含証明を偽れる場合があります。手順と対策は [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で説明します。
 
 <br>
 
@@ -296,10 +273,7 @@ witness を除いた大きさがちょうど 64 バイトの取引は、葉と�
 
 - ブロック全体を持たない参加者が、取引 1 件の包含を自力で検証できる
 - 証明のサイズが件数の対数で、数千件のブロックでも数百バイトに収まる
-- witness を別の木に分けたことで、txid の木は署名の作り替えの影響を受けない
-- 使い終わった取引の枝をハッシュ 1 つに置き換え、古いブロックの保存量を減らせる
-
-4 番目について、Bitcoin の白書は、使い終わった取引を木から外し、代わりにその枝をまとめたハッシュを残すことで古いブロックを圧縮する案を挙げています。なお Bitcoin Core の枝刈りはブロックファイルごと消す別の方式で、白書のこの案は実装されていません。
+- witness を別の木に分けたことで、SegWit の取引の txid は署名の作り替えの影響を受けない
 
 ---
 
@@ -310,9 +284,11 @@ Bitcoin の Merkle Tree は、証明を小さく保つ代わりに、渡す情�
 - 素朴に証明を要求すると、どの取引に関心があるかが相手のノードに伝わる
 - SPV が確かめるのはブロックへの包含だけで、取引の有効性までは確かめない
 - 複製規則の副作用として、同じルートハッシュになる別の取引の並びが存在する（検出して棄却する）
-- 葉と内部ノードを入力の長さで区別しないため、64 バイトの取引を使って包含証明を偽れる余地がある
+- 葉と内部ノードを区別しないため、64 バイトの取引を使って包含証明を偽れる余地がある
 
-どの取引に関心があるかが伝わる問題に対して、BIP 37 は、誤検出を許す集合の判定である Bloom filter を使い、関係の無い取引もいくらか混ぜて受け取る仕組みを定めました。同じ文書の説明では、絞り込みの精度を上げれば自分のウォレットに関係する取引だけが届く一方で、相手のノードに取引と IP アドレスを結び付けられる場合があります。通信量と匿名性のどちらを取るかの選択になります。
+後ろの 2 つは [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で扱っています。
+
+どの取引に関心があるかが伝わる問題に対して、BIP 37 は、誤検出を許す集合の判定である Bloom filter を使い、関係の無い取引もいくらか混ぜて受け取る仕組みを定めました。同じ文書によれば、絞り込みの精度を上げると自分のウォレットに関係する取引だけが届く一方で、相手のノードに取引と IP アドレスを結び付けられる場合があります。通信量と匿名性のどちらを取るかの選択になります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -325,4 +301,4 @@ sequenceDiagram
     Note over C: 条件が粗いほど、無関係の取引まで<br/>受け取り通信量が増える
 ```
 
-なお [Bitcoin Core 0.19.0.1](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.19.0.1.md) は、サービス拒否攻撃の経路を断つ目的で、この絞り込みを受け付ける設定を既定で無効にしました。代わりの仕組みとして、ブロックごとに作った要約をクライアントが取得し、手元で照合する compact block filters（形式は [BIP 158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki)、取得の手順は [BIP 157](https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki)）があります。
+なお Bitcoin Core は、サービス拒否攻撃の経路を断つ目的で、[0.19.0.1](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.19.0.1.md) からこの絞り込みを既定で受け付けていません。代わりに、ブロックごとの要約を配り、軽量クライアントが手元で照合する仕組み（形式は [BIP 158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki)、取得の手順は [BIP 157](https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki)）があり、関心のある取引を相手に伝えずに済みます。

@@ -1,5 +1,8 @@
 # 2026-11-10, AMD RYZEN AI MAX+ 395 (16 cores / 32 threads), cpufreq governor powersave
 # command: go run poh.go -runs 7
+# 2026-11-11: the redo line in [3] was fixed (the old one counted only entries 100-400)
+# and now prints a count only. The count does not depend on timing; a rerun of the
+# fixed poh.go printed the same [2] last hash, [3] lines and [4] hash count.
 go go1.26.4, 32 logical CPUs, loadavg 10.24 16.09 19.67
 
 [1] hash rate: 10.5M hashes/s (median of 7, range 9.4-14.8M)
@@ -15,7 +18,7 @@ verify 32 goroutines     0.054s (range 0.053-0.058)   36.7x faster than generate
 
 [3] swap events A and B   -> first bad entry 100
     entry 10 claims 4096 hashes -> first bad entry 10
-    honest redo of entries 100-400 in the new order: 2465792 hashes = 0.24s at [1]
+    honest redo from the mix in entry 100 to entry 2047: 15949825 of 16777216 hashes (95%)
 
 [4] one 400ms-era slot = 4000000 hashes -> 381 ms on this machine
 loadavg at end 11.75 15.75 19.39

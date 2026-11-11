@@ -8,7 +8,7 @@ weight: 8
 topics: ["Data Structure"]
 ---
 
-Merkle Tree（マークルツリー、ハッシュ木）は、データの並びを 2 つずつハッシュ関数で畳み込み、最後に 1 つの値にまとめる木構造です。まとまった 1 つの値をルートハッシュと呼びます。名前は、署名方式の論文「[A Digital Signature Based on a Conventional Encryption Function](https://link.springer.com/chapter/10.1007/3-540-48184-2_32)」（1987 年）でこの木を示した Ralph Merkle から来ています。
+Merkle Tree（マークルツリー、ハッシュ木）は、データの並びを 2 つずつ[ハッシュ関数](../hash-function/)で畳み込み、最後に 1 つの値にまとめる木構造です。まとまった 1 つの値をルートハッシュと呼びます。名前は、署名方式の論文「[A Digital Signature Based on a Conventional Encryption Function](https://link.springer.com/chapter/10.1007/3-540-48184-2_32)」（1987 年）でこの木を示した Ralph Merkle から来ています。
 
 全件を持つ側は、データ 1 件と少数のハッシュだけを渡して、その 1 件が並びに確かに含まれていたことを相手に検証させられます。
 
@@ -18,7 +18,7 @@ Merkle Tree（マークルツリー、ハッシュ木）は、データの並び
 
 {{< figure src="images/merkle-tree_proof_size.svg" alt="データの件数と、包含証明に入るハッシュの個数の関係。件数 4 でハッシュ 2 個、8 で 3 個、1,024 で 10 個、100 万で 20 個にとどまる" caption="データの件数と、包含証明に入るハッシュの個数" align="center" >}}
 
-上記の図の横軸は 100 万件まで伸びていますが、縦軸は 20 個で止まります。
+上記の図の横軸はデータの件数（number of data items）で、100 万件まで伸びていますが、縦軸の証明に入るハッシュの個数（hashes in the inclusion proof）は 20 個で止まります。
 
 <br>
 
@@ -215,6 +215,6 @@ Merkle Tree が小さく保てるのは包含の証明だけで、それ以外�
 
 Bitcoin は、ブロックに入った取引の識別子（txid）を葉にして、ルートハッシュをブロックヘッダに収めています。ブロック全体を持たない利用者は、自分で検証したブロックヘッダの列からルートハッシュを得て、包含証明だけで自分宛の取引を確かめられます。Bitcoin 固有の計算規則と検証の仕組みは [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で、前提となるブロックの構造は [Bitcoin Block](../bitcoin-block/) で説明しています。
 
-Web の暗号化通信（TLS）に使う証明書の発行記録を追記専用のログに残す Certificate Transparency（[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)）も、ログ全体をルートハッシュで代表し、個々の証明書の包含を対数サイズで証明します。
+Web の暗号化通信（TLS）に使う[証明書](/notes/security/pki/)の発行記録を追記専用のログに残す Certificate Transparency（[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)）も、ログ全体をルートハッシュで代表し、個々の証明書の包含を対数サイズで証明します。
 
-[Ethereum](https://ethereum.org/) は、キーの文字を辿って値の位置が決まる木（trie）と組み合わせた [Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) で、アカウントの残高などの状態を管理しています。プロトコルごとの構築規則の違いは [Merkle Tree Design](../merkle-tree-design/) で扱います。
+[Ethereum](https://ethereum.org/) は、キーの文字を辿って値の位置が決まる木（trie）と組み合わせた [Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) で、[アカウントの残高などの状態](../ethereum-account-model/)を管理しています。プロトコルごとの構築規則の違いは [Merkle Tree Design](../merkle-tree-design/) で扱います。

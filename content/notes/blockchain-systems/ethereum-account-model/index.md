@@ -10,12 +10,12 @@ topics: ["Transaction / Wallet"]
 
 アカウントモデル（account model）は、アドレスごとに残高などの状態を保存し、取引がその状態を書き換える形で送金を表すモデルです。[Ethereum](https://ethereum.org/) が採用しています。[UTXO](../utxo/) で説明した [Bitcoin](https://bitcoin.org/) の表し方には残高という保存された値が無く、コインは使い切りの出力として存在します。同じ送金でも、アカウントモデルは保存された数値を書き換え、UTXO モデルは出力を作り直します。
 
-例えば、2 件の送金を短い間隔で出すと、ウォレットが付けた通し番号（nonce）の小さい方から順に取り込まれ、1 件目が取り込まれないうちは 2 件目も待たされます。同じアカウントから自動で取引を出すサービスを書くなら、この番号を誰が採番するのかを決める必要があります。
+例えば、2 件の送金を短い間隔で出すと、[ウォレット](../wallet/)が付けた通し番号（nonce）の小さい方から順に取り込まれ、1 件目が取り込まれないうちは 2 件目も待たされます。同じアカウントから自動で取引を出すサービスを書くなら、この番号を誰が採番するのかを決める必要があります。
 
 以下は、Alice から Bob に 1 ETH を送る取引（nonce 7）で、アカウントの状態のどの欄が変わるのかを示した図です。
 
 {{< figure src="images/ethereum-account-model_concept.svg" alt="アドレスごとに nonce・balance・storageRoot・codeHash の 4 欄を並べた表。Alice の nonce 7 → 8 と balance 5 → 4 − 手数料、Bob の balance 2 → 3 だけが青く塗られ、EOA の storageRoot と codeHash は空、コントラクトの行だけが記憶領域とコードを持つ" caption="1 ETH の送金で書き換わる、アカウントの状態の欄" align="center" >}}
-上記の図で変わるのは青い欄だけで、Bob のように受け取るだけのアカウントでは nonce は動きません。送り主の残高からは、送る 1 ETH に加えて手数料も引かれます。手数料は、実行に要した計算量を gas という単位で計り、その量と単価から決まります。
+上記の図で変わるのは青い欄だけで、Bob のように受け取るだけのアカウントでは nonce は動きません。送り主の残高からは、送る 1 ETH に加えて手数料も引かれます。手数料は、実行に要した計算量を [gas](../gas-eip-1559/) という単位で計り、その量と単価から決まります。
 
 <br>
 
@@ -45,7 +45,7 @@ Ethereum のアカウントには、利用者が秘密鍵で操作する EOA（E
 
 公式ドキュメントは 1 行目の nonce を「[the number of transactions sent from an externally-owned account or the number of contracts created by a contract account](https://ethereum.org/en/developers/docs/accounts/)」（外部所有アカウントから送られた取引の件数、またはコントラクトアカウントが作ったコントラクトの件数）と定義しています。
 
-3 行目の記憶領域には、コードが実行のたびに読み書きし、次の実行にも残したい値が入ります。例えば、トークンの残高表がここに置かれます。中身を 1 つの値にまとめる木の構造は、後の「世界状態と execution layer の `state_root`」で扱います。
+3 行目の記憶領域には、コードが実行のたびに読み書きし、次の実行にも残したい値が入ります。例えば、[トークン](../erc-20/)の残高表がここに置かれます。中身を 1 つの値にまとめる木の構造は、後の「世界状態と execution layer の `state_root`」で扱います。
 
 ---
 
@@ -74,7 +74,7 @@ sequenceDiagram
 
 従来は、コードの有無で 2 種類を見分けられました。公式ドキュメントでも、EOA の codeHash は「[the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（空文字列のハッシュ）です。
 
-今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の [Pectra](https://ethereum.org/roadmap/pectra/) というプロトコルの更新で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA のコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
+今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の [Pectra](https://ethereum.org/roadmap/pectra/) という[プロトコルの更新](../ethereum-hard-forks/)で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA のコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
 
 この EOA を呼び出すと、委任先のコードが EOA のアドレスで動き、読み書きする記憶領域も EOA のものになります。例えば、複数の操作を 1 件の取引にまとめたり、手数料を別のアカウントに払ってもらったりできます。2 種類の違いはコードの有無ではなく、EOA が秘密鍵による認証を起点に取引を送り出せるのに対し、コントラクトアカウントはコードの実行によって動く点にあります。
 
@@ -92,7 +92,7 @@ nonce が 1 ずつ増えるのは、通常の EOA が取引を送る場合です
 
 <br>
 
-nonce で防げるのは、同じチェーンでの再送です。別のチェーンへの再生は、chain ID を署名の対象に含めることで防ぎます。この仕組みを旧来の形式の取引（legacy transaction）に導入したのが [EIP-155](https://eips.ethereum.org/EIPS/eip-155) で、先頭に型を表すバイトを持つ現在の形式（typed transaction）も chain ID を署名の対象に含みます。
+nonce で防げるのは、同じチェーンでの再送です。[別のチェーンへの再生](../replay-protection/)は、chain ID を署名の対象に含めることで防ぎます。この仕組みを旧来の形式の取引（legacy transaction）に導入したのが [EIP-155](https://eips.ethereum.org/EIPS/eip-155) で、先頭に型を表すバイトを持つ現在の形式（typed transaction）も chain ID を署名の対象に含みます。
 
 ---
 
@@ -179,9 +179,9 @@ nonce 0 が取り込まれても 1 が欠けている間は 2 は動かず、1 �
 
 取引は、この状態を次の状態に移す入力です。そのため、同じ送金の取引でも、先に別の取引が残高を減らしていれば失敗します。
 
-世界状態は、アドレスを `keccak256`（[Keccak](https://keccak.team/keccak.html) に基づくハッシュ関数）でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。
+世界状態は、アドレスを `keccak256`（[Keccak](https://keccak.team/keccak.html) に基づく[ハッシュ関数](../hash-function/)）でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。
 
-現在の Ethereum の本番ネットワーク（Mainnet）では、[modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
+現在の Ethereum の[本番ネットワーク（Mainnet）](../mainnet-and-testnet/)では、[modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
 
 <br>
 
@@ -207,7 +207,7 @@ flowchart LR
 
 [Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入った取引の並びを代表する値を持っていました。Ethereum の execution layer では、取引の並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。
 
-全状態を持たない利用者は、このルートハッシュと 1 本の経路だけで、あるアカウントの残高を確かめられます。
+全状態を持たない利用者は、このルートハッシュと [1 本の経路](../merkle-tree/)だけで、あるアカウントの残高を確かめられます。
 
 ---
 

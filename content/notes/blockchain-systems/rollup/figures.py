@@ -1,27 +1,37 @@
-"""Generate the cover diagram of the Rollup note (Python stdlib only).
+"""Generate the figures of the Rollup note (hand-written SVG -> WebP).
 
-concept_figure() puts L2 above L1. Many L2 transactions are ordered and
-executed by the sequencer and packed into a batch; only a state root and the
-transaction data go down to the rollup contract on L1, which accepts the update
-with a validity proof or after the challenge period.
+concept_figure()   L2 executes many transactions; only a state root and the
+                   transaction data reach the rollup contract on L1.
+bisection_figure() A dispute is narrowed down to the one step where the two
+                   claims first differ, and only that step is executed on L1.
+withdraw_figure()  The steps of a withdrawal to L1, Optimistic vs ZK.
+retention_figure() Blob retention (4096 epochs) against the challenge periods.
 
 Run: python3 content/notes/blockchain-systems/rollup/figures.py
+Needs google-chrome (headless, to render the SVG) and Pillow.
 """
 
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
 
+from PIL import Image
+
 HERE = Path(__file__).resolve().parent
+IMAGES = HERE / "images"
 INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
 FILL, PALE = "#f2f2f2", "#eaf1f5"
 OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
+RED_PALE = "#fbe3e3"
 FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
 
 
 class Svg:
-    """A tiny hand-written SVG builder (960x540, white background)."""
+    """A tiny hand-written SVG builder (white background)."""
 
     def __init__(self, title, width=960, height=540):
+        self.w, self.h = width, height
         self.parts = [
             f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
             f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
@@ -36,24 +46,19 @@ class Svg:
             f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
         ]
 
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle"):
+    def text(self, x, y, s, size=24, color=INK, anchor="middle"):
         self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
+            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="normal" '
             f'text-anchor="{anchor}" style="fill:{color}">{escape(s)}</text>')
 
-    def box(self, x, y, w, h, fill, stroke="none", sw=2.5, dash="", rx=10, opacity=1):
+    def box(self, x, y, w, h, fill, stroke="none", sw=2.5, dash="", rx=10):
         d = f' stroke-dasharray="{dash}"' if dash else ""
-        o = f' fill-opacity="{opacity}"' if opacity != 1 else ""
         self.parts.append(
             f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}"{o} stroke="{stroke}" stroke-width="{sw}"{d}/>')
+            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
 
-    def circle(self, cx, cy, r, fill, stroke="none", sw=2.5, dash="", opacity=1):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        o = f' fill-opacity="{opacity}"' if opacity != 1 else ""
-        self.parts.append(
-            f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"{o} '
-            f'stroke="{stroke}" stroke-width="{sw}"{d}/>')
+    def circle(self, cx, cy, r, fill):
+        self.parts.append(f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{fill}"/>')
 
     def line(self, x1, y1, x2, y2, color, sw=4, arrow=None, dash=""):
         m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
@@ -62,29 +67,32 @@ class Svg:
             f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
             f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
 
-    def path(self, d, stroke, sw=4, fill="none"):
-        self.parts.append(
-            f'<path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{sw}" '
-            'stroke-linecap="round" stroke-linejoin="round"/>')
-
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+    def save(self, name):
+        """Render the SVG with headless Chrome at 2x and store it as WebP."""
+        IMAGES.mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory() as tmp:
+            svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+            svg.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+            subprocess.run(
+                ["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                 "--force-device-scale-factor=2", f"--window-size={self.w},{self.h}",
+                 f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
+            Image.open(png).convert("RGB").save(IMAGES / name, "WEBP", quality=90, method=6)
 
 
 def concept_figure():
-    f = Svg("L2 で実行した多数の取引と、L1 に届く state root と取引データ")
+    f = Svg("L2 で実行した多数の取引のうち、L1 に届くのは state root と取引データだけ")
     # L2: many transactions are executed off L1.
     f.box(24, 24, 912, 266, PALE, rx=16)
-    f.text(56, 68, "L2", 32, weight="normal", anchor="start")
+    f.text(56, 68, "L2（Ethereum の外のチェーン）", 28, anchor="start")
     for row in range(5):
         for col in range(9):
-            f.circle(118 + col * 34, 104 + row * 34, 9, ACCENT)
+            f.circle(118 + col * 34, 112 + row * 30, 9, ACCENT)
     f.text(254, 278, "利用者の取引", 24, SUB)
     f.line(416, 172, 456, 172, SUB, sw=4, arrow="sub")
     f.box(466, 112, 196, 120, "#ffffff", ACCENT, sw=3)
-    f.text(564, 164, "sequencer", 26)
-    f.text(564, 200, "順序付け・実行", 24, SUB)
+    f.text(564, 164, "シーケンサー", 26)
+    f.text(564, 200, "順に実行", 24, SUB)
     f.line(668, 172, 708, 172, SUB, sw=4, arrow="sub")
     for i in range(3):
         f.box(722 + i * 8, 104 + i * 8, 150, 112, PALE if i < 2 else "#ffffff",
@@ -93,82 +101,111 @@ def concept_figure():
     for row in range(5):
         for col in range(9):
             f.circle(769 + col * 11, 154 + row * 11, 3.6, ACCENT)
-    f.text(813, 254, "batch", 26)
+    f.text(813, 254, "batch（まとめ）", 24)
 
-    # L1: only a state root and the data arrive.
+    # L1: the state root goes to the contract, the data goes into the block.
     f.box(24, 316, 912, 200, FILL, rx=16)
-    f.text(56, 360, "L1", 32, weight="normal", anchor="start")
-    f.line(813, 264, 813, 372, SUB, sw=4, arrow="sub")
-    f.box(530, 382, 382, 116, "#ffffff", SUB, sw=3)
-    f.text(721, 418, "rollup contract", 24, SUB)
-    f.box(552, 438, 34, 34, ACCENT, rx=4)
-    f.text(596, 465, "state root", 24, anchor="start")
-    f.box(736, 446, 30, 18, ACCENT, rx=3)
-    f.text(774, 465, "取引データ", 24, anchor="start")
+    f.text(56, 360, "L1（Ethereum）", 28, anchor="start")
+    f.line(790, 264, 790, 350, SUB, sw=4)
+    f.line(790, 350, 480, 350, SUB, sw=4)
+    f.line(480, 350, 480, 384, SUB, sw=4, arrow="sub")
+    f.line(840, 264, 840, 384, SUB, sw=4, arrow="sub")
+    f.box(330, 392, 300, 104, "#ffffff", SUB, sw=3)
+    f.text(480, 428, "rollup のコントラクト", 24, SUB)
+    f.box(352, 448, 28, 28, ACCENT, rx=4)
+    f.text(392, 472, "state root", 24, anchor="start")
+    f.box(650, 392, 270, 104, "#ffffff", SUB, sw=3)
+    f.text(785, 428, "L1 のブロック", 24, SUB)
+    f.box(672, 452, 28, 20, ACCENT, rx=3)
+    f.text(712, 472, "取引データ", 24, anchor="start")
     # The checker is a second actor on L1 (ochre), not a failure.
-    f.box(70, 410, 330, 64, OCHRE_PALE, OCHRE, sw=3)
-    f.text(235, 452, "証明 または challenge", 24, INK)
-    f.line(406, 442, 518, 442, OCHRE, sw=4, arrow="ochre")
-    f.save(HERE / "images" / "rollup_concept.svg")
+    f.box(40, 396, 248, 96, OCHRE_PALE, OCHRE, sw=3)
+    f.text(164, 434, "異議 または", 24)
+    f.text(164, 468, "validity proof", 24)
+    f.line(292, 444, 322, 444, OCHRE, sw=4, arrow="ochre")
+    f.save("rollup_concept.webp")
 
 
-def _plt(salt):
-    """matplotlib with the site's monochrome settings (imported lazily)."""
-    import sys
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    sys.path.insert(0, str(HERE / "lab"))
-    plt.rcParams.update({
-        "font.size": 11, "axes.edgecolor": SUB, "axes.labelcolor": INK,
-        "xtick.color": INK, "ytick.color": INK, "text.color": INK,
-        "svg.fonttype": "path", "svg.hashsalt": salt,
-        "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
-    })
-    return plt
+def bisection_figure():
+    f = Svg("2 人の主張が最初に食い違う 1 ステップまで絞り、L1 はその 1 ステップだけを実行する",
+            height=590)
+    x0, cw, n = 260, 40, 16
+
+    def x(i):
+        return x0 + i * cw
+
+    f.text(x0 - 20, 40, "ステップ", 22, SUB, anchor="end")
+    for i in (0, 4, 8, 12, 16):
+        f.text(x(i), 40, str(i), 22, SUB)
+    rows = (("提出者の主張", 60, OCHRE_PALE, OCHRE), ("異議を出した人", 124, PALE, ACCENT))
+    for label, y, fill, stroke in rows:
+        f.text(x0 - 20, y + 34, label, 24, anchor="end")
+        for i in range(n):
+            differ = i >= 10
+            f.box(x(i) + 2, y, cw - 4, 48, fill if differ else PALE,
+                  stroke if differ else ACCENT, sw=2, rx=4)
+    f.text(x(5), 214, "10 ステップ目までは同じ状態", 22, SUB)
+    f.text(x(13), 214, "11 ステップ目から食い違う", 22, SUB)
+    f.text(x0 - 20, 262, "途中の状態を比べて、範囲を半分ずつ絞る", 22, SUB, anchor="start")
+
+    # Each question halves the range that still contains the first difference.
+    ranges = (("最初の範囲", 0, 16), ("8 で一致", 8, 16), ("12 で不一致", 8, 12),
+              ("10 で一致", 10, 12), ("11 で不一致", 10, 11))
+    for k, (label, lo, hi) in enumerate(ranges):
+        y = 282 + k * 46
+        f.text(x0 - 20, y + 26, label, 24, anchor="end")
+        last = k == len(ranges) - 1
+        f.box(x(lo) + 2, y, (hi - lo) * cw - 4, 34, RED_PALE if last else FILL,
+              RED if last else SUB, sw=2, rx=4)
+    f.line(x(10) + 20, 282 + 4 * 46 + 40, x(10) + 20, 530, RED, sw=3, arrow=None)
+    f.text(x(10) + 20, 562, "L1 は 11 ステップ目だけを実行して判定する", 24)
+    f.save("rollup_bisection.webp")
 
 
-def _save(fig, name):
-    fig.tight_layout()
-    fig.savefig(HERE / "images" / name, metadata={"Date": None})
+def _steps(f, y, steps):
+    """A row of step boxes joined by arrows. steps: (lines, width, fill, stroke)."""
+    x = 40
+    for i, (lines, w, fill, stroke) in enumerate(steps):
+        f.box(x, y, w, 96, fill, stroke, sw=2.5, rx=8)
+        for j, s in enumerate(lines):
+            f.text(x + w / 2, y + 40 + j * 32 - (len(lines) - 1) * 6, s, 24)
+        if i < len(steps) - 1:
+            f.line(x + w + 4, y + 48, x + w + 26, y + 48, SUB, sw=3, arrow="sub")
+        x += w + 34
 
 
-def batch_cost_figure():
-    plt = _plt("rollup-batch-cost")
-    from batch_cost import BLOB_BYTES, TX_BYTES, per_tx
-    fig, ax = plt.subplots(figsize=(7.2, 4.0))
-    n = list(range(1, 6001))
-    exec_gas, blob_gas = zip(*(per_tx(k) for k in n))
-    ax.plot(n, blob_gas, color=ACCENT, lw=2.4, label="blob gas per tx")
-    ax.plot(n, exec_gas, color=RED, lw=2.4, label="execution gas per tx (21,000 / n)")
-    full = BLOB_BYTES // TX_BYTES
-    ax.axvline(full, color=SUB, ls="--", lw=1.2)
-    ax.text(full * 1.08, 3e4, f"one blob full\nat {full} txs", color=SUB)
-    ax.set_xscale("log")
-    ax.set_yscale("log")
-    ax.set_xlim(1, 6000)
-    ax.set_xlabel(f"L2 transactions in one batch ({TX_BYTES} bytes each)")
-    ax.set_ylabel("L1 gas per L2 transaction")
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, loc="lower left")
-    _save(fig, "rollup_batch_cost.svg")
+def withdraw_figure():
+    f = Svg("L1 に戻す出金の手順。Optimistic Rollup は challenge 期間を待ち、"
+            "ZK Rollup は証明の検証を待つ", height=420)
+    f.text(40, 44, "Optimistic Rollup（OP Mainnet の例）", 24, anchor="start")
+    _steps(f, 64, [(["L2 で", "出金を送る"], 140, "#ffffff", SUB),
+                   (["batch を", "L1 に提出"], 140, "#ffffff", SUB),
+                   (["L1 で出金", "を証明"], 140, "#ffffff", SUB),
+                   (["challenge 期間", "（7 日）"], 210, OCHRE_PALE, OCHRE),
+                   (["L1 で", "受け取る"], 140, "#ffffff", SUB)])
+    f.text(40, 236, "ZK Rollup", 24, anchor="start")
+    _steps(f, 256, [(["L2 で", "出金を送る"], 140, "#ffffff", SUB),
+                    (["batch を", "L1 に提出"], 140, "#ffffff", SUB),
+                    (["validity proof を", "作り、L1 が検証"], 210, PALE, ACCENT),
+                    (["L1 で", "受け取る"], 140, "#ffffff", SUB)])
+    f.text(480, 400, "箱の幅は時間の長さを表していない", 22, SUB)
+    f.save("rollup_withdraw.webp")
 
 
 def retention_figure():
     """Blob retention (4096 epochs) against the withdrawal challenge periods."""
     blob_days = 4096 * 32 * 12 / 86400
     arbitrum_days = 45818 * 12 / 86400
-    rows = [("blob の保持", blob_days, PALE, ACCENT, f"約 {blob_days:.0f} 日（4096 epoch）"),
+    rows = [("blob の保持", blob_days, PALE, ACCENT, f"約 {blob_days:.0f} 日以上（4096 epoch）"),
             ("OP Mainnet", 7, OCHRE_PALE, OCHRE, "7 日"),
             ("Arbitrum One", arbitrum_days, OCHRE_PALE, OCHRE, f"約 {arbitrum_days:.1f} 日")]
-    f = Svg("blob の保持期間約 18 日の内側に、約 1 週間の challenge 期間が収まる")
-    f.text(480, 50, "blob の保持期間と、出金の challenge 期間", 26)
-    x0, per_day, top = 250, 32, 110
+    f = Svg("blob の保持期間約 18 日の内側に、約 1 週間の challenge 期間が収まる", height=500)
+    x0, per_day, top = 250, 30, 70
     for d in range(0, 21, 5):
         x = x0 + d * per_day
-        f.line(x, top - 10, x, 420, "#dddddd", sw=2)
-        f.text(x, 455, f"{d}", 24, SUB)
-    f.text(x0 + 10 * per_day, 500, "日", 24, SUB)
+        f.line(x, top - 10, x, 400, "#dddddd", sw=2)
+        f.text(x, 435, f"{d}", 24, SUB)
+    f.text(x0 + 10 * per_day, 478, "日", 24, SUB)
     for i, (label, days, fill, stroke, value) in enumerate(rows):
         y = top + i * 105
         f.text(x0 - 20, y + 45, label, 24, anchor="end")
@@ -178,10 +215,11 @@ def retention_figure():
             f.text(end - 16, y + 47, value, 24, anchor="end")
         else:
             f.text(end + 14, y + 47, value, 24, anchor="start")
-    f.save(HERE / "images" / "rollup_retention.svg")
+    f.save("rollup_retention.webp")
 
 
 if __name__ == "__main__":
     concept_figure()
-    batch_cost_figure()
+    bisection_figure()
+    withdraw_figure()
     retention_figure()

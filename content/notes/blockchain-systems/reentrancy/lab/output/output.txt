@@ -1,0 +1,43 @@
+anvil Version: 1.7.1
+Version: 0.8.28+commit.7893614a.Linux.g++
+
+== (1) single-function reentrancy: mallory deposits 1 ETH and calls withdraw() once
+  VulnerableBank: tx ok, gas used 172,961
+    bank balance after each ETH arrival: 10 -> 9 -> 8 -> 7 -> 6 -> 5 -> 4 -> 3 -> 2 -> 1 -> 0 ETH
+    bank 0 ETH (was 11 ETH), attacker contract 11 ETH, alice ledger 5 ETH
+    alice withdraw() -> reverted
+  CeiBank: tx ok, gas used 74,080
+    bank balance after each ETH arrival: 10 ETH
+    reentry #1 rejected: no balance
+    bank 10 ETH (was 11 ETH), attacker contract 1 ETH, alice ledger 5 ETH
+    alice withdraw() -> ok
+  GuardedBank: tx ok, gas used 80,512
+    bank balance after each ETH arrival: 10 ETH
+    reentry #1 rejected: ReentrancyGuardReentrantCall()
+    bank 10 ETH (was 11 ETH), attacker contract 1 ETH, alice ledger 5 ETH
+    alice withdraw() -> ok
+  TransientGuardedBank: tx ok, gas used 74,620
+    bank balance after each ETH arrival: 10 ETH
+    reentry #1 rejected: ReentrancyGuardReentrantCall()
+    bank 10 ETH (was 11 ETH), attacker contract 1 ETH, alice ledger 5 ETH
+    alice withdraw() -> ok
+
+== (2) cross-function reentrancy: during the callback, move the not-yet-zeroed balance to mallory with transferBalance()
+  GuardedBank: attacker contract got 1 ETH, mallory ledger 1 ETH, mallory withdraws it -> ok
+    bank 9 ETH (victims deposited 10 ETH)
+  TransientGuardedBank: transferBalance rejected: ReentrancyGuardReentrantCall()
+  TransientGuardedBank: attacker contract got 1 ETH, mallory ledger 0 ETH
+    bank 10 ETH (victims deposited 10 ETH)
+  CeiBank: transferBalance rejected: no balance
+  CeiBank: attacker contract got 1 ETH, mallory ledger 0 ETH
+    bank 10 ETH (victims deposited 10 ETH)
+
+== (3) gas of a normal deposit + withdraw by alice (1 ETH, fresh bank)
+  VulnerableBank        deposit 43,623  withdraw 28,729
+  CeiBank               deposit 43,623  withdraw 28,729
+  GuardedBank           deposit 46,341  withdraw 31,447
+  TransientGuardedBank  deposit 44,443  withdraw 29,549
+
+== (4) 2300 gas stipend: receiver reads one storage slot and emits a log
+  payWithTransfer -> reverted; gas given to receiver 2,300, used 2,300, error: out of gas
+  payWithCall     -> ok; gas given to receiver 2,922,297, used 3,342

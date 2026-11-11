@@ -1,0 +1,45 @@
+anvil Version: 1.7.1
+Version: 0.8.28+commit.7893614a.Linux.g++
+secp256k1.py signature == cast wallet sign: True
+EIP-155 example transaction reproduced: True
+
+== 0. chain B forks chain A at block 7
+  chain A: eth_chainId=31337 block=7 alice nonce=0 balance=5 ETH voucher code=4d46331d594b…
+  chain B: eth_chainId=31338 block=7 alice nonce=0 balance=5 ETH voucher code=4d46331d594b…
+
+== 1. pre-EIP-155 transfer (alice nonce 0, 1 ETH to bob, signed without chain ID)
+  raw 0xf86c808502540be400… v=28; recovered sender (None, '0x691f244c770a9d3dda5a97a4cc278afe51c19391')
+  send to A: included 0x60ac026ee2d38b11… status 1
+  send to B: included 0x60ac026ee2d38b11… status 1
+  send to A again: rejected: nonce too low
+  bob balance: A 1 ETH, B 1 ETH; alice nonce: A 1, B 1
+
+== 2. EIP-155 transfer for chain 31337 (alice nonce 1)
+  raw 0xf86e018502540be400… v=62710 = 31337*2+35+1; recovered (chain, sender) (31337, '0x691f244c770a9d3dda5a97a4cc278afe51c19391')
+  send to A: included 0xf782f056affe8dd1… status 1
+  send to B: hash 0xf782f056affe8dd1… returned, but not included (receipt null)
+  v rewritten to 62712: recovered (chain, sender) (31338, '0x7d0a685db592d3104a37aa1590d878ecae3f54ca')
+  send rewritten to B: rejected: Insufficient funds for gas * price + value
+  bob balance: A 2 ETH, B 1 ETH; alice nonce: A 2, B 1
+
+== 3. one EIP-712 voucher signature (signed for voucher #1 on chain 31337), sent 4 ways
+  mode 0 (no chainId / verifyingContract): separator == Python on A True, on B True
+    voucher #1 on A          -> ok, paid 1 ETH
+    voucher #1 on B (fork)   -> ok, paid 1 ETH
+    voucher #2 on A          -> ok, paid 1 ETH
+    voucher #1 on A again    -> revert execution reverted: nonce used
+  mode 1 (both, fixed at deploy): separator == Python on A True, on B True
+    voucher #1 on A          -> ok, paid 1 ETH
+    voucher #1 on B (fork)   -> ok, paid 1 ETH
+    voucher #2 on A          -> revert execution reverted: bad signature
+    voucher #1 on A again    -> revert execution reverted: nonce used
+  mode 2 (both, computed per call): separator == Python on A True, on B False
+    voucher #1 on A          -> ok, paid 1 ETH
+    voucher #1 on B (fork)   -> revert execution reverted: bad signature
+    voucher #2 on A          -> revert execution reverted: bad signature
+    voucher #1 on A again    -> revert execution reverted: nonce used
+
+== 4. a year later on chain A
+  block time 1794367721 -> 1825903721 (+365 days)
+  transfer signed a year ago (nonce 2) -> included 0x61ee9ef1e81f9e90… status 1
+  voucher signed a year ago (deadline +1 h) -> revert execution reverted: expired

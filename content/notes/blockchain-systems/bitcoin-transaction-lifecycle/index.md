@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Introduction"]
 ---
 
-[Bitcoin](https://bitcoin.org/) の送金は、ウォレット（鍵を管理し、取引を組み立てるソフトウェア）が取引を作り、ネットワークに流し、マイナー（取引をまとめた単位であるブロックを作る参加者）がブロックに取り込むまでの段階を通ります。取引が共有された履歴に載るのは最後の段階で、送信した直後の取引は、ウォレットと各ノードの手元に置かれているだけです。
+[Bitcoin](https://bitcoin.org/) の送金は、[ウォレット](../wallet/)（鍵を管理し、取引を組み立てるソフトウェア）が取引を作り、ネットワークに流し、マイナー（取引をまとめた単位であるブロックを作る参加者）がブロックに取り込むまでの段階を通ります。取引が共有された履歴に載るのは最後の段階で、送信した直後の取引は、ウォレットと各ノードの手元に置かれているだけです。
 
 以下では、Alice が Bob に 0.1 BTC（BTC は Bitcoin の通貨単位）を送る 1 件の取引で、作成からブロックへの取り込みまでを順に追います。
 
@@ -32,7 +32,7 @@ topics: ["Introduction"]
 - 他のノードは、配られたブロックの何を検証してチェーンに繋ぐのか。
 - 取引に手数料の欄は無いのに、ノードはどこから手数料を知るのか。
 
-[署名の計算手順](../digital-signature/)、[Bitcoin Script の命令](../bitcoin-script/)、[SHA-256（Secure Hash Algorithm 256、Bitcoin が使うハッシュ関数）の内部](../hash-function/)、[Merkle Tree の構築規則](../merkle-tree-design/)、[合格条件の計算](../proof-of-work/)といった詳細は、各ノートに譲ります。
+[署名の計算手順](../digital-signature/)、[Bitcoin Script の命令](../bitcoin-script/)、[SHA-256（Secure Hash Algorithm 256、Bitcoin が使うハッシュ関数）の内部](/notes/security/sha-256/)、[Merkle Tree の構築規則](../merkle-tree-design/)、[合格条件の計算](../proof-of-work/)といった詳細は、各ノートに譲ります。
 
 ---
 

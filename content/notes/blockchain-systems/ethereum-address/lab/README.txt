@@ -22,6 +22,7 @@ Steps:
   4. Metamorphic: CREATE2 a Deployer, CREATE V1 from it, SELFDESTRUCT both in
      later transactions, CREATE2 the Deployer again and CREATE V2.
      Compared with --hardfork shanghai, cancun and prague.
+     Step 4 is explained in the metamorphic-contract note.
 
 Address.sol is educational code and not audited. kill() has no access control.
 Contracts are compiled with --evm-version shanghai so that the same bytecode

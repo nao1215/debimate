@@ -23,7 +23,7 @@ UTXO（Unspent Transaction Output、未使用の取引出力）は、取引（tr
 
 取引 1 の出力も、それより前の取引が作ったものです。出力の参照をどこまでも遡ると、コインベース取引（[Bitcoin Block](../bitcoin-block/) で説明した、ブロックの先頭に置かれる報酬の取引）に行き着きます。
 
-コインの実体は口座に記録された数値ではなく、取引から取引に連なる出力と、それを使う資格の証明です。前の持ち主が署名して次の持ち主宛の出力を作るため、Bitcoin の白書はコインを「[a chain of digital signatures](https://bitcoin.org/bitcoin.pdf)」（電子署名のチェーン）と定義しています。ただし、取引は複数の入力と複数の出力を持てるため、実際の連なりは 1 本の鎖ではなく、合流と分岐を持つグラフになります。
+コインの実体は口座に記録された数値ではなく、取引から取引に連なる出力と、それを使う資格の証明です。前の持ち主が署名して次の持ち主宛の出力を作るため、Bitcoin の白書はコインを「[a chain of digital signatures](https://bitcoin.org/bitcoin.pdf)」（[電子署名](../digital-signature/)のチェーン）と定義しています。ただし、取引は複数の入力と複数の出力を持てるため、実際の連なりは 1 本の鎖ではなく、合流と分岐を持つグラフになります。
 
 <br>
 
@@ -78,7 +78,7 @@ flowchart LR
 
 ただし、検証に現在の状態が必要なことは、UTXO でも素朴な方式と変わりません。参照先の出力が消費されずに残っているか、金額はいくらか、使う条件を満たしているかの確認が必要です。違いは、どの出力を消費するかが取引の中に名指しされている点です。
 
-同じ outpoint を参照する 2 つの取引のうち、どちらを残すかは UTXO だけでは決まりません。決めるには取引の順序についての合意が別に必要で、その順序を作る仕組みがブロックのチェーンです（[Bitcoin Block](../bitcoin-block/)）。
+同じ outpoint を参照する 2 つの取引のうち、どちらを残すかは UTXO だけでは決まりません。決めるには[取引の順序についての合意](../proof-of-work/)が別に必要で、その順序を作る仕組みがブロックのチェーンです（[Bitcoin Block](../bitcoin-block/)）。
 
 なお、口座ごとに残高を保存する実際の方式はアカウントモデルと呼ばれ、[Ethereum](https://ethereum.org/) が採用しています（[Ethereum Account Model](../ethereum-account-model/)）。
 
@@ -165,7 +165,7 @@ flowchart LR
 
 上記の図の金額は一例で、手数料をいくら残すかは取引を作る人が決めます。[白書](https://bitcoin.org/bitcoin.pdf)が挙げる典型的な取引では、入力は 1 つの大きな入力か、小さな金額の入力を複数組み合わせたものです。出力は支払い先と、あればお釣り先の最大 2 つですが、出力を 3 つ以上持つ取引も作れます。
 
-金額が足りない時は、複数の UTXO を入力に並べて合算します。入力が増えるほど取引のデータは大きくなります。マイナーは通常、仮想サイズあたりの手数料率（feerate）が高い取引を優先して取り込みます（[Bitcoin Block](../bitcoin-block/)）。仮想サイズは、[SegWit](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)（Segregated Witness）で追加された、署名などを入れる witness という領域を割り引いて数えた取引の大きさです。
+金額が足りない時は、複数の UTXO を入力に並べて合算します。入力が増えるほど取引のデータは大きくなります。マイナーは通常、仮想サイズあたりの[手数料率（feerate）が高い取引を優先して取り込みます](../mempool/)（[Bitcoin Block](../bitcoin-block/)）。仮想サイズは、[SegWit](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki)（Segregated Witness）で追加された、署名などを入れる witness という領域を割り引いて数えた取引の大きさです。
 
 大きい取引が同じ優先度を得るには多くの手数料が必要です。そのため、細かい UTXO ばかり持っている人は、同じ金額の支払いでも手数料がかさみやすいと考えられます。
 

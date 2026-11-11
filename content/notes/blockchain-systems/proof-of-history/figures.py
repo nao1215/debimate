@@ -1,16 +1,27 @@
 """Generate the figures of the Proof of History note.
 
-- images/proof-of-history_concept.svg: hand-written SVG (standard library only)
-- images/proof-of-history_verify.svg: matplotlib, read from lab/output.txt
-- images/proof-of-history_window.svg: hand-written SVG (standard library only)
-- images/proof-of-history_lockout.svg: hand-written SVG (standard library only)
+- images/proof-of-history_concept.webp: hand-written SVG
+- images/proof-of-history_entry.webp: hand-written SVG
+- images/proof-of-history_verify.webp: matplotlib, read from lab/output.txt
+- images/proof-of-history_window.webp: hand-written SVG
+- images/proof-of-history_redo.webp: hand-written SVG
+- images/proof-of-history_tower.webp: hand-written SVG
+- images/proof-of-history_lockout.webp: hand-written SVG
 
-    uv run --with matplotlib python content/notes/blockchain-systems/proof-of-history/figures.py
+The hand-written SVGs are rendered with headless Chrome at 2x and stored as WebP.
+Needs google-chrome, matplotlib and Pillow.
+
+    uv run --with matplotlib --with pillow python content/notes/blockchain-systems/proof-of-history/figures.py
 """
 
+import io
 import re
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
+
+from PIL import Image
 
 HERE = Path(__file__).resolve().parent
 INK, SUB, FILL = "#1f1f1f", "#666666", "#f2f2f2"
@@ -20,9 +31,21 @@ GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
 FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
 
 
+def save_svg(parts, name, w=960, h=540):
+    """Render the SVG with headless Chrome at 2x and store it as WebP in images/."""
+    with tempfile.TemporaryDirectory() as tmp:
+        svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+        svg.write_text("\n".join(parts + ["</svg>"]) + "\n", encoding="utf-8")
+        subprocess.run(
+            ["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+             "--force-device-scale-factor=2", f"--window-size={w},{h}",
+             f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
+        Image.open(png).convert("RGB").save(HERE / "images" / name, "WEBP", quality=90, method=6)
+
+
 def concept_figure():
     """One long sequential chain on top; the same chain cut into lanes below."""
-    w, h = 960, 540
+    w, h = 960, 570
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" role="img"><title>'
@@ -96,10 +119,11 @@ def concept_figure():
     end_ver = left + 5 * step + 26
     p.append(f'<line x1="{left}" y1="526" x2="{end_ver}" y2="526" stroke="{INK}" stroke-width="2.5"/>')
     p.append(f'<polygon points="{end_ver + 14},526 {end_ver},518 {end_ver},534" fill="{INK}"/>')
-    text(end_ver + 60, 534, "同じ連鎖を短い時間で", 24, cls="sub")
-    text(560, 380, "枠：記録された区切りの値", 24, cls="sub")
-    text(560, 420, "黄土：混ぜた出来事", 24, cls="sub")
-    (HERE / "images" / "proof-of-history_concept.svg").write_text("\n".join(p + ["</svg>"]) + "\n")
+    text(end_ver + 22, 534, "時間（同じ連鎖を短い時間で）", 24, cls="sub")
+    text(560, 380, "枠：計算を始める値", 24, cls="sub")
+    text(560, 412, "（前の区切りに記録）", 24, cls="sub")
+    text(560, 460, "黄土：混ぜた取引", 24, cls="sub")
+    save_svg(p, "proof-of-history_concept.webp", w, h)
 
 
 def verify_figure():
@@ -118,7 +142,7 @@ def verify_figure():
     g = float(gen.group(1))
 
     plt.rcParams.update({
-        "font.size": 10, "axes.edgecolor": SUB, "axes.labelcolor": INK,
+        "font.family": "Noto Sans CJK JP", "font.size": 10, "axes.edgecolor": SUB, "axes.labelcolor": INK,
         "xtick.color": INK, "ytick.color": INK, "text.color": INK,
         "svg.fonttype": "path", "svg.hashsalt": "proof-of-history",
         "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
@@ -126,23 +150,27 @@ def verify_figure():
     fig, ax = plt.subplots(figsize=(6.6, 3.8))
     x = list(range(len(ws)))
     ax.bar(x, med, color=BLUE_PALE, edgecolor=BLUE, linewidth=1.5, width=0.6,
-           yerr=[lo, hi], ecolor=SUB, capsize=4, label="verify (median, min-max)")
-    ax.axhline(g, color=OCHRE, lw=2.0, ls="--", label=f"generate on 1 goroutine ({g:.2f} s)")
+           yerr=[lo, hi], ecolor=SUB, capsize=4, label="検証（verify）の中央値と最小〜最大")
+    ax.axhline(g, color=OCHRE, lw=2.0, ls="--", label=f"1 本での生成（generate）{g:.2f} 秒")
     for xi, r in zip(x, rows):
-        ax.text(xi, float(r[3]) * 1.12, f"{r[4]}x", ha="center", va="bottom", fontsize=9)
+        ax.text(xi, float(r[3]) * 1.12, f"{r[4]} 倍速い", ha="center", va="bottom", fontsize=9)
     ax.set_yscale("log")
     ax.set_xticks(x, [str(w) for w in ws])
-    ax.set_xlabel("Goroutines used for verification")
-    ax.set_ylabel("Seconds for 16.8M hashes (log)")
-    ax.set_ylim(0.03, 4)
+    ax.set_xlabel("検証に使った goroutine の数")
+    ax.set_ylabel("約 1,678 万回の計算にかかった秒数（対数）")
+    ax.set_ylim(0.03, 12)
+    ax.set_yticks([0.05, 0.1, 0.5, 1, 2], ["0.05", "0.1", "0.5", "1", "2"])
+    ax.minorticks_off()
     ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(loc="upper right", frameon=False, fontsize=9)
+    ax.legend(loc="upper right", frameon=False, fontsize=9, ncol=2)
     fig.tight_layout()
-    fig.savefig(HERE / "images" / "proof-of-history_verify.svg", metadata={"Date": None})
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=200, facecolor="#ffffff")
+    Image.open(buf).convert("RGB").save(HERE / "images" / "proof-of-history_verify.webp", "WEBP",
+                                         quality=90, method=6)
 
 
-def _svg_start(title):
-    w, h = 960, 540
+def _svg_start(title, w=960, h=540):
     return [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" role="img"><title>' + escape(title) + "</title>",
@@ -155,6 +183,59 @@ def _text(p, x, y, s, size=26, anchor="start", cls=""):
     c = f' class="{cls}"' if cls else ""
     p.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}"{c}>'
              f"{escape(s)}</text>")
+
+
+def entry_figure():
+    """The chain is cut into entries; a slot of the 400 ms era is 64 ticks of 62,500 hashes."""
+    w, h = 960, 500
+    p = _svg_start("連鎖は entry に区切って記録し、取引を含まない entry を tick と呼ぶ", w, h)
+    _text(p, 40, 52, "連鎖を entry に区切って記録する", 28)
+    beads, step, left, y = 5, 36, 60, 150
+    gap = 26
+    kinds = ["tick", "tick", "tx", "tick"]
+    x = left
+    for e, kind in enumerate(kinds):
+        x_start = x
+        for i in range(beads):
+            last = i == beads - 1
+            if x > left:
+                p.append(f'<line x1="{x - step + 26 if i else x - gap - 10}" y1="{y + 13}" '
+                         f'x2="{x}" y2="{y + 13}" stroke="{SUB}" stroke-width="2"/>')
+            fill, stroke = (OCHRE_PALE, OCHRE) if (last and kind == "tx") else (BLUE_PALE, BLUE)
+            p.append(f'<rect x="{x}" y="{y}" width="26" height="26" rx="3" fill="{fill}" '
+                     f'stroke="{stroke}" stroke-width="2.5"/>')
+            if last:  # the recorded hash of the entry
+                p.append(f'<rect x="{x - 4}" y="{y - 4}" width="34" height="34" rx="4" '
+                         f'fill="none" stroke="{INK}" stroke-width="2"/>')
+            x += step
+        x_end = x - step + 26
+        # bracket under the entry
+        by = y + 48
+        p.append(f'<polyline points="{x_start},{by - 8} {x_start},{by} {x_end},{by} {x_end},{by - 8}" '
+                 f'fill="none" stroke="{SUB}" stroke-width="2"/>')
+        name = "取引を含む entry" if kind == "tx" else "tick"
+        _text(p, (x_start + x_end) / 2, by + 30, name, 22, "middle")
+        _text(p, (x_start + x_end) / 2, by + 58, "num_hashes = 5", 20, "middle", cls="sub")
+        if kind == "tx":
+            cx = x_end - 13
+            p.append(f'<line x1="{cx}" y1="92" x2="{cx}" y2="{y - 6}" stroke="{OCHRE}" stroke-width="3"/>')
+            p.append(f'<polygon points="{cx},{y - 4} {cx - 8},{y - 18} {cx + 8},{y - 18}" fill="{OCHRE}"/>')
+            _text(p, cx, 84, "取引を混ぜる", 22, "middle")
+        x += gap
+    # legend
+    _text(p, 40, 304, "枠：entry に記録する区切りの値（hash）", 22, cls="sub")
+    _text(p, 40, 336, "num_hashes：前の区切りからの回数（図は説明用に 5 回で描いている）", 22, cls="sub")
+    # slot bar: 64 ticks
+    p.append(f'<line x1="30" y1="356" x2="930" y2="356" stroke="{SUB}" stroke-width="1" '
+             'stroke-dasharray="4 4"/>')
+    _text(p, 40, 396, "400ms の時期の 1 スロット = 64 tick", 26)
+    bx, bw, bh, byy = 40, 880, 30, 418
+    for i in range(64):
+        cw = bw / 64
+        p.append(f'<rect x="{bx + i * cw:.1f}" y="{byy}" width="{cw - 2:.1f}" height="{bh}" '
+                 f'fill="{BLUE_PALE}" stroke="{BLUE}" stroke-width="1"/>')
+    _text(p, 40, 484, "1 tick = 62,500 回。64 × 62,500 = 400 万回で、毎秒 1,000 万回なら 400ms", 22, cls="sub")
+    save_svg(p, "proof-of-history_entry.webp", w, h)
 
 
 def window_figure():
@@ -194,7 +275,75 @@ def window_figure():
     p.append(f'<line x1="{xk}" y1="{y + 84}" x2="{xk}" y2="444" stroke="{SUB}" stroke-width="1.5" '
              'stroke-dasharray="4 4"/>')
     _text(p, 480, 520, "リーダーが手元に置いたまま混ぜると、上限は後ろへずれる", 24, "middle", cls="sub")
-    (HERE / "images" / "proof-of-history_window.svg").write_text("\n".join(p + ["</svg>"]) + "\n")
+    save_svg(p, "proof-of-history_window.webp")
+
+
+def redo_figure():
+    """After swapping A (entry 100) and B (entry 400), every value from entry 100 to the end changes."""
+    w, h = 960, 500
+    p = _svg_start("入れ替えた後に計算し直す範囲は entry 100 から末尾まで", w, h)
+    left, width, n = 60, 840, 2048
+
+    def x(i):
+        return left + width * i / n
+
+    def bar(y, marks, changed):
+        p.append(f'<rect x="{left}" y="{y}" width="{width}" height="40" fill="{FILL}" '
+                 f'stroke="{SUB}" stroke-width="1.5"/>')
+        if changed:
+            p.append(f'<rect x="{x(100)}" y="{y}" width="{left + width - x(100)}" height="40" '
+                     f'fill="{OCHRE_PALE}" stroke="{OCHRE}" stroke-width="2"/>')
+        for i, label in marks:
+            p.append(f'<line x1="{x(i)}" y1="{y - 6}" x2="{x(i)}" y2="{y + 46}" stroke="{INK}" stroke-width="3"/>')
+            _text(p, x(i), y - 14, label, 22, "middle")
+
+    _text(p, left, 52, "元の連鎖（2,048 entry）", 26)
+    bar(110, [(100, "A"), (400, "B"), (700, "C")], False)
+    _text(p, left, 194, "entry 0", 20, cls="sub")
+    _text(p, left + width, 194, "entry 2047", 20, "end", cls="sub")
+
+    _text(p, left, 262, "A と B を入れ替えて作り直す", 26)
+    bar(320, [(100, "B"), (400, "A"), (700, "C")], True)
+    _text(p, (x(700) + left + width) / 2, 348, "値が全て変わる：entry 100 から末尾まで", 22, "middle")
+    _text(p, left, 436, "entry 0〜99 はそのまま使える", 20, cls="sub")
+    # The range that is not enough on its own.
+    yb = 384
+    p.append(f'<path d="M{x(100)},{yb - 8} V{yb} H{x(400)} V{yb - 8}" fill="none" stroke="{SUB}" '
+             'stroke-width="2" stroke-dasharray="6 4"/>')
+    _text(p, x(400) + 14, yb + 6, "entry 400 までだけでは足りない", 20, cls="sub")
+    _text(p, left, 470, "計算し直す回数：約 1,595 万回（連鎖全体の約 1,678 万回の 95%）", 22)
+    save_svg(p, "proof-of-history_redo.webp", w, h)
+
+
+def tower_figure():
+    """Votes stacked in the tower before and after vote 7 (example of the Tower BFT document)."""
+    w, h = 960, 450
+    p = _svg_start("新しい投票を積むと、下の投票の lockout が 2 倍になる", w, h)
+    before = [("投票 6（スロット 10）", 2), ("投票 5（スロット 9）", 4), ("投票 2（スロット 2）", 8),
+              ("投票 1（スロット 1）", 16)]
+    after = [("投票 7（スロット 11）", 2)] + [(n, l * 2) for n, l in before]
+
+    def stack(x, title, rows, new_top=False):
+        _text(p, x + 170, 50, title, 26, "middle")
+        bw, bh, gap = 340, 52, 10
+        top = 80 + (5 - len(rows)) * (bh + gap)
+        for i, (name, lock) in enumerate(rows):
+            y = top + i * (bh + gap)
+            fill, stroke = (OCHRE_PALE, OCHRE) if (new_top and i == 0) else (BLUE_PALE, BLUE)
+            p.append(f'<rect x="{x}" y="{y}" width="{bw}" height="{bh}" rx="4" fill="{fill}" '
+                     f'stroke="{stroke}" stroke-width="2.5"/>')
+            _text(p, x + 16, y + 34, name, 22)
+            _text(p, x + bw - 16, y + 34, f"lockout {lock}", 22, "end")
+        return top
+
+    stack(60, "投票 7 を積む前", before)
+    stack(560, "投票 7 を積んだ後", after, new_top=True)
+    # arrow between the stacks
+    p.append(f'<line x1="420" y1="260" x2="530" y2="260" stroke="{INK}" stroke-width="2.5"/>')
+    p.append('<polygon points="544,260 530,252 530,268" fill="#1f1f1f"/>')
+    _text(p, 480, 420, "下の投票ほど lockout（別の列へ移れないスロット数）が長い。1 票積むごとに 2 倍", 22,
+          "middle", cls="sub")
+    save_svg(p, "proof-of-history_tower.webp", w, h)
 
 
 def lockout_figure():
@@ -226,8 +375,8 @@ def lockout_figure():
             p.append(f'<circle cx="{X(n):.1f}" cy="{Y(f(n)):.1f}" r="6" fill="#ffffff" '
                      f'stroke="{color}" stroke-width="3"/>')
     # Labels for the speed-up at the four points of the text.
-    for n, s, dx, dy in [(1, "2 倍", 6, 36), (3, "約 2.7 倍", 12, 36), (10, "約 102 倍", 14, 34),
-                         (20, "約 5 万 2 千倍", -12, 40)]:
+    for n, s, dx, dy in [(1, "2 倍", 10, 30), (3, "約 2.7 倍", 12, 36), (10, "約 102 倍", 14, 34),
+                         (20, "約 5 万 2 千倍", -14, 100)]:
         v = n - math.log2(n)
         _text(p, X(n) + dx, Y(v) + dy, s, 24, "end" if dx < 0 else "start")
     # Legend.
@@ -235,11 +384,14 @@ def lockout_figure():
         yy = 92 + i * 40
         p.append(f'<line x1="{x0 + 30}" y1="{yy - 8}" x2="{x0 + 80}" y2="{yy - 8}" stroke="{color}" stroke-width="3"/>')
         _text(p, x0 + 92, yy, label, 24)
-    (HERE / "images" / "proof-of-history_lockout.svg").write_text("\n".join(p + ["</svg>"]) + "\n")
+    save_svg(p, "proof-of-history_lockout.webp")
 
 
 if __name__ == "__main__":
     concept_figure()
+    entry_figure()
     verify_figure()
     window_figure()
+    redo_figure()
+    tower_figure()
     lockout_figure()

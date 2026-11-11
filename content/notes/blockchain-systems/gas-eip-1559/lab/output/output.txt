@@ -1,0 +1,55 @@
+anvil Version: 1.7.1
+== (1) base fee per block: gas limit 1,050,000, target 525,000, start 1 gwei
+phase   block  txs    used  base fee(wei)       EIP-1559  cmp
+genesis     0    0    0.0%     1000000000
+target      1   25   50.0%     1000000000      875000000 DIFF  
+target      2   25   50.0%     1000000000     1000000000   ok  
+target      3   25   50.0%     1000000000     1000000000   ok  
+  alice sends: maxFeePerGas 2 gwei, maxPriorityFeePerGas 1 gwei (base fee 1.000 gwei)
+  carol sends: maxFeePerGas 5 gwei, maxPriorityFeePerGas 1 gwei
+full        4   50  100.0%     1000000000     1000000000   ok  alice pending, carol pending
+full        5   50  100.0%     1125000000     1125000000   ok  alice pending, carol pending
+full        6   50  100.0%     1265625000     1265625000   ok  alice pending, carol pending
+full        7   50  100.0%     1423828125     1423828125   ok  alice pending, carol pending
+full        8   50  100.0%     1601806640     1601806640   ok  alice pending, carol pending
+full        9   50  100.0%     1802032470     1802032470   ok  alice pending, carol pending
+full       10   50  100.0%     2027286528     2027286528   ok  alice pending, carol pending
+  bob sends the same 2 gwei transaction: rejected (max fee per gas less than block base fee)
+full       11   50  100.0%     2280697344     2280697344   ok  alice pending, carol pending
+full       12   50  100.0%     2565784512     2565784512   ok  alice pending, carol pending
+full       13   50  100.0%     2886507576     2886507576   ok  alice pending, carol pending
+full       14   50  100.0%     3247321023     3247321023   ok  alice pending, carol pending
+full       15   50  100.0%     3653236150     3653236150   ok  alice pending, carol pending
+empty      16    1    2.0%     4109890668     4109890668   ok  alice gone, carol included (price 5.000 = base fee + tip 0.890 gwei)
+empty      17    0    0.0%     3616703788     3616703788   ok  alice gone
+empty      18    0    0.0%     3164615815     3164615815   ok  alice gone
+empty      19    0    0.0%     2769038839     2769038839   ok  alice gone
+empty      20    0    0.0%     2422908985     2422908985   ok  alice gone
+empty      21    0    0.0%     2120045362     2120045362   ok  alice gone
+empty      22    0    0.0%     1855039692     1855039692   ok  alice gone
+empty      23    0    0.0%     1623159731     1623159731   ok  alice gone
+empty      24    0    0.0%     1420264765     1420264765   ok  alice gone
+empty      25    0    0.0%     1242731670     1242731670   ok  alice gone
+empty      26    0    0.0%     1087390212     1087390212   ok  alice gone
+empty      27    0    0.0%      951466436      951466436   ok  alice gone
+
+== (2) start at 20 wei: empty blocks, then full blocks
+phase   block  txs    used  base fee(wei)       EIP-1559  cmp
+genesis     0    0    0.0%             20
+empty       1    0    0.0%             20             18 DIFF  
+empty       2    0    0.0%             18             18   ok  
+empty       3    0    0.0%             16             16   ok  
+empty       4    0    0.0%             14             14   ok  
+empty       5    0    0.0%             13             13   ok  
+empty       6    0    0.0%             12             12   ok  
+empty       7    0    0.0%             11             11   ok  
+empty       8    0    0.0%             10             10   ok  
+empty       9    0    0.0%              9              9   ok  
+empty      10    0    0.0%              8              8   ok  
+empty      11    0    0.0%              7              7   ok  
+empty      12    0    0.0%              7              7   ok  
+empty      13    0    0.0%              7              7   ok  
+empty      14    0    0.0%              7              7   ok  
+full       15   50  100.0%              7              7   ok  
+full       16   50  100.0%              8              8   ok  
+full       17   50  100.0%              9              9   ok  

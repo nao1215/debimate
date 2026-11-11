@@ -30,7 +30,7 @@ topics: ["Scaling"]
 - 直接チャネルが無い相手への支払いで、中継者の持ち逃げをどう防ぐのか。
 - チャネルの残高の偏りは、支払いの成功率にどう影響するのか。
 
-取引の形は、[BOLT 3](https://github.com/lightning/bolts/blob/master/03-transactions.md) が定めるチャネル（2-of-2 マルチシグの出力を使う形）を前提に説明します。出力の考え方は [UTXO](../utxo/)、出力に付ける条件の書き方は [Bitcoin Script](../bitcoin-script/) で説明しています。
+取引の形は、[BOLT 3](https://github.com/lightning/bolts/blob/master/03-transactions.md) が定めるチャネル（[2-of-2 マルチシグ](../multisig/)の出力を使う形）を前提に説明します。出力の考え方は [UTXO](../utxo/)、出力に付ける条件の書き方は [Bitcoin Script](../bitcoin-script/) で説明しています。
 
 ---
 
@@ -156,7 +156,7 @@ BOLT 2 の [channel_reestablish](https://github.com/lightning/bolts/blob/master/
 
 この中継を成立させるのが HTLC（Hashed Time Locked Contract）です。HTLC は commitment transaction に追加する出力で、「ハッシュ値 H の元の値（preimage）を示せば受取側が受け取れる。期限のブロック高までに示されなければ送り手に戻る」という条件を持ちます。
 
-preimage は Carol が乱数で作り、そのハッシュ値だけを[請求書（BOLT 11 の invoice）](https://github.com/lightning/bolts/blob/master/11-payment-encoding.md)で Alice に渡します。ハッシュ値から元の値を求められない性質は、[ハッシュ関数の原像計算困難性](../hash-function/)です。
+preimage は Carol が[乱数](/notes/security/random-number/)で作り、そのハッシュ値だけを[請求書（BOLT 11 の invoice）](https://github.com/lightning/bolts/blob/master/11-payment-encoding.md)で Alice に渡します。ハッシュ値から元の値を求められない性質は、[ハッシュ関数の原像計算困難性](../hash-function/)です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
@@ -178,19 +178,19 @@ Bob は Carol から preimage を受け取った時点で、Alice からの HTLC
 
 BOLT 2 の [cltv_expiry_delta の選び方](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection)は、チェーンの組み替え（reorg）・相手の応答待ち・取引がブロックに入るまでの遅れを足し合わせ、迷うなら差を 34 ブロック以上にするよう勧めています。図の 52 は、この 34 と受取人の最小値の既定である 18 を足した説明用の値です。
 
-以下は、シーケンス図の 2 つの HTLC の期限をブロック高の軸に並べた図です。
+以下は、シーケンス図の 2 つの HTLC の期限をブロック高（block height）の軸に並べた図です。
 
 {{< figure src="images/lightning-network_cltv.svg" alt="横軸はブロック高で、N・N+18・N+52 に目盛り。上の Alice → Bob の HTLC は N+52 まで、下の Bob → Carol の HTLC は N+18 まで伸びる。N+18 から N+52 の間は黄土色の破線の枠で、34 blocks for Bob to claim" caption="上流の HTLC の期限が 34 ブロック遅い" align="center" >}}
 
 Carol が N+18 の直前に preimage を示しても、Bob には Alice からの HTLC を請求する時間が 34 ブロック残ります。
 
-中継者は [BOLT 7](https://github.com/lightning/bolts/blob/master/07-routing-gossip.md#the-channel_update-message) で公開した手数料を差し引いて次に渡します。経路は [BOLT 4](https://github.com/lightning/bolts/blob/master/04-onion-routing.md) の onion routing で包まれ、中継者には前後のノードしか分かりません。
+中継者は [BOLT 7](https://github.com/lightning/bolts/blob/master/07-routing-gossip.md#the-channel_update-message) で公開した手数料を差し引いて次に渡します。経路は [BOLT 4](https://github.com/lightning/bolts/blob/master/04-onion-routing.md) の [onion routing](/notes/security/tor/) で包まれ、中継者には前後のノードしか分かりません。
 
 ---
 
 ### 流動性とルーティング
 
-チャネルの容量は、どちらの向きにも同じだけ送れる量ではありません。容量 1,000,000 sat のチャネルで Alice 側に 900,000 sat、Bob 側に 100,000 sat ある時、手数料と reserve（各側がチャネルに最低限残す額、channel_reserve_satoshis）を除けば、Alice から Bob には 900,000 sat まで送れますが、Bob から Alice には 100,000 sat までしか送れません。
+チャネルの容量（capacity）は、どちらの向きにも同じだけ送れる量ではありません。容量 1,000,000 sat のチャネルで Alice 側に 900,000 sat、Bob 側に 100,000 sat ある時、手数料と reserve（各側がチャネルに最低限残す額、channel_reserve_satoshis）を除けば、Alice から Bob には 900,000 sat まで送れますが、Bob から Alice には 100,000 sat までしか送れません。
 
 {{< figure src="images/lightning-network_liquidity.svg" alt="容量 1,000,000 sat の棒が、青い Alice 900,000 と黄土色の Bob 100,000 に分かれる。下の青い矢印は Alice → Bob で up to 900,000 sat、黄土色の短い矢印は Bob → Alice で up to 100,000 sat。fees and reserve are left out" caption="同じチャネルでも、向きによって送れる上限が違う" align="center" >}}
 
@@ -310,7 +310,7 @@ out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": boun
 
 </details>
 
-以下は、実行結果の成功率を支払い額ごとに並べたグラフです。破線の `endpoint_bound` は、送り手の手元の残高の合計と、受取人側の受け取りの余地の合計が、どちらも支払い額以上だった割合です。
+以下は、実行結果の成功率（success rate）を支払い額（payment amount）ごとに並べたグラフです。破線の `endpoint_bound`（凡例の endpoint balance bound）は、送り手の手元の残高の合計と、受取人側の受け取りの余地の合計が、どちらも支払い額以上だった割合です。
 
 {{< figure src="images/lightning_payment_success.svg" alt="支払い額ごとの成功率。3 万 sat までは分割の有無によらずほぼ全て成功する。30 万 sat では分割しない場合 69.7%、8 分割で 84.4%。100 万 sat では 17.5% と 38.6% で、送り手の残高と受取人の受け取りの余地から決まる上限 60.2% には届かない" caption="200 ノードの合成グラフでの支払い額と成功率（各 1,000 回）" align="center" >}}
 

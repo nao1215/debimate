@@ -107,7 +107,7 @@ sequenceDiagram
 
 [Ethereum](https://ethereum.org/en/what-is-ethereum/) などでは、資産の交換やゲーム内の資産管理をチェーン上のプログラムで行えます。ウォレットでは、そのプログラムに対する操作も承認できます。
 
-例えば、カードゲームの [Gods Unchained](https://portal.godsunchained.com/getting-started) では、ウォレットを連携し、[NFT（Non-Fungible Token）として扱われるカード](https://immutable.zendesk.com/hc/en-us/articles/15427608928399-Do-I-have-to-understand-blockchain-or-the-Ethereum-network)を売買できます。以下は、公式ガイドのデッキ選択画面です。
+例えば、カードゲームの [Gods Unchained](https://portal.godsunchained.com/getting-started) では、ウォレットを連携し、[NFT（Non-Fungible Token）として扱われるカード](https://immutable.zendesk.com/hc/en-us/articles/15427608928399-Do-I-have-to-understand-blockchain-or-the-Ethereum-network)を売買できます（NFT の仕組みは [ERC-721](../erc-721/)）。以下は、公式ガイドのデッキ選択画面です。
 
 {{< figure align="center" src="images/gods-unchained-decks.webp" link="images/gods-unchained-decks.webp" width="640" alt="Gods Unchained のデッキ選択画面。カードを組み合わせた複数のデッキが並ぶ" caption="Gods Unchained のデッキ選択画面（公式ガイドから引用）<br>出典：[Gods Unchained — Getting started](https://portal.godsunchained.com/getting-started)（WebP に変換）" >}}
 
@@ -337,7 +337,7 @@ Bitcoin には、Lightning Network を使った支払いもあります。これ
 
 Ethereum の取引は、ETH の送金に加えて、スマートコントラクトというチェーン上のプログラムを呼び出せます。その実行に必要な計算量を gas と呼び、通常は ETH で手数料を支払います。ウォレットには、送信先と金額だけでなく、どのプログラムに何を実行させるかを表示する機能が必要です。
 
-チェーン上のプログラムなどで管理する資産の単位を「トークン」と呼びます。Ethereum では、ETH 以外のトークンをコントラクトが管理する残高として表現できます。広く使われる [ERC-20](https://eips.ethereum.org/EIPS/eip-20) には、他のアドレスにトークンを使用する権限を与える `approve` があります。例えば交換サービスを利用する際、送金する前に使用許可を求められるのは、この仕組みによります。ETH の送金額がゼロでも、トークンの使用権限を変更する取引かもしれません。
+チェーン上のプログラムなどで管理する資産の単位を「[トークン](../erc-20/)」と呼びます。Ethereum では、ETH 以外のトークンをコントラクトが管理する残高として表現できます。広く使われる [ERC-20](https://eips.ethereum.org/EIPS/eip-20) には、他のアドレスにトークンを使用する権限を与える `approve` があります。例えば交換サービスを利用する際、送金する前に使用許可を求められるのは、この仕組みによります。ETH の送金額がゼロでも、トークンの使用権限を変更する取引かもしれません。
 
 <br>
 
@@ -356,13 +356,13 @@ sequenceDiagram
 
 EVM（Ethereum Virtual Machine）は Ethereum のプログラムを実行する仕組みであり、EVM と互換性のあるチェーンでは取引処理を共通化しやすくなります。しかし、Ethereum と別のチェーンは、資産の記録も別です。同じアドレスが表示されても、片方の ETH やトークンが自動で他方に現れる訳ではありません。
 
-Ethereum の外で取引を処理し、その結果の検証などを Ethereum に依存する仕組みは、[L2（Layer 2）](https://ethereum.org/en/layer-2/)と呼ばれます。ウォレットでは別のネットワークとして扱うため、ネットワークの表示を切り替えても資産は移動しません。資産を移すには、チェーン間の移転を仲介する[ブリッジ](https://ethereum.org/en/developers/docs/bridges/)などが必要です。ブリッジのコントラクトや運営方式に由来するリスクは、ウォレットを変更するだけでは取り除けません。
+Ethereum の外で取引を処理し、その結果の検証などを Ethereum に依存する仕組みは、[L2（Layer 2）](https://ethereum.org/en/layer-2/)と呼ばれます（代表的な仕組みは [Rollup](../rollup/)）。ウォレットでは別のネットワークとして扱うため、ネットワークの表示を切り替えても資産は移動しません。資産を移すには、チェーン間の移転を仲介する[ブリッジ](https://ethereum.org/en/developers/docs/bridges/)などが必要です。ブリッジのコントラクトや運営方式に由来するリスクは、ウォレットを変更するだけでは取り除けません。
 
 ---
 
 #### Avalanche・BNB Smart Chain の互換性
 
-Avalanche は、一つのチェーンだけを指す名前ではありません。基本となるネットワークには、スマートコントラクトを実行する C-Chain、資産の送受信を扱う X-Chain、検証者や、資産を預けて検証に参加するステーキングを管理する P-Chain があります。
+Avalanche は、一つのチェーンだけを指す名前ではありません。基本となるネットワークには、スマートコントラクトを実行する C-Chain、資産の送受信を扱う X-Chain、検証者や、資産を預けて検証に参加するステーキングを管理する P-Chain があります。3 つのチェーンのブロックを決める合意の仕組みは [Snowman](../snowman/) です。
 
 このうち [C-Chain は EVM と互換性があり](https://docs.core.app/docs/connect-your-dapp/avalanche-chains/)、Ethereum 系ウォレットの取引構築や接続方式を利用できます。通常の手数料は AVAX で支払います。一方、[X-Chain と P-Chain](https://build.avax.network/docs/avalanche-l1s) は取引形式が異なり、専用の対応が必要です。「Avalanche 対応」とだけ書かれたウォレットが、P-Chain の操作にも対応するとは限りません。
 
@@ -478,7 +478,7 @@ sequenceDiagram
 
 一つの鍵に送金の権限が集中すると、その鍵を盗まれた時に資産を動かされてしまいます。複数の鍵や参加者の協力を必要とする構成で、この集中を避けられます。
 
-「マルチシグ（multisig）」は、例えば 3 個の鍵のうち 2 個の署名を要求する方式です。「スマートアカウント」は、操作を認める条件をコントラクトのコードとして定義するアカウントであり、[Safe](https://docs.safe.global/advanced/smart-account-overview) では複数人の承認などを構成できます。例えば、所有者として登録した EOA のウォレットで署名し、Safe のコントラクトが必要数の署名を検証する構成があります。画面を操作するウォレットと、資産を管理するスマートアカウントを組み合わせて使うのです。
+「[マルチシグ（multisig）](../multisig/)」は、例えば 3 個の鍵のうち 2 個の署名を要求する方式です。「スマートアカウント」は、操作を認める条件をコントラクトのコードとして定義するアカウントであり、[Safe](https://docs.safe.global/advanced/smart-account-overview) では[複数人の承認](../safe-multisig/)などを構成できます。例えば、所有者として登録した EOA のウォレットで署名し、Safe のコントラクトが必要数の署名を検証する構成があります。画面を操作するウォレットと、資産を管理するスマートアカウントを組み合わせて使うのです。
 
 以下は、Safe で必要な署名数を変更する画面です。`2 out of 2 signers` は、登録した 2 人の署名者の両方が承認する設定を表します。
 
@@ -630,7 +630,7 @@ Ledger は、この事件でハードウェアや管理アプリの Ledger Live 
 
 2025 年 2 月 21 日、暗号資産取引所 Bybit が使っていた Safe で資産が盗まれました。攻撃者は、資産を管理するコードの参照先を変更し、元のマルチシグの追加承認なしで資産を移転しました。
 
-Safe は、資産や設定を持つ「プロキシ」と、署名検証や送金のコードを持つ「実装コントラクト」を組み合わせて動きます。プロキシに保存された参照先を変えると、以後の処理に使われるコードも変わります。攻撃は、次の順序で進みました。
+Safe は、資産や設定を持つ「[プロキシ](../upgradeable-proxy/)」と、署名検証や送金のコードを持つ「実装コントラクト」を組み合わせて動きます。プロキシに保存された参照先を変えると、以後の処理に使われるコードも変わります。攻撃は、次の順序で進みました。
 
 1. Web 画面を改竄し、署名する取引を変更する。
    [Sygnia の調査](https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/)では、Safe の Web 画面に配信された JavaScript の改竄が確認されています。このコードが、署名前の取引に攻撃者のコードを実行する指示を入れました。

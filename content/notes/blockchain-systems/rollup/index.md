@@ -9,46 +9,48 @@ wrapTables: true
 topics: ["Scaling"]
 ---
 
-[Rollup](https://ethereum.org/en/developers/docs/scaling/rollups/) は、取引の実行と状態の更新を Layer 2（L2）でまとめ、Layer 1（L1）に検証に必要なデータまたは証明を送るスケーリング手法です。Ethereum を L1 とする rollup では、L2 の利用者が送った取引を sequencer（シーケンサー）が順に実行し、まとまりごとの結果を Ethereum に提出します。
+[Ethereum](https://ethereum.org/) では、ネットワークに参加する多数のノード（取引を検証するコンピュータ）が、全ての取引を同じ順に実行して結果を照合します。誰でも結果を確かめられる代わりに、1 秒に処理できる取引の数が限られ、混み合うと手数料が上がります。
 
-例えば、Alice が 1 ETH を Ethereum から L2 の一つである OP Mainnet に預け、L2 上で Bob に 0.3 ETH を送ったとします。L2 の送金は数秒で残高に反映され、手数料も L1 より安くなります。
+[Rollup](https://ethereum.org/developers/docs/scaling/#rollups) は、この制約を緩める仕組みです。取引の実行を Ethereum の外にある別のチェーンで行い、Ethereum には実行の結果と、結果を確かめるのに要るデータだけを書き込みます。土台になる Ethereum を Layer 1（L1）、外のチェーンを Layer 2（L2）と呼びます。L2 では、シーケンサー（sequencer）と呼ばれるサーバーが利用者の取引を受け取り、順に実行し、多数の取引を 1 つの batch（まとめ）にして L1 に提出します。
 
-しかし、Bob が受け取った ETH を Ethereum に戻す時は、[OP Mainnet の出金手順](https://docs.optimism.io/stack/transactions/withdrawal-flow) に従い、L1 で出金を証明してから 7 日間の challenge 期間を待ちます。L2 では数秒で済んだ送金が、L1 に戻す時は 1 週間かかります。
+例えば、Alice が L1 と L2 の間で資産を移す L1 上のプログラム（bridge）を通じて、1 ETH（Ethereum の通貨）を L2 の 1 つである [OP Mainnet](https://docs.optimism.io/) に預け、L2 上で Bob に 0.3 ETH を送ったとします。L2 の送金は数秒で残高に反映され、手数料も L1 より安くなります。
 
-以下は、L2 で実行した多数の取引のうち、L1 に何が届くかを示した図です。
+しかし、Bob が受け取った ETH を Ethereum に戻す時は、[OP Mainnet の出金手順](https://docs.optimism.io/op-stack/bridging/withdrawal-flow)に従い、L1 で出金を証明してから 7 日間待ちます。L2 では数秒で済んだ送金が、L1 に戻す時は 1 週間かかります。以下は、L2 で実行した多数の取引のうち、L1 に何が届くかを示した図です。
 
-{{< figure src="images/rollup_concept.svg" alt="上の L2 では、利用者の多数の取引を sequencer が順に実行し、1 つの batch に詰める。下の L1 の rollup contract に届くのは小さな state root と取引データだけで、証明または challenge がその更新を確かめる" caption="L2 の多数の取引のうち、L1 に届くもの" align="center" >}}
+{{< figure src="images/rollup_concept.webp" alt="上の L2 では、利用者の多数の取引をシーケンサーが順に実行し、1 つの batch に詰める。batch から下の L1 へ矢印が 2 本出て、rollup のコントラクトには state root、L1 のブロックには取引データが届く。左の黄土色の「異議 または validity proof」がコントラクトの更新を確かめる" caption="L2 の多数の取引のうち、L1 に届くもの" align="center" >}}
 
-この待ち時間は、L2 の運営者を無条件に信用しないための仕組みから生まれます。L1 は公開された取引データを元に、challenge または証明で L2 の結果を確かめ、不正な更新を拒否します。
+L1 に届くのは、L2 の残高などを短い値に要約した state root（状態の要約）と、batch に入れた取引のデータです。state root は L1 上のプログラム（rollup のコントラクト）に記録され、取引データは L1 のブロックに置かれます。
+
+L1 は state root を提出する者を無条件には信用せず、誰かが異議（challenge）を出せる期間を待つか、計算が正しいことの証明（validity proof）を検証して、state root が正しいかを確かめます。OP Mainnet は前者の方式で、冒頭の 7 日間は、異議が出るのを待つために設けた期間です。
 
 <br>
 
-本記事では、L1 と L2 の役割、state root（状態ルート）と data availability（データ可用性）の違い、Optimistic Rollup と ZK Rollup が更新を検証する方法を説明します。
+本記事では、rollup が L1 に何を残し、L1 がそれをどう確かめるかを次の順に説明します。
 
 - L2 はどの処理を L1 の外へ出し、L1 には何を残すのか。
 - state root だけでは、なぜ利用者が L2 の状態を再計算できないのか。
-- 異議申し立てとゼロ知識証明では、いつ出金を確定できるのか。
-- [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) の blob は、どのコストを下げ、どの問題を解決しないのか。
+- 異議と validity proof では、L1 は何を確かめ、いつ出金を確定できるのか。
+- 取引データは L1 のどこに置かれ、いつまで残るのか。
 
-L1 に取引を入れるまでの流れは [Ethereum Transaction](../ethereum-transaction/)、L1 自体の取引確定の考え方は [Finality](../finality/) で説明しています。本記事でいう確定は、L2 の batch が各 rollup の規則を満たして L1 のコントラクトに受け入れられた状態を指します。L1 のブロックがどの程度巻き戻りにくいかという finality とは分けて扱います。
+L1 に取引を入れるまでの流れは [Ethereum Transaction](../ethereum-transaction/) で説明しています。
 
 ---
 
 ### L1 と L2 の分担
 
-Ethereum では、取引をブロックに入れる時に全ての検証ノードが同じ順序で実行し、状態更新を確かめます。この性質は誰でも結果を検証できる根拠になりますが、計算とデータを各ノードが処理するため、取引の処理量には限りがあります。
+Ethereum では、取引をブロックに入れる時に[全ての検証ノードが同じ順序で実行し](../evm/)、状態の更新を確かめます。ここでいう状態は、各アカウントの残高やコントラクトが保存している値の全体で、DB でいえばテーブルの全行にあたります。全てのノードが計算とデータを処理するため、取引の処理量には限りがあります。
 
-rollup は、利用者の取引を L2 で実行してから、複数の結果を batch にまとめます。L1 は L2 の各取引を通常は一件ずつ再実行せず、batch に対応する状態へのコミットメントと、rollup が採用する検証材料を [Smart Contract](../smart-contract/) で受け取ります。取引を L2 内でまとめることで、L1 に載せる処理を減らせます。
+rollup は、利用者の取引を L2 で実行してから、複数の取引を batch にまとめます。L1 は L2 の各取引を通常は一件ずつ再実行しません。L1 上の [Smart Contract](../smart-contract/)（rollup のコントラクト）が、batch を実行した後の state root と、異議または validity proof を受け取ります。取引を L2 内でまとめることで、L1 に載せる処理を減らせます。
 
-ただし、L2 に順序を決める主体がいることと、その主体が状態を自由に改竄できることは同じではありません。利用者は sequencer が表示する残高だけを信用するのではなく、公開された取引データから計算した状態と L1 に記録されたコミットメントを照合できます。
+シーケンサーは 1 つの事業者が運用する構成が多くあります。ただし、順序を決める主体がいることと、その主体が状態を自由に改竄できることは同じではありません。検証者（公開されたデータから L2 の状態を自分で計算し直す人）は、計算した状態と L1 に記録された state root を照合できます。
 
 {{< note-panels caption="L1 と L2 は、同じ取引を別々に処理するのではなく、検証の仕事を分けます。">}}
 - title: L2
-  body: 利用者の取引を受け取り、順序を決めて実行し、batch と新しい状態を作ります。sequencer がこの役割を担う構成が多くあります。
+  body: 利用者の取引を受け取り、順序を決めて実行し、batch と新しい状態を作ります。シーケンサーがこの役割を担う構成が多くあります。
 - title: L1
-  body: L2 のコミットメントと、取引データ、proof または challenge を受け取り、rollup の規則に従って更新を受け入れます。
+  body: コントラクトが state root と、異議または validity proof を受け取り、rollup の規則に従って更新を受け入れます。取引データはブロックに置かれます。
 - title: 利用者・検証者
-  body: 公開されたデータから L2 の状態を復元・検証します。不正を発見した時に誰が challenge を提出できるかは実装ごとに確認が必要です。
+  body: 公開されたデータから L2 の状態を復元・検証します。不正を発見した時に誰が異議を提出できるかは実装ごとに確認が必要です。
 {{< /note-panels >}}
 
 冒頭の Bob の例のように、L2 が取引を受け付けた時点、batch を L1 に提出した時点、L1 の規則で出金を認める時点は一致しません。ウォレットに表示された「完了」だけから、L1 に戻す資産が既に引き出せるとは判断できません。
@@ -57,11 +59,15 @@ rollup は、利用者の取引を L2 で実行してから、複数の結果を
 
 ### state root と取引データ
 
-L2 の state root は、アカウント残高やコントラクトの保存状態を Merkle tree（マークル木）などで要約した識別子です。状態の一部と Merkle proof があれば、その一部が特定の state root に含まれることを検証できます。[Merkle Tree](../merkle-tree/) で扱ったように、root が変われば対応する木の内容も変わります。
+state root は、アカウントの残高やコントラクトの保存状態を Merkle tree（マークル木）などで要約した値です。状態の一部と Merkle proof（その一部が木に含まれることを示す経路）があれば、その一部が特定の state root に含まれることを検証できます。[Merkle Tree](../merkle-tree/) で扱ったように、木の内容が変われば root も変わります。
 
-しかし、root は状態の要約であり、全ての取引や状態そのものではありません。新しい root と古い root だけが L1 にあっても、検証者はどの送金をどの順序で実行してその root になったかを再計算できません。
+冒頭の OP Mainnet の「出金の証明」は、L1 に提出された L2 の状態の要約に自分の出金の記録が含まれることを Merkle proof で L1 のコントラクトに示す手順です。
 
-以下は、sequencer が自分の残高に 50 を足した状態の root を提出した場合に、検証者が公開された取引から root を再計算して照合する例です。説明を短くするため、Merkle tree ではなく残高の表全体の SHA-256 を root にしています。
+OP では、この要約を output root と呼び、state root などをまとめてハッシュにした値を使います（[出金の仕様](https://github.com/ethereum-optimism/specs/blob/main/specs/protocol/withdrawals.md)）。
+
+ただし、state root から分かるのは、ある値が含まれるかどうかまでです。root は状態の要約であり、全ての取引や状態そのものではありません。新しい root と古い root だけが L1 にあっても、検証者はどの送金をどの順序で実行してその root になったかを再計算できません。
+
+以下は、シーケンサーが自分の残高に 50 を足した状態の root を提出した場合に、検証者が公開された取引から root を再計算して照合する例です。説明を短くするため、Merkle tree ではなく残高の表全体の [SHA-256](../../security/sha-256/) を root にしています。
 
 ```python
 import hashlib
@@ -103,127 +109,85 @@ print("一致するか:", state_root(forged) == state_root(apply(before, txs)))
 
 検証者が不正に気付けたのは、`before` と `txs` を入手できたからです。`txs` が無ければ、`c3ce5aa78617464f` が正しい root かどうかを確かめる手段はありません。
 
-data availability は、検証者が必要な取引データを取得できる性質です。rollup が取引データを L1 に公開する場合、L2 の運営者がデータ配布を止めても、L1 のデータから別の参加者が状態を再計算できます。一方で、L2 の運営者や別の委員会だけが取引データを持ち、root だけを L1 に送る構成は validium などと呼ばれ、rollup とは区別されます。
+<br>
 
-例えば、[L2BEAT（2026 年に ETHBEAT へ改称）](https://ethbeat.org/scaling/summary) は、取引データを Ethereum に公開するものを Rollups とし、Validiums & Optimiums とは別の一覧に載せています。
+この「検証者が必要な取引データを取得できる」性質は、data availability（データ可用性）と呼ばれます。rollup が取引データを L1 に公開する場合、シーケンサーがデータの配布を止めても、L1 のデータから別の参加者が状態を再計算できます。冒頭の図で、state root と取引データの 2 つが L1 に届くのはこのためです。state root は照合する値で、取引データは再計算の入力です。
 
-```mermaid
-%%{init: {"theme":"base","flowchart":{"nodeSpacing":20,"rankSpacing":24,"padding":8},"themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","fontSize":"16px"}}}%%
-flowchart LR
-    T["L2 の取引列"] --> E["L2 で順に実行"]
-    E --> O["新しい状態"]
-    O --> R["state root<br/>状態が一致するか照合する値"]
-    T --> A["データを公開<br/>状態を再計算する入力"]
-    R --> C["L1 の contract"]
-    A --> C
-```
-
-L1 にデータがあっても、状態を復元するには、データを取得・実行するソフトウェア、実装された exit（退出・出金）の手順、L1 の手数料が別に必要です。data availability は、その前提の一つです。
+一方で、シーケンサーや、データを預かる少数の組織（委員会）だけが取引データを持ち、state root だけを L1 に送る構成は validium などと呼ばれ、rollup とは区別されます。例えば、L2 を比較するサイトの [ETHBEAT（旧 L2BEAT）](https://ethbeat.org/layer2s/summary)は、state root を証明の仕組み付きで提出し、取引データも Ethereum に公開するものを Rollups とし、データを外に置く validium などとは別の一覧に載せています。
 
 ---
 
 ### Optimistic Rollup の challenge
 
-Optimistic Rollup は、L1 に提出された状態更新を直ちに全て再実行して検証するのではなく、challenge 期間中に異議がなければ受け入れる設計を取ります。
+Optimistic Rollup は、L1 に提出された state root を直ちに検証するのではなく、決められた期間（challenge 期間）に誰も異議を出さなければ受け入れる方式です。提出された batch は正しいと楽観的に（optimistic）扱い、不正を見つけた人が期間内に異議を出した時だけ L1 が判定します。
 
-不正な state root を提出したと考える参加者は、取引実行に関する fault proof（不正を示す証明）を提出して争えます。OP Mainnet の [fault proof の仕様](https://specs.optimism.io/fault-proof/index.html) では、この争いを L1 上の dispute game として定めています。
+異議を出す人は、取引の実行に関する fault proof（不正を示す証明）を使って争います。OP Mainnet の [fault proof の仕様](https://specs.optimism.io/fault-proof/index.html)では、この争いを L1 上の dispute game（異議を争う手続き）として定めています。
 
-challenge では、「誰かが不正だと主張した」だけで状態を巻き戻さず、L1 の規則が proof を検証してどちらの主張が正しいかを決めます。前節の例でいえば、検証者が `txs` を再実行して得た root と提出された root の食い違いを L1 が判定できる形で示す処理です。
+L1 のコントラクトは、batch の全ての計算を再実行して判定するわけではありません。提出者と異議を出した人に途中の状態を示させ、2 人の主張が最初に食い違う 1 ステップまで範囲を半分ずつ絞り、最後にその 1 ステップだけを L1 で実行します。ここでのステップは計算の 1 段で、取引 1 件ではありません。実装では、L2 の取引を実行するプログラムの命令 1 つの単位まで絞ります。以下は、16 ステップの計算でこの絞り込みを示した説明用の図です。
 
-この設計では、通常の batch は proof を伴わずに先へ進められますが、L1 に戻す出金は challenge 期間を待ちます。2026 年 11 月時点の公式ドキュメントでは、OP Mainnet は 7 日、[Arbitrum One](https://docs.arbitrum.io/arbitrum-bridge/troubleshooting) は 45818 ブロック（約 6.4 日）で、どちらも出金には約 1 週間かかります。
+{{< figure src="images/rollup_bisection.webp" alt="上に、提出者の主張と異議を出した人の主張を 16 マスずつ並べ、10 ステップ目までは同じ青、提出者の 11 ステップ目以降だけが黄土色。下に、最初の範囲 0〜16 から、8 で一致・12 で不一致・10 で一致・11 で不一致と比べるごとに範囲が半分になる棒を並べ、最後は 11 ステップ目の 1 マスだけが赤く残る。L1 は 11 ステップ目だけを実行して判定する" caption="食い違う 1 ステップまで絞り、L1 はそこだけを実行する（説明用の 16 ステップの例）" align="center" >}}
 
-出金の待ち条件は、rollup のアップグレードでも変わります。OP Mainnet では、2024 年 6 月まで許可された 1 つのアカウントだけが root を提出していました。[誰でも root を提出・challenge できる fault proof へ移行](https://gov.optimism.io/t/final-protocol-upgrade-7-fault-proofs/8161) した時は、証明済みで未確定の出金が全て無効になり、利用者は新しい仕組みで出金を証明し直す必要がありました。
+上記の図では、8 ステップ目の後の状態は一致し、12 ステップ目の後は食い違うので、食い違いの始まりは 9〜12 ステップ目のどこかにあると分かります。これを繰り返すと 11 ステップ目だけが残り、L1 は 10 ステップ目の後の状態から 1 ステップだけ実行して、どちらの 11 ステップ目の状態が正しいかを決めます。前節の例でいえば、検証者が `txs` を再実行して得た root と、提出された root の食い違いを L1 が判定できる大きさまで小さくする処理です。
+
+<br>
+
+この方式では、通常の batch は証明を伴わずに先へ進められますが、L1 に戻す出金は challenge 期間を待ちます。2026 年 11 月時点の公式ドキュメントでは、OP Mainnet は 7 日、[Arbitrum One](https://docs.arbitrum.io/arbitrum-bridge/troubleshooting) は L1 の 45818 ブロック（1 ブロック 12 秒として約 6.4 日）で、どちらも出金には約 1 週間かかります。
+
+なお、OP Mainnet でも、2024 年 6 月までは fault proof が無く、許可された 1 つのアカウントだけが L2 の状態の要約を提出していました。
+
+[誰でも提出・異議申し立てできる fault proof へ移行](https://gov.optimism.io/t/final-protocol-upgrade-7-fault-proofs/8161)した時は、証明済みで 7 日の待ちが終わっていない出金が全て無効になり、利用者は出金を証明し直す必要がありました。
 
 ---
 
 ### ZK Rollup の validity proof
 
-[Zero-Knowledge Proof](../zero-knowledge-proof/) を使う ZK Rollup は、batch の実行が規則に従ったことを示す validity proof（有効性証明）を L1 の verifier contract（検証コントラクト）に提出します。L1 は proof を検証し、受け入れた batch の state root を更新します。
+ZK Rollup は、batch の実行が規則に従ったことを示す validity proof（有効性証明）を作り、L1 の verifier contract（証明を検証するコントラクト）に提出します。L1 は証明を検証し、受け入れた batch の state root を更新します。証明には [Zero-Knowledge Proof](../zero-knowledge-proof/)（ゼロ知識証明）の技術を使います。
 
-名称に ZK とありますが、rollup で使う証明が常に取引内容を隠すためのものとは限りません。ここで重要なのは、L1 が短い証明から状態遷移の正しさを検証できる点です。
+名称に ZK とありますが、rollup で使う証明が常に取引内容を隠すためのものとは限りません。ここで重要なのは、L1 が短い証明を検証するだけで、batch の全ての計算が正しかったと確かめられる点です。Optimistic Rollup が異議の出た時だけ 1 ステップを判定するのに対し、ZK Rollup では全ての batch が validity proof で確かめられます（複数の batch をまとめて 1 つの証明にする実装もあります）。
 
-proof が検証されてから L1 上の出金を受け付ける構成では、Optimistic Rollup のように不正を待ち受ける challenge 期間は必要ありません。ただし、proof を作る時間、batch の提出間隔、L1 のブロックへの取り込み、L1 の finality は残ります。「ZK Rollup なら即時に出金できる」とは限りません。
+validity proof が検証されてから L1 上の出金を受け付ける構成では、不正を待ち受ける challenge 期間は必要ありません。以下は、L1 に戻す出金の手順を 2 つの方式で並べた図です。
 
-証明の soundness（健全性）に加え、circuit（回路）と verifier の実装、prover を運用する主体、取引データの公開方法も安全性に関わります。proof が正しい遷移を示しても、利用者が必要なデータを得られなければ、自分の資産を扱う手順を実行できません。
+{{< figure src="images/rollup_withdraw.webp" alt="上段の Optimistic Rollup（OP Mainnet の例）は、L2 で出金を送る、batch を L1 に提出、L1 で出金を証明、黄土色の challenge 期間（7 日）、L1 で受け取る、の 5 つの箱。下段の ZK Rollup は、L2 で出金を送る、batch を L1 に提出、青の「validity proof を作り、L1 が検証」、L1 で受け取る、の 4 つの箱。箱の幅は時間の長さを表していない" caption="L1 に戻す出金の手順（Optimistic Rollup と ZK Rollup）" align="center" >}}
 
-| 検証方法 | L1 が受け取る主な材料 | L1 に戻す出金で主に待つ条件 |
+ZK Rollup でも、証明を作る時間、batch の提出間隔、L1 のブロックへの取り込み、L1 のブロックが巻き戻らなくなるまでの時間（[Finality](../finality/)）は残ります。「ZK Rollup なら即時に出金できる」とは限りません。
+
+本記事でいう出金の確定は、batch が rollup の規則を満たして L1 のコントラクトに受け入れられた状態を指し、L1 自体の finality とは分けて扱っています。
+
+安全性は、誤った計算に対して正しい証明を作れないという証明の仕組みの性質だけでなく、その実装に欠陥が無いこと、証明を作る主体が止まらないこと、取引データが公開されていることにも依存します。証明が正しい遷移を示しても、利用者が必要なデータを得られなければ、自分の資産を扱う手順を実行できません。
+
+| 検証方法 | L1 が受け取る主な材料 | L1 が確かめること |
 | --- | --- | --- |
-| Optimistic Rollup | 状態へのコミットメント、取引データ、challenge 時の fault proof | challenge 期間（OP Mainnet は 7 日）と L1 側の処理 |
-| ZK Rollup | 状態へのコミットメント、取引データ、validity proof | proof の生成・検証と L1 側の処理 |
+| Optimistic Rollup | state root、取引データ、異議が出た時の fault proof | 異議が出た時だけ、食い違う 1 ステップ |
+| ZK Rollup | state root、取引データ、validity proof | 全ての batch が、証明で正しいか |
 
-この表は検証の違いを示したものです。手数料、sequencer の停止時の挙動、bridge の管理者権限は個別の L2 と bridge の仕様で確認する必要があります。
+この表は検証の違いを示したものです。手数料、シーケンサーが止まった時の挙動、[bridge の管理者権限](../cross-chain-bridge/)は、個別の L2 と bridge の仕様で確認する必要があります。
 
 ---
 
-### blob と EIP-4844
+### 取引データの置き場所と保持期間
 
-EIP-4844 は、blob-carrying transaction（blob を運ぶ取引）を Ethereum に追加しました。blob は 1 個 128 KiB（32 バイト × 4096 要素）のバイト列で、EVM からは中身を読めず、コミットメントの versioned hash（バージョン付きハッシュ）だけを参照できます。
+どちらの方式でも、利用者や異議を出す人が状態を計算し直すには、公開された取引データが要ります。
 
-rollup は batch の取引データを blob に置き、L1 上の検証コントラクトには versioned hash を渡します。
+rollup は以前、L1 の取引の data 欄（calldata）に取引データを入れていました。calldata はブロックの一部として、blob のような期限を決めずに保存され（2025 年 7 月から、The Merge より前の古い履歴はノードが削除できるようになりました）、取引の実行中はコントラクトから読めます。その代わり、実行と同じ [gas](../gas-eip-1559/)（L1 の計算量の単位）で値段が付くため高くつきます。
 
-この仕組みは、rollup が L1 に公開するデータのために使うブロックスペースを通常の calldata と分けます。EIP-4844 は blob 用の手数料市場を定め、1 ブロックあたり target 3 個・最大 6 個の blob を割り当てました。この上限は後の [EIP-7691](https://eips.ethereum.org/EIPS/eip-7691) で target 6 個・最大 9 個に引き上げられています。
+<br>
 
-blob を保存するのは実行層ではなく consensus 層（beacon ノード）で、仕様上の保持期間は少なくとも 4096 epoch です。1 epoch は 32 slot、1 slot は 12 秒なので、4096 × 32 × 12 秒で約 18 日です。過去の blob を 18 日より後に取得する用途では、アーカイブや別の保存手段が必要になります。
+2024 年 3 月の Ethereum の更新（Dencun）で、取引に大きなデータを添付する blob という欄が入りました（[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844)）。blob はコントラクトから中身を読めず、一定の期間が過ぎると消える代わりに、calldata より安く置けます。
 
-{{< figure src="images/rollup_retention.svg" alt="横棒グラフ。blob の保持は約 18 日（4096 epoch）、OP Mainnet の challenge 期間は 7 日、Arbitrum One は約 6.4 日で、2 本の黄土色の棒は青い棒の半分にも届かない" caption="blob の保持期間と、出金の challenge 期間" align="center" >}}
+L1 の取引に残るのは blob を識別するハッシュ（versioned hash）だけで、コントラクトはそのハッシュを参照できます。中身は合意層のノードが一定期間保存します。多くの rollup は、batch の取引データを blob に置いています。
 
-OP Mainnet の 7 日の challenge 期間は、この 18 日の内側に収まります。
+blob を保存するのは、Ethereum のノードのうち合意を担う側（consensus layer、合意層）で、仕様上の保持期間は少なくとも 4096 epoch です。[epoch](../proof-of-stake/) は合意層の時間の単位で、1 epoch は 32 slot、1 slot は 2026 年 11 月時点で 12 秒なので、4096 × 32 × 12 秒で約 18 日です。
 
-blob の手数料は 1 個単位で掛かり、EIP-4844 では 1 個あたり 2 の 17 乗（131,072）blob gas です。中身が少なくても 1 個分を払うため、batch に詰める取引の数で 1 件あたりの負担が変わります。
+{{< figure src="images/rollup_retention.webp" alt="横棒グラフ。blob の保持は約 18 日以上（4096 epoch）、OP Mainnet の challenge 期間は 7 日、Arbitrum One は約 6.4 日で、2 本の黄土色の棒は青い棒の半分にも届かない" caption="blob の保持期間と、出金の challenge 期間" align="center" >}}
 
-L2 の取引 1 件を圧縮後 150 バイトと仮定し、1 件あたりの L1 の gas を計算しました。batch を出す L1 の取引には、blob gas とは別に 21,000 の execution gas が毎回掛かります（rollup のコントラクトの実行分は含めていません）。2 種類の gas は別々の base fee で値段が付くため、足さずに並べています。
+2025 年 12 月の Fulu 以降は、各ノードが blob を列に分けた一部だけを持ちますが、期間は同じ 4096 epoch です（[Fulu の仕様](https://github.com/ethereum/consensus-specs/blob/master/specs/fulu/p2p-interface.md)）。
 
-```python
-GAS_PER_BLOB = 2**17
-BLOB_BYTES = 4096 * 32
-TX_GAS = 21_000
-TX_BYTES = 150  # 仮定した L2 の取引 1 件の大きさ
+上記の図の通り、OP Mainnet と Arbitrum One の challenge 期間は、blob の保持期間の内側に収まります。異議を出す人は、期間中なら blob から取引データを取り出して再計算できます。18 日より古い blob を後から使う用途では、アーカイブなどの別の保存手段が必要です。blob の大きさ、手数料の仕組み、batch に詰める件数と 1 件あたりのコストは [Blob](../blob/) で説明しています。
 
+---
 
-def blobs_for(n):
-    return -(-n * TX_BYTES // BLOB_BYTES)  # 切り上げ
+### rollup を比べる時に見る所
 
+blob が下げるのは、L1 にデータを公開するコストです。シーケンサーによる取引の検閲、rollup のコードの欠陥、利用者が出金できる時点は、blob を使っても変わりません。データの置き場所が calldata から blob に変わっても、Optimistic Rollup では challenge の条件、ZK Rollup では証明の条件を満たす必要があります。
 
-def per_tx(n):
-    """n 件の batch での、1 件あたりの execution gas と blob gas"""
-    return TX_GAS / n, GAS_PER_BLOB * blobs_for(n) / n
-```
-
-上記は [lab/batch_cost.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/rollup/lab/batch_cost.py) からの抜粋で、[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/rollup/lab/batch_cost_output.txt)の末尾は以下の通りです。
-
-```text
-txs that fill one blob: 873
-target 6 blobs per block: 5238 txs per slot, 436 txs/s for all rollups together
-max 9 blobs per block: 7857 txs per slot, 655 txs/s for all rollups together
-```
-
-<details>
-<summary>件数ごとの値（グラフの元）</summary>
-
-```text
-   txs blobs  exec gas/tx  blob gas/tx
-     1     1      21000.0     131072.0
-    10     1       2100.0      13107.2
-   100     1        210.0       1310.7
-   500     1         42.0        262.1
-   873     1         24.1        150.1
-   874     2         24.0        299.9
-  1000     2         21.0        262.1
-  2000     3         10.5        196.6
-  5000     6          4.2        157.3
-txs that fill one blob: 873
-target 6 blobs per block: 5238 txs per slot, 436 txs/s for all rollups together
-max 9 blobs per block: 7857 txs per slot, 655 txs/s for all rollups together
-```
-
-</details>
-
-{{< figure src="images/rollup_batch_cost.svg" alt="両対数の折れ線グラフ。横軸は batch の取引数、縦軸は L2 の取引 1 件あたりの L1 の gas。blob gas は 1 件の 131,072 から件数に反比例して下がり、blob が 1 個埋まる 873 件で約 150 に達した後は、blob が増える度に跳ねながら 150 前後に留まる。execution gas は 21,000 から件数に反比例して下がり続ける" caption="batch の件数と、取引 1 件あたりの L1 の gas" align="center" >}}
-
-blob が 1 個埋まる 873 件までは、1 件あたりの blob gas が件数に反比例して下がり、その先は 1 バイトあたり 1 blob gas、つまり 1 件 150 前後で下げ止まります。874 件目で 2 個目の blob が要り、一時的に 300 に跳ねます。
-
-target の 6 個を全て使っても、この大きさの取引なら 1 slot で 5,238 件、全ての rollup を合わせて毎秒 436 件分です。
-
-blob が下げるのは、L1 にデータを公開するコストです。sequencer による取引の検閲、rollup のコードの欠陥、利用者が出金できる時点は、blob を使っても変わりません。L1 にデータを出す方法が calldata から blob に変わっても、Optimistic Rollup では challenge の条件、ZK Rollup では proof の条件を満たす必要があります。
-
-rollup を比較する時は「L2 の手数料が安いか」だけでなく、取引データをどこで得るか、状態遷移をどう検証するか、sequencer が停止した時と L1 に資産を戻す時にどの経路を使うかを分けて確認する必要があります。
+L1 にデータがあっても、状態を復元するには、データを取得・実行するソフトウェアと、L1 に資産を戻す手順の実装も要ります。rollup を比較する時は「L2 の手数料が安いか」だけでなく、取引データをどこで得るか、状態の更新をどう検証するか、シーケンサーが止まった時と L1 に資産を戻す時にどの経路を使うかを分けて確認する必要があります。

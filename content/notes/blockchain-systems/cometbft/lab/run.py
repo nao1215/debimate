@@ -204,7 +204,7 @@ def main():
                     cells = [x for s in ss for x in
                              ((s[0], s[1].split("/")[1]) if s else ("", ""))]
                     w.writerow([f"{t:.1f}", name] + cells)
-            print("== run 1 timeline (every 5 s): committed height, height/round/step")
+            print("== run 1 timeline (every 5 samples): committed height, height/round/step")
             for k, (name, t, ss) in enumerate(log):
                 if k % 5 == 0:
                     cells = " | ".join(f"{show(s):<29}" for s in ss)

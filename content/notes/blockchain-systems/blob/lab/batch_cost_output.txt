@@ -1,0 +1,15 @@
+   txs blobs  exec gas/tx  blob gas/tx
+     1     1      21000.0     131072.0
+    10     1       2100.0      13107.2
+   100     1        210.0       1310.7
+   500     1         42.0        262.1
+   873     1         24.1        150.1
+   874     2         24.0        299.9
+  1000     2         21.0        262.1
+  2000     3         10.5        196.6
+  5000     6          4.2        157.3
+txs that fill one blob: 873
+Cancun 2024-03: target 3 blobs = 218 txs/s, max 6 blobs = 436 txs/s for all rollups together
+Prague 2025-05: target 6 blobs = 436 txs/s, max 9 blobs = 655 txs/s for all rollups together
+BPO1 2025-12: target 10 blobs = 728 txs/s, max 15 blobs = 1091 txs/s for all rollups together
+BPO2 2026-01: target 14 blobs = 1018 txs/s, max 21 blobs = 1528 txs/s for all rollups together
