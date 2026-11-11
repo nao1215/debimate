@@ -1,0 +1,10 @@
+== BUGGY: 28 checks, 5 not reflected
+output: {"query_time_ms": "3", "server": "127.0.0.53#53", "when": "Wed Nov 11 10:00:00 JST 2026", "msg_size": "56"}
+  line 2: '127' changed, output unchanged
+  line 2: '0' changed, output unchanged
+  line 2: '0' changed, output unchanged
+  line 2: '53' changed, output unchanged
+  line 2: 'UDP' changed, output unchanged
+
+== FIXED: 28 checks, 0 not reflected
+output: {"query_time_ms": "3", "server": "127.0.0.53#53", "server_name": "127.0.0.53", "protocol": "UDP", "when": "Wed Nov 11 10:00:00 JST 2026", "msg_size": "56"}

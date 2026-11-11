@@ -1,0 +1,21 @@
+jz v0.9.1 (definition format 1, linux/amd64)
+wc (uutils coreutils) 0.8.0
+
+$ jz run wc a.txt b.txt
+together: [{"lines":2,"words":3,"bytes":6,"filename":"a.txt"},{"lines":1,"words":1,"bytes":6,"filename":"b.txt"},{"lines":3,"words":4,"bytes":12,"filename":"total"}]
+separate: [{"lines":2,"words":3,"bytes":6,"filename":"a.txt"},{"lines":1,"words":1,"bytes":6,"filename":"b.txt"}]
+relation: BROKEN
+
+$ jz run wc a.txt total
+together: [{"lines":2,"words":3,"bytes":6,"filename":"a.txt"},{"lines":1,"words":1,"bytes":2,"filename":"total"},{"lines":3,"words":4,"bytes":8,"filename":"total"}]
+separate: [{"lines":2,"words":3,"bytes":6,"filename":"a.txt"},{"lines":1,"words":1,"bytes":2,"filename":"total"}]
+relation: BROKEN
+
+$ jz run wc total
+[{"lines":1,"words":1,"bytes":2,"filename":"total"}]
+
+$ jz run wc --total=never a.txt total
+[{"lines":2,"words":3,"bytes":6,"filename":"a.txt"},{"lines":1,"words":1,"bytes":2,"filename":"total"}]
+
+$ LANG=ja_JP.UTF-8 gnuwc a.txt b.txt | jz --parser wc
+[{"lines":2,"words":3,"bytes":6,"filename":"a.txt"},{"lines":1,"words":1,"bytes":6,"filename":"b.txt"},{"lines":3,"words":4,"bytes":12,"filename":"合計"}]

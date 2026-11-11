@@ -1,0 +1,287 @@
+{
+ "fixture": ";; Query time: 3 msec\n;; SERVER: 127.0.0.53#53(127.0.0.53) (UDP)\n;; WHEN: Wed Nov 11 10:00:00 JST 2026\n;; MSG SIZE  rcvd: 56\n",
+ "buggy": [
+  {
+   "start": 3,
+   "token": "Query",
+   "reflected": true
+  },
+  {
+   "start": 9,
+   "token": "time",
+   "reflected": true
+  },
+  {
+   "start": 15,
+   "token": "3",
+   "reflected": true
+  },
+  {
+   "start": 17,
+   "token": "msec",
+   "reflected": true
+  },
+  {
+   "start": 25,
+   "token": "SERVER",
+   "reflected": true
+  },
+  {
+   "start": 33,
+   "token": "127",
+   "reflected": true
+  },
+  {
+   "start": 37,
+   "token": "0",
+   "reflected": true
+  },
+  {
+   "start": 39,
+   "token": "0",
+   "reflected": true
+  },
+  {
+   "start": 41,
+   "token": "53",
+   "reflected": true
+  },
+  {
+   "start": 44,
+   "token": "53",
+   "reflected": true
+  },
+  {
+   "start": 47,
+   "token": "127",
+   "reflected": false
+  },
+  {
+   "start": 51,
+   "token": "0",
+   "reflected": false
+  },
+  {
+   "start": 53,
+   "token": "0",
+   "reflected": false
+  },
+  {
+   "start": 55,
+   "token": "53",
+   "reflected": false
+  },
+  {
+   "start": 60,
+   "token": "UDP",
+   "reflected": false
+  },
+  {
+   "start": 68,
+   "token": "WHEN",
+   "reflected": true
+  },
+  {
+   "start": 74,
+   "token": "Wed",
+   "reflected": true
+  },
+  {
+   "start": 78,
+   "token": "Nov",
+   "reflected": true
+  },
+  {
+   "start": 82,
+   "token": "11",
+   "reflected": true
+  },
+  {
+   "start": 85,
+   "token": "10",
+   "reflected": true
+  },
+  {
+   "start": 88,
+   "token": "00",
+   "reflected": true
+  },
+  {
+   "start": 91,
+   "token": "00",
+   "reflected": true
+  },
+  {
+   "start": 94,
+   "token": "JST",
+   "reflected": true
+  },
+  {
+   "start": 98,
+   "token": "2026",
+   "reflected": true
+  },
+  {
+   "start": 106,
+   "token": "MSG",
+   "reflected": true
+  },
+  {
+   "start": 110,
+   "token": "SIZE",
+   "reflected": true
+  },
+  {
+   "start": 116,
+   "token": "rcvd",
+   "reflected": true
+  },
+  {
+   "start": 122,
+   "token": "56",
+   "reflected": true
+  }
+ ],
+ "fixed": [
+  {
+   "start": 3,
+   "token": "Query",
+   "reflected": true
+  },
+  {
+   "start": 9,
+   "token": "time",
+   "reflected": true
+  },
+  {
+   "start": 15,
+   "token": "3",
+   "reflected": true
+  },
+  {
+   "start": 17,
+   "token": "msec",
+   "reflected": true
+  },
+  {
+   "start": 25,
+   "token": "SERVER",
+   "reflected": true
+  },
+  {
+   "start": 33,
+   "token": "127",
+   "reflected": true
+  },
+  {
+   "start": 37,
+   "token": "0",
+   "reflected": true
+  },
+  {
+   "start": 39,
+   "token": "0",
+   "reflected": true
+  },
+  {
+   "start": 41,
+   "token": "53",
+   "reflected": true
+  },
+  {
+   "start": 44,
+   "token": "53",
+   "reflected": true
+  },
+  {
+   "start": 47,
+   "token": "127",
+   "reflected": true
+  },
+  {
+   "start": 51,
+   "token": "0",
+   "reflected": true
+  },
+  {
+   "start": 53,
+   "token": "0",
+   "reflected": true
+  },
+  {
+   "start": 55,
+   "token": "53",
+   "reflected": true
+  },
+  {
+   "start": 60,
+   "token": "UDP",
+   "reflected": true
+  },
+  {
+   "start": 68,
+   "token": "WHEN",
+   "reflected": true
+  },
+  {
+   "start": 74,
+   "token": "Wed",
+   "reflected": true
+  },
+  {
+   "start": 78,
+   "token": "Nov",
+   "reflected": true
+  },
+  {
+   "start": 82,
+   "token": "11",
+   "reflected": true
+  },
+  {
+   "start": 85,
+   "token": "10",
+   "reflected": true
+  },
+  {
+   "start": 88,
+   "token": "00",
+   "reflected": true
+  },
+  {
+   "start": 91,
+   "token": "00",
+   "reflected": true
+  },
+  {
+   "start": 94,
+   "token": "JST",
+   "reflected": true
+  },
+  {
+   "start": 98,
+   "token": "2026",
+   "reflected": true
+  },
+  {
+   "start": 106,
+   "token": "MSG",
+   "reflected": true
+  },
+  {
+   "start": 110,
+   "token": "SIZE",
+   "reflected": true
+  },
+  {
+   "start": 116,
+   "token": "rcvd",
+   "reflected": true
+  },
+  {
+   "start": 122,
+   "token": "56",
+   "reflected": true
+  }
+ ]
+}
