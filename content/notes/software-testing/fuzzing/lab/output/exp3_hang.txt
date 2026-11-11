@@ -1,0 +1,10 @@
+# 2026-11-12、Go 1.26.9
+== sleep 3s
+PASS
+ok  	example.com/hang	42.006s
+== sleep 8s
+PASS
+ok  	example.com/hang	42.006s
+== sleep 12s
+--- FAIL: FuzzSleep (10.02s)
+    fuzzing process hung or terminated unexpectedly: exit status 2

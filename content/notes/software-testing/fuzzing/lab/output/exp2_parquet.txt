@@ -1,0 +1,4 @@
+== filesql 8cf4dda (bd2f9e9^)
+    zz_cost_test.go:31: 473 bytes allocated 100456.2 KiB, err=failed to read table: decoding thrift payload: 5:FIELD<STRUCT> → 5:FIELD<STRUCT> → 5:FIELD<BINARY>: unexpected EOF
+== filesql bd2f9e9 (bd2f9e9)
+    zz_cost_test.go:31: 473 bytes allocated 40.1 KiB, err=parquet column chunk 0 of row group 0 claims 3113 bytes at offset 42 in a file of 473

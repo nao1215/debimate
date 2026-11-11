@@ -1,0 +1,33 @@
+package reader
+
+// exp2_parquet.sh が filesql の internal/reader に置いて走らせるテスト。
+// fuzz が 473 バイトまで縮めた Parquet を 1 回読み、確保したメモリの合計を表示する。
+
+import (
+	"bytes"
+	"encoding/base64"
+	"os"
+	"runtime"
+	"strings"
+	"testing"
+)
+
+func TestPageHeaderCost(t *testing.T) {
+	b64, err := os.ReadFile(os.Getenv("PAGE_HEADER_B64"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := base64.StdEncoding.DecodeString(strings.TrimSpace(string(b64)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var before, after runtime.MemStats
+	runtime.GC()
+	runtime.ReadMemStats(&before)
+	_, readErr := readParquet(bytes.NewReader(data), Options{}, func(*Chunk) error { return nil })
+	runtime.ReadMemStats(&after)
+
+	t.Logf("%d bytes allocated %.1f KiB, err=%v", len(data),
+		float64(after.TotalAlloc-before.TotalAlloc)/(1<<10), readErr)
+}

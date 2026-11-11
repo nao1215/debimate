@@ -1,0 +1,20 @@
+# filesql の parser パッケージに parquet/ceiling_test.go.txt を置き、
+# go clean -fuzzcache の後に go test ./parser -run '^$' -fuzz '^FuzzParquetCeiling$' -fuzztime 300s
+# を走らせた結果（2026-11-12、Go 1.26.4、32 ワーカー）。見つかった入力は output/crashers/。
+
+== 修正前 8cf4dda (bd2f9e9^)
+run1: fuzz: elapsed: 1m48s, execs: 1874815 (0/sec), new interesting: 104 (total: 106)
+      zz_ceiling_test.go:27: 471 bytes allocated 44 MiB
+      Failing input written to testdata/fuzz/FuzzParquetCeiling/6c8066a60e22dff9   -> crashers/pre_fix_run1
+run2: fuzz: elapsed: 57s, execs: 297252 (43157/sec), new interesting: 37 (total: 39)
+      zz_ceiling_test.go:27: 472 bytes allocated 16 MiB                              -> crashers/pre_fix_run2
+run3: fuzz: elapsed: 5m1s, execs: 9708012 (0/sec), new interesting: 218 (total: 220)
+      見つからず
+
+== 修正後 bd2f9e9
+run1: fuzz: elapsed: 5m1s, execs: 13692914 (0/sec), new interesting: 227 (total: 229)
+      ok  github.com/nao1215/filesql/parser 301.408s
+
+== 見つかった 2 つの入力を seed として go test で読み直す
+修正後: --- PASS: FuzzParquetCeiling（pre_fix_run1、pre_fix_run2 とも通る）
+修正前: 471 bytes allocated 44 MiB / 472 bytes allocated 16 MiB --- FAIL

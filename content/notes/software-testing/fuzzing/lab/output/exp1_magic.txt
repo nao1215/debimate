@@ -1,0 +1,10 @@
+FuzzByteByByte run1: found at call 116814
+FuzzByteByByte run2: found at call 98533
+FuzzByteByByte run3: found at call 36709
+FuzzByteByByte run4: found at call 71669
+FuzzByteByByte run5: found at call 100685
+FuzzAtOnce run1: fuzz: elapsed: 2m0s, execs: 102601150 (0/sec), new interesting: 0 (total: 1)
+FuzzAtOnce run2: fuzz: elapsed: 2m0s, execs: 102784344 (0/sec), new interesting: 0 (total: 1)
+FuzzAtOnce run3: fuzz: elapsed: 2m0s, execs: 95110989 (0/sec), new interesting: 0 (total: 1)
+    magic_test.go:33: not found in 100,000,000 inputs
+ok  	example.com/magic	1.583s

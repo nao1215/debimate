@@ -1,0 +1,41 @@
+// exp0_jsonize_retain.sh が jsonize の cmd/zzretain/main.go に置いて走らせるプログラム。
+// 256 列の見出しの下に "x" だけの行を rows 行並べ、engine.Parse の直後のヒープを表示する。
+package main
+
+import (
+	"fmt"
+	"os"
+	"runtime"
+	"strconv"
+	"strings"
+
+	"github.com/nao1215/jsonize/pkg/definition"
+	"github.com/nao1215/jsonize/pkg/engine"
+)
+
+func main() {
+	rows, _ := strconv.Atoi(os.Args[1])
+	def, err := definition.Load([]byte("format: 1\ncommand: t\nvariant: v\nparse: {type: table, split: aligned}\n"), "repro")
+	if err != nil {
+		panic(err)
+	}
+	var b strings.Builder
+	for i := range 256 {
+		if i > 0 {
+			b.WriteByte(' ')
+		}
+		fmt.Fprintf(&b, "c%d", i)
+	}
+	b.WriteByte('\n')
+	for range rows {
+		b.WriteString("x\n")
+	}
+	input := b.String()
+
+	out, err := engine.Parse(def, []byte(input), engine.Options{MaxInputSize: 64 << 20})
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("rows=%d input=%.1f KB heap=%.2f GB ratio=%.0f err=%v\n", rows,
+		float64(len(input))/1e3, float64(m.HeapAlloc)/1e9, float64(m.HeapAlloc)/float64(len(input)), err)
+	runtime.KeepAlive(out)
+}

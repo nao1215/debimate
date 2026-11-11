@@ -1,0 +1,10 @@
+== jsonize 711dfe29 (0e6b5cd^)
+rows=20000 input=41.2 KB heap=0.61 GB ratio=14703 err=<nil>
+rows=40000 input=81.2 KB heap=1.12 GB ratio=13751 err=<nil>
+rows=80000 input=161.2 KB heap=2.03 GB ratio=12602 err=<nil>
+rows=160000 input=321.2 KB heap=4.63 GB ratio=14419 err=<nil>
+== jsonize 0e6b5cd8 (0e6b5cd)
+rows=20000 input=41.2 KB heap=0.50 GB ratio=12264 err=t/v: line 16386: the input yields more than 4194304 values, more than one document holds; --stream reads it one record at a time: too many values
+rows=40000 input=81.2 KB heap=0.44 GB ratio=5408 err=t/v: line 16386: the input yields more than 4194304 values, more than one document holds; --stream reads it one record at a time: too many values
+rows=80000 input=161.2 KB heap=0.52 GB ratio=3252 err=t/v: line 16386: the input yields more than 4194304 values, more than one document holds; --stream reads it one record at a time: too many values
+rows=160000 input=321.2 KB heap=0.52 GB ratio=1617 err=t/v: line 16386: the input yields more than 4194304 values, more than one document holds; --stream reads it one record at a time: too many values

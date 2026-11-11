@@ -14,6 +14,7 @@ ShowBreadCrumbs: true
 description: ""
 topics:
   - name: "Test Oracles"
+  - name: "Input Generation"
   - name: "Testing in Practice"
     related:
       - path: "/post/ja/2026-07-04-CLIにブラックボックステストE2Eを行うatagoを作った話"

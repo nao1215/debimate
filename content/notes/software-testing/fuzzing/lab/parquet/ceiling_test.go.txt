@@ -1,0 +1,31 @@
+package parser
+
+import (
+	"bytes"
+	"os"
+	"path/filepath"
+	"runtime"
+	"testing"
+)
+
+// FuzzParquetCeiling は FuzzParseBinary の Parquet の部分に、
+// 「64 KiB 以下のファイルを読むのに 16 MiB を超えて確保しないか」の検査を足したもの。
+// exp2_parquet.sh fuzz が filesql の parser パッケージに置いて走らせる。
+func FuzzParquetCeiling(f *testing.F) {
+	if parquet, err := os.ReadFile(filepath.Join("testdata", "products.parquet")); err == nil {
+		f.Add(parquet)
+	}
+	f.Add([]byte("PAR1"))
+	f.Fuzz(func(t *testing.T, data []byte) {
+		if len(data) > 1<<16 {
+			t.Skip()
+		}
+		var before, after runtime.MemStats
+		runtime.ReadMemStats(&before)
+		_, _ = Parse(bytes.NewReader(data), Parquet)
+		runtime.ReadMemStats(&after)
+		if got, limit := after.TotalAlloc-before.TotalAlloc, uint64(16<<20); got > limit {
+			t.Fatalf("%d bytes allocated %d MiB", len(data), got>>20)
+		}
+	})
+}
