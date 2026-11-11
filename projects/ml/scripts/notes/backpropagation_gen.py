@@ -1,252 +1,393 @@
-"""backpropagation ノート用の図を生成するスクリプト。
+"""backpropagation ノートの実験と図を生成するスクリプト。
 
-実行: cd projects/ml && uv run python scripts/notes/backpropagation_gen.py
+本文に載せた実験（2 層の手計算と数値微分、digits の 3 層 NN と backward の書き間違い、
+勾配の照合、数値微分との速さの比較、層を深くした時の勾配と学習曲線）を同じ順に実行し、
+出力を標準出力に、図を Page Bundle に WebP で保存する。
+実行: cd projects/ml && .venv/bin/python scripts/notes/backpropagation_gen.py
+確認した版: scikit-learn 1.9.1、NumPy 2.5.4、matplotlib 3.11.2
 """
-import os
+import time
+from io import BytesIO
 from pathlib import Path
 
-import matplotlib.pyplot as plt
 import matplotlib.patches as patches
+import matplotlib.pyplot as plt
 import numpy as np
-
-plt.rcParams.update({"svg.hashsalt": "debimate"})
-
-COLOR_BLUE = "#4e79a7"
-COLOR_RED = "#c0392b"
-COLOR_GREEN = "#59a14f"
-COLOR_GRAY = "#666666"
-FILL_INPUT = "#dde8f0"
-FILL_HIDDEN = "#f6e3c8"
-FILL_OUTPUT = "#dcebd5"
-FILL_LOSS = "#f3d6d3"
+from PIL import Image
+from sklearn.datasets import load_digits
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 NOTE_DIR = Path(__file__).resolve().parents[2] / "notes" / "ml" / "backpropagation"
-NOTE_DIR.mkdir(parents=True, exist_ok=True)
+plt.rcParams.update({"font.family": "Noto Sans CJK JP", "font.size": 10,
+                     "axes.spines.top": False, "axes.spines.right": False})
+BLUE, RED, GREEN, INK, GRAY = "#4e79a7", "#e15759", "#59a14f", "#333333", "#999999"
+ORANGE, PURPLE = "#f28e2b", "#8e6bb0"
 
 
-def save(name: str) -> None:
-    plt.savefig(NOTE_DIR / name, bbox_inches="tight")
-    plt.close()
+def save(fig, name):
+    buf = BytesIO()
+    fig.savefig(buf, format="png", dpi=200, bbox_inches="tight", facecolor="#ffffff")
+    plt.close(fig)
+    buf.seek(0)
+    Image.open(buf).convert("RGB").save(NOTE_DIR / name, "WEBP", quality=90, method=6)
 
 
-def fmt(v: float) -> str:
-    return f"{v:g}"
-
-
-# ============================================================
-# Fig 1: Tiny network forward + backward visualization
-# ============================================================
-# Network: x → z1 = w1*x + b1 → a1 = ReLU(z1) → z2 = w2*a1 + b2 → L = (z2 - y)^2
+# ---- 実験 1: 2 層の NN を 1 つのデータで手計算し、数値微分と比べる ----
 x, w1, b1, w2, b2, y = 2.0, 3.0, -1.0, 0.5, 2.0, 5.0
-z1 = w1 * x + b1            # 5
-a1 = max(0, z1)              # 5
+
+
+def tiny_loss(w1, b1, w2, b2):
+    a1 = max(0.0, w1 * x + b1)
+    return (w2 * a1 + b2 - y) ** 2
+
+
+# forward
+z1 = w1 * x + b1             # 5
+a1 = max(0.0, z1)            # 5（ReLU）
 z2 = w2 * a1 + b2            # 4.5
 L = (z2 - y) ** 2            # 0.25
 
+# backward（出力側から連鎖律）
 dL_dz2 = 2 * (z2 - y)        # -1
-dL_dw2 = dL_dz2 * a1          # -5
-dL_db2 = dL_dz2 * 1           # -1
-dL_da1 = dL_dz2 * w2          # -0.5
+dL_dw2 = dL_dz2 * a1         # -5
+dL_db2 = dL_dz2 * 1          # -1
+dL_da1 = dL_dz2 * w2         # -0.5
 dL_dz1 = dL_da1 * (1 if z1 > 0 else 0)  # -0.5
-dL_dw1 = dL_dz1 * x           # -1
-dL_db1 = dL_dz1 * 1           # -0.5
+dL_dw1 = dL_dz1 * x          # -1
+dL_db1 = dL_dz1 * 1          # -0.5
+
+# 数値微分: 1 つのパラメータだけを ±eps 動かして損失の差を測る
+eps = 1e-6
+params = {"w1": w1, "b1": b1, "w2": w2, "b2": b2}
+numeric = {}
+for name in params:
+    plus, minus = dict(params), dict(params)
+    plus[name] += eps
+    minus[name] -= eps
+    numeric[name] = (tiny_loss(**plus) - tiny_loss(**minus)) / (2 * eps)
+
+print(f"L = {L}")
+print("backward:", {"w1": dL_dw1, "b1": dL_db1, "w2": dL_dw2, "b2": dL_db2})
+print("数値微分:", {k: round(v, 6) for k, v in numeric.items()})
+
+
+def fmt(v):
+    return f"{v:g}"
+
 
 fig, ax = plt.subplots(figsize=(12, 5.2))
 R = 0.45
 nodes = [
-    ("x", 0.5, 3.0, x, None),
-    ("w1", 0.5, 4.6, w1, dL_dw1),
-    ("b1", 0.5, 1.4, b1, dL_db1),
-    ("z1", 3.0, 3.0, z1, dL_dz1),
-    ("a1", 5.3, 3.0, a1, dL_da1),
-    ("w2", 5.3, 4.6, w2, dL_dw2),
-    ("b2", 5.3, 1.4, b2, dL_db2),
-    ("z2", 7.8, 3.0, z2, dL_dz2),
-    ("L", 10.3, 3.0, L, 1.0),
+    ("x", 0.5, 3.0, x, None), ("w1", 0.5, 4.6, w1, dL_dw1), ("b1", 0.5, 1.4, b1, dL_db1),
+    ("z1", 3.0, 3.0, z1, dL_dz1), ("a1", 5.3, 3.0, a1, dL_da1),
+    ("w2", 5.3, 4.6, w2, dL_dw2), ("b2", 5.3, 1.4, b2, dL_db2),
+    ("z2", 7.8, 3.0, z2, dL_dz2), ("L", 10.3, 3.0, L, 1.0),
 ]
-node_pos = {}
+pos = {}
 for name, xx, yy, val, grad in nodes:
-    node_pos[name] = (xx, yy)
+    pos[name] = (xx, yy)
     ax.add_patch(patches.Circle((xx, yy), R, facecolor="white", edgecolor="black", lw=1.3))
-    ax.text(xx, yy + 0.12, name, ha="center", va="center", fontsize=11, fontweight="normal")
-    ax.text(xx, yy - 0.18, f"={fmt(val)}", ha="center", va="center", fontsize=9.5,
-            color=COLOR_BLUE)
-    if grad is not None:
-        ax.text(xx + R + 0.08, yy + R - 0.05, f"∂L/∂{name}={fmt(grad)}", ha="left",
-                va="bottom", fontsize=9.5, color=COLOR_RED)
-
-edges_fwd = [
-    ("x", "z1"), ("w1", "z1"), ("b1", "z1"),
-    ("z1", "a1"),
-    ("a1", "z2"), ("w2", "z2"), ("b2", "z2"),
-    ("z2", "L"),
-]
-for src, dst in edges_fwd:
-    ax.annotate("", xy=node_pos[dst], xytext=node_pos[src],
-                arrowprops=dict(arrowstyle="->", color=COLOR_BLUE, lw=1.4,
-                                shrinkA=17, shrinkB=17))
-
-ax.text(5.5, 5.55, "forward (blue): values, left → right",
-        ha="center", fontsize=11, color=COLOR_BLUE)
-ax.text(5.5, 0.45, "backward (red): ∂L/∂node, right → left by the chain rule",
-        ha="center", fontsize=11, color=COLOR_RED)
-
-ax.set_xlim(-0.2, 12.0)
-ax.set_ylim(0.2, 5.9)
+    ax.text(xx, yy + 0.12, name, ha="center", va="center", fontsize=11)
+    ax.text(xx, yy - 0.18, f"={fmt(val)}", ha="center", va="center", fontsize=9.5, color=BLUE)
+    if grad is not None:  # 勾配は矢印と重ならない位置に置く（上の段は上、それ以外は下）
+        if yy > 4:
+            gx, gy, ha = xx, yy + R + 0.12, "center"
+        elif name == "z2":  # 下は逆向きの矢印が通るので右下に置く
+            gx, gy, ha = xx + 0.35, yy - R - 0.45, "left"
+        elif name == "L":  # 右下を z2 の勾配に譲り、上の矢印のさらに上に置く
+            gx, gy, ha = xx, yy + R + 0.45, "center"
+        else:
+            gx, gy, ha = xx, yy - R - 0.35, "center"
+        ax.text(gx, gy, f"∂L/∂{name} = {fmt(grad)}", ha=ha, va="bottom", fontsize=10, color=RED)
+for src, dst in [("x", "z1"), ("w1", "z1"), ("b1", "z1"), ("z1", "a1"),
+                 ("a1", "z2"), ("w2", "z2"), ("b2", "z2"), ("z2", "L")]:
+    ax.annotate("", xy=pos[dst], xytext=pos[src],
+                arrowprops=dict(arrowstyle="->", color=BLUE, lw=1.4, shrinkA=17, shrinkB=17))
+# backward で ∂L/∂z2 を w2・a1・b2 の 3 つへ渡す様子（赤い破線の逆向きの矢印）
+for dst, rad in [("w2", 0.35), ("a1", -0.35), ("b2", -0.35)]:
+    ax.annotate("", xy=pos[dst], xytext=pos["z2"],
+                arrowprops=dict(arrowstyle="->", color=RED, lw=1.3, ls="--", shrinkA=17, shrinkB=17,
+                                connectionstyle=f"arc3,rad={rad}"))
+ax.annotate("", xy=pos["z2"], xytext=pos["L"],
+            arrowprops=dict(arrowstyle="->", color=RED, lw=1.3, ls="--", shrinkA=17, shrinkB=17,
+                            connectionstyle="arc3,rad=0.35"))
+ax.text(9.0, 1.3, "∂L/∂z2 = -1 を\nw2・b2・a1 の 3 つで使い回す", ha="left", va="center",
+        fontsize=10, color=RED)
+ax.text(5.5, 6.05, "forward（青）: 値を左から右へ計算する", ha="center", fontsize=11, color=BLUE)
+ax.text(5.5, -0.05, "backward（赤）: ∂L/∂(各ノード) を右から左へ、連鎖律で求める",
+        ha="center", fontsize=11, color=RED)
+ax.set_xlim(-0.2, 11.4)
+ax.set_ylim(-0.3, 6.4)
 ax.set_aspect("equal")
 ax.axis("off")
-save("backprop_tiny_network.svg")
+save(fig, "bp_tiny_network.webp")
 
 
-# ============================================================
-# Fig 2: Computational graph for a slightly bigger model
-# ============================================================
-fig, ax = plt.subplots(figsize=(11, 5.6))
+# ---- 実験 2: digits を 3 層の NN で学習し、backward の 1 行を消した版と比べる ----
+X, y_all = load_digits(return_X_y=True)
+X_tr, X_te, y_tr, y_te = train_test_split(X, y_all, test_size=0.3, random_state=0, stratify=y_all)
+scaler = StandardScaler().fit(X_tr)
+X_tr, X_te = scaler.transform(X_tr), scaler.transform(X_te)
 
-positions = {
-    "x1": (1, 5), "x2": (1, 1),
-    "h1": (4, 5), "h2": (4, 1),
-    "ŷ": (7, 3), "y": (7, 5.5),
-    "L": (10, 3),
-}
-fills = {"x1": FILL_INPUT, "x2": FILL_INPUT, "y": FILL_INPUT,
-         "h1": FILL_HIDDEN, "h2": FILL_HIDDEN, "ŷ": FILL_OUTPUT, "L": FILL_LOSS}
-for name, (xx, yy) in positions.items():
-    ax.add_patch(patches.Circle((xx, yy), 0.4, facecolor=fills[name],
-                                edgecolor="black", lw=1.2))
-    ax.text(xx, yy, name, ha="center", va="center", fontsize=12)
-
-# (src, dst, label, label position as fraction from src)
-edges = [
-    ("x1", "h1", r"$w_{11}$", 0.5), ("x1", "h2", r"$w_{12}$", 0.25),
-    ("x2", "h1", r"$w_{21}$", 0.25), ("x2", "h2", r"$w_{22}$", 0.5),
-    ("h1", "ŷ", r"$v_1$", 0.5), ("h2", "ŷ", r"$v_2$", 0.5),
-    ("ŷ", "L", "", 0.5), ("y", "L", "", 0.5),
-]
-for src, dst, label, frac in edges:
-    x0, y0 = positions[src]
-    x1, y1 = positions[dst]
-    ax.annotate("", xy=(x1, y1), xytext=(x0, y0),
-                arrowprops=dict(arrowstyle="->", color="black", lw=0.9,
-                                shrinkA=16, shrinkB=16))
-    if label:
-        lx, ly = x0 + (x1 - x0) * frac, y0 + (y1 - y0) * frac
-        ax.text(lx, ly + 0.25, label, ha="center", fontsize=11, color=COLOR_GRAY)
-
-ax.annotate("", xy=(10.6, -0.1), xytext=(0.4, -0.1),
-            arrowprops=dict(arrowstyle="->", color=COLOR_BLUE, lw=2))
-ax.text(5.5, -0.55, "forward: compute h, ŷ, L (left → right)",
-        ha="center", color=COLOR_BLUE, fontsize=11)
-ax.annotate("", xy=(0.4, 6.4), xytext=(10.6, 6.4),
-            arrowprops=dict(arrowstyle="->", color=COLOR_RED, lw=2))
-ax.text(5.5, 6.65, "backward: propagate ∂L/∂(weight) by the chain rule (right → left)",
-        ha="center", color=COLOR_RED, fontsize=11)
-
-ax.set_xlim(0, 11)
-ax.set_ylim(-0.9, 7.1)
-ax.set_aspect("equal")
-ax.axis("off")
-save("backprop_computational_graph.svg")
-
-
-# ============================================================
-# Fig 3: Chain rule visualization - 1D
-# ============================================================
-# L = log(f), f = exp(g), g = h^2, h = sin(x)
-fig, ax = plt.subplots(figsize=(11, 3.6))
-
-stages = [
-    (1, "x"),
-    (3.5, "h = sin(x)"),
-    (6, "g = h²"),
-    (8.5, "f = exp(g)"),
-    (11, "L = log(f)"),
-]
-gradients = [
-    "∂L/∂f = 1/f",
-    "∂f/∂g = exp(g)",
-    "∂g/∂h = 2h",
-    "∂h/∂x = cos(x)",
-]
-BW = 1.7
-for x_pos, label in stages:
-    ax.add_patch(patches.Rectangle((x_pos - BW / 2, 1.6), BW, 0.8, facecolor=FILL_INPUT,
-                                   edgecolor="black", linewidth=1.1))
-    ax.text(x_pos, 2.0, label, ha="center", va="center", fontsize=10.5)
-
-for i in range(len(stages) - 1):
-    ax.annotate("", xy=(stages[i + 1][0] - BW / 2 - 0.05, 2),
-                xytext=(stages[i][0] + BW / 2 + 0.05, 2),
-                arrowprops=dict(arrowstyle="->", color=COLOR_BLUE, lw=1.5))
-
-for i, grad in enumerate(gradients):
-    right, left = stages[-(i + 1)][0], stages[-(i + 2)][0]
-    ax.text((right + left) / 2, 0.75, grad, ha="center", fontsize=10, color=COLOR_RED)
-    ax.annotate("", xy=(left + 0.3, 1.25), xytext=(right - 0.3, 1.25),
-                arrowprops=dict(arrowstyle="->", color=COLOR_RED, lw=1.5))
-
-ax.text(6, 3.0, "∂L/∂x = (∂L/∂f) × (∂f/∂g) × (∂g/∂h) × (∂h/∂x)",
-        ha="center", fontsize=12)
-ax.set_xlim(-0.1, 12.1)
-ax.set_ylim(0.4, 3.4)
-ax.set_aspect("equal")
-ax.axis("off")
-save("backprop_chain_rule.svg")
-
-
-# ============================================================
-# Fig 4: Gradient norm per layer in a 10-layer MLP (vanishing)
-# ============================================================
-# 本文の実験コードと同じ関数。NumPy で forward と backward を書き、
-# 各層の重みの勾配のノルム ||∂L/∂W_i|| を測る。
-ACTS = {
-    "sigmoid": (lambda z: 1 / (1 + np.exp(-z)),
-                lambda z: (s := 1 / (1 + np.exp(-z))) * (1 - s)),
-    "tanh": (np.tanh, lambda z: 1 - np.tanh(z) ** 2),
-    "relu": (lambda z: np.maximum(z, 0), lambda z: (z > 0).astype(float)),
+ACTS = {  # 活性化関数と、その微分（h は活性化した後の値）
+    "sigmoid": (lambda z: 1 / (1 + np.exp(-z)), lambda z, h: h * (1 - h)),
+    "relu": (lambda z: np.maximum(z, 0), lambda z, h: (z > 0).astype(float)),
 }
 
 
-def layer_grad_norms(act, n_layers=10, width=64, batch=256, seed=0):
+def init(act, n_layers, rng, width=64):
+    dims = [64] + [width] * (n_layers - 1) + [10]  # 入力 64 画素、出力 10 クラス
+    # sigmoid は標準偏差 1/√n、ReLU は He の初期化の √(2/n)
+    std = (lambda n: np.sqrt(2 / n)) if act == "relu" else (lambda n: 1 / np.sqrt(n))
+    Ws = [rng.normal(0, std(dims[i]), (dims[i], dims[i + 1])) for i in range(n_layers)]
+    bs = [np.zeros(dims[i + 1]) for i in range(n_layers)]
+    return Ws, bs
+
+
+def forward(Ws, bs, x, act):
+    f, _ = ACTS[act]
+    hs, zs = [x], []  # 各層の入力 h と、活性化する前の z を残す
+    for i, (W, b) in enumerate(zip(Ws, bs)):
+        zs.append(hs[-1] @ W + b)
+        if i < len(Ws) - 1:
+            hs.append(f(zs[-1]))  # 最後の層は活性化せず、softmax に渡す
+    return hs, zs
+
+
+def softmax(z):
+    e = np.exp(z - z.max(axis=1, keepdims=True))
+    return e / e.sum(axis=1, keepdims=True)
+
+
+def loss_only(Ws, bs, x, y, act):
+    p = softmax(forward(Ws, bs, x, act)[1][-1])
+    return -np.log(p[np.arange(len(y)), y]).mean()  # 交差エントロピー
+
+
+def loss_and_grads(Ws, bs, x, y, act, bug=False):
+    _, df = ACTS[act]
+    hs, zs = forward(Ws, bs, x, act)
+    p = softmax(zs[-1])
+    loss = -np.log(p[np.arange(len(y)), y]).mean()  # 交差エントロピー
+    g = p.copy()
+    g[np.arange(len(y)), y] -= 1
+    g /= len(y)  # ∂L/∂z（最後の層）
+    gWs, gbs = [None] * len(Ws), [None] * len(Ws)
+    for i in reversed(range(len(Ws))):
+        if i < len(Ws) - 1 and not bug:
+            g = g * df(zs[i], hs[i + 1])  # 活性化関数の微分を掛ける（bug=True はこの 1 行を飛ばす）
+        gWs[i] = hs[i].T @ g  # ∂L/∂W_i
+        gbs[i] = g.sum(axis=0)  # ∂L/∂b_i
+        g = g @ Ws[i].T  # 1 つ入力側の層へ渡す
+    return loss, gWs, gbs
+
+
+def accuracy(Ws, bs, x, y, act):
+    return (forward(Ws, bs, x, act)[1][-1].argmax(axis=1) == y).mean()
+
+
+def train(act, n_layers, epochs=100, lr=0.1, seed=0, bug=False):
     rng = np.random.default_rng(seed)
-    f, df = ACTS[act]
-    # 重みは平均 0、標準偏差 1/√width の正規分布で初期化する
-    Ws = [rng.normal(0, 1 / np.sqrt(width), (width, width)) for _ in range(n_layers)]
-    x = rng.normal(size=(batch, width))
-    t = rng.normal(size=(batch, width))
-
-    # forward: 各層の入力 h と活性化前の z を保持する
-    hs, zs = [x], []
-    for W in Ws:
-        zs.append(hs[-1] @ W)
-        hs.append(f(zs[-1]))
-
-    # L は二乗誤差の和をバッチ数で割ったもの。g は ∂L/∂(最終層の出力)
-    g = 2 * (hs[-1] - t) / batch
-
-    # backward: 出力側から 1 層ずつ連鎖律を適用する
-    norms = [0.0] * n_layers
-    for i in reversed(range(n_layers)):
-        g = g * df(zs[i])                       # ∂L/∂z_i
-        norms[i] = np.linalg.norm(hs[i].T @ g)  # ||∂L/∂W_i||
-        g = g @ Ws[i].T                         # ∂L/∂h_i（1 つ入力側の層へ渡す）
-    return norms
+    Ws, bs = init(act, n_layers, rng)
+    history = []  # エポックごとの (テストの正解率, 1 層目の勾配の大きさ)
+    for _ in range(epochs):
+        idx = rng.permutation(len(X_tr))
+        for s in range(0, len(X_tr), 32):  # 32 件ずつのミニバッチで SGD
+            b = idx[s:s + 32]
+            _, gWs, gbs = loss_and_grads(Ws, bs, X_tr[b], y_tr[b], act, bug)
+            for i in range(n_layers):
+                Ws[i] -= lr * gWs[i]
+                bs[i] -= lr * gbs[i]
+        g1 = loss_and_grads(Ws, bs, X_tr, y_tr, act)[1][0]
+        history.append((accuracy(Ws, bs, X_te, y_te, act), np.linalg.norm(g1)))
+    return np.array(history)
 
 
+runs = {}
+for bug in [False, True]:
+    accs = []
+    for seed in range(5):
+        h = train("sigmoid", n_layers=3, seed=seed, bug=bug)
+        accs.append(h[-1, 0])
+        if seed == 0:
+            runs[bug] = h  # 冒頭の図に描いた seed 0 の学習曲線
+    label = "微分を掛け忘れた backward" if bug else "正しい backward"
+    print(f"{label}: テストの正解率 seed 0 {accs[0]:.3f}、seed 0〜4 {min(accs):.3f}〜{max(accs):.3f}")
+
+fig, ax = plt.subplots(figsize=(7.2, 3.8))
+ep = np.arange(1, 101)
+ax.plot(ep, runs[False][:, 0], color=BLUE, lw=2, label=f"正しい backward（{runs[False][-1, 0]:.1%}）")
+ax.plot(ep, runs[True][:, 0], color=RED, lw=2, ls="--",
+        label=f"活性化関数の微分を掛け忘れた backward（{runs[True][-1, 0]:.1%}）")
+ax.set_xlabel("エポック")
+ax.set_ylabel("テストの正解率")
+ax.set_ylim(0.8, 1.0)
+ax.set_title("digits を 3 層の NN で学習した時のテストの正解率", fontsize=11)
+ax.legend(loc="lower right", frameon=False)
+ax.grid(True, alpha=0.25)
+save(fig, "bp_cover.webp")
+
+
+# ---- 実験 3: 勾配の照合（数値微分と backward を比べる） ----
+rng = np.random.default_rng(0)
+Ws, bs = init("sigmoid", 3, rng)
+xb, yb = X_tr[:32], y_tr[:32]
+
+
+def numeric_grad(W, eps=1e-5):
+    num = np.zeros_like(W)
+    for idx in np.ndindex(W.shape):  # 1 要素ずつ ±eps 動かして損失を 2 回測る
+        old = W[idx]
+        W[idx] = old + eps
+        lp = loss_only(Ws, bs, xb, yb, "sigmoid")
+        W[idx] = old - eps
+        lm = loss_only(Ws, bs, xb, yb, "sigmoid")
+        W[idx] = old
+        num[idx] = (lp - lm) / (2 * eps)
+    return num
+
+
+num_W1 = numeric_grad(Ws[0])
+check = {}
+for bug in [False, True]:
+    g = loss_and_grads(Ws, bs, xb, yb, "sigmoid", bug)[1][0]
+    rel = np.linalg.norm(g - num_W1) / (np.linalg.norm(g) + np.linalg.norm(num_W1))
+    cos = (g * num_W1).sum() / (np.linalg.norm(g) * np.linalg.norm(num_W1))
+    check[bug] = (g, rel)
+    label = "微分を掛け忘れた backward" if bug else "正しい backward"
+    ratio = np.linalg.norm(g) / np.linalg.norm(num_W1)
+    print(f"{label}: 相対誤差 {rel:.1e}、コサイン類似度 {cos:.3f}、大きさの比 {ratio:.1f}")
+
+fig, axes = plt.subplots(1, 2, figsize=(8.4, 3.9))
+lim = np.abs(num_W1).max() * 1.1
+for ax, bug, color, title in [(axes[0], False, BLUE, "正しい backward"),
+                              (axes[1], True, RED, "活性化関数の微分を掛け忘れた backward")]:
+    g, rel = check[bug]
+    ylim = np.abs(g).max() * 1.1
+    ax.plot([-lim, lim], [-lim, lim], color=GRAY, lw=1, ls=":", label="数値微分と一致する線")
+    ax.scatter(num_W1.ravel(), g.ravel(), s=5, color=color, alpha=0.5)
+    ax.set_title(f"{title}\n相対誤差 {rel:.1e}", fontsize=10)
+    ax.set_xlabel("数値微分で求めた勾配")
+    ax.set_xlim(-lim, lim)
+    ax.set_xticks([-0.005, 0, 0.005])
+    ax.set_ylim(-ylim, ylim)
+    ax.grid(True, alpha=0.25)
+axes[0].set_ylabel("backward で求めた勾配")
+axes[0].legend(loc="upper left", frameon=False, fontsize=9)
+save(fig, "bp_gradcheck.webp")
+
+# ---- 補助の図: 正しい勾配と 90 度未満の向きなら、小さく進めば損失は下がる ----
+fig, ax = plt.subplots(figsize=(6.4, 4.2))
+w1g, w2g = np.meshgrid(np.linspace(-2.2, 2.2, 200), np.linspace(-1.6, 1.6, 200))
+ax.contour(w1g, w2g, w1g ** 2 + 3 * w2g ** 2, levels=8, colors=GRAY, linewidths=0.7)
+P = np.array([1.5, 0.6])
+grad = np.array([2 * P[0], 6 * P[1]])
+d = -grad / np.linalg.norm(grad) * 1.0
+
+
+def rot(v, deg):
+    t = np.deg2rad(deg)
+    return np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]]) @ v
+
+
+tangent = rot(d, 90)
+ax.plot([P[0] - 1.4 * tangent[0], P[0] + 1.4 * tangent[0]],
+        [P[1] - 1.4 * tangent[1], P[1] + 1.4 * tangent[1]], color=INK, ls=":", lw=1)
+for v, color, label in [(d, BLUE, "正しい勾配の逆向き"), (rot(d, -17), RED, "間違えた勾配の逆向き（約 17 度ずれ）"),
+                        (rot(d, 135), GRAY, "90 度を超えてずれた向き")]:
+    ax.annotate("", xy=P + v, xytext=P, arrowprops=dict(arrowstyle="-|>", color=color, lw=2))
+    ax.plot([], [], color=color, lw=2, label=label)
+ax.plot([], [], color=INK, ls=":", lw=1, label="損失が変わらない向き（等高線の接線）")
+ax.scatter([0], [0], color=INK, s=15)
+ax.text(0.05, -0.15, "損失が最小の点", fontsize=9)
+ax.scatter([P[0]], [P[1]], color=INK, s=15)
+ax.set_aspect("equal")
+ax.set_xlim(-2.2, 2.6)
+ax.set_ylim(-1.6, 1.6)
+ax.set_xlabel("重み 1")
+ax.set_ylabel("重み 2")
+ax.set_title("損失の等高線と、更新に使う向き", fontsize=10.5)
+ax.legend(loc="upper left", fontsize=8.5, frameon=True, framealpha=0.9)
+save(fig, "bp_descent.webp")
+
+
+# ---- 実験 4: 数値微分と backward の速さ ----
+n_params = sum(W.size + b.size for W, b in zip(Ws, bs))
+t = time.perf_counter()
+for _ in range(1000):
+    loss_and_grads(Ws, bs, xb, yb, "sigmoid")
+t_backprop = (time.perf_counter() - t) / 1000
+t = time.perf_counter()
+for W, b in zip(Ws, bs):
+    numeric_grad(W)
+    numeric_grad(b)
+t_numeric = time.perf_counter() - t
+print(f"パラメータ {n_params} 個: forward と backward {t_backprop * 1e3:.3f} ms、"
+      f"数値微分 {t_numeric:.2f} s（損失の計算 {2 * n_params} 回）、{t_numeric / t_backprop:,.0f} 倍")
+
+fig, ax = plt.subplots(figsize=(7.2, 2.2))
+vals = [t_backprop * 1e3, t_numeric * 1e3]
+ax.barh([1, 0], vals, color=[BLUE, GRAY], height=0.55)
+ax.set_xscale("log")
+ax.set_yticks([1, 0], ["forward と backward 1 回ずつ", f"数値微分（損失を {2 * n_params:,} 回計算）"])
+for yy, v in zip([1, 0], vals):
+    ax.text(v * 1.15, yy, f"{v:,.0f} ms" if v >= 100 else f"{v:.3g} ms", va="center", fontsize=9.5)
+ax.set_xlim(0.03, vals[1] * 20)
+ax.set_xlabel("全パラメータの勾配を 1 回求める時間（ms、対数の軸）")
+ax.set_title(f"パラメータ {n_params:,} 個の 3 層の NN、32 件のミニバッチ", fontsize=10.5)
+save(fig, "bp_cost.webp")
+
+
+# ---- 実験 5: 層を深くした時の、層ごとの勾配と学習曲線 ----
+for act in ["sigmoid", "relu"]:
+    Ws10, bs10 = init(act, 10, np.random.default_rng(0))
+    norms = np.array([np.linalg.norm(gW) for gW in loss_and_grads(Ws10, bs10, X_tr, y_tr, act)[1]])
+    print(f"{act} 10 層、初期化の直後: 1 層目の勾配は 10 層目の {norms[0] / norms[-1]:.1e} 倍")
+    if act == "sigmoid":
+        sig_norms = norms
+    else:
+        relu_norms = norms
+
+fig, ax = plt.subplots(figsize=(7.2, 3.8))
 layers = np.arange(1, 11)
-plt.figure(figsize=(8, 4.2))
-for act, color, marker in [("sigmoid", COLOR_BLUE, "o"), ("tanh", COLOR_GREEN, "s"),
-                           ("relu", COLOR_RED, "^")]:
-    n = np.array(layer_grad_norms(act))
-    plt.plot(layers, n / n[-1], marker=marker, color=color, lw=1.8, label=act)
-plt.yscale("log")
-plt.xticks(layers)
-plt.xlabel("layer (1 = input side, 10 = output side)")
-plt.ylabel("||∂L/∂W_i|| / ||∂L/∂W_10||")
-plt.title("10-layer MLP at initialization: gradient norm relative to the last layer")
-plt.legend()
-plt.grid(True, alpha=0.25)
-save("backprop_vanishing.svg")
+ax.plot(layers, sig_norms / sig_norms[-1], marker="o", color=RED, lw=1.8,
+        label="sigmoid（標準偏差 1/√n で初期化）")
+ax.plot(layers, relu_norms / relu_norms[-1], marker="^", color=BLUE, lw=1.8,
+        label="ReLU（He の初期化）")
+ax.set_yscale("log")
+ax.set_xticks(layers)
+ax.set_xlabel("層の番号（1 が入力側、10 が出力側）")
+ax.set_ylabel("10 層目の勾配に対する比")
+ax.set_title("10 層の NN の初期化の直後に、各層の重みに届く勾配の大きさ", fontsize=10.5)
+ax.legend(frameon=False)
+ax.grid(True, alpha=0.25)
+save(fig, "bp_layer_grad.webp")
 
+curves = {}
+for depth in [4, 6, 8, 10]:
+    h = train("sigmoid", n_layers=depth, epochs=600)
+    curves[f"sigmoid {depth} 層"] = h
+    print(f"sigmoid {depth} 層: 100 エポック {h[99, 0]:.3f}、300 エポック {h[299, 0]:.3f}、"
+          f"600 エポック {h[-1, 0]:.3f}")
+h = train("relu", n_layers=10, epochs=600)
+curves["ReLU 10 層"] = h
+print(f"ReLU 10 層: 100 エポック {h[99, 0]:.3f}、600 エポック {h[-1, 0]:.3f}")
 
-print("done:", sorted(os.listdir(NOTE_DIR)))
+fig, axes = plt.subplots(1, 2, figsize=(10, 3.9))
+ep = np.arange(1, 601)
+styles = {"sigmoid 4 層": (GREEN, "-"), "sigmoid 6 層": (ORANGE, "-"),
+          "sigmoid 8 層": (PURPLE, "-"), "sigmoid 10 層": (RED, "-"), "ReLU 10 層": (BLUE, "--")}
+for name, h in curves.items():
+    color, ls = styles[name]
+    axes[0].plot(ep, h[:, 0], color=color, ls=ls, lw=1.6, label=name)
+    axes[1].plot(ep, h[:, 1], color=color, ls=ls, lw=1.6, label=name)
+axes[0].set_ylabel("テストの正解率")
+axes[0].set_title("テストの正解率", fontsize=10.5)
+axes[1].set_yscale("log")
+axes[1].set_title("1 層目の重みに届く勾配の大きさ", fontsize=10.5)
+for ax in axes:
+    ax.set_xlabel("エポック")
+    ax.grid(True, alpha=0.25)
+axes[0].legend(frameon=False, fontsize=9)
+save(fig, "bp_depth.webp")
