@@ -1,0 +1,40 @@
+CREATE EXTENSION pgstattuple;
+CREATE EXTENSION
+CREATE TABLE t (id uuid DEFAULT uuidv4() PRIMARY KEY, body text NOT NULL);
+CREATE TABLE
+INSERT INTO t (body) SELECT md5(i::text) FROM generate_series(1, 1000000) AS i;
+INSERT 0 1000000
+SELECT leaf_pages, avg_leaf_density FROM pgstatindex('t_pkey');
+ leaf_pages | avg_leaf_density 
+------------+------------------
+       4891 |            70.57
+(1 row)
+
+ALTER TABLE t ALTER COLUMN id SET DEFAULT uuidv7();
+ALTER TABLE
+INSERT INTO t (body) SELECT md5(i::text) FROM generate_series(1, 200000) AS i;
+INSERT 0 200000
+SELECT leaf_pages, avg_leaf_density FROM pgstatindex('t_pkey');
+ leaf_pages | avg_leaf_density 
+------------+------------------
+       6270 |            66.08
+(1 row)
+
+DELETE FROM t WHERE uuid_extract_version(id) = 4;
+DELETE 1000000
+VACUUM t;
+VACUUM
+SELECT leaf_pages, avg_leaf_density FROM pgstatindex('t_pkey');
+ leaf_pages | avg_leaf_density 
+------------+------------------
+       1382 |            50.05
+(1 row)
+
+REINDEX INDEX t_pkey;
+REINDEX
+SELECT leaf_pages, avg_leaf_density FROM pgstatindex('t_pkey');
+ leaf_pages | avg_leaf_density 
+------------+------------------
+        767 |            89.91
+(1 row)
+

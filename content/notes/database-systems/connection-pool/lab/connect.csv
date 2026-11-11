@@ -1,0 +1,7 @@
+reconnect,run,tps,latency_ms
+reuse,1,61911.496770,0.129
+reuse,2,102277.614873,0.078
+reuse,3,105494.572582,0.076
+reconnect,1,689.226406,11.607
+reconnect,2,671.885920,11.907
+reconnect,3,418.095868,19.134

@@ -1,0 +1,16 @@
+shared 40          B ok during outage  39.5%  B ok 2108  B rejected 968  A ok 1494  A timeout 600  A rejected 972  busy A at 20s 33
+bulkhead A<=10     B ok during outage 100.0%  B ok 3076  B rejected 0  A ok 1499  A timeout 150  A rejected 1417  busy A at 20s 10
+
+a_limit  A rejected in normal time  B ok during outage
+      1                     71.85%              100.0%
+      2                     47.34%              100.0%
+      3                     28.29%              100.0%
+      4                     15.69%              100.0%
+      5                      7.49%              100.0%
+      6                      3.22%              100.0%
+      8                      0.28%              100.0%
+     10                      0.00%              100.0%
+     15                      0.00%              100.0%
+     20                      0.00%              100.0%
+     30                      0.00%              100.0%
+     40                      0.00%               39.5%

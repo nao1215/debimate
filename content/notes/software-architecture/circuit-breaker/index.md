@@ -313,7 +313,7 @@ Retry だけでブレーカーの無い構成では、処理できた要求 B �
 
 呼び出しが何段も重なる構成では、各段の Retry が掛け算になります。5 段の各段で 3 回試すと、最下段の DB への負荷は `3^5 = 243` 倍です（[Amazon Builders' Library](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)）。
 
-ブレーカーは、下流が処理できる速さに送る量を合わせる [Backpressure](/notes/distributed-systems/backpressure/) や、同時に実行する呼び出しの数に上限を置く [Bulkhead](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead) の代わりにはなりません。
+ブレーカーは、下流が処理できる速さに送る量を合わせる [Backpressure](/notes/distributed-systems/backpressure/) や、同時に実行する呼び出しの数に上限を置く [Bulkhead](/notes/software-architecture/bulkhead/) の代わりにはなりません。
 
 ---
 

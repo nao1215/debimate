@@ -60,7 +60,7 @@ Time: 29.028 ms
 
 `DELETE` は 1 件ずつ削除の印を付けるので、印の付いたレコード（`n_dead_tup`）が 500 万件残り、表の大きさも 211 MB のままです。
 
-これを回収するのは後で動く `VACUUM` です。`DROP TABLE` はファイルごと捨てるので、回収するものがありません。一括の `DELETE` が生む `VACUUM` の負担を避けられる点は、[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)でも利点に挙げられています。
+これを回収するのは後で動く `VACUUM` です（[MVCC と VACUUM](/notes/database-systems/mvcc-vacuum/) のノート）。`DROP TABLE` はファイルごと捨てるので、回収するものがありません。一括の `DELETE` が生む `VACUUM` の負担を避けられる点は、[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)でも利点に挙げられています。
 
 ---
 

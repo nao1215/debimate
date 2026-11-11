@@ -45,7 +45,7 @@ cell が範囲を狭められる障害は、主に次の 3 つです。
 
 毒入りの要求は、ロードバランサーの[再試行](/notes/distributed-systems/retry-backoff/)と組み合わさると、2 台目、3 台目と再送されて全台を落とします。cell に分けると再送先も同じ cell の中なので、他の cell のサーバーには届きません。
 
-cell の考え方は、浸水を 1 区画に留める船の[隔壁（bulkhead）](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/what-is-a-cell-based-architecture.html)と同じです。100 件の要求を 10 個の cell で処理していれば、1 つの cell の障害で影響を受けない要求は 90% です。
+cell の考え方は、浸水を 1 区画に留める船の[隔壁（bulkhead）](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/what-is-a-cell-based-architecture.html)と同じです（資源を用途ごとに区切る [Bulkhead](/notes/software-architecture/bulkhead/) パターンのノート）。100 件の要求を 10 個の cell で処理していれば、1 つの cell の障害で影響を受けない要求は 90% です。
 
 <br>
 

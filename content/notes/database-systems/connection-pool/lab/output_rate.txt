@@ -1,0 +1,36 @@
+done in 1.73 s (drop tables 0.00 s, create tables 0.01 s, client-side generate 1.18 s, vacuum 0.10 s, primary keys 0.45 s).
+ 20:15:20 up 9 days,  6:26,  1 user,  load average: 238.70, 89.16, 39.90
+clients=8 rate=10000 run=1 tps=10019.317450 latency_ms=0.710 lag_ms=0.627
+clients=8 rate=10000 run=2 tps=9988.775644 latency_ms=0.211 lag_ms=0.152
+clients=8 rate=10000 run=3 tps=9958.960569 latency_ms=0.134 lag_ms=0.086
+clients=256 rate=10000 run=1 tps=9787.213224 latency_ms=0.485 lag_ms=0.052
+clients=256 rate=10000 run=2 tps=9863.868336 latency_ms=0.582 lag_ms=0.091
+clients=256 rate=10000 run=3 tps=9729.976403 latency_ms=0.510 lag_ms=0.054
+clients=8 rate=20000 run=1 tps=20070.831161 latency_ms=7.632 lag_ms=7.539
+clients=8 rate=20000 run=2 tps=19998.808951 latency_ms=0.404 lag_ms=0.360
+clients=8 rate=20000 run=3 tps=20009.811704 latency_ms=1.005 lag_ms=0.919
+clients=256 rate=20000 run=1 tps=19733.844491 latency_ms=0.393 lag_ms=0.121
+clients=256 rate=20000 run=2 tps=19653.014199 latency_ms=0.442 lag_ms=0.120
+clients=256 rate=20000 run=3 tps=19407.847529 latency_ms=1.327 lag_ms=0.636
+clients=8 rate=30000 run=1 tps=30005.122327 latency_ms=0.209 lag_ms=0.158
+clients=8 rate=30000 run=2 tps=29863.198786 latency_ms=0.149 lag_ms=0.099
+clients=8 rate=30000 run=3 tps=29944.896151 latency_ms=0.172 lag_ms=0.121
+clients=256 rate=30000 run=1 tps=29607.178373 latency_ms=1.814 lag_ms=1.015
+clients=256 rate=30000 run=2 tps=29535.101988 latency_ms=4.335 lag_ms=3.106
+clients=256 rate=30000 run=3 tps=29449.313313 latency_ms=2.237 lag_ms=1.557
+clients=8 rate=40000 run=1 tps=39964.227852 latency_ms=0.187 lag_ms=0.132
+clients=8 rate=40000 run=2 tps=39910.531584 latency_ms=15.059 lag_ms=14.992
+clients=8 rate=40000 run=3 tps=39980.410663 latency_ms=0.208 lag_ms=0.162
+clients=256 rate=40000 run=1 tps=39472.826253 latency_ms=273.672 lag_ms=268.299
+clients=256 rate=40000 run=2 tps=38660.959255 latency_ms=144.401 lag_ms=139.597
+clients=256 rate=40000 run=3 tps=38943.735454 latency_ms=125.104 lag_ms=120.852
+mode=reuse run=1 tps=61911.496770 latency_ms=0.129
+mode=reuse run=2 tps=102277.614873 latency_ms=0.078
+mode=reuse run=3 tps=105494.572582 latency_ms=0.076
+mode=reconnect run=1 tps=689.226406 latency_ms=11.607
+mode=reconnect run=2 tps=671.885920 latency_ms=11.907
+mode=reconnect run=3 tps=418.095868 latency_ms=19.134
+100
+3
+pgbench: error: connection to server at "note-pool-db100" (172.22.0.3), port 5432 failed: FATAL:  sorry, too many clients already
+pgbench: error: could not create connection for client 25

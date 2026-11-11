@@ -1,0 +1,295 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+CREATE TABLE posts (
+  id         bigint PRIMARY KEY,
+  created_at timestamptz NOT NULL,
+  title      text NOT NULL
+);
+CREATE TABLE
+INSERT INTO posts
+SELECT i, timestamptz '2026-01-01 00:00:00+00' + (i / 2) * interval '1 second', 'post ' || i
+FROM generate_series(1, 1000000) AS i;
+INSERT 0 1000000
+CREATE INDEX posts_created_id ON posts (created_at DESC, id DESC);
+CREATE INDEX
+VACUUM ANALYZE posts;
+VACUUM
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id, created_at, title FROM posts
+ORDER BY created_at DESC, id DESC
+LIMIT 20 OFFSET 0;
+                                         QUERY PLAN                                          
+---------------------------------------------------------------------------------------------
+ Limit (actual time=0.041..0.048 rows=20 loops=1)
+   Buffers: shared hit=1 read=3
+   ->  Index Scan using posts_created_id on posts (actual time=0.039..0.043 rows=20 loops=1)
+         Buffers: shared hit=1 read=3
+ Planning:
+   Buffers: shared hit=40
+ Planning Time: 0.279 ms
+ Execution Time: 0.072 ms
+(8 rows)
+
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id, created_at, title FROM posts
+ORDER BY created_at DESC, id DESC
+LIMIT 20 OFFSET 999980;
+                                             QUERY PLAN                                             
+----------------------------------------------------------------------------------------------------
+ Limit (actual time=291.823..291.831 rows=20 loops=1)
+   Buffers: shared hit=7356 read=3831
+   ->  Index Scan using posts_created_id on posts (actual time=0.009..221.326 rows=1000000 loops=1)
+         Buffers: shared hit=7356 read=3831
+ Planning Time: 0.038 ms
+ Execution Time: 291.849 ms
+(6 rows)
+
+SELECT created_at, id FROM posts ORDER BY created_at DESC, id DESC OFFSET 999979 LIMIT 1;
+       created_at       | id 
+------------------------+----
+ 2026-01-01 00:00:10+00 | 21
+(1 row)
+
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id, created_at, title FROM posts
+WHERE (created_at, id) < ('2026-01-01 00:00:10+00', 21)
+ORDER BY created_at DESC, id DESC
+LIMIT 20;
+                                               QUERY PLAN                                                
+---------------------------------------------------------------------------------------------------------
+ Limit (actual time=0.029..0.036 rows=20 loops=1)
+   Buffers: shared hit=4
+   ->  Index Scan using posts_created_id on posts (actual time=0.018..0.022 rows=20 loops=1)
+         Index Cond: (ROW(created_at, id) < ROW('2026-01-01 00:00:10+00'::timestamp with time zone, 21))
+         Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=3 read=1
+ Planning Time: 0.340 ms
+ Execution Time: 0.175 ms
+(9 rows)
+
+CREATE TABLE feed (id int PRIMARY KEY, created_at timestamptz NOT NULL);
+CREATE TABLE
+INSERT INTO feed SELECT i, timestamptz '2026-01-01 00:00:00+00' + i * interval '1 minute'
+FROM generate_series(1, 20) AS i;
+INSERT 0 20
+SELECT id FROM feed ORDER BY created_at DESC, id DESC LIMIT 5 OFFSET 0;
+ id 
+----
+ 20
+ 19
+ 18
+ 17
+ 16
+(5 rows)
+
+INSERT INTO feed SELECT i, timestamptz '2026-01-01 00:00:00+00' + i * interval '1 minute'
+FROM generate_series(21, 23) AS i;
+INSERT 0 3
+SELECT id FROM feed ORDER BY created_at DESC, id DESC LIMIT 5 OFFSET 5;
+ id 
+----
+ 18
+ 17
+ 16
+ 15
+ 14
+(5 rows)
+
+SELECT id FROM feed
+WHERE (created_at, id) < (timestamptz '2026-01-01 00:16:00+00', 16)
+ORDER BY created_at DESC, id DESC LIMIT 5;
+ id 
+----
+ 15
+ 14
+ 13
+ 12
+ 11
+(5 rows)
+
+DELETE FROM feed WHERE id IN (21, 22, 23);
+DELETE 3
+SELECT id FROM feed ORDER BY created_at DESC, id DESC LIMIT 5 OFFSET 0;
+ id 
+----
+ 20
+ 19
+ 18
+ 17
+ 16
+(5 rows)
+
+DELETE FROM feed WHERE id IN (19, 18);
+DELETE 2
+SELECT id FROM feed ORDER BY created_at DESC, id DESC LIMIT 5 OFFSET 5;
+ id 
+----
+ 13
+ 12
+ 11
+ 10
+  9
+(5 rows)
+
+SELECT id FROM feed
+WHERE (created_at, id) < (timestamptz '2026-01-01 00:16:00+00', 16)
+ORDER BY created_at DESC, id DESC LIMIT 5;
+ id 
+----
+ 15
+ 14
+ 13
+ 12
+ 11
+(5 rows)
+
+CREATE TABLE tie (id int PRIMARY KEY, created_at timestamptz NOT NULL);
+CREATE TABLE
+INSERT INTO tie VALUES
+  (1, '2026-01-01 10:00+00'), (2, '2026-01-01 10:01+00'), (3, '2026-01-01 10:02+00'),
+  (4, '2026-01-01 10:02+00'), (5, '2026-01-01 10:03+00'), (6, '2026-01-01 10:04+00');
+INSERT 0 6
+SELECT id, created_at FROM tie ORDER BY created_at DESC, id DESC LIMIT 3;
+ id |       created_at       
+----+------------------------
+  6 | 2026-01-01 10:04:00+00
+  5 | 2026-01-01 10:03:00+00
+  4 | 2026-01-01 10:02:00+00
+(3 rows)
+
+SELECT id, created_at FROM tie WHERE created_at < '2026-01-01 10:02+00'
+ORDER BY created_at DESC LIMIT 3;
+ id |       created_at       
+----+------------------------
+  2 | 2026-01-01 10:01:00+00
+  1 | 2026-01-01 10:00:00+00
+(2 rows)
+
+SELECT id, created_at FROM tie WHERE (created_at, id) < ('2026-01-01 10:02+00', 4)
+ORDER BY created_at DESC, id DESC LIMIT 3;
+ id |       created_at       
+----+------------------------
+  3 | 2026-01-01 10:02:00+00
+  2 | 2026-01-01 10:01:00+00
+  1 | 2026-01-01 10:00:00+00
+(3 rows)
+
+SELECT created_at, id FROM posts ORDER BY created_at DESC, id DESC OFFSET 499999 LIMIT 1;
+       created_at       |   id   
+------------------------+--------
+ 2026-01-03 21:26:40+00 | 500001
+(1 row)
+
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id FROM posts
+WHERE created_at < '2026-01-03 21:26:40+00'
+   OR (created_at = '2026-01-03 21:26:40+00' AND id < 500001)
+ORDER BY created_at DESC, id DESC
+LIMIT 20;
+                                                                                  QUERY PLAN                                                                                  
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit (actual time=56.337..56.344 rows=20 loops=1)
+   Buffers: shared hit=1919
+   ->  Index Only Scan using posts_created_id on posts (actual time=56.334..56.338 rows=20 loops=1)
+         Filter: ((created_at < '2026-01-03 21:26:40+00'::timestamp with time zone) OR ((created_at = '2026-01-03 21:26:40+00'::timestamp with time zone) AND (id < 500001)))
+         Rows Removed by Filter: 500000
+         Heap Fetches: 0
+         Buffers: shared hit=1919
+ Planning Time: 0.147 ms
+ Execution Time: 56.380 ms
+(9 rows)
+
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id FROM posts
+WHERE created_at <= '2026-01-03 21:26:40+00'
+  AND (created_at < '2026-01-03 21:26:40+00' OR id < 500001)
+ORDER BY created_at DESC, id DESC
+LIMIT 20;
+                                              QUERY PLAN                                              
+------------------------------------------------------------------------------------------------------
+ Limit (actual time=0.079..0.087 rows=20 loops=1)
+   Buffers: shared hit=3 read=1
+   ->  Index Only Scan using posts_created_id on posts (actual time=0.078..0.082 rows=20 loops=1)
+         Index Cond: (created_at <= '2026-01-03 21:26:40+00'::timestamp with time zone)
+         Filter: ((created_at < '2026-01-03 21:26:40+00'::timestamp with time zone) OR (id < 500001))
+         Rows Removed by Filter: 1
+         Heap Fetches: 0
+         Buffers: shared hit=3 read=1
+ Planning:
+   Buffers: shared hit=14
+ Planning Time: 0.237 ms
+ Execution Time: 0.123 ms
+(12 rows)
+
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id FROM posts
+WHERE created_at < '2026-01-03 21:26:40+00'
+   OR (created_at = '2026-01-03 21:26:40+00' AND id > 500001)
+ORDER BY created_at DESC, id ASC
+LIMIT 20;
+                                                                                     QUERY PLAN                                                                                     
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit (actual time=52.856..52.859 rows=20 loops=1)
+   Buffers: shared hit=1919
+   ->  Incremental Sort (actual time=52.854..52.856 rows=20 loops=1)
+         Sort Key: created_at DESC, id
+         Presorted Key: created_at
+         Full-sort Groups: 1  Sort Method: quicksort  Average Memory: 25kB  Peak Memory: 25kB
+         Buffers: shared hit=1919
+         ->  Index Only Scan using posts_created_id on posts (actual time=52.831..52.833 rows=21 loops=1)
+               Filter: ((created_at < '2026-01-03 21:26:40+00'::timestamp with time zone) OR ((created_at = '2026-01-03 21:26:40+00'::timestamp with time zone) AND (id > 500001)))
+               Rows Removed by Filter: 500001
+               Heap Fetches: 0
+               Buffers: shared hit=1919
+ Planning:
+   Buffers: shared hit=3
+ Planning Time: 0.085 ms
+ Execution Time: 52.877 ms
+(16 rows)
+
+CREATE INDEX posts_created_desc_id_asc ON posts (created_at DESC, id ASC);
+CREATE INDEX
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT id FROM posts
+WHERE created_at <= '2026-01-03 21:26:40+00'
+  AND (created_at < '2026-01-03 21:26:40+00' OR id > 500001)
+ORDER BY created_at DESC, id ASC
+LIMIT 20;
+                                                QUERY PLAN                                                 
+-----------------------------------------------------------------------------------------------------------
+ Limit (actual time=0.048..0.054 rows=20 loops=1)
+   Buffers: shared hit=1 read=3
+   ->  Index Only Scan using posts_created_desc_id_asc on posts (actual time=0.045..0.049 rows=20 loops=1)
+         Index Cond: (created_at <= '2026-01-03 21:26:40+00'::timestamp with time zone)
+         Filter: ((created_at < '2026-01-03 21:26:40+00'::timestamp with time zone) OR (id > 500001))
+         Rows Removed by Filter: 2
+         Heap Fetches: 0
+         Buffers: shared hit=1 read=3
+ Planning:
+   Buffers: shared hit=20 read=1
+ Planning Time: 0.327 ms
+ Execution Time: 0.081 ms
+(12 rows)
+
+DROP INDEX posts_created_desc_id_asc;
+DROP INDEX
+EXPLAIN (ANALYZE, BUFFERS, COSTS OFF)
+SELECT count(*) FROM posts;
+                                          QUERY PLAN                                          
+----------------------------------------------------------------------------------------------
+ Finalize Aggregate (actual time=61.879..66.419 rows=1 loops=1)
+   Buffers: shared hit=7353
+   ->  Gather (actual time=61.736..66.409 rows=3 loops=1)
+         Workers Planned: 2
+         Workers Launched: 2
+         Buffers: shared hit=7353
+         ->  Partial Aggregate (actual time=58.741..58.742 rows=1 loops=3)
+               Buffers: shared hit=7353
+               ->  Parallel Seq Scan on posts (actual time=0.009..32.980 rows=333333 loops=3)
+                     Buffers: shared hit=7353
+ Planning:
+   Buffers: shared hit=13
+ Planning Time: 0.135 ms
+ Execution Time: 66.455 ms
+(14 rows)
+

@@ -1,0 +1,669 @@
+PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+CREATE EXTENSION pageinspect;
+CREATE EXTENSION
+CREATE TABLE acct (id int PRIMARY KEY, balance int NOT NULL) WITH (autovacuum_enabled = off);
+CREATE TABLE
+INSERT INTO acct VALUES (1, 100), (2, 500);
+INSERT 0 2
+SELECT ctid, xmin, xmax, * FROM acct ORDER BY id;
+ ctid  | xmin | xmax | id | balance 
+-------+------+------+----+---------
+ (0,1) |  741 |    0 |  1 |     100
+ (0,2) |  741 |    0 |  2 |     500
+(2 rows)
+
+UPDATE acct SET balance = 200 WHERE id = 1;
+UPDATE 1
+SELECT ctid, xmin, xmax, * FROM acct ORDER BY id;
+ ctid  | xmin | xmax | id | balance 
+-------+------+------+----+---------
+ (0,3) |  742 |    0 |  1 |     200
+ (0,2) |  741 |    0 |  2 |     500
+(2 rows)
+
+SELECT lp, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
+ lp | t_xmin | t_xmax | t_ctid 
+----+--------+--------+--------
+  1 |    741 |    742 | (0,3)
+  2 |    741 |      0 | (0,2)
+  3 |    742 |      0 | (0,3)
+(3 rows)
+
+DELETE FROM acct WHERE id = 1;
+DELETE 1
+SELECT lp, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
+ lp | t_xmin | t_xmax | t_ctid 
+----+--------+--------+--------
+  1 |    741 |    742 | (0,3)
+  2 |    741 |      0 | (0,2)
+  3 |    742 |    743 | (0,3)
+(3 rows)
+
+VACUUM acct;
+VACUUM
+SELECT lp, lp_flags, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
+ lp | lp_flags | t_xmin | t_xmax | t_ctid 
+----+----------+--------+--------+--------
+  1 |        0 |        |        | 
+  2 |        1 |    741 |      0 | (0,2)
+(2 rows)
+
+CREATE TABLE sizes (cond text, round int, mb numeric, dead bigint);
+CREATE TABLE
+SELECT format('CREATE TABLE %I (id int PRIMARY KEY, n int NOT NULL, pad text NOT NULL) WITH (autovacuum_enabled = off)', t),
+       format('INSERT INTO %I SELECT i, 0, repeat(''x'', 100) FROM generate_series(1, 100000) AS i', t),
+       format('VACUUM ANALYZE %I', t),
+       format('INSERT INTO sizes VALUES (%L, 0, round(pg_relation_size(%L) / 1048576.0, 1), 0)', c, t)
+FROM (VALUES ('none', 'items_none'), ('vacuum', 'items_vacuum'), ('hold', 'items_hold')) AS v(c, t) 
+CREATE TABLE items_none (id int PRIMARY KEY, n int NOT NULL, pad text NOT NULL) WITH (autovacuum_enabled = off)
+CREATE TABLE
+INSERT INTO items_none SELECT i, 0, repeat('x', 100) FROM generate_series(1, 100000) AS i
+INSERT 0 100000
+VACUUM ANALYZE items_none
+VACUUM
+INSERT INTO sizes VALUES ('none', 0, round(pg_relation_size('items_none') / 1048576.0, 1), 0)
+INSERT 0 1
+CREATE TABLE items_vacuum (id int PRIMARY KEY, n int NOT NULL, pad text NOT NULL) WITH (autovacuum_enabled = off)
+CREATE TABLE
+INSERT INTO items_vacuum SELECT i, 0, repeat('x', 100) FROM generate_series(1, 100000) AS i
+INSERT 0 100000
+VACUUM ANALYZE items_vacuum
+VACUUM
+INSERT INTO sizes VALUES ('vacuum', 0, round(pg_relation_size('items_vacuum') / 1048576.0, 1), 0)
+INSERT 0 1
+CREATE TABLE items_hold (id int PRIMARY KEY, n int NOT NULL, pad text NOT NULL) WITH (autovacuum_enabled = off)
+CREATE TABLE
+INSERT INTO items_hold SELECT i, 0, repeat('x', 100) FROM generate_series(1, 100000) AS i
+INSERT 0 100000
+VACUUM ANALYZE items_hold
+VACUUM
+INSERT INTO sizes VALUES ('hold', 0, round(pg_relation_size('items_hold') / 1048576.0, 1), 0)
+INSERT 0 1
+SELECT format('UPDATE %I SET n = n + 1', t),
+       CASE WHEN c = 'none' THEN 'SELECT 1' ELSE format('VACUUM %I', t) END,
+       'SELECT pg_stat_force_next_flush()',
+       format('INSERT INTO sizes SELECT %L, %s, round(pg_relation_size(%L) / 1048576.0, 1), n_dead_tup '
+              'FROM pg_stat_user_tables WHERE relname = %L', c, r, t, t)
+FROM (VALUES ('none', 'items_none'), ('vacuum', 'items_vacuum')) AS v(c, t), generate_series(1, 10) AS r
+ORDER BY c, r 
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 1, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 2, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 3, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 4, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 5, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 6, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 7, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 8, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 9, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_none SET n = n + 1
+UPDATE 100000
+SELECT 1
+ ?column? 
+----------
+        1
+(1 row)
+
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'none', 10, round(pg_relation_size('items_none') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_none'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 1, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 2, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 3, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 4, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 5, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 6, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 7, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 8, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 9, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+UPDATE items_vacuum SET n = n + 1
+UPDATE 100000
+VACUUM items_vacuum
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'vacuum', 10, round(pg_relation_size('items_vacuum') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_vacuum'
+INSERT 0 1
+SELECT pg_advisory_lock(42);
+ pg_advisory_lock 
+------------------
+ 
+(1 row)
+
+SELECT pg_sleep(2);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+SELECT application_name, state, backend_xmin FROM pg_stat_activity WHERE application_name = 'holder';
+ application_name | state  | backend_xmin 
+------------------+--------+--------------
+ holder           | active |          797
+(1 row)
+
+SELECT format('UPDATE %I SET n = n + 1', t),
+       CASE WHEN c = 'none' THEN 'SELECT 1' ELSE format('VACUUM %I', t) END,
+       'SELECT pg_stat_force_next_flush()',
+       format('INSERT INTO sizes SELECT %L, %s, round(pg_relation_size(%L) / 1048576.0, 1), n_dead_tup '
+              'FROM pg_stat_user_tables WHERE relname = %L', c, r, t, t)
+FROM (VALUES ('hold', 'items_hold')) AS v(c, t), generate_series(1, 10) AS r
+ORDER BY c, r 
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 1, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 2, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 3, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 4, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 5, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 6, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 7, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 8, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 9, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+UPDATE items_hold SET n = n + 1
+UPDATE 100000
+VACUUM items_hold
+VACUUM
+SELECT pg_stat_force_next_flush()
+ pg_stat_force_next_flush 
+--------------------------
+ 
+(1 row)
+
+INSERT INTO sizes SELECT 'hold', 10, round(pg_relation_size('items_hold') / 1048576.0, 1), n_dead_tup FROM pg_stat_user_tables WHERE relname = 'items_hold'
+INSERT 0 1
+SELECT * FROM sizes ORDER BY cond, round;
+  cond  | round |  mb   |  dead   
+--------+-------+-------+---------
+ hold   |     0 |  13.5 |       0
+ hold   |     1 |  26.9 |  200000
+ hold   |     2 |  40.4 |  300000
+ hold   |     3 |  53.9 |  400000
+ hold   |     4 |  67.4 |  500000
+ hold   |     5 |  80.8 |  600000
+ hold   |     6 |  94.3 |  700000
+ hold   |     7 | 107.8 |  700000
+ hold   |     8 | 121.2 |  800000
+ hold   |     9 | 134.7 | 1000000
+ hold   |    10 | 148.2 | 1000000
+ none   |     0 |  13.5 |       0
+ none   |     1 |  26.9 |  100000
+ none   |     2 |  40.4 |  200000
+ none   |     3 |  53.9 |  299992
+ none   |     4 |  67.3 |  399977
+ none   |     5 |  80.8 |  499962
+ none   |     6 |  94.3 |  599961
+ none   |     7 | 107.7 |  699892
+ none   |     8 | 121.2 |  799823
+ none   |     9 | 134.7 |  899746
+ none   |    10 | 148.1 |  999712
+ vacuum |     0 |  13.5 |       0
+ vacuum |     1 |  26.9 |  100000
+ vacuum |     2 |  26.9 |  100000
+ vacuum |     3 |  26.9 |  100000
+ vacuum |     4 |  26.9 |  100000
+ vacuum |     5 |  26.9 |  100000
+ vacuum |     6 |  26.9 |  100000
+ vacuum |     7 |  26.9 |  100000
+ vacuum |     8 |  26.9 |  100000
+ vacuum |     9 |  26.9 |  100000
+ vacuum |    10 |  26.9 |  100000
+(33 rows)
+
+VACUUM (VERBOSE) items_hold;
+psql:/tmp/experiment.sql:50: INFO:  vacuuming "postgres.public.items_hold"
+psql:/tmp/experiment.sql:50: INFO:  finished vacuuming "postgres.public.items_hold": index scans: 0
+pages: 0 removed, 18966 remain, 18966 scanned (100.00% of total)
+tuples: 0 removed, 1100000 remain, 1000000 are dead but not yet removable
+removable cutoff: 797, which was 20 XIDs old when operation ended
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (0.00% of total) had 0 dead item identifiers removed
+avg read rate: 270.291 MB/s, avg write rate: 0.000 MB/s
+buffer usage: 33789 hits, 4159 misses, 0 dirtied
+WAL usage: 0 records, 0 full page images, 0 bytes
+system usage: CPU: user: 0.11 s, system: 0.00 s, elapsed: 0.12 s
+psql:/tmp/experiment.sql:50: INFO:  vacuuming "postgres.pg_toast.pg_toast_16453"
+psql:/tmp/experiment.sql:50: INFO:  finished vacuuming "postgres.pg_toast.pg_toast_16453": index scans: 0
+pages: 0 removed, 0 remain, 0 scanned (100.00% of total)
+tuples: 0 removed, 0 remain, 0 are dead but not yet removable
+removable cutoff: 797, which was 20 XIDs old when operation ended
+frozen: 0 pages from table (100.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (100.00% of total) had 0 dead item identifiers removed
+avg read rate: 0.000 MB/s, avg write rate: 0.000 MB/s
+buffer usage: 4 hits, 0 misses, 0 dirtied
+WAL usage: 0 records, 0 full page images, 0 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+VACUUM
+SELECT pg_advisory_unlock(42);
+ pg_advisory_unlock 
+--------------------
+ t
+(1 row)
+
+SELECT pg_sleep(1);
+ pg_sleep 
+----------
+ 
+(1 row)
+
+SELECT count(*) AS holders FROM pg_stat_activity WHERE application_name = 'holder';
+ holders 
+---------
+       0
+(1 row)
+
+VACUUM (VERBOSE) items_hold;
+psql:/tmp/experiment.sql:56: INFO:  vacuuming "postgres.public.items_hold"
+psql:/tmp/experiment.sql:56: INFO:  finished vacuuming "postgres.public.items_hold": index scans: 1
+pages: 0 removed, 18966 remain, 18966 scanned (100.00% of total)
+tuples: 1000000 removed, 100000 remain, 0 are dead but not yet removable
+removable cutoff: 828, which was 0 XIDs old when operation ended
+new relfrozenxid: 815, which is 61 XIDs ahead of previous value
+frozen: 0 pages from table (0.00% of total) had 0 tuples frozen
+index scan needed: 17242 pages from table (90.91% of total) had 1000000 dead item identifiers removed
+index "items_hold_pkey": pages: 1648 in total, 0 newly deleted, 0 currently deleted, 0 reusable
+avg read rate: 313.461 MB/s, avg write rate: 706.534 MB/s
+buffer usage: 48044 hits, 8804 misses, 19844 dirtied
+WAL usage: 55091 records, 0 full page images, 8340995 bytes
+system usage: CPU: user: 0.14 s, system: 0.03 s, elapsed: 0.21 s
+psql:/tmp/experiment.sql:56: INFO:  vacuuming "postgres.pg_toast.pg_toast_16453"
+psql:/tmp/experiment.sql:56: INFO:  finished vacuuming "postgres.pg_toast.pg_toast_16453": index scans: 0
+pages: 0 removed, 0 remain, 0 scanned (100.00% of total)
+tuples: 0 removed, 0 remain, 0 are dead but not yet removable
+removable cutoff: 828, which was 0 XIDs old when operation ended
+new relfrozenxid: 828, which is 31 XIDs ahead of previous value
+frozen: 0 pages from table (100.00% of total) had 0 tuples frozen
+index scan not needed: 0 pages from table (100.00% of total) had 0 dead item identifiers removed
+avg read rate: 0.000 MB/s, avg write rate: 0.000 MB/s
+buffer usage: 10 hits, 0 misses, 0 dirtied
+WAL usage: 1 records, 0 full page images, 188 bytes
+system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+VACUUM
+SELECT pg_size_pretty(pg_relation_size('items_none')) AS before_vacuum;
+ before_vacuum 
+---------------
+ 148 MB
+(1 row)
+
+VACUUM items_none;
+VACUUM
+SELECT pg_size_pretty(pg_relation_size('items_none')) AS after_vacuum;
+ after_vacuum 
+--------------
+ 148 MB
+(1 row)
+
+UPDATE items_none SET n = n + 1;
+UPDATE 100000
+SELECT pg_size_pretty(pg_relation_size('items_none')) AS after_one_more_update;
+ after_one_more_update 
+-----------------------
+ 148 MB
+(1 row)
+
+VACUUM FULL items_none;
+VACUUM
+SELECT pg_size_pretty(pg_relation_size('items_none')) AS after_vacuum_full;
+ after_vacuum_full 
+-------------------
+ 13 MB
+(1 row)
+
+SELECT datname, age(datfrozenxid) FROM pg_database WHERE datname = 'postgres';
+ datname  | age 
+----------+-----
+ postgres |  99
+(1 row)
+
+SELECT name, setting FROM pg_settings
+WHERE name IN ('autovacuum', 'autovacuum_vacuum_threshold', 'autovacuum_vacuum_scale_factor',
+               'autovacuum_freeze_max_age', 'idle_in_transaction_session_timeout')
+ORDER BY name;
+                name                 |  setting  
+-------------------------------------+-----------
+ autovacuum                          | on
+ autovacuum_freeze_max_age           | 200000000
+ autovacuum_vacuum_scale_factor      | 0.2
+ autovacuum_vacuum_threshold         | 50
+ idle_in_transaction_session_timeout | 0
+(5 rows)
+

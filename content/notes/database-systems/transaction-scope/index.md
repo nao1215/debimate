@@ -83,7 +83,7 @@ Time: 4005.503 ms (00:04.006)
 
 その接続がプールに戻るのは `Commit` か `Rollback` の後です。上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
 
-開いたままのトランザクションがあると、更新前の古い行バージョンを `VACUUM` という掃除の処理で回収できず、表が膨らみ続けることがあります（[`VACUUM` による回収](https://www.postgresql.org/docs/current/routine-vacuuming.html)、[`idle_in_transaction_session_timeout` の説明](https://www.postgresql.org/docs/current/runtime-config-client.html)）。
+開いたままのトランザクションがあると、更新前の古い行バージョンを `VACUUM` という掃除の処理（[MVCC と VACUUM](/notes/database-systems/mvcc-vacuum/) のノート）で回収できず、表が膨らみ続けることがあります（[`VACUUM` による回収](https://www.postgresql.org/docs/current/routine-vacuuming.html)、[`idle_in_transaction_session_timeout` の説明](https://www.postgresql.org/docs/current/runtime-config-client.html)）。
 
 ---
 
