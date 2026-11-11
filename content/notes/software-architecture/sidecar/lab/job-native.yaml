@@ -1,0 +1,19 @@
+# 同じ Job で、sidecar を Sidecar Containers（initContainers に restartPolicy: Always）として置く
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-native
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      initContainers:
+      - name: log-shipper
+        image: busybox:1.37
+        restartPolicy: Always
+        command: ["sh", "-c", "while true; do sleep 1; done"]
+      containers:
+      - name: main
+        image: busybox:1.37
+        command: ["sh", "-c", "echo work; sleep 5; echo done"]

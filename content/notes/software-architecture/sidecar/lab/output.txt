@@ -1,0 +1,41 @@
+Server Version: v1.34.0
+== 1. Job: sidecar を普通のコンテナとして同居
+succeeded:   active: 1  start: 2026-11-11T14:11:19Z
+log-shipper: {"running":{"startedAt":"2026-11-11T14:11:19Z"}}
+main: {"terminated":{"containerID":"containerd://16800acc313eb4be9aa146d27b0ce56d274789d05d112abdcaf14b963c9c4d53","exitCode":0,"finishedAt":"2026-11-11T14:11:24Z","reason":"Completed","startedAt":"2026-11-11T14:11:19Z"}}
+== 2. Job: sidecar を Sidecar Containers として同居（job-native）
+succeeded: 1  start: 2026-11-11T14:11:49Z  completion: 2026-11-11T14:12:31Z
+main: finished 2026-11-11T14:11:56Z exit 0
+log-shipper: finished 2026-11-11T14:12:27Z exit 137
+-- job-native の log-shipper のログ
+== 2. Job: sidecar を Sidecar Containers として同居（job-native-term）
+succeeded: 1  start: 2026-11-11T14:12:31Z  completion: 2026-11-11T14:12:43Z
+main: finished 2026-11-11T14:12:38Z exit 0
+log-shipper: finished 2026-11-11T14:12:39Z exit 0
+-- job-native-term の log-shipper のログ
+got SIGTERM
+== 3. 起動順: プロキシを普通のコンテナとして同居
+main: restarts=2 ready=true
+proxy: restarts=0 ready=true
+-- 時刻（pod の作成、各コンテナの直前の終了と今の開始）
+pod created 2026-11-11T14:12:43Z
+main last started 2026-11-11T14:12:44Z last finished 2026-11-11T14:12:44Z now started 2026-11-11T14:13:00Z
+proxy last started  last finished  now started 2026-11-11T14:12:44Z
+2026-11-11T14:12:43Z 2026-11-11T14:13:00Z Started 3 Started container main
+2026-11-11T14:12:44Z 2026-11-11T14:12:44Z Started 1 Started container proxy
+2026-11-11T14:12:45Z 2026-11-11T14:12:45Z BackOff 1 Back-off restarting failed container main in pod proxy-plain_default(ead6665d-f466-4b3f-b40e-843e3e327e3e)
+-- main の直前（2 回目）の失敗のログ（--previous）
+wget: can't connect to remote host (127.0.0.1): Connection refused
+-- main の今のログ
+ok
+connected
+== 4. 起動順: プロキシを Sidecar Containers として同居（startupProbe）
+proxy: restarts=0 ready=true
+main: restarts=0 ready=true
+-- main のログ
+ok
+connected
+-- コンテナの開始時刻
+pod created 2026-11-11T14:13:24Z
+proxy started 2026-11-11T14:13:24Z
+main started 2026-11-11T14:13:28Z

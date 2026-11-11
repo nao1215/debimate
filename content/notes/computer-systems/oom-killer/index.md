@@ -104,7 +104,7 @@ earlyoom は固まる時間を短くしますが、メモリを使い切る処�
 
 テストや Fuzzing のように、使うメモリの量を読みにくい処理は、動かす側で上限を付けます。Go には [`GOMEMLIMIT`](https://pkg.go.dev/runtime#hdr-Environment_Variables) がありますが、これは Go のランタイムが管理するメモリの目標値で、超えることもあります。保持し続けるデータが増える処理は、GOMEMLIMIT では止まりません。
 
-確実に止めるには、[cgroup](https://docs.kernel.org/admin-guide/cgroup-v2.html)（プロセスのまとまりごとに CPU やメモリの上限を付ける Linux カーネルの機能）を使います。cgroup のメモリが上限に達し、回収しても収まらない場合、OOM killer はその cgroup の中だけからプロセスを選びます。
+確実に止めるには、Linux カーネルの [cgroup](https://docs.kernel.org/admin-guide/cgroup-v2.html) を使います。cgroup は、プロセスのまとまりごとに CPU やメモリの上限を付ける機能です。cgroup のメモリが上限に達し、回収しても収まらない場合、OOM killer はその cgroup の中だけからプロセスを選びます。コンテナのメモリの上限もこの仕組みで付けられています。そのため、[Sidecar](/notes/software-architecture/sidecar/) のように同じ Pod にログ転送などの補助コンテナを置いても、補助コンテナがメモリを使い切った時に止められるのは補助コンテナだけで、アプリケーションは巻き込まれません。
 
 <br>
 

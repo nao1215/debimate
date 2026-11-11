@@ -1,0 +1,14 @@
+# main は起動するとすぐ localhost:8080 のプロキシに接続する。プロキシは待ち受けを始めるまで 3 秒かかる
+apiVersion: v1
+kind: Pod
+metadata:
+  name: proxy-plain
+spec:
+  restartPolicy: Always
+  containers:
+  - name: main
+    image: busybox:1.37
+    command: ["sh", "-c", "wget -q -T 2 -O - http://127.0.0.1:8080/ && echo connected && sleep 3600"]
+  - name: proxy
+    image: busybox:1.37
+    command: ["sh", "-c", "sleep 3; mkdir -p /www; echo ok > /www/index.html; httpd -f -p 8080 -h /www"]

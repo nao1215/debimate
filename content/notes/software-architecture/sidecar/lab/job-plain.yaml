@@ -1,0 +1,17 @@
+# 処理のコンテナ（main）が 5 秒で終わる Job に、ログを送る想定の sidecar を普通のコンテナとして同居させる
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: job-plain
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: main
+        image: busybox:1.37
+        command: ["sh", "-c", "echo work; sleep 5; echo done"]
+      - name: log-shipper
+        image: busybox:1.37
+        command: ["sh", "-c", "while true; do sleep 1; done"]

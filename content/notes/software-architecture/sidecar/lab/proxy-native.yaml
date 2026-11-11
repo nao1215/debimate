@@ -1,0 +1,21 @@
+# 同じ構成で、プロキシを Sidecar Containers として置き、待ち受けを始めたことを startupProbe で確かめる
+apiVersion: v1
+kind: Pod
+metadata:
+  name: proxy-native
+spec:
+  restartPolicy: Always
+  initContainers:
+  - name: proxy
+    image: busybox:1.37
+    restartPolicy: Always
+    command: ["sh", "-c", "sleep 3; mkdir -p /www; echo ok > /www/index.html; httpd -f -p 8080 -h /www"]
+    startupProbe:
+      tcpSocket:
+        port: 8080
+      periodSeconds: 1
+      failureThreshold: 30
+  containers:
+  - name: main
+    image: busybox:1.37
+    command: ["sh", "-c", "wget -q -T 2 -O - http://127.0.0.1:8080/ && echo connected && sleep 3600"]
