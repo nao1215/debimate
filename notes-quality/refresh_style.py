@@ -5,7 +5,7 @@
     python3 notes-quality/refresh_style.py --check   # 書き出し済みのものが古ければ終了コード 1（CI 用）
 
 本人の実文 = content/post/ja の技術記事（style/corpus_nontechnical.txt と style/corpus_llm_written.txt を除く）
-            + content/weeknotes。表記の揺れは 2023 年以降だけで数える（2026-11-02 著者「最近の記事に合わせる」）。
+            + content/weeknotes。表記の揺れは 2023 年以降だけで数える（2026-11-02 著者の指定）。
 
 書き出すもの（どれも手で書き足さない）:
 - style/variants.tsv: style/variant_groups.tsv の組ごとの、本人の使用数と割合。gate.py が使う

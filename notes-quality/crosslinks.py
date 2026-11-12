@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""相互リンクの抜けを見つける（2026-11-12 著者「回遊はあるといいなぐらい。むしろ相互リンクできてないほうが気になる」）。
+"""相互リンクの抜けを見つける（2026-11-12 著者の指定）。
 
     python3 notes-quality/crosslinks.py                 # 全ノートの抜けの候補
     python3 notes-quality/crosslinks.py <index.md>      # 1 本の抜けの候補（gate.py が使う）

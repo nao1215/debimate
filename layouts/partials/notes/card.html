@@ -33,7 +33,7 @@
   </a>
 {{- else }}
   <a class="listing-card-link" href="{{ $page.RelPermalink }}">
-    {{- /* 別カテゴリのタブに並べたカードも、本文の図があればそれを表紙にする（2026-11-10 ユーザー「基本的に記事内画像を使いたい」）。
+    {{- /* 別カテゴリのタブに並べたカードも、本文の図があればそれを表紙にする（2026-11-10 著者の指定）。
          図が無い時だけ、並べた先のカテゴリの表紙で描く。 */ -}}
     {{- if and .section (not (partial "notes/first_image.html" $page)) }}
     {{ partial "notes/card_cover.html" (dict "title" $page.Title "label" .section.Title "section" .section) }}

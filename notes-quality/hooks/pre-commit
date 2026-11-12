@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 技術ノート・ML ノートを含む commit だけで動く。記事（content/post）・weeknotes だけの commit では何もしない
-# （2026-11-12 著者「私が weeknotes や記事を書いたときに動かないでほしい」）。
+# （2026-11-12 著者の指定）。
 # 1. 文体の基準（notes-quality/style の variants.tsv・vocabulary.md・corpus.sha256）を本人の実文から作り直し、
 #    同じ commit に入れる。記事・weeknotes の更新は、次にノートを commit する時にここで取り込まれる。
 # 2. ノートの規則を staged の版で見る（notes-quality/gate.py commit）。

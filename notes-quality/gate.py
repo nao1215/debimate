@@ -13,7 +13,7 @@
 
 全部通れば終了コード 0、NG があれば 1。
 
-2026-11-12 著者「私の文体とかの情報を git 管理にして、基準 4 点にして、それ以外はプッシュできないように」。
+2026-11-12 著者の指定。
 - 規則と文体の資料はこのディレクトリが基準。スキル（debimate-visual-notes・create-tech-notes）はここを読む。
 - push できるのは、変えたノートが scores/<key>.json で総合 4 以上と記録され、その記録が今の版
   （git の blob）か、そこから足した行が SMALL 行以下の版に対するものである時だけ。
@@ -37,7 +37,7 @@ BASELINE = [5, 5, 3, 2, 2]  # 基準の 5 本（wallet, transaction-scope, quoru
 # 「基準 4 が NG になるのはバグでは」）。これより前に付けた点（standard が無い記録）は旧基準として扱う
 STANDARD = 'gate-v1'
 # 手本の記事（Wallet・Transaction Scope・stdout-buffering・Sidecar）が引っかかる規則は、止めずに注意として出す
-# （2026-11-12 著者「手本に合わせて緩めて」）。数で決めた上限と書き方の型の規則が対象。著者が禁止と明示した
+# （2026-11-12 著者の指定）。数で決めた上限と書き方の型の規則が対象。著者が禁止と明示した
 # 「を、」・太字・「確かめ」などの揺れ・表記の旧形・details と #### の前後の <br> は NG のまま
 NOTICE_RX = re.compile('|'.join([
     '折り返す箇条書き', '表のマスが長い', '括弧が多い・長い段落', '型の節が残っている', '文末の括弧でリンクを添えている',
@@ -249,7 +249,7 @@ def webp_durations(path):
 
 
 def check_animation(p, text):
-    """動く WebP の速さ（2026-11-12 著者「動画作れるとこもあるはず。作れる部分は速度に気をつけてほしい」）。
+    """動く WebP の速さ（2026-11-12 著者の指定）。
     基準は著者が合格にした stdout-buffering・Sidecar・fuzzing・property-based-testing の実測（全体 7〜14 秒、
     最後のコマ 3 秒、caption に再生の速さ）。実際の映像の比較（全体 3 秒未満でコマが 50ms 以下）は対象外。"""
     ng = []
@@ -418,7 +418,7 @@ def main(argv):
             code = report([(rel, '質の規則だけ', check_full(rel, process=False))])
         else:
             code = report([(rel, '全部の規則', check_full(rel))])
-        # 相互リンクの抜けの候補は止めずに知らせる（2026-11-12 著者「むしろ相互リンクできてないほうが気になる」）。
+        # 相互リンクの抜けの候補は止めずに知らせる（2026-11-12 著者の指定）。
         # 前提や詳しい説明があるノートなら初出にリンクを足し、題材が違うなら足さない。チェックリストの相互リンクの行に結果を書く
         _, out = run([sys.executable, os.path.join(HERE, 'crosslinks.py'), os.path.join(ROOT, rel)])
         if out.strip():

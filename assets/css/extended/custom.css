@@ -1387,7 +1387,7 @@ body.home .home-columns {
   display: grid;
   /* 記事 2 段・技術ノート 2 段・Weeknotes 1 段の 5 段。技術ノートを 1 段にすると
      件数（172）が多く、最後まで読み込んだ時に技術ノートだけが大きく下へ伸びる
-     （2026-11-10 ユーザー「技術ノートが末尾で凄い飛び抜けるので、5 段にすべきか」）。 */
+     （2026-11-10 著者の指定）。 */
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: start;
   gap: 18px;

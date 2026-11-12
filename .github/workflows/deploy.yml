@@ -31,8 +31,7 @@ permissions:
 jobs:
   # 技術ノート・ML ノートの関門（notes-quality/gate.py）。最後に公開した版から変えたノートが規則と
   # 総合 4 以上の点の記録を満たさなければ、そのノートだけを最後に公開した版に戻して（新規なら外して）
-  # ビルドする。記事・weeknotes の公開は止めない（2026-11-12 著者「私が weeknotes や記事を書いたときに
-  # 動かないでほしい」）
+  # ビルドする。記事・weeknotes の公開は止めない（2026-11-12 著者の指定）
   notes-gate:
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
