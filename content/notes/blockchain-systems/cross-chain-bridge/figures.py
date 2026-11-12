@@ -131,7 +131,7 @@ def trust_figure():
     f = Svg("destination chain が確かめる材料と、利用者が信頼する相手の 4 つのタイプ", height=600)
     f.text(330, 44, "確かめるもの", 22, SUB, anchor="start")
     f.text(660, 44, "信頼する相手", 22, SUB, anchor="start")
-    rows = ["外部の署名者", "軽量クライアント", "異議の受付期間", "有効性の証明"]
+    rows = ["外部の署名者", "ライト・クライアント", "異議の受付期間", "有効性の証明"]
     trusts = [("署名者の過半", "（例: 9 人中 5 人）"), ("source chain の合意", "と検証コードの実装"),
               ("正直な監視者が", "1 人いて期間内に動ける"), ("source chain の合意", "と証明系・回路の実装")]
     for i, label in enumerate(rows):
@@ -172,7 +172,7 @@ def trust_figure():
 
 def light_client_figure():
     """A light client contract keeps headers and checks a Merkle path."""
-    f = Svg("軽量クライアントは、承認者の署名でヘッダを確かめ、Merkle proof で預け入れがヘッダに含まれることを確かめる", height=470)
+    f = Svg("ライト・クライアントは、承認者の署名でヘッダを確かめ、Merkle proof で預け入れがヘッダに含まれることを確かめる", height=470)
     # source chain: a header chain and a tree under one header
     f.box(24, 24, 430, 420, PALE, rx=16)
     f.text(239, 62, "source chain", 22, SUB)
@@ -206,7 +206,7 @@ def light_client_figure():
     f.box(524, 24, 412, 420, FILL, rx=16)
     f.text(730, 62, "destination chain", 22, SUB)
     f.box(552, 92, 356, 330, "#ffffff", SUB, sw=2.5)
-    f.text(730, 128, "軽量クライアントのコントラクト", 20)
+    f.text(730, 128, "ライト・クライアントのコントラクト", 20)
     f.box(576, 152, 308, 108, PALE, ACCENT, sw=2, rx=8)
     f.text(730, 198, "1. 新しいヘッダに", 20)
     f.text(730, 232, "承認者の署名が足りるか", 20)

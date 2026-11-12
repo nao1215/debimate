@@ -61,7 +61,7 @@ def save_webp(im, name):
 # ---------------------------------------------------------------- 1. 承認の付け替えの割り込み（動く WebP）
 
 def lane_txs(race):
-    """events から、取引ごとに送った時刻・ブロックに入った時刻・順番・成否を組み立てる。"""
+    """events から、トランザクションごとに送った時刻・ブロックに入った時刻・順番・成否を組み立てる。"""
     txs, pending = [], []
     for e in race["events"]:
         if e["kind"] == "owner_sent":
@@ -76,7 +76,7 @@ def lane_txs(race):
             pending.append(t)
         elif e["kind"] == "block_mined":
             for o in e["order"]:
-                # order の名前から、待っている取引のどれかを決める
+                # order の名前から、待っているトランザクションのどれかを決める
                 who = "spender" if o["tx"].startswith("spender") else "owner"
                 t = next(p for p in pending if p["who"] == who)
                 pending.remove(t)
@@ -85,7 +85,7 @@ def lane_txs(race):
 
 
 def lane_state(txs, t):
-    """時刻 t までにブロックに入った取引を順に当て、許可の残りと spender の受け取りを返す。"""
+    """時刻 t までにブロックに入ったトランザクションを順に当て、許可の残りと spender の受け取りを返す。"""
     allowance, got = 100, 0
     for x in sorted([x for x in txs if x.get("mined", 1e9) <= t], key=lambda x: (x["mined"], x["index"])):
         if not x["ok"]:
@@ -114,7 +114,7 @@ def race_figure(speed=0.5, step=0.1, hold=3.0):
 
     def frame(t):
         c = Canvas(W, H)
-        c.text(20, 12, "許可を 100 から 50 に下げる取引を、spender が見て割り込む", size=17)
+        c.text(20, 12, "許可を 100 から 50 に下げるトランザクションを、spender が見て割り込む", size=17)
         c.text(20, 42, f"経過 {t:.1f} 秒", size=20)
         c.text(20, 74, f"ローカルの Anvil で実測。2 秒ごとにブロックを作る。{speed:g} 倍速で再生", size=13, color=SUB)
         # 時間の帯
@@ -128,7 +128,7 @@ def race_figure(speed=0.5, step=0.1, hold=3.0):
         c.text(bx0 + (bx1 - bx0) * blocks[0] / t_end - 50, by - 32, "ブロックを作った時刻", size=12, color=SUB)
         xx = bx0 + (bx1 - bx0) * min(t, t_end) / t_end
         c.d.ellipse([(xx - 7) * S, (by - 7) * S, (xx + 7) * S, (by + 7) * S], fill=rgb(INK))
-        c.text(x_pool, top - 26, "待っている取引（mempool）", size=14, color=SUB)
+        c.text(x_pool, top - 26, "待っているトランザクション（mempool）", size=14, color=SUB)
         c.text(x_blk, top - 26, "ブロックに入った順", size=14, color=SUB)
         c.text(x_res, top - 26, "spender の受け取り", size=14, color=SUB)
         for i, (name, txs) in enumerate(lanes):
@@ -245,9 +245,9 @@ def matrix_figure():
                 c.text(x + cw / 2, y + 16, f"記帳 {r['credited']:g}", size=14, color=RED if bad else INK, anchor="ma")
                 c.text(x + cw / 2, y + 40, f"届いた {r['vault_received']:g}", size=14, color=RED if bad else INK, anchor="ma")
     c.box(20, H - 36, 18, 18, RED_PALE, RED, 2, 3)
-    c.text(46, H - 36, "取引は成功したのに、記帳と届いた額が食い違う", size=12, color=SUB)
+    c.text(46, H - 36, "トランザクションは成功したのに、記帳と届いた額が食い違う", size=12, color=SUB)
     c.box(420, H - 36, 18, 18, "#e9e9e9", "#c8c8c8", 1, 3)
-    c.text(446, H - 36, "取引ごと取り消された", size=12, color=SUB)
+    c.text(446, H - 36, "トランザクションごと取り消された", size=12, color=SUB)
     save_webp(c.final(), "deposit_matrix.webp")
 
 

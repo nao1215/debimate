@@ -17,7 +17,7 @@ crossTopics:
 
 左は、ハッシュ関数の入力から途中で送る値を 1 つ外しただけで、秘密鍵を知らない人の証明が 1000 個とも通りました。右は、証明者が自由に入れる値を縛る式を回路から 1 行減らしただけで、「5 は 0 と等しい」という嘘の証明が通りました。暗号の数学は破られておらず、実装の漏れだけで起きています。同じ形の穴は実際のライブラリや、暗号資産を預かるコントラクトが使う回路でも見つかっています。
 
-[Rollup](../rollup/) のうち ZK Rollup は、まとめた取引を正しく実行したことを証明して Ethereum に提出します。Google は 2025 年 7 月に、年齢確認に使う目的で、電子身分証明書（mdoc など）から証明を作るライブラリ [longfellow-zk](https://github.com/google/longfellow-zk) を[公開しました](https://blog.google/technology/safety-security/opening-up-zero-knowledge-proof-technology-to-promote-privacy-in-age-assurance/)。使う側からは「検証のコントラクトが true を返したから正しい」としか見えないので、何が保証されていて、どこが壊れやすいのかを知っておく必要があります。
+[Rollup](../rollup/) のうち ZK Rollup は、まとめたトランザクションを正しく実行したことを証明して Ethereum に提出します。Google は 2025 年 7 月に、年齢確認に使う目的で、電子身分証明書（mdoc など）から証明を作るライブラリ [longfellow-zk](https://github.com/google/longfellow-zk) を[公開しました](https://blog.google/technology/safety-security/opening-up-zero-knowledge-proof-technology-to-promote-privacy-in-age-assurance/)。使う側からは「検証のコントラクトが true を返したから正しい」としか見えないので、何が保証されていて、どこが壊れやすいのかを知っておく必要があります。
 
 <br>
 
@@ -181,7 +181,7 @@ R を入れない検証では、偽造した証明が 1000 個とも通りまし
 
 ### 回路で書く証明
 
-Schnorr の証明が示せるのは「x を知っている」ことだけです。ZK Rollup のように「この取引を全て実行すると残高がこうなる」と示したい時は、任意の計算を証明できる仕組みが必要です。そのために使われるのが zk-SNARK（Succinct Non-interactive ARgument of Knowledge）です。名前が proof ではなく argument なのは、証明者の計算能力に限りがあることを前提に安全性を示すからです。
+Schnorr の証明が示せるのは「x を知っている」ことだけです。ZK Rollup のように「このトランザクションを全て実行すると残高がこうなる」と示したい時は、任意の計算を証明できる仕組みが必要です。そのために使われるのが zk-SNARK（Succinct Non-interactive ARgument of Knowledge）です。名前が proof ではなく argument なのは、証明者の計算能力に限りがあることを前提に安全性を示すからです。
 
 計算を証明するには、まず計算を掛け算と足し算のステップに分け、各ステップの入力と出力が満たすべき式を制約（constraint）として並べます。この形を算術回路（arithmetic circuit）と呼びます。後の節で測る「x² + 1 を N 回繰り返す」計算で N = 2 とし、回路にしたのが次の図です。
 
@@ -315,13 +315,13 @@ x を知っている人が同じ計算をやり直す時間は、0.05 ms から 
 
 #### ZK Rollup で効く所
 
-ZK Rollup が証明を提出するのも、同じ理屈です。Ethereum 本体を L1、その外で取引を処理するチェーンを L2 と呼びます。Ethereum のノードは全ての取引を [EVM](../evm/) で実行し直すので、L2 で処理した数千件の取引をそのまま L1 で実行すると重くなります。代わりに証明を 1 つ検証すれば済むようにするのが ZK Rollup です。
+ZK Rollup が証明を提出するのも、同じ理屈です。Ethereum 本体を L1、その外でトランザクションを処理するチェーンを L2 と呼びます。Ethereum のノードは全てのトランザクションを [EVM](../evm/) で実行し直すので、L2 で処理した数千件のトランザクションをそのまま L1 で実行すると重くなります。代わりに証明を 1 つ検証すれば済むようにするのが ZK Rollup です。
 
-Groth16 の検証は公開値の数に応じて重くなるので、件数によらず手間を抑えられるのは、取引の結果を少ない公開値にまとめた時です。本記事の実験は Node.js 上の snarkjs で、L1 のガスは測っていません。
+Groth16 の検証は公開値の数に応じて重くなるので、件数によらず手間を抑えられるのは、トランザクションの結果を少ない公開値にまとめた時です。本記事の実験は Node.js 上の snarkjs で、L1 のガスは測っていません。
 
 Groth16 の検証に使う楕円曲線の計算は Ethereum に組み込まれているので、L1 のコントラクトでも安いガスで検証できます。組み込みの経緯は [EVM Opcode History](../evm-opcode-history/) で扱っています。
 
-なお、[ethereum.org の ZK Rollup の解説](https://ethereum.org/developers/docs/scaling/zk-rollups/)によると、有効性の証明を使うだけでは取引の中身は秘密になりません。取引のデータは誰でも検証できるように公開されているからです。ZK Rollup で主に効いているのは、ゼロ知識性ではなく、証明が小さく検証が速いという性質のほうです。
+なお、[ethereum.org の ZK Rollup の解説](https://ethereum.org/developers/docs/scaling/zk-rollups/)によると、有効性の証明を使うだけではトランザクションの中身は秘密になりません。トランザクションのデータは誰でも検証できるように公開されているからです。ZK Rollup で主に効いているのは、ゼロ知識性ではなく、証明が小さく検証が速いという性質のほうです。
 
 <br>
 

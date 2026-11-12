@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Oracle の実験 2 つをローカルの Anvil で走らせ、結果を output/results.json に残す。
 
-1. 同じ取引の中の価格操作: フラッシュローンで借りた 300,000 tUSD で Pool の価格をつり上げ、
+1. 同じトランザクションの中の価格操作: フラッシュローンで借りた 300,000 tUSD で Pool の価格をつり上げ、
    その間に Lending から借りる。Lending が読む価格を Pool の今の価格（spot）・30 分の TWAP・
    外から書き込む価格（feed）の 3 通りに変えて、同じ攻撃を当てる。
 2. 急落の追いかけ方: 市場の価格が 10 分で 3,000 から 2,100 に下がる 90 分を 12 秒ごとのブロックで流し、
@@ -148,7 +148,7 @@ def exp_attack(c, acct):
                "pool_spot_after": call_uint(env["pool"], "spot()") / E18}
         if res["status"] == 0:
             # 失敗した時は、どこで止まったかを eth_call で取り出す
-            # 同じ取引を eth_call で実行し直し、CannotRepay(held, owed, borrowed) を読む
+            # 同じトランザクションを eth_call で実行し直し、CannotRepay(held, owed, borrowed) を読む
             try:
                 rpc("eth_call", {"from": attacker_eoa, "to": atk, "data": calldata("attack(uint256)", 300_000 * E18)}, "latest")
             except RuntimeError as e:

@@ -1,0 +1,89 @@
+name: Announce new pages on Bluesky
+
+# 記事・技術ノート・ML ノート・weeknotes の 1 話を「題名 + URL」で Bluesky に投稿する。
+# 毎朝、JST の昨日と今日に公開された分を流す。デプロイを待たずに済むよう、まだ公開されていない URL は
+# 飛ばして次の回に回し、同じ URL を既に投稿していれば飛ばす（scripts/bsky_announce.py）。
+# 要る secrets: BSKY_IDENTIFIER（投稿するアカウントのハンドル。メールアドレスは不可）、
+#               BSKY_APP_PASSWORD（https://bsky.app/settings/app-passwords で作るアプリパスワード）
+on:
+  schedule:
+    # 毎日 07:30 JST
+    - cron: '30 22 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'recent: 昨日と今日の分 / yesterday: 昨日（または date の日）の分 / latest: 種類ごとに最新の 1 件'
+        type: choice
+        options: [recent, yesterday, latest]
+        default: recent
+      date:
+        description: 'yesterday の代わりに対象にする JST の日（YYYY-MM-DD、空なら昨日）'
+        type: string
+        default: ''
+      kinds:
+        description: '対象の種類（カンマ区切り）'
+        type: string
+        default: 'post,notes,ml,weeknotes'
+      dry_run:
+        description: '投稿せずに表示だけする'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bsky-announce
+  cancel-in-progress: false
+
+env:
+  BSKY_VERSION: v0.14.0
+
+jobs:
+  announce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # weeknotes の見出しを足した commit を日付で探すので履歴が要る
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Install bsky
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          dir="$RUNNER_TEMP/bsky-dl"
+          mkdir -p "$dir" "$HOME/.local/bin"
+          asset="bsky-${BSKY_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          gh release download "$BSKY_VERSION" -R nao1215/bluesky-terminal-client -D "$dir" -p "$asset" -p checksums.txt
+          (cd "$dir" && grep " ${asset}\$" checksums.txt | sha256sum -c -)
+          tar -xzf "$dir/$asset" -C "$dir"
+          install -m 0755 "$(find "$dir" -type f -name bsky | head -1)" "$HOME/.local/bin/bsky"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Log in
+        if: github.event_name == 'schedule' || !inputs.dry_run
+        env:
+          BSKY_CONFIG_DIR: ${{ runner.temp }}/bsky-config
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          BSKY_APP_PASSWORD: ${{ secrets.BSKY_APP_PASSWORD }}
+        run: |
+          bsky --version
+          printf '%s' "$BSKY_APP_PASSWORD" | bsky login "$BSKY_IDENTIFIER" --password-stdin > /dev/null
+
+      - name: Post
+        env:
+          BSKY_CONFIG_DIR: ${{ runner.temp }}/bsky-config
+          BSKY_IDENTIFIER: ${{ secrets.BSKY_IDENTIFIER }}
+          MODE: ${{ inputs.mode || 'recent' }}
+          DATE: ${{ inputs.date }}
+          KINDS: ${{ inputs.kinds || 'post,notes,ml,weeknotes' }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          args=(--mode "$MODE" --kinds "$KINDS")
+          [ -n "$DATE" ] && args+=(--date "$DATE")
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          python3 scripts/bsky_announce.py "${args[@]}"

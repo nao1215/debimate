@@ -201,7 +201,7 @@ maxFeePerGas は、送った後に base fee が上がった時に払いすぎな
 
 送った時の base fee の 3 倍を上限に書いても、満杯のブロックが 10 個、約 2 分続けば超える計算です。
 
-base fee が maxFeePerGas を超えている間、トランザクションはすぐには消えず、ブロックに入る前のトランザクションを置く [mempool](../mempool/) で下がるのを待ちます。待つ時間が長いと、ノードの方針で mempool から外されることもあります。この扱いは [Gas and EIP-1559](../gas-eip-1559/#上限を下回ったトランザクションの行方) で実験しています。
+base fee が maxFeePerGas を超えている間、トランザクションはすぐには消えず、ブロックに入る前のトランザクションを置く [mempool](../mempool/) で下がるのを待ちます。待つ時間が長いと、ノードのポリシーで mempool から外されることもあります。この扱いは [Gas and EIP-1559](../gas-eip-1559/#上限を下回ったトランザクションの行方) で実験しています。
 
 <br>
 
@@ -229,7 +229,7 @@ maxPriorityFeePerGas は上限という名前でも、base fee との和が maxF
 
 2 件目は単価の上限を 40 gwei に下げても、gasLimit を 1,000,000 と多めに書いたために拒否されています。3 件目だけが通り、払ったのは 1 件目と同じ 0.000231 ETH でした。
 
-この条件は、ノードごとに決める受け付けの方針ではなく、プロトコルの規則です。参照実装の [execution-specs](https://github.com/ethereum/execution-specs/blob/7b8124a77280edaaad877128937b71a1e3a7ebc5/src/ethereum/forks/prague/fork.py) では `check_transaction` にあり、満たさないトランザクションを含むブロックは無効になります。
+この条件は、ノードごとに決める受け付けのポリシーではなく、プロトコルの規則です。参照実装の [execution-specs](https://github.com/ethereum/execution-specs/blob/7b8124a77280edaaad877128937b71a1e3a7ebc5/src/ethereum/forks/prague/fork.py) では `check_transaction` にあり、満たさないトランザクションを含むブロックは無効になります。
 
 上限を多めに書くほど安全に見えますが、残高に余裕が無い時は送れなくなります。残高をちょうど使い切るには、maxFeePerGas を実際に払う単価に、gasLimit を使う gas の量に、それぞれ合わせる必要があります。上限に余裕を持たせた分は、使わなかった分として送信元の残高に残ります。
 

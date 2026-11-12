@@ -5,7 +5,7 @@
 // PushFeed: 外から書き込まれる価格。Chainlink の latestRoundData と同じ形で読める。
 // SpotSource / TwapSource / FeedSource: 貸付が読む価格の取り出し口。単位は 1 tETH あたりの tUSD（18 桁）。
 // Lending: tETH を担保に tUSD を貸す。担保の評価額の 80% まで借りられる。
-// FlashLender: 同じ取引の中で返す約束で、担保なしに tUSD を貸す。
+// FlashLender: 同じトランザクションの中で返す約束で、担保なしに tUSD を貸す。
 // Attacker: フラッシュローンで借りた tUSD で Pool の価格をつり上げ、その間に Lending から借りる。
 pragma solidity 0.8.28;
 
@@ -167,7 +167,7 @@ contract Lending {
 }
 
 // フラッシュローンの貸し手（Lending とは別のプロトコルの役）。
-// 同じ取引の中で返せば担保なしで借りられる。返せなければ取引ごと取り消される（revert）。
+// 同じトランザクションの中で返せば担保なしで借りられる。返せなければトランザクションごと取り消される（revert）。
 contract FlashLender {
     Token public immutable usd;
     constructor(Token u) { usd = u; }
