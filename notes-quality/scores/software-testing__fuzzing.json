@@ -1,9 +1,9 @@
 {
  "path": "content/notes/software-testing/fuzzing/index.md",
- "overall": 4,
+ "overall": 5,
  "product": 81,
  "blob": "8e358c580598bb9b611f1b062e2aaa9a731eb5a3",
- "by": "別担当の採点（抜き出しだけ、基準 5 本 5・5・3・2・2 と同じ回。2026-11-12、.note-review/work/scoring/scores_round1.json）",
+ "by": "別担当の採点（抜き出しだけ、基準 5 本 5・5・3・2・2 と同じ回、回遊を総合に使わない 2026-11-12 の rubric。.note-review/work/scoring2/scores.json）",
  "baseline": [
   5,
   5,
