@@ -42,7 +42,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 | scikit-learn の [KernelDensity](../../math/kde/) | 必要 | `bandwidth="scott"` も列の標準偏差を見ず、全ての列に同じ幅のカーネルを置く |
 | ニューラルネットワーク（[勾配降下](/ml/math/gradient-descent-sgd/)で学習するもの） | 推奨 | スケールの違いが勾配の方向を歪め、収束が遅くなる |
 | 木系（[決定木](../decision-tree/), [RandomForest](../random-forest/), [GradientBoosting](../gradient-boosting/)） | ほぼ不要 | 各分割は「特徴量 X が閾値 t 以下か」という順序ベースの判定で、値の絶対スケールに依存しない |
-| ガウス型 [Naive Bayes](/ml/math/bayes-theorem/) | 不要 | 特徴量ごとに平均と分散を推定するので、定数倍しても予測はほぼ変わらない |
+| ガウス型 [Naive Bayes](/ml/math/bayes-theorem/) | ほぼ不要 | 特徴量ごとに平均と分散を推定する。ただし [`GaussianNB`](https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html) は最大の分散に比例する値を各列の分散に足すので、桁違いの列があると他の列が効かなくなる |
 
 表の「必要」は、金額と年齢のように単位の違う特徴量を混ぜる場合の話です。画素値や同じ単位の座標のように、特徴量の単位が揃っていて分散の大きさ自体に意味がある場合は、標準化しないことがあります。例えば画像の PCA で標準化すると、わずかしか変化しない背景の画素まで分散 1 に拡大され、ノイズの方向が主成分に混ざります。標準化は「どの特徴量でも 1 標準偏差の差を同じ重さで扱う」という選択なので、それが目的に合うかで決めます。
 
