@@ -1,175 +1,218 @@
-"""Hash Function ノートの図を生成する。
+"""Hash Function ノートの図を作る。
 
-再生成:
-    uv run --with matplotlib --with numpy python content/notes/blockchain-systems/hash-function/figures.py
+    python3 figures.py   # -> images/*.webp
 
-概念図 (hash_function_concept.svg) は標準ライブラリだけで SVG を手書きする。
+数値の図は lab/output/（lab/run.sh の出力）を読む。仕組みの図は
+matplotlib の箱と矢印で描く。どれも PNG（dpi 200、白背景）から WebP にする。
+
+- tries_figure(): keccak256 の先頭 n ビットが一致するまでの試行回数。表紙
+- collide32_figure(): 32 ビットでどれでもよい 2 つが一致するまでの回数、200 回の分布
+- poly_figure(): Poly Network の名前と、狙った関数の keccak256
+- padding_figure(): Keccak-256 と SHA3-256 の最後のブロック
+- length_extension_figure(): sha256(秘密 || 本文) の値から計算を続ける
 """
 
-import pathlib
+import csv
+import io
+import math
+import re
+import statistics
+from collections import defaultdict
+from pathlib import Path
 
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-import numpy as np
+import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch  # noqa: E402
+from PIL import Image  # noqa: E402
 
-COLOR_BLUE = "#7aa6c2"
-COLOR_RED = "#e15759"
-COLOR_GREEN = "#59a14f"
-COLOR_GRAY = "#666666"
-
+HERE = Path(__file__).resolve().parent
+OUT = HERE / "lab" / "output"
+INK, SUB, FILL, PALE = "#1f1f1f", "#666666", "#f2f2f2", "#eaf1f5"
+ACCENT, RED, RED_PALE = "#4f7fa0", "#c8423f", "#fbe3e3"
 plt.rcParams.update({
-    "figure.figsize": (6, 4),
+    "font.family": "Noto Sans CJK JP",
     "font.size": 11,
+    "axes.edgecolor": SUB,
+    "axes.labelcolor": INK,
+    "xtick.color": SUB,
+    "ytick.color": INK,
     "axes.spines.top": False,
     "axes.spines.right": False,
-    "axes.grid": True,
-    "grid.alpha": 0.3,
-    "grid.linewidth": 0.5,
-    "savefig.bbox": "tight",
-    "savefig.dpi": 144,
 })
-
-OUT = pathlib.Path(__file__).parent / "images"
-OUT.mkdir(exist_ok=True)
+MONO = "DejaVu Sans Mono"
 
 
-def save(name: str) -> None:
-    path = OUT / name
-    plt.savefig(path)
-    plt.close()
-    print(f"wrote {path}")
+def save(fig, name):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=200, facecolor="#ffffff", bbox_inches="tight", pad_inches=0.15)
+    plt.close(fig)
+    (HERE / "images").mkdir(exist_ok=True)
+    Image.open(buf).convert("RGB").save(HERE / "images" / name, "WEBP", quality=90, method=6)
 
 
-# --- 図1: 出力のビット数 n と、総当たりに必要な試行回数 ---
-# 原像・第二原像は 2^n 回、衝突は 2^(n/2) 回。本文の表と同じ式である。
-n = np.arange(64, 513)
-
-fig, ax = plt.subplots()
-ax.plot(n, 2.0 ** n, color=COLOR_BLUE, linewidth=1.8, label="Preimage / second preimage: 2^n")
-ax.plot(n, 2.0 ** (n / 2), color=COLOR_RED, linewidth=1.8, label="Collision: 2^(n/2)")
-ax.set_yscale("log", base=2)
-
-# SHA-256 (n = 256) の 2 点。本文の表の右列に当たる
-ax.axvline(256, color=COLOR_GRAY, linestyle="--", linewidth=1)
-ax.text(262, 2.0 ** 430, "SHA-256 (n = 256)", color=COLOR_GRAY, fontsize=9, ha="left", va="top")
-for exp, color in ((256, COLOR_BLUE), (128, COLOR_RED)):
-    ax.plot([256], [2.0 ** exp], marker="o", markersize=6, color=color)
-    ax.annotate(
-        f"2^{exp}",
-        xy=(256, 2.0 ** exp),
-        xytext=(268, 2.0 ** (exp - 40)),
-        color=color,
-        fontsize=9,
-        va="center",
-        arrowprops={"arrowstyle": "-", "color": color, "linewidth": 0.8},
-    )
-
-# SHA-1 (n = 160) の衝突は、総当たりの 2^80 回より少ない計算で見付かった
-ax.plot([160], [2.0 ** 80], marker="o", markersize=6, color=COLOR_GREEN)
-ax.annotate(
-    "SHA-1 (n = 160): 2^80 by brute force,\nbut a collision was found\nwith far fewer trials",
-    xy=(160, 2.0 ** 76),
-    xytext=(278, 2.0 ** 40),
-    color=COLOR_GREEN,
-    fontsize=9,
-    ha="left",
-    va="center",
-    arrowprops={"arrowstyle": "->", "color": COLOR_GREEN, "linewidth": 1.0},
-)
-
-exps = (0, 128, 256, 384, 512)
-ax.set_yticks([2.0 ** e for e in exps])
-ax.set_yticklabels([f"2^{e}" for e in exps])
-ax.set_ylim(2.0 ** 0, 2.0 ** 600)
-ax.set_xlim(64, 512)
-ax.set_xticks([64, 128, 160, 256, 384, 512])
-ax.set_xlabel("Output length n (bits)")
-ax.set_ylabel("Trials needed by brute force")
-ax.legend(loc="upper left", fontsize=9)
-
-save("hash_function_attack_cost.svg")
+def measured():
+    d = defaultdict(list)
+    with open(OUT / "measure.tsv", encoding="utf-8") as f:
+        for r in csv.DictReader(f, delimiter="\t"):
+            d[(r["kind"], int(r["n"]))].append(int(r["tries"]))
+    return d
 
 
-# --- 概念図: 大きさの違う入力が、どれも同じ大きさの 32 バイトに入る ---
-# 標準ライブラリだけで SVG を手書きする。入力の正方形の面積は模式で、
-# 1 文字 < 数 MB < 数 GB の順に大きくし、出力の箱は全て同じ大きさにする。
-from html import escape
-
-HERE = pathlib.Path(__file__).resolve().parent
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
-FILL, PALE = "#f2f2f2", "#eaf1f5"
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
-GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+def poly_tries():
+    text = (OUT / "poly.txt").read_text(encoding="utf-8")
+    m = re.search(r"tries=(\d+) seconds=([\d.]+) threads=(\d+)", text)
+    return int(m.group(1)), float(m.group(2)), int(m.group(3))
 
 
-class Svg:
-    def __init__(self, width, height, title):
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" '
-            'markerWidth="4" markerHeight="4" orient="auto">'
-            f'<path d="M0,0 L10,5 L0,10 z" fill="{SUB}"/></marker>'
-            '<marker id="arrowred" viewBox="0 0 10 10" refX="8" refY="5" '
-            'markerWidth="4" markerHeight="4" orient="auto">'
-            f'<path d="M0,0 L10,5 L0,10 z" fill="{RED}"/></marker></defs>',
-            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        ]
-
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle"):
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}">{escape(s)}</text>')
-
-    def circle(self, cx, cy, r, fill, stroke, sw=3, dash=""):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<circle cx="{cx}" cy="{cy}" r="{r:.1f}" fill="{fill}" '
-            f'stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def box(self, x, y, w, h, fill, stroke, sw=3, rx=14):
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"/>')
-
-    def arrow(self, x1, y1, x2, y2, color=SUB, sw=4):
-        m = "arrowred" if color == RED else "arrow"
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2:.1f}" y2="{y2:.1f}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round" marker-end="url(#{m})"/>')
-
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+def jp(n):
+    """1,121,318,094 -> 約 11 億 の形"""
+    if n >= 10**8:
+        return f"約 {n / 10**8:.0f} 億"
+    if n >= 10**4:
+        return f"約 {n / 10**4:.0f} 万"
+    return f"{n:,}"
 
 
-def concept_figure():
-    f = Svg(960, 540, "大きさの違う入力が、どれも 32 バイトのハッシュ値になる")
-    right = 370  # right edge of the input squares
-    rows = [("1 文字", 14, 92), ("数 MB", 96, 200), ("数 GB", 236, 392)]
+def tries_figure():
+    d = measured()
+    poly, sec, threads = poly_tries()
+    fig, ax = plt.subplots(figsize=(8.4, 5.0))
+    xs = list(range(8, 33))
+    ax.plot(xs, [2**n for n in xs], color=RED, lw=1.2, ls="--", label="決まった値に当てる: 理論の平均 $2^n$")
+    ax.plot(xs, [math.sqrt(math.pi / 2 * 2**n) for n in xs], color=ACCENT, lw=1.2, ls="--",
+            label="どれでもよい 2 つ: 理論の平均 約 $1.25 \\times 2^{n/2}$")
+    tn = sorted(n for k, n in d if k == "target")
+    cn = sorted(n for k, n in d if k == "collide")
+    ax.plot(tn, [statistics.mean(d[("target", n)]) for n in tn], "o", color=RED, ms=7,
+            label="決まった値に当てる: 実測の平均")
+    ax.plot(cn, [statistics.mean(d[("collide", n)]) for n in cn], "o", color=ACCENT, ms=7,
+            label="どれでもよい 2 つ: 実測の平均（各 200 回）")
+    ax.plot([32], [poly], "*", color=RED, ms=17, mec=INK, mew=0.6)
+    ax.annotate(f"Poly Network で攻撃者が使った名前 f1121318093\nf0 から数えて {poly:,} 回目\n"
+                f"手元の {threads} スレッドで {sec:.0f} 秒",
+                xy=(32, poly), xytext=(21.6, 6e10), fontsize=10, color=INK,
+                arrowprops=dict(arrowstyle="->", color=SUB, lw=0.8))
+    c32 = statistics.mean(d[("collide", 32)])
+    ax.annotate(f"関数セレクターの 32 ビットで\n平均 {c32:,.0f} 回", xy=(32, c32), xytext=(25.3, 5e2),
+                fontsize=10, color=INK, arrowprops=dict(arrowstyle="->", color=SUB, lw=0.8))
+    ax.set_yscale("log")
+    ax.set_xticks([8, 12, 16, 20, 24, 28, 32])
+    ax.set_xlabel("比べる先頭のビット数 n")
+    ax.set_ylabel("一致するまでの試行回数")
+    ax.set_title("keccak256 の先頭 n ビットが一致するまでの試行回数（実測）", fontsize=12, loc="left", color=INK)
+    ax.grid(True, which="major", alpha=0.3, lw=0.5)
+    ax.legend(loc="upper left", fontsize=9, frameon=False)
+    ax.set_ylim(5, 2e12)
+    save(fig, "tries.webp")
 
-    f.box(465, 40, 140, 480, PALE, ACCENT, rx=14)
-    f.text(535, 290, "SHA-256", 26, weight="normal")
 
-    for label, side, cy in rows:
-        x, y = right - side, cy - side / 2
-        f.box(x, y, side, side, FILL, SUB, sw=2.5, rx=3 if side < 30 else 6)
-        if side > 200:
-            f.text(x + side / 2, cy + 9, label, 28)
-        else:
-            f.text(60, cy + 9, label, 28, anchor="start")
-        f.arrow(right + 10, cy, 455, cy)
-        f.arrow(615, cy, 682, cy)
-        f.box(690, cy - 34, 200, 68, GREEN_PALE, GREEN, rx=8)
-        f.text(790, cy + 9, "32 バイト", 26, INK, weight="normal")
-
-    f.text(790, 495, "どれも同じ長さ", 26, SUB)
-    f.text(60, 34, "入力の大きさは模式", 24, SUB, anchor="start")
-    f.save(OUT / "hash_function_concept.svg")
+def collide32_figure():
+    v = measured()[("collide", 32)]
+    fig, ax = plt.subplots(figsize=(8.0, 3.4))
+    ax.hist([x / 1000 for x in v], bins=25, color=PALE, edgecolor=ACCENT, lw=0.8)
+    m = statistics.mean(v)
+    ax.axvline(m / 1000, color=ACCENT, lw=1.4)
+    top = ax.get_ylim()[1]
+    ax.set_ylim(0, top * 1.15)
+    ax.text(m / 1000 + 2, top * 1.07, f"平均 {m:,.0f} 回", color=INK, fontsize=10)
+    ax.set_xlabel("一致するまでの試行回数（千回）")
+    ax.set_ylabel("200 回のうちの回数")
+    ax.set_title(f"32 ビットでどれでもよい 2 つが一致するまで（200 回、最小 {min(v):,} 回・最大 {max(v):,} 回）",
+                 fontsize=11, loc="left", color=INK)
+    save(fig, "collide32.webp")
 
 
-concept_figure()
+def box(ax, x, y, w, h, text, fc=FILL, ec=SUB, size=10, family=None, color=INK, ha="center"):
+    ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.02,rounding_size=0.08",
+                                fc=fc, ec=ec, lw=0.9))
+    tx = x + w / 2 if ha == "center" else x + 0.15
+    ax.text(tx, y + h / 2, text, ha=ha, va="center", fontsize=size, color=color,
+            family=family or plt.rcParams["font.family"])
+
+
+def arrow(ax, x0, y0, x1, y1, color=SUB):
+    ax.add_patch(FancyArrowPatch((x0, y0), (x1, y1), arrowstyle="-|>", mutation_scale=12, color=color, lw=1.0))
+
+
+def canvas(w, h):
+    fig = plt.figure(figsize=(w, h))
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_xlim(-0.1, w)
+    ax.set_ylim(-0.15, h)
+    ax.axis("off")
+    return fig, ax
+
+
+def poly_figure():
+    from importlib import util
+    spec = util.spec_from_file_location("keccak", HERE / "lab" / "keccak.py")
+    k = util.module_from_spec(spec)
+    spec.loader.exec_module(k)
+    a = k.keccak256(b"putCurEpochConPubKeyBytes(bytes)").hex()
+    b = k.keccak256(b"f1121318093(bytes,bytes,uint64)").hex()
+    fig, ax = canvas(9.4, 3.6)
+    ax.text(0.1, 3.35, "狙われた関数", fontsize=10, color=SUB)
+    box(ax, 0.1, 2.35, 3.4, 0.75, "putCurEpochConPubKeyBytes(bytes)", family=MONO, size=9)
+    ax.text(0.1, 1.55, "攻撃者が送った名前 ＋ 固定された引数の型", fontsize=10, color=SUB)
+    box(ax, 0.1, 0.55, 3.4, 0.75, "f1121318093(bytes,bytes,uint64)", fc=RED_PALE, ec=RED, family=MONO, size=9)
+    for y, h in [(2.72, a), (0.92, b)]:
+        arrow(ax, 3.6, y, 4.3, y)
+        ax.text(3.95, y + 0.12, "keccak256", ha="center", fontsize=8, color=SUB, family=MONO)
+        ax.add_patch(FancyBboxPatch((4.4, y - 0.37), 4.9, 0.75, boxstyle="round,pad=0.02,rounding_size=0.08",
+                                    fc="#ffffff", ec=SUB, lw=0.9))
+        ax.text(4.55, y, h[:8], fontsize=9.5, color=RED, family=MONO, va="center")
+        ax.text(4.55 + 0.76, y, h[8:40] + "…", fontsize=9.5, color=SUB, family=MONO, va="center")
+    ax.add_patch(FancyBboxPatch((4.47, 0.4), 0.8, 2.75, boxstyle="round,pad=0.02,rounding_size=0.08",
+                                fc="none", ec=RED, lw=1.2, ls="--"))
+    ax.text(5.4, 1.82, "先頭 4 バイトだけを比べるので、同じ関数として呼ばれる\n残りの 28 バイトは全く違う",
+            fontsize=10, color=INK, va="center")
+    save(fig, "poly.webp")
+
+
+def padding_figure():
+    fig, ax = canvas(10.0, 3.3)
+    ax.text(0.1, 3.05, "空の入力を 1 ブロック（136 バイト）に詰めた形", fontsize=10, color=SUB)
+    rows = [(2.0, "01", "Keccak-256（Ethereum の keccak256）", "c5d24601…85a470"),
+            (0.6, "06", "SHA3-256（FIPS 202、hashlib.sha3_256）", "a7ffc6f8…f8434a")]
+    for y, b, name, out in rows:
+        ax.text(0.1, y + 0.78, name, fontsize=10, color=INK)
+        box(ax, 0.1, y, 0.9, 0.6, b, fc=RED_PALE, ec=RED, family=MONO, size=11)
+        box(ax, 1.0, y, 3.6, 0.6, "00 00 … 00（134 バイト）", size=9, color=SUB)
+        box(ax, 4.6, y, 0.9, 0.6, "80", family=MONO, size=11)
+        arrow(ax, 5.65, y + 0.3, 6.45, y + 0.3)
+        ax.text(6.05, y + 0.42, "Keccak-f", ha="center", fontsize=8, color=SUB, family=MONO)
+        box(ax, 6.55, y, 3.3, 0.6, out, fc="#ffffff", family=MONO, size=10)
+    ax.text(0.15, 0.2, "違いは赤い 1 バイトだけ。出力は全く別の値になる", fontsize=10, color=INK)
+    save(fig, "padding.webp")
+
+
+def length_extension_figure():
+    fig, ax = canvas(10.4, 4.2)
+    # 上の段: サーバーが作った値
+    ax.text(0.1, 3.9, "サーバー: sha256(秘密 ‖ 本文) を値として渡す", fontsize=10, color=SUB)
+    box(ax, 0.1, 2.85, 1.6, 0.7, "秘密\n16 バイト", fc="#dddddd", size=9)
+    box(ax, 1.7, 2.85, 2.0, 0.7, "本文\n19 バイト", size=9)
+    box(ax, 3.7, 2.85, 1.5, 0.7, "パディング\n29 バイト", size=9, color=SUB)
+    arrow(ax, 5.3, 3.2, 6.1, 3.2)
+    ax.text(5.7, 3.33, "圧縮", ha="center", fontsize=8.5, color=SUB)
+    box(ax, 6.2, 2.85, 4.0, 0.7, "値 = 内部状態\nc253f0e1…（攻撃者にも見える）", fc=PALE, ec=ACCENT, size=9)
+    # 下の段: 攻撃者
+    ax.text(0.1, 2.15, "攻撃者: 秘密を知らずに、値から計算を続ける", fontsize=10, color=SUB)
+    box(ax, 0.1, 1.1, 5.1, 0.7, "（秘密 ‖ 本文 ‖ パディング）は計算済みとして飛ばす", size=9, color=SUB)
+    box(ax, 6.2, 1.1, 1.9, 0.7, "追記\n15 バイト", fc=RED_PALE, ec=RED, size=9)
+    box(ax, 8.1, 1.1, 2.1, 0.7, "パディング\n49 バイト", size=9, color=SUB)
+    arrow(ax, 7.2, 2.8, 7.2, 1.85, color=ACCENT)
+    ax.text(7.3, 2.3, "初期値にする", fontsize=8.5, color=ACCENT)
+    arrow(ax, 9.15, 1.05, 9.15, 0.55)
+    box(ax, 5.2, 0.0, 5.0, 0.5, "新しい値 d273494c… = sha256(秘密 ‖ 本文 ‖ パディング ‖ 追記)", fc="#ffffff", ec=RED, size=9)
+    save(fig, "length_extension.webp")
+
+
+if __name__ == "__main__":
+    tries_figure()
+    collide32_figure()
+    poly_figure()
+    padding_figure()
+    length_extension_figure()

@@ -1,0 +1,7 @@
+元の本文      b'to=0xA11CE&amount=1'
+元の値        c253f0e1a111fff61aa53234a99ae58592c6bd496ee574f3cc5c2be0fb836b64
+偽の本文      b'to=0xA11CE&amount=1\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x18&amount=1000000'
+偽の値        d273494ce5425a94a1dd08b86c7077b573d2687ba6fd9695262e072e70eede67
+sha256 で検証 True
+HMAC で検証   False
+SHA3 で検証   False

@@ -1,8 +1,16 @@
 {
  "path": "content/notes/blockchain-systems/hash-function/index.md",
- "overall": 3,
- "product": 2,
- "blob": "ddc7d78ee0203c2736c647614589f59545239c0e",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:14:40"
+ "overall": 5,
+ "product": 54,
+ "blob": "64aded2e1e3d88925d9c196483e5fe40d0ca4c00",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }
