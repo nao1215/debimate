@@ -46,7 +46,7 @@ Ollama の値は 3 段で決まります。Ollama 本体の既定の値があり
 | qwen3-coder:30b | 0.7 | 0.8 | 20 |
 | gpt-oss-20b | 指定なし | 指定なし | 指定なし |
 
-本体の既定は、[Modelfile の文書](https://docs.ollama.com/modelfile#valid-parameters-and-values)と、v0.22.1 のソースの [`DefaultOptions`](https://github.com/ollama/ollama/blob/v0.22.1/api/types.go) で同じ値でした。Ollama の公式のライブラリから取った Qwen3 の 2 つは、モデルの作者が勧める値を持っています。Hugging Face から直接取った gpt-oss-20b は何も持っていないので、v0.22.1 では本体の既定の 0.8 で動きます。同じ Ollama でも、モデルの取り方で既定が変わるということです。GGUF は、llama.cpp や Ollama が読むモデルのファイルの形式です。
+本体の既定は、[Modelfile の文書](https://docs.ollama.com/modelfile#valid-parameters-and-values)と、v0.22.1 のソースの [`DefaultOptions`](https://github.com/ollama/ollama/blob/v0.22.1/api/types.go) で同じ値でした。Ollama の公式のライブラリから取った Qwen3 の 2 つは、モデルの作者が勧める値を持っています。Hugging Face から [GGUF](https://github.com/ggml-org/ggml/blob/master/docs/gguf.md) で直接取った gpt-oss-20b は何も持っていないので、v0.22.1 では本体の既定の 0.8 で動きます。GGUF は、llama.cpp や Ollama が読み込むモデルを収めるファイル形式です。同じ Ollama でも、モデルの取り方で既定が変わるということです。
 
 コンテキストの長さを決める `num_ctx` も同じ 3 段で上書きされ、その既定値の落とし穴は [Ollama のコンテキスト長のノート](/notes/generative-ai/ollama-context-length/)で扱っています。
 
@@ -200,7 +200,7 @@ A のうち、問いの処理に 159〜181 ms 掛かった回は出力 1（`832a
 
 Ollama は直前に処理した問いの計算結果をプロンプトのキャッシュとして残しておき、同じ問いが来るとその部分を使い回します。この仕組みと、使い回せたかを処理の時間で見分ける方法は、[KV Cache のノートの実験 3](/notes/generative-ai/kv-cache/#実験-3-同じ前置きの再利用) で詳しく扱っています。v0.22.1 の [runner/ollamarunner/cache.go](https://github.com/ollama/ollama/blob/v0.22.1/runner/ollamarunner/cache.go) を読むと、問いが丸ごと一致した時は末尾の 1 トークンだけを計算し直します。多くのトークンをまとめて計算した回とは計算の形が変わり、ロジットがわずかに変わると考えられます。その差で上位の 2 つが入れ替わる所があれば、以降の文も変わります。
 
-同じ設定で回し直しても結果が一致しなかったことは、[Tool Calling](/notes/generative-ai/tool-calling/) と[構造化出力](/notes/generative-ai/structured-output/)のノートの実験でも起きていて、条件は本記事と違い、Tool Calling は temperature 0.6 と seed で、他の実験と同時に流していたので、この使い回しは原因の候補の 1 つです。temperature 0 で揃えたい時は、1 回目の結果を捨てるか、比べる全ての回で条件をそろえます。毎回モデルを読み込み直せば、全ての回が問いを最初から計算します。別の問いを挟む方法では、2 つの問いに共通する先頭の部分は使い回されるので、問いの大部分を計算し直す形になります。
+同じ設定で回し直しても結果が一致しなかったことは、[Tool Calling](/notes/generative-ai/tool-calling/) と[構造化出力](/notes/generative-ai/structured-output/)のノートの実験でも起きています。Tool Calling は temperature 0.6 と seed を使い、他の実験と同時に流していたので条件は本記事と違いますが、この使い回しも原因の候補の 1 つです。temperature 0 で揃えたい時は、1 回目の結果を捨てるか、比べる全ての回で条件をそろえます。毎回モデルを読み込み直せば、全ての回が問いを最初から計算します。別の問いを挟む方法では、2 つの問いに共通する先頭の部分は使い回されるので、問いの大部分を計算し直す形になります。
 
 <br>
 
@@ -226,7 +226,7 @@ AI の研究企業の Thinking Machines Lab は「[Defeating Nondeterminism in L
 
 temperature が全候補の確率を一律に変えるのに対して、top-p と top-k は確率の低い候補を切り捨てます。
 
-top-p は、確率の大きい順に並べて、累積が p に届くまでの候補だけを残す方法です。2019 年の [Holtzman 氏らの論文](https://arxiv.org/abs/1904.09751)で nucleus sampling として提案されました。残す数は状況で変わり、「日本の首都は」の次の「東京」のように次のトークンがほぼ決まっている所では 1 個、選択肢が多い所では多く残ります。top-k は上位 k 個を残す方法で、k は状況に関係なく固定です。
+top-p は、確率の大きい順に並べて、累積が p に届くまでの候補だけを残す方法です。2019 年の [Holtzman 氏らの論文](https://arxiv.org/abs/1904.09751)で nucleus sampling として提案されました。残す数は状況で変わり、「日本の首都は東」の次の「京」のように次のトークンがほぼ決まっている所では 1 個、選択肢が多い所では多く残ります。top-k は上位 k 個を残す方法で、k は状況に関係なく固定です。
 
 どちらを先に掛けるかは実装で違います。v0.22.1 の Ollama の [sample/samplers.go](https://github.com/ollama/ollama/blob/v0.22.1/sample/samplers.go) は、temperature が 0 なら greedy decoding を返します。それ以外は、top-k で上位 k 個を残し、temperature で割り、残った k 個の中で softmax を計算し直してから、top-p で切り、最後に min-p で切ります。min-p は、1 位の確率に対する割合で下限を決めて切る方法です。
 
