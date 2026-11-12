@@ -184,7 +184,7 @@ sequenceDiagram
 
 ### blocking を避ける手順
 
-blocking を避ける狙いで提案されてきた手順は、non-blocking commit protocol と総称され、3 相コミット（Three-Phase Commit）とも呼ばれます。
+1 台が落ちても残りが確定か中止かを決められる手順は、non-blocking commit protocol と呼ばれます。その代表例が、1980 年代初めに提案された 3 相コミット（Three-Phase Commit）です。
 
 [Skeen 氏の 1981 年の論文](https://doi.org/10.1145/582318.582339)が示した 3 相コミットは、prepared と確定の間に、全員が yes と答えたことを参加者に知らせる段階（pre-commit）を足し、コーディネータが落ちても残った参加者だけで結論を出せるようにします。
 
