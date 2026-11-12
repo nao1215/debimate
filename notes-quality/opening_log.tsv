@@ -15,3 +15,4 @@ math__quantile	結果	なぜ	Quantile - 同じ 10 個の応答時間の 90 パ�
 math__log-exp-logodds	結果	なぜ	対数・指数と log-odds - 確率を掛けただけの Naive Bayes が、digits で正解率 10% に落ちる理由
 math__mean	結果	なぜ	平均 - float32 で画像 1000 枚の画素の平均を取ると、R・G・B が全て 0.334 になる理由
 math__eigen-decomposition	問い	その他	固有値分解 - wine の PC4 を「malic_acid の軸」と呼んでよいか
+math__information-theory	場面	その他	情報理論 - 目的変数と無関係な ID の列でも、相互情報量は上限の H(Y) に届く

@@ -1,8 +1,16 @@
 {
  "path": "projects/ml/notes/math/information-theory/index.md",
- "overall": 2,
- "product": 1,
- "blob": "01e9a88c701bafd43e3c78da6e4a04c6b0b4830c",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T00:16:13"
+ "overall": 4,
+ "product": 54,
+ "blob": "0cf01bd53ce8ab67d7cf20f77f205d5c0c54c285",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

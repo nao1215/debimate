@@ -161,7 +161,7 @@ Correct (Pipeline):    CV accuracy = 0.534
 
 ### Hashing trick と Embedding
 
-基数が極端に大きい場面（URL、商品 ID、[トークン](/notes/generative-ai/tokenizer/)など）では、One-hot の列が膨れ、Target encoding もカテゴリごとの行数が少なすぎて平均値が安定しないことがあります。
+基数が極端に大きい場面（URL、商品 ID、[トークン](/notes/generative-ai/tokenizer/)など）では、One-hot の列が膨れ、Target encoding もカテゴリごとの行数が少なすぎて平均値が安定しないことがあります。同じ理由で、カテゴリごとの行数が少ない列は、目的変数と無関係でも[相互情報量](../../math/information-theory/)が高く出ます。
 
 - Hashing trick: カテゴリ名をハッシュ関数で列番号に変え、固定長のベクトルに押し込む。例えば `n_features=16` なら基数が 100 万でも 16 列に収まる。代償として、別カテゴリが同じ列に入る衝突が起きる。scikit-learn の [`FeatureHasher`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.FeatureHasher.html) は既定で 2<sup>20</sup> 列を使い、衝突しても内積がおおよそ保たれるように、ハッシュ値で決めた符号を付ける（上の例の A の +1 と B の −1）
 - Embedding: ニューラルネットでカテゴリごとの密ベクトルを学習する。似た振る舞いのカテゴリが近いベクトルになる。ただし、ニューラルネットの訓練が前提になる。[PyTorch の `nn.Embedding`](https://docs.pytorch.org/docs/stable/generated/torch.nn.Embedding.html) や [Keras の `Embedding`](https://keras.io/api/layers/core_layers/embedding/) 層を使う
