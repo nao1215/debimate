@@ -85,10 +85,10 @@ class Svg:
 
 def concept_figure():
     """One transaction: borrow, use, repay. If repayment fails, everything is undone."""
-    f = Svg("1 つの取引の中で、借りる・使う・手数料を付けて返す。返せなければ取引全体が失敗し、"
+    f = Svg("1 つのトランザクションの中で、借りる・使う・手数料を付けて返す。返せなければトランザクション全体が失敗し、"
             "借りる前の状態に戻る", 960, 430)
     f.box(30, 60, 900, 190, "#ffffff", SUB, sw=2.5, dash="10 7", rx=14)
-    f.text(56, 96, "1 つの取引", 22, SUB, anchor="start")
+    f.text(56, 96, "1 つのトランザクション", 22, SUB, anchor="start")
     steps = (("① 借りる", "担保は預けない"), ("② 使う", "交換・清算など"),
              ("③ 返す", "借りた額 + 手数料"))
     for i, (title, note) in enumerate(steps):
@@ -109,14 +109,14 @@ def concept_figure():
     f.circle(640, 338, 15, RED)
     f.text(640, 346, "×", 20, "#ffffff")
     f.box(30, 306, 560, 64, OCHRE_PALE, OCHRE, sw=2.5)
-    f.text(310, 346, "返せない：取引全体が失敗し、①② も取り消される", 21)
-    f.text(310, 400, "借りる前の状態に戻る（取引の gas 代だけは払う）", 18, SUB)
+    f.text(310, 344, "返せない：トランザクション全体が失敗し、①② も取り消される", 17)
+    f.text(310, 400, "借りる前の状態に戻る（トランザクションの gas 代だけは払う）", 18, SUB)
     f.save("flash_loan_concept.webp")
 
 
 def bzx_figure():
     """bZx, 2020-02-18: the sUSD price seen on the DEXes and the loan against it."""
-    f = Svg("左は 1 つの取引の中の攻撃者の ETH の出入りで、最後に 2,381 ETH が残る。"
+    f = Svg("左は 1 つのトランザクションの中の攻撃者の ETH の出入りで、最後に 2,381 ETH が残る。"
             "右は担保の本来の価値約 4,100 ETH と、借りた 6,799 ETH", 960, 440)
     # left panel: the attacker's ETH within the transaction (waterfall)
     f.text(230, 44, "攻撃者の ETH の出入り", 22)

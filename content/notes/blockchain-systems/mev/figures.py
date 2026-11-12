@@ -77,7 +77,7 @@ class Svg:
             to_webp(png, name)
 
 
-# --- 冒頭の図: 取引の並びと、プールの ETH 価格 ---
+# --- 冒頭の図: トランザクションの並びと、プールの ETH 価格 ---
 
 def price(pool):
     """プールの ETH 価格 (USDC/ETH)。残高の比で、手数料と価格インパクトは含まない。"""
@@ -85,7 +85,7 @@ def price(pool):
 
 
 def price_path(order, victim, front):
-    """順番どおりに 3 件を実行し、開始時と各取引の後の価格、A の受取量を返す。"""
+    """順番どおりに 3 件を実行し、開始時と各トランザクションの後の価格、A の受取量を返す。"""
     pool = Pool()
     prices, got, attacker_eth = [price(pool)], None, 0
     for tx in order:
@@ -102,8 +102,8 @@ def price_path(order, victim, front):
 def concept_figure():
     victim = 10_000 * USDC
     front = largest_front(victim, min_out(victim, 100))  # 許容幅 1% の時の B の大きさ
-    f = Svg(960, 540, "取引の並び順と、取引所の ETH 価格の上下")
-    f.text(570, 40, "線: 取引所の ETH 価格（USDC/ETH）　箱: 取引の並び", 24, SUB)
+    f = Svg(960, 540, "トランザクションの並び順と、取引所の ETH 価格の上下")
+    f.text(540, 40, "線: 取引所の ETH 価格（USDC/ETH）　箱: トランザクションの並び", 20, SUB)
 
     xs = [300, 490, 680]  # 箱の中心
     bw, bh, scale = 150, 52, 2.0  # 1 USDC/ETH を 2px で描く
@@ -119,7 +119,7 @@ def concept_figure():
             f'<line x1="205" y1="{base}" x2="765" y2="{base}" stroke="#cccccc" '
             f'stroke-width="2" stroke-dasharray="6 6"/>')
         f.text(196, base + 8, "3,000", 24, SUB, anchor="end")
-        # 箱の上は、その取引が動かした区間。取引と同じ色で描く
+        # 箱の上は、そのトランザクションが動かした区間。トランザクションと同じ色で描く
         pts = [(205, y[0])]
         for i, x in enumerate(xs):
             pts += [(x - bw / 2, y[i]), (x + bw / 2, y[i + 1])]
@@ -148,11 +148,11 @@ def concept_figure():
 # --- 並び順が価値になる 2 つの条件 ---
 
 def conditions_figure():
-    f = Svg(960, 470, "取引が実行前に読めることと、ブロックを作る者が並び順を選べること")
+    f = Svg(960, 470, "トランザクションが実行前に読めることと、ブロックを作る者が並び順を選べること")
     # 条件 1: 公開の置き場
     f.text(230, 44, "条件 1: 実行前に誰でも読める", 24)
     f.box(30, 66, 400, 250, FILL, "#cccccc", 2)
-    f.text(230, 104, "公開 mempool（取引の置き場）", 22, SUB)
+    f.text(230, 104, "公開 mempool（トランザクションを置く場所）", 17, SUB)
     f.box(60, 126, 340, 70, PALE, BLUE)
     f.text(230, 170, "A 利用者: ETH を買う", 24)
     f.arrow(230, 200, 230, 236)
@@ -172,8 +172,8 @@ def conditions_figure():
         y = 124 + i * 62
         f.box(570, y, 330, 50, fill, stroke)
         f.text(735, y + 34, label, 22)
-    f.text(480, 372, "プロトコルが決めるのは、同じ送り主の取引を nonce の順に並べることだけ", 22, SUB)
-    f.text(480, 420, "2 つが揃うと、他人の取引の前後に自分の取引を差し込める", 24)
+    f.text(480, 372, "プロトコルが決めるのは、同じ送り主のトランザクションを nonce の順に並べることだけ", 19, SUB)
+    f.text(480, 420, "2 つが揃うと、他人のトランザクションを挟むように前後に自分のトランザクションを差し込める", 20)
     f.save("mev_conditions.webp")
 
 

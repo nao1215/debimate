@@ -1,6 +1,6 @@
-"""Uniswap v2 型の定数積プールで、同じ指示の 3 件の取引を並べ替えて結果を比べる。
+"""Uniswap v2 型の定数積プールで、同じ指示の 3 件のトランザクションを並べ替えて結果を比べる。
 
-C は「B で得た ETH を全て売る」取引なので、C が売る量は順番で変わる。
+C は「B で得た ETH を全て売る」トランザクションなので、C が売る量は順番で変わる。
 
 ネットワークには接続せず、整数の計算だけを行う。gas 代は含めない。
 """
@@ -40,7 +40,7 @@ def run(order, victim_usdc, min_eth, front_usdc):
     attacker_eth = 0
     for tx in order:
         if tx == "A":
-            # Router は受取量が amountOutMin を下回ると取引全体を取り消す
+            # Router は受取量が amountOutMin を下回るとトランザクション全体を取り消す
             if amount_out(victim_usdc, pool.usdc, pool.eth) < min_eth:
                 result["A"] = None
                 continue
@@ -60,7 +60,7 @@ def min_out(victim_usdc, tolerance_bps):
 
 
 def largest_front(victim_usdc, min_eth):
-    """利用者の取引が取り消されない範囲で、最も大きい先回りの買いを二分探索する。"""
+    """利用者のトランザクションが取り消されない範囲で、最も大きい先回りの買いを二分探索する。"""
     lo, hi = 0, 3_000_000 * USDC
     while lo < hi:
         mid = (lo + hi + 1) // 2
