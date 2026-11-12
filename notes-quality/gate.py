@@ -22,6 +22,8 @@
 - `>` で始まる引用の行は語の判定から外す（ブログ記事・weeknotes・外部の文からの引用のため）。
 """
 import csv, difflib, glob, json, os, re, subprocess, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import no_chain  # noqa: E402  名詞を「の」で 3 つ以上つなぐ表現（2026-11-12 著者）
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -120,6 +122,8 @@ def _hits(lines):
         for row in drift_rows():
             for _ in range(t.count(row[0])):
                 out.append((f'「{row[0]}」（本人の言い方: {row[2] if len(row) > 2 else ""}）', t))
+        for c in no_chain.chains(t):
+            out.append((f'名詞を「の」で 3 つ以上つなぐ表現「{c}」', t))
         tt = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', t)
         for form, rx, hint in variant_rules():
             for _ in rx.findall(tt):

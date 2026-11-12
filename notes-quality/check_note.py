@@ -131,6 +131,15 @@ if ext < 2:
 if internal < 4:
     warn.append(f"他のノートへのリンクが {internal} 本（前提や詳しい説明がある所の初出に張る）")
 
+# 11. 名詞を「の」で 3 つ以上つながない（2026-11-12 著者。判定は no_chain.py）
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import no_chain  # noqa: E402
+
+found = no_chain.scan(raw)
+if found:
+    shown = "、".join(f"{n} 行「{c}」" for n, c in found[:12])
+    ng.append(f"名詞を「の」で 3 つ以上つないでいる所が {len(found)} 個（言い換える・動詞でつなぐ・文を分ける）: {shown}")
+
 print(("NG " if ng else "OK ") + p)
 for x in ng:
     print("  NG:", x)
