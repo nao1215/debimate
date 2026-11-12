@@ -247,7 +247,7 @@ A も B も、相手が書く前の `有効` を読んでから書き込みま�
 
 退会したはずの会員が一時停止になり、履歴には `有効` から始まる遷移が 2 件並びます。先の書き込みを古い値に基づいて上書きする、[lost update](../transaction-isolation/) と呼ばれる異常です。
 
-手順 1 と 2 の `SELECT` に `FOR UPDATE` を付けて会員のレコードをロックすると、B は A の `COMMIT` まで待ってから `退会済み` を読みます。退会済みから一時停止への矢印は上記の状態遷移図に無いので、B はこの時点で遷移を拒否できます。
+PostgreSQL が既定とする [READ COMMITTED](https://www.postgresql.org/docs/17/transaction-iso.html) の分離レベルでは、手順 1 と 2 の `SELECT` に `FOR UPDATE` を付けて会員のレコードをロックすると、B は A の `COMMIT` まで待ってから `退会済み` を読みます。REPEATABLE READ 以上では、B は読み直さずに直列化の失敗で中止されます。退会済みから一時停止への矢印は上記の状態遷移図に無いので、B はこの時点で遷移を拒否できます。
 
 現在の状態を保存せず、遷移の記録だけから状態を毎回組み立てる方式が [Event Sourcing](../../software-architecture/event-sourcing/) です。ここで挙げた履歴テーブルは現在の状態を `members` に残しているので、Event Sourcing とは別の設計になります。追記する 1 件を業務の出来事として名前を付けて扱う考え方は [Domain Event](../../software-architecture/domain-event/) で整理しています。
 
