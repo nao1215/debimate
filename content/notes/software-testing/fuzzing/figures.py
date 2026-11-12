@@ -242,7 +242,7 @@ def matrix_figure():
         s.box(30, y, 320, 34, RED_PALE if bad else PALE, RED if bad else SUB, rx=4)
         s.text(42, y + 22, f"{pkg}  {name}", 12.5, INK, "start", mono=True)
         if bad:
-            s.text(362, y + 22, "directory not found", 12.5, RED, "start", mono=True)
+            s.text(362, y + 22, "ディレクトリが無い", 12.5, RED, "start")
         else:
             s.line(350, y + 17, 560, y0 + j * dy + 17, LINE)
     for i, (pkg, name) in enumerate(tree):

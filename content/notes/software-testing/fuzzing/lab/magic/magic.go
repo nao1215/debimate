@@ -17,6 +17,7 @@ func ByteByByte(b []byte) {
 
 // AtOnce は先頭の 4 バイトを 1 回の比較で比べる。
 func AtOnce(b []byte) {
+	// 0x5a5a5546 は、"FUZZ" の 4 バイトを 1 つの整数として読んだ値。
 	if len(b) >= 4 && uint32(b[0])|uint32(b[1])<<8|uint32(b[2])<<16|uint32(b[3])<<24 == 0x5a5a5546 {
 		panic("FUZZ")
 	}

@@ -15,7 +15,7 @@ func FuzzAtOnce(f *testing.F) {
 	f.Fuzz(func(t *testing.T, b []byte) { AtOnce(b) })
 }
 
-// TestRandom は、カバレッジを見ずに乱数で 4 バイトを作り、同じ時間だけ ByteByByte を呼ぶ。
+// TestRandom は、カバレッジを見ずに乱数で 4 バイトを作り、1 億回 ByteByByte を呼ぶ。
 func TestRandom(t *testing.T) {
 	b := make([]byte, 4)
 	for i := 0; i < 100_000_000; i++ {

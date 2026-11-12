@@ -89,20 +89,90 @@ func AtOnce(b []byte) {
 
 Go の fuzz のテストは、名前が `Fuzz` で始まり `*testing.F` を受け取る関数です。`f.Add` で seed を渡し、`f.Fuzz` に渡した関数が、変異させた入力ごとに呼ばれます。
 
+以下は、2 つの関数の fuzz のテストと、比較のために乱数で 4 バイトを作って 1 億回渡すテスト `TestRandom` です。
+
 ```go
+package magic
+
+import (
+	"math/rand/v2"
+	"testing"
+)
+
 func FuzzByteByByte(f *testing.F) {
 	f.Add([]byte("seed"))
 	f.Fuzz(func(t *testing.T, b []byte) { ByteByByte(b) })
 }
+
+func FuzzAtOnce(f *testing.F) {
+	f.Add([]byte("seed"))
+	f.Fuzz(func(t *testing.T, b []byte) { AtOnce(b) })
+}
+
+// TestRandom は、カバレッジを見ずに乱数で 4 バイトを作り、1 億回 ByteByByte を呼ぶ。
+func TestRandom(t *testing.T) {
+	b := make([]byte, 4)
+	for i := 0; i < 100_000_000; i++ {
+		v := rand.Uint32()
+		b[0], b[1], b[2], b[3] = byte(v), byte(v>>8), byte(v>>16), byte(v>>24)
+		func() {
+			defer func() {
+				if recover() != nil {
+					t.Fatalf("found after %d inputs", i+1)
+				}
+			}()
+			ByteByByte(b)
+		}()
+	}
+	t.Logf("not found in 100,000,000 inputs")
+}
 ```
 
-`go test -run '^$' -fuzz '^FuzzByteByByte$'` で fuzz を始めます。`-run '^$'` は、普段のテストを走らせない指定です。比較のため、カバレッジを見ずに乱数で 4 バイトを作り、`ByteByByte` に 1 億回渡すテストも走らせました。条件と結果は以下の通りです。見つかるまでの回数は、ワーカーを 1 つにして（`-parallel 1`）数えました。
+`go test -run '^$' -fuzz '^FuzzByteByByte$'` で fuzz を始めます。`-run '^$'` は、普段のテストを走らせない指定です。`TestRandom` は普段の `go test` で走ります。条件と結果は以下の通りです。見つかるまでの回数は、ワーカーを 1 つにして（`-parallel 1`）数えました。
 
 | 条件 | 実行した回数 | 結果 |
 |---|---|---|
 | `ByteByByte` に fuzz | 36,709〜116,814 回 | 5 回とも見つかった |
 | `ByteByByte` に乱数の 4 バイト | 1 億回 | 見つからない |
 | `AtOnce` に fuzz | 2 分で約 1 億回を 3 回 | 見つからない |
+
+<br>
+
+<details>
+<summary>表の回数を数えた fuzz のテスト（count_test.go）</summary>
+
+`FuzzByteByByte` と同じ対象を呼び、何回目の呼び出しで見つけたかを panic のメッセージに入れます。実行は [exp1_magic.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp1_magic.sh) です。
+
+```go
+package magic
+
+// FuzzCount は FuzzByteByByte と同じ対象を、何回目の呼び出しで見つけたかを数えて呼ぶ。
+// -parallel 1 で走らせると、ワーカーが 1 つなので回数が実行回数になる。
+
+import (
+	"fmt"
+	"testing"
+)
+
+var calls int
+
+func FuzzCount(f *testing.F) {
+	f.Add([]byte("seed"))
+	f.Fuzz(func(t *testing.T, b []byte) {
+		calls++
+		defer func() {
+			if r := recover(); r != nil {
+				panic(fmt.Sprintf("found at call %d of this worker", calls))
+			}
+		}()
+		ByteByByte(b)
+	})
+}
+```
+
+</details>
+
+<br>
 
 {{< figure src="images/steps.webp" alt="左は ByteByByte。seed、F...、FU..、FUZ.、FUZZ と 1 段ずつ上がる階段で、1 段上がるたびに新しい分岐を通るので、その入力が corpus に残る。見つかるまで 36,709〜116,814 回。右は AtOnce。seed から FUZZ まで途中の段が無く、4 バイト全てを一度に当てる必要がある。当たる確率は 4,294,967,296 分の 1 で、2 分で約 1 億回実行しても見つからない" caption="1 バイトずつ比べると、途中まで一致した入力が corpus に残る" align="center" >}}
 
@@ -135,13 +205,93 @@ go test fuzz v1
 
 ### panic しない異常
 
-前の loop の図の通り、Go の fuzz が失敗とみなすのは、panic した時、`t.Fatal` などでテストが失敗した時、1 つの入力の実行が長すぎる時です。[公式の文書](https://go.dev/doc/security/fuzz/)は 1 秒と書いていますが、手元の Go 1.26.9 で試すと、8 秒眠る入力は通り、12 秒眠る入力は 10 秒で失敗になりました。試したスクリプトは [exp3_hang.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp3_hang.sh) です。
+前の loop の図の通り、Go の fuzz が失敗とみなすのは、panic した時、`t.Fatal` などでテストが失敗した時、1 つの入力の実行が長すぎる時です。
+
+[公式の文書](https://go.dev/doc/security/fuzz/)は、長すぎる時間を 1 秒と書いていますが、手元の Go 1.26.9 で試すと、8 秒眠る入力は通り、12 秒眠る入力は 10 秒で失敗になりました。試したのは以下の fuzz のテストで、環境変数 `SLEEP` を 3・8・12 と変えて [exp3_hang.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp3_hang.sh) で 40 秒ずつ走らせました。
+
+```go
+package hang
+
+import (
+	"os"
+	"strconv"
+	"testing"
+	"time"
+)
+
+func FuzzSleep(f *testing.F) {
+	d, _ := strconv.Atoi(os.Getenv("SLEEP"))
+	f.Add([]byte("seed"))
+	f.Fuzz(func(t *testing.T, b []byte) {
+		if len(b) > 4 {
+			time.Sleep(time.Duration(d) * time.Second)
+		}
+	})
+}
+```
 
 メモリの使い過ぎは検査しないので、冒頭の jsonize のように、OS がプロセスを止めるまで動き続けます。
 
 jsonize の問題は、1 行の入力が小さくても、読み取りが列の数だけ値を作る所にありました。256 列の見出しの下に `x` だけの行を並べると、各行は `x` と改行の 2 バイトですが、読み取りは 1 行ごとに 256 個の値を持つ JSON のオブジェクトを作ります。
 
 {{< figure src="images/row.webp" alt="左は入力で、1 行目は c0 c1 c2 … c255 の見出し、2 行目以降は x だけの行。1 行は x と改行の 2 バイト。右は読み取りが保持する 1 行分で、256 個の値の細い帯。c0 だけが x で、c1 から c255 は null。列の数は 256 で止めていたが、行の数は止めていなかったので、1 行 2 バイトの入力が 1 行約 29 KB のメモリになる" caption="1 行 2 バイトの入力が、256 個の値になる" align="center" >}}
+
+冒頭の図は、修正前と修正後の jsonize に計測用のプログラムを置いて測りました。[exp0_jsonize_retain.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp0_jsonize_retain.sh) が、行の数を 20,000 から 160,000 まで変えて走らせます。
+
+<br>
+
+<details>
+<summary>冒頭の図を測ったプログラム（retain.go.txt）</summary>
+
+jsonize の定義を読み込み、256 列の見出しの下に `x` だけの行を並べた入力を表として読み、直後のヒープの使用量（HeapAlloc）を表示します。
+
+```go
+// exp0_jsonize_retain.sh が jsonize の cmd/zzretain/main.go に置いて走らせるプログラム。
+// 256 列の見出しの下に "x" だけの行を rows 行並べ、engine.Parse の直後のヒープを表示する。
+package main
+
+import (
+	"fmt"
+	"os"
+	"runtime"
+	"strconv"
+	"strings"
+
+	"github.com/nao1215/jsonize/pkg/definition"
+	"github.com/nao1215/jsonize/pkg/engine"
+)
+
+func main() {
+	rows, _ := strconv.Atoi(os.Args[1])
+	def, err := definition.Load([]byte("format: 1\ncommand: t\nvariant: v\nparse: {type: table, split: aligned}\n"), "repro")
+	if err != nil {
+		panic(err)
+	}
+	var b strings.Builder
+	for i := range 256 {
+		if i > 0 {
+			b.WriteByte(' ')
+		}
+		fmt.Fprintf(&b, "c%d", i)
+	}
+	b.WriteByte('\n')
+	for range rows {
+		b.WriteString("x\n")
+	}
+	input := b.String()
+
+	out, err := engine.Parse(def, []byte(input), engine.Options{MaxInputSize: 64 << 20})
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("rows=%d input=%.1f KB heap=%.2f GB ratio=%.0f err=%v\n", rows,
+		float64(len(input))/1e3, float64(m.HeapAlloc)/1e9, float64(m.HeapAlloc)/float64(len(input)), err)
+	runtime.KeepAlive(out)
+}
+```
+
+</details>
+
+<br>
 
 修正では、読み取りが作った値の数を数え、4,194,304 個を超えたら入力を拒否するようにしました。修正後の jsonize に同じ入力を渡すと、16,386 行目で `the input yields more than 4194304 values` というエラーで止まります。入力の大きさではなく、読み取りが作るものの量に上限を置いたわけです。
 
@@ -151,25 +301,44 @@ jsonize の問題は、1 行の入力が小さくても、読み取りが列の�
 
 jsonize の件は、マシンが固まって初めて分かりました。メモリの使い過ぎをテストの失敗として見つけるには、fuzz の関数の中で検査する必要があります。
 
-[filesql](https://github.com/nao1215/filesql) は、CSV などのファイルを SQLite に読み込んで SQL で問い合わせる著者の Go のライブラリです。[Parquet](https://parquet.apache.org/) という列指向のファイル形式も読めます。
+[filesql](https://github.com/nao1215/filesql) は、CSV などのファイルを SQLite に読み込んで SQL で問い合わせる著者の Go のライブラリです。[Parquet](https://parquet.apache.org/) という[列指向](/notes/database-systems/columnar-storage/)のファイル形式も読めます。
 
 filesql の `FuzzParseBinary` は、壊れたファイルで panic しないかと、行のセルの数が見出しの数と合うかを検査する fuzz で、Parquet の読み取りの中で panic が起きる入力を 3 秒未満で見つけています（[Issue #413](https://github.com/nao1215/filesql/issues/413)）。
 
-この関数を元に、Parquet の読み取りが 16 MiB を超えて確保したら失敗にする fuzz を書き、確保を制限する修正の前のコードに掛けました。全体は [lab の exp2_parquet.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp2_parquet.sh) と [ceiling_test.go.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/parquet/ceiling_test.go.txt) にあります。
+この関数を元に、Parquet の読み取りが 16 MiB を超えて確保したら失敗にする fuzz を書き、確保を制限する修正の前のコードに掛けました。seed には、filesql のテスト用の本物の Parquet のファイルを渡しています。[exp2_parquet.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp2_parquet.sh) が、このファイルを filesql の parser パッケージに置いて走らせます。
 
 ```go
-f.Fuzz(func(t *testing.T, data []byte) {
-	if len(data) > 1<<16 {
-		t.Skip()
+package parser
+
+import (
+	"bytes"
+	"os"
+	"path/filepath"
+	"runtime"
+	"testing"
+)
+
+// FuzzParquetCeiling は FuzzParseBinary の Parquet の部分に、
+// 「64 KiB 以下のファイルを読むのに 16 MiB を超えて確保しないか」の検査を足したもの。
+// exp2_parquet.sh fuzz が filesql の parser パッケージに置いて走らせる。
+func FuzzParquetCeiling(f *testing.F) {
+	if parquet, err := os.ReadFile(filepath.Join("testdata", "products.parquet")); err == nil {
+		f.Add(parquet)
 	}
-	var before, after runtime.MemStats
-	runtime.ReadMemStats(&before)
-	_, _ = Parse(bytes.NewReader(data), Parquet)
-	runtime.ReadMemStats(&after)
-	if got, limit := after.TotalAlloc-before.TotalAlloc, uint64(16<<20); got > limit {
-		t.Fatalf("%d bytes allocated %d MiB", len(data), got>>20)
-	}
-})
+	f.Add([]byte("PAR1"))
+	f.Fuzz(func(t *testing.T, data []byte) {
+		if len(data) > 1<<16 {
+			t.Skip()
+		}
+		var before, after runtime.MemStats
+		runtime.ReadMemStats(&before)
+		_, _ = Parse(bytes.NewReader(data), Parquet)
+		runtime.ReadMemStats(&after)
+		if got, limit := after.TotalAlloc-before.TotalAlloc, uint64(16<<20); got > limit {
+			t.Fatalf("%d bytes allocated %d MiB", len(data), got>>20)
+		}
+	})
+}
 ```
 
 `runtime.MemStats` の `TotalAlloc` は、プロセスがそれまでにヒープに確保したメモリの累計で、解放しても減りません。`Parse` の前後の差が、1 回の読み取りで確保した量になります。64 KiB を超える入力は飛ばすので、16 MiB は入力の 256 倍以上です。
@@ -180,6 +349,53 @@ f.Fuzz(func(t *testing.T, data []byte) {
 
 filesql の修正（[Issue #526](https://github.com/nao1215/filesql/issues/526)）のきっかけになった 473 バイトのファイルも、`FuzzParseBinary` に確保の上限を足して見つけたものです。Go の fuzz は、失敗する入力を見つけると、失敗したまま小さくできるだけ小さくしてから保存します。473 バイトは、そうして縮めた後の大きさです。
 
+<br>
+
+<details>
+<summary>473 バイトのファイルを読んだテスト（cost_test.go.txt）</summary>
+
+`page_header.b64` は、473 バイトのファイルを base64 にしたものです。
+
+```go
+package reader
+
+// exp2_parquet.sh が filesql の internal/reader に置いて走らせるテスト。
+// fuzz が 473 バイトまで縮めた Parquet を 1 回読み、確保したメモリの合計を表示する。
+
+import (
+	"bytes"
+	"encoding/base64"
+	"os"
+	"runtime"
+	"strings"
+	"testing"
+)
+
+func TestPageHeaderCost(t *testing.T) {
+	b64, err := os.ReadFile(os.Getenv("PAGE_HEADER_B64"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, err := base64.StdEncoding.DecodeString(strings.TrimSpace(string(b64)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	var before, after runtime.MemStats
+	runtime.GC()
+	runtime.ReadMemStats(&before)
+	_, readErr := readParquet(bytes.NewReader(data), Options{}, func(*Chunk) error { return nil })
+	runtime.ReadMemStats(&after)
+
+	t.Logf("%d bytes allocated %.1f KiB, err=%v", len(data),
+		float64(after.TotalAlloc-before.TotalAlloc)/(1<<10), readErr)
+}
+```
+
+</details>
+
+<br>
+
 修正前（8cf4dda）と修正後（bd2f9e9）で、このファイルを 1 回ずつ読んだ出力が以下です。
 
 ```text
@@ -188,6 +404,7 @@ filesql の修正（[Issue #526](https://github.com/nao1215/filesql/issues/526)�
 == filesql bd2f9e9 (bd2f9e9)
 473 bytes allocated 40.1 KiB, err=parquet column chunk 0 of row group 0 claims 3113 bytes at offset 42 in a file of 473
 ```
+
 
 修正前も、エラーを返すという結果は正しいです。問題は、エラーを返すまでに 98.1 MiB を確保した点にあります。
 
@@ -232,11 +449,11 @@ fuzz が見つけられるのは、fuzz の関数が検査している異常だ�
 
 ジョブは、パッケージのパスと関数名の組の一覧（matrix）から作ります。filesql では、v0.55.0 でパッケージを `internal/` の下に移した時、この一覧を直し忘れました。
 
-{{< figure src="images/matrix.webp" alt="左は filesql の夜間の fuzz の matrix の 7 行、右はリポジトリにある Fuzz 関数の 7 個。5 組は線でつながる。左の ./parser FuzzParseFormats と ./parser FuzzParseBinary は赤で directory not found。右の internal/parser FuzzParseFormats と internal/parser FuzzParseBinary は黄色で、どのジョブも回していなかった" caption="filesql v0.56.0 の時点で、2 つの fuzz の関数を誰も回していなかった" align="center" >}}
+{{< figure src="images/matrix.webp" alt="左は filesql の夜間の fuzz の matrix の 7 行、右はリポジトリにある Fuzz 関数の 7 個。5 組は線でつながる。左の ./parser FuzzParseFormats と ./parser FuzzParseBinary は赤で、ディレクトリが無いと示す。右の internal/parser FuzzParseFormats と internal/parser FuzzParseBinary は黄色で、どのジョブも回していなかった" caption="filesql v0.56.0 の時点で、2 つの fuzz の関数を誰も回していなかった" align="center" >}}
 
-一覧の `./parser` が存在しないので、2 つのジョブは毎晩 `directory not found` で失敗していました。一覧には `fail-fast: false` を指定していたので、1 つのジョブが失敗しても他の 5 つは最後まで走ります。また、スケジュールで動くジョブの失敗は、プルリクエストの画面には出ません。そのため、誰も失敗を見ていませんでした。
+一覧の `./parser` が存在しないので、2 つのジョブは毎晩、ディレクトリが無いことを示す `directory not found` というエラーで失敗していました。一覧には `fail-fast: false` を指定していたので、1 つのジョブが失敗しても他の 5 つは最後まで走ります。また、スケジュールで動くジョブの失敗は、プルリクエストの画面には出ません。そのため、誰も失敗を見ていませんでした。
 
-回っていなかった 2 つは、外部から受け取ったファイルを読む関数の fuzz で、filesql の中で最も fuzz が必要な所でした。v0.56.0 の時点でジョブの失敗に気付き、[Issue #1051](https://github.com/nao1215/filesql/issues/1051) で直しました。
+回っていなかった 2 つは、外から受け取ったファイルを読む関数の fuzz で、filesql の中で最も fuzz が必要な所でした。v0.56.0 の時点でジョブの失敗に気付き、[Issue #1051](https://github.com/nao1215/filesql/issues/1051) で直しました。
 
 jsonize でも、新しく書いた 2 つの fuzz の関数を一覧に足し忘れました。一覧とリポジトリの fuzz の関数を比べるジョブはありましたが、1 日 1 回の定期実行でしか動かなかったので、関数を書いたプルリクエストではなく、翌日の定期実行で報告されました。
 
@@ -248,7 +465,7 @@ jsonize でも、新しく書いた 2 つの fuzz の関数を一覧に足し忘
 
 fuzz の関数を書くこと自体は、数行で済みます。著者の OSS で fuzz が役に立ったか、役に立たなかったかを分けたのは、以下の 4 つでした。
 
-| 決めること | 確かめること |
+| 決めること | 確認すること |
 |---|---|
 | 対象 | ファイル、ネットワーク、コマンドの出力など、外から受け取るバイト列を読む関数か |
 | 検査 | panic に加えて、メモリと時間の上限や、別の読み方・別の実装との一致を見るか |
