@@ -43,7 +43,7 @@ jsonize の wc の定義にも、GNU coreutils 9.7 の `wc` の本物の出力�
 
 コマンドの出力を読むパーサーも、この種類の処理です。jsonize は v0.9.1 で 280 個のコマンドの出力を読みます。定義ごとに本物の出力を fixture として保存し、期待する JSON を golden ファイルとして置いて比べています。
 
-正解を書けない処理に使える手法は、他にもあります。Property-Based Testing は、Haskell の [QuickCheck の論文](https://dl.acm.org/doi/10.1145/351240.351266)で広まった手法で、「ソートした結果は昇順に並ぶ」のような、1 つの出力だけで判定できる性質を書きます。[Differential Testing](https://web.archive.org/web/20061031200115/http://www.hpl.hp.com/hpjournal/dtj/vol10num1/vol10num1art9.pdf) は、同じ仕様の別の実装と出力を比べます。
+正解を書けない処理に使える手法は、他にもあります。Property-Based Testing は、Haskell の [QuickCheck の論文](https://dl.acm.org/doi/10.1145/351240.351266)で広まった手法で、「ソートした結果は昇順に並ぶ」のような、1 つの出力だけで判定できるプロパティ（property）を書きます。[Differential Testing](https://web.archive.org/web/20061031200115/http://www.hpl.hp.com/hpjournal/dtj/vol10num1/vol10num1art9.pdf) は、同じ仕様の別の実装と出力を比べます。
 
 テストの種類ごとに、何を正解とみなすか、何を用意するかと、Software Testing の各ノートの実験で見つけた例を並べると以下の通りです。
 
@@ -51,7 +51,7 @@ jsonize の wc の定義にも、GNU coreutils 9.7 の `wc` の本物の出力�
 |---|---|---|---|
 | 例を使うテスト | 人が書いた期待値 | 入力ごとの正解 | — |
 | golden テスト | 前に保存した出力 | 目で見た最初の出力 | 冒頭の合計行は見逃した |
-| Property-Based Testing | 1 つの出力が満たす性質 | 性質と乱数の入力 | filesql の Distinct の重複 |
+| Property-Based Testing | 1 つの出力が満たすプロパティ | プロパティと乱数の入力 | filesql の Distinct の重複 |
 | Metamorphic Testing | 複数の出力の間の関係 | 入力の変換と関係 | wc の合計行（実験 1） |
 | Differential Testing | 別の実装の出力 | 同じ仕様の別の実装 | 終了コードが 0 の失敗 |
 
@@ -352,7 +352,7 @@ jsonize でも同じことが起きています。2026-09-12 に関係のテス�
 
 ### 反例の最小化
 
-testing/quick は新しい機能を追加しない方針（frozen）で、反例を最小化する機能もありません。実験 3 で手で行った最小化を自動で行う機能は shrinking と呼ばれ、[Property-Based Testing](/notes/software-testing/property-based-testing/) のライブラリの多くが持っています。
+testing/quick は新しい機能を追加しない方針（frozen）で、反例を最小化する機能もありません。実験 3 で手で行った最小化を自動で行う機能は収縮（shrinking）と呼ばれ、[Property-Based Testing](/notes/software-testing/property-based-testing/) のライブラリの多くが持っています。
 
 著者は、Erlang の VM と JavaScript で動く関数型言語の [Gleam](https://gleam.run/) で、Property-Based Testing と Metamorphic Testing を同じ形で書けるライブラリ [metamon](https://github.com/nao1215/metamon) を作っています。以下は README にある例で、`string.trim` を 2 回実行しても 1 回と同じ、という冪等の関係を書いています。
 
@@ -374,7 +374,7 @@ pub fn trim_idempotent_test() {
 
 `idempotency_of` に渡した `string.trim` が図の変換 T、`forall_morph` の 3 つ目の引数が f で、関係 R は f(x)＝f(T(x)) です。冪等の関係なので、この例では T と f が同じ `string.trim` です。
 
-`forall_morph` は、生成器（`generator.string_ascii`）で作った入力で関係を検証し、失敗したら入力を最小化してから報告します。冪等の他に、変換しても出力が変わらない関係（`invariant_under`）や、入力の変換に合わせて出力も決まった形で変わる関係（`equivariant_under`）の型を持っています。
+`forall_morph` は、ジェネレーター（`generator.string_ascii`）で作った入力で関係を検証し、失敗したら入力を最小化してから報告します。冪等の他に、変換しても出力が変わらない関係（`invariant_under`）や、入力の変換に合わせて出力も決まった形で変わる関係（`equivariant_under`）の型を持っています。
 
 ---
 

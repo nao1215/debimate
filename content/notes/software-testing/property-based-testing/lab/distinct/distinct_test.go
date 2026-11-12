@@ -25,7 +25,7 @@ func (tb table) rows() []map[string]any {
 	return rows
 }
 
-// 性質: Distinct が返す行の数は、値が本当に異なる行の数に等しい。
+// プロパティ: Distinct が返す行の数は、値が本当に異なる行の数に等しい。
 // セルは nil・int64・string だけなので、[2]any を map の鍵にすれば
 // 「型と値が両方同じ」の比較になる。
 func check(tb table) error {
@@ -44,7 +44,7 @@ func check(tb table) error {
 	return nil
 }
 
-// 狭い生成器: 整数は 0〜9、文字列は 0〜2 文字で、文字は数字・x・NUL だけ。
+// 狭いジェネレーター: 整数は 0〜9、文字列は 0〜2 文字で、文字は数字・x・NUL だけ。
 const narrowRunes = "0123456789x\x00"
 
 func narrowCell(r *rand.Rand) any {
@@ -62,7 +62,7 @@ func narrowCell(r *rand.Rand) any {
 	}
 }
 
-// 広い生成器: 整数は int64 の全範囲、文字列は testing/quick が string に使う既定の生成。
+// 広いジェネレーター: 整数は int64 の全範囲、文字列は testing/quick が string に使う既定の生成。
 func broadCell(r *rand.Rand) any {
 	switch r.Intn(3) {
 	case 0:
@@ -126,10 +126,10 @@ func TestQuickSeeds(t *testing.T) {
 	}
 }
 
-// rapid の生成器。狭い・広いの範囲は上の testing/quick と同じにする。
+// rapid のジェネレーター。狭い・広いの範囲は上の testing/quick と同じにする。
 func rapidCell(gen string) *rapid.Generator[any] {
 	if gen == "edge" {
-		// 境界を足した生成器: 整数に、float64 で正確に表せる最大の連続した整数 2^53 の前後を混ぜる。
+		// 境界を足したジェネレーター: 整数に、float64 で正確に表せる最大の連続した整数 2^53 の前後を混ぜる。
 		return rapid.OneOf(
 			rapid.Just[any](nil),
 			rapid.Map(rapid.OneOf(rapid.Int64Range(0, 9), rapid.Int64Range(1<<53-2, 1<<53+2)), func(v int64) any { return v }),
@@ -167,7 +167,7 @@ func TestRapid(t *testing.T) {
 	})
 }
 
-// SHRINKLOG を指定すると、性質が破れた表を破れた順にそのファイルへ 1 行ずつ足す。
+// SHRINKLOG を指定すると、プロパティが破れた表を破れた順にそのファイルへ 1 行ずつ足す。
 // 最初の行が最初に見つけた反例で、その後は rapid が縮める途中で破れた表。
 func logShrink(tb table) {
 	p := os.Getenv("SHRINKLOG")

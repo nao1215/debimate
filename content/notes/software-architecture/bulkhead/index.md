@@ -11,7 +11,7 @@ crossTopics:
   distributed-systems: ["Reliability"]
 ---
 
-Bulkhead（隔壁）は、スレッドや接続のような限られた資源を用途ごとに区切り、1 つの用途が資源を使い切っても、他の用途の分が残るようにするパターンです。名前は船の隔壁から来ています。船体を区画に仕切っておけば、穴の開いた区画だけが浸水し、船全体は沈みません。[Microsoft の設計パターンの解説](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead)も、この船の例で説明しています。
+Bulkhead（バルクヘッド）は、スレッドや接続のような限られた資源を用途ごとに区切り、1 つの用途が資源を使い切っても、他の用途の分が残るようにするパターンです。名前は船の隔壁から来ています。船体を区画に仕切っておけば、穴の開いた区画だけが浸水し、船全体は沈みません。[Microsoft の設計パターンの解説](https://learn.microsoft.com/en-us/azure/architecture/patterns/bulkhead)も、この船の例で説明しています。
 
 ソフトウェアで区切る対象は、多くの場合、呼び出し側のサーバーが持つスレッドや接続です。以下は、スレッド 40 本を持つサーバーで、呼び出し先の 1 つが応答しなくなって 15 秒後のスレッドの使われ方を描いた図です。数値は、後で説明するシミュレーションの値です。
 
@@ -24,7 +24,7 @@ Bulkhead（隔壁）は、スレッドや接続のような限られた資源を
 本記事では、[Circuit Breaker](/notes/software-architecture/circuit-breaker/) のノートと同じ条件のシミュレーションで、Bulkhead が何を守り、何を守らないのかを説明します。扱う疑問は次の通りです。
 
 - 呼び出し先の 1 つが止まると、なぜ関係の無い要求まで失敗するのか。
-- 隔壁で区切ると、何がどれだけ変わるのか。
+- Bulkhead で区切ると、何がどれだけ変わるのか。
 - 区画の大きさは、何から決めるのか。
 - Circuit Breaker や timeout（待つ時間の上限）とは、どう役割を分けるのか。
 - 区切る単位には、どんな種類があるのか。
@@ -49,7 +49,7 @@ Bulkhead の効果は、Python の標準ライブラリだけで書いた 1 ミ�
 - 要求 A は在庫サービスを呼び、要求 B は呼ばずに 5 ms で終わる。どちらも平均毎秒 50 件で、到着の間隔はランダム（ポアソン到着。乱数の種は固定）
 - 在庫サービスは通常 50 ms で応答し、10 秒から 40 秒までは応答を返さない。呼び出し側は 2 秒で打ち切る
 
-Bulkhead は、A が同時に使えるスレッドの上限（`a_limit`）として入れます。上限に達している時に届いた A は、スレッドが余っていても、待たずにすぐ断ります。以下は、シミュレーションの本体です。1 ミリ秒ごとに、(1) 応答が返ってきた呼び出しのスレッドを返し、(2) 届いた要求を受け付けるか断り（隔壁は `a_limit` の条件の 1 行）、(3) 1 秒ごとに使用中のスレッドの数を記録します（到着の列を作る `arrivals()` と、結果を表示する部分は [lab/sim.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/bulkhead/lab/sim.py) にあります）。
+Bulkhead は、A が同時に使えるスレッドの上限（`a_limit`）として入れます。上限に達している時に届いた A は、スレッドが余っていても、待たずにすぐ断ります。以下は、シミュレーションの本体です。1 ミリ秒ごとに、(1) 応答が返ってきた呼び出しのスレッドを返し、(2) 届いた要求を受け付けるか断り（Bulkhead は `a_limit` の条件の 1 行）、(3) 1 秒ごとに使用中のスレッドの数を記録します（到着の列を作る `arrivals()` と、結果を表示する部分は [lab/sim.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/bulkhead/lab/sim.py) にあります）。
 
 ```python
 END, OUTAGE = 60_000, (10_000, 40_000)  # milliseconds
@@ -125,7 +125,7 @@ bulkhead A<=10     B ok during outage 100.0%  B ok 3076  B rejected 0  A ok 1499
 
 ---
 
-### 隔壁は A を救わない
+### Bulkhead は A を救わない
 
 上の結果で、B は守られましたが、A は守られていません。停止中の A は、仕切りなしでも Bulkhead でも全て失敗しています。違うのは失敗の仕方です。
 
@@ -183,7 +183,7 @@ A の上限を小さくすれば B は守りやすくなりますが、在庫サ
 
 区切る資源はスレッドに限りません。DB の接続プールを、管理画面とユーザー向けの API で分ける例や、呼び出し先ごとに HTTP クライアントの接続の上限を分ける例もあります。DB の接続数の上限そのものは、[Connection Pool](/notes/database-systems/connection-pool/) のノートで扱います。
 
-区切る単位も、呼び出し先ごと（上の例）に限りません。提供する側が、顧客やテナントごとに資源を区切ることもあります。顧客ごとに独立した環境の組（cell）を並べる [Cell-Based Architecture](/notes/software-architecture/cell-based-architecture/) は、この考えをサービスの全体に広げたものです。Microsoft の解説も、Bulkhead は cell-based architecture とも呼ばれる、と書いています。
+区切る単位も、呼び出し先ごと（上の例）に限りません。提供する側が、顧客やテナントごとに資源を区切ることもあります。顧客ごとに独立した環境をセル（cell）として並べる [Cell-Based Architecture](/notes/software-architecture/cell-based-architecture/) は、この考えをサービスの全体に広げたものです。Microsoft の解説も、Bulkhead は cell-based architecture とも呼ばれる、と書いています。
 
 ---
 

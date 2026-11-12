@@ -35,7 +35,7 @@ OUT.mkdir(exist_ok=True)
 # ワーカー 100 台。1 人の顧客が使う台数 k を変える。
 N = 100
 ks = list(range(1, 11))
-cell_full = [k / N for k in ks]  # 通常の cell: 毒入り顧客と同じ cell の顧客が全滅
+cell_full = [k / N for k in ks]  # 通常の cell: ポイズンピルを送る顧客と同じ cell の顧客が全滅
 shuffle_full = [1 / comb(N, k) for k in ks]  # 組が完全に重なる顧客だけが全滅
 # k = 1 では一部だけ止まる顧客がいないので、対数軸に載せない。
 shuffle_part = [1 - comb(N - k, k) / comb(N, k) - 1 / comb(N, k) if k > 1 else float("nan")

@@ -1,5 +1,5 @@
 ---
-title: "Property-Based Testing - 性質を書いて入力を作らせ、破れた入力を縮める"
+title: "Property-Based Testing - プロパティを書いて入力を作らせ、破れた入力を縮める"
 date: 2026-11-12
 draft: false
 series: ["技術ノート", "Software Testing"]
@@ -9,21 +9,21 @@ wrapTables: true
 topics: ["Input Generation"]
 ---
 
-Property-Based Testing（プロパティベーステスト）は、入力と期待値の組を人が書く代わりに、どの入力でも成り立つはずの性質を書き、入力を機械に作らせて性質が破れる入力を探すテスト手法です。性質が破れた入力を反例と呼びます。多くのライブラリは、反例を見つけると、性質が破れたまま入力を小さくする縮小（shrinking）も行います。
+Property-Based Testing（プロパティベーステスト）は、入力と期待値の組を人が書く代わりに、どの入力でも成り立つはずのプロパティ（property）を書き、入力を機械に作らせてプロパティが破れる入力を探すテスト手法です。プロパティが破れた入力を反例と呼びます。多くのライブラリは、反例を見つけると、プロパティが破れたまま入力を小さくする収縮（shrinking）も行います。
 
-著者は 2026 年 8 月に、Go のライブラリ [filesql](https://github.com/nao1215/filesql) の `Distinct` に性質を書きました。filesql は CSV などのファイルを SQL で読むライブラリで、`Distinct` は当時あった frame パッケージの、重複した行を 1 行にまとめる関数です。文書には「全ての列の値が等しい行を重複とみなす」とあり、入力と期待値を並べたテストも通っていました。
+著者は 2026 年 8 月に、Go のライブラリ [filesql](https://github.com/nao1215/filesql) の `Distinct` にプロパティを書きました。filesql は CSV などのファイルを SQL で読むライブラリで、`Distinct` は当時あった frame パッケージの、重複した行を 1 行にまとめる関数です。文書には「全ての列の値が等しい行を重複とみなす」とあり、入力と期待値を並べたテストも通っていました。
 
-性質は「`Distinct` が返す行の数は、値が本当に異なる行の数に等しい」です。標準ライブラリの [testing/quick](https://pkg.go.dev/testing/quick) で入力を作らせると、4 個目の入力で性質が破れ、20 行の表が反例として報告されました。testing/quick は反例を縮めないので、著者は手で行を消して 2 行まで減らし、[Issue #354](https://github.com/nao1215/filesql/issues/354) に報告しました。残った 2 行は、整数の 7 と文字列の "7" のように、値は異なるのに `Distinct` が 1 行にまとめた組でした。
+プロパティは「`Distinct` が返す行の数は、値が本当に異なる行の数に等しい」です。標準ライブラリの [testing/quick](https://pkg.go.dev/testing/quick) で入力を作らせると、4 個目の入力でプロパティが破れ、20 行の表が反例として報告されました。testing/quick は反例を縮めないので、著者は手で行を消して 2 行まで減らし、[Issue #354](https://github.com/nao1215/filesql/issues/354) に報告しました。残った 2 行は、整数の 7 と文字列の "7" のように、値は異なるのに `Distinct` が 1 行にまとめた組でした。
 
-手元では、修正前のコードを写し、同じ性質を testing/quick と、反例を縮める [rapid](https://github.com/flyingmutant/rapid) で回し直しました。下の図は、乱数の初期値（種）を 1 にした回の反例で、Issue の 20 行の表とは別の表です。
+手元では、修正前のコードを写し、同じプロパティを testing/quick と、反例を縮める [rapid](https://github.com/flyingmutant/rapid) で回し直しました。下の図は、乱数の初期値（種）を 1 にした回の反例で、Issue の 20 行の表とは別の表です。
 
 {{< figure src="images/cover.webp" alt="左は testing/quick が報告した 10 行の表で、1 行目の a: nil b: int64(8) と 2 行目の a: nil b: \"8\" だけが赤い。右は rapid が報告した 2 行の表で、a: \"\" b: int64(0) と a: \"\" b: \"0\" の 2 行がどちらも赤い" caption="testing/quick は 10 行の表、rapid は原因の 2 行だけを返した（種 1）" align="center" >}}
 
-左の 10 行のうち、性質が破れた原因は赤い 2 行だけです。残りの 8 行は、原因を探す人が 1 行ずつ消して確認する必要があります。右の rapid は、その作業を済ませた 2 行を返しています。
+左の 10 行のうち、プロパティが破れた原因は赤い 2 行だけです。残りの 8 行は、原因を探す人が 1 行ずつ消して確認する必要があります。右の rapid は、その作業を済ませた 2 行を返しています。
 
 <br>
 
-本記事では、Issue #354 のバグと、その修正に残っていたもう 1 つのバグを手元で再現し、Property-Based Testing の書き方と、反例の縮小、入力の範囲の決め方を説明します。扱う疑問は以下の通りです。
+本記事では、Issue #354 のバグと、その修正に残っていたもう 1 つのバグを手元で再現し、Property-Based Testing の書き方と、反例の収縮（shrinking）、入力の範囲の決め方を説明します。扱う疑問は以下の通りです。
 
 - 入力と期待値を並べるテストと、何が違うのか。
 - 反例を縮めると、何が変わるのか。
@@ -33,19 +33,19 @@ Property-Based Testing（プロパティベーステスト）は、入力と期�
 
 ---
 
-### 例ではなく性質を書く
+### 例ではなくプロパティを書く
 
 本記事では、入力と期待値の組を並べるテストを例のテストと呼びます。Go では[テーブル駆動テスト](https://go.dev/wiki/TableDrivenTests)の形でよく書きます。例のテストは、書いた人が思い付いた入力しか試しません。`Distinct` の例のテストには、整数の行だけの表や、文字列の行だけの表はありましたが、整数の 7 と文字列の "7" が同じ列に並ぶ表はありませんでした。
 
-Property-Based Testing では、例の代わりに 2 つを書きます。1 つは入力の作り方で、生成器（generator）と呼びます。もう 1 つは、作った入力で成り立つはずの性質です。ライブラリは生成器で入力を作り、性質を確認する処理を数百回繰り返します。
+Property-Based Testing では、例の代わりに 2 つを書きます。1 つは入力の作り方で、ジェネレーター（generator）と呼びます。もう 1 つは、作った入力で成り立つはずのプロパティです。ライブラリはジェネレーターで入力を作り、プロパティを確認する処理を数百回繰り返します。
 
-以下は、本記事の実験で使う性質です。行の値を Go の配列にして map の鍵に入れると、型と値が両方同じ行だけが 1 つにまとまります。この単純な数え方を正しい答えとして、`Distinct` の結果の行数と比べます。
+以下は、本記事の実験で使うプロパティです。行の値を Go の配列にして map の鍵に入れると、型と値が両方同じ行だけが 1 つにまとまります。この単純な数え方を正しい答えとして、`Distinct` の結果の行数と比べます。
 
 ```go
 // 表は a と b の 2 列。セルは nil、int64、string のどれか。
 type table [][2]any
 
-// 性質: Distinct が返す行の数は、値が本当に異なる行の数に等しい。
+// プロパティ: Distinct が返す行の数は、値が本当に異なる行の数に等しい。
 // セルは nil・int64・string だけなので、[2]any を map の鍵にすれば
 // 「型と値が両方同じ」の比較になる。
 func check(tb table) error {
@@ -67,7 +67,7 @@ func check(tb table) error {
 
 `tb.rows()` は、列名から値への map を並べた `Distinct` の入力の形に、表を直す関数です。`DistinctWith` は、行の鍵を作る関数を差し替えられるように実験で足した関数で、`makeRowKey` を渡すと修正前の `Distinct` と同じ動きになります。`fixedRowKey` は後の実験 2 で使う修正後の鍵で、環境変数 `KEY` で切り替えます。
 
-性質を確認するためには、正しい答えを別の方法で出す必要があります。ここでは、map で数えるという遅いが間違えにくい方法を使いました。正しい答えを出す方法が見つからない時に、入力を変えた時の出力の関係で確認する方法は [Metamorphic Testing](/notes/software-testing/metamorphic-testing/) のノートで、同じ仕様の別の実装と比べる方法は [Differential Testing](/notes/software-testing/differential-testing/) のノートで扱っています。
+プロパティを確認するためには、正しい答えを別の方法で出す必要があります。ここでは、map で数えるという遅いが間違えにくい方法を使いました。正しい答えを出す方法が見つからない時に、入力を変えた時の出力の関係で確認する方法は [Metamorphic Testing](/notes/software-testing/metamorphic-testing/) のノートで、同じ仕様の別の実装と比べる方法は [Differential Testing](/notes/software-testing/differential-testing/) のノートで扱っています。
 
 <br>
 
@@ -75,7 +75,7 @@ func check(tb table) error {
 
 Property-Based Testing は、Haskell の QuickCheck を説明した [2000 年の論文](https://dl.acm.org/doi/10.1145/351240.351266) で広まりました。Python には [Hypothesis](https://hypothesis.readthedocs.io/) があり、本記事で使う rapid はこれを手本にしています。
 
-Go では、標準ライブラリの testing/quick が関数の引数の型から入力を作ります。ただし、testing/quick は新しい機能を受け付けない方針（frozen）で、反例の縮小もありません。本記事で使う rapid は、README で Hypothesis と同じ使い勝手を Go に持ち込むことを目的に掲げ、反例を自動で縮めます。バージョンは 2026-03-30 に出た v1.3.0 を使いました。
+Go では、標準ライブラリの testing/quick が関数の引数の型から入力を作ります。ただし、testing/quick は新しい機能を受け付けない方針（frozen）で、反例の収縮もありません。本記事で使う rapid は、README で Hypothesis と同じ使い勝手を Go に持ち込むことを目的に掲げ、反例を自動で縮めます。バージョンは 2026-03-30 に出た v1.3.0 を使いました。
 
 ---
 
@@ -105,17 +105,17 @@ func makeRowKey(row map[string]any, columns []string) string {
 
 ---
 
-### 実験 1: 同じ性質を testing/quick と rapid で回す
+### 実験 1: 同じプロパティを testing/quick と rapid で回す
 
-実験 1 では、修正前の鍵に同じ性質を掛け、2 つのライブラリが返す反例を比べます。表は 0〜20 行・2 列で、セルは nil・整数・文字列のどれかです。生成器は 2 つ用意しました。
+実験 1 では、修正前の鍵に同じプロパティを掛け、2 つのライブラリが返す反例を比べます。表は 0〜20 行・2 列で、セルは nil・整数・文字列のどれかです。ジェネレーターは 2 つ用意しました。
 
-- 狭い生成器: 整数は 0〜9、文字列は数字・`x`・NUL から 0〜2 文字。
-- 広い生成器: 整数は int64 の全範囲、文字列はライブラリの既定の作り方。
+- 狭いジェネレーター: 整数は 0〜9、文字列は数字・`x`・NUL から 0〜2 文字。
+- 広いジェネレーター: 整数は int64 の全範囲、文字列はライブラリの既定の作り方。
 
-以下は rapid の生成器と、性質を確認するテストです。testing/quick の生成器も同じ範囲で書きました（下の折り畳み）。1 回の実行で入力を最大 500 個作り、乱数の種を 1〜100 に変え、ライブラリと生成器の 4 つの組ごとに 100 回実行しました。
+以下は rapid のジェネレーターと、プロパティを確認するテストです。testing/quick のジェネレーターも同じ範囲で書きました（下の折り畳み）。1 回の実行で入力を最大 500 個作り、乱数の種を 1〜100 に変え、ライブラリとジェネレーターの 4 つの組ごとに 100 回実行しました。
 
 ```go
-// rapid の生成器。狭い・広いの範囲は testing/quick と同じにする。
+// rapid のジェネレーター。狭い・広いの範囲は testing/quick と同じにする。
 func rapidCell(gen string) *rapid.Generator[any] {
 	if gen == "broad" {
 		return rapid.OneOf(

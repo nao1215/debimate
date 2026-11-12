@@ -1,6 +1,6 @@
 #!/bin/sh
-# 実験 2: filesql の修正（305c7bf）の鍵の作り方に、同じ性質を rapid で掛ける。
-# 生成器は、狭い（narrow）・広い（broad）・2^53 の前後を混ぜた（edge）の 3 つ。種 1〜100、各 500 入力。
+# 実験 2: filesql の修正（305c7bf）の鍵の作り方に、同じプロパティを rapid で掛ける。
+# ジェネレーターは、狭い（narrow）・広い（broad）・2^53 の前後を混ぜた（edge）の 3 つ。種 1〜100、各 500 入力。
 set -eu
 cd "$(dirname "$0")/distinct"
 out=../output/exp2_fixed.tsv

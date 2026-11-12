@@ -222,7 +222,7 @@ func (o *Order) PullEvents() []DomainEvent {
 flowchart LR
     subgraph TX["業務データと同じトランザクション"]
         O[("orders<br/>業務データ")]
-        OB[("outbox<br/>送信箱")]
+        OB[("outbox<br/>テーブル")]
     end
     AP["業務処理"] --> O
     AP --> OB
@@ -233,7 +233,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の業務処理は、メッセージを外部に送る代わりに、業務データと同じトランザクションで outbox（送信箱）テーブルに書き込みます。
+上記の図の業務処理は、メッセージを外部に送る代わりに、業務データと同じトランザクションで outbox テーブルに書き込みます。
 
 コミットが成立すれば送るべき行が outbox に残り、巻き戻せば業務データと一緒に消えるので、業務データの更新と送信の予約は食い違いません。しかし、relay（図の message relay）が止まっている間は送られず、届く回数とタイミングも relay とブローカーの実装で変わります。この保証の範囲は [Transactional Outbox のノート](../../distributed-systems/transactional-outbox/)で扱っています。
 

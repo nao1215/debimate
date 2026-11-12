@@ -34,11 +34,11 @@ stdio のバッファリング（buffering）は、C の標準入出力ライブ
 
 最初に、出力がどこに溜まるのかを押さえます。C の `printf` は、文字列をすぐにカーネルへ渡すわけではありません。stdio が持つバッファ、つまり書く側のプロセスのメモリに一度置かれ、後で [`write(2)`](https://man7.org/linux/man-pages/man2/write.2.html) システムコールでまとめてカーネルへ渡されます。`(2)` は man ページの章番号で、2 章はシステムコール（プログラムがカーネルに処理を頼む入口）を表します。
 
-{{< figure src="images/buffer_path.webp" alt="左に書く側のプロセスがあり、その中で printf から stdio のバッファへ矢印が伸びる。バッファから write(2) でカーネルのパイプへ、パイプから読む側のプロセスへ矢印が続く。下に、バッファ無しは書くたびに、行バッファは改行を書いた時に、全バッファは満杯になった時と終了時に write(2) を呼ぶ、と並ぶ" caption="stdio のバッファは書く側のプロセスの中にあり、write(2) を呼ぶ契機が 3 種類ある" align="center" >}}
+{{< figure src="images/buffer_path.webp" alt="左に書く側のプロセスがあり、その中で printf から stdio のバッファへ矢印が伸びる。バッファから write(2) でカーネルのパイプへ、パイプから読む側のプロセスへ矢印が続く。下に、バッファ無しは書くたびに、行バッファは改行を書いた時に、完全バッファリングは満杯になった時と終了時に write(2) を呼ぶ、と並ぶ" caption="stdio のバッファは書く側のプロセスの中にあり、write(2) を呼ぶ契機が 3 種類ある" align="center" >}}
 
-上記の図の下段の通り、バッファリングには 3 つのモードがあります。バッファ無し（unbuffered）は書くたびに、行バッファ（line buffered）は改行を書いた時に、全バッファ（fully buffered）はバッファが満杯になった時かプロセスの終了時に `write(2)` を呼びます。どのモードでも、読む側から見えるのは `write(2)` された後のデータだけです。
+上記の図の下段の通り、バッファリングには 3 つのモードがあります。バッファ無し（unbuffered）は書くたびに、行バッファ（line buffered）は改行を書いた時に、完全バッファリング（fully buffered）はバッファが満杯になった時かプロセスの終了時に `write(2)` を呼びます。どのモードでも、読む側から見えるのは `write(2)` された後のデータだけです。
 
-C の標準出力が使うモードは、出力先で決まります。C 規格は「対話的な装置（端末のこと）ではないと判定できる場合に限り、標準出力は全バッファにする」と定めており、Linux で標準の C ライブラリである [glibc](https://www.gnu.org/software/libc/) は、出力先が端末なら行バッファ、パイプやファイルなら全バッファを選びます（[glibc の文書](https://sourceware.org/glibc/manual/latest/html_node/Buffering-Concepts.html)）。
+C の標準出力が使うモードは、出力先で決まります。C 規格は「対話的な装置（端末のこと）ではないと判定できる場合に限り、標準出力は完全バッファリングにする」と定めており、Linux で標準の C ライブラリである [glibc](https://www.gnu.org/software/libc/) は、出力先が端末なら行バッファ、パイプやファイルなら完全バッファリングを選びます（[glibc の文書](https://sourceware.org/glibc/manual/latest/html_node/Buffering-Concepts.html)）。
 
 端末かどうかは、出力先のファイル記述子（OS が開いたファイルやパイプに振る番号で、標準出力は 1）を [`isatty`](https://man7.org/linux/man-pages/man3/isatty.3.html) で調べて判定します。
 
@@ -86,9 +86,9 @@ write(1, "line 1\nline 2\nline 3\nline 4\nline"..., 35) = 35
 
 以下は、同じ C のプログラムをパイプにつなぎ、1.2 秒後に Ctrl-C と同じ `SIGINT` をパイプライン全体へ送った結果です。
 
-{{< figure src="images/interrupt.webp" alt="経過時間が 0 秒から 2 秒まで進む動画。パイプの行では、0、0.5、1.0 秒に書いた 3 行がバッファの箱に溜まり、1.2 秒の Ctrl-C で取り消し線が付いて強制終了で消えたと表示され、読む側の箱は空のまま。stdbuf -oL を付けたパイプでは、3 行とも書いた直後に読む側の箱へ移っている" caption="1.2 秒で止めると、全バッファでは書いたはずの 3 行が 1 行も届かない" align="center" >}}
+{{< figure src="images/interrupt.webp" alt="経過時間が 0 秒から 2 秒まで進む動画。パイプの行では、0、0.5、1.0 秒に書いた 3 行がバッファの箱に溜まり、1.2 秒の Ctrl-C で取り消し線が付いて強制終了で消えたと表示され、読む側の箱は空のまま。stdbuf -oL を付けたパイプでは、3 行とも書いた直後に読む側の箱へ移っている" caption="1.2 秒で止めると、完全バッファリングでは書いたはずの 3 行が 1 行も届かない" align="center" >}}
 
-全バッファの場合、プログラムは 3 行を書いたつもりでいます。しかし、3 行はプロセスのメモリから出ないまま消えました。`tail -f app.log | grep ERROR | cut -d' ' -f1` を眺めていて Ctrl-C を押すと、途中の `grep` が溜めていた行は `cut` に渡らないまま消えます。最後の数行が画面に出なかった、という現象の正体はこれです。
+完全バッファリングの場合、プログラムは 3 行を書いたつもりでいます。しかし、3 行はプロセスのメモリから出ないまま消えました。`tail -f app.log | grep ERROR | cut -d' ' -f1` を眺めていて Ctrl-C を押すと、途中の `grep` が溜めていた行は `cut` に渡らないまま消えます。最後の数行が画面に出なかった、という現象の正体はこれです。
 
 実験のスクリプトは、Python から起動して、プロセスグループ（パイプラインに並んだプロセスのまとまり）全体にシグナルを送っています（`stamp.py` は、読んだ行に起動からの秒を付けて出す小さなスクリプトで、[lab](https://github.com/nao1215/debimate/tree/main/content/notes/computer-systems/stdout-buffering/lab) にあります）。
 
@@ -147,11 +147,11 @@ done
 
 上記の動画を見て分かる通り、C と Python はパイプにつなぐとまとめて届き、Go と Rust はパイプでも 1 行ずつ届きます。ただし、Go と Rust が 1 行ずつ届く理由は違います。
 
-C と Python は、端末なら行バッファ、パイプなら全バッファです。Python の `sys.stdout` は、対話的な時は行バッファ、それ以外は通常のファイルと同じブロック単位のバッファ（つまり全バッファ）になると[公式の文書](https://docs.python.org/3/library/sys.html#sys.stdout)に書かれています。著者の環境の Python 3.14 では、パイプへの書き出しは 1 回あたり約 120KB でした。
+C と Python は、端末なら行バッファ、パイプなら完全バッファリングです。Python の `sys.stdout` は、対話的な時は行バッファ、それ以外は通常のファイルと同じブロック単位のバッファ（つまり完全バッファリング）になると[公式の文書](https://docs.python.org/3/library/sys.html#sys.stdout)に書かれています。著者の環境の Python 3.14 では、パイプへの書き出しは 1 回あたり約 120KB でした。
 
 Go は、バッファを持ちません。`os.Stdout` は、ファイル記述子をそのまま包んだ [`*os.File`](https://pkg.go.dev/os#pkg-variables) で、`fmt.Println` は呼ぶたびに `write(2)` まで進みます。速さが必要な時は、利用者が `bufio.Writer` で包み、自分で `Flush` を呼びます。
 
-Rust の標準出力は、改行で書き出す `LineWriter` です。[公式の文書](https://doc.rust-lang.org/std/io/struct.Stdout.html)は「端末につながっている時は行バッファ」と書いていますが、実装は出力先を見ずに常に `LineWriter` を使うので、パイプでも 1 行ずつ届きます。出力先で全バッファへ切り替える案は [rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673) で議論が続いています。
+Rust の標準出力は、改行で書き出す `LineWriter` です。[公式の文書](https://doc.rust-lang.org/std/io/struct.Stdout.html)は「端末につながっている時は行バッファ」と書いていますが、実装は出力先を見ずに常に `LineWriter` を使うので、パイプでも 1 行ずつ届きます。出力先で完全バッファリングへ切り替える案は [rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673) で議論が続いています。
 
 <br>
 
@@ -159,8 +159,8 @@ Rust の標準出力は、改行で書き出す `LineWriter` です。[公式の
 
 | 言語 | パイプへの既定 | すぐ届けたい時 | まとめて書きたい時 |
 |---|---|---|---|
-| C | 全バッファ | `fflush(stdout)`、`setvbuf` | 既定のまま |
-| Python | 全バッファ | `python3 -u`、`PYTHONUNBUFFERED=1`、`print(..., flush=True)` | 既定のまま |
+| C | 完全バッファリング | `fflush(stdout)`、`setvbuf` | 既定のまま |
+| Python | 完全バッファリング | `python3 -u`、`PYTHONUNBUFFERED=1`、`print(..., flush=True)` | 既定のまま |
 | Go | バッファ無し | 既定のまま | `bufio.NewWriter(os.Stdout)` と `Flush` |
 | Rust | 行バッファ | `stdout().flush()` | `BufWriter::new(stdout().lock())` |
 
@@ -280,7 +280,7 @@ GNU coreutils を前提に書いたシェルスクリプトや、手に馴染ん
 
 ### 書けなかった時の終わり方
 
-バッファリングは、出力が届く時刻だけでなく、書き込みの失敗に気付く時刻も遅らせます。全バッファのプログラムは、バッファが満杯になるか終了する時に `write(2)` を呼ぶまで、読む側がもういないことも、書き込み先が満杯なことも知りません。ここでは、書けない状況を 3 つ作り、各プログラムがどう終わるかを比べます。
+バッファリングは、出力が届く時刻だけでなく、書き込みの失敗に気付く時刻も遅らせます。完全バッファリングのプログラムは、バッファが満杯になるか終了する時に `write(2)` を呼ぶまで、読む側がもういないことも、書き込み先が満杯なことも知りません。ここでは、書けない状況を 3 つ作り、各プログラムがどう終わるかを比べます。
 
 1. 読む側が先に終わる（`| head -n 1`）。
 2. 書き込み先が満杯（`> /dev/full`。[`/dev/full`](https://man7.org/linux/man-pages/man4/full.4.html) は書くと必ず「空き領域が無い」エラーを返す装置）。

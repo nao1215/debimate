@@ -160,7 +160,7 @@ Wikipedia を動かす MediaWiki は、書き込みを primary（書き込みを
 
 反映の実装には、DB の複製機能や CDC（Change Data Capture、DB の変更を捕捉して外部に流す仕組み）で変更を転送する形と、[Domain Event](../domain-event/) を配送して受け取った側が読み取り用のデータを更新し続ける形があります。イベントの配送を取りこぼさない仕組みは、[Transactional Outbox](../../distributed-systems/transactional-outbox/) のノートで扱っています。
 
-更新モデルの保存先に Event Sourcing のイベントストアを選ぶと、読み取り用のデータはイベントを順に読んで作り続けるものになります。この反映を投影と呼び、Event Sourcing のノートで扱っています。
+更新モデルの保存先に Event Sourcing のイベントストアを選ぶと、読み取り用のデータはイベントを順に読んで作り続けるものになります。この反映をプロジェクション（projection）と呼び、Event Sourcing のノートで扱っています。
 
 CQRS はイベントを保存しなくても成立します。逆に、現在の状態を保存せずイベントだけを記録する構成では、複数の集約を横断する検索に答えるために読み取りモデルが必要になります。Greg Young 氏の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) は、この点を CQRS と組み合わせる理由に挙げています。
 

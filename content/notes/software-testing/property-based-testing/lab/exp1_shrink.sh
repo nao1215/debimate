@@ -1,7 +1,7 @@
 #!/bin/sh
-# 実験 1・2: 修正前の Distinct に、同じ性質を testing/quick と rapid で掛ける。
+# 実験 1・2: 修正前の Distinct に、同じプロパティを testing/quick と rapid で掛ける。
 # 種 1〜100 で回し、見つけたか・何回目の入力か・報告された反例の行数を TSV に出す。
-# 狭い生成器（narrow）と広い生成器（broad）の両方。入力は 1 回の実行につき最大 500 個。
+# 狭いジェネレーター（narrow）と広いジェネレーター（broad）の両方。入力は 1 回の実行につき最大 500 個。
 set -eu
 cd "$(dirname "$0")/distinct"
 out=../output/exp1_shrink.tsv

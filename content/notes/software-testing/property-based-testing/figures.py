@@ -6,10 +6,10 @@
 動く図は Pillow の ImageDraw でコマを描く。images/ には WebP だけを残す。
 数値と反例は lab/output/ から読むので、実験の script を回し直したら、この script も回し直す。
 
-- cover_figure(): 表紙。修正前の Distinct に同じ性質を掛けた時、testing/quick が報告した反例（10 行）と
+- cover_figure(): 表紙。修正前の Distinct に同じプロパティを掛けた時、testing/quick が報告した反例（10 行）と
   rapid が縮めた反例（2 行）を並べる（lab/output/exp1_shrink.tsv の種 1）。
 - keys_figure(): 修正前の makeRowKey が、異なる 2 行に同じ鍵を作る 3 つの組（filesql Issue #354）。
-- shrink_animation(): rapid が種 1 の反例を縮める途中で、性質が破れた表を順に見せる動画
+- shrink_animation(): rapid が種 1 の反例を縮める途中で、プロパティが破れた表を順に見せる動画
   （lab/output/exp1_shrink_steps_seed1.txt）。
 - float_figure(): 修正後の鍵が整数を float64 にしてから文字列にするので、2^53 を超えると
   隣り合う整数が同じ鍵になる（filesql Issue #379）。
@@ -155,14 +155,14 @@ def cover_figure():
     q, r = read_exp1("quick"), read_exp1("rapid")
     qrows, rrows = parse_table(q["counterexample"]), parse_table(r["counterexample"])
     s = Svg(960, 400)
-    s.text(30, 36, "修正前の Distinct に同じ性質を掛けて、報告された反例（種 1）", 20, INK, "start")
+    s.text(30, 36, "修正前の Distinct に同じプロパティを掛けて、報告された反例（種 1）", 20, INK, "start")
     end = table_svg(s, 30, 74, qrows, 400, f"testing/quick: {len(qrows)} 行",
                     f"{q['case']} 個目の入力で破れた表を、そのまま報告する")
     table_svg(s, 520, 74, rrows, 400, f"rapid: {len(rrows)} 行",
               f"{r['case']} 個目の入力で破れ、破れたまま縮めた表")
     s.arrow(450, 180, 505, 180)
     s.text(520, 210, "赤い行: 値が異なるのに 1 行にまとめられた 2 行", 13, RED, "start")
-    s.text(520, 236, "他の行は、性質が破れたことに関係しない", 13, SUB, "start")
+    s.text(520, 236, "他の行は、プロパティが破れたことに関係しない", 13, SUB, "start")
     s.h = max(end + 20, 300)
     s.p[0] = f'<svg xmlns="http://www.w3.org/2000/svg" width="960" height="{s.h}" viewBox="0 0 960 {s.h}">'
     s.p[3] = f'<rect width="960" height="{s.h}" fill="#ffffff"/>'
@@ -218,7 +218,7 @@ def shrink_animation(step_sec=0.5, hold=3.0):
         im = Image.new("RGB", (W * S, H * S), "#ffffff")
         d = ImageDraw.Draw(im)
         d.text((24 * S, 18 * S), "rapid が反例を縮める様子（修正前の Distinct、種 1）", font=font(19), fill=rgb(INK))
-        d.text((24 * S, 50 * S), f"性質が破れた表 {k + 1} 個目 / {len(steps)} 個（1 個目が見つけた反例）　　行の数 {len(rows)}",
+        d.text((24 * S, 50 * S), f"プロパティが破れた表 {k + 1} 個目 / {len(steps)} 個（1 個目が見つけた反例）　　行の数 {len(rows)}",
                font=font(15), fill=rgb(SUB))
         # 何個目かが分かる帯
         bx, by, bw = 24, 80, 852

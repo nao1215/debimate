@@ -1,5 +1,5 @@
 #!/bin/sh
-# 実験 3: 同じ性質を go test -fuzz に掛ける。バイト列を表に読み替える（distinct_test.go の decode）。
+# 実験 3: 同じプロパティを go test -fuzz に掛ける。バイト列を表に読み替える（distinct_test.go の decode）。
 # 修正前の鍵（KEY 無し）と修正後の鍵（KEY=fixed）で、それぞれ 5 回、1 回 60 秒まで回す。
 # 見つけるまでの秒数と、fuzz が縮めた入力を読み替えた表を記録する。縮めた入力のバイト列は output/exp3_crashers/ に残す。回ごとに fuzz のキャッシュを消す。
 set -eu

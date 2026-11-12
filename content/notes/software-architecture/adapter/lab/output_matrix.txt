@@ -1,0 +1,28 @@
+== PostgreSQL 15.19
+exporter v0.15.0: pg_up=1 collectors=9 failed=[] pg_metric_names=299 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.16.0: pg_up=1 collectors=10 failed=[] pg_metric_names=302 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=303 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=303 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=302 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=302 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+== PostgreSQL 16.15
+exporter v0.15.0: pg_up=1 collectors=9 failed=[] pg_metric_names=307 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.16.0: pg_up=1 collectors=10 failed=[] pg_metric_names=310 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=311 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=311 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=310 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=310 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
+== PostgreSQL 17.11
+exporter v0.15.0: pg_up=1 collectors=9 failed=[stat_bgwriter] pg_metric_names=311 checkpoint_timed=なし
+exporter v0.16.0: pg_up=1 collectors=10 failed=[stat_bgwriter] pg_metric_names=314 checkpoint_timed=なし
+exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=319 checkpoint_timed=なし
+exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=328 checkpoint_timed=pg_stat_checkpointer_num_timed_total
+exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=318 checkpoint_timed=なし
+exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=327 checkpoint_timed=pg_stat_checkpointer_num_timed_total
+== PostgreSQL 18.6
+exporter v0.15.0: pg_up=1 collectors=9 failed=[stat_bgwriter] pg_metric_names=325 checkpoint_timed=なし
+exporter v0.16.0: pg_up=1 collectors=10 failed=[stat_bgwriter] pg_metric_names=328 checkpoint_timed=なし
+exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=333 checkpoint_timed=なし
+exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=342 checkpoint_timed=pg_stat_checkpointer_num_timed_total
+exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=332 checkpoint_timed=なし
+exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=341 checkpoint_timed=pg_stat_checkpointer_num_timed_total

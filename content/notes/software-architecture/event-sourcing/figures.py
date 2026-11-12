@@ -127,7 +127,7 @@ def table(f, x, y, w, title):
 
 
 def concept_figure():
-    """追記だけのイベントの帯と、そこから導く状態・スナップショット・投影。
+    """追記だけのイベントの帯と、そこから導く状態・スナップショット・プロジェクション。
 
     青はイベント（一次記録）、青の破線は新しく追記するイベント、灰色はイベントから
     作り直せる導出物（今の状態・スナップショット・読み取りモデル）を表す。
@@ -167,7 +167,7 @@ def concept_figure():
     f.line(x0 + cell / 2, by, x0 + 6 * step + cell / 2, by, COLOR_GRAY, sw=4)
     for x in (210, 530):
         f.line(x, by, x, 362, COLOR_GRAY, sw=4, arrow="gray")
-    f.text(370, 320, "投影", 24, COLOR_GRAY)
+    f.text(370, 320, "プロジェクション", 24, COLOR_GRAY)
     table(f, 100, 372, 220, "一覧")
     table(f, 420, 372, 220, "集計")
     f.text(370, 528, "読み取りモデル", 24, COLOR_GRAY)
