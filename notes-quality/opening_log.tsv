@@ -18,3 +18,4 @@ math__eigen-decomposition	問い	その他	固有値分解 - wine の PC4 を「
 math__information-theory	場面	その他	情報理論 - 目的変数と無関係な ID の列でも、相互情報量は上限の H(Y) に届く
 math__joint-marginal-conditional	場面	その他	同時分布・周辺分布・条件付き分布 - ペンギンのくちばしは、種ごとには長いほど厚く、3 種を混ぜると長いほど薄い
 software-testing__property-based-testing	場面	その他	Property-Based Testing - 性質を書いて入力を作らせ、破れた入力を縮める
+math__kde	誤解	その他	カーネル密度推定（KDE） - 同じ「scott」のバンド幅が、細胞核の面積では scikit-learn と scipy で 352 倍違う

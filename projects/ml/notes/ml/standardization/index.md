@@ -39,6 +39,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 | 距離ベース（[kNN](../knn/), [k-means](../k-means/), [SVM](../svm/) RBF カーネル） | 必要 | 距離計算でスケールの大きい特徴量が他を支配する |
 | 正則化付き線形モデル（[LogisticRegression](../logistic-regression/) L1/L2, Ridge, Lasso） | 必要 | [正則化](../regularization/)項がスケールに依存し、スケールの小さい特徴量の係数ほど強く縮められる |
 | [PCA](../pca/) | 必要 | 共分散行列の[固有値分解](../../math/eigen-decomposition/)で、分散の大きい特徴量が第 1 主成分を占める |
+| scikit-learn の [KernelDensity](../../math/kde/) | 必要 | `bandwidth="scott"` も列の標準偏差を見ず、全ての列に同じ幅のカーネルを置く |
 | ニューラルネットワーク（[勾配降下](/ml/math/gradient-descent-sgd/)で学習するもの） | 推奨 | スケールの違いが勾配の方向を歪め、収束が遅くなる |
 | 木系（[決定木](../decision-tree/), [RandomForest](../random-forest/), [GradientBoosting](../gradient-boosting/)） | ほぼ不要 | 各分割は「特徴量 X が閾値 t 以下か」という順序ベースの判定で、値の絶対スケールに依存しない |
 | ガウス型 [Naive Bayes](/ml/math/bayes-theorem/) | 不要 | 特徴量ごとに平均と分散を推定するので、定数倍しても予測はほぼ変わらない |
