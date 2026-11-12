@@ -102,7 +102,7 @@ test R²=0.862
 | [Gradient Boosting](../gradient-boosting/) | `learning_rate`、`n_estimators`、`max_depth` | 一回の更新量と木の複雑さ |
 | ニューラルネット | [学習率](/ml/math/gradient-descent-sgd/)、層数、batch size | 更新量と表現力 |
 
-候補は広い範囲から始め、CV の結果を見て狭めます。探索を続けるほど CV への過適合も起きるため、改善幅が小さい場合はデータ・特徴量・評価指標を見直します。
+候補は広い範囲から始め、CV の結果を見て狭めます。探索を続けるほど CV への過適合も起きるため、改善幅が小さい場合はデータ・特徴量・評価指標を見直します。1 つの設定を 1 回ずつ学習させて並べると、1 位の設定が seed しだいで入れ替わる様子は、[実験管理](../../mlops/experiment-tracking/)で測っています。
 
 ---
 

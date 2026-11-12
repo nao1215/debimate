@@ -19,3 +19,5 @@ math__information-theory	場面	その他	情報理論 - 目的変数と無関�
 math__joint-marginal-conditional	場面	その他	同時分布・周辺分布・条件付き分布 - ペンギンのくちばしは、種ごとには長いほど厚く、3 種を混ぜると長いほど薄い
 software-testing__property-based-testing	場面	その他	Property-Based Testing - 性質を書いて入力を作らせ、破れた入力を縮める
 math__kde	誤解	その他	カーネル密度推定（KDE） - 同じ「scott」のバンド幅が、細胞核の面積では scikit-learn と scipy で 352 倍違う
+math__vector-matrix-ops	結果	その他	ベクトルと行列の演算 - (442,) と (442, 1) を引くだけで、diabetes の MSE が 2,860 から 9,000 になる
+mlops__experiment-tracking	問い	その他	実験管理（experiment tracking） - MLflow で 1 位の run は、seed を変えても 1 位か

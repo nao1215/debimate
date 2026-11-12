@@ -1,5 +1,5 @@
 ---
-title: "実験管理（experiment tracking）"
+title: "実験管理（experiment tracking） - MLflow で 1 位の run は、seed を変えても 1 位か"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "MLOps"]
@@ -8,217 +8,341 @@ weight: 1
 topics: ["MLOps"]
 ---
 
-実験管理（experiment tracking）は、機械学習モデルの学習を「再現可能な記録」として残す仕組みです。1 回の学習を「実験（experiment）」と捉え、そこに入った設定（hyperparameter、データセット、コードバージョン）、出てきた結果（metric、可視化、学習曲線）、副産物（学習済み weight、前処理後データ、評価レポート）を 1 セットで保存します。
+実験管理（experiment tracking）は、モデルを 1 回学習させるたびに、使った設定とデータ、出てきた評価の値を 1 組にして残す仕組みです。この 1 組を run と呼びます。代表的なツールの [MLflow](https://mlflow.org/) では、Python のコードから run を記録し、後から評価の値が高い順に並べたり、2 つの run を見比べたりできます。
 
-何百回も `train.py --lr 0.001` を回した記憶を頼りに「あの時 lr はいくつだったか」を探す事態を避けるための運用基盤で、(1) 再現性、(2) モデル比較、(3) ステークホルダー説明、(4) 監査、の 4 つの目的を同時に達成します。代表的なツールに [MLflow](https://mlflow.org/)、[Weights & Biases](https://wandb.ai/)（W&B）、[Comet](https://www.comet.com/)、[TensorBoard](https://www.tensorflow.org/tensorboard)、[ClearML](https://clear.ml/) などがあります。以前よく名前の挙がった Neptune は、OpenAI による買収に伴い 2026 年 3 月に SaaS を[終了](https://docs.neptune.ai/transition_hub)しました。
+よくある使い方は、[ハイパーパラメータ](../../ml/hyperparameter/)の候補を変えて何十回も学習させ、記録した run を評価の値が高い順に並べて、1 位になったハイパーパラメータの組み合わせを選ぶことです。以下では、この組み合わせを設定と呼びます。モデルの多くは学習の途中で乱数を使い、その乱数の出発点を seed と呼びます。scikit-learn では、seed を `random_state` で渡します。では、seed だけを変えて同じ探索をやり直しても、1 位の設定は 1 位のままでしょうか。
 
-[ハイパーパラメータ](../../ml/hyperparameter/) 探索や [交差検証](../../ml/cross-validation/) と組み合わせると効果が大きく、ベイズ最適化や [Optuna](https://optuna.org/) の study も実験管理ツールに保存できます。
+これを調べるために、[scikit-learn](https://scikit-learn.org/stable/) に同梱の [breast_cancer](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html)（乳がんの診断データ、569 行）を学習用 426 行と検証用 143 行に分け、[ランダムフォレスト](../../ml/random-forest/)の設定を 24 通り用意しました。評価の値には、検証用のデータで測った [ROC-AUC](../../ml/roc-pr-auc/) を使い、以下では val_auc と書きます。ROC-AUC は高いほど良く、0.5 なら当てずっぽうと同じ、1 なら陽性と陰性を完全に分けられることを表します。
 
----
+24 設定を 1 回ずつ学習させる探索は、seed を 0 から 9 まで変えて 10 回行い、全ての run を MLflow に記録しました。各設定の順位は、探索に使っていない別の seed 20 回の val_auc の平均で決めます。
 
-### 実験管理の全体像
+{{< figure src="exp_cover.webp" alt="横軸は 24 設定を別の seed 20 回の平均 val_auc が高い順に並べた順位、縦軸は val_auc。各設定に灰色の点が 10 個ずつあり、seed 0〜9 の探索で出た値を表す。黒い横線は 20 回の平均で、1 位の 0.978 から 24 位の 0.970 まで右へ下がり、8 位と 9 位の間で一段下がる。各回の探索で 1 位になった run の赤い点は 10 個で、1 位に 2 個、2 位に 2 個、3 位に 1 個、5 位と同率の 6 位に 3 個、14 位に 1 個、23 位に 1 個ある" caption="24 設定の探索を seed だけ変えて 10 回行った時の、各回の 1 位（赤）" align="center" >}}
 
-```mermaid
-graph LR
-    A["Config + Code<br/>+ Dataset version"] --> B["Train run"]
-    B --> C["Log params"]
-    B --> D["Log metrics<br/>(per step / per epoch)"]
-    B --> E["Log artifacts<br/>(weights, plots, reports)"]
-    C --> F["Tracking server<br/>(MLflow / W&B / ...)"]
-    D --> F
-    E --> F
-    F --> G["Compare runs<br/>(dashboard)"]
-    F --> H["Register best model<br/>→ Model Registry"]
-```
+赤い点が、各回の探索で 1 位になった run です。灰色の点は val_auc が 0.963 から 0.985、20 回の平均は 0.970 から 0.978 の間に入るので、比べているのは 0.001 前後の小さな差です。10 回の探索のうち、20 回の平均で 1 位の設定を選べたのは 2 回だけでした。seed 2 の探索で 1 位になったのは、木が 20 本で深さ 2 までの小さなフォレストで、20 回の平均では 24 設定中 23 位です。
 
-トラッキングサーバー（tracking server）は「全実験のメタデータ DB + アーティファクトストア」の組み合わせで、(1) リレーショナル DB に params/metrics、(2) S3 や MinIO に weights/plots をそれぞれ保存するのが典型です。各 run には一意の ID が振られ、Git の commit SHA、データのハッシュ、Docker イメージ、Python の `requirements.txt` まで紐付けておくと、後から環境を再現できます。
+MLflow の記録に誤りはなく、この run の val_auc 0.9816 は実際に出た値です。1 つの設定を 1 回しか学習させないと、記録された値には設定そのものの差と seed による揺れが混ざり、並べても区別できません。
 
----
+<br>
 
-### 何をログすればよいか
+本記事では、ML を学び始めたエンジニアと、scikit-learn で学習させた結果を MLflow などに記録し始めた人に向けて、次の疑問に答えます。
 
-トラッキング対象は次の 5 つに分類できます。これが揃って初めて「他人がその run を再現できる」状態になります。
+- 実験管理のツールは、1 回の学習の何を記録するのか。
+- 探索の 1 位は、seed を変えるとなぜ入れ替わるのか。
+- seed を何個使えば、下位の設定を 1 位に選ばずに済むか。
+- 同じ設定で結果が変わった時、記録から原因を追えるか。
+- MLflow 以外のツールは何が違うのか。
 
-| 種別 | 例 | 目的 |
-|---|---|---|
-| Params | `lr=1e-3, batch_size=64, model="resnet50"` | 設定の記録 |
-| Metrics | `train_loss`, `val_acc`, `epoch_time` | 結果の評価 |
-| Artifacts | `model.pt`, `confusion_matrix.png`, `predictions.csv` | 成果物保存 |
-| Environment | `requirements.txt`, `conda_env.yml`, Docker image digest | 環境再現 |
-| Lineage | Git commit SHA、データセット version | コード/データ追跡 |
-
-記憶に頼らず run 同士の違いを調べられるように、設定や結果をログに残します。
+実験は MLflow 3.18.0 と scikit-learn 1.9.1 で行いました。図を描く処理も含めた完全なコードは [experiment-tracking_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/experiment-tracking_gen.py) にあります。
 
 ---
 
-### コード例: MLflow
+### MLflow で 1 回の学習を記録する
 
-MLflow を例にした最小限のトラッキングコードです。MLflow 3.18.0 と scikit-learn 1.9.1 で実行すると、params と metrics はカレントディレクトリの `mlflow.db`（SQLite）に、モデル・[混同行列](/ml/ml/confusion-matrix/)・評価レポートは `mlruns/` に残ります。
+MLflow では、`with mlflow.start_run()` の中で記録の関数を呼ぶと、呼んだ分が 1 つの run にまとまります。設定は `log_params`、評価の値は `log_metric`、学習に使ったデータは `log_input`、学習済みのモデルは `log_model` で記録します。次のコードは、冒頭の探索と同じデータで 1 回学習させ、記録した run を読み出します。
 
 ```python
-from pathlib import Path
-
-import matplotlib.pyplot as plt
 import mlflow
+from sklearn.datasets import load_breast_cancer
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.datasets import load_iris
-from sklearn.metrics import (
-    ConfusionMatrixDisplay, accuracy_score, classification_report, f1_score
-)
+from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import train_test_split
 
-X, y = load_iris(return_X_y=True)
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.25, random_state=0, stratify=y
-)
-artifact_dir = Path("artifacts")
-artifact_dir.mkdir(exist_ok=True)
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_experiment("breast-cancer-rf")
 
-mlflow.set_experiment("iris-classification")
-with mlflow.start_run(run_name="rf-baseline"):
-    # 1. params を記録
-    params = {"n_estimators": 200, "max_depth": 8, "random_state": 0}
+data = load_breast_cancer(as_frame=True)
+df = data.frame                                    # 569 行。30 列の特徴量と target
+train_df, valid_df = train_test_split(df, test_size=0.25, random_state=0, stratify=df["target"])
+X_train, y_train = train_df.drop(columns="target"), train_df["target"]
+X_valid, y_valid = valid_df.drop(columns="target"), valid_df["target"]
+
+with mlflow.start_run(run_name="rf-baseline") as run:
+    params = {"n_estimators": 100, "max_depth": 6, "max_features": 0.3,
+              "min_samples_leaf": 1, "random_state": 0}
     mlflow.log_params(params)
-
-    # 2. 学習
+    mlflow.log_input(mlflow.data.from_pandas(train_df, name="train", targets="target"),
+                     context="training")
     model = RandomForestClassifier(**params).fit(X_train, y_train)
-    pred = model.predict(X_test)
+    auc = roc_auc_score(y_valid, model.predict_proba(X_valid)[:, 1])
+    mlflow.log_metric("val_auc", auc)
+    # MLflow 3.18.0 の既定の保存形式 skops に、決定木の型を読み込んでよいと伝える
+    mlflow.sklearn.log_model(model, name="model",
+                             skops_trusted_types=["sklearn.tree._tree.Tree"])
 
-    # 3. metrics を記録（3 クラスなので F1 はクラスごとの値を平均する）
-    mlflow.log_metric("accuracy", accuracy_score(y_test, pred))
-    mlflow.log_metric("f1_macro", f1_score(y_test, pred, average="macro"))
-
-    # 4. artifacts を記録 (model 自体、可視化、レポート)
-    mlflow.sklearn.log_model(
-        model, name="model", skops_trusted_types=["sklearn.tree._tree.Tree"]
-    )
-    fig, ax = plt.subplots()
-    ConfusionMatrixDisplay.from_predictions(y_test, pred, ax=ax)
-    figure_path = artifact_dir / "confusion_matrix.png"
-    fig.savefig(figure_path, bbox_inches="tight")
-    plt.close(fig)
-    mlflow.log_artifact(str(figure_path))
-    report = classification_report(y_test, pred, output_dict=True)
-    mlflow.log_dict(report, "report.json")
-
-    # 5. lineage (環境の requirements.txt は log_model がモデルと一緒に残す)
-    mlflow.set_tag("dataset", "sklearn.datasets.load_iris")
+r = mlflow.get_run(run.info.run_id)
+print("params:", r.data.params)
+print("metrics:", {k: round(v, 4) for k, v in r.data.metrics.items()})
+print("dataset:", [(d.dataset.name, d.dataset.digest) for d in r.inputs.dataset_inputs])
 ```
 
-手元の実行では accuracy が 0.947、f1_macro が 0.946 でした。Iris は 3 クラスなので、[`f1_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html) を既定の `average="binary"` のまま呼ぶと ValueError で止まります。`average="macro"` はクラスごとの F1 を単純平均します。`skops_trusted_types` を外すと、MLflow 3.18.0 の既定の保存形式（Databricks 以外）である [skops](https://skops.readthedocs.io/) が RandomForest の内部型を拒み、保存の時点で例外になります。
+```text
+params: {'n_estimators': '100', 'max_depth': '6', 'max_features': '0.3', 'min_samples_leaf': '1', 'random_state': '0'}
+metrics: {'val_auc': 0.9765}
+dataset: [('train', '7a02f1b5')]
+```
 
-`with mlflow.start_run()` の中で `log_*` を呼ぶと、ID が振られた 1 つの run にまとまります。チームではこれをトラッキングサーバーに送り、ダッシュボードで比較します。
+記録先の `sqlite:///mlflow.db` は、カレントディレクトリに作られる、ファイル 1 つで動く DB の SQLite です。読み出した params の値は、数値で渡しても全て文字列になります。`mlflow.data.from_pandas` は pandas の表である DataFrame から [dataset](https://mlflow.org/docs/latest/ml/dataset/) を作り、`log_input` がそれを run に結び付けます。dataset にはデータの中身から計算した 8 文字の digest が付き、後の節でデータの上書きを見つけるのに使います。
+
+<br>
+
+<details>
+<summary>log_model に skops_trusted_types を渡している理由</summary>
+
+`skops_trusted_types` は、MLflow 3.18.0 がモデルの保存に既定で使う [skops](https://skops.readthedocs.io/) の形式に、読み込んでよい型を伝える引数です。外すと、ランダムフォレストの中の[決定木](../../ml/decision-tree/)の型を信頼できないとして、保存の時点で MlflowException になりました。
+
+</details>
+
+<br>
+
+MLflow で記録できるものと、本記事で使う関数は次のとおりです。
+
+| 記録するもの | MLflow の関数 | 例 |
+|---|---|---|
+| 設定（params） | `log_params` | `n_estimators`、`random_state` |
+| 評価の値（metrics） | `log_metric` | `val_auc` |
+| 学習に使ったデータ | `log_input` | dataset の名前と digest |
+| 成果物（artifacts） | `log_model`、`log_artifact` | 学習済みモデル、図 |
+| 環境とコードのバージョン | `log_model`、`set_tag` | requirements.txt、Git の commit |
+
+冒頭の探索は、この表のうち設定と評価の値を全ての run で記録していました。それでも seed 2 の探索で 23 位の設定を 1 位に選んだのは、記録が足りなかったからではありません。1 回ずつの値を並べて、一番高い run をそのまま選んだからです。
 
 ---
 
-### ハイパーパラメータ探索の可視化
+### 探索の 1 位を再実行する
 
-実験管理の最も典型的な利用は、ハイパーパラメータ探索の結果比較です。グリッドサーチ・ランダムサーチ・ベイズ最適化のどれを使っても、各試行を個別の run として記録すれば、後で 1 つのダッシュボードで一覧できます。次の図は、比較の読み方を示すために生成した仮想の 25 run です。実測値ではありません。
+冒頭の探索のコードです。前の節のコードの続きで、`X_train` などの変数をそのまま使います。24 設定は、木の数・深さ・1 回の分岐で見る列の割合・葉に残す最小の行数を乱数で組み合わせて作りました。探索に使う seed 0〜9 に加え、順位を決める seed 100〜119 でも全ての設定を学習させ、同じ実験の中に記録します。
 
 ```python
 import numpy as np
-import matplotlib.pyplot as plt
 
-# 表示用の仮想結果。実際は tracking server から取得する
-lrs = [1e-4, 3e-4, 1e-3, 3e-3, 1e-2]
-batches = [16, 32, 64, 128, 256]
-val_acc = np.array([
-    [0.71, 0.74, 0.76, 0.73, 0.68],
-    [0.78, 0.82, 0.85, 0.82, 0.76],
-    [0.81, 0.87, 0.92, 0.88, 0.80],
-    [0.77, 0.84, 0.88, 0.83, 0.74],
-    [0.66, 0.70, 0.75, 0.69, 0.61],
-])
-fig, ax = plt.subplots()
-im = ax.imshow(val_acc, cmap="viridis", vmin=0.60, vmax=0.95)
-ax.set_xticks(range(len(batches)), batches)
-ax.set_yticks(range(len(lrs)), [f"{lr:.0e}" for lr in lrs])
-ax.set_xlabel("batch_size")
-ax.set_ylabel("learning_rate")
-best = np.unravel_index(np.argmax(val_acc), val_acc.shape)
-ax.scatter(best[1], best[0], s=220, facecolors="none", edgecolors="#e15759")
-fig.colorbar(im, ax=ax, label="val_acc")
-fig.savefig("experiment_sweep_heatmap.svg", bbox_inches="tight")
+rng = np.random.default_rng(0)
+settings = [{"n_estimators": int(rng.choice([10, 20, 50, 100, 200])),
+             "max_depth": [2, 3, 4, 6, 8, None][rng.integers(6)],
+             "max_features": float(rng.choice([0.1, 0.3, 0.5, 1.0])),
+             "min_samples_leaf": int(rng.choice([1, 2, 5, 10]))} for _ in range(24)]
+SWEEP_SEEDS = range(10)          # 探索に使う seed
+TRUTH_SEEDS = range(100, 120)    # 順位の物差しに使う seed（探索には使わない）
+
+mlflow.set_experiment("rf-sweep")
+for i, p in enumerate(settings):
+    for seed in [*SWEEP_SEEDS, *TRUTH_SEEDS]:
+        with mlflow.start_run(run_name=f"setting{i:02d}-seed{seed}"):
+            mlflow.log_params({**p, "setting": i, "random_state": seed})
+            m = RandomForestClassifier(**p, random_state=seed).fit(X_train, y_train)
+            mlflow.log_metric("val_auc", roc_auc_score(y_valid, m.predict_proba(X_valid)[:, 1]))
+
+runs = mlflow.search_runs(experiment_names=["rf-sweep"])
+runs["setting"] = runs["params.setting"].astype(int)
+runs["seed"] = runs["params.random_state"].astype(int)
+auc = runs.pivot(index="setting", columns="seed", values="metrics.val_auc")
+truth = auc[list(TRUTH_SEEDS)].mean(axis=1)              # 20 回の平均
+true_rank = truth.rank(ascending=False, method="first").astype(int)
+
+# 1 回の探索 = 24 設定を 1 つの seed で 1 回ずつ。search_runs で val_auc の 1 位を取る
+for seed in SWEEP_SEEDS:
+    top = mlflow.search_runs(experiment_names=["rf-sweep"],
+                             filter_string=f"params.random_state = '{seed}'",
+                             order_by=["metrics.val_auc DESC"], max_results=1).iloc[0]
+    s = int(top["params.setting"])
+    print(f"seed {seed}: 1 位は設定 {s:2d}  val_auc {top['metrics.val_auc']:.4f}"
+          f"  20 回の平均 {truth[s]:.4f}  順位 {true_rank[s]:2d} / 24")
 ```
 
-{{< figure src="experiment_sweep_heatmap.svg" alt="縦軸が learning_rate の 5 段階、横軸が batch_size の 5 段階のヒートマップ。色が val_acc を表し、lr=1e-3・batch_size=64 のマスが赤丸で囲まれ最良の 0.92。値は説明用の仮想結果" caption="ハイパーパラメータ探索の結果を並べたヒートマップ（仮想の 25 run）" align="center" >}}
+[`mlflow.search_runs`](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.html#mlflow.search_runs) は、記録した run を pandas の DataFrame で返します。`filter_string` で 1 つの seed の run だけに絞り、`order_by` で val_auc の高い順に並べた先頭が、その回の探索の 1 位です。params は文字列で記録されるので、`random_state` は `'0'` のように引用符で比べます。
 
-この仮想例では、赤丸の `lr=1e-3, batch_size=64` が最良です。色の濃淡は val_acc を表します。実データでは、各 run に `lr`、`batch_size`、`val_acc` を記録し、データ分割と乱数 seed も同時に比較します。
+```text
+seed 0: 1 位は設定  7  val_auc 0.9799  20 回の平均 0.9779  順位  3 / 24
+seed 1: 1 位は設定  6  val_auc 0.9788  20 回の平均 0.9778  順位  6 / 24
+seed 2: 1 位は設定  1  val_auc 0.9816  20 回の平均 0.9715  順位 23 / 24
+seed 3: 1 位は設定 20  val_auc 0.9846  20 回の平均 0.9783  順位  1 / 24
+seed 4: 1 位は設定  6  val_auc 0.9805  20 回の平均 0.9778  順位  6 / 24
+seed 5: 1 位は設定 21  val_auc 0.9783  20 回の平均 0.9781  順位  2 / 24
+seed 6: 1 位は設定 18  val_auc 0.9799  20 回の平均 0.9744  順位 14 / 24
+seed 7: 1 位は設定  6  val_auc 0.9814  20 回の平均 0.9778  順位  6 / 24
+seed 8: 1 位は設定 21  val_auc 0.9826  20 回の平均 0.9781  順位  2 / 24
+seed 9: 1 位は設定 20  val_auc 0.9816  20 回の平均 0.9783  順位  1 / 24
+```
+
+seed 1・4・7 で 1 位になった設定 6 は、深さの上限が無い（None）点だけが設定 5（上限 8）と違います。このデータでは木の深さが 8 を超えないので、2 つは同じモデルになり、20 回の平均も同じ値です。順位は 5 位と同率で、番号の小さい設定 5 を 5 位にしています。
+
+同じ設定でも、seed を変えると val_auc は動きます。20 回の val_auc の[標準偏差](../../math/stddev/)を設定ごとに出すと、その[中央値](../../math/median/)は 0.0028 でした。一方で、20 回の平均は 1 位の 0.9783 から 8 位の 0.9775 まで、0.0008 しか違いません。seed による揺れが設定の差の 3 倍以上あるので、1 回ずつの比較では、上位 8 設定の中の順位はほぼ seed で決まります。冒頭の図では、灰色の点の縦の広がりが seed による揺れ、黒い横線の段差が設定の差に当たり、左の 8 設定では点の広がりに比べて横線がほとんど平らです。
+
+9 位から下は平均が 0.9752 以下に下がり、冒頭の図でも横線が一段下がります。それでも seed 2 の 23 位や seed 6 の 14 位のように、下の設定が 1 位を取る回がありました。24 設定もあれば、どれか 1 つは seed のおかげで高い値が出るからです。
+
+<br>
+
+#### 1 位の値は高く出る
+
+出力の val_auc と 20 回の平均を比べると、1 位に選ばれた run の val_auc は、10 回とも、その設定の 20 回の平均より高く出ています。24 個の中から一番高い値を選ぶと、seed で高く出た run が選ばれやすいからです。seed 2 の 1 位の 0.9816 は、その設定の平均 0.9715 より 0.0101 高い値でした。
+
+1 位の run の val_auc を「このモデルの性能」として報告すると、実際より高い値を伝えることになります。検証用の 143 行で何十回も選ぶほど、選んだ値はその 143 行に合わせて高く出ます。性能として伝える値は、別の seed で測り直した平均か、最初に取り分けておき、設定を選ぶのには一度も使っていないテスト用のデータで測った値にします。[交差検証](../../ml/cross-validation/)のノートには、選んだ時のスコア 0.860 が、選ぶのに使っていない分割で測り直す nested CV では 0.809 に下がった例があります。
+
+この実験は検証用の 143 行の分け方を 1 通りに固定し、seed だけを変えています。分け方を変えた時に評価の値がどれだけ動くかも、同じ交差検証のノートで扱っています。
 
 ---
 
-### 複数 run の学習曲線比較
+### seed を何個使うか
 
-異なる設定の学習曲線を 1 枚に重ねると、学習の速さや検証指標の差を比較できます。以下の値も読み方を示す仮想 run であり、トラッキングサーバーから取得した実測値ではありません。
+1 つの設定を複数の seed で学習させ、val_auc の平均で比べれば、seed による揺れは小さくなります。seed を何個使えば下位の設定を選ばずに済むかは、記録済みの run から数えられます。探索に使った seed 0〜9 の 10 個から k 個を選び、24 設定それぞれで k 個の val_auc の平均を取って、一番高い設定を選びます。
+
+k 個の選び方を乱数で 500 回引き、2 つの値を出しました。1 つ目は、選んだ設定が 20 回の平均で 9 位以下だった割合です。9 位以下は、冒頭の図で横線が一段下がった後の設定です。2 つ目は、選んだ設定の k 個の平均から 20 回の平均を引いた差で、500 回分を平均しています。
+
+10 個から k 個を選ぶ組み合わせは、k が 1 なら 10 通りしかないので、500 回の中には同じ選び方が何度も出ます。出力の順位の中央値は、選んだ設定の 20 回の平均での順位について、500 回分の真ん中の値です。
 
 ```python
-# tracking server から取得した配列を想定する仮想曲線
-epochs = np.arange(1, 51)
-run_12_curve = 0.55 * (1 - np.exp(-0.020 * epochs))
-run_18_curve = 0.82 * (1 - np.exp(-0.045 * epochs))
-run_23_curve = 0.91 * (1 - np.exp(-0.060 * epochs))
-run_27_curve = 0.79 * (1 - np.exp(-0.015 * epochs))
-plt.plot(epochs, run_12_curve, label="run #12 lr=1e-2 bs=128")
-plt.plot(epochs, run_18_curve, label="run #18 lr=3e-3 bs=64")
-plt.plot(epochs, run_23_curve, label="run #23 lr=1e-3 bs=64")
-plt.plot(epochs, run_27_curve, label="run #27 lr=1e-4 bs=32")
-plt.legend()
-plt.savefig("experiment_compare_runs.svg", bbox_inches="tight")
+sweep = auc[list(SWEEP_SEEDS)].to_numpy()
+rng = np.random.default_rng(1)
+ks = [1, 2, 3, 5, 10]
+stats = {}
+for k in ks:
+    ranks, gaps = [], []
+    for _ in range(500):
+        cols = rng.choice(10, size=k, replace=False)
+        mean_k = sweep[:, cols].mean(axis=1)
+        s = int(np.argmax(mean_k))
+        ranks.append(true_rank.iloc[s])
+        gaps.append(mean_k[s] - truth.iloc[s])            # 見えた値と 20 回の平均の差
+    ranks = np.array(ranks)
+    stats[k] = (np.mean(ranks >= 9), np.median(ranks), np.mean(gaps))
+    print(f"k={k:2d}: 9 位以下を選ぶ割合 {stats[k][0]:.2f}  順位の中央値 {stats[k][1]:.0f}"
+          f"  選んだ値と 20 回の平均の差 {stats[k][2]:+.4f}")
 ```
 
-{{< figure src="experiment_compare_runs.svg" alt="横軸 epoch、縦軸 val_acc に 4 つの仮想 run の学習曲線を重ねた図。run #23 が最も高い値へ伸び、run #27 は 50 epoch でも伸び切っていない" caption="設定の異なる 4 run の学習曲線（仮想値）" align="center" >}}
+```text
+k= 1: 9 位以下を選ぶ割合 0.20  順位の中央値 5  選んだ値と 20 回の平均の差 +0.0040
+k= 2: 9 位以下を選ぶ割合 0.13  順位の中央値 2  選んだ値と 20 回の平均の差 +0.0023
+k= 3: 9 位以下を選ぶ割合 0.06  順位の中央値 2  選んだ値と 20 回の平均の差 +0.0015
+k= 5: 9 位以下を選ぶ割合 0.03  順位の中央値 2  選んだ値と 20 回の平均の差 +0.0009
+k=10: 9 位以下を選ぶ割合 0.00  順位の中央値 2  選んだ値と 20 回の平均の差 +0.0006
+```
 
-この仮想例では、run #23（緑）が最も高い val_acc に収束し、run #27（青）は 50 epoch 時点で伸び切っていません。実際の曲線では、[過学習](/ml/ml/overfitting/)を判断するために train/validation の両方、データ分割、停止条件も記録します。
+{{< figure src="exp_seeds.webp" alt="横軸はどちらも 1 設定あたりの seed の数で、1、2、3、5、10。左は 9 位以下の設定を選ぶ割合で、0.20、0.13、0.06、0.03、0.00 と下がる。右は選んだ val_auc と 20 回の平均の差で、0.0040、0.0023、0.0015、0.0009、0.0006 と下がる" caption="1 設定あたりの seed の数と、9 位以下を選ぶ割合（左）・選んだ値の高さ（右）" align="center" >}}
 
----
+seed が 1 個だと 5 回に 1 回は 9 位以下の設定を選び、選んだ値は平均で 0.0040 高く出ます。3 個にすると 9 位以下を選ぶ割合は 0.06、5 個で 0.03 まで下がりました。k が 10 の時は 10 個全てを使うので選び方は 1 通りしかなく、毎回 2 位の設定を選びます。2 位の平均は 1 位より 0.0002 低いだけなので、外れの設定を選んだとは言えません。
 
-### 多次元ハイパーパラメータの俯瞰
-
-4 個以上のハイパーパラメータを同時に変えると、heatmap や散布図では限界が来ます。Parallel coordinates plot は多次元探索を 1 枚にまとめる定番の可視化で、[W&B のダッシュボード](https://docs.wandb.ai/models/app/features/panels/parallel-coordinates)でも標準機能になっています。次の図も、読み方を示すために乱数で作った仮想の 40 run です（[生成元](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/experiment-tracking_gen.py)）。
-
-{{< figure src="experiment_parallel_coords.svg" alt="lr、batch_size、dropout、weight_decay の 4 本の縦軸を 40 本の線が結ぶ平行座標プロット。線の色が val_acc を表し、上位 5 run の太線は lr と batch_size の軸で狭い範囲に集まる" caption="4 つのハイパーパラメータと val_acc の平行座標プロット（仮想の 40 run）" align="center" >}}
-
-各線が 1 つの run で、色が val_acc を表し、上位 5 run を太線にしています。各軸の目盛りは元の値です。この仮想例の上位 5 run は、`lr` が 6e-4〜3.5e-3、`batch_size` が 64 か 128 に集まる一方で、`dropout` は 0.09〜0.38、`weight_decay` は 1e-5〜7e-4 に散らばっています。ここから「`lr` と `batch_size` は効きが大きく、残り 2 つは小さそう」と仮説を立て、次の探索範囲を絞ります。
-
----
-
-### 数学での使いどころ
-
-- 統計的仮説検定との対応: A/B テスト的に「設定 A が設定 B より有意に良いか」を [仮説検定](../../math/hypothesis-test/) で評価
-- ベイズ最適化: 過去の run にガウス過程などの代理モデルを当てはめ、獲得関数で次の有望候補を選ぶ
-- メタ学習: 過去実験の結果を「メタ訓練データ」として扱い、新タスクの初期 hyperparameter を予測
-- 多目的最適化: Pareto 最適性の議論（精度 vs 学習時間など複数の指標）
+seed を k 個使うと、学習の回数も k 倍になります。24 設定を 5 個ずつなら 120 回です。全ての設定を 1 個ずつ学習させてから、上位の数設定にだけ seed を足して平均で比べると、回数を抑えつつ、冒頭の図の 23 位のような設定を 1 位に選ぶことは避けられると考えられます。どちらにしても、`random_state` を params に記録しておけば、`search_runs` の結果を設定ごとにまとめて平均できます。
 
 ---
 
-### 機械学習での使いどころ
+### 同じ設定で結果が変わる時
 
-- ハイパーパラメータ探索: GridSearchCV / RandomizedSearchCV / Optuna の各試行を 1 run として記録
-- モデル比較: 異なるアルゴリズム（[ロジスティック回帰](../../ml/logistic-regression/) vs [勾配ブースティング](../../ml/gradient-boosting/) vs ニューラル）を同じ評価指標で並べる
-- アブレーション: 特徴量 1 つを外した時の精度変化を run として残す
-- データセット version 管理: 同じコードで「v1 のデータ」「v2 のデータ」を別 run として記録
-- チームコラボ: 誰がいつ何を試したかが共有できる（休暇明けでも追える）
-- 監査・規制対応: 「このモデルがどう作られたか」の証跡として
-- 論文の再現性確保: 全実験の seed・ハイパーパラメータをトラッキング ID で参照可能に
-- 後段の [モデルレジストリ](../model-registry/) への接続: 「best run」を選んで本番モデルに昇格
+seed を記録していても、同じ設定・同じ seed の run で結果が変わることがあります。よくあるのは、学習用のデータが同じパスのファイルに上書きされる場合です。最初の節のコードの続きで、最初に届いた 320 行を `train.csv` に書いて学習させ、後から届いた 106 行を足した 426 行で同じパスに上書きし、同じ設定で学習させ直しました。
 
-ツール選び:
+```python
+import pandas as pd
 
-- 個人 / 小規模チーム: MLflow（OSS、self-host 可能）、TensorBoard（深層学習特化）
-- 中規模チーム: Weights & Biases（無料枠あり）、Comet
-- 大規模・企業: [Vertex AI Experiments](https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments)、[SageMaker AI の MLflow](https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow.html)、[Azure Machine Learning の MLflow 連携](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-track-experiments-mlflow)、[Databricks の MLflow](https://docs.databricks.com/aws/en/mlflow/)。AWS は以前の SageMaker Experiments を Studio Classic 向けの機能とし、MLflow への移行を案内しています（2026 年 11 月時点）
+first = train_df.iloc[:320]                      # 最初に届いた 320 行
+first.to_csv("train.csv", index=False)
+
+
+def train_from_csv(run_name):
+    with mlflow.start_run(run_name=run_name) as run:
+        params = {"n_estimators": 100, "max_depth": 6, "max_features": 0.3,
+                  "min_samples_leaf": 1, "random_state": 0, "data_path": "train.csv"}
+        mlflow.log_params(params)
+        train = pd.read_csv("train.csv")
+        mlflow.log_input(mlflow.data.from_pandas(train, source="train.csv", name="train",
+                                                 targets="target"), context="training")
+        m = RandomForestClassifier(**{k: v for k, v in params.items() if k != "data_path"})
+        m.fit(train.drop(columns="target"), train["target"])
+        mlflow.log_metric("val_auc", roc_auc_score(y_valid, m.predict_proba(X_valid)[:, 1]))
+    return run.info.run_id
+
+
+run_a = train_from_csv("before")
+train_df.to_csv("train.csv", index=False)       # 後から届いた 106 行を足して同じパスに上書き
+run_b = train_from_csv("after")
+
+a, b = mlflow.get_run(run_a), mlflow.get_run(run_b)
+print("params が同じ:", a.data.params == b.data.params)
+for r in (a, b):
+    d = r.inputs.dataset_inputs[0].dataset
+    print(f"{r.info.run_name:6s} val_auc {r.data.metrics['val_auc']:.4f}  digest {d.digest}"
+          f"  profile {d.profile}")
+```
+
+```text
+params が同じ: True
+before val_auc 0.9791  digest bf8ce65b  profile {"num_rows": 320, "num_elements": 9920}
+after  val_auc 0.9765  digest 5f3bcb17  profile {"num_rows": 426, "num_elements": 13206}
+```
+
+2 つの run の記録を並べると、次のようになります。
+
+| 記録 | before | after |
+|---|---|---|
+| params の 6 項目 | 同じ | 同じ |
+| val_auc | 0.9791 | 0.9765 |
+| dataset の digest | bf8ce65b | 5f3bcb17 |
+| dataset の行数 | 320 | 426 |
+
+params には `data_path` としてファイルのパスも記録しましたが、パスは同じなので違いが出ません。違いが見えるのは、`log_input` で記録した digest と行数だけです。val_auc の差の 0.0026 は、前の節の seed による揺れと同じくらいなので、値だけを見ても設定のせいかデータのせいかは分かりません。digest が違えば、データが変わったと分かります。
+
+<br>
+
+#### digest が見分けない変更
+
+MLflow 3.18.0 の [digest の計算](https://github.com/mlflow/mlflow/blob/v3.18.0/mlflow/data/digest_utils.py)は、DataFrame の先頭 10000 行の中身と、行数、列名から作られます。20000 行のデータで 1 行だけラベルを直し、digest と、CSV 全体からハッシュ関数の [SHA-256](/notes/security/sha-256/) で計算した値の先頭 8 文字を比べました。
+
+```python
+import hashlib
+
+from sklearn.datasets import make_classification
+
+Xb, yb = make_classification(n_samples=20000, n_features=5, random_state=0)
+big = pd.DataFrame(Xb, columns=[f"x{i}" for i in range(5)]).assign(target=yb)
+
+
+def digest(frame):
+    return mlflow.data.from_pandas(frame, targets="target").digest
+
+
+def sha256(frame):
+    return hashlib.sha256(frame.to_csv(index=False).encode()).hexdigest()[:8]
+
+
+for row in [50, 15000]:
+    fixed = big.copy()
+    fixed.loc[row, "target"] = 1 - fixed.loc[row, "target"]   # 1 行のラベルを直す
+    print(f"{row:5d} 行目を直す: digest {digest(big)} → {digest(fixed)}"
+          f"  sha256 {sha256(big)} → {sha256(fixed)}")
+```
+
+```text
+   50 行目を直す: digest d2c11937 → 92bbfeed  sha256 2df62e76 → f6392947
+15000 行目を直す: digest d2c11937 → d2c11937  sha256 2df62e76 → 5996be93
+```
+
+50 行目を直すと digest は変わりますが、15000 行目を直しても d2c11937 のままでした。行数を変えずに 10000 行より後ろだけを直すと、MLflow の digest では見分けられません。1 万行を超えるデータでは、ファイル全体のハッシュを自分で計算して `set_tag` で残すか、[DVC](https://dvc.org/) のようなデータのバージョン管理のツールで付けたバージョンを記録します。
 
 ---
 
-### 適さないケース / 落とし穴
+### MLflow 以外のツール
 
-- 1 行 1 メトリックで全部 print してログファイルに頼る: run をまたいだ比較・検索ができなくなる。最低限 MLflow を入れる
-- params だけログして artifacts を残さない: モデル本体が再現できなければ意味が薄い
-- 環境（requirements / Docker image）を残さない: 「同じコードで違う結果」が起きた時に原因を調べられない
-- データセット version を tag しない: データが上書きされると過去 run の再現が不可能になる
-- 巨大なファイルを毎回 artifact に保存: ストレージコストが爆発。weights は最良 run だけ残す等の運用ルールを決める
-- 実験名がカオス（"test1", "final", "final_v2"）: 命名規約（`{date}_{algo}_{purpose}`）を最初に決める
-- 個人開発で「自分しか使わないから」と省略: 3 か月後の自分にも他人と思って記録する
-- トラッキングサーバーが壊れた時の復旧計画なし: DB とモデルファイルを定期的にバックアップする。例えば、バックアップ用スクリプトを cron で実行する
-- メトリクスのスケールがバラバラ: `loss` と `accuracy` を同じ軸で比較すると判断を誤る。グループ化と単位を意識する
-- 失敗 run を消す: 「効かなかった設定」も貴重な情報。失敗 run も残して後から検索できるようにする
+実験管理のツールは、記録する中身より、記録をどこに置くかで分かれます。
+
+| ツール | 記録の置き場所 |
+|---|---|
+| [MLflow](https://mlflow.org/docs/latest/ml/tracking/) | OSS（Open Source Software）。手元の SQLite から、自分で立てるサーバーまで |
+| [Weights & Biases](https://wandb.ai/)（W&B）、[Comet](https://www.comet.com/) | 各社のサービス |
+| [TensorBoard](https://www.tensorflow.org/tensorboard) | 手元のログのファイル。学習曲線などの可視化が中心 |
+| [ClearML](https://clear.ml/) | OSS のサーバーか、ClearML のサービス |
+| クラウドの ML 基盤 | Vertex AI、SageMaker AI、Azure ML、Databricks |
+
+クラウドの ML 基盤のうち、[SageMaker AI](https://docs.aws.amazon.com/sagemaker/latest/dg/mlflow.html)、[Azure Machine Learning](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-track-experiments-mlflow)、[Databricks](https://docs.databricks.com/aws/en/mlflow/) は MLflow の仕組みで記録を受け取ります。Google Cloud は [Vertex AI Experiments](https://cloud.google.com/vertex-ai/docs/experiments/intro-vertex-ai-experiments) という独自の仕組みです。AWS は以前の SageMaker Experiments を Studio Classic 向けの機能とし、MLflow への移行を案内しています（2026 年 11 月時点）。
+
+サービスが終わった例もあります。以前よく名前の挙がった Neptune は、OpenAI による買収に伴い、2026 年 3 月にクラウドのサービスを[終了](https://docs.neptune.ai/transition_hub)しました。
+
+どのツールを選んでも、seed とデータの識別子を記録するかどうかは、コードを書く側が決めます。本記事の 2 つの問題は、ツールを変えても同じように起きます。
+
+---
+
+### 1 位を選ぶ前に見ること
+
+探索の結果を val_auc の高い順に並べたら、1 位の設定を選ぶ前に、1 位と下の設定との差を見ます。その差が、同じ設定で seed を変えた時の揺れより小さければ、並びは seed で決まっています。冒頭の図の上位 8 設定は、平均の差が 0.0008 で、seed による揺れの 0.0028 より小さい範囲でした。
+
+その場合は、上位の数設定に seed を足して平均で比べます。この実験では、seed 1 個ずつの探索で 5 回に 1 回は 9 位以下を選び、5 個の平均で 3% まで下がりました。選んだ後に伝える性能は、1 位の run の値ではなく、テスト用のデータか、別の seed で測り直した値にします。
+
+記録には、`random_state` を params として、学習に使ったデータを `log_input` で残します。1 万行を超えるデータは、digest に加えてファイル全体のハッシュかデータのバージョンも残します。選んだモデルは、[モデルレジストリ](../model-registry/)で本番の候補として管理します。
+
+冒頭の図の seed 2 の探索は、23 位の小さなフォレストを 1 位に選びました。MLflow の画面でこの run だけを見ていれば、0.9816 という値に疑う理由はありません。並んだ run の 1 位が本当に 1 位かは、同じ設定の run が seed を変えて何個あるかを見れば分かります。
