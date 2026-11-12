@@ -1,9 +1,9 @@
 {
  "path": "content/notes/generative-ai/depth-body-shape/index.md",
- "overall": 5,
- "product": 36,
- "blob": "e710822e90c6a7a9dc4ab210ac0aa01aa1cda863",
- "by": "別担当の採点（抜き出し＋実験 1・2 の節、基準 5 本 5・5・3・2・2）",
+ "overall": 4,
+ "product": 24,
+ "blob": "e15c16120ab39e3084d147919a61084b7cf819c2",
+ "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）。「人形」を「3D モデル」に直した後に採点し直した",
  "baseline": [
   5,
   5,
@@ -11,6 +11,6 @@
   2,
   2
  ],
- "scored_at": "",
+ "scored_at": "2026-11-12",
  "standard": "gate-v1"
 }

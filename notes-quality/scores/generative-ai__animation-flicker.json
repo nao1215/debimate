@@ -1,9 +1,9 @@
 {
  "path": "content/notes/generative-ai/animation-flicker/index.md",
- "overall": 4,
- "product": 36,
- "blob": "a5fa59c5a660a608e8f67ede7442055682e0353a",
- "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）",
+ "overall": 5,
+ "product": 54,
+ "blob": "de43ee819f3ec8355d2828292e3df0a8cd563918",
+ "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）。「人形」を「3D モデル」に直した後に採点し直した",
  "baseline": [
   5,
   5,
@@ -11,6 +11,6 @@
   2,
   2
  ],
- "scored_at": "",
+ "scored_at": "2026-11-12",
  "standard": "gate-v1"
 }

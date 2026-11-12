@@ -1,9 +1,9 @@
 {
  "path": "content/notes/generative-ai/controlnet/index.md",
  "overall": 4,
- "product": 36,
- "blob": "acfe09f352076241185b7f3ed63a299d2d0ffd17",
- "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）",
+ "product": 24,
+ "blob": "6a0e17e8ff3d98129a6a34afc2b920210c92f016",
+ "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）。「人形」を「3D モデル」に直した後に採点し直した",
  "baseline": [
   5,
   5,
@@ -11,6 +11,6 @@
   2,
   2
  ],
- "scored_at": "",
+ "scored_at": "2026-11-12",
  "standard": "gate-v1"
 }
