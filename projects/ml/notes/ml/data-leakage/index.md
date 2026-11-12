@@ -8,7 +8,7 @@ weight: 11
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-データリーク（data leakage）は、学習時には観測できるはずのない情報がモデルに混入し、評価指標を不当に高く出してしまう現象です。[過学習](../overfitting/) と紛らわしい現象です。過学習が「複雑なモデルが訓練データを覚えすぎる」のに対し、データリークは「特徴量や前処理の組み方が予測対象の情報を漏らしている」点で原因が違います。
+データリーク（data leakage）は、予測時には手に入らないはずの情報がモデルの学習に混入し、評価指標を不当に高く出してしまう現象です。[過学習](../overfitting/) と紛らわしい現象です。過学習が「複雑なモデルが訓練データを覚えすぎる」のに対し、データリークは「特徴量や前処理の組み方が予測対象の情報を漏らしている」点で原因が違います。
 
 学習時に [交差検証](../cross-validation/) でも高スコアが出るため、テスト分割を厳密にしても検出できないことがあり、本番投入してはじめて精度が崩れる、という事故が起きます。
 
@@ -35,9 +35,9 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 ### 典型症状: 学習時のスコアが不当に高い
 
-リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、[ROC-AUC](../roc-pr-auc/) ほぼ 1.0 など）に達することが多いです。普段の精度感を 0.05〜0.10 上回るスコアが急に出たら、リークの有無を確認します。
+リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、[ROC-AUC](../roc-pr-auc/) ほぼ 1.0 など）に達することが多いです。普段の精度感を大きく上回るスコアが急に出たら、リークの有無を確認します。
 
-試しに、[scikit-learn](https://scikit-learn.org/stable/) の [`make_classification`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html) の CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで貼り付きます。
+試しに、[scikit-learn](https://scikit-learn.org/stable/) の [`make_classification`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html) の CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで張り付きます。
 
 ```python
 import matplotlib.pyplot as plt
@@ -234,5 +234,5 @@ CV の分割だけでなく、前処理の fit 対象と各特徴量の as-of ti
 - 「CV で評価しているからリークは起きない」とは限らない: 前処理を分割前に fit していれば CV を回しても情報が漏れる
 - 「目的変数と相関が高い特徴量を入れるとリーク」ではない: 強相関でも、推論時刻に観測可能で、目的変数から派生していなければリークではない（むしろ良い特徴量）
 - 「テスト精度が高ければ本番でも当たる」とは限らない: テストデータも訓練データと同じ前処理パイプラインを通過しているなら、その前処理に汚染がある時点でテスト精度も信頼できない
-- 「リークは個人開発の小さい問題」ではない: 胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 99.9% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
+- 「リークは個人開発の小さい問題」ではない: 狭い意味のリークではなく交絡（confounding）の例だが、胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 99.9% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
 - [過学習](../overfitting/) と同じ現象ではない: 過学習はモデルの複雑さが原因、データリークは特徴量・前処理の設計が原因。リークがあると過学習対策（[正則化](../regularization/)・early stopping）は効かない
