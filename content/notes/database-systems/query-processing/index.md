@@ -333,7 +333,7 @@ flowchart TD
 
 PostgreSQL の実行器では、上の演算子が下の演算子に次の 1 件を要求し、要求された演算子が 1 件だけ返します。返すレコードが尽きた演算子は、その旨を呼び出し元に伝えます。この作りは、PostgreSQL のドキュメントで「[demand-pull pipeline mechanism](https://www.postgresql.org/docs/current/executor.html)」（要求で引き出すパイプラインの仕組み）と呼ばれています。
 
-この仕組みでは、各演算子が準備（open）・次の 1 件の生成（next）・後始末（close）の 3 つの手続きを持ち、上の演算子が下の演算子の next を呼びます。
+この仕組みは一般に、各演算子が準備（open）・次の 1 件の生成（next）・後始末（close）の 3 つの手続きを持ち、上の演算子が下の演算子の next を呼ぶ形で説明されます。open・next・close は下記の Graefe 氏の論文が使う呼び名で、PostgreSQL のソースコードでは [`ExecInitNode`・`ExecProcNode`・`ExecEndNode`](https://github.com/postgres/postgres/blob/master/src/backend/executor/README) がそれぞれに当たります。
 
 Goetz Graefe 氏の論文「[Query Evaluation Techniques for Large Databases](https://cs.uwaterloo.ca/~david/cs848s13/graefe.pdf)」（ACM Computing Surveys 25(2)）も同じ作りを整理していて、この形の演算子（iterator）を組み合わせれば、いくらでも複雑な実行計画を組み立てられるとしています。
 
