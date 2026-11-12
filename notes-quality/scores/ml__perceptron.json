@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/ml/perceptron/index.md",
- "overall": 2,
- "product": 4,
- "blob": "cc668f2baca2c496b4b56d061dfbff62b3dee153",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "4611abb2ef91d4156d0f8a87180c7e5b07b9d4b3",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
