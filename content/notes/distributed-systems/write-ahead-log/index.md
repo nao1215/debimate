@@ -178,7 +178,7 @@ batch  latency_p50_ms  latency_p99_ms
 
 <br>
 
-以下は、上記の出力を描いた図です。
+以下は、上記の出力を描いた図です。図の文字は英語で、横軸の Records per Sync は `Sync` 1 回でまとめる件数です。左の Back to back は待たずに続けて書いた時、右の 1 record arrives every 1 ms は 1 ミリ秒ごとに 1 件届く時の結果です。
 
 {{< figure src="images/write-ahead-log_fsync_batch.svg" alt="左は Sync 1 回あたりの件数を 1 から 256 に増やした時の 1 秒あたりの件数で、1,328 件から 314,132 件までほぼ比例して増える。右は 1 ミリ秒ごとに 1 件届く時の応答時間で、中央値は 1 件ごとの 1.4 ミリ秒から 64 件ごとの 34 ミリ秒まで延びる。p99 は 1 件ごとが 23 ミリ秒と高く、4 件ごとで最も低い" caption="Sync 1 回でまとめる件数と、処理件数・応答時間" align="center" >}}
 
@@ -387,9 +387,11 @@ sequenceDiagram
     participant C as クライアント
     participant L as Leader
     participant F1 as Follower 1
+    participant F2 as Follower 2
     C->>L: 書き込み
     L->>L: index 42<br/>追記・同期
     L->>F1: 複製
+    L->>F2: 複製
     F1-->>L: index 42まで<br/>永続化完了
     Note over L,F1: Leader 自身を含めて<br/>3 台中 2 台に到達<br/>確定位置を42に
     L-->>C: 完了を応答
