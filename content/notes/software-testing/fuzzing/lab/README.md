@@ -6,12 +6,14 @@
 |---|---|---|
 | `exp0_jsonize_retain.sh` | 修正前後の jsonize の表の読み取りに、256 列の見出しと `x` だけの行を渡し、保持したヒープを測る（`jsonize/retain.go.txt`） | `output/exp0_jsonize_retain.txt` |
 | `exp1_magic.sh` | 1 バイトずつ比べる関数と 4 バイトまとめて比べる関数に fuzz を掛け、乱数の 1 億回とも比べる（`magic/`） | `output/exp1_magic.txt` |
+| `exp1_steps.sh` | 1 バイトずつ比べる関数で、FUZZ と一致した先頭のバイト数が初めて増えた時の回数と経過時間を 5 回記録する（`magic/steps_test.go`） | `output/exp1_steps.tsv` |
 | `exp2_parquet.sh` | filesql の修正前後で 473 バイトの Parquet を読む。`fuzz 300s` を付けると確保の上限を検査する fuzz を掛ける（`parquet/`） | `output/exp2_parquet.txt`、`output/exp2_fuzz_ceiling.txt`、`output/crashers/` |
 | `exp3_hang.sh` | 1 つの入力で 3・8・12 秒眠る fuzz の関数で、`go test -fuzz` が失敗にする時間を確かめる（`hang/`） | `output/exp3_hang.txt` |
 
 ```sh
 ./exp0_jsonize_retain.sh   # systemd-run でメモリを 8 GB に制限して走らせる
 ./exp1_magic.sh            # 10 分ほど
+./exp1_steps.sh            # 1 分ほど
 ./exp2_parquet.sh          # 473 バイトのファイルを修正前後で 1 回ずつ読む
 ./exp2_parquet.sh fuzz 300s
 ./exp3_hang.sh

@@ -10,8 +10,10 @@ from lab/output/, so rerun the experiment scripts first when they change.
   drawn as two squares whose areas are the input and the heap
   (lab/output/exp0_jsonize_retain.txt).
 - loop_figure(): the loop of a coverage-guided fuzzer.
-- steps_figure(): experiment 1. Byte-by-byte comparisons give the fuzzer a step
-  for each byte; one 4-byte comparison gives it none (lab/output/exp1_magic.txt).
+- steps_animation(): experiment 1 as an animated WebP. The measured times at which
+  the fuzzer first matched 1-4 bytes of FUZZ in ByteByByte, at half speed, next to
+  AtOnce, whose one 4-byte comparison gives no steps (lab/output/exp1_steps.tsv,
+  lab/output/exp1_magic.txt). steps_figure() is the earlier still version.
 - row_figure(): why one 2-byte line of input becomes 256 values in jsonize.
 - parquet_figure(): experiment 2. The 473-byte Parquet whose column chunk claims
   3113 bytes, before and after the fix (lab/output/exp2_parquet.txt).
@@ -255,10 +257,106 @@ def matrix_figure():
     s.save("matrix.webp")
 
 
+JP_TTF = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+MONO_TTF = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+
+
+def steps_animation(run=5):
+    """Experiment 1 as an animation: the measured times at which go test -fuzz first
+    matched 1, 2, 3 and 4 bytes of FUZZ in ByteByByte (lab/output/exp1_steps.tsv),
+    played at half speed, next to AtOnce which has no steps (lab/output/exp1_magic.txt)."""
+    from PIL import ImageDraw, ImageFont
+    rows = [l.split("\t") for l in (OUT / "exp1_steps.tsv").read_text().splitlines() if l.strip()]
+    steps = [(int(r[1]), int(r[2]), int(r[3]), r[4].strip('"')) for r in rows if r[0] == str(run)]
+    assert [s[0] for s in steps] == [1, 2, 3, 4], steps
+    text = (OUT / "exp1_magic.txt").read_text()
+    execs = [int(e) for e in re.findall(r"FuzzAtOnce run\d+: fuzz: elapsed: [^,]+, execs: (\d+)", text)]
+    assert all(0.9e8 < e < 1.1e8 for e in execs), execs
+    fin = sorted(int(r[2]) for r in rows if r[1] == "4")
+    lo, hi = fin[0], fin[-1]
+
+    S, W, H = 2, 900, 430
+    end_ms = (steps[-1][2] // 100 + 2) * 100
+
+    def font(size, mono=False):
+        return ImageFont.truetype(MONO_TTF if mono else JP_TTF, int(size * S))
+
+    def frame(t_ms):
+        im = Image.new("RGB", (W * S, H * S), "#ffffff")
+        d = ImageDraw.Draw(im)
+
+        def tx(x, y, s, size, fill=INK, anchor="la", mono=False):
+            d.text((x * S, y * S), s, font=font(size, mono), fill=fill, anchor=anchor)
+
+        def rect(x0, y0, x1, y1, fill, outline, width=1):
+            d.rectangle([x0 * S, y0 * S, x1 * S, y1 * S], fill=fill, outline=outline, width=width * S)
+
+        tx(20, 14, "左: ByteByByte に go test -fuzz を掛けた 1 回（実測の時刻を 0.5 倍速、段が上がる所で一時停止）", 14)
+        # time bar
+        bx0, bx1, by = 20, 880, 46
+        rect(bx0, by, bx1, by + 12, FILL, LINE)
+        fx = bx0 + (bx1 - bx0) * min(t_ms, steps[-1][2]) / end_ms
+        rect(bx0, by, fx, by + 12, "#cfe0eb", ACCENT)
+        for st in steps:
+            x = bx0 + (bx1 - bx0) * st[2] / end_ms
+            d.line([x * S, (by - 3) * S, x * S, (by + 15) * S], fill=RED if st[0] == 4 else SUB, width=S)
+        tx(bx1, by + 18, f"経過 {min(t_ms, steps[-1][2]):,} ms", 13, INK, "ra")
+        tx(bx0, by + 18, "0 ms", 12, SUB)
+
+        # ByteByByte staircase
+        tx(225, 92, "ByteByByte: 1 バイトずつ比べる", 14.5, INK, "ma")
+        d.line([450 * S, 90 * S, 450 * S, 400 * S], fill="#dddddd", width=S)
+        base, step, w0 = 330, 46, 78
+        reached = [st for st in steps if st[2] <= t_ms]
+        labels = [("seed", 0, 0)] + [(st[3], st[1], st[0]) for st in steps]
+        for i in range(5):
+            x = 22 + i * (w0 + 6)
+            top = base - i * step
+            got = i == 0 or i <= len(reached)
+            hit = i == 4 and got
+            if got:
+                rect(x, top, x + w0, base + 20, RED_PALE if hit else PALE, RED if hit else SUB)
+                lab, calls, _ = labels[i]
+                tx(x + w0 / 2, top - 22, lab, 12.5, RED if hit else INK, "ma", mono=True)
+                if i:
+                    tx(x + w0 / 2, top + 6, f"{calls:,} 回目", 11.5, SUB, "ma")
+            else:
+                rect(x, top, x + w0, base + 20, "#ffffff", "#d0d0d0")
+        msg = "FUZZ に届いて panic" if len(reached) == 4 else "先頭の一致が増えた入力。次の変異はここから始まる"
+        tx(22, 362, msg, 12.5, RED if len(reached) == 4 else SUB)
+        tx(22, 384, f"この記録の 5 回では、FUZZ まで {lo:,}〜{hi:,} 回", 12.5, SUB)
+
+        # AtOnce
+        tx(675, 92, "AtOnce: 4 バイトをまとめて比べる", 14.5, INK, "ma")
+        rect(480, base, 480 + w0, base + 20, PALE, SUB)
+        tx(480 + w0 / 2, base - 22, "seed", 12.5, INK, "ma", mono=True)
+        rect(780, base - 4 * step, 780 + w0, base + 20, "#ffffff", "#d0d0d0")
+        tx(780 + w0 / 2, base - 4 * step - 22, "FUZZ", 12.5, SUB, "ma", mono=True)
+        d.line([(480 + w0) * S, (base + 10) * S, 780 * S, (base + 10) * S], fill=LINE, width=S)
+        tx(669, 170, "途中の段が無いので、", 12.5, SUB, "ma")
+        tx(669, 192, "残る入力も無い", 12.5, SUB, "ma")
+        tx(480, 362, "corpus は seed のまま", 12.5, SUB)
+        tx(480, 384, f"別の測定: 2 分で約 1 億回を {len(execs)} 回、どれも見つからない", 12.5, SUB)
+        return im.resize((W, H), Image.LANCZOS)
+
+    tick = 40  # ms of real time per frame
+    times = sorted(set(list(range(0, steps[-1][2], tick)) + [st[2] for st in steps]))
+    frames = [frame(t) for t in times]
+    # half speed: each frame lasts twice the real time until the next one
+    durs = [max(20, (b - a) * 2) for a, b in zip(times, times[1:])] + [3000]
+    for i, t in enumerate(times[:-1]):
+        if t in [st[2] for st in steps]:
+            durs[i] += 1000  # pause where a step is reached
+    durs[0] = max(durs[0], 1200)
+    (HERE / "images").mkdir(exist_ok=True)
+    frames[0].save(HERE / "images" / "steps.webp", "WEBP", save_all=True, append_images=frames[1:],
+                   duration=durs, loop=0, quality=80, method=6)
+
+
 if __name__ == "__main__":
     retain_figure()
     loop_figure()
     row_figure()
     parquet_figure()
     matrix_figure()
-    steps_figure()
+    steps_animation()
