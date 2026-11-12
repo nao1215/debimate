@@ -196,7 +196,7 @@ n=4 quorum=3 faulty=backup  cases=27 split= 0 nobody_prepared= 0
 
 {{< figure src="images/bft_one_round.svg" alt="縦に 3 台・2 票、3 台・3 票、4 台・3 票で判断する構成、横に嘘をつく primary と、黙る・嘘をつく backup が並ぶ。3 台・2 票は primary が嘘をつくと 9 通り中 2 通りで割れ、backup なら全通りで進む。3 台・3 票は primary では割れないが、backup が黙ると primary が正直でも 9 通り中 4 通りで止まる。4 台・3 票は primary では割れず、誰も prepared にならない 13 通りは View Change に回し、backup なら全通りで進む" caption="構成と嘘つきの位置ごとに、1 ラウンドの全通りをまとめた結果" align="center" >}}
 
-つまり 3 台では、2 票で判断すると割れ、quorum を 3 票に上げると割れない代わりに嘘つきが黙るだけで止まります。4 台で primary が嘘をついて誰も prepared にならない 13 通りは、後述の View Change で primary を交代させて進めます。
+つまり 3 台では、2 票で判断すると割れ、quorum を 3 票に上げると割れない代わりに嘘つきが黙るだけで止まります。4 台で primary が嘘をついて誰も prepared にならない 13 通りや、prepared が一部のノードに留まって確定まで進まない場合は、後述の View Change で primary を交代させて進めます。
 
 ---
 
@@ -265,7 +265,7 @@ View Change は、primary が止まった時や、順序を進めない時に、
 
 VIEW-CHANGE には、送り主が prepared にした要求の証明を入れます。証明は、pre-prepare と 2f 個の一致した prepare の組です。署名付きのメッセージを束ねているので、嘘つきは存在しない prepared をでっち上げられません。VIEW-CHANGE には古い記録を捨てるためのチェックポイントの情報も入りますが、本記事では省略します。
 
-ここまでの説明は、全てのメッセージに署名する前提で書かれた論文の 4 節の手順です。論文の実装は通常の往復を MAC（Message Authentication Code、共有鍵で作る認証符号）で認証します。MAC は第三者に真正性を示せないので、View Change は別の手順に変えてあり、詳細は[同じ著者の技術メモ](https://dspace.mit.edu/handle/1721.1/149288)で説明されています。
+ここまでの説明は、全てのメッセージに署名する前提で書かれた論文の 4 節の手順です。論文の実装は通常の往復を MAC（Message Authentication Code、共有鍵で作る認証符号）で認証し、MAC では第三者に真正性を示せないので、[5 節](https://www.usenix.org/legacy/events/osdi99/full_papers/castro/castro_html/node5.html)にある通り VIEW-CHANGE と NEW-VIEW にだけ署名を使います。View Change まで MAC だけで行う手順は、[同じ著者の技術メモ](https://dspace.mit.edu/handle/1721.1/149288)で説明されています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
