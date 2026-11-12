@@ -18,7 +18,7 @@ ControlNet ノートの実験ファイル
       https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0 の diffusion_pytorch_model.safetensors
       （リビジョン 23f966c、sha256 b8524e557a7df60d081f5d4a0eb109967d107df217943bf88c2d99b9ebcc06c5）
       ライセンス: Apache License 2.0
-- 人形は Blender 4.5.15 LTS（https://www.blender.org/）と MPFB 2.0.18（https://extensions.blender.org/add-ons/mpfb/、
+- 3D モデルは Blender 4.5.15 LTS（https://www.blender.org/）と MPFB 2.0.18（https://extensions.blender.org/add-ons/mpfb/、
   GPL-3.0-or-later）で作る。MPFB の人体と骨組み（game_engine）を使い、手足の位置は IK で置く
 - 生成のスクリプト（comfy.py、run_controlnet.py）は Python 標準ライブラリだけで動く
 - 画像の処理と計測は uv の一時環境で動かした（バージョンを固定）
@@ -51,13 +51,13 @@ ControlNet ノートの実験ファイル
 ----
 - 1 枚は 832 x 1216、seed 20261111 / 20261112、steps 28、CFG 5.5、euler_ancestral、scheduler normal、
   clip skip 2（CLIPSetLastLayer -2）、txt2img（EmptyLatentImage、denoise 1.0）
-- 文面（3 ポーズ共通の前半 + ポーズごとの後半）
+- プロンプト（3 ポーズ共通の前半 + ポーズごとの後半）
     masterpiece, best quality, 1boy, solo, adult man, short black hair, white shirt, navy jacket,
     black trousers, brown boots, holding a long wooden staff, full body, simple background, white background,
     raise:    raising staff overhead with right hand, arm raised high, left hand on hip
     lunge:    lunging forward, thrusting staff forward with both hands, from side
     lookback: from behind, looking back over shoulder, staff resting on shoulder
-  打ち消し: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
+  ネガティブプロンプト: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
             watermark, logo, nsfw, nude, child, 1girl, multiple boys, multiple views, extra arms
 - 条件（compare）
     骨格: union（SetUnionControlNetType openpose）、strength 1.0、start 0、end 1.0
@@ -65,11 +65,11 @@ ControlNet ノートの実験ファイル
 - dedicated: 骨格の専用モデル xinsir_openpose_sdxl、strength 1.0、end 1.0
 - sweep: 突き（lunge）の深度マップ。strength 0.3 / 0.5 / 1.0（end 0.6）と end 0.2 / 0.4 / 1.0（strength 0.7）
 - thin: comfyui_controlnet_aux の既定の太さ（棒の半幅 4 px = 太さ約 8 px、点の半径 4 px）で描いた骨格。他は compare の骨格と同じ
-- canny: 人形の深度マップから作った輪郭。union（canny/lineart/anime_lineart/mlsd）、strength 0.7、end 0.6
+- canny: 3D モデルの深度マップから作った輪郭。union（canny/lineart/anime_lineart/mlsd）、strength 0.7、end 0.6
 
 計測
 ----
-pose_metrics.py は、生成した絵から姿勢を検出し（rtmlib の Body、performance）、人形の 12 関節
-（肩・肘・手首・腰・膝・足首）とのずれを、人形の背丈（首から両足首の中点まで）に対する % で出す。
-左右の取り違えは問わない。人形の深度マップそのものも同じ方法で数え（*_mannequin）、
+pose_metrics.py は、生成した絵から姿勢を検出し（rtmlib の Body、performance）、3D モデルの 12 関節
+（肩・肘・手首・腰・膝・足首）とのずれを、3D モデルの背丈（首から両足首の中点まで）に対する % で出す。
+左右の取り違えは問わない。3D モデルの深度マップそのものも同じ方法で数え（*_mannequin）、
 検出器が見落とす分の目安にした（output_pose_metrics.txt）。

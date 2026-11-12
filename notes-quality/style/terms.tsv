@@ -1,0 +1,39 @@
+# 分野の訳語（2026-11-12 著者「性質という単語が出るが、これは性質が一般的か？」「使う単語が一般的かどうかをチェックして欲しい」）
+# 英語の用語を日本語にする時は、本人の実文ではなく、その分野の日本語の資料（訳書・公式文書の日本語版・主要な解説）での言い方に合わせる。
+# 対象の正規表現は、ノートのパス（content/notes/<区分>/<スラッグ>/index.md）と題（front matter の title）に当てる。空なら全部のノートが対象。
+# 避ける語はコードの外の本文と題を見る。根拠には、分野での言い方を確かめた資料を書く。調べた語の一覧（一致・未確定を含む）は glossary.tsv。
+# ここに載せるのは、意味が 1 つに決まり、機械で止めても誤検出しにくい語だけ。「取引」（売買の意味もある）・「確定」（finality の意味もある）
+# のように文脈で決まる語は glossary.tsv の要修正の行を見て手で直し、ここには入れない。
+# 対象（パスか題の正規表現）	避ける語（正規表現）	分野での言い方	根拠
+Property-Based Testing|プロパティベース	性質	プロパティ（property）	訳書『実践プロパティベーステスト』（Fred Hebert、山口能迪 訳、ラムダノート）の章題「プロパティを書く」「プロパティで考える」 https://www.lambdanote.com/products/proper
+software-testing/|Property-Based Testing	生成器	ジェネレーター（generator）	同書の章題「カスタムジェネレーター」
+	余弦類似度	コサイン類似度（cosine similarity）	https://ja.wikipedia.org/wiki/コサイン類似度
+	再ランキング	リランキング（reranking）	https://developer.nvidia.com/ja-jp/blog/rag-with-sota-reranking-model-in-japanese
+	乱数の種	シード（seed）	https://weel.co.jp/media/innovator/image-genai-seed/
+	記憶喪失性	無記憶性（memoryless property）	https://ja.wikipedia.org/wiki/無記憶性
+	Anscombe の四つ組	アンスコムの例（Anscombe's quartet）	https://ja.wikipedia.org/wiki/アンスコムの例
+	勾配の照合	勾配確認（gradient check）	『ゼロから作るDeep Learning』5.7.3 節「誤差逆伝播法の勾配確認」 https://www.oreilly.co.jp/books/9784873117584/
+	怠惰な学習	怠惰学習（lazy learning）	https://www.elastic.co/jp/what-is/knn
+database-systems/	全走査	シーケンシャルスキャン（sequential scan。Oracle 系なら全表スキャン）	https://www.postgresql.jp/document/16/html/using-explain.html
+database-systems/	実行器	エグゼキュータ（executor）	https://www.postgresql.jp/document/16/html/querytree.html
+	消去権	消去の権利（right to erasure）	個人情報保護委員会の GDPR 仮日本語訳 https://www.ppc.go.jp/files/pdf/gdpr-provisions-ja.pdf
+	送信箱	アウトボックス（outbox）	https://docs.aws.amazon.com/ja_jp/prescriptive-guidance/latest/cloud-design-patterns/transactional-outbox.html
+software-architecture/	隔壁	バルクヘッド（bulkhead。隔壁は船の由来の説明だけに使う）	https://learn.microsoft.com/ja-jp/azure/architecture/patterns/bulkhead
+	毒入りの要求	ポイズンピル（poison pill）	AWS Well-Architected REL10-BP03 https://docs.aws.amazon.com/ja_jp/wellarchitected/latest/reliability-pillar/rel_fault_isolation_use_bulkhead.html
+	全バッファ	完全バッファリング（fully buffered）	JM の stdio(3) https://manpages.debian.org/trixie/manpages-ja-dev/stdio.3.ja.html
+	二重リーダー	スプリットブレイン（split brain）	https://atmarkit.itmedia.co.jp/ait/articles/1612/16/news015.html
+	固定窓|スライディング窓	固定ウィンドウ・スライディングウィンドウ（fixed / sliding window）	https://codenote.net/ja/posts/rate-limit-algorithm-comparison/
+	作業証明	プルーフ・オブ・ワーク（proof of work）	https://ethereum.org/ja/glossary/
+blockchain-systems/	合意層|合意側	コンセンサス・レイヤー（consensus layer）	https://ethereum.org/ja/glossary/
+blockchain-systems/	実行層	実行レイヤー（execution layer）	https://ethereum.org/ja/glossary/
+blockchain-systems/	再入(?!力)	リエントランシー（reentrancy）	https://ethereum.org/ja/glossary/
+blockchain-systems/	白書	ホワイトペーパー（whitepaper）	https://ethereum.org/ja/glossary/
+blockchain-systems/	採掘者	マイナー（miner）	https://bitcoin.org/ja/vocabulary
+blockchain-systems/	取引レシート	トランザクションレシート（transaction receipt）	https://ethereum.org/ja/glossary/
+blockchain-systems/	確認数	承認数（confirmations）	https://bitcoin.org/ja/vocabulary
+blockchain-systems/	軽量クライアント	ライト・クライアント（light client）	https://ethereum.org/ja/developers/docs/nodes-and-clients/light-clients/
+blockchain-systems/	本番ネットワーク	メインネット（mainnet）	https://ethereum.org/ja/glossary/
+blockchain-systems/	処罰	スラッシング（slashing）	https://ethereum.org/ja/developers/docs/consensus-mechanisms/pos/
+blockchain-systems/	記憶領域|保存領域	ストレージ（contract storage）	https://ethereum.org/ja/developers/docs/smart-contracts/anatomy/
+blockchain-systems/	砂場	サンドボックス（sandbox）	https://web.dev/articles/sandboxed-iframes?hl=ja
+generative-ai/	人形	3D モデル（Blender などで作った人体の 3D モデル）	2026-11-12 著者の指定（「人形」は不可。せめて 3D モデル）。ポーズを付ける人体の素体を指す

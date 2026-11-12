@@ -1,12 +1,12 @@
 """生成した絵を動かすとちらつく話のノートの図を作る。
 
 - flicker_cover.webp（動く）: 4 通りの作り方で作った 4 コマを、横に並べて同時に再生する
-- flicker_doll.webp: 人形の 4 コマと、計測に使う 2 つの範囲（止まっている所・腕が新しく入る所）
+- flicker_doll.webp: 3D モデルの 4 コマと、計測に使う 2 つの範囲（止まっている所・腕が新しく入る所）
 - flicker_diff.webp: 2 コマ目と 3 コマ目の差を、明るさで描いた図（作り方ごと）
 - flicker_tradeoff.webp: ちらつき（横）と、腕が付いてきた割合（縦）の散布図
 - flicker_denoise.webp: 元の 1 コマ目と、弱く描き直す強さ（denoise）0.45・0.6・0.75 の 4 コマ目
 - flicker_steps.webp: txt2img と img2img が、ノイズを除く列のどこから描き始めるか
-- flicker_warp_how.webp: 人形の表面の座標を色にした絵（1 コマ目と 4 コマ目）と、手の 1 点の対応
+- flicker_warp_how.webp: 3D モデルの表面の座標を色にした絵（1 コマ目と 4 コマ目）と、手の 1 点の対応
 - flicker_tear.webp: 流れのならし 3 画素と 20 画素で歪めた 4 コマ目の腕の周り
 - flicker_sheet.webp: 1 枚ずつ描いた顔と、並べて 1 枚で描いた顔を同じ大きさで並べる
 
@@ -146,7 +146,7 @@ def tradeoff():
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     ax.legend(frameon=False, loc="center right", fontsize=9)
-    ax.set_title("左上ほど良い（ちらつかず、人形どおりに動く）。各 3 seed", color=SUB, fontsize=10, loc="left")
+    ax.set_title("左上ほど良い（ちらつかず、3D モデルどおりに動く）。各 3 seed", color=SUB, fontsize=10, loc="left")
     save_plot(fig, "flicker_tradeoff")
 
 
@@ -221,7 +221,7 @@ def tear(gen):
 
 
 def sheet(gen):
-    """顔の周りを、どちらも人形の 1 m が同じ画素数になる大きさで並べる。"""
+    """顔の周りを、どちらも 3D モデルの 1 m が同じ画素数になる大きさで並べる。"""
     one = Image.open(f"{gen}/redraw_f0_{SEED}.png").convert("RGB")
     s = Image.open(f"{gen}/sheet_{SEED}.png").convert("RGB")
     k = 1216 / 768  # 並べた 1 枚の 1 コマは、1 枚ずつの絵の 768/1216 倍の大きさ

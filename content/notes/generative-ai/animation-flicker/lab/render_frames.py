@@ -1,4 +1,4 @@
-"""服の厚みを付けた人形で、腕を上げていく 4 コマを書き出す（Blender 4.5 + MPFB 2.0.18）。
+"""服の厚みを付けた 3D モデルで、腕を上げていく 4 コマを書き出す（Blender 4.5 + MPFB 2.0.18）。
 
 使い方: blender --background <real.blend> --python render_frames.py -- poses.json <出力先>
 出力（コマ i = 0..3）:
@@ -7,7 +7,7 @@
   uv_f<i>.png      表面の各点の展開図の座標（Texture Coordinate の UV）を色にしたもの。同じ形式
   cell_f<i>.png    並べた 1 枚に使う、小さいコマの深度マップ（384 x 768。4 つ並べると 1536 x 768）
 
-- 人形は depth-body-shape の make_dolls.py が作った real.blend（標準体型）。服の厚みは poses.json の _bulk
+- 3D モデルは depth-body-shape の make_dolls.py が作った real.blend（標準体型）。服の厚みは poses.json の _bulk
 - ポーズは骨の回転（度）だけで付ける（FK）。体の向きは 4 コマとも _facing（度）
 - カメラは平行投影。並べた 1 枚の 1 コマも、縦の写る範囲（2.1 m）とカメラの位置は同じ
 """

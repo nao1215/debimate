@@ -18,7 +18,7 @@ IP-Adapter の参照で色が転ぶ話のノートの実験ファイル（2026-1
       同じリポジトリの models/image_encoder（OpenCLIP の ViT-H-14）
     custom_nodes/ComfyUI_IPAdapter_plus（https://github.com/cubiq/ComfyUI_IPAdapter_plus、コミット a0f451a、GPL-3.0）
 - 深度マップは ../../animation-flicker/lab の render_frames.py が書き出す depth_f0.png
-  （標準体型の成人女性の人形、体を 35 度回した立ち姿、832 x 1216）
+  （標準体型の成人女性の 3D モデル、体を 35 度回した立ち姿、832 x 1216）
 - 生成のスクリプト（comfy.py、run.py）は Python 標準ライブラリだけで動く
 - 参照を作る・数えるスクリプトは uv の一時環境で動かした（バージョンを固定）
     uv run --with opencv-python-headless==4.10.0.84 --with numpy==2.1.3 --with scipy==1.14.1 \
@@ -28,8 +28,8 @@ IP-Adapter の参照で色が転ぶ話のノートの実験ファイル（2026-1
 
 参照の絵
 --------
-run.py の workflow（参照なしの 1 段目）と同じ条件で、seed と文面だけを変えて描いた。
-  銀の参照（ref_plain/source.png）: seed 20261123、文面は run.py の PROMPT のまま
+run.py の workflow（参照なしの 1 段目）と同じ条件で、seed とプロンプトだけを変えて描いた。
+  銀の参照（ref_plain/source.png）: seed 20261123、プロンプトは run.py の PROMPT のまま
   青い陣羽織の参照（ref/source.png）: seed 20261122、PROMPT の「silver plate armor,」の後に
     「red cape, blue tabard, gold trim,」を足した
   人物のいない参照（ref_blank/）: 1216 x 1216 の真っ白（255, 255, 255）と真っ緑（0, 177, 64）
@@ -65,11 +65,11 @@ ref_plain/clear_black.png（銀の参照。図の中央に使った read_clear_b
 - IP-Adapter: IPAdapterAdvanced、weight 0.6（weight の計画では 0.3・0.9）、start_at 0、end_at 1、
   combine_embeds concat、embeds_scaling V only。weight_type は style transfer precise か linear
 - 参照は 1216 x 1216 の正方形（縦長の絵の左右に背景を足した）。人物は全体の画素の約 15%（銀）・16%（青い陣羽織）
-- 文面
+- プロンプト
     masterpiece, best quality, 1girl, solo, adult woman, long brown hair, ponytail, knight,
     silver plate armor, breastplate, pauldrons, gauntlets, armored boots, dark trousers,
     standing, full body, simple background, white background
-- 打ち消し: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
+- ネガティブプロンプト: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
             watermark, logo, nsfw, nude, child, multiple girls, multiple views
 
 出力

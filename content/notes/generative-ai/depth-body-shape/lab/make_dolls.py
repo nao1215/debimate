@@ -1,4 +1,4 @@
-"""MPFB で成人女性の人形を 2 体作り、.blend に保存する（Blender 4.5 + MPFB 2.0.18）。
+"""MPFB で成人女性の 3D モデルを 2 体作り、.blend に保存する（Blender 4.5 + MPFB 2.0.18）。
 
 - real: MPFB の既定の比率（macro の値を中くらいにした人体）
 - anime: real に、太もも・すねを長くする target と、頭を小さくする target を足した人体

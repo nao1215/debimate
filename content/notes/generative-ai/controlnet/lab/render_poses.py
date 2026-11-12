@@ -1,4 +1,4 @@
-"""MPFB の人形にポーズを付け、同じカメラから深度マップ（depth map）と OpenPose の 18 点の座標を書き出す。
+"""MPFB の 3D モデルにポーズを付け、同じカメラから深度マップ（depth map）と OpenPose の 18 点の座標を書き出す。
 
 使い方: blender --background <make_mannequin.py の .blend> --python render_poses.py -- poses.json <出力先>
 

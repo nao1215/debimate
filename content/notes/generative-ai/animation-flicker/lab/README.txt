@@ -11,9 +11,9 @@
     models/controlnet/xinsir_union_promax_sdxl.safetensors
       https://huggingface.co/xinsir/controlnet-union-sdxl-1.0 の diffusion_pytorch_model_promax.safetensors
       （リビジョン 801a4a3）ライセンス: Apache License 2.0
-- 人形は Blender 4.5.15 LTS（https://www.blender.org/）と MPFB 2.0.18
+- 3D モデルは Blender 4.5.15 LTS（https://www.blender.org/）と MPFB 2.0.18
   （https://extensions.blender.org/add-ons/mpfb/、GPL-3.0-or-later）で作る。
-  人形そのもの（real.blend）は ../../depth-body-shape/lab/make_dolls.py が作る標準体型の成人女性
+  3D モデルそのもの（real.blend）は ../../depth-body-shape/lab/make_dolls.py が作る標準体型の成人女性
 - 生成のスクリプト（comfy.py、run_frames.py）は Python 標準ライブラリと Pillow で動く
 - 歪める・数える・図を描くスクリプトは uv の一時環境で動かした（バージョンを固定）
     uv run --with opencv-python-headless==4.10.0.84 --with numpy==2.1.3 --with scipy==1.14.1 \
@@ -23,8 +23,8 @@
 
 手順
 ----
-  blender --background --python ../../depth-body-shape/lab/make_dolls.py -- <人形の置き場>
-  blender --background <人形の置き場>/real.blend --python render_frames.py -- poses.json <作業先>/pass
+  blender --background --python ../../depth-body-shape/lab/make_dolls.py -- <3D モデルの置き場>
+  blender --background <3D モデルの置き場>/real.blend --python render_frames.py -- poses.json <作業先>/pass
       # depth_f0〜f3.png（深度マップ）、gen_f0〜f3.png・uv_f0〜f3.png（表面の座標）、cell_f0〜f3.png
   python3 run_frames.py <作業先>/pass <作業先>/gen redraw      # 1 コマずつ描く。12 枚
   python3 run_frames.py <作業先>/pass <作業先>/gen img2img     # 弱く描き直す denoise 0.45。12 枚
@@ -39,7 +39,7 @@
 
 設定
 ----
-- 人形: 標準体型の成人女性。服の厚みは poses.json の _bulk（骨ごとの頂点グループを法線方向に何 m 膨らませるか）
+- 3D モデル: 標準体型の成人女性。服の厚みは poses.json の _bulk（骨ごとの頂点グループを法線方向に何 m 膨らませるか）
 - ポーズ: 体を 35 度回した斜め前の立ち姿。右腕は上腕の骨（upperarm_r）を 32 度下げたまま、
   左腕（upperarm_l）を -32 度から 10 度ずつ上げた 4 コマ（f0〜f3）
 - カメラ: 平行投影、縦の写る範囲 2.1 m、中心 x 0.16 m・z 0.95 m。1 コマずつは 832 x 1216、並べて 1 枚の 1 コマは 384 x 768
@@ -49,12 +49,12 @@
   denoise 0.45・0.6・0.75、深度マップは強さ 0.8、end 0.8。どのコマも元の 1 コマ目から描く（前のコマをつながない）
 - sheet: 4 コマの小さい深度マップを横に並べた 1536 x 768 を txt2img で。強さ 0.7、end 0.6
 - warp: 表面の座標が gen（Texture Coordinate の Generated）か uv（UV）、流れのならし（ガウスの sigma）3 か 20 画素
-- 文面（redraw・img2img）
+- プロンプト（redraw・img2img）
     masterpiece, best quality, 1girl, solo, adult woman, long brown hair, ponytail, knight,
     silver plate armor, breastplate, pauldrons, gauntlets, armored boots, dark trousers,
     standing, full body, simple background, white background
-- 文面（sheet）: 上の「1girl, solo, 」を「multiple views, four views of the same woman, same outfit, same hairstyle, 」に替える
-- 打ち消し: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
+- プロンプト（sheet）: 上の「1girl, solo, 」を「multiple views, four views of the same woman, same outfit, same hairstyle, 」に替える
+- ネガティブプロンプト: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
             watermark, logo, nsfw, nude, child, multiple girls, multiple views
   （sheet では最後の multiple girls, multiple views を外す）
 

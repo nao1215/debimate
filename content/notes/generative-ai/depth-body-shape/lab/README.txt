@@ -11,7 +11,7 @@
     models/controlnet/xinsir_union_promax_sdxl.safetensors
       https://huggingface.co/xinsir/controlnet-union-sdxl-1.0 の diffusion_pytorch_model_promax.safetensors
       （リビジョン 801a4a3）ライセンス: Apache License 2.0
-- 人形は Blender 4.5.15 LTS（https://www.blender.org/）と MPFB 2.0.18
+- 3D モデルは Blender 4.5.15 LTS（https://www.blender.org/）と MPFB 2.0.18
   （https://extensions.blender.org/add-ons/mpfb/、GPL-3.0-or-later）で作る
 - 生成のスクリプト（comfy.py、run_depth.py）は Python 標準ライブラリだけで動く
 - 計測は uv の一時環境で動かした（バージョンを固定）
@@ -29,7 +29,7 @@
   blender --background --python make_dolls.py -- <作業先>                 # real.blend、anime.blend、dolls.json
   blender --background <作業先>/real.blend  --python render_depth.py -- poses.json <作業先>/depth real
   blender --background <作業先>/anime.blend --python render_depth.py -- poses.json <作業先>/depth anime
-      # <人形>_<plain|bulk>_<front|turn>.png の 8 枚
+      # <3D モデル>_<plain|bulk>_<front|turn>.png の 8 枚
   python3 run_depth.py <作業先>/depth <作業先>/gen compare   # 18 枚
   python3 run_depth.py <作業先>/depth <作業先>/gen sweep     # 16 枚
   python3 run_depth.py <作業先>/depth <作業先>/gen loose     # 10 枚
@@ -40,26 +40,26 @@
 
 設定
 ----
-- 人形: 成人女性（MPFB の macro: gender 0、age 0.5、他は 0.5。race は asian・caucasian・african に 1/3 ずつ）。anime は脚を長く・頭を小さくする target を足す
+- 3D モデル: 成人女性（MPFB の macro: gender 0、age 0.5、他は 0.5。race は asian・caucasian・african に 1/3 ずつ）。anime は脚を長く・頭を小さくする target を足す
   （make_dolls.py の ANIME）。服の厚みは poses.json の _bulk（骨ごとの頂点グループを法線方向に何 m 膨らませるか）
 - ポーズ: front（正面）と turn（35 度回した斜め前）。腕は上腕の骨（upperarm）を 32 度下げるだけ
 - 1 枚は 832 x 1216、seed 20261112 / 20261113、steps 28、CFG 5.5、euler_ancestral、scheduler normal、
   clip skip 2、txt2img（denoise 1.0）
 - 深度マップ: union（SetUnionControlNetType depth）、start 0、end 0.6。強さは compare・loose が 0.7、sweep が 0.4 と 1.0
-- 文面（鎧、compare と sweep）
+- プロンプト（鎧、compare と sweep）
     masterpiece, best quality, 1girl, solo, adult woman, long brown hair, ponytail, knight,
     silver plate armor, breastplate, pauldrons, gauntlets, armored boots, dark trousers,
     standing, full body, simple background, white background
-- 文面（ゆったりした服、loose）
+- プロンプト（ゆったりした服、loose）
     masterpiece, best quality, 1girl, solo, adult woman, long brown hair, ponytail,
     oversized grey hoodie, baggy cargo pants, white sneakers, standing, full body, simple background, white background
-- 打ち消し: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
+- ネガティブプロンプト: lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature,
             watermark, logo, nsfw, nude, child, multiple girls, multiple views
 
 出力
 ----
-- dolls.json: 人形の身長・頭の高さ・頭身・股下の比（Blender の頂点から計算）
-- metrics.json: 人形の深度マップと生成した絵の、脚の比・肩より上の比・太ももの幅（body_metrics.py）
+- dolls.json: 3D モデルの身長・頭の高さ・頭身・股下の比（Blender の頂点から計算）
+- metrics.json: 3D モデルの深度マップと生成した絵の、脚の比・肩より上の比・太ももの幅（body_metrics.py）
 - tags.json: 生成した絵の服のタグの確率（clothes_tags.py）
 - log_*.json: 1 枚ごとの prompt_id・実行秒数・送る直前の負荷（ComfyUI の待ち行列・GPU の使用率・load average）。
   他の生成と GPU を分け合っていたので、秒数は参考

@@ -1,7 +1,7 @@
-"""人形の深度マップを、服の厚みなし・ありの 2 通りで書き出す（Blender 4.5 + MPFB 2.0.18）。
+"""3D モデルの深度マップを、服の厚みなし・ありの 2 通りで書き出す（Blender 4.5 + MPFB 2.0.18）。
 
-使い方: blender --background <real.blend か anime.blend> --python render_depth.py -- poses.json <出力先> <人形の名前>
-出力: <出力先>/<人形>_<plain|bulk>_<ポーズ>.png
+使い方: blender --background <real.blend か anime.blend> --python render_depth.py -- poses.json <出力先> <3D モデルの名前>
+出力: <出力先>/<3D モデル>_<plain|bulk>_<ポーズ>.png
 
 - ポーズは骨の回転（度）だけで付ける（FK）。2 体で腕の長さは同じなので、同じ回転で同じ形になる
 - 服の厚みは、骨ごとの頂点グループを法線方向に Displace で膨らませる（値は poses.json の _bulk、単位 m）。

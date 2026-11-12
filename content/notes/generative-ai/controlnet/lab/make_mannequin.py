@@ -1,4 +1,4 @@
-"""MPFB で成人の人体（人形）と骨組みを作り、.blend に保存する（Blender 4.5 + MPFB 2.0.18）。
+"""MPFB で成人の人体（3D モデル）と骨組みを作り、.blend に保存する（Blender 4.5 + MPFB 2.0.18）。
 
 使い方: blender --background --python make_mannequin.py -- <保存先の .blend>
 """

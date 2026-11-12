@@ -6,7 +6,7 @@
                参照なしの 1 段目と 2 段目も描く
         first  1 段目だけを背景 × 型 × seed で描く（人物のいない参照に使う）
         weight 1 段目に白の参照を style transfer precise で、2 段目に緑の参照を linear で、重み 0.3・0.9 で描く
-1 段目: 深度マップ（union depth、強さ 0.7、end 0.6）で文面から描く（txt2img）。
+1 段目: 深度マップ（union depth、強さ 0.7、end 0.6）でプロンプトから描く（txt2img）。
 2 段目: 参照なしの 1 段目の絵を denoise 0.45 で描き直す（深度マップは強さ 0.8、end 0.8）。
 参照はどちらの段でも start 0、end 1 で掛ける。
 ログは <PNG の保存先>/log_<計画>.json に足していく（prompt_id・実行秒数・送る直前の負荷）。

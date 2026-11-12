@@ -1,9 +1,9 @@
-"""同じ文面と seed で、深度マップ（人形の体型 × 服の厚み）と強さだけを変えて 1 枚ずつ描く。
+"""同じプロンプトと seed で、深度マップ（3D モデルの体型 × 服の厚み）と強さだけを変えて 1 枚ずつ描く。
 
 使い方: python3 run_depth.py <深度マップのディレクトリ> <PNG の保存先> <計画の名前>
-  計画: compare（文面だけ、と 2 体 × 服の厚みなし・あり × 2 ポーズを強さ 0.7 で、各 2 seed）
-        sweep（正面のポーズで、4 つの人形を強さ 0.4 と 1.0 で、各 2 seed）
-        loose（ゆったりした服の文面で、文面だけと 4 つの人形の正面を強さ 0.7 で、各 2 seed）
+  計画: compare（プロンプトだけ、と 2 体 × 服の厚みなし・あり × 2 ポーズを強さ 0.7 で、各 2 seed）
+        sweep（正面のポーズで、4 つの 3D モデルを強さ 0.4 と 1.0 で、各 2 seed）
+        loose（ゆったりした服のプロンプトで、プロンプトだけと 4 つの 3D モデルの正面を強さ 0.7 で、各 2 seed）
 ログは <PNG の保存先>/log_<計画>.json に足していく（prompt_id・実行秒数・送る直前の負荷）。
 Python 標準ライブラリだけで動く。
 """
@@ -20,7 +20,7 @@ PROMPT = ("masterpiece, best quality, 1girl, solo, adult woman, long brown hair,
           "standing, full body, simple background, white background")
 NEG = ("lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature, watermark, logo, "
        "nsfw, nude, child, multiple girls, multiple views")
-# loose の計画の文面: 体から離れる服を頼む
+# loose の計画のプロンプト: 体から離れる服を頼む
 LOOSE = ("masterpiece, best quality, 1girl, solo, adult woman, long brown hair, ponytail, "
          "oversized grey hoodie, baggy cargo pants, white sneakers, standing, full body, simple background, "
          "white background")
@@ -29,7 +29,7 @@ DOLLS = [f"{d}_{k}" for d in ("real", "anime") for k in ("plain", "bulk")]
 
 
 def workflow(seed, control=None, prompt=PROMPT):
-    """control = None（文面だけ）か {"image", "strength", "end"}。union の depth を使う。"""
+    """control = None（プロンプトだけ）か {"image", "strength", "end"}。union の depth を使う。"""
     wf = {
         "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": CKPT}},
         "2": {"class_type": "CLIPSetLastLayer", "inputs": {"clip": ["1", 1], "stop_at_clip_layer": -2}},

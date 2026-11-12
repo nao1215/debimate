@@ -1,13 +1,13 @@
 """深度マップと体型・服の厚みのノートの図を作る。
 
-- depth_cover.webp: 文面だけと、4 つの人形の深度マップ → 生成した絵（同じ文面と seed）
-- depth_dolls.webp: 2 体の人形の深度マップに、頭の高さごとの目盛りを引いた図
+- depth_cover.webp: プロンプトだけと、4 つの 3D モデルの深度マップ → 生成した絵（同じプロンプトと seed）
+- depth_dolls.webp: 2 体の 3D モデルの深度マップに、頭の高さごとの目盛りを引いた図
 - depth_bulk.webp: 服の厚みなし・ありの深度マップ。ありの方に、なしの輪郭を重ねる
-- depth_measure.webp: 計測の線（頭頂・肩・股関節・膝・足首・足の裏と、太ももの幅）を、人形の深度マップと生成した絵に引く
-- depth_ratio.webp: 脚の比と肩より上の比（人形と、生成した絵）
-- depth_thigh.webp: 太ももの幅（鎧の文面と、ゆったりした服の文面）
+- depth_measure.webp: 計測の線（頭頂・肩・股関節・膝・足首・足の裏と、太ももの幅）を、3D モデルの深度マップと生成した絵に引く
+- depth_ratio.webp: 脚の比と肩より上の比（3D モデルと、生成した絵）
+- depth_thigh.webp: 太ももの幅（鎧のプロンプトと、ゆったりした服のプロンプト）
 - depth_strength.webp: 強さ 0.4・0.7・1.0 で、脚の比と太ももの幅がどう動くか
-- depth_loose.webp: ゆったりした服の文面で、文面だけと 4 つの人形の 5 列 × 2 seed
+- depth_loose.webp: ゆったりした服のプロンプトで、プロンプトだけと 4 つの 3D モデルの 5 列 × 2 seed
 
     uv run --with pillow==12.0.0 --with matplotlib==3.9.2 --with numpy==2.1.3 \
         python figures.py <深度マップのディレクトリ> <生成した PNG のディレクトリ>
@@ -33,13 +33,13 @@ CJK = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 font_manager.fontManager.addfont(CJK)
 plt.rcParams["font.family"] = font_manager.FontProperties(fname=CJK).get_name()
 INK, SUB, GRID = "#1f1f1f", "#666666", "#dddddd"
-# 人形ごとの色: 現実の比率は青、アニメの比率は黄土。服の厚みありは濃く
+# 3D モデルごとの色: 現実の比率は青、アニメの比率は黄土。服の厚みありは濃く
 COLORS = {"real_plain": "#9cc3db", "real_bulk": "#3f7fa6", "anime_plain": "#e6c27a", "anime_bulk": "#b07d1e"}
 DOLLS = list(COLORS)
-LABELS = {"text": "文面だけ", "real_plain": "標準体型\n服の厚みなし", "real_bulk": "標準体型\n服の厚みあり",
+LABELS = {"text": "プロンプトだけ", "real_plain": "標準体型\n服の厚みなし", "real_bulk": "標準体型\n服の厚みあり",
           "anime_plain": "アニメ体型\n服の厚みなし", "anime_bulk": "アニメ体型\n服の厚みあり"}
 SEEDS = (20261112, 20261113)
-# 人形の実寸（make_dolls.py の出力）。頭の高さ m と身長 m
+# 3D モデルの実寸（make_dolls.py の出力）。頭の高さ m と身長 m
 DOLL_SIZE = {"real": (0.210, 1.590), "anime": (0.184, 1.760)}
 PX_PER_M = 1216 / 2.1  # 平行投影のカメラの ortho_scale 2.1 m が縦 1216 px
 
@@ -54,12 +54,12 @@ def to_webp(img, name):
 
 
 def crop_fig(path, box=(166, 60, 666, 1216)):
-    """832 x 1216 の絵から人物の周りを切る（人形を使った絵は全て同じ枠）。"""
+    """832 x 1216 の絵から人物の周りを切る（3D モデルを使った絵は全て同じ枠）。"""
     return Image.open(path).convert("RGB").crop(box)
 
 
 def crop_text(path):
-    """文面だけの絵は人物が大きく描かれるので、縦を全部残して同じ縦横比（500 : 1156）で切る。"""
+    """プロンプトだけの絵は人物が大きく描かれるので、縦を全部残して同じ縦横比（500 : 1156）で切る。"""
     return crop_fig(path, (153, 0, 679, 1216))
 
 
@@ -162,9 +162,9 @@ def bulk(depth):
 
 
 def measure(depth, gen, m):
-    """計測の線: 同じ方法で、人形の深度マップと生成した絵に線を引く。"""
+    """計測の線: 同じ方法で、3D モデルの深度マップと生成した絵に線を引く。"""
     panels = []
-    for src, tag, title in [(depth / "real_plain_front.png", "real_plain_front", "人形の深度マップ"),
+    for src, tag, title in [(depth / "real_plain_front.png", "real_plain_front", "3D モデルの深度マップ"),
                             (gen / "real_plain_front_s070_20261112.png", "real_plain_front_s070_20261112",
                              "生成した絵")]:
         im = Image.open(src).convert("RGB")
@@ -207,8 +207,8 @@ def style(ax):
 
 
 def dot_panel(ax, m, key, prefix="", poses=("front", "turn"), title="", with_text=True):
-    """人形ごとに、ポーズごとの人形の値（横線）と生成した絵の値（点）を並べる。
-    ポーズが 2 つなら、各人形の左が正面、右が斜め。with_text なら左端に文面だけ。"""
+    """3D モデルごとに、ポーズごとの 3D モデルの値（横線）と生成した絵の値（点）を並べる。
+    ポーズが 2 つなら、各 3D モデルの左が正面、右が斜め。with_text なら左端にプロンプトだけ。"""
     cats = (["text"] if with_text else []) + DOLLS
     offs = {"front": -0.2, "turn": 0.2} if len(poses) == 2 else {"front": 0.0}
     for i, k in enumerate(cats):
@@ -231,7 +231,7 @@ def ratio(m):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.8))
     dot_panel(axes[0], m, "leg", title="脚の比（股関節から足の裏 ÷ 全身の高さ）")
     dot_panel(axes[1], m, "above_shoulder", title="肩より上の比（頭頂から肩 ÷ 全身の高さ）")
-    fig.text(0.99, 0.005, "横線 = 人形、丸 = 正面の絵、四角 = 斜めの絵（各人形の左が正面、右が斜め）", ha="right",
+    fig.text(0.99, 0.005, "横線 = 3D モデル、丸 = 正面の絵、四角 = 斜めの絵（各 3D モデルの左が正面、右が斜め）", ha="right",
              fontsize=9, color=SUB)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     savefig(fig, "depth_ratio")
@@ -239,12 +239,12 @@ def ratio(m):
 
 def thigh(m):
     fig, axes = plt.subplots(1, 2, figsize=(10, 3.8), sharey=True)
-    # 文面だけの絵は体の向きが決まらず、太ももの幅を比べられないので載せない
-    dot_panel(axes[0], m, "thigh_width", title="鎧の文面（正面と斜め、各 2 seed）", with_text=False)
+    # プロンプトだけの絵は体の向きが決まらず、太ももの幅を比べられないので載せない
+    dot_panel(axes[0], m, "thigh_width", title="鎧のプロンプト（正面と斜め、各 2 seed）", with_text=False)
     dot_panel(axes[1], m, "thigh_width", prefix="loose_", poses=("front",),
-              title="ゆったりした服の文面（正面、2 seed）", with_text=False)
+              title="ゆったりした服のプロンプト（正面、2 seed）", with_text=False)
     axes[0].set_ylabel("太ももの幅（÷ 肩から足首）")
-    fig.text(0.99, 0.005, "横線 = 人形、丸 = 正面の絵、四角 = 斜めの絵（左の図は各人形の左が正面、右が斜め）",
+    fig.text(0.99, 0.005, "横線 = 3D モデル、丸 = 正面の絵、四角 = 斜めの絵（左の図は各 3D モデルの左が正面、右が斜め）",
              ha="right", fontsize=9, color=SUB)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
     savefig(fig, "depth_thigh")
@@ -262,10 +262,10 @@ def strength(m):
         if key == "leg":
             text = np.mean([m[f"text_{s}"][key] for s in SEEDS])
             ax.hlines(text, 0.36, 1.04, color="#999999", lw=1.2, ls=":")
-            ax.text(1.05, text, "文面だけ", va="center", fontsize=9, color=SUB)
+            ax.text(1.05, text, "プロンプトだけ", va="center", fontsize=9, color=SUB)
         ax.set_xticks(xs)
         ax.set_xlabel("ControlNet の強さ（strength）")
-        ax.set_title(f"{title}（正面。点 = 2 seed の平均、破線 = 人形）", fontsize=12, loc="left")
+        ax.set_title(f"{title}（正面。点 = 2 seed の平均、破線 = 3D モデル）", fontsize=12, loc="left")
         style(ax)
     axes[1].legend(fontsize=8, frameon=False, loc="upper left", bbox_to_anchor=(1.12, 1))
     fig.tight_layout()

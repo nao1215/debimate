@@ -93,11 +93,11 @@ def concept_figure():
 
 
 def error_figure():
-    """ポーズごとに、腕と脚の関節のずれ（人形の背丈に対する %）を条件ごとの棒で並べる。
-    棒は seed 2 本の平均、点は各 seed。破線は人形の深度マップそのものを検出した時のずれ（検出器の目安）。"""
+    """ポーズごとに、腕と脚の関節のずれ（3D モデルの背丈に対する %）を条件ごとの棒で並べる。
+    棒は seed 2 本の平均、点は各 seed。破線は 3D モデルの深度マップそのものを検出した時のずれ（検出器の目安）。"""
     m = json.loads((LAB / "pose_metrics.json").read_text())
     poses = [("raise", "腕を上げる"), ("lunge", "突き"), ("lookback", "振り返る")]
-    conds = [("text", "文面だけ", "#bdbdbd", NEUTRAL), ("openpose", "骨格", BLUE, BLUE_F),
+    conds = [("text", "プロンプトだけ", "#bdbdbd", NEUTRAL), ("openpose", "骨格", BLUE, BLUE_F),
              ("depth", "深度マップ", OCHRE, OCHRE_F)]
     seeds = ["20261111", "20261112"]
     W, H = 960, 540
@@ -142,7 +142,7 @@ def error_figure():
         o.append(text(lx + 30, 30, name, 20, INK, "start"))
         lx += 30 + 20 * len(name) + 30
     o.append(line(lx, 29, lx + 30, 29, color=INK, sw=1.5, dash="5 4"))
-    o.append(text(lx + 38, 30, "人形そのもの", 20, INK, "start"))
+    o.append(text(lx + 38, 30, "3D モデルそのもの", 20, INK, "start"))
     o.append("</svg>")
     (IMAGES / "controlnet_error.svg").write_text("\n".join(o) + "\n")
 
