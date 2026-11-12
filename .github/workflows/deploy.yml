@@ -17,6 +17,7 @@ on:
 
 permissions:
   contents: read
+  deployments: read
   discussions: read
   pages: write
   id-token: write
@@ -40,8 +41,23 @@ jobs:
         with:
           fetch-depth: 0
           filter: blob:none
-      - name: Check changed notes
-        run: python3 notes-quality/gate.py push "${{ github.event.before }}" "${{ github.sha }}"
+      # 起点は「最後に公開に成功した commit」。直前の push を起点にすると、hook を飛ばして
+      # push した関門 NG のノートが、次の別の push で差分から外れて公開されてしまうため
+      - name: Find last successful Pages deployment
+        id: base
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          base=""
+          for row in $(gh api "repos/${{ github.repository }}/deployments?environment=github-pages&per_page=30" --jq '.[] | "\(.id):\(.sha)"'); do
+            id="${row%%:*}"; sha="${row##*:}"
+            state=$(gh api "repos/${{ github.repository }}/deployments/$id/statuses" --jq '.[0].state' || true)
+            if [ "$state" = "success" ] && git cat-file -e "$sha^{commit}" 2>/dev/null; then base="$sha"; break; fi
+          done
+          echo "sha=${base:-${{ github.event.before }}}" >> "$GITHUB_OUTPUT"
+          echo "base: ${base:-${{ github.event.before }}（公開の記録が見つからず、直前の push を起点にした）}"
+      - name: Check notes changed since the last deployment
+        run: python3 notes-quality/gate.py push "${{ steps.base.outputs.sha }}" "${{ github.sha }}"
       - name: Warn when style references are stale
         continue-on-error: true
         run: python3 notes-quality/refresh_style.py --check

@@ -5,8 +5,8 @@
     python3 notes-quality/gate.py note --diff <index.md>   # 既存ノートの小さな修正。HEAD から足した行だけ
     python3 notes-quality/gate.py commit                   # pre-commit: staged のノートを規則で見る
     python3 notes-quality/gate.py push <base> <head>       # pre-push と CI: 規則に加え、総合 4 以上の点の記録
-    python3 notes-quality/gate.py score <index.md> --overall 4 --product 36 --by <誰が>
-                                                           # 採点し直しの結果を scores/ に記録する
+    python3 notes-quality/gate.py score <index.md> --overall 4 --product 36 --baseline 5,5,3,2,2 --by <採点した担当>
+                                                           # 別の担当の採点し直しを scores/ に記録する（自己採点は不可）
     python3 notes-quality/gate.py record <index.md>        # 冒頭の型と題の形を opening_log.tsv に足す
 
 全部通れば終了コード 0、NG があれば 1。
@@ -28,6 +28,7 @@ NOTE_RE = re.compile(r'(?:content/notes|projects/ml/notes)/([^/]+)/([^/]+)/index
 SMALL = 5          # 小さな修正とみなす足した行の数
 MAJOR_LINES = 40   # これ以上足した改稿は全部の規則で見る
 MAJOR_RATIO = 0.3
+BASELINE = [5, 5, 3, 2, 2]  # 基準の 5 本（wallet, transaction-scope, quorum, adapter, sidecar）の点
 
 
 def git(*a, check=False):
@@ -215,6 +216,11 @@ def score_check(rel, head_text):
         return [f'点の記録が無い: notes-quality/scores/{key}.json（読解 A・事実確認・採点し直しで総合 4 以上を記録してから push）']
     s = json.load(open(sp, encoding='utf-8'))
     ng = []
+    by = s.get('by', '')
+    independent = s.get('baseline') == BASELINE or '基準 5 本 5・5・3・2・2' in by or '著者' in by
+    if '自己' in by or not independent:
+        ng.append(f'点の記録が書いた本人の採点か、基準の 5 本を一緒に採点していない（by: {by[:60]}）。'
+                  '別の担当が抜き出しだけで、基準の 5 本（5・5・3・2・2）と一緒に採点し直し、gate.py score --baseline 5,5,3,2,2 で記録する')
     if s.get('overall', 0) < 4:
         ng.append(f'記録の総合が {s.get("overall")}（4 以上でないと push できない）')
     scored = git('cat-file', '-p', s.get('blob', ''), check=True) if s.get('blob') else None
@@ -290,8 +296,13 @@ def main(argv):
         rel = os.path.relpath(os.path.abspath(rest[0]), ROOT)
         opts = dict(zip(rest[1::2], rest[2::2]))
         blob = subprocess.run(['git', '-C', ROOT, 'hash-object', '-w', rel], capture_output=True, text=True).stdout.strip()
+        base = [int(x) for x in opts.get('--baseline', '').split(',') if x.strip()]
+        if base != BASELINE:
+            sys.exit('--baseline に、同じ回に採点した基準の 5 本の点（5,5,3,2,2）を渡す。動いていたらその回の採点は使わない')
+        if '自己' in opts.get('--by', '') or not opts.get('--by'):
+            sys.exit('--by に採点した担当を書く。書いた本人の採点（自己採点）は記録しない')
         rec = {'path': rel, 'overall': int(opts.get('--overall', 0)), 'product': int(opts.get('--product', 0)),
-               'blob': blob, 'by': opts.get('--by', ''), 'scored_at': opts.get('--at', '')}
+               'blob': blob, 'by': opts['--by'], 'baseline': base, 'scored_at': opts.get('--at', '')}
         os.makedirs(os.path.join(HERE, 'scores'), exist_ok=True)
         json.dump(rec, open(os.path.join(HERE, 'scores', f'{key_of(rel)}.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
         print(f'記録した: notes-quality/scores/{key_of(rel)}.json 総合 {rec["overall"]}')
