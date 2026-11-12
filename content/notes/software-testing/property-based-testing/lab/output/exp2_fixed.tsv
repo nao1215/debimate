@@ -1,0 +1,301 @@
+gen	seed	found	case	rows	counterexample
+narrow	1	no	-	-	-
+narrow	2	no	-	-	-
+narrow	3	no	-	-	-
+narrow	4	no	-	-	-
+narrow	5	no	-	-	-
+narrow	6	no	-	-	-
+narrow	7	no	-	-	-
+narrow	8	no	-	-	-
+narrow	9	no	-	-	-
+narrow	10	no	-	-	-
+narrow	11	no	-	-	-
+narrow	12	no	-	-	-
+narrow	13	no	-	-	-
+narrow	14	no	-	-	-
+narrow	15	no	-	-	-
+narrow	16	no	-	-	-
+narrow	17	no	-	-	-
+narrow	18	no	-	-	-
+narrow	19	no	-	-	-
+narrow	20	no	-	-	-
+narrow	21	no	-	-	-
+narrow	22	no	-	-	-
+narrow	23	no	-	-	-
+narrow	24	no	-	-	-
+narrow	25	no	-	-	-
+narrow	26	no	-	-	-
+narrow	27	no	-	-	-
+narrow	28	no	-	-	-
+narrow	29	no	-	-	-
+narrow	30	no	-	-	-
+narrow	31	no	-	-	-
+narrow	32	no	-	-	-
+narrow	33	no	-	-	-
+narrow	34	no	-	-	-
+narrow	35	no	-	-	-
+narrow	36	no	-	-	-
+narrow	37	no	-	-	-
+narrow	38	no	-	-	-
+narrow	39	no	-	-	-
+narrow	40	no	-	-	-
+narrow	41	no	-	-	-
+narrow	42	no	-	-	-
+narrow	43	no	-	-	-
+narrow	44	no	-	-	-
+narrow	45	no	-	-	-
+narrow	46	no	-	-	-
+narrow	47	no	-	-	-
+narrow	48	no	-	-	-
+narrow	49	no	-	-	-
+narrow	50	no	-	-	-
+narrow	51	no	-	-	-
+narrow	52	no	-	-	-
+narrow	53	no	-	-	-
+narrow	54	no	-	-	-
+narrow	55	no	-	-	-
+narrow	56	no	-	-	-
+narrow	57	no	-	-	-
+narrow	58	no	-	-	-
+narrow	59	no	-	-	-
+narrow	60	no	-	-	-
+narrow	61	no	-	-	-
+narrow	62	no	-	-	-
+narrow	63	no	-	-	-
+narrow	64	no	-	-	-
+narrow	65	no	-	-	-
+narrow	66	no	-	-	-
+narrow	67	no	-	-	-
+narrow	68	no	-	-	-
+narrow	69	no	-	-	-
+narrow	70	no	-	-	-
+narrow	71	no	-	-	-
+narrow	72	no	-	-	-
+narrow	73	no	-	-	-
+narrow	74	no	-	-	-
+narrow	75	no	-	-	-
+narrow	76	no	-	-	-
+narrow	77	no	-	-	-
+narrow	78	no	-	-	-
+narrow	79	no	-	-	-
+narrow	80	no	-	-	-
+narrow	81	no	-	-	-
+narrow	82	no	-	-	-
+narrow	83	no	-	-	-
+narrow	84	no	-	-	-
+narrow	85	no	-	-	-
+narrow	86	no	-	-	-
+narrow	87	no	-	-	-
+narrow	88	no	-	-	-
+narrow	89	no	-	-	-
+narrow	90	no	-	-	-
+narrow	91	no	-	-	-
+narrow	92	no	-	-	-
+narrow	93	no	-	-	-
+narrow	94	no	-	-	-
+narrow	95	no	-	-	-
+narrow	96	no	-	-	-
+narrow	97	no	-	-	-
+narrow	98	no	-	-	-
+narrow	99	no	-	-	-
+narrow	100	no	-	-	-
+broad	1	no	-	-	-
+broad	2	no	-	-	-
+broad	3	no	-	-	-
+broad	4	no	-	-	-
+broad	5	no	-	-	-
+broad	6	no	-	-	-
+broad	7	no	-	-	-
+broad	8	no	-	-	-
+broad	9	no	-	-	-
+broad	10	no	-	-	-
+broad	11	no	-	-	-
+broad	12	no	-	-	-
+broad	13	no	-	-	-
+broad	14	no	-	-	-
+broad	15	no	-	-	-
+broad	16	no	-	-	-
+broad	17	no	-	-	-
+broad	18	no	-	-	-
+broad	19	no	-	-	-
+broad	20	no	-	-	-
+broad	21	no	-	-	-
+broad	22	no	-	-	-
+broad	23	no	-	-	-
+broad	24	no	-	-	-
+broad	25	no	-	-	-
+broad	26	no	-	-	-
+broad	27	no	-	-	-
+broad	28	no	-	-	-
+broad	29	no	-	-	-
+broad	30	no	-	-	-
+broad	31	no	-	-	-
+broad	32	no	-	-	-
+broad	33	no	-	-	-
+broad	34	no	-	-	-
+broad	35	no	-	-	-
+broad	36	no	-	-	-
+broad	37	no	-	-	-
+broad	38	no	-	-	-
+broad	39	no	-	-	-
+broad	40	no	-	-	-
+broad	41	no	-	-	-
+broad	42	no	-	-	-
+broad	43	no	-	-	-
+broad	44	no	-	-	-
+broad	45	no	-	-	-
+broad	46	no	-	-	-
+broad	47	no	-	-	-
+broad	48	no	-	-	-
+broad	49	no	-	-	-
+broad	50	no	-	-	-
+broad	51	no	-	-	-
+broad	52	no	-	-	-
+broad	53	no	-	-	-
+broad	54	no	-	-	-
+broad	55	no	-	-	-
+broad	56	no	-	-	-
+broad	57	no	-	-	-
+broad	58	no	-	-	-
+broad	59	no	-	-	-
+broad	60	no	-	-	-
+broad	61	no	-	-	-
+broad	62	no	-	-	-
+broad	63	no	-	-	-
+broad	64	no	-	-	-
+broad	65	no	-	-	-
+broad	66	no	-	-	-
+broad	67	no	-	-	-
+broad	68	no	-	-	-
+broad	69	no	-	-	-
+broad	70	no	-	-	-
+broad	71	no	-	-	-
+broad	72	no	-	-	-
+broad	73	no	-	-	-
+broad	74	no	-	-	-
+broad	75	no	-	-	-
+broad	76	no	-	-	-
+broad	77	no	-	-	-
+broad	78	no	-	-	-
+broad	79	no	-	-	-
+broad	80	no	-	-	-
+broad	81	no	-	-	-
+broad	82	no	-	-	-
+broad	83	no	-	-	-
+broad	84	no	-	-	-
+broad	85	no	-	-	-
+broad	86	no	-	-	-
+broad	87	no	-	-	-
+broad	88	no	-	-	-
+broad	89	no	-	-	-
+broad	90	no	-	-	-
+broad	91	no	-	-	-
+broad	92	no	-	-	-
+broad	93	no	-	-	-
+broad	94	no	-	-	-
+broad	95	no	-	-	-
+broad	96	no	-	-	-
+broad	97	no	-	-	-
+broad	98	no	-	-	-
+broad	99	no	-	-	-
+broad	100	no	-	-	-
+edge	1	yes	9	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	2	yes	69	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	3	yes	34	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	4	yes	5	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	5	yes	81	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	6	yes	42	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	7	yes	47	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	8	yes	74	2	[{a:int64(9007199254740992) b:int64(9007199254740992)} {a:int64(9007199254740992) b:int64(9007199254740993)}]
+edge	9	yes	4	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	10	yes	8	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	11	yes	36	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	12	yes	42	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	13	yes	3	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	14	yes	83	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	15	yes	18	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	16	yes	2	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	17	yes	24	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	18	yes	1	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	19	yes	0	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	20	yes	43	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	21	yes	62	2	[{a:int64(9007199254740992) b:""} {a:int64(9007199254740993) b:""}]
+edge	22	yes	33	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	23	yes	31	2	[{a:"" b:int64(9007199254740992)} {a:"" b:int64(9007199254740993)}]
+edge	24	yes	135	2	[{a:int64(9007199254740992) b:int64(9007199254740992)} {a:int64(9007199254740992) b:int64(9007199254740993)}]
+edge	25	yes	6	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	26	yes	97	2	[{a:int64(9007199254740992) b:int64(9007199254740991)} {a:int64(9007199254740993) b:int64(9007199254740991)}]
+edge	27	yes	38	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	28	yes	94	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	29	yes	314	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	30	yes	32	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	31	yes	5	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	32	yes	248	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	33	yes	17	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	34	yes	169	2	[{a:int64(9007199254740994) b:int64(9007199254740992)} {a:int64(9007199254740994) b:int64(9007199254740993)}]
+edge	35	yes	34	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	36	yes	4	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	37	yes	33	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	38	yes	196	2	[{a:"" b:int64(9007199254740992)} {a:"" b:int64(9007199254740993)}]
+edge	39	yes	61	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	40	yes	3	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	41	yes	23	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	42	yes	70	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	43	yes	2	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	44	yes	81	2	[{a:"" b:int64(9007199254740992)} {a:"" b:int64(9007199254740993)}]
+edge	45	yes	1	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	46	yes	0	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	47	yes	35	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	48	yes	41	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	49	yes	59	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	50	yes	16	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	51	yes	62	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	52	yes	91	2	[{a:int64(9007199254740992) b:int64(9007199254740992)} {a:int64(9007199254740992) b:int64(9007199254740993)}]
+edge	53	yes	91	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	54	yes	30	2	[{a:"" b:int64(9007199254740992)} {a:"" b:int64(9007199254740993)}]
+edge	55	yes	32	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	56	yes	161	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	57	yes	53	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	58	yes	59	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	59	yes	85	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	60	yes	103	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	61	yes	71	2	[{a:int64(9007199254740992) b:""} {a:int64(9007199254740993) b:""}]
+edge	62	yes	31	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	63	yes	42	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	64	yes	22	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	65	yes	37	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	66	yes	15	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	67	yes	106	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	68	yes	248	2	[{a:int64(9007199254740992) b:int64(0)} {a:int64(9007199254740993) b:int64(0)}]
+edge	69	yes	33	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	70	yes	32	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	71	yes	37	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	72	yes	138	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	73	yes	153	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	74	yes	61	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	75	yes	51	2	[{a:"" b:int64(9007199254740992)} {a:"" b:int64(9007199254740993)}]
+edge	76	yes	154	2	[{a:int64(9007199254740992) b:int64(9007199254740991)} {a:int64(9007199254740993) b:int64(9007199254740991)}]
+edge	77	yes	128	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	78	yes	129	2	[{a:int64(9007199254740992) b:""} {a:int64(9007199254740993) b:""}]
+edge	79	yes	154	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	80	yes	139	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	81	yes	14	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	82	yes	34	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	83	yes	61	2	[{a:int64(9007199254740992) b:""} {a:int64(9007199254740993) b:""}]
+edge	84	yes	29	2	[{a:"" b:int64(9007199254740992)} {a:"" b:int64(9007199254740993)}]
+edge	85	yes	157	2	[{a:int64(9007199254740992) b:int64(8)} {a:int64(9007199254740993) b:int64(8)}]
+edge	86	yes	21	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	87	yes	31	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	88	yes	79	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	89	yes	40	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	90	yes	98	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	91	yes	142	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	92	yes	43	2	[{a:int64(9007199254740992) b:""} {a:int64(9007199254740993) b:""}]
+edge	93	yes	30	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	94	yes	147	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	95	yes	13	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	96	yes	59	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	97	yes	55	2	[{a:nil b:int64(9007199254740992)} {a:nil b:int64(9007199254740993)}]
+edge	98	yes	175	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	99	yes	282	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]
+edge	100	yes	45	2	[{a:int64(9007199254740992) b:nil} {a:int64(9007199254740993) b:nil}]

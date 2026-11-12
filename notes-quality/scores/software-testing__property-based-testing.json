@@ -1,0 +1,16 @@
+{
+ "path": "content/notes/software-testing/property-based-testing/index.md",
+ "overall": 5,
+ "product": 81,
+ "blob": "150e4a60767c05d0ff07f624fb0dfc4a58bfc0a2",
+ "by": "別担当の採点（抜き出しだけ、基準 5 本と同じ回。.note-review/work/scoring3/scores.json）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
+}

@@ -472,6 +472,6 @@ fuzz の関数を書くこと自体は、数行で済みます。著者の OSS �
 | seed | 形式の確認を通る正しい入力を渡したか |
 | 実行 | 全ての関数が、実際に毎晩回っているか |
 
-fuzz はバイト列を作るので、形式の確認で弾かれやすく、作った入力の意味を知りません。構造のある値（日付、木、SQL の式など）を作って性質を確認する方法は、次の Property-Based Testing のノートで扱います。
+fuzz はバイト列を作るので、形式の確認で弾かれやすく、作った入力の意味を知りません。構造のある値（日付、木、SQL の式など）を作って性質を確認する方法は、次の [Property-Based Testing](/notes/software-testing/property-based-testing/) のノートで扱います。
 
 実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/fuzzing/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/figures.py) にあります。

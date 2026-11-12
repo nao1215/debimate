@@ -1,0 +1,4 @@
+quick	narrow	found 100/100	case median 10.0 max 54	rows min 6 median 15.5 max 20
+quick	broad	found 0/100
+rapid	narrow	found 100/100	case median 24.0 max 185	rows min 2 median 2.0 max 2
+rapid	broad	found 2/100	case median 124.5 max 181	rows min 2 median 2.0 max 2

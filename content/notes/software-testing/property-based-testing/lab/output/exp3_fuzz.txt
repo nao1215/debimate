@@ -1,0 +1,10 @@
+buggy	run 1	found in 1.3 s	反例 6 行: [{a:"0" b:nil} {a:int64(0) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行
+buggy	run 2	found in 0.5 s	反例 6 行: [{a:"0" b:nil} {a:nil b:""} {a:int64(0) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 3 行、異なる行は 4 行
+buggy	run 3	found in 0.6 s	反例 6 行: [{a:"0" b:nil} {a:int64(0) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行
+buggy	run 4	found in 0.4 s	反例 6 行: [{a:"0" b:nil} {a:int64(0) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行
+buggy	run 5	found in 1.8 s	反例 8 行: [{a:"" b:int64(3472328296227680304)} {a:nil b:nil} {a:nil b:int64(3472328296227680304)} {a:"00000" b:nil} {a:nil b:"0"} {a:"000" b:nil} {a:"" b:nil} {a:nil b:int64(0)}]: Distinct は 7 行、異なる行は 8 行
+fixed	run 1	found in 1.1 s	反例 6 行: [{a:int64(3472328296227680304) b:nil} {a:int64(3472328296227680305) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行
+fixed	run 2	found in 1.4 s	反例 6 行: [{a:int64(3472328296227680305) b:nil} {a:int64(3472328296227680304) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行
+fixed	run 3	found in 0.8 s	反例 6 行: [{a:nil b:int64(3472328296227680304)} {a:nil b:nil} {a:nil b:int64(3472328296227680304)} {a:int64(-6221254864074594000) b:int64(-6221254864074594000)} {a:nil b:nil} {a:int64(-6221254864074594000) b:int64(-6221254864074593999)}]: Distinct は 3 行、異なる行は 4 行
+fixed	run 4	found in 0.8 s	反例 6 行: [{a:int64(3472328296227680305) b:nil} {a:int64(3472328296227680304) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行
+fixed	run 5	found in 0.9 s	反例 6 行: [{a:int64(3472328296227680304) b:nil} {a:int64(3472328296227680305) b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil} {a:nil b:nil}]: Distinct は 2 行、異なる行は 3 行

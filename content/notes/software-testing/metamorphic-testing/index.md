@@ -350,7 +350,7 @@ jsonize でも同じことが起きています。2026-09-12 に関係のテス�
 
 ### 反例の最小化
 
-testing/quick は新しい機能を追加しない方針（frozen）で、反例を最小化する機能もありません。実験 3 で手で行った最小化を自動で行う機能は shrinking と呼ばれ、Property-Based Testing のライブラリの多くが持っています。
+testing/quick は新しい機能を追加しない方針（frozen）で、反例を最小化する機能もありません。実験 3 で手で行った最小化を自動で行う機能は shrinking と呼ばれ、[Property-Based Testing](/notes/software-testing/property-based-testing/) のライブラリの多くが持っています。
 
 著者は、Erlang の VM と JavaScript で動く関数型言語の [Gleam](https://gleam.run/) で、Property-Based Testing と Metamorphic Testing を同じ形で書けるライブラリ [metamon](https://github.com/nao1215/metamon) を作っています。以下は README にある例で、`string.trim` を 2 回実行しても 1 回と同じ、という冪等の関係を書いています。
 

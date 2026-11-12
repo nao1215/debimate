@@ -1,0 +1,401 @@
+tool	gen	seed	found	case	rows	counterexample
+quick	narrow	1	yes	10	10	[{a:nil b:int64(8)} {a:nil b:"8"} {a:nil b:nil} {a:nil b:""} {a:nil b:nil} {a:nil b:int64(4)} {a:"6\x00" b:nil} {a:"" b:nil} {a:"" b:int64(2)} {a:nil b:nil}]
+quick	narrow	2	yes	13	16	[{a:"5" b:"1"} {a:nil b:"9"} {a:int64(0) b:nil} {a:int64(2) b:int64(7)} {a:"2\x00" b:nil} {a:"0" b:nil} {a:"71" b:""} {a:"" b:"78"} {a:nil b:nil} {a:int64(7) b:nil} {a:"17" b:nil} {a:int64(4) b:"6"} {a:int64(5) b:"68"} {a:nil b:""} {a:"3" b:"09"} {a:"19" b:int64(7)}]
+quick	narrow	3	yes	29	14	[{a:"x" b:nil} {a:int64(9) b:nil} {a:int64(8) b:nil} {a:int64(6) b:int64(9)} {a:int64(7) b:"2"} {a:nil b:int64(3)} {a:int64(9) b:int64(6)} {a:nil b:"2"} {a:"09" b:int64(6)} {a:int64(8) b:"\x00"} {a:"32" b:int64(9)} {a:nil b:int64(2)} {a:"" b:nil} {a:int64(1) b:int64(4)}]
+quick	narrow	4	yes	19	10	[{a:"8" b:nil} {a:"" b:"37"} {a:nil b:""} {a:int64(8) b:nil} {a:int64(6) b:nil} {a:nil b:int64(8)} {a:int64(3) b:int64(0)} {a:"9" b:int64(7)} {a:int64(8) b:"76"} {a:int64(3) b:int64(9)}]
+quick	narrow	5	yes	12	15	[{a:int64(7) b:"1x"} {a:int64(8) b:int64(9)} {a:nil b:"99"} {a:nil b:"9"} {a:nil b:int64(9)} {a:"" b:nil} {a:nil b:"00"} {a:"" b:int64(5)} {a:int64(5) b:""} {a:"4" b:""} {a:int64(5) b:nil} {a:nil b:nil} {a:int64(0) b:int64(7)} {a:nil b:int64(6)} {a:"0\x00" b:"5x"}]
+quick	narrow	6	yes	11	14	[{a:nil b:int64(6)} {a:int64(4) b:""} {a:"" b:"\x003"} {a:int64(5) b:int64(6)} {a:int64(8) b:nil} {a:"8" b:nil} {a:int64(3) b:int64(2)} {a:int64(2) b:int64(2)} {a:nil b:"\x00"} {a:nil b:int64(7)} {a:nil b:"9"} {a:int64(4) b:int64(1)} {a:int64(9) b:int64(2)} {a:nil b:int64(7)}]
+quick	narrow	7	yes	46	19	[{a:nil b:nil} {a:nil b:""} {a:"" b:nil} {a:nil b:int64(2)} {a:int64(5) b:"3"} {a:"6" b:int64(5)} {a:"\x00" b:nil} {a:nil b:nil} {a:int64(8) b:int64(8)} {a:"15" b:"8"} {a:int64(6) b:int64(5)} {a:int64(9) b:""} {a:nil b:"8"} {a:"\x00" b:""} {a:nil b:nil} {a:int64(7) b:nil} {a:"x" b:"22"} {a:"9" b:nil} {a:"62" b:nil}]
+quick	narrow	8	yes	7	19	[{a:int64(1) b:"x"} {a:int64(5) b:""} {a:nil b:""} {a:nil b:int64(2)} {a:int64(5) b:""} {a:int64(3) b:int64(0)} {a:"" b:int64(1)} {a:int64(0) b:int64(6)} {a:"" b:"7"} {a:nil b:nil} {a:"8\x00" b:""} {a:"73" b:"8"} {a:int64(7) b:int64(0)} {a:int64(8) b:nil} {a:"" b:nil} {a:nil b:"5"} {a:int64(4) b:""} {a:"0" b:int64(6)} {a:"95" b:nil}]
+quick	narrow	9	yes	15	16	[{a:"98" b:nil} {a:nil b:""} {a:int64(6) b:"9"} {a:"9" b:nil} {a:"99" b:"\x00"} {a:nil b:"0"} {a:"1" b:nil} {a:"1" b:"43"} {a:int64(4) b:int64(5)} {a:nil b:"2"} {a:nil b:int64(2)} {a:"1" b:nil} {a:int64(8) b:nil} {a:"" b:""} {a:nil b:"9"} {a:int64(0) b:nil}]
+quick	narrow	10	yes	10	19	[{a:int64(1) b:nil} {a:int64(7) b:int64(3)} {a:int64(7) b:nil} {a:"" b:"x"} {a:"75" b:int64(1)} {a:nil b:"2"} {a:int64(1) b:nil} {a:"2" b:nil} {a:"7" b:""} {a:"14" b:nil} {a:"" b:nil} {a:nil b:int64(0)} {a:nil b:"x8"} {a:nil b:nil} {a:int64(7) b:nil} {a:int64(1) b:"8x"} {a:nil b:int64(0)} {a:int64(7) b:""} {a:nil b:int64(5)}]
+quick	narrow	11	yes	10	16	[{a:int64(4) b:int64(3)} {a:nil b:nil} {a:nil b:int64(0)} {a:int64(4) b:nil} {a:"" b:int64(3)} {a:nil b:"3"} {a:int64(2) b:int64(1)} {a:nil b:int64(2)} {a:nil b:int64(1)} {a:"x" b:"6"} {a:int64(2) b:int64(5)} {a:nil b:nil} {a:"" b:"2"} {a:nil b:nil} {a:nil b:int64(3)} {a:nil b:int64(0)}]
+quick	narrow	12	yes	5	19	[{a:"77" b:nil} {a:int64(3) b:""} {a:int64(4) b:nil} {a:"3" b:int64(5)} {a:"3" b:nil} {a:nil b:nil} {a:int64(1) b:nil} {a:int64(3) b:nil} {a:"" b:"61"} {a:int64(4) b:"88"} {a:int64(0) b:"30"} {a:"" b:nil} {a:nil b:"50"} {a:nil b:""} {a:int64(3) b:nil} {a:int64(1) b:""} {a:"x\x00" b:""} {a:"3" b:int64(2)} {a:nil b:nil}]
+quick	narrow	13	yes	25	20	[{a:int64(6) b:"x"} {a:int64(0) b:"2"} {a:int64(6) b:nil} {a:int64(9) b:int64(8)} {a:nil b:int64(9)} {a:int64(0) b:int64(5)} {a:"" b:int64(8)} {a:"81" b:int64(9)} {a:nil b:nil} {a:int64(5) b:int64(8)} {a:nil b:int64(8)} {a:int64(6) b:""} {a:"6" b:nil} {a:"" b:""} {a:"9" b:int64(9)} {a:int64(2) b:""} {a:int64(5) b:nil} {a:nil b:"35"} {a:int64(7) b:"40"} {a:"" b:nil}]
+quick	narrow	14	yes	11	10	[{a:"38" b:nil} {a:nil b:int64(1)} {a:"2" b:nil} {a:"31" b:"0"} {a:int64(6) b:int64(8)} {a:nil b:"1"} {a:int64(5) b:nil} {a:"" b:int64(5)} {a:"89" b:nil} {a:nil b:nil}]
+quick	narrow	15	yes	25	12	[{a:nil b:int64(6)} {a:int64(4) b:nil} {a:"" b:nil} {a:"03" b:"59"} {a:int64(1) b:nil} {a:"2" b:int64(8)} {a:int64(8) b:"5"} {a:int64(8) b:nil} {a:int64(4) b:int64(2)} {a:int64(9) b:"46"} {a:int64(8) b:int64(4)} {a:"8" b:nil}]
+quick	narrow	16	yes	29	16	[{a:nil b:""} {a:"\x00" b:int64(9)} {a:int64(5) b:""} {a:int64(3) b:"8"} {a:nil b:int64(6)} {a:int64(1) b:int64(2)} {a:int64(7) b:nil} {a:"2" b:""} {a:int64(7) b:nil} {a:int64(4) b:nil} {a:nil b:nil} {a:nil b:"5x"} {a:"" b:nil} {a:"0" b:"79"} {a:int64(4) b:"52"} {a:"3" b:"8"}]
+quick	narrow	17	yes	3	19	[{a:"" b:nil} {a:nil b:int64(8)} {a:"x1" b:nil} {a:int64(6) b:int64(0)} {a:int64(6) b:nil} {a:int64(6) b:int64(6)} {a:"0" b:int64(3)} {a:"" b:"\x001"} {a:nil b:""} {a:"6" b:int64(6)} {a:nil b:"70"} {a:int64(0) b:nil} {a:int64(9) b:""} {a:int64(0) b:"3"} {a:nil b:nil} {a:nil b:int64(3)} {a:"30" b:"1"} {a:"" b:"x"} {a:nil b:""}]
+quick	narrow	18	yes	10	11	[{a:nil b:"5"} {a:nil b:"1"} {a:nil b:nil} {a:nil b:int64(6)} {a:nil b:nil} {a:"37" b:"\x002"} {a:nil b:nil} {a:nil b:nil} {a:nil b:"3"} {a:"1" b:nil} {a:int64(1) b:nil}]
+quick	narrow	19	yes	7	14	[{a:nil b:int64(8)} {a:"" b:"7"} {a:"55" b:"9"} {a:"" b:nil} {a:nil b:"8"} {a:nil b:"08"} {a:int64(6) b:int64(7)} {a:int64(3) b:"8"} {a:nil b:""} {a:nil b:""} {a:nil b:int64(7)} {a:int64(9) b:int64(2)} {a:int64(2) b:"9"} {a:int64(9) b:"1"}]
+quick	narrow	20	yes	2	17	[{a:nil b:int64(6)} {a:"x\x00" b:int64(2)} {a:"9" b:""} {a:int64(7) b:nil} {a:"" b:nil} {a:nil b:"6"} {a:int64(8) b:nil} {a:"" b:int64(1)} {a:nil b:nil} {a:int64(0) b:""} {a:nil b:int64(7)} {a:"25" b:int64(1)} {a:nil b:int64(0)} {a:"4" b:""} {a:int64(0) b:"5"} {a:int64(9) b:nil} {a:int64(7) b:""}]
+quick	narrow	21	yes	7	16	[{a:nil b:"23"} {a:int64(3) b:""} {a:"6\x00" b:int64(9)} {a:int64(7) b:nil} {a:int64(9) b:nil} {a:"" b:"2"} {a:"88" b:int64(1)} {a:"05" b:int64(7)} {a:nil b:nil} {a:"7" b:nil} {a:nil b:nil} {a:"\x00" b:int64(9)} {a:int64(4) b:"x"} {a:nil b:nil} {a:"" b:"9x"} {a:nil b:"15"}]
+quick	narrow	22	yes	2	13	[{a:nil b:"67"} {a:nil b:""} {a:nil b:int64(9)} {a:"02" b:nil} {a:nil b:nil} {a:"7" b:int64(3)} {a:nil b:int64(0)} {a:"8" b:nil} {a:int64(2) b:nil} {a:int64(8) b:nil} {a:int64(4) b:""} {a:nil b:int64(6)} {a:int64(4) b:"32"}]
+quick	narrow	23	yes	3	10	[{a:nil b:int64(9)} {a:"36" b:""} {a:nil b:int64(1)} {a:nil b:int64(9)} {a:int64(7) b:"9"} {a:int64(4) b:nil} {a:"5" b:int64(3)} {a:"09" b:nil} {a:int64(5) b:int64(3)} {a:nil b:""}]
+quick	narrow	24	yes	16	18	[{a:int64(3) b:nil} {a:nil b:"\x002"} {a:int64(7) b:nil} {a:nil b:nil} {a:int64(4) b:"80"} {a:int64(6) b:int64(3)} {a:nil b:int64(4)} {a:int64(9) b:int64(2)} {a:int64(6) b:nil} {a:nil b:"4"} {a:nil b:int64(8)} {a:int64(1) b:nil} {a:nil b:nil} {a:nil b:int64(0)} {a:nil b:""} {a:int64(3) b:int64(2)} {a:nil b:int64(1)} {a:"7" b:"28"}]
+quick	narrow	25	yes	10	15	[{a:nil b:nil} {a:"37" b:nil} {a:"\x00" b:nil} {a:int64(8) b:nil} {a:"7" b:nil} {a:"4" b:nil} {a:nil b:""} {a:int64(0) b:"00"} {a:nil b:int64(6)} {a:int64(5) b:""} {a:"" b:int64(4)} {a:nil b:""} {a:int64(7) b:nil} {a:"23" b:nil} {a:"5" b:int64(4)}]
+quick	narrow	26	yes	18	18	[{a:int64(0) b:""} {a:"" b:int64(8)} {a:"" b:nil} {a:nil b:int64(7)} {a:"75" b:nil} {a:int64(2) b:int64(9)} {a:int64(5) b:"9"} {a:int64(4) b:""} {a:int64(4) b:int64(0)} {a:"" b:int64(3)} {a:int64(8) b:""} {a:int64(8) b:"29"} {a:nil b:int64(7)} {a:"1" b:nil} {a:"2\x00" b:nil} {a:"28" b:int64(1)} {a:"8" b:""} {a:nil b:nil}]
+quick	narrow	27	yes	17	12	[{a:int64(6) b:""} {a:nil b:nil} {a:nil b:nil} {a:int64(7) b:nil} {a:nil b:""} {a:"" b:nil} {a:int64(1) b:"18"} {a:nil b:int64(9)} {a:"" b:nil} {a:"3" b:"7"} {a:nil b:nil} {a:nil b:"9"}]
+quick	narrow	28	yes	18	18	[{a:int64(0) b:int64(7)} {a:nil b:"8"} {a:nil b:int64(4)} {a:"" b:int64(3)} {a:nil b:nil} {a:nil b:"0"} {a:nil b:nil} {a:"" b:int64(1)} {a:"" b:int64(6)} {a:nil b:int64(8)} {a:nil b:int64(2)} {a:int64(0) b:"53"} {a:nil b:""} {a:"59" b:int64(2)} {a:int64(4) b:int64(8)} {a:nil b:nil} {a:nil b:nil} {a:int64(7) b:nil}]
+quick	narrow	29	yes	3	20	[{a:"" b:int64(7)} {a:nil b:int64(9)} {a:"9" b:nil} {a:"" b:int64(6)} {a:nil b:int64(1)} {a:int64(6) b:"9"} {a:nil b:"04"} {a:int64(9) b:nil} {a:nil b:nil} {a:int64(8) b:nil} {a:nil b:nil} {a:"" b:"63"} {a:int64(2) b:int64(5)} {a:"\x00" b:"\x00"} {a:int64(5) b:"08"} {a:int64(4) b:""} {a:nil b:nil} {a:nil b:int64(9)} {a:int64(7) b:int64(3)} {a:int64(5) b:nil}]
+quick	narrow	30	yes	16	18	[{a:int64(7) b:int64(3)} {a:"x8" b:"9"} {a:"5" b:int64(5)} {a:"" b:"1"} {a:"x3" b:"7\x00"} {a:int64(7) b:int64(5)} {a:"" b:int64(5)} {a:"0" b:"35"} {a:nil b:"69"} {a:int64(8) b:nil} {a:nil b:nil} {a:int64(0) b:int64(2)} {a:nil b:int64(0)} {a:"" b:int64(1)} {a:nil b:int64(4)} {a:"" b:int64(6)} {a:int64(7) b:"x9"} {a:nil b:nil}]
+quick	narrow	31	yes	1	8	[{a:nil b:int64(0)} {a:"x" b:nil} {a:int64(4) b:"53"} {a:"" b:nil} {a:nil b:"0"} {a:nil b:int64(1)} {a:int64(7) b:"7"} {a:"3" b:"6"}]
+quick	narrow	32	yes	9	9	[{a:"x3" b:"97"} {a:nil b:"58"} {a:"6" b:"4\x00"} {a:"" b:"6"} {a:nil b:"1"} {a:nil b:"\x00"} {a:"" b:""} {a:nil b:int64(1)} {a:int64(1) b:int64(9)}]
+quick	narrow	33	yes	17	16	[{a:nil b:int64(9)} {a:nil b:nil} {a:nil b:"7"} {a:int64(7) b:int64(0)} {a:"" b:""} {a:int64(0) b:""} {a:nil b:nil} {a:"\x00" b:int64(9)} {a:nil b:""} {a:"" b:"51"} {a:int64(5) b:nil} {a:"2\x00" b:int64(3)} {a:int64(9) b:nil} {a:int64(0) b:int64(4)} {a:int64(0) b:int64(1)} {a:"9" b:nil}]
+quick	narrow	34	yes	6	17	[{a:"1" b:nil} {a:int64(4) b:"\x00"} {a:nil b:nil} {a:int64(3) b:int64(0)} {a:nil b:nil} {a:int64(8) b:nil} {a:int64(5) b:int64(3)} {a:"" b:nil} {a:nil b:int64(2)} {a:nil b:"8"} {a:nil b:int64(8)} {a:int64(7) b:"7\x00"} {a:"12" b:int64(3)} {a:int64(0) b:nil} {a:"\x002" b:"x0"} {a:"3" b:nil} {a:nil b:nil}]
+quick	narrow	35	yes	22	20	[{a:int64(0) b:int64(4)} {a:"" b:int64(1)} {a:nil b:"7"} {a:int64(5) b:"2"} {a:int64(5) b:"5"} {a:"51" b:nil} {a:nil b:nil} {a:int64(4) b:int64(1)} {a:"4" b:int64(9)} {a:int64(4) b:int64(7)} {a:int64(7) b:nil} {a:nil b:int64(8)} {a:"7" b:nil} {a:nil b:"6"} {a:nil b:""} {a:int64(2) b:""} {a:nil b:nil} {a:nil b:"1"} {a:int64(0) b:nil} {a:nil b:nil}]
+quick	narrow	36	yes	6	15	[{a:nil b:int64(6)} {a:nil b:int64(6)} {a:"\x00" b:"5"} {a:int64(4) b:int64(1)} {a:"90" b:nil} {a:int64(6) b:"50"} {a:"54" b:nil} {a:nil b:int64(7)} {a:"\x00" b:""} {a:int64(5) b:int64(9)} {a:nil b:""} {a:"\x00" b:int64(4)} {a:int64(4) b:nil} {a:nil b:"7"} {a:int64(2) b:int64(9)}]
+quick	narrow	37	yes	20	15	[{a:"1" b:nil} {a:nil b:"7"} {a:nil b:int64(4)} {a:nil b:int64(2)} {a:"08" b:""} {a:nil b:"9\x00"} {a:int64(4) b:"5\x00"} {a:nil b:int64(7)} {a:int64(0) b:""} {a:int64(4) b:int64(8)} {a:nil b:nil} {a:int64(8) b:int64(2)} {a:nil b:"70"} {a:nil b:"0"} {a:"" b:int64(7)}]
+quick	narrow	38	yes	21	19	[{a:nil b:int64(4)} {a:nil b:"07"} {a:int64(9) b:"50"} {a:int64(6) b:int64(0)} {a:int64(9) b:""} {a:nil b:int64(5)} {a:nil b:"4"} {a:nil b:nil} {a:"8" b:int64(2)} {a:int64(8) b:int64(4)} {a:nil b:nil} {a:"8" b:int64(7)} {a:"8" b:""} {a:nil b:nil} {a:"0" b:nil} {a:"" b:int64(3)} {a:int64(2) b:"2"} {a:int64(9) b:nil} {a:"7x" b:""}]
+quick	narrow	39	yes	18	19	[{a:int64(3) b:"49"} {a:nil b:nil} {a:"24" b:int64(3)} {a:int64(4) b:int64(0)} {a:nil b:int64(3)} {a:nil b:nil} {a:int64(7) b:nil} {a:int64(7) b:int64(4)} {a:int64(6) b:""} {a:nil b:int64(4)} {a:int64(8) b:"3x"} {a:"" b:int64(8)} {a:nil b:"7"} {a:int64(7) b:int64(2)} {a:int64(0) b:int64(4)} {a:nil b:nil} {a:"" b:int64(8)} {a:nil b:int64(7)} {a:nil b:""}]
+quick	narrow	40	yes	19	7	[{a:nil b:int64(1)} {a:int64(8) b:int64(6)} {a:int64(0) b:nil} {a:"0" b:nil} {a:int64(2) b:int64(9)} {a:"5" b:nil} {a:int64(4) b:""}]
+quick	narrow	41	yes	1	18	[{a:int64(5) b:int64(5)} {a:"03" b:int64(4)} {a:nil b:"5"} {a:int64(6) b:int64(3)} {a:int64(2) b:int64(2)} {a:nil b:"0"} {a:nil b:int64(2)} {a:"" b:"\x003"} {a:int64(4) b:nil} {a:"7" b:nil} {a:"30" b:nil} {a:int64(3) b:int64(5)} {a:"" b:int64(1)} {a:nil b:int64(5)} {a:nil b:int64(5)} {a:"1" b:"2x"} {a:"" b:nil} {a:nil b:int64(2)}]
+quick	narrow	42	yes	18	16	[{a:int64(3) b:"4"} {a:"2" b:int64(0)} {a:nil b:"0"} {a:nil b:int64(3)} {a:"54" b:"04"} {a:int64(6) b:int64(5)} {a:nil b:int64(0)} {a:"x3" b:"4"} {a:nil b:int64(7)} {a:int64(1) b:int64(7)} {a:int64(7) b:int64(9)} {a:"" b:""} {a:"6\x00" b:"3"} {a:"0" b:nil} {a:nil b:int64(5)} {a:nil b:int64(9)}]
+quick	narrow	43	yes	7	15	[{a:"" b:int64(8)} {a:"48" b:"8\x00"} {a:nil b:int64(1)} {a:int64(5) b:""} {a:int64(2) b:int64(6)} {a:"" b:"23"} {a:nil b:int64(3)} {a:"6" b:"1"} {a:nil b:int64(5)} {a:nil b:""} {a:"" b:int64(0)} {a:int64(1) b:nil} {a:"5\x00" b:""} {a:nil b:"1"} {a:nil b:nil}]
+quick	narrow	44	yes	4	20	[{a:int64(8) b:nil} {a:int64(5) b:"7"} {a:"1" b:nil} {a:int64(3) b:int64(3)} {a:nil b:"1"} {a:nil b:int64(8)} {a:int64(8) b:nil} {a:"" b:int64(1)} {a:"7" b:nil} {a:nil b:nil} {a:nil b:"1"} {a:int64(4) b:"56"} {a:nil b:""} {a:"" b:int64(7)} {a:int64(0) b:int64(2)} {a:int64(4) b:nil} {a:"\x005" b:""} {a:"95" b:"6"} {a:"85" b:nil} {a:nil b:int64(1)}]
+quick	narrow	45	yes	5	14	[{a:int64(9) b:"05"} {a:"x5" b:nil} {a:int64(6) b:"54"} {a:nil b:""} {a:nil b:"7"} {a:nil b:int64(6)} {a:nil b:int64(1)} {a:int64(4) b:nil} {a:nil b:nil} {a:"" b:int64(8)} {a:nil b:int64(7)} {a:int64(5) b:"4"} {a:nil b:"61"} {a:nil b:"90"}]
+quick	narrow	46	yes	9	17	[{a:int64(9) b:""} {a:nil b:"x8"} {a:int64(7) b:int64(8)} {a:nil b:int64(5)} {a:"" b:int64(6)} {a:"" b:nil} {a:"68" b:"1"} {a:int64(2) b:""} {a:"\x00\x00" b:int64(9)} {a:int64(6) b:int64(2)} {a:"" b:nil} {a:int64(8) b:"01"} {a:nil b:nil} {a:nil b:int64(9)} {a:"2" b:""} {a:"" b:"x7"} {a:nil b:"x"}]
+quick	narrow	47	yes	11	10	[{a:"" b:""} {a:nil b:int64(8)} {a:nil b:"x"} {a:nil b:int64(6)} {a:"52" b:int64(5)} {a:int64(1) b:nil} {a:int64(5) b:nil} {a:"5" b:nil} {a:nil b:""} {a:"" b:""}]
+quick	narrow	48	yes	8	15	[{a:nil b:nil} {a:nil b:"04"} {a:int64(2) b:"7"} {a:int64(5) b:nil} {a:nil b:"2"} {a:nil b:int64(2)} {a:nil b:nil} {a:int64(9) b:nil} {a:"78" b:"x"} {a:nil b:int64(5)} {a:"32" b:nil} {a:nil b:int64(5)} {a:nil b:nil} {a:"9\x00" b:nil} {a:"1" b:int64(3)}]
+quick	narrow	49	yes	9	12	[{a:nil b:"\x00"} {a:"\x00" b:""} {a:nil b:nil} {a:"59" b:"9"} {a:nil b:""} {a:"" b:"\x00"} {a:"53" b:""} {a:nil b:int64(5)} {a:nil b:nil} {a:nil b:""} {a:nil b:int64(1)} {a:int64(5) b:int64(3)}]
+quick	narrow	50	yes	9	8	[{a:"\x00" b:nil} {a:int64(3) b:nil} {a:nil b:"4"} {a:"3" b:nil} {a:"9" b:int64(7)} {a:int64(3) b:int64(8)} {a:nil b:"44"} {a:int64(2) b:nil}]
+quick	narrow	51	yes	1	12	[{a:"6" b:int64(0)} {a:nil b:"9"} {a:nil b:int64(9)} {a:int64(5) b:nil} {a:nil b:nil} {a:int64(0) b:int64(5)} {a:nil b:nil} {a:"56" b:"\x00"} {a:nil b:"30"} {a:int64(8) b:int64(8)} {a:nil b:"9"} {a:nil b:nil}]
+quick	narrow	52	yes	50	15	[{a:int64(9) b:nil} {a:int64(6) b:"3"} {a:int64(0) b:nil} {a:"" b:nil} {a:nil b:int64(4)} {a:int64(6) b:""} {a:"" b:"41"} {a:nil b:"4"} {a:int64(2) b:nil} {a:"6\x00" b:nil} {a:int64(2) b:""} {a:"17" b:int64(3)} {a:nil b:int64(0)} {a:nil b:"52"} {a:"" b:"71"}]
+quick	narrow	53	yes	1	9	[{a:int64(1) b:int64(1)} {a:nil b:int64(7)} {a:int64(5) b:"63"} {a:int64(3) b:"90"} {a:"01" b:int64(3)} {a:int64(9) b:int64(6)} {a:int64(9) b:int64(2)} {a:int64(9) b:"6"} {a:"8" b:"72"}]
+quick	narrow	54	yes	16	15	[{a:nil b:int64(7)} {a:nil b:nil} {a:int64(3) b:"8"} {a:"" b:int64(1)} {a:int64(8) b:"36"} {a:nil b:"7"} {a:"6" b:int64(6)} {a:int64(3) b:int64(1)} {a:nil b:int64(3)} {a:nil b:nil} {a:"5" b:int64(2)} {a:int64(9) b:nil} {a:int64(7) b:nil} {a:"" b:""} {a:"07" b:int64(9)}]
+quick	narrow	55	yes	3	20	[{a:nil b:int64(1)} {a:"\x007" b:"6"} {a:nil b:"\x009"} {a:int64(3) b:nil} {a:int64(2) b:nil} {a:nil b:"42"} {a:int64(0) b:""} {a:nil b:nil} {a:"7" b:int64(7)} {a:nil b:int64(5)} {a:"" b:int64(8)} {a:nil b:nil} {a:int64(5) b:"x"} {a:int64(5) b:"21"} {a:"5" b:nil} {a:nil b:"2"} {a:"3" b:"6"} {a:"" b:"42"} {a:int64(5) b:nil} {a:int64(7) b:""}]
+quick	narrow	56	yes	15	17	[{a:int64(3) b:int64(5)} {a:"" b:int64(3)} {a:int64(5) b:int64(0)} {a:"2" b:int64(9)} {a:int64(6) b:nil} {a:nil b:nil} {a:"7" b:nil} {a:int64(5) b:nil} {a:nil b:nil} {a:int64(4) b:"x1"} {a:nil b:"9"} {a:"49" b:int64(7)} {a:int64(3) b:int64(1)} {a:"8" b:nil} {a:"" b:int64(9)} {a:int64(7) b:nil} {a:int64(5) b:"22"}]
+quick	narrow	57	yes	35	18	[{a:nil b:nil} {a:"" b:"2"} {a:int64(8) b:nil} {a:"" b:int64(4)} {a:int64(0) b:"84"} {a:"15" b:nil} {a:nil b:"\x00"} {a:"\x00" b:int64(1)} {a:"" b:""} {a:"4x" b:int64(7)} {a:nil b:""} {a:"" b:int64(2)} {a:int64(4) b:int64(9)} {a:int64(7) b:"8"} {a:int64(9) b:int64(0)} {a:int64(1) b:int64(1)} {a:int64(9) b:nil} {a:nil b:nil}]
+quick	narrow	58	yes	18	8	[{a:int64(7) b:int64(6)} {a:"20" b:nil} {a:nil b:int64(5)} {a:"0" b:nil} {a:nil b:int64(4)} {a:nil b:int64(5)} {a:"x2" b:""} {a:int64(0) b:nil}]
+quick	narrow	59	yes	3	16	[{a:int64(2) b:nil} {a:nil b:nil} {a:int64(2) b:"\x00\x00"} {a:nil b:""} {a:"2" b:int64(4)} {a:nil b:""} {a:int64(3) b:nil} {a:nil b:"3x"} {a:"5" b:"5"} {a:"84" b:"1"} {a:int64(1) b:nil} {a:int64(6) b:nil} {a:nil b:nil} {a:"" b:""} {a:"" b:"49"} {a:int64(5) b:int64(5)}]
+quick	narrow	60	yes	22	20	[{a:"80" b:int64(9)} {a:"3" b:nil} {a:int64(0) b:int64(0)} {a:int64(9) b:int64(2)} {a:nil b:"07"} {a:int64(4) b:nil} {a:nil b:""} {a:int64(1) b:""} {a:int64(0) b:"55"} {a:"8" b:"5"} {a:nil b:"0"} {a:"75" b:int64(5)} {a:nil b:int64(0)} {a:int64(3) b:"88"} {a:nil b:"5"} {a:int64(3) b:nil} {a:"" b:"8"} {a:int64(1) b:""} {a:int64(4) b:"1"} {a:nil b:nil}]
+quick	narrow	61	yes	38	20	[{a:"30" b:"3"} {a:nil b:nil} {a:nil b:int64(4)} {a:"3x" b:int64(5)} {a:int64(4) b:nil} {a:nil b:int64(0)} {a:"1" b:int64(3)} {a:"" b:"0"} {a:nil b:nil} {a:nil b:nil} {a:nil b:int64(5)} {a:nil b:int64(7)} {a:"12" b:"x"} {a:nil b:nil} {a:int64(5) b:int64(8)} {a:nil b:"0"} {a:"5" b:""} {a:int64(8) b:nil} {a:int64(7) b:nil} {a:nil b:nil}]
+quick	narrow	62	yes	5	16	[{a:int64(6) b:int64(6)} {a:int64(2) b:nil} {a:nil b:int64(6)} {a:"" b:nil} {a:int64(4) b:nil} {a:int64(6) b:"3\x00"} {a:nil b:nil} {a:"57" b:"4"} {a:nil b:"7"} {a:nil b:"46"} {a:"2" b:int64(9)} {a:"\x001" b:int64(3)} {a:int64(6) b:int64(9)} {a:int64(8) b:""} {a:int64(9) b:int64(3)} {a:nil b:int64(7)}]
+quick	narrow	63	yes	7	19	[{a:int64(6) b:int64(0)} {a:int64(7) b:nil} {a:"" b:int64(1)} {a:"8" b:"83"} {a:nil b:nil} {a:"77" b:""} {a:int64(2) b:int64(9)} {a:nil b:nil} {a:int64(4) b:""} {a:nil b:""} {a:nil b:nil} {a:"63" b:int64(2)} {a:int64(7) b:"3"} {a:int64(2) b:"0"} {a:"" b:"8"} {a:int64(5) b:""} {a:int64(4) b:int64(1)} {a:nil b:"9"} {a:"2" b:int64(9)}]
+quick	narrow	64	yes	11	11	[{a:int64(9) b:int64(0)} {a:nil b:"9"} {a:nil b:"\x00"} {a:int64(8) b:nil} {a:"86" b:"67"} {a:int64(1) b:int64(9)} {a:nil b:int64(8)} {a:"" b:nil} {a:"8" b:nil} {a:nil b:""} {a:int64(7) b:nil}]
+quick	narrow	65	yes	8	19	[{a:int64(3) b:""} {a:"06" b:nil} {a:nil b:"43"} {a:nil b:"4x"} {a:int64(7) b:int64(7)} {a:nil b:nil} {a:nil b:nil} {a:nil b:int64(1)} {a:nil b:int64(0)} {a:nil b:int64(7)} {a:"" b:nil} {a:"0" b:nil} {a:"" b:nil} {a:nil b:int64(2)} {a:"3" b:""} {a:"\x001" b:int64(5)} {a:nil b:int64(9)} {a:nil b:int64(8)} {a:"1" b:nil}]
+quick	narrow	66	yes	5	20	[{a:"" b:"2"} {a:int64(8) b:"9\x00"} {a:int64(3) b:nil} {a:nil b:int64(8)} {a:"5" b:"x"} {a:int64(9) b:int64(4)} {a:nil b:"43"} {a:"" b:"5"} {a:"" b:nil} {a:"7" b:nil} {a:"6x" b:int64(2)} {a:"3" b:"x"} {a:"31" b:int64(0)} {a:"\x009" b:nil} {a:"5" b:nil} {a:nil b:nil} {a:int64(3) b:nil} {a:nil b:int64(7)} {a:"" b:int64(5)} {a:nil b:nil}]
+quick	narrow	67	yes	21	14	[{a:int64(0) b:int64(8)} {a:"6" b:""} {a:"4" b:nil} {a:"40" b:nil} {a:"70" b:"0"} {a:nil b:int64(7)} {a:int64(1) b:int64(7)} {a:nil b:""} {a:int64(4) b:nil} {a:int64(5) b:int64(4)} {a:nil b:""} {a:int64(8) b:nil} {a:"" b:"0"} {a:"" b:""}]
+quick	narrow	68	yes	54	15	[{a:nil b:""} {a:int64(4) b:nil} {a:int64(8) b:"0"} {a:nil b:nil} {a:nil b:"7"} {a:"3" b:nil} {a:int64(4) b:"09"} {a:nil b:"0"} {a:int64(6) b:int64(7)} {a:int64(4) b:nil} {a:nil b:"7\x00"} {a:nil b:int64(0)} {a:nil b:""} {a:nil b:nil} {a:"" b:int64(2)}]
+quick	narrow	69	yes	10	10	[{a:nil b:int64(8)} {a:nil b:int64(4)} {a:"" b:int64(5)} {a:int64(1) b:int64(4)} {a:"10" b:""} {a:nil b:"8"} {a:int64(1) b:int64(7)} {a:"" b:"\x00"} {a:nil b:"57"} {a:"" b:"09"}]
+quick	narrow	70	yes	8	16	[{a:int64(4) b:int64(7)} {a:nil b:nil} {a:nil b:"\x007"} {a:int64(3) b:nil} {a:"3" b:nil} {a:nil b:nil} {a:nil b:""} {a:nil b:""} {a:"8" b:int64(0)} {a:"" b:int64(8)} {a:int64(6) b:nil} {a:"45" b:int64(5)} {a:int64(1) b:int64(1)} {a:int64(1) b:int64(4)} {a:nil b:nil} {a:int64(4) b:"56"}]
+quick	narrow	71	yes	11	10	[{a:nil b:"19"} {a:"" b:int64(3)} {a:nil b:int64(9)} {a:"9\x00" b:nil} {a:nil b:nil} {a:int64(2) b:"7"} {a:"0" b:int64(7)} {a:"" b:"3"} {a:"" b:nil} {a:"" b:"66"}]
+quick	narrow	72	yes	11	20	[{a:nil b:int64(4)} {a:int64(8) b:""} {a:nil b:nil} {a:"9" b:nil} {a:int64(7) b:nil} {a:int64(3) b:int64(9)} {a:"32" b:nil} {a:nil b:nil} {a:int64(1) b:nil} {a:"" b:"44"} {a:nil b:"36"} {a:nil b:int64(6)} {a:"7" b:nil} {a:"" b:"6"} {a:"84" b:int64(0)} {a:nil b:"1"} {a:int64(2) b:int64(1)} {a:nil b:""} {a:"" b:"6"} {a:int64(8) b:""}]
+quick	narrow	73	yes	11	15	[{a:int64(3) b:nil} {a:"" b:int64(6)} {a:"84" b:nil} {a:nil b:nil} {a:"8" b:nil} {a:int64(8) b:int64(5)} {a:nil b:int64(4)} {a:int64(0) b:int64(2)} {a:int64(5) b:nil} {a:"\x00" b:"1"} {a:nil b:int64(7)} {a:"x" b:int64(9)} {a:nil b:nil} {a:nil b:"4"} {a:nil b:"\x00"}]
+quick	narrow	74	yes	4	10	[{a:"13" b:""} {a:int64(4) b:nil} {a:"" b:""} {a:"\x009" b:nil} {a:nil b:"8"} {a:nil b:int64(8)} {a:nil b:int64(5)} {a:int64(7) b:int64(3)} {a:"\x009" b:int64(4)} {a:"" b:int64(9)}]
+quick	narrow	75	yes	16	9	[{a:"7" b:nil} {a:int64(2) b:nil} {a:int64(3) b:nil} {a:int64(1) b:int64(4)} {a:int64(4) b:nil} {a:nil b:"7"} {a:nil b:int64(7)} {a:"48" b:int64(0)} {a:int64(5) b:nil}]
+quick	narrow	76	yes	12	20	[{a:int64(2) b:nil} {a:"" b:nil} {a:int64(7) b:int64(5)} {a:"" b:nil} {a:int64(1) b:""} {a:nil b:int64(1)} {a:int64(4) b:nil} {a:nil b:int64(4)} {a:"2" b:nil} {a:nil b:int64(4)} {a:"4" b:nil} {a:nil b:nil} {a:int64(3) b:int64(8)} {a:"" b:nil} {a:"2" b:"2"} {a:nil b:"1"} {a:"3" b:int64(2)} {a:nil b:nil} {a:nil b:nil} {a:nil b:""}]
+quick	narrow	77	yes	9	13	[{a:nil b:nil} {a:"8" b:int64(5)} {a:int64(4) b:int64(3)} {a:nil b:int64(0)} {a:nil b:int64(5)} {a:nil b:int64(9)} {a:int64(3) b:int64(0)} {a:nil b:"5"} {a:nil b:"\x002"} {a:"\x000" b:int64(9)} {a:"2" b:nil} {a:"29" b:int64(9)} {a:"7x" b:"10"}]
+quick	narrow	78	yes	1	15	[{a:"x" b:int64(5)} {a:"1" b:"9"} {a:"" b:nil} {a:int64(6) b:nil} {a:nil b:nil} {a:nil b:int64(3)} {a:"76" b:int64(4)} {a:"" b:int64(1)} {a:nil b:int64(0)} {a:int64(2) b:int64(5)} {a:"" b:nil} {a:int64(1) b:"6"} {a:nil b:int64(8)} {a:nil b:"x8"} {a:nil b:"8"}]
+quick	narrow	79	yes	8	13	[{a:int64(1) b:int64(3)} {a:"7" b:nil} {a:nil b:nil} {a:nil b:nil} {a:"" b:"08"} {a:"5" b:nil} {a:nil b:"5"} {a:"" b:nil} {a:nil b:int64(7)} {a:nil b:nil} {a:nil b:int64(5)} {a:"" b:int64(4)} {a:nil b:nil}]
+quick	narrow	80	yes	11	20	[{a:nil b:int64(5)} {a:"2" b:nil} {a:"1" b:nil} {a:"6" b:""} {a:nil b:int64(9)} {a:nil b:"7"} {a:nil b:int64(8)} {a:nil b:int64(7)} {a:nil b:""} {a:"" b:nil} {a:int64(6) b:""} {a:nil b:""} {a:nil b:"x9"} {a:"" b:nil} {a:int64(4) b:int64(5)} {a:int64(2) b:"4"} {a:int64(5) b:nil} {a:int64(8) b:nil} {a:nil b:"10"} {a:int64(5) b:int64(6)}]
+quick	narrow	81	yes	1	17	[{a:int64(3) b:nil} {a:int64(8) b:int64(3)} {a:nil b:int64(5)} {a:"0" b:nil} {a:nil b:nil} {a:"" b:"6"} {a:int64(7) b:"\x00"} {a:int64(7) b:int64(0)} {a:int64(6) b:nil} {a:"\x00\x00" b:int64(2)} {a:nil b:""} {a:nil b:"4"} {a:int64(0) b:nil} {a:"" b:"21"} {a:"" b:"33"} {a:"03" b:int64(2)} {a:"x" b:"60"}]
+quick	narrow	82	yes	27	11	[{a:int64(7) b:"6"} {a:"1" b:""} {a:int64(1) b:""} {a:nil b:int64(0)} {a:nil b:nil} {a:int64(4) b:nil} {a:int64(6) b:"7"} {a:"x3" b:"\x00"} {a:int64(5) b:nil} {a:int64(3) b:"5"} {a:int64(4) b:"\x00"}]
+quick	narrow	83	yes	12	17	[{a:nil b:int64(2)} {a:nil b:""} {a:nil b:nil} {a:"\x00" b:int64(2)} {a:int64(2) b:int64(6)} {a:"" b:int64(4)} {a:nil b:"2"} {a:nil b:int64(2)} {a:nil b:nil} {a:int64(4) b:nil} {a:nil b:nil} {a:nil b:int64(8)} {a:int64(2) b:nil} {a:nil b:nil} {a:nil b:int64(0)} {a:int64(3) b:int64(8)} {a:int64(0) b:""}]
+quick	narrow	84	yes	32	18	[{a:nil b:"9"} {a:int64(3) b:"3"} {a:"3\x00" b:int64(4)} {a:int64(1) b:"69"} {a:int64(2) b:"81"} {a:nil b:nil} {a:int64(7) b:nil} {a:int64(3) b:nil} {a:"" b:int64(6)} {a:nil b:"7"} {a:"\x00" b:"1x"} {a:nil b:nil} {a:int64(9) b:"5"} {a:nil b:int64(0)} {a:int64(1) b:nil} {a:int64(6) b:"27"} {a:"5" b:""} {a:"7" b:nil}]
+quick	narrow	85	yes	4	6	[{a:int64(5) b:int64(8)} {a:"0" b:"4"} {a:int64(4) b:int64(4)} {a:nil b:"6"} {a:nil b:int64(6)} {a:nil b:nil}]
+quick	narrow	86	yes	8	19	[{a:nil b:nil} {a:nil b:int64(8)} {a:"1" b:nil} {a:nil b:int64(8)} {a:int64(3) b:nil} {a:int64(6) b:int64(2)} {a:nil b:int64(5)} {a:nil b:""} {a:int64(7) b:int64(0)} {a:nil b:int64(1)} {a:nil b:"9"} {a:nil b:""} {a:"34" b:nil} {a:"16" b:int64(8)} {a:int64(5) b:int64(0)} {a:"50" b:int64(3)} {a:nil b:int64(9)} {a:int64(2) b:"0"} {a:nil b:nil}]
+quick	narrow	87	yes	7	16	[{a:"54" b:"\x008"} {a:"15" b:int64(5)} {a:"1" b:int64(7)} {a:int64(8) b:int64(1)} {a:int64(6) b:nil} {a:nil b:int64(9)} {a:nil b:"9"} {a:int64(9) b:"18"} {a:int64(1) b:int64(4)} {a:"03" b:"6"} {a:"45" b:int64(1)} {a:"51" b:nil} {a:"" b:int64(1)} {a:nil b:nil} {a:"\x00" b:nil} {a:int64(1) b:int64(8)}]
+quick	narrow	88	yes	2	12	[{a:nil b:nil} {a:"" b:int64(9)} {a:nil b:int64(0)} {a:int64(6) b:int64(2)} {a:int64(8) b:"8"} {a:int64(9) b:int64(8)} {a:nil b:""} {a:"93" b:nil} {a:"2" b:"9"} {a:"0" b:nil} {a:nil b:"0"} {a:nil b:int64(9)}]
+quick	narrow	89	yes	8	9	[{a:nil b:int64(3)} {a:int64(3) b:nil} {a:nil b:"3"} {a:nil b:nil} {a:int64(7) b:int64(5)} {a:"07" b:nil} {a:"65" b:int64(1)} {a:int64(4) b:"9\x00"} {a:nil b:"60"}]
+quick	narrow	90	yes	3	9	[{a:nil b:"7"} {a:nil b:int64(1)} {a:int64(8) b:int64(9)} {a:"03" b:int64(0)} {a:"65" b:nil} {a:int64(4) b:"49"} {a:nil b:int64(3)} {a:nil b:"3"} {a:nil b:int64(2)}]
+quick	narrow	91	yes	5	10	[{a:int64(0) b:"\x00"} {a:"3" b:nil} {a:int64(8) b:nil} {a:nil b:int64(3)} {a:int64(1) b:"71"} {a:"57" b:int64(3)} {a:int64(3) b:nil} {a:nil b:nil} {a:"6" b:nil} {a:"\x00" b:"1"}]
+quick	narrow	92	yes	3	18	[{a:"5" b:"36"} {a:int64(5) b:"75"} {a:nil b:int64(7)} {a:"9" b:"9"} {a:int64(4) b:nil} {a:nil b:int64(4)} {a:int64(3) b:nil} {a:nil b:"9"} {a:"" b:nil} {a:nil b:"58"} {a:nil b:"7"} {a:int64(8) b:int64(5)} {a:nil b:""} {a:nil b:""} {a:int64(7) b:nil} {a:nil b:""} {a:nil b:""} {a:"1" b:"19"}]
+quick	narrow	93	yes	5	17	[{a:nil b:int64(1)} {a:"" b:int64(5)} {a:nil b:"1"} {a:int64(1) b:"9"} {a:"" b:int64(4)} {a:int64(3) b:"98"} {a:int64(1) b:""} {a:nil b:nil} {a:int64(6) b:nil} {a:nil b:"4"} {a:nil b:"4"} {a:"4" b:nil} {a:int64(5) b:"x"} {a:int64(8) b:"3x"} {a:int64(6) b:""} {a:nil b:"07"} {a:"x1" b:""}]
+quick	narrow	94	yes	17	15	[{a:int64(4) b:int64(5)} {a:"8" b:"7x"} {a:nil b:int64(6)} {a:"8" b:"9"} {a:nil b:int64(2)} {a:nil b:int64(1)} {a:nil b:"4"} {a:"" b:nil} {a:"55" b:"5"} {a:nil b:int64(8)} {a:nil b:""} {a:"x1" b:int64(4)} {a:"" b:nil} {a:nil b:int64(4)} {a:nil b:int64(8)}]
+quick	narrow	95	yes	2	13	[{a:int64(6) b:int64(4)} {a:int64(2) b:"89"} {a:nil b:nil} {a:nil b:"2"} {a:nil b:"9"} {a:"4" b:int64(5)} {a:int64(6) b:int64(2)} {a:nil b:"91"} {a:int64(4) b:int64(4)} {a:int64(9) b:int64(1)} {a:int64(6) b:int64(4)} {a:nil b:int64(2)} {a:nil b:int64(2)}]
+quick	narrow	96	yes	3	18	[{a:nil b:int64(5)} {a:nil b:nil} {a:int64(2) b:int64(2)} {a:"" b:nil} {a:nil b:int64(2)} {a:nil b:"9"} {a:int64(1) b:int64(3)} {a:int64(4) b:nil} {a:int64(0) b:"9"} {a:int64(7) b:nil} {a:int64(7) b:int64(6)} {a:nil b:int64(4)} {a:"" b:int64(0)} {a:"" b:int64(4)} {a:"8" b:nil} {a:nil b:int64(9)} {a:nil b:int64(3)} {a:nil b:int64(7)}]
+quick	narrow	97	yes	13	19	[{a:int64(7) b:int64(1)} {a:nil b:int64(7)} {a:int64(3) b:nil} {a:"\x007" b:nil} {a:"1" b:int64(1)} {a:"9" b:"56"} {a:int64(5) b:int64(7)} {a:"3" b:nil} {a:int64(2) b:"x"} {a:"" b:"3"} {a:int64(4) b:nil} {a:"x" b:""} {a:nil b:"8"} {a:"98" b:nil} {a:"" b:""} {a:"26" b:nil} {a:int64(7) b:""} {a:nil b:int64(3)} {a:nil b:int64(0)}]
+quick	narrow	98	yes	24	18	[{a:int64(9) b:""} {a:int64(3) b:int64(9)} {a:int64(5) b:nil} {a:"4" b:int64(9)} {a:int64(7) b:nil} {a:int64(0) b:""} {a:nil b:int64(0)} {a:"7\x00" b:nil} {a:int64(6) b:int64(1)} {a:"4" b:nil} {a:int64(2) b:int64(7)} {a:nil b:"0"} {a:int64(4) b:int64(2)} {a:int64(6) b:int64(0)} {a:"50" b:int64(5)} {a:nil b:nil} {a:int64(1) b:nil} {a:"28" b:"80"}]
+quick	narrow	99	yes	1	14	[{a:int64(0) b:nil} {a:"9" b:int64(9)} {a:nil b:nil} {a:"5" b:nil} {a:nil b:int64(3)} {a:nil b:"7"} {a:int64(5) b:nil} {a:"" b:"65"} {a:int64(2) b:nil} {a:nil b:nil} {a:"7" b:nil} {a:"" b:int64(6)} {a:int64(9) b:int64(8)} {a:"04" b:nil}]
+quick	narrow	100	yes	6	15	[{a:int64(0) b:int64(5)} {a:"3" b:nil} {a:"03" b:nil} {a:int64(7) b:nil} {a:"5" b:""} {a:int64(5) b:nil} {a:"46" b:""} {a:"6x" b:int64(9)} {a:int64(3) b:nil} {a:"87" b:"1"} {a:nil b:nil} {a:"29" b:int64(4)} {a:"67" b:nil} {a:"23" b:""} {a:nil b:"2"}]
+rapid	narrow	1	yes	52	2	[{a:"" b:int64(0)} {a:"" b:"0"}]
+rapid	narrow	2	yes	24	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	3	yes	61	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	4	yes	11	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	5	yes	79	2	[{a:int64(1) b:""} {a:"1" b:""}]
+rapid	narrow	6	yes	28	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	7	yes	18	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	8	yes	19	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	9	yes	67	2	[{a:nil b:int64(3)} {a:nil b:"3"}]
+rapid	narrow	10	yes	10	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	11	yes	12	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	12	yes	46	2	[{a:int64(6) b:""} {a:"6" b:""}]
+rapid	narrow	13	yes	49	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	14	yes	30	2	[{a:nil b:int64(9)} {a:nil b:"9"}]
+rapid	narrow	15	yes	10	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	16	yes	15	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+rapid	narrow	17	yes	28	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	18	yes	67	2	[{a:int64(2) b:int64(0)} {a:"2" b:int64(0)}]
+rapid	narrow	19	yes	39	2	[{a:nil b:int64(3)} {a:nil b:"3"}]
+rapid	narrow	20	yes	9	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	21	yes	114	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	22	yes	185	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	23	yes	11	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	24	yes	86	2	[{a:int64(5) b:nil} {a:"5" b:nil}]
+rapid	narrow	25	yes	9	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	26	yes	23	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	27	yes	18	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	28	yes	35	2	[{a:int64(1) b:int64(9)} {a:int64(1) b:"9"}]
+rapid	narrow	29	yes	8	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	30	yes	89	2	[{a:nil b:int64(9)} {a:nil b:"9"}]
+rapid	narrow	31	yes	14	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+rapid	narrow	32	yes	31	2	[{a:nil b:int64(1)} {a:nil b:"1"}]
+rapid	narrow	33	yes	37	2	[{a:int64(0) b:""} {a:"0" b:""}]
+rapid	narrow	34	yes	8	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	35	yes	66	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	36	yes	64	2	[{a:int64(3) b:nil} {a:"3" b:nil}]
+rapid	narrow	37	yes	7	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	38	yes	33	2	[{a:"" b:int64(1)} {a:"" b:"1"}]
+rapid	narrow	39	yes	85	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	40	yes	126	2	[{a:int64(9) b:""} {a:"9" b:""}]
+rapid	narrow	41	yes	161	2	[{a:int64(2) b:nil} {a:"2" b:nil}]
+rapid	narrow	42	yes	7	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	43	yes	26	2	[{a:nil b:int64(1)} {a:nil b:"1"}]
+rapid	narrow	44	yes	6	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	45	yes	13	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+rapid	narrow	46	yes	54	2	[{a:int64(2) b:nil} {a:"2" b:nil}]
+rapid	narrow	47	yes	56	2	[{a:int64(0) b:""} {a:"0" b:""}]
+rapid	narrow	48	yes	33	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	49	yes	6	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	50	yes	5	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	51	yes	71	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	52	yes	58	2	[{a:"" b:int64(1)} {a:"" b:"1"}]
+rapid	narrow	53	yes	8	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	54	yes	33	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	55	yes	4	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	56	yes	56	2	[{a:nil b:int64(1)} {a:nil b:"1"}]
+rapid	narrow	57	yes	79	2	[{a:nil b:int64(9)} {a:nil b:"9"}]
+rapid	narrow	58	yes	12	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+rapid	narrow	59	yes	3	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	60	yes	4	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	61	yes	7	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	62	yes	2	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	63	yes	30	2	[{a:nil b:int64(1)} {a:nil b:"1"}]
+rapid	narrow	64	yes	1	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	65	yes	0	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	narrow	66	yes	73	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	67	yes	2	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	68	yes	6	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	69	yes	1	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	70	yes	0	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	71	yes	21	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	72	yes	26	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	73	yes	14	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	74	yes	5	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	75	yes	54	2	[{a:"" b:int64(9)} {a:"" b:"9"}]
+rapid	narrow	76	yes	42	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	77	yes	107	2	[{a:int64(2) b:nil} {a:"2" b:nil}]
+rapid	narrow	78	yes	15	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	79	yes	4	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	80	yes	68	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	81	yes	10	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+rapid	narrow	82	yes	31	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	83	yes	3	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	84	yes	69	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	85	yes	64	2	[{a:nil b:int64(1)} {a:nil b:"1"}]
+rapid	narrow	86	yes	2	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	87	yes	13	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	88	yes	1	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	89	yes	0	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	90	yes	45	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	91	yes	9	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+rapid	narrow	92	yes	20	2	[{a:int64(0) b:nil} {a:"0" b:nil}]
+rapid	narrow	93	yes	14	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	94	yes	24	2	[{a:nil b:int64(1)} {a:nil b:"1"}]
+rapid	narrow	95	yes	49	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	96	yes	37	2	[{a:nil b:int64(3)} {a:nil b:"3"}]
+rapid	narrow	97	yes	33	2	[{a:int64(1) b:int64(9)} {a:int64(1) b:"9"}]
+rapid	narrow	98	yes	25	2	[{a:int64(1) b:nil} {a:"1" b:nil}]
+rapid	narrow	99	yes	66	2	[{a:nil b:int64(0)} {a:nil b:"0"}]
+rapid	narrow	100	yes	8	2	[{a:"" b:int64(6)} {a:"" b:"6"}]
+quick	broad	1	no	-	-	-
+quick	broad	2	no	-	-	-
+quick	broad	3	no	-	-	-
+quick	broad	4	no	-	-	-
+quick	broad	5	no	-	-	-
+quick	broad	6	no	-	-	-
+quick	broad	7	no	-	-	-
+quick	broad	8	no	-	-	-
+quick	broad	9	no	-	-	-
+quick	broad	10	no	-	-	-
+quick	broad	11	no	-	-	-
+quick	broad	12	no	-	-	-
+quick	broad	13	no	-	-	-
+quick	broad	14	no	-	-	-
+quick	broad	15	no	-	-	-
+quick	broad	16	no	-	-	-
+quick	broad	17	no	-	-	-
+quick	broad	18	no	-	-	-
+quick	broad	19	no	-	-	-
+quick	broad	20	no	-	-	-
+quick	broad	21	no	-	-	-
+quick	broad	22	no	-	-	-
+quick	broad	23	no	-	-	-
+quick	broad	24	no	-	-	-
+quick	broad	25	no	-	-	-
+quick	broad	26	no	-	-	-
+quick	broad	27	no	-	-	-
+quick	broad	28	no	-	-	-
+quick	broad	29	no	-	-	-
+quick	broad	30	no	-	-	-
+quick	broad	31	no	-	-	-
+quick	broad	32	no	-	-	-
+quick	broad	33	no	-	-	-
+quick	broad	34	no	-	-	-
+quick	broad	35	no	-	-	-
+quick	broad	36	no	-	-	-
+quick	broad	37	no	-	-	-
+quick	broad	38	no	-	-	-
+quick	broad	39	no	-	-	-
+quick	broad	40	no	-	-	-
+quick	broad	41	no	-	-	-
+quick	broad	42	no	-	-	-
+quick	broad	43	no	-	-	-
+quick	broad	44	no	-	-	-
+quick	broad	45	no	-	-	-
+quick	broad	46	no	-	-	-
+quick	broad	47	no	-	-	-
+quick	broad	48	no	-	-	-
+quick	broad	49	no	-	-	-
+quick	broad	50	no	-	-	-
+quick	broad	51	no	-	-	-
+quick	broad	52	no	-	-	-
+quick	broad	53	no	-	-	-
+quick	broad	54	no	-	-	-
+quick	broad	55	no	-	-	-
+quick	broad	56	no	-	-	-
+quick	broad	57	no	-	-	-
+quick	broad	58	no	-	-	-
+quick	broad	59	no	-	-	-
+quick	broad	60	no	-	-	-
+quick	broad	61	no	-	-	-
+quick	broad	62	no	-	-	-
+quick	broad	63	no	-	-	-
+quick	broad	64	no	-	-	-
+quick	broad	65	no	-	-	-
+quick	broad	66	no	-	-	-
+quick	broad	67	no	-	-	-
+quick	broad	68	no	-	-	-
+quick	broad	69	no	-	-	-
+quick	broad	70	no	-	-	-
+quick	broad	71	no	-	-	-
+quick	broad	72	no	-	-	-
+quick	broad	73	no	-	-	-
+quick	broad	74	no	-	-	-
+quick	broad	75	no	-	-	-
+quick	broad	76	no	-	-	-
+quick	broad	77	no	-	-	-
+quick	broad	78	no	-	-	-
+quick	broad	79	no	-	-	-
+quick	broad	80	no	-	-	-
+quick	broad	81	no	-	-	-
+quick	broad	82	no	-	-	-
+quick	broad	83	no	-	-	-
+quick	broad	84	no	-	-	-
+quick	broad	85	no	-	-	-
+quick	broad	86	no	-	-	-
+quick	broad	87	no	-	-	-
+quick	broad	88	no	-	-	-
+quick	broad	89	no	-	-	-
+quick	broad	90	no	-	-	-
+quick	broad	91	no	-	-	-
+quick	broad	92	no	-	-	-
+quick	broad	93	no	-	-	-
+quick	broad	94	no	-	-	-
+quick	broad	95	no	-	-	-
+quick	broad	96	no	-	-	-
+quick	broad	97	no	-	-	-
+quick	broad	98	no	-	-	-
+quick	broad	99	no	-	-	-
+quick	broad	100	no	-	-	-
+rapid	broad	1	no	-	-	-
+rapid	broad	2	no	-	-	-
+rapid	broad	3	no	-	-	-
+rapid	broad	4	no	-	-	-
+rapid	broad	5	no	-	-	-
+rapid	broad	6	no	-	-	-
+rapid	broad	7	no	-	-	-
+rapid	broad	8	no	-	-	-
+rapid	broad	9	no	-	-	-
+rapid	broad	10	no	-	-	-
+rapid	broad	11	no	-	-	-
+rapid	broad	12	no	-	-	-
+rapid	broad	13	no	-	-	-
+rapid	broad	14	no	-	-	-
+rapid	broad	15	no	-	-	-
+rapid	broad	16	no	-	-	-
+rapid	broad	17	no	-	-	-
+rapid	broad	18	no	-	-	-
+rapid	broad	19	no	-	-	-
+rapid	broad	20	no	-	-	-
+rapid	broad	21	no	-	-	-
+rapid	broad	22	no	-	-	-
+rapid	broad	23	no	-	-	-
+rapid	broad	24	no	-	-	-
+rapid	broad	25	no	-	-	-
+rapid	broad	26	no	-	-	-
+rapid	broad	27	no	-	-	-
+rapid	broad	28	no	-	-	-
+rapid	broad	29	no	-	-	-
+rapid	broad	30	no	-	-	-
+rapid	broad	31	no	-	-	-
+rapid	broad	32	no	-	-	-
+rapid	broad	33	no	-	-	-
+rapid	broad	34	no	-	-	-
+rapid	broad	35	no	-	-	-
+rapid	broad	36	no	-	-	-
+rapid	broad	37	no	-	-	-
+rapid	broad	38	no	-	-	-
+rapid	broad	39	no	-	-	-
+rapid	broad	40	no	-	-	-
+rapid	broad	41	no	-	-	-
+rapid	broad	42	no	-	-	-
+rapid	broad	43	no	-	-	-
+rapid	broad	44	no	-	-	-
+rapid	broad	45	no	-	-	-
+rapid	broad	46	no	-	-	-
+rapid	broad	47	no	-	-	-
+rapid	broad	48	no	-	-	-
+rapid	broad	49	no	-	-	-
+rapid	broad	50	no	-	-	-
+rapid	broad	51	no	-	-	-
+rapid	broad	52	no	-	-	-
+rapid	broad	53	no	-	-	-
+rapid	broad	54	no	-	-	-
+rapid	broad	55	no	-	-	-
+rapid	broad	56	no	-	-	-
+rapid	broad	57	no	-	-	-
+rapid	broad	58	no	-	-	-
+rapid	broad	59	yes	68	2	[{a:nil b:int64(2)} {a:nil b:"2"}]
+rapid	broad	60	no	-	-	-
+rapid	broad	61	no	-	-	-
+rapid	broad	62	no	-	-	-
+rapid	broad	63	no	-	-	-
+rapid	broad	64	no	-	-	-
+rapid	broad	65	no	-	-	-
+rapid	broad	66	no	-	-	-
+rapid	broad	67	no	-	-	-
+rapid	broad	68	no	-	-	-
+rapid	broad	69	no	-	-	-
+rapid	broad	70	no	-	-	-
+rapid	broad	71	no	-	-	-
+rapid	broad	72	no	-	-	-
+rapid	broad	73	no	-	-	-
+rapid	broad	74	yes	181	2	[{a:int64(3) b:nil} {a:"3" b:nil}]
+rapid	broad	75	no	-	-	-
+rapid	broad	76	no	-	-	-
+rapid	broad	77	no	-	-	-
+rapid	broad	78	no	-	-	-
+rapid	broad	79	no	-	-	-
+rapid	broad	80	no	-	-	-
+rapid	broad	81	no	-	-	-
+rapid	broad	82	no	-	-	-
+rapid	broad	83	no	-	-	-
+rapid	broad	84	no	-	-	-
+rapid	broad	85	no	-	-	-
+rapid	broad	86	no	-	-	-
+rapid	broad	87	no	-	-	-
+rapid	broad	88	no	-	-	-
+rapid	broad	89	no	-	-	-
+rapid	broad	90	no	-	-	-
+rapid	broad	91	no	-	-	-
+rapid	broad	92	no	-	-	-
+rapid	broad	93	no	-	-	-
+rapid	broad	94	no	-	-	-
+rapid	broad	95	no	-	-	-
+rapid	broad	96	no	-	-	-
+rapid	broad	97	no	-	-	-
+rapid	broad	98	no	-	-	-
+rapid	broad	99	no	-	-	-
+rapid	broad	100	no	-	-	-
