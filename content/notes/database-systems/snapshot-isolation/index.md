@@ -327,7 +327,7 @@ SSI は、Cahill 氏らが 2008 年の論文「[Serializable Isolation for Snaps
 
 依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。
 
-口座の例なら、T1 が x と y を読んだことを記録しておき、T2 が y を書いた時に、T1 が読んだものを T2 が書き換えたという依存を見付けます。
+口座の例なら、T1 と T2 が x と y を読んだことを記録しておきます。T1 が x を書くと、T2 が読んだものを T1 が書き換えたという依存が見付かり、T2 が y を書くと逆向きの依存が見付かります。PostgreSQL は依存が 1 本あるだけでは中止せず、この例のように 2 本が連続してつながる形を見付けた時に中止を考えます。PostgreSQL 17 の [README-SSI](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/storage/lmgr/README-SSI) は、この形を dangerous structure と呼んでいます。
 
 記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 は更新・確定の途中で `could not serialize access` を含むエラーを受け、T1 だけが確定しました。合計は 0 です。
 
