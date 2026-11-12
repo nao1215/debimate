@@ -27,7 +27,7 @@ UserOperation は、普通の取引とは別の置き場（UserOperation の mem
 
 <br>
 
-本記事では、ローカルの実験で確かめながら、ERC-4337 の部品と処理の流れを説明します。軸になるのは次の疑問です。
+本記事では、ローカルの実験で確認しながら、ERC-4337 の部品と処理の流れを説明します。軸になるのは次の疑問です。
 
 - ERC-4337 は、EOA の何を解決するのか。
 - UserOperation は、誰がどうやってチェーンに載せるのか。
@@ -42,7 +42,7 @@ UserOperation は、普通の取引とは別の置き場（UserOperation の mem
 
 ### アカウント抽象化が必要な理由
 
-EOA の取引は、プロトコルが決めた 1 通りの方法で検証されます。秘密鍵の[署名](../digital-signature/)から送り主を復元し、nonce と ETH の残高を確かめます。そのため、次のことは EOA だけではできません。
+EOA の取引は、プロトコルが決めた 1 通りの方法で検証されます。秘密鍵の[署名](../digital-signature/)から送り主を復元し、nonce と ETH の残高を確認します。そのため、次のことは EOA だけではできません。
 
 | EOA の決まり | 困る場面 |
 | --- | --- |
@@ -62,7 +62,7 @@ EIP（Ethereum Improvement Proposal）は Ethereum の改善提案の総称で�
 
 ### UserOperation と部品
 
-UserOperation は、アカウントにさせたい操作を表す構造体です。取引に似た項目（送り主・nonce・呼び出しデータの `callData`・手数料の上限・署名）に加えて、アカウントを作るための `initCode` や、手数料を肩代わりする Paymaster の指定を持ちます。`signature` の中身はプロトコルではなく、アカウントのコードが解釈します。コントラクトのアカウントの署名を他のコントラクトが確かめる一般的な方法は、[ERC-1271](../erc-1271/) で説明しています。
+UserOperation は、アカウントにさせたい操作を表す構造体です。取引に似た項目（送り主・nonce・呼び出しデータの `callData`・手数料の上限・署名）に加えて、アカウントを作るための `initCode` や、手数料を肩代わりする Paymaster の指定を持ちます。`signature` の中身はプロトコルではなく、アカウントのコードが解釈します。コントラクトのアカウントの署名を他のコントラクトが確認する一般的な方法は、[ERC-1271](../erc-1271/) で説明しています。
 
 UserOperation を受け取ってからチェーンに載るまでには、次の部品が関わります。
 
@@ -130,7 +130,7 @@ Bundler の負担は、EntryPoint が後で返します。EntryPoint は、ア�
 | Paymaster なし | アカウント自身。deposit の不足分を検証の中で前払いし、使わなかった分は deposit に残る |
 | Paymaster あり | Paymaster の deposit。代わりに USDC を受け取る、アプリの運営者が負担する、などは Paymaster のコードで決める |
 
-つまり、手数料が消えるわけではなく、ETH で払う主体が利用者からほかの誰かに移るだけです。Paymaster は、自分の deposit を減らす相手を選ぶ必要があるので、署名した承認やトークンの支払いを `validatePaymasterUserOp` で確かめます。
+つまり、手数料が消えるわけではなく、ETH で払う主体が利用者からほかの誰かに移るだけです。Paymaster は、自分の deposit を減らす相手を選ぶ必要があるので、署名した承認やトークンの支払いを `validatePaymasterUserOp` で確認します。
 
 <br>
 
@@ -154,12 +154,16 @@ address = keccak256(0xff ‖ factory ‖ salt ‖ keccak256(creationCode))[12:]
 
 ウォレットはこのアドレスを先に利用者に見せ、ETH やトークンを受け取れるようにします。アドレスに残高はあっても、まだコードはありません。最初の UserOperation の `initCode` に Factory のアドレスと `createAccount` の呼び出しを入れておくと、EntryPoint は検証の前にアカウントを作ります。
 
+<br>
+
 <details>
 <summary>initCode を呼ぶのは誰か</summary>
 
-`initCode` を呼ぶのは EntryPoint ではなく、専用の SenderCreator というコントラクトです。`initCode` には任意の宛先を書けるので、EntryPoint から呼ぶと、EntryPoint からの呼び出しを無条件に信頼するアカウントや Paymaster を操作できてしまいます。Factory も、呼び出し元が SenderCreator であることを確かめます。
+`initCode` を呼ぶのは EntryPoint ではなく、専用の SenderCreator というコントラクトです。`initCode` には任意の宛先を書けるので、EntryPoint から呼ぶと、EntryPoint からの呼び出しを無条件に信頼するアカウントや Paymaster を操作できてしまいます。Factory も、呼び出し元が SenderCreator であることを確認します。
 
 </details>
+
+<br>
 
 ---
 
@@ -168,6 +172,8 @@ address = keccak256(0xff ‖ factory ‖ salt ‖ keccak256(creationCode))[12:]
 実験では、[Foundry](https://github.com/foundry-rs/foundry)（Ethereum の開発ツール群）のローカル開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) の上で、ERC-4337 の参照実装 [eth-infinitism/account-abstraction](https://github.com/eth-infinitism/account-abstraction/tree/v0.9.0) の 4 つのコントラクトを使います。EntryPoint、所有者 1 人の署名で動く最小のスマートアカウントの [SimpleAccount](https://github.com/eth-infinitism/account-abstraction/blob/v0.9.0/contracts/accounts/SimpleAccount.sol)、その Factory、無条件に手数料を払う試験用の Paymaster です。
 
 Bundler のソフトウェアと UserOperation の mempool は使いません。スクリプトが UserOperation を組み立て、テスト用の EOA から `handleOps` を直接呼んで Bundler の役を代わります。鍵は Anvil の公開されたテスト用のニーモニック（鍵を作る元になる単語列）から作ったものだけで、所有者の鍵には ETH を一度も入れません。
+
+<br>
 
 <details>
 <summary>実験の環境とライセンス</summary>
@@ -184,6 +190,8 @@ Bundler のソフトウェアと UserOperation の mempool は使いません。
 ソースは本記事のリポジトリに複製せず、実行時に固定したコミットを取得します。
 
 </details>
+
+<br>
 
 以下は、UserOperation を作って署名し、`handleOps` を送る部分の抜粋です。`cast` は Foundry の CLI、`call` は読み取りの呼び出し、`send` は取引の送信、`entry_point` と `sender` はデプロイ済みの EntryPoint と、作る前のアカウントのアドレスです。
 
@@ -210,6 +218,8 @@ r = send(bundler, handle_ops(o, bundler), entry_point, gas=3_000_000)
 ```
 
 署名の対象 `userOpHash` は、`signature`（v0.9 では Paymaster の署名も）以外の全項目と [chain ID、EntryPoint のアドレス](../replay-protection/)から作る [EIP-712](../eip-712/) の型付きハッシュです。起動・デプロイ・残高の検査を含む全体は以下です。
+
+<br>
 
 <details>
 <summary>run.py の全体（268 行）</summary>
@@ -472,11 +482,15 @@ finally:
 
 </details>
 
+<br>
+
 ```bash
 bash content/notes/blockchain-systems/erc-4337/lab/run.sh
 ```
 
 実行すると、4 段に分かれた[出力](lab/output/summary.txt)が出ます。手順は [lab/README.txt](lab/README.txt) にまとめています。
+
+<br>
 
 <details>
 <summary>summary.txt の全体</summary>
@@ -507,6 +521,8 @@ Assertions: PASS
 ```
 
 </details>
+
+<br>
 
 1 段目では、作る前のアカウントのアドレスを 3 通りで計算しています。`CREATE2` の式、Factory の `getAddress`、EntryPoint の `getSenderAddress` です。3 つは一致し、そのアドレスはコードが空のまま 0.1 ETH を受け取りました。
 
@@ -584,13 +600,15 @@ Bundler は、UserOperation に付いた委任の承認（委任を許す EOA �
 
 - 1 つの鍵で ETH を送るだけで、承認の方式も手数料の肩代わりも使わない場合。EOA の方が安く済む
 - 既存の EOA のアドレスを変えずに機能を足したい場合。EIP-7702 の委任を先に検討する
-- 検証に外部の価格など、他のコントラクトの変わりやすい状態を使いたい場合。検証ではなく実行の段階で確かめる設計にする
+- 検証に外部の価格など、他のコントラクトの変わりやすい状態を使いたい場合。検証ではなく実行の段階で確認する設計にする
 
 ---
 
 ### 付録: EntryPoint の版
 
 アカウントは信頼する EntryPoint のアドレスをコードに持つので（SimpleAccount では `immutable`）、EntryPoint の版を変えるにはアカウントの更新が必要です。本記事の実験は v0.9.0 を使っています。
+
+<br>
 
 <details>
 <summary>v0.6〜v0.9 の主な変更と Mainnet のアドレス</summary>
@@ -606,6 +624,8 @@ Bundler は、UserOperation に付いた委任の承認（委任を許す EOA �
 
 v0.6 と v0.7 では構造体の形が違い、[ABI](../evm/#calldata-と-abi)（Application Binary Interface、関数の呼び出し形式）に互換性がありません。v0.9 は v0.7・v0.8 と ABI の互換があり、既存の関数は変えずに関数やイベントを足しています。ただし、v0.8 で userOpHash の計算が変わったので、署名を作る側は合わせる必要があります。
 
-アドレスはリリースノートに載っている値で、v0.9.0 のリリースノートは使う前に監査報告のアドレスとコードのハッシュを確かめるよう警告しています。
+アドレスはリリースノートに載っている値で、v0.9.0 のリリースノートは使う前に監査報告のアドレスとコードのハッシュを確認するよう警告しています。
 
 </details>
+
+<br>

@@ -277,7 +277,7 @@ LIMIT 20;
 
 52.9 ms が 0.081 ms になりました。
 
-どの書き方が `Index Cond` に入るかは、DBMS と版で違います。キーセットを書いたら、後ろの方のページで `EXPLAIN` を実行し、索引で読み始める位置が決まっているか（PostgreSQL なら `Index Cond` があり、`Rows Removed by Filter` が小さいか）を確かめるのが確実です。
+どの書き方が `Index Cond` に入るかは、DBMS と版で違います。キーセットを書いたら、後ろの方のページで `EXPLAIN` を実行し、索引で読み始める位置が決まっているか（PostgreSQL なら `Index Cond` があり、`Rows Removed by Filter` が小さいか）を確認するのが確実です。
 
 ---
 

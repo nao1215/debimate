@@ -127,6 +127,8 @@ Anthropic のカードの MRCR の他社の値は、主に第三者の評価サ�
 
 各社の数値は、手元で再現できません。そこで 2026 年 11 月に、手元の [ollama](https://ollama.com/) で [Qwen3](https://ollama.com/library/qwen3) の 8B（`qwen3:8b`）に 2 種類の問いを解かせました。思考は切り、出力の揺らぎを決める [temperature](/notes/generative-ai/sampling/) は 0 です。
 
+<br>
+
 <details>
 <summary>実行環境</summary>
 
@@ -135,6 +137,8 @@ Anthropic のカードの MRCR の他社の値は、主に第三者の評価サ�
 - コンテキストウィンドウは 40,960 トークンで、実行時は 32,768 に設定（超えた入力は既定でエラーにならず一部が捨てられる。[Ollama のコンテキスト長](../ollama-context-length/)）
 
 </details>
+
+<br>
 
 干し草には、Project Gutenberg の『[シャーロック・ホームズの冒険](https://www.gutenberg.org/ebooks/1661)』（パブリックドメイン）の本文を使い、先頭から 8,000・32,000・96,000 文字を切り出しました。トークンに直すと約 1.9K・7.6K・22.6K です。
 

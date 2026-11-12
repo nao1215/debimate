@@ -85,7 +85,7 @@ resid std (est) = 2.81  (true noise std = 3.59)
 
 ### 時間順の分割
 
-時系列の予測性能を評価する時は、データを時間順に分割します。前のコードの `t` と `y` で、ランダムに分割した評価がどれだけ楽観的になるかを確かめます。モデルは経過月だけを特徴量にした[ランダムフォレスト](../random-forest/)で、MAE（mean absolute error、平均絶対誤差。予測と正解の差の絶対値の平均）で比べます。
+時系列の予測性能を評価する時は、データを時間順に分割します。前のコードの `t` と `y` で、ランダムに分割した評価がどれだけ楽観的になるかを確認します。モデルは経過月だけを特徴量にした[ランダムフォレスト](../random-forest/)で、MAE（mean absolute error、平均絶対誤差。予測と正解の差の絶対値の平均）で比べます。
 
 ```python
 from sklearn.ensemble import RandomForestRegressor

@@ -157,6 +157,8 @@ def classify(shards, poison):
     return full, part
 ```
 
+<br>
+
 <details>
 <summary>blast_radius.py の全体</summary>
 
@@ -223,6 +225,8 @@ for n, k in [(8, 2), (16, 4), (100, 5), (2048, 4)]:
 ```
 
 </details>
+
+<br>
 
 `python3 blast_radius.py` で実行した結果は次の通りです。
 
@@ -351,4 +355,4 @@ cell は、状態を共有しない複製を並べて障害の範囲を狭めま
 - 顧客の数が少なく、1 つの cell に全員が収まる規模で、デプロイの自動化も整っていない
 - 1 つの DB での強い一貫性を前提にした、顧客をまたぐ取引が業務の中心にある
 
-こうした場合は、1 つのシステムの中でモジュールの境界を整える [Modular Monolith](/notes/software-architecture/modular-monolith/) や、DB だけを分ける [Partitioning](/notes/database-systems/partitioning/) で足りるかを確かめる方が、負担は小さく済みます。
+こうした場合は、1 つのシステムの中でモジュールの境界を整える [Modular Monolith](/notes/software-architecture/modular-monolith/) や、DB だけを分ける [Partitioning](/notes/database-systems/partitioning/) で足りるかを確認する方が、負担は小さく済みます。

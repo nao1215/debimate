@@ -109,7 +109,9 @@ Qwen3-1.7B は Q を 16 ヘッド持ちますが、K と V は 8 ヘッドしか
 
 ### 実験 1: num_ctx とメモリ
 
-実験は、2026 年 11 月 10 日に手元の PC の Ollama で行いました。モデルは qwen3:1.7b で、重みの持ち方が違う 3 つの型（8 ビットの q8_0、16 ビットの fp16、主に 4 ビットの q4_K_M）を使い、上記の式が成り立つかを確かめます。
+実験は、2026 年 11 月 10 日に手元の PC の Ollama で行いました。モデルは qwen3:1.7b で、重みの持ち方が違う 3 つの型（8 ビットの q8_0、16 ビットの fp16、主に 4 ビットの q4_K_M）を使い、上記の式が成り立つかを確認します。
+
+<br>
 
 <details>
 <summary>実験の環境（Ollama の版、GPU、計測中の負荷）</summary>
@@ -120,6 +122,8 @@ Qwen3-1.7B は Q を 16 ヘッド持ちますが、K と V は 8 ヘッドしか
 - 思考モードを切ったことや、モデルの digest は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/kv-cache/lab/README.txt) に記録しています。
 
 </details>
+
+<br>
 
 モデルを一度メモリから降ろしてから num_ctx を指定して読み込み直し、[/api/ps](https://docs.ollama.com/api/ps)（`ollama ps` と同じ情報）の `size` を記録します。`size` は、読み込んだモデルが使うメモリの量です。あわせて、読み込み時にサーバーのログに出る KV キャッシュの大きさを拾い、同じ num_ctx のまま約 1,800 トークンの入力を送った後の `size` も記録します。
 
@@ -159,6 +163,8 @@ for model, ctx in CASES:
                   num_ctx=ctx, num_predict=8, keep_alive="5m")
     mine2 = [x for x in ps() if x["name"] == model]
 ```
+
+<br>
 
 <details>
 <summary>kvlab.py と exp_memory.py の全体</summary>
@@ -338,7 +344,11 @@ json.dump(results, open(sys.argv[1] if len(sys.argv) > 1 else "memory.json", "w"
 
 </details>
 
+<br>
+
 記録した `memory.json` は、[lab/summarize_memory.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/kv-cache/lab/summarize_memory.py) で表に整形しました（計測の前後の `/api/ps` を含む生の出力は [lab/output_memory.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/kv-cache/lab/output_memory.txt)）。
+
+<br>
 
 <details>
 <summary>num_ctx ごとの size とログの KV キャッシュの表</summary>
@@ -362,6 +372,8 @@ qwen3:1.7b-q4_K_M     4096    4096  1,894,083,456  1,894,083,456    448.0 MiB   
 
 </details>
 
+<br>
+
 読み込み時のログの KV キャッシュは、num_ctx 2,048 で 224.0 MiB、4,096 で 448.0 MiB、40,960 で 4.4 GiB でした。前の節の式で計算した 224 MiB・448 MiB・4.375 GiB と一致します。以下は、num_ctx と `size` の関係をグラフにしたものです。グラフの GB は 10 の 9 乗バイトで、前の節の GiB（2 の 30 乗バイト）とは単位が違います。
 
 {{< figure src="images/kv-cache_memory.webp" alt="qwen3:1.7b-q8_0 の size は num_ctx 2,048 で 2.52 GB、4,096 で 2.75 GB、8,192 で 3.24 GB、16,384 で 4.19 GB、32,768 で 6.11 GB、40,960 で 7.07 GB。2,048 の値から 1 トークンあたり 114,688 バイトずつ増やした破線とほぼ重なる。fp16 は 4,096 で 4.61 GB、32,768 で 7.96 GB、q4_K_M は 4,096 で 1.89 GB、40,960 で 6.21 GB で、どの型も同じ傾きで増える" caption="num_ctx と読み込んだモデルの size（qwen3:1.7b の 3 つの型）" align="center" >}}
@@ -374,7 +386,7 @@ qwen3:1.7b-q4_K_M     4096    4096  1,894,083,456  1,894,083,456    448.0 MiB   
 
 もう 1 つ分かるのは、`size` が入力の長さで変わらないことです。約 1,800 トークンを送った後の `size` は、全ての行で読み込み直後と同じでした。冒頭の図の通り、Ollama は読み込んだ時点で num_ctx 個の枠の分を全部確保し（同時に処理する要求の数が 1 の時）、プロンプトが短くても空きの枠の分のメモリを使ったままにします。
 
-ただし、`/api/ps` の `size` は、Ollama が読み込み時に割り当てた量の報告で、プロンプトの長さに応じて増減する使用量ではありません。枠の分が実際に確保されたことは、ログの `kv cache ROCm0`（ROCm0 は GPU を指すログ上の名前。num_ctx 32,768 で 3.5 GiB など。上の表の `log kv cache`）で確かめています。
+ただし、`/api/ps` の `size` は、Ollama が読み込み時に割り当てた量の報告で、プロンプトの長さに応じて増減する使用量ではありません。枠の分が実際に確保されたことは、ログの `kv cache ROCm0`（ROCm0 は GPU を指すログ上の名前。num_ctx 32,768 で 3.5 GiB など。上の表の `log kv cache`）で確認しています。
 
 num_ctx を指定しない時は上限の 40,960 で読み込まれ、短い質問でも 4.4 GiB の KV キャッシュを確保しました。既定値の決まり方は [Ollama の num_ctx のノート](../ollama-context-length/)で説明しています。
 
@@ -402,6 +414,8 @@ for rnd in range(ROUNDS):
         prompt = f"Session {uuid.uuid4().hex}\n" + filler(n, seed=rnd) + TAIL
         r = generate(MODEL, prompt, num_ctx=NUM_CTX, num_predict=64)
 ```
+
+<br>
 
 <details>
 <summary>exp_prefill.py の全体</summary>
@@ -462,9 +476,13 @@ json.dump(rows, open(sys.argv[1] if len(sys.argv) > 1 else "prefill.json", "w"),
 
 </details>
 
+<br>
+
 以下は、3 巡の中央値をグラフにしたものです（縦の線は最小から最大の幅）。
 
 {{< figure src="images/kv-cache_prefill.webp" alt="左のグラフは入力のトークン数とプロンプトの処理の時間で、542 トークンで 0.12 秒、8,305 トークンで 2.65 秒、30,759 トークンで 21.0 秒と、長いほど傾きが急になる。右のグラフは生成の速さで、542 トークンの 92.0 トークン毎秒から、30,759 トークンの 38.8 トークン毎秒まで下がる" caption="入力の長さと、プロンプトの処理の時間・生成の速さ" align="center" >}}
+
+<br>
 
 <details>
 <summary>3 巡の中央値（括弧内は最小と最大）の出力</summary>
@@ -483,6 +501,8 @@ prompt  30759 tok  prefill  21.030 s (20.626-21.253)  gen  38.8 tok/s (36.2-39.0
 ```
 
 </details>
+
+<br>
 
 プロンプトの処理の時間（図の左）は、入力の長さに比例するより速く増えました。1 秒あたりに処理したトークン数は、2,000 トークン前後の約 4,700 から、30,759 トークンでは約 1,460 まで落ちています。注意機構では、各トークンの Q を自分とそれより前の全ての K と比べるので、比べる回数は入力の長さの 2 乗に比例します。入力が短いうちはモデルの重みの掛け算が時間の大半を占め、長くなるとこの 2 乗の部分が効いてきます。
 
@@ -504,7 +524,7 @@ prompt  30759 tok  prefill  21.030 s (20.626-21.253)  gen  38.8 tok/s (36.2-39.0
 
 KV キャッシュは、1 回の生成の中だけでなく、次の要求にも使い回せます。チャットで会話を続ける時や、同じ長い資料に別の質問をする時、要求の先頭の部分（前置き、プレフィックス）は前回と同じです。前回の K・V がキャッシュに残っていれば、一致した部分の計算を省けます。K・V はそれより前のトークンにだけ依存するので、使い回せるのは先頭から一致している部分だけです。
 
-これを確かめるために、約 8,300 トークンの前置き（実験 2 と同じ詰め物）に対して、次の 5 通りの送り方を順に試しました。num_ctx は 32,768 で、3 巡しています。
+これを確認するために、約 8,300 トークンの前置き（実験 2 と同じ詰め物）に対して、次の 5 通りの送り方を順に試しました。num_ctx は 32,768 で、3 巡しています。
 
 ```python
 # lab/exp_prefix.py から抜粋（全体は下の折りたたみ）
@@ -523,6 +543,8 @@ cases = [
 for label, prompt in cases:
     r = generate(MODEL, prompt, num_ctx=NUM_CTX, num_predict=16)
 ```
+
+<br>
 
 <details>
 <summary>exp_prefix.py の全体</summary>
@@ -576,7 +598,9 @@ json.dump(rows, open(sys.argv[1] if len(sys.argv) > 1 else "prefix.json", "w"), 
 
 </details>
 
-使い回せたかどうかは、`prompt_eval_duration` で見ます。`prompt_eval_count` は、使い回した回でも入力の全トークン数（8,325 など）を返すからです。Ollama で使い回しを確かめる方法は、[Ollama の num_ctx のノート](../ollama-context-length/)にまとめています。
+<br>
+
+使い回せたかどうかは、`prompt_eval_duration` で見ます。`prompt_eval_count` は、使い回した回でも入力の全トークン数（8,325 など）を返すからです。Ollama で使い回しを確認する方法は、[Ollama の num_ctx のノート](../ollama-context-length/)にまとめています。
 
 以下は 3 巡目の結果です（`ps` の行は省略。3 巡の全体は [lab/output_prefix.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/kv-cache/lab/output_prefix.txt)）。
 
@@ -634,4 +658,4 @@ KV キャッシュの利点は、過去のトークンの K・V を一度だけ�
 
 <br>
 
-コンテキスト長は、大きくするほど長い入力を扱える代わりに、メモリで払う設定です。速さを落とすのは、実験 2 の通り、実際に読ませた入力の長さです（num_ctx を大きくしただけで速さが変わるかは、本記事では測っていません）。実験の数字は 1.7B のモデル 1 つと、他の作業と共有した 1 台の GPU での値なので、手元のモデルでは、上記の式でモデルの構成から 1 トークンあたりの大きさを計算して確かめてください。
+コンテキスト長は、大きくするほど長い入力を扱える代わりに、メモリで払う設定です。速さを落とすのは、実験 2 の通り、実際に読ませた入力の長さです（num_ctx を大きくしただけで速さが変わるかは、本記事では測っていません）。実験の数字は 1.7B のモデル 1 つと、他の作業と共有した 1 台の GPU での値なので、手元のモデルでは、上記の式でモデルの構成から 1 トークンあたりの大きさを計算して確認してください。

@@ -21,7 +21,7 @@ topics: ["Transaction / Wallet"]
 
 <br>
 
-本記事では、Bitcoin のマルチシグを中心に、m と n が何に備える数なのか、スクリプトが署名をどう数えるのか、署名を 1 個にまとめる MuSig2 や MPC と何が違うのかを説明します。説明の要所は、手元の検証用チェーンで確かめます。Ethereum のコントラクトで署名を数える Safe は、[Safe](../safe-multisig/) のノートで扱います。
+本記事では、Bitcoin のマルチシグを中心に、m と n が何に備える数なのか、スクリプトが署名をどう数えるのか、署名を 1 個にまとめる MuSig2 や MPC と何が違うのかを説明します。説明の要所は、手元の検証用チェーンで確認します。Ethereum のコントラクトで署名を数える Safe は、[Safe](../safe-multisig/) のノートで扱います。
 
 ウォレットの全体像と鍵の保管は [Wallet](../wallet/)、スクリプトの実行は [Bitcoin Script](../bitcoin-script/)、署名の基礎は [Digital Signature](../digital-signature/) を前提にします。
 
@@ -96,15 +96,15 @@ witness は txid の計算に含まれないので、前の節の書き換えで
 
 P2WSH を定めた [BIP-141](https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki) では、出力に条件の本体（witnessScript）の 32 バイトの [SHA-256](/notes/security/sha-256/) を書き、条件の本体と署名は witness に置きます。
 
-{{< figure src="images/multisig_p2wsh.webp" alt="上に出力（scriptPubKey）の箱があり、0 と、条件の本体の SHA-256（32 バイト）が入っている。下に使う時の witness として、空のダミー、署名 A 71 バイト、署名 B 71 バイト、条件の本体 witnessScript 105 バイトの 4 つの箱が並ぶ。条件の本体の箱から出力のハッシュへ、SHA-256 が一致するかを確かめる矢印が伸びる。下に、一致したら条件の本体（2 <公開鍵A> <公開鍵B> <公開鍵C> 3 OP_CHECKMULTISIG）を左の 3 個を積んだ状態で実行する、という注記" caption="2-of-3 の P2WSH の出力と、使う時の witness" align="center" >}}
+{{< figure src="images/multisig_p2wsh.webp" alt="上に出力（scriptPubKey）の箱があり、0 と、条件の本体の SHA-256（32 バイト）が入っている。下に使う時の witness として、空のダミー、署名 A 71 バイト、署名 B 71 バイト、条件の本体 witnessScript 105 バイトの 4 つの箱が並ぶ。条件の本体の箱から出力のハッシュへ、SHA-256 が一致するかを確認する矢印が伸びる。下に、一致したら条件の本体（2 <公開鍵A> <公開鍵B> <公開鍵C> 3 OP_CHECKMULTISIG）を左の 3 個を積んだ状態で実行する、という注記" caption="2-of-3 の P2WSH の出力と、使う時の witness" align="center" >}}
 
-上記の図の通り、出力（scriptPubKey）に残るのは、witness の形式の版を表す 0 と、ハッシュ値だけです。使う時は、witness にダミー・署名 2 個・条件の本体を並べます。検証するノードは、条件の本体のハッシュ値が出力と一致することを確かめてから、条件の本体を実行します。図のバイト数は、次の節の実験で記録した値です。
+上記の図の通り、出力（scriptPubKey）に残るのは、witness の形式の版を表す 0 と、ハッシュ値だけです。使う時は、witness にダミー・署名 2 個・条件の本体を並べます。検証するノードは、条件の本体のハッシュ値が出力と一致することを確認してから、条件の本体を実行します。図のバイト数は、次の節の実験で記録した値です。
 
 ---
 
 ### regtest で 2-of-3 を作る
 
-[Bitcoin Core](https://bitcoincore.org/) 32.1 の regtest（手元だけで動く検証用のチェーン）で、署名が 1 個では本当に通らないのか、並びを逆にすると何で失敗するのかを確かめました。コンテナはネットワークに繋がず、鍵は使い捨てのウォレットで作っています。取得したファイルと版は [lab の README](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/multisig/lab/README.txt) に記録しました。
+[Bitcoin Core](https://bitcoincore.org/) 32.1 の regtest（手元だけで動く検証用のチェーン）で、署名が 1 個では本当に通らないのか、並びを逆にすると何で失敗するのかを確認しました。コンテナはネットワークに繋がず、鍵は使い捨てのウォレットで作っています。取得したファイルと版は [lab の README](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/multisig/lab/README.txt) に記録しました。
 
 3 個のウォレット a・b・c から公開鍵を 1 個ずつ集め、`wsh(multi(2,a,b,c))` という [descriptor](https://github.com/bitcoin/bips/blob/master/bip-0380.mediawiki)（出力の条件を表す記法）で 2-of-3 の P2WSH を作ります。`wsh(...)` が P2WSH、`multi(2,...)` が OP_CHECKMULTISIG の条件を表します。
 
@@ -127,6 +127,8 @@ for label, items in cases:
 判定には 2 段階あります。受け取った取引をブロックに入る前の置き場（mempool）に入れるかどうかは、各ノードの方針（policy）で決まります。方針はノードごとに変えられるので、全ノード共通の規則（合意規則）で拒まれるかを知るには、ブロックに入れて試す必要があります。`verdict` は、mempool に拒まれた取引を `generateblock` でブロックに入れ、合意規則での判定を返します。
 
 `with_witness` は取引の witness だけを差し替える関数です。全体は以下です。
+
+<br>
 
 <details>
 <summary>bitcoin_multisig.py の全体</summary>
@@ -324,6 +326,8 @@ if __name__ == '__main__':
 
 </details>
 
+<br>
+
 実行結果は以下の通りです。txid と公開鍵は実行ごとに変わります。
 
 ```text
@@ -441,7 +445,7 @@ m 個の署名を要求しても、署名者の全員が同じ偽の内容に署
 
 - 鍵 1 個の盗難でも、紛失でも資産を失わない構成を作れる
 - 承認に複数人を必要とし、1 人の判断や 1 台の端末の侵害だけで送金されない
-- P2WSH では、誰が署名したかがチェーンに記録され、後から確かめられる
+- P2WSH では、誰が署名したかがチェーンに記録され、後から確認できる
 - MuSig2 では、手数料と見た目は 1 個の鍵の送金と同じになる
 
 ---
@@ -461,5 +465,5 @@ m 個の署名を要求しても、署名者の全員が同じ偽の内容に署
 
 - 少額を頻繁に送る用途で、署名を集める手間が資産の保護に見合わない場合
 - 鍵を別の端末・人・場所に分けられず、全ての鍵が同じ環境に集まる場合
-- 署名者が取引の内容を自分の端末で確かめる手段を持たず、共通の画面の表示を信じるしかない場合
+- 署名者が取引の内容を自分の端末で確認する手段を持たず、共通の画面の表示を信じるしかない場合
 - チェーン上で誰が承認したかを隠したい場合（P2WSH は署名者の数と公開鍵がチェーンに出る）

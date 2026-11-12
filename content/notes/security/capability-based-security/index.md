@@ -51,7 +51,7 @@ ACL と capability の違いは、[Lampson 氏の Protection](https://www.bwlamp
 | 利用者 alice | 読み書き | なし | なし |
 | コンパイラ | なし | 書き込み | 書き込み |
 
-列を切り出してオブジェクトに付けると ACL になり、OS は要求した主体を確かめてからこの表を引きます。行を切り出して主体に持たせると capability の一覧（C-list）になります。1966 年の [Dennis 氏と Van Horn 氏の論文](https://doi.org/10.1145/365230.365252)は、計算が使って良い対象と操作の一覧を C-list として表しました。
+列を切り出してオブジェクトに付けると ACL になり、OS は要求した主体を確認してからこの表を引きます。行を切り出して主体に持たせると capability の一覧（C-list）になります。1966 年の [Dennis 氏と Van Horn 氏の論文](https://doi.org/10.1145/365230.365252)は、計算が使って良い対象と操作の一覧を C-list として表しました。
 
 Miller 氏らの [Capability Myths Demolished](https://papers.agoric.com/papers/capability-myths-demolished/full-text/)（2003 年）は、2 つを等価とみなす考えを「Equivalence Myth」と呼んで否定しています。ACL 型では、対象の名前と、それを使って良いかの判断が別々に流れます。
 
@@ -117,6 +117,8 @@ fd は、Unix ドメインソケットの `SCM_RIGHTS` で別のプロセスに�
 ```
 
 名前を受け取った時はコンパイラ自身の権限で `open()` し、fd を受け取った時は渡されたものをそのまま使います。
+
+<br>
 
 <details>
 <summary>run.py の全体（2 つの UID でコンパイラと alice を動かし、4 つのケースを順に実行する）</summary>
@@ -239,6 +241,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 UID を切り替えるために root で起動するので、使い捨てのコンテナで動かします。`lab/` で次のように実行します。
 
 ```bash
@@ -253,6 +257,8 @@ Python 3.13.18 での結果をケースごとにまとめると、以下の通�
 | 2 | alice が書き込み用に開いた `debug.txt` の fd | `debug.txt` にだけ書かれ、BILL は無傷 |
 | 3 | alice が `SYSX/BILL` を開こうとした | alice の権限で開けず、渡すものが作れない |
 | 4 | alice が読み取り専用で開いた fd | コンパイラの `write()` が `EBADF` で失敗 |
+
+<br>
 
 <details>
 <summary>run.py の出力</summary>
@@ -277,6 +283,8 @@ STAT: 3 lines written with the compiler's own authority
 ```
 
 </details>
+
+<br>
 
 出力は [output.txt](lab/output.txt) にもあります。
 

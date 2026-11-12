@@ -187,6 +187,8 @@ Go 1.26.4 で `./run.sh` を実行した結果は、以下の通りです。矢�
 
 {{< figure src="images/modular_monolith_violations.svg" alt="請求モジュールの billing と、注文モジュールの orders・orders/internal/store・orders/notify、Go モジュールの根の internal/ordersql を箱で置いた図。billing から orders への灰色の矢印が許可した向き。[1] billing から orders/internal/store と [2] orders から billing は青で、go build が止める。[3] orders/notify から billing と [4] billing から internal/ordersql は黄土色で、depcheck.sh が止める" caption="実験で足した 4 つの import と、止めた検査" align="center" >}}
 
+<br>
+
 <details>
 <summary>run.sh の出力</summary>
 
@@ -213,6 +215,8 @@ depcheck.sh の終了コード: 1
 ```
 
 </details>
+
+<br>
 
 [1] と [2] は `go build` が止めました。go コマンドはパッケージ同士の import の循環を許さないので、`orders` パッケージ自身が `billing` を import すると、ビルドが通りません。
 
@@ -280,7 +284,7 @@ sequenceDiagram
 
 上記の図では、注文の確定と「確定した」という記録が同じトランザクションで残るので、イベントだけが失われることはありません。中継はプロセス内の goroutine やスレッドで足り、メッセージブローカーは必須ではありません。一方で、中継が送信済みの印を付ける前に止まると同じイベントをもう一度送るので、請求側は同じ注文の請求書を 2 枚作らないように、[冪等](../../distributed-systems/idempotency/)な処理にします。
 
-ちなみに、多くのユースケースで境界をまたぐトランザクションが必要になるなら、その 2 つは 1 つのモジュールにまとめるべき候補です。トランザクションの範囲は、モジュールの境界が業務の切れ目と合っているかを確かめる材料になります。
+ちなみに、多くのユースケースで境界をまたぐトランザクションが必要になるなら、その 2 つは 1 つのモジュールにまとめるべき候補です。トランザクションの範囲は、モジュールの境界が業務の切れ目と合っているかを確認する材料になります。
 
 ---
 

@@ -11,7 +11,7 @@ topics: ["Smart Contract"]
 
 EVM（Ethereum Virtual Machine）は、[Ethereum](https://ethereum.org/) のノードが、取引で呼び出されたコントラクトのコードを実行する仮想マシンです。[Solidity](https://www.soliditylang.org/) などで書いたプログラムはバイトコードにコンパイルされ、EVM がその命令を 1 つずつ実行して、残高や保存領域の値を更新します。
 
-EVM の話に入る前に、Ethereum の登場人物を確かめます。Ethereum の状態は、アドレスごとのアカウントの集まりで、アカウントには 2 種類あります。
+EVM の話に入る前に、Ethereum の登場人物を確認します。Ethereum の状態は、アドレスごとのアカウントの集まりで、アカウントには 2 種類あります。
 
 {{< figure src="images/evm_overview.webp" alt="左の EOA の箱に秘密鍵・残高・nonce。そこから「取引」の矢印（宛先・額・入力、ガスの上限）が右のコントラクトに向かう。コントラクトの中には青いコード（不変）と黄土色の storage（キー → 値）があり、コードから storage に読み書きの矢印" caption="EOA が送る取引と、コードと storage を持つコントラクト" align="center" >}}
 
@@ -23,7 +23,7 @@ EOA が署名した取引（transaction）は、宛先（to）、送る ETH の�
 
 <br>
 
-Ethereum には、計算結果を配る中央のサーバーがありません。全てのノードがブロックに並んだ取引を自分で実行し、同じ状態になることを確かめます。
+Ethereum には、計算結果を配る中央のサーバーがありません。全てのノードがブロックに並んだ取引を自分で実行し、同じ状態になることを確認します。
 
 {{< figure src="images/evm_nodes.webp" alt="灰色の枠の中で、ノード 1・2・3 がそれぞれ自分の EVM で同じ取引を実行し、3 本の矢印が緑の「同じ新しい状態（1 つでも違えば合わない）」に集まる" caption="全ノードが同じ取引を実行し、同じ状態になる" align="center" >}}
 
@@ -57,13 +57,15 @@ Ethereum は、全てのノードが決めた時期に一斉に規則を切り�
 
 {{< figure src="images/evm_pipeline.webp" alt="灰色の外枠が取引の処理（状態遷移）。左の「検査」の箱に署名・nonce・intrinsic gas・前払い、右の「精算」の箱に払い戻し・手数料・レシートがある。中央の青い枠がメッセージ呼び出し（フレーム）で、その中で「読む → ガスを引く → 実行」のループが STOP・RETURN・REVERT・エラーまで回る。下の点線の枠は「CALL → 子のフレーム」" caption="1 件の取引を処理する 3 段の入れ子" align="center" >}}
 
-外側の左では、署名（signature）と nonce を確かめ、取引 1 件ごとに決まった基本のガス（intrinsic gas）を引き、gas limit 分の手数料を送り主の残高から前払いさせます。EVM はまだ動いていません。
+外側の左では、署名（signature）と nonce を確認し、取引 1 件ごとに決まった基本のガス（intrinsic gas）を引き、gas limit 分の手数料を送り主の残高から前払いさせます。EVM はまだ動いていません。
 
 中央のメッセージ呼び出し（message call）は、呼び出し元・宛先・入力・渡すガス・送る ETH の組です。EVM はこれを 1 つのフレーム（frame）として実行します。
 
 フレームは、1 回の呼び出しの実行に必要なもの（残りのガス、後で説明するスタックや memory）をまとめた単位です。フレームの中では、命令を読み、ガスを引き、実行する、を停止まで繰り返します。コードが CALL 命令で別のコントラクトを呼ぶと、同じループを持つ子のフレームが作られます。
 
 外側の右では、払い戻し（refund。storage の値を 0 に戻した時などに付く割引で、後の節で説明）を計算し、使わなかったガスの分を送り主に返して手数料を払い、レシート（receipt）を作ります。レシートは取引の結果の記録で、ノードの API が返すレシートは、成否を表す `status`、使ったガスの `gasUsed`、後で説明するログを持ちます。
+
+<br>
 
 <details>
 <summary>3 段に当たる geth と execution-specs の関数</summary>
@@ -142,6 +144,8 @@ ADD の 3 に比べて、storage やアカウントに触る命令（図の状�
 
 図の cold と warm は、2021 年 4 月の更新（Berlin）で [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) が加えた区別です。同じ取引の中で初めて触るアカウントや storage の slot（cold）は高く、2 回目から（warm）は安くなります。入力の大きさで変わる式を含めた一覧は、以下に畳みました。`w` はバイト数を 32 で割って切り上げた語数です。
 
+<br>
+
 <details>
 <summary>Osaka の主な命令のガス</summary>
 
@@ -166,7 +170,9 @@ ADD の 3 に比べて、storage やアカウントに触る命令（図の状�
 
 #### 実験の環境
 
-ここからは、ガスの式を実際のノードで確かめます。実験は、手元のコンテナで動かした開発用ノードの Anvil を Osaka の規則に固定して行い、公開のネットワークには繋ぎません。
+ここからは、ガスの式を実際のノードで確認します。実験は、手元のコンテナで動かした開発用ノードの Anvil を Osaka の規則に固定して行い、公開のネットワークには繋ぎません。
+
+<br>
 
 <details>
 <summary>実験の環境の詳細</summary>
@@ -177,6 +183,8 @@ Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコン�
 
 </details>
 
+<br>
+
 ノードへの問い合わせには、2 つの API を使います。`eth_call` は、取引を作らずにノードにコードを試しに実行させ、返り値だけを受け取る API で、状態は変わりません。`debug_traceTransaction` は、送った取引で実行された命令とそのガスを 1 つずつ返す API です。実験コードは [probe.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/probe.py) で、コントラクトと手で組み立てたバイトコードは学習用で、監査していません。
 
 <br>
@@ -185,7 +193,7 @@ Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコン�
 
 memory は使った最大の位置までを語数 `a` で数え、累計で `3a + floor(a² / 512)` のガスが掛かります。命令が memory を広げた時は、広げた後と前の累計の差を払います（execution-specs の [`calculate_memory_gas_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/gas.py#L253-L276)）。
 
-この式を確かめるため、残りのガスを積む GAS 命令で MLOAD（memory から 1 語読む命令）の前後を挟んだ短いコードを `eth_call` で実行し、差から拡張の分を求めました。同じ位置を 2 回読み、2 回目には拡張が無いことも見ています。
+この式を確認するため、残りのガスを積む GAS 命令で MLOAD（memory から 1 語読む命令）の前後を挟んだ短いコードを `eth_call` で実行し、差から拡張の分を求めました。同じ位置を 2 回読み、2 回目には拡張が無いことも見ています。
 
 ```text
 size_bytes | 1st MLOAD extra | 2nd MLOAD extra | formula 3a + a*a//512
@@ -194,6 +202,8 @@ size_bytes | 1st MLOAD extra | 2nd MLOAD extra | formula 3a + a*a//512
      32768 |            5120 |               0 | 5120
     131072 |           45056 |               0 | 45056
 ```
+
+<br>
 
 <details>
 <summary>測定に使ったコード（probe.py の抜粋）</summary>
@@ -218,6 +228,8 @@ for size in (32, 1024, 32768, 131072):
 
 </details>
 
+<br>
+
 4 つの大きさの全てで、式と実測が一致しました。2 回目の拡張分は 0 で、確保済みの範囲を読むたびに払うわけではありません。
 
 {{< figure src="images/evm_memory_gas.webp" alt="横軸が memory の大きさ（バイト）、縦軸が 0 から広げるガス。青い破線の直線の項 3a は直線で、黄土色の合計 3a + a²/512 は大きくなるほど上に反る。実測の黒い点 32,768 バイト → 5,120 と 131,072 バイト → 45,056 が曲線に乗っている" caption="memory を広げるガスの式と実測" align="center" >}}
@@ -236,7 +248,7 @@ storage の値を 0 に戻すと、払い戻し（refund）が付きます。払
 
 <br>
 
-値を 1 つ保存してイベント（後の節で説明するログ）を出すだけの次のコントラクトで、この内訳を確かめました。
+値を 1 つ保存してイベント（後の節で説明するログ）を出すだけの次のコントラクトで、この内訳を確認しました。
 
 ```solidity
 // SPDX-License-Identifier: CC0-1.0
@@ -288,6 +300,8 @@ CALLDATALOAD で calldata の先頭の 32 バイトを読み、224 ビット右�
 
 `set(42)` の取引を `debug_traceTransaction` でたどると、実行された命令もこの順でした。Foundry の [cast](https://getfoundry.sh/cast/overview) の `cast disassemble` で命令に戻した該当部分は、以下に畳みました。
 
+<br>
+
 <details>
 <summary>selector を比べる部分の抜粋（左が PC）</summary>
 
@@ -320,6 +334,8 @@ CALLDATALOAD で calldata の先頭の 32 バイトを読み、224 ビット右�
 全体は [dispatcher.disasm.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/output/build/dispatcher.disasm.txt) にあります。
 
 </details>
+
+<br>
 
 この直線の比較は、関数が少なく optimizer を使わない場合の形です。optimizer の設定は、関数を振り分ける部分の二分探索の大きさなどを変えます（[solc の optimizer options](https://docs.soliditylang.org/en/v0.8.28/using-the-compiler.html#optimizer-options)）。
 
@@ -365,6 +381,8 @@ STATICCALL は 2017 年 10 月の更新（Byzantium）の [EIP-214](https://eips
 #### 3 つの命令の比較
 
 同じ `Caller` から同じ `Target` を 3 通りに呼び、`Target` の中で見えた値を記録しました。`Target.record()` は slot 0 の `count` を 1 増やし、自分が見た `msg.sender`・`address(this)`・`msg.value` を返します。EOA は `Caller.run()` を 7 wei 付きで呼び、CALL では 3 wei を送ります。
+
+<br>
 
 <details>
 <summary>Context.sol の全体</summary>
@@ -420,6 +438,8 @@ contract Caller {
 
 </details>
 
+<br>
+
 ```text
 == Caller.run(target) sent by the EOA with 7 wei ==
 mode                | ok | msg.sender | address(this) | msg.value
@@ -461,11 +481,13 @@ CALL で子に渡せるガスには上限があります。2016 年 10 月の更
 
 親には少なくとも 64 分の 1 が残り、子が全てのガスを使い切っても、親は後処理を続けられます（execution-specs の [`max_message_call_gas`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/gas.py#L360-L377)）。
 
-`eth_call` に 1,000 万ガスを渡し、入口で残りのガスを返すだけの子コントラクトを CALL して、式どおりの量が渡るかを確かめました。子は初めて触るアカウントなので cold の 2,600 が掛かり、返り値を書く memory の 1 語の拡張で 3 が加わります。
+`eth_call` に 1,000 万ガスを渡し、入口で残りのガスを返すだけの子コントラクトを CALL して、式どおりの量が渡るかを確認しました。子は初めて触るアカウントなので cold の 2,600 が掛かり、返り値を書く memory の 1 語の拡張で 3 が加わります。
 
 {{< figure src="images/evm_call_split.webp" alt="上に g = 9,946,370（CALL の前）− 2,603（CALL の費用）= 9,943,767。その下の横棒の大部分が青い「子が受け取る 9,788,396（63/64）」で、右端の細い黄土色が「親に残る 155,371（1/64）」。下に「10,000 を要求 → 子は 10,000 を受け取る（上限 9,788,364 より小さい）」" caption="CALL で子に渡るガスの 63/64 の分け方" align="center" >}}
 
 全てを要求した時、子が受け取ったガスは、`g` から 64 分の 1 を引いた値と 1 ガスも違いませんでした。10,000 だけを要求した時は、上限より小さいので要求どおりに渡っています（この時は CALL の前の命令が少し違い、残りのガスが 33 少ないので、上限も 9,788,364 と少し下がります）。
+
+<br>
 
 <details>
 <summary>測定に使ったコード（probe.py の抜粋）</summary>
@@ -487,6 +509,8 @@ for label, gas_arg, push_cost in (('all', '5a', 2), ('10000', '612710', 3)):
 ```
 
 </details>
+
+<br>
 
 続いて、自分自身を `this.down(depth - 1)` で呼び続ける Solidity のコントラクトで、深さごとに入口のガスを測りました。
 
@@ -536,7 +560,7 @@ unknown selector 0xdeadbeef: status=0
 
 ただし、子のフレームの失敗は、そのまま取引の失敗にはなりません。「子のフレームの終わり方」の図のとおり、CALL は子の失敗を 0 としてスタックに積むだけで、親はその値を見て処理を続けられます。前の節の STATICCALL の `record()` が失敗しても `run()` の取引が成功したのは、`Caller` が 0 を受け取って記録しただけだからです。
 
-Solidity の高水準の呼び出し（`target.f()`）が子の失敗を親の失敗として伝えるのは、コンパイラが 0 を見て REVERT するコードを入れているからです。2 種類の失敗の違いは、[Smart Contract](../smart-contract/) の実験でも確かめています。
+Solidity の高水準の呼び出し（`target.f()`）が子の失敗を親の失敗として伝えるのは、コンパイラが 0 を見て REVERT するコードを入れているからです。2 種類の失敗の違いは、[Smart Contract](../smart-contract/) の実験でも確認しています。
 
 ---
 

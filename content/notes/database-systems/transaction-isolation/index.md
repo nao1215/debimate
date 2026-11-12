@@ -378,6 +378,8 @@ END;
 
 {{< figure src="images/transaction-isolation_lost_update.svg" alt="並列度を 1 から 32 に増やした時の、失われた更新の割合（左）と注文 1 件あたりの再試行回数（右）。READ COMMITTED は 2 並列で 48%、32 並列で 97% の更新を失い、再試行は 0。SERIALIZABLE は失われた更新が 0 で、再試行は 32 並列で 1 件あたり 27 回に増える。" caption="並列度と、失われた更新・再試行の回数" align="center" >}}
 
+<br>
+
 <details>
 <summary>測定値（抜粋）</summary>
 
@@ -390,6 +392,8 @@ serializable         32    6400            6400             0        1556   1719
 ```
 
 </details>
+
+<br>
 
 READ COMMITTED はエラーを 1 件も返さないまま、32 並列では 6,400 件の注文に対して在庫が 200 個しか減りませんでした。SERIALIZABLE では失われた更新（Lost updates）が 0 件になった代わりに、32 並列（Concurrent clients）で注文 1 件あたり平均 27 回の再試行（Retries per order）が起きています。
 

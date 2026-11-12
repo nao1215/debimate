@@ -56,7 +56,7 @@ sequenceDiagram
 
 確認した時点ではまだ相手のレコードが無く、`INSERT` を出す時点では相手が入っています。アプリケーションは、確認と書き込みの間に入った相手の挿入に気づけません。
 
-一意制約の無い `users` 表に対して、上記の図の順序で 2 本の接続を実際に動かした結果は以下の通りです。2 本とも `SELECT` で 0 件を確かめてから `INSERT` しています。
+一意制約の無い `users` 表に対して、上記の図の順序で 2 本の接続を実際に動かした結果は以下の通りです。2 本とも `SELECT` で 0 件を確認してから `INSERT` しています。
 
 ```text
 SELECT id, email FROM users ORDER BY id;
@@ -111,7 +111,7 @@ Time: 1001.301 ms (00:01.001)
 
 同じアドレスの要求が 2 件より多く重なった時の結果は、PostgreSQL 付属の負荷試験の道具である [pgbench](https://www.postgresql.org/docs/current/pgbench.html) で測りました。c 本の接続が user1 から user1000 までを同じ順に登録するので、各アドレスに c 件の要求がほぼ同時に届きます。
 
-1 回の登録は、以下のように `SELECT` で 0 件を確かめてから `INSERT` します。`register_unique()` は `INSERT` を実行し、`23505` を受け取ったら回数を記録する関数です。
+1 回の登録は、以下のように `SELECT` で 0 件を確認してから `INSERT` します。`register_unique()` は `INSERT` を実行し、`23505` を受け取ったら回数を記録する関数です。
 
 ```sql
 \set i :i + 1
@@ -124,6 +124,8 @@ SELECT register_unique('user' || :i);
 一意制約の無い表にも同じ手順を流し、c ごとに 3 回繰り返しました（[lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/unique-constraint/lab/run.sh)）。以下は、c ごとに 3 回の平均を描いた図です。3 回分の数値は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/unique-constraint/lab/output.txt) にあります。
 
 {{< figure src="images/unique-constraint_race.svg" alt="左の図では、一意制約の無い表に残るアドレス 1 件あたりのレコード数が、同時の要求 2・8・32 件で約 2・7.9・31.7 件と要求数にほぼ等しく、一意制約のある表では常に 1 件。右の図は一意制約のある表が返した 23505 の回数で、アドレス 1 件あたり要求数の約半分" caption="pgbench で同時の要求を増やした時の結果（3 回の平均）" align="center" >}}
+
+<br>
 
 <details>
 <summary>1 回目の出力の抜粋（列はアドレス 1 件あたりのレコード数、2 件以上入ったアドレスの数、23505 を受け取った回数）</summary>
@@ -140,7 +142,9 @@ clients run table rows_per_email emails_with_dup unique_violation
 
 </details>
 
-一意制約の無い表（凡例の no UNIQUE）では、同時に届いた要求（Concurrent requests）のほぼ全てが 0 件を確かめて挿入しました。一意制約のある表は常に 1 件で、代わりに要求の約半分が `23505` で失敗しています。残りの要求は、`SELECT` の時点で先行の挿入が確定していたので `INSERT` に進みませんでした。
+<br>
+
+一意制約の無い表（凡例の no UNIQUE）では、同時に届いた要求（Concurrent requests）のほぼ全てが 0 件を確認して挿入しました。一意制約のある表は常に 1 件で、代わりに要求の約半分が `23505` で失敗しています。残りの要求は、`SELECT` の時点で先行の挿入が確定していたので `INSERT` に進みませんでした。
 
 この経路を想定外の失敗として扱い、HTTP の 500 を返す実装にすると、業務のエラーとして返せる要求まで障害になります。
 

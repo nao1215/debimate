@@ -69,7 +69,7 @@ EXPLAIN QUERY PLAN SELECT v FROM scan_demo ORDER BY v;
 SCAN scan_demo USING COVERING INDEX scan_demo_v
 ```
 
-これは [SQLite の SCAN と SEARCH の区別](https://www.sqlite.org/eqp.html)を確かめる例です。実行計画の表示形式はバージョンで変わる場合があります。
+これは [SQLite の SCAN と SEARCH の区別](https://www.sqlite.org/eqp.html)を確認する例です。実行計画の表示形式はバージョンで変わる場合があります。
 
 ---
 
@@ -227,7 +227,7 @@ Index Scan で読む量を整理すると、およそ「索引で読むページ
 
 ある問い合わせに必要なカラムが全て入っている索引は、その問い合わせに対する [covering index](https://dev.mysql.com/doc/refman/8.4/en/glossary.html) と呼ばれます。covering index に当たるかどうかは、索引の種類ではなく問い合わせとの組み合わせで決まります。
 
-取り出すカラムだけを変えると実行計画がどう動くのかは、Python 標準の `sqlite3` から SQLite 3.46.1 を使って確かめられます。`orders` は 100 万件で、`user_id` は 1 万種類（1 つの値につきおよそ 100 件）です。張ってある索引は 1 本で、`user_id` と `amount` の 2 カラムをこの順に並べた複合索引です。
+取り出すカラムだけを変えると実行計画がどう動くのかは、Python 標準の `sqlite3` から SQLite 3.46.1 を使って確認できます。`orders` は 100 万件で、`user_id` は 1 万種類（1 つの値につきおよそ 100 件）です。張ってある索引は 1 本で、`user_id` と `amount` の 2 カラムをこの順に並べた複合索引です。
 
 ```python
 import random
@@ -403,7 +403,7 @@ SQLite にも同じ名前の[最適化](https://www.sqlite.org/optoverview.html#
 
 コストは実際のレコード数ではなく、統計から見積もった推定レコード数で計算されます。
 
-索引が使われない理由を調べたい時は、PostgreSQL の `enable_seqscan` を off にして全走査を選びにくくし、別の計画が成立するかを確かめます。それでも全走査が選ばれるなら、条件が索引と噛み合っていないなどの根本的な理由がある可能性が高いと[ドキュメント](https://www.postgresql.org/docs/current/indexes-examine.html)は説明しています。
+索引が使われない理由を調べたい時は、PostgreSQL の `enable_seqscan` を off にして全走査を選びにくくし、別の計画が成立するかを確認します。それでも全走査が選ばれるなら、条件が索引と噛み合っていないなどの根本的な理由がある可能性が高いと[ドキュメント](https://www.postgresql.org/docs/current/indexes-examine.html)は説明しています。
 
 ---
 

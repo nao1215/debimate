@@ -85,7 +85,7 @@ policy を満たさない取引でも、ブロックに入った時点のチェ�
 
 ### 拒否した取引を含むブロックの受け入れ
 
-自分の mempool では拒否した取引をブロックに入ってからは受け入れることを 2 台のローカルノードで確かめます。使うのは Bitcoin Core 30.4 の [regtest](../testnet-history/#bitcoin-のテストネット) です。regtest は、開発者が手元でブロックを生成できる専用のテスト環境で、実際の BTC は使いません。
+自分の mempool では拒否した取引をブロックに入ってからは受け入れることを 2 台のローカルノードで確認します。使うのは Bitcoin Core 30.4 の [regtest](../testnet-history/#bitcoin-のテストネット) です。regtest は、開発者が手元でブロックを生成できる専用のテスト環境で、実際の BTC は使いません。
 
 2 台には、同じ 101 ブロックを読み込ませます。違いは、単独の未確認取引を受け入れる最低手数料率（`minrelaytxfee`）だけです。取引は 2 sat/vB の手数料率で作成します。sat は BTC の最小単位 satoshi、vB は witness の割引を反映した仮想サイズの単位です。
 
@@ -196,7 +196,7 @@ Node A がこの取引をブロックに取り込み、そのブロックを Nod
 
 <br>
 
-Bitcoin Core v30.0 の [txmempool.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/txmempool.cpp) の規則を写したシミュレーションで、追い出しによって最低の手数料率がどう上がり、どう戻るのかを確かめます。
+Bitcoin Core v30.0 の [txmempool.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/txmempool.cpp) の規則を写したシミュレーションで、追い出しによって最低の手数料率がどう上がり、どう戻るのかを確認します。
 
 取り除いた取引の手数料率に incremental relay fee（既定 0.1 sat/vB）を足した値まで最低値を上げ、その後に新しいブロックが来てからは、12 時間の半減期で下げていく規則です。mempool が上限の 4 分の 1 未満なら半減期は 3 時間、2 分の 1 未満なら 6 時間に縮みます。
 
@@ -243,6 +243,8 @@ peak min fee 1.85 sat/vB at hour 6.00
 rejected arrivals below the minimum: 64,102
 ```
 
+<br>
+
 <details>
 <summary>3 時間ごとの値（グラフの元）</summary>
 
@@ -265,6 +267,8 @@ rejected arrivals below the minimum: 64,102
 ```
 
 </details>
+
+<br>
 
 {{< figure src="images/mempool_rolling_min_fee.svg" alt="上段は mempool の量、下段は最低の手数料率の推移。混雑した最初の 6 時間は mempool が上限に張り付き、最低の手数料率は 0.1 から 1.85 sat/vB まで上がる。到着が減ると mempool は上限の 2 割ほどに空くが、最低の手数料率は曲線を描いてゆっくり下がり、0.1 に戻るのは約 19 時間目" caption="シミュレーションでの mempool の量と最低の手数料率" align="center" >}}
 

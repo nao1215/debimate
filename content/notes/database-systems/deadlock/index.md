@@ -177,7 +177,7 @@ func applyUpdates(ctx context.Context, db *sql.DB, updates []accountUpdate) erro
 
 <br>
 
-順序を揃えた効き目は、件数で確かめられます。PostgreSQL 17.11 で、2 つの口座の間で 1 円を動かす送金を pgbench から並行に流し、デッドロックで中止された割合を数えました。
+順序を揃えた効き目は、件数で確認できます。PostgreSQL 17.11 で、2 つの口座の間で 1 円を動かす送金を pgbench から並行に流し、デッドロックで中止された割合を数えました。
 
 送金元と送金先は口座の中から一様に選び、2 本の `UPDATE` の間に 5 ms の処理を挟みます。受け付けた順（送金元が先）でロックを取る場合と、口座 ID の昇順で取る場合を比べます。`deadlock_timeout` は実験を早く終えるために 100 ms に縮め、中止した送金は再試行しません。
 

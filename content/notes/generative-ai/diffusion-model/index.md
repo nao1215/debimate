@@ -23,7 +23,7 @@ topics: ["Image Generation"]
 
 <br>
 
-本記事では、画像生成を使っていても中身を知らないエンジニアに向けて、SDXL と ComfyUI を例に拡散モデルの基本を説明します。ComfyUI のソースと手元で生成した画像から、次の疑問を順に確かめます。
+本記事では、画像生成を使っていても中身を知らないエンジニアに向けて、SDXL と ComfyUI を例に拡散モデルの基本を説明します。ComfyUI のソースと手元で生成した画像から、次の疑問を順に確認します。
 
 - ノイズを足すと、潜在の中身はどう変わるのか。
 - モデルは何を予測し、その予測からどう次の状態を作るのか。
@@ -72,6 +72,8 @@ x = x_0 + σ × eps
 
 なお、生成は描く画像がまだ無い状態から始めるので、`x_0` を 0 として、seed から作ったノイズだけを置きます。その大きさは、ノイズを `sqrt(1 + σ²)` 倍（最大の σ 14.6146 なら約 14.65 倍）です。割った後のモデルへの入力が、ちょうど標準正規分布のノイズになります（[ComfyUI の実装](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47)）。
 
+<br>
+
 <details>
 <summary>DDPM の論文の式と、ComfyUI の実装との対応</summary>
 
@@ -86,6 +88,8 @@ x_t = sqrt(abar_t) × x_0 + sqrt(1 − abar_t) × eps
 図の画像は、サンプラーに長さ 1 の σ の列を渡して作りました。この時 ComfyUI はモデルを呼ばず、ノイズを足す処理（[noise_scaling](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47)）の結果だけを（潜在の単位に戻して）返します。
 
 </details>
+
+<br>
 
 ---
 
@@ -127,6 +131,8 @@ for i in trange(len(sigmas) - 1, disable=disable):
 
 ComfyUI でプレビューを有効にした時（起動オプションの `--preview-method` か、画面の設定）に出るのも、`x` ではなくこの `x0_hat` です（[samplers.py の 1003 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L1003)）。プレビューが「ぼやけた下書きが少しずつ締まる」ように見えるのは、予測がはっきりしていく様子を見ているからです。
 
+<br>
+
 <details>
 <summary>冒頭の図の作り方（lab/wf.py の抜粋）</summary>
 
@@ -148,6 +154,8 @@ wf["14"] = {"class_type": "LatentMultiply", "inputs": {"samples": ["13", 0], "mu
 
 </details>
 
+<br>
+
 ---
 
 ### σ の列とステップ数
@@ -159,6 +167,8 @@ wf["14"] = {"class_type": "LatentMultiply", "inputs": {"samples": ["13", 0], "mu
 {{< figure src="images/diffusion_schedule.webp" alt="左は 28 ステップの σ を対数目盛で描いたもの（末尾の 0 は対数目盛に描けないので省いた）。normal と karras はどちらも 14.6 から始まり、ほぼ一定の割合で下がる。normal は最後の 1〜2 ステップで急に落ちる。karras は 11 ステップ目以降で normal より小さい。右は画像に掛かる係数で、0.07 から 1 に向かって上がり、karras は 15〜20 ステップ目で normal より早く 1 に近づく" caption="28 ステップの σ と、画像に掛かる係数" align="center" >}}
 
 左のグラフは対数目盛なので、ほぼ直線に見えても、前半で σ の値を大きく下げ、後半は小さな σ の間を細かく刻んでいます。右のグラフの係数で見ると、`normal` では 14 ステップ目で 0.55 です。冒頭の図で 10〜14 ステップ目から下段の配置がほとんど変わらないのは、この辺りで大きな形が決まっているためだと考えられます。
+
+<br>
 
 <details>
 <summary>σ の列を NumPy で写したコード（lab/schedule.py の抜粋）</summary>
@@ -181,7 +191,7 @@ def karras(steps, rho=7.0):
     return np.append((hi + ramp * (lo - hi)) ** rho, 0.0)
 ```
 
-この値が ComfyUI 自身の `calculate_sigmas` と小数 4 桁まで一致することは、ComfyUI のコードを CPU で呼ぶ [lab/check_schedule_comfy.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/check_schedule_comfy.py) で確かめました。
+この値が ComfyUI 自身の `calculate_sigmas` と小数 4 桁まで一致することは、ComfyUI のコードを CPU で呼ぶ [lab/check_schedule_comfy.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/check_schedule_comfy.py) で確認しました。
 
 </details>
 
@@ -190,6 +200,8 @@ def karras(steps, rho=7.0):
 #### ステップ数を変える
 
 本記事の実験は、SDXL 系のチェックポイントで、1024 × 1024、seed を固定、CFG（後で説明する、プロンプトの効きの強さ）5.5、28 ステップを基準に描きました。ここからは、この基準から 1 つずつ値を変えて比べます。
+
+<br>
 
 <details>
 <summary>実験の条件（チェックポイント・プロンプト・環境）</summary>
@@ -200,6 +212,8 @@ def karras(steps, rho=7.0):
 - ComfyUI 0.35.0、PyTorch 2.12.0a0+rocm7.13、GPU は AMD Radeon 8060S（2026-11-11）。手順は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/README.txt)
 
 </details>
+
+<br>
 
 ステップ数は、この列の長さです。ステップ数を増やすと、同じ σ の範囲をより細かく刻みます。seed・プロンプト・サンプラー（euler）・スケジューラー（normal）を固定し、ステップ数だけを変えて生成しました。
 
@@ -213,6 +227,8 @@ def karras(steps, rho=7.0):
 8 ステップでも、灯台・雲・崖の配置は 28 ステップとほぼ同じでした。変わったのは崖の輪郭や波の形のような細部です（縮小した図では見えにくいですが、元の 1024 × 1024 の画像では、50 ステップで沖に小さな岩が増えています）。この実験では、ステップを増やしても絵が「より完成に近づく」わけではなく、同じ出発点のノイズからの道筋を細かく刻み直した結果、細部が少し違う絵になります。
 
 時間は、ステップ数にほぼ比例しました。UNet を呼ぶ回数がステップ数と同じだからです（後で説明する CFG があると、1 ステップで 2 つの予測を計算します）。
+
+<br>
 
 <details>
 <summary>全ての依頼の実行時間（lab/output_runs.txt）</summary>

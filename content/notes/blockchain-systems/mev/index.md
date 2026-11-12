@@ -130,6 +130,8 @@ def largest_front(victim_usdc, min_eth):
     return lo
 ```
 
+<br>
+
 <details>
 <summary>sandwich.py の全体</summary>
 
@@ -251,6 +253,8 @@ if __name__ == "__main__":
 ```
 
 </details>
+
+<br>
 
 以下が[実行結果](lab/output.txt)の前半です。`quote` は取引前の見積もり、`victim` は利用者、`attacker` は攻撃者です。
 

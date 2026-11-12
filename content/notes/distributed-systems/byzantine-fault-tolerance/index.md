@@ -80,13 +80,15 @@ PBFT はこの前提を置かず、遅延に上限が無くても安全性が崩
 
 ### 全数列挙での確認
 
-3 台では足りないことは、全ての組み合わせを列挙すると確かめられます。[ローカルで実行するコード](lab/bft_quorum.py)は Python の標準ライブラリだけで動きます。
+3 台では足りないことは、全ての組み合わせを列挙すると確認できます。[ローカルで実行するコード](lab/bft_quorum.py)は Python の標準ライブラリだけで動きます。
 
 前半の `quorum_intersection` は、quorum の全ての組と嘘つきの全ての選び方について、重なりに残る正直なノードの最小数を数えます。
 
 後半の `one_round` は、PBFT の最初の 2 段階だけの 1 ラウンドです。ノード 0 が値を提案する primary で、残りの backup は受け取った値を全員に伝え直します。各ノードは提案と伝え直された値を 1 票ずつ数え、quorum の台数分だけ同じ値が揃ったら、その値で prepared になるものとします。
 
 単純化として commit と View Change は含めず、メッセージは全て届くものとします。嘘つき 1 台が送り先ごとに commit・abort・沈黙を選ぶ全通りを試します。
+
+<br>
 
 <details><summary>bft_quorum.py の全体</summary>
 
@@ -169,6 +171,8 @@ if __name__ == "__main__":
 ```
 
 </details>
+
+<br>
 
 `python3 lab/bft_quorum.py` の[実行結果](lab/output.txt)は以下の通りです（Python 3.14 で実行）。
 

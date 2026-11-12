@@ -150,7 +150,7 @@ flowchart TD
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確かめられます。開発用モードは取引が届くとすぐブロックを作ります。
+上記の図の行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確認できます。開発用モードは取引が届くとすぐブロックを作ります。
 
 geth は、mempool を txpool と呼び、すぐ実行できる取引を pending、番号の欠けで待つ取引を queued と数えます。nonce 0 のアカウントから nonce 2・0・1 の順に送り、最後に nonce 0 の取引を流し直した結果が以下です。
 
@@ -203,11 +203,11 @@ flowchart LR
 
 上記の図の S' は各ノードが手元に保持します。
 
-全てのクライアントは execution payload の取引を実行し直し、得られた状態が `state_root` の示す状態と一致するかを[確かめます](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
+全てのクライアントは execution payload の取引を実行し直し、得られた状態が `state_root` の示す状態と一致するかを[確認します](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
 
 [Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入った取引の並びを代表する値を持っていました。Ethereum の execution layer では、取引の並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。
 
-全状態を持たない利用者は、このルートハッシュと [1 本の経路](../merkle-tree/)だけで、あるアカウントの残高を確かめられます。
+全状態を持たない利用者は、このルートハッシュと [1 本の経路](../merkle-tree/)だけで、あるアカウントの残高を確認できます。
 
 ---
 

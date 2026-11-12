@@ -105,6 +105,8 @@ dg = 1 - cos(ca[:, 768:], cb[:, 768:], dim=-1)
 
 中央のグラフで `aqua eyes` より後ろのトークンのうち、差が大きいのは直後の読点（CLIP ViT-L で 0.14）と `EOS`（ViT-bigG で 0.11）でした。このプロンプトに限れば、text encoder の中で `hair` の出力に混ざる色は小さいと言えます。ただし、読点や `EOS` に乗った色は、② で髪の位置から使われる可能性があります。
 
+<br>
+
 <details>
 <summary>実験 A の出力（aqua eyes, black hair の行）</summary>
 
@@ -125,6 +127,8 @@ dg = 1 - cos(ca[:, 768:], cb[:, 768:], dim=-1)
 ```
 
 </details>
+
+<br>
 
 ---
 
@@ -172,7 +176,9 @@ r["hair_aqua"] = hue_share(h, s, v, hair, "aqua")
 | 構図と解像度 | 上半身、1024 × 1024 | 全身の立ち絵、768 × 1344 |
 | ステップ数・[CFG](https://arxiv.org/abs/2207.12598)（プロンプトに従わせる強さ）・サンプラー | 28・5.5・euler_ancestral（[k-diffusion](https://github.com/crowsonkb/k-diffusion) 由来） | 同じ |
 
-人物は成人で、服を着た姿に限りました。体の部位を強調する語は書かず、打ち消しに `nude, cleavage` などを入れ、画風 LoRA の組では `child, loli` も入れています。生成した画像は全て目で確かめ、露出のある絵はありませんでした。プロンプトの全文は [lab/gen.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/attribute-binding/lab/gen.py) にあります。
+人物は成人で、服を着た姿に限りました。体の部位を強調する語は書かず、打ち消しに `nude, cleavage` などを入れ、画風 LoRA の組では `child, loli` も入れています。生成した画像は全て目で確認し、露出のある絵はありませんでした。プロンプトの全文は [lab/gen.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/attribute-binding/lab/gen.py) にあります。
+
+<br>
 
 <details>
 <summary>実行した環境</summary>
@@ -182,6 +188,8 @@ r["hair_aqua"] = hue_share(h, s, v, hair, "aqua")
 - 同じ seed で 2 回生成すると、1 画素も違わない画像になりました。GPU・ドライバ・PyTorch の版が違うと、同じ seed でも画素が一致するとは限りません。版の一覧は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/attribute-binding/lab/README.txt) にあります。
 
 </details>
+
+<br>
 
 ---
 
@@ -193,12 +201,16 @@ r["hair_aqua"] = hue_share(h, s, v, hair, "aqua")
 
 ComfyUI の [ConditioningConcat](https://github.com/Comfy-Org/ComfyUI/blob/19e1058f4c445ef74047e77a23f9ca7684c1e4b6/nodes.py#L134-L160) は、別々に text encoder に通した 2 つの出力をつなぎ、トークンの並びの方向に 1 本の列にするノードです。前半と後半は別々に通るので、`black hair` の出力に `aqua` は混ざりません。
 
+<br>
+
 <details>
 <summary>stable-diffusion-webui の BREAK との関係</summary>
 
 [stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) で `BREAK` と書くと、そこで [75 トークンの区切り](/notes/generative-ai/clip-token-limit/#77-トークンの区切り)を改めるので（[BREAK keyword](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features#break-keyword)）、効果は近いと考えられます。ComfyUI v0.35.0 の `CLIPTextEncode` は、`BREAK` を普通の語として読みます。
 
 </details>
+
+<br>
 
 以下は、髪の領域に占める青緑の画素の割合を 1 枚 1 点で描いたグラフです。横線は 12 枚の平均です。
 
@@ -244,7 +256,7 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 <div style="display:flex;gap:8px;justify-content:center;align-items:flex-end;margin:0 0 12px"><figure style="flex:0 1 320px;min-width:0;margin:0"><img src="images/attribute-binding_s_rep_none_1000_crop.webp" alt="目の色なしの顔の周りの等倍の切り抜き。茶色の目、白いシャツ、銀色の細い耳飾り" width="280" height="240" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">顔の周り（等倍）</figcaption></figure><figure style="flex:0 1 320px;min-width:0;margin:0"><img src="images/attribute-binding_s_rep_aqua_1000_crop.webp" alt="aqua eyes の顔の周りの等倍の切り抜き。青緑の目、水色のシャツ、青緑の雫形の耳飾り" width="280" height="240" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">顔の周り（等倍）</figcaption></figure></div>
 </div>
 
-`aqua eyes` を足した右の絵では、髪は黒のままですが、シャツが水色、スカートが白になり、耳飾りまで青緑です。シャツの水色は目の青緑が移ったと読めます。スカートの白は、シャツに書いた白がスカートへ移り、2 つの色が入れ替わったように見えます（理由は確かめていません）。
+`aqua eyes` を足した右の絵では、髪は黒のままですが、シャツが水色、スカートが白になり、耳飾りまで青緑です。シャツの水色は目の青緑が移ったと読めます。スカートの白は、シャツに書いた白がスカートへ移り、2 つの色が入れ替わったように見えます（理由は確認していません）。
 
 表の通り、髪を単色にする打ち消しは効き、髪に青緑が入ったのは 12 枚中 1 枚でした。一方で、青系のシャツ（5 枚）と白いスカート（5 枚）は、打ち消しを足す前（6 枚・4 枚）と同じくらい出ています。この条件では、髪への色移りは止まっても、服の色の取り違えは残りました。
 
@@ -289,7 +301,7 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 #### 対策が効きにくいケース
 
-実験で確かめた範囲ではありませんが、著者が立ち絵を作った経験では、次の場合に上記の書き方が効きにくくなりました。
+実験で確認した範囲ではありませんが、著者が立ち絵を作った経験では、次の場合に上記の書き方が効きにくくなりました。
 
 - 学習した画像で、2 つの属性がいつも一緒に描かれている組み合わせ（目の色と同じ色の髪の光沢など）
 - 画風 LoRA のように、特定の色や服の傾向を強く持つ差分を重ねている場合

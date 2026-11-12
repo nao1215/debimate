@@ -100,13 +100,13 @@ Osaka の時点で 18 個あり、追加された更新ごとに並べると以�
 
 Byzantium の 4 個のうち、modexp は大きな数のべき乗の剰余で、RSA の署名の検証などに使います。bn254（alt_bn128）の 3 個は、計算の中身を明かさずに正しさだけを示す証明（[zkSNARK](../zero-knowledge-proof/)）の検証に使われます（[EIP-196](https://eips.ethereum.org/EIPS/eip-196)、[EIP-197](https://eips.ethereum.org/EIPS/eip-197)）。Istanbul の blake2f は、ハッシュ関数 BLAKE2 の計算の一部です。
 
-Cancun の 0x0a（KZG 検証）は、[rollup](../rollup/) のためのものです。rollup は Ethereum の外で取引をまとめて処理し、そのデータを [blob](../blob/) という大きなデータの欄に載せます。以下は、その時に 0x0a が何を確かめるかを示した図です。
+Cancun の 0x0a（KZG 検証）は、[rollup](../rollup/) のためのものです。rollup は Ethereum の外で取引をまとめて処理し、そのデータを [blob](../blob/) という大きなデータの欄に載せます。以下は、その時に 0x0a が何を確認するかを示した図です。
 
-{{< figure src="images/evm-opcode-history_kzg.webp" alt="左の灰色の「blob を運ぶ取引」の中に、黄土色の blob（128 KiB、EVM からは読めない）と、versioned hash（commitment のハッシュ）。versioned hash から BLOBHASH の矢印で「rollup のコントラクト」へ、そこから青い「0x0a で検証（commitment が versioned hash と合うか、点 z で値 y か）」へ。下に「z・y・commitment・証明は、送る側が blob から計算して渡す」「確かめられるのは、その blob のその点の値」" caption="EVM から読めない blob を 0x0a で確かめる" align="center" >}}
+{{< figure src="images/evm-opcode-history_kzg.webp" alt="左の灰色の「blob を運ぶ取引」の中に、黄土色の blob（128 KiB、EVM からは読めない）と、versioned hash（commitment のハッシュ）。versioned hash から BLOBHASH の矢印で「rollup のコントラクト」へ、そこから青い「0x0a で検証（commitment が versioned hash と合うか、点 z で値 y か）」へ。下に「z・y・commitment・証明は、送る側が blob から計算して渡す」「確認できるのは、その blob のその点の値」" caption="EVM から読めない blob を 0x0a で確認する" align="center" >}}
 
 blob を運ぶ取引には、blob の本体と、blob を要約した値（commitment）のハッシュである versioned hash が入ります。EVM からは blob の本体を読めず、コントラクトが BLOBHASH 命令で読めるのは versioned hash だけです。
 
-そこで rollup のコントラクトは、取引を送る側が blob から計算した値（点 z・その点での値 y・commitment・証明）を受け取り、versioned hash と合わせて 0x0a に渡します。0x0a は KZG という方式の証明を使い、commitment が versioned hash と合うことと、blob の中身を多項式とみなした時に点 z で値 y を取ることを確かめます。確かめられるのは blob 全体ではなく、その blob のその点の値です。
+そこで rollup のコントラクトは、取引を送る側が blob から計算した値（点 z・その点での値 y・commitment・証明）を受け取り、versioned hash と合わせて 0x0a に渡します。0x0a は KZG という方式の証明を使い、commitment が versioned hash と合うことと、blob の中身を多項式とみなした時に点 z で値 y を取ることを確認します。確認できるのは blob 全体ではなく、その blob のその点の値です。
 
 Prague の 7 個は、PoS の投票の署名に使われる BLS12-381 という曲線の演算で、その署名をコントラクトの中でも検証できるようにするためのものです（[EIP-2537](https://eips.ethereum.org/EIPS/eip-2537)）。
 
@@ -197,7 +197,7 @@ Core の EIP はクライアントのコードを変え、全ノードが同時�
 
 EIP-1 では、ERC の分類の文書は「ERC-番号」、それ以外の分類（Core・Interface など）の文書は「EIP-番号」と呼びます。そのため、署名するデータの形を決める EIP-712 は「EIP」と呼ばれますが、分類は Core ではなく Interface で、フォークは要りません。逆に、「EIP-1271」と書かれることの多いコントラクトの署名の規格は、分類が ERC です。手数料の仕組みを変えた [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) は Core です。呼び名ではなく、文書の `category` を見る必要があります。
 
-また、EIP の文書には、どこまで確定したかを表す状態（status。Draft・Review・Final など）もあります。Final は文書が確定したことを表すだけで、Core の EIP が mainnet で有効になったことは、別に Meta EIP や更新の一覧で確かめます。
+また、EIP の文書には、どこまで確定したかを表す状態（status。Draft・Review・Final など）もあります。Final は文書が確定したことを表すだけで、Core の EIP が mainnet で有効になったことは、別に Meta EIP や更新の一覧で確認します。
 
 ---
 

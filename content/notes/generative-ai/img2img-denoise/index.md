@@ -19,7 +19,7 @@ denoise は「何割を描き直すか」の割合ではなく、ノイズを取
 
 <br>
 
-本記事では、画像生成の内部を知らないエンジニアに向けて、denoise の仕組みを説明します。ComfyUI のソースで denoise が開始の段に変わる所を確かめ、単純な図形の下絵から denoise を変えて描かせた結果を数値で比べます。扱う疑問は次の通りです。
+本記事では、画像生成の内部を知らないエンジニアに向けて、denoise の仕組みを説明します。ComfyUI のソースで denoise が開始の段に変わる所を確認し、単純な図形の下絵から denoise を変えて描かせた結果を数値で比べます。扱う疑問は次の通りです。
 
 - denoise を変えると、内部で何が変わるのか。
 - denoise を上げると、下絵の形と色はどの順に消えるのか。
@@ -71,6 +71,8 @@ Python の数値計算ライブラリ [NumPy](https://numpy.org/) で ComfyUI �
 
 {{< figure src="images/denoise_keep.svg" alt="横軸が denoise、縦軸が開始の段で下絵の潜在に掛かる係数の折れ線グラフ。0.3 で 0.776、0.6 で 0.402、0.86 で 0.138、1.0 で 0.068 と下がり、1.0 でも 0 にならない" caption="denoise ごとの、開始の段で下絵に掛かる係数（28 ステップ）" align="center" >}}
 
+<br>
+
 <details>
 <summary>schedule.py の出力（列の長さ・飛ばす段・開始の sigma・係数 keep）</summary>
 
@@ -90,7 +92,9 @@ denoise  long_schedule  skipped  sigma_start  keep(1/sqrt(1+s^2))
 
 </details>
 
-上記の図の通り、係数は denoise 0.86 でも 0.138、1.0 でも 0.068 です。係数が小さくても、下絵の大まかな明暗と色の配置は、最初の数ステップで画面の構図を決める時の手掛かりになると考えられます。この残り方が絵にどう出るかは、次の実験で確かめます。
+<br>
+
+上記の図の通り、係数は denoise 0.86 でも 0.138、1.0 でも 0.068 です。係数が小さくても、下絵の大まかな明暗と色の配置は、最初の数ステップで画面の構図を決める時の手掛かりになると考えられます。この残り方が絵にどう出るかは、次の実験で確認します。
 
 ステップ数の扱いは、ツールによって違います。ComfyUI（v0.35.0）は、denoise を下げても `steps` 回の除去を全部行うので、時間はほとんど変わりません。
 
@@ -106,7 +110,7 @@ denoise  long_schedule  skipped  sigma_start  keep(1/sqrt(1+s^2))
 
 ### 実験 1: 単純な下絵から denoise を変えて描く
 
-denoise を上げた分だけ絵が下絵から離れるのかを確かめるために、2026 年 11 月に、手元の ComfyUI（v0.35.0 のタグより後のコミット `19e1058`、GPU は AMD Radeon 8060S）の API に、下絵と denoise だけを変えたワークフローを 1 枚ずつ送りました。下絵は、[lab/make_sketches.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/make_sketches.py) で、Python の画像ライブラリ [Pillow](https://python-pillow.github.io/) を使って描いた静物の配置図です。壁と机の 2 色の上に、青い長方形（本）、赤い円（りんご）、黄色の楕円（レモン）を置きました。この下絵を 3 種類用意しています。
+denoise を上げた分だけ絵が下絵から離れるのかを確認するために、2026 年 11 月に、手元の ComfyUI（v0.35.0 のタグより後のコミット `19e1058`、GPU は AMD Radeon 8060S）の API に、下絵と denoise だけを変えたワークフローを 1 枚ずつ送りました。下絵は、[lab/make_sketches.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/make_sketches.py) で、Python の画像ライブラリ [Pillow](https://python-pillow.github.io/) を使って描いた静物の配置図です。壁と机の 2 色の上に、青い長方形（本）、赤い円（りんご）、黄色の楕円（レモン）を置きました。この下絵を 3 種類用意しています。
 
 | 名前 | 下絵 |
 |---|---|
@@ -212,6 +216,8 @@ denoise を 1.0 まで上げれば下絵から自由になる、と思うかも�
 
 {{< figure src="images/denoise_metrics.svg" alt="denoise ごとの SSIM・輪郭の一致・彩度。crisp の SSIM は 0.6 まで 0.96 以上で、0.75 で 0.70 に落ちる。blurred は 0.6 で 0.63。gray の彩度は 0.6 まで 5 以下で、0.75 で 20 に上がる" caption="下絵ごとの、denoise と 3 つの指標" align="center" >}}
 
+<br>
+
 <details>
 <summary>metrics.py の出力（全 21 枚と下絵なしの 1 枚。dE と flat を含む）</summary>
 
@@ -245,6 +251,8 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 ```
 
 </details>
+
+<br>
 
 出力には、ほかに 2 つの値も出しています。`dE` は、色の付いた下絵（blurred）と出力を 32 × 32 に縮めた時の色差（[CIEDE2000](https://scikit-image.org/docs/0.26.x/api/skimage.color.html#skimage.color.deltaE_ciede2000)）の平均で、gray から描いた絵も同じ色の配置と比べています。`flat` は、図形の内側の明るさの[標準偏差](/ml/math/stddev/)で、0 に近いほど平らな板です。
 
@@ -303,6 +311,8 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 
 {{< figure src="images/denoise_coins.svg" alt="条件ごとの金色の画素の割合の横棒グラフと、右に 1 枚目との SSIM。1 枚目 3.03%、0.3 で 2.16%（SSIM 0.850）、0.45 で 1.26%（0.740）、0.5 で 0.43%（0.689）、0.6 で 0.07%（0.611）、0.75 で 0.08%（0.406）。黄土色の 0.6 金貨ありは 1.86%（0.620）" caption="描き直しの条件ごとの金色の画素の割合と、1 枚目との SSIM" align="center" >}}
 
+<br>
+
 <details>
 <summary>coins_metrics.py の出力</summary>
 
@@ -319,13 +329,15 @@ coins_c_060  gold= 1.86%  ssim_vs_base=0.620
 
 </details>
 
+<br>
+
 金色の画素は、0.3 で 2.16%、0.45 で 1.26%、0.6 で 0.07% と減りました。一方で、金貨を書いた文面の 0.6 は 1.86% で、0.3 に近い値です。SSIM は 0.611 と 0.620 でほとんど同じなので、構図の崩れ方は同じで、金貨かどうかだけが文面で分かれています。
 
 <br>
 
 化ける理由は、仕組みの節の係数から次のように考えられます。0.6 の開始の段では、下絵の潜在に掛かる係数は 0.402 です。金貨のような小さなものが並ぶ所は、細かい明暗の模様としてしか残らず、ノイズと区別しにくくなるのだと考えられます。その模様を何として描くかは、残りの 28 ステップで、文面と周りの絵を手掛かりにモデルが選びます。
 
-文面に金貨が無ければ、宝箱と机に合いそうな別のもの（この実験では木の棒）が選ばれ、文面に書けば金貨に戻ります。この実験では 0.45 で既に化けていて、前述のキャラクターの絵の 0.6 より低い値でした。文面と絵が違うので、境目は絵ごとに確かめる必要があります。
+文面に金貨が無ければ、宝箱と机に合いそうな別のもの（この実験では木の棒）が選ばれ、文面に書けば金貨に戻ります。この実験では 0.45 で既に化けていて、前述のキャラクターの絵の 0.6 より低い値でした。文面と絵が違うので、境目は絵ごとに確認する必要があります。
 
 0.3 は 1 枚目との SSIM が 0.850 で、描き直す範囲も小さくなります。しかし、崩れた所や淡い塗りを直したい描き直しで denoise を下げると、直したい所も元のままになります。化けない値と、直したい所が直る値の間に、使える幅があるとは限りません。その場合は、化けるものを文面に書くか、描き直す範囲を inpaint で限ります。
 
@@ -341,7 +353,7 @@ denoise が低い 2 段目は、仕上げの軽い処理に見えるかもしれ
 
 時間と効果を測るために、成人の女性の全身（1 色の黒髪、白いブラウスまたは黒い服に白い袖口、ワイドパンツ、灰色の背景）を描きました。人物の例は、本記事の説明用に用意した独自の画風 LoRA を強さ 1.0 で当てています（[LoRA](/notes/generative-ai/lora/) は、学習済みモデルに画風の差分を足すファイルです）。
 
-1 段目は 768 × 1344 で 28 ステップ描き、lanczos で 1.5 倍（1152 × 2016）に拡大して、20 ステップ・denoise 0.45 で描き直しました。ネガティブには nsfw・nude・cleavage・child などを入れ、載せる絵は全て目で確かめています。文面と、候補から外した絵の枚数と理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/README.txt) にあります。
+1 段目は 768 × 1344 で 28 ステップ描き、lanczos で 1.5 倍（1152 × 2016）に拡大して、20 ステップ・denoise 0.45 で描き直しました。ネガティブには nsfw・nude・cleavage・child などを入れ、載せる絵は全て目で確認しています。文面と、候補から外した絵の枚数と理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/README.txt) にあります。
 
 | 依頼 | seed | 実行時間 | 送る直前の負荷 |
 |---|---|---|---|

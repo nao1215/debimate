@@ -201,7 +201,7 @@ flowchart LR
 
 厄介なのは実行するまで気付けない側で、型検査もビルドも通るため、誤りが表面化するのは拡張が動いた後になります。
 
-互換性を保って機能を追加するには、既存のインターフェースを変更せず、新しいメソッドを別のインターフェースで定義します。コアは、受け取った拡張が新しいインターフェースを満たすかを実行時に（Go なら型アサーションで）確かめ、満たす拡張にだけ新しい呼び出しを行います。Go の標準ライブラリでは、`http.ResponseWriter` に対する `http.Flusher` や `http.Pusher` がこの形です。
+互換性を保って機能を追加するには、既存のインターフェースを変更せず、新しいメソッドを別のインターフェースで定義します。コアは、受け取った拡張が新しいインターフェースを満たすかを実行時に（Go なら型アサーションで）確認し、満たす拡張にだけ新しい呼び出しを行います。Go の標準ライブラリでは、`http.ResponseWriter` に対する `http.Flusher` や `http.Pusher` がこの形です。
 
 拡張を別プロセスに分けても、公開した境界が API になる点は変わりません。互換を保つ対象が Go のインターフェースではなく、JSON や Protocol Buffers、RPC の呼び出し形式に移るだけです。フィールドを必須にする、意味を変えるといった変更が何を壊すかは、その形式の規約で決まります。
 
@@ -258,6 +258,8 @@ func (p *pipeExporter) Export(data []byte) error {
 
 {{< figure src="images/plugin-architecture_call_cost.svg" alt="1 回の呼び出しにかかる時間を対数軸で比べた棒グラフ。in-process はデータ量によらず 2 ns 前後、パイプは 7 から 28 マイクロ秒、net/rpc は 20 から 53 マイクロ秒で、別プロセスの呼び出しは 3 桁から 4 桁遅い" caption="1 回の呼び出しにかかる時間（9 回の中央値）" align="center" >}}
 
+<br>
+
 <details>
 <summary>計測の出力（ns per call、9 回の中央値。<a href="https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/plugin-architecture/lab/callcost_output.txt">callcost_output.txt</a>）</summary>
 
@@ -270,6 +272,8 @@ payload      in-process           pipe   net/rpc+unix
 ```
 
 </details>
+
+<br>
 
 別プロセスの呼び出しは、16 バイトでも in-process の約 3,000 倍かかりました。他の処理と同じマシンで測ったため値は実行ごとに 2 倍程度ぶれますが、桁の差は変わりません。
 

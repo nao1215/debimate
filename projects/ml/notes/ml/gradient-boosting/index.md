@@ -44,7 +44,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 <br>
 
-以下のコードは、この手順を 10 行ほどのループで書き、scikit-learn の `GradientBoostingRegressor` と同じ予測になるかを確かめます。
+以下のコードは、この手順を 10 行ほどのループで書き、scikit-learn の `GradientBoostingRegressor` と同じ予測になるかを確認します。
 
 ```python
 rng = np.random.default_rng(0)
@@ -323,7 +323,7 @@ for label, params in [("random_state=0", {"random_state": 0}), ("early_stopping=
 | `early_stopping=False` | 全ての行で学習し、毎回同じ | 全ての行で学習し、毎回同じ |
 | `random_state=0` だけ | 全ての行で学習し、毎回同じ | 10% を検証に回し、毎回同じ |
 
-学習の後には `n_iter_` を見て、`max_iter` の上限まで学習したのか、途中で止まったのかを確かめます。
+学習の後には `n_iter_` を見て、`max_iter` の上限まで学習したのか、途中で止まったのかを確認します。
 
 <br>
 
@@ -331,6 +331,6 @@ for label, params in [("random_state=0", {"random_state": 0}), ("early_stopping=
 
 列の前処理は、他のモデルより少なく済みます。`HistGradientBoostingClassifier` は欠損値をそのまま受け取れるので、[欠損値](../missing-values/)を補完する前に試せます。カテゴリの列の扱いは[カテゴリ変数のエンコーディング](../categorical-encoding/)で、日付の順に並ぶデータで前の時点の値を列として足す作り方は[時系列予測](../time-series-forecasting/)で扱っています。
 
-学習した後に、どの列が効いたかを見るなら[特徴量重要度](../feature-importance/)を使います。分類で出した確率をそのまま判断に使うなら、その確率が実際の割合と合っているかを[確率の校正](../probability-calibration/)で確かめます。
+学習した後に、どの列が効いたかを見るなら[特徴量重要度](../feature-importance/)を使います。分類で出した確率をそのまま判断に使うなら、その確率が実際の割合と合っているかを[確率の校正](../probability-calibration/)で確認します。
 
 同じ設定で 2 回学習してスコアが変わったら、冒頭の図のように、学習に渡した行数が 10,000 を超えていないかを最初に見てください。

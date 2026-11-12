@@ -225,6 +225,8 @@ def save(con, version, lines, check_version):
 
 {{< figure src="images/repository_lost_update.svg" alt="同じ注文を保存する処理の数を横軸にした 2 枚のグラフ。左は足した明細のうち消えた割合で、バージョンの検査が無いと 2 個で 22%、8 個で 67% が消え、検査があると常に 0%。右は検査がある時に明細 1 件あたりで起きた読み直しの回数で、8 個で約 1 回まで増える" caption="同時に保存する処理の数と、消えた明細・読み直しの回数" align="center" >}}
 
+<br>
+
 <details>
 <summary>件数の出力</summary>
 
@@ -239,6 +241,8 @@ def save(con, version, lines, check_version):
 ```
 
 </details>
+
+<br>
 
 処理が 2 つ重なるだけで、足した明細の 22% がエラーも無く消えました（no version check）。バージョンを検査すると（version check + retry）消える明細は 0 件になり、代わりに読み直しの回数が重なる処理の数とともに増えます。
 

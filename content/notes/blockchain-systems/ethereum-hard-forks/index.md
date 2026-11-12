@@ -38,7 +38,7 @@ topics: ["Smart Contract"]
 - 最新の solc でコンパイルしたコードは、どのチェーンでも動くのか。
 - 規則の更新は、誰がどのような手順で決めるのか。
 
-前半で答えを示し、後半では、フォークを固定したローカルのノードで同じバイトコードを実行して確かめます。ブロックの合意の仕組みだけを変える更新と、価格や投資の話は扱いません。
+前半で答えを示し、後半では、フォークを固定したローカルのノードで同じバイトコードを実行して確認します。ブロックの合意の仕組みだけを変える更新と、価格や投資の話は扱いません。
 
 ---
 
@@ -58,7 +58,7 @@ Paris は The Merge と呼ばれる更新で、ブロックを作る権利の決
 
 <br>
 
-各ノードはブロックの取引を自分で実行し、結果の状態がブロックに記録された値と合うかを確かめます。そのため、境目で切り替えなかったノードは、新しいブロックを受け入れられません。古い規則では PUSH0 は無効な命令なので、PUSH0 を使う取引を含むブロックは、取引の結果として変わる残高やストレージ（まとめて状態と呼びます）が古い規則での計算と合わず、無効なブロックと判定されるからです。
+各ノードはブロックの取引を自分で実行し、結果の状態がブロックに記録された値と合うかを確認します。そのため、境目で切り替えなかったノードは、新しいブロックを受け入れられません。古い規則では PUSH0 は無効な命令なので、PUSH0 を使う取引を含むブロックは、取引の結果として変わる残高やストレージ（まとめて状態と呼びます）が古い規則での計算と合わず、無効なブロックと判定されるからです。
 
 {{< figure src="images/ethereum-hard-forks_rules.webp" alt="左はソフトフォーク。灰色の「古い規則で有効」の枠の中に、青い「新しい規則で有効」の枠が収まっていて、古いノードも新しいブロックを受け入れ、ブロックの列は 1 本。右はハードフォーク。青い枠が灰色の枠からはみ出し、はみ出した所に PUSH0 がある。古いノードは新しいブロックを拒み、ブロックの列が黄土色の列に分かれる" caption="ソフトフォークとハードフォークの違い" align="center" >}}
 
@@ -175,7 +175,7 @@ Ethereum のアカウントには、秘密鍵で操作する通常のアカウ�
 
 一方で、Ethereum の上で動く L2（[Rollup](../rollup/) など、Ethereum に記録を預けて動く別のチェーン）や、EVM を採用した別のチェーンは、どのフォークの規則まで取り込むかを各自で決めます。[0.8.20 のリリースのお知らせ](https://soliditylang.org/blog/2023/05/10/solidity-0.8.20-release-announcement/)も、PUSH0 にまだ対応していない L2 などにデプロイする場合は、適切な EVM のバージョンを選ばないとデプロイが失敗すると注意しています。
 
-そのため、デプロイ先が対応しているフォークを確かめ、solc の `--evm-version`（standard JSON では `settings.evmVersion`）で指定します（[Solidity のドキュメント](https://docs.soliditylang.org/en/v0.8.28/using-the-compiler.html#setting-the-evm-version-to-target)）。
+そのため、デプロイ先が対応しているフォークを確認し、solc の `--evm-version`（standard JSON では `settings.evmVersion`）で指定します（[Solidity のドキュメント](https://docs.soliditylang.org/en/v0.8.28/using-the-compiler.html#setting-the-evm-version-to-target)）。
 
 <br>
 
@@ -196,7 +196,7 @@ Ethereum のアカウントには、秘密鍵で操作する通常のアカウ�
 
 ソースに、新しい命令でしか書けない機能を使った場合は、もっと早く気付けます。例えば、取引の終わりに消える保存領域（transient storage）の変数は、cancun より古い evmVersion を指定するとコンパイルの時点でエラーになります。一方で、同じ処理を古い命令でも書ける場合は、エラーにならずに使う命令だけが変わります。
 
-後の実験で、デプロイで失敗する場合、デプロイが通ってしまう場合、コンパイルでエラーになる場合の 3 つを確かめます。
+後の実験で、デプロイで失敗する場合、デプロイが通ってしまう場合、コンパイルでエラーになる場合の 3 つを確認します。
 
 ---
 
@@ -219,7 +219,7 @@ Ethereum には、規則の更新を決める管理者がいません。変更�
   body: 時刻を設定したクライアントを全ノードが入れ、その時刻で切り替える。
 {{< /note-steps >}}
 
-devnet で試すのは、Ethereum には実装の異なるクライアントが複数あるからです。同じブロックから同じ状態を計算できなければ、更新の時点でノードの間に分岐が起きます。mainnet の時刻は、通常は[テストネット](../mainnet-and-testnet/#ハードフォークはテストネットから)（本番と同じソフトウェアで動く試験用のネットワーク）で問題が出なかったことを確かめてから決めます。
+devnet で試すのは、Ethereum には実装の異なるクライアントが複数あるからです。同じブロックから同じ状態を計算できなければ、更新の時点でノードの間に分岐が起きます。mainnet の時刻は、通常は[テストネット](../mainnet-and-testnet/#ハードフォークはテストネットから)（本番と同じソフトウェアで動く試験用のネットワーク）で問題が出なかったことを確認してから決めます。
 
 <br>
 
@@ -238,9 +238,9 @@ Ethereum のノードは、取引を実行する実行層（execution layer）�
 
 ### フォークを切り替えた実験
 
-同じバイトコードを複数のフォークで実行して、ここまでの変更を確かめます。
+同じバイトコードを複数のフォークで実行して、ここまでの変更を確認します。
 
-開発用のローカルノードである [Foundry の Anvil](https://getfoundry.sh/anvil/overview) を 8 個起動し、`--hardfork` オプションで petersburg（EIP-1283 を外した Constantinople）から osaka までを 1 つずつ固定しました（The Merge の paris は、本記事で確かめる命令とガスに変化が無いので省いています）。
+開発用のローカルノードである [Foundry の Anvil](https://getfoundry.sh/anvil/overview) を 8 個起動し、`--hardfork` オプションで petersburg（EIP-1283 を外した Constantinople）から osaka までを 1 つずつ固定しました（The Merge の paris は、本記事で確認する命令とガスに変化が無いので省いています）。
 
 Anvil と solc の設定ではフォーク名を小文字で書くので、以下の図と出力も小文字です。
 
@@ -254,7 +254,7 @@ bash content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh
 
 #### 新しい命令
 
-確かめたのは、次の 5 つの命令です。
+確認したのは、次の 5 つの命令です。
 
 | 命令 | 何をするか | 追加された更新 |
 | --- | --- | --- |
@@ -264,7 +264,7 @@ bash content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh
 | MCOPY | メモリの中で値をコピーする | Cancun（[EIP-5656](https://eips.ethereum.org/EIPS/eip-5656)） |
 | CLZ | 先頭の 0 のビットを数える | Osaka（[EIP-7939](https://eips.ethereum.org/EIPS/eip-7939)） |
 
-各命令を初期化用コードとして並べ、宛先を付けずに [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-call)（ノードを操作する HTTP の API である JSON-RPC のメソッドの 1 つ）で送りました。宛先の無い `eth_call` は、[JSON-RPC の仕様](https://github.com/ethereum/execution-apis/blob/main/src/schemas/transaction.yaml)の通りコントラクトの作成を模擬して初期化用コードを実行し、結果を状態に保存しないので、取引を送らずに命令の可否を試せます。バイトコードは、命令を 1 つずつ確かめるために手で組み立てた学習用のもので、監査していません。
+各命令を初期化用コードとして並べ、宛先を付けずに [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-call)（ノードを操作する HTTP の API である JSON-RPC のメソッドの 1 つ）で送りました。宛先の無い `eth_call` は、[JSON-RPC の仕様](https://github.com/ethereum/execution-apis/blob/main/src/schemas/transaction.yaml)の通りコントラクトの作成を模擬して初期化用コードを実行し、結果を状態に保存しないので、取引を送らずに命令の可否を試せます。バイトコードは、命令を 1 つずつ確認するために手で組み立てた学習用のもので、監査していません。
 
 {{< figure src="images/ethereum-hard-forks_opcodes.webp" alt="行がフォーク（petersburg から osaka）、列が BASEFEE・PUSH0・TSTORE・MCOPY・CLZ と SLOAD のガスの 1 回目・2 回目。BASEFEE は london から、PUSH0 は shanghai から、TSTORE と MCOPY は cancun から、CLZ は osaka から「動く」で、それより前は「失敗」。SLOAD は petersburg で 200 / 200、istanbul で 800 / 800、berlin 以降は 2100 / 100" caption="同じバイトコードを 8 つのフォークで実行した結果" align="center" >}}
 
@@ -297,6 +297,8 @@ raw = rpc(fork, 'eth_call', {'data': '0x' + SLOAD_TWICE}, 'latest')[2:]
 g0, g1, g2 = (int(raw[i:i + 64], 16) for i in range(0, 192, 64))
 lines.append(f'{fork:<10} | {g0 - g1 - 7:>9} | {g1 - g2 - 7:>9}')
 ```
+
+<br>
 
 <details>
 <summary>probe.py の全体（transfer・SELFDESTRUCT・evmVersion の検査を含む）</summary>
@@ -475,6 +477,8 @@ print(summary, end='')
 
 </details>
 
+<br>
+
 <details>
 <summary>命令の可否と SLOAD のガスの出力</summary>
 
@@ -521,6 +525,8 @@ osaka      |      2100 |       100
 
 petersburg で成功した送金が、同じバイトコードのまま istanbul 以降で失敗しました。SLOAD の値上げで、3 回の読み出しが 2300 ガスに収まらなくなったからです。Berlin 以降は、3 つのスロットを access list に書くと warm になり、送金が再び成功しました。access list の先払いは取引の開始時に送り主が払うので、`transfer` が渡す 2300 ガスの枠からは引かれず、枠の中の SLOAD は warm の 100 × 3 = 300 ガスで済みます。
 
+<br>
+
 <details>
 <summary>transfer の出力（status の 1 は成功、0 は失敗）</summary>
 
@@ -566,6 +572,8 @@ cancun     | 0x33ff      | 0x33ff     | 0
 
 transient storage の変数を書いた [Guard.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/Guard.sol) は、shanghai を指定するとコンパイルの時点でエラーになり、cancun では通りました。
 
+<br>
+
 <details>
 <summary>evmVersion を変えたコンパイルの出力（deploy の 1 は成功、0 は失敗）</summary>
 
@@ -580,6 +588,8 @@ Guard.sol (transient) with cancun: compiled
 ```
 
 </details>
+
+<br>
 
 ---
 
@@ -610,8 +620,8 @@ Glamsterdam の Meta EIP の [EIP-7773](https://github.com/ethereum/EIPs/blob/f1
 | [EIP-7954](https://eips.ethereum.org/EIPS/eip-7954) | コントラクトのコードの上限を 24,576 バイトから 65,536 バイトに拡大 |
 | [EIP-7928](https://eips.ethereum.org/EIPS/eip-7928) | ブロックの中の取引が読み書きした状態の一覧（Block-Level Access Lists）をブロックに付ける |
 
-内容と時期は Meta EIP の更新で変わります。その後の変更は、Meta EIP と [execution-specs の更新履歴](https://github.com/ethereum/execution-specs/blob/873ecb3e982ad4311a91cea5aaf2bbb83d306db1/docs/specs/protocol_history.md)で確かめてください。
+内容と時期は Meta EIP の更新で変わります。その後の変更は、Meta EIP と [execution-specs の更新履歴](https://github.com/ethereum/execution-specs/blob/873ecb3e982ad4311a91cea5aaf2bbb83d306db1/docs/specs/protocol_history.md)で確認してください。
 
 <br>
 
-ガスの値は、ノードの負荷に合わせて今後も見直される対象です。コントラクトの中で特定のガスの値を前提にした分岐や上限を書くと、その前提はハードフォーク 1 回で崩れます。デプロイ先が対応するフォークを確かめて evmVersion を指定し、ガスの値を固定値として扱わないことが、規則が変わり続けるチェーンでコードを長く動かす前提になります。
+ガスの値は、ノードの負荷に合わせて今後も見直される対象です。コントラクトの中で特定のガスの値を前提にした分岐や上限を書くと、その前提はハードフォーク 1 回で崩れます。デプロイ先が対応するフォークを確認して evmVersion を指定し、ガスの値を固定値として扱わないことが、規則が変わり続けるチェーンでコードを長く動かす前提になります。

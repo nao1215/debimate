@@ -91,7 +91,7 @@ validator が参加をやめる（退出する）手続きは、一度に処理�
 
 ### 更新はテストネットから順に
 
-全てのノードが同じ時刻に規則を切り替える更新（ハードフォーク）は、テストネットで先に有効にし、問題が無いことを確かめてからメインネットの時刻を決めます。手順は [Ethereum Hard Forks](../ethereum-hard-forks/) で説明しています。以下は、2025 年の 2 回の更新が各ネットワークで有効になった日（UTC）です。
+全てのノードが同じ時刻に規則を切り替える更新（ハードフォーク）は、テストネットで先に有効にし、問題が無いことを確認してからメインネットの時刻を決めます。手順は [Ethereum Hard Forks](../ethereum-hard-forks/) で説明しています。以下は、2025 年の 2 回の更新が各ネットワークで有効になった日（UTC）です。
 
 {{< figure src="images/testnet-history_activation.webp" alt="縦に Holesky・Sepolia・Hoodi・メインネットの 4 行、横に 2025 年の時間。Pectra は Holesky 02-24、Sepolia 03-05、Hoodi 03-26、メインネット 05-07。Fusaka は Holesky 10-01、Sepolia 10-14、Hoodi 10-28、メインネット 12-03。どちらも上の行から下の行へ順に右へずれる" caption="Pectra と Fusaka が有効になった日（2025 年、UTC）" align="center" >}}
 

@@ -178,7 +178,7 @@ sequenceDiagram
 
 予約を先に保存すれば、保存の完了を待つ間も番号を使えます。予約した範囲を使い切っても保存が終わっていなければ、完了するまで新しい nonce の発行を止めます。番号が飛ぶことは問題になりませんが、同じ番号を 2 度使うことは問題になります。順序を逆にして使ってから保存すると、保存が間に合わなかった分は必ずもう一度使われます。
 
-保存の順序で生じる差をシミュレーションで確かめます。1 つの鍵で 1,000 万通を送り、平均 1 万通に 1 回（seed、つまり乱数の生成器に最初に与える値を固定して決めた間隔）プロセスが落ちるとします。
+保存の順序で生じる差をシミュレーションで確認します。1 つの鍵で 1,000 万通を送り、平均 1 万通に 1 回（seed、つまり乱数の生成器に最初に与える値を固定して決めた間隔）プロセスが落ちるとします。
 
 使ってから m 本ごとに保存する場合、落ちた時点で最後の保存より後の番号は、再起動後にもう一度使われます。比較として、96 bit と 192 bit（[XChaCha20-Poly1305](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha) などが使う長い nonce）の乱数の nonce で重なる組の期待値も、同じ通数で計算しました（抜粋。全体は [lab/counter_restart.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/nonce/lab/counter_restart.py)）。
 
@@ -197,6 +197,8 @@ for stop in events:                      # 次に落ちるまで送り続ける
     counter = saved                      # 落ちて、保存値から再開する
 ```
 
+<br>
+
 <details>
 <summary>lab/counter_restart.py の出力</summary>
 
@@ -214,6 +216,8 @@ random 192-bit (expected)        8.0e-51     8.0e-49     8.0e-47     8.0e-45
 
 </details>
 
+<br>
+
 以下は、この出力のうち 96 bit の乱数と、2 つの間隔で使ってから保存するカウンタを描いたグラフです。
 
 {{< figure src="images/nonce_counter_restart.webp" alt="送った通数を横軸、再利用した鍵と nonce の組の数を縦軸にした両対数のグラフ。使ってから保存するカウンタは最初に落ちた時点から重複が出て、1,000 万通で 10 本ごとの保存は 4,488 組、1,000 本ごとの保存は約 51 万組に達する。予約を先に保存するカウンタは常に 0 で、96 bit の乱数の期待値は 1,000 万通でも 10 の -15 乗を下回る" caption="再起動をまたいで再利用した鍵と nonce の組の数" align="center" >}}
@@ -226,7 +230,7 @@ random 192-bit (expected)        8.0e-51     8.0e-49     8.0e-47     8.0e-45
 
 カウンタの状態を安全に保存できない場合、nonce を乱数で作る選択肢があります。ただし、カウンタは手順で重複を排除しますが、乱数では衝突の確率が残るので、鍵あたりの発行回数と、許容する確率を管理します。
 
-乱数で作る時に確かめるのは、nonce の長さに対して何本発行すると衝突の確率がどこまで上がるかです。
+乱数で作る時に確認するのは、nonce の長さに対して何本発行すると衝突の確率がどこまで上がるかです。
 
 具体的な上限は [NIST SP 800-38D](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38d.pdf) にあります。この文書は GCM の nonce を IV と呼び、96 bit の IV を乱数から作る構成について、その鍵を使う全ての暗号化主体を合わせた呼び出しを 2^32 回以下に収めることを求めています。2^32 本を発行した時点で 96 bit の値のどれか 2 本が重なる確率は、2^-33 程度です（計算は [Random Number](../random-number/) のノート）。
 
@@ -361,6 +365,6 @@ AES-GCM の鍵ストリームは鍵と nonce だけから決まるので、nonce
 
 RFC 8452 は Internet Standards Track の仕様ではなく、IRTF（Internet Research Task Force）の研究グループである CFRG（Crypto Forum Research Group）の consensus として公開された Informational RFC です。
 
-その §9 は、同じ nonce を繰り返す回数に応じて鍵あたりのメッセージ数と 1 通の平文の大きさに上限を置き、実装がタグを確かめる前の平文を外に出すことを MUST NOT で禁じています。
+その §9 は、同じ nonce を繰り返す回数に応じて鍵あたりのメッセージ数と 1 通の平文の大きさに上限を置き、実装がタグを確認する前の平文を外に出すことを MUST NOT で禁じています。
 
 再利用に耐える方式に移しても、nonce を毎回変える設計は残ります。§9 は nonce をランダムに生成することを RECOMMENDED とし、固定の nonce を方針として使うことは勧めていません。同じ nonce を使い続ければ、同じ入力を 2 度送ったことが観測者に見え続けるからです。

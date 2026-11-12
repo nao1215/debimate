@@ -206,7 +206,9 @@ Pickhardt 氏らの 2021 年の論文「[Security and Privacy of Lightning Netwo
 
 #### 支払い額と成功率のシミュレーション
 
-分割の効き方はローカルの [Python](https://www.python.org/) で確かめます。200 ノードのグラフの各チャネルに容量と内訳を乱数で割り当て、同じ支払いを分割せずに送った場合と、2・4・8 等分した場合を比べます。送り手は容量だけを見て経路を選び、残高の足りない区間で失敗したら、その区間を外して試し直します。コードは [lab/simulate.py](lab/simulate.py) で、全体を以下に畳みました。
+分割の効き方はローカルの [Python](https://www.python.org/) で確認します。200 ノードのグラフの各チャネルに容量と内訳を乱数で割り当て、同じ支払いを分割せずに送った場合と、2・4・8 等分した場合を比べます。送り手は容量だけを見て経路を選び、残高の足りない区間で失敗したら、その区間を外して試し直します。コードは [lab/simulate.py](lab/simulate.py) で、全体を以下に畳みました。
+
+<br>
 
 <details>
 <summary>simulate.py の全体（94 行）</summary>
@@ -309,6 +311,8 @@ out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": boun
 ```
 
 </details>
+
+<br>
 
 以下は、実行結果の成功率（success rate）を支払い額（payment amount）ごとに並べたグラフです。破線の `endpoint_bound`（凡例の endpoint balance bound）は、送り手の手元の残高の合計と、受取人側の受け取りの余地の合計が、どちらも支払い額以上だった割合です。
 

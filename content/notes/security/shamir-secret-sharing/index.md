@@ -159,7 +159,7 @@ k-1 個では、Secret の候補ごとに条件を満たす多項式を 1 本ず
 
 <br>
 
-x 座標が 0 でないことも、有限体の中で確かめます。セキュリティ監査の会社 Trail of Bits が 2021 年 12 月に[公表した脆弱性](https://blog.trailofbits.com/2021/12/21/disclosing-shamirs-secret-sharing-vulnerabilities-and-announcing-zkdocs/)は、各参加者が自分の多項式で dealer を務め合う、[閾値署名](/notes/blockchain-systems/multisig/)の鍵生成処理で見つかりました。1 人の dealer が 1 つの Secret を分ける構成とは異なります。
+x 座標が 0 でないことも、有限体の中で確認します。セキュリティ監査の会社 Trail of Bits が 2021 年 12 月に[公表した脆弱性](https://blog.trailofbits.com/2021/12/21/disclosing-shamirs-secret-sharing-vulnerabilities-and-announcing-zkdocs/)は、各参加者が自分の多項式で dealer を務め合う、[閾値署名](/notes/blockchain-systems/multisig/)の鍵生成処理で見つかりました。1 人の dealer が 1 つの Secret を分ける構成とは異なります。
 
 暗号資産取引所 Binance の tss-lib などは、参加者が自分で選べる ID を x 座標に使い、0 かどうかを整数のまま判定していました。13 を法とする例で、x=13 の扱いを描くと次のようになります。
 
@@ -193,9 +193,9 @@ SSS が保証する範囲は、正しく生成された異なる Share の個数
   - 復元後の Secret の消去
 {{< /note-panels >}}
 
-Share 保持者が誰なのかを確かめる処理は [Authentication](../authentication/) です。Share の配布先は Authorization（認可）や配布ポリシーで決め、配送経路と保存場所は別に保護します。
+Share 保持者が誰なのかを確認する処理は [Authentication](../authentication/) です。Share の配布先は Authorization（認可）や配布ポリシーで決め、配送経路と保存場所は別に保護します。
 
-SSS には Share の改竄検出も含まれません。書き換えられた Share が混ざると別の値が Secret として復元され、復元処理だけではそれが誤りだと分かりません。値を置き換えられる経路があるなら、各 Share が正しいかを確かめられる検証可能秘密分散などを別に検討します。復元時には Secret が 1 か所のメモリに現れ、その端末も攻撃対象になります。
+SSS には Share の改竄検出も含まれません。書き換えられた Share が混ざると別の値が Secret として復元され、復元処理だけではそれが誤りだと分かりません。値を置き換えられる経路があるなら、各 Share が正しいかを確認できる検証可能秘密分散などを別に検討します。復元時には Secret が 1 か所のメモリに現れ、その端末も攻撃対象になります。
 
 ---
 
@@ -269,7 +269,7 @@ invalid input: x must be nonzero and distinct modulo 13
 
 変更したのは最後の Share の y 座標だけです。「k 個の点からの復元」で求めた重みは `3, 10, 1` なので、その y 座標を 1 増やすと、復元結果も 1 増えます。変更後の 3 点にも 2 次以下の多項式は存在するため、補間の計算はエラーになりません。
 
-末尾の 2 行は、Share の個数不足と x 座標の重複をサンプルが拒否した結果です。この入力検査は、正しい形をした偽の Share を見抜く検査にはなりません。Share の真正性を確かめる仕組みは別に必要です。Share を検証する拡張は、[ZKDocs の Feldman 方式の解説](https://www.zkdocs.com/docs/zkdocs/protocol-primitives/verifiable-secret-sharing/)で説明されています。
+末尾の 2 行は、Share の個数不足と x 座標の重複をサンプルが拒否した結果です。この入力検査は、正しい形をした偽の Share を見抜く検査にはなりません。Share の真正性を確認する仕組みは別に必要です。Share を検証する拡張は、[ZKDocs の Feldman 方式の解説](https://www.zkdocs.com/docs/zkdocs/protocol-primitives/verifiable-secret-sharing/)で説明されています。
 
 ---
 

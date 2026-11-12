@@ -14,7 +14,7 @@ topics: ["Mathematics（数学の基礎）"]
 
 <br>
 
-本記事では、KDE の式を 1 点ずつのカーネルの和として確かめた後、バンド幅の選び方、クラスごとの分布の比較、適さないケースを説明します。コードは図の計算部分です。描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/kde_gen.py)も保存しています。
+本記事では、KDE の式を 1 点ずつのカーネルの和として確認した後、バンド幅の選び方、クラスごとの分布の比較、適さないケースを説明します。コードは図の計算部分です。描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/kde_gen.py)も保存しています。
 
 ---
 

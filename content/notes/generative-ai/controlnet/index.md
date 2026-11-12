@@ -118,7 +118,7 @@ end_percent  sigma_end  active_steps  (start_percent=0)
 
 ### 実験の条件
 
-骨格と奥行きで縛れるものの違いを確かめるために、2026 年 11 月 11 日に、同じ姿勢から作った骨格と奥行きを渡して描き比べました。条件の画像を手で描くと、骨格と奥行きで姿勢がずれます。そこで、3D の人形に姿勢を付け、同じカメラから両方を書き出しました。
+骨格と奥行きで縛れるものの違いを確認するために、2026 年 11 月 11 日に、同じ姿勢から作った骨格と奥行きを渡して描き比べました。条件の画像を手で描くと、骨格と奥行きで姿勢がずれます。そこで、3D の人形に姿勢を付け、同じカメラから両方を書き出しました。
 
 人形は、3D の制作ツール [Blender](https://www.blender.org/) 4.5 と、人体と骨組みを作るアドオン [MPFB](https://extensions.blender.org/add-ons/mpfb/) 2.0.18 で作った成人男性の体です。手足は、手先と足先の行き先を置くと肘と膝の曲がりが決まる IK（Inverse Kinematics）で動かし、右手に長さ 1.5 m の棒を持たせました。服の厚みの分だけ、体の表面を少し膨らませています。
 
@@ -249,13 +249,15 @@ if control:
 
 ### 関節の位置を数える
 
-目で見た「揃った」を確かめるために、[lab/pose_metrics.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/pose_metrics.py) で絵から姿勢を検出し、人形の関節とのずれを数えました。検出には、[ONNX](https://onnx.ai/) 形式の姿勢推定モデルを動かす [rtmlib](https://github.com/Tau-J/rtmlib) 0.0.13 を使っています。人物の検出は、イラストなどの描かれた人物を含む [Human-Art](https://github.com/IDEA-Research/HumanArt) で学習した [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)-x、関節の推定は [RTMPose](https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose)-x です。
+目で見た「揃った」を確認するために、[lab/pose_metrics.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/pose_metrics.py) で絵から姿勢を検出し、人形の関節とのずれを数えました。検出には、[ONNX](https://onnx.ai/) 形式の姿勢推定モデルを動かす [rtmlib](https://github.com/Tau-J/rtmlib) 0.0.13 を使っています。人物の検出は、イラストなどの描かれた人物を含む [Human-Art](https://github.com/IDEA-Research/HumanArt) で学習した [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)-x、関節の推定は [RTMPose](https://github.com/open-mmlab/mmpose/tree/main/projects/rtmpose)-x です。
 
 比べたのは肩・肘・手首・腰・膝・足首の 12 点です。ずれは、2 点の距離を人形の背丈（首から両足首の中点まで）で割った % で、左右の取り違えは問いません。棒の向きは、この 12 点には入っていません。
 
 検出器自体も、横や後ろから見た腕を見落とします。そこで、人形の奥行きの画像そのものも同じ方法で数え、目安にしました。以下のグラフの破線が、その値です。
 
 {{< figure src="images/controlnet_error.svg" alt="姿勢ごとの腕と脚の関節のずれについて、文面だけ（灰）・骨格（青）・奥行き（黄土）の棒で並べたグラフ。突きの文面だけは腕 57%、脚 45% と大きい。骨格の突きの腕は 25% で、奥行きの 14% と人形そのものの 15% より大きい。脚は骨格も奥行きも 2〜8.4% に収まる" caption="条件ごとの関節のずれ（棒は 2 つの seed の平均、点は各 seed）" align="center" >}}
+
+<br>
 
 <details>
 <summary>pose_metrics.py の出力（実験 1〜3 の 32 枚と、人形の奥行きの画像そのもの *_mannequin の 3 枚）</summary>
@@ -300,6 +302,8 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 ```
 
 </details>
+
+<br>
 
 脚のずれは、骨格でも奥行きでも 2.0〜8.4% に収まりました。文面だけの突きの 38〜52% と比べると、どちらも脚の位置を十分に縛っています。
 

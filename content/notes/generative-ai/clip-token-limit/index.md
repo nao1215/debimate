@@ -78,7 +78,7 @@ ComfyUI v0.35.0 の区切り方は、[tokenize_with_weights()](https://github.co
 
 前のトークンだけを見る作りなので、最後の位置は枠の全てのトークンを見ていて、文章全体のまとめになります。区切りの図の右の pooled（枠 1 の E の位置）がこれで、絵全体に効きます。2 つ目の枠の語は、pooled には入りません。
 
-一方で、UNet の cross-attention は 154 トークンの全てを参照します。そのため、後ろの枠の語も無視されるわけではありません。どれだけ効きが落ちるかは、画像で確かめるしかありません。
+一方で、UNet の cross-attention は 154 トークンの全てを参照します。そのため、後ろの枠の語も無視されるわけではありません。どれだけ効きが落ちるかは、画像で確認するしかありません。
 
 ---
 
@@ -106,7 +106,7 @@ ComfyUI v0.35.0 の区切り方は、[tokenize_with_weights()](https://github.co
 
 {{< figure src="images/clip-token-limit_position_map.webp" alt="149 トークンが枠 1 の 75 トークンと枠 2 の 74 トークンに分かれ、赤い印で 4 か所を示す。front は枠 1 の先頭近く、chunk1_end は枠 1 の末尾、chunk2_start は枠 2 の先頭、chunk2_end は枠 2 の末尾" caption="red background を入れた 4 か所" align="center" >}}
 
-プロンプトのどこで区切られるかは、上記の区切り方を写した [token_chunks.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/prompt-weighting/lab/token_chunks.py) で確かめられます。以下は、2 つ目の枠の先頭に入れた時の区切りを表示した結果です（各枠の 2 行目以降は、トークンを文字に戻したもの）。
+プロンプトのどこで区切られるかは、上記の区切り方を写した [token_chunks.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/prompt-weighting/lab/token_chunks.py) で確認できます。以下は、2 つ目の枠の先頭に入れた時の区切りを表示した結果です（各枠の 2 行目以降は、トークンを文字に戻したもの）。
 
 ```text
 chunk 1: 75 tokens, weights [1.0]
@@ -199,6 +199,8 @@ pooled に入らない 2 つ目の枠の語も、トークンごとの参照だ�
 
 原因を探す時に比べるのは、画素の差ではなく、困っている症状の指標です。赤い画素の割合（2 seed の平均）は、全部の語で 3.8% のところ、`red apple` を外した時だけ 0.6% に下がり、他の 7 通りは 3.0〜5.1% でした。黄色い画素も、`lemons` を外した時に 4.9% から 1.3% に下がります。
 
+<br>
+
 <details>
 <summary>表の抜粋（2 seed の平均）と補足</summary>
 
@@ -218,6 +220,8 @@ no_potted_plant  0.030   0.031  0.002   40.6
 
 </details>
 
+<br>
+
 ---
 
 ### 後ろの語が効かない時に疑うこと
@@ -226,6 +230,6 @@ no_potted_plant  0.030   0.031  0.002   40.6
 
 1 つ目は、道具が上限を超えた語を捨てている場合です。区切って読む ComfyUI と違い、77 トークンで切り捨てる道具もあります。例えば [diffusers](https://github.com/huggingface/diffusers)（Hugging Face の拡散モデルのライブラリ）の SDXL のパイプラインは、77 トークンを超えた分を切り捨て、警告を出します（[pipeline_stable_diffusion_xl.py](https://github.com/huggingface/diffusers/blob/v0.31.0/src/diffusers/pipelines/stable_diffusion_xl/pipeline_stable_diffusion_xl.py#L388-L408)、v0.31.0）。
 
-2 つ目は、後ろの語が他の語と競合している場合です。この時は、実験 2 のように同じ seed で 1 語ずつ外し、困っている症状の指標で比べると、原因の語を絞れます。実験 2 は区切りの無い短いプロンプトで試したので、長いプロンプトの後ろの語でも同じように絞れるかは、本記事では確かめていません。
+2 つ目は、後ろの語が他の語と競合している場合です。この時は、実験 2 のように同じ seed で 1 語ずつ外し、困っている症状の指標で比べると、原因の語を絞れます。実験 2 は区切りの無い短いプロンプトで試したので、長いプロンプトの後ろの語でも同じように絞れるかは、本記事では確認していません。
 
-まとめると、ComfyUI では 75 トークンの区切りの後ろの語も効きます。後ろの語が効かないと感じたら、区切りより先に、切り捨てと競合を疑います。どちらも、同じ seed で 1 か所ずつ変えて比べれば確かめられます。
+まとめると、ComfyUI では 75 トークンの区切りの後ろの語も効きます。後ろの語が効かないと感じたら、区切りより先に、切り捨てと競合を疑います。どちらも、同じ seed で 1 か所ずつ変えて比べれば確認できます。

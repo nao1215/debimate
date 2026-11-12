@@ -26,11 +26,11 @@ ERC は、Ethereum の改善提案 [EIP](https://eips.ethereum.org/EIPS/eip-1)�
 本記事では、ERC-20 との違いを軸に、ERC-721 の所有・移転・承認の仕組みを説明します。
 
 - 数量ではなく番号で所有を記録すると、何が変わるのか。
-- 受け取れない相手に送ると何が起きるのか。`safeTransferFrom` は何を確かめるのか。
+- 受け取れない相手に送ると何が起きるのか。`safeTransferFrom` は何を確認するのか。
 - `approve` と `setApprovalForAll` は、それぞれ誰に何を許すのか。
 - NFT の画像や説明は、どこに保存されているのか。
 
-後半では、ローカルのチェーンに学習用の NFT をデプロイし、上記の 4 つを実行結果で確かめます。最後に、受け手の確認で引っかかりやすい場面と、ERC-1155 という別の規格との違いを扱います。価格や取引所の手数料、著作権の扱いは説明しません。
+後半では、ローカルのチェーンに学習用の NFT をデプロイし、上記の 4 つを実行結果で確認します。最後に、受け手の確認で引っかかりやすい場面と、ERC-1155 という別の規格との違いを扱います。価格や取引所の手数料、著作権の扱いは説明しません。
 
 ---
 
@@ -48,7 +48,7 @@ ERC-20 と並べると、主な違いは以下の通りです。
 | 所有の照会 | `balanceOf(owner)` で数量 | `ownerOf(tokenId)` で所有者 |
 | 本人の送金 | `transfer(to, amount)` | 専用の関数は無く、`transferFrom` などを本人が呼ぶ |
 | 第三者への許可 | `approve(spender, amount)` で数量 | `approve` で 1 つ、`setApprovalForAll` で全部 |
-| 受け手の確認 | 規格に無い | `safeTransferFrom` が受け手のコントラクトを確かめる |
+| 受け手の確認 | 規格に無い | `safeTransferFrom` が受け手のコントラクトを確認する |
 
 新しい NFT を作る発行（mint）と、消す焼却（burn）の関数は、ERC-20 と同じく規格に含まれていません。関数の名前や呼べる人は実装が決め、規格はその通知の仕方だけを決めています（後述のイベントの節）。
 
@@ -58,11 +58,11 @@ ERC-20 と並べると、主な違いは以下の通りです。
 
 ERC-721 で NFT を移す関数は、`transferFrom` と、引数の数が違う 2 つの `safeTransferFrom` です。ERC-20 の `transfer` に相当する本人専用の関数は無く、所有者も `transferFrom(自分, 宛先, tokenId)` を呼びます。引数が 4 つの `safeTransferFrom` は、宛先に渡す任意のバイト列 `data` を足したものです。
 
-`transferFrom` は、呼び出し元が所有者か、所有者から許可を受けた相手（後述の承認の節）であれば、宛先を確かめずに所有者を書き換えます。仕様のコメントには、次の注意があります。
+`transferFrom` は、呼び出し元が所有者か、所有者から許可を受けた相手（後述の承認の節）であれば、宛先を確認せずに所有者を書き換えます。仕様のコメントには、次の注意があります。
 
 > THE CALLER IS RESPONSIBLE TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE THEY MAY BE PERMANENTLY LOST
 
-（宛先が NFT を受け取れることを確かめる責任は呼び出し側にあり、確かめなければ NFT が永久に失われ得る）
+（宛先が NFT を受け取れることを確認する責任は呼び出し側にあり、確認しなければ NFT が永久に失われ得る）
 
 <br>
 
@@ -123,7 +123,7 @@ function safeTransferFrom(address from, address to, uint256 tokenId, bytes memor
 }
 ```
 
-`onERC721Received` が確かめるのは、宛先が「受け取る」と答えたことだけです。受け取った NFT を後で送り出す関数を宛先が持っているかは、宛先のコードを読まないと分かりません。また、移転の途中で宛先のコードを実行させるので、宛先が同じコントラクトの関数を呼び直す[再入](../reentrancy/)の入口にもなります。
+`onERC721Received` が確認するのは、宛先が「受け取る」と答えたことだけです。受け取った NFT を後で送り出す関数を宛先が持っているかは、宛先のコードを読まないと分かりません。また、移転の途中で宛先のコードを実行させるので、宛先が同じコントラクトの関数を呼び直す[再入](../reentrancy/)の入口にもなります。
 
 コードの長さで判定することには、EOA 宛てでも失敗する場面があります。これは実験の後の「委任した EOA 宛ての失敗」で扱います。
 
@@ -251,7 +251,7 @@ IPFS の場合は、[IPFS の NFT データのベストプラクティス](https
 
 実験は次の 4 つです。
 
-1. alice に #1〜#3 を発行し、`ownerOf` と `supportsInterface` を確かめる。
+1. alice に #1〜#3 を発行し、`ownerOf` と `supportsInterface` を確認する。
 2. `Counter` と `StudyReceiver` に、`safeTransferFrom` と `transferFrom` で送る。
 3. #4〜#6 を追加で発行しながら、`approve` と `setApprovalForAll` で carol と bob に許可を出して動かさせ、最後に取り消す。
 4. サーバーの上と `setBaseURI` で、#2 の JSON を書き換える。
@@ -274,6 +274,8 @@ step('setApprovalForAll(bob, true)', alice, 'setApprovalForAll(address,bool)', b
 step('mint #5 to alice (after the approval)', alice, 'mint(address,uint256)', alice, 5, ok=1)
 step('bob moves #5', bob, 'transferFrom(address,address,uint256)', alice, bob, 5, ok=1)
 ```
+
+<br>
 
 <details>
 <summary>run.py の全体（ノードと HTTP サーバーの起動・デプロイ・4 つの実験・後始末、270 行）</summary>
@@ -553,6 +555,8 @@ if __name__ == '__main__':
 
 </details>
 
+<br>
+
 <details>
 <summary>StudyNFT.sol と Receivers.sol の全体</summary>
 
@@ -723,6 +727,8 @@ contract StudyReceiver {
 
 </details>
 
+<br>
+
 再現用のファイルは [lab/README.txt](lab/README.txt) にまとめています。`anvil`、[`cast`](https://getfoundry.sh/cast/overview)、`solc` を PATH に置き、次のように実行します。
 
 ```bash
@@ -808,7 +814,7 @@ dave code after EIP-7702 delegation to Counter: 0xef0100e7f1725e7734ce288f8367e1
 safeTransferFrom #1 -> dave (delegated): Error: server returned an error response: error code 3: execution reverted: receiver rejected
 ```
 
-委任する前は確認を飛ばして呼び出しが通り（`0x` は戻り値が空という意味です）、委任した後は同じ EOA 宛てが `receiver rejected` で revert しました。委任先を選ぶ時は、NFT を受け取るなら `onERC721Received` を実装しているかも確かめる必要があります。
+委任する前は確認を飛ばして呼び出しが通り（`0x` は戻り値が空という意味です）、委任した後は同じ EOA 宛てが `receiver rejected` で revert しました。委任先を選ぶ時は、NFT を受け取るなら `onERC721Received` を実装しているかも確認する必要があります。
 
 ---
 
@@ -835,4 +841,4 @@ ERC-721 が揃えるのは、所有の照会、移転、許可、通知、機能
 
 一方で、規格に含まれない部分はコントラクトごとに異なります。発行できる人、URI を変えられる人、移転を止める機能などです。規格は移転と受け取りの関数について、必ず失敗させる（MUST throw。Solidity の今の書き方では revert）条件だけを定めており、それ以外の場面で失敗させることは実装に任せています。ERC-721 に対応していることは、画像が残り続けることも、発行者が URI を変えないことも保証しません。
 
-利用者が確かめることは、ERC-20 と同じく 2 つです。送る時は宛先が受け取れるか、許可する時は相手が誰で、どこまで許すかです。特に `setApprovalForAll` は、そのコレクションの NFT 全部を相手に渡す許可として読む必要があります。サイトとの接続を解除しても許可が残ることと、承認する前の確かめ方は、[Wallet のノート](../wallet/#鍵の保護と誤承認への対策)で扱っています。
+利用者が確認することは、ERC-20 と同じく 2 つです。送る時は宛先が受け取れるか、許可する時は相手が誰で、どこまで許すかです。特に `setApprovalForAll` は、そのコレクションの NFT 全部を相手に渡す許可として読む必要があります。サイトとの接続を解除しても許可が残ることと、承認する前の確かめ方は、[Wallet のノート](../wallet/#鍵の保護と誤承認への対策)で扱っています。

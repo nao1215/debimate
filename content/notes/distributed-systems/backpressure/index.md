@@ -65,6 +65,8 @@ else:
     await queue.put(item)  # unbounded は即座に返る。block は空くまで待つ
 ```
 
+<br>
+
 <details>
 <summary>queue_experiment.py の全体</summary>
 
@@ -156,6 +158,8 @@ main()
 
 </details>
 
+<br>
+
 Python 3.14.4 で実行した結果です。ローカルのタイマー精度に左右されるので、数値は実行のたびに少し変わります。
 
 ```text
@@ -245,7 +249,7 @@ sequenceDiagram
 
 TCP も同じ構造です。[RFC 9293](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6) では、受信側が各セグメントで受け取れるシーケンス番号の範囲（受信ウィンドウ）を広告し、送信側はその範囲に収まるように送ります。アプリケーションが受信バッファを読まなければウィンドウは 0 まで縮み、送信側は止まります。
 
-ちなみに [RFC 9293 の 3.8.6.1](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6.1) は、受信側がウィンドウを閉じたまま無期限に待つ場面として、RFC 1122 にある「プリンタの紙切れ」の例を引いています。紙が補充されるまで、送信側は窓が開いたかを確かめる小さなセグメント（zero-window probe）を定期的に送りながら接続を保ちます。
+ちなみに [RFC 9293 の 3.8.6.1](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6.1) は、受信側がウィンドウを閉じたまま無期限に待つ場面として、RFC 1122 にある「プリンタの紙切れ」の例を引いています。紙が補充されるまで、送信側は窓が開いたかを確認する小さなセグメント（zero-window probe）を定期的に送りながら接続を保ちます。
 
 [HTTP/2](https://www.rfc-editor.org/rfc/rfc9113#section-5.2) は、1 本の TCP 接続に複数のストリームを載せるので、ストリームごとと接続全体の 2 段でウィンドウを持ちます。初期値はどちらも 65,535 バイトで、対象は DATA フレームだけです。受信側は処理した分を `WINDOW_UPDATE` フレームで返し、送信側の枠を広げます。
 

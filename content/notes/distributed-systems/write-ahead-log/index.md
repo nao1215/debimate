@@ -152,6 +152,8 @@ func appendBatch(f *os.File, next *uint64, n int, data []byte) {
 }
 ```
 
+<br>
+
 <details>
 <summary>計測の出力（各値は 3 回の中央値）</summary>
 
@@ -173,6 +175,8 @@ batch  latency_p50_ms  latency_p99_ms
 ```
 
 </details>
+
+<br>
 
 以下は、上記の出力を描いた図です。
 

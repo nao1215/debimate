@@ -14,7 +14,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 <br>
 
-本記事では、scikit-learn の [`DecisionTreeClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) を使って次の疑問を確かめます。
+本記事では、scikit-learn の [`DecisionTreeClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html) を使って次の疑問を確認します。
 
 - 各ノードで、どの特徴量・閾値をどう選んでいるのか
 - Gini 不純度とエントロピーで、選ばれる分割は変わるのか
@@ -161,7 +161,7 @@ plot_tree(clf3, feature_names=["x1", "x2"], class_names=["class 0", "class 1"],
 
 例えば根ノードは `x2 <= 0.203` で、前節の手計算と同じ分割です。`x2 > 0.203` かつ `x1 <= 2.198` かつ `x2 > 0.976` の葉には 76 点が落ち、そのうち 75 点が class 1 です。新しいサンプルの予測は「x2 が 0.203 より大きく、x1 が 2.198 以下で、x2 が 0.976 より大きいので class 1」のように文章で説明できます。
 
-ただし、深さ 10 の木は葉が 35 個あり、全ての経路を人が読むのは現実的ではありません。説明に使うなら、読める深さで精度が足りるかを交差検証で確かめます。
+ただし、深さ 10 の木は葉が 35 個あり、全ての経路を人が読むのは現実的ではありません。説明に使うなら、読める深さで精度が足りるかを交差検証で確認します。
 
 ---
 
@@ -222,6 +222,6 @@ depth=None 葉=20  学習=1.000  CV=0.972
 - 滑らかな回帰・外挿: 予測は区分定数なので滑らかな関数は苦手で、学習データの範囲外では端の葉の値を返し続ける。傾向を伸ばす予測には[線形回帰](../linear-regression/)などを検討する
 - カテゴリ変数: [scikit-learn の決定木](https://scikit-learn.org/stable/modules/tree.html)はカテゴリ変数を直接扱えないので、[エンコーディング](../categorical-encoding/)が必要（LightGBM や CatBoost は内部で扱える）
 - [相関](/ml/math/correlation/)の強い特徴量: どちらで分けても同程度なら片方だけが選ばれ、もう片方の重要度が低く見える
-- 不純度ベースの重要度: 値の種類が多い特徴量ほど分割候補が多く、重要度が高く出やすい。[permutation importance](https://scikit-learn.org/stable/modules/permutation_importance.html) でも確かめる
+- 不純度ベースの重要度: 値の種類が多い特徴量ほど分割候補が多く、重要度が高く出やすい。[permutation importance](https://scikit-learn.org/stable/modules/permutation_importance.html) でも確認する
 
 図の生成コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/decision-tree_gen.py) にあります。

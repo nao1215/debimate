@@ -11,7 +11,7 @@ topics: ["Scaling"]
 
 blob は、Ethereum の取引に添付できる 128 KiB のデータの塊です。2024 年 3 月の Ethereum の更新（Cancun）で、仕様の変更提案（EIP、Ethereum Improvement Proposal）の 1 つである [EIP-4844](https://eips.ethereum.org/EIPS/eip-4844) によって入りました。
 
-blob の主な利用者は rollup です。[Rollup](../rollup/) は Ethereum の外のチェーン（L2）で取引を実行し、結果が正しいかを誰でも確かめられるように、取引のデータを Ethereum（L1）に公開します。以前は、このデータを L1 の取引の data 欄（calldata）に入れていました。blob は、このデータを calldata より安く置くための欄です。以下は、2 つの置き場所で、データが残る期間を比べた図です。
+blob の主な利用者は rollup です。[Rollup](../rollup/) は Ethereum の外のチェーン（L2）で取引を実行し、結果が正しいかを誰でも確認できるように、取引のデータを Ethereum（L1）に公開します。以前は、このデータを L1 の取引の data 欄（calldata）に入れていました。blob は、このデータを calldata より安く置くための欄です。以下は、2 つの置き場所で、データが残る期間を比べた図です。
 
 {{< figure src="images/blob_concept.webp" alt="横軸は取引が入ったブロックからの日数（0〜24 日）。上段の calldata（取引の data 欄）は灰色の棒が右端まで続き、「消す期限は無い　実行中は EVM から読める」「実行と同じ gas で払う」。下段の blob（取引に添付）は青い棒が約 18 日で終わり、その先は点線の「消える」。「中身は読めない」「blob 用の gas で別に払う」" caption="calldata と blob の違い" align="center" >}}
 
@@ -23,23 +23,23 @@ rollup が必要とするのは、不正に異議を申し立てられる期間�
 
 <br>
 
-本記事では、blob の中身をコントラクトがどう確かめるか、blob がいつまで残るか、blob の手数料がどう決まるか、batch（rollup が L1 に提出する取引のまとめ）に詰める件数で 1 件あたりのコストがどう変わるかを説明します。
+本記事では、blob の中身をコントラクトがどう確認するか、blob がいつまで残るか、blob の手数料がどう決まるか、batch（rollup が L1 に提出する取引のまとめ）に詰める件数で 1 件あたりのコストがどう変わるかを説明します。
 
 ---
 
 ### blob の中身の確かめ方
 
-rollup は batch の取引データを blob に置き、L1 上の rollup のコントラクトには、どの blob にデータを置いたかを記録します。後で batch の中身を争う時には、コントラクトが「この blob のこの部分の値はこれである」と確かめる必要があります。しかし、コントラクトは blob の中身を読めません。そこで、blob を要約した短い値を使います。
+rollup は batch の取引データを blob に置き、L1 上の rollup のコントラクトには、どの blob にデータを置いたかを記録します。後で batch の中身を争う時には、コントラクトが「この blob のこの部分の値はこれである」と確認する必要があります。しかし、コントラクトは blob の中身を読めません。そこで、blob を要約した短い値を使います。
 
 blob は 32 バイトの要素 4096 個、合わせて 131,072 バイト（128 KiB）です。送る側は、blob から commitment（blob 全体を 48 バイトに要約した値）を計算し、そのハッシュである versioned hash（バージョン付きハッシュ）を取引に書きます。blob の本体は取引に添えてノードに渡しますが、ブロックの中の取引に残るのは versioned hash だけで、本体は後述の合意層のノードの間で配られます。
 
-rollup のコントラクトが参照するのは、この versioned hash です。以下の図の「blob を運ぶ取引」は、ノードに渡す時の、本体を添えた形です。図は、[EVM Opcode History](../evm-opcode-history/#プリコンパイル) で使った、確かめる流れを示しています。
+rollup のコントラクトが参照するのは、この versioned hash です。以下の図の「blob を運ぶ取引」は、ノードに渡す時の、本体を添えた形です。図は、[EVM Opcode History](../evm-opcode-history/#プリコンパイル) で使った、確認する流れを示しています。
 
-{{< figure src="/notes/blockchain-systems/evm-opcode-history/images/evm-opcode-history_kzg.webp" alt="左の灰色の「blob を運ぶ取引」の中に、黄土色の blob（128 KiB、EVM からは読めない）と、versioned hash（commitment のハッシュ）。versioned hash から BLOBHASH の矢印で「rollup のコントラクト」へ、そこから青い「0x0a で検証（commitment が versioned hash と合うか、点 z で値 y か）」へ。下に「z・y・commitment・証明は、送る側が blob から計算して渡す」「確かめられるのは、その blob のその点の値」" caption="EVM から読めない blob を 0x0a で確かめる（EVM Opcode History の図の再掲）" align="center" >}}
+{{< figure src="/notes/blockchain-systems/evm-opcode-history/images/evm-opcode-history_kzg.webp" alt="左の灰色の「blob を運ぶ取引」の中に、黄土色の blob（128 KiB、EVM からは読めない）と、versioned hash（commitment のハッシュ）。versioned hash から BLOBHASH の矢印で「rollup のコントラクト」へ、そこから青い「0x0a で検証（commitment が versioned hash と合うか、点 z で値 y か）」へ。下に「z・y・commitment・証明は、送る側が blob から計算して渡す」「確認できるのは、その blob のその点の値」" caption="EVM から読めない blob を 0x0a で確認する（EVM Opcode History の図の再掲）" align="center" >}}
 
 コントラクトは、blob を運ぶ取引の実行中に BLOBHASH 命令でその取引の versioned hash を読み、記録しておきます。次に、送る側が blob から計算した値（点 z・その点での値 y・commitment・証明）を 0x0a に渡します。0x0a は、Ethereum に組み込まれた検証処理（プリコンパイル）の 1 つです。
 
-blob の 4096 個の要素は、ある多項式の 4096 点での値とみなせます。0x0a は [KZG](https://dankradfeist.de/ethereum/2020/06/16/kate-polynomial-commitments.html) という方式の証明を使い、commitment が versioned hash と合うことと、blob の中身を多項式とみなした時に点 z で値 y を取ることを確かめます。確かめられるのは blob 全体ではなく、その blob のその点の値です。
+blob の 4096 個の要素は、ある多項式の 4096 点での値とみなせます。0x0a は [KZG](https://dankradfeist.de/ethereum/2020/06/16/kate-polynomial-commitments.html) という方式の証明を使い、commitment が versioned hash と合うことと、blob の中身を多項式とみなした時に点 z で値 y を取ることを確認します。確認できるのは blob 全体ではなく、その blob のその点の値です。
 
 ---
 
@@ -102,6 +102,8 @@ def per_tx(n):
 {{< figure src="images/blob_batch_cost.webp" alt="両対数の折れ線グラフ。横軸は 1 つの batch に入れる L2 の取引の件数、縦軸は L2 の取引 1 件あたりの L1 の gas。青い blob gas は 1 件の 131,072 から件数に反比例して下がり、blob が 1 個埋まる 873 件で約 150 に達した後は、blob が増えるたびに跳ねながら 150 前後に留まる。赤い execution gas は 21,000 から件数に反比例して下がり続ける" caption="batch の件数と、取引 1 件あたりの L1 の gas" align="center" >}}
 
 blob が 1 個埋まる 873 件までは、1 件あたりの blob gas が件数に反比例して下がり、その先は 1 バイトあたり 1 blob gas、つまり 1 件 150 前後で下げ止まります（実際の符号化では 1 個に詰められる量が少し減るため、件数も少し減ります）。874 件目で 2 個目の blob が要り、一時的に 300 に跳ねます。1 個単位の課金のため、件数が少ない batch ほど 1 件あたりの負担が重くなります。
+
+<br>
 
 <details>
 <summary>件数ごとの値（グラフの元）</summary>

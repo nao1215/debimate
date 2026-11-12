@@ -372,6 +372,8 @@ for i in range(N):
 
 {{< figure src="images/domain-event_redelivery.svg" alt="コミットと完了の通知の間で落ちる確率を横軸、余分に引き当てた在庫の個数を縦軸にしたグラフ。処理済みの記録が無い線は確率に比例して増え、10% で 1,139 個、20% で 2,502 個になる。記録がある線は全ての確率で 0 個" caption="落ちる確率と、余分に引き当てた在庫の個数（シミュレーション）" align="center" >}}
 
+<br>
+
 <details>
 <summary>redelivery.py の出力（配送の回数と、余分に引き当てた個数）</summary>
 
@@ -387,6 +389,8 @@ crash rate deliveries | over-reserved units | over-reserved units
 ```
 
 </details>
+
+<br>
 
 記録が無いと（no processed record）、再配送の回数だけ在庫が余分に減り、10% では在庫が -1,139 個になりました。処理済みの記録がある時は、配送の回数が同じでも余分な引き当ては 0 個です。
 

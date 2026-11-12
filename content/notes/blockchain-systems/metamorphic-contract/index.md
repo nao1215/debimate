@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-Ethereum の[スマートコントラクト](../smart-contract/)（チェーン上で動くプログラム。以下、コントラクト）には、一度置いたコードを書き換える命令がありません。そのため、利用者は、あるアドレスのコードを読んだり監査の結果を確かめたりしてから、そのアドレスに資産を預けたり権限を与えたりします。後からコードが変わらないことが前提です。
+Ethereum の[スマートコントラクト](../smart-contract/)（チェーン上で動くプログラム。以下、コントラクト）には、一度置いたコードを書き換える命令がありません。そのため、利用者は、あるアドレスのコードを読んだり監査の結果を確認したりしてから、そのアドレスに資産を預けたり権限を与えたりします。後からコードが変わらないことが前提です。
 
 metamorphic contract は、この前提を崩す手法です。コントラクトを消す命令 `SELFDESTRUCT` で消してから作り直し、同じアドレスに別のコードを置きます。2024 年 3 月の Ethereum の仕様の更新（Cancun）より前は、この手法が使えました。
 
@@ -69,13 +69,13 @@ V1 と V2 の initcode は違いますが、手順 2 と 5 の `CREATE` の材�
 
 2024 年 3 月 13 日の Cancun で有効になった [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780)（EIP は Ethereum の仕様変更の提案）により、`SELFDESTRUCT` でアカウントが消えるのは、コントラクトを作ったのと同じ取引の中で呼んだ場合だけになりました。別の取引で呼ばれた `SELFDESTRUCT` は残高を送るだけで、コードも nonce も消しません。
 
-そのため、手順 3 の後も Deployer は残り、手順 4 の `CREATE2` は、消えずに残った Deployer に当たって失敗します。仕様の更新ごとの `SELFDESTRUCT` の違いは、[Ethereum Hard Forks](../ethereum-hard-forks/#selfdestruct-の意味) でも確かめています。
+そのため、手順 3 の後も Deployer は残り、手順 4 の `CREATE2` は、消えずに残った Deployer に当たって失敗します。仕様の更新ごとの `SELFDESTRUCT` の違いは、[Ethereum Hard Forks](../ethereum-hard-forks/#selfdestruct-の意味) でも確認しています。
 
 ---
 
 ### ローカルでの比較
 
-Cancun の前後で、手順 1〜5 の結果が変わるかを確かめました。チェーンには、開発用に PC の中だけで動く Ethereum のノード [Anvil](https://getfoundry.sh/anvil/overview/) を使います。Anvil は、`--hardfork` の指定で、どの仕様の更新までの規則で動くかを選べます。環境と、アドレスを計算する Python のコードは [Ethereum Address の実験](../ethereum-address/#ローカルでの計算と照合)と共通です。
+Cancun の前後で、手順 1〜5 の結果が変わるかを確認しました。チェーンには、開発用に PC の中だけで動く Ethereum のノード [Anvil](https://getfoundry.sh/anvil/overview/) を使います。Anvil は、`--hardfork` の指定で、どの仕様の更新までの規則で動くかを選べます。環境と、アドレスを計算する Python のコードは [Ethereum Address の実験](../ethereum-address/#ローカルでの計算と照合)と共通です。
 
 以下は、実験に使ったコントラクト（[Address.sol](../ethereum-address/lab/Address.sol)）の抜粋です。学習用に書いたもので監査しておらず、`kill()` には誰でも呼べるという問題があります。
 
@@ -166,6 +166,6 @@ Shanghai では、`SELFDESTRUCT` の後に V1 も Deployer も 0 バイトにな
 
 ### Cancun 以降に残る仕組み
 
-Cancun 以降も、同じ取引の中で作って消したアドレスには、後の取引で別のコードを作れます。しかし、そのコードは 1 つの取引の中にしか無かったので、取引をまたいで誰かが確かめたコードが差し替わることはありません。
+Cancun 以降も、同じ取引の中で作って消したアドレスには、後の取引で別のコードを作れます。しかし、そのコードは 1 つの取引の中にしか無かったので、取引をまたいで誰かが確認したコードが差し替わることはありません。
 
-ただし、コードが変わらなくても振る舞いが変わる仕組みは残っています。処理を担うコントラクト（実装）の参照先を記憶領域に持つ[プロキシ](../upgradeable-proxy/)は、参照先を差し替えると別の処理を行います。また、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で EOA（秘密鍵で操作するアカウント）がコードの実行を任せた委任先も、後から書き換えられます（[Ethereum Account Model](../ethereum-account-model/)）。アドレスのコードを確かめる時は、そのコードが別のアドレスの何に処理を任せているかまで見る必要があります。
+ただし、コードが変わらなくても振る舞いが変わる仕組みは残っています。処理を担うコントラクト（実装）の参照先を記憶領域に持つ[プロキシ](../upgradeable-proxy/)は、参照先を差し替えると別の処理を行います。また、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で EOA（秘密鍵で操作するアカウント）がコードの実行を任せた委任先も、後から書き換えられます（[Ethereum Account Model](../ethereum-account-model/)）。アドレスのコードを確認する時は、そのコードが別のアドレスの何に処理を任せているかまで見る必要があります。

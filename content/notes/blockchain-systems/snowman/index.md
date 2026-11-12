@@ -34,7 +34,7 @@ Snowman は票を数えません。各ノードは、無作為に選んだ少数
 - 「確率的な確定」とは、何の確率なのか。
 - 全員と通信する方式と比べて、通信量はどれだけ違うのか。
 
-Snowman には、元になった 2019 年の論文の方式、それを確かめる本記事の実験、Avalanche のノードの実装（avalanchego というソフトウェア）という 3 つの層があります。本記事の軸は論文の方式で、実験と実装は以下の節に分けています。
+Snowman には、元になった 2019 年の論文の方式、それを確認する本記事の実験、Avalanche のノードの実装（avalanchego というソフトウェア）という 3 つの層があります。本記事の軸は論文の方式で、実験と実装は以下の節に分けています。
 
 {{< note-panels caption="各節が、論文の方式・本記事の実験・実装のどれを扱うか。" >}}
 - title: 論文の方式（主軸）
@@ -80,7 +80,7 @@ Snowman の土台は、2019 年に公開された論文 [Scalable and Probabilis
 
 <br>
 
-この様子は、本記事の Python のシミュレーションでも確かめられます。論文の方式の節ですが、ここだけ先に実験の結果を借ります。全てのノードが同時に 1 回ずつ問い合わせる単位が、ラウンドです（モデルの詳細は「シミュレーションで見る k・α・β」の節）。
+この様子は、本記事の Python のシミュレーションでも確認できます。論文の方式の節ですが、ここだけ先に実験の結果を借ります。全てのノードが同時に 1 回ずつ問い合わせる単位が、ラウンドです（モデルの詳細は「シミュレーションで見る k・α・β」の節）。
 
 以下は、500 台のノードが半々に割れた状態から Slush を 60 ラウンド動かし、青を支持する正しいノードの割合を追った結果です。乱数の種（seed）を 1〜5 に変えた 5 回分を重ねています（[生成コード](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/snowman/figures.py)）。
 
@@ -201,6 +201,8 @@ conf[active[~ok]] = 0                      # 失敗したら連続の回数を 0
 done = win[conf[win] >= beta]              # β 回続いたら確定
 decided[done] = last[done]
 ```
+
+<br>
 
 <details>
 <summary>snow_sim.py の全体（Slush・Snowflake・Snowball と集計、186 行）</summary>
@@ -396,6 +398,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 以下が実験 1（agree）の実行結果です。実験 2〜6 は下に畳み、全ての出力と README は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/blockchain-systems/snowman/lab) に置いています。出力の `== 1.` などの番号が実験の番号です。
 
 `rounds` は全員が確定した試行のラウンド数の中央値、`red` は赤を確定した正しいノードがいた試行の数、`splits` は正しいノードが赤と青の両方を確定した試行の数です。`unfinished` は、全員が確定しないまま打ち切った試行の数で、5000 ラウンドに達するか、1000 ラウンド続けて誰も確定しなかった時に打ち切ります。`msgs/node` は、正しいノード 1 台あたりのメッセージ数の中央値です。
@@ -409,6 +413,8 @@ byz  red  rounds splits unfinished msgs/node
 0.25    0      -      0        100    189191
 0.30    0      -      0        100     40000
 ```
+
+<br>
 
 <details>
 <summary>実験 2〜6 の出力（β・α・ノード数を変えた結果）</summary>

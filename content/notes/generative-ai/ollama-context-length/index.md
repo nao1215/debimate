@@ -21,7 +21,7 @@ num_ctx は、Ollama が KV キャッシュのために用意する枠の数で�
 
 <br>
 
-本記事では、Ollama 0.22.1（2026 年 11 月）で num_ctx がどう決まり、メモリと入力にどう効くかを手元の実験で確かめます。
+本記事では、Ollama 0.22.1（2026 年 11 月）で num_ctx がどう決まり、メモリと入力にどう効くかを手元の実験で確認します。
 
 - num_ctx を指定しない時に、どの長さで読み込まれるか。
 - 読み込んだモデルのメモリのうち、どれだけが KV キャッシュか。
@@ -43,6 +43,8 @@ num_ctx を指定しない時の既定値は、2026 年 11 月時点の Ollama �
 | 48 GiB 以上 | 256k（262,144） |
 
 ただし、既定値がモデルの上限（モデルが扱えるように作られた最大のコンテキスト長）より大きい時は、上限で頭打ちになります。
+
+<br>
 
 <details>
 <summary>FAQ との食い違いと、0.22.1 のコード</summary>
@@ -93,6 +95,8 @@ for ctx in (2048, 8192):
     r = generate(MODEL, PROMPT, num_ctx=ctx, num_predict=32)
 ```
 
+<br>
+
 <details>
 <summary>exp_truncate.py の全体</summary>
 
@@ -141,6 +145,8 @@ json.dump(rows, open(sys.argv[1] if len(sys.argv) > 1 else "truncate.json", "w")
 
 </details>
 
+<br>
+
 以下が実行結果です（`ps` の行は省略。全体は [output_truncate.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/kv-cache/lab/output_truncate.txt)）。
 
 ```text
@@ -156,7 +162,7 @@ num_ctx 8,192 では、同じ入力で `BLUE-FALCON-42` と答えました。以
 
 {{< figure src="images/ollama-context-length_truncate.webp" alt="3,084 トークンの入力を表す横長の帯。左端の細い青は先頭の 4 トークン（keep=4）で残る。続く点線の白い部分は捨てる 1,036 トークンで、その左寄りに合言葉の文がある。右の青い部分は残す 2,044 トークンで、右端に最後の質問がある。下に、モデルに届くのは計 2,048 トークン（new=2048）、エラーは返らない" caption="num_ctx 2,048 で 3,084 トークンの入力を切り詰めた範囲" align="center" >}}
 
-入力 3,084 トークンのうち、先頭の 4 トークン（`keep=4`。中身は確かめていません）を残して、その後ろの 1,036 トークンが捨てられます（[runner.go](https://github.com/ollama/ollama/blob/v0.22.1/runner/ollamarunner/runner.go#L154-L188)）。モデルに届いたトークン列は確かめていませんが、ログの数とこの切り詰め方から、先頭の文にある合言葉は捨てた範囲に入ったと考えられます。最後の質問は残っているので、モデルは合言葉を知らないまま答えています。
+入力 3,084 トークンのうち、先頭の 4 トークン（`keep=4`。中身は確認していません）を残して、その後ろの 1,036 トークンが捨てられます（[runner.go](https://github.com/ollama/ollama/blob/v0.22.1/runner/ollamarunner/runner.go#L154-L188)）。モデルに届いたトークン列は確認していませんが、ログの数とこの切り詰め方から、先頭の文にある合言葉は捨てた範囲に入ったと考えられます。最後の質問は残っているので、モデルは合言葉を知らないまま答えています。
 
 API の応答で気付ける手がかりは、`prompt_eval_count`（モデルに届いた入力のトークン数。切り詰めた後の数）が num_ctx と同じ 2,048 になっていることだけです。ただし、これは疑うきっかけで、確かな判定ではありません。入力がちょうど num_ctx の長さで切り詰められていない場合も、同じ値になります。
 
@@ -195,7 +201,7 @@ KV キャッシュの大きさは、1 トークンあたりの大きさ × num_c
 
 そのため、0.22.1 でキャッシュが効いたかを見る時は、`prompt_eval_count` ではなく `prompt_eval_duration` を見ます。実験 3 では、同じ前置きを送り直した回で 2.6 秒から 0.016 秒に縮みました。
 
-2026 年 11 月時点の API のドキュメントには、キャッシュから読んだ数を返す `prompt_eval_cached_count` が載っており、このフィールドを返す版なら、その値で確かめられます。
+2026 年 11 月時点の API のドキュメントには、キャッシュから読んだ数を返す `prompt_eval_cached_count` が載っており、このフィールドを返す版なら、その値で確認できます。
 
 <br>
 
@@ -209,10 +215,10 @@ KV キャッシュの大きさは、1 トークンあたりの大きさ × num_c
 
 ### num_ctx の決め方
 
-num_ctx は、大きくするほど長い入力を扱える代わりに、メモリで払う設定です。速さについて実験で確かめたのは、num_ctx を固定したまま、実際に読ませた入力が長いほど遅くなることです（[KV キャッシュのノート](../kv-cache/)の実験 2）。num_ctx を大きくしただけで速さが変わるかは測っていません。決める時は、次の順で確かめます。
+num_ctx は、大きくするほど長い入力を扱える代わりに、メモリで払う設定です。速さについて実験で確認したのは、num_ctx を固定したまま、実際に読ませた入力が長いほど遅くなることです（[KV キャッシュのノート](../kv-cache/)の実験 2）。num_ctx を大きくしただけで速さが変わるかは測っていません。決める時は、次の順で確認します。
 
 1. 送る入力と出力の長さを足したトークン数を見積もり、num_ctx をそれより少し大きくする。指定しないと、GPU のメモリが多い環境ではモデルの上限まで確保される。
-2. 読み込んだ後に `/api/ps` の `size` と `context_length`（読み込んだ num_ctx）を見て、想定した num_ctx で読み込まれたかを確かめる。
-3. 応答の `prompt_eval_count` が、読み込まれた num_ctx（`/api/ps` の `context_length`）と同じになっていたら、切り詰めを疑う。確かめるには、`"truncate": false` を付けて送り直すか、サーバーのログの `truncating input prompt` を見る。
+2. 読み込んだ後に `/api/ps` の `size` と `context_length`（読み込んだ num_ctx）を見て、想定した num_ctx で読み込まれたかを確認する。
+3. 応答の `prompt_eval_count` が、読み込まれた num_ctx（`/api/ps` の `context_length`）と同じになっていたら、切り詰めを疑う。確認するには、`"truncate": false` を付けて送り直すか、サーバーのログの `truncating input prompt` を見る。
 
-本記事の数字は 1.7B と 4B のモデルと、1 台の GPU での値です。手元のモデルでは、`/api/ps` の `size` とサーバーのログの `kv cache` の行を見て確かめてください。
+本記事の数字は 1.7B と 4B のモデルと、1 台の GPU での値です。手元のモデルでは、`/api/ps` の `size` とサーバーのログの `kv cache` の行を見て確認してください。

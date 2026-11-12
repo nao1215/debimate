@@ -118,11 +118,11 @@ proposer は中身を見ないまま署名します。relay は署名を受け�
 1. 攻撃者が、囮として、slippage tolerance（受取量の下限）を付けずに ETH でトークンを買う交換を公開 mempool に流した。sandwich を狙う searcher の bot（自動で取引を送るプログラム）は、下限が無いので大きく先回りできると見て、これを挟む bundle を組んだ。
 2. bot の bundle は builder に渡り、bot の取引を含むブロックの入札が relay に届いた。
 
-後半の 3〜5 を追う前に、proposer が署名するものの形を確かめておきます。ここまで「ヘッダーに署名する」と書いてきましたが、正確には、proposer が署名するのは合意側のブロック（beacon block）です。その中に、取引の中身を指すヘッダー（execution payload header）が入れ子で入っています。
+後半の 3〜5 を追う前に、proposer が署名するものの形を確認しておきます。ここまで「ヘッダーに署名する」と書いてきましたが、正確には、proposer が署名するのは合意側のブロック（beacon block）です。その中に、取引の中身を指すヘッダー（execution payload header）が入れ子で入っています。
 
 以下の図のように、中身を 1 つに固定しているのは、ヘッダーの中の block_hash（中身のハッシュ値）です。block_hash 以外の欄、例えば parent_root（直前のブロックを指す値）が誤っていると、ブロックは無効になりますが、block_hash が指す中身は変わりません。
 
-{{< figure src="images/pbs_signed.webp" alt="左の灰色の枠は proposer が署名する合意側のブロック（beacon block）で、slot・proposer の番号、parent_root（直前のブロックを指す値）、state_root（合意側の状態のハッシュ値）、青い枠の execution payload header（中身を指すヘッダー）を含む。header の中の block_hash（中身のハッシュ値）から、右の relay が持つ中身（execution payload。事故では bot の買い・囮の交換・bot の売りなど）へ矢印が伸びる。block_hash は事故でもそのまま。下に、relay は block_hash で自分の中身を探し、署名されたブロックが有効かは確かめなかったと書いてある" caption="proposer が署名するブロックの入れ子と、relay が中身を探した block_hash" align="center" >}}
+{{< figure src="images/pbs_signed.webp" alt="左の灰色の枠は proposer が署名する合意側のブロック（beacon block）で、slot・proposer の番号、parent_root（直前のブロックを指す値）、state_root（合意側の状態のハッシュ値）、青い枠の execution payload header（中身を指すヘッダー）を含む。header の中の block_hash（中身のハッシュ値）から、右の relay が持つ中身（execution payload。事故では bot の買い・囮の交換・bot の売りなど）へ矢印が伸びる。block_hash は事故でもそのまま。下に、relay は block_hash で自分の中身を探し、署名されたブロックが有効かは確認しなかったと書いてある" caption="proposer が署名するブロックの入れ子と、relay が中身を探した block_hash" align="center" >}}
 
 3. proposer に選ばれた攻撃者が、Ultra Sound という relay からヘッダーを受け取った。Ultra Sound は、Flashbots が公開する relay のソフトウェア（[mev-boost-relay](https://github.com/flashbots/mev-boost-relay)）を動かしていた。攻撃者は、事後報告によると「state root と parent root を 0 にした」無効なブロックに署名して返した（state root という欄は中身を指すヘッダーの側にもあり、どの階層の欄かは報告に書かれていない）。block_hash は元のままだった。無効なブロックなので、公開は失敗する。
 4. relay は、block_hash から自分のブロックへの署名と判断し、中身を proposer に返した。その後に別の処理で試みた公開は beacon node に拒否されたが、当時の relay は公開の結果を待たずに中身を返す作りだった。
@@ -178,9 +178,9 @@ builder が少数に集まると、その数社が並び順と、どの取引を
 
 以下は、組み込んだ形でのブロックの構成を描いた図です。
 
-{{< figure src="images/pbs_epbs.webp" alt="左の黄土色の枠は proposer が署名するブロックで、中には builder の入札（支払いの約束と中身のハッシュ値）と proposer の署名だけが入る。右の青い枠は builder が後で公開する取引の中身。下に、支払いはプロトコルが builder の預けた残高から行い、中身が期限までに公開されたかは一部のバリデータが投票で確かめると書いてある" caption="プロトコルに組み込んだ PBS では、ブロックが 2 つに分かれる" align="center" >}}
+{{< figure src="images/pbs_epbs.webp" alt="左の黄土色の枠は proposer が署名するブロックで、中には builder の入札（支払いの約束と中身のハッシュ値）と proposer の署名だけが入る。右の青い枠は builder が後で公開する取引の中身。下に、支払いはプロトコルが builder の預けた残高から行い、中身が期限までに公開されたかは一部のバリデータが投票で確認すると書いてある" caption="プロトコルに組み込んだ PBS では、ブロックが 2 つに分かれる" align="center" >}}
 
-支払いは、プロトコルが builder の預けた残高から行います。中身が期限までに公開されたかは、slot ごとに選ばれる 512 のバリデータが確かめ、その結果でその slot の中身を採用するかが決まります。一方、proposer への支払いは中身の公開を条件にしません。proposer のブロック自体が期限内に通常の投票（そのブロックを採用するという attestation）を十分に集めていれば、builder が中身を出さなくても支払われます。その場合、その slot は取引の中身が無いまま進み、builder は払うだけ払って何も得ません。
+支払いは、プロトコルが builder の預けた残高から行います。中身が期限までに公開されたかは、slot ごとに選ばれる 512 のバリデータが確認し、その結果でその slot の中身を採用するかが決まります。一方、proposer への支払いは中身の公開を条件にしません。proposer のブロック自体が期限内に通常の投票（そのブロックを採用するという attestation）を十分に集めていれば、builder が中身を出さなくても支払われます。その場合、その slot は取引の中身が無いまま進み、builder は払うだけ払って何も得ません。
 
 builder の側も、中身を自分で持ったまま、proposer のブロックが出た後で自分で公開するので、中身を預ける第三者が要りません。そのため、両側が relay を信頼する必要がなくなります。
 

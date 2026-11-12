@@ -84,7 +84,7 @@ SELECT lp, lp_flags, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('a
 
 冒頭のグラフで、毎回 VACUUM した表が 1 回目に 13.5 MB から 27 MB に増え、そこで止まったのは、このためです。1 回目の UPDATE で、全件の新しい版が足されて 2 倍になります。その後の VACUUM で古い版の場所が空き、2 回目の UPDATE はその空きに新しい版を書きます。古い版と新しい版の 2 組分の場所があれば、それ以上は増えません。
 
-VACUUM は空いた場所を使い回せるようにするだけで、ファイルを小さくはしません（末尾のブロックが丸ごと空き、表のロックがすぐ取れる時は、その分を切り詰めます）。VACUUM しなかった 148 MB の表で確かめると、次の通りでした。
+VACUUM は空いた場所を使い回せるようにするだけで、ファイルを小さくはしません（末尾のブロックが丸ごと空き、表のロックがすぐ取れる時は、その分を切り詰めます）。VACUUM しなかった 148 MB の表で確認すると、次の通りでした。
 
 ```text
 VACUUM しなかった表        148 MB
@@ -191,7 +191,7 @@ ERROR:  database is not accepting commands that assign new transaction IDs to av
 
 メール配信の Mandrill（Mailchimp のサービス）も、[2019 年 2 月 4 日から 5 日にかけて](https://mailchimp.com/what-we-learned-from-the-recent-mandrill-outage/)、同じ周回の問題で送信が滞りました。Mailchimp の報告によると、ピーク時の負荷でトランザクション ID が上限の半分ほどまで上がることには 2018 年 11 月の時点で気づいていたものの、差し迫った問題ではないと判断していました。
 
-どちらも、普段は見えない VACUUM の遅れが、ある日まとめて書き込みの停止として表に出た例です。手元の DB では、`SELECT datname, age(datfrozenxid) FROM pg_database` で、各 DB の最も古い凍結していない ID がどれだけ古いかを確かめられます。
+どちらも、普段は見えない VACUUM の遅れが、ある日まとめて書き込みの停止として表に出た例です。手元の DB では、`SELECT datname, age(datfrozenxid) FROM pg_database` で、各 DB の最も古い凍結していない ID がどれだけ古いかを確認できます。
 
 ---
 

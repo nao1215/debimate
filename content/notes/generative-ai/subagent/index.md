@@ -79,7 +79,7 @@ Chroma の報告「[Context Rot](https://www.trychroma.com/research/context-rot)
 
 ### 実験: 6 つの資料から数を集める
 
-親のコンテキストを短く保つと答えが変わるのかを確かめるために、2026 年 11 月 11 日に、手元の [Ollama](https://ollama.com/)（0.22.1）で [Qwen3](https://github.com/QwenLM/Qwen3) の 8B（`qwen3:8b`、[Q4_K_M](../quantization/)）を動かして比べました。
+親のコンテキストを短く保つと答えが変わるのかを確認するために、2026 年 11 月 11 日に、手元の [Ollama](https://ollama.com/)（0.22.1）で [Qwen3](https://github.com/QwenLM/Qwen3) の 8B（`qwen3:8b`、[Q4_K_M](../quantization/)）を動かして比べました。
 
 機材は AMD Ryzen AI Max+ 395 と Radeon 8060S で、RAM 128GB のうち 64GB を GPU に割り当てています。答えの前に考えを書き出す思考モードは切り、[temperature](../sampling/) は 0、seed は 1、コンテキストの長さは 32,768 トークンです。
 

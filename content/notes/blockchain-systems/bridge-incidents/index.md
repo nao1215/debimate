@@ -9,24 +9,24 @@ wrapTables: true
 topics: ["Interoperability"]
 ---
 
-[Cross-Chain Bridge](../cross-chain-bridge/)（以下、bridge）は、あるブロックチェーン（以下、チェーン）で資産が金庫に預けられたことを確かめて、別のチェーンで同じ量の引換券（wrapped token）を発行する仕組みです。引換券を焼却（消すこと）すると、元のチェーンの金庫から資産が払い出されます。預ける側を source chain、引換券を受け取る側を destination chain と呼びます。
+[Cross-Chain Bridge](../cross-chain-bridge/)（以下、bridge）は、あるブロックチェーン（以下、チェーン）で資産が金庫に預けられたことを確認して、別のチェーンで同じ量の引換券（wrapped token）を発行する仕組みです。引換券を焼却（消すこと）すると、元のチェーンの金庫から資産が払い出されます。預ける側を source chain、引換券を受け取る側を destination chain と呼びます。
 
-bridge の安全性は、destination chain が「source chain で預け入れがあった」という主張をどう確かめるかで決まります。2022 年には、この確かめる部分が破られる事故が続きました。
+bridge の安全性は、destination chain が「source chain で預け入れがあった」という主張をどう確認するかで決まります。2022 年には、この確認する部分が破られる事故が続きました。
 
-{{< figure src="images/bridge-incidents_concept.webp" alt="左に source chain の金庫、右に destination chain の引換券があり、間の「確かめる部分」に 4 つの穴が開いている。Ronin は署名者の鍵と残っていた署名の代行の許可、Wormhole は署名を確かめるコード、Nomad は確認済みの初期値、BSC Token Hub は Merkle proof を確かめるコード。どの穴を通っても、預け入れや焼却の無いメッセージが本物として扱われる" caption="4 件の事故が破った場所。どれも金庫ではなく、間の確かめる部分" align="center" >}}
+{{< figure src="images/bridge-incidents_concept.webp" alt="左に source chain の金庫、右に destination chain の引換券があり、間の「確認する部分」に 4 つの穴が開いている。Ronin は署名者の鍵と残っていた署名の代行の許可、Wormhole は署名を確認するコード、Nomad は確認済みの初期値、BSC Token Hub は Merkle proof を確認するコード。どの穴を通っても、預け入れや焼却の無いメッセージが本物として扱われる" caption="4 件の事故が破った場所。どれも金庫ではなく、間の確認する部分" align="center" >}}
 
 上記の図のように、4 件とも金庫やトークンのコントラクト（チェーン上で動くプログラム）自体は壊れていません。偽の預け入れが本物として扱われて引換券が発行されたか、偽の焼却が本物として扱われて金庫から払い出されました。
 
 <br>
 
-本記事では、4 件を表の順に説明します。鍵を奪われた Ronin から始め、確かめるコードの欠陥を突かれた 3 件へ進みます。外部の署名者、軽量クライアント、異議の受付期間といった確かめ方の違いは [Cross-Chain Bridge](../cross-chain-bridge/#預け入れを確かめる方法) を前提にします。金額は当時の公式発表と報道によるもので、ドル換算は当時の価格です。
+本記事では、4 件を表の順に説明します。鍵を奪われた Ronin から始め、確認するコードの欠陥を突かれた 3 件へ進みます。外部の署名者、軽量クライアント、異議の受付期間といった確かめ方の違いは [Cross-Chain Bridge](../cross-chain-bridge/#預け入れを確かめる方法) を前提にします。金額は当時の公式発表と報道によるもので、ドル換算は当時の価格です。
 
 | 事故 | 時期 | 確かめ方 | 破られた所 |
 | --- | --- | --- | --- |
 | Ronin | 2022 年 3 月 | 外部の署名者 | 署名者の鍵 4 本と、残っていた署名の代行の許可（計 9 人中 5 人分） |
-| Wormhole | 2022 年 2 月 | 外部の署名者 | 署名を確かめるコード |
+| Wormhole | 2022 年 2 月 | 外部の署名者 | 署名を確認するコード |
 | Nomad | 2022 年 8 月 | 異議の受付期間 | 確認済みの扱いにする初期値 |
-| BSC Token Hub | 2022 年 10 月 | 軽量クライアント | Merkle proof を確かめるコード |
+| BSC Token Hub | 2022 年 10 月 | 軽量クライアント | Merkle proof を確認するコード |
 
 ---
 
@@ -50,21 +50,21 @@ bridge の安全性は、destination chain が「source chain で預け入れが
 
 ### Wormhole
 
-[Wormhole](https://wormhole.com/) は、[19 の guardian（署名者）のうち 13 の署名](https://wormhole.com/docs/protocol/infrastructure/guardians/)でメッセージを受け入れる bridge です。Ronin と同じ外部の署名者のタイプですが、鍵は奪われていません。2022 年 2 月 2 日、[Solana](https://solana.com/) 側のコントラクトで、署名を確かめる処理そのものが回避されました。
+[Wormhole](https://wormhole.com/) は、[19 の guardian（署名者）のうち 13 の署名](https://wormhole.com/docs/protocol/infrastructure/guardians/)でメッセージを受け入れる bridge です。Ronin と同じ外部の署名者のタイプですが、鍵は奪われていません。2022 年 2 月 2 日、[Solana](https://solana.com/) 側のコントラクトで、署名を確認する処理そのものが回避されました。
 
 この欠陥を読むには、Solana のプログラムの呼び出し方を知る必要があります。Solana のプログラム（コントラクト）は、呼び出し側から、読み書きするデータを入れたアカウントを引数の一覧として受け取ります。その中には、ランタイムが用意する特別なアカウント（sysvar）も含まれます。アカウントはそれぞれアドレス（識別子）を持ち、sysvar のアドレスは決まっています。
 
-Solana では、署名の検証を組み込みのプログラム（secp256k1 program。secp256k1 は署名方式の名前）の命令として取引に入れ、同じ取引の中で先に実行させます。後から呼ばれるプログラムは、その命令が取引に入っていたかを [Instructions sysvar](https://docs.anza.xyz/runtime/sysvars#instructions)（同じ取引の中で実行される命令の一覧を持つ sysvar）から読んで確かめます。
+Solana では、署名の検証を組み込みのプログラム（secp256k1 program。secp256k1 は署名方式の名前）の命令として取引に入れ、同じ取引の中で先に実行させます。後から呼ばれるプログラムは、その命令が取引に入っていたかを [Instructions sysvar](https://docs.anza.xyz/runtime/sysvars#instructions)（同じ取引の中で実行される命令の一覧を持つ sysvar）から読んで確認します。
 
-{{< figure src="images/bridge-incidents_wormhole.webp" alt="左右 2 段の比較。上の正しい呼び出しでは、呼び出し側が本物の Instructions sysvar を渡し、命令の一覧に署名の検証の命令がある。下の攻撃では、呼び出し側が自分で作った偽のアカウントを渡し、命令の一覧に署名の検証の命令があるように書いておく。Wormhole のプログラムは渡されたアカウントのアドレスを確かめなかったため、どちらも検証済みと判断した" caption="渡されたアカウントが本物の sysvar かを確かめなかった" align="center" >}}
+{{< figure src="images/bridge-incidents_wormhole.webp" alt="左右 2 段の比較。上の正しい呼び出しでは、呼び出し側が本物の Instructions sysvar を渡し、命令の一覧に署名の検証の命令がある。下の攻撃では、呼び出し側が自分で作った偽のアカウントを渡し、命令の一覧に署名の検証の命令があるように書いておく。Wormhole のプログラムは渡されたアカウントのアドレスを確認しなかったため、どちらも検証済みと判断した" caption="渡されたアカウントが本物の sysvar かを確認しなかった" align="center" >}}
 
 [Halborn の分析](https://www.halborn.com/blog/post/explained-the-wormhole-hack-february-2022)によると、流れは次の通りです。
 
-1. Wormhole の `verify_signatures` は、渡された Instructions sysvar を読んで、guardian の署名を検証する secp256k1 program の命令が同じ取引に入っているかを確かめていた。
-2. 渡されたアカウントのアドレスが本物の sysvar のものかを確かめていなかったため、攻撃者は検証の命令が入っているように見える偽のアカウントを渡した。
+1. Wormhole の `verify_signatures` は、渡された Instructions sysvar を読んで、guardian の署名を検証する secp256k1 program の命令が同じ取引に入っているかを確認していた。
+2. 渡されたアカウントのアドレスが本物の sysvar のものかを確認していなかったため、攻撃者は検証の命令が入っているように見える偽のアカウントを渡した。
 3. guardian の署名が揃ったと扱われたメッセージで、Ethereum に預け入れの無い 120,000 wETH（Wormhole の wrapped ETH）を Solana 上で発行した。
 
-本物の sysvar かを確かめる [`load_instruction_at_checked`](https://docs.rs/solana-program/latest/solana_program/sysvar/instructions/index.html) へ置き換える[変更の提案（pull request）](https://github.com/wormhole-foundation/wormhole/pull/751)は、事故の 3 週間前の 2022 年 1 月 13 日に公開リポジトリへ出ていました。しかし、main への取り込みは事故当日の 2 月 2 日で、Solana 上で動いていたプログラムは古いままでした。裏付けの無いまま発行された 120,000 wETH の分の ETH は、Wormhole の開発に関わる [Jump Crypto](https://jumpcrypto.com/) が[補填しました](https://www.theblock.co/post/132909/wormhole-replenishes-its-blockchain-bridge-after-325-million-exploit)。
+本物の sysvar かを確認する [`load_instruction_at_checked`](https://docs.rs/solana-program/latest/solana_program/sysvar/instructions/index.html) へ置き換える[変更の提案（pull request）](https://github.com/wormhole-foundation/wormhole/pull/751)は、事故の 3 週間前の 2022 年 1 月 13 日に公開リポジトリへ出ていました。しかし、main への取り込みは事故当日の 2 月 2 日で、Solana 上で動いていたプログラムは古いままでした。裏付けの無いまま発行された 120,000 wETH の分の ETH は、Wormhole の開発に関わる [Jump Crypto](https://jumpcrypto.com/) が[補填しました](https://www.theblock.co/post/132909/wormhole-replenishes-its-blockchain-bridge-after-325-million-exploit)。
 
 ---
 
@@ -113,11 +113,11 @@ unproved message accepted after fix: False
 
 [BNB Chain](https://www.bnbchain.org/)（通貨は BNB）は、2022 年当時、ステーキングや投票を扱う BNB Beacon Chain と、コントラクトを動かす [BNB Smart Chain](https://docs.bnbchain.org/)（BSC）の 2 本のチェーンで構成されていました。Beacon Chain を source chain、BSC を destination chain とする bridge が BSC Token Hub（[TokenHub.sol](https://github.com/bnb-chain/bsc-genesis-contract/blob/master/contracts/TokenHub.sol)）です。
 
-BSC Token Hub は軽量クライアントのタイプで、Beacon Chain の状態を Merkle proof（Merkle Tree の葉から根までの経路のハッシュ）で確かめていました。木の形式は [IAVL](https://github.com/cosmos/iavl) という、Cosmos 系のチェーンが使う Merkle Tree の一種です。
+BSC Token Hub は軽量クライアントのタイプで、Beacon Chain の状態を Merkle proof（Merkle Tree の葉から根までの経路のハッシュ）で確認していました。木の形式は [IAVL](https://github.com/cosmos/iavl) という、Cosmos 系のチェーンが使う Merkle Tree の一種です。
 
 [Nansen の分析](https://www.nansen.ai/post/bnb-chains-cross-chain-bridge-exploit-explained)によると、攻撃者は前日に BSC Token Hub の relayer として登録し、2022 年 10 月 6 日に存在しない預け入れの proof を提出して、1,000,000 BNB の発行を 2 回通しました。BNB Chain は validator（BNB Smart Chain でブロックを承認する参加者）と調整してチェーンを止めたため、外のチェーンへ持ち出されたのは一部に留まりました。
 
-{{< figure src="images/bridge-incidents_bsc.webp" alt="左の BNB Beacon Chain（source chain）には預け入れが無い。中央の攻撃者は relayer に登録し、偽の Merkle proof を 2 回提出する。右の BNB Smart Chain（destination chain）の BSC Token Hub は proof を確かめて発行し、1,000,000 BNB の発行が 2 回通った" caption="預け入れの無い proof で、BSC Token Hub が発行した" align="center" >}}
+{{< figure src="images/bridge-incidents_bsc.webp" alt="左の BNB Beacon Chain（source chain）には預け入れが無い。中央の攻撃者は relayer に登録し、偽の Merkle proof を 2 回提出する。右の BNB Smart Chain（destination chain）の BSC Token Hub は proof を確認して発行し、1,000,000 BNB の発行が 2 回通った" caption="預け入れの無い proof で、BSC Token Hub が発行した" align="center" >}}
 
 [Verichains の分析](https://blog.verichains.io/p/binance-bridge-exploitation-preliminary)によると、原因は IAVL の範囲の proof（1 つの proof で複数の葉が木に含まれることを示す形式）を検証するコード（[iavl の修正](https://github.com/cosmos/iavl/pull/582)）にありました。検証コードは、次の 2 つが両方成り立てば、proof に並んだ葉が木の中にあると判定していました。
 
@@ -128,4 +128,4 @@ BSC Token Hub は軽量クライアントのタイプで、Beacon Chain の状�
 
 {{< figure src="images/bridge-incidents_iavl.webp" alt="Merkle Tree の経路の図。正しい証明では、経路の要素は兄弟のハッシュを 1 つだけ持ち、本物の葉から計算した値が root と一致する。攻撃の証明では、経路の要素に左の子と右の子を両方入れ、右の子に偽の葉のハッシュを入れる。確認 1 では右の子が使われないので root は一致し、確認 2 では偽の葉のハッシュと右の子が一致するので、偽の葉も木の中にあると判定される" caption="root の計算に使われない右の子に、偽の葉のハッシュを入れた" align="center" >}}
 
-上記の図のように、攻撃者は本物の葉と経路で 1. を通し、右の子に偽の葉のハッシュを入れて 2. を通しました。右の子は 1. の計算に使われないため、何を入れても root は変わりません。軽量クライアントのタイプは source chain の合意を信頼する方式ですが、その前提は、証明を確かめるコードが正しい場合に限ります。証明の形式を曖昧にしない木の設計は [Merkle Tree Design](../merkle-tree-design/) で扱っています。
+上記の図のように、攻撃者は本物の葉と経路で 1. を通し、右の子に偽の葉のハッシュを入れて 2. を通しました。右の子は 1. の計算に使われないため、何を入れても root は変わりません。軽量クライアントのタイプは source chain の合意を信頼する方式ですが、その前提は、証明を確認するコードが正しい場合に限ります。証明の形式を曖昧にしない木の設計は [Merkle Tree Design](../merkle-tree-design/) で扱っています。

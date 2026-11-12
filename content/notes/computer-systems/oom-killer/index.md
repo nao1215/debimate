@@ -21,7 +21,7 @@ GUI が数分間固まると、OS やデスクトップ環境が不安定だと�
 
 <br>
 
-本記事では、メモリ不足で GUI が固まる理由と、カーネルの OOM killer と earlyoom の違いを説明します。cgroup で上限を付けた実験で、OOM killer がプロセスを終了させる様子も確かめます。扱う疑問は以下の通りです。
+本記事では、メモリ不足で GUI が固まる理由と、カーネルの OOM killer と earlyoom の違いを説明します。cgroup で上限を付けた実験で、OOM killer がプロセスを終了させる様子も確認します。扱う疑問は以下の通りです。
 
 - メモリが足りなくなると、なぜ OOM killer より先に GUI が固まるのか。
 - OOM killer は、どのプロセスを終了させるのか。
@@ -65,7 +65,7 @@ $ cat /proc/$$/oom_score_adj
 
 メモリを多く使っているプロセスほど選ばれやすいですが、原因になったプロセスが選ばれるとは限りません。メモリを大量に使っているブラウザが、暴走した処理の巻き添えで終了されることもあります。
 
-終了の記録はカーネルのログに残り、[journalctl](https://www.freedesktop.org/software/systemd/man/latest/journalctl.html) の `-k`（カーネルのメッセージだけを表示する）で確かめられます。`-k` が表示するのは今回の起動分だけなので、固まった後に再起動した場合は、`journalctl -k -b -1` で前回の起動分を見ます。
+終了の記録はカーネルのログに残り、[journalctl](https://www.freedesktop.org/software/systemd/man/latest/journalctl.html) の `-k`（カーネルのメッセージだけを表示する）で確認できます。`-k` が表示するのは今回の起動分だけなので、固まった後に再起動した場合は、`journalctl -k -b -1` で前回の起動分を見ます。
 
 ---
 
@@ -110,7 +110,7 @@ earlyoom は固まる時間を短くしますが、メモリを使い切る処�
 
 #### 実験：cgroup の上限で OOM killer を起こす
 
-cgroup の中だけで OOM killer が動くことを確かめます。以下のコードは、100MB ずつメモリを確保し、確保した量を表示し続けます。
+cgroup の中だけで OOM killer が動くことを確認します。以下のコードは、100MB ずつメモリを確保し、確保した量を表示し続けます。
 
 ```python
 """100MB ずつメモリを確保し、確保した量を表示し続ける。

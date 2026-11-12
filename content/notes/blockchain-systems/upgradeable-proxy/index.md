@@ -42,7 +42,7 @@ Ethereum には、コントラクトのアドレスに置いたコードを後�
 
 そこで、アドレスとデータを持つプロキシと、コードを持つ実装に分けます。入口を固定したまま裏を入れ替える考え方は、Web のシステムを段階的に置き換える [Strangler Fig](../../software-architecture/strangler-fig/) に近いものです。
 
-一方で、変わらないのはアドレスに置かれたコードのバイト列だけで、プロキシの振る舞いは参照先の差し替えで変わります。利用者が確かめるべきなのは、誰が参照先を差し替えられるのか、差し替えに待ち時間や複数人の承認があるのか、です。2025 年 2 月の Bybit の事故では、Safe のプロキシの参照先が攻撃者の実装に差し替えられました（[Wallet の過去のセキュリティ事件](../wallet/#bybitsafe-の承認処理の乗っ取り)）。
+一方で、変わらないのはアドレスに置かれたコードのバイト列だけで、プロキシの振る舞いは参照先の差し替えで変わります。利用者が確認するべきなのは、誰が参照先を差し替えられるのか、差し替えに待ち時間や複数人の承認があるのか、です。2025 年 2 月の Bybit の事故では、Safe のプロキシの参照先が攻撃者の実装に差し替えられました（[Wallet の過去のセキュリティ事件](../wallet/#bybitsafe-の承認処理の乗っ取り)）。
 
 ---
 
@@ -138,12 +138,16 @@ bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1)
 
 Keccak-256（Ethereum が使う[ハッシュ関数](../hash-function/)）の出力は 2 の 256 乗通りの値に散らばるので、0 から数えた小さい番号と重なる確率は無視できます。管理者のアドレスは、`eip1967.proxy.admin` から同じ式で決めた slot に置きます。
 
+<br>
+
 <details>
 <summary>ハッシュから 1 を引く理由</summary>
 
 Solidity は、mapping（キーと値の表）の値を `keccak256(キーと slot 番号)` の場所に置きます。ハッシュの値をそのまま slot にすると、ハッシュの入力（原像）が分かっているので、細工したキーを使った mapping の値と同じ場所になる余地が残ります。仕様は、1 を引いて原像の知られていない場所にすることで、この可能性を減らしたと説明しています。
 
 </details>
+
+<br>
 
 置き場所が決まっているので、ブロックエクスプローラー（チェーンの中身を見せる Web サービス）などのツールは、コードを解析しなくても、この slot を読むだけで今の実装を見つけられます。開発ツール群 [Foundry](https://getfoundry.sh/) の `cast implementation` も、この slot を読むコマンドです。
 
@@ -172,6 +176,8 @@ struct OwnableStorage {
 
 新しいメンバーは構造体の末尾に足します。前述の OpenZeppelin のガイドも、同社の更新用ツール（Upgrades Plugins）は名前空間の中の変更を、通常の変数と同じ規則で検査すると説明しています。
 
+<br>
+
 <details>
 <summary>ERC-7201 の計算式</summary>
 
@@ -182,6 +188,8 @@ keccak256(abi.encode(uint256(keccak256(id)) - 1)) & ~bytes32(uint256(0xff))
 `id` は注記の `erc7201:` の後の名前です。ERC-1967 と同じく 1 を引いた後、構造体が複数の slot に広がっても Solidity の使う場所と重ならないように、もう一度ハッシュを取ります。最後の `& ~0xff` は下位 8 bit を 0 にし、起点を 256 の倍数に揃えます。仕様は、将来の状態の木の移行（Verkle）後に 256 slot がまとめて安く読める可能性を見込んだ揃えとしています。
 
 </details>
+
+<br>
 
 ---
 
@@ -261,11 +269,11 @@ sequenceDiagram
 
 ### Anvil での再現
 
-ここまでの現象は、Foundry に含まれる開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) で確かめました。公開ネットワークには接続せず、Anvil が用意する公開のテスト用アカウントだけを使います。使用したツールのバージョンと実行条件は、[README](lab/README.txt) に記載しています。
+ここまでの現象は、Foundry に含まれる開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) で確認しました。公開ネットワークには接続せず、Anvil が用意する公開のテスト用アカウントだけを使います。使用したツールのバージョンと実行条件は、[README](lab/README.txt) に記載しています。
 
 コントラクトは 2 つのファイルに分けています。[Study.sol](lab/Study.sol) は本記事のために書いた学習用のコードで、監査していません。[Box.sol](lab/Box.sol) は OpenZeppelin Contracts と Contracts Upgradeable の [v5.7.0](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v5.7.0)（どちらも MIT ライセンス）を使います。
 
-OpenZeppelin のソースはリポジトリに含めず、[run.sh](lab/run.sh) がタグとコミットを確かめて取得します。
+OpenZeppelin のソースはリポジトリに含めず、[run.sh](lab/run.sh) がタグとコミットを確認して取得します。
 
 以下は、更新で並びがずれる実装と、名前空間を使う実装の抜粋です。
 
@@ -309,6 +317,8 @@ assert int(storage(p3, hex(int(loc, 16) + 1)), 16) == 100
 tx(mallory, impl, 'initialize(address)', mallory)
 assert storage(impl, own_slot) == word(mallory.lower())     # own_slot: Ownable の名前空間の起点
 ```
+
+<br>
 
 <details>
 <summary>run.py の全体（ノードの起動、6 つの検査、後始末）</summary>
@@ -535,6 +545,8 @@ finally:
 
 </details>
 
+<br>
+
 anvil・cast・solc を PATH に置き、次のコマンドで実行します。
 
 ```bash
@@ -542,6 +554,8 @@ bash content/notes/blockchain-systems/upgradeable-proxy/lab/run.sh
 ```
 
 検査は 6 段あり、全て通りました（[出力](lab/output/summary.txt)の末尾が `Assertions: PASS`）。1 段目（slot 0 の衝突）、3 段目（並びのずれ）、4 段目（constructor）の結果は、前の節で示した通りです。
+
+<br>
 
 <details>
 <summary>6 段の出力の全体</summary>
@@ -590,6 +604,8 @@ Assertions: PASS
 
 </details>
 
+<br>
+
 2 段目では、Python で計算した ERC-1967 の 2 つの slot が仕様の値と一致し、プロキシの storage・`cast implementation`・`cast admin` の結果とも一致しました。3 段目で V2Bad に差し替えた時の `Upgraded` のログには、新しい実装のアドレスが入っていました。
 
 5 段目は、ERC-7201 の名前空間です。
@@ -629,7 +645,7 @@ constructor で `_disableInitializers()` を呼んだ `BoxLocked` は `initializ
 
 - 利用者や他のコントラクトが登録したアドレスを変えずに、不具合を直せる
 - 残高などのデータを移し替えずに、処理だけを更新できる
-- ERC-1967 の slot を読めば、ツールや利用者が今の実装を確かめられる（Transparent 型のように管理者の slot を使う型では管理者も）
+- ERC-1967 の slot を読めば、ツールや利用者が今の実装を確認できる（Transparent 型のように管理者の slot を使う型では管理者も）
 - ERC-7201 で、継承の順や親の変数の追加に左右されない配置にできる（名前空間の中のメンバーは末尾に足す）
 
 ### 欠点

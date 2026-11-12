@@ -17,13 +17,13 @@ topics: ["Interoperability"]
 
 wrapped ETH は、金庫の中の ETH への引換券にあたるトークン（チェーン上で残高を管理される資産）です。以下では、預ける側を source chain、受け取る側を destination chain と呼びます。
 
-{{< figure src="images/bridge_concept.webp" alt="左の預ける側（source chain）の金庫に青い丸で描いたコインがロックされ、右の受け取る側（destination chain）には同じ数の点線の丸で描いた引換券（wrapped token）が発行されている。間に黄土色の「検証役」の箱があり、預け入れが本当にあったかを確かめてから発行を許可する" caption="ロックした分だけ引換券を発行し、間で預け入れを確かめる" align="center" >}}
+{{< figure src="images/bridge_concept.webp" alt="左の預ける側（source chain）の金庫に青い丸で描いたコインがロックされ、右の受け取る側（destination chain）には同じ数の点線の丸で描いた引換券（wrapped token）が発行されている。間に黄土色の「検証役」の箱があり、預け入れが本当にあったかを確認してから発行を許可する" caption="ロックした分だけ引換券を発行し、間で預け入れを確認する" align="center" >}}
 
-上記の図の中央にある検証役が、本記事の主題です。destination chain は source chain の台帳を直接読めないため、誰かが「100 ETH の預け入れがあった」と伝え、destination chain はその主張を何らかの方法で確かめてから引換券を発行します。この確認を偽れば、金庫に何も入れずに引換券を作れます。
+上記の図の中央にある検証役が、本記事の主題です。destination chain は source chain の台帳を直接読めないため、誰かが「100 ETH の預け入れがあった」と伝え、destination chain はその主張を何らかの方法で確認してから引換券を発行します。この確認を偽れば、金庫に何も入れずに引換券を作れます。
 
 <br>
 
-本記事では、bridge は何を信頼して、別のチェーンの出来事を受け入れるのかを説明します。チェーン同士が直接確かめ合えない理由から始め、資産の移し方を 2 つのタイプに絞って確認した後、預け入れの確かめ方を 4 つ比べます。最後に、署名の鍵を奪われた時に何が起きるかを Python の実験で確かめ、実際の事故がどの確かめ方を破ったかを対応させます。
+本記事では、bridge は何を信頼して、別のチェーンの出来事を受け入れるのかを説明します。チェーン同士が直接確かめ合えない理由から始め、資産の移し方を 2 つのタイプに絞って確認した後、預け入れの確かめ方を 4 つ比べます。最後に、署名の鍵を奪われた時に何が起きるかを Python の実験で確認し、実際の事故がどの確かめ方を破ったかを対応させます。
 
 source chain の取引をどの時点で確定と見なすかは [Finality](../finality/) で、事故の経緯の詳細は [Bridge の事故](../bridge-incidents/) で扱います。
 
@@ -37,7 +37,7 @@ source chain の取引をどの時点で確定と見なすかは [Finality](../f
 
 <br>
 
-ただし、材料があることと、destination chain がそれを安く検証できることは別です。source chain の取引が正しく確定したかを自分で確かめるには、source chain の合意の規則（どのブロックを正しいと認めるか。承認者の署名の数や、計算量の大きさで決まる）をコントラクトとして実装する必要があります。相手が [Proof of Work](../proof-of-work/) なのか [CometBFT](../cometbft/) なのかで、必要な処理も変わります。この負担を避けるために、多くの bridge は確認を外部の署名者に任せてきました。
+ただし、材料があることと、destination chain がそれを安く検証できることは別です。source chain の取引が正しく確定したかを自分で確認するには、source chain の合意の規則（どのブロックを正しいと認めるか。承認者の署名の数や、計算量の大きさで決まる）をコントラクトとして実装する必要があります。相手が [Proof of Work](../proof-of-work/) なのか [CometBFT](../cometbft/) なのかで、必要な処理も変わります。この負担を避けるために、多くの bridge は確認を外部の署名者に任せてきました。
 
 ---
 
@@ -45,7 +45,7 @@ source chain の取引をどの時点で確定と見なすかは [Finality](../f
 
 bridge で「資産を移す」と言っても、同じ[トークン](../erc-20/)がチェーンの間を移動するわけではありません。ethereum.org の [bridge の解説](https://ethereum.org/en/developers/docs/bridges/)は、lock and mint、burn and mint、atomic swap の 3 つのタイプを挙げています。
 
-このうち atomic swap は、交換相手と直接資産を交換するタイプで、[Lightning Network](../lightning-network/) と同じ仕組みの条件付きの支払いを両方のチェーンに置きます。間で預け入れを確かめる役が無いため、本記事では残りの 2 つを扱います。
+このうち atomic swap は、交換相手と直接資産を交換するタイプで、[Lightning Network](../lightning-network/) と同じ仕組みの条件付きの支払いを両方のチェーンに置きます。間で預け入れを確認する役が無いため、本記事では残りの 2 つを扱います。
 
 <br>
 
@@ -78,7 +78,7 @@ sequenceDiagram
 
 burn and mint は、同じ発行者が複数のチェーンでトークンを発行している場合に使えます。例えば、[Circle](https://www.circle.com/) は米ドルと 1 対 1 で交換できるトークン [USDC](https://www.circle.com/usdc) を多くのチェーンで発行しており、[CCTP（Cross-Chain Transfer Protocol）](https://developers.circle.com/cctp)で移せます。
 
-source chain で USDC を焼却し、Circle が焼却を確かめて attestation（焼却があったことを示す署名付きの証明）を出し、destination chain がそれを確かめて USDC を発行します。
+source chain で USDC を焼却し、Circle が焼却を確認して attestation（焼却があったことを示す署名付きの証明）を出し、destination chain がそれを確認して USDC を発行します。
 
 金庫に資産が残らないため、wrapped token のような引換券は生まれません。確かめ方は次節の外部の署名者のタイプで、署名するのは Circle です。USDC の利用者は既に発行者として Circle を信頼しているため、新しく加わる信頼の相手はいません。
 
@@ -86,29 +86,29 @@ source chain で USDC を焼却し、Circle が焼却を確かめて attestation
 
 ### 預け入れを確かめる方法
 
-lock and mint と burn and mint のどちらでも、destination chain は「source chain でロックや焼却があった」という主張を確かめる必要があります。
+lock and mint と burn and mint のどちらでも、destination chain は「source chain でロックや焼却があった」という主張を確認する必要があります。
 
-主張を destination chain へ取引として送る役を relayer と呼びます。relayer は誰でもなれる場合が多く、relayer を信頼しなくて済むように、主張には確かめられる材料を付けます。その材料と確かめ方によって、利用者が何を信頼するかが変わります。
+主張を destination chain へ取引として送る役を relayer と呼びます。relayer は誰でもなれる場合が多く、relayer を信頼しなくて済むように、主張には確認できる材料を付けます。その材料と確かめ方によって、利用者が何を信頼するかが変わります。
 
 <br>
 
 #### 外部の署名者
 
-bridge の運営者が選んだ署名者（bridge によって validator や guardian などと呼ばれます）が source chain を監視し、預け入れを見つけたらメッセージに署名します。destination chain のコントラクトは、[Multisig](../multisig/) と同じく、決められた数以上の有効な署名があるかだけを確かめます。
+bridge の運営者が選んだ署名者（bridge によって validator や guardian などと呼ばれます）が source chain を監視し、預け入れを見つけたらメッセージに署名します。destination chain のコントラクトは、[Multisig](../multisig/) と同じく、決められた数以上の有効な署名があるかだけを確認します。
 
-この方法は、新しいチェーンに対応する時も署名者が監視するノードを足すだけで済むため、多くのチェーンをつなぐ bridge で使われてきました。しかし、destination chain は署名者が正しい預け入れを見たかを確かめられません。署名者の過半の鍵を持つ者は、存在しない預け入れや焼却に署名して資産を発行・払い出しできます。利用者が信頼するのは、source chain ではなく署名者の集団です。
+この方法は、新しいチェーンに対応する時も署名者が監視するノードを足すだけで済むため、多くのチェーンをつなぐ bridge で使われてきました。しかし、destination chain は署名者が正しい預け入れを見たかを確認できません。署名者の過半の鍵を持つ者は、存在しない預け入れや焼却に署名して資産を発行・払い出しできます。利用者が信頼するのは、source chain ではなく署名者の集団です。
 
 <br>
 
 #### 軽量クライアント
 
-軽量クライアントは、チェーンの全取引を持たずにブロックヘッダ（ブロックの要約。ブロック内の取引をまとめたハッシュを含む）だけを追い、取引がブロックに入っていることを短い証明で確かめるクライアントです（Bitcoin での例は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/)）。この証明は、[Merkle Tree](../merkle-tree/) の葉から根までの経路のハッシュで、Merkle proof と呼びます。
+軽量クライアントは、チェーンの全取引を持たずにブロックヘッダ（ブロックの要約。ブロック内の取引をまとめたハッシュを含む）だけを追い、取引がブロックに入っていることを短い証明で確認するクライアントです（Bitcoin での例は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/)）。この証明は、[Merkle Tree](../merkle-tree/) の葉から根までの経路のハッシュで、Merkle proof と呼びます。
 
-bridge では、source chain の軽量クライアントを destination chain のコントラクトとして実装し、ヘッダと Merkle proof から預け入れを確かめます。[Cosmos](https://cosmos.network/) のチェーン間で使われる [IBC（Inter-Blockchain Communication）](https://github.com/lfdt-ibc/ibc) は、相手のチェーンの軽量クライアントを各チェーンに置き、相手のヘッダに付いた承認者（相手のチェーンでブロックを承認する参加者）の署名と、メッセージの存在を示す Merkle proof を検証します。この承認者は bridge の署名者ではなく、source chain 自体の参加者で、validator とも呼ばれます。
+bridge では、source chain の軽量クライアントを destination chain のコントラクトとして実装し、ヘッダと Merkle proof から預け入れを確認します。[Cosmos](https://cosmos.network/) のチェーン間で使われる [IBC（Inter-Blockchain Communication）](https://github.com/lfdt-ibc/ibc) は、相手のチェーンの軽量クライアントを各チェーンに置き、相手のヘッダに付いた承認者（相手のチェーンでブロックを承認する参加者）の署名と、メッセージの存在を示す Merkle proof を検証します。この承認者は bridge の署名者ではなく、source chain 自体の参加者で、validator とも呼ばれます。
 
-{{< figure src="images/bridge_light_client.webp" alt="左の source chain では、承認者の署名付きのヘッダが並び、最後のヘッダの下に Merkle Tree がある。葉の 1 つが預け入れで、黄土の丸の兄弟のハッシュが Merkle proof になる。relayer が右の destination chain へ運び、軽量クライアントのコントラクトが、1. 新しいヘッダに承認者の署名が足りるか、2. 預け入れと proof から計算した値がヘッダの root と一致するかを確かめる" caption="軽量クライアントが確かめる 2 つのこと" align="center" >}}
+{{< figure src="images/bridge_light_client.webp" alt="左の source chain では、承認者の署名付きのヘッダが並び、最後のヘッダの下に Merkle Tree がある。葉の 1 つが預け入れで、黄土の丸の兄弟のハッシュが Merkle proof になる。relayer が右の destination chain へ運び、軽量クライアントのコントラクトが、1. 新しいヘッダに承認者の署名が足りるか、2. 預け入れと proof から計算した値がヘッダの root と一致するかを確認する" caption="軽量クライアントが確認する 2 つのこと" align="center" >}}
 
-上記の図のように、軽量クライアントはまずヘッダに付いた承認者の署名を確かめ、次に預け入れと Merkle proof から根のハッシュ（root）を計算し直して、ヘッダの root と比べます。
+上記の図のように、軽量クライアントはまずヘッダに付いた承認者の署名を確認し、次に預け入れと Merkle proof から根のハッシュ（root）を計算し直して、ヘッダの root と比べます。
 
 <br>
 
@@ -130,13 +130,13 @@ optimistic な bridge は、relayer が提出したメッセージをすぐに�
 
 [Zero-Knowledge Proof](../zero-knowledge-proof/) の技術を使い、source chain のヘッダの署名の検証や合意の規則の確認を回路（証明を作れる形の計算）として書きます。
 
-destination chain は、その計算を正しく実行したことを示す短い証明を検証します。軽量クライアントが行う検証を destination chain が安く確かめられるようにしたもの、と考えると分かりやすいです。信頼の相手は source chain の合意に加えて、証明を作り検証する仕組み（証明系）と回路の実装です。
+destination chain は、その計算を正しく実行したことを示す短い証明を検証します。軽量クライアントが行う検証を destination chain が安く確認できるようにしたもの、と考えると分かりやすいです。信頼の相手は source chain の合意に加えて、証明を作り検証する仕組み（証明系）と回路の実装です。
 
 <br>
 
 4 つの確かめ方を並べると、次のようになります。
 
-{{< figure src="images/bridge_trust.webp" alt="4 段の図。外部の署名者は 9 人中 5 人の署名を確かめ、署名者の過半を信頼する。軽量クライアントは source chain のヘッダと Merkle の経路を確かめ、source chain の合意と検証コードの実装を信頼する。異議の受付期間は期間中に異議が出ずに経過したことを確かめ、正直な監視者が 1 人いて期間内に動けることを信頼する。有効性の証明は証明を検証し、source chain の合意と証明系・回路の実装を信頼する" caption="destination chain が確かめるものと、信頼する相手" align="center" >}}
+{{< figure src="images/bridge_trust.webp" alt="4 段の図。外部の署名者は 9 人中 5 人の署名を確認し、署名者の過半を信頼する。軽量クライアントは source chain のヘッダと Merkle の経路を確認し、source chain の合意と検証コードの実装を信頼する。異議の受付期間は期間中に異議が出ずに経過したことを確認し、正直な監視者が 1 人いて期間内に動けることを信頼する。有効性の証明は証明を検証し、source chain の合意と証明系・回路の実装を信頼する" caption="destination chain が確認するものと、信頼する相手" align="center" >}}
 
 外部の署名者だけは、bridge のために新しく加わる相手を信頼します。軽量クライアントと有効性の証明は、source chain の合意と検証のコードに寄せています。異議の受付期間は、正直な監視者が 1 人いることに寄せています。
 
@@ -144,7 +144,7 @@ destination chain は、その計算を正しく実行したことを示す短�
 
 ### 署名鍵を奪われた bridge の実験
 
-外部の署名者を使う bridge で、署名鍵の過半を奪われると何が起きるかを Python で確かめました。2 つのチェーンを辞書で表し、9 人の署名者のうち 5 人の署名があればメッセージを受け入れます。
+外部の署名者を使う bridge で、署名鍵の過半を奪われると何が起きるかを Python で確認しました。2 つのチェーンを辞書で表し、9 人の署名者のうち 5 人の署名があればメッセージを受け入れます。
 
 標準ライブラリだけで動かすため、署名は [HMAC](https://docs.python.org/3/library/hmac.html) で代用しています。実際の bridge は [Digital Signature](../digital-signature/) で扱った公開鍵の署名を使いますが、閾値を数えて受け入れる処理は同じです。
 
@@ -245,7 +245,7 @@ wrapped coins without backing: 360
 
 {{< figure src="images/bridge_backing.webp" alt="棒グラフ。預け入れの後は金庫の残高 400・wrapped token の総量 400、Alice の払い出しの後は 360・360 で揃っている。9 本中 5 本の鍵を奪われて偽の払い出しが通った後は、金庫の残高が 0 になり、wrapped token だけが 360 残る" caption="偽の払い出しの前後での、金庫の残高と wrapped token の総量" align="center" >}}
 
-4 本の鍵では払い出しを拒否しましたが、5 本目で通りました。`release` は署名の数だけを確かめ、destination chain で焼却があったかを確かめる手段を持たないからです。なお、拒否された時は `used` に記録しないため、同じ番号 3 で送り直せます。
+4 本の鍵では払い出しを拒否しましたが、5 本目で通りました。`release` は署名の数だけを確認し、destination chain で焼却があったかを確認する手段を持たないからです。なお、拒否された時は `used` に記録しないため、同じ番号 3 で送り直せます。
 
 偽の払い出し（forged release）の後も destination chain の 360 wrapped はそのまま残り、Alice と Carol の残高の表示は変わりません。しかし、金庫（locked）は空なので、2 人が焼却して払い出しを求めても受け取れません。外部の署名者のタイプで信頼していた「署名者の過半は正直」という前提が崩れると、destination chain の側からは何も異常が見えないまま裏付けが消えます。
 
@@ -257,14 +257,14 @@ wrapped coins without backing: 360
 
 | 事故 | 時期 | 確かめ方 | 破られた所 |
 | --- | --- | --- | --- |
-| [Wormhole](../bridge-incidents/#wormhole) | 2022 年 2 月 | 外部の署名者 | 署名を確かめるコード |
+| [Wormhole](../bridge-incidents/#wormhole) | 2022 年 2 月 | 外部の署名者 | 署名を確認するコード |
 | [Ronin](../bridge-incidents/#ronin) | 2022 年 3 月 | 外部の署名者 | 署名者の鍵 4 本と、残っていた署名の代行の許可（計 9 人中 5 人分） |
 | [Nomad](../bridge-incidents/#nomad) | 2022 年 8 月 | 異議の受付期間 | 確認済みの扱いにする初期値 |
-| [BSC Token Hub](../bridge-incidents/#bsc-token-hub) | 2022 年 10 月 | 軽量クライアント | Merkle proof を確かめるコード |
+| [BSC Token Hub](../bridge-incidents/#bsc-token-hub) | 2022 年 10 月 | 軽量クライアント | Merkle proof を確認するコード |
 
-Ronin は、前節の実験と同じ場面です。運営する会社の鍵 4 本と、署名の代行の許可が残っていた 1 本の計 5 本で、偽の払い出しが通りました。残りの 3 件では鍵は奪われておらず、署名や証明を確かめるコードの欠陥で、偽の預け入れや焼却が本物として扱われました。
+Ronin は、前節の実験と同じ場面です。運営する会社の鍵 4 本と、署名の代行の許可が残っていた 1 本の計 5 本で、偽の払い出しが通りました。残りの 3 件では鍵は奪われておらず、署名や証明を確認するコードの欠陥で、偽の預け入れや焼却が本物として扱われました。
 
-4 件とも、金庫やトークンのコントラクト自体ではなく、相手のチェーンの預け入れや焼却を確かめる部分が破られています。どの確かめ方でも、信頼の前提には「確かめるコードが正しい」ことが含まれます。各事故の経緯と再現は [Bridge の事故](../bridge-incidents/) で扱います。
+4 件とも、金庫やトークンのコントラクト自体ではなく、相手のチェーンの預け入れや焼却を確認する部分が破られています。どの確かめ方でも、信頼の前提には「確認するコードが正しい」ことが含まれます。各事故の経緯と再現は [Bridge の事故](../bridge-incidents/) で扱います。
 
 ---
 
@@ -272,9 +272,9 @@ Ronin は、前節の実験と同じ場面です。運営する会社の鍵 4 �
 
 bridge の wrapped token は、名前に元の資産の名前が入っていても、金庫への引換券です。同じ ETH を元にした wrapped token でも、どの bridge が発行したかで裏付けと信頼の相手が異なります。
 
-以下は、bridge を使う前に確かめる点です。
+以下は、bridge を使う前に確認する点です。
 
-- 預け入れを誰が、どの方法で確かめているか。外部の署名者なら、署名者の人数と閾値、鍵を誰が持っているか。
+- 預け入れを誰が、どの方法で確認しているか。外部の署名者なら、署名者の人数と閾値、鍵を誰が持っているか。
 - コントラクトを更新できる管理者がいるか。更新の権限を持つ鍵は、検証の方法を丸ごと差し替えられます（[Upgradeable Proxy](../upgradeable-proxy/)）。
 - source chain の取引をどの時点で確定と見なしているか。[Finality](../finality/) より前に発行する bridge は、source chain のブロックが差し替わると裏付けを失います。
 - 受け取るトークンが発行者自身の発行したものか、bridge の wrapped token か。

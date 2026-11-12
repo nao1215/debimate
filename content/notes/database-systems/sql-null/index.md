@@ -38,7 +38,7 @@ topics: ["Data Modeling"]
 
 ### 前提
 
-例には次の表を使います。動かして確かめた結果は [SQLite](https://www.sqlite.org/) 3.50.4 のもので、並べ替えの例だけは [PostgreSQL](https://www.postgresql.org/) 17.11 と [MySQL](https://www.mysql.com/) 8.4.11 でも動かしています。
+例には次の表を使います。動かして確認した結果は [SQLite](https://www.sqlite.org/) 3.50.4 のもので、並べ替えの例だけは [PostgreSQL](https://www.postgresql.org/) 17.11 と [MySQL](https://www.mysql.com/) 8.4.11 でも動かしています。
 
 ```sql
 CREATE TABLE users (
@@ -118,7 +118,7 @@ UNKNOWN は、それを含む式の全体に伝わります。以下は、Postgr
 
 `WHERE` が残すのは、条件が TRUE になったレコードだけです。FALSE と UNKNOWN はどちらも残りません。`NULL` が絡む条件でレコードが消えるのは、この規則と、前の節で見た `NOT` の規則からきています。
 
-次の 4 つの問い合わせで、この規則が結果にどう表れるのかを確かめられます。
+次の 4 つの問い合わせで、この規則が結果にどう表れるのかを確認できます。
 
 ```sql
 SELECT NULL = NULL;                        -- NULL（UNKNOWN）

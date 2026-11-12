@@ -154,7 +154,7 @@ main: finished 2026-11-11T14:12:38Z exit 0
 log-shipper: finished 2026-11-11T14:12:39Z exit 0
 ```
 
-`log-shipper` は `main` の 1 秒後に終了コード 0 で止まり、Job は冒頭の図の 3 段目のとおり 12 秒で完了しました。Sidecar Containers が決めるのは「いつ止めるか」で、「止まれるか」は sidecar 自身の作りに残ります。実際のログ転送のソフトウェアなら、SIGTERM を受けた時に、溜めたログを送り切ってから止まるかどうかも確かめておきたい所です。
+`log-shipper` は `main` の 1 秒後に終了コード 0 で止まり、Job は冒頭の図の 3 段目のとおり 12 秒で完了しました。Sidecar Containers が決めるのは「いつ止めるか」で、「止まれるか」は sidecar 自身の作りに残ります。実際のログ転送のソフトウェアなら、SIGTERM を受けた時に、溜めたログを送り切ってから止まるかどうかも確認しておきたい所です。
 
 ---
 
@@ -179,7 +179,7 @@ wget: can't connect to remote host (127.0.0.1): Connection refused
 
 <br>
 
-プロキシを Sidecar Containers として置き、待ち受けを始めたかを [startupProbe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/) の TCP の接続で確かめるようにすると、次の通りでした。
+プロキシを Sidecar Containers として置き、待ち受けを始めたかを [startupProbe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/) の TCP の接続で確認するようにすると、次の通りでした。
 
 ```yaml
   initContainers:
@@ -231,9 +231,9 @@ ambient mode は、暗号化のような基本の処理をノードごとに 1 �
 
 ### sidecar を足す前に確かめること
 
-sidecar をこれから足す人も、既に動いている sidecar に出会った人も、確かめることは 4 つです。
+sidecar をこれから足す人も、既に動いている sidecar に出会った人も、確認することは 4 つです。
 
-Job やバッチのように終わる処理に足すなら、Kubernetes 1.29 以降では Sidecar Containers で、`initContainers` に `restartPolicy: Always` を付けて置きます。そのうえで、sidecar が SIGTERM を受けて止まるかを確かめます。止まらなければ、Job は完了しても、終わるたびに 30 秒待たされます。
+Job やバッチのように終わる処理に足すなら、Kubernetes 1.29 以降では Sidecar Containers で、`initContainers` に `restartPolicy: Always` を付けて置きます。そのうえで、sidecar が SIGTERM を受けて止まるかを確認します。止まらなければ、Job は完了しても、終わるたびに 30 秒待たされます。
 
 通信を仲介する sidecar なら、待ち受けを始めたことを startupProbe や `dependsOn` で実行基盤に伝えます。伝えないと、起動の直後にアプリケーションが落ち、再起動の回数として現れます。
 

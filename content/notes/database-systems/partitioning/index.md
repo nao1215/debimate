@@ -116,6 +116,8 @@ EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
 
 {{< figure src="images/partitioning_pruning.svg" alt="横に 1 月から 6 月のパーティション、縦に 3 つの書き方が並ぶ表の形の図。(1) 範囲で書いた条件は 3 月だけを青で読み、ほかは点線で読まない。(2) 関数で包んだ条件は 6 つ全てを読み、3 月以外の 5 つは黄土色で読んで全て捨てる。(3) generic plan は 3 月だけを読み、ほかは実行の開始時に外す" caption="同じ 3 月の条件でも、書き方で読むパーティションが変わる" align="center" >}}
 
+<br>
+
 <details><summary>EXPLAIN の出力の抜粋（Filter の行は省き、(2) は 4〜6 月も同じ形で続きます）</summary>
 
 ```text
@@ -139,6 +141,8 @@ EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
 ```
 
 </details>
+
+<br>
 
 どれも結果は 44,640 件で同じです。しかし、(1) は `events_2026_03` だけを読み、(2) は 6 つ全てを読んで、3 月以外の約 21 万件を `Rows Removed by Filter` で捨てています。
 
@@ -190,7 +194,7 @@ Range は 11 月の 1 つに全件が入り、Hash は 3 つにほぼ均等に�
 
 PostgreSQL の索引は、左側の Local Index のタイプだけです。親表に `CREATE INDEX` や `PRIMARY KEY` を付けると、各パーティションに同じ定義の索引が作られます。パーティションを `DROP` すれば索引も消え、`DETACH` すれば索引は外した表に残ります。
 
-[B-Tree](/notes/database-systems/b-tree/) の索引は 1 つのパーティションの中のレコードしか知らないので、主キーや [UNIQUE 制約](/notes/database-systems/unique-constraint/) にはパーティションキーを含める必要があります。以下は、その制約を確かめた SQL と出力です（[04_unique.sql](lab/04_unique.sql)）。
+[B-Tree](/notes/database-systems/b-tree/) の索引は 1 つのパーティションの中のレコードしか知らないので、主キーや [UNIQUE 制約](/notes/database-systems/unique-constraint/) にはパーティションキーを含める必要があります。以下は、その制約を確認した SQL と出力です（[04_unique.sql](lab/04_unique.sql)）。
 
 ```sql
 -- orders を created_at で 10 月・11 月の 2 つに分けた状態で（抜粋）
@@ -276,7 +280,7 @@ C_select finished after 0.1 s
 
 <br>
 
-`ATTACH PARTITION` にも注意点があります。繋ぐ表のレコードが全てパーティションの範囲に収まっているかを確かめるために、表全体を走査します。この走査は、範囲と同じ条件の `CHECK` 制約（各レコードが満たすべき条件）を先に付けておくと省けます。手順は以下の通りです。
+`ATTACH PARTITION` にも注意点があります。繋ぐ表のレコードが全てパーティションの範囲に収まっているかを確認するために、表全体を走査します。この走査は、範囲と同じ条件の `CHECK` 制約（各レコードが満たすべき条件）を先に付けておくと省けます。手順は以下の通りです。
 
 {{< note-steps border="slate" caption="親表を止めずに、新しい月のパーティションを追加する手順。" >}}
 - title: 表を作る

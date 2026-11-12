@@ -110,7 +110,7 @@ flowchart LR
 
 <br>
 
-作成者の近道と、解く人の逐次 2 乗の差を Python で確かめます。後述の LCS35 と同じ 2048 ビットの n を作り、t を 10 倍ずつ増やして、`φ(n)` を使う計算と t 回の 2 乗の時間を比べます。素数の生成には [SymPy](https://github.com/sympy/sympy) を使いました。
+作成者の近道と、解く人の逐次 2 乗の差を Python で確認します。後述の LCS35 と同じ 2048 ビットの n を作り、t を 10 倍ずつ増やして、`φ(n)` を使う計算と t 回の 2 乗の時間を比べます。素数の生成には [SymPy](https://github.com/sympy/sympy) を使いました。
 
 ```python
 import time
@@ -181,6 +181,8 @@ def independent(args):  # 依存の無い 2 乗を count 回
 
 {{< figure src="images/timelock_squaring_measured.svg" alt="左は 2 乗の回数を横軸、1 コアでの時間を縦軸にした実測で、点は毎秒約 12 万回の直線に乗る。右はワーカー数を横軸にした実測で、2 乗の鎖は 16 コアでも約 1.4 秒から縮まないが、依存の無い 2 乗は 1.81 秒から 0.19 秒まで縮む" caption="2 乗の回数・ワーカー数と時間（1 台の PC での実測）" align="center" >}}
 
+<br>
+
 <details>
 <summary>squaring_time.py の出力（<code>lab/squaring_time_output.txt</code>）</summary>
 
@@ -201,6 +203,8 @@ part 2: t=200,000, wall time until one result
 ```
 
 </details>
+
+<br>
 
 時間は t に比例し、鎖（図の one chain of 200k squarings）はコアを 16 個使っても 1.4 秒前後のままでした。増えたコアは別の puzzle を同時に解くのに使えるだけです。前述の Python より速いのは、プロセスを物理コアに固定したためと考えられます。固定しないプログラムを同じ PC で動かした時は、毎秒約 7 万回でした。
 

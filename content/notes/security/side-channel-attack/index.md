@@ -135,6 +135,8 @@ static int recover(equal_fn eq, int n) {
 
 GCC 15.2.0 の `-O2` でビルドし、コア 2 に固定して実行しました（`taskset -c 2 ./compare_timing`）。出力の全体は [output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/side-channel-attack/lab/output.txt) にあります。
 
+<br>
+
 <details>
 <summary>compare_timing の出力</summary>
 
@@ -171,6 +173,8 @@ constant_time,300,0/20
 ```
 
 </details>
+
+<br>
 
 1 段目を図にすると、以下の通りです。
 
@@ -258,7 +262,7 @@ Spectre は、正しい実行経路では決して起きない、範囲外の値
 
 | 対策 | 何をするか | 効く経路 | 注意点 |
 |---|---|---|---|
-| constant-time 実装 | 分岐とメモリのアドレスを秘密に依存させない | 時間・キャッシュ | コンパイラの最適化で崩れ得る。計測で確かめる |
+| constant-time 実装 | 分岐とメモリのアドレスを秘密に依存させない | 時間・キャッシュ | コンパイラの最適化で崩れ得る。計測で確認する |
 | マスキング / blinding | 秘密に乱数を混ぜ、観測値と秘密の相関を切る | 電力・時間 | 乱数の質に依存する。平均の時間は残り得る |
 | ランダムな遅延の追加 | 処理に乱数の待ちを足す | 時間（部分的） | 平均すると消え、回数で補える |
 
@@ -276,7 +280,7 @@ constant-time 実装は、実験で見た通り、秘密の値によって処理
 
 自分で暗号の関数を書く場面は多くありません。まず、言語やライブラリが用意した比較関数（`hmac.compare_digest`、`crypto/subtle.ConstantTimeCompare` など）を使い、秘密を `==` で比べないことが出発点です。鍵や署名を扱う処理は、枯れたライブラリに任せます。
 
-constant-time を保てているかは、人の目では分かりません。計測で確かめる道具があります。[dudect](https://github.com/oreparaz/dudect) は、固定した入力と乱数の入力で処理時間を多数回測り、2 つの分布の差を Welch の t 検定で判定します。
+constant-time を保てているかは、人の目では分かりません。計測で確認する道具があります。[dudect](https://github.com/oreparaz/dudect) は、固定した入力と乱数の入力で処理時間を多数回測り、2 つの分布の差を Welch の t 検定で判定します。
 
 実装は |t| が 10 を超えると漏れありと判定し、より厳しい 4.5 を使う流儀もあります。ハードウェアのモデル化は不要です。元の論文は Reparaz・Balasch・Verbauwhede の「[Dude, is my code constant time?](https://eprint.iacr.org/2016/1123)」（DATE 2017）です。この種の計測を CI に組み込むと、コンパイラの更新で constant-time が崩れた時に気付けます。
 
@@ -288,5 +292,5 @@ constant-time を保てているかは、人の目では分かりません。計
 
 - 処理をわざと遅くするだけの対策。乱数の遅延は差を取ると打ち消し合い、計測回数で破られます。
 - 秘密を `==` や通常の文字列比較で突き合わせる実装。先頭から比べて早期に抜ける比較は、一致した長さを時間として漏らします。
-- 計測せずに「分岐が無いから constant-time」と判断すること。コンパイラの最適化で分岐が入り得るので、生成された命令か実測で確かめます。
+- 計測せずに「分岐が無いから constant-time」と判断すること。コンパイラの最適化で分岐が入り得るので、生成された命令か実測で確認します。
 - 秘密に依存した添字で表を引く高速化（AES の T-table など）。キャッシュの状態から添字が漏れます。

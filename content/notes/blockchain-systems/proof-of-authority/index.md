@@ -30,7 +30,7 @@ PoA が使われるのは、参加する組織が互いに分かっている私�
 - 署名者はどう追加・削除されるのか。Clique では、なぜ同じ署名者が続けて署名できないのか。
 - 何割の署名者が止まると、または不正をすると、チェーンは止まるのか分岐するのか。
 
-ローカルの [Docker](https://www.docker.com/) で 4 台のネットワークを動かし、署名者を止めた時と通信を分断した時の振る舞いも確かめます。各チェーンや実装の対応状況は 2026 年 11 月時点のものです。
+ローカルの [Docker](https://www.docker.com/) で 4 台のネットワークを動かし、署名者を止めた時と通信を分断した時の振る舞いも確認します。各チェーンや実装の対応状況は 2026 年 11 月時点のものです。
 
 ---
 
@@ -152,7 +152,9 @@ Besu の QBFT では、JSON-RPC（ノードへの問い合わせ口）の `qbft_
 
 ### 4 台で止める実験
 
-ローカルの Docker で、4 台のうち 1 台ずつ署名者を止めた時の振る舞いを確かめます。QBFT は Besu、Clique は Ethereum クライアントの [Nethermind](https://github.com/NethermindEth/nethermind) で動かしました。Clique を動かせるクライアントが限られているからです（後述）。どちらもブロックの間隔は 2 秒で、外部に経路の無い Docker の内部ネットワークに閉じています。
+ローカルの Docker で、4 台のうち 1 台ずつ署名者を止めた時の振る舞いを確認します。QBFT は Besu、Clique は Ethereum クライアントの [Nethermind](https://github.com/NethermindEth/nethermind) で動かしました。Clique を動かせるクライアントが限られているからです（後述）。どちらもブロックの間隔は 2 秒で、外部に経路の無い Docker の内部ネットワークに閉じています。
+
+<br>
 
 <details><summary>実験の環境</summary>
 
@@ -168,6 +170,8 @@ Besu の QBFT では、JSON-RPC（ノードへの問い合わせ口）の `qbft_
 ホストの負荷平均が 20〜35 の状態で計測したので、待ち時間の数値はこの環境での値です。再現の手順は [lab/README.md](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/README.md) にあります。
 
 </details>
+
+<br>
 
 #### QBFT
 
@@ -195,7 +199,7 @@ heights 1..53: 0 heights differ between nodes
 
 2 台を止めていた間、残りの 2 台は round を上げ続け、待ち時間も伸びていました。
 
-再起動した node3 が他の 2 台の round に飛び移るのか、round 0 から数え直すのかは、翌日の再実行で Besu のログから確かめました。
+再起動した node3 が他の 2 台の round に飛び移るのか、round 0 から数え直すのかは、翌日の再実行で Besu のログから確認しました。
 
 Besu は round 2 以降、各検証者から最後に受け取った round の一覧（下の `Address: … Round:` の行）をログに出します（[ログの抜粋](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/output/qbft_trial5_rounds.txt)）。以下は node3 のログの抜粋で、時刻は UTC です（日付・スレッド名・ログレベルと一部の行を省き、アドレスを短くしてノード名を書き足しています）。
 
@@ -265,6 +269,8 @@ healed                         0 blocks  first new      -
 
 Clique は連続署名の制限（言い換えると「直近 ⌊N/2⌋ ブロックに署名していない署名者だけが署名できる」）で、何台が動いていればブロックを作り続けられるかを全て試します。QBFT は quorum の式 `⌈2N/3⌉` で計算します（クライアントは動かしていません）。
 
+<br>
+
 <details><summary>lab/limits.py</summary>
 
 ```python
@@ -307,6 +313,8 @@ for k in range(1, 5):
 ```
 
 </details>
+
+<br>
 
 以下は、N ごとに進み続けるのに必要な台数をグラフにしたものです。数値の全体は [limits_output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/limits_output.txt) にあります。
 
@@ -385,6 +393,8 @@ node1 と node2 は自分のチェーンの直近 2 ブロックに署名して�
 
 4 台がたどるチェーンの中身は揃っていて、一部のノードの「番号からブロックを引く索引」だけが、採用されなかったブロックを指したまま残っている、と読めます。表で「揃った」と書いたのは、チェーンの中身のことです。
 
+<br>
+
 <details><summary>高さ 18 の食い違いの中身</summary>
 
 ```mermaid
@@ -405,7 +415,7 @@ flowchart LR
 
 この再実行（[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/output/clique_trial5.txt)）では、node3 と node4 が、番号で 18 を問い合わせると node4 の 18 を返しました（図の点線）。ところが、同じノードの 19 の親は node3 の 18 で、19 以降のブロックは全ノードで一致しました。10 秒の時間切れで問い合わせ直しても（答えが無ければ 3 回まで）、全ノードが答えを返し、同じ食い違いが残りました。
 
-Nethermind の不具合かどうかまでは確かめていません。再実行では、最後まで動いた 3 回のうち 2 回で、同じ高さ 18 に食い違いが出ました（1 回は node4 だけ）。試行 1 は食い違った高さを記録していないので、同じ現象かは確定できません。以下は再実行の出力の抜粋です。
+Nethermind の不具合かどうかまでは確認していません。再実行では、最後まで動いた 3 回のうち 2 回で、同じ高さ 18 に食い違いが出ました（1 回は node4 だけ）。試行 1 は食い違った高さを記録していないので、同じ現象かは確定できません。以下は再実行の出力の抜粋です。
 
 ```text
   height 18 node1: 0xca238eb1 signed by n3 difficulty 1 | block 19 parent 0xca238eb1
@@ -438,7 +448,7 @@ PoA は、署名者を選べる場面で使われてきました。2026 年 11 �
 
 #### Clique を動かせるクライアント
 
-Clique を動かせるクライアントは減っています。geth は [v1.14.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.14.0)（2024 年 4 月）で Clique の署名をやめ、Besu は [26.4.0](https://github.com/besu-eth/besu/releases/tag/26.4.0)（2026 年 4 月）で Clique を削除しました。今回 Clique を Nethermind で動かしたのは、そのためです。今回の実験で、[Nethermind 2.2.2](https://github.com/NethermindEth/nethermind/releases/tag/2.2.2)（2026 年 10 月）が Clique の署名者として動くことを確かめました。
+Clique を動かせるクライアントは減っています。geth は [v1.14.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.14.0)（2024 年 4 月）で Clique の署名をやめ、Besu は [26.4.0](https://github.com/besu-eth/besu/releases/tag/26.4.0)（2026 年 4 月）で Clique を削除しました。今回 Clique を Nethermind で動かしたのは、そのためです。今回の実験で、[Nethermind 2.2.2](https://github.com/NethermindEth/nethermind/releases/tag/2.2.2)（2026 年 10 月）が Clique の署名者として動くことを確認しました。
 
 ---
 

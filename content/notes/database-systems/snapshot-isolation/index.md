@@ -113,6 +113,8 @@ else:
 
 `Session` は接続を開いたまま SQL を実行し、`scenario` は読み取りと更新の順序を変えて比較します。
 
+<br>
+
 <details>
 <summary>run.py の全体（Docker で PostgreSQL 17 を起動し、3 通りを実行して停止する）</summary>
 
@@ -271,6 +273,8 @@ finally:
 ```
 
 </details>
+
+<br>
 
 Python 3 と [Docker](https://docs.docker.com/) が使える環境で `python3 run.py` を実行できます。専用の PostgreSQL コンテナを使い、外部ポートや永続ボリュームを作らず、実験後に停止します。以下は PostgreSQL 17.11 での出力です。
 

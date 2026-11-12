@@ -73,7 +73,7 @@ MoE の層では、1 つの大きな FFN の代わりに、小さな FFN（専�
 
 <br>
 
-この数え方は、Ollama が保存しているモデルのファイル（[GGUF](https://github.com/ggml-org/ggml/blob/v0.29.0/docs/gguf.md) 形式）でも確かめました。[ローカル LLM の速さのノート](/notes/generative-ai/local-llm-speed/)の [lab/gguf_bytes.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/local-llm-speed/lab/gguf_bytes.py) は、ファイルのヘッダーからテンソル（重みの配列）ごとの形と型を読み、名前に `_exps` を含む専門家の重みだけは選ぶ割合で数えます。入力の埋め込み（トークンの番号で 1 行を引く表）は 1 行分だけを数えます。
+この数え方は、Ollama が保存しているモデルのファイル（[GGUF](https://github.com/ggml-org/ggml/blob/v0.29.0/docs/gguf.md) 形式）でも確認しました。[ローカル LLM の速さのノート](/notes/generative-ai/local-llm-speed/)の [lab/gguf_bytes.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/local-llm-speed/lab/gguf_bytes.py) は、ファイルのヘッダーからテンソル（重みの配列）ごとの形と型を読み、名前に `_exps` を含む専門家の重みだけは選ぶ割合で数えます。入力の埋め込み（トークンの番号で 1 行を引く表）は 1 行分だけを数えます。
 
 ```text
 $ python3 gguf_bytes.py qwen3-8b=... qwen3-coder-30b=... gpt-oss-20b=...（抜粋）

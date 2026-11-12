@@ -99,7 +99,7 @@ flowchart LR
     N -->|"もう無い"| E["無いと返す"]
 ```
 
-上記の図で、SSTable を開く前に確かめている Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。
+上記の図で、SSTable を開く前に確認している Bloom filter は、「このキーは確実に無い」か「有るかもしれない」かを答える小さなビット列です。SSTable ごとに 1 つ持たせ、「確実に無い」なら、その SSTable はディスクを読まずに飛ばします。
 
 [RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter) では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
 
@@ -130,7 +130,7 @@ compaction は、複数の SSTable を読んで 1 つの並びに併合し、古
 
 {{< figure src="images/lsm-tree_compaction_shapes.svg" alt="size-tiered と leveled のディスク上の並び。size-tiered は全てのキー範囲に掛かる sorted run が tier ごとに複数本並ぶ。leveled は L0 だけが範囲の重なるファイルを持ち、L1 と L2 はそれぞれ範囲で分割された 1 本の sorted run になる" caption="size-tiered と leveled のディスク上の sorted run" align="center" >}}
 
-size-tiered は、同じキーのバージョンが複数の sorted run に散らばったまま残ります。読む時に確かめる本数が多く、容量も多く使います。leveled は L1 以降の各レベルでキーが 1 回しか現れないので、読む本数と容量は抑えられます。しかし、上のレベルから 1 本降ろすたびに次のレベルの重なる部分を書き直すため、同じデータを何度も書きます。
+size-tiered は、同じキーのバージョンが複数の sorted run に散らばったまま残ります。読む時に確認する本数が多く、容量も多く使います。leveled は L1 以降の各レベルでキーが 1 回しか現れないので、読む本数と容量は抑えられます。しかし、上のレベルから 1 本降ろすたびに次のレベルの重なる部分を書き直すため、同じデータを何度も書きます。
 
 [LevelDB](https://github.com/google/leveldb/blob/main/doc/impl.md) は leveled で、L1 の上限を 10MB、L2 を 100MB と 10 倍ずつ大きくします。RocksDB は [Compaction の wiki](https://github.com/facebook/rocksdb/wiki/Compaction) で、size-tiered に当たる方式を Universal と呼びます。既定の Level は、小さいレベル（L0）を tiered、大きいレベルを leveled にした混合の方式です。
 
@@ -143,7 +143,7 @@ compaction のやり方で変わるコストは、3 種類の増幅で比べま�
 | 増幅 | 定義 | 主に増やす要因 |
 |---|---|---|
 | Write Amplification | ストレージに書いたバイト数 ÷ DB に書いたバイト数 | compaction で同じデータを書き直す回数 |
-| Read Amplification | 1 回の問い合わせで読むディスクの回数 | 確かめる sorted run の本数 |
+| Read Amplification | 1 回の問い合わせで読むディスクの回数 | 確認する sorted run の本数 |
 | Space Amplification | ディスク上のファイルの大きさ ÷ データの大きさ | 残っている古いバージョンと tombstone |
 
 前節の size-tiered と leveled は、3 つのうち抑えるものが逆になっており、3 つを同時に小さくすることは難しいと考えられます。
@@ -242,19 +242,19 @@ none     0.97   17.05 1.10        4.88      10.77  107 107000  9932  9932
 | 列 | 意味 |
 |---|---|
 | write | ディスクに書いた件数 ÷ ユーザーが書いた件数（Write Amplification） |
-| visited / read | `get` 1 回で確かめた SSTable / Bloom filter を通過して読んだ SSTable（Read Amplification） |
+| visited / read | `get` 1 回で確認した SSTable / Bloom filter を通過して読んだ SSTable（Read Amplification） |
 | space(load) / space(end) | 保存件数 ÷ 生きているキーの数（Space Amplification）。左は `put` の終わり、右は `delete` の終わり |
 | full | 全ての SSTable を 1 本に併合した後の件数 |
 
 以下は、3 つの増幅を compaction のやり方ごとに並べた図です。容量の増幅は `delete` の後の値です。
 
-{{< figure src="images/lsm-tree_amplification.svg" alt="3 つの横棒グラフ。書き込みの増幅は leveled 3.70、size-tiered 2.64、compaction なし 0.97。get 1 回で確かめる SSTable は 4.05、4.96、17.05 本。削除後の容量の増幅は 3.05、5.27、10.77" caption="compaction のやり方ごとの 3 つの増幅" align="center" >}}
+{{< figure src="images/lsm-tree_amplification.svg" alt="3 つの横棒グラフ。書き込みの増幅は leveled 3.70、size-tiered 2.64、compaction なし 0.97。get 1 回で確認する SSTable は 4.05、4.96、17.05 本。削除後の容量の増幅は 3.05、5.27、10.77" caption="compaction のやり方ごとの 3 つの増幅" align="center" >}}
 
 書き込みの増幅は leveled が最も大きく、容量の増幅は size-tiered が leveled の約 2 倍です。[Compaction の wiki](https://github.com/facebook/rocksdb/wiki/Compaction) にも、書き込みの増幅は通常 leveled の方が tiered より悪いとあります。
 
 レベルが増えるほど差は開き、[チューニングガイド](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide)の 500GB・5 レベルの例では leveled が約 33 です。この実験の差が小さいのは、データが L2 までしか育たないからです。`none` の書き込みが 1 を下回るのは、Memtable 上で上書きされた分と、最後に Memtable に残った分をディスクに書いていないからです。
 
-Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後です。しかし `none` は `get` 1 回ごとに平均 17 本の Bloom filter を確かめ、偽陽性の分だけ無駄な読み出しも増えています。
+Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後です。しかし `none` は `get` 1 回ごとに平均 17 本の Bloom filter を確認し、偽陽性の分だけ無駄な読み出しも増えています。
 
 下記の図は、保存している件数（entries on disk、実線）と生きているキーの数（Live keys、破線）の推移です。
 
@@ -268,11 +268,11 @@ Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後�
 
 ### compaction が遅れた時
 
-compaction は flush と同じく裏のスレッドで動きます。書き込みの量が compaction の処理能力を上回ると、併合されない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確かめるしかありません。下記の図は、compaction を止めた `none`（図の No compaction）と、他の 2 つの SSTable の本数の推移です。
+compaction は flush と同じく裏のスレッドで動きます。書き込みの量が compaction の処理能力を上回ると、併合されない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確認するしかありません。下記の図は、compaction を止めた `none`（図の No compaction）と、他の 2 つの SSTable の本数の推移です。
 
 {{< figure src="images/lsm-tree_runs_timeline.svg" alt="操作回数に対する SSTable の本数。compaction を行わないと flush のたびに 1 本ずつ増え、11 万回の操作で 107 本になる。leveled と size-tiered は 10 本未満で上下を繰り返す" caption="compaction のやり方ごとの SSTable の本数" align="center" >}}
 
-本数は flush の回数に比例して増え、前節の通り `get` 1 回で確かめる SSTable は 4〜5 本から 17 本に、容量の増幅は 10 倍を超えました。このまま書き込みを受け付け続けると、読み取りは遅くなり続け、ディスクも溢れます。
+本数は flush の回数に比例して増え、前節の通り `get` 1 回で確認する SSTable は 4〜5 本から 17 本に、容量の増幅は 10 倍を超えました。このまま書き込みを受け付け続けると、読み取りは遅くなり続け、ディスクも溢れます。
 
 そこで RocksDB は、溜まった量に応じて[書き込みの速度を落とし](/notes/distributed-systems/backpressure/)（slowdown）、それでも追い付かなければ止めます（stop）。仕組みは [Write Stalls の wiki](https://github.com/facebook/rocksdb/wiki/Write-Stalls) にあります。発動の条件は以下の通りで、既定値は RocksDB の [advanced_options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/advanced_options.h) にある値です。
 
@@ -301,7 +301,7 @@ LSM-Tree の書き込みが速いのは、併合の作業を後回しにして�
 
 LSM-Tree は、書き込みの時に済ませるはずの整理を compaction に後回しにします。その代わりに、次の制約があります。
 
-- 1 つのキーを読む時に、複数の SSTable を確かめる場合がある
+- 1 つのキーを読む時に、複数の SSTable を確認する場合がある
 - 範囲の読み取りではキー全体で作った Bloom filter が効かず、範囲に掛かる全ての sorted run を突き合わせる
 - 削除しても、compaction が最下段に届くまで容量が減らない
 - compaction の I/O が通常の読み書きと競合し、追い付かなければ書き込みが絞られる
@@ -314,7 +314,7 @@ LSM-Tree は、書き込みの時に済ませるはずの整理を compaction �
 - 範囲の読み取りが中心で、応答時間のばらつきを小さく保つ必要がある場合
 - 削除と挿入を短い間隔で繰り返し、tombstone が溜まり続ける場合
 
-書き込みが少ないなら、B-Tree の方が素直です。[B-Tree](/notes/database-systems/b-tree/) なら、根から葉まで数ページを降りれば値に届きます。LSM-Tree は Bloom filter で読む SSTable を絞れても、各レベルを確かめる処理が残ります。
+書き込みが少ないなら、B-Tree の方が素直です。[B-Tree](/notes/database-systems/b-tree/) なら、根から葉まで数ページを降りれば値に届きます。LSM-Tree は Bloom filter で読む SSTable を絞れても、各レベルを確認する処理が残ります。
 
 範囲の読み取りが中心の場合は、平均の速さより、compaction の I/O が重なった時の遅れが問題になります。大きな併合の I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量のレコードを集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が効く場合があります。
 

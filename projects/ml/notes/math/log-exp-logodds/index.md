@@ -22,7 +22,7 @@ Naive Bayes の式を教科書どおりに書いた時や、分類の確率を�
 
 <br>
 
-本記事では、ML の説明に出てくる log・exp・log-odds を自分で計算して確かめたい人と、scikit-learn の結果を読む人に向けて、次の疑問に答えます。
+本記事では、ML の説明に出てくる log・exp・log-odds を自分で計算して確認したい人と、scikit-learn の結果を読む人に向けて、次の疑問に答えます。
 
 - log と exp は何が対応し、ML の log の底は何か。
 - 確率をそのまま掛けると、どこで 0 になるのか。
@@ -50,7 +50,7 @@ Naive Bayes の式を教科書どおりに書いた時や、分類の確率を�
 
 モデルのパラメータは、学習データ 1 件ずつに付けた確率の積が最大になるように決めることがあり、この積を尤度と呼びます。尤度 `Π_i p_i` を最大にする時は、代わりに `Σ_i log(p_i)` を最大にします。log は増える関数なので、最大になるパラメータは変わりません。和にすると、[勾配](../partial-derivative-gradient/)も 1 件ずつの勾配の和で求まります。
 
-底は、ツールを移る時に取り違えやすい所です。NumPy の `np.log` と Python の [`math.log`](https://docs.python.org/3/library/math.html#math.log) は、底を省くと自然対数です。一方で、Excel の [`LOG` 関数](https://support.microsoft.com/en-us/office/log-function-4e82f196-1ca9-4747-8fb0-6c4a3abb3280)は底を省くと 10 になります。Python で計算した値を Excel で確かめると、`log(10) ≈ 2.303` 倍ずれます。
+底は、ツールを移る時に取り違えやすい所です。NumPy の `np.log` と Python の [`math.log`](https://docs.python.org/3/library/math.html#math.log) は、底を省くと自然対数です。一方で、Excel の [`LOG` 関数](https://support.microsoft.com/en-us/office/log-function-4e82f196-1ca9-4747-8fb0-6c4a3abb3280)は底を省くと 10 になります。Python で計算した値を Excel で確認すると、`log(10) ≈ 2.303` 倍ずれます。
 
 ---
 
@@ -137,7 +137,7 @@ softmax: [0.66524096 0.24472847 0.09003057]
 
 <br>
 
-そこで、ロジット `[2, 1, 0]` に `c` を足しながら、式どおりに書いた素朴な softmax が `[0.665, 0.245, 0.090]` を返すかを確かめました。
+そこで、ロジット `[2, 1, 0]` に `c` を足しながら、式どおりに書いた素朴な softmax が `[0.665, 0.245, 0.090]` を返すかを確認しました。
 
 ```python
 def softmax_naive(z):
@@ -250,7 +250,7 @@ z = 40 をロジットのまま計算: 40.0  z + log1p(exp(-z)): 40.0
 
 float32 では z = 16.64 で損失が `inf` になります。学習が進んで自信を持った予測が外れると、ロジットはこの程度の大きさになり得ると考えられます。この式のまま勾配を求めると、各段の微分を掛け合わせる連鎖律で、`1 / (1 - p)` の `inf` に sigmoid の微分の `0` を掛けることになり、勾配は `nan` です。
 
-ニューラルネットのライブラリ [PyTorch](https://pytorch.org/) の [`BCELoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCELoss.html) は確率を受け取る損失で、文書によると log の値を -100 で止めるので、損失は `inf` ではなく 100 に張り付きます。ロジットを受け取る [`BCEWithLogitsLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) は、文書に log-sum-exp の工夫で数値的に安定させているとあります。本記事では PyTorch を動かして確かめていません。
+ニューラルネットのライブラリ [PyTorch](https://pytorch.org/) の [`BCELoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCELoss.html) は確率を受け取る損失で、文書によると log の値を -100 で止めるので、損失は `inf` ではなく 100 に張り付きます。ロジットを受け取る [`BCEWithLogitsLoss`](https://docs.pytorch.org/docs/stable/generated/torch.nn.BCEWithLogitsLoss.html) は、文書に log-sum-exp の工夫で数値的に安定させているとあります。本記事では PyTorch を動かして確認していません。
 
 ---
 
@@ -262,7 +262,7 @@ float32 では z = 16.64 で損失が `inf` になります。学習が進んで
 
 <br>
 
-scikit-learn に同梱の [breast_cancer](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html) で、この関係を確かめました。乳がんの細胞核の画像から測った 30 項目で、腫瘍が良性か悪性かを当てるデータで、`target = 1` が良性です。[標準化](../../ml/standardization/)してから学習したので、係数は各列を 1 標準偏差増やした時の log-odds の増え方です。
+scikit-learn に同梱の [breast_cancer](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html) で、この関係を確認しました。乳がんの細胞核の画像から測った 30 項目で、腫瘍が良性か悪性かを当てるデータで、`target = 1` が良性です。[標準化](../../ml/standardization/)してから学習したので、係数は各列を 1 標準偏差増やした時の log-odds の増え方です。
 
 ```python
 bc = load_breast_cancer()
@@ -308,7 +308,7 @@ log が係数の読み方を変える例は、もう 1 つあります。[線形
 
 確率を掛ける計算を自分で書いたら、同じ計算を log の和でも書き、答えが一致するかを比べます。冒頭の図のとおり、値が `0.0` になっても `argmax` はエラーを出さずに先頭のクラスを返すので、正解率を見ただけでは原因に気付きにくいからです。掛けた値が `0.0` になった行を数えれば、すぐに分かります。
 
-確率を足す所は、`logsumexp` と最大値を引く softmax を使います。自分で書く時は、ロジットから最大値を引いてから `exp` に渡します。float32 では最大のロジットが 88 を超えると壊れるので、temperature を小さくする時は特に確かめます。
+確率を足す所は、`logsumexp` と最大値を引く softmax を使います。自分で書く時は、ロジットから最大値を引いてから `exp` に渡します。float32 では最大のロジットが 88 を超えると壊れるので、temperature を小さくする時は特に確認します。
 
 損失が `inf` や `nan` になったら、確率を経由して log を取っていないかを先に見ます。2 値の交差エントロピーは、ロジットのまま `np.logaddexp` や PyTorch の `BCEWithLogitsLoss` で計算します。
 

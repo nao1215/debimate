@@ -9,27 +9,27 @@ wrapTables: true
 topics: ["Scaling"]
 ---
 
-[Ethereum](https://ethereum.org/) では、ネットワークに参加する多数のノード（取引を検証するコンピュータ）が、全ての取引を同じ順に実行して結果を照合します。誰でも結果を確かめられる代わりに、1 秒に処理できる取引の数が限られ、混み合うと手数料が上がります。
+[Ethereum](https://ethereum.org/) では、ネットワークに参加する多数のノード（取引を検証するコンピュータ）が、全ての取引を同じ順に実行して結果を照合します。誰でも結果を確認できる代わりに、1 秒に処理できる取引の数が限られ、混み合うと手数料が上がります。
 
-[Rollup](https://ethereum.org/developers/docs/scaling/#rollups) は、この制約を緩める仕組みです。取引の実行を Ethereum の外にある別のチェーンで行い、Ethereum には実行の結果と、結果を確かめるのに要るデータだけを書き込みます。土台になる Ethereum を Layer 1（L1）、外のチェーンを Layer 2（L2）と呼びます。L2 では、シーケンサー（sequencer）と呼ばれるサーバーが利用者の取引を受け取り、順に実行し、多数の取引を 1 つの batch（まとめ）にして L1 に提出します。
+[Rollup](https://ethereum.org/developers/docs/scaling/#rollups) は、この制約を緩める仕組みです。取引の実行を Ethereum の外にある別のチェーンで行い、Ethereum には実行の結果と、結果を確認するのに要るデータだけを書き込みます。土台になる Ethereum を Layer 1（L1）、外のチェーンを Layer 2（L2）と呼びます。L2 では、シーケンサー（sequencer）と呼ばれるサーバーが利用者の取引を受け取り、順に実行し、多数の取引を 1 つの batch（まとめ）にして L1 に提出します。
 
 例えば、Alice が L1 と L2 の間で資産を移す L1 上のプログラム（bridge）を通じて、1 ETH（Ethereum の通貨）を L2 の 1 つである [OP Mainnet](https://docs.optimism.io/) に預け、L2 上で Bob に 0.3 ETH を送ったとします。L2 の送金は数秒で残高に反映され、手数料も L1 より安くなります。
 
 しかし、Bob が受け取った ETH を Ethereum に戻す時は、[OP Mainnet の出金手順](https://docs.optimism.io/op-stack/bridging/withdrawal-flow)に従い、L1 で出金を証明してから 7 日間待ちます。L2 では数秒で済んだ送金が、L1 に戻す時は 1 週間かかります。以下は、L2 で実行した多数の取引のうち、L1 に何が届くかを示した図です。
 
-{{< figure src="images/rollup_concept.webp" alt="上の L2 では、利用者の多数の取引をシーケンサーが順に実行し、1 つの batch に詰める。batch から下の L1 へ矢印が 2 本出て、rollup のコントラクトには state root、L1 のブロックには取引データが届く。左の黄土色の「異議 または validity proof」がコントラクトの更新を確かめる" caption="L2 の多数の取引のうち、L1 に届くもの" align="center" >}}
+{{< figure src="images/rollup_concept.webp" alt="上の L2 では、利用者の多数の取引をシーケンサーが順に実行し、1 つの batch に詰める。batch から下の L1 へ矢印が 2 本出て、rollup のコントラクトには state root、L1 のブロックには取引データが届く。左の黄土色の「異議 または validity proof」がコントラクトの更新を確認する" caption="L2 の多数の取引のうち、L1 に届くもの" align="center" >}}
 
 L1 に届くのは、L2 の残高などを短い値に要約した state root（状態の要約）と、batch に入れた取引のデータです。state root は L1 上のプログラム（rollup のコントラクト）に記録され、取引データは L1 のブロックに置かれます。
 
-L1 は state root を提出する者を無条件には信用せず、誰かが異議（challenge）を出せる期間を待つか、計算が正しいことの証明（validity proof）を検証して、state root が正しいかを確かめます。OP Mainnet は前者の方式で、冒頭の 7 日間は、異議が出るのを待つために設けた期間です。
+L1 は state root を提出する者を無条件には信用せず、誰かが異議（challenge）を出せる期間を待つか、計算が正しいことの証明（validity proof）を検証して、state root が正しいかを確認します。OP Mainnet は前者の方式で、冒頭の 7 日間は、異議が出るのを待つために設けた期間です。
 
 <br>
 
-本記事では、rollup が L1 に何を残し、L1 がそれをどう確かめるかを次の順に説明します。
+本記事では、rollup が L1 に何を残し、L1 がそれをどう確認するかを次の順に説明します。
 
 - L2 はどの処理を L1 の外へ出し、L1 には何を残すのか。
 - state root だけでは、なぜ利用者が L2 の状態を再計算できないのか。
-- 異議と validity proof では、L1 は何を確かめ、いつ出金を確定できるのか。
+- 異議と validity proof では、L1 は何を確認し、いつ出金を確定できるのか。
 - 取引データは L1 のどこに置かれ、いつまで残るのか。
 
 L1 に取引を入れるまでの流れは [Ethereum Transaction](../ethereum-transaction/) で説明しています。
@@ -38,7 +38,7 @@ L1 に取引を入れるまでの流れは [Ethereum Transaction](../ethereum-tr
 
 ### L1 と L2 の分担
 
-Ethereum では、取引をブロックに入れる時に[全ての検証ノードが同じ順序で実行し](../evm/)、状態の更新を確かめます。ここでいう状態は、各アカウントの残高やコントラクトが保存している値の全体で、DB でいえばテーブルの全行にあたります。全てのノードが計算とデータを処理するため、取引の処理量には限りがあります。
+Ethereum では、取引をブロックに入れる時に[全ての検証ノードが同じ順序で実行し](../evm/)、状態の更新を確認します。ここでいう状態は、各アカウントの残高やコントラクトが保存している値の全体で、DB でいえばテーブルの全行にあたります。全てのノードが計算とデータを処理するため、取引の処理量には限りがあります。
 
 rollup は、利用者の取引を L2 で実行してから、複数の取引を batch にまとめます。L1 は L2 の各取引を通常は一件ずつ再実行しません。L1 上の [Smart Contract](../smart-contract/)（rollup のコントラクト）が、batch を実行した後の state root と、異議または validity proof を受け取ります。取引を L2 内でまとめることで、L1 に載せる処理を減らせます。
 
@@ -107,7 +107,7 @@ print("一致するか:", state_root(forged) == state_root(apply(before, txs)))
 一致するか: False
 ```
 
-検証者が不正に気付けたのは、`before` と `txs` を入手できたからです。`txs` が無ければ、`c3ce5aa78617464f` が正しい root かどうかを確かめる手段はありません。
+検証者が不正に気付けたのは、`before` と `txs` を入手できたからです。`txs` が無ければ、`c3ce5aa78617464f` が正しい root かどうかを確認する手段はありません。
 
 <br>
 
@@ -143,7 +143,7 @@ L1 のコントラクトは、batch の全ての計算を再実行して判定�
 
 ZK Rollup は、batch の実行が規則に従ったことを示す validity proof（有効性証明）を作り、L1 の verifier contract（証明を検証するコントラクト）に提出します。L1 は証明を検証し、受け入れた batch の state root を更新します。証明には [Zero-Knowledge Proof](../zero-knowledge-proof/)（ゼロ知識証明）の技術を使います。
 
-名称に ZK とありますが、rollup で使う証明が常に取引内容を隠すためのものとは限りません。ここで重要なのは、L1 が短い証明を検証するだけで、batch の全ての計算が正しかったと確かめられる点です。Optimistic Rollup が異議の出た時だけ 1 ステップを判定するのに対し、ZK Rollup では全ての batch が validity proof で確かめられます（複数の batch をまとめて 1 つの証明にする実装もあります）。
+名称に ZK とありますが、rollup で使う証明が常に取引内容を隠すためのものとは限りません。ここで重要なのは、L1 が短い証明を検証するだけで、batch の全ての計算が正しかったと確認できる点です。Optimistic Rollup が異議の出た時だけ 1 ステップを判定するのに対し、ZK Rollup では全ての batch が validity proof で確認できます（複数の batch をまとめて 1 つの証明にする実装もあります）。
 
 validity proof が検証されてから L1 上の出金を受け付ける構成では、不正を待ち受ける challenge 期間は必要ありません。以下は、L1 に戻す出金の手順を 2 つの方式で並べた図です。
 
@@ -155,7 +155,7 @@ ZK Rollup でも、証明を作る時間、batch の提出間隔、L1 のブロ�
 
 安全性は、誤った計算に対して正しい証明を作れないという証明の仕組みの性質だけでなく、その実装に欠陥が無いこと、証明を作る主体が止まらないこと、取引データが公開されていることにも依存します。証明が正しい遷移を示しても、利用者が必要なデータを得られなければ、自分の資産を扱う手順を実行できません。
 
-| 検証方法 | L1 が受け取る主な材料 | L1 が確かめること |
+| 検証方法 | L1 が受け取る主な材料 | L1 が確認すること |
 | --- | --- | --- |
 | Optimistic Rollup | state root、取引データ、異議が出た時の fault proof | 異議が出た時だけ、食い違う 1 ステップ |
 | ZK Rollup | state root、取引データ、validity proof | 全ての batch が、証明で正しいか |

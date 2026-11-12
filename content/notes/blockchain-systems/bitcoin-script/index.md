@@ -105,7 +105,7 @@ OP_CHECKSIG は、今検証している取引の内容に対する署名かど�
 
 OP_DUP で公開鍵を複製するのは、ハッシュ値の照合で使う分と、その後の署名検証で使う分を残すためです。OP_HASH160 は一番上の公開鍵をハッシュ値に置き換えるので、複製しなければ署名検証に必要な公開鍵がなくなります。
 
-公開鍵と署名のどちらを間違えたかで、失敗する箇所は異なります。以下は、データの形式が正しい場合に、2 段階の検査で何を確かめるかを示した図です。
+公開鍵と署名のどちらを間違えたかで、失敗する箇所は異なります。以下は、データの形式が正しい場合に、2 段階の検査で何を確認するかを示した図です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -173,7 +173,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-図のとおり、使う時には条件スクリプトの本体と証明の両方を出します。検証者は、本体のハッシュ値が出力の値と一致することを確かめてから、本体を実行します。P2SH を定めた [BIP-16](https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki)（Bitcoin Improvement Proposal、仕様変更の提案文書）では、出力はハッシュ値と、それを照合する短い命令列だけです。
+図のとおり、使う時には条件スクリプトの本体と証明の両方を出します。検証者は、本体のハッシュ値が出力の値と一致することを確認してから、本体を実行します。P2SH を定めた [BIP-16](https://github.com/bitcoin/bips/blob/master/bip-0016.mediawiki)（Bitcoin Improvement Proposal、仕様変更の提案文書）では、出力はハッシュ値と、それを照合する短い命令列だけです。
 
 条件の本体は使う時に提示するため、P2SH は条件を消してデータを圧縮する仕組みではありません。長い条件を知って持ち運ぶのも、その分の手数料を払うのも、使う時の受け取る側（条件を設計した本人）です。多くの公開鍵を並べる [multisig](../multisig/) のような長い条件は、この形式との組み合わせで使われます。
 

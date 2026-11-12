@@ -96,7 +96,7 @@ function _transfer(address from, address to, uint256 amount) internal {
 }
 ```
 
-`require` は条件を満たさなければ実行を失敗させます。この例では、宛先がゼロアドレスでないことと、送り主の残高が十分であることを確かめます。ゼロアドレスは、値がすべて 0 のアドレスです。
+`require` は条件を満たさなければ実行を失敗させます。この例では、宛先がゼロアドレスでないことと、送り主の残高が十分であることを確認します。ゼロアドレスは、値がすべて 0 のアドレスです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
@@ -311,4 +311,4 @@ ERC-20 が揃えるのは、アプリが呼び出す基本的な操作です。�
 
 [OpenZeppelin の SafeERC20](https://docs.openzeppelin.com/contracts/5.x/api/token/erc20#SafeERC20) は、返り値が false のケースや返り値のないトークンなどの差を扱うためのライブラリです。
 
-利用時には、残高だけでなく、利用を認めた相手と承認額も資産管理の対象になります。秘密鍵を守ることと、コントラクトに渡す権限を確かめることの両方が必要です。
+利用時には、残高だけでなく、利用を認めた相手と承認額も資産管理の対象になります。秘密鍵を守ることと、コントラクトに渡す権限を確認することの両方が必要です。

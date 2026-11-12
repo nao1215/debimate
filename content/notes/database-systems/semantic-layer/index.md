@@ -58,7 +58,7 @@ $ sqly --sql-file revenue.sql orders.csv order_items.csv payments.csv
 +---------------------+-------+
 ```
 
-どれも SQL としては正しく、どれを「売上」と呼ぶかは会社の決め事です。経理は税抜で返品を除いた 5700 円を、決済の担当は税込の支払い額（8250 円か 6270 円）を見たいかもしれません。ダッシュボードごとに別の人が SQL を書くと、それぞれが別の定義を選び、会議で「どちらの数字が正しいのか」を確かめる時間が生まれます。
+どれも SQL としては正しく、どれを「売上」と呼ぶかは会社の決め事です。経理は税抜で返品を除いた 5700 円を、決済の担当は税込の支払い額（8250 円か 6270 円）を見たいかもしれません。ダッシュボードごとに別の人が SQL を書くと、それぞれが別の定義を選び、会議で「どちらの数字が正しいのか」を確認する時間が生まれます。
 
 <br>
 
@@ -88,7 +88,7 @@ ORDER BY c.region;
 
 正しい値は、東京が支払い 4400 円・5 点、大阪が 3850 円・5 点です。東京の支払いは 2 倍以上、販売点数は両地域とも 2 倍近くに膨らみました。支払いは明細の数だけ、明細は支払いの数だけ複製されるからです。
 
-1 対多の関係を JOIN して、多の側の数だけ 1 の側のレコードが複製されることを、MetricFlow のドキュメントは [fan-out join](https://docs.getdbt.com/docs/build/join-logic) と呼んでいます。今回のように、注文という共通の親から 2 つの 1 対多の関係を同時にたどり、明細と支払いが多対多の組み合わせになる形は chasm join と呼ばれます。冒頭の図は、この chasm join の例です。どちらも、件数を確かめなければ気付けません。
+1 対多の関係を JOIN して、多の側の数だけ 1 の側のレコードが複製されることを、MetricFlow のドキュメントは [fan-out join](https://docs.getdbt.com/docs/build/join-logic) と呼んでいます。今回のように、注文という共通の親から 2 つの 1 対多の関係を同時にたどり、明細と支払いが多対多の組み合わせになる形は chasm join と呼ばれます。冒頭の図は、この chasm join の例です。どちらも、件数を確認しなければ気付けません。
 
 ---
 
@@ -207,7 +207,7 @@ GROUP BY COALESCE(p.region, i.region);
 
 <br>
 
-MetricFlow は、この JOIN の向きをエンティティの型から選びます。[join のルール](https://docs.getdbt.com/docs/build/join-logic)では、`foreign` から `primary` への JOIN（支払いの order から注文の order へ）は許し、`primary` から `foreign` への JOIN（注文から明細へ）や `foreign` 同士の JOIN（明細から支払いへ。どちらも order が foreign）は fan-out になるとして許しません。冒頭の図の chasm join は、この foreign 同士の組み合わせにあたります。SQL を書く人が毎回レコード数を確かめる代わりに、エンティティの型を一度宣言すれば、膨らむ JOIN は組み立てられなくなります。
+MetricFlow は、この JOIN の向きをエンティティの型から選びます。[join のルール](https://docs.getdbt.com/docs/build/join-logic)では、`foreign` から `primary` への JOIN（支払いの order から注文の order へ）は許し、`primary` から `foreign` への JOIN（注文から明細へ）や `foreign` 同士の JOIN（明細から支払いへ。どちらも order が foreign）は fan-out になるとして許しません。冒頭の図の chasm join は、この foreign 同士の組み合わせにあたります。SQL を書く人が毎回レコード数を確認する代わりに、エンティティの型を一度宣言すれば、膨らむ JOIN は組み立てられなくなります。
 
 ---
 

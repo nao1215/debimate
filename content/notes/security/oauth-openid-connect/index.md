@@ -23,12 +23,12 @@ topics: ["Authentication / Identity", "Authorization"]
 
 <br>
 
-本記事では、OAuth 2.0 と OIDC で一般的な Authorization Code Flow（code を先に受け取り、別の経路で token と交換する流れ）を中心に、次の疑問に答えます。後半では、localhost 上の小さな authorization server で、横取りした code が使える場合と使えない場合を実験で確かめます。
+本記事では、OAuth 2.0 と OIDC で一般的な Authorization Code Flow（code を先に受け取り、別の経路で token と交換する流れ）を中心に、次の疑問に答えます。後半では、localhost 上の小さな authorization server で、横取りした code が使える場合と使えない場合を実験で確認します。
 
 - 認可の access token と、認証の ID Token は何が違うのか。
 - なぜ authorization server は、token ではなく code を先に返すのか。
 - PKCE は、横取りされた code をどうやって無効にするのか。
-- redirect URI・state・nonce は、それぞれ何を確かめているのか。
+- redirect URI・state・nonce は、それぞれ何を確認しているのか。
 - 2025 年以降の推奨では、どのやり方を使わないのか。
 
 refresh token と、利用者のいない client credentials grant の詳細は、本記事では扱いません。
@@ -37,7 +37,7 @@ refresh token と、利用者のいない client credentials grant の詳細は�
 
 ### 認可と認証の違い
 
-OAuth 2.0 の access token は、resource server に対して「この client に、この範囲の操作を許した」ことを示す値です。[Authentication](../authentication/) のノートで見た通り、相手が誰かを確かめる認証と、その相手に操作を許すかを決める認可は別の処理です。
+OAuth 2.0 の access token は、resource server に対して「この client に、この範囲の操作を許した」ことを示す値です。[Authentication](../authentication/) のノートで見た通り、相手が誰かを確認する認証と、その相手に操作を許すかを決める認可は別の処理です。
 
 OAuth 2.0 が標準化したのは後者で、[RFC 6749](https://www.rfc-editor.org/rfc/rfc6749.html) には、ログインした利用者を client に伝える仕組みがありません（[OAuth.net の解説](https://oauth.net/articles/authentication/)）。
 
@@ -61,7 +61,7 @@ sequenceDiagram
 
 access token は refresh token から利用者のいない所で発行し直すこともできるので、持っているだけではログインの証明になりません。前述の解説は、この壊れ方を access token の注入と audience restriction（宛先の制限）の欠如として説明しており、token substitution とも呼ばれます。
 
-OIDC の ID Token は、この穴を埋めるために client 宛てに発行される、署名付きの認証結果です。[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) は、ID Token の `aud`（audience、宛先）に client の `client_id` を含めることを必須にしています。クイズアプリ向けの ID Token の `aud` はクイズアプリなので、写真アプリが `aud` を確かめれば、冒頭の事故は起きません。
+OIDC の ID Token は、この穴を埋めるために client 宛てに発行される、署名付きの認証結果です。[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) は、ID Token の `aud`（audience、宛先）に client の `client_id` を含めることを必須にしています。クイズアプリ向けの ID Token の `aud` はクイズアプリなので、写真アプリが `aud` を確認すれば、冒頭の事故は起きません。
 
 ---
 
@@ -99,7 +99,7 @@ code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org
 
 ### PKCE
 
-[PKCE](https://www.rfc-editor.org/rfc/rfc7636.html)（Proof Key for Code Exchange）は、事前に秘密を登録しなくても、code を発行させた client と交換しに来た client が同じだと確かめられる拡張です。[RFC 7636 §1](https://www.rfc-editor.org/rfc/rfc7636.html#section-1) が想定する攻撃は、正規のアプリと同じ独自の URL スキーム（`com.example.app:/callback` のような形）を悪意のあるアプリが登録し、OS がそのアプリに code を渡してしまうものです。
+[PKCE](https://www.rfc-editor.org/rfc/rfc7636.html)（Proof Key for Code Exchange）は、事前に秘密を登録しなくても、code を発行させた client と交換しに来た client が同じだと確認できる拡張です。[RFC 7636 §1](https://www.rfc-editor.org/rfc/rfc7636.html#section-1) が想定する攻撃は、正規のアプリと同じ独自の URL スキーム（`com.example.app:/callback` のような形）を悪意のあるアプリが登録し、OS がそのアプリに code を渡してしまうものです。
 
 PKCE では、client がログインを始めるたびに code_verifier（43〜128 文字の乱数）を作ります。最初の `/authorize` には、そのハッシュである code_challenge だけを載せます。
 
@@ -115,7 +115,7 @@ PKCE では、client がログインを始めるたびに code_verifier（43〜1
 
 ### code の横取りと login CSRF の実験
 
-PKCE・state・nonce と ID Token の `aud` の効き目は、[ローカルで実行するコード](lab/run.py)で確かめられます。Python 標準ライブラリで、127.0.0.1 の空きポートに `/authorize`・`/token`・`/userinfo` を持つ authorization server を立て、client を同じプロセスの中の関数として書きました。
+PKCE・state・nonce と ID Token の `aud` の効き目は、[ローカルで実行するコード](lab/run.py)で確認できます。Python 標準ライブラリで、127.0.0.1 の空きポートに `/authorize`・`/token`・`/userinfo` を持つ authorization server を立て、client を同じプロセスの中の関数として書きました。
 
 client は全て public client で、client 認証はありません。
 
@@ -193,7 +193,7 @@ python3 lab/run.py
 
 (c) の 1 行目では、被害者のブラウザが mallory としてログインしました。この状態で被害者が写真をアップロードすると、写真は mallory のアカウントに入ります。この攻撃を login CSRF（Cross-Site Request Forgery）と呼びます。
 
-(c) の 2〜4 行目の通り、攻撃者が client の通常の手順で要求を作った場合は、state・PKCE・nonce のどれか 1 つを検証すれば止まります。つまり、どれも「この callback は、このブラウザが始めたログインの続きか」を別々の値で確かめています。
+(c) の 2〜4 行目の通り、攻撃者が client の通常の手順で要求を作った場合は、state・PKCE・nonce のどれか 1 つを検証すれば止まります。つまり、どれも「この callback は、このブラウザが始めたログインの続きか」を別々の値で確認しています。
 
 しかし、PKCE だけに頼る client は条件付きです。5 行目では、攻撃者が自分の要求から code_challenge を外しました。code_challenge の無い code に被害者の code_verifier が添えられても、authorization server が比べる値を持たないので交換が通ります。これを PKCE downgrade と呼びます。
 
@@ -205,7 +205,7 @@ python3 lab/run.py
 
 ### Redirect URI・state・nonce
 
-実験の (c) で効いた値と redirect URI は、それぞれ別の結び付きを確かめています。整理すると以下の通りです。
+実験の (c) で効いた値と redirect URI は、それぞれ別の結び付きを確認しています。整理すると以下の通りです。
 
 | 値 | 検証する者 | 結び付けるもの | 検証しないと |
 | --- | --- | --- | --- |
@@ -217,7 +217,7 @@ redirect URI（code を送り返す先の URL）は、authorization server が�
 
 例えば、前方一致やワイルドカードを許すと、登録したドメインの別のパスや、そのドメインにある open redirector（任意の URL に転送するページ）を経由して、code が攻撃者の手に渡ります。
 
-state は、client がログインの開始時にセッションに保存しておく推測できない値で、callback で戻ってきた値と比べます（[RFC 6749 §10.12](https://www.rfc-editor.org/rfc/rfc6749.html#section-10.12)）。[RFC 9700 §2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1) は、authorization server が PKCE に対応していることを確かめた client なら、PKCE による CSRF 対策に頼って良いとしています。上記の downgrade 対策も、その対応に含まれます。
+state は、client がログインの開始時にセッションに保存しておく推測できない値で、callback で戻ってきた値と比べます（[RFC 6749 §10.12](https://www.rfc-editor.org/rfc/rfc6749.html#section-10.12)）。[RFC 9700 §2.1](https://www.rfc-editor.org/rfc/rfc9700.html#section-2.1) は、authorization server が PKCE に対応していることを確認した client なら、PKCE による CSRF 対策に頼って良いとしています。上記の downgrade 対策も、その対応に含まれます。
 
 nonce は OIDC の値で、client が認証要求に入れ、authorization server が ID Token の `nonce` クレームにそのまま写します。nonce の目的は、client のセッションと ID Token を結び付け、[replay](/notes/blockchain-systems/replay-protection/)（過去の値を送り直す攻撃）を緩和することです（[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)）。
 
@@ -233,7 +233,7 @@ RFC 9700 §2.1 は、OIDC のフローでは nonce が CSRF 対策になると�
 | --- | --- | --- |
 | 宛先（`aud`） | resource server | client の `client_id` |
 | 検証する者 | resource server | client |
-| client が中身を読むか | 読まない。形式は authorization server が決める | 読む。署名・`iss`・`aud`・`exp`・`nonce` を確かめる |
+| client が中身を読むか | 読まない。形式は authorization server が決める | 読む。署名・`iss`・`aud`・`exp`・`nonce` を確認する |
 | API に送るか | `Authorization: Bearer` で送る | 送らない |
 | 形式 | 意味を持たない文字列でも JWT でも良い | 署名付きの JWT |
 
@@ -243,7 +243,7 @@ access token を JWT で発行する場合の形式は、[RFC 9068](https://www.
 
 逆向きに、ID Token を API に送って認可に使うと、resource server は「ログインした」という結果を「操作を許された」と読むことになります。
 
-ID Token の署名の検証には、authorization server が公開する鍵を使います。公開鍵と署名の関係は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノートにあります。その鍵は TLS（通信路を暗号化し、相手のサーバーを証明書で確かめる規約）で取得するので、[PKI](../pki/) が前提になります。
+ID Token の署名の検証には、authorization server が公開する鍵を使います。公開鍵と署名の関係は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノートにあります。その鍵は TLS（通信路を暗号化し、相手のサーバーを証明書で確認する規約）で取得するので、[PKI](../pki/) が前提になります。
 
 ---
 
@@ -268,7 +268,7 @@ implicit grant は token をフロントチャネルに載せ、password grant �
 - client が利用者の Password を受け取らずに、利用者の資源にアクセスできる
 - `scope` で client に委ねる範囲を絞れ、Password を変えずに client ごとの委譲を取り消せる
 - ログインを authorization server に任せると、[Passkey](../passkey/) や MFA（多要素認証）を client ごとに実装し直さずに済む
-- ID Token の `aud` と `nonce` で、どの client のどのログインの結果かを client 自身が確かめられる
+- ID Token の `aud` と `nonce` で、どの client のどのログインの結果かを client 自身が確認できる
 
 ---
 

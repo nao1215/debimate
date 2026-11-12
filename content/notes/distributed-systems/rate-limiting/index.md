@@ -74,7 +74,7 @@ Stripe は、ブログの [Scaling your API with rate limiters](https://stripe.c
 
 #### 2 つの到着列での比較
 
-3 つの方式の差を数値で確かめるために、2026 年 11 月 11 日に、Python 3.14.4 の標準ライブラリだけで各方式を実装し（[lab/limiters.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/limiters.py)）、同じ要求の列を通しました（[lab/simulate.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/simulate.py)）。時刻は実時間ではなく数値として渡しているので、結果は機材によらず同じです。上限はすべて 60 秒あたり 60 件、数えるのは通した要求だけです。以下は、スライディング窓カウンタの部分の抜粋です。
+3 つの方式の差を数値で確認するために、2026 年 11 月 11 日に、Python 3.14.4 の標準ライブラリだけで各方式を実装し（[lab/limiters.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/limiters.py)）、同じ要求の列を通しました（[lab/simulate.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/simulate.py)）。時刻は実時間ではなく数値として渡しているので、結果は機材によらず同じです。上限はすべて 60 秒あたり 60 件、数えるのは通した要求だけです。以下は、スライディング窓カウンタの部分の抜粋です。
 
 ```python
 class SlidingWindowCounter:
@@ -175,7 +175,7 @@ API のサーバーが 1 台なら、数は自分のメモリに置けば済み�
 
 #### 中央の Redis で数える
 
-もう 1 つの方法は、数を中央の Redis に置き、全サーバーが同じキーを更新することです。Stripe も、ブログで「We implement our rate limiters using Redis.」（レート制限は Redis で実装している）と書いています。この時に気を付けるのは、数を確かめてから増やす 2 つの操作の間に、他のサーバーの要求が割り込むことです。
+もう 1 つの方法は、数を中央の Redis に置き、全サーバーが同じキーを更新することです。Stripe も、ブログで「We implement our rate limiters using Redis.」（レート制限は Redis で実装している）と書いています。この時に気を付けるのは、数を確認してから増やす 2 つの操作の間に、他のサーバーの要求が割り込むことです。
 
 同じ 11 月 11 日に、8 個のプロセスを 8 台のサーバーに見立て、同じ利用者のキーに 50 件ずつ一斉に要求を送りました。上限は 100 件です。
 
@@ -266,11 +266,11 @@ Retry-After: 5
 
 ### 欠点
 
-レート制限は、利用者ごとの数を持ち、要求のたびにその数を確かめて更新します。その代わりに、次の制約があります。
+レート制限は、利用者ごとの数を持ち、要求のたびにその数を確認して更新します。その代わりに、次の制約があります。
 
 - 窓の方式は、境目で上限の 2 倍まで通すか、メモリを多く使うか、到着の偏りで誤差が出るかのどれかを受け入れる
 - 複数のサーバーでは、上限を分け合うと偏りで誤って断り、中央で数えると要求ごとに往復が増える
-- 中央の数を確かめてから増やす実装は、同時に判定するサーバーの数だけ上限を超える
+- 中央の数を確認してから増やす実装は、同時に判定するサーバーの数だけ上限を超える
 - 利用者をどう見分けるか（API キー、IP アドレスなど）を誤ると、同じ NAT の後ろの別人を一緒に断る
 
 ### Rate Limiting の効果が小さくなりやすいケース

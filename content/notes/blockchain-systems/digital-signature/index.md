@@ -11,7 +11,7 @@ crossTopics:
   security: ["Cryptography"]
 ---
 
-デジタル署名は、秘密鍵の持ち主だけが作れて、対になる公開鍵を持つ誰もが検証できるデータです。メッセージに署名を添えると、受け取った側は「秘密鍵の持ち主がこのメッセージを承認したこと」と「メッセージが署名の後に書き換えられていないこと」を確かめられます。
+デジタル署名は、秘密鍵の持ち主だけが作れて、対になる公開鍵を持つ誰もが検証できるデータです。メッセージに署名を添えると、受け取った側は「秘密鍵の持ち主がこのメッセージを承認したこと」と「メッセージが署名の後に書き換えられていないこと」を確認できます。
 
 [UTXO](../utxo/) で説明したように、Bob が自分宛の出力を使うには、出力に書かれた条件を満たす証明を入力に添えます。その代表がデジタル署名です。[Bitcoin の白書がコインを「電子署名のチェーン」と定義した](https://bitcoin.org/bitcoin.pdf)のも、所有の移転が署名の連なりとして表されるからです。
 
@@ -91,7 +91,7 @@ flowchart LR
 
 署名の対象は、メッセージそのものではなくメッセージのハッシュ値です。署名の計算では決まった大きさの数を扱うので、どんな大きさのメッセージも、まず固定長のハッシュ値に要約してから署名します。
 
-署名の作成は「メッセージのハッシュ値と秘密鍵から署名を計算する」処理で、検証は「メッセージのハッシュ値・署名・公開鍵の 3 つが対応しているかを確かめる」処理です。流れは以下の通りです。
+署名の作成は「メッセージのハッシュ値と秘密鍵から署名を計算する」処理で、検証は「メッセージのハッシュ値・署名・公開鍵の 3 つが対応しているかを確認する」処理です。流れは以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -118,7 +118,7 @@ sequenceDiagram
 
 ### メッセージを変えた時の検証結果
 
-署名した後に金額を変えると、本当に検証が落ちるのかを確かめます。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式。[FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final) で規格化）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。
+署名した後に金額を変えると、本当に検証が落ちるのかを確認します。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式。[FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final) で規格化）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。
 
 これは署名の性質を確認する実験で、Bitcoin の取引形式や署名対象の組み立てを再現するものではありません。
 
@@ -233,7 +233,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の検証者は、入力の公開鍵をハッシュして出力の値と一致することと、署名がその公開鍵での検証に合格することの 2 つを確かめます。条件の書き方の仕組みは [Bitcoin Script](../bitcoin-script/) で扱います。
+上記の図の検証者は、入力の公開鍵をハッシュして出力の値と一致することと、署名がその公開鍵での検証に合格することの 2 つを確認します。条件の書き方の仕組みは [Bitcoin Script](../bitcoin-script/) で扱います。
 
 署名の対象には、署名自身を含められません。署名を計算する時点で、その値はまだ存在しないからです。Bitcoin では、決められた規則に従って、取引の一部と、使用する出力の情報から署名対象のハッシュ値を組み立てます。
 

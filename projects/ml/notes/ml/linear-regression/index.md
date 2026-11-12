@@ -30,7 +30,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 特徴量の数がサンプル数より多い時や、ある特徴量が他の特徴量の線形和で書ける時は逆行列が無く、最小解が無数にあります。逆行列があっても、特徴量同士の相関が極端に強い（[多重共線性](#多重共線性と正則化)）と数値的に不安定になります。
 
-scikit-learn の [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) は、密な行列なら [`scipy.linalg.lstsq`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) で解きます。既定の LAPACK ドライバ gelsd は SVD（Singular Value Decomposition、特異値分解）を使い、`(X^T X)^-1` を直接計算しないので、数値的に安定します。`X^T X` を作ると小さい特異値が丸めに埋もれる様子は、[固有値分解](../../math/eigen-decomposition/)で scikit-learn の PCA を例に確かめています。最小解が無数にある時は、その中でノルムが最小の解を返します。
+scikit-learn の [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) は、密な行列なら [`scipy.linalg.lstsq`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) で解きます。既定の LAPACK ドライバ gelsd は SVD（Singular Value Decomposition、特異値分解）を使い、`(X^T X)^-1` を直接計算しないので、数値的に安定します。`X^T X` を作ると小さい特異値が丸めに埋もれる様子は、[固有値分解](../../math/eigen-decomposition/)で scikit-learn の PCA を例に確認しています。最小解が無数にある時は、その中でノルムが最小の解を返します。
 
 ---
 
@@ -122,7 +122,7 @@ OLS の前提は、何を求めるかで変わります。
 - ガウス・マルコフ定理（線形不偏推定量の中で OLS の分散が最小）: さらに誤差の等分散（homoscedastic）と無相関が必要
 - 少ないサンプルで [t 検定や信頼区間](/ml/math/hypothesis-test/)を正確に出す: さらに誤差の正規分布が必要
 
-残差プロット（横軸: 予測値、縦軸: 残差）で主に分かるのは、等分散が崩れていないかと、関係に曲がりが残っていないかです。独立性は残差を時間順などに並べて、正規性はヒストグラムや Q-Q プロットで確かめます。
+残差プロット（横軸: 予測値、縦軸: 残差）で主に分かるのは、等分散が崩れていないかと、関係に曲がりが残っていないかです。独立性は残差を時間順などに並べて、正規性はヒストグラムや Q-Q プロットで確認します。
 
 次のコードは、ばらつきが一定のデータと、`x` とともにばらつきが増えるデータに OLS を当てます。
 

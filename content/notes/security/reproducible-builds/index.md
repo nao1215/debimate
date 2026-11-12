@@ -11,7 +11,7 @@ topics: ["Software Supply Chain"]
 
 Reproducible Builds（再現可能なビルド）は、同じソースコード・同じビルド環境・同じ手順を与えれば、誰がビルドしてもビット単位で同じ成果物が得られる性質です。[reproducible-builds.org の定義](https://reproducible-builds.org/docs/definition/)では、成果物は実行ファイル・配布パッケージ・ファイルシステムのイメージなどを指し、ビルドのログは通常含めません。
 
-この性質があると、配布されたバイナリが公開されているソースから作られたことを配布元以外の人が確かめられます。開発者と独立したビルダーが同じコミットからビルドし、成果物の [SHA-256](/notes/security/sha-256/) を比べるだけです。一致すれば、配布物はそのソースと記録したツールチェーンから作られたものと同じです。一致しなければ、どこかに差があります。
+この性質があると、配布されたバイナリが公開されているソースから作られたことを配布元以外の人が確認できます。開発者と独立したビルダーが同じコミットからビルドし、成果物の [SHA-256](/notes/security/sha-256/) を比べるだけです。一致すれば、配布物はそのソースと記録したツールチェーンから作られたものと同じです。一致しなければ、どこかに差があります。
 
 しかし、2 つのハッシュは素直には一致しません。ビルドは、ソースに書かれていない現在時刻・ディレクトリのパス・ファイルの所有者などを成果物に混ぜるからです。
 
@@ -29,7 +29,7 @@ Reproducible Builds（再現可能なビルド）は、同じソースコード�
 - 同じハッシュを得るには、何を固定し、何を記録すれば良いのか。
 - 署名があるのに、なぜ再現性も必要なのか。
 - ハッシュが一致しなかった時、差分から何が分かるのか。
-- 再現性で確かめられる範囲は、どこまでなのか。
+- 再現性で確認できる範囲は、どこまでなのか。
 
 ---
 
@@ -82,6 +82,8 @@ fi
 
 2 つのビルダーを動かして比べるのは [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/run.sh) です。段階ごとに A と B を 1 秒ずらして起動し、成果物の sha256 を比べます。
 
+<br>
+
 <details>
 <summary>run.sh の抜粋（末尾の表示部分を省略）</summary>
 
@@ -123,6 +125,8 @@ done
 ```
 
 </details>
+
+<br>
 
 以下が実行結果の抜粋です（全体は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/output.txt)）。ハッシュは先頭 16 文字だけを表示しています。
 
@@ -199,6 +203,8 @@ drwxrwxr-x 1000/1000         0 2026-11-10 07:50:59 project/
 
 `-buildvcs=false` は VCS（Version Control System）の情報を埋め込まない指定で、`CGO_ENABLED=0` は C のツールチェーンを使わない指定です。
 
+<br>
+
 <details>
 <summary>go-build.sh の全体</summary>
 
@@ -229,6 +235,8 @@ strings "$WORK"/alice/src/hello-trim | grep -m1 "main.go"
 ```
 
 </details>
+
+<br>
 
 以下が実行結果です（[lab/go-output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/reproducible-builds/lab/go-output.txt)）。
 
@@ -287,19 +295,19 @@ Go は [Go 1.21.0 でツールチェーンを完全に再現可能にした](htt
 
 配布物の改竄対策には、先に[デジタル署名](/notes/blockchain-systems/digital-signature/)があります。署名と再現性は、答える問いが違います。
 
-{{< note-panels caption="署名は配布元、再現性はビルドの入力を確かめます。どちらも、もう一方の問いには答えません。" >}}
+{{< note-panels caption="署名は配布元、再現性はビルドの入力を確認します。どちらも、もう一方の問いには答えません。" >}}
 - title: 署名
-  body: 配布物を「誰が出したか」を確かめる。
+  body: 配布物を「誰が出したか」を確認する。
   items:
   - 秘密鍵を持つ配布元だけが作れる
   - 検証には、[PKI](/notes/security/pki/) などで配布元の公開鍵を信頼する必要がある
-  - 署名する前の成果物が正しいかは確かめない
+  - 署名する前の成果物が正しいかは確認しない
 - title: 再現性
-  body: 配布物を「何から作ったか」を確かめる。
+  body: 配布物を「何から作ったか」を確認する。
   items:
   - 誰でも、同じソースからビルドして比べられる
   - 検証には、ソースと手順の公開が必要
-  - 配布元が誰かは確かめない
+  - 配布元が誰かは確認しない
 {{< /note-panels >}}
 
 署名は、署名する時点の成果物が本物だという前提に立っています。ビルドサーバーが乗っ取られ、改竄された成果物が正規の手順で署名されると、署名の検証は正しく通ります。この時、公開されたソースから独立したビルダーが作った成果物とはハッシュが一致せず、再現性の検証で差に気付けます。
@@ -363,7 +371,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の左側は、再現性では確かめられません。ソースに最初から悪意のあるコードがあれば、誰がビルドしても同じ悪意のある成果物が一致します。依存パッケージも同じで、lockfile とチェックサムが保証するのは「前回と同じもの」であって「安全なもの」ではありません。
+上記の図の左側は、再現性では確認できません。ソースに最初から悪意のあるコードがあれば、誰がビルドしても同じ悪意のある成果物が一致します。依存パッケージも同じで、lockfile とチェックサムが保証するのは「前回と同じもの」であって「安全なもの」ではありません。
 
 <br>
 
@@ -381,7 +389,7 @@ David A. Wheeler 氏の [Diverse Double-Compiling](https://dwheeler.com/trusting
 
 [SLSA](https://slsa.dev/spec/v1.2/build-provenance)（Supply-chain Levels for Software Artifacts）の provenance は、成果物を「どこで、いつ、どのように作ったか」を検証可能な形で記録する仕様です。
 
-provenance はビルドの基盤を信頼して記録を受け入れる仕組みで、再現性は記録された入力から作り直して確かめる仕組みです。SLSA は provenance の目的の 1 つに作り直しを挙げつつ、[FAQ](https://slsa.dev/spec/v1.2/faq) では検証済みの再現可能なビルドを直接の要件とせず、再現可能なビルドはソース・依存・配布への脅威には対処しないと整理しています。
+provenance はビルドの基盤を信頼して記録を受け入れる仕組みで、再現性は記録された入力から作り直して確認する仕組みです。SLSA は provenance の目的の 1 つに作り直しを挙げつつ、[FAQ](https://slsa.dev/spec/v1.2/faq) では検証済みの再現可能なビルドを直接の要件とせず、再現可能なビルドはソース・依存・配布への脅威には対処しないと整理しています。
 
 CI が使う GitHub Actions の Action も、図の左側の依存パッケージと同じく信頼する入力の 1 つです（更新の運用は [Dependabot で Action を更新する記事](/post/ja/2023-09-30-dependabot%E3%81%A7github-actions%E3%81%AEaction%E3%82%92%E6%9C%80%E6%96%B0%E3%81%AB%E4%BF%9D%E3%81%A4%E6%96%B9%E6%B3%95/)）。
 
@@ -389,7 +397,7 @@ CI が使う GitHub Actions の Action も、図の左側の依存パッケー�
 
 ### 利点
 
-- 配布元を信頼しなくても、配布物とソースの対応を第三者が確かめられる
+- 配布元を信頼しなくても、配布物とソースの対応を第三者が確認できる
 - ビルドサーバーや CI が乗っ取られた時、改竄が独立したビルダーとの差として現れる
 - 不具合の報告を受けた時、報告されたバイナリと同じものを手元で作り直せる
 

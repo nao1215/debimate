@@ -138,6 +138,8 @@ for name, down in downs.items():
     full_params += up["shape"][0] * numel(down["shape"][1:])
 ```
 
+<br>
+
 <details>
 <summary>count_params.py の全体（103 行）</summary>
 
@@ -249,6 +251,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 ベースモデルは、LoRA の学習にも使った [WAI-illustrious-SDXL の v17.0](https://civitai.com/models/827184?modelVersionId=2883731)（Civitai で配布されている、Illustrious 系のイラスト向けのモデル。アーキテクチャは SDXL）です。以下は、実行結果のうち LoRA の部分です。ベースモデルの部品ごとの数と比率を含む全体は [lab/output_count.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/lora/lab/output_count.txt) にあり、後のグラフにも描いています。
 
 ```text
@@ -299,6 +303,8 @@ LoRA が差分を足す 722 層（target layers）の `W` は、UNet のパラ�
                    "strength_model": 1.0, "strength_clip": 1.0}},
 ```
 
+<br>
+
 <details>
 <summary>workflow_api.json の全体（9 ノード）</summary>
 
@@ -334,6 +340,8 @@ LoRA が差分を足す 722 層（target layers）の `W` は、UNet のパラ�
 
 </details>
 
+<br>
+
 送信には [lab/run_sweep.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/lora/lab/run_sweep.py) を使いました。以下は、その `main()` から、強さを書き換えて `/prompt` に 5 本積む部分の抜粋です。`/history` で終わりを待って `/view` で画像を取り出す続きは、折りたたんでいます。`post_json()` と `get_json()` は `urllib.request` で JSON を送受信するだけの関数です。引数の処理、ComfyUI 側の保存ファイル名の設定、進み具合と所要時間の表示は省きました。
 
 ```python
@@ -351,6 +359,8 @@ for w in WEIGHTS:
     jobs.append((w, res["prompt_id"]))        # 自分の依頼の ID だけを控える
 
 ```
+
+<br>
 
 <details>
 <summary>完了を待って画像を取り出す部分</summary>
@@ -376,6 +386,8 @@ for w, pid in jobs:
 ```
 
 </details>
+
+<br>
 
 ComfyUI の `LoraLoader` は、強さが 2 つとも 0 の時に LoRA を読まずにベースモデルをそのまま返します。また、実験 1 の通り、この LoRA は text encoder の層を持たないので、効くのは `strength_model` だけです（`strength_clip` は効きません）。
 
@@ -411,6 +423,8 @@ euler でも、構図を保ったまま、強さを上げるほど部屋が明�
 
 実験 2 の画像の変化を数値でも見るために、[lab/to_webp.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/lora/lab/to_webp.py) で、強さ 0 の画像との画素の差（RGB の値の差の絶対値の平均、0〜255）も数えました。`diff_from_prev` は 1 つ前の強さの画像との差、`brightness` は画像をグレースケールにした時の画素の平均（明るさ）です。to_webp.py の出力は、以下に折りたたんでいます。
 
+<br>
+
 <details>
 <summary>to_webp.py の出力（強さごとの差と明るさ）</summary>
 
@@ -430,6 +444,8 @@ weight=1.00  diff_from_0= 60.45  diff_from_prev= 28.11  brightness= 115.8
 ```
 
 </details>
+
+<br>
 
 {{< figure src="images/lora_pixel_change.svg" alt="強さ 0 の画像との画素の差。euler_ancestral は 0.25 で 53.8、1.0 で 87.9 まで増える。euler は 0.25 で 40.4、0.75 で 65.4、1.0 で 60.5。seed だけを変えた別の構図の絵どうしの差は 60.3〜79.0 で、灰色の帯で示す" caption="強さごとの、強さ 0 の画像との画素の差" align="center" >}}
 
@@ -455,6 +471,8 @@ $ python3 seed_baseline.py <PNG の保存先>
 min=60.32  mean=69.20  max=79.04
 ```
 
+<br>
+
 <details>
 <summary>10 組の内訳</summary>
 
@@ -474,6 +492,8 @@ min=60.32  mean=69.20  max=79.04
 ```
 
 </details>
+
+<br>
 
 5 枚とも題材は同じですが、フクロウ・ライト・本の山の位置が違う、別の構図の絵です。このような絵どうし（unrelated images）の差は 60.3〜79.0 でした。グラフの灰色の帯がこの範囲です。
 

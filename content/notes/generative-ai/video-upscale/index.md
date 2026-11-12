@@ -59,7 +59,7 @@ topics: ["Image Generation"]
 
 ### 実験: 縮めた動画を 4 倍に戻す
 
-1 枚ずつの拡大がどれだけちらつくかを確かめるために、2026 年 11 月に、高解像度の動画を縮めて劣化させ、4 倍に戻して元の動画と比べました。素材は、Blender Foundation のオープンムービー『[Sintel](https://studio.blender.org/films/sintel/)』の[予告編](https://download.blender.org/durian/trailer/)（1080p、[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)、[© copyright Blender Foundation | durian.blender.org](https://durian.blender.org/sharing/)）です。34.0 秒からの 48 フレーム（2 秒）で、鱗のあるドラゴンと、毛糸の手袋をはめた手が写っています。
+1 枚ずつの拡大がどれだけちらつくかを確認するために、2026 年 11 月に、高解像度の動画を縮めて劣化させ、4 倍に戻して元の動画と比べました。素材は、Blender Foundation のオープンムービー『[Sintel](https://studio.blender.org/films/sintel/)』の[予告編](https://download.blender.org/durian/trailer/)（1080p、[CC BY 3.0](https://creativecommons.org/licenses/by/3.0/)、[© copyright Blender Foundation | durian.blender.org](https://durian.blender.org/sharing/)）です。34.0 秒からの 48 フレーム（2 秒）で、鱗のあるドラゴンと、毛糸の手袋をはめた手が写っています。
 
 | 名前 | 作り方 |
 |---|---|
@@ -85,6 +85,8 @@ topics: ["Image Generation"]
 
 描き直しは、[hires fix](https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Features/fbff21b0d67505cc760904cfab80bc2acfba76b1#hires-fix) と同じ「拡大してから弱く描き直す」手順で、モデルは Illustrious 系（SDXL から派生し、アニメ絵を多く学習したモデルの系統）の中で写実寄りのモデルです。
 
+<br>
+
 <details>
 <summary>描き直しの設定</summary>
 
@@ -93,6 +95,8 @@ topics: ["Image Generation"]
 - プロンプトには場面を説明する語を入れた
 
 </details>
+
+<br>
 
 全体の手順は [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/video-upscale/lab/run.sh) にあります。以下は、1 枚ずつ拡大する [lab/upscale.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/video-upscale/lab/upscale.py) の中心です。
 

@@ -217,7 +217,7 @@ Ethereum のノードは、取引を実行して残高などを管理する実�
 
 同じ時点で、[Lighthouse](https://github.com/sigp/lighthouse) と [Prysm](https://github.com/OffchainLabs/prysm) はこの規則をオプションで有効にする形です。既定では、Lighthouse は justified な checkpoint のブロックを、Prysm は集計途中の投票で justified の条件を満たした checkpoint（unrealized justified）のブロックを `safe` として返します。
 
-`safe` を使う時は手元のクライアントの説明を確かめる必要があります。
+`safe` を使う時は手元のクライアントの説明を確認する必要があります。
 
 ここまでの 3 つは、ノードがブロックタグとして返すものです。一方で、Bitcoin と同じく確認数で判断する方法は Ethereum でも使え、その閾値はアプリケーションの運用者が決めます。4 つの判断それぞれについて、誰がどこに線を引いているのかを以下にまとめます。
 
@@ -304,7 +304,7 @@ Bitcoin の値は平均で、ブロックの間隔は毎回ばらつきます。
 
 ### 別のチェーンの状態を信じる時点
 
-2 つのチェーンをまたいで資産を移す [bridge](../cross-chain-bridge/) も、同じ判断をプログラムとして下しています。source chain（送り出す側のチェーン）で資産が預けられたことを確かめてから、destination chain（受け取る側のチェーン）で対応する資産を発行します。
+2 つのチェーンをまたいで資産を移す [bridge](../cross-chain-bridge/) も、同じ判断をプログラムとして下しています。source chain（送り出す側のチェーン）で資産が預けられたことを確認してから、destination chain（受け取る側のチェーン）で対応する資産を発行します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -322,7 +322,7 @@ sequenceDiagram
 
 destination chain に裏付けのない資産が残るのは、bridge が預け入れを確定と扱うのが早すぎたからです。
 
-取引がブロックに入っていることは、[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) の包含証明（取引がブロックに含まれることを示す短い証明）で確かめられます。しかし、包含証明が示すのはブロックの中にあることまでで、そのブロックが canonical chain に残るかどうかは別です。確率的な finality を相手にする bridge は、何ブロック待つかを自分で決めます。
+取引がブロックに入っていることは、[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) の包含証明（取引がブロックに含まれることを示す短い証明）で確認できます。しかし、包含証明が示すのはブロックの中にあることまでで、そのブロックが canonical chain に残るかどうかは別です。確率的な finality を相手にする bridge は、何ブロック待つかを自分で決めます。
 
 <br>
 

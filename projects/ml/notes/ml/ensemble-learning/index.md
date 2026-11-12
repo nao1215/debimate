@@ -14,7 +14,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 <br>
 
-本記事では、3 系統の違いを [バイアス-バリアンス分解](../bias-variance-tradeoff/) の「Variance を抑える」「Bias を抑える」の軸で整理し、[scikit-learn](https://scikit-learn.org/stable/modules/ensemble.html) での実験で次の疑問を確かめます。
+本記事では、3 系統の違いを [バイアス-バリアンス分解](../bias-variance-tradeoff/) の「Variance を抑える」「Bias を抑える」の軸で整理し、[scikit-learn](https://scikit-learn.org/stable/modules/ensemble.html) での実験で次の疑問を確認します。
 
 - 木を 100 本平均すると、予測の分散は 1/100 になるのか
 - 残差を追い続ける boosting は、どこから[過学習](../overfitting/)に入るのか

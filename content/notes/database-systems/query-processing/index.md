@@ -132,9 +132,9 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-PostgreSQL の構文解析は、DB が自身のスキーマを格納したカタログを一切引きません（[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/parser-stage.html)）。そのため、上記の図の木に `users` という名前があっても、それがどの表を指すのかはまだ確かめていません。木には読む順序も使う索引も入っておらず、実行計画に進む前に、名前と型の解決と、書き換えが行われます。
+PostgreSQL の構文解析は、DB が自身のスキーマを格納したカタログを一切引きません（[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/parser-stage.html)）。そのため、上記の図の木に `users` という名前があっても、それがどの表を指すのかはまだ確認していません。木には読む順序も使う索引も入っておらず、実行計画に進む前に、名前と型の解決と、書き換えが行われます。
 
-名前と型の解決では、カタログを引いて、`users` という表と `country` というカラムが本当にあるのか、`country` の型が何なのかを確かめます。PostgreSQL はこの処理を transformation process と呼び、構文だけを表す木（parse tree）とは別に、意味を解決し終えた問い合わせの木（query tree）を作ります。
+名前と型の解決では、カタログを引いて、`users` という表と `country` というカラムが本当にあるのか、`country` の型が何なのかを確認します。PostgreSQL はこの処理を transformation process と呼び、構文だけを表す木（parse tree）とは別に、意味を解決し終えた問い合わせの木（query tree）を作ります。
 
 書き換えでは、例えばビューを読む問い合わせなら、ビューの名前がその定義に書かれた問い合わせに置き換わります。[PostgreSQL の書き換えシステム](https://www.postgresql.org/docs/current/query-path.html)は、システムカタログに格納された規則の中から、問い合わせの木に適用できるものを探して適用します。
 
@@ -379,7 +379,7 @@ sequenceDiagram
 
 Query Processing では、手順の決定を DB に預け、データの分布に応じて選ばせます。そのため、SQL の書き手には次の制約があります。
 
-- 既定では手順を SQL に書かないので、何が選ばれたのかは `EXPLAIN` で確かめるまで分からない
+- 既定では手順を SQL に書かないので、何が選ばれたのかは `EXPLAIN` で確認するまで分からない
 - 統計情報が古いと、実際のレコード数とかけ離れた見積もりのまま手順が選ばれる
 - 結合する表が増えるほど候補が増え、広く探索する DBMS では実行計画を作る処理に時間が掛かる
 - データ量や統計の更新をきっかけに手順が変わり、同じ SQL の応答時間が動く

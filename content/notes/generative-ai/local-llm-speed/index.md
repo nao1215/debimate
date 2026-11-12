@@ -58,7 +58,7 @@ KV キャッシュは、既に読んだトークンの計算結果（注意機�
 
 EVO-X2 は、GMKtec の[公式ブログ](https://de.gmktec.com/en/blogs/news/high-end-modell-amd-ryzen-ai-max-395-im-gmk-evo-x2-der-ultimative-ai-mini-pc)（2025 年 6 月 27 日）の説明では、LPDDR5X-8000（毎秒 80 億回の転送）のメモリを 32 ビットのメモリコントローラ 8 個（合計 256 ビット幅）でつないでいます。理論上の帯域は、256 ビット × 8,000 MT/s ÷ 8 = 256 GB/s です。
 
-この機材は CPU と GPU が同じメモリを共有するので、GPU に割り当てた 64GB の領域にある重みも、この帯域で読みます。手元の機材のメモリが実際に 8000 で動いているかは確かめておらず、本記事では仕様の上限の 256 GB/s を使います。
+この機材は CPU と GPU が同じメモリを共有するので、GPU に割り当てた 64GB の領域にある重みも、この帯域で読みます。手元の機材のメモリが実際に 8000 で動いているかは確認しておらず、本記事では仕様の上限の 256 GB/s を使います。
 
 <br>
 
@@ -114,6 +114,8 @@ prompt = f"Session {uuid.uuid4().hex}\n" + filler(n, seed=rnd) + TAIL
 
 この GPU は画像生成の [ComfyUI](https://github.com/Comfy-Org/ComfyUI) と共有しているので、生成と重なった回などを除き、条件ごとに 3〜4 回の中央値を使っています。除いた回を戻しても結論は変わりません。gpt-oss は Hugging Face の GGUF を使いました。どちらも詳細は次の折りたたみにあります。
 
+<br>
+
 <details>
 <summary>除いた回と、gpt-oss の取得元</summary>
 
@@ -125,9 +127,11 @@ prompt = f"Session {uuid.uuid4().hex}\n" + filler(n, seed=rnd) + TAIL
 
 gpt-oss は、Ollama のライブラリの `gpt-oss:20b` が 0.22.1 では取得できなかった（新しい版の Ollama が必要というエラー）ので、Hugging Face の [ggml-org/gpt-oss-20b-GGUF](https://huggingface.co/ggml-org/gpt-oss-20b-GGUF) を使いました。
 
-この組み合わせでは、128 トークンを生成しても返答の本文と思考の欄（thinking）はどちらも空で返りました（[lab/output_check_gptoss.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/local-llm-speed/lab/output_check_gptoss.txt)）。生成したトークンの数と時間は返るので速さは測れますが、答えの中身は確かめていません。
+この組み合わせでは、128 トークンを生成しても返答の本文と思考の欄（thinking）はどちらも空で返りました（[lab/output_check_gptoss.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/local-llm-speed/lab/output_check_gptoss.txt)）。生成したトークンの数と時間は返るので速さは測れますが、答えの中身は確認していません。
 
 </details>
+
+<br>
 
 ---
 

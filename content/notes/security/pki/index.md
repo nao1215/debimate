@@ -11,7 +11,7 @@ topics: ["Authentication / Identity"]
 
 PKI（Public Key Infrastructure、公開鍵基盤）は、公開鍵と名前や組織の結び付きを証明書と信頼の連鎖で検証する仕組みです。公開鍵だけでは、接続先が本当にその鍵の持ち主か分かりません。
 
-Web ブラウザで `https://example.test` を開く時は、接続先が示した公開鍵と `example.test` の関係を確かめる必要があります。これは、利用者を確認する [Authentication](../authentication/) とは別に、接続先のサーバーを認証する処理です。
+Web ブラウザで `https://example.test` を開く時は、接続先が示した公開鍵と `example.test` の関係を確認する必要があります。これは、利用者を確認する [Authentication](../authentication/) とは別に、接続先のサーバーを認証する処理です。
 
 この関係を記録するデータが X.509 証明書です。証明書と失効リストのプロファイル、および証明書パス検証の手順は、[RFC 5280](https://www.rfc-editor.org/rfc/rfc5280) で定められています。
 
@@ -19,7 +19,7 @@ Web ブラウザで `https://example.test` を開く時は、接続先が示し�
 
 以下は、trust store から署名をたどる検証と、検証で拒否される箇所を示した図です。
 
-{{< figure src="images/pki_concept.svg" alt="端末の trust store の枠の中には Root CA だけがあり、サーバーが送る Intermediate とサーバー証明書は署名の矢印で外側につながる。サーバー証明書の名前・期限・用途は黄土色の枠で確かめ、合わなければ拒否される。サーバー証明書を CA として使った場合は、赤い × の所で拒否される。" caption="trust store の Root CA から署名をたどる検証と、拒否される箇所" align="center" >}}
+{{< figure src="images/pki_concept.svg" alt="端末の trust store の枠の中には Root CA だけがあり、サーバーが送る Intermediate とサーバー証明書は署名の矢印で外側につながる。サーバー証明書の名前・期限・用途は黄土色の枠で確認し、合わなければ拒否される。サーバー証明書を CA として使った場合は、赤い × の所で拒否される。" caption="trust store の Root CA から署名をたどる検証と、拒否される箇所" align="center" >}}
 
 上記の図で信頼の起点になる Root CA は、接続先から受け取るものではありません。OS、ブラウザ、組織の端末管理などがあらかじめ trust store に入れた証明書です。Intermediate CA は Root CA の秘密鍵を日常的な発行に使わずに済むよう、発行権限を分けます。
 
@@ -117,7 +117,7 @@ error 62 at 0 depth lookup: hostname mismatch
 error server.pem: verification failed
 ```
 
-上記に加えて、表の `basicConstraints` の行を確かめます。終端の証明書である `server.pem` とその秘密鍵で、別の名前の証明書を署名します。署名の計算自体は成功するので、`evil.pem` は作れます。
+上記に加えて、表の `basicConstraints` の行を確認します。終端の証明書である `server.pem` とその秘密鍵で、別の名前の証明書を署名します。署名の計算自体は成功するので、`evil.pem` は作れます。
 
 ```sh
 openssl req -newkey rsa:2048 -nodes -keyout evil.key -out evil.csr \

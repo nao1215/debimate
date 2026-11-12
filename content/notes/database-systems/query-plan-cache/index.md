@@ -180,7 +180,7 @@ PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
 
 保存した計画は、表の定義や統計が変わると古くなります。PostgreSQL は、文が参照する表や関数を覚えておき、それらが変わったという通知（キャッシュの無効化）を受けると、次の実行の前に解析と計画をやり直します。
 
-[PREPARE のドキュメント](https://www.postgresql.org/docs/17/sql-prepare.html)には、DDL（Data Definition Language、表や索引を定義する SQL）による定義の変更、統計の更新、`search_path` の変更が挙げられています。実験で確かめた結果は以下の通りです。
+[PREPARE のドキュメント](https://www.postgresql.org/docs/17/sql-prepare.html)には、DDL（Data Definition Language、表や索引を定義する SQL）による定義の変更、統計の更新、`search_path` の変更が挙げられています。実験で確認した結果は以下の通りです。
 
 | 変更 | 実験での結果 |
 |---|---|

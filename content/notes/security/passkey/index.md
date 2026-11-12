@@ -19,7 +19,7 @@ Passkey は、ログイン画面を真似た偽サイトに認証情報を盗ま
 
 {{< figure src="images/passkey_concept.svg" alt="Password では、利用者が偽サイトに入力した文字列がそのまま本物のサイトで使われる。Passkey では、秘密鍵は example.com 用として Authenticator の中に留まり、署名は本物のサイトにだけ出て、偽サイトには出ない。" caption="偽サイトに渡るもの: Password と Passkey" align="center" >}}
 
-上記の図の Passkey では、秘密鍵が Authenticator の管理下に留まり、サーバーに渡るのは署名です。署名は対になる公開鍵で検証でき、公開鍵から秘密鍵は導けません。そのため、サーバーは秘密鍵を預からずに「相手が秘密鍵を持っていること」を確かめられます。
+上記の図の Passkey では、秘密鍵が Authenticator の管理下に留まり、サーバーに渡るのは署名です。署名は対になる公開鍵で検証でき、公開鍵から秘密鍵は導けません。そのため、サーバーは秘密鍵を預からずに「相手が秘密鍵を持っていること」を確認できます。
 
 <br>
 
@@ -199,7 +199,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の判定は 2 段あります。Client は、スクリプトが指定した RP ID が呼び出し元の origin に対応することを確かめ、対応しない RP ID を渡された要求を拒否します。
+上記の図の判定は 2 段あります。Client は、スクリプトが指定した RP ID が呼び出し元の origin に対応することを確認し、対応しない RP ID を渡された要求を拒否します。
 
 対応するとは、RP ID が origin のホスト名と同じか、その親のドメインであることです（login.example.com の origin なら example.com も指定できます）。
 
@@ -207,7 +207,7 @@ Level 3 の [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-rel
 
 偽サイトが自分の origin を RP ID として指定した場合は、Authenticator まで届きます。Authenticator は origin を見ませんが、鍵が RP ID ごとに分かれているので、そこで作れる署名は偽サイト向けの鍵によるものだけです。
 
-サーバーも、自分が出した値と、受け取った clientDataJSON の origin と challenge、authenticatorData の中の RP ID のハッシュを突き合わせます。この 3 段のどこにも、利用者がアドレス欄を目で確かめる手順は入っていません。
+サーバーも、自分が出した値と、受け取った clientDataJSON の origin と challenge、authenticatorData の中の RP ID のハッシュを突き合わせます。この 3 段のどこにも、利用者がアドレス欄を目で確認する手順は入っていません。
 
 守られるのは、この手順が始まってからの範囲です。偽サイトが「Passkey を使えないので Password で」と誘導する経路は、手順の外側に残ります。
 
@@ -217,14 +217,14 @@ Level 3 の [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-rel
 
 署名の検証とは別に、利用者に対する確認が 2 種類あり、どちらも Authenticator の中で完結します。
 
-| 用語 | 誰が何を確かめるか | 結果の伝わり方 |
+| 用語 | 誰が何を確認するか | 結果の伝わり方 |
 | --- | --- | --- |
-| User Presence | Authenticator が、人が操作していることを確かめる | authenticatorData の UP フラグ |
+| User Presence | Authenticator が、人が操作していることを確認する | authenticatorData の UP フラグ |
 | User Verification | Authenticator が、PIN や生体で利用者をローカルに検証する | authenticatorData の UV フラグ |
 
-User Presence は、セキュリティキーに触れるような単純な操作で満たされます。User Verification は PIN の入力や生体認証で、その Authenticator を使って良い相手かどうかまで確かめます。通常の認証の手順では User Presence が求められ、Relying Party はさらに User Verification を必須にするかどうかを選べます。
+User Presence は、セキュリティキーに触れるような単純な操作で満たされます。User Verification は PIN の入力や生体認証で、その Authenticator を使って良い相手かどうかまで確認します。通常の認証の手順では User Presence が求められ、Relying Party はさらに User Verification を必須にするかどうかを選べます。
 
-確かめているのは、Authenticator を操作している利用者です。氏名のような現実世界の身元を Relying Party に証明する仕組みではありません。
+確認しているのは、Authenticator を操作している利用者です。氏名のような現実世界の身元を Relying Party に証明する仕組みではありません。
 
 生体情報は、この確認のために Authenticator の中で照合されます。サーバーに送られるのは、確認が済んだかどうかを表すフラグだけです。
 

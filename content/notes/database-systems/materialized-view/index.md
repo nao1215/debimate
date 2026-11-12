@@ -114,6 +114,8 @@ FROM orders
 GROUP BY 1;
 ```
 
+<br>
+
 <details>
 <summary>setup.sql の全体（注文表の作成と 500 万件の投入を含む）</summary>
 
@@ -146,6 +148,8 @@ GROUP BY 1;
 
 </details>
 
+<br>
+
 注文表は 249 MB、`daily_sales` は 365 件で 32 kB になりました。注文表から集計した場合と `daily_sales` から読んだ場合で、3 月の売上合計を 3 回ずつ測った時間は、以下の通りです（[run.sh の出力](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/materialized-view/lab/output.txt)の (c-1)・(c-2)）。
 
 {{< figure src="images/materialized-view_query_times.svg" alt="対数軸の横棒グラフ。500 万件の注文表から集計すると 1,044〜1,210 ms、365 件の daily_sales から読むと 0.56〜0.69 ms で、約 1,800 分の 1 になった" caption="注文表から集計した時間と daily_sales から読んだ時間" align="center" >}}
@@ -163,9 +167,11 @@ GROUP BY 1;
 
 <br>
 
-`REFRESH` の実行中に読み手が止まるかは、3 本の接続で確かめました。`observer` が `daily_sales` に対するロックを [pg_locks](https://www.postgresql.org/docs/17/view-pg-locks.html) で繰り返し読み、`refresher` の `REFRESH` がロックを取ったのを見てから、`reader` が 3 月 1 日の売上を読みます。
+`REFRESH` の実行中に読み手が止まるかは、3 本の接続で確認しました。`observer` が `daily_sales` に対するロックを [pg_locks](https://www.postgresql.org/docs/17/view-pg-locks.html) で繰り返し読み、`refresher` の `REFRESH` がロックを取ったのを見てから、`reader` が 3 月 1 日の売上を読みます。
 
 `observer` は、`reader` がロック待ちになるか読み終わるまで読み続けるので、`REFRESH` の所要時間に頼らずに途中の状態を残せます。直前に 3 月 1 日の注文を 1 円分足しておき、`reader` が新旧どちらの値を読んだかも見ます。
+
+<br>
 
 <details>
 <summary>run.sh の抜粋（3 本の接続の動かし方）</summary>
@@ -201,6 +207,8 @@ blocking_test 'REFRESH MATERIALIZED VIEW CONCURRENTLY daily_sales;'
 ```
 
 </details>
+
+<br>
 
 `CONCURRENTLY` を付けない `REFRESH` の結果は以下の通りです（抜粋）。
 

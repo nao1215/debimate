@@ -56,7 +56,7 @@ topics: ["Image Generation"]
 | [ControlNet](/notes/generative-ai/controlnet/) | 骨格・奥行き・輪郭などの形 |
 | [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter) | 参照画像の画像特徴 |
 
-以降の実験で、これらが実際に何を揃えるかを確かめます。
+以降の実験で、これらが実際に何を揃えるかを確認します。
 
 ---
 
@@ -72,6 +72,8 @@ topics: ["Image Generation"]
 | キャラクターの文面 | `<trigger>, 1girl, solo, adult woman, mature female, 20s, brown hair, medium hair, low ponytail, parted bangs, open eyes, green eyes, ..., white collared shirt, navy cardigan, long sleeves` |
 | 場面の語 | 基準（無表情で立つ）、笑顔、手を振る、カフェで座ってカップを持つ |
 
+<br>
+
 <details>
 <summary>環境と設定の詳細</summary>
 
@@ -82,6 +84,8 @@ topics: ["Image Generation"]
 - IP-Adapter: [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)（コミット `a0f451a`）の `IPAdapterAdvanced` で掛けた。画像エンコーダーは OpenCLIP の ViT-H-14
 
 </details>
+
+<br>
 
 `<trigger>` は LoRA を効かせる起動語です。文面の全文、ネガティブ（描かせたくない物を並べる文面）、候補から外した絵の理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/README.txt) にあります。冒頭の 4 枚のうち、目がはっきり見えて正面を向いた右端（seed 20261114）を基準の絵にし、そこから描き分けました。
 
@@ -214,7 +218,7 @@ ControlNet は、骨格や奥行きの画像を形の条件として渡し、ポ
 
 掛け方を 2 通り変えても、同じように色が転びました。1 つは、ノイズの多い最初の 3 割のステップでは参照を掛けず、残りのステップだけに重み 0.6 で掛ける方法です。もう 1 つは、参照なしで描いた絵を下絵にして denoise 0.5 の img2img で描き直し、その描き直しにだけ重み 0.7 で参照を掛ける方法です。
 
-IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので、今回のベースモデルは SDXL を大きく追加学習した派生モデルです。その差と画風 LoRA の重なりが原因と推測していますが、確かめてはいません。公式の README は、同じベースモデルから追加学習したモデルにも IP-Adapter を使える（"IP-Adapter can be generalized not only to other custom models fine-tuned from the same base model"）と書いているので、この推測はその記述と食い違います。少なくともこの組み合わせでは、参照画像は顔を寄せる前に絵を壊しました。
+IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので、今回のベースモデルは SDXL を大きく追加学習した派生モデルです。その差と画風 LoRA の重なりが原因と推測していますが、確認してはいません。公式の README は、同じベースモデルから追加学習したモデルにも IP-Adapter を使える（"IP-Adapter can be generalized not only to other custom models fine-tuned from the same base model"）と書いているので、この推測はその記述と食い違います。少なくともこの組み合わせでは、参照画像は顔を寄せる前に絵を壊しました。
 
 ---
 
@@ -223,6 +227,8 @@ IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので�
 以下は、目で見た「似ている」「別人に見える」の差を 2 つの指標で並べたグラフです。各点が 1 枚、縦の線が組の平均、点線が基準の絵（1.0）です。一番上は、金髪・青い目・黒いタートルネックと書いた別人の 2 枚で、物差しの目盛りとして描きました（絵は本文に載せず、数値にだけ使っています）。点の色は、灰色が別人、黄土が文面と seed を変える組、緑が骨格、青が画像を渡す手段です。
 
 {{< figure src="images/metrics.webp" alt="組ごとに、基準の顔との近さを点で並べたグラフ。左は CLIP の cos で、別人 0.90、seed 違い 0.92〜0.98、img2img 0.96〜0.98、IP-Adapter 0.69〜0.88 と、別人と同じキャラの差が小さく、IP-Adapter が別人より低い。右はタグの一致で、別人 0.21〜0.23、seed 違い 0.41〜0.73、場面の語だけ変える 0.33〜0.73、場面の語と seed を変える 0.44〜0.73、骨格 0.44〜0.62、IP-Adapter 0.25〜0.42、img2img 0.5・0.7 が 0.67〜0.89、img2img 0.85 が 0.53〜0.64" caption="手段ごとの、基準の顔との近さ（左: CLIP、右: タグの一致）" align="center" >}}
+
+<br>
 
 <details>
 <summary>metrics.py の出力（抜粋。全 36 枚は lab/output_metrics.txt）</summary>
@@ -237,6 +243,8 @@ ipa80_cafe      face_clip=0.692 face_tags=0.417 ...
 ```
 
 </details>
+
+<br>
 
 左の CLIP は、物差しとしては目盛りが詰まっていました。髪も目の色も違う別人が 0.90 で、seed を変えた同じ文面の絵（0.92〜0.98）とほとんど差がありません。参照画像（IP-Adapter）の絵は、別人より低い 0.69〜0.88 で、前の節の色の崩れが効いていると見ています。img2img の 0.85 は、タグの一致が下がったのに CLIP では最も高い組の 1 つ（0.98）でした。今回の 36 枚では、CLIP の埋め込みは顔立ちよりも塗り・色・構図の違いに強く反応しているように見えます。
 

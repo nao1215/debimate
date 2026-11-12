@@ -220,6 +220,8 @@ POST /checkout [gateway] start=+0ms dur=56ms OK
         process order.created [mailer] start=+67ms dur=10ms OK app.delivery_attempt=2
 ```
 
+<br>
+
 <details>
 <summary>1 回目に --json で出した Span の 1 行と、2 回目の実行（inventory の時計を 100 ms 遅らせた）</summary>
 
@@ -244,6 +246,8 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
 ```
 
 </details>
+
+<br>
 
 1 件の注文確定から、10 個の Span ができました。在庫の引き当てとメールの処理は、それぞれ 2 つの Span として現れています。2 回目の実行では、inventory の Span が親の `reserve` より 99 ms 前に始まっています。呼ぶ前に呼ばれた処理が始まることは無いので、この表示は時計のずれが作った見かけです。次の節から、この 2 つの現象を順に読み解きます。
 

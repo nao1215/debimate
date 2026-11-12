@@ -136,6 +136,8 @@ greedy first token: '```'
 
 確率は、同じ入力でも実行ごとに変わりました。同じ日に 4 回取ると、囲みは 60〜76%、`{"` は 23〜35% の幅でした。図は最後の 1 回の値です。どの回でも囲みが首位で、外した後に `{"` が選ばれる点は同じでした。
 
+<br>
+
 <details>
 <summary>probe.py の全体（59 行）</summary>
 
@@ -203,6 +205,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 なお、スキーマはプロンプトには入りません。Ollama は `format` を生成の制約にだけ使い、モデルにはスキーマが見えません。[Ollama のドキュメント](https://docs.ollama.com/capabilities/structured-outputs)は、スキーマを文字列としてプロンプトにも入れることを勧めています。
 
 ---
@@ -254,6 +258,8 @@ def chat(host, model, text, fmt, prompt=PROMPT):
 ```
 
 入力文を作る texts.py と、run.py の全体は以下の通りです。
+
+<br>
 
 <details>
 <summary>texts.py の全体（70 行）</summary>
@@ -332,6 +338,8 @@ if __name__ == "__main__":
 ```
 
 </details>
+
+<br>
 
 <details>
 <summary>run.py の全体（103 行）</summary>
@@ -444,6 +452,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 採点は [lab/evaluate.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/structured-output/lab/evaluate.py) で行いました。中心は次の関数です。
 
 ```python
@@ -459,6 +469,8 @@ def score(content, answer):
     return {"parse": True, "schema": ok_schema, "value": all(fields.values()),
             "fields": fields}
 ```
+
+<br>
 
 <details>
 <summary>evaluate.py の全体（103 行）</summary>
@@ -571,6 +583,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 ### 形と値の結果
 
 #### 形の崩れ方
@@ -578,6 +592,8 @@ if __name__ == "__main__":
 以下が採点の結果です。3 つのモデルについて、方式ごとにパースできた率（図の parses as JSON）、スキーマに合った率（matches schema）、3 つの値が全て正解だった率（all 3 values correct）を並べています。
 
 {{< figure src="images/structured-output_results.svg" alt="3 つのモデルについて、方式ごとにパースできた率・スキーマに合った率・3 つの値が全て正解だった率を並べた棒グラフ。プロンプトだけの場合、パースできたのは qwen3:1.7b が 38%、qwen3:4b が 0%、qwen3:8b が 100%。JSON モードとスキーマは全てのモデルで 100% がパースでき、スキーマにも合った。値が全て正解だったのは、スキーマで qwen3:1.7b が 78%、qwen3:4b が 90%、qwen3:8b が 90%。プロンプトにキー名を書かずにスキーマで縛ると、qwen3:1.7b は 58%、qwen3:8b は 60% に下がった" caption="方式ごとのパース・スキーマ・値の正解率" align="center" >}}
+
+<br>
 
 <details>
 <summary>採点の出力</summary>
@@ -606,6 +622,8 @@ $ uv run --with jsonschema==4.25.1 python3 evaluate.py results.jsonl summary.jso
 ```
 
 </details>
+
+<br>
 
 プロンプトで頼むだけの場合（図の prompt only）、パースできた率はモデルで大きく違いました。qwen3:1.7b は 40 件中 15 件で、失敗した 25 件は全て Markdown の囲みでした（採点の出力の `fence` の 25）。囲みを外せば全て読めたので、中身の JSON は書けています。
 
@@ -648,7 +666,7 @@ qwen3:1.7b は、和暦の 8 件のうち 5 件で年を間違えました。qwe
 
 文法の判定が軽く済むのは、前述の通り、モデルが選んだトークンが文法に合う間は、語彙全体を調べないからだと考えられます。この課題は、モデルが自分から形を守る場面が大半でした。モデルが文法に合わない候補を選び続ける課題（例えば、プロンプトに書いていない深い入れ子の形）では、語彙全体の判定が毎トークン走るので、結果は変わる可能性があります。
 
-なお、temperature 0 と seed を固定しても、プロンプトだけの方式では、20 件中 7 件で 3 回の応答が一致しませんでした。囲みの有無や、和暦から変換した年が変わっています。[Sampling のノート](/notes/generative-ai/sampling/)で確かめたように、Ollama が直前の問いの計算を使い回すかどうかで temperature 0 でも出力が変わることがあり、この揺れにも効いている可能性があります。JSON モードとスキーマは、20 件とも 3 回同じ応答でした。
+なお、temperature 0 と seed を固定しても、プロンプトだけの方式では、20 件中 7 件で 3 回の応答が一致しませんでした。囲みの有無や、和暦から変換した年が変わっています。[Sampling のノート](/notes/generative-ai/sampling/)で確認したように、Ollama が直前の問いの計算を使い回すかどうかで temperature 0 でも出力が変わることがあり、この揺れにも効いている可能性があります。JSON モードとスキーマは、20 件とも 3 回同じ応答でした。
 
 ### 思考モードと format
 
@@ -671,6 +689,8 @@ qwen3:4b think=true  format=none   thinking= 7964 chars  tokens=2387  eval=  80.
 qwen3:4b think=true  format=schema thinking= 7964 chars  tokens=  37  eval=   1.4 s  wall=  89.1 s  done=stop
     content: {"person": "松本彩", "date": "2024-03-19", "amount_yen": 120000}
 ```
+
+<br>
 
 <details>
 <summary>qwen3:1.7b を含む出力の全体</summary>
@@ -699,6 +719,8 @@ qwen3:4b think=true  format=schema thinking= 7964 chars  tokens=  37  eval=   1.
 ```
 
 </details>
+
+<br>
 
 <details>
 <summary>think.py の全体（50 行）</summary>
@@ -758,6 +780,8 @@ if __name__ == "__main__":
 
 </details>
 
+<br>
+
 `"think": false` の qwen3:4b は、2,387 トークンの思考を `content` に書き、`</think>` の後に JSON を置きました。`</think>` より後を切り出せば読めますが、生成に 90 秒近くかかる思考の分の時間は払っています。
 
 同じ `"think": false` でスキーマを付けると、思考は消えました。文法が 1 トークン目に `{` しか許さないので、モデルは `Okay` と書き出せず、42 トークンで JSON を返しています。
@@ -806,6 +830,8 @@ qwen3:8b           integer|null      -> {"person": "佐藤花子", "date": "2025
 qwen3:8b           integer|null+ask  -> { "person": "佐藤花子", "date": "2025-06-01", "amount_yen": null }
 ```
 
+<br>
+
 <details>
 <summary>missing.py の全体（35 行）</summary>
 
@@ -848,6 +874,8 @@ if __name__ == "__main__":
 ```
 
 </details>
+
+<br>
 
 どちらのモデルも、金額を 0 円としました。スキーマで null を許しても、プロンプトに書かなければ 0 のままです。モデルにはスキーマが見えないので、null を選べることを知りません。プロンプトに「文に書かれていない項目は null」と足すと、2 つのモデルとも null を返しました。0 円の取引と「金額の記載が無い」を区別したい場合は、スキーマとプロンプトの両方に逃げ道を書く必要があります。
 
