@@ -21,7 +21,7 @@
   逆向きのリンクの 1 文などを足すため。
 - `>` で始まる引用の行は語の判定から外す（ブログ記事・weeknotes・外部の文からの引用のため）。
 """
-import csv, difflib, glob, json, os, re, subprocess, sys
+import csv, difflib, glob, json, os, re, shutil, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import no_chain  # noqa: E402  名詞を「の」で 3 つ以上つなぐ表現（2026-11-12 著者）
 
@@ -344,6 +344,16 @@ def check_process(rel, key, text):
         ng.append(f'冒頭の型「{ot}」が直前の 3 本（{", ".join(r[0] for r in prev)}）と同じ。題材に合う別の型を選ぶ')
     if len(prev) == 3 and ts == 'なぜ' and all(r[2] == ts for r in prev):
         ng.append(f'題が直前の 3 本と同じ「〜の理由／なぜ〜のか」の形: {title}')
+
+    # PC 幅（1280）での見栄え。箇条書きの折り返しと表のマスの行数を、描いて数える（layout_check.py。2026-11-12 著者の指定）。
+    # hugo と google-chrome が要るので、無い環境では飛ばして知らせる
+    if shutil.which('google-chrome') and shutil.which('hugo'):
+        r = subprocess.run([sys.executable, os.path.join(HERE, 'layout_check.py'), rel],
+                           cwd=ROOT, capture_output=True, text=True, timeout=600)
+        if r.returncode != 0:
+            ng += ['PC 幅の見栄え: ' + l.strip() for l in r.stdout.splitlines() if l.strip()]
+    else:
+        print('  注意: hugo か google-chrome が無いので、PC 幅の見栄え（layout_check.py）を見ていない', file=sys.stderr)
     return ng
 
 
