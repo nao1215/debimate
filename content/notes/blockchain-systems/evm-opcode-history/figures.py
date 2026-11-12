@@ -183,7 +183,7 @@ def eip_types():
     s.rect(20, 140, 680, 400, GRAY_PALE, SUB, 2, rx=12)
     s.text(40, 178, "Standards Track", 26, "start")
     cats = [
-        (36, 200, "Core", ["命令・ガス・取引の型", "原則フォークが要る"], True),
+        (36, 200, "Core", ["命令・ガス・トランザクションの型", "原則フォークが要る"], True),
         (368, 200, "Networking", ["ノード間通信（devp2p）", "フォーク不要"], False),
         (36, 370, "Interface", ["ABI・メソッド名", "フォーク不要"], False),
         (368, 370, "ERC", ["トークン・署名など", "フォーク不要"], False),
@@ -191,7 +191,7 @@ def eip_types():
     for x, y, name, lines, core in cats:
         s.rect(x, y, 316, 150, BLUE_PALE if core else "#ffffff", BLUE if core else SUB, 2.5 if core else 2, rx=8)
         s.text(x + 20, y + 42, name, 26, "start")
-        s.text(x + 20, y + 84, lines[0], 24, "start", "sub")
+        s.text(x + 20, y + 84, lines[0], 18 if len(lines[0]) > 12 else 24, "start", "sub")
         s.text(x + 20, y + 122, lines[1], 24, "start", "" if core else "sub")
     for y, h, name, sub in ((140, 180, "Meta", ["手続き、", "更新の一覧", "フォーク不要"]),
                             (340, 150, "Informational", ["指針", "フォーク不要"])):
@@ -220,10 +220,10 @@ def prevrandao():
 
 # 6b. Why 0x0a exists: the EVM cannot read a blob, only its hash, so a short proof is checked instead.
 def kzg():
-    s = Svg(960, 420, "blob を運ぶ取引には blob と versioned hash が入る。EVM は blob を読めず、BLOBHASH 命令で versioned hash だけを読む。"
+    s = Svg(960, 420, "blob を運ぶトランザクションには blob と versioned hash が入る。EVM は blob を読めず、BLOBHASH 命令で versioned hash だけを読む。"
                       "rollup のコントラクトは、versioned hash・commitment・点 z・値 y・証明を 0x0a に渡し、blob がその点でその値を取るかを確かめる")
     s.rect(30, 30, 360, 250, GRAY_PALE, SUB, 2, rx=10)
-    s.text(50, 66, "blob を運ぶ取引", 24, "start")
+    s.text(50, 66, "blob を運ぶトランザクション", 24, "start")
     s.rect(50, 86, 320, 80, OCHRE_PALE, OCHRE, 2.5, rx=8)
     s.text(210, 122, "blob（128 KiB）", 24)
     s.text(210, 154, "EVM からは読めない", 20, cls="sub")

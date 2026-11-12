@@ -3,7 +3,7 @@
 - チェーン A（8548, chain ID 31337）でコントラクトを置いた後、そのブロックから
   チェーン B（8549, chain ID 31338）を分岐させる（anvil --fork-url）。分岐の時点の残高・nonce・
   コントラクトは両方のチェーンで同じになる。
-- 取引の署名と検証は secp256k1.py（純 Python）で手で行う。秘密鍵は説明用の無価値なもの
+- トランザクションの署名と検証は secp256k1.py（純 Python）で手で行う。秘密鍵は説明用の無価値なもの
   （Anvil の既定のテスト用の鍵と、文字列のハッシュから作った鍵）だけを使う。
 - 公開ネットワーク・実資産・本物の秘密鍵は使わない。
 
@@ -53,7 +53,7 @@ class Node:
         raise SystemExit(f'{self.url} did not start')
 
     def send_raw(self, raw):
-        """署名済みの取引のバイト列をそのまま流す。自動のマイニングなので、受け付けられればすぐブロックに入る。"""
+        """署名済みのトランザクションのバイト列をそのまま流す。自動のマイニングなので、受け付けられればすぐブロックに入る。"""
         try:
             h = self.rpc('eth_sendRawTransaction', raw)
         except RuntimeError as e:
@@ -112,7 +112,7 @@ def calldata(signature, *args):
     return '0x' + (keccak256(signature.encode())[:4] + b''.join(word(a) for a in args)).hex()
 
 
-# ---- 取引の署名（legacy transaction） --------------------------------------------
+# ---- トランザクションの署名（legacy transaction） --------------------------------------------
 
 def legacy_fields(nonce, to, value, gas_price=10 * GWEI):
     return [num(nonce), num(gas_price), num(21000), bytes.fromhex(to[2:]), num(value), b'']
@@ -208,7 +208,7 @@ def main():
         theirs = subprocess.check_output([CAST, 'wallet', 'sign', '--no-hash', '--private-key',
                                           hex(ISSUER_KEY), '0x' + h.hex()], text=True).strip()
         print(f'secp256k1.py signature == cast wallet sign: {ours == theirs}')
-        # 照合: EIP-155 の仕様にある例（nonce 9, chain ID 1）と同じ取引のバイト列になるか
+        # 照合: EIP-155 の仕様にある例（nonce 9, chain ID 1）と同じトランザクションのバイト列になるか
         example, _ = sign_legacy(0x46 * sum(256**i for i in range(32)), 9, '0x' + '35' * 20, ETH,
                                  chain_id=1, gas_price=20 * GWEI)
         print(f'EIP-155 example transaction reproduced: {example == EIP155_EXAMPLE}')
@@ -271,7 +271,7 @@ def main():
             print(f'    voucher #2 on A          -> {try_claim(a, relayer, second, args)}')
             print(f'    voucher #1 on A again    -> {try_claim(a, relayer, first, args)}')
 
-        # ---- 4. 時間: 取引には期限が無く、引換券には期限がある ----
+        # ---- 4. 時間: トランザクションには期限が無く、引換券には期限がある ----
         print('\n== 4. a year later on chain A')
         held, _ = sign_legacy(ALICE_KEY, 2, BOB, ETH, chain_id=31337)
         late = sign_claim(domain_separator(2, 31337, vouchers[2][0]), BOB, ETH, 1, a.now() + 3600)

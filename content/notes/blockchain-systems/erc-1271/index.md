@@ -21,7 +21,7 @@ ERC-1271 は、このようなアカウントに「この署名は自分のも�
 
 上記の図の上の黄土色の枠が EOA の検証で、署名から復元したアドレスを比べます。下の青い枠がコードを持つアカウント（コントラクトのアカウント（contract account）と、後で説明する委任した EOA）の検証で、アカウント自身に問い合わせます。
 
-サーバーで検証する場合も、`eth_call`（取引を送らずにコントラクトの関数を呼ぶ JSON-RPC のメソッド）でアカウントの `isValidSignature` を呼びます。図の中の `0x1626ba7e` は、後の節で説明します。
+サーバーで検証する場合も、`eth_call`（トランザクションを送らずにコントラクトの関数を呼ぶ JSON-RPC のメソッド）でアカウントの `isValidSignature` を呼びます。図の中の `0x1626ba7e` は、後の節で説明します。
 
 <br>
 
@@ -40,7 +40,7 @@ ERC-1271 は、このようなアカウントに「この署名は自分のも�
 
 EOA の署名は、ecrecover という組み込みの関数で検証します。ecrecover は、署名したハッシュ（digest）と署名から公開鍵を求め、そのアドレスを返します。EOA のアドレスは[公開鍵から導かれる](../ethereum-address/)ので、正しい署名なら署名者のアドレスが返ります。
 
-コントラクトのアカウントのアドレスは、デプロイした側のアドレスとその取引数（アカウントの nonce）などから決まり、公開鍵から導かれたものではありません。そのため、どんな署名を ecrecover しても、コントラクトのアカウントのアドレスは返りません。
+コントラクトのアカウントのアドレスは、デプロイした側のアドレスとそのトランザクション数（アカウントの nonce）などから決まり、公開鍵から導かれたものではありません。そのため、どんな署名を ecrecover しても、コントラクトのアカウントのアドレスは返りません。
 
 {{< figure src="images/erc-1271_address.webp" alt="上の黄土色の枠は EOA で、秘密鍵 → 公開鍵 → アドレスと決まり、ecrecover(digest, 署名) も公開鍵を経て同じアドレスになるので一致する。下の青い枠はコントラクトのアカウントで、デプロイした側のアドレスと nonce などからアドレスが決まり、ecrecover(digest, 署名) は所有者の EOA のアドレスを返すので、赤い ≠ で一致しない" caption="アドレスの決まり方と、ecrecover が返すアドレス" align="center" >}}
 
@@ -115,7 +115,7 @@ contract StudyAccount is IERC1271 {
 
 署名するのは、Permit の owner 欄をこのアカウントにした ERC-2612 の Permit（トークンの利用を署名で承認するメッセージ）で、署名するのは所有者の EOA です。検証には、ecrecover だけで比べる `checkEcrecover` と、上記の SignatureChecker を呼ぶ `checkWith1271` を持つ学習用のコントラクト [SigCheck](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/SigCheck.sol) を用います。
 
-以下は run.py の該当部分です。`a.deploy` はコントラクトのデプロイ、`a.call` は [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/)（取引を送らずに関数を呼ぶ）で結果か失敗の理由を返す関数、`permit_typed` は Permit の型とドメインを組み立てる関数、`digest` は EIP-712 のハッシュを Python で計算する関数です。
+以下は run.py の該当部分です。`a.deploy` はコントラクトのデプロイ、`a.call` は [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/)（トランザクションを送らずに関数を呼ぶ）で結果か失敗の理由を返す関数、`permit_typed` は Permit の型とドメインを組み立てる関数、`digest` は EIP-712 のハッシュを Python で計算する関数です。
 
 `token` は学習用のトークン、`spender` は承認を受ける側のアカウント、`checker` は SigCheck、`psig` は permit の関数の型で、どれも EIP-712 のノートの実験と同じです。
 
@@ -198,15 +198,15 @@ permit では、Permit の owner 欄に A のアドレスが入るので、B の
 
 ### まだデプロイされていないアカウント
 
-スマートアカウントは、アドレスを先に計算しておき、最初の取引の時にデプロイすることがあります。送り主の nonce によらず、作る前にアドレスが決まるデプロイの方法（[CREATE2](https://eips.ethereum.org/EIPS/eip-1014)）があり、ウォレットはそのアドレスを先に利用者に見せられるからです（仕組みは [ERC-4337 のノート](../erc-4337/)で説明しています）。
+スマートアカウントは、アドレスを先に計算しておき、最初のトランザクションを送る時にデプロイすることがあります。送り主の nonce によらず、作る前にアドレスが決まるデプロイの方法（[CREATE2](https://eips.ethereum.org/EIPS/eip-1014)）があり、ウォレットはそのアドレスを先に利用者に見せられるからです（仕組みは [ERC-4337 のノート](../erc-4337/)で説明しています）。
 
 しかし、コードの無いアドレスに `isValidSignature` は呼べず、デプロイ前のアカウントはログインの署名を示せません。
 
 [ERC-6492](https://eips.ethereum.org/EIPS/eip-6492)（2026 年 11 月時点で Final）は、この場合の署名の形を定めています。アカウントを作るコントラクト（ファクトリ）のアドレス、その呼び出しデータ、元の署名の 3 つを Solidity の [ABI 形式](https://docs.soliditylang.org/en/v0.8.28/abi-spec.html)（`abi.encode`）でまとめ、その後ろに 32 バイトの `0x6492…6492` を付けます。
 
-{{< figure src="images/erc-1271_6492.webp" alt="上段は ERC-6492 の署名の並びで、青い abi.encode(factory, factoryCalldata, 元の署名) の後ろに、黄土色の末尾 32 バイト 0x6492…6492 が続く。下段は検証する側が 1 回の eth_call の中で行う 3 段階で、1. 末尾を見て 6492 の形と判断、2. ファクトリを呼びデプロイを模擬、3. isValidSignature を元の署名で呼ぶ。eth_call は取引を送らないので、チェーンの状態は変わらない" caption="ERC-6492 の署名の並びと、検証する側の手順" align="center" >}}
+{{< figure src="images/erc-1271_6492.webp" alt="上段は ERC-6492 の署名の並びで、青い abi.encode(factory, factoryCalldata, 元の署名) の後ろに、黄土色の末尾 32 バイト 0x6492…6492 が続く。下段は検証する側が 1 回の eth_call の中で行う 3 段階で、1. 末尾を見て 6492 の形と判断、2. ファクトリを呼びデプロイを模擬、3. isValidSignature を元の署名で呼ぶ。eth_call はトランザクションを送らないので、チェーンの状態は変わらない" caption="ERC-6492 の署名の並びと、検証する側の手順" align="center" >}}
 
-上記の図の下段のように、検証する側はこの末尾を見つけたら、1 回の `eth_call` の中で、仕様にある検証用のコントラクト（`ValidateSigOffchain`）は、デプロイせずに生成用のコードごと実行します。このコントラクトは生成の処理の中でファクトリを呼んでデプロイを模擬し、続けて `isValidSignature` を呼びます。`eth_call` は取引を送らないので、チェーンの状態は変わりません。
+上記の図の下段のように、検証する側はこの末尾を見つけたら、1 回の `eth_call` の中で、仕様にある検証用のコントラクト（`ValidateSigOffchain`）は、デプロイせずに生成用のコードごと実行します。このコントラクトは生成の処理の中でファクトリを呼んでデプロイを模擬し、続けて `isValidSignature` を呼びます。`eth_call` はトランザクションを送らないので、チェーンの状態は変わりません。
 
 仕様には、コントラクトの中で検証する方法も載っています。ただ、仕様自身も、コントラクトの中で検証する時はアカウントがデプロイ済みであることが多いので、主な用途はオフチェーンの検証だろうと書いています。
 

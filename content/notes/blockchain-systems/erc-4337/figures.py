@@ -85,7 +85,7 @@ class Svg:
 
 
 def concept_figure():
-    s = Svg(960, 540, "UserOperation はチェーンの外で Bundler に渡り、チェーンに載るのは Bundler の普通の取引 1 件だけ")
+    s = Svg(960, 540, "UserOperation はチェーンの外で Bundler に渡り、チェーンに載るのは Bundler の普通のトランザクション 1 件だけ")
     # Off-chain layer: dashed outline, no fill.
     s.box(16, 16, 928, 248, "none", SUB, sw=2, dash="8 6")
     s.text(36, 54, "チェーンの外（UserOperation の mempool）", size=24, color=SUB, anchor="start")
@@ -101,7 +101,7 @@ def concept_figure():
     s.box(16, 284, 928, 240, GRAY_F)
     s.text(36, 322, "チェーンの上（プロトコルは従来のまま）", size=24, color=SUB, anchor="start")
     s.line(500, 208, 500, 350, INK, arrow="ink")
-    s.text(488, 244, "handleOps の取引", size=22, anchor="end")
+    s.text(488, 244, "handleOps のトランザクション", size=22, anchor="end")
     s.line(610, 350, 610, 214, OCHRE, dash="10 8", arrow="ochre")
     s.text(626, 244, "手数料を ETH で返す", size=22, anchor="start")
     s.box(36, 356, 600, 148, "#ffffff", INK, sw=2)
@@ -125,7 +125,7 @@ def concept_figure():
 
 def loops_figure():
     s = Svg(960, 580, "handleOps は全ての UserOperation を先に検証し、その後で実行する")
-    s.text(480, 42, "EntryPoint の handleOps（Bundler が送る 1 件の取引）", size=26)
+    s.text(480, 42, "EntryPoint の handleOps（Bundler が送る 1 件のトランザクション）", size=26)
     s.text(480, 80, "検証は全て、どの実行よりも前に終わる（実行で他の検証の結果が変わらない）", size=20, color=SUB)
     y0 = 110
     cols = [(20, BLUE_F, BLUE, "1 回目のループ：検証", "アカウントの作成・署名の確認・前払い"),
@@ -209,11 +209,11 @@ def load_summary():
 
 def fees_figure():
     *_, fees, _ = load_summary()
-    s = Svg(960, 540, "UserOperation ごとの手数料の出どころと、Bundler 自身の取引のガス代")
+    s = Svg(960, 540, "UserOperation ごとの手数料の出どころと、Bundler 自身のトランザクションのガス代")
     legend = [(BLUE_F, BLUE, "アカウントが払う"), (OCHRE_F, OCHRE, "Paymaster が払う"),
-              (GRAY_F, SUB, "Bundler 自身の取引のガス代")]
+              (GRAY_F, SUB, "Bundler のガス代")]
     for i, (face, edge, label) in enumerate(legend):
-        x = 40 + i * 270
+        x = 40 + i * 290
         s.box(x, 30, 32, 26, face, edge, rx=4)
         s.text(x + 44, 52, label, size=22, anchor="start")
     names = {"op1 initCode, self-paid": ("op1", "作成・自分で払う"),
@@ -238,7 +238,7 @@ def fees_figure():
 
 def gas_figure():
     *_, gas = load_summary()
-    s = Svg(960, 500, "1 件の取引のガスの内訳と、EOA の送金との比較")
+    s = Svg(960, 500, "1 件のトランザクションのガスの内訳と、EOA の送金との比較")
     legend = [(OCHRE_F, OCHRE, "アカウントの作成"), (BLUE_F, BLUE, "検証（アカウント＋Paymaster）"),
               (GREEN_F, GREEN, "実行"), (GRAY_F, SUB, "EntryPoint・呼び出しデータ・基本料")]
     for i, (face, edge, label) in enumerate(legend):
@@ -264,7 +264,7 @@ def gas_figure():
             left += width * scale
         s.text(left + 12, y + 32, f"{tx:,}", size=21, anchor="start")
     s.line(x0, 120, x0, 450, SUB, sw=2)
-    s.text(x0 + 280, 486, "取引が使ったガス", size=20, color=SUB)
+    s.text(x0 + 280, 486, "トランザクションが使ったガス", size=20, color=SUB)
     s.save("erc-4337_gas.webp")
 
 

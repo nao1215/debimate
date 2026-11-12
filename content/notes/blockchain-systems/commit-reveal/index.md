@@ -9,11 +9,11 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-[スマートコントラクト](../smart-contract/)で、入札額を最後まで伏せる封印入札（sealed-bid）のオークションを開くとします。Alice が「50 で入札する」という取引を送ると、その取引はブロックに入る前に [mempool](../mempool/)（ブロックに入る前の取引の置き場）を通じてネットワークに広まり、誰でも中身を読めます。
+[スマートコントラクト](../smart-contract/)で、入札額を最後まで伏せる封印入札（sealed-bid）のオークションを開くとします。Alice が「50 で入札する」というトランザクションを送ると、そのトランザクションはブロックに入る前に [mempool](../mempool/)（ブロックに入る前のトランザクションを置く場所）を通じてネットワークに広まり、誰でも中身を読めます。
 
-Bob はそれを見てから 51 で入札し、手数料を上乗せすれば、後から送った自分の取引を Alice より前に並べてもらえます。手元のローカルチェーンで試すと、Bob の入札が先に処理され、Alice の入札は「too low」で取り消されました。
+Bob はそれを見てから 51 で入札し、手数料を上乗せすれば、後から送った自分のトランザクションを Alice より前に並べてもらえます。手元のローカルチェーンで試すと、Bob の入札が先に処理され、Alice の入札は「too low」で取り消されました。
 
-コミット・リビール（commit-reveal）は、この問題を 2 回の取引に分けて解く仕組みです。1 回目（コミット）では、値そのものではなく、値と秘密の乱数（salt）を合わせたハッシュ値だけを送ります。締め切りの後の 2 回目（リビール）で値と salt を明かし、コントラクトがハッシュ値を計算し直して、1 回目に送られた値と照合します。以下は、何がいつ公開されるかを時間の流れに沿って並べた図です。
+コミット・リビール（commit-reveal）は、この問題を 2 回のトランザクションに分けて解く仕組みです。1 回目（コミット）では、値そのものではなく、値と秘密の乱数（salt）を合わせたハッシュ値だけを送ります。締め切りの後の 2 回目（リビール）で値と salt を明かし、コントラクトがハッシュ値を計算し直して、1 回目に送られた値と照合します。以下は、何がいつ公開されるかを時間の流れに沿って並べた図です。
 
 {{< figure src="images/commit-reveal_timeline.webp" alt="左の青い帯がコミットの段、右の黄土の帯がリビールの段で、間に締め切りの破線がある。上の行は誰でも見える公開の情報、下の行は本人だけが持つ手元の情報。コミットの段では、手元の入札額 50 と salt（と送り主のアドレス）から keccak256 で作ったハッシュ値 0x66be… だけが公開される。締め切りの後、入札額 50 と salt が公開の行に出て、その下でコントラクトが照合する" caption="コミットの段ではハッシュ値だけが、リビールの段で中身が公開される" align="center" >}}
 
@@ -23,7 +23,7 @@ Bob はそれを見てから 51 で入札し、手数料を上乗せすれば、
 
 本記事では、手元のローカルチェーンでオークションを動かしながら、コミット・リビールの仕組みと限界を説明します。扱う疑問は次の通りです。
 
-- 取引の中身を先に見られると、何が起きるのか。
+- トランザクションの中身を先に見られると、何が起きるのか。
 - ハッシュ値は、どうやって中身を隠したまま約束を固定するのか。
 - salt が無いと、なぜ中身が分かってしまうのか。
 - 明かさない参加者や、他人のコミットを写す参加者はどう扱うのか。
@@ -35,11 +35,11 @@ Bob はそれを見てから 51 で入札し、手数料を上乗せすれば、
 
 ### 中身を先に見せられない理由
 
-ブロックチェーンに送った取引は、送った順に処理されるとは限りません。[MEV](../mev/) のノートで説明した通り、Ethereum のプロトコルは同じ送り主の取引を [nonce](../ethereum-account-model/)（通し番号）の順に並べること以外に、ブロックの中の並び順を定めていません。ブロックを作る者は、受け取った順ではなく、手数料や自分の利益で並び順を決められます。
+ブロックチェーンに送ったトランザクションは、送った順に処理されるとは限りません。[MEV](../mev/) のノートで説明した通り、Ethereum のプロトコルは同じ送り主のトランザクションを [nonce](../ethereum-account-model/)（通し番号）の順に並べること以外に、ブロックの中の並び順を定めていません。ブロックを作る者は、受け取った順ではなく、手数料や自分の利益で並び順を決められます。
 
-そのため、mempool で他人の取引を読み、手数料を上乗せして前に割り込む先回り（front-running）ができます。冒頭のオークションでは、Alice の取引の引数に入札額がそのまま入っているので、Bob は 1 だけ多い額を入れれば勝てます。
+そのため、mempool で他人のトランザクションを読み、手数料を上乗せして前に割り込む先回り（front-running）ができます。冒頭のオークションでは、Alice のトランザクションでは、引数に入札額がそのまま入っているので、Bob は 1 だけ多い額を入れれば勝てます。
 
-{{< figure src="images/commit-reveal_frontrun.webp" alt="左の灰色の枠は mempool で、1. Alice の bid(50)、手数料 1 gwei の取引を Bob が読み、2. Bob が bid(51)、手数料 3 gwei の取引を送る。3. ブロックでは手数料の高い順に並び、#0 の Bob の bid(51) が成功し、#1 の Alice の bid(50) が too low で取り消される" caption="mempool で読んだ入札に、手数料を上乗せして割り込む（gwei は 10 億分の 1 ETH）" align="center" >}}
+{{< figure src="images/commit-reveal_frontrun.webp" alt="左の灰色の枠は mempool で、1. Alice の bid(50)、手数料 1 gwei のトランザクションを Bob が読み、2. Bob が bid(51)、手数料 3 gwei のトランザクションを送る。3. ブロックでは手数料の高い順に並び、#0 の Bob の bid(51) が成功し、#1 の Alice の bid(50) が too low で取り消される" caption="mempool で読んだ入札に、手数料を上乗せして割り込む（gwei は 10 億分の 1 ETH）" align="center" >}}
 
 以下では、図の流れを手元のローカルチェーンで再現します。
 
@@ -54,7 +54,7 @@ Anvil 1.7.1 と Solidity コンパイラ 0.8.28 を使い、2026 年 11 月 11 �
 
 </details>
 
-Anvil は既定では取引を受け取るたびにブロックを作るので、`--no-mining` で自動のマイニングを止め、取引を mempool に溜めてから手でブロックを作っています。並び順は、手数料の高い取引を先にする Anvil の既定の設定（`--order fees`）です。比較用の、入札額をそのまま受け取るコントラクトは次の通りです。
+Anvil は既定ではトランザクションを受け取るたびにブロックを作るので、`--no-mining` で自動のマイニングを止め、トランザクションを mempool に溜めてから手でブロックを作っています。並び順は、手数料の高いトランザクションを先にする Anvil の既定の設定（`--order fees`）です。比較用の、入札額をそのまま受け取るコントラクトは次の通りです。
 
 ```solidity
 contract OpenAuction {
@@ -69,7 +69,7 @@ contract OpenAuction {
 }
 ```
 
-Alice が [priority fee](../gas-eip-1559/)（ブロックを作る者への上乗せの手数料）1 gwei で `bid(50)` を送った後、Bob は Anvil の `txpool_content`（mempool の中身を返す RPC）から Alice の取引を読み、3 gwei で `bid(51)` を送りました。その後に作ったブロックは次の通りです。
+Alice が [priority fee](../gas-eip-1559/)（ブロックを作る者への上乗せの手数料）1 gwei で `bid(50)` を送った後、Bob は Anvil の `txpool_content`（mempool の中身を返す RPC）から Alice のトランザクションを読み、3 gwei で `bid(51)` を送りました。その後に作ったブロックは次の通りです。
 
 ```text
   bob sees in txpool: bid(50) from alice
@@ -79,7 +79,7 @@ Alice が [priority fee](../gas-eip-1559/)（ブロックを作る者への上�
   winner bob, highest 51
 ```
 
-後から送った Bob の取引が 0 番目に並び、Alice の取引は取り消されました。取り消された取引も、ブロックに入った以上は gas の手数料が掛かります。実験の全体は [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/commit-reveal/lab/run.py)、出力の全体は [lab/output/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/commit-reveal/lab/output/output.txt) にあります。
+後から送った Bob のトランザクションが 0 番目に並び、Alice のトランザクションは取り消されました。取り消されたトランザクションも、ブロックに入った以上は gas の手数料が掛かります。実験の全体は [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/commit-reveal/lab/run.py)、出力の全体は [lab/output/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/commit-reveal/lab/output/output.txt) にあります。
 
 ---
 
@@ -156,7 +156,7 @@ def brute_force(addr, target, candidates, salt=b'\0' * 32):
     return None, len(candidates), time.perf_counter() - start
 ```
 
-`word` は値を 32 バイトに揃える補助関数、`keccak256` は [EIP-712 のノート](../eip-712/)の実験で使った、Python だけで書いた Keccak-256 です。Alice の送り主のアドレスは取引から分かるので、Bob が知らないのは入札額と salt だけです。
+`word` は値を 32 バイトに揃える補助関数、`keccak256` は [EIP-712 のノート](../eip-712/)の実験で使った、Python だけで書いた Keccak-256 です。Alice の送り主のアドレスはトランザクションから分かるので、Bob が知らないのは入札額と salt だけです。
 
 Alice が salt を 0 に固定してコミットすると、次のようになりました。
 
@@ -221,7 +221,7 @@ Carol は 70 でコミットしたのにリビールせず、締め切りが過�
 
 ENS（Ethereum Name Service）は、`alice.eth` のような名前をアドレスに対応付ける仕組みです。`.eth` の名前を登録するコントラクト ETHRegistrarController は、コミット・リビールで登録を受け付けます。
 
-[ENS のドキュメント](https://docs.ens.domains/registry/eth)によると、この仕組みの目的は、mempool で `register` の取引を見た参加者に先回りされないことです。欲しい名前をいきなり `register` で送ると、mempool でその名前を見た人が先に同じ名前を登録できるからです。
+[ENS のドキュメント](https://docs.ens.domains/registry/eth)によると、この仕組みの目的は、mempool で `register` のトランザクションを見た参加者に先回りされないことです。欲しい名前をいきなり `register` で送ると、mempool でその名前を見た人が先に同じ名前を登録できるからです。
 
 [v1.7.0 のソース](https://github.com/ensdomains/ens-contracts/blob/v1.7.0/contracts/ethregistrar/ETHRegistrarController.sol#L210-L235)では、コミットのハッシュ値を次のように作ります。
 
@@ -285,15 +285,15 @@ def process_randao(state: BeaconState, body: BeaconBlockBody) -> None:
 
 コミット・リビールは、中身を明かす時期を締め切りの後へずらすことで先回りを防ぎます。その代わりに、次の制約があります。
 
-- 取引が 2 回要り、gas の手数料と待ち時間が増える
+- トランザクションが 2 回要り、gas の手数料と待ち時間が増える
 - 明かすかどうかを本人が選べ、預け金では明かさない選択に値段を付けることしかできない
 - salt を失うと明かせなくなり、推測できる salt や使い回した salt は総当たりされる
-- コミットの取引そのもの（誰が・いつ・いくら預けたか）は隠せない
+- コミットのトランザクションそのもの（誰が・いつ・いくら預けたか）は隠せない
 - 締め切りの長さを決める必要があり、短すぎると混雑時に間に合わず、長すぎると結果が遅れる
 
 ### 適さないケース
 
-- 1 回の取引で即座に結果が要る交換や送金
+- 1 回のトランザクションで即座に結果が要る交換や送金
 - 参加者が最後の値を出すかどうかで、大きな額が動く乱数（くじの賞金など）
 - salt を安全に保管できない利用者に、候補が少ない値を扱わせる場合
 - 中身を明かさないまま比べたい場合（入札額を最後まで隠したい場合など）

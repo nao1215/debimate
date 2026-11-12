@@ -71,7 +71,7 @@ def token(f, x, y, ours, w=44, h=28):
 
 
 def concept_figure():
-    f = Svg(960, 540, "同じ取引がウォレットから mempool を経てブロックへ移る")
+    f = Svg(960, 540, "同じトランザクションがウォレットから mempool を経てブロックへ移る")
     top, bottom = 110, 420
 
     # Wallet: Alice builds and signs the transaction.
@@ -110,7 +110,7 @@ def concept_figure():
     f.line(620, 384, 930, 384, INK, sw=2.5)
     f.line(620, 376, 620, 392, INK, sw=2.5)
     f.line(930, 376, 930, 392, INK, sw=2.5)
-    f.text(775, 420, "確認数 3", 26)
+    f.text(775, 420, "承認数 3", 26)
 
     # Status shown by the wallet.
     f.line(30, 470, 518, 470, OCHRE, sw=6)

@@ -95,7 +95,7 @@ def concept_figure():
             f.line(hx - 4, ht + rh / 2, px + 10, ht + rh / 2,
                    OCHRE if after else ACCENT, sw=4,
                    arrow="ochre" if after else "accent")
-    f.text(30, 462, "小さい箱: ヘッダ 80 バイト　大きい箱: 本体（取引の並び）",
+    f.text(30, 462, "小さい箱: ヘッダ 80 バイト　大きい箱: 本体（トランザクションの並び）",
            24, SUB, anchor="start")
     f.text(30, 512, "1 か所の書き換えが、後ろの全ブロックの「直前」に伝わる", 26, INK,
            anchor="start")

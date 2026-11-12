@@ -15,11 +15,11 @@ topics: ["Transaction / Wallet"]
 
 <br>
 
-ここでのチェーンは、取引の記録を多数のコンピュータ（ノード）で共有するブロックチェーンのことです。Ethereum の本体のほかに、テスト用のチェーンや、Ethereum と同じ規則で動く別のチェーンがあり、[chain ID](../mainnet-and-testnet/#ethereum-の-chain-id-と-network-id) という番号で区別します（Ethereum の本体は 1）。
+ここでのチェーンは、トランザクションの記録を多数のコンピュータ（ノード）で共有するブロックチェーンのことです。Ethereum の本体のほかに、テスト用のチェーンや、Ethereum と同じ規則で動く別のチェーンがあり、[chain ID](../mainnet-and-testnet/#ethereum-の-chain-id-と-network-id) という番号で区別します（Ethereum の本体は 1）。
 
 <br>
 
-以下は、3 つの規則の材料と、材料に入らない chain ID の関係を示した図です。図の nonce は送り手がそれまでに出した取引などの数、salt は作り手が選ぶ 32 バイトの値、initcode はコントラクトを作る時に 1 度だけ動くプログラムで、それぞれの節で説明します。
+以下は、3 つの規則の材料と、材料に入らない chain ID の関係を示した図です。図の nonce は送り手がそれまでに出したトランザクションなどの数、salt は作り手が選ぶ 32 バイトの値、initcode はコントラクトを作る時に 1 度だけ動くプログラムで、それぞれの節で説明します。
 
 {{< figure src="images/ethereum-address_concept.webp" alt="EOA は公開鍵 64 バイト、CREATE は送り手と nonce、CREATE2 は ff・送り手・salt・initcode のハッシュを keccak256 に入れ、下位 20 バイトがアドレスになる。アドレスの下にはチェーン A（コード X がある）とチェーン B（空か別のコード）の 2 つの枠が並ぶ。chain ID は署名に入り、keccak256 に向かう点線には赤い × が付いている" caption="3 つの規則の材料と、材料に入らない chain ID" align="center" >}}
 
@@ -35,7 +35,7 @@ topics: ["Transaction / Wallet"]
 
 ### 計算でアドレスを求める理由
 
-誰でも参加できるネットワークには、アドレスを発行する窓口がありません。[Digital Signature](../digital-signature/) で説明したように、鍵ペアは誰の許可も無しに手元で作れ、作った瞬間からそのアドレスで Ethereum の通貨 ETH を受け取れます。コントラクトのアドレスも、取引を実行した全てのノードで一致しなければなりません。
+誰でも参加できるネットワークには、アドレスを発行する窓口がありません。[Digital Signature](../digital-signature/) で説明したように、鍵ペアは誰の許可も無しに手元で作れ、作った瞬間からそのアドレスで Ethereum の通貨 ETH を受け取れます。コントラクトのアドレスも、トランザクションを実行した全てのノードで一致しなければなりません。
 
 そのため、どの規則も、材料を [keccak256](https://ethereum.github.io/yellowpaper/paper.pdf) という[ハッシュ関数](../hash-function/)に通し、32 バイトの結果の下位 20 バイトを取ります。材料が 1 ビットでも違えば別のアドレスになり、材料が同じなら、いつどこで計算しても同じアドレスになります。つまり、同じアドレスになるかどうかは、材料に何が入っているかで判断できます。
 
@@ -53,7 +53,7 @@ EOA のアドレスは、次の手順で公開鍵から計算します（[ethere
 
 材料は秘密鍵から求まる公開鍵だけで、chain ID は入りません。アドレスはチェーンごとに違うと思われがちですが、EOA については誤りです。同じ秘密鍵は、Ethereum の上に作られた別のチェーンである [L2](../rollup/) でも、コントラクトを動かす仮想マシン [EVM](../evm/)（Ethereum Virtual Machine）を同じ規則で備えたチェーン（EVM 互換チェーン）でも、同じアドレスになります。
 
-chain ID が入るのは取引の署名です。2016 年の [EIP-155](https://eips.ethereum.org/EIPS/eip-155)（EIP は Ethereum の仕様変更の提案）以降の形式の取引は、署名する対象に chain ID を含めます。アドレスはチェーンをまたいで共通で、あるチェーン向けの取引を別のチェーンに流す[再生（replay）](../replay-protection/)は署名で防ぐのです。
+chain ID が入るのはトランザクションの署名です。2016 年の [EIP-155](https://eips.ethereum.org/EIPS/eip-155)（EIP は Ethereum の仕様変更の提案）以降の形式で作ったトランザクションは、署名する対象に chain ID を含めます。アドレスはチェーンをまたいで共通で、あるチェーン向けのトランザクションを別のチェーンに流す[リプレイ（replay）](../replay-protection/)は署名で防ぐのです。
 
 [Wallet](../wallet/) で確認した通り、残高はチェーンごとに別です。それでも、どのチェーンでも同じ秘密鍵が操作するので、EOA の持ち主は変わりません。
 
@@ -67,13 +67,13 @@ chain ID が入るのは取引の署名です。2016 年の [EIP-155](https://ei
 
 ### CREATE のアドレス
 
-EOA の取引でコントラクトを作る時と、コントラクトが `CREATE` 命令で別のコントラクトを作る時は、送り手のアドレスと nonce から計算します。
+EOA のトランザクションでコントラクトを作る時と、コントラクトが `CREATE` 命令で別のコントラクトを作る時は、送り手のアドレスと nonce から計算します。
 
 ```text
 address = keccak256(rlp([sender, nonce]))[12:]
 ```
 
-`[12:]` は、32 バイトのハッシュの 13 バイト目以降、つまり下位 20 バイトを取る意味です。[RLP](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/)（Recursive Length Prefix）は、Ethereum がデータを並べる時の符号化の形式です。`nonce` は作る時点の送り手の nonce で、EOA なら送った取引の件数です。コントラクトの nonce は [EIP-161](https://eips.ethereum.org/EIPS/eip-161) により 1 から始まり、`CREATE` のたびに 1 増えます。
+`[12:]` は、32 バイトのハッシュの 13 バイト目以降、つまり下位 20 バイトを取る意味です。[RLP](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp/)（Recursive Length Prefix）は、Ethereum がデータを並べる時の符号化の形式です。`nonce` は作る時点の送り手の nonce で、EOA なら送ったトランザクションの件数です。コントラクトの nonce は [EIP-161](https://eips.ethereum.org/EIPS/eip-161) により 1 から始まり、`CREATE` のたびに 1 増えます。
 
 材料にコードは入っていません。そのため、同じコードをデプロイしても、同じ EOA が先に送金を 1 件済ませていれば nonce が進み、別のアドレスになります。逆に、送り手と nonce が同じなら、中身が全く違うコントラクトでも同じアドレスになります。
 
@@ -101,13 +101,13 @@ nonce が入らないので、デプロイする前にアドレスが分かり�
 
 そのために広く使われているのが [deterministic-deployment-proxy](https://github.com/Arachnid/deterministic-deployment-proxy) で、ファクトリは多くのチェーンで `0x4e59b448…` に置かれています。
 
-署名は r・s・v の 3 つの値からなり、署名と取引の中身から送り手の公開鍵を逆算できます（[Ethereum Transaction](../ethereum-transaction/)）。普通は秘密鍵から署名を作りますが、deterministic-deployment-proxy は逆に、r と s に固定の値を置いた署名を先に決め、そこから送り手を逆算しています。そのため、この送り手の秘密鍵は誰も知らず、送り手が出せるのは nonce 0 のこの取引 1 件だけです。
+署名は r・s・v の 3 つの値からなり、署名とトランザクションの中身から送り手の公開鍵を逆算できます（[Ethereum Transaction](../ethereum-transaction/)）。普通は秘密鍵から署名を作りますが、deterministic-deployment-proxy は逆に、r と s に固定の値を置いた署名を先に決め、そこから送り手を逆算しています。そのため、この送り手の秘密鍵は誰も知らず、送り手が出せるのは nonce 0 のこのトランザクション 1 件だけです。
 
-署名は `v` が 27 の、chain ID を含まない古い形式です。そのため、chain ID の無い取引を受け付けるチェーンなら、どこに流しても送り手と nonce 0 が同じになり、ファクトリは同じアドレスにできます。
+署名は `v` が 27 の、chain ID を含まない古い形式です。そのため、chain ID の無いトランザクションを受け付けるチェーンなら、どこに流しても送り手と nonce 0 が同じになり、ファクトリは同じアドレスにできます。
 
 以下は、その仕組みを 3 つのチェーンに並べた図です。
 
-{{< figure src="images/ethereum-address_ddproxy.webp" alt="左に「署名済みの取引 1 件、chain ID なし（v=27）、送り手の秘密鍵は誰も知らない」の箱。そこから Ethereum・チェーン X・チェーン Y の 3 本に矢印が伸び、どれも送り手の nonce 0 でファクトリ 0x4e59b448… ができ、その先の CREATE2 の作成先もどのチェーンでも同じになる" caption="1 件の取引を各チェーンに流して、ファクトリを同じアドレスに置く" align="center" >}}
+{{< figure src="images/ethereum-address_ddproxy.webp" alt="左に「署名済みのトランザクション 1 件、chain ID なし（v=27）、送り手の秘密鍵は誰も知らない」の箱。そこから Ethereum・チェーン X・チェーン Y の 3 本に矢印が伸び、どれも送り手の nonce 0 でファクトリ 0x4e59b448… ができ、その先の CREATE2 の作成先もどのチェーンでも同じになる" caption="1 件のトランザクションを各チェーンに流して、ファクトリを同じアドレスに置く" align="center" >}}
 
 計算したアドレスに既にコードがあるか、nonce が 0 でない場合、作成は失敗します。同じ salt と initcode で 2 度はデプロイできません。ただし、2024 年 3 月までは、コントラクトを消してから作り直すことで、同じアドレスに別のコードを置けました。この手法は [Metamorphic Contract](../metamorphic-contract/) で説明しています。
 
@@ -150,9 +150,9 @@ def create2_address(sender: bytes, salt: bytes, initcode: bytes) -> bytes:
 
 <br>
 
-chain ID の違うチェーン A（31337）、B（31338）、C（31339）を起動し、A と C では最初の取引でファクトリを作りました。B では、最初の取引で別のコントラクト（V2）を作り、次の取引でファクトリを作ります。ここでのファクトリは、上記の deterministic-deployment-proxy ではなく、[Address.sol](lab/Address.sol) に書いた自作の `Factory` です。V2 も同じファイルの、ファクトリとは中身の違うコントラクトです。ファクトリは、コンストラクタで値 `v` を受け取る `Child` を `CREATE2` で作ります。
+chain ID の違うチェーン A（31337）、B（31338）、C（31339）を起動し、A と C では最初のトランザクションでファクトリを作りました。B では、最初のトランザクションで別のコントラクト（V2）を作り、次のトランザクションでファクトリを作ります。ここでのファクトリは、上記の deterministic-deployment-proxy ではなく、[Address.sol](lab/Address.sol) に書いた自作の `Factory` です。V2 も同じファイルの、ファクトリとは中身の違うコントラクトです。ファクトリは、コンストラクタで値 `v` を受け取る `Child` を `CREATE2` で作ります。
 
-`= python` は、Python の計算と一致したことを示します。`chainId=0x7a69` は 16 進の 31337、`status=0` は取引が失敗したことを示します。手順の全体は [run.py](lab/run.py) にあります。`Address.sol` は学習用に書いたもので、監査していません。以下が[出力](lab/output/summary.txt)の前半です。
+`= python` は、Python の計算と一致したことを示します。`chainId=0x7a69` は 16 進の 31337、`status=0` はトランザクションが失敗したことを示します。手順の全体は [run.py](lab/run.py) にあります。`Address.sol` は学習用に書いたもので、監査していません。以下が[出力](lab/output/summary.txt)の前半です。
 
 ```text
 == EOA
@@ -182,7 +182,7 @@ chain A salt=0 v=1 again: status=0 (address already used)
 
 {{< figure src="images/ethereum-address_lab.webp" alt="チェーン A（31337）、B（31338）、C（31339）の 3 列。どの列も EOA は 0xf39Fd6e5…。A と C は nonce 0 の作成先 0x5FbDB231… にファクトリがあり、CREATE2 で作った Child（salt=0, v=1）は 0x66fAc1bd…。B は 0x5FbDB231… に V2（別のコード）、nonce 1 の 0xe7f1725E… にファクトリがあり、Child は 0xbE75Bf11… にずれる。A と C の箱は青、B のずれた箱は黄土色" caption="3 つのチェーンでの、同じアドレスとずれたアドレス" align="center" >}}
 
-EOA の段では、3 つのチェーンで同じアドレスが返りました。同じ取引でも A 向けと B 向けの署名は別のデータで、A 向けのものを B に流すと拒否されます。
+EOA の段では、3 つのチェーンで同じアドレスが返りました。同じトランザクションでも A 向けと B 向けの署名は別のデータで、A 向けのものを B に流すと拒否されます。
 
 `CREATE` の段では、チェーン B の `0x5FbD…` に最初はコードがありません。そこに nonce 0 で V2 を作ると、チェーン A のファクトリと同じアドレスに、全く別のコードが置かれました。
 
@@ -203,12 +203,12 @@ EOA の段では、3 つのチェーンで同じアドレスが返りました�
 
 以下は、ここまでの状態と、この後の攻撃を Ethereum と OP Mainnet の 2 本に並べた図です。
 
-{{< figure src="images/ethereum-address_wintermute.webp" alt="上の Ethereum の列では、2019 年に chain ID なしの署名で ProxyFactory を作り、2020 年 11 月にその CREATE で Wintermute の Safe 0x4f3a… ができる。下の OP Mainnet の列では、2022 年 5 月に何も無い 0x4f3a… へ 2,000 万 OP が送られ、6 月 5 日に 2019 年の取引の再生で ProxyFactory が同じアドレスにでき、攻撃者が Safe を作り続けて nonce を 2020 年と同じ値へ進め、0x4f3a… に攻撃者の Safe ができる" caption="Ethereum の取引を OP Mainnet で再生し、nonce を進めて同じアドレスを取る" align="center" >}}
+{{< figure src="images/ethereum-address_wintermute.webp" alt="上の Ethereum の列では、2019 年に chain ID なしの署名で ProxyFactory を作り、2020 年 11 月にその CREATE で Wintermute の Safe 0x4f3a… ができる。下の OP Mainnet の列では、2022 年 5 月に何も無い 0x4f3a… へ 2,000 万 OP が送られ、6 月 5 日に 2019 年のトランザクションのリプレイで ProxyFactory が同じアドレスにでき、攻撃者が Safe を作り続けて nonce を 2020 年と同じ値へ進め、0x4f3a… に攻撃者の Safe ができる" caption="Ethereum のトランザクションを OP Mainnet でリプレイし、nonce を進めて同じアドレスを取る" align="center" >}}
 
 [Wintermute が Optimism のフォーラムに出した報告](https://gov.optimism.io/t/message-to-optimism-community-from-wintermute/2595)、[rekt.news の解析](https://rekt.news/wintermute-rekt)、チェーン上の記録によると、攻撃は次の 2 段で進みました。
 
-3. 2022 年 6 月 5 日、攻撃者は、2019 年に Ethereum で ProxyFactory を作った取引を OP Mainnet に流しました。同じ送り手のそれまでの取引も、順に流しています。両方のチェーンに[同じハッシュの取引](https://optimistic.etherscan.io/tx/0x75a42f240d229518979199f56cd7c82e4fc1f1a20ad9a4864c635354b4a34261)が記録されており、chain ID の無い署名だったので再生できたのです。ProxyFactory は Ethereum と同じアドレスにできました。
-4. 攻撃者は、自作のコントラクトからこの ProxyFactory を呼び、自分を所有者にした Safe を 1 回の取引で 162 個ずつ作り、nonce を進めました。nonce が 2020 年の時と同じ値に来たところで、`0x4f3a120E…cb81` に[攻撃者の Safe ができ](https://optimistic.etherscan.io/tx/0x00a3da68f0f6a69cb067f09c3f7e741a01636cbc27a84c603b468f65271d415b)、2,000 万 OP を動かせるようになりました。
+3. 2022 年 6 月 5 日、攻撃者は、2019 年に Ethereum で ProxyFactory を作ったトランザクションを OP Mainnet に流しました。同じ送り手のそれまでのトランザクションも、順に流しています。両方のチェーンに[同じハッシュのトランザクション](https://optimistic.etherscan.io/tx/0x75a42f240d229518979199f56cd7c82e4fc1f1a20ad9a4864c635354b4a34261)が記録されており、chain ID の無い署名だったのでリプレイできたのです。ProxyFactory は Ethereum と同じアドレスにできました。
+4. 攻撃者は、自作のコントラクトからこの ProxyFactory を呼び、自分を所有者にした Safe を 1 回のトランザクションで 162 個ずつ作り、nonce を進めました。nonce が 2020 年の時と同じ値に来たところで、`0x4f3a120E…cb81` に[攻撃者の Safe ができ](https://optimistic.etherscan.io/tx/0x00a3da68f0f6a69cb067f09c3f7e741a01636cbc27a84c603b468f65271d415b)、2,000 万 OP を動かせるようになりました。
 
 攻撃者は 100 万 OP を売却した後、6 月 10 日に 1,700 万 OP を Optimism 側に返しました（[The Block の報道](https://www.theblock.co/post/151344/hacker-returns-17-million-op-tokens)）。さらに 100 万 OP は Ethereum の考案者 Vitalik Buterin のアドレスへ送られており、Optimism は回収中としました。売却分を含む 200 万 OP は報奨金として攻撃者に残り、Wintermute が Optimism に補填すると約束しました（[Fortune の報道](https://fortune.com/crypto/2022/06/10/optimism-cryptohacker-returns-majority-funds-vitalik-buterin-ethereum/)）。
 
@@ -228,7 +228,7 @@ EOA の段では、3 つのチェーンで同じアドレスが返りました�
 
 アドレスを材料のハッシュで計算する設計から、次の性質が得られます。
 
-- 発行の窓口が無くても、鍵を作った人や取引を実行するノードが、同じアドレスを独立に求められる
+- 発行の窓口が無くても、鍵を作った人やトランザクションを実行するノードが、同じアドレスを独立に求められる
 - EOA は、同じ秘密鍵でどの EVM 互換チェーンでも同じアドレスを使える
 - `CREATE2` では、デプロイする前にアドレスを相手に伝え、資産を受け取れる
 - 同じファクトリを使えば、複数のチェーンで同じアドレスにコントラクトを置ける
@@ -241,7 +241,7 @@ EOA の段では、3 つのチェーンで同じアドレスが返りました�
 
 - アドレスが同じでも、何が置かれているか、誰が操作できるかはチェーンごとに違う
 - コントラクトのアドレスに送る前に、送る先のチェーンでそのアドレスにコードがあり、自分が管理できるかを確認する必要がある
-- `CREATE` のアドレスは nonce で変わるので、デプロイの前に別の取引を挟むと、予定したアドレスがずれる
-- 署名に chain ID の無い古い形式の取引は、それを受け付けるチェーンで再生でき、同じアドレスにコントラクトを作れる
+- `CREATE` のアドレスは nonce で変わるので、デプロイの前に別のトランザクションを挟むと、予定したアドレスがずれる
+- 署名に chain ID の無い古い形式のトランザクションは、それを受け付けるチェーンでリプレイでき、同じアドレスにコントラクトを作れる
 
 4 つ目は、EIP-155 より前の形式の署名がプロトコル上は今も有効なことから来ます（ノードの設定やチェーンによっては受け付けません）。deterministic-deployment-proxy はこの性質を使って全てのチェーンで同じアドレスを得ており、Wintermute の件では同じ性質が攻撃に使われました。

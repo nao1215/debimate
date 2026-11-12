@@ -105,7 +105,7 @@ def concept_figure():
     f.box(726, 60, 210, 330, FILL, rx=14)
     f.text(831, 104, "destination chain", 22, SUB)
     f.box(756, 140, 150, 150, "#ffffff", SUB, sw=3)
-    f.text(831, 176, "引換券", 24)
+    f.text(831, 176, "ラップドトークン", 19)
     for r in range(2):
         for c in range(3):
             f.circle(791 + c * 40, 222 + r * 40, 14, "#ffffff", SUB, dash="5 4")

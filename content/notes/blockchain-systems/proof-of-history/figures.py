@@ -74,7 +74,7 @@ def concept_figure():
         p.append(f'<line x1="{x1}" y1="{y}" x2="{x2}" y2="{y}" stroke="{SUB}" stroke-width="2"/>')
 
     step, left, n = 38, 60, 22  # 22 beads, 38px apart
-    events = {6: "取引 A", 15: "取引 B"}
+    events = {6: "トランザクション A", 15: "トランザクション B"}
 
     # Top: generation on one core, left to right.
     text(left, 52, "生成：1 本の連鎖を順に計算", 28)
@@ -122,7 +122,7 @@ def concept_figure():
     text(end_ver + 22, 534, "時間（同じ連鎖を短い時間で）", 24, cls="sub")
     text(560, 380, "枠：計算を始める値", 24, cls="sub")
     text(560, 412, "（前の区切りに記録）", 24, cls="sub")
-    text(560, 460, "黄土：混ぜた取引", 24, cls="sub")
+    text(560, 460, "黄土：混ぜたトランザクション", 24, cls="sub")
     save_svg(p, "proof-of-history_concept.webp", w, h)
 
 
@@ -188,7 +188,7 @@ def _text(p, x, y, s, size=26, anchor="start", cls=""):
 def entry_figure():
     """The chain is cut into entries; a slot of the 400 ms era is 64 ticks of 62,500 hashes."""
     w, h = 960, 500
-    p = _svg_start("連鎖は entry に区切って記録し、取引を含まない entry を tick と呼ぶ", w, h)
+    p = _svg_start("連鎖は entry に区切って記録し、トランザクションを含まない entry を tick と呼ぶ", w, h)
     _text(p, 40, 52, "連鎖を entry に区切って記録する", 28)
     beads, step, left, y = 5, 36, 60, 150
     gap = 26
@@ -213,14 +213,14 @@ def entry_figure():
         by = y + 48
         p.append(f'<polyline points="{x_start},{by - 8} {x_start},{by} {x_end},{by} {x_end},{by - 8}" '
                  f'fill="none" stroke="{SUB}" stroke-width="2"/>')
-        name = "取引を含む entry" if kind == "tx" else "tick"
+        name = "トランザクションを含む entry" if kind == "tx" else "tick"
         _text(p, (x_start + x_end) / 2, by + 30, name, 22, "middle")
         _text(p, (x_start + x_end) / 2, by + 58, "num_hashes = 5", 20, "middle", cls="sub")
         if kind == "tx":
             cx = x_end - 13
             p.append(f'<line x1="{cx}" y1="92" x2="{cx}" y2="{y - 6}" stroke="{OCHRE}" stroke-width="3"/>')
             p.append(f'<polygon points="{cx},{y - 4} {cx - 8},{y - 18} {cx + 8},{y - 18}" fill="{OCHRE}"/>')
-            _text(p, cx, 84, "取引を混ぜる", 22, "middle")
+            _text(p, cx, 84, "トランザクションを混ぜる", 22, "middle")
         x += gap
     # legend
     _text(p, 40, 304, "枠：entry に記録する区切りの値（hash）", 22, cls="sub")
@@ -240,7 +240,7 @@ def entry_figure():
 
 def window_figure():
     """A transaction is pinned between the blockhash it cites and the place it is mixed in."""
-    p = _svg_start("取引が存在した時期は、含めた blockhash と混ぜた位置の間に挟まる")
+    p = _svg_start("トランザクションが存在した時期は、含めた blockhash と混ぜた位置の間に挟まる")
     step, left, n, y = 38, 62, 22, 250
     j, k = 5, 15  # blockhash cited by the transaction, position where it is mixed in
     xj, xk = left + j * step + 13, left + k * step + 13
@@ -259,10 +259,10 @@ def window_figure():
     p.append(f'<polygon points="{end + 14},{y + 70} {end},{y + 62} {end},{y + 78}" fill="{INK}"/>')
     _text(p, end + 20, y + 78, "連鎖", 24, cls="sub")
     # Upper side: what each end means.
-    _text(p, xj, 92, "取引 A に含めた", 26, "middle")
+    _text(p, xj, 92, "トランザクション A に含めた", 26, "middle")
     _text(p, xj, 126, "blockhash", 26, "middle")
     p.append(f'<line x1="{xj}" y1="140" x2="{xj}" y2="{y - 6}" stroke="{BLUE}" stroke-width="3"/>')
-    _text(p, xk, 92, "取引 A を", 26, "middle")
+    _text(p, xk, 92, "トランザクション A を", 26, "middle")
     _text(p, xk, 126, "混ぜた位置", 26, "middle")
     p.append(f'<line x1="{xk}" y1="140" x2="{xk}" y2="{y - 6}" stroke="{OCHRE}" stroke-width="3"/>')
     p.append(f'<polygon points="{xk},{y - 2} {xk - 8},{y - 16} {xk + 8},{y - 16}" fill="{OCHRE}"/>')

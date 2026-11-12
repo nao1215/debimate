@@ -9,25 +9,25 @@ wrapTables: true
 topics: ["Transaction / Wallet"]
 ---
 
-[ERC-7562](https://eips.ethereum.org/EIPS/eip-7562) は、Ethereum のアカウント抽象化（account abstraction）の仕組みである [ERC-4337](../erc-4337/) で、Bundler がアカウントの検証のコードに課す規則です。検証のコードが使って良い命令と、読み書きして良い storage（コントラクトが持つ永続的な記憶領域で、32 バイトの番号＝slot ごとに値を置く）を決めています。
+[ERC-7562](https://eips.ethereum.org/EIPS/eip-7562) は、Ethereum のアカウント抽象化（account abstraction）の仕組みである [ERC-4337](../erc-4337/) で、Bundler がアカウントの検証のコードに課す規則です。検証のコードが使って良い命令と、読み書きして良い storage（コントラクトが持つ永続的な領域で、32 バイトの番号＝slot ごとに値を置く）を決めています。
 
-本記事で必要な ERC-4337 の前提は、次の流れだけです。ERC-4337 では、利用者のアカウントをコントラクト（スマートアカウント）で作ります。利用者は取引の代わりに UserOperation という依頼を作り、Bundler に送ります。Bundler は集めた UserOperation を 1 件の取引にまとめ、自分の EOA（秘密鍵で署名して取引を送る通常のアカウント）から EntryPoint というコントラクトへ送ります。
+本記事で必要な ERC-4337 の前提は、次の流れだけです。ERC-4337 では、利用者のアカウントをコントラクト（スマートアカウント）で作ります。利用者はトランザクションの代わりに UserOperation という依頼を作り、Bundler に送ります。Bundler は集めた UserOperation を 1 件のトランザクションにまとめ、自分の EOA（秘密鍵で署名してトランザクションを送る通常のアカウント）から EntryPoint というコントラクトへ送ります。
 
 EntryPoint は UserOperation ごとに、アカウントの `validateUserOp`（検証）を呼び、通れば中身を実行します。検証の中身はアカウントのコードが決めるので、署名の確かめ方などを自由に書けます。
 
 {{< figure src="images/erc-7562_roles.webp" alt="左から利用者、Bundler、EntryPoint、スマートアカウントの箱が矢印でつながる。利用者から Bundler へ UserOperation、Bundler から EntryPoint へ handleOps（ガス代は Bundler）、EntryPoint からアカウントへ検証から実行。EntryPoint から Bundler へ破線の矢印が戻り、アカウントか Paymaster の deposit から払い戻す（検証を通った分だけ）とある。下に、チェーンの外は利用者と Bundler、チェーンの上は EntryPoint とアカウントとある" caption="ERC-4337 の登場人物と、手数料の流れ" align="center" >}}
 
-上記の図で、利用者と Bundler はチェーンの外、EntryPoint とアカウントはチェーンの上にいます。`handleOps` の取引のガス代はネットワークに払うもので、送った Bundler の EOA から出ます。
+上記の図で、利用者と Bundler はチェーンの外、EntryPoint とアカウントはチェーンの上にいます。`handleOps` のトランザクションでは、ガス代はネットワークに払うもので、送った Bundler の EOA から出ます。
 
-ここで、[取引の手数料](../gas-eip-1559/)を先に払うのは、送り主ではなく Bundler です。Ethereum では、途中で失敗して取り消された取引でも、使った分の手数料は取引を送った側が払います。
+ここで、[トランザクションの手数料](../gas-eip-1559/)を先に払うのは、送り主ではなく Bundler です。Ethereum では、途中で失敗して取り消されたトランザクションでも、使った分の手数料はトランザクションを送った側が払います。
 
 EntryPoint は、検証を通った UserOperation についてだけ、アカウント（または、手数料を肩代わりするコントラクトの Paymaster）が EntryPoint に預けた ETH（deposit）から手数料を Bundler へ払い戻します。参照実装の EntryPoint では、チェーン上で 1 件でも検証が失敗するとバンドル全体が取り消され、その手数料は全て Bundler の損になります。そのため Bundler は、送る前に手元で検証をシミュレーションします。
 
 {{< figure src="images/erc-7562_flow.webp" alt="左の灰色の箱は送り主の UserOperation。中央の破線の枠は Bundler の手元のシミュレーションで、青い箱が 3 つ並ぶ。1 つ目は受け取った時に 1 件だけ検証して規則に合うかを見る。2 つ目はバンドルの前に 1 件ずつ検証して状態の変化を見る。3 つ目は送る直前にバンドル全体を検証して組み合わせを見る。枠の下に、ERC-7562 の規則でここの結果をチェーンでも保つとある。右の黄土色の箱はチェーンの EntryPoint で、検証から実行へ進む。下に、ここで検証が失敗すると手数料は Bundler が払うとある" caption="Bundler が 1 件の UserOperation を送るまでの 3 回の検証" align="center" >}}
 
-上記の図の 3 回の検証は、どれもチェーンに取引を出さずに、ノードに実行だけをさせる呼び出し（`eth_call` など）で行います。1 回目は受け取った時に 1 件だけを検証し、規則に合うかを確認します。
+上記の図の 3 回の検証は、どれもチェーンにトランザクションを出さずに、ノードに実行だけをさせる呼び出し（`eth_call` など）で行います。1 回目は受け取った時に 1 件だけを検証し、規則に合うかを確認します。
 
-2 回目は、バンドル（bundle、複数の UserOperation をまとめた 1 件の `handleOps` の呼び出し）に入れる前に 1 件ずつ検証し直し、受け取った後の他の取引で結果が変わっていないかを見ます。3 回目は送る直前にバンドル全体を検証し、同じバンドルの UserOperation どうしが邪魔し合わないかを見ます（ERC-4337 の「Bundler behavior upon receiving a UserOperation」）。
+2 回目は、バンドル（bundle、複数の UserOperation をまとめた 1 件の `handleOps` の呼び出し）に入れる前に 1 件ずつ検証し直し、受け取った後に届いた他のトランザクションで結果が変わっていないかを見ます。3 回目は送る直前にバンドル全体を検証し、同じバンドルの UserOperation どうしが邪魔し合わないかを見ます（ERC-4337 の「Bundler behavior upon receiving a UserOperation」）。
 
 シミュレーションで通っても、右端のチェーン上で検証が失敗すれば、手数料を払うのは Bundler です。ERC-7562 の規則で検証から読めるのは、原則として、1 回書き換えても影響がそのアカウントの UserOperation だけに留まる値です。多数の UserOperation をまとめて無効にするには件数分の書き換えが要るので、シミュレーションの結果をチェーンの上で覆す攻撃が割に合わなくなります。
 
@@ -41,7 +41,7 @@ EntryPoint は、検証を通った UserOperation についてだけ、アカウ
 
 - 検証に制限が無いと、誰がどう損をするのか。
 - 検証では、どの命令と storage が使えるのか。
-- stake（担保）と reputation（評判）は、何を防ぐのか。
+- stake（ステーク）と reputation（評判）は、何を防ぐのか。
 - Bundler は、規則に従っているかどうかをどう確認するのか。
 
 UserOperation の中身、手数料を肩代わりする Paymaster、アカウントを作る Factory を含む全体は [ERC-4337](../erc-4337/) のノートで説明しています。仕様の引用は、2026 年 10 月 23 日時点の内容（[ethereum/ERCs のコミット cab9f75](https://github.com/ethereum/ERCs/blob/cab9f75eaf10ffb30d4aa4b4f712e8324a24f4db/ERCS/erc-7562.md)、状態は Review）に基づきます。
@@ -50,11 +50,11 @@ UserOperation の中身、手数料を肩代わりする Paymaster、アカウ�
 
 ### 検証の規則が必要な理由
 
-通常の取引では、ノードは受け取った取引を [mempool](../mempool/)（ブロックに入る前の取引を溜めておく場所）に入れます。EOA の取引が有効かどうかは、署名・nonce（取引の通し番号）・残高の 3 つで判定できます。取引を無効にする方向にこの 3 つを変えられるのは、同じ EOA の別の取引だけです。無効になった取引でノードが失うのは検証の計算だけで、お金は失いません。
+通常のトランザクションでは、ノードは受け取ったトランザクションを [mempool](../mempool/)（ブロックに入る前のトランザクションを溜めておく場所）に入れます。EOA のトランザクションが有効かどうかは、署名・nonce（トランザクションの通し番号）・残高の 3 つで判定できます。トランザクションを無効にする方向にこの 3 つを変えられるのは、同じ EOA が送る別のトランザクションだけです。無効になったトランザクションでノードが失うのは検証の計算だけで、お金は失いません。
 
 Bundler も、受け取った UserOperation を自分の mempool に溜めます。しかし、Bundler は無効になった UserOperation の検証に払われない計算を使い、チェーン上で失敗すれば自分の ETH も失います。
 
-さらに、UserOperation の検証はアカウントのコードが決めます。コードがブロックの時刻や他のコントラクトの storage を読むと、無関係な取引や時間の経過で結果が変わります。以下は、検証が `block.timestamp`（ブロックの時刻）を読み、期限を過ぎていたら失敗するアカウントで起きる流れです。t+46 は後の実験の値で、期限を過ぎたブロックを表します。
+さらに、UserOperation の検証はアカウントのコードが決めます。コードがブロックの時刻や他のコントラクトの storage を読むと、無関係なトランザクションや時間の経過で結果が変わります。以下は、検証が `block.timestamp`（ブロックの時刻）を読み、期限を過ぎていたら失敗するアカウントで起きる流れです。t+46 は後の実験の値で、期限を過ぎたブロックを表します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f8eed8","noteBorderColor":"#d4a24c","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -69,7 +69,7 @@ sequenceDiagram
     Note over B,E: 手数料は Bundler の EOA が払う<br/>送り主の負担は 0
 ```
 
-上記の図の `AA23` は、アカウントの検証が revert（処理を取り消して失敗）した時に EntryPoint が返すエラーです。送り主の deposit から手数料を受け取る処理は、検証を通った後にしか動きません。検証は、Web のアプリで言えば認可に当たり、通るまではアカウントの資金を使ってよいと言えないからです。検証で revert した取引は、Bundler が手数料を払っただけで終わります。
+上記の図の `AA23` は、アカウントの検証が revert（処理を取り消して失敗）した時に EntryPoint が返すエラーです。送り主の deposit から手数料を受け取る処理は、検証を通った後にしか動きません。検証は、Web のアプリで言えば認可に当たり、通るまではアカウントの資金を使ってよいと言えないからです。検証で revert したトランザクションは、Bundler が手数料を払っただけで終わります。
 
 <br>
 
@@ -81,15 +81,15 @@ ERC-7562 の Rationale は、これを大量無効化攻撃（mass invalidation 
 
 {{< figure src="images/erc-7562_attacks.webp" alt="上に、受け取った時、バンドルの前、送る直前の 3 回の検証と、ブロックの中の箱が左から並ぶ。下の 3 行で、方法 1（後で失敗する）はバンドルの前の検証で丸が付き見つかる。方法 2（一緒だと失敗する）は送る直前の検証で見つかる。方法 3（前に割り込む）はブロックの中まで線が伸びて赤い × があり、検証の後なので見つからないとある" caption="大量無効化の 3 つの方法が見つかる場所" align="center" >}}
 
-3 つ目の割り込みは、ブロックの中の取引の順序はブロックを作る側が手数料の単価などで決める、という性質を使います。Bundler の取引を見てから、より高い単価の取引を[前に入れる](../mev/)わけです。
+3 つ目の割り込みは、ブロックに入るトランザクションの順序はブロックを作る側が手数料の単価などで決める、という性質を使います。Bundler のトランザクションを見てから、より高い単価のトランザクションを[前に入れる](../mev/)わけです。
 
 どれも、攻撃者の少ないコストで、Bundler に多数の UserOperation の手数料や検証の手間を負わせる経路です。1 つ目と 2 つ目は検証で見つけて捨てられますが、何度も繰り返されると手間だけが残ります。
 
-ERC-7562 は検証のコードを砂場（sandbox）に閉じ込め、他の UserOperation、外部の storage の変更、ブロックの時刻のような環境から切り離します。この制限があれば、3 つ目の割り込みでも1 回の変更で無効にできるのは 1 つのアカウントの分だけになります。
+ERC-7562 は検証のコードをサンドボックス（sandbox）に閉じ込め、他の UserOperation、外部の storage の変更、ブロックの時刻のような環境から切り離します。この制限があれば、3 つ目の割り込みでも1 回の変更で無効にできるのは 1 つのアカウントの分だけになります。
 
-ERC-7562 はプロトコルの規則だと思うかもしれません。しかし、仕様の Abstract が述べる通り、規則を守らせるのはブロックビルダー（取引を選んでブロックを組み立てるノード）と Bundler で、確認する場所はオフチェーンです。
+ERC-7562 はプロトコルの規則だと思うかもしれません。しかし、仕様の Abstract が述べる通り、規則を守らせるのはブロックビルダー（トランザクションを選んでブロックを組み立てるノード）と Bundler で、確認する場所はオフチェーンです。
 
-EntryPoint のコントラクトは、時刻を読む検証もそのまま実行します。Mempool のノートの言葉では、consensus rule（全ノードが守るブロックの規則）ではなく policy（各ノードが受け付けを決める方針）に入る規則です。
+EntryPoint のコントラクトは、時刻を読む検証もそのまま実行します。Mempool のノートの言葉では、consensus rule（全ノードが守るブロックの規則）ではなく policy（各ノードが受け付けを決めるポリシー）に入る規則です。
 
 ---
 
@@ -99,7 +99,7 @@ ERC-7562 の規則は、命令の規則と storage の規則に大きく分か�
 
 {{< figure src="images/erc-7562_concept.webp" alt="左に黄土色の箱が 3 つ（TIMESTAMP、NUMBER、関連しない storage）並び、上にブロックまでに変わる値とある。3 本の線は中央の青い枠（検証、ERC-7562 の規則（原則））の手前で赤い × に止められる。青い枠の中には自分の storage と自分に関連する他の slot の白い箱があり、下に書き換えの影響はそのアカウントだけとある。青い枠から右の破線の灰色の箱（実行、任意のコード）に矢印が伸びる" caption="検証が読める値と、柵の外に置かれる値" align="center" >}}
 
-上記の図の左の値は、時刻の経過や他人の取引で、ブロックに入るまでに変わり得るので、検証からは読めません。中央の 2 つは、書き換えて影響を受けるのがそのアカウントの UserOperation だけの値です。「自分に関連する他の slot」の決まり方は、次の次の節で説明します。制限が掛かるのは検証だけで、右の実行では任意のコードが動きます。
+上記の図の左の値は、時刻の経過や他人のトランザクションで、ブロックに入るまでに変わり得るので、検証からは読めません。中央の 2 つは、書き換えて影響を受けるのがそのアカウントの UserOperation だけの値です。「自分に関連する他の slot」の決まり方は、次の次の節で説明します。制限が掛かるのは検証だけで、右の実行では任意のコードが動きます。
 
 仕様は個々の規則に、命令なら OP-011、storage なら STO-021 のような番号を振っています。後の実験の出力も、この番号で違反を示します。
 
@@ -107,7 +107,7 @@ ERC-7562 の規則は、命令の規則と storage の規則に大きく分か�
 
 ### 禁止される命令
 
-ERC-7562 は、storage とコード以外の情報を読む命令を「環境」と呼び、検証での使用を禁じています（OP-011）。ブロックの時刻（`TIMESTAMP`）や番号（`NUMBER`）、手数料の単価（`GASPRICE`・`BASEFEE`）など、値がブロックや取引ごとに変わる命令です。
+ERC-7562 は、storage とコード以外の情報を読む命令を「環境」と呼び、検証での使用を禁じています（OP-011）。ブロックの時刻（`TIMESTAMP`）や番号（`NUMBER`）、手数料の単価（`GASPRICE`・`BASEFEE`）など、値がブロックやトランザクションごとに変わる命令です。
 
 残高を読む `BALANCE` と `SELFBALANCE` も、原則として使えません（後述の stake をした主体だけが使えます。OP-080）。他人の送金で残高が変わるからです。コントラクトを作る `CREATE` も、アカウントを作る時の例外（OP-032）を除いて禁止です。
 
@@ -119,7 +119,7 @@ ERC-7562 は、storage とコード以外の情報を読む命令を「環境」
 | 区分 | 禁止される命令 |
 | --- | --- |
 | ブロックの情報 | `TIMESTAMP`・`NUMBER`・`BLOCKHASH`・`PREVRANDAO`・`COINBASE`・`GASLIMIT`・`BASEFEE`・`BLOBBASEFEE` |
-| 取引の情報 | `GASPRICE`・`ORIGIN`・`BLOBHASH` |
+| トランザクションの情報 | `GASPRICE`・`ORIGIN`・`BLOBHASH` |
 | 作成と削除 | `CREATE`（アカウントを作る時の例外あり）・`SELFDESTRUCT` |
 | 未有効化の命令 | `SETCODEFROM`・`SLOTNUM`（有効化したネットワークのみ） |
 | その他 | `INVALID`・割り当てのない命令（OP-013） |
@@ -178,7 +178,7 @@ Bundler はシミュレーションの結果から期限を読めるので、期
 
 この制限で、1 回の storage の変更で無効にできる UserOperation は、原則として 1 つのアカウントの分に限られます。
 
-仕様の試算では、無効化に必要な最小の変更は storage の書き換え 1 回の 5,000 gas です。取引 1 件ごとの基本料（21,000 gas）は別で、1 件の取引で多数の slot を書き換えると、1 UserOperation あたりの費用はこの値に近づきます。
+仕様の試算では、無効化に必要な最小の変更は storage の書き換え 1 回の 5,000 gas です。トランザクション 1 件ごとの基本料（21,000 gas）は別で、1 件のトランザクションで多数の slot を書き換えると、1 UserOperation あたりの費用はこの値に近づきます。
 
 ノードが 1 ブロックで 2,000 件の不正な UserOperation を処理できると仮定すると、その全てを無効にし続けるには 1 ブロックあたり 10,000,000 gas が要ります。この量は、2026 年 11 月時点のメインネットのブロックのガスの上限（6,000 万）の 6 分の 1 に当たり、これを毎ブロック払い続けることになります。
 
@@ -236,9 +236,9 @@ nonce の key（並列に使える nonce の系列）を分ければ、同じ送
 
 [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) は、EOA がコントラクトのコードに実行を委任する仕組みです。2025 年 5 月 7 日に、Ethereum のプロトコルの更新（[ハードフォーク](../ethereum-hard-forks/)）である Pectra で有効になりました。委任の書き方は [Ethereum Account Model](../ethereum-account-model/) で説明しています。
 
-委任した EOA のコードは誰からでも呼べるので、他人の取引の中でその EOA の残高が動くことがあります。委任先も、新しい承認（authorization、委任先を指定する署名）で変わります。EOA の取引は他人の取引に左右されない、という前提が崩れたわけです。
+委任した EOA のコードは誰からでも呼べるので、他人が送ったトランザクションの中でその EOA の残高が動くことがあります。委任先も、新しい承認（authorization、委任先を指定する署名）で変わります。EOA のトランザクションは他人のトランザクションに左右されない、という前提が崩れたわけです。
 
-EIP-7702 の Security Considerations は、委任した EOA の保留中の取引を 1 件までに抑えるよう勧めています。
+EIP-7702 の Security Considerations は、委任した EOA が持つ保留中のトランザクションを 1 件までに抑えるよう勧めています。
 
 UserOperation の送り主にも委任した EOA を使えるので、ERC-7562 にも承認を扱う規則が足されました。
 
@@ -263,7 +263,7 @@ EntryPoint が委任した EOA を送り主として扱えるのは v0.8 以降�
 
 参照実装の [eth-infinitism/bundler](https://github.com/eth-infinitism/bundler/tree/aae77140e5c2b1386d04eaeba2d23fc17a62bd87)（2026 年 11 月時点の最新のコミット `aae7714`）は、既定では [go-ethereum](https://github.com/ethereum/go-ethereum) の native tracer `erc7562Tracer` の出力を [ERC7562Parser](https://github.com/eth-infinitism/bundler/blob/aae77140e5c2b1386d04eaeba2d23fc17a62bd87/packages/validation-manager/src/ERC7562Parser.ts) で規則と照合します。
 
-[erc7562Tracer](https://github.com/ethereum/go-ethereum/blob/v1.17.10/eth/tracers/native/erc7562.go) は go-ethereum v1.16.0 で入った tracer で（[PR #31006](https://github.com/ethereum/go-ethereum/pull/31006)）、呼び出しごとに使った命令（`usedOpcodes`）と触れた slot（`accessedSlots`）、取引全体の `keccak` の入力を返します。
+[erc7562Tracer](https://github.com/ethereum/go-ethereum/blob/v1.17.10/eth/tracers/native/erc7562.go) は go-ethereum v1.16.0 で入った tracer で（[PR #31006](https://github.com/ethereum/go-ethereum/pull/31006)）、呼び出しごとに使った命令（`usedOpcodes`）と触れた slot（`accessedSlots`）、トランザクション全体で `keccak` に渡した入力を返します。
 
 <br>
 
@@ -969,7 +969,7 @@ Assertions: PASS
 
 <br>
 
-3 段目は、大量無効化の 3 つ目の方法です。10 件の UserOperation は、1 件ずつでもバンドルでもシミュレーションを通りました。攻撃者が同じブロックで `Gate.close()` を Bundler の取引より高い単価で割り込ませると、`handleOps` は revert しました。
+3 段目は、大量無効化の 3 つ目の方法です。10 件の UserOperation は、1 件ずつでもバンドルでもシミュレーションを通りました。攻撃者が同じブロックで `Gate.close()` を Bundler のトランザクションより高い単価で割り込ませると、`handleOps` は revert しました。
 
 {{< figure src="images/erc-7562_paid.webp" alt="横棒グラフ。無効になったバンドル 1 件で払った額は、Bundler が 207,780 gwei、攻撃者が 64,287 gwei、10 個の GateAccount が 0 gwei" caption="割り込みの実験（出力の 3 段目）で、誰がいくら払ったか" align="center" >}}
 
@@ -983,7 +983,7 @@ Bundler が払ったのは 207,780 gwei（103,890 gas × 2 gwei）、攻撃者�
 
 ### 利点
 
-- Bundler が、他人の取引や時間の経過でただ働きさせられる経路を塞げる
+- Bundler が、他人のトランザクションや時間の経過でただ働きさせられる経路を塞げる
 - 規則を共有するので、どの Bundler も同じ UserOperation を有効と判定し、P2P の mempool で配れる
 - stake すれば、Paymaster や Factory も自分の storage を使った検証を書ける
 

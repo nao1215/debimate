@@ -127,7 +127,7 @@ def concept_figure():
 def chain_figure():
     f = Svg(1060, 430, "直前のブロックのハッシュ値で繋がるブロック")
     bw, gap, x0, top = 290, 80, 15, 60
-    rows = ["前のブロックのハッシュ値", "取引の要約（Merkle root）", "nonce"]
+    rows = ["前のブロックのハッシュ値", "要約（Merkle root）", "nonce"]
     for k in range(3):
         x = x0 + k * (bw + gap)
         f.text(x + bw / 2, top - 18, f"ブロック {100 + k}", 24, INK)
@@ -142,13 +142,13 @@ def chain_figure():
             f.text(x + 20, y + 20, r, 16, INK, anchor="start")
         # body
         f.box(x, top + 166, bw, 150, FILL, "#cccccc", rx=8)
-        f.text(x + 14, top + 196, "取引の並び", 18, SUB, anchor="start")
+        f.text(x + 14, top + 196, "トランザクションの並び", 18, SUB, anchor="start")
         for j in range(3):
             bad = k == 0 and j == 1
             y = top + 210 + j * 32
             f.box(x + 12, y, bw - 58, 26, RED_PALE if bad else "#ffffff",
                   RED if bad else "#cccccc", sw=2, rx=5)
-            f.text(x + 20, y + 19, "取引 " + str(j + 1) + ("（書き換え）" if bad else ""),
+            f.text(x + 20, y + 19, "トランザクション " + str(j + 1) + ("（書き換え）" if bad else ""),
                    16, INK, anchor="start")
         # Merkle root arrow: from the body up along the right margin to row 2
         c = RED if k == 0 else SUB
@@ -167,7 +167,7 @@ def chain_figure():
             f.text(x - gap / 2, top + 40, "ハッシュ値", 14, col)
             if broken:
                 f.text(x - gap / 2, top + 86, "合わない", 15, RED)
-    f.text(530, 410, "取引を書き換えると要約とヘッダのハッシュ値が変わり、"
+    f.text(530, 410, "トランザクションを書き換えると要約とヘッダのハッシュ値が変わり、"
            "ブロック 101 が持つ値と合わなくなる", 18, RED)
     f.save("blockchain-basics_chain.webp")
 

@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Consensus / Finality"]
 ---
 
-Proof of Authority（PoA）は、あらかじめ許可した署名者（authority）だけにブロックの作成を認める合意の方式の総称です。ブロックは、取引をまとめて前のブロックにつなげた単位です（[Blockchain Basics](../blockchain-basics/)）。
+Proof of Authority（PoA）は、あらかじめ許可した署名者（authority）だけにブロックの作成を認める合意の方式の総称です。ブロックは、トランザクションをまとめて前のブロックにつなげた単位です（[Blockchain Basics](../blockchain-basics/)）。
 
 署名者は公開鍵（Ethereum ではアドレス）の一覧で決まり、各ノードは、[ブロックに付いた署名](../digital-signature/)が一覧の誰のものかを検証します。PoA の方式に共通するのは「許可された署名者だけが参加する」ことで、署名の順番・署名者の入れ替え方・不正への対処は方式ごとに違います。
 
@@ -42,7 +42,7 @@ PoA が使われるのは、参加する組織が互いに分かっている私�
 
 <br>
 
-実際に、PoW で動いていた Ethereum のテストネット [Ropsten](https://github.com/ethereum/ropsten) は、2017 年に参加者の計算量の少なさを突かれました。攻撃者は 1 ブロックに入れられる計算量の上限（[gas](../gas-eip-1559/) の上限）を 4.7M から 9B まで吊り上げ、巨大な取引でネットワークを麻痺させました。PoA の方式の 1 つである Clique の仕様書は、この事件を動機に挙げています。
+実際に、PoW で動いていた Ethereum のテストネット [Ropsten](https://github.com/ethereum/ropsten) は、2017 年に参加者の計算量の少なさを突かれました。攻撃者は 1 ブロックに入れられる計算量の上限（[gas](../gas-eip-1559/) の上限）を 4.7M から 9B まで吊り上げ、巨大なトランザクションでネットワークを麻痺させました。PoA の方式の 1 つである Clique の仕様書は、この事件を動機に挙げています。
 
 署名者を信頼するなら、合意の規則は不要に見えます。しかし、信頼で置き換えたのは「誰に票を与えるか」の部分だけです。例えば 1 人の署名でブロックになる方式（後述の Clique）では、正直な署名者同士でも、同じ高さ（最初のブロックから数えたブロックの番号）のブロックを 2 人が同時に作り得ます。その時にどちらを採用するかを決める規則が必要です。Clique の実験でも、全員正直なまま通信の分断で 2 本に分かれました。署名者が投票する方式（後述の QBFT）では、投票の手順がこの規則を兼ね、票が揃うまでブロックを作りません。
 
@@ -132,7 +132,7 @@ Besu の実装では、round r の待ち時間は、genesis（チェーンの初
 
 #### Clique
 
-Clique は、署名者の一覧をコントラクト（チェーン上のプログラム）ではなくブロックヘッダーに持たせます。ヘッダーだけを同期するノードも、取引を実行せずに一覧を追えるようにするためです。投票には、PoA では使わない 2 つのヘッダー項目を流用します。
+Clique は、署名者の一覧をコントラクト（チェーン上のプログラム）ではなくブロックヘッダーに持たせます。ヘッダーだけを同期するノードも、トランザクションを実行せずに一覧を追えるようにするためです。投票には、PoA では使わない 2 つのヘッダー項目を流用します。
 
 | 項目 | 通常のブロック | 投票するブロック |
 |---|---|---|
@@ -430,7 +430,7 @@ Nethermind の不具合かどうかまでは確認していません。再実行
 
 この停止は、実験の作り物ではありません。Clique で動いていた Ethereum のテストネット [Görli](https://github.com/eth-clients/goerli) でも、署名者の過半数が動いていたのにチェーンが止まりました。[EIP-3436](https://eips.ethereum.org/EIPS/eip-3436) はこの事例を挙げ、合計が同じ時に短いチェーンを選ぶなどの規則を足す提案をしています（2026 年 11 月時点で、議論が止まった Stagnant の状態）。
 
-つまり、Clique の過半数の規則は、少数の署名者がチェーンを独占しないための制限で、ブロックの確定とは別です。Clique には確定の定義が無く、入金を扱うアプリケーションは、PoW と同じく[何ブロック待つか](../finality/#確認数をいくつ待つかを決める材料)を自分で決める必要があります。
+つまり、Clique の過半数の規則は、少数の署名者がチェーンを独占しないための制限で、ブロックの確定とは別です。Clique には確定の定義が無く、入金を扱うアプリケーションは、PoW と同じく[何ブロック待つか](../finality/#承認数をいくつ待つかを決める材料)を自分で決める必要があります。
 
 QBFT は、不正な検証者が ⌊(N−1)/3⌋ 人以下なら、ブロックを挿入した時点で確定します。代わりに、quorum に届かない組は 1 ブロックも作れません。同じ 2 対 2 の分断では、どちらの組も止まる筈です（QBFT の分断は今回試していません）。分岐するか止まるかの選択で、QBFT は止まる方を選んでいます。同じく止まる方を選ぶ合意エンジンには [CometBFT](../cometbft/) があります。
 
@@ -440,7 +440,7 @@ QBFT は、不正な検証者が ⌊(N−1)/3⌋ 人以下なら、ブロック�
 
 PoA は、署名者を選べる場面で使われてきました。2026 年 11 月時点の状況は次の通りです。
 
-- テストネット: Ethereum の Rinkeby（[geth v1.10.26 の設定](https://github.com/ethereum/go-ethereum/blob/v1.10.26/params/config.go#L179)）と Görli（[geth v1.13.15 の設定](https://github.com/ethereum/go-ethereum/blob/v1.13.15/params/config.go#L115)。後に PoS へ移行）は Clique で動いていましたが、どちらも廃止（deprecated）されています。現在の [Sepolia](https://github.com/eth-clients/sepolia) は PoS ですが、検証者は[クライアントとテストのチームが管理する許可制](https://ethereum.org/developers/docs/networks/)です。入れ替わりの経緯は [Testnet History](../testnet-history/) にあります。
+- テストネット: Ethereum の Rinkeby（[geth v1.10.26 の設定](https://github.com/ethereum/go-ethereum/blob/v1.10.26/params/config.go#L179)）と Görli（[geth v1.13.15 の設定](https://github.com/ethereum/go-ethereum/blob/v1.13.15/params/config.go#L115)。後に PoS へ移行）は Clique で動いていましたが、どちらも非推奨（deprecated）されています。現在の [Sepolia](https://github.com/eth-clients/sepolia) は PoS ですが、検証者は[クライアントとテストのチームが管理する許可制](https://ethereum.org/developers/docs/networks/)です。入れ替わりの経緯は [Testnet History](../testnet-history/) にあります。
 - サイドチェーン: Gnosis Chain（旧 xDai）は、Clique と同じく 1 人が署名する系統の PoA（[Aura](https://openethereum.github.io/Aura)）で動いていました。その後、Ethereum 本体が PoS に移った [The Merge](https://ethereum.org/roadmap/merge/) と同様の切り替えで、PoS で動く Gnosis Beacon Chain と統合し、PoS に移りました（[Gnosis Chain のドキュメント](https://docs.gnosischain.com/about/specs/consensus/)）。
 - 私設のチェーン: Besu は QBFT を推奨しています。公開されている PoA のチェーンでは、Nethermind が 日本の企業が署名者を務める [JOC Mainnet](https://www.japanopenchain.org/)（Clique）や、エネルギー業界向けの [Energy Web Chain](https://www.energyweb.org/)（Aura）の設定を[同梱しています](https://github.com/NethermindEth/nethermind/tree/17b84a019d75ed4a03dfce53b5599ace81026c7b/src/Nethermind/Chains)。
 
@@ -478,4 +478,4 @@ Clique を動かせるクライアントは減っています。geth は [v1.14.
 
 - 参加者が互いを知らず、誰でも署名者になれる必要があるネットワーク
 - 署名者の半数以上（Clique）や 1/3 を超える検証者（QBFT）が、同じ組織・同じクラウド・同じクライアントに偏っている場合。1 つの障害でチェーンが止まり、QBFT では侵害されると確定したブロックが食い違い得る
-- Clique のチェーンで、ブロックに入った取引をすぐに確定として扱いたいアプリケーション
+- Clique のチェーンで、ブロックに入ったトランザクションをすぐに確定として扱いたいアプリケーション

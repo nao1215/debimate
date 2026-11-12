@@ -32,26 +32,26 @@ CometBFT は [Tendermint Core](https://github.com/tendermint/tendermint) のコ�
 
 ### ABCI によるアプリケーションの分離
 
-CometBFT は取引をバイト列として運ぶだけで、残高や署名の規則は知りません。取引の中身を判断するのは、別に書くアプリケーションです。両者の間の境界を ABCI（Application BlockChain Interface）と呼びます。[CometBFT の入門文書](https://github.com/cometbft/cometbft/blob/v0.38.x/docs/introduction/README.md)は、Bitcoin のような仕組みを ABCI の上に作る場合の分担として、次の例を挙げています。
+CometBFT はトランザクションをバイト列として運ぶだけで、残高や署名の規則は知りません。トランザクションの中身を判断するのは、別に書くアプリケーションです。両者の間の境界を ABCI（Application BlockChain Interface）と呼びます。[CometBFT の入門文書](https://github.com/cometbft/cometbft/blob/v0.38.x/docs/introduction/README.md)は、Bitcoin のような仕組みを ABCI の上に作る場合の分担として、次の例を挙げています。
 
 {{< note-panels caption="CometBFT は順序を決め、アプリケーションは中身を判断します。" >}}
 - title: CometBFT
   items:
-  - ノード間でブロックと取引を共有する
-  - 取引の順序を決め、確定させる
+  - ノード間でブロックとトランザクションを共有する
+  - トランザクションの順序を決め、確定させる
 - title: アプリケーション
   items:
   - UTXO（まだ使われていない出力）などの状態を保持する
-  - 取引の署名を検証する
+  - トランザクションの署名を検証する
   - 存在しない出力の使用を拒否する
   - 状態の問い合わせに答える
 {{< /note-panels >}}
 
-v0.38 の ABCI（[ABCI 2.0](https://github.com/cometbft/cometbft/blob/v0.38.x/spec/abci/abci++_basic_concepts.md)）では、CometBFT は決まった場面でアプリケーションを呼びます。本記事で出てくるのは、受け取った取引を [mempool](../mempool/)（未確定の取引の置き場）に入れる前に検査させる `CheckTx` と、確定したブロックを渡す `FinalizeBlock` です。ほかに、提案するブロックの組み立てと検証、状態の保存のための呼び出しがあります。
+v0.38 の ABCI（[ABCI 2.0](https://github.com/cometbft/cometbft/blob/v0.38.x/spec/abci/abci++_basic_concepts.md)）では、CometBFT は決まった場面でアプリケーションを呼びます。本記事で出てくるのは、受け取ったトランザクションを [mempool](../mempool/)（未確定のトランザクションを置く場所）に入れる前に検査させる `CheckTx` と、確定したブロックを渡す `FinalizeBlock` です。ほかに、提案するブロックの組み立てと検証、状態の保存のための呼び出しがあります。
 
 <br>
 
-全てのノードが同じブロックから同じ状態を計算できるように、アプリケーションの処理は決定的である必要があります。乱数、時計、[Go](https://go.dev/) の map の走査順に結果が依存すると、ノードごとに状態がずれます。後の実験で使う kvstore は、`key=value` の形の取引を受け取って保存するだけの、CometBFT に組み込まれた試験用のアプリケーションです。
+全てのノードが同じブロックから同じ状態を計算できるように、アプリケーションの処理は決定的である必要があります。乱数、時計、[Go](https://go.dev/) の map の走査順に結果が依存すると、ノードごとに状態がずれます。後の実験で使う kvstore は、`key=value` の形をしたトランザクションを受け取って保存するだけの、CometBFT に組み込まれた試験用のアプリケーションです。
 
 ---
 
@@ -166,7 +166,7 @@ BFT のチェーンも PoW と同じように、分断された 2 つのグル�
 
 1. 4 台とも動かす（20 秒）
 2. node3 を止める（30 秒）
-3. node2 も止める（45 秒）。止めた 3 秒後に、取引 `halted=yes` を node0 に送る
+3. node2 も止める（45 秒）。止めた 3 秒後に、トランザクション `halted=yes` を node0 に送る
 4. node2 と node3 を再起動する（45 秒）
 5. node0・node1 と node2・node3 の間の通信を切る（45 秒）
 6. 通信を戻す（45 秒）
@@ -476,7 +476,7 @@ heal -> first block: median 10.9 s (min 9.9, max 12.6, n=3)
 
 <br>
 
-<details><summary>1 回目の 5 サンプルおき（約 8 秒ごと）の記録と、3 回分の取引・ハッシュの照合（<a href="lab/output.txt">output.txt</a> の抜粋）</summary>
+<details><summary>1 回目の 5 サンプルおき（約 8 秒ごと）の記録と、3 回分のトランザクション・ハッシュの照合（<a href="lab/output.txt">output.txt</a> の抜粋）</summary>
 
 ```text
 image: cometbft/cometbft:v0.38.26@sha256:08f635fe1eff3bdcbe9d9a57091811351c55de66fbaa80190b28fe436a08356f
@@ -531,9 +531,9 @@ run 3: heights 1..89 identical on 4 nodes: True; heights decided after round 0: 
 
 <br>
 
-止まっている間も、node0 は取引を受け付けました（`code=0` は `CheckTx` が通ったことを示します）。しかし、キー `halted` を問い合わせても値は返らず、取引は mempool で待っているだけです。
+止まっている間も、node0 はトランザクションを受け付けました（`code=0` は `CheckTx` が通ったことを示します）。しかし、キー `halted` を問い合わせても値は返らず、トランザクションは mempool で待っているだけです。
 
-2 台を再起動すると、止まっていた高さ（1 回目は 32）のブロックが確定しました。ラウンド 0 は precommit の待ち時間が切れて終わり（出力のログの `Timed out ... PrecommitWait`）、ラウンド 1 で確定しています。このブロックに取引が入り、値 `eWVz`（base64 で `yes`）が読めるようになりました。
+2 台を再起動すると、止まっていた高さ（1 回目は 32）のブロックが確定しました。ラウンド 0 は precommit の待ち時間が切れて終わり（出力のログの `Timed out ... PrecommitWait`）、ラウンド 1 で確定しています。このブロックにトランザクションが入り、値 `eWVz`（base64 で `yes`）が読めるようになりました。
 
 docker start の直後の計測から最初の確定までは、3 回の中央値で 6.5 秒（1.5〜6.5 秒）でした。計測の間隔が約 1.6 秒なので、この秒数はその幅で前後します。2|2 の分断も、通信を戻すと 3 回の中央値 10.9 秒（9.9〜12.6 秒）で確定が再開しました。
 
@@ -566,7 +566,7 @@ Ethereum の確定は、一定間隔ごとの区切りのブロック（checkpoi
 
 ### 利点
 
-- precommit が 2/3 を超えたブロックは即座に確定し、確認数を数えて待つ必要が無い
+- precommit が 2/3 を超えたブロックは即座に確定し、承認数を数えて待つ必要が無い
 - 確定したブロックは、嘘をつく重みが 1/3 未満である限り巻き戻らない
 - 同じラウンドで二重投票したバリデータは、矛盾する 2 つの署名から特定できる
 - ABCI の境界により、合意の実装に触れずにアプリケーションを任意の言語で書ける
@@ -587,5 +587,5 @@ CometBFT は、食い違うくらいなら止まる側を選んでいます。�
 ### 適さないケース
 
 - 参加者が非常に多く、誰でも自由に出入りできるネットワーク
-- 確定が遅れても、取引の受け付けとブロックの生成を止めたくない用途
+- 確定が遅れても、トランザクションの受け付けとブロックの生成を止めたくない用途
 - 地理的に広く分かれ、分断が頻繁に起きるネットワークで、各側が独立して動き続ける必要がある場合

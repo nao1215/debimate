@@ -197,7 +197,7 @@ def checkpoint_figure():
     cy, cw, ch = 380, 200, 76
     cells = (
         (150, "source（起点）", "直近の justified", src, OCHRE, "sub"),
-        (370, "target（行き先）", "今の epoch", tgt, OCHRE, "sub"),
+        (370, "target（ターゲット）", "今の epoch", tgt, OCHRE, "sub"),
         (590, "head（先頭）", "最新のブロック", head_x, ACCENT, "accent"),
     )
     f.box(140, cy - 10, 660, ch + 20, "#ffffff", INK, sw=2.5, rx=10)

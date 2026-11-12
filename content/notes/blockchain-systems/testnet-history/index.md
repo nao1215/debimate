@@ -58,24 +58,24 @@ Sepolia も、後継を立てて 2027 年に終える案が [2026 年 5 月に E
 
 Holesky は、当初の予定より 3 年早く終わりました。Holesky の README には、当初の予定として「LTS（長期の支援）は 2027 年 12 月まで、終了は 2028 年 12 月」と書かれています。きっかけは、テストネットで先に有効にした更新で起きた不具合です。
 
-PoS の Ethereum のノードは、2 つのソフトウェアを組み合わせて動きます。取引を実行して状態を計算する実行層のクライアント（[EVM](../evm/) を動かす側）と、どのブロックを正しいとするかを validator の間で決める合意層のクライアントです。
+PoS の Ethereum のノードは、2 つのソフトウェアを組み合わせて動きます。トランザクションを実行して状態を計算する実行レイヤーのクライアント（[EVM](../evm/) を動かす側）と、どのブロックを正しいとするかを validator の間で決めるコンセンサス・レイヤーのクライアントです。
 
-validator になる人は、預け入れ（deposit）用のコントラクトに ETH を送って登録します。ブロックが取り消されないことを保証する[確定（finality）](../finality/)には、validator の 2/3 の票が同じ列に集まる必要があります。
+validator になる人は、預け入れ（deposit）用のコントラクトに ETH を送って登録します。ブロックが取り消されないことを保証する[ファイナリティ（finality）](../finality/)には、validator の 2/3 の票が同じ列に集まる必要があります。
 
-2025 年 2 月 24 日、Holesky で更新 [Pectra](https://ethereum.org/roadmap/pectra/) が有効になった直後に、ネットワークが 2 つに分かれました。以下は、分かれた 2 本の列と、確定が止まった期間を示した図です。
+2025 年 2 月 24 日、Holesky で更新 [Pectra](https://ethereum.org/roadmap/pectra/) が有効になった直後に、ネットワークが 2 つに分かれました。以下は、分かれた 2 本の列と、ファイナライズが止まった期間を示した図です。
 
-{{< figure src="images/testnet-history_holesky.webp" alt="左に灰色の共通の列があり、2/24 Pectra が有効になった点線の所で 2 本に分かれる。上の赤い列は誤った列で、Geth・Nethermind・Besu が受け入れ、ノードの多くが従った。下の青い列は正しい列で、Erigon・Reth は預け入れを含むブロックを拒否した。正しい列の最初の 6 個は点線の枠で、票が集まらない期間を表す。間に「確定が止まる（約 2 週間）」の矢印があり、3/10 の点線で正しい列で確定が戻る。誤った列はそこで途切れている" caption="2025 年 2 月の Holesky の分岐と、確定が止まった期間" align="center" >}}
+{{< figure src="images/testnet-history_holesky.webp" alt="左に灰色の共通の列があり、2/24 Pectra が有効になった点線の所で 2 本に分かれる。上の赤い列は誤った列で、Geth・Nethermind・Besu が受け入れ、ノードの多くが従った。下の青い列は正しい列で、Erigon・Reth は預け入れを含むブロックを拒否した。正しい列の最初の 6 個は点線の枠で、票が集まらない期間を表す。間に「ファイナライズが止まる（約 2 週間）」の矢印があり、3/10 の点線で正しい列でファイナライズが戻る。誤った列はそこで途切れている" caption="2025 年 2 月の Holesky の分岐と、ファイナライズが止まった期間" align="center" >}}
 
 [事後報告](https://github.com/ethereum/pm/blob/6f1d4cb01d68e07c02ed61e48a9a335f9fb787db/Network-Upgrade-Archive/Pectra/holesky-postmortem.md)によると、経緯は次の通りです。
 
-1. Pectra で、validator の登録を処理するため、実行層のクライアントが預け入れのコントラクトの出す記録（イベント）を読むようになりました。
+1. Pectra で、validator の登録を処理するため、実行レイヤーのクライアントが預け入れのコントラクトの出す記録（イベント）を読むようになりました。
 2. このコントラクトのアドレスは、メインネットと Holesky で違います。Holesky は `0x4242…4242` です。
-3. 実行層のクライアントの [Geth](https://geth.ethereum.org/)・[Nethermind](https://github.com/NethermindEth/nethermind)・[Besu](https://github.com/besu-eth/besu) は Holesky のアドレスを正しく設定しておらず、預け入れを含むブロックで、本来は無効なブロックを有効と判定しました。
+3. 実行レイヤーのクライアントである [Geth](https://geth.ethereum.org/)・[Nethermind](https://github.com/NethermindEth/nethermind)・[Besu](https://github.com/besu-eth/besu) は Holesky のアドレスを正しく設定しておらず、預け入れを含むブロックで、本来は無効なブロックを有効と判定しました。
 4. 同じブロックから違う結果を出したソフトウェアの間で、列が 2 本に分かれました。
 
 図の誤った列は、Geth・Nethermind・Besu が受け入れた方です。この 3 つを使うノードが多く、事後報告によると、ノードの多くがこちらに従いました。もう一方の [Erigon](https://github.com/erigontech/erigon)・[Reth](https://github.com/paradigmxyz/reth) は、預け入れを含むブロックを拒否して正しい列に残りました。
 
-誤った列に一度票を入れた validator は、正しい列に票を入れ直すと、矛盾する票として罰（slashing）を受けるおそれがありました。そのため正しい列へ移る調整が手間取り、確定に必要な 2/3 の票が集まらず、確定は約 2 週間止まりました。回復したのは 3 月 10 日です。
+誤った列に一度票を入れた validator は、正しい列に票を入れ直すと、矛盾する票としてスラッシング（slashing）を受けるおそれがありました。そのため正しい列へ移る調整が手間取り、ファイナライズに必要な 2/3 の票が集まらず、ファイナライズは約 2 週間止まりました。回復したのは 3 月 10 日です。
 
 メインネットには無い、テストネットの設定だけで起きた不具合です。テストネットで先に試す手順が、メインネットの前に問題を見つけたとも言えます。
 
@@ -83,7 +83,7 @@ validator になる人は、預け入れ（deposit）用のコントラクトに
 
 #### Hoodi への移行
 
-validator が参加をやめる（退出する）手続きは、一度に処理できる数に上限があり、待ち行列に並んで順に処理されます。事後報告は、確定が戻った後に validator に関する処理が進み始め、退出の待ち行列が約 1.5 年分埋まったと書いています。これほど多くの退出が並んだ理由は、公開された事後報告では説明されていません。
+validator が参加をやめる（退出する）手続きは、一度に処理できる数に上限があり、待ち行列に並んで順に処理されます。事後報告は、ファイナライズが戻った後に validator に関する処理が進み始め、退出の待ち行列が約 1.5 年分埋まったと書いています。これほど多くの退出が並んだ理由は、公開された事後報告では説明されていません。
 
 これでは登録から退出までの [validator の一連の操作を試せない](https://blog.ethereum.org/2025/03/18/hoodi-holesky)ので、代わりに Hoodi を立ち上げました。
 
@@ -148,7 +148,7 @@ signet は、別の方向から問題を解きました。signet のブロック
 
 2023 年 2 月、[LayerZero](https://layerzero.network/) は ETH で Goerli の ETH を買える [bridge](../cross-chain-bridge/)（チェーンの間で資産を移す仕組み）を公開し、[開発者から批判を受けました](https://www.theblock.co/post/213868/layerzero-sparks-controversy-by-making-it-possible-to-buy-testnet-ether)。
 
-合意層のクライアント [Lodestar](https://github.com/ChainSafe/lodestar) を開発する [ChainSafe](https://chainsafe.io/) は、2023 年 4 月に[市場を開いても Goerli の供給の問題は解決せず、終了予定のテストネットを使い続ける動機になる](https://blog.chainsafe.io/ethereum-testnets-goerli-eth-and-a-way-forward/)と反対しました。
+コンセンサス・レイヤーのクライアント [Lodestar](https://github.com/ChainSafe/lodestar) を開発する [ChainSafe](https://chainsafe.io/) は、2023 年 4 月に[市場を開いても Goerli の供給の問題は解決せず、終了予定のテストネットを使い続ける動機になる](https://blog.chainsafe.io/ethereum-testnets-goerli-eth-and-a-way-forward/)と反対しました。
 
 <br>
 

@@ -9,9 +9,9 @@ wrapTables: true
 topics: ["Scaling"]
 ---
 
-毎朝のコーヒー代を [Bitcoin](https://bitcoin.org/) で払うと、1 杯ごとに取引をブロックに入れることになります。ブロックは平均 10 分に 1 つしか作られず、手数料は金額ではなく取引のデータ量で決まるため、数百円の支払いに数十分の確定待ちと見合わない手数料が付く場合があります。
+毎朝のコーヒー代を [Bitcoin](https://bitcoin.org/) で払うと、1 杯ごとにトランザクションをブロックに入れることになります。ブロックは平均 10 分に 1 つしか作られず、手数料は金額ではなくトランザクションのデータ量で決まるため、数百円の支払いに数十分の確定待ちと見合わない手数料が付く場合があります。
 
-[Lightning Network](https://lightning.network/) は、2 者が共同で管理する Bitcoin を「チャネル」に預け、2 人だけが署名する残高表を何度も書き換えることで支払いを進めるネットワークです。チェーンに記録するのは、原則としてチャネルを開く取引と閉じる取引の 2 つだけです。
+[Lightning Network](https://lightning.network/) は、2 者が共同で管理する Bitcoin を「チャネル」に預け、2 人だけが署名する残高表を何度も書き換えることで支払いを進めるネットワークです。チェーンに記録するのは、原則としてチャネルを開くトランザクションと閉じるトランザクションの 2 つだけです。
 
 複数のチャネルを経由すれば、直接チャネルを持たない相手にも支払えます。プロトコルは [BOLT（Basis of Lightning Technology）](https://github.com/lightning/bolts)という仕様群で定められています。
 
@@ -19,7 +19,7 @@ topics: ["Scaling"]
 
 {{< figure src="images/lightning-network_concept.svg" alt="チャネルの容量を表す棒の長さはどの段階でも同じで、更新のたびに Alice と Bob の分割点だけが動く。チェーンの列に印が付くのは開設と閉鎖の 2 回だけで、途中の更新はチェーンに載らない" caption="開設から閉鎖までのチャネルの取り分" align="center" >}}
 
-図のように、2 人の取り分は何度変わっても、チェーンが目にするのは最初と最後の取引だけです。しかし、Bob が署名した古い残高表は Alice の手元に残っており、チェーンにはそれが古いかどうかを判断する材料がありません。チェーンに書かないのに、なぜ持ち逃げできないのでしょうか。
+図のように、2 人の取り分は何度変わっても、チェーンが目にするのは最初と最後のトランザクションだけです。しかし、Bob が署名した古い残高表は Alice の手元に残っており、チェーンにはそれが古いかどうかを判断する材料がありません。チェーンに書かないのに、なぜ持ち逃げできないのでしょうか。
 
 <br>
 
@@ -30,13 +30,13 @@ topics: ["Scaling"]
 - 直接チャネルが無い相手への支払いで、中継者の持ち逃げをどう防ぐのか。
 - チャネルの残高の偏りは、支払いの成功率にどう影響するのか。
 
-取引の形は、[BOLT 3](https://github.com/lightning/bolts/blob/master/03-transactions.md) が定めるチャネル（[2-of-2 マルチシグ](../multisig/)の出力を使う形）を前提に説明します。出力の考え方は [UTXO](../utxo/)、出力に付ける条件の書き方は [Bitcoin Script](../bitcoin-script/) で説明しています。
+トランザクションの形は、[BOLT 3](https://github.com/lightning/bolts/blob/master/03-transactions.md) が定めるチャネル（[2-of-2 マルチシグ](../multisig/)の出力を使う形）を前提に説明します。出力の考え方は [UTXO](../utxo/)、出力に付ける条件の書き方は [Bitcoin Script](../bitcoin-script/) で説明しています。
 
 ---
 
 ### チャネルが必要な理由
 
-通常の Bitcoin の送金は、全てのノードに伝わり、各ノードの [mempool](../mempool/) で待ち、マイナーがブロックに入れて初めて記録されます。手数料はデータ量あたりの単価で競うため、1 万円の送金と 300 円の送金で大きくは変わりません。ブロックに入った後も、[Finality](../finality/) の観点では確認数を待ちます。
+通常の Bitcoin の送金は、全てのノードに伝わり、各ノードの [mempool](../mempool/) で待ち、マイナーがブロックに入れて初めて記録されます。手数料はデータ量あたりの単価で競うため、1 万円の送金と 300 円の送金で大きくは変わりません。ブロックに入った後も、[Finality](../finality/) の観点では承認数を待ちます。
 
 この待ちと手数料を避けるだけなら、事業者の帳簿で残高を付け替える方法もあります。しかし、事業者が出金を止めれば、利用者は資金を取り戻せません。小額の支払いを繰り返す仕組みに必要なのは、次の 3 つを同時に満たすことです。
 
@@ -44,19 +44,19 @@ topics: ["Scaling"]
 - 相手や中継者を信用しなくても、自分の残高を一方的に取り戻せる。
 - 最後の分配は、Bitcoin のルールで強制できる。
 
-Lightning Network は、1 つ目をチェーンに書かないことで、残りを「いつでもチェーンに出せる署名済みの取引」を持つことで満たします。
+Lightning Network は、1 つ目をチェーンに書かないことで、残りを「いつでもチェーンに出せる署名済みのトランザクション」を持つことで満たします。
 
 ---
 
 ### チャネルの開設・更新・閉鎖
 
-開設では、資金を出す側（BOLT では funder）が funding transaction を作ります。この取引の出力は「2 人とも署名した時だけ使える」2-of-2 のマルチシグで、預けた資金は片方の[デジタル署名](../digital-signature/)だけでは動かせません。
+開設では、資金を出す側（BOLT では funder）が funding transaction を作ります。このトランザクションの出力は「2 人とも署名した時だけ使える」2-of-2 のマルチシグで、預けた資金は片方の[デジタル署名](../digital-signature/)だけでは動かせません。
 
-funder は funding transaction をチェーンに出す前に、その資金を自分に払い戻す取引への相手の署名を受け取ります。そのため、相手が応答しなくなっても資金は閉じ込められません。
+funder は funding transaction をチェーンに出す前に、その資金を自分に払い戻すトランザクションに、相手の署名をもらいます。そのため、相手が応答しなくなっても資金は閉じ込められません。
 
 更新で書き換える残高表の正体は、funding transaction の出力を入力にし、「Alice に何 sat、Bob に何 sat」という出力を持つ commitment transaction です。sat（satoshi）は Bitcoin の最小単位で、1 BTC の 1 億分の 1 です。
 
-例えば、容量 1,000,000 sat のチャネルで Alice が 3,000 sat のコーヒー代を払うと、手数料などを除けば「Alice 997,000 / Bob 3,000」とした新しい commitment transaction に 2 人が署名し直します。この取引は手元に置くだけで、通常はチェーンに出しません。
+例えば、容量 1,000,000 sat のチャネルで Alice が 3,000 sat のコーヒー代を払うと、手数料などを除けば「Alice 997,000 / Bob 3,000」とした新しい commitment transaction に 2 人が署名し直します。このトランザクションは手元に置くだけで、通常はチェーンに出しません。
 
 閉鎖には 2 通りあります。協調 close（mutual close）は、2 人が最終残高で分配する closing transaction に合意して出す方法で、[BOLT 2](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#channel-close) では資金をすぐに使え、手数料も抑えられます。一方的 close（unilateral close）は、相手が応答しない時に、手元の最新の commitment transaction を片方だけで出す方法です。
 
@@ -73,7 +73,7 @@ funder は funding transaction をチェーンに出す前に、その資金を�
 
 ### 古い残高表を出した時の罰
 
-Alice は、手元にある古い commitment transaction を一方的に出すこともできます。Bob の署名は本物なので、Bitcoin のノードはその取引を有効と判断します。Lightning Network は、古い残高表を出すことを禁止するのではなく、出すと損をする形にして防ぎます。
+Alice は、手元にある古い commitment transaction を一方的に出すこともできます。Bob の署名は本物なので、Bitcoin のノードはそのトランザクションを有効と判断します。Lightning Network は、古い残高表を出すことを禁止するのではなく、出すと損をする形にして防ぎます。
 
 そのために、2 人は同じ残高を別々の commitment transaction として持ちます。Alice が持つ commitment transaction では、Alice 自身に払う出力（to_local）に、BOLT 3 が定める次の[条件](https://github.com/lightning/bolts/blob/master/03-transactions.md#to_local-output)が付きます。
 
@@ -90,7 +90,7 @@ OP_ENDIF
 OP_CHECKSIG
 ```
 
-`OP_ELSE` の分岐は、取引がブロックに入ってから `to_self_delay` ブロックが経つまで、Alice が自分の出力を使えないことを表します。`OP_IF` の分岐は、revocation key（取り消し鍵）に対応する秘密鍵を持つ者なら、待たずに使えることを表します。この待ち時間を決めるのは相手の Bob で、チャネルを開く時に指定します。
+`OP_ELSE` の分岐は、トランザクションがブロックに入ってから `to_self_delay` ブロックが経つまで、Alice が自分の出力を使えないことを表します。`OP_IF` の分岐は、revocation key（取り消し鍵）に対応する秘密鍵を持つ者なら、待たずに使えることを表します。この待ち時間を決めるのは相手の Bob で、チャネルを開く時に指定します。
 
 ```mermaid
 %%{init: {"theme":"base","flowchart":{"nodeSpacing":22,"rankSpacing":30,"padding":8},"themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","fontSize":"15px"}}}%%
@@ -140,7 +140,7 @@ sequenceDiagram
 
 2 つの結末を分けるのは、Bob がチェーンを見ていたかどうかだけです。
 
-常時起動していないノードのために、監視を他者に頼む watchtower があります。ノード実装の 1 つである [LND](https://github.com/lightningnetwork/lnd) の [watchtower](https://github.com/lightningnetwork/lnd/blob/master/docs/watchtower.md) では、クライアントが penalty 用の取引を暗号化して預け、watchtower は取り消し済みの commitment transaction がチェーンに出た時に初めてそれを復号して送信します。
+常時起動していないノードのために、監視を他者に頼む watchtower があります。ノード実装の 1 つである [LND](https://github.com/lightningnetwork/lnd) の [watchtower](https://github.com/lightningnetwork/lnd/blob/master/docs/watchtower.md) では、クライアントが penalty 用のトランザクションを暗号化して預け、watchtower は取り消し済みの commitment transaction がチェーンに出た時に初めてそれを復号して送信します。
 
 預けられるのは to_local と to_remote の分だけで、HTLC（次の節で説明します）の出力は今後の対応とされています。
 
@@ -152,7 +152,7 @@ BOLT 2 の [channel_reestablish](https://github.com/lightning/bolts/blob/master/
 
 ### 中継支払いと HTLC
 
-支払う相手ごとにチャネルを開くと、開設のたびにチェーンに載せる取引が必要になります。Alice が Bob とチャネルを持ち、Bob が Carol とチャネルを持っていれば、Bob に中継を頼んで Carol に払えます。問題は、Alice が Bob に払った後、Bob が Carol に払わずに終わる場合です。
+支払う相手ごとにチャネルを開くと、開設のたびにチェーンに載せるトランザクションが必要になります。Alice が Bob とチャネルを持ち、Bob が Carol とチャネルを持っていれば、Bob に中継を頼んで Carol に払えます。問題は、Alice が Bob に払った後、Bob が Carol に払わずに終わる場合です。
 
 この中継を成立させるのが HTLC（Hashed Time Locked Contract）です。HTLC は commitment transaction に追加する出力で、「ハッシュ値 H の元の値（preimage）を示せば受取側が受け取れる。期限のブロック高までに示されなければ送り手に戻る」という条件を持ちます。
 
@@ -176,7 +176,7 @@ Bob は Carol から preimage を受け取った時点で、Alice からの HTLC
 
 期限が下流ほど短くないと、Bob は preimage を知った後に、Alice との HTLC をチェーン上で請求する時間を持てません。
 
-BOLT 2 の [cltv_expiry_delta の選び方](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection)は、チェーンの組み替え（reorg）・相手の応答待ち・取引がブロックに入るまでの遅れを足し合わせ、迷うなら差を 34 ブロック以上にするよう勧めています。図の 52 は、この 34 と受取人の最小値の既定である 18 を足した説明用の値です。
+BOLT 2 の [cltv_expiry_delta の選び方](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection)は、チェーンの組み替え（reorg）・相手の応答待ち・トランザクションがブロックに入るまでの遅れを足し合わせ、迷うなら差を 34 ブロック以上にするよう勧めています。図の 52 は、この 34 と受取人の最小値の既定である 18 を足した説明用の値です。
 
 以下は、シーケンス図の 2 つの HTLC の期限をブロック高（block height）の軸に並べた図です。
 
@@ -334,7 +334,7 @@ out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": boun
   - 2-of-2 の出力で資金を固定する
   - closing transaction による最終残高の分配を記録する
   - to_self_delay と HTLC の期限を数える
-  - penalty transaction や HTLC の請求を有効な取引として受け入れる
+  - penalty transaction や HTLC の請求を有効なトランザクションとして受け入れる
 - title: Lightning のノード
   items:
   - commitment transaction に署名し合って残高を更新する
@@ -350,8 +350,8 @@ out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": boun
 ### 利点
 
 - 支払いのたびにブロックを待たず、チャネル内の更新は 2 者間のメッセージで済む
-- 支払いの回数が増えても、チェーンに載る取引は開設と閉鎖の分に抑えられる
-- 相手や中継者を信用しなくても、署名済みの取引で自分の残高を取り戻せる
+- 支払いの回数が増えても、チェーンに載るトランザクションは開設と閉鎖の分に抑えられる
+- 相手や中継者を信用しなくても、署名済みのトランザクションで自分の残高を取り戻せる
 - 中継の各区間が同じハッシュ値で結ばれ、中継者が片方だけ受け取ることを防げる
 
 ---
@@ -367,6 +367,6 @@ Lightning Network は、チェーンに書く回数を減らすために、不�
 
 ### 効果が小さくなりやすいケース
 
-- 支払いの回数が少なく、開設と閉鎖の取引の手数料を回収できない場合
+- 支払いの回数が少なく、開設と閉鎖のトランザクションに掛かる手数料を回収できない場合
 - 経路上のチャネルの残高に近い、またはそれを超える額を一度に送る場合
 - 端末を長期間オフラインにする利用者が、監視を誰にも頼まずにチャネルを持つ場合

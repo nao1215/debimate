@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Transaction / Wallet"]
 ---
 
-gas は、[Ethereum](https://ethereum.org/) で取引の実行に掛かる計算量を測る単位です。[EVM](../evm/)（Ethereum Virtual Machine）の命令ごとに gas の量が決まっており、取引は「使ってよい gas の上限」と「1 gas あたりに払う額」を書いて送ります。取引をまとめた単位がブロックで、ネットワークに参加する全てのノード（Ethereum のソフトウェアを動かすコンピューター）がブロックの取引を実行します。ブロック 1 つに入る取引の gas の合計にも上限があり、これが全ノードが 1 ブロックごとに実行する量の上限になります。
+gas は、[Ethereum](https://ethereum.org/) でトランザクションの実行に掛かる計算量を測る単位です。[EVM](../evm/)（Ethereum Virtual Machine）の命令ごとに gas の量が決まっており、トランザクションは「使ってよい gas の上限」と「1 gas あたりに払う額」を書いて送ります。トランザクションをまとめた単位がブロックで、ネットワークに参加する全てのノード（Ethereum のソフトウェアを動かすコンピューター）がブロックのトランザクションを実行します。ブロック 1 つに入るトランザクションは、gas の合計にも上限があり、これが全ノードが 1 ブロックごとに実行する量の上限になります。
 
 [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)（EIP は Ethereum の仕様変更の提案書）は、2021 年 8 月 5 日の London の[ハードフォーク](../ethereum-hard-forks/)（全ノードの規則の一斉更新）で入った、1 gas あたりの額の決め方です。この額は、ブロックごとにプロトコルが決める base fee と、送り主が上乗せする priority fee の 2 つに分かれます。base fee は、前のブロックが上限の半分（target）よりどれだけ多く、または少なく gas を使ったかで、1 ブロックごとに最大 12.5% 上下します。以下は、前のブロックの使用量と、次のブロックの base fee の関係を描いた図です。
 
@@ -25,25 +25,25 @@ gas は、[Ethereum](https://ethereum.org/) で取引の実行に掛かる計算
 - London 以前の手数料の決め方は、何が問題だったのか。
 - base fee を焼却し（誰にも渡さずに消し）、priority fee だけをブロックの提案者に渡すのはなぜか。
 - base fee はどんな式で上下し、実際のノードは式の通りに動くのか。
-- base fee が上がって単価の上限を超えた取引は、どうなるのか。
+- base fee が上がって単価の上限を超えたトランザクションは、どうなるのか。
 
-命令ごとの gas の値は [EVM のノート](../evm/#命令とガス)、取引に書く項目と送り主が払う額の計算例は [Ethereum Transaction](../ethereum-transaction/#使った-gas-と単価による手数料) で説明しています。[rollup](../rollup/) が使う [blob の手数料](../blob/#blob-の手数料)にも target を基準に値段を上下させる仕組みがありますが、その式は扱いません。
+命令ごとの gas の値は [EVM のノート](../evm/#命令とガス)、トランザクションに書く項目と送り主が払う額の計算例は [Ethereum Transaction](../ethereum-transaction/#使った-gas-と単価による手数料) で説明しています。[rollup](../rollup/) が使う [blob の手数料](../blob/#blob-の手数料)にも target を基準に値段を上下させる仕組みがありますが、その式は扱いません。
 
 ---
 
 ### gas で計算量を測る理由
 
-Ethereum の取引は、宛先のコントラクトのコードを動かせます。コードはループを書けるので、どれだけの計算になるかを取引のデータから事前に決められません。そこで EVM は、全ての命令に gas の値を付け、送り主が取引に書いた上限（gasLimit）まで使った所で実行を止めます。止まった取引は、状態の変更が取り消されますが、使った gas の分の手数料は払います。
+Ethereum のトランザクションは、宛先のコントラクトのコードを動かせます。コードはループを書けるので、どれだけの計算になるかをトランザクションのデータから事前に決められません。そこで EVM は、全ての命令に gas の値を付け、送り主がトランザクションに書いた上限（gasLimit）まで使った所で実行を止めます。止まったトランザクションは、状態の変更が取り消されますが、使った gas の分の手数料は払います。
 
-命令の値は、計算の重さだけでなく、ノードのディスクや状態への負担で決まります。例えば、足し算の ADD は 3 gas ですが、storage（コントラクトがチェーン上に持ち続ける保存領域）の空の場所に初めて値を書く SSTORE は 2 万 gas（その場所に取引の中で初めて触れる cold の時は、さらに 2,100 gas）掛かります。手数料はこの gas の量に 1 gas あたりの額を掛けて決まるので、重い処理を頼む取引ほど多く払います。
+命令の値は、計算の重さだけでなく、ノードのディスクや状態への負担で決まります。例えば、足し算の ADD は 3 gas ですが、storage（コントラクトがチェーン上に持ち続ける領域）の空の場所に初めて値を書く SSTORE は 2 万 gas（その場所にトランザクションの中で初めて触れる cold の時は、さらに 2,100 gas）掛かります。手数料はこの gas の量に 1 gas あたりの額を掛けて決まるので、重い処理を頼むトランザクションほど多く払います。
 
 <br>
 
-1 ブロックに入る取引の gas の合計にも上限（block gas limit）があります。ブロックを受け取ったノードは、中の取引を全て実行し直して検証します。上限を上げれば 1 ブロックに入る取引は増えますが、全ノードの検証の負担も同じだけ増えます。以下は、取引ごとの上限とブロックの上限の関係を描いた図です。
+1 ブロックに入るトランザクションは、gas の合計にも上限（block gas limit）があります。ブロックを受け取ったノードは、中のトランザクションを全て実行し直して検証します。上限を上げれば 1 ブロックに入るトランザクションは増えますが、全ノードの検証の負担も同じだけ増えます。以下は、トランザクションごとの上限とブロックの上限の関係を描いた図です。
 
-{{< figure src="images/gas-eip-1559_limits.webp" alt="2 段の図。上段は取引 1 件で、ADD 3、SSTORE 22,100、ADD 3、… と命令の gas の箱が左から積み上がり、右端の縦線 gasLimit（送り主が取引に書く上限）に達した所に「使い切ったら実行を止める」。下段はブロック 1 つで、取引 1〜5 の箱が左から並び、右端の縦線が block gas limit（全ノードが実行し直す量の上限）。左下に「箱の幅は gas の量に比例しない」" caption="取引の gasLimit と、ブロックの gas の上限" align="center" >}}
+{{< figure src="images/gas-eip-1559_limits.webp" alt="2 段の図。上段はトランザクション 1 件で、ADD 3、SSTORE 22,100、ADD 3、… と命令の gas の箱が左から積み上がり、右端の縦線 gasLimit（送り主がトランザクションに書く上限）に達した所に「使い切ったら実行を止める」。下段はブロック 1 つで、トランザクション 1〜5 の箱が左から並び、右端の縦線が block gas limit（全ノードが実行し直す量の上限）。左下に「箱の幅は gas の量に比例しない」" caption="トランザクションの gasLimit と、ブロックの gas の上限" align="center" >}}
 
-取引の gasLimit は送り主が 1 件ごとに書く上限で、ブロックの上限は全ての取引の合計に掛かる上限です。
+トランザクションの gasLimit は送り主が 1 件ごとに書く上限で、ブロックの上限は、全てのトランザクションを合計した量に掛かる上限です。
 
 上限の値は固定ではありません。Ethereum の仕様を Python で書いた [execution-specs](https://github.com/ethereum/execution-specs) の [`check_gas_limit`](https://github.com/ethereum/execution-specs/blob/v2.20.0/src/ethereum/forks/osaka/fork.py#L1024-L1062) は、親ブロックの上限から 1024 分の 1 未満の幅でしか次の上限を変えられないと定めています。[ethereum.org の gas のページ](https://ethereum.org/en/developers/docs/gas/)には、次のように書かれています。
 
@@ -57,15 +57,15 @@ Ethereum の取引は、宛先のコントラクトのコードを動かせま�
 
 ### London 以前の手数料
 
-London 以前の取引は、1 gas あたりの額（gasPrice）を 1 つだけ書いていました。採掘者（当時の Proof of Work で、ブロックを作る参加者）は gasPrice の高い取引から選び、取り込まれた取引は書いた額をそのまま払います。高い値を付けた順に、付けた値で買う形で、EIP-1559 の本文はこれを first price auction（第一価格オークション）と呼んでいます。
+London 以前のトランザクションは、1 gas あたりの額（gasPrice）を 1 つだけ書いていました。マイナー（当時の Proof of Work で、ブロックを作る参加者）は gasPrice の高いトランザクションから選び、取り込まれたトランザクションは書いた額をそのまま払います。高い値を付けた順に、付けた値で買う形で、EIP-1559 の本文はこれを first price auction（第一価格オークション）と呼んでいます。
 
 [EIP-1559 の Motivation](https://github.com/ethereum/EIPs/blob/ba6c342c23164072adb500c3136e3ae6eabff306/EIPS/eip-1559.md#motivation) は、この形の問題を 4 つ挙げています。1 つ目は、ブロックが満杯の時に gasPrice が激しく上下することです。本文は、ブロックに 1 件を足す時のネットワークの負担は 800 万 gas が 802 万 gas になる程度で変わらないのに、値段だけが 10 倍になるのはおかしいと書いています。
 
-2 つ目は、上限が固定されていて、混んだブロックの取引が次へ回されても、空いたブロックの余りを使う仕組みが無いことです。3 つ目は、払う額を自分で入札するので見積もりが難しく、払いすぎが頻繁に起きることです。4 つ目は本記事では扱いません。2 つ目への答えは、後の「base fee を決める式」の節で出てきます。
+2 つ目は、上限が固定されていて、混んだブロックのトランザクションが次へ回されても、空いたブロックの余りを使う仕組みが無いことです。3 つ目は、払う額を自分で入札するので見積もりが難しく、払いすぎが頻繁に起きることです。4 つ目は本記事では扱いません。2 つ目への答えは、後の「base fee を決める式」の節で出てきます。
 
-{{< figure src="images/gas-eip-1559_auction.webp" alt="左は London 以前で、高さの違う 5 本の青い棒がそれぞれの入札額で、全額が採掘者へ渡る。右は EIP-1559 で、5 本とも同じ高さの黄土色の base fee の上に、高さの違う小さな青い tip が乗る。その上の点線の枠は「書いた上限（払わない）」で、払わない部分" caption="London 以前と EIP-1559 の、1 gas あたりの支払い" align="center" >}}
+{{< figure src="images/gas-eip-1559_auction.webp" alt="左は London 以前で、高さの違う 5 本の青い棒がそれぞれの入札額で、全額がマイナーへ渡る。右は EIP-1559 で、5 本とも同じ高さの黄土色の base fee の上に、高さの違う小さな青い tip が乗る。その上の点線の枠は「書いた上限（払わない）」で、払わない部分" caption="London 以前と EIP-1559 の、1 gas あたりの支払い" align="center" >}}
 
-上記の図の右側が EIP-1559 です。同じブロックの取引は全員が同じ base fee を払い、上乗せの priority fee（tip）だけが取引ごとに違います。送り主が書くのは、1 gas あたりの額の上限（maxFeePerGas）と、上乗せの上限（maxPriorityFeePerGas）です。点線の枠のうち、base fee と tip を超える部分は払いません。
+上記の図の右側が EIP-1559 です。同じブロックのトランザクションは全員が同じ base fee を払い、上乗せの priority fee（tip）だけがトランザクションごとに違います。送り主が書くのは、1 gas あたりの額の上限（maxFeePerGas）と、上乗せの上限（maxPriorityFeePerGas）です。点線の枠のうち、base fee と tip を超える部分は払いません。
 
 額は ETH の小さな単位で表し、gwei は 10 億分の 1 ETH、wei は 10^18 分の 1 ETH です。
 
@@ -73,27 +73,27 @@ London 以前の取引は、1 gas あたりの額（gasPrice）を 1 つだけ�
 
 ### base fee の焼却と priority fee
 
-EIP-1559 の取引が 1 gas あたりに払う額は、ブロックの base fee と priority fee の和です。priority fee は、maxPriorityFeePerGas と「maxFeePerGas − base fee」のうち小さい方になります。maxFeePerGas が base fee を下回る取引は、そのブロックに入れられません（[execution-specs](https://github.com/ethereum/execution-specs/blob/v2.20.0/src/ethereum/forks/osaka/fork.py#L475-L482) の `InsufficientMaxFeePerGasError`）。
+EIP-1559 のトランザクションが 1 gas あたりに払う額は、ブロックの base fee と priority fee の和です。priority fee は、maxPriorityFeePerGas と「maxFeePerGas − base fee」のうち小さい方になります。maxFeePerGas が base fee を下回るトランザクションは、そのブロックに入れられません（[execution-specs](https://github.com/ethereum/execution-specs/blob/v2.20.0/src/ethereum/forks/osaka/fork.py#L475-L482) の `InsufficientMaxFeePerGasError`）。
 
 以下は、base fee が 4.11 gwei（後の実験のブロック 16 の値）のブロックで、maxPriorityFeePerGas を 1 gwei にした 3 人が払う額を並べた図です。
 
-{{< figure src="images/gas-eip-1559_split.webp" alt="横の破線が base fee 4.11 gwei。左の maxFeePerGas 10 gwei の取引は、黄土色の base fee の上に青い tip 1.00 が乗り、払う額は 5.11 gwei で、点線の枠の残りは払わない。中央の 5 gwei の取引は tip が 0.89 に減り、払う額は 5.00 gwei。右の 2 gwei の取引は点線の枠が base fee に届かず、ブロックに入れられない。右に、tip はブロックの提案者へ、base fee は焼却（誰にも渡らない）の 2 つの箱。下に tip = min(maxPriorityFeePerGas 1 gwei, maxFeePerGas − base fee)" caption="base fee と priority fee（tip）の分け方と行き先" align="center" >}}
+{{< figure src="images/gas-eip-1559_split.webp" alt="横の破線が base fee 4.11 gwei。左の maxFeePerGas 10 gwei のトランザクションは、黄土色の base fee の上に青い tip 1.00 が乗り、払う額は 5.11 gwei で、点線の枠の残りは払わない。中央の 5 gwei のトランザクションは tip が 0.89 に減り、払う額は 5.00 gwei。右の 2 gwei のトランザクションは点線の枠が base fee に届かず、ブロックに入れられない。右に、tip はブロックの提案者へ、base fee は焼却（誰にも渡らない）の 2 つの箱。下に tip = min(maxPriorityFeePerGas 1 gwei, maxFeePerGas − base fee)" caption="base fee と priority fee（tip）の分け方と行き先" align="center" >}}
 
 上限に余裕が無いと、tip は書いた額より小さくなります。
 
-base fee の分は誰にも渡らず焼却され、priority fee の分だけがブロックの提案者に渡ります。EIP の本文は受け取る側を miner（採掘者）と書いていますが、2022 年 9 月に [Proof of Stake](../proof-of-stake/) へ移ってからは、ブロックを提案するバリデータが指定したアドレスに渡ります。base fee を提案者に渡さない理由について、本文は次のように書いています。
+base fee の分は誰にも渡らず焼却され、priority fee の分だけがブロックの提案者に渡ります。EIP の本文は受け取る側を miner（マイナー）と書いていますが、2022 年 9 月に [Proof of Stake](../proof-of-stake/) へ移ってからは、ブロックを提案するバリデータが指定したアドレスに渡ります。base fee を提案者に渡さない理由について、本文は次のように書いています。
 
 > Finally, ensuring the miner of a block does not receive the base fee is important because it removes miner incentive to manipulate the fee in order to extract more fees from users.
 >
-> （最後に、ブロックの採掘者が base fee を受け取らないようにすることは重要である。利用者からより多くの手数料を取るために、採掘者が手数料を操作する動機を取り除くからだ。）
+> （最後に、ブロックのマイナーが base fee を受け取らないようにすることは重要である。利用者からより多くの手数料を取るために、マイナーが手数料を操作する動機を取り除くからだ。）
 
-提案者が base fee を受け取れるなら、自分の取引でブロックを満杯にして base fee を吊り上げ、次のブロックから多く取れます。焼却すれば、吊り上げても提案者の取り分は増えません。本文は他にも、手数料を ETH だけで払わせることと、焼却で ETH の新規発行を打ち消すことを理由に挙げています。
+提案者が base fee を受け取れるなら、自分のトランザクションでブロックを満杯にして base fee を吊り上げ、次のブロックから多く取れます。焼却すれば、吊り上げても提案者の取り分は増えません。本文は他にも、手数料を ETH だけで払わせることと、焼却で ETH の新規発行を打ち消すことを理由に挙げています。
 
 <br>
 
 #### priority fee の役割
 
-priority fee について、Proof of Work の時代に書かれた本文は 1 nanoeth（1 gwei）程度の小さな額を想定し、ブロックを作る側が負う、作ったブロックが[孤立して（orphan）チェーンに残らない](../finality/)危険への補償と説明しています。ブロックに空きがあれば、小さな tip でも取引は入ります。満杯のブロックが続いた時に何が起きるかは、後の実験で確かめます。
+priority fee について、Proof of Work の時代に書かれた本文は 1 nanoeth（1 gwei）程度の小さな額を想定し、ブロックを作る側が負う、作ったブロックが[孤立して（orphan）チェーンに残らない](../finality/)危険への補償と説明しています。ブロックに空きがあれば、小さな tip でもトランザクションは入ります。満杯のブロックが続いた時に何が起きるかは、後の実験で確かめます。
 
 ---
 
@@ -146,7 +146,7 @@ London のフォークのブロックでは、ブロックの上限を 2 倍に�
 
 ブロックを満杯にしやすいように、ブロックの gas の上限を 1,050,000（ETH を送るだけの送金 1 件は 21,000 gas なので、50 件分）に下げ、base fee は 1 gwei から始めました。target は 525,000 で、送金 25 件で使用率がちょうど 50% になります。
 
-`--no-mining` で自動のマイニングを止め、送金を [mempool](../mempool/)（ブロックに入る前の取引の置き場）に溜めてから、`evm_mine` でブロックを 1 つずつ作ります。並び順は、tip の高い取引を先にする Anvil の既定の設定（`--order fees`）です。
+`--no-mining` で自動のマイニングを止め、送金を [mempool](../mempool/)（ブロックに入る前のトランザクションを置く場所）に溜めてから、`evm_mine` でブロックを 1 つずつ作ります。並び順は、tip の高いトランザクションを先にする Anvil の既定の設定（`--order fees`）です。
 
 以下は、実験の [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/gas-eip-1559/lab/run.py) から、式の計算と、ブロックを作る部分の抜粋です。`transfer` は `eth_sendTransaction` で送金を 1 件送り、`block` は `eth_getBlockByNumber` の結果から gas の使用量と base fee を取り出す関数です。
 
@@ -193,15 +193,15 @@ empty      22    0    0.0%     1855039692     1855039692   ok  alice gone
 
 #### 満杯の間は tip の競争になる
 
-Alice と Carol の取引は、満杯の 12 ブロックの間、一度も入りませんでした。ブロック 4〜9 の base fee は Alice の上限 2 gwei を下回っており、base fee の条件は満たしています。それでも入らなかったのは、混雑役の 50 件の tip が 2 gwei で、tip 1 gwei の 2 件より先に並び、ブロックを埋めたからです。
+Alice と Carol のトランザクションは、満杯の 12 ブロックの間、一度も入りませんでした。ブロック 4〜9 の base fee は Alice の上限 2 gwei を下回っており、base fee の条件は満たしています。それでも入らなかったのは、混雑役の 50 件の tip が 2 gwei で、tip 1 gwei の 2 件より先に並び、ブロックを埋めたからです。
 
-base fee が上がれば需要が減り、ブロックは target に戻る、というのが EIP-1559 の想定です。base fee が需要に追いつくまでの間は、ブロックに入る取引を決めるのは tip の高さで、London 以前に近い入札の形に戻ります。
+base fee が上がれば需要が減り、ブロックは target に戻る、というのが EIP-1559 の想定です。base fee が需要に追いつくまでの間は、ブロックに入るトランザクションを決めるのは tip の高さで、London 以前に近い入札の形に戻ります。
 
 <br>
 
-#### 上限を超えた取引は入らない
+#### 上限を超えたトランザクションは入らない
 
-混雑役が止まったブロック 16 で、Carol の取引が入りました。base fee は 4.11 gwei で、Carol の上限 5 gwei までの残りは 0.89 gwei です。tip は 1 gwei と書いていましたが、実際に払ったのは 0.89 gwei で、1 gas あたりの額はちょうど上限の 5 gwei でした。
+混雑役が止まったブロック 16 で、Carol のトランザクションが入りました。base fee は 4.11 gwei で、Carol の上限 5 gwei までの残りは 0.89 gwei です。tip は 1 gwei と書いていましたが、実際に払ったのは 0.89 gwei で、1 gas あたりの額はちょうど上限の 5 gwei でした。
 
 Alice の取引は、同じブロック 16 で mempool から消えました。`eth_getTransactionByHash` も null を返し、ブロック 22 で base fee が 1.86 gwei まで下がって上限の 2 gwei を下回った後も、戻ってきませんでした。理由は次の節で見ます。
 

@@ -169,9 +169,9 @@ def box(p, x, y, w, h, fill, stroke, sw=2):
 def ids_figure():
     """chain ID sits inside the signed transaction; network ID in the Status message between nodes."""
     w, h = 960, 430
-    p = svg_head(w, h, "chain ID は署名した取引の中に、network ID はノード同士が接続時に送る Status の中にある")
+    p = svg_head(w, h, "chain ID は署名したトランザクションの中に、network ID はノード同士が接続時に送る Status の中にある")
     # Left: a signed transaction.
-    put(p, 230, 44, "署名済みの取引（EIP-1559 の形式）", 24)
+    put(p, 240, 44, "署名済みのトランザクション（EIP-1559）", 20)
     box(p, 40, 64, 380, 290, GRAY_PALE, SUB)
     fields = ["chainId", "nonce", "宛先・金額", "手数料・gas", "data"]
     for i, f in enumerate(fields):

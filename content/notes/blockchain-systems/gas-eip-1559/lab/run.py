@@ -2,7 +2,7 @@
 
 - 公開ネットワーク・実資産・本物の秘密鍵は使わない。Anvil は 127.0.0.1 だけで待ち受ける。
 - アカウントは Anvil が既定で作るテスト用のもの（鍵が広く公開されており、説明用で無価値）。
-- 自動のマイニングを止め（--no-mining）、取引を mempool に溜めてから evm_mine でブロックを作る。
+- 自動のマイニングを止め（--no-mining）、トランザクションを mempool に溜めてから evm_mine でブロックを作る。
 - ブロックの gas 上限を 1,050,000（21,000 gas の送金 50 件分）に下げ、送金の件数で使用率を決める。
 
 実行: ANVIL=... python3 run.py > output/output.txt  （anvil が PATH にあれば環境変数は不要）
@@ -52,7 +52,7 @@ def rpc(method, *params):
 
 
 def transfer(sender, to, max_fee, tip):
-    """21,000 gas の単純な送金を 1 件送り、取引のハッシュを返す。"""
+    """21,000 gas の単純な送金を 1 件送り、トランザクションのハッシュを返す。"""
     return rpc('eth_sendTransaction', {
         'from': sender, 'to': to, 'value': '0x1', 'gas': hex(TRANSFER_GAS),
         'maxFeePerGas': hex(max_fee), 'maxPriorityFeePerGas': hex(tip)})
@@ -139,7 +139,7 @@ def run_main():
                     out.append(f'{name} gone')
             return ', '.join(out)
 
-        # 満杯（filler の 50 件、上乗せ 2 gwei）を 12 ブロック。2 人の取引は上乗せで負けて入らない
+        # 満杯（filler の 50 件、上乗せ 2 gwei）を 12 ブロック。2 人のトランザクションは上乗せで負けて入らない
         bob_tried = False
         for _ in range(12):
             b = mine_with(filler, to, 50)

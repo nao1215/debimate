@@ -68,7 +68,7 @@ class Svg:
 
 
 def rows(f, x, y, w, labels, hidden=False):
-    """ブロックの中身（取引の並び）を細い行で描く。hidden なら灰色の点線で中身を伏せる。"""
+    """ブロックの中身（トランザクションの並び）を細い行で描く。hidden なら灰色の点線で中身を伏せる。"""
     for i, label in enumerate(labels):
         yy = y + i * 40
         if hidden:
@@ -76,7 +76,7 @@ def rows(f, x, y, w, labels, hidden=False):
             f.text(x + w / 2, yy + 23, "見えない", 18, SUB)
         else:
             f.box(x, yy, w, 32, "#ffffff", LINE, sw=1.5, rx=4)
-            f.text(x + w / 2, yy + 23, label, 20)
+            f.text(x + w / 2, yy + 23, label, 16 if len(label) > 8 else 20)
 
 
 def concept_figure():
@@ -97,7 +97,7 @@ def concept_figure():
     # builder と relay: ブロックの中身が見える
     for cx in (355, 600):
         f.text(cx, 160, "ブロックの中身", 20, SUB)
-        rows(f, cx - 80, 174, 160, ["B 買い", "A 利用者", "C 売り", "他の取引", "proposer へ送金"])
+        rows(f, cx - 80, 174, 160, ["B 買い", "A 利用者", "C 売り", "他のトランザクション", "proposer へ送金"])
     # proposer: ヘッダーだけ
     f.text(840, 160, "ヘッダーと入札額", 20, SUB)
     f.box(770, 174, 140, 32, "#ffffff", OCHRE, sw=2, rx=4)
@@ -114,15 +114,15 @@ def concept_figure():
 
 def signed_figure():
     f = Svg(960, 490, "proposer が署名するブロックの入れ子と、relay が中身を探した block_hash")
-    # 外側: proposer が署名する合意側のブロック
-    f.text(40, 44, "proposer が署名する合意側のブロック（beacon block）", 20, anchor="start")
+    # 外側: proposer が署名するコンセンサス・レイヤーのブロック
+    f.text(40, 44, "proposer が署名するコンセンサス・レイヤーのブロック（beacon block）", 17, anchor="start")
     f.box(40, 60, 560, 360, FILL, SUB)
     f.text(70, 100, "slot・proposer の番号", 20, anchor="start")
-    for i, (name, note) in enumerate([("parent_root", "直前のブロックを指す値"), ("state_root", "合意側の状態のハッシュ値")]):
+    for i, (name, note) in enumerate([("parent_root", "直前のブロックを指す値"), ("state_root", "コンセンサス・レイヤーの状態のハッシュ値")]):
         y = 120 + i * 52
         f.box(66, y, 508, 42, "#ffffff", LINE, sw=1.5, rx=6)
         f.text(84, y + 28, name, 20, anchor="start")
-        f.text(250, y + 28, note, 20, SUB, anchor="start")
+        f.text(250, y + 28, note, 16 if len(note) > 12 else 20, SUB, anchor="start")
     # 内側: 実行内容を指すヘッダー
     f.box(66, 262, 508, 108, PALE, BLUE, sw=2, rx=6)
     f.text(84, 292, "execution payload header（中身を指すヘッダー）", 20, anchor="start")
@@ -134,9 +134,9 @@ def signed_figure():
     f.text(780, 30, "relay が持つ中身", 20)
     f.text(780, 54, "（execution payload）", 18, SUB)
     f.box(660, 66, 240, 354, PALE, BLUE)
-    for i, label in enumerate(["bot の買い", "囮の交換", "bot の売り", "他の取引", "proposer へ送金"]):
+    for i, label in enumerate(["bot の買い", "囮の交換", "bot の売り", "他のトランザクション", "proposer へ送金"]):
         f.box(690, 96 + i * 62, 180, 40, "#ffffff", LINE, sw=1.5, rx=4)
-        f.text(780, 96 + i * 62 + 27, label, 20)
+        f.text(780, 96 + i * 62 + 27, label, 17 if len(label) > 8 else 20)
     f.arrow(388, 330, 652, 330)
     f.text(630, 318, "指す", 18, SUB)
     f.text(480, 466, "relay は block_hash で自分の中身を探し、署名されたブロックが有効かは確かめなかった", 21)
@@ -179,7 +179,7 @@ def epbs_figure():
     # builder の中身
     f.text(720, 44, "2. builder が後で公開する中身", 24)
     f.box(520, 66, 400, 230, PALE, BLUE)
-    for i, label in enumerate(["B 買い", "A 利用者", "C 売り", "他の取引"]):
+    for i, label in enumerate(["B 買い", "A 利用者", "C 売り", "他のトランザクション"]):
         f.box(600, 90 + i * 48, 240, 38, "#ffffff", LINE, sw=1.5, rx=4)
         f.text(720, 90 + i * 48 + 27, label, 20)
     f.arrow(444, 181, 512, 181)

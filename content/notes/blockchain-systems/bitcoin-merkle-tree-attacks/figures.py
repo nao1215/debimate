@@ -90,10 +90,10 @@ def concept_figure():
     """Two build rules, two weaknesses."""
     f = Svg(960, 540, "奇数の複製と、葉と内部ノードを区別しない計算が、それぞれ弱点になる")
 
-    def node(x, y, w, s, fill=PALE, stroke=ACCENT, dash="", color=INK):
+    def node(x, y, w, s, fill=PALE, stroke=ACCENT, dash="", color=INK, size=22):
         f.box(x - w / 2, y - 22, w, 44, fill, stroke, dash=dash)
         if s:
-            f.text(x, y + 8, s, 22, color)
+            f.text(x, y + 7, s, size, color)
 
     # Left: duplicating the odd node.
     f.box(20, 20, 450, 500, FILL, rx=16)
@@ -123,13 +123,13 @@ def concept_figure():
     node(715, 128, 110, "ルート")
     node(610, 240, 90, "")
     node(800, 240, 180, "T（64 バイト）", OCHRE_PALE, OCHRE)
-    f.line(770, 262, 730, 318, OCHRE, sw=2.5, dash="7 6")
-    f.line(830, 262, 865, 318, OCHRE, sw=2.5, dash="7 6")
-    node(728, 340, 136, "左 32 バイト", "#ffffff", OCHRE, "7 6", SUB)
-    node(870, 340, 120, "偽の取引", "#ffffff", OCHRE, "7 6")
+    f.line(770, 262, 650, 318, OCHRE, sw=2.5, dash="7 6")
+    f.line(830, 262, 835, 318, OCHRE, sw=2.5, dash="7 6")
+    node(650, 340, 130, "左 32 バイト", "#ffffff", OCHRE, "7 6", SUB, size=20)
+    node(835, 340, 196, "偽のトランザクション", "#ffffff", OCHRE, "7 6", size=18)
     f.text(800, 394, "内部ノードと偽る", 20, SUB)
-    f.text(715, 446, "ブロックに無い取引の証明が通る", 22, RED)
-    f.text(715, 486, "→ 軽量クライアントを騙す", 22)
+    f.text(715, 446, "ブロックに無いトランザクションの証明が通る", 22, RED)
+    f.text(715, 486, "→ ライト・クライアントを騙す", 22)
     f.save("bitcoin-merkle-tree-attacks_concept.webp")
 
 
@@ -185,17 +185,18 @@ def depth_figure():
         levels = [("ルート", "", 0), ("計算値", "兄弟 B", 1), (leaf_label, "兄弟 A", 1)]
         if depth4:
             # The fake transaction is the right child; the first 32 bytes of T are the left.
-            levels.append(("偽の取引", "左 32 バイト", -1))
+            levels.append(("偽のトランザクション", "左 32 バイト", -1))
         for k, (pl, sl, side) in enumerate(levels):
             y = rows[k]
-            bx = sx if side > 0 else px - 160
+            bx = sx if side > 0 else px - 180
             if k > 0:
                 f.line(px, y - 26, px, rows[k - 1] + 26, ACCENT, sw=4)
                 f.line(bx - 50 * side, y - 26, px + 20 * side, rows[k - 1] + 26, OCHRE, sw=2.5)
             dashed = k == 3
-            f.box(px - 85, y - 26, 170, 52, "#ffffff" if dashed else PALE, ACCENT,
+            hw = 100 if dashed else 85
+            f.box(px - hw, y - 26, 2 * hw, 52, "#ffffff" if dashed else PALE, ACCENT,
                   dash="7 6" if dashed else "")
-            f.text(px, y + 9, pl, 22)
+            f.text(px, y + 8, pl, 18 if dashed else 22)
             if sl:
                 f.box(bx - 70, y - 26, 140, 52, OCHRE_PALE, OCHRE)
                 f.text(bx, y + 9, sl, 22)
@@ -210,7 +211,7 @@ def depth_figure():
 
 def ambiguity_figure():
     """A 64-byte transaction reads both as a leaf and as an internal node."""
-    f = Svg(960, 540, "64 バイトの取引は葉としても内部ノードとしても読める")
+    f = Svg(960, 540, "64 バイトのトランザクションは葉としても内部ノードとしても読める")
 
     def panel(cx, head, fill, stroke, top):
         f.text(cx, 62, head, 26)
@@ -221,15 +222,15 @@ def ambiguity_figure():
         f.box(cx - 190, 260, 380, 70, fill, stroke)
 
     panel(240, "葉として読む", PALE, ACCENT, "txid")
-    f.text(240, 304, "取引 T（64 バイト）", 24)
-    f.text(240, 380, "ブロックに入った本物の取引", 24, SUB)
+    f.text(240, 304, "トランザクション T（64 バイト）", 24)
+    f.text(240, 380, "ブロックに入った本物のトランザクション", 24, SUB)
 
     panel(720, "内部ノードとして読む", OCHRE_PALE, OCHRE, "内部ノードのハッシュ")
     f.line(720, 260, 720, 330, OCHRE, sw=2.5)
     f.text(625, 304, "左 32 バイト", 24)
     f.text(815, 304, "右 32 バイト", 24)
-    f.box(715, 430, 200, 60, "#ffffff", OCHRE, dash="8 6")
-    f.text(815, 469, "偽の取引", 24)
+    f.box(700, 430, 230, 60, "#ffffff", OCHRE, dash="8 6")
+    f.text(815, 467, "偽のトランザクション", 21)
     f.line(815, 428, 815, 338, OCHRE, sw=2.5, arrow="sub")
     f.text(800, 395, "txid が一致", 24, SUB, anchor="end")
 

@@ -1,5 +1,5 @@
 ---
-title: "Finality - ブロックチェーンの取引はいつ確定したと言えるのか"
+title: "Finality - ブロックチェーンのトランザクションはいつ確定したと言えるのか"
 date: 2026-09-02
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
@@ -9,13 +9,13 @@ wrapTables: true
 topics: ["Consensus / Finality"]
 ---
 
-finality（ファイナリティ、確定性）は、一度確定したと扱った取引が後から覆らない性質です。この性質を注意深く扱う必要があるのは、入金を検知して商品を発送したり、[アカウントの残高](../ethereum-account-model/)を加算したりするアプリケーションを書く時です。取引が後で履歴から消えても、渡したものは戻ってきません。
+finality（ファイナリティ、確定性）は、一度確定したと扱ったトランザクションが後から覆らない性質です。この性質を注意深く扱う必要があるのは、入金を検知して商品を発送したり、[アカウントの残高](../ethereum-account-model/)を加算したりするアプリケーションを書く時です。トランザクションが後で履歴から消えても、渡したものは戻ってきません。
 
-取引がブロックに入ったことと、その取引をもう覆らないものとして扱えることは、別です。ブロックに入った後、外れにくくなる段階を経て、覆らないと扱える段階に至ります。[Bitcoin](https://bitcoin.org/) は後ろに積まれたブロックの数（確認数）で近似し、[Ethereum](https://ethereum.org/) は参加者（バリデータ）の投票でこの最後の段階を作ります。
+トランザクションがブロックに入ったことと、そのトランザクションをもう覆らないものとして扱えることは、別です。ブロックに入った後、外れにくくなる段階を経て、覆らないと扱える段階に至ります。[Bitcoin](https://bitcoin.org/) は後ろに積まれたブロックの数（承認数）で近似し、[Ethereum](https://ethereum.org/) は参加者（バリデータ）の投票でこの最後の段階を作ります。
 
 Ethereum のノード（チェーンのデータを保持し、アプリケーションからの問い合わせに答えるサーバー）は、段階を `latest`・`safe`・`finalized` の 3 つに分けます。この 3 つはブロック番号を使わずにブロックを指す文字列で、ブロックタグと呼びます。ノードに残高を尋ねる API（`eth_getBalance`）にも、アドレスと一緒に渡します。
 
-1 件の取引が通る段階と、3 つのタグの対応は以下の通りです。
+1 件のトランザクションが通る段階と、3 つのタグの対応は以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -30,13 +30,13 @@ flowchart LR
 
 <br>
 
-本記事では、アプリケーションが取引をいつ確定済みとして扱えるのかを説明します。ブロックに入った所から段階を追って、次の疑問に答えます。
+本記事では、アプリケーションがトランザクションをいつ確定済みとして扱えるのかを説明します。ブロックに入った所から段階を追って、次の疑問に答えます。
 
 - なぜ「ブロックに入った」と「確定した」を分けるのか。
-- Bitcoin の確認数は、何を数えているのか。
+- Bitcoin の承認数は、何を数えているのか。
 - Ethereum では、バリデータの投票がどのように finality を作るのか。投票が集まらなかった 2023 年 5 月には、何が起きたのか。
-- `finalized`・`safe`・確認数は、それぞれ誰が何を根拠に決めるのか。
-- 確認数をいくつ待つかは、何を材料に決めるのか。
+- `finalized`・`safe`・承認数は、それぞれ誰が何を根拠に決めるのか。
+- 承認数をいくつ待つかは、何を材料に決めるのか。
 - 別のチェーンの状態を受け入れる bridge はどこまで待つのか。待たずに進めて良いのはどんな場面か。
 
 1 件の送金がどの段階を通るのかは、[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で追っています。Bitcoin と Ethereum 以外のチェーンが確定を作る方法は、[CometBFT](../cometbft/)・[Snowman](../snowman/)・[Proof of Authority](../proof-of-authority/)・[Proof of History](../proof-of-history/) のノートで説明しています。
@@ -45,16 +45,16 @@ flowchart LR
 
 ### 「ブロックに入った」と「確定した」を分ける理由
 
-ブロックに入った取引も、後から列から外れることがあります。Bitcoin での典型的な例は、複数のマイナー（計算作業でブロックを作る参加者）がほぼ同時にブロックを作り、チェーンの末尾が一時的に 2 本に分かれた場合です。分かれた直後は、どちらの列も規則を満たしています。各参加者は、積まれた計算量（ブロックを作るのに費やした計算の総量）が最も大きい列を canonical chain（正しい履歴として扱う列）に選び、選ばれなかった側のブロックは列から外れます。
+ブロックに入ったトランザクションも、後から列から外れることがあります。Bitcoin での典型的な例は、複数のマイナー（計算作業でブロックを作る参加者）がほぼ同時にブロックを作り、チェーンの末尾が一時的に 2 本に分かれた場合です。分かれた直後は、どちらの列も規則を満たしています。各参加者は、積まれた計算量（ブロックを作るのに費やした計算の総量）が最も大きい列を canonical chain（正しい履歴として扱う列）に選び、選ばれなかった側のブロックは列から外れます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
-    A["ブロック N-1"] --> B["ブロック N<br/>取引を含む"]
+    A["ブロック N-1"] --> B["ブロック N<br/>トランザクションを含む"]
     A --> C["ブロック N'"]
     C --> D["ブロック N'+1"]
     D --> E["ブロック N'+2<br/>この列が canonical chain になる"]
-    B -.->|"canonical chain に<br/>選ばれなかった列"| Z["取引はブロックから外れる"]
+    B -.->|"canonical chain に<br/>選ばれなかった列"| Z["トランザクションはブロックから外れる"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
@@ -70,29 +70,29 @@ sequenceDiagram
     participant N as 自分のノード
     participant C as チェーンの参加者
     U->>P: 送金する
-    C->>N: 取引を含むブロックが届く
+    C->>N: トランザクションを含むブロックが届く
     N-->>P: ブロック N に入っている
     P->>U: 商品を渡す
     C->>N: より計算量の大きい列が届く
     Note over N,C: 末尾が組み替わり<br/>ブロック N が外れる
-    N-->>P: その取引は<br/>ブロックから外れた
+    N-->>P: そのトランザクションは<br/>ブロックから外れた
 ```
 
-外れた取引は、それだけで無効になるわけではありません。ただし、取り込みを待つ状態に戻るかどうかは規則で保証されておらず、各ノードの扱いによります。取引がまだ有効で、新しい canonical chain の取引と競合しない場合に限り、そのノードの [mempool](../mempool/) に戻ることがあります。
+外れたトランザクションは、それだけで無効になるわけではありません。ただし、取り込みを待つ状態に戻るかどうかは規則で保証されておらず、各ノードの扱いによります。トランザクションがまだ有効で、新しい canonical chain のトランザクションと競合しない場合に限り、そのノードの [mempool](../mempool/) に戻ることがあります。
 
-逆に、支払う人が同じコインを別の宛先に使う取引を先に通した場合、その取引を含む列を canonical chain としているノードは、元の取引を受け入れなくなります。
+逆に、支払う人が同じコインを別の宛先に使うトランザクションを先に通した場合、そのトランザクションを含む列を canonical chain としているノードは、元のトランザクションを受け入れなくなります。
 
 ---
 
 ### confirmation の数と覆る確率
 
-Bitcoin には、この取引はもう覆らないと宣言する仕組みがありません。代わりに使うのが確認数（confirmation）で、取引を含むブロック自身を 1 個目として数え、後ろに積まれたブロックを足した値です。後ろにブロックが積まれるほど、その取引を外すためにやり直す [proof of work](../proof-of-work/) は大きくなります。
+Bitcoin には、このトランザクションはもう覆らないと宣言する仕組みがありません。代わりに使うのが承認数（confirmation）で、トランザクションを含むブロック自身を 1 個目として数え、後ろに積まれたブロックを足した値です。後ろにブロックが積まれるほど、そのトランザクションを外すためにやり直す [proof of work](../proof-of-work/) は大きくなります。
 
-ここまでの分岐は偶然に起きるものでした。確認数が意味を持つのは、取引を意図して外そうとする攻撃者がいる場合です。
+ここまでの分岐は偶然に起きるものでした。承認数が意味を持つのは、トランザクションを意図して外そうとする攻撃者がいる場合です。
 
 正直なマイナーは、規則どおりにブロックを作り、見つけたらすぐ公開する参加者です。攻撃者の書き換えが成功するのは、攻撃者が公開せずに伸ばした列が、正直なマイナーの列に追い付いた時です。
 
-[Bitcoin の白書](https://bitcoin.org/bitcoin.pdf)は、支払った本人が攻撃者になる場合を想定しています。攻撃者は全体のハッシュ計算能力（ブロックを見つける計算の速さ）のうち割合 `q` を握り、取引を送った時点から、支払いを取り消した列を公開せずに伸ばして追い付こうとします。受け取る側は、取引の後ろに `z` 個のブロックが積まれるまで待ちます。
+[Bitcoin のホワイトペーパー](https://bitcoin.org/bitcoin.pdf)は、支払った本人が攻撃者になる場合を想定しています。攻撃者は全体のハッシュ計算能力（ブロックを見つける計算の速さ）のうち割合 `q` を握り、トランザクションを送った時点から、支払いを取り消した列を公開せずに伸ばして追い付こうとします。受け取る側は、トランザクションの後ろに `z` 個のブロックが積まれるまで待ちます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -100,12 +100,12 @@ sequenceDiagram
     participant H as 正直なマイナー
     participant R as 受け取る側
     participant Q as 攻撃者
-    H->>R: 取引の入ったブロックを配る
+    H->>R: トランザクションの入ったブロックを配る
     Q->>Q: 支払いを差し替えた列を<br/>公開せずに伸ばす
     H->>R: 後ろに z 個積む
-    R->>R: 確認数 z+1 で<br/>商品を渡す
+    R->>R: 承認数 z+1 で<br/>商品を渡す
     Q->>Q: 遅れを詰める
-    Note over H,Q: 追い付いた列を公開すると<br/>渡した後で取引が外れる
+    Note over H,Q: 追い付いた列を公開すると<br/>渡した後でトランザクションが外れる
 ```
 
 次のブロックを正直な側と攻撃者のどちらが先に作るかの賭けを繰り返す形になるため、追い付ける確率は Gambler's Ruin（賭博者の破産問題）として計算できます。`q` が大きいほど、同じ確率まで下げるのに必要な `z` は増えます。
@@ -114,9 +114,9 @@ sequenceDiagram
 
 攻撃者が過半のハッシュ計算能力を握っていない限り、攻撃の成功確率（追い付く確率）は `z` に対して指数的に下がります。一方で、0 には届きません。この性質を probabilistic finality（確率的な確定性）と呼びます。一度確定したブロックは組み替えず、ノードの間で確定が食い違う確率だけが小さく残る方式もあります（[Snowman](../snowman/#確率的な確定の意味)）。
 
-白書は、成功確率が 0.1% を下回る `z` を `q` ごとに並べています。
+ホワイトペーパーは、成功確率が 0.1% を下回る `z` を `q` ごとに並べています。
 
-| 攻撃者のハッシュ計算能力の割合 `q` | 必要な `z`（後ろに積むブロック数） | 確認数（`z + 1`） |
+| 攻撃者のハッシュ計算能力の割合 `q` | 必要な `z`（後ろに積むブロック数） | 承認数（`z + 1`） |
 | --- | --- | --- |
 | 0.10 | 5 | 6 |
 | 0.15 | 8 | 9 |
@@ -127,7 +127,7 @@ sequenceDiagram
 | 0.40 | 89 | 90 |
 | 0.45 | 340 | 341 |
 
-確認数 6 は、Bitcoin の規則で定められた値ではなく、`q` を 0.10 と置いた時の値です。`q` を 0.30 と見るなら 25 必要になります。また、表の値は上のモデルの中での確率で、ネットワークの分断、実装と合意の規則の不具合、コミュニティの調整による手動の介入は含みません。
+承認数 6 は、Bitcoin の規則で定められた値ではなく、`q` を 0.10 と置いた時の値です。`q` を 0.30 と見るなら 25 必要になります。また、表の値は上のモデルの中での確率で、ネットワークの分断、実装と合意の規則の不具合、コミュニティの調整による手動の介入は含みません。
 
 ---
 
@@ -135,7 +135,7 @@ sequenceDiagram
 
 Ethereum のバリデータ（validator）は、Ethereum の通貨 ether をプロトコルに預けて、ブロックの提案と検証と投票を行う参加者です。規則に反する投票（矛盾する 2 票など）を残すと、その証拠によって預けた ether の一部または全部が没収されます。
 
-これを slashing と呼び、本記事で「処罰」と書く時はこれだけを指します。参加の仕組みと報酬・罰則の違いは、[Proof of Stake](../proof-of-stake/) で説明しています。
+これを slashing と呼び、本記事で「スラッシング」と書く時はこれだけを指します。参加の仕組みと報酬・罰則の違いは、[Proof of Stake](../proof-of-stake/) で説明しています。
 
 Ethereum では、どの列を canonical chain に選ぶかを計算量ではなく、バリデータの投票の重み（預けた ether の量）で決めます。この選び方でも末尾は組み替わり得るので、Ethereum でも `latest` のブロックは、より重い列が現れれば外れます。
 
@@ -151,13 +151,13 @@ checkpoint は、epoch の先頭 slot のブロックです。図の epoch N+1 �
 
 checkpoint の状態は、投票待ち・justified（正当化済み）・finalized（確定済み）の 3 つです。出発点として、チェーンの最初のブロックの checkpoint だけは、初めから justified かつ finalized と決めておきます。
 
-1 票は「既に合意した checkpoint から、次の checkpoint まで合意を延ばしてよい」という意思表示で、ある checkpoint から別の checkpoint への矢印として書きます。矢印の根元を起点（source）、先を行き先（target）と呼び、起点には既に justified な checkpoint を選びます。
+1 票は「既に合意した checkpoint から、次の checkpoint まで合意を延ばしてよい」という意思表示で、ある checkpoint から別の checkpoint への矢印として書きます。矢印の根元を起点（source）、先をターゲット（target）と呼び、起点には既に justified な checkpoint を選びます。
 
-{{< figure src="images/finality_votes.webp" alt="4 つの checkpoint が左から並ぶ。最初のブロックから epoch 1 へ、epoch 1 から epoch 2 へ、2/3 の投票の矢印がある。epoch 2 から epoch 3 への矢印は破線で集計中。状態は左から finalized、finalized、justified、投票待ち" caption="起点から行き先への 2/3 の投票と、checkpoint の状態" align="center" >}}
+{{< figure src="images/finality_votes.webp" alt="4 つの checkpoint が左から並ぶ。最初のブロックから epoch 1 へ、epoch 1 から epoch 2 へ、2/3 の投票の矢印がある。epoch 2 から epoch 3 への矢印は破線で集計中。状態は左から finalized、finalized、justified、投票待ち" caption="起点からターゲットへの 2/3 の投票と、checkpoint の状態" align="center" >}}
 
-図の矢印に添えた 2/3 は、預けられた ether の 2/3 にあたるバリデータが、同じ起点と行き先の組に投票したことを表します。justified（正当化済み）な起点から 2/3 の投票が張られた行き先の checkpoint が、justified になります。最初のブロックから epoch 1 への 2/3 で epoch 1 が、epoch 1 から epoch 2 への 2/3 で epoch 2 が justified になり、1 つずつ先へ延びていきます。
+図の矢印に添えた 2/3 は、預けられた ether の 2/3 にあたるバリデータが、同じ起点とターゲットの組に投票したことを表します。justified（正当化済み）な起点から 2/3 の投票が張られたターゲットの checkpoint が、justified になります。最初のブロックから epoch 1 への 2/3 で epoch 1 が、epoch 1 から epoch 2 への 2/3 で epoch 2 が justified になり、1 つずつ先へ延びていきます。
 
-起点と行き先が隣り合う checkpoint の場合は、行き先が justified になるのに加えて、起点が finalized（確定済み）に変わります。図で epoch 1 が finalized なのは、epoch 1 から直後の epoch 2 へ 2/3 が集まったからです。
+起点とターゲットが隣り合う checkpoint の場合は、ターゲットが justified になるのに加えて、起点が finalized（確定済み）に変わります。図で epoch 1 が finalized なのは、epoch 1 から直後の epoch 2 へ 2/3 が集まったからです。
 
 Casper FFG の論文の規則では、epoch を飛ばした投票（epoch 1 から epoch 3 へなど）で行き先は justified になりますが、起点は finalized になりません。Ethereum の実装は少し広く、間の checkpoint も justified なら、1 つ飛ばしの投票でも起点が finalized になる場合があります。以下の状態図は、論文の規則で描いています。
 

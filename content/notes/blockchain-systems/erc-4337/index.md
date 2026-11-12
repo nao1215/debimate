@@ -9,21 +9,21 @@ wrapTables: true
 topics: ["Transaction / Wallet"]
 ---
 
-[ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) は、Ethereum のプロトコルを変えずに、スマートコントラクトのアカウントを取引の送り主のように使えるようにする規格です。
+[ERC-4337](https://eips.ethereum.org/EIPS/eip-4337) は、Ethereum のプロトコルを変えずに、スマートコントラクトのアカウントをトランザクションの送り主のように使えるようにする規格です。
 
-Ethereum のアカウントには、秘密鍵で署名して取引を送る EOA（Externally Owned Account）と、コードを持つ[コントラクト](../smart-contract/)の 2 種類があります。チェーンに取引を送れるのは EOA だけです。コントラクトで作ったアカウント（スマートアカウント）は、署名の確かめ方を自分のコードで決められるので、複数人の承認や鍵の差し替えを組み込めます。しかし、自分では取引を送れません。
+Ethereum のアカウントには、秘密鍵で署名してトランザクションを送る EOA（Externally Owned Account）と、コードを持つ[コントラクト](../smart-contract/)の 2 種類があります。チェーンにトランザクションを送れるのは EOA だけです。コントラクトで作ったアカウント（スマートアカウント）は、署名の確かめ方を自分のコードで決められるので、複数人の承認や鍵の差し替えを組み込めます。しかし、自分ではトランザクションを送れません。
 
-もう 1 つの制約は手数料です。例えば、[ERC-20](../erc-20/) のトークンである [USDC](https://www.circle.com/usdc)（米ドルに連動するステーブルコイン）だけを持ち、ETH を少しも持たないアドレスからは、通常は USDC を送れません。取引の手数料（ガス代）は、送り主が ETH で払う決まりだからです。
+もう 1 つの制約は手数料です。例えば、[ERC-20](../erc-20/) のトークンである [USDC](https://www.circle.com/usdc)（米ドルに連動するステーブルコイン）だけを持ち、ETH を少しも持たないアドレスからは、通常は USDC を送れません。トランザクションの手数料（ガス代）は、送り主が ETH で払う決まりだからです。
 
 <br>
 
-ERC-4337 では、利用者は取引の代わりに UserOperation という依頼を作ります。Bundler と呼ぶ第三者がそれを集め、自分の EOA から 1 件の普通の取引として送ります。その取引の宛先は、全てのスマートアカウントが共有する EntryPoint というコントラクトです。
+ERC-4337 では、利用者はトランザクションの代わりに UserOperation という依頼を作ります。Bundler と呼ぶ第三者がそれを集め、自分の EOA から 普通のトランザクション 1 件として送ります。そのトランザクションの宛先は、全てのスマートアカウントが共有する EntryPoint というコントラクトです。
 
-UserOperation は、普通の取引とは別の置き場（UserOperation の mempool）で Bundler どうしの間を配られます。EntryPoint は依頼ごとにアカウントの検証と実行を呼び、使った分の手数料は、アカウントか肩代わり役の Paymaster の預け金（deposit）から Bundler に返します。
+UserOperation は、普通のトランザクションとは別の置き場（UserOperation の mempool）で Bundler どうしの間を配られます。EntryPoint は依頼ごとにアカウントの検証と実行を呼び、使った分の手数料は、アカウントか肩代わり役の Paymaster の預け金（deposit）から Bundler に返します。
 
-{{< figure src="images/erc-4337_concept.webp" alt="上段は破線で囲んだチェーンの外の層で、青い UserOperation のカード（署名の形式は自由）が黄土色の Bundler（EOA・ガス代を払う）に渡る。Bundler から handleOps の取引が下段の灰色の層（チェーンの上、プロトコルは従来のまま）に下り、EntryPoint の中で 1. 検証（使える処理に制限）→ 2. 実行（任意のコード）の順に処理し、スマートアカウントと、使う場合は Paymaster を呼ぶ。EntryPoint から Bundler へ、手数料を ETH で返す破線の矢印が戻る" caption="チェーンの外の UserOperation と、チェーンに載る 1 件の取引" align="center" >}}
+{{< figure src="images/erc-4337_concept.webp" alt="上段は破線で囲んだチェーンの外の層で、青い UserOperation のカード（署名の形式は自由）が黄土色の Bundler（EOA・ガス代を払う）に渡る。Bundler から handleOps のトランザクションが下段の灰色の層（チェーンの上、プロトコルは従来のまま）に下り、EntryPoint の中で 1. 検証（使える処理に制限）→ 2. 実行（任意のコード）の順に処理し、スマートアカウントと、使う場合は Paymaster を呼ぶ。EntryPoint から Bundler へ、手数料を ETH で返す破線の矢印が戻る" caption="チェーンの外の UserOperation と、チェーンに載る 1 件のトランザクション" align="center" >}}
 
-上記の図の上段はチェーンの外、灰色の下段はチェーンの上です。下段は従来の Ethereum と何も変わらず、チェーンから見えるのは、Bundler の EOA が EntryPoint の `handleOps` という関数を呼ぶ普通の取引だけです。
+上記の図の上段はチェーンの外、灰色の下段はチェーンの上です。下段は従来の Ethereum と何も変わらず、チェーンから見えるのは、Bundler の EOA が EntryPoint の `handleOps` という関数を呼ぶ普通のトランザクションだけです。
 
 <br>
 
@@ -36,25 +36,25 @@ UserOperation は、普通の取引とは別の置き場（UserOperation の mem
 - まだ存在しないアカウントのアドレスに、なぜ送金できるのか。
 - 既存の EOA に機能を足す EIP-7702 とは、どういう関係にあるのか。
 
-アカウントの状態や nonce（取引の通し番号）は [Ethereum Account Model](../ethereum-account-model/)、取引の項目と手数料の計算は [Ethereum Transaction](../ethereum-transaction/) で説明しています。
+アカウントの状態や nonce（トランザクションの通し番号）は [Ethereum Account Model](../ethereum-account-model/)、トランザクションの項目と手数料の計算は [Ethereum Transaction](../ethereum-transaction/) で説明しています。
 
 ---
 
 ### アカウント抽象化が必要な理由
 
-EOA の取引は、プロトコルが決めた 1 通りの方法で検証されます。秘密鍵の[署名](../digital-signature/)から送り主を復元し、nonce と ETH の残高を確認します。そのため、次のことは EOA だけではできません。
+EOA のトランザクションは、プロトコルが決めた 1 通りの方法で検証されます。秘密鍵の[署名](../digital-signature/)から送り主を復元し、nonce と ETH の残高を確認します。そのため、次のことは EOA だけではできません。
 
 | EOA の決まり | 困る場面 |
 | --- | --- |
 | 1 つの秘密鍵の署名だけを受け付ける | 鍵を失うと資産を取り戻せない。2 人の承認を必須にできない |
 | 手数料は送り主が ETH で払う | ETH を持たない新しい利用者は、最初の操作ができない |
-| 1 件の取引で呼べる宛先は 1 つ | トークンの使用許可（`approve`）と交換を 1 回でまとめられない |
+| 1 件のトランザクションで呼べる宛先は 1 つ | トークンの使用許可（`approve`）と交換を 1 回でまとめられない |
 
-アカウント抽象化（account abstraction）は、検証と手数料の払い方をプロトコルの固定の規則から外し、アカウント自身のコードに任せる考え方です。[Wallet](../wallet/) で触れたスマートアカウントや[マルチシグ](../safe-multisig/)は、この考え方をコントラクトで実現しています。ただし冒頭で述べた通り、スマートアカウントは自分では取引を送れないので、誰かの EOA が呼び出す必要がありました。
+アカウント抽象化（account abstraction）は、検証と手数料の払い方をプロトコルの固定の規則から外し、アカウント自身のコードに任せる考え方です。[Wallet](../wallet/) で触れたスマートアカウントや[マルチシグ](../safe-multisig/)は、この考え方をコントラクトで実現しています。ただし冒頭で述べた通り、スマートアカウントは自分ではトランザクションを送れないので、誰かの EOA が呼び出す必要がありました。
 
 <br>
 
-ERC-4337 は Ethereum のプロトコルを変えた、と思うかもしれません。しかし、仕様の冒頭の要約（Abstract）が述べる通り、ERC-4337 はコンセンサス層（全ノードが守るブロックの規則）の変更を完全に避けています。取引の型を足す代わりに、UserOperation を別の [mempool](../mempool/)（未確定の要求の置き場）で配り、EntryPoint というコントラクトで処理します。
+ERC-4337 は Ethereum のプロトコルを変えた、と思うかもしれません。しかし、仕様の冒頭の要約（Abstract）が述べる通り、ERC-4337 はコンセンサス層（全ノードが守るブロックの規則）の変更を完全に避けています。トランザクションの型を足す代わりに、UserOperation を別の [mempool](../mempool/)（未確定の要求の置き場）で配り、EntryPoint というコントラクトで処理します。
 
 EIP（Ethereum Improvement Proposal）は Ethereum の改善提案の総称で、ERC はそのうちアプリケーション層の規格の分類です。ERC-4337 は 2021 年 9 月に提案され、2026 年 6 月に Final（確定）になりました（[ethereum/ERCs の変更履歴](https://github.com/ethereum/ERCs/commits/master/ERCS/erc-4337.md)）。
 
@@ -62,14 +62,14 @@ EIP（Ethereum Improvement Proposal）は Ethereum の改善提案の総称で�
 
 ### UserOperation と部品
 
-UserOperation は、アカウントにさせたい操作を表す構造体です。取引に似た項目（送り主・nonce・呼び出しデータの `callData`・手数料の上限・署名）に加えて、アカウントを作るための `initCode` や、手数料を肩代わりする Paymaster の指定を持ちます。`signature` の中身はプロトコルではなく、アカウントのコードが解釈します。コントラクトのアカウントの署名を他のコントラクトが確認する一般的な方法は、[ERC-1271](../erc-1271/) で説明しています。
+UserOperation は、アカウントにさせたい操作を表す構造体です。トランザクションに似た項目（送り主・nonce・呼び出しデータの `callData`・手数料の上限・署名）に加えて、アカウントを作るための `initCode` や、手数料を肩代わりする Paymaster の指定を持ちます。`signature` の中身はプロトコルではなく、アカウントのコードが解釈します。コントラクトのアカウントの署名を他のコントラクトが確認する一般的な方法は、[ERC-1271](../erc-1271/) で説明しています。
 
 UserOperation を受け取ってからチェーンに載るまでには、次の部品が関わります。
 
 | 部品 | 役割 |
 | --- | --- |
 | スマートアカウント | `validateUserOp` で署名を検証し、操作を実行するコントラクト |
-| Bundler | UserOperation を集め、`handleOps` を呼ぶ取引を EOA から送るノード |
+| Bundler | UserOperation を集め、`handleOps` を呼ぶトランザクションを EOA から送るノード |
 | EntryPoint | 全てのアカウントが共有するコントラクト。検証と実行を順に呼ぶ |
 | Factory | まだ無いアカウントを作るコントラクト |
 | Paymaster | 手数料を肩代わりするかを判断するコントラクト |
@@ -87,13 +87,13 @@ sequenceDiagram
     participant A as スマートアカウント
     W->>B: eth_sendUserOperation
     B->>B: 検証をシミュレーション
-    B->>E: handleOps（普通の取引）
+    B->>E: handleOps（普通のトランザクション）
     E->>A: validateUserOp（検証）
     E->>A: callData を実行
     E->>B: deposit から手数料を払う
 ```
 
-上記の図の `eth_sendUserOperation` は、Bundler が受け付ける JSON-RPC のメソッドです。ウォレットが Bundler に渡すのは取引ではありません。チェーンに載る取引の送り主は Bundler で、UserOperation はその呼び出しデータの中に入ります。
+上記の図の `eth_sendUserOperation` は、Bundler が受け付ける JSON-RPC のメソッドです。ウォレットが Bundler に渡すのはトランザクションではありません。チェーンに載るトランザクションの送り主は Bundler で、UserOperation はその呼び出しデータの中に入ります。
 
 ---
 
@@ -101,11 +101,11 @@ sequenceDiagram
 
 EntryPoint の `handleOps` は、ループを 2 回回します。1 回目は全ての UserOperation の検証で、必要ならアカウントを作り、`validateUserOp` を呼び、手数料の前払いを受け取ります。2 回目で、検証を通った UserOperation の `callData` を実行します。
 
-{{< figure src="images/erc-4337_loops.webp" alt="EntryPoint の handleOps（Bundler が送る 1 件の取引）。見出しの下に、検証は全て、どの実行よりも前に終わる（実行で他の検証の結果が変わらない）とある。左の青い枠「1 回目のループ：検証」（アカウントの作成・署名の確認・前払い）と右の緑の枠「2 回目のループ：実行」（callData を実行）が並び、それぞれに UserOperation 1〜3 の箱がある。全て通ったら左から右へ進む。左の枠から赤い矢印が下に伸び、1 件でも検証に失敗すると handleOps 全体が取り消し（FailedOp など）、前払いも戻り、ガス代は Bundler の損とある。右の枠の下には、実行が失敗しても使ったガスの手数料はアカウントか Paymaster が払うとある" caption="handleOps の 2 つのループと、失敗した時に損をする側" align="center" >}}
+{{< figure src="images/erc-4337_loops.webp" alt="EntryPoint の handleOps（Bundler が送る 1 件のトランザクション）。見出しの下に、検証は全て、どの実行よりも前に終わる（実行で他の検証の結果が変わらない）とある。左の青い枠「1 回目のループ：検証」（アカウントの作成・署名の確認・前払い）と右の緑の枠「2 回目のループ：実行」（callData を実行）が並び、それぞれに UserOperation 1〜3 の箱がある。全て通ったら左から右へ進む。左の枠から赤い矢印が下に伸び、1 件でも検証に失敗すると handleOps 全体が取り消し（FailedOp など）、前払いも戻り、ガス代は Bundler の損とある。右の枠の下には、実行が失敗しても使ったガスの手数料はアカウントか Paymaster が払うとある" caption="handleOps の 2 つのループと、失敗した時に損をする側" align="center" >}}
 
-上記の図のように、参照実装の EntryPoint では、検証で 1 件でも失敗すると、`handleOps` は `FailedOp` などのエラーで取引ごと取り消されます。検証の中で受け取った前払いも取り消しで戻るので、手数料は誰からも入らず、その取引のガス代は Bundler の損です。一方、検証を通った後なら、実行が失敗しても前払いから使った分の手数料が払われます（Bundler が取引に積んだガスが足りない場合を除く）。
+上記の図のように、参照実装の EntryPoint では、検証で 1 件でも失敗すると、`handleOps` は `FailedOp` などのエラーでトランザクションごと取り消されます。検証の中で受け取った前払いも取り消しで戻るので、手数料は誰からも入らず、そのトランザクションのガス代は Bundler の損です。一方、検証を通った後なら、実行が失敗しても前払いから使った分の手数料が払われます（Bundler がトランザクションに積んだガスが足りない場合を除く）。
 
-検証を全て先に済ませるので、ある UserOperation の実行が、同じ取引の別の UserOperation の検証の結果を変えることもありません。手数料を払うかどうかは検証で決まり、その検証の結果は実行に左右されないわけです。
+検証を全て先に済ませるので、ある UserOperation の実行が、同じトランザクションに入った別の UserOperation で検証した結果を変えることもありません。手数料を払うかどうかは検証で決まり、その検証の結果は実行に左右されないわけです。
 
 <br>
 
@@ -117,7 +117,7 @@ EntryPoint の `handleOps` は、ループを 2 回回します。1 回目は全
 
 ### 手数料を払う主体
 
-ETH を持たないアカウントの UserOperation でも、チェーンに載る以上はガス代が掛かります。チェーンに載るのは Bundler の取引なので、[ガス代](../gas-eip-1559/)はまず Bundler の EOA が ETH で払います。
+ETH を持たないアカウントの UserOperation でも、チェーンに載る以上はガス代が掛かります。チェーンに載るのは Bundler のトランザクションなので、[ガス代](../gas-eip-1559/)はまず Bundler の EOA が ETH で払います。
 
 Bundler の負担は、EntryPoint が後で返します。EntryPoint は、アカウントか Paymaster ごとに預かった ETH の残高（deposit）を持っています。そこから使った分を引き、`handleOps` の引数 `beneficiary`（Bundler が指定する受取先）に払います。
 
@@ -134,13 +134,13 @@ Bundler の負担は、EntryPoint が後で返します。EntryPoint は、ア�
 
 <br>
 
-EntryPoint が測れないガスもあります。どの取引にも掛かる基本料 21,000 を束ねた UserOperation の数で割った分や、UserOperation を呼び出しデータとして載せる分です（取引のデータもバイト数に応じてガスが掛かります）。これは UserOperation の `preVerificationGas` に書き、アカウントや Paymaster が一緒に払います。低すぎる値の UserOperation は Bundler の赤字になるので、受け取られません。
+EntryPoint が測れないガスもあります。どのトランザクションにも掛かる基本料 21,000 を束ねた UserOperation の数で割った分や、UserOperation を呼び出しデータとして載せる分です（トランザクションのデータもバイト数に応じてガスが掛かります）。これは UserOperation の `preVerificationGas` に書き、アカウントや Paymaster が一緒に払います。低すぎる値の UserOperation は Bundler の赤字になるので、受け取られません。
 
 ---
 
 ### 作る前から決まるアドレス
 
-コントラクトを作る通常の方法（`CREATE` 命令や、EOA の作成用の取引）では、作る側の [nonce でアドレスが変わる](../ethereum-address/)ので、先に別の取引を出すと予定のアドレスからずれます。ERC-4337 の Factory は `CREATE2` という命令を使い、アドレスは次の式で作る前から決まります。
+コントラクトを作る通常の方法（`CREATE` 命令や、EOA から送る作成用のトランザクション）では、作る側の [nonce でアドレスが変わる](../ethereum-address/)ので、先に別のトランザクションを出すと予定のアドレスからずれます。ERC-4337 の Factory は `CREATE2` という命令を使い、アドレスは次の式で作る前から決まります。
 
 ```text
 address = keccak256(0xff ‖ factory ‖ salt ‖ keccak256(creationCode))[12:]
@@ -193,7 +193,7 @@ Bundler のソフトウェアと UserOperation の mempool は使いません。
 
 <br>
 
-以下は、UserOperation を作って署名し、`handleOps` を送る部分の抜粋です。`cast` は Foundry の CLI、`call` は読み取りの呼び出し、`send` は取引の送信、`entry_point` と `sender` はデプロイ済みの EntryPoint と、作る前のアカウントのアドレスです。
+以下は、UserOperation を作って署名し、`handleOps` を送る部分の抜粋です。`cast` は Foundry の CLI、`call` は読み取りの呼び出し、`send` はトランザクションの送信、`entry_point` と `sender` はデプロイ済みの EntryPoint と、作る前のアカウントのアドレスです。
 
 `u128x2` は 2 つの値を 32 バイトに詰める補助関数で、v0.7 以降の EntryPoint（版の違いは付録）はガスの上限 2 つと手数料の単価 2 つをこの形で受け取ります。`OP_TYPE` と `op_tuple` は構造体の型と値を `cast` に渡す文字列、`handle_ops` は `handleOps` の呼び出しデータを作る関数、`o` は送る UserOperation です。
 
@@ -533,7 +533,7 @@ getSenderAddress     : 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
 code before          : 0x  balance: 0.1 ETH
 ```
 
-2 段目は、署名した後に送金額を 0.01 ETH から 1 ETH に書き換えた場合と、所有者以外の鍵で署名した場合です。どちらもチェーンには送らず、`handleOps` を `eth_call`（取引を出さずに実行だけを試す呼び出し）で試しています。どちらも検証で `AA24 signature error` になり、アカウントは作られません。ちなみに、`AA2` で始まるコードはアカウントの検証での失敗を表します。
+2 段目は、署名した後に送金額を 0.01 ETH から 1 ETH に書き換えた場合と、所有者以外の鍵で署名した場合です。どちらもチェーンには送らず、`handleOps` を `eth_call`（トランザクションを出さずに実行だけを試す呼び出し）で試しています。どちらも検証で `AA24 signature error` になり、アカウントは作られません。ちなみに、`AA2` で始まるコードはアカウントの検証での失敗を表します。
 
 ```text
 value changed after signing : FailedOp(0, "AA24 signature error")
@@ -548,7 +548,7 @@ op1 の後、同じアドレスに 141 バイトのコード（OpenZeppelin の 
 
 3 段目の結果では、所有者の EOA の残高は全ての行で 0 のままです。op1 と op2 では、アカウントの残高と deposit の合計が、送金額に加えて手数料（op1 は、`preVerificationGas` を含めて UserOperation に請求された 298,816 gas × 2 gwei = 597,632 gwei）だけ減りました。op3 では、アカウントは送金額しか減らず、手数料は Paymaster の deposit から引かれています。
 
-以下は、3 段目の UserOperation の手数料と、Bundler 自身が払った取引のガス代を並べたグラフです。手数料の棒は、払った主体で色を分けています。
+以下は、3 段目の UserOperation の手数料と、Bundler 自身が払ったトランザクションのガス代を並べたグラフです。手数料の棒は、払った主体で色を分けています。
 
 {{< figure src="images/erc-4337_fees.webp" alt="op1・op2・op3 の 3 組の横棒。上の棒は UserOperation の手数料で、op1 は 597,632、op2 は 248,598 で青（アカウントが払う）、op3 は 241,398 で黄土色（Paymaster が払う）。下の灰色の棒は Bundler 自身の取引のガス代で、585,516・234,634・228,528。単位は gwei" caption="op1〜op3 の手数料の出どころと Bundler の出費（gwei）" align="center" >}}
 

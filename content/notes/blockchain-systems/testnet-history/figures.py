@@ -120,7 +120,7 @@ def holesky_split():
     """One block with deposits splits Holesky; most nodes follow the invalid side; finality stops ~2 weeks."""
     w, h = 960, 410
     p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img">'
-         f'<title>{escape("2025-02-24 に Holesky の列が 2 本に分かれ、確定が 3 月 10 日まで止まった")}</title>',
+         f'<title>{escape("2025-02-24 に Holesky の列が 2 本に分かれ、ファイナライズが 3 月 10 日まで止まった")}</title>',
          f"<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>",
          f'<rect width="{w}" height="{h}" fill="#ffffff"/>']
 
@@ -143,7 +143,7 @@ def holesky_split():
         if i:
             link(x - 16, mid, x, mid, GRAY)
     t(130, mid + 52, "共通の列", 19, cls="sub")
-    t(130, mid + 78, "（確定済み）", 17, cls="sub")
+    t(130, mid + 78, "（ファイナライズ済み）", 17, cls="sub")
     # The block with deposits.
     bx = 250
     link(224, mid, bx, mid, GRAY)
@@ -164,11 +164,11 @@ def holesky_split():
     sx, ex = bx + 34, bx + 34 + 6 * 50 - 8
     p.append(f'<line x1="{sx}" y1="{mid}" x2="{ex}" y2="{mid}" stroke="{SUB}" stroke-width="2"/>')
     p.append(f'<polygon points="{ex},{mid - 6} {ex + 10},{mid} {ex},{mid + 6}" fill="{SUB}"/>')
-    t((sx + ex) / 2, mid - 10, "確定が止まる（約 2 週間）", 19)
+    t((sx + ex) / 2, mid - 10, "ファイナライズが止まる（約 2 週間）", 19)
     t((sx + ex) / 2, bot - 26, "点線の枠: 正しい列に票が集まらない期間", 15, cls="sub")
     rx = ex + 18
     p.append(f'<line x1="{rx}" y1="170" x2="{rx}" y2="282" stroke="{INK}" stroke-width="1.5" stroke-dasharray="6 4"/>')
-    t(rx + 12, mid + 6, "3/10 正しい列で確定が戻る", 19, anchor="start")
+    t(rx + 12, mid + 6, "3/10 正しい列でファイナライズが戻る", 19, anchor="start")
     save_svg(p, w, h, "testnet-history_holesky.webp")
 
 

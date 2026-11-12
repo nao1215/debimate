@@ -2,7 +2,7 @@
 
 - 公開ネットワーク・実資産・本物の秘密鍵は使わない。
 - アカウントは Anvil が既定で作るテスト用のもの（鍵が広く公開されており、説明用で無価値）。
-- 自動のマイニングを止め（--no-mining）、取引をメモリプールに溜めてから evm_mine でブロックを作る。
+- 自動のマイニングを止め（--no-mining）、トランザクションをメモリプールに溜めてから evm_mine でブロックを作る。
 
 実行: ANVIL=... SOLC=... python3 run.py  （PATH にあれば環境変数は不要）
 """
@@ -68,7 +68,7 @@ def call(to, signature, *args):
 
 
 def pending_from(sender):
-    """メモリプールにある、sender の未処理の取引を返す（後続の人が見る情報）。"""
+    """メモリプールにある、sender の未処理のトランザクションを返す（後続の人が見る情報）。"""
     pool = rpc('txpool_content')['pending']
     for addr, txs in pool.items():
         if addr.lower() == sender.lower():

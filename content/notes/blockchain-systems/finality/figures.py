@@ -80,9 +80,9 @@ class Svg:
 
 
 def attacker_success_probability(q: float, z: int) -> float:
-    """Bitcoin 白書 (Nakamoto 2008) の AttackerSuccessProbability を写したもの。
+    """Bitcoin ホワイトペーパー (Nakamoto 2008) の AttackerSuccessProbability を写したもの。
 
-    受け取り側が取引の後ろに z ブロック積むまで待った時点で、攻撃者がなお
+    受け取り側がトランザクションの後ろに z ブロック積むまで待った時点で、攻撃者がなお
     追い付く確率を返す。攻撃者の進捗は期待値 z*q/p の Poisson 分布と仮定する。
     """
     p = 1.0 - q
@@ -114,7 +114,7 @@ def success_rate_figure() -> None:
         plt.semilogy(z_values, probs, marker="o", markersize=3, color=color, label=f"q = {q:.2f}")
     plt.axhline(0.001, color=SUB, linestyle="--", linewidth=1)
     plt.text(0.3, 0.0013, "0.1%", color=SUB, fontsize=9)
-    plt.xlabel("取引の後ろに積まれたブロック数 z")
+    plt.xlabel("トランザクションの後ろに積まれたブロック数 z")
     plt.ylabel("攻撃の成功確率（追い付く確率）")
     plt.ylim(1e-8, 2)
     plt.legend(title="攻撃者のハッシュ\n計算能力の割合 q", loc="upper left", bbox_to_anchor=(1.02, 1))
@@ -167,9 +167,9 @@ def checkpoint_figure() -> None:
     s.save("finality_checkpoint.webp")
 
 
-# --- 図3: 起点から行き先への 2/3 の投票で、justified と finalized が進む ---
+# --- 図3: 起点からターゲットへの 2/3 の投票で、justified と finalized が進む ---
 def votes_figure() -> None:
-    s = Svg("justified な起点から直後の checkpoint へ 2/3 の投票が張られると、行き先が justified、起点が finalized になる", h=380)
+    s = Svg("justified な起点から直後の checkpoint へ 2/3 の投票が張られると、ターゲットが justified、起点が finalized になる", h=380)
     xs = [130, 360, 590, 820]
     names = ["最初のブロック", "epoch 1", "epoch 2", "epoch 3"]
     states = [
@@ -193,7 +193,7 @@ def votes_figure() -> None:
         s.raw(f'<path d="M{xa},{y - 4} Q{mid},{y - 110} {xb},{y - 6}" fill="none" stroke="{SUB}" '
               f'stroke-width="2.5"{dash} marker-end="url(#arr)"/>')
         s.text(mid, y - 66, lab, 22, cls="sub" if lab == "集計中" else "")
-    s.text(480, 360, "矢印は起点 → 行き先。直後への 2/3 が張られると、起点が finalized になる", 22, cls="sub")
+    s.text(480, 360, "矢印は起点 → ターゲット。直後への 2/3 が張られると、起点が finalized になる", 22, cls="sub")
     s.save("finality_votes.webp")
 
 
@@ -212,8 +212,8 @@ def overlap_figure() -> None:
     s.text(x0 + 2 * third, 265, "A と矛盾する B に至る列の 2/3 の投票", 24)
     s.raw(f'<path d="M{x0 + third},345 V360 H{x0 + 2 * third} V345" fill="none" stroke="{SUB}" stroke-width="2"/>')
     s.text(480, 400, "少なくとも 1/3 は両方に投票している", 26)
-    s.box(480 - 150, 420, 300, 56, RED, RED_PALE, sw=2, rx=6)
-    s.text(480, 458, "処罰（slashing）の対象", 24)
+    s.box(480 - 190, 420, 380, 56, RED, RED_PALE, sw=2, rx=6)
+    s.text(480, 458, "スラッシング（slashing）の対象", 24)
     for x, label in ((x0, "0"), (x0 + third, "1/3"), (x0 + 2 * third, "2/3"), (x1, "1")):
         s.text(x, 520, label, 24, cls="sub")
     s.save("finality_overlap.webp")
@@ -247,7 +247,7 @@ def tags_figure() -> None:
         s.text(xm, yy + 86, ja, 17, cls="sub")
 
     mark(starts[0] + bw / 2, "finalized", "2 epoch 前の checkpoint", GREEN, GREEN_PALE, 0)
-    # safe の位置は合意層の実装に任されるので、finalized と latest の間の幅で示す。
+    # safe の位置はコンセンサス・レイヤーの実装に任されるので、finalized と latest の間の幅で示す。
     xa, xb = starts[0] + bw / 2 + 8, head - bw / 2 - 4
     s.raw(f'<path d="M{xa},{y + 64} V{y + 76} H{xb} V{y + 64}" fill="none" stroke="{BLUE}" stroke-width="3" stroke-dasharray="7 5"/>')
     xm = (xa + xb) / 2 - 40
@@ -266,8 +266,8 @@ def wait_figure() -> None:
     plt.rcParams.update({"font.family": ["Noto Sans CJK JP", "DejaVu Sans"], "font.size": 11})
     fig, ax = plt.subplots(figsize=(6.4, 2.6))
     rows = [
-        ("Bitcoin 確認数 3", 20, 20, BLUE, "平均 約 20 分"),
-        ("Bitcoin 確認数 6", 50, 50, BLUE, "平均 約 50 分"),
+        ("Bitcoin 承認数 3", 20, 20, BLUE, "平均 約 20 分"),
+        ("Bitcoin 承認数 6", 50, 50, BLUE, "平均 約 50 分"),
         ("Ethereum finalized", 12.8, 19.2, GREEN, "約 13〜19 分"),
     ]
     for i, (label, lo, hi, color, note) in enumerate(rows):
@@ -337,4 +337,4 @@ if __name__ == "__main__":
         z = 0
         while attacker_success_probability(q, z) >= 0.001:
             z += 1
-        print(f"q={q:.2f}: z={z} (確認数 {z + 1})")
+        print(f"q={q:.2f}: z={z} (承認数 {z + 1})")

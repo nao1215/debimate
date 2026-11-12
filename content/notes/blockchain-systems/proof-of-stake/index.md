@@ -24,7 +24,7 @@ topics: ["Consensus / Finality"]
 - 通信が途切れた場合と、矛盾する投票をした場合では何が違うのか。
 - 2 つの投票から違反を検出するには、どの項目を比較するのか。
 
-取引とブロックの関係は[ブロックチェーンの基本](../blockchain-basics/)、投票を集めて取引を確定する条件は [Finality](../finality/) で説明しています。PoS を使うチェーンでも、参加条件や罰則は同じとは限りません。
+トランザクションとブロックの関係は[ブロックチェーンの基本](../blockchain-basics/)、投票を集めてトランザクションを確定する条件は [Finality](../finality/) で説明しています。PoS を使うチェーンでも、参加条件や罰則は同じとは限りません。
 
 ---
 
@@ -36,19 +36,19 @@ topics: ["Consensus / Finality"]
 
 Ethereum で合意に使う重みは、各バリデータの effective balance（有効残高）です。これはウォレットの残高全体ではなく、預け入れた残高から、上限などの規則に従って計算する値です。[EIP-7251](https://eips.ethereum.org/EIPS/eip-7251) では、参加に必要な最低額の 32 ETH を維持しつつ、条件を満たすバリデータの有効残高の上限を引き上げています。「バリデータ 1 つなら全て同じ重み」とは限りません。
 
-資産を持っているだけで、有効でない取引を正しくできるわけではありません。署名や残高などの検証規則は、各ノードが自分で適用します。PoS が資産の量を使うのは、有効なブロックの候補からどの履歴を選ぶかという合意の部分です。
+資産を持っているだけで、有効でないトランザクションを正しくできるわけではありません。署名や残高などの検証規則は、各ノードが自分で適用します。PoS が資産の量を使うのは、有効なブロックの候補からどの履歴を選ぶかという合意の部分です。
 
 ---
 
 ### バリデータとノード
 
-Ethereum のノードは、[実行クライアントと合意クライアント](https://ethereum.org/en/developers/docs/nodes-and-clients/node-architecture/)を組み合わせて動かします。前者は取引を実行して残高などの状態更新を検証し、後者はブロックや投票を受信して採用するチェーンを選びます。自分でチェーンを検証するだけなら、ETH の預け入れは必要ありません。
+Ethereum のノードは、[実行クライアントと合意クライアント](https://ethereum.org/en/developers/docs/nodes-and-clients/node-architecture/)を組み合わせて動かします。前者はトランザクションを実行して残高などの状態更新を検証し、後者はブロックや投票を受信して採用するチェーンを選びます。自分でチェーンを検証するだけなら、ETH の預け入れは必要ありません。
 
 ブロックの提案と投票にも参加する場合は、ETH を預けてバリデータとして登録し、参加待ちの処理を経ます。稼働が始まると、バリデータクライアントが担当の時間を確認し、秘密鍵で提案や投票に[デジタル署名](../digital-signature/)を付けます。ノード 1 台とバリデータ 1 つは同じ単位ではなく、一つのノードで複数のバリデータを動かすこともできます。
 
 {{< note-panels caption="ノードの検証と、バリデータによる署名の役割。クライアントの配布形態によって、バリデータ機能が合意クライアントに含まれる場合もあります。" >}}
 - title: 実行クライアント
-  body: 取引を実行し、計算結果がブロックに記録された状態更新と一致するか確認します。
+  body: トランザクションを実行し、計算結果がブロックに記録された状態更新と一致するか確認します。
 - title: 合意クライアント
   body: ブロックと投票を検証し、どのチェーンを追うか判断します。
 - title: バリデータクライアント
@@ -72,7 +72,7 @@ sequenceDiagram
     participant V as 投票者
     participant N as 他のノード
     P->>V: 署名付き<br/>ブロック
-    V->>V: 取引とブロック<br/>を検証
+    V->>V: トランザクションとブロック<br/>を検証
     V->>V: チェーンを選択
     V->>N: attestation<br/>を送信
     N->>N: 署名を検証<br/>投票を反映
@@ -83,11 +83,11 @@ sequenceDiagram
 
 以下は、epoch 2 の途中で送る投票が、どのブロックを指すかを示した図です。
 
-{{< figure src="images/proof-of-stake_checkpoint.webp" alt="時間軸に epoch 1 と epoch 2 の枠が並び、それぞれ最初のブロックが黄土色の checkpoint になっている。下の「epoch 2 で送る attestation」の枠に source・target・head の 3 つの欄があり、各欄から矢印が出る。source（起点、直近の justified）は epoch 1 の checkpoint、target（行き先、今の epoch）は epoch 2 の checkpoint、head（先頭）は epoch 2 の最新の青いブロックを指す。epoch 3 はまだ来ていない点線の枠" caption="1 つの attestation が指す head・source・target" align="center" >}}
+{{< figure src="images/proof-of-stake_checkpoint.webp" alt="時間軸に epoch 1 と epoch 2 の枠が並び、それぞれ最初のブロックが黄土色の checkpoint になっている。下の「epoch 2 で送る attestation」の枠に source・target・head の 3 つの欄があり、各欄から矢印が出る。source（起点、直近の justified）は epoch 1 の checkpoint、target（ターゲット、今の epoch）は epoch 2 の checkpoint、head（先頭）は epoch 2 の最新の青いブロックを指す。epoch 3 はまだ来ていない点線の枠" caption="1 つの attestation が指す head・source・target" align="center" >}}
 
-[attestation](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/attestations/) は、図の 3 つのブロックを指します。head（先頭）は、今どのブロックをチェーンの先頭と見るかです。source（起点）と target（行き先）は、確定に向けてどの checkpoint からどの checkpoint へのつながりを支持するかです。target には今の epoch の checkpoint、source には投票者から見て直近に正当化（justified）された checkpoint を入れます（正当化の条件は次の段落）。
+[attestation](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/attestations/) は、図の 3 つのブロックを指します。head（先頭）は、今どのブロックをチェーンの先頭と見るかです。source（起点）と target（ターゲット）は、確定に向けてどの checkpoint からどの checkpoint へのつながりを支持するかです。target には今の epoch の checkpoint、source には投票者から見て直近にジャスティファイド（justified）された checkpoint を入れます（ジャスティファイドになる条件は次の段落）。
 
-先頭の選択と確定は目的が異なります。source から target への投票が有効残高の合計で 3 分の 2 以上集まると、target が justified になります。さらに条件を満たすと finalized（確定）になります。この条件は [checkpoint への投票による finality](../finality/#checkpoint-への投票による-finality) で説明しています。
+先頭の選択と確定は目的が異なります。source から target への投票が有効残高の合計で 3 分の 2 以上集まると、target が justified になります。さらに条件を満たすと finalized（ファイナライズ済み）になります。この条件は [checkpoint への投票による finality](../finality/#checkpoint-への投票による-finality) で説明しています。
 
 ---
 
@@ -112,30 +112,30 @@ slashing の主な条件は、同じ slot に異なるブロックを提案す�
 
 ### 矛盾する投票の条件
 
-投票データ（AttestationData）は、slot、委員会の番号（index）、head、source、target の 5 項目です（最初の仕様の定義。2025 年 5 月のアップグレード（Electra）以降は index が 0 に固定され、委員会の番号は投票データの外に移りました）。Ethereum の[合意仕様にある投票データの判定](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#is_slashable_attestation_data)では、次の 2 つを区別します。
+アテステーションデータ（AttestationData）は、slot、委員会の番号（index）、head、source、target の 5 項目です（最初の仕様の定義。2025 年 5 月のアップグレード（Electra）以降は index が 0 に固定され、委員会の番号はアテステーションデータの外に移りました）。Ethereum の[合意仕様にあるアテステーションデータの判定](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#is_slashable_attestation_data)では、次の 2 つを区別します。
 
-- double vote（二重投票）：同じ `target.epoch` に対して、異なる投票データに署名すること。
+- double vote（二重投票）：同じ `target.epoch` に対して、異なるアテステーションデータに署名すること。
 - surround vote（包囲投票）：一方の投票の `source.epoch` が他方より小さく、かつ `target.epoch` が他方より大きいこと。
 
-二重投票で比較するのは、行き先のブロックだけではありません。例えば、`target` が同じでも、チェーンの先頭として支持するブロックを変えれば投票データが変わります。同じ投票データを再送することとは区別します。
+二重投票で比較するのは、ターゲットのブロックだけではありません。例えば、`target` が同じでも、チェーンの先頭として支持するブロックを変えればアテステーションデータが変わります。同じアテステーションデータを再送することとは区別します。
 
-包囲投票は、起点から行き先までの区間を比べると分かりやすくなります。以下では、同じバリデータが 2 つの投票に署名した場合を考えます。
+包囲投票は、起点からターゲットまでの区間を比べると分かりやすくなります。以下では、同じバリデータが 2 つの投票に署名した場合を考えます。
 
 {{< figure src="images/proof-of-stake_surround.webp" alt="横軸が epoch の数直線に 4 本の区間が並ぶ。基準の A は 2 から 5。B は 3 から 4 で、A の点線の内側に収まり、赤い×と「包囲する」。C は 2 から 4 で起点が A と同じなので包囲しない。D は 3 から 6 で A の終点を越えて交差するだけなので包囲しない" caption="投票 A（2→5）と B・C・D の区間の比較" align="center" >}}
 
-A の区間の内側に、両端とも A の端と重ならずに収まる B だけが包囲投票です。判定は厳密な大小比較です。起点が同じ場合を誤って包囲投票と判断すると、仕様にない理由で違反と見なしてしまいます。A の 2→5 のように起点と行き先の間が空く投票は、しばらく justified が進まなかった時に起こります。
+A の区間の内側に、両端とも A の端と重ならずに収まる B だけが包囲投票です。判定は厳密な大小比較です。起点が同じ場合を誤って包囲投票と判断すると、仕様にない理由で違反と見なしてしまいます。A の 2→5 のように起点とターゲットの間が空く投票は、しばらく justified が進まなかった時に起こります。
 
 二重投票と包囲投票を禁止しておくと、矛盾する 2 つの checkpoint がどちらも確定するには、全体の 3 分の 1 以上の重みのバリデータがどちらかの違反をする必要があります（[Casper FFG の論文](https://arxiv.org/abs/1710.09437)）。違反の証拠は署名として残るため、その分の担保を減らせます。
 
 <br>
 
-2 つのデータが矛盾しているだけで、任意のバリデータを処罰できるわけではありません。[証拠を処理する際](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#attester-slashings)は署名を検証し、両方に署名したバリデータがいるか、そのバリデータがまだ処罰可能な状態かも確認します。罰則の判定は、送信者に悪意があったかどうかを推測する処理ではありません。
+2 つのデータが矛盾しているだけで、任意のバリデータをスラッシングできるわけではありません。[証拠を処理する際](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#attester-slashings)は署名を検証し、両方に署名したバリデータがいるか、そのバリデータがまだスラッシング可能な状態かも確認します。罰則の判定は、送信者に悪意があったかどうかを推測する処理ではありません。
 
 ---
 
-### 投票データの比較実験
+### アテステーションデータの比較実験
 
-以下は、二重投票と包囲投票の条件を [Python](https://www.python.org/) で試すコードです。`Vote` は投票データの各項目、`Checkpoint` は epoch とブロックを識別する値を持ちます。`head` はチェーンの先頭として支持するブロックです。ブロックのハッシュ値は、違いを目で追える説明用の文字列に置き換えています。`slot=target * 32` は、1 epoch を 32 slot として、行き先の epoch の最初の slot を選ぶ計算です。
+以下は、二重投票と包囲投票の条件を [Python](https://www.python.org/) で試すコードです。`Vote` はアテステーションデータの各項目、`Checkpoint` は epoch とブロックを識別する値を持ちます。`head` はチェーンの先頭として支持するブロックです。ブロックのハッシュ値は、違いを目で追える説明用の文字列に置き換えています。`slot=target * 32` は、1 epoch を 32 slot として、ターゲットにする epoch で最初の slot を選ぶ計算です。
 
 仕様の包囲判定は引数の順序を決めて呼び出しますが、この実験では両方の順序を調べます。署名の検証、バリデータの状態、チェーン上で投票が有効かどうかは確認しません。`none` は 2 つのデータがこの比較条件に該当しないという意味であり、有効な投票の保証ではありません。実資産・秘密鍵・外部通信は使いません。
 

@@ -4,9 +4,9 @@ python3 figures.py
   -> images/gas-eip-1559_concept.webp   （手書きの SVG。使用量と次の base fee）
   -> images/gas-eip-1559_auction.webp   （手書きの SVG。London 以前と EIP-1559 の支払い）
   -> images/gas-eip-1559_measured.webp  （matplotlib。lab/output/output.txt の実測値）
-  -> images/gas-eip-1559_limits.webp    （手書きの SVG。取引の gasLimit とブロックの gas 上限）
+  -> images/gas-eip-1559_limits.webp    （手書きの SVG。トランザクションの gasLimit とブロックの gas 上限）
   -> images/gas-eip-1559_split.webp     （手書きの SVG。base fee と priority fee の分け方と行き先）
-  -> images/gas-eip-1559_pool.webp      （手書きの SVG。上限を下回った取引の Anvil と geth の扱い）
+  -> images/gas-eip-1559_pool.webp      （手書きの SVG。上限を下回ったトランザクションの Anvil と geth の扱い）
 SVG は Chrome の headless で 2 倍の解像度に描き、matplotlib は dpi 200 の PNG にしてから、
 どちらも Pillow で WebP にする。
 """
@@ -106,7 +106,7 @@ def concept():
 
 def auction():
     """Before London everyone pays their own bid; with EIP-1559 everyone pays the same base fee plus a tip."""
-    s = Svg("London 以前は各自の入札額を払い全額が採掘者に渡る。EIP-1559 では全員が同じ base fee を払って焼却され、tip だけが提案者に渡る")
+    s = Svg("London 以前は各自の入札額を払い全額がマイナーに渡る。EIP-1559 では全員が同じ base fee を払って焼却され、tip だけが提案者に渡る")
     base_y = 430
     bids = [210, 150, 290, 180, 240]
     tips = [14, 8, 24, 10, 18]
@@ -117,7 +117,7 @@ def auction():
         x = 70 + i * 70
         s.rect(x, base_y - b, 48, b, BLUE_PALE, BLUE, rx=3)
     s.text(240, base_y + 40, "各自の入札額をそのまま払う", 24)
-    s.text(240, base_y + 76, "全額が採掘者へ", 22, cls="sub")
+    s.text(240, base_y + 76, "全額がマイナーへ", 22, cls="sub")
     # 右: EIP-1559
     s.text(700, 50, "EIP-1559", 28)
     for i, (b, t) in enumerate(zip(bids, tips)):
@@ -136,12 +136,13 @@ def auction():
 
 def limits():
     """Two ceilings: gasLimit stops one transaction, the block gas limit caps the sum of transactions."""
-    s = Svg("取引は命令ごとの gas を積み上げ、送り主が書いた gasLimit に達すると実行を止める。"
-            "ブロックは取引の gas の合計を block gas limit まで詰める", h=430)
+    s = Svg("トランザクションは命令ごとの gas を積み上げ、送り主が書いた gasLimit に達すると実行を止める。"
+            "ブロックはトランザクションの gas の合計を block gas limit まで詰める", h=430)
     x0, x1 = 210, 780
-    # 上段: 取引 1 件
+    # 上段: トランザクション 1 件
     y = 70
-    s.text(40, y + 40, "取引 1 件", 26, anchor="start")
+    s.text(40, y + 30, "トランザクション", 20, anchor="start")
+    s.text(40, y + 56, "1 件", 20, anchor="start")
     s.rect(x0, y, x1 - x0, 64, "#ffffff", SUB)
     segs = [("ADD 3", 100), ("SSTORE 22,100", 200), ("ADD 3", 100), ("…", 170)]
     x = x0
@@ -152,15 +153,16 @@ def limits():
     s.line(x1, y - 14, x1, y + 78, INK, 3, arrow=False)
     s.text(x1 + 12, y + 40, "使い切ったら", 20, anchor="start")
     s.text(x1 + 12, y + 66, "実行を止める", 20, anchor="start")
-    s.text(x1, y + 106, "gasLimit（送り主が取引に書く上限）", 20, anchor="end", cls="sub")
+    s.text(x1, y + 106, "gasLimit（送り主がトランザクションに書く上限）", 20, anchor="end", cls="sub")
     # 下段: ブロック 1 つ
     y = 250
-    s.text(40, y + 40, "ブロック 1 つ", 26, anchor="start")
+    s.text(40, y + 32, "ブロック 1 つ", 26, anchor="start")
+    s.text(40, y + 60, "1〜5 はトランザクション", 13, anchor="start", cls="sub")
     s.rect(x0, y, x1 - x0, 64, "#ffffff", SUB)
     x = x0
     for i, w in enumerate((120, 70, 150, 90, 100)):
         s.rect(x + 3, y + 6, w - 6, 52, BLUE_PALE, BLUE, rx=4)
-        s.text(x + w / 2, y + 41, f"取引 {i + 1}", 20)
+        s.text(x + w / 2, y + 41, f"{i + 1}", 20)
         x += w
     s.line(x1, y - 14, x1, y + 78, INK, 3, arrow=False)
     s.text(x1, y + 106, "block gas limit（全ノードが実行し直す量の上限）", 20, anchor="end", cls="sub")
@@ -209,7 +211,7 @@ def split():
 
 def pool():
     """What happens to a transaction whose max fee is below the base fee: Anvil 1.7.1 vs geth v1.17.10."""
-    s = Svg("maxFeePerGas が base fee を下回った取引の扱い。Anvil 1.7.1 はブロックを作る時に検証して失敗した取引を "
+    s = Svg("maxFeePerGas が base fee を下回ったトランザクションの扱い。Anvil 1.7.1 はブロックを作る時に検証して失敗したトランザクションを "
             "mempool から取り除く。geth v1.17.10 はブロックの候補から外すだけで mempool に残し、base fee が下がれば候補に戻す",
             h=400)
     def box(x, y, w, label, sub="", fill=NEUTRAL, stroke=SUB):
@@ -234,7 +236,7 @@ def pool():
     s.p.append(f'<path d="M829,250 C829,206 275,206 275,246" fill="none" stroke="{SUB}" stroke-width="2" '
                'stroke-dasharray="8 6" marker-end="url(#ar)"/>')
     s.text(552, 200, "base fee が下がれば、また候補になる", 18, cls="sub")
-    s.text(480, 380, "どちらも、maxFeePerGas が base fee 未満の取引をブロックに入れない点は同じ（プロトコルの規則）", 18,
+    s.text(480, 380, "どちらも、maxFeePerGas が base fee 未満のトランザクションをブロックに入れない点は同じ（プロトコルの規則）", 18,
            cls="sub")
     s.save("gas-eip-1559_pool.webp")
 

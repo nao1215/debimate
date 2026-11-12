@@ -192,7 +192,7 @@ def finality_figure():
         mine = i == 0
         s.rect(x, 140, bw, 40, BLUE_PALE, INK if mine else BLUE, 4 if mine else 2.5)
     mx = 30 + (bw + gap) + bw / 2
-    s.text(mx, 112, "自分の取引を含むブロック", 18, "start" if False else "middle")
+    s.text(20, 112, "自分のトランザクションを含むブロック", 18, "start")
     s.p.append(f'<polygon points="{mx},{136} {mx - 7},{122} {mx + 7},{122}" fill="{INK}"/>')
     s.text(30 + 2.5 * (bw + gap) + bw / 2, 210, "後ろに積まれるほど覆りにくい", 18, cls="sub")
     s.line(30 + bw, 170, 30 + bw + gap, 260, OCHRE, 2.5)

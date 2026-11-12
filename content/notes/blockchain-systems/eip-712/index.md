@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-[Ethereum](https://ethereum.org/) の署名は、取引（transaction）を送る時だけに使うものではありません。サイトへのログインやトークンの利用承認のように、取引を送らずにメッセージだけに署名させる場面があります。これを「オフチェーン署名」と呼びます。
+[Ethereum](https://ethereum.org/) の署名は、トランザクション（transaction）を送る時だけに使うものではありません。サイトへのログインやトークンの利用承認のように、トランザクションを送らずにメッセージだけに署名させる場面があります。これを「オフチェーン署名」と呼びます。
 
 署名を受け取ったサービスは、自分のサーバーで検証するか、後でその署名を[コントラクト](../smart-contract/)に渡して検証させます。
 
@@ -31,7 +31,7 @@ EIP-712 は、このメッセージが構造を持つデータ（型と項目名
 
 - 署名を求める画面で、なぜ中身を読めないことがあったのか。
 - EIP-712 は何をハッシュに含め、別のチェーンや別のコントラクトでの再利用をどう防ぐのか。
-- 取引を送っていないのに、permit の署名 1 つで資産を失うのはなぜか。
+- トランザクションを送っていないのに、permit の署名 1 つで資産を失うのはなぜか。
 
 途中では、ローカルのチェーンでハッシュを手で計算し、ウォレットの署名とコントラクトの検証が一致することと、署名だけでトークンを移される流れを確認します。秘密鍵を持たないコントラクトのアカウントが署名を示す方法は、[ERC-1271](../erc-1271/) のノートで扱います。
 
@@ -45,7 +45,7 @@ EIP-712 は、このメッセージが構造を持つデータ（型と項目名
 
 サイトがウォレットに署名を頼む時は、JSON-RPC（ウォレットやノードを呼ぶ共通の API）のメソッドを呼びます。[MetaMask](https://metamask.com/) の `eth_sign` は、渡された 32 バイトのハッシュにそのまま署名するメソッドでした。ハッシュから元のデータは分からないので、ウォレットは `0x9f3b…` のような 16 進の列しか表示できません。
 
-取引への署名も取引のハッシュへの署名なので、渡されたハッシュが取引の署名用のハッシュ（署名を除いた取引の内容のハッシュ）であれば、その署名を付けて誰でも取引として送れます。ユーザーは知らないうちに取引に署名することになります。以下は、その流れです。
+トランザクションへの署名も、トランザクションのハッシュに対する署名なので、渡されたハッシュがトランザクションに署名するためのハッシュ（署名を除いた内容から作るハッシュ）であれば、その署名を付けて誰でもトランザクションとして送れます。ユーザーは知らないうちにトランザクションに署名することになります。以下は、その流れです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -53,23 +53,23 @@ sequenceDiagram
     participant A as 攻撃者のサイト
     participant W as ユーザーのウォレット
     participant N as チェーン
-    A->>W: eth_sign(取引の署名用のハッシュ)
+    A->>W: eth_sign(トランザクションに署名するためのハッシュ)
     W-->>A: 署名（画面には 16 進の列だけ）
-    A->>N: 取引の内容 ＋ 署名を送る
-    Note over W,N: ユーザーが署名した取引として実行される
+    A->>N: トランザクションの内容 ＋ 署名を送る
+    Note over W,N: ユーザーが署名したトランザクションとして実行される
 ```
 
 MetaMask は 2024 年 5 月作成の [MIP-3](https://github.com/MetaMask/metamask-improvement-proposals/blob/main/MIPs/mip-3.md) で、この方法の廃止を決めています。
 
 <br>
 
-取引と取り違えないための約束が、[EIP-191](https://eips.ethereum.org/EIPS/eip-191) です。署名するデータを `0x19 ‖ バージョン（1 バイト）‖ バージョンごとのデータ` の形にすると定めました（`‖` はバイト列の連結）。
+トランザクションと取り違えないための約束が、[EIP-191](https://eips.ethereum.org/EIPS/eip-191) です。署名するデータを `0x19 ‖ バージョン（1 バイト）‖ バージョンごとのデータ` の形にすると定めました（`‖` はバイト列の連結）。
 
-[取引](../ethereum-transaction/)を符号化したバイト列の先頭は、旧来の形なら 0xc0 以上（[RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/) という符号化でのリストの印）、新しい形なら取引の種類を表す番号（[EIP-2718](https://eips.ethereum.org/EIPS/eip-2718)、2026 年 11 月時点で 0x01〜0x04）です。どちらも `0x19` にならないので、この形のデータへの署名は、取引の署名として使えません。
+[トランザクション](../ethereum-transaction/)を符号化したバイト列の先頭は、旧来の形なら 0xc0 以上（[RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/) という符号化でのリストの印）、新しい形ならトランザクションの種類を表す番号（[EIP-2718](https://eips.ethereum.org/EIPS/eip-2718)、2026 年 11 月時点で 0x01〜0x04）です。どちらも `0x19` にならないので、この形のデータへの署名は、トランザクションの署名として使えません。
 
-{{< figure src="images/eip-712_prefix.webp" alt="署名するバイト列の先頭 1 バイトを 0x00 から 0xff の帯で表した図。左端の 0x01〜0x04 が型付き取引の種類、0xc0 から右端が旧来の取引（RLP のリスト）、その間の 0x19 だけが EIP-191（personal_sign・EIP-712）。取引と EIP-191 のデータは先頭の 1 バイトで重ならない" caption="署名するバイト列の先頭 1 バイトの使い分け" align="center" >}}
+{{< figure src="images/eip-712_prefix.webp" alt="署名するバイト列の先頭 1 バイトを 0x00 から 0xff の帯で表した図。左端の 0x01〜0x04 が型付きトランザクションの種類、0xc0 から右端が旧来のトランザクション（RLP のリスト）、その間の 0x19 だけが EIP-191（personal_sign・EIP-712）。トランザクションと EIP-191 のデータは先頭の 1 バイトで重ならない" caption="署名するバイト列の先頭 1 バイトの使い分け" align="center" >}}
 
-上記の図の帯は、先頭 1 バイトが取りうる 256 通りの値を左から並べたものです。取引が使う範囲は左端の 4 つと右側の 64 個で、EIP-191 の `0x19` はその間に入ります。
+上記の図の帯は、先頭 1 バイトが取りうる 256 通りの値を左から並べたものです。トランザクションが使う範囲は左端の 4 つと右側の 64 個で、EIP-191 の `0x19` はその間に入ります。
 
 よく使われる `personal_sign` は、この形の 1 つ（バージョン `0x45`）で、メッセージの前に `\x19Ethereum Signed Message:\n` と長さを付けてからハッシュします。文字列なら画面に表示できますが、ハッシュを渡されれば、やはり 16 進の列が並ぶだけです。
 
@@ -108,7 +108,7 @@ digest          = keccak256(0x19 ‖ 0x01 ‖ domainSeparator ‖ hashStruct(mes
 
 `typeHash` を先頭に入れるので、項目の並びが同じでも、型の名前や項目名が違えば別のハッシュになります。EIP-712 の Rationale は、ERC-20 と [ERC-721](../erc-721/)（NFT の規格）の `transfer(address,uint256)` が、数量と識別子という別の意味の `uint256` を同じ形で持つ例を挙げ、型の意味まで区別する理由にしています。
 
-先頭の `0x19 0x01` は、EIP-191 のバージョン `0x01` を表します。取引の署名対象は `0x19` で始まらず、`personal_sign` はバージョン `0x45` なので、3 種類の署名対象が同じバイト列になることはありません。
+先頭の `0x19 0x01` は、EIP-191 のバージョン `0x01` を表します。トランザクションの署名対象は `0x19` で始まらず、`personal_sign` はバージョン `0x45` なので、3 種類の署名対象が同じバイト列になることはありません。
 
 <br>
 
@@ -118,13 +118,13 @@ domain separator は、`EIP712Domain` という型の hashStruct です。項目
 | --- | --- | --- |
 | `name` | 署名の領域の名前（アプリやプロトコルの名前） | 別のアプリでの再利用 |
 | `version` | 署名の領域（アプリやプロトコル）のメジャーバージョン | 古いバージョンの署名の流用 |
-| `chainId` | [EIP-155](https://eips.ethereum.org/EIPS/eip-155) のチェーン ID | 別のチェーンでの再生 |
-| `verifyingContract` | 署名を検証するコントラクトのアドレス | 別のコントラクトでの再生 |
+| `chainId` | [EIP-155](https://eips.ethereum.org/EIPS/eip-155) のチェーン ID | 別のチェーンでリプレイされる |
+| `verifyingContract` | 署名を検証するコントラクトのアドレス | 別のコントラクトでリプレイされる |
 | `salt` | 最後の手段として区別に使う 32 バイト | 上記で区別できない場合 |
 
 `name` と `version` は、アプリが自分で名乗る文字列です。登録制ではないので、別のコントラクトも同じ名前を名乗れます。区別の決め手になるのは `chainId` と `verifyingContract` です。
 
-一方で、[同じドメインの中での再利用](../replay-protection/)は、EIP-712 の範囲外です。仕様の冒頭にも「It does not include replay protection.」（再生の防止は含まない）とあります。permit はメッセージに `nonce`（使うたびに増える番号）を入れ、使うたびにコントラクト側の値を 1 増やして、同じ署名の 2 回目を拒否します。期限の `deadline` も、メッセージ側の項目です。
+一方で、[同じドメインの中での再利用](../replay-protection/)は、EIP-712 の範囲外です。仕様の冒頭にも「It does not include replay protection.」（リプレイの防止は含まない）とあります。permit はメッセージに `nonce`（使うたびに増える番号）を入れ、使うたびにコントラクト側の値を 1 増やして、同じ署名の 2 回目を拒否します。期限の `deadline` も、メッセージ側の項目です。
 
 ---
 
@@ -248,9 +248,9 @@ def digest(typed):
 
 ecrecover は、上記の図の r・s・v の 3 つから署名者を復元します。v は、署名から求まる公開鍵の 2 つの候補のどちらを使うかを選ぶ値です。コードの `sig[130:132]` などは、16 進の文字列からこの区切りを切り出しています。
 
-`a` と `b` は chain ID 31337 と 31338 の Anvil、`token_b` は 31338 にデプロイしたトークンです。コントラクトのアドレスはデプロイした側のアドレスとその取引数で決まるので、同じアカウントの 1 件目のデプロイにすると 31337 のトークンと同じアドレスになります。`token_2` は 31337 にもう 1 つデプロイした同名のトークン、`psig` は permit の関数の型です。
+`a` と `b` は chain ID 31337 と 31338 の Anvil、`token_b` は 31338 にデプロイしたトークンです。コントラクトのアドレスはデプロイした側のアドレスとそのトランザクション数で決まるので、同じアカウントの 1 件目のデプロイにすると 31337 のトークンと同じアドレスになります。`token_2` は 31337 にもう 1 つデプロイした同名のトークン、`psig` は permit の関数の型です。
 
-`permit_typed` は前述の Permit 型と domain を組み立てる関数（spender、value = 100、nonce = 0、期限 1 時間）、`checker` は ecrecover でアドレスを復元する学習用のコントラクト `SigCheck`（監査していません）、`a.call` は [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/) （取引を送らずに関数を呼ぶ）で呼び出して、結果か失敗（revert）の理由を返す関数です。
+`permit_typed` は前述の Permit 型と domain を組み立てる関数（spender、value = 100、nonce = 0、期限 1 時間）、`checker` は ecrecover でアドレスを復元する学習用のコントラクト `SigCheck`（監査していません）、`a.call` は [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/) （トランザクションを送らずに関数を呼ぶ）で呼び出して、結果か失敗（revert）の理由を返す関数です。
 
 ```python
 typed = permit_typed(31337, token, owner)
@@ -320,11 +320,11 @@ ecrecover(EIP-191 hash, personal_sign) | 0x70997970C51812dc3A010C7d01b50e0d17dc7
 
 ### permit - 署名だけで成立する承認
 
-ERC-20 の `approve` は、所有者が取引を送り、`msg.sender`（取引の送り主）として承認を記録します。そのため、トークンを使うには承認と利用の 2 件の取引が必要で、[手数料](../gas-eip-1559/)の ETH も持っている必要がありました。
+ERC-20 の `approve` は、所有者がトランザクションを送り、`msg.sender`（トランザクションの送り主）として承認を記録します。そのため、トークンを使うには承認と利用の 2 件のトランザクションが必要で、[手数料](../gas-eip-1559/)の ETH も持っている必要がありました。
 
 ERC-2612 の `permit(owner, spender, value, deadline, v, r, s)` は、所有者の EIP-712 署名を受け取って `allowance[owner][spender]`（spender が使える上限）を設定します。仕様にも明記されている通り、`permit` を呼ぶのは誰でも構いません。
 
-利点は、利用するサービスが署名と利用の処理を 1 件の取引にまとめ、手数料も肩代わりできることです。しかし、署名を受け取った相手が、所有者の知らない時点で承認を成立させられることも意味します。実験の 4 では、owner は署名しただけで取引を 1 件も送らず、spender が `permit` と `transferFrom`（承認された上限の範囲で、owner のトークンを移す関数）を送りました。
+利点は、利用するサービスが署名と利用の処理を 1 件のトランザクションにまとめ、手数料も肩代わりできることです。しかし、署名を受け取った相手が、所有者の知らない時点で承認を成立させられることも意味します。実験の 4 では、owner は署名しただけでトランザクションを 1 件も送らず、spender が `permit` と `transferFrom`（承認された上限の範囲で、owner のトークンを移す関数）を送りました。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -333,11 +333,11 @@ sequenceDiagram
     participant S as spender
     participant T as トークンのコントラクト
     S->>O: Permit への署名を要求
-    O-->>S: 署名だけを返す（取引なし）
+    O-->>S: 署名だけを返す（トランザクションなし）
     S->>T: permit(owner, spender, 100, …)
     T->>T: 署名を検証し allowance = 100
     S->>T: transferFrom(owner, spender, 100)
-    Note over O,T: owner は取引を送らない
+    Note over O,T: owner はトランザクションを送らない
 ```
 
 ```text
@@ -352,9 +352,9 @@ owner の送信数（`owner txs`）は最後まで 0 で、100 枚すべてが s
 
 <br>
 
-「署名は送金ではないので、署名するだけなら安全」と考える方がいるかもしれません。しかし、permit の署名は、`approve` の取引と同じ権限を渡します。違いは、相手がいつ使うかを所有者が見られないことです。
+「署名は送金ではないので、署名するだけなら安全」と考える方がいるかもしれません。しかし、permit の署名は、`approve` のトランザクションと同じ権限を渡します。違いは、相手がいつ使うかを所有者が見られないことです。
 
-期限前の署名は、所有者が自分で permit を送って nonce を進めれば無効にできます（ERC-2612 の Security Considerations）。ただし、それも取引で、取引がブロックに入る順は[送った順とは限らない](../mempool/)ので、相手より先に届く保証はありません。サイトとの接続を解除しても、渡した署名は相手の手元に残ります。
+期限前の署名は、所有者が自分で permit を送って nonce を進めれば無効にできます（ERC-2612 の Security Considerations）。ただし、それもトランザクションで、トランザクションがブロックに入る順は[送った順とは限らない](../mempool/)ので、相手より先に届く保証はありません。サイトとの接続を解除しても、渡した署名は相手の手元に残ります。
 
 <br>
 
@@ -363,9 +363,9 @@ permit は、ERC-2612 に対応したトークンでしか使えません。対�
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
 flowchart LR
-    U["ユーザー"] -- "1. Permit2 を approve（トークンごとに 1 回の取引）" --> T["トークン"]
-    U -- "2. EIP-712 の署名（取引なし）" --> S["サービス"]
-    S -- "3. 署名を付けて Permit2 を呼ぶ（サービスの取引）" --> P["Permit2"]
+    U["ユーザー"] -- "1. Permit2 を approve（トークンごとに 1 回のトランザクション）" --> T["トークン"]
+    U -- "2. EIP-712 の署名（トランザクションなし）" --> S["サービス"]
+    S -- "3. 署名を付けて Permit2 を呼ぶ（サービスのトランザクション）" --> P["Permit2"]
     P -- "4. transferFrom（ユーザーから受取人へ）" --> T
 ```
 
@@ -398,13 +398,13 @@ flowchart LR
 
 - 署名の画面に型と項目名が出るので、ユーザーやウォレットが中身を検査できる。
 - ドメインに chain ID とコントラクトのアドレスを入れれば、別のチェーンや別のコントラクトでは同じ署名が通らない。
-- 所有者が取引を送らずに、承認を渡せる。手数料をサービスが肩代わりし、取引を 1 件にまとめられる。
+- 所有者がトランザクションを送らずに、承認を渡せる。手数料をサービスが肩代わりし、トランザクションを 1 件にまとめられる。
 
 ---
 
 ### 欠点
 
 - 同じドメインの中の再利用は防がない。nonce や期限はアプリが設計する。
-- 署名は相手の手元に残り、所有者は使われる時点を見られない。取り消しには取引が必要になる。
+- 署名は相手の手元に残り、所有者は使われる時点を見られない。取り消しにはトランザクションが必要になる。
 - 読めることと安全なことは別で、詐欺は正規のドメインのまま spender だけを差し替える。
 - ecrecover で比べる検証は、秘密鍵を持たないコントラクトのアカウントの署名を受け付けない。その対処は [ERC-1271](../erc-1271/) のノートで説明している。

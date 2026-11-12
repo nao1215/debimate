@@ -9,9 +9,9 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-再入（reentrancy）は、[スマートコントラクト](../smart-contract/)が外部のアドレスへ ETH を送ったり、別のコントラクトを呼んだりしている途中に、呼ばれた側から元のコントラクトの関数を呼び直されることです。残高を減らす前に送金する実装では、呼び直された関数がまだ減っていない残高を読み、同じ預け金を何度も払い出します。この穴を突く攻撃を再入攻撃と呼びます。
+リエントランシー（reentrancy）は、[スマートコントラクト](../smart-contract/)が外部のアドレスへ ETH を送ったり、別のコントラクトを呼んだりしている途中に、呼ばれた側から元のコントラクトの関数を呼び直されることです。残高を減らす前に送金する実装では、呼び直された関数がまだ減っていない残高を読み、同じ預け金を何度も払い出します。この穴を突く攻撃をリエントランシー攻撃と呼びます。
 
-再入が起きる場所は、ETH の送金に限りません。[Solidity のドキュメント](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#reentrancy)が書く通り、他のコントラクトの関数を呼ぶ処理はすべて、相手にコードを実行させる機会になります。[NFT の規格の ERC-721](../erc-721/) のように、トークンの受け渡しの途中で受け手の関数を呼ぶ規格もあります。
+リエントランシーが起きる場所は、ETH の送金に限りません。[Solidity のドキュメント](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#reentrancy)が書く通り、他のコントラクトの関数を呼ぶ処理はすべて、相手にコードを実行させる機会になります。[NFT の規格の ERC-721](../erc-721/) のように、トークンの受け渡しの途中で受け手の関数を呼ぶ規格もあります。
 
 <br>
 
@@ -23,21 +23,21 @@ topics: ["Smart Contract"]
 
 <br>
 
-本記事では、手元のローカルチェーンで再入攻撃を再現し、銀行の残高の推移から対策の効き方を説明します。扱う疑問は次の通りです。
+本記事では、手元のローカルチェーンでリエントランシー攻撃を再現し、銀行の残高の推移から対策の効き方を説明します。扱う疑問は次の通りです。
 
 - 送金の途中で、なぜ相手のコードが動くのか。
 - 2016 年の The DAO では、何が起きたのか。
 - 状態を先に更新する書き方とロックは、それぞれ何を防ぐのか。
-- ロックを付けても防げない、関数をまたぐ再入と読み取り専用の再入はどう起きるのか。
+- ロックを付けても防げない、関数をまたぐリエントランシーと読み取り専用のリエントランシーはどう起きるのか。
 - 送金の gas を 2300 に絞る対策は、なぜ今は勧められないのか。
 
-署名の使い回しや[オラクルの価格操作](../oracle/)のような、再入とは別の攻撃は扱いません。
+署名の使い回しや[オラクルの価格操作](../oracle/)のような、リエントランシーとは別の攻撃は扱いません。
 
 ---
 
 ### 外部呼び出しで制御が移る
 
-[EVM](../evm/) は 1 本の取引を 1 本の流れで実行します。コントラクト A が B を呼ぶと、A の実行は B が終わるまで止まり、その間は B のコードが動きます。B がコントラクトなら、ETH を受け取っただけでも `receive` または `fallback` という関数が動きます。B はその中で、止まっている A の関数を含め、どの関数でも呼べます。並列に動くスレッドはありません。同期的な呼び出しが入れ子になるだけで起きる問題です。
+[EVM](../evm/) は 1 本のトランザクションを 1 本の流れで実行します。コントラクト A が B を呼ぶと、A の実行は B が終わるまで止まり、その間は B のコードが動きます。B がコントラクトなら、ETH を受け取っただけでも `receive` または `fallback` という関数が動きます。B はその中で、止まっている A の関数を含め、どの関数でも呼べます。並列に動くスレッドはありません。同期的な呼び出しが入れ子になるだけで起きる問題です。
 
 例えば、預かった ETH を引き出す次の銀行は、送金の後に残高を 0 にしています。
 
@@ -81,7 +81,7 @@ receive() external payable {
 }
 ```
 
-ETH が届くたびに、銀行にまだ 1 ETH 以上あれば `withdraw` を呼び直します。呼び直しが拒否された時は、`try` で受け止めて理由をログに残し、取引全体は成功させます。`crossFunction_` は後の節で使う切り替えです。銀行と攻撃側のコントラクトの全体は [lab/Bank.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/reentrancy/lab/Bank.sol)、取引を送るスクリプトは [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/reentrancy/lab/run.py) にあります。説明用の実装で、監査は受けていません。
+ETH が届くたびに、銀行にまだ 1 ETH 以上あれば `withdraw` を呼び直します。呼び直しが拒否された時は、`try` で受け止めて理由をログに残し、トランザクション全体は成功させます。`crossFunction_` は後の節で使う切り替えです。銀行と攻撃側のコントラクトの全体は [lab/Bank.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/reentrancy/lab/Bank.sol)、トランザクションを送るスクリプトは [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/reentrancy/lab/run.py) にあります。説明用の実装で、監査は受けていません。
 
 最初の節の脆弱な銀行を攻撃した結果は次の通りです。
 
@@ -92,7 +92,7 @@ ETH が届くたびに、銀行にまだ 1 ETH 以上あれば `withdraw` を呼
     alice withdraw() -> reverted
 ```
 
-1 回の取引の中で ETH が 11 回届き、銀行の 11 ETH はすべて攻撃側のコントラクトに移りました。帳簿の上では Alice の預け金は 5 ETH のままですが、銀行に ETH が無いので、Alice の `withdraw` は失敗（revert。取引を取り消して状態を元に戻す）します。後で説明する 3 つの対策（状態を先に更新する CEI 版と、2 種類のロック版）を入れた銀行に、同じ攻撃をした結果と並べたのが次の図です。
+1 回のトランザクションで ETH が 11 回届き、銀行の 11 ETH はすべて攻撃側のコントラクトに移りました。帳簿の上では Alice の預け金は 5 ETH のままですが、銀行に ETH が無いので、Alice の `withdraw` は失敗（revert。トランザクションを取り消して状態を元に戻す）します。後で説明する 3 つの対策（状態を先に更新する CEI 版と、2 種類のロック版）を入れた銀行に、同じ攻撃をした結果と並べたのが次の図です。
 
 {{< figure src="images/reentrancy_balance.webp" alt="横軸は攻撃側に ETH が届いた回数 0〜11、縦軸は銀行の ETH 残高。黄土色の階段の線は 11 から 1 回ごとに 1 ずつ下がり、11 回目で 0 になり赤い×が付く。注記は「被害者の預け金 10 ETH も抜かれる」。青い線は 11 から 1 回目で 10 に下がった後、点線で 10 のまま続き、注記は「2 回目の withdraw が拒否され、攻撃者は自分の 1 ETH だけ受け取る」。凡例は「残高を減らす前に送る銀行」「CEI 版・ロック版 2 種（3 つとも同じ値）」" caption="攻撃中の銀行の残高（Anvil での実測）" align="center" >}}
 
@@ -179,11 +179,11 @@ function _nonReentrantBefore() private {
 
 #### transient storage の旗
 
-旗を storage（コントラクトがチェーン上に持ち続ける保存領域）に置くと、呼び出しのたびに storage を書き換える gas が掛かります。2024 年 3 月の Cancun で入った [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153) の transient storage は、取引が終わると消える保存領域で、ロックの旗のように取引の間だけ要る値に向いています。
+旗を storage（コントラクトがチェーン上に持ち続ける領域）に置くと、呼び出しのたびに storage を書き換える gas が掛かります。2024 年 3 月の Cancun で入った [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153) の transient storage は、トランザクションが終わると消えるストレージで、ロックの旗のようにトランザクションの間だけ要る値に向いています。
 
 OpenZeppelin は v5.1 から、旗を transient storage に置く [ReentrancyGuardTransient](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.7.0/contracts/utils/ReentrancyGuardTransient.sol) を加えました。v5.7.0 のソースは、storage 版を非推奨とし、v6.0 で transient 版に置き換えると注記しています。
 
-同じ銀行に Alice が 1 ETH を預けて引き出す、攻撃の無い取引の gas を比べると、次の通りでした。
+同じ銀行に Alice が 1 ETH を預けて引き出す、攻撃の無いトランザクションの gas を比べると、次の通りでした。
 
 | 銀行 | deposit（gas） | withdraw（gas） |
 |---|---|---|
@@ -195,9 +195,9 @@ OpenZeppelin は v5.1 から、旗を transient storage に置く [ReentrancyGua
 
 ---
 
-### 関数をまたぐ再入
+### 関数をまたぐリエントランシー
 
-ロックは、付けた関数にしか効きません。呼び直されるのが同じ関数とは限らず、同じ状態を触る別の関数を呼ばれることもあります。これを関数をまたぐ再入（cross-function reentrancy）と呼びます。
+ロックは、付けた関数にしか効きません。呼び直されるのが同じ関数とは限らず、同じ状態を触る別の関数を呼ばれることもあります。これを関数をまたぐリエントランシー（cross-function reentrancy）と呼びます。
 
 実験では、`withdraw` にだけ `nonReentrant` を付け、帳簿の残高を他人へ移す `transferBalance` にはロックを付けない銀行を用意しました。攻撃側は、ETH を受け取った時に `withdraw` ではなく `transferBalance` を呼び、まだ減っていない 1 ETH を Mallory 本人のアカウントへ移します。
 
@@ -213,7 +213,7 @@ sequenceDiagram
     Note over B: ロックの無い関数なので通り、帳簿の 1 ETH が Mallory へ移る
     A-->>B: receive から戻る
     Note over B: 攻撃側の帳簿を 0 にする（既に 0）
-    M->>B: 別の取引で withdraw()
+    M->>B: 別のトランザクションで withdraw()
     B->>M: 帳簿の 1 ETH を送る（2 ETH 目）
 ```
 
@@ -231,13 +231,13 @@ The DAO でも、関数の組み合わせが穴になっていました。Daian 
 
 <br>
 
-#### 読み取り専用の再入
+#### 読み取り専用のリエントランシー
 
-ロックは、状態を変える関数に付けるのが普通です。値を返すだけの `view` 関数にはロックが無く、呼び出しの途中の、まだ更新し終わっていない状態をそのまま返します。これを他のコントラクトが価格として読むと、自分には再入の穴が無くても誤った値で動きます。この攻撃を読み取り専用の再入（read-only reentrancy）と呼びます。
+ロックは、状態を変える関数に付けるのが普通です。値を返すだけの `view` 関数にはロックが無く、呼び出しの途中の、まだ更新し終わっていない状態をそのまま返します。これを他のコントラクトが価格として読むと、自分にはリエントランシーの穴が無くても誤った値で動きます。この攻撃を読み取り専用のリエントランシー（read-only reentrancy）と呼びます。
 
 2022 年に公開された [ChainSecurity の事後分析](https://web.archive.org/web/20221011152148/https://chainsecurity.com/curve-lp-oracle-manipulation-post-mortem/)によると、ETH を含む [Curve](https://curve.fi/)（トークンを交換する [AMM](../amm/)）のプールの `remove_liquidity` は、[LP トークン（プールの持ち分を表すトークン）](../amm/)を焼いて総量を減らした後、ETH を先に送ってから、もう一方のトークンを送っていました。ETH を受け取った攻撃側のコードが動く間は、プールの残高と LP トークンの総量が合っておらず、`get_virtual_price`（LP トークン 1 枚あたりの価値を返す `view` 関数）が通常より高い値を返します。
 
-{{< figure src="images/reentrancy_readonly.webp" alt="上段に Curve のプールの remove_liquidity の 3 つの手順が左から並ぶ。① LP トークンを焼く（総量が減る）、② ETH を送る（受け手のコードが動く）、③ もう一方のトークンを送る（残高と総量が合う）。② の下に赤い帯「残高と総量が合っていない」。帯から下へ矢印が出て、黄土色の「攻撃側の receive（他のプロジェクトを呼ぶ）」から、灰色の「他のプロジェクト（get_virtual_price を読む → 通常より高い値）」へ進む。下に「ロックの無い view 関数は、呼び出しの途中の値をそのまま返す」「誤った値で動くのは、値を読んだ他のプロジェクトの側」" caption="読み取り専用の再入。プールの更新の途中で、他のプロジェクトが値を読む" align="center" >}}
+{{< figure src="images/reentrancy_readonly.webp" alt="上段に Curve のプールの remove_liquidity の 3 つの手順が左から並ぶ。① LP トークンを焼く（総量が減る）、② ETH を送る（受け手のコードが動く）、③ もう一方のトークンを送る（残高と総量が合う）。② の下に赤い帯「残高と総量が合っていない」。帯から下へ矢印が出て、黄土色の「攻撃側の receive（他のプロジェクトを呼ぶ）」から、灰色の「他のプロジェクト（get_virtual_price を読む → 通常より高い値）」へ進む。下に「ロックの無い view 関数は、呼び出しの途中の値をそのまま返す」「誤った値で動くのは、値を読んだ他のプロジェクトの側」" caption="読み取り専用のリエントランシー。プールの更新の途中で、他のプロジェクトが値を読む" align="center" >}}
 
 この値を価格の計算に使っていた MakerDAO（ETH などを担保にトークンを貸し出すプロジェクト）など複数のプロジェクトが操作を受け得る状態で、ChainSecurity は詳細の公開より前に Curve と各プロジェクトへ知らせていました。担保の評価がずれると何が起きるかは、[Lending](../lending/) のノートで扱っています。
 
@@ -247,11 +247,11 @@ OpenZeppelin は v5.5.0 で、`view` 関数に付ける `nonReentrantView` を�
 
 ### 2300 gas に頼る対策
 
-Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だけを渡します。2,300 gas では storage を書き換えられないので、受け手は呼び直しても何もできず、再入の対策になると考えられていた時期がありました。
+Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だけを渡します。2,300 gas では storage を書き換えられないので、受け手は呼び直しても何もできず、リエントランシーの対策になると考えられていた時期がありました。
 
 この前提は、命令の gas の値段が変わらないことに依存していました。2019 年のハードフォーク Istanbul で入った [EIP-1884](https://eips.ethereum.org/EIPS/eip-1884) は、storage を読む SLOAD を 200 から 800 gas に上げ、storage を読む受け取り用の関数が 2,300 gas を超える場合があると互換性の節で警告しています。
 
-実験の Cancun の規則では、2021 年のハードフォーク Berlin の [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) で取引の中で初めて読む SLOAD が 2,100 gas になっており、storage の値を 1 つ読んでログに出すだけの `receive` は、`transfer` では失敗しました。
+実験の Cancun の規則では、2021 年のハードフォーク Berlin の [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) でトランザクションの中で初めて読む SLOAD が 2,100 gas になっており、storage の値を 1 つ読んでログに出すだけの `receive` は、`transfer` では失敗しました。
 
 ```text
   payWithTransfer -> reverted; gas given to receiver 2,300, used 2,300, error: out of gas
@@ -260,7 +260,7 @@ Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だ�
 
 `call` で送ると、受け手は 3,342 gas を使って成功しています。Solidity 0.8.31 は `send` と `transfer` に非推奨の警告を出すようになり、[リリースのお知らせ](https://www.soliditylang.org/blog/2025/12/03/solidity-0.8.31-release-announcement/)は代わりに空のデータの `call` を勧めています。
 
-ただし、`call` は gas を絞らないので、再入は自分で防ぐ必要があります。お知らせも、transient storage のロックか CEI を挙げています。gas の値段の変更がデプロイ済みのコードに与えた影響は、[Ethereum のハードフォーク](../ethereum-hard-forks/)のノートで扱っています。
+ただし、`call` は gas を絞らないので、リエントランシーは自分で防ぐ必要があります。お知らせも、transient storage のロックか CEI を挙げています。gas の値段の変更がデプロイ済みのコードに与えた影響は、[Ethereum のハードフォーク](../ethereum-hard-forks/)のノートで扱っています。
 
 ---
 
@@ -273,12 +273,12 @@ Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だ�
 
 ### 対策の欠点
 
-どの対策も、外部を呼ぶ間に自分の状態を他人に触らせないことで再入を防ぎます。その代わりに、次の制約があります。
+どの対策も、外部を呼ぶ間に自分の状態を他人に触らせないことでリエントランシーを防ぎます。その代わりに、次の制約があります。
 
 - CEI は関数ごとの約束で、外部を呼ぶ処理が深い所に隠れていると守れているかを見落としやすい
-- ロックは付けた関数にしか効かず、付け忘れた関数から関数をまたぐ再入を受ける
+- ロックは付けた関数にしか効かず、付け忘れた関数から関数をまたぐリエントランシーを受ける
 - `nonReentrant` の関数どうしは互いに呼べず、内部の処理を private な関数に分ける必要がある
-- pull 型では、受け取る人が自分で引き出す取引を送る手間と手数料が増える
+- pull 型では、受け取る人が自分で引き出すトランザクションを送る手間と手数料が増える
 
 ### 対策が効かないケース
 
@@ -286,4 +286,4 @@ Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だ�
 - 同じ状態を複数のコントラクトで分け持ち、ロックの旗がコントラクトごとに別になっている場合
 - transient storage の無いチェーンに、ReentrancyGuardTransient を使ったコントラクトを置く場合（transient storage に書く命令の TSTORE を実行できず、関数が失敗する）
 
-再入の対策は、自分のコントラクトの中の約束です。外部の値を信じて動く部分は、相手のコントラクトが更新の途中ではないかという別の問いとして残ります。
+リエントランシーの対策は、自分のコントラクトの中の約束です。外部の値を信じて動く部分は、相手のコントラクトが更新の途中ではないかという別の問いとして残ります。

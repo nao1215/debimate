@@ -2,7 +2,7 @@
 <style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
 <defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1f1f1f"/></marker><marker id="arrow-sub" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
 <rect width="960" height="540" fill="#ffffff"/>
-<text x="480" y="56" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Alice から Bob に 1 ETH を送る取引（nonce 7）</text>
+<text x="480" y="56" font-size="28" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">Alice から Bob に 1 ETH を送るトランザクション（nonce 7）</text>
 <text x="120.0" y="123" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">アドレス</text>
 <text x="280.0" y="123" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">nonce</text>
 <text x="480.0" y="123" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">balance（ETH）</text>
@@ -36,13 +36,13 @@
 <rect x="361" y="338" width="238" height="84" rx="8" fill="#ffffff" stroke="#666666" stroke-width="2.5"/>
 <text x="480.0" y="389.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">0</text>
 <rect x="611" y="338" width="148" height="84" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
-<text x="685.0" y="389.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">記憶領域</text>
+<text x="685.0" y="389.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">ストレージ</text>
 <rect x="771" y="338" width="148" height="84" rx="8" fill="#f8eed8" stroke="#d4a24c" stroke-width="2.5"/>
 <text x="845.0" y="389.0" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">コード</text>
-<rect x="60" y="460" width="30" height="30" rx="4" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
-<text x="104" y="482" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">この取引で変わる欄</text>
-<rect x="370" y="460" width="30" height="30" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
-<text x="414" y="482" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">EOA では空のまま</text>
-<rect x="640" y="460" width="30" height="30" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
-<text x="684" y="482" font-size="24" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">コントラクトが使う</text>
+<rect x="40" y="460" width="30" height="30" rx="4" fill="#7aa6c2" stroke="#7aa6c2" stroke-width="2"/>
+<text x="80" y="482" font-size="20" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">このトランザクションで変わる欄</text>
+<rect x="400" y="460" width="30" height="30" rx="4" fill="#f2f2f2" stroke="#666666" stroke-width="2"/>
+<text x="440" y="482" font-size="20" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">EOA では空のまま</text>
+<rect x="660" y="460" width="30" height="30" rx="4" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
+<text x="700" y="482" font-size="20" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">コントラクトが使う</text>
 </svg>

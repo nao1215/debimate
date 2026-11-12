@@ -70,7 +70,7 @@ ROWS = [
     ("Bob", "EOA", [("0", "plain"), ("2 → 3", "change"),
                     ("空", "empty"), ("空", "empty")]),
     ("トークン", "コントラクト", [("1", "plain"), ("0", "plain"),
-                                 ("記憶領域", "code"), ("コード", "code")]),
+                                 ("ストレージ", "code"), ("コード", "code")]),
 ]
 STYLE = {
     "plain": ("#ffffff", SUB, INK, "normal"),
@@ -82,7 +82,7 @@ STYLE = {
 
 def concept_figure():
     f = Svg(960, 540, "Alice から Bob への送金で世界状態のどの欄が変わるか")
-    f.text(480, 56, "Alice から Bob に 1 ETH を送る取引（nonce 7）", 28, weight="normal")
+    f.text(480, 56, "Alice から Bob に 1 ETH を送るトランザクション（nonce 7）", 28, weight="normal")
     x0, top, hh, rh = 35, 88, 52, 84
     xs = [x0]
     for _, w in COLS:
@@ -99,17 +99,17 @@ def concept_figure():
             f.box(x + 6, y, w - 12, rh, fill, stroke, sw=2.5, rx=8)
             f.text(x + w / 2, y + rh / 2 + 9, s, 24, color, weight)
     ly = 482
-    for x, fill, stroke, label in ((60, ACCENT, ACCENT, "この取引で変わる欄"),
-                                   (370, FILL, SUB, "EOA では空のまま"),
-                                   (640, OCHRE_PALE, OCHRE, "コントラクトが使う")):
+    for x, fill, stroke, label in ((40, ACCENT, ACCENT, "このトランザクションで変わる欄"),
+                                   (400, FILL, SUB, "EOA では空のまま"),
+                                   (660, OCHRE_PALE, OCHRE, "コントラクトが使う")):
         f.box(x, ly - 22, 30, 30, fill, stroke, sw=2, rx=4)
-        f.text(x + 44, ly, label, 24, INK, anchor="start")
+        f.text(x + 40, ly, label, 20, INK, anchor="start")
     f.save(HERE / "images" / "ethereum-account-model_concept.svg")
 
 
 def txpool_figure():
     """geth --dev: send nonce 2, 0, 1 and resend 0 from an account at nonce 0."""
-    f = Svg(960, 540, "nonce 2・0・1 の順に送った取引が txpool とブロックに入る様子")
+    f = Svg(960, 540, "nonce 2・0・1 の順に送ったトランザクションが txpool とブロックに入る様子")
     left, col = 210, 185
     steps = [
         ("2 を送信", "0", ["2"], [], []),

@@ -67,7 +67,7 @@ class Svg:
 def fork():
     """One chain splits into A and B. The old-format transaction lands on both, the EIP-155 one only on A."""
     s = Svg("分岐の前の共通のブロックの列が、chain A（31337）と chain B（31338）の 2 本に分かれる。"
-            "chain ID を含めない署名の取引は両方のブロックに入り、chain ID 31337 を含めた取引は A だけに入って B では外される", h=470)
+            "chain ID を含めない署名のトランザクションは両方のブロックに入り、chain ID 31337 を含めたトランザクションは A だけに入って B では外される", h=470)
     s.p.append('<g transform="translate(0,-75)">')
     bw, bh = 92, 76
     # 分岐の前の共通の列
@@ -82,7 +82,7 @@ def fork():
         s.p.append(f'<path d="M372,270 C410,270 410,{y + bh / 2} 448,{y + bh / 2}" fill="none" '
                    f'stroke="{SUB}" stroke-width="2" marker-end="url(#ar)"/>')
         s.rect(450, y, 250, bh, "#ffffff", SUB)
-    # 取り込まれた取引の印
+    # 取り込まれたトランザクションの印
     def mark(x, y, fill, stroke, label):
         s.rect(x, y, 100, 52, fill, stroke, rx=6)
         s.text(x + 50, y + 35, label, 22)
@@ -146,7 +146,7 @@ def voucher():
 
 def timeline():
     """2016-07 the DAO fork splits ETH and ETC; old transactions replay on both until each side adopts EIP-155."""
-    s = Svg("2016 年 7 月のブロック 1,920,000 で ETH と ETC に分かれ、同じ取引が両方で通る期間が続いた。"
+    s = Svg("2016 年 7 月のブロック 1,920,000 で ETH と ETC に分かれ、同じトランザクションが両方で通る期間が続いた。"
             "ETH は 2016 年 11 月の Spurious Dragon で EIP-155 を入れ、ETC は 2017 年 1 月の Die Hard で chain ID 61 を採用した。"
             "chain ID を含めない形式は、その後も両方で有効", h=490)
     y_eth, y_etc, y_c = 140, 300, 220
@@ -174,8 +174,8 @@ def timeline():
         ty = y - 72 if d < 0 else y + 50
         s.text(x, ty, l1, 20)
         s.text(x, ty + 26, l2, 20, cls="sub")
-    s.text(480, 446, "黄土の帯: 片方のチェーン向けの取引が、もう片方でも通った期間（それぞれが EIP-155 を入れるまで）", 17, cls="sub")
-    s.text(480, 472, "chain ID を含めない形式で署名した取引は、その後も両方で有効", 17, cls="sub")
+    s.text(480, 446, "黄土の帯: 片方のチェーン向けのトランザクションが、もう片方でも通った期間（それぞれが EIP-155 を入れるまで）", 17, cls="sub")
+    s.text(480, 472, "chain ID を含めない形式で署名したトランザクションは、その後も両方で有効", 17, cls="sub")
     s.save("replay-protection_timeline.webp")
 
 

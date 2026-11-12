@@ -69,11 +69,11 @@ def radius(btc):
 
 
 def concept_figure():
-    f = Svg(960, 540, "取引が UTXO を丸ごと消費し、宛先とお釣りの出力を作る")
+    f = Svg(960, 540, "トランザクションが UTXO を丸ごと消費し、宛先とお釣りの出力を作る")
 
     # Left: the output Alice owned, now spent by the transaction.
     lx, cy_in = 145, 280
-    f.text(lx, 60, "取引 1 の出力", 28, weight="normal")
+    f.text(lx + 20, 60, "トランザクション 1 の出力", 22, weight="normal")
     f.text(lx, 96, "使用済み", 26, SUB)
     r_in = radius(1.0)
     f.circle(lx, cy_in, r_in, FILL, SUB, dash="10 7")
@@ -82,13 +82,14 @@ def concept_figure():
 
     # Middle: the transaction that consumes it whole.
     f.box(325, 165, 150, 230, PALE, ACCENT)
-    f.text(400, cy_in - 6, "取引 2", 28, weight="normal")
+    f.text(400, cy_in - 34, "トランザクション", 17, weight="normal")
+    f.text(400, cy_in - 6, "2", 22, weight="normal")
     f.text(400, cy_in + 30, "丸ごと消費", 24, SUB)
     f.arrow(lx + r_in + 8, cy_in, 315, cy_in)
 
     # Right: new outputs, unspent until another transaction consumes them.
     rx = 640
-    f.text(rx + 60, 60, "取引 2 の出力", 28, weight="normal")
+    f.text(rx + 60, 60, "トランザクション 2 の出力", 22, weight="normal")
     f.text(rx + 60, 96, "未使用（UTXO）", 26, SUB)
     outs = [("Bob", 0.3, 180), ("Alice のお釣り", 0.69, 345)]
     for name, btc, cy in outs:

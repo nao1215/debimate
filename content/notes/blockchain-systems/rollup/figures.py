@@ -81,14 +81,14 @@ class Svg:
 
 
 def concept_figure():
-    f = Svg("L2 で実行した多数の取引のうち、L1 に届くのは state root と取引データだけ")
+    f = Svg("L2 で実行した多数のトランザクションのうち、L1 に届くのは state root とトランザクションデータだけ")
     # L2: many transactions are executed off L1.
     f.box(24, 24, 912, 266, PALE, rx=16)
     f.text(56, 68, "L2（Ethereum の外のチェーン）", 28, anchor="start")
     for row in range(5):
         for col in range(9):
             f.circle(118 + col * 34, 112 + row * 30, 9, ACCENT)
-    f.text(254, 278, "利用者の取引", 24, SUB)
+    f.text(254, 278, "利用者のトランザクション", 24, SUB)
     f.line(416, 172, 456, 172, SUB, sw=4, arrow="sub")
     f.box(466, 112, 196, 120, "#ffffff", ACCENT, sw=3)
     f.text(564, 164, "シーケンサー", 26)
@@ -117,7 +117,7 @@ def concept_figure():
     f.box(650, 392, 270, 104, "#ffffff", SUB, sw=3)
     f.text(785, 428, "L1 のブロック", 24, SUB)
     f.box(672, 452, 28, 20, ACCENT, rx=3)
-    f.text(712, 472, "取引データ", 24, anchor="start")
+    f.text(712, 472, "トランザクションデータ", 18, anchor="start")
     # The checker is a second actor on L1 (ochre), not a failure.
     f.box(40, 396, 248, 96, OCHRE_PALE, OCHRE, sw=3)
     f.text(164, 434, "異議 または", 24)

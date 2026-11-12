@@ -106,7 +106,7 @@ def concept_figure():
     s = Svg(960, 540, "m-of-n の規則を検査する場所と、チェーンに残るもの")
     column(s, 162, "Bitcoin P2WSH", "スクリプト", "2-of-3 を検査", BLUE_F, BLUE, 2, 3, "チェーンに残るもの")
     column(s, 480, "Ethereum Safe", "コントラクト", "必要数 2 を検査", OCHRE_F, OCHRE, 2, 3, "チェーンに残るもの", key_word="アドレス")
-    column(s, 798, "しきい値署名（MPC）", "チェーンの外", "署名者が協力", "#ffffff", SUB, 1, 1, "チェーンに残るもの", dash="8 6")
+    column(s, 798, "しきい値署名（MPC）", "オフチェーン", "署名者が協力", "#ffffff", SUB, 1, 1, "チェーンに残るもの", dash="8 6")
     s.save(HERE / "images" / "multisig_concept.webp")
 
 

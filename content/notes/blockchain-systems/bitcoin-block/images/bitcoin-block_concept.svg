@@ -65,6 +65,6 @@
 <rect x="775.0" y="124" width="130" height="40" rx="4" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
 <text x="840.0" y="153" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">root</text>
 <line x1="771.0" y1="104.0" x2="675.0" y2="104.0" stroke="#d4a24c" stroke-width="4" stroke-linecap="round" marker-end="url(#arrow-ochre)"/>
-<text x="30" y="462" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">小さい箱: ヘッダ 80 バイト　大きい箱: 本体（取引の並び）</text>
+<text x="30" y="462" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">小さい箱: ヘッダ 80 バイト　大きい箱: 本体（トランザクションの並び）</text>
 <text x="30" y="512" font-size="26" font-weight="normal" text-anchor="start" style="fill:#1f1f1f">1 か所の書き換えが、後ろの全ブロックの「直前」に伝わる</text>
 </svg>

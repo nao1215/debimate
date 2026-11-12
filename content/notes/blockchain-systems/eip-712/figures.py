@@ -101,7 +101,7 @@ def concept_figure():
 
 def prefix_figure():
     """The first byte of what gets signed: transactions vs EIP-191 data."""
-    s = Svg("署名するバイト列の先頭 1 バイト。型付き取引は 0x01〜0x04、旧来の取引は 0xc0 以上、EIP-191 は 0x19", h=400)
+    s = Svg("署名するバイト列の先頭 1 バイト。型付きトランザクションは 0x01〜0x04、旧来のトランザクションは 0xc0 以上、EIP-191 は 0x19", h=400)
     x0, x1, y = 60, 900, 190
 
     def xpos(b):
@@ -117,11 +117,11 @@ def prefix_figure():
         s.text(xpos(b), y + 80, label, 22, cls="sub mono")
 
     s.line(xpos(3), y - 70, xpos(3), y - 6)
-    s.text(xpos(3) - 10, y - 82, "型付き取引の種類 0x01〜0x04", 22, anchor="start")
+    s.text(xpos(3) - 10, y - 82, "型付きトランザクションの種類 0x01〜0x04", 22, anchor="start")
     s.line(xpos(0x19) + 2, y + 110, xpos(0x19) + 2, y + 56)
     s.text(xpos(0x19) - 10, y + 140, "0x19：EIP-191（personal_sign・EIP-712）", 22, anchor="start", fill="#8a6418")
-    s.text((xpos(0xc0) + x1) / 2, y - 22, "旧来の取引（RLP のリスト）", 22)
-    s.text(480, 380, "取引と EIP-191 のデータは、先頭の 1 バイトで重ならない", 22, cls="sub")
+    s.text(x1, y - 22, "旧来のトランザクション（RLP のリスト）", 22, anchor="end")
+    s.text(480, 380, "トランザクションと EIP-191 のデータは、先頭の 1 バイトで重ならない", 22, cls="sub")
     s.save("eip-712_prefix.webp")
 
 

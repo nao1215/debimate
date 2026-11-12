@@ -115,8 +115,8 @@ def concept_figure():
     s.text(115, 469, "chain ID", 24)
     s.line(200, 460, 306, 460)
     s.text(253, 448, "入る", 18, cls="sub")
-    s.box(310, 430, 170, 60, SUB, FILL)
-    s.text(395, 469, "取引の署名", 24)
+    s.box(310, 430, 240, 60, SUB, FILL)
+    s.text(430, 467, "トランザクションの署名", 21)
     s.line(160, 430, 470, 352, SUB, 2, arrow="", dash=True)
     s.cross(330, 387)
     s.text(370, 400, "アドレスの材料には入らない", 22, "start", "sub")
@@ -125,9 +125,9 @@ def concept_figure():
 
 def ddproxy_figure():
     """One signed transaction without a chain ID puts the factory at one address on every chain."""
-    s = Svg("chain ID の無い 1 件の取引を各チェーンに流すと、ファクトリも CREATE2 の作成先も同じアドレスになる")
+    s = Svg("chain ID の無い 1 件のトランザクションを各チェーンに流すと、ファクトリも CREATE2 の作成先も同じアドレスになる")
     s.box(30, 190, 230, 170, OCHRE, OCHRE_PALE, rx=10)
-    s.lines(145, 275, ["署名済みの取引 1 件", "chain ID なし（v=27）", "送り手の秘密鍵は", "誰も知らない"], 19)
+    s.lines(145, 275, ["署名済みの", "トランザクション 1 件", "chain ID なし（v=27）", "送り手の秘密鍵は", "誰も知らない"], 18)
     s.text(470, 34, "送り手の nonce 0 で作る", 22, cls="sub")
     s.text(795, 34, "同じ salt・initcode で作る", 22, cls="sub")
     lanes = [(84, "Ethereum"), (228, "チェーン X"), (372, "チェーン Y")]
@@ -179,7 +179,7 @@ def lab_figure():
 
 def wintermute_figure():
     """Ethereum and OP Mainnet: the 2019 factory transaction is replayed, then nonces are burned."""
-    s = Svg("Ethereum の ProxyFactory を作った取引が OP Mainnet で再生され、nonce を進めた攻撃者が同じアドレスに Safe を作る")
+    s = Svg("Ethereum の ProxyFactory を作ったトランザクションが OP Mainnet でリプレイされ、nonce を進めた攻撃者が同じアドレスに Safe を作る")
     s.text(30, 44, "Ethereum", 24, "start")
     s.text(30, 300, "OP Mainnet", 24, "start")
     s.line(30, 60, 930, 60, SUB, 1.5, arrow="")
@@ -204,7 +204,7 @@ def wintermute_figure():
     s.lines(835, 410, ["0x4f3a… に", "攻撃者の Safe"], 20)
     # replay and the shared address
     s.line(200, 198, 340, 344, SUB, 2, arrow="arrs", dash=True)
-    s.text(285, 250, "同じ取引を再生", 20, "start", "sub")
+    s.text(285, 250, "同じトランザクションをリプレイ", 20, "start", "sub")
     s.line(720, 170, 820, 344, SUB, 2, arrow="arrs", dash=True)
     s.text(782, 250, "同じアドレス", 20, "start", "sub")
     s.text(480, 516, "どちらのアドレスも ProxyFactory のアドレスと nonce で決まる", 20, cls="sub")

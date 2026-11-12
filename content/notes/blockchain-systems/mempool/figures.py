@@ -152,7 +152,7 @@ def rolling_min_fee_figure():
 
 def eviction_figure():
     """A full mempool sorted by fee rate: a new high-rate tx pushes out the tail."""
-    f = Svg("上限に達した mempool に手数料率の高い取引が入ると、末尾の取引が取り除かれる")
+    f = Svg("上限に達した mempool に手数料率の高いトランザクションが入ると、末尾のトランザクションが取り除かれる")
     f.text(480, 42, "上限に達した mempool（手数料率の高い順）", 26)
     base, limit_x = 380, 744
     f.box(60, 110, limit_x - 60, 290, "#ffffff", SUB, sw=2, rx=8)
@@ -168,14 +168,14 @@ def eviction_figure():
             fill, stroke = FILL, SUB
         f.box(x, base - h, 44, h, fill, stroke, sw=2, rx=3)
     nx = 80 + 2 * 56 + 22
-    f.text(nx, 92, "新しい取引", 24)
+    f.text(nx, 92, "新しいトランザクション", 24)
     f.line(nx, 100, nx, base - heights[2] - 10, ACCENT, sw=3, arrow="accent")
     f.line(limit_x, 100, limit_x, 410, INK, sw=2.5, dash="8 6")
     f.text(limit_x, 92, "上限", 24)
     ex = 80 + 12 * 56 + 20 + 22
     f.text(ex + 20, base - heights[-1] - 24, "取り除く", 24, anchor="middle")
     f.text(400, 440, "高い　←　手数料率　→　低い", 24, SUB)
-    f.text(480, 500, "最低の手数料率は、取り除いた取引の率 + 0.1 sat/vB まで上がる", 24)
+    f.text(480, 500, "最低の手数料率は、取り除いたトランザクションの率 + 0.1 sat/vB まで上がる", 24)
     f.save(HERE / "images" / "mempool_eviction.svg")
 
 

@@ -38,11 +38,11 @@ Ethereum の更新には名前が付いていて、1 回の更新の中身は EI
 | London | 2021-08 | 手数料の基本料金（base fee）と、それを読む BASEFEE の追加 |
 | The Merge | 2022-09 | ブロックを作る権利の決め方が、計算の競争（PoW）から ETH の預け入れ（PoS）に移行 |
 | Shanghai | 2023-04 | 0 を積む PUSH0 の追加 |
-| Cancun | 2024-03 | 取引の間だけ残る保存領域 transient storage（TSTORE・TLOAD）と、memory をコピーする MCOPY などの追加 |
+| Cancun | 2024-03 | トランザクションの間だけ残るストレージ transient storage（TSTORE・TLOAD）と、memory をコピーする MCOPY などの追加 |
 | Prague | 2025-05 | EOA がコントラクトのコードに実行を委任できる EIP-7702 |
 | Osaka | 2025-12 | 先頭の 0 のビットを数える CLZ の追加、スマートフォンの鍵などで使う曲線 P-256 の署名の検証 |
 
-2022 年の The Merge 以降、更新には実行層（execution layer、取引を実行する側）と合意層（consensus layer、ブロックの合意を担う側）の 2 つの名前があり、本記事では EVM に関わる実行層の名前（Shanghai、Cancun など）を使います。
+2022 年の The Merge 以降、更新には実行レイヤー（execution layer、トランザクションを実行する側）とコンセンサス・レイヤー（consensus layer、ブロックの合意を担う側）の 2 つの名前があり、本記事では EVM に関わる実行レイヤーの名前（Shanghai、Cancun など）を使います。
 
 ---
 
@@ -100,13 +100,13 @@ Osaka の時点で 18 個あり、追加された更新ごとに並べると以�
 
 Byzantium の 4 個のうち、modexp は大きな数のべき乗の剰余で、RSA の署名の検証などに使います。bn254（alt_bn128）の 3 個は、計算の中身を明かさずに正しさだけを示す証明（[zkSNARK](../zero-knowledge-proof/)）の検証に使われます（[EIP-196](https://eips.ethereum.org/EIPS/eip-196)、[EIP-197](https://eips.ethereum.org/EIPS/eip-197)）。Istanbul の blake2f は、ハッシュ関数 BLAKE2 の計算の一部です。
 
-Cancun の 0x0a（KZG 検証）は、[rollup](../rollup/) のためのものです。rollup は Ethereum の外で取引をまとめて処理し、そのデータを [blob](../blob/) という大きなデータの欄に載せます。以下は、その時に 0x0a が何を確認するかを示した図です。
+Cancun の 0x0a（KZG 検証）は、[rollup](../rollup/) のためのものです。rollup は Ethereum の外でトランザクションをまとめて処理し、そのデータを [blob](../blob/) という大きなデータの欄に載せます。以下は、その時に 0x0a が何を確認するかを示した図です。
 
-{{< figure src="images/evm-opcode-history_kzg.webp" alt="左の灰色の「blob を運ぶ取引」の中に、黄土色の blob（128 KiB、EVM からは読めない）と、versioned hash（commitment のハッシュ）。versioned hash から BLOBHASH の矢印で「rollup のコントラクト」へ、そこから青い「0x0a で検証（commitment が versioned hash と合うか、点 z で値 y か）」へ。下に「z・y・commitment・証明は、送る側が blob から計算して渡す」「確認できるのは、その blob のその点の値」" caption="EVM から読めない blob を 0x0a で確認する" align="center" >}}
+{{< figure src="images/evm-opcode-history_kzg.webp" alt="左の灰色の「blob を運ぶトランザクション」の中に、黄土色の blob（128 KiB、EVM からは読めない）と、versioned hash（commitment のハッシュ）。versioned hash から BLOBHASH の矢印で「rollup のコントラクト」へ、そこから青い「0x0a で検証（commitment が versioned hash と合うか、点 z で値 y か）」へ。下に「z・y・commitment・証明は、送る側が blob から計算して渡す」「確認できるのは、その blob のその点の値」" caption="EVM から読めない blob を 0x0a で確認する" align="center" >}}
 
-blob を運ぶ取引には、blob の本体と、blob を要約した値（commitment）のハッシュである versioned hash が入ります。EVM からは blob の本体を読めず、コントラクトが BLOBHASH 命令で読めるのは versioned hash だけです。
+blob を運ぶトランザクションには、blob の本体と、blob を要約した値（commitment）のハッシュである versioned hash が入ります。EVM からは blob の本体を読めず、コントラクトが BLOBHASH 命令で読めるのは versioned hash だけです。
 
-そこで rollup のコントラクトは、取引を送る側が blob から計算した値（点 z・その点での値 y・commitment・証明）を受け取り、versioned hash と合わせて 0x0a に渡します。0x0a は KZG という方式の証明を使い、commitment が versioned hash と合うことと、blob の中身を多項式とみなした時に点 z で値 y を取ることを確認します。確認できるのは blob 全体ではなく、その blob のその点の値です。
+そこで rollup のコントラクトは、トランザクションを送る側が blob から計算した値（点 z・その点での値 y・commitment・証明）を受け取り、versioned hash と合わせて 0x0a に渡します。0x0a は KZG という方式の証明を使い、commitment が versioned hash と合うことと、blob の中身を多項式とみなした時に点 z で値 y を取ることを確認します。確認できるのは blob 全体ではなく、その blob のその点の値です。
 
 Prague の 7 個は、PoS の投票の署名に使われる BLS12-381 という曲線の演算で、その署名をコントラクトの中でも検証できるようにするためのものです（[EIP-2537](https://eips.ethereum.org/EIPS/eip-2537)）。
 
@@ -116,7 +116,7 @@ Osaka の 0x100 は P-256（secp256r1）の署名を検証します。[EIP-7951]
 
 #### 3 つのプリコンパイルを呼ぶ
 
-EVM のノートと同じローカルの開発用ノード（[Anvil](https://getfoundry.sh/anvil/overview) を Osaka の規則に固定したもの）で、3 つのプリコンパイルを `eth_call`（取引を作らずにコードを試しに実行し、返り値だけを受け取る API）で呼びました。
+EVM のノートと同じローカルの開発用ノード（[Anvil](https://getfoundry.sh/anvil/overview) を Osaka の規則に固定したもの）で、3 つのプリコンパイルを `eth_call`（トランザクションを作らずにコードを試しに実行し、返り値だけを受け取る API）で呼びました。
 
 0x02 には `abc` を渡して Python の [`hashlib`](https://docs.python.org/3/library/hashlib.html) の [SHA-256](https://csrc.nist.gov/pubs/fips/180-4/upd1/final) と比べ、0x01 の ecrecover には、Anvil のテスト用の鍵で署名したハッシュを渡しました。0x100 には、Python で書いた学習用の P-256 の署名（固定の乱数で作るので実際の鍵には使えません）を渡し、ハッシュを 1 ビット変えた場合とも比べています。
 
@@ -157,7 +157,7 @@ ecrecover は、署名からアドレスを復元し、署名したテスト用�
 
 Osaka の候補でしたが、2025 年 4 月 28 日のクライアント開発者の会議（[Interop Testing #34](https://github.com/ethereum/pm/issues/1499#issuecomment-2836061807)）で外されました。2021 年の London の [EIP-3541](https://eips.ethereum.org/EIPS/eip-3541) が 0xEF で始まるコードのデプロイを禁止したのは、この形式のための予約で、EOF が有効になったわけではありません。
 
-次の更新は、実行層が Amsterdam、合意層が Gloas で、2026 年 11 月 10 日時点で mainnet の日付は決まっていません（2 つを合わせた通称は Glamsterdam。[ethereum.org の Glamsterdam](https://ethereum.org/roadmap/glamsterdam/)、予定の詳細は [Ethereum Hard Forks](../ethereum-hard-forks/#今後の予定)）。
+次の更新は、実行レイヤーが Amsterdam、コンセンサス・レイヤーが Gloas で、2026 年 11 月 10 日時点で mainnet の日付は決まっていません（2 つを合わせた通称は Glamsterdam。[ethereum.org の Glamsterdam](https://ethereum.org/roadmap/glamsterdam/)、予定の詳細は [Ethereum Hard Forks](../ethereum-hard-forks/#今後の予定)）。
 
 本記事で使ったコミットの geth には、図の左上の Amsterdam の命令表（4 個を加えた 153 個）が既にありますが、mainnet の設定に有効化の時刻は無く、現行の EVM の命令ではありません。
 
@@ -167,9 +167,9 @@ Osaka の候補でしたが、2025 年 4 月 28 日のクライアント開発�
 
 ここまでの命令の追加は、どれも EIP（Ethereum Improvement Proposal）という文書で提案されました。一方で、[ERC-20](../erc-20/) のようなトークンの規格も、同じ番号の体系の文書です。両者の違いは、ノードの規則を変えるかどうかです。[EIP-1](https://eips.ethereum.org/EIPS/eip-1) は、EIP を以下の種類（type）と分類（category）に分けています。
 
-{{< figure src="images/evm-opcode-history_eip_types.webp" alt="EIP の下に 3 つの種類。灰色の大きな Standards Track の枠の中に 4 つの分類があり、青い Core（命令・ガス・取引の型、原則フォークが要る）、Networking（ノード間通信（devp2p））、Interface（ABI・メソッド名）、ERC（トークン・署名など）。右に Meta（手続き、更新の一覧）と Informational（指針）。Core 以外はフォーク不要" caption="EIP の種類と、ハードフォークが要る範囲" align="center" >}}
+{{< figure src="images/evm-opcode-history_eip_types.webp" alt="EIP の下に 3 つの種類。灰色の大きな Standards Track の枠の中に 4 つの分類があり、青い Core（命令・ガス・トランザクションの型、原則フォークが要る）、Networking（ノード間通信（devp2p））、Interface（ABI・メソッド名）、ERC（トークン・署名など）。右に Meta（手続き、更新の一覧）と Informational（指針）。Core 以外はフォーク不要" caption="EIP の種類と、ハードフォークが要る範囲" align="center" >}}
 
-上記の図で、原則としてハードフォークが必要なのは、合意の規則（命令・ガス・取引の型など）を変える青い Core だけです。
+上記の図で、原則としてハードフォークが必要なのは、合意の規則（命令・ガス・トランザクションの型など）を変える青い Core だけです。
 
 Networking はノード間の通信（devp2p など）、Interface は言語レベルの規約（メソッド名など）やコントラクトの ABI（関数の呼び出し形式）、ERC はトークン、署名、ウォレットなどアプリケーション層の規格を扱います。Meta は手続きや更新の内容の一覧、Informational は設計上の指針や情報です。
 
@@ -177,7 +177,7 @@ ERC（Ethereum Request for Comments）は、Standards Track の分類の 1 つ�
 
 Core の EIP はクライアントのコードを変え、全ノードが同時に切り替える必要があります。ERC は、コントラクトとウォレットが従う約束で、ノードの規則は変えません。例えば ERC-20 に従うトークンは、規格の関数とイベントを持つ普通のコントラクトで、EVM にトークン専用の命令はありません。
 
-なお、図の「Core なら原則ハードフォーク」には例外があります。EIP-1 は合意に必ずしも関わらない変更も Core に含めていて、コードを持つアドレスからの取引を拒む [EIP-3607](https://eips.ethereum.org/EIPS/eip-3607) は、ソフトフォーク（更新前のノードとも互換を保つ更新）として実装できると書かれています。分類だけで、ハードフォークの有無を機械的には判定できません。
+なお、図の「Core なら原則ハードフォーク」には例外があります。EIP-1 は合意に必ずしも関わらない変更も Core に含めていて、コードを持つアドレスからのトランザクションを拒む [EIP-3607](https://eips.ethereum.org/EIPS/eip-3607) は、ソフトフォーク（更新前のノードとも互換を保つ更新）として実装できると書かれています。分類だけで、ハードフォークの有無を機械的には判定できません。
 
 <br>
 

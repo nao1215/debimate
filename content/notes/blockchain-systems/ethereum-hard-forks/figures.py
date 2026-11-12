@@ -355,7 +355,7 @@ def warm_figure():
         s.text(x - 6, y + 86, note, 20, "end", "sub")
         total = sum(g for _, g, _, _ in parts)
         s.text(x + 10, y + 38, f"計 {total:,}", 22, "start")
-    s.text(W / 2, 362, "先払い = アドレス 1 件の 2,400 ＋ キー 1 件の 1,900。取引の開始時に払う", 20, cls="sub")
+    s.text(W / 2, 362, "先払い = アドレス 1 件の 2,400 ＋ キー 1 件の 1,900。トランザクションの開始時に払う", 20, cls="sub")
     s.text(W / 2, 396, "Berlin 以降。呼び出しの料金のうち、アドレスの参照以外の分は省いている", 20, cls="sub")
     s.save("ethereum-hard-forks_warm.webp")
 
@@ -373,7 +373,7 @@ def delegation_figure():
         s.raw(f'<path d="M{x2} {y} L{x2 - 12} {y - 7} L{x2 - 12} {y + 7} Z" fill="{INK}"/>')
     # Before: EOA -> contract B -> A
     s.text(20, 44, "以前", 24, "start", "sub")
-    node(20, 64, 190, "EOA", "取引に署名", BLUE_PALE, BLUE)
+    node(20, 64, 190, "EOA", "署名して送る", BLUE_PALE, BLUE)
     node(290, 64, 240, "コントラクト B", "間に挟まったコード", GRAY_PALE, SUB)
     node(610, 64, 330, "コントラクト A の判定", "msg.sender = B ≠ tx.origin", "#ffffff", SUB)
     arrow(210, 290, 99); arrow(530, 610, 99)
@@ -384,7 +384,7 @@ def delegation_figure():
     node(610, 254, 330, "コントラクト A の判定", "msg.sender = EOA = tx.origin", "#ffffff", SUB)
     arrow(530, 610, 289)
     s.text(775, 354, "→ 通ってしまう", 22)
-    s.text(W / 2, 414, "委任先のコードは 1 つの取引の中で A を何度でも呼べ、「EOA から 1 回だけ」の前提が崩れる", 20, cls="sub")
+    s.text(W / 2, 414, "委任先のコードは 1 つのトランザクションの中で A を何度でも呼べ、「EOA から 1 回だけ」の前提が崩れる", 20, cls="sub")
     s.save("ethereum-hard-forks_delegation.webp")
 
 

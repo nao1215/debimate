@@ -186,7 +186,7 @@ def stuck_figure():
     RED = "#c0392b"
     f.box(25, 30, 300, 120, "#ffffff", INK, sw=2.5, rx=10)
     f.text(175, 80, "alice", 26)
-    f.text(175, 120, "EOA・秘密鍵で取引を送る", 21, SUB)
+    f.text(175, 120, "EOA・秘密鍵でトランザクションを送る", 16, SUB)
     f.box(635, 30, 300, 120, GRAY_PALE, SUB, sw=2.5, rx=10)
     f.text(785, 80, "Counter（コントラクト）", 22)
     f.text(785, 120, "コード: increment() だけ", 21, SUB)
@@ -269,9 +269,10 @@ def metadata_figure():
             f.text(cx, 405, "image", 24, SUB)
             f.text(cx, 445, image, 26)
     # What moved the chain between the stages.
-    for i, (s, color) in enumerate([("取引なし", SUB), ("取引 1 件・イベントなし", INK), ("取引なし", SUB)]):
+    for i, (s, color) in enumerate([("トランザクションなし", SUB), ("トランザクション 1 件", INK), ("トランザクションなし", SUB)]):
         x = 140 + i * 227 + 113
-        f.text(x, 230, s, 24, color)
+        f.text(x, 214 if i == 1 else 230, s, 20, color)
+    f.text(140 + 227 + 113, 238, "イベントなし", 16, INK)
     f.save("erc-721_metadata.webp")
 
 

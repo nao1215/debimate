@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-// 再入攻撃の説明用のコントラクト。監査を受けていない教材であり、実際の資産に使わない。
+// リエントランシー攻撃の説明用のコントラクト。監査を受けていない教材であり、実際の資産に使わない。
 pragma solidity 0.8.28;
 
 import {ReentrancyGuard} from "./oz/ReentrancyGuard.sol";
@@ -67,7 +67,7 @@ contract GuardedBank is ReentrancyGuard {
         balances[msg.sender] = 0;
     }
 
-    // わざと nonReentrant を付けない関数（関数をまたぐ再入の実験用）
+    // わざと nonReentrant を付けない関数（関数をまたぐリエントランシーの実験用）
     function transferBalance(address to, uint256 amount) external {
         require(balances[msg.sender] >= amount, "no balance");
         balances[msg.sender] -= amount;
@@ -107,7 +107,7 @@ interface IBank {
 // 攻撃側: ETH を受け取るたびに、銀行の withdraw を呼び直す
 contract Attacker {
     IBank public immutable bank;
-    address public immutable accomplice; // 関数をまたぐ再入で残高を逃がす先
+    address public immutable accomplice; // 関数をまたぐリエントランシーで残高を逃がす先
     bool public crossFunction;
     uint256 public calls;
 

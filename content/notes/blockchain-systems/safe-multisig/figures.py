@@ -105,7 +105,7 @@ def overview_figure():
     s.box(590, 390, 340, 120, "#ffffff", BLUE, dash="8 6")
     s.text(760, 428, "実装（singleton）", 28)
     s.text(760, 464, "署名を数える（checkNSignatures）", 20, color=SUB)
-    s.text(760, 494, "取引を実行する（コードだけ）", 20, color=SUB)
+    s.text(760, 494, "トランザクションを実行する（コードだけ）", 15, color=SUB)
     s.line(760, 322, 760, 382, dash="6 6")
     s.text(775, 356, "delegatecall", 22, color=SUB, anchor="start")
     # Destination: the sender seen by the destination is the proxy.

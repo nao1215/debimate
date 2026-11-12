@@ -90,7 +90,7 @@ class Svg:
 
 # 1. Cover: an EOA sends a transaction to a contract (code + storage); every node runs the same code.
 def overview():
-    s = Svg(960, 290, "EOA が署名した取引がコントラクトに届き、コントラクトのコードが storage を書き換える。"
+    s = Svg(960, 290, "EOA が署名したトランザクションがコントラクトに届き、コントラクトのコードが storage を書き換える。"
                       "全てのノードが同じコードを EVM で実行し、同じ新しい状態になる。命令にはガスの値段が付く")
     # EOA.
     s.rect(30, 50, 230, 190, "#ffffff", SUB, 2.5, rx=12)
@@ -100,7 +100,7 @@ def overview():
     s.text(145, 210, "nonce", 24, cls="sub")
     # Transaction.
     s.line(262, 120, 556, 120, SUB, 3.5)
-    s.text(409, 104, "取引", 26)
+    s.text(409, 104, "トランザクション", 26)
     s.text(409, 156, "宛先・額・入力", 24, cls="sub")
     s.text(409, 190, "ガスの上限", 24, cls="sub")
     # Contract account: code and storage.
@@ -119,9 +119,9 @@ def overview():
 
 # 1b. Every node runs the same transaction in its own EVM and reaches the same state.
 def nodes():
-    s = Svg(960, 300, "全てのノードが同じ取引を自分の EVM で実行し、同じ新しい状態になる。命令ごとにガスが掛かる")
+    s = Svg(960, 300, "全てのノードが同じトランザクションを自分の EVM で実行し、同じ新しい状態になる。命令ごとにガスが掛かる")
     s.rect(30, 20, 900, 260, GRAY_PALE, SUB, 1.5, rx=12)
-    s.text(54, 60, "全ノードが自分の EVM で同じ取引を実行", 24, "start", "sub")
+    s.text(54, 60, "全ノードが自分の EVM で同じトランザクションを実行", 24, "start", "sub")
     for i in range(3):
         y = 86 + i * 62
         s.rect(60, y, 150, 50, "#ffffff", SUB, 2, rx=6)
@@ -138,7 +138,7 @@ def nodes():
 
 # 1c. Gas limit, gas used and the fee.
 def gas_fee():
-    s = Svg(960, 330, "取引のガスの上限のうち、実際に使った分だけに 1 ガスあたりの単価を掛けて手数料を払い、使わなかった分は払わない")
+    s = Svg(960, 330, "トランザクションのガスの上限のうち、実際に使った分だけに 1 ガスあたりの単価を掛けて手数料を払い、使わなかった分は払わない")
     s.text(40, 50, "ガスの上限（gas limit）= 送り主が用意した量", 24, "start")
     s.rect(40, 74, 880, 70, "#ffffff", SUB, 2, rx=6)
     s.rect(40, 74, 560, 70, BLUE_PALE, BLUE, 2.5, rx=6)
@@ -175,10 +175,10 @@ def clients():
 
 # 2. A transaction contains a message call, which contains the opcode loop.
 def pipeline():
-    s = Svg(960, 470, "取引の処理の中にメッセージ呼び出しがあり、その中で命令を 1 つずつ実行するループが回る。"
-                      "CALL は同じループを持つ子のフレームを作る。前後に取引の検査と精算がある")
+    s = Svg(960, 470, "トランザクションの処理の中にメッセージ呼び出しがあり、その中で命令を 1 つずつ実行するループが回る。"
+                      "CALL は同じループを持つ子のフレームを作る。前後にトランザクションの検査と精算がある")
     s.rect(20, 20, 920, 430, GRAY_PALE, SUB, 2, rx=12)
-    s.text(44, 62, "取引の処理（状態遷移）", 26, "start")
+    s.text(44, 62, "トランザクションの処理（状態遷移）", 26, "start")
     # Before and after.
     s.rect(44, 100, 170, 310, "#ffffff", SUB, rx=10)
     s.text(129, 136, "検査", 22, cls="sub")
@@ -207,15 +207,15 @@ def pipeline():
 
 # 3. Lifetimes of the data areas over one transaction.
 def lifetimes():
-    s = Svg(960, 520, "1 件の取引の時間軸。stack と memory はフレームの間だけ、transient storage は取引の終わりまで、"
-                      "storage は次の取引にも残る")
+    s = Svg(960, 520, "1 件のトランザクションの時間軸。stack と memory はフレームの間だけ、transient storage はトランザクションの終わりまで、"
+                      "storage は次のトランザクションにも残る")
     x0, x1 = 300, 860
     s.text(40, 52, "時間 →", 24, "start", "sub")
     s.line(x0, 70, 930, 70, SUB, 2)
     s.line(x0, 60, x0, 480, SUB, 1.5, arrow=False, dash="5 5")
     s.line(x1, 60, x1, 480, SUB, 1.5, arrow=False, dash="5 5")
-    s.text(x0, 46, "取引の開始", 24, cls="sub")
-    s.text(x1, 46, "取引の終わり", 24, cls="sub")
+    s.text(x0, 46, "トランザクションの開始", 24, cls="sub")
+    s.text(x1 + 40, 46, "トランザクションの終わり", 20, "end", "sub")
     rows = [
         ("フレーム A", x0, x1, GRAY_PALE, SUB),
         ("フレーム B（CALL）", 470, 680, GRAY_PALE, SUB),
@@ -230,7 +230,7 @@ def lifetimes():
         s.rect(a, y + 6, b - a, 38, face, edge, 2, rx=6)
     s.text(392, 389, "TSTORE", 22, "start", "sub")
     s.cross(x1, 389, 11)
-    s.text(924, 453, "次の取引", 22, "end", "sub")
+    s.text(924, 453, "次のトランザクション", 22, "end", "sub")
     s.save("evm_lifetimes.webp")
 
 
@@ -372,9 +372,9 @@ def log_figure():
 
 # 10. Where a transaction can fail: rejected by the checks, or included with status 0.
 def failure_kinds():
-    s = Svg(960, 400, "取引の失敗は 2 種類ある。署名・nonce・前払いの検査で弾かれた取引はブロックに入らない。"
-                      "コードの実行中に失敗した取引はブロックに入り、status 0 になり、nonce が進み、手数料を払う")
-    s.text(34, 112, "取引", 24, "start")
+    s = Svg(960, 400, "トランザクションの失敗は 2 種類ある。署名・nonce・前払いの検査で弾かれたトランザクションはブロックに入らない。"
+                      "コードの実行中に失敗したトランザクションはブロックに入り、status 0 になり、nonce が進み、手数料を払う")
+    s.text(12, 92, "トランザクション", 15, "start")
     s.line(76, 104, 136, 104)
     s.rect(140, 60, 250, 90, GRAY_PALE, SUB, 2)
     s.text(265, 98, "検査", 26)
@@ -436,7 +436,7 @@ def data_areas():
             ("stack", "フレームの終わりまで、256 ビット"), ("memory", "フレームの終わりまで、バイト列"),
             ("calldata", "フレームの終わりまで、読むだけ"), ("returndata", "次に子を呼ぶまで")]),
         (500, "アカウントに属する", OCHRE_PALE, OCHRE, [
-            ("transient storage", "取引の終わりまで"), ("storage", "書き換えるまで"),
+            ("transient storage", "トランザクションの終わりまで"), ("storage", "書き換えるまで"),
             ("code", "デプロイ後は不変、読むだけ")]),
     ]
     for x, title, face, edge, items in groups:
@@ -543,7 +543,7 @@ def call_split():
 
 # 16. Reentrancy: A's frame is paused while B calls A again.
 def reentrancy():
-    s = Svg(960, 430, "再入の時間軸。A が B を CALL すると A のフレームは途中で止まり、その間に B が A を呼び返す。"
+    s = Svg(960, 430, "リエントランシーの時間軸。A が B を CALL すると A のフレームは途中で止まり、その間に B が A を呼び返す。"
                       "2 回目の A は、1 回目の A がまだ更新していない storage を読む")
     s.text(200, 44, "時間 →", 24, "start", "sub")
     rows = [("A（1 回目）", 80), ("B", 190), ("A（2 回目）", 300)]

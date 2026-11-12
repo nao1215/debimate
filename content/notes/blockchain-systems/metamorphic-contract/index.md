@@ -28,7 +28,7 @@ metamorphic contract は、この前提を崩す手法です。コントラク�
 
 計算したアドレスのアカウントに既にコードがあるか、そのアカウントの nonce が 0 でない場合、作成は失敗します。そのため、同じアドレスに作り直すには、先に今のコントラクトを消す必要があります。
 
-`SELFDESTRUCT` は、Cancun より前は、コントラクトのコードと記憶領域（storage）を消し、残高を指定した先へ送る命令でした。アカウントごと消えるので、nonce も消えます。
+`SELFDESTRUCT` は、Cancun より前は、コントラクトのコードとストレージ（storage）を消し、残高を指定した先へ送る命令でした。アカウントごと消えるので、nonce も消えます。
 
 ---
 
@@ -67,7 +67,7 @@ V1 と V2 の initcode は違いますが、手順 2 と 5 の `CREATE` の材�
 
 ### Cancun での変更
 
-2024 年 3 月 13 日の Cancun で有効になった [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780)（EIP は Ethereum の仕様変更の提案）により、`SELFDESTRUCT` でアカウントが消えるのは、コントラクトを作ったのと同じ取引の中で呼んだ場合だけになりました。別の取引で呼ばれた `SELFDESTRUCT` は残高を送るだけで、コードも nonce も消しません。
+2024 年 3 月 13 日の Cancun で有効になった [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780)（EIP は Ethereum の仕様変更の提案）により、`SELFDESTRUCT` でアカウントが消えるのは、コントラクトを作ったのと同じトランザクションの中で呼んだ場合だけになりました。別のトランザクションで呼ばれた `SELFDESTRUCT` は残高を送るだけで、コードも nonce も消しません。
 
 そのため、手順 3 の後も Deployer は残り、手順 4 の `CREATE2` は、消えずに残った Deployer に当たって失敗します。仕様の更新ごとの `SELFDESTRUCT` の違いは、[Ethereum Hard Forks](../ethereum-hard-forks/#selfdestruct-の意味) でも確認しています。
 
@@ -116,7 +116,7 @@ contract V1 {
 
 <br>
 
-以下は、手順 1〜5 を別々の取引で送る部分で、[run.py](../ethereum-address/lab/run.py) からの抜粋です。`n.send` が取引を送って結果を返し、`ok` はその成否（1 が成功）、`returned_address` は呼び出しが返すアドレスを先に問い合わせる補助関数です。`create2_address` と `create_address` は、Python で計算したアドレスです。
+以下は、手順 1〜5 を別々のトランザクションで送る部分で、[run.py](../ethereum-address/lab/run.py) からの抜粋です。`n.send` がトランザクションを送って結果を返し、`ok` はその成否（1 が成功）、`returned_address` は呼び出しが返すアドレスを先に問い合わせる補助関数です。`create2_address` と `create_address` は、Python で計算したアドレスです。
 
 `selector` は呼ぶ関数を指す 4 バイト、`word` は 32 バイトの値、`abi_bytes` はバイト列の引数の符号化、`bins` はコンパイルしたコントラクトの一覧です。`dd` は手順 1 と 4 で Deployer を作る呼び出し、`deploy` は手順 2 と 5 で Deployer に V1・V2 を作らせる呼び出しです。
 
@@ -147,7 +147,7 @@ for fork in ('shanghai', 'cancun', 'prague'):
     v_old = int.from_bytes(n.call(target, selector('version()')) or bytes(32), 'big')
 ```
 
-結果は以下の通りです（[出力](../ethereum-address/lab/output/summary.txt)の後半）。`code after kill` は手順 3 の後の V1 と Deployer のコードの大きさ、`v at 1st` は最後に最初のアドレスへ `version()` を呼んだ結果、`status=1` は取引の成功、`status=0` は失敗です。
+結果は以下の通りです（[出力](../ethereum-address/lab/output/summary.txt)の後半）。`code after kill` は手順 3 の後の V1 と Deployer のコードの大きさ、`v at 1st` は最後に最初のアドレスへ `version()` を呼んだ結果、`status=1` はトランザクションの成功、`status=0` は失敗です。
 
 ```text
 fork     | 1st target | v | code after kill | redeploy Deployer | 2nd target | v | v at 1st
@@ -166,6 +166,6 @@ Shanghai では、`SELFDESTRUCT` の後に V1 も Deployer も 0 バイトにな
 
 ### Cancun 以降に残る仕組み
 
-Cancun 以降も、同じ取引の中で作って消したアドレスには、後の取引で別のコードを作れます。しかし、そのコードは 1 つの取引の中にしか無かったので、取引をまたいで誰かが確認したコードが差し替わることはありません。
+Cancun 以降も、同じトランザクションの中で作って消したアドレスには、後のトランザクションで別のコードを作れます。しかし、そのコードは 1 つのトランザクションの中にしか無かったので、トランザクションをまたいで誰かが確認したコードが差し替わることはありません。
 
-ただし、コードが変わらなくても振る舞いが変わる仕組みは残っています。処理を担うコントラクト（実装）の参照先を記憶領域に持つ[プロキシ](../upgradeable-proxy/)は、参照先を差し替えると別の処理を行います。また、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で EOA（秘密鍵で操作するアカウント）がコードの実行を任せた委任先も、後から書き換えられます（[Ethereum Account Model](../ethereum-account-model/)）。アドレスのコードを確認する時は、そのコードが別のアドレスの何に処理を任せているかまで見る必要があります。
+ただし、コードが変わらなくても振る舞いが変わる仕組みは残っています。処理を担うコントラクト（実装）の参照先をストレージに持つ[プロキシ](../upgradeable-proxy/)は、参照先を差し替えると別の処理を行います。また、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で EOA（秘密鍵で操作するアカウント）がコードの実行を任せた委任先も、後から書き換えられます（[Ethereum Account Model](../ethereum-account-model/)）。アドレスのコードを確認する時は、そのコードが別のアドレスの何に処理を任せているかまで見る必要があります。

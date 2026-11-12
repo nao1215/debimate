@@ -11,19 +11,19 @@ topics: ["Transaction / Wallet"]
 
 リプレイ攻撃（replay attack）は、署名した人が意図していない場所や時点で、正しく署名されたデータをもう一度使わせる攻撃です。[デジタル署名](../digital-signature/)が示すのは、誰が署名したかと、署名の後に中身が変わっていないことです。どこで何回使ってよいかは、署名した中身に書いていない限り示しません。
 
-[Ethereum](https://ethereum.org/) の取引は、送り主が秘密鍵で署名したバイト列で、[mempool](../mempool/) やブロックを通じて誰でも読めます。読めたバイト列は、誰でも別のノードへそのまま送り直せます。
+[Ethereum](https://ethereum.org/) のトランザクションは、送り主が秘密鍵で署名したバイト列で、[mempool](../mempool/) やブロックを通じて誰でも読めます。読めたバイト列は、誰でも別のノードへそのまま送り直せます。
 
-送り直す先は、同じチェーン、分岐した別のチェーン、[テストネットとメインネット](../mainnet-and-testnet/)、[L2](../rollup/)（Ethereum の上で動く別のチェーン）と複数あります。それぞれの先で同じ署名が通らないように、署名する中身に「どこで」「何回目か」「いつまで」を表す値を入れて防ぎます。チェーンを表す番号（chain ID）を署名に入れる規則は、[EIP-155](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-155.md) という提案で入りました。以下は、手元で分岐させた 2 本のチェーンに、同じ取引を流した結果です。
+送り直す先は、同じチェーン、分岐した別のチェーン、[テストネットとメインネット](../mainnet-and-testnet/)、[L2](../rollup/)（Ethereum の上で動く別のチェーン）と複数あります。それぞれの先で同じ署名が通らないように、署名する中身に「どこで」「何回目か」「いつまで」を表す値を入れて防ぎます。チェーンを表す番号（chain ID）を署名に入れる規則は、[EIP-155](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-155.md) という提案で入りました。以下は、手元で分岐させた 2 本のチェーンに、同じトランザクションを流した結果です。
 
-{{< figure src="images/replay-protection_fork.webp" alt="左の 3 つの灰色のブロックが共通の列で、分岐の前は残高も nonce も共通。右で chain A（chain ID 31337）と chain B（chain ID 31338）の 2 本に分かれる。chain ID なしの署名（黄土色の古い形式）は A と B の両方のブロックに入り、chain ID 31337 入りの署名（青の EIP-155）は A だけに入って、B では赤い破線の × で外される" caption="分岐した 2 本のチェーンに同じ署名済みの取引を流した結果" align="center" >}}
+{{< figure src="images/replay-protection_fork.webp" alt="左の 3 つの灰色のブロックが共通の列で、分岐の前は残高も nonce も共通。右で chain A（chain ID 31337）と chain B（chain ID 31338）の 2 本に分かれる。chain ID なしの署名（黄土色の古い形式）は A と B の両方のブロックに入り、chain ID 31337 入りの署名（青の EIP-155）は A だけに入って、B では赤い破線の × で外される" caption="分岐した 2 本のチェーンに同じ署名済みのトランザクションを流した結果" align="center" >}}
 
-chain ID を含めない古い形式の取引は、両方のチェーンで実行されました。chain ID 31337 を署名に含めた取引は、chain ID 31338 のチェーンでは実行されていません。
+chain ID を含めない古い形式のトランザクションは、両方のチェーンで実行されました。chain ID 31337 を署名に含めたトランザクションは、chain ID 31338 のチェーンでは実行されていません。
 
 <br>
 
-本記事では、Ethereum の取引とコントラクトの署名を例に、リプレイ攻撃を防ぐ仕組みを説明します。扱う疑問は次の通りです。
+本記事では、Ethereum のトランザクションとコントラクトの署名を例に、リプレイ攻撃を防ぐ仕組みを説明します。扱う疑問は次の通りです。
 
-- 署名済みの取引は、なぜ別のチェーンでも通るのか。
+- 署名済みのトランザクションは、なぜ別のチェーンでも通るのか。
 - nonce は何を防ぎ、分岐したチェーンでは何を防げないのか。
 - 2016 年の ETH と ETC の分岐では何が起き、EIP-155 は chain ID をどう署名に入れたのか。
 - コントラクトに渡す署名は、domain と nonce・期限でどう縛るのか。
@@ -32,27 +32,27 @@ chain ID を含めない古い形式の取引は、両方のチェーンで実�
 
 ---
 
-### 署名済みの取引が使い回せる理由
+### 署名済みのトランザクションが使い回せる理由
 
 署名は、署名したデータに対して何度検証しても同じ結果を返します。[Digital Signature](../digital-signature/) のノートの実験でも、同じメッセージを送り直した場合の検証は `VALID` でした。署名の仕組みだけでは、1 回目と 2 回目を区別できません。
 
-同じチェーンでの再送を止めるのは、[Ethereum Account Model](../ethereum-account-model/) で説明した nonce です。取引には送り主の通し番号が入り、アカウントの nonce と一致する取引だけが実行されます。実行されると nonce が 1 進むので、同じ取引の 2 回目は古い番号として拒否されます。
+同じチェーンでの再送を止めるのは、[Ethereum Account Model](../ethereum-account-model/) で説明した nonce です。トランザクションには送り主の通し番号が入り、アカウントの nonce と一致するトランザクションだけが実行されます。実行されると nonce が 1 進むので、同じトランザクションの 2 回目は古い番号として拒否されます。
 
-ただし、nonce を数えているのはチェーンごとの状態です。チェーンが分岐すると、分岐の時点の残高と nonce は両方のチェーンにそのまま残ります。片方で実行した取引の nonce は、もう片方でもまだ使われていません。テストネットとメインネットや L2 でも、同じ鍵のアカウントの nonce がたまたま同じなら、同じことが起きます。
+ただし、nonce を数えているのはチェーンごとの状態です。チェーンが分岐すると、分岐の時点の残高と nonce は両方のチェーンにそのまま残ります。片方で実行したトランザクションの nonce は、もう片方でもまだ使われていません。テストネットとメインネットや L2 でも、同じ鍵のアカウントの nonce がたまたま同じなら、同じことが起きます。
 
 <br>
 
-そこで、署名する中身に「どこで使う署名か」と「何回目か」「いつまでか」を入れます。署名には、取引そのものの署名のほかに、取引を送らずにメッセージへ署名し、受け取った相手がそれをコントラクトに渡すもの（トークンの使用許可など）があり、後者はコントラクトが検査します。以下は、使い回す先ごとに、それを防ぐ部品を並べた表です。
+そこで、署名する中身に「どこで使う署名か」と「何回目か」「いつまでか」を入れます。署名には、トランザクションそのものの署名のほかに、トランザクションを送らずにメッセージへ署名し、受け取った相手がそれをコントラクトに渡すもの（トークンの使用許可など）があり、後者はコントラクトが検査します。以下は、使い回す先ごとに、それを防ぐ部品を並べた表です。
 
 | 使い回す先 | 防ぐ部品 | 署名に入る値 |
 | --- | --- | --- |
-| 同じチェーンでもう一度 | 取引の nonce | 送り主の通し番号 |
-| 別のチェーン | EIP-155 と型付きの取引 | chain ID |
+| 同じチェーンでもう一度 | トランザクションの nonce | 送り主の通し番号 |
+| 別のチェーン | EIP-155 と型付きのトランザクション | chain ID |
 | 同じチェーンの別のコントラクト | EIP-712 の domain | 検証するコントラクトのアドレス |
 | 同じコントラクトでもう一度 | [アプリの nonce](/notes/security/nonce/) | 使い終わった番号 |
 | 後の時点 | アプリの期限 | 期限の時刻 |
 
-上の 2 行は取引の規則で、プロトコルが検査します。下の 3 行は、コントラクトが自分で検査する必要があります。型付きの取引と EIP-712 の domain は、後の節で説明します。
+上の 2 行はトランザクションの規則で、プロトコルが検査します。下の 3 行は、コントラクトが自分で検査する必要があります。型付きのトランザクションと EIP-712 の domain は、後の節で説明します。
 
 ---
 
@@ -60,15 +60,15 @@ chain ID を含めない古い形式の取引は、両方のチェーンで実�
 
 署名に chain ID を入れる規則は、2016 年のチェーンの分岐をきっかけに作られました。[The DAO の事件](../reentrancy/)の後、Ethereum はブロック 1,920,000 で資金を移す規則に切り替え、切り替えなかったノードの列は Ethereum Classic（ETC）として続きました。経緯は [Blockchain Basics](../blockchain-basics/) と [Ethereum Hard Forks](../ethereum-hard-forks/) で説明しています。
 
-分岐の前に ETH を持っていた人は、両方のチェーンに同じ残高を持つことになりました。当時の取引の署名にはチェーンを区別する値が無いので、片方のチェーンに送った取引は、もう片方のチェーンでも有効です。ETH を送ったつもりの取引が ETC のチェーンにも流されれば、同じ額の ETC も同じ宛先へ移ります。以下は、分岐から、両方のチェーンが chain ID を署名に入れるまでの流れです。
+分岐の前に ETH を持っていた人は、両方のチェーンに同じ残高を持つことになりました。当時のトランザクションは、署名にチェーンを区別する値が無いので、片方のチェーンに送ったトランザクションは、もう片方のチェーンでも有効です。ETH を送ったつもりのトランザクションが ETC のチェーンにも流されれば、同じ額の ETC も同じ宛先へ移ります。以下は、分岐から、両方のチェーンが chain ID を署名に入れるまでの流れです。
 
-{{< figure src="images/replay-protection_timeline.webp" alt="左の 1 本の線が、2016-07 のブロック 1,920,000 で上の ETH と下の ETC の 2 本に分かれる。ETH 側には分岐から 2016-11 の Spurious Dragon（EIP-155、chain ID 1）まで「ETC でも通る」黄土色の帯、ETC 側には分岐から 2017-01 の Die Hard（EIP-155、chain ID 61）まで「ETH でも通る」帯がある。下に、帯はそのチェーンで署名した取引がもう片方でも通った期間（EIP-155 の形式で署名した場合）で、chain ID を含めない形式で署名した取引はその後も両方で有効、という注記" caption="ETH と ETC の分岐と、両方が chain ID を署名に入れるまで" align="center" >}}
+{{< figure src="images/replay-protection_timeline.webp" alt="左の 1 本の線が、2016-07 のブロック 1,920,000 で上の ETH と下の ETC の 2 本に分かれる。ETH 側には分岐から 2016-11 の Spurious Dragon（EIP-155、chain ID 1）まで「ETC でも通る」黄土色の帯、ETC 側には分岐から 2017-01 の Die Hard（EIP-155、chain ID 61）まで「ETH でも通る」帯がある。下に、帯はそのチェーンで署名したトランザクションがもう片方でも通った期間（EIP-155 の形式で署名した場合）で、chain ID を含めない形式で署名したトランザクションはその後も両方で有効、という注記" caption="ETH と ETC の分岐と、両方が chain ID を署名に入れるまで" align="center" >}}
 
-帯の長さは、それぞれのチェーンが EIP-155 を入れるまでの期間です。ただし、EIP-155 は chain ID を含めない形式も有効なまま残したので、その形式で署名した取引は帯が終わった後も使い回せます（この節の最後で説明します）。
+帯の長さは、それぞれのチェーンが EIP-155 を入れるまでの期間です。ただし、EIP-155 は chain ID を含めない形式も有効なまま残したので、その形式で署名したトランザクションは帯が終わった後も使い回せます（この節の最後で説明します）。
 
 Ethereum Foundation は分岐の 6 日後の[ブログ](https://blog.ethereum.org/2016/07/26/onward-from-the-hard-fork)で、ETC を動かす前に splitter のコントラクトを使い、新しく作ったアカウントへ移すよう勧めました。
 
-[Etherscan に載っている関数の一覧（ABI）](https://etherscan.io/address/0xaBbb6bEbFA05aA13e908EaA492Bd7a8343760477#code) では、このコントラクトの名前は ReplaySafeSplit、関数は `split(targetFork, targetNoFork)` です。同じ取引が両方のチェーンで実行されても、分岐した側と分岐しなかった側で別の宛先に送るので、その後は 2 つのチェーンの資金が別のアカウントに分かれます。片方だけに残高があるアカウントから出した取引は、もう片方では残高が足りず実行されません。同じブログは、ETC 側にも取引の形式を変える分岐を検討するよう求めています。
+[Etherscan に載っている関数の一覧（ABI）](https://etherscan.io/address/0xaBbb6bEbFA05aA13e908EaA492Bd7a8343760477#code) では、このコントラクトの名前は ReplaySafeSplit、関数は `split(targetFork, targetNoFork)` です。同じトランザクションが両方のチェーンで実行されても、分岐した側と分岐しなかった側で別の宛先に送るので、その後は 2 つのチェーンの資金が別のアカウントに分かれます。片方だけに残高があるアカウントから出したトランザクションは、もう片方では残高が足りず実行されません。同じブログは、ETC 側にもトランザクションの形式を変える分岐を検討するよう求めています。
 
 <br>
 
@@ -76,9 +76,9 @@ Ethereum Foundation は分岐の 6 日後の[ブログ](https://blog.ethereum.or
 
 プロトコル側の対策が [EIP-155](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-155.md) です。2016 年 10 月 14 日に作られ、ブロック 2,675,000 の [Spurious Dragon](https://eips.ethereum.org/EIPS/eip-607) で有効になりました。[告知](https://blog.ethereum.org/2016/11/18/hard-fork-no-4-spurious-dragon)では、2016 年 11 月 22 日に到達する見込みとされています。
 
-EIP-155 の Rationale は、目的を「a way to send transactions that work on Ethereum without working on ETC or the Morden testnet」（ETC やテストネットの Morden では通らず、Ethereum でだけ通る取引を送る方法）と書き、ETC にも別の chain ID で採用するよう勧めています。
+EIP-155 の Rationale は、目的を「a way to send transactions that work on Ethereum without working on ETC or the Morden testnet」（ETC やテストネットの Morden では通らず、Ethereum でだけ通るトランザクションを送る方法）と書き、ETC にも別の chain ID で採用するよう勧めています。
 
-ただし、chain ID を含めない古い形式も、引き続き有効です。上記の告知も、この互換性のために EIP-155 を採用していないチェーン（ETC など）で作った取引は、まだ Ethereum で再生できると注意しています。ETC は 2017 年 1 月 13 日のブロック 3,000,000 の Die Hard で EIP-155 を採用し、chain ID 61 を使っています（[ECIP-1066](https://github.com/ethereumclassic/ECIPs/blob/cad0aecc6978e5fa0cdff66b99f79e6dc4978d86/_specs/ecip-1066.md)）。
+ただし、chain ID を含めない古い形式も、引き続き有効です。上記の告知も、この互換性のために EIP-155 を採用していないチェーン（ETC など）で作ったトランザクションは、まだ Ethereum でリプレイできると注意しています。ETC は 2017 年 1 月 13 日のブロック 3,000,000 の Die Hard で EIP-155 を採用し、chain ID 61 を使っています（[ECIP-1066](https://github.com/ethereumclassic/ECIPs/blob/cad0aecc6978e5fa0cdff66b99f79e6dc4978d86/_specs/ecip-1066.md)）。
 
 ---
 
@@ -92,7 +92,7 @@ Anvil は `127.0.0.1` だけで待ち受け、公開のネットワークや実�
 
 <br>
 
-署名は、Python だけで書いた secp256k1 の署名と復元（[secp256k1.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/secp256k1.py)）で行います。[cast](https://getfoundry.sh/cast/overview/) の `wallet sign` と同じ署名になること、EIP-155 の仕様にある例の取引を同じバイト列で作れることを確かめています。以下が、取引の署名の部分です。
+署名は、Python だけで書いた secp256k1 の署名と復元（[secp256k1.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/secp256k1.py)）で行います。[cast](https://getfoundry.sh/cast/overview/) の `wallet sign` と同じ署名になること、EIP-155 の仕様にある例のトランザクションを同じバイト列で作れることを確かめています。以下が、トランザクションに署名する部分です。
 
 ```python
 def sighash(fields, chain_id=None):
@@ -109,9 +109,9 @@ def sign_legacy(key, nonce, to, value, chain_id=None, gas_price=10 * GWEI):
     return '0x' + rlp(fields + [num(v), num(r), num(s)]).hex(), (v, r, s)
 ```
 
-`rlp` は取引の符号化（[RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/)）、`keccak256` は [EIP-712 のノート](../eip-712/)の実験で使った Python だけの Keccak-256 です。実験の全体は [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/run.py)、出力の全体は [lab/output/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/output/output.txt) にあります。
+`rlp` はトランザクションの符号化（[RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/)）、`keccak256` は [EIP-712 のノート](../eip-712/)の実験で使った Python だけの Keccak-256 です。実験の全体は [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/run.py)、出力の全体は [lab/output/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/output/output.txt) にあります。
 
-まず、chain ID を渡さずに、Alice の nonce 0 で 1 ETH を Bob に送る取引を作り、同じバイト列を A、B、もう一度 A の順に送りました。
+まず、chain ID を渡さずに、Alice の nonce 0 で 1 ETH を Bob に送るトランザクションを作り、同じバイト列を A、B、もう一度 A の順に送りました。
 
 ```text
 == 1. pre-EIP-155 transfer (alice nonce 0, 1 ETH to bob, signed without chain ID)
@@ -122,7 +122,7 @@ def sign_legacy(key, nonce, to, value, chain_id=None, gas_price=10 * GWEI):
   bob balance: A 1 ETH, B 1 ETH; alice nonce: A 1, B 1
 ```
 
-同じ取引が、同じハッシュのまま両方のチェーンで実行されました。A への 2 回目は nonce で拒否されています。nonce は同じチェーンの 2 回目を止めますが、分岐した B の 1 回目は止めません。
+同じトランザクションが、同じハッシュのまま両方のチェーンで実行されました。A への 2 回目は nonce で拒否されています。nonce は同じチェーンの 2 回目を止めますが、分岐した B の 1 回目は止めません。
 
 ---
 
@@ -132,7 +132,7 @@ Ethereum の署名は、r、s、v の 3 つの値です。r と s が署名の�
 
 EIP-155 では、署名する前にハッシュする項目に chain ID と 0 を 2 つ足し、6 項目から 9 項目に変えます。前述のコードの `sighash` の 2 つの分岐が、その違いです。署名の `v` も、27 か 28 の代わりに `chain ID × 2 + 35` か `+ 36` にします。
 
-取引のデータには送り主のアドレスが入っていません。[Ethereum Transaction](../ethereum-transaction/) で説明した通り、ノードは署名から送り主を復元します。`v` が 35 以上なら、ノードは `v` から chain ID を読み、9 項目のハッシュで復元します。
+トランザクションのデータには送り主のアドレスが入っていません。[Ethereum Transaction](../ethereum-transaction/) で説明した通り、ノードは署名から送り主を復元します。`v` が 35 以上なら、ノードは `v` から chain ID を読み、9 項目のハッシュで復元します。
 
 <br>
 

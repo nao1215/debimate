@@ -158,7 +158,7 @@ def balance():
                 color=INK, fontsize=12, arrowprops=dict(arrowstyle="-", color=SUB))
     ax.annotate("2 回目の withdraw が拒否され、\n攻撃者は自分の 1 ETH だけ受け取る", (1, 10), (2.2, 10.6),
                 color=INK, fontsize=12, arrowprops=dict(arrowstyle="-", color=SUB))
-    ax.set_xlabel("攻撃側に ETH が届いた回数（1 回の取引の中）", color=INK)
+    ax.set_xlabel("攻撃側に ETH が届いた回数（1 回のトランザクションの中）", color=INK)
     ax.set_ylabel("銀行の ETH 残高", color=INK)
     ax.set_xlim(-0.3, len(vul) - 0.5)
     ax.set_ylim(-0.6, 12.6)

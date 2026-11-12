@@ -1,5 +1,5 @@
 ---
-title: "EVM - Ethereum の取引を実行する仮想マシンの全体像"
+title: "EVM - Ethereum のトランザクションを実行する仮想マシンの全体像"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
@@ -9,31 +9,31 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-EVM（Ethereum Virtual Machine）は、[Ethereum](https://ethereum.org/) のノードが、取引で呼び出されたコントラクトのコードを実行する仮想マシンです。[Solidity](https://www.soliditylang.org/) などで書いたプログラムはバイトコードにコンパイルされ、EVM がその命令を 1 つずつ実行して、残高や保存領域の値を更新します。
+EVM（Ethereum Virtual Machine）は、[Ethereum](https://ethereum.org/) のノードが、トランザクションで呼び出されたコントラクトのコードを実行する仮想マシンです。[Solidity](https://www.soliditylang.org/) などで書いたプログラムはバイトコードにコンパイルされ、EVM がその命令を 1 つずつ実行して、残高やストレージの値を更新します。
 
 EVM の話に入る前に、Ethereum の登場人物を確認します。Ethereum の状態は、アドレスごとのアカウントの集まりで、アカウントには 2 種類あります。
 
-{{< figure src="images/evm_overview.webp" alt="左の EOA の箱に秘密鍵・残高・nonce。そこから「取引」の矢印（宛先・額・入力、ガスの上限）が右のコントラクトに向かう。コントラクトの中には青いコード（不変）と黄土色の storage（キー → 値）があり、コードから storage に読み書きの矢印" caption="EOA が送る取引と、コードと storage を持つコントラクト" align="center" >}}
+{{< figure src="images/evm_overview.webp" alt="左の EOA の箱に秘密鍵・残高・nonce。そこから「トランザクション」の矢印（宛先・額・入力、ガスの上限）が右のコントラクトに向かう。コントラクトの中には青いコード（不変）と黄土色の storage（キー → 値）があり、コードから storage に読み書きの矢印" caption="EOA が送るトランザクションと、コードと storage を持つコントラクト" align="center" >}}
 
-上記の図の EOA（Externally Owned Account）は、人が秘密鍵で操作する通常のアカウントで、残高と nonce を持ちます。nonce は、そのアカウントが送った取引を数える番号で、同じ取引を 2 回実行させないために使います。
+上記の図の EOA（Externally Owned Account）は、人が秘密鍵で操作する通常のアカウントで、残高と nonce を持ちます。nonce は、そのアカウントが送ったトランザクションを数える番号で、同じトランザクションを 2 回実行させないために使います。
 
-コントラクト（contract）は、デプロイしたプログラムのコードと、そのコードが読み書きする保存領域（storage）を持つアカウントです。コードはデプロイ後に変わらず、storage はキーと値の対応表です。
+コントラクト（contract）は、デプロイしたプログラムのコードと、そのコードが読み書きするストレージ（storage）を持つアカウントです。コードはデプロイ後に変わらず、storage はキーと値の対応表です。
 
-EOA が署名した取引（transaction）は、宛先（to）、送る ETH の額（value）、コードに渡す入力（data）、使ってよいガスの上限（gas limit）を持ちます。宛先がコントラクトなら、ノードは EVM でそのコードを実行し、storage や残高を書き換えます。
+EOA が署名したトランザクション（transaction）は、宛先（to）、送る ETH の額（value）、コードに渡す入力（data）、使ってよいガスの上限（gas limit）を持ちます。宛先がコントラクトなら、ノードは EVM でそのコードを実行し、storage や残高を書き換えます。
 
 <br>
 
-Ethereum には、計算結果を配る中央のサーバーがありません。全てのノードがブロックに並んだ取引を自分で実行し、同じ状態になることを確認します。
+Ethereum には、計算結果を配る中央のサーバーがありません。全てのノードがブロックに並んだトランザクションを自分で実行し、同じ状態になることを確認します。
 
-{{< figure src="images/evm_nodes.webp" alt="灰色の枠の中で、ノード 1・2・3 がそれぞれ自分の EVM で同じ取引を実行し、3 本の矢印が緑の「同じ新しい状態（1 つでも違えば合わない）」に集まる" caption="全ノードが同じ取引を実行し、同じ状態になる" align="center" >}}
+{{< figure src="images/evm_nodes.webp" alt="灰色の枠の中で、ノード 1・2・3 がそれぞれ自分の EVM で同じトランザクションを実行し、3 本の矢印が緑の「同じ新しい状態（1 つでも違えば合わない）」に集まる" caption="全ノードが同じトランザクションを実行し、同じ状態になる" align="center" >}}
 
 上記の図のように、1 つのノードでも結果が違えば、そのノードは他と別の状態を持つことになります。そのため EVM は、同じ入力から必ず同じ結果が出るように、命令の意味を細かく決めています。
 
-もう 1 つの前提がガス（gas）です。EVM の全ての命令には、ガスという単位で値段が決まっています。以下は、1 件の取引のガスと手数料の関係を示した図です。
+もう 1 つの前提がガス（gas）です。EVM の全ての命令には、ガスという単位で値段が決まっています。以下は、トランザクション 1 件のガスと手数料の関係を示した図です。
 
 {{< figure src="images/evm_gas_fee.webp" alt="横長の棒がガスの上限（gas limit）で、左の青い部分が使ったガス（gasUsed）、右の白い部分が使わなかった分。使ったガスから黄土色の「手数料 = gasUsed × 単価、ETH（wei）で払う」へ、使わなかった分から点線の「払わない」へ矢印" caption="ガスの上限・使ったガス・手数料" align="center" >}}
 
-取引はガスの上限（gas limit）の範囲でしか実行できず、使い切ると実行は止まります。送り主は、実際に使ったガス（gasUsed）に 1 ガスあたりの単価を掛けた額を ETH で払い、使わなかった分は払いません。額の単位には、ETH の 10 の 18 乗分の 1 にあたる wei も使います。ガスがなぜ必要かは「命令とガス」の節で説明します。
+トランザクションはガスの上限（gas limit）の範囲でしか実行できず、使い切ると実行は止まります。送り主は、実際に使ったガス（gasUsed）に 1 ガスあたりの単価を掛けた額を ETH で払い、使わなかった分は払いません。額の単位には、ETH の 10 の 18 乗分の 1 にあたる wei も使います。ガスがなぜ必要かは「命令とガス」の節で説明します。
 
 EVM の仕様は 1 つですが、実装（ノードで動くソフトウェアで、クライアントとも呼びます）は複数あります。Go で書かれた [go-ethereum](https://github.com/ethereum/go-ethereum)（geth）や、開発用のローカルノードの [Foundry の Anvil](https://getfoundry.sh/anvil/overview) が使う Rust の [revm](https://github.com/bluealloy/revm) などが、同じブロックから同じ状態を計算します。
 
@@ -43,7 +43,7 @@ EVM の仕様は 1 つですが、実装（ノードで動くソフトウェア�
 
 <br>
 
-本記事では、EVM を初めて学ぶ開発者に向けて、取引が届いてからコードが実行され、結果が残るまでを順に説明します。最初に取引の処理の全体を見て、EVM の中の仕組み（スタック、データ領域、フレーム）、ガス、関数の呼び分け（calldata と ABI）、コントラクト同士の呼び出し、失敗の扱いへ進みます。
+本記事では、EVM を初めて学ぶ開発者に向けて、トランザクションが届いてからコードが実行され、結果が残るまでを順に説明します。最初にトランザクションを処理する全体の流れを見て、EVM の中の仕組み（スタック、データ領域、フレーム）、ガス、関数の呼び分け（calldata と ABI）、コントラクト同士の呼び出し、失敗の扱いへ進みます。
 
 Ethereum は、全てのノードが決めた時期に一斉に規則を切り替える更新（ハードフォーク）を重ねていて、命令やガスの値は更新ごとに変わります。本文では、更新を「2021 年 4 月の更新（Berlin）」のように時期と名前で示します。
 
@@ -51,19 +51,19 @@ Ethereum は、全てのノードが決めた時期に一斉に規則を切り�
 
 ---
 
-### 取引からコードの実行まで
+### トランザクションからコードの実行まで
 
-ノードが 1 件の取引を処理して状態を次に進める流れ（状態遷移、state transition）は、外側から順に「取引の検査と精算」「メッセージ呼び出し」「命令の実行ループ」の 3 段の入れ子になっています。
+ノードが 1 件のトランザクションを処理して状態を次に進める流れ（状態遷移、state transition）は、外側から順に「トランザクションの検査と精算」「メッセージ呼び出し」「命令の実行ループ」の 3 段の入れ子になっています。
 
-{{< figure src="images/evm_pipeline.webp" alt="灰色の外枠が取引の処理（状態遷移）。左の「検査」の箱に署名・nonce・intrinsic gas・前払い、右の「精算」の箱に払い戻し・手数料・レシートがある。中央の青い枠がメッセージ呼び出し（フレーム）で、その中で「読む → ガスを引く → 実行」のループが STOP・RETURN・REVERT・エラーまで回る。下の点線の枠は「CALL → 子のフレーム」" caption="1 件の取引を処理する 3 段の入れ子" align="center" >}}
+{{< figure src="images/evm_pipeline.webp" alt="灰色の外枠がトランザクションの処理（状態遷移）。左の「検査」の箱に署名・nonce・intrinsic gas・前払い、右の「精算」の箱に払い戻し・手数料・レシートがある。中央の青い枠がメッセージ呼び出し（フレーム）で、その中で「読む → ガスを引く → 実行」のループが STOP・RETURN・REVERT・エラーまで回る。下の点線の枠は「CALL → 子のフレーム」" caption="1 件のトランザクションを処理する 3 段の入れ子" align="center" >}}
 
-外側の左では、署名（signature）と nonce を確認し、取引 1 件ごとに決まった基本のガス（intrinsic gas）を引き、gas limit 分の手数料を送り主の残高から前払いさせます。EVM はまだ動いていません。
+外側の左では、署名（signature）と nonce を確認し、トランザクション 1 件ごとに決まった基本のガス（intrinsic gas）を引き、gas limit 分の手数料を送り主の残高から前払いさせます。EVM はまだ動いていません。
 
 中央のメッセージ呼び出し（message call）は、呼び出し元・宛先・入力・渡すガス・送る ETH の組です。EVM はこれを 1 つのフレーム（frame）として実行します。
 
 フレームは、1 回の呼び出しの実行に必要なもの（残りのガス、後で説明するスタックや memory）をまとめた単位です。フレームの中では、命令を読み、ガスを引き、実行する、を停止まで繰り返します。コードが CALL 命令で別のコントラクトを呼ぶと、同じループを持つ子のフレームが作られます。
 
-外側の右では、払い戻し（refund。storage の値を 0 に戻した時などに付く割引で、後の節で説明）を計算し、使わなかったガスの分を送り主に返して手数料を払い、レシート（receipt）を作ります。レシートは取引の結果の記録で、ノードの API が返すレシートは、成否を表す `status`、使ったガスの `gasUsed`、後で説明するログを持ちます。
+外側の右では、払い戻し（refund。storage の値を 0 に戻した時などに付く割引で、後の節で説明）を計算し、使わなかったガスの分を送り主に返して手数料を払い、レシート（receipt）を作ります。レシートはトランザクションの結果を記録したもので、ノードの API が返すレシートは、成否を表す `status`、使ったガスの `gasUsed`、後で説明するログを持ちます。
 
 <br>
 
@@ -72,7 +72,7 @@ Ethereum は、全てのノードが決めた時期に一斉に規則を切り�
 
 | 段 | geth（Go） | execution-specs（Python、Osaka） |
 | --- | --- | --- |
-| 取引の検査と精算 | [`ApplyMessage`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/state_transition.go#L396-L404) → [`execute`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/state_transition.go#L716-L817) | [`process_transaction`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/fork.py#L829-L978) |
+| トランザクションの検査と精算 | [`ApplyMessage`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/state_transition.go#L396-L404) → [`execute`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/state_transition.go#L716-L817) | [`process_transaction`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/fork.py#L829-L978) |
 | メッセージ呼び出し | [`EVM.Call`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/vm/evm.go#L276-L334) | [`process_message_call`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/interpreter.py#L92-L160) |
 | 命令の実行ループ | [`EVM.Run`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/vm/interpreter.go#L96-L137) | [`process_message`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/interpreter.py#L221-L302) |
 
@@ -80,9 +80,9 @@ Ethereum は、全てのノードが決めた時期に一斉に規則を切り�
 
 <br>
 
-EVM が担うのは、上記の図の中央の部分だけです。どのブロックを採用するかの合意は、[Proof of Stake](../proof-of-stake/) を担う別のソフトウェアの仕事で、EVM は関わりません。また、宛先が EOA で ETH を送るだけの取引なら、宛先にコードが無いので、EVM の命令は 1 つも実行されません。
+EVM が担うのは、上記の図の中央の部分だけです。どのブロックを採用するかの合意は、[Proof of Stake](../proof-of-stake/) を担う別のソフトウェアの仕事で、EVM は関わりません。また、宛先が EOA で ETH を送るだけのトランザクションなら、宛先にコードが無いので、EVM の命令は 1 つも実行されません。
 
-コントラクトは、時間が来ても自分では動きません。コードが動く入口は、ユーザーが送った取引か、ノード自身がブロックの処理の始めや終わりに決まったコントラクトを呼ぶ場合だけです。後者の例には、合意の仕組みが使う値をコントラクトに書き込む呼び出しがあり、Ethereum の仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-4788](https://eips.ethereum.org/EIPS/eip-4788) で決まっています。
+コントラクトは、時間が来ても自分では動きません。コードが動く入口は、ユーザーが送ったトランザクションか、ノード自身がブロックの処理の始めや終わりに決まったコントラクトを呼ぶ場合だけです。後者の例には、合意の仕組みが使う値をコントラクトに書き込む呼び出しがあり、Ethereum の仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-4788](https://eips.ethereum.org/EIPS/eip-4788) で決まっています。
 
 ---
 
@@ -104,19 +104,19 @@ EVM はスタックマシン（stack machine）です。命令は、値をスタ
 
 EVM のコードが読み書きする場所は、スタックの他に複数あります。違いは、寿命と、誰に属するかです。
 
-{{< figure src="images/evm_data_areas.webp" alt="2 つの枠。青い「フレームに属する」に stack（フレームの終わりまで、256 ビットの語）、memory（フレームの終わりまで、バイト列）、calldata（フレームの終わりまで、読むだけ）、returndata（次に子を呼ぶまで）。黄土色の「アカウントに属する」に transient storage（取引の終わりまで）、storage（書き換えるまで）、code（デプロイ後は不変、読むだけ）" caption="EVM が読み書きする場所と、その持ち主" align="center" >}}
+{{< figure src="images/evm_data_areas.webp" alt="2 つの枠。青い「フレームに属する」に stack（フレームの終わりまで、256 ビットの語）、memory（フレームの終わりまで、バイト列）、calldata（フレームの終わりまで、読むだけ）、returndata（次に子を呼ぶまで）。黄土色の「アカウントに属する」に transient storage（トランザクションの終わりまで）、storage（書き換えるまで）、code（デプロイ後は不変、読むだけ）" caption="EVM が読み書きする場所と、その持ち主" align="center" >}}
 
 左のフレームに属する 4 つは、フレームが終わると消えます。memory は作業用のバイト列で、使った分だけガスが掛かります。calldata は呼び出しの入力のバイト列で、読むだけです。returndata は直近に呼んだ子のフレームが返したバイト列です。
 
 右のアカウントに属する 3 つのうち、storage と transient storage は、どちらも 256 ビットのキーから 256 ビットの値への対応表です。時間軸に並べると、以下のようになります。
 
-{{< figure src="images/evm_lifetimes.webp" alt="1 件の取引の時間軸。フレーム A は取引の開始から終わりまで、フレーム B（CALL）は途中の一部だけ続く。A と B の stack・memory はそれぞれのフレームの間だけ青い帯で続く。transient storage は TSTORE の時点から取引の終わりまで黄土色の帯で続き、終わりに赤い×がある。storage の緑の帯は取引の前から次の取引まで続く" caption="1 件の取引の中での各領域の寿命" align="center" >}}
+{{< figure src="images/evm_lifetimes.webp" alt="1 件のトランザクションの時間軸。フレーム A はトランザクションの開始から終わりまで、フレーム B（CALL）は途中の一部だけ続く。A と B の stack・memory はそれぞれのフレームの間だけ青い帯で続く。transient storage は TSTORE の時点からトランザクションの終わりまで黄土色の帯で続き、終わりに赤い×がある。storage の緑の帯はトランザクションの前から次のトランザクションまで続く" caption="トランザクション 1 件の間に各領域が残る期間" align="center" >}}
 
 memory はフレームごとに新しく作られます。子のフレームに渡すのは、親の memory の一部をコピーした calldata で、子は親の memory を直接は触れません。
 
-storage は、次の取引にも残る唯一の領域です。2 の 256 乗個の場所を確保しているわけではなく、0 以外の値を書いたキーだけを状態に持ちます。Solidity の変数がどのキー（slot）に置かれるかは、EVM ではなくコンパイラの規則で決まります（[Solidity の storage layout](https://docs.soliditylang.org/en/v0.8.28/internals/layout_in_storage.html)）。この配置が問題になる例は [Upgradeable Proxy](../upgradeable-proxy/#storage-の衝突) のノートで説明しています。
+storage は、次のトランザクションにも残る唯一の領域です。2 の 256 乗個の場所を確保しているわけではなく、0 以外の値を書いたキーだけを状態に持ちます。Solidity の変数がどのキー（slot）に置かれるかは、EVM ではなくコンパイラの規則で決まります（[Solidity の storage layout](https://docs.soliditylang.org/en/v0.8.28/internals/layout_in_storage.html)）。この配置が問題になる例は [Upgradeable Proxy](../upgradeable-proxy/#storage-の衝突) のノートで説明しています。
 
-transient storage は、2024 年 3 月の更新（Cancun）で [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153) が加えた領域で、TSTORE と TLOAD で読み書きします。同じ取引の中なら複数のフレームから見えますが、取引が終わると消えます。「処理の途中である」ことを示す旗のように、取引の間だけ要る値に向いています。
+transient storage は、2024 年 3 月の更新（Cancun）で [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153) が加えた領域で、TSTORE と TLOAD で読み書きします。同じトランザクションの中なら複数のフレームから見えますが、トランザクションが終わると消えます。「処理の途中である」ことを示す旗のように、トランザクションの間だけ要る値に向いています。
 
 <br>
 
@@ -142,7 +142,7 @@ transient storage は、2024 年 3 月の更新（Cancun）で [EIP-1153](https:
 
 ADD の 3 に比べて、storage やアカウントに触る命令（図の状態・ディスク・レシート）は約 30 倍から 1 万倍です。SLOAD と SSTORE は storage を読む・書く命令、TLOAD は transient storage を読む命令、LOG0 はログを出す命令、CREATE はコントラクトを作る命令です。計算の命令は 3〜10 です。
 
-図の cold と warm は、2021 年 4 月の更新（Berlin）で [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) が加えた区別です。同じ取引の中で初めて触るアカウントや storage の slot（cold）は高く、2 回目から（warm）は安くなります。入力の大きさで変わる式を含めた一覧は、以下に畳みました。`w` はバイト数を 32 で割って切り上げた語数です。
+図の cold と warm は、2021 年 4 月の更新（Berlin）で [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) が加えた区別です。同じトランザクションの中で初めて触るアカウントや storage の slot（cold）は高く、2 回目から（warm）は安くなります。入力の大きさで変わる式を含めた一覧は、以下に畳みました。`w` はバイト数を 32 で割って切り上げた語数です。
 
 <br>
 
@@ -185,7 +185,7 @@ Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコン�
 
 <br>
 
-ノードへの問い合わせには、2 つの API を使います。`eth_call` は、取引を作らずにノードにコードを試しに実行させ、返り値だけを受け取る API で、状態は変わりません。`debug_traceTransaction` は、送った取引で実行された命令とそのガスを 1 つずつ返す API です。実験コードは [probe.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/probe.py) で、コントラクトと手で組み立てたバイトコードは学習用で、監査していません。
+ノードへの問い合わせには、2 つの API を使います。`eth_call` は、トランザクションを作らずにノードにコードを試しに実行させ、返り値だけを受け取る API で、状態は変わりません。`debug_traceTransaction` は、送ったトランザクションで実行された命令とそのガスを 1 つずつ返す API です。実験コードは [probe.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/probe.py) で、コントラクトと手で組み立てたバイトコードは学習用で、監査していません。
 
 <br>
 
@@ -238,7 +238,7 @@ for size in (32, 1024, 32768, 131072):
 
 <br>
 
-#### 取引全体のガス
+#### トランザクション全体のガス
 
 命令のガスの外側にも、取引ごとに掛かる分があります。最初の節の図の intrinsic gas は、宛先のある取引なら、基本の 21,000 に、取引の `data` の 0 のバイトごとに 4、0 以外のバイトごとに 16 を足した値です。取引でコントラクトを作成（デプロイ）する場合などは、その分も足します（execution-specs の [`calculate_intrinsic_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/transactions.py#L598-L666)）。
 
