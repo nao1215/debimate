@@ -32,7 +32,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 | [Isolation Forest](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.IsolationForest.html) | ランダムな分割で、少ない回数で孤立する点を異常とする | 木を最大 256 点の部分標本で作るので、データが多くても軽い | 分割が軸に平行なので、境界が角ばる |
 | [LOF](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.LocalOutlierFactor.html)（Local Outlier Factor） | [近傍](../knn/)の点と比べて、局所的な密度が低い点を異常とする | 密度の違うクラスタが混ざっていても使える | 近傍探索が重い。新しいデータの判定には `novelty=True` が要る |
 | [One-Class SVM](https://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html) | 正常データを囲む境界を[カーネル](../svm/)で学ぶ | 非線形な境界を引ける | 特徴量のスケールと `gamma` に敏感 |
-| [Elliptic Envelope](https://scikit-learn.org/stable/modules/generated/sklearn.covariance.EllipticEnvelope.html) | 正常データを 1 つの多変量[正規分布](/ml/math/probability-distributions/)とみなし、楕円の外を異常とする | 外れ値の混入に強い共分散推定（MCD）を使う | クラスタが複数あるデータや、正規分布から遠いデータに合わない |
+| [Elliptic Envelope](https://scikit-learn.org/stable/modules/generated/sklearn.covariance.EllipticEnvelope.html) | 正常データを 1 つの多変量[正規分布](/ml/math/probability-distributions/)とみなし、楕円の外を異常とする | 外れ値の混入に強い共分散の推定法である最小共分散行列式（MCD）推定を使う | クラスタが複数あるデータや、正規分布から遠いデータに合わない |
 
 次のコードは、正常データ 300 点（2 つのクラスタ）と、広い範囲に一様乱数で置いた異常データ 20 点に、4 つの手法を当てます。異常の割合は全て 7% に揃えました。
 

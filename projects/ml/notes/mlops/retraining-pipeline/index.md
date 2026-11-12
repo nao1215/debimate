@@ -201,7 +201,7 @@ C を 4 倍: 18 日
 {{< note-steps caption="評価ゲートの例。失敗した段階で停止・通知し、必要に応じて champion へ戻します。" >}}
 - title: スキーマ確認（schema check）
   body: 入出力のカラムと型を確認。不一致なら即停止し、データチームに通知。
-- title: 動作確認（smoke test）
+- title: スモークテスト（smoke test）
   body: 100 件のサンプル予測を実行。失敗したら学習コードを調べる。
 - title: 検証データでの評価（holdout eval）
   body: 学習に使っていないデータで、精度が champion 以上かを確認。未達なら学習データ・特徴量を見直す。

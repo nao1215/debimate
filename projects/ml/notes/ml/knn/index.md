@@ -61,7 +61,7 @@ k=5: 近い順のラベル ['B', 'A', 'A', 'A', 'A']、距離 [0.187 0.354 0.462
 
 最も近い 1 点は距離 0.187 のクラス B なので、k=1 なら答えは B です。5 点まで広げると票は A が 4、B が 1 になり、答えは A に変わります。回帰の [`KNeighborsRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.neighbors.KNeighborsRegressor.html) は、票の代わりに近傍の値の平均を返します。
 
-`fit` は点を覚えるだけで、距離の計算は全て予測の時に行います。そのため kNN は、怠惰な学習（lazy learning）とも呼ばれます。距離を測るので、列は全て数値でなければなりません。文字列のカテゴリを持つ列は、[カテゴリ変数のエンコーディング](../categorical-encoding/)で数値にしてから渡します。
+`fit` は点を覚えるだけで、距離の計算は全て予測の時に行います。そのため kNN は、怠惰学習（lazy learning）とも呼ばれます。距離を測るので、列は全て数値でなければなりません。文字列のカテゴリを持つ列は、[カテゴリ変数のエンコーディング](../categorical-encoding/)で数値にしてから渡します。
 
 kNN の考え方は 1950 年代からあり、1967 年の Cover と Hart の論文「[Nearest neighbor pattern classification](https://ieeexplore.ieee.org/document/1053964)」が、k=1 の誤り率は、データが十分に多ければ理論上の最小の誤り率の 2 倍を超えないと示したことでよく知られています。[異常検知](../anomaly-detection/)では、近傍までの距離そのものを「周りから離れている度合い」として使うこともあります。
 

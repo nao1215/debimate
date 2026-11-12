@@ -1,7 +1,7 @@
 """backpropagation ノートの実験と図を生成するスクリプト。
 
 本文に載せた実験（2 層の手計算と数値微分、digits の 3 層 NN と backward の書き間違い、
-勾配の照合、数値微分との速さの比較、層を深くした時の勾配と学習曲線）を同じ順に実行し、
+勾配確認、数値微分との速さの比較、層を深くした時の勾配と学習曲線）を同じ順に実行し、
 出力を標準出力に、図を Page Bundle に WebP で保存する。
 実行: cd projects/ml && .venv/bin/python scripts/notes/backpropagation_gen.py
 確認した版: scikit-learn 1.9.1、NumPy 2.5.4、matplotlib 3.11.2
@@ -229,7 +229,7 @@ ax.grid(True, alpha=0.25)
 save(fig, "bp_cover.webp")
 
 
-# ---- 実験 3: 勾配の照合（数値微分と backward を比べる） ----
+# ---- 実験 3: 勾配確認（数値微分と backward を比べる） ----
 rng = np.random.default_rng(0)
 Ws, bs = init("sigmoid", 3, rng)
 xb, yb = X_tr[:32], y_tr[:32]

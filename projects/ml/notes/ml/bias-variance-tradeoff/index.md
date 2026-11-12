@@ -1,5 +1,5 @@
 ---
-title: "バイアス-バリアンス分解（bias-variance tradeoff）"
+title: "バイアス-バリアンストレードオフ（bias-variance tradeoff）"
 date: 2026-05-25
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
