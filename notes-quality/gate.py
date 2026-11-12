@@ -274,8 +274,15 @@ def main(argv):
             ng = check_added(added_lines(old or '', open(os.path.join(ROOT, rel), encoding='utf-8').read()))
             return report([(rel, '足した行だけ', ng)])
         if '--quality' in rest:
-            return report([(rel, '質の規則だけ', check_full(rel, process=False))])
-        return report([(rel, '全部の規則', check_full(rel))])
+            code = report([(rel, '質の規則だけ', check_full(rel, process=False))])
+        else:
+            code = report([(rel, '全部の規則', check_full(rel))])
+        # 相互リンクの抜けの候補は止めずに知らせる（2026-11-12 著者「むしろ相互リンクできてないほうが気になる」）。
+        # 前提や詳しい説明があるノートなら初出にリンクを足し、題材が違うなら足さない。チェックリストの相互リンクの行に結果を書く
+        _, out = run([sys.executable, os.path.join(HERE, 'crosslinks.py'), os.path.join(ROOT, rel)])
+        if out.strip():
+            print('  注意: 相互リンクの抜けの候補 ' + out.strip().split(': ', 1)[-1])
+        return code
 
     if cmd == 'commit':
         results = []

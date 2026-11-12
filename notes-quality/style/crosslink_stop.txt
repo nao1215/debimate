@@ -1,0 +1,7 @@
+# crosslinks.py で、題の語として扱わない語（一般の英単語・別の意味と重なる語）。1 行 1 語、大文字小文字は区別しない
+Safe
+Entity
+Repository
+Authentication
+Sampling
+Oracle
