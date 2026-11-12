@@ -15,11 +15,11 @@ Differential Testing（差分テスト）は、同じ仕事をする 2 つ以上
 
 著者の Ubuntu 26.04 には両方が入っていて、`ls` は uutils、`gnuls` は GNU です。シェルスクリプトから見ると、ある日を境に同じ名前のコマンドの中身が入れ替わったことになります。
 
-著者はこの 2 つに、同じ 32 ケースの呼び出しを渡して比べました。26 ケースは出力も終了コードも一致し、5 ケースで違いました。違った 5 ケースのうち 4 ケースは、書き込み先のディスクが一杯の時の振る舞いです。`/dev/full` は、書き込むと必ず「空き容量が無い」エラーを返す特殊なファイルで、ディスクが一杯の状況を再現できます。
+著者はこの 2 つに、同じ 32 ケースの呼び出しを渡して比べました。26 ケースは出力も終了コードも一致し、5 ケースで違いました。残りの 1 ケースは、エラーの文面だけの差です。違った 5 ケースのうち 4 ケースは、書き込み先のディスクが一杯の時の振る舞いです。`/dev/full` は、書き込むと必ず「空き容量が無い」エラーを返す特殊なファイルで、ディスクが一杯の状況を再現できます。
 
 {{< figure src="images/full_disk.webp" alt="ディスクが一杯の時の ls > list.txt。GNU 9.7 は書き込みが失敗すると stderr に ls: write error: No space left を出し、終了コード 2 で終わるので、スクリプトは失敗に気付いて止まる。uutils 0.8.0 は書き込みが失敗しても stderr に何も出さず、終了コード 0 で終わるので、スクリプトは成功とみなして欠けた list.txt を使う" caption="ディスクが一杯の時、uutils 0.8.0 の ls は失敗を報告しない" align="center" >}}
 
-uutils の `ls` は、書き込みに失敗しても何も表示せずに 0 で終わりました。`ls > list.txt` を実行したスクリプトは、ディスクが一杯でも成功したと判断して、中身の欠けたファイルを次の処理に渡します。残りの差は後の節で扱います。
+uutils 0.8.0 の `ls` は、書き込みに失敗しても何も表示せずに 0 で終わりました。`ls > list.txt` を実行したスクリプトは、ディスクが一杯でも成功したと判断して、中身の欠けたファイルを次の処理に渡します。残りの差は後の節で扱います。
 
 どちらの実装にも「ディスクが一杯の時の正解」は書いてありません。2 つを並べて比べたことで、片方だけが失敗を報告していないと分かります。
 
@@ -36,7 +36,7 @@ uutils の `ls` は、書き込みに失敗しても何も表示せずに 0 で�
 
 ### 正解の代わりに別の実装を使う
 
-[Metamorphic Testing のノート](/notes/software-testing/metamorphic-testing/)では、入力ごとの正解（期待値）を書けない処理を扱いました。正解を書けない問題は、テストオラクル問題と呼ばれます。
+[Metamorphic Testing のノート](/notes/software-testing/metamorphic-testing/)では、入力ごとの正解（期待値）を書けない処理を扱いました。出力が正しいかを判定する手段をテストオラクルと呼び、正解を書けない問題はテストオラクル問題と呼ばれます。
 
 Metamorphic Testing は、1 つの実装に入力を変えて 2 回渡し、2 つの出力が満たすはずの関係を検証する方法でした。例えば「2 つのファイルを 1 回で `wc` に渡した結果は、1 ファイルずつ渡してつないだ結果と等しい」という関係です。Differential Testing は、入力を 1 つに固定し、実装の方を 2 つにします。
 
@@ -68,11 +68,37 @@ Csmith のように別の製品を用意できる場面は限られます。し�
 
 ### 実験 1: GNU coreutils と uutils
 
-冒頭の結果は、以下のスクリプトで取りました。`/usr/bin/gnu<コマンド名>` が GNU、`/usr/lib/cargo/bin/coreutils/<コマンド名>` が uutils の実体です。全体は [lab の exp1_gnu_uutils.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/differential-testing/lab/exp1_gnu_uutils.py) にあります。以下は抜粋で、`make_fixture` は作業ディレクトリに入力のファイル（`data.txt` など）を作る関数です。
+冒頭の結果は、以下のスクリプトで取りました。`/usr/bin/gnu<コマンド名>` が GNU、`/usr/lib/cargo/bin/coreutils/<コマンド名>` が uutils の実体です。以下は抜粋で、32 ケースの一覧の途中と、結果を表示する部分を略しています。全体は [lab の exp1_gnu_uutils.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/differential-testing/lab/exp1_gnu_uutils.py) にあります。公開用の出力では `ls -l` の所有者の名前を伏せていて、そのための置き換えも抜粋からは略しました。
 
 ```python
 GNU = "/usr/bin/gnu{}"
 UUTILS = "/usr/lib/cargo/bin/coreutils/{}"
+
+# (ケース名, argv, リダイレクト)。"full" なら stdout を /dev/full に、ファイル名ならそのファイルを stdin にする。
+CASES = [
+    ("ls", ["ls"], None),
+    ("ls -l（xattr 付き）", ["ls", "-l", "--time-style=+%Y", "attr.txt"], None),
+    ("ls --bogus", ["ls", "--bogus"], None),
+    # …（中略。全 32 ケース）
+    ("ls（/dev/full へ）", ["ls"], "full"),
+    ("printf（/dev/full へ）", ["printf", "x"], "full"),
+    ("sort（/dev/full へ）", ["sort", "data.txt"], "full"),
+    ("md5sum（/dev/full へ）", ["md5sum", "data.txt"], "full"),
+]
+
+
+def make_fixture(d):
+    def w(name, text):
+        with open(os.path.join(d, name), "w") as f:
+            f.write(text)
+
+    w("data.txt", "pear\napple\napple\nfig\n")
+    w("nums.txt", "10\n9\n100\n")
+    w("data.csv", "id,name\n1,pear\n2,fig\n")
+    w("attr.txt", "x\n")
+    os.setxattr(os.path.join(d, "attr.txt"), "user.note", b"1")
+    for name in os.listdir(d):
+        os.utime(os.path.join(d, name), (978307200, 978307200))  # 2001-01-01
 
 
 def run(impl, argv, redirect):
@@ -88,7 +114,11 @@ def run(impl, argv, redirect):
             stdin = open(os.path.join(d, redirect))
         p = subprocess.run(argv, executable=exe, cwd=d, env=env,
                            stdin=stdin, stdout=out, stderr=subprocess.PIPE)
-        return {"stdout": ..., "stderr": ..., "exit": p.returncode}
+        return {
+            "stdout": (p.stdout or b"").decode(errors="replace"),
+            "stderr": p.stderr.decode(errors="replace"),
+            "exit": p.returncode,
+        }
 
 
 for name, argv, redirect in CASES:
@@ -99,11 +129,15 @@ for name, argv, redirect in CASES:
                  (u["stdout"], u["exit"], bool(u["stderr"]))
 ```
 
-比べる前に、2 つの実装の条件を揃えています。
+比べる前に、2 つの実装の条件を以下のように揃えています。
 
-- 呼び出し名: `executable` で実体を指定し、`argv[0]` はコマンド名（`ls`）のままにします。`gnuls` という名前で起動すると、エラーメッセージが `gnuls: ...` で始まり、それだけで差になります。
-- ロケールと時刻: `LC_ALL=C` と `TZ=UTC` で揃えます。日本語のロケールでは、日付の表記などが実装ごとに違います。
-- 入力: ケースごとに作業ディレクトリを作り直し、同じファイルを同じ更新時刻で置きます。
+| 揃える条件 | 揃え方 |
+|---|---|
+| 呼び出し名 | `executable` で実体を指定し、`argv[0]` は `ls` のままにする |
+| ロケールと時刻 | `LC_ALL=C` と `TZ=UTC` を渡す |
+| 入力 | ケースごとに作業ディレクトリを作り直し、同じファイルを同じ更新時刻で置く |
+
+呼び出し名を揃えるのは、`gnuls` という名前で起動すると、エラーメッセージが `gnuls: ...` で始まり、それだけで差になるからです。ロケールを揃えるのは、日本語のロケールでは日付の表記などが実装ごとに違うからです。
 
 <br>
 
@@ -124,9 +158,11 @@ for name, argv, redirect in CASES:
 
 uutils の開発者も同じ判断をしています。uutils のリポジトリの [fuzz ディレクトリ](https://github.com/uutils/coreutils/tree/main/fuzz)には、ランダムな引数と入力を GNU と uutils の両方に渡して比べるテスト（uufuzz）があります。失敗にするのは stdout と終了コードの差で、stderr の差はほとんどの対象で表示するだけです。
 
-stderr を比べる前に、両方の stderr から `sort:` のような最初の `:` までを落とし、コマンド名の違いが差として出ないようにしています。また、GNU は `LC_ALL=C` で起動します。
+uufuzz は、stderr を比べる前に両方の stderr から `sort:` のような最初の `:` までを落とし、コマンド名の違いが差として出ないようにしています。また、GNU を `LC_ALL=C` で起動します。
 
 何を比べないかを決めないと、差の一覧の大半がノイズになり、本当の差を見落とします。一方で、比べない範囲を広げ過ぎると、本当の差も消えます。stderr を全く比べなければ、`ls` が書き込み失敗を報告しない差は終了コードでしか見えません。
+
+同じソースから 2 回ビルドした成果物を比べる [Reproducible Builds](/notes/security/reproducible-builds/) でも、時刻やファイルの所有者のように比べなくてよい差を先に取り除いてから、中身の差を調べます。
 
 ---
 
@@ -134,15 +170,17 @@ stderr を比べる前に、両方の stderr から `sort:` のような最初�
 
 2 つの実装の出力が違っても、どちらが正しいかは比べただけでは分かりません。実装が 3 つ以上あれば多数決を考えられますが、2 つでは決められません。そこで、両方が従うはずの文書を確認します。coreutils の場合は、UNIX 系 OS のコマンドの振る舞いを定めた標準規格である POSIX と、GNU のマニュアルです。
 
+冒頭の差を 1 つずつ判断した結果が、以下の表です。`ls -l` の 1 列目の末尾の `+` は、ACL などのアクセス制御があるファイルに付く印です。[ACL](/notes/security/capability-based-security/)（Access Control List）は、ファイルに利用者ごとの権限を付ける仕組みです。
+
 | 差 | 確認した文書の定め | 判断 |
 |---|---|---|
 | `ls -l` の `+` | [GNU のマニュアル](https://www.gnu.org/software/coreutils/manual/html_node/What-information-is-listed.html): ACL などがある時に付ける | uutils の誤り |
-| `ls`、`printf` の 0 | [POSIX の printf](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/printf.html) と ls: エラーは 0 より大きい値 | uutils の誤り |
+| `ls`、`printf` の 0 | [POSIX の printf](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/printf.html) と [ls](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html): エラーは 0 より大きい値 | uutils の誤り |
 | `sort` の 1 | [POSIX の sort](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sort.html): エラーは 1 より大きい値 | uutils の誤り |
 | `md5sum` の異常終了 | 書き込みの失敗での異常終了を認める文書は無い | uutils の誤り |
 | エラーの文面 | 文面を定めた文書は無い | ノイズ |
 
-ACL（Access Control List）は、ファイルに利用者ごとの権限を付ける仕組みです。実験では、ファイルに名前と値の組を付ける拡張属性（xattr）で、`user.note` という属性を付けました。これはアクセス制御ではないので、GNU の `ls` は `+` を付けません。
+実験では、ファイルに名前と値の組を付ける拡張属性（xattr）で、`user.note` という属性を付けました。これはアクセス制御ではないので、GNU の `ls` は `+` を付けません。
 
 uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0/src/uucore/src/lib/features/fsxattr.rs)は、拡張属性が 1 つでもあれば ACL があるとみなすので、`+` を付けました。
 
@@ -150,11 +188,11 @@ uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0
 
 `ls -l` の 1 列目を正規表現で読んでいるスクリプトは、末尾の `+` で一致しなくなることがあります。
 
-`sort` の終了コード 1 は、POSIX では `-c`（入力が並んでいるかを確認するオプション）で並んでいなかった時の値です。GNU の 2 は「1 より大きい値」に収まり、uutils の 1 は収まりません。`sort -c` で「並んでいるか」を確認するスクリプトは、終了コード 1 を「並んでいない」と読むので、書き込みの失敗を並びの問題と取り違えます。
+`sort` の `-c` は、入力が並んでいるかを確認するオプションです。POSIX は、終了コード 1 を `-c` で並んでいなかった時の値として取っておき、他のエラーには 1 より大きい値を求めます。GNU の 2 は「1 より大きい値」に収まり、uutils の 1 は収まりません。uutils は書き込みの失敗にその 1 を使ったので、終了コードで原因を分けるスクリプトは、並びの問題と取り違えます。
 
 <br>
 
-`md5sum` の異常終了は、Rust の panic（回復できないエラーで処理を止める仕組み）です。uutils は panic した時にすぐ止まる設定（`panic = "abort"`）で[ビルドされている](https://github.com/uutils/coreutils/blob/0.8.0/Cargo.toml)ので、プロセスは SIGABRT（シグナル 6）で終わり、シェルからは終了コード 134 に見えます。
+`md5sum` の異常終了は、Rust の panic です。panic は、回復できないエラーで処理を止める仕組みです。uutils は panic した時にすぐ止まる設定（`panic = "abort"`）で[ビルドされている](https://github.com/uutils/coreutils/blob/0.8.0/Cargo.toml)ので、プロセスは SIGABRT（シグナル 6）で終わり、シェルからは終了コード 134 に見えます。Python の `returncode` では -6 です。
 
 書き込みの失敗の扱いは、同じ uutils の中でもコマンドごとに違います。[stdio Buffering のノート](/notes/computer-systems/stdout-buffering/)で試した uutils の `cat` は、`/dev/full` への書き込みでエラーを表示して 1 を返しました。
 
@@ -162,7 +200,7 @@ uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0
 
 #### バージョンを上げた時の比較
 
-本記事を書いている途中の 2026-11-12 の朝に、著者の Ubuntu 26.04 では unattended-upgrades（更新を自動で入れる仕組み）が uutils を 0.8.0 から 0.10.0 に上げました。同じスクリプトを実行し直すと、normalized の差は 5 から 4 に減りました。0.8.0 の結果は、docker の `ubuntu:26.04` のイメージで同じスクリプトを実行して残しています。
+本記事を書いている途中の 2026-11-12 の朝に、著者の Ubuntu 26.04 では、更新を自動で入れる unattended-upgrades が uutils を 0.8.0 から 0.10.0 に上げました。同じスクリプトを実行し直すと、normalized の差は 5 から 4 に減りました。0.8.0 の結果は、docker の `ubuntu:26.04` のイメージで同じスクリプトを実行して残しています。
 
 | ケース | GNU 9.7 | uutils 0.8.0 | uutils 0.10.0 |
 |---|---|---|---|
@@ -174,7 +212,7 @@ uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0
 
 `md5sum` は panic せずにエラーを表示して 1 を返すようになり、残った差は stderr の文面だけです。`ls` もエラーを表示するようになりましたが、終了コードは GNU の 2 に対して 1 です。
 
-POSIX の ls は「0 より大きい値」としか定めていないので、この差は仕様の範囲内です。比較の規則に「終了コードは 0 かそれ以外かだけを比べる」を足すかは、次に決めることになります。`printf` の 0、`sort` の 1、`ls -l` の `+` は 0.8.0 と同じでした。
+POSIX の ls は「0 より大きい値」としか定めていないので、この差は仕様の範囲内です。比較の規則に「終了コードは 0 かそれ以外かだけを比べる」を足すかは、次に決めることになります。
 
 更新は利用者の知らない間にも入ります。比べるスクリプトを残しておけば、変わった振る舞いを 1 回の実行で一覧にできます。
 
@@ -182,7 +220,7 @@ POSIX の ls は「0 より大きい値」としか定めていないので、�
 
 ### 実験 2: 対象が自分で出す JSON と比べる
 
-[jsonize](https://github.com/nao1215/jsonize) は、コマンドの出力を JSON に変換する著者の CLI で、コマンド名は `jz` です。コマンドごとに、出力の各行を正規表現で読む「定義」を持っています。
+[jsonize](https://github.com/nao1215/jsonize) は、コマンドの出力を JSON に変換する著者の CLI で、コマンド名は `jz` です。`jz run ip -br link` のように使うと、コマンドを実行して、その出力を JSON にします。コマンドごとに、出力の各行を正規表現で読む「定義」を持っています。
 
 Linux のネットワークの設定を表示する `ip` コマンドは、`-br`（brief）を付けるとインターフェースを 1 行 1 つの短い表で出し、`-j` を付けると同じ内容を JSON で出します。以下は、docker が作った veth の行です。veth は、コンテナとホストをつなぐ仮想のネットワークインターフェースです。
 
@@ -196,20 +234,54 @@ veth3a8eedd@if2  UP             xx:xx:xx:xx:xx:xx <BROADCAST,MULTICAST,UP,LOWER_
 ただし、キーの名前は一致しません。jz はインターフェース名を `interface` に置き、`ip -j` は `ifname` に置きます。そこで、キーは比べずに、1 行に含まれる値の集まりを比べます。
 
 ```python
-for o, n in zip(ours, native):          # 行の位置で対にする
+def leaves(v, out):
+    if isinstance(v, dict):
+        for x in v.values():
+            leaves(x, out)
+    elif isinstance(v, list):
+        for x in v:
+            leaves(x, out)
+    elif v is not None:
+        out.append(str(v))
+    return out
+
+
+for o, n in zip(ours, native):
     a, b = Counter(leaves(o, [])), Counter(leaves(n, []))
-    extra = a - b                         # jz にだけある値
+    missing = b - a
+    k, other = classify(a - b, missing)
 ```
 
-`leaves` は、1 行分の JSON から値だけを取り出して 1 つの一覧にする関数です。`ip` の表と JSON は同じ順でインターフェースを並べるので、行の位置で対にできます。jz にだけある値は、jz が作った値か、誤って読んだ値の候補です。以下は、jz の修正前のバージョンと v0.9.1 で、veth の 1 行を比べた結果です。
+上記は抜粋で、`missing` は `ip -j` にだけある値、`classify` は jz にだけある値を分類する関数です。集計と表示の部分は略しました。`ours` は `jz run ip -br link` の JSON、`native` は `ip -j -br link` の JSON です。`ip` の表と JSON は同じ順でインターフェースを並べるので、行の位置で対にできます。jz にだけある値は、jz が作った値か、誤って読んだ値の候補です。以下は、jz の修正前のバージョンと v0.9.1 で、veth の 1 行を比べた結果です。
 
 {{< figure src="images/native_json.webp" alt="上は修正前の jz。interface の値 veth3a8eedd@if2 が赤く、jz にだけある値。ip -j の ifname の veth3a8eedd と link_index の 2 も赤い枠で、ip -j にだけある値。state の UP、lladdr の MAC、flags の 4 個は ip -j の値と実線でつながる。下は修正後の v0.9.1。interface の veth3a8eedd は ifname と実線で、peer の if2 は link_index の 2 と点線でつながり、if2 と 2 は表現の違いと書かれている" caption="docker の veth の 1 行。修正前の jz は名前に相手の番号を含めていた" align="center" >}}
 
 修正前の jz は、`veth3a8eedd@if2` 全体をインターフェース名にしていました。`@` の後ろは veth の相手の番号で、`ip -j` では `link_index` という別の値です。この値をインターフェース名として次のコマンドに渡すと、`ip link show dev veth3a8eedd@if2` は `Device "veth3a8eedd@if2" does not exist.` で失敗します。
 
-スクリプトは、jz にだけある値のうち、表現が違うだけと分かっている 2 種類を先に分けて数えます。1 つは「アドレスと長さ」で、jz の `127.0.0.1/8` に対して `ip -j` は `127.0.0.1` と `8` に分けています。もう 1 つは「ifN と N」で、jz の `if2` に対して `ip -j` は `2` です。
+`classify` は、jz にだけある値のうち、表現が違うだけと分かっている 2 種類を先に分けて数えます。1 つは「アドレスと長さ」で、jz の `127.0.0.1/8` に対して `ip -j` は `127.0.0.1` と `8` に分けています。もう 1 つは「ifN と N」で、jz の `if2` に対して `ip -j` は `2` です。
 
-どちらにも当たらない値を「その他」として表示します。手元には docker の veth が 3 本あり、修正前の「その他 3」はその 3 本の名前です。
+```python
+def classify(extra, missing):
+    """jz にだけある値を、表現の違いとその他に分ける。"""
+    kinds = Counter()
+    other = []
+    for v in extra.elements():
+        m = re.fullmatch(r"(.+)/(\d+)", v)
+        if m and missing[m.group(1)] and missing[m.group(2)]:
+            kinds["アドレスと長さ"] += 1
+            missing[m.group(1)] -= 1
+            missing[m.group(2)] -= 1
+            continue
+        m = re.fullmatch(r"if(\d+)", v)
+        if m and missing[m.group(1)]:
+            kinds["ifN と N"] += 1
+            missing[m.group(1)] -= 1
+            continue
+        other.append(v)
+    return kinds, other
+```
+
+どちらにも当たらない値を「その他」として表示します。全体は [exp2_native_json.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/differential-testing/lab/exp2_native_json.py) にあります。手元には docker の veth が 3 本あり、修正前の「その他 3」はその 3 本の名前です。以下の出力は抜粋で、修正前の「その他」の行は 1 本分だけを載せています。
 
 ```text
 == 修正前の jz
@@ -245,7 +317,50 @@ ip -br addr: 11 行、43 値、jz にだけある値 21（アドレスと長さ 
 
 この機能を検証する時、比較の相手の候補は 2 つあります。filesql が内部で使う SQLite と、filesql が書き方を受け付けると約束した PostgreSQL です。2 つの結果が同じなら迷いませんが、違う時はどちらかに合わせる必要があります。
 
-以下は、同じ SQL を SQLite と PostgreSQL に渡す [exp3_group_by.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/differential-testing/lab/exp3_group_by.sh) の結果です。テーブル `g` には `(1,10)`、`(2,10)`、`(3,20)` の 3 行があり、どちらの SQL も、GROUP BY に無く集約もしていない列 `a` を SELECT しています。
+以下は、同じ SQL を SQLite と PostgreSQL に渡す [exp3_group_by.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/differential-testing/lab/exp3_group_by.sh) です。テーブル `g` には `(1,10)`、`(2,10)`、`(3,20)` の 3 行があり、どちらの SQL も、GROUP BY に無く集約もしていない列 `a` を SELECT しています。SQLite は Python の `sqlite3` で、PostgreSQL は docker のコンテナで動かします。
+
+```bash
+#!/usr/bin/env bash
+# 実験 3: 同じ SQL を SQLite と PostgreSQL に渡す。
+#
+# GROUP BY に無く、集約もしていない列 a を SELECT する。
+# SQLite はグループごとに 1 行を選んで答え、PostgreSQL は拒否する。
+# PostgreSQL は docker の postgres:17-alpine で一時的に起動する。
+set -u
+
+SQL_SETUP="CREATE TABLE g (a INTEGER, b INTEGER); INSERT INTO g VALUES (1,10),(2,10),(3,20);"
+QUERIES=(
+  "SELECT a, b FROM g GROUP BY b ORDER BY b;"
+  "SELECT a, max(b) FROM g;"
+)
+
+echo "== SQLite $(python3 -c 'import sqlite3; print(sqlite3.sqlite_version)')"
+for q in "${QUERIES[@]}"; do
+  echo "> $q"
+  python3 - "$SQL_SETUP" "$q" <<'EOF'
+import sqlite3, sys
+db = sqlite3.connect(":memory:")
+db.executescript(sys.argv[1])
+for row in db.execute(sys.argv[2]):
+    print(row)
+EOF
+done
+
+name="difftest-pg-$$"
+docker run -d --rm --name "$name" -e POSTGRES_PASSWORD=x postgres:17-alpine >/dev/null
+trap 'docker stop "$name" >/dev/null' EXIT
+until docker exec "$name" pg_isready -q -U postgres; do sleep 0.5; done
+sleep 1
+
+echo "== $(docker exec "$name" postgres --version)"
+docker exec "$name" psql -q -U postgres -c "$SQL_SETUP" >/dev/null
+for q in "${QUERIES[@]}"; do
+  echo "> $q"
+  docker exec "$name" psql -q -U postgres -At -F ', ' -c "$q" 2>&1
+done
+```
+
+実行した結果は以下の通りで、PostgreSQL のエラーの `LINE 1:` と `^` の行は略しています。
 
 ```text
 == SQLite 3.46.1
@@ -265,6 +380,8 @@ ERROR:  column "g.a" must appear in the GROUP BY clause or be used in an aggrega
 
 SQLite は答え、PostgreSQL は拒否しました。SQLite の答えは誤りではありません。[SQLite の文書](https://www.sqlite.org/lang_select.html#bare_columns_in_an_aggregate_query)は、このような列を bare column と呼び、グループのどれか 1 行の値を返すと定めています。`b = 10` のグループでは、`a` が 1 になるか 2 になるかは決まっていません。
 
+2 本目の `max(b)` のように集約関数の `max()` か `min()` を 1 つだけ使う時は、bare column はその最大か最小の行の値を取ると、同じ文書が定めています。
+
 修正前の filesql は、PostgreSQL の書き方の SQL を SQLite に渡し、SQLite の答えをそのまま返していました。
 
 しかし、filesql は PostgreSQL の書き方を受け付けると約束しているので、比べる相手は PostgreSQL です。PostgreSQL の書き方で書かれた SQL に、決まっていない行を返すのは約束に反します。そこで、[filesql の Issue #1095](https://github.com/nao1215/filesql/issues/1095) で、変換の時点でこの SQL を拒否するように直しました。
@@ -278,6 +395,7 @@ SQLite は答え、PostgreSQL は拒否しました。SQLite の答えは誤り�
 Differential Testing は、2 つの実装が同じ誤りを持っていると、差が出ないので見つけられません。
 
 {{< figure src="images/blind_spot.webp" alt="仕様書の曖昧な記述について、実装 A と実装 B が同じ解釈をし、どちらも誤った出力 X を出す。比べると一致するので、テストは通る。比べて分かるのは 2 つが違うことだけで、2 つが正しいことは分からない" caption="2 つの実装が同じ誤りを持つと、比べても差が出ない" align="center" >}}
+
 jsonize の定義と `ip -j` は別の人が書いたので、同じ誤りを持つ可能性は低いです。しかし、2 人の開発者が、仕様書の同じ曖昧な記述で、同じ誤った解釈をすることはあります。
 
 また、渡していない入力の差は見つかりません。実験 1 で `/dev/full` の 4 ケースを足したのは、書き込みの失敗が書き直しで壊れやすいと知っていたからです。思い付かなかった入力は、比べようがありません。uutils の uufuzz がランダムな引数と入力を生成しているのは、人が思い付かない入力も比べるためです。入力を機械に作らせる方法は、次の [Fuzzing のノート](/notes/software-testing/fuzzing/)で扱います。
