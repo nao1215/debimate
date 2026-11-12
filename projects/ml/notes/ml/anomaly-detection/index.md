@@ -86,7 +86,7 @@ Elliptic Envelope: 異常と判定 23 点（本物の異常 12 点、誤検知 1
 
 同じ 7% でも結果は手法ごとに違います。LOF は密度を近傍で測るので、2 つのクラスタを別々に扱えて、本物の異常を最も多い 16 点見つけました。Elliptic Envelope は 2 つのクラスタを 1 つの細長い楕円で囲み、楕円の両端にある異常を正常と判定します。
 
-One-Class SVM は `nu=0.07` でも 30 点を異常とし、右下の異常点 2 つの周りにも正常の領域を作りました。`gamma` が大きいほど、境界は個々の点に合わせて細かく曲がります。
+One-Class SVM は `nu=0.07` でも 30 点を異常とし、右下の異常点 2 つの周りにも正常の領域を作りました。[`nu`](https://scikit-learn.org/stable/modules/generated/sklearn.svm.OneClassSVM.html) は境界の外に出る点が占める割合に上限を与える目安で、判定の数をそのまま決める値ではありません。手元で数えると、30 点のうち 20 点は境界の上に乗った点でした。`gamma` が大きいほど、境界は個々の点に合わせて細かく曲がります。
 
 逆に、20 点のうち 4 点は正常クラスタの中（最寄りの正常点まで 0.15 未満）に落ちていて、4 つの手法が全て正常と判定しました。特徴量の上で正常と区別できない異常は、手法を変えても見つかりません。
 
@@ -224,7 +224,7 @@ for name, z in [("元の系列", rolling_z(s)), ("残差", rolling_z(resid))]:
 
 残差では、異常 4 点の |z| が 6.73〜11.79 まで上がり、正常点の最大 4.34 との間に差が開きます。|z| > 3 のままでは正常点も 5 点拾うので、しきい値を 5 程度に上げると 4 点だけが残ります。
 
-上のコードは [STL 分解](https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.STL.html)を簡略化したものです。他にも次の手法があります。
+上のコードは、移動平均と周期ごとの平均で分ける[古典的な分解](https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.seasonal_decompose.html)を中央値に置き換えたものです。LOESS を繰り返し当てて分ける [STL 分解](https://www.statsmodels.org/stable/generated/statsmodels.tsa.seasonal.STL.html)もあります。他にも次の手法があります。
 
 - ARIMA などの予測モデルの残差を見る（[時系列予測](../time-series-forecasting/)）
 - [Matrix Profile](https://www.cs.ucr.edu/~eamonn/MatrixProfile.html): 部分列同士の距離を総当たりで求め、似た部分列が他に無い区間を異常とする
@@ -240,7 +240,7 @@ for name, z in [("元の系列", rolling_z(s)), ("残差", rolling_z(resid))]:
 - [カーネル密度推定](../../math/kde/)や混合ガウス分布で、密度の低い点を異常とする
 - [KL ダイバージェンス](../../math/information-theory/)で、点ではなく分布全体の変化を検出する
 
-scikit-learn 以外では、[PyOD](https://github.com/yzhao062/pyod) が 60 を超える検出器を同じ API で提供しています。画像の異常検知には [Anomalib](https://github.com/open-edge-platform/anomalib)、時系列には [tsod](https://github.com/DHI/tsod) があります。
+scikit-learn 以外では、[PyOD](https://github.com/yzhao062/pyod) が PyOD 3 の時点で 60 を超える検出器を同じ API で提供しています。画像の異常検知には [Anomalib](https://github.com/open-edge-platform/anomalib)、時系列には [tsod](https://github.com/DHI/tsod) があります。
 
 ---
 
