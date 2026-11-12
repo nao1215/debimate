@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/ml/activation-functions/index.md",
- "overall": 2,
- "product": 2,
- "blob": "28a50eb1531c5bf003c768e194113023d1638e2e",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 36,
+ "blob": "c9b357fba07718a3c803c8678d5b63207f2c68a7",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
