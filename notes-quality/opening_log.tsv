@@ -26,9 +26,8 @@ distributed-systems__transactional-outbox	場面	その他	Transactional Outbox 
 generative-ai__depth-body-shape	誤解	その他	Depth Body Shape - 3D の人形から作った深度マップは、ポーズと一緒に体型と服の厚みも写す
 generative-ai__animation-flicker	結果	その他	Animation Flicker - 生成した絵をコマにして動かすと、止まっている所までちらつく
 generative-ai__ip-adapter-color-cast	場面	その他	IP-Adapter Color Cast - 参照の背景で、描いた絵の色が転ぶ
-math__variance	場面	その他	分散 - 散らばりの小さいミリ秒の時刻では、AVG(ts*ts) - AVG(ts)*AVG(ts) が 0 や負の値を返す
+math__variance	場面	その他	分散 - SQLite の AVG(ts*ts) - AVG(ts)*AVG(ts) は、標準偏差が 100 秒に満たないミリ秒の時刻で 0 や負の値を返すことがある
 ml__activation-functions	場面	その他	活性化関数 - 学習率 0.3 で digits を学習した ReLU の MLP は、2 層目の 64 個中 59 個が 0 しか返さなくなった
-ml__decision-tree	場面	その他	決定木（decision tree） - breast_cancer で深さ 3 の木を学習すると、train_test_split の乱数だけで根の質問が 5 通りに変わる
 ml__perceptron	問い	その他	パーセプトロン（perceptron） - 重みを 0 から始めて止め方を切れば、学習率を 12 桁変えても予測は同じ
 generative-ai__background-removal	結果	その他	Background Removal - 切り抜いた立ち絵の縁に、描いた時の背景が残る
 generative-ai__face-redraw	フラット	その他	Face Redraw - 全身の立ち絵で、顔だけを拡大して描き直す
@@ -43,3 +42,4 @@ blockchain-systems__zero-knowledge-proof	場面	その他	Zero-Knowledge Proof -
 blockchain-systems__ethereum-transaction	場面	その他	Ethereum Transaction - 送信元は署名から決まり、priority fee は base fee との和が maxFeePerGas 以下の間、書いた値のまま払われる
 ml__hyperparameter	結果	その他	ハイパーパラメータ - 81 回のグリッド探索で、learning_rate は 3 通りしか試されない
 math__lln-clt	誤解	その他	大数の法則と中心極限定理 - California Housing の 1 列から重複を許して 1000 件選ぶと、95% 信頼区間が 31% しか当たらない
+ml__decision-tree	場面	その他	決定木（decision tree） - breast_cancer で深さ 3 の木を学習すると、train_test_split の乱数だけで根の質問が 5 通りに変わる
