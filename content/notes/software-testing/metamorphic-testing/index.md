@@ -11,7 +11,7 @@ topics: ["Test Oracles"]
 
 Metamorphic Testing（メタモルフィックテスト）は、出力の正解が分からない処理をテストする手法です。1 つの入力に対する正解を書く代わりに、「入力をこう変えたら、出力はこう変わるはず」という関係を書き、2 つの出力がその関係を満たすかを検証します。
 
-以下は、コマンドの出力を JSON に変換する著者の CLI である [jsonize](https://github.com/nao1215/jsonize)（コマンド名は `jz`）で、1 つの関係を検証した結果です。関係は「2 つのファイルを 1 回で `wc` に渡して読んだ結果は、1 ファイルずつ読んでつないだ結果と等しいはず」です。しかし、1 回で読むと要素が 1 つ多くなりました。
+以下は、コマンドの出力を JSON に変換する著者の CLI である [jsonize](https://github.com/nao1215/jsonize)（コマンド名は `jz`）で、1 つの関係を検証した結果です。`jz run wc` は `wc` を実行し、その出力を JSON にします。関係は「2 つのファイルを 1 回で `wc` に渡して読んだ結果は、1 ファイルずつ読んでつないだ結果と等しいはず」です。しかし、1 回で読むと要素が 1 つ多くなりました。
 
 {{< figure src="images/wc_relation.webp" alt="上段は jz run wc a.txt b.txt。wc の出力 3 行のうち最後の 3 4 12 total が赤く合計行と示され、jz が作る JSON の要素は a.txt、b.txt、total の 3 つで、total の要素が赤い。下段は jz run wc a.txt と jz run wc b.txt。wc の出力はそれぞれ 1 行で、つないだ JSON は a.txt と b.txt の 2 要素。下に、2 つの結果が一致しない（関係を満たさない）と書かれている" caption="1 回で読むと、wc の合計行が total という名前のファイルとして 1 件増える" align="center" >}}
 
@@ -39,7 +39,9 @@ Metamorphic Testing（メタモルフィックテスト）は、出力の正解�
 
 <br>
 
-コマンドの出力を読むパーサーも、この種類の処理です。jsonize は v0.9.1 で 280 個のコマンドの出力を読みます。定義ごとに本物の出力を fixture として保存し、期待する JSON を golden ファイルとして置いて比べています。golden は定義の出力から生成し、定義を書いた本人が差分を目で見て置きます。そのため、本人が気付かなかった値の欠落は golden にも残り、テストは通ります。golden が保証するのは「前と同じ」までで、「正しい」ではありません。
+コマンドの出力を読むパーサーも、この種類の処理です。jsonize は v0.9.1 で 280 個のコマンドの出力を読みます。定義ごとに本物の出力を fixture として保存し、期待する JSON を golden ファイルとして置いて比べています。
+
+golden は定義の出力から生成し、定義を書いた本人が差分を目で見て置きます。そのため、本人が気付かなかった値の欠落は golden にも残り、テストは通ります。golden が保証するのは「前と同じ」までで、「正しい」ではありません。
 
 テストの種類ごとに、何を正解とみなすかを並べると以下の通りです。
 
@@ -75,7 +77,7 @@ Metamorphic Testing は、Chen 氏らが 1998 年の技術報告 [Metamorphic Te
 
 ### 実験 1: wc の合計行
 
-冒頭の結果は、以下のスクリプトで検証しました。1 回で読んだ結果（together）と、1 ファイルずつ読んで [jq](https://jqlang.org/) の `add` で 1 つの配列につないだ結果（separate）を比べます。掲載したのは比べる部分の抜粋で、バージョンの表示などを含む全体は [exp1_wc_concat.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/lab/exp1_wc_concat.sh) にあります。
+冒頭の結果は、以下のスクリプトで検証しました。1 回で読んだ結果（together）と、1 ファイルずつ読んで [jq](https://jqlang.org/) の `add` で 1 つの配列につないだ結果（separate）を比べます。後半の `--total=never` と `gnuwc` の行は、後の段落で触れる合計行の消し方と、ロケールによる違いを調べる部分です。スクリプトは [exp1_wc_concat.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/lab/exp1_wc_concat.sh) にもあります。
 
 ```bash
 #!/usr/bin/env bash
@@ -101,11 +103,24 @@ check() {
   echo
 }
 
+jz --version
+wc --version | head -1
+echo
 check a.txt b.txt
 check a.txt total
-```
+echo "\$ jz run wc total"
+jz run wc total
+echo
+echo "\$ jz run wc --total=never a.txt total"
+jz run wc --total=never a.txt total
 
-なお、Ubuntu 26.04 の `wc` は、GNU coreutils から Rust 製の [uutils](https://github.com/uutils/coreutils) の実装に置き換わっています。合計行の形は GNU coreutils の `wc` と同じです。置き換わった経緯は [stdio Buffering のノート](/notes/computer-systems/stdout-buffering/)で説明しています。
+# GNU 版の wc があれば、日本語のロケールで合計行の名前が変わることも見る
+if command -v gnuwc >/dev/null; then
+  echo
+  echo "\$ LANG=ja_JP.UTF-8 gnuwc a.txt b.txt | jz --parser wc"
+  LANG=ja_JP.UTF-8 LC_ALL=ja_JP.UTF-8 gnuwc a.txt b.txt | jz --parser wc
+fi
+```
 
 1 つ目の `check` の結果は、冒頭の図の通りです。2 つ目の `check` は、`total` という名前のファイルを本当に置いた場合です。together の 2 つ目と 3 つ目の要素が両方とも `"filename":"total"` になり、JSON だけを見てどちらがファイルでどちらが合計かを見分けられません。
 
@@ -121,11 +136,15 @@ relation: BROKEN
 
 上記は、読みやすいように要素ごとに改行しています。実際の出力は 1 行です。
 
+実験した Ubuntu 26.04 の `wc` は、GNU coreutils から Rust 製の [uutils](https://github.com/uutils/coreutils) の実装に置き換わっています。合計行の形は GNU coreutils の `wc` と同じです。置き換わった経緯は [stdio Buffering のノート](/notes/computer-systems/stdout-buffering/)で説明しています。
+
 合計行の名前は、ロケールでも変わります。Ubuntu の gnu-coreutils パッケージが入れる GNU coreutils 9.7 の `wc`（コマンド名は `gnuwc`）を日本語のロケールで実行すると、合計行は `3 4 12 合計` になり、jz はそれを `"filename":"合計"` として読みました。字面で合計行を見分ける実装にすると、この形も漏れます。
 
 <br>
 
-これはバグでしょうか。jz の定義は 1 行ずつ同じ形で読むので、「最後の行だけは合計」と書く手段がありません。直すには定義の書き方を増やす必要があり、著者の作業記録では 2026-11 時点でも判断を保留しています。なお、`wc` を実行する人は、GNU coreutils 9.2 で入った `wc --total=never` を付ければ合計行が出なくなり、関係も満たします。このオプションは、実験した uutils の `wc` でも有効でした。関係で見つかったのは、コードの書き間違いではなく、仕様が決めていない所でした。
+これはバグでしょうか。jz の定義は 1 行ずつ同じ形で読むので、「最後の行だけは合計」と書く手段がありません。直すには、最後の行だけ別の正規表現で読む書き方を定義に足す必要があり、著者の作業記録では 2026-11 時点でも判断を保留しています。
+
+なお、`wc` を実行する人は、GNU coreutils 9.2 で入った `wc --total=never` を付ければ合計行が出なくなり、関係も満たします。このオプションは、実験した uutils の `wc` でも有効でした。関係で見つかったのは、コードの書き間違いではなく、jsonize の wc の定義が合計行をどう扱うかを決めていなかった所でした。
 
 ---
 
@@ -139,7 +158,7 @@ relation: BROKEN
 
 そこで、以下の関係を使います。入力の英数字のトークンを 1 つ選び、1 文字だけ変えて読み直します。そのトークンが出力の値に反映されているなら、出力が変わるか、正規表現に一致しなくなってエラーになるはずです。エラーにならず出力も同じなら、そのトークンは出力に反映されていません。著者は jsonize の作業で、この検証をトークン感度と呼んでいます。
 
-以下は、DNS を問い合わせるコマンド `dig` の出力の末尾にある統計の 4 行（問い合わせにかかった時間、問い合わせ先のサーバー、日時、応答の大きさ）を読む小さなパーサーで、この関係を検証した結果です。直す前の SERVER 行の正規表現は、jsonize の dig の定義に 2026-09 まであった形を写しました。
+以下は、DNS を問い合わせるコマンド `dig` の出力の末尾にある統計の 4 行を読む小さなパーサーで、この関係を検証した結果です。4 行は、問い合わせにかかった時間、問い合わせ先のサーバー、日時、応答の大きさです。直す前の SERVER 行の正規表現は、jsonize の dig の定義に 2026-09 まであった形を写しました。
 
 {{< figure src="images/token_sweep.webp" alt="左に直す前、右に直した後の dig の統計 4 行が等幅で並び、英数字のトークンが枠で囲まれている。直す前は SERVER 行の括弧の中の 127、0、0、53 と UDP の 5 つが赤い枠で、1 文字変えても出力が同じことを表す。直した後は全てのトークンが灰色の枠" caption="直す前は、SERVER 行の括弧の中の 5 トークンが出力に反映されていない" align="center" >}}
 
@@ -226,9 +245,9 @@ output: {"query_time_ms": "3", "server": "127.0.0.53#53", "when": "Wed Nov 11 10
 
 #### jsonize の全 fixture での結果
 
-jsonize では、同じ関係を Go のテストとして書き、全ての定義の全 fixture で検証しました。2026-09-10 の初回は 99,365 件の検査に 27 秒かかり、617 個のトークンが出力を変えませんでした。
+jsonize では、同じ関係を Go のテストとして書き、全ての定義の全 fixture で検証しました。2026-09-10 の初回は、トークンを 1 つ変えて読み直す検査 99,365 件に 27 秒かかり、617 個のトークンが出力を変えませんでした。
 
-617 個の大半は、意図して捨てているものでした。例えば、毎回同じ見出しやバナーの行や、同じ値が 2 回出る行の 2 つ目です。Go の正規表現は、同じ文字列が 2 回出ることを書けないので、2 つ目の値は 1 つ目と等しいかを確認できず、読まずに捨てています。本当に値を落としていたのは、`dig`、`lspci -v`、`lspci -nn`、`stat` の 4 つの定義でした。dig の修正は [834bb1b5](https://github.com/nao1215/jsonize/commit/834bb1b5) です。
+617 個の大半は、意図して捨てているものでした。例えば、毎回同じ見出しやバナーの行や、同じ値が 2 回出る行の 2 つ目です。Go の正規表現には、前に出た文字列を参照する書き方（後方参照）が無いので、2 つ目の値は 1 つ目と等しいかを確認できず、読まずに捨てています。本当に値を落としていたのは、`dig`、`lspci -v`、`lspci -nn`、`stat` の 4 つの定義でした。dig の修正は [834bb1b5](https://github.com/nao1215/jsonize/commit/834bb1b5) です。
 
 この関係はその後も定義を足した時に実行していて、2026-09-14 には定義が増えた分を含めて 130,321 件を 30 秒で検査しました。新しく出たトークンは、新しい定義の見出しなど、意図して捨てているものだけでした。
 
@@ -250,18 +269,20 @@ jsonize では、同じ関係を Go のテストとして書き、全ての定�
 
 <br>
 
-関係は、一度書けば定義を足す度に自動で検証できます。jsonize の定義のテストは、正規化の 5 つ（先頭に BOM を付ける、改行を CRLF にする、末尾の改行を消す、末尾に空行を足す、先頭に空行を足す）と連結の関係を全 fixture で必ず実行します。利用者が自分で書いた定義を `jz test` でテストする時も同じです。定義を書く人は fixture と golden を置くだけで、関係のテストも通すことになります。
+関係は、一度書けば定義を足す度に自動で検証できます。jsonize の定義のテストは、正規化の 5 つの関係と連結の関係を全 fixture で必ず実行します。正規化の 5 つは、先頭への BOM の追加、改行の CRLF への変換、末尾の改行の削除、末尾と先頭への空行の追加です。
+
+jz では利用者も自分の定義を足せて、`jz test` でテストできます。その時も同じ関係を実行するので、定義を書く人は fixture と golden を置くだけで、関係のテストも通すことになります。
 
 ---
 
 ### 実験 3: 関係の方が間違っている時
 
-関係は期待値を必要としないので、乱数で作った入力とも組み合わせられます。Go の標準ライブラリには [testing/quick](https://pkg.go.dev/testing/quick) があり、関数の引数の型に合わせて乱数の入力を作り、渡した関数が false を返す入力を探します。この入力を反例と呼びます。
+関係は期待値を必要としないので、乱数で作った入力や、[Fuzzing](/notes/software-testing/fuzzing/) が作った入力とも組み合わせられます。Go の標準ライブラリには [testing/quick](https://pkg.go.dev/testing/quick) があり、関数の引数の型に合わせて乱数の入力を作り、渡した関数が false を返す入力を探します。この入力を反例と呼びます。
 
-この節では、テストが失敗した原因が関係にあった例を説明します。以下は、語の数を数える関数 `Words` で、testing/quick を使って連結の関係を検証した実験です。
+この節では、テストが失敗した原因が関係にあった例を説明します。以下は、語の数を数える関数 `Words` で、「つないだ文字列の語数は、それぞれの語数の和になる」という関係を testing/quick で検証した実験です。実験 1 の分割と同じ形の関係です。
 
 ```go
-// 語数を数える関数で、連結の関係を testing/quick を使って検証する。
+// 語数を数える関数で、つないだ文字列の語数の関係を testing/quick を使って検証する。
 // 1 つ目の関係は誤りで、2 つ目が正しい関係。
 package main
 
@@ -313,7 +334,7 @@ Words(a+" "+b) == Words(a)+Words(b): holds for 1000 inputs
 shrunk by hand: Words("xy")=1, Words("x")+Words("y")=2
 ```
 
-上記の反例の文字列は途中を略しています。全文は [exp3_quick.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/lab/output/exp3_quick.txt) にあります。1 つ目の関係は最初の入力で失敗し、testing/quick が報告した反例は 31 文字と 37 文字の乱数の文字列でした。
+上記の反例の文字列は途中を略しています。全文は [exp3_quick.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/lab/output/exp3_quick.txt) にあります。1 つ目の関係は最初の入力で失敗し、testing/quick が報告した反例は 31 文字と 37 文字の乱数の文字列でした。testing/quick は Unicode 全体から文字を選ぶので、空白をほとんど含まず、a と b はそれぞれ 1 語になります。
 
 {{< figure src="images/quick_shrink.webp" alt="上に testing/quick が見つけた反例として、a と b に \U000ea123 のような 31 文字と 37 文字の文字列が並ぶ。下に手で最小化した反例として a = x、b = y があり、Words(xy) = 1、Words(x) + Words(y) = 2、つなぐと 2 語が 1 語になる、と書かれている" caption="最小化していない反例からは原因が読めず、手で最小化すると 2 語がつながることが分かる" align="center" >}}
 
@@ -321,7 +342,9 @@ shrunk by hand: Words("xy")=1, Words("x")+Words("y")=2
 
 <br>
 
-jsonize でも同じことが起きています。2026-09-12 に関係のテストを実行し直した時は 13 件が失敗し、13 件とも関係の誤りでした。例えば、元から改行が CRLF の HTTP ヘッダの fixture に「改行を CRLF にする」変換をかけると、改行が `\r\r\n` になり、余った `\r` が値に入ります。改行ではなく NUL 文字で区切る出力（`ls --zero`）に「末尾に空行を足す」変換をかけると、足した改行が 1 件のファイル名として読まれます。どちらも jz は正しく、関係の方が入力の形式を無視していました。
+jsonize でも同じことが起きています。2026-09-12 に関係のテストを実行し直した時は 13 件が失敗し、13 件とも関係の誤りでした。
+
+例えば、元から改行が CRLF の HTTP ヘッダの fixture に「改行を CRLF にする」変換をかけると、改行が `\r\r\n` になり、余った `\r` が値に入ります。改行ではなく NUL 文字で区切る出力（`ls --zero`）に「末尾に空行を足す」変換をかけると、足した改行が 1 件のファイル名として読まれます。どちらも jz は正しく、関係の方が入力の形式を無視していました。
 
 ---
 
@@ -346,6 +369,8 @@ pub fn trim_idempotent_test() {
   )
 }
 ```
+
+`idempotency_of` に渡した `string.trim` が図の変換 T、`forall_morph` の 3 つ目の引数が f で、関係 R は f(x)＝f(T(x)) です。
 
 `forall_morph` は、生成器（`generator.string_ascii`）で作った入力で関係を検証し、失敗したら入力を最小化してから報告します。冪等の他に、変換しても出力が変わらない関係（`invariant_under`）や、入力の変換に合わせて出力も決まった形で変わる関係（`equivariant_under`）の型を持っています。
 

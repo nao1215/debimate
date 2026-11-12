@@ -104,7 +104,7 @@ def wc_relation_figure():
             red = extra_last and i == len(rows) - 1
             if red:
                 s.box(x + 6, y + 8 + i * 24, 278, 23, RED_PALE, RED, rx=4)
-            s.text(x + 14, y + 25 + i * 24, f'{{"filename":"{r["filename"]}", "lines":{r["lines"]}, …}}',
+            s.text(x + 14, y + 25 + i * 24, f'{{"lines":{r["lines"]}, …, "filename":"{r["filename"]}"}}',
                    mono, RED if red else INK, "start", mono=True)
 
     # 上段: 1 回で読む
@@ -208,7 +208,7 @@ def shrink_figure():
     a = ascii_only(lines[1].split(" = ", 1)[1])
     b = ascii_only(lines[2].split(" = ", 1)[1])
     s = Svg(940, 300)
-    s.text(20, 32, "testing/quick が見つけた反例（最小化なし。ASCII 以外の文字は \\U で表示）", 18, INK, "start")
+    s.text(20, 32, "testing/quick が見つけた反例（最小化なし。図では ASCII 以外の文字を全て \\U で表示）", 18, INK, "start")
     s.box(20, 46, 900, 92, FILL)
     s.text(36, 78, "a = " + a.split(" (")[0][:78] + "…", 13, INK, "start", mono=True)
     s.text(36, 104, "b = " + b.split(" (")[0][:78] + "…", 13, INK, "start", mono=True)
