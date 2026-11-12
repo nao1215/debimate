@@ -276,7 +276,7 @@ if __name__ == "__main__":
 
 {{< figure src="images/lora_params.svg" alt="ベースモデルの UNet は 2,567.5 M、text encoder 2 つで 817.7 M、LoRA が差分を足す 722 層の W は合わせて 2,207.7 M。LoRA の B と A は 85.1 M で、UNet の 3.32%" caption="ベースモデルの部品と LoRA のパラメータ数" align="center" >}}
 
-LoRA が差分を足す 722 層（target layers）の `W` は、UNet のパラメータ（parameters）の 86% を占めます。つまり、この LoRA は UNet の大部分の層に手を入れていながら、その層の 3.9% の量で済んでいます。層の内訳は、UNet の中にある 70 個の [Transformer](https://arxiv.org/abs/1706.03762) ブロック（注意機構と全結合層を組み合わせた単位）ごとに、注意機構（attention）の行列 8 個と全結合の行列 2 個、それに入口と出口の行列 22 個です。
+LoRA が差分を足す 722 層（target layers）の `W` は、UNet のパラメータ（parameters）の 86% を占めます。つまり、この LoRA は UNet の大部分の層に手を入れていながら、その層の 3.9% の量で済んでいます。層の内訳は、UNet の中にある 70 個の [Transformer](https://arxiv.org/abs/1706.03762) ブロック（注意機構と全結合層を組み合わせた単位）ごとに、注意機構（attention）の行列 8 個と全結合の行列 2 個です。残りの 22 個は、Transformer ブロックを束ねる 11 個の単位が入口と出口に 1 個ずつ持つ行列です（数は [SDXL が公開する UNet の設定](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/unet/config.json)と一致します）。
 
 メタデータの `trained on` と `base SHA-256` は、sd-scripts が学習時に記録したベースモデルのファイル名と [SHA-256](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)（ファイルの中身から計算する[ハッシュ値](/notes/security/sha-256/)）です。ファイル名と、SHA-256 が配布ページの v17.0 の値と一致することから、学習に使ったのは WAI-illustrious-SDXL v17.0 だと分かります。差分は、このベースモデルとの差として学習された値です。
 
