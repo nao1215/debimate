@@ -1,0 +1,28 @@
+# 表記・語の揺れの組。refresh_style.py が本人の実文（2023 年以降の content/post/ja の技術記事と weeknotes）で数え、
+# variants.tsv に書き出す。gate.py は mode=enforce の組で、本人の使用が 5% 未満（組の合計 30 件以上）の形を NG にする。
+# 組<TAB>mode<TAB>形<TAB>正規表現（Python）
+確認する	enforce	確認	確認
+確認する	enforce	検証	検証
+確認する	enforce	確かめ	確かめ
+ユーザー	enforce	ユーザー	ユーザー
+ユーザー	enforce	ユーザ	ユーザ(?!ー)
+サーバー	enforce	サーバー	サーバー
+サーバー	enforce	サーバ	サーバ(?!ー)
+パーサー	enforce	パーサー	パーサー
+パーサー	enforce	パーサ	パーサ(?!ー)
+レイヤー	enforce	レイヤー	レイヤー
+レイヤー	enforce	レイヤ	レイヤ(?!ー)
+ブラウザ	enforce	ブラウザ	ブラウザ(?!ー)
+ブラウザ	enforce	ブラウザー	ブラウザー
+メモリ	enforce	メモリ	メモリ(?!ー)
+メモリ	enforce	メモリー	メモリー
+ディレクトリ	enforce	ディレクトリ	ディレクトリ(?!ー)
+ディレクトリ	enforce	ディレクトリー	ディレクトリー
+ライブラリ	enforce	ライブラリ	ライブラリ(?!ー)
+ライブラリ	enforce	ライブラリー	ライブラリー
+一方	report	一方で	一方で
+一方	report	一方、	一方、
+DB	report	DB	(?<![A-Za-z])DB(?![A-Za-z])
+DB	report	データベース	データベース
+形式名詞のこと	report	こと	(?<=[ぁ-ん])こと
+形式名詞のこと	report	事	(?<=[ぁ-ん])(?<![はがをにでとへもや])事(?![件務例前実情柄故業象態項典後者])

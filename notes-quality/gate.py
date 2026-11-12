@@ -50,6 +50,26 @@ def drift_rows():
     return [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#')]
 
 
+def variant_rules():
+    """style/variants.tsv から、本人がほぼ使わない形（enforce の組で 5% 未満、組の合計 30 件以上）を返す。"""
+    p = os.path.join(HERE, 'style', 'variants.tsv')
+    if not os.path.exists(p):
+        return []
+    rows = [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#') and r[0] != '組']
+    rules = []
+    for g in dict.fromkeys(r[0] for r in rows):
+        grp = [r for r in rows if r[0] == g and r[1] == 'enforce']
+        total = sum(int(r[3]) for r in grp)
+        if not grp or total < 30:
+            continue
+        best = max(grp, key=lambda r: int(r[3]))
+        others = '・'.join(r[2] for r in grp if float(r[4]) >= 0.05)
+        for r in grp:
+            if float(r[4]) < 0.05:
+                rules.append((r[2], re.compile(r[5]), f'{others}（本人の実文で {r[2]} {r[3]} 件、{best[2]} {best[3]} 件）'))
+    return rules
+
+
 def added_lines(old_text, new_text):
     out = []
     for l in difflib.unified_diff(old_text.splitlines(), new_text.splitlines(), lineterm='', n=0):
@@ -73,6 +93,10 @@ def check_added(lines):
         for row in drift_rows():
             if row[0] in t:
                 ng.append(f'足した行に「{row[0]}」（本人の言い方: {row[2] if len(row) > 2 else ""}）: {t[:60]}')
+        tt = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', t)
+        for form, rx, hint in variant_rules():
+            if rx.search(tt):
+                ng.append(f'足した行に「{form}」（本人の言い方: {hint}）: {t[:60]}')
     return ng
 
 
@@ -135,6 +159,17 @@ def check_full(rel):
         if n > limit:
             lines = [str(i + 1) for i, l in enumerate(text.splitlines()) if word in l][:8]
             ng.append(f'「{word}」が {n} 回（上限 {limit}）。本人の言い方: {hint}。行: {", ".join(lines)}')
+    plain = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', prose)
+    for form, rx, hint in variant_rules():
+        n = len(rx.findall(plain))
+        if n:
+            lines = [str(i + 1) for i, l in enumerate(text.splitlines()) if rx.search(re.sub(r'`[^`]*`|\]\([^)]*\)', '', l))][:8]
+            ng.append(f'「{form}」が {n} 回。本人の言い方: {hint}。行: {", ".join(lines)}')
+    code, out = run([sys.executable, os.path.join(HERE, 'omokage_check.py'), p])
+    if code == 0 and out.strip().splitlines()[-1].strip().isdigit():
+        sc = int(out.strip().splitlines()[-1])
+        if sc < 85:
+            ng.append(f'omokage の一致度が {sc}%（85% 以上。omokage check --explain で崩れた段落を見る）')
 
     cp = os.path.join(HERE, 'checklists', f'{key}.md')
     if not os.path.exists(cp):

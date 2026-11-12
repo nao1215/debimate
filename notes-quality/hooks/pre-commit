@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
-# 技術ノート・ML ノートの規則を、commit 前に staged の版で見る（notes-quality/gate.py commit）。
+# 1. 本人の記事・weeknotes・ノート・揺れの組を変えた commit では、文体の基準（notes-quality/style の
+#    variants.tsv・vocabulary.md・corpus.sha256）を本人の実文から作り直し、同じ commit に入れる。
+# 2. 技術ノート・ML ノートの規則を staged の版で見る（notes-quality/gate.py commit）。
 # 有効にする: git config core.hooksPath notes-quality/hooks
-exec python3 "$(git rev-parse --show-toplevel)/notes-quality/gate.py" commit
+set -e
+root="$(git rev-parse --show-toplevel)"
+if git diff --cached --name-only | grep -qE '^(content/post/ja/|content/weeknotes/|content/notes/|projects/ml/notes/|notes-quality/style/(variant_groups|corpus_)|notes-quality/(build_vocab|refresh_style)\.py)'; then
+  python3 "$root/notes-quality/refresh_style.py" >/dev/null
+  git add "$root/notes-quality/style/variants.tsv" "$root/notes-quality/style/vocabulary.md" "$root/notes-quality/style/corpus.sha256"
+fi
+exec python3 "$root/notes-quality/gate.py" commit

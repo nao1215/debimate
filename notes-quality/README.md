@@ -29,3 +29,13 @@ git config core.hooksPath notes-quality/hooks
 | `review_cache.py`、`reviews/` | 精読の記録（debimate-note-review スキル）。記事ごとの判断と、確認した時の git の版。2026-11-12 に SQLite から移した |
 
 規則を変える時は、先に `scoring/decisions.md` に日付と著者の言葉を書きます。機械で判定できる規則は `gate.py` か `drift_words.tsv` に、判定できない規則は `style/` に足します。
+
+## 自動で作り直すもの
+
+本人の記事・weeknotes・ノートを commit すると、pre-commit が `refresh_style.py` を走らせ、次を作り直して同じ commit に入れます。手で書き足しません。
+
+- `style/variants.tsv`: 表記・語の揺れ（`style/variant_groups.tsv` の組）を、2023 年以降の本人の技術記事と weeknotes で数えたもの。本人の使用が 5% 未満の形は関門で NG になります。
+- `style/vocabulary.md`: 本人の実文とノートの言い回しの差。
+- `style/corpus.sha256`: 学習に使う技術記事のハッシュ。
+
+omokage のプロファイルは git に入れず、`omokage_check.py` が技術記事の変化を見て `~/.cache/debimate-omokage/` に作り直します（初回 1 分ほど）。関門は一致度 85% 未満を NG にします。omokage が無い環境（CI）ではこの判定を飛ばします。非技術記事と LLM が書いた記事は `style/corpus_nontechnical.txt` と `style/corpus_llm_written.txt` に足して学習から外します。

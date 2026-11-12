@@ -42,6 +42,9 @@ jobs:
           filter: blob:none
       - name: Check changed notes
         run: python3 notes-quality/gate.py push "${{ github.event.before }}" "${{ github.sha }}"
+      - name: Warn when style references are stale
+        continue-on-error: true
+        run: python3 notes-quality/refresh_style.py --check
 
   build:
     needs: notes-gate

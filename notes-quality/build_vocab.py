@@ -100,16 +100,19 @@ def main():
         body.append(f"| {g} | {rp[g]:.1f} | {n_:.1f} | {ra.get(g, 0):.1f} | {c} |")
     out = "\n".join(body)
 
-    if '--write' in sys.argv:
-        dst = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'references', 'vocabulary.md')
-        head = ("# 語彙の差分（自動生成）\n\n"
-                "`scripts/build_vocab.py --write` で再生成する。手で書き足さない。\n"
+    head = ("# 語彙の差分（自動生成）\n\n"
+                "`notes-quality/refresh_style.py` が本人の実文から作り直す。手で書き足さない。\n"
                 "ノートを書く度に本人との差は動くので、規則として固定せず、書いた後に\n"
                 "この表を当てて言い換える使い方をする。\n\n"
                 "専門用語は題材が違えば当然ずれるので、ひらがなが半分以上を占める\n"
                 "言い回しだけを残してある。\n\n---\n\n")
-        open(os.path.abspath(dst), 'w', encoding='utf-8').write(head + out + "\n")
-        print("wrote", os.path.abspath(dst))
+    if '--stdout' in sys.argv:
+        sys.stdout.write(head + out + "\n")
+        return
+    if '--write' in sys.argv:
+        dst = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'style', 'vocabulary.md')
+        open(dst, 'w', encoding='utf-8').write(head + out + "\n")
+        print("wrote", dst)
     print(out)
 
 main()
