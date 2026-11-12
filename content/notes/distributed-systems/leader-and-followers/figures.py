@@ -42,7 +42,7 @@ def concept_figure():
     p = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" role="img"><title>'
-        f'{escape("Leader が決めた順序で各ノードのログが同じ位置に並び、過半数に届いた所まで確定する")}'
+        f'{escape("Leader が決めた順序で各ノードのログが同じ位置に並び、過半数に届いた所までコミットする")}'
         '</title>',
         f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}} '
         f'.red{{fill:{RED}}}</style>',
@@ -87,13 +87,13 @@ def concept_figure():
     xc = col_x(COMMIT) + BOX + (COL - BOX) / 2
     p.append(f'<line x1="{xc}" y1="84" x2="{xc}" y2="{140 + 2 * 92 + BH + 14}" '
              f'stroke="{GREEN}" stroke-width="6" stroke-linecap="round"/>')
-    text(xc - 12, 66, "確定（commit index）", 24, "end", "normal")
-    text(xc + 12, 66, "未確定", 24, "start", cls="sub")
+    text(xc - 12, 66, "コミット（commit index）", 24, "end", "normal")
+    text(xc + 12, 66, "未コミット", 24, "start", cls="sub")
 
     # Legend: colour is the term, dashed is not committed.
     yl = 450
     items = [((FILL, SUB, ""), "任期 1"), ((ACCENT, ACCENT, ""), "任期 2"),
-             ((OCHRE_PALE, OCHRE, ' stroke-dasharray="8 6"'), "未確定")]
+             ((OCHRE_PALE, OCHRE, ' stroke-dasharray="8 6"'), "未コミット")]
     x = 236
     for (fill, stroke, dash), label in items:
         p.append(f'<rect x="{x}" y="{yl}" width="44" height="36" rx="6" fill="{fill}" '

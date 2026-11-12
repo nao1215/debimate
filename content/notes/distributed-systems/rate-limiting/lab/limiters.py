@@ -8,7 +8,7 @@ from collections import deque
 
 
 class FixedWindow:
-    """固定窓: 時刻を window 秒ごとの枠に切り、枠ごとの数が limit に達したら断る。"""
+    """固定ウィンドウ: 時刻を window 秒ごとの枠に切り、枠ごとの数が limit に達したら断る。"""
 
     def __init__(self, limit, window):
         self.limit, self.window = limit, window
@@ -32,7 +32,7 @@ class SlidingLog:
         self.log = deque()
 
     def allow(self, t):
-        while self.log and self.log[0] <= t - self.window:   # 窓から出た記録を捨てる
+        while self.log and self.log[0] <= t - self.window:   # ウィンドウから出た記録を捨てる
             self.log.popleft()
         if len(self.log) < self.limit:
             self.log.append(t)
@@ -41,8 +41,8 @@ class SlidingLog:
 
 
 class SlidingWindowCounter:
-    """スライディング窓カウンタ: 前の枠と今の枠の 2 つの数だけを持ち、
-    前の枠の数を「今の窓に重なっている割合」で按分して足す（Cloudflare のブログの式）。"""
+    """スライディングウィンドウカウンター: 前の枠と今の枠の 2 つの数だけを持ち、
+    前の枠の数を「今のウィンドウに重なっている割合」で按分して足す（Cloudflare のブログの式）。"""
 
     def __init__(self, limit, window):
         self.limit, self.window = limit, window

@@ -109,7 +109,7 @@ def panel(f, top, title, stopped):
             band(f, y, YES[name], X1, "doubt")
         else:
             band(f, y, YES[name], ARRIVE[name], "doubt")
-            band(f, y, ARRIVE[name], X1, "done", "確定")
+            band(f, y, ARRIVE[name], X1, "done", "コミット")
     if stopped:
         f.text(X1, cy + 8, "参加者は待ち続ける →", 24, INK, weight="normal", anchor="end")
 

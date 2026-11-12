@@ -129,16 +129,16 @@ def concept_figure():
 
 
 def coordination_figure():
-    """オーケストレーション（中央の指揮役から放射状）とコレオグラフィー（イベントで数珠つなぎ）。"""
-    s = Svg(960, 540, "左のオーケストレーションでは中央の指揮役が 4 つのサービスに命令を送り返事を受ける。"
+    """オーケストレーション（中央のオーケストレーターから放射状）とコレオグラフィー（イベントで数珠つなぎ）。"""
+    s = Svg(960, 540, "左のオーケストレーションでは中央のオーケストレーターが 4 つのサービスに命令を送り返事を受ける。"
                       "右のコレオグラフィーでは各サービスが出したイベントを次のサービスが受けて連鎖する")
     s.text(230, 48, "オーケストレーション", 26)
     s.text(720, 48, "コレオグラフィー", 26)
     s.line(480, 70, 480, 500, color=LINE, width=1.5, marker="")
-    # 左: 中央の指揮役
+    # 左: 中央のオーケストレーター
     cx, cy = 230, 290
-    s.circle(cx, cy, 70, OCHRE_PALE, OCHRE)
-    s.text(cx, cy - 4, "指揮役", 24)
+    s.circle(cx, cy, 82, OCHRE_PALE, OCHRE)
+    s.text(cx, cy - 4, "オーケストレーター", 15)
     s.text(cx, cy + 26, "Saga の状態", 18, cls="sub")
     pos = [(70, 130, "注文"), (390, 130, "在庫"), (70, 450, "決済"), (390, 450, "配送")]
     for x, y, label in pos:
@@ -149,8 +149,8 @@ def coordination_figure():
         n = (dx * dx + dy * dy) ** 0.5
         ux, uy = dx / n, dy / n
         px, py = -uy * 9, ux * 9
-        s.line(cx + ux * 74 + px, cy + uy * 74 + py, x - ux * 72 + px, y - uy * 50 + py)
-        s.line(x - ux * 72 - px, y - uy * 50 - py, cx + ux * 74 - px, cy + uy * 74 - py)
+        s.line(cx + ux * 86 + px, cy + uy * 86 + py, x - ux * 72 + px, y - uy * 50 + py)
+        s.line(x - ux * 72 - px, y - uy * 50 - py, cx + ux * 86 - px, cy + uy * 86 - py)
     # 右: 数珠つなぎ
     chain = [(580, 150, "注文"), (840, 150, "在庫"), (840, 430, "決済"), (580, 430, "配送")]
     for x, y, label in chain:

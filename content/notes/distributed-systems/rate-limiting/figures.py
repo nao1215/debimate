@@ -61,16 +61,16 @@ def per_bin(times, start, stop, width):
 
 
 def fig_boundary(res):
-    """表紙: 窓の境目の前後 1 秒に 60 件ずつ送った時、1 秒ごとに通した件数。"""
+    """表紙: ウィンドウの境目の前後 1 秒に 60 件ずつ送った時、1 秒ごとに通した件数。"""
     fig, axes = plt.subplots(1, 2, figsize=(8.4, 3.4), sharey=True)
-    for ax, key, title in [(axes[0], "fixed", "固定窓"), (axes[1], "log", "スライディングログ")]:
+    for ax, key, title in [(axes[0], "fixed", "固定ウィンドウ"), (axes[1], "log", "スライディングログ")]:
         xs, ys = per_bin(res[key]["times"], 56, 64, 1.0)
         colors = []
         for x, y in zip(xs, ys):
             colors.append(RED if (key == "fixed" and x == 60) else BLUE)
         ax.bar([x + 0.5 for x in xs], ys, width=0.8, color=colors, edgecolor="none")
         ax.axvline(60, color=SUB, lw=1, ls=(0, (4, 3)))
-        ax.text(59.9, 78, "窓の境目", color=SUB, fontsize=9, ha="right", va="top")
+        ax.text(59.9, 78, "ウィンドウの境目", color=SUB, fontsize=9, ha="right", va="top")
         ax.set_title(title, fontsize=13, loc="left", color=INK)
         ax.set_xlim(56, 64)
         ax.set_ylim(0, 80)
@@ -88,18 +88,18 @@ def fig_boundary(res):
 def fig_windows():
     """各方式が「今の数」として何を数えるかの概念図（時刻 75 秒で判定する時）。"""
     fig, ax = plt.subplots(figsize=(8.4, 3.8))
-    rows = [("固定窓", 2), ("スライディングログ", 1), ("スライディング窓カウンタ", 0)]
+    rows = [("固定ウィンドウ", 2), ("スライディングログ", 1), ("スライディングウィンドウカウンター", 0)]
     now = 75
     for label, y in rows:
         ax.text(-3, y, label, ha="right", va="center", fontsize=13)
         ax.plot([0, 120], [y, y], color=LINE, lw=0.8, zorder=1)
-    # 固定窓: 60〜75 を数える
+    # 固定ウィンドウ: 60〜75 を数える
     ax.add_patch(plt.Rectangle((60, 2 - 0.28), now - 60, 0.56, fc=BLUE_PALE, ec=BLUE, zorder=2))
     ax.text(67.5, 2, "今の枠", ha="center", va="center", fontsize=12, zorder=3)
     # スライディングログ: 15〜75 を数える
     ax.add_patch(plt.Rectangle((now - 60, 1 - 0.28), 60, 0.56, fc=BLUE_PALE, ec=BLUE, zorder=2))
     ax.text(45, 1, "直近 60 秒の記録をすべて", ha="center", va="center", fontsize=12, zorder=3)
-    # カウンタ: 前の枠 × 45/60 + 今の枠
+    # カウンター: 前の枠 × 45/60 + 今の枠
     ax.add_patch(plt.Rectangle((0, 0 - 0.28), 60, 0.56, fc="#ffffff", ec=OCHRE, zorder=2))
     ax.add_patch(plt.Rectangle((now - 60, 0 - 0.28), 60 - (now - 60), 0.56, fc=OCHRE_PALE, ec=OCHRE, zorder=2))
     ax.add_patch(plt.Rectangle((60, 0 - 0.28), now - 60, 0.56, fc=BLUE_PALE, ec=BLUE, zorder=2))
@@ -163,8 +163,8 @@ def fig_counter_example():
 
 def fig_steady(res):
     """100 秒から 1 秒に 2 件を送り続けた時、5 秒ごとに通した件数。"""
-    keys = [("fixed", "固定窓"), ("log", "スライディングログ"),
-            ("counter", "スライディング窓カウンタ"), ("bucket10", "トークンバケット（容量 10）")]
+    keys = [("fixed", "固定ウィンドウ"), ("log", "スライディングログ"),
+            ("counter", "スライディングウィンドウカウンター"), ("bucket10", "トークンバケット（容量 10）")]
     fig, axes = plt.subplots(len(keys), 1, figsize=(8.4, 6.4), sharex=True, sharey=True)
     for ax, (key, title) in zip(axes, keys):
         xs, ys = per_bin(res[key]["times"], 90, 235, 5.0)

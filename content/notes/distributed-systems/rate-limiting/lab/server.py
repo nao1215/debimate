@@ -1,6 +1,6 @@
 """429 Too Many Requests と Retry-After、RateLimit ヘッダーを返す最小の HTTP サーバー。
 
-固定窓で「10 秒あたり 5 件」を数える（数は 1 つだけで、利用者は区別しない）。
+固定ウィンドウで「10 秒あたり 5 件」を数える（数は 1 つだけで、利用者は区別しない）。
 ヘッダーの形は draft-ietf-httpapi-ratelimit-headers-11（2026-05-23、Internet-Draft）に合わせた。
 127.0.0.1 だけで待ち受ける。
 
@@ -21,7 +21,7 @@ class Handler(BaseHTTPRequestHandler):
         w = math.floor(now / WINDOW)
         if w != state["window"]:
             state["window"], state["count"] = w, 0
-        reset = math.ceil((w + 1) * WINDOW - now)      # 今の窓が終わるまでの秒数
+        reset = math.ceil((w + 1) * WINDOW - now)      # 今のウィンドウが終わるまでの秒数
 
         allowed = state["count"] < LIMIT
         if allowed:

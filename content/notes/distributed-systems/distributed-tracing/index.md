@@ -67,7 +67,7 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 | 親 | 呼び出し元の Span。root span には無い | orders の `reserve` |
 | 開始・終了時刻 | 記録したホストの時計で測った時刻 | ミリ秒の UNIX 時刻 |
 | 属性（attributes） | キーと値の組。HTTP のステータスや再試行の回数など | `http.request.resend_count=1` |
-| 状態（status） | 未設定（Unset）・成功（Ok）・失敗（Error）の 3 値 | `ERROR` |
+| ステータス（status） | 未設定（Unset）・成功（Ok）・失敗（Error）の 3 値 | `ERROR` |
 | link | 親子ではない別の Span への参照 | 後述 |
 
 Context は、サービスの境界を越えて渡す最小限の情報です。中身は trace ID・span ID・trace flags（記録するかどうかを示す sampled フラグなど）と、製品ごとの追加情報（tracestate）で、開始時刻や属性は渡しません。冒頭のヘッダは、この Context を 1 行の文字列にしたものです。
@@ -83,9 +83,9 @@ Context は、サービスの境界を越えて渡す最小限の情報です。
 
 ---
 
-### Context の伝播
+### Context の伝搬
 
-Context を次の処理に渡すことは、伝播（propagation）と呼ばれます。同期的な HTTP 呼び出しでは、呼ぶ側が `traceparent` ヘッダに Context を書き込み、呼ばれた側が読み出します。
+Context を次の処理に渡すことは、伝搬（propagation）と呼ばれます。同期的な HTTP 呼び出しでは、呼ぶ側が `traceparent` ヘッダに Context を書き込み、呼ばれた側が読み出します。
 
 OpenTelemetry では、この書き込みは inject、読み出しは extract と呼ばれ、[Propagators API](https://opentelemetry.io/docs/specs/otel/context/api-propagators/) で形式を差し替えられるようにしています。W3C Trace Context には、製品ごとの追加情報を載せる `tracestate` ヘッダもあり、最大 32 個のキーと値の組を運べます。
 
@@ -257,9 +257,9 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
 
 再試行では、試行ごとに別の Span を作ります。OpenTelemetry の [HTTP の規約](https://opentelemetry.io/docs/specs/semconv/http/http-spans/)も、送信の試行ごとに Span を作り、2 回目以降の Span に `http.request.resend_count` を付けるよう求めています。
 
-実験の出力では、1 回目の `reserve` が `ERROR`、2 回目が `OK` で `http.request.resend_count=1` を持ちます。読む側は、同じ親の下に同じ名前の Span が並んでいたら、状態と試行回数の属性で失敗した試行と成功した試行を見分けます。
+実験の出力では、1 回目の `reserve` が `ERROR`、2 回目が `OK` で `http.request.resend_count=1` を持ちます。読む側は、同じ親の下に同じ名前の Span が並んでいたら、ステータスと試行回数の属性で失敗した試行と成功した試行を見分けます。
 
-ただし、失敗した Span は「何も起きなかった」ことを意味しません。実験の inventory は 503 を返す前に何も変更していませんが、在庫を減らした後で応答だけがタイムアウトする場合もあります。その場合、呼ぶ側の Span は `ERROR` でも、在庫は減っています。Span の状態は呼ぶ側から見た結果で、相手の DB の状態ではありません。
+ただし、失敗した Span は「何も起きなかった」ことを意味しません。実験の inventory は 503 を返す前に何も変更していませんが、在庫を減らした後で応答だけがタイムアウトする場合もあります。その場合、呼ぶ側の Span は `ERROR` でも、在庫は減っています。Span のステータスは呼ぶ側から見た結果で、相手の DB の状態ではありません。
 
 2 回目の試行で在庫が二重に減らないことは、記録の仕組みではなく、[Idempotency](../idempotency/) のような受け取る側の設計が保証します。
 

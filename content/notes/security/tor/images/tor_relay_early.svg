@@ -16,7 +16,7 @@
 <rect x="750" y="150" width="140" height="70" rx="10" fill="#f8eed8" stroke="#d4a24c" stroke-width="3"/>
 <text x="820" y="194.0" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">HSDir</text>
 <text x="820" y="256" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">descriptor を預かる役</text>
-<text x="40" y="60" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">descriptor を載せる・取りに来る経路</text>
+<text x="40" y="60" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">descriptor を載せる・取りに来る回線</text>
 <path d="M820,272 L820,340 L340,340 L340,226" fill="none" stroke="#d4a24c" stroke-width="3" stroke-dasharray="8 6" marker-end="url(#arro)"/>
 <rect x="470" y="323" width="34" height="34" rx="4" fill="#d4a24c" stroke="#d4a24c" stroke-width="2.5"/>
 <rect x="512" y="323" width="34" height="34" rx="4" fill="#ffffff" stroke="#d4a24c" stroke-width="2.5"/>

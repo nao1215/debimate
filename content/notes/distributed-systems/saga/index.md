@@ -75,13 +75,13 @@ Saga の各段は、1 つのサービスの中で閉じたローカルトラン�
 
 #### 実験の構成
 
-手元で、注文・在庫・決済・配送の 4 つのサービスと、次の段を決める指揮役（orchestrator）を Python で書きました。2026 年 11 月 11 日に、Python 3.14.4 の標準ライブラリ（[sqlite3](https://docs.python.org/3/library/sqlite3.html)、SQLite 3.46.1）だけで動かしています。乱数は使わず、何度実行しても同じログになります。
+手元で、注文・在庫・決済・配送の 4 つのサービスと、次の段を決めるオーケストレーター（orchestrator）を Python で書きました。2026 年 11 月 11 日に、Python 3.14.4 の標準ライブラリ（[sqlite3](https://docs.python.org/3/library/sqlite3.html)、SQLite 3.46.1）だけで動かしています。乱数は使わず、何度実行しても同じログになります。
 
 各サービスは自分専用の SQLite の DB を持ち、他のサービスの DB には触りません。
 
-指揮役への返事は、業務の更新と同じトランザクションで outbox テーブル（これから送るメッセージを貯める表）に入れ、relay（outbox の未送信の行を読んで送る処理）が後からバス（サービス間でメッセージを運ぶ仕組み）に流します（[Transactional Outbox](/notes/distributed-systems/transactional-outbox/)）。バスは仮想の時計を持ち、決済は外部の API を呼ぶ想定で仮想の時刻で 5、他のサービスは 1 だけ処理に掛かります。全体は [lab/saga.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/saga/lab/saga.py) にあります。
+オーケストレーターへの返事は、業務の更新と同じトランザクションで outbox テーブル（これから送るメッセージを貯める表）に入れ、relay（outbox の未送信の行を読んで送る処理）が後からバス（サービス間でメッセージを運ぶ仕組み）に流します（[Transactional Outbox](/notes/distributed-systems/transactional-outbox/)）。バスは仮想の時計を持ち、決済は外部の API を呼ぶ想定で仮想の時刻で 5、他のサービスは 1 だけ処理に掛かります。全体は [lab/saga.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/saga/lab/saga.py) にあります。
 
-指揮役は、次の表に従って命令を出します（ログの出力を除いた抜粋）。
+オーケストレーターは、次の表に従って命令を出します（ログの出力を除いた抜粋）。
 
 ```python
 # 進める命令と、それを打ち消す補償の命令。決済が pivot で、それより後は補償せずに再試行で進める
@@ -101,7 +101,7 @@ class Orchestrator(Node):
                 self.emit(dest, type=undo, **body)
 ```
 
-`emit()` は、宛先と命令を指揮役の outbox に入れる関数です。Saga の状態（どの段まで進んだか、補償中か）の更新と同じトランザクションで outbox に入れるので、状態だけが進んで命令が出ない、という食い違いは起きません。
+`emit()` は、宛先と命令をオーケストレーターの outbox に入れる関数です。Saga の状態（どの段まで進んだか、補償中か）の更新と同じトランザクションで outbox に入れるので、状態だけが進んで命令が出ない、という食い違いは起きません。
 
 <br>
 
@@ -120,17 +120,17 @@ t=11  order        CancelOrder     saga-A
 -- 結果: available=3  saga-A=CANCELLED
 ```
 
-決済が断られると、指揮役は在庫を戻す ReleaseStock と、注文を取り消す CancelOrder を出しました。在庫は 3 冊に戻り、注文は削除されずに CANCELLED として残ります。注文のレコードを消さずに状態を変えるのも、補償が「元の状態に戻す」ではなく「意味の上で打ち消す」ものだからです。失敗した決済の段は、自分のローカルトランザクションが ROLLBACK されるだけなので、補償は要りません。
+決済が断られると、オーケストレーターは在庫を戻す ReleaseStock と、注文を取り消す CancelOrder を出しました。在庫は 3 冊に戻り、注文は削除されずに CANCELLED として残ります。注文のレコードを消さずに状態を変えるのも、補償が「元の状態に戻す」ではなく「意味の上で打ち消す」ものだからです。失敗した決済の段は、自分のローカルトランザクションが ROLLBACK されるだけなので、補償は要りません。
 
 ---
 
 ### オーケストレーションとコレオグラフィー
 
-次の段を誰が決めるかで、Saga の組み立て方は 2 つに分かれます。上記の実験のように中央の指揮役が命令を出す形をオーケストレーション（orchestration）、各サービスが出したイベントを次のサービスが受けて自分の段を始める形をコレオグラフィー（choreography）と呼びます。
+次の段を誰が決めるかで、Saga の組み立て方は 2 つに分かれます。上記の実験のように中央のオーケストレーターが命令を出す形をオーケストレーション（orchestration）、各サービスが出したイベントを次のサービスが受けて自分の段を始める形をコレオグラフィー（choreography）と呼びます。
 
-{{< figure src="images/saga_coordination.webp" alt="左のオーケストレーションでは、中央の指揮役の円が、注文・在庫・決済・配送の 4 つのサービスと命令と返事を往復させる。右のコレオグラフィーでは、注文を作った、在庫を確保した、決済した、のイベントで 4 つのサービスが数珠つなぎに動く" caption="指揮役が命令するオーケストレーションと、イベントで連鎖するコレオグラフィー" align="center" >}}
+{{< figure src="images/saga_coordination.webp" alt="左のオーケストレーションでは、中央のオーケストレーターの円が、注文・在庫・決済・配送の 4 つのサービスと命令と返事を往復させる。右のコレオグラフィーでは、注文を作った、在庫を確保した、決済した、のイベントで 4 つのサービスが数珠つなぎに動く" caption="オーケストレーターが命令するオーケストレーションと、イベントで連鎖するコレオグラフィー" align="center" >}}
 
-オーケストレーションでは、Saga がどこまで進んだかが指揮役の DB の 1 か所にあります。段の順序の変更や補償の順序は指揮役のコードを読めば分かり、障害の調査もそこから始められます。その代わりに、指揮役という部品を作って動かし続ける必要があり、Azure のページは指揮役が障害点になることを欠点に挙げています。
+オーケストレーションでは、Saga がどこまで進んだかがオーケストレーターが持つ DB の 1 か所にあります。段の順序の変更や補償の順序はオーケストレーターのコードを読めば分かり、障害の調査もそこから始められます。その代わりに、オーケストレーターという部品を作って動かし続ける必要があり、Azure のページはオーケストレーターが障害点になることを欠点に挙げています。
 
 <br>
 
@@ -153,13 +153,13 @@ sequenceDiagram
     Note over O: 注文を取り消す（補償）
 ```
 
-指揮役がいないので、「決済に失敗した」を誰が購読して何を戻すかは、在庫と注文のサービスの購読の設定にだけ書かれます。
+オーケストレーターがいないので、「決済に失敗した」を誰が購読して何を戻すかは、在庫と注文のサービスの購読の設定にだけ書かれます。
 
 <br>
 
 どちらの形でも、各段は「DB を更新して確定する」と「次へ伝えるメッセージを出す」の 2 つを食い違わせてはいけません。確定したのにメッセージが出なければ、Saga はそこで止まります。各段のメッセージを [Transactional Outbox](/notes/distributed-systems/transactional-outbox/) で出すのはこのためです。
 
-指揮役が止まった時に、Saga の途中から再開する仕組みも要ります。この部分を引き受けるのが、[Temporal](https://temporal.io/) のようなワークフローエンジンです。2026 年 11 月時点の Temporal の [Saga のページ](https://docs.temporal.io/design-patterns/saga-pattern)は、補償をワークフローのコードの中でリストに登録しておき、失敗した時に逆順に実行する書き方を示し、ワーカー（ワークフローのコードを実行するプロセス）が落ちても補償が実行されることをエンジンが保証するとしています。
+オーケストレーターが止まった時に、Saga の途中から再開する仕組みも要ります。この部分を引き受けるのが、[Temporal](https://temporal.io/) のようなワークフローエンジンです。2026 年 11 月時点の Temporal の [Saga のページ](https://docs.temporal.io/design-patterns/saga-pattern)は、補償をワークフローのコードの中でリストに登録しておき、失敗した時に逆順に実行する書き方を示し、ワーカー（ワークフローのコードを実行するプロセス）が落ちても補償が実行されることをエンジンが保証するとしています。
 
 ---
 
@@ -198,7 +198,7 @@ t=11  inventory    ReleaseStock    saga-A  -> available=1
         ...
 ```
 
-指揮役は busy の返事を受けると、補償せずに、その 6 時刻後に同じ命令を送り直します。最後の段（配送）まで通った後には、予約の PENDING を外す命令を出します。以下は、印の有無で在庫の数と 2 人の注文の結末を比べた図です。
+オーケストレーターは busy の返事を受けると、補償せずに、その 6 時刻後に同じ命令を送り直します。最後の段（配送）まで通った後には、予約の PENDING を外す命令を出します。以下は、印の有無で在庫の数と 2 人の注文の結末を比べた図です。
 
 {{< figure src="images/saga_dirty_read.webp" alt="上段の対策なしでは、t=3 に A が在庫を確保して 0 になり、t=4 にページが在庫切れと表示し、t=7 に B が在庫切れで注文を取り消す。t=11 に A の補償で在庫が 1 に戻るが、A も B も買えない。下段の semantic lock では、ページは仮押さえ中と表示し、B は待ち、t=15 に再試行で在庫を確保して決済まで成功する" caption="在庫 1 冊を A と B が取り合う時の、在庫の数の推移（lab/saga.py の実行結果）" align="center" >}}
 
@@ -241,7 +241,7 @@ pivot が失敗すれば、前の compensable な段を補償します。pivot �
 
 この分け方は、論文が述べる後ろ向きの回復（backward recovery）と前向きの回復（forward recovery）に近い考え方です。ただし、論文の前向きの回復はセーブポイントから欠けた T を実行し直す仕組みで、pivot の考え方そのものではありません。
 
-実験で配送の API を 1 回だけ失敗させると、指揮役は補償せずに送り直し、注文を確定させました（ログの抜粋）。
+実験で配送の API を 1 回だけ失敗させると、オーケストレーターは補償せずに送り直し、注文を確定させました（ログの抜粋）。
 
 ```text
 t= 9  payment      ChargeCard      saga-A  1000 円 -> charged
@@ -264,7 +264,7 @@ t=20  orchestrator done            saga-A
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant O as 指揮役の outbox
+    participant O as オーケストレーターの outbox
     participant R as relay
     participant I as 在庫サービス
     R->>O: 未送信の ReleaseStock を読む
@@ -275,7 +275,7 @@ sequenceDiagram
     Note over I: 冪等でないと<br/>在庫を 2 回戻す
 ```
 
-実験では、指揮役の relay が ReleaseStock を送った直後に、relay を 1 回だけ止めました。在庫を戻す処理が「確保した数を足す」だけだと、2 通目でも足します（ログの抜粋）。
+実験では、オーケストレーターの relay が ReleaseStock を送った直後に、relay を 1 回だけ止めました。在庫を戻す処理が「確保した数を足す」だけだと、2 通目でも足します（ログの抜粋）。
 
 ```text
 t=10  orchestrator relay が ReleaseStock を送った直後に停止、再起動

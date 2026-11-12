@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Authentication / Identity"]
 ---
 
-Passkey は、手元の端末（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバーが対になる公開鍵で署名を検証する[認証](../authentication/)の方式です。
+Passkey は、手元の認証器（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバーが対になる公開鍵で署名を検証する[認証](../authentication/)の方式です。
 
 FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだとしています。
 

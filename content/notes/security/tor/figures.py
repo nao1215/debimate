@@ -162,7 +162,7 @@ def relay_early_figure():
         f.box(x - 70, ny, 140, nh, fill, stroke, sw=3)
         f.text(x, ny + nh / 2 + 9, name, 26)
     f.text(820, ny + nh + 36, "descriptor を預かる役", 24, SUB)
-    f.text(40, 60, "descriptor を載せる・取りに来る経路", 24, SUB, anchor="start")
+    f.text(40, 60, "descriptor を載せる・取りに来る回線", 24, SUB, anchor="start")
 
     # The mark travels back towards the client as a pattern of cells.
     ry = 340

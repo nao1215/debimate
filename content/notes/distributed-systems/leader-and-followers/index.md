@@ -16,9 +16,9 @@ Follower は、Client から更新を受け取っても自分では処理せず�
 
 以下は、3 台のログ（受け付けた更新を順に追記した記録）を位置を揃えて並べた図です。箱の数字と色は任期（後述）を表します。
 
-{{< figure src="images/leader-and-followers_concept.svg" alt="3 台のログを index の位置を揃えて横に並べた図。index 6 までは Leader と Follower 1 の 2 台に届いて確定し、灰緑の縦線が確定位置を示す。Leader だけが持つ index 7 と 8 は破線の未確定で、Follower 2 は index 4 までしか受け取っていない" caption="3 台のログと、過半数に届いた確定位置" align="center" >}}
+{{< figure src="images/leader-and-followers_concept.svg" alt="3 台のログを index の位置を揃えて横に並べた図。index 6 までは Leader と Follower 1 の 2 台に届いてコミットし、灰緑の縦線がコミット位置を示す。Leader だけが持つ index 7 と 8 は破線の未コミットで、Follower 2 は index 4 までしか受け取っていない" caption="3 台のログと、過半数に届いたコミット位置" align="center" >}}
 
-上記の図のように、各ノードは Leader と同じ位置に同じ更新を並べ、3 台のうち過半数の 2 台に届いた位置までが確定します。
+上記の図のように、各ノードは Leader と同じ位置に同じ更新を並べ、3 台のうち過半数の 2 台に届いた位置までがコミットします。
 
 <br>
 
@@ -26,7 +26,7 @@ Follower は、Client から更新を受け取っても自分では処理せず�
 
 - なぜ全ノードが対等に更新を受け付けると、値が食い違うのか。
 - Leader が落ちた時、次の Leader をどう選び、2 台立つのをどう防ぐのか。
-- Leader が受け付けた更新は、いつ確定するのか。
+- Leader が受け付けた更新は、いつコミットするのか。
 - 分断から復帰した古い Leader は、どう締め出されるのか。
 - Leader から読んでも古い値が返るのは、どんな時か。
 
@@ -59,7 +59,7 @@ sequenceDiagram
 
 [クォーラム](../quorum/)で読み書きするノードの集合を重ねるだけでは、更新の順序は決まりません。過半数を要求すると、書き込みに関わったノードの集合と読み取りに関わったノードの集合は、必ず 1 台以上を共有します。ただし、共有するノードが 2 つの更新を両方受け取っていることと、どちらが後の更新なのかを判定できることは別です。
 
-更新の順序を 1 つに決めるには、全ノードが共有できる 1 つの並びが必要です。Leader and Followers は、その並びを決める役目を Leader に集約します。ただし、全ノードに共通の並びとして残るのは、後の節で説明する確定を済ませた更新だけです。確定前の更新は、Leader が交代すると切り捨てられる場合があります。
+更新の順序を 1 つに決めるには、全ノードが共有できる 1 つの並びが必要です。Leader and Followers は、その並びを決める役目を Leader に集約します。ただし、全ノードに共通の並びとして残るのは、後の節で説明するコミットを済ませた更新だけです。コミット前の更新は、Leader が交代すると切り捨てられる場合があります。
 
 パターンの名前は Unmesh Joshi 氏の書籍『Patterns of Distributed Systems』（邦訳『分散システムのためのデザインパターン』）で使われているもので、Martin Fowler 氏のサイトにも [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) として要約が置かれています。
 
@@ -145,9 +145,9 @@ Raft は、この 2 つとログを RPC（Remote Procedure Call、遠隔手続�
 
 <br>
 
-省略したログの新しさの検査は、確定済みのエントリ（Leader が過半数への複製を確認し、以後取り消されないと判断したログの 1 件）を守るためのものです。Raft では、Candidate より新しいログを持つノードは投票を拒否します。新しさは末尾のエントリの任期で比べ、任期が同じならログが長い方を新しいとします（論文 5.4.1 節）。
+省略したログの新しさの検査は、コミット済みのエントリ（Leader が過半数への複製を確認し、以後取り消されないと判断したログの 1 件）を守るためのものです。Raft では、Candidate より新しいログを持つノードは投票を拒否します。新しさは末尾のエントリの任期で比べ、任期が同じならログが長い方を新しいとします（論文 5.4.1 節）。
 
-確定済みのエントリは過半数が持っており、票を集めるにも過半数が必要なので、エントリを持つ過半数と票を出す過半数は必ず重なります。以下は、確定済みのエントリを持たないノードが Candidate になった例で、台数と配置は説明用の値です。
+コミット済みのエントリは過半数が持っており、票を集めるにも過半数が必要なので、エントリを持つ過半数と票を出す過半数は必ず重なります。以下は、コミット済みのエントリを持たないノードが Candidate になった例で、台数と配置は説明用の値です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -155,7 +155,7 @@ flowchart TB
     E["Node E（Candidate）<br/>エントリ無し"]
     E -->|"投票を要求"| D["Node D<br/>エントリ無し<br/>投票する"]
     E -->|"投票を要求"| M
-    subgraph M["確定済みのエントリを持つ過半数"]
+    subgraph M["コミット済みのエントリを持つ過半数"]
         direction LR
         A["Node A<br/>拒否"]
         B["Node B<br/>拒否"]
@@ -200,15 +200,15 @@ sequenceDiagram
 
 ---
 
-### 更新の複製と確定
+### 更新の複製とコミット
 
-Client の更新を受け取った Leader は、まず自分のログの末尾に追記し、続けて同じ内容を Follower に送ります。ログは [WAL](../write-ahead-log/)（Write-Ahead Log、書き込み先行ログ）と同じく末尾に追記していく記録で、Leader が決めた順序をそのまま保持します。追記した 1 件をエントリと呼びます。
+Client の更新を受け取った Leader は、まず自分のログの末尾に追記し、続けて同じ内容を Follower に送ります。ログは [WAL](../write-ahead-log/)（Write-Ahead Log、ログ先行書き込み）と同じく末尾に追記していく記録で、Leader が決めた順序をそのまま保持します。追記した 1 件をエントリと呼びます。
 
-現在の任期で作られたエントリが過半数のノードに複製された時点で、Leader はそのエントリを確定（commit）させます。確定は実行と同じではありません。Leader は確定したエントリを自分の状態機械（state machine、ログのコマンドを順に適用して状態を作る部分）に適用し、その実行結果を Client に返します。
+現在の任期で作られたエントリが過半数のノードに複製された時点で、Leader はそのエントリをコミット（commit）します。コミットは実行と同じではありません。Leader はコミットしたエントリを自分の状態機械（state machine、ログのコマンドを順に適用して状態を作る部分）に適用し、その実行結果を Client に返します。
 
 追記しかしないのは Leader のログだけです。Leader は複製要求に直前のエントリの位置と任期を添え、Follower は同じ位置に同じ任期のエントリが無ければ拒否します。拒否されると Leader は位置を 1 つずつ戻して送り直し、一致した位置より後ろを上書きさせます。Raft は、Leader が追記しかしない性質を Leader Append-Only と呼んでいます。
 
-以下が確定までの往復です。
+以下がコミットまでの往復です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -223,25 +223,25 @@ sequenceDiagram
     L->>F2: 複製要求
     F1-->>L: 受け取った
     Note over L,F1: Leader 自身と合わせて<br/>2 台なので過半数に到達
-    L->>L: 確定して状態機械に適用
+    L->>L: コミットして状態機械に適用
     L-->>C: 実行結果
     F2-->>L: 受け取った（遅れて到着）
 ```
 
 上記の図で Leader が Client に応答したのは、Follower 2 の応答が届く前です。全ノードの応答を待たないため、1 台が遅れていても更新は進みます。遅れた Follower は、後から届いた分を自分のログに追記して追い付きます。
 
-Leader は、Follower ごとに「どこまで複製できたか」の位置を `matchIndex` として持ち、確定済みの末尾を `commitIndex` として持ちます。確定の判定は、`matchIndex` を数えて過半数に届いた位置まで `commitIndex` を進める処理になります。
+Leader は、Follower ごとに「どこまで複製できたか」の位置を `matchIndex` として持ち、コミット済みの末尾を `commitIndex` として持ちます。コミットの判定は、`matchIndex` を数えて過半数に届いた位置まで `commitIndex` を進める処理になります。
 
 ```go
 // advanceCommitIndex は、過半数に複製できた位置まで commitIndex を進めます。
 // Leader を務めているノードだけが呼びます。
 // n.log は Raft 論文に合わせて添字 1 から使い、log[0] は番兵です。
-// commitIndex の初期値 0 は、まだ何も確定していないことを表します。
+// commitIndex の初期値 0 は、まだ何もコミットしていないことを表します。
 func (n *node) advanceCommitIndex() {
 	total := len(n.matchIndex) + 1 // Follower の数と、Leader 自身の 1 台
 	for i := len(n.log) - 1; i > n.commitIndex; i-- {
 		if n.log[i].Term != n.currentTerm {
-			continue // 過去の任期のエントリは、応答数だけでは確定させない
+			continue // 過去の任期のエントリは、応答数だけではコミットしない
 		}
 		agreed := 1 // Leader は自分のログに追記済み
 		for _, m := range n.matchIndex {
@@ -257,9 +257,9 @@ func (n *node) advanceCommitIndex() {
 }
 ```
 
-複製の数で確定させるのは現在の任期で作られたエントリだけ、という条件が入っています。
+複製の数でコミットするのは現在の任期で作られたエントリだけ、という条件が入っています。
 
-Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件です。
+Raft 論文の Figure 2 はコミットの規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件です。
 
 過去の任期のエントリは、過半数に複製されていても、後の Leader に上書きされる場合があります。そのエントリを持たないノードでも、ログの末尾の任期が新しければ Leader に選ばれる場合があるからです（論文の Figure 8）。
 
@@ -269,7 +269,7 @@ Raft 論文の Figure 2 は確定の規則を「`N > commitIndex` かつ過半�
 
 段階 3 で任期 2 のエントリは過半数の 3 台に届いています。それでも段階 4 で E は B・C・D の票を集めて当選できます。E の末尾の任期 3 が、B・C の末尾の任期 2 より新しいためです。
 
-現在の任期のエントリが過半数に複製されると、そのエントリを持たないノードは検査に落ち、Leader になれません。Raft は、2 つのログの同じ位置に同じ任期のエントリがあれば、そこまでの内容が全て一致するように保っています。そのため、Leader が `commitIndex` を現在の任期のエントリの位置まで進めると、その手前にある過去の任期のエントリも確定済みの範囲に入ります。
+現在の任期のエントリが過半数に複製されると、そのエントリを持たないノードは検査に落ち、Leader になれません。Raft は、2 つのログの同じ位置に同じ任期のエントリがあれば、そこまでの内容が全て一致するように保っています。そのため、Leader が `commitIndex` を現在の任期のエントリの位置まで進めると、その手前にある過去の任期のエントリもコミット済みの範囲に入ります。
 
 ---
 
@@ -299,7 +299,7 @@ sequenceDiagram
 
 上記の図の Node A は、拒否の応答に含まれる任期番号を見て、初めて自分が交代させられたことを知ります。権利を渡すたびに大きくなる番号で古い操作を拒否する点は、[Lease](../lease/) で使う fencing token と同じ発想です。
 
-分断されている間、Node A が更新を確定させることはありません。確定には過半数の応答が必要で、少数派は定義上その数に届かないからです。更新は確定していないので、Node A は Client に完了も返していません。分断が解消すると、Node A のログは前述の手順で任期 6 の Leader のものと突き合わせられ、食い違う位置から後ろが上書きされます。
+分断されている間、Node A が更新をコミットすることはありません。コミットには過半数の応答が必要で、少数派は定義上その数に届かないからです。更新はコミットしていないので、Node A は Client に完了も返していません。分断が解消すると、Node A のログは前述の手順で任期 6 の Leader のものと突き合わせられ、食い違う位置から後ろが上書きされます。
 
 締め出しは、複製要求を受け取る側の数行のコードで実現できます。
 
@@ -326,17 +326,17 @@ func (n *node) handleAppendEntries(args appendEntriesArgs) appendEntriesReply {
 
 ### 読み取りの流し先
 
-読み取りを Follower に分散させると、Leader の負荷は下がります。その代わり、確定した更新がまだ届いていない Follower は古い値を返します。更新の直後に自分の書いた値を読み返す用途では、この遅れが表に出ます。
+読み取りを Follower に分散させると、Leader の負荷は下がります。その代わり、コミットした更新がまだ届いていない Follower は古い値を返します。更新の直後に自分の書いた値を読み返す用途では、この遅れが表に出ます。
 
 Leader から読んでも、古い値が返る場合があります。2014 年、Kyle Kingsbury 氏は故障を注入して DB（データベース）の正しさを調べる [Jepsen](https://jepsen.io/) で、[etcd](https://etcd.io/)（Raft で複製する Key-Value ストア）の[読み取りが古い値を返す](https://aphyr.com/posts/316-call-me-maybe-etcd-and-consul)ことを示しました。
 
-当時の etcd は、`consistent` を指定した読み取りでも、自分を Leader と考えているノードが手元の状態をそのまま返していました。分断で孤立した旧 Leader も、交代に気付くまでは自分を Leader と考えているので、新しい Leader の下で確定した値を知らないまま応答します。
+当時の etcd は、`consistent` を指定した読み取りでも、自分を Leader と考えているノードが手元の状態をそのまま返していました。分断で孤立した旧 Leader も、交代に気付くまでは自分を Leader と考えているので、新しい Leader の下でコミットした値を知らないまま応答します。
 
-Kingsbury 氏はこの問題を [issue #741](https://github.com/etcd-io/etcd/issues/741)「Consistent reads are not consistent」（一貫性のある読み取りが一貫していない）として報告し、読み取りもログに追記して確定させる `quorum=true` が etcd に足されました。ログを通せば確実ですが、読み取りのたびに複製と確定の往復が掛かります。
+Kingsbury 氏はこの問題を [issue #741](https://github.com/etcd-io/etcd/issues/741)「Consistent reads are not consistent」（一貫性のある読み取りが一貫していない）として報告し、読み取りもログに追記してコミットする `quorum=true` が etcd に足されました。ログを通せば確実ですが、読み取りのたびに複製とコミットの往復が掛かります。
 
 <br>
 
-Raft は、ログに追記せずに最新の値を返すため、2 つの手順を要求しています（論文 8 節）。1 つ目は、Leader が就任した直後に自分の任期の空エントリを確定させることです。`advanceCommitIndex` は現在の任期のエントリしか複製の数で数えないので、自分の任期のエントリを 1 つ確定させるまで、就任した Leader はどこまでが確定済みなのかを把握できません。
+Raft は、ログに追記せずに最新の値を返すため、2 つの手順を要求しています（論文 8 節）。1 つ目は、Leader が就任した直後に自分の任期の空エントリをコミットすることです。`advanceCommitIndex` は現在の任期のエントリしか複製の数で数えないので、自分の任期のエントリを 1 つコミットするまで、就任した Leader はどこまでがコミット済みなのかを把握できません。
 
 2 つ目は、読み取りに応答する前に過半数とハートビートを交換することです。上記の etcd の旧 Leader のような応答は、ここで防げます。新しい Leader が既に立っていれば、過半数のうち少なくとも 1 台が新しい任期を返します。
 
@@ -349,13 +349,13 @@ sequenceDiagram
     participant L as Leader
     participant F1 as Follower 1
     participant F2 as Follower 2
-    Note over L: 就任直後に自分の任期の<br/>空エントリを確定済み
+    Note over L: 就任直後に自分の任期の<br/>空エントリをコミット済み
     C->>L: 読み取り
     L->>F1: ハートビート
     L->>F2: ハートビート
     F1-->>L: 応答（同じ任期）
     Note over L,F1: Leader 自身と合わせて<br/>2 台なので過半数に到達
-    L-->>C: 確定済みの値
+    L-->>C: コミット済みの値
 ```
 
 論文は、上記の図の往復の代わりに、ハートビートを Lease のように扱う方法も挙げています。過半数への問い合わせを省ける代わりに、ノード間の時計のずれに上限があることを前提にします。
@@ -366,8 +366,8 @@ sequenceDiagram
 
 ### 利点
 
-- 確定した更新の順序が Leader のログの並びに定まり、順序を後から復元する仕組みが必要ない
-- 過半数の応答で確定するため、一部のノードが遅れても更新が進む
+- コミットした更新の順序が Leader のログの並びに定まり、順序を後から復元する仕組みが必要ない
+- 過半数の応答でコミットするため、一部のノードが遅れても更新が進む
 - Follower は Leader の内容を写すだけなので、複製の処理が単純になる
 - Leader が落ちても、過半数のノードが残っていれば選び直して処理を続けられる
 - Raft のように任期の番号で新旧を判定する実装なら、時計を合わせずに古い Leader を排除できる
@@ -381,8 +381,8 @@ Leader 1 台に更新を集める構成には、次の制約があります。
 - 更新が全て Leader を通るため、書き込みの性能が Leader 1 台の性能で頭打ちになる
 - Leader が落ちてから次が決まるまで、更新を受け付けられない時間が生じる
 - 選出の待ち時間を短くすると誤検知による交代が増え、長くすると復旧が遅れる
-- 拠点をまたぐ構成では、確定のたびに Leader と過半数の間の往復の時間が加わる
-- Follower から読むと、確定済みの更新がまだ届いていない値が返る場合がある
+- 拠点をまたぐ構成では、コミットのたびに Leader と過半数の間の往復の時間が加わる
+- Follower から読むと、コミット済みの更新がまだ届いていない値が返る場合がある
 
 ---
 

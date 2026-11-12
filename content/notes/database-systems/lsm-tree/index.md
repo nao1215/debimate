@@ -64,7 +64,7 @@ LSM-Tree を示した [O'Neil 氏らの論文（1996 年）](https://www.cs.umb.
 
 LSM-Tree の書き込みは、ログへの追記とメモリ上の表への挿入で完了し、ディスク上のファイルを書くのを待ちません。メモリ上で更新を受け取る表を Memtable と呼び、RocksDB では [Memtable の既定の実装はスキップリスト](https://github.com/facebook/rocksdb/wiki/MemTable)です。スキップリストは、キーの順を保ったまま挿入と探索ができるデータ構造です。
 
-メモリの内容は停止で消えます。そこで多くの実装は、Memtable に入れる前に同じ更新を [WAL（Write-Ahead Log、書き込み先行ログ）](/notes/distributed-systems/write-ahead-log/)に追記し、停止後はログから Memtable を作り直します。
+メモリの内容は停止で消えます。そこで多くの実装は、Memtable に入れる前に同じ更新を [WAL（Write-Ahead Log、ログ先行書き込み）](/notes/distributed-systems/write-ahead-log/)に追記し、停止後はログから Memtable を作り直します。
 
 ディスクに書き出すファイルは、キーの順に並び、書いた後は変更しない SSTable です。SSTable という名前は Google の分散ストレージである [Bigtable の論文](https://research.google/pubs/pub27898/)で使われ、Sorted String Table の略として広く呼ばれます。更新を受け取ってから SSTable になるまでの流れは以下の通りです。
 
