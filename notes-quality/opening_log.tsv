@@ -30,3 +30,4 @@ math__variance	場面	その他	分散 - 散らばりの小さいミリ秒の時
 ml__activation-functions	場面	その他	活性化関数 - 学習率 0.3 で digits を学習した ReLU の MLP は、2 層目の 64 個中 59 個が 0 しか返さなくなった
 ml__decision-tree	場面	その他	決定木（decision tree） - breast_cancer で深さ 3 の木を学習すると、train_test_split の乱数だけで根の質問が 5 通りに変わる
 ml__perceptron	問い	その他	パーセプトロン（perceptron） - 重みを 0 から始めて止め方を切れば、学習率を 12 桁変えても予測は同じ
+generative-ai__background-removal	結果	その他	Background Removal - 切り抜いた立ち絵の縁に、描いた時の背景が残る
