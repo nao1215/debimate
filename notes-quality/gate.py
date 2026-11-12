@@ -31,6 +31,9 @@ SMALL = 5          # 小さな修正とみなす足した行の数
 MAJOR_LINES = 40   # これ以上足した改稿は全部の規則で見る
 MAJOR_RATIO = 0.3
 BASELINE = [5, 5, 3, 2, 2]  # 基準の 5 本（wallet, transaction-scope, quorum, adapter, sidecar）の点
+# 点の記録の基準。「4 点」は、関門の質の判定を通った上で別の担当が付けた点だけを指す（2026-11-12 著者
+# 「基準 4 が NG になるのはバグでは」）。これより前に付けた点（standard が無い記録）は旧基準として扱う
+STANDARD = 'gate-v1'
 
 
 def git(*a, check=False):
@@ -132,8 +135,8 @@ def opening_hist():
     return [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#')] if os.path.exists(p) else []
 
 
-def check_full(rel):
-    """全部の規則。NG のリストを返す。"""
+def check_full(rel, process=True):
+    """全部の規則。NG のリストを返す。process=False なら質の規則だけ（手続きの規則を除く）。"""
     p = os.path.join(ROOT, rel)
     key = key_of(rel)
     text = open(p, encoding='utf-8').read()
@@ -173,7 +176,15 @@ def check_full(rel):
         sc = int(out.strip().splitlines()[-1])
         if sc < 85:
             ng.append(f'omokage の一致度が {sc}%（85% 以上。omokage check --explain で崩れた段落を見る）')
+    if process:
+        ng += check_process(rel, key, text)
+    return ng
 
+
+def check_process(rel, key, text):
+    """書いた時の手続き（チェックリストと、直前 3 本との冒頭の型・題の形の重複）。
+    新規と書き直しにだけ使い、既存のノートの質の判定（--quality）には使わない（2026-11-12）。"""
+    ng = []
     cp = os.path.join(HERE, 'checklists', f'{key}.md')
     if not os.path.exists(cp):
         ng.append(f'完了のチェックリストが無い: notes-quality/checklists/{key}.md（notes-quality/completion_checklist.md の表を埋めて置く）')
@@ -223,6 +234,8 @@ def score_check(rel, head_text):
     if '自己' in by or not independent:
         ng.append(f'点の記録が書いた本人の採点か、基準の 5 本を一緒に採点していない（by: {by[:60]}）。'
                   '別の担当が抜き出しだけで、基準の 5 本（5・5・3・2・2）と一緒に採点し直し、gate.py score --baseline 5,5,3,2,2 で記録する')
+    if s.get('standard') != STANDARD:
+        ng.append('関門より前の基準で付けた点（旧基準）。関門の質の判定を通してから、別の担当が採点し直して gate.py score で記録する')
     if s.get('overall', 0) < 4:
         ng.append(f'記録の総合が {s.get("overall")}（4 以上でないと push できない）')
     scored = git('cat-file', '-p', s.get('blob', ''), check=True) if s.get('blob') else None
@@ -260,6 +273,8 @@ def main(argv):
             old = git('show', f'HEAD:{rel}', check=True)
             ng = check_added(added_lines(old or '', open(os.path.join(ROOT, rel), encoding='utf-8').read()))
             return report([(rel, '足した行だけ', ng)])
+        if '--quality' in rest:
+            return report([(rel, '質の規則だけ', check_full(rel, process=False))])
         return report([(rel, '全部の規則', check_full(rel))])
 
     if cmd == 'commit':
@@ -309,8 +324,15 @@ def main(argv):
             sys.exit('--baseline に、同じ回に採点した基準の 5 本の点（5,5,3,2,2）を渡す。動いていたらその回の採点は使わない')
         if '自己' in opts.get('--by', '') or not opts.get('--by'):
             sys.exit('--by に採点した担当を書く。書いた本人の採点（自己採点）は記録しない')
+        q = check_full(rel, process=False)
+        if q:
+            print('関門の質の判定が NG なので点を記録しない（4 点は、関門の質の判定を通った上での点）:')
+            for x in q:
+                print('  NG:', x)
+            return 1
         rec = {'path': rel, 'overall': int(opts.get('--overall', 0)), 'product': int(opts.get('--product', 0)),
-               'blob': blob, 'by': opts['--by'], 'baseline': base, 'scored_at': opts.get('--at', '')}
+               'blob': blob, 'by': opts['--by'], 'baseline': base, 'scored_at': opts.get('--at', ''),
+               'standard': STANDARD}
         os.makedirs(os.path.join(HERE, 'scores'), exist_ok=True)
         json.dump(rec, open(os.path.join(HERE, 'scores', f'{key_of(rel)}.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
         print(f'記録した: notes-quality/scores/{key_of(rel)}.json 総合 {rec["overall"]}')
