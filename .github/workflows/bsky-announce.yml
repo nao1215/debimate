@@ -1,14 +1,15 @@
 name: Announce new pages on Bluesky
 
 # 記事・技術ノート・ML ノート・weeknotes の 1 話を「題名 + URL」で Bluesky に投稿する。
-# 毎朝、JST の昨日と今日に公開された分を流す。デプロイを待たずに済むよう、まだ公開されていない URL は
+# 毎日昼に、JST の昨日と今日に公開された分を流す。デプロイを待たずに済むよう、まだ公開されていない URL は
 # 飛ばして次の回に回し、同じ URL を既に投稿していれば飛ばす（scripts/bsky_announce.py）。
 # 要る secrets: BSKY_IDENTIFIER（投稿するアカウントのハンドル。メールアドレスは不可）、
 #               BSKY_APP_PASSWORD（https://bsky.app/settings/app-passwords で作るアプリパスワード）
 on:
   schedule:
-    # 毎日 07:30 JST
-    - cron: '30 22 * * *'
+    # 毎日 12:17 JST。過去の投稿では昼から夕方の反応が朝の約 3 倍だった。
+    # GitHub の cron は毎時 0 分が混んで遅れやすいので、半端な分にする
+    - cron: '17 3 * * *'
   workflow_dispatch:
     inputs:
       mode:

@@ -12,7 +12,7 @@
   URL の作り方は content/weeknotes/_content.gotmpl と layouts/partials/weeknotes/headings.html に合わせる。
 
 範囲:
-- recent（既定。毎朝の CI が使う）: JST の昨日と今日に公開された分
+- recent（既定。毎日昼の CI が使う）: JST の昨日と今日に公開された分
   （weeknotes は昨日の 0 時から今までの commit で足された見出し）。前の回と重なる分は、投稿済みの URL として飛ばす。
   まだ公開されていない URL は飛ばすので、cron の後にデプロイされた分は次の回に投稿する。
 - yesterday: JST の昨日（または --date の日）に公開された分。取りこぼした日を後から流す時に使う。
