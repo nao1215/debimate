@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/math/probability-distributions/index.md",
- "overall": 2,
- "product": 2,
- "blob": "f82848c9ee679f101bb280045eaab362e351d371",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "7fd68681f542671f4e444981e9fadcb3e23f8886",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
