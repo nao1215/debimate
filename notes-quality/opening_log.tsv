@@ -1,0 +1,17 @@
+# key	冒頭の型	題の形	題
+ml__pca	結果	なぜ	PCA - 寄与率 99.8% の第 1 主成分は、なぜ列の単位を変えると入れ替わるのか
+ml__cross-validation	結果	なぜ	交差検証 - cv=3 で正解率 97% の iris が、KFold(3) と書くと 0% になる理由
+ml__k-means	結果	その他	k-means - 塊の無い一様乱数でも、k を選ぶ 3 つの指標はそろって k=4 を指す
+ml__regularization	結果	なぜ	正則化 - Lasso が残す列は、なぜ行を選び直すだけで 27 通りに分かれるのか
+ml__svm	結果	なぜ	SVM - SVC を LinearSVC に替えると、なぜ列の値をずらすだけで正解率が 53% に落ちるのか
+ml__overfitting	結果	なぜ	過学習 - 答えが乱数のデータで、テストの正解率が 0.69 まで上がる理由
+ml__confusion-matrix	結果	なぜ	混同行列 - 閾値を下げて Recall が 1.000 になったのに、悪性の見逃しが 2 件から 14 件に増えた理由
+ml__gradient-boosting	結果	なぜ	Gradient Boosting - 10,000 行では毎回同じ結果が、1 行足すと学習のたびに変わる理由
+ml__knn	結果	なぜ	kNN - 緯度と経度を度から m に書き直すだけで、R² が 0.15 から 0.80 に変わる理由
+ml__hierarchical-clustering	結果	その他	階層的クラスタリング - 1〜5 の回答は、行の順番を変えるだけで分け方が変わる
+ml__backpropagation	結果	なぜ	誤差逆伝播法 - backward の 1 行を消しても、正解率 96% まで学習が進む理由
+math__gradient-descent-sgd	結果	なぜ	最急降下法・SGD - 標準化しても SGDRegressor の R² が 10 回とも負になる理由
+math__quantile	結果	なぜ	Quantile - 同じ 10 個の応答時間の 90 パーセンタイルが、関数ごとに 40〜814 ms の 4 通りに分かれる理由
+math__log-exp-logodds	結果	なぜ	対数・指数と log-odds - 確率を掛けただけの Naive Bayes が、digits で正解率 10% に落ちる理由
+math__mean	結果	なぜ	平均 - float32 で画像 1000 枚の画素の平均を取ると、R・G・B が全て 0.334 になる理由
+math__eigen-decomposition	結果	なぜ	固有値分解 - wine の行を選び直すと、PC1 は 7 度、PC4 は 43 度向きが変わる理由

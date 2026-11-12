@@ -28,7 +28,24 @@ permissions:
 #   error のまま残り、後続のデプロイが deployment_queued から進まなくなる事があるため。
 #   待機中のものは Actions 標準の pending 置換で最新の 1 件だけが残る
 jobs:
+  # 技術ノート・ML ノートの関門（notes-quality/gate.py）。push で変えたノートが規則と
+  # 総合 4 以上の点の記録を満たさなければ、ビルドとデプロイをしない（2026-11-12 著者の指定）
+  notes-gate:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          filter: blob:none
+      - name: Check changed notes
+        run: python3 notes-quality/gate.py push "${{ github.event.before }}" "${{ github.sha }}"
+
   build:
+    needs: notes-gate
+    if: always() && (needs.notes-gate.result == 'success' || needs.notes-gate.result == 'skipped')
     # Keep the OS within the pinned Playwright version's supported platforms.
     runs-on: ubuntu-24.04
     # 普段は 3 分前後で終わる。apt やネットワークで固まった時に既定の 6 時間待たない

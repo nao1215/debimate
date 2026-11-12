@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# 技術ノート・ML ノートの規則を、commit 前に staged の版で見る（notes-quality/gate.py commit）。
+# 有効にする: git config core.hooksPath notes-quality/hooks
+exec python3 "$(git rev-parse --show-toplevel)/notes-quality/gate.py" commit

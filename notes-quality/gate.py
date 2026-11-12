@@ -1,0 +1,278 @@
+#!/usr/bin/env python3
+"""技術ノート（content/notes）と ML ノート（projects/ml/notes）の関門。
+
+    python3 notes-quality/gate.py note <index.md>          # 書き終えた時。全部の規則
+    python3 notes-quality/gate.py note --diff <index.md>   # 既存ノートの小さな修正。HEAD から足した行だけ
+    python3 notes-quality/gate.py commit                   # pre-commit: staged のノートを規則で見る
+    python3 notes-quality/gate.py push <base> <head>       # pre-push と CI: 規則に加え、総合 4 以上の点の記録
+    python3 notes-quality/gate.py score <index.md> --overall 4 --product 36 --by <誰が>
+                                                           # 採点し直しの結果を scores/ に記録する
+    python3 notes-quality/gate.py record <index.md>        # 冒頭の型と題の形を opening_log.tsv に足す
+
+全部通れば終了コード 0、NG があれば 1。
+
+2026-11-12 著者「私の文体とかの情報を git 管理にして、基準 4 点にして、それ以外はプッシュできないように」。
+- 規則と文体の資料はこのディレクトリが基準。スキル（debimate-visual-notes・create-tech-notes）はここを読む。
+- push できるのは、変えたノートが scores/<key>.json で総合 4 以上と記録され、その記録が今の版
+  （git の blob）か、そこから足した行が SMALL 行以下の版に対するものである時だけ。
+- 例外: 既存のノートへの小さな修正（足した行が SMALL 行以下で、足した行が規則を通る）は点の記録が無くても通す。
+  逆向きのリンクの 1 文などを足すため。
+- `>` で始まる引用の行は語の判定から外す（ブログ記事・weeknotes・外部の文からの引用のため）。
+"""
+import csv, difflib, json, os, re, subprocess, sys
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+TYPES = ['フラット', '場面', '結果', '誤解', '問い']
+NOTE_RE = re.compile(r'(?:content/notes|projects/ml/notes)/([^/]+)/([^/]+)/index\.md$')
+SMALL = 5          # 小さな修正とみなす足した行の数
+MAJOR_LINES = 40   # これ以上足した改稿は全部の規則で見る
+MAJOR_RATIO = 0.3
+
+
+def git(*a, check=False):
+    r = subprocess.run(['git', '-C', ROOT, *a], capture_output=True, text=True, errors='replace')
+    return r.stdout if (r.returncode == 0 or not check) else None
+
+
+def run(cmd):
+    r = subprocess.run(cmd, capture_output=True, text=True, errors='replace', cwd=ROOT)
+    return r.returncode, r.stdout + r.stderr
+
+
+def key_of(rel):
+    m = NOTE_RE.search(rel)
+    return f'{m.group(1)}__{m.group(2)}' if m else None
+
+
+def drift_rows():
+    p = os.path.join(HERE, 'drift_words.tsv')
+    return [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#')]
+
+
+def added_lines(old_text, new_text):
+    out = []
+    for l in difflib.unified_diff(old_text.splitlines(), new_text.splitlines(), lineterm='', n=0):
+        if l.startswith('+') and not l.startswith('+++'):
+            out.append(l[1:])
+    return out
+
+
+def check_added(lines):
+    ng, incode = [], False
+    for t in lines:
+        if t.lstrip().startswith('```'):
+            incode = not incode
+            continue
+        if incode or t.lstrip().startswith('>'):
+            continue
+        if '**' in t:
+            ng.append(f'足した行に太字: {t[:60]}')
+        if 'を、' in t:
+            ng.append(f'足した行に「を、」: {t[:60]}')
+        for row in drift_rows():
+            if row[0] in t:
+                ng.append(f'足した行に「{row[0]}」（本人の言い方: {row[2] if len(row) > 2 else ""}）: {t[:60]}')
+    return ng
+
+
+def title_of(text):
+    fm = re.match(r'^---\n(.*?)\n---\n', text, re.S)
+    m = re.search(r'^title:\s*"?(.*?)"?\s*$', fm.group(1), re.M) if fm else None
+    return m.group(1) if m else ''
+
+
+def title_shape(t):
+    sub = t.split(' - ', 1)[-1]
+    return 'なぜ' if re.search(r'(理由|のか|なぜ)[」）]?$', sub) else 'その他'
+
+
+def opening_type(key):
+    cp = os.path.join(HERE, 'checklists', f'{key}.md')
+    if not os.path.exists(cp):
+        return None
+    for line in open(cp, encoding='utf-8'):
+        if line.startswith('|') and '冒頭の型' in line:
+            cell = line.strip().strip('|').split('|')[-1]
+            for t in TYPES:
+                if t in cell:
+                    return t
+    return None
+
+
+def opening_hist():
+    p = os.path.join(HERE, 'opening_log.tsv')
+    return [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#')] if os.path.exists(p) else []
+
+
+def check_full(rel):
+    """全部の規則。NG のリストを返す。"""
+    p = os.path.join(ROOT, rel)
+    key = key_of(rel)
+    text = open(p, encoding='utf-8').read()
+    fm = re.match(r'^---\n(.*?)\n---\n', text, re.S)
+    body = text[fm.end():] if fm else text
+    prose = re.sub(r'```.*?```', '', body, flags=re.S)
+    prose = '\n'.join(l for l in prose.splitlines() if not l.lstrip().startswith('>'))
+    ng = []
+
+    code, out = run([sys.executable, os.path.join(HERE, 'check_note.py'), p])
+    if code != 0:
+        ng.append('check_note.py が NG:\n    ' + '\n    '.join(l for l in out.splitlines() if 'NG' in l))
+    code, out = run(['bash', os.path.join(HERE, 'style_check.sh'), p])
+    if code != 0:
+        det = '\n    '.join(l.strip() for l in out.splitlines() if re.search(r'\[(NG|ERROR)\]|NG:', l))
+        ng.append('style_check.sh が NG（bash notes-quality/style_check.sh で詳細）:\n    ' + det[:1500])
+    code, out = run([sys.executable, os.path.join(HERE, 'textruns.py'), p])
+    mm = re.search(r'700字以上の文字だけの区間 (\d+) 個 / 200字超の段落 (\d+) 個', out)
+    if mm and int(mm.group(1)) > 0:
+        ng.append(f'700 字以上の文字だけの区間が {mm.group(1)} 個（0 にする。図か空行で挟んだ <br> で割る）')
+    if mm and int(mm.group(2)) > 8:
+        ng.append(f'200 字超の段落が {mm.group(2)} 個（基準の Wallet は 5、上限 8）')
+    for row in drift_rows():
+        word, limit, hint = row[0], int(row[1]), row[2] if len(row) > 2 else ''
+        n = prose.count(word)
+        if n > limit:
+            lines = [str(i + 1) for i, l in enumerate(text.splitlines()) if word in l][:8]
+            ng.append(f'「{word}」が {n} 回（上限 {limit}）。本人の言い方: {hint}。行: {", ".join(lines)}')
+
+    cp = os.path.join(HERE, 'checklists', f'{key}.md')
+    if not os.path.exists(cp):
+        ng.append(f'完了のチェックリストが無い: notes-quality/checklists/{key}.md（notes-quality/completion_checklist.md の表を埋めて置く）')
+    else:
+        for line in open(cp, encoding='utf-8'):
+            if not line.startswith('|') or set(line.strip()) <= set('|-: '):
+                continue
+            cells = [c.strip() for c in line.strip().strip('|').split('|')]
+            if cells[0] == '項目':
+                continue
+            val = cells[-1] if len(cells) > 1 else ''
+            if not val or re.search(r'未実施|いいえ|^-$|TODO', val):
+                ng.append(f'チェックリストの空欄・未実施: {cells[0][:40]} → 「{val}」')
+        if opening_type(key) is None:
+            ng.append(f'チェックリストの「冒頭の型」に {"/".join(TYPES)} のどれかを書く')
+
+    prev = [r for r in opening_hist() if r[0] != key][-3:]
+    ot, ts, title = opening_type(key), title_shape(title_of(text)), title_of(text)
+    if len(prev) == 3 and ot and all(r[1] == ot for r in prev):
+        ng.append(f'冒頭の型「{ot}」が直前の 3 本（{", ".join(r[0] for r in prev)}）と同じ。題材に合う別の型を選ぶ')
+    if len(prev) == 3 and ts == 'なぜ' and all(r[2] == ts for r in prev):
+        ng.append(f'題が直前の 3 本と同じ「〜の理由／なぜ〜のか」の形: {title}')
+    return ng
+
+
+def classify(rel, old_text, new_text):
+    """'new'（新規）・'major'（大きな改稿）・'small'（小さな修正）。"""
+    if old_text is None:
+        return 'new'
+    add = len(added_lines(old_text, new_text))
+    total = max(1, len(old_text.splitlines()))
+    if add >= MAJOR_LINES or add / total >= MAJOR_RATIO:
+        return 'major'
+    return 'small'
+
+
+def score_check(rel, head_text):
+    """scores/<key>.json が総合 4 以上で、記録した版から足した行が SMALL 以下か。"""
+    key = key_of(rel)
+    sp = os.path.join(HERE, 'scores', f'{key}.json')
+    if not os.path.exists(sp):
+        return [f'点の記録が無い: notes-quality/scores/{key}.json（読解 A・事実確認・採点し直しで総合 4 以上を記録してから push）']
+    s = json.load(open(sp, encoding='utf-8'))
+    ng = []
+    if s.get('overall', 0) < 4:
+        ng.append(f'記録の総合が {s.get("overall")}（4 以上でないと push できない）')
+    scored = git('cat-file', '-p', s.get('blob', ''), check=True) if s.get('blob') else None
+    if scored is None:
+        ng.append('点の記録の版（blob）がリポジトリに無い。採点し直す')
+    else:
+        add = added_lines(scored, head_text)
+        if len(add) > SMALL:
+            ng.append(f'採点した版から {len(add)} 行足している（{SMALL} 行まで）。採点し直す')
+        else:
+            ng += check_added(add)
+    return ng
+
+
+def report(results):
+    bad = False
+    for rel, kind, ng in results:
+        print(('NG ' if ng else 'OK ') + f'{rel}（{kind}）')
+        for x in ng:
+            print('  NG:', x)
+        bad = bad or bool(ng)
+    return 1 if bad else 0
+
+
+def main(argv):
+    if not argv:
+        sys.exit(__doc__)
+    cmd, rest = argv[0], argv[1:]
+    if cmd == 'note':
+        diff = '--diff' in rest
+        rel = os.path.relpath(os.path.abspath([a for a in rest if not a.startswith('--')][0]), ROOT)
+        if not key_of(rel):
+            sys.exit(f'対象外のパス: {rel}')
+        if diff:
+            old = git('show', f'HEAD:{rel}', check=True)
+            ng = check_added(added_lines(old or '', open(os.path.join(ROOT, rel), encoding='utf-8').read()))
+            return report([(rel, '足した行だけ', ng)])
+        return report([(rel, '全部の規則', check_full(rel))])
+
+    if cmd == 'commit':
+        results = []
+        for rel in git('diff', '--cached', '--name-only', '--diff-filter=AM').split():
+            if not key_of(rel):
+                continue
+            old = git('show', f'HEAD:{rel}', check=True)
+            new = git('show', f':{rel}')
+            kind = classify(rel, old, new)
+            ng = check_added(added_lines(old, new)) if kind == 'small' else check_full(rel)
+            results.append((rel, kind, ng))
+        return report(results)
+
+    if cmd == 'push':
+        base, head = rest[0], rest[1]
+        if re.fullmatch(r'0+', base) or git('cat-file', '-e', base, check=True) is None:
+            base = git('rev-parse', f'{head}~1').strip()
+        results = []
+        for line in git('diff', '--name-status', '--diff-filter=AMR', base, head).splitlines():
+            parts = line.split('\t')
+            rel = parts[-1]
+            if not key_of(rel):
+                continue
+            old = git('show', f'{base}:{parts[1] if parts[0].startswith("R") else rel}', check=True)
+            new = git('show', f'{head}:{rel}')
+            kind = classify(rel, old, new)
+            if kind == 'small':
+                ng = check_added(added_lines(old, new))
+            else:
+                ng = check_full(rel) + score_check(rel, new)
+            results.append((rel, kind, ng))
+        return report(results)
+
+    if cmd == 'score':
+        rel = os.path.relpath(os.path.abspath(rest[0]), ROOT)
+        opts = dict(zip(rest[1::2], rest[2::2]))
+        blob = subprocess.run(['git', '-C', ROOT, 'hash-object', '-w', rel], capture_output=True, text=True).stdout.strip()
+        rec = {'path': rel, 'overall': int(opts.get('--overall', 0)), 'product': int(opts.get('--product', 0)),
+               'blob': blob, 'by': opts.get('--by', ''), 'scored_at': opts.get('--at', '')}
+        os.makedirs(os.path.join(HERE, 'scores'), exist_ok=True)
+        json.dump(rec, open(os.path.join(HERE, 'scores', f'{key_of(rel)}.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+        print(f'記録した: notes-quality/scores/{key_of(rel)}.json 総合 {rec["overall"]}')
+        return 0
+
+    if cmd == 'record':
+        rel = os.path.relpath(os.path.abspath(rest[0]), ROOT)
+        key = key_of(rel)
+        text = open(os.path.join(ROOT, rel), encoding='utf-8').read()
+        rows = [r for r in opening_hist() if r[0] != key] + [[key, opening_type(key) or '', title_shape(title_of(text)), title_of(text)]]
+        with open(os.path.join(HERE, 'opening_log.tsv'), 'w', encoding='utf-8', newline='') as f:
+            f.write('# key\t冒頭の型\t題の形\t題\n')
+            csv.writer(f, delimiter='\t').writerows(rows)
+        return 0
+    sys.exit(__doc__)
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))
