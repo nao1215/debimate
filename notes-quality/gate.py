@@ -222,8 +222,59 @@ def check_full(rel, process=True):
         if sc < 85:
             ng.append(f'omokage の一致度が {sc}%（85% 以上。omokage check --explain で崩れた段落を見る）')
     ng += check_anchors(rel, text)
+    ng += check_animation(p, text)
     if process:
         ng += check_process(rel, key, text)
+    return ng
+
+
+def webp_durations(path):
+    """動く WebP の各コマの表示時間（ms）。動かない WebP なら空。"""
+    import struct
+    b = open(path, 'rb').read()
+    if b[:4] != b'RIFF' or b[8:12] != b'WEBP':
+        return []
+    i, out = 12, []
+    while i + 8 <= len(b):
+        tag, size = b[i:i + 4], struct.unpack('<I', b[i + 4:i + 8])[0]
+        if tag == b'ANMF':
+            d = b[i + 20:i + 23]
+            out.append(d[0] | d[1] << 8 | d[2] << 16)
+        i += 8 + size + (size & 1)
+    return out
+
+
+def check_animation(p, text):
+    """動く WebP の速さ（2026-11-12 著者「動画作れるとこもあるはず。作れる部分は速度に気をつけてほしい」）。
+    基準は著者が合格にした stdout-buffering・Sidecar・fuzzing・property-based-testing の実測（全体 7〜14 秒、
+    最後のコマ 3 秒、caption に再生の速さ）。実際の映像の比較（全体 3 秒未満でコマが 50ms 以下）は対象外。"""
+    ng = []
+    bundle = os.path.dirname(p)
+    for m in re.finditer(r'\{\{<\s*figure[^>]*src="([^"]+\.webp)"[^>]*>\}\}', text):
+        src, tag = m.group(1), m.group(0)
+        f = os.path.join(bundle, src)
+        if not os.path.exists(f):
+            continue
+        d = webp_durations(f)
+        if len(d) < 2:
+            continue
+        total = sum(d)
+        if total < 3000 and max(d) <= 50:
+            continue
+        name = os.path.basename(src)
+        if d[-1] < 2500:
+            ng.append(f'動く図 {name}: 最後のコマが {d[-1]}ms（2.5 秒以上止めてから繰り返す）')
+        if not 5000 <= total <= 20000:
+            ng.append(f'動く図 {name}: 全体が {total / 1000:.1f} 秒（5〜20 秒。目安 10 秒前後）')
+        fast = sum(x for x in d if x < 100)
+        if fast > total / 2:
+            ng.append(f'動く図 {name}: 100ms 未満のコマが全体の {fast * 100 // total}%（速すぎる。実時間より遅く、目安 0.5 倍速）')
+        speed_rx = r'倍速|倍の速さ|秒で表示|秒ずつ|実時間'
+        words = ' '.join(re.findall(r'(?:caption|alt)="([^"]*)"', tag))
+        gens = glob.glob(os.path.join(bundle, '*.py')) + glob.glob(os.path.join(ROOT, 'projects/ml/scripts/notes', os.path.basename(bundle) + '_gen.py'))
+        in_frames = any(re.search(speed_rx, open(g, encoding='utf-8').read()) for g in gens)
+        if not re.search(speed_rx, words) and not in_frames:
+            ng.append(f'動く図 {name}: 再生の速さが caption にもコマの中にも無い（「実測した時刻を 0.5 倍速で再生」など）')
     return ng
 
 
