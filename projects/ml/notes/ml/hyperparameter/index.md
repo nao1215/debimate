@@ -8,7 +8,7 @@ weight: 10
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、[`Ridge(alpha=1.0)`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` や [RandomForest](../random-forest/) の木数は、候補を比べて選びます。
+ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、[`Ridge(alpha=1.0)`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` や [RandomForest](../random-forest/) で木の深さを決める `max_depth` は、候補を比べて選びます。
 
 重要なのは、候補を選ぶデータと最終性能を測るデータを分けることです。本記事では Ridge の `alpha` を例に、交差検証で候補を選び、最後に触れていないテスト集合で評価する順序を確認します。
 
@@ -88,7 +88,7 @@ test R²=0.862
 
 ![Ridge の alpha ごとの訓練 R² と CV R²。破線は CV で選んだ alpha=10](./hyperparameter_search.svg)
 
-訓練 R² は `alpha` が小さいほど高く、0.001 では 0.979 です。訓練 R² だけで選ぶと最も弱い正則化を選びますが、その CV R² は 0.533 で、fold 間のばらつきも ±0.288 と大きくなります。反対に `alpha` を 100 以上にすると、訓練 R² と CV R² がそろって下がり、係数を縮めすぎた[未学習](../overfitting/)になります。CV R² は両者の間の `alpha=10` で 0.743 と最も高くなり、これを選びます。テスト R² の 0.862 は、選び終えた後に一度だけ出した値です。テスト集合は 38 行と小さいため、CV R² より高く出ることもあります。
+訓練 R² は `alpha` が小さいほど高く、0.001 では 0.979 です。訓練 R² だけで選ぶと最も弱い正則化を選びますが、その CV R² は 0.533 で、fold 間のばらつきも ±0.288 と大きくなります。反対に `alpha` を 100 以上にすると、訓練 R² と CV R² がそろって下がり、係数を縮めすぎた[未学習](../overfitting/)になります。CV R² は両者の間の `alpha=10` で 0.743 と最も高くなり、これを選びます。テスト R² の 0.862 は、選び終えた後に一度だけ出した値です。CV R² より高いのは、`GridSearchCV` が既定の `refit=True` で約 90 行の各 fold より多い 112 行の訓練集合全体に再学習したことと、テスト集合が 38 行と小さく値がぶれやすいことの両方によります。
 
 ---
 
