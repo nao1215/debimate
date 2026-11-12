@@ -37,3 +37,4 @@ blockchain-systems__blob	フラット	その他	Blob - 大きなデータなら 
 blockchain-systems__erc-20	場面	その他	ERC-20 - 残高はコントラクトが持つ表、approve は引き出しを任せる許可
 blockchain-systems__hash-function	場面	その他	Hash Function - 4 バイトの keccak256 は、どれか 2 つの名前なら平均 8 万回弱で重なる
 math__probability-distributions	場面	その他	代表的な確率分布 - 2012 年の平日 8 時（晴れ）に借りられた自転車の台数は、ポアソン分布が示す 95% の範囲に 36% しか入らない
+blockchain-systems__smart-contract	フラット	その他	Smart Contract - 書き込みは検証するノード全てが同じ計算をやり直すプログラム

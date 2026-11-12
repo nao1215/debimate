@@ -1,8 +1,16 @@
 {
  "path": "content/notes/blockchain-systems/smart-contract/index.md",
- "overall": 3,
- "product": 16,
- "blob": "c50c365417fb58b64fcdb4d1292632dc8d1e3762",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:23:21"
+ "overall": 5,
+ "product": 54,
+ "blob": "25adf40b80401b92d94392fe6cd678658ff9261b",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

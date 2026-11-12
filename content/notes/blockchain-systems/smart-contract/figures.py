@@ -1,126 +1,140 @@
-"""Generate the cover diagram of the smart contract note.
-
-concept_figure() draws, as a hand-written SVG (stdlib only), one lane for an
-ordinary web service (only the operator's server runs the code) and three
-lanes for verifying nodes that each apply the same transactions in the same
-order to the same state, and reach the same state.
+#!/usr/bin/env python3
+"""Smart Contract ノートの図を lab/output/results.json から作る。
 
 Run: python3 content/notes/blockchain-systems/smart-contract/figures.py
+出力: images/ の WebP 3 枚（lottery、replay、storage）。
 """
+import json
+import os
 
-from html import escape
-from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont
 
-HERE = Path(__file__).resolve().parent
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
+HERE = os.path.dirname(os.path.abspath(__file__))
+IMG = os.path.join(HERE, "images")
+RES = json.load(open(os.path.join(HERE, "lab", "output", "results.json")))
+
+JP = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+INK, SUB, LINE = "#1f1f1f", "#666666", "#bdbdbd"
 FILL, PALE = "#f2f2f2", "#eaf1f5"
-GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
+WIN = "#3a5a6e"
+RED, RED_PALE = "#d1495b", "#fbe3e3"
+S = 2  # 2 倍で描いて縮める
 
 
-class Svg:
-    def __init__(self, width, height, title):
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs>'
-            + "".join(
-                f'<marker id="arrow-{n}" viewBox="0 0 10 10" refX="9" refY="5" '
-                'markerWidth="4" markerHeight="4" orient="auto">'
-                f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
-                for n, c in (("ink", INK), ("sub", SUB), ("accent", ACCENT), ("red", RED)))
-            + '</defs>',
-            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        ]
-
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle",
-             rotate=None):
-        r = f' transform="rotate({rotate} {x} {y})"' if rotate is not None else ""
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}"{r}>{escape(s)}</text>')
-
-    def box(self, x, y, w, h, fill, stroke="none", sw=2.5, dash="", rx=10):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def line(self, x1, y1, x2, y2, color, sw=4, arrow=None, dash=""):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
-
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+def font(size, mono=False):
+    return ImageFont.truetype(MONO if mono else JP, size * S)
 
 
-def lane(f, y, name, block_fill, block_stroke, block_text, end_fill, end_stroke):
-    """One row: start state -> transactions 1, 2, 3 -> end state."""
-    h = 62
-    f.text(200, y + 9, name, 24, INK, anchor="end")
-    f.line(330, y, 590, y, SUB, sw=2.5, arrow="sub")
-    f.box(220, y - h / 2, 110, h, "#ffffff", SUB, sw=2.5, rx=8)
-    f.text(275, y + 9, "前の状態", 24, INK)
-    for i, x in enumerate((358, 428, 498)):
-        f.box(x, y - 26, 52, 52, block_fill, block_stroke, sw=2.5, rx=6)
-        f.text(x + 26, y + 9, str(i + 1), 24, block_text, "normal")
-    f.box(595, y - h / 2, 110, h, end_fill, end_stroke, sw=2.5, rx=8)
-    f.text(650, y + 9, "後の状態", 24, INK)
+def rgb(h):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def concept_figure():
-    f = Svg(960, 540, "運営者のサーバーだけが実行する構成と、各ノードが同じ取引を独立に実行する構成")
+class Canvas:
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+        self.im = Image.new("RGB", (w * S, h * S), "#ffffff")
+        self.d = ImageDraw.Draw(self.im)
 
-    f.text(30, 52, "通常の Web サービス", 26, weight="normal", anchor="start")
-    lane(f, 108, "運営者のサーバー", FILL, SUB, SUB, FILL, SUB)
-    f.text(730, 117, "運営者だけが計算", 24, SUB, anchor="start")
+    def text(self, x, y, s, size=14, color=INK, mono=False, anchor="la"):
+        self.d.text((x * S, y * S), s, font=font(size, mono), fill=rgb(color), anchor=anchor)
 
-    f.line(30, 170, 930, 170, "#dddddd", sw=2)
+    def rect(self, x, y, w, h, fill="#ffffff", outline=LINE, width=1):
+        self.d.rectangle([x * S, y * S, (x + w) * S, (y + h) * S],
+                         fill=rgb(fill) if fill else None, outline=rgb(outline) if outline else None, width=width * S)
 
-    f.text(30, 218, "スマートコントラクト", 26, weight="normal", anchor="start")
-    f.text(453, 218, "同じ取引の並び", 24, SUB)
-    for y, name in ((282, "ノード A"), (372, "ノード B"), (462, "ノード C")):
-        lane(f, y, name, ACCENT, ACCENT, INK, GREEN_PALE, GREEN)
-    f.box(583, 236, 134, 272, "none", GREEN, sw=3, dash="10 7", rx=12)
-    f.text(735, 362, "全員が同じ", 24, INK, anchor="start")
-    f.text(735, 396, "状態に至る", 24, INK, anchor="start")
-    f.save(HERE / "images" / "smart-contract_concept.svg")
+    def box(self, x, y, w, h, fill="#ffffff", outline=LINE, width=1, r=8):
+        self.d.rounded_rectangle([x * S, y * S, (x + w) * S, (y + h) * S], radius=r * S,
+                                 fill=rgb(fill) if fill else None, outline=rgb(outline), width=width * S)
 
-
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
+    def final(self):
+        return self.im.resize((self.w, self.h), Image.LANCZOS)
 
 
-def order_figure():
-    """Two transfers of 8 tokens from a balance of 10: the order decides the winner."""
-    f = Svg(960, 540, "残高 10 から 8 枚ずつ送る 2 件の取引で、順序が結果を決める様子")
-    lanes = [(120, "X が先", "X", "Y"), (330, "Y が先", "Y", "X")]
-    for y, head, first, second in lanes:
-        f.text(30, y + 10, head, 26, anchor="start")
-        x = 150
-        items = [
-            (120, ["残高 10"], "#ffffff", SUB),
-            (176, [f"{first} が 8 枚送る", "成功"], GREEN_PALE, GREEN),
-            (120, ["残高 2"], "#ffffff", SUB),
-            (176, [f"{second} が 8 枚送る", "残高不足"], OCHRE_PALE, OCHRE),
-        ]
-        for k, (w, lines, fill, stroke) in enumerate(items):
-            f.box(x, y - 50, w, 100, fill, stroke)
-            for j, line in enumerate(lines):
-                ty = y + 9 - (len(lines) - 1) * 16 + j * 32
-                f.text(x + w / 2, ty, line, 24, INK if j == 0 else SUB)
-            x += w
-            if k < len(items) - 1:
-                f.line(x + 8, y, x + 46, y, SUB, sw=3, arrow="sub")
-                x += 56
-    f.text(480, 480, "同じ 2 件でも、先に実行された方だけが成功する", 24, SUB)
-    f.save(HERE / "images" / "smart-contract_order.svg")
+def save_webp(im, name):
+    im.save(os.path.join(IMG, name), "WEBP", quality=90, method=6)
+
+
+def lottery():
+    """表紙: 適当に選んだ番号と Predictor の当たりの数。1 回を 1 マスで描く。"""
+    s = RES["lottery"]["summary"]
+    grid = RES["replay"]["grid"]
+    rows = [("適当に選ぶ", "アカウントから play を呼ぶ", s["guess"], grid["guess"]["A"]),
+            ("計算してから選ぶ", "Predictor が同じトランザクションで", s["predictor"], grid["predictor"]["A"])]
+    c = Canvas(1000, 360)
+    c.text(30, 22, "ブロックの値で当たり番号を作る抽選に、100 回ずつ参加", 26)
+    c.text(30, 64, "1 マスが 1 回で、左から参加した順。濃いマスが当たり、白いマスが外れ", 17, SUB)
+    x0, cell = 300, 5.4
+    for i, (title, sub, r, st) in enumerate(rows):
+        y = 112 + i * 100
+        c.text(30, y, title, 22)
+        c.text(30, y + 34, sub, 15, SUB)
+        wins = r["wins"]
+        assert sum(st) == wins and len(st) == 100
+        for k, v in enumerate(st):
+            c.rect(x0 + k * cell, y, cell - 1, 58, fill=WIN if v else "#ffffff", outline=None if v else LINE)
+        c.text(x0 + 100 * cell + 16, y + 2, f"{wins} 回", 28)
+        c.text(x0 + 100 * cell + 16, y + 40, "当たり", 15, SUB)
+    c.text(30, 318, f"外れた {100 - s['guess']['wins']} 回は取り消されたが、手数料は払った（手元の anvil で実行）", 17, SUB)
+    save_webp(c.final(), "smart-contract_lottery.webp")
+
+
+def replay():
+    """ブロックの時刻だけを変えて、適当に選んだ 100 回を実行し直した当たり外れを並べる。"""
+    g = RES["replay"]["grid"]["guess"]
+    a = g["A"]
+    rows = [("ノード A", "元のブロック", g["A"]),
+            ("ノード B", "時刻を A に揃える", g["B"]),
+            ("ノード C", "時刻を 1 秒ずらす", g["C"])]
+    c = Canvas(1000, 452)
+    c.text(30, 22, "ブロックの時刻だけを変えて、同じトランザクションを実行し直す", 24)
+    c.text(30, 62, "濃いマスが当たり（適当に選んだ 100 回）。赤い枠は、時刻を変えて当たり外れが変わった回", 17, SUB)
+    x0, cell = 250, 5.6
+    for i, (name, sub, st) in enumerate(rows):
+        y = 108 + i * 92
+        c.text(30, y, name, 22)
+        c.text(30, y + 34, sub, 15, SUB)
+        for k, v in enumerate(st):
+            diff = v != a[k]
+            c.rect(x0 + k * cell, y, cell - 1.2, 56, fill=WIN if v else "#ffffff",
+                   outline=RED if diff else (None if v else LINE), width=2 if diff else 1)
+        nd = sum(1 for k, v in enumerate(st) if v != a[k])
+        c.text(x0 + 100 * cell + 16, y, f"当たり {sum(st)} 回", 20)
+        c.text(x0 + 100 * cell + 16, y + 32, "A と同じ" if nd == 0 else f"時刻で変わった {nd} 回", 16, RED if nd else SUB)
+    for k in (0, 49, 99):
+        c.text(x0 + k * cell + cell / 2, 386, f"{k + 1}", 15, SUB, anchor="ma")
+    c.text(x0 - 12, 386, "回目", 15, SUB, anchor="ra")
+    c.text(30, 420, "手元の anvil で時刻を指定した実験。実際のノードは受け取ったブロックの時刻で実行するので、結果は揃う", 15, SUB)
+    save_webp(c.final(), "smart-contract_replay.webp")
+
+
+def storage():
+    """Quiz の slot 1 の 32 バイトに、private の answer がそのまま入っている様子。"""
+    q = RES["quiz"]
+    slot1 = bytes.fromhex(q["slot1"][2:])
+    n = len(q["decoded"])
+    c = Canvas(1000, 330)
+    c.text(30, 22, "eth_getStorageAt で読んだ Quiz の slot 1（private の answer）", 24)
+    c.text(30, 62, "1 マスが 1 バイト。31 バイト以下の文字列は、先頭に中身、末尾に長さ × 2", 17, SUB)
+    x0, y0, cell = 30, 112, 29.4
+    for i, b in enumerate(slot1):
+        used = i < n
+        fill = RED_PALE if used else (PALE if i == 31 else FILL)
+        c.rect(x0 + i * cell, y0, cell - 3, 48, fill=fill, outline=RED if used else LINE)
+        c.text(x0 + i * cell + (cell - 3) / 2, y0 + 14, f"{b:02x}", 15, INK, mono=True, anchor="ma")
+        if used:
+            c.text(x0 + i * cell + (cell - 3) / 2, y0 + 62, chr(b), 24, RED, mono=True, anchor="ma")
+    c.text(x0, y0 + 112, f"先頭の {n} バイト: 文字列 \"{q['decoded']}\"", 18, RED)
+    right = x0 + 31 * cell + (cell - 3)
+    c.text(right, y0 + 62, f"0x{slot1[-1]:02x} = {slot1[-1]}", 17, SUB, anchor="ra")
+    c.text(right, y0 + 90, f"長さ {n} × 2", 17, SUB, anchor="ra")
+    c.text(x0, y0 + 160, "private を付けても、ノードに問い合わせれば誰でもこの 32 バイトを読める", 18, SUB)
+    save_webp(c.final(), "smart-contract_storage.webp")
 
 
 if __name__ == "__main__":
-    concept_figure()
-    order_figure()
+    os.makedirs(IMG, exist_ok=True)
+    lottery()
+    replay()
+    storage()

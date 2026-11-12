@@ -1,0 +1,84 @@
+{
+ "guess": {
+  "plays": 100,
+  "wins": 11,
+  "fee_eth": 0.002334521337224081,
+  "gas_win": [
+   26934,
+   26946,
+   44046
+  ],
+  "gas_miss": [
+   21875,
+   21887
+  ]
+ },
+ "predictor": {
+  "plays": 100,
+  "wins": 100,
+  "fee_eth": 0.00324191542659792,
+  "gas_win": [
+   31236,
+   48336
+  ],
+  "gas_miss": []
+ },
+ "winsOf_player": 11,
+ "winsOf_predictor": 100
+}
+{
+ "txs": 202,
+ "same_hash": true,
+ "wins": {
+  "guess": {
+   "A": 11,
+   "B": 11,
+   "C": 9
+  },
+  "predictor": {
+   "A": 100,
+   "B": 100,
+   "C": 100
+  }
+ },
+ "diff_vs_A": {
+  "B": 0,
+  "C": 16
+ }
+}
+{
+ "quiz": "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512",
+ "word": "tsukimi",
+ "slot1": "0x7473756b696d690000000000000000000000000000000000000000000000000e",
+ "decoded": "tsukimi",
+ "deploy_input_tail": "00000000000000000000000000000000000000000000000000000000000000077473756b696d6900000000000000000000000000000000000000000000000000",
+ "call_solve_as_dead": {
+  "ok": true,
+  "result": "0x"
+ },
+ "call_setAnswer_as_owner": {
+  "ok": true,
+  "result": "0x"
+ },
+ "call_setAnswer_as_stranger": {
+  "ok": false,
+  "error": "execution reverted: not owner"
+ },
+ "after_calls": {
+  "solved": 0,
+  "slot1": "0x7473756b696d690000000000000000000000000000000000000000000000000e",
+  "blocks_added": 0
+ },
+ "dead_balance": "0x0",
+ "tx_setAnswer_as_stranger": {
+  "status": 0,
+  "gasUsed": 24119,
+  "logs": 0,
+  "nonce": [
+   0,
+   1
+  ],
+  "fee_wei": 24119000192952,
+  "balance_diff_wei": 24119000192952
+ }
+}

@@ -1,5 +1,5 @@
 ---
-title: "Smart Contract - チェーン上のプログラムは誰が実行するのか"
+title: "Smart Contract - 書き込みは検証するノード全てが同じ計算をやり直すプログラム"
 date: 2026-11-03T00:00:00+09:00
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
@@ -9,225 +9,379 @@ wrapTables: true
 topics: ["Smart Contract"]
 ---
 
-スマートコントラクト（smart contract）は、ブロックチェーン上に配置し、共通のルールに従って実行するプログラムです。Ethereum では、アドレスにコードと保存状態が紐づきます。例えば、トークンの残高を管理し、送金の条件を満たす場合だけ残高を更新できます。
+スマートコントラクト（smart contract）は、[Ethereum](https://ethereum.org/ja/developers/docs/smart-contracts/) などのブロックチェーンに置いて動かすプログラムです。コードとデータはチェーン上の 1 つのアドレスにまとまっていて、誰でもトランザクションを送って関数を呼べます。[ERC-20](../erc-20/) で作るトークンの残高表も、交換所の [AMM](../amm/) も、コントラクトとして書かれています。
 
-通常の Web サービスでは、運営者のサーバーがプログラムを実行します。スマートコントラクトを利用する時も実行するコンピュータは必要ですが、結果の正しさを運営者だけに任せる構成ではありません。
+Web のバックエンドを書いてきたエンジニアが、抽選の API を初めてコントラクトで書く場面を考えます。サーバーなら、当たり番号は乱数生成器で作り、正解は DB（データベース）に置いて外には出しません。コントラクトにはどちらも無いので、ブロックの時刻などを混ぜたハッシュ値から当たり番号を作り、正解は `private` を付けた変数に置きたくなります。手元に立てたチェーンで、そう書いた抽選に 2 通りの参加者を 100 回ずつ参加させました。
 
-以下は、運営者のサーバーだけが実行する構成と、検証するノードがそれぞれ同じ取引を実行する構成を比べた図です。
+{{< figure src="images/smart-contract_lottery.webp" alt="0 から 9 の当たり番号をブロックの値から作る抽選に、100 回ずつ参加した結果。1 回を 1 マスとして左から参加した順に並べ、番号を適当に選んだアカウントは当たった 11 回のマスだけが散らばって濃く、当たり番号を同じトランザクションの中で計算してから選んだ Predictor は 100 マス全てが濃い。外れた 89 回も手数料は払っている" caption="同じ抽選に 100 回ずつ参加した結果" align="center" >}}
 
-{{< figure src="images/smart-contract_concept.svg" alt="上段は通常の Web サービスで、運営者のサーバーだけが前の状態に取引 1・2・3 を適用して後の状態を作る。下段はスマートコントラクトで、ノード A・B・C がそれぞれ同じ前の状態に同じ並びの取引 1・2・3 を適用し、点線で囲まれた同じ後の状態に至る" caption="運営者だけが実行する構成と、各ノードが実行し直す構成" align="center" >}}
-上記の図の各ノードは、他のノードの計算結果をそのまま信じず、自分で実行して手元の状態を更新します。
+番号を適当に選んだ参加者の当たりは 11 回で、外れた 89 回にも手数料を払いました。もう一方の Predictor というコントラクトは、100 回全てで当たっています。抽選が当たり番号の計算に使った値は、同じトランザクションの中で動く別のコントラクトからも、そのまま読めるからです。
 
 <br>
 
-本記事では、[Ethereum Transaction](../ethereum-transaction/) で扱った「実行の依頼」が、どのようにプログラムの実行に繋がるのかを説明します。
+本記事では、Web の API とサーバーに慣れたエンジニアが、コントラクトを書く前や呼ぶ前に知っておきたい次の 5 つを説明します。最初の 4 つは手元に立てたチェーンで実験し、最後の 1 つは公式の文書と実際の事故で説明します。
 
-- コードとデータはどこに保存されるのか。
-- 誰がプログラムを動かし、結果を確認するのか。
-- 値を読む操作と、値を変える取引は何が違うのか。
-- 実行に失敗すると、何が取り消され、何が残るのか。
+- コントラクトのコードは、どこで誰が実行するのか。
+- ブロックの値で作った当たり番号は、なぜ当てられるのか。
+- `private` の変数は、誰から隠れるのか。
+- 読み取りの呼び出しとトランザクションは、何が違うのか。
+- 置いたコードの誤りは、後から直せるのか。
 
-後半では、ローカルノード上の小さなカウンターで実際の結果を確認します。Solidity の文法全体や、[EVM](../evm/) の命令一覧は扱いません。
-
----
-
-### 共通のルールによる状態更新
-
-例えば、ゲームのポイントをユーザー間で送る機能を考えます。サーバーに残高を保存する場合、運営者が送金条件の判定と残高の更新を行います。利用者は画面に表示された結果を受け取りますが、その画面だけからサーバー内部の処理を検証することはできません。
-
-Ethereum のスマートコントラクトでは、送金条件をコードにし、残高をチェーン上の状態として管理します。ブロックを検証するノードは、直前の状態に取引を順番に適用し、計算結果がブロックの示す結果と一致するか確認します。[Ethereum Virtual Machine（EVM）](https://ethereum.org/en/developers/docs/evm/)は、この実行規則を定める仮想マシンです。
-
-開発者の PC が動き続ける必要はありません。コードが配置され、チェーンが動いていれば、別の利用者もそのアドレスに取引を送れます。一方で、コードは時間になっただけで自動的に起動するわけではありません。定期処理が必要なら、外部から取引を送る仕組みなどを用意します。
-
-利用者やノードは、公開されたコードの通りに処理されたかを検証できます。ルール自体が適切かどうかは別の問題です。管理者だけが残高を変更できるコードも書けるため、「スマートコントラクトだから管理者がいない」とは限りません。
+例には Ethereum を使い、コードは [Solidity](https://docs.soliditylang.org/) で書きます。コントラクトを動かした量は gas という単位で数え、手数料は使った gas に単価を掛けた額になります。命令ごとの動きや gas の細かい計算は、[EVM](../evm/) のノートで扱っています。
 
 ---
 
-### コードと保存状態
+### コントラクトの置き場所
 
-Ethereum 向けの開発では、[Solidity](https://docs.soliditylang.org/en/v0.8.28/introduction-to-smart-contracts.html) などで書いたソースコードを EVM が実行するバイトコードにコンパイルします。コードをチェーン上に配置する操作がデプロイ（deploy）です。
+Ethereum の[アカウント](../ethereum-account-model/)には、秘密鍵で操作する EOA（Externally Owned Account）と、コードを持つコントラクトアカウントがあります。コントラクトを置くには、Solidity をコンパイルしたバイトコードを載せたトランザクションを送ります。この操作をデプロイと呼びます。
 
-コントラクト作成の取引では、初期化用のコードを実行します。その結果として実行用のコードを配置し、必要な初期状態を設定します。ソースファイルをそのままノードにアップロードして実行する仕組みではありません。
+載せるのはソースではなく初期化用のコードです。通常のデプロイ（CREATE）では、アドレスは送信者のアドレスと、送信者の [nonce](/notes/security/nonce/) という通し番号で決まります。EOA の nonce は、そのアカウントが送ったトランザクションの数です。ブロックに入ると、ノードが初期化用のコードを実行し、その結果がそのアドレスで動くコードと、変数の値を保存するストレージの初期値になります。
 
-以下は、整数 `count` を保存し、`increment()` を呼ぶたびに 1 増やすカウンターをデプロイした直後の構成です。storage は、呼び出しが終わった後も保持する保存領域です。アカウントの状態全体は [Ethereum Account Model](../ethereum-account-model/) で説明しています。
+<br>
+
+関数を呼ぶ時も、宛先をコントラクトのアドレスにした[トランザクション](../ethereum-transaction/)を送ります。データの先頭 4 バイトが呼ぶ関数を表し、続くバイト列が引数です。この並べ方は ABI（Application Binary Interface）と呼ばれ、[Solidity の ABI 仕様](https://docs.soliditylang.org/en/latest/abi-spec.html)が定めています。[EVM のノート](../evm/#calldata-と-abi)では、実際のバイト列を読んでいます。
+
+<br>
+
+送ったトランザクションは、[mempool](../mempool/) で待った後、次のブロックを作る役に選ばれたノード（提案者）が、ブロックに並べて実行します。ブロックを受け取った他のノードも、同じトランザクションを同じ順に自分で再実行します。2026 年時点の Ethereum では、並べる作業の多くを builder という別の参加者が担っています。この分担は [PBS](../pbs/) のノートで扱っています。
 
 ```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
-flowchart TD
-    S["Counter.sol<br/>Solidityのソース"] -->|"コンパイル"| I["初期化用コード"]
-    I -->|"作成取引で実行"| A
-    subgraph A["デプロイ先のアドレス"]
-        C["実行用コード<br/>incrementなど"]
-        D["storage<br/>count = 0"]
-    end
-```
-
-同じコードを 2 回デプロイすると、通常は別々のアドレスに配置され、それぞれの保存状態を持ちます。一方を増やしても、もう一方のカウンターは増えません。呼び出す側は、チェーンとアドレスを指定して対象を選びます。
-
-関数の呼び出しには、ABI（Application Binary Interface）というデータの取り決めを使います。ABI は、関数名や引数の型などを送信するバイト列に変換するための情報です。
-
-例えば `increment()` を呼ぶ場合、その関数を識別する 4 バイトの値が取引の `data` に入ります。引数があれば、その後ろに符号化した値が続きます。[Solidity の ABI 仕様](https://docs.soliditylang.org/en/v0.8.28/abi-spec.html)がこの形を定めています。
-
-ウォレットやライブラリは、この変換を代わりに行います。人が画面で見ている関数名と、ノードに送るデータは同じ表現ではありません。
-
----
-
-### 実行するノードと取引の順序
-
-Ethereum のノードは、実行を担当する実行クライアントと、ブロックの合意を担当する合意クライアントを組み合わせて動きます。[ノード構成の公式解説](https://ethereum.org/en/developers/docs/nodes-and-clients/node-architecture/)にあるように、取引の実行と、採用するチェーンを決める処理は役割が異なります。
-
-取引の処理量を表す単位を gas と呼び、取引として実行する場合は gas に応じた手数料を払います。手数料の仕組みは [Ethereum Transaction](../ethereum-transaction/) で説明しています。
-
-以下は、ウォレットから送った取引がブロックに入り、検証されるまでを簡略化した図です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
 sequenceDiagram
-    participant U as ウォレット
-    participant N as 受付ノード
-    participant P as ブロックの提案側
-    participant V as 検証するノード
-    U->>N: 署名済みの呼び出し取引
-    N->>P: ネットワークで取引を伝播
-    P->>P: 取引の順序を決めて実行
-    P->>V: 実行結果を含むブロック
-    V->>V: 同じ順序で実行して照合
-    U->>N: 取引レシートを照会
-    N-->>U: 成否・gas・ログ
+    participant W as ウォレット
+    participant R as 送信先のノード
+    participant P as 提案者
+    participant O as 他のノード
+    W->>R: 署名したトランザクション
+    R->>P: mempool を通して届く
+    P->>P: ブロックに並べて実行
+    P->>O: ブロック（時刻・state root を含む）
+    O->>O: 同じ順で再実行し、state root を照合
+    Note over P,O: 書き込みはブロックを検証するノードが全て実行する
 ```
 
-すべてのノードが、ウォレットから同時に呼び出されるわけではありません。受け取ったブロックを検証するノードが、[同じ初期状態と順序から結果を再計算します](/notes/distributed-systems/leader-and-followers/)。軽量クライアントなど、すべての取引を自分で実行しない参加方法もあります。
+state root は、全アカウントの残高やストレージをまとめて 1 つにしたハッシュ値です。提案者は実行した後の state root をブロックのヘッダーに書き、他のノードは自分で計算した値と比べます。一致しなければ、そのブロックは受け付けません。
 
-[実行順序は結果に影響します](../mev/)。トークン残高 10 から 8 枚ずつ送る呼び出しが 2 件あれば、先に実行された取引が残高を減らし、後の取引は残高不足になります。以下は、2 件の並びを入れ替えた時の結果です。
+つまり、コントラクトの関数は、どのノードで実行しても同じ結果になる必要があります。コントラクトを実行する仮想マシンの [EVM（Ethereum Virtual Machine）](https://ethereum.org/ja/developers/docs/evm/)に、乱数生成器やノードの時計、外部の API を読む命令が無いのはこのためです。関数が読めるのは、チェーンに記録された状態と、トランザクションの中身と、提案者がヘッダーに書いた時刻などのブロックの値だけです。
 
-{{< figure src="images/smart-contract_order.svg" alt="2 段の流れ。上段の X が先では、残高 10 から X が 8 枚送るが緑で成功し、残高 2 になり、Y が 8 枚送るは黄土色で残高不足。下段の Y が先では、Y が成功し、X が残高不足になる" caption="並びを入れ替えて実行した、同じ 2 件の取引の結果" align="center" >}}
-「同じコードなら常に同じ結果」ではなく、入力、直前の状態、ブロックの情報などの実行条件も揃えて初めて同じ結果になります。
-
-外部の Web API に自由にアクセスできないのも、検証する側が同じ条件を再現する必要があるからです。外部の価格などを使う場合は、その情報をチェーンに渡す[オラクル（oracle）](../oracle/)が必要になります。渡された情報が現実と一致するかという問題は、コードの実行とは別に残ります。
+リーダーが決めた順の更新を全員が同じ初期状態から適用する点は、[Leader and Followers](/notes/distributed-systems/leader-and-followers/) の複製と同じ考え方です。ただし、[ライト・クライアント](https://ethereum.org/ja/developers/docs/nodes-and-clients/light-clients/)のように、全トランザクションを自分では実行しない参加方法もあります。
 
 ---
 
-### 値の照会と状態の変更
+### ブロックの値を変えた再実行
 
-カウンターの値を確認するだけなら、取引をブロックに入れる必要はありません。ノードの API にある [`eth_call`](https://ethereum.org/en/developers/docs/apis/json-rpc/#eth_call)は、指定した状態で実行を試し、返り値を返します。試した結果をチェーンの状態として保存しません。
+手元で 3 台のノードを動かし、関数の結果がブロックの値で決まる様子を見ました。ノードには [Foundry](https://getfoundry.sh/anvil/overview/) の anvil 1.7.1 を使い、同じ初期状態で起動しています。
 
-| 操作 | ノードでの処理 | チェーンへの反映 |
+ノード A で冒頭の抽選に送ったトランザクション 202 件を実行し、その署名済みのバイト列を B と C に送り直して、それぞれにブロックを作り直させました。B ではブロックの時刻を A と同じ値に、C では 1 秒ずらした値にしています。
+
+{{< figure src="images/smart-contract_replay.webp" alt="ブロックの時刻だけを変えて同じトランザクションを実行し直し、適当に選んだ 100 回の当たり外れを 1 行 100 マスで並べた図。元のブロックのノード A と、時刻を A に揃えたノード B は同じ 11 マスが濃い。時刻を 1 秒ずらしたノード C は 9 マスが濃く、時刻を変えて当たり外れが変わった 16 マスが赤い枠で囲まれている。下に、実際のノードは受け取ったブロックの時刻で実行するので結果は揃うという注記" caption="ブロックの時刻だけを変えて実行し直した時の当たり外れ" align="center" >}}
+
+時刻を揃えた B は、202 件全ての成否が A と一致しました。C では適当に選んだ 100 回のうち 16 回で結果が変わり、当たりは 11 回から 9 回になっています。
+
+実際のノードは、受け取ったブロックのヘッダーに書かれた時刻で実行するので、C のような食い違いは起きません。この実験で分かるのは、結果がブロックの値で決まり、値を揃えれば一致するところまでで、state root の照合は再現していません。
+
+<br>
+
+<details>
+<summary>送り直したコードと実験の細部</summary>
+
+送り直す部分のコードは次の通りです。コードの `rpc` は指定したノードに JSON-RPC（ノードに照会や送信を頼む HTTP の API）の要求を送る関数、`receipt` はトランザクションの実行結果を記したレシート（receipt）を待って返す関数です。
+
+```python
+def exp_replay():
+    """A の 1 番目以降のブロックを、生のトランザクションのまま B と C に送り直す。"""
+    head = int(rpc("A", "eth_blockNumber"), 16)
+    status = {"A": {}, "B": {}, "C": {}}
+    same_hash = True
+    for n in range(1, head + 1):
+        blk = rpc("A", "eth_getBlockByNumber", hex(n), False)
+        ts = int(blk["timestamp"], 16)
+        for h in blk["transactions"]:
+            status["A"][h] = int(receipt("A", h)["status"], 16)
+            raw = rpc("A", "eth_getRawTransactionByHash", h)
+            for node, shift in (("B", 0), ("C", 1)):
+                rpc(node, "evm_setNextBlockTimestamp", ts + shift)
+                h2 = rpc(node, "eth_sendRawTransaction", raw)
+                same_hash &= h2 == h
+                status[node][h] = int(receipt(node, h2)["status"], 16)
+    return status, same_hash
+```
+
+`status` は [EIP-658](https://eips.ethereum.org/EIPS/eip-658) が定めるトランザクション全体の成否で、1 は成功、0 は失敗です。送り直したトランザクションのハッシュ値は、B と C の 202 件全てで A と同じでした。
+
+当たり番号には時刻の他に、次の節で説明する `prevrandao` というブロックの値も混ぜています。anvil はこの値を[1 つ前のブロックが持つハッシュ値とブロック番号から作る](https://github.com/foundry-rs/foundry/blob/4072e48705af9d93e3c0f6e29e93b5e9a40caed8/crates/anvil/src/eth/backend/mem/mod.rs#L2561-L2565)ので、時刻もトランザクションも A と同じ B では揃います。C では最初のブロックで時刻がずれてハッシュ値が変わるため、2 番目のブロックからはこの値も A と違います。
+
+status が 1 でも、中の呼び出しが全て成功したとは限りません。コントラクトが別のコントラクトを呼んだ失敗を [try/catch](https://docs.soliditylang.org/en/latest/control-structures.html#try-catch) などで受け止めて処理を続ければ、外側の status は 1 になります。Predictor の `attack` は `play` の失敗を受け止めないので、`play` が revert すればトランザクション全体が失敗します。
+
+本記事の実験は gas の上限を指定して送る前の見積もりを飛ばし、失敗するトランザクションもブロックに入れています。
+
+</details>
+
+<br>
+
+検証するノードが全て再実行するという性質から、サーバーの API と次の違いが出てきます。
+
+| 項目 | サーバーの API | コントラクト |
 | --- | --- | --- |
-| `eth_call`で値を読む | 指定した状態で実行 | なし |
-| `eth_call`で更新を試す | 一時的に実行 | なし |
-| 更新の取引を送る | ブロック内で実行 | 成功した変更を保存 |
+| 実行する機械 | 運営者のサーバー | 書き込みは検証するノード全て、読み取りは問い合わせた 1 台 |
+| 呼べる人 | 認証を通った利用者 | 誰でも。断る条件はコードに書く |
+| 失敗した時 | エラーを返し、DB を巻き戻す | 状態は巻き戻るが、手数料は払う |
+| 乱数・外部の API | 使える | 使えない。外の値は誰かが書き込む |
+| データの見え方 | 運営者だけが読める | ストレージも引数も誰でも読める |
+| コードの更新 | デプロイし直せば変わる | 置いたバイトコードは書き換えられない。直す手は後の節で扱う |
 
-`eth_call`は、読み取り専用の関数だけに使える API ではありません。状態を変える関数も試せますが、変更は残りません。ブロックに取引を送らないためチェーンの取引手数料は発生しませんが、ノード側の計算資源は使います。API サービス独自の利用料金や実行制限は別にあります。
+外の値は、誰かがトランザクションで書き込まない限りコントラクトに届きません。外の値を書き込む仕組みをオラクル（oracle）と呼び、価格を書き込む 3 通りを [Oracle](../oracle/) のノートで比べています。書き込まれた値が現実と合っているかは、コントラクトの実行とは別の問題として残ります。
 
-逆に、値を返すだけの関数でも、取引として送れば gas を使います。Solidity の `view` は状態を変更しない関数の指定であって、あらゆる呼び出し方で手数料がなくなる指定ではありません。
-
-試した時点と実際にブロックに入った時点で状態が違えば、結果も変わります。事前のシミュレーションが成功していても、その後の取引の成功は保証されません。
+コントラクトは自分から動き出すこともないので、締め切りの処理なども、誰かが関数を呼んだ時に初めて動きます。また、検証するノードが全て実行する分、1 ブロックで使える gas には[上限](../gas-eip-1559/)があり、大量のデータを 1 件のトランザクションで処理すると、上限に達して失敗することがあります。
 
 ---
 
-### ローカルのカウンター実験
+### ブロックの値で作る当たり番号
 
-実験では、[Foundry の Anvil](https://getfoundry.sh/anvil/overview) という開発用ノードをローカルに起動します。公開ネットワークには接続せず、Anvil のテスト用アカウントを利用します。使用したバージョンは Anvil 1.7.1、Solidity コンパイラ 0.8.28 で、EVM の規則は Cancun に固定しています。
+以下は、冒頭で使った抽選のコードです。`draw` は、ブロックの `prevrandao` と時刻、参加者のアドレスを混ぜた [keccak256](../hash-function/) のハッシュ値から、0〜9 の当たり番号を作ります。`prevrandao` は、前のブロックまでに提案者たちが出し合った値を混ぜて作る乱数で、[EIP-4399](https://eips.ethereum.org/EIPS/eip-4399) でコントラクトから読めるようになりました。`play` は、渡された番号が外れていれば `require` で処理を取り消します。
 
-デプロイするコードは次の通りです。[Counter.sol](lab/Counter.sol) にも保存しています。
+この取り消しを revert と呼び、それまでのストレージの変更とログが全て消えます。ログは、コントラクトが処理の結果をアプリに知らせるために残す記録です。命令の定義は [EIP-140](https://eips.ethereum.org/EIPS/eip-140) にあります。
 
 ```solidity
-// SPDX-License-Identifier: MIT
-pragma solidity 0.8.28;
+// ブロックの値から 0〜9 の当たり番号を作る抽選。
+// 外れた番号で play を呼ぶと取り消される（revert）。
+contract Lottery {
+    mapping(address => uint256) public winsOf;
 
-contract Counter {
-    uint256 public count;
-    event Changed(uint256 value);
-
-    function increment() external {
-        count += 1;
-        emit Changed(count);
+    function draw(address player) public view returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, player))) % 10;
     }
 
-    function incrementAndFail() external {
-        count += 1;
-        emit Changed(count);
-        revert("demonstration");
+    function play(uint256 guess) external {
+        require(guess == draw(msg.sender), "miss");
+        winsOf[msg.sender] += 1;
+    }
+}
+
+// 同じトランザクションの中で当たり番号を計算してから play を呼ぶ。
+contract Predictor {
+    function attack(Lottery lottery) external {
+        lottery.play(lottery.draw(address(this)));
     }
 }
 ```
 
-`count` は保存する整数で、初期値は 0 です。`public` を付けると、Solidity が値を取得する `count()` を生成します。`increment()` は値を 1 増やし、`Changed` というイベントを出します。イベントはアプリが処理結果を追跡するためのログです。
+Predictor は、自分のアドレスで当たり番号を計算し、その番号で `play` を呼びます。2 つの呼び出しは 1 つのトランザクションの中にあるので、同じブロックの値を読みます。`draw` が `public` でなくても、チェーン上のバイトコードを逆アセンブルすれば式は分かるので、同じ計算を Predictor の中に書けば済みます。
 
-`incrementAndFail()` は、値を増やしてイベントを出した後に、意図的に `revert` で実行を中止します。最後に失敗した場合、途中の変更が残るかどうかを確認するための関数です。利用者を制限するコードはないため、どのアカウントからも呼べます。
+<br>
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteTextColor":"#403c32"}}}%%
-flowchart TD
-    S["開始時 count = 1"] --> W["実行途中 count = 2<br/>Changedを発行"]
-    W --> R["revertで中止"]
-    R --> D["終了後 count = 1<br/>今回のログも取り消し"]
-    R --> F["取引はブロックに残る<br/>nonce更新・手数料支払い"]
-```
-
-再現用の [run.py](lab/run.py) は、コンパイル、ノード起動、デプロイ、各操作、結果の検査を行います。`anvil`、`cast`、`solc`を PATH に置き、リポジトリのルートで次を実行します。必要なバージョンと実行条件は [README](lab/README.txt) にも記載しています。
-
-以下は、実験コードの抜粋です。デプロイ後に `eth_call`・成功する取引・失敗する取引を比較します。コンパイルとノード起動を含む全体は [run.py](lab/run.py) にあります。
-
-`rpc` はローカルノードへの呼び出し、`data` は関数呼び出しの符号化、`send` は取引送信と receipt の取得、`read` は `eth_call` による値の照会、`status` は receipt の成否を整数に直す関数です。`lines` は出力をためるリストです。`owner` はテスト用アカウント、`address` はデプロイ済みの `Counter` のアドレスです。
+参加させた部分のコードは次の通りです。適当に選ぶ番号は、シードを 1 に固定した Python の乱数で選びました。ブロックの時刻は、Ethereum でブロックが作られる間隔と同じ 12 秒ずつ進め、何度実行しても同じ結果になるようにしています。
 
 ```python
-assert read('count()') == 0
-before_block = rpc('eth_blockNumber')
-rpc('eth_call', {'from': owner, 'to': address, 'data': data('increment()')}, 'latest')
-assert read('count()') == 0 and rpc('eth_blockNumber') == before_block
-lines.append('eth_call increment: count=0; block unchanged')
-for label, signature, expected in [
-    ('increment', 'increment()', 1),
-    ('revert', 'incrementAndFail()', 0),
-]:
-    nonce = int(rpc('eth_getTransactionCount', owner, 'latest'), 16)
-    balance = int(rpc('eth_getBalance', owner, 'latest'), 16)
-    receipt = send(label, owner, data(signature), address)
-    fee = int(receipt['gasUsed'], 16) * int(receipt['effectiveGasPrice'], 16)
-    assert status(receipt) == expected and read('count()') == 1
-    assert int(rpc('eth_getTransactionCount', owner, 'latest'), 16) == nonce + 1
-    assert balance - int(rpc('eth_getBalance', owner, 'latest'), 16) == fee
-    assert len(receipt['logs']) == expected
-    lines.append(
-        f'{label}: status={status(receipt)}; count=1; logs={len(receipt["logs"])}; nonce_delta=1; fee_wei={fee}'
-    )
+rng = random.Random(1)
+for i in range(ROUNDS):
+    guess = rng.randrange(10)
+    r1 = send("A", player, lot, calldata("play(uint256)", guess))
+    r2 = send("A", attacker, pred, calldata("attack(address)", lot))
 ```
 
-```bash
-python3 content/notes/blockchain-systems/smart-contract/lab/run.py
+結果の要約を抜粋します。
+
+```json
+{
+ "guess": {"plays": 100, "wins": 11, "fee_eth": 0.002334521337224081,
+           "gas_miss": [21875, 21887]},
+ "predictor": {"plays": 100, "wins": 100}
+}
 ```
 
-以下は、実際に実行した[出力](lab/output/summary.txt)です。
+外れた `play` は revert したので、`winsOf` の更新は残りません。それでもトランザクションはブロックに入り、使った 21,875 か 21,887 gas に見合う手数料は払っています。送信者の nonce も 1 進みます。失敗した時に手数料がどう決まるかは、[Ethereum Transaction のノート](../ethereum-transaction/#実行が止まった時に消費する-gas)で扱っています。
 
-```text
-eth_call increment: count=0; block unchanged
-increment: status=1; count=1; logs=1; nonce_delta=1; fee_wei=89652000000000
-revert: status=0; count=1; logs=0; nonce_delta=1; fee_wei=55922000000000
-Assertions: PASS
+<br>
+
+外れた時に失うのが手数料だけなら、当たる時だけ参加する使い方もできます。実際のチェーンでも、この形の被害が出ています。[SolidityScan の解析](https://blog.solidityscan.com/roast-football-hack-analysis-e9316170c443)によると、BNB Smart Chain の Roast Football は 2022 年 12 月 5 日に攻撃されました。当たりの判定は、ブロックの番号と時刻、買い手のアドレス、プールの残高から作ったハッシュ値で、どれも呼び出す時点で攻撃者が読める値でした。外れた買い注文は revert して gas の分しか失わないので、攻撃者は当たる時だけ買い、12 BNB を得たと報告されています。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
+flowchart LR
+    A["買い注文を送る"] --> B["同じブロックで<br/>番号・時刻・残高を読み<br/>当たりを計算"]
+    B -->|"当たり"| C["買って賞金を受け取る"]
+    B -->|"外れ"| D["revert<br/>失うのは gas の分だけ"]
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+    classDef miss fill:#f6eae7,stroke:#bb9991,color:#48302b;
+    class D miss;
 ```
 
-最初の行では、`eth_call` で `increment()` を試しています。関数は実行されますが、保存されている `count` は 0 のままで、ブロックも増えません。
+脆弱性の分類をまとめた [OWASP Smart Contract Top 10](https://owasp.org/www-project-smart-contract-top-10/) も、2025 年の一覧で SC09 Insecure Randomness として、ブロックの値を使う乱数を挙げています。
 
-次の行では、同じ関数を取引として送っています。`count` が 1 になり、レシートの `status` は成功を表す 1、ログは 1 件になりました。
-
-最後は、`count` を増やした後に失敗する `incrementAndFail()` を取引として実行した結果です。`count` は 1 のままで、ログも 0 件です。[REVERT の仕様](https://eips.ethereum.org/EIPS/eip-140)に従い、実行中の変更とログが取り消されました。一方で、取引の通し番号である nonce は 1 進み、手数料も払っています。表示した金額は wei 単位で、1 ETH は 10 の 18 乗 wei です。
-
-この実験は gas の上限を明示し、失敗する取引も意図的に送っています。通常のウォレットでは、事前の gas 見積もりで失敗を検出すると送信前に止まる場合があります。その場合と、ブロック内で実行して失敗した場合を混同しないことが大切です。
+当たり番号を守るには、参加を締め切った後に作られるブロックの値で決めるか、外で作った乱数を検証できる形で書き込んでもらいます。前者の作り方と、`prevrandao` を最後の提案者がどこまで動かせるかは [Commit-Reveal](../commit-reveal/) のノートで扱っています。後者の例は、証明付きの乱数を書き込む [Chainlink VRF](https://docs.chain.link/vrf) です。
 
 ---
 
-### 実行結果の確認と制約
+### `private` の変数
 
-[EIP-658](https://eips.ethereum.org/EIPS/eip-658) で定められたレシートの `status` は、取引全体の実行が成功したかを表します。コントラクトが内部で別のコントラクトを呼び、その失敗を受け止めて処理を続けた場合、外側の取引は成功することがあります。本実験では失敗を受け止める処理がないため、`revert` が取引全体の失敗になります。
+次は、正解を `private` の変数に置いたクイズです。`public` を付けた `owner` と `solved` には、同じ名前で値を返す関数をコンパイラが自動で作ります。`private` を付けた `answer` にはこの関数が作られず、このコントラクトを継承したコントラクトからも使えません。
 
-スマートコントラクトは、同じコードを他のアプリから呼び出せる点でも便利です。例えば、トークンの管理と決済処理を別のコントラクトに分け、組み合わせて使えます。トークンの残高と利用承認を管理するコントラクトの例は、[ERC-20](../erc-20/) で扱います。
+```solidity
+// 正解の言葉を private の変数に置いたクイズ。
+contract Quiz {
+    address public owner;          // slot 0
+    string private answer;         // slot 1
+    uint256 public solved;         // slot 2
 
-一方で、設計時には次の制約があります。
+    constructor(string memory _answer) {
+        owner = msg.sender;
+        answer = _answer;
+    }
 
-- 公開チェーンの storage は秘密の保管場所にはなりません。Solidity の `private` は他のコントラクトからのアクセス制限であり、データを暗号化する指定ではありません。
-- 実行量には [gas の上限](../gas-eip-1559/)があります。大量のデータを 1 件の取引で処理する設計は、上限に達して失敗する可能性があります。
-- デプロイ済みコードの修正は通常のサーバー更新のようには行えません。別のアドレスへの移行や、[あらかじめ用意した更新機構](../upgradeable-proxy/)が必要です。
-- 外部情報の正しさ、管理者権限、アプリ画面の表示内容まで、EVM が保証するわけではありません。
+    function solve(string calldata word) external {
+        require(keccak256(bytes(word)) == keccak256(bytes(answer)), "wrong");
+        solved += 1;
+    }
 
-更新機構がある場合は、誰が実装を差し替えられるかも利用者の判断材料になります。[コントラクト更新の公式解説](https://ethereum.org/en/developers/docs/smart-contracts/upgrading/)では、更新可能にする設計と、その複雑さを説明しています。コードがチェーン上にあるという事実だけでなく、実際の処理と権限を確認する必要があります。
+    function setAnswer(string calldata _answer) external {
+        require(msg.sender == owner, "not owner");
+        answer = _answer;
+    }
+}
+```
+
+ストレージは 32 バイトずつのスロット（slot）に分かれていて、変数は宣言の順に slot 0 から入ります。
+
+ノードには、照会やトランザクションの送信を頼む JSON-RPC という HTTP の API があります。正解の `tsukimi` でデプロイし、slot 1 を JSON-RPC の `eth_getStorageAt` で読みました。コードの `rpc` は、指定したノードに JSON-RPC の要求を送る関数です。
+
+```python
+slot1 = rpc("A", "eth_getStorageAt", quiz, "0x1", "latest")
+b = bytes.fromhex(slot1[2:])
+length = b[-1] // 2  # 31 バイト以下の文字列は、末尾の 1 バイトに長さ × 2 が入る
+decoded = b[:length].decode()
+```
+
+```text
+slot1:   0x7473756b696d690000000000000000000000000000000000000000000000000e
+decoded: tsukimi
+```
+
+{{< figure src="images/smart-contract_storage.webp" alt="Quiz の slot 1 の 32 バイトを 1 マス 1 バイトで並べた図。先頭の 7 バイト 74 73 75 6b 69 6d 69 が赤く、その下に t s u k i m i の文字。途中は 00 が並び、最後のバイト 0e は 14 で、長さ 7 × 2 を表す" caption="private の answer を入れた slot 1 の中身" align="center" >}}
+
+先頭の 7 バイトが `tsukimi` の文字コードで、末尾の 0x0e（14）は長さ 7 の 2 倍です。31 バイト以下の文字列をこう詰める決まりは、Solidity の文書にある [Layout of State Variables in Storage](https://docs.soliditylang.org/en/latest/internals/layout_in_storage.html#bytes-and-string) にあります。フルノードは全アカウントのストレージを持っているので、RPC を開いているノードなら誰でもこの読み方ができます。
+
+[Solidity で可視性を決める指定の説明](https://docs.soliditylang.org/en/latest/contracts.html#state-variable-visibility)でも、`private` や `internal` で防げるのは他のコントラクトからの読み書きだけで、チェーンの外からは誰にでも見えるとされています。さらに、デプロイしたトランザクションでは、データの末尾に constructor へ渡した `7473756b696d69` がそのまま入っていました。トランザクションの中身も全ノードに配られるからです。
+
+<br>
+
+隠したい値は、ストレージにも引数にも置けません。正解のハッシュ値だけを置く手もありますが、言葉のように候補を絞れる値は総当たりで当てられます。値に秘密の乱数を混ぜてハッシュ値を置き、締め切りの後に明かす手順も、[Commit-Reveal](../commit-reveal/) のノートで実験しています。
+
+---
+
+### 読み取りの呼び出し
+
+ここまでの値の読み取りでは、トランザクションを送らずに、JSON-RPC でノードに直接照会しました。関数の呼び出しにも [eth_call](https://ethereum.org/ja/developers/docs/apis/json-rpc/#eth-call) という同じ種類の要求があり、問い合わせたノードが今の状態で関数を実行して、結果だけを返します。ブロックには入らず、チェーンの手数料も掛かりません。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
+sequenceDiagram
+    participant W as ウォレット
+    participant R as 問い合わせ先のノード
+    participant O as 他のノード
+    W->>R: eth_call（署名なし）
+    R->>R: 今の状態で実行し、変更は捨てる
+    R-->>W: 戻り値か revert の理由
+    Note over R,O: 他のノードは何も知らない
+```
+
+eth_call には署名が要らないので、`from` に好きなアドレスを書けます。Quiz の `solve` は、鍵の持ち主が知られていない焼却用のアドレス `0x000000000000000000000000000000000000dEaD` を名乗って呼びました。`setAnswer` は、所有者と他人をそれぞれ名乗って呼んでいます。最後に、同じ `setAnswer` を他人のアカウントから本物のトランザクションで送っています。
+
+```python
+nobody = "0x000000000000000000000000000000000000dEaD"
+block_before = int(rpc("A", "eth_blockNumber"), 16)
+c_solve = call("A", nobody, quiz, calldata("solve(string)", word))
+c_set_owner = call("A", owner, quiz, calldata("setAnswer(string)", "kaze"))
+c_set_stranger = call("A", stranger, quiz, calldata("setAnswer(string)", "kaze"))
+after = {"solved": uint("A", quiz, "solved()(uint256)"),
+         "slot1": rpc("A", "eth_getStorageAt", quiz, "0x1", "latest"),
+         "blocks_added": int(rpc("A", "eth_blockNumber"), 16) - block_before}
+assert after["blocks_added"] == 0 and after["solved"] == 0
+
+nonce0 = int(rpc("A", "eth_getTransactionCount", stranger, "latest"), 16)
+bal0 = int(rpc("A", "eth_getBalance", stranger, "latest"), 16)
+r_bad = send("A", stranger, quiz, calldata("setAnswer(string)", "kaze"))
+nonce1 = int(rpc("A", "eth_getTransactionCount", stranger, "latest"), 16)
+bal1 = int(rpc("A", "eth_getBalance", stranger, "latest"), 16)
+fee = int(r_bad["gasUsed"], 16) * int(r_bad["effectiveGasPrice"], 16)
+assert int(r_bad["status"], 16) == 0 and nonce1 == nonce0 + 1 and bal0 - bal1 == fee
+```
+
+```text
+call_solve_as_dead:         ok
+call_setAnswer_as_owner:    ok
+call_setAnswer_as_stranger: execution reverted: not owner
+after_calls:                solved=0, slot1 は tsukimi のまま, 増えたブロック 0
+tx_setAnswer_as_stranger:   status=0, gasUsed=24119, logs=0, nonce 0 -> 1
+                            残高の減少 24119000192952 wei = 手数料
+```
+
+所有者だけが呼べる `setAnswer` も、所有者を名乗るだけで成功しました。それでも `solved` は 0 で、slot 1 も `tsukimi` のままです。eth_call を 3 回呼ぶ間に、ブロックは 1 つも増えていません。eth_call の実行は問い合わせたノードの中で終わり、何も書き込まれません。
+
+一方で、他人が本物のトランザクションで送った `setAnswer` は revert し、ログも残りませんでした。それでも nonce は 0 から 1 に進み、残高は使った 24,119 gas に単価を掛けた手数料と同じ額だけ減っています。
+
+<br>
+
+送る前に eth_call で試せば、revert するかどうかを手数料を払わずに知ることができます。gas の量を見積もる eth_estimateGas も、実行が revert すると[見積もりではなくエラーを返します](https://github.com/ethereum/go-ethereum/blob/4721b2cc765495073d9745995616b36b06480824/internal/ethapi/api.go#L971)。逆に、値を返すだけの `view` の関数でも、トランザクションとして送れば gas を使います。
+
+ウォレットが送る前に結果を予想して見せるのも、同じ考え方です。[Wallet のノート](../wallet/)で紹介した、Rabby というウォレットの確認画面がその例です。ただし、eth_call の答えを出しているのは問い合わせた 1 台だけで、他のノードとは照合していません。また、送ったトランザクションがブロックに入るまでに他のトランザクションが状態を変えれば、結果も変わります。並び順で結果が変わる話は [MEV](../mev/) のノートで扱っています。
+
+---
+
+### 置いたコードの誤り
+
+デプロイしたアドレスのコードは、後から書き換えられません。直したコードをデプロイし直すと別のアドレスになり、ストレージも空から始まります。利用者や他のコントラクトが覚えているのは古いアドレスなので、残高などのデータの移し替えと、参照先の切り替えが別に必要です。
+
+コードを直せなかった例として知られるのが、2016 年の The DAO です。集めた ETH を流し出される[リエントランシー](../reentrancy/)の欠陥がありましたが、コントラクトは直せず、Ethereum はチェーンの規則を変える[ハードフォーク](../ethereum-hard-forks/)で ETH を回収用のコントラクトに移しました。この時に規則を変えずに続いたもう一方のチェーンが、[Ethereum Classic](https://ethereumclassic.org/knowledge/history) です。
+
+送信者が選んだ値と初期化用のコードから計算したハッシュ値でアドレスを決める [CREATE2](https://eips.ethereum.org/EIPS/eip-1014) と、`SELFDESTRUCT` でコードを消す命令を組み合わせ、同じアドレスに別のコードを置き直す [Metamorphic Contract](../metamorphic-contract/) という手もありました。
+
+2024 年 3 月の Cancun で有効になった [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780) により、コードを消せるのは作ったのと同じトランザクションの中だけになり、この手は使えなくなっています。
+
+<br>
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b"}}}%%
+flowchart TB
+    subgraph R["デプロイし直す"]
+        direction LR
+        U1["利用者"] --> O1["古いアドレス<br/>古いコード・残高"]
+        O1 -.->|"データの移し替えが要る"| N1["新しいアドレス<br/>直したコード・空のストレージ"]
+    end
+    subgraph P["プロキシを置く"]
+        direction LR
+        U2["利用者"] --> X["プロキシ<br/>残高などのデータ"]
+        X -->|"コードを借りる"| I1["実装 v1"]
+        X -.->|"参照先を差し替え"| I2["実装 v2"]
+    end
+    R ~~~ P
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```
+
+直す手段を初めから組み込むのが [Upgradeable Proxy](../upgradeable-proxy/) です。プロキシはデータだけを持ち、処理は差し替えられる別のコントラクトからコードを借りて動きます。その代わり、参照先を書き換える操作が通れば、資産を扱うコードごと入れ替えられます。
+
+2025 年に Bybit が使っていた Safe では、Web 画面の JavaScript が改竄され、承認者は中身を差し替えられたトランザクションと気付かずに署名しました。承認者の鍵は盗まれていません。
+
+[Sygnia の調査](https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/)によると、その実行は delegatecall で攻撃者のコントラクトを呼び、Safe の参照先をそのコントラクトに差し替えています。経緯は [Wallet のノート](../wallet/)で扱っています。
+
+<br>
+
+更新できるコントラクトの利用者は、開発者が勝手に書き換えないと信頼するしかありません。ethereum.org の [Upgrading smart contracts](https://ethereum.org/en/developers/docs/smart-contracts/upgrading/) も、この点を更新の欠点に挙げています。差し替えを複数の鍵で承認する[マルチシグ](../multisig/)や、変更が効くまで待つタイムロック（timelock）は、この信頼を減らすための工夫です。
+
+更新の仕組みが無くても、管理者だけが残高を変えられる関数を書くことはできます。コードがチェーン上にあることと、管理者がいないことは別なので、どの関数を誰が呼べるかまでコードで読む必要があります。
+
+---
+
+### 移す前に見ること
+
+乱数と秘密をサーバーに任せていた処理をコントラクトに移す時は、次の順で見ていきます。
+
+1. 関数の結果を決める値を全て挙げ、同じブロックで誰が読めるかを見る。
+2. 先に知られると困る値は、締め切った後のブロックか外の仕組みで決める。
+3. 隠したい値は、ストレージにも引数にも置かない。
+4. 送る前に eth_call で試し、revert した時の手数料も見込む。
+5. 後から直す手段を用意するなら、差し替えの鍵を誰が持つかを決める。
+
+冒頭の抽選は 1 と 2 を飛ばしていたので、Predictor に 100 回当てられました。参加した時点ではまだ決まっていない値で当たり番号を作れば、同じトランザクションの中で計算する手は使えなくなります。
+
+実験の環境は [lab/README.txt](lab/README.txt)、Solidity のコードは [lab/Contracts.sol](lab/Contracts.sol)、実行の全体は [lab/run.sh](lab/run.sh) と [lab/experiment.py](lab/experiment.py)、図の生成元は [figures.py](figures.py) にあります。
