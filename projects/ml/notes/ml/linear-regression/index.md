@@ -30,7 +30,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 
 特徴量の数がサンプル数より多い時や、ある特徴量が他の特徴量の線形和で書ける時は逆行列が無く、最小解が無数にあります。逆行列があっても、特徴量同士の相関が極端に強い（[多重共線性](#多重共線性と正則化)）と数値的に不安定になります。
 
-scikit-learn の [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) は、密な行列なら [`scipy.linalg.lstsq`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) で解きます。既定の LAPACK ドライバ gelsd は SVD（Singular Value Decomposition、特異値分解）を使い、`(X^T X)^-1` を直接計算しないので、数値的に安定します。最小解が無数にある時は、その中でノルムが最小の解を返します。
+scikit-learn の [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) は、密な行列なら [`scipy.linalg.lstsq`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) で解きます。既定の LAPACK ドライバ gelsd は SVD（Singular Value Decomposition、特異値分解）を使い、`(X^T X)^-1` を直接計算しないので、数値的に安定します。`X^T X` を作ると小さい特異値が丸めに埋もれる様子は、[固有値分解](../../math/eigen-decomposition/)で scikit-learn の PCA を例に確かめています。最小解が無数にある時は、その中でノルムが最小の解を返します。
 
 ---
 
