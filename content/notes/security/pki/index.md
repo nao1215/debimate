@@ -43,7 +43,7 @@ X.509 証明書は、subject（識別される主体）、公開鍵、有効期�
 
 CA の仕事は、公開鍵をただ登録することではありません。どの識別子について、どの種類の確認を済ませ、どの用途・期限で証明書を発行するかを決めます。
 
-公開 Web PKI の CA は、[CA/Browser Forum Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/)（以下、BR）に従い、DNS 名などの domain name を検証します。これはサイトの運営者の法人格や、通信内容の安全性を保証するものではありません。
+公開 Web PKI の CA は、[CA/Browser Forum Baseline Requirements](https://cabforum.org/working-groups/server/baseline-requirements/)（以下、BR）に従い、申請者がその DNS 名を管理していることを必ず検証します。運営する組織の実在まで検証するのは OV や EV の証明書だけで、最も多い DV の証明書はサイトの運営者が誰かを保証しません。どの種類も、通信内容の安全性は保証しません。
 
 trust store に Root CA を入れる行為は、その CA が定めた検証と発行の方針を受け入れることです。CA は [RFC 3647](https://www.rfc-editor.org/rfc/rfc3647) の枠組みに沿って、Certificate Policy と Certification Practice Statement に方針と実務を記述します。したがって、署名の検証に成功しても、利用者が信頼したのは任意の CA ではなく、手元の trust store にある CA です。
 
@@ -71,7 +71,7 @@ Public CA は不特定のインターネット利用者が検証する公開 DNS
 
 `basicConstraints` の `CA:TRUE` は、その証明書が CA として扱われ得ることを示します。`pathLenConstraint` があれば、その下に置ける CA の数も制限します。CA 証明書の `keyUsage` には通常 `keyCertSign` が必要です。
 
-サーバー証明書は `extendedKeyUsage` の `serverAuth` を持つことがあり、クライアントは TLS サーバー認証に使ってよいかを判断します。
+公開 Web PKI のサーバー証明書は、BR により `extendedKeyUsage` に `serverAuth` を必ず持ちます。クライアントはこれを見て、TLS サーバー認証に使ってよいかを判断します。
 
 `basicConstraints` が CA になれるかと深さを決めるのに対し、CA が発行できる名前の範囲は `nameConstraints` で制限します。これらは RFC 5280 の証明書パス検証で確認する制約です。
 
