@@ -25,7 +25,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
   body: ある 1 件の予測値を特徴量ごとの寄与へ分けます。SHAP（予測値を特徴量の寄与へ分配する手法）などで調べます。
 {{< /note-panels >}}
 
-以下は [scikit-learn](https://scikit-learn.org/) 1.8.0、[NumPy](https://numpy.org/) 2.4.1 で実行した結果です（scikit-learn 1.9.1、NumPy 2.5.4 でも同じ値になりました）。[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/feature-importance_gen.py)は GitHub で公開しています。本文のコードは抜粋で、[Matplotlib](https://matplotlib.org/) の描画設定や保存処理を省略しています。
+以下は [scikit-learn](https://scikit-learn.org/) 1.8.0、[NumPy](https://numpy.org/) 2.4.1 で実行した結果です（scikit-learn 1.9.1、NumPy 2.5.4 でも同じ値になりました）。[図と数値の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/feature-importance_gen.py)は GitHub で公開しています。本文のコードは抜粋で、[Matplotlib](https://matplotlib.org/) の描画設定を省略しています。図に使う色の定数 `BLUE`・`GREEN`・`BROWN` と、図を保存する関数 `save` は生成コードの冒頭で定義しているので、そのまま貼って動かす時は生成コードから写してください。
 
 ---
 
