@@ -1,5 +1,5 @@
 ---
-title: "同時分布・周辺分布・条件付き分布"
+title: "同時分布・周辺分布・条件付き分布 - ペンギンのくちばしは、種ごとには長いほど厚く、3 種を混ぜると長いほど薄い"
 date: 2026-05-25
 draft: false
 series: ["機械学習ノート", "Mathematics"]
@@ -8,298 +8,241 @@ weight: 11
 topics: ["Mathematics（数学の基礎）"]
 ---
 
-確率変数が複数ある時、それらの関係を表す分布には 3 種類あります。同時分布（joint distribution, `P(x, y)`）、周辺分布（marginal distribution, `P(x)` や `P(y)`）、条件付き分布（conditional distribution, `P(y|x)`）の 3 つで、機械学習の本や論文で繰り返し出てくる基本概念です。
+同時分布（joint distribution）は、複数の変数の値の組ごとの確率です。周辺分布（marginal distribution）は、同時分布を一部の変数について合計し、その変数を消した分布で、条件付き分布（conditional distribution）は、一部の変数の値を固定した時の残りの変数の分布です。
 
-[データドリフト](../../mlops/data-drift/)の分類、[ベイズの定理](../bayes-theorem/)、分類器の確率出力を扱う時に、これらの分布を区別します。周辺分布と条件付き分布は、同時分布から計算できます。
+機械学習で出会う値の多くは、条件付き分布から求めた値です。分類器が出す確率は入力を固定した時のクラスの条件付き分布で、回帰が予測する値は入力を固定した時の目的変数の平均です。
+
+カリフォルニア大学バークレー校（UC Berkeley）の 1973 年の大学院の出願では、6 学科を合計した合格率は男性 44.5%、女性 30.4% で男性の方が高いのに、学科ごとに見ると 6 学科のうち 4 学科で女性の方が高くなっています。このように、全体と内訳で大小が逆転することがあります。回帰モデルに特徴量を 1 つ足したら、別の特徴量の係数の符号が変わることもあります。どちらも計算の誤りではなく、グループをまとめた周辺分布で見るか、グループの値を固定した条件付き分布で見るかの違いで起きます。
+
+ペンギンのくちばしでも、同じことが起きます。以下は、南極の Palmer 基地の周辺の 3 島で計測された 3 種のペンギン 342 羽について、くちばしの長さから厚さを線形回帰で予測した結果です。データは [palmerpenguins](https://allisonhorst.github.io/palmerpenguins/) として公開されているものを使いました。破線は 3 種を混ぜたまま学習した回帰の予測で、実線は種を特徴量に足して学習した回帰の予測です。
+
+{{< figure src="jmc_cover.webp" alt="横軸はくちばしの長さ、縦軸はくちばしの厚さの散布図。青の Adelie は左上、赤の Chinstrap は右上、緑の Gentoo は右下に固まる。3 種それぞれの点に沿った実線はどれも右上がりで、種を足した回帰の傾きは +0.200。3 種を混ぜた回帰の黒い破線だけが右下がりで、傾きは -0.085" caption="くちばしの長さから厚さを予測する回帰（種を混ぜた場合と、種を足した場合）" align="center" >}}
+
+種を足した回帰の傾きは +0.200 で、種ごとに別々に学習しても +0.18〜+0.22 です。どの種でも、くちばしが長いほど厚くなります。3 種を混ぜると傾きは -0.085 で、長いほど薄くなります。相関係数も、種ごとの +0.39〜+0.65 に対して、全体では -0.24 です。どちらも同じ 342 羽から計算した値です。
+
+<br>
+
+本記事では、ML を学び始めた人と、手元のデータの集計やモデルの係数を読む人に向けて、次の疑問に答えます。
+
+- 3 つの分布は、件数の表のどこを見た値か。
+- まとめた表で、なぜ大小が逆転するのか。
+- 連続の値で条件を付けると、何が起きているのか。
+- 特徴量を 1 つ足すと、係数の符号が変わるのはなぜか。
+- 混ぜる比率が変わると、関係はどこまで動くのか。
+- 独立と条件付き独立は、何が違うのか。
+
+実験は [NumPy](https://numpy.org/) 2.5.4、[pandas](https://pandas.pydata.org/) 3.1.1、[scikit-learn](https://scikit-learn.org/stable/) 1.9.1 で行いました。図を描く処理も含めた完全なコードは [joint-marginal-conditional_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/joint-marginal-conditional_gen.py) にあります。
 
 ---
 
-### 3 つの分布の関係
+### 件数の表の中の 3 つの分布
 
-```mermaid
-graph LR
-    A["同時分布 P(x, y)"] --> B["周辺分布 P(x) = Σ_y P(x, y)"]
-    A --> C["周辺分布 P(y) = Σ_x P(x, y)"]
-    A --> D["条件付き分布 P(y|x) = P(x, y) / P(x)"]
-```
-
-- 同時分布: `x` と `y` を同時に観測した時の確率
-- 周辺分布: 片方の変数だけに注目した分布。もう片方を足し合わせる（または積分する）操作で得られる
-- 条件付き分布: 片方の変数を固定した時の、もう片方の分布
-
-関係式を 1 行で書くと次の通りです。これは「乗法定理」とも呼ばれ、ベイズの定理の出発点になります。
-
-`P(x, y) = P(y|x) × P(x) = P(x|y) × P(y)`
-
----
-
-### 離散の例: 雲量と雨
-
-具体例として「雲量 `x` ∈ {少, 中, 多}」と「雨 `y` ∈ {降る, 降らない}」を考えます。観測データから次のような同時分布が得られたとします。
+最初に、離散の変数で 3 つの分布を表の上に置きます。使うのは、冒頭で触れた UC Berkeley の 1973 年の大学院の出願のうち、出願の多い 6 学科への 4526 件の出願について、学科・性別・合否の組ごとに件数を数えたデータです。R に [UCBAdmissions](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/UCBAdmissions.html) として同梱されており、ここでは [Rdatasets](https://vincentarelbundock.github.io/Rdatasets/) が配布している CSV を使いました。
 
 ```python
-import matplotlib.pyplot as plt
-import numpy as np
+import pandas as pd
 
-x_labels = ["clouds=low", "clouds=mid", "clouds=high"]
-y_labels = ["rain=yes", "rain=no"]
-joint = np.array([
-    [0.02, 0.28],
-    [0.08, 0.22],
-    [0.30, 0.10],
-])
+ucb = load_csv("UCBAdmissions.csv",
+               "https://vincentarelbundock.github.io/Rdatasets/csv/datasets/UCBAdmissions.csv")
+counts = ucb.pivot_table(index=["Dept", "Gender"], columns="Admit",
+                         values="Freq", aggfunc="sum")  # 6 学科 × 2 性別 × 2 合否 = 24 マス
+n_total = counts.to_numpy().sum()
 
-p_x = joint.sum(axis=1)  # 行方向の和 = P(x)
-p_y = joint.sum(axis=0)  # 列方向の和 = P(y)
-
-fig = plt.figure(figsize=(7, 5))
-gs = fig.add_gridspec(2, 2, width_ratios=[3, 1], height_ratios=[1, 3],
-                      hspace=0.05, wspace=0.05)
-ax_top = fig.add_subplot(gs[0, 0])
-ax_main = fig.add_subplot(gs[1, 0])
-ax_right = fig.add_subplot(gs[1, 1])
-
-ax_main.imshow(joint, cmap="Blues", aspect="auto", vmin=0, vmax=0.35)
-for i in range(joint.shape[0]):
-    for j in range(joint.shape[1]):
-        ax_main.text(j, i, f"{joint[i, j]:.2f}", ha="center", va="center",
-                     color="black" if joint[i, j] < 0.2 else "white")
-ax_main.set_xticks(range(len(y_labels))); ax_main.set_xticklabels(y_labels)
-ax_main.set_yticks(range(len(x_labels))); ax_main.set_yticklabels(x_labels)
-
-ax_top.bar(range(len(y_labels)), p_y, color="#59a14f", edgecolor="white")
-ax_top.set_xticks([]); ax_top.set_ylabel("P(y)\nmarginal")
-ax_right.barh(range(len(x_labels)), p_x, color="#e15759", edgecolor="white")
-ax_right.set_yticks([]); ax_right.invert_yaxis()
-ax_right.set_xlabel("P(x)\nmarginal")
-fig.suptitle("Joint P(x,y) and marginals P(x), P(y)")
-plt.savefig("joint-marginal-conditional_discrete.svg", bbox_inches="tight")
-print(f"P(x) = {p_x}")
-print(f"P(y) = {p_y}")
+# 学科について合計して学科を消す（周辺化）: 性別 × 合否の 2 × 2 の表
+by_gender = counts.groupby(level="Gender").sum()
+print((by_gender / n_total).round(3))
+rate_all = by_gender["Admitted"] / by_gender.sum(axis=1)  # P(合格 | 性別)
+print("P(合格 | 性別):", rate_all.round(3).to_dict())
 ```
 
-出力:
+`load_csv` は、配布元から 1 回だけ取得して手元の写しを読む小さな関数です。出力は次の通りでした。
 
 ```text
-P(x) = [0.3 0.3 0.4]
-P(y) = [0.4 0.6]
+Admit   Admitted  Rejected
+Gender
+Female     0.123     0.282
+Male       0.265     0.330
+P(合格 | 性別): {'Female': 0.304, 'Male': 0.445}
 ```
 
-{{< figure src="joint-marginal-conditional_discrete.svg" alt="雲量 3 段階と雨の有無の 6 マスのヒートマップ。上端の緑のバーが列の和 P(y)、右端の赤のバーが行の和 P(x)" caption="同時分布と、その端に描いた周辺分布" align="center" >}}
+この 4 つの値が、性別と合否の同時分布 `P(性別, 合否)` です。4 つを足すと 1 になります。表の右端と下端に、行の合計と列の合計を書き足すと、次のようになります。
 
-中央のヒートマップ 6 マスが同時分布 `P(x, y)` で、すべての値を足すと 1.0 になります。上端の緑のバーは「各列を縦に足し上げて得た `P(y)`」、右端の赤のバーは「各行を横に足し上げて得た `P(x)`」です。図の端（margin）に合計を書くため、marginal（周辺）と呼びます。
+| | 合格 | 不合格 | 行の合計 `P(性別)` |
+|---|---:|---:|---:|
+| 女性 | 0.123 | 0.282 | 0.405 |
+| 男性 | 0.265 | 0.330 | 0.595 |
+| 列の合計 `P(合否)` | 0.388 | 0.612 | 1 |
 
----
+表の端（margin）に書いた合計が周辺分布で、名前の由来もここにあります。`P(性別)` は合否について合計して消した分布、`P(合否)` は性別について合計して消した分布です。
 
-### 周辺分布（marginal distribution）
+条件付き分布は、1 つの行だけを取り出し、その行の合計で割って和を 1 にした分布です。女性の行なら `0.123 / 0.405 = 0.304` で、出願した女性の合格率 `P(合格 | 女性)` は 30.4% になります。式で書くと `P(y | x) = P(x, y) / P(x)` で、両辺に `P(x)` を掛けた `P(x, y) = P(y | x) × P(x)` を乗法定理と呼びます。
 
-複数の変数を持つ同時分布から、一部の変数だけに注目して取り出した分布を周辺分布と呼びます。求め方は、注目しない変数について「足し合わせる」（連続なら「積分する」）だけです。
+<br>
 
-離散の例で再掲します。
-
-- `P(x=low)`  = `P(x=low, y=yes) + P(x=low, y=no)` = `0.02 + 0.28 = 0.30`
-- `P(x=mid)`  = `0.08 + 0.22 = 0.30`
-- `P(x=high)` = `0.30 + 0.10 = 0.40`
-
-機械学習の文脈では `P(y)` を「クラス比率」「事前分布」「prior」と呼ぶことが多いです。例えば、不正取引検知では `P(y=1) = 0.01`（陽性 1%）が `P(y)` にあたります。ラベル分布が時間で変わる現象は [label shift / prior shift](../../mlops/data-drift/) と呼ばれ、`P(y)` が動く drift の一種です。
+列で割ると別の値になります。合格者のうち女性の割合 `P(女性 | 合格)` は `0.123 / 0.388 = 0.317` で、30.4% とは意味も値も違います。条件と結果を入れ替えた確率を互いに変換する式が[ベイズの定理](../bayes-theorem/)で、検査で陽性の人が病気である確率を求める例で説明しています。
 
 ---
 
-### 条件付き分布（conditional distribution）
+### まとめると大小が逆転する表
 
-片方の変数をある値に固定した時の、もう片方の分布です。同時分布の特定の行（または列）を取り出し、その行の合計で割って和を 1 にすると得られます。
+前の節の表では、男性の合格率は 44.5%、女性は 30.4% でした。この表は、学科・性別・合否の 3 つの変数の同時分布から、学科について合計して消した周辺分布です。学科を消さずに、学科ごとに合格率を並べたのが次の図です。
 
-`P(y|x) = P(x, y) / P(x)`
+{{< figure src="jmc_ucb.webp" alt="左は学科 A〜F ごとの女性（赤い丸）と男性（青い四角）の合格率。学科 A は女性 82%、男性 62% で女性が高い。B・D・F も女性がわずかに高く、C と E は男性がわずかに高い。右端の 6 学科の合計では男性 44.5%、女性 30.4% で男性が高い。右は性別ごとに出願した学科の割合で、男性は合格率 64% の学科 A と 63% の学科 B に多く、女性は合格率が 4 割に届かない学科 C〜F に多い" caption="学科ごとの合格率と、性別ごとに出願した学科の割合（UC Berkeley、1973 年）" align="center" >}}
 
-雲量の例で計算してみます。
+左の図で、6 学科のうち A・B・D・F の 4 学科は女性の合格率の方が高く、C と E の 2 学科は男性が高いものの、差は 4 ポイント以内です。それでも、学科をまとめると男性が 14 ポイント上になります。集計の仕方で大小が逆転するこの現象は、[シンプソンのパラドックス](https://doi.org/10.1111/j.2517-6161.1951.tb00088.x)（Simpson's paradox）と呼ばれ、このデータは、[Bickel らの 1975 年の論文](https://doi.org/10.1126/science.187.4175.398)が分析した出願の一部です。
+
+理由は右の図にあります。男性の出願の 51% は合格率が 6 割を超える学科 A と B に向かい、女性の出願の 93% は合格率が 4 割に届かない学科 C〜F に向かっていました。
+
+<br>
+
+周辺の合格率は、その性別の出願がどの学科に向かったかの割合で、学科ごとの合格率に重みを付けた平均です。
+
+`P(合格 | 性別) = Σ_学科 P(合格 | 性別, 学科) × P(学科 | 性別)`
 
 ```python
-conditionals = joint / p_x[:, None]  # 各行を P(x) で割る
-
-fig, axes = plt.subplots(1, 3, figsize=(10, 3.2), sharey=True)
-for i, (ax, xlbl) in enumerate(zip(axes, x_labels)):
-    ax.bar(y_labels, conditionals[i], color="#7aa6c2", edgecolor="white")
-    for j, v in enumerate(conditionals[i]):
-        ax.text(j, v + 0.02, f"{v:.2f}", ha="center", fontsize=10)
-    ax.set_title(f"P(y | {xlbl})")
-    ax.set_ylim(0, 1.05)
-axes[0].set_ylabel("Conditional probability")
-fig.suptitle("Conditional distributions: each row of the joint normalized")
-plt.tight_layout()
-plt.savefig("joint-marginal-conditional_conditional.svg", bbox_inches="tight")
-for xlbl, row in zip(x_labels, conditionals):
-    print(f"P(y | {xlbl}) = {row.round(2)}")
+rate = (counts["Admitted"] / counts.sum(axis=1)).unstack("Gender")  # P(合格 | 性別, 学科)
+apply = counts.sum(axis=1).unstack("Gender")
+share = apply / apply.sum(axis=0)                                   # P(学科 | 性別)
+print("重み付き平均の P(合格 | 性別):", (rate * share).sum(axis=0).round(3).to_dict())
 ```
-
-出力:
 
 ```text
-P(y | clouds=low) = [0.07 0.93]
-P(y | clouds=mid) = [0.27 0.73]
-P(y | clouds=high) = [0.75 0.25]
+重み付き平均の P(合格 | 性別): {'Female': 0.304, 'Male': 0.445}
 ```
 
-{{< figure src="joint-marginal-conditional_conditional.svg" alt="雲量が少・中・多の 3 つの棒グラフ。雨が降る確率は 0.07、0.27、0.75 と上がる" caption="同時分布の各行を正規化した条件付き分布" align="center" >}}
-
-雲量が多い時に雨が降る確率は 75%、雲量が少ない時は 7% です。分類器の [`predict_proba`](https://scikit-learn.org/stable/glossary.html#term-predict_proba) が出すスコアは、`P(y=1 | x)`（入力 `x` が与えられた時、ラベルが 1 である確率）の推定値です。
+学科ごとの合格率がほぼ同じでも、重みの `P(学科 | 性別)` が性別で違えば、平均は大きく離れます。重みの違いで平均がずれる話は、[平均](../mean/)の「平均の平均」の節で、区画ごとの値を平均した例を扱っています。
 
 ---
 
-### 連続の例: 2 次元正規分布
+### 連続の値で条件を付ける
 
-連続変数の場合も考え方は同じで、「足し合わせる」が「積分する」に変わるだけです。相関 0.7 の二次元正規分布から 1000 点をサンプリングし、散布図と周辺ヒストグラムを描きます。
+ペンギンのくちばしのような連続の値でも、考え方は同じです。条件付き分布 `P(厚さ | 長さ = c)` は、散布図を `長さ = c` の位置で縦に細く切り、その帯に入った点の厚さを集めた分布に当たります。
 
-```python
-mean = [0, 0]
-cov = [[1.0, 0.7], [0.7, 1.0]]
-rng = np.random.default_rng(0)  # 以降の乱数はすべてこの rng から引く
-samples = rng.multivariate_normal(mean, cov, size=1000)
-
-fig = plt.figure(figsize=(7, 5))
-gs = fig.add_gridspec(2, 2, width_ratios=[3, 1], height_ratios=[1, 3],
-                      hspace=0.05, wspace=0.05)
-ax_top = fig.add_subplot(gs[0, 0])
-ax_main = fig.add_subplot(gs[1, 0])
-ax_right = fig.add_subplot(gs[1, 1])
-
-ax_main.scatter(samples[:, 0], samples[:, 1], s=8, alpha=0.4, color="#7aa6c2")
-ax_main.set_xlabel("x"); ax_main.set_ylabel("y")
-ax_top.hist(samples[:, 0], bins=30, color="#59a14f", edgecolor="white")
-ax_top.set_xticks([]); ax_top.set_ylabel("P(x)\nmarginal")
-ax_right.hist(samples[:, 1], bins=30, color="#e15759", edgecolor="white",
-              orientation="horizontal")
-ax_right.set_yticks([]); ax_right.set_xlabel("P(y)\nmarginal")
-ax_top.set_xlim(ax_main.get_xlim()); ax_right.set_ylim(ax_main.get_ylim())
-fig.suptitle("Continuous joint and marginals (correlated 2D Gaussian)")
-plt.savefig("joint-marginal-conditional_continuous.svg", bbox_inches="tight")
-```
-
-{{< figure src="joint-marginal-conditional_continuous.svg" alt="相関 0.7 の 2 次元正規分布から引いた 1000 点の散布図。上端に x、右端に y のヒストグラム" caption="2 次元正規分布の同時分布と周辺分布" align="center" >}}
-
-中央の散布図が同時分布 `P(x, y)` のサンプル可視化で、上端と右端のヒストグラムがそれぞれ `P(x)` と `P(y)` の周辺分布です。連続の場合、条件付き分布 `P(y|x=a)` は「`x=a` 付近の縦の細い帯に入る点だけ取り出した分布」に対応します。`x` と `y` に [相関](../correlation/) があるため、`x` が大きい領域では `y` も大きめ、という関係が見えます。
-
----
-
-### 条件付き分布をスライスとして見る
-
-散布図の縦の帯に入る点を取り出し、条件付き分布 `P(y|x=c)` をヒストグラムにします。
+データは palmerpenguins の配布元の CSV を使いました。Adelie（アデリーペンギン）151 羽、Gentoo（ジェンツーペンギン）123 羽、Chinstrap（ヒゲペンギン）68 羽で、元の 344 羽からくちばしの値が欠けた 2 羽を除いています。計測は [Gorman らの 2014 年の論文](https://doi.org/10.1371/journal.pone.0090081)のものです。
 
 ```python
-samples = rng.multivariate_normal([0, 0], [[1.0, 0.7], [0.7, 1.0]], size=5000)
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 5))
-ax1.scatter(samples[:, 0], samples[:, 1], s=4, alpha=0.25, color="#7aa6c2")
-# x ≈ -1.5, 0, +1.5 の 3 帯を取り出して y の分布を比較
-for c, color in zip([-1.5, 0.0, 1.5], ["#59a14f", "#e15759", "#b07aa1"]):
-    in_slice = np.abs(samples[:, 0] - c) < 0.25
-    y_in_slice = samples[in_slice, 1]
-    ax1.axvspan(c - 0.25, c + 0.25, alpha=0.25, color=color)
-    ax2.hist(y_in_slice, bins=30, alpha=0.5, color=color, density=True,
-             label=f"P(y | x≈{c})")
-    print(f"x≈{c:+.1f}: E[y|x] ≈ {y_in_slice.mean():+.2f}  (theory: {0.7*c:+.2f})")
-ax2.legend()
-plt.savefig("joint-marginal-conditional_slicing.svg", bbox_inches="tight")
-```
+peng = load_csv("penguins.csv",
+                "https://raw.githubusercontent.com/allisonhorst/palmerpenguins/main/inst/extdata/penguins.csv")
+peng = peng.dropna(subset=["bill_length_mm", "bill_depth_mm"])  # 欠けた 2 羽を除く
 
-出力:
+for c in [40, 44, 48]:
+    b = peng[(peng["bill_length_mm"] - c).abs() < 1.5]  # 長さ c ± 1.5 mm の帯
+    mean_all = b["bill_depth_mm"].mean()                 # E[厚さ | 長さ ≈ c]
+    by_sp = b.groupby("species")["bill_depth_mm"].agg(["size", "mean"])
+    print(f"長さ ≈ {c} の帯: {len(b)} 羽 E[厚さ|長さ] = {mean_all:.2f}",
+          "  ".join(f"{sp} {int(r['size'])} 羽 {r['mean']:.2f}" for sp, r in by_sp.iterrows()))
+```
 
 ```text
-x≈-1.5: E[y|x] ≈ -1.05  (theory: -1.05)
-x≈+0.0: E[y|x] ≈ +0.02  (theory: +0.00)
-x≈+1.5: E[y|x] ≈ +1.03  (theory: +1.05)
+長さ ≈ 40 の帯: 61 羽 E[厚さ|長さ] = 18.38 Adelie 59 羽 18.49  Chinstrap 1 羽 16.60  Gentoo 1 羽 13.70
+長さ ≈ 44 の帯: 43 羽 E[厚さ|長さ] = 15.56 Adelie 8 羽 18.60  Chinstrap 5 羽 17.56  Gentoo 30 羽 14.42
+長さ ≈ 48 の帯: 50 羽 E[厚さ|長さ] = 15.73 Chinstrap 13 羽 17.87  Gentoo 37 羽 14.98
 ```
 
-{{< figure src="joint-marginal-conditional_slicing.svg" alt="左の散布図に x ≈ -1.5、0、+1.5 の 3 本の色帯。右は各帯に入った点の y のヒストグラムで、x が大きい帯ほど右に寄る" caption="縦の帯で切り出した条件付き分布 P(y|x)" align="center" >}}
+各行の後半は、帯の中の種ごとの羽数と平均の厚さです。以下は、3 本の帯と、帯ごとの厚さの分布を並べた図です。
 
-左の 3 本の色帯が `x ≈ -1.5`, `0`, `+1.5` 付近の範囲で、帯の中の `y` だけを集めたのが右のヒストグラムです。`x` が大きくなると `P(y|x)` の中心も右へ動きます。理論値の `0.7c` は、相関 0.7・分散 1 の 2 次元正規分布で `E[y|x=c] = 0.7c` になることから来ています。
+{{< figure src="jmc_slices.webp" alt="左は種ごとに色を分けた散布図に、長さ 40、44、48 の位置で幅 3 mm の灰色の帯を 3 本重ねた図。右は帯ごとに、帯に入ったペンギンの厚さを横に並べた図。長さ ≈ 40 の帯はほぼ青の Adelie だけで平均 18.38。長さ ≈ 44 の帯は緑の Gentoo が多く、平均 15.56。長さ ≈ 48 の帯は Gentoo と赤の Chinstrap で平均 15.73" caption="縦の帯で切った条件付き分布 P(厚さ | 長さ ≈ c) と、帯の中の種の内訳" align="center" >}}
 
-`f(x) = E[y|x]` を学習する回帰モデルは、この帯ごとの平均（`x` を固定した時の `y` の[期待値](../expectation/)）を推定しています。
+長さ 40 の帯から 44 の帯へ移ると、厚さの平均は 18.38 mm から 15.56 mm へ 2.8 mm 下がります。Adelie だけを見ると 18.49 から 18.60 へ上がっているので、下がった原因は帯の中身の入れ替わりです。長さ 40 の帯はほぼ Adelie だけですが、44 の帯では 43 羽のうち 30 羽が、くちばしの薄い Gentoo でした。
+
+<br>
+
+帯の平均は、前の節の合格率と同じ形の、種ごとの平均の加重平均です。
+
+`E[厚さ | 長さ] = Σ_種 E[厚さ | 長さ, 種] × P(種 | 長さ)`
+
+`E[厚さ | 長さ]` は、長さを固定した時の厚さの[期待値](../expectation/)で、条件付き期待値と呼びます。二乗誤差で学習する回帰モデルが予測しようとしているのは、この値です。重みの `P(種 | 長さ)` は長さとともに動くので、種ごとの関係が右上がりでも、混ぜた関係は右下がりになり得ます。
 
 ---
 
-### 独立と従属
+### 種を足すと回帰の係数の符号が変わる
 
-独立性（independence）の定義は `P(x, y) = P(x) × P(y)` です。言い換えると `P(y|x) = P(y)` で、`x` の値を知っても `y` の分布が変わらない状態を指します。散布図の形からある程度は読み取れますが、相関係数だけでは判定できません。独立な 2 変数、線形に従属する 2 変数、`y = x^2 + ノイズ` で非線形に従属する 2 変数を比べます。
+冒頭の図の 2 本の回帰は、scikit-learn の [LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) で学習しました。種は、種ごとに 0 か 1 を立てる列に変える one-hot エンコーディングで特徴量にしています。カテゴリの列を数値の列に変える方法は、[カテゴリ変数のエンコーディング](../../ml/categorical-encoding/)で扱っています。
 
 ```python
-indep_x = rng.normal(0, 1, 800)
-indep_y = rng.normal(0, 1, 800)
-dep = rng.multivariate_normal([0, 0], [[1.0, 0.85], [0.85, 1.0]], size=800)
-nl_x = rng.normal(0, 1, 800)
-nl_y = nl_x**2 + rng.normal(0, 0.3, 800)  # y = x^2 + ノイズ
+from sklearn.linear_model import LinearRegression
 
-panels = [("Independent", indep_x, indep_y),
-          ("Linear dependence", dep[:, 0], dep[:, 1]),
-          ("Nonlinear dependence: y = x^2 + noise", nl_x, nl_y)]
-fig, axes = plt.subplots(1, 3, figsize=(13, 4.6))
-for ax, (title, xv, yv) in zip(axes, panels):
-    r = np.corrcoef(xv, yv)[0, 1]
-    ax.scatter(xv, yv, s=10, alpha=0.4, color="#7aa6c2")
-    ax.set_title(f"{title}\nr = {r:+.2f}")
-    print(f"{title:<40s} r = {r:+.2f}")
-for c in [0.0, 1.5]:
-    band = np.abs(nl_x - c) < 0.25
-    axes[2].axvspan(c - 0.25, c + 0.25, alpha=0.2, color="#e15759")
-    print(f"nonlinear: E[y | x≈{c:.1f}] = {nl_y[band].mean():.2f}")
-plt.savefig("joint-marginal-conditional_independence.svg", bbox_inches="tight")
+x, y = peng[["bill_length_mm"]], peng["bill_depth_mm"]
+m1 = LinearRegression().fit(x, y)  # 長さだけ
+X2 = pd.get_dummies(peng[["bill_length_mm", "species"]], drop_first=True, dtype=float)
+m2 = LinearRegression().fit(X2, y)  # 長さ + 種
+print(f"長さだけ: 長さの係数 {m1.coef_[0]:+.3f}")
+print("長さ + 種:", {c: round(float(v), 3) for c, v in zip(X2.columns, m2.coef_)})
 ```
-
-出力:
 
 ```text
-Independent                              r = -0.05
-Linear dependence                        r = +0.85
-Nonlinear dependence: y = x^2 + noise    r = -0.07
-nonlinear: E[y | x≈0.0] = 0.04
-nonlinear: E[y | x≈1.5] = 2.13
+長さだけ: 長さの係数 -0.085
+長さ + 種: {'bill_length_mm': 0.2, 'species_Chinstrap': -1.933, 'species_Gentoo': -5.106}
 ```
 
-{{< figure src="joint-marginal-conditional_independence.svg" alt="左から独立（円形）、線形の従属（楕円）、y = x^2 の非線形の従属（放物線）。右端は r がほぼ 0 でも従属しており、x ≈ 0 と x ≈ 1.5 の帯を赤く塗っている" caption="独立・線形の従属・非線形の従属の散布図" align="center" >}}
+`drop_first=True` は、種の 3 列のうち先頭の Adelie の列を落とす指定です。3 列を全て残すと、どの行でも合計が 1 になり、切片と区別できなくなるためです。Adelie は `species_Chinstrap` と `species_Gentoo` がどちらも 0 の行として表され、残った 2 列の係数は Adelie との差になります。
 
-左の独立な散布図は円形に近く、どの `x` の帯を切っても中の `y` の分布はほぼ同じです。中央の線形の従属は右上がりの楕円に伸び、`x` が大きい帯ほど `y` も大きくなります。
+長さだけのモデル `m1` の係数 -0.085 は、混ぜたデータで「長さが 1 mm 違うと、厚さの予測がどれだけ違うか」で、前の節の `E[厚さ | 長さ]` の傾きです。種を足したモデル `m2` の係数 +0.200 は、種の列を固定した時の傾き、つまり同じ種の中で長さが 1 mm 違う時の差です。`species_Gentoo` の -5.106 は、同じ長さなら Gentoo は Adelie より 5.1 mm 薄いという意味で、冒頭の図で緑の実線が青の実線より下にある距離に当たります。
 
-右の `y = x^2 + ノイズ` は、Pearson の[相関係数](../correlation/)が `r = -0.07` でほぼ 0 です。それでも赤く塗った 2 本の帯を比べると、`x ≈ 0` の帯では `y` の平均が 0.04、`x ≈ 1.5` の帯では 2.13 で、`x` を知ると `y` の分布が大きく動きます。相関係数が測るのは線形の関係だけなので、`r ≈ 0` から独立とは言えません。非線形の依存まで調べるなら、同時分布と周辺分布の積の差を測る[相互情報量](../information-theory/)（mutual information）などを使います。
-
----
-
-### ベイズの定理との関係
-
-3 つの分布をつなぐ式から、ベイズの定理が直接導出できます。
-
-`P(x, y) = P(y|x) × P(x) = P(x|y) × P(y)`
-
-両辺を変形すると次のようになります。
-
-`P(y|x) = P(x|y) × P(y) / P(x)`
-
-これがベイズの定理です。読み方は「事後分布 `P(y|x)` は、尤度 `P(x|y)` と事前分布 `P(y)` の積を証拠 `P(x)` で正規化したもの」となります。
-
-分類では、`P(y|x)` を直接学習するモデル（識別モデル: [ロジスティック回帰](../../ml/logistic-regression/)、[決定木](../../ml/decision-tree/)、ニューラルネット）と、`P(x|y)` と `P(y)` を別々に学習してベイズの定理で `P(y|x)` を作るモデル（生成モデル: [Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html)、[線形判別分析（LDA）](https://scikit-learn.org/stable/modules/lda_qda.html)）の 2 系統があります。画像などを作る [GAN（Generative Adversarial Network）](https://arxiv.org/abs/1406.2661)や[拡散モデル](https://arxiv.org/abs/2006.11239)も生成モデルと呼ばれます。ただし GAN や[拡散モデル](/notes/generative-ai/diffusion-model/)は `P(x)`（条件付きなら `P(x|y)`）に従う新しいサンプルを作るのが目的で、ベイズの定理で分類するモデルではありません。
+2 つの係数は、どちらも計算としては正しく、使う目的が違います。種が分からないペンギンの厚さを長さだけから予測するなら、`m1` の右下がりの直線は、手元の 3 種の混ざり方の下で二乗誤差が最も小さい直線です。長さが厚さにどう効くかを読みたいなら、種を固定した `m2` の係数を見ます。[線形回帰](../../ml/linear-regression/)の係数を「他の特徴量を固定した時の効き方」と読めるのは、固定する特徴量がモデルに入っている時だけです。
 
 ---
 
-### 数学での使いどころ
+### 混ぜる比率で変わる関係
 
-- 期待値の計算（`E[Y] = Σ_y y P(y)` のように周辺分布を使う）
-- 独立性の判定（`P(x, y) = P(x) × P(y)` なら独立）
-- 条件付き期待値（`E[Y|X=x] = Σ_y y P(y|x)`）
-- 相関と共分散の定義（同時分布から計算する量）
+`m1` の予測は、混ぜ方の `P(種 | 長さ)` が変わらない限り使えます。この `P(種 | 長さ)` は、種ごとの長さの分布と、全体に占める種の割合 `P(種)` で決まります。種ごとの長さの分布が同じでも、`P(種)` が変われば、各帯の中の種の内訳も変わります。
+
+では、全体に占める種の割合が変わると、傾きはどこまで動くのか。比率を 1 つの数で表せるように、Adelie と Gentoo の 2 種だけを使い、全体に占める Gentoo の割合を 0% から 100% まで 2.5% 刻みで動かして、回帰の傾きを測りました。羽数は変えず、[LinearRegression の fit](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html#sklearn.linear_model.LinearRegression.fit) の `sample_weight` で各羽の重みを変えています。
+
+```python
+ag = peng[peng["species"].isin(["Adelie", "Gentoo"])]
+is_g = (ag["species"] == "Gentoo").to_numpy()
+n_a, n_g = (~is_g).sum(), is_g.sum()
+for p in np.linspace(0, 1, 41):
+    w = np.where(is_g, p / n_g, (1 - p) / n_a)  # Gentoo が全体の p を占めるように重みを付ける
+    s = LinearRegression().fit(ag[["bill_length_mm"]], ag["bill_depth_mm"],
+                               sample_weight=w).coef_[0]
+    print(f"Gentoo の割合 {p:.1%}: 傾き {s:+.3f}")
+```
+
+```text
+Gentoo の割合 0.0%: 傾き +0.179
+Gentoo の割合 5.0%: 傾き -0.009
+Gentoo の割合 45.0%: 傾き -0.212
+Gentoo の割合 92.5%: 傾き -0.011
+Gentoo の割合 95.0%: 傾き +0.039
+Gentoo の割合 100.0%: 傾き +0.205
+```
+
+出力は 41 行のうち、符号が変わる前後と最も負の所だけを抜き出しました。全体を描いたのが次の図です。
+
+{{< figure src="jmc_mix.webp" alt="横軸は混ぜたデータに占める Gentoo の割合で 0% から 100%、縦軸は長さから厚さを予測する回帰の傾き。左端の Adelie だけは +0.179、右端の Gentoo だけは +0.205 で、どちらも正。その間は U 字の曲線で、5% ですでに 0 を下回り、45% で最も負の -0.212 になり、92.5% まで負のまま" caption="混ぜたデータに占める Gentoo の割合と、回帰の傾き（Adelie と Gentoo の 2 種）" align="center" >}}
+
+1 種だけなら傾きは +0.179 と +0.205 で、どちらも右上がりです。Gentoo を 5% 混ぜただけで傾きは負になり、92.5% まで負のままでした。Adelie は短くて厚く、Gentoo は長くて薄いので、2 種を混ぜると、種の間の違いが種の中の傾きを上回ります。
+
+<br>
+
+本番のデータで、この比率が動くことがあります。長さだけで学習した `m1` から見ると、入力の分布 `P(長さ)` だけでなく、長さと厚さの関係 `P(厚さ | 長さ)` まで変わったように見えます。学習時と本番でデータの性質が変わる[データドリフト](../../mlops/data-drift/)の分類では、`P(y | x)` が変わる concept drift に当たります。種を特徴量に入れた `m2` から見ると、種ごとの関係は変わっておらず、入力の分布が動いただけの covariate shift です。同じ変化でも、どの変数で条件を付けたモデルかで、名前も対処も変わります。
 
 ---
 
-### 機械学習での使いどころ
+### 独立と条件付き独立
 
-数式やモデルの出力を読む時は、どの分布を表しているか確認します。
+2 つの変数が独立（independent）とは、`P(x, y) = P(x) × P(y)` が成り立つことです。乗法定理と並べると `P(y | x) = P(y)` と同じで、`x` の値を知っても `y` の分布が変わらない状態を指します。
 
-- データドリフト分析: covariate shift は `P(x)`、concept drift は `P(y|x)`、label shift は `P(y)` が動くので、3 分類が直接判断軸になる
-- ベイズ推論: 事前分布 `P(θ)`、尤度 `P(D|θ)`、事後分布 `P(θ|D)` の関係をベイズの定理でつなぐ
-- Naive Bayes 分類器: 特徴量間の条件付き独立 `P(x1, x2, ..., xn | y) = Π_i P(xi | y)` を仮定して計算量を抑える
-- 不均衡データの校正: クラス比率 `P(y)` が訓練と本番で違う時の確率出力の[再校正](../../ml/probability-calibration/)
+最初の表では、全体の合格率 `P(合格)` は 38.8% で、`P(合格 | 女性)` の 30.4% とも `P(合格 | 男性)` の 44.5% とも違います。学科をまとめた表では、性別と合否は独立ではありません。一方、学科を固定すると、学科 A を除けば男女の合格率の差は 5 ポイント以内でした。学科を固定した時に `P(合格 | 性別, 学科) = P(合格 | 学科)` が成り立つ状態は、学科を条件とした条件付き独立と呼ばれ、Berkeley のデータはこれに近い表です。
+
+<br>
+
+条件付き独立と独立は別の性質で、一方が成り立っても、もう一方が成り立つとは限りません。[Naive Bayes](https://scikit-learn.org/stable/modules/naive_bayes.html) は、正解のクラスを固定すると特徴量どうしが条件付き独立だと仮定し、`P(x1, ..., xn | y) = Π_i P(xi | y)` と分解して計算する分類器です。この掛け算を確率のまま行うと、1 未満の数を数百回掛けた値が小数で表せる範囲を下回り、0.0 になります。手書き数字の例と、log の和で避ける方法は、[対数・指数と log-odds](../log-exp-logodds/) にあります。
+
+<br>
+
+独立かどうかは、[相関係数](../correlation/)が 0 かどうかでは判定できません。相関係数は線形の関係だけを測るので、0 を中心に左右対称に散らばる x と `y = x^2` の相関係数は 0 ですが、独立ではありません。同時分布が周辺分布の積からどれだけ離れているかを測る量が、[情報理論](../information-theory/)の相互情報量です。
 
 ---
 
-### よくある誤解
+### 集計やモデルの関係を読む前に確認すること
 
-- 「周辺分布と同時分布は同じもの」ではない: 同時分布は 2 変数を保ったまま、周辺分布は片方を捨てた要約。情報量が減るので、周辺分布から同時分布は復元できない（独立な場合を除く）
-- 「`P(y|x)` と `P(x|y)` は同じ」ではない: 条件と被条件を入れ替えると意味も値も変わる。雨の例では `P(雨|雲量=少) = 0.02 / 0.30 ≈ 0.07` に対して、`P(雲量=少|雨) = 0.02 / 0.40 = 0.05` になる（雲量=多では、どちらも 0.75 とたまたま一致するが、問いは違う）。混同するとベイズの定理の意味も失われる
-- 「条件付き分布の表も全マスを足すと 1 になる」わけではない: 1 になるのは `x` を固定した各行の合計で、雲量の例では 3 行あるので全マスの合計は 3 になる
-- 「離散と連続で別の公式を使う必要がある」とは限らない: 足し合わせるか積分するかの違いだけで、関係式 `P(x, y) = P(y|x) × P(x)` は同じ形をしている
+全体の合格率や、混ぜたデータで学習した回帰の傾きを読む前に、その値が周辺の値か、何かを固定した条件付きの値かを確認します。周辺の値は、グループの混ざり方で重みを付けた、グループごとの値の平均です。グループを分ける変数が手元にあるなら、冒頭の図のように、分けて同じ比較をやり直します。分けた結果と大小や符号が揃っているかを見るだけで、Berkeley のような取り違えは防げます。
+
+次に、分けた比較と混ぜた比較のどちらを使うかを決めます。これはデータだけでは決まりません。Berkeley では、どの学科に出願するかを選ぶのは出願者で、合否を決めるのは学科なので、Bickel らは学科ごとの比較から、女性に不利な選考の証拠は無いと結論しました。ペンギンの予測なら、種が分からないまま長さだけで予測するのか、種を入力に足せるのかで、使う係数が変わります。
+
+<br>
+
+最後に、混ぜた関係をそのままモデルに使うなら、混ぜ方が本番で変わらないかを監視します。Gentoo と Adelie の比率で傾きが +0.205 から -0.212 まで動いたように、グループの比率は、グループの中で何も変わっていなくても `P(y | x)` を動かします。グループを分ける変数を特徴量に入れておけば、その変化は入力の分布の変化として現れ、[モデル性能劣化の監視](../../mlops/model-performance-monitoring/)でも原因を切り分けやすくなります。冒頭の破線と実線のどちらを使うかは、種が分からないまま長さだけで予測したいのか、同じ種の中での長さの効き方を知りたいのかで決まります。
