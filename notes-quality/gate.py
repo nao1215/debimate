@@ -84,25 +84,48 @@ def added_lines(old_text, new_text):
     return out
 
 
-def check_added(lines):
-    ng, incode = [], False
+def removed_lines(old_text, new_text):
+    out = []
+    for l in difflib.unified_diff(old_text.splitlines(), new_text.splitlines(), lineterm='', n=0):
+        if l.startswith('-') and not l.startswith('---'):
+            out.append(l[1:])
+    return out
+
+
+def _hits(lines):
+    """行ごとの規則違反を (規則の名前, 行) で返す。コードと引用は除く。"""
+    out, incode = [], False
     for t in lines:
         if t.lstrip().startswith('```'):
             incode = not incode
             continue
         if incode or t.lstrip().startswith('>'):
             continue
-        if '**' in t:
-            ng.append(f'足した行に太字: {t[:60]}')
-        if 'を、' in t:
-            ng.append(f'足した行に「を、」: {t[:60]}')
+        for _ in range(t.count('**') // 2 or ('**' in t)):
+            out.append(('太字', t))
+        for _ in range(t.count('を、')):
+            out.append(('「を、」', t))
         for row in drift_rows():
-            if row[0] in t:
-                ng.append(f'足した行に「{row[0]}」（本人の言い方: {row[2] if len(row) > 2 else ""}）: {t[:60]}')
+            for _ in range(t.count(row[0])):
+                out.append((f'「{row[0]}」（本人の言い方: {row[2] if len(row) > 2 else ""}）', t))
         tt = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', t)
         for form, rx, hint in variant_rules():
-            if rx.search(tt):
-                ng.append(f'足した行に「{form}」（本人の言い方: {hint}）: {t[:60]}')
+            for _ in rx.findall(tt):
+                out.append((f'「{form}」（本人の言い方: {hint}）', t))
+    return out
+
+
+def check_added(lines, removed=()):
+    """足した行の規則違反のうち、消した行より増えたものだけを NG にする（2026-11-12）。
+    同じ行にもともとあった違反は、小さな修正が持ち込んだものではないので数えない。"""
+    from collections import Counter
+    before = Counter(name for name, _ in _hits(removed))
+    after = _hits(lines)
+    ng, seen = [], Counter()
+    for name, t in after:
+        seen[name] += 1
+        if seen[name] > before[name]:
+            ng.append(f'足した行に{name}: {t[:60]}')
     return ng
 
 
@@ -246,7 +269,7 @@ def score_check(rel, head_text):
         if len(add) > SMALL:
             ng.append(f'採点した版から {len(add)} 行足している（{SMALL} 行まで）。採点し直す')
         else:
-            ng += check_added(add)
+            ng += check_added(add, removed_lines(scored, head_text))
     return ng
 
 
@@ -271,7 +294,8 @@ def main(argv):
             sys.exit(f'対象外のパス: {rel}')
         if diff:
             old = git('show', f'HEAD:{rel}', check=True)
-            ng = check_added(added_lines(old or '', open(os.path.join(ROOT, rel), encoding='utf-8').read()))
+            cur = open(os.path.join(ROOT, rel), encoding='utf-8').read()
+            ng = check_added(added_lines(old or '', cur), removed_lines(old or '', cur))
             return report([(rel, '足した行だけ', ng)])
         if '--quality' in rest:
             code = report([(rel, '質の規則だけ', check_full(rel, process=False))])
@@ -292,7 +316,7 @@ def main(argv):
             old = git('show', f'HEAD:{rel}', check=True)
             new = git('show', f':{rel}')
             kind = classify(rel, old, new)
-            ng = check_added(added_lines(old, new)) if kind == 'small' else check_full(rel)
+            ng = check_added(added_lines(old, new), removed_lines(old, new)) if kind == 'small' else check_full(rel)
             results.append((rel, kind, ng))
         return report(results)
 
@@ -310,7 +334,7 @@ def main(argv):
             new = git('show', f'{head}:{rel}')
             kind = classify(rel, old, new)
             if kind == 'small':
-                ng = check_added(added_lines(old, new))
+                ng = check_added(added_lines(old, new), removed_lines(old, new))
             else:
                 ng = check_full(rel) + score_check(rel, new)
             results.append((rel, kind, ng))
