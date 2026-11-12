@@ -84,7 +84,7 @@ core: 30, border: 1, noise: 3
 
 {{< figure src="dbscan_core_border_noise.svg" alt="原点付近の 30 点の塊がすべて core 点で、各点の周りに半径 eps=0.6 の円が描かれる。(1.0, 0.0) の 1 点が border 点、離れた 3 点が × の noise 点になる" caption="core・border・noise の 3 分類（eps=0.6、min_samples=5）" align="center" >}}
 
-赤い円が各 core 点の `eps` 範囲です。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられます。
+赤い点が core 点で、その周りの薄い赤の円が各 core 点の `eps` 範囲です。密集地帯にあるコア点同士が「density-reachable」（相互に近傍を辿れる）であれば、同じクラスタにまとめられます。
 
 橙の 1 点が `(1.0, 0.0)` に置いた点です。自分の近傍数は `min_samples` 未満でも、core 点の近傍にあるためボーダー点になります。ノイズ点は外れ値として `label = -1` で返されます。
 
