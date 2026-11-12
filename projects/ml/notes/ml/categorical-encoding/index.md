@@ -11,7 +11,7 @@ cardImage: "categorical-encoding_leak.svg"
 
 カテゴリ変数のエンコーディング（categorical encoding）は、文字列やカテゴリ値で表された特徴量を数値ベクトルに変換する前処理操作の総称です。
 
-機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / [ニューラルネット](../perceptron/) / [GradientBoosting](../gradient-boosting/) など）は数値入力を前提とします。そのため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。
+機械学習モデルの大半（[ロジスティック回帰](../logistic-regression/) / [kNN](../knn/) / [ニューラルネット](../perceptron/) / scikit-learn の [`GradientBoostingClassifier`](../gradient-boosting/) など）は数値入力を前提とします。そのため、`category='electronics'` や `prefecture='東京'` のような値はそのままでは渡せません。例外もあり、scikit-learn 1.9.1 の [`HistGradientBoostingClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingClassifier.html) は `categorical_features` で指定した列をカテゴリとして扱い、[LightGBM](https://lightgbm.readthedocs.io/en/stable/Advanced-Topics.html#categorical-feature-support) や [CatBoost](https://catboost.ai/docs/en/features/categorical-features) もカテゴリ列を扱う仕組みを持っています。
 
 選び方を間違えると、列数が膨れてメモリに載らない、順序を勝手に持ち込んでしまう、[データリーク](../data-leakage/) を起こすといった事故につながります。方式を選ぶ時は、カテゴリの種類数（cardinality、基数）、順序の有無、目的変数を変換に使うかを確認します。
 
@@ -93,7 +93,7 @@ One-hot は基数と同じ 3 列、Ordinal と Target encoding は 1 列、Hashi
 各カテゴリに整数を割り当てて 1 列で済まします。
 
 - 利点: 1 列で済み、メモリ・計算が軽い
-- 欠点: 整数の大小関係に意味を持たせてしまう（`'electronics'=0` `'food'=1` `'books'=2` だと「electronics と food は近く、books は遠い」と[線形モデル](../linear-regression/)が解釈する）
+- 欠点: 整数の大小関係に意味を持たせてしまう（`'electronics'=0` `'food'=1` `'books'=2` だと「electronics と books が最も遠い」と[線形モデル](../linear-regression/)が解釈する）
 - scikit-learn: [`OrdinalEncoder`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OrdinalEncoder.html)
 - 適切な使用場面: 順序があるカテゴリ（`low < medium < high`、星評価、学年など）。順序なしには使ってはならない
 
