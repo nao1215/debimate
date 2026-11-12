@@ -17,7 +17,6 @@ on:
 
 permissions:
   contents: read
-  deployments: read
   discussions: read
   pages: write
   id-token: write
@@ -29,7 +28,7 @@ permissions:
 #   error のまま残り、後続のデプロイが deployment_queued から進まなくなる事があるため。
 #   待機中のものは Actions 標準の pending 置換で最新の 1 件だけが残る
 jobs:
-  # 技術ノート・ML ノートの関門（notes-quality/gate.py）。最後に公開した版から変えたノートが規則と
+  # 技術ノート・ML ノートの関門（notes-quality/gate.py）。今回の push で変えたノートが規則と
   # 総合 4 以上の点の記録を満たさなければ警告を出す。公開は止めず、ノートも古い版に戻さない。
   # 止めるのは手元の pre-commit・pre-push に任せる。古い版に戻すと、直した本文が判定のずれで消え、
   # 新旧の版が混ざって他のノートからの #見出し リンクが切れるため（2026-11-13 著者の指定）
@@ -43,21 +42,15 @@ jobs:
         with:
           fetch-depth: 0
           filter: blob:none
-      # 起点は「最後に公開に成功した commit」。build が取り消された push の分も警告から漏らさないため
-      - name: Find last successful Pages deployment
+      # 範囲は pre-push と同じく今回の push の分（2026-11-13）。最後に公開した版から見ると、pre-push を通した
+      # commit を、後から変えた規則でもう一度見ることになり、手元と CI で結果が食い違ったため
+      - name: Find the pushed range
         id: base
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
-          base=""
-          for row in $(gh api "repos/${{ github.repository }}/deployments?environment=github-pages&per_page=30" --jq '.[] | "\(.id):\(.sha)"'); do
-            id="${row%%:*}"; sha="${row##*:}"
-            state=$(gh api "repos/${{ github.repository }}/deployments/$id/statuses" --jq '.[0].state' || true)
-            if [ "$state" = "success" ] && git cat-file -e "$sha^{commit}" 2>/dev/null; then base="$sha"; break; fi
-          done
-          echo "sha=${base:-${{ github.event.before }}}" >> "$GITHUB_OUTPUT"
-          echo "base: ${base:-${{ github.event.before }}（公開の記録が見つからず、直前の push を起点にした）}"
-      - name: Check notes changed since the last deployment
+          before="${{ github.event.before }}"
+          if [ -z "$before" ] || ! git cat-file -e "$before^{commit}" 2>/dev/null; then before=0000000000000000000000000000000000000000; fi
+          echo "sha=$before" >> "$GITHUB_OUTPUT"
+      - name: Check notes changed in this push
         run: |
           python3 notes-quality/gate.py push "${{ steps.base.outputs.sha }}" "${{ github.sha }}" --ng-list ng.txt || true
           touch ng.txt

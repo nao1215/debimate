@@ -379,6 +379,75 @@ def check_process(rel, key, text):
     return ng
 
 
+WORD = re.compile(r'[ァ-ヴー]+|[一-龥々]+|[A-Za-z][A-Za-z0-9-]*')
+
+
+def _names(cell):
+    """glossary.tsv のセルを、区切り（／、；・括弧）で分けた呼び名にする。英語だけの名前と 1 文字は外す。"""
+    parts = re.split(r'[／/、,;；（）()「」]+', re.sub(r'（[^）]*）|\([^)]*\)', '', cell))
+    return {x.strip() for x in parts if len(x.strip()) >= 2 and not re.fullmatch(r'[\x00-\x7f]+', x.strip())}
+
+
+def glossary_pairs():
+    """style/glossary.tsv の同じ行の（ノートでの言い方に出る語, 分野で一般的な言い方に出る語）の組。
+    置き換えの取り残しは、この組に当たる置き換え（訳語の直し）だけを見る。普通の言い換えは見ない。"""
+    p = os.path.join(HERE, 'style', 'glossary.tsv')
+    if not os.path.exists(p):
+        return set()
+    out = set()
+    for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t'):
+        if len(r) > 3 and not r[0].startswith('#') and r[0] != '組':
+            olds, news = _names(r[2]), _names(r[3])
+            out |= {(x, y) for x in olds - news for y in news - olds}
+    return out
+
+
+def _words_at(line, i1, i2):
+    """line の [i1, i2) に掛かる語。"""
+    return {m.group() for m in WORD.finditer(line) if m.start() < max(i2, i1 + 1) and m.end() > i1}
+
+
+def replaced_terms(old_text, new_text):
+    """行の中で別の語に置き換えた語（old → new の組）。手直しした行（文字の一致 0.6 以上）だけを見る。"""
+    a, b = old_text.splitlines(), new_text.splitlines()
+    pairs = set()
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if tag != 'replace':
+            continue
+        for line in b[j1:j2]:
+            o = max(a[i1:i2], key=lambda x: difflib.SequenceMatcher(None, x, line).ratio())
+            if difflib.SequenceMatcher(None, o, line).ratio() < REWRITE_SIMILARITY:
+                continue
+            for t, p1, p2, q1, q2 in difflib.SequenceMatcher(None, o, line, autojunk=False).get_opcodes():
+                if t != 'replace':
+                    continue
+                olds = {w for w in _words_at(o, p1, p2) if w not in WORD.findall(line)}
+                news = {w for w in _words_at(line, q1, q2) if w not in WORD.findall(o)}
+                pairs |= {(x, y) for x in olds for y in news}
+    return pairs
+
+
+def check_small_whole(rel, old_text, new_text):
+    """小さな修正でも全文を見る検査（2026-11-13 著者の指定）。既存の違反は数えず、今回の修正が生む食い違いだけを見る。
+    1. 見出しの行を変えたら、他のノートからこのノートの #見出し へのリンクが残っているか
+    2. glossary.tsv の訳語を分野の言い方に置き換えたら、古い語が同じノートの他の行に残っていないか（新旧の訳を混ぜない）。
+       同じ語が別の意味で残る（lsm-tree の「併合」、tor の「経路」）ことが多く、機械では分けられないので止めずに知らせる"""
+    ng = []
+    if any(re.match(r'#{2,6}\s', l) for l in removed_lines(old_text, new_text)):
+        ng += check_anchors(rel, new_text)
+    terms = glossary_pairs()
+    body = re.sub(r'```.*?```', '', new_text, flags=re.S)
+    plain = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', body)
+    for old_w, new_w in sorted(replaced_terms(old_text, new_text)):
+        if (old_w, new_w) not in terms:
+            continue
+        rows = [str(i + 1) for i, l in enumerate(new_text.splitlines()) if old_w in re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', l)]
+        if old_w in WORD.findall(plain) and rows:
+            print(f'  注意: {rel}: 「{old_w}」を「{new_w}」に置き換えたが、同じノートに「{old_w}」が残っている'
+                  f'（行: {", ".join(rows[:8])}）。同じ訳語なら揃え、別の意味（併合する・経路上の装置など）ならそのままでよい')
+    return ng
+
+
 def classify(rel, old_text, new_text):
     """'new'（新規）・'major'（大きな改稿）・'small'（小さな修正）。"""
     if old_text is None:
@@ -446,6 +515,7 @@ def main(argv):
             old = git('show', f'HEAD:{rel}', check=True)
             cur = open(os.path.join(ROOT, rel), encoding='utf-8').read()
             ng = check_added(added_lines(old or '', cur), removed_lines(old or '', cur))
+            ng += check_small_whole(rel, old or '', cur)
             return report([(rel, '足した行だけ', ng)])
         if '--quality' in rest:
             code = report([(rel, '質の規則だけ', check_full(rel, process=False))])
@@ -467,6 +537,8 @@ def main(argv):
             new = git('show', f':{rel}')
             kind = classify(rel, old, new)
             ng = check_added(added_lines(old, new), removed_lines(old, new)) if kind == 'small' else check_full(rel)
+            if kind == 'small':
+                ng += check_small_whole(rel, old, new)
             results.append((rel, kind, ng))
         return report(results)
 
@@ -476,7 +548,7 @@ def main(argv):
             base = git('rev-parse', f'{head}~1').strip()
         # 範囲の commit を 1 つずつ、親との差分で見る（2026-11-12）。pre-push を 1 commit ずつ通した直しを、
         # CI が最後に公開した版からまとめて比べると、分けた commit が合算されて大きな改稿になり、食い違うため。
-        # 関門を飛ばした commit も 1 つずつ見るので、最後に公開した版を起点にする意味（抜け道を塞ぐ）は変わらない。
+        # CI も pre-push と同じく、今回 push した範囲だけを見る（2026-11-13）。
         commits = git('rev-list', '--reverse', '--no-merges', f'{base}..{head}').split() or [head]
         merged = {}
         for c in commits:
@@ -492,6 +564,7 @@ def main(argv):
                 if kind == 'small':
                     title = [f'{rel}\n{title_of(new)}'] if check_added.__code__.co_argcount > 2 else []
                     ng = check_added(added_lines(old, new), removed_lines(old, new), *title)
+                    ng += check_small_whole(rel, old, new)
                 else:
                     ng = check_full(rel) + score_check(rel, git('show', f'{head}:{rel}'))
                 prev = merged.get(rel)
