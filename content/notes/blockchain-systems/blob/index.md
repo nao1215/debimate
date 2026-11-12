@@ -67,7 +67,7 @@ target と max は、Ethereum の更新のたびに引き上げられてきま�
 
 {{< figure src="images/blob_params.webp" alt="階段状の折れ線グラフ。横軸は 2024 年 3 月から 2026 年 11 月、縦軸は blob の個数。Cancun で目標 3・上限 6、Prague で 6・9、Fusaka の後の BPO1 で 10・15、BPO2 で 14・21 に上がる。黄土色の線が上限、青い線が目標" caption="1 ブロックあたりの blob の目標（target）と上限（max）の推移" align="center" >}}
 
-2025 年 5 月の更新（Prague）で、target 6 個・max 9 個に引き上げられました（[EIP-7691](https://eips.ethereum.org/EIPS/eip-7691)）。2025 年 12 月 3 日の更新（Fusaka。実行層では Osaka、合意層では Fulu と呼ぶ）では、クライアントのコードを変えずに、blob の数などの設定だけを変えるハードフォーク（BPO、Blob Parameter Only。[EIP-7892](https://eips.ethereum.org/EIPS/eip-7892)）が入りました。
+2025 年 5 月の更新（Prague）で、target 6 個・max 9 個に引き上げられました（[EIP-7691](https://eips.ethereum.org/EIPS/eip-7691)）。2025 年 12 月 3 日の更新（Fusaka。実行層では Osaka、合意層では Fulu と呼ぶ）では、クライアントのコードを変えずに、blob の数などの設定だけを変えるハードフォーク（BPO、Blob Parameter Only。[EIP-7892](https://eips.ethereum.org/EIPS/eip-7892)）を行うための仕組みが入りました。
 
 この仕組みで、2025 年 12 月 9 日（BPO1）と 2026 年 1 月 7 日（BPO2）に数が引き上げられ、2026 年 11 月時点の値は target 14 個、max 21 個です（[Ethereum Hard Forks](../ethereum-hard-forks/#今後の予定)）。
 
