@@ -3,6 +3,13 @@
  "overall": 4,
  "product": 81,
  "blob": "64d6c681d46b1c281b96b9bb3b77135fb6629344",
- "by": "自己採点（メインのセッション。rubric.md に沿い全文で採点。別担当の採点し直しではない）",
+ "by": "別担当の採点（抜き出しだけ、基準 5 本 5・5・3・2・2 と同じ回。2026-11-12、.note-review/work/scoring/scores_round1.json）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
  "scored_at": ""
 }
