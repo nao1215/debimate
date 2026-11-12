@@ -15,7 +15,7 @@ topics: ["LLM"]
 
 {{< figure src="images/speed_by_length.webp" alt="左は prefill、右は decode の速さの折れ線グラフ。横軸は入力のトークン数（500 から 32K、対数）。prefill は gpt-oss-20b が 1,419 から 742、qwen3:8b が 1,032 から 416、qwen3-coder:30b が 1,029 から 307 トークン毎秒に下がる。decode は gpt-oss-20b が 69 から 50、qwen3-coder:30b が 62 から 30、qwen3:8b が 38 から 20 トークン毎秒に下がる" caption="入力の長さと、prefill・decode の速さ（Ollama 0.22.1、3〜4 回の中央値。縦軸の目盛りは左右で 20 倍違う）" align="center" >}}
 
-prefill は 1 秒に 300〜1,400 トークンを読みますが、decode は 1 秒に 20〜70 トークンしか出せません。しかも、decode の順位は prefill と違い、パラメーター（学習で決まる重みの数値）の数が最も多い qwen3-coder:30b が、最も少ない qwen3:8b より速く生成しています。モデル名の 8b・30b は、パラメーターが 80 億・300 億個という意味です。凡例の MoE（Mixture of Experts）は、層の一部を専門家と呼ぶ小さな層の束に分け、トークンごとに一部だけを動かすモデル、dense は全てのパラメーターを毎回動かすモデルで、違いは後の節で触れます。
+prefill は 1 秒に 300〜1,400 トークンを読みますが、decode は 1 秒に 20〜70 トークンしか出せません。しかも、decode の順位は prefill と違い、パラメーター（学習で決まる重みの数値）の数が最も多い qwen3-coder:30b が、最も少ない qwen3:8b より速く生成しています。モデル名の 8b・30b は、パラメーターが 80 億・300 億個という意味です。凡例の MoE（Mixture of Experts）は、層の一部をエキスパートと呼ぶ小さな層の束に分け、トークンごとに一部だけを動かすモデル、dense は全てのパラメーターを毎回動かすモデルで、違いは後の節で触れます。
 
 <br>
 
@@ -68,11 +68,11 @@ EVO-X2 は、GMKtec の[公式ブログ](https://de.gmktec.com/en/blogs/news/hig
 # lab/gguf_bytes.py の summarize() から抜粋
 g = "embed" if name == "token_embd.weight" else "experts" if "_exps" in name else "other"
 ...
-frac = n_used / n_exp if n_exp else 1.0          # MoE なら、全専門家のうち 1 トークンで選ぶ割合
+frac = n_used / n_exp if n_exp else 1.0          # MoE なら、全エキスパートのうち 1 トークンで選ぶ割合
 read_b = groups["other"]["bytes"] + groups["experts"]["bytes"] * frac + embed_row
 ```
 
-入力の埋め込み（`token_embd`）は、トークンの番号で 1 行を引くだけなので、1 行分しか数えません。qwen3-coder と gpt-oss は、専門家（expert）と呼ぶ小さな層の束から一部だけを選んで動かす MoE（Mixture of Experts）のモデルで、専門家の重みは選ぶ割合だけを数えます。MoE の仕組みは [MoE のノート](/notes/generative-ai/mixture-of-experts/)で説明しています。
+入力の埋め込み（`token_embd`）は、トークンの番号で 1 行を引くだけなので、1 行分しか数えません。qwen3-coder と gpt-oss は、エキスパート（expert）と呼ぶ小さな層の束から一部だけを選んで動かす MoE（Mixture of Experts）のモデルで、エキスパートの重みは選ぶ割合だけを数えます。MoE の仕組みは [MoE のノート](/notes/generative-ai/mixture-of-experts/)で説明しています。
 
 | モデル | ファイル | 1 トークンで読む重み | 256 GB/s での上限 |
 |---|---|---|---|
@@ -149,7 +149,7 @@ decode が計算の速さで決まっていないことは、prefill と比べ�
 
 <br>
 
-qwen3-coder:30b は、上限の 47% にとどまりました。この MoE は 48 層のそれぞれで 128 個から 8 個の専門家を選び、小さな行列を何度も掛けます。読む量のほかに、層や専門家ごとの処理の切り替えにかかる時間が効いていると考えられます（推測です。GPU の内部の時間の内訳は測っていません）。
+qwen3-coder:30b は、上限の 47% にとどまりました。この MoE は 48 層のそれぞれで 128 個から 8 個のエキスパートを選び、小さな行列を何度も掛けます。読む量のほかに、層やエキスパートごとの処理の切り替えにかかる時間が効いていると考えられます（推測です。GPU の内部の時間の内訳は測っていません）。
 
 それでも、qwen3-coder:30b は qwen3:8b の 1.6 倍の速さで生成しました。decode の速さを決めるのは総パラメーター数ではなく、主に 1 トークンで読むバイト数です。
 
@@ -187,7 +187,7 @@ qwen3:8b の prefill は、約 500 トークンで 1,032 トークン毎秒、�
 
 <br>
 
-答えを待つ時間は、おおよそ「入力のトークン数 ÷ prefill の速さ ＋ 出力のトークン数 ÷ decode の速さ」です。ファイルを読み書きさせる[エージェント](../tool-calling/)のように、毎回数万トークンの入力を送る使い方では、待ち時間の大半は prefill です。この場合に効くのは、入力を短くすることと、同じ前置きの計算を使い回すこと（[KV キャッシュのノート](/notes/generative-ai/kv-cache/)の実験 3）です。
+答えを待つ時間は、おおよそ「入力のトークン数 ÷ prefill の速さ ＋ 出力のトークン数 ÷ decode の速さ」です。ファイルを読み書きさせる[エージェント](../tool-calling/)のように、毎回数万トークンの入力を送る使い方では、待ち時間の大半は prefill です。この場合に効くのは、入力を短くすることと、同じプレフィックスの計算を使い回すこと（[KV キャッシュのノート](/notes/generative-ai/kv-cache/)の実験 3）です。
 
 短い質問に長い答えを返させる使い方では、decode が待ち時間の大半を占めます。こちらに効くのは、1 トークンで読むバイト数を減らすことで、重みを小さく量子化するか、1 トークンで動かすパラメーターの少ない MoE のモデルを選ぶかです。GPU の計算の速さを上げても、decode は速くなりにくいはずです。
 

@@ -117,7 +117,7 @@ def result_figures():
     })
     lab = HERE / "lab"
 
-    # 打ち消しの重みと個数ごとの、彩度の平均と赤い画素の割合
+    # ネガティブプロンプトの重みと個数ごとの、彩度の平均と赤い画素の割合
     neg = {r["name"]: r for r in json.loads((lab / "result_negative.json").read_text())}
     weights = [1.0, 1.2, 1.3, 1.5, 1.8]
     fig, axes = plt.subplots(1, 2, figsize=(7.2, 4.2))
@@ -133,7 +133,7 @@ def result_figures():
             xs = [wt for wt in weights if wt == 1.0 or f"{prefix}_w{wt:.1f}" in neg]
             ys = [neg["w1.0" if wt == 1.0 else f"{prefix}_w{wt:.1f}"][key] * scale for wt in xs]
             ax.plot(xs, ys, color=color, ls=ls, marker=mk, lw=2, label=label)
-        ax.set_xlabel("打ち消しの語の重み")
+        ax.set_xlabel("ネガティブプロンプトの語の重み")
         ax.set_ylabel(ylabel)
         ax.set_xticks(weights)
         ax.spines[["top", "right"]].set_visible(False)
@@ -162,7 +162,7 @@ def lighting_figure():
         for name, label, color, ls, mk in lights:
             ys = [rows[f"{name}_neg{w:.1f}"][key] * scale for w in weights]
             ax.plot(weights, ys, color=color, ls=ls, marker=mk, lw=2, label=label)
-        ax.set_xlabel("打ち消し 12 語の重み")
+        ax.set_xlabel("ネガティブプロンプト 12 語の重み")
         ax.set_ylabel(ylabel)
         ax.set_xticks(weights)
         ax.spines[["top", "right"]].set_visible(False)
@@ -209,10 +209,10 @@ def positive_figure():
 
 
 def cfg_figure():
-    """CFG: 打ち消しでの予測からプロンプトでの予測への差を cfg 倍に伸ばす。"""
+    """CFG: ネガティブプロンプトでの予測からプロンプトでの予測への差を cfg 倍に伸ばす。"""
     w, h = 960, 260
     p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img">'
-         f'<title>{escape("CFG は打ち消しでの予測からプロンプトでの予測への差を cfg 倍に伸ばす")}</title>',
+         f'<title>{escape("CFG はネガティブプロンプトでの予測からプロンプトでの予測への差を cfg 倍に伸ばす")}</title>',
          f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
          f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
          '<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
@@ -222,7 +222,7 @@ def cfg_figure():
         c = f' class="{cls}"' if cls else ""
         p.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}"{c}>{escape(t)}</text>')
 
-    nx, py_, y = 90, 220, 150
+    nx, py_, y = 150, 260, 150
     mx = nx + (py_ - nx) * 5.5
     p.append(f'<line x1="{py_}" y1="{y}" x2="{mx - 14}" y2="{y}" stroke="{OCHRE}" stroke-width="3" '
              f'stroke-dasharray="9 6"/>')
@@ -230,13 +230,13 @@ def cfg_figure():
     p.append(f'<circle cx="{nx}" cy="{y}" r="12" fill="{NEUTRAL}" stroke="{SUB}" stroke-width="2.5"/>')
     p.append(f'<circle cx="{py_}" cy="{y}" r="12" fill="{BLUE_PALE}" stroke="{BLUE}" stroke-width="2.5"/>')
     p.append(f'<circle cx="{mx}" cy="{y}" r="13" fill="#ffffff" stroke="{OCHRE}" stroke-width="3"/>')
-    text(nx, y + 50, "打ち消しでの予測", 19)
+    text(nx, y + 50, "ネガティブプロンプトでの予測", 19)
     text(py_, y - 30, "プロンプトでの予測", 19)
     text(mx, y + 50, "混ぜた予測", 19)
     text(mx, y + 76, "（差の 5.5 倍の位置）", 17, cls="sub")
     text((nx + py_) / 2, y + 26, "差", 18, cls="sub")
-    text((py_ + mx) / 2, y - 22, "打ち消しから遠ざかる向きに伸ばす", 19, cls="sub")
-    text(w / 2, 50, "予測 = 打ち消しでの予測 + 5.5 ×（プロンプトでの予測 − 打ち消しでの予測）", 20)
+    text(470, y + 30, "ネガティブプロンプトから遠ざかる向きに伸ばす", 19, cls="sub")
+    text(w / 2, 50, "予測 = ネガティブプロンプトでの予測 + 5.5 ×（プロンプトでの予測 − ネガティブプロンプトでの予測）", 17)
     p.append("</svg>")
     svg_to_webp("\n".join(p) + "\n", w, h, "prompt-weighting_cfg.webp")
 

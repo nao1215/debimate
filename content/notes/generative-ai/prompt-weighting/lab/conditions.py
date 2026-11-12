@@ -9,7 +9,7 @@ STILL_POS = ("masterpiece, best quality, no humans, still life, {teapot}, lemons
              "white tablecloth, wooden table, window, indoors")
 STILL_NEG_PERSON = "1girl, 1boy, person"
 
-# 実験 2 で重みを付ける打ち消し（よく使われる品質の語と、白黒を避ける語）
+# 実験 2 で重みを付けるネガティブプロンプト（よく使われる品質の語と、白黒を避ける語）
 NEG_WORDS = ["lowres", "worst quality", "bad quality", "low quality", "jpeg artifacts",
              "blurry", "text", "signature", "watermark", "logo", "monochrome", "greyscale"]
 
@@ -32,13 +32,13 @@ def exp_positive():
 
 
 def exp_negative():
-    """実験 2: 打ち消しの先頭 k 語に重み w を付ける（k = 1, 6, 12）。"""
+    """実験 2: ネガティブプロンプトの先頭 k 語に重み w を付ける（k = 1, 6, 12）。"""
     out = []
     pos = STILL_POS.format(teapot="white ceramic teapot")
     for k in [1, 6, 12]:
         for w in [1.0, 1.2, 1.3, 1.5, 1.8]:
             if w == 1.0 and k != 1:
-                continue  # 重み 1.0 は k によらず同じ文面になるので 1 回だけ
+                continue  # 重み 1.0 は k によらず同じプロンプトになるので 1 回だけ
             words = [weighted(x, w) if i < k else x for i, x in enumerate(NEG_WORDS)]
             neg = ", ".join(words + [STILL_NEG_PERSON])
             name = "w1.0" if w == 1.0 else f"k{k}_w{w:.1f}"
@@ -114,8 +114,8 @@ def exp_ablation():
     return out
 
 
-# --- 実験 5: 照明・時間帯の語と、打ち消しの重みの組み合わせ ---
-# 照明の語は、著者の文面と検査の記録に出てきた語から選んだ（night, neon light, sunset）と、
+# --- 実験 5: 照明・時間帯の語と、ネガティブプロンプトの重みの組み合わせ ---
+# 照明の語は、著者のプロンプトと検査の記録に出てきた語から選んだ（night, neon light, sunset）と、
 # 「lighting」を含む語の例として dramatic lighting。プロンプトの末尾（indoors の後）に足す。
 LIGHT_WORDS = [None, "night", "neon light", "sunset", "dramatic lighting"]
 LIGHT_NEG_WEIGHTS = [1.0, 1.2, 1.3]   # 実験 2 の 12 語すべてに掛ける重み（1.0 は重みなし）

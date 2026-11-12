@@ -15,7 +15,7 @@ topics: ["LLM"]
 
 {{< figure src="images/sampling_repeat.webp" alt="4 行の点の並び。1 行目の指定なしは 30 個の点が全て違う色で 30 種類。2 行目の temperature 0 と 3 行目の temperature 0 を 8 並列で送った場合は、30 個とも同じ色で 1 種類、2 行と 3 行も同じ色。4 行目の temperature 0.6 と seed 42 は 30 個とも同じ色で 1 種類だが、2・3 行目とは別の色" caption="同じ問いを 30 回送った時の出力の種類（qwen3:8b、Ollama 0.22.1、上の行から順に実行）" align="center" >}}
 
-何も指定しないと 30 回とも違う文になり、temperature を 0 にすると 30 回とも同じ文になりました。指定しない時に使われた値は Ollama の文書にある既定の temperature 0.8 ではなく、モデルに付いてきた 0.6 でした。temperature を 0.6 のまま乱数の種（seed）を固定しても、30 回とも同じ文になります。
+何も指定しないと 30 回とも違う文になり、temperature を 0 にすると 30 回とも同じ文になりました。指定しない時に使われた値は Ollama の文書にある既定の temperature 0.8 ではなく、モデルに付いてきた 0.6 でした。temperature を 0.6 のままシード（seed）を固定しても、30 回とも同じ文になります。
 
 ただし、この 4 つの条件は上から順に続けて実行したもので、temperature 0 の 30 回は、直前に同じ問いを送った後に始まっています。モデルを読み込み直した直後に送ると、temperature 0 でも 1 回目だけは別の文が返りました。その理由は temperature 0 の節で確認します。
 
@@ -73,7 +73,7 @@ p_i = exp(z_i / T) / (全トークン j についての exp(z_j / T) の合計)
 
 `z_i` がトークン i のロジットです。T = 1 ならモデルが出した確率をそのまま使い、1 より小さいとロジットの差が広がって上位に確率が集まり、1 より大きいと差が縮んで下位にも確率が回ります。どちらでもトークンの順位は変わりません。
 
-実際のモデルの確率を見ます。Ollama の API は、選ばれたトークンと上位の候補の確率（logprobs）を返せます。以下のスクリプトで、`qwen3:8b` に「今日の天気は」の続きを 1 トークンだけ出させました。
+実際のモデルの確率を見ます。Ollama の API は、選ばれたトークンと、上位にある候補の対数確率（logprobs）を返せます。以下のスクリプトで、`qwen3:8b` に「今日の天気は」の続きを 1 トークンだけ出させました。
 
 ```python
 """qwen3:8b に「今日の天気は」の続きを 1 トークンだけ出させ、上位 10 個の候補の確率を取る。
@@ -105,7 +105,7 @@ for t in [0.5, 1.0, 1.5]:
         print(f"  {tok!r:12} {math.exp(c['logprob']):.4f}")
 ```
 
-返ってきた確率は、temperature を 0.5・1.0・1.5 のどれにしても同じでした。出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/generative-ai/sampling/lab) にあります。Ollama が返す logprobs は、temperature を掛ける前のモデルの確率です。そこで、上位 10 個だけを取り出し、その 10 個の中で合計 1 になるように temperature を掛けて計算し直したのが次の図の左です。後の節で見るように、Ollama も上位 k 個に絞ってから同じ計算をします。
+返ってきた対数確率は、temperature を 0.5・1.0・1.5 のどれにしても同じでした。出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/generative-ai/sampling/lab) にあります。Ollama が返す logprobs は、temperature を掛ける前のモデルの確率です。そこで、上位 10 個だけを取り出し、その 10 個の中で合計 1 になるように temperature を掛けて計算し直したのが次の図の左です。後の節で見るように、Ollama も上位 k 個に絞ってから同じ計算をします。
 
 {{< figure src="images/sampling_nexttoken.webp" alt="左は qwen3:8b が「今日の天気は」の次に出した上位 10 個のトークンについて、10 個の中で計算し直した確率を temperature 0.5、1.0、1.5 で並べた棒グラフ。1 位の晴は temperature 1.0 で 0.40、0.5 では 0.67 に上がり、1.5 では 0.29 に下がる。右は同じ確率の上位からの累積で、0.95 の点線を超えるまでに残る候補は temperature 0.5 で 4 個、1.0 で 8 個、1.5 で 9 個" caption="qwen3:8b の次のトークンの確率（上位 10 個の中で計算し直した値）" align="center" >}}
 
@@ -198,7 +198,7 @@ if __name__ == "__main__":
 
 A のうち、問いの処理に 159〜181 ms 掛かった回は出力 1（`832a7755`）になり、37〜54 ms で済んだ回は、図 1 の temperature 0 と同じ出力 2（`bbdc1719`）になりました。
 
-Ollama は直前に処理した問いの計算結果をプロンプトのキャッシュとして残しておき、同じ問いが来るとその部分を使い回します。この仕組みと、使い回せたかを処理の時間で見分ける方法は、[KV Cache のノートの実験 3](/notes/generative-ai/kv-cache/#実験-3-同じ前置きの再利用) で詳しく扱っています。v0.22.1 の [runner/ollamarunner/cache.go](https://github.com/ollama/ollama/blob/v0.22.1/runner/ollamarunner/cache.go) を読むと、問いが丸ごと一致した時は末尾の 1 トークンだけを計算し直します。多くのトークンをまとめて計算した回とは計算の形が変わり、ロジットがわずかに変わると考えられます。その差で上位の 2 つが入れ替わる所があれば、以降の文も変わります。
+Ollama は直前に処理した問いの計算結果をプロンプトのキャッシュとして残しておき、同じ問いが来るとその部分を使い回します。この仕組みと、使い回せたかを処理の時間で見分ける方法は、[KV Cache のノートの実験 3](/notes/generative-ai/kv-cache/#実験-3-同じプレフィックスの再利用) で詳しく扱っています。v0.22.1 の [runner/ollamarunner/cache.go](https://github.com/ollama/ollama/blob/v0.22.1/runner/ollamarunner/cache.go) を読むと、問いが丸ごと一致した時は末尾の 1 トークンだけを計算し直します。多くのトークンをまとめて計算した回とは計算の形が変わり、ロジットがわずかに変わると考えられます。その差で上位の 2 つが入れ替わる所があれば、以降の文も変わります。
 
 同じ設定で回し直しても結果が一致しなかったことは、[Tool Calling](/notes/generative-ai/tool-calling/) と[構造化出力](/notes/generative-ai/structured-output/)のノートの実験でも起きています。Tool Calling は temperature 0.6 と seed を使い、他の実験と同時に流していたので条件は本記事と違いますが、この使い回しも原因の候補の 1 つです。temperature 0 で揃えたい時は、1 回目の結果を捨てるか、比べる全ての回で条件をそろえます。毎回モデルを読み込み直せば、全ての回が問いを最初から計算します。別の問いを挟む方法では、2 つの問いに共通する先頭の部分は使い回されるので、問いの大部分を計算し直す形になります。
 
@@ -210,7 +210,7 @@ API の LLM のように、サーバー側で他の人のリクエストとま�
 
 AI の研究企業の Thinking Machines Lab は「[Defeating Nondeterminism in LLM Inference](https://thinkingmachines.ai/blog/defeating-nondeterminism-in-llm-inference/)」で、temperature 0 で同じ問いを 1,000 回送ると 80 種類の答えが返ったと報告し、まとめる数に左右されない計算の方法を示しています。手元の 1 回目だけ違う現象も、計算の形が変わると答えが変わるという点で同じ種類の問題です。
 
-[seed（乱数の種）](/notes/security/random-number/)の固定も同じで、同じ乱数の列は再現できますが、計算の順序によるロジットの差は防げません。
+[シード（seed）](/notes/security/random-number/)の固定も同じで、同じ乱数の列は再現できますが、計算の順序によるロジットの差は防げません。
 
 <br>
 

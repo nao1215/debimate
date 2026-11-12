@@ -14,7 +14,7 @@
 ------
   qwen3:8b                                 ollama list の ID 500a1f067a9f（Q4_K_M）
   qwen3-coder:30b                          06c1097efce0（Q4_K_M）
-  hf.co/ggml-org/gpt-oss-20b-GGUF:latest   c6110f4035c3（専門家の重みは MXFP4、他は Q8_0）
+  hf.co/ggml-org/gpt-oss-20b-GGUF:latest   c6110f4035c3（エキスパートの重みは MXFP4、他は Q8_0）
   gpt-oss は、ollama pull gpt-oss:20b が「requires a newer version of Ollama」で失敗したので、
   Hugging Face の ggml-org/gpt-oss-20b-GGUF を ollama pull hf.co/... で取った
 
@@ -24,7 +24,7 @@
   python3 gguf_bytes.py qwen3-8b=$B/sha256-a3de86cd... qwen3-coder-30b=$B/sha256-1194192c... \
       gpt-oss-20b=$B/sha256-27cd6c43... --json gguf.json > output_gguf.txt
   - blob のパスは ollama show --modelfile <モデル> の FROM 行
-  - 専門家の重み（名前に _exps を含むテンソル）は expert_used_count / expert_count の割合だけ、
+  - エキスパートの重み（名前に _exps を含むテンソル）は expert_used_count / expert_count の割合だけ、
     埋め込み（token_embd）は 1 行だけ、それ以外は全部を 1 トークンごとに読むとして数える
 
 2. prefill と decode の速さ

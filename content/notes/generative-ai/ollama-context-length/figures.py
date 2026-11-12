@@ -4,7 +4,7 @@
 - ollama-context-length_default.webp   : 既定の num_ctx が GPU のメモリで決まり、モデルの上限で頭打ちになる流れ
 - ollama-context-length_breakdown.webp : q4_K_M の size を KV キャッシュとそれ以外に分ける
 - ollama-context-length_truncate.webp  : num_ctx 2,048 で 3,084 トークンの入力を切り詰めた範囲
-- ollama-context-length_slot.webp      : 枠が 1 組の時に別の要求が挟まると、共通の前置きだけが残る（cache.go の模式）
+- ollama-context-length_slot.webp      : 枠が 1 組の時に別の要求が挟まると、共通のプレフィックスだけが残る（cache.go の模式）
 
 手書きの SVG を Chrome の headless で PNG にしてから WebP にする。images/ に SVG は残さない。
 
@@ -163,16 +163,16 @@ def slot_figure():
     Ollama 0.22.1 の runner/ollamarunner/cache.go は、枠に残ったトークン列と新しい入力を
     先頭から比べ、一致した数だけ使い回す。実測ではなく、コードの動きを描いた模式。
     """
-    s = Svg(960, 470, "枠が 1 組の時に別の要求が挟まると、共通の前置きだけが残る")
+    s = Svg(960, 470, "枠が 1 組の時に別の要求が挟まると、共通のプレフィックスだけが残る")
     s.rect(300, 28, 28, 28, PALE, ACCENT, 2.5)
     s.text(338, 50, "枠から使い回す", 24, "start")
     s.rect(560, 28, 28, 28, OCHRE_PALE, OCHRE, 2.5)
     s.text(598, 50, "計算する", 24, "start")
     x0, unit = 300, 30
     # (表示名, [(区間の名前, 長さ, 使い回すか)])
-    rows = (("1 要求 A", [("共通の前置き", 6, False), ("資料 A と質問", 14, False)]),
-            ("2 要求 B", [("共通の前置き", 6, True), ("資料 B と質問", 14, False)]),
-            ("3 要求 A をもう一度", [("共通の前置き", 6, True), ("資料 A と質問", 14, False)]))
+    rows = (("1 要求 A", [("プレフィックス", 6, False), ("資料 A と質問", 14, False)]),
+            ("2 要求 B", [("プレフィックス", 6, True), ("資料 B と質問", 14, False)]),
+            ("3 要求 A をもう一度", [("プレフィックス", 6, True), ("資料 A と質問", 14, False)]))
     for i, (label, segs) in enumerate(rows):
         y = 100 + i * 90
         s.text(30, y + 33, label, 24, "start")

@@ -374,25 +374,25 @@ def prefix_figure():
     # （runner/ollamarunner/cache.go の LoadCacheSlot）。2 と 3 の右端の黄土は幅を誇張している。
     cases = (("1 first send", "1 初回", 0.0),
              ("2 same prompt again", "2 同じ入力をもう一度", 0.985),
-             ("3 same prefix, new question", "3 同じ前置き・別の質問", 0.96),
+             ("3 same prefix, new question", "3 同じプレフィックス・別の質問", 0.96),
              ("4 one line edited in the middle", "4 真ん中の 1 行を変更", 0.5),
              ("5 one char added at the head", "5 先頭に 1 文字を追加", 0.0))
-    s = Svg(960, 580, "同じ前置きを送り直した時に、キャッシュを使えた範囲と処理の時間")
-    s.rect(330, 32, 28, 28, PALE, ACCENT, 2.5)
-    s.text(368, 54, "キャッシュから使う", 24, "start")
-    s.rect(600, 32, 28, 28, OCHRE_PALE, OCHRE, 2.5)
-    s.text(638, 54, "計算し直す", 24, "start")
-    x0, width = 330, 420
+    s = Svg(960, 580, "同じプレフィックスを送り直した時に、キャッシュを使えた範囲と処理の時間")
+    s.rect(420, 32, 28, 28, PALE, ACCENT, 2.5)
+    s.text(458, 54, "キャッシュから使う", 24, "start")
+    s.rect(680, 32, 28, 28, OCHRE_PALE, OCHRE, 2.5)
+    s.text(718, 54, "計算し直す", 24, "start")
+    x0, width = 420, 340
     for i, (case, label, frac) in enumerate(cases):
         y = 100 + i * 80
-        s.text(30, y + 32, label, 24, "start")
+        s.text(30, y + 32, label, 22, "start")
         if frac > 0:
             s.rect(x0, y, width * frac, 44, PALE, ACCENT, 2.5)
         if frac < 1:
             s.rect(x0 + width * frac, y, width * (1 - frac), 44, OCHRE_PALE, OCHRE, 2.5)
         s.text(930, y + 32, f"{statistics.median(med[case]):.3f} 秒", 26, "end")
     s.text(480, 516, "2・3 の右端の黄土は幅を誇張（2 は応答を作るための末尾の 1 トークン）", 22, "middle", "sub")
-    s.text(480, 552, "約 8,300 トークンの前置き、3 巡の中央値。帯は送った内容から見た模式", 22, "middle", "sub")
+    s.text(480, 552, "約 8,300 トークンのプレフィックス、3 巡の中央値。帯は送った内容から見た模式", 22, "middle", "sub")
     s.save("kv-cache_prefix.webp")
 
 

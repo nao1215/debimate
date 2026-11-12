@@ -16,8 +16,8 @@ Prompt Weighting のノートと CLIP Token Limit のノート（../../clip-toke
 ファイル
 --------
   workflow_api.json  ComfyUI の API 形式のワークフロー（8 ノード）。run.py が
-                     ノード 4（プロンプト）・5（打ち消し）・7 の seed を書き換える
-  conditions.py      5 つの実験の条件（プロンプト・打ち消し・seed）
+                     ノード 4（プロンプト）・5（ネガティブプロンプト）・7 の seed を書き換える
+  conditions.py      5 つの実験の条件（プロンプト・ネガティブプロンプト・seed）
   run.py             条件を 1 枚ずつ ComfyUI に送り、PNG を保存する
   analyze.py         PNG の色を数え、条件ごとに seed で平均する
   token_chunks.py    プロンプトを CLIP のトークンに分け、ComfyUI と同じ規則で
@@ -35,16 +35,16 @@ Prompt Weighting のノートと CLIP Token Limit のノート（../../clip-toke
   解像度        : 1024 x 1024、batch 1
   CLIP          : CLIPSetLastLayer -2（clip skip 2）
 
-  実験ごとのプロンプト・打ち消し・seed は conditions.py にある。
+  実験ごとのプロンプト・ネガティブプロンプト・seed は conditions.py にある。
     positive  : 実験 1。blue ceramic teapot の重み 1.0〜2.0、seed 101〜103（18 枚）
-    negative  : 実験 2。打ち消しの先頭 k 語（k = 1, 6, 12）の重み 1.0〜1.8 と、
+    negative  : 実験 2。ネガティブプロンプトの先頭 k 語（k = 1, 6, 12）の重み 1.0〜1.8 と、
                 白黒の 2 語だけ・残りの 10 語だけに重みを付ける切り分け、
                 seed 101〜103（57 枚）
     position  : CLIP Token Limit の実験 1。red background を置く位置 5 通り、seed 201〜204（20 枚）
     ablation  : CLIP Token Limit の実験 2。静物の 8 個の品の語を 1 つずつ外す 9 通り、seed 301・302（18 枚）
     lighting  : 実験 3。照明の語（なし / night / neon light / sunset / dramatic lighting）
-                × 打ち消し 12 語の重み（なし / 1.2 / 1.3）、seed 101〜103（45 枚）。
-                照明の語なしの 9 枚は negative と同じ文面なので、negative の
+                × ネガティブプロンプト 12 語の重み（なし / 1.2 / 1.3）、seed 101〜103（45 枚）。
+                照明の語なしの 9 枚は negative と同じプロンプトなので、negative の
                 w1.0・k12_w1.2・k12_w1.3 の PNG を none_neg1.0・none_neg1.2・none_neg1.3 の
                 名前で lighting/ に写してから run.py を実行した（残り 36 枚を生成）
 

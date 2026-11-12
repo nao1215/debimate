@@ -5,7 +5,7 @@
   リンクは文字だけを残す
 - チャンク: 固定長（文字数で機械的に切る。重なり無し）と、### の節単位
 - 埋め込み: Ollama の bge-m3（/api/embed）。ベクトルは長さ 1 に揃えて保存する
-- 検索: 質問のベクトルとの内積（= 余弦類似度）が大きい順に k 個
+- 検索: 質問のベクトルとの内積（= コサイン類似度）が大きい順に k 個
 
 使い方:
     python3 rag_lab.py build <キャッシュのディレクトリ>   # 全チャンクを埋め込んで保存する
@@ -94,8 +94,8 @@ def embed(texts, batch=16):
 
 
 def search(index_vecs, query_vec, k):
-    """余弦類似度の上位 k 個の (チャンクの番号, 類似度)。"""
-    scores = index_vecs @ query_vec          # 長さ 1 のベクトル同士なので内積 = 余弦類似度
+    """コサイン類似度の上位 k 個の (チャンクの番号, 類似度)。"""
+    scores = index_vecs @ query_vec          # 長さ 1 のベクトル同士なので内積 = コサイン類似度
     top = np.argsort(-scores)[:k]
     return [(int(i), float(scores[i])) for i in top]
 

@@ -2,7 +2,7 @@
 
 テンソルを次の 4 つに分ける。
   embed   : token_embd.weight。1 トークンにつき 1 行しか読まない
-  experts : 名前に _exps を含む MoE の専門家の重み（ffn_gate_exps など）。
+  experts : 名前に _exps を含む MoE のエキスパートの重み（ffn_gate_exps など）。
             1 トークンで動くのは expert_used_count / expert_count の割合だけ
   other   : 上記以外（注意機構・ルーター・正規化・出力層など）。1 トークンごとに全部読む
 

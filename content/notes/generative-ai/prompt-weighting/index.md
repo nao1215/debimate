@@ -1,5 +1,5 @@
 ---
-title: "Prompt Weighting - 語の重みと打ち消しが画像を崩す仕組み"
+title: "Prompt Weighting - 語の重みとネガティブプロンプトが画像を崩す仕組み"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Generative AI"]
@@ -14,16 +14,16 @@ cardImage: "images/negative_k12_w1.8_s101.webp"
 masterpiece, best quality, no humans, still life, (blue ceramic teapot:1.4), lemons, glass bottle
 ```
 
-上記は、画像生成のプロンプト（描きたい絵の内容を語で並べた文面）の 1 行です。`(blue ceramic teapot:1.4)` の括弧と数字が Prompt Weighting（プロンプトの重み付け）の書式で、括弧で囲んだ語の効き具合を 1.4 倍に強める、という意味で書きます。描きたくないものを並べる打ち消し（ネガティブプロンプト）にも、同じ書式で重みを付けられます。
+上記は、画像生成のプロンプト（描きたい絵の内容を語で並べた文）の 1 行です。`(blue ceramic teapot:1.4)` の括弧と数字が Prompt Weighting（プロンプトの重み付け）の書式で、括弧で囲んだ語の効き具合を 1.4 倍に強める、という意味で書きます。描きたくないものを並べるネガティブプロンプト（ネガティブプロンプト）にも、同じ書式で重みを付けられます。
 
-この書式は「その語を 1.4 倍しっかり描け」という指示に見えます。しかし、重みが動かすのは指定した語だけではありません。以下は、上の 1 行とは別の条件で、白いポットの静物の打ち消しに並べた 12 語（品質の語など。本記事の実験 2 で示します）に重みを付ける前と後の絵です。打ち消しには「赤」とは一言も書いていないのに、重み 1.8 では壁が赤く、テーブルクロスが桃色に焼けました。
+この書式は「その語を 1.4 倍しっかり描け」という指示に見えます。しかし、重みが動かすのは指定した語だけではありません。以下は、上の 1 行とは別の条件で、白いポットの静物で、ネガティブプロンプト（negative prompt）に並べた 12 語（品質の語など。本記事の実験 2 で示します）に重みを付ける前と後の絵です。ネガティブプロンプトには「赤」とは一言も書いていないのに、重み 1.8 では壁が赤く、テーブルクロスが桃色に焼けました。
 
 <div style="display:flex;gap:8px;justify-content:center;margin:1.5rem 0">
 <figure style="margin:0;flex:0 1 260px;min-width:0">
-<img src="images/negative_w1.0_s101.webp" alt="打ち消しに重みなし。窓辺の丸い盆に、レモン水の入ったガラスのポットと白いポット、グラス。落ち着いた色" width="448" height="448" style="width:100%;height:auto;margin:0">
-<figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">打ち消しの 12 語に重みなし</figcaption></figure>
+<img src="images/negative_w1.0_s101.webp" alt="ネガティブプロンプトに重みなし。窓辺の丸い盆に、レモン水の入ったガラスのポットと白いポット、グラス。落ち着いた色" width="448" height="448" style="width:100%;height:auto;margin:0">
+<figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">ネガティブプロンプトの 12 語に重みなし</figcaption></figure>
 <figure style="margin:0;flex:0 1 260px;min-width:0">
-<img src="images/negative_k12_w1.8_s101.webp" alt="打ち消しの 12 語に重み 1.8。同じ構図で、窓枠と壁が真っ赤になり、テーブルクロスが桃色に光り、盆が橙色に焼ける" width="448" height="448" style="width:100%;height:auto;margin:0">
+<img src="images/negative_k12_w1.8_s101.webp" alt="ネガティブプロンプトの 12 語に重み 1.8。同じ構図で、窓枠と壁が真っ赤になり、テーブルクロスが桃色に光り、盆が橙色に焼ける" width="448" height="448" style="width:100%;height:auto;margin:0">
 <figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">12 語に重み 1.8</figcaption></figure>
 </div>
 
@@ -33,8 +33,8 @@ masterpiece, best quality, no humans, still life, (blue ceramic teapot:1.4), lem
 
 - 重みの数字は、内部で何を何倍にしているのか。
 - 1 つの語に重みを付けると、他の語はどうなるのか。
-- 打ち消しの重みを上げると、なぜ色が崩れるのか。
-- 照明の語は、打ち消しの重みとどう組み合わさるのか。
+- ネガティブプロンプトの重みを上げると、なぜ色が崩れるのか。
+- 照明の語は、ネガティブプロンプトの重みとどう組み合わさるのか。
 
 長いプロンプトの後ろに書いた語が効くのか、1 語で絵全体が変わった時に原因の語をどう探すのかは、[CLIP Token Limit のノート](/notes/generative-ai/clip-token-limit/)で扱います。実験はすべて 2026 年 11 月 10 日に、ComfyUI v0.35.0 と、SDXL（後述する画像生成モデル）系のモデル 1 つで行いました。数値はこの条件での結果です。
 
@@ -55,29 +55,29 @@ text encoder には [CLIP](https://arxiv.org/abs/2103.00020)（画像と文章�
 ```mermaid
 flowchart LR
     P["プロンプト"] --> T["tokenizer<br>トークンの列"] --> E["text encoder<br>トークンごとの埋め込み"] --> W["重みを掛ける<br>（括弧の語だけ）"] --> U["UNet で予測（1 回目）<br>cross-attention で参照"]
-    N["打ち消し"] --> T2["tokenizer"] --> E2["text encoder"] --> W2["重みを掛ける"] --> U2["同じ UNet で予測<br>（2 回目）"]
+    N["ネガティブプロンプト"] --> T2["tokenizer"] --> E2["text encoder"] --> W2["重みを掛ける"] --> U2["同じ UNet で予測<br>（2 回目）"]
     U --> C["CFG で混ぜる"]
     U2 --> C
     C --> X["画像を更新<br>（ステップごとに繰り返す）"]
 ```
 
-プロンプトと打ち消しは、それぞれ別に encoder を通り、同じ UNet の 2 回の予測に使われます。重みは encoder の出力に掛かります（計算は後の節で説明します）。2 つの予測を混ぜるのが、次の CFG です。
+プロンプトとネガティブプロンプトは、それぞれ別に encoder を通り、同じ UNet の 2 回の予測に使われます。重みは encoder の出力に掛かります（計算は後の節で説明します）。2 つの予測を混ぜるのが、次の CFG です。
 
 <br>
 
-#### 打ち消しは CFG の引き算に入る
+#### ネガティブプロンプトは CFG の引き算に入る
 
-打ち消しは「この語を消せ」という命令ではありません。CFG（[Classifier-Free Guidance](https://arxiv.org/abs/2207.12598)）という仕組みで、引き算される方に入るプロンプトです。CFG は、各ステップで UNet に 2 回予測させ、次の式で混ぜます。
+ネガティブプロンプトは「この語を消せ」という命令ではありません。CFG（[Classifier-Free Guidance](https://arxiv.org/abs/2207.12598)）という仕組みで、引き算される方に入るプロンプトです。CFG は、各ステップで UNet に 2 回予測させ、次の式で混ぜます。
 
 ```text
-予測 = 打ち消しでの予測 + cfg × (プロンプトでの予測 − 打ち消しでの予測)
+予測 = ネガティブプロンプトでの予測 + cfg × (プロンプトでの予測 − ネガティブプロンプトでの予測)
 ```
 
-ここでの予測は、各ステップで「どこがノイズか」を予測した結果で、画像はこの予測を取り除く向きに更新されます。`cfg` は生成の設定の CFG の値（本記事の実験では 5.5）です。ComfyUI v0.35.0 では [comfy/samplers.py の cfg_function](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L598) がこの式です。以下の図の通り、打ち消しでの予測からプロンプトでの予測への差は、常に 5.5 倍に引き伸ばされます。
+ここでの予測は、各ステップで「どこがノイズか」を予測した結果で、画像はこの予測を取り除く向きに更新されます。`cfg` は生成の設定の CFG の値（本記事の実験では 5.5）です。ComfyUI v0.35.0 では [comfy/samplers.py の cfg_function](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L598) がこの式です。以下の図の通り、ネガティブプロンプトでの予測からプロンプトでの予測への差は、常に 5.5 倍に引き伸ばされます。
 
-{{< figure src="images/prompt-weighting_cfg.webp" alt="左から打ち消しでの予測、プロンプトでの予測の点があり、その差の矢印を 5.5 倍に伸ばした先に混ぜた予測の点がある" caption="CFG は、打ち消しでの予測からプロンプトでの予測への差を 5.5 倍に伸ばす" align="center" >}}
+{{< figure src="images/prompt-weighting_cfg.webp" alt="左からネガティブプロンプトでの予測、プロンプトでの予測の点があり、その差の矢印を 5.5 倍に伸ばした先に混ぜた予測の点がある" caption="CFG は、ネガティブプロンプトでの予測からプロンプトでの予測への差を 5.5 倍に伸ばす" align="center" >}}
 
-そのため、混ぜた予測は打ち消しの文が表す絵から離れた側を指し、画像は「打ち消しの文から遠ざかる」方向に押されます。打ち消しの文や重みが変われば、打ち消しでの予測が変わり、押される向きも変わります。
+そのため、混ぜた予測はネガティブプロンプトの文が表す絵から離れた側を指し、画像は「ネガティブプロンプトの文から遠ざかる」方向に押されます。ネガティブプロンプトの文や重みが変われば、ネガティブプロンプトでの予測が変わり、押される向きも変わります。
 
 ---
 
@@ -88,7 +88,7 @@ flowchart LR
 - `(word:1.3)` は、重みを 1.3 に置き換えます。掛け算ではないので、`((word:1.3))` も 1.3 です。
 - `(word)` のように数字が無い時は、外側の重みの 1.1 倍です。`((word))` は 1.21 になります。
 
-2 つ目の [encode_token_weights()](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/sd1_clip.py#L28-L78) が、text encoder の出力に重みを掛けます。重みが 1 でないトークンが 1 つでもあると、空のプロンプトも一緒に encoder に通し、トークンの位置ごとに次の計算をします（変数名は実装の通りです）。空のプロンプトも、始まりと終わりの記号と埋め草（padding）で 77 トークンに揃えられるので、位置ごとにベクトルがあります。
+2 つ目の [encode_token_weights()](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/sd1_clip.py#L28-L78) が、text encoder の出力に重みを掛けます。重みが 1 でないトークンが 1 つでもあると、空のプロンプトも一緒に encoder に通し、トークンの位置ごとに次の計算をします（変数名は実装の通りです）。空のプロンプトも、始まりと終わりの記号とパディング（padding）で 77 トークンに揃えられるので、位置ごとにベクトルがあります。
 
 ```python
 # comfy/sd1_clip.py（v0.35.0）の encode_token_weights() から抜粋
@@ -109,15 +109,15 @@ for j in range(len(z[i])):             # トークンの位置ごと
 
 ### 実験の条件
 
-手元の ComfyUI（v0.35.0、GPU は AMD Radeon 8060S）の API に、ワークフロー（ノードのつながりを書いた JSON）を 1 枚ずつ送りました。変えたのはプロンプトと打ち消しの文字列だけで、それ以外は全ての実験で同じです。
+手元の ComfyUI（v0.35.0、GPU は AMD Radeon 8060S）の API に、ワークフロー（ノードのつながりを書いた JSON）を 1 枚ずつ送りました。変えたのはプロンプトとネガティブプロンプトの文字列だけで、それ以外は全ての実験で同じです。
 
 | 項目 | 値 |
 |---|---|
 | モデル | [WAI-illustrious-SDXL v17.0](https://civitai.com/models/827184?modelVersionId=2883731)（SDXL のアーキテクチャのイラスト向けのモデル）。LoRA は使わない |
-| seed | 条件ごとに 3 個（101〜103）。seed は初期のノイズを決める乱数の種で、同じ seed と同じ設定なら同じ絵が出る |
+| seed | 条件ごとに 3 個（101〜103）。seed（シード値）は初期のノイズを決める値で、同じ seed と同じ設定なら同じ絵が出る |
 | ステップ数・CFG・サンプラー | 24・5.5・euler（ノイズを取り除く計算の手順。scheduler は normal） |
 | 解像度・CLIP | 1024 × 1024・最後から 2 番目の層の出力（clip skip 2） |
-| 題材 | 机の上のティーポット・レモンなどの静物（イラスト向けのモデルは人物を描きやすいので、`no humans` を入れ、打ち消しに人物の語を入れる） |
+| 題材 | 机の上のティーポット・レモンなどの静物（イラスト向けのモデルは人物を描きやすいので、`no humans` を入れ、ネガティブプロンプトに人物の語を入れる） |
 
 全ての生成を終えた後に、いくつかの条件を同じ設定でもう一度生成すると、画素が完全に一致しました。つまり、以下の差は生成のたびに出るぶれではなく、文字列を変えた結果です。
 
