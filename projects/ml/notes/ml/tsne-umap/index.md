@@ -87,7 +87,7 @@ UMAP も近傍を保つ手法で、元の空間で k 近傍のグラフを作り
 
 - 学習済みの写像で新しいデータを変換できる（`reducer.transform(X_new)`）。scikit-learn の `TSNE` には `transform` がありません
 - 出力を 4 次元以上にできる。scikit-learn の t-SNE は既定の Barnes-Hut 法だと 3 次元までです
-- 大きなデータで速い。[umap-learn のベンチマーク](https://umap-learn.readthedocs.io/en/latest/benchmarking.html)では、70,000 枚の手書き数字 MNIST で UMAP が約 8.6 秒、scikit-learn の t-SNE が約 102 秒でした。1797 枚の digits では、手元で t-SNE 1.9 秒、UMAP 4.1 秒と逆転します
+- 大きなデータで速い。[umap-learn のベンチマーク](https://umap-learn.readthedocs.io/en/latest/benchmarking.html)では、umap-learn 0.6.0 と scikit-learn 1.9.0 を 64 スレッドで動かした時、70,000 枚の手書き数字 MNIST で UMAP が約 8.6 秒、scikit-learn の t-SNE が約 102 秒でした。1797 枚の digits では、手元で t-SNE 1.9 秒、UMAP 4.1 秒と逆転します
 
 主要なハイパーパラメータは `n_neighbors`（近傍の数）と `min_dist`（低次元での点同士の最小間隔）です。次のコードも上の `X` を使った抜粋です。
 
