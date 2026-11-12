@@ -170,15 +170,19 @@ uufuzz は、stderr を比べる前に両方の stderr から `sort:` のよう�
 
 2 つの実装の出力が違っても、どちらが正しいかは比べただけでは分かりません。実装が 3 つ以上あれば多数決を考えられますが、2 つでは決められません。そこで、両方が従うはずの文書を確認します。coreutils の場合は、UNIX 系 OS のコマンドの振る舞いを定めた標準規格である POSIX と、GNU のマニュアルです。
 
-冒頭の差を 1 つずつ判断した結果が、以下の表です。`ls -l` の 1 列目の末尾の `+` は、ACL などのアクセス制御があるファイルに付く印です。[ACL](/notes/security/capability-based-security/)（Access Control List）は、ファイルに利用者ごとの権限を付ける仕組みです。
+実験 1 で出た差を 1 つずつ判断した結果が、以下の表です。`ls -l` の 1 列目の末尾の `+` は、ACL などのアクセス制御があるファイルに付く印です。[ACL](/notes/security/capability-based-security/)（Access Control List）は、ファイルに利用者ごとの権限を付ける仕組みです。
 
 | 差 | 確認した文書の定め | 判断 |
 |---|---|---|
 | `ls -l` の `+` | [GNU のマニュアル](https://www.gnu.org/software/coreutils/manual/html_node/What-information-is-listed.html): ACL などがある時に付ける | uutils の誤り |
-| `ls`、`printf` の 0 | [POSIX の printf](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/printf.html) と [ls](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html): エラーは 0 より大きい値 | uutils の誤り |
-| `sort` の 1 | [POSIX の sort](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sort.html): エラーは 1 より大きい値 | uutils の誤り |
-| `md5sum` の異常終了 | 書き込みの失敗での異常終了を認める文書は無い | uutils の誤り |
+| `/dev/full` への `ls`・`printf` が 0 | [POSIX の printf](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/printf.html) と [ls](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/ls.html): エラーは 0 より大きい値 | uutils の誤り |
+| `/dev/full` への `sort` が 1 | [POSIX の sort](https://pubs.opengroup.org/onlinepubs/9799919799/utilities/sort.html): エラーは 1 より大きい値 | uutils の誤り |
+| `/dev/full` への `md5sum` の異常終了 | 書き込みの失敗での異常終了を認める文書は無い | uutils の誤り |
 | エラーの文面 | 文面を定めた文書は無い | ノイズ |
+
+<br>
+
+#### ls -l の +
 
 実験では、ファイルに名前と値の組を付ける拡張属性（xattr）で、`user.note` という属性を付けました。これはアクセス制御ではないので、GNU の `ls` は `+` を付けません。
 
@@ -188,11 +192,15 @@ uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0
 
 `ls -l` の 1 列目を正規表現で読んでいるスクリプトは、末尾の `+` で一致しなくなることがあります。
 
-`sort` の `-c` は、入力が並んでいるかを確認するオプションです。POSIX は、終了コード 1 を `-c` で並んでいなかった時の値として取っておき、他のエラーには 1 より大きい値を求めます。GNU の 2 は「1 より大きい値」に収まり、uutils の 1 は収まりません。uutils は書き込みの失敗にその 1 を使ったので、終了コードで原因を分けるスクリプトは、並びの問題と取り違えます。
-
 <br>
 
-`md5sum` の異常終了は、Rust の panic です。panic は、回復できないエラーで処理を止める仕組みです。uutils は panic した時にすぐ止まる設定（`panic = "abort"`）で[ビルドされている](https://github.com/uutils/coreutils/blob/0.8.0/Cargo.toml)ので、プロセスは SIGABRT（シグナル 6）で終わり、シェルからは終了コード 134 に見えます。Python の `returncode` では -6 です。
+#### 終了コードと panic
+
+`/dev/full` へ書いた `ls` と `printf` は、冒頭の `ls` と同じく、失敗しても 0 で終わりました。POSIX はエラーに 0 より大きい値を求めているので、どちらも誤りです。
+
+`sort` の `-c` は、入力が並んでいるかを確認するオプションです。POSIX は、終了コード 1 を `-c` で並んでいなかった時の値として取っておき、他のエラーには 1 より大きい値を求めます。GNU の 2 は「1 より大きい値」に収まり、uutils の 1 は収まりません。uutils は `/dev/full` への書き込みの失敗にその 1 を使ったので、終了コードで原因を分けるスクリプトは、並びの問題と取り違えます。
+
+`md5sum` の異常終了は、Rust の panic です。panic は、回復できないエラーで処理を止める仕組みです。uutils は panic した時にすぐ止まる設定（`panic = "abort"`）で[ビルドされている](https://github.com/uutils/coreutils/blob/0.8.0/Cargo.toml)ので、プロセスは SIGABRT（シグナル 6）で終わり、シェルからは 128 にシグナル番号の 6 を足した終了コード 134 に見えます。Python の `returncode` では -6 です。
 
 書き込みの失敗の扱いは、同じ uutils の中でもコマンドごとに違います。[stdio Buffering のノート](/notes/computer-systems/stdout-buffering/)で試した uutils の `cat` は、`/dev/full` への書き込みでエラーを表示して 1 を返しました。
 
