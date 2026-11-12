@@ -1,0 +1,12 @@
+{
+ "_camera": {"ortho": 2.1, "x": 0.16, "z": 0.95, "w": 832, "h": 1216},
+ "_bulk": {"spine_03": 0.045, "spine_02": 0.03, "spine_01": 0.025, "pelvis": 0.035,
+           "clavicle_r": 0.04, "clavicle_l": 0.04, "upperarm_r": 0.04, "upperarm_l": 0.04,
+           "lowerarm_r": 0.02, "lowerarm_l": 0.02, "thigh_r": 0.03, "thigh_l": 0.03,
+           "calf_r": 0.035, "calf_l": 0.035, "foot_r": 0.03, "foot_l": 0.03},
+ "_facing": 35,
+ "f0": {"upperarm_r": [0, 0, 32], "upperarm_l": [0, 0, -32]},
+ "f1": {"upperarm_r": [0, 0, 32], "upperarm_l": [0, 0, -22]},
+ "f2": {"upperarm_r": [0, 0, 32], "upperarm_l": [0, 0, -12]},
+ "f3": {"upperarm_r": [0, 0, 32], "upperarm_l": [0, 0, -2]}
+}

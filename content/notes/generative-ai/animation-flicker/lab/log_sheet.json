@@ -1,0 +1,41 @@
+{
+ "sheet_20261112": {
+  "prompt_id": "c1a0acd0-bed3-4150-9992-4e6283bb26f2",
+  "seconds": 37.83,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 63,
+   "loadavg_1m": 7.3125
+  }
+ },
+ "sheet_20261113": {
+  "prompt_id": "40595127-cde7-44c8-b9ea-de6f7e692190",
+  "seconds": 40.12,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 63,
+   "loadavg_1m": 7.4599609375
+  }
+ },
+ "sheet_20261114": {
+  "prompt_id": "55f7346c-11c6-46fb-94bc-237560ac2b85",
+  "seconds": 41.7,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 28,
+   "loadavg_1m": 8.8505859375
+  }
+ }
+}

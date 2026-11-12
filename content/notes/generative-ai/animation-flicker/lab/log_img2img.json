@@ -1,0 +1,193 @@
+{
+ "img2img_f1_20261112": {
+  "prompt_id": "8153a6ee-14a8-48e3-962c-a3b41be28be6",
+  "seconds": 31.34,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 61,
+   "loadavg_1m": 5.826171875
+  }
+ },
+ "img2img_f2_20261112": {
+  "prompt_id": "222bd137-e5e5-4fb4-93ed-5877037cf2c0",
+  "seconds": 31.49,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "11",
+   "12",
+   "20",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 49,
+   "loadavg_1m": 5.3984375
+  }
+ },
+ "img2img_f3_20261112": {
+  "prompt_id": "d62fc33a-92eb-4185-a31a-368910aa5334",
+  "seconds": 36.65,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "11",
+   "12",
+   "20",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 48,
+   "loadavg_1m": 10.31298828125
+  }
+ },
+ "img2img_f1_20261113": {
+  "prompt_id": "484c65ab-6194-4b59-b9ae-abfa31f8e53b",
+  "seconds": 42.62,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 25,
+   "loadavg_1m": 23.4814453125
+  }
+ },
+ "img2img_f2_20261113": {
+  "prompt_id": "37f89439-70ec-470c-9b91-41050c21bf57",
+  "seconds": 37.74,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 23,
+   "loadavg_1m": 22.3154296875
+  }
+ },
+ "img2img_f3_20261113": {
+  "prompt_id": "32415703-320d-493e-9ee5-d57566cf3ecd",
+  "seconds": 35.05,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 48,
+   "loadavg_1m": 13.427734375
+  }
+ },
+ "img2img_f1_20261114": {
+  "prompt_id": "6ba67098-2c81-4d79-8caf-d600ce42dd4e",
+  "seconds": 29.58,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 58,
+   "loadavg_1m": 9.427734375
+  }
+ },
+ "img2img_f2_20261114": {
+  "prompt_id": "c209ea57-c98f-4371-a20a-9e3ac2b552f1",
+  "seconds": 28.93,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "11",
+   "12",
+   "20",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 7.87744140625
+  }
+ },
+ "img2img_f3_20261114": {
+  "prompt_id": "6abd14c9-4345-4df6-9338-c8ab433976da",
+  "seconds": 32.14,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 38,
+   "loadavg_1m": 7.80126953125
+  }
+ },
+ "img2img_f0_20261112": {
+  "prompt_id": "ea8d7cb9-0a39-4991-a314-137d462f8570",
+  "seconds": 34.66,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 98,
+   "loadavg_1m": 9.6865234375
+  }
+ },
+ "img2img_f0_20261113": {
+  "prompt_id": "9313dfd8-d039-49fd-b9b3-b6ded5bb7721",
+  "seconds": 32.09,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 8.90576171875
+  }
+ },
+ "img2img_f0_20261114": {
+  "prompt_id": "cc324b7a-df60-40b7-9e46-9b93e4861b26",
+  "seconds": 32.35,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 6.962890625
+  }
+ }
+}

@@ -218,4 +218,4 @@ return {"leg": round((bottom - hip) / H, 3), "above_shoulder": round((sh - top) 
 
 服の厚みは、骨ごとに頂点グループの Displace で人形に付けます。裸の人形を使うと、文面で頼んだゆったりした服も、体の線に沿う細い服に変わります。
 
-同じ人物を何枚も描く時は、体型と服の厚みを決めた人形を人物ごとに 1 つ作り、ポーズだけを変えて使い回します。髪や服の細部を揃える話は、[Character Consistency のノート](/notes/generative-ai/character-consistency/)で扱っています。
+同じ人物を何枚も描く時は、体型と服の厚みを決めた人形を人物ごとに 1 つ作り、ポーズだけを変えて使い回します。髪や服の細部を揃える話は、[Character Consistency のノート](/notes/generative-ai/character-consistency/)で扱っています。同じ人形で動きのコマを作ると細部がちらつく話は、[Animation Flicker のノート](/notes/generative-ai/animation-flicker/)で扱っています。
