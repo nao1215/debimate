@@ -7,7 +7,7 @@
 - flicker_denoise.webp: 元の 1 コマ目と、弱く描き直す強さ（denoise）0.45・0.6・0.75 の 4 コマ目
 - flicker_steps.webp: txt2img と img2img が、ノイズを除く列のどこから描き始めるか
 - flicker_warp_how.webp: 3D モデルの表面の座標を色にした絵（1 コマ目と 4 コマ目）と、手の 1 点の対応
-- flicker_tear.webp: 流れのならし 3 画素と 20 画素で歪めた 4 コマ目の腕の周り
+- flicker_tear.webp: フローの平滑化 3 画素と 20 画素で歪めた 4 コマ目の腕の周り
 - flicker_sheet.webp: 1 枚ずつ描いた顔と、並べて 1 枚で描いた顔を同じ大きさで並べる
 
     uv run --with pillow==12.0.0 --with matplotlib==3.9.2 --with numpy==2.1.3 --with scipy==1.14.1 \
@@ -211,10 +211,10 @@ def warp_how(passes):
 
 
 def tear(gen):
-    """腕の周り: 元の絵、ならし 3 画素のコマ 4、ならし 20 画素のコマ 2 とコマ 4。"""
+    """腕の周り: 元の絵、平滑化 3 画素のコマ 4、平滑化 20 画素のコマ 2 とコマ 4。"""
     box = (380, 380, 760, 860)
-    picks = [(f"redraw_f0_{SEED}", "元の絵（コマ 1）"), (f"warp_gen_s3_{SEED}_f3", "ならし 3 画素・コマ 4"),
-             (f"warp_gen_s20_{SEED}_f1", "ならし 20 画素・コマ 2"), (f"warp_gen_s20_{SEED}_f3", "ならし 20 画素・コマ 4")]
+    picks = [(f"redraw_f0_{SEED}", "元の絵（コマ 1）"), (f"warp_gen_s3_{SEED}_f3", "平滑化 3 画素・コマ 4"),
+             (f"warp_gen_s20_{SEED}_f1", "平滑化 20 画素・コマ 2"), (f"warp_gen_s20_{SEED}_f3", "平滑化 20 画素・コマ 4")]
     ims = [Image.open(f"{gen}/{n}.png").convert("RGB").crop(box) for n, _ in picks]
     labels = [lab for _, lab in picks]
     to_webp(labeled_row(ims, labels, size=24), "flicker_tear.webp")

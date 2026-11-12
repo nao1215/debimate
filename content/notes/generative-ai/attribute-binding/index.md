@@ -11,7 +11,7 @@ topics: ["Image Generation"]
 
 Attribute Binding（属性の束縛）は、画像生成のプロンプトに書いた色や素材などの属性が、その語の修飾する対象に正しく付くことです。例えば `black hair, aqua eyes` と書いたら、青緑（aqua）は目に付き、髪は黒のままであってほしいわけです。
 
-以下は、手元の画像生成モデルで同じ seed から描いた 2 枚です。seed は生成の出発点になる乱数の種で、同じ seed ならプロンプトを少し変えても構図はほぼ同じになり、変えた語の効き目だけを見比べられます。右は `aqua eyes` を足しただけですが、目だけでなく、髪の内側の房と光沢にも青緑が入りました。
+以下は、手元の画像生成モデルで同じ seed から描いた 2 枚です。seed（シード値）は生成の出発点になるノイズを決める値で、同じ seed ならプロンプトを少し変えても構図はほぼ同じになり、変えた語の効き目だけを見比べられます。右は `aqua eyes` を足しただけですが、目だけでなく、髪の内側の房と光沢にも青緑が入りました。
 
 {{< figure src="images/attribute-binding_eye_none_vs_eye_aqua_1000.webp" alt="同じ構図の 2 枚の上半身の絵。左の black hair では目が灰色で髪は黒一色。右の black hair, aqua eyes では目が青緑になり、顔の右側の髪の内側の房と頭頂の光沢も青緑になっている" caption="左が black hair、右が black hair, aqua eyes（同じ seed 1000）" align="center" >}}
 
@@ -21,11 +21,11 @@ Attribute Binding（属性の束縛）は、画像生成のプロンプトに書
 
 <br>
 
-本記事では、画像生成を使い始めたエンジニアに向けて、色移りが起きる理由を説明します。モデルの中で文面を読む部分の出力を比べる実験と、seed だけを変えて生成した画像の色を機械で数える実験から、次の疑問に答えます。
+本記事では、画像生成を使い始めたエンジニアに向けて、色移りが起きる理由を説明します。モデルの中でプロンプトを読む部分の出力を比べる実験と、seed だけを変えて生成した画像の色を機械で数える実験から、次の疑問に答えます。
 
 - 色の語は、モデルのどこで別の語や別の位置に届くのか。
 - 目の色が髪に移る割合は、語順やプロンプトの分割で変わるのか。
-- 髪への色移りを打ち消しの語（ネガティブプロンプト。描いてほしくない物を書く欄）で止めると、服の色はどうなるのか。
+- 髪への色移りをネガティブプロンプトの語（ネガティブプロンプト。描いてほしくない物を書く欄）で止めると、服の色はどうなるのか。
 - 2 色の服は、どう書けば狙った部位に色が付くのか。
 
 実験は 2026 年 11 月 10 日に、SDXL 系（次の節で説明します）のモデル 1 つで行いました。数値はこのモデル・この条件での結果で、他のモデルに同じ割合で当てはまるとは限りません。
@@ -34,17 +34,17 @@ Attribute Binding（属性の束縛）は、画像生成のプロンプトに書
 
 ### 色の語が別の物に届く 2 か所
 
-[SDXL](https://arxiv.org/abs/2307.01952)（Stable Diffusion XL）は、ノイズから少しずつ絵を作る[拡散モデル](../diffusion-model/)です。プロンプトはそのままでは使えないので、モデルはまず文面を[トークン](../tokenizer/)（語や語の断片）に区切り、トークンごとに数値の列（ベクトル。以下、出力と呼びます）に変えます。
+[SDXL](https://arxiv.org/abs/2307.01952)（Stable Diffusion XL）は、ノイズから少しずつ絵を作る[拡散モデル](../diffusion-model/)です。プロンプトはそのままでは使えないので、モデルはまずプロンプトを[トークン](../tokenizer/)（語や語の断片）に区切り、トークンごとに数値の列（ベクトル。以下、出力と呼びます）に変えます。
 
 絵を描く側のネットワーク（後で説明する UNet）は、この出力を見ながら画像の各位置のノイズを取り除きます。全体の流れは [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/)で説明しているので、ここでは色の語が別の物に届く 2 か所だけを取り上げます。
 
-{{< figure src="images/attribute-binding_concept.webp" alt="左にトークン black・hair・aqua・eyes。中央の text encoder の枠では、各トークンから自分と後ろのトークンの出力へ線が伸び、aqua からは aqua の出力と eyes の出力へ青い線が伸びる。hair の出力には aqua からの線が無い。右の顔の絵では、aqua の出力から目へ青い矢印、髪の一房へ黄土色の点線の矢印が伸び、色移りと注記されている" caption="色の語が別の物に届く 2 か所。① 文面を読む所と、② 画像の各位置が出力を選ぶ所" align="center" >}}
+{{< figure src="images/attribute-binding_concept.webp" alt="左にトークン black・hair・aqua・eyes。中央の text encoder の枠では、各トークンから自分と後ろのトークンの出力へ線が伸び、aqua からは aqua の出力と eyes の出力へ青い線が伸びる。hair の出力には aqua からの線が無い。右の顔の絵では、aqua の出力から目へ青い矢印、髪の一房へ黄土色の点線の矢印が伸び、色移りと注記されている" caption="色の語が別の物に届く 2 か所。① プロンプトを読む所と、② 画像の各位置が出力を選ぶ所" align="center" >}}
 
 <br>
 
-#### ① 文面を読む所（text encoder）
+#### ① プロンプトを読む所（text encoder）
 
-1 か所目は、文面を出力に変える text encoder です。SDXL は、[CLIP](https://arxiv.org/abs/2103.00020)（画像と文章を同じベクトルの空間に対応付けるモデル）の文章側を 2 つ持ちます。[CLIP ViT-L](https://huggingface.co/openai/clip-vit-large-patch14) と、[OpenCLIP](https://github.com/mlfoundations/open_clip) の ViT-bigG です。2 つの出力は横に並べて 1 本にして使うので、実験 A では 2 つを別々に測ります。
+1 か所目は、プロンプトを出力に変える text encoder です。SDXL は、[CLIP](https://arxiv.org/abs/2103.00020)（画像と文章を同じベクトルの空間に対応付けるモデル）の文章側を 2 つ持ちます。[CLIP ViT-L](https://huggingface.co/openai/clip-vit-large-patch14) と、[OpenCLIP](https://github.com/mlfoundations/open_clip) の ViT-bigG です。2 つの出力は横に並べて 1 本にして使うので、実験 A では 2 つを別々に測ります。
 
 どちらも、各トークンの出力は、自分と自分より前のトークンだけから作られます（causal attention。[KV Cache のノート](/notes/generative-ai/kv-cache/)で説明している仕組みと同じです）。上記の図の中央のように、後ろの語の出力には前の語が混ざり、前の語の出力には後ろの語が混ざりません。`black hair, aqua eyes` の順なら、`aqua` は `eyes` の出力に混ざりますが、`hair` の出力には届きません。
 
@@ -80,7 +80,7 @@ Attribute Binding（属性の束縛）は、画像生成のプロンプトに書
 
 [lab/clip_mix.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/attribute-binding/lab/clip_mix.py) は、[ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）のライブラリで、モデルのファイルから text encoder だけを CPU に読みます。
 
-UNet に渡す出力は、77 トークン分（短い文面は余りを埋めて 77 にそろえる）の 2,048 次元のベクトルです。`clip_layer(-2)` は、最後の層ではなく最後から 2 番目の層の出力を使う設定で、生成の時と同じにしています。以下が中心の部分です。
+UNet に渡す出力は、77 トークン分（短いプロンプトは余りを埋めて 77 にそろえる）の 2,048 次元のベクトルです。`clip_layer(-2)` は、最後の層ではなく最後から 2 番目の層の出力を使う設定で、生成の時と同じにしています。以下が中心の部分です。
 
 ```python
 # lab/clip_mix.py から抜粋（全体はリンク先）
@@ -176,7 +176,7 @@ r["hair_aqua"] = hue_share(h, s, v, hair, "aqua")
 | 構図と解像度 | 上半身、1024 × 1024 | 全身の立ち絵、768 × 1344 |
 | ステップ数・[CFG](https://arxiv.org/abs/2207.12598)（プロンプトに従わせる強さ）・サンプラー | 28・5.5・euler_ancestral（[k-diffusion](https://github.com/crowsonkb/k-diffusion) 由来） | 同じ |
 
-人物は成人で、服を着た姿に限りました。体の部位を強調する語は書かず、打ち消しに `nude, cleavage` などを入れ、画風 LoRA の組では `child, loli` も入れています。生成した画像は全て目で確認し、露出のある絵はありませんでした。プロンプトの全文は [lab/gen.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/attribute-binding/lab/gen.py) にあります。
+人物は成人で、服を着た姿に限りました。体の部位を強調する語は書かず、ネガティブプロンプトに `nude, cleavage` などを入れ、画風 LoRA の組では `child, loli` も入れています。生成した画像は全て目で確認し、露出のある絵はありませんでした。プロンプトの全文は [lab/gen.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/attribute-binding/lab/gen.py) にあります。
 
 <br>
 
@@ -197,7 +197,7 @@ r["hair_aqua"] = hue_share(h, s, v, hair, "aqua")
 
 黒髪の人物に `aqua eyes` を足すと、髪に青緑が入るのでしょうか。ベースモデルだけの組で、色の部分を 4 通りに変えて 12 枚ずつ生成しました。対照の `black hair`、目の色を後ろに書いた `black hair, aqua eyes`、前に書いた `aqua eyes, black hair`、2 つに分けて text encoder に通す条件です。
 
-最後の条件は、1 つ目の経路を断つためのものです。文面を前半（`…, white collared shirt, black hair`）と後半（`aqua eyes, simple background, white background`）に分けました。
+最後の条件は、1 つ目の経路を断つためのものです。プロンプトを前半（`…, white collared shirt, black hair`）と後半（`aqua eyes, simple background, white background`）に分けました。
 
 ComfyUI の [ConditioningConcat](https://github.com/Comfy-Org/ComfyUI/blob/19e1058f4c445ef74047e77a23f9ca7684c1e4b6/nodes.py#L134-L160) は、別々に text encoder に通した 2 つの出力をつなぎ、トークンの並びの方向に 1 本の列にするノードです。前半と後半は別々に通るので、`black hair` の出力に `aqua` は混ざりません。
 
@@ -232,24 +232,24 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 ---
 
-### 実験 2: 髪を打ち消しで塞ぐと
+### 実験 2: 髪をネガティブプロンプトで塞ぐと
 
-画風 LoRA を当てた立ち絵でも、`aqua eyes` の有無だけを変えて 12 枚ずつ比べました。頼んだ服は `white collared shirt, long navy skirt`（白い襟付きのシャツと紺の長いスカート）です。スカートの丈は、文面通りにならない絵もありました。
+画風 LoRA を当てた立ち絵でも、`aqua eyes` の有無だけを変えて 12 枚ずつ比べました。頼んだ服は `white collared shirt, long navy skirt`（白い襟付きのシャツと紺の長いスカート）です。スカートの丈は、プロンプト通りにならない絵もありました。
 
-さらに、髪を単色にする打ち消し（`multicolored hair, streaked hair, two-tone hair` など）を足した文面でも 12 枚ずつ比べています。髪への移りを打ち消しで止めた時に、服の色がどうなるかを見るためです。
+さらに、髪を単色にするネガティブプロンプト（`multicolored hair, streaked hair, two-tone hair` など）を足したプロンプトでも 12 枚ずつ比べています。髪への移りをネガティブプロンプトで止めた時に、服の色がどうなるかを見るためです。
 
-最初の文面では目を閉じた絵が多かったので、この文面には目をはっきり描く語（`sharp eyes, eye highlights, detailed eyes`）も足しました。以下、この文面を「髪の打ち消しを足した文面」と呼びます。2 か所を同時に変えたので、打ち消しだけの効き目とは切り分けられていません。
+最初のプロンプトでは目を閉じた絵が多かったので、このプロンプトには目をはっきり描く語（`sharp eyes, eye highlights, detailed eyes`）も足しました。以下、このプロンプトを「髪を抑えたプロンプト」と呼びます。2 か所を同時に変えたので、ネガティブプロンプトだけの効き目とは切り分けられていません。
 
 この組は、服の色も含めて目で数えました。
 
 | 条件（画風 LoRA あり、12 枚ずつ） | 髪に青緑 | シャツが青系 | スカートが白 |
 |---|---|---|---|
-| 立ち絵の文面 | 0 | 4 | 0 |
-| 立ち絵の文面 + `aqua eyes` | 12 | 6 | 4 |
-| 髪の打ち消しを足した文面 | 0 | 2 | 0 |
-| 髪の打ち消しを足した文面 + `aqua eyes` | 1 | 5 | 5 |
+| 立ち絵のプロンプト | 0 | 4 | 0 |
+| 立ち絵のプロンプト + `aqua eyes` | 12 | 6 | 4 |
+| 髪を抑えたプロンプト | 0 | 2 | 0 |
+| 髪を抑えたプロンプト + `aqua eyes` | 1 | 5 | 5 |
 
-以下は、髪の打ち消しを足した文面の同じ seed の 2 枚です。集計に使った画像をそのまま載せています。下の段は、顔の周りを等倍で切り抜いたものです。プロンプトの並びは、髪と目の語が先、服の語が後です（全文は lab/gen.py）。
+以下は、髪を抑えたプロンプトの同じ seed の 2 枚です。集計に使った画像をそのまま載せています。下の段は、顔の周りを等倍で切り抜いたものです。プロンプトの並びは、髪と目の語が先、服の語が後です（全文は lab/gen.py）。
 
 <div class="binding-rows" style="margin:1.5rem 0">
 <div style="display:flex;gap:8px;justify-content:center;align-items:flex-end;margin:0 0 12px"><figure style="flex:0 1 320px;min-width:0;margin:0"><a href="images/attribute-binding_s_rep_none_1000.webp"><img src="images/attribute-binding_s_rep_none_1000.webp" alt="目の色なし。黒髪の女性が白いシャツと紺のタイトスカートで立つ。目は茶色" width="768" height="1344" loading="lazy" style="width:100%;height:auto;margin:0"></a><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">目の色なし（seed 1000）</figcaption></figure><figure style="flex:0 1 320px;min-width:0;margin:0"><a href="images/attribute-binding_s_rep_aqua_1000.webp"><img src="images/attribute-binding_s_rep_aqua_1000.webp" alt="aqua eyes。同じ構図で、目が青緑になり、シャツが水色、スカートが白、耳飾りが青緑になっている" width="768" height="1344" loading="lazy" style="width:100%;height:auto;margin:0"></a><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">aqua eyes（seed 1000）</figcaption></figure></div>
@@ -258,11 +258,11 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 `aqua eyes` を足した右の絵では、髪は黒のままですが、シャツが水色、スカートが白になり、耳飾りまで青緑です。シャツの水色は目の青緑が移ったと読めます。スカートの白は、シャツに書いた白がスカートへ移り、2 つの色が入れ替わったように見えます（理由は確認していません）。
 
-表の通り、髪を単色にする打ち消しは効き、髪に青緑が入ったのは 12 枚中 1 枚でした。一方で、青系のシャツ（5 枚）と白いスカート（5 枚）は、打ち消しを足す前（6 枚・4 枚）と同じくらい出ています。この条件では、髪への色移りは止まっても、服の色の取り違えは残りました。
+表の通り、髪を単色にするネガティブプロンプトは効き、髪に青緑が入ったのは 12 枚中 1 枚でした。一方で、青系のシャツ（5 枚）と白いスカート（5 枚）は、ネガティブプロンプトを足す前（6 枚・4 枚）と同じくらい出ています。この条件では、髪への色移りは止まっても、服の色の取り違えは残りました。
 
 <br>
 
-この結果から言えることには限りがあります。目の色を書かない文面でも、シャツが青系になる絵は 2〜4 枚あり、12 枚ずつでは服の色の変化の大きさまでは決められません。また、この文面では `aqua eyes` が服の語より前にあるので、1 つ目の経路（text encoder の中で後ろの服の語の出力に混ざる）も残っています。どちらの経路で移ったのかは区別できていません。
+この結果から言えることには限りがあります。目の色を書かないプロンプトでも、シャツが青系になる絵は 2〜4 枚あり、12 枚ずつでは服の色の変化の大きさまでは決められません。また、このプロンプトでは `aqua eyes` が服の語より前にあるので、1 つ目の経路（text encoder の中で後ろの服の語の出力に混ざる）も残っています。どちらの経路で移ったのかは区別できていません。
 
 機械の判定は、この組では 48 枚中 41 枚の一致に下がりました。食い違った 7 枚は全て、機械が、髪の領域に重なった水色のシャツや青い背景、黒髪の青みのある艶を青緑と数えた誤りです。服の色が変わる絵では、領域の切り出しの誤りが色の数え違いになります。
 
@@ -272,7 +272,7 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 色の取り違えは、色の組をまとめて渡した時にも起きます。2 色の服を頼む書き方は 2 通りあります。`two-tone dress, black and white dress` と色の組を 1 か所に書く方法と、`black jacket, white long skirt` と部位ごとに色を書く方法です。前者は、どちらの色をどこに塗るかを決めていません。
 
-画風 LoRA の 2 つの文面（立ち絵の文面と、髪の打ち消しを足した文面）で 6 枚ずつ、合わせて 12 枚ずつ比べました。以下の上の行は同じ seed の 2 枚で、左が `two-tone`、右が部位ごとの指定です。下の行は `two-tone` で左右に塗り分けられた例です。
+画風 LoRA の 2 つのプロンプト（立ち絵のプロンプトと、髪を抑えたプロンプト）で 6 枚ずつ、合わせて 12 枚ずつ比べました。以下の上の行は同じ seed の 2 枚で、左が `two-tone`、右が部位ごとの指定です。下の行は `two-tone` で左右に塗り分けられた例です。
 
 <div class="binding-rows" style="margin:1.5rem 0">
 <div style="display:flex;gap:8px;justify-content:center;align-items:flex-end;margin:0 0 12px"><figure style="flex:0 1 240px;min-width:0;margin:0"><img src="images/attribute-binding_s_rep_tone_two_1000_s480.webp" alt="two-tone。黒は腰のベルトだけで、白一色の長いドレスの女性" width="274" height="480" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">two-tone、seed 1000</figcaption></figure><figure style="flex:0 1 240px;min-width:0;margin:0"><img src="images/attribute-binding_s_rep_tone_parts_1000_s480.webp" alt="部位ごと。黒い上着と白い長いスカートの女性" width="274" height="480" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">部位ごと、seed 1000</figcaption></figure></div>
@@ -281,7 +281,7 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 部位ごとに書いた 12 枚は、全て上着が黒、スカートが白でした（目視）。ただし、こちらは上着とスカートの 2 着を頼んでいるので、1 着のドレスを頼んだ `two-tone` とは服の種類も違います。`two-tone` の 12 枚は、体の左右で白と黒が分かれた絵が 4 枚、上が黒で下が白の絵が 2 枚で、残りの 6 枚は白一色や、両脇だけ黒い帯などばらばらでした（目視。lab のラベルには左右の塗り分けだけを記録しています）。
 
-色の組をまとめて渡すと「2 色ある」ことしか伝わらず、どこを何色にするかはモデルが seed ごとに決めます。服の領域を中心で左右に割って黒の割合を比べる機械の判定は、立ち絵の文面の 12 枚（`two-tone` 6 枚と部位ごと 6 枚）で目視と 9 枚しか合わなかったので、目で数えた値を使っています。
+色の組をまとめて渡すと「2 色ある」ことしか伝わらず、どこを何色にするかはモデルが seed ごとに決めます。服の領域を中心で左右に割って黒の割合を比べる機械の判定は、立ち絵のプロンプトで描いた 12 枚（`two-tone` 6 枚と部位ごと 6 枚）で目視と 9 枚しか合わなかったので、目で数えた値を使っています。
 
 ---
 
@@ -295,7 +295,7 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 語順の入れ替えとプロンプトの分割は、実験 1 では効きませんでした。text encoder の中で混ざる経路は断てても、画像の各位置が出力を選ぶ経路と、学習した画像の組み合わせの影響は残るからと考えられます。前者には、Attend-and-Excite や SynGen のように生成の途中で重みに手を入れる手法が提案されていますが、本記事の色移りが直るかは試していません。
 
-色を付ける対象を書かない語は、画面の広い範囲に効きます。`sunset` のような照明の語は、空だけでなく背景や白い物、肌まで光の色に染めます（色かぶり。実測は [Prompt Weighting のノートの実験 3](/notes/generative-ai/prompt-weighting/#実験-3-照明の語と打ち消しの重みを組み合わせる)）。著者は、立ち絵ではこれらの語を[検査](../image-linting/)で止める決まりにしています。
+色を付ける対象を書かない語は、画面の広い範囲に効きます。`sunset` のような照明の語は、空だけでなく背景や白い物、肌まで光の色に染めます（色かぶり。実測は [Prompt Weighting のノートの実験 3](/notes/generative-ai/prompt-weighting/#実験-3-照明の語とネガティブプロンプトの重みを組み合わせる)）。著者は、立ち絵ではこれらの語を[検査](../image-linting/)で止める決まりにしています。
 
 <br>
 
@@ -311,12 +311,12 @@ SDXL が画像全体の条件に使う pooled 出力も候補に見えますが�
 
 ### 余談: 縦横比で同じ人物が増える
 
-色の話からは外れますが、同じ立ち絵の実験で目に付いた取り違えがもう 1 つあります。`solo`（1 人）と書き、打ち消しに `2girls` を入れても、人物が 2 人描かれることがありました。画風 LoRA の 2 つの文面（立ち絵の文面と、髪の打ち消しを足した文面。どちらも目の色は書いていません）のまま解像度だけを変えて 6 枚ずつ生成し、2 人以上が描かれた絵を目で数えました。
+色の話からは外れますが、同じ立ち絵の実験で目に付いた取り違えがもう 1 つあります。`solo`（1 人）と書き、ネガティブプロンプトに `2girls` を入れても、人物が 2 人描かれることがありました。画風 LoRA の 2 つのプロンプト（立ち絵のプロンプトと、髪を抑えたプロンプト。どちらも目の色は書いていません）のまま解像度だけを変えて 6 枚ずつ生成し、2 人以上が描かれた絵を目で数えました。
 
-{{< figure src="images/attribute-binding_people.webp" alt="解像度ごとに、2 人以上が描かれた絵の枚数を 2 つの文面で並べた棒グラフ。768 × 1344 は 2 枚と 2 枚、832 × 1216 は 0 枚と 1 枚、1024 × 1024 は 2 枚と 1 枚（各 6 枚中）" caption="2 人以上が描かれた絵の枚数（各 6 枚中）" align="center" >}}
+{{< figure src="images/attribute-binding_people.webp" alt="解像度ごとに、2 人以上が描かれた絵の枚数を 2 つのプロンプトで並べた棒グラフ。768 × 1344 は 2 枚と 2 枚、832 × 1216 は 0 枚と 1 枚、1024 × 1024 は 2 枚と 1 枚（各 6 枚中）" caption="2 人以上が描かれた絵の枚数（各 6 枚中）" align="center" >}}
 
 増えたのは、どれも同じ顔・同じ服の人物でした。もう 1 人が立っている絵と、顔の大写しが差し込まれた絵があります。画面の余白を埋めるように、同じ人物をもう 1 枚の中に描き足したように見えます。
 
-著者は以前、832 × 1216 で人物が並び、768 × 1344 に変えて直した経験があります。今回は逆に、768 × 1344 で 12 枚中 4 枚、832 × 1216 で 12 枚中 1 枚でした。この枚数では縦横比ごとの差は言えず、安全な縦横比はモデルと文面ごとに数えて決める必要があります。
+著者は以前、832 × 1216 で人物が並び、768 × 1344 に変えて直した経験があります。今回は逆に、768 × 1344 で 12 枚中 4 枚、832 × 1216 で 12 枚中 1 枚でした。この枚数では縦横比ごとの差は言えず、安全な縦横比はモデルとプロンプトごとに数えて決める必要があります。
 
 WD tagger の `multiple_girls`・`2girls`・`multiple_views` のどれかが 0.35 以上なら 2 人以上とする機械の判定は、目で数えた人数と全て一致しました。

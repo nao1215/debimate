@@ -2,8 +2,8 @@
 
 3D モデルの表面の各点には、変形前の位置（Generated）か展開図の座標（UV）を色として描いてある（render_frames.py）。
 コマ i の画素が見ている表面の点を、1 コマ目の画素から探せば、「コマ i のこの画素は 1 コマ目のどこから持ってくるか」
-（流れ、flow）が決まる。3D モデルの外の画素（髪・背景）と、探して外れた画素は、いちばん近い体の画素の流れを使う。
-最後に流れをガウスでならし（sigma、画素）、1 コマ目をその流れで引き伸ばす。
+（フロー、flow）が決まる。3D モデルの外の画素（髪・背景）と、探して外れた画素は、いちばん近い体の画素が持つフローを使う。
+最後にフローをガウスで平滑化し（sigma、画素）、1 コマ目をそのフローで引き伸ばす。
 
 使い方: python3 warp.py <1 コマ目の PNG> <render_frames.py の出力先> <gen か uv> <sigma> <保存先の接頭辞>
 出力: <接頭辞>_f0.png 〜 _f3.png（f0 は 1 コマ目そのまま）
@@ -50,7 +50,7 @@ def doll_flow(passes, kind, frame):
 
 def warp(pic, flow, good, sigma):
     _, (iy, ix) = ndimage.distance_transform_edt(~good, return_indices=True)
-    flow = flow[iy, ix]  # 体の外と外れた画素は、いちばん近い体の画素の流れ
+    flow = flow[iy, ix]  # 体の外と外れた画素は、いちばん近い体の画素が持つフロー
     fx = ndimage.gaussian_filter(flow[..., 0], sigma)
     fy = ndimage.gaussian_filter(flow[..., 1], sigma)
     H, W = pic.shape[:2]

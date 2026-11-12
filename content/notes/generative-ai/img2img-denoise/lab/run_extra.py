@@ -2,7 +2,7 @@
 
   control : 下絵を使わない txt2img（EmptyLatentImage、denoise 1.0）。下絵の 1.0 と比べる
   morph   : 金貨の静物を txt2img で 1 枚描き、1.5 倍に拡大して全体を描き直す
-            （denoise 0.3〜0.75、金貨を書かない文面。0.6 だけ金貨を書いた文面でも描く）
+            （denoise 0.3〜0.75、金貨を書かないプロンプト。0.6 だけ金貨を書いたプロンプトでも描く）
   （実験 3 の hires fix は person_lora.py。ここの txt2img と add_redraw を使う）
 
 使い方: python3 run_extra.py <control|morph> <PNG の保存先>

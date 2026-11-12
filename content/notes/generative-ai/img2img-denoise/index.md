@@ -35,7 +35,7 @@ denoise は「何割を描き直すか」の割合ではなく、ノイズを取
 
 [Stable Diffusion XL](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0)（SDXL）系の画像生成モデルは、ノイズだけの画像から、少しずつノイズを取り除いて絵を作る[拡散モデル](../diffusion-model/)です。1 回の除去をステップと呼び、例えば 28 ステップなら 28 回除去します。各ステップでノイズがどれだけ残っているかは、スケジューラーが決める数の列（sigma の列）で与えます。sigma はノイズの大きさで、列の先頭が最大、末尾が 0 です。
 
-SDXL は画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画素を縦横 8 分の 1 に縮めた潜在（latent）と呼ばれる数の配列の上でノイズを取り除きます。プロンプトだけから描く txt2img（text-to-image）は、空の潜在に最大のノイズを掛けて列の先頭から始めます。img2img は、下絵を VAE で潜在に変え、列の途中の大きさのノイズを足して、その段から始めます。
+SDXL は画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画素を縦横 8 分の 1 に縮めた潜在表現（latent）と呼ばれる数の配列の上でノイズを取り除きます。プロンプトだけから描く txt2img（text-to-image）は、空の潜在表現に最大のノイズを掛けて列の先頭から始めます。img2img は、下絵を VAE で潜在表現に変え、列の途中の大きさのノイズを足して、その段から始めます。
 
 つまり、denoise が決めるのは、この開始の段です。開始の段のノイズが大きいほど、下絵の情報はノイズに埋もれ、モデルがプロンプトに従って描き直す余地が増えます。
 
@@ -61,15 +61,15 @@ def set_steps(self, steps, denoise=None):
 
 denoise が 1 未満の時は、`steps / denoise` 段の長い列を作り、その末尾の `steps + 1` 個だけを使います。例えば 28 ステップで denoise 0.6 なら、`int(28 / 0.6) = 46` 段の列を作り、先頭の 18 段を飛ばします。冒頭の図は、この 46 段です。
 
-開始の段のノイズを下絵に足すのは、[comfy/samplers.py の 993 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L993)から呼ばれる [noise_scaling](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47) です。SDXL のようなノイズを予測するモデル（EPS）では、`下絵の潜在 + sigma × ノイズ` を作ります。開始の sigma が列の最大値の時（denoise 1.0。28 ステップなら `int(28 / d)` が 28 になる 0.97 以上も同じ）だけは `sqrt(1 + sigma²) × ノイズ` を足しますが、下絵の潜在を消す処理はありません。
+開始の段のノイズを下絵に足すのは、[comfy/samplers.py の 993 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L993)から呼ばれる [noise_scaling](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47) です。SDXL のようなノイズを予測するモデル（EPS）では、`下絵の潜在表現 + sigma × ノイズ` を作ります。開始の sigma が列の最大値の時（denoise 1.0。28 ステップなら `int(28 / d)` が 28 になる 0.97 以上も同じ）だけは `sqrt(1 + sigma²) × ノイズ` を足しますが、下絵の潜在表現を消す処理はありません。
 
 <br>
 
-ここから、開始の段で下絵がどれだけ残るかを計算できます。モデルの入力は `sqrt(sigma² + 1)` で割ってから渡すので（[EPS の calculate_input](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L31-L33)）、下絵の潜在に掛かる係数は `1 / sqrt(1 + sigma²)` になります。ここでの潜在は、VAE の出力に SDXL の係数 0.13025 を掛けて、分散をほぼ 1 に揃えたものです（[samplers.py の 1224 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L1224)の `process_latent_in`）。
+ここから、開始の段で下絵がどれだけ残るかを計算できます。モデルの入力は `sqrt(sigma² + 1)` で割ってから渡すので（[EPS の calculate_input](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L31-L33)）、下絵の潜在表現に掛かる係数は `1 / sqrt(1 + sigma²)` になります。ここでの潜在表現は、VAE の出力に SDXL の係数 0.13025 を掛けて、分散をほぼ 1 に揃えたものです（[samplers.py の 1224 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L1224)の `process_latent_in`）。
 
 Python の数値計算ライブラリ [NumPy](https://numpy.org/) で ComfyUI の SDXL の sigma の列（scheduler は `normal`）を写した [lab/schedule.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/schedule.py) で、denoise ごとにこの係数を数えました。
 
-{{< figure src="images/denoise_keep.svg" alt="横軸が denoise、縦軸が開始の段で下絵の潜在に掛かる係数の折れ線グラフ。0.3 で 0.776、0.6 で 0.402、0.86 で 0.138、1.0 で 0.068 と下がり、1.0 でも 0 にならない" caption="denoise ごとの、開始の段で下絵に掛かる係数（28 ステップ）" align="center" >}}
+{{< figure src="images/denoise_keep.svg" alt="横軸が denoise、縦軸が開始の段で下絵の潜在表現に掛かる係数の折れ線グラフ。0.3 で 0.776、0.6 で 0.402、0.86 で 0.138、1.0 で 0.068 と下がり、1.0 でも 0 にならない" caption="denoise ごとの、開始の段で下絵に掛かる係数（28 ステップ）" align="center" >}}
 
 <br>
 
@@ -123,13 +123,13 @@ denoise を上げた分だけ絵が下絵から離れるのかを確認するた
 | 項目 | 値 |
 |---|---|
 | 解像度 | 1024 × 1024 |
-| seed・ステップ数・CFG（文面に従わせる強さ） | 20261110・28・5.5 |
+| seed・ステップ数・CFG（プロンプトに従わせる強さ） | 20261110・28・5.5 |
 | サンプラー | [euler_ancestral](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/k_diffusion/sampling.py#L216)（ステップごとにノイズを足し直すサンプラー）、scheduler は normal |
 | denoise | 0.3 / 0.45 / 0.6 / 0.75 / 0.86 / 0.95 / 1.0 |
 | プロンプト | masterpiece, best quality, no humans, still life, red apple, blue book, lemon, wooden table, plain wall, indoors |
 | ネガティブ | lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature, watermark, logo, 1girl, 1boy, person |
 
-ワークフローは、`LoadImage` で読んだ下絵を `VAEEncode` で潜在に変え、`KSampler` に渡すだけです（[lab/workflow_img2img.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/workflow_img2img.json)）。以下は、送信に使った [lab/run_sweep.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/run_sweep.py) から、denoise を書き換えて 1 枚ずつ送る部分の抜粋です。`comfy.run()` は、`/prompt` に送った自分の `prompt_id` だけを `/history` で待ち、画像を取り出す関数です（[lab/comfy.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/comfy.py)）。
+ワークフローは、`LoadImage` で読んだ下絵を `VAEEncode` で潜在表現に変え、`KSampler` に渡すだけです（[lab/workflow_img2img.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/workflow_img2img.json)）。以下は、送信に使った [lab/run_sweep.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/run_sweep.py) から、denoise を書き換えて 1 枚ずつ送る部分の抜粋です。`comfy.run()` は、`/prompt` に送った自分の `prompt_id` だけを `/history` で待ち、画像を取り出す関数です（[lab/comfy.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/comfy.py)）。
 
 ```python
 # lab/run_sweep.py の main() から抜粋
@@ -192,7 +192,7 @@ blurred は、0.45 で既に厚みのある本とりんごになっています�
 
 <br>
 
-denoise を 1.0 まで上げれば下絵から自由になる、と思うかもしれません。しかし、色の付いた下絵は 1.0 でも消えませんでした。crisp と blurred の 1.0 は、左に本、右に果物という下絵の並びのままです。前の節の通り、ComfyUI の denoise 1.0 は下絵の潜在を消さず、係数 0.068 で残すからです。
+denoise を 1.0 まで上げれば下絵から自由になる、と思うかもしれません。しかし、色の付いた下絵は 1.0 でも消えませんでした。crisp と blurred の 1.0 は、左に本、右に果物という下絵の並びのままです。前の節の通り、ComfyUI の denoise 1.0 は下絵の潜在表現を消さず、係数 0.068 で残すからです。
 
 比べるために、同じ seed とプロンプトで、下絵を使わない txt2img（`EmptyLatentImage` から描く）も 1 枚描きました。
 
@@ -268,7 +268,7 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 
 1 つ目は、くっきりした図形が平らな塗りのまま残りやすいことです。crisp の図形の内側の `flat` は 0.6 で 6.7 と、ほぼ平らなままでした。blurred は 0.45 で 19.2、0.6 で 30.5 と、陰影と質感が付いています。
 
-境目のはっきりした単色の面は、潜在の上でも「平らな面」という強い手掛かりになり、低い denoise ではモデルがそれを写し直すと考えられます。人物の絵でも、原色の図形を置いた下絵は半透明の板のように描かれ、下絵をぼかすと解消しました。
+境目のはっきりした単色の面は、潜在空間でも「平らな面」という強い手掛かりになり、低い denoise ではモデルがそれを写し直すと考えられます。人物の絵でも、原色の図形を置いた下絵は半透明の板のように描かれ、下絵をぼかすと解消しました。
 
 2 つ目は、灰色の下絵では色が付かないことです。gray の彩度は 0.6 まで 1.0〜4.6 で、色の付いた下絵（24〜34）の 5 分の 1 以下でした。プロンプトに red apple や blue book と書いても、灰色の明暗が強く残る段からは色が出ません。
 
@@ -280,9 +280,9 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 
 ### 実験 2: 全体の描き直しで小物が化ける
 
-仕上げの描き直しは、絵を拡大してから全体を中くらいの denoise で描き直す工程です。構図が残る値でも、文面に書いていない小物は別の物体に変わります。キャラクターの絵を 1.5 倍・0.6 で描き直した時は、小物の金貨が花やパイに変わり、0.5 に下げると金貨は残った代わりに、0.45 では元の淡い塗りが直りませんでした。
+仕上げの描き直しは、絵を拡大してから全体を中くらいの denoise で描き直す工程です。構図が残る値でも、プロンプトに書いていない小物は別の物体に変わります。キャラクターの絵を 1.5 倍・0.6 で描き直した時は、小物の金貨が花やパイに変わり、0.5 に下げると金貨は残った代わりに、0.45 では元の淡い塗りが直りませんでした。
 
-同じ状況を静物で作りました。1 枚目は、宝箱と金貨を書いた文面で txt2img から描いた 1024 × 1024 の絵です。これを lanczos で 1536 × 1536 に拡大し、金貨を書かない文面（masterpiece, best quality, no humans, still life, wooden table, indoors）で、denoise だけを変えて描き直しました。0.6 だけは、1 枚目と同じ金貨を書いた文面でも描いています。seed はどれも 20261110 です（[lab/run_extra.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/run_extra.py) の `morph`）。
+同じ状況を静物で作りました。1 枚目は、宝箱と金貨を書いたプロンプトで txt2img から描いた 1024 × 1024 の絵です。これを lanczos で 1536 × 1536 に拡大し、金貨を書かないプロンプト（masterpiece, best quality, no humans, still life, wooden table, indoors）で、denoise だけを変えて描き直しました。0.6 だけは、1 枚目と同じ金貨を書いたプロンプトでも描いています。seed はどれも 20261110 です（[lab/run_extra.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/run_extra.py) の `morph`）。
 
 <div class="denoise-strip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(110px,100%),1fr));gap:6px;margin:1.5rem 0">
 <figure style="margin:0"><img src="images/coins_base.webp" alt="1 枚目。暗い石の部屋の机に、蓋の開いた宝箱。中と周りに金貨が積もり、ろうそくが 4 本立つ" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">1 枚目</figcaption></figure>
@@ -291,7 +291,7 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 <figure style="margin:0"><img src="images/coins_g_050.webp" alt="0.5。構図は同じ。宝箱の中と周りが、角ばった薄茶色の塊になる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.5</figcaption></figure>
 <figure style="margin:0"><img src="images/coins_g_060.webp" alt="0.6。構図は同じ。宝箱の中と周りが、薄茶色の木の棒の山になる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.6</figcaption></figure>
 <figure style="margin:0"><img src="images/coins_g_075.webp" alt="0.75。宝箱も金貨もろうそくも消え、木の部屋に空の木の台が 1 つ置かれる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.75</figcaption></figure>
-<figure style="margin:0"><img src="images/coins_c_060.webp" alt="0.6、金貨を書いた文面。構図は同じで、金貨は金色に光ったまま" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.6（金貨あり）</figcaption></figure>
+<figure style="margin:0"><img src="images/coins_c_060.webp" alt="0.6、金貨を書いたプロンプト。構図は同じで、金貨は金色に光ったまま" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.6（金貨あり）</figcaption></figure>
 </div>
 
 0.45 から 0.6 まで、宝箱・ろうそく・石の壁の構図は 1 枚目のままです。変わったのは、宝箱の中と周りの金貨だけでした。以下は、宝箱の口の部分を拡大したものです。
@@ -302,7 +302,7 @@ txt2img (no sketch) vs crisp: ssim=0.400 edge_f1=0.232 dE= 27.4 chroma= 23.4 fla
 <figure style="margin:0"><img src="images/coins_g_045_zoom.webp" alt="0.45 の拡大。光沢の無い茶色の丸い粒" width="420" height="300" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.45</figcaption></figure>
 <figure style="margin:0"><img src="images/coins_g_050_zoom.webp" alt="0.5 の拡大。角ばった薄茶色の塊" width="420" height="300" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.5</figcaption></figure>
 <figure style="margin:0"><img src="images/coins_g_060_zoom.webp" alt="0.6 の拡大。薄茶色の短い木の棒" width="420" height="300" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.6</figcaption></figure>
-<figure style="margin:0"><img src="images/coins_c_060_zoom.webp" alt="0.6、金貨を書いた文面の拡大。金色の硬貨のまま" width="420" height="300" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.6（金貨あり）</figcaption></figure>
+<figure style="margin:0"><img src="images/coins_c_060_zoom.webp" alt="0.6、金貨を書いたプロンプトの拡大。金色の硬貨のまま" width="420" height="300" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">0.6（金貨あり）</figcaption></figure>
 </div>
 
 化けたかどうかは、拡大した画像を目で見て判定しました（正解のラベルは自分で付けています）。0.3 は金貨のままで、0.45 で金属の光沢が消えて茶色の丸い粒に、0.5 で角ばった塊に、0.6 で木の棒になりました。
@@ -331,15 +331,15 @@ coins_c_060  gold= 1.86%  ssim_vs_base=0.620
 
 <br>
 
-金色の画素は、0.3 で 2.16%、0.45 で 1.26%、0.6 で 0.07% と減りました。一方で、金貨を書いた文面の 0.6 は 1.86% で、0.3 に近い値です。SSIM は 0.611 と 0.620 でほとんど同じなので、構図の崩れ方は同じで、金貨かどうかだけが文面で分かれています。
+金色の画素は、0.3 で 2.16%、0.45 で 1.26%、0.6 で 0.07% と減りました。一方で、金貨を書いたプロンプトの 0.6 は 1.86% で、0.3 に近い値です。SSIM は 0.611 と 0.620 でほとんど同じなので、構図の崩れ方は同じで、金貨かどうかだけがプロンプトで分かれています。
 
 <br>
 
-化ける理由は、仕組みの節の係数から次のように考えられます。0.6 の開始の段では、下絵の潜在に掛かる係数は 0.402 です。金貨のような小さなものが並ぶ所は、細かい明暗の模様としてしか残らず、ノイズと区別しにくくなるのだと考えられます。その模様を何として描くかは、残りの 28 ステップで、文面と周りの絵を手掛かりにモデルが選びます。
+化ける理由は、仕組みの節の係数から次のように考えられます。0.6 の開始の段では、下絵の潜在表現に掛かる係数は 0.402 です。金貨のような小さなものが並ぶ所は、細かい明暗の模様としてしか残らず、ノイズと区別しにくくなるのだと考えられます。その模様を何として描くかは、残りの 28 ステップで、プロンプトと周りの絵を手掛かりにモデルが選びます。
 
-文面に金貨が無ければ、宝箱と机に合いそうな別のもの（この実験では木の棒）が選ばれ、文面に書けば金貨に戻ります。この実験では 0.45 で既に化けていて、前述のキャラクターの絵の 0.6 より低い値でした。文面と絵が違うので、境目は絵ごとに確認する必要があります。
+プロンプトに金貨が無ければ、宝箱と机に合いそうな別のもの（この実験では木の棒）が選ばれ、プロンプトに書けば金貨に戻ります。この実験では 0.45 で既に化けていて、前述のキャラクターの絵の 0.6 より低い値でした。プロンプトと絵が違うので、境目は絵ごとに確認する必要があります。
 
-0.3 は 1 枚目との SSIM が 0.850 で、描き直す範囲も小さくなります。しかし、崩れた所や淡い塗りを直したい描き直しで denoise を下げると、直したい所も元のままになります。化けない値と、直したい所が直る値の間に、使える幅があるとは限りません。その場合は、化けるものを文面に書くか、描き直す範囲を inpaint で限ります。
+0.3 は 1 枚目との SSIM が 0.850 で、描き直す範囲も小さくなります。しかし、崩れた所や淡い塗りを直したい描き直しで denoise を下げると、直したい所も元のままになります。化けない値と、直したい所が直る値の間に、使える幅があるとは限りません。その場合は、化けるものをプロンプトに書くか、描き直す範囲を inpaint で限ります。
 
 ---
 
@@ -353,7 +353,7 @@ denoise が低い 2 段目は、仕上げの軽い処理に見えるかもしれ
 
 時間と効果を測るために、成人の女性の全身（1 色の黒髪、白いブラウスまたは黒い服に白い袖口、ワイドパンツ、灰色の背景）を描きました。人物の例は、本記事の説明用に用意した独自の画風 LoRA を強さ 1.0 で当てています（[LoRA](/notes/generative-ai/lora/) は、学習済みモデルに画風の差分を足すファイルです）。
 
-1 段目は 768 × 1344 で 28 ステップ描き、lanczos で 1.5 倍（1152 × 2016）に拡大して、20 ステップ・denoise 0.45 で描き直しました。ネガティブには nsfw・nude・cleavage・child などを入れ、載せる絵は全て目で確認しています。文面と、候補から外した絵の枚数と理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/README.txt) にあります。
+1 段目は 768 × 1344 で 28 ステップ描き、lanczos で 1.5 倍（1152 × 2016）に拡大して、20 ステップ・denoise 0.45 で描き直しました。ネガティブには nsfw・nude・cleavage・child などを入れ、載せる絵は全て目で確認しています。プロンプトと、候補から外した絵の枚数と理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/img2img-denoise/lab/README.txt) にあります。
 
 | 依頼 | seed | 実行時間 | 送る直前の負荷 |
 |---|---|---|---|
@@ -405,7 +405,7 @@ seed 20261193: white b* -1.99 -> -0.67 (5768 px)  sharpness 57.4 -> 116.3  face(
 
 ### img2img の利点
 
-- 文面ではなく下絵で、構図・配置・色を指定できる。文面で書きにくい物体の位置や大きさも渡せる
+- プロンプトではなく下絵で、構図・配置・色を指定できる。プロンプトで書きにくい物体の位置や大きさも渡せる
 - denoise 1 つで、下絵をどこまで残すかを連続的に変えられる
 - 描き上がった絵を元に、拡大（hires fix）や仕上げの描き直しができる
 - 下絵は、図形を塗っただけの単純なものでも効く。実験 1 の下絵は、Pillow で長方形と楕円を塗っただけ
@@ -414,11 +414,11 @@ seed 20261193: white b* -1.99 -> -0.67 (5768 px)  sharpness 57.4 -> 116.3  face(
 
 ### img2img の欠点
 
-img2img は、下絵の潜在にノイズを足して、途中の段から描きます。下絵をノイズで薄めるだけなので、次の制約があります。
+img2img は、下絵の潜在表現にノイズを足して、途中の段から描きます。下絵をノイズで薄めるだけなので、次の制約があります。
 
 - 「何割描き直すか」を直接は指定できない。実験 1 では、0.6 と 0.75 の間で平らな図形から写実的な絵に急に変わった
 - 下絵は 1.0 でも消えない（ComfyUI v0.35.0 で確認）。色の塊は残り、下絵と違う姿勢や配置にしにくい
-- 文面に無い小さなものは、高い denoise で別のものに化ける。下げると、直したい所も直らない
+- プロンプトに無い小さなものは、高い denoise で別のものに化ける。下げると、直したい所も直らない
 - 下絵の作り方に左右される。くっきりした単色の図形は平らな板のまま残り、灰色の下絵では色が付かない
 - hires fix の 2 段目は、1 段目より時間が掛かる。実験 3 では 1 枚が 2.8 倍になった
 

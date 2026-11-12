@@ -17,7 +17,7 @@
 <line x1="812" y1="150" x2="875" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
 <text x="910" y="150" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">出力</text>
 <text x="60" y="132" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">ノイズを</text>
-<text x="60" y="164" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">含む潜在</text>
+<text x="60" y="164" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="22" fill="#666666" text-anchor="middle" dominant-baseline="middle">含む潜在表現</text>
 <line x1="105" y1="150" x2="150" y2="150" stroke="#666666" stroke-width="2.5" marker-end="url(#arrow)"/>
 <path d="M181.0,75.0 L181.0,40 L781.0,40 L781.0,71.0" fill="none" stroke="#666666" stroke-width="2" marker-end="url(#arrow)"/>
 <path d="M276.0,95.0 L276.0,58 L686.0,58 L686.0,91.0" fill="none" stroke="#666666" stroke-width="2" marker-end="url(#arrow)"/>

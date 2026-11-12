@@ -15,9 +15,9 @@ topics: ["Image Generation"]
 
 ノイズを取り除く 1 回の計算をステップと呼び、k ステップ目は k 回の計算を終えた後を指します。以下は、[ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）で 28 ステップの生成を途中で止めた時の状態（上段、図の `x_k`）と、予測した完成図（下段、図の `x0_hat`）を画像に戻して並べたものです。下段は、そこまでの最後のステップでモデルが出した予測から計算しています。
 
-図の「潜在」と、画像に戻す VAE は次の節で説明します。0 ステップ目は、まだモデルを呼んでいないので予測がありません。実験の条件（チェックポイントやプロンプト）は、後の「ステップ数を変える」にまとめました。
+図の「潜在表現」と、画像に戻す VAE は次の節で説明します。0 ステップ目は、まだモデルを呼んでいないので予測がありません。実験の条件（チェックポイントやプロンプト）は、後の「ステップ数を変える」にまとめました。
 
-{{< figure src="images/diffusion_trajectory.webp" alt="上段は 0、2、4、7、10、14、20、28 ステップ目の潜在を画像に戻したもの。14 ステップ目まで画面の大半が色の粒のノイズで、20 ステップ目で雲と崖が粒の中に見え、28 ステップ目で灯台と夕焼けの海の絵になる。下段はモデルの予測から計算した完成図で、2 ステップ目で既に夕焼けの空と水平線がぼやけて現れ、7 ステップ目で崖と灯台、10 ステップ目以降は完成図とほぼ同じ配置になる" caption="途中の状態（上段）と、各ステップの予測から計算した画像（下段）" align="center" >}}
+{{< figure src="images/diffusion_trajectory.webp" alt="上段は 0、2、4、7、10、14、20、28 ステップ目の潜在表現を画像に戻したもの。14 ステップ目まで画面の大半が色の粒のノイズで、20 ステップ目で雲と崖が粒の中に見え、28 ステップ目で灯台と夕焼けの海の絵になる。下段はモデルの予測から計算した完成図で、2 ステップ目で既に夕焼けの空と水平線がぼやけて現れ、7 ステップ目で崖と灯台、10 ステップ目以降は完成図とほぼ同じ配置になる" caption="途中の状態（上段）と、各ステップの予測から計算した画像（下段）" align="center" >}}
 
 上段は 14 ステップ目でも粒が大半で、20 ステップ目でようやく雲と崖が粒の中に見えます。一方で、下段は 2 ステップ目で既に夕焼けの空と水平線の配置が出ています。モデルが毎回出しているのは「今の状態に含まれるノイズはこれだ」という予測で、そこから完成図の全体も計算できます（式は後の節で示します）。ステップが進むほど、その予測がはっきりしていきます。
 
@@ -25,7 +25,7 @@ topics: ["Image Generation"]
 
 本記事では、画像生成を使っていても中身を知らないエンジニアに向けて、SDXL と ComfyUI を例に拡散モデルの基本を説明します。ComfyUI のソースと手元で生成した画像から、次の疑問を順に確認します。
 
-- ノイズを足すと、潜在の中身はどう変わるのか。
+- ノイズを足すと、潜在表現の中身はどう変わるのか。
 - モデルは何を予測し、その予測からどう次の状態を作るのか。
 - ノイズの大きさの列とステップ数は、何を決めているのか。
 - VAE とプロンプトは、どこで効くのか。
@@ -38,13 +38,13 @@ topics: ["Image Generation"]
 
 SDXL で 1 枚を描く時に使う部品と、データの流れは次の通りです。
 
-{{< figure src="images/diffusion_pipeline.webp" alt="プロンプトはテキストエンコーダーで語ごとのベクトルになり、潜在の上で 28 回繰り返す UNet とサンプラーの組に渡る。繰り返しの入口は seed から作ったノイズで、出口の潜在は VAE のデコーダーで 1024 × 1024 の画像になる" caption="SDXL で 1 枚を描く時の部品の流れ" align="center" >}}
+{{< figure src="images/diffusion_pipeline.webp" alt="プロンプトはテキストエンコーダーで語ごとのベクトルになり、潜在空間で 28 回繰り返す UNet とサンプラーの組に渡る。繰り返しの入口は seed から作ったノイズで、出口の潜在表現は VAE のデコーダーで 1024 × 1024 の画像になる" caption="SDXL で 1 枚を描く時の部品の流れ" align="center" >}}
 
-SDXL は [Latent Diffusion Model](https://arxiv.org/abs/2112.10752)（LDM）の構成で、画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画像を縮めた潜在（latent）の上でノイズを取り除きます。1024 × 1024 の画像の潜在は、128 × 128 × 4 の数の配列です。
+SDXL は [Latent Diffusion Model](https://arxiv.org/abs/2112.10752)（LDM）の構成で、画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画像を縮めた潜在表現（latent）の上でノイズを取り除きます。1024 × 1024 の画像を縮めた潜在表現は、128 × 128 × 4 の数の配列です。
 
 テキストエンコーダー（text encoder）はプロンプトを語ごとのベクトルに変え、ノイズを予測する [UNet](https://arxiv.org/abs/1505.04597) が各ステップでそれを参照します。UNet の予測を使って、ノイズを少し引いた次の状態を計算する手順をサンプラーと呼びます。
 
-繰り返しの入口は seed（乱数の種）から作ったノイズで、出口では VAE のデコーダー（decoder）が潜在を画像に戻します。図の σ は、次の節で説明するノイズの大きさです。
+繰り返しの入口は seed（シード値）から作ったノイズで、出口では VAE のデコーダー（decoder）が潜在表現を画像に戻します。図の σ は、次の節で説明するノイズの大きさです。
 
 ComfyUI で読み込むチェックポイントのファイルには、UNet・テキストエンコーダー 2 つ・VAE の重みが全て入っています。
 
@@ -52,13 +52,13 @@ ComfyUI で読み込むチェックポイントのファイルには、UNet・�
 
 ### ノイズを足す過程
 
-まずは、モデルを作る学習の時の話です。学習では、手持ちの画像（正解の画像）を VAE のエンコーダー（encoder）で潜在にし、それにノイズを足します。ComfyUI は、ノイズの大きさを σ（シグマ）という 1 つの数で表し、[Karras 氏らの論文](https://arxiv.org/abs/2206.00364)（EDM、2022 年）の書き方で次のようにノイズを足します。
+まずは、モデルを作る学習の時の話です。学習では、手持ちの画像（正解の画像）を VAE のエンコーダー（encoder）で潜在表現にし、それにノイズを足します。ComfyUI は、ノイズの大きさを σ（シグマ）という 1 つの数で表し、[Karras 氏らの論文](https://arxiv.org/abs/2206.00364)（EDM、2022 年）の書き方で次のようにノイズを足します。
 
 ```text
 x = x_0 + σ × eps
 ```
 
-`x_0` は正解の画像の潜在、`eps` は[標準正規分布](/ml/math/probability-distributions/)のノイズです。SDXL は学習でノイズの大きさを 1000 通り（1000 段）に分けていて、σ は 0.0292 から 14.6146 までです。なお、生成の時は、ステップ数と同じ数の σ を大きい側から順に使います（どの σ を使うかは、後で説明するスケジューラーが決めます）。
+`x_0` は正解の画像から作った潜在表現、`eps` は[標準正規分布](/ml/math/probability-distributions/)のノイズです。SDXL は学習でノイズの大きさを 1000 通り（1000 段）に分けていて、σ は 0.0292 から 14.6146 までです。なお、生成の時は、ステップ数と同じ数の σ を大きい側から順に使います（どの σ を使うかは、後で説明するスケジューラーが決めます）。
 
 ノイズを足した状態には、サンプラーが持つ `x` と、モデルに見せる入力の 2 つの形があります。生成の時にサンプラーが持って更新していくのは、この `x` です。ただし σ が大きいと `x` の値の幅も大きくなるので、モデル（UNet）に渡す直前にだけ `x` を `sqrt(1 + σ²)` で割り、値の幅がほぼ一定の入力にします。モデルがその形の入力で学習しているためです（DDPM の論文の式との対応は下の補足に載せました）。
 
@@ -68,7 +68,7 @@ x = x_0 + σ × eps
 
 先に消えるのは灯台の窓や波の筋のような細部で、雲と崖の大きな塊は σ 1.52（画像の係数 0.55）でもまだ見えます。σ 6.51（係数 0.15）では、目で分かる形は残っていません。冒頭の図の上段は、おおよそこの図を右から左へたどっています。
 
-図の画像は、28 ステップで描き終えた潜在に σ を変えてノイズを足し、`1 / sqrt(1 + σ²)` を掛けてから VAE で画像に戻したものです。冒頭の図の上段も、同じく割った後の形で画像に戻しています。
+図の画像は、28 ステップで描き終えた潜在表現に σ を変えてノイズを足し、`1 / sqrt(1 + σ²)` を掛けてから VAE で画像に戻したものです。冒頭の図の上段も、同じく割った後の形で画像に戻しています。
 
 なお、生成は描く画像がまだ無い状態から始めるので、`x_0` を 0 として、seed から作ったノイズだけを置きます。その大きさは、ノイズを `sqrt(1 + σ²)` 倍（最大の σ 14.6146 なら約 14.65 倍）です。割った後のモデルへの入力が、ちょうど標準正規分布のノイズになります（[ComfyUI の実装](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47)）。
 
@@ -85,7 +85,7 @@ x_t = sqrt(abar_t) × x_0 + sqrt(1 − abar_t) × eps
 
 `σ = sqrt((1 − abar_t) / abar_t)` と置くと `sqrt(abar_t) = 1 / sqrt(1 + σ²)` なので、`x_t` は本文の `x` を `sqrt(1 + σ²)` で割ったものと同じです。ComfyUI は σ をこの式で求め（[comfy/model_sampling.py の 180 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L180)）、モデルに渡す直前に [calculate_input](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L31-L33) で `sqrt(1 + σ²)` で割ります。
 
-図の画像は、サンプラーに長さ 1 の σ の列を渡して作りました。この時 ComfyUI はモデルを呼ばず、ノイズを足す処理（[noise_scaling](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47)）の結果だけを（潜在の単位に戻して）返します。
+図の画像は、サンプラーに長さ 1 の σ の列を渡して作りました。この時 ComfyUI はモデルを呼ばず、ノイズを足す処理（[noise_scaling](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/model_sampling.py#L39-L47)）の結果だけを（潜在表現の単位に戻して）返します。
 
 </details>
 
@@ -139,7 +139,7 @@ ComfyUI でプレビューを有効にした時（起動オプションの `--pr
 冒頭の図は、このループを途中で止めて作りました。ComfyUI の `SplitSigmas` で 28 ステップの σ の列の先頭 `k + 1` 個だけを切り出し、`SamplerCustom` に渡しています。`SamplerCustom` の 2 つ目の出力は、最後のステップの `x0_hat` です。以下は、送ったワークフローを組み立てる [lab/wf.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/wf.py) の抜粋です。
 
 ```python
-# lab/wf.py の partial() から抜粋。1〜5 はモデル・プロンプト・空の潜在のノード
+# lab/wf.py の partial() から抜粋。1〜5 はモデル・プロンプト・空の潜在表現を作るノード
 wf["10"] = {"class_type": "KSamplerSelect", "inputs": {"sampler_name": "euler"}}
 wf["11"] = {"class_type": "BasicScheduler", "inputs": {
     "model": ["1", 0], "scheduler": "normal", "steps": steps, "denoise": 1.0}}   # steps = 28
@@ -208,7 +208,7 @@ def karras(steps, rho=7.0):
 
 - チェックポイント: waiIllustriousSDXL_v170.safetensors、seed: 20261111、サンプラー: euler、スケジューラー: normal
 - プロンプト: `masterpiece, best quality, no humans, scenery, lighthouse, cliff, ocean, sunset, orange sky, cloud, horizon, waves`
-- 打ち消し: `lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature, watermark, logo, 1girl, 1boy, person`
+- ネガティブプロンプト: `lowres, worst quality, bad quality, low quality, jpeg artifacts, blurry, text, signature, watermark, logo, 1girl, 1boy, person`
 - ComfyUI 0.35.0、PyTorch 2.12.0a0+rocm7.13、GPU は AMD Radeon 8060S（2026-11-11）。手順は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/README.txt)
 
 </details>
@@ -277,16 +277,16 @@ rerun       rerun_steps_28                    26.17  14, 6.73  identical_to_step
 
 ---
 
-### 潜在と VAE
+### 潜在表現と VAE
 
-ここまでの `x` は全て潜在です。SDXL の VAE のエンコーダーは、画像の縦横を 3 回半分にして 8 分の 1 にし、各位置を 4 つの数で表します。1024 × 1024 の画像の 3,145,728 個の値が、65,536 個になり、48 分の 1 です。UNet は全てのステップでこの小さな配列を扱うので、画素の上で同じ処理をするより計算が軽くなります。これが LDM の論文の狙いです。
+ここまでの `x` は全て潜在表現です。SDXL の VAE のエンコーダーは、画像の縦横を 3 回半分にして 8 分の 1 にし、各位置を 4 つの数で表します。1024 × 1024 の画像の 3,145,728 個の値が、65,536 個になり、48 分の 1 です。UNet は全てのステップでこの小さな配列を扱うので、画素の上で同じ処理をするより計算が軽くなります。これが LDM の論文の狙いです。
 
-潜在は数の配列ですが、中身は小さな画像に近いものです。28 ステップで描き終えた潜在を ComfyUI の `SaveLatent` で保存し、ComfyUI がプレビューに使う一次式（[latent_formats.py の SDXL の latent_rgb_factors](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/latent_formats.py#L37-L48)）で 4 つの数を RGB に直しました（[lab/latent_preview.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/latent_preview.py)）。
+潜在表現は数の配列ですが、中身は小さな画像に近いものです。28 ステップで描き終えた潜在表現を ComfyUI の `SaveLatent` で保存し、ComfyUI がプレビューに使う一次式（[latent_formats.py の SDXL の latent_rgb_factors](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/latent_formats.py#L37-L48)）で 4 つの数を RGB に直しました（[lab/latent_preview.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/diffusion-model/lab/latent_preview.py)）。
 
-下のコードの `0.13025` は、VAE のエンコーダーの出力（潜在）をサンプラーに渡す前に掛ける係数です（[samplers.py の 1224 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L1224)）。`SaveLatent` は掛ける前の値を保存するので、ここで掛け直しています。
+下のコードの `0.13025` は、VAE のエンコーダーの出力（潜在表現）をサンプラーに渡す前に掛ける係数です（[samplers.py の 1224 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L1224)）。`SaveLatent` は掛ける前の値を保存するので、ここで掛け直しています。
 
 ```python
-# lab/latent_preview.py から抜粋。lat は保存した潜在 [4, 128, 128]
+# lab/latent_preview.py から抜粋。lat は保存した潜在表現 [4, 128, 128]
 x = lat * 0.13025                                  # SDXL.scale_factor。モデルが扱う単位に揃える
 rgb = np.einsum("chw,cr->hwr", x, RGB) + BIAS      # 4 つの数に 4 × 3 の係数を掛けて RGB にする
 img = (np.clip((rgb + 1) / 2, 0, 1) * 255).astype(np.uint8)
@@ -298,11 +298,11 @@ shape [4, 128, 128] values 65536 vs pixels 3145728 ratio 48
 ```
 
 <div style="display:flex;justify-content:center;gap:8px;margin:1.5rem 0">
-<figure style="margin:0;flex:0 1 256px;min-width:0"><img src="images/latent_rgb.webp" alt="潜在 128 × 128 を一次式で RGB にしたもの。画素の粗いモザイクだが、灯台、雲、崖、波の配置と色が分かる" width="256" height="256" loading="lazy" style="width:100%;height:auto;margin:0;image-rendering:pixelated"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">潜在を一次式で RGB に（128 × 128）</figcaption></figure>
-<figure style="margin:0;flex:0 1 256px;min-width:0"><img src="images/x_28.webp" alt="同じ潜在を VAE のデコーダーで戻した 1024 × 1024 の画像。灯台の窓や波の筋まで描かれる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">VAE のデコーダーで戻した画像</figcaption></figure>
+<figure style="margin:0;flex:0 1 256px;min-width:0"><img src="images/latent_rgb.webp" alt="潜在表現 128 × 128 を一次式で RGB にしたもの。画素の粗いモザイクだが、灯台、雲、崖、波の配置と色が分かる" width="256" height="256" loading="lazy" style="width:100%;height:auto;margin:0;image-rendering:pixelated"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">潜在表現を一次式で RGB に（128 × 128）</figcaption></figure>
+<figure style="margin:0;flex:0 1 256px;min-width:0"><img src="images/x_28.webp" alt="同じ潜在表現を VAE のデコーダーで戻した 1024 × 1024 の画像。灯台の窓や波の筋まで描かれる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">VAE のデコーダーで戻した画像</figcaption></figure>
 </div>
 
-4 つの数を足し引きしただけで、灯台・雲・崖の配置と色まで分かります。構図と色は拡散モデルが潜在の上で決めていて、VAE のデコーダーは 8 倍の解像度の細部を描き起こす役割と言えます。[LDM の論文](https://arxiv.org/abs/2112.10752)も、意味の情報は潜在に残し、知覚上の細部の圧縮を autoencoder に任せる分け方を取っています。
+4 つの数を足し引きしただけで、灯台・雲・崖の配置と色まで分かります。構図と色は拡散モデルが潜在空間で決めていて、VAE のデコーダーは 8 倍の解像度の細部を描き起こす役割と言えます。[LDM の論文](https://arxiv.org/abs/2112.10752)も、意味の情報は潜在表現に残し、知覚上の細部の圧縮を autoencoder に任せる分け方を取っています。
 
 ---
 
@@ -310,13 +310,13 @@ shape [4, 128, 128] values 65536 vs pixels 3145728 ratio 48
 
 プロンプトは、ノイズの予測に条件として渡ります。SDXL は、[CLIP](https://arxiv.org/abs/2103.00020)（画像と文章を同じベクトルの空間に対応付けるよう学習したモデル）型のテキストエンコーダーを 2 つ（CLIP ViT-L と [OpenCLIP](https://github.com/mlfoundations/open_clip) の ViT-bigG）使い、語ごとのベクトルの列を作ります。UNet は各ステップで、画像の各位置からこの列を参照します（cross-attention）。流れの細部は [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/#前提-プロンプトが-unet-に届くまで)で説明しています。
 
-プロンプトを条件にするだけでは、絵は文面に強く従いません。そこで使うのが CFG（[Classifier-Free Guidance](https://arxiv.org/abs/2207.12598)）です。1 ステップごとに、プロンプトありと打ち消し（ネガティブプロンプト）ありの 2 つの予測を計算し、その差を CFG の値の倍率で伸ばします（[samplers.py の 598 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L598)）。論文では打ち消しの代わりに条件なしの予測を使い、ComfyUI の CFG の値は論文の `1 + w` に当たります。
+プロンプトを条件にするだけでは、絵はプロンプトに強く従いません。そこで使うのが CFG（[Classifier-Free Guidance](https://arxiv.org/abs/2207.12598)）です。1 ステップごとに、プロンプトありとネガティブプロンプト（negative prompt）ありの 2 つの予測を計算し、その差を CFG の値の倍率で伸ばします（[samplers.py の 598 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L598)）。論文ではネガティブプロンプトの代わりに条件なしの予測を使い、ComfyUI の CFG の値は論文の `1 + w` に当たります。
 
 ```text
-予測 = 打ち消しでの予測 + cfg × (プロンプトでの予測 − 打ち消しでの予測)
+予測 = ネガティブプロンプトでの予測 + cfg × (プロンプトでの予測 − ネガティブプロンプトでの予測)
 ```
 
-CFG が 1.0 の時は打ち消し側の予測が式から消えるので、ComfyUI はその計算を省きます（[samplers.py の 610〜611 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L610-L611)）。以下は、euler・28 ステップで CFG だけを変えた結果です。
+CFG が 1.0 の時はネガティブプロンプト側の予測が式から消えるので、ComfyUI はその計算を省きます（[samplers.py の 610〜611 行目](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy/samplers.py#L610-L611)）。以下は、euler・28 ステップで CFG だけを変えた結果です。
 
 <div style="display:flex;justify-content:center;gap:8px;margin:1.5rem 0">
 <figure style="margin:0;flex:0 1 200px;min-width:0"><img src="images/cfg_1_0.webp" alt="CFG 1.0。全体が灰色がかってくすみ、灯台は遠くの小島に小さく立つ。夕焼けの色が薄い" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">CFG 1.0・13.5 秒</figcaption></figure>
@@ -324,7 +324,7 @@ CFG が 1.0 の時は打ち消し側の予測が式から消えるので、Comfy
 <figure style="margin:0;flex:0 1 200px;min-width:0"><img src="images/cfg_9_0.webp" alt="CFG 9.0。5.5 と同じ配置で、雲と夕焼けの橙色が濃くなり、波の白も強くなる" width="320" height="320" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">CFG 9.0・26.1 秒</figcaption></figure>
 </div>
 
-CFG 1.0 は、時間がほぼ半分でした。一方で、夕焼けの色は薄く、灯台は遠くの小島に小さく描かれ、プロンプトの lighthouse や orange sky の効きが弱く見えます。CFG 9.0 は 5.5 と同じ配置のまま、橙色が濃くなりました。打ち消しの重みが CFG の式を通して色を崩す例は、Prompt Weighting のノートで扱っています。
+CFG 1.0 は、時間がほぼ半分でした。一方で、夕焼けの色は薄く、灯台は遠くの小島に小さく描かれ、プロンプトの lighthouse や orange sky の効きが弱く見えます。CFG 9.0 は 5.5 と同じ配置のまま、橙色が濃くなりました。ネガティブプロンプトの重みが CFG の式を通して色を崩す例は、Prompt Weighting のノートで扱っています。
 
 ---
 

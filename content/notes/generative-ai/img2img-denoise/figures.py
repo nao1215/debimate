@@ -156,7 +156,7 @@ def _t(x, y, s, size=24, anchor="start", cls=""):
 
 
 def keep_figure():
-    """denoise ごとに、開始の段で下絵の潜在に掛かる係数 1/sqrt(1+sigma^2)（lab/schedule.json）。"""
+    """denoise ごとに、開始の段で下絵の潜在表現に掛かる係数 1/sqrt(1+sigma^2)（lab/schedule.json）。"""
     rows = json.loads((LAB / "schedule.json").read_text())["rows"]
     x0, x1, y0, y1 = 150, 900, 450, 60  # denoise 0.25..1.0, keep 0..0.8
     X = lambda d: x0 + (x1 - x0) * (d - 0.25) / 0.75
@@ -181,7 +181,7 @@ def keep_figure():
             dx, dy = labels[r["denoise"]]
             b.append(_t(X(r["denoise"]) + dx, Y(r["keep"]) + dy, f"{r['keep']:.3f}", 26,
                         "start" if dx else "middle"))
-    _svg("denoise ごとの、開始の段で下絵の潜在に掛かる係数", b, "denoise_keep.svg")
+    _svg("denoise ごとの、開始の段で下絵の潜在表現に掛かる係数", b, "denoise_keep.svg")
 
 
 def coins_figure():

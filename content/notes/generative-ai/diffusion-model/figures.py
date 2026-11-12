@@ -71,9 +71,9 @@ def pipeline_figure():
     arrow(470, 132, 470, 218)
     p.append(f'<text x="484" y="182" font-size="21" class="sub">語ごとのベクトル</text>')
 
-    # 中段: 潜在の上での繰り返し（青）
+    # 中段: 潜在空間での繰り返し（青）
     p.append(f'<rect x="150" y="220" width="640" height="200" rx="14" fill="none" stroke="{BLUE}" stroke-width="2.5"/>')
-    p.append(f'<text x="170" y="252" font-size="22" class="sub">潜在 128 × 128 × 4 の上で 28 回</text>')
+    p.append(f'<text x="170" y="252" font-size="22" class="sub">潜在表現 128 × 128 × 4 の上で 28 回</text>')
     box(190, 275, 260, 110, BLUE_F, BLUE, [("UNet", ""), ("ノイズを予測", "sub")])
     box(500, 275, 260, 110, BLUE_F, BLUE, [("サンプラー", ""), ("次の σ まで引く", "sub")])
     arrow(452, 315, 498, 315)

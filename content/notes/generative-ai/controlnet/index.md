@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Image Generation"]
 ---
 
-ControlNet は、学習済みの画像生成モデルに、骨格・深度マップ・輪郭などの画像を形の条件として渡す仕組みです。深度マップ（depth map）は、カメラからの距離を明るさで表した白黒の画像で、手前ほど明るくなります。[ControlNet の論文](https://arxiv.org/abs/2302.05543)（2023 年）で提案され、論文の著者による実装は [lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) で公開されています。プロンプトだけでは決まらない人物の姿勢や構図も、画像で指定できます。
+ControlNet は、学習済みの画像生成モデルに、骨格・深度マップ・エッジなどの画像を形の条件として渡す仕組みです。深度マップ（depth map）は、カメラからの距離を明るさで表した白黒の画像で、手前ほど明るくなります。[ControlNet の論文](https://arxiv.org/abs/2302.05543)（2023 年）で提案され、論文の著者による実装は [lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) で公開されています。プロンプトだけでは決まらない人物の姿勢や構図も、画像で指定できます。
 
 人物の姿勢を指定する時は、関節を点と棒で描いた [OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の骨格を渡す使い方がよく知られています。骨格を渡せば、手足も手に持つものも骨格の通りに描かれると思うかもしれません。しかし、本記事の実験では、骨格を渡すと脚の開きと腕の向きは揃いましたが、両手で前に突き出したはずの棒は縦に立ちました。同じ姿勢を付けた 3D モデルから深度マップを作って渡すと、棒も前を向きます。
 
@@ -46,7 +46,7 @@ ControlNet は、学習済みモデルの重みを書き換えずに、条件の
 
 {{< figure src="images/controlnet_concept.svg" alt="上段に灰色の SDXL の U-Net。左から縮める段 3 つ、中央、広げる段 3 つが並び、縮める段から対になる広げる段へ skip connection の線が伸びる。下段に黄土色の学習するコピーが、広げる段の真下に右から左へ並び、右端の青い条件の画像から入力を受ける。コピーの各段から、0 と書いた四角（ゼロ畳み込み）を通る線が、真上の広げる段と中央へ伸びる" caption="固定した U-Net と、学習するコピー・ゼロ畳み込み（段の数は省略）" align="center" >}}
 
-上記の図では、下段が学習するコピー（trainable copy）です。コピーには、ノイズを含む潜在と、条件の画像が入ります。論文では、条件の画像を 4 層の小さな畳み込みネットワークで潜在と同じ縦横の大きさに縮めてから足します。コピーが各段で出した値は、元の U-Net にある skip connection（縮める段から広げる段へ直接渡す線）と中央の段に足されます。
+上記の図では、下段が学習するコピー（trainable copy）です。コピーには、ノイズを含む潜在表現と、条件の画像が入ります。論文では、条件の画像を 4 層の小さな畳み込みネットワークで潜在表現と同じ縦横の大きさに縮めてから足します。コピーが各段で出した値は、元の U-Net にある skip connection（縮める段から広げる段へ直接渡す線）と中央の段に足されます。
 
 <br>
 
@@ -60,7 +60,7 @@ ControlNet は、学習済みモデルの重みを書き換えずに、条件の
 
 #### 条件に渡す画像の種類
 
-論文は [Canny エッジ](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)（明るさの勾配から取り出した輪郭）、深度マップ（depth map）、[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の骨格など、条件ごとに別の ControlNet を学習しています。
+論文は [Canny エッジ](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html)（明るさの勾配から取り出したエッジ）、深度マップ（depth map）、[OpenPose](https://github.com/CMU-Perceptual-Computing-Lab/openpose) の骨格など、条件ごとに別の ControlNet を学習しています。
 
 本記事で使う [xinsir/controlnet-union-sdxl-1.0](https://huggingface.co/xinsir/controlnet-union-sdxl-1.0)（ControlNet++）は、1 つのモデルで 10 種類以上の条件を扱う SDXL 向けのモデルです（2024 年 7 月更新の model card の記述）。ComfyUI では [`SetUnionControlNetType`](https://github.com/Comfy-Org/ComfyUI/blob/v0.35.0/comfy_extras/nodes_controlnet.py#L7-L33) ノードで、どの種類の画像を渡すかを指定します。
 
@@ -70,7 +70,7 @@ ControlNet は、学習済みモデルの重みを書き換えずに、条件の
 |---|---|---|
 | OpenPose（骨格） | 黒地に、関節の 18 点と、それを結ぶ色付きの棒 | 関節の位置。体の太さ、前後の重なり、手に持つものは無い |
 | depth（深度マップ） | 手前ほど明るい白黒の画像 | 体と物の外形、前後の重なり |
-| canny / lineart（輪郭） | 黒地に白い線 | 線の位置。線で囲んだ内側には手前と奥が無い |
+| canny（エッジ）/ lineart（線画） | 黒地に白い線 | 線の位置。線で囲んだ内側には手前と奥が無い |
 
 骨格は、手に持つ棒を表せません。OpenPose の 18 点は鼻・首・肩・肘・手首・腰・膝・足首・目・耳だけで（[OpenPose の出力形式](https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/doc/02_output.md#pose-output-format-coco)）、物の点はありません。
 
@@ -339,7 +339,7 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 
 ---
 
-### 実験 3: 骨格の太さ・専用モデル・輪郭
+### 実験 3: 骨格の太さ・専用モデル・エッジ
 
 実験 1 の骨格で棒が縦に立ったのは、骨格の描き方や union のモデルのせいかもしれません。そこで、突きの骨格を [comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux) が既定とする細さで描き直したもの、太い骨格を骨格の専用モデル xinsir/controlnet-openpose-sdxl-1.0（Apache License 2.0）に渡したものも描きました。既定の細さは、棒の太さが約 8 px、点の半径が 4 px です。どれも seed 20261111、強さ 1.0、`end_percent` 1.0 です。
 
@@ -354,16 +354,16 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 
 <br>
 
-輪郭は、3D モデルの深度マップから [OpenCV](https://github.com/opencv/opencv) の Canny で取り出しました（[lab/make_canny.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/make_canny.py)）。union の canny で、強さと `end_percent` は深度マップと同じ 0.7 と 0.6 です。
+エッジは、3D モデルの深度マップから [OpenCV](https://github.com/opencv/opencv) の Canny で取り出しました（[lab/make_canny.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/make_canny.py)）。union の canny で、強さと `end_percent` は深度マップと同じ 0.7 と 0.6 です。
 
 <div style="display:flex;justify-content:center;gap:6px;margin:1rem 0">
-<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/canny_raise.webp" alt="黒地に白い線で描いた、腕を上げる 3D モデルの輪郭" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">輪郭</figcaption></figure>
-<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/raise_canny_20261111.webp" alt="輪郭から描いた絵。外形は 3D モデルと同じだが、背中を向けた後ろ姿になる" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">腕を上げる</figcaption></figure>
-<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/canny_lunge.webp" alt="黒地に白い線で描いた、突きの姿勢を付けた 3D モデルの輪郭" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">輪郭</figcaption></figure>
-<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/lunge_canny_20261111.webp" alt="輪郭から描いた絵。3D モデルと同じ姿勢で、棒を前へ水平に突き出す" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">突き</figcaption></figure>
+<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/canny_raise.webp" alt="黒地に白い線で描いた、腕を上げる 3D モデルのエッジ" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">エッジ</figcaption></figure>
+<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/raise_canny_20261111.webp" alt="エッジから描いた絵。外形は 3D モデルと同じだが、背中を向けた後ろ姿になる" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">腕を上げる</figcaption></figure>
+<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/canny_lunge.webp" alt="黒地に白い線で描いた、突きの姿勢を付けた 3D モデルのエッジ" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">エッジ</figcaption></figure>
+<figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/lunge_canny_20261111.webp" alt="エッジから描いた絵。3D モデルと同じ姿勢で、棒を前へ水平に突き出す" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">突き</figcaption></figure>
 </div>
 
-輪郭でも、突きの棒は前へ水平に描かれました。外形の線に棒が含まれているからです。一方で、腕を上げる姿勢は、外形は 3D モデルの通りなのに後ろ姿になりました。プロンプトに後ろ向きの語は無く、深度マップと骨格では 4 枚とも正面を向いています。輪郭の線は外形だけで、線の内側が手前に膨らんでいるのか奥へへこんでいるのかを伝えないので、正面と後ろ姿を区別できなかったと考えられます。
+エッジでも、突きの棒は前へ水平に描かれました。外形の線に棒が含まれているからです。一方で、腕を上げる姿勢は、外形は 3D モデルの通りなのに後ろ姿になりました。プロンプトに後ろ向きの語は無く、深度マップと骨格では 4 枚とも正面を向いています。エッジの線は外形だけで、線の内側が手前に膨らんでいるのか奥へへこんでいるのかを伝えないので、正面と後ろ姿を区別できなかったと考えられます。
 
 ---
 
@@ -381,8 +381,8 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 条件の画像は、学習した種類ごとの決まりに従って描く必要があります。骨格なら色と棒の組、深度マップなら手前ほど明るいことなどです。手で描いた画像や、検出器が間違えた骨格を渡すと、その誤りも形として縛られると考えられます。
 
 - 骨格は、関節の点しか伝えない。手に持つものの向き、体の厚み、腕が体の手前か奥かはモデルが決める
-- 深度マップと輪郭は、外形まで縛る。絵の体型は、条件の画像に写った体型に寄る
-- 輪郭は、線で囲んだ内側の凹凸を伝えない。実験 3 では、正面を向いた 3D モデルの輪郭から後ろ姿が描かれた
+- 深度マップとエッジは、外形まで縛る。絵の体型は、条件の画像に写った体型に寄る
+- エッジは、線で囲んだ内側の凹凸を伝えない。実験 3 では、正面を向いた 3D モデルのエッジから後ろ姿が描かれた
 - 生成が遅くなる。ControlNet を呼ぶステップでは、元の U-Net に加えてコピーの段も計算する
 
 実験 1 では、1 枚あたりプロンプトだけで 25.56〜27.48 秒だったのに対して、骨格（全 28 ステップ）は 39.45〜41.52 秒、深度マップ（前の 17 ステップ）は 32.54〜35.94 秒でした。他の作業と共有した ComfyUI での目安です。
@@ -392,5 +392,5 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 ### 適さないケース
 
 - 条件の画像を用意できない場合。狙った姿勢の写真や 3D モデルが無ければ、手で描くことになり、骨格の決まりや深度マップの明暗を外しやすい
-- 体型や服の形をモデルに自由に決めさせたい場合。深度マップや輪郭は外形まで縛るので、条件の画像に写った体型が絵に残る
+- 体型や服の形をモデルに自由に決めさせたい場合。深度マップやエッジは外形まで縛るので、条件の画像に写った体型が絵に残る
 - 絵の見た目（顔・服の色）を[別の絵と揃えたい](../character-consistency/)場合。ControlNet が渡すのは形で、見た目は渡さない

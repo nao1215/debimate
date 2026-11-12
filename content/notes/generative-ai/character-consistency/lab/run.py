@@ -121,7 +121,7 @@ OUT = "."
 S = BASE_SEED
 # 依頼の名前 -> (場面, seed, 付け足す手段)
 JOBS = {}
-for i in range(4):                                   # (a) 同じ文面・seed だけ変える（候補を兼ねる）
+for i in range(4):                                   # (a) 同じプロンプト・seed だけ変える（候補を兼ねる）
     JOBS[f"seed_{i}"] = ("base", S + i, None)
 for i in range(4):                                   # (c) 画風 LoRA を外す
     JOBS[f"nolora_{i}"] = ("base", S + i, "nolora")

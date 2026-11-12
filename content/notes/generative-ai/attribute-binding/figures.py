@@ -92,7 +92,7 @@ def concept_figure():
     bx = 330
     p.append(f'<rect x="{bx - 30}" y="80" width="260" height="{ys[-1] + bh + 30 - 80}" rx="12" '
              f'fill="none" stroke="{SUB}" stroke-width="1.5" stroke-dasharray="6 5"/>')
-    text(bx + 100, 40, "① 文面を読む", 20)
+    text(bx + 100, 40, "① プロンプトを読む", 20)
     text(bx + 100, 66, "（text encoder）", 18, cls="sub")
     for i, yi in enumerate(ys):
         for j, yj in enumerate(ys):
@@ -168,8 +168,8 @@ def people_chart(plt):
     x = list(range(len(sets)))
     a = [count(c1) for _, c1, _ in sets]
     b = [count(c2) for _, _, c2 in sets]
-    ax.bar([i - 0.18 for i in x], a, 0.36, color=BLUE, label="立ち絵の文面")
-    ax.bar([i + 0.18 for i in x], b, 0.36, color=OCHRE, label="髪の打ち消しを足した文面")
+    ax.bar([i - 0.18 for i in x], a, 0.36, color=BLUE, label="立ち絵のプロンプト")
+    ax.bar([i + 0.18 for i in x], b, 0.36, color=OCHRE, label="髪を抑えたプロンプト")
     for i in x:
         ax.text(i - 0.18, a[i] + 0.08, str(a[i]), ha="center", fontsize=10)
         ax.text(i + 0.18, b[i] + 0.08, str(b[i]), ha="center", fontsize=10)

@@ -10,7 +10,7 @@ topics: ["Image Generation"]
 cardImage: "images/clip-token-limit_position.webp"
 ---
 
-Stable Diffusion 系の画像生成では、text encoder と呼ぶ部品がプロンプト（描きたい絵の内容を語で並べた文面）を数値に変え、その数値を手がかりに絵を作ります。
+Stable Diffusion 系の画像生成では、text encoder と呼ぶ部品がプロンプト（描きたい絵の内容を語で並べた文）を数値に変え、その数値を手がかりに絵を作ります。
 
 text encoder には [CLIP](https://arxiv.org/abs/2103.00020)（画像と文章を同じベクトルの空間に対応付けるよう学習したモデル）の文章側が使われていて、一度に 77 トークン（語や語の断片。分け方は [Tokenizer のノート](/notes/generative-ai/tokenizer/)を参照）までしか読めません。
 
@@ -18,7 +18,7 @@ text encoder には [CLIP](https://arxiv.org/abs/2103.00020)（画像と文章�
 
 しかし、手元の [ComfyUI](https://github.com/Comfy-Org/ComfyUI)（ノードをつないで画像生成の処理を組む OSS）で同じ語を前と後ろに置いて比べると、後ろに置いた語も前に置いた時と同じくらい効きました。
 
-以下は、`red background`（赤い背景）を置く場所だけを変えて生成した絵の、画面の赤い画素（色相が赤の範囲に入る画素）の割合です。seed（初期のノイズを決める乱数の種）を 4 通り変えて生成しています。図の none は `red background` を入れていない基準です。front は 1 つ目の枠（chunk 1）の先頭近く（先頭の 4 語の後）、chunk1_end はその末尾、chunk2_start と chunk2_end は 2 つ目の枠（chunk 2）の先頭と末尾に置いた絵です。
+以下は、`red background`（赤い背景）を置く場所だけを変えて生成した絵の、画面の赤い画素（色相が赤の範囲に入る画素）の割合です。seed（初期のノイズを決めるシード値）を 4 通り変えて生成しています。図の none は `red background` を入れていない基準です。front は 1 つ目の枠（chunk 1）の先頭近く（先頭の 4 語の後）、chunk1_end はその末尾、chunk2_start と chunk2_end は 2 つ目の枠（chunk 2）の先頭と末尾に置いた絵です。
 
 {{< figure src="images/clip-token-limit_position.webp" alt="red background を置いた場所ごとの赤い画素の割合。点は seed ごとの値、横線は 4 seed の平均。入れない基準（none）は約 5%。1 つ目の枠の先頭近く（front）36%、末尾（chunk1_end）30%、2 つ目の枠の先頭（chunk2_start）26%、末尾（chunk2_end）36%" caption="red background を置いた場所と、赤い画素の割合（点は seed ごと、横線は 4 seed の平均。枠 1・枠 2 は chunk 1・chunk 2）" align="center" >}}
 
@@ -32,7 +32,7 @@ text encoder には [CLIP](https://arxiv.org/abs/2103.00020)（画像と文章�
 - 区切りの後ろの語は、どれだけ効くのか。
 - 長いプロンプトのどの語が絵を変えたのか、どう探すのか。
 
-語に重みを付ける `(word:1.3)` の書式と、打ち消し（ネガティブプロンプト）の重みは [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/)で扱います。実験はすべて 2026 年 11 月 10 日に、ComfyUI v0.35.0 と、SDXL（後述する画像生成モデル）系のモデル 1 つで行いました。数値はこの条件での結果です。
+語に重みを付ける `(word:1.3)` の書式と、ネガティブプロンプト（negative prompt）の重みは [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/)で扱います。実験はすべて 2026 年 11 月 10 日に、ComfyUI v0.35.0 と、SDXL（後述する画像生成モデル）系のモデル 1 つで行いました。数値はこの条件での結果です。
 
 ---
 
@@ -92,7 +92,7 @@ ComfyUI v0.35.0 の区切り方は、[tokenize_with_weights()](https://github.co
 | seed | 実験 1 は 201〜204 の 4 個、実験 2 は 301・302 の 2 個 |
 | ステップ数・CFG・サンプラー | 24・5.5（CFG はプロンプトに従う強さ）・euler（ノイズを取り除く計算の手順。scheduler は normal） |
 | 解像度・CLIP | 1024 × 1024・最後から 2 番目の層の出力（clip skip 2） |
-| 題材 | 机の上のティーポット・レモンなどの静物（イラスト向けのモデルは人物を描きやすいので、`no humans` を入れ、打ち消しに人物の語を入れる） |
+| 題材 | 机の上のティーポット・レモンなどの静物（イラスト向けのモデルは人物を描きやすいので、`no humans` を入れ、ネガティブプロンプトに人物の語を入れる） |
 
 同じ seed と同じ設定なら、同じ絵が出ます。全ての生成を終えた後に、実験 2 の 1 条件を同じ設定でもう一度生成すると、画素が完全に一致しました。以下の差は、生成のたびに出るぶれではなく、文字列を変えた結果です。
 

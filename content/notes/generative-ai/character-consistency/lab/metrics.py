@@ -16,7 +16,7 @@
 数えるもの
   face_clip  顔の切り抜きどうしの CLIP の画像埋め込みの cos 類似度（基準の顔と比べる）
   face_tags  顔の切り抜きのタグ（確率 0.35 以上、表情・視線・構図の語を除く）の Jaccard 係数（基準と比べる）
-  attrs      全体の画像で、文面に書いた属性のタグ（髪・目・服）が確率 0.35 以上で出たか
+  attrs      全体の画像で、プロンプトに書いた属性のタグ（髪・目・服）が確率 0.35 以上で出たか
   saturation 全体の画像の HSV の彩度の平均（色の転びの目安）
 faces.json には顔の埋め込み（emb）も残す。figures.py が、組の中の総当たりの近さをここから数える。
 """
@@ -32,7 +32,7 @@ CLIPSEG = os.environ.get("CLIPSEG_MODEL", "CIDAS/clipseg-rd64-refined")
 CLIP = os.environ.get("CLIP_MODEL", "openai/clip-vit-large-patch14")
 TAGGER = os.environ.get("WD_TAGGER", "wd-eva02-large-tagger-v3")
 THRESH = 0.35
-# 文面に書いた属性（run.py の CHARACTER の語）に対応するタグ
+# プロンプトに書いた属性（run.py の CHARACTER の語）に対応するタグ
 ATTRS = ["brown hair", "medium hair", "low ponytail", "parted bangs", "green eyes", "earrings",
          "collared shirt", "white shirt", "cardigan", "long sleeves"]
 # 顔のタグから除く、表情・視線・構図・背景の語

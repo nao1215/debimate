@@ -12,7 +12,7 @@ NEGATIVE = ("lowres, worst quality, bad quality, low quality, jpeg artifacts, bl
 
 
 def base():
-    """1: モデル、2: clip skip 2、3/4: プロンプトと打ち消し、5: 空の潜在（1024 x 1024）。"""
+    """1: モデル、2: clip skip 2、3/4: プロンプトとネガティブプロンプト、5: 空の潜在表現（1024 x 1024）。"""
     return {
         "1": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": CKPT}},
         "2": {"class_type": "CLIPSetLastLayer", "inputs": {"clip": ["1", 1], "stop_at_clip_layer": -2}},

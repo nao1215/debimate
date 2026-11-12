@@ -58,7 +58,7 @@ def concept_figure():
     o.append(line(dec_x[0] + bw, top_c, 875, top_c, arrow=True))
     o.append(text(910, top_c, "出力", 22, SUB))
     o.append(text(60, top_c - 18, "ノイズを", 22, SUB))
-    o.append(text(60, top_c + 14, "含む潜在", 22, SUB))
+    o.append(text(60, top_c + 14, "含む潜在表現", 22, SUB))
     o.append(line(105, top_c, enc_x[0], top_c, arrow=True))
     for i, h in enumerate(heights):  # skip connection
         x1, x2, y = enc_x[i] + bw / 2, dec_x[i] + bw / 2, top_c - h / 2

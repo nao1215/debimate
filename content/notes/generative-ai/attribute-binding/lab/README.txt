@@ -47,10 +47,10 @@ Attribute Binding ノートの実験ファイル
       ベースモデルだけ（1024 x 1024）
         eye_none / eye_aqua / eye_aqua_rev / eye_aqua_concat : 各 12 枚（seed 1000〜1011）
         tone_two / tone_parts                               : 各 6 枚（本文には載せていない）
-      画風 LoRA あり（立ち絵の文面、既定は 768 x 1344）
+      画風 LoRA あり（立ち絵のプロンプト、既定は 768 x 1344）
         s_eye_none / s_eye_aqua                             : 各 12 枚
-        s_rep_none / s_rep_aqua                             : 各 12 枚（髪を単色にする打ち消しと、
-                                                              目をはっきり描く語を足した文面）
+        s_rep_none / s_rep_aqua                             : 各 12 枚（髪を単色にするネガティブプロンプトと、
+                                                              目をはっきり描く語を足したプロンプト）
         s_rep_ar_832x1216 / s_rep_ar_1024x1024              : 各 6 枚（768 x 1344 は s_rep_none の
                                                               seed 1000〜1005 を使う）
         s_rep_light_sunset / s_rep_light_night              : 各 4 枚
@@ -114,7 +114,7 @@ Attribute Binding ノートの実験ファイル
   服の領域を左右に割って黒の割合を比べる機械の判定は、目視と 12 枚中 9 枚しか一致しなかった。
   この結果は output_summary_v1.txt と measure_v1.json にある。
 
-  画風 LoRA の条件は、前髪で目が隠れる絵や、顔の大写しばかりになる文面を避けるため、文面を
+  画風 LoRA の条件は、前髪で目が隠れる絵や、顔の大写しばかりになるプロンプトを避けるため、プロンプトを
   作り直している。作り直す前の画像は集計に入れていない。
 
 図の再生成

@@ -31,7 +31,7 @@ BODY = "full body, standing, long sleeves, "
 STYLE_LORA = os.environ.get("STYLE_LORA", "example_style_lora.safetensors")
 STYLE_TRIGGER = os.environ.get("STYLE_TRIGGER", "<trigger>")
 STYLE_STRENGTH = 0.75
-# 立ち絵の文面（目を見せた立ち絵で実績のある語順と打ち消し）。起動語は先頭に足す
+# 立ち絵のプロンプト（目を見せた立ち絵で実績のある語順とネガティブプロンプト）。起動語は先頭に足す
 S_HEAD = ("adult, mature adult, 1woman, mature female, 20s, black hair, long hair, parted bangs, "
           "open eyes, visible eyes")
 S_TAIL = ("white collared shirt, long sleeves, long navy skirt, fully clothed, white background, "
@@ -57,7 +57,7 @@ def c(positive, w=1024, h=1024, neg=NEG_PERSON, lora=False):
 
 
 def s_(extra="", w=768, h=1344, clothes=None):
-    """立ち絵の文面に語を足した条件。extra は髪の色・目の色の後ろに入る。
+    """立ち絵のプロンプトに語を足した条件。extra は髪の色・目の色の後ろに入る。
     clothes を渡すと、服の語（white collared shirt, long sleeves, long navy skirt）を置き換える。"""
     head = S_HEAD + (", " + extra if extra else "")
     tail = S_TAIL if clothes is None else S_TAIL.replace(S_CLOTHES, clothes)
@@ -65,7 +65,7 @@ def s_(extra="", w=768, h=1344, clothes=None):
 
 
 def r_(extra="", w=768, h=1344, clothes=None):
-    """s_ の文面に、目をはっきり描く語と、髪を単色にする打ち消しを足した条件（本文に絵を載せる組）。"""
+    """s_ のプロンプトに、目をはっきり描く語と、髪を単色にするネガティブプロンプトを足した条件（本文に絵を載せる組）。"""
     head = S_HEAD + ", " + S_EYES + (", " + extra if extra else "")
     tail = S_TAIL if clothes is None else S_TAIL.replace(S_CLOTHES, clothes)
     return c(", ".join([head, tail, S_QUALITY]), w, h, neg=NEG_STYLE + NEG_REP, lora=True)
@@ -80,7 +80,7 @@ CONDITIONS = {
     "s_ar_1024x1024": s_("", 1024, 1024),
     "s_light_sunset": s_("sunset"),
     "s_light_night":  s_("night"),
-    # 目をはっきり描く語と、髪を単色にする打ち消しを足した組（s_rep_ で始まる）
+    # 目をはっきり描く語と、髪を単色にするネガティブプロンプトを足した組（s_rep_ で始まる）
     "s_rep_none":  r_(),
     "s_rep_aqua":  r_("aqua eyes"),
     # 縦横比・照明・two-tone の、本文に絵を載せる組（768 x 1344 は s_rep_none を使う）

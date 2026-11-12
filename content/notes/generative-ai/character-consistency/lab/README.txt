@@ -26,7 +26,7 @@ Character Consistency ノートの実験ファイル
   - 依頼は全部で 36 件（python3 run.py --list）。送ったワークフローは workflows/<名前>.json、
     prompt_id・実行秒数・送る直前の負荷は gen_log.json（他の作業の依頼と交互に流れたので、秒数は 27〜162 秒とばらつく）
   - 共通の設定: 832x1216、28 ステップ、CFG 5.5、euler_ancestral、scheduler normal、clip skip 2、画風 LoRA の強さ 0.75
-  - 文面（{scene} に場面の語が入る。<trigger> は LoRA の起動語）
+  - プロンプト（{scene} に場面の語が入る。<trigger> は LoRA の起動語）
       <trigger>, 1girl, solo, adult woman, mature female, 20s, brown hair, medium hair, low ponytail,
       parted bangs, forehead, open eyes, visible eyes, green eyes, eye highlights, long eyelashes, lips, earrings,
       jewelry, nail polish, medium breasts, white collared shirt, navy cardigan, long sleeves, {scene},
@@ -44,7 +44,7 @@ Character Consistency ノートの実験ファイル
       oversaturated, neon colors, nsfw, nude, nipples, cleavage, underwear, child, loli, aged down, 2girls,
       multiple girls, large breasts, huge breasts, sleepy eyes, sultry
   - 依頼の種類（名前の頭）
-      seed_     同じ文面（base）で seed だけ 20261111〜20261114。4 枚目 seed_3 を基準の絵 base.png にした
+      seed_     同じプロンプト（base）で seed だけ 20261111〜20261114。4 枚目 seed_3 を基準の絵 base.png にした
       nolora_   seed_ と同じで、画風 LoRA と起動語を外す
       fixed_    seed を基準と同じ 20261114 にして、場面の語だけ smile / wave / cafe に変える
       newseed_  場面の語を変え、seed も 20261211 に変える（参照画像の対照）
@@ -59,8 +59,8 @@ Character Consistency ノートの実験ファイル
 人物の絵の確かめ
 ----------------
   全ての絵を目で確かめた。載せる条件は、成人、服を着ている、露出や性的な姿勢が無い、1 人、両目が開いて前髪で隠れていない。
-  外した絵: 最初の文面（medium breasts・large breasts の打ち消し・目の語が無い版）で描いた候補 3 枚。胸が強調された構図で、
-  目が半眼に寄ったため、文面を上の形に直して seed_0〜seed_3 を描き直した（3 枚目は受け取る前に打ち切ったので画像は無い）。
+  外した絵: 最初のプロンプト（medium breasts・large breasts のネガティブプロンプト・目の語が無い版）で描いた候補 3 枚。胸が強調された構図で、
+  目が半眼に寄ったため、プロンプトを上の形に直して seed_0〜seed_3 を描き直した（3 枚目は受け取る前に打ち切ったので画像は無い）。
   別人の 2 枚は体の線の出るセーターになったので、本文には載せず、数値の物差しにだけ使った。
 
 計測

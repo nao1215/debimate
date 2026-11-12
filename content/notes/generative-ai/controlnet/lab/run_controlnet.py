@@ -2,7 +2,7 @@
 
 使い方: python3 run_controlnet.py <条件の画像のディレクトリ> <PNG の保存先> <計画の名前>
   計画: compare（プロンプトだけ・骨格・深度マップ × 3 ポーズ × 2 seed）、dedicated（骨格の専用モデル）、
-        sweep（深度マップの強さと end の振り）、thin（細い骨格）、canny（3D モデルの輪郭）
+        sweep（深度マップの強さと end の振り）、thin（細い骨格）、canny（3D モデルのエッジ）
 ログは <PNG の保存先>/log_<計画>.json に足していく（prompt_id・実行秒数・送る直前の負荷）。
 """
 import json

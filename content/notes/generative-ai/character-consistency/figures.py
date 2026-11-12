@@ -29,10 +29,10 @@ plt.rcParams.update({"font.family": "Noto Sans CJK JP", "svg.fonttype": "path", 
 
 M = json.load(open(HERE / "lab" / "metrics.json"))
 
-# 上から下へ: 物差しの目盛り → 文面だけ → 手段
+# 上から下へ: 物差しの目盛り → プロンプトだけ → 手段
 GROUPS = [
     ("別人（金髪・青い目）", ["other_0", "other_1"], "#bdbdbd"),
-    ("同じ文面・seed だけ変える", ["seed_0", "seed_1", "seed_2"], OCHRE),
+    ("同じプロンプト・seed だけ変える", ["seed_0", "seed_1", "seed_2"], OCHRE),
     ("seed 固定・場面の語だけ変える", ["fixed_smile", "fixed_wave", "fixed_cafe"], OCHRE),
     ("場面の語と seed を変える", ["newseed_smile", "newseed_wave", "newseed_cafe"], OCHRE),
     ("基準の骨格で縛る（ControlNet）", ["pose_1", "pose_2"], GREEN),
@@ -83,7 +83,7 @@ def routes_figure():
     edge = {"ochre": OCHRE, "blue": BLUE, "green": GREEN, "gray": "#999999"}
     fnt = "'Noto Sans CJK JP','Hiragino Sans',sans-serif"
     p = [f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" viewBox="0 0 {w} {h}" role="img">'
-         '<title>最初のノイズからステップを繰り返して絵を描く流れに、seed・img2img・文面・IP-Adapter・'
+         '<title>最初のノイズからステップを繰り返して絵を描く流れに、seed・img2img・プロンプト・IP-Adapter・'
          'ControlNet・LoRA がどこから入るか</title>',
          f'<style>text{{font-family:{fnt};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
          f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
@@ -116,10 +116,10 @@ def routes_figure():
     # 上から入るもの
     box(40, 30, 190, 80, "ochre")
     text(135, 64, "seed", 19)
-    text(135, 92, "ノイズの乱数の種", 15, cls="sub")
+    text(135, 92, "ノイズのシード値", 15, cls="sub")
     arrow(135, 112, 135, 186)
     box(300, 30, 200, 80, "ochre")
-    text(400, 64, "文面", 19)
+    text(400, 64, "プロンプト", 19)
     text(400, 92, "各ステップの条件", 15, cls="sub")
     arrow(400, 112, 430, 171)
     box(540, 30, 200, 80, "blue")
