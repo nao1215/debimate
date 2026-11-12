@@ -323,7 +323,7 @@ def main(argv):
         rows = [r for r in opening_hist() if r[0] != key] + [[key, opening_type(key) or '', title_shape(title_of(text)), title_of(text)]]
         with open(os.path.join(HERE, 'opening_log.tsv'), 'w', encoding='utf-8', newline='') as f:
             f.write('# key\t冒頭の型\t題の形\t題\n')
-            csv.writer(f, delimiter='\t').writerows(rows)
+            csv.writer(f, delimiter='\t', lineterminator='\n').writerows(rows)
         return 0
     sys.exit(__doc__)
 

@@ -14,4 +14,4 @@ math__gradient-descent-sgd	結果	なぜ	最急降下法・SGD - 標準化して
 math__quantile	結果	なぜ	Quantile - 同じ 10 個の応答時間の 90 パーセンタイルが、関数ごとに 40〜814 ms の 4 通りに分かれる理由
 math__log-exp-logodds	結果	なぜ	対数・指数と log-odds - 確率を掛けただけの Naive Bayes が、digits で正解率 10% に落ちる理由
 math__mean	結果	なぜ	平均 - float32 で画像 1000 枚の画素の平均を取ると、R・G・B が全て 0.334 になる理由
-math__eigen-decomposition	結果	なぜ	固有値分解 - wine の行を選び直すと、PC1 は 7 度、PC4 は 43 度向きが変わる理由
+math__eigen-decomposition	問い	その他	固有値分解 - wine の PC4 を「malic_acid の軸」と呼んでよいか
