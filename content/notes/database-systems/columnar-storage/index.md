@@ -87,6 +87,7 @@ FROM range(4000000) t(i);
 
 COPY sales TO 'sales.csv' (HEADER);
 COPY sales TO 'sales.parquet' (FORMAT parquet, PARQUET_VERSION v2);
+COPY sales TO 'sales_v1.parquet' (FORMAT parquet);  -- 既定の設定（V1）との比較用
 COPY (FROM sales ORDER BY hash(id)) TO 'sales_shuffled.parquet' (FORMAT parquet, PARQUET_VERSION v2);
 
 -- 列ごとのエンコードと大きさ
@@ -138,7 +139,7 @@ CSV と比べて、`sales.parquet` は 15.6 分の 1 です。同じ Parquet で
 
 既定の設定（V1）では、この 2 列が `PLAIN`（値をそのまま並べる）になり、ファイルは 53 MB でした。行の順序を崩したファイルでは、差が大きくばらつくので、`ts` は 23,031,839 バイト、`id` は 11,525,343 バイトに膨らみました。
 
-`region` は 8 種類の都市名で、1 値あたり約 4 ビットでした。理論上の 3 ビットより大きいのは、書き手の都合です。値がランダムな `amount` は、他の列ほどは縮まず（そのまま並べた 16 MB の約半分）、ファイルの 7 割を占めています。
+`region` は 8 種類の都市名で、1 値あたり約 4 ビットでした。理論上の 3 ビットより大きいのは、DuckDB の書き手が番号の幅を最大の番号 7 ではなく辞書の大きさ 8 から決め、4 ビットにするからです。v1.5.5 の[書き手の実装](https://github.com/duckdb/duckdb/blob/v1.5.5/extension/parquet/include/writer/templated_column_writer.hpp#L97)が、[幅を求める関数](https://github.com/duckdb/duckdb/blob/v1.5.5/extension/parquet/include/parquet_rle_bp_decoder.hpp#L87-L96)に辞書の大きさを渡しています。値がランダムな `amount` は、他の列ほどは縮まず（そのまま並べた 16 MB の約半分）、ファイルの 7 割を占めています。
 
 ちなみに、`region` の順に並べ替えて書くと、`region` は同じ値の連続になり 2,049 バイトまで縮みます。しかし、その代わりに `ts` が 7,252,651 バイトに膨らみました。どの列の順に並べるかは、どの列を縮めるかの選択でもあります。
 
