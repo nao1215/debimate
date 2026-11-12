@@ -128,7 +128,7 @@ def race_figure(speed=0.5, step=0.1, hold=3.0):
         c.text(bx0 + (bx1 - bx0) * blocks[0] / t_end - 50, by - 32, "ブロックを作った時刻", size=12, color=SUB)
         xx = bx0 + (bx1 - bx0) * min(t, t_end) / t_end
         c.d.ellipse([(xx - 7) * S, (by - 7) * S, (xx + 7) * S, (by + 7) * S], fill=rgb(INK))
-        c.text(x_pool, top - 26, "待っているトランザクション（mempool）", size=14, color=SUB)
+        c.text(x_pool, top - 26, "mempool で待つ", size=14, color=SUB)
         c.text(x_blk, top - 26, "ブロックに入った順", size=14, color=SUB)
         c.text(x_res, top - 26, "spender の受け取り", size=14, color=SUB)
         for i, (name, txs) in enumerate(lanes):

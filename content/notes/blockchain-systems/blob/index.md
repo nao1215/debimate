@@ -152,7 +152,7 @@ GET https://ethereum-beacon-api.publicnode.com/eth/v1/beacon/blobs/15315356
 
 <br>
 
-optimistic rollup で不正を指摘できる challenge 期間は、OP Mainnet で 7 日、Arbitrum One で約 6.4 日です。どちらも 18 日の内側に収まり、その関係は [rollup のノート](../rollup/#取引データの置き場所と保持期間)に図があります。一方で、L2 のノードを最初から同期し直す時や、エクスプローラーやインデクサーのように過去の blob を読み直す時は、18 日に縛られない保存先が必要です。
+optimistic rollup で不正を指摘できる challenge 期間は、OP Mainnet で 7 日、Arbitrum One で約 6.4 日です。どちらも 18 日の内側に収まり、その関係は [rollup のノート](../rollup/#トランザクションデータの置き場所と保持期間)に図があります。一方で、L2 のノードを最初から同期し直す時や、エクスプローラーやインデクサーのように過去の blob を読み直す時は、18 日に縛られない保存先が必要です。
 
 ---
 
