@@ -225,7 +225,7 @@ class LSM:
             self.levels[level] = []
 ```
 
-`none` は compaction を一切行わない設定で、併合が追い付かない状態の極端な例です。負荷は 3 つとも同じで、2 万種類のキーにランダムに 10 万回 `put` した後、半分の 1 万キーを `delete` します。最後に、ランダムなキーを 2 万回 `get` します。
+`none` はコンパクションを一切行わない設定で、コンパクションが追い付かない状態の極端な例です。負荷は 3 つとも同じで、2 万種類のキーにランダムに 10 万回 `put` した後、半分の 1 万キーを `delete` します。最後に、ランダムなキーを 2 万回 `get` します。
 
 このコードでは、量をバイトではなく件数で数え、WAL への追記は含めません（含めると書き込みの増幅は 1 増えます）。また、レベルを丸ごと書き直しており、ファイルの一部だけを併合する LevelDB や RocksDB より単純です。
 
@@ -246,9 +246,9 @@ none     0.97   17.05 1.10        4.88      10.77  107 107000  9932  9932
 | space(load) / space(end) | 保存件数 ÷ 生きているキーの数（Space Amplification）。左は `put` の終わり、右は `delete` の終わり |
 | full | 全ての SSTable を 1 本に併合した後の件数 |
 
-以下は、3 つの増幅を compaction のやり方ごとに並べた図です。容量の増幅は `delete` の後の値です。
+以下は、3 つの増幅をコンパクションのやり方ごとに並べた図です。容量の増幅は `delete` の後の値です。
 
-{{< figure src="images/lsm-tree_amplification.svg" alt="3 つの横棒グラフ。書き込みの増幅は leveled 3.70、size-tiered 2.64、compaction なし 0.97。get 1 回で確認する SSTable は 4.05、4.96、17.05 本。削除後の容量の増幅は 3.05、5.27、10.77" caption="compaction のやり方ごとの 3 つの増幅" align="center" >}}
+{{< figure src="images/lsm-tree_amplification.svg" alt="3 つの横棒グラフ。書き込みの増幅は leveled 3.70、size-tiered 2.64、コンパクションなし 0.97。get 1 回で確認する SSTable は 4.05、4.96、17.05 本。削除後の容量の増幅は 3.05、5.27、10.77" caption="コンパクションのやり方ごとの 3 つの増幅" align="center" >}}
 
 書き込みの増幅は leveled が最も大きく、容量の増幅は size-tiered が leveled の約 2 倍です。[Compaction の wiki](https://github.com/facebook/rocksdb/wiki/Compaction) にも、書き込みの増幅は通常 leveled の方が tiered より悪いとあります。
 
@@ -262,15 +262,15 @@ Bloom filter を通すと、中まで読む SSTable は 3 つとも 1 本前後�
 
 上記の図の右端では、生きているキーが 1 万件に減ったのに、leveled の保存件数は約 3 万件まで増えています。最下段に削除前の約 2 万件（うち約 1 万件は削除済みキーの古い値）が残り、その上に約 1 万件の tombstone が積まれたからです。
 
-全てを 1 本に併合すると、`full` の列の通り 9,932 件まで減ります。削除した容量は、compaction が最下段まで届いた時に初めて戻ります。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/lsm-tree/figures.py) です。
+全てを 1 本に併合すると、`full` の列の通り 9,932 件まで減ります。削除した容量は、コンパクションが最下段まで届いた時に初めて戻ります。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/lsm-tree/figures.py) です。
 
 ---
 
-### compaction が遅れた時
+### コンパクションが遅れた時
 
-compaction は flush と同じく裏のスレッドで動きます。書き込みの量が compaction の処理能力を上回ると、併合されない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確認するしかありません。下記の図は、compaction を止めた `none`（図の No compaction）と、他の 2 つの SSTable の本数の推移です。
+コンパクションは flush と同じく裏のスレッドで動きます。書き込みの量がコンパクションの処理能力を上回ると、コンパクションされない SSTable が L0 に溜まっていきます。L0 の SSTable は互いにキーの範囲が重なるので、読む時は 1 本ずつ確認するしかありません。下記の図は、コンパクションを止めた `none`（図の No compaction）と、他の 2 つの SSTable の本数の推移です。
 
-{{< figure src="images/lsm-tree_runs_timeline.svg" alt="操作回数に対する SSTable の本数。compaction を行わないと flush のたびに 1 本ずつ増え、11 万回の操作で 107 本になる。leveled と size-tiered は 10 本未満で上下を繰り返す" caption="compaction のやり方ごとの SSTable の本数" align="center" >}}
+{{< figure src="images/lsm-tree_runs_timeline.svg" alt="操作回数に対する SSTable の本数。コンパクションを行わないと flush のたびに 1 本ずつ増え、11 万回の操作で 107 本になる。leveled と size-tiered は 10 本未満で上下を繰り返す" caption="コンパクションのやり方ごとの SSTable の本数" align="center" >}}
 
 本数は flush の回数に比例して増え、前節の通り `get` 1 回で確認する SSTable は 4〜5 本から 17 本に、容量の増幅は 10 倍を超えました。このまま書き込みを受け付け続けると、読み取りは遅くなり続け、ディスクも溢れます。
 
@@ -279,12 +279,12 @@ compaction は flush と同じく裏のスレッドで動きます。書き込�
 | 溜まるもの | 速度を落とす条件 | 書き込みを止める条件 |
 |---|---|---|
 | L0 の SSTable の本数 | `level0_slowdown_writes_trigger`（既定 20） | `level0_stop_writes_trigger`（既定 36） |
-| compaction 待ちと見積もったバイト数 | `soft_pending_compaction_bytes_limit`（既定 64GB） | `hard_pending_compaction_bytes_limit`（既定 256GB） |
+| コンパクション待ちと見積もったバイト数 | `soft_pending_compaction_bytes_limit`（既定 64GB） | `hard_pending_compaction_bytes_limit`（既定 256GB） |
 | flush 待ちの Memtable | `max_write_buffer_number` が 3 より大きい時、待ちが `max_write_buffer_number - 1` に達した時 | 待ちが `max_write_buffer_number`（既定 2）に達した時 |
 
-速度を落とす間は、書き込みが `delayed_write_rate` の速度に制限されます。[options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/options.h) では既定が 0 で、レート制限の設定が無ければ毎秒 16MB を使います。L0 の compaction を始める本数 `level0_file_num_compaction_trigger` も options.h にあり、既定は 4 本です。
+速度を落とす間は、書き込みが `delayed_write_rate` の速度に制限されます。[options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/options.h) では既定が 0 で、レート制限の設定が無ければ毎秒 16MB を使います。L0 のコンパクションを始める本数 `level0_file_num_compaction_trigger` も options.h にあり、既定は 4 本です。
 
-LSM-Tree の書き込みが速いのは、併合の作業を後回しにしているからです。後回しにできる量には上限があり、上限に達すると書き込みが併合を待ちます。
+LSM-Tree の書き込みが速いのは、コンパクションの作業を後回しにしているからです。後回しにできる量には上限があり、上限に達すると書き込みがコンパクションを待ちます。
 
 ---
 
@@ -293,18 +293,18 @@ LSM-Tree の書き込みが速いのは、併合の作業を後回しにして�
 - 書く位置を探さずに Memtable に入れるので、ランダムなキーの書き込みでも応答が速い
 - ディスクには大きな塊を順に書くので、小さなランダム書き込みが減る
 - SSTable を書き換えないので、ファイルの複製を取りやすい（RocksDB の [Checkpoint](https://github.com/facebook/rocksdb/wiki/Checkpoints) はハードリンクを使える）
-- compaction のやり方を変えるだけで、書き込み・読み取り・容量のどれを優先するかを選べる
+- コンパクションのやり方を変えるだけで、書き込み・読み取り・容量のどれを優先するかを選べる
 
 ---
 
 ### 欠点
 
-LSM-Tree は、書き込みの時に済ませるはずの整理を compaction に後回しにします。その代わりに、次の制約があります。
+LSM-Tree は、書き込みの時に済ませるはずの整理をコンパクションに後回しにします。その代わりに、次の制約があります。
 
 - 1 つのキーを読む時に、複数の SSTable を確認する場合がある
 - 範囲の読み取りではキー全体で作った Bloom filter が効かず、範囲に掛かる全ての sorted run を突き合わせる
-- 削除しても、compaction が最下段に届くまで容量が減らない
-- compaction の I/O が通常の読み書きと競合し、追い付かなければ書き込みが絞られる
+- 削除しても、コンパクションが最下段に届くまで容量が減らない
+- コンパクションの I/O が通常の読み書きと競合し、追い付かなければ書き込みが絞られる
 
 ---
 
@@ -316,6 +316,6 @@ LSM-Tree は、書き込みの時に済ませるはずの整理を compaction �
 
 書き込みが少ないなら、B-Tree の方が素直です。[B-Tree](/notes/database-systems/b-tree/) なら、根から葉まで数ページを降りれば値に届きます。LSM-Tree は Bloom filter で読む SSTable を絞れても、各レベルを確認する処理が残ります。
 
-範囲の読み取りが中心の場合は、平均の速さより、compaction の I/O が重なった時の遅れが問題になります。大きな併合の I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量のレコードを集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が効く場合があります。
+範囲の読み取りが中心の場合は、平均の速さより、コンパクションの I/O が重なった時の遅れが問題になります。大きなコンパクションの I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量のレコードを集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が効く場合があります。
 
 削除と挿入の繰り返しで典型的なのは、先頭から順に取り出して消すキューのような使い方です。消したキーの tombstone が最下段に届くまで残るので、先頭を範囲で読むたびに、既に消した分の印を読み飛ばすことになります。
