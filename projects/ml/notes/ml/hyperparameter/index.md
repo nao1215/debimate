@@ -1,5 +1,5 @@
 ---
-title: "ハイパーパラメータ（hyperparameter）"
+title: "ハイパーパラメータ - 81 回のグリッド探索で、learning_rate は 3 通りしか試されない"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
@@ -8,108 +8,319 @@ weight: 10
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-ハイパーパラメータは、学習を始める前に決める設定値です。データから推定されるモデルのパラメータとは異なり、[`Ridge(alpha=1.0)`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) の `alpha` や [RandomForest](../random-forest/) で木の深さを決める `max_depth` は、候補を比べて選びます。
+ハイパーパラメータ（hyperparameter）は、学習を始める前に人が決めるモデルの設定値です。[勾配ブースティング](../gradient-boosting/)なら、木を何本足すか、1 本の木に葉を何枚まで作るか、といった値がこれに当たります。良い値はデータごとに違うので、候補をいくつも試し、一番良かったものを選びます。この作業をハイパーパラメータの探索と呼びます。
 
-重要なのは、候補を選ぶデータと最終性能を測るデータを分けることです。本記事では Ridge の `alpha` を例に、交差検証で候補を選び、最後に触れていないテスト集合で評価する順序を確認します。
+[scikit-learn](https://scikit-learn.org/stable/) で探索を書く時、よく使われるのは [`GridSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html) です。例えば住宅価格を当てる回帰で、4 つのハイパーパラメータに 3 つずつ候補を並べると、全ての組み合わせは 3 × 3 × 3 × 3 = 81 通りになります。81 通りを全部学習し、1 位の組み合わせを使う、という流れです。
+
+この 81 通りの探索と、同じ 4 つの値を範囲の中から乱数で選ぶ探索 81 回を回し、試した値を並べたのが以下の図です。横軸は 4 つのうちの `learning_rate`、縦軸は学習に使っていない行で測った当てはまりの良さで、交差検証の R² という 1 が満点の値です。
+
+{{< figure src="hp_cover.webp" alt="2 つの散布図。横軸は learning_rate（0.01〜1 の対数目盛り）、縦軸は交差検証の R²。左のグリッド 81 回は、赤い点が 0.01・0.1・1.0 の 3 本の縦の列に固まり、1 位は 0.832。0.1 の列の 0.765 に固まる 9 点は max_leaf_nodes=4 の組み合わせ。右のランダム 81 回は、青い点が 0.01〜1 に広がって山の形を描き、0.05〜0.3 の辺りが高く、1 位は 0.833" caption="グリッド 81 回とランダム 81 回が試した learning_rate と、交差検証の R²" align="center" >}}
+
+グリッドの 81 回は、`learning_rate` を 0.01・0.1・1.0 の 3 通りしか試していません。残りの 3 つのハイパーパラメータを変えるために、同じ `learning_rate` で 27 回ずつ学習しています。右側のランダム探索は 81 回で 81 通りの `learning_rate` を試し、0.05〜0.3 の辺りが高い山の形まで見えます。後で示すとおり、この題材で一番高い R² を大きく左右したのは `learning_rate` でした。ただし、1 位どうしの差は、交差検証の分け方で入れ替わる程度の小さなものです。
+
+探索を書く人は、何通り試すか、どの範囲から選ぶか、回数を減らす仕組みを使うかを毎回決めることになります。
 
 <br>
 
-### パラメータとの違い
+本記事では、ML を学び始めたエンジニアと、scikit-learn で手元のデータに探索を組む人に向けて、次の疑問に答えます。
 
-- パラメータ: `Ridge.fit()` の後に得られる係数のように、学習データから決まる値です。
-- ハイパーパラメータ: `alpha`、[kNN](../knn/) の `n_neighbors`、RandomForest の `max_depth` のように、学習前に候補を指定する値です。
+- ハイパーパラメータは、学習で決まる値と何が違うのか。
+- 候補の良し悪しは、どのデータで測るのか。
+- 同じ回数なら、グリッドとランダムのどちらがよいのか。
+- 候補の範囲と間隔は、どう決めるのか。
+- 回数を減らす HalvingRandomSearchCV は、何を落とすのか。
+- 選んだ設定の性能は、どう測るのか。
 
-パラメータは訓練集合に合わせて更新されます。ハイパーパラメータは、訓練集合をさらに分割する[交差検証](../cross-validation/)で比較してから固定します。
-
----
-
-### 候補を選ぶ場所
-
-データを訓練用とテスト用に一度だけ分けます。テスト集合は `alpha` の候補を選ぶまで見ません。訓練集合の中を 5 分割し、各 `alpha` の平均 R² と分割間のばらつきを比較します。
-
-```mermaid
-flowchart LR
-    data[全データ] --> split[訓練集合 / テスト集合]
-    split --> train[訓練集合]
-    train --> cv[5-fold CVでalphaを選ぶ]
-    cv --> refit[選んだalphaで訓練集合全体に再学習]
-    refit --> test[未使用のテスト集合で一度だけ評価]
-```
-
-探索中にテスト R² を見て `alpha` を選ぶと、テスト集合にも合わせ込んでしまいます。候補数が多い場合や選択自体を評価したい場合は、外側の評価と内側の探索を分ける nested CV を使います。
+実験は scikit-learn 1.9.1 と NumPy 2.5.4 で行いました。図を描く処理も含めた完全なコードは [hyperparameter_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hyperparameter_gen.py) にあります。
 
 ---
 
-### Ridge の探索を実行する
+### 学習で決まる値と、前に決める値
 
-以下の実験は、[`make_regression`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_regression.html) で作った 150 行・60 特徴量（うち予測に効くのは 10 個）の回帰データを使います。訓練集合は 112 行で、各 fold の学習に使えるのは約 90 行です。特徴量に対して行が少ないため、[正則化](../regularization/)が弱いと訓練データのノイズまで覚えます。[`GridSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html) で、訓練集合だけを使って 19 個の `alpha` を 5-fold CV し、平均 R² が最も高い候補を選びます。
+学習データからモデルが決める値は、パラメータ（parameter）と呼びます。[線形回帰](../linear-regression/)なら列ごとの係数、[決定木](../decision-tree/)なら「どの列をどの値で分けるか」と葉ごとの予測値がパラメータで、scikit-learn では `fit()` を呼んだ後に `coef_` などの属性として読めます。
+
+ハイパーパラメータは、`fit()` の前にコンストラクタの引数として渡す値です。学習はハイパーパラメータを固定したままパラメータを決めるので、ハイパーパラメータの良し悪しは、学習を何度か回して結果を比べないと分かりません。モデルごとに、よく探索されるハイパーパラメータを並べます。
+
+| モデル | よく探索するハイパーパラメータ |
+|---|---|
+| [kNN](../knn/) | `n_neighbors`（近傍の数）、`metric`（距離の測り方） |
+| [Ridge・Lasso](../regularization/) | `alpha`（係数を小さく抑える強さ） |
+| [SVM](../svm/) | `C`（外れをどこまで許すか）、`gamma`（1 点の影響が届く範囲） |
+| [ランダムフォレスト](../random-forest/) | `n_estimators`、`max_depth`、`max_features` |
+| 勾配ブースティング | `learning_rate`、木の本数、葉の数や木の深さ |
+| ニューラルネット | [学習率とバッチの大きさ](/ml/math/gradient-descent-sgd/)、層の数 |
+
+`random_state` もコンストラクタの引数ですが、乱数のシード値（seed）を固定して結果を再現するための値なので、探索の対象にはしません。`random_state` を候補に並べて一番良い値を選ぶと、たまたま当たりを引いた乱数を選ぶだけになります。
+
+<br>
+
+#### 本記事の実験
+
+実験には、scikit-learn の [fetch_california_housing](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_california_housing.html) で取得できる California Housing を使います。初回の呼び出しでデータをダウンロードします。1990 年にアメリカで行われた国勢調査から、カリフォルニア州の区画ごとに、所得・築年数・緯度・経度など 8 列と住宅価格の中央値を並べた 20640 行のデータです。
+
+モデルは [`HistGradientBoostingRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.HistGradientBoostingRegressor.html) です。予測の外れを小さな決定木で 1 本ずつ埋めていく勾配ブースティングの実装で、次の 4 つを探索します。
+
+| ハイパーパラメータ | 意味 | 既定値 |
+|---|---|---|
+| `learning_rate` | 木 1 本の予測を何倍して足すか | 0.1 |
+| `max_leaf_nodes` | 木 1 本に作ってよい葉の枚数 | 31 |
+| `min_samples_leaf` | 葉 1 枚に最低何行を残すか | 20 |
+| `l2_regularization` | 葉の予測値を 0 に寄せる罰の強さ | 0 |
+
+性能は [R²](../regression-metrics/)（決定係数）で測ります。R² は、予測の外れを「全ての行を平均で当てた時の外れ」と比べた値で、1 なら全て的中、0 なら平均で当てるのと同じです。
+
+---
+
+### 候補を比べる基準
+
+候補を比べる時に、学習に使った行で測った R² を使ってはいけません。グリッドの 81 通りについて、学習に使った行で測った R² と、学習に使っていない行で測った R² を並べました。
+
+学習に使っていない行で測るには、[交差検証](../cross-validation/)を使います。学習データを 3 つに分け、2 つで学習して残り 1 つで測ります。これを測る側を入れ替えて 3 回行い、3 回の R² を平均します。以下、この平均を交差検証の R² と呼び、出力では CV と書きます。テストデータは、最初に全体の 25% の 5160 行を取り分け、探索では使いません。
 
 ```python
-import numpy as np
-from sklearn.datasets import make_regression
-from sklearn.linear_model import Ridge
-from sklearn.model_selection import GridSearchCV, KFold, train_test_split
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
+X, y = fetch_california_housing(return_X_y=True)      # 20640 行 × 8 列
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=0)
+cv = KFold(n_splits=3, shuffle=True, random_state=0)
+# 木は 100 本に固定する。10000 行を超えると、既定では本数を自動で決めて候補ごとに変わるため
+model = HistGradientBoostingRegressor(max_iter=100, early_stopping=False, random_state=0)
 
-X, y = make_regression(n_samples=150, n_features=60, n_informative=10, noise=40, random_state=17)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=17)
-alphas = np.logspace(-3, 3, 19)
-
-search = GridSearchCV(
-    make_pipeline(StandardScaler(), Ridge()),
-    param_grid={"ridge__alpha": alphas},
-    cv=KFold(n_splits=5, shuffle=True, random_state=17),
-    scoring="r2",
-    return_train_score=True,
-).fit(X_train, y_train)
-
-result = search.cv_results_
-for i in range(0, len(alphas), 3):
-    print(f"alpha={alphas[i]:>7g}  train R²={result['mean_train_score'][i]:.3f}  "
-          f"CV R²={result['mean_test_score'][i]:.3f} ± {result['std_test_score'][i]:.3f}")
-print(f"selected alpha={search.best_params_['ridge__alpha']:g}")
-print(f"test R²={search.score(X_test, y_test):.3f}")
+# 各値の候補は、範囲の両端と、対数で真ん中に当たる値の 3 つ
+grid81 = {
+    "learning_rate": [0.01, 0.1, 1.0],
+    "max_leaf_nodes": [4, 32, 256],
+    "min_samples_leaf": [1, 14, 200],
+    "l2_regularization": [0.001, 0.1, 10.0],
+}
+# return_train_score=True で、学習に使った行で測った R² も cv_results_ に残す
+search = GridSearchCV(model, grid81, cv=cv, scoring="r2", return_train_score=True, n_jobs=-1)
+search.fit(X_train, y_train)
 ```
 
 ```text
-alpha=  0.001  train R²=0.979  CV R²=0.533 ± 0.288
-alpha=   0.01  train R²=0.979  CV R²=0.535 ± 0.286
-alpha=    0.1  train R²=0.979  CV R²=0.548 ± 0.269
-alpha=      1  train R²=0.978  CV R²=0.635 ± 0.172
-alpha=     10  train R²=0.960  CV R²=0.743 ± 0.091
-alpha=    100  train R²=0.737  CV R²=0.506 ± 0.045
-alpha=   1000  train R²=0.215  CV R²=0.090 ± 0.043
-selected alpha=10
-test R²=0.862
+訓練の R² が最高: 訓練 1.000  CV 0.602  {'l2_regularization': 0.001, 'learning_rate': 1.0, 'max_leaf_nodes': 256, 'min_samples_leaf': 1}
+CV の R² が最高: 訓練 0.977  CV 0.832  {'l2_regularization': 10.0, 'learning_rate': 0.1, 'max_leaf_nodes': 256, 'min_samples_leaf': 14}
 ```
 
-出力は 19 候補のうち 7 個を抜き出したものです。全候補を図にすると次のようになります。灰色は訓練 R²（train R²）、青は CV R²、誤差棒は fold 間の[標準偏差](/ml/math/stddev/)です。
+{{< figure src="hp_train_cv.webp" alt="散布図。横軸は訓練の R²、縦軸は交差検証の R² で、81 通りを learning_rate ごとに灰・青・赤で塗っている。灰の 0.01 は対角線の近くで、交差検証が 0.44〜0.67。青の 0.1 は訓練 0.78〜0.99、交差検証 0.76〜0.83。赤の 1.0 は訓練が 0.84〜1.0 と高いほど交差検証が 0.6 まで下がる。訓練の R² で選ぶと右下の訓練 1.000・交差検証 0.602 の点、交差検証の R² で選ぶと青の訓練 0.977・交差検証 0.832 の点になる" caption="グリッド 81 通りで測った訓練の R² と交差検証の R²" align="center" >}}
 
-![Ridge の alpha ごとの訓練 R² と CV R²。破線は CV で選んだ alpha=10](./hyperparameter_search.svg)
+訓練の R² が一番高いのは、`learning_rate=1.0`・葉 256 枚・葉に 1 行でもよい、という組み合わせで、学習に使った行を 1.000 で当てます。この組み合わせは、学習に使っていない行では 0.602 でした。`learning_rate=1.0` の 27 通りでは、交差検証の R² が葉 4 枚で 0.79〜0.81、葉 256 枚で 0.60〜0.78 と、葉を細かく作れるほど下がります。学習データの雑音まで覚えた[過学習](../overfitting/)の木になるためです。この 81 通りでは、訓練の R² だけを見て選ぶと、一番複雑な候補を選びました。
 
-訓練 R² は `alpha` が小さいほど高く、0.001 では 0.979 です。訓練 R² だけで選ぶと最も弱い正則化を選びますが、その CV R² は 0.533 で、fold 間のばらつきも ±0.288 と大きくなります。反対に `alpha` を 100 以上にすると、訓練 R² と CV R² がそろって下がり、係数を縮めすぎた[未学習](../overfitting/)になります。CV R² は両者の間の `alpha=10` で 0.743 と最も高くなり、これを選びます。テスト R² の 0.862 は、選び終えた後に一度だけ出した値です。CV R² より高いのは、`GridSearchCV` が既定の `refit=True` で約 90 行の各 fold より多い 112 行の訓練集合全体に再学習したことと、テスト集合が 38 行と小さく値がぶれやすいことの両方によります。
+反対に、灰色で描いた `learning_rate=0.01` の点は、訓練の R² が 0.45〜0.76、交差検証の R² が 0.44〜0.67 と、そろって低いままです。木 100 本では 0.01 倍ずつしか予測を動かせず、学習データにも合わせ切れない未学習の状態です。
 
----
+<br>
 
-### モデルごとの設定
+#### 行に順番や持ち主がある時
 
-| モデル | 主なハイパーパラメータ | 何を変えるか |
-| --- | --- | --- |
-| [kNN](../knn/) | `n_neighbors`、`metric` | 近傍の広さと距離の測り方 |
-| Ridge / Lasso | `alpha` | 正則化の強さ |
-| RandomForest | `n_estimators`、`max_depth`、`max_features` | 木の数・複雑さ・木同士の違い |
-| [Gradient Boosting](../gradient-boosting/) | `learning_rate`、`n_estimators`、`max_depth` | 一回の更新量と木の複雑さ |
-| ニューラルネット | [学習率](/ml/math/gradient-descent-sgd/)、層数、batch size | 更新量と表現力 |
+交差検証で行を分ける時は、本番で予測する時と同じ条件で分けます。日付のある売上を予測するなら、未来の行で学習して過去の行を当てることがないよう、[`TimeSeriesSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) で時間順に分けます。[時系列予測](../time-series-forecasting/)で使う分け方です。
 
-候補は広い範囲から始め、CV の結果を見て狭めます。探索を続けるほど CV への過適合も起きるため、改善幅が小さい場合はデータ・特徴量・評価指標を見直します。1 つの設定を 1 回ずつ学習させて並べると、1 位の設定が seed しだいで入れ替わる様子は、[実験管理](../../mlops/experiment-tracking/)で測っています。
+同じユーザーの行が何行もあるなら、[`GroupKFold`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupKFold.html) で同じユーザーの行を同じ側にまとめます。分け方を誤ると、交差検証の R² が本番より高く出て、その R² で選んだハイパーパラメータも本番には合いません。
 
 ---
 
-### 適さないケース / 落とし穴
+### グリッドとランダム
 
-- `random_state` は乱数を再現する設定であり、性能を良くするための探索対象ではありません。
-- 時系列や同一ユーザーの複数行には、通常の KFold を使いません。[TimeSeriesSplit](../time-series-forecasting/) や GroupKFold のようにデータの構造を保つ分割を使います。
-- テスト集合を繰り返し見た場合は、すでに独立したテストではありません。新しい評価集合を用意するか、評価が楽観的になり得ることを明記します。
+冒頭に示した図の右側は、[`RandomizedSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.RandomizedSearchCV.html) によるランダム探索です。各値の範囲を分布で渡すと、指定した回数だけ 4 つの値を乱数で選び、交差検証の R² を測ります。範囲はグリッドの両端と同じにしました。
 
-図を含む再現用コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hyperparameter_gen.py) にあります。
+ランダム探索は、選ばれた値が乱数次第で変わります。運の良し悪しを見るために、seed を 0〜29 の 30 通りに変えて 81 回ずつ回し、何回目までに R² がどこまで上がったかを数えました。
+
+```python
+dist = {
+    "learning_rate": loguniform(0.01, 1.0),
+    "max_leaf_nodes": randint(4, 257),
+    "min_samples_leaf": randint(1, 201),
+    "l2_regularization": loguniform(0.001, 10.0),
+}
+rand = []
+for seed in range(30):
+    search = RandomizedSearchCV(model, dist, n_iter=81, cv=cv, scoring="r2",
+                                random_state=seed, n_jobs=-1)
+    search.fit(X_train, y_train)
+    rand.append(pd.DataFrame(search.cv_results_))
+```
+
+[`loguniform`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.loguniform.html) は対数を取った値が一様になる分布で、0.01〜0.1 と 0.1〜1.0 から同じ割合で値を選びます。[`randint`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.randint.html) は整数を一様に選ぶ分布です。比べるために、グリッドを各 2 値の 16 通りに減らした探索も回しました。
+
+```text
+grid81: 81 通り、learning_rate は [0.01, 0.1, 1.0]、最高の CV R² 0.8321
+grid16: 16 通り、learning_rate は [0.01, 1.0]、最高の CV R² 0.8082
+ 4 回: 最高の CV R² の中央値 0.8302（最小 0.8151、最大 0.8349）  グリッド 81 回以上 6/30、グリッド 16 回以上 30/30
+ 8 回: 最高の CV R² の中央値 0.8317（最小 0.8236、最大 0.8349）  グリッド 81 回以上 12/30、グリッド 16 回以上 30/30
+16 回: 最高の CV R² の中央値 0.8333（最小 0.8299、最大 0.8358）  グリッド 81 回以上 26/30、グリッド 16 回以上 30/30
+27 回: 最高の CV R² の中央値 0.8337（最小 0.8322、最大 0.8358）  グリッド 81 回以上 30/30、グリッド 16 回以上 30/30
+81 回: 最高の CV R² の中央値 0.8344（最小 0.8332、最大 0.8360）  グリッド 81 回以上 30/30、グリッド 16 回以上 30/30
+```
+
+{{< figure src="hp_budget.webp" alt="横軸は試した回数（1〜81）、縦軸はそれまでで一番高い交差検証の R²。青い線はランダム探索 30 回の中央値で、10 回目までに 0.833 近くまで上がり、その後はほぼ平ら。薄い青の帯は 10〜90% の範囲。赤い点はグリッド探索で、16 回が 0.808、81 回が 0.832。青い中央値の線は、10 回目の前後で赤い破線の 0.832 を上回る" caption="試した回数と、それまでで一番高い交差検証の R²（ランダム探索は seed 30 通り）" align="center" >}}
+
+ランダム探索は、4 回で 30 通り全てがグリッドの 16 回を上回りました。16 回では 30 通りのうち 26 通りが、27 回では全てが、グリッドの 81 回の 1 位に並ぶか上回っています。グリッドの 16 回は、`learning_rate` を 0.01 と 1.0 の 2 通りしか試さないので、0.1 付近の高い所に一度も入りません。
+
+<br>
+
+#### 一番高い点を動かす値
+
+ランダム探索の 30 × 81 = 2430 回について、R² を 4 つのハイパーパラメータごとに並べ直しました。赤い破線は、グリッドが試した 3 値です。
+
+{{< figure src="hp_importance.webp" alt="横に 4 つ並んだ散布図で、縦軸は交差検証の R²。learning_rate は 0.01 付近で 0.6〜0.67、0.05〜0.3 で 0.83 前後の山になり、1.0 に向けて下がる。max_leaf_nodes は 10 枚未満で一番高い点が 0.820 に下がり、10〜15 枚は 0.829、16 枚以上は 0.836 まで届く。min_samples_leaf と l2_regularization は、どの値でも上の縁が 0.83 前後で平らに並ぶ。各図にグリッドの 3 値の赤い破線がある" caption="ランダム探索 2430 回の、ハイパーパラメータごとの交差検証の R²" align="center" >}}
+
+一番高い点が値によって大きく動くのは `learning_rate` です。`max_leaf_nodes` は、葉を 10 枚未満にすると一番高い点が 0.820 まで下がります。10〜15 枚では 0.829、16 枚以上なら 0.836 に届きます。冒頭の図で、グリッドが 0.1 で試した列に 0.765 で固まっていた 9 点も、葉 4 枚の組み合わせです。`min_samples_leaf` と `l2_regularization` は、範囲のどこを選んでも 0.83 前後の点があります。
+
+この図で読めるのは、各値での一番高い点です。`learning_rate` が合っていない時は、前の節で見た `learning_rate=1.0` のように、葉の設定でも R² が大きく動きます。
+
+<br>
+
+Bergstra 氏と Bengio 氏は、2012 年の[論文](https://jmlr.org/papers/v13/bergstra12a.html)で同じ理由を挙げ、効くハイパーパラメータが一部だけの時は、同じ回数ならランダム探索の方が良い値を見つけやすいことを示しています。どれが効くかは、データとモデルごとに違い、探索の前には分かりません。
+
+ただし、R² の差は大きくありません。同じ 3 つの分け方で、2 つの探索の 1 位を 1 回ずつ比べました。
+
+```text
+グリッド 81 回の 1 位: 3 分割の R² [0.821, 0.839, 0.837]、標準偏差 0.008
+ランダム 81 回（seed 0）の 1 位: 3 分割の R² [0.824, 0.837, 0.839]、標準偏差 0.007
+ランダム 81 回の 1 位が、3 分割の全てでグリッド 81 回の 1 位を上回った seed: 15/30
+```
+
+1 つの候補でも、分け方で R² が 0.02 近く動きます。[標準偏差](/ml/math/stddev/)にすると 0.008 です。seed 0 の 1 位は、3 回のうち 2 回でグリッドの 1 位を上回り、1 回で下回りました。seed 30 通りで見ても、3 回とも上回ったのは 15 通りだけです。
+
+ランダム 81 回の 1 位は、上の出力のとおり 0.833〜0.836 で、グリッドの 0.832 との差は 0.001〜0.004 です。どちらが上かが分け方で入れ替わる程度の差なので、この実験で得をしたのは、81 回分と同じくらいの R² に 16〜27 回で届く所です。
+
+---
+
+### 範囲と間隔
+
+ランダム探索で `learning_rate` を `loguniform` で選んだのは、この値が「何倍か」で効くからです。0.01 を 0.02 にするのは 2 倍、0.5 を 0.51 にするのは 1.02 倍です。この題材でも、先ほどの 4 つ並びの図で一番高い点は、0.01 付近の 0.70 から 0.02 付近の 0.79 まで上がります。
+
+値そのものが一様になる [`uniform`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.uniform.html) で同じ範囲 0.01〜1.0 から選ぶと、選ばれる値は大きい方に偏ります。他の 3 つは同じ分布のまま、16 回のランダム探索を seed 30 通りで比べました。
+
+```python
+dist_uniform = dict(dist, learning_rate=uniform(0.01, 0.99))  # 0.01〜1.0 を一様に
+```
+
+```text
+log16: 最高の CV R² の中央値 0.8333（最小 0.8299）  learning_rate が 0.1 未満の割合 49%
+uniform16: 最高の CV R² の中央値 0.8314（最小 0.8279）  learning_rate が 0.1 未満の割合 8%
+```
+
+{{< figure src="hp_logscale.webp" alt="左は選ばれた learning_rate のヒストグラム（対数目盛り）。青の loguniform（0.01〜1.0）は 0.01〜1 にほぼ均等に並ぶ。赤の uniform（0.01〜1.0）は 0.3 より上に集まり、0.1 未満は 8% だけ。R² が高い 0.05〜0.3 の範囲を緑で塗っている。右は 16 回の探索で一番高い交差検証の R² を seed 30 通り並べた図で、対数で選ぶ方の中央値は 0.8333、一様に選ぶ方は 0.8314" caption="learning_rate を対数で選ぶ場合と一様に選ぶ場合（16 回、seed 30 通り）" align="center" >}}
+
+一様に選ぶと、`learning_rate` が 0.1 未満になるのは 8% だけで、R² が高い 0.05〜0.3 のうち、下半分をほとんど試しません。この題材では差は 0.002 で済みました。良い値が範囲の下端に近い題材では、差はもっと開くと考えられます。学習率や正則化の強さのように桁で効く値は、グリッドでも 0.01・0.1・1.0 のように対数で等間隔に並べます。
+
+範囲は、最初は広く取り、1 回目の結果を見て狭めます。1 位が範囲の端に来た時は、範囲を広げる前に、その値が R² を動かしているかを見ます。グリッドの 81 通りの 1 位は `max_leaf_nodes=256` と `l2_regularization=10` で、2 つとも範囲の端でした。先ほどの 4 つ並びの図では、この 2 つは一番高い点をほとんど動かしていないので、R² がほぼ同じ候補の中で偶然 1 位になった可能性が高いと読めます。広げてやり直すのは、R² を動かしている値が端に来て、その外にもっと良い値がある可能性がある時です。
+
+範囲を狭めてやり直すほど、交差検証の R² が少しでも高い候補を拾うことになります。何十回も試した中の 1 位は、分け方の揺れで高く出た候補である可能性も高くなります。[実験管理](../../mlops/experiment-tracking/)のノートでは、探索の 1 位の設定が seed を変えると入れ替わる様子を測っています。改善の幅が分け方の揺れより小さくなったら、探索を続けるより、データや特徴量、評価の指標を見直す方が効きます。
+
+---
+
+### 候補を途中で落とす探索
+
+81 候補を全て学習データ全体で測ると、時間がかかります。[`HalvingRandomSearchCV`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.HalvingRandomSearchCV.html) は、最初は全ての候補を少ない行数で測り、上位の 1/3 だけを残して、行数を 3 倍にして測り直すことを繰り返します。この方法は successive halving と呼ばれ、Jamieson 氏と Talwalkar 氏の [2016 年の論文](https://proceedings.mlr.press/v51/jamieson16.html)でハイパーパラメータの探索に使われました。
+
+ランダム探索と同じ分布から 81 候補を選び、`min_resources="exhaust"` で回しました。これは、最後の回で学習データのほぼ全体を使うように、最初の行数を自動で決める指定です。81 候補なら、191 行・573 行・1719 行・5157 行・15471 行の 5 回で、候補は 81・27・9・3・1 と減ります。
+
+```python
+search = HalvingRandomSearchCV(model, dist, n_candidates=81, factor=3,
+                               resource="n_samples", min_resources=min_resources,
+                               cv=cv, scoring="r2", random_state=seed,
+                               refit=False, n_jobs=-1)
+search.fit(X_train, y_train)
+```
+
+<br>
+
+<details>
+<summary>実験的な機能であることと、min_resources の既定値</summary>
+
+`HalvingRandomSearchCV` は scikit-learn 1.9.1 でも実験的な機能で、使う前に `from sklearn.experimental import enable_halving_search_cv` の読み込みが要ります。また、`min_resources` を既定の `"smallest"` のままにすると、本記事の設定では 6 行から始まり、最後の回でも 486 行しか使いません。そのため `"exhaust"` を明示しています。
+
+</details>
+
+<br>
+
+答え合わせのために、同じ 81 候補を学習データ全体の交差検証でも測り、R² の高い順に順位を付けました。次の動く図は、seed 2 の回で、各回にどの候補が測られ、どれが落ちたかを描いたもので、横軸はその順位です。上の帯は、3 分割の学習にかかった時間を回ごとに足していった累計です。
+
+{{< figure src="hp_halving.webp" alt="動く図。横軸は 81 候補を学習データ全体で測った R² の順位、縦軸はその R²。上の帯は 3 分割の学習時間の累計で、8.9 秒を 0.6 倍速で進み、1 回目〜5 回目の区切りに名札がある。1 回目の 191 行だけで帯の約 4 分の 1 を使う。1 回目は 81 候補全てが青で、191 行で測る。2 回目は 27 候補だけが青で、順位 1 位の候補も残るが、60〜80 位の低い候補も混ざる。3 回目の 9 候補では 1 位の候補が灰色になり、最後は 18 位の候補が赤い丸で選ばれる" caption="HalvingRandomSearchCV が各回で残す候補（seed 2、学習時間の実測を 0.6 倍速で再生）" align="center" >}}
+
+学習データ全体で測れば 1 位の候補は、2 回目に 573 行で測られた後に落ちました。最後に選ばれたのは 18 位の候補で、学習データ全体での R² は 1 位の 0.834 に対して 0.827 です。差の 0.007 は、前の節で測った 1 候補の分け方による揺れ（標準偏差 0.008）と同じくらいなので、この回だけでは損をしたとまでは言えません。
+
+<br>
+
+#### 191 行では葉を作れない候補
+
+選ばれる候補の順位が下がる原因の 1 つは、1 回目の行数にあります。191 行を 3 つに分けると、学習に使えるのは 127〜128 行です。葉を 2 枚に分けるには両側に `min_samples_leaf` 行以上が要るので、この値が 64 以上の候補は、学習に使う行が 127 行の回では木を分けられません。128 行の回でも、ちょうど 64 行ずつに分かれる区切りが無ければ分けられません。
+
+{{< figure src="hp_halving_leaf.webp" alt="横軸が min_samples_leaf の散布図を 2 つ並べている。左は 1 回目の 191 行で測った R² で、64 未満の青い点は 0.2〜0.5、64 以上の赤い点は全て同じ -0.019 で、0 をわずかに下回る所に一列に並ぶ。右は学習データ全体で測った R² で、多くは 0.78〜0.83 に集まって青と赤が混ざり（下は 0.61 まで）、黒い丸の 1 位の候補は min_samples_leaf が 52" caption="1 回目の 191 行と学習データ全体で測った R²（seed 2、81 候補）" align="center" >}}
+
+seed 2 の 81 候補のうち、`min_samples_leaf` が 64 以上の 59 候補は、1 回目の R² が全て同じ -0.019 でした。3 分割のどの R² も 59 候補で一致するので、どの木も 1 度も分かれず、学習側の平均を返すだけになっています。学習データ全体で測れば、この 59 候補の中には 0.833 の候補もあります。
+
+2 回目に残る 27 候補は、64 未満の 22 候補と、同点の 59 候補から選ばれた 5 候補です。scikit-learn 1.9.1 の実装では、同点の中のどれが残るかは R² では決まらず、点数を並べ替えた時の順番で決まります。冒頭に示したランダム探索で 1 位だった候補も `min_samples_leaf=112` なので、HalvingRandomSearchCV に入れれば 1 回目で同点の -0.019 に並び、ほとんどが落ちる側に回ります。
+
+このように、葉に残す行数のような行数で効く値を探索すると、本記事の題材では、少ない行数での順位が全体での順位と食い違いました。
+
+<br>
+
+#### 最初の行数を増やす
+
+seed 2 の 1 回だけでは、運が悪かっただけかもしれません。seed を 0〜19 の 20 通りに変え、選ばれた候補の順位と、学習データ全体で測った R² が 1 位からどれだけ低いかを数えました。比べるために、`min_resources=1719` で 1719 行・5157 行・15471 行の 3 回に減らし、最後に 9 候補を残す探索も回しました。
+
+```text
+exhaust: 行数 [191, 573, 1719, 5157, 15471]、候補 [81, 27, 9, 3, 1]、選んだ候補の順位の中央値 17、最悪 42（1 位との差 0.014）  1 位との R² の差の中央値 0.005、最大 0.018
+1719: 行数 [1719, 5157, 15471]、候補 [81, 27, 9]、選んだ候補の順位の中央値 2、最悪 6（1 位との差 0.002）  1 位との R² の差の中央値 0.001、最大 0.003
+```
+
+{{< figure src="hp_halving_rank.webp" alt="横軸は、学習データ全体で測った R² の、81 候補の 1 位と選ばれた候補の差（0〜0.02）。0〜0.008 には、1 候補の分け方による揺れ（標準偏差 0.008）として灰色の帯がある。上の段の最初の行数を自動で決める（191 行から 5 回）は、20 個の赤い点が 0〜0.018 に散らばり、中央値は 0.005（順位の中央値 17 位）で、6 個が帯の外にある。42 位の点は 0.014。下の段の最初の行数を 1719 行に（1719 行から 3 回）は、20 個の青い点が 0〜0.003 に固まり、中央値は 0.001（順位の中央値 2 位）" caption="選ばれた候補の R² が、81 候補の 1 位からどれだけ低いか（seed 20 通り）" align="center" >}}
+
+最初の行数を自動で決めると、1 位との差は[中央値](/ml/math/median/)で 0.005 となり、1 候補の分け方による揺れの中に収まります。ただし 20 通りのうち 6 通りは 0.010〜0.018 と揺れの外まで離れ、42 位の候補は 1 位より 0.014 低い値でした。1719 行から始めると、差は最大でも 0.003 です。
+
+3 分割の学習にかかった時間を全て足すと、seed 20 通りの中央値で、81 候補を全て学習データ全体で測った時は 130.9 秒、最初の行数を自動で決めると 15.5 秒、1719 行から始めると 53.8 秒でした。自動で決めた場合は 8.4〜27.4 秒に散らばり、動く図の seed 2 の 8.9 秒は速い方です。successive halving は時間を減らしますが、減らす分だけ少ない行数での順位を信じることになります。
+
+ここまでの 3 つの探索の方法を並べます。
+
+| 探索の方法 | 候補の選び方 | 向く場面 |
+|---|---|---|
+| `GridSearchCV` | 全ての組み合わせ | ハイパーパラメータが 1〜2 個 |
+| `RandomizedSearchCV` | 範囲から乱数で選ぶ | 3 個以上で、どれが効くか分からない |
+| `HalvingRandomSearchCV` | 少ない行で測り上位を残す | 学習が重く、少ない行でも順位が保たれる |
+
+`GridSearchCV` の行だけは本記事で測っておらず、Bergstra 氏と Bengio 氏の論文が、グリッドは 1〜2 次元の空間なら信頼できると書いていることに拠ります。
+
+他に、前の結果を見て次に試す値を選ぶ [Optuna](https://optuna.org/) のような方法もあります。本記事では測っていないので、ここでは名前を挙げるだけにします。
+
+---
+
+### 選んだ設定を測る
+
+探索で選んだ設定は、`refit=True`（既定）なら学習データ全体で学習し直されます。探索に一度も使っていないテストデータで、学習し直したモデルを 1 回だけ測ります。以下では、ランダム探索の 1 位、グリッドの 1 位、訓練の R² が一番高い組み合わせの 3 つを比べるために、手で学習し直しています。`res` は、ここまでの探索の結果を入れた辞書です。
+
+```python
+r0 = res["rand"][0]
+best_rand = dict(r0.loc[r0["mean_test_score"].idxmax(), "params"])   # ランダム探索（seed 0）の 1 位
+g = res["grid81"]["cv_results"]
+best_train = dict(g.loc[g["mean_train_score"].idxmax(), "params"])   # 訓練の R² が最高の組み合わせ
+tests = {}
+for name, params in [("rand81_seed0", best_rand), ("grid81", res["grid81"]["best_params"]),
+                     ("grid81_by_train", best_train)]:
+    m = HistGradientBoostingRegressor(max_iter=100, early_stopping=False, random_state=0, **params)
+    tests[name] = {"params": params, "test_r2": m.fit(X_train, y_train).score(X_test, y_test)}
+```
+
+```text
+rand81_seed0: テストの R² 0.842
+grid81: テストの R² 0.841
+grid81_by_train: テストの R² 0.600
+```
+
+ランダム探索の 1 位とグリッドの 1 位は、テストの R² では 0.842 と 0.841 で、ほぼ同じです。訓練の R² で選んだ設定は 0.600 です。
+
+テストの R² を見て候補を選び直すと、テストデータも探索に使ったことになり、テストの R² はもう新しいデータでの性能を表しません。[過学習](../overfitting/)のノートでは、手元のテストを繰り返し見るとテストにたまたま合う候補が残ることを実験しています。見てしまった時は、新しいテストデータを用意するか、R² が高めに出ている可能性を明記します。
+
+候補が多い時や、探索の手順そのものの性能を知りたい時は、nested CV を使います。外側で交差検証を回し、各回で学習側の行だけを使って内側の交差検証で探索し、外側で残した行で測る方法で、[交差検証](../cross-validation/)のノートで Ridge の `alpha` を例に説明しています。
+
+---
+
+### 探索を組む前に決めること
+
+最初に、何で測るかを決めます。テストデータを取り分け、残りを交差検証で分けます。行に時間の順や持ち主があれば、`TimeSeriesSplit` や `GroupKFold` で本番と同じ分け方にします。
+
+次に、試す値と範囲を決めます。探索する値が 3 個以上で、どれが効くか分からない時は、グリッドを細かくする前に `RandomizedSearchCV` を回してみます。本記事の題材では、16〜27 回で一番高い点がほぼ頭打ちになりました。学習率や正則化の強さは `loguniform` で選びます。結果をハイパーパラメータごとに並べ、R² を動かしている値と動かしていない値を分けます。動かしていない値は範囲をそのままにし、動かしている値の範囲だけを狭めて、もう一度回します。
+
+`HalvingRandomSearchCV` で時間を減らすなら、1 回目の行数で、探索する範囲の候補が意味を持つかを見ます。`min_samples_leaf` のように行数で効く値を探索する時は、`min_resources` を大きくします。
+
+最後に、選んだ設定をテストデータで 1 回だけ測ります。グリッドを使った時は、冒頭に示した図の左側のように、`cv_results_` を値ごとに数え、同じ値を何十回も学習していないかを見ておきます。
