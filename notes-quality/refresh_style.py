@@ -12,7 +12,7 @@
 - style/vocabulary.md: build_vocab.py による、本人の実文とノートの言い回しの差
 - style/corpus.sha256: 学習に使う本文のハッシュ。omokage のプロファイルを作り直すかの判定に使う
 
-記事や weeknotes を commit する時に pre-commit が自動で走らせ、書き出したものを同じ commit に入れる。
+GitHub Actions（.github/workflows/style-refresh.yml）が週 1 回走らせ、変わっていれば main に commit する（2026-11-13 から。以前は pre-commit で毎回）。
 """
 import csv, glob, hashlib, io, os, re, subprocess, sys
 

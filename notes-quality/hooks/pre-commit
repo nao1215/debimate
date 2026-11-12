@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
 # 技術ノート・ML ノートを含む commit だけで動く。記事（content/post）・weeknotes だけの commit では何もしない
-# （2026-11-12 著者の指定）。
-# 1. 文体の基準（notes-quality/style の variants.tsv・vocabulary.md・corpus.sha256）を本人の実文から作り直し、
-#    同じ commit に入れる。記事・weeknotes の更新は、次にノートを commit する時にここで取り込まれる。
-# 2. ノートの規則を staged の版で見る（notes-quality/gate.py commit）。
+# （2026-11-12 著者の指定）。ノートの規則を staged の版で見る（notes-quality/gate.py commit）。
+# 文体の基準（notes-quality/style の variants.tsv・vocabulary.md・corpus.sha256）は、ここでは作り直さない。
+# 文体はすぐには変わらないので、GitHub Actions の style-refresh.yml が週 1 回作り直す（2026-11-13 著者の指定）。
 # 有効にする: git config core.hooksPath notes-quality/hooks
 set -e
-git diff --cached --name-only | grep -qE '^(content/notes/|projects/ml/notes/|notes-quality/style/(variant_groups|corpus_)|notes-quality/(build_vocab|refresh_style)\.py)' || exit 0
+git diff --cached --name-only | grep -qE '^(content/notes/|projects/ml/notes/)' || exit 0
 root="$(git rev-parse --show-toplevel)"
-python3 "$root/notes-quality/refresh_style.py" >/dev/null
-git add "$root/notes-quality/style/variants.tsv" "$root/notes-quality/style/vocabulary.md" "$root/notes-quality/style/corpus.sha256"
 exec python3 "$root/notes-quality/gate.py" commit

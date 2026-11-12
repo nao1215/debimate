@@ -1,0 +1,35 @@
+name: Refresh writing style baseline
+
+# 文体の基準（notes-quality/style の variants.tsv・vocabulary.md・corpus.sha256）を
+# 本人の記事・weeknotes から作り直し、変わっていれば main に commit する。
+# 文体はすぐには変わらないので週 1 回で足りる（2026-11-13 著者の指定。以前は pre-commit で毎回作り直していた）。
+# GITHUB_TOKEN の push では他の workflow は動かない（基準はサイトに載らないので deploy は要らない）。
+on:
+  schedule:
+    # Sunday 09:00 JST
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: style-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild the style baseline
+        run: python3 notes-quality/refresh_style.py
+      - name: Commit if changed
+        run: |
+          files="notes-quality/style/variants.tsv notes-quality/style/vocabulary.md notes-quality/style/corpus.sha256"
+          if git diff --quiet -- $files; then echo "変更なし"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- $files
+          git commit -m "chore(notes-quality): refresh the writing style baseline from posts and weeknotes"
+          git push
