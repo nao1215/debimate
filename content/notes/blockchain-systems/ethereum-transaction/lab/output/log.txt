@@ -1,0 +1,19 @@
+## 書き換え
+raw 0x02f874827a6980843b9aca0084773594008252089470997970c51812dc3a010c7d01b50e0d17dc79c8880de0b6b3a764000080c080a074128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37a06d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48 bytes 119
+signer 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 hash 0x7d4c13ed95c0cee830d7457ec5a5976db1fc301cfa7a23fef0039a7ccf6aea87
+value を 1 → 2 ETH signer 0x6eb0fa363dc12d7675fe88009c284d270620d268 balance 0 -> Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value
+to の末尾 c8 → c9 signer 0x1bdd809d3d12c1bd683145553de86776245614f4 balance 0 -> Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value
+chainId を 31337 → 31338 signer 0xcdabb6962285901a6ddeab5d6edef381e197fafd balance 0 -> Error: server returned an error response: error code -32003: invalid chain id for signer
+資金を入れた後: status 0x1 from 0x6eb0fa363dc12d7675fe88009c284d270620d268 hash 0xd2211cb96ce453d6418e1c1d73827a1c7406650a302a8a1173c93dc523028e3d
+元のまま -> status 0x1 receipt hash 0x7d4c13ed95c0cee830d7457ec5a5976db1fc301cfa7a23fef0039a7ccf6aea87
+## 手数料
+{'max_fee_gwei': 100, 'prio_gwei': 1, 'base_gwei': 10.0, 'eff_gwei': 11.0, 'gas_used': 21000, 'fee_eth': 0.000231, 'burn_eth': 0.00021, 'tip_eth': 2.1e-05, 'cap_eth': 0.0021}
+{'max_fee_gwei': 100, 'prio_gwei': 50, 'base_gwei': 10.0, 'eff_gwei': 60.0, 'gas_used': 21000, 'fee_eth': 0.00126, 'burn_eth': 0.00021, 'tip_eth': 0.00105, 'cap_eth': 0.0021}
+{'max_fee_gwei': 100, 'prio_gwei': 100, 'base_gwei': 10.0, 'eff_gwei': 100.0, 'gas_used': 21000, 'fee_eth': 0.0021, 'burn_eth': 0.00021, 'tip_eth': 0.00189, 'cap_eth': 0.0021}
+priority fee 20 > maxFee 10 -> Error: server returned an error response: error code -32003: max priority fee per gas higher than max fee per gas
+## 残高
+{'gas_limit': 21000, 'max_fee_gwei': 100, 'balance_eth': 1.001, 'need_eth': 1.0021, 'node': 'Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value'}
+{'gas_limit': 1000000, 'max_fee_gwei': 40, 'balance_eth': 1.001, 'need_eth': 1.04, 'node': 'Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value'}
+{'gas_limit': 21000, 'max_fee_gwei': 40, 'balance_eth': 1.001, 'need_eth': 1.00084, 'node': '受け付けた', 'fee_eth': 0.000231, 'base_gwei': 10.0}
+## 失敗
+{'status': '0x0', 'gas_limit': 100000, 'gas_used': 21006, 'eff_gwei': 11.0, 'fee_eth': 0.000231066, 'balance_delta_eth': 0.000231066, 'nonce_after': 6, 'nonce_before': 5, 'block': 8, 'receipt': {'type': '0x2', 'status': '0x0', 'cumulativeGasUsed': '0x520e', 'logs': [], 'transactionHash': '0x8b639c1ce31a4d4fe83657db63fa43db80380b72a9feacd4f397a98deb5d839a', 'transactionIndex': '0x0', 'blockHash': '0x729065f154f1281e279bf6889ca6bbd138f775f2c4f58dd2d35ee17ac85f265b', 'blockNumber': '0x8', 'gasUsed': '0x520e', 'effectiveGasPrice': '0x28fa6ae00', 'blobGasPrice': '0x1', 'from': '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', 'to': '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9', 'contractAddress': None, 'blockTimestamp': 1794495724}}

@@ -41,3 +41,4 @@ blockchain-systems__smart-contract	フラット	その他	Smart Contract - 書�
 ml__logistic-regression	問い	その他	ロジスティック回帰 - Pima の糖尿病データを元の単位のまま liblinear に渡すと、年齢の係数が 3.5% に縮む
 blockchain-systems__oracle	場面	その他	Oracle - レンディングが読む価格をプールの価格・TWAP・プッシュ型で比べる
 blockchain-systems__zero-knowledge-proof	場面	その他	Zero-Knowledge Proof - ハッシュから R を外す、IsZero 回路の制約を 1 行消すと偽の証明が通る
+blockchain-systems__ethereum-transaction	場面	その他	Ethereum Transaction - 送信元は署名から決まり、priority fee は base fee との和が maxFeePerGas 以下の間、書いた値のまま払われる

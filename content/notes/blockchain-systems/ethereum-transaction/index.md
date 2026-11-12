@@ -1,5 +1,5 @@
 ---
-title: "Ethereum Transaction - 署名された実行の依頼と手数料の上限"
+title: "Ethereum Transaction - 送信元は署名から決まり、priority fee は base fee との和が maxFeePerGas 以下の間、書いた値のまま払われる"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
@@ -8,281 +8,333 @@ weight: 14
 topics: ["Transaction / Wallet"]
 ---
 
-[Ethereum](https://ethereum.org/) の取引（transaction）は、EOA（Externally Owned Account、外部所有アカウント）が秘密鍵で署名した指示のデータです。[公式ドキュメント](https://ethereum.org/en/developers/docs/transactions/)も、取引はアカウントが暗号で署名して出す指示だと定義しています。送金も、コントラクト（コードを持つアカウント）の呼び出しも、コントラクトの作成も、この 1 つの形で表されます。
+Ethereum のトランザクション（[transaction](https://ethereum.org/developers/docs/transactions/)）は、ETH の送金、[スマートコントラクト](../smart-contract/)の呼び出しと作成を[ブロックチェーン](../blockchain-basics/)のネットワークに依頼する、署名済みのデータです。[ウォレット](../wallet/)の確認画面で承認した時や、アプリが [ethers](https://docs.ethers.org/) などのライブラリで送った時に作られます。
 
-[ウォレット](../wallet/)の確認画面には、金額のほかに「ガスの上限」や「最大手数料」が表示されます。gas は実行の計算量を測る単位です。また、実行に失敗した取引からも手数料が引かれます。どちらも、取引が送金の指示にとどまらず、宛先のコードを動かす依頼にもなるためです。
+手数料の欄には、上限という名前の値が 2 つあります。ところが、片方は条件を満たす間、上限ではなく書いた値がそのまま払われます。
 
-手数料は、使った gas の量に 1 gas あたりの額を掛けて決まります。1 gas あたりの額は、[ブロック](../blockchain-basics/)（取引をまとめた記録の単位）ごとにプロトコルが決める最低額（base fee）と、ブロックを作る参加者への上乗せ（priority fee）の和です。以下は、確認画面の「最大手数料」と、実際に払う手数料の関係を面積で示した図です。
+2021 年 9 月 27 日、暗号資産取引所の Bitfinex から分かれた DeversiFi の画面で、ドルと価値を連動させた [ERC-20](../erc-20/) トークンの USDT を約 10 万ドル分動かす 1 件のトランザクションが送られ、7,676 ETH の手数料が払われました。手数料を払った送信元は、Bitfinex が持つウォレットの 1 つです。[The Block の報道](https://www.theblock.co/post/118753/bitfinex-just-spent-23-7-million-in-fees-to-make-one-ethereum-transaction)によると、当時の価値で約 2,370 万ドルです。
 
-{{< figure src="images/ethereum-transaction_concept.webp" alt="横軸が gas の量、縦軸が 1 gas あたりの額の図。gasLimit と maxFeePerGas で囲んだ点線の外枠が最大手数料で、その中の、使った gas の幅で base fee の高さまでが黄土色（焼却）、その上の priority fee の帯が青（参加者へ）に塗られている。使わずに済んだ gas と単価の上限までの余りは塗られていない" caption="最大手数料の枠と、実際に払う手数料" align="center" >}}
+{{< figure src="images/ethereum-transaction_deversifi.webp" alt="対数の横軸に 3 本の横棒。灰色の base fee は 58.9 gwei、黄土色の maxPriorityFeePerGas は 53,243,611 gwei、青い maxFeePerGas は 115,773,962 gwei。上に、ブロック 13,307,440 で手数料 7,676.6 ETH、うち焼却 0.0085 ETH。下に、払った単価は base fee と priority fee の和の 53,243,670 gwei で、maxFeePerGas には届いていない" caption="7,676 ETH を払ったトランザクションに書かれた値と、その時の base fee" align="center" >}}
 
-上記の図で、送り主が取引に書くのは外枠の 2 辺です。横幅が使って良い gas の上限（gasLimit）、高さが 1 gas あたりの額の上限（maxFeePerGas）です。確認画面の「ガスの上限」は横幅の gasLimit で、「最大手数料」は外枠の面積（gasLimit × maxFeePerGas）に当たります。実際に払うのは塗った部分だけで、詳しくは「使った gas と単価による手数料」で扱います。
+上の図に並べたのは、公開のノードから読んだ[そのトランザクション](https://etherscan.io/tx/0x2c9931793876db33b1a9aad123ad4921dfb9cd5e59dbb78ce78f277759587115)に書かれた上限 2 つと、当時のブロックで決まっていた最低単価（base fee）です。Ethereum の手数料は、[gas](https://ethereum.org/developers/docs/gas/) という単位で数える処理量に、gwei という単位の単価を掛けて決まります。図の gasUsed は使った gas の量です。
 
-取引が作られてから、実行の結果の記録（レシート）が残るまでを以下に示します。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    A["取引を組み立てる<br/>宛先・金額・data<br/>gas の上限"] --> B["秘密鍵で署名する"]
-    B --> C["ネットワークに流す"]
-    C --> D["ブロックに取り込まれ<br/>実行される"]
-    D --> E["レシートに結果が残る"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図で秘密鍵を使うのは、署名の段階だけです。[中継するノード](../mempool/)が中身を書き換えること自体はできます。書き換えた取引がどう扱われるのかは、「署名からの送り主の復元」で扱います。
+払った単価は、単価の上限を書く maxFeePerGas の半分ほどでした。払った額を決めたのは、ブロックを作る側への上乗せを書く maxPriorityFeePerGas の方です。ただし、maxFeePerGas も base fee の約 200 万倍でした。誰の手にも渡らず消える焼却の分はわずかで、手数料のほぼ全部が当時ブロックを作っていたマイナーへ渡りました。報道の追記によると、そのうち約 2,210 万ドル分は Bitfinex のウォレットへ返されています。
 
 <br>
 
-本記事では、1 件の取引に何が書かれ、送り主がどう確かめられ、手数料がどう決まるのかを説明します。手掛かりにするのは次の疑問です。
+本記事では、手数料の欄に書く値をコードで決める人や、確認画面で承認する人に向けて、手元のチェーンで試した結果から次の順に説明します。
 
-- 取引には、なぜ gas の上限を書くのか。
-- 1 件の取引には、どの項目が書かれるのか。
-- 送り主は、どのように確認できるのか。
-- 手数料は、どのように決まるのか。
-- 中の送金が失敗しても、取引が成功として残るのはなぜか。
+- トランザクションには何が書かれ、送信元はどこにあるのか。
+- 署名後のバイト列を書き換えると、何が起きるのか。
+- 手数料の上限 2 つのうち、どちらが書いた値のまま払われるのか。
+- 送るには、残高がいくら必要なのか。
+- 中の処理が失敗した時、手数料と nonce はどうなるのか。
+- Bitcoin のトランザクションや、型の番号ごとに何が違うのか。
 
-アカウントが持つ状態と nonce による順序は [Ethereum Account Model](../ethereum-account-model/) で扱っており、[EVM](../evm/)（Ethereum Virtual Machine）の命令とコントラクトの書き方は本記事では扱いません。
-
----
-
-### 取引に gas の上限を書く理由
-
-[コントラクト](../smart-contract/)とは、アドレスの下にコードと storage（値を保存する領域）を持つアカウントです。取引の宛先がコードを実行するアカウントであれば、そのコードが EVM で実行されます。
-
-[Bitcoin](https://bitcoin.org/) の取引（[UTXO](../utxo/) を消費して作る形）は、検証に必要な手間が中身からほぼ決まります。Ethereum の取引は宛先のコードを動かせるため、何段階の処理になるのかがデータを見ただけでは分かりません。
-
-Ethereum では、ブロックに入った取引を全てのノードが自分で実行し直し、結果を確認します。素朴に「実行が終わるまで動かす」形にすると、終わらない処理を含む取引を 1 件流すだけで、全ノードの計算を占有できます。そこで、実行の量を [gas](https://ethereum.org/en/developers/docs/gas/) で測り、上限を設けます。
-
-[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)は、1 件あたりの上限を課す理由として、コードの中の意図しない、または悪意のある無限ループなど、計算の浪費を防ぐことを挙げています。送り主は、その取引が使って良い gas の上限（gasLimit）を自分で書きます。処理が終わらなくても、実行は gasLimit で止まります。
+単価が上下する仕組みは [Gas and EIP-1559](../gas-eip-1559/)、nonce の順序は [Ethereum Account Model](../ethereum-account-model/) に任せ、本記事では使う所だけを説明します。
 
 ---
 
-### 取引に書かれる項目
+### 欄と署名
 
-以下は、今のウォレットが送金やコントラクトの呼び出しで作る取引の主な項目です。手数料の上限を 2 つ書く型の取引で、型の違いは後で説明します。
+まず、署名済みのトランザクションがどんなバイト列かを見ます。実験には [Foundry](https://getfoundry.sh/) の [Anvil](https://getfoundry.sh/anvil/overview/) を使いました。Anvil は、手元の PC だけで動く Ethereum 互換のチェーンを作る、開発用のノードです。公開ネットワークと実資産は使いません。
 
-| 項目 | 何を決めるか |
-| --- | --- |
-| nonce | 送り主のアカウントの通し番号 |
-| to | 宛先のアドレス。空のバイト列にすると新しいコントラクトの作成になる |
-| value | 宛先に送る ETH（Ethereum の通貨）の量。単位は最小単位の wei で、1 ETH は 10 の 18 乗 wei |
-| data | 宛先のコードに渡す任意の長さのデータ |
-| gasLimit | この取引が使って良い gas の上限 |
-| maxFeePerGas | 1 gas あたりに払う額の上限 |
-| maxPriorityFeePerGas | 1 gas あたりで、ブロックを作る参加者に渡す分の上限 |
-| accessList | 実行中に触る予定のアドレスと storage key を先に申告する。使わない場合は空のリストにする |
-| chainId | どのチェーン向けの取引か |
-| 署名 | 送り主が承認した証拠。`r`、`s` と、公開鍵の復元に使う `yParity` |
+Anvil は開発用のアカウントを 10 個用意し、その秘密鍵を誰でも見られる形で配っています。そのうちアカウント 0 の鍵で、アカウント 1 へ 1 ETH を送るトランザクションを [cast](https://getfoundry.sh/cast/overview/) の `mktx` で署名しました。`mktx` は署名したバイト列を作るだけで、ノードには送りません。
 
-nonce が何を防ぎ、どの範囲の順序を縛るのかは [Ethereum Account Model](../ethereum-account-model/) で扱っています。value と data は独立していて、`value` が 0 でも `data` を渡してコントラクトを呼べます。
+```shell
+# KEY0 は Anvil のアカウント 0 の秘密鍵（開発用に公開されている値）
+cast mktx --private-key "$KEY0" 0x70997970C51812dc3A010C7d01b50e0d17dc79C8 \
+  --value 1ether --nonce 0 --gas-limit 21000 \
+  --gas-price 2gwei --priority-gas-price 1gwei --chain 31337
+```
 
-accessList は、後から足された省略できる項目です。足したのは仕様変更の提案書である EIP（Ethereum Improvement Proposal）の 1 つ、[EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) です。申告したアドレスと storage key は、実行中のアクセスが安く済みます。ただし、列挙した分にも gas が掛かるので、実行中に触らない項目まで並べると、申告の分だけ gas が増えます。
+`--gas-price` に書いた値は下の表にある maxFeePerGas に、`--priority-gas-price` は maxPriorityFeePerGas に入ります。
+
+出てきたのは 119 バイトの 16 進数です。先頭の 1 バイトが型、残りが欄を並べた [RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/)（Recursive Length Prefix）という形式のバイト列です。区切ると次のようになります。
+
+{{< figure src="images/ethereum-transaction_bytes.webp" alt="119 バイトを欄ごとに区切った 2 段の帯。上の段は灰色の型 02（1 バイト）と長さ（2 バイト）の後に、青い chainId 3・nonce 1・maxPriorityFeePerGas 5・maxFeePerGas 5・gasLimit 3・to 21・value 9・data 1・accessList 1 バイトが並び、青い欄の上に「署名する欄（49 バイト。リストにまとめ直し、前に型 02 を付けてハッシュする）」の括弧。下の段は黄土色の yParity 1・r 33・s 33 バイトで「署名（67 バイト）」の括弧。一番上に「送信元（from）の欄は無い」" caption="署名済みのトランザクション（type 2）を欄ごとに区切った 119 バイト" align="center" >}}
+
+青い欄の意味は次の通りです。表の wei は ETH を数える最小の単位で、1 gwei は 10 億 wei、1 ETH は 10 の 18 乗 wei です。
+
+| 欄 | 役割 | 実験の値 |
+| --- | --- | --- |
+| chainId | どのチェーン宛ての依頼か | [31337](../mainnet-and-testnet/#ethereum-の-chain-id-と-network-id)（Anvil） |
+| [nonce](../../security/nonce/) | 送信元の通し番号。同じ番号は 1 回しか通らない | 0 |
+| maxPriorityFeePerGas | gas 1 単位ごとに上乗せする額の上限 | 1 gwei |
+| maxFeePerGas | gas 1 単位ごとに払う額の上限 | 2 gwei |
+| gasLimit | この依頼で使って良い gas の量 | 21,000 |
+| to | 宛先のアドレス。空ならコントラクトの作成 | アカウント 1 |
+| value | 送る ETH の額。単位は wei | 10 の 18 乗 |
+| data | コントラクトに渡す入力。送金だけなら空 | 空 |
+| accessList | 先に読むと宣言するアドレスとストレージ | 空 |
+
+gasLimit を書くのは、全ノードが同じ処理を実行し直すからです。終わらない処理でネットワークを占有されないよう、1 件ごとに使って良い量を先に決めます。単純な送金でも 21,000 の gas が必ず掛かり、これを intrinsic gas と呼びます。data と accessList を足すと増えます。
+
+value と data は別の欄なので、value が 0 のまま data でコントラクトを呼べます。data の中身は、呼ぶ関数と引数を決まった形に並べたバイト列で、[ABI](../evm/#calldata-と-abi) を知らないと何をする依頼か読めません。accessList は [EIP-2930](https://eips.ethereum.org/EIPS/eip-2930) で加わった欄で、触るアドレスとストレージを先に申告すると実行中の読み書きが安くなります。ただし、列挙した分にも gas が掛かります。
 
 <br>
 
-#### 先頭 1 バイトで分かれる取引の型
-
-取引の形は 1 通りではなく、先頭の 1 バイトが中身の読み方を決めます。[EIP-2718](https://eips.ethereum.org/EIPS/eip-2718) は「`TransactionType || TransactionPayload` is a valid transaction」（型の番号と、型ごとの中身を繋いだものが有効な取引になる）と定めています。
-
-上記の表の型は、1 gas あたりの額を base fee と priority fee に分ける今の決め方を入れた [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) が定めた、番号 0x02 の型で、Type 2 transaction と呼ばれます。
-
-型の番号を持たない古い形の取引（legacy transaction）も、今も使えます。こちらは Ethereum の符号化規則である RLP（Recursive Length Prefix）で項目のリストを符号化したもので、先頭のバイトは 0xc0〜0xfe の範囲に入ります（0xff は将来の拡張用に予約されています）。型の番号はこれと重ならない 0x7f 以下に置かれるので、先頭の 1 バイトを見ればどちらの形かが分かります。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    B["取引の先頭 1 バイト"] --> Q{"値の範囲"}
-    Q -->|"0x00〜0x7f"| N["型の番号（TransactionType）<br/>続きは型ごとの中身"]
-    Q -->|"0xc0〜0xfe"| L["legacy transaction<br/>RLP で符号化した並び"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図で、型の番号を持つ側の取引を typed transaction と呼び、Type 2 もここに入ります。この分岐があるため、新しい項目を持つ型を足しても、古い形の取引はそのまま検証できます。legacy transaction は、手数料の上限 2 つの代わりに 1 gas あたりの単価 gasPrice を 1 つだけ持ち、chainId を独立した項目としては持ちません。
-
-ほかに、大きなデータ（blob）を伴う 0x03 の型（[Blob のノート](../blob/)で扱います）や、EOA がコントラクトのコードに実行を委ねる 0x04 の型（[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)）もあります。どちらも本記事では扱わず、手数料も実行に使う gas の分だけを扱います。
-
----
-
-### 署名からの送り主の復元
-
-上記の表に、送り主のアドレスを書く項目がありません。取引のデータには送り主が入っておらず、署名から復元します。EOA の公開鍵は、楕円曲線を使う署名方式である ECDSA の署名の `r`、`s` と、`yParity`（legacy transaction では `v`）から導けます（[『Mastering Ethereum』第 2 版の第 6 章](https://masteringethereum.xyz/chapter_6.html)）。
-
-復元した公開鍵から[アドレスを計算](../ethereum-address/)すれば送り主が分かり、そのアカウントの nonce と残高で取引を受け付けられるかを照合します。
-
-ここでの復元は、手元の公開鍵で署名を検証する操作とは別です。ECDSA では、署名と対象のデータから公開鍵の候補が求まり、legacy transaction の `v` や typed transaction の `yParity` が、どれを使うのかを指します。署名の計算は [Digital Signature](../digital-signature/) で扱っています。
-
-署名から送り主が決まるまでの流れを図にすると、以下のようになります。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    H["署名の対象になった<br/>取引のデータ"] --> P["公開鍵を復元する"]
-    S["署名 r, s と yParity"] --> P
-    P --> A["アドレスを計算する"]
-    A --> C["そのアカウントの<br/>nonce と残高を照合する"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図で、取引のデータを 1 バイトでも書き換えると、署名の対象が変わります。元の署名をそのまま付けても、復元されるのは元の送り主とは別のアドレスになるか、復元そのものが失敗します。どちらにしても、元の送り主が承認した取引としては成立しません。
-
-同じ鍵とアドレスは、Ethereum 本体とテスト用のネットワークなど、複数のチェーンで使えます。署名済みの取引をそのまま[別のチェーンに流される](../replay-protection/)と、送り主が承認していない送金が成立してしまいます。これを防ぐために、署名の対象に [chain ID](../mainnet-and-testnet/#ethereum-の-chain-id-と-network-id) を入れます。
-
-chain ID が署名の対象に入るかどうかは、取引の形で変わります。typed transaction と、[EIP-155 に従う legacy transaction](https://eips.ethereum.org/EIPS/eip-155) では、署名のためのハッシュを計算する対象に chain ID を含めます。同じ EIP は、chain ID を含めない以前の署名も引き続き有効だと書いており、その形の取引に chain ID は入らず、別のチェーンへ流されることを防げません。
-
----
-
-### 使った gas と単価による手数料
-
-送り主が払う額は、`使った gas × (base fee + priority fee)` で決まります。base fee はブロックごとに決まる 1 gas あたりの最低額で、priority fee は[ブロックを作る参加者](../proof-of-stake/)に渡す上乗せ分です。
-
-[公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)には、base fee の分が焼却されて流通から取り除かれ、priority fee の分が参加者に渡ると説明されています。
-
-取引に書く 2 つの上限は、この式の別々の箇所を制限します。冒頭の図で言えば、gasLimit が外枠の横幅で、maxFeePerGas が高さです。コードを持たないアカウントに data 無しで ETH を送るだけなら 21,000 gas で、data を付けたりコードが動いたりすると増えます。
-
-実際に渡る priority fee は、maxPriorityFeePerGas と、maxFeePerGas から base fee を引いた残りのうち、小さい方になります。base fee が maxFeePerGas を超えている間、その取引は取り込まれません。
-
-例えば、1 ETH を送る単純な送金に、gasLimit 21,000、maxFeePerGas 30 gwei、maxPriorityFeePerGas 2 gwei を書いたとします。gwei は 10 億 wei です。以下は、ブロックの base fee ごとの支払いです。
-
-| base fee | 渡る priority fee | 1 gas あたりの単価 | 手数料 |
-| --- | --- | --- | --- |
-| 10 gwei | 2 gwei | 12 gwei | 252,000 gwei（0.000252 ETH） |
-| 29 gwei | 1 gwei | 30 gwei | 630,000 gwei（0.00063 ETH） |
-| 31 gwei | なし | なし | 取り込まれない |
-
-base fee が 10 gwei なら、0.00021 ETH が焼却され、0.000042 ETH が参加者に渡ります（公式ドキュメントの例と同じ数値です）。base fee が 29 gwei に上がると、上乗せは maxFeePerGas までの残りの 1 gwei に削られます。base fee が 31 gwei の行の取引は、拒否されて消えるのではなく、base fee が 30 gwei 以下に下がるまでブロックに入らないまま待つことになります。待っている取引をノードがどう扱うかは [Gas and EIP-1559](../gas-eip-1559/) で確認しています。
-
-実行が gasLimit に届かずに終われば、使わずに済んだ分は手数料になりません。それでも取引がブロックに入るには、`gasLimit × maxFeePerGas + value` の残高が必要で、上記の例では 1.00063 ETH です。
-
-ウォレットの確認画面に出る「最大手数料」は、実際に引かれる額ではなく、この `gasLimit × maxFeePerGas`（上記の例では 0.00063 ETH）を指します。
-
-送り主が取引に書けるのは上限までで、払う額は、使った gas と、取り込まれたブロックの base fee が分かるまで確定しません。
+黄土色の 67 バイトが署名です。r と s は [ECDSA](../digital-signature/) で作った署名の値で、yParity は公開鍵の候補 2 つのどちらかを示す 0 か 1 です。
 
 <br>
 
-#### 混雑で上がる base fee
+欄を全部並べても、送信元（from）はありません。ノードは青い欄を RLP のリストにまとめ直し、前に型の 02 を付けて [Keccak-256](../hash-function/) でハッシュします。
 
-base fee は、前のブロックの混み具合で上下します。1 ブロックに入る取引の gas の合計にも上限（取引の gasLimit とは別の、ブロックの gas 上限）があり、使った gas がその半分（target）を超えると次の base fee が上がり、下回ると下がります。1 ブロックで動く幅は最大 12.5%（8 分の 1）です。式と、ローカルのノードで実測した推移は [Gas and EIP-1559](../gas-eip-1559/) で扱っています。
+そのハッシュと r・s・yParity から公開鍵を計算します。この計算を公開鍵の復元と呼び、公開鍵から決まる[アドレス](../ethereum-address/)が送信元です。ブロックエクスプローラーの From も、記録された値ではなくこの計算の結果です。復元の手順は [Mastering Ethereum の第 6 章](https://masteringethereum.xyz/chapter_6.html)で説明されています。
 
-上記の例に当てはめると、満杯のブロックが続けば base fee は 1 ブロックごとに 1.125 倍になり、10 gwei からは 10 ブロック目（1 ブロック 12 秒で約 2 分後）に 30 gwei を超えて、表の 3 行目の状態になります。送った時点の base fee の 3 倍を上限に書いても、混雑が 2 分続けば足りなくなる計算です。
+同じ計算は `cast decode-transaction` でもできます。出力の `signer` が復元した送信元です（抜粋）。
+
+```json
+{
+  "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "type": "0x2",
+  "nonce": "0x0",
+  "hash": "0x7d4c13ed95c0cee830d7457ec5a5976db1fc301cfa7a23fef0039a7ccf6aea87"
+}
+```
+
+`hash` は、署名まで含めた 119 バイト全体を Keccak-256 でハッシュした値で、トランザクションハッシュと呼びます。ノードに送る前から決まっており、後でノードに送ると、実行結果の記録であるレシート（receipt）にも同じ `0x7d4c…ea87` が載りました。
 
 ---
 
-### 実行が止まった時に消費する gas
+### 署名した後の書き換え
 
-取引には、実行を始める前に必ず掛かる intrinsic gas があります。上に挙げた単純な送金なら 21,000 で、data や accessList を付ければ、その内容に応じて増えます。
+送信元が欄に無いなら、署名した後のバイト列を書き換えると何が起きるのかを試します。上記の 119 バイトで、value・to・chainId という 3 つの欄だけ、長さを変えずに値を置き換えました。署名の 67 バイトには触れていません。次のコードは、Python から cast を呼ぶ [run.py](lab/run.py) の抜粋です。
 
-実行を始めた後は、コードが条件を満たさない時（例えば、送ろうとした[トークン](../erc-20/)の残高が足りない時）に、EVM の `REVERT` 命令で自分から実行を中止し、状態の変更を取り消せます。以下は、gasLimit と実行の進み方によって、消費される gas が分かれる様子です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    T["取引"] --> Q{"gasLimit が<br/>intrinsic gas に届くか"}
-    Q -->|"届かない"| X["検証の段階で拒否<br/>ブロックに入らず<br/>gas も消費しない"]
-    Q -->|"届く"| E["実行を始める"]
-    E -->|"最後まで終わる"| D["使った gas の分だけ払う"]
-    E -->|"REVERT で中止"| RV["状態の変更を取り消す<br/>使った分は払い<br/>残った gas は消費しない"]
-    E -->|"途中で gas を使い切る"| OG["状態の変更を取り消す<br/>gasLimit の分を全て消費"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```python
+# sign・decode・publish は cast の mktx・decode-transaction・publish を呼ぶだけの関数
+raw = sign(KEY0, nonce=0, value_wei=1 * ETH, max_fee=2 * GWEI, prio=1 * GWEI)
+cases = {
+    # 88 は「続く 8 バイト」を表す長さ、0de0b6b3a7640000 が 1 ETH（10 の 18 乗 wei）
+    "value を 1 → 2 ETH": raw.replace("880de0b6b3a7640000", "881bc16d674ec80000"),
+    # to のアドレスの末尾 3 バイト
+    "to の末尾 c8 → c9": raw.replace("dc79c8", "dc79c9"),
+    # 82 は長さ、7a69 が chainId の 31337、続く 80 は nonce の 0
+    "chainId を 31337 → 31338": raw.replace("827a6980", "827a6a80"),
+}
+for name, r in cases.items():
+    print(name, decode(r)["signer"], publish(r))
 ```
 
-上記の図のうち、手数料を払わずに済むのは、検証の段階で拒否される経路だけです。[gas の公式ドキュメント](https://ethereum.org/en/developers/docs/gas/)の例では、単純な送金に 20,000 の gasLimit を付けた取引は、検証の段階で拒否されます。
+結果は次の通りです。
 
----
+| 書き換えた欄 | 復元した送信元 | ノードの返事 |
+| --- | --- | --- |
+| 無し | `0xf39f…2266`（アカウント 0） | 受け付けた |
+| value を 1 → 2 ETH | `0x6eb0…d268` | Insufficient funds |
+| to の末尾 c8 → c9 | `0x1bdd…14f4` | Insufficient funds |
+| chainId を 31337 → 31338 | `0xcdab…fafd` | invalid chain id for signer |
 
-### レシートに残る実行の結果
+どの書き換えでも、署名が不正というエラーは出ませんでした。value と to を書き換えたバイト列は、知らないアドレスが送信元の依頼として読まれ、そのアドレスの残高が 0 なので拒否されています。表の Insufficient funds は、Anvil の返事 `Insufficient funds for gas * price + value` の先頭です。chainId を書き換えたものは、残高より先に、Anvil の chainId と合わないことで拒否されました。
 
-ブロックに入ったことは、実行が成功したことを意味しません。Ethereum は、取引として有効かどうかの検査と、実行が成功したかどうかを分けて扱います。有効でない取引はブロックに入りませんが、有効であれば、実行に失敗しても手数料を払ってブロックに残ります。
+chainId を署名する欄に含めるのは、別のチェーンに同じバイト列を送らせないためです。この防ぎ方は [Replay Protection](../replay-protection/) で扱っています。
 
-Bitcoin にはこの 2 段の区別が無く、検証を通らない取引はブロックに入らないだけです（[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/)）。Ethereum で実行の結果を読み取る先が、取引ごとに作られる取引レシート（receipt）です。
+{{< figure src="images/ethereum-transaction_recover.webp" alt="2 段の流れ図。見出しは、署名の 67 バイトに触れずに試した 3 件の書き換えでは、どれも公開鍵の復元は失敗せず、別の送信元が復元された。上段は元のバイト列（value = 1 ETH）から、署名する欄をハッシュし、同じ r, s, yParity から公開鍵を復元すると、緑の送信元 0xf39f…2266（Anvil のアカウント 0、署名した鍵）になり、受け付けて実行される。下段は value を 2 ETH に書き換えたバイト列で、同じ手順から赤い送信元 0x6eb0…d268（鍵の持ち主はいない、残高 0）が出て、残高不足で拒否、残高を入れると実行された" caption="試した書き換えでは、ハッシュが変わり同じ署名から別の送信元が復元された" align="center" >}}
 
-プロトコルが定めるレシートの中身は 4 つです。[EIP-2718 には legacy receipt が `rlp([status, cumulativeGasUsed, logsBloom, logs])` と書かれています](https://eips.ethereum.org/EIPS/eip-2718)。状態コード（status）、そのブロックでこの取引までに使われた gas の累計、logs bloom、ログです。
-
-[ログ](../evm/#イベントとログ)はコントラクトが実行中に残す出来事の記録（例えば、トークンが送られた）で、アプリはこれを読んで結果を知ります。logs bloom は、中身を読まずに、あるアドレスや出来事のログが含まれ得るかを判定するための値です。
-
-typed transaction のレシートには、この 4 つの前に型のバイトが付きます。1 件が使った量はこの中に無く、前の取引の累計との差として求まります。
-
-以下は、プロトコルが記録するレシートと、ノードが API で返すレシートの違いです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph P["プロトコルが記録するレシート"]
-        P1["status"]
-        P2["cumulativeGasUsed<br/>ブロックでの累計"]
-        P3["logsBloom"]
-        P4["logs"]
-    end
-    subgraph R["eth_getTransactionReceipt の応答"]
-        R1["status や logs など"]
-        R2["gasUsed<br/>1 件が使った量"]
-        R3["effectiveGasPrice<br/>実際に払った単価"]
-    end
-    P1 --> R1
-    P4 --> R1
-    P2 -.->|"前の取引の累計との差"| R2
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-ノードに問い合わせて見るのは、上記の図の右側です。[JSON-RPC のドキュメント](https://ethereum.org/en/developers/docs/apis/json-rpc/)によれば、`eth_getTransactionReceipt` は `gasUsed` と `effectiveGasPrice` も含めて返します。
-
-`REVERT` で中止した取引も、gas を使い切った取引も、成否はレシートの中の status という 1 つの値で表されます。EIP-658 はこの項目を「[a status code, 0 indicating failure ... and 1 indicating success](https://eips.ethereum.org/EIPS/eip-658)」（0 が失敗、1 が成功を示す状態コード）と定めています。
-
-この値が表すのは、取引のトップレベルの実行（取引の宛先として最初に呼ばれた実行）が成功したかどうかです。
-
-2017 年 10 月の更新（Byzantium）で [EIP-140](https://eips.ethereum.org/EIPS/eip-140) が `REVERT` 命令を入れる前は、失敗した取引は必ず gas を使い切るので、使い切らなかった取引は成功したと分かりました。`REVERT` は gas を残して失敗するため、この推測は使えません。[同じ EIP](https://eips.ethereum.org/EIPS/eip-658) は、これを status を入れた理由の 1 つに挙げています。
-
-以下は、実行の結果によって分かれる処理です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    E["ブロックの中で実行する"] --> Q{"トップレベルの実行"}
-    Q -->|"成功"| S1["status 1<br/>EVM 実行による<br/>状態変更が残る"]
-    Q -->|"失敗<br/>REVERT や gas 切れ"| S0["status 0<br/>EVM 実行による<br/>状態変更を取り消す"]
-    S1 --> F["nonce を 1 進め<br/>消費した gas の分を支払う"]
-    S0 --> F
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-取り消されるのは、EVM の実行中に生じた状態の変更です。`value` の移動も、コードが storage に書き込んだ分もここに入ります。失敗した取引で送った額は送り主に残り、消えるのは手数料の分だけということです。
-
-一方で、取引の処理として行う nonce の更新と手数料の支払いは、どちらの経路でも残ります（[Ethereum Account Model](../ethereum-account-model/)）。冒頭で挙げた、失敗した取引からも手数料が引かれる理由はここにあります。
+上の図のように、試した 3 件では公開鍵の復元は失敗せず、計算した結果がそのまま送信元になりました。
 
 <br>
 
-ただし、status が表すのはトップレベルの実行の成否だけです。コントラクトが別のコントラクトを呼び、その中で `REVERT` や gas 切れが起きても、呼び出し元が失敗を受け流して最後まで進めば、取引としては成功になります。以下は、中の呼び出しが失敗した時に、呼び出し元の扱いで status が分かれる様子です。
+では、書き換えで出てきた `0x6eb0…d268` に残高があればどうなるかです。Anvil が開発用に持つ命令 `anvil_setBalance` でこのアドレスに 10 ETH を入れ、value を書き換えたバイト列をもう一度送りました。
 
-{{< figure src="images/ethereum-transaction_nested.webp" alt="上下 2 段の図。どちらも灰色の枠がトップレベルの実行で、中に ① 処理を始める、② 別のコントラクトを呼ぶ（赤い点線の箱、× 中で失敗）、③ の 3 つの箱が並ぶ。上段の ③ は「結果を確認せず最後まで進む」で、枠の外の緑の箱 status 1（成功として残る）に矢印が向かう。下段の ③ は「失敗を見て REVERT で中止」で、赤い箱 status 0（状態の変更を取り消す）に矢印が向かう" caption="中の呼び出しの失敗と、レシートの status" align="center" >}}
+```text
+資金を入れた後: status 0x1 from 0x6eb0fa363dc12d7675fe88009c284d270620d268
+```
 
-上記の図の上段では、② の中の変更だけが取り消され、① と ③ の変更は残ります。status が 1 でも、中の処理が失敗していることがあるわけです。下段のように、呼び出し元が失敗を確認して自分も `REVERT` すれば、status は 0 になります。呼び出しの入れ子と失敗の伝わり方は、[EVM のノート](../evm/#失敗の扱い)で実験しています。
+レシートの status は成功を表す 1 で、秘密鍵を知る人がいない `0x6eb0…d268` から 2 ETH が送られました。ノードから見ると、署名と送信元の対応に矛盾は無いためです。
 
-2016 年 2 月のゲーム King of the Ether Throne（新しい王が座を買うと、前の王に補償金が送られる）では、上段の形で[中の送金の失敗が見落とされました](https://www.kingoftheether.com/postmortem.html)。
+公開のチェーンでこれが攻撃にならないのは、復元される送信元を書き換える側が選べないからです。出てくるのは残高の無い、事実上ランダムなアドレスです。特定の誰かを送信元にするには、その人の秘密鍵で署名し直すしかありません。
 
-ETH の受け取り手がコントラクトなら、受け取った時にそのコードが動き、gas を使います。補償金の送り先が、Ethereum のウォレットアプリ [Mist](https://github.com/ethereum/mist) の作るコントラクト型のウォレットだった時、[Solidity](https://soliditylang.org/) の `send`（受け取り側に 2,300 gas だけを渡して ETH を送る関数）では gas が足りず、送金が失敗しています。コントラクトは結果を確認せずに処理を続けたため、取引は成功として進み、補償金は送り元のコントラクトに残りました。
-
-内側の失敗は `REVERT` ではなく gas 切れですが、呼び出し元が受け流せば取引が成功になる点は同じです。当時のレシートに status はありませんでしたが、今の規則なら 1 になります。
-
----
-
-### この設計で得られる性質
-
-以下は、実行の依頼を署名付きのデータにし、gas の上限を書かせる形から得られる性質です。
-
-- 送り主のアドレスを書かなくても、署名から復元して残高と nonce を照合できる
-- 実行の量が事前に決まらない処理でも、1 件あたりの上限を gasLimit で切れる
-- 送金、コントラクトの呼び出し、コントラクトの作成が 1 つの形で表される
-- 先頭 1 バイトの型により、古い形の取引を残したまま新しい項目を足せる
+ただし、ネットワークにつながない端末で署名したバイト列を別の端末から送る時や、送信を他のサービスに任せる時は、途中の書き換えが署名エラーではなく残高不足や chainId の不一致として返ってきます。送る前に `cast decode-transaction` などで欄と送信元を読み直すか、署名した時に控えたトランザクションハッシュと照らすと気付けます。
 
 ---
 
-### 利用時に生じる制約
+### 手数料の上限 2 つ {#使った-gas-と単価による手数料}
 
-Ethereum は、実行の量が読めないコードを取引から動かせるようにしました。利用時には、次の制約があります。
+次に、冒頭で DeversiFi に起きたことを手元で再現します。手数料に関わるのは、ブロックごとに決まる base fee と、トランザクションに書く 2 つの上限です。
 
-- 実行に必要な gas を送る前に見積もる必要があり、外すと実行を始められないか、gas 切れで失敗する
-- 実行に失敗しても、消費した gas の分の手数料は支払う。gas 切れなら gasLimit の分が消費される
-- 実行時の状態によって結果が変わるため、送った時点では成否が決まらない
-- 取引のデータだけでは何が起きるか読み取れず、data の中身の解釈が必要
+base fee（基本料金）は、ブロックの混み具合からプロトコルが決める gas 1 単位の最低額で、払った分は焼却され誰の手にも渡りません。[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) の規則では、gas 1 単位に実際に払う単価は、次のどちらか小さい方です。
 
-見積もりを外した時の損失を小さくするため、ウォレットはノードに依頼し、ブロックに入れずに同じ取引を試してもらって、使われた gas の量を見積もります。試した時点と実行される時点で状態が違えば、必要な量も変わります。
+- maxFeePerGas
+- base fee + maxPriorityFeePerGas
+
+maxPriorityFeePerGas は略して priority fee と呼ばれ、本記事の図もこの呼び名を使います。単価のうち base fee を超えた分は tip と呼ばれ、ブロックを作った側に渡ります。
+
+<br>
+
+<details>
+<summary>tip の受け取り先</summary>
+
+2022 年 9 月の [The Merge](https://ethereum.org/roadmap/merge/) より前はマイナーでした。今はブロックごとに指定されたアドレスに入り、多くはブロックを提案した[バリデーター](../proof-of-stake/)、外部のビルダーが組んだブロックではビルダーのアドレスのこともあります。
+
+</details>
+
+<br>
+
+Anvil の `anvil_setNextBlockBaseFeePerGas` で、次に作るブロックの base fee を 10 gwei に固定し、maxFeePerGas を 100 gwei にそろえて、maxPriorityFeePerGas だけを 1・50・100 gwei と変えた送金を 1 件ずつ送りました。gas はどれも 21,000 です。次のコードは [run.py](lab/run.py) から、レシートを読む行を省いた抜粋です。
+
+```python
+for prio in [1, 50, 100]:
+    raw = sign(KEY0, nonce, 0, max_fee=100 * GWEI, prio=prio * GWEI)
+    nonce += 1
+    set_base_fee(10)  # anvil_setNextBlockBaseFeePerGas
+    publish(raw)
+```
+
+{{< figure src="images/ethereum-transaction_fee_split.webp" alt="3 本の横棒。横軸は gas 1 単位あたりの gwei で、100 に maxFeePerGas の点線。priority fee 1 gwei は灰色の base fee 10、黄土色の tip 1、斜線の払わない 89 で、手数料 0.000231 ETH。50 gwei は 10、50、払わない 40 で 0.001260 ETH。100 gwei は 10 と 90 で上限の 100 に届き、0.002100 ETH" caption="maxFeePerGas を 100 gwei にそろえ、priority fee だけを変えた 3 件の単価" align="center" >}}
+
+上の図のように、maxPriorityFeePerGas を 1 から 50 gwei に上げると、手数料は 0.000231 ETH から 0.00126 ETH まで 5 倍以上になりました。maxFeePerGas はどちらも 100 gwei のままです。
+
+maxFeePerGas が単価を抑えたのは、base fee と priority fee の和が 110 gwei になった 3 件目だけで、tip は 100 ではなく 90 gwei に削られています。
+
+maxPriorityFeePerGas を 20 gwei、maxFeePerGas を 10 gwei と、priority fee の方を大きくしたトランザクションは、ノードが受け付けませんでした。
+
+```text
+priority fee 20 > maxFee 10 -> max priority fee per gas higher than max fee per gas
+```
+
+<br>
+
+maxFeePerGas は、送った後に base fee が上がった時に払いすぎないための上限です。base fee はブロックが混んでいると上がり、1 ブロックで最大 12.5% 動きます。満杯のブロックが続いた時に、10 gwei から上がる様子を EIP-1559 の式で計算しました。
+
+{{< figure src="images/ethereum-transaction_basefee_rise.webp" alt="横軸が満杯のブロックが続いた数 0〜12（1 ブロック 12 秒）、縦軸が base fee の棒グラフ。10.0 gwei から 1 ブロックごとに 1.125 倍になり、9 ブロック目の 28.9 gwei までは灰色、10 ブロック目の 32.5 gwei から赤で、maxFeePerGas 30 gwei の点線を超える" caption="満杯のブロックが続いた時の base fee（計算値）" align="center" >}}
+
+送った時の base fee の 3 倍を上限に書いても、満杯のブロックが 10 個、約 2 分続けば超える計算です。
+
+base fee が maxFeePerGas を超えている間、トランザクションはすぐには消えず、ブロックに入る前のトランザクションを置く [mempool](../mempool/) で下がるのを待ちます。待つ時間が長いと、ノードの方針で mempool から外されることもあります。この扱いは [Gas and EIP-1559](../gas-eip-1559/#上限を下回ったトランザクションの行方) で実験しています。
+
+<br>
+
+冒頭の図に戻ると、DeversiFi のトランザクションは maxPriorityFeePerGas が 53,243,611 gwei で、その時の base fee 58.9 gwei の約 90 万倍でした。maxFeePerGas は 115,773,962 gwei で、base fee と priority fee の和はこれに届いていません。
+
+払った単価は base fee と priority fee の和で、gas 144,179 を掛けて 7,676.6 ETH になりました。焼却された base fee の分は 0.0085 ETH だけです。gasLimit の 169,595 に maxFeePerGas を掛けた、払う可能性があった最大の額は 19,634.7 ETH です。
+
+maxPriorityFeePerGas は上限という名前でも、base fee との和が maxFeePerGas に届かない限り、書いた値がそのまま払われる入札額として働きます。
+
+なお、DeversiFi は原因としてハードウェアウォレットからの入金に「誤って高い gas の手数料」が付いたと説明しています。なぜその値になったかは、上記の報道からは分かりません。
+
+---
+
+### 送るのに必要な残高
+
+手数料の上限は、払う額だけでなく、送れるかどうかにも効きます。上限まで払うことになった場合に備えて、ノードはトランザクションを受け付ける前に、送信元の残高が次の額以上あるかを調べるからです。
+
+- value + gasLimit × maxFeePerGas
+
+アカウント 2 の残高を 1.001 ETH にして、1 ETH を送るトランザクションを 3 通りの上限で署名しました。base fee は 10 gwei に固定し、priority fee は 1 gwei です。1 ETH を送った残りは 0.001 ETH なので、gasLimit × maxFeePerGas がこれを超えると拒否されるはずです。
+
+{{< figure src="images/ethereum-transaction_reserve.webp" alt="対数の横軸に 3 本の横棒と、1 ETH を送った残り 0.001 ETH の点線。gasLimit 21,000 × maxFeePerGas 100 gwei は 0.00210 ETH で赤、Insufficient funds で拒否。gasLimit 1,000,000 × maxFeePerGas 40 gwei は 0.04000 ETH で赤、拒否。gasLimit 21,000 × maxFeePerGas 40 gwei は 0.00084 ETH で緑、受け付けた、実際の手数料 0.000231 ETH" caption="残高 1.001 ETH から 1 ETH を送る時に必要な上限分の額と結果" align="center" >}}
+
+1 件目は、実際に掛かる手数料が 21,000 × 11 gwei = 0.000231 ETH で、残りの 0.001 ETH に収まります。それでも、maxFeePerGas を 100 gwei と書いたため、上限分の 0.0021 ETH が足りずに拒否されました。
+
+2 件目は単価の上限を 40 gwei に下げても、gasLimit を 1,000,000 と多めに書いたために拒否されています。3 件目だけが通り、払ったのは 1 件目と同じ 0.000231 ETH でした。
+
+この条件は、ノードごとに決める受け付けの方針ではなく、プロトコルの規則です。参照実装の [execution-specs](https://github.com/ethereum/execution-specs/blob/7b8124a77280edaaad877128937b71a1e3a7ebc5/src/ethereum/forks/prague/fork.py) では `check_transaction` にあり、満たさないトランザクションを含むブロックは無効になります。
+
+上限を多めに書くほど安全に見えますが、残高に余裕が無い時は送れなくなります。残高をちょうど使い切るには、maxFeePerGas を実際に払う単価に、gasLimit を使う gas の量に、それぞれ合わせる必要があります。上限に余裕を持たせた分は、使わなかった分として送信元の残高に残ります。
+
+ウォレットでも同じ欄を変えられます。[MetaMask のガス設定](https://support.metamask.io/configure/transactions/how-to-customize-gas-settings/)では、gasLimit は「Gas limit」（gas の上限）、maxPriorityFeePerGas は「Max priority fee」（priority fee の上限）という名前です。確認画面に出る手数料がこの式の額か、見込みの額かはウォレットで違うので、承認する前に欄の値から計算して比べます。
+
+---
+
+### 中の処理が失敗した時 {#実行が止まった時に消費する-gas}
+
+ここまでの拒否は、どれもブロックに入る前の話でした。gasLimit が intrinsic gas に届かないトランザクションも、この段階で拒否されて手数料が掛かりません。手数料を払わずに済むのは、ブロックに入る前に拒否された時だけです。トランザクションがブロックに入った後、宛先のコントラクトで処理が失敗した時は扱いが変わります。
+
+`REVERT` は、処理を取り消して終える命令です。呼ばれると必ず `REVERT` するだけのコントラクトを置き、gasLimit 100,000 で呼び出しました。結果は次の通りです。
+
+```text
+status 0x0  gasUsed 21,006 / gasLimit 100,000  手数料 0.000231066 ETH  nonce 5 → 6  ブロック 8
+```
+
+トランザクションはブロック 8 に入り、レシートの status は失敗を表す 0 でした。コントラクトで行った変更は取り消され、value で送るはずだった ETH も送信元に残ります。ただし、使った gas 21,006 に掛かる手数料は引かれ、nonce も 1 つ進みます。21,006 は、送金でも掛かる 21,000 に、`REVERT` までに実行した命令の 6 を足した値です。
+
+ブロックエクスプローラーで「失敗」なのに手数料が引かれているのは、このようにブロックに入った後で処理が止まった状態です。払う額は止まり方で変わり、`REVERT` で止まった時は使った分だけ、gas を使い切って止まった時は gasLimit の分を全て払います。
+
+gasLimit を指定しないと、[cast は送る前にノードの `eth_estimateGas` を呼び](https://github.com/foundry-rs/foundry/blob/v1.7.1/crates/cast/src/tx.rs#L684-L695)、ブロックへ入れずに試させた結果で gasLimit を決めます。試した時と実行する時でコントラクトの状態が違えば必要な gas も変わり、gas 切れで失敗することがあります。
+
+ノードに [JSON-RPC](https://ethereum.org/developers/docs/apis/json-rpc/) で問い合わせる `eth_getTransactionReceipt` で、この失敗したトランザクションのレシートを読みました（抜粋）。
+
+```json
+{
+  "status": "0x0",
+  "cumulativeGasUsed": "0x520e",
+  "logs": [],
+  "blockNumber": "0x8",
+  "gasUsed": "0x520e",
+  "effectiveGasPrice": "0x28fa6ae00"
+}
+```
+
+`gasUsed` の 0x520e は 21,006、`effectiveGasPrice` の 0x28fa6ae00 は 11 gwei で、掛けると上記の手数料になります。`cumulativeGasUsed` はブロックの中で使った gas の累計で、このブロックには 1 件しか無いので gasUsed と同じです。`logs` はコントラクトが残した[ログ](../evm/#イベントとログ)で、取り消されたので空です。
+
+ただし、status 1 も、中の処理が全て成功したことまでは示しません。コントラクトが別のコントラクトを呼ぶ入れ子の処理では、呼んだ先が失敗しても、呼んだ側がその失敗を受け止めて処理を続ければ status は 1 になり、呼んだ先の変更だけが取り消されます。
+
+{{< figure src="images/ethereum-transaction_nested.webp" alt="上下 2 段の模式図。どちらも灰色の枠がトップレベルの実行で、中に ① 処理を始める、② 別のコントラクトを呼ぶ（赤い点線の箱、× 中で失敗）、③ の 3 つの箱が並ぶ。上段の ③ は「戻り値を見ず最後まで進む」で、枠の外の緑の箱 status 1（成功として残る）に矢印が向かう。下段の ③ は「失敗を見て REVERT で中止」で、赤い箱 status 0（状態の変更を取り消す）に矢印が向かう" caption="中の呼び出しの失敗と、レシートの status" align="center" >}}
+
+図の上段では、② の中の変更だけが取り消され、① と ③ の変更は残ります。下段のように、呼んだ側が失敗を見て自分も `REVERT` すれば、status は 0 になります。
+
+例えば、2016 年 2 月のゲーム [King of the Ether Throne](https://www.kingoftheether.com/postmortem.html) では、ゲームのコントラクトが [Solidity](https://soliditylang.org/) の `send` で補償金を払いました。`send` は受け取る側に 2,300 gas だけを渡すので、送り先が [Mist](https://github.com/ethereum/mist) の作るコントラクト型ウォレットだった時は gas が足りずに失敗しました。
+
+ゲームのコントラクトは `send` の戻り値を見ていなかったため、上段の形でトランザクション全体は成功し、補償金はゲームのコントラクトに残りました。補償金は後に手作業で返されています。
+
+当時のレシートには、まだ status がありませんでした。status は [EIP-658](https://eips.ethereum.org/EIPS/eip-658) で 2017 年 10 月の Byzantium から入りました。足されたのは、同じ時に [EIP-140](https://eips.ethereum.org/EIPS/eip-140) の `REVERT` も入り、gas を残して止まる失敗ができたので、gas を使い切ったかどうかでは失敗を見分けられなくなったからです。この事故は今の規則で送っても、status は 1 になります。
+
+失敗の種類ごとに gas と状態がどう扱われるかは、[EVM](../evm/#失敗の扱い)（Ethereum Virtual Machine）のノートに図があります。
+
+---
+
+### 型の番号と Bitcoin との違い
+
+冒頭に示したバイト列の先頭 1 バイト `02` は、トランザクションの型を表す番号です。[EIP-2718](https://eips.ethereum.org/EIPS/eip-2718) で、先頭の 1 バイトで形式を区別する決まりができ、欄の組み合わせは、全ノードが同時に規則を切り替える更新（ハードフォーク）のたびに増えてきました。
+
+| 型 | 導入 | 加わったもの |
+| --- | --- | --- |
+| 0 | 最初から | 単価の欄は gasPrice だけ |
+| 1 | Berlin（2021 年 4 月） | accessList（EIP-2930） |
+| 2 | London（2021 年 8 月） | 上限 2 つの手数料（EIP-1559） |
+| 3 | Dencun（2024 年 3 月） | blob の手数料と参照（[EIP-4844](https://eips.ethereum.org/EIPS/eip-4844)） |
+| 4 | Pectra（2025 年 5 月） | 秘密鍵で動くアカウントにコードを委任（[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)） |
+
+型 0 は gasPrice に書いた単価をそのまま払う形式で、今も送れます。型 3 の blob は [Blob](../blob/)、ハードフォークの流れは [Ethereum Hard Forks](../ethereum-hard-forks/) で扱っています。
+
+<br>
+
+<details>
+<summary>型 0 の署名と先頭のバイト</summary>
+
+型 0 には chainId の欄が無く、yParity の代わりに v という値を使います。[EIP-155](https://eips.ethereum.org/EIPS/eip-155) に従って署名した時だけ、v に chainId を埋め込みます。chainId を含めない古い形の署名もプロトコルでは今も有効なので、受け付けるノードがあれば別のチェーンでも通ります。ただし [geth](https://geth.ethereum.org/docs/fundamentals/command-line-options) は既定で、この形のトランザクションを RPC から受け付けません。
+
+型 0 のバイト列は RLP のリストなので先頭が 0xc0 以上になり、0x7f 以下を使う型の番号とは先頭 1 バイトで見分けられます。
+
+</details>
+
+<br>
+
+同じ「トランザクション」でも、[Bitcoin のトランザクション](../bitcoin-transaction-lifecycle/)とは作りが違います。Bitcoin は、まだ使われていない過去の出力を入力として指す [UTXO](../utxo/) のモデルで、送信元の欄が無い点は同じですが、理由が異なります。
+
+| | Bitcoin | Ethereum |
+| --- | --- | --- |
+| 送信元 | 入力が指す出力の条件を満たした人 | 署名から復元したアドレス |
+| 手数料 | 入力の合計 − 出力の合計 | gasUsed × 単価 |
+| 二重の使用を防ぐもの | 使った出力は消える | 送信元の nonce |
+| 中で処理が失敗した時 | ブロックに入らない | 入り、status 0 で手数料を払う |
+
+Bitcoin の手数料には欄が無く、出力に書かなかった差額がそのまま手数料になります。検証の手間もデータからほぼ決まります。Ethereum は宛先のコードを動かすので、データだけでは処理量が分からず、gasLimit と単価の上限を書く必要があります。
+
+入力の条件を書く [Bitcoin Script](../bitcoin-script/) が通らないトランザクションは無効で、ブロックに入りません。Ethereum では、署名・nonce・残高の条件を満たせば、中で処理が成功したかに関わらずブロックに入り、gas の分を払います。
+
+---
+
+### 送る前に見る所
+
+DeversiFi の画面から送られたトランザクションは、正しく署名され、status 1 の成功としてブロックに入っていました。違っていたのは手数料の欄に書いた値で、払った額を決めたのは上限という名前の maxPriorityFeePerGas でした。トランザクションを組み立てるコードや、承認する画面では、次の 4 つを見ます。どれも本記事の実験と冒頭の事例で起きたことに対応しています。
+
+1. 上限 2 つをその時の base fee と桁で比べる。
+2. value + gasLimit × maxFeePerGas が残高に収まるかを見る。
+3. 受け渡した署名済みのバイト列は、送る前にデコードする。
+4. 送った後はハッシュでなく status を見る。入れ子の失敗は出ない。
+
+1 つ目で maxPriorityFeePerGas も見るのは、maxFeePerGas に届かない限り、書いた値のまま払われるからです。冒頭の DeversiFi では maxFeePerGas も base fee の約 200 万倍で、どちらを見ても桁違いに気付けました。2 つ目は、gas 切れを避けようと gasLimit に余裕を持たせるほど、必要な残高も増えるためです。
+
+実験のコードと出力は [lab](lab/README.txt) にあります。

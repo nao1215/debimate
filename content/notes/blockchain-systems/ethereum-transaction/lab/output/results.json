@@ -1,0 +1,158 @@
+{
+  "versions": {
+    "cast": "cast Version: 1.7.1"
+  },
+  "tamper": {
+    "raw": "0x02f874827a6980843b9aca0084773594008252089470997970c51812dc3a010c7d01b50e0d17dc79c8880de0b6b3a764000080c080a074128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37a06d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48",
+    "decoded": {
+      "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "type": "0x2",
+      "chainId": "0x7a69",
+      "nonce": "0x0",
+      "gas": "0x5208",
+      "maxFeePerGas": "0x77359400",
+      "maxPriorityFeePerGas": "0x3b9aca00",
+      "to": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+      "value": "0xde0b6b3a7640000",
+      "accessList": [],
+      "input": "0x",
+      "r": "0x74128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37",
+      "s": "0x6d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48",
+      "yParity": "0x0",
+      "v": "0x0",
+      "hash": "0x7d4c13ed95c0cee830d7457ec5a5976db1fc301cfa7a23fef0039a7ccf6aea87"
+    },
+    "rows": [
+      {
+        "case": "元のまま",
+        "raw": "0x02f874827a6980843b9aca0084773594008252089470997970c51812dc3a010c7d01b50e0d17dc79c8880de0b6b3a764000080c080a074128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37a06d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48",
+        "signer": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+        "hash": "0x7d4c13ed95c0cee830d7457ec5a5976db1fc301cfa7a23fef0039a7ccf6aea87",
+        "signer_balance": 10000000000000000000000,
+        "node": "受け付けた",
+        "receipt_hash": "0x7d4c13ed95c0cee830d7457ec5a5976db1fc301cfa7a23fef0039a7ccf6aea87"
+      },
+      {
+        "case": "value を 1 → 2 ETH",
+        "raw": "0x02f874827a6980843b9aca0084773594008252089470997970c51812dc3a010c7d01b50e0d17dc79c8881bc16d674ec8000080c080a074128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37a06d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48",
+        "signer": "0x6eb0fa363dc12d7675fe88009c284d270620d268",
+        "hash": "0xd2211cb96ce453d6418e1c1d73827a1c7406650a302a8a1173c93dc523028e3d",
+        "signer_balance": 0,
+        "node": "Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value",
+        "after_funding": {
+          "status": "0x1",
+          "from": "0x6eb0fa363dc12d7675fe88009c284d270620d268",
+          "to": "0x70997970c51812dc3a010c7d01b50e0d17dc79c8",
+          "value_wei": 2000000000000000000
+        }
+      },
+      {
+        "case": "to の末尾 c8 → c9",
+        "raw": "0x02f874827a6980843b9aca0084773594008252089470997970c51812dc3a010c7d01b50e0d17dc79c9880de0b6b3a764000080c080a074128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37a06d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48",
+        "signer": "0x1bdd809d3d12c1bd683145553de86776245614f4",
+        "hash": "0x1ce61ddb177f045dbdab979af7b3307bdc37b61b93d4012e20b29f4949f41e18",
+        "signer_balance": 0,
+        "node": "Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value"
+      },
+      {
+        "case": "chainId を 31337 → 31338",
+        "raw": "0x02f874827a6a80843b9aca0084773594008252089470997970c51812dc3a010c7d01b50e0d17dc79c8880de0b6b3a764000080c080a074128fd7d42631897474d93692787a2e56b813754468caaca4993c641c986a37a06d5a3b027177cc2841199b70400fece0a29ac5eabee2fa9cbf9b6aa213716c48",
+        "signer": "0xcdabb6962285901a6ddeab5d6edef381e197fafd",
+        "hash": "0xd115a482b32c2ed300ac2d7f317ff7036f80800e5635a05f676cbf2f480cf7da",
+        "signer_balance": 0,
+        "node": "Error: server returned an error response: error code -32003: invalid chain id for signer"
+      }
+    ]
+  },
+  "fee": {
+    "rows": [
+      {
+        "max_fee_gwei": 100,
+        "prio_gwei": 1,
+        "base_gwei": 10.0,
+        "eff_gwei": 11.0,
+        "gas_used": 21000,
+        "fee_eth": 0.000231,
+        "burn_eth": 0.00021,
+        "tip_eth": 2.1e-05,
+        "cap_eth": 0.0021
+      },
+      {
+        "max_fee_gwei": 100,
+        "prio_gwei": 50,
+        "base_gwei": 10.0,
+        "eff_gwei": 60.0,
+        "gas_used": 21000,
+        "fee_eth": 0.00126,
+        "burn_eth": 0.00021,
+        "tip_eth": 0.00105,
+        "cap_eth": 0.0021
+      },
+      {
+        "max_fee_gwei": 100,
+        "prio_gwei": 100,
+        "base_gwei": 10.0,
+        "eff_gwei": 100.0,
+        "gas_used": 21000,
+        "fee_eth": 0.0021,
+        "burn_eth": 0.00021,
+        "tip_eth": 0.00189,
+        "cap_eth": 0.0021
+      }
+    ],
+    "prio_over_max": "Error: server returned an error response: error code -32003: max priority fee per gas higher than max fee per gas"
+  },
+  "reserve": [
+    {
+      "gas_limit": 21000,
+      "max_fee_gwei": 100,
+      "balance_eth": 1.001,
+      "need_eth": 1.0021,
+      "node": "Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value"
+    },
+    {
+      "gas_limit": 1000000,
+      "max_fee_gwei": 40,
+      "balance_eth": 1.001,
+      "need_eth": 1.04,
+      "node": "Error: server returned an error response: error code -32003: Insufficient funds for gas * price + value"
+    },
+    {
+      "gas_limit": 21000,
+      "max_fee_gwei": 40,
+      "balance_eth": 1.001,
+      "need_eth": 1.00084,
+      "node": "受け付けた",
+      "fee_eth": 0.000231,
+      "base_gwei": 10.0
+    }
+  ],
+  "revert": {
+    "status": "0x0",
+    "gas_limit": 100000,
+    "gas_used": 21006,
+    "eff_gwei": 11.0,
+    "fee_eth": 0.000231066,
+    "balance_delta_eth": 0.000231066,
+    "nonce_after": 6,
+    "nonce_before": 5,
+    "block": 8,
+    "receipt": {
+      "type": "0x2",
+      "status": "0x0",
+      "cumulativeGasUsed": "0x520e",
+      "logs": [],
+      "transactionHash": "0x8b639c1ce31a4d4fe83657db63fa43db80380b72a9feacd4f397a98deb5d839a",
+      "transactionIndex": "0x0",
+      "blockHash": "0x729065f154f1281e279bf6889ca6bbd138f775f2c4f58dd2d35ee17ac85f265b",
+      "blockNumber": "0x8",
+      "gasUsed": "0x520e",
+      "effectiveGasPrice": "0x28fa6ae00",
+      "blobGasPrice": "0x1",
+      "from": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "to": "0xdc64a140aa3e981100a9beca4e685f962f0cf6c9",
+      "contractAddress": null,
+      "blockTimestamp": 1794495724
+    }
+  }
+}
