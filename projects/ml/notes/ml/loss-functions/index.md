@@ -22,19 +22,19 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 - パラメータの勾配の振る舞い（学習の安定性、収束速度）
 - 学習結果が何を最適化するか（平均的な予測か、[中央値](/ml/math/median/)的な予測か、確率分布の一致か）
 
-例えば回帰問題で「外れ値を強く罰したい」なら MSE、「外れ値の影響を抑えたい」なら MAE、「その中間」なら Huber 損失を選びます。
+例えば回帰問題で平均を当てたいなら MSE、外れ値の影響を抑えて中央値を当てたいなら MAE、その中間なら Huber 損失を選びます。[scikit-learn の Quantile Regression の説明](https://scikit-learn.org/stable/modules/linear_model.html#quantile-regression)にある通り、MSE を最小化する最小二乗法は `X` を条件にした `y` の平均を推定し、MAE は中央値を推定します。MSE は大きな誤差ほど重く罰するので、外れ値に引きずられやすくなります。
 
 ```mermaid
 flowchart LR
-    A["タスクの種類は?"] --> B{"回帰 or 分類?"}
-    B -->|"回帰"| C{"外れ値の扱い?"}
+    A["タスクの種類は?"] --> B{"回帰・分類・順位付け?"}
+    B -->|"回帰"| C{"何を当てたい?"}
     B -->|"分類"| D{"出力は?"}
-    C -->|"重く罰したい"| C1["MSE (L2)"]
-    C -->|"影響を抑えたい"| C2["MAE (L1)"]
+    B -->|"順位付け"| D3["Ranking loss"]
+    C -->|"平均"| C1["MSE (L2)"]
+    C -->|"中央値（外れ値に強い）"| C2["MAE (L1)"]
     C -->|"中間"| C3["Huber"]
     D -->|"確率を出したい"| D1["Cross-Entropy"]
     D -->|"マージン重視"| D2["Hinge (SVM)"]
-    D -->|"順序関係"| D3["Ranking loss"]
 ```
 
 ---
