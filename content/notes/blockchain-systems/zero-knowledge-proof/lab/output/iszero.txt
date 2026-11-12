@@ -1,0 +1,8 @@
+iszero_bug honest: 公開値 [out, x] = ["0","5"]  検証 OK!
+iszero_bug cheat: 公開値 [out, x] = ["1","5"]  検証 OK!
+iszero_ok honest: 公開値 [out, x] = ["0","5"]  検証 OK!
+iszero_ok cheat: witness を作れない (Assert Failed)
+WITNESS IS NOT CORRECT
+iszero_ok 偽の witness: 公開値 [out, x] = ["1","5"]  検証 Invalid proof
+iszero_bug.r1cs と iszero_bug_cheat.r1cs の sha256: b300e469c2885341 / b300e469c2885341  一致
+iszero_ok.r1cs と iszero_ok_cheat.r1cs の sha256: 7cd30a900a29e490 / 7cd30a900a29e490  一致

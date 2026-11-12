@@ -1,0 +1,9 @@
+{
+  "name": "zkp-circom-lab",
+  "private": true,
+  "dependencies": {
+    "circom2": "0.2.22",
+    "circomlib": "2.0.5",
+    "snarkjs": "0.7.5"
+  }
+}

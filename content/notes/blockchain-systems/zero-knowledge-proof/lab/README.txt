@@ -1,33 +1,28 @@
-RISC Zero local proof experiment
+Zero-Knowledge Proof のノートの実験
 
-Requirements tested:
-- Linux x86_64, host rustc 1.98.0
-- rzup 0.6.0; RISC Zero Rust toolchain 1.97.0 (rustup name: risc0)
-- risc0-zkvm and risc0-build 3.0.6; transitive versions in both Cargo.lock files
-- C/C++ compiler and normal Rust native build prerequisites
-- CPU proving, no CUDA feature or external proving service
+schnorr_zk.py
+  Schnorr の知識の証明を secp256k1 の上で動かす（Python 3 の標準ライブラリだけ）。
+  python3 schnorr_zk.py > output/schnorr.json
+  1. 1 ビットのチャレンジを 20 ラウンド。秘密鍵を知らない 1000 人の残りの数
+  2. 本物のやり取りと、シミュレーターが作ったやり取りが検証を通る数
+  3. Fiat-Shamir のチャレンジに R を入れない時と入れる時に、偽造した証明が通る数
+  乱数は毎回変わるので、残りの数は実行ごとに少し変わる。
 
-Install rzup following https://dev.risczero.com/zkvm/quickstart and run:
-  rzup install rust 1.97.0
-Then, from this lab directory:
-  cargo run --release --locked -p zk-note
+circom/
+  circom 2 と snarkjs（Groth16）の実験。Node.js 22 で走らせた。
+  ./circom/setup.sh   ライブラリ、手元だけの powers of tau、回路のコンパイル
+  ./circom/run.sh     iszero.sh と bench.mjs を走らせ、output/ に書く
+  iszero.sh   制約が 1 つ足りない IsZero で、x = 5 を「0 である」と証明できるか
+  bench.mjs   計算の回数 N を変えた時の、証明を作る時間・検証の時間・やり直す時間
 
-If the toolchain lives outside ~/.risc0, set RISC0_HOME to its rzup directory.
-You can set CARGO_TARGET_DIR to keep build artifacts outside the Page Bundle.
-The first build downloads dependencies and builds the native prover.
-The official docs recommend at least 16 GB RAM for local proving.
-Do not set RISC0_DEV_MODE: disable-dev-mode is deliberately enabled.
+risc0/
+  RISC Zero 3.0.6 の zkVM で、積が 391 になる 2 つの整数（1 より大きい）を知っていることを証明する。
+  dev-mode を切り、手元の CPU で succinct receipt を作る。手順は risc0/README.txt。
+  journal の 1 ビットと、期待する image ID の 1 ビットを反転すると検証が失敗するかも見る。
+  risc0/output/summary.txt が実行の出力。
 
-The guest checks a,b > 1, checked u32 multiplication, and commits the product.
-The host uses teaching inputs 17 and 23. They are deliberately public in the
-source and easily recoverable from 391: this is not a secret-storage example.
-The host explicitly invokes LocalProver with succinct receipts (recursive compression), rejects Fake,
-checks receipt.verify against the compiled expected image ID and checks 391.
-It also checks rejection of a tampered journal and a changed expected image ID.
-
-output/summary.txt is actual stdout from a successful local execution.
-The succinct form avoids the execution-length leakage documented for proofs
-not passed through the recursion prover. See:
-https://dev.risczero.com/api/security-model#zero-knowledge-proving
-Elapsed time includes proving, verification and negative checks, not compilation;
-it is one observation on this machine, not a benchmark or performance promise.
+output/
+  schnorr.json  iszero.txt  bench.tsv  versions.txt
+  bench_runs.tsv は bench.mjs を 3 回走らせた記録（1 回の中で各 15 回の最小）。
+  他の処理も走っている機械（32 コア、load average 30〜44）だったので、値は 2 倍ほどぶれる。
+  bench.tsv は 3 回の最小。

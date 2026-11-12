@@ -1,3 +1,7 @@
-rustc 1.98.0 (88d9e12ae 2026-08-18)
-rustc 1.97.0-dev (e638c6cfe 2026-07-15)
-rzup 0.6.0
+v22.22.1
+├── circom2@0.2.22
+├── circomlib@2.0.5
+└── snarkjs@0.7.5
+
+circom2 npm package 0.2.22
+circom compiler 2.2.2

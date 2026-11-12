@@ -1,0 +1,32 @@
+{
+ "survivors": [
+  1000,
+  499,
+  258,
+  132,
+  62,
+  31,
+  14,
+  8,
+  2,
+  2,
+  1,
+  1,
+  1,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0,
+  0
+ ],
+ "honest_20rounds": "200/200",
+ "real_transcripts": "1000/1000",
+ "simulated_transcripts": "1000/1000",
+ "forged_weak": "1000/1000",
+ "forged_strong": "0/1000",
+ "honest_weak": "1000/1000",
+ "honest_strong": "1000/1000"
+}

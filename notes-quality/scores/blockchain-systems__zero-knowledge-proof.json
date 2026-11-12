@@ -1,8 +1,16 @@
 {
  "path": "content/notes/blockchain-systems/zero-knowledge-proof/index.md",
- "overall": 3,
- "product": 8,
- "blob": "7e2bc8dac3148f0e3a983d1389767a1da5cc559c",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:23:21"
+ "overall": 5,
+ "product": 54,
+ "blob": "4bde6419a31c17a194d11a5885bd050e80ca94a0",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

@@ -1,0 +1,14 @@
+node_modules/
+package-lock.json
+*.ptau
+c/*.r1cs
+c/*.zkey
+c/*.vkey.json
+c/*_js/
+c/chain[0-9]*.circom
+*.wtns
+proof.json
+public.json
+in3.json
+in5.json
+err.txt

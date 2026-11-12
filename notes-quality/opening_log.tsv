@@ -40,3 +40,4 @@ math__probability-distributions	場面	その他	代表的な確率分布 - 2012
 blockchain-systems__smart-contract	フラット	その他	Smart Contract - 書き込みは検証するノード全てが同じ計算をやり直すプログラム
 ml__logistic-regression	問い	その他	ロジスティック回帰 - Pima の糖尿病データを元の単位のまま liblinear に渡すと、年齢の係数が 3.5% に縮む
 blockchain-systems__oracle	場面	その他	Oracle - レンディングが読む価格をプールの価格・TWAP・プッシュ型で比べる
+blockchain-systems__zero-knowledge-proof	場面	その他	Zero-Knowledge Proof - ハッシュから R を外す、IsZero 回路の制約を 1 行消すと偽の証明が通る
