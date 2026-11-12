@@ -1,0 +1,113 @@
+{
+ "article": "content/notes/software-architecture/repository/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:29.970253+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:18.827901+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:54.257961+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:32.842669+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:11.503406+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.890313+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.332966+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:13.470608+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.947031+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:22.356532+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/software-architecture/repository/index.md": "3c66599723c7e75383fb5594a3b52fa863543be1"
+  },
+  "evidence": {
+   "body": "Git差分の全hunkを読み、判定を見直すため全文を精読。",
+   "code_results": "Python の sqlite3（SQLite 3.46.1、本文は 3.54.1）で order_lines と出荷記録の外部キーを作り、削除→再挿入で CASCADE: 成功・出荷記録 0 件、RESTRICT: FOREIGN KEY constraint failed・1 件を再現。Go コードはコンパイルしていない。",
+   "figures": "Mermaid 3 つ（層の参照、集約の中身、更新と照会の分離）。集約図の unitPrice 3,000/8,000 円・合計 19,000 円と本文が一致。",
+   "judgment": "良い",
+   "limitations": "Go のコードは断片のため未コンパイル。外部資料（Fowler/Evans）の再取得なし。",
+   "previous_review_id": 1055,
+   "reason": "前回の主指摘（saveLines が単価を保存せず、単価が規則の前提なのに集約を完全に保存しない）が解消。INSERT に unit_price を加え、本文で『OrderLine は sku・quantity・unitPrice しか知らない』『復元側も unit_price を読み、図の 3,000 円と 8,000 円の単価を失わない』と図の数値まで結んだ。全削除→再挿入の保存が ON DELETE CASCADE で触っていない X の出荷記録を 1→0 件に消し、RESTRICT では保存自体が失敗する実験は、手元でも再現した。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "追加文（復元側・単価の保持）の後に『例えば、次の条件ではこのやり方が使えません』が続き、『このやり方』が全削除→再挿入を指すことが分かりにくくなった。段落を分けるか『全削除して書き直すやり方』と明示する。",
+     "where": "集約全体の書き戻し、saveLines 直後の段落"
+    },
+    {
+     "priority": "低",
+     "problem": "『version 列』『1 行を更新』『表示に必要な列だけ』『どの行を更新すべきか』など、DB の説明で用語集の優先表記（カラム／レコード）と揃っていない。",
+     "where": "同時更新の検出・欠点・照会の図説明"
+    },
+    {
+     "priority": "低",
+     "problem": "『Repository を使っていても、この無駄は避けられます』が直前の『重くなります』と逆に読めて一瞬つまずく。『次の 2 つの方法で避けられます』など、後段との対応を示す。",
+     "where": "読み取りでの限界 第1段落"
+    }
+   ],
+   "resolved_previous_issues": [
+    "saveLines が単価を保存しない → INSERT に unit_price を追加し、復元側の説明も追加"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1158 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回は再取得していない（本文の変更が空白調整または内部の整合に限られ、外部仕様に依存する結論を新たに使っていないため）。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/software-architecture/repository/index.md": "48c84750d3daa8c36bfd78ce59a80706eff27dddfdc2ee80c1e1f6b04b69f516"
+   },
+   "fingerprint": "315ec80847e064bfe1b53ced18926eea69de4edf7773e7237a71f1fff261ee35",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:47.994743+00:00",
+  "source_updated_at": "2026-11-08T19:40:45+09:00"
+ }
+}

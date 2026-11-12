@@ -1,0 +1,104 @@
+{
+ "article": "projects/ml/notes/ml/hyperparameter/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:26.898525+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:57.720206+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:37.033055+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:15.519601+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.304969+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.455737+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.199485+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:34.450625+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:26.078733+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:51.344354+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/hyperparameter/index.md": "81710db1d3cf776557c2b80dddf085a083f8936e",
+   "projects/ml/scripts/notes/hyperparameter_gen.py": "ab88d444c0a7c76751bb7d8a06967b877a34cdfa"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認。",
+   "figures": "1280/390px で表示検査（browser/results-v3-*.json）。",
+   "judgment": "通常",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1324,
+   "reason": "review-06 draft-v3 を反映（ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "alpha=.001 の図が暴れた曲線と言えない／alpha=1000 が直線でない問題（図自体を差し替え）",
+    "多項式特徴量の説明が無く Ridge で曲線が出る理由が抜ける問題（例を変更して解消）",
+    "random_state の影響を否定しすぎる記述（「探索対象ではない」に弱めた）"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1200 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html: 既知の API（return_train_score、cv_results_）と照合。再取得なし。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "86ceba2c03a47afee1f6b10c9126268e4bc56b64",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/hyperparameter/hyperparameter_search.svg": "43ab77b2eb08b7d0b9cad79286d7f06887491821e1d110ae56eb2669e8a13450",
+    "projects/ml/notes/ml/hyperparameter/index.md": "dc3828b711d7c16bd638fcd0b4dec8fe760d3135bccd6335b417bbc22a8dbb47",
+    "projects/ml/scripts/notes/hyperparameter_gen.py": "02f3cb4d5214b16470fd1bb781797d346cb1f54f99e686a4d99cef25da49e2f5"
+   },
+   "fingerprint": "3084f5759e95f1121ea379c541714f79d945992cf9246635d77a4dbd8e7b70b2",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:55:45.125324+00:00",
+  "source_updated_at": "2026-11-09T17:55:44+09:00"
+ }
+}

@@ -1,0 +1,111 @@
+{
+ "article": "projects/ml/notes/ml/gradient-boosting/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:26.543102+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:57.591305+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:36.830467+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:15.350931+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.284536+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.712900+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.100475+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:09.128378+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:42.467414+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:25.901416+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:51.165057+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/gradient-boosting/index.md": "342a0f736e7e385c91ee506155240a53534ae0d9",
+   "projects/ml/scripts/notes/gradient-boosting_gen.py": "38c09db08966fcaece06e21212ade5501dcfa928"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "通常",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1322,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "HistGradientBoosting の推奨文の『こちら』が具体名になり、推量の『と考えられます』が除かれた（文体の改善。技術的指摘の解消ではない）"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1198 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "HistGradientBoosting が scikit-learn 0.21 で（実験的機能として）導入された点は既知の知識と整合（再取得なし）。",
+   "style_fix": "2026-11-09 b185e367: style_check の NG（本人が使わない言い回し）を修正。omokage 89〜90%。"
+  },
+  "git_head": "86ceba2c03a47afee1f6b10c9126268e4bc56b64",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/gradient-boosting/gradient-boosting_early_stopping.svg": "dc21ef6a883546f4335b4000224cec5b80a7c4371cee9007750639dbdf709fdb",
+    "projects/ml/notes/ml/gradient-boosting/gradient-boosting_learning_rate.svg": "3ab2e6fd26ca5a119c7fd2625ff151f8ba76106ccc243d3e567eba85b7ab6df9",
+    "projects/ml/notes/ml/gradient-boosting/gradient-boosting_progressive_fit.svg": "90d0d55c77d3d602153070b3dec0affbb4f53f8a81cc1529f22adbe397b0456a",
+    "projects/ml/notes/ml/gradient-boosting/gradient-boosting_residual.svg": "fb50fd1e1ee759a0b377f66c4d27cf3aab8e8413b177902cbccb5d8ed54bd4c8",
+    "projects/ml/notes/ml/gradient-boosting/index.md": "ffaa10142f8ac59ca91ce6e7c1c0121c5fd526fe7d7a6f5358ab637dbed8892c",
+    "projects/ml/scripts/notes/gradient-boosting_gen.py": "7ea17cb16d59112502fafa2101b85e3f10cb06a66c0dcae2b813a815a159c0f1"
+   },
+   "fingerprint": "1721aed66b6c293d06148a2e2b06bbd47f2dde4c890ce96fc33969bfcc6015fe",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:55:45.032142+00:00",
+  "source_updated_at": "2026-11-09T17:50:10+09:00"
+ }
+}

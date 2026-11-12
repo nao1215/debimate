@@ -1,0 +1,100 @@
+{
+ "article": "projects/ml/notes/ml/pca/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "良い候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:29.091541+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "良い候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:58.454741+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:37.828590+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:16.315651+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.381816+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.120101+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "良い候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.607599+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.598329+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:26.822520+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:52.094370+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/pca/index.md": "bd67f660cd86f1541e8940dce2be6b53eec594e9",
+   "projects/ml/scripts/notes/pca_gen.py": "2b09af55d754391d04b20b5ee820ae4ad11ae6c8"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認。",
+   "figures": "1280/390px で表示検査（browser/results-v3-*.json）。",
+   "judgment": "通常",
+   "limitations": "コード未実行。描画は画像ファイルの目視のみ。",
+   "previous_review_id": 1332,
+   "reason": "review-06 draft-v3 を反映（ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1208 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回は再取得していない（本文の変更が空白調整または内部の整合に限られ、外部仕様に依存する結論を新たに使っていないため）。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "86ceba2c03a47afee1f6b10c9126268e4bc56b64",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/pca/index.md": "bef39ad23fa9da09523e53d35ee9406101a2015aa759ecd0a0c1eac9aa3c8f3c",
+    "projects/ml/notes/ml/pca/pca_rotation.svg": "16afa68b8c6f61a444d7439757d9d8c6d6abf5fb2fc2681ad4b486b2bddd30ea",
+    "projects/ml/scripts/notes/pca_gen.py": "f16bdf50c7e13e5e0f6232140156a31f29fec7b854dc49170c0d176edcda8d9d"
+   },
+   "fingerprint": "69894df7de1a7c0240c15524d030d1489feffa6dca53a065851ef689b5c498c8",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:55:45.454272+00:00",
+  "source_updated_at": "2026-11-09T17:55:44+09:00"
+ }
+}

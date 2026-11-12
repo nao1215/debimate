@@ -1,0 +1,126 @@
+{
+ "article": "projects/ml/notes/ml/standardization/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:30.740579+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:59.092675+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:38.518074+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:16.953605+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.454475+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.505171+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.973085+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:06.153778+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:27.440399+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:52.731498+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/standardization/index.md": "d3328e1a12a9ae5c8d24cd7cdf119b0d7fcdd6ec",
+   "projects/ml/scripts/notes/standardization_gen.py": "5a1a2763103ebb858458f18da3b2c75f55abae02"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 556,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 808,
+   "previous_review_id": 1339,
+   "reason": "review-06 draft-v4 を反映（commit 8c191fc5、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1215 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "8c191fc550507b41bf074dc54e1c55ac58d698d0",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/standardization/index.md": "a6a949910d0e942649cf7d82f939f1178e20c7d0d2018573c842c04413e2aac9",
+    "projects/ml/notes/ml/standardization/standardization_hist.svg": "bcb1c5beff436485bc8213e79ea51570d8a0dcdc25559ea8a98b9caf8e7a4c7b",
+    "projects/ml/notes/ml/standardization/standardization_knn_boundary.png": "75cc2d07ae5e98553498d185a56c437b2c5975129c8b8e814006c665f1a96a40",
+    "projects/ml/notes/ml/standardization/standardization_lr_coef.svg": "8dec175851068e9f07b197881c0e571e47e2df4ead3d9ca1447446edac32f255",
+    "projects/ml/notes/ml/standardization/standardization_rf_boundary.png": "0981a9766544173f0b6d27c11bc2118d8db20a1ad6bab3fa57105aa3a71b7c97",
+    "projects/ml/scripts/notes/standardization_gen.py": "f613974060ba844fdd35c77419d9266dbb6477a55becf5c7c4abdd4a0398a890"
+   },
+   "fingerprint": "1825dcf57a3163ebac661e9014d566ec8df92124f4c157a57def01d6588160e2",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:05:22.846511+00:00",
+  "source_updated_at": "2026-11-09T18:05:08+09:00"
+ }
+}

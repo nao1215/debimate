@@ -1,0 +1,126 @@
+{
+ "article": "content/notes/blockchain-systems/ethereum-account-model/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:25.904430+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:16.938605+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:50.313524+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:43.318795+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:06.787092+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.415998+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.808194+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:07.518678+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:05.645982+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:17.506493+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:43.002383+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/ethereum-account-model/index.md": "2d965cfc52fc644a7777993b6114786133046d0d"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 450,
+   "previous_judgment": "good",
+   "previous_latest_id": 735,
+   "previous_review_id": 1232,
+   "reason": "review-06 draft-g45 を反映（commit 0ed2ac9e、一般技術・結果 OK 済み）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1103 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "0ed2ac9ecbdea000505a4cb674b5dba15726f3ed",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/ethereum-account-model/index.md": "b3db55b849b6e30c54c7a552b223a90479160d754c2151c3c738f855de60d422"
+   },
+   "fingerprint": "990aca84a633d2c753ad8676d91e0cf3487e2a8218828c277bf0ecff210331c2",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T11:32:02.491785+00:00",
+  "source_updated_at": "2026-11-09T20:32:01+09:00"
+ }
+}

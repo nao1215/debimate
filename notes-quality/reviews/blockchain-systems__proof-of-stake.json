@@ -1,0 +1,61 @@
+{
+ "article": "content/notes/blockchain-systems/proof-of-stake/index.md",
+ "history": [
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:55:51.621466+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.261303+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.225701+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/proof-of-stake/index.md": "483d284a8505276036c0712e7fcc8e1584a26b2a",
+   "content/notes/blockchain-systems/proof-of-stake/slashing_demo.py": "ec86d83083662705540b291662edcb12688aa365"
+  },
+  "evidence": {
+   "body": "スナップショット差分全体（224行中の変更行）と前後段落を読み、変更が空白のみであることを確認。タイトル・構成は baseline と同じ。",
+   "code_results": "slashing_demo.py を Python 3.14.4 で実行し、7行の出力（same data: none … next vote: none）が掲載と一致。掲載コードはファイル先頭のdocstringを除き一致。",
+   "figures": "図・note-panels に変更なし。共通変更は .mermaid の text-align のみで影響軽微。描画の再確認はしていない。",
+   "judgment": "良い",
+   "limitations": "外部資料の再取得、ブラウザ描画の再確認はしていない。",
+   "previous_review_id": 1070,
+   "reason": "変更は和欧間スペースの挿入のみ（本文の意味・表・コードに変更なし）。参加者数と資産量→ノードとバリデータ→提案と投票→報酬と罰則→double/surround の表（A:2→5 と B:3→4 等）→7ケースの比較実験→署名履歴（EIP-3076）・weak subjectivity の構成は前回のまま有効。殿堂入り記事のため良い候補には出さない。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "caption=\"Ethereumの報酬を失う場合…\" だけ和欧間スペースが入っておらず、今回の表記統一から漏れている。",
+     "where": "「報酬と罰則」の note-panels caption"
+    }
+   ],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1111 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "前回（id 953）の一次情報確認を継承。今回再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/proof-of-stake/index.md": "ce8a22a183107feb7b17ba119b561897296d8b5bb48e2fece5443abb88ac0fb4",
+    "content/notes/blockchain-systems/proof-of-stake/slashing_demo.py": "8f6b7dbb0b7a74d205e0fd756658bbb0b98cfb861537729ad5fe84c0301b521a"
+   },
+   "fingerprint": "21e59a0d976b7d3315b531eaf07ccaff8d40b463f8bb12c43f48185e714df036",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:43.716231+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

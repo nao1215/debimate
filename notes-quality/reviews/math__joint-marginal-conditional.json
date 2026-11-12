@@ -1,0 +1,127 @@
+{
+ "article": "projects/ml/notes/math/joint-marginal-conditional/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.351459+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.269080+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.039944+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:12.768202+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.014096+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.375249+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.509040+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:06.721690+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:23.448865+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:49.108664+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/joint-marginal-conditional/index.md": "aae8270c00e4950ffbf04aef347693e6fc68b416",
+   "projects/ml/scripts/notes/joint-marginal-conditional_gen.py": "fc9b6422e963eed63c234c6ceacca8f1f5261b2e"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 511,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 794,
+   "previous_review_id": 1299,
+   "reason": "review-06 draft-v4 を反映（commit 8c191fc5、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1170 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "8c191fc550507b41bf074dc54e1c55ac58d698d0",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/joint-marginal-conditional/index.md": "a1b4f69917dd756543ab8fc1720d4df8ea23da846ba60a2432db8bbad1a85e9f",
+    "projects/ml/notes/math/joint-marginal-conditional/joint-marginal-conditional_conditional.svg": "e1b767fe865bbb7d6cff6f2c80c977fdb231f48041b086a7fa47605eb4ebed36",
+    "projects/ml/notes/math/joint-marginal-conditional/joint-marginal-conditional_continuous.svg": "bbd1c74bf87a3254c2082cc51cabde59ac7b84c1f5309e0353ae114c341684bc",
+    "projects/ml/notes/math/joint-marginal-conditional/joint-marginal-conditional_discrete.svg": "7edb07a40b27f80636176ae03fdee7c72baa735b558dd833fced682914452cea",
+    "projects/ml/notes/math/joint-marginal-conditional/joint-marginal-conditional_independence.svg": "c93d02a7e73557785000dc9a241e3c36519755f69293c09a333db8f36fe07e1e",
+    "projects/ml/notes/math/joint-marginal-conditional/joint-marginal-conditional_slicing.svg": "7f7fd52cb5bd381ecc1996f7190fc57b7034aff7610c76f674c097157bb4053d",
+    "projects/ml/scripts/notes/joint-marginal-conditional_gen.py": "8d5c8ee677da01fc4f4d549a80f382f3f1d69b26ace2c9714d9a7e41c32df38b"
+   },
+   "fingerprint": "b2c770c67a2f0da6d92ad968a8f29842150cc3a0116530a8e96f93b14998d323",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:05:22.483887+00:00",
+  "source_updated_at": "2026-11-09T18:05:08+09:00"
+ }
+}

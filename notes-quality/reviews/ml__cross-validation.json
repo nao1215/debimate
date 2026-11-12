@@ -1,0 +1,110 @@
+{
+ "article": "projects/ml/notes/ml/cross-validation/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:25.298480+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.928510+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:36.037973+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.645000+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.208214+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.068122+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.694164+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:04.047151+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/cross-validation/index.md": "ce20c1a01aa5fe80f4c4313d6837622b58970cff",
+   "projects/ml/scripts/notes/cross-validation_gen.py": "cda58e63370f7bf2a31408b766ed3afe11b41cc9"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版の差分を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（runchk/chk.py）。",
+   "figures": "5 本×1280/390px で表示検査（browser/results-v2-*.json）。",
+   "judgment": "通常",
+   "limitations": "一部の原典は書誌のみ確認。",
+   "previous_complete_id": 531,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 761,
+   "previous_review_id": 974,
+   "reason": "review-06 draft-v2 を反映（commit ddd50c11）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/cross-validation/cross_validation_alpha.svg": "4dc872b6fc82bd2388059dc8def2099f98143edb99001ada6c274f52b19e6667",
+    "projects/ml/notes/ml/cross-validation/cross_validation_split.svg": "92a0d4ce29ca70fbc82391bea416a3c63d5e48abcb3e34a08b88c4e84ef4ae72",
+    "projects/ml/notes/ml/cross-validation/index.md": "67e48642bb7f677f4eaf21fbdef621aa65fb929940d05233db0a752c3472fec5",
+    "projects/ml/scripts/notes/cross-validation_gen.py": "e887e3c4e8de1f2c4ff4b9d33d6fa834d35b09c5fe9229e56e6e78a04959d000"
+   },
+   "fingerprint": "eb608fff363b2cf8181f8e02ed603c4e070b0dd8933c9f9c99ffb72a10b04f6d",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:25.200423+00:00",
+  "source_updated_at": "2026-11-09T17:45:59+09:00"
+ }
+}

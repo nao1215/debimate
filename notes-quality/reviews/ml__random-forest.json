@@ -1,0 +1,105 @@
+{
+ "article": "projects/ml/notes/ml/random-forest/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:29.729213+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:58.712792+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:38.121560+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:16.569298+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.413113+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.127600+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.766342+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:45:28.655325+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:27.078351+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:52.368369+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/random-forest/index.md": "4bebd0950488b49f602431ee704d2a6902716758",
+   "projects/ml/scripts/notes/random-forest_gen.py": "1a3d4af020ca0fd66cc8952a84196da9239a1635"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "SVG のブラウザ描画は未確認（ImageMagick のみ）。外部仕様の再取得なし。",
+   "previous_review_id": 1335,
+   "reason": "review-06 draft-v4 を反映（commit 8c191fc5、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "相関特徴量の重要度バイアスを permutation importance で解決できるという誤り：『もう一方が低く見える場合があります。… permutation importance も併読します』に変わり、解決を主張しなくなった",
+    "df 未定義のテンプレートで実測が無い：生成スクリプト付きの再現可能な実験 2 つに置き換わった",
+    "MDI で相関特徴量が必ず半分という断定：削除された"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1211 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回取得していない。scikit-learn の RandomForest が 1.4 から欠損値に対応した点は既知の知識として本文の『バージョンによって欠損値の扱いが異なります』と矛盾しないと判断（未再取得）。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "8c191fc550507b41bf074dc54e1c55ac58d698d0",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/random-forest/index.md": "06055a4e6e2aff7917f90631617b66d5f01742a2422a089e9b4e6718481b29a9",
+    "projects/ml/notes/ml/random-forest/random-forest_oob.svg": "a22c69d9af09cab83c23ac17c5f4bd0f3b6e2fbf6d98ad8df76b0793fc46205a",
+    "projects/ml/notes/ml/random-forest/random-forest_stability.svg": "5ad661730a5aa7f0f2f2a7d3952cac0c7fe36c0f938c7bf46eebc8fc5bf46661",
+    "projects/ml/scripts/notes/random-forest_gen.py": "dac385329263baace8a27c8db5d501c9ae2339706ce33aaf59f5c9a91d633eee"
+   },
+   "fingerprint": "7b372bf421e634be40237ca6e0a0029bf561142d1b0fbd5e1c9c3c05b5136d0d",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:05:22.574523+00:00",
+  "source_updated_at": "2026-11-09T18:05:08+09:00"
+ }
+}

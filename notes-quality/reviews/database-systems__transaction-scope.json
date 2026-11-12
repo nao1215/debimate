@@ -1,0 +1,103 @@
+{
+ "article": "content/notes/database-systems/transaction-scope/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:31.296741+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:19.843901+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:52.079575+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:29.935460+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:08.739894+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.629609+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.875310+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:09.974113+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:49:11.141929+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:19.651295+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/database-systems/transaction-scope/index.md": "4e2aa0581edf3d98dc3179d3cb4169f52d0017c0",
+   "content/notes/database-systems/transaction-scope/lab/README.md": "cd65df3f6ea1db2d9604ba391c589959f93acfac",
+   "content/notes/database-systems/transaction-scope/lab/output.txt": "b8fbfd66426bce05620b25d6e6a8b78f05fb10b1",
+   "content/notes/database-systems/transaction-scope/lab/run.py": "8744bd7c06a7155b6f747f4927badabca13bf21c"
+  },
+  "evidence": {
+   "body": "Git 差分の全 hunk と前後段落。",
+   "code_results": "lab/run.py・output.txt は今回変更なし。再実行していない。",
+   "figures": "Mermaid 図・lab は今回変更なし。再描画確認なし。",
+   "judgment": "良い",
+   "limitations": "再実行・描画確認なし。内容不変のため判断への影響は小さい。",
+   "previous_review_id": 1081,
+   "reason": "殿堂入り記事。差分 8 行はすべて和文と英数字の間の半角空白の挿入（『DBのトランザクション』→『DB のトランザクション』、『在庫数を1減らすだけの注文B』→『在庫数を 1 減らすだけの注文 B』、『特定の1 件』→『特定の 1 件』など）。これにより冒頭段落内の『DB』と『DB 接続』の表記揺れ、『注文B』と『注文 A』の揺れが揃った。4 秒のロック待ち、rollback 後 stock=1/orders=0 でも charges が 1→2 に増える実験、outbox の説明は不変で、前回の良い判断を維持する。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "冒頭段落と 82 行・230 行・306 行の和文と英数字の間の空白の揺れ（『DBの』『注文B』『特定の1 件』）が揃った"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1127 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/database-systems/transaction-scope/index.md": "939d46f4574b3ad17aad149176a4520ffa05f292b8b3a9fc27fdc2dae7421340",
+    "content/notes/database-systems/transaction-scope/lab/README.md": "55a1a935e71c15d66ddb0b9c61404fbb600f00df121c027eedd03e17b0bc8d7a",
+    "content/notes/database-systems/transaction-scope/lab/output.txt": "0d5bdd6a2c54c5c838753a76bdc48dd17965221b16294f6a966716138e748a85",
+    "content/notes/database-systems/transaction-scope/lab/run.py": "ca02d47356120d09402510aaaa94e1e1bfab1bf9c67e3f55d0a7f6a9103626fc"
+   },
+   "fingerprint": "d2d0aff78e5844ec01200a121633cb93a58d9e0db584aa7cc521e5795087bc32",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:45.151331+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

@@ -1,0 +1,107 @@
+{
+ "article": "content/notes/distributed-systems/lease/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "legacy_partial",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:15:06.655793+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "良い",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:27.718004+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:17.849957+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:52.452766+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:30.433344+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:09.193930+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.677029+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.488115+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:10.688300+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:35.105406+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:20.175708+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/distributed-systems/lease/index.md": "2e9415998651e1e19c8aa6ad9badcb807583b788",
+   "content/notes/distributed-systems/lease/lab/README.md": "1b7c047a904f053bc70ad6db29a1a76e4c31c734",
+   "content/notes/distributed-systems/lease/lab/output.txt": "b1f794d1a4f4832b5dbe07f62b30ae6380d35198",
+   "content/notes/distributed-systems/lease/lab/run.py": "78abe0281619525b83f3307278dec1da453cebd3"
+  },
+  "evidence": {
+   "body": "diff 全体と前後段落。",
+   "code_results": "今回実行していない（コード変更なし）。",
+   "figures": "変更なし。",
+   "judgment": "良い",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1066,
+   "reason": "殿堂入り。差分は Lease・fencing token・GC・数字前後の空白の統一だけで内容は不変。fencing token 33<34 の拒否図と本文の対応も変わらない。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1133 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回参照していない（本文の数値・コードを再計算・目視で確認）。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/distributed-systems/lease/index.md": "b9b09d4aa31076786ccaeda3e9a907177bd960760ee510582186be77082077af",
+    "content/notes/distributed-systems/lease/lab/README.md": "95e39a2817e0e484bd8414cc0f0bdfd9f1c4fe664b7ef23ea09a4a1da0d815e2",
+    "content/notes/distributed-systems/lease/lab/output.txt": "43f3e09ded3fdfd439177bfc8875e90d6f60ef19a83e48884b1698a05432d35a",
+    "content/notes/distributed-systems/lease/lab/run.py": "4ae1b5af674e77027a1d7311b27c6cc2ccaa43e6760fb48c1593bc73d4047954"
+   },
+   "fingerprint": "fa85a0f599aa890ea04e0fe79dee2799709cc5a378624716b63a94f325b214ef",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:45.685058+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

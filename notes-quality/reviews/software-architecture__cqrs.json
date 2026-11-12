@@ -1,0 +1,118 @@
+{
+ "article": "content/notes/software-architecture/cqrs/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "良い",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:25.247263+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:16.493993+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:53.749503+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:32.218066+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:10.914312+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.834260+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.319357+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:12.727410+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:07.025824+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:21.731681+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/software-architecture/cqrs/index.md": "37e92b9e785a943402cd5e0dfc48cb88b9be8f37"
+  },
+  "evidence": {
+   "body": "本文は前回 id=863 の確認時点から変更なし（保存スナップショット差分で確認）。判断を継承。",
+   "changed_files_since_latest": [],
+   "code_results": "今回コード・掲載結果の変更なし。前回の検証範囲を継承し、再実行していない。",
+   "figures": "図の変更なし。共通変更は layouts/partials/extend_footer.html の .mermaid への text-align:center 追加のみで、図の読み取りへの影響はないと判断。今回ブラウザでの再描画確認はしていない。",
+   "judgment": "良い",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 493,
+   "previous_judgment": "良い",
+   "previous_latest_id": 789,
+   "previous_review_id": 1013,
+   "reason": "CQRSを別DBやEvent Sourcingと同一視せず、保存先共有から分離へ説明。書いた本人の画面が古い例が用途と制約を結ぶ。",
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1151 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/software-architecture/cqrs/index.md": "cbf8710e07ff7b9a401eb499beb5622288b35fa5a1a04f7060e2063aa8840600"
+   },
+   "fingerprint": "10d2e26744dcb2074b5493b474df0d0fe45a40befe21b326e30174b1f2fe42cb",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:47.366583+00:00",
+  "source_updated_at": "2026-11-03T22:38:43+09:00"
+ }
+}

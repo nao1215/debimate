@@ -1,0 +1,113 @@
+{
+ "article": "content/notes/database-systems/index-scan/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "improve",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:27.105109+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:17.688806+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:51.590341+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "improve",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:44.805585+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "normal",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:08.204901+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.570924+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.857861+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "normal",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:09.290677+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:44.909062+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:19.106318+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:44.595341+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/database-systems/index-scan/figures.py": "594d061ccdf4a9f0e7d26b2909c1c0a5c204a507",
+   "content/notes/database-systems/index-scan/index.md": "d5d62ef0fb7e22c56d4c5c55a78429472dc9c90e",
+   "content/notes/database-systems/index-scan/lab/orders_sqlite.py": "98a14b4a6a77c57dedde2cb4e3d8c6f1089523d3",
+   "content/notes/database-systems/index-scan/lab/scan.py": "53e4ae19fdb58c2d35cdeb732c92ca8eab5f82ec"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "PostgreSQL の実行計画・性能例は再実行していない。",
+   "previous_review_id": 1250,
+   "reason": "review-06 draft-g45 を反映（commit 0ed2ac9e、一般技術・結果 OK 済み）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "前回の未解決指摘なし（SCAN の誤りは前々回までに解消済み）"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1121 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "SQLite eqp.html の SCAN/SEARCH の区別は前回確認を継承。今回外部資料の再取得なし。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "0ed2ac9ecbdea000505a4cb674b5dba15726f3ed",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/database-systems/index-scan/figures.py": "fcf13b7d0d587827cd6e0746296617701153ee0c56658a85e0f1021038303cb5",
+    "content/notes/database-systems/index-scan/images/index_scan_crossover.svg": "93195cdd7300063194caf4ac8782142ede46f7d847187d02baf9cc2c8e617818",
+    "content/notes/database-systems/index-scan/index.md": "a86d102c63d530d1e2b5fd523033f5f14b20b2e249f21e4c82f0f51ad4746946",
+    "content/notes/database-systems/index-scan/lab/orders_pg.sql": "15f693f6f48e5c24acf2cc1376b9791fcada0e2eea48c192c45510cae47c8778",
+    "content/notes/database-systems/index-scan/lab/orders_sqlite.py": "914be3a48da084f3e33c3d8c81c5499c3cb89f8f4c205e02dcb95a02b5f1fcfa",
+    "content/notes/database-systems/index-scan/lab/scan.py": "4dd285087c9c8115ac79a9cd382469ccc2af550d53fa9c204dbc1779b10c45e8"
+   },
+   "fingerprint": "c374ecdba02f2672b91af707a487e9a0239a720e597a965177aff87260b624ef",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T11:32:03.451100+00:00",
+  "source_updated_at": "2026-11-09T20:32:01+09:00"
+ }
+}

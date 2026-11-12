@@ -1,0 +1,133 @@
+{
+ "article": "projects/ml/notes/math/log-exp-logodds/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.929803+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.478847+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.337818+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:13.037793+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.042987+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.385572+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.660547+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:51:49.671173+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:03.412909+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:23.709296+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:49.378103+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/log-exp-logodds/index.md": "73cb8f67f450e37ba81f168d806630e771087615",
+   "projects/ml/scripts/notes/log-exp-logodds_gen.py": "fc7c28d13978b36e4c5b4ea4517c1c4001934883"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 514,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 795,
+   "previous_review_id": 1302,
+   "reason": "review-06 draft-v6 を反映（commit e34930e6、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1173 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "以前の一次資料確認を継承。今回BIP54、SQLite CREATE TABLE、scikit-learn confusion_matrix / DBSCAN、SciPy linkage / logsumexpを当該対象で照合。全出典の再取得はしていない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json",
+   "verification": "runs/2026-11-08-review-05/reproductions.json / browser/results.json"
+  },
+  "git_head": "e34930e679bef974918f1be1130af1a3a9938f09",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/log-exp-logodds/index.md": "c67b60e51e5d2754c44719aedc07bd5fcdd2269a23ae9faa4d33a0304d2f973b",
+    "projects/ml/notes/math/log-exp-logodds/log_exp_curves.svg": "49ee732b5d65f405bac16954ba958f9962646cf1beb039f060b59a9c72604484",
+    "projects/ml/notes/math/log-exp-logodds/log_numerical_stability.svg": "bb307b9c06d2d4b3947c8522821ab79cf8ff075abc7a2fa7811b640f1675b4a2",
+    "projects/ml/notes/math/log-exp-logodds/log_products_to_sums.svg": "728e7e449fadafdb2e593050c01af5637326a9ef92e92321e9173437fac01e80",
+    "projects/ml/notes/math/log-exp-logodds/sigmoid_logit.svg": "deacdc6b49d1f40c515d069e49cd608320ec94920157d56115b195e4ffb20a43",
+    "projects/ml/scripts/notes/log-exp-logodds_gen.py": "99c18575eb0862c0dfd0a1060b57a56ef1e226fffffd92defad6e9cad8c2dda0"
+   },
+   "fingerprint": "7c1da9e21ea99b949539ce2093e7c5a65b1ccfb1e8f26b63555171afcfad4e78",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:24:44.685835+00:00",
+  "source_updated_at": "2026-11-09T18:24:43+09:00"
+ }
+}

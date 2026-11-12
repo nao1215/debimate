@@ -1,0 +1,102 @@
+{
+ "article": "projects/ml/notes/ml/bias-variance-tradeoff/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:24.578406+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.548073+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:35.648495+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.278721+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.170417+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.670299+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.495415+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:35.008574+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:24.840823+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:50.255756+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/bias-variance-tradeoff/index.md": "50b6ea6bb3c63c973018287e8573ea8e74f52f25",
+   "projects/ml/scripts/notes/bias-variance-tradeoff_gen.py": "b6c1b878007b3f21cb710c5f89f189b1aaf823c2"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1312,
+   "reason": "review-06 draft-v5 を反映（commit bfcd744a、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1186 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回参照していない（本文の数値・コードを再計算・目視で確認）。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "bfcd744a80855eb18873a6ff1cfee02fbc813702",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/bias-variance-tradeoff/decomposition_curve.svg": "2d075707395617ceb2b6234ec767866a28915434536ba8a6c998892b183e2e74",
+    "projects/ml/notes/ml/bias-variance-tradeoff/index.md": "5764cfb6c8fe086b275bdabf2c583ab12b113edde87c19762bff6dbed3824bf1",
+    "projects/ml/notes/ml/bias-variance-tradeoff/learning_curves_diagnose.svg": "f29152e65ad54dfa5783eacd6375c22f7a46983492e54081012eb2c7eef3aa34",
+    "projects/ml/notes/ml/bias-variance-tradeoff/polyfit_compare.svg": "16bf23380aaf18ba69721bcb7856a7e98b36fd60f3184c5312a0bdc6cb7f049d",
+    "projects/ml/scripts/notes/bias-variance-tradeoff_gen.py": "b09a219fbf282d5dd6d1edfc572edfd5663acf1898ec0c92697e723a412f71bc"
+   },
+   "fingerprint": "ab3b7ff115eaf019679456457e9424469fab59d07aec0436ca8b9d9768c49084",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:15:53.336666+00:00",
+  "source_updated_at": "2026-11-09T18:15:52+09:00"
+ }
+}

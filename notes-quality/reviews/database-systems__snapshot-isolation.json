@@ -1,0 +1,99 @@
+{
+ "article": "content/notes/database-systems/snapshot-isolation/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "improve",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:30.545569+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:19.255514+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:51.744733+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "improve",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:44.942623+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:08.390823+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.592544+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.458716+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:09.523588+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:45.999948+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:19.302978+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/database-systems/snapshot-isolation/index.md": "b39f1aee73a8f0643bcc525571984d6824ca879f",
+   "content/notes/database-systems/snapshot-isolation/lab/run.py": "c73937e026dc9ee17e984b70beeeee8a15a6fea2"
+  },
+  "evidence": {
+   "body": "Git 差分の全 hunk と前後段落。助詞の変更後も『次の疑似コードは、x と y それぞれの口座に対して実行します』が主語・目的として自然に読めることを確認。",
+   "code_results": "lab/run.py は今回変更なし。Docker/PostgreSQL での再実行はしていない。",
+   "figures": "Mermaid 図（sequenceDiagram と flowchart TB）は今回変更なし。共通変更は .mermaid の中央寄せのみ。再描画確認なし。",
+   "judgment": "良い",
+   "limitations": "再実行・描画確認・外部資料の再取得なし。内容不変のため判断への影響は小さい。",
+   "previous_review_id": 1045,
+   "reason": "殿堂入り記事。差分 18 行は和文と英数字の間の半角空白の挿入と、『次の疑似コードを、x と y …実行します』→『次の疑似コードは、…』の助詞 1 箇所（『を、』の解消）のみ。合計>=100 の条件付き引き出しを serial RR / parallel RR / parallel SERIALIZABLE で比べる実験の出力（seen=[100,0]/[100,100]、total=0/-100/0）、write skew の説明、SSI の述語ロックの説明は変わらず、前回の良い判断を維持する。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "『次の疑似コードを、』（『を、』の禁止表記）が『次の疑似コードは、』に直った"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1123 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "Berenson et al. 1995、Docker、PostgreSQL の参照は不変。再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/database-systems/snapshot-isolation/index.md": "933f103f8148982389590fc4eb7350adbe17c809835942adebe6702e89ed5a91",
+    "content/notes/database-systems/snapshot-isolation/lab/run.py": "d13cfc041da3ad1a7b820b21e617b6dace23dd1ead0e58714bca94da2eac484f"
+   },
+   "fingerprint": "be515355454337dac60d87373703e00e8a85ee07fdbf4ece7bac9aa31c1d7a25",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:44.783497+00:00",
+  "source_updated_at": "2026-11-08T22:46:35+09:00"
+ }
+}

@@ -1,0 +1,118 @@
+{
+ "article": "content/notes/software-architecture/domain-event/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:25.704945+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:16.730916+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:53.830411+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:32.319903+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:11.024269+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.842899+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.555767+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:12.842649+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:51:49.422921+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:34.731090+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:41.809104+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:21.902210+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:47.552632+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/software-architecture/domain-event/index.md": "288b7b2e4384878baf2d662d268ba19d74549ff3"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "通常",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1282,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "受信側ハンドラで同じ SKU の Stock を別インスタンスで得る可能性（SKU ごとの集約で解消）",
+    "冒頭で Domain Event が何をするかの言い方（具体化）"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1153 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回参照していない（本文の数値・コードを再計算・目視で確認）。",
+   "style_fix": "2026-11-09 b3e11319: 363 字の段落を 2 つに分割（ユーザー指示）。style_check NG 0、omokage 90%。"
+  },
+  "git_head": "b3e11319c74f43c0822545cce4cd2ae383a764a3",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/software-architecture/domain-event/index.md": "81fd0f3ae398baf3a33e3de024c66250b55d71a79bd077da0f56aa42de1f57cb"
+   },
+   "fingerprint": "30c28160ab6b601961b5fe951752366e4ece05de034d101c0d0272dfaedca6b7",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:09:27.812761+00:00",
+  "source_updated_at": "2026-11-09T18:09:18+09:00"
+ }
+}

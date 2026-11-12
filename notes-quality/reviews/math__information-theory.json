@@ -1,0 +1,135 @@
+{
+ "article": "projects/ml/notes/math/information-theory/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.276057+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.166031+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:33.937357+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:12.634704+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.002722+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.014215+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.456724+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:51:49.608574+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:04.470339+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:23.366716+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:49.010282+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/information-theory/index.md": "6dca7587ae3f4db4230b932b8605645d5a2b361c",
+   "projects/ml/scripts/notes/information-theory_gen.py": "124a2c4e3947065bc3f8b963f69a1356b10bea83"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 510,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 755,
+   "previous_review_id": 1298,
+   "reason": "review-06 draft-v6 を反映（commit e34930e6、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1169 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "以前の一次資料確認を継承。今回BIP54、SQLite CREATE TABLE、scikit-learn confusion_matrix / DBSCAN、SciPy linkage / logsumexpを当該対象で照合。全出典の再取得はしていない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json",
+   "verification": "runs/2026-11-08-review-05/reproductions.json / browser/results.json"
+  },
+  "git_head": "e34930e679bef974918f1be1130af1a3a9938f09",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/information-theory/index.md": "6e03e7d934700ec7a3c7ddf128d059976e485e7083a79e25959af22d877ecfb1",
+    "projects/ml/notes/math/information-theory/info_bernoulli_entropy.svg": "a44ca108575b8e3973dfbb943e9dc15e698c84a8059d2d4732e412987d96fdfb",
+    "projects/ml/notes/math/information-theory/info_cross_entropy_decomp.svg": "0ac45021799799b2637bee65a129a6b7b48dfdb53667594b5968f69fee286618",
+    "projects/ml/notes/math/information-theory/info_differential_entropy.svg": "0cd0631639db4bd54cb3b60469345f84e141470a1813662e5eb98bdc02eb1b7a",
+    "projects/ml/notes/math/information-theory/info_kl_divergence.svg": "87dd9d12e4e2cfec89bc2aa54df476c8344a2514960c9a25880e3c1d278549ae",
+    "projects/ml/notes/math/information-theory/info_mutual_information.svg": "a3fc189835d72805633c1131c170368ad725e553c86f1b930f8e6eef364c624b",
+    "projects/ml/notes/math/information-theory/info_self_information.svg": "fc7f56040a907632f8a055ba332f59cb4624e7f059fb119e8ac7164447dab3cf",
+    "projects/ml/scripts/notes/information-theory_gen.py": "59e307130e743172054479e594bf7f5729a6dd1ffd271e4afbab1b69f637e011"
+   },
+   "fingerprint": "f64734a49f7625031e28e900009710103051409294ff62738a829ccc65b03611",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:24:44.580671+00:00",
+  "source_updated_at": "2026-11-09T18:24:43+09:00"
+ }
+}

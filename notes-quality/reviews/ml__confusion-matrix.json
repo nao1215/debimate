@@ -1,0 +1,92 @@
+{
+ "article": "projects/ml/notes/ml/confusion-matrix/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:25.049051+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.830585+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:35.950496+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.562102+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.199723+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.679458+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.639835+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:51:49.814693+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.525006+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/confusion-matrix/index.md": "71bc71176d4e8ea722f17faec5589762ccfd877f"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（runchk/chk.py）。",
+   "figures": "5 本×1280/390px で表示検査（browser/results-v2-*.json）。",
+   "judgment": "通常",
+   "limitations": "一部の原典は書誌のみ確認。",
+   "previous_review_id": 1050,
+   "reason": "review-06 draft-v2 を反映（commit ddd50c11）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "閾値 0.3/0.5 で Recall が同じ・0.5→0.7 で Precision が下がる事実と直後の説明の食い違い → 説明を書き直して一致",
+    "本文コードに表を計算する部分がない → ループで3閾値の値を出力するコードに置換"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "sources": "外部一次情報は今回は再取得していない（本文の変更が空白調整または内部の整合に限られ、外部仕様に依存する結論を新たに使っていないため）。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/confusion-matrix/index.md": "a3319aa2c9dabcf08fd7fe445e07d881ef2ed24a97547650abbee8915383d323"
+   },
+   "fingerprint": "56190c7570856dfa6c49ddebdd5ff6d64c1207fa5f812e6c1b3fb44e05fd7b93",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:25.109383+00:00",
+  "source_updated_at": "2026-11-09T17:45:59+09:00"
+ }
+}

@@ -1,0 +1,126 @@
+{
+ "article": "content/notes/blockchain-systems/erc-20/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:25.853353+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:16.841256+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:50.225435+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:43.238912+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:06.710609+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.407347+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.376014+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:07.397766+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:45:56.003514+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:17.418235+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/erc-20/index.md": "7ca7530bf10dc58ffd795668e4c6f99149bf7d59",
+   "content/notes/blockchain-systems/erc-20/lab/README.txt": "e2f1102d531ee59ad401dde390688b040142cb92",
+   "content/notes/blockchain-systems/erc-20/lab/output/deploy.json": "e50158d570b234765ea4612f2fa87a619458b4e3",
+   "content/notes/blockchain-systems/erc-20/lab/output/step-0.json": "4c967ddfdad87cd0605e1bd9bda1fb9a97723370",
+   "content/notes/blockchain-systems/erc-20/lab/output/step-1.json": "5153b60dddebc0801b32cda4083cc032876f9520",
+   "content/notes/blockchain-systems/erc-20/lab/output/step-2.json": "8826c7e2d3acc1651c1cd1d8e645c15b633cdfb5",
+   "content/notes/blockchain-systems/erc-20/lab/output/step-3.json": "a3ccc25c5941e9273f69e17802b9cb6841763ff3",
+   "content/notes/blockchain-systems/erc-20/lab/output/step-4.json": "cfbb888bdec89c0c66fd5f81611272373814b4f8",
+   "content/notes/blockchain-systems/erc-20/lab/output/step-5.json": "c452256accee1c7142c9bafd998b9ca925a4869d",
+   "content/notes/blockchain-systems/erc-20/lab/output/summary.txt": "f87257063579aab48f751b7d98d8ccd304096a56",
+   "content/notes/blockchain-systems/erc-20/lab/output/versions.txt": "390b50c701b52fc9cd15c1c833d3e5a444ebf7bd",
+   "content/notes/blockchain-systems/erc-20/lab/run.sh": "c6c3e5f7743ff427d02611da746426caa6cf1953"
+  },
+  "evidence": {
+   "body": "Git 差分全 hunk（本文の全段落が対象）と前後段落を読み、差分が空白挿入のみで語の置換・削除・追加が無いことを行ごとに確認。全文に対し和文と英数字の隣接を grep して残りを列挙。",
+   "code_results": "lab/（StudyToken.sol, run.sh, output/summary.txt）は今回変更なし。Anvil による再実行はしていない。本文の出力表と lab/output/summary.txt の対応は前回確認を継承。",
+   "figures": "Mermaid 5 図は今回変更なし（%%init%% の配色も同一）。共通変更は .mermaid の text-align:center のみで描画判断への影響は軽微。ブラウザでの再描画は行っていない。",
+   "judgment": "良い",
+   "limitations": "Anvil 再実行・外部資料の再取得・ブラウザ描画確認なし。内容の変更が無いため判断への影響は小さい。",
+   "previous_review_id": 1031,
+   "reason": "殿堂入り記事。今回の差分 111 行はすべて和文と英数字・リンク・コードの間に半角空白を入れる表記変更（例『ERC-20は』→『ERC-20 は』、『30枚』→『30 枚』）で、文の内容・数値・リンク先・コード・出力表（100→95/5→85/15、allowance 30→20→0、21 枚と取消後 1 枚が status 0）は変わっていない。approve は送金や予約ではなく allowance を書き換えるだけ、という核の説明と実験の対応は維持。表記の統一は本文では一貫したが、Mermaid 図のラベル（『トークンAのコントラクト』『5を引く』『21枚の利用は失敗』）と 171 行『`solc`を PATH に』は空白なしのまま残り、本文と図で表記が揃っていない。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "本文は和文と英数字の間に半角空白を入れる表記に揃えたが、図のラベルと 1 箇所のコード直後が空白なしで残り、本文と図で表記が揃わない",
+     "where": "Mermaid 図 2・3・5 のラベル、171 行『`solc`を PATH に』"
+    }
+   ],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1102 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部リンク（EIP-20, OpenZeppelin ERC20 解説・v5.0.2 実装・SafeERC20）は URL 文字列が不変であることのみ確認。今回再取得していない。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/erc-20/index.md": "d94eb6100362078a79488bb7ad4aa6cb23dbb6c53b10734a933e5862ee4af2c1",
+    "content/notes/blockchain-systems/erc-20/lab/.gitignore": "7513250ccf804f7fd52c8dd4e9a3ceca802da1116ef76c61fd4d75a483dec521",
+    "content/notes/blockchain-systems/erc-20/lab/README.txt": "bd4296fc99a7625ae655e32c198e981ffc7e8dc4b205399d2ea2fad44fd9ae25",
+    "content/notes/blockchain-systems/erc-20/lab/StudyToken.sol": "c95a3caf1a224a60a3ce7729a71b6f4f89d4157add707e9da71d3964419cdc7f",
+    "content/notes/blockchain-systems/erc-20/lab/output/deploy.json": "da9fb517e4786cc55b004e0df3a554c045bd76fd668baff0da6f610801a9ab3d",
+    "content/notes/blockchain-systems/erc-20/lab/output/node.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "content/notes/blockchain-systems/erc-20/lab/output/step-0.json": "ff93ad410c061c83cfbc367984ac35836b5d67da7ed5dfb86643354e53e49087",
+    "content/notes/blockchain-systems/erc-20/lab/output/step-1.json": "356be6813368daa3570ab4d720fc859bce0c1e4c6af1477d82e801b9c7855363",
+    "content/notes/blockchain-systems/erc-20/lab/output/step-2.json": "f76f85ba138012d6414f0a7a3badbdb7baff5bfb5fc214ee4108116f326cb676",
+    "content/notes/blockchain-systems/erc-20/lab/output/step-3.json": "a3f77f8be31555af2bb4b9268ed9828e2db225a761cd362cb07a6608e353a09a",
+    "content/notes/blockchain-systems/erc-20/lab/output/step-4.json": "6327ee0af288dd0157d088a8278aeeef13bb3aebebd2bbafae81b6a799576bac",
+    "content/notes/blockchain-systems/erc-20/lab/output/step-5.json": "f0b4271c0eee5330d34fd37d46a48848a062e1686c0c2b3e1d524030e0ce32c2",
+    "content/notes/blockchain-systems/erc-20/lab/output/summary.txt": "5731f7ec1e8d19186906961f99eba4c6e47223db42986271defd9d6322aac0f8",
+    "content/notes/blockchain-systems/erc-20/lab/output/versions.txt": "940eba645e21b088826ae6500b98b3e80ed97f1932a0dd1dfbd98eba4a801356",
+    "content/notes/blockchain-systems/erc-20/lab/run.sh": "4faa8844ba6d391b9d3fd604877de535edc2777b07fd3e6e585650c1f8874a66"
+   },
+   "fingerprint": "616deaea7994879975c05846e7793b0d5f106402bab79e46fb1d71f87c5c48dc",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:42.915335+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

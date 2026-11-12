@@ -1,0 +1,102 @@
+{
+ "article": "projects/ml/notes/ml/k-means/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "通常（改善余地）",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.424471+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "通常（改善余地）",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:57.788651+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常（改善余地）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:37.130931+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常（改善余地）",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:15.612251+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.313921+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.721614+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "通常（改善余地）",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.248116+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:34.129904+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:26.182022+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:51.437341+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/k-means/index.md": "6c63b4538f125ccaecd09684e00ab045562ede1e",
+   "projects/ml/scripts/notes/k-means_gen.py": "03242e80a9f74c687eac95e4f1c1eff780344628"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認。",
+   "figures": "1280/390px で表示検査（browser/results-v3-*.json）。",
+   "judgment": "通常",
+   "limitations": "再実行・描画確認なし。冒頭の改行用空白の削除で 1 段落目の 2 文が 1 段落に結合されたが、描画上の影響は軽微と判断（未描画）。",
+   "previous_review_id": 1325,
+   "reason": "review-06 draft-v3 を反映（ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1201 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報の再取得なし。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "86ceba2c03a47afee1f6b10c9126268e4bc56b64",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/k-means/index.md": "8e80be909468574eff655e9c3b3642f1f0599193e44df3323694f8274845fee5",
+    "projects/ml/notes/ml/k-means/k-means.png": "a23bf330d834ef8c08ec5e240f960f7a0fe942eae51539c4d8c1acfed573da5b",
+    "projects/ml/notes/ml/k-means/k-means_selection.svg": "3b84c1877109dd71fd8e15df0ccc804453c23f3e1b3efbffab90cf7d8c346c84",
+    "projects/ml/notes/ml/k-means/original.png": "933880ccd97718ba1262e4c3b0289056793d6ab01858195444496a1ec2bd3512",
+    "projects/ml/scripts/notes/k-means_gen.py": "83737c3682216095dbc15cf3c64ced900fd9d1c6dec4a8de960b7f88e90174c9"
+   },
+   "fingerprint": "a3de055fb6e89cbf23cf0a1c9bb8d5d843ce89812851bbcfa0cef3b4839c12f1",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:55:45.216295+00:00",
+  "source_updated_at": "2026-11-09T17:55:44+09:00"
+ }
+}

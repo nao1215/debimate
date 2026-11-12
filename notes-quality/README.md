@@ -26,5 +26,6 @@ git config core.hooksPath notes-quality/hooks
 | `opening_log.tsv` | 書いた順の冒頭の型と題の形。直前の 3 本と同じ型を続けないために使う |
 | `scoring/` | 採点の物差し（`rubric.md`）、決定の記録（`decisions.md`）、抜き出しの作り方、基準の 5 本の抜き出し |
 | `scores/` | ノートごとの総合点と、点を付けた版（git の blob） |
+| `review_cache.py`、`reviews/` | 精読の記録（debimate-note-review スキル）。記事ごとの判断と、確認した時の git の版。2026-11-12 に SQLite から移した |
 
 規則を変える時は、先に `scoring/decisions.md` に日付と著者の言葉を書きます。機械で判定できる規則は `gate.py` か `drift_words.tsv` に、判定できない規則は `style/` に足します。

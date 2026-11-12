@@ -1,0 +1,59 @@
+{
+ "article": "content/notes/distributed-systems/consistent-hashing/index.md",
+ "history": [
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "良い候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:10.210990+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:03.780339+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:19.821326+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/distributed-systems/consistent-hashing/experiment.py": "e874360c2a2f9fa4d301c5821a9e239e4811dd48",
+   "content/notes/distributed-systems/consistent-hashing/figures.py": "1776bd8a465a7ff0af1745a2c5b4982b80861646",
+   "content/notes/distributed-systems/consistent-hashing/index.md": "11c2a56483a7155c79f00314411654a8677be02b"
+  },
+  "evidence": {
+   "body": "前回 id=842 からの差分 .note-review/runs/2026-11-09-review-06/diffs/consistent-hashing.diff を前後の段落と読んだ。半角英数字前後の空白の統一のみで、文意の変更なし。",
+   "code_results": "今回コード・掲載結果の変更なし。前回の検証範囲を継承し、再実行していない。",
+   "figures": "図の変更なし。共通変更は layouts/partials/extend_footer.html の .mermaid への text-align:center 追加のみで、図の読み取りへの影響はないと判断。今回ブラウザでの再描画確認はしていない。",
+   "judgment": "良い候補",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_review_id": 969,
+   "reason": "商品IDキャッシュの容量追加を起点に、剰余75%とリングの移動区間、仮想ノードによる件数とHot Key負荷の違いへ進む。10万キーの74.93%/6.17%/26.51%を実行で再現し、移動の少なさと追加容量を使えることを区別する。",
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1129 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "2026-11-08 Swift ring_backgroundとCassandra Dynamo文書の分割/vnodes/repairを確認。sources.md。",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/distributed-systems/consistent-hashing/experiment.py": "a2aa5eacb936e25ac8a4d1465322c586068b4e4724170329bb085124ba5019e9",
+    "content/notes/distributed-systems/consistent-hashing/figures.py": "0615af49ea223f4dc0291af7e759a60430a52a89779e5e04a6a8cfca4b6799ba",
+    "content/notes/distributed-systems/consistent-hashing/index.md": "fcdf5c4a54743df17064453ba5465d99e1939325b1ba96055a22880677e7f035",
+    "content/notes/distributed-systems/consistent-hashing/ring-after.svg": "0251228ba79eb49803e860e3202a3b11e5e6d5222cac262c685f99588448364c",
+    "content/notes/distributed-systems/consistent-hashing/ring-before.svg": "9e7df50164da8531af695e412a917b91e6e4a25feb7f85bb1f28af64544c5eaf"
+   },
+   "fingerprint": "bb46ae8e78d571cec543103344f2c972e654af527c05a7790708a0c7654dbd8a",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:45.322881+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

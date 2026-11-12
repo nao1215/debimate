@@ -1,0 +1,127 @@
+{
+ "article": "content/notes/blockchain-systems/proof-of-work/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:29.459521+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:18.472201+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:50.938921+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:44.037410+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:07.440350+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.482394+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.206613+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:08.343542+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:03.884039+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.310465+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/proof-of-work/figures.py": "30490b232b7e14a6c284c09b5d817a69ada9697a",
+   "content/notes/blockchain-systems/proof-of-work/index.md": "7e94924abc6f698c920951758a2aa1a9e8df05cd",
+   "content/notes/blockchain-systems/proof-of-work/lab/output.txt": "b9cea4ce0a1fa36b814d3f9a31c9cb834c66e1ec",
+   "content/notes/blockchain-systems/proof-of-work/lab/verify_genesis.py": "c59236598c16a88ade1d4e6415fbc599e5d1d499"
+  },
+  "evidence": {
+   "body": "前回 id=826 からの差分 .note-review/runs/2026-11-09-review-06/diffs/proof-of-work.diff を前後の段落と読んだ。末尾の重複した段落（diff記号「+」付きの混入行）を削除し、リンク後に空白を追加。前回の表記崩れが解消。",
+   "changed_files_since_latest": [
+    "content/notes/blockchain-systems/proof-of-work/index.md"
+   ],
+   "code_results": "今回コード・掲載結果の変更なし。前回の検証範囲を継承し、再実行していない。",
+   "figures": "図の変更なし。共通変更は layouts/partials/extend_footer.html の .mermaid への text-align:center 追加のみで、図の読み取りへの影響はないと判断。今回ブラウザでの再描画確認はしていない。",
+   "judgment": "good",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 457,
+   "previous_judgment": "good",
+   "previous_latest_id": 777,
+   "previous_review_id": 971,
+   "reason": "試行回数そのものを証明しないと導入し、targetによる期待仕事量とchainworkを結ぶ。genesisヘッダのnonceを1変えるPASS/FAILが検算可能。難易度調整の2015区間にも注記。",
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1112 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/proof-of-work/figures.py": "d69f4965f99d96f1e25b75772a3bdd1f2e4d882156933cba6b732f3b1ea2c2cd",
+    "content/notes/blockchain-systems/proof-of-work/images/proof_of_work_target_trials.svg": "541c2cfa98e6815e6fdfd9c738440eef4e92655306f2eb76c58e12442942e3d0",
+    "content/notes/blockchain-systems/proof-of-work/index.md": "d09c07a8a5b7863724502f66ebf5394c8a53e97a614f9c96c03d06028016c9ff",
+    "content/notes/blockchain-systems/proof-of-work/lab/output.txt": "e9f6e4eadf124df4253878790f050091c02bf9f88c344aa53e3b628eedb4dc12",
+    "content/notes/blockchain-systems/proof-of-work/lab/verify_genesis.py": "d79f8952510fbdaa7b2e094dd286f756104e618cfcfcb791d81d44dde55396c0"
+   },
+   "fingerprint": "ad62c292dae676fc91ae45c09f50277f9fdc77a9451f78333419a9758afff1b1",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:43.805896+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

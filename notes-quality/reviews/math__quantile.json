@@ -1,0 +1,102 @@
+{
+ "article": "projects/ml/notes/math/quantile/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:29.531553+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.865982+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常・小修整候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.846154+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:13.560739+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.093010+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.031804+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.931480+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.857790+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:42.355500+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:24.163427+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/quantile/index.md": "173b21ab0d9a06558328bfe0cca1968bfe2d25bf",
+   "projects/ml/scripts/notes/quantile_gen.py": "ce2523716e8d97c45439a150d5b08e2aacda49ca"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "通常",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1091,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1178 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回は再取得していない（本文の変更が空白調整または内部の整合に限られ、外部仕様に依存する結論を新たに使っていないため）。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/quantile/index.md": "bd10b04ec1aa21e58d059739fa532f124e202b3b4b745eeede3ee0721453a1ac",
+    "projects/ml/notes/math/quantile/quantile_iqr_outliers.svg": "2ff36ccdd3a94fb4c552f3b60792e23059518f877d2eabcd32b9cd4431982d3b",
+    "projects/ml/notes/math/quantile/quantile_regression_bands.svg": "644007a47b850dfb0a3c559a79298e7d5cfcf078bdbd9d48706341ff4b33a165",
+    "projects/ml/notes/math/quantile/quartile_box.svg": "b6105aa8a92bc5b1413aeb32e6c4041eaa04473dc9e4ab89ac42298b75691aaf",
+    "projects/ml/notes/math/quantile/quartile_hist.svg": "0686841d780fd383ac4f35a77e0a0e24aff9ec2c55f66283baf33a7db5d133c3",
+    "projects/ml/scripts/notes/quantile_gen.py": "ea404bc3d358cb52cf8351be8839015a9a38d77f9c34e6813c372eed7779f69d"
+   },
+   "fingerprint": "1e45487c871aa2c26139fc0a2db14171fa7c9fee6073b1fed52b700140cf6e39",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:49.819516+00:00",
+  "source_updated_at": "2026-11-09T17:14:28+09:00"
+ }
+}

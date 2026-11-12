@@ -1,0 +1,98 @@
+{
+ "article": "projects/ml/notes/ml/overfitting/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:28.800141+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:58.346975+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:37.732005+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:16.236814+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.373526+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.739668+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.561120+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:45.266465+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:42.578350+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:26.728662+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/overfitting/index.md": "e81b6a748ee45af6c7c61ae54c6119b52ba1e798"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "通常",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1093,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1207 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部資料の確認対象なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/overfitting/index.md": "7da6b026983e05596727aab34de8d2d95d64e89df14844567bef9f2dbbef6b0f",
+    "projects/ml/notes/ml/overfitting/overfitting_fit.svg": "e7e2ee94ea9706f91931f4c068abf87024dbb0d13f35e0fd561681bcca406563",
+    "projects/ml/notes/ml/overfitting/overfitting_loss.svg": "bf364e9312bd00e3b8e8fc5bab80d3b2038b8ee45880fa981054200fa5415e18"
+   },
+   "fingerprint": "fa20e60f3b62181303bd2fdc7869b153b4a36cb26998df3dfc841dd8f8eb3e55",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:51.992041+00:00",
+  "source_updated_at": "2026-11-09T17:14:28+09:00"
+ }
+}

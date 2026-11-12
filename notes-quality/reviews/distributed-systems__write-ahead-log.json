@@ -1,0 +1,106 @@
+{
+ "article": "content/notes/distributed-systems/write-ahead-log/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "優先改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:31.964439+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:20.487903+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:52.763975+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:30.866466+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:09.613115+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.710910+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.925606+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:11.173686+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:34.544089+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:20.522608+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/distributed-systems/write-ahead-log/index.md": "d1be0252366debf8399c9ae28442bbeaed49bb25",
+   "content/notes/distributed-systems/write-ahead-log/lab/main.go": "a81bf65082a75692cd33318db88214d92981af32",
+   "content/notes/distributed-systems/write-ahead-log/lab/main_test.go": "087406f156c613db84d626045662ed75dd27d705"
+  },
+  "evidence": {
+   "body": "diff 全体（70 行、空白の統一のみ）を確認し、変更箇所の前後段落と shortcode の caption を読んだ。",
+   "code_results": "lab で go test ./... が ok、go run . の出力が本文の掲載値と一致。",
+   "figures": "note-steps / note-panels / Mermaid シーケンス。差分による変化なし。",
+   "judgment": "良い",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1060,
+   "reason": "殿堂入り。今回の差分は英数字と和文の間の空白の統一だけで、本文の内容・コード・数値は変わっていない。同期順序の note-steps、停止位置と復旧結果の比較、上限ちょうど/超過の実験出力、L≤H+1 の境界例は前回どおり整合する。lab を実行し、掲載出力（complete entries=3、truncated tail entries=2、corrupt middle entries=1、maximum data bytes=8388600、oversized rejected=true）と一致した。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "本文で行った英数字前後の空白の統一が caption に及んでいない。",
+     "where": "shortcode の caption（15 行目「WALが定める」、275 行目「index 200までの…201にした」、345 行目「index 200まで…2例で」）"
+    }
+   ],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1137 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "https://www.postgresql.org/docs/current/wal-intro.html: リンクのみ、再取得なし"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/distributed-systems/write-ahead-log/index.md": "6dbb1c60616731da9a0a20d8781c975ae6a8a55585c7931b0bc93bb6dc0bbe18",
+    "content/notes/distributed-systems/write-ahead-log/lab/go.mod": "725a82e30f2cd8753d1c6778987612b32ab875c77abc2524211e9bace76c6d01",
+    "content/notes/distributed-systems/write-ahead-log/lab/main.go": "e3de443c7b1ba20f4dc519ce4c76b425a201c4e29a6621a7e70cb2594e2932e6",
+    "content/notes/distributed-systems/write-ahead-log/lab/main_test.go": "e8aefdacc402bbc5c67a41fa18b747167814c33acfae2f4ca1410f26d19fb675"
+   },
+   "fingerprint": "7eb663d6b2e1ae1f42cf857332904728f23cfd8c6245adaa86d1d8e3cefea7fe",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:46.071818+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

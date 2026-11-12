@@ -1,0 +1,58 @@
+{
+ "article": "content/notes/software-architecture/distributed-monolith/index.md",
+ "history": [
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.236101+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:41.701826+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:21.817314+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/software-architecture/distributed-monolith/index.md": "38916d6cceef9e7ba499901a05c4d185073c1222",
+   "content/notes/software-architecture/distributed-monolith/lab/chain.py": "a4d7ebfc2b5558c43491ed010dd6d87f3fb49649",
+   "content/notes/software-architecture/distributed-monolith/lab/output.txt": "d2ef5dd4fae90b63b7c62d25d0171acb13d05276"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "通常",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1085,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1152 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "https://microservices.io/patterns/monolithic.html: 2026-11-09 WebFetch。単一デプロイ単位のモノリスパターンの説明で、サービス間の同期呼び出し連鎖や distributed monolith には触れていない。本文の『Microservices.io の設計資料でも同じ問題を扱っています』を支えない。 / https://microservices.io/patterns/data/database-per-service.html: 既知の内容と照合（private tables / schema / DB server per service の選択肢）。本文の『DB サーバーを必ず分ける意味ではない』と整合。今回は再取得していない。 / https://martinfowler.com/articles/microservices.html: 独立デプロイ可能性を特徴に挙げる記事であることを既知情報で照合。再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/software-architecture/distributed-monolith/index.md": "ce2d4e5d86be4ac9002409a9d91f14bc03cf75264c131d6eafd2d396a1009477",
+    "content/notes/software-architecture/distributed-monolith/lab/chain.py": "ed2c8240bad487a02194582394187b3f2bd784a5f1eef9d8b749553e0ec24bb6",
+    "content/notes/software-architecture/distributed-monolith/lab/output.txt": "feccc8fd317b4459ef1a14f4d7253c18a493b588ce2703885c7c97a1c4fce863"
+   },
+   "fingerprint": "e451082744def4238b17baa72a44e12e3c2ca62332fe87bd39abd5a94aa14020",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:47.456430+00:00",
+  "source_updated_at": "2026-11-09T17:14:28+09:00"
+ }
+}

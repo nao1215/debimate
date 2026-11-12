@@ -1,0 +1,55 @@
+{
+ "article": "content/notes/security/pki/index.md",
+ "history": [
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.187675+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:20.880279+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:46.444295+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/security/pki/index.md": "f8993a7b4a3c32c7dd130ea95e07272348154186"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "外部一次情報は今回ネットワークで再取得していない（記載内容は既知の仕様知識と照合）。ブラウザでの描画確認は行っていない。 CT の実運用が RFC 6962（v1）である点、OCSP の BR 上の扱いの最新状況は再取得していない。",
+   "previous_review_id": 1270,
+   "reason": "review-06 draft-g45 を反映（commit 0ed2ac9e、一般技術・結果 OK 済み）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1141 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "RFC 5280（パス検証・basicConstraints/pathLen/keyUsage）、RFC 9525（DNS名照合、ワイルドカードは最左ラベル全体）、RFC 6960、RFC 9162、RFC 8555、CA/B Forum BR、OpenSSL verify man の内容と照合（今回再取得なし）。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "0ed2ac9ecbdea000505a4cb674b5dba15726f3ed",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/security/pki/index.md": "7295dd0d8b83bbbc7a2ff8dfbfdb21f46657440080bd010c95a1f6a479cece03"
+   },
+   "fingerprint": "9b2af2c7a3bcb07ee8b4523787d6a06aa6ff3b414249d88bda3a46edddb02b49",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T11:32:04.469621+00:00",
+  "source_updated_at": "2026-11-09T20:32:01+09:00"
+ }
+}

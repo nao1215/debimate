@@ -1,0 +1,102 @@
+{
+ "article": "projects/ml/notes/ml/probability-calibration/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:29.325436+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:58.635235+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:38.025868+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:16.488935+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.402875+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.747084+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.713287+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.382121+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:26.989966+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/probability-calibration/index.md": "f80f8a6d4cd88e63fb0bcbc15fe78f33e9df22fe",
+   "projects/ml/notes/ml/probability-calibration/results.json": "ed09cfee8d4fdbd2c4b8c3ef950044ee1a83dadc",
+   "projects/ml/scripts/notes/probability-calibration_gen.py": "348ea08e51e3c061b045131965d46ab2f49036b3"
+  },
+  "evidence": {
+   "body": "スナップショット差分の全変更行と前後段落を確認（意味の変更なし）。",
+   "code_results": "projects/ml/scripts/notes/probability-calibration_gen.py を出力先だけ scratchpad に変えて uv run --offline で実行（scikit-learn 1.9.1, NumPy 2.5.4）。Before 0.0783/0.9612、Sigmoid 0.0804/0.9612、Isotonic 0.0788/0.9597 と bin_counts が results.json（1.8.0/2.4.1 で生成）と一致。",
+   "figures": "SVG 3図は不変。生成元を scratchpad 出力先に書き換えて再生成し、数値は一致。SVGバイト列は matplotlib のバージョン差で一致しない（内容の差は未確認）。",
+   "judgment": "良い",
+   "limitations": "ブラウザ描画の再確認なし。",
+   "previous_review_id": 1072,
+   "reason": "変更は和欧間スペースのみ。学習1500/校正750/テスト750の分離、FrozenEstimator、Brier .0783→.0804/.0788 の悪化をそのまま説明、Isotonic の AUC 変化の理由、ヒストグラムで Sigmoid 後に 0 付近が 234→276 件と増える点まで前回評価どおり。殿堂入り記事。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "「約 90%なら」「50%の集団」で、数値には空白を入れたが % と和文の間は詰めたまま。表記統一の範囲として揃えるかは軽微。",
+     "where": "冒頭と「使いどころと限界」"
+    }
+   ],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1210 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "前回（id 921）の確認を継承。今回再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/probability-calibration/calib_before_after.svg": "6f93a425e100ce2f7ae89f86b4bba199e0ddb930e6c1a2959e7ff8f0d22c307d",
+    "projects/ml/notes/ml/probability-calibration/calib_probability_histogram.svg": "0ce6137067229e6e05f8387ea311d11eedece37a97ef111915abe52d3af51408",
+    "projects/ml/notes/ml/probability-calibration/calib_reliability_diagram.svg": "60de996093701ac5105563fe812334a882b14f231ec9f175a3b05a7fe1f4e93f",
+    "projects/ml/notes/ml/probability-calibration/index.md": "23a0e820446fd47ad29ac6dc83b63787eaff7cc7727f1f67dd1a19064c64c729",
+    "projects/ml/notes/ml/probability-calibration/results.json": "0342f29001532042113c38dfaaf1fe40f734a343bdaf71ae07ea21a5162274ce",
+    "projects/ml/scripts/notes/probability-calibration_gen.py": "f451ecdb5d6191b2ed13cb1010ec6d656f3f758405b2bc57a1053c044ba13031"
+   },
+   "fingerprint": "4549ae7d767454c778a301569ff302f961cbf891951b5ab18f9fe63861ed0a3b",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:52.279842+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

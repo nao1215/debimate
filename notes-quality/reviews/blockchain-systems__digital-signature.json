@@ -1,0 +1,114 @@
+{
+ "article": "content/notes/blockchain-systems/digital-signature/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:25.652462+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:16.639627+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:50.142639+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:43.141154+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:06.608479+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.393618+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.177791+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:07.280693+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:49:11.302077+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "殿堂入り",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:41.587007+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:17.328285+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/digital-signature/index.md": "b276844814e3e678f3cfaa5d023142dd92139904",
+   "content/notes/blockchain-systems/digital-signature/lab/README.txt": "f3f587f6a21a4a03fe49857a4aaf88955c7b0589",
+   "content/notes/blockchain-systems/digital-signature/lab/output.txt": "a6daa78576e11b9bc02cb0dc43b0f1ee4fb2253d",
+   "content/notes/blockchain-systems/digital-signature/lab/requirements.txt": "2033083a01a7f2750c455bc90dbd8ab3c0770331",
+   "content/notes/blockchain-systems/digital-signature/lab/verify_changes.py": "f29bc1f382ea046c9ddbd2f54132c0beff8d22f6",
+   "content/notes/blockchain-systems/digital-signature/lab/versions.txt": "3b88cd7ac1f11b6075d0388f2ad149a9f1b24185"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "殿堂入り",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1084,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "鍵と人を結び付ける仕組みを『本記事では扱いません』で終えていた箇所に、PKI ノートへの導線が付いた"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1101 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "PKI ノート（content/notes/security/pki/index.md 36 行に Digital Signature への逆リンク）を確認。cryptography 50.0.0 の公開状況は未確認。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/digital-signature/index.md": "9f310069a0000d2b4306cc9be04f18672ee082c4a97211963573be220ea4ef1f",
+    "content/notes/blockchain-systems/digital-signature/lab/README.txt": "f600af85cd9f0f2562669e1ab3a4063ba8f8747346a00a05e4a6de952af342f1",
+    "content/notes/blockchain-systems/digital-signature/lab/output.txt": "59cf9dcff61aa88e4f3975fbd510988ec69d352a02913f971ef1c848581daac2",
+    "content/notes/blockchain-systems/digital-signature/lab/requirements.txt": "56e6301f491d336997805ec0e824b163ce5797a708440d68f52b6c3e60d63909",
+    "content/notes/blockchain-systems/digital-signature/lab/verify_changes.py": "0d4b4f6dc3cedb1446ce1a55779f580bd89133d51802a9b61aa7bead582b0ff2",
+    "content/notes/blockchain-systems/digital-signature/lab/versions.txt": "e0ba10e052e4df9e2ac9edaf13e92ad1f265f55eb7b4edf24dbf68a38077f3c7"
+   },
+   "fingerprint": "1b93abbae5e6777a4ee9b7688f27602bea172f950a0254207ec7956a5d00fa6e",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:42.826353+00:00",
+  "source_updated_at": "2026-11-09T17:14:28+09:00"
+ }
+}

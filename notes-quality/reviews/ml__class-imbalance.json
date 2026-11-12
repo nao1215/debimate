@@ -1,0 +1,99 @@
+{
+ "article": "projects/ml/notes/ml/class-imbalance/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:24.998033+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.755436+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:35.853749+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.481337+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.190139+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.420863+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.589811+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:04.604672+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:25.017342+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/class-imbalance/index.md": "d7b75e1a182443b4feb5e73ecab2e2d3d85e92cd",
+   "projects/ml/notes/ml/class-imbalance/results.json": "fa52e238de464a032567a8ebac19f27cc02802bc",
+   "projects/ml/scripts/notes/class-imbalance_gen.py": "aa4da108ca9c87b3ad77c7584985b83136eae3d4"
+  },
+  "evidence": {
+   "body": "Git 差分の全 hunk と前後段落。差分が空白挿入と上記 1 語の助詞変更のみで、数値・リンク・コードに変更が無いことを行ごとに確認。",
+   "code_results": "今回は再実行していない。前回の生成元再実行で 4 図と results.json が byte 一致していた記録を継承（生成元・出力は今回不変）。",
+   "figures": "PNG 3 枚・SVG 1 枚・results.json・生成元は今回変更なし（manifest 上 index.md のみ CHANGED）。図の alt『同じ評価集合で測った 5 指標と 4 モデル』は空白挿入のみ。再描画確認はしていない。",
+   "judgment": "良い",
+   "limitations": "再実行・外部資料の再取得なし。内容不変のため判断への影響は小さい。",
+   "previous_review_id": 1033,
+   "reason": "殿堂入り記事。差分 54 行は和文と英数字・リンクの間に半角空白を入れる表記変更が中心で、内容の変更は『落とし穴』の『影響を、適用先に近いデータで確認する』→『影響は、…』の 1 箇所（ユーザーが禁じる『を、』の解消）だけ。評価 300 件・正例 17 件、LR P=1.000 R=.588 F1=.741 AP=.767、weighted P=.255 R=.824 F1=.389、SMOTE P=.237、多数派基準の AP=17/300≈.0567 などの数値・コード・図は変わっておらず、重み付けで Recall が上がっても F1 が下がるという核の説明は維持されている。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "落とし穴の『影響を、』（『を、』の禁止表記）が『影響は、』に直った"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1188 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "scikit-learn / NumPy / imbalanced-learn / Matplotlib / AP の API ページ / imbalanced-learn common pitfalls のリンクは URL 文字列が不変であることのみ確認。再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/class-imbalance/imbalance_boundary_resampling.png": "6e9a68575715df11247a8fd23581e94539967ccc452049fb55aaa982ce088afb",
+    "projects/ml/notes/ml/class-imbalance/imbalance_class_weight.png": "6dc54e2c8d743e57b27ca8351abee1ff2c91a6174f72fa06ae4c0f0123b50af6",
+    "projects/ml/notes/ml/class-imbalance/imbalance_metrics_breakdown.svg": "62c79ce450eb19ff7b11397959078c6b0491d303d97bacad305d5f301db7ca19",
+    "projects/ml/notes/ml/class-imbalance/imbalance_resampling.png": "ad94a4e15a5fc328d2b03b002281cb1515908e5745a0a29e2cf48e6b33a2d6a6",
+    "projects/ml/notes/ml/class-imbalance/index.md": "2a6d339ed570a831883e03bdff04e2a7445a1ff604e14ac87f513db9f1d4dd38",
+    "projects/ml/notes/ml/class-imbalance/results.json": "8987bae9203c53e5ba97cb58283dd640ef61548aa03196c487c14eb67a1e118c",
+    "projects/ml/scripts/notes/class-imbalance_gen.py": "c3d320e623fd3e225868e8793a20c84a135e5a6adee215315d29904e11c0824d"
+   },
+   "fingerprint": "94fb5e9bd66a79855bef1c7824e048c2438e9199aca0340b07c7943871c37038",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:50.430346+00:00",
+  "source_updated_at": "2026-11-08T22:46:35+09:00"
+ }
+}

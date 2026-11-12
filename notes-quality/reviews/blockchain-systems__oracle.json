@@ -1,0 +1,67 @@
+{
+ "article": "content/notes/blockchain-systems/oracle/index.md",
+ "history": [
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:55:51.544626+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.324758+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.138140+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:43.626229+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/oracle/index.md": "0c89350f1af88d8e9e932dd812ace95ea9d84ebf",
+   "content/notes/blockchain-systems/oracle/lab/output.txt": "adbfa4ddf7d9e336cab93fc007b2cd29fc4c7f48",
+   "content/notes/blockchain-systems/oracle/lab/price_feed.py": "2eff2c07f7523182588889b3e93956bf2495f7a9"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "外部資料の再取得、ブラウザ描画の再確認はしていない。",
+   "previous_review_id": 1239,
+   "reason": "review-06 draft-g45 を反映（commit 0ed2ac9e、一般技術・結果 OK 済み）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "前回は指摘なし。今回の冒頭の具体化で、用途の把握が早くなった。"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1110 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "前回（id 952）の Chainlink/Ethereum 公式確認を継承。今回再取得なし。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "0ed2ac9ecbdea000505a4cb674b5dba15726f3ed",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/oracle/index.md": "968b0a1c875480f82f3043d901cab9a102f7b842065cf62bfd8c71f530765487",
+    "content/notes/blockchain-systems/oracle/lab/output.txt": "45c04075dc3d64fc6aa1ac95a5e4af944f98dc20334ed70142a0d97dd5cf9ace",
+    "content/notes/blockchain-systems/oracle/lab/price_feed.py": "3fa2f36afc4900c92c3f8a6c34b428ed68b719eed6f40e37ce04305897989250"
+   },
+   "fingerprint": "8007212e67e11f1b978c7b47358d50ccf2e64f01ffc594530b615324f5f56b68",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T11:32:02.991118+00:00",
+  "source_updated_at": "2026-11-09T20:32:01+09:00"
+ }
+}

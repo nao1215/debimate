@@ -1,0 +1,110 @@
+{
+ "article": "content/notes/blockchain-systems/merkle-tree-design/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:28.389871+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:18.008838+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:50.758963+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:43.929985+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:07.341787+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.465450+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.406856+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:08.230841+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.775998+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:17.952413+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/merkle-tree-design/index.md": "2b9d9a21d2a5dc1832974d7d89b0aa31f9949126",
+   "content/notes/blockchain-systems/merkle-tree-design/lab/compare_rules.py": "9f19fc38a4cddd3cfc635790e74c46927a3b5ef9",
+   "content/notes/blockchain-systems/merkle-tree-design/lab/output.txt": "0667efdd3035177b4f75412f0e34988969c1a4a4"
+  },
+  "evidence": {
+   "body": "Git差分の全hunk（16行）と前後段落、および『葉の並べ方 3 通りの比較』表を読んだ。",
+   "code_results": "lab/compare_rules.py を scratchpad にコピーして python3 -I で実行。output.txt が lab/output/output.txt と一致し、本文の出力ブロック（duplicate-last True、RFC9162 False、no prefix True、RFC9162 False、Assertions PASS）とも一致。",
+   "figures": "hash-input-comparison shortcode と Mermaid の変更なし。",
+   "judgment": "良い",
+   "limitations": "RFC 9162 は再取得していない。",
+   "previous_review_id": 1053,
+   "reason": "変更は英数字前後の空白統一のみ。同じ64バイトの読み替えと末尾複製を compare_rules.py で比較し、True/False の対比で構築規則の必要性を示す点は維持。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "『ノード数は対数』『O(log n)』はキー長・キー分布（ハッシュ化キー）の条件を省いている（前回指摘、未修正）。trie の深さはキー長で上限が決まる。",
+     "where": "葉の並べ方 3 通りの比較 表 trie 列"
+    },
+    {
+     "priority": "低",
+     "problem": "葉の追加の計算量が書かれておらず、配列状の木で中間に挿入すると以降の葉の位置がずれて多くの内部ノードを再計算する点が伝わらない。",
+     "where": "同表 キー順に整列する列"
+    }
+   ],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1108 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回は再取得していない（本文の変更が空白調整または内部の整合に限られ、外部仕様に依存する結論を新たに使っていないため）。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/merkle-tree-design/index.md": "439917650b6cfa7ec9efd6580a0f622d243e20d6252d72621e5344dbb45b3cf2",
+    "content/notes/blockchain-systems/merkle-tree-design/lab/compare_rules.py": "be1f3bddd5a404aa9011e52964b10d733f5dd327d67c2e93b057781d4cca7cb0",
+    "content/notes/blockchain-systems/merkle-tree-design/lab/output.txt": "f9f8487849765a6ce730883456bb700f83c302e6dd278279279850f54bfee082"
+   },
+   "fingerprint": "c394ed31ae599595394cb330b70ebcd459bef605853f3d064b6757263ba39d92",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:43.457690+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "article": "projects/ml/notes/ml/dbscan/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:25.501587+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:57.178772+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:36.339155+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.917280+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.234798+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.077808+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.844486+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:51:49.891697+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:34.828618+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:25.462481+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:50.720682+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/dbscan/index.md": "79be4859421b788f67ffdba0b9dd43b9c4ed76b1",
+   "projects/ml/scripts/notes/dbscan_gen.py": "fcf88d230ac7c8215900d02dfa8413f82a7176e6"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1317,
+   "reason": "review-06 draft-v8 を反映（commit b1812e4f、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "分類図に border が 0 件でボーダー例を示せない問題",
+    "k-distance 図の 95% 線が固定規則ではないという本文と食い違う問題"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1193 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回参照していない（本文の数値・コードを再計算・目視で確認）。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "b1812e4f3bcf501c8b6ff44421605accfd62199b",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/dbscan/dbscan_core_border_noise.svg": "924b4e3e7491f875a756f53bd5b930c4474fd6a49724e613a4a2a3d4c4363895",
+    "projects/ml/notes/ml/dbscan/dbscan_eps_sensitivity.png": "9c7e647ddff67daa71a6cec386c7cff86fdb2552b274c245d6569563b2e91d4d",
+    "projects/ml/notes/ml/dbscan/dbscan_k_distance_elbow.svg": "8a3ad860fcd1b1367c1d61280edb5825a63a6f12f3c8bc4200281ceec61bf779",
+    "projects/ml/notes/ml/dbscan/dbscan_vs_kmeans.svg": "b3c21b1b2669999d1505003e574dd08d1d72e1ba65668e16859872de52d336b5",
+    "projects/ml/notes/ml/dbscan/index.md": "9f29401e0bf5b2bb2265c8c48e77e4d868d92b4ca5abfc669d189f3e408607a8",
+    "projects/ml/scripts/notes/dbscan_gen.py": "6ae4970fe4a561cdbae1c396bed9419ae6aec4075d2f460bb2b08267fbda2b48"
+   },
+   "fingerprint": "02c9ae73d26e645b7d14a7127c00f0bdf3458aa410dfc7557019cd1cf5a7b412",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:50:57.172227+00:00",
+  "source_updated_at": "2026-11-09T18:50:56+09:00"
+ }
+}

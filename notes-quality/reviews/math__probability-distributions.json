@@ -1,0 +1,103 @@
+{
+ "article": "projects/ml/notes/math/probability-distributions/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:29.384883+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.779627+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.742065+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:13.436465+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.083600+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.638701+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.879718+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:49:11.220770+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:24.073016+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:49.724768+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/probability-distributions/index.md": "416f4d52a5ad124d646a2b4372f58e8a863732e2",
+   "projects/ml/scripts/notes/probability-distributions_gen.py": "d6bafb67029a07f517541b2689270583afedc680"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "再実行・描画確認なし。",
+   "previous_review_id": 1306,
+   "reason": "review-06 draft-v7 を反映（commit e385abf3、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1177 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "再取得なし。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "e385abf3ca7753b50c172b217fa1c9c8d7a8ebf6",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/probability-distributions/distributions_continuous.svg": "253d1a9bd690bcb1e9220aefa99660d294f3ed1f030b8af2bc55482abe1944af",
+    "projects/ml/notes/math/probability-distributions/distributions_discrete.svg": "b887613c456588a92f90f7a379631580eb82000b3c88ee6ca4cd82fc1453a42a",
+    "projects/ml/notes/math/probability-distributions/distributions_family_choice.svg": "4e5ad2674bc56ae8ad97bce07badf8fe81515b79d7eff73ec9d097a52bcb0199",
+    "projects/ml/notes/math/probability-distributions/distributions_family_tree.svg": "883e79b2b2b4d6c24131bb7d8828419fe7f9bdb7aaf49c5c583c5cc442856906",
+    "projects/ml/notes/math/probability-distributions/index.md": "a4cacdf8fe32794d2e439f25ebd33762b266849067586da63e1dccd92ffa6a32",
+    "projects/ml/scripts/notes/probability-distributions_gen.py": "9bc15b5f399ef38703a45d536e022f0984a2e989fc56d741829d9a456825e95e"
+   },
+   "fingerprint": "5fc5ff6c36edea9a70f7f316efc92109364a1e81fd74deb8edc7fee21dea9711",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:37:27.372868+00:00",
+  "source_updated_at": "2026-11-09T18:37:26+09:00"
+ }
+}

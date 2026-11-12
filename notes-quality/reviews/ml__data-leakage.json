@@ -1,0 +1,111 @@
+{
+ "article": "projects/ml/notes/ml/data-leakage/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "legacy_partial",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:15:06.754194+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:25.450420+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:57.114245+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常・小修整候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:36.238123+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.834682+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.225712+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.691385+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.796455+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:45.355076+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:25.373414+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:50.616342+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/data-leakage/index.md": "daa03b5e7fdc9e5483d109b6950650cd8efd4bec",
+   "projects/ml/scripts/notes/data-leakage_gen.py": "fe7a93f32de6259c21565239f061d0c4e233b931"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "図の再生成、目的変数リーク実験の再実行はしていない。",
+   "previous_review_id": 1316,
+   "reason": "review-06 draft-v5 を反映（commit bfcd744a、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "表記（CV・fit・as-of timestamp 前後の空白）の統一"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1192 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部資料の再取得なし。116 行の与信スコア事例、229 行の医療画像の事例に出典リンクがないことを再確認。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "bfcd744a80855eb18873a6ff1cfee02fbc813702",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/data-leakage/data-leakage_contamination.svg": "d63c9b9bb2b27338c6e2a0f50db5468b870d95aef138e5cd51740fbb71ad90a5",
+    "projects/ml/notes/ml/data-leakage/data-leakage_cv_score.svg": "48fe161cf3b96977b0f7c6cf8fdc6a4075900af5d623306e1e8f65d490733748",
+    "projects/ml/notes/ml/data-leakage/data-leakage_importance.svg": "9a1eed0b5299c50a7defa9897f584c80313fe9e62e4857ec2c30523b5667a2a1",
+    "projects/ml/notes/ml/data-leakage/data-leakage_timeline.svg": "c6f4e2d0354c6484aa190cc04c5c850509ba2b929a1f6ba0de0692119101660e",
+    "projects/ml/notes/ml/data-leakage/index.md": "b7441db86465dd9326bd6ad274d5a52028d65006f5605eb9391b168fbca7f91d",
+    "projects/ml/scripts/notes/data-leakage_gen.py": "9b22dd03dd6fadea6629ca08d6c844fd65c6b110c1ec8637363d66c7dd45fcf4"
+   },
+   "fingerprint": "c0bb8c6f36f9e1d83b595a0e9358e49c22fd583382da0b8284780bc0f4d43ae0",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:15:53.617034+00:00",
+  "source_updated_at": "2026-11-09T18:15:52+09:00"
+ }
+}

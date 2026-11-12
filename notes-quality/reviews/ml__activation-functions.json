@@ -1,0 +1,99 @@
+{
+ "article": "projects/ml/notes/ml/activation-functions/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:24.094303+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.296881+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:35.342443+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:14.012696+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.142316+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.660201+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.342624+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:44.755557+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:24.586299+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/activation-functions/index.md": "0c2745ce24463c750800d711c1ba7078fa31cc73",
+   "projects/ml/notes/ml/activation-functions/results.json": "4827a8e2a08f717984c9fcdbbe861be8fb0f2899",
+   "projects/ml/scripts/notes/activation-functions_gen.py": "bb49bfb1ffa01fb49219a18e1d124b5a250933c1"
+  },
+  "evidence": {
+   "body": "差分 diffs/activation-functions.diff（68 行、すべて空白の統一）を読み、変更箇所の前後段落を確認。文意の変更なし。",
+   "code_results": "今回再実行していない。0.25^10=9.54e-7 は暗算で一致。なお projects/ml/.venv の scikit-learn は 1.9.1 で、本文の「scikit-learn 1.8.0、NumPy 2.4.1」と環境が異なる。掲載値は記載バージョンでの結果として明記されているため誤りではない。",
+   "figures": "図・生成コード・results.json は不変。共通変更は layouts/partials/extend_footer.html の .mermaid への text-align:center 追加のみで、描画判断への影響は軽微と判断。今回ブラウザでの再描画確認はしていない。",
+   "judgment": "良い",
+   "limitations": "前回の再実行結果（byte 一致）を継承。現行 venv（sklearn 1.9.1）での再実行はしていない。",
+   "previous_review_id": 1037,
+   "reason": "殿堂入り記事。GELU の値域（z≈-0.752 で約 -0.170）、sigmoid 微分の上限 0.25^10≈9.54×10^-7 と「重みを含めた勾配ではない」の区別、80 epoch の訓練 MSE を勾配消失の直接測定・汎化性能と区別する記述は維持。今回は英数字前後の空白統一のみ。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "前回の未解決指摘なし（GELU 値域・ReLU 凸性の旧指摘は前々回までに修正済み）"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1183 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "旧completeの一次情報確認を継承。外部資料の再取得なし。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/activation-functions/activations_decision_boundary.png": "aee50368bb09a1379b06d0b2efc027c95fc3f01a62bbba1abde13ba9f9656312",
+    "projects/ml/notes/ml/activation-functions/activations_gradients.svg": "a0516880f47374da5c7b7e754ca01e5e8aa59d2735f90881440508ce0fab65ee",
+    "projects/ml/notes/ml/activation-functions/activations_shapes.svg": "8cfe6ab378af21e4896dd4a8dc16ed5c65b474a35b436f28bf439765d6ab12eb",
+    "projects/ml/notes/ml/activation-functions/activations_training_curves.svg": "faa15e0274f250884904abfd7b03c2a8a5bb577ca271caa9b90616c521cba207",
+    "projects/ml/notes/ml/activation-functions/index.md": "d3ca9f7167c9a0f9ea3612c772ce30ee5c68efe8053b64eec2f65a2fa07e150d",
+    "projects/ml/notes/ml/activation-functions/results.json": "f6baecd6ee84b99a5bf3b5425922fa427103f2e490c5ea3f12104ba3940bcea9",
+    "projects/ml/scripts/notes/activation-functions_gen.py": "0bcdb75a5e3d95616efad35553aa9d2a1f165145c31c70f028530f4cd6de7da7"
+   },
+   "fingerprint": "6eba081338ca9820e66b820d0d94a19120e461f1da1ef5f57c6cdeebb2335d9c",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:49.997565+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

@@ -1,0 +1,126 @@
+{
+ "article": "content/notes/blockchain-systems/smart-contract/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:30.478026+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:19.181971+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:51.014946+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:44.144293+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:07.553606+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.492301+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.422222+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:08.457963+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:55:51.705229+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:16.329055+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.486172+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/smart-contract/index.md": "b56a377a68b80c249744b6ca50fda5f522a3d462",
+   "content/notes/blockchain-systems/smart-contract/lab/README.txt": "b97da538eff8d60a7d9d5e8ecb3bc91206d381f1",
+   "content/notes/blockchain-systems/smart-contract/lab/output/deploy.json": "0c320980ad72e9bb93f4794ccf4a5e450433cd4b",
+   "content/notes/blockchain-systems/smart-contract/lab/output/increment.json": "87a15d4b0abbce7dfb95e0602fb33750e768f7ad",
+   "content/notes/blockchain-systems/smart-contract/lab/output/revert.json": "ede13943a3a0df31e239b9a254eeef49601a4ce1",
+   "content/notes/blockchain-systems/smart-contract/lab/output/summary.txt": "c59c28f8d015c7405c84010cc3843d543c833bfd",
+   "content/notes/blockchain-systems/smart-contract/lab/output/versions.txt": "390b50c701b52fc9cd15c1c833d3e5a444ebf7bd",
+   "content/notes/blockchain-systems/smart-contract/lab/run.py": "9c3a7cee584a5b6f40b50c5eb3c8ec3d8346e032"
+  },
+  "evidence": {
+   "body": "Git差分・スナップショット差分の全hunkと前後段落を読んだ。構成変更なし（本文変更82行は空白調整のみ）。実験の出力ブロックと lab/output/summary.txt を照合。",
+   "code_results": "anvil/solc/cast が環境に無く run.py は実行していない。本文の出力ブロックが lab/output/summary.txt と一字一句一致することを確認。",
+   "figures": "Mermaid 図の変更なし。共有 CSS の .mermaid 中央寄せは影響軽微。",
+   "judgment": "良い",
+   "limitations": "実験の再実行は未実施（ツール未導入）。外部の Ethereum 公式ドキュメントは再取得していない。",
+   "previous_review_id": 1048,
+   "reason": "殿堂入り。今回の変更は英数字前後の空白の統一と、『オラクル（oracle）』に ../oracle/ ノートへのリンクを付けた1点のみ。eth_call で count=0 のまま、increment で status=1 count=1 logs=1、incrementAndFail で status=0 count=1 logs=0 でも nonce_delta=1 と fee_wei=55922000000000 が残る、という実験の対比は変わらない。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "『`eth_call`は』『`solc`を PATH に』などインラインコード直後の空白の有無が、今回揃えた他の箇所と不統一。Mermaid ラベル『nonce更新・手数料支払い』も未調整。",
+     "where": "本文の各所"
+    }
+   ],
+   "resolved_previous_issues": [
+    "前回指摘なし。オラクルへの相互リンクが追加された。"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1114 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "content/notes/blockchain-systems/oracle/index.md: 新リンク先が存在し、Oracle ノート側も ../smart-contract/ へリンクしており相互リンクが成立。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/smart-contract/index.md": "b0fd4a8c718a601eb235ca5e9788555132233070eadf82ecdb68a8dd99ebba07",
+    "content/notes/blockchain-systems/smart-contract/lab/.gitignore": "7513250ccf804f7fd52c8dd4e9a3ceca802da1116ef76c61fd4d75a483dec521",
+    "content/notes/blockchain-systems/smart-contract/lab/Counter.sol": "b4486d67f539a64ed84c1650fa927143f1be36a4c9300e0f5f6aaacddcb6864c",
+    "content/notes/blockchain-systems/smart-contract/lab/README.txt": "6d3b6bfed80e1012990efad9f9460f3cf79939b8463d74e2ebf29cf58c727c9d",
+    "content/notes/blockchain-systems/smart-contract/lab/output/deploy.json": "5eeaa13a4bbcc07054bc8bd1cceee182d9d250eeb59d1ad24666a79f5a5812f5",
+    "content/notes/blockchain-systems/smart-contract/lab/output/increment.json": "78d14ca0339588cc2d0c1cfc5196e9b38b34514df3d2fe7273ae00a4a8490ee6",
+    "content/notes/blockchain-systems/smart-contract/lab/output/node.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "content/notes/blockchain-systems/smart-contract/lab/output/revert.json": "721d124e2202ce787b190eb41d3282f14d17d97507297dc9767b0471fd7501b7",
+    "content/notes/blockchain-systems/smart-contract/lab/output/summary.txt": "fafbd3a42b59f6ae6266986db8e172c444be0219728ec9cc6eff3cb9ba8e29b4",
+    "content/notes/blockchain-systems/smart-contract/lab/output/versions.txt": "940eba645e21b088826ae6500b98b3e80ed97f1932a0dd1dfbd98eba4a801356",
+    "content/notes/blockchain-systems/smart-contract/lab/run.py": "b64816daf046948c33231a390f0dd0e1943d4bfc24dc30f3254705a30ca5b89a"
+   },
+   "fingerprint": "30c2e76a76100f7908ca5ab4ebd6210714713b4d96058f2e7daddd6af7c10a5d",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:43.977542+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "article": "projects/ml/notes/math/vector-matrix-ops/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:31.820498+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.218719+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:35.244493+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:13.913080+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.132650+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済みv2反映完了",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T12:40:33.583889+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "承認済みv2反映完了",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.284528+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.612568+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:24.498889+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:49.909572+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/vector-matrix-ops/index.md": "524dd7a4caa3be32b17c3c174a5b6992e6719307",
+   "projects/ml/scripts/notes/vector-matrix-ops_gen.py": "6c22630e281f942fcb08f75f06b67e27dc6f3ac5"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "他の図・生成元の再実行、描画確認はしていない。前回の judgment 欄が『承認済みv2反映完了』で品質判定でなかったため、今回『通常』として付け直した。",
+   "previous_review_id": 1308,
+   "reason": "review-06 draft-v7 を反映（commit e385abf3、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "Xw の説明図でノイズ付き観測値を予測値として表示していた点（v2 で解消済みを今回図で再確認）"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1182 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "前回を継承。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "e385abf3ca7753b50c172b217fa1c9c8d7a8ebf6",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/vector-matrix-ops/dot_product_projection.svg": "d38c98d6fd405887b195c20b6047e63394c6fc4a7ce7793b5d48b6652e2ca697",
+    "projects/ml/notes/math/vector-matrix-ops/index.md": "d02adaff5cd26877e0977d45e07ef04f32bf502e50bf8b5a837a869e46d1ba5a",
+    "projects/ml/notes/math/vector-matrix-ops/matrix_regression_layout.png": "d38c2c9ef8ecceb7622f78a0064c044c5aa023e0f1640d658496bfd50c8e8667",
+    "projects/ml/notes/math/vector-matrix-ops/matrix_transformations.png": "ac7246922a5149d2a15565568565293c77bf40cb37d99af5f299f2798f605fcd",
+    "projects/ml/notes/math/vector-matrix-ops/vector_basics.svg": "6c739100bb9807fb94c7cede1967707993a537dd3edd046fa17e2fd3f5d8f593",
+    "projects/ml/scripts/notes/vector-matrix-ops_gen.py": "643a3d1db0f75cb691a158465b7d49dbe9775c4e53e5e596647078e819b6e290"
+   },
+   "fingerprint": "60c8b2df167827cce892d5cfc208458861a3311d3d399d7872318755824fb6a9",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:37:27.461866+00:00",
+  "source_updated_at": "2026-11-09T18:37:26+09:00"
+ }
+}

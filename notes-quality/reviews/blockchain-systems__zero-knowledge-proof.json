@@ -1,0 +1,128 @@
+{
+ "article": "content/notes/blockchain-systems/zero-knowledge-proof/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:32.031538+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:20.579413+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:51.281482+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:44.442200+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:07.842439+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.534595+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.438688+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:08.825893+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:44.665056+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.749600+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/zero-knowledge-proof/index.md": "08386dd66de5717c9b1e4eeae65a9af077c1c9a6",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/Cargo.toml": "9fced10e9af4568f98648b7e75e938f4877f0f2d",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/README.txt": "1325c540a2f8d4790cc337896ff926e45dc39bcb",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/host/Cargo.toml": "288e02809a7ab74022d1b6ffe2b8b99ce7d78e01",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/host/src/main.rs": "7dbb1629aa4f7f9e17a9046bc3b61dc59776fb06",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/Cargo.toml": "64270a20eb3f45ef966c0f5ab172622fd121a315",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/build.rs": "08a8a4eb72e5ae99c9647680707f0f4c461238cf",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/guest/Cargo.toml": "2f313e1328e5bd5ca5fbb626d4b09561fe477667",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/guest/src/main.rs": "f61d667e8582d3a2a3a384d001ea05a05951a91e",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/src/lib.rs": "1bdb3085fa164c7151a1128bcc4ea78dd3a96657",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/output/summary.txt": "be08294ada4eeb39fbd3a647ab8c410f331ba148",
+   "content/notes/blockchain-systems/zero-knowledge-proof/lab/output/versions.txt": "d350846ff7839d446c71a0007bd68f3831b56f51"
+  },
+  "evidence": {
+   "body": "差分 diffs/zero-knowledge-proof.diff（126 行）を読み、追加文の前後段落（冒頭 3 段落）と変更箇所の前後を確認。変更は表記のみで構成不変のため、全文の再精読ではなく差分と前後段落の確認に留めた。",
+   "code_results": "host/guest の Rust・lab は不変。証明の再生成はしていない（RISC Zero ツールチェーンが要るため）。",
+   "figures": "Mermaid・コードは不変。共通変更は layouts/partials/extend_footer.html の .mermaid への text-align:center 追加のみで、描画判断への影響は軽微と判断。今回ブラウザでの再描画確認はしていない。",
+   "judgment": "良い",
+   "limitations": "全文の再通読・証明の再生成・外部資料の再取得はしていない。",
+   "previous_review_id": 1036,
+   "reason": "391=17×23 で公開 journal と秘密 witness を分ける表、image ID と journal の 391 照合の両方が要ること、assert!/checked_mul を消した時に証明される条件が変わること、dev-mode 禁止、succinct と composite の実行長漏れの差、Security Model が完全なゼロ知識性の証明を未提示と明記している点は維持。今回は数字・英字前後の空白統一と、冒頭への Rollup への導線 1 文の追加。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "本記事で L1 が初出かつ未説明。Rollup ノートでは定義されているが、この記事だけ読む人には「L1」が通じない。「Ethereum 本体（L1）」程度の補いが必要",
+     "where": "冒頭 2 段落目「後者を L1 で利用する構成の一つが Rollup です」"
+    }
+   ],
+   "resolved_previous_issues": [
+    "前回は技術的な指摘なし。表記（英数字前後の空白）が統一された"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1117 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "追加リンク ../rollup/ がリポジトリ内に存在し、Rollup ノート冒頭で L1/L2 を定義していることを確認。外部 URL の再取得はしていない。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/zero-knowledge-proof/index.md": "acb307e819f9a1cf0f172232c0c9296c1adbd9dae5dee085f1f6fdb82cbf939a",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/.gitignore": "abb0e782bbc5118742d021351b8d3ec4937e415d0b0008c315d1e5883937ff35",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/Cargo.lock": "11d5c4bf48761b65e0a7e6fbe2077d24595182957827981ea10bedc6c8e72cd2",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/Cargo.toml": "c37d8efbaa7dae88288f2e7877793228729a9488d37428de866a2c23712a9390",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/README.txt": "262ac325feb5db47c512a859a39742d17c621ee466497b63d994af17be44bb28",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/host/Cargo.toml": "4302d7c22de8607c5144ee40418dc7900dfbfa1f7f1be5885075dacd28442ce4",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/host/src/main.rs": "147545bef8eaf6910fc1dd8411eee66a56d11b252e71ab604b66ec574d42284e",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/Cargo.toml": "1874b8cffed2f05f7e10bbbae4d38175e7be68e18c267a3c0bb5174bb0e218bd",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/build.rs": "d3d0aa4add6d6294b4cd9199c9b7162187b7383980cda986051fe94497334f75",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/guest/Cargo.lock": "da7cb6474cb004af88d5c1f882d31436fc61669cd17b572949191bb5de1c0b70",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/guest/Cargo.toml": "2124c823f6f95a1560554d6422dbf6a067d9c19e4b8d5596b41d9dabf6af02f3",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/guest/src/main.rs": "9dabc3567706ac824734e64b8c870d85357b2d444f12d3210893cd7a7ffc82f4",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/methods/src/lib.rs": "902d56d952004dd42e65c148a4b537710f869054556528b25ed3e67d050bb255",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/output/summary.txt": "29f7e0789cb4dfb8c3a210f1d746682ad3084f95fe696f55b61cab7f16c93a09",
+    "content/notes/blockchain-systems/zero-knowledge-proof/lab/output/versions.txt": "15bdc893926813ae86f035fcb9fb299919ea0d4b935689be5b33b95a5da64893"
+   },
+   "fingerprint": "9d3be0b75306c0cec98ffaed28211714295c642dff7c214b33034153ef02f4f5",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:44.252662+00:00",
+  "source_updated_at": "2026-11-08T22:49:18+09:00"
+ }
+}

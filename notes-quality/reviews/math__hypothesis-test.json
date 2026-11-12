@@ -1,0 +1,132 @@
+{
+ "article": "projects/ml/notes/math/hypothesis-test/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "legacy_partial",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:15:06.724859+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:26.951036+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.094038+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "優先改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:33.838781+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:12.506351+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.993306+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.604847+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.406358+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:03.461823+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:23.276233+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "優先改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:48.911382+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/hypothesis-test/index.md": "1f6d8fb070e9b0d313f28dcb002ce0a57979aad0",
+   "projects/ml/scripts/notes/hypothesis-test_gen.py": "bdd28cd5618d8f636b64ab085cc54234f77c0713"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 509,
+   "previous_judgment": "優先改善候補",
+   "previous_latest_id": 714,
+   "previous_review_id": 1297,
+   "reason": "review-06 draft-v6 を反映（commit e34930e6、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1168 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "e34930e679bef974918f1be1130af1a3a9938f09",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/hypothesis-test/confidence_intervals.svg": "8f18ca80e4e2878eb08c9cc65013be10ee70be173e7532b2f9ae5073e9026c64",
+    "projects/ml/notes/math/hypothesis-test/index.md": "a3a01db11f40a81153230b0bd48c992eeed4a318ab854205415151027c8a11a2",
+    "projects/ml/notes/math/hypothesis-test/p_value_concept.svg": "0e9097de3d16f248d61db8425c7fd003a5d519bab1f9add84480c8464316d9bb",
+    "projects/ml/notes/math/hypothesis-test/sample_size_effect.svg": "60065d4cb8973bee043a2ff33a20d41bba51eba4dec11e45dd0780b1ed57beb9",
+    "projects/ml/notes/math/hypothesis-test/type1_type2_power.svg": "8edeeb0573b2a99467900741096022d75014945144e5cdd62ae017d33f86e280",
+    "projects/ml/scripts/notes/hypothesis-test_gen.py": "5d128ecb1dbb507baa1202f7759d09c47dc60a438f21550afb9ea681ab7e020b"
+   },
+   "fingerprint": "264e71df117349f496893fa5ddaefd9315d8850e6037571d00343101189f6205",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:24:44.477030+00:00",
+  "source_updated_at": "2026-11-09T18:24:43+09:00"
+ }
+}

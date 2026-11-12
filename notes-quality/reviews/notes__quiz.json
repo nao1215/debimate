@@ -1,0 +1,99 @@
+{
+ "article": "projects/ml/notes/quiz/index.md",
+ "history": [],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/quiz/index.md": "c3991b52492c85058f468352cd7911debee7bd87"
+  },
+  "evidence": {
+   "article": "projects/ml/notes/quiz/index.md",
+   "body": "全679行を1-170、171-340、341-510、511-679に分け、全Q1〜Q15の問題・選択肢・折り畳み解答・関連リンクを全文精読。",
+   "code_results": "実行する学習コードなし。Q10の混同行列を手計算照合。Q3/Q6/Q12/Q13等のスコアは設問上の仮定で実測主張ではない。",
+   "figures": "掲載図なし。public/ml/quiz/index.htmlをローカルHTTP配信しChrome/Playwrightで15個すべてのdetailsをクリックして開閉・正解文の存在を確認、全件pass。1280px解答表示スクショquiz-open.png、390pxスクショquiz-mobile.pngを目視。操作記録quiz-browser.json。",
+   "fingerprint": "55ec8af068d9d63e10127146bce375c42457e70e0448228c94f21576845ae9d2",
+   "judgment": "特殊形式：通常ランキング対象外、改善候補",
+   "level": "complete",
+   "limitations": "全15設問全文・折り畳み開閉を確認。全主張の独立実験ではなく主要誤解を一次情報・数式・関連ノートと照合。通常記事のランキングから除外する特殊形式。",
+   "priority": 1,
+   "question_evidence": [
+    {
+     "finding": "ROC-AUCが不均衡だけで左上へ張り付く説明は条件付きscore分布固定なら不変というroc-pr-aucノート実験と矛盾。MSEは二値分類に使わないという否定はBrier score（確率と0/1のMSE）に反する。",
+     "q": 1
+    },
+    {
+     "finding": "RFが最小影響という選択は妥当。距離・正則化で標準化必須、NaiveBayes一律不要は一般化が強い。",
+     "q": 2
+    },
+    {
+     "finding": "CV平均±標準偏差を信頼区間と呼び、その重なりでモデル差の有無を判定している。fold間依存と対応ある比較を考慮せず、重なっても差が有意になる場合がある。",
+     "q": 3
+    },
+    {
+     "finding": "最終testをモデル選定に使わない役割区別は明快。固定3分割必須とCV代用の整理は文章で補完されている。",
+     "q": 4
+    },
+    {
+     "finding": "r=.8から学習集合内の切片あり単回帰R²=.64となる条件が省略。残り36%を別要因と断定するのは残差の因果説明ではない。",
+     "q": 5
+    },
+    {
+     "finding": "PR-AUC高いBは有力候補だが、曲線/運用閾値/コストなく運用採用を一意に決められない。AUC差.01をほぼ誤差と断定する根拠なく、AP .30だけでアラート大半誤検知は結論できない。",
+     "q": 6
+    },
+    {
+     "finding": "標準化済みなのにexp(2.1)を延滞回数が1回増加したオッズ比とする。正しくは他特徴一定で1標準偏差増加。係数最大を主因とする説明は因果推論ではない。",
+     "q": 7
+    },
+    {
+     "finding": "予測時点に利用可能かで未来特徴を見抜く構成は良い。過去集計は到着遅延・更新時点も確認が必要。Accuracy.99を一般的リーク兆候とするのは極端不均衡と混同しやすい。",
+     "q": 8
+    },
+    {
+     "finding": "L1の疎性を選択理由にするのは妥当。ただしL2が全係数を一定比率で縮小する説明は一般に成立しない。ElasticNetはL1ほど疎でない/L2ほど安定でないと無条件比較できない。penalty指定は現行sklearnで非推奨。",
+     "q": 9
+    },
+    {
+     "finding": "Recall .4/Precision .0909/Accuracy .954の計算は一致。閾値低下でRecall非減少だがPrecisionは単調減少を保証しない。0.3に具体的に下げる効果はスコア分布未提示。",
+     "q": 10
+    },
+    {
+     "finding": "P(y|x)変化からconcept drift選択は妥当。一方、平均・分散不変だけではP(x)不変と断定できない。Label shiftのP(x|y)不変条件が欠落。",
+     "q": 11
+    },
+    {
+     "finding": "複数指標と業務文脈を合わせる説明は有用。silhouette .5以上良好/.2以下怪しいはデータ依存。イナーシャは分散の単純合計ではなく中心への二乗距離和。",
+     "q": 12
+    },
+    {
+     "finding": "5000次元だけで距離比.93と決まらず分布・標本数・内在次元依存。LR/RFが良いので不均衡原因と矛盾するという推論は誤り。",
+     "q": 13
+    },
+    {
+     "finding": "100万カテゴリOneHotを実行不能・線形分離無意味・汎化ゼロ・OOV予測不能と断定。CSRは非ゼロ数に比例し疎線形モデルで扱える場合がある。handle_unknown=ignoreなどもあり設計条件次第。IDはカテゴリではないとの断定も誤り。",
+     "q": 14
+    },
+    {
+     "finding": "訓練/検証が低位で頭打ちから容量・特徴量を検討する選択肢は妥当。ただしラベルノイズやBayes限界/最適化不良もあり、目標未達だけでhigh biasを確定しない。",
+     "q": 15
+    }
+   ],
+   "reason": "全15問の解説で関連ノートと同じ過剰断定が反復。特にQ3のSD/信頼区間、Q7の標準化単位、Q14の疎行列と未知カテゴリの説明を優先。",
+   "reviewed_at": "2026-11-03T07:31:37.571962+00:00",
+   "reviewer": "read_ml_applied",
+   "sources": "2026-11-03: https://scikit-learn.org/stable/modules/generated/sklearn.metrics.brier_score_loss.html は二値確率MSEを定義。https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html はCSR既定とhandle_unknown=ignoreを明記。https://proceedings.mlr.press/v80/lipton18a.html はlabel shiftのP(x|y)不変条件を定義。関連28記事の全文精読結果と照合。",
+   "special_format": true
+  },
+  "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/quiz/index.md": "4b8bc3bc87ad9e9c5e6fedfe434ee91185a938c1912c8aa9d934e33c417876e6"
+   },
+   "fingerprint": "55ec8af068d9d63e10127146bce375c42457e70e0448228c94f21576845ae9d2",
+   "shared_fingerprint": "0ef4bdc5c463d0d27e13089535f04f5718f7978fce5eab3e13de835cb4069136"
+  },
+  "reviewed_at": "2026-11-03T07:36:18.616436+00:00",
+  "source_updated_at": "2026-08-05T19:09:44+09:00"
+ }
+}

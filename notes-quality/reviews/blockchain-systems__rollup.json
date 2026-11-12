@@ -1,0 +1,55 @@
+{
+ "article": "content/notes/blockchain-systems/rollup/index.md",
+ "history": [
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:34.357973+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.396845+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:43.895487+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/rollup/index.md": "9476c2b2e224035d0c8cafe7b0bba5521a5e7a63"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。 Mermaid の実描画は確認していない。",
+   "previous_review_id": 1242,
+   "reason": "review-06 draft-g45 を反映（commit 0ed2ac9e、一般技術・結果 OK 済み）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1113 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "https://eips.ethereum.org/EIPS/eip-4844: 既知の仕様内容と照合（blob の保持期間 4096 epoch、versioned hash、blob 手数料市場）。今回再取得はしていない。 / https://specs.optimism.io/fault-proof/index.html: リンクの存在のみ。内容の再取得なし。 / https://ethereum.org/en/developers/docs/scaling/rollups/: リンクの存在のみ。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "0ed2ac9ecbdea000505a4cb674b5dba15726f3ed",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/rollup/index.md": "6db4260ff905a4068c744a7ac8dd4b8bdcafa3ed87301667868cc0ed81879acd"
+   },
+   "fingerprint": "e2e22fdeec22f7ebe162e8f0edde0c1cb0f6c38528236a620eaf0636f9aa279e",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T11:32:03.101499+00:00",
+  "source_updated_at": "2026-11-09T20:32:01+09:00"
+ }
+}

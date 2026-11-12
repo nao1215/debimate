@@ -1,0 +1,94 @@
+{
+ "article": "projects/ml/notes/math/skewness/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:30.401314+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.950228+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.950366+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:13.651464+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.102922+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.404027+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.988079+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:44.999807+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/skewness/index.md": "7217ee3581fd921218111b0d4bfb2a2d3dc58a42",
+   "projects/ml/scripts/notes/skewness_gen.py": "bc9326fe684523b22d400cfeeedef34c4a93767a"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（runchk/chk.py）。",
+   "figures": "5 本×1280/390px で表示検査（browser/results-v2-*.json）。",
+   "judgment": "通常",
+   "limitations": "一部の原典は書誌のみ確認。",
+   "previous_review_id": 1040,
+   "reason": "review-06 draft-v2 を反映（commit ddd50c11）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "log1p の定義域を x>=0 とした誤り → x>-1 と明記",
+    "インラインコード内の Markdown リンク露出 → 削除",
+    "平均と中央値の位置で歪度の符号を判定できるという記述 → 判定できないと訂正",
+    "残差図で expm1 で戻した残差が等分散になるという本文と図の不一致 → 本文を log1p(y) での残差として書き直し、元尺度での評価を促す形に",
+    "|skewness|≥1 を変換の目安とする断定 → 経験的な目安と注記"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "sources": "外部資料の再取得なし。尖度が中心の尖りではなく裾を測るという点は Westfall (2014, The American Statistician) の一般的な知見に基づく判断で、今回 URL は再取得していない。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/skewness/index.md": "b1b7d271ce28ea8c361fdc639c755ff2d9ad988f6a5d73e96f733454f4ee9404",
+    "projects/ml/notes/math/skewness/skewness_log1p.svg": "b2389cc469376f1c205447b4e4460ce6b51fc1b6c956ca2d1fc16c5ebc15bfef",
+    "projects/ml/notes/math/skewness/skewness_residual_diag.svg": "3fc040b0e0e06732377cc93c54ca22549fe1b9bff9bbef565288cfe1ed9d3b42",
+    "projects/ml/notes/math/skewness/skewness_sign_compare.svg": "eda6c8ac41ffa145dbf74cd3a26c24eb9846eb8ba12fe3932070912054221c59",
+    "projects/ml/scripts/notes/skewness_gen.py": "8f5e270666c73b21b7e8d659f7e6eb6d1055b7ed8e637e43bde2017e86e15773"
+   },
+   "fingerprint": "452947ab13993de7934812e22b99c426b6374242ece298674ac74eaaa2d201ec",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:24.250339+00:00",
+  "source_updated_at": "2026-11-09T17:45:59+09:00"
+ }
+}

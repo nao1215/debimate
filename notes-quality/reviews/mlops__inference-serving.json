@@ -1,0 +1,140 @@
+{
+ "article": "projects/ml/notes/mlops/inference-serving/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "legacy_partial",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:15:06.698082+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.193864+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:59.642288+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:39.145554+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:17.556468+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.518583+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.533683+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:17.287748+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:05.837373+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:27.986571+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:53.273632+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/mlops/inference-serving/index.md": "62998ce14bac21339d6e80dcbbaeb95ca54632a4",
+   "projects/ml/notes/mlops/inference-serving/lab/batch_predict.py": "0ecf1f4488579972bfb4b748c1c577c38b2d43bc",
+   "projects/ml/notes/mlops/inference-serving/lab/requirements.txt": "d9ddb6f731e26f87c80b05158fcb7b0a1c629f01",
+   "projects/ml/notes/mlops/inference-serving/lab/run.py": "8612f6f9c59d4889c3691cbdfbc0d535cb86edee",
+   "projects/ml/notes/mlops/inference-serving/lab/serve.py": "1c941d77faa38aaf412212abfc6c4c8183219a95",
+   "projects/ml/scripts/notes/inference-serving_gen.py": "4ab34fa6ed2e8fbfa2fcd5df57ac0d8480c2d56d"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "前回記録の制限を継承。今回は差分確認のみで全文の再読、外部資料の再取得はしていない。",
+   "previous_complete_id": 562,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 810,
+   "previous_review_id": 1345,
+   "reason": "review-06 draft-v10 を反映（commit 7b04d03c、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1221 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "7b04d03cc6f89fd5392d0b005a8cfe9a77f5d56a",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/mlops/inference-serving/index.md": "2e5cd8a65dad294016383597564926402594c1545917593d12dfe2ddd539eac9",
+    "projects/ml/notes/mlops/inference-serving/lab/batch_predict.py": "579bb2846f90a631b36ab54d128f550821d6d472b8fa88fc406b5289cf62e0ff",
+    "projects/ml/notes/mlops/inference-serving/lab/requirements.txt": "e9931cca73d30704349f328d7a793f4f62eba556fe497aeb39d2e620923ff0ee",
+    "projects/ml/notes/mlops/inference-serving/lab/run.py": "3a162deea20237f5cf1dd7a9eb150156d4faaabfa851b0c978f18dae60be6146",
+    "projects/ml/notes/mlops/inference-serving/lab/serve.py": "daa36949f8393e613a726672e8d2ead76d35e40a799d0917f1c932380db87bbe",
+    "projects/ml/notes/mlops/inference-serving/serving_cache_effect.svg": "091171973343445450785f2400fd51dba91e4e95034a5ccb5882135ac85683a0",
+    "projects/ml/notes/mlops/inference-serving/serving_latency_distribution.svg": "88e435fd521bbae05622d5a4a3ad620e5d449f36d687522698a2f0bb5e92aea3",
+    "projects/ml/notes/mlops/inference-serving/serving_modes_compare.svg": "87fedf10a99932313990c4e8427824e106c2cf2916a68aa10a5ef3d7b46dbd6f",
+    "projects/ml/notes/mlops/inference-serving/serving_replica_scaling.svg": "a9a3130aa7d1b891bd1eef0050577aebbf57f6fd31a348554b704901a934c8d2",
+    "projects/ml/scripts/notes/inference-serving_gen.py": "82be09ba03e21d74e7d5848d1c9836e84ab22b83c048bee2f4484d980cdc637b"
+   },
+   "fingerprint": "66cb12c033054c57270c422724adb7cde1a64d5996eb1d42787103cf112dab91",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T10:26:05.939770+00:00",
+  "source_updated_at": "2026-11-09T19:26:05+09:00"
+ }
+}

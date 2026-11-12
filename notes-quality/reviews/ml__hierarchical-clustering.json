@@ -1,0 +1,111 @@
+{
+ "article": "projects/ml/notes/ml/hierarchical-clustering/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:26.841284+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:57.657397+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:36.930264+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:15.430160+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.294350+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.095584+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:16.148789+00:00"
+  },
+  {
+   "git_head": "4bf51b9aec1eb108c0ec796b2014e5bfa4da5b15",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T08:51:50.072573+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.443335+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:25.984693+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:51.255452+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/ml/hierarchical-clustering/index.md": "786a098a57581280fb47246fec15de24767e29a5",
+   "projects/ml/scripts/notes/hierarchical-clustering_gen.py": "faa57415799e66a227055b7f3318df51130c7a39"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "dendrogram と linkage 比較図の再目視、ブラウザ描画確認はしていない。",
+   "previous_review_id": 1323,
+   "reason": "review-06 draft-v8 を反映（commit b1812e4f、ML 一括委任）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [
+    "ステップ図が3回結合でk=3と表記していた点 → Step 0〜4 の4回結合に修正、本文も整合",
+    "cophenetic 相関係数の掲載値不一致（.683/.762/.844/.751）→ 実測 .739/.798/.801/.776 に修正。結論も average 最大で整合"
+   ],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1199 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "SciPy linkage/cophenet、scikit-learn AgglomerativeClustering（ward がデフォルト）は前回確認を継承。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "b1812e4f3bcf501c8b6ff44421605accfd62199b",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/ml/hierarchical-clustering/hierarchical_dendrogram.svg": "241151c4909e2c7f518c5e04361ab222b40da6ebb879f9ecddf7a4e1a4c244a3",
+    "projects/ml/notes/ml/hierarchical-clustering/hierarchical_linkage_compare.png": "3965c4c7a6a73aeb5e2de163dab8da6f122f2d02b5a64df8010db526f38fab25",
+    "projects/ml/notes/ml/hierarchical-clustering/hierarchical_steps.svg": "7a7c8e33726c3d09e25c97f5865452d7d864bbdb8319fc0c0980b8c68eea3221",
+    "projects/ml/notes/ml/hierarchical-clustering/index.md": "59bddef51395b316674e0e04bdc053960ecc7ecdb45519dd4dc167997612dae7",
+    "projects/ml/scripts/notes/hierarchical-clustering_gen.py": "675229098a4e775fb89881850317a8ee8c4e6355e1ab32d422156bd7d0d4c857"
+   },
+   "fingerprint": "4289bf077209b0368cb47b31a00d554e648b086b638a0af62e842dce0c132256",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T09:50:57.531093+00:00",
+  "source_updated_at": "2026-11-09T18:50:56+09:00"
+ }
+}

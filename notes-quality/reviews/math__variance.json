@@ -1,0 +1,118 @@
+{
+ "article": "projects/ml/notes/math/variance/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:31.753816+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:56.102384+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:35.151788+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:13.827059+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.121115+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.040293+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:15.209122+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:44:06.619056+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:24.421318+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/variance/index.md": "4cbf477adf7d71ab0733b7dfeda322db4b889f4f",
+   "projects/ml/scripts/notes/variance_gen.py": "a0811f39d8e2204a360bc213ce4c794f825b905d"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版の差分を確認。",
+   "changed_files_since_latest": [],
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（runchk/chk.py）。",
+   "figures": "5 本×1280/390px で表示検査（browser/results-v2-*.json）。",
+   "judgment": "通常",
+   "limitations": "一部の原典は書誌のみ確認。",
+   "previous_complete_id": 522,
+   "previous_judgment": "改善候補",
+   "previous_latest_id": 758,
+   "previous_review_id": 1181,
+   "reason": "review-06 draft-v2 を反映（commit ddd50c11）。改稿内容と殿堂入り見送りの理由は各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_changes": [
+    "layouts/shortcodes/figures.html",
+    "layouts/partials/home_weeknotes.html",
+    "assets/css/extended/custom.css",
+    "layouts/partials/home_post_card.html",
+    "config/_default/menus.toml",
+    "layouts/partials/game_poster.html",
+    "assets/js/game-demos.js",
+    "layouts/partials/head.html",
+    "layouts/partials/extend_footer.html",
+    "layouts/shortcodes/game-demo.html",
+    "assets/js/new-badges.js",
+    "layouts/partials/weeknotes/topic_game.html",
+    "layouts/partials/new_badge.html",
+    "layouts/partials/home_weeknote_card.html",
+    "config/_default/config.toml",
+    "layouts/partials/home_note_card.html"
+   ],
+   "sources": "旧completeに記録された一次情報と確認内容を継承。今回再取得した一次情報と確認範囲はsources.md。全参照先の再取得ではない。",
+   "style_fix": "2026-11-09 b185e367: style_check の NG（本人が使わない言い回し）を修正。omokage 89〜90%。",
+   "style_review_reference": "runs/2026-11-03-review-03/style-result-v1.md",
+   "validation_ref": "runs/2026-11-08-review-04/browser/results.json"
+  },
+  "git_head": "86ceba2c03a47afee1f6b10c9126268e4bc56b64",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/variance/index.md": "5adead357b879300a415a0b216f901d633e2a841e1025bb16fa209f3723e056e",
+    "projects/ml/notes/math/variance/variance_averaging.svg": "035dde0b7bc7a8cd08b24bcb5005741c014e4073469c9b6cf20a606931f20a86",
+    "projects/ml/notes/math/variance/variance_decomposition.svg": "003e29ff98cac05fa7dc710ace2fc2919cb3640030b35bd266c97aa7b651b564",
+    "projects/ml/notes/math/variance/variance_hist.svg": "3140d2f0cdada0dd6e2b7867917ee0dc8b8a0a29ed1610096bf7a9e5cd54a044",
+    "projects/ml/scripts/notes/variance_gen.py": "1d3d296f23dfb118f891f0a0d11187dc95e8934b679ddee383ebc074b9007e81"
+   },
+   "fingerprint": "0ace1297770545b945aa3aa1dab2ff1213bac8d826af58af9d041a98f038d0bc",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:55:44.942885+00:00",
+  "source_updated_at": "2026-11-09T17:50:10+09:00"
+ }
+}

@@ -1,0 +1,102 @@
+{
+ "article": "projects/ml/notes/math/kde/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.497263+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.352241+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常・小修整候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.137205+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:12.882042+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.023781+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:57.616179+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "通常・小修整候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.564805+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:50.723535+00:00"
+  },
+  {
+   "git_head": "ddaca427705f8685017f7dbb12b58148ae57f545",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:14:42.019548+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:23.534053+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/kde/index.md": "a363c84b15909ba7c51ab1c1f9465696476d2af0",
+   "projects/ml/scripts/notes/kde_gen.py": "520bfbe93b89e515844fea8524738822a4e1dcc4"
+  },
+  "evidence": {
+   "body": "草稿で全文または承認範囲を読み直して改稿し、反映版の差分を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し、出力の一致を確認（runchk/chk.py）。distributed-monolith の lab、domain-event の Go（stub 付き）、digital-signature（cryptography 50.0.0）、model-registry（mlflow 3.17.2）も実行して一致。",
+   "figures": "12 本×1280/390px で表示検査（browser/results-*.json）。図の拡大目視は一部のみ。",
+   "judgment": "通常",
+   "limitations": "一部の原典（Anscombe、Hampel）は書誌のみ確認。",
+   "previous_review_id": 1088,
+   "reason": "review-06 draft-v1.1 を反映（commit ddaca427）。改稿内容と自動殿堂入りの見送り理由は runs/2026-11-09-review-06 の各エージェント報告と approvals.md。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1171 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "前回を継承。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/kde/index.md": "ff3b4269848fd1ea4b1b12d4434e33681e64570002298a52f69c959e01752ede",
+    "projects/ml/notes/math/kde/kde_bandwidth.svg": "37a5a5a507276471ac7ea6654d55525cb2b6e1e4e52db4a8b1f3425a9d5f83ce",
+    "projects/ml/notes/math/kde/kde_class_conditional.svg": "00d472c04ae5899a16e2115366fe58750bef4c0de792937dec5e8ce4c08f0b69",
+    "projects/ml/notes/math/kde/kde_example.svg": "6d6bed39f7f84a15dd3bd5b97643bac2fc6771ec2a6dfdcfa5fb44097d0a96ea",
+    "projects/ml/notes/math/kde/kde_per_point_intuition.svg": "555a7dc17a2a1c19c03219b49e04f103ad6d1470828795341b48890caa066730",
+    "projects/ml/scripts/notes/kde_gen.py": "0c48680c6723ebb48d2d4dd1014b672d3dc878bd817aa539f74880b7960ce3b9"
+   },
+   "fingerprint": "611503091532f49dfb07b6667f6c82ef969669461f31f90826d549449afc71c5",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:49.202445+00:00",
+  "source_updated_at": "2026-11-09T17:14:28+09:00"
+ }
+}

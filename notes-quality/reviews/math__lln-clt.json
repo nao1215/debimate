@@ -1,0 +1,95 @@
+{
+ "article": "projects/ml/notes/math/lln-clt/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:30:27.862097+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:55.415187+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "改善候補",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:34:34.238666+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:12.967764+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:45.033070+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済みv2反映完了",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T12:40:33.577233+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "承認済みv2反映完了",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:14.611580+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:35.204689+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:23.621077+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "projects/ml/notes/math/lln-clt/index.md": "6429cd3aad2f252ac3bac111761d60f68bfd4d2e",
+   "projects/ml/scripts/notes/lln-clt_gen.py": "4e8f32ee96c220360a7646fd2bccf02f53617fc7"
+  },
+  "evidence": {
+   "body": "index.md 全文。",
+   "code_results": "python3 + numpy で lognormal の 4 ケースを再実行し掲載値と一致。",
+   "figures": "SVG は今回再描画していない（alt のみ変更）。",
+   "judgment": "良い",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1067,
+   "reason": "殿堂入り。差分は画像 alt の数字前後の空白だけ。全文を読み直し、LLN（弱法則・強法則の区別）、CLT の条件 0<σ²<∞、lognormal(0,1) の n=1/5/30/200 の spread を再計算し 1.968/0.948/0.398/0.152 と一致、n=1 の最大値 25.98 で「20 を超える値」も一致。限界節のコーシー分布・依存データの注意も適切。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1172 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回参照していない（本文の数値・コードを再計算・目視で確認）。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "projects/ml/notes/math/lln-clt/index.md": "a2173618d5372f55bd01fcd0ae6becdfcb0458d1d192438fc8432582aa076da4",
+    "projects/ml/notes/math/lln-clt/llnclt_clt_universal.svg": "6b1340e2b108802c9251eb70621ca25632cb601f4ac257fafefa8fbad1528cc2",
+    "projects/ml/notes/math/lln-clt/llnclt_lln.svg": "ff3f4bcf217acb09877b26e202efdb5c0d797d532db24742d155caeb895c6622",
+    "projects/ml/notes/math/lln-clt/llnclt_n_effect.svg": "13270dba353aee4e31a1ca9fef207201be56792c4c6f6995ef56b470a547682d",
+    "projects/ml/notes/math/lln-clt/llnclt_se_root_n.svg": "2abb4c7ce90be217acf6caad9b38c0a7610d20f592502180da726f3328c548c2",
+    "projects/ml/scripts/notes/lln-clt_gen.py": "3940506b6b1b23c58df04576067f1f71686ae7dabe600690c5b7100e32d0ee0c"
+   },
+   "fingerprint": "2c1d9f138a0da558b5cb894723fe688dede6681bf4e342aee9bc2f0020f24637",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:49.288830+00:00",
+  "source_updated_at": "2026-11-08T19:04:28+09:00"
+ }
+}

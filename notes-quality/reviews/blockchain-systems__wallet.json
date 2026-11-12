@@ -1,0 +1,158 @@
+{
+ "article": "content/notes/blockchain-systems/wallet/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:31.901203+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:20.403490+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:51.212884+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:44.341637+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:07.740655+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.520796+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.220917+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "good",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:08.700193+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "良い",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:47:44.551644+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:18.663101+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/wallet/README.md": "58d8d004513c83bfaf8437adbb20a3b7a1bb1583",
+   "content/notes/blockchain-systems/wallet/figures.py": "d81e0272d3381d26a4de1c6868038071a01979ec",
+   "content/notes/blockchain-systems/wallet/index.md": "50e2825c9694e38ceabe66045fc167de32e7d132",
+   "content/notes/blockchain-systems/wallet/lab/README.txt": "09cce02026b19066514023b7c8d8986961aee39c",
+   "content/notes/blockchain-systems/wallet/lab/block.toml": "0c431b4b0ed1021632b4f817ac21387a1478bd91",
+   "content/notes/blockchain-systems/wallet/lab/output/accounts.json": "f2ad92e2a5f458958845ca21693eb488cf97d4f7",
+   "content/notes/blockchain-systems/wallet/lab/output/receipt.json": "7198f57532c06c0c55f33a72c8b2104663e8603c",
+   "content/notes/blockchain-systems/wallet/lab/output/summary.txt": "26d8f955ec5f4d109f3dfd7f337926c9a72e0edd",
+   "content/notes/blockchain-systems/wallet/lab/output/transaction.json": "856258ee123d6cb2d8e23437b5f22dea2d52f49f",
+   "content/notes/blockchain-systems/wallet/lab/output/versions.txt": "eb312219e9615b9ca0c0ee9f05f1f97365d9a4db",
+   "content/notes/blockchain-systems/wallet/lab/run.sh": "ed0b2447011aea7285ca5765f1b7e894fce762fb",
+   "content/notes/blockchain-systems/wallet/screenshots.py": "c308d67b0d50c0ec4302a181f80a3e0038b3f24f"
+  },
+  "evidence": {
+   "body": "差分 diffs/wallet.diff（144 行、表記統一のみ）を読み、変更が 40 行を超えるため本文全 697 行を通読。構成・節順・図の配置は前回から不変。",
+   "code_results": "ローカル送金の掲載値（gasUsed 0x5208=21000、effectiveGasPrice 0x3b9aca00=1e9 wei、手数料 0.000021 ETH）を暗算で照合し本文と一致。Anvil・run.sh は再実行していない（Foundry 環境が要るため）。",
+   "figures": "画像・SVG・生成コード（figures.py）は不変。Mermaid のラベル（participant ユーザー／攻撃者のサーバー／Note のわけではない）の変更は表記のみで図の意味は不変。共通変更は layouts/partials/extend_footer.html の .mermaid への text-align:center 追加のみで、描画判断への影響は軽微と判断。今回ブラウザでの再描画確認はしていない。",
+   "judgment": "良い",
+   "limitations": "外部資料の再取得、Anvil 実験の再実行、ブラウザでの再描画確認はしていない。",
+   "previous_review_id": 1035,
+   "reason": "「基本機能と製品ごとの特徴」の実画面と OSS 表、「ローカル送金例」の Anvil A/B 実験（sender 9998.999979・receiver 10001・B 不変、21,000×1gwei=0.000021ETH）、「鍵の復元とパスワード」の BIP39 追加パスフレーズ・Electrum 独自方式、「過去のセキュリティ事件」の Electrum/Ledger/Bybit で鍵の盗難と誤承認を分ける構成は維持。今回の変更は ユーザ→ユーザー、サーバ→サーバー、事→こと、訳→わけ、数字前後の空白の統一で、前回指摘の表記揺れはほぼ解消。",
+   "remaining_issues": [
+    {
+     "priority": "低",
+     "problem": "「片方の ETH やトークンが自動で他方に現れる訳ではありません」だけ「訳」が残り、他箇所の「わけ」と不統一",
+     "where": "「Ethereum の残高と実行処理」EVM の段落末"
+    },
+    {
+     "priority": "低",
+     "problem": "「安全性を保証する物ではありません」の「物」。今回の こと/わけ への統一方針に合わせるなら「もの」",
+     "where": "「基本操作例」Rabby の段落"
+    },
+    {
+     "priority": "低",
+     "problem": "「従来の1人から、2人中2人」で本文側の数字前後の空白統一と揃っていない（alt なので影響は小）",
+     "where": "Safe の画像 alt"
+    }
+   ],
+   "resolved_previous_issues": [
+    "長文でユーザ/ユーザー、サーバ/サーバーの揺れが残る → 本文・Mermaid ラベル・キャプションとも ユーザー/サーバー に統一済み"
+   ],
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1116 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "旧completeの一次情報確認を継承。今回外部 URL の再取得はしていない。"
+  },
+  "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/wallet/README.md": "5f970836fec868592c1cb7f2e8ab3618ea67a3f0de18931ab302f5fa606cf65f",
+    "content/notes/blockchain-systems/wallet/figures.py": "c26efdc9fbcbe1d2138b4b83c349b34e2a1c1270aff263e4a37a47d98ea09ada",
+    "content/notes/blockchain-systems/wallet/images/bluewallet-send.webp": "186332ae9fd654a1c9fde76bd196a30f419f750d55e7a85cb59ec1096ed22b62",
+    "content/notes/blockchain-systems/wallet/images/cli-input.svg": "3bb58f7991064391f103a556e53eb526ed9da4a5d96a27f71af9e8938f761509",
+    "content/notes/blockchain-systems/wallet/images/gods-unchained-decks.webp": "444b566f975f5c82dbf85102fd8224739d9febe916c3fde8cf91cd2aa3458b3f",
+    "content/notes/blockchain-systems/wallet/images/gui-input.svg": "cbc918abdcf1cd476cf3b606ad20545729ce693c87241cc89bd7a0a12cd0f6e3",
+    "content/notes/blockchain-systems/wallet/images/lnbits-wallet.webp": "d41dc1551cd5db1916c803f36c51640b9eea9e95f523d58ad0f0dc4367eeb916",
+    "content/notes/blockchain-systems/wallet/images/local-transfer.svg": "fa2bd041c5bef1e6c4927e2cf1b320a3c36720af199234765721661c61827e7e",
+    "content/notes/blockchain-systems/wallet/images/metamask-spending-cap.webp": "ff36e30d482e3b7a547514000777ccbea59073e998221076b1717426dbb1248c",
+    "content/notes/blockchain-systems/wallet/images/rabby-confirm.webp": "b994f6e3536017a1eab7bce5a27a447045d9b3a116d2c270b8a57244de2b863e",
+    "content/notes/blockchain-systems/wallet/images/safe-threshold.webp": "3c43a5a74ff4e91eae820aae0e9d7fa071dd7acfbb661f07233eed0d007ecc2c",
+    "content/notes/blockchain-systems/wallet/images/sparrow-keystore.webp": "bd7d84c7e5585a5a581876539f5f42158982b84398a461d077541325b3d757ed",
+    "content/notes/blockchain-systems/wallet/images/sparrow-send.webp": "6f49a20b8ad6df2fa4b45ceff11bdcab94c22e010a891f2ad2e35477c46f24e0",
+    "content/notes/blockchain-systems/wallet/index.md": "9453d12bb1d2f7e437a5d398c2742f14d2480ce84a67e5f8aa0713973ec082eb",
+    "content/notes/blockchain-systems/wallet/lab/.gitignore": "bf5fd097f74414084f01e5851b1eb676489df7c423e4e518f96e924f93592655",
+    "content/notes/blockchain-systems/wallet/lab/README.txt": "994ba03ab8502e842d6406b912ac668405951c3804d8dc70e2b9c7902e3602f9",
+    "content/notes/blockchain-systems/wallet/lab/block.lock": "60e5acaf83b136c3b63a46ce5faf45080d92ca7521ab73b673bc4c730a751f90",
+    "content/notes/blockchain-systems/wallet/lab/block.toml": "162fc5e284778767da81277db71365ae0c8bea9d66317714c58ae5eb91f27875",
+    "content/notes/blockchain-systems/wallet/lab/output/accounts.json": "704dd4e1fc33aa6f4a171676d3d9a093a2b6a42cb9b7ae4b5cfd3ffc6a73b846",
+    "content/notes/blockchain-systems/wallet/lab/output/after-a-receiver.wei": "bc52a0c9005f224e0e0bf294d7fbac012b4f56192a0f306c57dd9813037ea7f2",
+    "content/notes/blockchain-systems/wallet/lab/output/after-a-sender.wei": "808b736e1ae5db5757a93d6d3b90e040234c18fb5072c3bf2e9d39d2ad149ba0",
+    "content/notes/blockchain-systems/wallet/lab/output/after-b-receiver.wei": "9a882bacd86092c544b3382a61a2fb1688ddcbeae57ca441db5d7d05541f8e40",
+    "content/notes/blockchain-systems/wallet/lab/output/after-b-sender.wei": "9a882bacd86092c544b3382a61a2fb1688ddcbeae57ca441db5d7d05541f8e40",
+    "content/notes/blockchain-systems/wallet/lab/output/before-a-receiver.wei": "9a882bacd86092c544b3382a61a2fb1688ddcbeae57ca441db5d7d05541f8e40",
+    "content/notes/blockchain-systems/wallet/lab/output/before-a-sender.wei": "9a882bacd86092c544b3382a61a2fb1688ddcbeae57ca441db5d7d05541f8e40",
+    "content/notes/blockchain-systems/wallet/lab/output/before-b-receiver.wei": "9a882bacd86092c544b3382a61a2fb1688ddcbeae57ca441db5d7d05541f8e40",
+    "content/notes/blockchain-systems/wallet/lab/output/before-b-sender.wei": "9a882bacd86092c544b3382a61a2fb1688ddcbeae57ca441db5d7d05541f8e40",
+    "content/notes/blockchain-systems/wallet/lab/output/chain-a.id": "86a0c4f8d13f9617d4b7dbd87976fa11a69de64cf0ce47b13bd21ab7cf9f1aca",
+    "content/notes/blockchain-systems/wallet/lab/output/chain-b.id": "90d76d9c87f8f1647de40d954769b2cfbe08df42a91cdfb19e085788a6159c1e",
+    "content/notes/blockchain-systems/wallet/lab/output/receipt.json": "d12704620151511d4f2bc7301e4d19ac1fddca64565139db18046107b5faeb1f",
+    "content/notes/blockchain-systems/wallet/lab/output/summary.txt": "ea9f5ec74d4cc05bf00c892803b3e74b5c423cf71473e7593582b22385dc23c9",
+    "content/notes/blockchain-systems/wallet/lab/output/transaction.json": "3e0ec3d814e372cd5c75deaad62336fa2d951ab05ba06b8f244c4f77ed873665",
+    "content/notes/blockchain-systems/wallet/lab/output/versions.txt": "82ac495d1dbfb2c6d34aca37a048075b58542893f4188037ad267c1a6b988be1",
+    "content/notes/blockchain-systems/wallet/lab/run.sh": "87d76fb8ad3961811307bc687c831a7e387a79f8ef5c2975368d89293b6ea959",
+    "content/notes/blockchain-systems/wallet/screenshots.py": "02bee60fa9709127363b85d3ca4b5017dacd3839a1729d64d5bf5e16092ed8c6"
+   },
+   "fingerprint": "74a3ec609f6e519afe825a996c1e8c4c37ed376765ff925ed44e2b36ed9c0672",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T08:46:44.161768+00:00",
+  "source_updated_at": "2026-11-08T22:46:35+09:00"
+ }
+}

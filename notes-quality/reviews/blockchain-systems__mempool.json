@@ -1,0 +1,123 @@
+{
+ "article": "content/notes/blockchain-systems/mempool/index.md",
+ "history": [
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "legacy_partial",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:15:06.640409+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "improve",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T07:30:28.313953+00:00"
+  },
+  {
+   "git_head": "022de34b2da42b68ccf11218ec21e01b7db34865",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T07:36:17.939022+00:00"
+  },
+  {
+   "git_head": "d08c6a3e7299d000fa5f03696220641240272e56",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T09:17:50.658960+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "improve",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T11:25:43.661027+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-03T11:40:07.150369+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "文体改善候補（全文再レビュー）",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:27:44.456353+00:00"
+  },
+  {
+   "git_head": "24c42685a0af22944f8d25127acb99abcd01ec4f",
+   "judgment": "承認済み文体改善style-v1反映完了",
+   "level": "partial",
+   "reviewed_at": "2026-11-03T12:52:58.197629+00:00"
+  },
+  {
+   "git_head": "9b98cf0921a44323dc639f3ca0d149a9a906ae52",
+   "judgment": "improve",
+   "level": "complete",
+   "reviewed_at": "2026-11-08T04:09:07.976974+00:00"
+  },
+  {
+   "git_head": "12021421233ed9f898baf3d24576449629d6eea1",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T07:48:35.296774+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "通常",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:17.870422+00:00"
+  },
+  {
+   "git_head": "ddd50c11532144f21276a40ffd25cc0b2d61e82f",
+   "judgment": "改善候補",
+   "level": "complete",
+   "reviewed_at": "2026-11-09T08:46:43.369425+00:00"
+  }
+ ],
+ "latest": {
+  "blobs": {
+   "content/notes/blockchain-systems/mempool/index.md": "a977472756bd3a094aafe72860c097f6b2ecf2f6",
+   "content/notes/blockchain-systems/mempool/lab/README.txt": "d7cc5c45ed44ffd2a9dbbdee9c7c3a5151cc8064",
+   "content/notes/blockchain-systems/mempool/lab/compare_policy.py": "aaca76a1afba72d714cbeb8c9b3266809aaccc78",
+   "content/notes/blockchain-systems/mempool/lab/output/accept-A.json": "beb325438d7bdf7e14edb2a411aeacd55d9d932c",
+   "content/notes/blockchain-systems/mempool/lab/output/accept-B.json": "c4effbcc5e3ad679da696bed2af6f3da4fa74e80",
+   "content/notes/blockchain-systems/mempool/lab/output/block-B.json": "a3ce912728d002bb057ae6feb9340df68612ed1c",
+   "content/notes/blockchain-systems/mempool/lab/output/summary.txt": "3948aad8fe27e69b80b588bf8da4889aa6e16be7",
+   "content/notes/blockchain-systems/mempool/lab/output/versions.txt": "6292298fa5b8cebdb62fe01386601f155bb70b71"
+  },
+  "evidence": {
+   "body": "草稿で全文を読み直して改稿し、反映版を確認。",
+   "code_results": "掲載した Python のコードを抽出・再実行し出力の一致を確認（抜粋の場合は生成元の実行で確認）。",
+   "figures": "1280/390px で表示検査。",
+   "judgment": "通常",
+   "limitations": "外部一次情報の再取得は行っていない（記載の URL は既知の内容との照合のみ）。スマートフォン幅での描画は未確認。",
+   "previous_review_id": 1236,
+   "reason": "review-06 draft-g45 を反映（commit 0ed2ac9e、一般技術・結果 OK 済み）。改稿内容と殿堂入り見送りの理由は各エージェント報告。",
+   "remaining_issues": [],
+   "resolved_previous_issues": [],
+   "review_run": "2026-11-09-review-06",
+   "shared_change_note": "2026-11-09: commit 33f4e28a（oss.css は OSS ページ専用）と e5745f8c（custom.css の .game-demo img のみ）で共通の描画ファイルが変わったため再記録。ノートの本文・図には影響しない。直前の id=1107 は draft-v2 の判定を誤って全記事へ書いた記録で無効。",
+   "sources": "外部一次情報は今回参照していない（本文の数値・コードを再計算・目視で確認）。",
+   "style": "style_check NG 0、omokage nao-tech 89〜90%。"
+  },
+  "git_head": "0ed2ac9ecbdea000505a4cb674b5dba15726f3ed",
+  "level": "complete",
+  "manifest": {
+   "extra": [],
+   "files": {
+    "content/notes/blockchain-systems/mempool/index.md": "fd8f3db3a2475417795ff8a67d4244f48f732a875712e27ac9a19bd91950809d",
+    "content/notes/blockchain-systems/mempool/lab/README.txt": "84c3ee7a9cf3737c486956bda3b3d7a6d3c543cc4df4e646215b107a827d2063",
+    "content/notes/blockchain-systems/mempool/lab/compare_policy.py": "c33daf16f9e081f593d7e03daccbcca7eb4fd8d75ed519b0355cb4bcb6cbd8da",
+    "content/notes/blockchain-systems/mempool/lab/output/accept-A.json": "37bb7397aaa133948481d251c3cc326dbd4627da19404d72a72b1f4613185ac0",
+    "content/notes/blockchain-systems/mempool/lab/output/accept-B.json": "f12dab46a26c2984c8548d1836418905789f4015e631ab96ce00924d76a1e601",
+    "content/notes/blockchain-systems/mempool/lab/output/block-B.json": "2beff27f96ef8a66535862a96efed78638d55ba04a03507bcef3386078248d07",
+    "content/notes/blockchain-systems/mempool/lab/output/summary.txt": "07ebfc06327148948afdbd938c6df2e339d44a2669f14e9ff8a1e0269603c024",
+    "content/notes/blockchain-systems/mempool/lab/output/versions.txt": "1cf76b000c0dc0284d6fc55bddfb1a76ef00675f9e1806775bf0a8f487e109b0"
+   },
+   "fingerprint": "6fa91675424f1b691bfb115d406366df226f301c217228a9818dc2582c4a5078",
+   "shared_fingerprint": "a7e142162dcd09cb68d8cc8deb9d329126db8919f9ef958ae7a394137f3992f4"
+  },
+  "reviewed_at": "2026-11-09T11:32:02.878261+00:00",
+  "source_updated_at": "2026-11-09T20:32:01+09:00"
+ }
+}
