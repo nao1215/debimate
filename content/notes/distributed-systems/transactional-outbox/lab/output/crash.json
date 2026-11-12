@@ -1,0 +1,24 @@
+{
+ "dual_write": {
+  "rounds": 100,
+  "orders": 2894,
+  "events": 2833,
+  "lost": 61,
+  "duplicated": 0
+ },
+ "send_first": {
+  "rounds": 100,
+  "orders": 3196,
+  "events": 3256,
+  "lost": 0,
+  "ghost": 60,
+  "duplicated": 0
+ },
+ "outbox": {
+  "rounds": 100,
+  "orders": 5565,
+  "events": 5565,
+  "lost": 0,
+  "duplicated": 59
+ }
+}

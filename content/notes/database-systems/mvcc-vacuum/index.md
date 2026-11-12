@@ -153,7 +153,7 @@ removable cutoff: 828, which was 0 XIDs old when operation ended
 - 読み取り用の複製（レプリカ）で長い問い合わせを流し、その境目を書き込みを受ける側（プライマリ）に伝える設定（[hot_standby_feedback](https://www.postgresql.org/docs/17/runtime-config-replication.html#GUC-HOT-STANDBY-FEEDBACK)）。プライマリが古い版を消すと、レプリカの問い合わせが読む版が無くなるので、この設定ではプライマリが消すのを待つ
 - hot_standby_feedback を使っていたレプリカが止まったまま残った、物理レプリケーションのスロット（複製先がどこまで受け取ったかをプライマリが覚えておく仕組みで、受け取った境目も覚え続ける）。論理レプリケーションのスロットが止めるのは、システムカタログの回収だけ
 
-1 つ目は、トランザクションの範囲を広げすぎた時に起きます（[Transaction Scope](/notes/database-systems/transaction-scope/) のノート）。PostgreSQL には、`idle in transaction` のまま一定の時間が経った接続を切る [idle_in_transaction_session_timeout](https://www.postgresql.org/docs/17/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT) がありますが、既定は 0（切らない）です。
+1 つ目は、トランザクションの範囲を広げすぎた時に起きます（[Transaction Scope](/notes/database-systems/transaction-scope/) のノート）。PostgreSQL には、`idle in transaction` のまま一定の時間が経った接続を切る [idle_in_transaction_session_timeout](https://www.postgresql.org/docs/17/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT) がありますが、既定は 0（切らない）です。書き込みをしたまま開いたトランザクションは、[Transactional Outbox](/notes/distributed-systems/transactional-outbox/) の行をトランザクション ID で読む relay の送信も止めます。
 
 ---
 

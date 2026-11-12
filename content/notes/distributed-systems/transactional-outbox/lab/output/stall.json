@@ -1,0 +1,110 @@
+{
+ "log": [
+  {
+   "t": 0.21,
+   "who": "batch",
+   "what": "begin"
+  },
+  {
+   "t": 0.51,
+   "who": "app",
+   "what": "commit",
+   "id": 1
+  },
+  {
+   "t": 1.02,
+   "who": "app",
+   "what": "commit",
+   "id": 2
+  },
+  {
+   "t": 1.59,
+   "who": "app",
+   "what": "commit",
+   "id": 3
+  },
+  {
+   "t": 2.16,
+   "who": "app",
+   "what": "commit",
+   "id": 4
+  },
+  {
+   "t": 2.85,
+   "who": "app",
+   "what": "commit",
+   "id": 5
+  },
+  {
+   "t": 3.21,
+   "who": "batch",
+   "what": "commit"
+  },
+  {
+   "t": 3.3,
+   "who": "relay",
+   "what": "send",
+   "id": 1
+  },
+  {
+   "t": 3.3,
+   "who": "relay",
+   "what": "send",
+   "id": 2
+  },
+  {
+   "t": 3.3,
+   "who": "relay",
+   "what": "send",
+   "id": 3
+  },
+  {
+   "t": 3.3,
+   "who": "relay",
+   "what": "send",
+   "id": 4
+  },
+  {
+   "t": 3.3,
+   "who": "relay",
+   "what": "send",
+   "id": 5
+  },
+  {
+   "t": 3.35,
+   "who": "app",
+   "what": "commit",
+   "id": 6
+  },
+  {
+   "t": 3.4,
+   "who": "relay",
+   "what": "send",
+   "id": 6
+  },
+  {
+   "t": 3.86,
+   "who": "app",
+   "what": "commit",
+   "id": 7
+  },
+  {
+   "t": 3.9,
+   "who": "relay",
+   "what": "send",
+   "id": 7
+  },
+  {
+   "t": 4.36,
+   "who": "app",
+   "what": "commit",
+   "id": 8
+  },
+  {
+   "t": 4.4,
+   "who": "relay",
+   "what": "send",
+   "id": 8
+  }
+ ]
+}

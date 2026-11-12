@@ -1,0 +1,273 @@
+{
+ "send_sec": 0.2,
+ "log": [
+  {
+   "t": 0.019,
+   "who": "A",
+   "what": "take",
+   "ids": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ]
+  },
+  {
+   "t": 0.119,
+   "who": "B",
+   "what": "take",
+   "ids": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ]
+  },
+  {
+   "t": 0.226,
+   "who": "A",
+   "what": "send",
+   "id": 1,
+   "order": 1,
+   "type": "OrderPlaced"
+  },
+  {
+   "t": 0.328,
+   "who": "B",
+   "what": "send",
+   "id": 11,
+   "order": 4,
+   "type": "OrderPaid"
+  },
+  {
+   "t": 0.431,
+   "who": "A",
+   "what": "send",
+   "id": 2,
+   "order": 1,
+   "type": "OrderPaid"
+  },
+  {
+   "t": 0.534,
+   "who": "B",
+   "what": "send",
+   "id": 12,
+   "order": 4,
+   "type": "OrderShipped"
+  },
+  {
+   "t": 0.636,
+   "who": "A",
+   "what": "send",
+   "id": 3,
+   "order": 1,
+   "type": "OrderShipped"
+  },
+  {
+   "t": 0.739,
+   "who": "B",
+   "what": "send",
+   "id": 13,
+   "order": 5,
+   "type": "OrderPlaced"
+  },
+  {
+   "t": 0.841,
+   "who": "A",
+   "what": "send",
+   "id": 4,
+   "order": 2,
+   "type": "OrderPlaced"
+  },
+  {
+   "t": 0.945,
+   "who": "B",
+   "what": "send",
+   "id": 14,
+   "order": 5,
+   "type": "OrderPaid"
+  },
+  {
+   "t": 1.047,
+   "who": "A",
+   "what": "send",
+   "id": 5,
+   "order": 2,
+   "type": "OrderPaid"
+  },
+  {
+   "t": 1.151,
+   "who": "B",
+   "what": "send",
+   "id": 15,
+   "order": 5,
+   "type": "OrderShipped"
+  },
+  {
+   "t": 1.253,
+   "who": "A",
+   "what": "send",
+   "id": 6,
+   "order": 2,
+   "type": "OrderShipped"
+  },
+  {
+   "t": 1.36,
+   "who": "B",
+   "what": "send",
+   "id": 16,
+   "order": 6,
+   "type": "OrderPlaced"
+  },
+  {
+   "t": 1.459,
+   "who": "A",
+   "what": "send",
+   "id": 7,
+   "order": 3,
+   "type": "OrderPlaced"
+  },
+  {
+   "t": 1.565,
+   "who": "B",
+   "what": "send",
+   "id": 17,
+   "order": 6,
+   "type": "OrderPaid"
+  },
+  {
+   "t": 1.665,
+   "who": "A",
+   "what": "send",
+   "id": 8,
+   "order": 3,
+   "type": "OrderPaid"
+  },
+  {
+   "t": 1.77,
+   "who": "B",
+   "what": "send",
+   "id": 18,
+   "order": 6,
+   "type": "OrderShipped"
+  },
+  {
+   "t": 1.871,
+   "who": "A",
+   "what": "send",
+   "id": 9,
+   "order": 3,
+   "type": "OrderShipped"
+  },
+  {
+   "t": 2.075,
+   "who": "A",
+   "what": "send",
+   "id": 10,
+   "order": 4,
+   "type": "OrderPlaced"
+  }
+ ],
+ "arrived": [
+  [
+   1,
+   1,
+   "OrderPlaced"
+  ],
+  [
+   11,
+   4,
+   "OrderPaid"
+  ],
+  [
+   2,
+   1,
+   "OrderPaid"
+  ],
+  [
+   12,
+   4,
+   "OrderShipped"
+  ],
+  [
+   3,
+   1,
+   "OrderShipped"
+  ],
+  [
+   13,
+   5,
+   "OrderPlaced"
+  ],
+  [
+   4,
+   2,
+   "OrderPlaced"
+  ],
+  [
+   14,
+   5,
+   "OrderPaid"
+  ],
+  [
+   5,
+   2,
+   "OrderPaid"
+  ],
+  [
+   15,
+   5,
+   "OrderShipped"
+  ],
+  [
+   6,
+   2,
+   "OrderShipped"
+  ],
+  [
+   16,
+   6,
+   "OrderPlaced"
+  ],
+  [
+   7,
+   3,
+   "OrderPlaced"
+  ],
+  [
+   17,
+   6,
+   "OrderPaid"
+  ],
+  [
+   8,
+   3,
+   "OrderPaid"
+  ],
+  [
+   18,
+   6,
+   "OrderShipped"
+  ],
+  [
+   9,
+   3,
+   "OrderShipped"
+  ],
+  [
+   10,
+   4,
+   "OrderPlaced"
+  ]
+ ]
+}

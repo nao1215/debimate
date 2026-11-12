@@ -1,0 +1,13 @@
+{
+ "wal_rows_while_open": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "xmin_rows_while_open": 0,
+ "xmin_while_open": "772",
+ "select_only_xid": null,
+ "xmin_rows_while_select_only": 5
+}

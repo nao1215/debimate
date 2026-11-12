@@ -1,0 +1,79 @@
+{
+ "log": [
+  {
+   "t": 0.02,
+   "who": "A",
+   "what": "insert",
+   "id": 1
+  },
+  {
+   "t": 0.33,
+   "who": "B",
+   "what": "insert",
+   "id": 2
+  },
+  {
+   "t": 0.33,
+   "who": "B",
+   "what": "commit",
+   "id": 2
+  },
+  {
+   "t": 0.52,
+   "who": "relay",
+   "what": "poll",
+   "cursor": 0,
+   "ids": [
+    2
+   ]
+  },
+  {
+   "t": 1.02,
+   "who": "relay",
+   "what": "poll",
+   "cursor": 2,
+   "ids": []
+  },
+  {
+   "t": 1.53,
+   "who": "relay",
+   "what": "poll",
+   "cursor": 2,
+   "ids": []
+  },
+  {
+   "t": 1.53,
+   "who": "A",
+   "what": "commit",
+   "id": 1
+  },
+  {
+   "t": 2.03,
+   "who": "relay",
+   "what": "poll",
+   "cursor": 2,
+   "ids": []
+  },
+  {
+   "t": 2.53,
+   "who": "relay",
+   "what": "poll",
+   "cursor": 2,
+   "ids": []
+  },
+  {
+   "t": 3.03,
+   "who": "relay",
+   "what": "poll",
+   "cursor": 2,
+   "ids": []
+  }
+ ],
+ "in_table": [
+  1,
+  2
+ ],
+ "sent": [
+  2
+ ]
+}

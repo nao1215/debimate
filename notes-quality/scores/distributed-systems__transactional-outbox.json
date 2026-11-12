@@ -1,9 +1,9 @@
 {
  "path": "content/notes/distributed-systems/transactional-outbox/index.md",
- "overall": 2,
- "product": 4,
- "blob": "731ed1801eb8c6bd850477d95e846c6ca2e9303f",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 5,
+ "product": 54,
+ "blob": "b32152698ff9e3a830200cffaa776f9d5bca4099",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
