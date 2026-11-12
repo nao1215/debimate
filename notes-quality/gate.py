@@ -21,7 +21,7 @@
   逆向きのリンクの 1 文などを足すため。
 - `>` で始まる引用の行は語の判定から外す（ブログ記事・weeknotes・外部の文からの引用のため）。
 """
-import csv, difflib, json, os, re, subprocess, sys
+import csv, difflib, glob, json, os, re, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -221,8 +221,45 @@ def check_full(rel, process=True):
         sc = int(out.strip().splitlines()[-1])
         if sc < 85:
             ng.append(f'omokage の一致度が {sc}%（85% 以上。omokage check --explain で崩れた段落を見る）')
+    ng += check_anchors(rel, text)
     if process:
         ng += check_process(rel, key, text)
+    return ng
+
+
+def heading_anchor(h):
+    """Hugo（goldmark の autoHeadingID）の見出しの ID に近い形にする。"""
+    h = re.sub(r'`([^`]*)`', r'\1', h).strip().lower()
+    h = re.sub(r'[^\w\- ]', '', h)
+    return re.sub(r' ', '-', h)
+
+
+def check_anchors(rel, text):
+    """他のノートからこのノートの #見出し へ張られたリンクが、今の見出しに実在するか（2026-11-12）。
+    見出しを変えると、他のノートのページ内リンクが黙って切れるため。"""
+    slug = rel.split('/')[-2]
+    nocode = re.sub(r'```.*?```', '', text, flags=re.S)
+    anchors = set()
+    for m in re.finditer(r'^#{2,6}\s+(.+?)\s*$', nocode, re.M):
+        h = m.group(1)
+        cid = re.search(r'\{#([^}]+)\}\s*$', h)
+        anchors.add(cid.group(1).lower() if cid else heading_anchor(h))
+        if cid:
+            anchors.add(heading_anchor(h[:cid.start()]))
+    ng = []
+    for base in ('content/notes', 'projects/ml/notes'):
+        for p in glob.glob(os.path.join(ROOT, base, '*', '*', 'index.md')):
+            if os.path.relpath(p, ROOT) == rel:
+                continue
+            for m in re.finditer(r'\]\(([^)\s]*' + re.escape(slug) + r'/?)#([^)\s]+)\)', open(p, encoding='utf-8').read()):
+                a = m.group(2)
+                try:
+                    from urllib.parse import unquote
+                    a = unquote(a)
+                except Exception:
+                    pass
+                if a.lower() not in anchors:
+                    ng.append(f'{os.path.relpath(p, ROOT)} から #{a} へのリンクが、このノートの見出しに無い（見出しを戻すか、リンク元を直す）')
     return ng
 
 
