@@ -2,7 +2,15 @@
  "path": "projects/ml/notes/math/lln-clt/index.md",
  "overall": 3,
  "product": 4,
- "blob": "3c35759881da5a6a3586030810bd5ca422c345e7",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T00:16:13"
+ "blob": "869744cfe37f1d4a7711d742fa4395ecf605300f",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

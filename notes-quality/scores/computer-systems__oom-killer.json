@@ -2,7 +2,15 @@
  "path": "content/notes/computer-systems/oom-killer/index.md",
  "overall": 4,
  "product": 54,
- "blob": "d00c7cc84e65fdb090f8c834fdbb9a9ac3f65888",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:30:13"
+ "blob": "f04bc43040a86d4e40668cef854d11f50237192f",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

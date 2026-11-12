@@ -2,7 +2,15 @@
  "path": "content/notes/distributed-systems/flp-impossibility/index.md",
  "overall": 3,
  "product": 16,
- "blob": "75ab92f88afef471fe2d7f4d8719fa7e0e0f6c5c",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:29:59"
+ "blob": "b8acadffc817ed4e1e020745c0609ba80a8413b2",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

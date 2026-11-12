@@ -2,7 +2,15 @@
  "path": "content/notes/blockchain-systems/ethereum-hard-forks/index.md",
  "overall": 4,
  "product": 54,
- "blob": "a4cde97686ea37809b961277aceae311d3f56c10",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:23:57"
+ "blob": "043ec03ddfc0f858192618d479ae9219a5765301",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

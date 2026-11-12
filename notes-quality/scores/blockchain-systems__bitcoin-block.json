@@ -1,8 +1,16 @@
 {
  "path": "content/notes/blockchain-systems/bitcoin-block/index.md",
  "overall": 3,
- "product": 2,
- "blob": "6ce99d64df93244b85c85982c6aa9fc23232e672",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:14:40"
+ "product": 8,
+ "blob": "750bb764cbfa664c6b062ff3d27b03545ce2e9ea",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

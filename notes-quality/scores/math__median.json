@@ -1,8 +1,16 @@
 {
  "path": "projects/ml/notes/math/median/index.md",
  "overall": 3,
- "product": 1,
- "blob": "c66495c3701ecd973ab7cdcb12ecfc47c262cf1a",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T00:16:13"
+ "product": 8,
+ "blob": "de5bc176f80cd49e291a5415bb1e9a52de5bf2fe",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

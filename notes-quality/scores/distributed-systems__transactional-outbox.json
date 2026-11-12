@@ -1,8 +1,16 @@
 {
  "path": "content/notes/distributed-systems/transactional-outbox/index.md",
- "overall": 3,
- "product": 6,
+ "overall": 2,
+ "product": 4,
  "blob": "731ed1801eb8c6bd850477d95e846c6ca2e9303f",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:22:46"
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

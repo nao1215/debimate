@@ -1,8 +1,16 @@
 {
  "path": "projects/ml/notes/ml/missing-values/index.md",
  "overall": 3,
- "product": 16,
- "blob": "a05ba0ab480aaae4c70e07f1e08e588afc8c2dbc",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T00:16:53"
+ "product": 8,
+ "blob": "984034df5fcd9ac0f48b9e7eb7c2e2228676bc19",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

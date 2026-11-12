@@ -1,8 +1,16 @@
 {
  "path": "projects/ml/notes/math/convex-functions/index.md",
  "overall": 3,
- "product": 2,
- "blob": "bafc0f867bc7c03ead5ec1406ccb8995cfa291f7",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T00:16:13"
+ "product": 18,
+ "blob": "6ee533b5c2497e93661729fb31d75ad83eda95c2",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

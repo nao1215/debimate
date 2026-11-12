@@ -1,8 +1,16 @@
 {
  "path": "content/notes/generative-ai/tokenizer/index.md",
  "overall": 4,
- "product": 24,
- "blob": "7c26bbc7641f3a1f2dda46e718f6acbdb99caa48",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:30:36"
+ "product": 54,
+ "blob": "bdc7d2de6f54f11e62f70c58a04bc95e7b0b2aef",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

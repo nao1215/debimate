@@ -1,8 +1,16 @@
 {
  "path": "content/notes/blockchain-systems/merkle-tree/index.md",
- "overall": 3,
- "product": 4,
- "blob": "bf8ace639cd9f63cd18ad71835507d4d665bfb02",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:01:50"
+ "overall": 2,
+ "product": 2,
+ "blob": "6d676c6168d7ab3dc40d15a121da928d09d3ef80",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

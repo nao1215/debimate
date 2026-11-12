@@ -2,7 +2,15 @@
  "path": "content/notes/database-systems/partitioning/index.md",
  "overall": 3,
  "product": 16,
- "blob": "ba8ee8f47dca69f761b68ba1660eb2b86532b884",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:28:24"
+ "blob": "1d0430c0dab80b64d3f6164b991bef3bc4d57cbf",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

@@ -1,8 +1,16 @@
 {
  "path": "content/notes/blockchain-systems/lightning-network/index.md",
  "overall": 3,
- "product": 16,
- "blob": "82d43c99ddd58bdd76d4474cea5f838a239063c0",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:30:13"
+ "product": 24,
+ "blob": "03b1d18c555147010cfb1d623f6a4bd6ea59437f",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

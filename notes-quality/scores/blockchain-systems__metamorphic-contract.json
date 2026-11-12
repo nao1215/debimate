@@ -2,7 +2,15 @@
  "path": "content/notes/blockchain-systems/metamorphic-contract/index.md",
  "overall": 4,
  "product": 24,
- "blob": "720bc65e99153d61a90d031064dc46efa1c1a62b",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:36:09"
+ "blob": "3bbb39d3ef89d04a679b732ed7f74923bec0afad",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

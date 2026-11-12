@@ -1,8 +1,16 @@
 {
  "path": "content/notes/database-systems/b-tree/index.md",
- "overall": 4,
+ "overall": 3,
  "product": 16,
- "blob": "d54e60ba63f50d8cfe75d7d8c727bf06c0445295",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:14:40"
+ "blob": "88e562a6f8fc6cfbaa7e9d0eb979b8383091e19e",
+ "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }
