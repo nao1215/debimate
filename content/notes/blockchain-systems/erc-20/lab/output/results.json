@@ -1,0 +1,382 @@
+{
+  "versions": {
+    "anvil": "anvil Version: 1.7.1",
+    "solc": "Version: 0.8.28+commit.7893614a.Linux.g++"
+  },
+  "storage": {
+    "token": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+    "receiver": "0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc",
+    "balanceOf_slot": "0x961ec03a078fec1e350bb1ca3bff1afa4bae5fb83d9d8382550c2fd26a7d7527",
+    "receiver_eth_before_wei": 10000000000000000000000,
+    "receiver_eth_after_wei": 10000000000000000000000,
+    "storage_before": 0,
+    "storage_after": 100000000000000000000,
+    "balanceOf_after": 100000000000000000000,
+    "transfer_gasUsed": 51689,
+    "transfer_to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+    "transfer_logs": 1
+  },
+  "race_approve": {
+    "change": "approve",
+    "events": [
+      {
+        "t": 0.012,
+        "kind": "owner_sent",
+        "tx": "0xffeb27d8e54d1f6d152d0a5df587d9db9ee341f34c55301af96be3a2d9521102",
+        "change": "approve",
+        "tip_gwei": 1
+      },
+      {
+        "t": 0.054,
+        "kind": "attacker_saw",
+        "tx": "0xffeb27d8e54d1f6d152d0a5df587d9db9ee341f34c55301af96be3a2d9521102",
+        "input": "0x095ea7b3"
+      },
+      {
+        "t": 0.06,
+        "kind": "attacker_sent",
+        "tx": "0x59902814a4b696ed0d3c1fb8ecc0613dc09059c237abeca20921e25fccc3ee07",
+        "amount": 100,
+        "tip_gwei": 20
+      },
+      {
+        "t": 1.611,
+        "kind": "block_mined",
+        "block": 6,
+        "order": [
+          {
+            "tx": "spender_transferFrom_100",
+            "index": 0,
+            "status": 1
+          },
+          {
+            "tx": "owner_approve",
+            "index": 1,
+            "status": 1
+          }
+        ]
+      },
+      {
+        "t": 1.626,
+        "kind": "allowance_after_block",
+        "allowance": 50,
+        "spender_balance": 100
+      },
+      {
+        "t": 1.631,
+        "kind": "attacker_sent",
+        "tx": "0xafe60f85c8e197263bc1f8c9e08e2d7d2b858fe5617658b53ba45eb298bc9c95",
+        "amount": 50,
+        "tip_gwei": 20
+      },
+      {
+        "t": 3.599,
+        "kind": "block_mined",
+        "block": 7,
+        "order": [
+          {
+            "tx": "spender_transferFrom_50",
+            "index": 0,
+            "status": 1
+          }
+        ]
+      }
+    ],
+    "front_block": 6,
+    "owner_block": 6,
+    "spender_total": 150,
+    "allowance_final": 0
+  },
+  "race_decrease": {
+    "change": "decrease",
+    "events": [
+      {
+        "t": 0.012,
+        "kind": "owner_sent",
+        "tx": "0x18bad87e5141dbe18dfa4c363e25f0eaa648013e9cc6ec0a56d5109dc5c7359c",
+        "change": "decrease",
+        "tip_gwei": 1
+      },
+      {
+        "t": 0.053,
+        "kind": "attacker_saw",
+        "tx": "0x18bad87e5141dbe18dfa4c363e25f0eaa648013e9cc6ec0a56d5109dc5c7359c",
+        "input": "0xa457c2d7"
+      },
+      {
+        "t": 0.063,
+        "kind": "attacker_sent",
+        "tx": "0x68a77b058832283b4d9aada25b4ec3b6ee2bd12ff57b26216775bc3d5c26bf56",
+        "amount": 100,
+        "tip_gwei": 20
+      },
+      {
+        "t": 1.615,
+        "kind": "block_mined",
+        "block": 11,
+        "order": [
+          {
+            "tx": "spender_transferFrom_100",
+            "index": 0,
+            "status": 1
+          },
+          {
+            "tx": "owner_decrease",
+            "index": 1,
+            "status": 0
+          }
+        ]
+      },
+      {
+        "t": 1.636,
+        "kind": "allowance_after_block",
+        "allowance": 0,
+        "spender_balance": 100
+      }
+    ],
+    "front_block": 11,
+    "owner_block": 11,
+    "spender_total": 100,
+    "allowance_final": 0
+  },
+  "race_zero_then": {
+    "change": "zero_then",
+    "events": [
+      {
+        "t": 0.014,
+        "kind": "owner_sent",
+        "tx": "0xf8b6e77caf709d19d65a3fffa9ae397eedc438c7d2f3933f94c159b303564ca4",
+        "change": "zero_then",
+        "tip_gwei": 1
+      },
+      {
+        "t": 0.054,
+        "kind": "attacker_saw",
+        "tx": "0xf8b6e77caf709d19d65a3fffa9ae397eedc438c7d2f3933f94c159b303564ca4",
+        "input": "0x095ea7b3"
+      },
+      {
+        "t": 0.065,
+        "kind": "attacker_sent",
+        "tx": "0xf7014cd74f7dfe1365aea3256eef2534b889583804d5d469e42133081ff92b3d",
+        "amount": 100,
+        "tip_gwei": 20
+      },
+      {
+        "t": 1.599,
+        "kind": "block_mined",
+        "block": 15,
+        "order": [
+          {
+            "tx": "spender_transferFrom_100",
+            "index": 0,
+            "status": 1
+          },
+          {
+            "tx": "owner_zero_then",
+            "index": 1,
+            "status": 1
+          }
+        ]
+      },
+      {
+        "t": 1.618,
+        "kind": "allowance_after_block",
+        "allowance": 0,
+        "spender_balance": 100
+      },
+      {
+        "t": 1.627,
+        "kind": "owner_sent",
+        "tx": "0x5dbc091969858e0d11c6a4a04d5eae73413ce579bb35ac0c5236ba839de0124c",
+        "change": "approve_50_after_zero",
+        "tip_gwei": 1
+      },
+      {
+        "t": 3.597,
+        "kind": "block_mined",
+        "block": 16,
+        "order": [
+          {
+            "tx": "owner_approve_50",
+            "index": 0,
+            "status": 1
+          }
+        ]
+      },
+      {
+        "t": 3.618,
+        "kind": "allowance_after_block",
+        "allowance": 50,
+        "spender_balance": 100
+      },
+      {
+        "t": 3.628,
+        "kind": "attacker_sent",
+        "tx": "0x9a0eb91d3231c8aeda837ac7f75720cd9fc2f6976dd8e6731aa614bec4062ba0",
+        "amount": 50,
+        "tip_gwei": 20
+      },
+      {
+        "t": 5.606,
+        "kind": "block_mined",
+        "block": 17,
+        "order": [
+          {
+            "tx": "spender_transferFrom_50",
+            "index": 0,
+            "status": 1
+          }
+        ]
+      }
+    ],
+    "front_block": 15,
+    "owner_block": 15,
+    "spender_total": 150,
+    "allowance_final": 0
+  },
+  "zero_transferFrom": {
+    "owner": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+    "stranger": "0x90f79bf6eb2c4f870365e785982e1f101e93b906",
+    "lookalike": "0xf39F000000000000000000000000000000002266",
+    "allowance_before": 0,
+    "status": 1,
+    "log_topics": [
+      "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
+      "0x000000000000000000000000f39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+      "0x000000000000000000000000f39f000000000000000000000000000000002266"
+    ],
+    "log_data": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "owner_balance_after": 1000
+  },
+  "matrix": [
+    {
+      "token": "StandardToken",
+      "style": "depositRequire",
+      "depositor_balance_before": 200.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 100.0
+    },
+    {
+      "token": "StandardToken",
+      "style": "depositIgnore",
+      "depositor_balance_before": 200.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 100.0
+    },
+    {
+      "token": "StandardToken",
+      "style": "depositSafe",
+      "depositor_balance_before": 200.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 100.0
+    },
+    {
+      "token": "StandardToken",
+      "style": "depositMeasured",
+      "depositor_balance_before": 200.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 100.0
+    },
+    {
+      "token": "NoReturnToken",
+      "style": "depositRequire",
+      "depositor_balance_before": 200.0,
+      "status": 0,
+      "credited": 0.0,
+      "vault_received": 0.0
+    },
+    {
+      "token": "NoReturnToken",
+      "style": "depositIgnore",
+      "depositor_balance_before": 200.0,
+      "status": 0,
+      "credited": 0.0,
+      "vault_received": 0.0
+    },
+    {
+      "token": "NoReturnToken",
+      "style": "depositSafe",
+      "depositor_balance_before": 200.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 100.0
+    },
+    {
+      "token": "NoReturnToken",
+      "style": "depositMeasured",
+      "depositor_balance_before": 200.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 100.0
+    },
+    {
+      "token": "FalseToken",
+      "style": "depositRequire",
+      "depositor_balance_before": 0.0,
+      "status": 0,
+      "credited": 0.0,
+      "vault_received": 0.0
+    },
+    {
+      "token": "FalseToken",
+      "style": "depositIgnore",
+      "depositor_balance_before": 0.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 0.0
+    },
+    {
+      "token": "FalseToken",
+      "style": "depositSafe",
+      "depositor_balance_before": 0.0,
+      "status": 0,
+      "credited": 0.0,
+      "vault_received": 0.0
+    },
+    {
+      "token": "FalseToken",
+      "style": "depositMeasured",
+      "depositor_balance_before": 0.0,
+      "status": 0,
+      "credited": 0.0,
+      "vault_received": 0.0
+    },
+    {
+      "token": "FeeToken",
+      "style": "depositRequire",
+      "depositor_balance_before": 196.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 98.0
+    },
+    {
+      "token": "FeeToken",
+      "style": "depositIgnore",
+      "depositor_balance_before": 196.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 98.0
+    },
+    {
+      "token": "FeeToken",
+      "style": "depositSafe",
+      "depositor_balance_before": 196.0,
+      "status": 1,
+      "credited": 100.0,
+      "vault_received": 98.0
+    },
+    {
+      "token": "FeeToken",
+      "style": "depositMeasured",
+      "depositor_balance_before": 196.0,
+      "status": 1,
+      "credited": 98.0,
+      "vault_received": 98.0
+    }
+  ]
+}

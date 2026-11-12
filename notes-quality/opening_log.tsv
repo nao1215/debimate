@@ -34,3 +34,4 @@ ml__perceptron	問い	その他	パーセプトロン（perceptron） - 重み�
 generative-ai__background-removal	結果	その他	Background Removal - 切り抜いた立ち絵の縁に、描いた時の背景が残る
 generative-ai__face-redraw	フラット	その他	Face Redraw - 全身の立ち絵で、顔だけを拡大して描き直す
 blockchain-systems__blob	フラット	その他	Blob - 大きなデータなら calldata より安く、コントラクトからは読めないデータ置き場
+blockchain-systems__erc-20	場面	その他	ERC-20 - 残高はコントラクトが持つ表、approve は引き出しを任せる許可

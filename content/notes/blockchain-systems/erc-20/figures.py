@@ -1,203 +1,258 @@
-"""Generate the figures of the ERC-20 note.
-
-concept_figure() draws the token contract as a hand-written SVG (stdlib only):
-the balanceOf table and the allowance table inside the contract, and the ETH
-balance outside it. transfer 5 changes two rows of balanceOf, approve 30
-changes one row of allowance. The values are those of lab/output/summary.txt.
-
-stages_figure() plots lab/output/summary.txt (owner, receiver, allowance per
-stage) as steps and marks the stages whose transaction failed (status 0).
-It reads the saved output and does not rerun the experiment.
-
-Both are rendered to PNG (the SVG with headless Chrome at 2x, the plot with
-dpi 200) and saved as WebP with Pillow. Only the WebP files are kept in images/.
-Needs google-chrome, matplotlib and Pillow.
+#!/usr/bin/env python3
+"""ERC-20 ノートの図を lab/output/results.json から作る。
 
 Run: python3 content/notes/blockchain-systems/erc-20/figures.py
+出力: images/ の WebP 3 枚（approve_race.webp は動く WebP）。
 """
+import json
+import os
 
-import subprocess
-import tempfile
-from html import escape
-from pathlib import Path
+from PIL import Image, ImageDraw, ImageFont
 
-from PIL import Image
+HERE = os.path.dirname(os.path.abspath(__file__))
+IMG = os.path.join(HERE, "images")
+RES = json.load(open(os.path.join(HERE, "lab", "output", "results.json")))
 
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
-
-HERE = Path(__file__).resolve().parent
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
+JP = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+INK, SUB, LINE = "#1f1f1f", "#666666", "#bdbdbd"
 FILL, PALE = "#f2f2f2", "#eaf1f5"
-OCHRE = "#d4a24c"
+RED, RED_PALE = "#e15759", "#fbe3e3"
+S = 2  # 2 倍で描いて縮める
 
 
-class Svg:
-    def __init__(self, width, height, title):
-        self.width, self.height = width, height
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs>'
-            + "".join(
-                f'<marker id="arrow-{n}" viewBox="0 0 10 10" refX="9" refY="5" '
-                'markerWidth="4" markerHeight="4" orient="auto">'
-                f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
-                for n, c in (("ink", INK), ("sub", SUB), ("accent", ACCENT), ("red", RED)))
-            + '</defs>',
-            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        ]
-
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle",
-             rotate=None):
-        r = f' transform="rotate({rotate} {x} {y})"' if rotate is not None else ""
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}"{r}>{escape(s)}</text>')
-
-    def box(self, x, y, w, h, fill, stroke="none", sw=2.5, dash="", rx=10):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def line(self, x1, y1, x2, y2, color, sw=4, arrow=None, dash=""):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
-
-    def save(self, name):
-        to_webp_from_svg("\n".join(self.parts + ["</svg>"]) + "\n",
-                         self.width, self.height, name)
+def font(size, mono=False):
+    return ImageFont.truetype(MONO if mono else JP, size * S)
 
 
-def to_webp(png, name):
-    (HERE / "images").mkdir(exist_ok=True)
-    Image.open(png).convert("RGB").save(HERE / "images" / name, "WEBP",
-                                        quality=90, method=6)
+def rgb(h):
+    h = h.lstrip("#")
+    return tuple(int(h[i:i + 2], 16) for i in (0, 2, 4))
 
 
-def to_webp_from_svg(svg_text, w, h, name):
-    """SVG text -> PNG (headless Chrome, 2x) -> images/<name> (WebP)."""
-    with tempfile.TemporaryDirectory() as tmp:
-        svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
-        svg.write_text(svg_text, encoding="utf-8")
-        subprocess.run(["google-chrome", "--headless=new", "--disable-gpu",
-                        "--hide-scrollbars", "--force-device-scale-factor=2",
-                        f"--window-size={w},{h}", f"--screenshot={png}",
-                        svg.as_uri()], check=True, capture_output=True)
-        to_webp(png, name)
+class Canvas:
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+        self.im = Image.new("RGB", (w * S, h * S), "#ffffff")
+        self.d = ImageDraw.Draw(self.im)
 
-plt.rcParams.update({
-    "font.family": "Noto Sans CJK JP", "font.size": 10, "axes.edgecolor": SUB, "axes.labelcolor": INK,
-    "xtick.color": INK, "ytick.color": INK, "text.color": INK,
-    "svg.fonttype": "path", "svg.hashsalt": "erc-20",
-    "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
-})
+    def text(self, x, y, s, size=14, color=INK, mono=False, anchor="la"):
+        self.d.text((x * S, y * S), s, font=font(size, mono), fill=rgb(color), anchor=anchor)
+
+    def box(self, x, y, w, h, fill="#ffffff", outline=LINE, width=1, r=8):
+        self.d.rounded_rectangle([x * S, y * S, (x + w) * S, (y + h) * S], radius=r * S,
+                                 fill=rgb(fill) if fill else None, outline=rgb(outline), width=width * S)
+
+    def line(self, pts, color=SUB, width=2):
+        self.d.line([(x * S, y * S) for x, y in pts], fill=rgb(color), width=width * S)
+
+    def arrow(self, x1, y1, x2, y2, color=SUB):
+        self.line([(x1, y1), (x2, y2)], color)
+        self.d.polygon([(x2 * S, y2 * S), ((x2 - 9) * S, (y2 - 5) * S), ((x2 - 9) * S, (y2 + 5) * S)], fill=rgb(color))
+
+    def final(self):
+        return self.im.resize((self.w, self.h), Image.LANCZOS)
 
 
-def load():
-    rows = []
-    for line in (HERE / "lab" / "output" / "summary.txt").read_text().splitlines()[1:]:
-        cols = [c.strip() for c in line.split("|")]
-        if len(cols) != 5:
+def save_webp(im, name):
+    im.save(os.path.join(IMG, name), "WEBP", quality=90, method=6)
+
+
+# ---------------------------------------------------------------- 1. 承認の付け替えの割り込み（動く WebP）
+
+def lane_txs(race):
+    """events から、取引ごとに送った時刻・ブロックに入った時刻・順番・成否を組み立てる。"""
+    txs, pending = [], []
+    for e in race["events"]:
+        if e["kind"] == "owner_sent":
+            label = {"approve": "approve(50)", "decrease": "decreaseAllowance(50)",
+                     "zero_then": "approve(0)", "approve_50_after_zero": "approve(50)"}[e["change"]]
+            t = {"who": "owner", "label": label, "sent": e["t"]}
+            txs.append(t)
+            pending.append(t)
+        elif e["kind"] == "attacker_sent":
+            t = {"who": "spender", "label": f"transferFrom({e['amount']})", "amount": e["amount"], "sent": e["t"]}
+            txs.append(t)
+            pending.append(t)
+        elif e["kind"] == "block_mined":
+            for o in e["order"]:
+                # order の名前から、待っている取引のどれかを決める
+                who = "spender" if o["tx"].startswith("spender") else "owner"
+                t = next(p for p in pending if p["who"] == who)
+                pending.remove(t)
+                t.update(mined=e["t"], block=e["block"], index=o["index"], ok=o["status"] == 1)
+    return txs
+
+
+def lane_state(txs, t):
+    """時刻 t までにブロックに入った取引を順に当て、許可の残りと spender の受け取りを返す。"""
+    allowance, got = 100, 0
+    for x in sorted([x for x in txs if x.get("mined", 1e9) <= t], key=lambda x: (x["mined"], x["index"])):
+        if not x["ok"]:
             continue
-        label, owner, receiver, allowance, status = cols
-        rows.append((label, int(owner), int(receiver), int(allowance),
-                     None if status == "-" else int(status)))
-    assert len(rows) == 7, rows
-    return rows
+        lab = x["label"]
+        if x["who"] == "spender":
+            allowance -= x["amount"]
+            got += x["amount"]
+        elif lab.startswith("approve("):
+            allowance = int(lab[8:-1])
+        elif lab.startswith("decrease"):
+            allowance -= 50
+    return allowance, got
 
 
-def stages_figure():
-    rows = load()
-    x = list(range(len(rows)))
-    fig, ax = plt.subplots(figsize=(7.2, 4.0))
-    series = [(1, "所有者の残高", INK, "-"), (2, "受取人の残高", ACCENT, "-"),
-              (3, "承認額（所有者 → spender）", SUB, "--")]
-    for i, label, color, ls in series:
-        ax.step(x, [r[i] for r in rows], where="mid", color=color, lw=2.4,
-                ls=ls, label=label)
-        ax.plot(x, [r[i] for r in rows], "o", color=color, ms=4)
-    failed = [k for k, r in enumerate(rows) if r[4] == 0]
-    for k in failed:
-        ax.axvspan(k - 0.5, k + 0.5, color=RED, alpha=0.12, lw=0)
-    ax.plot(failed, [108] * len(failed), "x", color=RED, ms=10, mew=2.6,
-            label="失敗した取引（status 0）")
-    names = {"initial": "初期", "spend 10": "10 枚利用", "overspend 21": "21 枚利用",
-             "revoke": "approve 0", "spend after revoke": "取り消し後に\n1 枚利用"}
-    ax.set_xticks(x, [names.get(r[0], r[0]) for r in rows],
-                  fontsize=9, rotation=25, ha="right")
-    ax.set_ylabel("枚数")
-    ax.set_ylim(-4, 115)
-    ax.set_xlim(-0.5, len(rows) - 0.5)
-    ax.legend(loc="center left", bbox_to_anchor=(0.01, 0.55), frameon=False, fontsize=9)
-    ax.spines[["top", "right"]].set_visible(False)
-    fig.tight_layout()
-    with tempfile.TemporaryDirectory() as tmp:
-        png = Path(tmp) / "fig.png"
-        fig.savefig(png, dpi=200, facecolor="#ffffff")
-        to_webp(png, "erc-20_stages.webp")
+def race_figure(speed=0.5, step=0.1, hold=3.0):
+    lanes = [("approve(50) で上書き", RES["race_approve"]),
+             ("approve(0) の後に\napprove(50)", RES["race_zero_then"]),
+             ("decreaseAllowance(50)\nで 50 を引く", RES["race_decrease"])]
+    lanes = [(name, lane_txs(r)) for name, r in lanes]
+    t_end = max(x["mined"] for _, txs in lanes for x in txs) + 0.3
+    blocks = sorted({round(x["mined"], 1) for _, txs in lanes for x in txs})
+    W, row_h, top = 1000, 172, 118
+    H = top + row_h * len(lanes) + 10
+    x_pool, x_blk, x_res = 230, 470, 820
+
+    def frame(t):
+        c = Canvas(W, H)
+        c.text(20, 12, "許可を 100 から 50 に下げる取引を、spender が見て割り込む", size=17)
+        c.text(20, 42, f"経過 {t:.1f} 秒", size=20)
+        c.text(20, 74, f"ローカルの Anvil で実測。2 秒ごとにブロックを作る。{speed:g} 倍速で再生", size=13, color=SUB)
+        # 時間の帯
+        bx0, bx1, by = 560, 970, 56
+        c.line([(bx0, by), (bx1, by)], "#cfcfcf", 3)
+        for b in blocks:
+            xx = bx0 + (bx1 - bx0) * b / t_end
+            c.line([(xx, by - 7), (xx, by + 7)], SUB, 1)
+        c.text(bx0 - 4, by + 10, "0 秒", size=12, color=SUB)
+        c.text(bx1 - 34, by + 10, f"{t_end:.1f} 秒", size=12, color=SUB)
+        c.text(bx0 + (bx1 - bx0) * blocks[0] / t_end - 50, by - 32, "ブロックを作った時刻", size=12, color=SUB)
+        xx = bx0 + (bx1 - bx0) * min(t, t_end) / t_end
+        c.d.ellipse([(xx - 7) * S, (by - 7) * S, (xx + 7) * S, (by + 7) * S], fill=rgb(INK))
+        c.text(x_pool, top - 26, "待っている取引（mempool）", size=14, color=SUB)
+        c.text(x_blk, top - 26, "ブロックに入った順", size=14, color=SUB)
+        c.text(x_res, top - 26, "spender の受け取り", size=14, color=SUB)
+        for i, (name, txs) in enumerate(lanes):
+            y = top + i * row_h
+            for k, part in enumerate(name.split("\n")):
+                c.text(20, y + 40 + k * 24, part, size=15)
+            c.box(x_pool, y, 220, row_h - 20, FILL)
+            c.box(x_blk, y, 330, row_h - 20, "#ffffff")
+            c.arrow(x_pool + 222, y + (row_h - 20) / 2, x_blk - 4, y + (row_h - 20) / 2)
+            waiting = [x for x in txs if x["sent"] <= t and x.get("mined", 1e9) > t]
+            for k, x in enumerate(waiting[:3]):
+                col = RED if x["who"] == "spender" else INK
+                c.box(x_pool + 10, y + 10 + k * 36, 200, 28, "#ffffff", col, 2, 6)
+                c.text(x_pool + 16, y + 15 + k * 36, x["label"], size=12, color=col, mono=True)
+            mined = sorted([x for x in txs if x.get("mined", 1e9) <= t], key=lambda x: (x["mined"], x["index"]))
+            for k, x in enumerate(mined[:4]):
+                col = RED if x["who"] == "spender" else INK
+                yy = y + 10 + k * 36
+                c.text(x_blk + 8, yy + 5, f"#{x['block']}", size=13, color=SUB)
+                c.box(x_blk + 50, yy, 200, 28, "#ffffff" if x["ok"] else FILL, col if x["ok"] else LINE, 2, 6)
+                c.text(x_blk + 56, yy + 5, x["label"], size=12, color=col if x["ok"] else SUB, mono=True)
+                if not x["ok"]:
+                    c.line([(x_blk + 56, yy + 14), (x_blk + 244, yy + 14)], SUB, 1)
+                    c.text(x_blk + 258, yy + 5, "失敗", size=12, color=SUB)
+            allowance, got = lane_state(txs, t)
+            over = got > 100
+            c.box(x_res, y, 160, row_h - 20, RED_PALE if over else "#ffffff", RED if over else LINE, 2 if over else 1)
+            c.text(x_res + 80, y + 22, str(got), size=34, color=RED if over else INK, anchor="ma")
+            c.text(x_res + 80, y + 78, f"残りの許可 {allowance}", size=14, color=SUB, anchor="ma")
+        return c.final()
+
+    frames, durs = [], []
+    n = int(t_end / step) + 1
+    for i in range(n):
+        frames.append(frame(i * step))
+        durs.append(int(step / speed * 1000))
+    durs[-1] = int(hold * 1000)
+    frames[0].save(os.path.join(IMG, "approve_race.webp"), "WEBP", save_all=True, append_images=frames[1:],
+                   duration=durs, loop=0, quality=55, method=6)
+    return sum(durs) / 1000
 
 
-def concept_figure():
-    rows = {r[0]: r for r in load()}
-    init, sent, appr = rows["initial"], rows["transfer 5"], rows["approve 30"]
-    f = Svg(960, 540, "transfer と approve がトークンコントラクトのどの行を変えるか")
+# ---------------------------------------------------------------- 2. 残高の置き場所
 
-    # The token contract holds both tables.
-    f.box(25, 30, 640, 400, "#ffffff", INK, sw=3, rx=16)
-    f.text(345, 72, "トークンコントラクト", 28, weight="normal")
+def storage_figure():
+    st = RES["storage"]
+    eth_b, eth_a = st["receiver_eth_before_wei"] / 10**18, st["receiver_eth_after_wei"] / 10**18
+    tok_b, tok_a = st["storage_before"] / 10**18, st["storage_after"] / 10**18
+    W, H = 980, 380
+    c = Canvas(W, H)
+    c.text(20, 14, "100 STU を送った前後で、受取人の何が変わったか", size=17)
+    # 左: アカウントの状態
+    c.box(20, 60, 300, 290, FILL)
+    c.text(36, 74, "受取人のアカウント", size=15)
+    c.text(36, 100, "Ethereum 自体が持つ状態", size=12, color=SUB)
+    c.box(36, 140, 268, 70, "#ffffff")
+    c.text(50, 152, "ETH の残高（eth_getBalance）", size=12, color=SUB)
+    c.text(50, 176, f"{eth_b:,.0f} → {eth_a:,.0f} ETH", size=16)
+    c.text(36, 228, "変わらない。トークンの残高は", size=13, color=SUB)
+    c.text(36, 250, "ここには無い", size=13, color=SUB)
+    # 右: トークンのコントラクト
+    c.box(360, 60, 600, 290, PALE)
+    c.text(376, 74, "STU のコントラクト（1 つのアドレス）", size=15)
+    c.text(376, 100, "コントラクトのストレージにある 2 つの表", size=12, color=SUB)
+    # balanceOf
+    c.box(376, 135, 280, 200, "#ffffff")
+    c.text(390, 145, "balanceOf", size=14, mono=True)
+    c.text(390, 172, "アドレス → 残高", size=12, color=SUB)
+    c.text(390, 210, "送った人", size=13)
+    c.text(640, 210, "1,000 → 900", size=13, anchor="ra")
+    c.box(384, 240, 264, 34, RED_PALE, RED, 2, 6)
+    c.text(392, 247, "受取人", size=13)
+    c.text(640, 247, f"{tok_b:,.0f} → {tok_a:,.0f}", size=13, color=RED, anchor="ra")
+    c.text(390, 292, "transfer が書き換える", size=12, color=SUB)
+    # allowance
+    c.box(670, 135, 276, 200, "#ffffff")
+    c.text(684, 145, "allowance", size=14, mono=True)
+    c.text(684, 172, "所有者 → spender → 上限", size=12, color=SUB)
+    c.text(684, 210, "所有者が approve で書き、", size=12, color=SUB)
+    c.text(684, 232, "spender の transferFrom が減らす", size=12, color=SUB)
+    c.text(684, 292, "この実験では空のまま", size=12, color=SUB)
+    save_webp(c.final(), "balance_storage.webp")
 
-    def table(x, title, cells):
-        f.text(x + 135, 125, title, 26, SUB)
-        for i, (key, value, style) in enumerate(cells):
-            y = 145 + i * 82
-            fill, stroke, color, weight = {
-                "plain": ("#ffffff", SUB, INK, "normal"),
-                "blue": (ACCENT, ACCENT, INK, "normal"),
-                "ochre": (OCHRE, OCHRE, INK, "normal"),
-            }[style]
-            f.box(x, y, 270, 70, fill, stroke, sw=2.5, rx=8)
-            f.text(x + 62, y + 44, key, 24, color, weight)
-            f.line(x + 124, y + 10, x + 124, y + 60,
-                   "#ffffff" if style != "plain" else SUB, sw=2)
-            f.text(x + 197, y + 44, value, 24, color, weight)
 
-    table(55, "balanceOf", [
-        ("所有者", f"{init[1]} → {sent[1]}", "blue"),
-        ("受取人", f"{init[2]} → {sent[2]}", "blue"),
-        ("spender", "0", "plain"),
-    ])
-    table(365, "allowance", [
-        ("spender", f"{sent[3]} → {appr[3]}", "ochre"),
-    ])
-    f.text(500, 270, "所有者が spender に", 24, SUB)
-    f.text(500, 302, "認めた額", 24, SUB)
+# ---------------------------------------------------------------- 3. 規格から外れたトークンと預け入れの書き方
 
-    # ETH balances live in the account state, outside the contract.
-    f.box(700, 120, 235, 230, FILL, SUB, sw=2.5, dash="10 7", rx=14)
-    f.text(817, 100, "コントラクトの外", 24, SUB)
-    f.text(817, 165, "アカウントの状態", 24, INK)
-    for i, name in enumerate(("所有者", "受取人")):
-        y = 190 + i * 74
-        f.box(725, y, 185, 60, "#ffffff", SUB, sw=2, rx=8)
-        f.text(817, y + 40, f"{name}の ETH", 24, INK)
-
-    ly = 490
-    for x, fill, label in ((60, ACCENT, "transfer 5 で変わる"),
-                           (400, OCHRE, "approve 30 で変わる")):
-        f.box(x, ly - 23, 30, 30, fill, fill, sw=2, rx=4)
-        f.text(x + 44, ly, label, 26, INK, anchor="start")
-    f.save("erc-20_concept.webp")
+def matrix_figure():
+    rows = [("StandardToken", "EIP-20 の書き方どおり", "成功で true、失敗で revert"),
+            ("NoReturnToken", "戻り値なし（USDT 型）", "関数が何も返さない"),
+            ("FalseToken", "失敗で false（ZRX 型）", "残高 0 の人が 100 を預ける"),
+            ("FeeToken", "手数料で減る（STA 型）", "実験は 2%、100 を送ると 98 が届く")]
+    cols = [("depositRequire", "1. 戻り値を require"), ("depositIgnore", "2. 戻り値を見ない"),
+            ("depositSafe", "3. SafeERC20 の判定"), ("depositMeasured", "4. SafeERC20 + 残高の差")]
+    cell = {(r["token"], r["style"]): r for r in RES["matrix"]}
+    W, x0, cw, top, rh = 1000, 250, 185, 96, 78
+    H = top + rh * len(rows) + 50
+    c = Canvas(W, H)
+    c.text(20, 14, "Vault に 100 を預けた結果: 記帳した額 / 実際に届いた額", size=17)
+    for j, (_, lab) in enumerate(cols):
+        c.text(x0 + j * cw + cw / 2, top - 30, lab, size=13, color=SUB, anchor="ma")
+    for i, (tok, lab, sub) in enumerate(rows):
+        y = top + i * rh
+        c.text(20, y + 16, lab, size=14)
+        c.text(20, y + 42, sub, size=11, color=SUB)
+        for j, (style, _) in enumerate(cols):
+            r = cell[(tok, style)]
+            x = x0 + j * cw
+            bad = r["status"] == 1 and r["credited"] != r["vault_received"]
+            if r["status"] == 0:
+                c.box(x + 6, y + 6, cw - 12, rh - 12, "#e9e9e9", "#c8c8c8")
+                c.text(x + cw / 2, y + 26, "取り消し（revert）", size=13, color=SUB, anchor="ma")
+            else:
+                c.box(x + 6, y + 6, cw - 12, rh - 12, RED_PALE if bad else "#ffffff", RED if bad else "#c8c8c8", 2 if bad else 1)
+                c.text(x + cw / 2, y + 16, f"記帳 {r['credited']:g}", size=14, color=RED if bad else INK, anchor="ma")
+                c.text(x + cw / 2, y + 40, f"届いた {r['vault_received']:g}", size=14, color=RED if bad else INK, anchor="ma")
+    c.box(20, H - 36, 18, 18, RED_PALE, RED, 2, 3)
+    c.text(46, H - 36, "取引は成功したのに、記帳と届いた額が食い違う", size=12, color=SUB)
+    c.box(420, H - 36, 18, 18, "#e9e9e9", "#c8c8c8", 1, 3)
+    c.text(446, H - 36, "取引ごと取り消された", size=12, color=SUB)
+    save_webp(c.final(), "deposit_matrix.webp")
 
 
 if __name__ == "__main__":
-    concept_figure()
-    stages_figure()
+    os.makedirs(IMG, exist_ok=True)
+    print("approve_race.webp", race_figure(), "秒")
+    storage_figure()
+    matrix_figure()

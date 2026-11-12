@@ -1,9 +1,9 @@
 {
  "path": "content/notes/blockchain-systems/erc-20/index.md",
- "overall": 3,
- "product": 16,
- "blob": "c63dac2f6fb04b138136f7a35d44523933424e90",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 5,
+ "product": 54,
+ "blob": "7d0d1ab8880328eb348b401e68787f142a3c6a5e",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
