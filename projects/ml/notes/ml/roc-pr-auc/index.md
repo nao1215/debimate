@@ -46,7 +46,7 @@ PR-AUC と呼ばれる値には、計算方法が 2 通りあります。
 - 平均適合率（AP: Average Precision）: 閾値ごとに Recall の増分とその閾値の Precision を掛けて足す。`AP = Σ (R_n − R_{n−1}) P_n`。scikit-learn の [`average_precision_score`](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.average_precision_score.html) が計算するのは AP
 - 台形則: `precision_recall_curve` の点を直線でつなぎ、`auc(recall, precision)` で面積を出す
 
-scikit-learn のドキュメントは、直線で補間する台形則は楽観的な値になり得ると説明しています。2 つの値は一致せず、後述の実験の陽性 2% のデータでは AP が 0.178、台形則が 0.175 でした。4 件のサンプル（`y_true=[0, 0, 1, 1]`、`y_score=[0.1, 0.4, 0.35, 0.8]`）では 0.833 と 0.792 まで開きます。本記事の PR-AUC は AP を指します。値を比べる時は計算方法を揃えます。
+scikit-learn 1.9 系のドキュメントは、直線で補間する台形則は楽観的な値になり得ると説明しています。ただし 2 つの値の大小はデータで変わり、次の 2 例ではどちらも台形則の方が低く出ます。後述の実験の陽性 2% のデータでは AP が 0.178、台形則が 0.175 でした。4 件のサンプル（`y_true=[0, 0, 1, 1]`、`y_score=[0.1, 0.4, 0.35, 0.8]`）では 0.833 と 0.792 まで開きます。本記事の PR-AUC は AP を指します。値を比べる時は計算方法を揃えます。
 
 ---
 
@@ -241,7 +241,7 @@ PR-AUC: 0.887
 
 - 二値分類の識別性能の要約（閾値非依存）
 - モデル比較で「全体的にどちらが強いか」を 1 つの数で示す
-- [確率予測の校正](../probability-calibration/)度合いとは別の軸（識別の良さは AUC、確率値そのものの正しさは Brier Score など）
+- [確率予測の校正](../probability-calibration/)度合いとは別の軸（識別の良さは AUC、確率値そのものの正しさは予測確率と実際の 0/1 の差を二乗して平均した [Brier Score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.brier_score_loss.html) など）
 
 ---
 
