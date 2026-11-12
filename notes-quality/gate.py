@@ -451,20 +451,31 @@ def main(argv):
         base, head = rest[0], rest[1]
         if re.fullmatch(r'0+', base) or git('cat-file', '-e', base, check=True) is None:
             base = git('rev-parse', f'{head}~1').strip()
-        results = []
-        for line in git('diff', '--name-status', '--diff-filter=AMR', base, head).splitlines():
-            parts = line.split('\t')
-            rel = parts[-1]
-            if not key_of(rel):
-                continue
-            old = git('show', f'{base}:{parts[1] if parts[0].startswith("R") else rel}', check=True)
-            new = git('show', f'{head}:{rel}')
-            kind = classify(rel, old, new)
-            if kind == 'small':
-                ng = check_added(added_lines(old, new), removed_lines(old, new))
-            else:
-                ng = check_full(rel) + score_check(rel, new)
-            results.append((rel, kind, ng))
+        # 範囲の commit を 1 つずつ、親との差分で見る（2026-11-12）。pre-push を 1 commit ずつ通した直しを、
+        # CI が最後に公開した版からまとめて比べると、分けた commit が合算されて大きな改稿になり、食い違うため。
+        # 関門を飛ばした commit も 1 つずつ見るので、最後に公開した版を起点にする意味（抜け道を塞ぐ）は変わらない。
+        commits = git('rev-list', '--reverse', '--no-merges', f'{base}..{head}').split() or [head]
+        merged = {}
+        for c in commits:
+            parent = git('rev-parse', f'{c}~1').strip() if c != head or commits != [head] else base
+            for line in git('diff', '--name-status', '--diff-filter=AMR', parent, c).splitlines():
+                parts = line.split('\t')
+                rel = parts[-1]
+                if not key_of(rel):
+                    continue
+                old = git('show', f'{parent}:{parts[1] if parts[0].startswith("R") else rel}', check=True)
+                new = git('show', f'{c}:{rel}')
+                kind = classify(rel, old, new)
+                if kind == 'small':
+                    title = [f'{rel}\n{title_of(new)}'] if check_added.__code__.co_argcount > 2 else []
+                    ng = check_added(added_lines(old, new), removed_lines(old, new), *title)
+                else:
+                    ng = check_full(rel) + score_check(rel, git('show', f'{head}:{rel}'))
+                prev = merged.get(rel)
+                rank = {'small': 0, 'major': 1, 'new': 2}
+                k = kind if prev is None or rank[kind] >= rank[prev[0]] else prev[0]
+                merged[rel] = (k, (prev[1] if prev else []) + [f'{c[:8]}: {x}' for x in ng])
+        results = [(rel, kind, ng) for rel, (kind, ng) in merged.items()]
         if '--ng-list' in rest:
             out = rest[rest.index('--ng-list') + 1]
             with open(out, 'w', encoding='utf-8') as f:
