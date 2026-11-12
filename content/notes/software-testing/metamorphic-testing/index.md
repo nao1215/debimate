@@ -11,13 +11,15 @@ topics: ["Test Oracles"]
 
 Metamorphic Testing（メタモルフィックテスト）は、出力の正解が分からない処理をテストする手法です。1 つの入力に対する正解を書く代わりに、「入力をこう変えたら、出力はこう変わるはず」という関係を書き、2 つの出力がその関係を満たすかを検証します。
 
-以下は、コマンドの出力を JSON に変換する著者の CLI である [jsonize](https://github.com/nao1215/jsonize)（コマンド名は `jz`）で、1 つの関係を検証した結果です。`jz run wc` は `wc` を実行し、その出力を JSON にします。関係は「2 つのファイルを 1 回で `wc` に渡して読んだ結果は、1 ファイルずつ読んでつないだ結果と等しいはず」です。しかし、1 回で読むと要素が 1 つ多くなりました。
+コマンドの出力やファイルを読むパーサーのテストでは、期待値を実際の出力から作ることがよくあります。作る人が気付いていない行があれば、その行の誤った読み方も期待値に入り、テストは通ります。
+
+以下は、コマンドの出力を JSON に変換する著者の CLI である [jsonize](https://github.com/nao1215/jsonize)（コマンド名は `jz`）で、期待値を書かずに 1 つの関係を検証した結果です。`jz run wc` は `wc` を実行し、その出力を JSON にします。関係は「2 つのファイルを 1 回で `wc` に渡して読んだ結果は、1 ファイルずつ読んでつないだ結果と等しいはず」です。しかし、1 回で読むと要素が 1 つ多くなりました。
 
 {{< figure src="images/wc_relation.webp" alt="上段は jz run wc a.txt b.txt。wc の出力 3 行のうち最後の 3 4 12 total が赤く合計行と示され、jz が作る JSON の要素は a.txt、b.txt、total の 3 つで、total の要素が赤い。下段は jz run wc a.txt と jz run wc b.txt。wc の出力はそれぞれ 1 行で、つないだ JSON は a.txt と b.txt の 2 要素。下に、2 つの結果が一致しない（関係を満たさない）と書かれている" caption="1 回で読むと、wc の合計行が total という名前のファイルとして 1 件増える" align="center" >}}
 
 `wc` は引数が 2 つ以上ある時、最後に合計の行を `3 4 12 total` の形で出します。この行は `total` という名前のファイルの行と字面が同じです。jz はコマンドごとに、出力の各行を正規表現で読む「定義」を持っています。`wc` の定義は全ての行を同じ形で読むので、合計行もファイルの 1 件になります。そのため、JSON を受け取ったプログラムが全要素の行数を足すと、合計を二重に数えます。
 
-`wc` の出力から作るべき JSON を人が書いて比べるテストでは、書いた人が合計行に気付いていなければ、この行を期待値に含めたままテストが通ります。関係で検証すると、期待値を書かずにこの食い違いが見つかります。
+jsonize の wc の定義にも、GNU coreutils 9.7 の `wc` の本物の出力から作った期待値の JSON があります。その [coreutils-9.7.json](https://github.com/nao1215/jsonize/blob/main/registry/parsers/wc/posix/testdata/coreutils-9.7.json) にも、合計行が `"filename": "total"` の 1 件として入っていて、テストは通っていました。関係で検証すると、期待値に頼らずにこの食い違いが見つかります。
 
 <br>
 
@@ -41,19 +43,19 @@ Metamorphic Testing（メタモルフィックテスト）は、出力の正解�
 
 コマンドの出力を読むパーサーも、この種類の処理です。jsonize は v0.9.1 で 280 個のコマンドの出力を読みます。定義ごとに本物の出力を fixture として保存し、期待する JSON を golden ファイルとして置いて比べています。
 
-golden は定義の出力から生成し、定義を書いた本人が差分を目で見て置きます。そのため、本人が気付かなかった値の欠落は golden にも残り、テストは通ります。golden が保証するのは「前と同じ」までで、「正しい」ではありません。
+正解を書けない処理に使える手法は、他にもあります。Property-Based Testing は、Haskell の [QuickCheck の論文](https://dl.acm.org/doi/10.1145/351240.351266)で広まった手法で、「ソートした結果は昇順に並ぶ」のような、1 つの出力だけで判定できる性質を書きます。[Differential Testing](https://web.archive.org/web/20061031200115/http://www.hpl.hp.com/hpjournal/dtj/vol10num1/vol10num1art9.pdf) は、同じ仕様の別の実装と出力を比べます。
 
-テストの種類ごとに、何を正解とみなすかを並べると以下の通りです。
+テストの種類ごとに、何を正解とみなすか、何を用意するかと、Software Testing の各ノートの実験で見つけた例を並べると以下の通りです。
 
-| テストの種類 | 正解とみなすもの | 正解を書けない時 |
-|---|---|---|
-| 例を使うテスト | 人が書いた期待値 | 使えない |
-| golden（snapshot）テスト | 前に保存した出力 | 前と同じことしか分からない |
-| Property-Based Testing | 1 つの出力が満たす性質 | 性質が見つかれば使える |
-| Metamorphic Testing | 複数の出力の間の関係 | 関係が見つかれば使える |
-| Differential Testing | 別の実装の出力 | 別の実装があれば使える |
+| テストの種類 | 正解とみなすもの | 用意するもの | 見つけた例 |
+|---|---|---|---|
+| 例を使うテスト | 人が書いた期待値 | 入力ごとの正解 | — |
+| golden テスト | 前に保存した出力 | 目で見た最初の出力 | 冒頭の合計行は見逃した |
+| Property-Based Testing | 1 つの出力が満たす性質 | 性質と乱数の入力 | filesql の Distinct の重複 |
+| Metamorphic Testing | 複数の出力の間の関係 | 入力の変換と関係 | wc の合計行（実験 1） |
+| Differential Testing | 別の実装の出力 | 同じ仕様の別の実装 | 終了コードが 0 の失敗 |
 
-Property-Based Testing は、Haskell の [QuickCheck の論文](https://dl.acm.org/doi/10.1145/351240.351266)で広まった手法で、「ソートした結果は昇順に並ぶ」のような、1 つの出力だけで判定できる性質を書きます。[Differential Testing](https://web.archive.org/web/20061031200115/http://www.hpl.hp.com/hpjournal/dtj/vol10num1/vol10num1art9.pdf) は、同じ仕様の別の実装と出力を比べます。
+表の golden テストの行が、jsonize の形です。golden は定義の出力から生成し、定義を書いた本人が差分を目で見て置きます。冒頭の coreutils-9.7.json も golden です。そのため、冒頭の合計行のように本人が気付かなかった読み違いは golden にも入り、テストは通ります。golden が保証するのは「前と同じ」までで、「正しい」ではありません。
 
 Metamorphic Testing は、1 つの出力だけでは正しさを判定できず、比べる別の実装も無い時に使います。入力を変えて同じ処理をもう一度実行し、自分の出力どうしを比べます。
 
@@ -370,7 +372,7 @@ pub fn trim_idempotent_test() {
 }
 ```
 
-`idempotency_of` に渡した `string.trim` が図の変換 T、`forall_morph` の 3 つ目の引数が f で、関係 R は f(x)＝f(T(x)) です。
+`idempotency_of` に渡した `string.trim` が図の変換 T、`forall_morph` の 3 つ目の引数が f で、関係 R は f(x)＝f(T(x)) です。冪等の関係なので、この例では T と f が同じ `string.trim` です。
 
 `forall_morph` は、生成器（`generator.string_ascii`）で作った入力で関係を検証し、失敗したら入力を最小化してから報告します。冪等の他に、変換しても出力が変わらない関係（`invariant_under`）や、入力の変換に合わせて出力も決まった形で変わる関係（`equivariant_under`）の型を持っています。
 
