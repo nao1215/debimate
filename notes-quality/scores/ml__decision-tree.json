@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/ml/decision-tree/index.md",
- "overall": 2,
- "product": 4,
- "blob": "99be230c26382e7edcaa8ecf910e6cdcbdd43b32",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "ff58d93566646fed0eb3b2ec45a06080df32aa70",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,

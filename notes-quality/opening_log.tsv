@@ -28,3 +28,4 @@ generative-ai__animation-flicker	結果	その他	Animation Flicker - 生成し�
 generative-ai__ip-adapter-color-cast	場面	その他	IP-Adapter Color Cast - 参照の背景で、描いた絵の色が転ぶ
 math__variance	場面	その他	分散 - 散らばりの小さいミリ秒の時刻では、AVG(ts*ts) - AVG(ts)*AVG(ts) が 0 や負の値を返す
 ml__activation-functions	場面	その他	活性化関数 - 学習率 0.3 で digits を学習した ReLU の MLP は、2 層目の 64 個中 59 個が 0 しか返さなくなった
+ml__decision-tree	場面	その他	決定木（decision tree） - breast_cancer で深さ 3 の木を学習すると、train_test_split の乱数だけで根の質問が 5 通りに変わる
