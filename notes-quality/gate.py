@@ -4,7 +4,9 @@
     python3 notes-quality/gate.py note <index.md>          # 書き終えた時。全部の規則
     python3 notes-quality/gate.py note --diff <index.md>   # 既存ノートの小さな修正。HEAD から足した行だけ
     python3 notes-quality/gate.py commit                   # pre-commit: staged のノートを規則で見る
-    python3 notes-quality/gate.py push <base> <head>       # pre-push と CI: 規則に加え、総合 4 以上の点の記録
+    python3 notes-quality/gate.py push <base> <head> [--ng-list <file>]
+                                                           # pre-push と CI: 規則に加え、総合 4 以上の点の記録。
+                                                           # --ng-list で NG のノートの Page Bundle を書き出す（CI がビルドから外す）
     python3 notes-quality/gate.py score <index.md> --overall 4 --product 36 --baseline 5,5,3,2,2 --by <採点した担当>
                                                            # 別の担当の採点し直しを scores/ に記録する（自己採点は不可）
     python3 notes-quality/gate.py record <index.md>        # 冒頭の型と題の形を opening_log.tsv に足す
@@ -290,6 +292,12 @@ def main(argv):
             else:
                 ng = check_full(rel) + score_check(rel, new)
             results.append((rel, kind, ng))
+        if '--ng-list' in rest:
+            out = rest[rest.index('--ng-list') + 1]
+            with open(out, 'w', encoding='utf-8') as f:
+                for rel, kind, ng in results:
+                    if ng:
+                        f.write(os.path.dirname(rel) + '\n')
         return report(results)
 
     if cmd == 'score':
