@@ -38,3 +38,4 @@ blockchain-systems__erc-20	場面	その他	ERC-20 - 残高はコントラクト
 blockchain-systems__hash-function	場面	その他	Hash Function - 4 バイトの keccak256 は、どれか 2 つの名前なら平均 8 万回弱で重なる
 math__probability-distributions	場面	その他	代表的な確率分布 - 2012 年の平日 8 時（晴れ）に借りられた自転車の台数は、ポアソン分布が示す 95% の範囲に 36% しか入らない
 blockchain-systems__smart-contract	フラット	その他	Smart Contract - 書き込みは検証するノード全てが同じ計算をやり直すプログラム
+ml__logistic-regression	問い	その他	ロジスティック回帰 - Pima の糖尿病データを元の単位のまま liblinear に渡すと、年齢の係数が 3.5% に縮む
