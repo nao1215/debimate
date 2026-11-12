@@ -99,7 +99,7 @@ for i, v in enumerate(norms):
     axn.text(v * 1.6, i, f"{v:.0e}", va="center", fontsize=8.5, color=INK)
 axn.set_title("重みの長さ ||coef_||", loc="left", fontsize=10)
 axn.set_xticks([1e-5, 1e0, 1e5])
-fig.suptitle("止める仕組みを切って 50 エポック回すと、eta0 を 12 桁変えてもテストの予測は同じ（tol=None）", x=0.01, ha="left", fontsize=11.5)
+fig.suptitle("正則化なしで止める仕組みを切り 50 エポック回すと、eta0 を 12 桁変えてもテストの予測は同じ（penalty=None、tol=None）", x=0.01, ha="left", fontsize=11.5)
 fig.tight_layout()
 save(fig, "pc_cover.webp")
 

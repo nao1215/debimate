@@ -26,7 +26,6 @@ distributed-systems__transactional-outbox	場面	その他	Transactional Outbox 
 generative-ai__depth-body-shape	誤解	その他	Depth Body Shape - 3D の人形から作った深度マップは、ポーズと一緒に体型と服の厚みも写す
 generative-ai__animation-flicker	結果	その他	Animation Flicker - 生成した絵をコマにして動かすと、止まっている所までちらつく
 generative-ai__ip-adapter-color-cast	場面	その他	IP-Adapter Color Cast - 参照の背景で、描いた絵の色が転ぶ
-ml__perceptron	問い	その他	パーセプトロン（perceptron） - 重みを 0 から始めて止め方を切れば、学習率を 12 桁変えても予測は同じ
 generative-ai__background-removal	結果	その他	Background Removal - 切り抜いた立ち絵の縁に、描いた時の背景が残る
 generative-ai__face-redraw	フラット	その他	Face Redraw - 全身の立ち絵で、顔だけを拡大して描き直す
 blockchain-systems__blob	フラット	その他	Blob - 大きなデータなら calldata より安く、コントラクトからは読めないデータ置き場
@@ -43,3 +42,4 @@ math__lln-clt	誤解	その他	大数の法則と中心極限定理 - California
 ml__decision-tree	場面	その他	決定木（decision tree） - breast_cancer で深さ 3 の木を学習すると、train_test_split の乱数だけで根の質問が 5 通りに変わる
 math__variance	場面	その他	分散 - SQLite の AVG(ts*ts) - AVG(ts)*AVG(ts) は、標準偏差が数秒以下のミリ秒の時刻で 0 や負の値を返すことがある
 ml__activation-functions	場面	その他	活性化関数 - 学習率 0.3 で digits を学習した ReLU の MLP は、2 層目の 64 個中 59 個が学習データのどの行にも 0 しか返さなくなった
+ml__perceptron	問い	その他	パーセプトロン（perceptron） - 正則化なしで重みを 0 から始め、止め方を切れば、学習率を 12 桁変えても予測は同じ
