@@ -159,7 +159,7 @@ checkpoint の状態は、投票待ち・justified（正当化済み）・finali
 
 起点とターゲットが隣り合う checkpoint の場合は、ターゲットが justified になるのに加えて、起点が finalized（確定済み）に変わります。図で epoch 1 が finalized なのは、epoch 1 から直後の epoch 2 へ 2/3 が集まったからです。
 
-Casper FFG の論文の規則では、epoch を飛ばした投票（epoch 1 から epoch 3 へなど）で行き先は justified になりますが、起点は finalized になりません。Ethereum の実装は少し広く、間の checkpoint も justified なら、1 つ飛ばしの投票でも起点が finalized になる場合があります。以下の状態図は、論文の規則で描いています。
+Casper FFG の論文の規則では、epoch を飛ばした投票（epoch 1 から epoch 3 へなど）でターゲットは justified になりますが、起点は finalized になりません。Ethereum の実装は少し広く、間の checkpoint も justified なら、1 つ飛ばしの投票でも起点が finalized になる場合があります。以下の状態図は、論文の規則で描いています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -183,15 +183,15 @@ stateDiagram-v2
 
 以下は、2 つの 2/3 が全体の中でどう重なるかを簡略化した図です。
 
-{{< figure src="images/finality_overlap.webp" alt="上に、バリデータが預けた ether の全体を表す横長の帯があり、下に 0・1/3・2/3・1 の目盛りがある。checkpoint A を確定させた 2/3 の投票は 0 から 2/3 まで、A と矛盾する B に至る列の 2/3 の投票は 1/3 から 1 までを占める。1/3 から 2/3 の区間は両方に投票した分で、処罰（slashing）の対象と書かれている" caption="矛盾する 2 つの checkpoint への 2/3 の重なり（簡略化した図）" align="center" >}}
+{{< figure src="images/finality_overlap.webp" alt="上に、バリデータが預けた ether の全体を表す横長の帯があり、下に 0・1/3・2/3・1 の目盛りがある。checkpoint A を確定させた 2/3 の投票は 0 から 2/3 まで、A と矛盾する B に至る列の 2/3 の投票は 1/3 から 1 までを占める。1/3 から 2/3 の区間は両方に投票した分で、スラッシング（slashing）の対象と書かれている" caption="矛盾する 2 つの checkpoint への 2/3 の重なり（簡略化した図）" align="center" >}}
 
-規則では、1 人のバリデータが同じ epoch を行き先とする 2 票を投じることと、一方がもう一方を内側に包む 2 票（例えば epoch 1→4 と epoch 2→3）を投じることを禁じています。Casper FFG の論文の証明によると、矛盾する 2 つの checkpoint が両方確定した時は、stake の 1/3 以上を占めるバリデータが、必ずどこかでこの禁じられた組を投じています。
+規則では、1 人のバリデータが同じ epoch をターゲットとする 2 票を投じることと、一方がもう一方を内側に包む 2 票（例えば epoch 1→4 と epoch 2→3）を投じることを禁じています。Casper FFG の論文の証明によると、矛盾する 2 つの checkpoint が両方確定した時は、stake の 1/3 以上を占めるバリデータが、必ずどこかでこの禁じられた組を投じています。
 
-そのため、少なくとも stake の 1/3 にあたるバリデータが、処罰（slashing）の対象になる投票を証拠として残し、預けた ether を没収されます。Casper FFG の論文は、この性質を accountable safety と呼びます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
+そのため、少なくとも stake の 1/3 にあたるバリデータが、スラッシング（slashing）の対象になる投票を証拠として残し、預けた ether を没収されます。Casper FFG の論文は、この性質を accountable safety と呼びます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
 
 ---
 
-### finalized・safe・確認数の違い
+### finalized・safe・承認数の違い
 
 `finalized` という保証には、例外が書き添えられています。ブロックタグを定義している [Ethereum の API の schema](https://github.com/ethereum/execution-apis/blob/main/src/schemas/block.yaml) には、「cannot be re-orged outside of manual intervention driven by community coordination」（コミュニティの調整による手動の介入を除いて、reorg され得ない）とあります。
 
@@ -201,15 +201,15 @@ stateDiagram-v2
 
 3 つのブロックタグのうち、まだ触れていない `safe` は、`latest` と `finalized` の間にあります。ブロックタグの定義では、正直なバリデータ（規則どおりに投票する参加者）が多数派であるという仮定と、ネットワークの遅延が想定の範囲に収まるという仮定の下で、reorg されない最も新しいブロックを指します。
 
-Ethereum のノードは、取引を実行して残高などを管理する実行層（execution layer）と、バリデータの投票を集めてどのブロックを列に採るかを決める合意層（consensus layer）の 2 つのソフトウェアで動きます。それぞれのソフトウェアをクライアントと呼びます。
+Ethereum のノードは、トランザクションを実行して残高などを管理する実行レイヤー（execution layer）と、バリデータの投票を集めてどのブロックを列に採るかを決めるコンセンサス・レイヤー（consensus layer）の 2 つのソフトウェアで動きます。それぞれのソフトウェアをクライアントと呼びます。
 
-どのブロックが `safe` かを決めるのは、実行層ではなく合意層です。アプリケーションが呼ぶ `eth_getBalance` などは実行層の API で、合意層の判断が実行層へ渡され、ブロックタグとして返ってきます。
+どのブロックが `safe` かを決めるのは、実行レイヤーではなくコンセンサス・レイヤーです。アプリケーションが呼ぶ `eth_getBalance` などは実行レイヤーの API で、コンセンサス・レイヤーの判断が実行レイヤーへ渡され、ブロックタグとして返ってきます。
 
 順調な時に 3 つのブロックタグが指す位置は、以下の通りです。
 
 {{< figure src="images/finality_tags.webp" alt="epoch N-2、N-1、N（現在）のブロックが左から並ぶ。finalized は epoch N-2 の先頭のブロック（2 epoch 前の checkpoint）、latest は現在の先頭のブロックを指す。safe はその間の破線の範囲のどこかで、実装による。finalized と latest の差は順調な時で 13〜19 分ほど" caption="3 つのブロックタグが指すブロック（順調な時の目安）" align="center" >}}
 
-`safe` は処罰ではなく仮定を根拠にしており、仮定が崩れれば誰も処罰されないまま覆り得ます。この点が `finalized` との違いです。
+`safe` はスラッシングではなく仮定を根拠にしており、仮定が崩れれば誰もスラッシングされないまま覆り得ます。この点が `finalized` との違いです。
 
 `safe` の位置を図で幅にしたのは、どのブロックを返すかがクライアントの実装と版で変わるからです。
 
@@ -219,20 +219,20 @@ Ethereum のノードは、取引を実行して残高などを管理する実�
 
 `safe` を使う時は手元のクライアントの説明を確認する必要があります。
 
-ここまでの 3 つは、ノードがブロックタグとして返すものです。一方で、Bitcoin と同じく確認数で判断する方法は Ethereum でも使え、その閾値はアプリケーションの運用者が決めます。4 つの判断それぞれについて、誰がどこに線を引いているのかを以下にまとめます。
+ここまでの 3 つは、ノードがブロックタグとして返すものです。一方で、Bitcoin と同じく承認数で判断する方法は Ethereum でも使え、その閾値はアプリケーションの運用者が決めます。4 つの判断それぞれについて、誰がどこに線を引いているのかを以下にまとめます。
 
 | 判断の拠り所 | 何が言えるか | 引いた主体 |
 | --- | --- | --- |
 | `latest` | 健全な状態でも外れ得る | ノード（受け取った最新のブロック） |
-| `safe` | 正直な多数派と、遅延が想定内という仮定の下では reorg されない | 合意層（仮定を根拠に） |
-| `finalized` | 手動の介入を除いて覆らない | 合意層（処罰を根拠に） |
-| 確認数の閾値 | 白書のモデルの下で、覆る確率が自分で決めた値を下回った | アプリケーションの運用 |
+| `safe` | 正直な多数派と、遅延が想定内という仮定の下では reorg されない | コンセンサス・レイヤー（仮定を根拠に） |
+| `finalized` | 手動の介入を除いて覆らない | コンセンサス・レイヤー（スラッシングを根拠に） |
+| 承認数の閾値 | ホワイトペーパーが置いたモデルの下で、覆る確率が自分で決めた値を下回った | アプリケーションの運用 |
 
 ---
 
 ### finalize の停止と inactivity leak
 
-Casper FFG が証明しているのは、先に触れた accountable safety と、plausible liveness の 2 つです。plausible liveness は、2/3 以上のバリデータが規則に従っている限り、それまでに何が起きていても、誰も処罰されずに次の checkpoint を finalize できる余地が常に残る、という性質です。
+Casper FFG が証明しているのは、先に触れた accountable safety と、plausible liveness の 2 つです。plausible liveness は、2/3 以上のバリデータが規則に従っている限り、それまでに何が起きていても、誰もスラッシングされずに次の checkpoint を finalize できる余地が常に残る、という性質です。
 
 投票が 2/3 に届かない場合に確定を再開する仕組みとして、同じ論文では inactivity leak を示しています。
 
@@ -250,45 +250,45 @@ flowchart LR
 
 ネットワークが 2 つに分かれ続けると、両側でそれぞれ相手側の残高が減り、両側が別々に 2/3 に届いて finalize し得ます。
 
-この場合は誰も処罰されないまま、矛盾する 2 つの checkpoint が finalized になり得ます。checkpoint の節で見た重なりの保証は、各バリデータの残高（投票の重み）が変わらない間だけ効くということです。この時どちらの列を残すかは、`finalized` の例外として触れた手動の介入で決めることになります。
+この場合は誰もスラッシングされないまま、矛盾する 2 つの checkpoint が finalized になり得ます。checkpoint の節で見た重なりの保証は、各バリデータの残高（投票の重み）が変わらない間だけ効くということです。この時どちらの列を残すかは、`finalized` の例外として触れた手動の介入で決めることになります。
 
-2023 年 5 月 11 日と 12 日には、Ethereum の[メインネット](../mainnet-and-testnet/)で finalize が実際に 2 回止まり、合意層のクライアントの 1 つである Prysm の開発元が[事後報告](https://prysm.offchainlabs.com/docs/resources/mainnet-postmortems/)を公開しています。
+2023 年 5 月 11 日と 12 日には、Ethereum の[メインネット](../mainnet-and-testnet/)で finalize が実際に 2 回止まり、コンセンサス・レイヤーのクライアントである Prysm の開発元が[事後報告](https://prysm.offchainlabs.com/docs/resources/mainnet-postmortems/)を公開しています。
 
-実行層のクライアントが応答しない時に古い checkpoint へ投票する一部のクライアントの挙動により、古い checkpoint を行き先とする投票が大量に届きました。Prysm などは、その投票がその epoch に投票を割り当てられたバリデータのものかを検証するために、古い checkpoint の時点の合意層の状態（バリデータの一覧や残高などのデータ）を計算し直して資源を使い果たしました。処理が追い付かなくなると、ブロックと投票が欠けて、投票が 2/3 に届かない epoch が続きました。
+実行レイヤーのクライアントが応答しない時に古い checkpoint へ投票する一部のクライアントの挙動により、古い checkpoint をターゲットとする投票が大量に届きました。Prysm などは、その投票がその epoch に投票を割り当てられたバリデータのものかを検証するために、古い checkpoint の時点に戻したコンセンサス・レイヤーの状態（バリデータの一覧や残高などのデータ）を計算し直して資源を使い果たしました。処理が追い付かなくなると、ブロックと投票が欠けて、投票が 2/3 に届かない epoch が続きました。
 
 止まっていた長さを epoch 単位で並べると、以下のようになります。
 
 {{< figure src="images/finality_incident.webp" alt="横棒グラフ。5 月 11 日は 4 epoch、約 25 分 finalize が止まった。5 月 12 日は 9 epoch、約 1 時間止まり、5 epoch を過ぎた所から inactivity leak による残高の減少が始まった" caption="2023 年 5 月の finalize の停止（epoch 数は Prysm の事後報告から）" align="center" >}}
 
-1 回目は約 25 分、2 回目は約 1 時間止まり、2 回目は途中から inactivity leak による残高の減少が始まりました。回復を助けたのは影響を受けなかった別のクライアントで、誰も介入しないまま finalize が再開しました。その間もブロックは作られ続け、ユーザーの取引への影響はわずかでした。
+1 回目は約 25 分、2 回目は約 1 時間止まり、2 回目は途中から inactivity leak による残高の減少が始まりました。回復を助けたのは影響を受けなかった別のクライアントで、誰も介入しないまま finalize が再開しました。その間もブロックは作られ続け、ユーザーが送るトランザクションへの影響はわずかでした。
 
 進まなくなるのは `finalized` を待つアプリケーションで、`latest` だけを見ているコードは finalize の停止に気付きません。
 
 ---
 
-### 確認数をいくつ待つかを決める材料
+### 承認数をいくつ待つかを決める材料
 
-確認数の閾値は、チェーンではなくアプリケーションが決めます。判断の出発点は、覆った時の損失をそのまま受け入れられるかどうかです。
+承認数の閾値は、チェーンではなくアプリケーションが決めます。判断の出発点は、覆った時の損失をそのまま受け入れられるかどうかです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
     A{"覆った時の損失を<br/>そのまま受け入れられるか"} -->|"受け入れられる"| B["ブロックに入った時点で進める"]
     A -->|"受け入れられない"| C{"渡したものを<br/>後から取り戻せるか"}
-    C -->|"取り戻せる"| D["浅い確認数で渡し<br/>覆ったら取り消す"]
+    C -->|"取り戻せる"| D["浅い承認数で渡し<br/>覆ったら取り消す"]
     C -->|"取り戻せない"| E{"失う額は攻撃者が<br/>払うコストを上回るか"}
-    E -->|"下回る"| F["自然な組み替えが収まる<br/>確認数まで待つ"]
-    E -->|"上回る"| G["finalized か<br/>より深い確認数まで待つ"]
+    E -->|"下回る"| F["自然な組み替えが収まる<br/>承認数まで待つ"]
+    E -->|"上回る"| G["finalized か<br/>より深い承認数まで待つ"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-攻撃コストが損失を上回る（攻撃が割に合わない）場合でも、自然な組み替えが収まるまでは待ちます。攻撃者がいなくても、複数のマイナーが同時にブロックを作れば組み替えが起きるからです。攻撃コストは、proof of work では後ろに積まれたブロックを作り直す計算のコストで見積もります。Ethereum の `finalized` を覆す場合は、前の重なりの図のとおり、預け入れの 1/3 以上が処罰の対象になります。
+攻撃コストが損失を上回る（攻撃が割に合わない）場合でも、自然な組み替えが収まるまでは待ちます。攻撃者がいなくても、複数のマイナーが同時にブロックを作れば組み替えが起きるからです。攻撃コストは、proof of work では後ろに積まれたブロックを作り直す計算のコストで見積もります。Ethereum の `finalized` を覆す場合は、前の重なりの図のとおり、預け入れの 1/3 以上がスラッシングの対象になります。
 
-アプリケーションが入金確認に使える時間も、待つ確認数を決める条件です。ブロック間隔が 10 分のチェーンで確認数 6 まで待つと、取り込まれてから 50 分、送信から数えると 1 時間ほどかかります。
+アプリケーションが入金確認に使える時間も、待つ承認数を決める条件です。ブロック間隔が 10 分のチェーンで承認数 6 まで待つと、取り込まれてから 50 分、送信から数えると 1 時間ほどかかります。
 
-Ethereum の `finalized` が指すのは、「finalized・safe・確認数の違い」の図のとおり、順調な時でも 2 epoch 前の checkpoint です。現在が epoch のどこにいるかで、13 分から 19 分ほど過去のブロックになります。
+Ethereum の `finalized` が指すのは、「finalized・safe・承認数の違い」の図のとおり、順調な時でも 2 epoch 前の checkpoint です。現在が epoch のどこにいるかで、13 分から 19 分ほど過去のブロックになります。
 
-Bitcoin の確認数 3 と 6、Ethereum の `finalized` について、取り込まれてから確定扱いにするまでの時間を並べると、以下のようになります。Ethereum の棒の濃い部分は、取り込まれた位置が epoch のどこかで変わる幅です。
+Bitcoin の承認数 3 と 6、Ethereum の `finalized` について、取り込まれてから確定扱いにするまでの時間を並べると、以下のようになります。Ethereum の棒の濃い部分は、取り込まれた位置が epoch のどこかで変わる幅です。
 
 {{< figure src="images/finality_wait.webp" alt="横棒グラフ。ブロックに取り込まれてからの時間は、Bitcoin の確認数 3 が平均約 20 分、確認数 6 が平均約 50 分、Ethereum の finalized が約 13〜19 分" caption="取り込まれてから確定扱いにするまでの時間の目安（Bitcoin はブロック間隔 10 分の平均）" align="center" >}}
 

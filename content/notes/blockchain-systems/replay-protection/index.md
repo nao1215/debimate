@@ -136,7 +136,7 @@ EIP-155 では、署名する前にハッシュする項目に chain ID と 0 �
 
 <br>
 
-Alice の nonce 1 で、chain ID 31337 を含めた取引を作りました。B に送った後、`v` だけを B の chain ID 31338 の値に書き換えた取引も B に送っています。
+Alice の nonce 1 で、chain ID 31337 を含めたトランザクションを作りました。B に送った後、`v` だけを B の chain ID 31338 の値に書き換えたトランザクションも B に送っています。
 
 ```text
 == 2. EIP-155 transfer for chain 31337 (alice nonce 1)
@@ -148,7 +148,7 @@ Alice の nonce 1 で、chain ID 31337 を含めた取引を作りました。B 
   bob balance: A 2 ETH, B 1 ETH; alice nonce: A 2, B 1
 ```
 
-B は取引を受け取ってハッシュを返しましたが、ブロックには入れませんでした。レシート（取り込まれた取引の結果）は返らず、B の Alice の nonce も 1 のままです。[Anvil 1.7.1 の取引の受け付けの検査](https://github.com/foundry-rs/foundry/blob/v1.7.1/crates/anvil/src/eth/backend/mem/mod.rs#L4326-L4340)は、型付きの取引（後述）の chain ID の食い違いは拒否しますが、古い形式（legacy）の取引は通します。B がこの取引をブロックに入れなかった理由までは確かめていませんが、直後のブロックには入らなかったので、RPC がハッシュを返したことは、取り込まれたことを意味しません。
+B はトランザクションを受け取ってハッシュを返しましたが、ブロックには入れませんでした。レシート（取り込まれたトランザクションの結果）は返らず、B の Alice の nonce も 1 のままです。[Anvil 1.7.1 がトランザクションを受け付ける時の検査](https://github.com/foundry-rs/foundry/blob/v1.7.1/crates/anvil/src/eth/backend/mem/mod.rs#L4326-L4340)は、型付きのトランザクション（後述）の chain ID の食い違いは拒否しますが、古い形式（legacy）のトランザクションは通します。B がこのトランザクションをブロックに入れなかった理由までは確かめていませんが、直後のブロックには入らなかったので、RPC がハッシュを返したことは、取り込まれたことを意味しません。
 
 `v` を書き換えると、ハッシュする 9 項目の chain ID が変わり、復元される送り主は Alice とは無関係な `0x7d0a…` になりました。このアドレスには残高が無いので、B は残高不足で拒否しています。chain ID は署名の外に付けた札ではなく、署名した中身の一部なので、書き換えれば別人の署名になるわけです。
 
@@ -158,9 +158,9 @@ B は取引を受け取ってハッシュを返しましたが、ブロックに
 
 <br>
 
-#### 型付きの取引と L2
+#### 型付きのトランザクションと L2
 
-先頭に型を表すバイトを持つ取引（[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) など）は、`chainId` を独立した項目として持ち、署名の対象に含めます。[Mainnet and Testnet](../mainnet-and-testnet/) の実験では、chain ID 1 向けの EIP-1559 の取引を chain ID 11155111 のノードに送り、`invalid chain id for signer` で拒否されています。
+先頭に型を表すバイトを持つトランザクション（[EIP-1559](https://eips.ethereum.org/EIPS/eip-1559) など）は、`chainId` を独立した項目として持ち、署名の対象に含めます。[Mainnet and Testnet](../mainnet-and-testnet/) の実験では、chain ID 1 向けに作った EIP-1559 のトランザクションを chain ID 11155111 のノードに送り、`invalid chain id for signer` で拒否されています。
 
 L2 も、それぞれ別の chain ID を持ちます。2026 年 11 月 11 日時点の [chainid.network](https://chainid.network/) の一覧（[ethereum-lists/chains](https://github.com/ethereum-lists/chains/tree/8443a02df0503b02b54eb7b6db47720feb87b148/_data/chains) が元）は 2,858 件で、OP Mainnet は 10、Arbitrum One は 42161、Base は 8453 です。
 
@@ -168,17 +168,17 @@ chain ID を割り当てる管理者はいないので、一覧に登録され�
 
 <br>
 
-#### chain ID を含めない取引の受け付け
+#### chain ID を含めないトランザクションの受け付け
 
-Ethereum のノードの実装である [Geth](https://geth.ethereum.org/) は [1.10.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.10.0) から、chain ID を含めない取引を RPC で既定では拒否します（`--rpc.allow-unprotected-txs` で解除）。
+Ethereum のノードの実装である [Geth](https://geth.ethereum.org/) は [1.10.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.10.0) から、chain ID を含めないトランザクションを RPC で既定では拒否します（`--rpc.allow-unprotected-txs` で解除）。
 
-これはノードの受け付けの方針で、プロトコルの規則は変わっていません。誰かがブロックに入れれば、chain ID を含めない取引は今も実行されます。2022 年の [Optimism](https://www.optimism.io/) で、Ethereum の古い取引を L2 に流してコントラクトを同じアドレスに作られた事故は、[Ethereum Address](../ethereum-address/) で説明しています。
+これはノードの受け付けのポリシーで、プロトコルの規則は変わっていません。誰かがブロックに入れれば、chain ID を含めないトランザクションは今も実行されます。2022 年の [Optimism](https://www.optimism.io/) で、Ethereum の古いトランザクションを L2 に流してコントラクトを同じアドレスに作られた事故は、[Ethereum Address](../ethereum-address/) で説明しています。
 
 ---
 
 ### EIP-712 の domain と分岐
 
-取引を送らずにメッセージに署名し、相手がその署名をコントラクトに渡す場面でも、同じ問題が起きます。例えば、トークンの使用許可を署名で渡す ERC-2612 の permit がこの形です。[EIP-712](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-712.md) では、署名するハッシュに domain separator（署名の領域を表すハッシュ）を入れ、`chainId` と `verifyingContract`（検証するコントラクトのアドレス）で、どのチェーンのどのコントラクト向けの署名かを区別します。
+トランザクションを送らずにメッセージに署名し、相手がその署名をコントラクトに渡す場面でも、同じ問題が起きます。例えば、トークンの使用許可を署名で渡す ERC-2612 の permit がこの形です。[EIP-712](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-712.md) では、署名するハッシュに domain separator（署名の領域を表すハッシュ）を入れ、`chainId` と `verifyingContract`（検証するコントラクトのアドレス）で、どのチェーンのどのコントラクト向けの署名かを区別します。
 
 ハッシュの組み立ては [EIP-712 のノート](../eip-712/)で説明しています。以下のコードの `ecrecover` は、署名とハッシュから署名者のアドレスを復元する EVM の組み込み関数です。
 
@@ -213,7 +213,7 @@ mode 0 は、分岐した B でも、同じチェーンの別のコントラク�
 
 mode 1 は、別のコントラクトでは署名が一致しませんが、B では払いました。domain separator をデプロイ時に計算して固定したので、B のコントラクトも分岐の前の chain ID 31337 で検証するからです。
 
-[ERC-2612](https://github.com/ethereum/ERCs/blob/6504eb9dbd3f42c685f057fd2a7e7cd20b5bc391/ERCS/erc-2612.md) の Security Considerations も、`chainId` を含む `DOMAIN_SEPARATOR` を署名ごとに作り直さずデプロイ時に決めると、将来のチェーンの分岐でチェーンをまたいだ再生の恐れがあると書いています。
+[ERC-2612](https://github.com/ethereum/ERCs/blob/6504eb9dbd3f42c685f057fd2a7e7cd20b5bc391/ERCS/erc-2612.md) の Security Considerations も、`chainId` を含む `DOMAIN_SEPARATOR` を署名ごとに作り直さずデプロイ時に決めると、将来のチェーンの分岐でチェーンをまたいだリプレイの恐れがあると書いています。
 
 mode 2 だけが、B と別のコントラクトの両方で署名の不一致になりました。[OpenZeppelin Contracts v5.1.0 の EIP712](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/utils/cryptography/EIP712.sol#L80-L86) は、デプロイ時の値を持ちつつ、`block.chainid` か自分のアドレスが変わっていれば計算し直します。固定の値で gas を節約しながら、mode 2 と同じ結果になる作りです。
 
@@ -223,13 +223,13 @@ mode 2 だけが、B と別のコントラクトの両方で署名の不一致�
 
 前節の結果の 4 列目では、3 つの mode とも同じコントラクトへの 2 回目が `nonce used` で拒否されました。domain が防ぐのは別の場所での使い回しで、同じ場所での 2 回目は防ぎません。
 
-EIP-712 の仕様の冒頭も「It does not include replay protection.」（再生の防止は含まない）と書き、Security Considerations で、同じ署名を 2 回見た時に拒否するか、[何度実行しても結果が変わらない処理](/notes/distributed-systems/idempotency/)にするのはアプリの責任だとしています。
+EIP-712 の仕様の冒頭も「It does not include replay protection.」（リプレイの防止は含まない）と書き、Security Considerations で、同じ署名を 2 回見た時に拒否するか、[何度実行しても結果が変わらない処理](/notes/distributed-systems/idempotency/)にするのはアプリの責任だとしています。
 
 実験の引換券は、使った番号を `used` に覚えるだけの nonce です。[EIP-712 のノート](../eip-712/)で扱った ERC-2612 の permit は、所有者ごとに番号を 1 ずつ進め、次の番号の署名だけを受け付けます。所有者が自分で permit を送って番号を進めれば、まだ使われていない署名を無効にできると、ERC-2612 の Security Considerations は書いています。
 
 <br>
 
-もう 1 つの軸が時間です。Ethereum の取引には、期限の項目がありません。署名した取引は、その nonce が使われるまでいつまでも有効です。A の時計を 365 日進めて、1 年前に署名した取引と引換券を出しました。
+もう 1 つの軸が時間です。Ethereum のトランザクションには、期限の項目がありません。署名したトランザクションは、その nonce が使われるまでいつまでも有効です。A の時計を 365 日進めて、1 年前に署名したトランザクションと引換券を出しました。
 
 ```text
 == 4. a year later on chain A
@@ -238,13 +238,13 @@ EIP-712 の仕様の冒頭も「It does not include replay protection.」（再�
   voucher signed a year ago (deadline +1 h) -> revert execution reverted: expired
 ```
 
-取引は 1 年後でも実行され、期限を 1 時間後にした引換券は `expired` で拒否されました。送らずに手元に残した取引を無効にするには、同じ nonce の別の取引を先に実行させるしかありません。署名をサービスに渡す場面では、期限を短くすることが、相手の手元に残った署名の寿命を決めます。
+トランザクションは 1 年後でも実行され、期限を 1 時間後にした引換券は `expired` で拒否されました。送らずに手元に残したトランザクションを無効にするには、同じ nonce を持つ別のトランザクションを先に実行させるしかありません。署名をサービスに渡す場面では、期限を短くすることが、相手の手元に残った署名の寿命を決めます。
 
 ---
 
 ### 意図した使い回し
 
-chain ID を含めない署名は、使い回せることを利用されてもいます。[deterministic-deployment-proxy](https://github.com/Arachnid/deterministic-deployment-proxy/tree/be3c5974db5028d502537209329ff2e730ed336c) は、秘密鍵を誰も知らない使い捨てのアカウントが署名した、chain ID を含めない取引（`v` が 27）でファクトリ（コントラクトを作るためのコントラクト）を作ります。署名の値を先に決め、そこから送り主のアドレスを逆に計算するので、そのアドレスの秘密鍵は誰も知りません。同じ取引を各チェーンに流せるので、どのチェーンでも同じアドレスにファクトリが置かれます。仕組みは [Ethereum Address](../ethereum-address/) で説明しています。
+chain ID を含めない署名は、使い回せることを利用されてもいます。[deterministic-deployment-proxy](https://github.com/Arachnid/deterministic-deployment-proxy/tree/be3c5974db5028d502537209329ff2e730ed336c) は、秘密鍵を誰も知らない使い捨てのアカウントが署名した、chain ID を含めないトランザクション（`v` が 27）でファクトリ（コントラクトを作るためのコントラクト）を作ります。署名の値を先に決め、そこから送り主のアドレスを逆に計算するので、そのアドレスの秘密鍵は誰も知りません。同じトランザクションを各チェーンに流せるので、どのチェーンでも同じアドレスにファクトリが置かれます。仕組みは [Ethereum Address](../ethereum-address/) で説明しています。
 
 [EIP-7702](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-7702.md) で、秘密鍵で動く普通のアカウント（EOA）が、自分の代わりに動くコントラクトのコードを指定（委任）する署名も、chain ID を 0 にすると全てのチェーンで有効になります。仕様は、委任先のアドレスに別のチェーンで何が置かれているかを考え、必要なら chain ID で範囲を絞るよう書き、全てのチェーンで使いたい場合は 0 にするとしています。使い回せることは、それ自体が欠陥なのではありません。問題は、どこまで使い回せるかを署名する人が分かっているかどうかです。
 
@@ -252,9 +252,9 @@ chain ID を含めない署名は、使い回せることを利用されても�
 
 ### 利点
 
-- 取引の nonce と chain ID は、ウォレットとノードが扱うので、利用者は意識せずに守られる
+- トランザクションの nonce と chain ID は、ウォレットとノードが扱うので、利用者は意識せずに守られる
 - 署名する中身に値を足すだけで、新しい鍵や仕組みを用意せずに使い回せる範囲を狭められる
-- chain ID や domain が違うと署名者が別のアドレスとして復元され、残高も権限も持たないので取引や検証が通らない
+- chain ID や domain が違うと署名者が別のアドレスとして復元され、残高も権限も持たないのでトランザクションや検証が通らない
 - 期限と nonce をアプリが選べるので、署名の寿命と回数を用途に合わせて決められる
 
 ### 欠点
@@ -264,7 +264,7 @@ chain ID を含めない署名は、使い回せることを利用されても�
 - chain ID を含めない古い署名も有効なままで、受け付けるかどうかはノードの設定に任される
 - chain ID は登録制ではなく、別のチェーンが同じ番号を名乗ることを規則では止められない
 - EIP-712 の domain や nonce・期限はコントラクトごとの実装で、入れ忘れや計算の時点の誤りは規格では防げない
-- 取引に期限が無いので、送らずに残した署名済みの取引は、同じ nonce を使うまで有効なまま残る
+- トランザクションに期限が無いので、送らずに残した署名済みのトランザクションは、同じ nonce を使うまで有効なまま残る
 
 ### これらの仕組みで防げないケース
 

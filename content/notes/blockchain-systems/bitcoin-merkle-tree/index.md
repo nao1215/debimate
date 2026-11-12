@@ -240,12 +240,12 @@ Go 1.26 で実行した結果が以下です。
 
 ブロックとトランザクションを自力で完全に検証する参加者をフルノード、ブロックヘッダだけを保持してトランザクションが有効かどうかの検証をフルノードに任せる参加者をライト・クライアントと呼びます。冒頭の携帯端末はライト・クライアントです。ライト・クライアントが持っているのは、ブロックヘッダの列だけです。ヘッダはルートハッシュを含むため、包含証明を受け取れば、そのトランザクションがヘッダの指すブロックに入っていたことを自力で確認できます。Bitcoin のホワイトペーパーはこの手順を Simplified Payment Verification（簡易支払い検証）と呼んでおり、一般には SPV と略されます。
 
-軽量クライアントとフルノードのやり取りは以下の通りです。
+ライト・クライアントとフルノードのやり取りは以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant C as 軽量クライアント
+    participant C as ライト・クライアント
     participant F as フルノード
     Note over C,F: ヘッダの列は<br/>取得済み
     C->>F: Tx2 の包含証明を要求
@@ -255,25 +255,25 @@ sequenceDiagram
     Note over C,F: 一致すれば Tx2 は<br/>そのブロックに<br/>入っていた
 ```
 
-上記の図の最後で一致した時に確認できたのは、Tx2 がそのブロックに入っていたことだけです。Tx2 が有効な取引であることまでは確認していません。署名が正しいか、使おうとしているコインが既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
+上記の図の最後で一致した時に確認できたのは、Tx2 がそのブロックに入っていたことだけです。Tx2 が有効なトランザクションであることまでは確認していません。署名が正しいか、使おうとしているコインが既に使われていないかについては、そのブロックを受け入れたノードの判断と、後ろにブロックが積み上がった事実だけが間接的な裏付けになります。
 
 <br>
 
-包含の確認そのものにも、木の作り方に由来する弱点があり、特定の取引を使うと包含証明を偽れる場合があります。手順と対策は [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で説明します。
+包含の確認そのものにも、木の作り方に由来する弱点があり、特定のトランザクションを使うと包含証明を偽れる場合があります。手順と対策は [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で説明します。
 
 <br>
 
 注意点として、包含証明だけでは、そのルートハッシュを含むブロックヘッダが正しいチェーンに属することまでは証明できません。
 
-ヘッダの列のどれを正しいチェーンとして採用するかは、各ヘッダが満たす [proof of work](../proof-of-work/)（計算作業）の量と、どの列を選ぶかの規則で決まります。白書も、この検証が信頼できるのは、正直な（規則どおりに動く）ノードの計算能力が攻撃者を上回っている間だけだとしています。Merkle Tree の外側にある話なので、本記事では扱いません。
+ヘッダの列のどれを正しいチェーンとして採用するかは、各ヘッダが満たす [proof of work](../proof-of-work/)（計算作業）の量と、どの列を選ぶかの規則で決まります。ホワイトペーパーも、この検証が信頼できるのは、正直な（規則どおりに動く）ノードの計算能力が攻撃者を上回っている間だけだとしています。Merkle Tree の外側にある話なので、本記事では扱いません。
 
 ---
 
 ### 利点
 
-- ブロック全体を持たない参加者が、取引 1 件の包含を自力で検証できる
+- ブロック全体を持たない参加者が、トランザクション 1 件の包含を自力で検証できる
 - 証明のサイズが件数の対数で、数千件のブロックでも数百バイトに収まる
-- witness を別の木に分けたことで、SegWit の取引の txid は署名の作り替えの影響を受けない
+- witness を別の木に分けたことで、SegWit のトランザクションでは、txid は署名の作り替えの影響を受けない
 
 ---
 
@@ -281,24 +281,24 @@ sequenceDiagram
 
 Bitcoin の Merkle Tree は、証明を小さく保つ代わりに、渡す情報をブロックへの包含に絞っています。その分、次の制約が残ります。
 
-- 素朴に証明を要求すると、どの取引に関心があるかが相手のノードに伝わる
-- SPV が確認するのはブロックへの包含だけで、取引の有効性までは確認しない
-- 複製規則の副作用として、同じルートハッシュになる別の取引の並びが存在する（検出して棄却する）
-- 葉と内部ノードを区別しないため、64 バイトの取引を使って包含証明を偽れる余地がある
+- 素朴に証明を要求すると、どのトランザクションに関心があるかが相手のノードに伝わる
+- SPV が確認するのはブロックへの包含だけで、トランザクションの有効性までは確認しない
+- 複製規則の副作用として、トランザクションを別の順に並べても同じルートハッシュになる場合がある（検出して棄却する）
+- 葉と内部ノードを区別しないため、64 バイトのトランザクションを使って包含証明を偽れる余地がある
 
 後ろの 2 つは [Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で扱っています。
 
-どの取引に関心があるかが伝わる問題に対して、BIP 37 は、誤検出を許す集合の判定である Bloom filter を使い、関係の無い取引もいくらか混ぜて受け取る仕組みを定めました。同じ文書によれば、絞り込みの精度を上げると自分のウォレットに関係する取引だけが届く一方で、相手のノードに取引と IP アドレスを結び付けられる場合があります。通信量と匿名性のどちらを取るかの選択になります。
+どのトランザクションに関心があるかが伝わる問題に対して、BIP 37 は、誤検出を許す集合の判定である Bloom filter を使い、関係の無いトランザクションもいくらか混ぜて受け取る仕組みを定めました。同じ文書によれば、絞り込みの精度を上げると自分のウォレットに関係するトランザクションだけが届く一方で、相手のノードにトランザクションと IP アドレスを結び付けられる場合があります。通信量と匿名性のどちらを取るかの選択になります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant C as 軽量クライアント
+    participant C as ライト・クライアント
     participant F as フルノード
-    C->>F: 関心のある取引の絞り込み条件<br/>（わざと粗くできる）
-    F-->>C: 条件に合った取引の包含証明
-    Note over F: 条件が細かいほど、どの取引に<br/>関心があるかを推測しやすい
-    Note over C: 条件が粗いほど、無関係の取引まで<br/>受け取り通信量が増える
+    C->>F: 関心のあるトランザクションの絞り込み条件<br/>（わざと粗くできる）
+    F-->>C: 条件に合ったトランザクションの包含証明
+    Note over F: 条件が細かいほど、どのトランザクションに<br/>関心があるかを推測しやすい
+    Note over C: 条件が粗いほど、無関係のトランザクションまで<br/>受け取り通信量が増える
 ```
 
-なお Bitcoin Core は、サービス拒否攻撃の経路を断つ目的で、[0.19.0.1](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.19.0.1.md) からこの絞り込みを既定で受け付けていません。代わりに、ブロックごとの要約を配り、軽量クライアントが手元で照合する仕組み（形式は [BIP 158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki)、取得の手順は [BIP 157](https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki)）があり、関心のある取引を相手に伝えずに済みます。
+なお Bitcoin Core は、サービス拒否攻撃の経路を断つ目的で、[0.19.0.1](https://github.com/bitcoin/bitcoin/blob/master/doc/release-notes/release-notes-0.19.0.1.md) からこの絞り込みを既定で受け付けていません。代わりに、ブロックごとの要約を配り、ライト・クライアントが手元で照合する仕組み（形式は [BIP 158](https://github.com/bitcoin/bips/blob/master/bip-0158.mediawiki)、取得の手順は [BIP 157](https://github.com/bitcoin/bips/blob/master/bip-0157.mediawiki)）があり、関心のあるトランザクションを相手に伝えずに済みます。

@@ -102,23 +102,23 @@ nonce で防げるのは、同じチェーンでの再送です。[チェーン�
 
 nonce の一致は、トランザクションが有効である条件の 1 つです。このほかに署名が有効か、手数料と送る額を払える残高があるかなども検査されます。これらの検査を通らないトランザクションはブロックに入れられず、アカウントの nonce も動きません。
 
-実行が始まった後にコードが `REVERT`（実行を中止して変更を取り消す命令）を呼んだ場合や gas を使い切った場合、その取引による状態の変更は取り消されます。それでも送り主の nonce の増加と手数料の支払いは残るため、次に有効な番号は 1 つ進んだままです。
+実行が始まった後にコードが `REVERT`（実行を中止して変更を取り消す命令）を呼んだ場合や gas を使い切った場合、そのトランザクションによる状態の変更は取り消されます。それでも送り主の nonce の増加と手数料の支払いは残るため、次に有効な番号は 1 つ進んだままです。
 
 <br>
 
 #### ブロックの並びと nonce による順序
 
-実行の順序を決めているのは、ブロックに並んだ取引の並びです。全てのノードがその並びのとおりに実行するため、どのノードに先に届いたかに関わらず、結果は全員で一致します。
+実行の順序を決めているのは、ブロックに並んだトランザクションの並びです。全てのノードがその並びのとおりに実行するため、どのノードに先に届いたかに関わらず、結果は全員で一致します。
 
-nonce が制約するのは、同じ送り主が出した取引どうしの前後だけです。ブロックを作る参加者は取引の並べ方を決められます。ただし、同じ送り主の取引を番号の小さい順に置かない並びは、受け入れられません。
+nonce が制約するのは、同じ送り主が出したトランザクションどうしの前後だけです。ブロックを作る参加者はトランザクションの並べ方を決められます。ただし、同じ送り主のトランザクションを番号の小さい順に置かない並びは、受け入れられません。
 
 例えば、同じ送り主の 2 件を含む並びには、次の 2 通りがあります。
 
-{{< note-panels caption="Alice の取引は nonce の順に実行します。別のアカウントの取引は間に入れられます。" >}}
+{{< note-panels caption="Alice のトランザクションは nonce の順に実行します。別のアカウントが出したトランザクションは間に入れられます。" >}}
 - title: 受け入れられる並び
   steps:
   - Alice nonce 3
-  - Carol の取引
+  - Carol のトランザクション
   - Alice nonce 4
 - title: 受け入れられない並び
   steps:
@@ -126,33 +126,33 @@ nonce が制約するのは、同じ送り主が出した取引どうしの前�
   - Alice nonce 3
 {{< /note-panels >}}
 
-上記の図の受け入れられない並びの先頭にある nonce 4 は、その時点の Alice の nonce（3）と一致しないため、取引として有効になりません。
+上記の図の受け入れられない並びの先頭にある nonce 4 は、その時点の Alice の nonce（3）と一致しないため、トランザクションとして有効になりません。
 
 <br>
 
 #### 飛んだ番号と、同じ番号の競合
 
-番号が飛んだ取引も、欠けた番号が取り込まれるまでは有効になりません。
+番号が飛んだトランザクションも、欠けた番号が取り込まれるまでは有効になりません。
 
-送り主が通常の EOA の場合、多くのクライアント（ノードが動かす Ethereum の実装ソフトウェア）はこの取引を mempool に置いて待ちます。
+送り主が通常の EOA の場合、多くのクライアント（ノードが動かす Ethereum の実装ソフトウェア）はこのトランザクションを mempool に置いて待ちます。
 
-保持するかどうかはコンセンサス規則（全ノードが守り、破るとブロックが拒否される規則）ではなくクライアントの方針で決まり、件数や時間の上限を超えると捨てられます。未確認の取引の置き場の性質は、Bitcoin を例に [Mempool](../mempool/) で扱っています。
+保持するかどうかはコンセンサス規則（全ノードが守り、破るとブロックが拒否される規則）ではなくクライアントのポリシーで決まり、件数や時間の上限を超えると捨てられます。未確認のトランザクションを置く場所の性質は、Bitcoin を例に [Mempool](../mempool/) で扱っています。
 
-以下は、届いた取引の nonce と、送り主のアカウントの nonce を比べた結果の行き先です。
+以下は、届いたトランザクションの nonce と、送り主のアカウントの nonce を比べた結果の行き先です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TD
-    T["届いた取引の nonce"] --> Q{"アカウントの<br/>nonce と比べる"}
+    T["届いたトランザクションの nonce"] --> Q{"アカウントの<br/>nonce と比べる"}
     Q -->|"一致する"| R["今なら有効に<br/>なり得る"]
     Q -->|"大きい"| W["まだ有効にならない<br/>多くのクライアントは保持する"]
     Q -->|"小さい"| N["使用済みの番号として拒否"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確認できます。開発用モードは取引が届くとすぐブロックを作ります。
+上記の図の行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確認できます。開発用モードはトランザクションが届くとすぐブロックを作ります。
 
-geth は、mempool を txpool と呼び、すぐ実行できる取引を pending、番号の欠けで待つ取引を queued と数えます。nonce 0 のアカウントから nonce 2・0・1 の順に送り、最後に nonce 0 の取引を流し直した結果が以下です。
+geth は、mempool を txpool と呼び、すぐ実行できるトランザクションを pending、番号の欠けで待つトランザクションを queued と数えます。nonce 0 のアカウントから nonce 2・0・1 の順に送り、最後に nonce 0 のトランザクションを流し直した結果が以下です。
 
 ```text
 アカウントの nonce: 0
@@ -164,12 +164,12 @@ nonce 0 を再送: nonce too low: next nonce 3, tx nonce 0
 
 以下は、上記の出力を送信ごとの列に並べ直した図です。
 
-{{< figure src="images/ethereum-account-model_txpool.svg" alt="4 つの列が左から 2 を送信、0 を送信、1 を送信、0 を再送。アカウントの nonce は 0、1、3、3。黄土色の queued の帯には、1 列目と 2 列目に取引 2 が残る。灰色のブロックの帯には、2 列目に 0、3 列目に 1 と 2 が青い札で入る。4 列目の再送した 0 は帯の外で、赤い枠と×が付いて拒否" caption="geth の開発用モードで、nonce を飛ばして送った結果" align="center" >}}
+{{< figure src="images/ethereum-account-model_txpool.svg" alt="4 つの列が左から 2 を送信、0 を送信、1 を送信、0 を再送。アカウントの nonce は 0、1、3、3。黄土色の queued の帯には、1 列目と 2 列目にトランザクション 2 が残る。灰色のブロックの帯には、2 列目に 0、3 列目に 1 と 2 が青い札で入る。4 列目の再送した 0 は帯の外で、赤い枠と×が付いて拒否" caption="geth の開発用モードで、nonce を飛ばして送った結果" align="center" >}}
 nonce 0 が取り込まれても 1 が欠けている間は 2 は動かず、1 が届いた時点で 1 と 2 が続けて取り込まれました。
 
-同じ番号を 2 件に付けた場合、両方が同じチェーンに入ることはありません。片方が取り込まれた時点でアカウントの nonce が進み、もう片方は古い番号になります。どちらが残るかはコンセンサス規則では決まらず、クライアントの方針とブロックを作る参加者の選択で決まります。
+同じ番号を 2 件に付けた場合、両方が同じチェーンに入ることはありません。片方が取り込まれた時点でアカウントの nonce が進み、もう片方は古い番号になります。どちらが残るかはコンセンサス規則では決まらず、クライアントのポリシーとブロックを作る参加者の選択で決まります。
 
-送った取引の差し替えは、この性質を使います。多くのクライアントは、手数料を一定以上引き上げた後発の取引で、同じ番号の先着を置き換えます。同じアカウントから複数のプログラムが同時に取引を出すと、番号の重複や欠けが起きます。冒頭で挙げた「誰が採番するか」はこの問題のことで、採番を 1 か所に集めるなどの調整が必要です。
+送ったトランザクションの差し替えは、この性質を使います。多くのクライアントは、手数料を一定以上引き上げた後発のトランザクションで、同じ番号の先着を置き換えます。同じアカウントから複数のプログラムが同時にトランザクションを出すと、番号の重複や欠けが起きます。冒頭で挙げた「誰が採番するか」はこの問題のことで、採番を 1 か所に集めるなどの調整が必要です。
 
 ---
 
@@ -177,15 +177,15 @@ nonce 0 が取り込まれても 1 が欠けている間は 2 は動かず、1 �
 
 全アカウントの現在の状態をまとめたものを世界状態（world state）と呼びます。公式ドキュメントには「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書かれています。
 
-取引は、この状態を次の状態に移す入力です。そのため、同じ送金の取引でも、先に別の取引が残高を減らしていれば失敗します。
+トランザクションは、この状態を次の状態に移す入力です。そのため、同じ送金のトランザクションでも、先に別のトランザクションが残高を減らしていれば失敗します。
 
 世界状態は、アドレスを `keccak256`（[Keccak](https://keccak.team/keccak.html) に基づく[ハッシュ関数](../hash-function/)）でハッシュした値を経路に使う trie で表されます。trie は、キーを先頭から 1 桁ずつ辿って値に着く木です。
 
-現在の Ethereum の[本番ネットワーク（Mainnet）](../mainnet-and-testnet/)では、[modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
+現在、Ethereum の[メインネット（Mainnet）](../mainnet-and-testnet/)では、[modified Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) が使われます。キーで経路が決まる trie を Merkle Tree と組み合わせた構造の性質は、[Merkle Tree Design](../merkle-tree-design/) で扱っています。
 
 <br>
 
-現在の Ethereum のブロックは、取引を実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。取引の並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。
+現在の Ethereum のブロックは、トランザクションを実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。トランザクションの並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。
 
 consensus layer のブロックにある同名の `state_root` は、EVM ではなく consensus layer 自身の状態を指します。
 
@@ -194,8 +194,8 @@ consensus layer のブロックにある同名の `state_root` は、EVM では�
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
-    T["ブロックの取引の並び"] --> X
-    S0["世界状態 S<br/>ルートハッシュ 0xaa…"] --> X["取引を並び順に実行"]
+    T["ブロックに並ぶトランザクション"] --> X
+    S0["世界状態 S<br/>ルートハッシュ 0xaa…"] --> X["トランザクションを並び順に実行"]
     X --> S1["世界状態 S'<br/>ルートハッシュ 0xbb…"]
     S1 -.->|"ルートハッシュだけを書く"| H["execution payload の<br/>state_root"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
@@ -203,9 +203,9 @@ flowchart LR
 
 上記の図の S' は各ノードが手元に保持します。
 
-全てのクライアントは execution payload の取引を実行し直し、得られた状態が `state_root` の示す状態と一致するかを[確認します](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
+全てのクライアントは execution payload のトランザクションを実行し直し、得られた状態が `state_root` の示す状態と一致するかを[確認します](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
 
-[Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入った取引の並びを代表する値を持っていました。Ethereum の execution layer では、取引の並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。
+[Bitcoin Block](../bitcoin-block/) で説明した Bitcoin のブロックヘッダは、そのブロックに入ったトランザクションの並びを代表する値を持っていました。Ethereum の execution layer では、トランザクションの並びを代表する値に加えて、実行し終えた後の状態を代表する値を持ちます。
 
 全状態を持たない利用者は、このルートハッシュと [1 本の経路](../merkle-tree/)だけで、あるアカウントの残高を確認できます。
 
@@ -216,9 +216,9 @@ flowchart LR
 以下は、アカウントごとに状態を保存し、連番の nonce で送り主ごとの順序を縛る Ethereum の設計から得られる性質です。
 
 - アドレスを 1 つ引けば残高が読めるため、支払いのたびに使う入力を選ぶ処理が必要ない
-- 同じチェーンでの同じ取引データの再送が、通し番号の不一致で弾かれる
-- 同じ送り主が出した取引の前後が、ネットワークの到着順に関わらず番号どおりに決まる
-- 実行をまたいで残る記憶領域をアカウントが持てるため、コードが状態を読み書きできる
+- 同じチェーンでの同じトランザクションデータの再送が、通し番号の不一致で弾かれる
+- 同じ送り主が出したトランザクションの前後が、ネットワークの到着順に関わらず番号どおりに決まる
+- 実行をまたいで残るストレージをアカウントが持てるため、コードが状態を読み書きできる
 
 ---
 
@@ -226,9 +226,9 @@ flowchart LR
 
 アカウントの状態と nonce を管理する場合、次の制約があります。
 
-- 番号を送り主が決めるため、同じアカウントから並行して取引を出すと調整が必要
-- 番号が 1 つ欠けると、後続の取引がその番号の取り込みまで有効にならない
-- 取引の結果が実行時点の状態で変わるため、取引のデータだけを見ても結果が決まらない
+- 番号を送り主が決めるため、同じアカウントから並行してトランザクションを出すと調整が必要
+- 番号が 1 つ欠けると、後続のトランザクションがその番号の取り込みまで有効にならない
+- トランザクションの結果が実行時点の状態で変わるため、トランザクションのデータだけを見ても結果が決まらない
 - ノードが保持する状態が、使われているアカウントと記憶領域の分だけ大きくなる
 
 1 つ目と 2 つ目は nonce の決め方から来ており、番号を連番にせず別の方法で取引の重複を弾くアカウントモデルもあります。

@@ -203,9 +203,9 @@ base fee が上がれば需要が減り、ブロックは target に戻る、と
 
 混雑役が止まったブロック 16 で、Carol のトランザクションが入りました。base fee は 4.11 gwei で、Carol の上限 5 gwei までの残りは 0.89 gwei です。tip は 1 gwei と書いていましたが、実際に払ったのは 0.89 gwei で、1 gas あたりの額はちょうど上限の 5 gwei でした。
 
-Alice の取引は、同じブロック 16 で mempool から消えました。`eth_getTransactionByHash` も null を返し、ブロック 22 で base fee が 1.86 gwei まで下がって上限の 2 gwei を下回った後も、戻ってきませんでした。理由は次の節で見ます。
+Alice のトランザクションは、同じブロック 16 で mempool から消えました。`eth_getTransactionByHash` も null を返し、ブロック 22 で base fee が 1.86 gwei まで下がって上限の 2 gwei を下回った後も、戻ってきませんでした。理由は次の節で見ます。
 
-また、base fee が 2 gwei を超えたブロック 10 の直後に、Bob が Alice と同じ 2 gwei の上限で送った取引は、`max fee per gas less than block base fee` で受け付けられませんでした。
+また、base fee が 2 gwei を超えたブロック 10 の直後に、Bob が Alice と同じ 2 gwei の上限で送ったトランザクションは、`max fee per gas less than block base fee` で受け付けられませんでした。
 
 <br>
 
@@ -225,29 +225,29 @@ full       16   50  100.0%              8              8   ok
 
 ---
 
-### 上限を下回った取引の行方
+### 上限を下回ったトランザクションの行方
 
-Alice の取引が消えたのは、Anvil の実装の振る舞いです。[Anvil v1.7.1 のブロックを作る処理](https://github.com/foundry-rs/foundry/blob/4072e48705af9d93e3c0f6e29e93b5e9a40caed8/crates/anvil/src/eth/backend/executor.rs#L380-L408)は、mempool の取引を順に見て、ブロックの gas が足りなければ取引を飛ばし、そのまま mempool に残します。gas が足りて取引を検証した時に失敗すれば、無効な取引として記録し、[ブロックを作った後に mempool から取り除きます](https://github.com/foundry-rs/foundry/blob/4072e48705af9d93e3c0f6e29e93b5e9a40caed8/crates/anvil/src/eth/pool/mod.rs#L183-L187)。Anvil は受け付ける時にもその時の base fee と比べるので、Bob の取引は最初から拒否されました。
+Alice のトランザクションが消えたのは、Anvil の実装の振る舞いです。[Anvil v1.7.1 のブロックを作る処理](https://github.com/foundry-rs/foundry/blob/4072e48705af9d93e3c0f6e29e93b5e9a40caed8/crates/anvil/src/eth/backend/executor.rs#L380-L408)は、mempool のトランザクションを順に見て、ブロックの gas が足りなければトランザクションを飛ばし、そのまま mempool に残します。gas が足りてトランザクションを検証した時に失敗すれば、無効なトランザクションとして記録し、[ブロックを作った後に mempool から取り除きます](https://github.com/foundry-rs/foundry/blob/4072e48705af9d93e3c0f6e29e93b5e9a40caed8/crates/anvil/src/eth/pool/mod.rs#L183-L187)。Anvil は受け付ける時にもその時の base fee と比べるので、Bob のトランザクションは最初から拒否されました。
 
 満杯の間の Alice は、受け付けた後に base fee が上限を超え、ブロックの gas が足りずに飛ばされ、mempool に残っていました。ブロック 16 で空きができて検証された時には、maxFeePerGas が base fee を下回っていたので、無効として取り除かれました。
 
-一方で、[go-ethereum](https://github.com/ethereum/go-ethereum)（geth）v1.17.10 の mempool は、受け付ける時に、ノードが決める [tip の最低額は比べます](https://github.com/ethereum/go-ethereum/blob/v1.17.10/core/txpool/validation.go#L159-L162)が、base fee とは比べません。base fee に届かない取引は、ブロックを組み立てる時に [base fee で絞り込んで](https://github.com/ethereum/go-ethereum/blob/v1.17.10/miner/worker.go#L593-L599)外すだけで、[絞り込みは取り出した一覧に対して行います](https://github.com/ethereum/go-ethereum/blob/v1.17.10/core/txpool/legacypool/legacypool.go#L510-L515)。mempool が溢れて追い出されない限り、base fee が上限を下回るまで下がれば、その取引は改めてブロックの候補になります。
+一方で、[go-ethereum](https://github.com/ethereum/go-ethereum)（geth）v1.17.10 の mempool は、受け付ける時に、ノードが決める [tip の最低額は比べます](https://github.com/ethereum/go-ethereum/blob/v1.17.10/core/txpool/validation.go#L159-L162)が、base fee とは比べません。base fee に届かないトランザクションは、ブロックを組み立てる時に [base fee で絞り込んで](https://github.com/ethereum/go-ethereum/blob/v1.17.10/miner/worker.go#L593-L599)外すだけで、[絞り込みは取り出した一覧に対して行います](https://github.com/ethereum/go-ethereum/blob/v1.17.10/core/txpool/legacypool/legacypool.go#L510-L515)。mempool が溢れて追い出されない限り、base fee が上限を下回るまで下がれば、そのトランザクションは改めてブロックの候補になります。
 
-{{< figure src="images/gas-eip-1559_pool.webp" alt="2 段の流れ図。上段の Anvil 1.7.1 は、mempool（受け付けて置く）から、ブロックを作る時に検証（maxFeePerGas < base fee で失敗）へ進み、赤い箱の「無効として取り除く（その後も戻らない）」で終わる。下段の geth v1.17.10 は、mempool から、候補から外す（base fee で絞り込む）へ進み、緑の箱の「mempool に残る」から、破線の矢印が「base fee が下がれば、また候補になる」と mempool に戻る。下に、どちらも maxFeePerGas が base fee 未満の取引をブロックに入れない点は同じ（プロトコルの規則）" caption="maxFeePerGas が base fee を下回った取引の、Anvil と geth での扱い" align="center" >}}
+{{< figure src="images/gas-eip-1559_pool.webp" alt="2 段の流れ図。上段の Anvil 1.7.1 は、mempool（受け付けて置く）から、ブロックを作る時に検証（maxFeePerGas < base fee で失敗）へ進み、赤い箱の「無効として取り除く（その後も戻らない）」で終わる。下段の geth v1.17.10 は、mempool から、候補から外す（base fee で絞り込む）へ進み、緑の箱の「mempool に残る」から、破線の矢印が「base fee が下がれば、また候補になる」と mempool に戻る。下に、どちらも maxFeePerGas が base fee 未満のトランザクションをブロックに入れない点は同じ（プロトコルの規則）" caption="maxFeePerGas が base fee を下回ったトランザクションの、Anvil と geth での扱い" align="center" >}}
 
-どちらのノードも、その取引をブロックに入れない点は同じです。違うのは、入れられない取引をその後も持ち続けるかどうかです。
+どちらのノードも、そのトランザクションをブロックに入れない点は同じです。違うのは、入れられないトランザクションをその後も持ち続けるかどうかです。
 
 <br>
 
-base fee を超える上限を書いた取引しかブロックに入れないことは、全ノードが守るプロトコルの規則です。それに対して、上限に届かない取引を受け付けるか、置いておくか、消すかは、[mempool のノート](../mempool/#consensus-rule-と-policy-の違い)で説明した、ノードごとの方針（policy）です。送った取引がしばらく入らない時、待てば入るのか、送り直すべきなのかは、取引を受け取ったノードの実装で変わります。
+base fee を超える上限を書いたトランザクションしかブロックに入れないことは、全ノードが守るプロトコルの規則です。それに対して、上限に届かないトランザクションを受け付けるか、置いておくか、消すかは、[mempool のノート](../mempool/#consensus-rule-と-policy-の違い)で説明した、ノードごとのポリシー（policy）です。送ったトランザクションがしばらく入らない時、待てば入るのか、送り直すべきなのかは、トランザクションを受け取ったノードの実装で変わります。
 
-送り直す時は、同じ [nonce](../ethereum-account-model/)（送り主ごとの通し番号）で上限を上げた取引を送り、前の取引を置き換えます。geth の既定では、置き換えに元の取引より 10% 以上高い額が必要です（[`PriceBump: 10`](https://github.com/ethereum/go-ethereum/blob/v1.17.10/core/txpool/legacypool/legacypool.go#L163)）。
+送り直す時は、同じ [nonce](../ethereum-account-model/)（送り主ごとの通し番号）で上限を上げたトランザクションを送り、前のトランザクションを置き換えます。geth の既定では、置き換えに元のトランザクションより 10% 以上高い額が必要です（[`PriceBump: 10`](https://github.com/ethereum/go-ethereum/blob/v1.17.10/core/txpool/legacypool/legacypool.go#L163)）。
 
 ---
 
 ### 利点
 
-- 同じブロックの取引は同じ base fee を払い、他人の入札を読んで額を当てる必要が減る
+- 同じブロックのトランザクションは同じ base fee を払い、他人の入札を読んで額を当てる必要が減る
 - base fee の変化は 1 ブロックで最大 12.5% なので、数ブロック先までの上限を見積もれる
 - 一時的な混雑は、ブロックを target の 2 倍まで伸ばして吸収できる
 - base fee が焼却されるので、提案者には base fee を吊り上げる動機が無い
@@ -257,7 +257,7 @@ base fee を超える上限を書いた取引しかブロックに入れない�
 EIP-1559 は、混雑の値段を前のブロックの使用量からプロトコルが決めます。その代わりに、次の制約があります。
 
 - base fee が需要に追いつくまでの数ブロックは、tip の競争に戻る
-- 書いた上限を base fee が超えると取引は入らず、ノードによっては mempool から消えて送り直しが要る
+- 書いた上限を base fee が超えるとトランザクションは入らず、ノードによっては mempool から消えて送り直しが要る
 - ノードは、target の 2 倍の大きさのブロックが一時的に来ても処理できるように備える必要がある
 - 焼却する量は利用量で決まり、ETH の供給量を固定できなくなる
 
@@ -267,6 +267,6 @@ EIP-1559 は、混雑の値段を前のブロックの使用量からプロト�
 
 - 需要が上限を長く上回り、満杯のブロックが続く時
 - 数ブロックで終わる急な混雑で、base fee が上がりきる前に収まる時
-- 取引のブロックの中での並び順に価値がある時
+- ブロックの中でトランザクションが並ぶ順番に価値がある時
 
-満杯のブロックが続く間は、実験の Alice と Carol のように、入る取引を決めるのは tip です。また、EIP-1559 が決めるのはブロックに入る額で、ブロックの中の並び順ではありません。並び順を争う取引では、tip や、[ブロックを組み立てる者](../pbs/)への支払いで順番が決まります。この話は [MEV](../mev/) のノートで扱っています。
+満杯のブロックが続く間は、実験の Alice と Carol のように、入るトランザクションを決めるのは tip です。また、EIP-1559 が決めるのはブロックに入る額で、ブロックの中の並び順ではありません。並び順を争うトランザクションでは、tip や、[ブロックを組み立てる者](../pbs/)への支払いで順番が決まります。この話は [MEV](../mev/) のノートで扱っています。

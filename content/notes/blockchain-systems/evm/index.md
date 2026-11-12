@@ -240,11 +240,11 @@ for size in (32, 1024, 32768, 131072):
 
 #### トランザクション全体のガス
 
-命令のガスの外側にも、取引ごとに掛かる分があります。最初の節の図の intrinsic gas は、宛先のある取引なら、基本の 21,000 に、取引の `data` の 0 のバイトごとに 4、0 以外のバイトごとに 16 を足した値です。取引でコントラクトを作成（デプロイ）する場合などは、その分も足します（execution-specs の [`calculate_intrinsic_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/transactions.py#L598-L666)）。
+命令のガスの外側にも、トランザクションごとに掛かる分があります。最初の節の図の intrinsic gas は、宛先のあるトランザクションなら、基本の 21,000 に、トランザクションの `data` で、0 のバイトごとに 4、0 以外のバイトごとに 16 を足した値です。トランザクションでコントラクトを作成（デプロイ）する場合などは、その分も足します（execution-specs の [`calculate_intrinsic_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/transactions.py#L598-L666)）。
 
-2025 年 5 月の更新（Prague）からは、[EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) の下限（floor）もあります。命令をほとんど実行せずに大量の `data` を載せる取引で、ブロックのデータが大きくなりすぎるのを抑えるためのものです。`data` の 0 のバイトは 1、0 以外のバイトは 4 と数え、その合計に 10 を掛けて 21,000 に足した値 `21000 + 10 × (0 のバイト数 + 4 × 0 以外のバイト数)` を下限とし、使ったガスがこれを下回る時は、この値まで引き上げます。
+2025 年 5 月の更新（Prague）からは、[EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) の下限（floor）もあります。命令をほとんど実行せずに大量の `data` を載せるトランザクションで、ブロックのデータが大きくなりすぎるのを抑えるためのものです。`data` の 0 のバイトは 1、0 以外のバイトは 4 と数え、その合計に 10 を掛けて 21,000 に足した値 `21000 + 10 × (0 のバイト数 + 4 × 0 以外のバイト数)` を下限とし、使ったガスがこれを下回る時は、この値まで引き上げます。
 
-storage の値を 0 に戻すと、払い戻し（refund）が付きます。払い戻しは取引の最後にまとめて行われ、2021 年 8 月の更新（London）の [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529) から、払い戻し前のガスの 5 分の 1 が上限です。実行中に使えるガスは増えません。
+storage の値を 0 に戻すと、払い戻し（refund）が付きます。払い戻しはトランザクションの最後にまとめて行われ、2021 年 8 月の更新（London）の [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529) から、払い戻し前のガスの 5 分の 1 が上限です。実行中に使えるガスは増えません。
 
 <br>
 
@@ -266,13 +266,13 @@ contract Dispatcher {
 }
 ```
 
-`set(42)`、`set(43)`、`set(0)` を別々の取引で送り、`debug_traceTransaction` で命令ごとのガスを合計しました。以下は、その内訳を横棒にした図で、数値の全体は [summary.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/output/summary.txt) にあります。
+`set(42)`、`set(43)`、`set(0)` を別々のトランザクションで送り、`debug_traceTransaction` で命令ごとのガスを合計しました。以下は、その内訳を横棒にした図で、数値の全体は [summary.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm/lab/output/summary.txt) にあります。
 
-{{< figure src="images/evm_tx_gas.webp" alt="3 件の取引のガスの横棒。どれも左の灰色の intrinsic gas が約 21,200 を占める。set(42) は青い SSTORE が 22,100 と長く、gasUsed 45,289。set(43) は SSTORE 5,000 で gasUsed 28,189。set(0) は SSTORE 5,000 の後、緑の払い戻し 4,800 が差し引かれて gasUsed 23,377。赤い縦線の EIP-7623 の下限は約 21,500 で、どの取引も上回っている" caption="set(42)・set(43)・set(0) の gasUsed の内訳" align="center" >}}
+{{< figure src="images/evm_tx_gas.webp" alt="3 件のトランザクションのガスの横棒。どれも左の灰色の intrinsic gas が約 21,200 を占める。set(42) は青い SSTORE が 22,100 と長く、gasUsed 45,289。set(43) は SSTORE 5,000 で gasUsed 28,189。set(0) は SSTORE 5,000 の後、緑の払い戻し 4,800 が差し引かれて gasUsed 23,377。赤い縦線の EIP-7623 の下限は約 21,500 で、どのトランザクションも上回っている" caption="set(42)・set(43)・set(0) の gasUsed の内訳" align="center" >}}
 
 `set(42)` は、0 の slot に 0 以外を書くので 20,000 に cold の 2,100 が加わり、SSTORE（storage に書く命令）だけで 22,100 です。`set(43)` は 0 以外から別の 0 以外への書き換えです。SSTORE の値段は、書き換えそのものの 2,900 と、slot に初めて触る cold の 2,100 の和です。
 
-cold と warm の区別は取引ごとにやり直すので、別の取引の `set(43)` でも再び cold になり、2,900 + 2,100 = 5,000 になりました（値は [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) の Specification）。
+cold と warm の区別はトランザクションごとにやり直すので、別のトランザクションで呼んだ `set(43)` でも再び cold になり、2,900 + 2,100 = 5,000 になりました（値は [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) の Specification）。
 
 `set(0)` は同じ 5,000 を払った後、0 以外の slot を 0 に戻した時の払い戻し 4,800（EIP-3529 の値）を受け、28,177 から 23,377 に下がっています。払い戻しの上限は 28,177 の 5 分の 1（5,635）なので、全額が戻りました。
 
@@ -282,7 +282,7 @@ cold と warm の区別は取引ごとにやり直すので、別の取引の `s
 
 ### calldata と ABI
 
-前の節では `set(42)` を取引で送りました。しかし、EVM は関数名も引数の型も知りません。コードに渡るのは、取引の `data` 欄のバイト列（calldata）だけです。このバイト列を関数呼び出しとして解釈する取り決めが ABI（Application Binary Interface）です。
+前の節では `set(42)` をトランザクションで送りました。しかし、EVM は関数名も引数の型も知りません。コードに渡るのは、トランザクションの `data` 欄のバイト列（calldata）だけです。このバイト列を関数呼び出しとして解釈する取り決めが ABI（Application Binary Interface）です。
 
 [Solidity の ABI 仕様](https://docs.soliditylang.org/en/v0.8.28/abi-spec.html#function-selector)では、`set(uint256)` のような関数のシグネチャ（関数名と引数の型を並べた文字列）から、Ethereum が使うハッシュ関数 Keccak-256 でハッシュ値を求め、その先頭 4 バイトを selector とします。その後ろに引数を 32 バイト単位で並べます。`set(42)` の calldata は、selector の `60fe47b1` と、42（0x2a）を 32 バイトに伸ばした値の 36 バイトです。
 
@@ -298,7 +298,7 @@ CALLDATALOAD で calldata の先頭の 32 バイトを読み、224 ビット右�
 
 図の pc 86 は飛び先の位置で、16 進では 0x56 です（下に畳んだ抜粋の `PUSH2 0x0056`）。どれにも一致しなければ REVERT します。
 
-`set(42)` の取引を `debug_traceTransaction` でたどると、実行された命令もこの順でした。Foundry の [cast](https://getfoundry.sh/cast/overview) の `cast disassemble` で命令に戻した該当部分は、以下に畳みました。
+`set(42)` のトランザクションを `debug_traceTransaction` でたどると、実行された命令もこの順でした。Foundry の [cast](https://getfoundry.sh/cast/overview) の `cast disassemble` で命令に戻した該当部分は、以下に畳みました。
 
 <br>
 
@@ -455,7 +455,7 @@ balance after (wei): Caller=4, Target=3
 
 DELEGATECALL では、`Target` のコードが動いたのに、`address(this)` は `Caller` で、増えたのも `Caller` の `count` でした。`msg.sender` と `msg.value` も、`Caller` が受け取った EOA と 7 wei のままです。この性質を使うのがプロキシで、仕組みと storage の衝突は [Upgradeable Proxy](../upgradeable-proxy/) で説明しています。
 
-STATICCALL は、書き込む `record()` では失敗し、読むだけの `peek()` では成功しました。失敗しても `run()` の取引は成功しています。この理由は最後の節で説明します。なお、Solidity が別のコントラクトの `view` 関数を呼ぶ時は STATICCALL を使います（[Solidity の view functions](https://docs.soliditylang.org/en/v0.8.28/contracts.html#view-functions)）。
+STATICCALL は、書き込む `record()` では失敗し、読むだけの `peek()` では成功しました。失敗しても `run()` のトランザクションは成功しています。この理由は最後の節で説明します。なお、Solidity が別のコントラクトの `view` 関数を呼ぶ時は STATICCALL を使います（[Solidity の view functions](https://docs.soliditylang.org/en/v0.8.28/contracts.html#view-functions)）。
 
 <br>
 
@@ -469,7 +469,7 @@ STOP と RETURN は成功で、状態の変更を残し、使わなかったガ�
 
 例外は、ガス切れ、無効な命令、JUMPDEST 以外への JUMP などで、変更を取り消したうえで渡されたガスを全て失います。「始められない」は、呼び出しの深さの上限（1,024 段）や残高不足で子を始められない場合で、渡そうとしたガスは親に残ります。
 
-右端の「親へ」の列は、CALL の結果として親のスタックに積まれる値（成功なら 1、失敗なら 0）と、親に返すデータです。最上位のフレーム（取引が直接呼んだフレーム）の場合は、この成否が取引の結果になります。
+右端の「親へ」の列は、CALL の結果として親のスタックに積まれる値（成功なら 1、失敗なら 0）と、親に返すデータです。最上位のフレーム（トランザクションが直接呼んだフレーム）の場合は、この成否がトランザクションの結果になります。
 
 図の下の注記のとおり、「残す」とした変更も確定ではなく、親が後で失敗すれば、親の変更と一緒に取り消されます。
 
@@ -532,11 +532,11 @@ contract Deep {
 
 <br>
 
-#### 再入
+#### リエントランシー
 
-呼び出しの文脈で最も事故が多いのが[再入（reentrancy）](../reentrancy/)です。A が B を CALL すると、A のフレームは B が終わるまで途中で止まっています。その間に B が A を呼び返すと、A のコードが、最初の A がまだ更新していない storage を読んで動きます。以下は、A が「残高を読んで送金し、その後で残高を 0 にする」コードだった場合の時間の流れです。
+呼び出しの文脈で最も事故が多いのが[リエントランシー（reentrancy）](../reentrancy/)です。A が B を CALL すると、A のフレームは B が終わるまで途中で止まっています。その間に B が A を呼び返すと、A のコードが、最初の A がまだ更新していない storage を読んで動きます。以下は、A が「残高を読んで送金し、その後で残高を 0 にする」コードだった場合の時間の流れです。
 
-{{< figure src="images/evm_reentrancy.webp" alt="3 行の時間軸。A（1 回目）は青い「残高 10 を読む」、黄土色の「10 を送る CALL の途中」、青い「残高に 0 を書く」と続く。CALL の途中で B が「A を呼び返す」を実行し、A（2 回目）の青い「また 10 を読み、送る」に矢印が下りる。その右に赤い×。下に「×: 0 になる前の残高で 2 回目の送金が起きる（並列ではなく、フレームの入れ子）」" caption="1 本のスレッドの中で起きる再入" align="center" >}}
+{{< figure src="images/evm_reentrancy.webp" alt="3 行の時間軸。A（1 回目）は青い「残高 10 を読む」、黄土色の「10 を送る CALL の途中」、青い「残高に 0 を書く」と続く。CALL の途中で B が「A を呼び返す」を実行し、A（2 回目）の青い「また 10 を読み、送る」に矢印が下りる。その右に赤い×。下に「×: 0 になる前の残高で 2 回目の送金が起きる（並列ではなく、フレームの入れ子）」" caption="1 本のスレッドの中で起きるリエントランシー" align="center" >}}
 
 上記の図では、1 回目の送金の途中で呼び返された A が、まだ 0 になっていない残高 10 を読み、もう一度 10 を送ってしまいます。並列に動くスレッドは無く、同期的な呼び出しの入れ子だけで起きる問題です（[Solidity の Security Considerations](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#reentrancy)）。対策は、外部を呼ぶ前に自分の状態を更新しておくことと、前に見た transient storage などに「処理中」の旗を置いて呼び返しを拒むことです。
 
@@ -544,13 +544,13 @@ contract Deep {
 
 ### 失敗の扱い
 
-最後に、ここまでに出てきた失敗が、取引の結果としてどう残るかをまとめます。取引が失敗する場所は、最初の節の 3 段の入れ子のうち 2 つです。
+最後に、ここまでに出てきた失敗が、トランザクションの結果としてどう残るかをまとめます。トランザクションが失敗する場所は、最初の節の 3 段の入れ子のうち 2 つです。
 
-{{< figure src="images/evm_failure_kinds.webp" alt="左から取引、灰色の検査（署名・nonce・前払い）、青いコードの実行（EVM のフレーム）、右端に縦長のブロックの枠。検査から点線で下に降りた先は赤い×の拒否で、ブロックに入らない、nonce も残高も不変。コードの実行から下に降りた黄土色のエラー / REVERT は状態を取り消し、矢印でブロックの中の status 0（nonce + 1、手数料は払う）に入る。成功（矢印のみ）はコードの実行からブロックの status 1（nonce + 1）に入る" caption="取引が失敗する 2 つの場所と、ブロックへの残り方" align="center" >}}
+{{< figure src="images/evm_failure_kinds.webp" alt="左からトランザクション、灰色の検査（署名・nonce・前払い）、青いコードの実行（EVM のフレーム）、右端に縦長のブロックの枠。検査から点線で下に降りた先は赤い×の拒否で、ブロックに入らない、nonce も残高も不変。コードの実行から下に降りた黄土色のエラー / REVERT は状態を取り消し、矢印でブロックの中の status 0（nonce + 1、手数料は払う）に入る。成功（矢印のみ）はコードの実行からブロックの status 1（nonce + 1）に入る" caption="トランザクションが失敗する 2 つの場所と、ブロックへの残り方" align="center" >}}
 
-署名が不正、nonce が合わない、最大の手数料（gas limit × 送り主が許す単価の上限）と送る額の合計が残高に足りない取引は、外側の検査で拒否され、ブロックに入りません。nonce も残高も変わりません。
+署名が不正、nonce が合わない、最大の手数料（gas limit × 送り主が許す単価の上限）と送る額の合計が残高に足りないトランザクションは、外側の検査で拒否され、ブロックに入りません。nonce も残高も変わりません。
 
-一方で、検査を通った取引がコードの実行中に失敗した場合は、ブロックに入り、レシートの `status` が 0 になります。状態の変更は取り消されますが、nonce は進み、使ったガスの手数料は払います。例えば、`Dispatcher` にどの selector にも一致しない `0xdeadbeef` を送った取引は、REVERT して `status=0` で終わりました。
+一方で、検査を通ったトランザクションがコードの実行中に失敗した場合は、ブロックに入り、レシートの `status` が 0 になります。状態の変更は取り消されますが、nonce は進み、使ったガスの手数料は払います。例えば、`Dispatcher` にどの selector にも一致しない `0xdeadbeef` を送ったトランザクションは、REVERT して `status=0` で終わりました。
 
 ```text
 unknown selector 0xdeadbeef: status=0
@@ -558,7 +558,7 @@ unknown selector 0xdeadbeef: status=0
 
 <br>
 
-ただし、子のフレームの失敗は、そのまま取引の失敗にはなりません。「子のフレームの終わり方」の図のとおり、CALL は子の失敗を 0 としてスタックに積むだけで、親はその値を見て処理を続けられます。前の節の STATICCALL の `record()` が失敗しても `run()` の取引が成功したのは、`Caller` が 0 を受け取って記録しただけだからです。
+ただし、子のフレームの失敗は、そのままトランザクションの失敗にはなりません。「子のフレームの終わり方」の図のとおり、CALL は子の失敗を 0 としてスタックに積むだけで、親はその値を見て処理を続けられます。前の節の STATICCALL の `record()` が失敗しても `run()` のトランザクションが成功したのは、`Caller` が 0 を受け取って記録しただけだからです。
 
 Solidity の高水準の呼び出し（`target.f()`）が子の失敗を親の失敗として伝えるのは、コンパイラが 0 を見て REVERT するコードを入れているからです。2 種類の失敗の違いは、[Smart Contract](../smart-contract/) の実験でも確認しています。
 

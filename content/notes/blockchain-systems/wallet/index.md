@@ -327,17 +327,17 @@ flowchart TB
 
 <br>
 
-Bitcoin には、Lightning Network を使った支払いもあります。これは通常の送金を短い間隔で繰り返すだけの仕組みではなく、二者間で残高を更新するためのチャネルを作り、個々の支払いを毎回チェーンに記録せずに処理する方式です。そのため、Bitcoin の秘密鍵が復元できても、チャネルの状態を同じように復元できるとは限りません。例えば [Core Lightning のバックアップ](https://docs.corelightning.org/docs/backup)は、鍵のファイルに加えて取引やチャネルの状態も対象です。Lightning の対応有無と、そのウォレットが要求するバックアップ方式は別に確認します。
+Bitcoin には、Lightning Network を使った支払いもあります。これは通常の送金を短い間隔で繰り返すだけの仕組みではなく、二者間で残高を更新するためのチャネルを作り、個々の支払いを毎回チェーンに記録せずに処理する方式です。そのため、Bitcoin の秘密鍵が復元できても、チャネルの状態を同じように復元できるとは限りません。例えば [Core Lightning のバックアップ](https://docs.corelightning.org/docs/backup)は、鍵のファイルに加えてトランザクションやチャネルの状態も対象です。Lightning の対応有無と、そのウォレットが要求するバックアップ方式は別に確認します。
 
 ---
 
 #### Ethereum の残高と実行処理
 
-[Ethereum のアカウント](../ethereum-account-model/)は、ローカル送金の例と同じく、アドレスに対応する残高などの状態を持つ単位です。ウォレット内の鍵の整理とは異なり、チェーン上に記録されます。秘密鍵で操作する通常のアカウントを EOA（Externally Owned Account）と呼び、送信する取引には nonce という通し番号を付けます。nonce の小さい取引が処理されずにいると、後続の取引も進まない場合があります。
+[Ethereum のアカウント](../ethereum-account-model/)は、ローカル送金の例と同じく、アドレスに対応する残高などの状態を持つ単位です。ウォレット内の鍵の整理とは異なり、チェーン上に記録されます。秘密鍵で操作する通常のアカウントを EOA（Externally Owned Account）と呼び、送信するトランザクションには nonce という通し番号を付けます。nonce の小さいトランザクションが処理されずにいると、後続のトランザクションも進まない場合があります。
 
-Ethereum の取引は、ETH の送金に加えて、スマートコントラクトというチェーン上のプログラムを呼び出せます。その実行に必要な計算量を gas と呼び、通常は ETH で手数料を支払います。ウォレットには、送信先と金額だけでなく、どのプログラムに何を実行させるかを表示する機能が必要です。
+Ethereum のトランザクションは、ETH の送金に加えて、スマートコントラクトというチェーン上のプログラムを呼び出せます。その実行に必要な計算量を gas と呼び、通常は ETH で手数料を支払います。ウォレットには、送信先と金額だけでなく、どのプログラムに何を実行させるかを表示する機能が必要です。
 
-チェーン上のプログラムなどで管理する資産の単位を「[トークン](../erc-20/)」と呼びます。Ethereum では、ETH 以外のトークンをコントラクトが管理する残高として表現できます。広く使われる [ERC-20](https://eips.ethereum.org/EIPS/eip-20) には、他のアドレスにトークンを使用する権限を与える `approve` があります。例えば交換サービスを利用する際、送金する前に使用許可を求められるのは、この仕組みによります。ETH の送金額がゼロでも、トークンの使用権限を変更する取引かもしれません。
+チェーン上のプログラムなどで管理する資産の単位を「[トークン](../erc-20/)」と呼びます。Ethereum では、ETH 以外のトークンをコントラクトが管理する残高として表現できます。広く使われる [ERC-20](https://eips.ethereum.org/EIPS/eip-20) には、他のアドレスにトークンを使用する権限を与える `approve` があります。例えば交換サービスを利用する際、送金する前に使用許可を求められるのは、この仕組みによります。ETH の送金額がゼロでも、トークンの使用権限を変更するトランザクションかもしれません。
 
 <br>
 
@@ -347,16 +347,16 @@ sequenceDiagram
     participant W as ウォレット
     participant N as ノード
     participant C as トークンのコントラクト
-    W->>N: コントラクトを呼ぶ取引
+    W->>N: コントラクトを呼ぶトランザクション
     N->>C: 指定された関数を実行
     C->>C: 管理している残高を更新
     N-->>W: 実行結果
     Note over W,C: ETH の送金額だけでは操作を判断できない
 ```
 
-EVM（Ethereum Virtual Machine）は Ethereum のプログラムを実行する仕組みであり、EVM と互換性のあるチェーンでは取引処理を共通化しやすくなります。しかし、Ethereum と別のチェーンは、資産の記録も別です。同じアドレスが表示されても、片方の ETH やトークンが自動で他方に現れる訳ではありません。
+EVM（Ethereum Virtual Machine）は Ethereum のプログラムを実行する仕組みであり、EVM と互換性のあるチェーンではトランザクション処理を共通化しやすくなります。しかし、Ethereum と別のチェーンは、資産の記録も別です。同じアドレスが表示されても、片方の ETH やトークンが自動で他方に現れる訳ではありません。
 
-Ethereum の外で取引を処理し、その結果の検証などを Ethereum に依存する仕組みは、[L2（Layer 2）](https://ethereum.org/en/layer-2/)と呼ばれます（代表的な仕組みは [Rollup](../rollup/)）。ウォレットでは別のネットワークとして扱うため、ネットワークの表示を切り替えても資産は移動しません。資産を移すには、チェーン間の移転を仲介する[ブリッジ](https://ethereum.org/en/developers/docs/bridges/)などが必要です。ブリッジのコントラクトや運営方式に由来するリスクは、ウォレットを変更するだけでは取り除けません。
+Ethereum の外でトランザクションを処理し、その結果の検証などを Ethereum に依存する仕組みは、[L2（Layer 2）](https://ethereum.org/en/layer-2/)と呼ばれます（代表的な仕組みは [Rollup](../rollup/)）。ウォレットでは別のネットワークとして扱うため、ネットワークの表示を切り替えても資産は移動しません。資産を移すには、チェーン間の移転を仲介する[ブリッジ](https://ethereum.org/en/developers/docs/bridges/)などが必要です。ブリッジのコントラクトや運営方式に由来するリスクは、ウォレットを変更するだけでは取り除けません。
 
 ---
 
@@ -364,9 +364,9 @@ Ethereum の外で取引を処理し、その結果の検証などを Ethereum �
 
 Avalanche は、一つのチェーンだけを指す名前ではありません。基本となるネットワークには、スマートコントラクトを実行する C-Chain、資産の送受信を扱う X-Chain、検証者や、資産を預けて検証に参加するステーキングを管理する P-Chain があります。3 つのチェーンのブロックを決める合意の仕組みは [Snowman](../snowman/) です。
 
-このうち [C-Chain は EVM と互換性があり](https://docs.core.app/docs/connect-your-dapp/avalanche-chains/)、Ethereum 系ウォレットの取引構築や接続方式を利用できます。通常の手数料は AVAX で支払います。一方、[X-Chain と P-Chain](https://build.avax.network/docs/avalanche-l1s) は取引形式が異なり、専用の対応が必要です。「Avalanche 対応」とだけ書かれたウォレットが、P-Chain の操作にも対応するとは限りません。
+このうち [C-Chain は EVM と互換性があり](https://docs.core.app/docs/connect-your-dapp/avalanche-chains/)、Ethereum 系ウォレットのトランザクション構築や接続方式を利用できます。通常の手数料は AVAX で支払います。一方、[X-Chain と P-Chain](https://build.avax.network/docs/avalanche-l1s) はトランザクション形式が異なり、専用の対応が必要です。「Avalanche 対応」とだけ書かれたウォレットが、P-Chain の操作にも対応するとは限りません。
 
-もう一つの例が、[BNB Smart Chain（BSC）](https://docs.bnbchain.org/bnb-smart-chain/developers/wallet-configuration/)です。これも EVM と互換性があり、手数料は通常 BNB で支払います。残高の独立性は、ローカル実験の A・B と同じです。BNB Smart Chain と Ethereum で同じアドレスが表示されても、残高や取引履歴は共有しません。
+もう一つの例が、[BNB Smart Chain（BSC）](https://docs.bnbchain.org/bnb-smart-chain/developers/wallet-configuration/)です。これも EVM と互換性があり、手数料は通常 BNB で支払います。残高の独立性は、ローカル実験の A・B と同じです。BNB Smart Chain と Ethereum で同じアドレスが表示されても、残高やトランザクション履歴は共有しません。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -380,44 +380,44 @@ flowchart TB
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-図の chain ID は、取引の対象ネットワークを区別する番号です。EVM 系への対応は共通化しやすい一方、接続先、手数料の通貨、利用できるコントラクト、送信後の状態確認は、対象チェーンに合わせる必要があります。アプリが対応する範囲と、規格上互換性がある範囲も同じではありません。
+図の chain ID は、トランザクションの対象ネットワークを区別する番号です。EVM 系への対応は共通化しやすい一方、接続先、手数料の通貨、利用できるコントラクト、送信後の状態確認は、対象チェーンに合わせる必要があります。アプリが対応する範囲と、規格上互換性がある範囲も同じではありません。
 
 ---
 
 #### Solana の実行指示
 
-Solana の基本通貨は SOL です。Solana では、取引の中に instruction というプログラムへの実行指示を一つ以上まとめます。取引には、プログラムが読み書きするアカウントも指定します。Solana のアカウントは、残高やプログラムのデータなどを保存する単位です。
+Solana の基本通貨は SOL です。Solana では、トランザクションの中に instruction というプログラムへの実行指示を一つ以上まとめます。トランザクションには、プログラムが読み書きするアカウントも指定します。Solana のアカウントは、残高やプログラムのデータなどを保存する単位です。
 
-署名には Ed25519 という方式を使い、Ethereum の通常の取引署名とは異なります。また、通常の取引は最近のブロックを示す blockhash を含むため、長時間放置した署名済み取引をそのまま送れるとは限りません。長期間有効な取引を作る仕組みは、別に用意されています。[取引の仕様](https://solana.com/docs/core/transactions)に対応する処理が、ウォレットにも必要です。
+署名には Ed25519 という方式を使い、Ethereum で通常使うトランザクション署名とは異なります。また、通常のトランザクションは最近のブロックを示す blockhash を含むため、長時間放置した署名済みトランザクションをそのまま送れるとは限りません。長期間有効なトランザクションを作る仕組みは、別に用意されています。[トランザクションの仕様](https://solana.com/docs/core/transactions)に対応する処理が、ウォレットにも必要です。
 
 トークンの持ち方にも違いがあります。[Solana の token account](https://solana.com/docs/tokens/basics/create-token-account) は、一つのトークンについて、保有量と操作権限を保存するアカウントです。ウォレットのアドレスと token account は役割が異なり、送金時に必要な token account を作る処理が加わる場合があります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
-    subgraph T["Solana の取引（概略）"]
+    subgraph T["Solana のトランザクション（概略）"]
         H["署名・最近の blockhash・アカウント一覧"]
         I["指示 1：アカウントの作成"]
         J["指示 2：トークンの送金"]
     end
     I -. 参照 .-> A["読み書きするアカウント"]
     J -. 参照 .-> A
-    N["指示の組み合わせは取引によって異なる"]:::note
+    N["指示の組み合わせはトランザクションによって異なる"]:::note
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-この例では、必要なアカウントの作成と送金を一つの取引にまとめています。ウォレットには、個々の指示だけでなく、まとめて何を行う取引なのかを表示する役割があります。
+この例では、必要なアカウントの作成と送金を一つのトランザクションにまとめています。ウォレットには、個々の指示だけでなく、まとめて何を行うトランザクションなのかを表示する役割があります。
 
 <br>
 
 対象とした 5 種類を整理すると、以下の通りです。
 
-| 対象 | 資産・取引の特徴 | ウォレットに必要な対応 |
+| 対象 | 資産・トランザクションの特徴 | ウォレットに必要な対応 |
 | --- | --- | --- |
 | Bitcoin | 未使用の出力（UTXO）を消費して新しい出力を作る | UTXO の選択、手数料の計算、入出力の表示、PSBT |
 | Ethereum | アカウントの残高と nonce、コントラクトの実行 | gas、トークン使用許可、実行結果の予測 |
-| Solana | instruction と参照先のアカウント、blockhash | 複数の実行指示、token account、取引の有効性 |
+| Solana | instruction と参照先のアカウント、blockhash | 複数の実行指示、token account、トランザクションの有効性 |
 | Avalanche | C-Chain は EVM。X/P-Chain は別の形式 | C-Chain の送金と X/P-Chain の操作を分けた対応 |
 | BNB Smart Chain | EVM 互換。Ethereum とは独立した履歴 | BSC の接続先・chain ID、BNB での手数料 |
 
@@ -427,9 +427,9 @@ flowchart TB
 
 チェーンへの対応と、鍵の管理方法は独立しています。同じ Bitcoin のウォレットでも、自分で鍵を管理するタイプと、事業者に預けるタイプでは、失敗した時の対処が違います。
 
-「セルフカストディ型（self-custody）」は、ユーザーが資産を操作する鍵を自分で管理するタイプです。事業者の出金承認を待たずに取引を作れますが、鍵を失った時に、本人確認だけで取り戻せるとは限りません。
+「セルフカストディ型（self-custody）」は、ユーザーが資産を操作する鍵を自分で管理するタイプです。事業者の出金承認を待たずにトランザクションを作れますが、鍵を失った時に、本人確認だけで取り戻せるとは限りません。
 
-「カストディ型（custodial）」は、事業者などが鍵を管理するタイプです。ユーザーはサービスにログインして送金を依頼し、事業者が取引に署名します。パスワードの再設定は容易でも、出金可否や事業継続に依存します。
+「カストディ型（custodial）」は、事業者などが鍵を管理するタイプです。ユーザーはサービスにログインして送金を依頼し、事業者がトランザクションに署名します。パスワードの再設定は容易でも、出金可否や事業継続に依存します。
 
 <br>
 
@@ -448,7 +448,7 @@ LNbits も、自分のサーバーと自分の Lightning ノードで運用す�
 
 自分で鍵を管理する場合も、普段使う PC に置くか、ネットワークから切り離した環境に置くかで、鍵を盗まれる危険や操作の手間が変わります。
 
-この保管環境の違いを表すのが、ホットウォレットとコールドウォレットです。普段使う PC やスマートフォンで署名するホットウォレットは操作しやすい一方、その端末が侵害されると鍵も危険にさらされます。ネットワークから切り離した環境で鍵を保管・使用するコールドウォレットは、取引データを安全に受け渡す手順が必要です。
+この保管環境の違いを表すのが、ホットウォレットとコールドウォレットです。普段使う PC やスマートフォンで署名するホットウォレットは操作しやすい一方、その端末が侵害されると鍵も危険にさらされます。ネットワークから切り離した環境で鍵を保管・使用するコールドウォレットは、トランザクションデータを安全に受け渡す手順が必要です。
 
 ハードウェアウォレットは、専用端末の中で鍵を保管し、署名する製品です。ネットワークに接続した PC と通信していても、通常の操作では秘密鍵を PC に渡しません。「インターネットに繋がった PC を使うから、全てホット」という単純な区別より、署名する場所と秘密鍵が外に出る経路を見る方が正確です。
 
@@ -458,11 +458,11 @@ sequenceDiagram
     participant P as PC のウォレット
     participant H as ハードウェアウォレット
     participant U as ユーザー
-    P->>H: 未署名の取引
+    P->>H: 未署名のトランザクション
     H-->>U: 端末の画面に送信先と金額を表示
     U->>H: 端末で承認
     H->>H: 内部の秘密鍵で署名
-    H-->>P: 署名済み取引
+    H-->>P: 署名済みトランザクション
     Note over P,H: 秘密鍵は PC に渡さない
 ```
 
@@ -496,8 +496,8 @@ Bitcoin の入金を選ぶ機能は UTXO の管理に、Rabby の実行結果の
 
 | ウォレット | 主な対象と使う場所 | 特徴 | 確認する制約 |
 | --- | --- | --- | --- |
-| [Sparrow](https://sparrowwallet.com/features/) | Bitcoin、デスクトップ | UTXO、取引の入出力、PSBT、複数署名、ハードウェア連携を詳しく確認できる | Bitcoin 専用。設定や取引構造の理解が必要 |
-| [Electrum](https://github.com/spesmilo/electrum) | Bitcoin、デスクトップ・Android | 軽量クライアント、複数署名、ハードウェア連携、Lightning | 新規作成する復元フレーズは独自方式。Lightning は別の状態管理が必要 |
+| [Sparrow](https://sparrowwallet.com/features/) | Bitcoin、デスクトップ | UTXO、トランザクションの入出力、PSBT、複数署名、ハードウェア連携を詳しく確認できる | Bitcoin 専用。設定やトランザクション構造の理解が必要 |
+| [Electrum](https://github.com/spesmilo/electrum) | Bitcoin、デスクトップ・Android | ライト・クライアント、複数署名、ハードウェア連携、Lightning | 新規作成する復元フレーズは独自方式。Lightning は別の状態管理が必要 |
 | [BlueWallet](https://bluewallet.io/features/) | Bitcoin、iOS・Android | スマートフォンでの送受信、watch-only、複数署名、coin control | Lightning の接続構成と鍵の管理主体は、通常の Bitcoin ウォレットと分けて確認 |
 | [Rabby](https://github.com/RabbyHub/Rabby) | Ethereum と EVM 系、ブラウザ拡張など | 複数ネットワークでの操作、署名前の実行結果の予測、リスクの表示 | 対応するチェーンと外部の解析サービスに依存する部分を確認 |
 | [Safe](https://docs.safe.global/advanced/smart-account-overview) | EVM 系、スマートアカウント | 複数の所有者と承認数、コントラクトによる操作条件 | 所有者の承認方法と構成を確認。コントラクトと設定の安全性も関わる |
@@ -509,15 +509,15 @@ Bitcoin の入金を選ぶ機能は UTXO の管理に、Rabby の実行結果の
 
 ### ウォレットの内部構成
 
-多くのウォレットは、ローカル送金の例で使った RPC（Remote Procedure Call）を通してノードに問い合わせます。履歴検索には、取引を検索しやすいように整理する「インデクサ」を使うこともあります。全履歴を自分で検証するノードと、必要な情報を検索して返すサービスは、同じ役割ではありません。
+多くのウォレットは、ローカル送金の例で使った RPC（Remote Procedure Call）を通してノードに問い合わせます。履歴検索には、トランザクションを検索しやすいように整理する「インデクサ」を使うこともあります。全履歴を自分で検証するノードと、必要な情報を検索して返すサービスは、同じ役割ではありません。
 
-ウォレットは、秘密鍵を使う小さなプログラムだけで完結しません。画面、取引を組み立てる処理、鍵の保管、チェーンとの通信、履歴の保存などを組み合わせます。価格表示やトークンの画像には、チェーンの外にある API も使われます。例えば、「日本円換算だけ表示されない」と「取引に署名できない」では、調べるべき処理が異なります。
+ウォレットは、秘密鍵を使う小さなプログラムだけで完結しません。画面、トランザクションを組み立てる処理、鍵の保管、チェーンとの通信、履歴の保存などを組み合わせます。価格表示やトークンの画像には、チェーンの外にある API も使われます。例えば、「日本円換算だけ表示されない」と「トランザクションに署名できない」では、調べるべき処理が異なります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart TB
     subgraph W["ウォレットのアプリ"]
-        U["画面・ユーザーの操作"] --> T["取引の構築・解析・確認"]
+        U["画面・ユーザーの操作"] --> T["トランザクションの構築・解析・確認"]
         T --- R["通信処理：RPC / API"]
         T --- K["鍵保管・署名"]
         T --- D["ローカル DB：履歴・ラベルなど"]
@@ -532,9 +532,9 @@ flowchart TB
 
 <br>
 
-ブラウザ拡張のウォレットには、さらに Web サイトとの接続が加わります。チェーン上のプログラムを利用する Web アプリを dApp（Decentralized Application）と呼び、Ethereum 系では [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193) の Provider API が接続の基礎となります。dApp はウォレットにアカウントの公開や取引を要求し、ウォレットはユーザーに確認を求めます。
+ブラウザ拡張のウォレットには、さらに Web サイトとの接続が加わります。チェーン上のプログラムを利用する Web アプリを dApp（Decentralized Application）と呼び、Ethereum 系では [EIP-1193](https://eips.ethereum.org/EIPS/eip-1193) の Provider API が接続の基礎となります。dApp はウォレットにアカウントの公開やトランザクションを要求し、ウォレットはユーザーに確認を求めます。
 
-Web サイトから取引を受け取ったウォレットは、署名対象のデータを検証する必要があります。サイトの説明文と、実際のデータが一致しているとは限らないからです。拡張機能の画面やバックグラウンド処理を分離するだけでなく、どのサイトから来た要求かを管理し、署名対象をウォレット自身が解析・表示する必要があります。
+Web サイトからトランザクションを受け取ったウォレットは、署名対象のデータを検証する必要があります。サイトの説明文と、実際のデータが一致しているとは限らないからです。拡張機能の画面やバックグラウンド処理を分離するだけでなく、どのサイトから来た要求かを管理し、署名対象をウォレット自身が解析・表示する必要があります。
 
 ---
 
@@ -558,8 +558,8 @@ Web サイトから取引を受け取ったウォレットは、署名対象の�
 
 | 製品・サービス | 有償の対象 | 主な機能 |
 | --- | --- | --- |
-| [Trezor Safe 3](https://trezor.io/trezor-safe-3) | ハードウェア端末の購入 | 端末内での鍵保管・署名、端末の画面での取引確認。Trezor Suite と連携して送受信する |
-| [Fireblocks](https://www.fireblocks.com/platforms/governance-and-policies) | 法人向けプラットフォームの利用 | Policy Engine で取引の許可条件や担当者の承認手順を設定する |
+| [Trezor Safe 3](https://trezor.io/trezor-safe-3) | ハードウェア端末の購入 | 端末内での鍵保管・署名、端末の画面でトランザクションを確認。Trezor Suite と連携して送受信する |
+| [Fireblocks](https://www.fireblocks.com/platforms/governance-and-policies) | 法人向けプラットフォームの利用 | Policy Engine でトランザクションの許可条件や担当者の承認手順を設定する |
 | [MetaMask Swaps](https://support.metamask.io/token-swaps/user-guide-swaps) | トークン交換時のサービス手数料 | ウォレット内で交換先の見積もりを比較し、トークンを交換する |
 
 ネットワーク手数料は、これらの端末代やサービス料金とは別に発生します。

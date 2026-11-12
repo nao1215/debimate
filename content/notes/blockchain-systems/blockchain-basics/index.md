@@ -140,14 +140,14 @@ Bitcoin Script は、出力に「使う条件」を書くための小さな言�
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
-    H["取引をまとめて<br/>ヘッダを組む"] --> S["ヘッダの<br/>ハッシュ値を計算"]
+    H["トランザクションをまとめて<br/>ヘッダを組む"] --> S["ヘッダの<br/>ハッシュ値を計算"]
     S --> J{"target 以下か"}
     J -->|いいえ| N["nonce などを変える"] --> S
     J -->|はい| B["ブロックを<br/>ネットワークに配る"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-最初に条件を満たしたマイナーは、ブロックをネットワークに配ります。各ノードは、ブロックの proof of work、前のブロックのハッシュ値、中の取引の署名などを検証し、通れば自分の列に足します。同じ出力を 2 回使う取引を含むブロックは拒否するので、二重使用はどちらか一方しか履歴に残りません。多数決の票の代わりに、計算の量が次のブロックを決める権利になります。ノードの数を増やしても計算能力は増えないため、前半の票の水増しは効きません（[Proof of Work](../proof-of-work/)）。
+最初に条件を満たしたマイナーは、ブロックをネットワークに配ります。各ノードは、ブロックの proof of work、前のブロックのハッシュ値、含まれるトランザクションの署名などを検証し、通れば自分の列に足します。同じ出力を 2 回使うトランザクションを含むブロックは拒否するので、二重使用はどちらか一方しか履歴に残りません。多数決の票の代わりに、計算の量が次のブロックを決める権利になります。ノードの数を増やしても計算能力は増えないため、前半の票の水増しは効きません（[Proof of Work](../proof-of-work/)）。
 
 <br>
 
@@ -155,19 +155,19 @@ flowchart LR
 
 {{< figure src="images/blockchain-basics_fork.webp" alt="ブロック 1・2・3 が共通の列として並び、3 の後ろが 2 本に分かれている。上の 4 の後ろには 5 が続き、積まれた計算量が大きい列として採用されている。下の 4' は灰色の破線で、外れたブロックになっている" caption="末尾が分岐した時は、積まれた計算量が大きい列を採用する" align="center" >}}
 
-上記の図では、ブロック 3 の後ろに 4 と 4' がほぼ同時にできました。マイナーは、先に受け取った方の後ろに次のブロックを作ります。4 の後ろに 5 が付くと、4' を先に受け取っていたノードも含め、各ノードは積まれた計算量が最も大きい列（4 と 5 の列）を正しい履歴として採用します。4' だけに入っていた取引は、採用した列の取引と矛盾しなければ、まだブロックに入っていない状態に戻り、後のブロックに入るのを待ちます。
+上記の図では、ブロック 3 の後ろに 4 と 4' がほぼ同時にできました。マイナーは、先に受け取った方の後ろに次のブロックを作ります。4 の後ろに 5 が付くと、4' を先に受け取っていたノードも含め、各ノードは積まれた計算量が最も大きい列（4 と 5 の列）を正しい履歴として採用します。4' だけに入っていたトランザクションは、採用した列のトランザクションと矛盾しなければ、まだブロックに入っていない状態に戻り、後のブロックに入るのを待ちます。
 
-過去の書き換えが困難なのは、この規則があるからです。ブロック 100 の取引を書き換えた列を採用させるには、101 以降の全てのブロックで proof of work をやり直し、さらに他のマイナー全員を合わせた速さより速く列を伸ばす必要があります。ネットワーク全体の計算能力の過半を持たない限り、この追い上げはほぼ成功しません。
+過去の書き換えが困難なのは、この規則があるからです。ブロック 100 のトランザクションを書き換えた列を採用させるには、101 以降の全てのブロックで proof of work をやり直し、さらに他のマイナー全員を合わせた速さより速く列を伸ばす必要があります。ネットワーク全体の計算能力の過半を持たない限り、この追い上げはほぼ成功しません。
 
-積まれた計算量で選ぶのは、自分のソフトウェアの規則で有効と判定したブロックの列の中だけです。そのため、過半の計算能力があっても規則に反する取引は通せず、前半の規則の違いで分かれた列どうしは、計算量に関係なく合流しません。
+積まれた計算量で選ぶのは、自分のソフトウェアの規則で有効と判定したブロックの列の中だけです。そのため、過半の計算能力があっても規則に反するトランザクションは通せず、前半の規則の違いで分かれた列どうしは、計算量に関係なく合流しません。
 
-後ろに積まれたブロックが多いほど取引は覆りにくくなるため、受け取る側は何ブロック積まれたか（確認数）を見て受け取りを確定させます（[Finality](../finality/)）。
+後ろに積まれたブロックが多いほどトランザクションは覆りにくくなるため、受け取る側は何ブロック積まれたか（承認数）を見て受け取りを確定させます（[Finality](../finality/)）。
 
 ---
 
 ### 1 件の送金が履歴に入るまで
 
-ここまでの仕組みが 1 件の送金のどこで使われるのか、Alice が Bob に送る場合で追います。ウォレットは鍵を管理し、取引を作るソフトウェアで、mempool はまだブロックに入っていない取引をノードが一時的に置く場所です。
+ここまでの仕組みが 1 件の送金のどこで使われるのか、Alice が Bob に送る場合で追います。ウォレットは鍵を管理し、トランザクションを作るソフトウェアで、mempool はまだブロックに入っていないトランザクションをノードが一時的に置く場所です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -176,19 +176,19 @@ sequenceDiagram
     participant N as ノード
     participant M as マイナー
     participant B as Bob のウォレット
-    A->>A: UTXO を選び、取引を作って署名
-    A->>N: 取引を送る
+    A->>A: UTXO を選び、トランザクションを作って署名
+    A->>N: トランザクションを送る
     N->>N: 署名と UTXO を検証し、mempool に置く
     N->>M: マイナーを含む他のノードに中継
-    M->>M: 取引をまとめ、proof of work
+    M->>M: トランザクションをまとめ、proof of work
     M->>N: ブロックを配る
     N->>N: ブロックを検証し、列に足す
     B->>N: 入金を照会
-    N-->>B: ブロックに入った取引
+    N-->>B: ブロックに入ったトランザクション
     Note over A,B: 後ろにブロックが積まれるほど覆りにくくなる
 ```
 
-上記の図の最初の 3 段が取引の節の話です。マイナーの proof of work からブロックを列に足すまでが合意の節の話で、列に足す前の検証では、ブロックの節のハッシュ値の繋がりも確認します。各段階の詳細は [Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/)、ウォレットの機能は [Wallet](../wallet/)、取引の置き場は [Mempool](../mempool/) で扱います。
+上記の図の最初の 3 段は、トランザクションの節で扱った話です。マイナーの proof of work からブロックを列に足すまでが合意の節の話で、列に足す前の検証では、ブロックの節のハッシュ値の繋がりも確認します。各段階の詳細は [Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/)、ウォレットの機能は [Wallet](../wallet/)、トランザクションの置き場は [Mempool](../mempool/) で扱います。
 
 ---
 
@@ -198,12 +198,12 @@ sequenceDiagram
 
 | 決める必要があること | Bitcoin で使う仕組み | 詳細 |
 | --- | --- | --- |
-| 取引をどう表し、二重使用をどう見分けるか | UTXO | [UTXO](../utxo/) |
+| トランザクションをどう表し、二重使用をどう見分けるか | UTXO | [UTXO](../utxo/) |
 | その資金を使う資格を示せるか | デジタル署名 | [Digital Signature](../digital-signature/) |
 | 支払いの条件をどう表すか | Bitcoin Script | [Bitcoin Script](../bitcoin-script/) |
 | データの変更をどう検出するか | ハッシュ関数 | [Hash Function](../hash-function/) |
-| 多数の取引をどの単位でまとめて履歴に足すか | ブロックと Merkle Tree | [Bitcoin Block](../bitcoin-block/) / [Merkle Tree](../merkle-tree/) |
+| 多数のトランザクションをどの単位でまとめて履歴に足すか | ブロックと Merkle Tree | [Bitcoin Block](../bitcoin-block/) / [Merkle Tree](../merkle-tree/) |
 | 次のブロックを誰が追加し、どの履歴を採用するか | proof of work | [Proof of Work](../proof-of-work/) |
 | 過去の履歴の書き換えをどう困難にするか | ハッシュ値の連鎖と proof of work | [Bitcoin Block](../bitcoin-block/) / [Proof of Work](../proof-of-work/) / [Finality](../finality/) |
 
-Ethereum などの他のブロックチェーンも同じ問題を解いていますが、仕組みの一部が違います。例えば Ethereum は、取引をアカウントの残高の更新として表し（[Ethereum Account Model](../ethereum-account-model/)）、資産を預け入れた参加者の中から次のブロックを作る者を選び、採用する列も預け入れた額で重み付けした投票で決めます（[Proof of Stake](../proof-of-stake/)）。
+Ethereum などの他のブロックチェーンも同じ問題を解いていますが、仕組みの一部が違います。例えば Ethereum は、トランザクションをアカウントの残高の更新として表し（[Ethereum Account Model](../ethereum-account-model/)）、資産を預け入れた参加者の中から次のブロックを作る者を選び、採用する列も預け入れた額で重み付けした投票で決めます（[Proof of Stake](../proof-of-stake/)）。
