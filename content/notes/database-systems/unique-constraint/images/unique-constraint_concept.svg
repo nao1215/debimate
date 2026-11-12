@@ -31,7 +31,7 @@
 <rect x="470" y="315.0" width="96" height="50" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
 <text x="518.0" y="349" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">挿入</text>
 <rect x="620" y="315.0" width="96" height="50" rx="8" fill="#e9f1e6" stroke="#8fae86" stroke-width="2.5"/>
-<text x="668.0" y="349" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">確定</text>
+<text x="668.0" y="349" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">コミット</text>
 <rect x="520" y="390.0" width="96" height="50" rx="8" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2.5"/>
 <text x="568.0" y="424" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">挿入</text>
 <line x1="620" y1="415" x2="704" y2="415" stroke="#d4a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 8"/>

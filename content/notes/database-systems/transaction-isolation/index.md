@@ -11,7 +11,7 @@ topics: ["Transaction / Concurrency Control"]
 
 Transaction Isolation（分離）は、複数のトランザクションを同時に実行した時に、互いの読み書きがどのように観測され、どのような結果まで許されるかを定める規則です。[ACID](https://doi.org/10.1145/289.291)（Atomicity、Consistency、Isolation、Durability。原子性・一貫性・分離・耐久性）の I です。
 
-トランザクションは複数の読み書きを 1 つのまとまりとして扱う単位で、まとまりを全部反映して終えることを確定（commit）、全部無かったことにして終えることを中止（abort）と言います。
+トランザクションは複数の読み書きを 1 つのまとまりとして扱う単位で、まとまりを全部反映して終えることをコミット（commit）、全部無かったことにして終えることを中止（abort）と言います。
 
 例えば、在庫を引き当てる処理を考えます。残り 1 個の商品に 2 件の注文がほぼ同時に届くと、どちらの処理も残数として 1 を読み、そこから 1 を引いた 0 を書きます。読んだ値をアプリケーション側で計算して書き戻す形なので、DB（データベース）から見れば 2 件とも正しい更新です。
 
@@ -27,8 +27,8 @@ sequenceDiagram
     D-->>A: 1
     B->>D: 残数を読む
     D-->>B: 1
-    A->>D: 0 を書いて確定
-    B->>D: 0 を書いて確定
+    A->>D: 0 を書いてコミット
+    B->>D: 0 を書いてコミット
     Note over A,B: 2 件売れたのに<br/>減ったのは 1 個
 ```
 
@@ -91,7 +91,7 @@ flowchart TB
 
 | 異常 | 何が起きるか |
 | --- | --- |
-| dirty read | 別のトランザクションが書いた、まだ確定していない値を読む |
+| dirty read | 別のトランザクションが書いた、まだコミットしていない値を読む |
 | nonrepeatable read | 一度読んだレコードを読み直すと、値が変わっているかレコードが消えている |
 | phantom read | 同じ検索条件で読み直すと、条件に合うレコードの集合が変わっている |
 
@@ -106,11 +106,11 @@ sequenceDiagram
     participant D as DB
     participant T2 as T2
     T1->>D: id = 7 の在庫を読む。5 が返る
-    T2->>D: id = 7 の在庫を 3 にして確定
+    T2->>D: id = 7 の在庫を 3 にしてコミット
     T1->>D: 同じレコードを読み直す。3 が返る
     Note over T1,T2: レコードの値が変わる<br/>nonrepeatable read
     T1->>D: price < 1000 を読む。4 件返る
-    T2->>D: 条件に合うレコードを挿入して確定
+    T2->>D: 条件に合うレコードを挿入してコミット
     T1->>D: 同じ条件で読み直す。5 件返る
     Note over T1,T2: 集合の要素が増える<br/>phantom read
 ```
@@ -121,7 +121,7 @@ sequenceDiagram
 
 標準の 3 つの現象だけでは、商用の DBMS が実装している分離レベルを区別できません。Berenson 氏らが 1995 年に発表した論文「[A Critique of ANSI SQL Isolation Levels](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/tr-95-51.pdf)」はこの点を指摘し、異常を足しました。
 
-足した異常には、確定していない書き込みを別のトランザクションが上書きする dirty write と、冒頭の在庫の例で挙げた lost update が入ります。
+足した異常には、コミットしていない書き込みを別のトランザクションが上書きする dirty write と、冒頭の在庫の例で挙げた lost update が入ります。
 
 論文には、nonrepeatable read の意味を広げ、読んだレコードを他のトランザクションが書き換えること自体まで含めて禁止すれば、lost update も併せて防げると書かれています。これは論文が採る広い解釈での話であって、標準の表で REPEATABLE READ を選べばどの DBMS でも lost update が防がれる、という意味にはなりません。
 
@@ -147,7 +147,7 @@ sequenceDiagram
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
-    RU["READ UNCOMMITTED"] --> RC["READ COMMITTED<br/>未確定の値を読まない"]
+    RU["READ UNCOMMITTED"] --> RC["READ COMMITTED<br/>コミット前の値を読まない"]
     RC --> RR["REPEATABLE READ<br/>読んだレコードが自分には変わらない"]
     RR --> SE["SERIALIZABLE<br/>3 つの禁止に加えて<br/>直列実行との一致を求める"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
@@ -165,7 +165,7 @@ PostgreSQL は 4 つ全部を指定として受け付けるものの、内部で
 
 [MySQL](https://www.mysql.com/) の既定のストレージエンジンである [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
 
-例えば、冒頭の在庫の取り合いを PostgreSQL 17.11 と MySQL 8.4.11 の InnoDB で再現します。在庫のテーブルに残数 1 のレコードを置き、2 本の接続（注文 A・注文 B）を開いて、以下の SQL を上から順に打ちます。注文 B は、注文 A が確定する前に残数を読みます。
+例えば、冒頭の在庫の取り合いを PostgreSQL 17.11 と MySQL 8.4.11 の InnoDB で再現します。在庫のテーブルに残数 1 のレコードを置き、2 本の接続（注文 A・注文 B）を開いて、以下の SQL を上から順に打ちます。注文 B は、注文 A がコミットする前に残数を読みます。
 
 ```sql
 -- 準備（PostgreSQL・MySQL 共通）
@@ -214,7 +214,7 @@ Query OK, 0 rows affected (0.00 sec)
 +-----+--------+
 ```
 
-PostgreSQL では注文 B が中止され、B が足した注文のレコードも取り消されました（B の `COMMIT` は `ROLLBACK` として扱われます）。MySQL では 2 本ともエラー無しで確定し、冒頭の図のとおり 2 件売れて減ったのは 1 個になりました。この差がどこから来るかは、書き込みの競合の処理で見ます。
+PostgreSQL では注文 B が中止され、B が足した注文のレコードも取り消されました（B の `COMMIT` は `ROLLBACK` として扱われます）。MySQL では 2 本ともエラー無しでコミットし、冒頭の図のとおり 2 件売れて減ったのは 1 個になりました。この差がどこから来るかは、書き込みの競合の処理で見ます。
 
 ---
 
@@ -222,7 +222,7 @@ PostgreSQL では注文 B が中止され、B が足した注文のレコード�
 
 DBMS は、読み取りに使う値の選択と、競合する書き込みの制御を組み合わせます。何を可視にするかを制御する代表的な方法として、スナップショットとロックがあります。
 
-スナップショットとは、レコードに複数のバージョンがある時に、その読み取りにどれを見せるかを決める基準です。ここでのバージョンは、レコードを更新しても古い内容を消さずに残した、レコードの各時点の内容を指します。ある論理的な時点を決め、その時点で確定していたバージョンだけを見せます。DB 全体を複製するわけではありません。
+スナップショットとは、レコードに複数のバージョンがある時に、その読み取りにどれを見せるかを決める基準です。ここでのバージョンは、レコードを更新しても古い内容を消さずに残した、レコードの各時点の内容を指します。ある論理的な時点を決め、その時点でコミットしていたバージョンだけを見せます。DB 全体を複製するわけではありません。
 
 レコードの複数のバージョンを保持し、スナップショットに従って可視なバージョンを選ぶ方式が [MVCC](https://doi.org/10.1145/319996.319998)（Multiversion Concurrency Control）です。
 
@@ -233,10 +233,10 @@ sequenceDiagram
     participant D as レコードの複数バージョン
     participant T2 as T2（書き手）
     T1->>D: スナップショットの時点を決める
-    T2->>D: 新しいバージョンを書いて確定
+    T2->>D: 新しいバージョンを書いてコミット
     T1->>D: 同じレコードを読む
     D-->>T1: スナップショット時点のバージョン
-    Note over T1,T2: 読み手は書き手の確定を<br/>待たずに読める
+    Note over T1,T2: 読み手は書き手のコミットを<br/>待たずに読める
 ```
 
 上記の図の T1 が待たされないのは、新しいバージョンと古いバージョンが同時に存在するからです。代わりに、古いバージョンを保持する領域と、不要になったバージョンを回収する処理が必要です（PostgreSQL での回収は [MVCC と VACUUM](/notes/database-systems/mvcc-vacuum/) のノート）。
@@ -253,7 +253,7 @@ sequenceDiagram
     D-->>A: 100
     B->>D: 1 回目の読み取り
     D-->>B: 100
-    Note over D: 別のトランザクションが<br/>200 にして確定
+    Note over D: 別のトランザクションが<br/>200 にしてコミット
     A->>D: 2 回目の読み取り
     D-->>A: 200
     B->>D: 2 回目の読み取り
@@ -270,14 +270,14 @@ InnoDB のドキュメントには、ロックを伴わない通常の `SELECT`�
 
 PostgreSQL の REPEATABLE READ が基準にするのは、`BEGIN` などのトランザクション制御の文を除いて、トランザクションの中で最初に実行した文の開始時点です。
 
-もう 1 つの方法がロックです。読み取りの前に共有ロック（読み取りどうしは共存でき、書き込みだけを待たせるロック）を取れば、確定していない値を読むことはなくなります。いつ手放すかで段階が分かれます。
+もう 1 つの方法がロックです。読み取りの前に共有ロック（読み取りどうしは共存でき、書き込みだけを待たせるロック）を取れば、コミットしていない値を読むことはなくなります。いつ手放すかで段階が分かれます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 flowchart LR
     R["読み取りで共有ロックを取る"] --> Q{"いつ手放すか"}
     Q -->|"読み終えた時点"| E["読み直すと値が変わり得る"]
-    Q -->|"確定まで持つ"| K["他は更新できず<br/>読み直しても同じ値"]
+    Q -->|"コミットまで持つ"| K["他は更新できず<br/>読み直しても同じ値"]
     K --> N["条件に合うレコードの新しい挿入は<br/>レコードのロックでは止められない"]
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
@@ -314,15 +314,15 @@ gap lock は隙間へのロック、next-key lock はレコードとその手前
 
 2 本のトランザクションが同じレコードを書こうとした時の扱いは、大きく 3 通りに分かれます。
 
-- ロックで待たせる。先に取った方が確定するまで、もう一方は止まる
-- 競合を検査して片方を中止する。確定の時点で判定する形が代表になる
-- 待たせた上で中止する。相手の確定を待ち、確定していたら自分を中止する
+- ロックで待たせる。先に取った方がコミットするまで、もう一方は止まる
+- 競合を検査して片方を中止する。コミットの時点で判定する形が代表になる
+- 待たせた上で中止する。相手のコミットを待ち、コミットしていたら自分を中止する
 
-PostgreSQL の REPEATABLE READ は 3 番目です。先ほどの実験では注文 A が既に確定していたので、注文 B は待たずに中止されました。
+PostgreSQL の REPEATABLE READ は 3 番目です。先ほどの実験では注文 A が既にコミットしていたので、注文 B は待たずに中止されました。
 
-ドキュメントには、先に更新した側が確定していれば「[rolled back with the message ERROR: could not serialize access due to concurrent update](https://www.postgresql.org/docs/current/transaction-iso.html)」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）とあります。
+ドキュメントには、先に更新した側がコミットしていれば「[rolled back with the message ERROR: could not serialize access due to concurrent update](https://www.postgresql.org/docs/current/transaction-iso.html)」（ERROR: could not serialize access due to concurrent update というメッセージでロールバックされる）とあります。
 
-Oracle の serializable も同じ形で、トランザクションの開始後に確定した更新に当たると `ORA-08177` を返します。待たせる方式なら[デッドロック](../deadlock/)への備え、中止させる方式なら[再試行](/notes/distributed-systems/retry-backoff/)の処理が必要です。
+Oracle の serializable も同じ形で、トランザクションの開始後にコミットした更新に当たると `ORA-08177` を返します。待たせる方式なら[デッドロック](../deadlock/)への備え、中止させる方式なら[再試行](/notes/distributed-systems/retry-backoff/)の処理が必要です。
 
 読み取りの可視性と書き込みの競合は分けて考えられ、1 つの DBMS が複数の方式を組み合わせます。操作ごとにどちらが働くのかは以下の通りで、この分かれ方は InnoDB と PostgreSQL のどちらにも当てはまります。
 
@@ -336,9 +336,9 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方から来ます。InnoDB の[スナップショットが効くのはロックを伴わない `SELECT`](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html) で、`UPDATE` や `DELETE` は他のトランザクションが確定したばかりのレコードにも及びます。
+MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方から来ます。InnoDB の[スナップショットが効くのはロックを伴わない `SELECT`](https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html) で、`UPDATE` や `DELETE` は他のトランザクションがコミットしたばかりのレコードにも及びます。
 
-実験の B はスナップショットから 1 を読みましたが、`UPDATE` は A が確定した 0 のレコードに当たりました。値が既に 0 なので結果は `0 rows affected` で、B が読んだ 1 と食い違うことは検査されないまま確定しています。
+実験の B はスナップショットから 1 を読みましたが、`UPDATE` は A がコミットした 0 のレコードに当たりました。値が既に 0 なので結果は `0 rows affected` で、B が読んだ 1 と食い違うことは検査されないままコミットしています。
 
 読み取りをトランザクション単位のスナップショットで固定し、書き込みは同じデータへの競合を検出して捌く、という組み方が Snapshot Isolation です。冒頭の在庫の例のような競合は防げる一方で、別々のレコードを書き換えて制約を壊す write skew は残ります。[Snapshot Isolation](../snapshot-isolation/) で扱います。
 
@@ -364,7 +364,7 @@ MySQL の実験で注文 B の `UPDATE` が通ったのも、この分かれ方�
 
 冒頭の在庫の引き当てで、最後の 2 つを数えました。PostgreSQL 17.11 で、残数を読んでから自分で計算した値を書き戻すトランザクションを [pgbench](https://www.postgresql.org/docs/current/pgbench.html) から並行に流し、READ COMMITTED と SERIALIZABLE で比べます。
 
-各クライアントが 200 件ずつ注文し、直列化の失敗で中止された時は先頭から再試行します（上限 10,000 回）。失われた更新は「確定した注文の数 − 在庫が減った数」です。
+各クライアントが 200 件ずつ注文し、直列化の失敗で中止された時は先頭から再試行します（上限 10,000 回）。失われた更新は「コミットした注文の数 − 在庫が減った数」です。
 
 ```sql
 BEGIN;
@@ -410,4 +410,4 @@ READ COMMITTED はエラーを 1 件も返さないまま、32 並列では 6,40
 
 1 つ目が分離レベルで解けないのは、トランザクションを開いたまま人の操作を待つと、その間ロックと接続を握り続けるからです。そのため、読んだ時のバージョン番号を更新条件に入れ、値が変わっていたら弾く方法（楽観ロック）が使われます。
 
-2 つ目と 3 つ目は、DB のロックやスナップショットが届かない状態を含むためで、複数の DB にまたがる確定は [2PC](../../distributed-systems/two-phase-commit/) の題材になります。4 つ目は、レベルを上げるほど中止が増える形なので、同じレコードに更新が集中しないよう、更新するレコードの分け方を変える必要があります。
+2 つ目と 3 つ目は、DB のロックやスナップショットが届かない状態を含むためで、複数の DB にまたがるコミットは [2PC](../../distributed-systems/two-phase-commit/) の題材になります。4 つ目は、レベルを上げるほど中止が増える形なので、同じレコードに更新が集中しないよう、更新するレコードの分け方を変える必要があります。

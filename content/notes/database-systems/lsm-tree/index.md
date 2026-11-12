@@ -1,5 +1,5 @@
 ---
-title: "LSM-Tree - 上書きせずに追記する索引と compaction"
+title: "LSM-Tree - 上書きせずに追記する索引とコンパクション"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Database Systems"]
@@ -10,11 +10,11 @@ topics: ["Storage Engine"]
 cardImage: "images/lsm-tree_space_timeline.svg"
 ---
 
-LSM-Tree（Log-Structured Merge-Tree）は、更新をメモリに貯めてから、キーの順に並べたファイルとしてディスクにまとめて書く索引です。同じキーを更新すると新しいバージョンを別のファイルに足し、古いバージョンは後から行う併合（compaction）で捨てます。
+LSM-Tree（Log-Structured Merge-Tree）は、更新をメモリに貯めてから、キーの順に並べたファイルとしてディスクにまとめて書く索引です。同じキーを更新すると新しいバージョンを別のファイルに足し、古いバージョンは後から行うコンパクション（compaction）で捨てます。
 
 キーと値を保存する組み込みの KVS（Key-Value Store）である [RocksDB](https://rocksdb.org/) や [LevelDB](https://github.com/google/leveldb)、分散 DB（データベース）の [Apache Cassandra](https://cassandra.apache.org/) が、この考え方でデータを保存しています。
 
-上書きしない設計なので、直感に反する現象が起きます。例えば、本記事の実験では、1 万件のキーを削除すると、ディスク上に保存している件数が約 1 万件増えました。書き込みが速いはずの DB が、ある時点から書き込みを絞り、最後には止めることもあります。どちらも、後回しにした併合の作業が溜まった結果です。
+上書きしない設計なので、直感に反する現象が起きます。例えば、本記事の実験では、1 万件のキーを削除すると、ディスク上に保存している件数が約 1 万件増えました。書き込みが速いはずの DB が、ある時点から書き込みを絞り、最後には止めることもあります。どちらも、後回しにしたコンパクションの作業が溜まった結果です。
 
 [B-Tree](/notes/database-systems/b-tree/) との違いは、更新したキーをどこに書くかです。以下は、同じキーを更新する時の 2 つの書き方です。
 
@@ -32,16 +32,16 @@ flowchart LR
     LSM ~~~ BT
 ```
 
-LSM-Tree は書く位置を探さず、どのバージョンが新しいかは読む時と併合する時に判断します。
+LSM-Tree は書く位置を探さず、どのバージョンが新しいかは読む時とコンパクションの時に判断します。
 
 <br>
 
 本記事では、1 台のサーバーで動く LSM-Tree を例に、次の疑問を説明します。
 
 - 更新・削除をどこに書き、読む時に最新の値をどう見つけるのか。
-- size-tiered と leveled の 2 つの compaction は何が違うのか。
-- 書き込み・読み取り・容量の増幅は、compaction のやり方でどう変わるのか。
-- compaction が遅れると、なぜ書き込みが止まるのか。
+- size-tiered と leveled の 2 つのコンパクションは何が違うのか。
+- 書き込み・読み取り・容量の増幅は、コンパクションのやり方でどう変わるのか。
+- コンパクションが遅れると、なぜ書き込みが止まるのか。
 - B-Tree とどう使い分けるのか。
 
 トランザクションと並行制御、[複数のサーバーへの複製](/notes/distributed-systems/leader-and-followers/)は、本記事では扱いません。
@@ -56,7 +56,7 @@ LSM-Tree を示した [O'Neil 氏らの論文（1996 年）](https://www.cs.umb.
 
 なお、論文の LSM-Tree はメモリ上の木 C0 とディスク上の木 C1 を少しずつ併合（rolling merge）する形で、本記事で説明する Memtable・SSTable・flush の形は Bigtable や LevelDB の系統です。
 
-そこで LSM-Tree は、索引の変更を後回しにして束ねます。メモリに貯めた変更をキーの順に並べ、大きな塊としてディスクに順に書くので、書く位置を 1 件ごとに探しません。その代わりに、同じキーの新旧のバージョンがディスク上に複数並び、読む処理と併合の処理が増えます。
+そこで LSM-Tree は、索引の変更を後回しにして束ねます。メモリに貯めた変更をキーの順に並べ、大きな塊としてディスクに順に書くので、書く位置を 1 件ごとに探しません。その代わりに、同じキーの新旧のバージョンがディスク上に複数並び、読む処理とコンパクションの処理が増えます。
 
 ---
 
@@ -113,15 +113,15 @@ flowchart LR
 
 LSM-Tree の削除は、「このキーは削除した」という印の追記です。この印を tombstone（墓石）と呼びます。古い SSTable にある値は書き換えられないので、印で隠すしかありません。O'Neil 氏らの論文では delete node entry と呼ばれます。
 
-そのため、削除しても保存している件数は減らず、印の分だけ増えます。印と古い値が消えるのは、compaction で両者が同じ併合に入った時です。
+そのため、削除しても保存している件数は減らず、印の分だけ増えます。印と古い値が消えるのは、両者が同じコンパクションに入った時です。
 
-LevelDB の実装メモには、[compaction は上書きされた値を捨て、tombstone は、より古いレベルに同じキーの範囲を持つファイルが無い時だけ捨てる](https://github.com/google/leveldb/blob/main/doc/impl.md)とあります。古い値がどこかに残っているうちに印を捨てると、削除したはずの値が読めるようになるからです。
+LevelDB の実装メモには、[コンパクションは上書きされた値を捨て、tombstone は、より古いレベルに同じキーの範囲を持つファイルが無い時だけ捨てる](https://github.com/google/leveldb/blob/main/doc/impl.md)とあります。古い値がどこかに残っているうちに印を捨てると、削除したはずの値が読めるようになるからです。
 
 ---
 
-### compaction の 2 つのやり方
+### コンパクションの 2 つのやり方
 
-compaction は、複数の SSTable を読んで 1 つの並びに併合し、古いバージョンと不要な tombstone を落として書き直す処理です。キーの順に並び、同じキーが 1 回しか現れない 1 本の並びを sorted run と呼びます。どの SSTable をいつ併合するかで、大きく 2 つのやり方に分かれます。
+コンパクションは、複数の SSTable を読んで 1 つの並びに併合し、古いバージョンと不要な tombstone を落として書き直す処理です。キーの順に並び、同じキーが 1 回しか現れない 1 本の並びを sorted run と呼びます。どの SSTable をいつ併合するかで、大きく 2 つのやり方に分かれます。
 
 - size-tiered: 大きさが近い sorted run が一定数揃ったら、まとめて 1 本にする。[Cassandra の STCS](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/stcs.html) は既定で 4 本
 - leveled: レベルごとに上限の大きさを決め、各レベルを重なりの無い 1 本の sorted run に保つ。上限を超えたら、溢れた分を次のレベルの重なる範囲と併合する
@@ -138,11 +138,11 @@ size-tiered は、同じキーのバージョンが複数の sorted run に散�
 
 ### 3 つの増幅
 
-compaction のやり方で変わるコストは、3 種類の増幅で比べます。[RocksDB のチューニングガイド](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide)の定義は以下の通りです。
+コンパクションのやり方で変わるコストは、3 種類の増幅で比べます。[RocksDB のチューニングガイド](https://github.com/facebook/rocksdb/wiki/RocksDB-Tuning-Guide)の定義は以下の通りです。
 
 | 増幅 | 定義 | 主に増やす要因 |
 |---|---|---|
-| Write Amplification | ストレージに書いたバイト数 ÷ DB に書いたバイト数 | compaction で同じデータを書き直す回数 |
+| Write Amplification | ストレージに書いたバイト数 ÷ DB に書いたバイト数 | コンパクションで同じデータを書き直す回数 |
 | Read Amplification | 1 回の問い合わせで読むディスクの回数 | 確認する sorted run の本数 |
 | Space Amplification | ディスク上のファイルの大きさ ÷ データの大きさ | 残っている古いバージョンと tombstone |
 
@@ -156,7 +156,7 @@ R・U・M は読み取り（Read）、更新（Update）、メモリ・記憶領
 
 ### 最小の LSM-Tree で測る
 
-Python 標準ライブラリだけで書いた[最小の LSM-Tree](lab/lsm.py) で、3 つの増幅が compaction のやり方でどう変わるかを測ります。以下は書き込みと compaction の部分の抜粋です。読み取りの経路と同じ順で探す `get`、Bloom filter（キー 1 件あたり 10 bit）、SSTable のクラスは `lab/lsm.py` の全体にあります。
+Python 標準ライブラリだけで書いた[最小の LSM-Tree](lab/lsm.py) で、3 つの増幅がコンパクションのやり方でどう変わるかを測ります。以下は、書き込みとコンパクションを抜き出したコードです。読み取りの経路と同じ順で探す `get`、Bloom filter（キー 1 件あたり 10 bit）、SSTable のクラスは `lab/lsm.py` の全体にあります。
 
 ```python
 TOMBSTONE = None       # a delete is stored as this marker

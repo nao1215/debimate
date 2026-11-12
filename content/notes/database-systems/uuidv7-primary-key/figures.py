@@ -109,8 +109,8 @@ def dirty_figure():
 
 def layout_figure():
     """UUIDv4 と UUIDv7 の 128 ビットの使い道を並べる。"""
-    s = Svg(1000, 330, "UUIDv4 は版と変種の 6 ビットを除く 122 ビットが乱数。UUIDv7 は先頭 48 ビットが "
-                       "ミリ秒の Unix 時刻で、続く版の 4 ビット、12 ビット、変種の 2 ビット、62 ビットの乱数が並ぶ")
+    s = Svg(1000, 330, "UUIDv4 はバージョンと変種の 6 ビットを除く 122 ビットが乱数。UUIDv7 は先頭 48 ビットが "
+                       "ミリ秒の Unix 時刻で、続くバージョンの 4 ビット、12 ビット、変種の 2 ビット、62 ビットの乱数が並ぶ")
     x0, w = 150, 820
     scale = w / 128
 
@@ -122,21 +122,21 @@ def layout_figure():
 
     s.text(40, 98, "UUIDv4", 22, anchor="start")
     seg(64, 0, 48, "乱数", OCHRE_PALE, OCHRE)
-    seg(64, 48, 4, "版", GRAY_PALE, LINE)
+    seg(64, 48, 4, "4", GRAY_PALE, LINE)
     seg(64, 52, 12, "乱数", OCHRE_PALE, OCHRE)
     seg(64, 64, 2, "", GRAY_PALE, LINE)
     seg(64, 66, 62, "乱数", OCHRE_PALE, OCHRE)
     s.text(40, 208, "UUIDv7", 22, anchor="start")
     seg(174, 0, 48, "Unix 時刻（ミリ秒、48 ビット）", BLUE_PALE, BLUE)
-    seg(174, 48, 4, "版", GRAY_PALE, LINE)
+    seg(174, 48, 4, "7", GRAY_PALE, LINE)
     seg(174, 52, 12, "12 ビット", GRAY_PALE, LINE)
     seg(174, 64, 2, "", GRAY_PALE, LINE)
     seg(174, 66, 62, "乱数（62 ビット）", OCHRE_PALE, OCHRE)
     for b in (0, 48, 64, 128):
         s.text(x0 + b * scale, 40, str(b), 16, cls="sub")
-    s.text(x0 + 48 * scale, 270, "版（version）は 4 か 7、細い灰色は変種（variant）の 2 ビット", 17,
+    s.text(x0, 270, "4・7 の箱はバージョン（version）、細い灰色は変種（variant）の 2 ビット", 17,
            anchor="start", cls="sub")
-    s.text(x0 + 48 * scale, 300, "12 ビットは乱数でもよく、PostgreSQL 18 はミリ秒未満の時刻に使う", 17,
+    s.text(x0, 300, "12 ビットは乱数でもよく、PostgreSQL 18 はミリ秒未満の時刻に使う", 17,
            anchor="start", cls="sub")
     s.save("uuidv7-primary-key_layout.webp")
 

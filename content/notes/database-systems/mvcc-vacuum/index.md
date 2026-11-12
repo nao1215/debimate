@@ -15,7 +15,7 @@ MVCC（Multiversion Concurrency Control）は、レコードを更新しても�
 
 {{< figure src="images/mvcc-vacuum_size.webp" alt="横軸は全件を更新した回数で 0 から 10。VACUUM しない表は 1 回ごとに約 13.5 MB ずつ増えて 148 MB になる。毎回 VACUUM する表は 1 回目に 27 MB になった後、増えない。毎回 VACUUM しても、古いスナップショットを持つ接続がある表は、VACUUM しない表と同じ線で 148 MB まで増える" caption="10 万件の全件を 10 回更新した時の表の大きさ" align="center" >}}
 
-スナップショットは、ある時点までに確定（COMMIT）したデータだけが見える、読み取りの視点です。毎回 VACUUM する表は 27 MB で止まりました。一方、毎回 VACUUM しても、別の接続が古いスナップショットを持ったままの表は、VACUUM しない表と同じ 148 MB まで増えました。件数はどの表も 10 万件です。
+スナップショットは、ある時点までにコミット（COMMIT）したデータだけが見える、読み取りの視点です。毎回 VACUUM する表は 27 MB で止まりました。一方、毎回 VACUUM しても、別の接続が古いスナップショットを持ったままの表は、VACUUM しない表と同じ 148 MB まで増えました。件数はどの表も 10 万件です。
 
 <br>
 
@@ -35,7 +35,7 @@ MVCC が読み手に見せる版を選ぶ規則（分離レベル）は、[Trans
 
 PostgreSQL の表は、8 KB のブロックを並べたファイルです。1 つのブロックに、レコードの版（tuple）がいくつも入ります。各版には、その版を作ったトランザクションの ID（`xmin`）と、その版を消したトランザクションの ID（`xmax`、まだ消されていなければ 0）が付いています。トランザクション ID は、書き込みをするトランザクションに 1 つずつ振られる通し番号です。
 
-2 件の口座（id 1 の残高 100、id 2 の残高 500）を入れた表で、id 1 の残高を 200 に更新しました。psql で 1 文ずつ実行すると、文ごとに別のトランザクションとして確定する（自動コミット）ので、INSERT が 741、UPDATE が 742、後の DELETE が 743 になっています。拡張機能 [pageinspect](https://www.postgresql.org/docs/17/pageinspect.html) の `heap_page_items()` は、ブロックの中の版を、見えるかどうかに関係なく全て並べます。
+2 件の口座（id 1 の残高 100、id 2 の残高 500）を入れた表で、id 1 の残高を 200 に更新しました。psql で 1 文ずつ実行すると、文ごとに別のトランザクションとしてコミットされる（自動コミット）ので、INSERT が 741、UPDATE が 742、後の DELETE が 743 になっています。拡張機能 [pageinspect](https://www.postgresql.org/docs/17/pageinspect.html) の `heap_page_items()` は、ブロックの中の版を、見えるかどうかに関係なく全て並べます。
 
 ```text
 SELECT lp, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
@@ -48,9 +48,9 @@ SELECT lp, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
 
 `lp` はブロックの中の版の番号、`t_ctid` は次の版の位置（ブロック 0 の 3 番、のように読みます）で、自分自身を指していれば最新の版です。普通の `SELECT` では id 1 は 1 件しか見えませんが、ブロックの中には 1 番（残高 100）と 3 番（残高 200）の 2 つの版があります。以下は、この 2 つの版と、それを読む側の関係を描いた図です。
 
-{{< figure src="images/mvcc-vacuum_versions.webp" alt="表のブロック 0 に、1 番の版（id 1、残高 100、xmin 741、xmax 742）と、3 番の版（id 1、残高 200、xmin 742、xmax 0）が並び、1 番から 3 番へ矢印が向く。742 の確定より前のスナップショットは 1 番を、後のスナップショットは 3 番を読む" caption="UPDATE の後のブロックの中（id 2 の版は省略）" align="center" >}}
+{{< figure src="images/mvcc-vacuum_versions.webp" alt="表のブロック 0 に、1 番の版（id 1、残高 100、xmin 741、xmax 742）と、3 番の版（id 1、残高 200、xmin 742、xmax 0）が並び、1 番から 3 番へ矢印が向く。742 のコミットより前のスナップショットは 1 番を、後のスナップショットは 3 番を読む" caption="UPDATE の後のブロックの中（id 2 の版は省略）" align="center" >}}
 
-UPDATE を実行したトランザクション 742 は、1 番の中身を書き換えず、`xmax` に自分の ID を書いて、3 番を足しました。742 が確定する前に取ったスナップショットで読むトランザクションは 1 番を、確定した後に取ったスナップショットで読むトランザクションは 3 番を読みます。書き手が古い版を残しておくので、読み手は書き手を待たずに読めます。
+UPDATE を実行したトランザクション 742 は、1 番の中身を書き換えず、`xmax` に自分の ID を書いて、3 番を足しました。742 がコミットする前に取ったスナップショットで読むトランザクションは 1 番を、コミットした後に取ったスナップショットで読むトランザクションは 3 番を読みます。書き手が古い版を残しておくので、読み手は書き手を待たずに読めます。
 
 続けて id 1 を DELETE すると、3 番の `xmax` に 743 が入るだけで、版はブロックに残りました。
 
@@ -66,7 +66,7 @@ UPDATE を実行したトランザクション 742 は、1 番の中身を書き
 
 ### VACUUM が消すもの
 
-`xmax` が付いて、その削除が確定し、今後どのスナップショットからも見えなくなった版を、PostgreSQL の[ドキュメント](https://www.postgresql.org/docs/17/routine-vacuuming.html#VACUUM-FOR-SPACE-RECOVERY)では dead tuple（死んだ版）と呼びます。「どのスナップショットからも見えない」という条件は、後の節で効いてきます。上の DELETE の後で `VACUUM acct` を実行すると、ブロックの中は次のようになりました。
+`xmax` が付いて、その削除がコミットされ、今後どのスナップショットからも見えなくなった版を、PostgreSQL の[ドキュメント](https://www.postgresql.org/docs/17/routine-vacuuming.html#VACUUM-FOR-SPACE-RECOVERY)では dead tuple（死んだ版）と呼びます。「どのスナップショットからも見えない」という条件は、後の節で効いてきます。上の DELETE の後で `VACUUM acct` を実行すると、ブロックの中は次のようになりました。
 
 ```text
 SELECT lp, lp_flags, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
@@ -109,7 +109,7 @@ SELECT count(*) FROM items_hold;
 
 REPEATABLE READ では、トランザクションの最初の問い合わせで取ったスナップショットを最後まで使います。このトランザクションは、いつ同じ表をもう一度読むか分かりません。読んだ時には、スナップショットを取った時点の版を返す必要があります。そのため、その時点より後に消された版は、どれも消せません。
 
-この接続のスナップショットは、トランザクション ID 797 より前に確定したものだけが見える状態でした。接続ごとのこの境目は、`pg_stat_activity` の `backend_xmin` で見られ、ここでは 797 でした。以下は、トランザクション ID の軸の上で、どこまでの版を消せるかを描いた図です。
+この接続のスナップショットは、トランザクション ID 797 より前にコミットしたものだけが見える状態でした。接続ごとのこの境目は、`pg_stat_activity` の `backend_xmin` で見られ、ここでは 797 でした。以下は、トランザクション ID の軸の上で、どこまでの版を消せるかを描いた図です。
 
 {{< figure src="images/mvcc-vacuum_horizon.webp" alt="トランザクション ID の軸の上に、古いスナップショットの境目 797（backend_xmin と removable cutoff）と、今の ID（817 前後）がある。797 より前に消された版は VACUUM で消せる。797 と今の間に並ぶ 10 回の UPDATE で消された、合わせて 100 万の版は消せない" caption="古いスナップショットより後に消された版は消せない" align="center" >}}
 
@@ -127,7 +127,7 @@ removable cutoff: 797, which was 20 XIDs old when operation ended
 
 <br>
 
-待たせていたトランザクションを確定させてから、もう一度 VACUUM を実行すると、次の通りでした。
+待たせていたトランザクションをコミットしてから、もう一度 VACUUM を実行すると、次の通りでした。
 
 ```text
 tuples: 1000000 removed, 100000 remain, 0 are dead but not yet removable
@@ -140,7 +140,7 @@ removable cutoff: 828, which was 0 XIDs old when operation ended
 
 #### READ COMMITTED の場合
 
-実験は REPEATABLE READ でしたが、PostgreSQL の既定の分離レベルは READ COMMITTED で、文ごとにスナップショットを取り直し、文が終わると手放します。そのため、読むだけで、カーソルも開いていないトランザクションは、`BEGIN` したまま止まっていても、文を実行していない間は境目を止めません。ただし、1 つの文が何時間も掛かれば、その間は止めます。また、書き込みをしたトランザクションは、自分のトランザクション ID を確定まで持ち続けるので、止まっている間も境目を止めます。
+実験は REPEATABLE READ でしたが、PostgreSQL の既定の分離レベルは READ COMMITTED で、文ごとにスナップショットを取り直し、文が終わると手放します。そのため、読むだけで、カーソルも開いていないトランザクションは、`BEGIN` したまま止まっていても、文を実行していない間は境目を止めません。ただし、1 つの文が何時間も掛かれば、その間は止めます。また、書き込みをしたトランザクションは、自分のトランザクション ID をコミットまで持ち続けるので、止まっている間も境目を止めます。
 
 <br>
 

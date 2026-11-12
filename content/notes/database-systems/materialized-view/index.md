@@ -79,7 +79,7 @@ full refresh は、元の表を全て読み直して結果を作り、中身を�
 
 一方で、Oracle の complete refresh は、[DBMS_MVIEW.REFRESH](https://docs.oracle.com/en/database/oracle/oracle-database/19/arpls/DBMS_MVIEW.html) の既定（`atomic_refresh => true`）では 1 つのトランザクションで中身を入れ替えます。
 
-Oracle は[読み手と書き手が互いを待たない](https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/data-concurrency-and-consistency.html)作りなので、読み手は止まらず、確定するまで古い結果を読みます。`atomic_refresh` を `false` にすると、中身を `TRUNCATE` で消してから入れ直します。
+Oracle は[読み手と書き手が互いを待たない](https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/data-concurrency-and-consistency.html)作りなので、読み手は止まらず、コミットするまで古い結果を読みます。`atomic_refresh` を `false` にすると、中身を `TRUNCATE` で消してから入れ直します。
 
 incremental refresh は、元の表に入った変更から、結果のどこが変わるかを計算して反映します。Oracle Database の fast refresh は、元の表の変更を materialized view log という表に記録しておき、それを使って反映します。
 
@@ -255,7 +255,7 @@ Time: 1.077 ms
 
 {{< figure src="images/refresh_timeline.svg" alt="REFRESH の実行中、通常の REFRESH では SELECT が約 2.8 秒待ち、CONCURRENTLY では約 1 ミリ秒で古い値を返した" caption="REFRESH の実行中に読み手が待った時間" align="center" >}}
 
-上記の図の下段では、`reader` は待たずに返りましたが、読んだのは直前に足した 1 円を含まない 63629337 です。`CONCURRENTLY` は読み手を止めない代わりに、`REFRESH` が確定するまで古い結果を返します。上段の `reader` は待たされた分、確定後の新しい値を読んでいます。
+上記の図の下段では、`reader` は待たずに返りましたが、読んだのは直前に足した 1 円を含まない 63629337 です。`CONCURRENTLY` は読み手を止めない代わりに、`REFRESH` がコミットするまで古い結果を返します。上段の `reader` は待たされた分、コミット後の新しい値を読んでいます。
 
 どちらも `REFRESH` の所要時間は 2.7〜3 秒で、`CONCURRENTLY` だから速くなるわけではありません。
 

@@ -232,7 +232,7 @@ COMMIT;
 
 {{< figure src="images/soft-delete_lost_update.svg" alt="横軸が時間で、手順 1 から 4 が並ぶ。上の段の処理 A（退会）は手順 1 で BEGIN の後に SELECT で有効を読み、手順 3 で退会済みに更新して遷移を追記し COMMIT する。下の段の処理 B（一時停止）は手順 2 で A の確定前に同じ SELECT で有効を読み、手順 4 で一時停止に更新して追記し COMMIT する。手順 4 の B から上へ赤い矢印が伸び、A の退会済みが消える" caption="退会 A と一時停止 B を同時に走らせた順序" align="center" >}}
 
-A も B も、相手が書く前の `有効` を読んでから書き込みます。両方の確定後に `members` と `member_status_changes` を読んだ結果は次の通りです。
+A も B も、相手が書く前の `有効` を読んでから書き込みます。両方のコミット後に `members` と `member_status_changes` を読んだ結果は次の通りです。
 
 ```text
   status
@@ -294,7 +294,7 @@ flowchart LR
 
 ### 消去が要件になる場合
 
-レコードを残せない場合もあります。個人データの消去を求められた時が、その代表です。GDPR（General Data Protection Regulation、EU 一般データ保護規則）の第 17 条は、消去権（right to erasure）を定めています。
+レコードを残せない場合もあります。個人データの消去を求められた時が、その代表です。GDPR（General Data Protection Regulation、EU 一般データ保護規則）の第 17 条は、消去の権利（right to erasure）を定めています。
 
 同条の第 1 項には、「[The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay](https://gdpr-info.eu/art-17-gdpr/)」（データ主体は、自分に関する個人データの消去を不当な遅滞なく行うよう管理者に求める権利を持つ）とあります。
 

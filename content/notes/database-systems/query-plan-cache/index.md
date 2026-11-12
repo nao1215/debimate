@@ -164,7 +164,7 @@ EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 上記の実験から、同じ計画が遅くなる条件は次の 3 つが重なった時だと分かります。
 
 - カラムの値の件数が大きく偏っている（大口顧客、`status` の大半が完了、など）
-- 件数によって最適な計画が変わる（索引か全走査か、結合の順序や方法など）
+- 件数によって最適な計画が変わる（索引かシーケンシャルスキャンか、結合の順序や方法など）
 - 使い回す計画が、件数の違う値を前提に作られている
 
 SQL Server の [parameter sniffing](https://learn.microsoft.com/en-us/sql/relational-databases/query-processing-architecture-guide#parameter-sensitivity) も同じ構図です。違いは、どの値を前提にするかです。PostgreSQL の generic plan は値を見ない平均的な計画で、SQL Server はコンパイル（または再コンパイル）した時に渡された値を見て作った計画を使い回します。Oracle Database の bind peeking も、ハード解析の時だけ値を見ます。
@@ -185,7 +185,7 @@ PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
 
 | 変更 | 実験での結果 |
 |---|---|
-| `DROP INDEX` | 次の `EXECUTE` で generic plan が並列の全走査に変わった |
+| `DROP INDEX` | 次の `EXECUTE` で generic plan が並列のシーケンシャルスキャンに変わった |
 | `CREATE INDEX` | 次の `EXECUTE` で Index Scan に戻った |
 | `ALTER TABLE ... ADD COLUMN` | `SELECT *` の文が `cached plan must not change result type` で失敗した |
 | `SET search_path = archive` | 同じ文が `archive.orders` を数えた（100 万件 → 1 件） |

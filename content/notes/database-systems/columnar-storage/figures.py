@@ -181,7 +181,7 @@ def colsizes():
 
 def vector():
     """Tuple-at-a-time vs vector-at-a-time calls between operators."""
-    f = Figure(960, 540, "1 行ずつ渡す実行器と、vector ずつ渡す実行器の呼び出し回数")
+    f = Figure(960, 540, "1 行ずつ渡すエグゼキュータと、vector ずつ渡すエグゼキュータの呼び出し回数")
     x0, w, h = 380, 40, 48
 
     f.text(40, 70, "1 行ずつ", 26)

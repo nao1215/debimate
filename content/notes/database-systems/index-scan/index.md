@@ -9,7 +9,7 @@ topics: ["Query Processing"]
 cardImage: "images/index-scan_selectivity.svg"
 ---
 
-Index Scan は、索引（インデックス）を辿って条件に一致するレコードの在り処を求め、そこから表のレコードを読み出す方法です。DB（データベース）が 1 つの表からレコードを取り出す手段の 1 つで、表を先頭から順に読む全走査（sequential scan）と対になります。
+Index Scan は、索引（インデックス）を辿って条件に一致するレコードの在り処を求め、そこから表のレコードを読み出す方法です。DB（データベース）が 1 つの表からレコードを取り出す手段の 1 つで、表を先頭から順に読むシーケンシャルスキャン（sequential scan）と対になります。
 
 遅い SQL の実行計画を確認すると、Index Scan という処理名が出てくることがあります。実行計画とは、DB がその問い合わせをどの手順で処理すると決めたのかを表す出力で、その手順を選ぶ DB の部品をプランナと呼びます。一覧画面の表示に数秒かかるので索引を足したのに応答時間が戻らない、という場面で開くのがこの出力です。
 
@@ -54,9 +54,9 @@ flowchart LR
 
 `EXPLAIN` に出る名前も、どの取り出し方を備えているかも、DBMS（Database Management System）で違います。
 
-例えば、[PostgreSQL](https://www.postgresql.org/) の [`EXPLAIN`](https://www.postgresql.org/docs/current/sql-explain.html) では `Index Scan`、[SQLite](https://www.sqlite.org/) の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` は表の順次走査です。
+例えば、[PostgreSQL](https://www.postgresql.org/) の [`EXPLAIN`](https://www.postgresql.org/docs/current/sql-explain.html) では `Index Scan`、[SQLite](https://www.sqlite.org/) の `EXPLAIN QUERY PLAN` では `SEARCH ... USING INDEX` という行が出ます。PostgreSQL の `Seq Scan` はシーケンシャルスキャンです。
 
-一方で、SQLite の `SCAN` は索引順の全走査も含むので、その語だけでは索引を使ったかどうかを判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。次の SQLite の実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
+一方で、SQLite の `SCAN` は索引を先頭から全部読む場合も含むので、その語だけでは索引を使ったかどうかを判断できません。`USING INDEX` や `USING COVERING INDEX` の有無も確認します。次の SQLite の実行計画には `SCAN` と `USING COVERING INDEX` が同時に現れます。`v` の順に索引全体を読み、必要なカラムも索引だけから取得します。
 
 ```sql
 CREATE TABLE scan_demo (id INTEGER PRIMARY KEY, v INTEGER);
@@ -180,9 +180,9 @@ EXPLAIN (ANALYZE, BUFFERS, COSTS OFF, TIMING OFF, SUMMARY OFF)
 
 同じ問い合わせをもう一度流すと、`orders_random` は `shared hit=103` に変わりました。hit はバッファキャッシュにあった枚数、read はその外から読んだ枚数です（OS のキャッシュから返る場合もあります）。2 回目は速く返りますが、触るページは同じ 103 枚です。
 
-一致するレコードが増えるほど、表のページの読み出しは積み上がります。一方で、全走査が読むページの枚数は、条件で絞れた割合、つまり選択性（selectivity）では動きません。そのため、2 つの経路が読む枚数はどこかで入れ替わります。
+一致するレコードが増えるほど、表のページの読み出しは積み上がります。一方で、シーケンシャルスキャンが読むページの枚数は、条件で絞れた割合、つまり選択性（selectivity）では動きません。そのため、2 つの経路が読む枚数はどこかで入れ替わります。
 
-同じ作り方の 2 つの表で条件を `user_id BETWEEN 1 AND k` に変え、一致する割合を 0.01% から 100% まで動かして、全走査と Index Scan が触ったページの延べ枚数と時間を測りました。実行計画は `enable_*` で固定し、並列実行は止めています。時間は全てのページを共有バッファに読み込んだ後の 7 回の中央値です。
+同じ作り方の 2 つの表で条件を `user_id BETWEEN 1 AND k` に変え、一致する割合を 0.01% から 100% まで動かして、シーケンシャルスキャンと Index Scan が触ったページの延べ枚数と時間を測りました。実行計画は `enable_*` で固定し、並列実行は止めています。時間は全てのページを共有バッファに読み込んだ後の 7 回の中央値です。
 
 ```python
 # 抜粋。PLANS[plan] は enable_seqscan などを off にする SET 文
@@ -203,13 +203,13 @@ orders_sorted  index           30.00   300000     2071     40.90   Index Scan
 orders_random  index           30.00   300000   297883    201.58   Index Scan
 ```
 
-{{< figure src="images/index-scan_selectivity.svg" alt="一致する割合を横軸に取った両対数のグラフ 2 枚。左の触ったページの延べ枚数では、全走査が 6,080 枚で水平、散らばった表の Index Scan は 0.3〜1% の間で全走査を超え、並んだ表の Index Scan は 100% でようやく全走査と並ぶ。右の時間では、散らばった表は 10〜30% の間、並んだ表は 30〜100% の間で全走査より遅くなる。" caption="一致する割合ごとの、触ったページの延べ枚数と時間" align="center" >}}
+{{< figure src="images/index-scan_selectivity.svg" alt="一致する割合を横軸に取った両対数のグラフ 2 枚。左の触ったページの延べ枚数では、シーケンシャルスキャンが 6,080 枚で水平、散らばった表の Index Scan は 0.3〜1% の間でシーケンシャルスキャンを超え、並んだ表の Index Scan は 100% でようやくシーケンシャルスキャンと並ぶ。右の時間では、散らばった表は 10〜30% の間、並んだ表は 30〜100% の間でシーケンシャルスキャンより遅くなる。" caption="一致する割合ごとの、触ったページの延べ枚数と時間" align="center" >}}
 
-上記の図の左の枚数（Pages touched）では、散らばった表（rows scattered）の Index Scan が一致した 1 件ごとにほぼ 1 枚を触るので、一致が 1% 弱（約 6,000 件）で全走査（Seq scan）の 6,080 枚を超えます。並んだ表（rows in key order）は 90% 前後まで全走査より少ない枚数で済みます。
+上記の図の左の枚数（Pages touched）では、散らばった表（rows scattered）の Index Scan が一致した 1 件ごとにほぼ 1 枚を触るので、一致が 1% 弱（約 6,000 件）でシーケンシャルスキャン（Seq scan）の 6,080 枚を超えます。並んだ表（rows in key order）は 90% 前後までシーケンシャルスキャンより少ない枚数で済みます。
 
 右の時間は全てのページがメモリにある状態の値で、1 枚を触る手間が安いぶん、散らばった表の交点は 10〜30% と枚数の交点より右に来ました。
 
-表が小さいほど全走査が読む枚数も少ないので、交点は左へ寄ります。
+表が小さいほどシーケンシャルスキャンが読む枚数も少ないので、交点は左へ寄ります。
 
 PostgreSQL のドキュメントには、100 件から 1 件を選ぶ例について、その 100 件がおそらく 1 枚のディスクページに収まるので「[there is no plan that can beat sequentially fetching 1 disk page](https://www.postgresql.org/docs/current/indexes-examine.html)」（1 枚のディスクページを順に読むことに勝てる計画は無い）とあります。
 
@@ -340,7 +340,7 @@ flowchart LR
 | カラムに関数や演算を掛けている | 通常のカラム索引に入っているのは元の値なので、計算後の値では葉を辿れない |
 | 複合索引の先頭カラムに条件が無い | 一般には走査する範囲を狭めにくい |
 
-この型は、先ほどの SQLite のコードの 3 つ目と 4 つ目の問い合わせで再現できます。取り出すカラムを `SELECT status` に固定したまま条件だけを変えると、どちらも全走査になりました。
+この型は、先ほどの SQLite のコードの 3 つ目と 4 つ目の問い合わせで再現できます。取り出すカラムを `SELECT status` に固定したまま条件だけを変えると、どちらも表を先頭から全部読む `SCAN` になりました。
 
 ```text
 SCAN orders
@@ -382,28 +382,28 @@ flowchart LR
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-先頭カラムの条件が無くても、索引を読むこと自体はできます。ただし、上記の図の `amount = 42` のように項目が散ると、多くの場合は索引の全体を読む形になり、走査する範囲が絞られません。何を読むのが安いかはそこで改めて見積もられ、表の全走査が選ばれることもあります。
+先頭カラムの条件が無くても、索引を読むこと自体はできます。ただし、上記の図の `amount = 42` のように項目が散ると、多くの場合は索引の全体を読む形になり、走査する範囲が絞られません。何を読むのが安いかはそこで改めて見積もられ、シーケンシャルスキャンが選ばれることもあります。
 
 例外として、PostgreSQL 18 の複合索引のドキュメントは skip scan にも触れています。skip scan は、先頭カラムの取り得る値がごく少ないとプランナが見積もった場合に、その値ごとの等値の条件を内部で作り、「[skip over most of the index](https://www.postgresql.org/docs/current/indexes-multicolumn.html)」（索引の大半を読み飛ばす）形で走査する範囲を減らす方法です。
 
 SQLite にも同じ名前の[最適化](https://www.sqlite.org/optoverview.html#the_skip_scan_optimization)があります。先頭カラムの 1 つの値に重複がおよそ 18 件以上あると分かった時だけ使われ、それを知る手段は `ANALYZE` の統計だけです。
 
-先ほどの `orders` は 1 つの `user_id` に約 100 件あるので、`ANALYZE` の後に `amount = 42` が `ANY(user_id) AND amount=?` の `SEARCH` に変わりました。統計が無いと、同じ索引と同じ条件でも全走査になります。
+先ほどの `orders` は 1 つの `user_id` に約 100 件あるので、`ANALYZE` の後に `amount = 42` が `ANY(user_id) AND amount=?` の `SEARCH` に変わりました。統計が無いと、同じ索引と同じ条件でも表を全部読む `SCAN` になります。
 
 ---
 
-### 見積もりで全走査に負ける条件
+### 見積もりでシーケンシャルスキャンに負ける条件
 
-条件に合う索引があっても、プランナが全走査の方を安いと見積もれば、索引を使う実行計画は選ばれません。
+条件に合う索引があっても、プランナがシーケンシャルスキャンの方を安いと見積もれば、索引を使う実行計画は選ばれません。
 
-| 条件 | なぜ全走査が選ばれるか |
+| 条件 | なぜシーケンシャルスキャンが選ばれるか |
 | --- | --- |
-| 一致するレコードが表の大部分を占める | 索引を使う候補より、全走査の方が安いと見積もられる |
-| 統計情報が古い | 推定レコード数が実際とずれ、全走査の方が安いと見積もられる |
+| 一致するレコードが表の大部分を占める | 索引を使う候補より、シーケンシャルスキャンの方が安いと見積もられる |
+| 統計情報が古い | 推定レコード数が実際とずれ、シーケンシャルスキャンの方が安いと見積もられる |
 
 コストは実際のレコード数ではなく、統計から見積もった推定レコード数で計算されます。
 
-索引が使われない理由を調べたい時は、PostgreSQL の `enable_seqscan` を off にして全走査を選びにくくし、別の計画が成立するかを確認します。それでも全走査が選ばれるなら、条件が索引と噛み合っていないなどの根本的な理由がある可能性が高いと[ドキュメント](https://www.postgresql.org/docs/current/indexes-examine.html)は説明しています。
+索引が使われない理由を調べたい時は、PostgreSQL の `enable_seqscan` を off にしてシーケンシャルスキャンを選びにくくし、別の計画が成立するかを確認します。それでもシーケンシャルスキャンが選ばれるなら、条件が索引と噛み合っていないなどの根本的な理由がある可能性が高いと[ドキュメント](https://www.postgresql.org/docs/current/indexes-examine.html)は説明しています。
 
 ---
 

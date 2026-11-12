@@ -74,7 +74,7 @@ PostgreSQL が組み込みで持つ分け方は、Range・List・Hash の 3 つ�
   items:
   - 例：created_at の月ごと
   - 期間で絞る検索と、古い範囲の削除に向く
-- title: List（列挙）
+- title: List（リスト）
   body: 値を列挙して分ける。
   items:
   - 例：region が 'jp' か、'us' と 'ca' か

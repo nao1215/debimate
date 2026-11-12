@@ -46,7 +46,7 @@ Query Processing（問い合わせ処理）は、DB（データベース）が�
 
 処理を何段階に分けるかと、それぞれの段階の呼び名は DBMS（Database Management System）で違います。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/query-path.html)は、接続の確立を別にするとパーサー、書き換えシステム、プランナ／オプティマイザ、エグゼキュータの 4 つに分けて説明しています。
 
-本記事では次の 3 段階に分けて説明し、DBMS ごとの違いを補足します。構文を解析して名前や型を解決する段階、実行方法を選ぶ段階（プランナ。オプティマイザとも呼ぶ）、選んだ手順を動かす段階（実行器。PostgreSQL ではエグゼキュータ）です。
+本記事では次の 3 段階に分けて説明し、DBMS ごとの違いを補足します。構文を解析して名前や型を解決する段階、実行方法を選ぶ段階（プランナ。オプティマイザとも呼ぶ）、選んだ手順を動かす段階（エグゼキュータ。executor）です。
 
 ---
 
@@ -166,7 +166,7 @@ flowchart TB
 
 遺伝的アルゴリズムは、良い候補どうしを組み合わせて少しずつ改善する探索の方法で、全ての候補を調べません。最適な手順を必ず選ぶのではなく、妥当な手順を現実的な時間で選ぶ割り切りです。候補の絞り方は DBMS ごとに違い、[SQLite](https://www.sqlite.org/queryplanner-ng.html) は結合順を探す各段で良い経路を少数だけ残し、全ての候補を調べずに計画を作ります。
 
-[PostgreSQL のプランナ](https://www.postgresql.org/docs/current/planner-optimizer.html)は、調べた候補の中から、見積もったコストが最も小さいものを選び、実行器に渡す実行計画にします。
+[PostgreSQL のプランナ](https://www.postgresql.org/docs/current/planner-optimizer.html)は、調べた候補の中から、見積もったコストが最も小さいものを選び、エグゼキュータに渡す実行計画にします。
 
 候補どうしで大きく違うのは、表を結合する順序、1 つの表からレコードを取り出す方法、2 つのレコードの集まりを突き合わせる方法です。以下の図の手順 1・手順 2 は、「DB が実行手順を決める理由」で見たものです。
 
@@ -179,7 +179,7 @@ flowchart TB
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-レコードの取り出し方は、表を先頭から順に読む方法（sequential scan）と、索引を辿って必要なレコードだけを読む方法（[index scan](/notes/database-systems/index-scan/)）が代表です。同じ動作でも `EXPLAIN` での名前は DBMS で違い、表の全走査を PostgreSQL は `Seq Scan`、SQLite は `SCAN` と表示します。
+レコードの取り出し方は、表を先頭から順に読む方法（sequential scan）と、索引を辿って必要なレコードだけを読む方法（[index scan](/notes/database-systems/index-scan/)）が代表です。同じ動作でも `EXPLAIN` での名前は DBMS で違い、表のシーケンシャルスキャンを PostgreSQL は `Seq Scan`、SQLite は `SCAN` と表示します。
 
 突き合わせ方として PostgreSQL が用意している 3 つを整理すると、以下の通りです。
 
@@ -212,7 +212,7 @@ flowchart LR
 
 上記の図の最後の段で求める候補ごとのコストは、推定レコード数を基に、そのレコードを読むのに何ページ触るか、突き合わせに何回比較するかを換算した値です。
 
-先ほどの例で候補を 3 つ挙げると、注文を全走査して hash join する候補 1、手順 2 と同じく利用者を絞ってから索引で注文を引く候補 2、両方を整列して merge join する候補 3 です。
+先ほどの例で候補を 3 つ挙げると、注文をシーケンシャルスキャンして hash join する候補 1、手順 2 と同じく利用者を絞ってから索引で注文を引く候補 2、両方を整列して merge join する候補 3 です。
 
 同じ利用者 1 万件と注文 100 万件を PostgreSQL 17.11 に入れ、他の結合方法を設定で外して、候補ごとの見積もりコストを `EXPLAIN` で表示しました。注文は利用者ごとに連続して入れ、並列実行は切っています。以下は候補 2 を表示する部分の抜粋です（全体は [lab/experiment.sql](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/query-processing/lab/experiment.sql)）。
 
@@ -234,7 +234,7 @@ EXPLAIN SELECT u.id, o.amount
 
 `cost` の 2 つ目の値が、最後のレコードを返し終えるまでの見積もりコストです。何も外さない既定の設定でも、PostgreSQL はこの候補 2 を選びました。3 つの候補の見積もりコストと、`EXPLAIN ANALYZE` で 5 回測った実行時間の中央値を以下に並べます。
 
-{{< figure src="images/query_processing_plan_cost.svg" alt="左は見積もりコストで、利用者を絞ってから索引で注文を引く候補 2 が 1,278 で最も安く選ばれ、注文を全走査して hash join する候補 1 は 18,213、両方を整列して merge join する候補 3 は 134,022。右は実行時間の中央値で、候補 2 が 3.4 ms、候補 1 が 149 ms、候補 3 が 224 ms" caption="3 つの候補の見積もりコストと実行時間の中央値" align="center" >}}
+{{< figure src="images/query_processing_plan_cost.svg" alt="左は見積もりコストで、利用者を絞ってから索引で注文を引く候補 2 が 1,278 で最も安く選ばれ、注文をシーケンシャルスキャンして hash join する候補 1 は 18,213、両方を整列して merge join する候補 3 は 134,022。右は実行時間の中央値で、候補 2 が 3.4 ms、候補 1 が 149 ms、候補 3 が 224 ms" caption="3 つの候補の見積もりコストと実行時間の中央値" align="center" >}}
 
 左の図の値（Estimated cost）は、測った時間ではなく見積もりです。図の Plan 1〜3 は、本文の候補 1〜3 に当たります。この例では右の実行時間と順位がそろいましたが、統計が実際のデータと離れれば、推定レコード数とコストがずれ、候補の順位も入れ替わります。実行計画が突然変わったように見える現象は、統計の変化が主な原因の 1 つです。
 
@@ -244,7 +244,7 @@ EXPLAIN SELECT u.id, o.amount
 
 {{< figure src="images/query_processing_order.svg" alt="注文を利用者ごとに連続して入れた表では、候補 1（hash join）が 18,213、候補 2（索引で引く nested loop）が 1,278 で、候補 2 が選ばれる。注文を利用者に散らして入れた表では、候補 1 は 18,213 のままで、候補 2 が 21,655 に上がり、候補 1 が選ばれる" caption="注文の並びで入れ替わる候補 1 と候補 2 の見積もりコスト" align="center" >}}
 
-変わったのは索引で引く候補 2 の見積もりだけで、注文を全走査する候補 1 は、どちらの並びでも 18,213 でした。
+変わったのは索引で引く候補 2 の見積もりだけで、注文をシーケンシャルスキャンする候補 1 は、どちらの並びでも 18,213 でした。
 
 <br>
 
@@ -306,7 +306,7 @@ PostgreSQL では、`CREATE STATISTICS users_dep (dependencies) ON country, city
 
 ---
 
-### 実行計画からレコードを引き出す実行器 {#実行計画から行を引き出す実行器}
+### 実行計画からレコードを引き出すエグゼキュータ {#実行計画から行を引き出す実行器}
 
 実行計画は、レコードを作る部品を組み合わせた木です。表を走査する、2 つの入力を結合する、並べ替える、といった 1 つ 1 つの部品を演算子と呼びます。SQL に書く `=` や `AND` の演算子とは別のものを指します。
 
@@ -331,7 +331,7 @@ flowchart TD
 
 <br>
 
-PostgreSQL の実行器では、上の演算子が下の演算子に次の 1 件を要求し、要求された演算子が 1 件だけ返します。返すレコードが尽きた演算子は、その旨を呼び出し元に伝えます。この作りは、PostgreSQL のドキュメントで「[demand-pull pipeline mechanism](https://www.postgresql.org/docs/current/executor.html)」（要求で引き出すパイプラインの仕組み）と呼ばれています。
+PostgreSQL のエグゼキュータでは、上の演算子が下の演算子に次の 1 件を要求し、要求された演算子が 1 件だけ返します。返すレコードが尽きた演算子は、その旨を呼び出し元に伝えます。この作りは、PostgreSQL のドキュメントで「[demand-pull pipeline mechanism](https://www.postgresql.org/docs/current/executor.html)」（要求で引き出すパイプラインの仕組み）と呼ばれています。
 
 この仕組みは一般に、各演算子が準備（open）・次の 1 件の生成（next）・後始末（close）の 3 つの手続きを持ち、上の演算子が下の演算子の next を呼ぶ形で説明されます。open・next・close は下記の Graefe 氏の論文が使う呼び名で、PostgreSQL のソースコードでは [`ExecInitNode`・`ExecProcNode`・`ExecEndNode`](https://github.com/postgres/postgres/blob/master/src/backend/executor/README) がそれぞれに当たります。
 

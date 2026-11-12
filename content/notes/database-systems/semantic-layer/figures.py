@@ -125,7 +125,7 @@ def layer_figure():
     s.box(360, 60, 330, 420, BLUE_PALE, BLUE, rx=12)
     s.text(525, 108, "セマンティックレイヤー", 26)
     rows = [("指標", "revenue / paid_amount"), ("エンティティ", "order / customer"),
-            ("切り口（次元）", "region / category")]
+            ("切り口（ディメンション）", "region / category")]
     for k, (h, v) in enumerate(rows):
         y = 140 + k * 106
         s.box(385, y, 280, 86, "#ffffff", BLUE)
@@ -151,10 +151,10 @@ def entity_figure():
             s.box(x, yy, w, 38, "#ffffff", LINE, rx=0, sw=1.5)
             s.text(x + 14, yy + 26, a, 18, anchor="start")
             s.text(x + w - 14, yy + 26, b, 16, anchor="end", cls="sub")
-    model(40, 40, "明細（order_items）", [("order_item", "primary"), ("order", "foreign"), ("category", "次元")])
+    model(40, 40, "明細（order_items）", [("order_item", "primary"), ("order", "foreign"), ("category", "ディメンション")])
     model(40, 330, "支払い（payments）", [("payment", "primary"), ("order", "foreign")])
-    model(380, 185, "注文（orders）", [("order", "primary"), ("customer", "foreign"), ("status", "次元")])
-    model(690, 185, "顧客（customers）", [("customer", "primary"), ("region", "次元")], w=240)
+    model(380, 185, "注文（orders）", [("order", "primary"), ("customer", "foreign"), ("status", "ディメンション")])
+    model(690, 185, "顧客（customers）", [("customer", "primary"), ("region", "ディメンション")], w=240)
     # 許される向き（foreign → primary）
     s.arrow(292, 145, 376, 250)
     s.arrow(292, 410, 376, 270)

@@ -103,7 +103,7 @@ MetricFlow では、dbt のモデル（SQL で定義したテーブルやビュ�
 | 種類 | 役割 | 今回の例 |
 |---|---|---|
 | エンティティ（entity） | テーブルをつなぐキー | order、customer |
-| 次元（dimension） | 集計を分ける切り口（図の「切り口」） | region、category、status |
+| ディメンション（dimension） | 集計を分ける切り口（図の「切り口」） | region、category、status |
 | 指標（metric） | 集計する値と計算式 | revenue、paid_amount、items_sold |
 
 エンティティには型があり、そのテーブルで 1 レコードに 1 つだけ現れるキーは `primary`、複数のレコードに現れうるキーは `foreign` です。以下は、明細と支払いの定義の抜粋です（dbt Core 1.12 以降の書式）。`stg_` は、CSV をそのまま読み込んだ段のモデルに付ける慣習的な接頭辞です。`agg_time_dimension` は、指標を日付で集計する時にどの日付の列を使うかの指定です。

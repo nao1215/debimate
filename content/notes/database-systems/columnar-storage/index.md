@@ -42,7 +42,7 @@ Row Store と Column Store は、1 回の処理で触る行と列の形が違い
 | 1 行の全ての列を読む・書く（OLTP） | 1 行が 1 か所にまとまっていて速い | 列の数だけ別の場所を読み書きする |
 | 大量の行の数列だけを読む（OLAP） | 使わない列も同じブロックに載ってくる | 使う列だけを読める |
 
-Row Store も [B-Tree](/notes/database-systems/b-tree/) の索引があれば、条件に合う少数の行を素早く探せます。しかし、表の大部分を読む集計では索引が役に立ちにくく、表を全部読むことになります（[Index Scan](/notes/database-systems/index-scan/) の「見積もりで全走査に負ける条件」）。
+Row Store も [B-Tree](/notes/database-systems/b-tree/) の索引があれば、条件に合う少数の行を素早く探せます。しかし、表の大部分を読む集計では索引が役に立ちにくく、表を全部読むことになります（[Index Scan](/notes/database-systems/index-scan/) の「見積もりでシーケンシャルスキャンに負ける条件」）。
 
 ---
 
@@ -201,7 +201,7 @@ zone map が効くのは、条件に使う列の値が塊ごとにまとまっ�
 
 ### 値の塊をまとめて処理する Vectorized Execution
 
-読む量を減らしても、読んだ値を CPU で計算する時間は掛かります。多くの RDB の実行器は、上の演算子が下の演算子に次の 1 行を要求する形で動きます（[Query Processing](/notes/database-systems/query-processing/#実行計画から行を引き出す実行器)）。1 行ごとに関数を呼ぶので、400 万行の合計なら、足し算 1 回のために関数呼び出しが 400 万回起きます。
+読む量を減らしても、読んだ値を CPU で計算する時間は掛かります。多くの RDB で、エグゼキュータ（executor）は、上の演算子が下の演算子に次の 1 行を要求する形で動きます（[Query Processing](/notes/database-systems/query-processing/#実行計画から行を引き出す実行器)）。1 行ごとに関数を呼ぶので、400 万行の合計なら、足し算 1 回のために関数呼び出しが 400 万回起きます。
 
 Boncz 氏らの論文 [MonetDB/X100: Hyper-Pipelining Query Execution](https://www.cidrdb.org/cidr2005/papers/P19.pdf)（CIDR 2005）は、[MySQL](https://www.mysql.com/) で [TPC-H](https://www.tpc.org/tpch/)（分析処理のベンチマーク）の Query 1 を実行し、1 行ずつの処理のコストを計測しています。
 

@@ -102,7 +102,7 @@ def concept_figure():
     # Only the verdict "-100" is red; the rest of the sentence stays black.
     f.parts.append(
         '<text x="480" y="506" font-size="26" font-weight="normal" text-anchor="middle" '
-        f'style="fill:{INK}">書くレコードが違うので両方確定し、合計は '
+        f'style="fill:{INK}">書くレコードが違うので両方コミットし、合計は '
         f'<tspan style="fill:{RED}">-100</tspan></text>')
     f.save(HERE / "images" / "snapshot-isolation_concept.svg")
 

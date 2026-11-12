@@ -99,7 +99,7 @@ def concept_figure():
     step(f, 250, ya, "確認")
     step(f, 288, yb, "確認")
     step(f, 470, ya, "挿入")
-    step(f, 620, ya, "確定", GREEN, GREEN_PALE)
+    step(f, 620, ya, "コミット", GREEN, GREEN_PALE)
     step(f, 520, yb, "挿入")
     f.line(620, yb, 704, yb, OCHRE, sw=6, dash="10 8")
     f.text(662, yb - 14, "待つ", 24, SUB)

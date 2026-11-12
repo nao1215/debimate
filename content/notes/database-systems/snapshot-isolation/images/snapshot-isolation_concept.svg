@@ -26,5 +26,5 @@
 <line x1="540" y1="90" x2="540" y2="144" stroke="#7aa6c2" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-blue)"/>
 <line x1="740" y1="355" x2="740" y2="301" stroke="#d4a24c" stroke-width="6" stroke-linecap="round" marker-end="url(#arrow-ochre)"/>
 <text x="480" y="458" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#666666">縦線の時点で読むので、どちらも x = 50、y = 50 を見る</text>
-<text x="480" y="506" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">書くレコードが違うので両方確定し、合計は <tspan style="fill:#e15759">-100</tspan></text>
+<text x="480" y="506" font-size="26" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">書くレコードが違うので両方コミットし、合計は <tspan style="fill:#e15759">-100</tspan></text>
 </svg>
