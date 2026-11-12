@@ -1,0 +1,13 @@
+{
+ "rgba_green_brown_20261115": {
+  "prompt_id": "f8f6ce0b-4121-46b6-93f7-4a345482fb3b",
+  "seconds": 4.79,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 96,
+   "loadavg_1m": 19.77734375
+  }
+ }
+}
