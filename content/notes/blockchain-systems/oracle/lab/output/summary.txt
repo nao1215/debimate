@@ -1,0 +1,66 @@
+[attack/spot] status=1 profit=61,307.05 tUSD debt=95,856.00 collateral=10.0 tETH revert=-
+    step 0: spot=3,000.00 twap=3,000.00 feed=3,000.00 usd=0.00 eth=0.0000
+    step 1: spot=3,000.00 twap=3,000.00 feed=3,000.00 usd=300,000.00 eth=0.0000
+    step 2: spot=11,982.00 twap=3,000.00 feed=3,000.00 usd=0.00 eth=49.9249
+    step 3: spot=11,982.00 twap=3,000.00 feed=3,000.00 usd=0.00 eth=39.9249
+    step 4: spot=11,982.00 twap=3,000.00 feed=3,000.00 usd=95,856.00 eth=39.9249
+    step 5: spot=3,714.21 twap=3,000.00 feed=3,000.00 usd=361,577.05 eth=0.0000
+    step 6: spot=3,714.21 twap=3,000.00 feed=3,000.00 usd=61,307.05 eth=0.0000
+[attack/twap] status=0 profit=0.00 tUSD debt=0.00 collateral=0.0 tETH revert={'error': 'CannotRepay', 'held': 289721.04722241766, 'owed': 300270.0, 'borrowed': 24000.0, 'shortfall': 10548.952777582337}
+[attack/feedsrc] status=0 profit=0.00 tUSD debt=0.00 collateral=0.0 tETH revert={'error': 'CannotRepay', 'held': 289721.04722241766, 'owed': 300270.0, 'borrowed': 24000.0, 'shortfall': 10548.952777582337}
+{
+ "borrower": {
+  "collateral_eth": 10,
+  "debt_usd": 22000,
+  "liquidation_threshold": 0.8
+ },
+ "liquidatable_from": {
+  "market": {
+   "t": 1380,
+   "price_seen": 2735.4380796122277,
+   "market": 2735.4380796122277,
+   "collateral_value_at_market": 27354.380796122277
+  },
+  "spot": {
+   "t": 1380,
+   "price_seen": 2735.411090045505,
+   "market": 2735.4380796122277,
+   "collateral_value_at_market": 27354.380796122277
+  },
+  "feed": {
+   "t": 1380,
+   "price_seen": 2735.43807961,
+   "market": 2735.4380796122277,
+   "collateral_value_at_market": 27354.380796122277
+  },
+  "twap": {
+   "t": 2016,
+   "price_seen": 2744.878600335777,
+   "market": 2103.926082241538,
+   "collateral_value_at_market": 21039.26082241538
+  },
+  "feed_lag12": {
+   "t": 1392,
+   "price_seen": 2735.43807961,
+   "market": 2717.3010238185593,
+   "collateral_value_at_market": 27173.010238185594
+  },
+  "feed_lag60": {
+   "t": 1452,
+   "price_seen": 2717.30102381,
+   "market": 2625.5316693995296,
+   "collateral_value_at_market": 26255.316693995297
+  }
+ },
+ "feed_updates": 51,
+ "feed_updates_during_crash": 50,
+ "feed_lag12_updates_during_crash": 49,
+ "feed_lag60_updates_during_crash": 9,
+ "feed_age_max": 3588,
+ "share_age_over_900_calm": 0.7441860465116279,
+ "share_age_over_900_all": 0.5543237250554324,
+ "max_gap_feed_vs_market_pct": 0.2572227518914294,
+ "max_gap_feed_lag12_vs_market_pct": 0.8337434031156838,
+ "max_gap_feed_lag60_vs_market_pct": 7.563871266618179,
+ "max_gap_twap_vs_market_pct": 35.94054680951265
+}

@@ -1,3 +1,0 @@
-market: 1999.96 -> min 1686.14 USD
-lag 12 s: updates  28 (crash window 25), max gap before crash 0.53 %, during crash 1.34 %, answer older than 300 s before crash 89 % of time
-lag 60 s: updates   9 (crash window 6), max gap before crash 0.57 %, during crash 6.82 %, answer older than 300 s before crash 89 % of time

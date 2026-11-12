@@ -1,192 +1,161 @@
-"""Generate the cover diagram of the oracle note.
-
-concept_figure() draws, as a hand-written SVG (stdlib only), the market and
-the reporters outside the chain boundary and the price feed and the
-application inside it. The part outside (what the market was and what the
-reporters observed) is trusted; inside, every node computes from the same
-reported value.
+#!/usr/bin/env python3
+"""Oracle ノートの図を lab/output/results.json から作る。
 
 Run: python3 content/notes/blockchain-systems/oracle/figures.py
+出力: images/ の WebP 3 枚。
+- oracle_attack_steps.webp: 同じトランザクションの中の手順ごとに、3 つの取り出し口が返した価格（表紙）
+- oracle_crash.webp: 急落の 90 分を、チェーンの時刻の 600 倍速で再生する動く図
+- oracle_feed_age.webp: プッシュ型の価格の最後の更新からの経過時間
 """
+import io
+import json
+import os
 
-from html import escape
-from pathlib import Path
+import matplotlib
 
-HERE = Path(__file__).resolve().parent
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
-FILL, PALE = "#f2f2f2", "#eaf1f5"
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+from matplotlib import font_manager
+from PIL import Image
 
+HERE = os.path.dirname(os.path.abspath(__file__))
+IMG = os.path.join(HERE, "images")
+RES = json.load(open(os.path.join(HERE, "lab", "output", "results.json")))
 
-class Svg:
-    def __init__(self, width, height, title):
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs>'
-            + "".join(
-                f'<marker id="arrow-{n}" viewBox="0 0 10 10" refX="9" refY="5" '
-                'markerWidth="4" markerHeight="4" orient="auto">'
-                f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
-                for n, c in (("ink", INK), ("sub", SUB), ("accent", ACCENT), ("ochre", OCHRE)))
-            + '</defs>',
-            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        ]
+JP = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+font_manager.fontManager.addfont(JP)
+plt.rcParams["font.family"] = font_manager.FontProperties(fname=JP).get_name()
+plt.rcParams["axes.spines.top"] = False
+plt.rcParams["axes.spines.right"] = False
 
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle",
-             rotate=None):
-        r = f' transform="rotate({rotate} {x} {y})"' if rotate is not None else ""
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}"{r}>{escape(s)}</text>')
-
-    def box(self, x, y, w, h, fill, stroke="none", sw=2.5, dash="", rx=10):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def line(self, x1, y1, x2, y2, color, sw=4, arrow=None, dash=""):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
-
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+INK, SUB, GRID = "#1f1f1f", "#666666", "#e4e4e4"
+SPOT, TWAP, FEED, MARKET = "#e15759", "#4e79a7", "#59a14f", "#9c9c9c"
+LAG = "#b07aa1"
 
 
-def concept_figure():
-    f = Svg(960, 540, "チェーンの境界の外の市場と報告者、内側の価格フィードとアプリ")
-    by, bh = 195, 100   # boxes
-
-    # Chain boundary.
-    f.box(470, 95, 465, 320, PALE, ACCENT, sw=3, rx=16)
-    f.text(702, 140, "チェーンの中", 26, weight="normal")
-
-    # Trusted part: market and reporters (a caution area, ochre).
-    f.box(25, 95, 420, 320, OCHRE_PALE, OCHRE, sw=3, dash="10 7", rx=16)
-    f.text(235, 140, "チェーンの外", 26, weight="normal")
-    f.box(45, by, 140, bh, "#ffffff", SUB, sw=2.5)
-    f.text(115, by + 44, "市場", 26, weight="normal")
-    f.text(115, by + 78, "取引所", 24, SUB)
-    for d in (16, 8):   # stacked boxes: several reporter nodes
-        f.box(250 + d, by - d, 170, bh, "#ffffff", SUB, sw=2)
-    f.box(250, by, 170, bh, "#ffffff", SUB, sw=2.5)
-    f.text(335, by + 44, "報告者", 26, weight="normal")
-    f.text(335, by + 78, "観測・署名", 24, SUB)
-    f.text(235, 375, "ここは信頼する", 26, INK, "normal")
-
-    # Inside the chain.
-    f.box(510, by, 180, bh, "#ffffff", ACCENT, sw=2.5)
-    f.text(600, by + 44, "価格フィード", 26, weight="normal")
-    f.text(600, by + 78, "署名を検証", 24, SUB)
-    f.box(745, by, 165, bh, "#ffffff", ACCENT, sw=2.5)
-    f.text(827, by + 44, "アプリ", 26, weight="normal")
-    f.text(827, by + 78, "価格を使う", 24, SUB)
-    f.text(702, 375, "全ノードが同じ値で計算", 24, INK)
-
-    # Flows.
-    my = by + bh / 2
-    f.line(187, my, 246, my, OCHRE, sw=5, arrow="ochre")
-    f.line(422, my, 506, my, OCHRE, sw=5, arrow="ochre")
-    f.line(692, my, 741, my, ACCENT, sw=5, arrow="accent")
-
-    f.text(480, 478, "同じ値で計算しても、その値が市場と一致するとは限らない", 24, INK)
-    f.save(HERE / "images" / "oracle_concept.svg")
+def save(fig, name, dpi=200):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=dpi, facecolor="#ffffff")
+    plt.close(fig)
+    buf.seek(0)
+    Image.open(buf).convert("RGB").save(os.path.join(IMG, name), "WEBP", quality=90, method=6)
 
 
-def _plt(salt):
-    """matplotlib with the site's monochrome settings (imported lazily)."""
-    import sys
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    sys.path.insert(0, str(HERE / "lab"))
-    plt.rcParams.update({
-        "font.size": 11, "axes.edgecolor": SUB, "axes.labelcolor": INK,
-        "xtick.color": INK, "ytick.color": INK, "text.color": INK,
-        "svg.fonttype": "path", "svg.hashsalt": salt,
-        "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
-    })
-    return plt
-
-
-def _save(fig, name):
+def fig_attack():
+    a = RES["attack"]
+    steps = a["spot"]["steps"]
+    labels = ["0 開始", "1 フラッシュ\nローン", "2 tETH を\n買う", "3 担保を\n預ける", "4 借りる", "5 tETH を\n売り戻す", "6 返済"]
+    x = [s["step"] for s in steps]
+    fig, ax = plt.subplots(figsize=(9.6, 4.6))
+    ax.plot(x, [s["spot"] for s in steps], color=SPOT, lw=2.6, marker="o", label="spot（プールの価格）")
+    ax.plot(x, [s["twap"] for s in steps], color=TWAP, lw=2.6, marker="s", label="TWAP（30 分）")
+    ax.plot(x, [s["feed"] for s in steps], color=FEED, lw=1.6, marker="^", ls="--", label="プッシュ型")
+    ax.set_xticks(x, labels, fontsize=10)
+    ax.set_ylabel("1 tETH の価格（tUSD）", fontsize=11)
+    ax.set_ylim(0, 15500)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:,.0f}"))
+    ax.grid(axis="y", color=GRID)
+    ax.annotate(f"{steps[2]['spot']:,.0f}", (3, steps[3]["spot"]), xytext=(0, -20), textcoords="offset points",
+                ha="center", fontsize=11, color=SPOT)
+    ax.annotate(f"{steps[5]['spot']:,.0f}", (5, steps[5]["spot"]), xytext=(14, 8), textcoords="offset points",
+                ha="left", fontsize=11, color=SPOT)
+    ax.text(2.0, 1250, "TWAP とプッシュ型は 3,000 のまま", fontsize=10.5, color=TWAP)
+    s, t = a["spot"], a["twap"]
+    box = (f"spot を読むレンディング: {s['lending_debt_usd']:,.0f} tUSD を貸し、攻撃者は {s['attacker_profit_usd']:,.0f} tUSD を得た\n"
+           f"TWAP・プッシュ型を読むレンディング: {t['revert']['borrowed']:,.0f} tUSD までで、"
+           f"返済に {t['revert']['shortfall']:,.0f} tUSD 足りず全部取り消し")
+    ax.text(0.0, 15300, box, fontsize=10.5, color=INK, va="top",
+            bbox=dict(boxstyle="round,pad=0.5", fc="#f7f7f7", ec="#cfcfcf"))
+    ax.legend(loc="center left", bbox_to_anchor=(0.0, 0.55), fontsize=10, frameon=False)
+    ax.set_title("同じトランザクションの中で、レンディングが読む価格\n（100 tETH・300,000 tUSD のプールに、手元 0 から借りた 300,000 tUSD を入れる）",
+                 fontsize=12, color=INK, loc="left")
     fig.tight_layout()
-    fig.savefig(HERE / "images" / name, metadata={"Date": None})
+    save(fig, "oracle_attack_steps.webp")
 
 
-def deviation_heartbeat_figure():
-    plt = _plt("oracle-deviation-heartbeat")
-    from deviation_heartbeat import DEVIATION, feed, gap, market
-    prices = market()
-    t0, t1 = 5100, 6300
-    t = [s / 60 for s in range(t0, t1)]
-    fast, _, _ = feed(prices, 12)
-    slow, _, _ = feed(prices, 60)
-    fig, (top, bottom) = plt.subplots(2, 1, figsize=(7.2, 5.0), sharex=True)
-    top.plot(t, prices[t0:t1], color=SUB, lw=2.0, label="market (simulated)")
-    top.step(t, fast[t0:t1], where="post", color=ACCENT, lw=2.4,
-             label="stored, 12 s delay")
-    top.step(t, slow[t0:t1], where="post", color=RED, lw=2.4,
-             label="stored, 60 s delay")
-    top.set_ylabel("Price (USD)")
-    top.legend(frameon=False, loc="lower left")
-    bottom.plot(t, gap(prices, fast)[t0:t1], color=ACCENT, lw=2.2)
-    bottom.plot(t, gap(prices, slow)[t0:t1], color=RED, lw=2.2)
-    bottom.axhline(100 * DEVIATION, color=SUB, ls="--", lw=1.2)
-    bottom.text(t[-1], 100 * DEVIATION + 0.3, "deviation threshold 0.5 %",
-                color=SUB, ha="right")
-    bottom.set_ylabel("Gap from market (%)")
-    bottom.set_xlabel("Minutes")
-    bottom.set_xlim(t[0], t[-1])
-    for ax in (top, bottom):
-        ax.spines[["top", "right"]].set_visible(False)
-    _save(fig, "oracle_deviation_heartbeat.svg")
+def crash_frame(rows, upto, summ, final=False):
+    t = [r["t"] / 60 for r in rows]
+    fig, ax = plt.subplots(figsize=(9.6, 4.8))
+    ax.set_xlim(0, 90)
+    ax.set_ylim(1900, 3200)
+    ax.grid(color=GRID)
+    ax.set_xlabel("経過時間（分。12 秒ごとのブロック）", fontsize=11)
+    ax.set_ylabel("1 tETH の価格（tUSD）", fontsize=11)
+    ax.yaxis.set_major_formatter(matplotlib.ticker.FuncFormatter(lambda v, _: f"{v:,.0f}"))
+    liq = summ["borrower"]["debt_usd"] / summ["borrower"]["collateral_eth"] / summ["borrower"]["liquidation_threshold"]
+    ax.axhline(liq, color=SUB, lw=1, ls=":")
+    ax.text(89, liq + 18, f"この価格を下回ると清算できる（{liq:,.0f}）", ha="right", fontsize=10, color=SUB)
+    n = upto + 1
+    ax.plot(t[:n], [r["market"] for r in rows[:n]], color=MARKET, lw=4.5, alpha=0.6, label="市場（spot もほぼ同じ）")
+    ax.plot(t[:n], [r["feed"] for r in rows[:n]], color=FEED, lw=1.8, label="プッシュ型（遅れなし、理想化）")
+    ax.plot(t[:n], [r["feed_lag60"] for r in rows[:n]], color=LAG, lw=1.8, ls="--", drawstyle="steps-post",
+            label="プッシュ型（書き込みが 60 秒遅れて届く）")
+    ax.plot(t[:n], [r["twap"] for r in rows[:n]], color=TWAP, lw=2.6, label="TWAP（30 分）")
+    now = rows[upto]
+    ax.axvline(now["t"] / 60, color="#bbbbbb", lw=1)
+    lf = summ["liquidatable_from"]
+    for key, color, tx, ty in (("feed", FEED, 2, 2440), ("twap", TWAP, 36, 3060)):
+        p = lf[key]
+        if p and p["t"] <= now["t"]:
+            ax.plot(p["t"] / 60, p["price_seen"], "o", color=color, ms=8)
+            debt = summ["borrower"]["debt_usd"]
+            cv = p["collateral_value_at_market"]
+            vs = f" < 借入 {debt:,.0f} tUSD" if cv < debt else ""
+            ax.annotate(f"{p['t'] / 60:.1f} 分: 清算できるようになる\n担保の市場価値 {cv:,.0f} tUSD{vs}",
+                        (p["t"] / 60, p["price_seen"]), xytext=(tx, ty), textcoords="data",
+                        fontsize=10, color=color, arrowprops=dict(arrowstyle="-", color=color))
+    ax.legend(loc="center right", bbox_to_anchor=(1.0, 0.42), fontsize=10, frameon=False)
+    head = (f"経過 {now['t'] / 60:4.1f} 分　市場 {now['market']:,.0f}　プッシュ型 {now['feed']:,.0f}"
+            f"（60 秒遅れ {now['feed_lag60']:,.0f}）　TWAP {now['twap']:,.0f}")
+    ax.set_title("急落する価格を、レンディングが読む価格はどう追うか（借入 22,000 tUSD・担保 10 tETH）\n" + head,
+                 fontsize=12, color=INK, loc="left")
+    ax.text(89, 1930, "チェーンの時刻の 90 分を 9 秒で再生（600 倍速）", ha="right", fontsize=9.5, color=SUB)
+    fig.tight_layout()
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=110, facecolor="#ffffff")
+    plt.close(fig)
+    buf.seek(0)
+    return Image.open(buf).convert("RGB")
 
 
-def update_triggers_figure():
-    """When a Data Feed updates (deviation or heartbeat) and how the app reads the age."""
-    f = Svg(960, 540, "価格フィードが更新される 2 つの条件と、利用側が見る経過時間")
-    # Legend.
-    f.line(90, 50, 140, 50, SUB, sw=3)
-    f.text(150, 58, "市場", 24, anchor="start")
-    f.line(260, 50, 310, 50, ACCENT, sw=6)
-    f.text(320, 58, "保存された価格", 24, anchor="start")
-    market = [(80, 205), (150, 195), (220, 208), (290, 198), (360, 204), (430, 196),
-              (500, 206), (560, 200), (600, 250), (640, 300), (700, 296), (780, 304),
-              (900, 300)]
-    pts = " ".join(f"{x},{y}" for x, y in market)
-    f.parts.append(f'<polyline points="{pts}" fill="none" stroke="{SUB}" stroke-width="3"/>')
-    f.parts.append(f'<polyline points="80,200 650,200 650,300 900,300" fill="none" '
-                   f'stroke="{ACCENT}" stroke-width="6"/>')
-    for x, y, label in ((330, 200, "heartbeat に達した"), (650, 300, "ずれが閾値を超えた")):
-        f.parts.append(f'<circle cx="{x}" cy="{y}" r="11" fill="{OCHRE_PALE}" '
-                       f'stroke="{OCHRE}" stroke-width="4"/>')
-    f.text(330, 160, "heartbeat に達した", 24)
-    f.text(330, 245, "（値が同じでも更新）", 24, SUB)
-    f.text(700, 160, "ずれが閾値を超えた", 24)
-    f.text(650, 430, "updatedAt", 24)
-    # Time axis and the age the application checks.
-    f.line(80, 390, 905, 390, SUB, sw=3, arrow="sub")
-    f.text(905, 375, "時間", 24, SUB, anchor="end")
-    f.line(650, 380, 650, 400, INK, sw=3)
-    f.line(880, 380, 880, 400, INK, sw=3)
-    f.text(880, 430, "現在", 24)
-    f.line(650, 445, 880, 445, OCHRE, sw=4)
-    f.line(650, 435, 650, 455, OCHRE, sw=4)
-    f.line(880, 435, 880, 455, OCHRE, sw=4)
-    f.text(560, 452, "経過時間", 24, anchor="end")
-    f.text(480, 510, "経過時間がアプリの許容時間以内かを利用側で判定する", 24, SUB)
-    f.save(HERE / "images" / "oracle_update_triggers.svg")
+def fig_crash():
+    rows, summ = RES["crash"], RES["crash_summary"]
+    idx = list(range(0, len(rows), 15))   # 15 ブロック（3 分）ごとに 1 コマ
+    if idx[-1] != len(rows) - 1:
+        idx.append(len(rows) - 1)
+    frames = [crash_frame(rows, i, summ) for i in idx]
+    durs = [300] * (len(frames) - 1) + [3500]
+    frames[0].save(os.path.join(IMG, "oracle_crash.webp"), "WEBP", save_all=True, append_images=frames[1:],
+                   duration=durs, loop=0, quality=72, method=6)
+
+
+def fig_feed_age():
+    rows, summ = RES["crash"], RES["crash_summary"]
+    t = [r["t"] / 60 for r in rows]
+    age = [r["feed_age"] / 60 for r in rows]
+    fig, ax = plt.subplots(figsize=(9.6, 3.8))
+    ax.fill_between(t, 0, age, where=[a > 15 for a in age], color="#fbe3e3", step="post")
+    ax.step(t, age, where="post", color=FEED, lw=2)
+    ax.axhline(15, color="#e15759", lw=1.2, ls="--")
+    ax.text(89, 10.5, "古さの上限を 15 分にした場合、赤い所では読めずに revert", ha="right", fontsize=10, color="#c03d3f")
+    ax.axhline(60, color=SUB, lw=1, ls=":")
+    ax.text(1, 61.5, "heartbeat（60 分）", fontsize=10, color=SUB)
+    ax.axvspan(20, 30, color="#f2f2f2", zorder=0)
+    ax.text(25, 40, "急落の 10 分\n（更新 50 回）", ha="center", fontsize=10, color=SUB)
+    ax.set_xlim(0, 90)
+    ax.set_ylim(0, 68)
+    ax.set_xlabel("経過時間（分）", fontsize=11)
+    ax.set_ylabel("最後の更新からの経過（分）", fontsize=11)
+    ax.grid(axis="y", color=GRID)
+    share = summ["share_age_over_900_calm"] * 100
+    ax.set_title(f"最後の更新からの経過：揺れを ±0.2% にした 30〜90 分では、{share:.0f}% のブロックで 15 分より古い",
+                 fontsize=12, color=INK, loc="left")
+    fig.tight_layout()
+    save(fig, "oracle_feed_age.webp")
 
 
 if __name__ == "__main__":
-    update_triggers_figure()
-    concept_figure()
-    deviation_heartbeat_figure()
+    os.makedirs(IMG, exist_ok=True)
+    fig_attack()
+    fig_crash()
+    fig_feed_age()
