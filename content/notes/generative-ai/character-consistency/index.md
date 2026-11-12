@@ -81,7 +81,7 @@ topics: ["Image Generation"]
 - 機材: AMD Ryzen AI Max+ 395 と Radeon 8060S（RAM 128GB のうち 64GB を GPU に割り当て）
 - CFG（文面にどれだけ強く従わせるか）5.5、サンプラー euler_ancestral
 - ライセンス（2026 年 11 月 11 日時点）: ベースモデルは [Fair AI Public License 1.0-SD](https://freedevproject.org/faipl-1.0-sd/)、IP-Adapter・ControlNet Union・WD tagger は Apache-2.0
-- IP-Adapter: [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)（コミット `a0f451a`）の `IPAdapterAdvanced` で掛けた。画像エンコーダーは OpenCLIP の ViT-H-14
+- IP-Adapter: [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)（コミット `a0f451a`）の `IPAdapterAdvanced` で使った。画像エンコーダーは OpenCLIP の ViT-H-14
 
 </details>
 
@@ -109,7 +109,7 @@ for i in (1, 2):
     JOBS[f"pose_{i}"] = ("base", S + 200 + i, ("pose", 1.0))             # 基準の骨格で縛る
 ```
 
-`ipa` は参照画像（IP-Adapter）、`i2i` は img2img、`pose` は骨格の ControlNet で、いずれも後の節で説明します。上記のほかに、参照の掛け方の別案・denoise 0.85・物差し用の別人の 8 件を送っています（一覧は lab/README.txt）。
+`ipa` は参照画像（IP-Adapter）、`i2i` は img2img、`pose` は骨格の ControlNet で、いずれも後の節で説明します。上記のほかに、参照画像の使い方の別案・denoise 0.85・物差し用の別人の 8 件を送っています（一覧は lab/README.txt）。
 
 揃い具合は、目で見るのに加えて、顔の切り抜きを 2 つの方法で比べました。顔の範囲は、文字で指定した物の範囲を推定する [CLIPSeg](https://huggingface.co/CIDAS/clipseg-rd64-refined)（[論文](https://arxiv.org/abs/2112.10003)）に `face` を探させて切り抜いています（[lab/metrics.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/metrics.py)）。
 
@@ -214,11 +214,11 @@ ControlNet は、骨格や奥行きの画像を形の条件として渡し、ポ
 <figure style="margin:0;flex:0 1 170px;min-width:0"><img src="images/ipa80_smile.webp" alt="参照の重み 0.8。顔が赤紫に転び、髪が黒っぽくなり、塗りが筆の跡のように荒れる" width="416" height="608" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">重み 0.8</figcaption></figure>
 </div>
 
-参照を掛けると、カーディガンはベージュ寄りになり、耳飾りには基準と同じ緑の石が付き、首の傾きも基準に寄りました。一方で、重み 0.35 でも全体の色が青白く転び、0.5 以上では顔が桃色や赤紫になって線が荒れました。後で数値でも比べますが、この色の崩れは顔の近さの指標も大きく下げました。
+参照画像を使うと、カーディガンはベージュ寄りになり、耳飾りには基準と同じ緑の石が付き、首の傾きも基準に寄りました。一方で、重み 0.35 でも全体の色が青白く転び、0.5 以上では顔が桃色や赤紫になって線が荒れました。後で数値でも比べますが、この色の崩れは顔の近さの指標も大きく下げました。
 
-掛け方を 2 通り変えても、同じように色が転びました。1 つは、ノイズの多い最初の 3 割のステップでは参照を掛けず、残りのステップだけに重み 0.6 で掛ける方法です。もう 1 つは、参照なしで描いた絵を下絵にして denoise 0.5 の img2img で描き直し、その描き直しにだけ重み 0.7 で参照を掛ける方法です。
+使い方を 2 通り変えても、同じように色が転びました。1 つは、ノイズの多い最初の 3 割のステップでは参照画像を使わず、残りのステップだけに重み 0.6 で使う方法です。もう 1 つは、参照なしで描いた絵を下絵にして denoise 0.5 の img2img で描き直し、その描き直しにだけ重み 0.7 で参照画像を使う方法です。
 
-IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので、今回のベースモデルは SDXL を大きく追加学習した派生モデルです。その差と画風 LoRA の重なりが原因と推測していますが、確認してはいません。公式の README は、同じベースモデルから追加学習したモデルにも IP-Adapter を使える（"IP-Adapter can be generalized not only to other custom models fine-tuned from the same base model"）と書いているので、この推測はその記述と食い違います。少なくともこの組み合わせでは、参照画像は顔を寄せる前に絵を壊しました。参照の背景・掛ける段・掛け方を変えて色の転びを切り分けた実験は、[IP-Adapter Color Cast のノート](/notes/generative-ai/ip-adapter-color-cast/)にまとめました。
+IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので、今回のベースモデルは SDXL を大きく追加学習した派生モデルです。その差と画風 LoRA の重なりが原因と推測していますが、確認してはいません。公式の README は、同じベースモデルから追加学習したモデルにも IP-Adapter を使える（"IP-Adapter can be generalized not only to other custom models fine-tuned from the same base model"）と書いているので、この推測はその記述と食い違います。少なくともこの組み合わせでは、参照画像は顔を寄せる前に絵を壊しました。参照の背景・使う段・効かせ方を変えて色の転びを切り分けた実験は、[IP-Adapter Color Cast のノート](/notes/generative-ai/ip-adapter-color-cast/)にまとめました。
 
 ---
 
@@ -285,6 +285,6 @@ ipa80_cafe      face_clip=0.692 face_tags=0.417 ...
 - 構図や視点を大きく変える場合。基準の絵からの img2img では新しい構図が出ず、文面で描くと顔が変わる
 - 顔立ちが似ていることを数値で保証したい場合。CLIP は別人と同じキャラの差が小さく、タグは語で書けない顔の差を測れない
 - 服の色や小物の形が語で縛れない場合。今回の `navy` のように、語が効かずに塗りの傾向に引っ張られる
-- 今回の組み合わせのように、参照画像を掛けると色と塗りが崩れる場合。顔を寄せる前に使えなくなる
+- 今回の組み合わせのように、参照画像を使うと色と塗りが崩れる場合。顔を寄せる前に使えなくなる
 
 文面・seed・LoRA・img2img・ControlNet・参照画像は、それぞれ揃えるものが違います。何を揃え、何を変えたいかを先に決めて、手段を組み合わせる必要があります。

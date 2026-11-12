@@ -1,13 +1,13 @@
 """IP-Adapter の参照で色が転ぶ話のノートの図を作る。
 
-- ipa_cover.webp: 緑の背景の参照、参照なし、参照を 1 段目に linear で掛けた絵
+- ipa_cover.webp: 緑の背景の参照、参照なし、参照画像を 1 段目に linear で使った絵
 - ipa_read.webp: 透明な参照を ComfyUI が読んだ絵と、画像エンコーダーが見る 224 x 224 の区画
 - ipa_layers.webp: SDXL で参照が入る 11 か所と、linear・style transfer precise が使う所
 - ipa_grid.webp: 銀の参照で、段（行）× 背景と型（列）を変えた絵（seed 20261113）
 - ipa_metrics.webp: 人物の彩度と、背景と白の差（銀の参照、各 3 seed）
 - ipa_blank.webp: 人物のいない真っ白・真っ緑の 1 枚を参照にした 1 段目
 - ipa_weight.webp: 重み 0.3・0.6・0.9
-- ipa_want.webp: 青い陣羽織の参照を 1 段目と 2 段目に掛けた絵
+- ipa_want.webp: 青い陣羽織の参照を 1 段目と 2 段目で使った絵
 
     uv run --with pillow==12.0.0 --with matplotlib==3.9.2 --with numpy==2.1.3 python figures.py <作業先>
 作業先には lab の手順で作った ref/・ref_plain/・ref_blank/・gen/・gen_plain/・gen_blank/ がある。
@@ -89,7 +89,7 @@ def grid(rows, row_labels, col_labels, gap=12, left=0, top=46, size=24):
 def cover(work):
     ims = [ref_body(work / "ref_plain/green.png"), body(work / f"gen_plain/s1_none_{SEED}.png"),
            body(work / f"gen_plain/s1_green_linear_{SEED}.png")]
-    to_webp(grid([ims], None, ["参照（背景は緑）", "参照なし", "参照を掛けた"], size=26), "ipa_cover.webp")
+    to_webp(grid([ims], None, ["参照（背景は緑）", "参照なし", "参照画像を使った"], size=26), "ipa_cover.webp")
 
 
 def read(work):
