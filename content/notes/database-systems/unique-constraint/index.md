@@ -228,7 +228,7 @@ CREATE UNIQUE INDEX users_email_active_idx
 
 続けるには、事前に途中の戻り先（SAVEPOINT）を置いてそこまで戻すか、トランザクションを分け直す必要があります。分け直せば、その 2 文の間にまた競合が入ります。PostgreSQL の `ON CONFLICT` 句は、この往復を避けて、衝突した時の動作を `INSERT` の中で決める書き方です。
 
-`ON CONFLICT` は、一意制約違反や排他制約違反でエラーにする代わりに、どう動くかを[指定する句](https://www.postgresql.org/docs/current/sql-insert.html)で、PostgreSQL 18 までに書ける動作は 2 つです。
+`ON CONFLICT` は、一意制約違反や排他制約違反でエラーにする代わりに、どう動くかを[指定する句](https://www.postgresql.org/docs/current/sql-insert.html)で、PostgreSQL 18 までに書ける動作は 2 つです。ただし排他制約違反に使えるのは `DO NOTHING` だけで、`DO UPDATE` が扱えるのは一意制約と一意索引です。
 
 | 指定 | 衝突したレコードへの動作 | 使う場面 |
 | --- | --- | --- |
