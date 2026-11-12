@@ -92,7 +92,7 @@
 <rect x="470" y="18" width="22" height="22" rx="2" fill="#eaf1f5" stroke="#7aa6c2" stroke-width="2"/>
 <text x="500" y="30" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="start" dominant-baseline="middle">骨格</text>
 <rect x="570" y="18" width="22" height="22" rx="2" fill="#f8eed8" stroke="#d4a24c" stroke-width="2"/>
-<text x="600" y="30" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="start" dominant-baseline="middle">奥行き</text>
-<line x1="690" y1="29" x2="720" y2="29" stroke="#1f1f1f" stroke-width="1.5" stroke-dasharray="5 4"/>
-<text x="728" y="30" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="start" dominant-baseline="middle">人形そのもの</text>
+<text x="600" y="30" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="start" dominant-baseline="middle">深度マップ</text>
+<line x1="730" y1="29" x2="760" y2="29" stroke="#1f1f1f" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text x="768" y="30" font-family="'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif" font-size="20" fill="#1f1f1f" text-anchor="start" dominant-baseline="middle">人形そのもの</text>
 </svg>

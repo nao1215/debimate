@@ -1,8 +1,8 @@
 """同じ文面と seed で、ControlNet の条件だけを変えて 1 枚ずつ描く（Python 標準ライブラリだけ）。
 
 使い方: python3 run_controlnet.py <条件の画像のディレクトリ> <PNG の保存先> <計画の名前>
-  計画: compare（文面だけ・骨格・奥行き × 3 ポーズ × 2 seed）、dedicated（骨格の専用モデル）、
-        sweep（奥行きの強さと end の振り）、thin（細い骨格）、canny（人形の輪郭）
+  計画: compare（文面だけ・骨格・深度マップ × 3 ポーズ × 2 seed）、dedicated（骨格の専用モデル）、
+        sweep（深度マップの強さと end の振り）、thin（細い骨格）、canny（人形の輪郭）
 ログは <PNG の保存先>/log_<計画>.json に足していく（prompt_id・実行秒数・送る直前の負荷）。
 """
 import json

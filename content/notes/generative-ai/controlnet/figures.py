@@ -94,11 +94,11 @@ def concept_figure():
 
 def error_figure():
     """ポーズごとに、腕と脚の関節のずれ（人形の背丈に対する %）を条件ごとの棒で並べる。
-    棒は seed 2 本の平均、点は各 seed。破線は人形の奥行きの画像そのものを検出した時のずれ（検出器の目安）。"""
+    棒は seed 2 本の平均、点は各 seed。破線は人形の深度マップそのものを検出した時のずれ（検出器の目安）。"""
     m = json.loads((LAB / "pose_metrics.json").read_text())
     poses = [("raise", "腕を上げる"), ("lunge", "突き"), ("lookback", "振り返る")]
     conds = [("text", "文面だけ", "#bdbdbd", NEUTRAL), ("openpose", "骨格", BLUE, BLUE_F),
-             ("depth", "奥行き", OCHRE, OCHRE_F)]
+             ("depth", "深度マップ", OCHRE, OCHRE_F)]
     seeds = ["20261111", "20261112"]
     W, H = 960, 540
     x0, y0, ph, top = 70, 440, 350, 70.0  # 縦軸 0〜top %

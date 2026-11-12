@@ -23,3 +23,4 @@ mlops__experiment-tracking	問い	その他	実験管理（experiment tracking�
 math__skewness	場面	その他	歪度と log1p - 単位を変えるだけで、log1p 後の歪度が 0.79 から -0.17 まで動く
 math__vector-matrix-ops	問い	その他	ベクトルと行列の演算（内積・行列積） - digits の 166 枚が、内積では同じ 1 枚の「1」を一番近いと選ぶ
 distributed-systems__transactional-outbox	場面	その他	Transactional Outbox - id の順に読む relay は、コミット済みの行を飛ばす
+generative-ai__depth-body-shape	誤解	その他	Depth Body Shape - 3D の人形から作った深度マップは、ポーズと一緒に体型と服の厚みも写す

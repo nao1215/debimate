@@ -34,7 +34,7 @@ ControlNet ノートの実験ファイル
 ----
   blender --background --python make_mannequin.py -- <作業先>/mannequin.blend
   blender --background <作業先>/mannequin.blend --python render_poses.py -- poses.json <条件の画像の保存先>
-      # depth_<ポーズ>.png（奥行き）と keypoints.json（OpenPose の 18 点の画面上の座標）
+      # depth_<ポーズ>.png（深度マップ）と keypoints.json（OpenPose の 18 点の画面上の座標）
   python3 draw_openpose.py <条件の画像の保存先>/keypoints.json <条件の画像の保存先>          # openpose_<ポーズ>.png
   python3 draw_openpose.py <条件の画像の保存先>/keypoints.json <条件の画像の保存先> --thin  # 細い骨格
   python3 make_canny.py <条件の画像の保存先>                                                 # canny_<ポーズ>.png
@@ -61,15 +61,15 @@ ControlNet ノートの実験ファイル
             watermark, logo, nsfw, nude, child, 1girl, multiple boys, multiple views, extra arms
 - 条件（compare）
     骨格: union（SetUnionControlNetType openpose）、strength 1.0、start 0、end 1.0
-    奥行き: union（SetUnionControlNetType depth）、strength 0.7、start 0、end 0.6
+    深度マップ: union（SetUnionControlNetType depth）、strength 0.7、start 0、end 0.6
 - dedicated: 骨格の専用モデル xinsir_openpose_sdxl、strength 1.0、end 1.0
-- sweep: 突き（lunge）の奥行き。strength 0.3 / 0.5 / 1.0（end 0.6）と end 0.2 / 0.4 / 1.0（strength 0.7）
+- sweep: 突き（lunge）の深度マップ。strength 0.3 / 0.5 / 1.0（end 0.6）と end 0.2 / 0.4 / 1.0（strength 0.7）
 - thin: comfyui_controlnet_aux の既定の太さ（棒の半幅 4 px = 太さ約 8 px、点の半径 4 px）で描いた骨格。他は compare の骨格と同じ
-- canny: 人形の奥行きから作った輪郭。union（canny/lineart/anime_lineart/mlsd）、strength 0.7、end 0.6
+- canny: 人形の深度マップから作った輪郭。union（canny/lineart/anime_lineart/mlsd）、strength 0.7、end 0.6
 
 計測
 ----
 pose_metrics.py は、生成した絵から姿勢を検出し（rtmlib の Body、performance）、人形の 12 関節
 （肩・肘・手首・腰・膝・足首）とのずれを、人形の背丈（首から両足首の中点まで）に対する % で出す。
-左右の取り違えは問わない。人形の奥行きの画像そのものも同じ方法で数え（*_mannequin）、
+左右の取り違えは問わない。人形の深度マップそのものも同じ方法で数え（*_mannequin）、
 検出器が見落とす分の目安にした（output_pose_metrics.txt）。

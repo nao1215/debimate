@@ -1,11 +1,11 @@
-"""MPFB の人形にポーズを付け、同じカメラから奥行き（depth）の画像と OpenPose の 18 点の座標を書き出す。
+"""MPFB の人形にポーズを付け、同じカメラから深度マップ（depth map）と OpenPose の 18 点の座標を書き出す。
 
 使い方: blender --background <make_mannequin.py の .blend> --python render_poses.py -- poses.json <出力先>
 
 - ポーズの座標は人物の基準の座標（m）。x = 人物の左、f = 人物の前、z = 上
 - 手足の位置は IK（Inverse Kinematics、手先の位置から肘・膝の曲がりを決める仕組み）の目標で置く
 - 棒（staff）は右手に付いて、tip の方向を向く単純な円柱
-- 奥行きは近いほど明るい白黒の画像（背景は黒）。カメラは平行投影で全ポーズ共通
+- 深度マップは近いほど明るい白黒の画像（背景は黒）。カメラは平行投影で全ポーズ共通
 - 18 点は MPFB の rig.openpose.json の定義（頂点の平均か、関節の補助の立方体の中心）を、
   ポーズを付けた後のメッシュで計算して画面に写す。鼻・目・耳は、体に隠れる時は書き出さない
 """
@@ -94,7 +94,7 @@ world.use_nodes = True
 world.node_tree.nodes["Background"].inputs[0].default_value = (0, 0, 0, 1)
 scene.world = world
 
-# 奥行きの材質: カメラからの距離 7.4〜8.6 m を明るさ 1.0〜0.15 に写す（近いほど明るい）
+# 深度マップの材質: カメラからの距離 7.4〜8.6 m を明るさ 1.0〜0.15 に写す（近いほど明るい）
 mat = bpy.data.materials.new("depth")
 mat.use_nodes = True
 nt = mat.node_tree

@@ -1,0 +1,14 @@
+{
+ "real": {
+  "height_m": 1.59,
+  "head_m": 0.21,
+  "heads_tall": 7.58,
+  "inseam_ratio": 0.524
+ },
+ "anime": {
+  "height_m": 1.76,
+  "head_m": 0.184,
+  "heads_tall": 9.57,
+  "inseam_ratio": 0.578
+ }
+}

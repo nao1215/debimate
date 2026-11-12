@@ -2,7 +2,15 @@
  "path": "content/notes/generative-ai/controlnet/index.md",
  "overall": 4,
  "product": 36,
- "blob": "78ee96987966feb7f1f8ade96a0bd379aef5c8de",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:41:10"
+ "blob": "acfe09f352076241185b7f3ed63a299d2d0ffd17",
+ "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

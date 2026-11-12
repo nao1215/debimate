@@ -1,0 +1,218 @@
+{
+ "loose_text_20261112": {
+  "prompt_id": "8bd122af-d1c0-4508-880d-ec4304764322",
+  "seconds": 26.27,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 96,
+   "loadavg_1m": 4.3251953125
+  },
+  "seed": 20261112,
+  "control": null
+ },
+ "loose_real_plain_front_s070_20261112": {
+  "prompt_id": "13e0e73f-e569-4027-a6f3-80b7147a38ba",
+  "seconds": 36.16,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 68,
+   "loadavg_1m": 13.40966796875
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/real_plain_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_real_bulk_front_s070_20261112": {
+  "prompt_id": "f8a34afd-9ea9-4344-9e00-293f5482d3c9",
+  "seconds": 33.88,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 17,
+   "loadavg_1m": 11.58154296875
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/real_bulk_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_anime_plain_front_s070_20261112": {
+  "prompt_id": "323b0e54-89ed-41a5-9c53-7cf740c2e138",
+  "seconds": 28.83,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 58,
+   "loadavg_1m": 7.486328125
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/anime_plain_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_anime_bulk_front_s070_20261112": {
+  "prompt_id": "a09d9a80-65c5-4aab-8716-b15b4e1edd5f",
+  "seconds": 36.46,
+  "cached_nodes": [
+   "1",
+   "2",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 26,
+   "loadavg_1m": 5.3974609375
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/anime_bulk_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_text_20261113": {
+  "prompt_id": "9fd3e7df-eb47-4dbf-ac63-0108a888ba4d",
+  "seconds": 22.76,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 48,
+   "loadavg_1m": 14.44970703125
+  },
+  "seed": 20261113,
+  "control": null
+ },
+ "loose_real_plain_front_s070_20261113": {
+  "prompt_id": "b5065c5b-bb17-4490-9ca3-e17e838bae75",
+  "seconds": 30.34,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 31,
+   "loadavg_1m": 11.2001953125
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/real_plain_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_real_bulk_front_s070_20261113": {
+  "prompt_id": "d15a073b-a7e3-4031-843d-06495f58983d",
+  "seconds": 28.78,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 20,
+   "loadavg_1m": 9.2666015625
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/real_bulk_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_anime_plain_front_s070_20261113": {
+  "prompt_id": "cbe6e10a-9053-4467-992b-0afde8b7dae1",
+  "seconds": 28.93,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 31,
+   "loadavg_1m": 6.53271484375
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/anime_plain_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ },
+ "loose_anime_bulk_front_s070_20261113": {
+  "prompt_id": "e77d0045-3639-4137-ad26-1baaf68b1f6f",
+  "seconds": 28.86,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 36,
+   "loadavg_1m": 7.44287109375
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/anime_bulk_front.png",
+   "strength": 0.7,
+   "end": 0.6
+  }
+ }
+}

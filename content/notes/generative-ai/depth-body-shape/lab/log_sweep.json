@@ -1,0 +1,381 @@
+{
+ "real_plain_front_s040_20261112": {
+  "prompt_id": "e885fac2-30db-44ba-88f0-f3b98cc3863a",
+  "seconds": 35.97,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 44,
+   "loadavg_1m": 3.02880859375
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/real_plain_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "real_plain_front_s100_20261112": {
+  "prompt_id": "1d7caf28-632c-4490-97a4-80f616279bcd",
+  "seconds": 34.35,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 31,
+   "loadavg_1m": 8.1376953125
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/real_plain_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "real_bulk_front_s040_20261112": {
+  "prompt_id": "cd8a592a-3ccc-4fcc-9a8c-f9dd31eb82c4",
+  "seconds": 40.2,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 20,
+   "loadavg_1m": 18.123046875
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/real_bulk_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "real_bulk_front_s100_20261112": {
+  "prompt_id": "cdf87928-80b7-4f27-9909-ac386e20f5a4",
+  "seconds": 29.16,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 61,
+   "loadavg_1m": 23.728515625
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/real_bulk_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "anime_plain_front_s040_20261112": {
+  "prompt_id": "fe1bd0f0-69a5-491b-9980-a9d6d3f34dbd",
+  "seconds": 33.77,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 43,
+   "loadavg_1m": 15.36767578125
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/anime_plain_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "anime_plain_front_s100_20261112": {
+  "prompt_id": "6c0ee24c-adf2-48fb-adfc-1936c89744c8",
+  "seconds": 33.6,
+  "cached_nodes": [
+   "1",
+   "2",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 43,
+   "loadavg_1m": 10.9140625
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/anime_plain_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "anime_bulk_front_s040_20261112": {
+  "prompt_id": "55951657-8bc8-42d3-82a7-a9ba62e5bfb2",
+  "seconds": 29.17,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 35,
+   "loadavg_1m": 5.03271484375
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/anime_bulk_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "anime_bulk_front_s100_20261112": {
+  "prompt_id": "3306a67c-c103-405c-a111-5f2caf9d9536",
+  "seconds": 29.11,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 49,
+   "loadavg_1m": 3.7626953125
+  },
+  "seed": 20261112,
+  "control": {
+   "image": "debimate_depth_body/anime_bulk_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "real_plain_front_s040_20261113": {
+  "prompt_id": "b6cc5bbc-1541-416d-8d17-d00da69de411",
+  "seconds": 29.24,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 46,
+   "loadavg_1m": 3.19677734375
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/real_plain_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "real_plain_front_s100_20261113": {
+  "prompt_id": "40ad6e49-192f-4469-8820-08a8b85db97b",
+  "seconds": 29.2,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 51,
+   "loadavg_1m": 2.91943359375
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/real_plain_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "real_bulk_front_s040_20261113": {
+  "prompt_id": "d855f431-ea62-468b-9b5f-e171c2d7a520",
+  "seconds": 29.29,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 49,
+   "loadavg_1m": 5.5107421875
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/real_bulk_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "real_bulk_front_s100_20261113": {
+  "prompt_id": "78c1297e-fc84-439c-9df5-09404e352e2a",
+  "seconds": 29.23,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 54,
+   "loadavg_1m": 4.4716796875
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/real_bulk_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "anime_plain_front_s040_20261113": {
+  "prompt_id": "84ad944e-3153-4ead-9a85-c5fa769050e1",
+  "seconds": 29.19,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 51,
+   "loadavg_1m": 3.63818359375
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/anime_plain_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "anime_plain_front_s100_20261113": {
+  "prompt_id": "48100c8d-9f9c-4d80-bb99-98633d62251b",
+  "seconds": 32.58,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 44,
+   "loadavg_1m": 5.2421875
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/anime_plain_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ },
+ "anime_bulk_front_s040_20261113": {
+  "prompt_id": "e9882720-93da-463a-8b27-a55b4999cfcd",
+  "seconds": 29.25,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 60,
+   "loadavg_1m": 7.4462890625
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/anime_bulk_front.png",
+   "strength": 0.4,
+   "end": 0.6
+  }
+ },
+ "anime_bulk_front_s100_20261113": {
+  "prompt_id": "3b1b3288-1af6-49e4-a39b-5d2eec58002a",
+  "seconds": 29.25,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "5",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 52,
+   "loadavg_1m": 5.5673828125
+  },
+  "seed": 20261113,
+  "control": {
+   "image": "debimate_depth_body/anime_bulk_front.png",
+   "strength": 1.0,
+   "end": 0.6
+  }
+ }
+}
