@@ -7,7 +7,7 @@
     python3 notes-quality/gate.py push <base> <head> [--ng-list <file>]
                                                            # pre-push と CI: 規則に加え、総合 4 以上の点の記録。
                                                            # --ng-list で NG のノートの Page Bundle を書き出す（CI がビルドから外す）
-    python3 notes-quality/gate.py score <index.md> --overall 4 --product 36 --baseline 5,5,3,2,2 --by <採点した担当>
+    python3 notes-quality/gate.py score <index.md> --overall 4 --product 36 --by <採点した担当>
                                                            # 別の担当の採点し直しを scores/ に記録する（自己採点は不可）
     python3 notes-quality/gate.py record <index.md>        # 冒頭の型と題の形を opening_log.tsv に足す
 
@@ -32,7 +32,6 @@ NOTE_RE = re.compile(r'(?:content/notes|projects/ml/notes)/([^/]+)/([^/]+)/index
 SMALL = 5          # 小さな修正とみなす足した行の数
 MAJOR_LINES = 40   # これ以上足した改稿は全部の規則で見る
 MAJOR_RATIO = 0.3
-BASELINE = [5, 5, 3, 2, 2]  # 基準の 5 本（wallet, transaction-scope, quorum, adapter, sidecar）の点
 # 点の記録の基準。「4 点」は、関門の質の判定を通った上で別の担当が付けた点だけを指す（2026-11-12 著者
 # 「基準 4 が NG になるのはバグでは」）。これより前に付けた点（standard が無い記録）は旧基準として扱う
 STANDARD = 'gate-v1'
@@ -468,10 +467,10 @@ def score_check(rel, head_text):
     s = json.load(open(sp, encoding='utf-8'))
     ng = []
     by = s.get('by', '')
-    independent = s.get('baseline') == BASELINE or '基準 5 本 5・5・3・2・2' in by or '著者' in by
-    if '自己' in by or not independent:
-        ng.append(f'点の記録が書いた本人の採点か、基準の 5 本を一緒に採点していない（by: {by[:60]}）。'
-                  '別の担当が抜き出しだけで、基準の 5 本（5・5・3・2・2）と一緒に採点し直し、gate.py score --baseline 5,5,3,2,2 で記録する')
+    # 2026-11-13: 基準の 5 本が 5・5・3・2・2 に揃うことは条件にしない（期待の点を見せた採点では毎回揃い、較正にならなかった）
+    if '自己' in by or not by:
+        ng.append(f'点の記録が書いた本人の採点か、採点した担当が無い（by: {by[:60]}）。'
+                  '別の担当が抜き出しだけで採点し直し、gate.py score で記録する')
     if s.get('standard') != STANDARD:
         ng.append('関門より前の基準で付けた点（旧基準）。関門の質の判定を通してから、別の担当が採点し直して gate.py score で記録する')
     if s.get('overall', 0) < 4:
@@ -584,9 +583,7 @@ def main(argv):
         rel = os.path.relpath(os.path.abspath(rest[0]), ROOT)
         opts = dict(zip(rest[1::2], rest[2::2]))
         blob = subprocess.run(['git', '-C', ROOT, 'hash-object', '-w', rel], capture_output=True, text=True).stdout.strip()
-        base = [int(x) for x in opts.get('--baseline', '').split(',') if x.strip()]
-        if base != BASELINE:
-            sys.exit('--baseline に、同じ回に採点した基準の 5 本の点（5,5,3,2,2）を渡す。動いていたらその回の採点は使わない')
+        base = [int(x) for x in opts.get('--baseline', '').split(',') if x.strip()]  # 任意。記録だけ
         if '自己' in opts.get('--by', '') or not opts.get('--by'):
             sys.exit('--by に採点した担当を書く。書いた本人の採点（自己採点）は記録しない')
         q = check_full(rel, process=False)
