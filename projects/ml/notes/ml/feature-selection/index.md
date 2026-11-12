@@ -157,7 +157,7 @@ selected: [ 3 10 13 15 17]
 
 横軸が残した特徴量数、縦軸が 5-fold CV 正解率の平均（青の帯は[標準偏差](/ml/math/stddev/)）です。赤い破線は平均が最大の 5 列（0.815）ですが、4 列以上はどれも 0.809〜0.815 で、差は標準偏差（0.015〜0.021）より小さい値でした。5 列が 20 列より確かに良いとは言えません。
 
-選ばれた 5 列も正解と一致しません。informative は 10・17 の 2 列で、redundant の 3・13 とノイズの 15 が入りました。学習器が線形な[ロジスティック回帰](../logistic-regression/)なので、組み合わせで効く列 1 も拾えていません。
+選ばれた 5 列も正解と一致しません。informative は 10・17 の 2 列で、redundant の 3・13 とノイズの 15 が入りました。組み合わせで効く列 1 も残りませんでした。RFE は[ロジスティック回帰](../logistic-regression/)で求めた係数を見て、絶対値が小さい列から削ります。全 20 列で学習すると、列 1 の係数は 0.07 で、redundant の列 3・13（約 0.26）より小さい値でした。
 
 RFE は特徴量を減らすたびに学習と評価を繰り返すため、特徴量が増えると計算量も増えます。実行時間と検証スコアを確認して、使うかどうかを判断します。
 
@@ -203,7 +203,7 @@ C は正則化の強さの逆数で、小さいほど係数を 0 に寄せます
 
 RF の重要度は上位 12 列が informative と redundant で占められ、最上位は redundant の列 10 です。ノイズ 18 列にも 0.008〜0.013 の値が付き、ちょうど 0 になる列はありませんでした。重要度を見れば効く列とノイズは分かれますが、redundant を informative と区別できません。
 
-線形関係が支配的で係数を解釈したいなら Lasso、非線形や相互作用が効くなら木の重要度が向きます。どちらも [`SelectFromModel`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFromModel.html)`(`[`LassoCV`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LassoCV.html)`())` や `SelectFromModel(RandomForestClassifier(), threshold="median")` のように包めば、しきい値で自動的に列を切れます。
+線形関係が支配的で係数を解釈したいなら Lasso、非線形や相互作用が効くなら木の重要度が向きます。どちらも [`SelectFromModel`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectFromModel.html)`(LogisticRegression(l1_ratio=1, solver="liblinear", C=0.03))` や `SelectFromModel(RandomForestClassifier(), threshold="median")` のように包めば、しきい値で自動的に列を切れます。
 
 ---
 
