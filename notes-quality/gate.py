@@ -34,6 +34,18 @@ BASELINE = [5, 5, 3, 2, 2]  # 基準の 5 本（wallet, transaction-scope, quoru
 # 点の記録の基準。「4 点」は、関門の質の判定を通った上で別の担当が付けた点だけを指す（2026-11-12 著者
 # 「基準 4 が NG になるのはバグでは」）。これより前に付けた点（standard が無い記録）は旧基準として扱う
 STANDARD = 'gate-v1'
+# 手本の記事（Wallet・Transaction Scope・stdout-buffering・Sidecar）が引っかかる規則は、止めずに注意として出す
+# （2026-11-12 著者「手本に合わせて緩めて」）。数で決めた上限と書き方の型の規則が対象。著者が禁止と明示した
+# 「を、」・太字・「確かめ」などの揺れ・表記の旧形・details と #### の前後の <br> は NG のまま
+NOTICE_RX = re.compile('|'.join([
+    '折り返す箇条書き', '表のマスが長い', '括弧が多い・長い段落', '型の節が残っている', '文末の括弧でリンクを添えている',
+    'WebP でない図', '図の生成元に英語だけのラベル',
+    '「版」をバージョンの意味', '英語の引用に日本語訳', '他のノートを「記事」と呼んでいる', '300 字を超える段落',
+    '本人が使わない言い回しがある',
+]))
+NOTICES = []
+# Wallet は著者が調整した基準の記事で、触らない（debimate-visual-notes §2）。関門の対象から外す
+EXEMPT = {'content/notes/blockchain-systems/wallet/index.md'}
 
 
 def git(*a, check=False):
@@ -160,6 +172,9 @@ def opening_hist():
 
 def check_full(rel, process=True):
     """全部の規則。NG のリストを返す。process=False なら質の規則だけ（手続きの規則を除く）。"""
+    if rel in EXEMPT:
+        NOTICES.append(f'{rel} は著者が調整した基準の記事なので、関門の対象外')
+        return []
     p = os.path.join(ROOT, rel)
     key = key_of(rel)
     text = open(p, encoding='utf-8').read()
@@ -170,12 +185,19 @@ def check_full(rel, process=True):
     ng = []
 
     code, out = run([sys.executable, os.path.join(HERE, 'check_note.py'), p])
-    if code != 0:
-        ng.append('check_note.py が NG:\n    ' + '\n    '.join(l for l in out.splitlines() if 'NG' in l))
+    hard = [l.strip() for l in out.splitlines() if l.strip().startswith('NG:') and not NOTICE_RX.search(l)]
+    NOTICES.extend(l.strip()[3:].strip() for l in out.splitlines() if l.strip().startswith('NG:') and NOTICE_RX.search(l))
+    if hard:
+        ng.append('check_note.py が NG:\n    ' + '\n    '.join(hard))
     code, out = run(['bash', os.path.join(HERE, 'style_check.sh'), p])
-    if code != 0:
-        det = '\n    '.join(l.strip() for l in out.splitlines() if re.search(r'\[(NG|ERROR)\]|NG:', l))
-        ng.append('style_check.sh が NG（bash notes-quality/style_check.sh で詳細）:\n    ' + det[:1500])
+    lines = out.splitlines()
+    hard = []
+    for i, l in enumerate(lines):
+        if re.search(r'\[(NG|ERROR)\]', l):
+            detail = lines[i + 1].strip() if i + 1 < len(lines) and not lines[i + 1].lstrip().startswith('[') else ''
+            (NOTICES if NOTICE_RX.search(l) else hard).append((l.strip() + ' ' + detail[:80]).strip())
+    if hard:
+        ng.append('style_check.sh が NG（bash notes-quality/style_check.sh で詳細）:\n    ' + '\n    '.join(hard)[:1500])
     code, out = run([sys.executable, os.path.join(HERE, 'textruns.py'), p])
     mm = re.search(r'700字以上の文字だけの区間 (\d+) 個 / 200字超の段落 (\d+) 個', out)
     if mm and int(mm.group(1)) > 0:
@@ -280,6 +302,9 @@ def report(results):
         for x in ng:
             print('  NG:', x)
         bad = bad or bool(ng)
+    for x in dict.fromkeys(NOTICES):
+        print('  注意:', x[:160])
+    NOTICES.clear()
     return 1 if bad else 0
 
 

@@ -13,7 +13,7 @@ Kubernetes の Job（完了したら終わるバッチ処理）に、ログを�
 
 {{< figure src="images/sidecar_jobs.webp" alt="3 つの Job の時間の流れ。普通のコンテナとして同居させると、main は 5 秒で終わるが log-shipper（sidecar）は動き続け、30 秒後も Job は未完了。Sidecar Containers にすると Job は完了するが、sidecar が SIGTERM を無視すると main の終了の約 30 秒後に強制終了され（exit 137）、完了まで 42 秒。SIGTERM で止まる sidecar なら main の 1 秒後に終わり、12 秒で完了する" caption="同じ Job を 3 通りの置き方で動かした時の、main と sidecar の終わり方" align="center" >}}
 
-足したコンテナのように、主となるアプリケーションと同じ実行単位に置き、ログの転送や通信の仲介のような共通の機能を足す補助コンテナを、Sidecar と呼びます。実行単位とは、同じマシンにまとめて置かれ、まとめて作られ消されるコンテナの集まりで、Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の Task です。
+足したコンテナのように、主となるアプリケーションと同じ実行単位に置き、ログの転送や通信の仲介のような共通の機能を足す補助コンテナを Sidecar と呼びます。実行単位とは、同じマシンにまとめて置かれ、まとめて作られ消されるコンテナの集まりで、Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の Task です。
 
 図の 2・3 段目の Sidecar Containers は、sidecar を扱うために Kubernetes に入った機能の名前で、2 段目と 3 段目の違いは、sidecar が停止の合図（SIGTERM）に従って止まるかどうかだけです。図の 1 段目の Job が終わらないのも、2 段目が 42 秒も掛かるのも、sidecar がいつ止まるかを誰が決めるのか、という問題です。
 
@@ -229,7 +229,7 @@ ambient mode は、暗号化のような基本の処理をノードごとに 1 �
 
 ---
 
-### sidecar を足す前に確かめること
+### sidecar を足す前に確認すること
 
 sidecar をこれから足す人も、既に動いている sidecar に出会った人も、確認することは 4 つです。
 
