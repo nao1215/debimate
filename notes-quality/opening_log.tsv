@@ -25,3 +25,4 @@ math__vector-matrix-ops	問い	その他	ベクトルと行列の演算（内積
 distributed-systems__transactional-outbox	場面	その他	Transactional Outbox - id の順に読む relay は、コミット済みの行を飛ばす
 generative-ai__depth-body-shape	誤解	その他	Depth Body Shape - 3D の人形から作った深度マップは、ポーズと一緒に体型と服の厚みも写す
 generative-ai__animation-flicker	結果	その他	Animation Flicker - 生成した絵をコマにして動かすと、止まっている所までちらつく
+generative-ai__ip-adapter-color-cast	場面	その他	IP-Adapter Color Cast - 参照の背景で、描いた絵の色が転ぶ

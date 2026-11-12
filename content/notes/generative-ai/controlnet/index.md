@@ -26,7 +26,7 @@ ControlNet は、学習済みの画像生成モデルに、骨格・深度マッ
 - 骨格と深度マップでは、縛れるものがどう違うのか。
 - 強さ（strength）と終了の位置（end_percent）を変えると、何が変わるのか。
 
-ControlNet を自分で学習する手順、複数の ControlNet を重ねる使い方、参照画像で見た目を寄せる [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter) は扱いません。
+ControlNet を自分で学習する手順、複数の ControlNet を重ねる使い方、参照画像で見た目を寄せる [IP-Adapter](https://github.com/tencent-ailab/IP-Adapter) は扱いません。IP-Adapter の参照を掛けると絵の色が転ぶ話は、[IP-Adapter Color Cast のノート](/notes/generative-ai/ip-adapter-color-cast/)で検証しました。
 
 ---
 

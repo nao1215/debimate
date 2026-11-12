@@ -1,0 +1,16 @@
+{
+ "path": "content/notes/generative-ai/ip-adapter-color-cast/index.md",
+ "overall": 4,
+ "product": 81,
+ "blob": "2c6f7ae58260b74d72efc0ae9102c54223d9f9be",
+ "by": "別担当の採点（抜き出し、基準 5 本 5・5・3・2・2）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "2026-11-12",
+ "standard": "gate-v1"
+}

@@ -1,0 +1,785 @@
+{
+ "s1_none_20261112": {
+  "prompt_id": "0fd72596-0163-4781-877c-c55b798fbf9f",
+  "seconds": 33.62,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 94,
+   "loadavg_1m": 7.3662109375
+  }
+ },
+ "s1_white_stp_20261112": {
+  "prompt_id": "d24d70dd-65ae-45d9-a684-1099a38087b8",
+  "seconds": 31.98,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 50,
+   "loadavg_1m": 7.06787109375
+  }
+ },
+ "s1_white_linear_20261112": {
+  "prompt_id": "7a9770c4-063d-406b-985e-aa341ce93dfa",
+  "seconds": 31.79,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 56,
+   "loadavg_1m": 9.60888671875
+  }
+ },
+ "s1_black_stp_20261112": {
+  "prompt_id": "fb03a5b3-d882-4086-ada8-91bd839222e1",
+  "seconds": 38.52,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 55,
+   "loadavg_1m": 9.8251953125
+  }
+ },
+ "s1_black_linear_20261112": {
+  "prompt_id": "7bfb62d6-51b1-4343-86b7-82e8463e7ee4",
+  "seconds": 39.31,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 18,
+   "loadavg_1m": 12.63525390625
+  }
+ },
+ "s1_green_stp_20261112": {
+  "prompt_id": "5dafec0f-042c-48d6-bf16-f708539d4dd8",
+  "seconds": 31.8,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 53,
+   "loadavg_1m": 11.66455078125
+  }
+ },
+ "s1_green_linear_20261112": {
+  "prompt_id": "2afa283c-cd24-4721-ac4b-bae362c512e1",
+  "seconds": 32.25,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 54,
+   "loadavg_1m": 9.81396484375
+  }
+ },
+ "s2_none_20261112": {
+  "prompt_id": "bceaa2ea-a0b0-4134-aa68-6e8c00db33c8",
+  "seconds": 33.9,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 14,
+   "loadavg_1m": 9.12939453125
+  }
+ },
+ "s2_white_stp_20261112": {
+  "prompt_id": "8811b097-dfb8-48ff-8894-69bcf5736463",
+  "seconds": 33.67,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 56,
+   "loadavg_1m": 8.888671875
+  }
+ },
+ "s2_white_linear_20261112": {
+  "prompt_id": "1db1c2a1-b688-4418-991a-a50b5c89dc5c",
+  "seconds": 31.71,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 56,
+   "loadavg_1m": 9.70458984375
+  }
+ },
+ "s2_black_stp_20261112": {
+  "prompt_id": "7aa8279e-2867-4c81-b099-e61173ba2a7e",
+  "seconds": 36.83,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 33,
+   "loadavg_1m": 11.48095703125
+  }
+ },
+ "s2_black_linear_20261112": {
+  "prompt_id": "3efe924a-ebb6-4191-9654-5db2b66de34d",
+  "seconds": 37.97,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 47,
+   "loadavg_1m": 6.85595703125
+  }
+ },
+ "s2_green_stp_20261112": {
+  "prompt_id": "24aeea89-54c3-4415-b5f1-973c2bb850fc",
+  "seconds": 34.56,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 55,
+   "loadavg_1m": 7.158203125
+  }
+ },
+ "s2_green_linear_20261112": {
+  "prompt_id": "ed731027-6589-4c48-99a1-1262a5528c6a",
+  "seconds": 30.72,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 21,
+   "loadavg_1m": 7.5244140625
+  }
+ },
+ "s1_none_20261113": {
+  "prompt_id": "c72ff47e-4685-455f-a7d8-3ea0f70a6068",
+  "seconds": 32.99,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 27,
+   "loadavg_1m": 5.1728515625
+  }
+ },
+ "s1_white_stp_20261113": {
+  "prompt_id": "e9ba80f7-3244-4560-8f7c-2f0afc6a3155",
+  "seconds": 36.1,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 57,
+   "loadavg_1m": 5.67529296875
+  }
+ },
+ "s1_white_linear_20261113": {
+  "prompt_id": "f3e9447f-b115-4e56-8cea-6d5c35806719",
+  "seconds": 42.88,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 16,
+   "loadavg_1m": 7.208984375
+  }
+ },
+ "s1_black_stp_20261113": {
+  "prompt_id": "83366a32-1537-4bee-8d2c-122bc1f68cbf",
+  "seconds": 35.06,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 22,
+   "loadavg_1m": 7.208984375
+  }
+ },
+ "s1_black_linear_20261113": {
+  "prompt_id": "a03ec82e-9995-42af-a983-fa5c4b9fb803",
+  "seconds": 35.13,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 40,
+   "loadavg_1m": 4.9033203125
+  }
+ },
+ "s1_green_stp_20261113": {
+  "prompt_id": "c53e9304-50d9-4468-9207-d6c77dfde8c3",
+  "seconds": 41.29,
+  "cached_nodes": [
+   "1",
+   "2",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 35,
+   "loadavg_1m": 3.69775390625
+  }
+ },
+ "s1_green_linear_20261113": {
+  "prompt_id": "fd7afae4-cc63-41ad-9966-02f44a6e3e57",
+  "seconds": 40.01,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 58,
+   "loadavg_1m": 4.2880859375
+  }
+ },
+ "s2_none_20261113": {
+  "prompt_id": "ae2e45d0-e50e-4c3f-8897-20221bf562f3",
+  "seconds": 36.9,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 6.09228515625
+  }
+ },
+ "s2_white_stp_20261113": {
+  "prompt_id": "61cdd6ce-5475-4c31-8e5b-00ec30fd8faa",
+  "seconds": 34.54,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 41,
+   "loadavg_1m": 9.10791015625
+  }
+ },
+ "s2_white_linear_20261113": {
+  "prompt_id": "86567a8b-7ed9-4c5a-9f71-f9cd7d6bfe25",
+  "seconds": 43.4,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 22,
+   "loadavg_1m": 5.78662109375
+  }
+ },
+ "s2_black_stp_20261113": {
+  "prompt_id": "03fcb98c-7371-472a-bdef-741ff353d636",
+  "seconds": 45.58,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 31,
+   "loadavg_1m": 10.06005859375
+  }
+ },
+ "s2_black_linear_20261113": {
+  "prompt_id": "1c11cdf3-01df-4f4d-818e-eace1cb16abf",
+  "seconds": 35.94,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 56,
+   "loadavg_1m": 10.77978515625
+  }
+ },
+ "s2_green_stp_20261113": {
+  "prompt_id": "824fd8c7-9308-456f-a0dc-cc61ac6e7f5e",
+  "seconds": 36.26,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 57,
+   "loadavg_1m": 8.58544921875
+  }
+ },
+ "s2_green_linear_20261113": {
+  "prompt_id": "8dd95bde-7a79-4286-9b1d-ded56f726e0b",
+  "seconds": 41.93,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 13,
+   "loadavg_1m": 9.49072265625
+  }
+ },
+ "s1_none_20261114": {
+  "prompt_id": "2be99f04-6365-4d64-aaad-b0e0a5de2299",
+  "seconds": 32.35,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 43,
+   "loadavg_1m": 7.07275390625
+  }
+ },
+ "s1_white_stp_20261114": {
+  "prompt_id": "63f9afad-7eb7-41ee-810e-6edeaf9d737f",
+  "seconds": 39.12,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 64,
+   "loadavg_1m": 5.14111328125
+  }
+ },
+ "s1_white_linear_20261114": {
+  "prompt_id": "c577a8f3-6b95-43d2-bdde-787029e8b21c",
+  "seconds": 40.03,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 48,
+   "loadavg_1m": 3.09228515625
+  }
+ },
+ "s1_black_stp_20261114": {
+  "prompt_id": "56181245-43a0-4d36-86d5-da403b038ea7",
+  "seconds": 35.84,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 57,
+   "loadavg_1m": 3.4560546875
+  }
+ },
+ "s1_black_linear_20261114": {
+  "prompt_id": "926a147b-9305-468a-8fcb-dac4486d4579",
+  "seconds": 36.59,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 58,
+   "loadavg_1m": 3.9501953125
+  }
+ },
+ "s1_green_stp_20261114": {
+  "prompt_id": "9bc32b15-46ff-4955-9af9-df3469e43dfe",
+  "seconds": 35.47,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 26,
+   "loadavg_1m": 5.93798828125
+  }
+ },
+ "s1_green_linear_20261114": {
+  "prompt_id": "2e70a5fe-973a-432b-a823-14f72faf5da8",
+  "seconds": 35.25,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 61,
+   "loadavg_1m": 4.92724609375
+  }
+ },
+ "s2_none_20261114": {
+  "prompt_id": "f9fa3d16-5b9b-4854-8dae-b41ff63460dd",
+  "seconds": 37.64,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 44,
+   "loadavg_1m": 3.65771484375
+  }
+ },
+ "s2_white_stp_20261114": {
+  "prompt_id": "bf10ae4f-4e6b-4077-aea1-b1b9ac30256e",
+  "seconds": 44.97,
+  "cached_nodes": [],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 25,
+   "loadavg_1m": 4.84375
+  }
+ },
+ "s2_white_linear_20261114": {
+  "prompt_id": "6e52ecbb-6126-4320-9fdb-d4116c39ef12",
+  "seconds": 37.39,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 56,
+   "loadavg_1m": 3.67138671875
+  }
+ },
+ "s2_black_stp_20261114": {
+  "prompt_id": "6f15910e-8fa5-4be4-b5cc-62b782368593",
+  "seconds": 33.81,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 54,
+   "loadavg_1m": 6.10595703125
+  }
+ },
+ "s2_black_linear_20261114": {
+  "prompt_id": "de41a044-0bb9-44d3-bb5c-c392dd28a160",
+  "seconds": 34.17,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31",
+   "32"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 59,
+   "loadavg_1m": 4.4658203125
+  }
+ },
+ "s2_green_stp_20261114": {
+  "prompt_id": "87dfebd7-f106-49be-8fe8-1e1f198e2069",
+  "seconds": 33.78,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4",
+   "10",
+   "11",
+   "12",
+   "13",
+   "20",
+   "5",
+   "30",
+   "31"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 16,
+   "loadavg_1m": 3.18310546875
+  }
+ },
+ "s2_green_linear_20261114": {
+  "prompt_id": "e8f2f934-57d3-48d5-ad03-5aac2cffe623",
+  "seconds": 51.39,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 54,
+   "loadavg_1m": 2.8330078125
+  }
+ }
+}
