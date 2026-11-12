@@ -30,14 +30,12 @@ permissions:
 #   待機中のものは Actions 標準の pending 置換で最新の 1 件だけが残る
 jobs:
   # 技術ノート・ML ノートの関門（notes-quality/gate.py）。最後に公開した版から変えたノートが規則と
-  # 総合 4 以上の点の記録を満たさなければ、そのノートだけを最後に公開した版に戻して（新規なら外して）
-  # ビルドする。記事・weeknotes の公開は止めない（2026-11-12 著者の指定）
+  # 総合 4 以上の点の記録を満たさなければ警告を出す。公開は止めず、ノートも古い版に戻さない。
+  # 止めるのは手元の pre-commit・pre-push に任せる。古い版に戻すと、直した本文が判定のずれで消え、
+  # 新旧の版が混ざって他のノートからの #見出し リンクが切れるため（2026-11-13 著者の指定）
   notes-gate:
     if: github.event_name == 'push'
     runs-on: ubuntu-24.04
-    outputs:
-      base: ${{ steps.base.outputs.sha }}
-      ng: ${{ steps.gate.outputs.ng }}
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -45,8 +43,7 @@ jobs:
         with:
           fetch-depth: 0
           filter: blob:none
-      # 起点は「最後に公開に成功した commit」。直前の push を起点にすると、hook を飛ばして
-      # push した関門 NG のノートが、次の別の push で差分から外れて公開されてしまうため
+      # 起点は「最後に公開に成功した commit」。build が取り消された push の分も警告から漏らさないため
       - name: Find last successful Pages deployment
         id: base
         env:
@@ -61,12 +58,10 @@ jobs:
           echo "sha=${base:-${{ github.event.before }}}" >> "$GITHUB_OUTPUT"
           echo "base: ${base:-${{ github.event.before }}（公開の記録が見つからず、直前の push を起点にした）}"
       - name: Check notes changed since the last deployment
-        id: gate
         run: |
           python3 notes-quality/gate.py push "${{ steps.base.outputs.sha }}" "${{ github.sha }}" --ng-list ng.txt || true
           touch ng.txt
-          while read -r d; do [ -n "$d" ] && echo "::warning title=notes-gate::$d は関門を通らないので、最後に公開した版でビルドする（新規なら外す）"; done < ng.txt
-          { echo 'ng<<NG_EOF'; cat ng.txt; echo 'NG_EOF'; } >> "$GITHUB_OUTPUT"
+          while read -r d; do [ -n "$d" ] && echo "::warning title=notes-gate::$d は関門を通らない（公開はそのまま続ける）"; done < ng.txt
 
   build:
     needs: notes-gate
@@ -89,23 +84,6 @@ jobs:
           # 使わないので取らない（Hugo のビルド中に追加の取得が起きない事を確認済み）
           fetch-depth: 0
           filter: blob:none
-
-      - name: Keep notes that fail the gate at their last deployed version
-        if: needs.notes-gate.outputs.ng != ''
-        env:
-          NG: ${{ needs.notes-gate.outputs.ng }}
-          BASE: ${{ needs.notes-gate.outputs.base }}
-        run: |
-          while read -r d; do
-            [ -z "$d" ] && continue
-            rm -rf "$d"
-            if git cat-file -e "$BASE:$d/index.md" 2>/dev/null; then
-              git checkout "$BASE" -- "$d"
-              echo "最後に公開した版に戻した: $d"
-            else
-              echo "新規で関門を通らないので外した: $d"
-            fi
-          done <<< "$NG"
 
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
