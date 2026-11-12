@@ -98,6 +98,28 @@ def added_lines(old_text, new_text):
     return out
 
 
+REWRITE_SIMILARITY = 0.6  # 置き換えた行の文字の一致がこれ以上なら、書き直しではなく手直しとみなす
+
+
+def rewritten_lines(old_text, new_text):
+    """足した行のうち、中身を書き直した行と新しく足した行だけを返す（2026-11-12 著者の指定）。
+    語の置き換えや言い回しの手直しで、元の行と文字の大半が一致する行は数えない。
+    行の数だけで大きな改稿を決めると、訳語を揃えただけの直しが書き直しと同じに数えられたため。"""
+    a, b = old_text.splitlines(), new_text.splitlines()
+    out = []
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, a, b, autojunk=False).get_opcodes():
+        if tag == 'insert':
+            out += b[j1:j2]
+        elif tag == 'replace':
+            olds = a[i1:i2]
+            for k, line in enumerate(b[j1:j2]):
+                cands = [olds[k]] if len(olds) == j2 - j1 else olds
+                best = max((difflib.SequenceMatcher(None, o, line).ratio() for o in cands), default=0)
+                if best < REWRITE_SIMILARITY:
+                    out.append(line)
+    return out
+
+
 def removed_lines(old_text, new_text):
     out = []
     for l in difflib.unified_diff(old_text.splitlines(), new_text.splitlines(), lineterm='', n=0):
@@ -361,7 +383,7 @@ def classify(rel, old_text, new_text):
     """'new'（新規）・'major'（大きな改稿）・'small'（小さな修正）。"""
     if old_text is None:
         return 'new'
-    add = len(added_lines(old_text, new_text))
+    add = len(rewritten_lines(old_text, new_text))
     total = max(1, len(old_text.splitlines()))
     if add >= MAJOR_LINES or add / total >= MAJOR_RATIO:
         return 'major'
@@ -390,8 +412,9 @@ def score_check(rel, head_text):
         ng.append('点の記録の版（blob）がリポジトリに無い。採点し直す')
     else:
         add = added_lines(scored, head_text)
-        if len(add) > SMALL:
-            ng.append(f'採点した版から {len(add)} 行足している（{SMALL} 行まで）。採点し直す')
+        n = len(rewritten_lines(scored, head_text))
+        if n > SMALL:
+            ng.append(f'採点した版から {n} 行を書き足し・書き直している（{SMALL} 行まで。語の置き換えなどの手直しは数えない）。採点し直す')
         else:
             ng += check_added(add, removed_lines(scored, head_text))
     return ng
