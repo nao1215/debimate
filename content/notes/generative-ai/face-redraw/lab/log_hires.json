@@ -1,0 +1,80 @@
+{
+ "hires_20261118": {
+  "prompt_id": "108c5b69-7399-4210-a690-2e0732b65ead",
+  "seconds": 162.42,
+  "cached_nodes": [
+   "1",
+   "2"
+  ],
+  "load_before": {
+   "queue_running": 1,
+   "queue_pending": 0,
+   "gpu_busy_percent": 52,
+   "loadavg_1m": 18.91845703125
+  }
+ },
+ "hires_20261119": {
+  "prompt_id": "4e7bcab6-d4fb-475f-98a8-2d3cd4ffcd7f",
+  "seconds": 152.95,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 51,
+   "loadavg_1m": 6.93408203125
+  }
+ },
+ "hires_20261120": {
+  "prompt_id": "413e8831-d64d-441b-9ec4-8fb0a261217a",
+  "seconds": 146.48,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 57,
+   "loadavg_1m": 3.46826171875
+  }
+ },
+ "hires_20261121": {
+  "prompt_id": "41be975d-a564-4d2f-8a98-675b24392bf8",
+  "seconds": 179.38,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 38,
+   "loadavg_1m": 3.35986328125
+  }
+ },
+ "hires_20261122": {
+  "prompt_id": "09f24e52-d590-4402-a3e1-922a505aa475",
+  "seconds": 166.97,
+  "cached_nodes": [
+   "1",
+   "2",
+   "3",
+   "4"
+  ],
+  "load_before": {
+   "queue_running": 0,
+   "queue_pending": 0,
+   "gpu_busy_percent": 67,
+   "loadavg_1m": 12.45849609375
+  }
+ }
+}
