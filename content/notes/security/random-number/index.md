@@ -187,7 +187,7 @@ SSH のホストの 1.03% では、署名ごとの k が別の署名と重なり
 
 調査チームが計測した Ubuntu Server 10.04 の起動では、`/dev/urandom` にエントロピーが混ざり始めるのは起動から 66 秒後で、OpenSSH はそれより前に seed を読んでいました。初期化前でも値を返す `/dev/urandom` の振る舞いが、そのまま鍵の弱さになりました。
 
-起動時の不足を seed ファイルで補う OS にも、別の落とし穴があります。停止時にプールから作った値を seed ファイルに保存して次の起動で読んでも、同じディスクイメージから複製したホストは同じ seed ファイルから始まります。
+起動時の不足を seed ファイルで補う OS にも、別の落とし穴があります。停止時にプールから作った値を seed ファイルに保存して次の起動で読んでも、[同じディスクイメージから複製したホスト](https://systemd.io/RANDOM_SEEDS/)は同じ seed ファイルから始まります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -199,7 +199,7 @@ sequenceDiagram
     I->>B: seed ファイルごと複製
     A->>A: 起動直後に鍵を作る
     B->>B: 起動直後に鍵を作る
-    Note over A,B: プールの初期化前なら<br/>同じ鍵が出ることがある
+    Note over A,B: 他に混ざるエントロピーが<br/>乏しいと同じ鍵が出ることがある
 ```
 
 複製先が同じ値を出さないように、初回起動で seed ファイルを新しい値で作り直す手当てが必要です。
