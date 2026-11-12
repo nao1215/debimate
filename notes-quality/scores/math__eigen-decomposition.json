@@ -1,8 +1,15 @@
 {
  "path": "projects/ml/notes/math/eigen-decomposition/index.md",
  "overall": 4,
- "product": 36,
- "blob": "532a14f625972281d64e6d93ba1d88c934cf796a",
- "by": "interest-review stage3（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T09:06:43"
+ "product": 54,
+ "blob": "158bdb62e67acef81eb4782e6f5eae12923d3cf8",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": ""
 }
