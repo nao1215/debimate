@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/math/lln-clt/index.md",
- "overall": 3,
- "product": 4,
- "blob": "869744cfe37f1d4a7711d742fa4395ecf605300f",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 24,
+ "blob": "019b26164ed54bc8bf28848fa14d5a6081d845f8",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
