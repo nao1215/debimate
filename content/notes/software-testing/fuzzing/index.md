@@ -58,6 +58,18 @@ Fuzzing の始まりは、1988 年の雷雨の夜です。[Barton Miller 氏の�
 
 新しい分岐に届いた入力が残るので、次の変異はそこから始まり、少しずつ奥の分岐へ進みます。
 
+ただし、4 バイトを 1 回の比較でまとめて確認する処理では、3 バイトまで合っても通る分岐が変わらないので、残す手掛かりがありません。
+
+乱数の入力、カバレッジで導く fuzz、次のノートで扱う [Property-Based Testing](/notes/software-testing/property-based-testing/)（PBT）は、どれも入力を機械に作らせます。PBT は、型に合わせて値を作る生成器で入力を作り、「並べ替えても要素の数は変わらない」のような、どの入力でも成り立つはずの性質が破れないかを調べる手法です。違いは、入力の作り方と、見落としやすい所です。
+
+| 手法 | 入力の作り方 | 失敗とみなすもの | 見落としやすい所 |
+|---|---|---|---|
+| 乱数の入力 | 毎回独立した乱数 | 落ちる、止まらない | 形式の確認より先 |
+| カバレッジで導く fuzz | 残した入力の変異 | 検査の失敗、時間切れ | 一度に比べる定数 |
+| PBT | 型に合わせた生成器 | 性質が破れる | 生成器が作らない値 |
+
+カバレッジで導く fuzz が一度に比べる定数を見落とす様子は、次の実験 1 で試します。PBT の生成器の偏りは、PBT のノートの実験で扱っています。
+
 ---
 
 ### 実験 1: 1 バイトずつの比較が、段を作る
@@ -305,7 +317,7 @@ jsonize の件は、マシンが固まって初めて分かりました。メモ
 
 filesql の `FuzzParseBinary` は、壊れたファイルで panic しないかと、行のセルの数が見出しの数と合うかを検査する fuzz で、Parquet の読み取りの中で panic が起きる入力を 3 秒未満で見つけています（[Issue #413](https://github.com/nao1215/filesql/issues/413)）。
 
-この関数を元に、Parquet の読み取りが 16 MiB を超えて確保したら失敗にする fuzz を書き、確保を制限する修正の前のコードに掛けました。seed には、filesql のテスト用の本物の Parquet のファイルを渡しています。[exp2_parquet.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp2_parquet.sh) が、このファイルを filesql の parser パッケージに置いて走らせます。
+この関数を元に、Parquet の読み取りが 16 MiB を超えて確保したら失敗にする fuzz を書き、後で触れる filesql の修正で確保を制限する前のコードに掛けました。seed には、filesql のテスト用の本物の Parquet のファイルを渡しています。[exp2_parquet.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp2_parquet.sh) が、このファイルを filesql の parser パッケージに置いて走らせます。
 
 ```go
 package parser
@@ -347,7 +359,9 @@ func FuzzParquetCeiling(f *testing.F) {
 
 <br>
 
-filesql の修正（[Issue #526](https://github.com/nao1215/filesql/issues/526)）のきっかけになった 473 バイトのファイルも、`FuzzParseBinary` に確保の上限を足して見つけたものです。Go の fuzz は、失敗する入力を見つけると、失敗したまま小さくできるだけ小さくしてから保存します。473 バイトは、そうして縮めた後の大きさです。
+#### 473 バイトのファイルが確保した 98 MiB
+
+filesql の修正（[Issue #526](https://github.com/nao1215/filesql/issues/526)）のきっかけになった 473 バイトのファイルも、`FuzzParseBinary` に確保の上限を足して見つけたものです。Go の fuzz は、失敗する入力を見つけると、失敗することを保ったまま、できるだけ小さく縮めてから保存します。473 バイトは、そうして縮めた後の大きさです。
 
 <br>
 
@@ -406,7 +420,7 @@ func TestPageHeaderCost(t *testing.T) {
 ```
 
 
-修正前も、エラーを返すという結果は正しいです。問題は、エラーを返すまでに 98.1 MiB を確保した点にあります。
+修正前も、エラーを返すという結果は正しいです。問題は、エラーを返すまでに 100456.2 KiB、つまり 98.1 MiB を確保した点にあります。
 
 Parquet のファイルは、列ごとのデータの塊を持ちます。この塊を列のチャンクと呼び、その位置と大きさをファイルの中で宣言しています。チャンクの中はページに分かれていて、各ページの見出しも、続くデータの大きさを宣言しています。
 
@@ -472,6 +486,6 @@ fuzz の関数を書くこと自体は、数行で済みます。著者の OSS �
 | seed | 形式の確認を通る正しい入力を渡したか |
 | 実行 | 全ての関数が、実際に毎晩回っているか |
 
-fuzz はバイト列を作るので、形式の確認で弾かれやすく、作った入力の意味を知りません。構造のある値（日付、木、SQL の式など）を作って性質を確認する方法は、次の [Property-Based Testing](/notes/software-testing/property-based-testing/) のノートで扱います。
+fuzz はバイト列を作るので、形式の確認で弾かれやすく、作った入力の意味を知りません。構造のある値（日付、木、SQL の式など）を作って性質を確認する方法は、次の Property-Based Testing のノートで扱います。
 
 実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/fuzzing/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/figures.py) にあります。
