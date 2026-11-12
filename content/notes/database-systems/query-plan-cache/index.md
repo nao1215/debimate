@@ -110,7 +110,8 @@ EXECUTE q(1);
 EXECUTE q(1);
 EXECUTE q(1);
 EXPLAIN (ANALYZE) EXECUTE q(1);   -- 6 回目
-EXPLAIN (ANALYZE) EXECUTE q(500); -- 小さい店舗
+EXPLAIN (ANALYZE) EXECUTE q(1);   -- 7 回目
+EXPLAIN (ANALYZE) EXECUTE q(500); -- 8 回目、小さい店舗
 SET plan_cache_mode = force_custom_plan;
 EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 ```
@@ -139,7 +140,7 @@ EXPLAIN (ANALYZE) EXECUTE q(1);   -- 値ごとの計画に戻す
 
 値も SQL も変えていないのに、実行時間は 40 ms から 117 ms に延びました。推定コストで見ると、custom plan の 12,646 に対して generic plan は 579 で、比較の時点では generic plan の方が 20 倍以上安く見えています。
 
-同じ実験を 3 回流すと、custom plan（1 回目と後述の force_custom_plan）は 36〜84 ms、generic plan（6・7 回目）は 103〜169 ms でした（[2 回目](lab/output-2.txt)・[3 回目](lab/output-3.txt)の出力）。以下は、3 回の実験の 1・6・7 回目の実行時間を並べた図です。
+同じ実験を 3 回流すと、custom plan は 1 回目が 41〜84 ms、後述の force_custom_plan が 36〜61 ms、generic plan（6・7 回目）は 103〜169 ms でした（[2 回目](lab/output-2.txt)・[3 回目](lab/output-3.txt)の出力）。以下は、3 回の実験の 1・6・7 回目の実行時間を並べた図です。
 
 {{< figure src="images/query-plan-cache_times.svg" alt="3 回の実験とも、1 回目の custom plan は 41〜84 ms、6 回目と 7 回目の generic plan は 103〜169 ms。2〜5 回目は EXPLAIN を付けずに実行したので時間を測っていない" caption="3 回の実験での q(1) の実行時間" align="center" >}}
 
