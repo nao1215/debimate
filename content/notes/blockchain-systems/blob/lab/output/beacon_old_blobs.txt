@@ -1,0 +1,12 @@
+Beacon API: blobs of an old slot from a public beacon node (2026-11-12 15:13 UTC)
+
+GET https://ethereum-beacon-api.publicnode.com/eth/v1/beacon/headers/head
+  head slot 15639366  (2026-11-12 15:13:35 UTC)
+GET https://ethereum-beacon-api.publicnode.com/eth/v1/beacon/blobs/15315356
+  slot 15315356  (2026-09-28 15:11:35 UTC, 324,010 slots = 45.0 days before head)
+  HTTP 200, 5,505,185 bytes, 21 blobs of 131,072 bytes each
+
+slot time = 1606824023 + slot * 12 (mainnet genesis time)
+An earlier try on 2026-11-13 (another session) got no response, and a slot
+60 days back got HTTP 403. What a node keeps beyond 4096 epochs is its own
+setting and can change.

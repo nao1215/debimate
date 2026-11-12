@@ -1,0 +1,36 @@
+{
+  "type": "0x3",
+  "chainId": "0x7a69",
+  "nonce": "0x1",
+  "gas": "0xba08",
+  "maxFeePerGas": "0x77359401",
+  "maxPriorityFeePerGas": "0x1",
+  "to": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+  "value": "0x0",
+  "accessList": [],
+  "blobVersionedHashes": [
+    "0x01ff8e9b72e2fc56d17f411e4eeecafb8c2c62130d1032145753fa173630f951"
+  ],
+  "maxFeePerBlobGas": "0x1",
+  "input": "0x",
+  "blobs": [
+    "0x00000000000000000500000000000000000000000000000000000000000000000068656c6c6f0000000000000000000000000000000000000000000000000000...（131,072 バイト。以下省略）"
+  ],
+  "commitments": [
+    "0x81596adaec97c3e1e950495073fedb8e3bb778016554de886b3bf48e38fb6ebe7eecf687dd99f25eb7ce463ce2b7433b"
+  ],
+  "cellProofs": [
+    "（128 個。省略）"
+  ],
+  "r": "0x85736a1e31e7e714dac27629fe35fe9025d55fffaa16eaca7253f8de713bf2ea",
+  "s": "0x7b9730efc21389e236d821b63497e0657a1a9499c0e4a14ac567f8b0c159c5a",
+  "yParity": "0x1",
+  "v": "0x1",
+  "hash": "0x799d804a5a33d618bd4c3176e7815f345d582703b877d382373552b01c55f94c",
+  "blockHash": "0x8458bcb624d0ad35165f7d16440d73af9fb353db2eb5fe60bffe3fbc63ee2942",
+  "blockNumber": "0x2",
+  "transactionIndex": "0x0",
+  "from": "0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266",
+  "gasPrice": "0x342eaab1",
+  "blockTimestamp": "0x6af5cad4"
+}

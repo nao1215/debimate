@@ -1,0 +1,2102 @@
+[
+{
+"number": 26399000,
+"timestamp": 1794488183,
+"excessBlobGas": 185033207,
+"blobGasUsed": 655360,
+"baseFeePerGas": 133070401
+},
+{
+"number": 26399001,
+"timestamp": 1794488195,
+"excessBlobGas": 185251660,
+"blobGasUsed": 393216,
+"baseFeePerGas": 127832956
+},
+{
+"number": 26399002,
+"timestamp": 1794488207,
+"excessBlobGas": 185382732,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 132057877
+},
+{
+"number": 26399003,
+"timestamp": 1794488219,
+"excessBlobGas": 185732257,
+"blobGasUsed": 0,
+"baseFeePerGas": 119196068
+},
+{
+"number": 26399004,
+"timestamp": 1794488231,
+"excessBlobGas": 183897249,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 108837151
+},
+{
+"number": 26399005,
+"timestamp": 1794488243,
+"excessBlobGas": 184552609,
+"blobGasUsed": 655360,
+"baseFeePerGas": 122421895
+},
+{
+"number": 26399006,
+"timestamp": 1794488255,
+"excessBlobGas": 184771062,
+"blobGasUsed": 655360,
+"baseFeePerGas": 128330623
+},
+{
+"number": 26399007,
+"timestamp": 1794488267,
+"excessBlobGas": 184989515,
+"blobGasUsed": 917504,
+"baseFeePerGas": 128923938
+},
+{
+"number": 26399008,
+"timestamp": 1794488279,
+"excessBlobGas": 185295349,
+"blobGasUsed": 524288,
+"baseFeePerGas": 127786509
+},
+{
+"number": 26399009,
+"timestamp": 1794488291,
+"excessBlobGas": 185470111,
+"blobGasUsed": 524288,
+"baseFeePerGas": 128281426
+},
+{
+"number": 26399010,
+"timestamp": 1794488303,
+"excessBlobGas": 185644873,
+"blobGasUsed": 131072,
+"baseFeePerGas": 117442167
+},
+{
+"number": 26399011,
+"timestamp": 1794488315,
+"excessBlobGas": 183940937,
+"blobGasUsed": 524288,
+"baseFeePerGas": 121424309
+},
+{
+"number": 26399012,
+"timestamp": 1794488327,
+"excessBlobGas": 184115699,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 124618775
+},
+{
+"number": 26399013,
+"timestamp": 1794488339,
+"excessBlobGas": 184508915,
+"blobGasUsed": 393216,
+"baseFeePerGas": 115584782
+},
+{
+"number": 26399014,
+"timestamp": 1794488351,
+"excessBlobGas": 184639987,
+"blobGasUsed": 393216,
+"baseFeePerGas": 121926932
+},
+{
+"number": 26399015,
+"timestamp": 1794488363,
+"excessBlobGas": 184771059,
+"blobGasUsed": 131072,
+"baseFeePerGas": 126519785
+},
+{
+"number": 26399016,
+"timestamp": 1794488375,
+"excessBlobGas": 184814749,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 122261972
+},
+{
+"number": 26399017,
+"timestamp": 1794488387,
+"excessBlobGas": 185295346,
+"blobGasUsed": 0,
+"baseFeePerGas": 121405956
+},
+{
+"number": 26399018,
+"timestamp": 1794488399,
+"excessBlobGas": 183460338,
+"blobGasUsed": 1966080,
+"baseFeePerGas": 110386892
+},
+{
+"number": 26399019,
+"timestamp": 1794488411,
+"excessBlobGas": 184115698,
+"blobGasUsed": 0,
+"baseFeePerGas": 121741214
+},
+{
+"number": 26399020,
+"timestamp": 1794488423,
+"excessBlobGas": 184115698,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 128767548
+},
+{
+"number": 26399021,
+"timestamp": 1794488435,
+"excessBlobGas": 184552604,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 134116957
+},
+{
+"number": 26399022,
+"timestamp": 1794488447,
+"excessBlobGas": 184945820,
+"blobGasUsed": 917504,
+"baseFeePerGas": 130250576
+},
+{
+"number": 26399023,
+"timestamp": 1794488459,
+"excessBlobGas": 185251654,
+"blobGasUsed": 655360,
+"baseFeePerGas": 133333284
+},
+{
+"number": 26399024,
+"timestamp": 1794488471,
+"excessBlobGas": 185470107,
+"blobGasUsed": 131072,
+"baseFeePerGas": 131849016
+},
+{
+"number": 26399025,
+"timestamp": 1794488483,
+"excessBlobGas": 185513797,
+"blobGasUsed": 917504,
+"baseFeePerGas": 125276744
+},
+{
+"number": 26399026,
+"timestamp": 1794488495,
+"excessBlobGas": 184596293,
+"blobGasUsed": 917504,
+"baseFeePerGas": 131588426
+},
+{
+"number": 26399027,
+"timestamp": 1794488507,
+"excessBlobGas": 184902127,
+"blobGasUsed": 917504,
+"baseFeePerGas": 127935646
+},
+{
+"number": 26399028,
+"timestamp": 1794488519,
+"excessBlobGas": 185207961,
+"blobGasUsed": 786432,
+"baseFeePerGas": 127797155
+},
+{
+"number": 26399029,
+"timestamp": 1794488531,
+"excessBlobGas": 185470105,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 122311169
+},
+{
+"number": 26399030,
+"timestamp": 1794488543,
+"excessBlobGas": 185339033,
+"blobGasUsed": 393216,
+"baseFeePerGas": 114294123
+},
+{
+"number": 26399031,
+"timestamp": 1794488555,
+"excessBlobGas": 183897241,
+"blobGasUsed": 0,
+"baseFeePerGas": 111584041
+},
+{
+"number": 26399032,
+"timestamp": 1794488567,
+"excessBlobGas": 183897241,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 109031872
+},
+{
+"number": 26399033,
+"timestamp": 1794488579,
+"excessBlobGas": 184814745,
+"blobGasUsed": 1966080,
+"baseFeePerGas": 114799029
+},
+{
+"number": 26399034,
+"timestamp": 1794488591,
+"excessBlobGas": 184945817,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 115550577
+},
+{
+"number": 26399035,
+"timestamp": 1794488603,
+"excessBlobGas": 184421529,
+"blobGasUsed": 524288,
+"baseFeePerGas": 113633192
+},
+{
+"number": 26399036,
+"timestamp": 1794488615,
+"excessBlobGas": 183110809,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 111112513
+},
+{
+"number": 26399037,
+"timestamp": 1794488627,
+"excessBlobGas": 183460334,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 106106501
+},
+{
+"number": 26399038,
+"timestamp": 1794488639,
+"excessBlobGas": 183940931,
+"blobGasUsed": 655360,
+"baseFeePerGas": 104749028
+},
+{
+"number": 26399039,
+"timestamp": 1794488651,
+"excessBlobGas": 182761283,
+"blobGasUsed": 917504,
+"baseFeePerGas": 103925043
+},
+{
+"number": 26399040,
+"timestamp": 1794488663,
+"excessBlobGas": 183067117,
+"blobGasUsed": 262144,
+"baseFeePerGas": 96969202
+},
+{
+"number": 26399041,
+"timestamp": 1794488675,
+"excessBlobGas": 181494253,
+"blobGasUsed": 393216,
+"baseFeePerGas": 102012238
+},
+{
+"number": 26399042,
+"timestamp": 1794488687,
+"excessBlobGas": 181625325,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 93021911
+},
+{
+"number": 26399043,
+"timestamp": 1794488699,
+"excessBlobGas": 182149613,
+"blobGasUsed": 131072,
+"baseFeePerGas": 87300457
+},
+{
+"number": 26399044,
+"timestamp": 1794488711,
+"excessBlobGas": 180445677,
+"blobGasUsed": 393216,
+"baseFeePerGas": 85319315
+},
+{
+"number": 26399045,
+"timestamp": 1794488723,
+"excessBlobGas": 180576749,
+"blobGasUsed": 917504,
+"baseFeePerGas": 95683097
+},
+{
+"number": 26399046,
+"timestamp": 1794488735,
+"excessBlobGas": 180882583,
+"blobGasUsed": 786432,
+"baseFeePerGas": 104428439
+},
+{
+"number": 26399047,
+"timestamp": 1794488747,
+"excessBlobGas": 181144727,
+"blobGasUsed": 524288,
+"baseFeePerGas": 111665402
+},
+{
+"number": 26399048,
+"timestamp": 1794488759,
+"excessBlobGas": 181319489,
+"blobGasUsed": 524288,
+"baseFeePerGas": 116107771
+},
+{
+"number": 26399049,
+"timestamp": 1794488771,
+"excessBlobGas": 181494251,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 107792169
+},
+{
+"number": 26399050,
+"timestamp": 1794488783,
+"excessBlobGas": 181887467,
+"blobGasUsed": 655360,
+"baseFeePerGas": 118700665
+},
+{
+"number": 26399051,
+"timestamp": 1794488795,
+"excessBlobGas": 182105920,
+"blobGasUsed": 917504,
+"baseFeePerGas": 120637414
+},
+{
+"number": 26399052,
+"timestamp": 1794488807,
+"excessBlobGas": 182411754,
+"blobGasUsed": 524288,
+"baseFeePerGas": 119714329
+},
+{
+"number": 26399053,
+"timestamp": 1794488819,
+"excessBlobGas": 182586516,
+"blobGasUsed": 655360,
+"baseFeePerGas": 108900978
+},
+{
+"number": 26399054,
+"timestamp": 1794488831,
+"excessBlobGas": 182804969,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 118170766
+},
+{
+"number": 26399055,
+"timestamp": 1794488843,
+"excessBlobGas": 183372947,
+"blobGasUsed": 524288,
+"baseFeePerGas": 120092643
+},
+{
+"number": 26399056,
+"timestamp": 1794488855,
+"excessBlobGas": 183547709,
+"blobGasUsed": 0,
+"baseFeePerGas": 120684385
+},
+{
+"number": 26399057,
+"timestamp": 1794488867,
+"excessBlobGas": 183547709,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 113763407
+},
+{
+"number": 26399058,
+"timestamp": 1794488879,
+"excessBlobGas": 184290450,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 117664321
+},
+{
+"number": 26399059,
+"timestamp": 1794488891,
+"excessBlobGas": 185033191,
+"blobGasUsed": 0,
+"baseFeePerGas": 125220774
+},
+{
+"number": 26399060,
+"timestamp": 1794488903,
+"excessBlobGas": 185033191,
+"blobGasUsed": 262144,
+"baseFeePerGas": 118477475
+},
+{
+"number": 26399061,
+"timestamp": 1794488915,
+"excessBlobGas": 183460327,
+"blobGasUsed": 0,
+"baseFeePerGas": 121747152
+},
+{
+"number": 26399062,
+"timestamp": 1794488927,
+"excessBlobGas": 183460327,
+"blobGasUsed": 393216,
+"baseFeePerGas": 126168547
+},
+{
+"number": 26399063,
+"timestamp": 1794488939,
+"excessBlobGas": 183591399,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 132572672
+},
+{
+"number": 26399064,
+"timestamp": 1794488951,
+"excessBlobGas": 184508903,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 148816740
+},
+{
+"number": 26399065,
+"timestamp": 1794488963,
+"excessBlobGas": 185426407,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 156138065
+},
+{
+"number": 26399066,
+"timestamp": 1794488975,
+"excessBlobGas": 186256529,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 164046808
+},
+{
+"number": 26399067,
+"timestamp": 1794488987,
+"excessBlobGas": 187130342,
+"blobGasUsed": 0,
+"baseFeePerGas": 171034150
+},
+{
+"number": 26399068,
+"timestamp": 1794488999,
+"excessBlobGas": 187130342,
+"blobGasUsed": 0,
+"baseFeePerGas": 176440833
+},
+{
+"number": 26399069,
+"timestamp": 1794489011,
+"excessBlobGas": 187130342,
+"blobGasUsed": 0,
+"baseFeePerGas": 191881984
+},
+{
+"number": 26399070,
+"timestamp": 1794489023,
+"excessBlobGas": 187130342,
+"blobGasUsed": 0,
+"baseFeePerGas": 175447581
+},
+{
+"number": 26399071,
+"timestamp": 1794489035,
+"excessBlobGas": 187130342,
+"blobGasUsed": 0,
+"baseFeePerGas": 196987835
+},
+{
+"number": 26399072,
+"timestamp": 1794489047,
+"excessBlobGas": 187130342,
+"blobGasUsed": 0,
+"baseFeePerGas": 202932306
+},
+{
+"number": 26399073,
+"timestamp": 1794489059,
+"excessBlobGas": 187130342,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 228175282
+},
+{
+"number": 26399074,
+"timestamp": 1794489071,
+"excessBlobGas": 187523558,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 252991553
+},
+{
+"number": 26399075,
+"timestamp": 1794489083,
+"excessBlobGas": 188441062,
+"blobGasUsed": 786432,
+"baseFeePerGas": 284594184
+},
+{
+"number": 26399076,
+"timestamp": 1794489095,
+"excessBlobGas": 188703206,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 320067809
+},
+{
+"number": 26399077,
+"timestamp": 1794489107,
+"excessBlobGas": 189577019,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 359987455
+},
+{
+"number": 26399078,
+"timestamp": 1794489119,
+"excessBlobGas": 190319760,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 341435518
+},
+{
+"number": 26399079,
+"timestamp": 1794489131,
+"excessBlobGas": 191237264,
+"blobGasUsed": 262144,
+"baseFeePerGas": 354087770
+},
+{
+"number": 26399080,
+"timestamp": 1794489143,
+"excessBlobGas": 191324645,
+"blobGasUsed": 0,
+"baseFeePerGas": 331846882
+},
+{
+"number": 26399081,
+"timestamp": 1794489155,
+"excessBlobGas": 191324645,
+"blobGasUsed": 131072,
+"baseFeePerGas": 324473801
+},
+{
+"number": 26399082,
+"timestamp": 1794489167,
+"excessBlobGas": 191368335,
+"blobGasUsed": 262144,
+"baseFeePerGas": 365012276
+},
+{
+"number": 26399083,
+"timestamp": 1794489179,
+"excessBlobGas": 191455716,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 408059090
+},
+{
+"number": 26399084,
+"timestamp": 1794489191,
+"excessBlobGas": 192373220,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 459039168
+},
+{
+"number": 26399085,
+"timestamp": 1794489203,
+"excessBlobGas": 193203342,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 511382484
+},
+{
+"number": 26399086,
+"timestamp": 1794489215,
+"excessBlobGas": 194033464,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 523114480
+},
+{
+"number": 26399087,
+"timestamp": 1794489227,
+"excessBlobGas": 194950968,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 534131641
+},
+{
+"number": 26399088,
+"timestamp": 1794489239,
+"excessBlobGas": 195824781,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 481272633
+},
+{
+"number": 26399089,
+"timestamp": 1794489251,
+"excessBlobGas": 196742285,
+"blobGasUsed": 0,
+"baseFeePerGas": 478157772
+},
+{
+"number": 26399090,
+"timestamp": 1794489263,
+"excessBlobGas": 196742285,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 449792733
+},
+{
+"number": 26399091,
+"timestamp": 1794489275,
+"excessBlobGas": 197616098,
+"blobGasUsed": 393216,
+"baseFeePerGas": 415114225
+},
+{
+"number": 26399092,
+"timestamp": 1794489287,
+"excessBlobGas": 197747170,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 406757800
+},
+{
+"number": 26399093,
+"timestamp": 1794489299,
+"excessBlobGas": 198577292,
+"blobGasUsed": 2097152,
+"baseFeePerGas": 457273842
+},
+{
+"number": 26399094,
+"timestamp": 1794489311,
+"excessBlobGas": 199276342,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 455175883
+},
+{
+"number": 26399095,
+"timestamp": 1794489323,
+"excessBlobGas": 200193846,
+"blobGasUsed": 0,
+"baseFeePerGas": 438623179
+},
+{
+"number": 26399096,
+"timestamp": 1794489335,
+"excessBlobGas": 198358838,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 412725511
+},
+{
+"number": 26399097,
+"timestamp": 1794489347,
+"excessBlobGas": 198970507,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 464291708
+},
+{
+"number": 26399098,
+"timestamp": 1794489359,
+"excessBlobGas": 199888011,
+"blobGasUsed": 0,
+"baseFeePerGas": 506477368
+},
+{
+"number": 26399099,
+"timestamp": 1794489371,
+"excessBlobGas": 199888011,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 458310031
+},
+{
+"number": 26399100,
+"timestamp": 1794489383,
+"excessBlobGas": 200630752,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 515561669
+},
+{
+"number": 26399101,
+"timestamp": 1794489395,
+"excessBlobGas": 201548256,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 574841549
+},
+{
+"number": 26399102,
+"timestamp": 1794489407,
+"excessBlobGas": 202290997,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 614342430
+},
+{
+"number": 26399103,
+"timestamp": 1794489419,
+"excessBlobGas": 203208501,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 557167708
+},
+{
+"number": 26399104,
+"timestamp": 1794489431,
+"excessBlobGas": 202553141,
+"blobGasUsed": 655360,
+"baseFeePerGas": 626545578
+},
+{
+"number": 26399105,
+"timestamp": 1794489443,
+"excessBlobGas": 202771594,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 622526195
+},
+{
+"number": 26399106,
+"timestamp": 1794489455,
+"excessBlobGas": 203295882,
+"blobGasUsed": 131072,
+"baseFeePerGas": 650892057
+},
+{
+"number": 26399107,
+"timestamp": 1794489467,
+"excessBlobGas": 203339572,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 638936141
+},
+{
+"number": 26399108,
+"timestamp": 1794489479,
+"excessBlobGas": 203776478,
+"blobGasUsed": 0,
+"baseFeePerGas": 654376956
+},
+{
+"number": 26399109,
+"timestamp": 1794489491,
+"excessBlobGas": 203776478,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 628240247
+},
+{
+"number": 26399110,
+"timestamp": 1794489503,
+"excessBlobGas": 204606600,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 631339719
+},
+{
+"number": 26399111,
+"timestamp": 1794489515,
+"excessBlobGas": 204213384,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 627466356
+},
+{
+"number": 26399112,
+"timestamp": 1794489527,
+"excessBlobGas": 204650290,
+"blobGasUsed": 917504,
+"baseFeePerGas": 628074535
+},
+{
+"number": 26399113,
+"timestamp": 1794489539,
+"excessBlobGas": 203732786,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 600004552
+},
+{
+"number": 26399114,
+"timestamp": 1794489551,
+"excessBlobGas": 204606599,
+"blobGasUsed": 131072,
+"baseFeePerGas": 591536853
+},
+{
+"number": 26399115,
+"timestamp": 1794489563,
+"excessBlobGas": 202902663,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 594162342
+},
+{
+"number": 26399116,
+"timestamp": 1794489575,
+"excessBlobGas": 203732785,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 556082315
+},
+{
+"number": 26399117,
+"timestamp": 1794489587,
+"excessBlobGas": 204388145,
+"blobGasUsed": 2097152,
+"baseFeePerGas": 593319493
+},
+{
+"number": 26399118,
+"timestamp": 1794489599,
+"excessBlobGas": 204650289,
+"blobGasUsed": 0,
+"baseFeePerGas": 563924401
+},
+{
+"number": 26399119,
+"timestamp": 1794489611,
+"excessBlobGas": 202815281,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 528845522
+},
+{
+"number": 26399120,
+"timestamp": 1794489623,
+"excessBlobGas": 203732785,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 497267447
+},
+{
+"number": 26399121,
+"timestamp": 1794489635,
+"excessBlobGas": 202946353,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 559174074
+},
+{
+"number": 26399122,
+"timestamp": 1794489647,
+"excessBlobGas": 203776475,
+"blobGasUsed": 0,
+"baseFeePerGas": 586032712
+},
+{
+"number": 26399123,
+"timestamp": 1794489659,
+"excessBlobGas": 201941467,
+"blobGasUsed": 2359296,
+"baseFeePerGas": 552893317
+},
+{
+"number": 26399124,
+"timestamp": 1794489671,
+"excessBlobGas": 202727899,
+"blobGasUsed": 524288,
+"baseFeePerGas": 568664108
+},
+{
+"number": 26399125,
+"timestamp": 1794489683,
+"excessBlobGas": 202902661,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 568130379
+},
+{
+"number": 26399126,
+"timestamp": 1794489695,
+"excessBlobGas": 203645402,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 603612823
+},
+{
+"number": 26399127,
+"timestamp": 1794489707,
+"excessBlobGas": 203994927,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 605348148
+},
+{
+"number": 26399128,
+"timestamp": 1794489719,
+"excessBlobGas": 203339567,
+"blobGasUsed": 0,
+"baseFeePerGas": 611811624
+},
+{
+"number": 26399129,
+"timestamp": 1794489731,
+"excessBlobGas": 203339567,
+"blobGasUsed": 2359296,
+"baseFeePerGas": 551866125
+},
+{
+"number": 26399130,
+"timestamp": 1794489743,
+"excessBlobGas": 203863855,
+"blobGasUsed": 0,
+"baseFeePerGas": 573819502
+},
+{
+"number": 26399131,
+"timestamp": 1794489755,
+"excessBlobGas": 202028847,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 591522627
+},
+{
+"number": 26399132,
+"timestamp": 1794489767,
+"excessBlobGas": 202509444,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 609938035
+},
+{
+"number": 26399133,
+"timestamp": 1794489779,
+"excessBlobGas": 203339566,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 619770678
+},
+{
+"number": 26399134,
+"timestamp": 1794489791,
+"excessBlobGas": 204257070,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 601194816
+},
+{
+"number": 26399135,
+"timestamp": 1794489803,
+"excessBlobGas": 203470638,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 606264784
+},
+{
+"number": 26399136,
+"timestamp": 1794489815,
+"excessBlobGas": 204344451,
+"blobGasUsed": 917504,
+"baseFeePerGas": 612939266
+},
+{
+"number": 26399137,
+"timestamp": 1794489827,
+"excessBlobGas": 203426947,
+"blobGasUsed": 524288,
+"baseFeePerGas": 589552944
+},
+{
+"number": 26399138,
+"timestamp": 1794489839,
+"excessBlobGas": 203601709,
+"blobGasUsed": 917504,
+"baseFeePerGas": 549072387
+},
+{
+"number": 26399139,
+"timestamp": 1794489851,
+"excessBlobGas": 202684205,
+"blobGasUsed": 131072,
+"baseFeePerGas": 548921640
+},
+{
+"number": 26399140,
+"timestamp": 1794489863,
+"excessBlobGas": 202727895,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 571204100
+},
+{
+"number": 26399141,
+"timestamp": 1794489875,
+"excessBlobGas": 203121111,
+"blobGasUsed": 0,
+"baseFeePerGas": 571012019
+},
+{
+"number": 26399142,
+"timestamp": 1794489887,
+"excessBlobGas": 203121111,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 555833969
+},
+{
+"number": 26399143,
+"timestamp": 1794489899,
+"excessBlobGas": 203776471,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 574299995
+},
+{
+"number": 26399144,
+"timestamp": 1794489911,
+"excessBlobGas": 204562903,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 538261001
+},
+{
+"number": 26399145,
+"timestamp": 1794489923,
+"excessBlobGas": 205480407,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 518387526
+},
+{
+"number": 26399146,
+"timestamp": 1794489935,
+"excessBlobGas": 206397911,
+"blobGasUsed": 131072,
+"baseFeePerGas": 496226989
+},
+{
+"number": 26399147,
+"timestamp": 1794489947,
+"excessBlobGas": 204693975,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 513471009
+},
+{
+"number": 26399148,
+"timestamp": 1794489959,
+"excessBlobGas": 204169687,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 481119523
+},
+{
+"number": 26399149,
+"timestamp": 1794489971,
+"excessBlobGas": 203907543,
+"blobGasUsed": 262144,
+"baseFeePerGas": 493912761
+},
+{
+"number": 26399150,
+"timestamp": 1794489983,
+"excessBlobGas": 202334679,
+"blobGasUsed": 1966080,
+"baseFeePerGas": 470900749
+},
+{
+"number": 26399151,
+"timestamp": 1794489995,
+"excessBlobGas": 202465751,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 447409469
+},
+{
+"number": 26399152,
+"timestamp": 1794490007,
+"excessBlobGas": 201679319,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 462720130
+},
+{
+"number": 26399153,
+"timestamp": 1794490019,
+"excessBlobGas": 201286103,
+"blobGasUsed": 786432,
+"baseFeePerGas": 464709549
+},
+{
+"number": 26399154,
+"timestamp": 1794490031,
+"excessBlobGas": 200237527,
+"blobGasUsed": 131072,
+"baseFeePerGas": 456216994
+},
+{
+"number": 26399155,
+"timestamp": 1794490043,
+"excessBlobGas": 200281217,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 465682510
+},
+{
+"number": 26399156,
+"timestamp": 1794490055,
+"excessBlobGas": 201198721,
+"blobGasUsed": 131072,
+"baseFeePerGas": 456060811
+},
+{
+"number": 26399157,
+"timestamp": 1794490067,
+"excessBlobGas": 199494785,
+"blobGasUsed": 524288,
+"baseFeePerGas": 445031617
+},
+{
+"number": 26399158,
+"timestamp": 1794490079,
+"excessBlobGas": 199669547,
+"blobGasUsed": 2097152,
+"baseFeePerGas": 399267103
+},
+{
+"number": 26399159,
+"timestamp": 1794490091,
+"excessBlobGas": 199931691,
+"blobGasUsed": 131072,
+"baseFeePerGas": 425892284
+},
+{
+"number": 26399160,
+"timestamp": 1794490103,
+"excessBlobGas": 198227755,
+"blobGasUsed": 262144,
+"baseFeePerGas": 423349395
+},
+{
+"number": 26399161,
+"timestamp": 1794490115,
+"excessBlobGas": 198315136,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 428805615
+},
+{
+"number": 26399162,
+"timestamp": 1794490127,
+"excessBlobGas": 198795733,
+"blobGasUsed": 0,
+"baseFeePerGas": 421016581
+},
+{
+"number": 26399163,
+"timestamp": 1794490139,
+"excessBlobGas": 198795733,
+"blobGasUsed": 393216,
+"baseFeePerGas": 437560855
+},
+{
+"number": 26399164,
+"timestamp": 1794490151,
+"excessBlobGas": 198926805,
+"blobGasUsed": 786432,
+"baseFeePerGas": 425998643
+},
+{
+"number": 26399165,
+"timestamp": 1794490163,
+"excessBlobGas": 199188949,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 433911819
+},
+{
+"number": 26399166,
+"timestamp": 1794490175,
+"excessBlobGas": 199625855,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 424516126
+},
+{
+"number": 26399167,
+"timestamp": 1794490187,
+"excessBlobGas": 200019071,
+"blobGasUsed": 917504,
+"baseFeePerGas": 405817286
+},
+{
+"number": 26399168,
+"timestamp": 1794490199,
+"excessBlobGas": 199101567,
+"blobGasUsed": 524288,
+"baseFeePerGas": 382703995
+},
+{
+"number": 26399169,
+"timestamp": 1794490211,
+"excessBlobGas": 197790847,
+"blobGasUsed": 917504,
+"baseFeePerGas": 379368708
+},
+{
+"number": 26399170,
+"timestamp": 1794490223,
+"excessBlobGas": 198096681,
+"blobGasUsed": 524288,
+"baseFeePerGas": 350634263
+},
+{
+"number": 26399171,
+"timestamp": 1794490235,
+"excessBlobGas": 196785961,
+"blobGasUsed": 131072,
+"baseFeePerGas": 376994951
+},
+{
+"number": 26399172,
+"timestamp": 1794490247,
+"excessBlobGas": 196829651,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 420565966
+},
+{
+"number": 26399173,
+"timestamp": 1794490259,
+"excessBlobGas": 197266557,
+"blobGasUsed": 786432,
+"baseFeePerGas": 453364877
+},
+{
+"number": 26399174,
+"timestamp": 1794490271,
+"excessBlobGas": 197528701,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 484901274
+},
+{
+"number": 26399175,
+"timestamp": 1794490283,
+"excessBlobGas": 198052989,
+"blobGasUsed": 786432,
+"baseFeePerGas": 492267364
+},
+{
+"number": 26399176,
+"timestamp": 1794490295,
+"excessBlobGas": 198315133,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 520666134
+},
+{
+"number": 26399177,
+"timestamp": 1794490307,
+"excessBlobGas": 198708349,
+"blobGasUsed": 524288,
+"baseFeePerGas": 516047186
+},
+{
+"number": 26399178,
+"timestamp": 1794490319,
+"excessBlobGas": 198883111,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 495253305
+},
+{
+"number": 26399179,
+"timestamp": 1794490331,
+"excessBlobGas": 199713233,
+"blobGasUsed": 262144,
+"baseFeePerGas": 500354358
+},
+{
+"number": 26399180,
+"timestamp": 1794490343,
+"excessBlobGas": 199800614,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 497979975
+},
+{
+"number": 26399181,
+"timestamp": 1794490355,
+"excessBlobGas": 200281211,
+"blobGasUsed": 262144,
+"baseFeePerGas": 500130053
+},
+{
+"number": 26399182,
+"timestamp": 1794490367,
+"excessBlobGas": 200368592,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 493675017
+},
+{
+"number": 26399183,
+"timestamp": 1794490379,
+"excessBlobGas": 200980261,
+"blobGasUsed": 655360,
+"baseFeePerGas": 478769021
+},
+{
+"number": 26399184,
+"timestamp": 1794490391,
+"excessBlobGas": 201198714,
+"blobGasUsed": 786432,
+"baseFeePerGas": 481938948
+},
+{
+"number": 26399185,
+"timestamp": 1794490403,
+"excessBlobGas": 201460858,
+"blobGasUsed": 655360,
+"baseFeePerGas": 472966992
+},
+{
+"number": 26399186,
+"timestamp": 1794490415,
+"excessBlobGas": 200281210,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 468023175
+},
+{
+"number": 26399187,
+"timestamp": 1794490427,
+"excessBlobGas": 200849188,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 467648141
+},
+{
+"number": 26399188,
+"timestamp": 1794490439,
+"excessBlobGas": 201460857,
+"blobGasUsed": 1966080,
+"baseFeePerGas": 459084678
+},
+{
+"number": 26399189,
+"timestamp": 1794490451,
+"excessBlobGas": 201591929,
+"blobGasUsed": 393216,
+"baseFeePerGas": 474346984
+},
+{
+"number": 26399190,
+"timestamp": 1794490463,
+"excessBlobGas": 200150137,
+"blobGasUsed": 262144,
+"baseFeePerGas": 478455821
+},
+{
+"number": 26399191,
+"timestamp": 1794490475,
+"excessBlobGas": 200237518,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 471276751
+},
+{
+"number": 26399192,
+"timestamp": 1794490487,
+"excessBlobGas": 200674424,
+"blobGasUsed": 524288,
+"baseFeePerGas": 456921487
+},
+{
+"number": 26399193,
+"timestamp": 1794490499,
+"excessBlobGas": 199363704,
+"blobGasUsed": 524288,
+"baseFeePerGas": 430363516
+},
+{
+"number": 26399194,
+"timestamp": 1794490511,
+"excessBlobGas": 199538466,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 429155674
+},
+{
+"number": 26399195,
+"timestamp": 1794490523,
+"excessBlobGas": 200150135,
+"blobGasUsed": 393216,
+"baseFeePerGas": 427729175
+},
+{
+"number": 26399196,
+"timestamp": 1794490535,
+"excessBlobGas": 198708343,
+"blobGasUsed": 524288,
+"baseFeePerGas": 419969461
+},
+{
+"number": 26399197,
+"timestamp": 1794490547,
+"excessBlobGas": 198883105,
+"blobGasUsed": 262144,
+"baseFeePerGas": 399610070
+},
+{
+"number": 26399198,
+"timestamp": 1794490559,
+"excessBlobGas": 198970486,
+"blobGasUsed": 786432,
+"baseFeePerGas": 399972369
+},
+{
+"number": 26399199,
+"timestamp": 1794490571,
+"excessBlobGas": 199232630,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 390502677
+},
+{
+"number": 26399200,
+"timestamp": 1794490583,
+"excessBlobGas": 198708342,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 397147013
+},
+{
+"number": 26399201,
+"timestamp": 1794490595,
+"excessBlobGas": 199145248,
+"blobGasUsed": 786432,
+"baseFeePerGas": 392434948
+},
+{
+"number": 26399202,
+"timestamp": 1794490607,
+"excessBlobGas": 198096672,
+"blobGasUsed": 0,
+"baseFeePerGas": 397014020
+},
+{
+"number": 26399203,
+"timestamp": 1794490619,
+"excessBlobGas": 198096672,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 372057666
+},
+{
+"number": 26399204,
+"timestamp": 1794490631,
+"excessBlobGas": 198446197,
+"blobGasUsed": 917504,
+"baseFeePerGas": 385611705
+},
+{
+"number": 26399205,
+"timestamp": 1794490643,
+"excessBlobGas": 198752031,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 353020852
+},
+{
+"number": 26399206,
+"timestamp": 1794490655,
+"excessBlobGas": 198620959,
+"blobGasUsed": 131072,
+"baseFeePerGas": 397147131
+},
+{
+"number": 26399207,
+"timestamp": 1794490667,
+"excessBlobGas": 198664649,
+"blobGasUsed": 262144,
+"baseFeePerGas": 389804346
+},
+{
+"number": 26399208,
+"timestamp": 1794490679,
+"excessBlobGas": 198752030,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 367386038
+},
+{
+"number": 26399209,
+"timestamp": 1794490691,
+"excessBlobGas": 198096670,
+"blobGasUsed": 917504,
+"baseFeePerGas": 361189390
+},
+{
+"number": 26399210,
+"timestamp": 1794490703,
+"excessBlobGas": 197179166,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 362605980
+},
+{
+"number": 26399211,
+"timestamp": 1794490715,
+"excessBlobGas": 197747144,
+"blobGasUsed": 131072,
+"baseFeePerGas": 351080188
+},
+{
+"number": 26399212,
+"timestamp": 1794490727,
+"excessBlobGas": 196043208,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 334026021
+},
+{
+"number": 26399213,
+"timestamp": 1794490739,
+"excessBlobGas": 196480114,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 350448960
+},
+{
+"number": 26399214,
+"timestamp": 1794490751,
+"excessBlobGas": 197004402,
+"blobGasUsed": 0,
+"baseFeePerGas": 346505289
+},
+{
+"number": 26399215,
+"timestamp": 1794490763,
+"excessBlobGas": 197004402,
+"blobGasUsed": 262144,
+"baseFeePerGas": 342847295
+},
+{
+"number": 26399216,
+"timestamp": 1794490775,
+"excessBlobGas": 197091783,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 334833048
+},
+{
+"number": 26399217,
+"timestamp": 1794490787,
+"excessBlobGas": 196436423,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 325787256
+},
+{
+"number": 26399218,
+"timestamp": 1794490799,
+"excessBlobGas": 197179164,
+"blobGasUsed": 786432,
+"baseFeePerGas": 333145602
+},
+{
+"number": 26399219,
+"timestamp": 1794490811,
+"excessBlobGas": 196130588,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 330715777
+},
+{
+"number": 26399220,
+"timestamp": 1794490823,
+"excessBlobGas": 196480113,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 320561072
+},
+{
+"number": 26399221,
+"timestamp": 1794490835,
+"excessBlobGas": 195693681,
+"blobGasUsed": 131072,
+"baseFeePerGas": 317475341
+},
+{
+"number": 26399222,
+"timestamp": 1794490847,
+"excessBlobGas": 195737371,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 300308970
+},
+{
+"number": 26399223,
+"timestamp": 1794490859,
+"excessBlobGas": 195082011,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 307574104
+},
+{
+"number": 26399224,
+"timestamp": 1794490871,
+"excessBlobGas": 195518917,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 311748931
+},
+{
+"number": 26399225,
+"timestamp": 1794490883,
+"excessBlobGas": 195999514,
+"blobGasUsed": 262144,
+"baseFeePerGas": 305907811
+},
+{
+"number": 26399226,
+"timestamp": 1794490895,
+"excessBlobGas": 194426650,
+"blobGasUsed": 0,
+"baseFeePerGas": 280539458
+},
+{
+"number": 26399227,
+"timestamp": 1794490907,
+"excessBlobGas": 194426650,
+"blobGasUsed": 917504,
+"baseFeePerGas": 304214735
+},
+{
+"number": 26399228,
+"timestamp": 1794490919,
+"excessBlobGas": 194732484,
+"blobGasUsed": 655360,
+"baseFeePerGas": 304985035
+},
+{
+"number": 26399229,
+"timestamp": 1794490931,
+"excessBlobGas": 194950937,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 277253317
+},
+{
+"number": 26399230,
+"timestamp": 1794490943,
+"excessBlobGas": 194688793,
+"blobGasUsed": 131072,
+"baseFeePerGas": 263314937
+},
+{
+"number": 26399231,
+"timestamp": 1794490955,
+"excessBlobGas": 192984857,
+"blobGasUsed": 524288,
+"baseFeePerGas": 285106282
+},
+{
+"number": 26399232,
+"timestamp": 1794490967,
+"excessBlobGas": 193159619,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 306576358
+},
+{
+"number": 26399233,
+"timestamp": 1794490979,
+"excessBlobGas": 193552835,
+"blobGasUsed": 262144,
+"baseFeePerGas": 308786093
+},
+{
+"number": 26399234,
+"timestamp": 1794490991,
+"excessBlobGas": 193640216,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 304616187
+},
+{
+"number": 26399235,
+"timestamp": 1794491003,
+"excessBlobGas": 194251885,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 309122635
+},
+{
+"number": 26399236,
+"timestamp": 1794491015,
+"excessBlobGas": 194601410,
+"blobGasUsed": 655360,
+"baseFeePerGas": 313600857
+},
+{
+"number": 26399237,
+"timestamp": 1794491027,
+"excessBlobGas": 194819863,
+"blobGasUsed": 0,
+"baseFeePerGas": 311122173
+},
+{
+"number": 26399238,
+"timestamp": 1794491039,
+"excessBlobGas": 194819863,
+"blobGasUsed": 524288,
+"baseFeePerGas": 302243007
+},
+{
+"number": 26399239,
+"timestamp": 1794491051,
+"excessBlobGas": 194994625,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 287127711
+},
+{
+"number": 26399240,
+"timestamp": 1794491063,
+"excessBlobGas": 195606294,
+"blobGasUsed": 524288,
+"baseFeePerGas": 288396982
+},
+{
+"number": 26399241,
+"timestamp": 1794491075,
+"excessBlobGas": 194295574,
+"blobGasUsed": 393216,
+"baseFeePerGas": 283160663
+},
+{
+"number": 26399242,
+"timestamp": 1794491087,
+"excessBlobGas": 194426646,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 275870078
+},
+{
+"number": 26399243,
+"timestamp": 1794491099,
+"excessBlobGas": 194819862,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 279987060
+},
+{
+"number": 26399244,
+"timestamp": 1794491111,
+"excessBlobGas": 195256768,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 282590841
+},
+{
+"number": 26399245,
+"timestamp": 1794491123,
+"excessBlobGas": 194601408,
+"blobGasUsed": 917504,
+"baseFeePerGas": 290424507
+},
+{
+"number": 26399246,
+"timestamp": 1794491135,
+"excessBlobGas": 194907242,
+"blobGasUsed": 655360,
+"baseFeePerGas": 301684781
+},
+{
+"number": 26399247,
+"timestamp": 1794491147,
+"excessBlobGas": 195125695,
+"blobGasUsed": 524288,
+"baseFeePerGas": 291908432
+},
+{
+"number": 26399248,
+"timestamp": 1794491159,
+"excessBlobGas": 195300457,
+"blobGasUsed": 2097152,
+"baseFeePerGas": 305072768
+},
+{
+"number": 26399249,
+"timestamp": 1794491171,
+"excessBlobGas": 195999507,
+"blobGasUsed": 262144,
+"baseFeePerGas": 300187567
+},
+{
+"number": 26399250,
+"timestamp": 1794491183,
+"excessBlobGas": 194426643,
+"blobGasUsed": 393216,
+"baseFeePerGas": 322757813
+},
+{
+"number": 26399251,
+"timestamp": 1794491195,
+"excessBlobGas": 194557715,
+"blobGasUsed": 1966080,
+"baseFeePerGas": 334625028
+},
+{
+"number": 26399252,
+"timestamp": 1794491207,
+"excessBlobGas": 195213075,
+"blobGasUsed": 393216,
+"baseFeePerGas": 330001124
+},
+{
+"number": 26399253,
+"timestamp": 1794491219,
+"excessBlobGas": 195344147,
+"blobGasUsed": 786432,
+"baseFeePerGas": 336223348
+},
+{
+"number": 26399254,
+"timestamp": 1794491231,
+"excessBlobGas": 195606291,
+"blobGasUsed": 655360,
+"baseFeePerGas": 319969236
+},
+{
+"number": 26399255,
+"timestamp": 1794491243,
+"excessBlobGas": 195824744,
+"blobGasUsed": 262144,
+"baseFeePerGas": 325429530
+},
+{
+"number": 26399256,
+"timestamp": 1794491255,
+"excessBlobGas": 195912125,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 328494975
+},
+{
+"number": 26399257,
+"timestamp": 1794491267,
+"excessBlobGas": 196261650,
+"blobGasUsed": 1572864,
+"baseFeePerGas": 328337257
+},
+{
+"number": 26399258,
+"timestamp": 1794491279,
+"excessBlobGas": 196785938,
+"blobGasUsed": 393216,
+"baseFeePerGas": 339983646
+},
+{
+"number": 26399259,
+"timestamp": 1794491291,
+"excessBlobGas": 196917010,
+"blobGasUsed": 131072,
+"baseFeePerGas": 339595906
+},
+{
+"number": 26399260,
+"timestamp": 1794491303,
+"excessBlobGas": 196960700,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 348049233
+},
+{
+"number": 26399261,
+"timestamp": 1794491315,
+"excessBlobGas": 197397606,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 350595162
+},
+{
+"number": 26399262,
+"timestamp": 1794491327,
+"excessBlobGas": 197965584,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 360515035
+},
+{
+"number": 26399263,
+"timestamp": 1794491339,
+"excessBlobGas": 197572368,
+"blobGasUsed": 2097152,
+"baseFeePerGas": 368474858
+},
+{
+"number": 26399264,
+"timestamp": 1794491351,
+"excessBlobGas": 198271418,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 370482464
+},
+{
+"number": 26399265,
+"timestamp": 1794491363,
+"excessBlobGas": 198664634,
+"blobGasUsed": 2359296,
+"baseFeePerGas": 399610102
+},
+{
+"number": 26399266,
+"timestamp": 1794491375,
+"excessBlobGas": 199451066,
+"blobGasUsed": 524288,
+"baseFeePerGas": 397135619
+},
+{
+"number": 26399267,
+"timestamp": 1794491387,
+"excessBlobGas": 198140346,
+"blobGasUsed": 131072,
+"baseFeePerGas": 403052628
+},
+{
+"number": 26399268,
+"timestamp": 1794491399,
+"excessBlobGas": 198184036,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 369817572
+},
+{
+"number": 26399269,
+"timestamp": 1794491411,
+"excessBlobGas": 197659748,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 403696402
+},
+{
+"number": 26399270,
+"timestamp": 1794491423,
+"excessBlobGas": 198140345,
+"blobGasUsed": 0,
+"baseFeePerGas": 380291977
+},
+{
+"number": 26399271,
+"timestamp": 1794491435,
+"excessBlobGas": 198140345,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 372040906
+},
+{
+"number": 26399272,
+"timestamp": 1794491447,
+"excessBlobGas": 198970467,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 404014408
+},
+{
+"number": 26399273,
+"timestamp": 1794491459,
+"excessBlobGas": 199363683,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 401930332
+},
+{
+"number": 26399274,
+"timestamp": 1794491471,
+"excessBlobGas": 198577251,
+"blobGasUsed": 786432,
+"baseFeePerGas": 412307617
+},
+{
+"number": 26399275,
+"timestamp": 1794491483,
+"excessBlobGas": 198839395,
+"blobGasUsed": 1441792,
+"baseFeePerGas": 420441435
+},
+{
+"number": 26399276,
+"timestamp": 1794491495,
+"excessBlobGas": 199319992,
+"blobGasUsed": 2359296,
+"baseFeePerGas": 425194434
+},
+{
+"number": 26399277,
+"timestamp": 1794491507,
+"excessBlobGas": 200106424,
+"blobGasUsed": 2752512,
+"baseFeePerGas": 454262520
+},
+{
+"number": 26399278,
+"timestamp": 1794491519,
+"excessBlobGas": 201023928,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 475728373
+},
+{
+"number": 26399279,
+"timestamp": 1794491531,
+"excessBlobGas": 201766669,
+"blobGasUsed": 655360,
+"baseFeePerGas": 466143686
+},
+{
+"number": 26399280,
+"timestamp": 1794491543,
+"excessBlobGas": 200587021,
+"blobGasUsed": 1179648,
+"baseFeePerGas": 462028498
+},
+{
+"number": 26399281,
+"timestamp": 1794491555,
+"excessBlobGas": 200980237,
+"blobGasUsed": 2621440,
+"baseFeePerGas": 445890709
+},
+{
+"number": 26399282,
+"timestamp": 1794491567,
+"excessBlobGas": 201766669,
+"blobGasUsed": 0,
+"baseFeePerGas": 404448286
+},
+{
+"number": 26399283,
+"timestamp": 1794491579,
+"excessBlobGas": 199931661,
+"blobGasUsed": 2228224,
+"baseFeePerGas": 434517474
+},
+{
+"number": 26399284,
+"timestamp": 1794491591,
+"excessBlobGas": 200674402,
+"blobGasUsed": 524288,
+"baseFeePerGas": 416695527
+},
+{
+"number": 26399285,
+"timestamp": 1794491603,
+"excessBlobGas": 199363682,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 431271868
+},
+{
+"number": 26399286,
+"timestamp": 1794491615,
+"excessBlobGas": 199975351,
+"blobGasUsed": 262144,
+"baseFeePerGas": 451446279
+},
+{
+"number": 26399287,
+"timestamp": 1794491627,
+"excessBlobGas": 200062732,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 426598869
+},
+{
+"number": 26399288,
+"timestamp": 1794491639,
+"excessBlobGas": 199276300,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 414737516
+},
+{
+"number": 26399289,
+"timestamp": 1794491651,
+"excessBlobGas": 199844278,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 416574199
+},
+{
+"number": 26399290,
+"timestamp": 1794491663,
+"excessBlobGas": 199713206,
+"blobGasUsed": 393216,
+"baseFeePerGas": 414510230
+},
+{
+"number": 26399291,
+"timestamp": 1794491675,
+"excessBlobGas": 198271414,
+"blobGasUsed": 1703936,
+"baseFeePerGas": 405018694
+},
+{
+"number": 26399292,
+"timestamp": 1794491687,
+"excessBlobGas": 198839392,
+"blobGasUsed": 1048576,
+"baseFeePerGas": 408651885
+},
+{
+"number": 26399293,
+"timestamp": 1794491699,
+"excessBlobGas": 199188917,
+"blobGasUsed": 917504,
+"baseFeePerGas": 398264256
+},
+{
+"number": 26399294,
+"timestamp": 1794491711,
+"excessBlobGas": 198271413,
+"blobGasUsed": 1835008,
+"baseFeePerGas": 381632708
+},
+{
+"number": 26399295,
+"timestamp": 1794491723,
+"excessBlobGas": 198883082,
+"blobGasUsed": 917504,
+"baseFeePerGas": 368010517
+},
+{
+"number": 26399296,
+"timestamp": 1794491735,
+"excessBlobGas": 197965578,
+"blobGasUsed": 1310720,
+"baseFeePerGas": 362871602
+},
+{
+"number": 26399297,
+"timestamp": 1794491747,
+"excessBlobGas": 197441290,
+"blobGasUsed": 786432,
+"baseFeePerGas": 377559235
+},
+{
+"number": 26399298,
+"timestamp": 1794491759,
+"excessBlobGas": 197703434,
+"blobGasUsed": 1966080,
+"baseFeePerGas": 364737421
+},
+{
+"number": 26399299,
+"timestamp": 1794491771,
+"excessBlobGas": 198358794,
+"blobGasUsed": 2490368,
+"baseFeePerGas": 361806928
+}
+]
