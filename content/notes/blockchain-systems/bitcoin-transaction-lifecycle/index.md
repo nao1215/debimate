@@ -198,9 +198,9 @@ mempool の手数料: 0.00001410
 | --- | --- | --- |
 | UTXO を選び、トランザクションを組み立てる | UTXO、Bitcoin Script | [UTXO](../utxo/) / [Bitcoin Script](../bitcoin-script/) |
 | 秘密鍵で署名する | デジタル署名 | [Digital Signature](../digital-signature/) |
-| 各ノードが検証し、mempool に入れる | UTXO 集合、Bitcoin Script、ノードの方針 | [UTXO](../utxo/) / [Bitcoin Script](../bitcoin-script/) / [Mempool](../mempool/) |
+| 各ノードが検証し、mempool に入れる | UTXO 集合、Bitcoin Script、ノードのポリシー | [UTXO](../utxo/) / [Bitcoin Script](../bitcoin-script/) / [Mempool](../mempool/) |
 | ブロックの候補を組む | Merkle Tree、ブロックヘッダ | [Merkle Tree](../merkle-tree/) / [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) |
 | proof of work で合格を探す | ハッシュ関数、target | [Proof of Work](../proof-of-work/) / [Hash Function](../hash-function/) |
-| チェーンに追加され、確認数が積まれる | ブロックとチェーン | [Bitcoin Block](../bitcoin-block/) |
+| チェーンに追加され、承認数が積まれる | ブロックとチェーン | [Bitcoin Block](../bitcoin-block/) |
 
 [Blockchain Basics](../blockchain-basics/) では、中央の管理者が居ない環境で決めなければならない事柄ごとに、どの仕組みが受け持つかを整理しています。次に読むノートは、詳細の列から選んでください。

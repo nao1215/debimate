@@ -572,7 +572,7 @@ Web サイトからトランザクションを受け取ったウォレットは�
 
 #### Electrum の偽更新誘導
 
-[2018 年 12 月の Electrum](https://github.com/spesmilo/electrum/issues/4968) では、悪意あるサーバーが取引送信時のエラーに偽更新の案内を混ぜ、ユーザーを偽ソフトウェアの導入に誘導しました。旧クライアントは、サーバーから届いた任意の文章を HTML の装飾を含むリッチテキストとして表示していました。
+[2018 年 12 月の Electrum](https://github.com/spesmilo/electrum/issues/4968) では、悪意あるサーバーがトランザクション送信時のエラーに偽更新の案内を混ぜ、ユーザーを偽ソフトウェアの導入に誘導しました。旧クライアントは、サーバーから届いた任意の文章を HTML の装飾を含むリッチテキストとして表示していました。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -582,14 +582,14 @@ sequenceDiagram
     participant S as 攻撃者のサーバー
     participant M as 偽の更新ソフトウェア
     U->>W: 送金を依頼
-    W->>S: 取引を送信
+    W->>S: トランザクションを送信
     S-->>W: エラー文に偽更新の案内を埋め込む
     W-->>U: アプリ内のエラー画面として表示
     U->>M: 案内を信じて取得・実行
     Note over U,M: メッセージの表示だけで<br/>コードが実行されたわけではない
 ```
 
-問題は、「取引を中継するサーバーが返した文章」が「ウォレットの開発元による更新指示」のように読めたことです。開発者は 3.3.3 より前の表示を問題として説明し、更新は公式サイトから行うよう案内しています。
+問題は、「トランザクションを中継するサーバーが返した文章」が「ウォレットの開発元による更新指示」のように読めたことです。開発者は 3.3.3 より前の表示を問題として説明し、更新は公式サイトから行うよう案内しています。
 
 この原因から考えると、通信エラーの表示と、アプリが判断した更新案内は分ける必要があります。利用者も、エラー画面内のリンクを配布元の確認なしに信用しない必要があります。
 
@@ -611,7 +611,7 @@ sequenceDiagram
     A->>P: 不正に得た権限で<br/>改竄パッケージを公開
     D->>P: 実行時に Connect Kit を取得
     P-->>D: 改竄された JavaScript
-    D->>W: 不正な取引への署名を要求
+    D->>W: 不正なトランザクションへの署名を要求
     Note over D,W: 正規サイトを開いていても<br/>読み込む依存コードが改竄済み
     W->>W: ユーザーが承認すると署名
 ```
@@ -620,7 +620,7 @@ sequenceDiagram
 
 <br>
 
-Ledger は、この事件でハードウェアや管理アプリの Ledger Live は[改竄されていないと報告しています](https://www.ledger.com/blog/a-letter-from-ledger-chairman-ceo-pascal-gauthier-regarding-ledger-connect-kit-exploit)。機器から秘密鍵を抜き取る代わりに、ユーザーに不正な取引を承認させたのです。
+Ledger は、この事件でハードウェアや管理アプリの Ledger Live は[改竄されていないと報告しています](https://www.ledger.com/blog/a-letter-from-ledger-chairman-ceo-pascal-gauthier-regarding-ledger-connect-kit-exploit)。機器から秘密鍵を抜き取る代わりに、ユーザーに不正なトランザクションを承認させたのです。
 
 この攻撃経路からは、不要になった配布権限の失効、依存バージョンの固定、読み込むファイルの改竄を検知する仕組みが対策として考えられます。ただし、検証に使う情報の取得経路を信頼できるかも確認する必要があります。特定の対策一つで防げたとは断定できません。
 
@@ -632,14 +632,14 @@ Ledger は、この事件でハードウェアや管理アプリの Ledger Live 
 
 Safe は、資産や設定を持つ「[プロキシ](../upgradeable-proxy/)」と、署名検証や送金のコードを持つ「実装コントラクト」を組み合わせて動きます。プロキシに保存された参照先を変えると、以後の処理に使われるコードも変わります。攻撃は、次の順序で進みました。
 
-1. Web 画面を改竄し、署名する取引を変更する。
-   [Sygnia の調査](https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/)では、Safe の Web 画面に配信された JavaScript の改竄が確認されています。このコードが、署名前の取引に攻撃者のコードを実行する指示を入れました。
+1. Web 画面を改竄し、署名するトランザクションを変更する。
+   [Sygnia の調査](https://www.sygnia.co/blog/sygnia-investigation-bybit-hack/)では、Safe の Web 画面に配信された JavaScript の改竄が確認されています。このコードが、署名前のトランザクションに攻撃者のコードを実行する指示を入れました。
 
-2. 変更後の取引に、必要数の署名を集める。
-   Bybit の承認者は、変更後のデータに署名しました。その署名を付けた取引が送信され、Safe の正規の実装は署名を検証して処理を進めました。
+2. 変更後のトランザクションに、必要数の署名を集める。
+   Bybit の承認者は、変更後のデータに署名しました。その署名を付けたトランザクションが送信され、Safe の正規の実装は署名を検証して処理を進めました。
 
 3. プロキシが参照する実装を、攻撃者の実装に変更する。
-   取引には、攻撃者の書き換え用コントラクトを [`delegatecall`](https://docs.soliditylang.org/en/latest/introduction-to-smart-contracts.html#delegatecall-and-libraries) で実行する指示がありました。これは外部のコードを呼び出し元の保存領域で実行する機能です。この経路ではプロキシの保存領域を使うため、[正規の実装が指示を実行](https://github.com/safe-global/safe-contracts/blob/v1.1.1/contracts/base/Executor.sol)すると、攻撃者のコードがプロキシの設定を書き換えられました。
+   トランザクションには、攻撃者の書き換え用コントラクトを [`delegatecall`](https://docs.soliditylang.org/en/latest/introduction-to-smart-contracts.html#delegatecall-and-libraries) で実行する指示がありました。これは外部のコードを呼び出し元のストレージで実行する機能です。この経路ではプロキシのストレージを使うため、[正規の実装が指示を実行](https://github.com/safe-global/safe-contracts/blob/v1.1.1/contracts/base/Executor.sol)すると、攻撃者のコードがプロキシの設定を書き換えられました。
 
    [当時のプロキシ](https://github.com/safe-global/safe-contracts/blob/v1.1.1/contracts/proxies/Proxy.sol)は、実装の参照先を `slot 0` に保存していました。[NCC Group の解析](https://www.nccgroup.com/research/in-depth-technical-analysis-of-the-bybit-hack/)によると、攻撃用の `transfer(address,uint256)` は、送金を思わせる名前でこの値を変更していました。
 
@@ -657,19 +657,19 @@ Safe は、資産や設定を持つ「[プロキシ](../upgradeable-proxy/)」�
 4. 差し替えた実装で資産を移転する。
    以後、プロキシは攻撃者の実装を使います。元のマルチシグの署名条件が適用されなくなり、追加承認なしで資産が移転されました。この実装は、手順 3 の書き換え用コントラクトとは別です。
 
-この事件では、署名の検証は通っていました。複数人の承認があっても、署名する取引の内容が不正なら実行される、という問題が表れています。
+この事件では、署名の検証は通っていました。複数人の承認があっても、署名するトランザクションの内容が不正なら実行される、という問題が表れています。
 
 ---
 
 ### 鍵の保護と誤承認への対策
 
-鍵を盗まれなくても、不正な取引に署名すれば資産を失います。鍵の保管と、承認する内容の確認は、両方が必要です。
+鍵を盗まれなくても、不正なトランザクションに署名すれば資産を失います。鍵の保管と、承認する内容の確認は、両方が必要です。
 
 例えば、MetaMask の[トークン使用上限の設定](https://support.metamask.io/configure/tokens/how-to-customize-token-approvals-with-a-spending-cap/)では、相手に使わせる数量を編集できます。画面の `Spending cap` が上限、`Spender` が使用を許可する相手です。送金額を入力する操作とは異なり、相手が後からトークンを移転できる権限を与えます。
 
 {{< figure align="center" src="images/metamask-spending-cap.webp" link="images/metamask-spending-cap.webp" width="420" alt="MetaMask のトークン使用上限を編集する画面。Spending cap の入力欄と、使用を許可する Spender が表示されている" caption="MetaMask のトークン使用上限の編集<br>出典：[公式ヘルプ](https://support.metamask.io/configure/tokens/how-to-customize-token-approvals-with-a-spending-cap/)（画面外の白い余白を透過し、WebP に変換）" >}}
 
-サイトとの接続を解除しても、チェーン上の使用許可は残ります。不要な許可は、取り消す取引を別に送ります。
+サイトとの接続を解除しても、チェーン上の使用許可は残ります。不要な許可は、取り消すトランザクションを別に送ります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
