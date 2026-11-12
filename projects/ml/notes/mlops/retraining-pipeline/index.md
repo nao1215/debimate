@@ -36,9 +36,9 @@ graph TD
     E -->|"pass gates"| F["5. Register in Model Registry"]
     E -->|"fail"| Z["halt + alert + keep champion"]
     F --> G["6. Shadow / canary deployment"]
-    G -->|"metrics OK"| H["7. Promote to Production"]
+    G -->|"metrics OK"| H["7. Move champion alias<br/>to challenger"]
     G -->|"metrics bad"| Z
-    H --> I["8. Archive previous champion"]
+    H --> I["8. Keep previous champion<br/>for rollback"]
 ```
 
 工程ごとに、テストする項目と、失敗した時に戻す状態を決めます。学習が終わったら即デプロイするのではなく、評価ゲートを順に通過してから本番へ反映します。どの段階で失敗しても、champion は動き続けます。
@@ -255,9 +255,9 @@ with DAG(
 
 ### Feature store との連携
 
-再学習では、学習時と推論時で特徴量の作り方を一致させる必要があります。同じ生データから特徴量を作っているはずなのに、わずかな実装差で学習時と推論時の特徴量がずれることがあります（training-serving skew。[データリーク](../../ml/data-leakage/)の派生問題）。
+再学習では、学習時と推論時で特徴量の作り方を一致させる必要があります。同じ生データから特徴量を作っているはずなのに、わずかな実装差で学習時と推論時の特徴量がずれることがあります（training-serving skew）。
 
-Feature store（[Feast](https://feast.dev/)、[Vertex AI Feature Store](https://cloud.google.com/vertex-ai/docs/featurestore/latest/overview) など）は、1 箇所で定義した特徴量を学習用のオフラインストア（BigQuery など）と推論用のオンラインストア（Redis など）の両方へ届けてくれます。計算式のずれは起きにくくなりますが、オンラインストアの更新遅れや、学習データに未来の値を混ぜる誤りまでは防げません。
+Feature store（[Feast](https://feast.dev/)、[Vertex AI Feature Store](https://cloud.google.com/vertex-ai/docs/featurestore/latest/overview) など）は、1 箇所で定義した特徴量を学習用のオフラインストア（BigQuery など）と推論用のオンラインストア（Redis など）の両方へ届けてくれます。計算式のずれは起きにくくなりますが、オンラインストアの更新遅れは防げません。学習データに未来の値が混ざる[データリーク](../../ml/data-leakage/)は、Feast の [point-in-time join](https://docs.feast.dev/getting-started/concepts/point-in-time-joins)（`get_historical_features`）のように時刻を基準に結合する機能で防げますが、その機能を使わずに学習データを作ると残ります。
 
 ---
 
