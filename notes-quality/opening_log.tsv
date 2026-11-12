@@ -26,3 +26,4 @@ distributed-systems__transactional-outbox	場面	その他	Transactional Outbox 
 generative-ai__depth-body-shape	誤解	その他	Depth Body Shape - 3D の人形から作った深度マップは、ポーズと一緒に体型と服の厚みも写す
 generative-ai__animation-flicker	結果	その他	Animation Flicker - 生成した絵をコマにして動かすと、止まっている所までちらつく
 generative-ai__ip-adapter-color-cast	場面	その他	IP-Adapter Color Cast - 参照の背景で、描いた絵の色が転ぶ
+math__variance	場面	その他	分散 - 散らばりの小さいミリ秒の時刻では、AVG(ts*ts) - AVG(ts)*AVG(ts) が 0 や負の値を返す

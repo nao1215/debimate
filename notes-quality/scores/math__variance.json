@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/math/variance/index.md",
- "overall": 2,
- "product": 1,
- "blob": "44f6dfc9273ca91f52337d3c19a831e3bebc6527",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 36,
+ "blob": "aa0b535ef121eb584a5cd2a4fb7164c07e377340",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,

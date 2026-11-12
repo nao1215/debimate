@@ -1,5 +1,5 @@
 ---
-title: "分散（バリアンス）"
+title: "分散 - 散らばりの小さいミリ秒の時刻では、AVG(ts*ts) - AVG(ts)*AVG(ts) が 0 や負の値を返す"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]
@@ -8,210 +8,447 @@ weight: 5
 topics: ["Mathematics（数学の基礎）"]
 ---
 
-分散（variance）は、データの散らばり具合を「[平均](../mean/) からの差の二乗の平均」として定量化する指標です。平均が分布の中心を表すのに対して、分散は分布の広がりを表します。
+分散（variance、バリアンス）は、値が[平均](../mean/)の周りにどれだけ散らばっているかを 1 つの数で表す指標です。各値から平均を引いた差を偏差と呼び、偏差を 2 乗して平均した値が分散です。[期待値](../expectation/)の記号では `Var(X) = E[(X - E[X])²]` と書き、式を展開すると `E[X²] - E[X]²`、つまり「2 乗の平均 − 平均の 2 乗」になります。分散の平方根を標準偏差と呼び、元の値と同じ単位で散らばりの大きさを読む時に使います。
 
-- 母分散: `sigma2 = E[(X - mu)^2]`
-- 標本分散: `s2 = sum((xi - x_bar)^2) / (n - 1)`
+2 つの式は数学の上では等しいので、計算しやすい方を使ってよさそうに見えます。後者なら、データを 1 回読む間に値の合計と 2 乗の合計を足していくだけで済みます。[SQLite](https://www.sqlite.org/) に組み込まれた[集約関数](https://www.sqlite.org/lang_aggfunc.html)には分散が無いので、SQL で `AVG(ts * ts) - AVG(ts) * AVG(ts)` と書くこともあります。以下、この書き方を AVG 式と呼びます。
 
-ここで `mu` は母平均、`x_bar` は標本平均、`X` は確率変数、`E[ ]` は[期待値](../expectation/)です。分散は単位が元の値の二乗になるので、元の単位で大きさを読む時は平方根を取った[標準偏差](../stddev/)を使います。
+ところが、Unix 時間をミリ秒で表した時刻を 1 万個作り、AVG 式で分散を計算すると、標準偏差 100 ms で散らばる時刻の分散が -1,073,741,824 になりました。2 乗の平均なので、正しい値は負になりえません。次の図は、時刻の散らばりを 1 ms から 1000 万 ms まで変えて、同じ計算を繰り返した結果です。正しい分散が 10 の 4 乗付近にある負の点が、上記の 1 回分です。散らばりの大きさが近くても、0 や正の値になる回があります。
+
+{{< figure src="var_cover.webp" alt="横軸は正しい分散で 1 から 10 の 14 乗まで、縦軸は計算した分散で 0 の上下を対数にしたもの。青い np.var の点は全て対角線の上に並ぶ。赤い SQLite の AVG 式の点は全て 536,870,912 の整数倍で、正しい分散が 10 の 9 乗より小さい間は 0 か、536,870,912 を数倍した正や負の段に乗る。正しい分散 9,961.78 の点は -1,073,741,824 に乗る。10 の 10 乗を超えると刻みが正しい値に比べて小さくなり、青い線に重なる" caption="np.var と SQLite の AVG 式で計算した、時刻 1 万個（ミリ秒）の分散。縦軸は 0 の上下をそれぞれ対数で取る" align="center" >}}
+
+[NumPy](https://numpy.org/) の `np.var` は全ての点で正しい値を返しました。AVG 式の結果は、この時刻の大きさでは常に 536,870,912 の整数倍です。正しい分散がこの刻みより小さい間は、0 か刻みを数倍した値になり、負の値も出ます。正しい分散が 10 の 10 乗、標準偏差にして 100 秒ほどになると、刻みの粗さが目立たなくなります。SQLite はエラーや警告を出しません。
+
+アクセスログに残る時刻、センサーの値、金額のように、0 から遠い所で小さく揺れる値は珍しくありません。値を 1 件ずつ受け取りながら分散を出す処理を自分で書く時や、ダッシュボードの集計を SQL で組む時に、AVG 式は自然に出てきます。
 
 <br>
 
-本記事では、[NumPy](https://numpy.org/) の乱数で次の疑問を順に確認します。
+本記事では、ML の式に出てくる分散を自分で計算したい人と、SQL や手書きの集計で分散を出す人に向けて、次の疑問に答えます。
 
-- なぜ差の絶対値ではなく二乗を使うのか
-- 標本分散の分母が `n` ではなく `n - 1` なのはなぜか
-- 全体の分散が群内と群間に分けられるとはどういうことか
-- 予測を平均すると分散が縮むのに、ランダムフォレストが木の相関を下げる工夫をするのはなぜか
+- 分散は、値のばらつきをどう数にしたものか。
+- AVG 式は、なぜ 0 や負の値を返すのか。
+- 平均の近くへずらすと、なぜ正しく計算できるのか。
+- 1 件ずつ届く値では、分散をどう更新すればよいか。
+- 日ごとの分散から、月の分散をどう求めるか。
+- 値を平均すると、分散はどれだけ小さくなるか。
+
+実験は Python 3.12、SQLite 3.50.4、NumPy 2.5.4、[scikit-learn](https://scikit-learn.org/stable/) 1.9.1 で行いました。図を描く処理も含めた完全なコードは [variance_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/variance_gen.py) にあります。
 
 ---
 
-### 平均が同じで分散が違う分布
+### 偏差の 2 乗の平均
 
-以下は、平均 0 で標準偏差 1 と 3 の[正規分布](../probability-distributions/)から 500 個ずつ値を引き、[Matplotlib](https://matplotlib.org/) で重ねた例です。
+5 回の応答時間 120・80・100・140・60 ms を例に取ります。平均は 100 ms で、偏差は +20・-20・0・+40・-40 です。偏差をそのまま平均すると、正と負が打ち消し合って必ず 0 になるので、2 乗して符号を消してから平均します。
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-rng = np.random.default_rng(0)
-values1 = rng.normal(loc=0.0, scale=1.0, size=500)
-values2 = rng.normal(loc=0.0, scale=3.0, size=500)
-
-plt.figure(figsize=(6, 4))
-plt.hist(values1, bins=30, color="#59a14f", alpha=0.55, edgecolor="white",
-         label=f"sigma=1 (var={values1.var():.2f})")
-plt.hist(values2, bins=30, color="#e15759", alpha=0.45, edgecolor="white",
-         label=f"sigma=3 (var={values2.var():.2f})")
-plt.title("Variance comparison: same mean, different spreads")
-plt.xlabel("Value")
-plt.ylabel("Count")
-plt.legend()
-plt.tight_layout()
-plt.show()
+ms = np.array([120, 80, 100, 140, 60])  # 5 回の応答時間（ms）
+dev = ms - ms.mean()
+print("平均:", ms.mean())
+print("偏差:", dev)
+print("偏差の 2 乗:", dev**2)
+print("分散:", np.mean(dev**2), " np.var:", np.var(ms))
 ```
-
-出力:
-
-{{< figure src="variance_hist.svg" alt="平均 0 の正規分布から 500 個ずつ引いた 2 つのヒストグラムを重ねた図。標準偏差 1 の分布（緑、分散 1.03）は 0 の周りに狭く、標準偏差 3 の分布（赤、分散 7.92）は横に広がる" caption="平均が同じで分散が違う 2 つの分布" align="center" >}}
-
-中心はどちらも 0 付近ですが、標準偏差 3 の分布は横に 3 倍広がり、分散は理論上 9 倍になります。実測は 1.03 と 7.92 で、500 個の標本でも分散は理論値 9 から 1 割ほどずれます。
-
----
-
-### 二乗する理由
-
-平均からの差を二乗すると、次の性質が得られます。
-
-- 符号の打ち消しを避ける: 差 `xi - mu` をそのまま足すと、正と負が打ち消し合って常にゼロになる。絶対値 `|xi - mu|` の平均（平均絶対偏差、mean absolute deviation）も使えるが、絶対値は 0 で微分できず、式の変形が面倒になる
-- 大きな逸脱を強調する: 差 2 は 4、差 10 は 100 の寄与になる。そのため、分散は外れ値の影響を強く受ける
-- L2 損失と対応する: 分散は「平均で代表させた時の二乗誤差」そのもの。[線形回帰](../../ml/linear-regression/)は残差の二乗和を最小化し、[PCA](../../ml/pca/) は射影後の分散を最大化する
-- 加法性が成り立つ: 独立な確率変数 `X` と `Y` について `Var(X + Y) = Var(X) + Var(Y)`。絶対値ベースの指標には、この性質が無い
-
-平均絶対偏差や[四分位範囲](../quantile/)は外れ値に強い一方で、上記の加法性や分解を使えません。外れ値が多いデータでは、分散だけで散らばりを判断しないようにします。
-
----
-
-### 分母が n - 1 の理由
-
-標本分散で `n` で割ると、平均的に母分散より小さい値が出ます。`x_bar` は標本との二乗誤差を最小にする点なので、真の `mu` を基準にした時より差の二乗和が小さくなる（`x_bar` と `mu` が一致した時だけ等しい）からです。期待値は `(n - 1) / n × sigma2` になり、`n - 1` で割るとこのずれが消えます（不偏推定量）。
-
-分散 1 の正規分布から 5 個を引く試行を 10 万回繰り返し、2 つの割り方の平均を比べます。
-
-```python
-import pandas as pd
-
-rng = np.random.default_rng(0)
-samples = rng.normal(0.0, 1.0, (100_000, 5))
-print(f"ddof=0: {samples.var(axis=1, ddof=0).mean():.4f}")
-print(f"ddof=1: {samples.var(axis=1, ddof=1).mean():.4f}")
-
-x = samples[0]
-print(f"np.var: {np.var(x):.4f}, pd.Series.var: {pd.Series(x).var():.4f}")
-```
-
-出力:
 
 ```text
-ddof=0: 0.8024
-ddof=1: 1.0030
-np.var: 0.1466, pd.Series.var: 0.1833
+平均: 100.0
+偏差: [ 20. -20.   0.  40. -40.]
+偏差の 2 乗: [ 400.  400.    0. 1600. 1600.]
+分散: 800.0  np.var: 800.0
 ```
 
-`n` で割った方は理論値 `4/5 = 0.8` の通りに小さく、`n - 1` で割った方は 1 に戻りました。ここで実装上の落とし穴があります。[`numpy.var`](https://numpy.org/doc/stable/reference/generated/numpy.var.html) の既定は `ddof=0`（`n` で割る）、[`pandas.Series.var`](https://pandas.pydata.org/docs/reference/api/pandas.Series.var.html) の既定は `ddof=1`（`n - 1` で割る）です。最後の行のように、同じ 5 個の値でも 0.1466 と 0.1833 という別の値が返ります。`n` が大きければ差は小さいですが、少数の標本を NumPy と pandas で混ぜて計算すると数値が合いません。
+{{< figure src="var_squares.webp" alt="上は 60 から 140 ms の数直線に 5 回の応答時間を置き、平均 100 から各点へ偏差の矢印を描いた図で、+40、+20、-20、-40 の矢印が出ている。下は偏差を 1 辺とする正方形を並べた図で、面積は 400、400、0、1600、1600。右端に面積 800 の破線の正方形があり、平均 800 = 分散と書いてある" caption="偏差を 1 辺とする正方形を並べ、面積を平均すると分散になる" align="center" >}}
 
----
+偏差の 2 乗は、偏差を 1 辺とする正方形の面積と見ることができます。平均から 40 ms 離れた値は、20 ms 離れた値の 4 倍の面積を持つので、分散は平均から遠い値に強く引っ張られます。単位も 2 乗の ms² になるので、元の単位に戻したい時は平方根を取った標準偏差を使います。
 
-### 分散分解
+絶対値の平均でも符号は消せますが、絶対値は 0 で微分できず、式の変形が面倒になります。2 乗には計算の上で都合の良い性質があります。偏差の 2 乗の合計は、平均の位置で最も小さくなります。[線形回帰](../../ml/linear-regression/)は残差の 2 乗の合計を小さくし、[PCA](../../ml/pca/) は射影した後の分散を大きくするので、どちらも 2 乗の合計を使っています。後の節で使う、足した値の分散を各分散に分ける性質も、絶対値には成り立ちません。
 
-データを群（クラスや特徴量の値ごと）に分けると、全体の分散は群内と群間の 2 つに分解できます。
+その代わり、分散は外れ値の影響を強く受けます。平均からの差の絶対値を平均した平均絶対偏差（mean absolute deviation）や、[四分位範囲](../quantile/)は外れ値に強い一方で、足し算や後の節で扱う分解が使えません。外れ値が多いデータでは、分散だけで散らばりを判断しないようにします。
 
-```text
-Var(全体) = E[Var(X|Group)] + Var(E[X|Group])
-             群内分散の平均     群平均の分散
-```
+上記のコードでは個数の 5 で割りましたが、手元の値から元の集団が持つ分散を推定する時は `n - 1` で割ります。件数が多ければ 2 つの割り方の差は小さいので、本記事では `n` で割る分散を使います。
 
-平均 3, 6, 9・標準偏差 1 の 3 群から 80 個ずつ値を引き、この分解を確認します。群平均には、生成に使った 3, 6, 9 ではなく、標本から計算した値を使います。
+<br>
+
+<details>
+<summary>n - 1 で割る標本分散と、10 万回の試行で比べた結果</summary>
+
+分散 1 の[正規分布](../probability-distributions/)から 5 個を引く試行を 10 万回繰り返し、2 つの割り方の平均を比べました。
 
 ```python
 rng = np.random.default_rng(0)
-groups = ["A", "B", "C"]
-data_by_group = {g: rng.normal(m, 1.0, 80) for g, m in zip(groups, [3.0, 6.0, 9.0])}
-all_data = np.concatenate(list(data_by_group.values()))
-
-total = all_data.var()
-within = np.mean([v.var() for v in data_by_group.values()])
-between = np.mean([(v.mean() - all_data.mean()) ** 2 for v in data_by_group.values()])
-print(f"total = {total:.4f}, within = {within:.4f}, between = {between:.4f}")
-print(f"within + between = {within + between:.4f}")
+samples = rng.normal(0.0, 1.0, (100_000, 5))   # 分散 1 の正規分布から 5 個を引く試行を 10 万回
+print(f"n で割った分散の平均    : {samples.var(axis=1, ddof=0).mean():.4f}")
+print(f"n - 1 で割った分散の平均: {samples.var(axis=1, ddof=1).mean():.4f}")
 ```
-
-出力:
 
 ```text
-total = 6.5681, within = 1.0081, between = 5.5600
-within + between = 6.5681
+n で割った分散の平均    : 0.8024
+n - 1 で割った分散の平均: 1.0030
 ```
 
-{{< figure src="variance_decomposition.svg" alt="左は平均 3, 6, 9 の 3 群の散布図と各群の平均の横線。右は全体分散 6.57 が群内分散 1.01 と群間分散 5.56 の和になることを示す棒グラフ" caption="全体の分散を群内と群間に分解した結果" align="center" >}}
+{{< figure src="var_ddof.webp" alt="左は、10 万回のうち 5 個の平均が 0.69 になった 1 回について、基準にした値 c を横軸、(x - c)² の合計を縦軸にした放物線。青い丸の手元の平均 0.69 で合計 3.47 と最小になり、赤い四角の本当の平均 0 では合計 5.83。右は棒グラフで、n で割った分散の 10 万回の平均は 0.8024、n - 1 で割った方は 1.0030 で、本当の分散 1 の破線に届く" caption="手元の平均から測ると合計が小さく出るので、n で割ると分散を小さく見積もる" align="center" >}}
 
-左の図は 3 群の生データと各群の平均（色付きの横線）、右の棒グラフは 3 つの分散（全体 Total・群内 Within・群間 Between）です。分解は近似ではなく恒等式で、群の大きさが等しく `n` で割る時はこの単純平均の式で厳密に一致します。群平均に生成時の 3, 6, 9 を使うと群間は 6.0005 になり、合計が 7.01 となって全体の 6.57 と合いません。標本の群平均は 3.12, 5.92, 8.90 で、3, 6, 9 からずれているからです。
+上記のとおり、偏差の 2 乗の合計は平均の位置で最も小さくなります。手元にある値の平均は、元の集団が持つ本当の平均から少しずれます。そのため、手元の平均から測った合計は、本当の平均から測った合計以下になります。等しくなるのは 2 つの平均が一致した時だけなので、`n` で割ると分散を小さく見積もります。その見積もりを平均すると、本当の分散に比べて `(n - 1) / n` 倍になることが知られていて、`n - 1` で割ると、このずれが消えます。平均すると本当の値に一致するこの性質は、不偏性と呼ばれます。
 
-ANOVA（分散分析）は、この分解で群間分散が群内分散より十分大きいかを検定します。[回帰木](../../ml/decision-tree/)の分割基準（MSE（Mean Squared Error、平均二乗誤差）の減少）も同じ発想で、分割後の子ノードの分散をサンプル数で重み付けして平均し、分割前より小さくなるかで分割を評価します。図の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/variance_gen.py)は GitHub で確認できます。
+`n` で割った方は `(5 - 1) / 5 = 0.8` のとおり小さく、`n - 1` で割った方は 1 に戻りました。図の左に描いた 1 回では、本当の平均 0 から測ると合計は 5.83 ですが、手元の平均 0.69 から測ると 3.47 に減ります。
+
+元の集団が持つ分散を母分散と呼び、手元の値から母分散を推定するために `n - 1` で割った値を標本分散と呼びます。式は `s² = Σ(x - x̄)² / (n - 1)` で、`x̄` は手元にある値の平均です。
+
+NumPy の `np.var` は `n`、pandas の [`Series.var`](https://pandas.pydata.org/docs/reference/api/pandas.Series.var.html) は `n - 1` で割るのが既定で、少ない件数では値が合いません。標準偏差で同じ違いがどれだけ出るかは、[標準偏差](../stddev/)のノートで扱っています。
+
+</details>
+
+<br>
 
 ---
 
-### 加法性と平均化
+### AVG 式が負になる仕組み
 
-分散には、線形変換と和について次の性質があります（1 行目は `X` と `Y` が独立な場合）。
+冒頭で -1,073,741,824 が出た、標準偏差 100 ms の 1 回分を詳しく見ます。時刻はミリ秒の整数で、`INTEGER` の列に入れています。正しい値は、Python 標準ライブラリの [`statistics.pvariance`](https://docs.python.org/3/library/statistics.html#statistics.pvariance) で求めました。この関数は、[実装](https://github.com/python/cpython/blob/3.12/Lib/statistics.py)を読むと整数を分数のまま計算するので、丸めが入りません。
 
-```text
-Var(X + Y)  = Var(X) + Var(Y)
-Var(aX + b) = a^2 * Var(X)
+```python
+t0 = 1_794_441_600_000                      # 2026-11-12 00:00:00 UTC の Unix 時間（ミリ秒）
+rng = np.random.default_rng(0)
+ts = np.round(t0 + rng.normal(0, 100, 10_000)).astype(np.int64)  # 標準偏差 100 ms の 1 万個の時刻
+
+con = sqlite3.connect(":memory:")
+con.execute("CREATE TABLE ev (ts INTEGER)")
+con.executemany("INSERT INTO ev VALUES (?)", [(int(v),) for v in ts])
+naive = con.execute("SELECT AVG(ts * ts) - AVG(ts) * AVG(ts) FROM ev").fetchone()[0]
+exact = statistics.pvariance(ts.tolist())   # 整数を分数のまま計算するので丸めが無い
+print(f"statistics.pvariance（正確な値）: {float(exact):,.2f}")
+print(f"np.var                         : {np.var(ts):,.2f}")
+print(f"AVG(ts*ts) - AVG(ts)*AVG(ts)    : {naive:,.2f}")
 ```
 
-2 つを組み合わせると、独立で分散が等しい `n` 個の値の平均について次の式が得られます。
+```text
+statistics.pvariance（正確な値）: 9,961.78
+np.var                         : 9,961.78
+AVG(ts*ts) - AVG(ts)*AVG(ts)    : -1,073,741,824.00
+```
 
-`Var((X_1 + X_2 + ... + X_n) / n) = (1/n^2) × n × Var(X_i) = Var(X_i) / n`
+`ts * ts` は約 3.2 × 10^24 で、SQLite で扱える整数の上限、約 9.2 × 10^18 を超えるので、SQLite はこの積を浮動小数点数で計算します。SQLite の浮動小数点数は、NumPy の float64 と同じ 64 ビットの形式です。AVG 式の 2 つの項と、その差を出しました。
 
-これがバギング（bagging、bootstrap aggregating。[Breiman, 1996](https://doi.org/10.1007/BF00058655)）や[ランダムフォレスト](https://doi.org/10.1023/A:1010933404324)の理論的根拠です。ただし、独立でなければ和の分散に共分散の項が残ります。予測どうしの相関が `rho` なら、平均の分散は `rho × sigma2 + (1 - rho) × sigma2 / n` となり、`n` を増やしても `rho × sigma2` より下がりません。独立な場合と、相関 0.5 の場合を比べます。
+```python
+a, b = con.execute("SELECT AVG(ts * ts), AVG(ts) * AVG(ts) FROM ev").fetchone()
+print(f"AVG(ts*ts)       = {a:.17e}")
+print(f"AVG(ts)*AVG(ts)  = {b:.17e}")
+print(f"差               = {a - b:,.0f}")
+print(f"この大きさで float64 が表せる数の間隔: {np.spacing(a):,.0f}")
+```
+
+```text
+AVG(ts*ts)       = 3.22002065581281612e+24
+AVG(ts)*AVG(ts)  = 3.22002065581281719e+24
+差               = -1,073,741,824
+この大きさで float64 が表せる数の間隔: 536,870,912
+```
+
+float64 は有効数字が 2 進数で 53 桁、10 進数で約 16 桁しか無く、値が大きくなるほど、表せる数の間隔が広がります。3.2 × 10^24 付近では、float64 で表せる数が 536,870,912 おきにしかありません。[`np.spacing`](https://numpy.org/doc/stable/reference/generated/numpy.spacing.html) は、この間隔を返す関数です。float32 で同じことが合計に起きる様子は、[平均のノート](../mean/)で扱っています。
+
+{{< figure src="var_grid.webp" alt="数直線に 536,870,912 おきの刻みを 7 本描いた図。青い AVG(ts)*AVG(ts) が刻みの 1 本に乗り、赤い AVG(ts*ts) はその 2 刻み左に乗る。上に、正しい差 9,961.78 は 1 刻みの約 5.4 万分の 1 で、刻みの間に埋もれると書いてある" caption="3.22 × 10^24 付近で float64 が表せる数の刻みと、AVG 式の 2 つの項" align="center" >}}
+
+2 つの項は、どちらも刻みのどこかに丸められます。本当の差 9,961.78 は 1 刻みの約 5.4 万分の 1 しか無いので、丸めた後の差は 0 か、刻みの整数倍にしかなりません。今回は、平均の 2 乗が約 1.6 刻み大きい側に、2 乗の平均が 1 万回の足し算と割り算を経て約 0.4 刻み小さい側にずれ、差は 2 刻み分の -1,073,741,824 になりました。冒頭の図で赤い点が乗っていた段は、この刻みの整数倍です。
+
+正しい分散が 10 の 10 乗を超えても、結果は刻みの整数倍のままです。ただ、刻みの幅が正しい値に比べて小さくなるので、冒頭の図で赤い点が青い線に重なります。
+
+---
+
+### 平均の近くへずらしてから計算する
+
+全ての値から同じ定数 `c` を引いても、平均も同じだけずれるので、偏差は変わりません。そのため `Var(X - c) = Var(X)` が成り立ちます。値を `a` 倍すると偏差も `a` 倍になり、分散は `a²` 倍になります。2 つをまとめると、`Var(aX + b) = a² Var(X)` です。標準偏差を 3 倍にすると、分散は 9 倍になります。
+
+AVG 式が壊れたのは、2 つの項が分散に比べて大きすぎたからでした。値を平均の近くへずらせば、2 つの項が小さくなり、丸めの誤差も小さくなります。同じ 1 万個から、平均との距離を変えながら定数を引き、AVG 式の相対誤差を測りました。
+
+```python
+x = ts.astype(np.float64)
+mu = np.mean(x)
+dists = 10.0 ** np.arange(0, 12.6, 0.5)
+errs = []
+for d in dists:
+    y = x - (mu - d)                     # 平均から d だけ離れた値 c = mu - d を引く
+    v = np.mean(y * y) - np.mean(y) ** 2
+    errs.append(abs(v - float(exact)) / float(exact))
+y = x - x[0]                             # 最初の値を引く
+first = np.mean(y * y) - np.mean(y) ** 2
+print(f"最初の値 {int(ts[0]):,} を引いてから AVG 式: {first:,.2f}（平均との距離 {abs(mu - x[0]):.1f} ms）")
+for d, e in zip(dists, errs):
+    if d in (1, 1e4, 1e6, 1e8, 1e10):
+        print(f"ずらした後の平均 {d:>18,.0f} ms  相対誤差 {e:.1e}")
+```
+
+```text
+最初の値 1,794,441,600,013 を引いてから AVG 式: 9,961.78（平均との距離 12.4 ms）
+ずらした後の平均                  1 ms  相対誤差 0.0e+00
+ずらした後の平均             10,000 ms  相対誤差 1.1e-12
+ずらした後の平均          1,000,000 ms  相対誤差 1.9e-08
+ずらした後の平均        100,000,000 ms  相対誤差 2.2e-05
+ずらした後の平均     10,000,000,000 ms  相対誤差 2.6e+00
+```
+
+{{< figure src="var_shift.webp" alt="横軸はずらした後の平均で 1 から 10 の 12 乗 ms、縦軸は AVG 式の相対誤差で、ともに対数。赤い線は 100 ms より左では 0 か 1e-16 前後（0 は下端に描く）、そこから右上へほぼ直線で増え、10 の 10 乗 ms で 1 を超える。10 の 11 乗 ms 付近の 2 点は AVG 式が 0 を返したため誤差がちょうど 1 になる。灰色の破線の目安の線に沿う。右端の点線はずらさない元の時刻、左の青い点線は最初の値を引いた位置" caption="定数を引いてから AVG 式で計算した時の相対誤差" align="center" >}}
+
+相対誤差は、目安の破線に沿って見ると、ずらした後の平均が 100 倍になるごとに約 1 万倍になります。実測の点は約 1,200 倍から 12 万倍とばらつきます。
+
+<br>
+
+<details>
+<summary>破線の目安の線と、誤差がちょうど 1 の 2 点</summary>
+
+float64 は 1 回の丸めで、値の約 1.1 × 10^-16 倍（2 の -53 乗）までずれます。2 乗の平均は「ずらした後の平均² + 分散」に等しいので、破線はこれを分散で割り、1.1 × 10^-16 を掛けた目安の線です。10 の 11 乗 ms 付近で誤差がちょうど 1 に落ちた 2 点は、AVG 式が 0 を返した所で、正しく計算できたわけではありません。
+
+</details>
+
+<br>
+
+元の時刻は標準偏差が約 100 ms なので、ずらした後の平均 10 の 8 乗 ms は、平均が標準偏差の 100 万倍ある状態です。以下、この倍率を平均と標準偏差の比と呼びます。最初の値を引いた場合は、その値が平均から 12.4 ms しか離れていなかったので、AVG 式でも正しい 9,961.78 が出ました。最初の値が平均から標準偏差の数倍以内にあれば、比は数倍に収まるので同じように効きます。
+
+`np.var` が正しかったのも同じ理由です。[文書](https://numpy.org/doc/stable/reference/generated/numpy.var.html)にあるとおり、`np.var` は先に平均を求め、各値から平均を引いてから 2 乗します。データを 2 回読みますが、大きな 2 つの項の引き算が起きません。
+
+SQL でも、データの範囲に近い定数を先に引けば、同じ効果があります。冒頭で作った SQLite の表から、時刻が始まる 2026-11-12 00:00:00 を引いて、AVG 式で計算しました。
+
+```python
+shifted = con.execute(
+    "SELECT AVG((ts - 1794441600000) * (ts - 1794441600000))"
+    " - AVG(ts - 1794441600000) * AVG(ts - 1794441600000) FROM ev").fetchone()[0]
+print(f"SQLite で 1794441600000 を引いてから AVG 式: {shifted:,.2f}")
+```
+
+```text
+SQLite で 1794441600000 を引いてから AVG 式: 9,961.78
+```
+
+引いた後の値は数百 ms ほどで、2 乗しても小さいので、丸めの刻みが分散よりずっと細かくなり、正しい値が出ました。
+
+---
+
+### 1 件ずつ届く値の分散
+
+値が 1 件ずつ届き、2 回読むことができない場面もあります。件数と合計と 2 乗の合計だけを持てば、いつでも AVG 式で分散を出せますが、合計が大きくなるほど同じ丸めが起きます。
+
+[Welford 氏](https://doi.org/10.1080/00401706.1962.10490022)が 1962 年に示した方法は、件数と平均と偏差の 2 乗の合計を持ち、値が届くたびに更新します。最初の節で使った応答時間で、120・80・100 ms の 3 件の後に 140 ms が届いた 1 回分をたどります。
+
+```python
+vals = [120.0, 80.0, 100.0]
+old_mean = np.mean(vals)                                    # 100
+old_m2 = float(np.sum((np.array(vals) - old_mean) ** 2))    # 800
+v = 140.0
+delta = v - old_mean                 # 更新前の平均から測った差
+new_mean = old_mean + delta / 4
+after = v - new_mean                 # 更新後の平均から測った差
+new_m2 = old_m2 + delta * after
+check = float(np.sum((np.array(vals + [v]) - new_mean) ** 2))
+print(f"140 が届く: 更新前の平均から測った差 {delta:.0f}、更新後の平均 {new_mean:.0f}、更新後の平均から測った差 {after:.0f}")
+print(f"足す量 {delta:.0f} × {after:.0f} = {delta * after:.0f}、更新後の合計 {new_m2:.0f}（4 個から直接計算すると {check:.0f}）")
+```
+
+```text
+140 が届く: 更新前の平均から測った差 40、更新後の平均 110、更新後の平均から測った差 30
+足す量 40 × 30 = 1200、更新後の合計 2000（4 個から直接計算すると 2000）
+```
+
+{{< figure src="var_welford.webp" alt="左は数直線を 2 段に描いた図。上の段は 120、80、100 の 3 個で平均 100。下の段は 140 が届いた後の 4 個で平均 110。上の段の平均 100 から 140 へ赤い矢印「更新前の平均から測った差 40」、下の段の平均 110 から 140 へ緑の矢印「更新後の平均から測った差 30」。右は横 40、縦 30 の長方形で面積 1200。偏差の 2 乗の合計は 800 + 1200 = 2000" caption="Welford の更新 1 回分: 2 つの差を掛けた長方形を足す" align="center" >}}
+
+140 が届くと、平均は 100 から 110 へ動きます。平均が動くと、届いていた 120・80・100 の偏差も変わるので、140 の偏差を 2 乗して足すだけでは合計が合いません。更新前の平均から測った差 40 を 2 乗した 1600 では多すぎ、更新後の平均から測った差 30 を 2 乗した 900 では少なすぎます。2 つの差を掛けた 1200 は、既にある値で偏差が変わった分まで含めた増分にちょうど等しく、4 個から直接計算した 2000 と一致します。
+
+冒頭の時刻を 1 件ずつ流し、合計と 2 乗の合計から出す方法と Welford 氏の方法で、届くたびに分散を求めました。
+
+```python
+n = s = ss = 0                           # 件数・合計・2 乗の合計だけを持つ
+naive_run = []
+for v in ts.tolist():
+    n += 1
+    s += float(v)
+    ss += float(v) * float(v)
+    naive_run.append(ss / n - (s / n) ** 2)
+
+n, mean, m2 = 0, 0.0, 0.0                # Welford: 件数・平均・偏差の 2 乗の合計
+welford_run = []
+for v in ts.tolist():
+    n += 1
+    delta = v - mean
+    mean += delta / n
+    m2 += delta * (v - mean)
+    welford_run.append(m2 / n)
+print(f"1 万件後  合計と 2 乗の合計: {naive_run[-1]:,.2f}  Welford: {welford_run[-1]:,.2f}"
+      f"  正確な値: {float(exact):,.2f}")
+neg = sum(1 for v in naive_run if v < 0)
+zero = sum(1 for v in naive_run if v == 0)
+print(f"合計と 2 乗の合計の途中の値: 負 {neg} 回、0 {zero} 回 / 10,000 回")
+```
+
+```text
+1 万件後  合計と 2 乗の合計: -13,958,643,712.00  Welford: 9,961.80  正確な値: 9,961.78
+合計と 2 乗の合計の途中の値: 負 5029 回、0 473 回 / 10,000 回
+```
+
+{{< figure src="var_stream.webp" alt="横軸は届いた件数で 1 から 1 万の対数、縦軸はその時点の分散で 0 の上下を対数にしたもの。青い Welford の線は最初の数件で 10 の 4 乗付近まで上がり、その後は 1 万件まで約 1 万で水平。赤い件数・合計・2 乗の合計から計算した線は、正の 10 の 9 乗付近と負の 10 の 9 乗から 10 の 10 乗付近の間を何度も行き来し、最後は負で終わる" caption="時刻が 1 件ずつ届くたびに求めた分散" align="center" >}}
+
+合計と 2 乗の合計から出した分散は、1 万回のうち 5029 回が負、473 回が 0 で、最後は -13,958,643,712 でした。Welford 氏の方法は、数件を過ぎると約 1 万で落ち着き、1 万件後は 9,961.80 でした。正確な値との差 0.02 は、1.8 × 10^12 ほどの平均を float64 で持ち、少しずつ更新することによる丸めと考えられます。
+
+<br>
+
+<details>
+<summary>SQLite の AVG 式より誤差が大きい理由</summary>
+
+上のループは、約 3.2 × 10^28 まで膨らんだ 2 乗の合計に値を素直に足すので、足すたびの丸めが 1 万回積み重なります。SQLite は 3.43.0 から、[`sum()` と `avg()`](https://github.com/sqlite/sqlite/blob/version-3.50.4/src/func.c#L1862) の中で丸めの誤差を別の変数に持って補う Kahan-Babuska-Neumaier の加算を使っています。Python の `math.fsum` で誤差を補いながら足すと、SQLite と同じ値になりました。
+
+```python
+fs = math.fsum(float(v) for v in ts.tolist()) / len(ts)
+fss = math.fsum(float(v) * float(v) for v in ts.tolist()) / len(ts)
+print(f"math.fsum で足した合計と 2 乗の合計から: {fss - fs * fs:,.0f}")
+```
+
+```text
+math.fsum で足した合計と 2 乗の合計から: -1,073,741,824
+```
+
+誤差を補っても、2 つの項の引き算で起きる -1,073,741,824 は残ります。
+
+</details>
+
+<br>
+
+実際のソフトウェアでも、この問題を受けて計算の方法を変えた例があります。[PostgreSQL](https://www.postgresql.org/) は、浮動小数点数の `variance()` などの集約関数で 2 乗の合計から引く方法を使っていましたが、2018 年の[コミット](https://postgr.es/c/e954a727f)で、Welford 氏の方法と同じく偏差の 2 乗の合計を 1 回の走査で積み上げる方法に替えました。コミットのメッセージには、2 つの項の差がそれぞれの項に比べて小さいと、精度が大きく失われると書かれています。この変更は [PostgreSQL 12 のリリースノート](https://www.postgresql.org/docs/release/12.0/)に載っています。
+
+<br>
+
+scikit-learn の [`StandardScaler`](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html) は、`partial_fit` でデータを分けて渡すと、件数・平均・分散を持ち、届いた分と合わせて更新します。冒頭の時刻を 1,000 件ずつ 10 回に分けて渡しました。
+
+```python
+sc = StandardScaler()
+for chunk in np.array_split(ts.astype(np.float64).reshape(-1, 1), 10):   # 1,000 件ずつ 10 回
+    sc.partial_fit(chunk)
+print(f"StandardScaler.partial_fit の分散: {sc.var_[0]:,.2f}")
+```
+
+```text
+StandardScaler.partial_fit の分散: 9,961.78
+```
+
+小数 2 桁まで正確な値と同じ 9,961.78 が出ました。列の分散を自分で計算する時も、件数と平均と偏差の 2 乗の合計を持つ形にしておけば、今回の時刻では、AVG 式が壊れる条件でも丸めの誤差は分散に比べて小さく収まりました。
+
+`StandardScaler` が行う[標準化](../../ml/standardization/)は、特徴量を平均 0・分散 1 に揃える処理で、[ロジスティック回帰](../../ml/logistic-regression/)や [kNN](../../ml/knn/) のように特徴量の大きさに左右されるモデルの前に使います。[特徴量選択](../../ml/feature-selection/)で使う scikit-learn の [`VarianceThreshold`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.VarianceThreshold.html) も列の分散を使い、しきい値より小さい、ほぼ定数の列を捨てます。
+
+---
+
+### 日ごとの分散から月の分散を出す
+
+集計の表に、日ごとの件数・平均・分散を残しておくことはよくあります。[materialized view](/notes/database-systems/materialized-view/) で日別に集計した結果を残す場合も同じです。この表から月の分散を出す時に、日ごとの分散を平均すると、正しい値になりません。
+
+公開データで試します。[Fanaee-T 氏と Gama 氏](https://doi.org/10.1007/s13748-013-0040-3)が公開した [Bike Sharing Dataset](https://archive.ics.uci.edu/dataset/275/bike+sharing+dataset) は、ワシントン D.C. の [Capital Bikeshare](https://capitalbikeshare.com/) のレンタル件数に天気を付けたデータです。これを [OpenML](https://www.openml.org/d/42712) から取得し、2011 年 1 月の 1 時間ごとの気温（℃）を使いました。31 日で 688 時間分あり、欠けた時間がある日も含まれます。
+
+```python
+df = fetch_openml(data_id=42712, as_frame=True, parser="liac-arff").frame
+df["day"] = (df["hour"].diff() < 0).cumsum()          # 時刻が 0 時に戻った所で日を変える
+jan = df[(df["year"] == 0) & (df["month"] == 1)]      # 2011 年 1 月
+daily = jan.groupby("day")["temp"].agg(n="count", mean="mean", var=lambda t: t.var(ddof=0))
+print(f"日数 {len(daily)}、時間数 {int(daily['n'].sum())}")
+print(f"日ごとの分散の平均         : {daily['var'].mean():.2f}")
+print(f"1 月全体の分散（正しい値） : {jan['temp'].var(ddof=0):.2f}")
+
+N = daily["n"].sum()
+M = (daily["n"] * daily["mean"]).sum() / N
+within = (daily["n"] * daily["var"]).sum() / N        # 日の中のばらつき（件数で重み付け）
+between = (daily["n"] * (daily["mean"] - M) ** 2).sum() / N   # 日と日の差（日の平均のばらつき）
+print(f"日の中のばらつき {within:.2f} + 日と日の差 {between:.2f} = {within + between:.2f}")
+```
+
+```text
+日数 31、時間数 688
+日ごとの分散の平均         : 3.34
+1 月全体の分散（正しい値） : 10.23
+日の中のばらつき 3.51 + 日と日の差 6.73 = 10.23
+```
+
+{{< figure src="var_merge.webp" alt="左は 2011 年 1 月の 31 日について、1 時間ごとの気温を点で、日の平均を横線で描いた図。日の平均は 2.5 ℃ から 15 ℃ まで日によって大きく動き、赤い破線の 1 月の平均は約 8 ℃。右は棒グラフで、日ごとの分散を平均した値は 3.34。1 月全体の分散 10.23 は、青い日の中 3.51 と赤い日と日の差 6.73 を積んだ棒" caption="2011 年 1 月の 1 時間ごとの気温と、分散の比較" align="center" >}}
+
+日ごとの分散を平均した値は 3.34 で、1 月全体の分散 10.23 の 3 分の 1 しかありません。日ごとの分散は、その日の平均からの偏差しか見ていないので、寒い日と暖かい日の差が入らないからです。
+
+全体の分散は、日の中のばらつきと、日の平均が月の平均からどれだけ離れているかの 2 つに分かれます。前者は日ごとの分散を時間数で重み付けして平均した 3.51、後者は日ごとの平均から求めた分散を同じく時間数で重み付けした 6.73 で、足すと 10.23 に一致します。この分け方は、確率の言葉では全分散の法則（law of total variance）と呼ばれます。
+
+式では `Var(X) = E[Var(X | 日)] + Var(E[X | 日])` と書き、前の項が日の中のばらつき、後の項が日と日の差です。分けた結果を足すと必ず元の分散に戻り、近似ではありません。3.34 と 3.51 が違うのは、時間が欠けた日を 1 日として同じ重みで平均したかどうかの差です。
+
+同じ分け方は ML の中にもあります。[決定木](../../ml/decision-tree/)の回帰では、分けた後に子ノードごとの分散を件数で重み付けして平均し、分ける前よりどれだけ小さくなるかで分け方を選びます。この減り方は平均二乗誤差（MSE）の減少と同じで、scikit-learn 1.9.1 の [`DecisionTreeRegressor`](https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeRegressor.html) では、既定の `criterion="squared_error"` がこの基準です。
+
+分散分析（ANOVA）は、組の平均のばらつきが組の中のばらつきより十分大きいかを[検定](../hypothesis-test/)します。
+
+<br>
+
+#### 2 組の集計をまとめる式
+
+日ごとの集計を 1 日ずつ足していく時は、2 組の (件数, 平均, 偏差の 2 乗の合計) を 1 組にまとめる式を使います。[Chan 氏・Golub 氏・LeVeque 氏](https://doi.org/10.1080/00031305.1983.10483115)が 1983 年の論文で示した形です。この式では、2 組の平均がどれだけ違うかを 2 乗する項が、上記の日と日の差に当たります。
+
+```python
+def merge(a, b):
+    """(件数, 平均, 偏差の 2 乗の合計) の 2 組を 1 組にまとめる。"""
+    na, ma, m2a = a
+    nb, mb, m2b = b
+    n = na + nb
+    delta = mb - ma
+    return n, ma + delta * nb / n, m2a + m2b + delta**2 * na * nb / n
+
+
+rows = [(r["n"], r["mean"], r["var"] * r["n"]) for _, r in daily.iterrows()]  # 分散 × 件数 = 偏差の 2 乗の合計
+acc = rows[0]
+for r in rows[1:]:
+    acc = merge(acc, r)
+print(f"日ごとの (件数, 平均, 分散) を順にまとめた分散: {acc[2] / acc[0]:.2f}")
+```
+
+```text
+日ごとの (件数, 平均, 分散) を順にまとめた分散: 10.23
+```
+
+31 日分を順にまとめると、1 月全体の 10.23 に一致しました。片方の組を 1 件にすれば、1 件ずつ届く値で使った Welford 氏の更新と同じ式になります。PostgreSQL が並列に集計した部分の結果をまとめる [`float8_combine`](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/utils/adt/float.c#L2856) や、`StandardScaler` の `partial_fit` も、この形でまとめています。集計の表から月や年の分散を出したいなら、日ごとの分散だけでなく、件数と平均も残しておく必要があります。
+
+---
+
+### 平均した値の分散
+
+`X` と `Y` を足した値の分散は、`Var(X + Y) = Var(X) + Var(Y) + 2 Cov(X, Y)` です。`Cov` は 2 つが一緒に増減する度合いを表す共分散で、`Cov(X, Y) = E[(X - E[X])(Y - E[Y])]` です。`Cov(X, X) = Var(X)` なので、共分散は分散を 2 つの変数に広げたものと見ることができます。
+
+共分散を 2 つの標準偏差で割った値が[相関係数](../correlation/) `ρ` で、-1 から 1 の値を取ります。
+
+変数が多い時は、変数の組ごとに共分散を求めて並べ、共分散行列を作ります。PCA では、この行列の[固有値](../eigen-decomposition/)が、その主成分の軸に沿った分散になります。独立なら共分散は 0 で、分散はそのまま足し算になります。
+
+分散 `σ²` の独立な値を `n` 個平均すると、和の分散は `n σ²`、`n` で割ると `n²` で割ることになるので、平均の分散は `σ² / n` です。この分散は `n` とともに 0 へ近づくので、平均が真の値に近づく[大数の法則](../lln-clt/)をここから示せます。平方根の `σ / √n` は標準誤差と呼ばれ、A/B テストの t 検定では、群ごとの分散から標準誤差を求め、2 群で平均を引き算した差をこれで割って t 値を出します。
+
+値の間に相関 `ρ` があると、平均の分散は `ρ σ² + (1 - ρ) σ² / n` になり、`n` を増やしても `ρ σ²` より下がりません。分散 1 の値を `n` 個平均して、2 万回分の分散を測りました。
 
 ```python
 rng = np.random.default_rng(1)
-n_trials = 5000
-for n in [1, 4, 16, 64, 256]:
-    samples = rng.normal(0.0, 1.0, (n_trials, n)).mean(axis=1)
-    print(f"independent n={n:3d}: var = {samples.var():.4f}")
-
-rho = 0.5
-for n in [1, 4, 16, 64, 256]:
-    shared = rng.normal(0.0, 1.0, (n_trials, 1))  # 全員に共通する誤差
-    own = rng.normal(0.0, 1.0, (n_trials, n))     # 各予測に固有の誤差
-    preds = np.sqrt(rho) * shared + np.sqrt(1 - rho) * own
-    print(f"rho=0.5     n={n:3d}: var = {preds.mean(axis=1).var():.4f}")
+ns = np.array([1, 2, 4, 8, 16, 32, 64, 128])
+trials = 20_000
+for rho in (0.0, 0.3):
+    vs = []
+    for k in ns:
+        common = rng.normal(size=(trials, 1))           # 全員に共通する揺れ
+        own = rng.normal(size=(trials, k))              # 1 個ずつの揺れ
+        z = np.sqrt(rho) * common + np.sqrt(1 - rho) * own   # 分散 1、互いの相関 rho
+        vs.append(z.mean(axis=1).var())
+    print(f"相関 {rho}: " + "  ".join(f"n={k} {v:.3f}" for k, v in zip(ns, vs)))
 ```
-
-出力:
 
 ```text
-independent n=  1: var = 1.0013
-independent n=  4: var = 0.2428
-independent n= 16: var = 0.0624
-independent n= 64: var = 0.0156
-independent n=256: var = 0.0040
-rho=0.5     n=  1: var = 1.0094
-rho=0.5     n=  4: var = 0.6405
-rho=0.5     n= 16: var = 0.5217
-rho=0.5     n= 64: var = 0.5030
-rho=0.5     n=256: var = 0.4824
+相関 0.0: n=1 0.987  n=2 0.491  n=4 0.250  n=8 0.123  n=16 0.064  n=32 0.031  n=64 0.016  n=128 0.008
+相関 0.3: n=1 0.995  n=2 0.654  n=4 0.470  n=8 0.390  n=16 0.351  n=32 0.318  n=64 0.316  n=128 0.310
 ```
 
-{{< figure src="variance_averaging.svg" alt="独立な予測を n 個平均した値の分布を n ごとに重ねた図。n が増えるほど、平均値の分布が真の値 0 の周りに鋭く集中していく" caption="独立な予測を n 個平均した値の分布" align="center" >}}
+{{< figure src="var_average.webp" alt="横軸は平均した個数 n で 1 から 128 の対数、縦軸は平均の分散。青い丸の相関 0 の実測は式 1/n の線に沿って 128 個で 0.008 まで下がる。赤い四角の相関 0.3 の実測は式 0.3 + 0.7/n の線に沿い、128 個でも 0.310 で、点線の 0.3 より下がらない" caption="分散 1 の値を n 個平均した時の分散（実測と式）" align="center" >}}
 
-図は独立な場合の「平均値の分布」で、`n` が増えるほど真の値 0 の周りに集中します。分散は 1/n の速さで縮み、64 個の平均で 0.0156（理論値 1/64 ≈ 0.0156）です。一方で、相関 0.5 の予測は 256 個を平均しても 0.48 前後で止まり、独立な場合の 100 倍以上残りました（理論値 0.502 との差は 5000 回の試行による揺らぎです）。ランダムフォレストが分割ごとに候補の特徴量をサンプリングして木どうしの相関を下げるのは、この下限を下げるためです。
+相関 0 なら 128 個で 0.008 まで下がりますが、相関 0.3 では 128 個でも 0.310 です。複数のモデルで予測を平均する[アンサンブル学習](../../ml/ensemble-learning/)で、モデルを増やしても予測のばらつきが一定より下がらないのは、この `ρ σ²` が残るからです。
+
+[Breiman 氏の bagging](https://doi.org/10.1007/BF00058655)（bootstrap aggregating）は、学習データから重複を許して取り直したデータごとにモデルを作り、予測を平均して分散を下げる方法です。ただし、元が同じ学習データなのでモデル同士は相関し、平均の分散は `σ² / n` までは下がらず `ρ σ²` が残ります。
+
+[ランダムフォレスト](../../ml/random-forest/)は、同じ Breiman 氏が [2001 年の論文](https://doi.org/10.1023/A:1010933404324)で示した方法で、分割ごとに、候補にする特徴量を無作為に一部だけ選び直します。選ぶ数は、scikit-learn の [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) では `max_features` で決めます。どの木も同じ強い特徴量で分けることが減るので、木同士の相関が下がり、`ρ σ²` そのものが小さくなります。
+
+学習データを変えた時の予測のばらつきを分散で測る考え方は、[バイアス-バリアンス分解](../../ml/bias-variance-tradeoff/)で扱っています。そこでは誤差をバイアスの 2 乗・分散・ノイズの 3 つに分け、[過学習](../../ml/overfitting/)を分散が大きい状態として説明します。
 
 ---
 
-### 共分散への橋渡し
+### 分散を自分で計算する前に
 
-分散は 1 変数の散らばりを表します。2 変数の関係を見る場合は「共分散（covariance）」に拡張されます。
+分散を出す時は、最初にデータの平均と標準偏差の比を見ます。ずらす実験では、ずらした後の平均を標準偏差の約 100 ms で割った比が 10 の 6 乗で相対誤差が約 2 × 10^-5、10 の 8 乗で 1 を超えました。冒頭の時刻は比が約 10 の 10 乗あり、このデータでは float64 でも AVG 式は使えません。Unix 時間のミリ秒、ナノ秒、大きな ID、0 から遠い所で揺れる測定値は、この形になりやすい値です。
 
-```text
-Cov(X, Y) = E[(X - mu_x)(Y - mu_y)]
-```
+データを 2 回読めるなら、`np.var` のように平均を引いてから 2 乗します。SQL なら、データの範囲に近い定数を先に引きます。1 件ずつ届く値や、分けて集計した結果をまとめる時は、件数と平均と偏差の 2 乗の合計を持ち、Welford 氏の更新と 2 組をまとめる式で足していきます。日ごとの表から月の分散を出す時に、日ごとの分散を平均してはいけません。
 
-`Cov(X, X) = Var(X)` なので、共分散は分散を 2 変数に広げたものと見ることができます。前節の相関 `rho` は、共分散を両者の[標準偏差](../stddev/) で割って正規化した[相関係数](../correlation/)です。
-
----
-
-### 機械学習での使いどころ
-
-機械学習では、分散は前処理・学習アルゴリズム・評価のあらゆる場面で出てきます。
-
-- [標準化](../../ml/standardization/): 特徴量を平均 0・分散 1 に揃える。[ロジスティック回帰](../../ml/logistic-regression/)や [kNN](../../ml/knn/) など、スケールに敏感なモデルの前処理
-- [特徴量選択](../../ml/feature-selection/)の初手: scikit-learn の [`VarianceThreshold`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.VarianceThreshold.html) で、分散がしきい値未満のほぼ定数の特徴量を捨てる
-- [PCA](../../ml/pca/): 共分散行列の[固有値](../eigen-decomposition/)が、その主成分の軸上での分散になる
-- [アンサンブル学習](../../ml/ensemble-learning/)・[ランダムフォレスト](../../ml/random-forest/): 前節の通り、予測を平均して分散を抑える
-- [バイアス-バリアンストレードオフ](../../ml/bias-variance-tradeoff/): 誤差を「バイアス² + 分散 + ノイズ」に分解する。[過学習](../../ml/overfitting/)はモデルの分散が大きい状態
-- [A/B テストの検定](../hypothesis-test/): 群内分散から求めた標準誤差で群平均の差を割り、t 値を計算する
-- [大数の法則・中心極限定理](../lln-clt/): 標本平均の分散が `sigma2 / n` に縮むことが土台になる
+自分で書いた集計が正しいかは、`statistics.pvariance` や `np.var` の値と並べれば分かります。冒頭の図で赤い点が 0 と、536,870,912 を整数倍した段に並んだように、返ってきた分散が 0 や負、あるいはデータの散らばりと関係の無い 536,870,912 の倍数のような値になっていたら、計算の方法を疑います。
