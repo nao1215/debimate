@@ -1,0 +1,30 @@
+An example execution:
+
+[State 0] { n: 0 }
+
+[State 1] { n: 1 }
+
+[State 2] { n: 0 }
+
+[State 3] { n: 1 }
+
+[State 4] { n: 2 }
+
+[State 5] { n: 1 }
+
+[State 6] { n: 0 }
+
+[State 7] { n: -1 }
+
+[State 8] { n: 0 }
+
+[State 9] { n: 1 }
+
+[State 10] { n: 2 }
+
+[State 11] { n: 3 }
+
+[violation] Found an issue (10ms at 100 traces/second).
+Use --verbosity=3 to show executions.
+Use --seed=0x1 --backend=rust to reproduce.
+error: Invariant violated

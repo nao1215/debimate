@@ -1,0 +1,4 @@
+traces/
+_apalache-out/
+.runtime/
+tmp/

@@ -1,0 +1,53 @@
+go version go1.26.11 linux/amd64
+original quint: replayed 500 traces, 0 disagreed with the spec
+original rapid(precise) seed=1: [rapid] OK, passed 100 tests
+original rapid(precise) seed=2: [rapid] OK, passed 100 tests
+original rapid(precise) seed=3: [rapid] OK, passed 100 tests
+original rapid(precise) seed=4: [rapid] OK, passed 100 tests
+original rapid(precise) seed=5: [rapid] OK, passed 100 tests
+original rapid(weak) seed=1: [rapid] OK, passed 100 tests
+original rapid(weak) seed=2: [rapid] OK, passed 100 tests
+original rapid(weak) seed=3: [rapid] OK, passed 100 tests
+original rapid(weak) seed=4: [rapid] OK, passed 100 tests
+original rapid(weak) seed=5: [rapid] OK, passed 100 tests
+original one run: disk: people.csv=old places.csv=old
+original one run: error: failed to move the saved data onto people.csv: injected failure
+original one run: weak oracle (the error names the file): true
+original one run: precise oracle (a restore failure names the file): true
+M1_failed_target_not_restored quint: replayed 500 traces, 69 disagreed with the spec
+M1_failed_target_not_restored rapid(precise) seed=1: [rapid] failed after 8 tests: plan {stageFail: commit:map[a:copyFailed b:renamed] restoreFail:map[a:true b:false]}
+M1_failed_target_not_restored rapid(precise) seed=2: [rapid] failed after 10 tests: plan {stageFail: commit:map[a:copyFailed b:copyFailed] restoreFail:map[a:false b:false]}
+M1_failed_target_not_restored rapid(precise) seed=3: [rapid] failed after 3 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:false b:true]}
+M1_failed_target_not_restored rapid(precise) seed=4: [rapid] failed after 4 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:true b:true]}
+M1_failed_target_not_restored rapid(precise) seed=5: [rapid] failed after 5 tests: plan {stageFail: commit:map[a:copyFailed b:renamed] restoreFail:map[a:false b:false]}
+M1_failed_target_not_restored rapid(weak) seed=1: [rapid] OK, passed 100 tests
+M1_failed_target_not_restored rapid(weak) seed=2: [rapid] OK, passed 100 tests
+M1_failed_target_not_restored rapid(weak) seed=3: [rapid] OK, passed 100 tests
+M1_failed_target_not_restored rapid(weak) seed=4: [rapid] OK, passed 100 tests
+M1_failed_target_not_restored rapid(weak) seed=5: [rapid] OK, passed 100 tests
+M1_failed_target_not_restored one run: disk: people.csv=broken places.csv=old
+M1_failed_target_not_restored one run: error: failed to move the saved data onto people.csv: injected failure
+M1_failed_target_not_restored one run: weak oracle (the error names the file): true
+M1_failed_target_not_restored one run: precise oracle (a restore failure names the file): false
+M2_restore_error_swallowed quint: replayed 500 traces, 53 disagreed with the spec
+M2_restore_error_swallowed rapid(precise) seed=1: [rapid] failed after 1 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M2_restore_error_swallowed rapid(precise) seed=2: [rapid] failed after 0 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M2_restore_error_swallowed rapid(precise) seed=3: [rapid] failed after 3 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:false b:true]}
+M2_restore_error_swallowed rapid(precise) seed=4: [rapid] failed after 4 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:true b:true]}
+M2_restore_error_swallowed rapid(precise) seed=5: [rapid] failed after 24 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M2_restore_error_swallowed rapid(weak) seed=1: [rapid] failed after 1 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M2_restore_error_swallowed rapid(weak) seed=2: [rapid] failed after 0 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M2_restore_error_swallowed rapid(weak) seed=3: [rapid] failed after 26 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:true b:true]}
+M2_restore_error_swallowed rapid(weak) seed=4: [rapid] failed after 4 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:true b:true]}
+M2_restore_error_swallowed rapid(weak) seed=5: [rapid] failed after 24 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M3_no_rollback quint: replayed 500 traces, 90 disagreed with the spec
+M3_no_rollback rapid(precise) seed=1: [rapid] failed after 1 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M3_no_rollback rapid(precise) seed=2: [rapid] failed after 0 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M3_no_rollback rapid(precise) seed=3: [rapid] failed after 1 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:false b:false]}
+M3_no_rollback rapid(precise) seed=4: [rapid] failed after 0 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:false b:false]}
+M3_no_rollback rapid(precise) seed=5: [rapid] failed after 5 tests: plan {stageFail: commit:map[a:copyFailed b:renamed] restoreFail:map[a:false b:false]}
+M3_no_rollback rapid(weak) seed=1: [rapid] failed after 1 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M3_no_rollback rapid(weak) seed=2: [rapid] failed after 0 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:true b:false]}
+M3_no_rollback rapid(weak) seed=3: [rapid] failed after 1 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:false b:false]}
+M3_no_rollback rapid(weak) seed=4: [rapid] failed after 0 tests: plan {stageFail: commit:map[a:renamed b:renameFailed] restoreFail:map[a:false b:false]}
+M3_no_rollback rapid(weak) seed=5: [rapid] failed after 19 tests: plan {stageFail: commit:map[a:renamed b:copyFailed] restoreFail:map[a:false b:false]}

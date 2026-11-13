@@ -1,0 +1,275 @@
+quint 0.33.1
+openjdk version "21.0.13" 2026-10-20 LTS
+== direct: [violation] Found an issue (5.4 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  reported: Set()
+== staged: [violation] Found an issue (6.0 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event: { outcome: "renamed", step: "commit", target: "a" },
+  reported: Set()
+[State 4]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renameFailed", step: "commit", target: "b" },
+  reported: Set()
+== copied: [violation] Found an issue (5.7 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  reported: Set()
+== selfRestore: [violation] Found an issue (5.8 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  reported: Set()
+== rollback: [violation] Found an issue (5.9 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  reported: Set()
+== reported: [violation] Found an issue (6.5 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+  i: 0,
+  phase: "stage",
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+  i: 1,
+  phase: "stage",
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+  i: 0,
+  phase: "commit",
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  i: 0,
+  phase: "failed",
+  reported: Set()
+== touched: [ok] No violation found (7.8 s)
+== selfRestore_renameOnly: [violation] Found an issue (6.2 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renamed", step: "commit", target: "a" },
+  reported: Set()
+[State 4]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renameFailed", step: "commit", target: "b" },
+  reported: Set()
+== selfRestore_noRestoreFail: [violation] Found an issue (6.9 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renamed", step: "commit", target: "a" },
+  reported: Set()
+[State 4]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renameFailed", step: "commit", target: "b" },
+  reported: Set()
+== selfRestore_noCopyFail: [violation] Found an issue (6.1 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renamed", step: "commit", target: "a" },
+  reported: Set()
+[State 4]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renameFailed", step: "commit", target: "b" },
+  reported: Set()
+== rollback_renameOnly: [ok] No violation found (5.9 s)
+== rollback_noRestoreFail: [violation] Found an issue (6.7 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  reported: Set()
+== rollback_noCopyFail: [violation] Found an issue (6.4 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "", step: "start", target: "" },
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "a" },
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "b" },
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renamed", step: "commit", target: "a" },
+  reported: Set()
+[State 4]
+  disk: Map("a" -> "new", "b" -> "old"),
+  event:
+    { outcome: "renameFailed", step: "commit", target: "b" },
+  reported: Set()
+== reported_renameOnly: [ok] No violation found (7.5 s)
+== reported_noRestoreFail: [violation] Found an issue (6.2 s)
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "", step: "start", target: "" },
+  i: 0,
+  phase: "stage",
+  reported: Set()
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "a" },
+  i: 1,
+  phase: "stage",
+  reported: Set()
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "ok", step: "stage", target: "b" },
+  i: 0,
+  phase: "commit",
+  reported: Set()
+[State 3]
+  disk: Map("a" -> "broken", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+  i: 0,
+  phase: "failed",
+  reported: Set()
+== reported_noCopyFail: [ok] No violation found (7.4 s)
+== touched_renameOnly: [ok] No violation found (5.4 s)
+== touched_noRestoreFail: [ok] No violation found (5.5 s)
+== touched_noCopyFail: [ok] No violation found (6.4 s)

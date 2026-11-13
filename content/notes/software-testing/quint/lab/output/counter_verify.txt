@@ -1,0 +1,12 @@
+An example execution:
+
+[State 0] { n: 0 }
+
+[State 1] { n: 1 }
+
+[State 2] { n: 2 }
+
+[State 3] { n: 3 }
+
+[violation] Found an issue (2951ms).
+error: found a counterexample

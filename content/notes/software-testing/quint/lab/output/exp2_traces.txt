@@ -1,0 +1,13 @@
+traces: 500, distinct behaviors: 12
+243 stage:a:fail | disk a=old,b=old | reported=
+108 stage:a:ok -> stage:b:fail | disk a=old,b=old | reported=
+49 stage:a:ok -> stage:b:ok -> commit:a:renameFailed | disk a=old,b=old | reported=
+25 stage:a:ok -> stage:b:ok -> commit:a:copyFailed | disk a=old,b=old | reported=
+25 stage:a:ok -> stage:b:ok -> commit:a:copyFailed | disk a=broken,b=old | reported=a
+11 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:renameFailed | disk a=new,b=old | reported=a
+10 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:renameFailed | disk a=old,b=old | reported=
+10 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:renamed | disk a=new,b=new | reported=
+8 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:copyFailed | disk a=new,b=broken | reported=a,b
+6 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:copyFailed | disk a=old,b=broken | reported=b
+3 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:copyFailed | disk a=new,b=old | reported=a
+2 stage:a:ok -> stage:b:ok -> commit:a:renamed -> commit:b:copyFailed | disk a=old,b=old | reported=

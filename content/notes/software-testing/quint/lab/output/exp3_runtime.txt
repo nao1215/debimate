@@ -1,0 +1,24 @@
+== npm install @informalsystems/quint@0.33.1
+node_modules: 43M, packages: 79
+== standalone binary
+quint-linux-amd64: 128M
+== quint run with an empty PATH
+Command failed: tar
+== node on PATH: none
+== first quint run without node (HOME is empty)
+[State 0]
+[State 1]
+[State 2]
+[State 3]
+[violation] Found an issue (382ms at 576 traces/second).
+error: Invariant violated
+downloaded: rust-evaluator-v0.7.1  2.1M
+== quint verify without java
+Downloading Apalache distribution 0.62.4... done.
+/home/nao/ghq/github.com/nao1215/debimate/.note-review/work/runtime/home/.quint/apalache-dist-0.62.4/apalache/bin/apalache-mc: line 83: exec: java: not found
+downloaded: apalache-dist-0.62.4 rust-evaluator-v0.7.1  188M
+== quint verify with JDK 17
+Error: LinkageError occurred while loading main class at.forsyte.apalache.tla.Tool
+	java.lang.UnsupportedClassVersionError: at/forsyte/apalache/tla/Tool has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
+== quint verify with JDK 21
+[ok] No violation found (6872ms).

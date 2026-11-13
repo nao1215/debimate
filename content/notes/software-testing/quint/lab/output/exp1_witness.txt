@@ -1,0 +1,30 @@
+== selfRestore: [violation] Found an issue 
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+[State 3]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
+== rollback: [ok] No violation found 
+== reported: [ok] No violation found 
+== touched: [violation] Found an issue 
+[State 0]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "", step: "start", target: "" },
+[State 1]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "a" },
+[State 2]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event: { outcome: "ok", step: "stage", target: "b" },
+[State 3]
+  disk: Map("a" -> "old", "b" -> "old"),
+  event:
+    { outcome: "copyFailed", step: "commit", target: "a" },
