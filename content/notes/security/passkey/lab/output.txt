@@ -1,0 +1,17 @@
+応答 | 全部チェックするサーバー | origin をチェックしないサーバー
+正規の応答 | 通す | 通す
+サブドメインのページ | 拒否: origin | 通す
+前回の challenge | 拒否: challenge | 拒否: challenge
+似たドメインの rpId | 拒否: rpIdHash | 拒否: rpIdHash
+UV なし | 拒否: UV フラグ | 拒否: UV フラグ
+署名後に 1 byte 変更 | 拒否: 署名 | 拒否: 署名
+別の鍵で署名 | 拒否: 署名 | 拒否: 署名
+
+1 台の中で数える鍵
+  端末 A signCount=1 -> 通す
+  端末 A signCount=2 -> 通す
+  端末 B signCount=1 -> 通す（カウンタ 1 <= 2、複製の疑い）
+カウンタを 0 で返す鍵
+  端末 A signCount=0 -> 通す
+  端末 A signCount=0 -> 通す
+  端末 B signCount=0 -> 通す

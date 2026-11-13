@@ -1,0 +1,5 @@
+登録 app.localhost 上で rpId=app.localhost: "http://app.localhost:18080"
+ページ app.localhost / rpId app.localhost -> 成功 origin=http://app.localhost:18080 signCount=2 flags=0x5
+ページ uploads.app.localhost / rpId app.localhost -> 成功 origin=http://uploads.app.localhost:18080 signCount=3 flags=0x5
+ページ app-localhost.localhost / rpId app.localhost -> 失敗 SecurityError
+ページ app-localhost.localhost / rpId app-localhost.localhost -> 失敗 NotAllowedError

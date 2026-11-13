@@ -1,5 +1,5 @@
 ---
-title: "Passkey - 秘密鍵をサーバーに渡さない認証"
+title: "Passkey - サブドメインで作った署名は origin のチェックでしか止まらない"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Security"]
@@ -9,297 +9,315 @@ wrapTables: true
 topics: ["Authentication / Identity"]
 ---
 
-Passkey は、手元の認証器（Authenticator）が管理する秘密鍵をサービス側（Relying Party）に渡さずに署名を作り、サーバーが対になる公開鍵で署名を検証する[認証](../authentication/)の方式です。
+Passkey（パスキー）は、パスワードの代わりに、利用者の端末に入っている秘密鍵で署名してログインする仕組みです。業界団体の FIDO Alliance は、[passkey](https://fidoalliance.org/passkeys/) を FIDO の標準に基づく認証の資格情報と位置付けています。ブラウザから使う API は W3C の [WebAuthn](https://www.w3.org/TR/webauthn-3/) で決まっています。[Google のアカウント](https://blog.google/technology/safety-security/passkeys-default-google-accounts/)では、2023 年 10 月から既定でパスキーを使えるようになりました。
 
-FIDO Alliance は passkey を「[a FIDO authentication credential based on FIDO standards](https://fidoalliance.org/passkeys/)」（FIDO 標準に基づく認証資格情報）と定義し、端末のロックを解除するのと同じ操作でアプリや Web サイトにサインインできるものだとしています。
+自分のサービスで、ログインに Passkey を足そうとすると、次の前提を置きがちです。
 
-Passkey は、ログイン画面を真似た偽サイトに認証情報を盗まれる攻撃への対策になります。Password は利用者が読み書きできる文字列なので、相手を間違えればそのまま攻撃者の手に渡り、本物のサイトで使われます。署名は、宛先のドメインと [1 回限りの乱数](../nonce/)に結び付いた値になるので、覗き見ても別のサイトや次回のログインでは通りません。
+- 署名が正しければ、本人が正規のサイトでログインした
+- サーバーは、秘密鍵か、それに当たる秘密を預かる
+- 署名カウンタを見れば、鍵の複製に気付ける
+- Passkey を足せば、アカウントはフィッシングに強くなる
+- 端末をなくすと、もうログインできない
 
-以下は、2 つの方式で、本物の example.com に似せた偽サイト examp1e.com に何が渡るかを比べた図です。
+どれも条件付きでしか成り立ちません。1 つ目は、ログインの応答から 1 か所だけ変えた応答を 7 通り作り、2 つのサーバーに渡すと崩れます。
 
-{{< figure src="images/passkey_concept.svg" alt="Password では、利用者が偽サイトに入力した文字列がそのまま本物のサイトで使われる。Passkey では、秘密鍵は example.com 用として Authenticator の中に留まり、署名は本物のサイトにだけ出て、偽サイトには出ない。" caption="偽サイトに渡るもの: Password と Passkey" align="center" >}}
+{{< figure src="images/passkey_verify_grid.webp" alt="7 通りの応答と 2 つのサーバーの判定の表。どちらのサーバーも UV を必須にした設定。全部チェックするサーバーは正規の応答だけを通し、他の 6 通りを origin、challenge、rpIdHash、UV フラグ、署名のチェックで止める。origin をチェックしないサーバーは、サブドメインのページで作った応答も通す（赤いマス）。残りの 5 通りは両方とも止める" caption="1 か所だけ変えた応答と、サーバーの判定（lab/verify.py の実測）" align="center" >}}
 
-上記の図の Passkey では、秘密鍵が Authenticator の管理下に留まり、サーバーに渡るのは署名です。署名は対になる公開鍵で検証でき、公開鍵から秘密鍵は導けません。そのため、サーバーは秘密鍵を預からずに「相手が秘密鍵を持っていること」を確認できます。
+origin は、応答を作ったページの URL から取ったスキーム・ホスト・ポートの組です。rpId は、どのサービス向けの鍵かを表す名前です。どちらも次の節で詳しく見ます。
+
+サブドメインのページで作った応答は、署名も rpId も正規の応答と同じく正しい値でした。違うのは応答の中に記録された origin だけで、それをチェックしないサーバーは正規の応答と同じく通しました。
 
 <br>
 
-本記事では、Web ブラウザから Passkey を使う場合の処理の流れを追い、以下の疑問に答えます。
+本記事では、ログインに Passkey を足そうとしている Web の開発者に向けて、上の前提を実験と仕様で 1 つずつ崩します。扱う問いは次の通りです。
 
-- Password を共有する方式は、どこから狙われるのか。
-- Registration と Authentication で、端末とサーバーの間に何が起きるのか。
-- サービスの識別子（RP ID）とページの URL（origin）の照合で、なぜ phishing を防げるのか。
-- 人が居ることの確認（User Presence）と、利用者本人の確認（User Verification）は、何が違うのか。
-- サーバーは、バックアップできる鍵とできない鍵をどう見分けるのか。
-
-Authenticator の内部実装、組織での配布運用、Authenticator の出自を Relying Party に証明する attestation の検証方式は扱いません。署名を作る手順と検証の計算は [Digital Signature](../../blockchain-systems/digital-signature/)、ハッシュ値の性質は [Hash Function](../../blockchain-systems/hash-function/) のノートで扱っているので、ここでは繰り返しません。
-
-以降、単に「サーバー」と書く場合は、認証を行う Relying Party のサーバーを指します。
-
-本記事の Passkey は、WebAuthn Level 3 が passkey の別名として挙げる Discoverable Credential（credential ID を渡さなくても端末が見付けられる資格情報）を指します。FIDO Alliance の一般向けの説明では、より広い意味で使われる場合があります。
+- ログインの時、何がサーバーに届き、何に署名しているのか
+- パスワードや TOTP と比べて、フィッシングに強いのはなぜか
+- 偽サイトを止めるのはブラウザか、サーバーか
+- 署名カウンタで何が分かり、何が分からないのか
+- 端末をなくした時に備えて、何を登録し、何を残すのか
 
 ---
 
-### Password を共有する方式の弱点
+### ログインで届くもの
 
-Password 認証が前提にしているのは、利用者とサーバーが同じ文字列を共有している状態です。サーバーは照合のために hash を保存し、利用者は入力のために文字列を覚えます。共有している以上、攻撃者はその文字列を利用者からもサーバーからも狙えます。
+登場するのは 3 者です。ログインを受け付けるサービスは RP（Relying Party）です。鍵を作って署名する部分は認証器（authenticator）と呼び、利用者が開いているブラウザが両者の間を仲介します。
 
-以下は、同じ文字列が届き得る先です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    U["User"] -- "password" --> S["本物の Server"]
-    U -- "password" --> F["偽サイト"]
-    U -- "同じ password" --> O["別のサービス"]
-    S -.- SN["漏洩すると<br/>hash から推測される"]
-    F -.- FN["そのまま本物に<br/>使い回される"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の偽サイトに向かう経路が phishing です。利用者（図の User）が相手のドメインを見誤ると、Password が攻撃者に渡ります。別のサービスに同じ文字列を使い回していれば、1 か所の漏洩が他のサービスに波及します。
-
-本物のサーバーから hash が漏れた場合も、利用者が選ぶ文字列は候補が限られるので、候補を片端から hash に掛けて元の文字列を割り出されます。
-
-Password に TOTP（認証アプリが時刻から作る使い捨ての数字）や SMS の確認コードを足すと、Password だけを盗まれた場合の被害は抑えられます。ただし、再利用できる共有秘密という Password の性質は残ります。Passkey が変えているのは、サーバーが保存する値と、利用者が相手に渡す値の両方です。
-
----
-
-### 3 つの主体と役割
-
-Passkey という言葉は資格情報を指し、それを扱う仕組みは複数の仕様に分かれています。役割は 3 つの主体で整理できます。
-
-- Relying Party: 認証したい Web アプリケーションと、そのサーバー
-- Client: ブラウザや OS。WebAuthn の API を実装する
-- Authenticator: 鍵を作り、保持し、署名する部品
-
-Authenticator には、端末に組み込まれた Platform Authenticator と、USB や NFC などで繋ぐ Roaming Authenticator があります。
-
-W3C の [Web Authentication 仕様](https://www.w3.org/TR/webauthn-3/)は、この部品を「that can register a user with a given Relying Party and later assert possession of the registered public key credential」（ある Relying Party に対して利用者を登録し、後から登録済みの公開鍵資格情報の保持を主張できるもの）と定義しています。
-
-定義はこの後に「[and optionally verify the user to the Relying Party](https://www.w3.org/TR/webauthn-3/#authenticator)」（任意で、利用者を Relying Party に確認する）と続きます。後述の User Verification がこの確認に当たります。
-
-以下が主体とプロトコルの関係です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    RP["Relying Party<br/>challenge の生成と検証"] -- "HTTPS" --> P["Web ページのスクリプト"]
-    P -- "WebAuthn API" --> B["Client<br/>ブラウザ・OS"]
-    B -- "端末内の仕組み" --> PA["Platform Authenticator<br/>端末に組み込まれる"]
-    B -- "CTAP" --> RA["Roaming Authenticator<br/>USB・NFC などで繋ぐ"]
-    PA -- "署名" --> B
-    RA -- "署名" --> B
-    B -- "assertion" --> P
-    P -- "HTTPS" --> RP
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の WebAuthn は、Web ページのスクリプトが Client を呼び出すための API です。Client と Roaming Authenticator の間は CTAP（Client to Authenticator Protocol）で繋がり、WebAuthn と CTAP はまとめて [FIDO2](https://fidoalliance.org/fido2/) と呼ばれます。
-
-Platform Authenticator には端末の中の仕組みで繋がるので、CTAP を通るとは限りません。
-
-Authenticator が返す署名と付随データの組を assertion と呼び、これがサーバーまで運ばれます。
-
----
-
-### Registration と公開鍵の保存
-
-登録は、サーバーが 1 回限りの乱数である challenge を作る所から始まります。ブラウザは `navigator.credentials.create()` を呼び、Authenticator が鍵ペアを作ります。RP ID は資格情報を紐づけるサービスの識別子で、clientDataJSON は Client が組み立てる要求データです。登録の流れは以下の通りです。
+認証器には、スマートフォンや PC の OS に組み込まれたものと、USB や NFC でつなぐセキュリティキーがあります。ブラウザがセキュリティキーと話す手順は CTAP（Client to Authenticator Protocol）で、WebAuthn と CTAP を合わせて [FIDO2](https://fidoalliance.org/fido2/) と呼びます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
 sequenceDiagram
-    participant S as Relying Party
-    participant B as Client
-    participant A as Authenticator
-    participant U as User
-    S->>B: challenge・RP ID・利用者の識別子
-    B->>B: 呼び出し元の origin に<br/>RP ID が対応するか検証
-    B->>A: clientDataJSON のハッシュと RP ID
-    A->>U: User Presence を要求<br/>RP が求めれば User Verification も
-    U-->>A: タッチ・PIN・生体
-    A->>A: RP ID に紐づく鍵ペアを生成<br/>秘密鍵は Authenticator の管理下
-    A-->>B: attestationObject<br/>中の authenticatorData に<br/>公開鍵と credential ID
-    B-->>S: PublicKeyCredential<br/>credential ID・clientDataJSON<br/>attestationObject
-    S->>S: challenge・origin・RP ID のハッシュを検証し<br/>公開鍵と credential ID を保存
+    participant S as RP のサーバー
+    participant B as ブラウザ
+    participant A as 認証器
+    Note over S,A: 登録
+    S->>B: challenge と rpId
+    B->>A: rpId と JSON のハッシュ値
+    A->>A: rpId ごとに鍵ペアを作る
+    A-->>B: 公開鍵と credential ID
+    B-->>S: 上記と JSON
+    S->>S: 応答を照合して公開鍵を保存
+    Note over S,A: ログイン
+    S->>B: 新しい challenge
+    B->>A: rpId と JSON のハッシュ値
+    A->>A: ユーザー確認の後に秘密鍵で署名
+    A-->>B: 署名と authenticatorData
+    B-->>S: 上記と JSON
+    S->>S: 保存した公開鍵で検証
 ```
 
-上記の図の clientDataJSON には、要求の種類・challenge・呼び出し元の origin が入ります。origin は、ページを読み込んだ URL のスキーム・ホスト・ポートの組で、ブラウザが決める値です。ページのスクリプトから書き換える手段はありません。
+登録の時、認証器は鍵ペアを作り、公開鍵と、その鍵を指す credential ID をサーバーに返します。サーバーは登録の応答でも、ログインと同じく challenge・origin・rpIdHash を照合してから、この 2 つを保存します。秘密鍵は認証器に残ります。鍵を同期する認証器では、パスキーを保存するソフト（Passkey Provider）が同じ利用者の端末に秘密鍵を写しますが、その場合もサーバーには届きません。
 
-Authenticator に渡るのは clientDataJSON のハッシュで、origin そのものは届きません。どの URL から呼ばれたのかの判断は Client が担います。RP ID は通常サービスのドメインになり、Authenticator は RP ID ごとに鍵を分けて扱います。
-
-1 件の資格情報には、秘密鍵・その資格情報を指す credential ID・RP ID・サーバーが渡した利用者の識別子（user handle）が入ります。attestationObject の中の authenticatorData には、Authenticator が作った公開鍵などの登録情報が含まれます。
-
-サーバーは、ここから公開鍵と credential ID を取り出し、利用者のアカウントと結び付けて保存します。
-
----
-
-### Authentication と署名の検証
-
-認証でも、始まりはサーバーが作る challenge です。ブラウザは `navigator.credentials.get()` を呼び、Authenticator は登録済みの秘密鍵で署名を作ります。認証の流れは以下の通りです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant S as Relying Party
-    participant B as Client
-    participant A as Authenticator
-    participant U as User
-    S->>B: challenge
-    B->>B: 呼び出し元の origin に<br/>RP ID が対応するか検証
-    B->>A: clientDataJSON のハッシュと RP ID
-    A->>U: User Presence を要求<br/>RP が求めれば User Verification も
-    U-->>A: タッチ・PIN・生体
-    A->>A: authenticatorData と<br/>ハッシュに署名
-    A-->>B: authenticatorData・signature
-    B-->>S: 上記と clientDataJSON・credential ID
-    S->>S: challenge・origin・RP ID のハッシュ・<br/>フラグを検証してから署名を検証
-```
-
-上記の図の authenticatorData には、RP ID のハッシュ・利用者の確認結果を表すフラグ・signCount が入ります。署名の対象は、この authenticatorData と clientDataJSON のハッシュを繋いだ値です。その結果、challenge も origin も署名の範囲に入ります。以下が署名の対象です。
-
-{{< figure src="images/passkey_signed.svg" alt="上段に、Authenticator が作る authenticatorData の 3 つの区画（RP ID のハッシュ 32 バイト、フラグ 1 バイト、signCount 4 バイト）と、clientDataJSON のハッシュ 32 バイトが並ぶ。フラグからは UP・UV・BE・BS のビットが、clientDataJSON からは type・challenge・origin が引き出されている。全体を括弧でまとめ、秘密鍵で署名して signature になる" caption="authenticatorData と clientDataJSON のハッシュを繋いで署名する" align="center" >}}
-
-青い区画は Authenticator が、黄土色の区画は Client が組み立てた値です。
-
-[署名の検証](https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion)で分かるのは、署名の対象が書き換えられていないことと、登録済みの公開鍵に対応する秘密鍵で署名されたことです。署名が正しくても、その中の challenge や origin がサーバーの期待した値だったとは限りません。
-
-そのためサーバーは、署名の検証とは別に、challenge が自分の出した値か、origin が期待する相手か、RP ID のハッシュが自分のものかを 1 つずつ突き合わせます。
+パスワードのハッシュ値は、漏れると総当たりで元の値を探す対象になります。一方、公開鍵から秘密鍵を求めることは現実的な時間では困難です。また、鍵はサービスごとに別に作るので、パスワードの使い回しのように 1 か所の漏洩が他のサービスに広がることもありません。
 
 <br>
 
-signCount は、対応する Authenticator が実装している場合に、認証に伴って増える署名カウンタです。資格情報が複製されると、複製した Authenticator と元の Authenticator がそれぞれ独立に数えるので、サーバーから見た増え方が乱れます。
+ログインの時は、サーバーが毎回新しい乱数を challenge として渡します。この値を[推測できないようにする理由](../random-number/)は、乱数のノートで扱っています。ブラウザは challenge と、今開いているページの origin を JSON にまとめます。
 
-保存済みの値と整合しない値が届いた場合、資格情報の複製などを疑うシグナルとして使えます。ただし、実装の都合や並行した認証でも値はずれ、カウンタを持たない Authenticator は常に 0 を返します。
+認証器は、どのサービス向けの鍵かを表す rpId の[ハッシュ値](/notes/blockchain-systems/hash-function/)などを並べた authenticatorData を作り、両方に秘密鍵で署名します。この署名と付随するデータの組を assertion と呼び、以降は応答と書きます。
 
----
+{{< figure src="images/passkey_signed_bytes.webp" alt="署名の対象となる 69 byte の並び。左から authenticatorData の rpIdHash 32 byte、flags 1 byte、signCount 4 byte、続いてブラウザが作る clientDataJSON の SHA-256 32 byte。clientDataJSON には type、challenge、origin が入る" caption="ログインの署名が覆う 69 byte" align="center" >}}
 
-### RP ID と origin による phishing 対策
+図で左にある 37 byte は認証器が、右にある 32 byte はブラウザが書きます。37 byte は拡張機能（extensions）を使わない時の長さで、拡張機能を使うとその分だけ伸びます。origin はブラウザが書き込む値で、ページのスクリプトから書き換える手段は無いです。認証器に届くのは JSON のハッシュ値だけなので、origin で判断するのはブラウザとサーバーの役目です。
 
-Passkey が phishing に強いのは、利用者ではなく Client が、要求された RP ID と呼び出し元の origin を照合するからです。判断の材料は画面の見た目ではなく、ブラウザが決める origin です。
+flags の UP（user presence）は、人が認証器に触れるなどの操作をしたかを表す 1 bit です。
 
-見た目に騙された社員がいても、ログインは通りませんでした。2022 年 7 月の [Cloudflare の社員を狙った SMS の phishing](https://blog.cloudflare.com/2022-07-sms-phishing-attacks/) では、少なくとも 76 人に `cloudflare-okta.com` という偽のログイン画面へのリンクが届き、3 人が Password を入力しました。
+UV は、指紋や PIN によるユーザー確認を端末の中で済ませたかを表す 1 bit で、user verification の略です。UV はその認証器を使って良い人かを確認した印で、氏名のような身元を証明するものではありません。
 
-攻撃者は盗んだ Password で本物のサイトに入ろうとしましたが、セキュリティキーの応答を求められて先に進めませんでした。
+指紋そのものは端末の中で照合し、サーバーに届くのは UV の 1 bit です。flags も署名の対象なので、途中で UV を書き換えると署名の検証に失敗します。
 
-偽サイトは TOTP も入力させて攻撃者へ中継する作りで、TOTP を使う組織なら突破されていました。使われたのは同期する Passkey ではなく USB のセキュリティキー（Roaming Authenticator）ですが、照合の仕組みは同じです。仮に偽サイトがキーの応答を求めても、作られるのは偽サイトの origin に結び付いた応答で、本物のサイトでは通りません。
+UV を求めるかは、RP がログインを求める時に渡す [userVerification](https://www.w3.org/TR/webauthn-3/#dom-publickeycredentialrequestoptions-userverification) で選びます。`required` なら UV の無い応答を拒否し、`preferred` なら PIN を設定していないセキュリティキーの応答も通せます。UP の方は、仕様の手順で常に求めます。
 
-例えば、偽サイトが Passkey を要求した場合は、次のように処理されます。
+<br>
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    F["偽サイト<br/>origin: examp1e.com"] --> B["Client"]
-    B --> C{"要求された RP ID は<br/>origin に対応するか"}
-    C -->|"いいえ: example.com を名乗る"| Y["Client が要求を拒否"]
-    C -->|"はい: examp1e.com を指定"| A["Authenticator"]
-    A --> D{"その RP ID の鍵はあるか"}
-    D -->|"無い"| X["署名しない"]
-    D -->|"有る"| Z["偽サイト用の鍵で署名<br/>本物のサイトでは通らない"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+#### 公開鍵で分かること
 
-上記の図の判定は 2 段あります。Client は、スクリプトが指定した RP ID が呼び出し元の origin に対応することを確認し、対応しない RP ID を渡された要求を拒否します。
+サーバーは、登録時に受け取った公開鍵でこの署名を検証します。解説では「サーバーが署名を公開鍵で復号し、challenge と比べる」と書かれることがあります。この説明と教科書の公開鍵暗号が合わないという[質問](https://mond.how/ja/topics/8t9i33a9lt6rh87/t9tua01k8j5m39h)は、2025 年 9 月にはてなブックマークで 1,083 users を集めました。
 
-対応するとは、RP ID が origin のホスト名と同じか、その親のドメインであることです（login.example.com の origin なら example.com も指定できます）。
+Passkey でよく使われる ECDSA（P-256）の署名は、暗号化ではありません。公開鍵で分かるのは、署名がこの 69 byte とこの鍵の組で作られたかどうかだけです。署名と暗号化の違いは[デジタル署名](/notes/blockchain-systems/digital-signature/)のノートで扱っています。
 
-Level 3 の [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-related-origins) では、RP ID のドメインが `/.well-known/webauthn` で許可した origin も含まれます。偽サイトが本物のドメインを RP ID として名乗っても、ここで止まります。
+冒頭の図で一番下の行は、登録していない鍵で署名した応答です。サーバーの DB（データベース）から公開鍵が漏れても、秘密鍵が無ければ、この行と同じく署名のチェックで止まります。つまり、2 つ目の前提にあった「サーバーが預かる秘密」は、Passkey では存在しないのです。
 
-偽サイトが自分の origin を RP ID として指定した場合は、Authenticator まで届きます。Authenticator は origin を見ませんが、鍵が RP ID ごとに分かれているので、そこで作れる署名は偽サイト向けの鍵によるものだけです。
+<br>
 
-サーバーも、自分が出した値と、受け取った clientDataJSON の origin と challenge、authenticatorData の中の RP ID のハッシュを突き合わせます。この 3 段のどこにも、利用者がアドレス欄を目で確認する手順は入っていません。
+#### 利用者名の要らないログイン
 
-守られるのは、この手順が始まってからの範囲です。偽サイトが「Passkey を使えないので Password で」と誘導する経路は、手順の外側に残ります。
+ログインの時にサーバーが credential ID を渡さなくても、認証器が rpId から鍵を見付けられる資格情報を [discoverable credential](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential) と呼びます。WebAuthn Level 3 は passkey をこの別名として挙げており、本記事の Passkey もこれを指します。credential ID を指定するログインにも、同じ鍵を使えます。
+
+利用者名を入力させないログインの画面は、この性質で作れます。応答には、登録の時にサーバーが渡した利用者の識別子である [user handle](https://www.w3.org/TR/webauthn-3/#dom-authenticatorassertionresponse-userhandle) が入り、サーバーはそこからアカウントを引きます。古い資料の resident key は、[passkeys.dev](https://passkeys.dev/docs/reference/terms/) によると同じものの旧称です。
 
 ---
 
-### User Presence と User Verification の違い
+### パスワード・TOTP との違い
 
-署名の検証とは別に、利用者に対する確認が 2 種類あり、どちらも Authenticator の中で完結します。
+比べる相手の [TOTP](https://datatracker.ietf.org/doc/html/rfc6238) は、時刻から作る 6 桁のコードを認証アプリに出させ、パスワードと一緒に入力させる方式です。
 
-| 用語 | 誰が何を確認するか | 結果の伝わり方 |
+フィッシングに強いかどうかは、偽サイトで手に入れたものが本物のサイトでそのまま使えるかで決まります。方式ごとに並べると以下の通りです。
+
+| 方式 | 偽サイトが受け取るもの | 本物のサイトで使えるか |
 | --- | --- | --- |
-| User Presence | Authenticator が、人が操作していることを確認する | authenticatorData の UP フラグ |
-| User Verification | Authenticator が、PIN や生体で利用者をローカルに検証する | authenticatorData の UV フラグ |
+| パスワード | パスワードそのもの | 使える |
+| パスワードと TOTP | パスワードと 6 桁のコード | コードの有効な 30 秒ほどの間なら使える |
+| SMS のコード | 電話に届いたコード | 有効期限の間なら使える |
+| Passkey | 偽サイトの origin が入った署名か、何も無い | 使えない |
 
-User Presence は、セキュリティキーに触れるような単純な操作で満たされます。User Verification は PIN の入力や生体認証で、その Authenticator を使って良い相手かどうかまで確認します。通常の認証の手順では User Presence が求められ、Relying Party はさらに User Verification を必須にするかどうかを選べます。
+パスワードと TOTP は、利用者が自分で読んで入力する値です。利用者が偽サイトに気付かなければ、同じ値が偽サイトにも届きます。Passkey の行の「何も無い」は、次の節で見る通り、偽サイトがブラウザに断られて署名を得られない場合です。
 
-確認しているのは、Authenticator を操作している利用者です。氏名のような現実世界の身元を Relying Party に証明する仕組みではありません。
+<br>
 
-生体情報は、この確認のために Authenticator の中で照合されます。サーバーに送られるのは、確認が済んだかどうかを表すフラグだけです。
+#### Cloudflare で止まった中継
 
-2 つのフラグは authenticatorData の中にあり、署名の対象に含まれます。そのため、途中の経路やスクリプトでフラグを書き換えると、署名の検証に失敗します。
+2022 年 7 月、[Cloudflare](https://blog.cloudflare.com/2022-07-sms-phishing-attacks/)では少なくとも 76 人の社員に、Okta のログイン画面を真似た偽サイト `cloudflare-okta.com` へのリンクが SMS で届きました。偽のページは、入力されたパスワードと TOTP のコードをすぐに攻撃者に送る作りでした。
+
+3 人がパスワードを入力しましたが、Cloudflare は全社員に FIDO2 のセキュリティキーを持たせていました。偽サイトではキーの応答を得られず、侵入は止まりました。TOTP を使う組織なら、コードの有効な間に中継されて突破されていた作りです。
+
+使われたのは本記事の Passkey とは種類の違うセキュリティキーですが、照合の仕組みは同じです。Passkey の署名にも、上の図で見た通り origin と rpId が入ります。偽サイトで作らせた署名には偽サイトの名前が入るので、本物のサーバーではチェックを通りません。
+
+[NIST SP 800-63B](https://pages.nist.gov/800-63-4/sp800-63b.html) は、応答に宛先の名前を含めて照合させるこの方法を検証者名の束縛（verifier name binding）と呼び、フィッシング耐性を持たせる方法の 1 つに挙げています。
+
+認証の要素ごとの違いと、ログインの後に発行する Cookie やトークンの扱いは、[Authentication](../authentication/) のノートで扱っています。
+
+ただし、表の「使えない」は、ブラウザとサーバーの両方がチェックを済ませた時の話です。次の節では、どちらが何を止めるかを分けて見ます。
 
 ---
 
-### Discoverable Credential と資格情報の発見
+### 偽サイトを止める 2 段
 
-WebAuthn の資格情報は、credential ID の指定が必要かどうかで 2 通りに分かれます。以下が 2 つの性質です。
+1 段目はブラウザです。WebAuthn の仕様では、ページが指定できる [rpId](https://www.w3.org/TR/webauthn-3/#rp-id) は、そのページのドメインと同じか、その親に当たる `example.com` のようなドメインに限られます。`com` のような公開接尾辞は指定できません。`login.example.com` のページは `example.com` を指定できますが、`example-login.com` は指定できません。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    W["WebAuthn の資格情報"] --> N["Non-discoverable Credential<br/>credential ID を<br/>allowCredentials で渡す必要がある"]
-    W --> DC["Discoverable Credential / Passkey<br/>credential ID の指定なしでも<br/>RP ID から発見できる"]
-    DC -.- DN["credential ID を指定した<br/>認証にも使える"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+Chrome の仮想認証器でこれを実際に動かしました。CDP（Chrome DevTools Protocol）の [WebAuthn ドメイン](https://chromedevtools.github.io/devtools-protocol/tot/WebAuthn/)は、指紋や PIN を求めずに署名する仮想認証器を Chrome に足せます。`app.localhost` のページで rpId を `app.localhost` として鍵を登録した後、ホスト名だけを変えたページで同じ鍵を使えるかを試しました。
+
+WebAuthn は https のような安全な接続のページでしか動きません。`*.localhost` の名前は全て手元の 127.0.0.1 を指し、Chrome は http でも安全な接続として扱うので、証明書を用意せずに試せます。
+
+```javascript
+// 抜粋。全体は lab/browser.mjs、ページは lab/webauthn_page.html.txt
+await send('WebAuthn.addVirtualAuthenticator', {options: {protocol: 'ctap2', transport: 'internal',
+  hasResidentKey: true, hasUserVerification: true, isUserVerified: true, automaticPresenceSimulation: true}});
+
+await open(`http://app.localhost:${port}/`);
+await evalJs('register("app.localhost")');          // ここで鍵を登録する
+const cases = [
+  ['app.localhost', 'app.localhost'],
+  ['uploads.app.localhost', 'app.localhost'],
+  ['app-localhost.localhost', 'app.localhost'],
+  ['app-localhost.localhost', 'app-localhost.localhost'],
+];
+for (const [host, rpId] of cases) {
+  await open(`http://${host}:${port}/`);
+  const r = await evalJs(`login(${JSON.stringify(rpId)})`);   // navigator.credentials.get を呼ぶ
+  // 成功なら clientDataJSON の origin と signCount、失敗なら例外の名前を出す
+}
 ```
 
-上記の図の点線が示すとおり、[発見できること](https://www.w3.org/TR/webauthn-3/#client-side-discoverable-credential)と credential ID を指定して使うことは排他ではありません。
+出力は次の通りです。
 
-Relying Party が利用者を先に特定しなくても Authenticator が資格情報を発見できるので、Username の入力欄を置かないログインの画面を作れます。この場合、サーバーは[認証の応答に入る user handle](https://www.w3.org/TR/webauthn-3/#dom-authenticatorassertionresponse-userhandle) から、どの利用者のアカウントかを引きます。
-
-旧称の resident credential・resident key については、[passkeys.dev](https://passkeys.dev/docs/reference/terms/) が古い呼び方だと整理しています。
-
----
-
-### Multi-device Credential と Single-device Credential
-
-「秘密鍵は絶対に端末から出ない」という説明は、Passkey 全体には当てはまりません。[W3C の仕様](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)は、資格情報をバックアップできるかどうかを Backup Eligibility（BE）、今バックアップされているかどうかを Backup State（BS）として、authenticatorData のフラグで表します。
-
-BE は作成時に決まり、後から変わりません。仕様は「[A backup eligible public key credential source is referred to as a multi-device credential](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)」（バックアップの対象にできる公開鍵資格情報は multi-device credential と呼ばれる）と定めています。対象にできないものは single-device credential と呼ばれます。
-
-BS は現在の状態を表し、時間とともに変わります。BE が 1 の資格情報でも、今すでに別の端末に同期されているとは限りません。以下が 3 つの状態です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    C["資格情報"] --> M["Multi-device Credential<br/>BE = 1・バックアップできる"]
-    C --> SD["Single-device Credential<br/>BE = 0・バックアップできない"]
-    M --> B0["BS = 0<br/>今はバックアップされていない"]
-    M --> B1["BS = 1<br/>今バックアップされている"]
-    B1 -.- PP["バックアップの方法は<br/>Provider の実装に依存"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```text
+ページ app.localhost / rpId app.localhost -> 成功 origin=http://app.localhost:18080 signCount=2 flags=0x5
+ページ uploads.app.localhost / rpId app.localhost -> 成功 origin=http://uploads.app.localhost:18080 signCount=3 flags=0x5
+ページ app-localhost.localhost / rpId app.localhost -> 失敗 SecurityError
+ページ app-localhost.localhost / rpId app-localhost.localhost -> 失敗 NotAllowedError
 ```
 
-仕様が表すのはバックアップの有無までで、バックアップや端末の間の同期をどう実現するかは、Passkey Provider（OS やブラウザ、資格情報管理ソフトのように passkey の作成と保存を担うソフトウェア）に依存します。
+`flags=0x5` は、UP の 0x01 と UV の 0x04 を足した値で、両方が立っていることを表します。
 
-ここでいうバックアップは、Passkey Provider の管理の中で資格情報を別の端末に写すことです。攻撃や不具合で秘密鍵が管理の外に写る credential clone とは別で、clone は BE・BS には現れません。
+{{< figure src="images/passkey_rpid_scope.webp" alt="localhost の下に app.localhost と app-localhost.localhost が並び、app.localhost の下に uploads.app.localhost がある木。app.localhost は鍵を登録した rpId で、使うと成功する。uploads.app.localhost も同じ rpId で成功し、origin には uploads.app.localhost が入る（赤）。app-localhost.localhost は rpId=app.localhost を指定すると SecurityError、自分の rpId を指定すると NotAllowedError で失敗する" caption="どのページが rpId=app.localhost の鍵を使えたか（Chrome の仮想認証器で実測）" align="center" >}}
 
-BE と BS のフラグは署名の対象ですが、その値を出した Authenticator の実装や性質まで信頼して良いかは別の問題で、attestation のような根拠が必要です。
+似た名前の `app-localhost.localhost` は、本物の rpId を指定すると SecurityError で止まりました。自分の rpId を指定しても、その rpId の鍵は認証器に無いので NotAllowedError です。偽のドメインで動くサイトは、ブラウザの段で本物の鍵に届きません。なお、WebAuthn Level 3 の [Related Origin Requests](https://www.w3.org/TR/webauthn-3/#sctn-related-origins) では、rpId のドメインが `/.well-known/webauthn` に書いた別のドメインに限り、その rpId を使わせることができます。
 
-仕様は、このフラグを single-device credential を弾くために使うことは挙げていません。端末を 1 台失うと復旧できなくなるため、追加の Authenticator を登録させるか、復旧の手続きを用意するよう勧めています。
+一方で、`uploads.app.localhost` は本物の rpId のまま署名を得ました。返った署名は正しく、clientDataJSON の origin にだけ `uploads.app.localhost` が入っています。
+
+<br>
+
+#### サーバーのチェック
+
+2 段目はサーバーです。上の `uploads` のように、同じ rpId の下で利用者が作ったページを配るサービスを考えます。攻撃者は、本物のサーバーから受け取った challenge を自分が作ったページのスクリプトに渡しておきます。別の利用者がそのページを訪れて確認の操作をすると、スクリプトはその利用者の鍵で正しい署名を得られます。攻撃者はその応答を本物のサーバーに送れば、訪れた利用者としてログインできます。
+
+WebAuthn の仕様は、[コードの注入](https://www.w3.org/TR/webauthn-3/#sctn-code-injection)を扱う節で `usercontent.example.org` と `example.org` の組をこの例として挙げ、[origin のチェック](https://www.w3.org/TR/webauthn-3/#sctn-validating-origin)を MUST としています。
+
+冒頭の図は、このチェックを Python で書いて試した結果です。ブラウザと認証器の役も Python で書き、正規の応答から 1 か所だけ変えた応答を作りました。チェックの順は仕様の [7.2 節](https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion)の主な手順に合わせました。サーバーは UV を `required` にした設定で、署名は [cryptography](https://cryptography.io/) の ECDSA（P-256）で作っています。
+
+```python
+# 抜粋。全体は lab/verify.py
+class Authenticator:
+    def sign(self, client_data_json, uv=True):
+        if not self.synced:
+            self.count += 1
+        flags = 0x01 | (0x04 if uv else 0)           # UP（触れた）と UV（ユーザー確認）
+        auth_data = (hashlib.sha256(self.rp_id.encode()).digest()
+                     + bytes([flags]) + self.count.to_bytes(4, "big"))
+        sig = self.key.sign(auth_data + hashlib.sha256(client_data_json).digest(),
+                            ec.ECDSA(hashes.SHA256()))
+        return {"clientDataJSON": client_data_json, "authenticatorData": auth_data, "signature": sig}
+
+class RelyingParty:
+    def verify(self, r):
+        c = json.loads(r["clientDataJSON"])
+        a = r["authenticatorData"]
+        if c["type"] != "webauthn.get":
+            return "拒否: type"
+        if c["challenge"] != b64url(self.challenge):
+            return "拒否: challenge"
+        if self.check_origin and c["origin"] != ORIGIN:
+            return "拒否: origin"
+        if a[:32] != hashlib.sha256(RP_ID.encode()).digest():
+            return "拒否: rpIdHash"
+        if not a[32] & 0x01:
+            return "拒否: UP フラグ"
+        if self.require_uv and not a[32] & 0x04:     # userVerification が required の時
+            return "拒否: UV フラグ"
+        try:
+            self.public_key.verify(r["signature"], a + hashlib.sha256(r["clientDataJSON"]).digest(),
+                                   ec.ECDSA(hashes.SHA256()))
+        except InvalidSignature:
+            return "拒否: 署名"
+        ...  # 署名カウンタの比較（後の節）
+        return "通す"
+
+# サブドメインのページで作った応答: 鍵も rpId も正規のまま、origin だけが違う
+ch = rp.new_challenge()
+rp.verify(dev.sign(client_data(ch, "https://uploads.app.example")))
+```
+
+`check_origin=False` は、冒頭の図で右の列に当たります。7 通りのうち、challenge・rpIdHash・UV フラグ・署名で止まる 5 通りは、origin のチェックが無くても止まりました。サブドメインの応答だけは、署名の検証から見ると正規の応答と区別が付かず、origin の 1 行が無いと通ります。
+
+前回の challenge を使い回した応答が止まるのは、サーバーが challenge を 1 回ごとに作り直しているからです。使い回しを防ぐ値の作り方は [Nonce](../nonce/) のノートで扱っています。
+
+なお、ライブラリを使えば、このチェックを書き忘れることはまず無いです。例えば [py_webauthn](https://github.com/duo-labs/py_webauthn)（3.0.1）の `verify_authentication_response` は `expected_origin` が必須の引数で、文字列なら完全一致、リストならそのどれかとの一致を見ます。危ないのは、ログインのページを増やした時に、許す origin を「`app.example` で終わる名前」のように広げる時です。広げた範囲に利用者のページを配る名前が入ると、冒頭の図で右の列と同じことが起きます。
 
 ---
 
-### 利点
+### 署名カウンタで分かること
 
-- サーバーが保存するのは公開鍵なので、DB（データベース）が漏洩しても署名を作る材料にならない
-- 利用者が相手のドメインを見誤っても、Client が RP ID と origin を照合して要求を止める
-- サーバーが challenge を 1 回限りの値として扱う限り、記録した通信を再利用できない
-- Discoverable Credential では、Username の入力なしでログインの候補を出せる
-- サービスごとに別の鍵が作られ、使い回しが構造として起こらない
+authenticatorData の signCount は、認証器が署名するたびに増やす数です。仕様で[署名カウンタを扱う節](https://www.w3.org/TR/webauthn-3/#sctn-sign-counter)は、サーバーが前回の値を保存し、次の値がそれ以下なら複製された認証器を疑うよう書いています。同じ節は、カウンタを持たない認証器は常に 0 を返す、とも決めています。
+
+lab/verify.py の `counters()` では、同じ秘密鍵を持つ 2 台目の端末 B を作り、端末 A で 2 回、端末 B で 1 回ログインしました。
+
+```text
+1 台の中で数える鍵
+  端末 A signCount=1 -> 通す
+  端末 A signCount=2 -> 通す
+  端末 B signCount=1 -> 通す（カウンタ 1 <= 2、複製の疑い）
+カウンタを 0 で返す鍵
+  端末 A signCount=0 -> 通す
+  端末 A signCount=0 -> 通す
+  端末 B signCount=0 -> 通す
+```
+
+{{< figure src="images/passkey_counter.webp" alt="上の段は 1 台の中で数える鍵で、端末 A の 1 回目が signCount=1、2 回目が 2、端末 B の 3 回目が 1 になり複製の疑い（赤）。下の段はカウンタを 0 で返す鍵で、3 回とも signCount=0 で通す" caption="同じ秘密鍵を持つ 2 台目の端末と署名カウンタ（lab/verify.py の実測）" align="center" >}}
+
+1 台の中で数える鍵では、端末 B の 1 が端末 A の 2 を下回り、複製を疑えました。カウンタを 0 で返す鍵では、3 回とも 0 で比べる材料がありません。
+
+複数の端末で同じ鍵を使うパスキーでは、端末ごとに数えた値を 1 つの増え続ける数に揃えるのは難しいと考えられ、0 を返すのは仕様が認めた形です。1 台の鍵でも、同時に走ったログインの応答が届く順が入れ替わると、値は前後します。ちなみに、どの製品が 0 を返すかは測っていないです。前の節で使った Chrome の仮想認証器は、出力の通り 2、3 と数を増やしました。サーバーは、カウンタを止める条件ではなく記録として持ち、0 が来た時に比べられないことを前提にします。
 
 ---
 
-### 欠点
+### 端末をなくした時
 
-Passkey は、利用者が覚えて入力する材料をなくし、鍵の保管を端末と Passkey Provider に寄せます。その分、次の制約を抱えます。
+仕様で[鍵の紛失を扱う節](https://www.w3.org/TR/webauthn-3/#sctn-credential-loss-key-mobility)は、秘密鍵をバックアップしたり認証器の間で共有したりする手順を WebAuthn では決めていない、としています。代わりに、1 つのアカウントに複数の鍵を登録できるようにすることをサーバーに求めています。
 
-- 端末を失うと、その端末にしかない資格情報は使えなくなる
-- 復旧の手段はサーバー側の設計に残り、そこが弱ければ認証全体の強さが頭打ちになる
-- 同期される Passkey の安全性は、Passkey Provider の保護の強さに依存する
-- 別の系列の端末やブラウザに移る際に、同期の仕組みが引き継がれるとは限らない
-- 代替の認証手段を用意すると、それが攻撃者に狙われる経路になる
+実際には、[iCloud キーチェーン](https://support.apple.com/ja-jp/102195)や [Google パスワードマネージャー](https://developers.google.com/identity/passkeys?hl=ja)のように、同じアカウントで使う端末の間で鍵を同期する認証器が多く使われています。どちらの形かは、authenticatorData の flags にある BE（backup eligible）と BS（backup state）の 2 bit で分かります。
 
-復旧の設計は、Passkey を導入しても消えない課題です。例えば、復旧手続きにメールの確認コードを使うと、通常のログインを phishing に強くしても、攻撃者はその手続きからアカウントに入れます。
+BE は鍵を作った時に決まり、後から変わりません。仕様は BE が 1 の鍵を multi-device credential、0 の鍵を [single-device credential](https://www.w3.org/TR/webauthn-3/#single-device-credential) と呼びます。BS は同期の状態に合わせて後から変わります。
+
+| BE | BS | 鍵の状態 | サーバーが備えること |
+| --- | --- | --- | --- |
+| 0 | 0 | 1 台に閉じた鍵 | 端末をなくすと使えないので、別の鍵か復旧の手順 |
+| 1 | 0 | 同期できるが、まだバックアップされていない | 状態は後で変わるので、ログインのたびに保存し直す |
+| 1 | 1 | 同期できて、バックアップ済み | 端末の紛失だけでは使えなくならない |
+
+BE が 0 で BS が 1 の組は、[仕様](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)で認められていません。仕様は BE が 0 の鍵を断る使い方は挙げず、別の鍵を登録させるか、復旧の手順を用意するよう勧めています。
+
+BE と BS が表すのは、Passkey Provider が管理するバックアップだけです。攻撃や不具合で秘密鍵が管理の外に写った複製は、この 2 bit に現れません。flags は署名の対象ですが、値を出した認証器をどこまで信頼するかは、認証器の製造元を示す証明である attestation のような別の根拠が必要です。
+
+同期するパスキーの安全性は、Passkey Provider で使うアカウントの保護に左右されます。系列の違う端末やブラウザに移ると、同期が引き継がれないこともあります。
+
+<br>
+
+#### 残したログインの手段
+
+4 つ目の前提が崩れるのはここです。Passkey を足しても、パスワードや SMS のコードでログインできる道を残せば、偽サイトはパスワードとコードを入力させれば済みます。
+
+フィッシングに対するアカウントの強さは、残したログインの手段と復旧の手順のうち、一番弱いものに揃います。例えば、メールの確認コードで復旧できるなら、攻撃者はその手順からアカウントに入れます。復旧の手順がどう突破されるかは、[Authentication](../authentication/) のノートで、Account Recovery を扱う節にあります。
+
+<br>
+
+#### attestation を求めるか
+
+Hacker News では、2026 年 10 月に「[Passkeys are a trap](https://nonfunctional.substack.com/p/passkeys-are-a-trap-do-not-use-them)」が [1,150 points](https://news.ycombinator.com/item?id=50048312) を集めました。サービスが登録の時に attestation を求めれば、使える認証器を絞れてしまう、という主張です。
+
+3 日後の反論「[Passkeys are not a trap](https://scotthelme.co.uk/passkeys-are-not-a-trap/)」（[677 points](https://news.ycombinator.com/item?id=50088935)）は、同期するパスキーは attestation を返さず `none` が届くので、求めれば利用者の大半を締め出す、と答えています。Passkey を足す側から見ると、一般の利用者が使うサービスで attestation を必須にすると、同期するパスキーでは登録できなくなる、という判断の材料です。
+
+---
+
+### 足す前に
+
+冒頭の図で赤く塗ったマスは、署名の正しさだけを見るサーバーが、正規のサイトとは別の名前で作られた応答を通すことを示していました。Passkey の強さは、署名の数学よりも、サーバーが何をチェックし、何を残すかで決まります。そのため、足す前に次の順で決めておくと迷わずに済みます。
+
+1. 登録とログインの両方で、許す origin を完全一致の一覧で決め、利用者のページを配る名前を入れない
+2. challenge はログインのたびにサーバーで作り、使ったら消す
+3. 署名カウンタは記録として持ち、0 の鍵では比べられないと決めておく
+4. 1 つのアカウントに鍵を 2 つ以上登録でき、BE と BS を保存する
+5. 残すログインの手段と復旧の手順も、Passkey と同じ強さで設計する
+
+1 は、受け付ける origin の一覧に、利用者のページを配る名前が入っていないかを見れば済みます。lab/verify.py の `ORIGIN` をその一覧での判定に置き換え、サブドメインの行と同じ応答を渡せば、冒頭の図で右の列と同じ結果になるかを手元で試せます。実験のコードは [lab/verify.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/passkey/lab/verify.py) と [lab/browser.mjs](https://github.com/nao1215/debimate/blob/main/content/notes/security/passkey/lab/browser.mjs)、出力は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/security/passkey/lab/output.txt) にあります。図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/passkey/figures.py) です。
