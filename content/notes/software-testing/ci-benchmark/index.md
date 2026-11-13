@@ -179,7 +179,7 @@ himorime は、base と head を 2,000 回選び直し、そのたびに変化�
 
 CPU が変わると、速さだけでなく、実行されるコードまで変わることがあります。
 
-C の標準ライブラリである glibc は、CPU が持つ命令やキャッシュの大きさを調べて、関数の実装や動きを切り替えます。CodSpeed は、ランナーの CPU が変わり、glibc が持つ malloc の動きも変わって、関係の無い変更で劣化したように見えた事例を[報告しています](https://codspeed.io/blog/unrelated-benchmark-regression)。本記事で測った Go のプログラムは glibc を使わないので、この違いは測っていません。
+C の標準ライブラリである glibc は、CPU が持つ命令やキャッシュの大きさを調べて、関数の実装や動きを切り替えます。CodSpeed は、関係の無い変更で劣化したように見えた事例を調べました。遅くなった時間は多くが glibc にある malloc の処理で、原因の候補はランナーごとに違う CPU だと[報告しています](https://codspeed.io/blog/unrelated-benchmark-regression)。ただし CodSpeed は、CPU が違うことだけでは全てを説明できなかったとも書いています。本記事で測った Go のプログラムは glibc を使わないので、この違いは測っていません。
 
 ---
 
