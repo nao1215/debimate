@@ -1,0 +1,4 @@
+FLAG_RULE=builtin
+547 of 3000 users differ
+FLAG_RULE=crc32
+0 of 3000 users differ

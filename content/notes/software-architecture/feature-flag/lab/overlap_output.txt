@@ -1,0 +1,12 @@
+== shared
+  new-checkout on 10006 (10.0%), new-search on 10006
+  both on 10006 (10.01% of users, 100.0% of new-checkout)
+  new-checkout 10% -> 20%: on 20042, still on 10006 of 10006
+  new-checkout 10% -> 50%: on 49936, still on 10006 of 10006
+  new-checkout 10% -> 100%: on 100000, still on 10006 of 10006
+== per-flag
+  new-checkout on 10143 (10.1%), new-search on 9911
+  both on 1034 (1.03% of users, 10.2% of new-checkout)
+  new-checkout 10% -> 20%: on 20284, still on 10143 of 10143
+  new-checkout 10% -> 50%: on 50097, still on 10143 of 10143
+  new-checkout 10% -> 100%: on 100000, still on 10143 of 10143

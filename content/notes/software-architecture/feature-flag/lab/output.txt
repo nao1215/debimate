@@ -1,6 +1,52 @@
-users=100000 requests_per_user_per_stage=10
-stage  hash_exposed  hash_mixed  keeps_previous  random_exposed  random_mixed
-   1%           985           0            True            9518          9518
-   5%          4938           0            True           40194         40194
-  25%         24913           0            True           94370         94370
- 100%        100000           0            True          100000             0
+python 3.14.4, users 3000, requests per user 6
+== gunicorn -w 3 (fork), builtin
+  process 1: 6538 requests, on 9.8%
+  process 2: 6195 requests, on 9.4%
+  process 3: 5267 requests, on 9.9%
+  users 3000, processes seen per user 2.75
+  users whose answer changed: 0 (0.0%)
+== uvicorn --workers 3 (spawn), builtin
+  process 1: 5865 requests, on 10.8%
+  process 2: 6656 requests, on 9.7%
+  process 3: 5479 requests, on 9.4%
+  users 3000, processes seen per user 2.74
+  users whose answer changed: 765 (25.5%)
+== uvicorn --workers 3 (spawn), crc32
+  process 1: 5615 requests, on 9.4%
+  process 2: 7792 requests, on 9.2%
+  process 3: 4593 requests, on 10.2%
+  users 3000, processes seen per user 2.67
+  users whose answer changed: 0 (0.0%)
+== 3 pods (uvicorn x3, round robin), builtin
+  process 1: 6000 requests, on 10.6%
+  process 2: 6000 requests, on 9.9%
+  process 3: 6000 requests, on 10.5%
+  users 3000, processes seen per user 3.00
+  users whose answer changed: 842 (28.1%)
+== 3 pods (uvicorn x3, round robin), crc32
+  process 1: 6000 requests, on 9.5%
+  process 2: 6000 requests, on 9.5%
+  process 3: 6000 requests, on 9.5%
+  users 3000, processes seen per user 3.00
+  users whose answer changed: 0 (0.0%)
+== restart gunicorn, builtin
+  on before 321, on after 299, on both 31 (9.7% of before)
+== restart gunicorn, crc32
+  on before 286, on after 286, on both 286 (100.0% of before)
+== timeline: uvicorn --workers 3, builtin, user u-00002, every 0.5 s
+  t=0.001 worker=1 on=True
+  t=0.502 worker=2 on=False
+  t=1.004 worker=2 on=False
+  t=1.506 worker=2 on=False
+  t=2.008 worker=1 on=True
+  t=2.510 worker=2 on=False
+  t=3.011 worker=2 on=False
+  t=3.513 worker=3 on=False
+  t=4.014 worker=3 on=False
+  t=4.516 worker=3 on=False
+  t=5.017 worker=2 on=False
+  t=5.519 worker=1 on=True
+  t=6.021 worker=2 on=False
+  t=6.522 worker=2 on=False
+  t=7.023 worker=2 on=False
+  t=7.524 worker=2 on=False
