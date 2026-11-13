@@ -1,0 +1,58 @@
+
+# GitHub Actions (output/samples.csv): 90 comparisons
+  base cv per comparison: median 0.60%  max 7.58%
+  cv of the per-round ratio head/base: median 0.84%  max 4.98%
+  A/A correlation of base[i] and head[i] (same round): median +0.19  min -0.22  max +0.97
+  rounds 20, max_percent 10%:
+    independent  0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg  0/10 inc  0 | 10%: reg  0/10 inc  5 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    paired       0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg  0/10 inc  0 | 10%: reg  0/10 inc  4 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    ratio        0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg  0/10 inc  0 | 10%: reg  0/10 inc  7 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+  rounds 20, max_percent 3%:
+    independent  0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    paired       0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    ratio        0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+  rounds 20, max_percent 2%:
+    independent  0%: reg  0/30 inc  1 |  2%: reg  0/10 inc 10 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    paired       0%: reg  0/30 inc  1 |  2%: reg  0/10 inc  9 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    ratio        0%: reg  0/30 inc  0 |  2%: reg  1/10 inc  7 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+  rounds 10, max_percent 10%:
+    independent  0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg  0/10 inc  0 | 10%: reg  0/10 inc  8 | 12%: reg  9/10 inc  1 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    paired       0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg  0/10 inc  0 | 10%: reg  0/10 inc  7 | 12%: reg  9/10 inc  1 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    ratio        0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg  0/10 inc  0 | 10%: reg  0/10 inc  8 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+  rounds 10, max_percent 3%:
+    independent  0%: reg  0/30 inc  1 |  2%: reg  0/10 inc  1 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    paired       0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    ratio        0%: reg  0/30 inc  0 |  2%: reg  0/10 inc  0 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+  rounds 10, max_percent 2%:
+    independent  0%: reg  0/30 inc  4 |  2%: reg  0/10 inc  9 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    paired       0%: reg  0/30 inc  1 |  2%: reg  0/10 inc  9 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+    ratio        0%: reg  0/30 inc  1 |  2%: reg  0/10 inc  8 |  5%: reg 10/10 inc  0 | 10%: reg 10/10 inc  0 | 12%: reg 10/10 inc  0 | 15%: reg 10/10 inc  0 | 20%: reg 10/10 inc  0
+
+# author's desktop (output/desktop_samples.csv): 40 comparisons
+  base cv per comparison: median 17.83%  max 26.48%
+  cv of the per-round ratio head/base: median 19.27%  max 26.77%
+  A/A correlation of base[i] and head[i] (same round): median +0.50  min +0.16  max +0.68
+  rounds 20, max_percent 10%:
+    independent  0%: reg  0/10 inc  7 |  5%: reg  0/10 inc 10 | 10%: reg  0/10 inc 10 | 20%: reg  2/10 inc  8
+    paired       0%: reg  0/10 inc  7 |  5%: reg  0/10 inc 10 | 10%: reg  0/10 inc 10 | 20%: reg  5/10 inc  5
+    ratio        0%: reg  0/10 inc  1 |  5%: reg  0/10 inc  3 | 10%: reg  0/10 inc  9 | 20%: reg  8/10 inc  2
+  rounds 20, max_percent 3%:
+    independent  0%: reg  0/10 inc 10 |  5%: reg  1/10 inc  9 | 10%: reg  4/10 inc  6 | 20%: reg  5/10 inc  5
+    paired       0%: reg  0/10 inc 10 |  5%: reg  1/10 inc  9 | 10%: reg  5/10 inc  5 | 20%: reg  6/10 inc  4
+    ratio        0%: reg  0/10 inc  8 |  5%: reg  4/10 inc  6 | 10%: reg  8/10 inc  2 | 20%: reg 10/10 inc  0
+  rounds 20, max_percent 2%:
+    independent  0%: reg  0/10 inc 10 |  5%: reg  1/10 inc  9 | 10%: reg  6/10 inc  4 | 20%: reg  6/10 inc  4
+    paired       0%: reg  0/10 inc 10 |  5%: reg  1/10 inc  9 | 10%: reg  5/10 inc  5 | 20%: reg  6/10 inc  4
+    ratio        0%: reg  0/10 inc  9 |  5%: reg  4/10 inc  6 | 10%: reg  8/10 inc  2 | 20%: reg 10/10 inc  0
+  rounds 10, max_percent 10%:
+    independent  0%: reg  0/10 inc  9 |  5%: reg  0/10 inc 10 | 10%: reg  0/10 inc 10 | 20%: reg  0/10 inc 10
+    paired       0%: reg  0/10 inc  9 |  5%: reg  1/10 inc  9 | 10%: reg  0/10 inc 10 | 20%: reg  1/10 inc  9
+    ratio        0%: reg  0/10 inc  7 |  5%: reg  0/10 inc  9 | 10%: reg  0/10 inc 10 | 20%: reg  8/10 inc  2
+  rounds 10, max_percent 3%:
+    independent  0%: reg  0/10 inc 10 |  5%: reg  1/10 inc  9 | 10%: reg  5/10 inc  5 | 20%: reg  2/10 inc  8
+    paired       0%: reg  0/10 inc 10 |  5%: reg  2/10 inc  8 | 10%: reg  5/10 inc  5 | 20%: reg  4/10 inc  6
+    ratio        0%: reg  0/10 inc 10 |  5%: reg  3/10 inc  7 | 10%: reg  7/10 inc  3 | 20%: reg  8/10 inc  2
+  rounds 10, max_percent 2%:
+    independent  0%: reg  0/10 inc 10 |  5%: reg  1/10 inc  9 | 10%: reg  5/10 inc  5 | 20%: reg  4/10 inc  6
+    paired       0%: reg  0/10 inc 10 |  5%: reg  2/10 inc  8 | 10%: reg  5/10 inc  5 | 20%: reg  5/10 inc  5
+    ratio        0%: reg  0/10 inc 10 |  5%: reg  3/10 inc  7 | 10%: reg  7/10 inc  3 | 20%: reg  9/10 inc  1

@@ -1,0 +1,25 @@
+job,slowdown,cpu,avx512f,perf,base_irefs_1,base_irefs_2,base_irefs_3,base_time_ms,head_irefs_1,head_irefs_2,head_irefs_3,head_time_ms
+instr2-s0-r1,0,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513452582,513531960,513449075,108.64,513448861,513451519,513455249,106.7
+instr2-s0-r2,0,INTEL(R) XEON(R) PLATINUM 8573C,True,The instructions:u event is not supported. / exit 1,513451165,513452409,513451337,118.933,513522455,513455741,513516836,119.09
+instr2-s0-r3,0,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513453503,513450324,513445936,124.695,513452509,513449353,513527426,124.361
+instr2-s0-r4,0,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513451368,513455581,513451985,110.953,513451969,513453823,513450651,110.362
+instr2-s0-r5,0,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513517426,513448031,513453850,124.557,513448848,513446968,513451437,124.621
+instr2-s0-r6,0,AMD EPYC 9V74 80-Core Processor,True,The instructions:u event is not supported. / exit 1,513450347,513449888,513504312,109.85,513451352,513546485,513537984,109.77
+instr2-s0-r7,0,INTEL(R) XEON(R) PLATINUM 8573C,True,The instructions:u event is not supported. / exit 1,513448935,513448507,513450259,124.015,513448861,513455121,513451442,124.416
+instr2-s0-r8,0,Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz,True,The instructions:u event is not supported. / exit 1,513448169,513446070,513448208,128.737,513447527,513452329,513445585,128.575
+instr2-s2-r1,2,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513456807,513457267,513456450,108.284,523764873,523818492,523756899,108.161
+instr2-s2-r2,2,Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz,True,The instructions:u event is not supported. / exit 1,513449187,513447823,513452073,128.484,523757182,523755030,523754581,130.898
+instr2-s2-r3,2,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513449753,513447818,513447491,125.377,523753913,523835637,523755384,127.54
+instr2-s2-r4,2,AMD EPYC 9V74 80-Core Processor,True,The instructions:u event is not supported. / exit 1,513452044,513449960,513456771,109.696,523756160,523761820,523820209,111.955
+instr2-s2-r5,2,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513520569,513446430,513505710,124.887,523753926,523767122,523756321,127.959
+instr2-s2-r6,2,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513446460,513449129,513452932,124.778,523755267,523759946,523753748,127.12
+instr2-s2-r7,2,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513448794,513448716,513449706,103.461,523762968,523842878,523759627,105.443
+instr2-s2-r8,2,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513446981,513511798,513453570,125.065,523756016,523756461,523756738,128.149
+instr2-s5-r1,5,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513454558,513457886,513449678,105.481,539154248,539157877,539156045,108.011
+instr2-s5-r2,5,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513454577,513452500,513454026,104.571,539157020,539154282,539158640,106.223
+instr2-s5-r3,5,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513448733,513447494,513445849,124.427,539238173,539153157,539154321,130.617
+instr2-s5-r4,5,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513545172,513448648,513449376,124.907,539153541,539241205,539155476,131.329
+instr2-s5-r5,5,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513452584,513449252,513451281,101.249,539152999,539160974,539156356,109.752
+instr2-s5-r6,5,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513502374,513451853,513529421,124.591,539152989,539157502,539154058,130.734
+instr2-s5-r7,5,AMD EPYC 9V45 96-Core Processor,True,The instructions:u event is not supported. / exit 1,513455291,513450159,513451474,108.107,539158603,539159082,539155559,106.801
+instr2-s5-r8,5,AMD EPYC 7763 64-Core Processor,False,The instructions:u event is not supported. / exit 1,513446040,513449951,513447004,124.294,539153504,539152036,539217176,130.327

@@ -1,0 +1,10 @@
+{
+ "path": "content/notes/software-testing/ci-benchmark/index.md",
+ "overall": 5,
+ "product": 81,
+ "blob": "9cd41d876156eb80d3e122633e715c84273c3d6d",
+ "by": "general-purpose subagent (rescore from extract, 2026-11-13)",
+ "baseline": [],
+ "scored_at": "",
+ "standard": "gate-v1"
+}
