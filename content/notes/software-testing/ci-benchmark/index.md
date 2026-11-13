@@ -313,7 +313,7 @@ himorime の既定は、base と head の値を別々に選び直す方法です
 
 <br>
 
-この結果を受けて、himorime に設定 `regression.pairing: rounds` を足しました。2026-11-13 に main へ入れ、まだリリースはしていません。既定は今までの判定のままなので、使う時は設定で選びます。
+この結果を受けて、himorime に設定 `regression.pairing: rounds` を足しました。2026-11-13 に v0.6.0 として[リリース](https://github.com/nao1215/himorime/releases/tag/v0.6.0)しました。既定は今までの判定のままなので、使う時は設定で選びます。
 
 ---
 
