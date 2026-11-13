@@ -1,5 +1,5 @@
 ---
-title: "Anticorruption Layer - 上流のモデルを自分の語に翻訳する"
+title: "Anticorruption Layer - 決済サービスが足した 1 つの status を、4 か所の分岐は 3 通りに読む"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]
@@ -9,366 +9,331 @@ wrapTables: true
 topics: ["Domain-Driven Design"]
 ---
 
-Anticorruption Layer（腐敗防止層。Anti-Corruption Layer とも綴り、ACL と略す）とは、他のシステムを利用する側（下流）が自分の責任で置く隔離層で、相手のモデルを自分のドメインモデル（業務の概念を表すコード上のモデル）の語に翻訳します。ここでいう語は、各システムが業務を表すために使う用語です。
+外部の決済サービスが、支払いの `status` に `REVIEW`（不正検知の審査中）という値を 1 つ足しました。呼び出す側のコードは例外を 1 件も出さず、そのまま動き続けます。以下は、決済サービスの値を 4 か所でそのまま読むコードと、値を 1 か所で自分たちの語に置き換えるコードに、`REVIEW` の支払いを 1 件ずつ渡した結果です。決済サービスとコードは、本記事のために書いた架空のものです。
 
-変更できない外部システムを呼ぶチームが、相手の項目名や状態コードを自分のコードに広げないために置きます。
+{{< figure src="images/acl_review_cover.webp" alt="上は ACL を置かない実装。status が REVIEW の支払いが出荷・メール・売上・在庫の 4 か所に直接届き、出荷は PENDING と同じ扱いで出荷を待つ、メールは PENDING と同じ扱いで入金案内のメールを送り（誤り）、売上は PAID と同じ扱いで計上し（誤り）、在庫は FAILED と同じ扱いで引当を外す（誤り）。誤りは 4 か所中 3 か所、例外は 0 件。下は ACL を置いた実装。REVIEW は ACL の translate() で確認中に置き換わり、ログに 1 行残る。4 か所とも確認中として扱い、出荷を待つ・送らない・計上しない・引当を保つで、誤りは 0 か所" caption="status が REVIEW の支払い 1 件に対する 4 か所の動き" align="center" >}}
 
-DDD（Domain-Driven Design）の用語をまとめた [Evans 氏の DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) によると、ACL は相手の既存のインターフェース越しに通信するため、相手のシステムへの変更をほとんど、あるいは全く必要としません。
+上の実装では、メールの処理は同じ 1 件の支払いを入金待ちとして、売上の処理は支払済として、在庫の処理は失敗として扱いました。4 か所のうち 3 か所が誤った動きをしていますが、どこにもエラーは出ていません。
 
-以下は、販売コンテキスト（販売の仕事を扱う範囲）が外部の在庫システムを利用する場面での、ACL の位置と語の切り替わりです。
+本記事でいう語は、業務の概念をコードで表した型や状態の名前で、その集まりをモデルと呼びます。
 
-{{< figure src="images/anti-corruption-layer_concept.svg" alt="左に上流の在庫システムがあり、QTY_ON_HAND・QTY_ALLOC・STS という相手の語を黄土色の枠の中に持つ。右の下流の販売コンテキストは左端に帯として ACL を持ち、黄土色の矢印は ACL と在庫システムの間だけを通る。ACL の内側のモデルは販売できる数・販売停止という自分の語だけを使う" caption="在庫システムの語が ACL の外側だけに現れる構成" align="center" >}}
+下の `translate()` のように、外部システムから受け取ったものを自分たちの語に置き換える層を Anticorruption Layer（腐敗防止層、以下 ACL）と呼びます。Anti-Corruption Layer とも綴ります。Eric Evans 氏が 2003 年の書籍『[Domain-Driven Design](https://www.domainlanguage.com/ddd/)』で名付けたパターンで、相手のシステムにはほとんど手を入れず、呼ぶ側で作ります。
 
-上記の図で在庫システムの語（黄土色）が現れるのは、ACL と在庫システムの間だけです。販売コンテキストのモデルは販売の語だけで問い合わせ、販売の語で応答を受け取ります。正常に終わった問い合わせで `QTY_ON_HAND` のような在庫システムの項目名を目にすることはありません。
+ACL が必要になるのは、決済・配送・社内の古い基幹システムのように、自分たちでは変えられない外部の API を呼ぶ時です。既存のコードで `gateway` や `translator` という名前の層に出会い、なぜわざわざ型を詰め替えているのかと思った人も、本記事の読者です。
 
 <br>
 
-本記事では、ACL で上流のモデルから下流を守る理由と、翻訳の作り方を説明します。具体的には、次の疑問に答えます。
+本記事では、次の疑問に答えます。
 
-- 相手のクライアントをそのまま使うと、なぜ下流のモデルが崩れるのか。
-- ACL の中には何を置き、翻訳で何をするのか。
-- 上流が変わった時、その変更はどこで判定されるのか。
-- ACL は、アプリケーションの中の部品と独立したサービスのどちらで置くのか。
-
----
-
-### 前提
-
-語は項目名だけを指しません。販売が使う語は「販売できる数」や「販売停止」で、在庫システムが使う語は `QTY_ON_HAND` や `STS` です。同じ在庫を指していても、名前も、数え方も、状態の表し方も違います。
-
-上流と下流は、開発するチームの間の関係を表す語です。DDD Reference は、上流の行動が下流のプロジェクトの成否に影響する一方で、下流の行動は上流のプロジェクトに大きくは影響しない関係だと定義しています。相手が [Bounded Context](../bounded-context/)（1 つのモデルとその語が一貫して通用する範囲）として設計されているとは限らず、その区切りを持たないレガシーシステムも上流になります。
+- 外部の API が値を 1 つ足すと、呼ぶ側のコードで何が起きるのか。
+- 値の追加と項目名の変更で、壊れ方はどう違うのか。
+- ACL を置けば、知らない値で誤らずに済むのか。
+- ACL は値の他に何を置き換え、コードのどこに置くのか。
+- ACL を作らずに、相手のモデルに従う方がよいのはいつか。
 
 ---
 
-### Anticorruption Layer が必要な理由
+### 値の追加で起きること
 
-外部システムが配布するクライアントを直接使えば、変換処理を追加せずに接続できます。問題は、相手の応答の形が下流のコードのどこまで広がるかです。
+実験に使った決済サービスは、支払いごとに次のような JSON を返します。`status` は、v1 の時点では `PAID`（支払済）、`PENDING`（コンビニ払いなどの入金待ち）、`FAILED`（失敗）の 3 つでした。
 
-例に使う在庫システムの応答には、`ITEM_CD`（商品コード）、`QTY_ON_HAND`（手持ちの数量）、`QTY_ALLOC`（引き当て済みの数量）、`STS`（商品の状態コード）が並んでいます。引き当て済みというのは、既に別の注文に割り当ててあり、手元にあっても他には売れない数量です。以下は、この応答の型を下流のコードにそのまま渡した場合です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    U["ACL が無い場合<br/>在庫システムの応答をそのまま渡す<br/>ITEM_CD・QTY_ON_HAND<br/>QTY_ALLOC・STS"]
-    U --> A["注文の受付<br/>手持ちから引き当て済みを引いて判定"]
-    U --> B["商品の一覧<br/>手持ちの数量を残数として表示"]
-    U --> C["再入荷の通知<br/>状態コードで対象を絞り込む"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```json
+{"payment_id": "pay_0042", "status": "PAID", "amount": 3980}
 ```
 
-上記の図の 3 箇所は、どれも在庫システムの語で書かれています。「販売できる数」という販売の語はどこにも現れません。引き算を重複しているのは注文受付だけですが、`QTY_ON_HAND` を残数として扱う表示と、`STS` を通知対象へ変える判断にも、上流の項目名と意味が漏れています。変更の影響は同じ計算の複製だけに限りません。
+DDD（Domain-Driven Design）では、開発するチームどうしの関係を上流と下流で表します。この決済サービスのように、自分たちの行動が相手の成否を左右する側を上流、左右される側を下流と呼びます。下流が何をしても、上流にはほとんど影響しません。
 
-上流のシステムとの接点が大きいと、下流のモデルは本来の意図を保てなくなり、その場しのぎで相手のモデルに似せて書き換えられていきます（Evans 氏の説明）。同じ箇所によると、レガシーシステムのモデルは概して弱く（業務の概念を明確に表していない）、明確に設計されていても今のプロジェクトの必要に合うとは限らないので、合わせることは現実的でなくなります。
+上流と下流は呼び出しの向きとは限らず、決済サービスが通販のシステムへ通知を送ってくる時も、決済サービスが上流です。上流は、境界を意識して設計されたシステムとは限らず、社内の古い基幹システムのこともあります。
 
-それでも統合が下流にとって大きな価値を持つことや欠かせないことがあり、その時に翻訳を置く選択が残ります。
+下流である通販のシステムには、出荷、購入者へのメール、売上の計上、在庫の引当という 4 か所に、`status` を読む処理があります。以下の `no_acl.py` は、4 か所がそれぞれ上流の文字列をそのまま比べるコードです。どの関数も v1 の 3 つの値を前提に書き、知らない値で落ちないよう最後に `else` を置いています。
 
-翻訳を作らない選択もあります。DDD Reference の Conformist は、上流チームのモデルに徹底して従うことで、Bounded Context の間の翻訳の複雑さをなくす選択です。同書は、下流の設計の自由が狭まり、おそらく理想的なモデルにもならない一方で、統合は大きく単純になるとしています。前提に置いているのは、上流に下流の要求に応える動機が無く、下流のチームが無力な状況です。
+```python
+def shipping(p):  # 出荷
+    if p["status"] == "PAID":
+        return "出荷する"
+    elif p["status"] == "FAILED":
+        return "取り消す"
+    else:
+        return "出荷を待つ"
 
-以下は、上流を動かせない下流が取る 2 つの形です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph CF["Conformist"]
-        direction TB
-        U1["在庫システムのモデル"] --> D1["販売のコード<br/>在庫システムの語で書く"]
-        D1 ~~~ N1["統合は単純<br/>設計の自由は狭まる"]:::note
-    end
-    subgraph AC["Anticorruption Layer"]
-        direction TB
-        U2["在庫システムのモデル"] --> T2["ACL<br/>販売の語に翻訳"]
-        T2 --> D2["販売のコード<br/>販売の語で書く"]
-        D2 ~~~ N2["相手のモデルに合わせる<br/>ことが現実的でない時"]:::note
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-    classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
+def mail(p):  # 購入者へのメール
+    if p["status"] == "PAID":
+        return "お礼のメール"
+    elif p["status"] == "FAILED":
+        return "失敗のメール"
+    else:
+        return "入金案内のメール"
+
+
+def sales(p):  # 売上の計上
+    if p["status"] in ("PENDING", "FAILED"):
+        return "計上しない"
+    else:
+        return "計上する"
+
+
+def stock(p):  # 在庫の引当
+    if p["status"] in ("PAID", "PENDING"):
+        return "引当を保つ"
+    else:
+        return "引当を外す"
 ```
 
-Conformist では上流と同じモデルを使い、ACL では下流の業務に合うモデルへ変換します。
+v2 で、決済サービスが `REVIEW` を足しました。不正検知の審査に回った支払いで、数時間後に `PAID` か `FAILED` に変わります。正しい扱いは、審査が終わるまで決まっていない支払いとして待つこと、つまり出荷を待ち、メールは送らず、売上に計上せず、在庫の引当を保つことです。`status` が `REVIEW` の支払いを 4 つの関数に渡すと、次のようになりました。
 
-翻訳の複雑さは、相手との関係で変わります。DDD Reference によれば、設計の良い Bounded Context どうしを協力的なチームの間で繋ぐなら、翻訳層は単純で見通しの良いものにできます。
-
-しかし、Shared Kernel・Partnership・Customer/Supplier（[Bounded Context のノート](../bounded-context/)で並べた、チームどうしが計画や変更を調整する関係）を成り立たせるだけの統制や意思疎通が無いと、翻訳は複雑になり、相手の異常に備える処理（後で示すコードの未知の状態コードや負の数量の検査）が増えます。
-
----
-
-### ACL の中に置く 3 つの責任
-
-ACL の中身は、ここでは 3 つの責任に分けて見ます。下流の `sales` パッケージが自分の語で宣言したインターフェース `StockChecker` を満たす `Checker`、2 つのモデルを翻訳する部分、上流の既存の API（Application Programming Interface）をそのまま呼ぶクライアントです。
-
-この 3 分割は説明のための整理で、DDD Reference が規定している構造ではありません。
-
-以下は、上に挙げた順で並べた 3 つと、下流のモデルの関係です。最初の図では ACL を販売コンテキストの枠に入れましたが、コードでは `sales` とは別のパッケージに置くので、この図では枠を分けます。図の矢印は、呼び出しの流れではなく、コードがどちらを参照するかの向きです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph S["sales パッケージ（下流のモデル）"]
-        I["StockChecker<br/>自分の語で宣言したインターフェース"]
-        M["Availability<br/>自分の語のモデル"]
-    end
-    subgraph ACL["Anticorruption Layer（inventoryacl パッケージ）"]
-        C["Checker<br/>インターフェースの実装"]
-        T["翻訳<br/>項目名・型・単位・状態コード"]
-        K["上流のクライアント<br/>既存の API をそのまま呼ぶ"]
-    end
-    U["外部の在庫システム（上流）"]
-    C -. "満たす" .-> I
-    C --> K --> U
-    C --> T --> M
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```text
+A: ACL なし
+  出荷　 出荷を待つ　　　 v1 の PENDING と同じ扱い
+  メール 入金案内のメール v1 の PENDING と同じ扱い  ← 誤り（正しくは 送らない）
+  売上　 計上する　　　　 v1 の PAID と同じ扱い  ← 誤り（正しくは 計上しない）
+  在庫　 引当を外す　　　 v1 の FAILED と同じ扱い  ← 誤り（正しくは 引当を保つ）
+  誤り 3/4 か所、例外 0 件
 ```
 
-上記の図で在庫システムを知っているのは ACL の枠の中だけで、`sales` から ACL を参照する矢印はありません。この向きは、下流のパッケージが上流の型を import しているかで、ある程度まで確認できます。しかし、import が 1 本も無くても語は入り込みます。次の `Availability` は在庫システムのパッケージを参照していません。
-
-```go
-// Package sales の中に、在庫システムの語が残った例です。
-package sales
-
-// Availability は在庫の状態を持ちます。
-type Availability struct {
-	SKU    string
-	OnHand int    // QTY_ON_HAND をそのまま持つ
-	Status string // STS の値。"1" が通常、"9" が販売停止
-}
-```
-
-`Status` に入っているのは在庫システムの状態コードで、`"9"` が販売停止だという知識は販売コンテキストの各所に散ります。`OnHand` も同じで、引き当て済みを引く計算が、`Availability` を使う各所に残ります。外部の型を import していなくても、状態コードや数量の意味が下流に残るため、モデルの定義も確認する必要があります。
-
----
-
-### 下流のモデルの語
-
-翻訳の行き先になるモデルは、上流を見ずに決めます。注文の成立を判断するために販売コンテキストが知りたいのは、今すぐ売れる数と、その商品の販売を止めているかどうかの 2 つです。
-
-```go
-// Package sales は販売コンテキストで、注文が成立するまでを扱います。
-package sales
-
-import "context"
-
-// Availability は、在庫について販売コンテキストが知りたいことの全てです。
-type Availability struct {
-	SKU       string // Stock Keeping Unit。在庫を数える単位に付けた商品の識別子
-	Sellable  int    // 今すぐ売れる数
-	Suspended bool   // 販売を止めている商品かどうか
-}
-
-// StockChecker は在庫の問い合わせ先です。実装は sales パッケージの外に置きます。
-type StockChecker interface {
-	Check(ctx context.Context, sku string) (Availability, error)
-}
-```
-
-`StockChecker` は `sales` が自分の語で宣言したインターフェースで、後で示す `inventoryacl` の `Checker` がこれを実装します。呼び出す側の `sales` がインターフェースを持つので、参照は `inventoryacl` から `sales` に向きます（依存性逆転）。
-
-`sales` は在庫システムのパッケージを import せず、後から相手の型を直接使うコードも書きにくくなります。言語が禁じるわけではないので、確実に止めたいなら import を制限する lint（コードの静的検査）が必要です。
-
-同じ向きの変え方は [Repository](../repository/) でも使います。ただし、Repository が隠すのは自分の [Aggregate](../value-object-entity-aggregate/)（まとめて一貫性を保つオブジェクトの集まり）の永続化で、相手のモデルを入口で自分の語に変える ACL とは守る対象が違います。
-
----
-
-### 翻訳で行う処理
-
-翻訳は、項目名の写し替えだけでは終わりません。以下は、例に使った在庫システムの応答の項目ごとに、下流での扱いを示した表です。
-
-| 上流の項目 | 型と値 | 下流での扱い |
-| --- | --- | --- |
-| `ITEM_CD` | 商品コードの文字列 | この例では `SKU` と同じ体系と見なし、要求した `SKU` と突き合わせる。体系が違う場合は対応付けも ACL で行う |
-| `QTY_ON_HAND` | 数量を表す文字列 | 数値に変換し、引き当て済みを引いて `Sellable` を求める |
-| `QTY_ALLOC` | 数量を表す文字列 | `Sellable` の計算にだけ使い、単独では下流に渡さない |
-| `STS` | 状態コードの文字列 | `1` は通常、`9` は `Suspended`。未知の値はエラーにする |
-
-翻訳を Go で書くと次のようになります。
-
-```go
-// Package inventoryacl は、外部の在庫システムと販売コンテキストの間の翻訳だけを担当します。
-package inventoryacl
-
-import (
-	"context"
-	"fmt"
-	"strconv"
-
-	"example.com/shop/sales"
-)
-
-// StockLevelResponse は在庫システムが返す構造です。項目名も型も相手の都合で決まっています。
-type StockLevelResponse struct {
-	ItemCD    string
-	QtyOnHand string
-	QtyAlloc  string
-	Sts       string
-}
-
-// legacyClient は在庫システムの既存の API を呼びます。実装は省略します。
-type legacyClient interface {
-	GetStockLevel(ctx context.Context, itemCode string) (StockLevelResponse, error)
-}
-
-// Checker は sales.StockChecker を満たします。
-type Checker struct {
-	client legacyClient
-}
-
-// NewChecker は Checker を作ります。
-func NewChecker(c legacyClient) *Checker {
-	return &Checker{client: c}
-}
-
-// Check は在庫システムに問い合わせ、応答を販売コンテキストの語に翻訳します。
-// エラーを返す時の sales.Availability は意味を持ちません。
-func (c *Checker) Check(ctx context.Context, sku string) (sales.Availability, error) {
-	res, err := c.client.GetStockLevel(ctx, sku)
-	if err != nil {
-		return sales.Availability{}, fmt.Errorf("在庫システムへの問い合わせに失敗しました: %w", err)
-	}
-	if res.ItemCD != sku {
-		return sales.Availability{}, fmt.Errorf("要求した商品と違う応答が返りました: %q", res.ItemCD)
-	}
-
-	switch res.Sts {
-	case "1", "9":
-		// 通常と販売停止のどちらも、数量は同じ形で翻訳します。
-	default:
-		return sales.Availability{}, fmt.Errorf("STS が未知の値です: %q", res.Sts)
-	}
-
-	onHand, err := strconv.Atoi(res.QtyOnHand)
-	if err != nil {
-		return sales.Availability{}, fmt.Errorf("QTY_ON_HAND を数値として読めません: %q: %w", res.QtyOnHand, err)
-	}
-	alloc, err := strconv.Atoi(res.QtyAlloc)
-	if err != nil {
-		return sales.Availability{}, fmt.Errorf("QTY_ALLOC を数値として読めません: %q: %w", res.QtyAlloc, err)
-	}
-	if onHand < 0 || alloc < 0 {
-		return sales.Availability{}, fmt.Errorf("数量が負の値です: QTY_ON_HAND=%d QTY_ALLOC=%d", onHand, alloc)
-	}
-
-	sellable := onHand - alloc
-	if sellable < 0 {
-		// 引き当てが手持ちを超える状態は在庫システムでは起こり得ます。
-		// 販売コンテキストの Sellable は売れる数なので、負の数を渡しません。
-		sellable = 0
-	}
-	return sales.Availability{
-		SKU:       sku,
-		Sellable:  sellable,
-		Suspended: res.Sts == "9",
-	}, nil
-}
-
-// 静的な検査。シグネチャがずれた時点でコンパイルを止めます。
-var _ sales.StockChecker = (*Checker)(nil)
-```
-
-未知の状態コードと負の数量は、下流に渡さずにエラーとして返すので、翻訳を通り抜けた `Availability` は[既知の状態だけを表します](../parse-dont-validate/)。ただし、エラーの文面には相手の項目名が残ります。そこまで断ちたいなら、下流で定義したエラーの型に包み直す必要があります。
-
-上のコードが `Sellable` を 0 にするのは、`QTY_ON_HAND` から `QTY_ALLOC` を引いた差が負になった時だけです。下流の `Sellable` は今すぐ売れる数として非負に定義してあるので、値域と意味の違いを吸収するこの変換は ACL の中に置けます。
-
-`Suspended` が true だから `Sellable` も 0 にする、という書き換えは行っていません。停止中の商品を何個持っているかと、それを売って良いかは別の事実で、2 つを結び付けるのは販売コンテキスト固有の業務判断だからです。
-
-以下は、ACL の中に置く変換（`STS` の `9` を `Suspended` と読むなど）と、翻訳した結果を使う販売コンテキストの判断との境界です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    subgraph ACL["Anticorruption Layer の中"]
-        T1["STS の 9<br/>→ Suspended"]
-        T2["QTY_ON_HAND − QTY_ALLOC<br/>負なら Sellable を 0"]
-        T3["未知の STS・負の数量<br/>→ エラー"]
-    end
-    subgraph SALES["販売コンテキスト"]
-        J["Suspended が true なら<br/>注文を断る"]
-    end
-    ACL -- "Availability" --> SALES
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上流に書き込む時も同じ ACL を通します。注文の確定を在庫システムに伝えるなら、販売の語で受け取った要求を ACL の中で `ITEM_CD` と数量に翻訳してから相手の API を呼びます。
-
-上のコードの `StockLevelResponse` から `Availability` への変換は、DTO（Data Transfer Object、データを受け渡すためのオブジェクト）の変換でもあります。しかし、ACL と呼べるかは、その変換が上流のモデルから下流のドメインモデルを守る境界に置かれているかで決まります。
-
----
-
-### 上流の変更の扱い
-
-ACL があると、上流の変更は下流に届く前に、ACL の 1 箇所で検出されます。例えば在庫システムが状態コードに新しい値を足すと、上のコードは未知の値としてエラーを返します。
-
-未知の値を既知の値として扱うと、下流は商品の状態を誤って解釈します。新しい値が販売停止を意味していれば、売れる商品として扱う誤りにもなり得ます。エラーで止めれば意味の確定していない状態は下流のモデルに届かず、直す場所も、状態コードを読む全ての箇所ではなく翻訳の 1 箇所で済みます。このエラーを受けた注文の受付は、翻訳を直すまでその商品の注文を断ります。
-
-以下は、上流が足した新しい値（ここでは例として `"7"`）がどこまで届くかを ACL の有無で比べた図です。
-
-{{< figure src="images/anti-corruption-layer_unknown_status.svg" alt=`上段の ACL がある場合は、黄土色の STS = "7" が ACL に入り、未知の値でエラーになって赤い×で止まり、右の点線の枠は「販売のモデルに届かない」。下段の ACL が無い場合は、STS = "7" から黄土色の矢印が 3 本に分かれ、注文の受付・商品の一覧・再入荷の通知のそれぞれで「7 の意味を各所で判断」する` caption="上流の新しい状態コードの行き先（ACL の有無）" align="center" >}}
-
-上流の出力を別の意味で読むと何が起きるかは、1996 年 6 月の Ariane 5 の初飛行が示しています。ロケットの姿勢を測る慣性基準装置（SRI）が、ソフトウェアの例外で自分の故障を宣言して停止しました。
-
-停止した SRI がメイン計算機（OBC）に送ったのは姿勢のデータではなく診断用のビットパターンで、OBC はそれを[飛行データとして解釈し](https://esamultimedia.esa.int/docs/esa-x-1819eng.pdf)、ノズルを最大限まで振りました。機体は発射の約 37 秒後に進路を外れて自爆しました。
-
-ACL を置く経路は、同期の呼び出しに限りません。上流が発行したイベントを受け取る非同期の経路にも同じ ACL を置き、相手の形式のメッセージを自分の [Domain Event](../domain-event/)（ドメインで既に起きた出来事を表すオブジェクト）に翻訳してから下流のハンドラに渡します。
-
----
-
-### ACL を置く場所
-
-Microsoft の [Azure Architecture Center](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer) は、ACL を「同じ意味論を共有しない異なるサブシステムの間に facade または adapter の層を実装する」パターンとして説明しています。意味論は、同じ名前や値が何を指すのかについて、それぞれのシステムが持っている取り決めです。
-
-facade は複雑な相手の API を単純な窓口にまとめる層、adapter は相手のインターフェースを自分が期待する形に合わせる層で、上の `Checker` は両方の役を兼ねています。どちらも書籍『オブジェクト指向における再利用のためのデザインパターン』のパターン名で、[Adapter](../adapter/) のノートで扱うコンテナのパターンとは別です。
-
-同ドキュメントは、ACL をアプリケーションの中の部品として実装する方法と、独立したサービスとして実装する方法の 2 つを挙げています。どちらでも翻訳の内容は変わらず、運用の単位が変わります。
-
-| | 同じプロセスの中のパッケージ | 独立したサービス |
-| --- | --- | --- |
-| 呼び出しの遅延 | 関数呼び出しの分だけ | ネットワークの往復が 1 段増える |
-| 配布 | 下流と同時に更新する | 下流と別に更新できる |
-| 同じ翻訳を複数のプロセスで使う時 | 各プロセスに取り込み、更新のたびに配布し直す | 1 箇所を更新すれば全てのプロセスに届く |
-| 運用 | 下流に含まれる | 監視・リリース・設定の対象が 1 つ増える |
-| 言語 | 下流と同じ | 上流のクライアントライブラリに合わせて選べる |
-
-下流のアプリケーションが 1 つで、上流のクライアントを同じ言語で書けるなら、パッケージとして置く方が扱いやすいと考えられます。同じ下流コンテキストの複数のプロセスが同じ翻訳を使う場合や、上流のクライアントの言語に合わせたい場合に、独立したサービスを選ぶ理由が出てきます。
-
-独立したサービスにした ACL をアプリケーションのコンテナの隣で別のコンテナとして動かすと、配置だけを見れば、外部との通信を代わりに引き受けるコンテナである [Ambassador](../ambassador/) と重なります。2 つを分けるのは、翻訳の結果が下流のドメインモデルの語になるかどうかです。
+カードで払った購入者にコンビニ払いの入金案内が届き、審査で落ちるかもしれない支払いが売上に入り、引当を外した在庫は別の購入者に売れます。審査が通って `PAID` に変わった時には、在庫が残っていないかもしれません。
 
 <br>
 
-別の Bounded Context が同じ上流を使っていても、1 つの ACL を共用できるとは限りません。翻訳の行き先は下流ごとのモデルで、必要な語も、落として良い情報も違います。2 つの下流の要求を 1 つの ACL に集めると、どちらの語でもない共通のモデルが育ち、統合用の共有サービスに変わります。
+4 つの関数が `REVIEW` をばらばらに扱った理由は、`else` の中身にあります。以下は、v1 の値を入れた箱として 4 つの関数の分岐を並べた図です。
 
-ACL は、レガシーシステムから新しいシステムへ[段階的に移行する](../strangler-fig/)間、新しいシステムをレガシーの語から守る用途にも使います。この場合は、レガシーの機能を全て移した後に撤去するのか、恒久的に残すのかを先に決めます（Microsoft のドキュメントも検討事項に挙げている）。撤去する前提か置き続けるかで、テストの厚さやエラーの型の包み直しに掛けて良いコストが違います。
+{{< figure src="images/acl_else_branches.webp" alt="出荷・メール・売上・在庫の 4 つの関数の分岐を横に並べた図。右端の赤い枠が else。出荷とメールの else には PENDING が、売上の else には PAID が、在庫の else には FAILED が入っていて、REVIEW はそれぞれの else に PENDING・PENDING・PAID・FAILED と並んで入る" caption="4 つの関数の分岐と、REVIEW が入る else" align="center" >}}
+
+`else` は「それ以外」と書いてありますが、書いた時点では残っている値が決まっていました。出荷とメールの `else` は `PENDING` のための分岐で、売上の `else` は `PAID` の、在庫の `else` は `FAILED` のための分岐です。`REVIEW` は、それぞれの `else` に残っていた値の意味を引き継ぎます。同じ書き方の `else` でも、条件を `==` で並べたか `in` で除外したかで、残る値が変わります。
+
+出荷の関数だけが正しく動いたのも、`else` に残っていた値が、たまたま `REVIEW` と同じ「まだ決まっていない」意味だったからです。テストを v1 の 3 つの値で書いていれば、入力に `REVIEW` が現れないので、v2 の後もテストは落ちません。
+
+<br>
+
+<details><summary>余談: 届いた値を別の意味で読んだ事故</summary>
+
+受け取る側が、送る側の値を取り決めと違う意味で読んだ例として、1996 年 6 月 4 日の Ariane 5 の初飛行があります。[事故調査委員会の報告書](https://esamultimedia.esa.int/docs/esa-x-1819eng.pdf)によると、機体の姿勢を測る慣性基準装置（SRI）は予備と主系の 2 台とも、同じソフトウェアの例外で相次いで故障を宣言し、主系は姿勢を表すデータの代わりに診断用のビットパターンを送りました。搭載計算機（OBC）はそれを飛行データとして読み、起きていない姿勢のずれを直そうとしてノズルを大きく振りました。機体は飛行シーケンスを始めてから約 39 秒後に分解し、自爆装置が働きました。
+
+規模も仕組みも違いますが、受け取る側が、届いた値を取り決めと違う意味で解釈した点は同じです。
+
+</details>
+
+<br>
+
+#### 上流にとっては壊さない変更
+
+決済サービスから見ると、値の追加は利用者を壊さない変更として扱われることがあります。決済サービスを提供する [Stripe](https://stripe.com/) の API では、決まった文字列の集合から値を取る項目を enum と呼び、値が増えない closed と値が増える open の 2 種類に分けています。[API リファレンス](https://docs.stripe.com/api/enums)によると、open な enum には API のバージョンを上げずに新しい値を足すことがあり、受け取る側には `switch` 文に `default` の分岐を置くような「安全な既定の動き」を書くよう勧めています。
+
+実験の 4 つの関数は、全て `else` という既定の分岐を持っていました。それでも 3 か所が誤ったのは、各関数が、書いた時点で残っていた値に合わせて既定の分岐で何をするか決めていたからです。安全な既定の動きは、関数ごとに決める限り揃いません。
+
+<br>
+
+#### 改名は例外で止まる
+
+比べるために、v3 で決済サービスが `status` という項目名を `payment_status` に変えた場合も試しました。
+
+```text
+A: ACL なし: KeyError を出した関数 4 個（mail, sales, shipping, stock）
+```
+
+4 つの関数は全て `KeyError` で止まりました。項目名の変更は上流にとっても互換を壊す変更で、Stripe のようにバージョンを持つ API では、新しいバージョンの変更として出されます。テストが v1 の JSON のままなら通り続けますが、本番では最初の 1 件で例外が出るので、呼ぶ側もすぐに気付けます。
+
+| 上流の変更 | 上流の扱い | ACL なしの 4 か所で起きたこと |
+|---|---|---|
+| 値の追加（`REVIEW`） | 互換を保つ変更として扱われることがある | 例外 0 件のまま 3 か所が誤る |
+| 項目名の変更（`payment_status`） | 互換を壊す変更 | 4 か所が `KeyError` で止まる |
+
+この実験のように上流の値を `else` で受ける書き方では、上流が「壊さない」と考える変更の方が、例外を出さずに誤りました。4 つの関数は `p["status"]` で読んでいたので改名で止まりましたが、`p.get("status")` で読んでいれば、改名も黙って `else` に落ちます。
 
 ---
 
-### 利点
+### 翻訳を 1 か所に集める
 
-- 上流の変更を下流の既存の語に写せる限り、直す箇所が翻訳の 1 箇所に収まる
-- 下流のモデルを下流の語だけで書け、上流の項目名や状態コードが混ざらない
-- 上流に変更を求めずに統合でき、上流を動かせない関係でも使える
-- 新しい上流から下流が必要とする情報を取得できる場合は、ACL の変換処理を変更して対応できる
-- 上流の異常値を ACL で止められ、下流のモデルが取り得る状態を絞れる
+ACL を置いた実装（lab と出力では C と呼びます）では、決済サービスの `status` を読むのは `translate()` だけです。上流の値は、通販のシステムが自分で決めた 4 つの状態（`PaymentState`）に置き換えます。4 つ目の `UNCONFIRMED`（確認中）は、上流から意味の分からない値が来た時の行き先として、最初から用意しておく状態です。
+
+```python
+class PaymentState(enum.Enum):
+    PAID = "支払済"
+    AWAITING_DEPOSIT = "入金待ち"
+    FAILED = "失敗"
+    UNCONFIRMED = "確認中"  # 決済サービスから、意味の分からない値が来た
+
+
+KNOWN = {
+    "PAID": PaymentState.PAID,
+    "PENDING": PaymentState.AWAITING_DEPOSIT,
+    "FAILED": PaymentState.FAILED,
+}
+
+
+def translate(p):
+    state = KNOWN.get(p["status"])
+    if state is None:
+        log.warning("知らない status: %r（payment_id=%s）", p["status"], p["payment_id"])
+        return PaymentState.UNCONFIRMED
+    return state
+
+
+# 4 か所は、自分たちの 4 つの状態だけで分岐する。else を置かず、全ての状態を表に書く
+ACTIONS = {
+    #                              出荷          メール              売上          在庫
+    PaymentState.PAID:             ("出荷する",   "お礼のメール",     "計上する",   "引当を保つ"),
+    PaymentState.AWAITING_DEPOSIT: ("出荷を待つ", "入金案内のメール", "計上しない", "引当を保つ"),
+    PaymentState.FAILED:           ("取り消す",   "失敗のメール",     "計上しない", "引当を外す"),
+    PaymentState.UNCONFIRMED:      ("出荷を待つ", "送らない",         "計上しない", "引当を保つ"),
+}
+```
+
+4 か所の処理は `ACTIONS` の表を引くだけで、上流の文字列を一度も見ません。`PaymentState` は通販のシステムが持つ型なので、状態が増えるのは自分たちが増やした時だけです。増やした時は、表に行を足さない限り、その状態の支払いが来て表を引いた所で `KeyError` で止まります。
+
+`REVIEW` を渡すと、`translate()` がログを 1 行残し、4 か所とも確認中として扱いました。
+
+```text
+C: ACL（知らない値は確認中）
+  ログ: 知らない status: 'REVIEW'（payment_id=pay_0042）
+  出荷　 出荷を待つ　　　 v1 の PENDING と同じ扱い
+  メール 送らない　　　　 v1 のどの値とも違う扱い
+  売上　 計上しない　　　 v1 の PENDING・FAILED と同じ扱い
+  在庫　 引当を保つ　　　 v1 の PAID・PENDING と同じ扱い
+  誤り 0/4 か所、例外 0 件
+```
+
+v3 の改名でも、`KeyError` を出したのは `translate()` の 1 か所だけでした。上流の項目名 `status` を読む関数は、ACL を置かない実装では 4 個、ACL を置いた実装では `translate()` だけで、直す場所もそこに集まります。
+
+Evans 氏が書籍の要点をまとめた [DDD Reference](https://www.domainlanguage.com/ddd/reference/)（[PDF](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf)）では、ACL は次のように説明されています。
+
+> As a downstream client, create an isolating layer to provide your system with functionality of the upstream system in terms of your own domain model.
+
+下流は隔離する層を作り、上流の機能を自分たちのモデルの語で使えるようにする、という意味です。実験の `PaymentState` が、ここでいう自分たちのモデルの語に当たります。同じ箇所は続けて、この層は上流が既に持つインターフェース越しに話すので、上流への変更はほとんど、あるいは全く必要ないと書いています。
+
+ACL が必要な理由として DDD Reference が挙げるのは、上流とやり取りする項目や API が多いと、下流のモデルが場当たり的に上流のモデルへ似せて書き換えられていくことです。実験の 4 つの関数は、通販の語を持たず、決済サービスの 3 つの値で分岐を書いていました。上流のモデルに似せて書いたコードは、上流のモデルが変わると一緒に動きます。
+
+<br>
+
+#### 置くだけでは防げない
+
+ACL を置いても、知らない値の行き先を決めていなければ、`else` と同じことが 1 か所で起きます。以下の B は、知らない値を「入金待ち」に置き換える実装です。翻訳は `KNOWN.get(p["status"], PaymentState.AWAITING_DEPOSIT)` のように、辞書の既定値を書いただけです。
+
+```text
+B: ACL（知らない値は入金待ち）
+  出荷　 出荷を待つ　　　 v1 の PENDING と同じ扱い
+  メール 入金案内のメール v1 の PENDING と同じ扱い  ← 誤り（正しくは 送らない）
+  売上　 計上しない　　　 v1 の PENDING・FAILED と同じ扱い
+  在庫　 引当を保つ　　　 v1 の PAID・PENDING と同じ扱い
+  誤り 1/4 か所、例外 0 件
+```
+
+誤りは 3 か所から 1 か所に減りましたが、カードで払った購入者には、まだ入金案内が届きます。ログも残らないので、`REVIEW` が届いていることに誰も気付きません。B と C の違いは、知らない値を既存の状態に混ぜたか、そのための状態を別に用意したかだけです。C の 0/4 か所も、審査中のように決まるまで待てばよい値だったからで、確認中の扱いは値の意味に合わせて下流が決めます。
+
+知らない値を「確認中」に置く代わりに、`translate()` で例外にして処理を止める作り方もあります。下流のモデルに意味の決まらない値が入らない点は同じで、止めた支払いを誰がどう扱うかを決めておく必要がある点も同じです。
 
 ---
 
-### 欠点
+### 翻訳するもの
 
-ACL を追加すると、モデル間の変換コードや、その実行方法について次の対応が必要になります。
+`status` の値は、ACL が置き換えるものの 1 つです。上流と自分たちの間でずれやすいものには、次のような種類があります。
 
-- 独立したサービスとして置くと、往復のたびに遅延が加わり、監視・リリース・設定の対象も 1 つ増える
-- 統合する相手の数だけ、上流と下流の両方の語を知る翻訳のコードを保守する必要がある
-- 翻訳で落とした情報が後から必要になった時、ACL とモデルの定義の両方を見直す（例：`QTY_ALLOC` を販売コンテキストが直接見たくなった時）
-- 2 つのモデルがずれている箇所の扱いを下流が決め、ACL の中の規則として書く必要がある
+| 種類 | 上流の例 | 自分たちの語の例 |
+|---|---|---|
+| 値の集合 | `REVIEW` が増える open な enum | 4 つで閉じた `PaymentState` |
+| 項目名と形 | `status`・`amount` の平らな JSON | `Payment` の型と、その中の状態と金額 |
+| 成功と失敗の表し方 | 失敗も HTTP 200 で返し、本文の項目で示す | 例外か、失敗を表す型 |
+| 単位と時刻 | 最小単位の整数、UTC の文字列 | 金額の型、タイムゾーン付きの時刻 |
+| 識別子 | 上流の `payment_id` | 自分たちの注文番号との対応 |
+
+成功と失敗の表し方は、実在の API でもよくずれます。例えば、[Slack の Web API](https://docs.slack.dev/apis/web-api/) は、応答の JSON に `ok` という真偽値を持たせ、失敗の時は `ok` を false にして `error` に理由を入れます。Slack の [Node.js 向け SDK の説明](https://docs.slack.dev/tools/node-slack-sdk/web-api/)によると、Web API はエラーを返す時も HTTP のステータスを 200 にし、回数制限の時だけ 429 を返します。HTTP のステータスだけを見るコードは、この失敗を見落とします。
+
+翻訳は、上流から受け取る向きだけではありません。Stripe の API では、要求で送る enum の値は、今サポートされている値だけが受け付けられます。自分たちの語から上流の語へ送る向きにも、置き換えが必要です。上流が出すイベントを非同期に受け取る経路も同じで、相手の形式で書かれたメッセージを自分たちの [Domain Event](/notes/software-architecture/domain-event/) に置き換えてから処理に渡します。
+
+受け取った JSON は入口で自分たちの型に置き換え、それ以降は型を信じて書く、という考え方は、[Parse, Don't Validate](/notes/software-architecture/parse-dont-validate/) と同じです。ACL は、その入口を外部システムとの境目に置いたものと見ることができます。
 
 ---
 
-### 適さないケース
+### 置く場所と形
 
-- 上流と下流でモデルの語がほぼ一致していて、翻訳が項目名の写し替えだけになる統合
-- モデルの違いが業務上の必要から来ておらず、上流の設計の歪みが原因で、しかも上流を直せる関係
-- 1 回限りの移行スクリプトや、次の作り直しまでの繋ぎとして書くコード
+ACL は、呼ぶ側のチームが自分のコードに作ります。上流のチームが配るクライアントライブラリ（SDK）は、上流のモデルをそのまま型にしたもので、ACL の代わりにはなりません。
 
-語がほぼ一致している統合は、Microsoft のドキュメントも、新旧のシステムに大きな意味論の差が無い場合として適さない例に挙げています。同じ箇所には、この場合は ACL を翻訳の処理に集中させ、業務規則や、複数のシステムの呼び出し順序を組み立てるオーケストレーションを置かないようにとあります。
+Stripe の SDK は、Java や Go のような型付きの言語では、その SDK を出した時点の API バージョンに型が固定されると[公式ドキュメント](https://docs.stripe.com/upgrades)に書かれています。SDK の型に `REVIEW` が無くても、open な enum には値が増えることがあります。そのため SDK の型を下流のコードでそのまま使うと、ACL を置かない 4 か所と同じことが起きます。以下は、SDK を使う場合も含めて、ACL を置く位置を描いた図です。
 
-上流の設計の歪みを理由に挙げたのは、上流と下流でモデルが違うこと自体が問題だからではありません。Bounded Context が違えばモデルが違うのは正常で、同じチームが両方を管理しているだけの理由で 1 つに統合する必要はありません。
+{{< figure src="images/acl_placement.webp" alt="左の灰色の領域が決済サービスの語で、決済サービスの API と SDK の型がある。右の青い領域が通販の語で、PaymentState、業務規則の ACTIONS の表、出荷・メール・売上・在庫の 4 か所がある。2 つの領域の境目に ACL の translate() があり、SDK の型から PaymentState への矢印は translate() だけを通る。業務規則は ACL の外、通販の語の領域に置く" caption="ACL を置く位置と、業務規則を置く位置" align="center" >}}
 
-上流の設計の歪みが原因なら、ACL を足しても歪みは上流に残るので、直せるなら直す方が根本的な解決になります。ただし、上流に別のチームが居て変更の合意に時間が掛かるなら、下流が自分の判断だけで置ける ACL の方が早く進みます。
+図のように、SDK は決済サービスの語で書かれた部品です。`translate()` は、SDK と通販のコードをつなぐ境目に置きます。Microsoft の Azure Architecture Center にある[解説](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer)は、このパターンが適さない場合を挙げる項の中で、ACL は翻訳に絞り、業務の規則や複数のシステムを呼ぶ順番の制御を置かないようにと書いています。実験で `ACTIONS` の表を `translate()` の外に置いたのも同じ理由で、「確認中なら出荷を待つ」は通販の業務規則であり、決済サービスの語とは関係がありません。
 
-移行スクリプトや繋ぎのコードは捨てる前提なので、上流の語が混ざっても困りません。
+同じ解説によると、ACL はアプリケーションに組み込む部品としても、独立したサービスとしても作れます。独立したサービスにすると、呼び出しの遅延と、管理するサービスが 1 つ増えます。下流のアプリケーションが 1 つなら、実験のように同じプロセスの関数で足ります。
+
+同じ翻訳を複数のプロセスで使う時は、独立したサービスにすれば 1 か所の更新で全てに届き、下流と別に配布でき、言語も上流のクライアントライブラリに合わせて選べます。
+
+<br>
+
+#### 名前の似たパターン
+
+同じ解説は、ACL を facade か adapter の層として作るパターンとも説明しています。facade は複雑な相手の API を単純な窓口にまとめる層、adapter は相手のインターフェースを自分が期待する形に合わせる層で、どちらも、著者 4 人の通称 Gang of Four から GoF 本と呼ばれる書籍『[Design Patterns](https://www.informit.com/store/design-patterns-elements-of-reusable-object-oriented-9780201633610)』に載っているパターンの名前です。実験の `translate()` は adapter に近い役です。
+
+コンテナを並べる [Adapter](/notes/software-architecture/adapter/) のパターンとは、名前が同じでも別物です。
+
+ACL を独立したサービスにし、アプリケーションの隣で別のコンテナとして動かすと、配置は [Ambassador](/notes/software-architecture/ambassador/) と重なります。Ambassador は、アプリケーションの隣で外部への通信を代わりに受け持つコンテナで、再試行や接続先の切り替えはしても、受け取った値を下流の語には置き換えません。両者の区別は、翻訳した結果が下流のモデルで使う語になっているかどうかです。
+
+上流の JSON を下流の型へ詰め替えるだけなら DTO（Data Transfer Object）の変換と変わりませんが、その変換が下流のモデルを上流から守る境目に置かれている時に、ACL と呼べます。
+
+<br>
+
+#### 参照の向きと移行
+
+実験のように同じプロセスの関数として作る時は、どちらがどちらを参照するかも決めておきます。下流が自分の語でインターフェースを宣言し、ACL がそれを実装すると、下流は ACL を参照せずに済みます。ACL を差し替えても、テストで偽物に替えても、下流のコードは変わりません。
+
+同じ向きの変え方は [Repository](/notes/software-architecture/repository/) でも使います。ただし Repository が隠すのは自分たちの [Aggregate](/notes/software-architecture/value-object-entity-aggregate/) を保存する先で、上流のモデルから守る ACL とは守る相手が違います。
+
+古いシステムを新しいシステムへ少しずつ移す時も、新しいシステムの入口に ACL を置きます。古いシステムの項目名や状態の表し方を新しいシステムの中に持ち込むと、移し終えた後もその形が残るからです。移し方は [Strangler Fig](/notes/software-architecture/strangler-fig/) で扱っています。この使い方では、移し終えたら ACL を外すのか、置き続けるのかを先に決めておきます。外す前提なら、テストやエラーを包み直す型に掛ける手間を抑えられます。
+
+<br>
+
+#### 上流の語が漏れる経路
+
+`translate()` を作っても、上流の語が下流に漏れる経路は他にも残ります。
+
+| 漏れる経路 | 例 | 止め方 |
+|---|---|---|
+| 上流の型を import する | 下流の関数が SDK の型を引数に取る | import を制限する lint を CI で回す |
+| 下流の型に生の値を持たせる | `Order` に `status: str` を足し、上流の値を入れる | 下流の型には `PaymentState` だけを持たせる |
+| エラーの文面 | `KeyError: 'status'` が下流まで上がる | 下流で決めたエラーの型に包み直す |
+| 同じ ACL の使い回し | 業務の範囲が違う 2 つの下流が同じ `translate()` を使う | 下流ごとに翻訳を分ける |
+
+2 行目は、import が 1 本も無くても上流の語が入り込む例です。`status` に `"REVIEW"` が入り得る型を下流が持つと、その値の意味は、その型を読む全ての場所で判断されます。最後の行は、同じ上流を使う下流が 2 つある時に、1 つの ACL に両方の要求を集めると、どちらの語でもない共通のモデルが育つという話です。
+
+<br>
+
+#### 他の選び方との比較
+
+外部システムとの付き合い方は、ACL の他にもあります。DDD Reference では、上流のモデルに全面的に従って翻訳を作らない方式を Conformist と呼びます。下流は設計の自由が狭まりますが、統合は大きく単純になります。チームどうしの関係を並べた一覧は [Bounded Context](/notes/software-architecture/bounded-context/) にあります。以下は、実験の 2 つの変更に対する違いです。
+
+| 選び方 | 作るもの | 値の追加（`REVIEW`） | 項目名の変更 |
+|---|---|---|---|
+| Conformist（上流に従う） | 無し | 上流の値を読む全ての場所が影響を受ける | 読む全ての場所を直す |
+| API のバージョンを固定する | 無し | open な enum は、固定しても増えることがある | 固定している間は届かない |
+| 上流に頼んで直してもらう | 無し | 上流が受けてくれれば、足す前に知らせてもらえる | 同左 |
+| ACL | 翻訳の層 | 知らない値の行き先を 1 か所で決める | `translate()` だけを直す |
+
+API のバージョンを固定する方法は、Stripe なら要求ごとに `Stripe-Version` のヘッダーで指定します。項目名の変更のような互換を壊す変更は届かなくなりますが、open な enum への値の追加は、バージョンを上げなくても起こり得ます。固定と ACL は、守る範囲が違うので、両方を使うことができます。
+
+上流を直してもらう方法は、上流のチームが同じ会社にいて、下流の要望を計画に入れてくれる時だけ取れます。DDD Reference で Conformist の説明が始まるのは、上流に下流の要望を叶える動機が無く、下流には手の打ちようがない状況です。決済サービスのような外部の事業者は、たいていこの状況に当たります。
+
+<br>
+
+DDD Reference は、設計の良い 2 つのシステムを協力的なチームの間で繋ぐなら翻訳は単純にでき、上流と調整できない時ほど翻訳は複雑になり、守りの色が濃くなる、とも書いています。ACL を選ぶと、統合する相手ごとに、両方の語を知る翻訳のコードを保守し続けることになります。翻訳で捨てた項目が後で要る時も手間が掛かります。実験の `translate()` は `status` だけを読み、`amount` を捨てています。売上の処理が金額を使うようになれば、`translate()` と、金額を受け取る下流の型を両方とも直します。
+
+上流と下流でずれている所をどう扱うかも、`UNCONFIRMED` のように下流が決め、ACL の規則として書く必要があります。
+
+---
+
+### ACL を作る前に見ること
+
+外部システムの値を読むコードに出会ったら、最初に、上流の項目を読んでいる関数がいくつあるかを数えます。実験の `run.py` は、Python の `ast` で `"status"` という文字列を含む関数を数えました。1 か所しか読んでいないなら、ACL を作るよりも、その 1 か所の分岐を見直す方が早く済みます。
+
+複数の場所が読んでいるなら、それぞれの `else` や `default` の分岐に、書いた時点でどの値が残っていたかを書き出します。冒頭の図で上に描いたように、分岐ごとに残っていた値が違えば、上流が値を 1 つ足しただけで、同じ支払いが場所ごとに別の意味になります。
+
+ACL を作るなら、知らない値の行き先として、自分たちの語の中に専用の状態を用意します。実験の B のように既存の状態へ混ぜると、誤りは減っても無くならず、届いたことにも気付けません。C のように専用の状態に置いてログに残し、そのログを監視していれば、上流のチームが値を足したことに早く気付けます。
+
+<br>
+
+#### ACL を作らない場合
+
+上流と自分たちの語がほぼ同じで、翻訳が項目名の写し替えだけになるなら、ACL は Conformist より手間が増えるだけです。1 回だけ流す移行スクリプトのように捨てる前提のコードにも、ACL は必要ありません。その場合も、上流の enum が open かどうかは、API のリファレンスで見ておく価値があります。
+
+語のずれが、上流の設計が歪んでいることから来ていて、上流を直せる関係なら、直す方が根本的です。ただし、業務の範囲が違えばモデルが違うのは普通のことで、ずれていること自体は直す理由になりません。上流が別のチームで合意に時間が掛かるなら、下流が自分の判断だけで作れる ACL の方が早く進みます。
+
+実験のコードと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/anti-corruption-layer/lab) にあります。出力で acl.py の `status` を読む関数が 2 個になっているのは、B の `translate_with_fallback()` も同じファイルにあるためです。

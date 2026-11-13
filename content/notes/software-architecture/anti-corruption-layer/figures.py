@@ -1,149 +1,216 @@
-"""Generate the cover figure of the Anticorruption Layer note (Python stdlib only).
+"""Anticorruption Layer のノートの図を作る（Pillow だけを使う）。
 
-concept_figure() draws the upstream inventory system on the left and the
-downstream sales context on the right. The ACL is the membrane on the edge of
-the downstream area: the upstream terms (red) exist only outside it, and the
-sales model inside uses only its own terms.
+図の中の動き（どの関数が何を返したか）は、lab/ の no_acl.py と acl.py を import して
+その場で計算する。本文の出力（lab/output.txt）と図が食い違わないようにするため。
 
-Run: python3 content/notes/software-architecture/anti-corruption-layer/figures.py
+実行: python3 content/notes/software-architecture/anti-corruption-layer/figures.py
 """
 
-from html import escape
+import sys
 from pathlib import Path
 
+from PIL import Image, ImageDraw, ImageFont
+
 HERE = Path(__file__).resolve().parent
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
-FILL, PALE, WHITE = "#f2f2f2", "#eaf1f5", "#ffffff"
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
-MARKERS = {"ink": SUB, "accent": ACCENT, "red": RED, "ochre": OCHRE}
+sys.path.insert(0, str(HERE / "lab"))
+import acl  # noqa: E402
+import no_acl  # noqa: E402
+
+S = 2  # 2 倍で描いて縮める
+INK, SUB, RED, LINE = "#1f1f1f", "#666666", "#c62828", "#9a9a9a"
+FILL, PALE, RED_PALE, WHITE = "#f2f2f2", "#eaf1f5", "#fbe9e7", "#ffffff"
+ACCENT = "#4f7ea8"
+JP = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+
+PLACES = ["shipping", "mail", "sales", "stock"]
+LABEL = {"shipping": "出荷", "mail": "メール", "sales": "売上", "stock": "在庫"}
+EXPECTED = {"shipping": "出荷を待つ", "mail": "送らない", "sales": "計上しない", "stock": "引当を保つ"}
+REVIEW = {"payment_id": "pay_0042", "status": "REVIEW", "amount": 3980}
+V1 = ["PAID", "PENDING", "FAILED"]
 
 
-class Svg:
-    def __init__(self, width, height, title):
-        defs = "".join(
-            f'<marker id="arrow-{name}" viewBox="0 0 10 10" refX="8" refY="5" '
-            f'markerWidth="4" markerHeight="4" orient="auto">'
-            f'<path d="M0,0 L10,5 L0,10 z" fill="{color}"/></marker>'
-            for name, color in MARKERS.items())
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            f'<defs>{defs}</defs>',
-            f'<rect width="{width}" height="{height}" fill="{WHITE}"/>',
-        ]
-
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle"):
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}">{escape(s)}</text>')
-
-    def box(self, x, y, w, h, fill, stroke, sw=2.5, dash="", rx=10):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def ellipse(self, cx, cy, rx, ry, fill, stroke, sw=2.5):
-        self.parts.append(
-            f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" fill="{fill}" '
-            f'stroke="{stroke}" stroke-width="{sw}"/>')
-
-    def line(self, x1, y1, x2, y2, color, sw=4, arrow="", dash=""):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
-
-    def path(self, d, color, sw=4, arrow="", dash="", fill="none"):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        da = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<path d="{d}" fill="{fill}" stroke="{color}" stroke-width="{sw}" '
-            f'stroke-linecap="round" stroke-linejoin="round"{da}{m}/>')
-
-    def cross(self, cx, cy, r, color, sw=6):
-        self.line(cx - r, cy - r, cx + r, cy + r, color, sw)
-        self.line(cx - r, cy + r, cx + r, cy - r, color, sw)
-
-    def db(self, cx, top, w, h, label):
-        rx, ry = w / 2, 14
-        x = cx - rx
-        self.parts.append(
-            f'<path d="M{x},{top} v{h} a{rx},{ry} 0 0 0 {w},0 v{-h}" '
-            f'fill="{FILL}" stroke="{SUB}" stroke-width="2.5"/>')
-        self.ellipse(cx, top, rx, ry, FILL, SUB)
-        self.text(cx, top + h / 2 + 18, label)
-
-    def save(self, name):
-        out = HERE / "images"
-        out.mkdir(exist_ok=True)
-        (out / name).write_text("\n".join(self.parts + ["</svg>"]) + "\n",
-                                encoding="utf-8")
+def font(n, mono=False):
+    return ImageFont.truetype(MONO if mono else JP, n * S)
 
 
-def concept_figure():
-    f = Svg(960, 540, "Anticorruption Layer の位置と語の切り替わり")
-    # Upstream: the inventory system speaks its own terms (ochre).
-    f.box(24, 120, 270, 300, OCHRE_PALE, OCHRE)
-    f.text(159, 172, "在庫システム", 28, weight="normal")
-    f.text(159, 206, "上流", 24, SUB)
-    for y, word in ((276, "QTY_ON_HAND"), (330, "QTY_ALLOC"), (384, "STS")):
-        f.text(159, y, word, 26, INK, weight="normal")
-    f.text(159, 468, "相手の語", 26)
+class Canvas:
+    def __init__(self, w, h):
+        self.w, self.h = w, h
+        self.img = Image.new("RGB", (w * S, h * S), WHITE)
+        self.d = ImageDraw.Draw(self.img)
 
-    # Downstream: the sales context, with the ACL as a membrane on its edge.
-    f.box(396, 56, 540, 428, PALE, ACCENT, rx=16)
-    f.box(396, 56, 66, 428, ACCENT, ACCENT, rx=0)
-    f.text(429, 280, "ACL", 26, INK, weight="normal")
-    f.text(699, 104, "下流：販売コンテキスト", 28, weight="normal")
-    f.box(520, 150, 380, 240, WHITE, SUB)
-    f.text(710, 200, "注文の成立を判断するモデル", 24)
-    f.text(710, 280, "販売できる数", 28, weight="normal")
-    f.text(710, 340, "販売停止", 28, weight="normal")
-    f.text(710, 448, "自分の語", 26)
+    def text(self, x, y, s, size=16, color=INK, anchor="la", mono=False):
+        self.d.text((x * S, y * S), s, font=font(size, mono), fill=color, anchor=anchor)
 
-    # Outside the membrane the exchange is in upstream terms (ochre arrows),
-    # inside it is in sales terms.
-    f.line(390, 230, 304, 230, OCHRE, 5, arrow="ochre")
-    f.line(300, 330, 384, 330, OCHRE, 5, arrow="ochre")
-    f.line(514, 230, 472, 230, SUB, 4, arrow="ink")
-    f.line(470, 330, 512, 330, SUB, 4, arrow="ink")
+    def box(self, x, y, w, h, fill=FILL, outline=LINE, width=2, r=8):
+        self.d.rounded_rectangle([x * S, y * S, (x + w) * S, (y + h) * S], radius=r * S,
+                                 fill=fill, outline=outline, width=width * S)
 
-    f.save("anti-corruption-layer_concept.svg")
+    def line(self, pts, color=LINE, width=2):
+        self.d.line([(x * S, y * S) for x, y in pts], fill=color, width=width * S)
+
+    def arrow(self, x1, y1, x2, y2, color=LINE, width=2):
+        self.line([(x1, y1), (x2, y2)], color, width)
+        self.d.polygon([(x2 * S, y2 * S), ((x2 - 9) * S, (y2 - 5) * S), ((x2 - 9) * S, (y2 + 5) * S)], fill=color)
+
+    def save_webp(self, name):
+        out = self.img.resize((self.w, self.h), Image.LANCZOS)
+        out.save(HERE / "images" / name, "WEBP", quality=90, method=6)
 
 
-def unknown_status_figure():
-    """A new STS value from the upstream: stopped at the ACL, or read in every place."""
-    f = Svg(960, 540, "上流が足した新しい状態コードを、ACL の 1 箇所で止めるか、各所で読むか")
+def like_v1(i, got):
+    """v1 のどの値と同じ動きか。A の 4 か所が REVIEW を何として読んだかを出す。"""
+    hits = [st for st in V1 if no_acl_actions({"payment_id": "x", "status": st, "amount": 1})[i] == got]
+    return hits
 
-    # With the ACL.
-    f.text(40, 44, "ACL がある", 26, anchor="start")
-    f.box(40, 76, 220, 76, OCHRE_PALE, OCHRE)
-    f.text(150, 123, "STS = \"7\"", 26)
-    f.line(266, 114, 330, 114, OCHRE, sw=4, arrow="ochre")
-    f.box(340, 66, 240, 96, PALE, ACCENT)
-    f.text(460, 106, "ACL", 26)
-    f.text(460, 140, "未知の値でエラー", 24, SUB)
-    f.cross(606, 114, 13, RED)
-    f.box(640, 76, 290, 76, WHITE, SUB, dash="8 6")
-    f.text(785, 123, "販売のモデルに届かない", 24, SUB)
 
-    # Without the ACL.
-    f.text(40, 244, "ACL が無い", 26, anchor="start")
-    f.box(40, 342, 220, 76, OCHRE_PALE, OCHRE)
-    f.text(150, 389, "STS = \"7\"", 26)
-    for k, label in enumerate(["注文の受付", "商品の一覧", "再入荷の通知"]):
-        y = 270 + k * 92
-        f.path(f"M266,380 C300,380 300,{y + 32} 344,{y + 32}", OCHRE, sw=4, arrow="ochre")
-        f.box(352, y, 220, 64, WHITE, OCHRE)
-        f.text(462, y + 41, label, 24)
-        f.text(596, y + 41, "7 の意味を各所で判断", 24, SUB, anchor="start")
-    f.save("anti-corruption-layer_unknown_status.svg")
+def no_acl_actions(p):
+    return [getattr(no_acl, f)(p) for f in PLACES]
+
+
+def acl_actions(p):
+    s = acl.translate(p)
+    return [getattr(acl, f)(s) for f in PLACES]
+
+
+def panel(c, y0, title, actions, with_acl):
+    """1 つの実装の図。左に届いた値、真ん中に 4 か所、右に動き。y0 は panel の上端。"""
+    x0 = 24
+    c.text(x0, y0, title, 20)
+    ys = [y0 + 44 + i * 74 for i in range(4)]
+    mid = (ys[0] + ys[-1]) / 2 + 28
+    # 届いた値
+    c.box(x0, mid - 36, 130, 72, fill=RED_PALE, outline=RED)
+    c.text(x0 + 65, mid - 13, "status", 15, SUB, "mm", mono=True)
+    c.text(x0 + 65, mid + 13, "REVIEW", 19, RED, "mm", mono=True)
+    fan_x = x0 + 130
+    if with_acl:
+        c.box(x0 + 160, mid - 74, 140, 148, fill=PALE, outline=ACCENT, width=3)
+        c.text(x0 + 230, mid - 42, "ACL", 20, ACCENT, "mm")
+        c.text(x0 + 230, mid - 8, "translate()", 15, SUB, "mm", mono=True)
+        c.text(x0 + 230, mid + 26, "→ 確認中", 18, INK, "mm")
+        c.text(x0 + 230, mid + 54, "ログに 1 行", 14, SUB, "mm")
+        c.arrow(fan_x, mid, x0 + 158, mid)
+        fan_x = x0 + 300
+    place_x = x0 + 360
+    for i, f in enumerate(PLACES):
+        y = ys[i] + 28
+        c.line([(fan_x, mid), (fan_x + 16, mid), (fan_x + 16, y), (place_x - 2, y)])
+        c.d.polygon([(place_x * S, y * S), ((place_x - 9) * S, (y - 5) * S), ((place_x - 9) * S, (y + 5) * S)], fill=LINE)
+        c.box(place_x, ys[i], 96, 56)
+        c.text(place_x + 48, y, LABEL[f], 18, INK, "mm")
+        ok = actions[i] == EXPECTED[f]
+        rx = place_x + 126
+        c.arrow(place_x + 96, y, rx - 2, y)
+        c.box(rx, ys[i] - 4, 330, 64, fill=WHITE if ok else RED_PALE, outline=LINE if ok else RED, width=2)
+        sub = "確認中として扱う" if with_acl else "・".join(like_v1(i, actions[i])) + " と同じ扱い"
+        c.text(rx + 14, ys[i] + 5, sub, 15, SUB)
+        c.text(rx + 14, ys[i] + 29, actions[i] + ("（誤り）" if not ok else ""), 18, INK if ok else RED)
+    wrong = sum(a != EXPECTED[f] for a, f in zip(actions, PLACES))
+    c.text(x0 + 360, ys[-1] + 74, f"誤り {wrong}/4 か所、例外 0 件", 18, RED if wrong else INK)
+
+
+def cover_figure():
+    c = Canvas(880, 860)
+    c.text(24, 18, "status が REVIEW の支払い 1 件を、4 か所がどう扱ったか（lab/run.py の実測）", 16, SUB)
+    panel(c, 60, "A: ACL なし（4 か所が上流の値をそのまま読む）", no_acl_actions(REVIEW), False)
+    c.line([(24, 452), (856, 452)], "#d0d0d0", 2)
+    panel(c, 474, "C: ACL あり（知らない値は「確認中」に翻訳）", acl_actions(REVIEW), True)
+    c.save_webp("acl_review_cover.webp")
+
+
+# 分岐の作り。no_acl.py の if と else の並びを、そのまま箱にしたもの
+BRANCHES = {
+    "shipping": [(["PAID"], "出荷する"), (["FAILED"], "取り消す"), (["PENDING"], "出荷を待つ")],
+    "mail": [(["PAID"], "お礼のメール"), (["FAILED"], "失敗のメール"), (["PENDING"], "入金案内のメール")],
+    "sales": [(["PENDING", "FAILED"], "計上しない"), (["PAID"], "計上する")],
+    "stock": [(["PAID", "PENDING"], "引当を保つ"), (["FAILED"], "引当を外す")],
+}
+
+
+def else_figure():
+    """各関数の分岐を、v1 の値の箱として並べる。最後の箱が else で、REVIEW はそこに落ちる。"""
+    # 図の箱が no_acl.py の動きと合っているかを、v1 の値で照合してから描く
+    for f, branches in BRANCHES.items():
+        for values, action in branches:
+            for v in values:
+                assert getattr(no_acl, f)({"payment_id": "x", "status": v, "amount": 1}) == action, (f, v)
+        assert getattr(no_acl, f)(REVIEW) == branches[-1][1], f
+    c = Canvas(960, 470)
+    c.text(24, 22, "no_acl.py の分岐。右端の箱が else で、REVIEW は書いた時に残っていた値と同じ箱に入る", 17, SUB)
+    for i, f in enumerate(PLACES):
+        y = 70 + i * 98
+        c.box(24, y, 80, 70)
+        c.text(64, y + 35, LABEL[f], 17, INK, "mm")
+        x = 140
+        for j, (values, action) in enumerate(BRANCHES[f]):
+            last = j == len(BRANCHES[f]) - 1
+            w = 300 if len(values) == 2 or last else 230
+            c.box(x, y, w, 70, fill=WHITE, outline=RED if last else LINE, width=2)
+            head = "else" if last else ("if " if j == 0 else "elif ")
+            c.text(x + 10, y + 8, head, 13, RED if last else SUB, mono=True)
+            vx = x + 10
+            for v in values:
+                c.box(vx, y + 32, 14 + len(v) * 10, 28, fill=FILL, outline=LINE, width=1, r=5)
+                c.text(vx + 7 + len(v) * 5, y + 46, v, 13, INK, "mm", mono=True)
+                vx += 22 + len(v) * 10
+            if last:
+                c.box(vx, y + 32, 14 + 6 * 10, 28, fill=RED_PALE, outline=RED, width=2, r=5)
+                c.text(vx + 7 + 30, y + 46, "REVIEW", 13, RED, "mm", mono=True)
+            c.text(x + w - 10, y + 8, f"→ {action}", 14, RED if last else INK, "ra")
+            x += w + 16
+    c.save_webp("acl_else_branches.webp")
+
+
+def placement_figure():
+    """ACL を置く位置。左が決済サービスの語、右が通販の語で、境目に translate() を置く。"""
+    c = Canvas(1100, 430)
+    c.text(24, 18, "実験のコードに当てはめた、ACL と業務規則を置く位置", 17, SUB)
+    c.box(20, 60, 330, 340, fill=FILL, outline=LINE, width=2, r=12)
+    c.text(185, 88, "決済サービスの語", 20, SUB, "mm")
+    c.box(500, 60, 580, 340, fill=PALE, outline=ACCENT, width=2, r=12)
+    c.text(790, 88, "通販の語", 20, ACCENT, "mm")
+    # 上流側
+    c.box(60, 120, 250, 70, fill=WHITE)
+    c.text(185, 145, "決済サービスの API", 18, INK, "mm")
+    c.text(185, 170, "status: PAID / PENDING / …", 15, SUB, "mm", mono=True)
+    c.box(60, 250, 250, 70, fill=WHITE)
+    c.text(185, 275, "SDK の型", 18, INK, "mm")
+    c.text(185, 300, "上流のモデルをそのまま写す", 15, SUB, "mm")
+    c.line([(185, 190), (185, 247)])
+    c.d.polygon([(185 * S, 250 * S), (180 * S, 241 * S), (190 * S, 241 * S)], fill=LINE)
+    # ACL
+    c.box(380, 200, 150, 120, fill=WHITE, outline=ACCENT, width=3)
+    c.text(455, 232, "ACL", 20, ACCENT, "mm")
+    c.text(455, 262, "translate()", 16, INK, "mm", mono=True)
+    c.text(455, 292, "語を置き換える", 15, SUB, "mm")
+    c.arrow(310, 285, 378, 285, ACCENT, 3)
+    # 下流側
+    c.box(570, 210, 170, 100, fill=WHITE)
+    c.text(655, 245, "PaymentState", 17, INK, "mm", mono=True)
+    c.text(655, 275, "4 つで閉じた状態", 15, SUB, "mm")
+    c.arrow(530, 260, 568, 260, ACCENT, 3)
+    c.box(780, 120, 270, 70, fill=WHITE)
+    c.text(915, 145, "業務規則（ACTIONS の表）", 17, INK, "mm")
+    c.text(915, 170, "確認中なら出荷を待つ", 15, SUB, "mm")
+    c.arrow(740, 240, 778, 165)
+    labels = ["出荷", "メール", "売上", "在庫"]
+    for k, lab in enumerate(labels):
+        x = 790 + k * 66
+        c.box(x, 300, 56, 44, fill=WHITE)
+        c.text(x + 28, 322, lab, 16, INK, "mm")
+    c.line([(915, 190), (915, 265)])
+    c.line([(818, 265), (1016, 265)])
+    for k in range(4):
+        x = 790 + k * 66 + 28
+        c.line([(x, 265), (x, 290)])
+        c.d.polygon([(x * S, 299 * S), ((x - 5) * S, 290 * S), ((x + 5) * S, 290 * S)], fill=LINE)
+    c.save_webp("acl_placement.webp")
 
 
 if __name__ == "__main__":
-    concept_figure()
-    unknown_status_figure()
+    (HERE / "images").mkdir(exist_ok=True)
+    cover_figure()
+    else_figure()
+    placement_figure()

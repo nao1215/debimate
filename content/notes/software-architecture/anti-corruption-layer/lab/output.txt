@@ -1,0 +1,31 @@
+v1 の 3 つの値（PAID・PENDING・FAILED）では、3 つの版の 4 か所が全て同じ動き
+
+== v2: status=REVIEW の支払いが 1 件届いた
+A: ACL なし
+  出荷　 出荷を待つ　　　 v1 の PENDING と同じ扱い
+  メール 入金案内のメール v1 の PENDING と同じ扱い  ← 誤り（正しくは 送らない）
+  売上　 計上する　　　　 v1 の PAID と同じ扱い  ← 誤り（正しくは 計上しない）
+  在庫　 引当を外す　　　 v1 の FAILED と同じ扱い  ← 誤り（正しくは 引当を保つ）
+  誤り 3/4 か所、例外 0 件
+B: ACL（知らない値は入金待ち）
+  出荷　 出荷を待つ　　　 v1 の PENDING と同じ扱い
+  メール 入金案内のメール v1 の PENDING と同じ扱い  ← 誤り（正しくは 送らない）
+  売上　 計上しない　　　 v1 の PENDING・FAILED と同じ扱い
+  在庫　 引当を保つ　　　 v1 の PAID・PENDING と同じ扱い
+  誤り 1/4 か所、例外 0 件
+C: ACL（知らない値は確認中）
+  ログ: 知らない status: 'REVIEW'（payment_id=pay_0042）
+  出荷　 出荷を待つ　　　 v1 の PENDING と同じ扱い
+  メール 送らない　　　　 v1 のどの値とも違う扱い
+  売上　 計上しない　　　 v1 の PENDING・FAILED と同じ扱い
+  在庫　 引当を保つ　　　 v1 の PAID・PENDING と同じ扱い
+  誤り 0/4 か所、例外 0 件
+
+== v3: status が payment_status に改名された
+A: ACL なし: KeyError を出した関数 4 個（mail, sales, shipping, stock）
+B: ACL（知らない値は入金待ち）: KeyError を出した関数 1 個（translate_with_fallback）
+C: ACL（知らない値は確認中）: KeyError を出した関数 1 個（translate）
+
+== 上流の項目名 "status" を読む関数
+no_acl.py: 4 個（shipping, mail, sales, stock）
+acl.py: 2 個（translate_with_fallback, translate）

@@ -196,7 +196,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-JSON を受け取る入力用の型から業務処理用の型へ変換する際に、必須の Email が設定されているかを確認します。
+JSON を受け取る入力用の型から業務処理用の型へ変換する際に、必須の Email が設定されているかを確認します。入力が外部システムから届いた応答なら、この変換を外部システムとの境目にまとめ、相手の語を自分たちの語へ置き換える [Anticorruption Layer](/notes/software-architecture/anti-corruption-layer/) の形になります。
 
 | 保ちたいこと | Go にあるもの | 無いもの | 代わりに使う手 |
 |---|---|---|---|

@@ -1,9 +1,9 @@
 {
  "path": "content/notes/software-architecture/anti-corruption-layer/index.md",
- "overall": 2,
- "product": 2,
- "blob": "f077287626331a2097971adbd3b84c2133029011",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 36,
+ "blob": "ba45905bd96fc1b908f671723ec59ec1f981ced7",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
