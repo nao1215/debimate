@@ -54,3 +54,4 @@ software-architecture__bounded-context	誤解	その他	Bounded Context - 税抜
 software-architecture__ambassador	問い	その他	Ambassador - localhost のプロキシに master の切り替えを任せると、書き込みは何秒止まり、何件消えるか
 blockchain-systems__merkle-tree	結果	その他	Merkle Tree - 35 億件の証明書ログにある 1 件は、32 個のハッシュで示せる
 blockchain-systems__blockchain-basics	他の手	その他	Blockchain Basics - 管理者のいない台帳は、規則を変えると 2 本に割れることがある
+ml__regression-metrics	予想	その他	回帰の評価指標（RMSE / MAE / R²）- 誤差が一番小さい地域で R² が一番低くなる

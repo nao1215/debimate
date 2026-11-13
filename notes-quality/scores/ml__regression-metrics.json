@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/ml/regression-metrics/index.md",
- "overall": 2,
- "product": 2,
- "blob": "4b449b6fd1667049888649e210100af6ee61353f",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 36,
+ "blob": "7148b954ee30026a4d443a1b04cabbb86f12b3b1",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
