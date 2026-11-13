@@ -1,239 +1,208 @@
-"""Generate the figures of the Blockchain Basics note.
+"""Blockchain Basics のノートの図を作る。
 
-concept_figure() draws five participants on a ring, each holding its own copy
-of the same block chain (the newest block in the accent color). Participant C
-rewrote block 2 in its copy, so that block shifts out of line (pale red with a
-red edge, the one failure point) and its link to block 3 turns into a red
-dashed line.
+rules_figure()     lab/trace.json（lab/fork_rules.py の seed 1 の記録）から、規則を変えた 4 通りで
+                   古い規則のノードと新しい規則のノードが持つ列が、ブロックが見つかる度にどう変わるかを
+                   動く WebP にする。時間の軸は 2 組を合わせたハッシュの試行回数（実測）。
+link_figure()      Bitcoin のブロック構造で、トランザクションの書き換えが Merkle root とヘッダのハッシュ値を経て
+                   次のブロックの prev と合わなくなる順を描く。
+validity_figure()  3 つの規則で有効なブロックの範囲を、入れ子の枠で描く。
 
-chain_figure() draws three blocks, each a header (previous hash, Merkle root,
-nonce) over a body of transactions, linked by the previous-hash field. One
-transaction in the first block is rewritten (red), so its summary and header
-hash change and the link to the next block no longer matches.
-
-fork_figure() draws a chain whose tip split into two blocks found at almost
-the same time. The branch that grew longer (more accumulated work) is adopted
-and the other block drops out.
-
-Run: python3 content/notes/blockchain-systems/blockchain-basics/figures.py
-Needs google-chrome (headless, to render the SVG) and Pillow (to write WebP).
+実行: python3 content/notes/blockchain-systems/blockchain-basics/figures.py
+（先に lab で python3 fork_rules.py > output.txt と python3 hash_link.py > hash_link_output.txt を実行する）
 """
 
-import math
-import subprocess
-import tempfile
-from html import escape
+import json
+import re
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 HERE = Path(__file__).resolve().parent
-INK, SUB, FILL, PALE = "#1f1f1f", "#666666", "#f2f2f2", "#eaf1f5"
-ACCENT, RED = "#7aa6c2", "#e15759"
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
-GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
-RED_PALE = "#fbe3e3"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+LAB = HERE / "lab"
+IMAGES = HERE / "images"
+S = 2  # 2 倍で描いて縮める
+JP = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
+INK, SUB, LINE = "#28343b", "#5f6d75", "#9cabb5"
+OLD, NEW, RED = "#a9b4bb", "#2f6f8f", "#c0392b"
+SHARED = "#eef3f6"
 
 
-class Svg:
-    def __init__(self, width, height, title):
-        self.w, self.h = width, height
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs>'
-            + "".join(
-                f'<marker id="arrow-{n}" viewBox="0 0 10 10" refX="9" refY="5" '
-                f'markerWidth="4" markerHeight="4" orient="auto">'
-                f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
-                for n, c in (("sub", SUB), ("red", RED), ("accent", ACCENT)))
-            + '</defs>',
-            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        ]
-
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle"):
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}">{escape(s)}</text>')
-
-    def box(self, x, y, w, h, fill, stroke="none", sw=2.5, dash="", rx=8):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def line(self, x1, y1, x2, y2, color, sw=3, arrow="", dash=""):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
-
-    def raw(self, s):
-        self.parts.append(s)
-
-    def save(self, name):
-        """Render the SVG with headless Chrome at 2x and store it as WebP."""
-        (HERE / "images").mkdir(exist_ok=True)
-        with tempfile.TemporaryDirectory() as tmp:
-            svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
-            svg.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
-            subprocess.run(
-                ["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
-                 "--force-device-scale-factor=2", f"--window-size={self.w},{self.h}",
-                 f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
-            Image.open(png).convert("RGB").save(
-                HERE / "images" / name, "WEBP", quality=90, method=6)
+def font(n, mono=False):
+    return ImageFont.truetype(MONO if mono else JP, int(n * S))
 
 
-def concept_figure():
-    f = Svg(960, 540, "参加者がそれぞれ同じブロックの列を複製して持つ")
-    cx, cy, rx, ry = 480, 272, 300, 190
-    f.raw(f'<ellipse cx="{cx}" cy="{cy}" rx="{rx}" ry="{ry}" fill="none" '
-          f'stroke="#dddddd" stroke-width="3"/>')
-    f.text(cx, cy - 8, "同じ履歴を", 30, SUB)
-    f.text(cx, cy + 32, "各自が複製", 30, SUB)
-    names = "12345"
-    tampered = 2  # participant 3 rewrote block 2 in its own copy
-    size, step, r = 56, 88, 32
-    for i, name in enumerate(names):
-        ang = math.radians(-90 + 72 * i)
-        px, py = cx + rx * math.cos(ang), cy + ry * math.sin(ang)
-        x0 = px - 147
-        f.box(x0 - 8, py - 40, 326, 80, "#ffffff", rx=12)
-        f.raw(f'<circle cx="{x0 + r}" cy="{py}" r="{r}" fill="{FILL}" '
-              f'stroke="{SUB}" stroke-width="2.5"/>')
-        f.text(x0 + r, py + 10, name, 28)
-        bx = x0 + 2 * r + 14
+def canvas(w, h):
+    img = Image.new("RGB", (w * S, h * S), "#ffffff")
+    return img, ImageDraw.Draw(img)
+
+
+def shrink(img):
+    return img.resize((img.width // S, img.height // S), Image.LANCZOS)
+
+
+def text(d, x, y, s, size, color=INK, mono=False, anchor="la"):
+    d.text((x * S, y * S), s, font=font(size, mono), fill=color, anchor=anchor)
+
+
+def rect(d, x, y, w, h, fill, outline=None, width=1.5, r=4):
+    d.rounded_rectangle([x * S, y * S, (x + w) * S, (y + h) * S], radius=r * S, fill=fill,
+                        outline=outline, width=int(width * S))
+
+
+# 1 秒で 4 万回分の試行を進める。コマは 300ms ごと。
+ATTEMPTS_PER_SEC = 40_000
+FRAME_MS = 300
+ROWS = [
+    ("soft-0.7", "上限を厳しくする（ソフトフォーク）・新マイナーが 70%"),
+    ("soft-0.3", "上限を厳しくする（ソフトフォーク）・新マイナーが 30%"),
+    ("hard-0.7", "上限を緩める（ハードフォーク）・新マイナーが 70%"),
+    ("hard-0.3", "上限を緩める（ハードフォーク）・新マイナーが 30%"),
+]
+
+
+def verdicts():
+    """lab/output.txt の 20 回の中央値で、共有する長さが 20 個を超える組を「1 本に戻る」とする。"""
+    out = {}
+    for kind, share, common in re.findall(r"^(soft|hard) (0\.\d)\s+(\d+)", (LAB / "output.txt").read_text(), re.M):
+        out[f"{kind}-{share}"] = int(common) > 20
+    return out
+
+
+def rules_figure():
+    trace = json.loads((LAB / "trace.json").read_text())
+    end = max(trace[k]["events"][-1]["attempt"] for k, _ in ROWS)
+    step = ATTEMPTS_PER_SEC * FRAME_MS // 1000
+    times = list(range(0, end + step, step))
+    W, H = 1000, 700
+    BOX, GAP, X0 = 9, 2, 180
+    one = verdicts()
+    frames = []
+    for t in times:
+        img, d = canvas(W, H)
+        text(d, 24, 16, "規則を変えた後に、旧ノードと新ノードが選ぶ列", 22)
+        text(d, 24, 50, f"ハッシュの試行 {min(t, end) / 10000:5.1f} 万回目"
+             f"（2 組の合計。試行 4 万回を 1 秒で表示）", 15, SUB)
+        # 進み具合の帯
+        rect(d, 24, 78, W - 48, 6, "#e6ebee", r=3)
+        rect(d, 24, 78, (W - 48) * min(t, end) / end, 6, LINE, r=3)
+        rect(d, 560, 52, 14, 14, OLD)
+        text(d, 580, 49, "旧マイナーが作ったブロック", 14, SUB)
+        rect(d, 775, 52, 14, 14, NEW)
+        text(d, 795, 49, "新マイナーが作ったブロック", 14, SUB)
+        for i, (key, title) in enumerate(ROWS):
+            evs = [e for e in trace[key]["events"] if e["attempt"] <= t]
+            y = 106 + i * 148
+            text(d, 24, y, title, 16)
+            if not evs:
+                continue
+            e = evs[-1]
+            common = e["common"]
+            for j, (lane, label) in enumerate((("old", "旧ノード（古い規則）"), ("new", "新ノード（新しい規則）"))):
+                ly = y + 34 + j * 26
+                text(d, 24, ly - 2, label, 14, SUB)
+                chain = e[lane]
+                if common:
+                    rect(d, X0 - 3, ly - 3, common * (BOX + GAP) + 4, BOX + 6, SHARED, r=2)
+                for k, miner in enumerate(chain):
+                    rect(d, X0 + k * (BOX + GAP), ly, BOX, BOX, NEW if miner == "new" else OLD, r=2)
+                text(d, X0 + len(chain) * (BOX + GAP) + 8, ly - 3, f"{len(chain)}", 14, SUB)
+            old_only, new_only = len(e["old"]) - common, len(e["new"]) - common
+            if t >= end and one[key]:
+                # 緩い側のノードは、厳しい側の列が追い越せば乗り換える（同じ長さなら先に届いた方を保つ）
+                strict = "new" if key.startswith("soft") else "old"
+                loose = "old" if strict == "new" else "new"
+                tail = len(e[loose]) - common
+                name = {"old": "旧ノード", "new": "新ノード"}
+                if tail:
+                    note = f"{name[loose]}の末尾 {tail} 個は、{name[strict]}の列が {len(e[loose]) + 1} 個になれば外れる"
+                else:
+                    note = "末尾の数個は、次のブロック次第で入れ替わる"
+                text(d, 24, y + 92, f"共有 {common} 個 → 1 本に戻る。{note}", 15)
+            elif t >= end:
+                text(d, 24, y + 92, f"共有 {common} 個 → 2 本のまま（分かれた後は旧ノード {old_only} 個・新ノード {new_only} 個）", 15, RED)
+            else:
+                text(d, 24, y + 92, f"共有 {common} 個。分かれた後は旧ノード {old_only} 個・新ノード {new_only} 個", 15, SUB)
+        frames.append(shrink(img))
+    durations = [FRAME_MS] * (len(frames) - 1) + [3500]
+    frames[0].save(IMAGES / "blockchain-basics_rules.webp", "WEBP", save_all=True, append_images=frames[1:],
+                   duration=durations, loop=0, lossless=True, quality=100, method=6)
+    print("rules:", len(frames), "frames", sum(durations) / 1000, "s")
+
+
+def link_figure():
+    """Bitcoin のブロック構造で、トランザクション 2 の書き換えが Merkle root、ヘッダのハッシュ値を経て
+    次のブロックの prev との不一致に届く順を描く。ハッシュ値の具体的な値は描かない。"""
+    W, H = 1000, 430
+    img, d = canvas(W, H)
+    text(d, 24, 16, "ブロック 100 のトランザクション 2 を書き換えると", 20)
+    bw, gap, x0, y0 = 270, 60, 24, 64
+    hh, th = 132, 150  # ヘッダとトランザクションの並びの高さ
+    for i in range(3):
+        x = x0 + i * (bw + gap)
+        bad = i == 0
+        text(d, x, y0, f"ブロック {100 + i}", 16)
+        hy = y0 + 30
+        rect(d, x, hy, bw, hh, "#fbeceb" if bad else "#f4f7f9", RED if bad else LINE, width=2)
+        text(d, x + 12, hy + 8, "ヘッダ", 13, SUB)
+        prev_bad = i == 1
+        rect(d, x + 12, hy + 32, bw - 24, 26, "#ffffff", RED if prev_bad else LINE, width=1.5)
+        text(d, x + 22, hy + 45, "prev（直前ヘッダのハッシュ値）", 13, RED if prev_bad else INK, anchor="lm")
+        rect(d, x + 12, hy + 64, bw - 24, 26, "#ffffff", RED if bad else LINE, width=1.5)
+        text(d, x + 22, hy + 77, "Merkle root", 13, RED if bad else INK, mono=False, anchor="lm")
+        rect(d, x + 12, hy + 96, bw - 24, 26, "#ffffff", LINE, width=1.5)
+        text(d, x + 22, hy + 109, "nonce", 13, INK, anchor="lm")
+        ty = hy + hh + 12
+        rect(d, x, ty, bw, th, "#f4f7f9", LINE, width=2)
+        text(d, x + 12, ty + 8, "トランザクションの並び", 13, SUB)
         for k in range(3):
-            x = bx + k * step
-            bad = i == tampered and k == 1
-            dy = 16 if bad else 0
-            if k:
-                broken = i == tampered and k == 2
-                f.line(x - step + size + 2, py, x - 2, py,
-                       RED if broken else ACCENT, sw=4,
-                       dash="5 6" if broken else "")
-            fill = RED_PALE if bad else (ACCENT if k == 2 else PALE)
-            f.box(x, py - size / 2 + dy, size, size, fill,
-                  RED if bad else ACCENT, rx=6)
-        if i == tampered:
-            f.text(px + 20, py + 80, "書き換えた複製だけ食い違う", 26, INK)
-    f.save("blockchain-basics_concept.webp")
+            tbad = bad and k == 1
+            rect(d, x + 12, ty + 32 + k * 36, bw - 24, 28, "#fbeceb" if tbad else "#ffffff",
+                 RED if tbad else LINE, width=2 if tbad else 1.5)
+            label = f"トランザクション {k + 1}" + ("（書き換え）" if tbad else "")
+            text(d, x + 22, ty + 46 + k * 36, label, 13, RED if tbad else INK, anchor="lm")
+        if bad:
+            # 書き換え -> Merkle root の矢印
+            ax, ay0, ay1 = x + bw - 30, ty + 32 + 36, hy + 90
+            d.line([ax * S, ay0 * S, ax * S, (ay1 + 8) * S], fill=RED, width=3 * S)
+            d.polygon([(ax * S, ay1 * S), ((ax - 7) * S, (ay1 + 12) * S), ((ax + 7) * S, (ay1 + 12) * S)], fill=RED)
+        # 次のブロックの prev から前のブロックのヘッダへ
+        if i > 0:
+            px = x
+            py = hy + 45
+            color = RED if prev_bad else LINE
+            d.line([((px - gap + 8) * S), py * S, px * S, py * S], fill=color, width=3 * S)
+            tip = px - gap
+            d.polygon([(tip * S, py * S), ((tip + 12) * S, (py - 7) * S), ((tip + 12) * S, (py + 7) * S)], fill=color)
+            if prev_bad:
+                text(d, px - gap / 2, py - 10, "合わない", 12, RED, anchor="mb")
+    text(d, x0, H - 24, "Merkle root が変わるとヘッダのハッシュ値も変わり、ブロック 101 の prev と合わなくなる", 14, RED)
+    img = shrink(img)
+    img.save(IMAGES / "blockchain-basics_link.webp", "WEBP", quality=90, method=6)
 
 
-def chain_figure():
-    f = Svg(1060, 430, "直前のブロックのハッシュ値で繋がるブロック")
-    bw, gap, x0, top = 290, 80, 15, 60
-    rows = ["前のブロックのハッシュ値", "要約（Merkle root）", "nonce"]
-    for k in range(3):
-        x = x0 + k * (bw + gap)
-        f.text(x + bw / 2, top - 18, f"ブロック {100 + k}", 24, INK)
-        # header
-        f.box(x, top, bw, 150, PALE, ACCENT, rx=8)
-        f.text(x + 14, top + 30, "ブロックヘッダ", 18, SUB, anchor="start")
-        for j, r in enumerate(rows):
-            bad = k == 0 and j == 1
-            y = top + 44 + j * 34
-            f.box(x + 12, y, bw - 58, 28, RED_PALE if bad else "#ffffff",
-                  RED if bad else "#c3d3dd", sw=2, rx=5)
-            f.text(x + 20, y + 20, r, 16, INK, anchor="start")
-        # body
-        f.box(x, top + 166, bw, 150, FILL, "#cccccc", rx=8)
-        f.text(x + 14, top + 196, "トランザクションの並び", 18, SUB, anchor="start")
-        for j in range(3):
-            bad = k == 0 and j == 1
-            y = top + 210 + j * 32
-            f.box(x + 12, y, bw - 58, 26, RED_PALE if bad else "#ffffff",
-                  RED if bad else "#cccccc", sw=2, rx=5)
-            f.text(x + 20, y + 19, "トランザクション " + str(j + 1) + ("（書き換え）" if bad else ""),
-                   16, INK, anchor="start")
-        # Merkle root arrow: from the body up along the right margin to row 2
-        c = RED if k == 0 else SUB
-        mx = x + bw - 24
-        f.raw(f'<polyline points="{mx},{top + 166} {mx},{top + 92} {x + bw - 42},{top + 92}" '
-              f'fill="none" stroke="{c}" stroke-width="2.5" '
-              f'marker-end="url(#arrow-{"red" if k == 0 else "sub"})"/>')
-        if k:
-            # previous-hash link: this block's row 1 points at the previous header
-            px = x - gap
-            broken = k == 1
-            col = RED if broken else ACCENT
-            f.line(x + 10, top + 58, px + 4, top + 58, col, sw=3.5,
-                   arrow="red" if broken else "accent", dash="6 6" if broken else "")
-            f.text(x - gap / 2, top + 22, "ヘッダの", 14, col)
-            f.text(x - gap / 2, top + 40, "ハッシュ値", 14, col)
-            if broken:
-                f.text(x - gap / 2, top + 86, "合わない", 15, RED)
-    f.text(530, 410, "トランザクションを書き換えると要約とヘッダのハッシュ値が変わり、"
-           "ブロック 101 が持つ値と合わなくなる", 18, RED)
-    f.save("blockchain-basics_chain.webp")
-
-
-def fork_figure():
-    f = Svg(960, 310, "末尾が分岐した時に採用される列")
-    size, step, y0 = 70, 120, 130
-    def blk(x, y, label, fill=PALE, stroke=ACCENT, dash=""):
-        f.box(x, y, size, size, fill, stroke, dash=dash, rx=8)
-        f.text(x + size / 2, y + size / 2 + 9, label, 24)
-    xs = [40 + i * step for i in range(4)]
-    for i, x in enumerate(xs[:3]):
-        blk(x, y0, str(i + 1))
-        if i:
-            f.line(x - step + size + 2, y0 + size / 2, x - 4, y0 + size / 2, ACCENT, 3.5)
-    # branch
-    up, dn = 40, 220
-    bx = xs[3]
-    f.line(xs[2] + size + 2, y0 + size / 2, bx - 4, up + size / 2, ACCENT, 3.5)
-    f.line(xs[2] + size + 2, y0 + size / 2, bx - 4, dn + size / 2, "#bbbbbb", 3.5, dash="6 6")
-    blk(bx, up, "4", ACCENT)
-    blk(bx + step, up, "5", ACCENT)
-    f.line(bx + size + 2, up + size / 2, bx + step - 4, up + size / 2, ACCENT, 3.5)
-    blk(bx, dn, "4'", "#f7f7f7", "#bbbbbb", dash="6 5")
-    f.text(bx + 2 * step + 10, up + 32, "計算量が大きい列を採用する", 22, INK, anchor="start")
-    f.text(bx + 2 * step + 10, up + 62, "（普通は長く伸びた列）", 20, SUB, anchor="start")
-    f.text(bx + size + 24, dn + 32, "外れたブロック", 22, SUB, anchor="start")
-    f.text(bx + size + 24, dn + 62, "ほぼ同時に見付かった別の候補", 20, SUB, anchor="start")
-    f.text(xs[1] + size / 2, y0 - 30, "全員が持つ共通の列", 20, SUB)
-    f.save("blockchain-basics_fork.webp")
-
-
-def split_figure():
-    f = Svg(960, 300, "規則を変えた参加者と変えなかった参加者で履歴が分かれる")
-    size, step, y0 = 64, 110, 118
-    def blk(x, y, label, fill=PALE, stroke=ACCENT):
-        f.box(x, y, size, size, fill, stroke, rx=8)
-        f.text(x + size / 2, y + size / 2 + 9, label, 22)
-    xs = [40 + i * step for i in range(3)]
-    for i, x in enumerate(xs):
-        blk(x, y0, str(i + 1))
-        if i:
-            f.line(x - step + size + 2, y0 + size / 2, x - 4, y0 + size / 2, ACCENT, 3.5)
-    up, dn = 30, 206
-    bx = xs[2] + step
-    f.line(xs[2] + size + 2, y0 + size / 2, bx - 4, up + size / 2, ACCENT, 3.5)
-    f.line(xs[2] + size + 2, y0 + size / 2, bx - 4, dn + size / 2, OCHRE, 3.5)
-    for k in range(3):
-        x = bx + k * step
-        blk(x, up, "", ACCENT)
-        blk(x, dn, "", OCHRE_PALE, OCHRE)
-        if k:
-            f.line(x - step + size + 2, up + size / 2, x - 4, up + size / 2, ACCENT, 3.5)
-            f.line(x - step + size + 2, dn + size / 2, x - 4, dn + size / 2, OCHRE, 3.5)
-    tx = bx + 3 * step - 20
-    f.text(tx, up + 28, "規則を変えたソフトウェア", 21, INK, anchor="start")
-    f.text(tx, up + 56, "を動かす参加者の列", 21, INK, anchor="start")
-    f.text(tx, dn + 28, "元の規則のソフトウェア", 21, INK, anchor="start")
-    f.text(tx, dn + 56, "を動かす参加者の列", 21, INK, anchor="start")
-    f.text(xs[1] + size / 2, y0 - 22, "切り替える前は共通の列", 19, SUB)
-    f.text(bx + step + size / 2, y0 + size / 2 + 8, "規則が違うので合流しない", 19, SUB)
-    f.save("blockchain-basics_split.webp")
+def validity_figure():
+    W, H = 1000, 380
+    img, d = canvas(W, H)
+    text(d, 24, 16, "ブロックの大きさの上限と、有効と判断するノード", 20)
+    rect(d, 24, 60, 952, 300, "#f4f7f9", LINE, width=2, r=10)
+    text(d, 40, 72, "緩めた規則で有効（2000 バイトまで）", 15)
+    rect(d, 60, 110, 600, 230, "#eaf1f5", LINE, width=2, r=10)
+    text(d, 76, 122, "古い規則で有効（1000 バイトまで）", 15)
+    rect(d, 96, 160, 300, 160, "#dfeaf0", NEW, width=2, r=10)
+    text(d, 112, 172, "厳しくした規則で有効", 15)
+    text(d, 112, 196, "（500 バイトまで）", 15)
+    for x, y, size, who in ((112, 232, "400", "全てのノードが受け取る"),
+                            (430, 232, "800", "厳しくした規則のノードだけが拒む"),
+                            (700, 232, "1500", "緩めた規則のノードしか受け取らない")):
+        rect(d, x, y, 76, 36, "#ffffff", INK, width=1.5, r=4)
+        text(d, x + 38, y + 18, f"{size} B", 14, INK, mono=True, anchor="mm")
+        text(d, x, y + 46, who, 13, SUB)
+    img = shrink(img)
+    img.save(IMAGES / "blockchain-basics_validity.webp", "WEBP", quality=90, method=6)
 
 
 if __name__ == "__main__":
-    split_figure()
-    concept_figure()
-    chain_figure()
-    fork_figure()
+    rules_figure()
+    link_figure()
+    validity_figure()

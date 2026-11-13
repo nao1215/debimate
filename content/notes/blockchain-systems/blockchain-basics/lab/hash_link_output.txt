@@ -1,0 +1,7 @@
+block 0: prev=00000000 hash=79a81103
+block 1: prev=79a81103 hash=1bca3eed
+block 2: prev=1bca3eed hash=9046d9cb
+rewrite block 1: bob -> carol 200
+block 1 hash now: 78e0f675
+link 0 -> 1: ok
+link 1 -> 2: mismatch
