@@ -1,220 +1,318 @@
 ---
-title: "Merkle Tree - ハッシュ木で包含を証明する"
+title: "Merkle Tree - 35 億件の証明書ログにある 1 件は、32 個のハッシュで示せる"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
 tags: ["blockchain-systems", "cryptography"]
 weight: 8
+wrapTables: true
 topics: ["Data Structure"]
 ---
 
-Merkle Tree（マークルツリー、ハッシュ木）は、データの並びを 2 つずつ[ハッシュ関数](../hash-function/)で畳み込み、最後に 1 つの値にまとめる木構造です。まとまった 1 つの値をルートハッシュと呼びます。名前は、署名方式の論文「[A Digital Signature Based on a Conventional Encryption Function](https://link.springer.com/chapter/10.1007/3-540-48184-2_32)」（1987 年）でこの木を示した Ralph Merkle から来ています。
+Merkle Tree（マークルツリー）は、多数のデータをそれぞれ[ハッシュ関数](../hash-function/)に通し、その値を 2 つずつ組にしてハッシュし直す操作を繰り返して、最後に 1 つの値へまとめる木です。最後に残る 1 つをルートハッシュと呼びます。名前は、この木を使った署名方式を 1979 年に[特許](https://patents.google.com/patent/US4309569A/en)として出願し、1987 年の論文「[A Digital Signature Based on a Conventional Encryption Function](https://link.springer.com/chapter/10.1007/3-540-48184-2_32)」で発表した Ralph Merkle に由来します。
 
-全件を持つ側は、データ 1 件と少数のハッシュだけを渡して、その 1 件が並びに確かに含まれていたことを相手に検証させられます。
+{{< figure src="images/merkle-tree_cover.webp" alt="横軸はログの件数、縦軸は送るデータのバイト数で、どちらも対数目盛り。葉のハッシュを全件並べた灰色の直線は件数に比例して伸び、35 億件で約 1,120 億バイトに達する。手元の木で測った包含証明と一貫性証明は 10 件から 100 万件まで数百バイトでほぼ横ばい。公開ログ Argon 2026h2 の 35.0 億件での包含証明 1,024 バイトが赤い点で、記録 1 件の大きさ 819 バイトの破線のすぐ上にある。Wyvern 2027h1 の 5.3 億件での一貫性証明 832 バイトが赤い四角で、破線とほぼ同じ高さにある" caption="ログの件数と、証明に必要なデータの大きさ（手元の木と、公開の CT ログで測った値）" align="center" >}}
 
-この証明が必要になるのは、データの集まり全体を持てない相手に、一部だけを渡して検証させたい場面です。代表例は Bitcoin で、数千件のトランザクションをまとめたブロックを丸ごとは持たない利用者が、少数のハッシュだけで自分宛のトランザクション 1 件がブロックに入っていることを確認します。この方式は [Bitcoin のホワイトペーパー](https://bitcoin.org/bitcoin.pdf)に示されています。
+図の赤い点は、TLS で使う[証明書](/notes/security/pki/)の発行を記録する公開ログ Argon 2026h2 から、1 件の記録と証明を取り寄せて手元で検証した結果です。このログには 35 億件の記録があり、葉のハッシュを全件並べると 112 GB になります。位置 3,000,000,000 の記録が入っていることは、32 個のハッシュ、1,024 バイトで示せました。記録そのもの（819 バイト）より少し大きい程度です。
 
-渡すハッシュの並びを包含証明（inclusion proof）と呼びます。件数が増えても、包含証明に入るハッシュの個数はゆっくりとしか増えません。
-
-{{< figure src="images/merkle-tree_proof_size.svg" alt="データの件数と、包含証明に入るハッシュの個数の関係。件数 4 でハッシュ 2 個、8 で 3 個、1,024 で 10 個、100 万で 20 個にとどまる" caption="データの件数と、包含証明に入るハッシュの個数" align="center" >}}
-
-上記の図の横軸はデータの件数（number of data items）で、100 万件まで伸びていますが、縦軸の証明に入るハッシュの個数（hashes in the inclusion proof）は 20 個で止まります。
+1 件が入っていることを示すために渡すハッシュの並びが、包含証明（inclusion proof）です。緑の線と赤い四角は、過去の記録を書き換えていないことを示す一貫性証明（consistency proof）で、後の節で扱います。
 
 <br>
 
-本記事では、A・B・C・D という 4 件のデータだけを使って、ルートハッシュの決まり方と包含証明を説明します。取り上げる疑問は以下です。
+Merkle Tree には、使っていると知らずに出会うことが多いです。[Bitcoin のブロックヘッダ](../bitcoin-block/)にある [merkle root](../bitcoin-merkle-tree/)、Ethereum の state root、[Rollup](../rollup/) の出金で提出する Merkle proof は、どれもこの木のルートか、ルートに対する証明です。HTTPS の証明書も、発行するとその記録が上記のようなログに入ります。
 
-- ルートハッシュは、どのように決まるのか。
-- 1 件の包含は、なぜ少数のハッシュで確認できるのか。
-- 100 万件の木では、証明はどれだけ小さくなるのか。
-- この木では、何を示せないのか。
-- 実際には、どこで使われているのか。
+<br>
 
-ハッシュ関数は、異なる入力から同じハッシュ値を意図的に作ることが現実的にできない、安全なものを使う前提です。Bitcoin の詳細は扱わず、末尾の「実際の利用例」から [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) に繋ぎます。
+本記事では、Certificate Transparency の公開ログと手元の実験から、次の疑問を順に扱います。
 
----
-
-### 木の作り方とルートハッシュ
-
-4 件のデータ A・B・C・D からルートハッシュがどう決まるかを以下に示します。図の矢印は、下の値から上の値を計算する向きです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart BT
-    A["データ A"] --> HA["HA"]
-    B["データ B"] --> HB["HB"]
-    C["データ C"] --> HC["HC"]
-    D["データ D"] --> HD["HD"]
-    HA --> HAB["HAB"]
-    HB --> HAB
-    HC --> HCD["HCD"]
-    HD --> HCD
-    HAB --> R["ルートハッシュ"]
-    HCD --> R
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-作り方は 3 手順です。各データをハッシュして HA から HD を作る。隣同士を左から組にし、HA と HB をこの順にバイト列として繋げてハッシュした値 HAB を 1 段上に置く（HC と HD から作る HCD も同様）。値が 1 つになるまで同じ操作を繰り返し、最後に残った値がルートハッシュです。
-
-上記の図の最下段にある HA から HD を葉、HAB と HCD を内部ノードと呼びます。木の同じ高さに並ぶ値のまとまりを段、葉からルートハッシュまでに上る回数を木の高さと呼びます。葉が奇数の場合にどう組むかは決め方が複数あり、[Merkle Tree Design](../merkle-tree-design/) で扱います。
-
-ルートハッシュは、4 件の内容と並び順の両方を代表します。例えば、C を 1 バイトでも書き換えると、HC が変わり、HCD が変わり、ルートハッシュも変わります。並びを B・A・C・D に入れ替えた場合も、連結する順序が変わるため別のルートハッシュになります。
+- ルートハッシュは、何を表す値なのか。
+- 35 億件に 1 件が入っていることは、なぜ 32 個のハッシュで示せるのか。
+- 過去の記録を書き換えていないことは、どう示すのか。
+- 1 ビットの誤りで、なぜ証明書のログが使えなくなったのか。
+- ハッシュの一覧や 1 件ずつの署名と比べて、何が違うのか。
+- この木で確認できないことは何か。
 
 ---
 
-### 包含証明
+### ルートハッシュと 1 ビットの変化
 
-登場人物は 2 者です。全件を持つ配布側と、C を 1 件だけ持つ検証者です。検証者は、正しいルートハッシュを信頼できる経路で入手済みとします（証明を送ってくる相手からルートハッシュも受け取ると、両方を偽造できるため検証になりません）。確認したいのは、手元の C が、そのルートハッシュの表す並びに確かに含まれていたことです。以下が 2 者のやり取りです。
+木の一番下に並ぶデータのハッシュを葉、2 つの子のハッシュを連結してハッシュした値を内部ノードと呼びます。本記事の実験では、証明書を記録するログの仕様 [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html#section-2.1)（Certificate Transparency Version 2.0）の規則で木を作ります。葉は `SHA-256(0x00 || データ)`、内部ノードは `SHA-256(0x01 || 左 || 右)` です。`||` はバイト列の連結を表します。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant V as 検証者（C だけ持つ）
-    participant P as 配布側（全件を持つ）
-    Note over V: ルートハッシュは信頼できる<br/>経路で取得済み
-    V->>P: C は含まれているか
-    P-->>V: HD と HAB
-    V->>V: C からルートハッシュを再計算
-    V->>V: 手元のルートハッシュと照合
-```
-
-上記の図で配布側が渡すのは、HD と HAB の 2 個だけです。HD と HAB を並べたものが、この例の包含証明です。証明に入るのは、C からルートハッシュまで上る各回で連結相手になるハッシュ 1 個ずつです。4 件なら HC から HCD、HCD からルートハッシュと 2 回上るので、証明に入るハッシュの個数は木の高さと同じ 2 個です。以下が検証者の計算です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart BT
-    HC["HC<br/>検証者が C から計算"] --> HCD["HCD<br/>検証者が計算"]
-    HD["HD<br/>証明として受け取る"] --> HCD
-    HAB["HAB<br/>証明として受け取る"] --> R2["再計算した<br/>ルートハッシュ"]
-    HCD --> R2
-    R2 -.->|"一致するか照合"| R1["手元の<br/>ルートハッシュ"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-検証者の手順は 3 つです。手元の C をハッシュして HC を作る。HC の右に受け取った HD を繋げてハッシュし、HCD を得る。HCD の左に受け取った HAB を繋げてハッシュし、出てきた値を手元のルートハッシュと照合する。一致すれば、C はルートハッシュが代表する 4 件の中に確かに入っていると分かります。
-
-連結する順序で結果が変わるため、証明の各ハッシュには「左右どちら側に置くか」の情報も添えられています。
-
-A・B・D の元データは 1 件も受け取っていません。A と B は HAB の中に畳み込まれています。Merkle Tree では、元データを受け取らずに、ハッシュ値だけで上の段を計算できます。
-
-偽造は、安全なハッシュ関数を使う限り現実的にできません。攻撃者は C の代わりの偽データも、証明側のハッシュも自由に選べます。どう選んでも、再計算した値を手元のルートハッシュに一致させるには、同じ値に辿り着く別の入力を見つける必要があります。ただし、この保証は木の構築規則の決め方にも依存します。「欠点」の 4 番目と [Merkle Tree Design](../merkle-tree-design/) で扱います。
-
----
-
-### 葉の件数と証明のサイズ
-
-証明に入るハッシュの個数は、木の高さと同じでした。葉が 4 件から 8 件になると高さが 1 つ増え、証明のハッシュも 3 個に増えます。冒頭の図の階段 1 段分がこの増加です。葉が n 件の時の木の高さは `ceil(log2 n)` で、証明に入るハッシュの個数は多くてもこの値です。冒頭の図は、この最大値を描いています。
-
-全ての葉の証明がちょうど `ceil(log2 n)` 個になるのは、n が 4、8、1,024 のように 2 の何乗かの数の時と、段の最後の値を複製して組む Bitcoin の規則の時です。余った値を複製しない Certificate Transparency（[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)）の規則では、浅い位置に付いた葉の証明はこれより短くなります。
-
-全件を渡す方式との差を確認するため、`tx-0` から `tx-1048575` までの文字列を葉にした [SHA-256](/notes/security/sha-256/)（[FIPS 180-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)）の木を作り、`tx-777777` の包含証明を取り出しました。末尾に 1 文字足した偽のデータでも、同じ証明を試しています。なお、葉は 2 の 20 乗件なので、どの段でも値の数は偶数です。以下は、Python 3.14 の [hashlib](https://docs.python.org/3/library/hashlib.html) だけを使ったコードです。
+葉の数が 2 の累乗でない時は、左側に「件数未満で最大となる 2 の累乗」個の葉を置き、残りを右側に置きます。7 件なら左に 4 件、右に 3 件です。先頭の 1 バイトで葉と内部ノードを区別する理由と、奇数個の葉を複製する Bitcoin と違う点は [Merkle Tree Design](../merkle-tree-design/) で扱います。
 
 ```python
 import hashlib
 
 
-def h(data: bytes) -> bytes:
-    return hashlib.sha256(data).digest()
+def h(b: bytes) -> bytes:
+    return hashlib.sha256(b).digest()
 
 
-def build_levels(leaves):
-    """葉のハッシュの段から、ルートハッシュの段までを全て返す。"""
-    levels = [[h(x) for x in leaves]]
-    while len(levels[-1]) > 1:
-        cur = levels[-1]
-        levels.append([h(cur[i] + cur[i + 1]) for i in range(0, len(cur), 2)])
-    return levels
+def leaf_hash(data: bytes) -> bytes:
+    return h(b"\x00" + data)
 
 
-def make_proof(levels, index):
-    """各段で連結相手になるハッシュと、それが左右どちらかを集める。"""
-    proof = []
-    for level in levels[:-1]:
-        sibling = index ^ 1
-        proof.append((level[sibling], "left" if sibling < index else "right"))
-        index //= 2
-    return proof
+def node_hash(left: bytes, right: bytes) -> bytes:
+    return h(b"\x01" + left + right)
 
 
-def verify(data, proof, root):
-    value = h(data)
-    for sibling, side in proof:
-        value = h(sibling + value) if side == "left" else h(value + sibling)
-    return value == root
+def split(n: int) -> int:
+    """n 未満で最大の 2 の累乗。"""
+    k = 1
+    while k * 2 < n:
+        k *= 2
+    return k
 
 
-n = 2**20
-leaves = [f"tx-{i}".encode() for i in range(n)]
-levels = build_levels(leaves)
-root = levels[-1][0]
-proof = make_proof(levels, 777777)
-
-print(f"leaves={n:,} leaf-hashes={n * 32:,} bytes")
-print(f"proof={len(proof)} hashes ({len(proof) * 32} bytes)")
-print("verify tx-777777:", verify(b"tx-777777", proof, root))
-print("verify tx-777777x:", verify(b"tx-777777x", proof, root))
+def root(leaves: list[bytes]) -> bytes:
+    """葉のハッシュの並びからルートハッシュを計算する。"""
+    n = len(leaves)
+    if n == 0:
+        return h(b"")
+    if n == 1:
+        return leaves[0]
+    k = split(n)
+    return node_hash(root(leaves[:k]), root(leaves[k:]))
 ```
 
-`make_proof` の `index ^ 1` は、各段で組になる相手の位置です。`verify` は、包含証明の節で検証者が行った 3 手順を 20 段分繰り返します。実行結果は以下です。
+ルートハッシュは、全ての葉から計算した値です。どれか 1 件の記録が 1 ビットでも変わると、その葉のハッシュが変わり、親、その親と順に変わって、ルートハッシュも変わります。
+
+{{< figure src="images/merkle-tree_path.webp" alt="記録 0 から 6 の 7 件の木。記録 2 を 1 ビット変えると、葉 2、内部ノード 2–3、0–3、ルート 0–6 の 4 個が赤で値が変わる。その経路の兄弟にあたる葉 3、内部ノード 0–1、4–6 の 3 個が黄土色で包含証明に入る。残りの葉 0・1・4・5・6 と内部ノード 4–5 は灰色で、値は変わらず送らない" caption="7 件の木で記録 2 を変えた時に変わるハッシュと、包含証明に入るハッシュ" align="center" >}}
+
+変わるのは、変えた葉からルートまでの経路にあるハッシュだけです。その数は、葉とルートを含めて、7 件の木で記録 2 を変えるなら 4 個、100 万件の木でも多くて 21 個です。証明に入る兄弟は、これより 1 個少なくなります。一方で、ルートハッシュそのものは別の値に大きく変わります。後で Yeti 2022 の再現に使う 11,000 件の木で葉を 1 ビット反転させて測ると、正しいルートとの差は 256 ビットのうち 123 ビットでした。1 ビットの違いが出力全体に広がるのは、[SHA-256](/notes/security/sha-256/) が入力を何度もかき混ぜて出力を作るからです。
+
+ルートハッシュが表すのは、「この件数の、この並びのデータ」です。1 件を足しても、2 件の順番を入れ替えても、別の値になります。そのため、記録を 1 件足したり変えたりするたびに経路を計算し直し、新しいルートを配り直す必要があります。
+
+---
+
+### 包含証明
+
+ルートハッシュだけを持っている人に、ある記録が木に入っていることを示すには、記録のハッシュから始めてルートまで計算し直せれば十分です。そのために必要なのは、上の図で黄土色にした経路の兄弟だけです。兄弟のハッシュを葉に近い順に並べたものが、冒頭で触れた包含証明です。
+
+検証する側は、記録から葉のハッシュを計算し、兄弟と順に連結してハッシュし、最後に得た値がルートハッシュと一致するかを見ます。兄弟を左に置くか右に置くかは、記録の位置（何番目か）と木の件数から決まります。上の図で記録 2 を検証するなら、葉 3 を右、内部ノード 0–1 を左、4–6 を右に置いて連結します。コードでは `fn` が記録の位置、`sn` が末尾にある記録の位置を持ち、1 段上がるたびに 2 で割って、その偶奇で向きを決めます。以下は、RFC 9162 の 2.1.3.2 節の手順をそのまま書いた検証です。
+
+```python
+def verify_inclusion(index, size, leaf, proof, expected_root) -> bool:
+    """RFC 9162 2.1.3.2 の手順。"""
+    if index >= size:
+        return False
+    fn, sn, r = index, size - 1, leaf
+    for p in proof:
+        if sn == 0:
+            return False
+        if fn & 1 or fn == sn:
+            r = node_hash(p, r)      # 兄弟が左
+            while not fn & 1 and fn != 0:   # 右端で兄弟の無い段を飛ばす
+                fn >>= 1
+                sn >>= 1
+        else:
+            r = node_hash(r, p)      # 兄弟が右
+        fn >>= 1
+        sn >>= 1
+    return sn == 0 and r == expected_root
+```
+
+木の段数は、件数を 2 で割り続けて 1 になるまでの回数で、件数が 2 倍になるごとに 1 段増えます。証明に入るハッシュの個数は、葉からルートまでの段数と同じです。手元で件数を 10 倍ずつ増やして木を作り、件数の 60% の位置にある記録の証明を数えました。先頭や末尾のような端ではない位置の例として選びました。
+
+| 件数 | 包含証明 | 葉のハッシュを全件 | 手元での検証 |
+| ---: | ---: | ---: | ---: |
+| 1,000 | 10 個（320 バイト） | 32,000 バイト | 15 µs |
+| 100,000 | 17 個（544 バイト） | 3,200,000 バイト | 22 µs |
+| 1,000,000 | 20 個（640 バイト） | 32,000,000 バイト | 43 µs |
+
+件数が 1,000 倍になっても、証明は 10 個増えただけでした。件数を n とすると、証明の個数は多くても `ceil(log2 n)` 個で、件数が 2 の累乗でない RFC 9162 の木では、浅い位置にある葉の証明はこれより短くなります。各段で末尾の値を複製して組む Bitcoin の規則では、どの葉の証明もちょうど `ceil(log2 n)` 個です。
+
+検証は数十マイクロ秒で終わります。一方で、ルートを作る側は全ての葉をハッシュする必要があり、100 万件で 1.1 秒かかりました。計測の全体は [proof_size.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/merkle-tree/lab/proof_size.py) にあり、Python の標準ライブラリ [hashlib](https://docs.python.org/3/library/hashlib.html) が計算する SHA-256（[FIPS 180-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)）だけを使います。
+
+偽の記録で検証を通すには、同じルートに辿り着く別の入力を見つける必要があり、SHA-256 では現実的にできません。
+
+証明を作る側も、全ての記録を持ち続ける必要はありません。古い記録を消しても、その部分木のハッシュを残しておけば、残った記録について証明を作れます。[Bitcoin のホワイトペーパー](https://bitcoin.org/bitcoin.pdf)は、この性質で古いトランザクションを消して保存量を減らす方法と、[Proof of Work](../proof-of-work/) を自分で検証したブロックヘッダだけを持つ利用者が、そのヘッダのルートと包含証明で支払いを確認する方法を示しています。
+
+<br>
+
+#### 公開ログでの検証
+
+次に、実際に運用されているログで同じ検証を行います。Certificate Transparency（CT）は、認証局が発行した証明書を誰でも読める追記だけのログに残す仕組みです。[Chrome](https://googlechrome.github.io/CertificateTransparency/ct_policy.html) などのブラウザは、公開の証明書にこのログへの登録を求めています。ログは全ての記録を Merkle Tree の葉にし、その時点の件数とルートハッシュに署名して公開します。この署名した値を STH（Signed Tree Head）と呼びます。
+
+ログの API は [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-4) で決まっています。木の作り方は RFC 9162 と同じなので、上記の検証をそのまま使えます。2026 年 11 月 13 日に、Argon 2026h2 の STH、位置 3,000,000,000 の記録、その包含証明を 1 回ずつ取得してファイルに保存しました。検証はその保存したファイルだけで行います。
+
+```python
+import base64, json
+from merkle import leaf_hash, verify_inclusion
+
+load = lambda name: json.load(open(f"ct/{name}.json"))
+b64 = base64.b64decode
+
+sth = load("sth1")                       # get-sth の応答
+size, signed_root = sth["tree_size"], b64(sth["sha256_root_hash"])
+entry, proof = load("entry"), load("inclusion")   # get-entries の 1 件に位置を足したもの、get-proof-by-hash の応答
+data = b64(entry["leaf_input"])
+path = [b64(p) for p in proof["audit_path"]]
+
+print(verify_inclusion(entry["index"], size, leaf_hash(data), path, signed_root))
+
+bad = bytearray(data)
+bad[len(bad) // 2] ^= 0x01               # 記録の 1 ビットを反転する
+print(verify_inclusion(entry["index"], size, leaf_hash(bytes(bad)), path, signed_root))
+print(verify_inclusion(entry["index"] + 1, size, leaf_hash(data), path, signed_root))
+```
+
+以下は、[ct_verify.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/merkle-tree/lab/ct_verify.py) が出力した行からの抜粋です。
 
 ```text
-leaves=1,048,576 leaf-hashes=33,554,432 bytes
-proof=20 hashes (640 bytes)
-verify tx-777777: True
-verify tx-777777x: False
+ログの件数        : 3,501,950,757
+記録の位置        : 3,000,000,000
+記録の大きさ      : 819 バイト
+包含証明          : 32 個 = 1,024 バイト
+葉のハッシュを全件: 112.1 GB
+検証              : True
+1 ビット反転       : False
+位置を 1 つずらす  : False
 ```
 
-1 文字違うデータは、同じ証明を使っても手元のルートハッシュに辿り着きません。証明の 640 バイトは、葉のハッシュを並べただけの 32 MiB の約 5 万分の 1 で、この差が冒頭の「集まり全体を持てない相手に検証させる」使い方を支えます。
+35 億件は 2 の 31 乗と 32 乗の間なので、木は 32 段で、証明も 32 個です。記録を 1 ビット変えると検証は失敗します。1 つ隣の位置にある記録の証明として同じ証明を出しても、失敗します。この規則では兄弟を置く向きが位置から決まるので、証明は「この記録がこの位置にある」ことまで示します。
+
+ただし、この検証が意味を持つのは、比べたルートハッシュがログの署名した値だと信じられる時だけです。今回はログに直接問い合わせた STH を使い、STH の署名は検証していません。ルートが正しいことは、Merkle Tree の外にある署名で守る必要があります。
 
 ---
 
-### 利点
+### 一貫性証明
 
-- ルートハッシュ 1 つを持っていれば、任意の 1 件の包含を確認できる
-- 証明のサイズが件数の対数に収まる
-- 1 件でも書き換わると上の段の値とルートハッシュが変わり、改竄を検出できる
-- 元データを削除しても、その枝をまとめたハッシュを残せば、残りの葉の包含証明を作り続けられる
+包含証明で分かるのは、ある時点のルートにその記録が入っていることだけです。ログを運用する側が、ある日の STH を公開した後に過去の記録を消したり書き換えたりして、新しいルートで STH を出し直しても、包含証明だけでは気付けません。
 
-この性質を使うと、古いデータを削除して保存量を減らせます。A と B を削除した場合の木は、以下の通りです。
+そこで CT のログは、前の STH が表す木が、後の STH が表す木の先頭にそのまま入っていることも証明します。これが、冒頭の図で触れた一貫性証明です。以下は、6 件の時点と 8 件の時点で出した STH を結ぶ一貫性証明です。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart BT
-    HAB["HAB だけ保存<br/>（A・B は削除済み）"] --> R["ルートハッシュ"]
-    HC["HC"] --> HCD["HCD"]
-    HD["HD"] --> HCD
-    HCD --> R
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+{{< figure src="images/merkle-tree_consistency.webp" alt="左は 6 件の木で、ルート 0–5 の下に部分木 0–3 と 4–5 がある。右は 8 件の木で、ルート 0–7 の下に部分木 0–3 と 4–7、その下に 4–5 と 6–7 がある。部分木 0–3 と 4–5 は左右とも緑で前の木と同じ、6–7 は青で後から足した部分。この 3 個が黄土色の破線で囲まれ、一貫性証明に入る" caption="6 件と 8 件で出した STH の間で、一貫性証明に入る 3 個のハッシュ" align="center" >}}
+
+ログは記録を後ろに足すだけなので、前の木にあった部分木（緑）は、後の木でも同じ値で残ります。証明を受け取った側は、緑の 2 個から前のルートを計算し、緑の 2 個と青の 1 個から後のルートを計算します。両方が 2 つの STH と一致すれば、前の木は後の木で先頭にそのまま残っています。前の 6 件のどれか 1 件でも書き換わっていれば、前のルートと一致しません。
+
+証明の大きさは、包含証明と同じく件数の対数に比例します。表紙の図にある緑の線が、手元の木で測った一貫性証明です。公開ログでも検証しました。Argon 2026h2 は 2026 年下半期に期限が切れる証明書のログで、取得した時点で件数が増えていませんでした。11 月に発行される証明書の多くは期限が 2027 年以降になり、後のログに入るためと考えていますが、2 時間で 1 件も増えない理由までは調べていません。そこで、数秒ごとに件数が増えていた DigiCert の Wyvern 2027h1 から 10 分の間をおいて 2 つの STH を取り、その間の一貫性証明を検証しました。
+
+```text
+Wyvern 2027h1     : 526,564,726 件 → 526,677,946 件（10 分後、113,220 件増加）
+一貫性証明        : 26 個 = 832 バイト
+検証              : True
+前のルートを 1 ビット反転: False
 ```
 
----
-
-### 欠点
-
-Merkle Tree が小さく保てるのは包含の証明だけで、それ以外の面では次の制約が残ります。
-
-- 対数サイズの証明では、含まれていないことを示せない
-- ルートハッシュが正しいかどうかは、別の仕組みで確認する必要がある
-- 葉を追加・変更するたびにルートハッシュまでの各段を計算し直し、変わったルートハッシュを配り直す必要がある
-- 奇数の葉の扱いや、葉と内部ノードの区別をどう決めるかで、保証の内容が変わる
-
-この木で不在を示せないのは、データ E がもしあるならどの位置にあるはずかを決める手掛かりが無いからです。E がどこにも無いことを示すには全ての葉を確認するしかなく、少数のハッシュで済ませることはできません。値の大小順などで位置が決まるように葉を並べる対策と、4 番目に挙げた構築規則の決め方は [Merkle Tree Design](../merkle-tree-design/) で扱います。
+10 分で 11 万件増えたログについて、26 個のハッシュで、それより前の 5 億 2,656 万件が 1 件も書き換わっていないことを確認できました。検証の手順は包含証明より少し長いので、[merkle.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/merkle-tree/lab/merkle.py) の `verify_consistency` に RFC 9162 の 2.1.4.2 節のまま書いています。
 
 ---
 
-### 適さないケース
+### Yeti 2022 の 1 ビット
 
-- 含まれていないことの証明が必要な用途
-- 葉の更新のたびに、新しいルートハッシュを信頼できる形で配り直す必要がある構成
-- 検証する側がどのみち全件を保持している構成
-- 葉が数件しかない構成。証明のサイズが全件を渡す場合とほとんど変わらない
+一貫性証明は、ログが過去を書き換えていないことを示します。裏返すと、ログは一度署名した STH と矛盾する木を後から出せません。この性質で、実際に 1 つのログが運用を止めました。
+
+2021 年 6 月 30 日、DigiCert が運用していた CT ログ Yeti 2022 について、記録を全件取り直してルートを計算しても、ログが署名した STH と一致しないという[報告](https://groups.google.com/a/chromium.org/g/ct-policy/c/PCkKU357M2Q/)が、Chromium が CT の方針を話し合うメーリングリスト ct-policy に出ました。経緯は次の通りです。
+
+1. 6 月 29 日に STH へ署名した後、65,562,066 番の葉が 1 ビット違う値で木に入った。
+2. ログはその値で次の STH に署名し、前の STH との一貫性証明は通った。
+3. 記録から計算した葉は木に無く、その包含証明は「見つからない」になった。
+4. 7 月 3 日にログは読み取り専用になり、新しい記録を受け付けなくなった。
+5. Chrome は回復できないと[判断](https://groups.google.com/a/chromium.org/g/ct-policy/c/hxNohyZncfQ/m/_ak9BQssAAAJ)し、7 月 21 日にログを Retired にした。
+
+Retired は、Chrome がそのログを新しい記録の登録先として認めなくなる状態です。
+
+報告したのは、CT の監視ツール Cert Spotter を作っている Andrew Ayer です。正しい葉のハッシュで、先頭 1 バイトの最下位ビットを反転させると、木に入っている値になりました。Ayer は、原因はハードウェアの誤りや宇宙線の可能性が高いと[解説](https://www.agwa.name/blog/post/how_ct_logs_fail)しています。7 件の小さなログでこの順を追うと、次のようになります。
+
+{{< figure src="images/merkle-tree_yeti.webp" alt="7 件の小さなログで Yeti 2022 の順を追う動く図。1 コマ目で 4 件の STH 1 に署名する。記録 4・5 を足した後、保存した記録 5 の葉のハッシュが 1 ビット反転し、記録 5 からルートまでのノードが赤くなる。記録 6 を足して反転したまま STH 2 に署名する。STH 1 から STH 2 への一貫性証明は通るが、監視する側が全件からルートを作ると R2 と合わない。ハッシュを正しく戻すと、同じ 7 件に R2 と R2′ の 2 つのルートが並ぶ。最後のコマで、残る手は読み取り専用にすることだと示す" caption="説明用に 7 件だけ入れたログで、Yeti 2022 で起きた順を追う（1 コマ 1.6 秒で表示）" align="center" >}}
+
+<br>
+
+#### 手元での再現
+
+記録と葉のハッシュを別々に保存する小さなログで、同じことを再現しました。10,000 件で STH 1 に署名した後、記録 10,500 の葉で、ハッシュの先頭 1 バイトの最下位ビットを反転し、11,000 件で STH 2 に署名します。ハッシュの中で反転させるビットは Yeti 2022 と同じです。
+
+```python
+from merkle import (leaf_hash, root, inclusion_proof, verify_inclusion,
+                    consistency_proof, verify_consistency)
+
+entries = [f"certificate #{i}".encode() for i in range(11_500)]
+stored = [leaf_hash(e) for e in entries[:10_000]]   # ログが保存した葉のハッシュ
+sth1 = (10_000, root(stored))                         # 反転の前に署名した STH
+
+stored += [leaf_hash(e) for e in entries[10_000:11_000]]
+FLIP = 10_500
+b = bytearray(stored[FLIP])
+b[0] ^= 0x01                                          # 保存した葉のハッシュが 1 ビット反転
+stored[FLIP] = bytes(b)
+sth2 = (11_000, root(stored))                         # 反転に気付かず署名した STH
+
+mine = [leaf_hash(e) for e in entries[:11_000]]       # 監視する側が記録から作り直した葉
+fixed = mine + [leaf_hash(e) for e in entries[11_000:]]
+sth3 = (11_500, root(fixed))                          # 葉を正しく戻して続きを足した木
+```
+
+この後で、一貫性証明・ルートの作り直し・包含証明を順に調べます。コードの全体は [yeti_repro.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/merkle-tree/lab/yeti_repro.py) にあり、出力は次の通りです。
+
+```text
+1. 一貫性証明 sth1→sth2       : True
+2. 記録から作り直したルート   : 不一致
+   先頭 10,000 件のルート     : 一致
+3. 記録 10,500 の葉を探す     : 見つからない
+   記録 10,499 の包含証明     : True
+4. 件数 10,001〜11,000 のルート: 500 通りが不一致（10,501 件以上の全て）
+   ルートの違い               : 256 ビットのうち 123 ビット
+5. 直した木への一貫性証明 sth2→sth3: False
+   直した木への一貫性証明 sth1→sth3: True
+```
+
+1 と 3 の 2 行目から、ログの API だけを見ている人は異常に気付けません。反転より前の部分は変わっていないので一貫性証明は通り、反転した記録以外の包含証明も通ります。気付けるのは、2 のように全件を取り直してルートを作る監視する側（monitor）だけです。
+
+4 は、10,501 件以上のどの件数のルートも、記録から作ると一致しないことを示しています。5 が直せない理由です。葉を正しく戻した木は STH 1 とは一貫しますが、すでに署名して配った STH 2 とは一貫しません。
+
+直した木で STH を出せば、同じログが矛盾する 2 つの歴史に署名したことになり、CT では利用者ごとに違うログを見せた証拠として扱われます。STH 2 に合わせるには、反転したハッシュになる記録を探す必要があります。これはハッシュ値から入力を逆算することで、SHA-256 では現実的にできません。
+
+DB（データベース）なら、壊れた 1 バイトを直して終わる障害です。Merkle Tree のログでは、どんな書き換えも見つかる性質が、自分の誤りも直せない性質になります。それでも証明書が使えなくなるわけではありません。ブラウザは 1 つの証明書を複数のログに登録するよう求めており、Ayer も 1 つのログが止まっても証明書は使い続けられると説明しています。
 
 ---
 
-### 実際の利用例
+### ハッシュの一覧・署名との比較
 
-Bitcoin は、ブロックに入ったトランザクションの識別子（txid）を葉にして、ルートハッシュをブロックヘッダに収めています。ブロック全体を持たない利用者は、自分で検証したブロックヘッダの列からルートハッシュを得て、包含証明だけで自分宛のトランザクションを確認できます。Bitcoin 固有の計算規則と検証の仕組みは [Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で、前提となるブロックの構造は [Bitcoin Block](../bitcoin-block/) で説明しています。
+Merkle Tree を使わなくても、データが書き換わっていないことは確認できます。他の方法と比べると、Merkle Tree が得意な所と、他の方法で足りる所が分かれます。表の「無いことの証明」は、ある記録が含まれていないことを示す証明です。表の最後にあるキーで位置が決まる木は、キーのビット列で葉の位置を決める木です。
 
-Web の暗号化通信（TLS）に使う[証明書](/notes/security/pki/)の発行記録を追記専用のログに残す Certificate Transparency（[RFC 9162](https://www.rfc-editor.org/rfc/rfc9162.html)）も、ログ全体をルートハッシュで代表し、個々の証明書の包含を対数サイズで証明します。
+| 方法 | 1 件を示すのに送るもの | 過去を変えていないことの証明 | 無いことの証明 |
+| --- | --- | --- | --- |
+| 全件をそのまま渡す | 全件 | 全件を比べる | 全件を見ればできる |
+| 全件を連結した 1 つのハッシュ | 他の全件 | 全件を比べる | 全件を見ればできる |
+| 1 件ずつ署名する | 署名 1 つ | できない | できない |
+| ハッシュチェーン | その後に足した全件 | その後に足した全件 | できない |
+| Merkle Tree | 段数と同じ個数のハッシュ | 一貫性証明 | できない |
+| キーで位置が決まる木 | 段数と同じ個数のハッシュ | 仕組みによる | 空の位置を示せる |
 
-[Ethereum](https://ethereum.org/) は、キーの文字を辿って値の位置が決まる木（trie）と組み合わせた [Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) で、[アカウントの残高などの状態](../ethereum-account-model/)を管理しています。プロトコルごとの構築規則の違いは [Merkle Tree Design](../merkle-tree-design/) で扱います。
+1 件ずつ[デジタル署名](../digital-signature/)を付ける方法は、証明が最も小さいです。ただし、署名する側が何件に署名したかは外から分かりません。同じ記録の集まりについて、利用者ごとに違う一覧を見せても気付けません。Merkle Tree のルートに署名すれば、1 つの署名で「この件数の、この並び」を固定できます。
+
+ハッシュチェーンは、[ブロックチェーンの基本](../blockchain-basics/)にあるように、直前の値を含めて次の値を作る形です。追記には向きますが、古い 1 件を示すには、その後ろの全てを渡す必要があります。
+
+[Ethereum](https://ethereum.org/) の [Merkle Patricia Trie](https://ethereum.org/en/developers/docs/data-structures-and-encoding/patricia-merkle-trie/) は、キーで位置が決まる木の 1 つで、[アカウントの状態](../ethereum-account-model/)を管理しています。あるキーの位置が空であることを示せるので、「このアカウントに残高が無い」ことまで証明できます。
+
+<br>
+
+データが手元に全てあり、比べる相手も全件を持っているなら、Merkle Tree は必要ありません。葉が数件しかない時も、証明は全件を渡すのとほとんど変わりません。
+
+どこが違うかを絞り込む用途では、[Amazon Dynamo](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) のように、複製どうしでルートを比べ、違う部分木だけを辿っていく使い方もあります。Dynamo がデータを分ける [Consistent Hashing](/notes/distributed-systems/consistent-hashing/) と、複製の食い違いを直すこの使い方を組み合わせる流れは、Consistent Hashing のノートで扱います。
+
+---
+
+### この木で確認できないこと
+
+Merkle Tree の証明が示すのは、「このルートの木に、この位置で、この記録が入っている」ことだけです。それ以外のことは、木の外で決める必要があります。
+
+1 つ目は、記録が無いことです。CT で、自分のドメインに知らない証明書が発行されていないかを調べたくても、包含証明では「無い」ことを確認できません。そのため、[RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-5.3) は、監視する側が少なくとも全ての新しい記録を調べる必要があるとしています。葉の並べ方を工夫して不在を示す方法は、[Merkle Tree Design](../merkle-tree-design/) で比べています。
+
+2 つ目は、比べるルートが正しいことです。証明はルートとの一致しか見ないので、偽のルートを受け入れる実装では、どんな証明も通ります。[Nomad の bridge](../bridge-incidents/) では、2022 年 4 月の[初期化](https://etherscan.io/tx/0x99662dacfb4b963479b159fc43c2b4d048562104fe154a4d0c2519ada72e50bf)で 0x00 を確認済みのルートとして登録してしまい、証明されていないメッセージまで処理されました。Tornado Cash でも、ルートを計算する回路の誤りで、偽のルートを作れる状態が[見つかりました](../zero-knowledge-proof/)。
+
+3 つ目は、木の作り方です。葉と内部ノードを同じ計算でハッシュすると、64 バイトの記録を内部ノードとして読ませる攻撃が成り立ちます。奇数の葉を複製する規則では、件数の違う 2 つの並びが同じルートになります。どちらも Bitcoin で実際に報告され、[Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/)で扱っています。本記事の実験で使った RFC 9162 の規則は、先頭の 1 バイトと、複製しない分け方で、この 2 つを避けています。
+
+---
+
+### Merkle root に出会った時
+
+ブロックヘッダ、Rollup の出金、証明書のログで Merkle Tree に出会ったら、証明の検証を書く前に次の順で調べると、仕組みの外にある前提が見えます。
+
+1. ルートを誰が作り、どこから受け取るか。署名や合意で守られているか。
+2. 葉と内部ノードをどう区別し、奇数の葉をどう扱うか。
+3. 証明が位置を含むか、要素が入っていることだけを示すか。
+4. 無いことや、過去を書き換えていないことを示す必要があるか。
+
+表紙の図にある 1,024 バイトは、35 億件から 1 件を示すには十分な大きさです。ただし、その証明が意味を持つのは、1 の答え、つまり比べたルートを信じられる時だけです。Yeti 2022 は、そのルートに一度署名すると、自分の 1 ビットの誤りも取り消せないことを示しました。

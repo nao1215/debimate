@@ -1,9 +1,9 @@
 {
  "path": "content/notes/blockchain-systems/merkle-tree/index.md",
- "overall": 2,
- "product": 2,
- "blob": "6d676c6168d7ab3dc40d15a121da928d09d3ef80",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 36,
+ "blob": "755fda57763182a3b66b7a8fcb6947805f560727",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
