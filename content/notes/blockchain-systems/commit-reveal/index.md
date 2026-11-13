@@ -39,6 +39,8 @@ Bob はそれを見てから 51 で入札し、手数料を上乗せすれば、
 
 そのため、mempool で他人のトランザクションを読み、手数料を上乗せして前に割り込む先回り（front-running）ができます。冒頭のオークションでは、Alice のトランザクションでは、引数に入札額がそのまま入っているので、Bob は 1 だけ多い額を入れれば勝てます。
 
+Bitcoin でも、署名を求めない条件に添えた値は mempool で読まれ、手数料を上乗せした置き換えで別の宛先に使われます。手元の regtest で再現した様子は [Bitcoin Script](../bitcoin-script/) にあります。
+
 {{< figure src="images/commit-reveal_frontrun.webp" alt="左の灰色の枠は mempool で、1. Alice の bid(50)、手数料 1 gwei のトランザクションを Bob が読み、2. Bob が bid(51)、手数料 3 gwei のトランザクションを送る。3. ブロックでは手数料の高い順に並び、#0 の Bob の bid(51) が成功し、#1 の Alice の bid(50) が too low で取り消される" caption="mempool で読んだ入札に、手数料を上乗せして割り込む（gwei は 10 億分の 1 ETH）" align="center" >}}
 
 以下では、図の流れを手元のローカルチェーンで再現します。

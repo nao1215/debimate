@@ -1,0 +1,105 @@
+{
+ "bitcoind": "/Satoshi:32.1.0/",
+ "poll_s": 0.5,
+ "block_at_s": 5.0,
+ "hashlock": {
+  "case": "hashlock",
+  "witnessScript": "a820675994e27d7fdda46028449bdd3d717a2221c1037b7e6e9148efc6a161713a6d87",
+  "p2wsh_address": "bcrt1q76ca3e6e4jvwe04lag38um20tnsl6sqsvpatqnrr8v26z0hqcess39299n",
+  "events": [
+   {
+    "t": 0.055,
+    "event": "bob_broadcast",
+    "txid": "414167951d81df47100f1f3fdd121d12feaaea36e2a89488e3c59a6af535c9a0",
+    "fee_sat": 1000,
+    "to": "bob"
+   },
+   {
+    "t": 0.564,
+    "event": "watcher_saw",
+    "txid": "414167951d81df47100f1f3fdd121d12feaaea36e2a89488e3c59a6af535c9a0",
+    "witness": [
+     "6f286a98c3d4e64cfbaee9152a9c4eb3",
+     "a820675994e27d7fdda46028449bdd3d717a2221c1037b7e6e9148efc6a161713a6d87"
+    ]
+   },
+   {
+    "t": 0.639,
+    "event": "watcher_broadcast",
+    "txid": "9857f28bacbc9a576acb209555b112163d33c5fbdbb62f00a2895a8f647c840d",
+    "fee_sat": 10000,
+    "to": "watcher",
+    "mempool": [
+     "9857f28bacbc9a576acb209555b112163d33c5fbdbb62f00a2895a8f647c840d"
+    ]
+   },
+   {
+    "t": 5.171,
+    "event": "block_mined",
+    "included": [
+     "9857f28bacbc9a576acb209555b112163d33c5fbdbb62f00a2895a8f647c840d"
+    ],
+    "winner": "watcher"
+   }
+  ],
+  "bob_balance_btc": 0.0,
+  "watcher_balance_btc": 0.9999
+ },
+ "hashsig": {
+  "case": "hashsig",
+  "witnessScript": "a820a51c5c2f13a44632f1b958a1692c5b22da2cb60db899c56c75211c452f146fd48821020e6eee1e52c08bbf8d8b8aff90c30966678d2a21751e82772f4c88593e9d9fb3ac",
+  "p2wsh_address": "bcrt1q787gg2gdyjnq6cy34urj54mwyptmfuumrsgnem2zr2657jz8tteskte8zc",
+  "events": [
+   {
+    "t": 0.069,
+    "event": "bob_broadcast",
+    "txid": "33b9b734cad99f5a207f1c3185673332b8a58b0ed2b55d035c141dadf50b976c",
+    "fee_sat": 1000,
+    "to": "bob"
+   },
+   {
+    "t": 0.578,
+    "event": "watcher_saw",
+    "txid": "33b9b734cad99f5a207f1c3185673332b8a58b0ed2b55d035c141dadf50b976c",
+    "witness": [
+     "3045022100f1a635fd141c082ba04e14cedb4dfe2c2a81798e512f2f20ce6588b09d464b8b022020d32c5dec09c4f538fd0fd53eb6d96b3e7f9726e3b19d946138ca070ac6fbfa01",
+     "254f807a835bc1c0513204b7c7b3771e",
+     "a820a51c5c2f13a44632f1b958a1692c5b22da2cb60db899c56c75211c452f146fd48821020e6eee1e52c08bbf8d8b8aff90c30966678d2a21751e82772f4c88593e9d9fb3ac"
+    ]
+   },
+   {
+    "t": 0.582,
+    "event": "watcher_rejected",
+    "fee_sat": 10000,
+    "error": "mempool-script-verify-flag-failed (Signature must be zero for failed CHECK(MULTI)SIG operation), input 0 of 4e2bc27a44117fe39042fbe48de610bc868bfe493d6c8b91feec944a9f989b6c (wtxid 25980216e8a485a461ae427de6d509e5d17b16a3ba786010130fd5d5b30a45be), spending 61e4862a03ed18b7a50ec6c8cf3e163ca3ae09047bc3db776277b18939f075cd:0"
+   },
+   {
+    "t": 5.11,
+    "event": "block_mined",
+    "included": [
+     "33b9b734cad99f5a207f1c3185673332b8a58b0ed2b55d035c141dadf50b976c"
+    ],
+    "winner": "bob"
+   }
+  ],
+  "bob_balance_btc": 0.99999,
+  "watcher_balance_btc": 0.0
+ },
+ "bare": {
+  "case": "bare_vs_p2wsh",
+  "witnessScript": "a82025cb41b5a9718b3547c58386991ecb5c8cad0a520fed1c0ab37e785300ae73d787",
+  "result": {
+   "bare": {
+    "scriptPubKey": "a82025cb41b5a9718b3547c58386991ecb5c8cad0a520fed1c0ab37e785300ae73d787",
+    "allowed": false,
+    "reject": "scriptpubkey",
+    "generateblock": "block 3449a9c42be75dcc"
+   },
+   "p2wsh": {
+    "scriptPubKey": "002014271c841a9b815443a4b52d7e44ef21011f384481fcd0a2ee583bd2ccc645c9",
+    "allowed": true,
+    "reject": null
+   }
+  }
+ }
+}

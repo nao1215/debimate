@@ -45,3 +45,4 @@ ml__activation-functions	場面	その他	活性化関数 - 学習率 0.3 で di
 ml__perceptron	問い	その他	パーセプトロン（perceptron） - 正則化なしで重みを 0 から始め、止め方を切れば、学習率を 12 桁変えても予測は同じ
 software-testing__ci-benchmark	結果	その他	CI のベンチマーク - GitHub Actions のランナーは、同じ型番の CPU でもジョブごとに 29% 速さが違う
 software-architecture__anti-corruption-layer	場面	その他	Anticorruption Layer - 決済サービスが足した 1 つの status を、4 か所の分岐は 3 通りに読む
+blockchain-systems__bitcoin-script	予想	その他	Bitcoin Script - 署名を求めない条件は、mempool を見た誰でも使える

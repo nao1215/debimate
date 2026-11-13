@@ -1,0 +1,3 @@
+scriptSig                 <=0.3.4 joined  0.3.6 joined  >=0.3.7 separate
+owner: sig-by-owner                 True          True              True
+attacker: OP_1 OP_RETURN            True         False             False

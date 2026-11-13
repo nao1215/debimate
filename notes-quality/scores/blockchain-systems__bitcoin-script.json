@@ -1,9 +1,9 @@
 {
  "path": "content/notes/blockchain-systems/bitcoin-script/index.md",
- "overall": 2,
- "product": 4,
- "blob": "035db7d43874a6efac3395e5c1c233698bb68085",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 5,
+ "product": 54,
+ "blob": "ffde308af433dfc7f1d985b25a77282a3253363c",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
