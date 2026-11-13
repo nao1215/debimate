@@ -1,5 +1,5 @@
 ---
-title: "CQRS - コマンドとクエリの分離"
+title: "CQRS - 4 つの worker で 1 つのキューを取り合うと、一部の商品が古い価格で止まる"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Software Architecture"]
@@ -9,191 +9,281 @@ wrapTables: true
 topics: ["CQRS / Event Sourcing"]
 ---
 
-CQRS（Command Query Responsibility Segregation、コマンドとクエリの責務分離）とは、情報の更新に使うモデルと、読み取りに使うモデルを分けられるという考え方です。ここでのモデルは、要求を受けて処理するコードの型と、それが前提にするデータの形の組で、保存先とは別の概念です。
+通販サイトで、商品ページの価格は新しいのに、商品一覧の価格だけが古いまま、という症状が起こり得ます。全ての商品ではなく 200 商品のうち数個だけで、再読み込みしても直らず、エラーのログも出ません。以下は、この症状を手元で再現した実験の結果です。一覧に価格を反映する処理を並行して進めるスレッド（worker）が 1 つの時は出ず、4 つにして 1 つのキューを共有させると毎回出ました。
 
-Martin Fowler 氏の [CQRS](https://martinfowler.com/bliki/CQRS.html) は、Greg Young 氏から知ったパターンとしてこの考え方を紹介しています。名前にあるコマンドとクエリのうち、コマンドは状態変更の要求で、`order.Cancel(...)` のようなメソッド呼び出しや、要求を表すオブジェクトで表します。クエリは「今日確定した注文の一覧が欲しい」のような読み取りの要求です。
+{{< figure src="images/cqrs_stale.webp" alt="worker の数と置き方を変えた 4 通りを 10 回ずつ動かした結果。左は古い価格のまま残った商品の数で、worker 1 つは 10 回とも 0、worker 4 つで 1 つのキューを共有すると毎回 1〜6 商品が残る。商品ごとに worker を振り分けた場合と、バージョンを比べてから書く場合は 10 回とも 0。右は 2,000 件を反映するのに掛かった秒数の中央値で、worker 1 つが 2.24 秒、4 つの 3 通りはどれも 0.6 秒前後" caption="worker の置き方ごとの、古い価格のまま残った商品の数と、反映に掛かった時間" align="center" >}}
 
-更新と読み取りで必要なデータの形が大きく違う場合に、CQRS を使います。例えば EC サイトの注文では、確定やキャンセルは「確定前の注文はキャンセルできない」のような業務規則を守る更新で、明細まで含めた `Order` [集約](../value-object-entity-aggregate/)（業務規則を守るために一緒に読み書きするオブジェクトのまとまり）が担います。
+worker を 4 つにすると、2,000 件の価格変更を反映する時間は 2.24 秒から 0.57 秒に縮みました。その代わり、1 つのキューを共有した段では、10 回とも 1〜6 個の商品が古い価格のまま残りました。同じ 4 つでも、置き方を変えた下の 2 段は 0 個です。
 
-同じシステムの管理画面に出すのは「今日確定した注文の一覧」や「注文者ごとの購入金額の合計」で、集約の形とは噛み合わない検索です。以降の例では、[Repository](../repository/) や [Event Sourcing](../event-sourcing/) のノートと同じ注文を使います。
+商品ページと商品一覧が別々の表から価格を読んでいるのは、システムが CQRS（Command Query Responsibility Segregation）で作られているからです。CQRS は、データを書き換える処理と読む処理で、別々のモデルを持つ設計です。ここでのモデルは、要求を処理するコードと、それが前提にするデータ形式の組です。保存先の DB（データベース）とは別の話で、共有しても分けても構いません。書き換えの要求をコマンド、読む要求をクエリと呼びます。
 
-以下は、同じ注文を 2 つのモデルで持った時の形の違いです。
-
-{{< figure src="images/cqrs_concept.svg" alt="左の更新モデルでは、注文ごとの Order 集約が明細と状態を子に持つ木の形で、それぞれ業務規則を検査する青い破線の枠に収まっている。右の読み取りモデルは、番号・合計・状態の 3 列だけを持つ平らな一覧で、集約 1 つが 1 行に対応し、明細は現れない" caption="同じ注文を更新モデルと読み取りモデルで持った形" align="center" >}}
-
-上記の図で見てほしいのは、要求の種類で通るモデルとその形が分かれる点です。更新モデルは明細まで持つ集約で業務規則の検査に専念し、読み取りモデルは画面や集計に合わせた平らな形を取れます。保存先の DB は共有しても分けても構いません。
+書き込む側のモデルを書き込みモデル、読む側のモデルを読み取りモデルと呼びます。書き込みモデルで起きた変更から読み取りモデルを作る処理をプロジェクション（projection）と呼び、上の実験で増やした worker は、この処理を動かします。
 
 <br>
 
-本記事では、CQRS で 2 つのモデルを分ける理由と、それぞれのモデルの形を説明します。中心になる疑問は次の通りです。
+本記事では、CQRS をこれから入れる人と、既存のシステムで出会った人に向けて、次の疑問に答えます。
 
-- なぜ更新と読み取りのモデルを分けるのか。
-- 更新モデルと読み取りモデルは、それぞれどのような形を取るのか。
-- 2 つのモデルは、保存先も含めてどこまで分けるのか。
-- 保存したはずの編集が本人の履歴に出ない時、何を待てば良いのか。
+- CQRS は何と何を分けるのか。
+- read replica やキャッシュと何が違うのか。
+- 保存した直後の一覧に、自分の変更が無いのはなぜか。
+- 一部の商品だけが古い価格で止まるのはなぜか。
+- 入れる前に何を決めておくのか。
+
+実験は Python 3.14 と SQLite 3.46 を使い、手元の 1 台で動かしました。SQLite はファイル 1 つで動く DB です。
 
 ---
 
-### 更新と読み取りのモデルを分ける理由
+### 書き込みと読み取りでモデルを分ける
 
-Fowler 氏は、情報システムを扱う主流のやり方は「CRUD データストアとして扱うこと」だと書き、「要求が洗練されるにつれて、そのモデルから着実に離れていく」と続けています。CRUD（Create / Read / Update / Delete）の 1 つのモデルで更新と読み取りの両方を支える設計は、出発点としては自然です。
+以下は、通販サイトで価格を変える処理と商品一覧を CQRS で分けた図です。利用者から見ると、コマンドの入口とクエリの入口が別々にあります。
 
-離れていく理由は、2 種類の要求がモデルに求める性質の違いにあります。以下は、その対比です。
+{{< figure src="images/cqrs_concept.webp" alt="利用者が送るコマンド（価格を変える）は書き込みモデルが受け取り、価格の規則を検査して商品の表とイベントに保存する。イベント（価格が変わった）はプロジェクションが別のプロセスで受け取り、読み取りモデルの商品一覧の表の行を書き換える。この矢印は破線で、遅れて届く。利用者のクエリ（一覧を見る）は読み取りモデルが答える" caption="CQRS の書き込みモデル・プロジェクション・読み取りモデル" align="center" >}}
 
-| | 更新（コマンド） | 読み取り（クエリ） |
-|---|---|---|
-| 扱う単位 | 整合を守る 1 かたまり（ここでは集約） | 問い合わせに必要な単位。複数の集約を横断する場合もある |
-| データの形 | 明細まで丸ごと、規則を検査できる形で持つ | 問い合わせに必要な列と形。必要なら結合・集計する |
-| 守るもの | 業務規則（常に成り立つべき不変条件） | 表示の形と応答の速さ |
+書き込みモデルは、価格を変えてよいかを決める規則を持ちます。例えば、原価を下回る価格を拒む、セール中は値上げを拒む、といった規則です。規則を一緒に守るオブジェクトのまとまりを [Aggregate](/notes/software-architecture/value-object-entity-aggregate/) と呼び、書き込みモデルは Aggregate を単位に読み書きします。
 
-ここで例にする RDB（リレーショナルデータベース）では、CRUD の 1 つのモデルを正規化（normalization、同じ事実を 1 箇所にだけ持つようにテーブルを分ける設計）したテーブルの上に作ることがあります。この構成では画面 1 つ分のデータが複数のテーブルに散らばり、読み出す時に結合で組み立て直します。更新には都合の良いこの形が、読み取りには遠回りになります。
-
-[Repository](../repository/) で見たとおり、集約を丸ごと復元する作りは、注文番号・合計金額・状態の 3 列を 20 件並べる一覧のためにも、20 個の集約を明細まで構築します。逆に一覧の都合にモデルを寄せ、注文が表示用の数個の列だけを持つ形にすると、キャンセル可否の判定に必要な明細や状態が手元に無くなり、業務規則の検査が画面側の処理に散らばります。
-
-CQRS では更新用と読み取り用のモデルを分け、それぞれに必要なデータと処理を定義します。
+商品一覧は、商品名・価格・在庫・レビューの平均点を 1 行に並べ、価格の順に並べ替えたり絞り込んだりします。規則は要らず、欲しいのは画面にそのまま出せる形です。1 つのモデルで両方に応えると、一覧のために Aggregate を何十個も組み立てるか、規則を通らずに表を直接読む経路が増えます。[Repository](/notes/software-architecture/repository/) のノートでは、Aggregate を通らずに一覧を返す照会の経路を扱いました。この経路を別のモデルとして正式に設計したものが CQRS の読み取りモデルです。
 
 <br>
 
-コマンドとクエリという語は、Bertrand Meyer 氏の書籍『Object-Oriented Software Construction』にある [Command Query Separation](https://martinfowler.com/bliki/CommandQuerySeparation.html)（CQS）から借りています。CQS は、状態を変えて値を返さないコマンドと、結果を返して観測可能な状態を変えないクエリにメソッドを分ける規律で、1 つのモデルの中でも守れます。
+#### コマンドとクエリの役割
 
-CQRS は同じ語を使いながら、分ける単位をメソッドからモデルに移しています。
-
----
-
-### コマンドを受ける更新モデル
-
-更新モデルは、コマンドを受けて業務規則を検査し、通った変更だけを保存します。[Domain Event](../domain-event/) や [Event Sourcing](../event-sourcing/) のノートと同じ `Order` 集約と [Repository](../repository/) の組が、そのまま更新モデルです。
-
-例えば、キャンセルのコマンドは次のように処理します。
-
-```go
-// CancelOrder は、注文をキャンセルするコマンドを処理します。
-// 業務規則の検査は Order 集約が行います。
-func (u *usecase) CancelOrder(ctx context.Context, id OrderID, reason string) error {
-	return u.tx.Do(ctx, func(tx Tx) error {
-		order, err := u.orders.Find(tx, id)
-		if err != nil {
-			return err
-		}
-		if err := order.Cancel(reason, time.Now()); err != nil {
-			return err
-		}
-		return u.orders.Save(tx, order)
-	})
-}
-```
-
-このコードは、表示用のデータを返さず成否だけを返します。キャンセル後の画面に出す内容は、クエリで読み取りモデルから取り直します。表示用のデータを大量に返して更新モデルを画面の形に寄せると、分離の利点が薄れるからです。
-
-なお、上のコードの `CancelOrder` は、コマンドを処理する側のメソッドです。コマンドをオブジェクトで表す場合は、`CancelOrderCommand` のような命令形の名前を付けます（過去形のイベントとの対比は [Domain Event](../domain-event/) のノート）。
-
-更新モデルの保存先は、集約の復元と、競合の検出（同じ注文への同時更新を片方だけ失敗させる仕組み）に向いた形を選べます。正規化したテーブルでも、[Event Sourcing](../event-sourcing/) のイベントストア（状態を変えた出来事を記録順に追記するだけの保存場所）でも構いません。
-
----
-
-### クエリに答える読み取りモデル
-
-読み取りモデルは、画面や集計の形に合わせて用意した読み取り専用のデータと、その問い合わせ窓口（問い合わせ用の interface）です。[Repository](../repository/) の末尾で触れた、集約を通らずに表示用の列だけを SELECT する照会サービスは、この窓口の最小の形です。
-
-以下は、窓口と返すデータの例です。
-
-```go
-// OrderSummary は、一覧の 1 行分を表示に必要な列だけで表します。
-// 業務規則を持たない、読み取り専用のデータです。
-type OrderSummary struct {
-	OrderID     string
-	Total       int
-	Status      string
-	ConfirmedAt time.Time
-}
-
-// OrderQueryService は、読み取りモデルへの問い合わせ窓口です。
-// 集約を復元せず、画面の形に合わせたデータを返します。
-type OrderQueryService interface {
-	FindConfirmedOn(ctx context.Context, day time.Time) ([]OrderSummary, error)
-	TotalByCustomer(ctx context.Context, id CustomerID) (int, error)
-}
-```
-
-`OrderSummary` は `Order` 集約と違ってメソッドを持たず、この型を通じて注文の状態を変える手段は用意していません。一覧で得た注文の ID をキャンセルのコマンドに渡すように、読み取りの結果から更新の入力を作ることは問題ありません。
-
-避けたいのは、読み取り用のデータを直接 DB に書き戻す使い方です。集約の業務規則を通らずに書き換わってしまうため、状態を変える時は必ずコマンドとして更新モデルに送る、という規律で防ぎます。
-
-窓口のメソッドは画面の数だけ増やせます。一覧には一覧用の、集計には集計用の形を返すので、1 つの型に全画面の都合を詰め込まずに済みます。画面が消えたら、対応するメソッドとデータを消すだけで済みます。
-
----
-
-### 2 つのモデルを分ける範囲
-
-モデルを分けることと、保存先を分けることは別の判断です。
-
-保存先を共有する構成では、読み取りモデルは更新モデルが書いたテーブルを SELECT やビュー（SELECT の結果をテーブルのように見せる DB の機能）で読みます。反映の仕組みが要らず、コミットした後の値を同じ書き込み先から直接読むので、反映の遅れもありません。
-
-結果を実体として保存しない通常のビューは、問い合わせのたびに正規化されたテーブルの結合と集計を計算し直します。その負荷は更新と同じ DB に載るため、読み取りが増えるほど更新と資源を取り合います。
-
-支えきれなくなったら、保存先を分けます。読み取り用の DB に一覧や集計の結果を[あらかじめ表の形で持たせれば](/notes/database-systems/materialized-view/)、問い合わせのたびの結合と集計が要らず、負荷も更新側と分かれます。以下は、保存先を分けた構成です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    C["更新モデル"] -- 書き込み --> W[("更新用の DB")]
-    W -- 反映 --> R[("読み取り用の DB")]
-    Q["読み取りモデル"] -- 読み出し --> R
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の反映は、多くの実装で更新の完了とは別のタイミングで走ります。その結果、読み取りは[結果整合](../domain-event/)（いずれ一致するものの、ある瞬間を切り取るとずれを許す性質）になることが多く、書いた直後のクエリが古い値を返す場合があります。
-
-Fowler 氏は、別々のモデルを持つこと自体が「モデルをどれだけ厳密に一致させ続けるかという問いを生み、結果整合を使う可能性を高める」と書いています。保存先を共有する構成でも、更新側のテーブルを変えるたびにビューの定義を追従させる必要があります。
-
-更新モデルの節で見た「キャンセル後の画面はクエリで取り直す」形も、この影響を受けます。分けた構成では反映前の古い値が返り得るので、受け付け済みと表示して反映を待つなど、遅れを許す画面設計が必要です。形を変えずに写すだけの複製でも、保存先を分ければ同じ遅れが出ます。
-
-Wikipedia を動かす MediaWiki は、書き込みを primary（書き込みを受け付ける DB）に送り、読み取りの大半を [primary の複製](/notes/distributed-systems/leader-and-followers/)から返します。複製は少し遅れるため、編集した本人の投稿履歴に、保存したはずの編集がすぐには出ないことがあります。
-
-そこで [ChronologyProtector](https://doc.wikimedia.org/mediawiki-core/master/php/classWikimedia_1_1Rdbms_1_1ChronologyProtector.html) は、書き込んだ要求の終わりに primary がどこまで書いたかを記録し、約 10 秒以内に同じユーザーから来た要求では、複製がそこに追い付くまで最大で数秒待ちます。以下は、その待ち方を時間軸に並べた図です。
-
-{{< figure src="images/cqrs_chronology.svg" alt="primary・複製・ユーザーの 3 本の時間軸。① 編集を保存すると primary に書き、書いた位置 P を記録する。複製は黄土色の帯の間 P まで遅れている。② 履歴を開く要求は黄土色の破線の間待ち、複製が P に追い付いてから読むので新しい編集が出る。上に「同じユーザーの約 10 秒以内の要求だけが待つ」、下に「数秒で追い付かなければ打ち切り、古い値を返す」" caption="MediaWiki の ChronologyProtector の待ち方" align="center" >}}
-
-上記の図の②は、複製が追い付いてから読むので、保存した編集が履歴に出ます。遅れた複製しか無い時は待つのを打ち切り、古い値を返します。
+コマンドは成否だけを返し、変更後の画面に出す内容はクエリで読み取りモデルから取り直します。逆に、読み取りモデルのデータを直接書き換えて DB に戻すと、書き込みモデルの規則を通らない変更になります。一覧で選んだ商品の番号をコマンドに渡すのは構いませんが、状態を変える時は必ずコマンドとして書き込みモデルに送ります。
 
 <br>
 
-反映の実装には、DB の複製機能や CDC（Change Data Capture、DB の変更を捕捉して外部に流す仕組み）で変更を転送する形と、[Domain Event](../domain-event/) を配送して受け取った側が読み取り用のデータを更新し続ける形があります。イベントの配送を取りこぼさない仕組みは、[Transactional Outbox](../../distributed-systems/transactional-outbox/) のノートで扱っています。
+<details>
+<summary>CQRS という名前の由来</summary>
 
-更新モデルの保存先に Event Sourcing のイベントストアを選ぶと、読み取り用のデータはイベントを順に読んで作り続けるものになります。この反映をプロジェクション（projection）と呼び、Event Sourcing のノートで扱っています。
+コマンドとクエリという語は、Bertrand Meyer 氏が著書『Object-Oriented Software Construction』で示した [Command Query Separation](https://martinfowler.com/bliki/CommandQuerySeparation.html) から来ています。Command Query Separation はメソッドごとに守る規則で、状態を変えるメソッドは値を返さず、値を返すメソッドは状態を変えない、というものです。
 
-CQRS はイベントを保存しなくても成立します。逆に、現在の状態を保存せずイベントだけを記録する構成では、複数の集約を横断する検索に答えるために読み取りモデルが必要になります。Greg Young 氏の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) は、この点を CQRS と組み合わせる理由に挙げています。
+この区別をモデルの単位に広げたのが Greg Young 氏の CQRS で、考え方は 2010 年の [CQRS Documents](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf) にまとまっています。CQRS Documents は、後で触れる Event Sourcing と組み合わせる理由に、複数の Aggregate をまたぐ検索を挙げています。
 
----
+</details>
 
-### 利点
+<br>
 
-- 更新モデルが業務規則の検査に専念でき、読み取りの都合でモデルが崩れない
-- 読み取りモデルを画面・集計ごとに最適化でき、集約を丸ごと復元する無駄が消える
-- 保存先まで分ける構成では、読み書きで負荷の特性が違う時に読み取り側だけを複製して増やせる
-- 読み取り専用の窓口が明示され、集約を通らない更新経路を設計上の逸脱として見分けられる
+#### イベントから作る読み取りモデル
 
-Fowler 氏が CQRS の使いどころとして挙げるのは、複雑なドメインと、読み書きの負荷を分けて別々にスケールさせたい高性能なアプリケーションの 2 つです。どちらにも当てはまらないなら、次の欠点に見合わない可能性が高いと考えられます。
+読み取りモデルは、書き込みモデルの変更を受けて作り直します。書き込みモデルは、価格が変わったという出来事をイベントとして残し、プロジェクションがそれを読んで一覧の行を書き換えます。
 
----
+このイベントは [Domain Event](/notes/software-architecture/domain-event/) とも呼ばれ、起きた事実なので「価格が変わった」のように過去形で名付けます。イベントを確実に残す方法には [Transactional Outbox](/notes/distributed-systems/transactional-outbox/) があり、業務の変更と同じトランザクションで、送るイベントを表に書きます。イベントを書かずに、DB の変更を捕まえて外へ流す CDC（Change Data Capture）で読み取りモデルを作ることもできます。
 
-### 欠点
+イベントそのものを記録の本体にする [Event Sourcing](/notes/software-architecture/event-sourcing/) と組み合わせることも多いですが、CQRS にイベントの保存は必須ではありません。逆に Event Sourcing では現在の状態を保存しないので、複数の Aggregate をまたぐ検索に答えるには読み取りモデルが必要です。
 
-更新用と読み取り用のモデルを分けると、次の負担が増えます。
-
-- 同じ情報を 2 つのモデルが別の形で扱うため、変更の内容によっては両方の修正が必要
-- 保存先まで分けると、モデルを繋ぐ反映の仕組みが業務と別に増える
-- 保存先を分けた構成では読み取りが結果整合になりやすく、書いた直後のクエリが古い値を返す場合がある
-- 要求の単純なシステムでは、分割の複雑さに見合う効果が出ない
-
-Fowler 氏は、ほとんどのシステムにとって「CQRS はリスクを伴う複雑さを加える」と注意しています。自身が出会った事例の大半は良い結果になっておらず、CQRS が「ソフトウェアシステムを深刻な困難に向かわせる大きな要因」と見なされていたとも書いています。
+<br>
 
 ---
 
-### 適さないケース
+### read replica・materialized view・キャッシュとの違い
 
-- 更新も読み取りも単純で、CRUD の 1 つのモデルで両方を支えられているシステム
-- 更新と読み取りの形の差も負荷の差も小さく、2 つのモデルの保守が割に合わない業務
-- システム全体への一律の適用
+読む処理を書き込みから切り離す仕組みは、CQRS の他にもあります。以下は、商品一覧を速く読みたい場合の比較です。
 
-最後の項目について、Fowler 氏の記事には「CQRS はシステムの特定の部分（DDD で言う [Bounded Context](../bounded-context/)）だけに使うべきで、システム全体に使うべきではない」とあります（DDD は Domain-Driven Design の略）。注文の部分では割に合い、会員情報の部分では CRUD で足りる、という判断を Bounded Context ごとに下せます。
+| 仕組み | 読む側の形 | 反映する処理 | 遅れの元 |
+|---|---|---|---|
+| 同じ DB の view | 1 つの問い合わせの結果 | 無し（読む度に計算） | 無し |
+| read replica | 書き込み側と同じ表 | DB の複製 | 複製の遅れ |
+| materialized view | 1 つの問い合わせの結果 | DB の REFRESH | REFRESH の方式による |
+| キャッシュ | 読んだ結果そのまま | アプリが読んだ時に保存 | 有効期限まで |
+| CQRS の読み取りモデル | 画面ごとに自由 | アプリのコード | プロジェクションの処理 |
+
+モデルを分けることと、保存先を分けることは別の判断です。1 行目の view は、書き込みモデルの表を `SELECT` の定義で一覧の形に見せるだけなので、反映する処理も遅れも要りません。その代わりに、読む度に結合と集計を計算し、その負荷は書き込みと同じ DB に載ります。
+
+read replica は、DB の複製に読む処理を逃がす仕組みで、表の形は変わりません。複製の遅れは [Leader and Followers](/notes/distributed-systems/leader-and-followers/) で扱っています。[Materialized View](/notes/database-systems/materialized-view/) は、問い合わせの結果を DB が表として持ち、反映する処理を自分で書かずに済みます。PostgreSQL では [REFRESH MATERIALIZED VIEW](https://www.postgresql.org/docs/current/sql-refreshmaterializedview.html) を実行するまで古い結果のままですが、Oracle の [ON COMMIT](https://docs.oracle.com/en/database/oracle/oracle-database/19/dwhsg/refreshing-materialized-views.html) のように、コミットの時に反映する DB もあります。
+
+CQRS の読み取りモデルは、置き場所まで自由に選べます。一覧は全文検索のエンジンに、ランキングはキーと値を持つストアに、と画面ごとに選べます。その代わりに、反映する処理をアプリケーションで書き、遅れも順番も自分で面倒を見ることになります。表の形を変えずに読む負荷を逃がしたいだけなら、read replica か materialized view で足ります。
+
+---
+
+### 保存した直後の一覧に無い
+
+プロジェクションが別のプロセスで後から動く以上、書いた直後の読み取りモデルには、まだその変更がありません。投稿したコメントが、直後に開いた一覧に無い、という形で見えます。このように、いずれ一致するものの、ある瞬間を切り取るとずれを許す性質を[結果整合性](/notes/software-architecture/domain-event/)（eventual consistency）と呼びます。
+
+Martin Fowler 氏が 2011 年に書いた [CQRS](https://martinfowler.com/bliki/CQRS.html) のページによると、別々のモデルを持つこと自体が、2 つのモデルをどれだけ厳密に一致させ続けるかという問いを生み、結果整合性を使う可能性を高めます。
+
+価格の変更でも同じことが起きますが、書いた本人が気付きやすく数えやすいので、この節はコメントの一覧で測りました。
+
+手元で、コメントを保存してから一覧を読むまでの時間を変えて、自分のコメントが一覧に無かった回数を数えました。プロジェクションは、0.5 秒ごとに新しいイベントをまとめて読み取りモデルに反映します。以下は実験の要となる関数で、コード全体は [read_after_write.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/cqrs/lab/read_after_write.py) にあります。
+
+```python
+POLL = 0.5  # プロジェクションがイベントを読みに行く間隔（秒）
+
+
+def projector(stop):
+    con = connect()
+    while not stop.is_set():
+        pos = con.execute("SELECT pos FROM checkpoint").fetchone()[0]
+        rows = con.execute("SELECT seq, body FROM events WHERE seq > ?", (pos,)).fetchall()
+        if rows:
+            con.execute("BEGIN")
+            con.executemany("INSERT INTO comment_list VALUES (?, ?)", rows)
+            con.execute("UPDATE checkpoint SET pos = ?", (rows[-1][0],))
+            con.execute("COMMIT")
+        time.sleep(POLL)
+
+
+def post(con, body):  # 書き込み側: イベントを追記し、その位置（seq）を返す
+    return con.execute("INSERT INTO events(body) VALUES (?)", (body,)).lastrowid
+
+
+def list_comments(con, wait_for=None, timeout=2.0):  # 参照側
+    start = time.monotonic()
+    while wait_for is not None and time.monotonic() - start < timeout:
+        if con.execute("SELECT pos FROM checkpoint").fetchone()[0] >= wait_for:
+            break
+        time.sleep(0.005)
+    rows = con.execute("SELECT seq FROM comment_list").fetchall()
+    return {r[0] for r in rows}, time.monotonic() - start
+```
+
+`checkpoint` の表は、プロジェクションがどのイベントまで反映したかを持ちます。保存はイベントの番号 `seq` を返し、`list_comments` に `wait_for` を渡すと、`checkpoint` がその番号に届くまで待ってから読みます。それぞれ 200 回試した結果が、次の通りです。
+
+```text
+保存の 0ms 後に読む	載っていない 200/200
+保存の 100ms 後に読む	載っていない 164/200
+保存の 250ms 後に読む	載っていない 104/200
+保存の 500ms 後に読む	載っていない 0/200
+seq まで待って読む	載っていない 0/200	待ち時間 中央値 239ms 最大 499ms
+```
+
+{{< figure src="images/cqrs_read_after_write.webp" alt="横軸は保存してから一覧を読むまでの時間、縦軸は自分のコメントが一覧に無かった割合。実測は 0ms で 100%、100ms で 82%、250ms で 52%、500ms で 0% で、間隔 0.5 秒から計算した直線とほぼ重なる。保存した位置まで待って読むと 0% で、待ち時間は中央値 239ms・最大 499ms" caption="保存から一覧を読むまでの時間と、自分のコメントが無かった割合" align="center" >}}
+
+無かった割合は、反映の間隔 0.5 秒から計算した直線にほぼ乗りました。保存の直後に読むと 200 回とも無く、間隔と同じ 0.5 秒待つと 200 回とも載っていました。保存で返した番号まで待ってから読めば毎回載りますが、その分だけ応答が遅れ、最大で間隔とほぼ同じ 499ms 待ちました。
+
+<br>
+
+#### 反映の遅れが伸びた Netflix の例
+
+Netflix のファン向けサイト Tudum は、CMS（Content Management System）の書き込み用の DB と、ページを返す読み取り用の DB を Kafka でつなぐ CQRS の構成でした。
+
+Netflix が 2025 年 7 月に公開した[技術ブログ](https://netflixtechblog.com/netflix-tudum-architecture-from-cqrs-with-kafka-to-cqrs-with-raw-hollow-86d141b72e52)によると、遅れの元は、読み取り用 DB の手前に置いたキャッシュでした。キャッシュは裏でキーを 1 つずつ作り直す作りで、60 個のキーを 60 秒の間隔で作り直すなら、1 秒に 1 キーしか新しくなりません。
+
+コンテンツが増えるほど作り直しの一巡が長くなり、編集者が書いた変更をプレビューで見るまでの時間が伸びました。Netflix は Kafka と読み取り用の DB を外し、データをメモリに持つ自社の RAW Hollow に置き換え、ブログによると、プレビューまでの時間は分の単位から秒の単位に縮みました。上の実験で 0.5 秒の間隔が待ち時間になったのと同じく、反映する処理の作りが、そのまま書いた人の待ち時間になった例です。
+
+<br>
+
+#### 書いた人に見せる方法
+
+全ての画面で遅れを消す必要はありません。多くの場合に困るのは、書いた本人が直後に見る画面だけです。実験の `wait_for` のように、コマンドの応答で返した位置まで読み取りモデルが進むのを待つ方法の他に、本人が保存の直後に見る表示だけは書き込みモデルから読む方法や、送信した内容を画面側でそのまま一覧に足しておく方法があります。
+
+[MediaWiki](https://www.mediawiki.org/) は、書き込みを受け付ける primary の DB と、読み取りの大半を返す複製を分けていて、編集した本人の投稿履歴に、保存した編集がすぐには出ないことがあります。[ChronologyProtector](https://doc.wikimedia.org/mediawiki-core/master/php/classWikimedia_1_1Rdbms_1_1ChronologyProtector.html) は、書き込んだ要求の終わりに primary の位置を記録し、約 10 秒以内に同じ利用者から来た要求では、複製がその位置に追い付くまで最大で数秒待ちます。追い付かなければ待つのを打ち切り、古い値を返します。実験の `wait_for` と同じ考え方で、read replica の遅れを扱う例です。
+
+どれを選ぶにしても、画面ごとに許せる遅れを先に決めておくと、後から「保存したのに無い」という問い合わせに答えられます。
+
+---
+
+### 一部の商品だけ古い価格で止まる
+
+冒頭の症状に戻ります。実験では、200 商品の価格を 10 回ずつ変え、2,000 件のイベントを書き込み側に追記しました。プロジェクションは、イベントを追記した順に取り出してキューに入れ、worker がキューから取って一覧の表 `price_view` を書き換えます。以下は要となる関数で、コード全体は [projector.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/cqrs/lab/projector.py) にあります。
+
+```python
+def apply(q, guard, seed, worker, t0):
+    con = sqlite3.connect(DB, isolation_level=None, timeout=30)
+    con.execute("PRAGMA synchronous=OFF")  # 実験を速くするため、ディスクへの同期を省く
+    rng = random.Random(seed)
+    sql = "UPDATE price_view SET version = ?, price = ? WHERE product_id = ?"
+    if guard:
+        sql += " AND version < ?"  # 自分より新しいバージョンが入っていれば書かない
+    while (ev := q.get()) is not None:
+        p, v, price = ev
+        got = time.monotonic() - t0
+        time.sleep(rng.uniform(0, 0.002))  # 画面用の整形などに掛かる時間
+        con.execute(sql, (v, price, p, v) if guard else (v, price, p))
+        with lock:
+            applied[0] += 1
+            trace.append((p, v, worker, got, time.monotonic() - t0))
+
+
+def project(con, workers, route, guard, seed):
+    events = con.execute("SELECT product_id, version, price FROM events ORDER BY seq").fetchall()
+    shared = queue.Queue()
+    qs = [shared] * workers if route == "shared" else [queue.Queue() for _ in range(workers)]
+    # ...（worker のスレッドを起動する）
+    for p, v, price in events:  # イベントは seq の順に配る
+        qs[0 if route == "shared" else p % workers].put((p, v, price))
+    # ...（終了の印を入れて、全ての worker を待つ）
+    assert applied[0] == len(events)  # 取りこぼしたイベントは無い
+```
+
+各イベントは、商品ごとに 1 から 10 まで増えるバージョンを持ちます。worker は書き込む前に 0〜2ms 眠り、画面用の整形のような処理の時間を模しています。`route` が `"shared"` なら 4 つの worker が 1 つのキューを取り合い、`"partition"` なら商品の番号を worker の数で割った余りで振り分けます。`guard` は、後で使う直し方です。
+
+以下は、worker 4 つで 1 つのキューを共有した 10 回のうち、最初の 3 回の出力です。右端の列は、古いバージョンを後から書いた回数です。
+
+```text
+4 つで 1 つのキュー	seed=0	0.58 秒	古い値の商品 1/200	順番の逆転 15 回
+4 つで 1 つのキュー	seed=1	0.57 秒	古い値の商品 6/200	順番の逆転 21 回
+4 つで 1 つのキュー	seed=2	0.56 秒	古い値の商品 5/200	順番の逆転 13 回
+```
+
+<br>
+
+#### 遅れでも取りこぼしでもない
+
+古い価格が残る原因として、最初に思い付くのは、前の節で測った遅れです。しかし、この実験ではプロジェクションが全てのイベントを処理し終えた後に数えていて、1 秒足らずで処理を終えた後の表に古い価格が残っています。待っても直らないのは、反映する処理がもう何もしていないからです。
+
+次に疑うのは、イベントの取りこぼしです。`project` の最後にある `assert` は、worker が処理したイベントの数が 2,000 件と一致することを見ていて、10 回とも通りました。全てのイベントが一覧の表に書かれていて、それでも価格が古いということは、書かれた順番が違うということです。
+
+<br>
+
+#### 書いた順番の逆転
+
+以下は、seed=0 の実行で古い価格のまま残った商品 170 について、最後に来た 4 つの変更が一覧の表に書かれるまでを実測した時刻で動かした図です。
+
+{{< figure src="images/cqrs_reorder.webp" alt="動く図。商品 170 のバージョン 7・8・9・10 がこの順にキューに入る。バージョン 9 は worker 3 が 561.1ms に、バージョン 10 は worker 0 が 561.2ms に受け取る。バージョン 10 は 561.7ms に書かれ、整形に時間が掛かったバージョン 9 は 562.8ms に書かれる。最後に一覧の表はバージョン 9、書き込みモデルはバージョン 10 で、一覧は古いまま止まる" caption="商品 170 で最後に来た 4 つの変更が一覧の表に書かれる順（実測した時刻を実時間より 2500 倍ゆっくり再生）" align="center" >}}
+
+キューから取り出す順番は追記の順のままで、バージョン 9 はバージョン 10 より先に worker 3 が受け取っています。ところが、worker 3 の整形はバージョン 10 を受け取った worker 0 より長く掛かり、バージョン 10 を書いた 1.1ms 後にバージョン 9 で上書きしました。`UPDATE` は今の値が何であれ書き換えるので、一覧の表には最後に書かれたバージョン 9 が残ります。
+
+出力で右端の列に数えた逆転は 1 回の実行で 11〜21 回起きていますが、古い価格が残ったのは 1〜6 商品でした。途中の逆転は、同じ商品に次の変更が来ると上書きされて消えるからです。図の商品 170 でも、バージョン 6 はバージョン 7 の後に書かれましたが、バージョン 8 が上書きしています。
+
+残るのは最後の変更より古い変更が後から書かれた時だけで、次にその商品の価格が変わるまで直りません。
+
+<br>
+
+#### 順番を保つ 2 つの方法
+
+直し方は、冒頭の図で下にある 2 段です。1 つ目は、同じ商品のイベントを同じ worker に振り分けることです。worker の中では受け取った順に書くので、同じ商品に来た変更は順番が入れ替わりません。
+
+[Kafka](https://kafka.apache.org/intro) は、イベントをパーティションという複数の列に分けて持ち、同じキーを持つイベントを同じパーティションに書きます。1 つのパーティションのイベントは、書いた順に読めることを保証しています。商品の番号をキーにすれば同じ形になります。
+
+<br>
+
+<details>
+<summary>Kafka で振り分けても順番が入れ替わる場合</summary>
+
+1 つのパーティションを読む側（consumer）が中でスレッドを増やすと、実験の 1 つのキューと同じ形に戻ります。イベントを DB から Kafka へ送る処理を増やした時にも、同じ注文に属するイベントの順番が入れ替わり得ます。その測定と、振り分けによる同じ直し方は、[Transactional Outbox](/notes/distributed-systems/transactional-outbox/) のノートにあります。
+
+</details>
+
+<br>
+
+2 つ目は、書く前にバージョンを比べることです。`guard` を有効にすると、worker は次の `UPDATE` を使います。
+
+```sql
+UPDATE price_view SET version = ?, price = ?
+ WHERE product_id = ? AND version < ?
+```
+
+最後の条件により、一覧の表に新しいバージョンが既に入っていれば何も書きません。この置き方でも逆転は 10〜17 回起きていましたが、古いバージョンの書き込みは 1 行も更新せずに終わり、残った商品は 10 回とも 0 でした。同じイベントが 2 回届いても結果が変わらないので、イベントが重複して届くことへの備えにもなります。重複への備えは [Idempotency](/notes/distributed-systems/idempotency/) のノートで扱っています。
+
+どちらも、worker 1 つの 2.24 秒に対して 0.6 秒前後で、worker 4 つの速さは保っています。振り分けは、特定の商品に変更が集中するとその worker だけが詰まります。バージョンの比較は、イベントにバージョンを持たせ、読み取りモデルにもそれを保存しておく必要があります。
+
+---
+
+### CQRS を入れる前に決めること
+
+CQRS は、多くのシステムでは、複雑さが増えて危険になる設計でもあります。先に挙げた Fowler 氏のページによると、氏が出会った事例の大半は良い結果にならず、CQRS はシステムを深刻な困難に追い込んだ大きな要因と見なされていました。
+
+使いどころに挙がっているのは、一部の複雑なドメインと、読み書きの負荷を分けて別々に増やしたい高性能なアプリケーションの 2 つです。使うならシステムの全体ではなく、[Bounded Context](/notes/software-architecture/bounded-context/) のような特定の部分に限るべきだ、というのが Fowler 氏の注意です。
+
+これから入れるなら、まず読み取りモデルの形が書き込みモデルと本当に違うかを考えます。同じ形で読むだけなら、read replica か materialized view で足ります。分けるのは、形と規則が大きく違う一部に限ります。注文は CQRS、会員情報は CRUD（Create / Read / Update / Delete）の 1 つのモデル、と分けて構いません。同じ情報を 2 つのモデルが別の形で持つので、一覧に出す項目を 1 つ足すなら、最大で、書き込みモデル・イベント・プロジェクション・読み取りモデルの 4 か所を直すことになります。
+
+分けると決めたら、画面ごとに許せる遅れと、書いた本人に何を見せるかを決めます。本人の画面は、書き込みモデルから読むか、保存の応答で返した位置まで待つかを選びます。
+
+プロジェクションの worker を増やす時は、同じ商品に来た変更が順番を入れ替えない仕組みを先に入れます。商品の番号で振り分けるか、バージョンを比べてから書くかのどちらかです。
+
+<br>
+
+#### 一部の行だけ古いと気付いたら
+
+既存のシステムで CQRS の読み取りモデルに出会い、一部の行だけが古いまま直らないなら、待つ前に、その行のバージョンと書き込みモデルのバージョンを並べてみてください。読み取り側の方が小さく、そのバージョンより新しいイベントが既に処理済みなら、遅れより先に、冒頭の図で 2 段目に起きた順番の入れ替わりを疑います。
+
+実験のコードと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/cqrs/lab) にあります。

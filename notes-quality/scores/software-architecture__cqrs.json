@@ -1,9 +1,9 @@
 {
  "path": "content/notes/software-architecture/cqrs/index.md",
- "overall": 2,
- "product": 8,
- "blob": "6159b3c06cd6a816ddece63f6aa2da08cacf11be",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 5,
+ "product": 54,
+ "blob": "8a3d9447ddbf4e1792d557caa3a2167657022c99",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
