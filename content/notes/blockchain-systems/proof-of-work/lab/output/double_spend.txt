@@ -1,0 +1,2 @@
+q=0.40 z=2 give_up=5 tick=0.0458s attempts=200
+success=103 rate=0.515

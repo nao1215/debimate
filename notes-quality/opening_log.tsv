@@ -47,3 +47,4 @@ software-testing__ci-benchmark	結果	その他	CI のベンチマーク - GitHu
 software-architecture__anti-corruption-layer	場面	その他	Anticorruption Layer - 決済サービスが足した 1 つの status を、4 か所の分岐は 3 通りに読む
 blockchain-systems__bitcoin-script	予想	その他	Bitcoin Script - 署名を求めない条件は、mempool を見た誰でも使える
 security__passkey	一覧	その他	Passkey - サブドメインで作った署名は origin のチェックでしか止まらない
+blockchain-systems__proof-of-work	結果	その他	Proof of Work - 10 分に 1 個のブロックでも、待ち時間は平均 10 分

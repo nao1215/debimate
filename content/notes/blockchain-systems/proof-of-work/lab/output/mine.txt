@@ -1,0 +1,5 @@
+blocks=3000 hashes=199578454 mean_trials=66526 expected=65536
+
+real	3m14.086s
+user	3m12.417s
+sys	0m0.016s

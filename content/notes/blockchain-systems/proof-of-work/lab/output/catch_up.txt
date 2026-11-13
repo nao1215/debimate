@@ -1,0 +1,4 @@
+win when a >= h, give_up=None: 0.704
+win when a >= h, give_up=5: 0.659
+win when a >  h, give_up=None: 0.529
+win when a >  h, give_up=5: 0.484

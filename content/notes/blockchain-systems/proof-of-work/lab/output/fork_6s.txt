@@ -1,0 +1,4 @@
+delay=6s (131 ticks) tick=0.0458s blocks_on_main=600
+miner A: found=345 stale=0 stale_rate=0.000
+miner B: found=257 stale=2 stale_rate=0.008
+all: found=602 stale=2 stale_rate=0.003

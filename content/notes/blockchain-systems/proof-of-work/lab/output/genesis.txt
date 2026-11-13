@@ -1,0 +1,6 @@
+header bytes : 80
+hash         : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+target       : 00000000ffff0000000000000000000000000000000000000000000000000000
+hash <= target: True
+leading zero bits: 43
+expected trials : 4,295,032,833

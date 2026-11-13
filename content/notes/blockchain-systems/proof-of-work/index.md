@@ -1,5 +1,5 @@
 ---
-title: "Proof of Work - 計算作業をブロック追加の条件にする"
+title: "Proof of Work - 10 分に 1 個のブロックでも、待ち時間は平均 10 分"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
@@ -9,385 +9,384 @@ wrapTables: true
 topics: ["Consensus / Finality"]
 ---
 
-proof of work（プルーフ・オブ・ワーク）は、条件を満たすハッシュ値の提示を参加者に課す仕組みで、その値を見付けるには平均すると大量のハッシュ計算が必要です。作る側は合格が出るまで試行を繰り返す一方で、入力とハッシュ値の組を受け取った側は、同じ入力に同じハッシュ計算を 1 度やり直すだけで、条件の成立を確認できます。
+プルーフ・オブ・ワーク（Proof of Work、PoW）は、ハッシュ値が決められた値以下になる入力を参加者に探させ、その探索に費やした計算でブロックを追加する資格を与える仕組みです。[Bitcoin](https://bitcoin.org/) では、送金 1 回分の記録であるトランザクションをまとめたブロックは、この探索に最初に成功した参加者が台帳の末尾に足します。探索する参加者をマイナー（miner）、探索をマイニングと呼びます。
 
-Bitcoin のブロックは、トランザクションの並びを全参加者で共有するための単位でした。誰かがその並びの末尾に追加する役を担う必要があるものの、Bitcoin には登録も許可も無く、役を任せる相手を選ぶ名簿が存在しません。
+Bitcoin は、ブロックが平均 10 分に 1 個見つかるように探索の厳しさを調整しています。
 
-Bitcoin は proof of work を使い、計算作業を競わせてブロックの追加を決めます。Bitcoin の設計を述べた[ホワイトペーパー](https://bitcoin.org/bitcoin.pdf)は、この仕組みを Adam Back の [Hashcash](http://www.hashcash.org/papers/hashcash.pdf)（電子メールの送信に少量の計算を課して大量送信を防ぐ提案）に似たものとして導入しています。
+Bitcoin と同じ形のブロックを手元で 3,000 個マイニングし、ランダムな時刻にトランザクションを送ったとして、次のブロックが見つかるまでの時間を数えました。
 
-Bitcoin では、ブロックが有効な候補として受け入れられるには proof of work を満たす必要があります。ブロックの候補を作り、合格のハッシュを探す参加者をマイナー（miner）、この探索を採掘（マイニング）と呼びます。マイナーと他の参加者の関係を以下に示します。
+{{< figure src="images/pow_wait.webp" alt="左は手元でマイニングした 3,000 個のブロックの間隔のヒストグラム。横軸は 0〜60 分で、0〜2.5 分の棒が約 680 個と最も高く、間隔が長いほど少なくなり、平均 10 分の指数分布の曲線に重なる。右は棒グラフで、ブロックの間隔の平均が 10.2 分、ランダムな時刻に送ってから次のブロックまでの平均が 10.0 分、送った時刻を含む間隔の平均が 20.1 分。間隔の半分の 5 分に赤い破線がある" caption="ブロックの間隔と、ランダムな時刻に送ったトランザクションの待ち時間（手元で 3,000 個をマイニング）" align="center" >}}
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    M["マイナー<br/>候補を作り<br/>proof of work を試行"] -- 候補を配る --> A["参加者 A<br/>検証して受け入れ"]
-    M -- 候補を配る --> B["参加者 B<br/>検証して受け入れ"]
-    M -- 候補を配る --> C["参加者 C<br/>検証して受け入れ"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+ブロックの間隔は平均 10.2 分でしたが、送ってから次のブロックまでの待ちは、その半分の 5 分ではなく平均 10.0 分でした。送った時刻を含む間隔に限ると、平均は 20.1 分です。
 
-上記の図のとおり、マイナーは候補をネットワークに配るだけで、受け取った各参加者が proof of work と他の規則を検証し、有効な候補として扱います。どの候補を自分の履歴に採用するかは、チェーンの累積した作業量も比較して決めます。権利を配る主体は居ません。
+トランザクションを含むブロックが見つかると 1 承認、その後ろにブロックが 1 個積まれるごとに承認数（confirmations）が 1 ずつ増えます。
+
+入金を「承認待ち」と表示するウォレットや、何承認で入金を確定させるかを決める開発者にとって、10 分に 1 個から「最初の承認まで 5 分ほど」と見積もるのは外れです。この平均 10 分も、次のブロックに入れたトランザクションの値で、手数料が低く後回しにされれば、さらに延びます。
+
+手元の 3,000 個では、20 分を超えてブロックが来ない間隔が 14% ありました。何承認を待てば覆らないかも、間隔とは別に、攻撃者が握る計算の割合で決まります。
 
 <br>
 
-本記事では、Bitcoin の proof of work が、計算作業をブロック追加の条件にする仕組みを説明します。計算作業が票になる理由から始めて、次の疑問を取り上げます。
+本記事では、手元のマイニングと Bitcoin の公開データを使い、次の問いに順に答えます。
 
-- 名簿の無いネットワークで、なぜ計算作業が多数決の票になるのか。
-- 合格の条件を数で表した時、試行回数はどれだけばらつくのか。
-- 合格のハッシュは、なぜ総当たりで探すしかないのか。
-- ハッシュ計算能力が変わっても、なぜブロックの平均の間隔が保たれるのか。
-- 過去のトランザクションを書き換えるのは、なぜ難しくなるのか。
-
-ブロックとヘッダの構造は [Bitcoin Block](../bitcoin-block/) の内容を前提にします。採掘用ハードウェアの詳細や報酬の経済性は本記事では扱いません。
-
----
-
-### 計算作業が票になる理由
-
-合格を得るために平均して必要な作業量は「期待作業量」、単位時間あたりに実行できるハッシュ計算の量は「ハッシュ計算能力」と、以下では呼び分けます。合格の条件は target という基準値で表し、target が小さいほど合格は難しくなります（次の節で説明します）。
-
-2 人のマイナーがほぼ同時に合格すると、チェーンの末尾が分岐します。その時、各参加者は累積した期待作業量が最も大きい列を正しい履歴として採用します（[Bitcoin Block](../bitcoin-block/)）。どの列が正しいかを決める多数決では、累積した期待作業量が票になります。
-
-注意点として、提示されたハッシュ値は、実際に行われた計算の回数を証明しません。運が良ければ 1 回目の試行で合格することもあり、受け取った側から実際の回数は分かりません。proof of work を支えるのは、合格を得るには平均で大量の試行が必要で、検証は 1 回の計算で済むという非対称性です。
-
-以下は、実際の回数と、ネットワークが評価する量の関係です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
-    M["実際の採掘<br/>1 回で当たることも<br/>100 億回掛かることもある"] --> V["ネットワークから確認できるもの<br/>ヘッダと合格したハッシュ<br/>外れた試行の履歴は残らない"]
-    V --> E["target から期待作業量を求め<br/>ブロックごとに足し上げる"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図のとおり、各参加者は、各ブロックの target から期待作業量を求めて足し上げ、その累積で列を比較します。Bitcoin Core が列の比較に使う chainwork も、この累積で、実行された [SHA-256](/notes/security/sha-256/) の回数の記録ではありません。
-
-名簿の無いネットワークでは、この票を参加者の数で数えられません。ホワイトペーパーは、この問題を「多数決の基準を 1 IP アドレス 1 票にすると、多数の IP アドレスを確保できる者に乗っ取られ得る。proof of work は本質的に 1 CPU 1 票である」と説明しています。1 人が多数の参加者を装う攻撃は[シビル攻撃（Sybil attack）](/notes/distributed-systems/byzantine-fault-tolerance/#参加者の決め方と票の重み)と呼ばれ、安く量産できるものを票に使う限り避けられません。
-
-なお、ホワイトペーパーの CPU は、採掘の主力が ASIC（Application-Specific Integrated Circuit、SHA-256 の計算だけを高速に行う採掘専用チップ）に移った現在では、ハッシュ計算能力と読み替えられます。
-
-例えば、票の数え方を変えると、次のような違いが生じます。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
-    subgraph V1["参加者の数で数える場合"]
-        A1["攻撃者"] --> F1["偽の参加者を大量に用意"]
-        F1 --> W1["票の過半数を握れる"]
-    end
-    subgraph V2["ハッシュ計算能力で数える場合"]
-        A2["攻撃者"] --> F2["参加者を装っても<br/>ハッシュ計算能力は増えない"]
-        F2 --> W2["履歴を速く伸ばすには<br/>実際の計算資源が必要"]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の右側では、ブロックを見付ける機会がハッシュ計算能力に紐付いています。偽の参加者を増やしてもハッシュ計算能力は増えないため、履歴を伸ばす力は増えません。ハッシュ計算能力を増やすには現実の計算資源とそれを動かすコストが必要なため、票の偽造に実費が掛かります。Bitcoin は、参加者の身元ではなく物理的な資源の消費に安全の根拠を置いています。
+- ハッシュ値の条件は何で、なぜ検証する側は 1 回の計算で済むのか。
+- 送ってから次のブロックまで、なぜ平均 10 分なのか。
+- 計算する人が増えると、10 分の間隔はどう保たれるのか。
+- 2 つのブロックが同時に見つかったら、どちらが残るのか。
+- 何承認を待てば、トランザクションは覆らないのか。
+- Proof of Stake や、Web でボットを止める PoW とは何が違うのか。
 
 ---
 
-### target - 数で表した合格の条件
+### ハッシュ値とターゲット
 
-ヘッダに SHA-256（Secure Hash Algorithm 256、出力が 32 バイト = 256 ビットのハッシュ関数）を 2 回適用したハッシュ値を 256 ビットの数として読み、その値が target と呼ぶ基準値を超えなければ合格です。ハッシュを 2 回重ねる理由はホワイトペーパーに書かれていないため、本記事では規則としてそのまま扱います。
+[ハッシュ関数](../hash-function/)は、入力の長さによらず決まった長さの値を作る関数で、入力を 1 ビット変えると出力は予測できない形で変わります。Bitcoin は [SHA-256](/notes/security/sha-256/) を 2 回掛けた 256 ビットの値を使います。
 
-target はヘッダの bits 項目に圧縮して収められており、[Bitcoin Block](../bitcoin-block/) のヘッダの表で「ターゲット（target）の圧縮表現」と書いた項目が、この target です。
+マイナーがハッシュ値を計算する対象は、ブロックの先頭にある 80 バイトのブロックヘッダです。ヘッダには、直前のブロックが持つハッシュ値、ブロックに入れたトランザクションをまとめた [Merkle root](../bitcoin-merkle-tree/)、時刻、ターゲット（target）を表す bits、自由に変えて良い 4 バイトの nonce が並びます。ヘッダの nonce は、条件を満たすまで変えていく数で、暗号の [nonce](/notes/security/nonce/) のように秘密にしたり予測できなくしたりする必要はありません。
+
+ヘッダのハッシュ値を 256 ビットの数として読み、ターゲット以下なら、そのブロックは条件を満たします。ヘッダ以外の項目は [Bitcoin Block](../bitcoin-block/) で説明しています。
+
+SHA-256 には、条件を満たす入力を逆算する方法も、出力を予測して試行を減らす方法も知られていないので、マイナーは nonce を 0, 1, 2, ... と変えてハッシュ値を計算し直すしかありません。SHA-1 で近道が見つかったのは、PoW の探索とは別の、同じハッシュ値になる 2 つの入力（衝突）を作る計算で、その経緯は Hash Function のノートで扱っています。一方、ブロックを受け取って検証する側は、ヘッダのハッシュ値を 1 回計算してターゲットと比べるだけで済みます。
 
 <br>
 
-SHA-256 の出力に既知の偏りは見付かっておらず、確率の計算では、2^256 通りある 256 ビットの値のどれも同じ確からしさで出るとみなします。この見方に立つと、1 回の試行が合格する確率は「target 以下の値の個数 ÷ 2^256」で決まります。
+#### ジェネシスブロックを 1 回で検証する
 
-target を半分にすれば合格の確率もほぼ半分に、必要な試行回数の平均はほぼ 2 倍になります。
-
-0 も合格するので、正確な合格確率は `(target + 1) / 2^256` です。target をおよそ `2^(256-k)` とすると、合格確率（pass rate）は約 `2^-k`、平均試行回数（average trials）は約 `2^k` になります。以下の図は、この近似を使った期待作業量です。k を大きくした時の 2 つの値は以下の通りです。
-
-{{< figure src="images/proof_of_work_target_trials.svg" alt="target をおよそ 2^256 の 1/2^k にした時の、合格までの平均試行回数と 1 回の試行が合格する確率。縦軸は対数で、k = 1 なら約 2 回で約 50%、k = 32 なら約 43 億回で約 43 億分の 1、k = 76 なら約 2^76 回。破線は nonce の 4 バイトで試せる 2^32 通り。" caption="target を小さくした時の、平均試行回数と合格確率" align="center" >}}
-
-上記の図のとおり、合格までの平均試行回数は k に対して指数的に増えます。一方で、検証はハッシュを 1 回実行するだけで済みます。
-
-図の値は平均で、1 回ごとの試行回数は大きくばらつきます。k = 16（平均 65,536 回）として、探索を 1,000 回繰り返しました。ヘッダに見立てた乱数の 76 バイトと 4 バイトの nonce に SHA-256 を 2 回適用し、計算には Python 3.14 の hashlib を使っています。以下が実験コードの全体です（[lab/trials.py](lab/trials.py)）。
+Bitcoin で最初に作られたブロック（ジェネシスブロック）のヘッダは、[Bitcoin Core](https://github.com/bitcoin/bitcoin) の [chainparams.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/kernel/chainparams.cpp) に値が書かれています。そのヘッダを組み立て、ハッシュ値を 1 回計算しました。
 
 ```python
-"""Count trials until a double SHA-256 falls at or below target = 2^(256-k). No network access."""
-from hashlib import sha256
-import random
-import statistics
+import hashlib
 import struct
 
-K, RUNS = 16, 1000
-target = 2 ** (256 - K) - 1  # about 2^(256-k), so the pass rate is 2^-k
-rng = random.Random(20260810)
-counts = []
-for _ in range(RUNS):
-    header76 = rng.randbytes(76)  # random stand-in for the first 76 bytes of a header
-    for nonce in range(2**32):
-        h = sha256(sha256(header76 + struct.pack('<I', nonce)).digest()).digest()
-        if int.from_bytes(h, 'little') <= target:
-            counts.append(nonce + 1)
-            break
-print(f'k={K} runs={RUNS} expected={2**K}')
-print(f'min={min(counts)} median={statistics.median(counts):.0f} '
-      f'mean={statistics.mean(counts):.0f} max={max(counts)}')
-```
+version = 1
+prev = bytes(32)
+merkle = bytes.fromhex("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b")[::-1]
+time, bits, nonce = 1231006505, 0x1d00ffff, 2083236893
 
-`python3 trials.py` の実行には、手元の PC で約 2 分かかりました。合格までの試行回数は次の通りです。
+header = struct.pack("<I", version) + prev + merkle + struct.pack("<III", time, bits, nonce)
+digest = hashlib.sha256(hashlib.sha256(header).digest()).digest()
+value = int.from_bytes(digest, "little")
+
+# bits: 1 byte of exponent and 3 bytes of mantissa (genesis only;
+# a general decoder must also reject the sign bit 0x00800000 and out-of-range values)
+target = (bits & 0xFFFFFF) << (8 * ((bits >> 24) - 3))
+expected = 2 ** 256 // (target + 1)          # GetBlockProof in Bitcoin Core v30.0
+
+print("header bytes :", len(header))
+print("hash         :", digest[::-1].hex())
+print("target       :", f"{target:064x}")
+print("hash <= target:", value <= target)
+print("leading zero bits:", 256 - value.bit_length())
+print(f"expected trials : {expected:,}")
+```
 
 ```text
-k=16 runs=1000 expected=65536
-min=17 median=47838 mean=67314 max=501149
+header bytes : 80
+hash         : 000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+target       : 00000000ffff0000000000000000000000000000000000000000000000000000
+hash <= target: True
+leading zero bits: 43
+expected trials : 4,295,032,833
 ```
 
-最短は 17 回、最長は 50 万回を超え、平均の 7 倍以上掛かりました。合格したハッシュ値からは、17 回で当たったのか 50 万回掛かったのかを区別できず、最初の節で述べたとおり、ネットワークが数えるのは target から求めた期待作業量だけです。
+bits の `0x1d00ffff` は、先頭の 1 バイト `0x1d` がターゲットのバイト数（29）、残りの 3 バイト `0x00ffff` が値の頭を表す圧縮形式です。頭の 3 バイトの後ろに 0 のバイトが 26 個（29 から 3 を引いた数）続くので、ターゲットは `0xffff` に 256 の 26 乗を掛けた値になります。
+
+上のコードはジェネシスブロックの bits だけを展開しています。一般の bits を読む時は、3 バイトの頭にある符号のビットが立った負の値や、範囲外の値を拒否する必要があります。
+
+このターゲットを満たすには、先頭の 32 ビットが 0 である必要があり、1 回の試行で満たす確率はおよそ 2 の 32 乗分の 1 です。条件を満たす値を見つけるまでに期待される試行は約 43 億回で、検証する側の計算は上のとおり 1 回でした。ただし、2083236893 という nonce の値は、その回数だけ試した証拠ではありません。後の実験は nonce を 0 から数えるので nonce + 1 が試行回数になりますが、実際のマイナーは extraNonce や時刻も変えて nonce を何巡もさせるので、nonce の値から何回試したかは分かりません。
+
+この比較で分かるのは、PoW の条件を満たすことだけです。ノードはブロックを受け入れる前に、その高さで要求される bits か、中のトランザクションが正しいかを別に検証します。
+
+{{< figure src="images/pow_hashes.webp" alt="2 行の 16 進数。上はジェネシスブロックのハッシュ値で、ターゲットが求める先頭の 0 の 32 ビット（8 桁）が茶色になり、実際には 10 桁が 0 で、先頭に並ぶ 0 は 43 ビット。期待される試行は約 43 億回、検証は 1 回。下は 2026 年 11 月 13 日の高さ 975,640 のブロックのハッシュ値で、ターゲットが求める 79 ビット（19 桁と 3 ビット）が茶色になり、20 桁が 0 で、先頭に並ぶ 0 は 80 ビット。期待される試行は約 6.4 × 10²³ 回、検証は 1 回" caption="ジェネシスブロックと、2026 年 11 月 13 日に見つかったブロックが持つハッシュ値" align="center" >}}
+
+下の行は、2026 年 11 月 13 日に [mempool.space の API](https://mempool.space/docs/api/rest) で取得した高さ 975,640 のブロックです。ターゲットが求める 0 は 79 ビットに増え、期待される試行は約 6.4 × 10²³ 回になりました。図の 80 ビットは、このブロックのハッシュ値に実際に並んだ 0 の数です。
+
+ジェネシスブロックのターゲットを 1 として今のターゲットが何分の 1 かを表した値を難易度（difficulty）と呼び、このブロックでは約 148 兆です。
+
+今のマイニングは、SHA-256 の計算だけを高速に行う専用のチップ（ASIC）で行われ、4 バイトの nonce が取れる約 43 億通りはすぐに使い切ります。そのため、マイナーは時刻や、自分への報酬を受け取るコインベーストランザクションに入れた extraNonce という値を変えて、Merkle root からヘッダを作り直します。この手順は [Bitcoin Wiki の Block hashing algorithm](https://en.bitcoin.it/wiki/Block_hashing_algorithm) に書かれています。それでも検証する側の計算は、ジェネシスブロックの時と同じ 1 回です。
+
+報酬の宛先がヘッダに含まれるので、見つかった nonce を他人が横取りすることもできません。宛先を自分に変えるとコインベーストランザクションが変わり、Merkle root を通してヘッダも変わるので、それまで条件を満たしていたハッシュ値は使えなくなります。
 
 ---
 
-### nonce の探索と総当たり
+### 次のブロックまでの待ち時間
 
-マイナーは、ヘッダの中の nonce という値を変えながらハッシュを計算し、target 以下の値が出るまで繰り返します。以下は、作業の全体です。
+ターゲットを決めると、1 回の試行で条件を満たす確率は毎回同じ値になります。手元では、ターゲットを 2 の 240 乗にして、この確率を 65,536 分の 1 にしました。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    H["ヘッダを組む<br/>（nonce を含む）"] --> S["SHA-256 を 2 回適用"]
-    S --> J{"target 以下?"}
-    J -->|いいえ| N["nonce を変える"] --> S
-    J -->|はい| B["ブロックを<br/>ネットワークに配る"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+Bitcoin と同じ 80 バイトのヘッダに、直前のブロックが持つハッシュ値を入れ、SHA-256 を 2 回掛けて 3,000 個のブロックをマイニングし、ブロックごとに何回試したかを記録しました。以下は [mine.py](lab/mine.py) から探索する部分を抜き出したものです。
+
+```python
+TARGET = 2 ** 240          # 16 leading zero bits
+BITS = 0x1f010000          # compact form of 2**240
+MERKLE = hashlib.sha256(b"toy merkle root").digest()
+
+
+def mine(prev, height):
+    # version | prev hash | merkle root | time | bits | nonce  (80 bytes)
+    head = struct.pack("<I", 0x20000000) + prev + MERKLE
+    tail = struct.pack("<II", 1700000000 + height, BITS)
+    first = hashlib.sha256(head[:64])          # midstate of the first 64 bytes
+    rest = head[64:] + tail
+    nonce = 0
+    while True:
+        h = first.copy()
+        h.update(rest + struct.pack("<I", nonce))
+        d = hashlib.sha256(h.digest()).digest()
+        # the hash is read as a little-endian number: the last 2 bytes are the top 16 bits
+        if d[30] == 0 and d[31] == 0:
+            assert int.from_bytes(d, "little") < TARGET
+            return d, nonce + 1
+        nonce += 1
 ```
 
-上記の図の試行の繰り返しが採掘で、合格のハッシュが出た時点で、ブロックを有効な候補としてネットワークに配れます。
+3,000 個で 1 億 9,958 万回のハッシュ計算を行い、1 個あたりの試行は平均 66,526 回でした。計算の速さが一定なら試行の回数は時間に比例するので、65,536 回を 10 分として時間に読み替えます。その上で、[wait.py](lab/wait.py) が 3,000 個の間隔をつないだ時間の中からランダムな時刻を 10 万回選び、次のブロックまでの待ちと、その時刻を含む間隔の長さを数えました。
 
-近道として考えられるのは、target 以下のハッシュ値から入力を逆算する方法と、入力を少し変えた時の出力を予測して、当たりを絞る方法です。SHA-256 にはそのどちらも知られておらず、入力を少しずつ変えては出力を確認する総当たりより、必要な試行回数を減らせる方法も見付かっていません。
-
-近道が見付かればこの前提は崩れます。逆算の難しさと、SHA-1 のように近道が見付かった関数の例は [Hash Function](../hash-function/) の「3 つの性質」と「理想から外れた関数」で説明しています。
-
-総当たりの骨格をコードにすると、以下のようになります。header はヘッダを規約どおりに直列化した 80 バイトで、nonce は末尾の 4 バイトに入ります。
-
-```go
-// mine は、2 回の SHA-256 が target 以下になる nonce を探します。
-func mine(header []byte, target *big.Int) (uint32, bool) {
-	buf := make([]byte, len(header))
-	copy(buf, header)
-	for nonce := uint32(0); ; nonce++ {
-		binary.LittleEndian.PutUint32(buf[76:], nonce)
-		first := sha256.Sum256(buf)
-		second := sha256.Sum256(first[:])
-		// Go の SHA-256 が返すバイト列を、Bitcoin の proof of work 判定で
-		// 使う整数の表現に合わせて反転する
-		slices.Reverse(second[:])
-		if new(big.Int).SetBytes(second[:]).Cmp(target) <= 0 {
-			return nonce, true
-		}
-		if nonce == math.MaxUint32 {
-			// nonce を使い切った。ヘッダの別の項目を変えて再挑戦する
-			return 0, false
-		}
-	}
-}
+```python
+for _ in range(100_000):
+    sent = random.uniform(0, ends[-1])
+    i = bisect.bisect_right(ends, sent)              # the next block after sending
+    waits.append(ends[i] - sent)
+    hit.append(gaps[i])
 ```
 
-上記のコードの反転は、ハッシュ値の整数としての読み方を Bitcoin の判定に合わせる処理です。外れたハッシュは捨てるだけで、次の試行には引き継がれません。
+```text
+blocks: 3000
+mean_gap: 10.2
+gap_over_20: 0.141
+gap_over_30: 0.051
+longest_gap: 79.5
+shortest_gap_s: 0.1
+mean_wait: 10.0
+mean_gap_containing_send: 20.1
+gaps_over_10: 1131
+mean_rest_after_10: 10.1
+```
 
-nonce は 4 バイトなので、全て試しても約 43 億通り（2^32 通り）です。target の節の図で引いた破線がこの上限で、例えば合格の確率が 1/2^76 ほどの水準では、43 億回を全て試しても合格する確率は 2^-44 ほどしかありません。しかも現在の採掘装置は毎秒それを超える回数を計算します。nonce を使い切ったら、ヘッダの別の場所を変えて続けるしかありません。
-
-ヘッダには、ブロック内の全トランザクションから計算した[ルートハッシュ](../bitcoin-merkle-tree/)が入っており、トランザクションが 1 つ変わればヘッダも変わります。先頭のトランザクションは、ブロックを作ったマイナーが報酬を自分宛に受け取るコインベーストランザクションです。nonce が一巡するたびに、コインベーストランザクションに入った extraNonce という領域を増やしてルートハッシュを作り直せば、nonce の全パターンをもう一度試せます（[Bitcoin Wiki](https://en.bitcoin.it/wiki/Block_hashing_algorithm)）。
+冒頭に置いた図の左側のとおり、間隔は短いものほど多く、20 分を超えた間隔が 14.1%、30 分を超えた間隔が 5.1%、最も長い間隔は 79.5 分でした。毎回の試行が前の試行と無関係に一定の確率で当たるので、間隔は平均 10 分の[指数分布](/ml/math/probability-distributions/)に従います。
 
 <br>
 
-合格した nonce は、横取りしても自分のブロックには使えません。nonce が合格するのはそのヘッダ全体のハッシュに対してだけなので、報酬の宛先を自分に変えるとコインベーストランザクションが変わり、ルートハッシュ経由でヘッダも変わり、それまでの合格は引き継がれません。新しいハッシュ値で条件を満たすか、改めて確認する必要があります。作業の成果は、作業を始める前に固定したブロックの中身（報酬の宛先を含む）にしか使えません。
+#### 待った時間は残りを減らさない
+
+指数分布には、既に待った時間が残りの待ち時間を変えない無記憶性（memoryless property）があります。nonce を何回外しても、次の 1 回が当たる確率は 65,536 分の 1 のままだからです。手元でも、10 分を超えた 1,131 個の間隔では、10 分を過ぎてから次のブロックまでの残りが平均 10.1 分でした。
+
+「10 分待ったから、もうすぐ来る」は成り立ちません。送った時刻がいつでも、その時点からの待ちは平均 10 分です。
+
+<br>
+
+#### 長い間隔ほど送った時刻を含みやすい
+
+もう 1 つの理由は、ランダムな時刻が長い間隔に落ちやすいことです。手元の 40 個の間隔に、送った時刻を 60 回落として数えました。
+
+{{< figure src="images/pow_inspection.webp" alt="横長の帯を 40 個の間隔に区切った図。帯の合計は約 410 分。20 分以上の間隔 6 個（21・23・56・26・21・26 分）は茶色で、合計で帯の 42% を占める。帯の上にランダムに選んだ送信の時刻 60 個が ▼ で並び、そのうち 29 個が茶色の間隔に落ちている" caption="長い間隔ほど、ランダムな送信の時刻を含みやすい（手元の高さ 1,121〜1,160）" align="center" >}}
+
+20 分以上の間隔は 40 個のうち 6 個ですが、時間では帯の 42% を占め、60 回のうち 29 回がそこに落ちました。
+
+時刻が間隔に落ちる確率は間隔の長さに比例するので、79.5 分の間隔は、0.1 秒の間隔より 4 万倍以上の確率で選ばれます。そのため、送った時刻を含む間隔の平均は 20.1 分と、間隔全体の平均のほぼ 2 倍になり、その間隔の残り半分を待つと 10 分になります。この偏りは検査のパラドックス（inspection paradox）と呼ばれ、バスがばらばらに来る停留所でも同じことが起きます。
+
+6 承認を待つ処理なら、最初の承認までの 10 分に、残る 5 個の間隔で 50 分を足して、平均でおよそ 60 分です。ただし、間隔は平均の周りに集まらず、7 個に 1 個は 20 分を超えます。タイムアウトを平均だけから決めると、この長い間隔に当たります。
 
 ---
 
-### 実際のヘッダによる合格判定
+### 難易度の調整
 
-採掘で合格する値を探す代わりに、すでに見つかっている値を検証してみます。対象は Bitcoin メインネットの最初のブロック（genesis block）です。[Bitcoin Core の chainparams.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/kernel/chainparams.cpp) に、ヘッダを作る値と期待されるハッシュ値が記載されています。
+ここまでは計算の速さを一定としました。実際には、マイナーが機械を増やすと試行の回数が増え、同じターゲットのままでは間隔が縮みます。
 
-ヘッダの材料は次の通りです。ルートハッシュの全桁は、後述のコードに記載しています。
+Bitcoin Core は 2,016 個（10 分ごとなら 2 週間）ごとに、直前の 2,016 個に掛かった時間を 2 週間と比べてターゲットを掛け直します。[pow.cpp](https://github.com/bitcoin/bitcoin/blob/v30.0/src/pow.cpp) にある `CalculateNextWorkRequired` から抜粋しました。
 
-| 項目 | 値 |
-| --- | --- |
-| version | 1 |
-| 直前のブロックのハッシュ | 32 バイトすべて 0 |
-| Merkle root | `4a5e1e4b…fdeda33b`（表示順） |
-| 時刻 | 1231006505（Unix 時刻） |
-| bits | `0x1d00ffff` |
-| nonce | 2083236893 |
-
-この bits は、係数 `0x00ffff` と指数 `0x1d` に分けて読めます。この値に対する target は `0x00ffff × 256^(0x1d - 3)` です。一般の bits の検証では、負の値や範囲外の値なども拒否する必要がありますが、ここでは既知の正しい値を展開します。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TD
-    B["bits = 0x1d00ffff"] --> T["targetを復元"]
-    H["80バイトのヘッダ"] --> D["SHA-256を2回適用"]
-    D --> V["結果をlittle-endianの整数として読む"]
-    T --> C{"ハッシュ値 ≤ target"}
-    V --> C
-    C -->|"はい"| Y["PoW条件を満たす"]
-    C -->|"いいえ"| N["PoW条件を満たさない"]
+```cpp
+// Limit adjustment step
+int64_t nActualTimespan = pindexLast->GetBlockTime() - nFirstBlockTime;
+if (nActualTimespan < params.nPowTargetTimespan/4)
+    nActualTimespan = params.nPowTargetTimespan/4;
+if (nActualTimespan > params.nPowTargetTimespan*4)
+    nActualTimespan = params.nPowTargetTimespan*4;
+...
+bnNew *= nActualTimespan;
+bnNew /= params.nPowTargetTimespan;
 ```
 
-[verify_genesis.py](lab/verify_genesis.py) は、80 バイトのヘッダを組み立て、上記の比較を行う Python 標準ライブラリだけのスクリプトです。ネットワークには接続しません。リポジトリのルートから実行できます。
+`nPowTargetTimespan` は 2 週間の秒数で、掛かった時間は、マイナーがヘッダに書いた時刻の差から求めます。ヘッダの時刻はマイナーの申告で、どこまで信用するかの規則は本記事では扱いません。
 
-以下が `verify_genesis.py` の全体です。
+全ての参加者が同じヘッダの列から同じ値を計算できるので、調整に管理者は必要ありません。1 週間で 2,016 個が見つかれば、ターゲットは半分になり、難易度は 2 倍になります。1 回で変えられる幅は 4 倍から 4 分の 1 までに抑えられています。なお、時間を測る起点は 2,016 個のうち最初のブロックなので、測っているのは 2,015 個分の間隔です。初期の実装から残る差で、今も変わっていません。
+
+<br>
+
+#### 公開データで見た 17 年分の調整
+
+[mempool.space の API](https://mempool.space/docs/api/rest) から、難易度が変わった調整を全て取得して並べました（2026 年 11 月 13 日取得）。
+
+{{< figure src="images/pow_retarget.webp" alt="横軸は 2010〜2026 年、縦軸は 1 回の調整で難易度が変わった倍率の対数目盛り。468 個の点の大半は 0.8〜1.3 倍に集まり、2010〜2011 年は 1.5 倍前後に散らばる。2010 年 7 月 16 日の点は 4.00 倍で、上限 4 倍の赤い破線にちょうど乗る。最も下の点は 2021 年 7 月 3 日の 0.72 倍。下限 1/4 の破線に届いた点は無い" caption="Bitcoin の難易度が変わった調整 468 回の倍率（mempool.space、2026 年 11 月 13 日取得）" align="center" >}}
+
+2010 年 7 月 16 日の調整は 4.00 倍で、上限にちょうど当たりました。直前の 2,016 個が 2 週間の 4 分の 1 より短い時間で見つかり、1 回の調整では追い付けなかったことになります。最も大きく下がったのは 2021 年 7 月 3 日の 0.72 倍で、下限の 4 分の 1 に届いた調整は 17 年で 1 回もありません。
+
+調整は 2 週間に 1 回なので、その間に計算量が変わると、間隔は 10 分からずれたままになります。2026 年 11 月 13 日の 17 時に [mempool.space から取得した値](lab/output/difficulty_adjustment.json)では、今の 2,016 個の区切りは約 95% まで進んでいて、その中の平均間隔は 655 秒（約 10.9 分）、次の調整で予想される変化は -8.3% でした。10 分は長い期間の平均で、2 週間の中では外れることがあります。
+
+---
+
+### 同時に見つかったブロック
+
+マイナーが見つけたブロックは、ネットワークのノードを中継して他のマイナーに届きます。届くまでの間に、別のマイナーが同じ高さのブロックを見つけると、列が 2 本に分かれます。高さは、ジェネシスブロックを 0 として数えたブロックの番号です。
+
+分かれた列から 1 本を選ぶ規則は、ブロックの数ではなく計算量の合計です。Bitcoin Core は、合計が最も大きい列を正しい列とみなし、同じ合計の列が 2 本ある間は、先に受け取った方を使い続けます。
+
+ブロックごとの計算量は、[2 の 256 乗をターゲットに 1 を足した値で割った値](https://github.com/bitcoin/bitcoin/blob/v30.0/src/chain.cpp#L126-L139)で、ジェネシスブロックを検証したコードの `expected` と同じく、期待される試行の回数です。Bitcoin Core は、列ごとにこの値を足した合計を chainwork と呼び、RPC の getblockchaininfo でも同じ名前で返します。
+
+実際に何回試したかは、条件を満たしたハッシュ値からは分かりません。手元の 3,000 個にも、0.1 秒で見つかったブロックと 79.5 分掛かったブロックがありましたが、Bitcoin Core はターゲットが同じなら同じ計算量として数えます。
+
+ターゲットが全て同じなら、計算量の合計が大きい列は長い列と同じです。違いが出るのは、ターゲットの違うブロックが混ざる時です。例えば[テストネット](../testnet-history/)の testnet3 には、20 分ブロックが無ければ最低の難易度で作って良いという規則があります。この規則で作ったブロックは、計算量の合計にはほとんど足されません。
+
+<br>
+
+#### 2 人のマイナーで分岐を起こす
+
+手元のマイニングで分岐を再現しました。[fork.py](lab/fork.py) では、計算能力が 60% のマイナー A と 40% のマイナー B が、同じ 16 ビットのターゲットで SHA-256 を 2 回掛けてマイニングし、相手のブロックを 60 秒後に受け取ります。実際の Bitcoin より長い遅れを置き、分岐を起こしやすくしています。受け取った時の判断は次の部分です。ターゲットが全て同じなので、計算量を足す代わりに高さで比べ、自分の列より高い時だけ乗り換えます。
 
 ```python
-"""Verify the mainnet genesis header, then change its nonce. No network access.
-Reference: Bitcoin Core v30.0 src/kernel/chainparams.cpp (genesis constants).
-This checks only the hash/target comparison, not full block validity.
-"""
-
-from hashlib import sha256
-from pathlib import Path
-import struct
-
-merkle_root = '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b'
-bits = 0x1D00FFFF
-nonce = 2083236893
-header = (
-    struct.pack('<I', 1)
-    + bytes(32)
-    + bytes.fromhex(merkle_root)[::-1]
-    + struct.pack('<III', 1231006505, bits, nonce)
-)
-assert len(header) == 80
-# For this known positive compact target (exponent >= 3).
-# This is not a general-purpose decoder for untrusted nBits values.
-exponent = bits >> 24
-coefficient = bits & 0x007FFFFF
-target = coefficient << (8 * (exponent - 3))
-
-
-def block_hash(data):
-    return sha256(sha256(data).digest()).digest()
-
-
-original = block_hash(header)
-assert original[::-1].hex() == '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'
-changed = block_hash(header[:76] + struct.pack('<I', nonce + 1))
-assert int.from_bytes(original, 'little') <= target
-assert int.from_bytes(changed, 'little') > target
-lines = [
-    f'header_bytes={len(header)}',
-    f'bits={bits:08x}',
-    f'target={target:064x}',
-    f'nonce={nonce}',
-    f'hash={original[::-1].hex()}',
-    'hash <= target: PASS',
-    f'changed_nonce={nonce + 1}',
-    f'changed_hash={changed[::-1].hex()}',
-    'changed_hash <= target: FAIL',
-    'Assertions: PASS',
-]
-summary = '\n'.join(lines) + '\n'
-Path(__file__).with_name('output.txt').write_text(summary)
-print(summary, end='')
+    def receive(self, block):
+        self.known[block["hash"]] = block
+        if block["height"] > self.tip["height"]:   # more work wins; a tie keeps the first seen
+            self.switch(block)
+            return True
+        return False
 ```
 
-```bash
-python3 content/notes/blockchain-systems/proof-of-work/lab/verify_genesis.py
-```
+600 個のブロックが列に載るまで走らせ、そのうち高さ 26 で起きた分岐を記録した時刻のとおりに再生します。
 
-以下は、実際の[出力](lab/output.txt)です。ハッシュ値は、ブロックの識別子として通常使われる表示順で示しています。
+{{< figure src="images/pow_fork.webp" alt="上段はマイナー A、下段はマイナー B が知っている列の動画。高さ 25 までは 2 人とも同じ列。経過 1.9 分に A が高さ 26 を見つけ、2.6 分に、A の 26 を受け取る前の B も自分の高さ 26 を見つける。互いのブロックが届いても同じ高さなので、2 人とも先に見た自分の 26 を使い、列が 2 本に分かれる。7.7 分に A が自分の 26 の上に 27 を見つけ、8.7 分に B に届くと、B は長い方へ乗り換え、B の 26 は赤くなって列から外れる" caption="高さ 26 で分かれた列が 1 本に戻るまで（相手に届くまで 60 秒。記録した時刻を実時間の 60 倍速で再生）" align="center" >}}
+
+A が高さ 26 を見つけてから 45 秒後に、まだ A のブロックを受け取っていない B も高さ 26 を見つけました。2 人とも自分が作った 26 の上でマイニングを続け、先に 27 を見つけた A の列が残りました。B の 26 にトランザクションが入っていれば、そのトランザクションは 1 承認を得た後で列から外れたことになります。
+
+外れたブロックのトランザクションは、ブロックに入る前のトランザクションを置く [mempool](../mempool/) に戻り、別のブロックに入り直すのを待ちます。
 
 ```text
-header_bytes=80
-bits=1d00ffff
-target=00000000ffff0000000000000000000000000000000000000000000000000000
-nonce=2083236893
-hash=000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
-hash <= target: PASS
-changed_nonce=2083236894
-changed_hash=9b227a4a5daa0cbae6874144bc5d7797d0513e320aceadeb3b06304971a41b1c
-changed_hash <= target: FAIL
-Assertions: PASS
+delay=60s (1311 ticks) tick=0.0458s blocks_on_main=600
+miner A: found=374 stale=7 stale_rate=0.019
+miner B: found=254 stale=21 stale_rate=0.083
+all: found=628 stale=28 stale_rate=0.045
 ```
 
-最初のハッシュ値は target 以下なので合格しました。nonce を 1 増やした場合は、大きく異なるハッシュ値になり、この例では不合格です。元の値に近い nonce が、条件を満たすハッシュ値に近づくわけではありません。
+見つかった 628 個のうち 28 個（4.5%）が列から外れました。外れた割合は、A の 1.9% に対して B は 8.3% です。分岐した後に次のブロックを見つけるのは、計算能力の大きい A であることが多いためです。遅れを 6 秒にすると、602 個のうち外れたのは 2 個（0.3%）でした。
 
-検証に必要なのは、このヘッダのハッシュを再計算することだけでした。2083236893 という nonce の値は、マイナーがその回数だけ試した証拠ではありません。また、このスクリプトはハッシュ値と target の比較だけを行います。トランザクションの正しさや、その高さで要求される bits かどうかまで確認するブロック全体の検証とは範囲が異なります。
+計算能力の小さいマイナーほど、自分のブロックを失いやすくなります。この不利に、ASIC の性能を競う装置の競争が重なり、計算能力は大きな事業者や、複数のマイナーが報酬を分け合うマイニングプールに集まりやすくなります。
 
 ---
 
-### 難易度の調整と平均 10 分
+### 何承認を待てば覆らないか
 
-難易度は合格の厳しさを表す値で、target が小さいほど高くなります。ネットワーク全体のハッシュ計算能力は、装置の追加や撤退で常に変わります。target が固定なら、ハッシュ計算能力が増えるほどブロックの平均の間隔は縮み、[Bitcoin Block](../bitcoin-block/) で前提にした「およそ 10 分に 1 個」は保てません。
+分岐は偶然でも起きますが、攻撃者は意図して起こせます。攻撃者は、店に送金するトランザクションを公開する一方で、同じコインを自分宛てに送るトランザクションを入れた列を隠れてマイニングします。店が商品を渡した後に、隠していた列が公開されている列より長くなれば、ノードは隠していた列に乗り換え、店への送金は無かったことになります。同じコインを 2 回使うこの攻撃を二重使用（double spending）と呼びます。
 
-このずれを補正する規則は次のとおりです。[Bitcoin Developer Guide](https://developer.bitcoin.org/devguide/block_chain.html) によると、2,016 ブロックごとに、期間の最初と最後のブロックのヘッダ時刻の差を求め、理想値の 1,209,600 秒（2 週間、10 分 × 2,016 ブロック）と比べて target を比例配分で調整します。1 回の調整幅には上限があり、難易度を上げる方向は 4 倍（+300%）、下げる方向は 4 分の 1（−75%）までです。
+手元でも、分岐の実験と同じ 16 ビットのターゲットで、計算能力 40% の攻撃者に二重使用を 200 回試させました。[double_spend.py](lab/double_spend.py) では、店は 2 承認で商品を渡し、攻撃者は隠した列が公開の列より長くなった時点で公開し、5 個遅れたら諦めます。ネットワークの遅れは置いていません。判断は次の部分です。
 
-[Bitcoin Core の実装](https://github.com/bitcoin/bitcoin/blob/v30.0/src/pow.cpp)で時刻を比較するのは、2,016 個のブロックの両端です。実際の差は 2,015 区間分ですが、比較する基準は 2,016 区間分の 2 週間です。ここでは Bitcoin メインネットの規則を扱っています。
-
-この調整が目指すのは、長期的な平均がおよそ 10 分に戻ることだけです。個々のブロックの間隔は試行の運でばらつき、参加するハッシュ計算能力が急に変わっても、次の調整までは前の target のまま進みます。
-
-以下が調整の繰り返しです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    B["期間の最初と最後の<br/>ヘッダ時刻の差を求める"] --> C{"2 週間より<br/>短い?"}
-    C -->|"短い（速すぎ）"| D["target を小さくして<br/>条件を厳しく"]
-    C -->|"長い（遅すぎ）"| E["target を大きくして<br/>条件を緩く"]
-    D --> F["次の 2,016 ブロック"] --> B
-    E --> F
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```python
+h, a = chains["honest"].height, chains["attacker"].height
+if paid_at is None and h >= Z:
+    paid_at = tick                     # the shop hands over the goods
+if paid_at is not None and a > h:
+    return True, tick, paid_at, events # publish: the payment disappears
+if h - a >= GIVE_UP:
+    return False, tick, paid_at, events
 ```
 
-上記の図の実測に使う時刻は、マイナーが申告するヘッダの時刻です。全参加者が同じヘッダの列から同じ規則で次の target を計算できるため、難易度の調整に管理者は必要ありません。申告された時刻をどこまで信用するか、偽装にどう耐えるかの検証規則は、本記事では扱いません。[Bitcoin Block](../bitcoin-block/) のノートで「条件の厳しさは自動で調整される」と書いた仕組みの中身が、この 2,016 ブロックごとの再計算です。
+{{< figure src="images/pow_double_spend.webp" alt="上段は公開されている列、下段は攻撃者が隠している列の動画。どちらも左の共通のブロックから分かれる。0.1 分に公開の列の 1 個目（店への送金）、3.8 分に 2 個目が見つかり、送金が 2 承認になって店は商品を渡す。この時点で隠している列は 0 個。9.1 分から攻撃者の列が伸び始め、16.4 分に公開の列は 3 個、17.8 分に隠した列も 3 個になる。23.9 分に隠した列が 4 個になって公開の 3 個を追い越し、公開されると、公開されていた 3 個は赤くなって外れ、店への送金が消える" caption="攻撃者の隠した列が、2 承認の後に公開の列を追い越すまで（200 回のうち 65 回目。記録した時刻を実時間の 150 倍速で再生）" align="center" >}}
 
----
+200 回のうち 103 回（51.5%）で、攻撃者の列が追い越しました。図の回では、店が商品を渡した 3.8 分の時点で攻撃者の列は 0 個でしたが、23.9 分に 4 個で公開の 3 個を追い越しています。2 承認の時点で遅れていても、攻撃者は諦めない限り追い付く機会があります。
 
-### 書き換えのコスト
+過去のブロックを書き換えるには、そのブロックと後に続くブロック全てで PoW をやり直し、さらに正直なノードの列に追い付いて追い越す必要があります。
 
-[Bitcoin Block](../bitcoin-block/) では、過去のトランザクションを書き換えると後続の全ヘッダの作り直しが必要だと説明しました。その作り直し 1 回ごとにコストを課しているのが proof of work です。ホワイトペーパーには「過去のブロックを書き換えるには、そのブロックと後続の全ブロックの proof of work をやり直し、さらに正直なノードの作業に追い付いて追い越す必要がある」と書かれています。
+Bitcoin の[ホワイトペーパー](https://bitcoin.org/bitcoin.pdf)は 11 章で、攻撃者が握る計算能力の割合を q として、z 承認を待った後に攻撃者が追い付く確率を式で示しています。その式を Python にしました。
 
-正直なマイナーは、規則どおりにブロックを作り、見つけたらすぐ公開する参加者です。追い付く必要があるのは、書き換えの間もその列が伸び続けるからです。
+```python
+import math
 
-ホワイトペーパーは「CPU 能力の過半数を正直なノードが握っていれば、正直なチェーンが最も速く伸び、競合するどのチェーンも引き離す」とも述べています。逆に言えば、書き換えの難しさはハッシュ計算能力の過半数を正直なマイナーが持つことを前提にしており、そこが崩れた場合の保証はありません。
 
-以下は、攻撃者が強いられる競争です。
+def whitepaper(q, z):
+    p = 1 - q
+    if q >= p:
+        return 1.0                        # the attacker catches up with certainty
+    lam = z * q / p
+    s = 1.0
+    for k in range(z + 1):
+        poisson = math.exp(-lam) * lam ** k / math.factorial(k)
+        s -= poisson * (1 - (q / p) ** (z - k))
+    return s
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph HN["正直なマイナー"]
-        R["平均およそ 10 分に 1 個<br/>積み続ける"]
-    end
-    subgraph AT["書き換えたい攻撃者"]
-        W["ブロック N から<br/>proof of work をやり直す"] --> X["正直な列より<br/>累積期待作業量を大きくする"]
-    end
-    X -.過半数未満なら<br/>長期的には不利.-> R
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+
+if __name__ == "__main__":
+    print("q     z=1        z=3        z=6        z=10")
+    for q in (0.1, 0.2, 0.3, 0.4, 0.45, 0.5):
+        print(f"{q:.2f}  " + "  ".join(f"{whitepaper(q, z):.7f}" for z in (1, 3, 6, 10)))
 ```
 
-上記の図の競争では、攻撃者のハッシュ計算能力が過半数未満でも、一時的に追い付くことはあり得ます。ただし、トランザクションの後に続くブロックが増えるほど、追い付く確率は下がります。ホワイトペーパーも、追い付くべきブロック数が増えるほど攻撃者の成功確率は指数的に下がると分析しています。この確率と[承認数](../bitcoin-block/)の関係から、トランザクションがブロックに入った直後には支払い完了と判断せず、[後続のブロックを待ちます](../finality/)。
+```text
+q     z=1        z=3        z=6        z=10
+0.10  0.2045873  0.0131722  0.0002428  0.0000012
+0.20  0.4158994  0.1032416  0.0142506  0.0010670
+0.30  0.6277491  0.3245841  0.1321112  0.0416605
+0.40  0.8288610  0.6641680  0.5039803  0.3599763
+0.45  0.9197758  0.8443950  0.7661055  0.6854240
+0.50  1.0000000  1.0000000  1.0000000  1.0000000
+```
+
+q が 10% で 6 承認なら 0.0243% と、ホワイトペーパーの表と同じ値になりました。手元の実験と同じ q = 40%、2 承認では、式の値は 73.6% です。
+
+手元の 51.5% がこれより低いのは、主に勝ちの条件が違うためです。ホワイトペーパーの式は攻撃者が追い付く、つまり並ぶ確率ですが、double_spend.py は追い越した時点で勝ちとしています。実験と同じ条件の確率を [catch_up.py](lab/catch_up.py) で計算すると、並べば勝ちなら 70.4%、追い越して勝ちなら 52.9% でした。5 個遅れたら諦める規則で下がるのは、そこから 48.4% までの 4.5 ポイントほどで、200 回の 51.5% はこの値に近い結果です。
+
+{{< figure src="images/pow_attack.webp" alt="横軸は待った承認数 z（0〜10）、縦軸は攻撃者が追い付く確率の対数目盛り。q = 10% の線は 6 承認で約 2.4 × 10^-4、10 承認で約 1.2 × 10^-6 まで下がる。q = 20%、30% は緩やかに下がり、q = 40%、45% は 10 承認でも 0.36、0.69 に留まる。q = 50% 以上は承認数に関係なく 1 の水平線" caption="攻撃者が握る計算能力の割合 q ごとに見た、承認数と追い付く確率（ホワイトペーパーの式）" align="center" >}}
+
+承認数を増やすと確率が下がるのは、q が 50% より小さい時だけです。q が 30% なら 6 承認でも 13%、q が 50% 以上なら、何承認を待っても攻撃者はいずれ追い付きます。6 承認という目安は、攻撃者の計算能力が小さいことを前提にした数です。なお、ホワイトペーパーの式は攻撃者の進み方を近似していて、厳密な値は、二重使用の確率を解析した Meni Rosenfeld の[論文](https://arxiv.org/abs/1402.2009)が示しています。
+
+<br>
+
+#### Ethereum Classic で 123 個のブロックが置き換わった
+
+計算能力の過半を握られたと見られる例として、2019 年 1 月の [Ethereum Classic](https://ethereumclassic.org/)（ETC）があります。ETC は、PoW でブロックを作るチェーンです。[Coinbase の報告](https://web.archive.org/web/20211208093157/https://blog.coinbase.com/ethereum-classic-etc-is-currently-being-51-attacked-33be13ce32de)によると、1 月 5〜7 日に 15 回の深い置き換え（reorg）が観測され、そのうち 12 回に二重使用が含まれていました。二重使用の合計は 219,500 ETC で、当時の価格で約 110 万ドルです。
+
+最も深い置き換えでは、123 個のブロックが 140 個のブロックに置き換わりました。Bitcoin でよく使われる 6 承認の 20 倍を超える深さです。
+
+これだけ深く置き換えられたのは、攻撃者がその間、計算能力の過半を握っていたためだと考えられます。q が 50% を超えれば、上の図のとおり承認数では防げません。同じ報告は、正しい列を決めるのはブロックの数ではなく計算量の合計だと、脚注で断っています。Coinbase はこの後、ETC の入出金を止め、再開した時には多くの承認数を求めました。
 
 ---
 
-### 利点
+### 他の仕組みとの比較
 
-- 参加に許可も名簿も必要なく、誰でも採掘と検証に加われる
-- 生成には平均して大きな作業量が必要な一方で、検証は 1 度の計算し直しで済む
-- 偽の参加者を量産しても、ブロック追加の多数決の票は増えない
-- 難易度の調整によって、参加するハッシュ計算能力が増減してもブロック間隔の長期的な平均がおよそ 10 分に戻る
+Bitcoin には参加者の名簿が無いので、ノードの数で多数決を取ると、1 人が多数のノードを立てて票を握れます。この攻撃を[シビル攻撃（Sybil attack）](/notes/distributed-systems/byzantine-fault-tolerance/#参加者の決め方と票の重み)と呼びます。IP アドレスごとに 1 票では、多数の IP アドレスを確保できる者に乗っ取られます。PoW は、ホワイトペーパーの言葉では本質的に 1 CPU 1 票です。ノードを増やしても計算能力は増えないので、票を増やすには実際の装置と電力が必要です。
+
+同じ問題を別の資源で解く仕組みと、同じ計算をブロックチェーンの外で使う仕組みを並べます。
+
+| 仕組み | 重みにするもの | 覆りにくさ |
+|---|---|---|
+| PoW（Bitcoin） | 計算量 | 承認数とともに上がるが、確定は無い |
+| [Proof of Stake](../proof-of-stake/)（Ethereum） | 預けた資産 | 投票が集まると確定する |
+| [Proof of Authority](../proof-of-authority/) | 認められた署名者 | 方式による。票を集める [QBFT](https://docs.besu-eth.org/private-networks/concepts/poa) は確定する |
+| [Anubis](https://github.com/TecharoHQ/anubis)（Web のボット対策） | 訪問ごとの計算量 | 列が無く、覆す対象が無い |
+
+Proof of Stake では、預けた資産の量に応じて投票し、投票が 3 分の 2 を超えたブロックは確定します。確定したブロックを覆すには、資産の 3 分の 1 以上を預けた参加者が規則に反する投票をする必要があり、その資産は没収されます。PoW には確定の段階が無く、承認数が増えるほど覆る確率が下がるだけです。確定の考え方は [Finality](../finality/) で比べています。
+
+PoW の計算は、条件を満たす値を探す以外に使い道が無く、装置と電力を使い続けます。ただし、そのコストが票の偽造を高くしているので、消費を減らせば安全の根拠も弱まります。参加者の名簿を用意できるネットワークなら、[Leader and Followers](/notes/distributed-systems/leader-and-followers/) や[クォーラム](/notes/distributed-systems/quorum/)のように、参加者を前提にした方法も選べます。
+
+<br>
+
+#### ブロックチェーン以外で使う PoW
+
+PoW は Bitcoin より古く、ホワイトペーパーは、電子メールの送信に少量の計算を課して大量の送信を防ぐ [Hashcash](http://www.hashcash.org/papers/hashcash.pdf) に似た仕組みとして導入しています。
+
+Web では、AI のクローラーからサイトを守る Anubis が同じ形を使います。ブラウザは、サーバーが渡した文字列に nonce をつないだ SHA-256 の 16 進表記が、決められた数の 0 で始まるまで計算を続け、サーバーは 1 回のハッシュ計算で検証します。
+
+v1.28.2 の [anubis.go](https://github.com/TecharoHQ/anubis/blob/v1.28.2/anubis.go) では求める 0 の数は既定で 4 個です。16 進の 4 桁は 16 ビットなので、本記事の実験と同じく平均 65,536 回の試行です。[Tor](/notes/security/tor/) も、2023 年の 0.4.8 から、onion service が接続の前に計算を求める[防御](https://blog.torproject.org/introducing-proof-of-work-defense-for-onion-services/)を入れています。既定では無効で、運用者が有効にすると負荷が高い時だけ計算を求めます。
+
+どれも、作る側に多くの試行を求め、検証する側は 1 回の計算で済む点は Bitcoin と同じです。Bitcoin はその計算を列の重みとして積み上げ、どの履歴を残すかまで決めています。
 
 ---
 
-### 欠点
+### 承認を待つ処理を書く前に
 
-proof of work は、票の偽造を防ぐために電力と装置を使い続けます。その代わりに、次の欠点を抱えます。
+次のブロックに入るトランザクションなら、最初の承認までの時間は、送った時刻によらず平均 10 分で、冒頭に置いた図の右側のとおり、間隔を半分にした 5 分ではありません。手数料が低く mempool で待たされれば、さらに延びます。
 
-- 採掘の計算は合格のハッシュを探すことだけに使われ、大きなハッシュ計算能力の維持には装置と電力のコストが必要
-- ブロック間隔の平均を保つ設計のため、トランザクションが取り込まれるまでの待ち時間は縮まらない
-- ハッシュ計算能力の過半数を握る主体が現れると、書き換えを防ぐ前提が崩れる
-- 採掘が装置の性能競争になり、ハッシュ計算能力が専用ハードウェアを持つ参加者に集中しやすい
+タイムアウトや画面の「あと何分」は平均ではなく分布で決め、20 分を超える間隔が 7 個に 1 個あること、調整までの 2 週間は 10 分からずれることを前提にします。
 
-1 番目の電力は、proof of work への批判で最も多く挙がる点です。計算そのものは合格探し以外の意味を持ちません。しかし、この消費こそが票の偽造を高価にしているので、消費を削れば安全の根拠も一緒に弱まります。
+承認数は、そのチェーンで攻撃者が握れる計算の割合から決めます。Bitcoin のように計算量が大きいチェーンの 6 承認と、計算量が小さいチェーンの 6 承認は、同じ安全さではありません。計算能力が大きな事業者やマイニングプールに集まれば、攻撃者が握れる割合も大きくなり得ます。ETC のように過半を握られると、承認数を増やしても防げないので、置き換えの深さを監視し、入金を止める手順も用意しておきます。
 
----
+1 承認のトランザクションは、手元で分岐を起こした実験のように、計算能力の小さいマイナーのブロックに入っていると列から外れることがあります。承認数が減った時に表示と残高を mempool の状態に戻す処理が必要か、冒頭の待ち時間の図と合わせて見直してください。
 
-### 適さないケース
-
-- 参加者の名簿がある[許可制のネットワーク](../proof-of-authority/)。参加者が既知なら、[Leader and Followers](../../distributed-systems/leader-and-followers/) のような構成や[クォーラム](../../distributed-systems/quorum/)を使う合意方式など、参加者を前提にした方法を選べる
-- 秒単位で確定してほしい決済や更新（ここで扱った Bitcoin の作りでは、ブロックの間隔と確認の積み上げを待つ）
-- 電力と装置のコストを正当化できない規模のシステム
-
-参加者を特定できるネットワークでは、計算作業で票を与える必要があるかを検討します。参加者を選べる場合の合意方式と比べて、装置と電力に掛かるコストを判断します。
+再現に使ったコードと出力は lab ディレクトリにあり、手順は [README.txt](lab/README.txt) に書いています。図は [figures.py](figures.py) で作っています。
