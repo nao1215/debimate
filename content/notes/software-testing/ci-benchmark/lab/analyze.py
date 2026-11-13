@@ -3,8 +3,9 @@
 usage: python3 -I analyze.py > output/analysis.txt
 
 The verdict rule is a simplified copy of himorime's latency comparison
-(median, max_percent 10, confidence 0.95, percentile bootstrap). It leaves out
-the max_cv and min_difference gates, which none of these jobs reached.
+(median, max_percent 10, confidence 0.95, percentile bootstrap, pass when the
+one-sided probability of a regression is at most 5%). It leaves out the max_cv
+and min_difference gates, which none of these jobs reached.
 """
 import csv
 import itertools
@@ -24,17 +25,20 @@ def read(name):
 def verdict(base, head, max_percent=10.0, conf=0.95, n=2000, seed=1):
     rnd = random.Random(seed)
     obs = (st.median(head) / st.median(base) - 1) * 100
-    reg = imp = within = 0
+    eps = 1e-9  # as himorime: a change of exactly the tolerance is not beyond it
+    reg = imp = 0
     for _ in range(n):
         ch = (st.median(rnd.choices(head, k=len(head))) / st.median(rnd.choices(base, k=len(base))) - 1) * 100
-        reg += ch > max_percent
-        imp += ch < -max_percent
-        within += -max_percent <= ch <= max_percent
-    if obs > max_percent and reg / n >= conf:
+        reg += ch > max_percent + eps
+        imp += ch < -max_percent - eps
+    if obs > max_percent + eps and reg / n >= conf:
         return "regression", obs
-    if obs < -max_percent and imp / n >= conf:
+    if obs < -max_percent - eps and imp / n >= conf:
         return "improved", obs
-    if within / n >= conf:
+    # himorime passes when the probability of a regression beyond the
+    # tolerance is small enough (one-sided), not when the change lies within
+    # plus or minus the tolerance.
+    if 1 - reg / n >= conf:
         return "pass", obs
     return "inconclusive", obs
 

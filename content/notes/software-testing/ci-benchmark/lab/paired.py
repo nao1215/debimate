@@ -27,14 +27,16 @@ N = 2000
 
 
 def judge(changes, obs, maxp, conf=0.95):
-    reg = sum(c > maxp for c in changes) / len(changes)
-    imp = sum(c < -maxp for c in changes) / len(changes)
-    within = sum(-maxp <= c <= maxp for c in changes) / len(changes)
-    if obs > maxp and reg >= conf:
+    """himorime's rule: pass when the one-sided probability of a regression
+    beyond maxp is at most 1 - conf; a change of exactly maxp is not beyond it."""
+    eps = 1e-9
+    reg = sum(c > maxp + eps for c in changes) / len(changes)
+    imp = sum(c < -maxp - eps for c in changes) / len(changes)
+    if obs > maxp + eps and reg >= conf:
         return "regression"
-    if obs < -maxp and imp >= conf:
+    if obs < -maxp - eps and imp >= conf:
         return "improved"
-    if within >= conf:
+    if 1 - reg >= conf:
         return "pass"
     return "inconclusive"
 
