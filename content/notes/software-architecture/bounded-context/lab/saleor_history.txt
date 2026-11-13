@@ -1,0 +1,8 @@
+0001_initial.py                          2015-07-14 4bc9b4a6c Make new initial migrations
+0098_discounts_relation.py               2021-03-05 326a5b882 Possibility to apply discount on order (#6930)
+0105_order_total_paid_amount.py          2021-05-10 a79a8b7d3 Add total_paid field on order (#7283)
+0148_auto_20220519_1118.py               2022-05-30 094b1ec0f Add new fields to Order type to show authorize/charge statuses (#9795)
+0180_auto_20231108_0908.py               2023-12-19 f4eeba7fa Extend order with subtotal (#14887)
+0228_add_order_base_prices.py            2026-09-30 c69c56cae Store order base prices in dedicated columns so a dropped tax calculation cannot leave untaxed totals (#19801) (#19806)
+2024-04-16 eb0c3f25e Calculate order promotions in draft order (#15459)
+2026-09-30 c69c56cae Store order base prices in dedicated columns so a dropped tax calculation cannot leave untaxed totals (#19801) (#19806)

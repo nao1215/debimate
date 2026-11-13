@@ -1,9 +1,9 @@
 {
  "path": "content/notes/software-architecture/bounded-context/index.md",
- "overall": 2,
- "product": 2,
- "blob": "1f23f8571b1e5a2a25fc9a6842e05dcaae4f143a",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "09bfb172f1c3e351da35afd1b4adada8235aa35c",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,

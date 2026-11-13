@@ -1,0 +1,32 @@
+normal shared 確定した合計: 88
+     0.001s  total= 80 base_total=  0  値引きの判定用に税抜きの合計を書く
+     0.001s  total= 80 base_total=  0  税の計算を始める
+     2.005s  total= 88 base_total=  0  税込みの合計を保存する
+     2.009s  total= 88 base_total=  0  注文を確定する（total=88）
+normal split  確定した合計: 88
+     0.002s  total= 88 base_total= 80  値引きの判定用に税抜きの合計を書く
+     0.002s  total= 88 base_total= 80  税の計算を始める
+     2.003s  total= 88 base_total= 80  税込みの合計を保存する
+     2.007s  total= 88 base_total= 80  注文を確定する（total=88）
+edit   shared 確定した合計: 80
+     0.004s  total= 80 base_total=  0  値引きの判定用に税抜きの合計を書く
+     0.004s  total= 80 base_total=  0  税の計算を始める
+     1.007s  total= 80 base_total=  0  別の処理が注文の備考を変える
+     2.004s  total= 80 base_total=  0  他の処理が注文を変えていたので、税込みの合計の保存をやめる
+     2.009s  total= 80 base_total=  0  注文を確定する（total=80）
+edit   split  確定した合計: None
+     0.003s  total= 88 base_total= 80  値引きの判定用に税抜きの合計を書く
+     0.003s  total= 88 base_total= 80  税の計算を始める
+     1.005s  total= 88 base_total= 80  別の処理が注文の備考を変える
+     2.012s  total= 88 base_total= 80  他の処理が注文を変えていたので、税込みの合計の保存をやめる
+     2.013s  total= 88 base_total= 80  保存されていない計算があるので、確定を拒否する
+crash  shared 確定した合計: 80
+     0.006s  total= 80 base_total=  0  値引きの判定用に税抜きの合計を書く
+     0.007s  total= 80 base_total=  0  税の計算を始める
+     2.008s  total= 80 base_total=  0  税の計算の途中で処理が落ちる
+     2.013s  total= 80 base_total=  0  注文を確定する（total=80）
+crash  split  確定した合計: 88
+     0.002s  total= 88 base_total= 80  値引きの判定用に税抜きの合計を書く
+     0.003s  total= 88 base_total= 80  税の計算を始める
+     2.003s  total= 88 base_total= 80  税の計算の途中で処理が落ちる
+     2.008s  total= 88 base_total= 80  注文を確定する（total=88）

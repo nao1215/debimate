@@ -1,0 +1,200 @@
+[
+ {
+  "scene": "normal",
+  "design": "shared",
+  "completed_total": 88,
+  "events": [
+   {
+    "t": 0.001,
+    "what": "値引きの判定用に税抜きの合計を書く",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 0.001,
+    "what": "税の計算を始める",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 2.005,
+    "what": "税込みの合計を保存する",
+    "total": 88,
+    "base_total": 0
+   },
+   {
+    "t": 2.009,
+    "what": "注文を確定する（total=88）",
+    "total": 88,
+    "base_total": 0
+   }
+  ]
+ },
+ {
+  "scene": "normal",
+  "design": "split",
+  "completed_total": 88,
+  "events": [
+   {
+    "t": 0.002,
+    "what": "値引きの判定用に税抜きの合計を書く",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 0.002,
+    "what": "税の計算を始める",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 2.003,
+    "what": "税込みの合計を保存する",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 2.007,
+    "what": "注文を確定する（total=88）",
+    "total": 88,
+    "base_total": 80
+   }
+  ]
+ },
+ {
+  "scene": "edit",
+  "design": "shared",
+  "completed_total": 80,
+  "events": [
+   {
+    "t": 0.004,
+    "what": "値引きの判定用に税抜きの合計を書く",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 0.004,
+    "what": "税の計算を始める",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 1.007,
+    "what": "別の処理が注文の備考を変える",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 2.004,
+    "what": "他の処理が注文を変えていたので、税込みの合計の保存をやめる",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 2.009,
+    "what": "注文を確定する（total=80）",
+    "total": 80,
+    "base_total": 0
+   }
+  ]
+ },
+ {
+  "scene": "edit",
+  "design": "split",
+  "completed_total": null,
+  "events": [
+   {
+    "t": 0.003,
+    "what": "値引きの判定用に税抜きの合計を書く",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 0.003,
+    "what": "税の計算を始める",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 1.005,
+    "what": "別の処理が注文の備考を変える",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 2.012,
+    "what": "他の処理が注文を変えていたので、税込みの合計の保存をやめる",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 2.013,
+    "what": "保存されていない計算があるので、確定を拒否する",
+    "total": 88,
+    "base_total": 80
+   }
+  ]
+ },
+ {
+  "scene": "crash",
+  "design": "shared",
+  "completed_total": 80,
+  "events": [
+   {
+    "t": 0.006,
+    "what": "値引きの判定用に税抜きの合計を書く",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 0.007,
+    "what": "税の計算を始める",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 2.008,
+    "what": "税の計算の途中で処理が落ちる",
+    "total": 80,
+    "base_total": 0
+   },
+   {
+    "t": 2.013,
+    "what": "注文を確定する（total=80）",
+    "total": 80,
+    "base_total": 0
+   }
+  ]
+ },
+ {
+  "scene": "crash",
+  "design": "split",
+  "completed_total": 88,
+  "events": [
+   {
+    "t": 0.002,
+    "what": "値引きの判定用に税抜きの合計を書く",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 0.003,
+    "what": "税の計算を始める",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 2.003,
+    "what": "税の計算の途中で処理が落ちる",
+    "total": 88,
+    "base_total": 80
+   },
+   {
+    "t": 2.008,
+    "what": "注文を確定する（total=88）",
+    "total": 88,
+    "base_total": 80
+   }
+  ]
+ }
+]
