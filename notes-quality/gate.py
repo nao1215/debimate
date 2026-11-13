@@ -27,7 +27,7 @@ import no_chain  # noqa: E402  名詞を「の」で 3 つ以上つなぐ表現�
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-TYPES = ['フラット', '場面', '結果', '誤解', '問い']
+TYPES = ['フラット', '場面', '結果', '誤解', '問い', '予想', '主張', '感覚', '一覧', '身近', '症状', '歴史', 'やめた話', '話題', '戸惑い', '先に断る', '他の手', '道具を認め']
 NOTE_RE = re.compile(r'(?:content/notes|projects/ml/notes)/([^/]+)/([^/]+)/index\.md$')
 SMALL = 5          # 小さな修正とみなす足した行の数
 MAJOR_LINES = 40   # これ以上足した改稿は全部の規則で見る
@@ -184,9 +184,10 @@ def opening_type(key):
     for line in open(cp, encoding='utf-8'):
         if line.startswith('|') and '冒頭の型' in line:
             cell = line.strip().strip('|').split('|')[-1]
-            for t in TYPES:
-                if t in cell:
-                    return t
+            # 理由の文に別の型の語が出ても、最初に書いた型を取る
+            hits = sorted((cell.find(t), t) for t in TYPES if t in cell)
+            if hits:
+                return hits[0][1]
     return None
 
 
