@@ -21,7 +21,7 @@ jobs:
   refresh:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Rebuild the style baseline
         run: python3 notes-quality/refresh_style.py
       - name: Commit if changed
