@@ -1,0 +1,15 @@
+groups:
+  - name: postgres
+    rules:
+      # よく見る形: DB に繋がらない時に鳴らす
+      - alert: PostgresDown
+        expr: pg_up == 0
+        for: 15s
+      # collector ごとの失敗で鳴らす
+      - alert: CollectorFailed
+        expr: pg_scrape_collector_success == 0
+        for: 15s
+      # グラフに使っている系列が消えたら鳴らす
+      - alert: CheckpointSeriesAbsent
+        expr: absent(pg_stat_bgwriter_checkpoints_req_total)
+        for: 15s

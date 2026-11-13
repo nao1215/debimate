@@ -1,0 +1,56 @@
+pg16-v0.15.0: 307 names
+pg17-v0.15.0: 311 names
+pg17-v0.17.1: 319 names
+pg17-v0.20.1: 318 names
+## pg16-v0.15.0 にあり pg17-v0.15.0 に無い
+pg_settings_db_user_namespace
+pg_settings_old_snapshot_threshold_seconds
+pg_stat_bgwriter_buffers_alloc_total
+pg_stat_bgwriter_buffers_backend_fsync_total
+pg_stat_bgwriter_buffers_backend_total
+pg_stat_bgwriter_buffers_checkpoint_total
+pg_stat_bgwriter_buffers_clean_total
+pg_stat_bgwriter_checkpoint_sync_time_total
+pg_stat_bgwriter_checkpoint_write_time_total
+pg_stat_bgwriter_checkpoints_req_total
+pg_stat_bgwriter_checkpoints_timed_total
+pg_stat_bgwriter_maxwritten_clean_total
+pg_stat_bgwriter_stats_reset_total
+## pg16-v0.15.0 にあり pg17-v0.17.1 に無い（DB と exporter の両方を上げた前後）
+pg_settings_db_user_namespace
+pg_settings_old_snapshot_threshold_seconds
+pg_stat_bgwriter_buffers_backend_fsync_total
+pg_stat_bgwriter_buffers_backend_total
+pg_stat_bgwriter_buffers_checkpoint_total
+pg_stat_bgwriter_checkpoint_sync_time_total
+pg_stat_bgwriter_checkpoint_write_time_total
+pg_stat_bgwriter_checkpoints_req_total
+pg_stat_bgwriter_checkpoints_timed_total
+## pg17-v0.17.1 にあり pg17-v0.20.1 に無い
+pg_stat_archiver_last_archive_age
+## pg17-v0.20.1 にあり pg17-v0.17.1 に無い（数だけ）
+0
+## pg17-v0.17.1 の checkpoint 関連
+pg_settings_checkpoint_completion_target
+pg_settings_checkpoint_flush_after_bytes
+pg_settings_checkpoint_timeout_seconds
+pg_settings_checkpoint_warning_seconds
+pg_settings_log_checkpoints
+## pg17-v0.15.0 の /metrics から pg_up と collector ごとの成否（本文の抜粋の元）
+# HELP pg_scrape_collector_success postgres_exporter: Whether a collector succeeded.
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+# HELP pg_up Whether the last scrape of metrics from PostgreSQL was able to connect to the server (1 for yes, 0 for no).
+pg_up 1
+## pg17-v0.17.1 の /metrics から pg_stat_bgwriter_ の値（本文の抜粋の元）
+pg_stat_bgwriter_buffers_alloc_total 87
+pg_stat_bgwriter_buffers_clean_total 0
+pg_stat_bgwriter_maxwritten_clean_total 0
+pg_stat_bgwriter_stats_reset_total 1.794577808e+09

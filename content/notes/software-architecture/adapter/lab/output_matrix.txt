@@ -1,28 +1,212 @@
-== PostgreSQL 15.19
-exporter v0.15.0: pg_up=1 collectors=9 failed=[] pg_metric_names=299 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.16.0: pg_up=1 collectors=10 failed=[] pg_metric_names=302 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=303 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=303 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=302 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=302 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-== PostgreSQL 16.15
-exporter v0.15.0: pg_up=1 collectors=9 failed=[] pg_metric_names=307 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.16.0: pg_up=1 collectors=10 failed=[] pg_metric_names=310 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=311 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=311 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=310 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=310 checkpoint_timed=pg_stat_bgwriter_checkpoints_timed_total
-== PostgreSQL 17.11
-exporter v0.15.0: pg_up=1 collectors=9 failed=[stat_bgwriter] pg_metric_names=311 checkpoint_timed=なし
-exporter v0.16.0: pg_up=1 collectors=10 failed=[stat_bgwriter] pg_metric_names=314 checkpoint_timed=なし
-exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=319 checkpoint_timed=なし
-exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=328 checkpoint_timed=pg_stat_checkpointer_num_timed_total
-exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=318 checkpoint_timed=なし
-exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=327 checkpoint_timed=pg_stat_checkpointer_num_timed_total
-== PostgreSQL 18.6
-exporter v0.15.0: pg_up=1 collectors=9 failed=[stat_bgwriter] pg_metric_names=325 checkpoint_timed=なし
-exporter v0.16.0: pg_up=1 collectors=10 failed=[stat_bgwriter] pg_metric_names=328 checkpoint_timed=なし
-exporter v0.17.1: pg_up=1 collectors=10 failed=[] pg_metric_names=333 checkpoint_timed=なし
-exporter v0.17.1+ckpt: pg_up=1 collectors=11 failed=[] pg_metric_names=342 checkpoint_timed=pg_stat_checkpointer_num_timed_total
-exporter v0.20.1: pg_up=1 collectors=15 failed=[] pg_metric_names=332 checkpoint_timed=なし
-exporter v0.20.1+ckpt: pg_up=1 collectors=16 failed=[] pg_metric_names=341 checkpoint_timed=pg_stat_checkpointer_num_timed_total
+## postgres 15 / exporter v0.15.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 15 / exporter v0.16.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 15 / exporter v0.17.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 15 / exporter v0.20.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slots"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="settings"} 1
+pg_scrape_collector_success{collector="stat_activity"} 1
+pg_scrape_collector_success{collector="stat_archiver"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_progress_vacuum"} 1
+pg_scrape_collector_success{collector="stat_replication"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 16 / exporter v0.15.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 16 / exporter v0.16.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 16 / exporter v0.17.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 16 / exporter v0.20.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slots"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="settings"} 1
+pg_scrape_collector_success{collector="stat_activity"} 1
+pg_scrape_collector_success{collector="stat_archiver"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_progress_vacuum"} 1
+pg_scrape_collector_success{collector="stat_replication"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 17 / exporter v0.15.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+ts=2026-11-13T13:10:43.186Z caller=collector.go:202 level=error msg="collector failed" name=stat_bgwriter duration_seconds=0.001976976 err="pq: column \"checkpoints_timed\" does not exist"
+## postgres 17 / exporter v0.16.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+time=2026-11-13T13:10:46.806Z level=ERROR source=collector.go:201 msg="collector failed" name=stat_bgwriter duration_seconds=0.005710837 err="pq: column \"checkpoints_timed\" does not exist"
+## postgres 17 / exporter v0.17.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 17 / exporter v0.20.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slots"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="settings"} 1
+pg_scrape_collector_success{collector="stat_activity"} 1
+pg_scrape_collector_success{collector="stat_archiver"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_progress_vacuum"} 1
+pg_scrape_collector_success{collector="stat_replication"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 18 / exporter v0.15.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+ts=2026-11-13T13:11:02.800Z caller=collector.go:202 level=error msg="collector failed" name=stat_bgwriter duration_seconds=0.001648772 err="pq: column \"checkpoints_timed\" does not exist"
+## postgres 18 / exporter v0.16.0
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+time=2026-11-13T13:11:06.411Z level=ERROR source=collector.go:201 msg="collector failed" name=stat_bgwriter duration_seconds=0.004431417 err="pq: column \"checkpoints_timed\" does not exist"
+## postgres 18 / exporter v0.17.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slot"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1
+## postgres 18 / exporter v0.20.1
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="locks"} 1
+pg_scrape_collector_success{collector="replication"} 1
+pg_scrape_collector_success{collector="replication_slots"} 1
+pg_scrape_collector_success{collector="roles"} 1
+pg_scrape_collector_success{collector="settings"} 1
+pg_scrape_collector_success{collector="stat_activity"} 1
+pg_scrape_collector_success{collector="stat_archiver"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 1
+pg_scrape_collector_success{collector="stat_database"} 1
+pg_scrape_collector_success{collector="stat_progress_vacuum"} 1
+pg_scrape_collector_success{collector="stat_replication"} 1
+pg_scrape_collector_success{collector="stat_user_tables"} 1
+pg_scrape_collector_success{collector="statio_user_tables"} 1
+pg_scrape_collector_success{collector="wal"} 1
+pg_up 1

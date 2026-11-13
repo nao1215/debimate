@@ -1,5 +1,5 @@
 ---
-title: "Adapter - アプリケーションの出力を外向きに揃える補助コンテナ"
+title: "Adapter - PostgreSQL 17 で checkpoint のグラフが消え、exporter を上げても戻らない"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]
@@ -9,193 +9,323 @@ wrapTables: true
 topics: ["Container Patterns"]
 ---
 
-Adapter とは、アプリケーションと同じ実行単位に置かれ、外から見える出力とインターフェースを統一する補助コンテナです。アプリケーションのコードには手を入れず、外から見た形だけを揃えます。手を入れられないミドルウェアと自作のサービスが混ざった環境で、監視やログを 1 か所に揃えたい時に使います。
+監視用の補助コンテナを古いバージョンのままにして、PostgreSQL を 16 から 17 に上げると、ダッシュボードで checkpoint 回数のグラフだけが途切れます。DB は動いていて、接続を表す `pg_up` は 1 のままで、DB が落ちた時に鳴らすアラートも鳴りません。補助コンテナを新しいバージョンに上げると、エラーは消えますが、グラフは途切れたままです。
 
-実行単位とは、同じマシンにまとめて配置され、まとめて作られ削除されるコンテナの集まりで、Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の [Task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html) が当たります（[Sidecar](../sidecar/) のノートと同じ意味です）。同じ実行単位のコンテナはネットワークを共有する設定にできるため、隣のコンテナに localhost で届きます。
+以下は、この流れを手元の Docker で 240 秒の間に再現し、[Prometheus](https://prometheus.io/) が 5 秒ごとに集めた値を並べた結果です。
 
-以下は、複数のアプリケーションのメトリクスを監視基盤に集める例で、出力の形式の違いを図形の違いで描いた図です。
+{{< figure src="images/adapter_timeline.webp" alt="5 段の時系列。1 段目の pg_up は 60 秒の DB の入れ替えで 1 回だけ 0 になり、他は 1 のまま。2 段目のダッシュボードが見ている pg_stat_bgwriter_checkpoints_req_total は 60 秒で途切れ、最後まで値が無い。3 段目の pg_stat_checkpointer_num_requested_total は 180 秒に stat_checkpointer を有効にした後だけ値がある。4 段目の stat_bgwriter の collector は 65 秒から 120 秒まで失敗し、exporter を v0.17.1 に上げた後は成功に戻る。5 段目のアラートは、pg_up == 0 が 1 回だけ待機中になって鳴らず、collector の失敗は 80 秒から 120 秒まで鳴り、系列が無いことのアラートは 80 秒から最後まで鳴り続ける" caption="DB を 17 に上げ、exporter を上げ、新しい collector を有効にした 240 秒" align="center" >}}
 
-{{< figure src="images/adapter_concept.svg" alt="3 つの実行単位で、アプリ A（JMX）は丸、アプリ B（StatsD）は三角、アプリ C（独自の形式）は四角の出力を出す。どれも実行単位の縁の adapter を通ると同じひし形になり、監視基盤には 1 つの形式だけが届く" caption="形式の違う 3 つのアプリと、形式を揃える adapter" align="center" >}}
+上記の図で、2 段目がダッシュボードが見ている系列です。系列は、Prometheus で[時系列](https://prometheus.io/docs/concepts/data_model/)（time series）と呼ばれるもので、同じ名前とラベルを持つ値を時刻の順に並べた、グラフの線 1 本に当たります。60 秒で DB を入れ替えてから最後まで、値は 1 つも届いていません。一方で 1 段目の `pg_up` は、入れ替えた瞬間の 1 回を除いて 1 です。3〜5 段目は、後の節で順に読みます。
 
-上記の図の監視基盤が知っているのは、ひし形で描いた 1 つの形式だけです。3 つのアプリケーションはそれぞれ別の方法でメトリクスを出しており、その違いを吸収するのが各実行単位の adapter です。
-
-[JMX](https://docs.oracle.com/javase/8/docs/technotes/guides/jmx/)（Java Management Extensions）は Java の管理と監視のための仕様で、アプリケーションが登録した情報を外から読み書きする窓口です。[StatsD](https://github.com/statsd/statsd) は、メトリクスを短いテキスト 1 行で送るプロトコルと、それを受けて集約するデーモンを指します。どちらも監視基盤が直接読める形とは限りません。
+この監視用の補助コンテナが、本記事で扱う Adapter です。PostgreSQL は自分の統計を SQL で読めるビューとして持っていますが、Prometheus が読める形では出しません。その間に立って、DB の統計を Prometheus の形に変換するのが [postgres_exporter](https://github.com/prometheus-community/postgres_exporter) です。README も、DB の隣に置く使い方を基本にしています。
 
 <br>
 
-本記事では、Adapter で外向きの形を揃える理由と、変換が起きる場所を説明します。扱う疑問は以下です。
+本記事では、exporter のような adapter をこれから置く人と、既存の監視で adapter に出会った人に向けて、次の疑問に答えます。
 
-- 出力の形式を揃えるのに、なぜアプリケーションの外で変換するのか。
-- アプリケーションと adapter は何で繋がり、変換はどちらの向きに起きるのか。
-- 監視基盤がメトリクスを取りに来る形では、どこで変換が起きるのか。
-- PostgreSQL を 17 に上げただけで、なぜ監視の一部が静かに止まったのか。
-- どのような構成では、分ける利益が小さいのか。
+- 変換を adapter に置くのは、他の置き場所と比べて何が違うのか。
+- exporter は DB から何を読み、Prometheus に何を出しているのか。
+- DB を上げただけで、なぜ一部のメトリクスだけが消えるのか。
+- なぜ `pg_up` のアラートでは気付けないのか。
+- exporter を上げても、なぜグラフは戻らないのか。
+- DB や adapter を上げる前に、何を見ておけばよいのか。
 
 ---
 
-### 名前の由来
+### 変換を置く 4 つの場所
 
-Brendan Burns 氏と David Oppenheimer 氏の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」は、4.3 節で Adapter を「複数のコンテナにまたがって出力とインターフェースを標準化すること」とし、外の世界に「単純化され均質にされたアプリケーションの姿」を見せるものとしています。
-
-この定義は [Ambassador](../ambassador/) との対比になっていて、2 つは単純化して見せる相手が逆です。Ambassador は外の世界を単純化してアプリケーションに見せ、Adapter はアプリケーションを揃えて外の世界に見せます。
-
-名前は、論文より前の Brendan Burns 氏のブログ「[The Distributed System ToolKit](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で Sidecar・Ambassador と並べて紹介されました。冒頭の監視の図は、論文とブログが挙げる例です。3 つのパターンの関係と名前の経緯は、[Sidecar](../sidecar/) のノートにまとめています。
+実行単位とは、同じマシンにまとめて置かれ、まとめて作られ消されるコンテナの集まりで、Kubernetes の [Pod](https://kubernetes.io/docs/concepts/workloads/pods/) や Amazon ECS の [Task](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definitions.html) です。隣に置いて機能を足すコンテナ全般は [Sidecar](../sidecar/) と呼ばれ、Adapter はそのうち出力とインターフェースの形を揃える役のものを指します。アプリごとに出し方が違っても、adapter が実行単位の縁で 1 つの形に変えて外へ見せるので、外の監視基盤が知る形式は 1 つで済みます。
 
 <br>
 
-書籍『オブジェクト指向における再利用のためのデザインパターン』にも同じ名前のパターンがあります。書籍の Adapter は、クライアントが期待する形に既存のクラスのインターフェースを変換するパターンで、形を合わせる境界はコンテナではなくクラスです。
+Adapter が揃える向きは、出力だけではありません。
 
----
-
-### Adapter が必要な理由
-
-出力の形式を最初から揃えておけるなら、変換は必要ありません。論文によると Google 社内ではコードの規約で統一していますが、それはソフトウェアを一から作る場合にしかできません。
-
-実際のシステムには、一から作れないソフトウェアが必ず混ざります。オープンソースのミドルウェアや、手を入れられない既存のシステムがその例です。Adapter を使えば、それらが混ざっていても、元のアプリケーションを改変せずに統一されたインターフェースを外に見せられます。
-
-変換をアプリケーションの外に出さず、監視基盤の中に持たせる方法もあります。以下は、変換を監視基盤の中に持たせた構成です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph M["監視基盤"]
-        C1["A 用の変換コード"]
-        C2["B 用の変換コード"]
-        C3["C 用の変換コード"]
-    end
-    A1["アプリ A<br/>JMX"] --> C1
-    A2["アプリ B<br/>StatsD"] --> C2
-    A3["アプリ C<br/>独自の形式"] --> C3
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図では、変換のコードが監視基盤の中に集まっています。アプリケーションが 1 つ増えるたびに監視基盤に手を入れる必要があり、変換のコードの誤りが監視基盤そのものに及びます。既存の監視ソリューションには、複数種類のバックエンドと通信できるものもあります。ただし論文は、それらが監視システムの中にアプリケーション固有のコードを抱えるため、関心の分離がきれいに保たれないと指摘しています。
-
----
-
-### 接点と変換の向き
-
-論文の 4.3 節によると、メインのコンテナは localhost または共有の volume（同じ実行単位の複数のコンテナから同じ内容が見えるファイルの置き場）を通じて adapter と通信できます。どちらを使うかは、アプリケーションが出力を何で出しているかで決まります。
-
-| アプリケーションの出し方 | 接点 | adapter が行うこと |
+| 向き | adapter がすること | 例 |
 |---|---|---|
-| ポートを開いて問い合わせに答える | localhost | 問い合わせて、統一された形式に変換する |
-| ファイルに書き出す | 共有 volume | 読み取って、統一された形式に変換する |
-| 一定間隔で外に送る | localhost | 受け取って、統一された形式で送り直す |
+| 中から外へ | アプリの出力を外が読める形にする | 本記事の postgres_exporter |
+| 外から中へ | 外から来た要求をアプリが受ける形にする | 古い形式しか受けないアプリの前に立つ受け口 |
 
-上記の表の監視の例では、変換されるデータはアプリケーションから外に向かいます。1 行目と 2 行目は adapter が取りに行く形、3 行目はアプリケーションが送る形です。ただし 3 行目では、アプリケーションの送信先を localhost の adapter に変更する必要があります。
-
-論文の 4.3 節は、標準化する対象を「出力とインターフェース」としています。具体例は監視のインターフェースですが、定義がインターフェースまで含んでいるので、外から来る要求の受け口を揃える構成にも当てはまります。
-
-例えば、外部が新しい形式で呼びたいのにアプリケーションが古い形式しか受け付けない場合、adapter が受け口になって変換します。要求を受け取る向きは監視の例と逆でも、外から見たアプリケーションの形を揃えている点は同じです。Adapter と Ambassador を通信の向きではなく見せる相手で分けるのは、このためです。
-
-同じ形は、メトリクス以外でも、出力と接点を持つものなら何にでも当てはまります。日時とログレベルの書き方がまちまちなログを 1 つの構造に揃える用途と、生死の判定の仕方が違うアプリケーションに共通の窓口を用意する用途が代表的です。
-
----
-
-### 取得の起点
-
-監視の用途では、監視基盤が一定間隔でメトリクスを取りに来る形が多くなります。Prometheus の exporter をアプリケーションと同じ実行単位に同居させる使い方が、この形です。
-
-[Prometheus](https://prometheus.io/) はメトリクスを取りに来て蓄える監視基盤です。[exporter](https://prometheus.io/docs/instrumenting/exporters/) は、サードパーティのシステムが持つ既存のメトリクスを Prometheus のメトリクスとして書き出すライブラリとサーバーで、「HAProxy や Linux のシステム統計のように、対象のシステムに直接 Prometheus のメトリクスを組み込むことが現実的でない場合に有用」なものです。
-
-以下は、監視基盤が取りに来る形での往復です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant M as 監視基盤
-    participant D as adapter
-    participant A as アプリケーション
-    M->>D: 統一された形式で<br/>取得を要求
-    D->>A: localhost で<br/>固有の窓口に問い合わせ
-    A-->>D: 固有の形式で応答
-    D->>D: 統一された形式に変換
-    D-->>M: 応答
-```
-
-上記の図で変換が起きるのは adapter の中だけで、取りに来る形であれば、アプリケーションは自分がどの形式で監視されているのかを知りません。
-
-そのため、監視基盤を入れ替える場合もアプリケーションには手を入れません。adapter が [OpenMetrics](https://prometheus.io/docs/specs/om/open_metrics_spec/)（Prometheus の形式を元にした標準の形式）で出していて、新しい監視基盤も同じ形式を読めるなら、adapter も変えずに済みます。読めない場合も、合わせるのは adapter か監視基盤の設定です。
+どちらも外に揃った姿を見せる点は同じなので、Adapter と [Ambassador](../ambassador/) は通信の向きではなく、誰に何を見せるかで分かれます。メトリクスの他に、書き方がまちまちなログを 1 つの構造に揃える用途や、生死を判定する窓口を共通にする用途もあります。
 
 <br>
 
-exporter を必ず同居させるわけではありません。exporter は、メトリクスの取得元のマシンで[動く必要がありません](https://prometheus.io/docs/guides/multi-target-exporter/)。1 台の exporter が多数の対象を担当する構成もあり、それは変換のコードを 1 か所に集める形なので、ここで扱う Adapter とは配置が違います。
+<details><summary>余談: Adapter という名前</summary>
 
-同居させる場合でも、対象によっては設定が必要です。Java のアプリケーションの JMX を別のコンテナから読むには、リモート接続を有効にする起動オプションが必要です。[jmx_exporter](https://prometheus.github.io/jmx_exporter/) は、リモート JMX の設定を避けられるので、同じ JVM（Java の実行環境）の中で動く Java Agent として使う形が大半の利用者に勧められています。
+Brendan Burns 氏は 2015 年 6 月の Kubernetes ブログ「[The Distributed System ToolKit](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」で、同じ Pod に置く補助コンテナを Sidecar・Ambassador・Adapter の 3 つに分けました。翌年に David Oppenheimer 氏と書いた論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」も同じ分け方です。
 
-Java Agent はアプリケーションと同じプロセスに読み込ませるコードで、コンテナを分けないので本記事の Adapter からは外れます。変換をプロセスの中に入れるか別のコンテナに出すかは、この手間と、独立した更新や資源の分離との兼ね合いです。
+論文の 4.3 節によると、Ambassador は外の世界を単純にしてアプリに見せ、Adapter は出力とインターフェースを揃えて均質な姿を外に見せます。
 
----
+書籍『オブジェクト指向における再利用のためのデザインパターン』にも同じ名前のパターンがありますが、書籍のパターンはクラスで、コンテナの Adapter は別のプロセスです。コードの設計で外のモデルを翻訳する層は [Anti-Corruption Layer](../anti-corruption-layer/) と呼ばれます。
 
-### 利点
+</details>
 
-- アプリケーションを改変せずに、外から見た形を揃えられる
-- 変換のコードが監視基盤から出て実行単位の中に閉じるため、アプリケーションが増えても監視基盤に固有の変換コードを足さずに済み、監視基盤の更新とも切り離せる
-- 同じ形式で出力する複数のアプリケーションに、同じ adapter を使い回せる
+<br>
 
----
+監視基盤が読める形に揃える変換は、adapter の他にも置き場所があります。以下は、PostgreSQL の統計を Prometheus で集める場合の比較です。
 
-### 欠点
+| 置き場所 | PostgreSQL での例 | 変換を直す人 | 動く数 |
+|---|---|---|---|
+| アプリが直接出す | 無い | 自分たち | アプリと同じ |
+| 同じ実行単位の adapter | postgres_exporter を DB の隣に置く | exporter の開発者 | DB ごとに 1 つ |
+| 離れた所に 1 つ | exporter の multi-target | exporter の開発者 | 全体で 1 つ |
+| 集める所で変換 | OpenTelemetry Collector の receiver | receiver の開発者 | Collector の数 |
 
-Adapter は、アプリケーションを改変しない代わりに、外向きの形を揃える仕事を別のコンテナに持たせます。そのため、次の制約があります。
+表の 1 行目のように、自分たちで書いたアプリなら、Prometheus の [client library](https://prometheus.io/docs/instrumenting/clientlibs/) を組み込んで、最初から Prometheus の形で出せます。変換は必要ありません。PostgreSQL や Redis のように中を変えられないソフトウェアでは、この行が使えないので、残りの 3 つのどれかになります。Prometheus の公式サイトには、こうした [exporter の一覧](https://prometheus.io/docs/instrumenting/exporters/)があります。
 
-- 実行単位ごとに adapter のコピーが動き、消費する資源がその数に比例して増える
-- 統一された形式に無い項目は、捨てるか独自の名前で載せるかのどちらかになる
-- アプリケーションの出力形式が変わると adapter が壊れ、アプリケーションのテストでは気付けない
-- 業務と関係のない変換の対応表が、アプリケーションの数だけ保守の対象として残る
-- 変換を挟む分だけ、値が外から見えるまでに追加の遅延が生じる
+Brendan Burns 氏らが 2016 年に書いた論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」によると、Google 社内ではコードの規約で監視の形を揃えていますが、それはソフトウェアを一から作る場合にしかできません。既存のシステムやオープンソースのソフトウェアを改変せずに揃えるために、論文は Adapter を挙げています。
 
-3 番目は、アプリケーションと adapter を別々に更新する構成の弱点です。[postgres_exporter](https://github.com/prometheus-community/postgres_exporter) は、DB（データベース）の [PostgreSQL](https://www.postgresql.org/) の統計を Prometheus の形式に変換する exporter で、DB と同じ実行単位に置けば adapter になります。
+<br>
 
-この exporter は、PostgreSQL 17（報告時はベータ）に上げた環境で、bgwriter の統計（checkpoint の回数など）を[まとめて取れなくなりました](https://github.com/prometheus-community/postgres_exporter/issues/1060)。
+2 行目に置く adapter の強みは、DB ごとに独立することです。Prometheus が取りに来る形なので、DB は自分がどう監視されているかを知らず、監視基盤を替えても DB には手を入れません。adapter が、Prometheus の形式を元に標準にした [OpenMetrics](https://prometheus.io/docs/specs/om/open_metrics_spec/) の形で出していて、新しい監視基盤も読めるなら、adapter も変えずに済みます。同じ exporter を全ての PostgreSQL に使い回せます。DB の種類が違っても同じです。
 
-PostgreSQL 17 が checkpoint（メモリ上の変更をディスクに書き出す処理）のカラムを `pg_stat_bgwriter` から新しい `pg_stat_checkpointer` に[移し](https://www.postgresql.org/docs/17/release-17.html)、exporter の問い合わせが消えたカラムを読みに行ったからです。
+{{< figure src="images/adapter_unify.webp" alt="3 つの実行単位に PostgreSQL・MySQL・Redis が 1 つずつある。統計は、PostgreSQL では SQL で読む統計のビュー、MySQL では SHOW GLOBAL STATUS、Redis では INFO コマンドから出るので、丸・三角・四角の違う形で描かれている。それぞれの隣の postgres_exporter・mysqld_exporter・redis_exporter（adapter）を通ると同じひし形になり、Prometheus にはテキスト形式 1 つだけが届く" caption="隣の exporter が、出し方の違う DB を 1 つの形式に揃える" align="center" >}}
 
-[修正](https://github.com/prometheus-community/postgres_exporter/pull/1072)が取り込まれたのは報告から 4 か月半後の 2025 年 1 月で、リリースは 2 月の v0.17.0 でした。以下は、PostgreSQL 17 と修正前の v0.15.0 を [Docker](https://docs.docker.com/) で動かし、exporter が返すメトリクスとログを確かめる手順です。
+上記の図のように、MySQL の隣に [mysqld_exporter](https://github.com/prometheus/mysqld_exporter)、Redis の隣に [redis_exporter](https://github.com/oliver006/redis_exporter) を置けば、Prometheus は統計の出し方が違う DB でも 1 つの形式で読めます。違いを吸収するのは各実行単位の adapter で、Prometheus は DB の種類を知りません。論文が 4.3 節で Adapter を「複数のコンテナにまたがって出力とインターフェースを標準化すること」と定義しているのは、この揃え方のことです。
 
-```bash
-docker network create pgnet
-docker run -d --name pg --network pgnet \
-  -e POSTGRES_PASSWORD=pw postgres:17-alpine
-sleep 5
-docker run -d --name exporter --network pgnet \
-  -e DATA_SOURCE_NAME="postgresql://postgres:pw@pg:5432/postgres?sslmode=disable" \
-  prometheuscommunity/postgres-exporter:v0.15.0
-sleep 5
-docker run --rm --network pgnet curlimages/curl:8.10.1 -s http://exporter:9187/metrics \
-  | grep -E '^pg_up|^pg_scrape_collector_success'
-docker logs exporter 2>&1 | grep 'collector failed'
-# 後始末: docker rm -f pg exporter && docker network rm pgnet
-```
-
-PostgreSQL 17.10 で実行した結果です（`docker run -d` が出すコンテナ ID の行は省きました）。
+1 個あたりの重さも小さく済みます。PostgreSQL 17 に exporter を繋いで 10 秒ごとに 6 回読ませた後、`docker stats` でメモリを見ると次の通りでした。
 
 ```text
-pg_scrape_collector_success{collector="database"} 1
-pg_scrape_collector_success{collector="locks"} 1
-pg_scrape_collector_success{collector="replication"} 1
-pg_scrape_collector_success{collector="replication_slot"} 1
-pg_scrape_collector_success{collector="stat_bgwriter"} 0
-pg_scrape_collector_success{collector="stat_database"} 1
-pg_scrape_collector_success{collector="stat_user_tables"} 1
-pg_scrape_collector_success{collector="statio_user_tables"} 1
-pg_scrape_collector_success{collector="wal"} 1
-pg_up 1
-ts=2026-11-09T10:42:20.778Z caller=collector.go:202 level=error msg="collector failed" name=stat_bgwriter duration_seconds=0.007986937 err="pq: column \"checkpoints_timed\" does not exist"
+exporter v0.15.0: 9.805MiB / 61.43GiB
+exporter v0.20.1: 8.449MiB / 61.43GiB
+postgres 17: 24.98MiB / 61.43GiB
 ```
 
-`pg_up` は 1 で、PostgreSQL への接続は成功しています。0 になったのは collector（統計を集める単位）ごとの成否を表す `pg_scrape_collector_success` の `stat_bgwriter` だけで、他の collector は値を返し続けます。失敗はこの値と exporter のログにしか現れないため、この値を監視していないと監視の一部だけが静かに止まります。
+exporter 1 個は 10MiB 足らずで、何も処理していない PostgreSQL 17 の 25MiB より小さい量です。ただし DB の数だけ動くので、数百の DB を持つ環境では総量が効いてきます。
 
-exporter のコンテナイメージを v0.17.0 に替えて同じ手順を実行すると、`stat_bgwriter` も 1 になりました。
+3 行目の [multi-target](https://prometheus.io/docs/guides/multi-target-exporter/) は、1 つの exporter が、要求ごとに `/probe?target=` で指定された DB を読む方式です。postgres_exporter の README は、sidecar として置けないクラウドの管理サービス向けと説明しています。
+
+4 行目は、[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) の [postgresql receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/postgresqlreceiver) のように、値を集める部品が DB を読む方式です。監視する DB の種類が増えるたびに、集める側の設定と receiver に手を入れることになり、変換の誤りや重さは、全ての値を集める部品そのものに及びます。論文は、監視の仕組みにアプリごとのコードを抱えさせる構成について、関心の分離がきれいでないと指摘しています。
+
+表に無い置き場所もあります。Java のアプリは、監視の値を [JMX](https://docs.oracle.com/javase/8/docs/technotes/guides/jmx/)（Java Management Extensions）という窓口で出します。[jmx_exporter](https://prometheus.github.io/jmx_exporter/) は、別のコンテナから JMX を読むとリモート接続の設定が必要なので、同じ JVM（Java の実行環境）に Java Agent として読み込ませる形を勧めています。jmx_exporter 1.5.0 の[文書](https://prometheus.github.io/jmx_exporter/1.5.0/deployment/java-agent/)にある起動例は次の通りで、アプリの `java` コマンドにエージェントの指定を足し、`9404` 番のポートで `/metrics` を出します。
+
+```bash
+java -javaagent:jmx_prometheus_javaagent-1.5.0.jar=9404:exporter.yaml -jar your-application.jar
+```
+
+これはアプリと同じプロセスに入れる形で、コンテナを分けないので Adapter からは外れます。変換をプロセスの中に入れるか別のコンテナに出すかは、このリモート接続の手間と、アプリと別に更新できることや資源を分けられることとの兼ね合いで決めます。
+
+<br>
+
+どこに置いても、変わらないことがあります。PostgreSQL のバージョンごとにどの列を何という名前で出すか、という対応の知識が、DB の開発者とも自分たちとも違う人のコードにあることです。DB 側のテストは exporter を通らないので、この対応が崩れても DB のテストでは気付けません。冒頭の図で起きたのは、DB が形を変え、その対応が追い付かなかった時の話です。
 
 ---
 
-### 分ける利益が小さいケース
+### exporter が読むものと出すもの
 
-- アプリケーションを自分たちで改変でき、最初から統一された形式で出力させられる構成
-- 出力する形式が既に 1 つに揃っている構成
-- 変換の規則が複雑で、対応表の保守がアプリケーションの改変より重くなる構成
-- 実行単位の数が多く、adapter の常駐メモリの総量が無視できない構成
+postgres_exporter が何をしているかは、Prometheus が取りに来た時の流れで見ると分かります。以下は、DB と exporter を同じ Pod に置いた構成の図です。
 
-1 番目の構成でも、オープンソースのミドルウェアを 1 つ足した時点で改変できない相手が現れます。
+{{< figure src="images/adapter_concept.webp" alt="破線の Pod の枠の中に PostgreSQL と postgres_exporter（adapter）が並ぶ。PostgreSQL の中には pg_stat_database・pg_stat_bgwriter・pg_stat_checkpointer などの統計のビューがあり、exporter の中には database・stat_bgwriter・stat_checkpointer などの collector がある。stat_bgwriter の collector は pg_stat_bgwriter へ SQL を投げ、stat_checkpointer から pg_stat_checkpointer への矢印は破線で既定は無効。Pod の外の Prometheus は 5 秒ごとに GET /metrics を送り、テキストを受け取る" caption="DB の隣に置いた exporter と、取りに来る Prometheus" align="center" >}}
+
+同じ Pod のコンテナはネットワークを共有するので、exporter は `localhost` で DB に繋がります。論文も、本体と adapter の間は `localhost` か共有の volume で繋ぐとしています。共有の volume は、同じ実行単位に置いた複数のコンテナから同じ内容が見えるファイルの置き場です。
+
+本記事の exporter は DB に問い合わせて取りに行く形ですが、繋ぎ方はアプリの出し方で決まります。[StatsD](https://github.com/statsd/statsd) は、値を短いテキスト 1 行で一定間隔に送る形の例です。
+
+| アプリの出し方 | 繋ぎ方 | adapter がすること | アプリの設定 |
+|---|---|---|---|
+| 問い合わせに答える | `localhost` | 取りに行き、形を変える | 変えない |
+| ファイルに書く | 共有の volume | 読み取り、形を変える | 変えない |
+| 一定間隔で送る | `localhost` | 受け取り、変えて送り直す | 送信先を変える |
+
+送る形だけは、アプリの送信先を `localhost` の adapter に変える設定が必要です。アプリを全く触らずに揃えられるのは、取りに行く形とファイルの形です。
+
+Prometheus は、exporter の `/metrics` に HTTP の GET を送ります。exporter はその都度、collector と呼ばれる部品ごとに SQL を 1 本ずつ DB に投げ、結果を Prometheus が決めた[テキスト形式](https://prometheus.io/docs/instrumenting/exposition_formats/)にして返します。集めに来るたびに SQL を投げるので、DB の値が外から見えるのは、この変換を挟んだ分だけ遅れます。
+
+collector の多くは、PostgreSQL が持つ統計のビューに 1 つずつ対応します。例えば `stat_bgwriter` の collector は `pg_stat_bgwriter` を読みます。
+
+<br>
+
+`pg_stat_bgwriter` は、変更されたデータをディスクに書き出すバックグラウンド処理の統計です。PostgreSQL 16 までは、[checkpoint](https://www.postgresql.org/docs/17/wal-configuration.html) の回数もここにありました。checkpoint は、溜まった変更をデータファイルへ書き出し、障害から復旧する時に [WAL](/notes/distributed-systems/write-ahead-log/) を読み直す起点を進める処理です。
+
+回数が急に増えるのは、書き込みが増えた時や設定が合っていない時の兆候なので、ダッシュボードによく置かれます。
+
+PostgreSQL 17 に postgres_exporter v0.15.0 を繋いだ時、`/metrics` の一部は次の通りでした。
+
+```text
+# HELP pg_up Whether the last scrape of metrics from PostgreSQL was able to connect to the server (1 for yes, 0 for no).
+pg_up 1
+# HELP pg_scrape_collector_success postgres_exporter: Whether a collector succeeded.
+pg_scrape_collector_success{collector="database"} 1
+pg_scrape_collector_success{collector="stat_bgwriter"} 0
+pg_scrape_collector_success{collector="stat_database"} 1
+```
+
+`pg_up` の説明文は「最後に集めた時に DB に繋がったか」です。繋がった後に投げた SQL が失敗したかどうかは、`pg_up` には入りません。SQL ごとの成否は、collector ごとの `pg_scrape_collector_success` に分かれています。冒頭の図で `pg_up` が 1 のままだったのは、この分け方のためです。
+
+---
+
+### 消えたのは 1 つの collector だけ
+
+冒頭の図で見た症状について、疑わしい所から順に外していきます。最初に疑うのは exporter そのものが止まった可能性ですが、`pg_up` が 1 で返ってくる以上、exporter は動いていて DB にも繋がっています。次に疑うのは DB の権限ですが、同じ DB を読む `database` や `stat_database` の collector は成功しています。
+
+残るのは `stat_bgwriter` の collector だけの問題で、exporter のログに理由が出ていました。
+
+```text
+ts=2026-11-13T13:10:43.186Z caller=collector.go:202 level=error msg="collector failed" name=stat_bgwriter duration_seconds=0.001976976 err="pq: column \"checkpoints_timed\" does not exist"
+```
+
+`checkpoints_timed` という列が無い、というエラーです。[PostgreSQL 17 のリリースノート](https://www.postgresql.org/docs/17/release-17.html)には、新しいビュー [pg_stat_checkpointer](https://www.postgresql.org/docs/17/monitoring-stats.html#MONITORING-PG-STAT-CHECKPOINTER-VIEW) を作り、関係する列を `pg_stat_bgwriter` から移した、と書かれています。exporter v0.15.0 は、移される前の列名で SQL を書いていました。
+
+<br>
+
+この組み合わせがどこまで続くかを見るため、PostgreSQL の 4 つのバージョンと exporter の 4 つのバージョンを全て組み合わせ、それぞれで `/metrics` を 1 回読みました。公式イメージで DB を立て、exporter を繋いで 3 秒待ち、`pg_up` と collector ごとの成否を抜き出すスクリプトです。実験は全て Docker 29.2.1 の上で動かしました。
+
+```bash
+for pg in 15 16 17 18; do
+  docker run -d --rm --name "pg$pg" --network "$NET" \
+    -e POSTGRES_PASSWORD=secret "postgres:$pg" >/dev/null
+  until docker exec "pg$pg" pg_isready -U postgres >/dev/null 2>&1; do sleep 1; done
+  sleep 2
+  for ex in v0.15.0 v0.16.0 v0.17.1 v0.20.1; do
+    docker run -d --rm --name exporter --network "$NET" -p 9187:9187 \
+      -e DATA_SOURCE_NAME="postgresql://postgres:secret@pg$pg:5432/postgres?sslmode=disable" \
+      "prometheuscommunity/postgres-exporter:$ex" >/dev/null
+    sleep 3
+    echo "## postgres $pg / exporter $ex"
+    curl -s localhost:9187/metrics | grep -E '^(pg_up|pg_scrape_collector_success)' || true
+    docker logs exporter 2>&1 | grep -m1 'collector failed' || true
+    docker rm -f exporter >/dev/null
+  done
+  docker rm -f "pg$pg" >/dev/null
+done
+```
+
+`$NET` は事前に `docker network create` で作ったネットワークの名前です。DB と exporter は `localhost` ではなくこのネットワーク上のホスト名で繋いでいるので、同じ Pod を真似た近似です。`stat_bgwriter` が成功したかどうかで、結果をマス目に並べました。
+
+{{< figure src="images/adapter_matrix.webp" alt="縦に PostgreSQL 15・16・17・18、横に postgres_exporter の v0.15.0（2023-11）・v0.16.0（2024-11）・v0.17.1（2025-03）・v0.20.1（2026-07）を並べた 16 のマス。全てのマスで pg_up = 1。PostgreSQL 15 と 16 の行は全て成功。PostgreSQL 17 と 18 の行は、v0.15.0 と v0.16.0 のマスが赤で collector が失敗（0）、v0.17.1 と v0.20.1 のマスは黄色で、成功（1）だが checkpoint の数は無い" caption="PostgreSQL と exporter のバージョンごとに見た stat_bgwriter の成否" align="center" >}}
+
+上記の図で、赤いマスが collector の失敗する組み合わせです。16 マスの全てで `pg_up` は 1 でした。黄色いマスは collector が成功しているのに中身が足りない組み合わせで、2 つ後の節で扱います。赤いマスで気になるのは v0.16.0 で、PostgreSQL 17 が出た 2024 年 9 月 26 日より後の、2024 年 11 月に出たバージョンでも失敗します。
+
+この不具合は、PostgreSQL 17 がベータだった 2024 年 8 月 18 日に [Issue #1060](https://github.com/prometheus-community/postgres_exporter/issues/1060) として報告されています。報告者は「16 から 17beta3 に上げた」と書いており、ログのエラーも上記と同じです。直した [PR #1072](https://github.com/prometheus-community/postgres_exporter/pull/1072) は 2025 年 1 月 1 日に取り込まれ、2025 年 2 月の v0.17.0 で出ました。DB の正式リリースから exporter の対応まで、約 5 か月の間がありました。
+
+<br>
+
+DB を上げる前に読む所にも、落とし穴がありました。PostgreSQL のリリースノートには、上げる時に注意が要る非互換の変更をまとめた「Migration to Version 17」（バージョン 17 への移行）の節があります。
+
+17 のその節に載っている `pg_stat_bgwriter` の変更は、`buffers_backend` と `buffers_backend_fsync` の 2 列の削除だけです。checkpoint 関係の列を移したことは、後ろの「Monitoring」の項に新しい機能として書かれています。非互換の節だけを読んで上げると、この変更は目に入りません。
+
+---
+
+### `pg_up` のアラートが鳴らない理由
+
+冒頭の図で 5 段目に並べたのは、次の 3 つのアラートの規則が、どの時刻に待機中になり、どの時刻に鳴ったかです。`for: 15s` は、条件が 15 秒続いたら鳴らす、という指定です。条件を満たしてからこの 15 秒を待つ間が待機中で、Prometheus の画面では pending と表示され、鳴っている間は firing と表示されます。Prometheus は 5 秒ごとに値を集め、5 秒ごとに規則を評価しました。
+
+```yaml
+groups:
+  - name: postgres
+    rules:
+      # よく見る形: DB に繋がらない時に鳴らす
+      - alert: PostgresDown
+        expr: pg_up == 0
+        for: 15s
+      # collector ごとの失敗で鳴らす
+      - alert: CollectorFailed
+        expr: pg_scrape_collector_success == 0
+        for: 15s
+      # グラフに使っている系列が消えたら鳴らす
+      - alert: CheckpointSeriesAbsent
+        expr: absent(pg_stat_bgwriter_checkpoints_req_total)
+        for: 15s
+```
+
+`PostgresDown` は、DB を入れ替えた直後の 65 秒に 1 回だけ待機中になり、鳴りませんでした。DB が止まっていたのは数秒で、15 秒続かなかったからです。その後の 175 秒間、checkpoint のグラフは空でしたが、`pg_up` は 1 なので、この規則は二度と条件を満たしません。
+
+`CollectorFailed` は 80 秒に鳴り、120 秒に exporter を v0.17.1 に上げると消えました。`CheckpointSeriesAbsent` は、[absent()](https://prometheus.io/docs/prometheus/latest/querying/functions/#absent) で系列が 1 つも無いことを条件にしたもので、80 秒に鳴り、最後まで消えませんでした。2 つの規則が分かれた 120 秒から先は、次の節で扱います。
+
+<br>
+
+実験の全体は次のスクリプトです。DB を同じホスト名 `db` のまま入れ替えるので、exporter の設定は変えていません。checkpoint の回数が動くように、DB の中で 10 秒ごとに `CHECKPOINT` を打ちます。手で打った checkpoint は「要求された checkpoint」として数えられるので、グラフには `checkpoints_req` の系列を使いました。
+
+```bash
+db() { docker rm -f db >/dev/null 2>&1 || true
+  docker run -d --rm --name db --network "$NET" -e POSTGRES_PASSWORD=secret "postgres:$1" >/dev/null
+  until docker exec db pg_isready -U postgres >/dev/null 2>&1; do sleep 1; done
+  docker exec -d db sh -c 'while true; do psql -U postgres -qc CHECKPOINT; sleep 10; done'; }
+exporter() { docker rm -f exporter >/dev/null 2>&1 || true
+  docker run -d --rm --name exporter --network "$NET" -e DATA_SOURCE_NAME="$DSN" \
+    "prometheuscommunity/postgres-exporter:$1" "${@:2}" >/dev/null; }
+
+db 16; exporter v0.15.0
+T0=$(date +%s)
+at 60 "db -> postgres:17"; db 17
+at 120 "exporter -> v0.17.1"; exporter v0.17.1
+at 180 "exporter -> v0.17.1 --collector.stat_checkpointer"; exporter v0.17.1 --collector.stat_checkpointer
+at 240 "end"
+```
+
+`$DSN` は exporter が DB に繋ぐ接続文字列で、ホスト名に `db` を指定しています。`at` は、開始から指定の秒数まで待つ関数です。Prometheus の起動、`prometheus.yml`、240 秒後に `query_range` の API で値を読み出す部分を含む完全なスクリプトは、[lab/timeline.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/adapter/lab/timeline.sh) にあります。
+
+---
+
+### exporter を上げても戻らない理由
+
+v0.17.1 に上げた後、`stat_bgwriter` の collector は成功に戻りました。それでもグラフが戻らないのは、成功した collector が返す中身が変わったからです。PostgreSQL 17 に v0.17.1 を繋いだ時、`pg_stat_bgwriter_` で始まるメトリクスは次の 4 つだけでした。
+
+```text
+pg_stat_bgwriter_buffers_alloc_total 87
+pg_stat_bgwriter_buffers_clean_total 0
+pg_stat_bgwriter_maxwritten_clean_total 0
+pg_stat_bgwriter_stats_reset_total 1.794577808e+09
+```
+
+v0.17.0 で取り込まれた修正は、PostgreSQL 17 以降では `pg_stat_bgwriter` に残った列だけを読み、checkpoint の数は新しい collector の `stat_checkpointer` に移しました。
+
+この collector は既定で無効で、`--collector.stat_checkpointer` を付けて起動した時だけ動きます。冒頭の図で 3 段目に 180 秒より後の値しか無いのは、このためです。
+
+<br>
+
+移った後のメトリクスは、名前も変わっています。DB を上げる前にダッシュボードが見ていた系列と、移った先の系列は次のように対応します。
+
+| PostgreSQL 16 まで | PostgreSQL 17 以降 |
+|---|---|
+| `pg_stat_bgwriter_checkpoints_timed_total` | `pg_stat_checkpointer_num_timed_total` |
+| `pg_stat_bgwriter_checkpoints_req_total` | `pg_stat_checkpointer_num_requested_total` |
+| `pg_stat_bgwriter_checkpoint_write_time_total` | `pg_stat_checkpointer_write_time_total` |
+| `pg_stat_bgwriter_checkpoint_sync_time_total` | `pg_stat_checkpointer_sync_time_total` |
+| `pg_stat_bgwriter_buffers_checkpoint_total` | `pg_stat_checkpointer_buffers_written_total` |
+
+collector を有効にしても、ダッシュボードとアラートの式をこの名前に書き換えるまで、グラフは戻りません。冒頭の図で `CheckpointSeriesAbsent` が最後まで鳴り続けたのは、古い名前の系列が二度と現れないからです。
+
+この collector が README に載ったのは、2025 年 12 月に取り込まれた [PR #1226](https://github.com/prometheus-community/postgres_exporter/pull/1226) で、2026 年 2 月の v0.19.0 からです。PR の説明には「bgwriter のメトリクスを使う人の時間を大きく省く」とあります。それまでの約 1 年間は、v0.17.0 の変更履歴にある 1 行と、`--help` に並ぶフラグの名前から辿るしかありませんでした。
+
+<br>
+
+#### adapter が形を変える時
+
+形が変わるのは DB だけではありません。adapter 自身が、出す名前を変えることもあります。
+
+2026 年 6 月の v0.20.0 は、変更履歴の BREAKING CHANGES で、collector の `replication_slot` を `replication_slots` に改め、`pg_replication_slot_` で始まるメトリクスを `pg_replication_slots_` に変えたと告知しています。
+
+手元で取ったマス目の出力でも、v0.20.1 では collector の名前が `replication_slots` でした。`collector="replication_slot"` で書いたアラートは、バージョンを上げると黙って空になります。
+
+Kubernetes でも同じ形の変更がありました。kubelet に組み込まれた [cAdvisor](https://github.com/google/cadvisor) は、コンテナが使った資源の量を Prometheus の形にして出す部品です。Kubernetes 1.16 は、そのメトリクスのラベル `pod_name` と `container_name` を消し、`pod` と `container` に揃えました。この変更は [PR #80376](https://github.com/kubernetes/kubernetes/pull/80376) で入っています。
+
+[1.16 の変更履歴](https://github.com/kubernetes/kubernetes/blob/master/CHANGELOG/CHANGELOG-1.16.md)は、これらのラベルを使う Prometheus の問い合わせを書き換えるよう求めています。
+
+---
+
+### 上げる前に見ておくこと
+
+adapter を置く人も、既に動いている exporter に出会った人も、冒頭の図で 2 段目のような途切れ方を防ぐために見ておくことは 4 つです。
+
+DB を上げる時は、exporter の変更履歴を DB のバージョン名で検索します。「PostgreSQL 17」「PG17」で引けば、今回の件は v0.17.0 の 1 行に当たります。DB のリリースノートは、非互換の節に加えて、監視（Monitoring）の項まで読みます。
+
+アラートは、`pg_up == 0` だけにしません。collector ごとの `pg_scrape_collector_success == 0` と、ダッシュボードで大事な系列ごとの `absent()` を足しておくと、冒頭の図で 5 段目にあるように、DB を上げてから 20 秒で鳴りました。3 つの規則のうち、名前が変わった後まで鳴り続けたのは `absent()` だけでした。
+
+<br>
+
+DB と exporter のどちらかを上げる前後で、`/metrics` に出る名前の集合を比べます。マス目の黄色いマスのように、collector が成功していても中身が減っていることがあるからです。前後の `/metrics` からメトリクス名だけを抜き出し、`comm` で差を取ります。1 行目は、DB と exporter のバージョンを引数の `$1` と `$2` に取り、`pg16-v0.15.0` のような名前のファイルに保存します。
+
+```bash
+curl -s localhost:9187/metrics | grep -E '^pg_' | sed -E 's/[{ ].*//' | sort -u > "pg$1-$2"
+comm -23 pg16-v0.15.0 pg17-v0.17.1   # 左にあり右に無い名前
+```
+
+PostgreSQL 16 と v0.15.0 の組から、17 と v0.17.1 の組に上げた前後で比べると、消えた名前は 9 個でした。7 個は `pg_stat_bgwriter_` で始まる名前です。前の節で表に並べた 5 個に、PostgreSQL 17 で列ごと削除された `buffers_backend` と `buffers_backend_fsync` の 2 個が加わります。
+
+残る 2 個は PostgreSQL 17 で無くなった設定の `db_user_namespace` と `old_snapshot_threshold` です。この一覧が、そのまま書き換えるダッシュボードとアラートの一覧になります。
+
+最後に、adapter が本当に必要かを考えます。自分たちで書いたアプリなら、client library で直接出せば、変換の知識を他人のコードに預けずに済みます。出力の形式が既に 1 つに揃っている時や、変換の規則が複雑で対応表の保守がアプリの改変より重い時も、adapter を置く利益は小さくなります。統一された形式に無い項目は、捨てるか独自の名前で載せることになる点も見ておきます。
+
+adapter が必要なのは PostgreSQL のように中を変えられないソフトウェアを監視する時で、その時は exporter も DB と同じく、バージョンを上げる対象として扱います。
+
+実験のスクリプト、Prometheus の設定、出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/adapter/lab) にあります。

@@ -1,0 +1,3 @@
+exporter v0.15.0: 9.805MiB / 61.43GiB
+exporter v0.20.1: 8.449MiB / 61.43GiB
+postgres 17: 24.98MiB / 61.43GiB

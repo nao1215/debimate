@@ -1,0 +1,8 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 5s
+rule_files: [rules.yml]
+scrape_configs:
+  - job_name: postgres
+    static_configs:
+      - targets: ["exporter:9187"]
