@@ -1,0 +1,32 @@
+sentinel-1-1  | 2026-11-13T02:51:19.474914186Z 1:X 13 Nov 2026 02:51:19.474 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+sentinel-1-1  | 2026-11-13T02:51:19.474954674Z 1:X 13 Nov 2026 02:51:19.474 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+sentinel-1-1  | 2026-11-13T02:51:19.474958374Z 1:X 13 Nov 2026 02:51:19.474 * Redis version=7.4.1, bits=64, commit=00000000, modified=0, pid=1, just started
+sentinel-1-1  | 2026-11-13T02:51:19.474960374Z 1:X 13 Nov 2026 02:51:19.474 * Configuration loaded
+sentinel-1-1  | 2026-11-13T02:51:19.475257436Z 1:X 13 Nov 2026 02:51:19.475 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+sentinel-1-1  | 2026-11-13T02:51:19.475284075Z 1:X 13 Nov 2026 02:51:19.475 * monotonic clock: POSIX clock_gettime
+sentinel-1-1  | 2026-11-13T02:51:19.476013893Z 1:X 13 Nov 2026 02:51:19.475 * Running mode=sentinel, port=26379.
+sentinel-1-1  | 2026-11-13T02:51:19.485545645Z 1:X 13 Nov 2026 02:51:19.485 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:19.485566254Z 1:X 13 Nov 2026 02:51:19.485 * Sentinel ID is 6ba7e3e9a4588bdbaf490e7746f20c7ba210eab6
+sentinel-1-1  | 2026-11-13T02:51:19.485569344Z 1:X 13 Nov 2026 02:51:19.485 # +monitor master mymaster 172.28.0.11 6379 quorum 2
+sentinel-1-1  | 2026-11-13T02:51:21.564703941Z 1:X 13 Nov 2026 02:51:21.564 * +sentinel sentinel 0358e7f1d5f2a4e840d02e1c3297d1ea26c92aef 172.28.0.23 26379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:51:21.580056102Z 1:X 13 Nov 2026 02:51:21.579 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:21.597817572Z 1:X 13 Nov 2026 02:51:21.596 * +sentinel sentinel 48579221018b77e0506f67fa1bb3fbbc4b85e317 172.28.0.22 26379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:51:21.607660454Z 1:X 13 Nov 2026 02:51:21.607 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:29.546761613Z 1:X 13 Nov 2026 02:51:29.546 * +slave slave 172.28.0.13:6379 172.28.0.13 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:51:29.575518690Z 1:X 13 Nov 2026 02:51:29.575 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:29.575540510Z 1:X 13 Nov 2026 02:51:29.575 * +slave slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:51:29.585229806Z 1:X 13 Nov 2026 02:51:29.585 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:35.852813870Z 1:X 13 Nov 2026 02:51:35.852 # +sdown master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:51:35.882852529Z 1:X 13 Nov 2026 02:51:35.882 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:35.882861348Z 1:X 13 Nov 2026 02:51:35.882 # +new-epoch 1
+sentinel-1-1  | 2026-11-13T02:51:35.899175270Z 1:X 13 Nov 2026 02:51:35.899 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:35.899187229Z 1:X 13 Nov 2026 02:51:35.899 # +vote-for-leader 48579221018b77e0506f67fa1bb3fbbc4b85e317 1
+sentinel-1-1  | 2026-11-13T02:51:35.911785270Z 1:X 13 Nov 2026 02:51:35.911 # +odown master mymaster 172.28.0.11 6379 #quorum 3/2
+sentinel-1-1  | 2026-11-13T02:51:35.911794180Z 1:X 13 Nov 2026 02:51:35.911 * Next failover delay: I will not start a failover before Fri Nov 13 02:51:46 2026
+sentinel-1-1  | 2026-11-13T02:51:37.021915385Z 1:X 13 Nov 2026 02:51:37.021 # +config-update-from sentinel 48579221018b77e0506f67fa1bb3fbbc4b85e317 172.28.0.22 26379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:51:37.021922595Z 1:X 13 Nov 2026 02:51:37.021 # +switch-master mymaster 172.28.0.11 6379 172.28.0.13 6379
+sentinel-1-1  | 2026-11-13T02:51:37.022181237Z 1:X 13 Nov 2026 02:51:37.022 * +slave slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.13 6379
+sentinel-1-1  | 2026-11-13T02:51:37.022212176Z 1:X 13 Nov 2026 02:51:37.022 * +slave slave 172.28.0.11:6379 172.28.0.11 6379 @ mymaster 172.28.0.13 6379
+sentinel-1-1  | 2026-11-13T02:51:37.029583400Z 1:X 13 Nov 2026 02:51:37.029 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:51:38.055093322Z 1:X 13 Nov 2026 02:51:38.054 # +sdown slave 172.28.0.11:6379 172.28.0.11 6379 @ mymaster 172.28.0.13 6379
+sentinel-1-1  | 2026-11-13T02:51:55.328288228Z 1:X 13 Nov 2026 02:51:55.328 # -sdown slave 172.28.0.11:6379 172.28.0.11 6379 @ mymaster 172.28.0.13 6379

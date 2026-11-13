@@ -1,8 +1,16 @@
 {
  "path": "content/notes/software-architecture/ambassador/index.md",
- "overall": 2,
- "product": 4,
- "blob": "e2e7b8a2b36c8e054fe337e7e9db68d7b884df70",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:01:50"
+ "overall": 4,
+ "product": 36,
+ "blob": "8c4c3eb55788012217563ad6e607c8ecb6b01ce7",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }

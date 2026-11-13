@@ -1,0 +1,498 @@
+{"t": 1794538335.2856097, "seq": 1, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 3}
+{"t": 1794538335.385673, "seq": 2, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538335.4857535, "seq": 3, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538335.5857882, "seq": 4, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538335.685811, "seq": 5, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538335.785831, "seq": 6, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538335.8858898, "seq": 7, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538335.985915, "seq": 8, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538336.085974, "seq": 9, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538336.186042, "seq": 10, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538336.2860825, "seq": 11, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538336.386153, "seq": 12, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538336.4862087, "seq": 13, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538336.5862625, "seq": 14, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538336.6863256, "seq": 15, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538336.7864242, "seq": 16, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538336.886507, "seq": 17, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538336.986567, "seq": 18, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.0866253, "seq": 19, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.1866865, "seq": 20, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.2867577, "seq": 21, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.386848, "seq": 22, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538337.4869134, "seq": 23, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.5869687, "seq": 24, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.687009, "seq": 25, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.7870915, "seq": 26, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.8871489, "seq": 27, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.9871943, "seq": 28, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538338.0872653, "seq": 29, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.1873064, "seq": 30, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.2873473, "seq": 31, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.387403, "seq": 32, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.4874175, "seq": 33, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.587463, "seq": 34, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.6874871, "seq": 35, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.787544, "seq": 36, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.887617, "seq": 37, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538338.9876966, "seq": 38, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.0877795, "seq": 39, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.1878533, "seq": 40, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.2879298, "seq": 41, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.3879974, "seq": 42, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.488062, "seq": 43, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.5881302, "seq": 44, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.6882033, "seq": 45, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.7882817, "seq": 46, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.8883586, "seq": 47, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538339.9884343, "seq": 48, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538340.0884988, "seq": 49, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538340.1885588, "seq": 50, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.288621, "seq": 51, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.3886678, "seq": 52, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.4887407, "seq": 53, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.5888295, "seq": 54, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538340.6889029, "seq": 55, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.7889967, "seq": 56, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.889059, "seq": 57, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538340.9891262, "seq": 58, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.0891926, "seq": 59, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.1892598, "seq": 60, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.2892826, "seq": 61, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.3893611, "seq": 62, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.4894383, "seq": 63, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538341.5895135, "seq": 64, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538341.68958, "seq": 65, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.7896457, "seq": 66, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.8897192, "seq": 67, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538341.9897993, "seq": 68, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.0898705, "seq": 69, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.1899421, "seq": 70, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.2900214, "seq": 71, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.3900943, "seq": 72, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.4901648, "seq": 73, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.5902307, "seq": 74, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.6902983, "seq": 75, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.790377, "seq": 76, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.8904452, "seq": 77, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538342.9905093, "seq": 78, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.0905874, "seq": 79, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.1906486, "seq": 80, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.2907135, "seq": 81, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.3907678, "seq": 82, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.4908335, "seq": 83, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.5909088, "seq": 84, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.6909802, "seq": 85, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.791048, "seq": 86, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.891118, "seq": 87, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538343.9911501, "seq": 88, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.0912206, "seq": 89, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.1913004, "seq": 90, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.291367, "seq": 91, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.3914208, "seq": 92, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.491499, "seq": 93, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.5915635, "seq": 94, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.6916282, "seq": 95, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.7916958, "seq": 96, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.8917613, "seq": 97, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538344.9918003, "seq": 98, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.0918713, "seq": 99, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.1919255, "seq": 100, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.2919858, "seq": 101, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.3920376, "seq": 102, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.4920895, "seq": 103, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.5921502, "seq": 104, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.6922271, "seq": 105, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.7923229, "seq": 106, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538345.8924024, "seq": 107, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538345.9924498, "seq": 108, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538346.0924718, "seq": 109, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.1925488, "seq": 110, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.2926326, "seq": 111, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.3927004, "seq": 112, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.4927764, "seq": 113, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.5928543, "seq": 114, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538346.6929219, "seq": 115, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.7929833, "seq": 116, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.8930526, "seq": 117, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.9931207, "seq": 118, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.0931928, "seq": 119, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.193261, "seq": 120, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.293331, "seq": 121, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.3934054, "seq": 122, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538347.4934807, "seq": 123, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538347.5935352, "seq": 124, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.6935716, "seq": 125, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.7936435, "seq": 126, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.8937135, "seq": 127, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538347.9937973, "seq": 128, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.0938876, "seq": 129, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.1939776, "seq": 130, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.294041, "seq": 131, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.3941445, "seq": 132, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.4942267, "seq": 133, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.5943058, "seq": 134, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538348.6943967, "seq": 135, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.7944968, "seq": 136, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538348.8945951, "seq": 137, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538348.9946861, "seq": 138, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.0947585, "seq": 139, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.1948977, "seq": 140, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538349.2949727, "seq": 141, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.3950405, "seq": 142, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.495119, "seq": 143, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.5951948, "seq": 144, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.6952426, "seq": 145, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.7952864, "seq": 146, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.895301, "seq": 147, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.9953687, "seq": 148, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538350.0954168, "seq": 149, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538350.1954906, "seq": 150, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538350.2955668, "seq": 151, "res": "timeout", "err": "Timeout reading from socket", "ms": 501}
+{"t": 1794538350.7972496, "seq": 152, "res": "timeout", "err": "Timeout reading from socket", "ms": 502}
+{"t": 1794538351.2989757, "seq": 153, "res": "timeout", "err": "Timeout reading from socket", "ms": 502}
+{"t": 1794538351.8007917, "seq": 154, "res": "timeout", "err": "Timeout reading from socket", "ms": 502}
+{"t": 1794538352.302845, "seq": 155, "res": "conn", "err": "Connection closed by server.", "ms": 1}
+{"t": 1794538352.4029715, "seq": 156, "res": "conn", "err": "Connection closed by server.", "ms": 1}
+{"t": 1794538352.5030308, "seq": 157, "res": "conn", "err": "Connection closed by server.", "ms": 0}
+{"t": 1794538352.6031055, "seq": 158, "res": "conn", "err": "Connection closed by server.", "ms": 0}
+{"t": 1794538352.703148, "seq": 159, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538352.803207, "seq": 160, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538352.9032817, "seq": 161, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.0033545, "seq": 162, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.1034257, "seq": 163, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.2035015, "seq": 164, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.3035758, "seq": 165, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538353.40363, "seq": 166, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.5037067, "seq": 167, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.6037862, "seq": 168, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.703857, "seq": 169, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.8039243, "seq": 170, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538353.9039938, "seq": 171, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.0040731, "seq": 172, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538354.104151, "seq": 173, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538354.2042072, "seq": 174, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.3042774, "seq": 175, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.404354, "seq": 176, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.5044112, "seq": 177, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.604476, "seq": 178, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.7045345, "seq": 179, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.8046095, "seq": 180, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538354.904673, "seq": 181, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.00474, "seq": 182, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.1047988, "seq": 183, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.204871, "seq": 184, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.3049457, "seq": 185, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.4050055, "seq": 186, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.5050802, "seq": 187, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538355.605355, "seq": 188, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538355.705426, "seq": 189, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.805486, "seq": 190, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538355.9055474, "seq": 191, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538356.0056283, "seq": 192, "res": "ok", "err": "", "ms": 3}
+{"t": 1794538356.1056993, "seq": 193, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538356.2057612, "seq": 194, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538356.30583, "seq": 195, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538356.4059825, "seq": 196, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538356.5060546, "seq": 197, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538356.6060948, "seq": 198, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538356.7061677, "seq": 199, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538356.8061867, "seq": 200, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538356.9062283, "seq": 201, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.0062985, "seq": 202, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.10636, "seq": 203, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.206433, "seq": 204, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.306507, "seq": 205, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538357.4065866, "seq": 206, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538357.5066528, "seq": 207, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.6067364, "seq": 208, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.7068124, "seq": 209, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.8068917, "seq": 210, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538357.906963, "seq": 211, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538358.0070364, "seq": 212, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538358.1071146, "seq": 213, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538358.2074227, "seq": 214, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538358.3075025, "seq": 215, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538358.407585, "seq": 216, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538358.5076756, "seq": 217, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538358.6077507, "seq": 218, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538358.7078104, "seq": 219, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538358.808452, "seq": 220, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538358.9085364, "seq": 221, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538359.0086422, "seq": 222, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538359.1087213, "seq": 223, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538359.2088058, "seq": 224, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538359.308884, "seq": 225, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538359.408949, "seq": 226, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538359.5090103, "seq": 227, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538359.6090841, "seq": 228, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538359.7091599, "seq": 229, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538359.809243, "seq": 230, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538359.909319, "seq": 231, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.009401, "seq": 232, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538360.1094732, "seq": 233, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.2095373, "seq": 234, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.3095937, "seq": 235, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.4096699, "seq": 236, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.5097244, "seq": 237, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.609758, "seq": 238, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.7097871, "seq": 239, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538360.8098526, "seq": 240, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538360.9098978, "seq": 241, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.0099716, "seq": 242, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538361.1100407, "seq": 243, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.210111, "seq": 244, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.3101456, "seq": 245, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.4101958, "seq": 246, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.5102692, "seq": 247, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.6102884, "seq": 248, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.7103589, "seq": 249, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.810373, "seq": 250, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538361.9104455, "seq": 251, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538362.0105164, "seq": 252, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.1105552, "seq": 253, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.2106256, "seq": 254, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538362.3106506, "seq": 255, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.4106705, "seq": 256, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.5107207, "seq": 257, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.610768, "seq": 258, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.7108052, "seq": 259, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.8108578, "seq": 260, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538362.9109023, "seq": 261, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.0109482, "seq": 262, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.1110098, "seq": 263, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.211084, "seq": 264, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538363.3111625, "seq": 265, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538363.411235, "seq": 266, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.5112908, "seq": 267, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.6113808, "seq": 268, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.7114534, "seq": 269, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538363.8115246, "seq": 270, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538363.9115777, "seq": 271, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.0116088, "seq": 272, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.1116228, "seq": 273, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.2116892, "seq": 274, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.3117607, "seq": 275, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.4118323, "seq": 276, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.5119028, "seq": 277, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.6119814, "seq": 278, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538364.712069, "seq": 279, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538364.8121452, "seq": 280, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538364.9122276, "seq": 281, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538365.0123117, "seq": 282, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538365.1123877, "seq": 283, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538365.2124665, "seq": 284, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538365.3125424, "seq": 285, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538365.4125934, "seq": 286, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538365.512662, "seq": 287, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538365.6127198, "seq": 288, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538365.712808, "seq": 289, "res": "ok", "err": "", "ms": 3}
+{"t": 1794538365.8130894, "seq": 290, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538365.9131474, "seq": 291, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.013212, "seq": 292, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.1132748, "seq": 293, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.2133393, "seq": 294, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538366.313405, "seq": 295, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.4134777, "seq": 296, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.5135427, "seq": 297, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.6136205, "seq": 298, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.7136822, "seq": 299, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.8137357, "seq": 300, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538366.9137864, "seq": 301, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.0138388, "seq": 302, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.1139042, "seq": 303, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.2139332, "seq": 304, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.3140118, "seq": 305, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.4140906, "seq": 306, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.5141366, "seq": 307, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.614212, "seq": 308, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.7142777, "seq": 309, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.8143618, "seq": 310, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538367.9144316, "seq": 311, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.014472, "seq": 312, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.114546, "seq": 313, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.2146094, "seq": 314, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.314685, "seq": 315, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.4147348, "seq": 316, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538368.5147798, "seq": 317, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538368.6148508, "seq": 318, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538368.7149208, "seq": 319, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.8149955, "seq": 320, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538368.9150674, "seq": 321, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.015142, "seq": 322, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.1152177, "seq": 323, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.215275, "seq": 324, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.3153484, "seq": 325, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.4154193, "seq": 326, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.5154936, "seq": 327, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.6155157, "seq": 328, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.7155972, "seq": 329, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.815668, "seq": 330, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538369.915725, "seq": 331, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.0158062, "seq": 332, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.1158683, "seq": 333, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.2159407, "seq": 334, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.315963, "seq": 335, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.4160368, "seq": 336, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.5161135, "seq": 337, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538370.616196, "seq": 338, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.7162693, "seq": 339, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538370.8163638, "seq": 340, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538370.9164402, "seq": 341, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538371.016517, "seq": 342, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538371.1165843, "seq": 343, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538371.2166584, "seq": 344, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538371.3167284, "seq": 345, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538371.4167905, "seq": 346, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538371.5168605, "seq": 347, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538371.6169431, "seq": 348, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538371.716998, "seq": 349, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538371.817072, "seq": 350, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538371.9171429, "seq": 351, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538372.01723, "seq": 352, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538372.1173038, "seq": 353, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538372.217377, "seq": 354, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538372.3174465, "seq": 355, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538372.4174986, "seq": 356, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538372.5175693, "seq": 357, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538372.6176462, "seq": 358, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538372.7177184, "seq": 359, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538372.8177693, "seq": 360, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538372.9178512, "seq": 361, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538373.0179136, "seq": 362, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538373.1179945, "seq": 363, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538373.218067, "seq": 364, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538373.318132, "seq": 365, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538373.418202, "seq": 366, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538373.5182672, "seq": 367, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538373.6183293, "seq": 368, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538373.7183852, "seq": 369, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538373.8184326, "seq": 370, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538373.918514, "seq": 371, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538374.0185752, "seq": 372, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538374.1186404, "seq": 373, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538374.218701, "seq": 374, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538374.3187604, "seq": 375, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538374.4188232, "seq": 376, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538374.518879, "seq": 377, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538374.618961, "seq": 378, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538374.71905, "seq": 379, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538374.8191423, "seq": 380, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538374.9192219, "seq": 381, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538375.019308, "seq": 382, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538375.1193745, "seq": 383, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538375.2194524, "seq": 384, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538375.3195288, "seq": 385, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538375.4195924, "seq": 386, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538375.5196636, "seq": 387, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538375.6197557, "seq": 388, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538375.7198288, "seq": 389, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538375.819875, "seq": 390, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538375.9199367, "seq": 391, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538376.0200078, "seq": 392, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538376.1200593, "seq": 393, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538376.220128, "seq": 394, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538376.3202097, "seq": 395, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538376.4202828, "seq": 396, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538376.520333, "seq": 397, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538376.6203883, "seq": 398, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538376.7204614, "seq": 399, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538376.8205113, "seq": 400, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538376.9205782, "seq": 401, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538377.0206366, "seq": 402, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538377.120696, "seq": 403, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538377.2207558, "seq": 404, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538377.3208315, "seq": 405, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538377.4208975, "seq": 406, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538377.520964, "seq": 407, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538377.621032, "seq": 408, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538377.7211094, "seq": 409, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538377.821167, "seq": 410, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538377.9212377, "seq": 411, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538378.0212986, "seq": 412, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538378.1213882, "seq": 413, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538378.2214565, "seq": 414, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538378.3214815, "seq": 415, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538378.4215498, "seq": 416, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538378.5216033, "seq": 417, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538378.6216714, "seq": 418, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538378.7217436, "seq": 419, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538378.821836, "seq": 420, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538378.9219174, "seq": 421, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538379.0219913, "seq": 422, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538379.1220639, "seq": 423, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538379.2221422, "seq": 424, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538379.3222134, "seq": 425, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538379.4222775, "seq": 426, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538379.5223324, "seq": 427, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538379.6223905, "seq": 428, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538379.7224603, "seq": 429, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538379.8225303, "seq": 430, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538379.9226012, "seq": 431, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538380.022665, "seq": 432, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538380.122723, "seq": 433, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538380.2227767, "seq": 434, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538380.3228369, "seq": 435, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538380.42291, "seq": 436, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538380.5229738, "seq": 437, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538380.6230383, "seq": 438, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538380.7231038, "seq": 439, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538380.8231661, "seq": 440, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538380.9232292, "seq": 441, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538381.023307, "seq": 442, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538381.1233635, "seq": 443, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538381.2234392, "seq": 444, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538381.3234963, "seq": 445, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538381.4235497, "seq": 446, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538381.5236237, "seq": 447, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538381.6237087, "seq": 448, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538381.7237887, "seq": 449, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538381.82386, "seq": 450, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538381.923935, "seq": 451, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538382.023993, "seq": 452, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.1240664, "seq": 453, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538382.2241418, "seq": 454, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.3241847, "seq": 455, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.424225, "seq": 456, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.5243022, "seq": 457, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.6243553, "seq": 458, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.7244036, "seq": 459, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.8244555, "seq": 460, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538382.9245095, "seq": 461, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.024565, "seq": 462, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.1246188, "seq": 463, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.2246735, "seq": 464, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.324757, "seq": 465, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.424822, "seq": 466, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.5248969, "seq": 467, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.6249561, "seq": 468, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.7250257, "seq": 469, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.825082, "seq": 470, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538383.9251487, "seq": 471, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.0252936, "seq": 472, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538384.1253667, "seq": 473, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.2254398, "seq": 474, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.325512, "seq": 475, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.4255662, "seq": 476, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.5256195, "seq": 477, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.625698, "seq": 478, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.7257617, "seq": 479, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.8258176, "seq": 480, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538384.925888, "seq": 481, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.0259602, "seq": 482, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538385.1260355, "seq": 483, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.2261097, "seq": 484, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.3261702, "seq": 485, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538385.426257, "seq": 486, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.526319, "seq": 487, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.6264062, "seq": 488, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.7264943, "seq": 489, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538385.826599, "seq": 490, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538385.926678, "seq": 491, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538386.0267558, "seq": 492, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538386.1268282, "seq": 493, "res": "ok", "err": "", "ms": 2}
+{"t": 1794538386.2269125, "seq": 494, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538386.3269875, "seq": 495, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538386.4270616, "seq": 496, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538386.5271392, "seq": 497, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538386.6272144, "seq": 498, "res": "conn", "err": "Error 111 connecting to 127.0.0.1:6380. Connection refused.", "ms": 0}

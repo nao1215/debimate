@@ -1,0 +1,351 @@
+{"t": 1794538335.134457, "seq": 1, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 2}
+{"t": 1794538335.2345428, "seq": 2, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.3346171, "seq": 3, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.4347005, "seq": 4, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.5347774, "seq": 5, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.6348078, "seq": 6, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.7348614, "seq": 7, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.8348892, "seq": 8, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538335.9349258, "seq": 9, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.0349884, "seq": 10, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.1350758, "seq": 11, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.2351446, "seq": 12, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.3352082, "seq": 13, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.4352717, "seq": 14, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.535343, "seq": 15, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.6354184, "seq": 16, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.7354937, "seq": 17, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.8355567, "seq": 18, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538336.935642, "seq": 19, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.0357292, "seq": 20, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.1358087, "seq": 21, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.2358885, "seq": 22, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.335953, "seq": 23, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.436055, "seq": 24, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538337.5361426, "seq": 25, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.636216, "seq": 26, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.736291, "seq": 27, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.8363638, "seq": 28, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538337.936448, "seq": 29, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.0365236, "seq": 30, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.136604, "seq": 31, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.2366672, "seq": 32, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.3367343, "seq": 33, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.4367898, "seq": 34, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.5368562, "seq": 35, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.636933, "seq": 36, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.7370107, "seq": 37, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.8370836, "seq": 38, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538338.9371452, "seq": 39, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.0372262, "seq": 40, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.137306, "seq": 41, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.2373712, "seq": 42, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.3374362, "seq": 43, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.4375052, "seq": 44, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.5375412, "seq": 45, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.6375787, "seq": 46, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.7376323, "seq": 47, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.837705, "seq": 48, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538339.9377625, "seq": 49, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538340.0378294, "seq": 50, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538340.137887, "seq": 51, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.2379777, "seq": 52, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.3380487, "seq": 53, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.4381235, "seq": 54, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.5381722, "seq": 55, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.638263, "seq": 56, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.7383335, "seq": 57, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.838419, "seq": 58, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538340.9384933, "seq": 59, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.038568, "seq": 60, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.1386409, "seq": 61, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.2387192, "seq": 62, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.338801, "seq": 63, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.4388754, "seq": 64, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.538945, "seq": 65, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.639036, "seq": 66, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.739128, "seq": 67, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.8392036, "seq": 68, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538341.9392788, "seq": 69, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.0393546, "seq": 70, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.1394296, "seq": 71, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.239509, "seq": 72, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.3395863, "seq": 73, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.4396515, "seq": 74, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.5397189, "seq": 75, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.6397896, "seq": 76, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.739869, "seq": 77, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.839935, "seq": 78, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538342.9400032, "seq": 79, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.0400684, "seq": 80, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.1401412, "seq": 81, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.2402081, "seq": 82, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.3402832, "seq": 83, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.440358, "seq": 84, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.5404336, "seq": 85, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.640509, "seq": 86, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.7405825, "seq": 87, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.8406546, "seq": 88, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538343.9407272, "seq": 89, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.040809, "seq": 90, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.1408744, "seq": 91, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.2409475, "seq": 92, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.3410058, "seq": 93, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.4410613, "seq": 94, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.5411248, "seq": 95, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.641181, "seq": 96, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.7412443, "seq": 97, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.8413072, "seq": 98, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538344.9413683, "seq": 99, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.0414398, "seq": 100, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.1415012, "seq": 101, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.2415643, "seq": 102, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.341645, "seq": 103, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.44171, "seq": 104, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.5417807, "seq": 105, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.6418357, "seq": 106, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.7418892, "seq": 107, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.8419545, "seq": 108, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538345.9420104, "seq": 109, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.04207, "seq": 110, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.1421237, "seq": 111, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.2421834, "seq": 112, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.3422737, "seq": 113, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538346.4423344, "seq": 114, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.5424082, "seq": 115, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.6424892, "seq": 116, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.7425642, "seq": 117, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.8426368, "seq": 118, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538346.9427094, "seq": 119, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.0427864, "seq": 120, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.1428602, "seq": 121, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.2429361, "seq": 122, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.343016, "seq": 123, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.4430938, "seq": 124, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.543141, "seq": 125, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.6432188, "seq": 126, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.7432919, "seq": 127, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.843368, "seq": 128, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538347.94345, "seq": 129, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.0435288, "seq": 130, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.1435807, "seq": 131, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.2436657, "seq": 132, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.3437545, "seq": 133, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.4438412, "seq": 134, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.5439208, "seq": 135, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.6439972, "seq": 136, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.7440698, "seq": 137, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.844148, "seq": 138, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538348.9442177, "seq": 139, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.0443068, "seq": 140, "res": "ok", "err": "", "ms": 1}
+{"t": 1794538349.1443956, "seq": 141, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.2444692, "seq": 142, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.3445454, "seq": 143, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.4446206, "seq": 144, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.5447083, "seq": 145, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.6447895, "seq": 146, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.7448616, "seq": 147, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.8449345, "seq": 148, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538349.9450061, "seq": 149, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538350.0450754, "seq": 150, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538350.145168, "seq": 151, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538350.2452376, "seq": 152, "res": "ok", "err": "", "ms": 0}
+{"t": 1794538350.3453104, "seq": 153, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538350.8464634, "seq": 154, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538351.3474474, "seq": 155, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538351.8484735, "seq": 156, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538352.3494437, "seq": 157, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538352.8504086, "seq": 158, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538353.351348, "seq": 159, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538353.8523507, "seq": 160, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538354.353094, "seq": 161, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538354.8541038, "seq": 162, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538355.3551056, "seq": 163, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538355.8561182, "seq": 164, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538356.3570843, "seq": 165, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538356.8580515, "seq": 166, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538357.3590188, "seq": 167, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538357.8600152, "seq": 168, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538358.360984, "seq": 169, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538358.862001, "seq": 170, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538359.363431, "seq": 171, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538359.8644028, "seq": 172, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538360.3654203, "seq": 173, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538360.8663352, "seq": 174, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538361.3672833, "seq": 175, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538361.8682683, "seq": 176, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538362.3692296, "seq": 177, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538362.8702042, "seq": 178, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538363.3712218, "seq": 179, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538363.8722074, "seq": 180, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538364.3732066, "seq": 181, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538364.8741953, "seq": 182, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538365.37521, "seq": 183, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538365.8761404, "seq": 184, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538366.3771691, "seq": 185, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538366.8781297, "seq": 186, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538367.379112, "seq": 187, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538367.880143, "seq": 188, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538368.3811886, "seq": 189, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538368.8822052, "seq": 190, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538369.3830779, "seq": 191, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538369.8840322, "seq": 192, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538370.385038, "seq": 193, "res": "timeout", "err": "Timeout connecting to server", "ms": 501}
+{"t": 1794538370.8860476, "seq": 194, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538370.9861386, "seq": 195, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.0862029, "seq": 196, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.1862752, "seq": 197, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.2863503, "seq": 198, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.3864126, "seq": 199, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.4864738, "seq": 200, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.5865242, "seq": 201, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.686583, "seq": 202, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.786645, "seq": 203, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.8867202, "seq": 204, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538371.986799, "seq": 205, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.0868833, "seq": 206, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.1869628, "seq": 207, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.2870286, "seq": 208, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.387112, "seq": 209, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.4871843, "seq": 210, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.5872586, "seq": 211, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.6873314, "seq": 212, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.7874126, "seq": 213, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.8874817, "seq": 214, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538372.9875576, "seq": 215, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.087629, "seq": 216, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.1877084, "seq": 217, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.287779, "seq": 218, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.3878472, "seq": 219, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.4879224, "seq": 220, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.588, "seq": 221, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.6880703, "seq": 222, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.7881508, "seq": 223, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.8882155, "seq": 224, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538373.9882786, "seq": 225, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.088351, "seq": 226, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.1884055, "seq": 227, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.2884605, "seq": 228, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.3885207, "seq": 229, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.4885786, "seq": 230, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.5886695, "seq": 231, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 1}
+{"t": 1794538374.6887414, "seq": 232, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.7888336, "seq": 233, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.888924, "seq": 234, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538374.9890077, "seq": 235, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.0890672, "seq": 236, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.1891463, "seq": 237, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.2892122, "seq": 238, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.389289, "seq": 239, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.489363, "seq": 240, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.589435, "seq": 241, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.6895156, "seq": 242, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.7895885, "seq": 243, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.8896601, "seq": 244, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538375.9897337, "seq": 245, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.0897894, "seq": 246, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.1898518, "seq": 247, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.2899258, "seq": 248, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.3900068, "seq": 249, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.4900844, "seq": 250, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.5901594, "seq": 251, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.690237, "seq": 252, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.7903135, "seq": 253, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.8904011, "seq": 254, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538376.990476, "seq": 255, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.0905387, "seq": 256, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.190601, "seq": 257, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.2906685, "seq": 258, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.390731, "seq": 259, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.490811, "seq": 260, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.5908866, "seq": 261, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.6909606, "seq": 262, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.7910397, "seq": 263, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.8911088, "seq": 264, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538377.9911857, "seq": 265, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.0912642, "seq": 266, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.1913476, "seq": 267, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.2914197, "seq": 268, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.3914855, "seq": 269, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.491552, "seq": 270, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.591623, "seq": 271, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.69169, "seq": 272, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.7917752, "seq": 273, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.8918562, "seq": 274, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538378.991925, "seq": 275, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.0919826, "seq": 276, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.1920557, "seq": 277, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.2921243, "seq": 278, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.3921945, "seq": 279, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.4922678, "seq": 280, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.5923412, "seq": 281, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.6924124, "seq": 282, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.7924829, "seq": 283, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.8925545, "seq": 284, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538379.9926274, "seq": 285, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.0926998, "seq": 286, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.192771, "seq": 287, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.2928383, "seq": 288, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.3929057, "seq": 289, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.4929726, "seq": 290, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.5930445, "seq": 291, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.6931121, "seq": 292, "res": "ResponseError", "err": "NOREPLICAS Not enough good replicas to write.", "ms": 0}
+{"t": 1794538380.7931457, "seq": 293, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538380.8932114, "seq": 294, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538380.9932902, "seq": 295, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.0933616, "seq": 296, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538381.1934354, "seq": 297, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.2935138, "seq": 298, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.3935719, "seq": 299, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.4936445, "seq": 300, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.5937254, "seq": 301, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.6937995, "seq": 302, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.7938733, "seq": 303, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.8939457, "seq": 304, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538381.9940126, "seq": 305, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.0940742, "seq": 306, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.1941295, "seq": 307, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.2941813, "seq": 308, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.3942373, "seq": 309, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.4942884, "seq": 310, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.5943425, "seq": 311, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.694396, "seq": 312, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.7945209, "seq": 313, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.8945956, "seq": 314, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538382.994663, "seq": 315, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.094724, "seq": 316, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.1947844, "seq": 317, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.2948434, "seq": 318, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.3949165, "seq": 319, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.4949903, "seq": 320, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.5950613, "seq": 321, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.6951375, "seq": 322, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.7952147, "seq": 323, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.8952906, "seq": 324, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538383.9953825, "seq": 325, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.095461, "seq": 326, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.195537, "seq": 327, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.2956119, "seq": 328, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.3956838, "seq": 329, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.4957569, "seq": 330, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.5958354, "seq": 331, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.6959136, "seq": 332, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.7959816, "seq": 333, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.8960552, "seq": 334, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538384.9961476, "seq": 335, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.0962317, "seq": 336, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.196306, "seq": 337, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.2963867, "seq": 338, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.3964772, "seq": 339, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.4965482, "seq": 340, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.5966256, "seq": 341, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 3}
+{"t": 1794538385.6968892, "seq": 342, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 1}
+{"t": 1794538385.7969675, "seq": 343, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.8970482, "seq": 344, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538385.9971373, "seq": 345, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538386.0972133, "seq": 346, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538386.1972866, "seq": 347, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538386.2973676, "seq": 348, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538386.3974419, "seq": 349, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538386.4975173, "seq": 350, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}
+{"t": 1794538386.5975952, "seq": 351, "res": "readonly", "err": "You can't write against a read only replica.", "ms": 0}

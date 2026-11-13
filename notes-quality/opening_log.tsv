@@ -51,3 +51,4 @@ blockchain-systems__proof-of-work	結果	その他	Proof of Work - 10 分に 1 �
 software-architecture__cqrs	症状	その他	CQRS - 4 つの worker で 1 つのキューを取り合うと、一部の商品が古い価格で止まる
 software-architecture__feature-flag	予想	その他	Feature Flag - hash() で 10% に出す判定は、3 台のサーバーで 28% のユーザーの答えを変えた
 software-architecture__bounded-context	誤解	その他	Bounded Context - 税抜きと税込みの「合計」を同じ列に書いた注文
+software-architecture__ambassador	問い	その他	Ambassador - localhost のプロキシに master の切り替えを任せると、書き込みは何秒止まり、何件消えるか

@@ -1,0 +1,30 @@
+   0.00s  event failover
+  20.16s  event end
+-- static
+  -1.00s〜 11.31s  ok        x123  うち消えた 110
+  11.31s〜 20.16s  readonly  x89
+-- sentinel
+  -0.91s〜 20.16s  ok        x211  うち消えた 111
+-- ambassador
+  -0.99s〜 11.32s  ok        x123  うち消えた 110
+  11.32s〜 20.16s  readonly  x89
+-- ambassador_new
+  -0.97s〜 11.44s  ok        x124  うち消えた 60
+  11.44s〜 11.54s  readonly  x1
+  11.54s〜 11.64s  ok        x1
+  11.64s〜 11.74s  readonly  x1
+  11.74s〜 11.84s  ok        x1
+  11.84s〜 11.94s  readonly  x1
+  11.94s〜 12.04s  ok        x1
+  12.04s〜 12.14s  readonly  x1
+  12.14s〜 12.24s  ok        x1
+  12.24s〜 12.34s  readonly  x1
+  12.34s〜 12.44s  ok        x1
+  12.44s〜 12.54s  readonly  x1
+  12.54s〜 12.64s  ok        x1
+  12.64s〜 12.74s  readonly  x1
+  12.74s〜 12.84s  ok        x1
+  12.84s〜 12.94s  readonly  x1
+  12.94s〜 13.04s  ok        x1
+  13.04s〜 13.14s  readonly  x1
+  13.14s〜 20.16s  ok        x71

@@ -1,0 +1,6 @@
+docker 29.2.1
+redis 7.4.1 (redis:7.4.1-alpine)
+haproxy 3.0.5 (haproxy:3.0.5-alpine)
+redis-py 8.0.1 / python 3.13
+Linux 7.0.0-43-generic
+2026-11-13

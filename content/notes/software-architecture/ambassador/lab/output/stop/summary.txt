@@ -1,0 +1,37 @@
+   0.00s  event stop-a
+  20.31s  event start-a
+  35.55s  event end
+-- static
+  -0.97s〜  0.13s  ok        x11
+   0.13s〜  0.23s  conn      x1
+   0.23s〜 20.77s  timeout   x41
+  20.77s〜 30.68s  ok        x99  うち消えた 99
+  30.68s〜 35.55s  readonly  x49
+-- sentinel
+  -0.92s〜  0.18s  ok        x11
+   0.18s〜  1.69s  timeout   x3
+   1.69s〜  2.39s  conn      x7
+   2.39s〜 35.55s  ok        x332
+-- ambassador
+  -0.99s〜  0.11s  ok        x11
+   0.11s〜  0.21s  conn      x1
+   0.21s〜  1.71s  timeout   x3
+   1.71s〜 35.55s  ok        x339
+-- ambassador_new
+  -0.95s〜  0.15s  ok        x11
+   0.15s〜  2.16s  timeout   x4
+   2.16s〜 30.77s  ok        x286  うち消えた 48
+  30.77s〜 30.87s  readonly  x1
+  30.87s〜 30.97s  ok        x1
+  30.97s〜 31.07s  readonly  x1
+  31.07s〜 31.17s  ok        x1
+  31.17s〜 31.28s  readonly  x1
+  31.28s〜 31.38s  ok        x1
+  31.38s〜 31.48s  readonly  x1
+  31.48s〜 31.58s  ok        x1
+  31.58s〜 31.68s  readonly  x1
+  31.68s〜 31.78s  ok        x1
+  31.78s〜 31.88s  readonly  x1
+  31.88s〜 31.98s  ok        x1
+  31.98s〜 32.08s  readonly  x1
+  32.08s〜 35.55s  ok        x35

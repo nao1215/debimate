@@ -1,0 +1,42 @@
+sentinel-1-1  | 2026-11-13T02:53:10.438261399Z 1:X 13 Nov 2026 02:53:10.438 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+sentinel-1-1  | 2026-11-13T02:53:10.439993688Z 1:X 13 Nov 2026 02:53:10.438 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+sentinel-1-1  | 2026-11-13T02:53:10.440016887Z 1:X 13 Nov 2026 02:53:10.438 * Redis version=7.4.1, bits=64, commit=00000000, modified=0, pid=1, just started
+sentinel-1-1  | 2026-11-13T02:53:10.440021007Z 1:X 13 Nov 2026 02:53:10.438 * Configuration loaded
+sentinel-1-1  | 2026-11-13T02:53:10.440024397Z 1:X 13 Nov 2026 02:53:10.438 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+sentinel-1-1  | 2026-11-13T02:53:10.440027047Z 1:X 13 Nov 2026 02:53:10.438 * monotonic clock: POSIX clock_gettime
+sentinel-1-1  | 2026-11-13T02:53:10.440029087Z 1:X 13 Nov 2026 02:53:10.439 * Running mode=sentinel, port=26379.
+sentinel-1-1  | 2026-11-13T02:53:10.459251212Z 1:X 13 Nov 2026 02:53:10.457 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:10.459289471Z 1:X 13 Nov 2026 02:53:10.458 * Sentinel ID is 4462885122592896a67feefb634982e0507ad49e
+sentinel-1-1  | 2026-11-13T02:53:10.459294291Z 1:X 13 Nov 2026 02:53:10.458 # +monitor master mymaster 172.28.0.11 6379 quorum 2
+sentinel-1-1  | 2026-11-13T02:53:11.450676321Z 1:X 13 Nov 2026 02:53:11.450 # +sdown master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:11.517981200Z 1:X 13 Nov 2026 02:53:11.517 * +slave slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:11.527610532Z 1:X 13 Nov 2026 02:53:11.527 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:11.527631932Z 1:X 13 Nov 2026 02:53:11.527 * +slave slave 172.28.0.13:6379 172.28.0.13 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:11.536922714Z 1:X 13 Nov 2026 02:53:11.536 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:11.576152642Z 1:X 13 Nov 2026 02:53:11.576 # -sdown master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:12.530441775Z 1:X 13 Nov 2026 02:53:12.530 * +sentinel sentinel c7489cf73968938815ca8d641547c45668f2d5db 172.28.0.22 26379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:12.543280581Z 1:X 13 Nov 2026 02:53:12.543 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:12.554039070Z 1:X 13 Nov 2026 02:53:12.553 * +sentinel sentinel d0eeff80cdb9caec691c1aa27214945e85b48b6d 172.28.0.23 26379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:12.567339272Z 1:X 13 Nov 2026 02:53:12.567 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:25.886870438Z 1:X 13 Nov 2026 02:53:25.886 * Executing user requested FAILOVER of 'mymaster'
+sentinel-1-1  | 2026-11-13T02:53:25.886893547Z 1:X 13 Nov 2026 02:53:25.886 # +new-epoch 1
+sentinel-1-1  | 2026-11-13T02:53:25.886897157Z 1:X 13 Nov 2026 02:53:25.886 # +try-failover master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:25.919789052Z 1:X 13 Nov 2026 02:53:25.919 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:25.919811201Z 1:X 13 Nov 2026 02:53:25.919 # +vote-for-leader 4462885122592896a67feefb634982e0507ad49e 1
+sentinel-1-1  | 2026-11-13T02:53:25.919826151Z 1:X 13 Nov 2026 02:53:25.919 # +elected-leader master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:25.919829421Z 1:X 13 Nov 2026 02:53:25.919 # +failover-state-select-slave master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:25.972755575Z 1:X 13 Nov 2026 02:53:25.972 # +selected-slave slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:25.972767515Z 1:X 13 Nov 2026 02:53:25.972 * +failover-state-send-slaveof-noone slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:26.028549764Z 1:X 13 Nov 2026 02:53:26.028 * +failover-state-wait-promotion slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:26.960353942Z 1:X 13 Nov 2026 02:53:26.960 * Sentinel new configuration saved on disk
+sentinel-1-1  | 2026-11-13T02:53:26.960378031Z 1:X 13 Nov 2026 02:53:26.960 # +promoted-slave slave 172.28.0.12:6379 172.28.0.12 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:26.960379971Z 1:X 13 Nov 2026 02:53:26.960 # +failover-state-reconf-slaves master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:27.009269017Z 1:X 13 Nov 2026 02:53:27.009 * +slave-reconf-sent slave 172.28.0.13:6379 172.28.0.13 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:28.035736674Z 1:X 13 Nov 2026 02:53:28.035 * +slave-reconf-inprog slave 172.28.0.13:6379 172.28.0.13 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:31.953559779Z 1:X 13 Nov 2026 02:53:31.953 # +failover-end-for-timeout master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:31.953581148Z 1:X 13 Nov 2026 02:53:31.953 # +failover-end master mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:31.953584738Z 1:X 13 Nov 2026 02:53:31.953 * +slave-reconf-sent-be slave 172.28.0.13:6379 172.28.0.13 6379 @ mymaster 172.28.0.11 6379
+sentinel-1-1  | 2026-11-13T02:53:31.953587108Z 1:X 13 Nov 2026 02:53:31.953 # +switch-master mymaster 172.28.0.11 6379 172.28.0.12 6379
+sentinel-1-1  | 2026-11-13T02:53:31.953813542Z 1:X 13 Nov 2026 02:53:31.953 * +slave slave 172.28.0.13:6379 172.28.0.13 6379 @ mymaster 172.28.0.12 6379
+sentinel-1-1  | 2026-11-13T02:53:31.953824951Z 1:X 13 Nov 2026 02:53:31.953 * +slave slave 172.28.0.11:6379 172.28.0.11 6379 @ mymaster 172.28.0.12 6379
+sentinel-1-1  | 2026-11-13T02:53:31.964276178Z 1:X 13 Nov 2026 02:53:31.964 * Sentinel new configuration saved on disk

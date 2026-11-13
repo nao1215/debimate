@@ -1,0 +1,51 @@
+name: ambassador-lab
+networks:
+  lab:
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24
+x-sentinel: &sentinel
+  image: redis:7.4.1-alpine
+  command: ["sh", "-c", "cp /conf/sentinel.conf /tmp/s.conf && exec redis-sentinel /tmp/s.conf"]
+  volumes: ["./sentinel.conf:/conf/sentinel.conf:ro"]
+services:
+  # REDIS_ARGS は run.sh が渡す（stop-minrep で --min-replicas-to-write 1）
+  redis-a:
+    image: redis:7.4.1-alpine
+    command: ["sh", "-c", "exec redis-server ${REDIS_ARGS:-}"]
+    networks: { lab: { ipv4_address: 172.28.0.11 } }
+  redis-b:
+    image: redis:7.4.1-alpine
+    command: ["sh", "-c", "exec redis-server --replicaof 172.28.0.11 6379 ${REDIS_ARGS:-}"]
+    networks: { lab: { ipv4_address: 172.28.0.12 } }
+  redis-c:
+    image: redis:7.4.1-alpine
+    command: ["sh", "-c", "exec redis-server --replicaof 172.28.0.11 6379 ${REDIS_ARGS:-}"]
+    networks: { lab: { ipv4_address: 172.28.0.13 } }
+  sentinel-1: { <<: *sentinel, networks: { lab: { ipv4_address: 172.28.0.21 } } }
+  sentinel-2: { <<: *sentinel, networks: { lab: { ipv4_address: 172.28.0.22 } } }
+  sentinel-3: { <<: *sentinel, networks: { lab: { ipv4_address: 172.28.0.23 } } }
+  writer-static:
+    build: .
+    environment: { MODE: static }
+    volumes: ["${OUT:-./output}:/out"]
+    networks: { lab: { ipv4_address: 172.28.0.31 } }
+  writer-sentinel:
+    build: .
+    environment: { MODE: sentinel }
+    volumes: ["${OUT:-./output}:/out"]
+    networks: { lab: { ipv4_address: 172.28.0.32 } }
+  writer-ambassador:
+    build: .
+    environment: { MODE: ambassador }
+    volumes: ["${OUT:-./output}:/out"]
+    networks: { lab: { ipv4_address: 172.28.0.33 } }
+  writer-ambassador-new:
+    build: .
+    environment: { MODE: ambassador_new }
+    volumes: ["${OUT:-./output}:/out"]
+    network_mode: "service:writer-ambassador"
+  ambassador:
+    image: haproxy:3.0.5-alpine
+    network_mode: "service:writer-ambassador"
+    volumes: ["./${HAPROXY_CFG:-haproxy.cfg}:/usr/local/etc/haproxy/haproxy.cfg:ro"]
