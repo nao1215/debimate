@@ -136,7 +136,7 @@ con = sqlite3.connect(":memory:")
 con.execute("CREATE TABLE ev (ts INTEGER)")
 con.executemany("INSERT INTO ev VALUES (?)", [(int(v),) for v in ts])
 naive = con.execute("SELECT AVG(ts * ts) - AVG(ts) * AVG(ts) FROM ev").fetchone()[0]
-exact = statistics.pvariance(ts.tolist())   # 整数を分数のまま計算するので丸めが無い
+exact = statistics.pvariance(ts.tolist())   # 整数を分数のまま計算し、最後に 1 回だけ float に直す
 print(f"statistics.pvariance（正確な値）: {float(exact):,.2f}")
 print(f"np.var                         : {np.var(ts):,.2f}")
 print(f"AVG(ts*ts) - AVG(ts)*AVG(ts)    : {naive:,.2f}")
@@ -280,6 +280,14 @@ print(f"1 万件後  合計と 2 乗の合計: {naive_run[-1]:,.2f}  Welford: {w
 neg = sum(1 for v in naive_run if v < 0)
 zero = sum(1 for v in naive_run if v == 0)
 print(f"合計と 2 乗の合計の途中の値: 負 {neg} 回、0 {zero} 回 / 10,000 回")
+
+n, mean, m2 = 0, 0.0, 0.0                # 先に t0 を引いてから同じ Welford の更新をする
+for v in ts.tolist():
+    n += 1
+    delta = (v - t0) - mean
+    mean += delta / n
+    m2 += delta * ((v - t0) - mean)
+print(f"t0 を引いてから Welford: {m2 / n:,.2f}")
 
 fs = math.fsum(float(v) for v in ts.tolist()) / len(ts)
 fss = math.fsum(float(v) * float(v) for v in ts.tolist()) / len(ts)
