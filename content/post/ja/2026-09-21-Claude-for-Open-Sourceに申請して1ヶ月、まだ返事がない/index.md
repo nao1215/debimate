@@ -14,6 +14,8 @@ cover:
   image: images/claude-wait.webp
   alt: Claude for Open Sourceの申請結果を待っているイメージ
   hidden: false
+aliases:
+- /post/ja/2026-09-21-claude-for-open-source
 ---
 
 ### Claude for Open Source に応募した話

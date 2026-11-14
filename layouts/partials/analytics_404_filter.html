@@ -1,0 +1,6 @@
+{{- if eq .Kind "404" -}}
+  {{- with site.Config.Services.GoogleAnalytics.ID -}}
+    {{- $filter := resources.Get "js/analytics-404-filter.js" -}}
+    <script data-measurement-id="{{ . }}">{{ $filter.Content | safeJS }}</script>
+  {{- end -}}
+{{- end -}}

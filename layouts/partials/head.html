@@ -293,6 +293,7 @@
 {{- if hugo.IsProduction | or (eq site.Params.env "production") }}
 {{- /* Preserve Hugo's GA configuration and privacy checks. Download with low
       priority and execute after parsing, without an idle/interaction delay. */}}
+{{- partial "analytics_404_filter.html" . }}
 {{- $analytics := partial "google_analytics.html" . }}
 {{- $analytics | replaceRE `<script async src="https://www\.googletagmanager\.com/gtag/js\?` `<script defer fetchpriority="low" src="https://www.googletagmanager.com/gtag/js?` | safeHTML }}
 {{- partial "templates/opengraph.html" . }}

@@ -17,6 +17,8 @@ cover:
   fit: contain
   alt: jsonize-logo
   hidden: false
+aliases:
+- /post/ja/2026-09-16-
 ---
 
 ### 前書き：JSON, JSON, JSON...
