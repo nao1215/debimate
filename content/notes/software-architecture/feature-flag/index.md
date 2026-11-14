@@ -1,5 +1,5 @@
 ---
-title: "Feature Flag - hash() で 10% に出す判定は、3 台のサーバーで 28% のユーザーの答えを変えた"
+title: "Feature Flag - 割合で出す判定は、どのサーバーでも同じ答えを返すハッシュで決める"
 date: 2026-08-17
 draft: false
 series: ["技術ノート", "Software Architecture"]

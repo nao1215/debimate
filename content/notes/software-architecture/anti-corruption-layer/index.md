@@ -1,5 +1,5 @@
 ---
-title: "Anticorruption Layer - 決済サービスが足した 1 つの status を、4 か所の分岐は 3 通りに読む"
+title: "Anticorruption Layer - 外部システムの語は、1 か所で自分たちの語に置き換える"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]

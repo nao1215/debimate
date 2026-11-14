@@ -1,5 +1,5 @@
 ---
-title: "Adapter - PostgreSQL 17 で checkpoint のグラフが消え、exporter を上げても戻らない"
+title: "Adapter - 2 つの形の間に立つ変換の層は、片方が変わると一部の値だけを黙って落とすことがある"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]

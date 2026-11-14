@@ -1,5 +1,5 @@
 ---
-title: "Mutation Testing - 公式文書の例で書いたテストは、引き算を足し算に変えても通った"
+title: "Mutation Testing - コードを 1 か所ずつ書き換え、テストが誤りに気づくかを数える"
 date: 2026-11-14
 draft: false
 series: ["技術ノート", "Software Testing"]

@@ -1,5 +1,5 @@
 ---
-title: "Bounded Context - 税抜きと税込みの「合計」を同じ列に書いた注文"
+title: "Bounded Context - 1 つの語が 1 つの意味を持つ範囲を区切る"
 date: 2026-08-06
 draft: false
 series: ["技術ノート", "Software Architecture"]
