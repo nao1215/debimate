@@ -135,7 +135,7 @@
 {{- $commonResources = $commonResources | append (resources.Get "css/common/footer.css") -}}
 {{- $commonResources = $commonResources | append (resources.Get "css/common/header.css") -}}
 {{- $commonResources = $commonResources | append (resources.Get "css/common/main.css") -}}
-{{- if or (eq .Layout "search") (and (not .IsPage) (not $isPostArchive) (ne .Layout "archives")) -}}
+{{- if or .IsPage (eq .Layout "search") (and (not .IsPage) (not $isPostArchive) (ne .Layout "archives")) -}}
   {{- $commonResources = $commonResources | append (resources.Get "css/common/post-entry.css") -}}
 {{- end -}}
 {{- if or (and .IsPage (ne .Layout "search")) $hasSectionContent -}}

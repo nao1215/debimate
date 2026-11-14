@@ -1,0 +1,30 @@
+{{- /* 前後リンクの小さな表紙。一覧と同じ画像選択を使う。 */ -}}
+<div class="nav-preview">
+  {{- if in (slice "notes" "ml") .Section -}}
+    {{- partial "notes/card_cover.html" . -}}
+  {{- else if and (eq .Section "weeknotes") (ne .Layout "topic") -}}
+    {{- /* 埋め込み動画を優先し、なければ週本文の最初の画像を選ぶ。 */ -}}
+    {{- $videos := findRE `https://(?:www\.)?youtube(?:-nocookie)?\.com/embed/[A-Za-z0-9_-]{11}` (string .Content) 1 -}}
+    {{- if $videos -}}
+      {{- $id := replaceRE `.*/` "" (index $videos 0) -}}
+      {{- partial "card_image.html" (dict "src" (printf "https://i.ytimg.com/vi/%s/hqdefault.jpg" $id) "sizes" "180px") -}}
+      <span class="nav-video-label">動画あり</span>
+    {{- else -}}
+      {{- $image := partial "weeknotes/topic_image_resource.html" (dict "week" . "body" .Content) -}}
+      {{- if $image -}}
+        {{- partial "card_image.html" (dict "resource" $image "src" $image.RelPermalink "sizes" "180px") -}}
+      {{- else -}}
+        {{- $cover := partial "list_title_image.html" (dict "title" .Title "label" "WEEKNOTES") -}}
+        {{- partial "card_image.html" (dict "src" $cover "sizes" "180px") -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else -}}
+    {{- $fallback := partial "list_title_image.html" (dict "title" .Title "label" "記事") -}}
+    {{- $image := partial "cover_url.html" . | default $fallback -}}
+    {{- $resource := false -}}
+    {{- with .Params.cover.image -}}
+      {{- $resource = $.Resources.GetMatch (printf "*%s*" .) -}}
+    {{- end -}}
+    {{- partial "card_image.html" (dict "src" $image "resource" $resource "sizes" "180px") -}}
+  {{- end -}}
+</div>

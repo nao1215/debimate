@@ -21,18 +21,18 @@
 {{- if $isMain }}
 {{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
 {{- if and (gt (len $pages) 1) (in $pages . ) }}
-<nav class="paginav">
+<nav class="paginav preview-paginav">
   {{- with $pages.Next . }}
   <a class="prev" href="{{ .Permalink }}">
     <span class="title">« {{ i18n "prev_page" }}</span>
-    <br>
+    {{ partial "nav_preview.html" . }}
     <span>{{- .Name -}}</span>
   </a>
   {{- end }}
   {{- with $pages.Prev . }}
   <a class="next" href="{{ .Permalink }}">
     <span class="title">{{ i18n "next_page" }} »</span>
-    <br>
+    {{ partial "nav_preview.html" . }}
     <span>{{- .Name -}}</span>
   </a>
   {{- end }}
@@ -62,7 +62,7 @@
 {{- $index := cond (eq .Section "ml") (site.GetPage "/ml") .Parent }}
 {{- $indexLabel := cond (eq .Section "ml") "機械学習ノート" .Parent.Title }}
 {{- if $index }}
-<nav class="paginav notes-paginav">
+<nav class="paginav notes-paginav preview-paginav">
   {{/* Pages.Next / Pages.Prev は「日付降順に並んだ一覧」を前提にした名前で、
        weight 昇順に並べた一覧では Next が 1 つ前の項目を指す。
        学習順で読めるように、ここでは入れ替えて使う */}}
@@ -70,7 +70,7 @@
   {{- with .Next $ }}
   <a class="prev" href="{{ .Permalink }}">
     <span class="title">« 前のノート</span>
-    <br>
+    {{ partial "nav_preview.html" . }}
     <span>{{ .Title }}</span>
   </a>
   {{- end }}
@@ -82,7 +82,7 @@
   {{- with .Prev $ }}
   <a class="next" href="{{ .Permalink }}">
     <span class="title">次のノート »</span>
-    <br>
+    {{ partial "nav_preview.html" . }}
     <span>{{ .Title }}</span>
   </a>
   {{- end }}

@@ -56,12 +56,11 @@
   <h2 class="related-posts-title">次に読む</h2>
   <div class="related-posts-list">
     {{- range $pages }}
-    <article class="related-post">
-      <a class="related-post-link" href="{{ .RelPermalink }}">
-        <span class="related-post-name">{{ .Title }}</span>
-        <span class="related-post-meta">{{ partial "post_meta.html" . }}</span>
-      </a>
-    </article>
+    {{- if in (slice "notes" "ml") .Section }}
+      {{- partial "home_note_card.html" . }}
+    {{- else }}
+      {{- partial "home_post_card.html" (dict "page" . "IsHome" true "PageNumber" 1 "Index" 1) }}
+    {{- end }}
     {{- end }}
   </div>
 </section>

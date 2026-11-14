@@ -10,6 +10,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[1]
 HUGO = shlex.split(os.environ.get("HUGO", "hugo"))
@@ -23,9 +24,13 @@ class RelatedPostsTest(unittest.TestCase):
             root = Path(directory)
             partials = root / "layouts/partials"
             partials.mkdir(parents=True)
-            for name in ["related_posts.html", "related_posts_index.html"]:
+            for name in ["related_posts.html", "related_posts_index.html",
+                         "home_note_card.html", "home_post_card.html"]:
                 shutil.copyfile(ROOT / "layouts/partials" / name, partials / name)
-            (partials / "post_meta.html").write_text("")
+            for name in ["post_meta.html", "cover.html", "new_badge.html", "notes/card_cover.html"]:
+                stub = partials / name
+                stub.parent.mkdir(parents=True, exist_ok=True)
+                stub.write_text("")
             (root / "hugo.toml").write_text('''baseURL = "https://example.test/"
 disableKinds = ["taxonomy", "term", "RSS", "sitemap"]
 [params.relatedPosts]
@@ -78,7 +83,7 @@ count = 4
                                    datetime.date.fromisoformat(other["date"])).days)
                         ranked.append((url, score, gap))
                 ranked.sort(key=lambda item: (-item[1], item[2]))
-                actual = re.findall(r'href="([^"]+)"', row["html"])
+                actual = [urlparse(url).path for url in re.findall(r'href="([^"]+)"', row["html"])]
                 self.assertEqual(actual, [item[0] for item in ranked[:4]], row["url"])
 
             # Adding unrelated content must not change any recommendations.

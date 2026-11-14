@@ -254,7 +254,7 @@ jobs:
       - name: Check internal links
         run: python3 scripts/check_links.py
 
-      - name: Check AdSense loading
+      - name: Check AdSense is removed
         run: python3 scripts/check_adsense.py
 
       - name: Check homepage batches and archive delivery

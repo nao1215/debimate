@@ -461,29 +461,69 @@ html {
 
 .related-posts-list {
   display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
-.related-post {
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--entry);
+.related-posts-list .post-entry {
+  min-width: 0;
+  margin: 0 !important;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
 }
 
-.related-post-link {
-  display: grid;
-  gap: 0.35rem;
+.related-posts-list .note-entry { background: #faf8f5; }
+html[data-theme="dark"] .related-posts-list .post-entry { background: #302e2b; }
+html[data-theme="dark"] .related-posts-list .note-entry { background: #292f32; }
+
+.related-posts-list .entry-cover { margin: 0 0 10px; }
+.related-posts-list .entry-cover img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.related-posts-list .entry-cover-contain img { object-fit: contain; background: #fff; }
+.related-posts-list .entry-header { height: 63px; overflow: hidden; }
+.related-posts-list .entry-header :is(h2, h3) {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.related-posts-list .entry-footer {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin-top: 4px;
+  font-size: 12px;
+  line-height: 20px;
+  overflow: hidden;
+}
+.related-posts-list .entry-footer > span {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.related-posts-list .entry-link:focus-visible { outline-offset: -3px; }
+
+@media (max-width: 760px) {
+  .related-posts-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.related-post-name {
-  color: var(--primary);
-  font-weight: 600;
-}
-
-.related-post-meta {
-  color: var(--secondary);
-  font-size: 0.9rem;
+@media (max-width: 480px) {
+  .related-posts-list { grid-template-columns: minmax(0, 1fr); }
 }
 
 .oss-grid {
@@ -973,7 +1013,7 @@ body.home .post-entry .entry-header h2 {
    174 枚が拡大表示で、最大 8.2 倍。元の解像度を超えて拡大した分がそのまま
    ぼやけとして出るため、上限を 520px に決め、かつ元画像より大きくしない。
    一覧・トップのカードは別ルール (body.home .post-entry) なので影響しない。 */
-.post-single .entry-cover img {
+.post-single > .entry-cover img {
   width: auto;
   max-width: min(100%, 520px);
   height: auto;
@@ -1780,4 +1820,42 @@ html[data-theme="dark"] .game-pick-gozen { background: #263038; color: #eef4f7; 
 /* 狭い画面では説明文が右下の「OSS 一覧」と重なるので、その分だけ下を空ける（2026-11-11）。 */
 @media (max-width: 640px) {
   .home-cards .oss-pick { padding-bottom: 2.1rem; }
+}
+
+/* 前後リンクは小さな表紙を添え、本文末尾を占有しすぎないようにする。 */
+.preview-paginav { align-items: stretch; }
+.preview-paginav :is(.prev, .next) { min-width: 0; font-size: 15px; line-height: 1.5; }
+.preview-paginav .index { align-self: center; }
+.nav-preview {
+  position: relative;
+  width: 180px;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  margin: 8px 0;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--entry);
+}
+.next .nav-preview { margin-inline-start: auto; }
+.nav-preview :is(figure, img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+.nav-preview img { object-fit: contain; }
+.nav-preview .note-card-figure { padding: 4px; border: 0; }
+
+.nav-video-label {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  padding: 2px 5px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1.4;
 }

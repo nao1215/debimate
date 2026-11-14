@@ -1,75 +1,48 @@
 #!/usr/bin/env python3
-"""Ensure the AdSense loader is emitted exactly where an ad slot exists."""
+"""Ensure published pages contain no AdSense scripts or advertising slots."""
 
-from pathlib import Path
 from html.parser import HTMLParser
+from pathlib import Path
+import sys
 
 
-LOADER = "pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
-SLOT = 'data-ad-slot="7574390420"'
-MINIFIED_SLOT = "data-ad-slot=7574390420"
-
-
-class ArticleLayout(HTMLParser):
-    def __init__(self, html):
+class AdSenseMarkup(HTMLParser):
+    def __init__(self):
         super().__init__()
-        self.article = False
-        self.content_depth = 0
-        self.content_done = False
-        self.footer_seen = False
-        self.slots = 0
-        self.correct_position = True
-        self.feed(html)
+        self.script = False
+        self.found = False
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
-        classes = attrs.get("class", "").split()
-        if tag == "article" and "post-single" in classes:
-            self.article = True
-        if tag == "div":
-            if self.content_depth:
-                self.content_depth += 1
-            elif "post-content" in classes:
-                self.content_depth = 1
-        if tag == "footer" and "post-footer" in classes:
-            self.footer_seen = True
-        if tag == "ins" and "data-ad-slot" in attrs:
-            self.slots += 1
-            self.correct_position &= self.content_done and not self.footer_seen
+        if tag == "script":
+            self.script = True
+            self.found |= "googlesyndication.com" in attrs.get("src", "")
+        self.found |= "adsbygoogle" in attrs.get("class", "").split()
+        self.found |= "data-ad-slot" in attrs or "data-ad-client" in attrs
+        self.found |= tag == "meta" and attrs.get("name") == "google-adsense-account"
+
+    def handle_data(self, data):
+        if self.script:
+            self.found |= "adsbygoogle" in data
 
     def handle_endtag(self, tag):
-        if tag == "div" and self.content_depth:
-            self.content_depth -= 1
-            if not self.content_depth:
-                self.content_done = True
+        if tag == "script":
+            self.script = False
 
 
 def check(root: Path) -> None:
-    ad_pages = 0
-    mismatches = []
-    for path in root.rglob("*.html"):
-        html = path.read_text(errors="replace")
-        has_loader = LOADER in html
-        has_slot = SLOT in html or MINIFIED_SLOT in html
-        if has_loader != has_slot:
-            mismatches.append((path, has_loader, has_slot))
-        layout = ArticleLayout(html)
-        section = path.relative_to(root).parts[0]
-        if layout.article and section in ("post", "notes", "ml", "weeknotes"):
-            assert layout.slots == 1, f"Expected one article ad slot: {path}"
-        if has_slot:
-            assert layout.slots == 1, f"Duplicate ad slots: {path}"
-            assert layout.correct_position, f"Ad must follow the body and precede the footer: {path}"
-            assert html.count(LOADER) == 1, f"Duplicate AdSense loaders: {path}"
-            ad_pages += 1
-
-    assert not mismatches, "AdSense loader/slot mismatch:\n" + "\n".join(
-        f"  {path}: loader={loader}, slot={slot}"
-        for path, loader, slot in mismatches
-    )
-    assert ad_pages, "No pages with AdSense slots found"
-    print(f"AdSense loading verified: loader limited to {ad_pages} pages with ad slots")
+    pages = list(root.rglob("*.html"))
+    assert pages, f"No built HTML pages found: {root}"
+    remaining = []
+    for path in pages:
+        parser = AdSenseMarkup()
+        parser.feed(path.read_text(errors="replace"))
+        if parser.found:
+            remaining.append(str(path))
+    assert not remaining, "AdSense remains in:\n" + "\n".join(remaining)
+    assert not (root / "ads.txt").exists(), "Obsolete ads.txt remains in build output"
+    print(f"AdSense removal verified: {len(pages)} pages contain no ad scripts or slots")
 
 
 if __name__ == "__main__":
-    check(Path("public"))
+    check(Path(sys.argv[1] if len(sys.argv) > 1 else "public"))
