@@ -27,6 +27,9 @@
 <div class="notes-category-head" data-notes-head="{{ .key }}" hidden>
   <h2>{{ .page.Title }}</h2>
   <script type="application/json" data-notes-topics>{{ collections.Apply (.page.Params.topics | default slice) "index" "." "name" | jsonify | safeJS }}</script>
+  {{- /* 小分類の見出しへ飛ぶ URL（#カテゴリ/小分類）の名前。見出しは JS で組み立てるので、名前はここで決めて JS とリンク検査（scripts/check_links.py）が読む。 */}}
+  {{- $key := .key }}
+  {{- range .page.Params.topics }}<span hidden data-notes-anchor="{{ $key }}/{{ strings.Trim (replaceRE "[^a-z0-9]+" "-" (lower .name)) "-" }}" data-notes-topic="{{ .name }}"></span>{{ end }}
 </div>
 {{- end }}
 {{- $notes := slice }}

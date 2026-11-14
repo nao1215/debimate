@@ -17,7 +17,12 @@
   const tabs = [...document.querySelectorAll('[data-notes-tabs] button')];
   const keys = tabs.map(tab => tab.dataset.category);
   // URL の #カテゴリ/小分類 で、タブを選んだうえで小分類の見出しまで移動する（例: #generative-ai/image-generation）。
-  const slug = topic => topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'other';
+  // 名前は layouts/notes/list.html の data-notes-anchor で決める。そこに無い小分類（その他など）だけここで作る。
+  const anchors = new Map([...document.querySelectorAll('[data-notes-anchor]')].map(span => [
+    `${span.closest('[data-notes-head]').dataset.notesHead}\n${span.dataset.notesTopic}`, span.dataset.notesAnchor,
+  ]));
+  const anchorOf = topic => anchors.get(`${category}\n${topic}`)
+    || `${category}/${topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'other'}`;
   const parseHash = () => {
     const [key, topic] = decodeURIComponent(location.hash.slice(1)).split('/');
     return keys.includes(key) ? { key, topic } : { key: 'all' };
@@ -44,7 +49,7 @@
       if (!members.length) return;
       const section = document.createElement('section');
       section.className = 'notes-topic';
-      section.id = `${category}/${slug(topic)}`;
+      section.id = anchorOf(topic);
       const title = document.createElement('h3');
       title.textContent = topic;
       const count = document.createElement('span');

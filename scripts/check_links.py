@@ -60,6 +60,11 @@ class Extractor(HTMLParser):
             if key in values and (tag != "meta"):
                 self.ids.add(values[key])
 
+        # 技術ノート一覧の小分類の見出しは JS が組み立てるので、id の代わりに
+        # layouts/notes/list.html が出す data-notes-anchor を飛び先として数える。
+        if "data-notes-anchor" in values:
+            self.ids.add(values["data-notes-anchor"])
+
         for attr in URL_ATTRS:
             if attr in values:
                 self.urls.append(values[attr])
