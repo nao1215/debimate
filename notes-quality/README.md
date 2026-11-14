@@ -36,7 +36,16 @@ git config core.hooksPath notes-quality/hooks
 
 ## 自動で作り直すもの
 
-GitHub Actions の `.github/workflows/style-refresh.yml` が週 1 回（日曜 9:00）`refresh_style.py` を走らせ、次を作り直して、変わっていれば main に commit します。文体はすぐには変わらないので、ノートの commit では作り直しません。`style/variant_groups.tsv` を変えた時は、手で `python3 notes-quality/refresh_style.py` を走らせるか、workflow を手動で動かします。手で書き足しません。
+GitHub Actions の `.github/workflows/style-refresh.yml` が週 1 回（日曜 9:00）`refresh_style.py` を走らせ、次を作り直して、変わっていれば main に commit します。文体はすぐには変わらないので、ノートの commit では作り直しません。手で書き足しません。
+
+週 1 回を待たずに手元で作り直してもかまいません（記事や weeknotes を書いた直後、`style/variant_groups.tsv` を変えた時など）。次の 2 つを実行し、3 つのファイルだけを commit して push します。CI は変わっていない時は何もしないので、手元で作り直した週は CI の commit が出ないだけです。
+
+```sh
+python3 notes-quality/refresh_style.py
+git commit -m "chore(notes-quality): refresh the writing style baseline from posts and weeknotes" -- notes-quality/style/variants.tsv notes-quality/style/vocabulary.md notes-quality/style/corpus.sha256
+```
+
+GitHub の Actions の画面から style-refresh を手動で動かしても同じです。
 
 - `style/variants.tsv`: 表記・語の揺れ（`style/variant_groups.tsv` の組）を、2023 年以降の本人の技術記事と weeknotes で数えたもの。本人の使用が 5% 未満の形は関門で NG になります。
 - `style/vocabulary.md`: 本人の実文とノートの言い回しの差。
