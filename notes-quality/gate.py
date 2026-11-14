@@ -208,6 +208,26 @@ def title_shape(t):
     return 'なぜ' if re.search(r'(理由|のか|なぜ)[」）]?$', sub) else 'その他'
 
 
+# 副題は、その技術の一般的な知見を書く場所（2026-11-14 著者の指定）。著者のプロジェクトや手元の実験で
+# 起きた出来事は本文の冒頭で扱い、副題の主題にしない。機械で拾えるのは、出来事の報告になりやすい
+# 過去形の結びと、著者のプロジェクト名・「著者」「手元」だけなので、それを止める
+OWN_PROJECTS = ('filesql', 'sqly', 'atago', 'jsonize', 'jz ', 'metamon', 'himorime', 'omokage', 'gup',
+                'mimixbox', 'gozen', 'sqlode', 'oaspec', 'nao1215', '著者', '手元', '私')
+
+
+def title_subject_ng(t):
+    """副題が一般知識でなく著者の出来事を主題にしていれば、その理由を返す。"""
+    if ' - ' not in t:
+        return None
+    sub = t.split(' - ', 1)[1].strip()
+    if re.search(r'(た|ていた|だった|なかった|かった)[」）。]?$', sub):
+        return f'副題が過去形で終わり、出来事の報告になっている: {sub}'
+    hit = [w.strip() for w in OWN_PROJECTS if w in sub]
+    if hit:
+        return f'副題に著者のプロジェクトや経験の語（{"、".join(hit)}）がある: {sub}'
+    return None
+
+
 def opening_type(key):
     cp = os.path.join(HERE, 'checklists', f'{key}.md')
     if not os.path.exists(cp):
@@ -412,6 +432,9 @@ def check_process(rel, key, text):
         ng.append(f'冒頭の型「{ot}」が直前の 3 本（{", ".join(r[0] for r in prev)}）と同じ。題材に合う別の型を選ぶ')
     if len(prev) == 3 and ts == 'なぜ' and all(r[2] == ts for r in prev):
         ng.append(f'題が直前の 3 本と同じ「〜の理由／なぜ〜のか」の形: {title}')
+    why = title_subject_ng(title)
+    if why:
+        ng.append(why + '（副題はその技術の一般的な知見を現在形で書く。著者の実験・出来事は本文の冒頭で扱う）')
 
     # PC 幅（1280）での見栄え。箇条書きの折り返しと表のマスの行数を、描いて数える（layout_check.py。2026-11-12 著者の指定）。
     # hugo と google-chrome が要るので、無い環境では飛ばして知らせる
