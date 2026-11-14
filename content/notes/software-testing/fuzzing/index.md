@@ -52,7 +52,7 @@ Fuzzing の始まりは、1988 年の雷雨の夜です。[Barton Miller 氏の�
 
 カバレッジは、実行中にプログラムのどの分岐を通ったかの記録です。現在の主な fuzz の道具は、カバレッジを記録し、新しい分岐を通った入力を残して、それを少しずつ変えます。[AFL](https://lcamtuf.coredump.cx/afl/) や [libFuzzer](https://llvm.org/docs/LibFuzzer.html) が広めた方法で、Go は 1.18 から [`go test` に組み込んでいます](https://go.dev/doc/security/fuzz/)。
 
-残した入力の集まりを corpus、最初に人が渡す入力を seed と呼びます。入力を少し変えることを変異（mutation）と呼びます。
+残した入力の集まりを corpus、最初に人が渡す入力を seed と呼びます。入力を少し変えることを変異（mutation）と呼びます。入力ではなくテスト対象のコードを変えて、テストの強さを測る [Mutation Testing](/notes/software-testing/mutation-testing/) とは別の手法です。
 
 {{< figure src="images/loop.webp" alt="カバレッジで導く fuzz の繰り返し。corpus（seed と、新しい分岐に届いた入力）から 1 つ選び、変異（バイトを足す・消す・変える）を加え、対象の関数に渡して実行し、前に通っていない分岐を通ったかを見る。通ったら corpus に足し、通らなければ捨てる。実行中に検査に失敗（panic、t.Fatal、10 秒を超える）したら、入力を testdata/fuzz/ に保存して止まる" caption="新しい分岐を通った入力を残し、それを元に次の入力を作る" align="center" >}}
 

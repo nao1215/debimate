@@ -1,0 +1,5 @@
+Mutation testing completed in 24 minutes 55 seconds
+Killed: 3329, Lived: 744, Not covered: 1140
+Timed out: 54, Not viable: 0, Skipped: 0
+Test efficacy: 81.73%
+Mutator coverage: 78.13%

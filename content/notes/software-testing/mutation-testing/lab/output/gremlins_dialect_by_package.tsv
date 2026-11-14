@@ -1,0 +1,9 @@
+package	KILLED	LIVED	NOT COVERED	TIMED OUT
+dialect	3	0	0	0
+internal/ast	0	0	5	0
+internal/lower	306	92	244	2
+internal/parser	354	111	261	16
+internal/render	147	46	127	0
+internal/runtime	2349	423	391	32
+internal/sqlerr	0	0	2	0
+internal/token	170	72	110	4

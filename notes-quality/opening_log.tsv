@@ -59,3 +59,4 @@ software-architecture__adapter	症状	その他	Adapter - PostgreSQL 17 で chec
 mlops__data-drift	一覧	その他	データドリフト - 合成データの 90 日、アラートが鳴った 30 日は正解率が上がり、鳴らない 30 日に落ちた
 software-testing__quint	問い	その他	Quint - 仕様に書いた失敗の順番は全部試し、書かなかった失敗は試さない
 mlops__model-performance-monitoring	一覧	その他	モデル性能劣化の監視 - 正解率が 0.41 に落ちた週、平均確信度は 0.99 だった
+software-testing__mutation-testing	予想	その他	Mutation Testing - 公式文書の例で書いたテストは、引き算を足し算に変えても通った

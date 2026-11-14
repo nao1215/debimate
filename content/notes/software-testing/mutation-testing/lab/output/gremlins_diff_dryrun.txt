@@ -1,0 +1,9 @@
+# filesql 21fbc9c、gremlins v0.6.0。差分の起点 ddd2edb^ から HEAD まで（dialect に 2,093 行の追加を含む）
+$ gremlins unleash --dry-run --diff ddd2edb^ ./dialect
+Runnable: 0, Not covered: 0
+Mutator coverage: 0.00%
+
+$ gremlins unleash --dry-run --diff ddd2edb^ .
+Runnable: 305, Not covered: 91
+Mutator coverage: 77.02%
+うち dialect 配下: 147

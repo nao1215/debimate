@@ -1,0 +1,51 @@
+== 0. 元のコードで gleam test を 1 回回す時間
+gleam test 1 回: 3.1 秒
+== 1. ミュータントを 1 個ずつ入れて gleam test
+KILLED         L23   == → !=
+KILLED         L35   == → !=
+KILLED         L71   == → !=
+KILLED         L73   == → !=
+KILLED         L101  == → !=
+KILLED         L233  == → !=
+KILLED         L28   != → ==
+KILLED         L48   <. → <=.
+KILLED         L59   <=. → <.
+LIVED          L55   >=. → >.
+KILLED         L56   -. → +.
+KILLED         L57   -. → +.
+KILLED         L183  && → ||
+KILLED         L190  || → &&
+KILLED         L197  ! を外す
+KILLED         L134  -> True → -> False
+KILLED         L145  -> True → -> False
+KILLED         L158  -> True → -> False
+KILLED         L159  -> True → -> False
+KILLED         L174  -> True → -> False
+LIVED          L230  -> True → -> False
+KILLED         L231  -> True → -> False
+LIVED          L252  -> True → -> False
+KILLED         L253  -> True → -> False
+KILLED         L72   -> False → -> True
+KILLED         L138  -> False → -> True
+KILLED         L149  -> False → -> True
+KILLED         L160  -> False → -> True
+LIVED          L235  -> False → -> True
+LIVED          L257  -> False → -> True
+COMPILE_ERROR  L73   == [] → == [Nil]
+全ミュータント: 99.9 秒
+== 2. 生き残った行の分岐を panic にして、テストが届くかを見る
+L55: 371 passed, 3 failures
+L230: 374 passed, no failures
+L235: 374 passed, no failures
+L252: 374 passed, no failures
+L257: 374 passed, no failures
+== 3. 逆順で結果が変わる関数を all_equal で検査する
+元のコード: 374 passed, 1 failures
+  source input:
+    [0, 1, 9, 8]
+  outputs (source first, then each follow-up):
+    [0] 0
+    [1] 8
+
+374 passed, 1 failures
+L235 のミュータント: 375 passed, no failures

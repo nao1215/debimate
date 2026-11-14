@@ -1,0 +1,9 @@
+2026-11-14 に取った
+OS: Linux 7.0.0-43-generic, CPU: AMD RYZEN AI MAX+ 395 w/ Radeon 8060S, 32 スレッド
+filesql: 21fbc9c (https://github.com/nao1215/filesql)
+go version go1.26.9 linux/amd64
+gremlins: v0.6.0（go install github.com/go-gremlins/gremlins/cmd/gremlins@latest が v0.6.0 に解決。go1.26.9 でビルド。go version -m で確認）
+gremlins の実行: gremlins unleash --workers 4 ./dialect（filesql の checkout の最上位で）
+metamon: 459ef87 (https://github.com/nao1215/metamon)
+gleam: 1.18.1, Erlang/OTP 29.0
+PostgreSQL: 18.6（docker の postgres:18-alpine）

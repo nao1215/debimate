@@ -1,0 +1,10 @@
+{
+ "path": "content/notes/software-testing/mutation-testing/index.md",
+ "overall": 5,
+ "product": 54,
+ "blob": "122d3af98dcdcc65ad5cdd1d5b4bab23eb12d4a1",
+ "by": "別担当の採点（抜き出し、基準 5 本と比較、t1）",
+ "baseline": [],
+ "scored_at": "2026-11-14",
+ "standard": "gate-v1"
+}

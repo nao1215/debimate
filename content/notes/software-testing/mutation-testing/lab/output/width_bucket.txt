@@ -1,0 +1,14 @@
+元のコード: 既存のテスト 通る
+元のコード: 足したテスト 通る
+L207 if low > high {        → if low >= high {       既存 LIVED  追加 LIVED
+L211 if x < low {           → if x <= low {          既存 LIVED  追加 KILLED
+    SELECT width_bucket(10, 10, 20, 5) = {0 true} (<nil>), want 1
+L214 if x >= high {         → if x > high {          既存 LIVED  追加 KILLED
+    SELECT width_bucket(0.7, 0, 0.7, 3) = {3 true} (<nil>), want 4
+L219 (x-low)                → (x+low)                既存 LIVED  追加 KILLED
+    SELECT width_bucket(15, 10, 20, 5) = {13 true} (<nil>), want 3
+    SELECT width_bucket(10, 10, 20, 5) = {11 true} (<nil>), want 1
+    SELECT width_bucket(15, 20, 10, 5) = {13 true} (<nil>), want 3
+L219 /(high-low)            → /(high+low)            既存 LIVED  追加 KILLED
+    SELECT width_bucket(15, 10, 20, 5) = {1 true} (<nil>), want 3
+    SELECT width_bucket(15, 20, 10, 5) = {1 true} (<nil>), want 3

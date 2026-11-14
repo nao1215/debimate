@@ -374,7 +374,7 @@ pub fn trim_idempotent_test() {
 
 `idempotency_of` に渡した `string.trim` が図の変換 T、`forall_morph` の 3 つ目の引数が f で、関係 R は f(x)＝f(T(x)) です。冪等の関係なので、この例では T と f が同じ `string.trim` です。
 
-`forall_morph` は、ジェネレーター（`generator.string_ascii`）で作った入力で関係を検証し、失敗したら入力を最小化してから報告します。冪等の他に、変換しても出力が変わらない関係（`invariant_under`）や、入力の変換に合わせて出力も決まった形で変わる関係（`equivariant_under`）の型を持っています。
+`forall_morph` は、ジェネレーター（`generator.string_ascii`）で作った入力で関係を検証し、失敗したら入力を最小化してから報告します。冪等の他に、変換しても出力が変わらない関係（`invariant_under`）や、入力の変換に合わせて出力も決まった形で変わる関係（`equivariant_under`）の型を持っています。この関係の部品そのものを書き換えて metamon のテストに掛けた結果は、[Mutation Testing](/notes/software-testing/mutation-testing/) のノートで扱っています。
 
 ---
 

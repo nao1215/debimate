@@ -1,0 +1,23 @@
+import gleam/list
+import metamon
+import metamon/generator
+import metamon/generator/range
+import metamon/relation
+import metamon/transform/list as list_t
+
+// 逆順にすると結果が変わる関数。all_equal で検査すれば落ちるはず
+fn first_or_zero(items: List(Int)) -> Int {
+  case list.first(items) {
+    Ok(x) -> x
+    Error(_) -> 0
+  }
+}
+
+pub fn first_is_invariant_under_reverse_test() {
+  metamon.forall_morph_n(
+    generator.list_of(generator.int(range.constant(0, 9)), range.constant(2, 5)),
+    [list_t.reverse()],
+    relation.all_equal(),
+    first_or_zero,
+  )
+}
