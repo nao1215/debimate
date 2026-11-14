@@ -69,6 +69,33 @@ def drift_rows():
     return [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#')]
 
 
+def term_rows():
+    """style/terms.tsv の (題の正規表現, 避ける語の正規表現, 分野での言い方, 根拠)。2026-11-12 著者の指定。"""
+    p = os.path.join(HERE, 'style', 'terms.tsv')
+    if not os.path.exists(p):
+        return []
+    rows = [r for r in csv.reader(open(p, encoding='utf-8'), delimiter='\t') if r and not r[0].startswith('#')]
+    return [(re.compile(r[0]) if r[0] else None, re.compile(r[1]), r[2], r[3] if len(r) > 3 else '') for r in rows if len(r) >= 3]
+
+
+def term_rules(where):
+    """このノートに当たる訳語の規則。where はノートのパスと題を改行でつないだもの（対象の正規表現はどちらに当ててもよい）。"""
+    return [(rx, common, src) for cond, rx, common, src in term_rows() if cond is None or cond.search(where)]
+
+
+PAIR_JP = re.compile(r'(?<![ァ-ヴー一-龥々])([ァ-ヴー一-龥々]{0,15}[一-龥々][ァ-ヴー一-龥々]{0,15})（([A-Za-z][A-Za-z0-9._+-]*(?: [A-Za-z][A-Za-z0-9._+-]*)*)）')
+
+
+def translated_pairs(prose):
+    """「縮小（shrinking）」のように、漢字を含む訳語と英語を併記した組。英語の小文字をキーにする。
+    カタカナだけの語（ジェネレーター（generator））は音を写しただけなので訳語として数えない。"""
+    plain = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', prose)
+    out = {}
+    for m in PAIR_JP.finditer(plain):
+        out.setdefault(m.group(2).lower(), f'{m.group(1)}（{m.group(2)}）')
+    return out
+
+
 def variant_rules():
     """style/variants.tsv から、本人がほぼ使わない形（enforce の組で 5% 未満、組の合計 30 件以上）を返す。"""
     p = os.path.join(HERE, 'style', 'variants.tsv')
@@ -127,9 +154,10 @@ def removed_lines(old_text, new_text):
     return out
 
 
-def _hits(lines):
-    """行ごとの規則違反を (規則の名前, 行) で返す。コードと引用は除く。"""
+def _hits(lines, title=''):
+    """行ごとの規則違反を (規則の名前, 行) で返す。コードと引用は除く。title はノートの題（訳語の規則に使う）。"""
     out, incode = [], False
+    terms = term_rules(title)
     for t in lines:
         if t.lstrip().startswith('```'):
             incode = not incode
@@ -149,15 +177,18 @@ def _hits(lines):
         for form, rx, hint in variant_rules():
             for _ in rx.findall(tt):
                 out.append((f'「{form}」（本人の言い方: {hint}）', t))
+        for rx, common, src in terms:
+            for w in rx.findall(tt):
+                out.append((f'「{w}」（分野での言い方: {common}。{src}）', t))
     return out
 
 
-def check_added(lines, removed=()):
+def check_added(lines, removed=(), title=''):
     """足した行の規則違反のうち、消した行より増えたものだけを NG にする（2026-11-12）。
     同じ行にもともとあった違反は、小さな修正が持ち込んだものではないので数えない。"""
     from collections import Counter
-    before = Counter(name for name, _ in _hits(removed))
-    after = _hits(lines)
+    before = Counter(name for name, _ in _hits(removed, title))
+    after = _hits(lines, title)
     ng, seen = [], Counter()
     for name, t in after:
         seen[name] += 1
@@ -242,6 +273,11 @@ def check_full(rel, process=True):
         if n:
             lines = [str(i + 1) for i, l in enumerate(text.splitlines()) if rx.search(re.sub(r'`[^`]*`|\]\([^)]*\)', '', l))][:8]
             ng.append(f'「{form}」が {n} 回。本人の言い方: {hint}。行: {", ".join(lines)}')
+    for rx, common, src in term_rules(f'{rel}\n{title_of(text)}'):
+        n = len(rx.findall(plain)) + len(rx.findall(title_of(text)))  # 題も本文と同じに見る
+        if n:
+            lines = [str(i + 1) for i, l in enumerate(text.splitlines()) if rx.search(l)][:8]
+            ng.append(f'「{rx.pattern}」が {n} 回。分野での言い方: {common}（{src}）。行: {", ".join(lines)}')
     code, out = run([sys.executable, os.path.join(HERE, 'omokage_check.py'), p])
     if code == 0 and out.strip().splitlines()[-1].strip().isdigit():
         sc = int(out.strip().splitlines()[-1])
@@ -359,6 +395,16 @@ def check_process(rel, key, text):
                 ng.append(f'チェックリストの空欄・未実施: {cells[0][:40]} → 「{val}」')
         if opening_type(key) is None:
             ng.append(f'チェックリストの「冒頭の型」に {"/".join(TYPES)} のどれかを書く')
+        # 訳語の確認（2026-11-12 著者の指定）。併記した訳語ごとに、英語の語と確かめた資料をチェックリストに書かせる
+        cell = ''
+        for line in open(cp, encoding='utf-8'):
+            if line.startswith('|') and '訳語' in line.split('|')[1]:
+                cell = line.strip().strip('|').split('|')[-1]
+        body = re.sub(r'```.*?```', '', text, flags=re.S)
+        missing = [jp for en, jp in translated_pairs(body).items() if en not in cell.lower()]
+        if missing:
+            ng.append('チェックリストの「訳語」の行に、分野での言い方を確かめた記録が無い訳語: ' + '、'.join(missing[:12])
+                      + '（英語の語・分野の資料での言い方・URL を書く。分野の言い方と違えば本文を直し、避ける語を style/terms.tsv に足す）')
 
     prev = [r for r in opening_hist() if r[0] != key][-3:]
     ot, ts, title = opening_type(key), title_shape(title_of(text)), title_of(text)
@@ -485,7 +531,7 @@ def score_check(rel, head_text):
         if n > SMALL:
             ng.append(f'採点した版から {n} 行を書き足し・書き直している（{SMALL} 行まで。語の置き換えなどの手直しは数えない）。採点し直す')
         else:
-            ng += check_added(add, removed_lines(scored, head_text))
+            ng += check_added(add, removed_lines(scored, head_text), f'{rel}\n{title_of(head_text)}')
     return ng
 
 
@@ -514,7 +560,7 @@ def main(argv):
         if diff:
             old = git('show', f'HEAD:{rel}', check=True)
             cur = open(os.path.join(ROOT, rel), encoding='utf-8').read()
-            ng = check_added(added_lines(old or '', cur), removed_lines(old or '', cur))
+            ng = check_added(added_lines(old or '', cur), removed_lines(old or '', cur), f'{rel}\n{title_of(cur)}')
             ng += check_small_whole(rel, old or '', cur)
             return report([(rel, '足した行だけ', ng)])
         if '--quality' in rest:
@@ -536,7 +582,7 @@ def main(argv):
             old = git('show', f'HEAD:{rel}', check=True)
             new = git('show', f':{rel}')
             kind = classify(rel, old, new)
-            ng = check_added(added_lines(old, new), removed_lines(old, new)) if kind == 'small' else check_full(rel)
+            ng = check_added(added_lines(old, new), removed_lines(old, new), f'{rel}\n{title_of(new)}') if kind == 'small' else check_full(rel)
             if kind == 'small':
                 ng += check_small_whole(rel, old, new)
             results.append((rel, kind, ng))

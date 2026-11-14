@@ -23,6 +23,8 @@ git config core.hooksPath notes-quality/hooks
 | `check_note.py`、`style_check.sh`、`textruns.py`、`name_drift.py` | 機械で見られる規則（太字、「を、」、表記、括弧、区切り、図の形式、文字だけの区間） |
 | `author_grep.sh`、`build_vocab.py` | 本人の実文（`content/post/ja` と `content/weeknotes`）で語を照合する |
 | `drift_words.tsv` | 本人の実文にほとんど無く、ノートで使わない語 |
+| `style/terms.tsv` | 分野の訳語。パスか題に当たるノートで避ける語と、訳書・公式文書での言い方と根拠。関門が読む |
+| `style/glossary.tsv` | 全ノートの用語と分野で一般的な言い方の一覧（一致・要修正・どちらも通用・未確定と根拠）。関門は読まない |
 | `style/` | 文体・語彙・本人の用例 |
 | `completion_checklist.md`、`checklists/` | 完了のチェックリストの雛形と、ノートごとに埋めたもの |
 | `opening_log.tsv` | 書いた順の冒頭の型と題の形。直前の 3 本と同じ型を続けないために使う |

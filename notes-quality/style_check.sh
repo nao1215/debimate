@@ -163,9 +163,10 @@ for i, line in enumerate(sys.stdin.read().split("\n"), 1):
   #      姓だけを並べる。「Martin Fowler 氏」のような下の名前付きは姓が
   #      拾うので二重に書かない。Alice・Bob のような架空の登場人物は人名
   #      ではないので入れない
+  #      姓の直後に英字が続く語 (Young に対する Youngs) は別の人名なので除く
   report "人名に敬称「氏」が付いていない (書名・引用文・URL の中は除く)" "$f" \
     "$(echo "$body" | sed -E 's#https?://[^ )]*##g' \
-        | grep -nP "($names)(?!\s*氏)" | head -20)"
+        | grep -nP "($names)(?![A-Za-z])(?!\s*氏)" | head -20)"
 
   # 9.5. 断定を避ける言い回し・名詞化 (§11)
   report "事実を膨らませる言い回しがある (§11 で言い切りへ)" "$f" \
