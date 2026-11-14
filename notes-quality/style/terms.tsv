@@ -38,3 +38,4 @@ blockchain-systems/	記憶領域|保存領域	ストレージ（contract storage
 blockchain-systems/	砂場	サンドボックス（sandbox）	https://web.dev/articles/sandboxed-iframes?hl=ja
 generative-ai/	人形	3D モデル（Blender などで作った人体の 3D モデル）	2026-11-12 著者の指定（「人形」は不可。せめて 3D モデル）。ポーズを付ける人体の素体を指す
 generative-ai/	検出枠	バウンディングボックス（bounding box）	https://docs.ultralytics.com/ja/tasks/detect 物体検出の日本語資料ではバウンディングボックスが多数派（2026-11-13 face-redraw の事実確認）
+security/(log-leak|oauth-openid-connect)|Secrets in Logs|OAuth	秘密(?!鍵)	シークレット（secret）	Kubernetes・GitHub Docs・AWS Secrets Manager・Google Cloud Secret Manager の日本語文書はシークレット（glossary.tsv の secret (credential) の行）。秘密鍵は対象外。秘密分散の secret・秘密の質問は意味が違うので、対象を認証情報の意味で使うノートに絞る

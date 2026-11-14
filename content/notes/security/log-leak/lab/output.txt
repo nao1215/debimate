@@ -1,0 +1,74 @@
+# go version go1.26.4 linux/amd64
+# OTel SDK: go.opentelemetry.io/otel/sdk v1.47.0
+
+$ ./loglab filter
+level=INFO msg=import mnemonic=[FILTERED]
+level=INFO msg=import params="{main CANARY-abandon-ability-able}"
+level=INFO msg=import params="{WalletName:main Mnemonic:CANARY-abandon-ability-able}"
+
+$ ./loglab wrapped
+direct:     <redacted>
+exported:   {S:<redacted>}
+unexported: {s:{v:CANARY-abandon-ability-able}}
+
+$ ./loglab error
+strconv.Atoi: strconv.Atoi: parsing "CANARY-abandon-ability-able": invalid syntax
+url.Parse:    parse "https://user:CANARY-abandon-ability-able@example.com:port/": invalid port ":port" after host
+URL.String:   https://user:CANARY-abandon-ability-able@example.com/
+URL.Redacted: https://user:xxxxx@example.com/
+
+$ ./loglab stack
+goroutine 1 [running]:
+runtime/debug.Stack()
+	runtime/debug/stack.go:26 +0x5e
+main.sign({0xdeadbeefcafe0001, 0x1122334455667788}, {0x846238?, 0x66d39dbc1e0?})
+	loglab/main.go:77 +0x13
+main.main()
+	loglab/main.go:119 +0x105
+
+$ ./loglab otel
+exception.type=*errors.errorString
+exception.message=upstream rejected token CANARY-abandon-ability-able
+exception.stacktrace=goroutine 1 [running]:
+go.opentelemetry.io/otel/sdk/trace.recordStackTrace(...)
+	go.opentelemetry.io/otel/sdk@v1.47.0/trace/span.go:527
+go.opentelemetry.io/otel/sdk/trace.(*recordingSpan).RecordError(0x273c589a25a0, {0x6963c0, 0x273c588d2400}, {0x273c588d2410, 0x1, 0x1})
+	go.opentelemetry.io/otel/sdk@v1.47.0/trace/span.go:509 +0x4f1
+main.record({0x69d538, 0x273c589a25a0}, {0xdeadbeefcafe0001, 0x1122334455667788})
+	loglab/main.go:91 +0xf2
+main.otel()
+	loglab/main.go:99 +0x11f
+main.main()
+	loglab/main.go:121 +0x65
+
+
+$ ./loglab panic
+panic: sign failed
+
+goroutine 1 [running]:
+main.panicSign({0xdeadbeefcafe0001, 0x1122334455667788})
+	loglab/main.go:84 +0x2b
+main.main()
+	loglab/main.go:123 +0xbc
+
+$ GOTRACEBACK=none ./loglab stack
+goroutine 1 [running]:
+runtime/debug.Stack()
+	runtime/debug/stack.go:26 +0x5e
+main.sign({0xdeadbeefcafe0001, 0x1122334455667788}, {0x846238?, 0x3ae925f201e0?})
+	loglab/main.go:77 +0x13
+main.main()
+	loglab/main.go:119 +0x105
+
+$ GOTRACEBACK=none ./loglab panic
+panic: sign failed
+
+$ go test -v ./...
+=== RUN   TestImportLeaks
+    exit_test.go:49: 出口に目印が出た: "CANARY-abandon-ability-able"
+--- FAIL: TestImportLeaks
+=== RUN   TestImportFixedOK
+--- PASS: TestImportFixedOK
+FAIL
+FAIL	loglab
+FAIL

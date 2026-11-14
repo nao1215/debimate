@@ -170,7 +170,7 @@ scenarios:
 
 {{< figure src="images/order.webp" alt="atago v0.4.2 の正規化を 3 段階で描いた図。上の段: 秘密 s3cr3t-token の途中に色を戻すエスケープ \e[0m がある出力は、1 の秘密をマスクする段で秘密と一致せず、2 の改行の段を素のまま進み、3 でエスケープが消えると s3cr3t-token がつながって golden に残る。テストは通る。下の段: 50%\r\r\n は、2 の段で \r\n を \n にしても \r が 1 つ残り、golden には 50%\r\n が書かれる。比べる時は golden 側をもう 1 回揃えるので 50%\n と 50%\r\n になり、更新の直後に落ちる" caption="atago v0.4.2 で、秘密と CR が golden まで残る流れ" align="center" >}}
 
-上の段は、出力の一部だけを色付けする CLI で起きる形です。秘密の途中にエスケープがあるので、1 段目は秘密を見つけられません。3 段目でエスケープが消えると秘密がつながり、そのまま golden に書かれます。テストは通るので、秘密は golden と一緒にリポジトリへ commit されます。
+上の段は、出力の一部だけを色付けする CLI で起きる形です。秘密の途中にエスケープがあるので、1 段目は秘密を見つけられません。3 段目でエスケープが消えると秘密がつながり、そのまま golden に書かれます。テストは通るので、秘密は golden と一緒にリポジトリへ commit されます。秘密を消す処理の抜けがログや診断ファイルから秘密を外へ出した事故は、[Secrets in Logs](../../security/log-leak/) のノートにまとめました。
 
 下の段では、改行コードを揃える処理が `\r\n` を `\n` に 1 回置き換えるだけなので、CR（`\r`）が 2 つ続くと 1 つ残ります。golden には `50%\r\n` が書かれます。比べる時、今の出力は同じ正規化を 1 回通って `50%\r\n` になります。一方、golden は読み込んだ後にもう 1 回改行コードを揃えるので `50%\n` になり、両者は一致しません。更新した直後のテストが落ち、何度更新しても通らない状態になります。
 
@@ -245,4 +245,4 @@ atago は、`expect_fail` のシナリオが golden と一致すると、バグ�
 
 どれかが欠けている時、スナップショットテストは「前回と同じ」ことは保証しますが、前回が正しかったことは保証しません。
 
-実験に使った spec・Go のテスト・描画のスクリプトと出力は、[lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/snapshot-testing/lab) に置いています。図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/snapshot-testing/figures.py) です。
+実験に使った spec・Go のテスト・描画のスクリプトと出力は、[lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/snapshot-testing/lab) に置いています。

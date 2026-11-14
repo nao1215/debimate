@@ -1,0 +1,10 @@
+{
+ "path": "content/notes/security/log-leak/index.md",
+ "overall": 4,
+ "product": 54,
+ "blob": "7a2e206711bcdcff8dced09da79a441447df47c0",
+ "by": "別担当の採点（抜き出し、基準 5 本と比較。Transaction Scope に最も近いが比較の厚みと独自性で 4）",
+ "baseline": [],
+ "scored_at": "",
+ "standard": "gate-v1"
+}

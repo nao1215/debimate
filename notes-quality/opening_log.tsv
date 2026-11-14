@@ -61,3 +61,4 @@ software-testing__quint	問い	その他	Quint - 仕様に書いた失敗の順�
 mlops__model-performance-monitoring	一覧	その他	モデル性能劣化の監視 - 正解率が 0.41 に落ちた週、平均確信度は 0.99 だった
 software-testing__mutation-testing	予想	その他	Mutation Testing - 公式文書の例で書いたテストは、引き算を足し算に変えても通った
 software-testing__snapshot-testing	結果	その他	Snapshot Testing - golden ファイルが保証するのは前回と同じことで、正しいことではない
+security__log-leak	場面	その他	Secrets in Logs - 秘密がログへ漏れる経路は層ごとに違い、後段の消去だけでは止まらない
