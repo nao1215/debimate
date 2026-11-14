@@ -16,7 +16,17 @@
   }]));
   const tabs = [...document.querySelectorAll('[data-notes-tabs] button')];
   const keys = tabs.map(tab => tab.dataset.category);
-  const fromHash = () => (keys.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'all');
+  // URL の #カテゴリ/小分類 で、タブを選んだうえで小分類の見出しまで移動する（例: #generative-ai/image-generation）。
+  const slug = topic => topic.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'other';
+  const parseHash = () => {
+    const [key, topic] = decodeURIComponent(location.hash.slice(1)).split('/');
+    return keys.includes(key) ? { key, topic } : { key: 'all' };
+  };
+  const fromHash = () => parseHash().key;
+  const scrollToTopic = () => {
+    const { key, topic } = parseHash();
+    if (topic) document.getElementById(`${key}/${topic}`)?.scrollIntoView();
+  };
   let category = fromHash();
 
   // カテゴリのタブでは、小分類ごとの見出しを立てる。複数の小分類に属するカードは複製して並べる。
@@ -34,6 +44,7 @@
       if (!members.length) return;
       const section = document.createElement('section');
       section.className = 'notes-topic';
+      section.id = `${category}/${slug(topic)}`;
       const title = document.createElement('h3');
       title.textContent = topic;
       const count = document.createElement('span');
@@ -81,8 +92,11 @@
   select.addEventListener('change', () => choose(select.value));
   form.addEventListener('reset', () => requestAnimationFrame(() => choose('all')));
   tabs.forEach(tab => tab.addEventListener('click', () => choose(tab.dataset.category)));
-  window.addEventListener('hashchange', () => { category = fromHash(); update(); });
+  window.addEventListener('hashchange', () => { category = fromHash(); update(); scrollToTopic(); });
   update();
   form.hidden = false;
   document.querySelector('[data-notes-tabs]').hidden = false;
+  scrollToTopic();
+  // 画像の読み込みで上の段の高さが変わるので、読み込み後にもう一度合わせる。
+  window.addEventListener('load', scrollToTopic, { once: true });
 })();
