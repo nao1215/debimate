@@ -1,0 +1,13 @@
+version: "1"
+suite:
+  name: timestamp
+scenarios:
+  - name: the creation time of a record
+    steps:
+      - run:
+          shell: true
+          command: |
+            printf 'id: 42\ncreated: 2026-11-14T10:00:00Z\n'
+      - assert:
+          stdout:
+            snapshot: snapshots/timestamp.txt

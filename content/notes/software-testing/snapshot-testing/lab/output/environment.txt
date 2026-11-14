@@ -1,0 +1,7 @@
+date: 2026-11-14
+Linux 7.0.0-43-generic x86_64
+go version go1.26.4 linux/amd64 (atago v0.26.1 is built with go1.26.11, which its go.mod requires)
+node v22.22.1
+mermaid 11.16.1, puppeteer 25.6.0 (Chrome for Testing bundled with puppeteer)
+atago v0.4.2 (2026-07-05) and v0.26.1
+github.com/nao1215/markdown v0.13.0 (2026-02-24) and v1.0.0 (2026-08-13)

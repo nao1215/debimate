@@ -1,0 +1,46 @@
+== atago v0.4.2  root.atago.yaml  (record: HOME=/, verify: HOME=/home/nao)
+  golden:
+    installed: ~usr~local~bin~app$
+    config: ~etc~app~config.toml$
+  verify: FAILED  1 scenario: 0 passed, 1 failed, 0 errored, 0 skipped (0s)
+== atago v0.4.2  home.atago.yaml  (record: HOME=/home/nao, verify: HOME=/home/nao)
+  golden:
+    ~$
+    ~ki$
+    ~ki/data$
+  verify: PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (0s)
+== atago v0.4.2  crlf.atago.yaml  (record: HOME=/home/nao, verify: HOME=/home/nao)
+  golden:
+    progress 50%\r$
+    done$
+  verify: FAILED  1 scenario: 0 passed, 1 failed, 0 errored, 0 skipped (0s)
+== atago v0.4.2  secret.atago.yaml  (record: HOME=/home/nao, verify: HOME=/home/nao)
+  golden:
+    token: s3cr3t-token$
+  verify: PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (1ms)
+== atago v0.26.1  root.atago.yaml  (record: HOME=/, verify: HOME=/home/nao)
+  golden:
+    installed: /usr/local/bin/app$
+    config: /etc/app/config.toml$
+  verify: PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (1ms)
+== atago v0.26.1  home.atago.yaml  (record: HOME=/home/nao, verify: HOME=/home/nao)
+  golden:
+    ~$
+    /home/naoki$
+    /home/naoki/data$
+  verify: PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (1ms)
+== atago v0.26.1  crlf.atago.yaml  (record: HOME=/home/nao, verify: HOME=/home/nao)
+  golden:
+    progress 50%$
+    done$
+  verify: PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (1ms)
+== atago v0.26.1  secret.atago.yaml  (record: HOME=/home/nao, verify: HOME=/home/nao)
+  golden:
+    token: ***$
+  verify: PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (1ms)
+== atago v0.26.1  timestamp.atago.yaml
+  golden:
+    id: 42$
+    created: <timestamp>$
+  verify with "created: 1970-01-01T00:00:00Z": PASSED  1 scenario: 1 passed, 0 failed, 0 errored, 0 skipped (1ms)
+  verify with "created: 2026-11-14": FAILED  1 scenario: 0 passed, 1 failed, 0 errored, 0 skipped (1ms)

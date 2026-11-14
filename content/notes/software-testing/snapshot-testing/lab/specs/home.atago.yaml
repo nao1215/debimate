@@ -1,0 +1,13 @@
+version: "1"
+suite:
+  name: home
+scenarios:
+  - name: list the home directories
+    steps:
+      - run:
+          shell: true
+          command: |
+            printf '%s\n' /home/nao /home/naoki /home/naoki/data
+      - assert:
+          stdout:
+            snapshot: snapshots/home.txt

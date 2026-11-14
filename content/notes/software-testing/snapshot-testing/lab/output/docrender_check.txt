@@ -1,0 +1,5 @@
+markdown v1.1.2-1-gbe43d84 scripts/mermaid-check/check.mjs (the DocRender job) on the two goldens:
+== deploy-v0.13.0.md
+checked 1 mermaid block(s), 0 failed
+== deploy-v1.0.0.md
+checked 1 mermaid block(s), 0 failed

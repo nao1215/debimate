@@ -1,0 +1,13 @@
+version: "1"
+suite:
+  name: crlf
+scenarios:
+  - name: a line ending with two CRs
+    steps:
+      - run:
+          shell: true
+          command: |
+            printf 'progress 50%%\r\r\ndone\n'
+      - assert:
+          stdout:
+            snapshot: snapshots/crlf.txt

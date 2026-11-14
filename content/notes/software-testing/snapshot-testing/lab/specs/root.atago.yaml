@@ -1,0 +1,13 @@
+version: "1"
+suite:
+  name: root
+scenarios:
+  - name: where the binary is installed
+    steps:
+      - run:
+          shell: true
+          command: |
+            printf 'installed: /usr/local/bin/app\nconfig: /etc/app/config.toml\n'
+      - assert:
+          stdout:
+            snapshot: snapshots/root.txt

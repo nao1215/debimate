@@ -55,7 +55,7 @@ jsonize の wc の定義にも、GNU coreutils 9.7 の `wc` の本物の出力�
 | Metamorphic Testing | 複数の出力の間の関係 | 入力の変換と関係 | wc の合計行（実験 1） |
 | Differential Testing | 別の実装の出力 | 同じ仕様の別の実装 | 終了コードが 0 の失敗 |
 
-表の golden テストの行が、jsonize の形です。golden は定義の出力から生成し、定義を書いた本人が差分を目で見て置きます。冒頭の coreutils-9.7.json も golden です。そのため、冒頭の合計行のように本人が気付かなかった読み違いは golden にも入り、テストは通ります。golden が保証するのは「前と同じ」までで、「正しい」ではありません。
+表の golden テストの行が、jsonize の形です。golden は定義の出力から生成し、定義を書いた本人が差分を目で見て置きます。冒頭の coreutils-9.7.json も golden です。そのため、冒頭の合計行のように本人が気付かなかった読み違いは golden にも入り、テストは通ります。golden が保証するのは「前と同じ」までで、「正しい」ではありません。golden に誤った出力が入る別の例と、毎回変わる値をマスクする処理の落とし穴は、[Snapshot Testing](../snapshot-testing/) のノートで扱っています。
 
 Metamorphic Testing は、1 つの出力だけでは正しさを判定できず、比べる別の実装も無い時に使います。入力を変えて同じ処理をもう一度実行し、自分の出力どうしを比べます。
 

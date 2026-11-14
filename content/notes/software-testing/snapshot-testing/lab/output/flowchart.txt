@@ -1,0 +1,64 @@
+== markdown v0.13.0
+-- go test against the golden recorded with the previous version
+    ok  	example.com/flowchart	0.006s
+-- golden after UPDATE_GOLDEN=1
+    ---
+    title: Deploy v1.0 #prod
+    ---
+    flowchart TB
+        A["run "make release""]
+        B["push the tag"]
+        A-->B
+-- go test -count=3
+    ok  	example.com/flowchart	0.003s
+    == deploy-v0.13.0.mmd
+    {
+      "ok": true,
+      "texts": [
+        "run make release",
+        "push the tag",
+        "Deploy v1.0"
+      ]
+    }
+== markdown v1.0.0
+-- go test against the golden recorded with the previous version
+    --- FAIL: TestDeployGolden (0.00s)
+        flowchart_test.go:24: golden mismatch
+            --- want
+            ---
+            title: Deploy v1.0 #prod
+            ---
+            flowchart TB
+                A["run "make release""]
+                B["push the tag"]
+                A-->B
+            --- got
+            ---
+            title: "Deploy v1.0 #prod"
+            ---
+            flowchart TB
+                A["run #quot;make release#quot;"]
+                B["push the tag"]
+                A-->B
+    FAIL
+    FAIL	example.com/flowchart	0.002s
+    FAIL
+-- golden after UPDATE_GOLDEN=1
+    ---
+    title: "Deploy v1.0 #prod"
+    ---
+    flowchart TB
+        A["run #quot;make release#quot;"]
+        B["push the tag"]
+        A-->B
+-- go test -count=3
+    ok  	example.com/flowchart	0.002s
+    == deploy-v1.0.0.mmd
+    {
+      "ok": true,
+      "texts": [
+        "run \"make release\"",
+        "push the tag",
+        "Deploy v1.0 #prod"
+      ]
+    }
