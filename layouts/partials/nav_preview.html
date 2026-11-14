@@ -12,10 +12,18 @@
     {{- else -}}
       {{- $image := partial "weeknotes/topic_image_resource.html" (dict "week" . "body" .Content) -}}
       {{- if $image -}}
-        {{- partial "card_image.html" (dict "resource" $image "src" $image.RelPermalink "sizes" "180px") -}}
+        {{- partial "weeknotes/nav_image.html" $image -}}
       {{- else -}}
         {{- $cover := partial "list_title_image.html" (dict "title" .Title "label" "WEEKNOTES") -}}
         {{- partial "card_image.html" (dict "src" $cover "sizes" "180px") -}}
+      {{- end -}}
+    {{- end -}}
+  {{- else if eq .Section "weeknotes" -}}
+    {{- range where (partial "weeknotes/topics.html" .) "page.RelPermalink" .RelPermalink -}}
+      {{- with partial "weeknotes/topic_image_resource.html" . -}}
+        {{- partial "weeknotes/nav_image.html" . -}}
+      {{- else -}}
+        {{- partial "card_image.html" (dict "src" (partial "weeknotes/topic_image.html" .) "sizes" "180px") -}}
       {{- end -}}
     {{- end -}}
   {{- else -}}

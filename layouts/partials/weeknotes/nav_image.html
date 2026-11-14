@@ -1,0 +1,2 @@
+{{- $attrs := partialCached "weeknotes/image_delivery.html" (dict "image" . "width" 180 "thumbnail" true) .RelPermalink 180 "thumbnail" -}}
+<img src="{{ $attrs.src }}" srcset="{{ $attrs.srcset }}" sizes="auto, 180px" width="{{ $attrs.width }}" height="{{ $attrs.height }}" alt="" loading="lazy" decoding="async">
