@@ -4,7 +4,7 @@
 /data/generated/
 
 # Hugo caches
-/.hugo_build.lock
+.hugo_build.lock
 
 # OS junk
 .DS_Store
