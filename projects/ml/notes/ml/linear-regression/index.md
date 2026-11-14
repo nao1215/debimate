@@ -62,7 +62,7 @@ slope = 0.766, intercept = 1.265
 normal equation: slope = 0.766, intercept = 1.265
 ```
 
-2 つの解き方で同じ値になります。次の図は同じデータを描いたもので、本記事の図の描画コードは[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/linear-regression_gen.py)にあります。
+2 つの解き方で同じ値になります。次の図は同じデータを描いたものです。
 
 ![単回帰の OLS 当てはめと残差](./linreg_simple_fit.svg)
 

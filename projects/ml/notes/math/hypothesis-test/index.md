@@ -69,7 +69,7 @@ z_crit = 1.645
 
 {{< figure src="p_value_concept.svg" alt="H0 のもとでの標準正規分布を 2 枚並べた図。左は z_obs = 2.46 より右の裾を赤く塗った p 値の面積、右は z > 1.645 を橙に塗った α = 0.05 の棄却域で、z_obs が棄却域に入る" caption="p 値と棄却域" align="center" >}}
 
-左の図の赤い領域が p 値の面積で、右の図の橙の領域が `α = 0.05` の棄却域（rejection region、`z > 1.645`）です。`z_obs = 2.46` は棄却域に入るので、`H0` を棄却します。`p < α` と「`z_obs` が棄却域に入る」は同じ判定です。図の描画を含む[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/hypothesis-test_gen.py)は GitHub で確認できます。
+左の図の赤い領域が p 値の面積で、右の図の橙の領域が `α = 0.05` の棄却域（rejection region、`z > 1.645`）です。`z_obs = 2.46` は棄却域に入るので、`H0` を棄却します。`p < α` と「`z_obs` が棄却域に入る」は同じ判定です。
 
 p 値は誤って読まれやすい確率です。[ASA（American Statistical Association、アメリカ統計学会）の声明](https://www.amstat.org/asa/files/pdfs/p-valuestatement.pdf)（2016 年）に沿って整理すると、以下のようになります。
 

@@ -273,8 +273,5 @@ ComfyUI が持つ MediaPipe のノードは、既定の short のままでは全
 - 顔の描き直し: バウンディングボックス（MediaPipe の full、0.5）の 3 倍の正方形、1024 x 1024 に拡大、同じ seed で img2img、枠を 1.3 倍に広げてぼかしたマスクで貼り戻し。ControlNet は掛けない。枠の 1.5 倍で切り抜いた条件も [lab/metrics.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/face-redraw/lab/metrics.json) にある。
 - 顔検出の重み: Comfy-Org/mediapipe の mediapipe_face_fp32.safetensors（Apache License 2.0）、Bingsu/adetailer の face_yolov8n.pt。face_yolov8n を動かす ultralytics は AGPL-3.0 なので、ComfyUI に入れず一時環境で動かした。
 - プロンプト・ネガティブプロンプト・seed・モデルの入手先は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/face-redraw/lab/README.txt) に書いた。
-- 図は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/face-redraw/figures.py) で作った。
 
 </details>
-
-<br>

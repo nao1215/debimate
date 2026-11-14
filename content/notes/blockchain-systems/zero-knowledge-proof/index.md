@@ -363,4 +363,4 @@ Groth16 の点 3 つは、本記事の実験で使った snarkjs では 256 バ�
 
 秘密を隠す必要が無く、検証する側が入力を全て持っているなら、証明を使うほど計算が大きいかも見直せます。x² + 1 という軽い計算と snarkjs の検証を比べた実験では、N = 16,384 まではやり直す方が速かったからです。どこで逆転するかは、計算 1 回の重さと検証する環境で変わります。
 
-実験のコードと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/blockchain-systems/zero-knowledge-proof/lab)、図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/zero-knowledge-proof/figures.py) にあります。
+実験のコードと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/blockchain-systems/zero-knowledge-proof/lab) にあります。

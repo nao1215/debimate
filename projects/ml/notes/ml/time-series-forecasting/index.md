@@ -21,7 +21,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 - 複数の時点で評価するには、どう分割するのか
 - 時刻の情報を特徴量にどう入れれば、予測が当たるようになるのか
 
-コードは [scikit-learn](https://scikit-learn.org/stable/) 1.9.1 と [NumPy](https://numpy.org/) 2.5.4 で実行しました。図の描画は[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/time-series-forecasting_gen.py)にあります。
+コードは [scikit-learn](https://scikit-learn.org/stable/) 1.9.1 と [NumPy](https://numpy.org/) 2.5.4 で実行しました。
 
 ---
 

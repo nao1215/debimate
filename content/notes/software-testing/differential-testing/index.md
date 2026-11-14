@@ -412,4 +412,4 @@ jsonize の定義と `ip -j` は別の人が書いたので、同じ誤りを持
 
 実装を書き直す時や、ライブラリ・DB を移行する時は、古い実装を消す前に比較のスクリプトを用意すると、変わった振る舞いを一覧にできます。最初に決めることは 3 つです。何を比べないか（文面、時刻、並び順など）、表現の違いをどの規則で同じとみなすか、差が出た時にどの文書で判断するかです。この 3 つを決めずに比べ始めると、差の一覧を読み切れなくなります。
 
-実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/differential-testing/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/differential-testing/figures.py) にあります。
+実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/differential-testing/lab) にあります。

@@ -21,7 +21,7 @@ topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 - 欠け方はデータから見分けられるのか
 - 補完の手法と「欠損だったこと」を特徴量にする方法は、どう使い分けるのか
 
-コードは [scikit-learn](https://scikit-learn.org/stable/) 1.9.1 と [NumPy](https://numpy.org/) 2.5.4 で実行しました。図の描画は[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/missing-values_gen.py)にあります。
+コードは [scikit-learn](https://scikit-learn.org/stable/) 1.9.1 と [NumPy](https://numpy.org/) 2.5.4 で実行しました。
 
 ---
 

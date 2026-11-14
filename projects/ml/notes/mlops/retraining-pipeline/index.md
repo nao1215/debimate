@@ -140,8 +140,6 @@ window 平均 0.921  最後の 30 日 0.919  0.85 未満の日数 0
 
 橙の線は、30 日ごとに再学習しているのに accuracy が下がり続けています。全期間のデータには古い境界で付けたラベルが大量に残っているので、学習した境界が実際の境界に追い付きません。再学習の頻度だけでなく、学習に使うデータの範囲も決める必要があります。
 
-図は [retraining-pipeline_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/retraining-pipeline_gen.py) で描いています。
-
 ---
 
 ### 再学習の間隔

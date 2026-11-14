@@ -219,10 +219,8 @@ back_dE = np.linalg.norm(img[back].mean(axis=0) - (100, 0, 0))  # 背景と白�
 <summary>実験の条件とファイル</summary>
 
 - 生成: ComfyUI 0.35.0、[WAI-illustrious-SDXL v17.0](https://civitai.com/models/827184?modelVersionId=2883731)、[ControlNet Union（ProMax）](https://huggingface.co/xinsir/controlnet-union-sdxl-1.0/tree/801a4a3) の depth、[SDXL 向けの IP-Adapter Plus](https://huggingface.co/h94/IP-Adapter/tree/018e402)（`ip-adapter-plus_sdxl_vit-h`、画像エンコーダーは OpenCLIP の ViT-H-14）。steps 28、CFG 5.5、euler_ancestral
-- 参照・計測・図: [lab/make_refs.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/make_refs.py)、[lab/measure.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/measure.py)、[figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/figures.py)
+- 参照・計測: [lab/make_refs.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/make_refs.py)、[lab/measure.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/measure.py)
 - 絵ごとの数値: [lab/metrics_plain.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/metrics_plain.json)（銀の参照）、[lab/metrics_color.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/metrics_color.json)（青い陣羽織の参照）、[lab/metrics_blank.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/metrics_blank.json)（人物のいない参照）
 - 手順・バージョン・ライセンス: [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/README.txt)
 
 </details>
-
-<br>

@@ -394,4 +394,4 @@ pub fn trim_idempotent_test() {
 
 正解を書けない処理を持っているなら、まず「変えても結果が変わらないはずのもの」を 1 つ挙げて、手元の入力で試すのが始めやすいです。テストが失敗した時に、関係・実装・仕様のどれが原因かを決めること自体が、仕様を詰める作業になります。
 
-実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/metamorphic-testing/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/figures.py) にあります。
+実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/metamorphic-testing/lab) にあります。

@@ -366,4 +366,4 @@ geokit には「タイルを quadkey にして戻すと元のタイルになる�
 
 既にある関数に Property-Based Testing を足すなら、最初は文書に書かれた約束を 1 つ選び、それをプロパティにします。`Distinct` のプロパティは、文書の「全ての列の値が等しい行を重複とみなす」という文を数え方に書き直しただけでした。反例が見つかったら、縮めた反例を例のテストとして残し、プロパティの方はジェネレーターに境界を足しながら回します。
 
-実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/property-based-testing/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/property-based-testing/figures.py) にあります。
+実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/property-based-testing/lab) にあります。

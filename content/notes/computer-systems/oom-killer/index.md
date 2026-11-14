@@ -13,7 +13,7 @@ OOM killer（Out Of Memory killer）は、メモリが足りなくなった Linu
 
 GUI が数分間固まると、OS やデスクトップ環境が不安定だと疑いたくなります。しかし、その原因がメモリ不足であることは珍しくありません。メモリが尽きかけると、カーネルは OOM killer を動かす前に、ファイルのキャッシュを捨てたり、メモリの中身をディスクのスワップ領域に退避したりしてメモリを空けようとします。その間はディスクの読み書きを待つ時間が増え、操作への応答が極端に遅くなります。
 
-この状態を短くするために、カーネルより早い段階でプロセスを終了させる [earlyoom](https://github.com/rfjakob/earlyoom) というデーモンがあります。以下は、earlyoom を入れていない PC で空きメモリが減っていく時の経過を描いた模式図です。実測ではなく、生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/computer-systems/oom-killer/figures.py) です。
+この状態を短くするために、カーネルより早い段階でプロセスを終了させる [earlyoom](https://github.com/rfjakob/earlyoom) というデーモンがあります。以下は、earlyoom を入れていない PC で空きメモリが減っていく時の経過を描いた模式図です。実測ではありません。
 
 {{< figure src="images/oom_timeline.svg" alt="横軸は時間。左の軸の空きメモリの線は下がり続け、右の軸の応答の遅さの破線は空きメモリが 20% を切った頃から上がり始める。空きメモリが 10% を切る所に、earlyoom を入れていればここで SIGTERM を送るという破線の縦線がある。応答が大きく悪化してから、右端でカーネルの OOM killer が動くまでの網掛けが、GUI が固まって見える区間" caption="earlyoom を入れていない PC で空きメモリが減っていく時の経過（模式図）" align="center" >}}
 

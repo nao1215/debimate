@@ -320,7 +320,7 @@ out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": boun
 
 上記の図で、分割が効くのは、支払い額が個々のチャネルの残高に近づく 10 万〜100 万 sat の範囲です。分割すると各区間に必要な額が下がり、別の経路も使えます。しかし、8 分割でも破線の上限には届かず、300 万 sat では 3.8% です。送り手が手元に持つ残高と、受取人が受け取れる余地は、経路の選び方では増えないからです。
 
-残高を一様分布とした仮定は、前述の論文と同じです。一方で、手数料、`cltv_expiry_delta`、HTLC の金額と同時数の上限、reserve は無視しており、グラフも合成したものです。数値は分割の有無を比べる目安として見てください。表の形の出力は [lab/output.txt](lab/output.txt)、条件は [lab/README.txt](lab/README.txt)、図は[生成コード](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/lightning-network/figures.py)にあります。
+残高を一様分布とした仮定は、前述の論文と同じです。一方で、手数料、`cltv_expiry_delta`、HTLC の金額と同時数の上限、reserve は無視しており、グラフも合成したものです。数値は分割の有無を比べる目安として見てください。表の形の出力は [lab/output.txt](lab/output.txt)、条件は [lab/README.txt](lab/README.txt) にあります。
 
 ---
 

@@ -631,4 +631,4 @@ LLM を API で使う時の料金、入力できる量、生成の速さは、�
 
 ---
 
-実験のスクリプト・出力・取得したトークナイザーのバージョンは [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/tokenizer/lab/README.txt) に、図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/tokenizer/figures.py) にあります。
+実験のスクリプト・出力・取得したトークナイザーのバージョンは [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/tokenizer/lab/README.txt) にあります。

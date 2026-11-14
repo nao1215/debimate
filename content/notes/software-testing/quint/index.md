@@ -345,4 +345,4 @@ Quint を試すかどうかは、次の 3 つで決まります。
 
 sqly の `.save` のように、失敗の順序が十数通りに収まり、正解を Go で書ける手順なら、rapid のテストで足ります。Quint で 7 本の修正と 1 回の後退を避けられたのは、一時ファイルを書く時・移す前・上書きの途中・戻す時という 4 種類の失敗を最初に挙げられた場合だけでした。
 
-実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/quint/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/quint/figures.py) にあります。
+実験のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/quint/lab) にあります。

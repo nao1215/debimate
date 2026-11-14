@@ -75,7 +75,7 @@ scikit-learn 1.9 系のドキュメントは、直線で補間する台形則は
 
 ROC 曲線は 3 本ともほぼ重なり、ROC-AUC はすべて 0.91 前後です。モデルの判別性能が変わっていないので、これは当然です。
 
-以下は [scikit-learn](https://scikit-learn.org/) 1.9.1、[NumPy](https://numpy.org/) 2.5.4 で実行したコードです。図は軸ラベルとタイトルを足した[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/roc-pr-auc_gen.py)で描いています。
+以下は [scikit-learn](https://scikit-learn.org/) 1.9.1、[NumPy](https://numpy.org/) 2.5.4 で実行したコードです。
 
 ```python
 import numpy as np

@@ -334,7 +334,3 @@ Span の開始・終了時刻は、その Span を記録したホストの時計
 - 1 つのプロセスで完結する処理。プロファイラや通常のログの方が、少ない手間で同じことが分かる
 - 監査の証跡として、全ての要求の記録を漏れなく残す必要がある場合。Sampling で捨てる前提の仕組みとは目的が違う
 - 別々のホストの Span の時刻から、処理の正確な前後関係を決めたい場合。Clock Skew の節の通り、ホストをまたぐ時刻の比較は信頼できない
-
-<br>
-
-なお、図は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/distributed-tracing/figures.py) で、実験の出力の値から生成しています。

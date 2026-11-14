@@ -453,4 +453,4 @@ exit=0
 
 どちらを選んでも、`| head -n 1` と `> /dev/full` の 2 つを一度試しておけば、書けない状況での終わり方の図の 1・2 列目の赤いマスに入っていないかが分かります。3 列目は、Go と Rust ではランタイムが先に処理するので、自分のコードでは見つけられません。
 
-実験に使ったプログラムとスクリプト、出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/computer-systems/stdout-buffering/lab)、図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/computer-systems/stdout-buffering/figures.py) にあります。
+実験に使ったプログラムとスクリプト、出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/computer-systems/stdout-buffering/lab) にあります。

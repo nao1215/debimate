@@ -346,4 +346,4 @@ def checkout(cart, user_id: str, decisions: CheckoutDecisions):
 
 最後に、管理サービスが本当に必要かを考えます。全員を一度に切り替えるだけなら、設定ファイルや環境変数で足ります。環境ごとの接続先のように消す予定の無い設定の分岐は、Feature Flag にしません。割合で出す規則が必要になった時に初めて、番号の出し方を持つ SDK が役に立ちます。その時に確認するのが、冒頭の図で右に並べた割合です。
 
-実験のコードと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/feature-flag/lab) にあります。図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/feature-flag/figures.py) です。
+実験のコードと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/feature-flag/lab) にあります。

@@ -340,4 +340,4 @@ STA 型の行では、SafeERC20 を使っても 100 と記帳し、届いたの�
 
 冒頭の動画に出た 150 は、`approve` が「上限をこの値にする」関数で、許可がトランザクションの外に残り続けることから生まれた数字です。割り込みは本番で被害の例が見当たりませんが、LI.FI の事故では無制限の許可を出したウォレットだけが引き出されました。上限を下げる工夫より先に、許可を必要な額と期間に絞ってください。
 
-実験の環境は [lab/README.txt](lab/README.txt)、Solidity のコードは [lab/Tokens.sol](lab/Tokens.sol)、実行の全体は [lab/run.sh](lab/run.sh) と [lab/experiment.py](lab/experiment.py)、図の生成元は [figures.py](figures.py) にあります。
+実験の環境は [lab/README.txt](lab/README.txt)、Solidity のコードは [lab/Tokens.sol](lab/Tokens.sol)、実行の全体は [lab/run.sh](lab/run.sh) と [lab/experiment.py](lab/experiment.py) にあります。

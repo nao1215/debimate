@@ -368,4 +368,4 @@ Linux の性能を測る道具の `perf` にも、命令を数える `perf stat`
 
 同じジョブの中で比べる場合でも、入れる前に自分のベンチマークで A/A を 20〜30 回回し、ずれの幅を確認してください。ずれが ±1% 程度に収まるなら、本記事のように閾値を 3% まで下げる余地があります。収まらなければ、回数を増やすか、劣化の判定に使う量を CPU 時間やメモリに変えます。CPU 時間は、プロセスが CPU の上で実際に動いた時間で、ファイルや他のプロセスを待った時間を含みません。
 
-集計のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/ci-benchmark/lab) に、図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/ci-benchmark/figures.py) にあります。計測のワークフローは [ci-bench-noise](https://github.com/nao1215/ci-bench-noise) にあり、`slowdown.txt` の代わりに自分のベンチマークを置けば、同じ A/A を回せます。
+集計のスクリプトと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/ci-benchmark/lab) にあります。計測のワークフローは [ci-bench-noise](https://github.com/nao1215/ci-bench-noise) にあり、`slowdown.txt` の代わりに自分のベンチマークを置けば、同じ A/A を回せます。

@@ -301,5 +301,3 @@ def process_randao(state: BeaconState, body: BeaconBlockBody) -> None:
 - 中身を明かさないまま比べたい場合（入札額を最後まで隠したい場合など）
 
 コミット・リビールが隠すのは締め切りまでで、リビールの後は全員が中身を読めます。最後まで伏せたい場合は、[ゼロ知識証明](../zero-knowledge-proof/)のような別の仕組みを組み合わせる必要があります。
-
-本記事の図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/commit-reveal/figures.py) です。

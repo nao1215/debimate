@@ -303,4 +303,4 @@ temperature 1.5 では、文脈に合わない「カレー」も 126 回選ば�
 
 最後に、値を動かす時は 1 つずつにします。Ollama は top-k → temperature → top-p の順に掛けるので、temperature を変えると top-p で残る数も変わり、2 つを同時に動かすとどちらの影響か分からなくなります。temperature を上げてばらつかせたい時は、top-p か top-k で裾野を切っておくと、外れた候補を引かずに済みます。
 
-実験のスクリプトと出力は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/generative-ai/sampling/lab)、図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/sampling/figures.py) にあります。
+実験のスクリプトと出力は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/generative-ai/sampling/lab) にあります。

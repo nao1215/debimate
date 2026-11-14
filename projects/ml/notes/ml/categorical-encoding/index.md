@@ -67,7 +67,7 @@ target   [[11.0], [19.0], [31.0]]
 hashing  [[1.0, 0.0], [-1.0, 0.0], [0.0, -1.0]]
 ```
 
-6 行全ての出力を並べると次の図になります。描画部分は上のコードから省いています（[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/categorical-encoding_gen.py)）。
+6 行全ての出力を並べると次の図になります。描画部分は上のコードから省いています。
 
 {{< figure src="categorical-encoding_methods.svg" alt="同じ 6 行の入力 A、B、C、A、B、C を 4 方式で変換した表を並べた図。One-hot は 3 列の 0 と 1、Ordinal は 0・1・2 の 1 列、Target encoding は各カテゴリの目的変数の平均 11・19・31 の 1 列、Hashing は 2 列で A が h0 に +1、B も h0 に -1 と同じ列に入る" caption="4 つのエンコーディングの出力" align="center" >}}
 

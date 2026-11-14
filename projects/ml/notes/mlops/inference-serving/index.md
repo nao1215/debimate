@@ -73,7 +73,7 @@ P95 = 83.0ms
 P99 = 159.6ms
 ```
 
-同じデータをヒストグラムにした図が次です。図の描画コードは[生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/inference-serving_gen.py)にあります。
+同じデータをヒストグラムにした図が次です。
 
 {{< figure src="serving_latency_distribution.svg" alt="10 万リクエストの応答時間のヒストグラム。山は 30ms 前後にあり、右に長い裾が伸びる。縦線で P50 = 26ms、P95 = 83ms、P99 = 160ms を示す" caption="オンライン推論の応答時間の分布と P50・P95・P99" align="center" >}}
 

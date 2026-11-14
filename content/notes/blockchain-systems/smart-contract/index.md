@@ -384,4 +384,4 @@ flowchart TB
 
 冒頭の抽選は 1 と 2 を飛ばしていたので、Predictor に 100 回当てられました。参加した時点ではまだ決まっていない値で当たり番号を作れば、同じトランザクションの中で計算する手は使えなくなります。
 
-実験の環境は [lab/README.txt](lab/README.txt)、Solidity のコードは [lab/Contracts.sol](lab/Contracts.sol)、実行の全体は [lab/run.sh](lab/run.sh) と [lab/experiment.py](lab/experiment.py)、図の生成元は [figures.py](figures.py) にあります。
+実験の環境は [lab/README.txt](lab/README.txt)、Solidity のコードは [lab/Contracts.sol](lab/Contracts.sol)、実行の全体は [lab/run.sh](lab/run.sh) と [lab/experiment.py](lab/experiment.py) にあります。

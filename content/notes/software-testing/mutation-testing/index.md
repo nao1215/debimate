@@ -321,4 +321,4 @@ git diff が出すパス:               dialect/internal/token/token.go
 
 生き残りが 1 つも無い関数でも、「成り立たない時に落ちる」テストがあるかは別に確認する必要があります。metamon の `all_equal` のように、失敗を返す枝にテストが 1 本も届いていなければ、その関数を使う側のテストは、誤ったコードでも全て通ります。
 
-実験に使ったスクリプトと出力は、[lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/mutation-testing/lab) に置いています。図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/mutation-testing/figures.py) です。
+実験に使ったスクリプトと出力は、[lab](https://github.com/nao1215/debimate/tree/main/content/notes/software-testing/mutation-testing/lab) に置いています。

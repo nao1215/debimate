@@ -172,7 +172,7 @@ reject       800      372   377    50       0.54        0.50      0.6
 
 列の意味は、`sent` が Producer の作った件数、`rejected` が断った件数、`done` が処理を終えた件数、`left` が 4 秒の時点でまだ並んでいる件数です。`max_wait_s` は取り出された要求の待ち時間の最大値、`last_wait_s` は `left` の件数を公称の 1 件 10 ms で捌いた場合の、最後尾の要求の待ち時間の見積もりです。
 
-キュー長と待ち時間を時系列で描くと、以下の通りです。グラフの生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/backpressure/figures.py) にあります。
+キュー長と待ち時間を時系列で描くと、以下の通りです。
 
 {{< figure src="images/queue_growth.svg" alt="到着 200 件/秒・処理 100 件/秒で 4 秒動かした結果。上限なしのキューは長さも待ち時間も直線的に伸び、上限 50 件のキューは block と reject のどちらも 50 件と約 0.5 秒で頭打ちになる" caption="3 種類のキューのキュー長と待ち時間の推移" align="center" >}}
 

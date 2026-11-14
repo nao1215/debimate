@@ -163,7 +163,7 @@ Predicate Pushdown は、`WHERE` の条件をファイルを読む処理（ス�
 └──────────────┴──────────┴─────────────────────┴─────────────────────┘
 ```
 
-3 月 1 日の 1 日分（14,400 行）の `amount` を合計するクエリで、どの row group を読んだかを数えると、以下のようになります。読んだ位置はメタデータにある column chunk の範囲に当てはめて数えています（図の生成元は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/database-systems/columnar-storage/figures.py)）。
+3 月 1 日の 1 日分（14,400 行）の `amount` を合計するクエリで、どの row group を読んだかを数えると、以下のようになります。読んだ位置はメタデータにある column chunk の範囲に当てはめて数えています。
 
 {{< figure src="images/rowgroups.svg" alt="1 日分の範囲条件で読んだ row group。ts の順に書いたファイルは 33 個中 6 と 7 の 2 個だけを読み、順序を崩したファイルは 33 個全部を読んだ" caption="3 月 1 日の 1 日分を集計した時に読んだ row group" align="center" >}}
 

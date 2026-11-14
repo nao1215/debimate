@@ -274,5 +274,3 @@ chain ID を含めない署名は、使い回せることを利用されても�
 - chain ID が 0 の委任のように、全てのチェーンで有効にした署名が、意図しないチェーンで使われる場合
 
 分岐の後に chain ID を変えるかどうかは、そのチェーンの参加者が決めることです。署名する側が確かめられるのは、自分の署名にどの chain ID とどのコントラクトが入っているかまでです。
-
-図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/figures.py) にあります。

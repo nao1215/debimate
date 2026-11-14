@@ -41,7 +41,7 @@ flowchart LR
 
 次の実験では、`make_classification` で作った 900 行・10 列の分類データを学習 585 行とテスト 315 行に分けます。学習データから 24 種類の bootstrap 標本を作り、標本ごとに単体の深い木と 200 本の木からなる RandomForest を学習して、同じテスト集合で精度を測ります。
 
-本節と次節のコードは、[図の生成コード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/random-forest_gen.py)から学習の部分だけを抜き出したものです。import、データの作成（`X_train` などの分割）、結果を入れるリストの用意は、生成コードの冒頭にあります。
+本節と次節のコードは、[完全なコード](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/random-forest_gen.py)から学習の部分だけを抜き出したものです。import、データの作成（`X_train` などの分割）、結果を入れるリストの用意は、完全なコードの冒頭にあります。
 
 ```python
 for seed in range(24):
@@ -122,5 +122,3 @@ OOB 精度が安定しても、その値を何度も見て木数を選べば楽�
 - scikit-learn の `RandomForestClassifier` が[欠損値](../missing-values/)（NaN）をそのまま扱えるのは [1.4](https://scikit-learn.org/stable/whats_new/v1.4.html) からです。それより古いバージョンでは、欠損を先に埋めます。
 - 多数の木を平均しても、因果関係や単純な IF-THEN 規則を説明できるわけではありません。
 - [時系列](../time-series-forecasting/)では、学習とテストを時刻で分けます。OOB 精度はランダムに外れた行で測るので、未来の行で学んだ木が過去の行を当てる形になり、本番より高く出ることがあります。
-
-図の再現用コードは [GitHub](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/random-forest_gen.py) にあります。

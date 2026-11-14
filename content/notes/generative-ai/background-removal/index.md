@@ -249,8 +249,5 @@ ComfyUI で透過 PNG まで作り、緑の背景で描いた 1 枚の中身を�
 - 背景除去: birefnet.safetensors（sha256 9ab37426…、ZhengPeng7/BiRefNet の model.safetensors と同じ）。
 - プロンプト・ネガティブプロンプト・シード・モデルの入手先は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/background-removal/lab/README.txt) に書いた。
 - 絵ごとの数値は [lab/metrics.json](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/background-removal/lab/metrics.json)。
-- 図は [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/background-removal/figures.py) で作った。
 
 </details>
-
-<br>

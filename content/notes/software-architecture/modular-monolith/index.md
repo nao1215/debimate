@@ -17,7 +17,7 @@ topics: ["Service Boundaries"]
 
 {{< figure src="images/modular_monolith_map.svg" alt="デプロイ単位の数を横軸、境界の強さを縦軸にして 4 つの構成を並べた図。左上がモジュラーモノリス、右上がマイクロサービス、左下が境界の無いモノリス、右下が Distributed Monolith" caption="デプロイ単位の数と境界の強さで並べた 4 つの構成" align="center" >}}
 
-上記の図のように、デプロイ単位を増やすことと境界を強くすることは別の軸です。右下の Distributed Monolith は前者だけを進めた結果で、モジュラーモノリスは左上で後者だけを先に進めています。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/modular-monolith/figures.py) にあります。
+上記の図のように、デプロイ単位を増やすことと境界を強くすることは別の軸です。右下の Distributed Monolith は前者だけを進めた結果で、モジュラーモノリスは左上で後者だけを先に進めています。
 
 <br>
 

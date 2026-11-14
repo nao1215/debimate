@@ -257,7 +257,7 @@ for n, k in [(8, 2), (16, 4), (100, 5), (2048, 4)]:
 
 凡例の Cell は k 台ずつの固定の cell、Shuffle sharding は k 台をランダムに選ぶ割り当てです。fully down は全滅、partly down は一部停止を指します。
 
-k を増やすと全滅の確率は桁で下がり、一部停止の割合は上がります。つまり shuffle sharding は、全停止する顧客を減らす代わりに、部分的に劣化する顧客を増やしています。図の生成コードは [figures.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/cell-based-architecture/figures.py) です。
+k を増やすと全滅の確率は桁で下がり、一部停止の割合は上がります。つまり shuffle sharding は、全停止する顧客を減らす代わりに、部分的に劣化する顧客を増やしています。
 
 ---
 

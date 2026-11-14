@@ -123,6 +123,11 @@ for g in gen:
         if eng:
             ng.append(f"図の生成元に英語だけのラベル: {eng[:5]}（日本語にする。識別子・固有名・単位は原文のまま）")
 
+# 9b. 図の生成元（図を描くだけのコード）への案内を本文に書かない（2026-11-14 著者の指定。実験の lab や ML の _gen.py の完全版への案内は対象外）
+gen_ref = re.findall(r"[^。\n]*(?:図の(?:生成|描画)(?:元|コード)|グラフの生成コード|\[figures\.py\]\(|図は \[[^\]]*\]\([^)]*figures\.py)[^。\n]*", nocode)
+if gen_ref:
+    ng.append(f"図の生成元への案内がある（本文に書かない。lab への案内だけ残す）: {vis(gen_ref[0])[:60]}…")
+
 # 10. 外部リンク（公式・原論文がある語は初出でリンク）と相互リンク
 ext = len(re.findall(r"\]\(https?://", nocode))
 internal = len(set(re.findall(r"\]\((/notes/[^)#]+|/ml/[^)#]+|\.\./[^)#]+)", nocode)))

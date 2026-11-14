@@ -389,4 +389,4 @@ v1.28.2 の [anubis.go](https://github.com/TecharoHQ/anubis/blob/v1.28.2/anubis.
 
 1 承認のトランザクションは、手元で分岐を起こした実験のように、計算能力の小さいマイナーのブロックに入っていると列から外れることがあります。承認数が減った時に表示と残高を mempool の状態に戻す処理が必要か、冒頭の待ち時間の図と合わせて見直してください。
 
-再現に使ったコードと出力は lab ディレクトリにあり、手順は [README.txt](lab/README.txt) に書いています。図は [figures.py](figures.py) で作っています。
+再現に使ったコードと出力は lab ディレクトリにあり、手順は [README.txt](lab/README.txt) に書いています。
