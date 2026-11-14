@@ -159,7 +159,7 @@ CRL（Certificate Revocation List）は RFC 5280 で定義され、OCSP（Online
 
 しかし、クライアントが失効情報を取得できなかった時に接続を止めるかは、可用性とのトレードオフになります。OCSP 応答を TLS ハンドシェイクでサーバーが添える OCSP stapling も、失効の確認を常に成功させるものではありません。そのため、証明書を短期間で更新し、秘密鍵の保護と監視を併用します。
 
-Certificate Transparency（CT）は、公開 Web PKI の証明書を追記専用ログに記録し、誤発行を監視可能にする仕組みです。証明書がログに登録されたことを示す SCT（Signed Certificate Timestamp）を利用して、発行を第三者が観測できるようにします。CT は DNS 名の所有を確認する仕組みでも、失効情報でもありません。
+Certificate Transparency（CT）は、公開 Web PKI の証明書を追記専用ログに記録し、誤発行を監視可能にする仕組みです。証明書がログに登録されたことを示す SCT（Signed Certificate Timestamp）を利用して、発行を第三者が観測できるようにします。CT は DNS 名の所有を確認する仕組みでも、失効情報でもありません。ログは記録を [Merkle Tree](/notes/blockchain-systems/merkle-tree/) にまとめているので、少数のハッシュで、ある証明書が入っていることや過去の記録が書き換わっていないことを検証できます。
 
 ブラウザが受け付ける CT ログと SCT は [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962)（CT v1）の形式です。v2.0 を定めた [RFC 9162](https://www.rfc-editor.org/rfc/rfc9162) は、公開 Web PKI ではまだ広く運用されていません。
 

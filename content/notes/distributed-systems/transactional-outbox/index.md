@@ -258,7 +258,7 @@ rows = c.execute("SELECT id, order_id, type FROM outbox WHERE NOT published" + w
                  " ORDER BY id LIMIT 10 FOR UPDATE SKIP LOCKED").fetchall()
 ```
 
-送り先が Kafka なら、同じキーのイベントは同じパーティションに入り、[公式の説明](https://kafka.apache.org/intro)によると、パーティションの中では書いた順に読まれます。注文の番号をキーにすれば、ブローカーの中でも注文ごとの順番が保たれます。順番が必要なのは注文ごとで、全ての注文をまたいだ順番まで必要なことは少ないので、その単位で分けるのが現実的です。
+送り先が Kafka なら、同じキーのイベントは同じパーティションに入り、[公式の説明](https://kafka.apache.org/intro)によると、パーティションの中では書いた順に読まれます。注文の番号をキーにすれば、ブローカーの中でも注文ごとの順番が保たれます。順番が必要なのは注文ごとで、全ての注文をまたいだ順番まで必要なことは少ないので、その単位で分けるのが現実的です。受け取る側が届いたイベントを並行して処理する時にも同じ入れ替わりが起き、読み取り用の表が古い値で止まる様子は [CQRS](/notes/software-architecture/cqrs/) のノートで測っています。
 
 ---
 

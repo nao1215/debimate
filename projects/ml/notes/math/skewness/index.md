@@ -262,7 +262,7 @@ log1p(y)  残差の標準偏差: 予測値の小さい半分 0.22、大きい半
 
 ただし、この人工データは対数を取ると直線になるように作っているので、揃うのは当然でもあります。変換が残差を揃えるかは、実データで残差の図を描いて見ます。
 
-`log1p(y)` で学習したモデルの予測は、[`np.expm1`](https://numpy.org/doc/stable/reference/generated/numpy.expm1.html) で元の単位に戻してから、元の単位の[回帰の評価指標](../../ml/regression-metrics/)で比べます。目的変数でも冒頭の単位の話は同じで、住宅価格を 1 ドル単位で持っていれば `log1p(y)` は `log(y)` と同じです。
+`log1p(y)` で学習したモデルの予測は、[`np.expm1`](https://numpy.org/doc/stable/reference/generated/numpy.expm1.html) で元の単位に戻してから、元の単位の[回帰の評価指標](../../ml/regression-metrics/)で比べます。目的変数でも冒頭の単位の話は同じで、住宅価格を 1 ドル単位で持っていれば `log1p(y)` は `log(y)` と同じです。戻した予測は期待値より小さくなるので、予測を足して総額を出すと足りなくなることを[期待値](../expectation/)で実測しています。
 
 ---
 

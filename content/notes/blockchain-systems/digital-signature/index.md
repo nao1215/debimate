@@ -249,7 +249,7 @@ flowchart LR
 
 署名の値だけが変わっても検証は合格し続けるため、署名を含めて txid を計算すると、トランザクションの内容が同じまま識別子だけが変わります。[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で説明した transaction malleability の一因がこれで、witness が txid の計算から外されている背景になっています。
 
-なお、2021 年の [Taproot](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki) という仕様変更で、ECDSA に加えて [Schnorr 署名](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)という別の署名方式も使えるようになりました。役割は同じ「使う資格の証明」で、方式の違いは本記事では扱いません。
+なお、2021 年の [Taproot](https://github.com/bitcoin/bips/blob/master/bip-0341.mediawiki) という仕様変更で、ECDSA に加えて [Schnorr 署名](https://github.com/bitcoin/bips/blob/master/bip-0340.mediawiki)という別の署名方式も使えるようになりました。役割は同じ「使う資格の証明」で、方式の違いは本記事では扱いません。Schnorr 署名が秘密鍵を見せずに鍵の持ち主であると示す仕組みは、[Zero-Knowledge Proof](../zero-knowledge-proof/) で手元の実験とともに説明しています。
 
 ---
 

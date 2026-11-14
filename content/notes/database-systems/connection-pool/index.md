@@ -130,7 +130,7 @@ pgbench: error: connection to server at "note-pool-db100" (172.22.0.3), port 543
 
 {{< figure src="images/connection-pool_servers.webp" alt="左はアプリのサーバー 10 台がそれぞれプール 20 本を持ち、DB に 200 本の接続が来て max_connections 100 を超える。右は 10 台が PgBouncer に繋ぎ、PgBouncer が DB への接続を 8 本にまとめる" caption="アプリのサーバーを増やした時の接続数と、PgBouncer でまとめる構成（右は後で説明する transaction mode）" align="center" >}}
 
-台数が多い構成では、アプリと DB の間に PgBouncer のような接続プールを置き、多くのアプリの接続を少ない DB の接続にまとめます。
+台数が多い構成では、アプリと DB の間に PgBouncer のような接続プールを置き、多くのアプリの接続を少ない DB の接続にまとめます。PgBouncer をアプリと同じ Pod に置いて localhost で呼ぶ構成は、[Ambassador](/notes/software-architecture/ambassador/) の一種です。
 
 PgBouncer には、アプリの接続が切れるまで DB の接続を貸し続ける session mode と、トランザクションの間だけ貸し出して終わると返す transaction mode などがあります（[features](https://www.pgbouncer.org/features.html)）。多くのアプリの接続を少ない DB の接続にまとめられるのは、transaction mode です。その代わり、セッションに結び付いた機能（`SET` で変えた設定や、一部のプリペアドステートメントなど）に制約が出ます。プリペアドステートメントとの関係は、[Query Plan Cache](/notes/database-systems/query-plan-cache/#接続プールとドライバ) のノートで説明しています。
 
