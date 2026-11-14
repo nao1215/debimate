@@ -91,15 +91,15 @@ sequenceDiagram
 
 一方で、`/token` への要求は client から authorization server への直接の HTTPS 通信で、バックチャネルと呼びます。token をバックチャネルだけに載せるために、フロントチャネルには code という引換券だけを流すわけです。
 
-code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.2) は、code の有効期限を短くし（最大 10 分を推奨）、1 度しか使えないようにすることを求めています。さらに、client が自分の秘密を持てる場合は、交換の時に client 認証を行います。
+code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.2) は、code の有効期限を短くし（最大 10 分を推奨）、1 度しか使えないようにすることを求めています。さらに、client が自分のシークレットを持てる場合は、交換の時に client 認証を行います。
 
-しかし、client の全てが秘密を持てるわけではありません。RFC 6749 §2.1 は、サーバーで動き秘密を守れる client を confidential client、スマートフォンのアプリや SPA（Single Page Application、ブラウザの中で動くアプリ）のように配布物の中身を読まれる client を public client と呼んで区別しています。public client では、code と `client_id` さえあれば誰でも交換できてしまいます。
+しかし、client の全てがシークレットを持てるわけではありません。RFC 6749 §2.1 は、サーバーで動きシークレットを守れる client を confidential client、スマートフォンのアプリや SPA（Single Page Application、ブラウザの中で動くアプリ）のように配布物の中身を読まれる client を public client と呼んで区別しています。public client では、code と `client_id` さえあれば誰でも交換できてしまいます。
 
 ---
 
 ### PKCE
 
-[PKCE](https://www.rfc-editor.org/rfc/rfc7636.html)（Proof Key for Code Exchange）は、事前に秘密を登録しなくても、code を発行させた client と交換しに来た client が同じだと確認できる拡張です。[RFC 7636 §1](https://www.rfc-editor.org/rfc/rfc7636.html#section-1) が想定する攻撃は、正規のアプリと同じ独自の URL スキーム（`com.example.app:/callback` のような形）を悪意のあるアプリが登録し、OS がそのアプリに code を渡してしまうものです。
+[PKCE](https://www.rfc-editor.org/rfc/rfc7636.html)（Proof Key for Code Exchange）は、事前にシークレットを登録しなくても、code を発行させた client と交換しに来た client が同じだと確認できる拡張です。[RFC 7636 §1](https://www.rfc-editor.org/rfc/rfc7636.html#section-1) が想定する攻撃は、正規のアプリと同じ独自の URL スキーム（`com.example.app:/callback` のような形）を悪意のあるアプリが登録し、OS がそのアプリに code を渡してしまうものです。
 
 PKCE では、client がログインを始めるたびに code_verifier（43〜128 文字の乱数）を作ります。最初の `/authorize` には、そのハッシュである code_challenge だけを載せます。
 
