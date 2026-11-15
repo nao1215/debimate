@@ -370,12 +370,12 @@
       "stars": 11
     },
     {
-      "name": "sensitive",
+      "name": "embargo",
       "category": "network",
       "language": "Go",
       "kind": "Library",
-      "tagline": "テキスト中の機密情報を見つける",
-      "description": "クレジットカード番号やメールアドレスなどを検出し、必要に応じてマスクします。",
+      "tagline": "ログやテキストの機密情報を見つけて伏せる",
+      "description": "個人情報・カード番号・API キーなどを検出してマスクします。依存ゼロ。旧名は sensitive です。",
       "stars": 2
     },
     {
