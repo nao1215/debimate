@@ -919,3 +919,4 @@ architecture-testing-systems	invariant violated	（不変条件が）破れる	�
 architecture-testing-systems	mutant	変異	ミュータント	修正済み	中	content/notes/software-testing/quint/index.md	mima_ita「ミューテーションテスト」 https://zenn.dev/mima_ita/articles/6b4b0de4cfefea ; issoh の解説 https://www.issoh.co.jp/tech/details/16261/	2026-11-14 同上。過去の設計にわざと戻したコードをミュータントと呼ぶ
 architecture-testing-systems	oracle (strong / weak)	判定（細かい・弱い）	テストオラクル（厳密・緩い）	修正済み	中	content/notes/software-testing/quint/index.md	既存のテストオラクルの行（JSTQB）	2026-11-14 同上
 architecture-testing-systems	backup / glue code	backup・つなぎのコード	バックアップ・グルーコード	修正済み	弱	content/notes/software-testing/quint/index.md	定着語のため検索省略	2026-11-14 同上
+ml-ml-mlops	OPTICS reachability distance	到達可能距離	到達可能距離	一致		projects/ml/notes/ml/dbscan/index.md	MetricGate https://metricgate.com/docs/ja/optics-clustering/ ／ https://metricgate.com/docs/ja/reachability-plot/	コア距離と対で使う。プロットは到達可能性プロット
