@@ -1,5 +1,5 @@
 ---
-title: "データリーク（data leakage）"
+title: "データリーク - 検証に回る行の正解が学習に届く経路ほど、評価は大きく膨らむ"
 date: 2026-05-25
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
@@ -8,231 +8,323 @@ weight: 11
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-データリーク（data leakage）は、予測時には手に入らないはずの情報がモデルの学習に混入し、評価指標を不当に高く出してしまう現象です。[過学習](../overfitting/) と紛らわしい現象です。過学習が「複雑なモデルが訓練データを覚えすぎる」のに対し、データリークは「特徴量や前処理の組み方が予測対象の情報を漏らしている」点で原因が違います。
+データリーク（data leakage）は、予測する時には手に入らないはずの情報が学習に混ざり、評価の点が本番より高く出ることです。[交差検証](../cross-validation/)で思ったより良い点が出た時に、最初に疑うものの 1 つです。
 
-学習時に [交差検証](../cross-validation/) でも高スコアが出るため、テスト分割を厳密にしても検出できないことがあり、本番投入してはじめて精度が崩れる、という事故が起きます。
+点が本番より高く出る現象には、[過学習](../overfitting/)もあります。過学習は学習に使った行に合わせすぎることです。学習データでの点と検証での点が離れるので、手元でも気付けます。リークは検証の点そのものが高く出るので、2 つの点を比べても気付けません。[正則化](../regularization/)で過学習を抑えても、リークで高く出た点は下がりません。
+
+<br>
+
+予測したい値は、以下で正解と呼びます。交差検証で点を測るために学習から外す行を検証の行、点を測る最後の 1 回まで使わずに取っておく行をテストの行と呼び分けます。
+
+リーク自体は、混ざる経路で次の 2 つに呼び分けられています。[Kaggle Learn の講座](https://www.kaggle.com/code/alexisbcook/data-leakage)もこの 2 つの呼び名で説明しています。
+
+| 呼び名 | 学習に入るもの | 本記事で扱う例 |
+|---|---|---|
+| target leakage | 予測する時点では手に入らない列 | 正解の代わりになる列 |
+| train-test contamination | 前処理や分け方を通じて検証の行から届く情報 | 列を選ぶ、補完、同じ人の写真 |
+
+リークについては、次のような話をよく見かけます。
+
+- 分割の前に標準化すると、点が水増しされる。
+- 前処理を Pipeline に入れれば、リークは防げる。
+- 欠損値の補完は正解を見ないので、全行でしても漏れない。
+- 交差検証で行を分ければ、検証の行から学習へは何も届かない。
+
+手元で測ると、4 つとも条件によっては外れました。次の図は、正解と全く関係の無い乱数のデータで、6 つの前処理・分け方を 20 回ずつ試した結果です。それぞれ、分割の前に処理する漏れる手順を赤、Pipeline か GroupKFold を使う正しい手順を青で示しています。正解は 0 と 1 が半分ずつなので、偶然に当たる正解率は 0.5 で、正しい手順なら点はその周りに散らばります。
+
+{{< figure src="data-leakage_cover.webp" alt="6 行の点の図。横軸は 5 分割の交差検証の正解率で、点線の 0.5 が偶然の水準。各行に赤い点（分割の前に処理）と青い点（Pipeline か GroupKFold）を 20 個ずつ置く。上の 3 行の標準化・平均で補完・PCA で 10 列には、赤と青がどちらも 0.5 の周りに重なり、赤の平均は 0.47、0.50、0.50。破線より下の 3 行は、2000 列から 20 列を選ぶの赤が平均 0.86、正解の列も入れて補完の赤が 0.94、同じ人の写真を分けずに CV の赤が 0.96 で、青はどれも 0.5 の周り" caption="正解と無関係なデータで、手順ごとに 20 回測った正解率" align="center" >}}
+
+上の 3 つは、分割の前に処理しても正しい手順と差がありません。下の 3 つは 0.86〜0.96 まで上がりました。下の 3 つに共通するのは、検証に回る行の正解が、何らかの経路で学習側に届いていることです。よく例に出る標準化は、漏れても点がほとんど動かない側にいます。
+
+冒頭の 4 つの話に当てはめると、1 つ目は標準化の行で点がほとんど動かず、話が大げさでした。2 つ目と 4 つ目は「同じ人の写真を分けずに CV」の行で、3 つ目は正解の列も入れた補完の行で外れています。
+
+<br>
+
+本記事では、交差検証の点が良すぎて戸惑っている人と、これから scikit-learn で前処理とモデルを組む人に向けて、次の疑問に答えます。
+
+- 分割の前に標準化すると、点はどれだけ上がるのか。
+- 点を大きく押し上げる前処理は、何が違うのか。
+- 正解を使わないはずの補完が、漏れるのはどんな時か。
+- Pipeline に入れても防げない漏れは何か。
+- 点が良すぎる時、どこから疑えばよいのか。
+
+実験は [scikit-learn](https://scikit-learn.org/stable/) 1.9.1 と NumPy 2.5.4 で行いました。図を描く処理も含めた完全なコードは [data-leakage_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/data-leakage_gen.py) にあります。
 
 ---
 
-### 2 系統に分類できる
+### 正解の無いデータで漏れを測る
 
-データリークは混入経路で大きく 2 系統に分かれます。
+冒頭の実験では、100 行 × 2000 列の正規乱数を入力にし、正解は 0 と 1 を 50 行ずつ無作為に並べました。入力には正解を当てる情報が一切無いので、交差検証の点が 0.5 を大きく超えたら、その分は全て漏れから来ています。実際のデータでは本当の情報と漏れが混ざって区別できないので、本当の情報を 0 にして漏れだけを測りました。
 
-{{< note-panels caption="データリークは、目的変数に関わる情報の混入と、学習・評価の分離の不備に分けられます。" >}}
-- title: Target leakage
-  items:
-  - 未来情報の混入
-  - 目的変数から派生した特徴
-- title: Train-test contamination
-  items:
-  - 前処理の fit が全データ対象
-  - "[特徴量選択](/ml/ml/feature-selection/)を分割前に実施"
-{{< /note-panels >}}
+比べたのは、前処理を適用する時期です。scikit-learn の前処理は、`fit` で行から必要な数を求め、`transform` でその数を使って値を変えます。標準化なら `fit` で列ごとの平均と標準偏差を求め、列を選ぶ処理なら `fit` で正解と関係の強い列を決めます。
 
-ターゲットリーク（target leakage）は「予測したい瞬間にはまだ存在しない情報」を特徴量に入れてしまうパターンです。訓練・テスト汚染（train-test contamination）は「テストデータの情報が前処理を通じて学習に使われる」パターンです。両者は別物です。ただし、症状（学習時の異常な高スコア）は似るため、それぞれの混入経路に対処する必要があります。
+「分割の前に処理」では、全ての行で前処理の `fit` をしてから交差検証に渡します。「Pipeline」では、[`make_pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.make_pipeline.html) で前処理とモデルを 1 本の [`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) につなぎ、交差検証の分割ごとに、学習に使う行だけで前処理の `fit` をします。次の図は、5 回の検証のそれぞれで `fit` に使う行を塗り分けたものです。
 
----
+{{< figure src="data-leakage_folds.webp" alt="動く図。上の段は分割の前に fit する手順、下の段は Pipeline。100 行を 20 行ずつ 5 つの箱に分けて横に並べる。準備のコマでは、上の段だけ 5 つの箱の全てに赤い fit の帯が掛かり、下の段にはまだ帯が無い。第 1 回から第 5 回のコマでは、検証に回る箱が 1 つずつ左から右へ橙色に変わる。上の段は赤い帯が 5 つの箱の全てに掛かったままで、橙色の検証の箱が赤い枠で囲まれ、検証の行も fit に入っていると示す。下の段は検証の箱を除いた 4 つの箱だけに青い帯が掛かる。最後のコマで、5 回とも上は検証の行が fit に入り、下は入らないとまとめる" caption="交差検証の 5 回で fit に使う行（1 回を 1.6 秒ずつ表示）" align="center" >}}
 
-### 典型症状: 学習時のスコアが不当に高い
-
-リークが入った状態では、[交差検証](../cross-validation/)（CV: データを `k` 個の fold に分け、学習と評価を順に回す手法）のスコアが現実離れした水準（Accuracy 0.99 以上、[ROC-AUC](../roc-pr-auc/) ほぼ 1.0 など）に達することが多いです。普段の精度感を大きく上回るスコアが急に出たら、リークの有無を確認します。
-
-試しに、[scikit-learn](https://scikit-learn.org/stable/) の [`make_classification`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作った二値分類タスクに「目的変数 `y` にごく小さなノイズを加えた列」を 1 本足し、ありなしで [`cross_val_score`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html) の CV スコアを比べます。推論時には手に入らない情報を意図的に流し込んだ形で、CV Accuracy は 1.000 まで張り付きます。
+上の段では、検証の行も `fit` に入ったまま 5 回の検証が進みます。下の段では、`fit` に使うのは毎回、その回で学習に使う 80 行だけです。次のコードは、標準化と列を選ぶ処理について、冒頭の図で測った 20 回のうち 1 回分を抜き出したものです。
 
 ```python
-import matplotlib.pyplot as plt
-import numpy as np
-from sklearn.datasets import make_classification
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_score
-
-X, y = make_classification(
-    n_samples=1000, n_features=10, n_informative=5,
-    n_redundant=3, random_state=0,
-)
 rng = np.random.default_rng(0)
-leak_feature = y + 0.05 * rng.standard_normal(len(y))  # 目的変数 + 小ノイズ
-X_leak = np.column_stack([X, leak_feature])
+X = rng.normal(size=(100, 2000))                 # 正解と無関係な 2000 列
+y = rng.permutation(np.repeat([0, 1], 50))       # 正解は 0 と 1 が 50 行ずつ
+cv = StratifiedKFold(5, shuffle=True, random_state=0)
+lr = LogisticRegression(max_iter=1000)
 
-cv_clean = cross_val_score(RandomForestClassifier(random_state=0), X, y, cv=5)
-cv_leak = cross_val_score(RandomForestClassifier(random_state=0), X_leak, y, cv=5)
-print(f"CV clean:  {cv_clean.mean():.3f} +/- {cv_clean.std():.3f}")
-print(f"CV leak:   {cv_leak.mean():.3f} +/- {cv_leak.std():.3f}")
+# 標準化: 全ての行で平均と標準偏差を求めてから分ける / 分割ごとに学習側だけで求める
+leak = cross_val_score(lr, StandardScaler().fit_transform(X[:, :20]), y, cv=cv).mean()
+safe = cross_val_score(make_pipeline(StandardScaler(), lr), X[:, :20], y, cv=cv).mean()
+print(f"標準化         : 分割の前 {leak:.2f}  Pipeline {safe:.2f}")
 
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.bar(["Clean", "With leak"],
-       [cv_clean.mean(), cv_leak.mean()],
-       yerr=[cv_clean.std(), cv_leak.std()],
-       color=["#7aa6c2", "#e15759"], capsize=8, edgecolor="white")
-ax.set_ylim(0, 1.08)
-ax.set_ylabel("CV accuracy (5-fold mean)")
-ax.set_title("CV score: clean vs with-leak")
-plt.tight_layout()
-plt.savefig("data-leakage_cv_score.svg", bbox_inches="tight")
+# 列を選ぶ: 全ての行で正解と関係の強い 20 列を選んでから分ける / 分割ごとに学習側だけで選ぶ
+leak = cross_val_score(lr, SelectKBest(f_classif, k=20).fit_transform(X, y), y, cv=cv).mean()
+safe = cross_val_score(make_pipeline(SelectKBest(f_classif, k=20), lr), X, y, cv=cv).mean()
+print(f"20 列を選ぶ    : 分割の前 {leak:.2f}  Pipeline {safe:.2f}")
 ```
-
-出力:
 
 ```text
-CV clean:  0.963 +/- 0.014
-CV leak:   1.000 +/- 0.000
+標準化         : 分割の前 0.54  Pipeline 0.54
+20 列を選ぶ    : 分割の前 0.84  Pipeline 0.54
 ```
 
-{{< figure src="data-leakage_cv_score.svg" alt="5-fold CV の平均 Accuracy の棒グラフ。リーク列なしは 0.963、目的変数に小さなノイズを足した列を加えると 1.000 に張り付き、ばらつきも 0 になる" caption="リーク列の有無による CV スコアの差" align="center" >}}
-
-CV スコアだけでなく、[RandomForest](../random-forest/) の[特徴量重要度](/ml/ml/feature-importance/)を出すとリーク列に重要度が集中する傾向も観察できます。
-
-```python
-rf_leak = RandomForestClassifier(n_estimators=100, random_state=0).fit(X_leak, y)
-importances = rf_leak.feature_importances_
-names = [f"x{i}" for i in range(10)] + ["leak"]
-
-fig, ax = plt.subplots(figsize=(7, 4))
-colors = ["#7aa6c2"] * 10 + ["#e15759"]
-ax.bar(names, importances, color=colors, edgecolor="white")
-ax.set_xticks(range(len(names)))
-ax.set_xticklabels(names, rotation=45, ha="right")
-ax.set_ylabel("Feature importance")
-ax.set_title("RF importance: leak column dominates")
-plt.tight_layout()
-plt.savefig("data-leakage_importance.svg", bbox_inches="tight")
-```
-
-{{< figure src="data-leakage_importance.svg" alt="RandomForest の特徴量重要度の棒グラフ。x0〜x9 の 10 本は最大でも 0.2 程度で、赤いリーク列だけが約 0.59 と重要度の過半を占める" caption="リーク列に集中する特徴量重要度" align="center" >}}
-
-スコアが急に改善した場合は、追加した特徴量が予測時点で取得できるかを確認します。
+標準化は、どちらの時期に適用しても 0.54 で同じでした。列を選ぶ処理は、分割の前に適用すると 0.84 になり、Pipeline に入れると 0.54 に戻ります。モデルはどちらも[ロジスティック回帰](../logistic-regression/)です。冒頭の図に載せた残りの 4 つのうち、平均で補完する処理と [PCA](../pca/) で 10 列に縮める処理も、同じ形で比べています。
 
 ---
 
-### ターゲットリーク（target leakage）
+### 分割の前に標準化した時の差
 
-ターゲットリークは「予測したい時点では存在しないはずの情報」を特徴量に入れてしまう過ちです。典型例として、注文確定の瞬間に「その注文がキャンセル／返品されるか」を予測するタスクを考えます。各特徴量の安全性は次のように分かれます。
-
-- 注文金額: 確定時に既知 → OK
-- 過去 30 日の注文回数: 確定時に既知 → OK
-- 注文確定後 72 時間以内の問い合わせ回数: 確定時には未来 → NG
-- 商品カテゴリ: 確定時に既知 → OK
-
-問題は 3 つ目で、「確定後 72 時間以内の問い合わせ」は注文確定時刻にはまだ起きていない事象であり、運用時の推論コードには渡せない量です。加えて「問い合わせ」自体がキャンセル・返品の前兆シグナルなので目的変数と強く相関し、学習データ上ではモデルが超高精度に見えてしまいます。
-
-{{< figure src="data-leakage_timeline.svg" alt="注文確定の時点 t を中心にした時間軸。t の前 30 日の集計は t で観測できるので使ってよく、t から 72 時間後までの問い合わせ回数は t の時点では存在しない未来の情報なので目的変数を漏らす" caption="過去の窓は安全で、未来の窓はリークになる" align="center" >}}
-
-各特徴量について「予測したい時点 `t` に、その値は本当に観測可能か」を機械的に問うことで検出できます。すべての特徴量に as-of timestamp（その値が確定した時点）を明示し、`as_of <= t` を満たすものだけを使う設計が安全と言えます。
-
-ターゲットリークは時系列が絡まなくても起きます。例えば、与信スコアの説明変数に「最終承認担当者の経験年数」を入れる場合を考えます。承認担当者の割当ては審査の難易度に応じて変わるため、結果ラベルと相関します。しかし、申込時点では未確定です。「対象タスクの結果が決まる過程で生まれる量」は、それが時間的に未来でなくても疑った方が良いです。
-
----
-
-### 訓練・テスト汚染（train-test contamination）
-
-もう 1 系統のリークは、前処理パイプラインの組み方によって生まれます（scikit-learn の [Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html) にも同じ注意があります）。[標準化](../standardization/) の `StandardScaler.fit` をデータ全体に適用してから train / test に分けると、テストデータの平均・分散の情報が train の前処理に紛れ込みます。同様に、特徴量選択や次元削減（[PCA](../pca/) など）、[欠損値処理](../missing-values/) の imputation 統計計算をデータ全体に対して先に行うと、テストの分布情報が漏れます。
-
-特に分かりやすい例は「ランダムなラベル＋大量の無関係特徴量」で、[`SelectKBest`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html) による特徴量選択を使う時に起きる現象です。真の信号が無いにもかかわらず、特徴量選択を分割前に実行すると CV Accuracy が 0.8 近くまで上がります。これは「全データに対して `y` と相関の高い列を 20 本選んだあとで CV」の手順なので、選別の段階で `y` を使った情報がテスト fold にも染み込んでいるためと考えられます。
+冒頭の図で[標準化](../standardization/)を試したのは乱数のデータだったので、scikit-learn に同梱の 2 つのデータでも差を測りました。[breast_cancer](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html) は乳がんの診断を当てる 569 行 × 30 列、[wine](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_wine.html) は 3 品種のブドウから作ったワインの品種を当てる 178 行 × 13 列のデータです。5 分割の分け方を 50 通りに変え、分割の前に標準化した点から Pipeline の点を引きました。
 
 ```python
-from sklearn.feature_selection import SelectKBest, f_classif
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score
-from sklearn.pipeline import Pipeline
-
-rng = np.random.default_rng(0)
-X_noise = rng.standard_normal((200, 5000))
-y_noise = rng.integers(0, 2, 200)
-
-# 誤: SelectKBest を全データで fit してから CV
-sel = SelectKBest(f_classif, k=20).fit(X_noise, y_noise)
-cv_wrong = cross_val_score(LogisticRegression(max_iter=2000),
-                           sel.transform(X_noise), y_noise, cv=5)
-
-# 正: Pipeline で SelectKBest を train fold 内に閉じる
-pipe = Pipeline([
-    ("select", SelectKBest(f_classif, k=20)),
-    ("clf", LogisticRegression(max_iter=2000)),
-])
-cv_correct = cross_val_score(pipe, X_noise, y_noise, cv=5)
-print(f"Wrong CV (contamination):  {cv_wrong.mean():.3f}")
-print(f"Correct CV (pipeline):     {cv_correct.mean():.3f}")
-
-fig, ax = plt.subplots(figsize=(6, 4))
-ax.bar(["Wrong\n(fit before split)", "Correct\n(Pipeline)"],
-       [cv_wrong.mean(), cv_correct.mean()],
-       yerr=[cv_wrong.std(), cv_correct.std()],
-       color=["#e15759", "#7aa6c2"], capsize=8, edgecolor="white")
-ax.axhline(0.5, color="gray", linestyle="--", label="chance level (0.5)")
-ax.set_ylim(0, 1.05); ax.set_ylabel("CV accuracy (5-fold)")
-ax.set_title("Random labels, 5000 noise features:\nwrong way over-reports")
-ax.legend(loc="lower right")
-plt.tight_layout()
-plt.savefig("data-leakage_contamination.svg", bbox_inches="tight")
+for dname, loader in [("breast_cancer", load_breast_cancer), ("wine", load_wine)]:
+    X, y = loader(return_X_y=True)
+    for mname, model in [("ロジスティック回帰", LogisticRegression(max_iter=5000)),
+                         ("kNN", KNeighborsClassifier())]:
+        d = []
+        for s in range(50):
+            cv = StratifiedKFold(5, shuffle=True, random_state=s)
+            wrong = cross_val_score(model, StandardScaler().fit_transform(X), y, cv=cv).mean()
+            right = cross_val_score(make_pipeline(StandardScaler(), model), X, y, cv=cv).mean()
+            d.append(wrong - right)
+        d = np.array(d)
+        print(f"{dname:<13} {mname:<9} 差の平均 {d.mean():+.4f}  最大の差 {np.abs(d).max():.4f}"
+              f"  上がった回数 {(d > 0).sum()} / 下がった回数 {(d < 0).sum()}")
 ```
-
-出力:
 
 ```text
-Wrong CV (contamination):  0.795
-Correct CV (pipeline):     0.510
+breast_cancer ロジスティック回帰 差の平均 +0.0004  最大の差 0.0018  上がった回数 13 / 下がった回数 2
+breast_cancer kNN       差の平均 +0.0002  最大の差 0.0053  上がった回数 18 / 下がった回数 11
+wine          ロジスティック回帰 差の平均 -0.0003  最大の差 0.0111  上がった回数 3 / 下がった回数 5
+wine          kNN       差の平均 +0.0004  最大の差 0.0059  上がった回数 14 / 下がった回数 11
 ```
 
-{{< figure src="data-leakage_contamination.svg" alt="ランダムなラベルと 5000 本のノイズ特徴量での 5-fold CV Accuracy。分割前に特徴量選択した誤った手順は約 0.8、Pipeline で fold 内に閉じた手順は偶然の水準 0.5 の破線付近に留まる" caption="特徴量選択を分割前に行った時の CV の上振れ" align="center" >}}
+{{< figure src="data-leakage_scaler.webp" alt="4 組の点の図。縦軸は分割の前に標準化した正解率から Pipeline の正解率を引いた差で、-0.03 から 0.03。breast_cancer とロジスティック回帰、breast_cancer と kNN、wine とロジスティック回帰、wine と kNN の 4 組とも、50 個の点が 0 の周りの ±0.006 ほどに集まり、wine とロジスティック回帰の 1 点だけが -0.011。黒い横線の平均はどれもほぼ 0" caption="分割の前に標準化した時と Pipeline との正解率の差（50 通りの分け方）" align="center" >}}
 
-正解は chance level（ランダム予測の精度）である 0.5 付近である一方で、誤った手順では 0.8 付近まで上振れします。CV を「分割そのもの」だけで信頼するのではなく、「前処理を含めたパイプライン全体を fold ごとに閉じているか」までセットで確認する必要があります。
+差の平均は 4 組とも 0.0004 以下で、最大でも 0.011 でした。wine は 178 行なので、5 分割で検証に回る行は 1 回あたり 35〜36 行です。1 回の検証で 1 行の当たり外れは 1/36 ≒ 0.028 の差になりますが、点は 5 回の平均なので、1 行分の差は 5 で割った 1/178 ≒ 0.0056 になります。点の多くは、その 1 行分の上下に並んでいます。下がった回もあるので、点は一方的に水増しされてもいません。
 
----
+差が小さいのは、標準化が使う情報が少ないからです。標準化は列ごとの平均と[標準偏差](../../math/stddev/)の 2 つの数だけを求め、正解は使いません。5 分割なら全行の 80% で求めても 100% で求めても、2 つの数はほとんど変わりません。
 
-### 検出の手がかり
+<br>
 
-データリークは事前検出が難しい代わり、いくつかの状況証拠で疑いを持てます。
-
-- CV のスコアが現実離れして高い（Accuracy 0.99 以上、ROC-AUC ほぼ 1.0）
-- 特徴量重要度が 1 本に集中している
-- ベースライン手法（[ロジスティック回帰](../logistic-regression/) や常に多数クラスを返す予測）との差が異常に大きい
-- 訓練と本番の精度に大きな乖離が後から判明する
-- 「この特徴量はいつ確定する量か」を答えられない列が存在する
-
-これらに 1 つでも当てはまったら、特徴量の as-of timestamp と前処理の fit 対象を順に確認します。逆に、すべての特徴量について「予測時点で観測可能」「目的変数の決定過程に関与していない」が即答できるなら、ターゲットリークの大半は防げます。
+ただし、正解を使わない前処理なら必ず安全、とは言えません。scikit-learn の [Common pitfalls](https://scikit-learn.org/stable/common_pitfalls.html) は、`StandardScaler`・`SimpleImputer`・`PCA` もリークの元になると書き、Pipeline に入れることを勧めています。Moscovich 氏と Rosset 氏の[論文](https://arxiv.org/abs/1901.08974)（2022 年）は、正解を使わない前処理でも、分散で列を選ぶ処理や列のスケーリングで、交差検証の点が大きくずれうることを示しました。ずれる向きは上にも下にもなり、大きさはデータとモデルの条件で複雑に変わるとしています。手元の 2 つのデータで差が小さかったことは、標準化を Pipeline の外に出してよい理由にはなりません。
 
 ---
 
-### 防ぎ方
+### 列を選ぶと点が上がる仕組み
 
-リスクの大きい順に対処の方針を並べると次のようになります。
+冒頭の図で点が大きく上がった 3 つのうち、最初は列を選ぶ処理です。[`SelectKBest`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html) は、列ごとに正解と関係がどれだけ強いかを測り、強い順に `k` 列を残します。[特徴量選択](../feature-selection/)の中でも一番簡単な部類の処理です。
 
-1. 特徴量を追加する時に 2 つ確認する
-    - その値は推論時刻にも観測できるか（as-of timestamp が予測時点以前か）
-    - その値は目的変数から派生していないか（過去の解約フラグ、過去のクレーム ID、結果由来の担当者割当てなど）
-2. 前処理を Pipeline 内に閉じ込める
-    - `StandardScaler`、`SelectKBest`、`PCA` のような fit 系操作は [`Pipeline`](https://scikit-learn.org/stable/modules/generated/sklearn.pipeline.Pipeline.html) に組み込み、`cross_val_score` / `GridSearchCV` と組み合わせる
-    - fit を学習 fold だけに閉じることで、テスト fold への情報の混入を防げる
-3. 時系列タスクでは[時系列に合わせた CV](../time-series-forecasting/) を使う
-    - 通常の `KFold` ではなく [`TimeSeriesSplit`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.TimeSeriesSplit.html) を使い、未来データで過去を予測する漏れを排除する
-    - ラグ特徴量を作る時も、ラグ計算の起点を予測時点に揃える
-4. テストデータは最後の最後だけ触る
-    - [ハイパーパラメータ](../hyperparameter/) 調整・特徴量選択は train + valid 内で完結させる
-    - テストデータでのスコアを見ながら何度も意思決定するのも「テストへのリーク」になる
-5. ベースラインを並走させる
-    - 「常に多数クラスを返す予測」「目的変数と無関係な特徴量だけのモデル」を必ず比較対象に出す
-    - ベースラインと差が大きすぎる場合、リーク疑いとして特徴量を 1 本ずつ外して原因を切り分ける
+乱数の列でも、100 行しか無ければ、偶然に正解と関係があるように見える列が出ます。`fit` に使う行を塗り分けた図で上の段のように、全ての行で選ぶと、検証に回る行の正解も含めて「たまたま正解と揃っている列」を選ぶことになります。選んだ列は検証の行でも正解と揃っているので、モデルは検証の行を当てられます。
+
+候補の列が多いほど、偶然に揃う列も見つかりやすくなるはずです。そこで、選ぶ候補にする列を 20 から 10000 まで増やし、全ての行で 20 列を選んでから交差検証しました。
+
+```python
+P = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000]
+sel = {p: [] for p in P}
+for seed in range(10):
+    X, y, _ = noise(seed, p=max(P))   # 100 行 × 10000 列の乱数と、0 と 1 の正解
+    cv = StratifiedKFold(5, shuffle=True, random_state=seed)
+    for p in P:
+        Xs = SelectKBest(f_classif, k=20).fit_transform(X[:, :p], y)  # 全ての行で 20 列を選ぶ
+        sel[p].append(cross_val_score(lr, Xs, y, cv=cv).mean())
+```
+
+```text
+雑音の列の数と、分割の前に 20 列を選んだ時の正解率（10 回の平均）
+     20 列: 0.525
+    100 列: 0.700
+   1000 列: 0.815
+  10000 列: 0.884
+```
+
+出力は 4 行だけを抜き出しました。`noise` は冒頭のコードと同じ作り方で乱数と正解を返す関数です。
+
+{{< figure src="data-leakage_select.webp" alt="折れ線グラフ。横軸は候補の列の数で 20 から 10000 の対数、縦軸は交差検証の正解率。10 回の平均は 20 列で 0.52、100 列で 0.70、1000 列で 0.82、10000 列で 0.88 と、列が増えるほど上がる。薄い帯は 10 回の最小から最大で、10000 列では 0.81 から 0.95。点線は 0.5" caption="候補にした列の数と、全ての行で 20 列を選んでから交差検証した正解率" align="center" >}}
+
+20 列から 20 列を選ぶ時は、何も選んでいないのと同じなので 0.525 です。候補が 100 列で 0.70、10000 列で 0.88 まで上がりました。0.70 は、本当の情報があるデータでも珍しくない点なので、点の高さだけでは漏れに気付けません。
+
+遺伝子ごとの発現量を数千から数万の列に並べたデータでは、この形の漏れが実際に起きました。Ambroise 氏と McLachlan 氏の [2002 年の論文](https://pmc.ncbi.nlm.nih.gov/articles/PMC124442/)によると、数個の遺伝子で誤り率をほぼ 0 にできるとした当時の報告は、遺伝子を選ぶ処理を交差検証の外で行っていました。選ぶ処理ごと交差検証し直すと、誤り率は 0 ではなくなりました。教科書の『[The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/)』も、7.10.2 節の「The Wrong and Right Way to Do Cross-validation」（交差検証の誤ったやり方と正しいやり方）で同じ例を扱っています。
+
+<br>
+
+#### 正解を使う他の処理
+
+正解を使う前処理は、列を選ぶ処理の他にもあります。カテゴリを正解の平均に置き換える target encoding は[カテゴリ変数のエンコーディング](../categorical-encoding/)で、少ない側の行を増やすオーバーサンプリングは[不均衡データ](../class-imbalance/)で扱っています。どちらも列を選ぶ処理と同じく、交差検証の分割ごとに学習側だけで適用すれば、検証に回る行の正解は学習側に届きません。
+
+交差検証の点で[ハイパーパラメータ](../hyperparameter/)を選ぶ時も、選んだ設定の点は、選ぶのに使った検証の行に合わせた分だけ高く出ます。交差検証を二重にし、内側で設定を選んで外側で点を測る nested CV で防げます。詳しくは[交差検証](../cross-validation/)のノートで扱っています。
+
+テストの点を見ながら列やモデルを何度も選び直すのも、選ぶ基準に正解を使っている点で同じです。この使い回しは、処理を分割の内側に入れても防げません。冒頭で呼び分けたテストの行は、最後の 1 回まで見ずに残しておきます。
 
 ---
 
-### 機械学習での使いどころ
+### 正解の列も入れた補完
 
-特徴量設計や評価手順をレビューする際は、次の点を確認します。
+点が大きく上がった 2 つ目は、[欠損値](../missing-values/)の補完です。平均で埋める補完は正解を使わないので、分割の前に適用しても点は動きませんでした。点が 0.94 まで上がったのは、他の列から欠損値を予測して埋める [`IterativeImputer`](https://scikit-learn.org/stable/modules/generated/sklearn.impute.IterativeImputer.html) に、正解の列も入力として渡した場合です。
 
-- 特徴量設計レビュー: 各列の as-of timestamp と目的変数との因果関係を確認する観点
-- CV 結果の解釈: 高スコアが出た時に、特徴量や前処理から情報が漏れていないかを確認する
-- [本番監視](/ml/mlops/model-performance-monitoring/): 訓練時と本番で精度差が大きい場合の原因分析の起点
-- データ受領時の確認: 受け取ったテーブルに「将来時点の集計列」が混じっていないかの監査
-- 競技 ML（[Kaggle](https://www.kaggle.com/) 等）: 不自然に高いスコアの上位解法に「データセット由来のリーク」が含まれることがあり、本番運用に持ち込めない解になりがち
+正解の列を渡すと、欠損値を埋める式は正解も使って値を作ります。補完は全ての行で 1 回だけ行うので、`fit` に使う行を塗り分けた図で上の段と同じく、検証に回る行も補完に入ります。その行の欠損値は、その行の正解から作った値で埋まります。埋まった値は正解を映しているので、モデルは検証の行を当てられます。欠損値が多いほど、列の中身が「正解から作った値」に置き換わる割合が増えるので、欠損値の割合を 0% から 95% まで変えて測りました。
 
-CV の分割だけでなく、前処理の fit 対象と各特徴量の as-of timestamp も確認します。
+```python
+MISS = [0.0, 0.2, 0.5, 0.8, 0.95]
+imp = {m: [] for m in MISS}
+for seed in range(10):
+    X, y, rng = noise(seed, p=20)
+    cv = StratifiedKFold(5, shuffle=True, random_state=seed)
+    u = rng.random(X.shape)
+    for miss in MISS:
+        Xm = X.copy()
+        Xm[u < miss] = np.nan
+        Z = np.column_stack([Xm, y])                           # 正解を最後の列に足す
+        Xi = IterativeImputer(random_state=0).fit_transform(Z)[:, :-1]
+        imp[miss].append(cross_val_score(rf, Xi, y, cv=cv).mean())
+```
+
+```text
+欠損値の割合と、正解の列も入れて全ての行で補完した時の正解率（10 回の平均）
+  0%: 0.470
+  20%: 0.470
+  50%: 0.611
+  80%: 0.743
+  95%: 0.925
+```
+
+`rf` は、200 本の木を使う[ランダムフォレスト](../random-forest/)です。
+
+{{< figure src="data-leakage_impute.webp" alt="折れ線グラフ。横軸は欠損値にした割合で 0%、20%、50%、80%、95%、縦軸は交差検証の正解率。10 回の平均は 0.47、0.47、0.61、0.74、0.93 と、欠損値の割合が 20% を超えると上がり始める。薄い帯は 10 回の最小から最大で、95% では 0.85 から 0.96。点線は 0.5" caption="欠損値の割合と、正解の列も入れて全ての行で補完した時の正解率" align="center" >}}
+
+欠損値が 20% までなら点は動かず、50% で 0.61、95% で 0.93 まで上がりました。補完の式に正解を渡すかどうかで、同じ「補完」が、冒頭の図で破線の上にも下にも入ります。
+
+<br>
+
+#### 内戦の予測で起きた例
+
+この形の漏れは、政治学の論文で実際に起きました。Kapoor 氏と Narayanan 氏の「[Leakage and the Reproducibility Crisis in ML-based Science](https://arxiv.org/abs/2207.07048)」は、ML を使った研究の誤りを集めた調査で、17 分野の 329 本の論文がリークなどの誤りの影響を受けていたと報告しています。同じ論文で、内戦を予測する 12 本の論文を調べ、誤りが見つかった 4 本を直して再現しました。
+
+そのうち Muchlinski 氏らの 2016 年の論文は、ランダムフォレストがロジスティック回帰を大きく上回ると主張していました。Kapoor 氏らによると、この論文は評価用のデータで値の 95% 以上が欠損値で、学習用と評価用のデータをまとめて R の `rfImpute` で補完しており、補完の入力に正解の列も入っていました。補完を正しい形に直すと、ランダムフォレストはロジスティック回帰より良くならなかった、と書かれています。冒頭の図で 0.94 だった手順は、欠損値の割合をこの論文に合わせて 95% にしています。
 
 ---
 
-### よくある誤解
+### Pipeline では防げない漏れ
 
-- 「CV で評価しているからリークは起きない」とは限らない: 前処理を分割前に fit していれば CV を回しても情報が漏れる
-- 「目的変数と相関が高い特徴量を入れるとリーク」ではない: 強相関でも、推論時刻に観測可能で、目的変数から派生していなければリークではない（むしろ良い特徴量）
-- 「テスト精度が高ければ本番でも当たる」とは限らない: テストデータも訓練データと同じ前処理パイプラインを通過しているなら、その前処理に汚染がある時点でテスト精度も信頼できない
-- 「リークは個人開発の小さい問題」ではない: 狭い意味のリークではなく交絡（confounding）の例だが、胸部 X 線の肺炎検出では、CNN が画像から撮影した病院を 99.9% 以上の精度で見分け、病院ごとの肺炎の有病率の差（1.0〜34.2%）を予測に使っていた、と報告されている（[Zech et al., 2018](https://doi.org/10.1371/journal.pmed.1002683)）
-- [過学習](../overfitting/) と同じ現象ではない: 過学習はモデルの複雑さが原因、データリークは特徴量・前処理の設計が原因。リークがあると過学習対策（[正則化](../regularization/)・early stopping）は効かない
+ここまでの 3 つは、前処理を Pipeline に入れれば防げます。冒頭の図で最後の 1 つは前処理が無く、行の分け方だけで点が上がりました。
+
+使ったのは、scikit-learn が配布する [Olivetti faces](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_olivetti_faces.html) で、40 人の顔写真が 10 枚ずつ、400 枚あります。40 人に 0 と 1 を半分ずつ無作為に配り、その人の写真 10 枚の正解にしました。顔には 0 と 1 を当てる情報が無いので、新しい人の写真なら、正解率は偶然の水準と同じ 0.5 になるはずです。
+
+モデルには、学習側で最も近い写真を 1 枚探し、その正解をそのまま答える [kNN](../knn/)（`n_neighbors=1`、以下 1-NN）を使いました。分け方は、写真を無作為に 5 分割する [`KFold`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.KFold.html) と、同じ人の写真を必ず同じ分割に入れる [`GroupKFold`](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GroupKFold.html) です。
+
+```python
+faces = fetch_olivetti_faces()                  # 40 人 × 10 枚の顔写真
+rng = np.random.default_rng(0)
+coin = rng.permutation(np.repeat([0, 1], 20))   # 40 人に 0 と 1 を半分ずつ配る
+yf = coin[faces.target]                         # その人の写真 10 枚とも同じ正解
+knn = KNeighborsClassifier(n_neighbors=1)
+for name, cv, groups in [("KFold(5, shuffle=True)", KFold(5, shuffle=True, random_state=0), None),
+                         ("GroupKFold(5)、人ごと", GroupKFold(5), faces.target)]:
+    acc, nn_same = [], []
+    for tr, te in cv.split(faces.data, yf, groups):
+        knn.fit(faces.data[tr], yf[tr])
+        acc.append((knn.predict(faces.data[te]) == yf[te]).mean())
+        nn = knn.kneighbors(faces.data[te], return_distance=False)[:, 0]  # 学習側で最も近い写真
+        nn_same.append((faces.target[tr][nn] == faces.target[te]).mean())
+    print(f"{name:<24} 正解率 {np.mean(acc):.3f}  最も近い写真が同じ人だった割合 {np.mean(nn_same):.2f}")
+```
+
+```text
+KFold(5, shuffle=True)   正解率 0.960  最も近い写真が同じ人だった割合 0.93
+GroupKFold(5)、人ごと        正解率 0.525  最も近い写真が同じ人だった割合 0.00
+```
+
+{{< figure src="data-leakage_groups.webp" alt="2 組の棒グラフ。KFold（写真ごとに分ける）は、最も近い写真が同じ人だった割合が 0.93、正解率が 0.96。GroupKFold（人ごとに分ける）は、最も近い写真が同じ人だった割合が 0.00、正解率が 0.53。点線は 0.5" caption="1 人ごとに配った 0 と 1 を顔写真から 1-NN で当てた結果" align="center" >}}
+
+`KFold` では写真ごとに分けるので、検証の写真と同じ人が写った残りの写真は、多くが学習側に入ります。1-NN が選んだ最も近い写真は 93% が同じ人で、その人に配った 0 か 1 をそのまま答えるので、正解率は 0.96 になりました。モデルが覚えたのは「誰か」であって、正解を当てる情報ではありません。`GroupKFold` では同じ人が学習側にいないので、0.525 に戻ります。
+
+正解は検証の写真そのものからではなく、同じ人が写った別の写真を通して学習側に届いています。Pipeline は前処理の `fit` を学習側に限るだけなので、この経路は塞げません。同じ人・同じ患者・同じ地点の行が複数あるデータでは、グループで分けます。California Housing で同じ地点の区画を分けた例は、[交差検証](../cross-validation/)で shuffle を扱う節にあります。
+
+<br>
+
+#### 病院ごとの違い
+
+同じ人の写真と似た形は、病院や集め方の単位でも起きます。ただし次の例は、検証に回した行の正解が学習側に届く狭い意味のリークではなく、病院と正解の結び付きにモデルが頼る交絡（confounding）の例です。
+
+Zech 氏らの [2018 年の研究](https://journals.plos.org/plosmedicine/article?id=10.1371/journal.pmed.1002683)は、3 つの病院系列の胸部 X 線写真で、肺炎を見分けるモデルを調べました。モデルは、画像の分類によく使うニューラルネットワークの CNN です。点には AUC を使っています。AUC は [ROC 曲線](../roc-pr-auc/)より下にある面積で、0.5 が偶然の水準、1 に近いほど良く当てていることを表します。
+
+<br>
+
+肺炎と診断された写真の割合は Mount Sinai Hospital が 34.2%、NIH Clinical Center が 1.2% と大きく違いました。そのため、撮った病院だけを手掛かりに肺炎らしさの順を付けても、AUC が 0.861 になりました。
+
+<br>
+
+NIH と Mount Sinai の写真では、CNN は撮った病院を 99.9% 以上の割合で見分けられました。2 つの病院の写真を混ぜて学習とテストに分けると AUC は 0.931 でしたが、3 つ目の病院で撮った写真では 0.815 に下がりました。病院ごとに肺炎の割合が違うことは、所見とは別に正解と結び付く交絡因子になります。
+
+検証の正解が学習側に届くわけではありませんが、同じ病院の写真を学習とテストに混ぜると、リークと同じく点が高く出て見落とします。病院ごとに分けて測ると気付けます。DeGrave 氏らの[論文](https://doi.org/10.1038/s42256-021-00338-7)（2021 年）も、COVID-19 を見分けるモデルが同じように交絡因子に頼り、新しい病院の写真で外れることを示しています。
+
+<br>
+
+#### 出どころごとに振った ID
+
+2008 年に乳がんの検出を競った KDD Cup 2008 では、患者 ID の列が正解をよく当てました。Kaufman 氏らの「[Leakage in data mining](https://doi.org/10.1145/2020408.2020496)」（2011 年）によると、データは複数の出どころから集められ、出どころごとに病状を持つ患者の割合が違い、ID も出どころごとに連番で振られていたためと推測されています。並べ替えていない行番号が正解を少し含む例は、[情報理論](../../math/information-theory/)の余談にもあります。
+
+<br>
+
+#### 正解の代わりになる列
+
+列そのものが正解の代わりになる場合もあります。Kapoor 氏らが直して再現した内戦の予測 4 本のうち、2019 年の 1 本は別の資料で内戦を数えた列を入力に使っていて、ほぼ完全な正解率が出ていました。内戦そのものを数えた列から内戦を当てていた形です。
+
+予測する時点の後にしか決まらない列も同じです。たとえば解約の予測で、解約を申し込んだ後で記録される列を入れると、その列が正解の代わりになります。次の図は、解約の予測で使いそうな列について、値が確定した時刻と集計に含む期間を並べた例です。
+
+{{< figure src="data-leakage_timing.webp" alt="横軸は予測する時刻を 0 とした月。縦線の 0 が予測する時刻。契約した月は -5 の青い点、先月の利用回数は -1 から 0 の青い帯、直近 3 か月の問い合わせ回数は -3 から 0 の青い帯で、どれも使える。同じ問い合わせ回数を表の作成日から数えた列は -1 から +2 の赤い帯で 0 をまたぎ、使えない。解約の申し込み日は +0.8、解約アンケートの回答は +1.6 の赤い点で、使えない" caption="解約の予測で、列ごとに値が確定した時刻と、集計に含む期間の例" align="center" >}}
+
+予測する時刻より右に点がある 2 列は、学習データの表には並んでいても、本番で予測する時にはまだ値がありません。防ぐには、各列に値が確定した時刻を持たせ、予測する時刻より前に確定した列だけを使います。
+
+先月の利用回数や直近 3 か月の問い合わせ回数のように期間で集計する列は、名前が過去の集計に見えても、期間の終わりが予測する時刻より前かを見ます。図の 4 行目のように、学習データの表を作った日から数えて集計すると、予測した後の問い合わせまで数えてしまいます。集計の期間を顧客ごとの予測する時刻で区切り直すと、3 行目と同じ使える列に戻ります。数期前の値を並べるラグ特徴量も、ずらす起点を予測する時刻に揃えます。時間順のデータで未来の行が学習に入る漏れは、[時系列予測](../time-series-forecasting/)で時間順の分割として扱っています。
+
+時刻が前でも、解約しそうな顧客に引き止めの担当者を付けた印のように、結果を予想した人が付けた列は疑います。値は予測する時刻より前に入っても、中身は人が先に下した予想なので、正解の代わりになるからです。
+
+正解と強く関係する列が、全てリークというわけではありません。予測する時点で手に入り、正解から作った値でなければ、良い列です。冒頭の呼び名で言えば、この節の列による漏れが target leakage です。列を選ぶ・補完・同じ人の写真で測った漏れは train-test contamination で、KDD Cup の患者 ID も、列そのものが正解を映す点では target leakage に近い例です。病院の例はどちらでもなく交絡です。
+
+---
+
+### 点が良すぎる時に見る順
+
+正解が学習側に届く経路で、冒頭の図に載せた 6 つの手順を並べ直すと、次の表になります。点は冒頭の図に書いた 20 回の平均です。
+
+| 手順 | 検証の正解が届く経路 | 防ぎ方 | 分割の前に処理した点 |
+|---|---|---|---|
+| 標準化・平均で補完・PCA | 無い | Pipeline | 0.47〜0.50 |
+| 全ての行で列を選ぶ | 列を選ぶ基準 | Pipeline | 0.86 |
+| 正解の列も入れて補完 | 補完した値 | 正解の列を外し Pipeline | 0.94 |
+| 同じ人の写真を分けずに CV | 同じ人が写った別の写真 | GroupKFold | 0.96 |
+| 正解の代わりになる列 | 列そのもの | 列を外す | 実験なし |
+
+交差検証の点が予想より良い時は、表の下から疑います。最初に、各列が予測する時点で本当に手に入るかを 1 列ずつ見ます。点を大きく押し上げる列は、[特徴量の重要度](../feature-importance/)で上位に出やすいので、重要度が不自然に高い列から見て、外すと点が戻るかを試します。次に、同じ人・同じ病院・同じ地点の行や、時間順に並ぶ行が無いかを見て、あれば `GroupKFold` や時間順の分割に変えます。
+
+最後に、正解を使う前処理が分割の外に出ていないかをコードで見ます。列を選ぶ・target encoding・正解を入れた補完・オーバーサンプリングは、Pipeline に入れて交差検証に渡します。標準化のような正解を使わない前処理は、手元では点がほとんど動きませんでしたが、本番で同じ処理を適用する時にも扱いやすいので、同じく入れておきます。
+
+<br>
+
+手元のデータで正解を無作為に並べ替えて同じコードで交差検証をすると、正解が学習側に届く経路がコードに潜んでいないかを試せます。並べ替えた正解は入力と無関係なので、点が偶然の水準から離れたら、正解を使う処理が分割の外にあります。
+
+ただし、行ごとに並べ替えると、同じ人の行でも正解がばらばらになり、Olivetti の漏れは消えます。行ごとに 3 回並べ替えて `KFold` のまま試すと、0.465〜0.505 でした。同じ人の行がある時は、冒頭の図で最後の行と同じく、人ごとに正解を配り直して試します。
+
+<br>
+
+本番の精度が交差検証より大きく落ちた時も、同じ順にリークを疑います。リークが無ければ、入力の分布が変わる[データドリフト](../../mlops/data-drift/)を疑い、[モデル性能劣化の監視](../../mlops/model-performance-monitoring/)で扱うように本番の精度を追います。
