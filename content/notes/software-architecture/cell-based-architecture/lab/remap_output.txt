@@ -1,0 +1,4 @@
+modulo           moved  8011 / 10000 (80.1%)
+consistent_hash  moved  1948 / 10000 (19.5%)
+table            moved     0 / 10000 (0.0%)
+consistent_hash: customers in the new cell = 1948

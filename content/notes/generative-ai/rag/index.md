@@ -466,7 +466,7 @@ rank of the first chunk holding the evidence (- = not in top 20)
 
 節単位は、k=1 で 53% と最も高くなりました。著者が 1 つの話題ごとに見出しを立てているので、節がそのまま話題の単位になっているからだと考えられます。
 
-一方で、Q27 は節単位で 20 位以内にも入りませんでした。[cell-based architecture のノート](/notes/software-architecture/cell-based-architecture/)では、毒入りの要求（poison pill）の話は「Blast Radius を小さくする理由」という節の表の 1 行と 1 段落だけで、節の大半は冗長化や他の障害の説明です。節全体のベクトルが別の話題に引っ張られたと考えられます。
+一方で、Q27 は節単位で 20 位以内にも入りませんでした。コミット `16c40d26` で固定した [cell-based architecture のノート](/notes/software-architecture/cell-based-architecture/)では、毒入りの要求（poison pill）の話は「Blast Radius を小さくする理由」という節の表の 1 行と 1 段落だけで、節の大半は冗長化や他の障害の説明です。節全体のベクトルが別の話題に引っ張られたと考えられます。
 
 質問は 30 個しかないので、1 問の違いが 3.3 ポイントになります。数ポイントの差は、質問の選び方で入れ替わる程度の差です。また、質問は答えを知っている筆者が作ったので、実際の利用者の質問より当たりやすい可能性があります。
 

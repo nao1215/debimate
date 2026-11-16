@@ -1,12 +1,27 @@
-[1] ワーカー 8 台、顧客 10,000 人、1 人あたり 2 台
-  通常の cell  全滅 25.84%  一部停止  0.00%  無傷 74.16%
-  shuffle      全滅  3.77%  一部停止 43.83%  無傷 52.40%
-[2] 理論値
-  組み合わせの数 C(8,2) = 28
-  通常の cell  全滅 25.00%
-  shuffle      全滅  3.57%  一部停止 42.86%
-[3] 台数と組の大きさを変えた時、ポイズンピルを送る顧客と組が完全に重なる確率
-      8 台から 2 台: 組み合わせ                28 通り  確率 3.57e-02  （通常の cell なら 25.00%）
-     16 台から 4 台: 組み合わせ             1,820 通り  確率 5.49e-04  （通常の cell なら 25.00%）
-    100 台から 5 台: 組み合わせ        75,287,520 通り  確率 1.33e-08  （通常の cell なら 5.00%）
-   2048 台から 4 台: 組み合わせ   730,862,190,080 通り  確率 1.37e-12  （通常の cell なら 0.20%）
+== shared
+normal requests: 2208  failed: 1608 (72.8%)
+customers with >=1 failure: 279 / 279
+worker crashes: 8  crashed ports: [9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008]
+poison responses: [[2.0, 502]]
+  poison tried: 127.0.0.1:9006, 127.0.0.1:9007, 127.0.0.1:9008, 127.0.0.1:9001, 127.0.0.1:9002, 127.0.0.1:9003, 127.0.0.1:9004, 127.0.0.1:9005
+
+== shared_post
+normal requests: 2136  failed: 0 (0.0%)
+customers with >=1 failure: 0 / 279
+worker crashes: 1  crashed ports: [9008]
+poison responses: [[2.0, 502]]
+  poison tried: 127.0.0.1:9008
+
+== cells
+normal requests: 2161  failed: 364 (16.8%)
+customers with >=1 failure: 62 / 279
+worker crashes: 2  crashed ports: [9007, 9008]
+poison responses: [[2.0, 502]]
+  poison tried: 127.0.0.1:9007, 127.0.0.1:9008
+
+== shuffle
+normal requests: 2160  failed: 77 (3.6%)
+customers with >=1 failure: 11 / 279
+worker crashes: 2  crashed ports: [9002, 9003]
+poison responses: [[2.0, 502]]
+  poison tried: 127.0.0.1:9002, 127.0.0.1:9003

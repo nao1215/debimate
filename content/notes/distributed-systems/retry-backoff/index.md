@@ -183,7 +183,7 @@ gRPC は、再試行してよい状態コードを `retryableStatusCodes` で列
 }
 ```
 
-gRPC の[状態コードの説明](https://github.com/grpc/grpc/blob/d825c2699f541669164c31e606678a7ba451a0fa/doc/statuscodes.md)では、`UNAVAILABLE` は一時的な状態で、バックオフ付きの再試行で直る可能性が高いとされています。一方で、`INVALID_ARGUMENT` のような要求自体の誤りは、何度送っても失敗します。
+gRPC の[状態コードの説明](https://github.com/grpc/grpc/blob/d825c2699f541669164c31e606678a7ba451a0fa/doc/statuscodes.md)では、`UNAVAILABLE` は一時的な状態で、バックオフ付きの再試行で直る可能性が高いとされています。一方で、`INVALID_ARGUMENT` のような要求自体の誤りは、何度送っても失敗します。要求そのものがサーバーを落とす場合はもっと悪く、ロードバランサーが再試行するたびに別の台が落ちます。設定を変えていない nginx の前で、8 台が 1 回の要求で全て落ちた実験は [Cell-based Architecture](/notes/software-architecture/cell-based-architecture/) で扱っています。
 
 <br>
 
