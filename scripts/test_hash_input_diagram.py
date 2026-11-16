@@ -22,6 +22,7 @@ class DiagramStylesTest(unittest.TestCase):
                          'layouts/shortcodes/note-panels.html',
                          'layouts/shortcodes/note-steps.html',
                          'layouts/partials/extend_head.html',
+                         'layouts/partials/is_redirect_section.html',
                          'assets/css/pages/note-diagrams.css',
                          'assets/css/pages/hash-input-comparison.css'):
                 target = root / name

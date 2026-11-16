@@ -3,8 +3,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
 {{- if hugo.IsProduction | or (eq site.Params.env "production") | and (ne .Params.robotsNoIndex true) }}
-{{- if partial "is_thin_term.html" . }}
-{{- /* 収録記事が少ないタグ／カテゴリ一覧は薄いページなのでインデックスさせない。
+{{- if or (partial "is_thin_term.html" .) (partial "is_redirect_section.html" .) }}
+{{- /* 収録記事が少ないタグ／カテゴリ一覧は薄いページなので、一覧のタブへ転送する
+       ノートのセクションは転送元なので、インデックスさせない。
        リンクは辿らせたいので nofollow は付けない。 */}}
 <meta name="robots" content="noindex, follow">
 {{- else }}

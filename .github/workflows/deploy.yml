@@ -273,6 +273,9 @@ jobs:
       - name: Check pagination SEO
         run: python3 scripts/check_pagination_seo.py
 
+      - name: Check sitemap and note-section redirects
+        run: python3 scripts/check_sitemap.py
+
       - name: Check Twitter embeds
         run: python3 scripts/check_twitter_embeds.py
 

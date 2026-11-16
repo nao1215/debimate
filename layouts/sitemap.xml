@@ -18,8 +18,8 @@
   {{- range $entries }}
   {{- $lastmod := .lastmod }}
   {{- with .page }}
-  {{- /* 収録記事が少ないタグ／カテゴリ一覧は noindex にしているので載せない */}}
-  {{- if or (partial "is_thin_term.html" .) .Params.robotsNoIndex (isset $seen .Permalink) }}{{ continue }}{{ end }}
+  {{- /* 収録記事が少ないタグ／カテゴリ一覧と、一覧のタブへ転送するノートのセクションは noindex にしているので載せない */}}
+  {{- if or (partial "is_thin_term.html" .) (partial "is_redirect_section.html" .) .Params.robotsNoIndex (isset $seen .Permalink) }}{{ continue }}{{ end }}
   {{- $seen = merge $seen (dict .Permalink true) }}
   <url>
     <loc>{{ .Permalink }}</loc>

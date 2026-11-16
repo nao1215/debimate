@@ -1,0 +1,7 @@
+{{- /* 技術ノートのカテゴリのページ（/notes/<section>/）と機械学習のセクション（/ml/）を
+       「一覧のタブへ転送するセクション」と判定する。
+       extend_head.html の転送・noindex と sitemap.xml の除外判定で共有する。
+       真なら非空文字列を、偽なら空文字列を返す。 */ -}}
+{{- if and (eq .Kind "section") (or (and (eq .Section "notes") (not .Parent.IsHome)) (eq .Section "ml")) -}}
+redirect
+{{- end -}}
