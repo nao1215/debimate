@@ -1,5 +1,5 @@
 ---
-title: "Soft Delete - 削除フラグを最初の選択肢にしない"
+title: "Soft Delete - 論理削除は、消えたことを読む側の全ての SQL に覚えさせる設計"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Database Systems"]
@@ -9,159 +9,297 @@ wrapTables: true
 topics: ["Data Modeling"]
 ---
 
-削除フラグとは、レコードを `DELETE` する代わりに「削除済み」を表すカラムを足し、通常の問い合わせからそのレコードを除外する設計です。`is_deleted` のような真偽値のカラムや、`deleted_at` のような日時のカラムで表し、論理削除（logical delete、soft delete）とも呼ばれます。レコードそのものを表から取り除く物理削除と対になる語です。
+機材の予約サービスを考えます。予約を取り消すと、予約のレコードは消えずに `deleted_at` に取り消した日時が入ります。商品はカメラ・三脚・レンズの 3 つで、カメラには予約が 1 件も無く、三脚には有効な予約が 1 件、レンズには取り消した予約が 1 件だけあります。商品ごとに有効な予約の数 `active_count` を出すため、次の SQL を書きました。結果は何行になるでしょうか。
 
-例えば、退会した会員のレコードを残すために削除フラグが使われます。会員のレコードを `DELETE` で取り除くと、注文が会員を参照する外部キー（参照先のレコードが実在することを保証する制約）の設計によっては過去の注文まで消えたり、注文から会員を辿る経路が失われたりします。どちらでも、問い合わせ対応で「去年の 3 月に何を買ったか」に答えるのが難しくなります。
-
-誤った操作を元に戻したい、監査に備えて記録を残したい、という要望も同じ形で現れます。レコードを残したまま無いことにするカラムを 1 つ足せば、これらが一度に片付くように見えます。
-
-業務の上で使われなくなったレコードの扱い方には、主に以下の 5 つがあります。図は、使わなくなった時を境に、どこに何が残るかを並べたものです。
-
-{{< figure src="images/soft-delete_concept.svg" alt="使わなくなった後、物理削除は何も残らない。削除フラグは deleted_at を付けて、状態の遷移は退会済みとして、同じ表に残る。アーカイブは保持期間の後に別の表へ移り、匿名化は個人データだけを消してレコードが残る" caption="使わなくなったレコードの 5 つの扱いと、残る場所" align="center" >}}
-
-実際の設計では、5 つのどれか 1 つを選ぶより組み合わせる方が普通です。状態を遷移させたレコードを後からアーカイブに移す、レコードを残したまま個人データだけを匿名化する、といった具合です。
-
-<br>
-
-本記事では、RDB（リレーショナルデータベース）の表に削除フラグを置く設計を説明します。レコードを残したい理由から始めて、次の疑問に答えていきます。
-
-- なぜレコードを消さずに残そうとするのか。
-- バックアップから戻せる削除でも、なぜレコードを残す仕組みが求められるのか。
-- 削除フラグは、問い合わせと制約にどんな影響を及ぼすのか。
-- 削除フラグに求めていた役割のうち、状態の遷移・履歴の表・アーカイブはそれぞれどれを引き受けるのか。
-- 個人データの消去を求められた時、残したレコードをどう扱うのか。
-- 削除フラグが妥当になりやすいのは、どんな場合なのか。
-
-分散 DB（データベース）が複製の間で消去を伝えるために置く [tombstone](../lsm-tree/) のような内部的な印には触れません。注文した時点の氏名や住所を残すかどうかも、会員のレコードを消すかどうかとは別の設計課題なので扱いません。
-
----
-
-### レコードを消さずに残そうとする理由 {#行を消さずに残そうとする理由}
-
-`DELETE` はレコードを表から取り除きます。そのレコードを別の表が参照していた場合に何が起きるかは、[外部キー制約](../foreign-key/)に付ける `ON DELETE` の指定で決まります。会員と注文のように一方が他方を参照している構造では、`DELETE` の影響が 1 つの表に留まりません。
-
-会員のレコードを消した時に何が起きるかを以下に示します。外部キー制約に `ON DELETE CASCADE` を指定した場合の例です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant OP as 運用担当
-    participant M as members 表
-    participant O as orders 表
-    participant R as 月次の売上集計
-    OP->>M: DELETE FROM members<br/>WHERE id = 42
-    M->>O: ON DELETE CASCADE で<br/>会員 42 の注文も削除
-    R->>O: 昨年 3 月の売上を集計
-    O-->>R: 会員 42 の注文を<br/>含まない結果
-    Note over M,R: 確定していた集計値が<br/>後から変わる
+```sql
+SELECT p.name, count(r.id) AS active_count
+FROM products p
+LEFT JOIN reservations r ON r.product_id = p.id
+WHERE p.deleted_at IS NULL
+  AND r.deleted_at IS NULL
+GROUP BY p.id, p.name;
 ```
 
-`ON DELETE` の指定を変えると何が守られ、何が失われるのかを整理すると、以下の通りです。
+答えは 2 行で、レンズが結果から消えます。次の図は、PostgreSQL 17.11 での結果と、条件を `ON` に移した場合の結果を並べたものです。
 
-| `ON DELETE` の指定 | 会員を消した時の注文 | 失うもの |
-| --- | --- | --- |
-| `CASCADE` | 一緒に消える | 過去の注文 |
-| `RESTRICT` | 残る | 「退会した会員を消す」操作が成立しない |
-| `SET NULL` | 残る（`member_id` は `NULL`） | 注文から会員を辿る経路 |
+{{< figure src="images/soft-delete_join.webp" alt="上の段は WHERE r.deleted_at IS NULL に書いた場合。結合した直後はカメラ（予約 NULL、取り消し NULL）、三脚（予約 10）、レンズ（予約 11、取り消し済み）の 3 行で、WHERE を通ると結果はカメラ 0 と三脚 1 の 2 行になり、レンズの行が赤い破線で消える。予約が 1 件も無いカメラは残る。下の段は ON の中に書いた場合で、レンズは予約 NULL で結合され、結果はカメラ 0・三脚 1・レンズ 0 の 3 行になる" caption="取り消した予約の条件を WHERE に書くか ON に書くかで、結果の行数が変わる" align="center" >}}
 
-どの指定を選んでも、会員のレコードを消す限り何かは失われます。消えて困る理由は、代表的には 3 つあります。
-
-- 上記の図のように、確定していた集計や帳票の値が後から変わる
-- `ON DELETE SET NULL` を選んだ場合や外部キー制約が無い場合に、注文から会員を辿る経路が切れる
-- 誤った操作を元に戻せない
-
-契約・取引・入出金のように、後から「その時点で何が成立していたか」を問われるデータでは、この 3 つが全部当てはまります。
+予約が 1 件も無いカメラは残るのに、取り消した予約しか無いレンズだけが消えました。エラーは出ず、2 行の結果はもっともらしく見えます。
 
 <br>
 
-誤って削除したデータは、バックアップがあっても復旧に時間がかかる場合があります。大規模な例が、2022 年 4 月 5 日に [Atlassian](https://www.atlassian.com/)（Jira や Confluence を提供する企業）で起きた障害です。表のレコードではなく顧客の環境ごとの削除でした。
+このように、`DELETE` の代わりに削除済みの印をカラムに書き、通常の問い合わせから外す設計を論理削除（soft delete）と呼びます。印には `deleted_at` のような日時や `is_deleted` のような真偽値を使い、レコードを表から取り除く普通の `DELETE` は物理削除と呼びます。論理削除は既存の表にカラムを 1 つ足すだけで入れられます。誤って消しても戻せ、過去の注文から会員も辿れるので、最初の選択肢として選ばれやすい設計です。
 
-Atlassian は、古いアプリを顧客のサイト（顧客ごとのクラウド環境）から消す保守作業で ID を取り違え、サイト全体の ID を削除の API に渡しました。
+ただし「`deleted_at` が `NULL` なら有効」という約束は、テーブルの定義のどこにも書かれていません。読む SQL が 1 本残らず条件を書くことで、初めて成り立ちます。冒頭の SQL は、その条件を書く場所を誤った例です。
 
-この API はどちらの ID も受け付けて入力を正しいと見なす作りだったので、775 の顧客の 883 サイトがその場で削除されました。失われたデータは削除前の 5 分以内に留まりましたが、バックアップからサイトを大量に戻す手順が無く、一部の顧客では[復旧に最長 14 日](https://www.atlassian.com/engineering/post-incident-review-april-2022-outage)掛かりました。
+<br>
 
-Atlassian が再発防止の 1 つ目に挙げたのは、保持期間が過ぎるまで本番環境からデータを消さない方針と、無効化（deactivation）を経た後にだけ削除を許す確認を設ける計画でした。Atlassian はこれを soft delete と呼んでいますが、挙げられた中身はカラム 1 つの削除フラグではなく、後の節で扱う状態の遷移と保持期間に近いものです。
+本記事では、これから `deleted_at` を足そうとしている人と、既存のシステムで `deleted_at` に出会った人に向けて、次の疑問に答えます。
 
-レコードを消したくないという要求は、ここまでの理由から見て妥当です。問題は、その要求に `is_deleted` という 1 カラムで答えると、問い合わせ・制約・業務の意味のそれぞれに影響が及ぶ点です。
+- `deleted_at` の条件を書く場所で、なぜ結果が変わるのか
+- 退会者と同じメールアドレスで、なぜ再登録できないのか
+- 外部キーは、退会した会員への注文を止めるのか
+- 消したレコードを残す方法は、論理削除の他に何があるか
+- 個人データの消去を求められた時、論理削除で足りるか
+- 論理削除で済むのは、どんな時か
+
+実験には、Docker の公式イメージで動かした PostgreSQL 17.11 と MySQL 8.4.11 を使いました。
 
 ---
 
-### 削除フラグが問い合わせと制約に及ぼす影響
+### 条件を書く場所で変わる結合の結果
 
-削除フラグを 1 つ置くと、有効なレコードだけを読みたい全ての問い合わせが、「削除済みを除く」絞り込み条件を必要とします。以下は、会員の表に `deleted_at` を置いた例です。以降の SQL は [PostgreSQL](https://www.postgresql.org/) の構文です。
+SQL は、論理的には `FROM` と `JOIN` で表を結合した後に、`WHERE` で行を絞り込みます。`LEFT JOIN` は、左に書いた表の行を必ず残し、右の表に相手が居ない行では右側のカラムを `NULL` で埋める結合です。冒頭の SQL で、`WHERE` を通る前の行を出すと次の通りでした。`canceled` は、`r.deleted_at` に日時が入っているかを表す列で、図の「取り消し」に当たります。
+
+```text
+  name  | reservation_id | canceled
+--------+----------------+----------
+ カメラ |                | f
+ 三脚   |             10 | f
+ レンズ |             11 | t
+```
+
+カメラは予約が無いので、`r.deleted_at` には結合が埋めた `NULL` が入ります。`r.deleted_at IS NULL` は、この `NULL` と「取り消していない予約」の `NULL` を区別できず、カメラを通します。
+
+レンズは、取り消した予約と結合しているので落とされます。取り消した予約を結合の相手から外したかったのに、商品ごと消したわけです。結合が作る `NULL` と表に保存された `NULL` の違いは、[NULL](../sql-null/#outer-join-が作り出す-null) のノートでも扱っています。
+
+意図どおりにするには、予約の条件を `ON` に書きます。`ON` の条件は結合の相手を選ぶ段階で使われるので、取り消した予約は結合の前に外れ、レンズは予約の無い商品として残ります。
+
+```sql
+SELECT p.name, count(r.id) AS active_count
+FROM products p
+LEFT JOIN reservations r ON r.product_id = p.id AND r.deleted_at IS NULL
+WHERE p.deleted_at IS NULL
+GROUP BY p.id, p.name;
+```
+
+条件の書き方だけ変えて同じ集計を 4 通り流した結果が、次の表です。
+
+| 予約の条件 | カメラ | 三脚 | レンズ |
+|---|---|---|---|
+| `WHERE` に書く | 0 | 1 | 行が無い |
+| `ON` に書く | 0 | 1 | 0 |
+| 書き忘れる | 0 | 1 | 1 |
+| 有効な予約のビューを結合する | 0 | 1 | 0 |
+
+書き忘れた場合は、取り消した予約が 1 件として数えられます。どの書き方でもエラーは出ないので、正しい数字を知っている人が見るまで気付けません。
+
+<br>
+
+#### 条件をビューに閉じ込める
+
+表の 4 行目は、有効な予約だけを返すビューを作り、結合の相手を表からビューに替えたものです。
+
+```sql
+CREATE VIEW active_reservations AS
+  SELECT * FROM reservations WHERE deleted_at IS NULL;
+```
+
+ビューを結合すれば、条件を書く場所を誤る余地がありません。ただし、元の表を直接読む SQL が 1 本でも残れば同じ問題が起きます。退会した会員も一覧に出す管理画面のように、わざと条件を外す SQL もあるので、条件が無いことだけでは書き忘れと判定できません。
+
+PostgreSQL の[行セキュリティポリシー](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)で、条件を DB に持たせる手もあります。それでも、管理画面のような例外の経路をどう通すかは設計が必要です。
+
+Rails の gem である [discard](https://github.com/jhawthorn/discard) や Laravel の [SoftDeletes](https://laravel.com/docs/12.x/eloquent#soft-deleting) のように、表とプログラムのオブジェクトを対応付ける ORM（Object-Relational Mapping）の部品として、論理削除を用意しているものも多くあります。SoftDeletes は全ての問い合わせに条件を自動で足し、discard は既定では足しません。
+
+ORM が条件を自動で足すほど、DB を直接読む運用者はかえって条件を忘れやすくなります。Stripe や Heroku で論理削除を使ってきた Brandur Leach 氏が、「[Soft Deletion Probably Isn't Worth It](https://brandur.org/soft-deletion)」で挙げている問題の 1 つです。
+
+冒頭と同じ結合の問題は、Zenn の「[LEFT JOINの論理削除はWHERE句でしぼるな](https://zenn.dev/levtech/articles/squeeze-on-join-on)」でも紹介されています。そこでは、予約を取り消した商品が「予約の無い商品」の抽出から漏れる例を挙げています。
+
+---
+
+### 退会者と同じアドレスでの再登録
+
+論理削除が影響するのは、読む SQL だけではありません。会員の表 `members` の `email` に一意制約を張ると、DB は値を [B-Tree](../b-tree/) のインデックスに入れて重複を検査し、退会済みのレコードもその対象になります。退会した人が同じアドレスで登録し直そうとすると、次のように拒否されます。
+
+```text
+ERROR:  duplicate key value violates unique constraint "m1_email_key"
+```
+
+制約を `UNIQUE (email, deleted_at)` に張り替えると、再登録は通ります。ところが今度は、有効な会員どうしで同じアドレスが 2 件入りました。PostgreSQL の既定では 2 つの `NULL` を等しいと見なさないので、`(b@, NULL)` どうしは別の値として扱われます。
+
+以下は、退会した a、再登録の a、有効な b、もう 1 件の有効な b の順に入れた結果です。一意制約の書き方ごとに、インデックスに入る値と、衝突して拒否された値を並べました。
+
+{{< figure src="images/soft-delete_unique.webp" alt="4 列の比較。UNIQUE (email) は退会した a と再登録の a が衝突して再登録できず、有効な b どうしも衝突して重複を止める。UNIQUE (email, deleted_at) は (a@, 日時) と (a@, NULL) が別の値なので再登録でき、(b@, NULL) どうしも別の値として通るので重複が通る。部分インデックス WHERE deleted_at IS NULL は退会した a がインデックスに入らないので再登録でき、有効な b どうしは衝突する。UNIQUE NULLS NOT DISTINCT (email, deleted_at) は再登録でき、(b@, NULL) どうしが衝突して重複を止める" caption="一意制約の書き方ごとに、インデックスに入る値と衝突する値" align="center" >}}
+
+有効な会員だけに一意性を掛けたい時の書き方は、PostgreSQL では 2 つあります。1 つは、インデックスに載せるレコードを条件で選ぶ[部分インデックス](https://www.postgresql.org/docs/current/indexes-partial.html)で、退会済みのレコードはインデックスに入りません。
+
+```sql
+CREATE UNIQUE INDEX members_email_active ON members (email) WHERE deleted_at IS NULL;
+```
+
+もう 1 つは PostgreSQL 15 で入った `NULLS NOT DISTINCT` で、`NULL` どうしを等しいと見なします。この書き方では、退会済みのレコードも `(email, deleted_at)` の組でインデックスに入るので、同じアドレスを同じ時刻に 2 回退会させると衝突します。
+
+部分インデックスの作り方と、`NULL` が一意制約に空ける穴は、[UNIQUE 制約](../unique-constraint/)のノートで扱っています。
+
+<br>
+
+部分インデックスは PostgreSQL や [SQLite](https://www.sqlite.org/partialindex.html) にありますが、MySQL には `WHERE` 付きのインデックスがありません。MySQL 8.4 でも `UNIQUE (email, deleted_at)` は有効な会員どうしの重複を通しました。代わりに、8.0.13 から使える [functional key parts](https://dev.mysql.com/doc/refman/8.4/en/create-index.html#create-index-functional-key-parts) で、退会済みなら `NULL` を返す式に一意のインデックスを張ります。一意性の検査は `NULL` を対象にしないので、退会済みのレコードだけが外れます。
 
 ```sql
 CREATE TABLE members (
-    id         BIGINT PRIMARY KEY,
-    email      TEXT NOT NULL,
-    name       TEXT NOT NULL,
-    deleted_at TIMESTAMPTZ,
-    UNIQUE (email)
+  id int PRIMARY KEY,
+  email varchar(100) NOT NULL,
+  deleted_at datetime NULL,
+  UNIQUE KEY email_active ((IF(deleted_at IS NULL, email, NULL)))
 );
 ```
 
-`deleted_at` が `NULL` なら有効、日時が入っていれば削除済み、という約束です。この約束は DDL（Data Definition Language、表や索引を定義する SQL）のどこにも書かれておらず、`members` を読む全てのコードが `WHERE deleted_at IS NULL` を守ることで成り立ちます。
+2 つの DB での結果をまとめると、次の通りです。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    A["会員一覧の画面"] -->|"deleted_at IS NULL あり"| M[(members)]
-    B["名前での検索"] -->|"deleted_at IS NULL あり"| M
-    C["月次のレポート"] -->|"deleted_at IS NULL あり"| M
-    D["別サービスからの参照"] -->|"絞り込み条件を<br/>書き忘れた経路"| M
-    M -->|"D の結果にだけ"| X["退会済みの会員が<br/>混ざる"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
+| DB | 一意制約の書き方 | 再登録 | 有効どうしの重複 |
+|---|---|---|---|
+| PostgreSQL 17 | `UNIQUE (email)` | できない | 止める |
+| PostgreSQL 17 | `UNIQUE (email, deleted_at)` | できる | 通る |
+| PostgreSQL 17 | 部分インデックス | できる | 止める |
+| PostgreSQL 17 | `NULLS NOT DISTINCT` | できる | 止める |
+| MySQL 8.4 | `UNIQUE (email, deleted_at)` | できる | 通る |
+| MySQL 8.4 | 式に一意のインデックス | できる | 止める |
 
-書き漏れは構文の誤りではないため実行時にエラーにならず、返るレコード数が多いことも正常な結果と区別が付きません。`JOIN` の先の表にも同じ絞り込み条件が必要なので、削除フラグを持つ表が増えるほど守る箇所も増えていきます。
-
-有効なレコードだけを返すビューを用意する、PostgreSQL の[行レベルセキュリティ](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)（読めるレコードの条件を DB に設定する機能）で絞り込み条件を DB に寄せる、といった方法で書き漏れの余地は狭められます。ただし、その表を触る経路を全部その仕組みに通す必要があります。退会済みも含めて一覧したい管理画面のような経路もあるので、絞り込み条件が無いことだけでは書き忘れと判定できません。
-
-制約についても影響が出ます。上記の DDL の [`UNIQUE (email)`](../unique-constraint/) は削除済みのレコードにも掛かるので、一度退会した会員と同じメールアドレスでは新規に登録できません。
-
-| id | email | deleted_at | 登録の可否 |
-| --- | --- | --- | --- |
-| 42 | taro@example.com | 2026-03-01 10:00 | 退会済みとして残っている |
-| 51 | taro@example.com | NULL | `UNIQUE (email)` 違反で入らない |
-
-PostgreSQL や [SQLite](https://www.sqlite.org/partialindex.html) のように[部分索引](https://www.postgresql.org/docs/current/indexes-partial.html)を持つ DBMS（Database Management System）なら、索引に載せるレコードを選ぶ条件（predicate）を付けて、その条件を満たすレコードだけに一意性を課せます。
-
-表に付けた `UNIQUE (email)` を外し、代わりに次の索引を置きます。
-
-```sql
-CREATE UNIQUE INDEX members_email_active_idx
-    ON members (email)
-    WHERE deleted_at IS NULL;
-```
-
-この索引は `deleted_at` が `NULL` のレコードだけを対象にします。退会済みのレコードと同じメールアドレスで新規に登録でき、有効な会員どうしで同じアドレスが重複することは防げます。裏返すと、条件から外れたレコードは縛られないので、退会済みのレコードどうしで同じアドレスは何件でも並びます。
-
-部分索引を持たない DBMS もあります。例えば MySQL は `WHERE` 句を付けて索引を作る構文を持たないため、[式の値に索引を張る functional key parts](https://dev.mysql.com/doc/refman/8.4/en/create-index.html) で代用します。退会済みなら `NULL` を返す式に一意索引を張ると、`NULL` は一意性の検査から外れるので同じ効果を得られます。索引の構造は [B-Tree](../b-tree/) のノートで扱っています。
-
-外部キー制約も同じ問題を抱えます。通常の外部キーが保証するのは参照先のレコードが存在することまでで、`deleted_at` が `NULL` かどうかまでは見ません。
-
-その結果、退会済みの会員に対して新しい注文を作る操作は、この制約では止まりません。DB の制約だけで禁じたい場合は、会員の状態まで含めた複合キーで参照する、レコードの追加時に DB が自動で実行する処理（トリガー）で検査する、といった追加の設計が必要です。
+部分インデックスと式のインデックスは、退会済みのレコードを縛りません。同じアドレスで退会と再登録を繰り返せば、退会済みのレコードは何件でも並びます。退会済みも含めて「このアドレスの人は誰か」を引く処理は、複数件が返ることを前提に書く必要があります。
 
 ---
 
-### 「削除」から業務の状態遷移への書き直し
+### 外部キーが見ない deleted_at
 
-`is_deleted` や `deleted_at` は、業務の語彙ではありません。ユーザーが「削除」と呼ぶ操作の裏には、退会・販売終了・キャンセルのような別々の業務上の意図があります。
+外部キーも `deleted_at` を見ません。外部キーは参照先のレコードが存在するかだけを検査する制約で、論理削除したレコードは存在しているからです。注文の表 `orders` から会員に `ON DELETE CASCADE` 付きの外部キーを張り、会員を論理削除すると次の通りでした。
 
-和田卓人氏の「[SQL アンチパターン 幻の第 26 章「とりあえず削除フラグ」](https://www.slideshare.net/slideshow/ronsakucasual/52256922)」は、解決策への糸口として ledsun 氏の「[論理削除フラグという名の死亡フラグ](https://ledsun.hatenablog.com/entry/2015/03/27/015203)」から「私の経験上は、ユーザーから「論理削除」という言葉を聞いたことがありません」という一文を引いています。引用元ではこの後に、退職や売上の打ち消しといった実際に聞く要件が並べられています。
+```text
+-- 佐藤さんが退会（論理削除）
+-- ON DELETE CASCADE は動かず、注文は有効のまま
+ id  | member_id | active
+-----+-----------+--------
+ 100 |         1 | t
+-- 退会した会員への新しい注文も通る
+ active_orders_of_withdrawn
+----------------------------
+                          2
+```
 
-同じ点を指摘した文章に、Udi Dahan 氏の [Don't Delete – Just Don't](https://udidahan.com/2009/09/01/dont-delete-just-dont/) があります。「don't think about deleting entities. Look for the reason why.」（エンティティを削除することを考えるのではなく、その理由を探しなさい）と書き、続けてエンティティが移り変わる状態を理解するよう促しています。
+`UPDATE` で日時を入れただけなので、`ON DELETE` に書いた動作は起きず、退会した会員を参照する新しい注文も通りました。物理削除なら、`ON DELETE` を書かない外部キーは、注文の残る会員の `DELETE` を止めます。`CASCADE` を書いていれば、止まらずに注文ごと消えます。次の出力は `ON DELETE` を書かずに張った表で試したもので、論理削除の表と分けるために表名に 2 を付けています。
 
-画面のボタンが「削除」でも、業務にはその操作を指す名前が既にあります。対応の例を以下に挙げます。
+```text
+ERROR:  update or delete on table "members2" violates foreign key constraint "orders2_member_id_fkey" on table "orders2"
+```
 
-| 画面での操作 | 業務での呼び名 | 遷移後の状態 |
-| --- | --- | --- |
-| 会員の削除 | 退会 | 退会済み |
-| 商品の削除 | 販売終了 | 販売終了 |
-| 注文の削除 | キャンセル | キャンセル済み |
-| 投稿の削除 | 公開の取り下げ | 公開停止 |
+論理削除で同じことを止めるには、会員の状態を含めた複合キーで参照するか、トリガーで検査を書きます。
 
-呼び名が決まると、その状態から次にどこに動けるのかも決まります。例えば、会員の遷移は次のようになります。
+複合キーなら、会員の表に `status` の列と `UNIQUE (id, status)` を置き、注文の表に `CHECK (member_status = '有効')` を付けた `member_status` の列を足して、外部キーを `(member_id, member_status)` で張ります。
+
+```sql
+CREATE TABLE members3 (
+  id     int PRIMARY KEY,
+  status text NOT NULL,
+  UNIQUE (id, status)
+);
+CREATE TABLE orders3 (
+  id            int PRIMARY KEY,
+  member_id     int  NOT NULL,
+  member_status text NOT NULL DEFAULT '有効' CHECK (member_status = '有効'),
+  FOREIGN KEY (member_id, member_status) REFERENCES members3 (id, status)
+);
+```
+
+手元の PostgreSQL 17 では、退会した会員に新しい注文を入れても、注文が 1 件でもある会員を退会させても、外部キーの違反で止まりました。
+
+この形では全ての注文が `member_status = '有効'` を持つので、過去の注文を残したまま会員を退会させるには、注文が済んだ時に `member_status` を `NULL` にするような設計が別に必要です。
+
+先の Brandur 氏も、外部キーを失うことを論理削除の欠点に挙げています。外部キーが何を保証し、`ON DELETE` に何を書くと何が変わるかは、[外部キー](../foreign-key/)のノートで扱っています。
+
+---
+
+### 消えて困るものと、残す場所 {#行を消さずに残そうとする理由}
+
+ここまでの 3 つの問題は、どれも「消したはずのレコードが表に残っている」ことから来ています。それでもレコードを残したくなるのは、物理削除で消えて困るものがあるからです。
+
+- 確定した売上の集計や帳票の値が、後から変わる
+- 過去の注文から、どの会員の注文かを辿れなくなる
+- 誤って消した時に、元に戻せない
+
+物理削除しようとすると、外部キーに書いた `ON DELETE` ごとに何かを失います。
+
+| `ON DELETE` の指定 | 会員を消した時の注文 | 失うもの |
+|---|---|---|
+| `CASCADE` | 一緒に消える | 過去の注文 |
+| `RESTRICT` | 残る | 注文のある会員を消す操作 |
+| `SET NULL` | 残り、`member_id` は `NULL` | 注文から会員を辿る経路 |
+
+誤って消したデータは、バックアップがあっても戻すまでに時間が掛かることがあります。表のレコードではなく顧客の環境ごとの削除ですが、実在の事故があります。
+
+2022 年 4 月 5 日、Jira や Confluence を提供する Atlassian は、古いアプリを消す保守作業で、アプリを指す ID ではなくサイト全体の ID を削除の API に渡しました。API はどちらの ID も受け付け、775 の顧客が持つ 883 サイトが即座に削除されました。
+
+[事後報告](https://www.atlassian.com/blog/atlassian-engineering/post-incident-review-april-2022-outage)によると、失われたデータは削除直前の 5 分以内でした。それでも、大量のサイトをまとめて戻す手順が無く、一部の顧客では復旧に最長で 14 日掛かりました。再発防止の筆頭は全てのシステムでの「soft delete」でしたが、中身は、保持期間が過ぎるまで本番から消さないことと、無効化（deactivation）を経た後にだけ削除を許すことです。カラムを 1 つ足すことではなく、状態の遷移と保持期間の設計に近いものです。
+
+<br>
+
+残す場所は、論理削除の他にもあります。以下は、退会した佐藤さんのレコードが、設計ごとにどこに残るかを描いた図です。
+
+{{< figure src="images/soft-delete_places.webp" alt="4 つの枠。論理削除は members に佐藤（deleted_at = 日時）と鈴木（deleted_at = NULL）が並び、読む SQL が全部条件を書く。削除したレコードの表は members に鈴木だけが残り、佐藤は deleted_record に JSON で移る。状態のカラムと履歴は members に佐藤（status = 退会済み）が残り、member_status_changes に「有効 → 退会済み」が追記される。匿名化は members に退会者 1（email = NULL）が残り、個人データだけ消えて注文は辿れる" caption="退会した会員のレコードが、設計ごとに残る場所" align="center" >}}
+
+図の 1 つ目が、本記事で見てきた論理削除です。それぞれの設計で、ここまでの問題がどう変わるかを並べると次の通りです。アーカイブは、論理削除や状態のカラムで残したレコードを後から別の表へ移す手順なので、図には描かず表の最後に置きました。以降の節で、削除したレコードの表と状態のカラムを見た後、アーカイブと匿名化に進みます。
+
+| 設計 | 読む SQL の条件 | 一意制約・外部キー | 戻し方 |
+|---|---|---|---|
+| 論理削除 | 全ての SQL に必要 | 削除済みにも掛かる | `NULL` に戻す |
+| 削除したレコードの表 | 不要 | そのまま効く | JSON から入れ直す |
+| 状態のカラムと履歴 | 状態ごとに書く | 状態を含めて設計する | 状態を遷移させる |
+| 匿名化 | 状態などで外す | そのまま効く | 戻せない |
+| アーカイブ | 保持期間の分だけ必要 | 移す時に外部キーが問題 | 元の表へ入れ直す |
+
+匿名化しても、退会者 1 のレコードは `members` に残ります。会員一覧や会員数の集計で退会者を外す条件は別に必要なので、匿名化は状態のカラムや論理削除と組み合わせて使います。
+
+[LSM-Tree](../lsm-tree/) の tombstone のように、DB が内部で削除を印として書く仕組みもあります。tombstone はストレージの実装に属し、アプリケーションが読む SQL には現れないので、上の表には入れていません。
+
+---
+
+### 削除したレコードの表
+
+先の Brandur 氏が勧めているのは、`deleted_at` を置かずに物理削除し、消したレコードをトリガーで別の表に JSON として残す方法です。氏は[続きの投稿](https://brandur.org/fragments/deleted-record-insert)で、`AFTER DELETE` のトリガーから全ての表で共通に使える関数を紹介しています。手元では次の形にしました。
+
+```sql
+CREATE TABLE deleted_record (
+  id         bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  table_name text  NOT NULL,
+  object_id  int   NOT NULL,
+  data       jsonb NOT NULL,
+  deleted_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE FUNCTION deleted_record_insert() RETURNS trigger LANGUAGE plpgsql AS $$
+BEGIN
+  INSERT INTO deleted_record (table_name, object_id, data)
+  VALUES (TG_TABLE_NAME, OLD.id, to_jsonb(OLD.*));
+  RETURN OLD;
+END;
+$$;
+CREATE TRIGGER keep AFTER DELETE ON reservations
+  FOR EACH ROW EXECUTE FUNCTION deleted_record_insert();
+```
+
+冒頭と同じ商品と予約で、レンズの予約を `DELETE` で取り消しました。冒頭の SQL から `deleted_at` の条件を外して流すと、レンズは予約 0 件として残りました。
+
+```text
+  name  | active_count
+--------+--------------
+ カメラ |            0
+ 三脚   |            1
+ レンズ |            0
+ table_name  | object_id |            data
+--------------+-----------+-----------------------------
+ reservations |        11 | {"id": 11, "product_id": 3}
+```
+
+戻す時は、`jsonb_populate_record` で JSON を元のテーブルと同じ形に直して入れ直します。現行の表には有効なレコードしか無いので、条件の書き忘れも、一意制約の範囲のずれも起きません。予約の残る商品の `DELETE` は、外部キーが止めます。
+
+ただし、戻せるのはテーブルの形が消した時から変わっていない間だけです。消したデータを戻す場面も多くありません。Brandur 氏が Heroku・Stripe と今の職場で 10 年以上論理削除を使ってきた間に、論理削除でデータを戻した例は無かったそうです。削除には外部システムへの通知やファイルの削除が伴い、`deleted_at` を `NULL` に戻すだけでは元に戻らないからです。
+
+---
+
+### 状態のカラムと、変わった記録 {#状態の列に残らない履歴を記録する別の表}
+
+業務の言葉には、「削除」という操作はほとんどありません。会員は退会し、商品は販売を終え、注文はキャンセルされ、投稿は公開を取り下げられます。和田卓人氏の講演資料「[SQL アンチパターン 幻の第 26 章「とりあえず削除フラグ」](https://www.slideshare.net/slideshow/ronsakucasual/52256922)」は、ユーザーから「論理削除」という言葉を聞いたことが無い、という一文を引いています。元は ledsun 氏が[ブログ](https://ledsun.hatenablog.com/entry/2015/03/27/015203)に書いた言葉で、その後には退職や売上の打ち消しのような、実際に聞く要件が並んでいます。
+
+Udi Dahan 氏の「[Don't Delete – Just Don't](https://udidahan.com/2009/09/01/dont-delete-just-dont/)」も、削除を考えずに、その理由を探すよう勧めています。
+
+会員なら、仮登録・有効・一時停止・失効・退会済み・強制退会のような状態があります。呼び名が決まると、その状態から次にどこへ動けるかも決まります。会員の遷移は、例えば次の図のようになります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -175,179 +313,151 @@ stateDiagram-v2
     一時停止 --> 強制退会: 規約違反の確定
 ```
 
-上記の図では、退会済み・強制退会・失効が別々の状態として並んでいます。削除フラグを使うと、この 3 つが `is_deleted = true` という 1 つの値になります。状態をカラムで持てば、再入会を認めるかどうか、返金の対象になるかどうかを状態ごとに決められます。
-
-表としては、`members` から `deleted_at` を落とし、代わりに `status TEXT NOT NULL` のようなカラムを置く形になります。取り得る値を `CHECK` 制約で列挙すれば、想定外の文字列は入りません。
-
-ただし `CHECK` が縛れるのは値の集合だけです。上記の図に矢印の無い遷移（退会済みから一時停止に戻す等）まで禁じるなら、アプリケーションで検査するか、トリガーなど別の仕組みが必要です。
-
----
-
-### 状態のカラムに残らない履歴を記録する別の表 {#状態の列に残らない履歴を記録する別の表}
-
-状態をカラムで持つ設計にも、削除フラグと共通する限界があります。`status` を `UPDATE` で書き換えると、書き換える前の値はそのカラムに残りません。「いつ退会したのか」「一度退会してから再入会したのか」に、現在の状態を持つカラムだけでは答えられません。
-
-状態を書き換える前の値が DBMS 側に残る仕組みもあります。SQL Server の [temporal table](https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal/overview) や MariaDB の[システムバージョニング](https://mariadb.com/docs/server/reference/sql-structure/temporal-tables/system-versioned-tables)は、`UPDATE` の前の値を自動で保持します。そうした仕組みを使わない場合、遷移を残すには、遷移を 1 件として追記する表を別に置きます。以下は PostgreSQL の構文で書いた例です。
+論理削除では、図で別々の状態として並ぶ退会済み・強制退会・失効が、「`deleted_at` に日時がある」という 1 つの値に潰れます。これでは、再入会を許すか、返金するかを状態ごとに決められません。状態をカラムに持てば、値の集合は `CHECK` 制約で縛れます。
 
 ```sql
+CREATE TABLE members (
+  id     int PRIMARY KEY,
+  status text NOT NULL CHECK (status IN ('仮登録', '有効', '一時停止', '失効', '退会済み', '強制退会'))
+);
 CREATE TABLE member_status_changes (
-    id          BIGSERIAL PRIMARY KEY,
-    member_id   BIGINT NOT NULL REFERENCES members (id),
-    from_status TEXT,
-    to_status   TEXT NOT NULL,
-    reason      TEXT,
-    changed_by  BIGINT,
-    changed_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+  id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  member_id   int  NOT NULL REFERENCES members (id),
+  from_status text,
+  to_status   text NOT NULL,
+  reason      text,
+  changed_by  int,
+  changed_at  timestamptz NOT NULL DEFAULT clock_timestamp()
 );
 ```
 
-DDL は書き換えを禁止しないので、この表を追記だけに保つには、`UPDATE` と `DELETE` の権限をアプリケーションの利用者から外すといった手当てが別に必要です。1 回の退会処理が書き込む先を以下の図に示します。
+`CHECK` が縛るのは値だけです。退会済みから一時停止に戻すような、図に矢印の無い遷移まで禁じるなら、アプリケーションかトリガーで検査します。
+
+`status` を `UPDATE` すると前の値は残りません。いつ・誰が・なぜ状態を変えたかに監査で答えるには、遷移を追記する `member_status_changes` のような表を置きます。
+
+表を追記だけに保つには、アプリケーションが使う DB ユーザーから `UPDATE` と `DELETE` の権限を外すような手当ても必要です。追記する 1 件に業務の出来事として名前を付けて扱う考え方は、[Domain Event](../../software-architecture/domain-event/) のノートで扱っています。
+
+更新前の値を DB が自動で残す仕組みもあります。SQL Server の [temporal table](https://learn.microsoft.com/en-us/sql/relational-databases/tables/temporal/overview) や MariaDB の[システムバージョニング](https://mariadb.com/docs/server/reference/sql-structure/temporal-tables/system-versioned-tables)です。一方、遷移の記録だけを持ち、現在の状態を毎回そこから組み立てる設計は [Event Sourcing](../../software-architecture/event-sourcing/) です。現在の状態を `members` に置いたまま記録を足す履歴の表とは、別の設計です。
+
+<br>
+
+#### 遷移を同時に走らせた時
+
+`members` の更新と記録の追記は、同じトランザクションで行います。片方だけが成功すると、現在の状態と遷移の記録が食い違ったまま残るからです。ただし、トランザクションが揃えるのは 2 つの書き込みが両方成功するか両方失敗するかで、正しい遷移の順序までは保証しません。退会 A と一時停止 B を 2 つのセッションで同時に走らせ、どちらも「有効なら遷移する」と判断させた時の順序が次の図です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    U["退会の処理"] --> M["members<br/>status を 有効 → 退会済み に更新"]
-    U --> H["member_status_changes<br/>遷移を 1 件追記"]
-    M --> Q1["今の状態を知りたい問い合わせ"]
-    H --> Q2["いつ・誰が・なぜ変えたかを<br/>知りたい問い合わせ"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+sequenceDiagram
+    participant A as セッション A（退会）
+    participant DB as members
+    participant B as セッション B（一時停止）
+    A->>DB: BEGIN、status を読む
+    DB-->>A: 有効
+    B->>DB: BEGIN、status を読む
+    DB-->>B: 有効
+    A->>DB: 退会済みに更新し、記録を追記して COMMIT
+    B->>DB: 一時停止に更新し、記録を追記して COMMIT
+    Note over DB: status は一時停止<br/>記録は「有効から」が 2 件
 ```
 
-上記の図の `members` への更新と `member_status_changes` への追記は、同じ[トランザクション](../transaction-scope/)（複数の書き込みをまとめて、成功か失敗かのどちらかにする単位）で行います。片方だけが成功すると、現在の状態と遷移の記録が食い違ったまま残るからです。
+分離レベルを PostgreSQL が既定とする [READ COMMITTED](https://www.postgresql.org/docs/17/transaction-iso.html) で実行すると、`status` は一時停止になり、記録には「有効 → 退会済み」と「有効 → 一時停止」が並びました。退会したはずの会員が一時停止になり、記録も実際の順序と食い違います。古い値を読んで判断し、先の書き込みを上書きするこの異常は lost update と呼ばれ、[トランザクション分離レベル](../transaction-isolation/)のノートで扱っています。
 
-トランザクションが揃えるのは、2 つの書き込みが両方成功するか両方失敗するかだけです。履歴が正しい遷移の並びになることまでは保証しません。
-
-PostgreSQL 17.11 で、`id` と `status` だけに絞った `members` の会員 42 に、退会の処理 A と一時停止の処理 B を同時に走らせました。どちらも今の `status` を読み、その値を `from_status` にして遷移を 1 件追記します。以下は処理 A が流す SQL で、処理 B は `退会済み` を `一時停止` に替えた同じ SQL を流します。
-
-```sql
-BEGIN;
-SELECT status FROM members WHERE id = 42;        -- 手順 1（B は手順 2）。'有効' が返る
-UPDATE members SET status = '退会済み' WHERE id = 42;   -- 手順 3（B は手順 4）
-INSERT INTO member_status_changes (member_id, from_status, to_status)
-    VALUES (42, '有効', '退会済み');               -- from_status には SELECT で読んだ値を入れる
-COMMIT;
-```
-
-実行の順序は以下の図の通りです。
-
-{{< figure src="images/soft-delete_lost_update.svg" alt="横軸が時間で、手順 1 から 4 が並ぶ。上の段の処理 A（退会）は手順 1 で BEGIN の後に SELECT で有効を読み、手順 3 で退会済みに更新して遷移を追記し COMMIT する。下の段の処理 B（一時停止）は手順 2 で A の確定前に同じ SELECT で有効を読み、手順 4 で一時停止に更新して追記し COMMIT する。手順 4 の B から上へ赤い矢印が伸び、A の退会済みが消える" caption="退会 A と一時停止 B を同時に走らせた順序" align="center" >}}
-
-A も B も、相手が書く前の `有効` を読んでから書き込みます。両方のコミット後に `members` と `member_status_changes` を読んだ結果は次の通りです。
+次の出力はスクリプトが表示した順に並んでおり、時間の順は上の図で示した通りです。B が状態を読んだのは、A のコミットより前です。
 
 ```text
+A が読んだ状態: 有効
+A が 有効 から 退会済み に変えた
+B が読んだ状態: 有効
+B が 有効 から 一時停止 に変えた
   status
 ----------
  一時停止
-
- member_id | from_status | to_status
------------+-------------+-----------
-        42 | 有効        | 退会済み
-        42 | 有効        | 一時停止
 ```
 
-退会したはずの会員が一時停止になり、履歴には `有効` から始まる遷移が 2 件並びます。先の書き込みを古い値に基づいて上書きする、[lost update](../transaction-isolation/) と呼ばれる異常です。
-
-PostgreSQL が既定とする [READ COMMITTED](https://www.postgresql.org/docs/17/transaction-iso.html) の分離レベルでは、手順 1 と 2 の `SELECT` に `FOR UPDATE` を付けて会員のレコードをロックすると、B は A の `COMMIT` まで待ってから `退会済み` を読みます。REPEATABLE READ 以上では、B は読み直さずに直列化の失敗で中止されます。退会済みから一時停止への矢印は上記の状態遷移図に無いので、B はこの時点で遷移を拒否できます。
-
-現在の状態を保存せず、遷移の記録だけから状態を毎回組み立てる方式が [Event Sourcing](../../software-architecture/event-sourcing/) です。ここで挙げた履歴テーブルは現在の状態を `members` に残しているので、Event Sourcing とは別の設計になります。追記する 1 件を業務の出来事として名前を付けて扱う考え方は [Domain Event](../../software-architecture/domain-event/) で整理しています。
-
----
-
-### 使わなくなったレコードのアーカイブへの移動 {#使わなくなった行のアーカイブへの移動}
-
-状態のカラムを足しても、現行の表からレコードが減るわけではありません。退会済みの会員が 10 年分積み上がった表は、有効な会員だけを読む問い合わせにとって余分なレコードを抱えた状態になります。アーカイブは、そのレコードを現行の表から取り除いて別の場所に移す方法です。
-
-以下は、移す前と移した後の構成です。
+読む `SELECT` に `FOR UPDATE` を付けると、B は A のコミットを待ってから読み直し、退会済みからの遷移を拒否しました。退会済みから一時停止への矢印は先の状態遷移図に無いので、B はこの時点で拒否できます。上の図と同じ 2 つのセッションで描くと、次の順序になります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph before["移す前"]
-        M1[(members<br/>有効・退会済みが同居)]
-    end
-    subgraph after["移した後"]
-        M2[(members<br/>有効な会員だけ)]
-        AR[(members_archive<br/>退会済みの会員)]
-    end
-    M1 -->|"1. 退会から 1 年経過したレコードを複写"| AR
-    M1 -->|"2. 複写を確かめてから DELETE"| M2
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+sequenceDiagram
+    participant A as セッション A（退会）
+    participant DB as members
+    participant B as セッション B（一時停止）
+    A->>DB: BEGIN、FOR UPDATE で status を読む
+    DB-->>A: 有効
+    B->>DB: BEGIN、FOR UPDATE で status を読む
+    Note over B: A のコミットまで待つ
+    A->>DB: 退会済みに更新し、記録を追記して COMMIT
+    DB-->>B: 退会済み
+    B->>DB: 遷移を拒否し、何も書かずに COMMIT
+    Note over DB: status は退会済み<br/>記録は 1 件
 ```
 
-上記の図の移送は、複写してから消すという順序で行います。退会済みの会員のレコードは `members_archive` に残るので、過去の注文からその会員を辿る経路を残せます。
-
-ただし、保持期間を置いている間は退会済みのレコードが `members` に残ります。`status = '有効'` の絞り込み条件は残りますが、除く対象が直近 1 年に退会した会員だけに減ります。退会と同時に移す設計にすれば、`members` から絞り込み条件を外せます。
-
-移す時に決めることが 2 つあります。1 つ目は移す条件で、退会から 1 年といった保持期間を業務の要件として決めます。2 つ目は参照の扱いです。`orders` から `members` への外部キーが `RESTRICT` や既定の `NO ACTION` なら、親のレコードを消す `DELETE` はその制約で止まり、`CASCADE` なら注文まで消えます。
-
-注文を残したまま親のレコードを移す手は、主に次の 3 つです。
-
-- 子のレコードも同時にアーカイブに移す（`orders_archive` が `members_archive` を参照する）
-- `orders` に会員名などの必要な値を複写しておいて外部キーを外す
-- 会員の `id` だけを持つ表を置き、`orders`・`members`・`members_archive` の 3 つがその表を参照する
-
-`orders` の外部キーの参照先を `members_archive` に張り替える手は使えません。`orders` には有効な会員の注文と退会済みの会員の注文が混ざっていますが、1 つの外部キーが参照できる表は 1 つだけだからです。
-
-移送先が同じ DB の別の表なら、複写と `DELETE` を 1 つのトランザクションにまとめられます。別の DB や別の保管先に移す場合は 1 つのトランザクションで括れないことがあるので、複写だけが済んで `DELETE` が失敗した状態を想定し、途中から再実行できる手順にしておきます。
-
----
-
-### 消去が要件になる場合
-
-レコードを残せない場合もあります。個人データの消去を求められた時が、その代表です。GDPR（General Data Protection Regulation、EU 一般データ保護規則）の第 17 条は、消去の権利（right to erasure）を定めています。
-
-同条の第 1 項には、「[The data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay](https://gdpr-info.eu/art-17-gdpr/)」（データ主体は、自分に関する個人データの消去を不当な遅滞なく行うよう管理者に求める権利を持つ）とあります。
-
-この権利には条件があります。引用した一文は `where one of the following grounds applies` と続き、収集の目的が達成された場合や同意が撤回された場合など、(a) から (f) の発動事由が並びます。第 3 項にも例外があり、法的義務の遵守や、法的請求の主張・行使・防御に必要な場合が挙がっています。
-
-消去の対象は個人データであって、レコードそのものではありません。レコードに何を残すかで、取れる手が分かれます。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    R["個人データの消去を求められた"] --> D{"レコードに何を残すか"}
-    D -->|"レコードも個人データも残す"| F["削除フラグ<br/>見えなくするだけで<br/>要件を満たさない"]
-    D -->|"レコードを残し個人データを消す"| A["匿名化<br/>取引の記録を残せる"]
-    D -->|"レコードごと消す"| E["消去<br/>バックアップ・ログ・集計表・<br/>検索エンジンの複製まで洗い出す"]
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+```text
+B が読んだ状態: 退会済み
+B は 退会済み からの遷移を拒否した
 ```
 
-上記の図の匿名化を選べるかどうかは、残した値から元の個人データを辿れないようにできるかで決まります。例えば、メールアドレスを [SHA-256](https://csrc.nist.gov/pubs/fips/180-4/upd1/final) のハッシュ値に置き換えただけでは足りません。手元の会員名簿や漏えいしたアドレスの一覧を同じ関数に通し、保存したハッシュ値と比較すれば、元のアドレスが分かります。
-
-GDPR の[前文第 26 項](https://gdpr-info.eu/recitals/no-26/)は、追加の情報で特定の人に結び付けられるデータを仮名化（pseudonymisation）したデータと呼び、識別可能な人に関する情報として扱います。消去を求められた個人データは、ハッシュ値の形で残ったままです。
-
-削除フラグを最初の選択肢として置いた設計ほど、消去の経路を持たないまま運用が始まります。全ての表に機械的にカラムを足す設計は、消せる仕組みではなく、消したように見せる仕組みだけを増やすからです。
+分離レベルを REPEATABLE READ 以上にした場合は、B は直列化の失敗で中止され、アプリケーションがやり直します。どちらの手当ても、状態のカラムを使う時に限らず、遷移を判断してから書く処理に必要です。
 
 ---
 
-### 利点
+### 現行の表から移す
 
-削除フラグは、レコードを表に残したまま、カラムの値だけで有効と削除済みを切り替えます。そのため、次の利点があります。
+状態のカラムでも論理削除でも、現行の表からレコードは減りません。10 年続くサービスなら、10 年分の退会者が有効な会員と同じ表に積み上がります。使わなくなったレコードを別の表や保管先へ移す方法をアーカイブと呼びます。
 
-- 既存の表にカラムを 1 つ追加するだけで導入できる
-- レコードそのものは、カラムの値を戻すことで復元しやすい
-- 参照先のレコードが残るので、`ON DELETE CASCADE` で子のレコードまで消えることも、注文から会員を辿る経路が切れることも無い
+先の削除したレコードの表も別の表へ移しますが、`DELETE` のたびにトリガーが 1 件ずつ JSON で残すので、現行の表には最初から削除済みのレコードがありません。アーカイブは、保持期間が過ぎた後に、論理削除や状態のカラムで現行の表に残したレコードをまとめて、元と同じ形の表へ移します。
+
+手順は、複写を確認してから元の表で `DELETE` する順です。退会から 1 年を保持期間にするなら、次のように移します。
+
+```sql
+BEGIN;
+INSERT INTO members_archive
+  SELECT * FROM members WHERE deleted_at < now() - interval '1 year';
+DELETE FROM members WHERE deleted_at < now() - interval '1 year';
+COMMIT;
+```
+
+保持期間を置けば、その間は条件が必要ですが、条件で外すレコードは保持期間の分だけに減ります。退会と同時に移せば、現行の表から条件を外せます。
+
+<br>
+
+会員を移す時は、注文からの外部キーが問題になります。既定の `NO ACTION` や `RESTRICT` なら会員の `DELETE` は止まり、`CASCADE` なら注文まで消えます。注文を残したまま会員を移すには、次のどれかを選びます。
+
+- 会員と一緒に注文もアーカイブの表へ移す
+- 注文に必要な会員の値を注文の表へ複写し、外部キーを外す
+- `id` だけの表を置き、現行・アーカイブの両方からそこを参照する
+
+注文の外部キーを `members_archive` に張り替える手は使えません。注文の表には有効な会員の注文と退会者の注文が混在し、1 つの外部キーは 1 つの表しか参照できないからです。
+
+同じ DB の中なら、上の SQL のように複写と `DELETE` を 1 つのトランザクションで行います。別の保管先へ移す時は 1 つのトランザクションに括れないことが多いので、複写だけが済んで `DELETE` が失敗した状態から再実行しても、複写した行が重複しない手順にします。トランザクションをどこで区切るかは、[Transaction Scope](../transaction-scope/) のノートで扱っています。
 
 ---
 
-### 欠点
+### 個人データの消去を求められた時
 
-一方で、削除フラグは業務上の終わり方の違いを 1 つのカラムに畳みます。その結果、次の制約があります。
+EU の GDPR（一般データ保護規則）の[第 17 条](https://gdpr-info.eu/art-17-gdpr/)は、本人が個人データの消去を求める権利を定めています。消去の権利（right to erasure）と呼ばれ、第 1 項に求められる場合の (a) から (f) が並び、第 3 項に法的義務の遵守や法的請求への対応のような例外があります。求めが第 1 項に当たれば、データを持つ事業者は不当な遅滞なく（without undue delay）消去します。
 
-- 有効なレコードだけを読みたい全ての問い合わせに、削除済みを除く絞り込み条件が必要
-- 絞り込み条件の書き漏れがエラーにならず、結果に混ざった時点では気付けない
-- 一意制約が削除済みのレコードにも掛かり、同じ値での再登録を妨げる
-- 素直に書いた外部キー制約では、削除済みの親を参照する子の作成を止められない
-- 退会・強制退会・失効という違う終わり方が、同じ値になる
-- 個人データの消去を求められた時に、カラムを書き換えるだけでは要件を満たせない
+消去の対象はレコードではなく、個人データです。論理削除は画面から見えなくするだけで、データは表に残るので、この要求には応えられません。選べるのは次の 2 つです。
+
+- 匿名化: 氏名やメールアドレスを消し、取引の記録は残す
+- 消去: レコードごと消し、バックアップ・ログ・集計表・検索の索引に残る複製まで洗い出す
+
+匿名化のつもりで、メールアドレスを [SHA-256](/notes/security/sha-256/) のハッシュ値に置き換えるだけでは足りません。手元の名簿や漏えいしたアドレスの一覧を同じ関数に通せば、元のアドレスと照合できるからです。
+
+GDPR の[前文第 26 項](https://gdpr-info.eu/recitals/no-26/)は、追加の情報を使えば特定の人に結び付けられるデータを仮名化（pseudonymisation）されたデータと呼び、識別できる人の情報として扱います。どこまで消すかは法務と決めることで、本記事では DB の設計で選べる手段だけを扱っています。
 
 ---
 
-### 削除フラグが妥当になりやすいケース
+### deleted_at を足す前に
 
-- 状態が有効と無効の 2 つしかなく、業務にもその 2 つ以外の呼び名が無い場合
-- レコードを読む経路が 1 つのアプリケーションに閉じていて、絞り込み条件の抜けを検査できる場合
-- 消したレコードを短い期間だけ戻せれば良く、長期の履歴が必要ない場合
-- 設定値やタグのような、業務上の状態遷移を持たないデータを扱う場合
+論理削除で済むのは、状態が有効と無効の 2 つしかなく、読む経路が 1 つのアプリケーションに閉じていて、条件の抜けを検査できる時です。短い期間だけ戻せればよい場合や、設定値・タグのように状態の遷移を持たないデータも当たります。
 
-いずれの場合も、カラム名を業務の語に寄せておくと、後から状態を増やす時の判断が楽になります。`is_deleted` ではなく `canceled_at` や `retired_at` と書けば、その表のレコードがどう終わるのかが名前から読み取れます。
+既に `deleted_at` がある表では、まず冒頭の図で上の段に示したのと同じ SQL を探します。`LEFT JOIN` した表の `deleted_at` を `WHERE` で絞っている SQL は、相手のレコードが全て消された行を結果から落としています。
+
+次に、一意制約が退会済みに掛かっていないか、`(email, deleted_at)` の組で張って有効どうしの重複を通していないかを見ます。外部キーが退会済みへの参照を通すことも前提にしておきます。
+
+これから足すなら、何を残したいのかを先に言葉にします。戻したいだけなら削除したレコードの表で足り、退会や販売終了のような業務の終わり方を区別したいなら状態のカラムと記録の表を選びます。
+
+それでも日時のカラムで持つ場合は、`canceled_at` や `retired_at` のように業務の語で名付け、`is_deleted` や `deleted_at` は避けます。名前が `canceled_at` なら、冒頭の SQL で取り消した予約しか無いレンズをどう数えるかは、書く人が意識しやすくなります。
+
+実験の SQL・実行用のスクリプト・出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/database-systems/soft-delete/lab) にあります。

@@ -1,0 +1,13 @@
+== (1) UNIQUE (email)
+ERROR:  duplicate key value violates unique constraint "m1_email_key"
+ERROR:  duplicate key value violates unique constraint "m1_email_key"
+== (2) UNIQUE (email, deleted_at)
+ active_b 
+----------
+        2
+(1 row)
+
+== (3) 部分一意索引 WHERE deleted_at IS NULL
+ERROR:  duplicate key value violates unique constraint "m3_email_active"
+== (4) UNIQUE NULLS NOT DISTINCT (email, deleted_at)
+ERROR:  duplicate key value violates unique constraint "m4_email_deleted_at_key"

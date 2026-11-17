@@ -1,0 +1,24 @@
+-- レンズの予約を取り消す（DELETE）
+-- 冒頭の (A) から deleted_at の条件を外しただけの SQL
+  name  | active_count 
+--------+--------------
+ カメラ |            0
+ 三脚   |            1
+ レンズ |            0
+(3 rows)
+
+-- 取り消した予約は deleted_record に残る
+  table_name  | object_id |            data             
+--------------+-----------+-----------------------------
+ reservations |        11 | {"id": 11, "product_id": 3}
+(1 row)
+
+-- 戻す
+ id | product_id 
+----+------------
+ 10 |          2
+ 11 |          3
+(2 rows)
+
+-- 予約のある商品は消せない（外部キーが効く）
+ERROR:  update or delete on table "products" violates foreign key constraint "reservations_product_id_fkey" on table "reservations"

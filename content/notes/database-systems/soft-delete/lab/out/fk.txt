@@ -1,0 +1,20 @@
+-- 佐藤さんが退会（論理削除）
+-- ON DELETE CASCADE は動かず、注文は有効のまま
+ id  | member_id | active 
+-----+-----------+--------
+ 100 |         1 | t
+(1 row)
+
+-- 退会した会員への新しい注文も通る
+ active_orders_of_withdrawn 
+----------------------------
+                          2
+(1 row)
+
+-- 比べる: 本当に DELETE すると
+ERROR:  update or delete on table "members2" violates foreign key constraint "orders2_member_id_fkey" on table "orders2"
+-- 状態を含めた複合キーで参照する
+-- 退会済みの会員への注文
+-- 注文が 1 件でもある会員を退会させる
+ERROR:  insert or update on table "orders3" violates foreign key constraint "orders3_member_id_member_status_fkey"
+ERROR:  update or delete on table "members3" violates foreign key constraint "orders3_member_id_member_status_fkey" on table "orders3"

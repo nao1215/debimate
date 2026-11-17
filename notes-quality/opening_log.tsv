@@ -71,3 +71,4 @@ distributed-systems__two-phase-commit	症状	その他	2PC - 準備を終えた�
 ml__linear-regression	主張	その他	線形回帰 - 係数は、他にどの列を入れたかで符号まで変わる
 blockchain-systems__lightning-network	一覧	その他	Lightning Network - チャネルの残高は、そのまま送れる額や受け取れる額にはならない
 database-systems__query-processing	一覧	その他	Query Processing - プランナは、条件に合う行が並びの中に均等に散らばり、列どうしは無関係だと見なして実行計画を選ぶ
+database-systems__soft-delete	予想	その他	Soft Delete - 論理削除は、消えたことを読む側の全ての SQL に覚えさせる設計
