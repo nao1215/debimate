@@ -1,0 +1,10 @@
+   0.0s  100 行を書き、Follower にも 100 行ある
+   0.2s  Follower をネットワークから外した
+   0.2s  Leader: insert id=101 ...
+   5.2s  別の接続から pg_cancel_backend で待ちを取り消す
+   5.2s  Leader: WARNING: canceling wait for synchronous replication due to user request / The transaction has already committed locally, but might not have been replicated to the standby.
+   5.2s  Leader: insert id=101 -> COMMIT が返った
+   5.2s  Leader を別の接続で数えると 101 行
+   5.4s  Leader を docker kill で落とした
+   5.6s  Follower を昇格させた: 行数 100
+   6.8s  起動し直した古い Leader: recovery=False 行数 101

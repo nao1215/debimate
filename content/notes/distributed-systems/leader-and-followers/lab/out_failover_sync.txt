@@ -1,0 +1,8 @@
+   0.0s  100 行を書き、Follower にも 100 行ある
+   0.2s  Follower をネットワークから外した
+   0.2s  Leader: insert id=101 ...
+   5.2s  5 秒待っても COMMIT が返らない（別の接続から見た行数 100）
+   5.2s  Leader: insert id=101 -> OperationalError
+   5.4s  Leader を docker kill で落とした
+   5.5s  Follower を昇格させた: 行数 100
+   6.7s  起動し直した古い Leader: recovery=False 行数 101

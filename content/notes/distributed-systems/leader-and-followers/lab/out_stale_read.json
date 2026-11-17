@@ -1,0 +1,26 @@
+{
+ "async": {
+  "stale": 2000,
+  "n": 2000,
+  "commit_median_ms": 0.6446430052164942,
+  "write_to_read_median_ms": 0.70691600558348
+ },
+ "sync(on)": {
+  "stale": 1,
+  "n": 2000,
+  "commit_median_ms": 1.250278000952676,
+  "write_to_read_median_ms": 1.3285999884828925
+ },
+ "sync(remote_apply)": {
+  "stale": 0,
+  "n": 2000,
+  "commit_median_ms": 1.1711455008480698,
+  "write_to_read_median_ms": 1.2215539754834026
+ },
+ "async + LSN を待つ": {
+  "stale": 0,
+  "n": 2000,
+  "commit_median_ms": 0.5878405063413084,
+  "write_to_read_median_ms": 1.1818950006272644
+ }
+}

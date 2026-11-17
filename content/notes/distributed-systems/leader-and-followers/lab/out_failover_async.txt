@@ -1,0 +1,17 @@
+   0.1s  100 行を書き、Follower にも 100 行ある
+   0.3s  Follower をネットワークから外した
+   0.3s  Leader: insert id=101 -> COMMIT が返った
+   0.3s  Leader: insert id=102 -> COMMIT が返った
+   0.3s  Leader: insert id=103 -> COMMIT が返った
+   0.3s  Leader: insert id=104 -> COMMIT が返った
+   0.3s  Leader: insert id=105 -> COMMIT が返った
+   0.3s  Leader: insert id=106 -> COMMIT が返った
+   0.3s  Leader: insert id=107 -> COMMIT が返った
+   0.3s  Leader: insert id=108 -> COMMIT が返った
+   0.3s  Leader: insert id=109 -> COMMIT が返った
+   0.3s  Leader: insert id=110 -> COMMIT が返った
+   0.6s  Leader を docker kill で落とした
+   0.8s  Follower を昇格させた: 行数 100
+   2.0s  起動し直した古い Leader: recovery=False 行数 110
+   2.0s  古い Leader: insert id=500 -> COMMIT が返った（行数 111、id=500 の v=1）
+   2.0s  昇格した Follower: insert id=500 -> COMMIT が返った（行数 101、id=500 の v=2）

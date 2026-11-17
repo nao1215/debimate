@@ -1,394 +1,310 @@
 ---
-title: "Leader and Followers - 更新を 1 台に集約する複製の型"
+title: "Leader and Followers - コミットが返る時点と、Follower に書き込みが届く時点はずれる"
 date: 2026-08-07
 draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "coordination"]
 weight: 5
+wrapTables: true
 topics: ["Replication / Coordination"]
 ---
 
-Leader and Followers は、同じデータを複製して持つノードのうち 1 台を Leader に決め、更新を全て Leader が受け付けて残りの Follower に配る構成です。更新の受け口が 1 台に絞られるため、同じデータへの更新の順序は Leader が決めた 1 つに定まります。
+PostgreSQL や MySQL の read replica、マネージドな DB（データベース）の自動フェイルオーバーは、書き込みを受け付ける 1 台と、その変更を複製する残りの台で動いています。書き込みを受け付ける台を Leader、複製する台を Follower と呼び、この構成を [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) と呼びます。Leader が落ちた時に Follower の 1 台を新しい Leader に切り替えることをフェイルオーバー、その Follower を Leader にすることを昇格と呼びます。
 
-例えば、在庫や座席のように同じ 1 件を複数の要求が取り合うデータでは、更新の順序が結果を決めます。1 台のノードだけで持てば順序は 1 つに定まりますが、そのノードが止まると更新も読み取りも止まります。止まらないように複製を増やすと、今度は同じデータへの更新が別々のノードに届き、順序が食い違います。
+この構成を使っていると、次の 4 つを当たり前と思いがちです。
 
-Follower は、Client から更新を受け取っても自分では処理せず、Client を Leader に案内します。Leader が落ちた場合は、残った Follower の中から次の Leader を選び直します。
+- コミットが返った行は、すぐに Follower からも読める
+- 同期レプリケーションにすれば、Follower から古い値は読まない
+- コミットが返った行は、Leader が落ちても消えない
+- 落ちた Leader は、戻ってきても書き込みを受け付けない
 
-以下は、3 台のログ（受け付けた更新を順に追記した記録）を位置を揃えて並べた図です。箱の数字と色は任期（後述）を表します。
+手元の PostgreSQL 17 で試すと、4 つとも成り立ちませんでした。以下は、3 つ目と 4 つ目を試した時の様子です。
 
-{{< figure src="images/leader-and-followers_concept.svg" alt="3 台のログを index の位置を揃えて横に並べた図。index 6 までは Leader と Follower 1 の 2 台に届いてコミットし、灰緑の縦線がコミット位置を示す。Leader だけが持つ index 7 と 8 は破線の未コミットで、Follower 2 は index 4 までしか受け取っていない" caption="3 台のログと、過半数に届いたコミット位置" align="center" >}}
+{{< figure src="images/leader-and-followers_failover.webp" alt="動く図。PostgreSQL 17 の Leader と Follower がそれぞれ 100 行を持つ。0.3 秒で Follower をネットワークから外し、Leader に id=101〜110 の 10 行を書くと、10 行ともコミットが返り Leader は 110 行になる。0.6 秒で Leader を docker kill で落とし、0.8 秒で Follower を昇格させると、新しい Leader は 100 行で id=101〜110 が無い。2.0 秒で古い Leader を起動し直すと Leader のまま起動し、最後のコマでは 2 台の両方に id=500 を書けて、古い Leader は v=1、新しい Leader は v=2 を持つ" caption="Leader を落として Follower を昇格させた時の行数（実測の時刻を 0.2 倍速で再生）" align="center" >}}
 
-上記の図のように、各ノードは Leader と同じ位置に同じ更新を並べ、3 台のうち過半数の 2 台に届いた位置までがコミットします。
+Leader が受け付けてコミットを返した 10 行は、昇格した Follower にはありませんでした。さらに、落とした Leader を起動し直すと Leader のまま動き出し、2 台がそれぞれ同じ id に別の値を受け付けました。
 
-<br>
+この形は実験の中だけの話ではありません。2018 年 10 月 21 日に GitHub で起きた障害では、データセンター間の通信が 43 秒途切れた間に、MySQL の Leader が別のデータセンターへ切り替わりました。
 
-本記事では、更新を 1 台に集約して複製する方法を説明します。話は次の順に進めます。
-
-- なぜ全ノードが対等に更新を受け付けると、値が食い違うのか。
-- Leader が落ちた時、次の Leader をどう選び、2 台立つのをどう防ぐのか。
-- Leader が受け付けた更新は、いつコミットするのか。
-- 分断から復帰した古い Leader は、どう締め出されるのか。
-- Leader から読んでも古い値が返るのは、どんな時か。
-
-想定する故障は、ノードの停止とネットワークの分断の 2 つです。誤った値を返す故障（[ビザンチン障害](../byzantine-fault-tolerance/)）には触れません。仕組みの説明には [Raft](https://raft.github.io/) を使います。Raft は、複製したログを全ノードで同じ順序に揃えるための合意アルゴリズムで、動作が論文で細部まで規定されています。
-
----
-
-### Leader が必要な理由
-
-全ノードが対等に更新を受け付ける構成では、同じデータへの更新が別々のノードに同時に届きます。到着の順序が入れ替わると、追加の併合規則を置かない限り、最終的に残る値がノードごとに食い違います。
-
-例えば、2 台が独立に更新を受け付けると、以下のようになります。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C1 as Client 1
-    participant A as Node A
-    participant B as Node B
-    participant C2 as Client 2
-    C1->>A: x = 1
-    C2->>B: x = 2
-    A->>B: 複製 x = 1
-    B->>A: 複製 x = 2
-    Note over A: 後に届いたのは<br/>x = 2 なので x = 2
-    Note over B: 後に届いたのは<br/>x = 1 なので x = 1
-```
-
-上記の図で問題なのは、どちらのノードも自分の見た順序で正しく処理している点です。順序を決める場所がどこにも無いため、値が 2 通りに割れています。後から一方を選び直すには、どちらが後の更新なのかを判定する材料が別に必要です。
-
-[クォーラム](../quorum/)で読み書きするノードの集合を重ねるだけでは、更新の順序は決まりません。過半数を要求すると、書き込みに関わったノードの集合と読み取りに関わったノードの集合は、必ず 1 台以上を共有します。ただし、共有するノードが 2 つの更新を両方受け取っていることと、どちらが後の更新なのかを判定できることは別です。
-
-更新の順序を 1 つに決めるには、全ノードが共有できる 1 つの並びが必要です。Leader and Followers は、その並びを決める役目を Leader に集約します。ただし、全ノードに共通の並びとして残るのは、後の節で説明するコミットを済ませた更新だけです。コミット前の更新は、Leader が交代すると切り捨てられる場合があります。
-
-パターンの名前は Unmesh Joshi 氏の書籍『Patterns of Distributed Systems』（邦訳『分散システムのためのデザインパターン』）で使われているもので、Martin Fowler 氏のサイトにも [Leader and Followers](https://martinfowler.com/articles/patterns-of-distributed-systems/leader-follower.html) として要約が置かれています。
-
----
-
-### 任期と選出
-
-Leader は固定ではなく、落ちた時に選び直せる必要があります。Raft は時間を任期（term）という単調増加する番号で区切り、1 つの任期に立つ Leader を最大 1 台に制限します。Diego Ongaro 氏と John Ousterhout 氏が 2014 年に発表した [Raft の論文](https://raft.github.io/raft.pdf)は、この性質を Election Safety と呼んでいます。
-
-Follower は Leader から定期的に届く信号を待ちます。信号が一定時間届かなければ、Leader が落ちたと判断して自分が Candidate になり、任期を 1 つ増やして他のノードに投票を求めます。クラスタの全構成ノードのうち過半数から票を集めたノードが、その任期の Leader になります。信号そのものは[ハートビート](../heartbeat/)で、Raft では中身が空の複製要求を流用しています。
-
-以下が役割の遷移です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-stateDiagram-v2
-    [*] --> Follower
-    Follower --> Candidate: 信号が届かないまま待ち時間が経過
-    Candidate --> Leader: 過半数の票を獲得
-    Candidate --> Candidate: 票が割れたので任期を増やして再挑戦
-    Candidate --> Follower: 自分の任期以上の Leader から複製要求
-    Leader --> Follower: より新しい任期を検知
-```
-
-上記の図で Candidate から Candidate に戻る経路は、複数のノードが同時に Candidate になって票が割れた場合を表します。全ノードが同じ待ち時間を使うと、票の割れが繰り返されます。そのため、Raft は待ち時間をランダムな幅で散らし、選出を始めるたびに引き直します。
-
-散らす幅の効き目を [Raft の論文](https://raft.github.io/raft.pdf)の Figure 16 と同じ形のシミュレーションで確認しました。5 台のうち Leader が最後の信号を送った直後に落ち、残る 4 台は待ち時間を 150 ミリ秒から上限までの一様分布で引きます。
-
-メッセージの片道は 2〜8 ミリ秒の一様分布で失われず、ログは全台で同じとしました。これは説明用に置いた前提で、論文の数値を再現したものではありません。上限ごとに 1 万回試し、10 秒経っても Leader が決まらない試行は stuck に数えます。コードの全体は [election.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/leader-and-followers/lab/election.py) にあります。
-
-{{< figure src="images/leader-and-followers_election_timeout.svg" alt="左は Leader が決まるまでの時間の累積分布（横軸は対数）。150-300 ミリ秒は 300 ミリ秒前後でほぼ全試行が決まり、150-155 ミリ秒は階段状に数秒まで延び、150-150 ミリ秒は 10 秒でも約 2 割しか決まらない。右は最初の任期で票が割れた割合で、上限 150〜155 ミリ秒では 84〜94%、300 ミリ秒では 3.6%" caption="待ち時間の幅と、Leader が決まるまでの時間" align="center" >}}
+元の Leader には、新しい Leader へ届いていない数秒分の書き込みが残り、[事後の報告](https://github.blog/news-insights/company-news/oct21-post-incident-analysis/)によると、書き込みの多いクラスタの 1 つでは 954 件でした。サービスの劣化は 24 時間 11 分続きました。
 
 <br>
 
-<details>
-<summary>測定値（上限ごとに 1 万回）</summary>
+本記事では、read replica やフェイルオーバーを使っている人、これから設定する人に向けて、次の問いに答えます。
+
+- Follower から読むと、書いたばかりの値が見えないのはなぜか。
+- 同期レプリケーションにすると、何が変わり、何が残るのか。
+- Leader が落ちた時、コミットが返った行はどこへ行くのか。
+- 戻ってきた古い Leader は、誰が止めるのか。
+- etcd のように Raft で動く Leader は、何が違うのか。
+
+実験では、1 台のマシンに Docker で PostgreSQL 17.11 と etcd v3.5.17 を立てました。
+
+---
+
+### コミットが返る所と、Follower で読める所
+
+複数の台が対等に書き込みを受け付けると、同じ行への 2 つの更新が別々の台に届き、台ごとに届く順番が入れ替わります。どちらが後の更新かを決める場所が無いので、最後に残る値が台ごとに分かれます。書き込みを Leader 1 台に集めると、更新の順番は Leader が受け付けた順の 1 通りに決まり、Follower はその順に適用すれば同じ内容になります。
+
+Leader は、受け付けた変更をまず [WAL（Write-Ahead Log、ログ先行書き込み）](/notes/distributed-systems/write-ahead-log/)に書きます。WAL はデータのファイルを書き換える前に、変更の内容を順に追記するログです。
+
+PostgreSQL の[ストリーミングレプリケーション](https://www.postgresql.org/docs/17/warm-standby.html#STREAMING-REPLICATION)では、Leader がこの WAL を Follower に送り続け、Follower は受け取った WAL を自分のデータに適用します。Follower は Leader と同じ変更を同じ順に適用するので、遅れはあっても同じ内容に追い付きます。
+
+問題は、アプリケーションにコミットが返るのが、この流れのどこかという点です。以下は、WAL が Follower で読めるようになるまでの段階と、コミットが返る所を並べた図です。
+
+{{< figure src="images/leader-and-followers_commit_points.webp" alt="左から、Leader が WAL をディスクに書く、Follower が WAL を受け取り OS に渡す、Follower が WAL をディスクに書く、Follower が WAL を適用し行が読める、の 4 つの箱が矢印で並ぶ。上の青い矢印は COMMIT が返る所で、非同期（既定）は 1 つ目、同期 remote_write は 2 つ目、同期 on は 3 つ目、同期 remote_apply は 4 つ目の箱を指す。下の赤い矢印は Follower から新しい値が読めるのは 4 つ目の箱からで、1 つ目から 4 つ目の手前までの間に Follower を読むと古い値が返る" caption="COMMIT が返る所と、Follower から新しい値が読める所" align="center" >}}
+
+PostgreSQL の既定は非同期で、Leader が自分のディスクに WAL を書いた時点でコミットを返します。WAL を Follower へ送るのはその後です。
+
+同期レプリケーションにすると、Leader は Follower からの返事を待ってからコミットを返します。同期になるのは、Leader の [synchronous_standby_names](https://www.postgresql.org/docs/17/runtime-config-replication.html#GUC-SYNCHRONOUS-STANDBY-NAMES) に Follower の名前を書いた時だけです。そのうえで、どの段階の返事を待つかを [synchronous_commit](https://www.postgresql.org/docs/17/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) の値で決めます。
+
+synchronous_commit は、既定の `on` で Follower がディスクに書いた所まで待ちます。`remote_write` は Follower が WAL を OS に渡した所で返り、ディスクへの書き出しは待ちません。適用して読めるようになるまで待つのは `remote_apply` だけです。
+
+---
+
+### Follower から読むと古い値が返る
+
+図の赤い矢印の間がどれくらいの長さなのかを測りました。Leader で 1 行を `UPDATE` し、コミットが返った直後に、Follower で同じ行を読みます。これを 2000 回繰り返し、Follower が古い値を返した回数を数えました。
+
+```python
+for i in range(1, N + 1):
+    leader.execute("update t set v = %s where id = 1", (i,))  # autocommit なので 1 文でコミット
+    if wait_lsn:
+        # 自分の書き込みが入った WAL の位置を覚え、Follower がそこまで適用するのを待つ
+        lsn = leader.execute("select pg_current_wal_lsn()").fetchone()[0]
+        while not follower.execute(
+                "select pg_last_wal_replay_lsn() >= %s::pg_lsn", (lsn,)).fetchone()[0]:
+            pass
+    v = follower.execute("select v from t where id = 1").fetchone()[0]
+    if v != i:
+        stale += 1
+```
+
+同じマシンの上で、他に負荷も無い状態でも、非同期では 2000 回の全てで古い値が返りました。
+
+{{< figure src="images/leader-and-followers_stale_read.webp" alt="横棒のグラフ。コミットの直後に Follower が古い値を返した割合は、非同期（既定）が 2000 回中 2000 回、同期 on が 2000 回中 1 回、同期 remote_apply が 0 回、非同期で LSN を待つやり方が 0 回。右の列はコミットまでの時間と、書いてから Follower で読み終えるまでの時間の中央値で、非同期が 0.64 ms と 0.71 ms、同期 on が 1.25 ms と 1.33 ms、同期 remote_apply が 1.17 ms と 1.22 ms、非同期で LSN を待つやり方が 0.59 ms と 1.18 ms" caption="コミットの直後に Follower を読んだ 2000 回のうち、古い値が返った回数（時間は中央値）" align="center" >}}
+
+非同期では、書いてから Follower で読み終えるまでが 0.71 ms で、WAL が Follower に届いて適用されるより先に読んでしまいます。遅れがわずかでも、書いた直後に読む処理はその隙間に入ります。フォームを送信した後の画面で自分の投稿が見えない、という不具合は、書き込みを Leader に送り、その直後に表示する画面を Follower から読む構成で起きます。
+
+同期の `on` にしても、2000 回のうち 1 回は古い値が返りました。測り直すと 0 回の時もあり、この回数は毎回変わります。ただ、COMMIT が返る所の図で、`on` は 3 つ目の箱でコミットが返るので、Follower がまだ適用していない短い間は仕組みとして残ります。
+
+`remote_apply` にすると 0 回になり、代わりに全ての書き込みのコミットが 0.64 ms から 1.17 ms に延びました。この差は同じマシンの中で測った値で、Follower が別のデータセンターにあれば、往復の時間がそのまま全てのコミットに足されます。
+
+<br>
+
+#### 自分の書き込みだけを待つ
+
+4 つ目の行は、レプリケーションは非同期のまま、読む側で待つやり方です。コミットの後に Leader で [pg_current_wal_lsn()](https://www.postgresql.org/docs/17/functions-admin.html) を呼んで WAL の位置（LSN、Log Sequence Number）を覚え、Follower の `pg_last_wal_replay_lsn()` がその位置を越えるまで待ってから読みます。
+
+古い値は 0 回で、コミットは非同期のまま 0.59 ms でした。待つのは、書いた本人がその直後に読む時だけで済みます。
+
+書いた本人には自分の書き込みが必ず見える、という保証は [read-your-writes](https://jepsen.io/consistency/models/read-your-writes) と呼ばれます。全ての読み取りに必要な保証ではなく、ほかの人が書いた投稿の一覧のように少し古くても困らない読み取りは、そのまま Follower に回せます。
+
+---
+
+### 同期レプリケーションで残ること
+
+同期にすると、コミットが返った行は Follower のディスクにもあります。その代わり、Follower が返事をしなければ、Leader はコミットを返せません。冒頭の実験と同じく、Follower をネットワークから外してから、同期の `on` で 1 行を書きました。
 
 ```text
-5 servers, leader crashed at t=0, 10000 trials per spread, message delay U(2.0, 8.0) ms
-timeout_ms   split_vote  median_ms  p99_ms  max_ms  max_terms  stuck
-150-150         93.6%        462    7510    9912         66   7874
-150-151         93.2%       2418    9791    9947         66   4142
-150-155         84.0%        623    3972    7318         48      0
-150-175         25.8%        171     646    1124          7      0
-150-200         12.0%        174     498     871          5      0
-150-300          3.6%        190     412     960          5      0
+   0.2s  Follower をネットワークから外した
+   0.2s  Leader: insert id=101 ...
+   5.2s  5 秒待っても COMMIT が返らない（別の接続から見た行数 100）
 ```
+
+コミットは返りませんでした。同期の Follower が落ちると、[コミットが完了しないことがあります](https://www.postgresql.org/docs/17/warm-standby.html#SYNCHRONOUS-REPLICATION)。そのため、書き込みを止めたくなければ、同期の候補になる Follower を複数並べます。`synchronous_standby_names = 'ANY 1 (f1, f2)'` のように Follower の名前 f1・f2 を書くと、2 台のうちどちらか 1 台の返事でコミットを返します。
+
+ただし、どちらが返事をしたかは書き込みごとに違います。返事をしなかった方を昇格させると、コミットが返った行が消えます。昇格させるのは WAL を一番先まで受け取った台で、受け取った位置は各 Follower で [`pg_last_wal_receive_lsn()`](https://www.postgresql.org/docs/17/functions-admin.html#FUNCTIONS-RECOVERY-INFO-TABLE) を呼ぶと分かります。
+
+<br>
+
+#### 返らなかったコミットの行方
+
+別の接続から `pg_cancel_backend()` でコミットの待ちを取り消すと、次の警告と一緒にコミットが返りました。
+
+```text
+WARNING: canceling wait for synchronous replication due to user request
+DETAIL: The transaction has already committed locally, but might not have been replicated to the standby.
+```
+
+Leader では、取り消した行が他の接続から見えるようになり、Follower には届いていません。
+
+待ちを取り消さずに Leader を落とした場合も、アプリケーションは接続が切れたというエラーを受け取りますが、Leader を起動し直すとその行がありました。これは PostgreSQL の決まった動きで、返事を待っている間に Leader が再起動すると、待っていたトランザクションは復旧の時にコミット済みになります。
+
+| 書き込みの仕方 | アプリが受け取った結果 | 昇格した Follower | 起動し直した Leader |
+|---|---|---|---|
+| 非同期 | 10 行ともコミット | 100 行（10 行が無い） | 110 行 |
+| 同期 `on` | 接続が切れたエラー | 100 行 | 101 行 |
+| 同期 `on` で待ちを取り消す | 警告付きのコミット | 100 行 | 101 行 |
+
+同期にして守れるのは、コミットが返った行は返事をした Follower にもある、という所までです。エラーで返った書き込みは、どこかに残っているかもしれません。エラーを見て書き込みを送り直すなら、二重に書かれても結果が変わらないように、[冪等性](/notes/distributed-systems/idempotency/)を持たせておく必要があります。
+
+---
+
+### Leader が落ちた時に消える行
+
+冒頭の図は、非同期のまま次の手順で動かした結果です。Follower をネットワークから外すのは、WAL が届いていない状態を作るためです。
+
+```python
+sh("docker", "network", "disconnect", "lf-net", "lf-follower")
+for i in range(101, 111):
+    leader.execute("insert into t values (%s, 0)", (i,))   # 10 行ともコミットが返る
+subprocess.run(["docker", "kill", "lf-leader"])           # Leader を落とす
+sh("docker", "network", "connect", "lf-net", "lf-follower")
+follower.execute("select pg_promote()")                   # Follower を Leader に昇格させる
+follower.execute("select count(*) from t")                # 100 行
+```
+
+PostgreSQL では、Follower の `pg_promote()` で昇格させます。昇格した Follower の行数は 100 で、コミットが返った 10 行がありませんでした。非同期では、WAL を送るのはコミットを返した後なので、送る前に Leader が落ちれば、その分は Follower に届きません。
+
+PostgreSQL では[ログの転送](https://www.postgresql.org/docs/17/warm-standby.html)が既定で非同期なので、Leader が落ちた時には、データを失いうる時間の幅があります。
+
+<br>
+
+#### GitHub の障害
+
+GitHub の障害も、この形でした。GitHub は、MySQL で Leader を切り替える処理を [Orchestrator](https://github.com/openark/orchestrator) に任せていて、Orchestrator 自身は Raft で合意を取ります。
+
+通信が途切れた 43 秒の間に、Orchestrator は Leader を西海岸のデータセンターに移しました。GitHub が使っていた半同期レプリケーションは、Follower の受け取りを待ってからコミットを返す複製で、[対象は同じデータセンターの Follower だけ](https://github.blog/engineering/infrastructure/mysql-high-availability-at-github/)でした。西海岸への複製は待っていなかったので、東海岸の Leader にだけある数秒分の書き込みが残りました。
+
+通信が戻った時には、西海岸の新しい Leader は約 40 分ぶんの書き込みを受け付けていて、単純に東海岸へ戻すこともできませんでした。43 秒の途絶で Orchestrator が Leader を落ちたと判定した経緯は、[ハートビート](/notes/distributed-systems/heartbeat/)のノートで扱っています。
+
+Leader を誰がどう選ぶかと、データをどう複製するかは別の仕組みです。Leader を選ぶ側を Raft にしても、データの複製が非同期なら、コミットが返った書き込みはフェイルオーバーで消えることがあります。
+
+---
+
+### 古い Leader を止めるのは誰か
+
+冒頭の図では、最後のコマで、落とした Leader を `docker start` で起動し直しただけで、Leader として書き込みを受け付けました。PostgreSQL は、自分の他に Leader がいることを知りません。2 台が Leader として別々の書き込みを受け付け、内容が分かれていく状態をスプリットブレイン（split brain）と呼びます。
+
+```text
+   2.0s  古い Leader: insert id=500 -> COMMIT が返った（行数 111、id=500 の v=1）
+   2.0s  昇格した Follower: insert id=500 -> COMMIT が返った（行数 101、id=500 の v=2）
+```
+
+[フェイルオーバー](https://www.postgresql.org/docs/17/warm-standby-failover.html)の後には、古い Leader にもう Leader ではないと伝える仕組みが必要です。PostgreSQL 自身はこの仕組みを持たず、外の道具に任せています。
+
+古い Leader を戻すには、[pg_rewind](https://www.postgresql.org/docs/17/app-pgrewind.html) で新しい Leader とずれた分を巻き戻し、Follower として繋ぎ直します。この時、古い Leader にだけあった id=101〜110 の行は捨てられます。pg_rewind を使うには、古い Leader で `wal_log_hints` かデータのチェックサムを有効にしておく必要があり、どちらも既定では無効です。
+
+<br>
+
+#### 外の道具が止める仕組み
+
+PostgreSQL のフェイルオーバーでよく使われる [Patroni](https://patroni.readthedocs.io/en/latest/dcs_failsafe_mode.html) は、etcd などの Key-Value ストアに、Leader であることを示す期限付きのキーを置きます。Leader はこのキーの期限を更新し続け、更新できなくなったら、期限が切れる前に自分を読み取り専用に落とします。期限が切れると、他の台がキーを取って昇格します。
+
+期限付きの権利で古い持ち主を止める考え方は [Lease](/notes/distributed-systems/lease/) と同じです。通信を仲介する [Ambassador](/notes/software-architecture/ambassador/) のノートでは、戻ってきた古い Redis の master に 99 件を書いて全てを失う様子を再現しています。
+
+自分で組んだフェイルオーバーの手順や、マネージドな DB の設定を見る時は、落とした Leader をそのまま起動し直して、書き込めてしまうかを試すと分かります。
+
+---
+
+### Raft では、外された Leader は書き込めない
+
+[Raft](https://raft.github.io/raft.pdf) は、Leader and Followers の形で複数の台にログを複製する合意アルゴリズムです。[etcd](https://etcd.io/) は Raft で複製する Key-Value ストアで、上の Patroni が Leader のキーを置く先の 1 つです。etcd の 3 台で、PostgreSQL と同じ実験を行いました。Leader をネットワークから外し、外した Leader と残りの 2 台の両方に書き込みます。
+
+{{< figure src="images/leader-and-followers_raft.webp" alt="動く図。etcd の e1・e2・e3 の 3 台で、最初は e1 が term 2 の Leader で k=v1。0.3 秒で e1 をネットワークから外すと、2.1 秒で e1 は過半数と話せずに自分から Leader を降り、2.5 秒で残りの e2 と e3 が e2 を term 3 の Leader に選び、2.6 秒で e2 に書いた k=v-new が e2 と e3 に入る。外した e1 への put k=v-old は待ち続け、5.4 秒で失敗する。e1 から読むと、既定の linearizable は失敗し、serializable は古い v1 を返す。最後のコマでは e1 を戻してから 3 秒後、e1 は term 3 の Follower になり、3 台とも k は v-new で、e1 のログにあった v-old は term 3 のエントリで上書きされている" caption="etcd の 3 台で Leader をネットワークから外した時（実測の時刻を 0.5 倍速で再生）" align="center" >}}
+
+外した e1 への書き込みは、5 秒待った後に失敗し、コミットは返りませんでした。Raft では、Leader は書き込みを自分のログに足した後、過半数の台がそれを受け取ってから初めてコミットを返します。3 台のうち 1 台だけになった e1 は過半数に届かないので、書き込みを受け付けても返事ができません。
+
+PostgreSQL の非同期で起きた、コミットを返してから消える、という順番になりません。過半数の考え方は [Quorum](/notes/distributed-systems/quorum/) で詳しく扱っています。
+
+残りの 2 台は、e1 から定期的に届く合図のハートビートが途絶えてから e2 を新しい Leader に選びました。etcd の[既定](https://etcd.io/docs/v3.5/tuning/)は、ハートビートの間隔が 100 ms、途絶えたと見なすまでが 1000 ms で、外してから新しい Leader が決まるまでの約 2.2 秒は、コミットを返せる台がいなかった時間です。
+
+外された e1 も、外してから 1.8 秒後に、自分から Leader を降りて Follower になっていました。etcd は [CheckQuorum](https://github.com/etcd-io/etcd/blob/v3.5.17/raft/raft.go#L164-L166) という設定を有効にしていて、Leader は、途絶えたと見なすのと同じ 1000 ms の間に過半数と連絡できないと、自分で Leader を降ります。
+
+---
+
+### 任期の番号で古い Leader を見分ける
+
+Leader が選ばれるたびに、任期（term）の番号が 1 つ増えます。e2 は term 3 の Leader で、e1 は term 2 のまま Follower に降りていました。戻ってきた e1 は、自分の term 2 より大きい番号を見て、term 3 で Leader になった e2 に従いました。e1 で動く etcd も、ログにこの順で書き残していました。
+
+```text
+stepped down to follower since quorum is not active
+became follower at term 2
+became follower at term 3
+found conflict at index 10 [existing term: 2, conflicting term: 3]
+```
+
+PostgreSQL では外の道具が古い Leader を止めましたが、etcd では、過半数と話せない Leader は自分で降り、戻った台はこの番号を見て新しい Leader に従います。番号の大きい側に従わせて古い操作を拒む点は、Lease のノートで扱う fencing token と同じ考え方です。fencing token は、権利を得るたびに増やす番号で、古い番号の操作を拒みます。期限付きキーを使う Patroni と違い、任期の番号は時計に頼りません。
+
+<br>
+
+Leader を選ぶ投票では、各台は 1 つの任期に 1 票しか投じず、当選には過半数の票が必要です。過半数どうしは必ず 1 台を共有するので、1 つの任期に Leader は 2 台立ちません。さらに、各台は候補のログが自分より古ければ投票しません。新しさは、ログの末尾にある任期の番号を先に比べ、同じなら長さで比べます。コミット済みの書き込みは過半数の台が持つので、それを持たない台は過半数の票を集められません。投票した記録は、ディスクに書いてから返事をします。忘れると、再起動の後に同じ任期で 2 票を投じ、Leader が 2 台立ちえます。
+
+<br>
+
+ログの 1 件をエントリと呼びます。外された Leader が自分のログに足したまま、過半数に届かなかったエントリは、戻った後に新しい Leader のログで上書きされます。上に載せたログでは最終行がこれで、e1 に足された v-old のエントリが term 3 のエントリで上書きされました。
+
+一方で、過半数に届いたエントリが、いつもコミット済みになるとは限りません。Raft 論文の 5.4.2 節は、Figure 8 で次の 5 台の例を示しています。
+
+{{< figure src="images/leader-and-followers_overwrite.webp" alt="段階 1 から 4 までを横に並べ、各段階で A から E の 5 台がログの同じ位置に持つエントリの任期を縦に並べた図。段階 1 は A と B が 2。段階 2 は A と B が 2、E が 3。段階 3 は A・B・C が 2 で過半数に届き、E が 3。段階 4 は任期 5 の Leader になった E が上書きし、5 台とも 3 になって任期 2 のエントリが消える。エントリが無い所は点線の「-」" caption="過半数に届いた任期 2 のエントリが、上書きされるまで" align="center" >}}
+
+任期 2 の Leader A が B に配って落ち、任期 3 の Leader E が自分だけに書いて落ちます。任期 4 で戻った A が C に配り、任期 2 のエントリは 3 台に届きます。それでも A が落ちると、E は B・C・D の票を集めて任期 5 の Leader になれます。ログの末尾にある任期は、E が 3 で、B・C の 2 より新しいためです。
+
+そのため Raft の Leader は、自分の任期で足したエントリが過半数に届いた時に初めてコミットを進め、それより前のエントリはまとめてコミット済みにします。自分の任期で足したエントリが過半数に届けば、それを持たない台は投票の検査に落ちて当選できません。
+
+<br>
+
+票が割れて誰も当選しない時に備えて、各台はハートビートを待つ時間を毎回ランダムにずらします。この待ち時間は、メッセージの往復より十分長く、1 台が故障する間隔より十分短いことが Raft の前提です。例えば etcd が既定にしている 1000 ms は、同じ LAN で往復する時間を想定した値です。待ち時間を短くすると、遅れただけの Leader を落ちたと誤って見なして交代が増え、長くすると切り替えが遅れます。
+
+---
+
+### 外された Leader から読む
+
+ただし、読み取りは別です。外された e1 から読むと、etcd が既定とする linearizable の読み取りは失敗しましたが、`--consistency=s` を付けた serializable の読み取りは、古い `v1` を返しました。serializable の読み取りは、[速さと引き換えに古いデータを返しうる](https://etcd.io/docs/v3.5/learning/api_guarantees/)読み方です。
+
+linearizable の読み取りでは、Leader が過半数とハートビートをやり取りして自分がまだ Leader であることを確認してから答えます。e1 はこの時すでに Follower に降りていて、Leader とも過半数とも話せないので答えられません。速さのために手元の値で答える読み取りは、PostgreSQL の Follower と同じく古い値を返します。
+
+この確認が無かった頃の etcd では、Leader から読んでも古い値が返りました。2014 年、Kyle Kingsbury 氏は故障を注入して DB の正しさを調べる [Jepsen](https://jepsen.io/) で、分断で孤立した古い Leader が、自分をまだ Leader だと思って手元の値を返すことを[示しました](https://aphyr.com/posts/316-call-me-maybe-etcd-and-consul)。報告の [issue #741](https://github.com/etcd-io/etcd/issues/741) を受けて、読み取りもログに通す選択肢が足されました。
+
+| 方式 | コミットが返る時点 | Leader が落ちた時 | 戻ってきた古い Leader |
+|---|---|---|---|
+| PostgreSQL 非同期 | Leader のディスクに書いた時 | 届いていない分が消える | 外の道具が止める |
+| PostgreSQL 同期 `on` | Follower のディスクに書いた時 | 返事をした台を昇格させれば残る | 外の道具が止める |
+| Raft（etcd） | 過半数が受け取った時 | 返った分は残る | 自分で降り、term を見て従う |
+
+Raft の代わりに払うのは台数と待ち時間です。1 台が落ちても書き込みを続けるには 3 台、2 台なら 5 台が必要で、全ての書き込みが過半数の返事を待ちます。Raft が想定する故障は台の停止と分断で、嘘の値を返す台は想定していません。そうした台まで扱うのは[ビザンチン障害耐性](/notes/distributed-systems/byzantine-fault-tolerance/)の方式です。
+
+どの方式でも、書き込みは全て Leader 1 台を通るので、書き込める量の上限は Leader 1 台で決まります。超えるなら、[Consistent Hashing](/notes/distributed-systems/consistent-hashing/) などでデータをキーで分け、分けた組ごとに Leader を置きます。
+
+<br>
+
+<details><summary>余談: Leader を固定しない Paxos</summary>
+
+Leslie Lamport 氏の合意アルゴリズム Paxos は、Leader を固定せずに、提案された値のうち 1 つだけを選びます。提案する台は値に番号を付けて過半数に受け入れを求め、受け入れる側は、より大きい番号を見たら小さい番号の提案を以後受け入れないと約束します。
+
+ただし、提案する台が 2 台いると、互いに大きい番号を出し合って、どちらの値も選ばれないまま続くことがあります。以下は、その流れを描いた図で、番号は説明用の値です。
+
+{{< figure src="images/leader-and-followers_paxos.webp" alt="左に提案する台 1、右に提案する台 2、中央に受け入れる過半数の台がある。上から順に、台 1 が番号 1 を出し、台 2 が番号 2 を出すと番号 1 は選ばれなくなる。台 1 が番号 3 を出すと番号 2 も選ばれなくなり、台 2 が番号 4 を出すと番号 3 も選ばれなくなる。下に、番号を出し合う限り何も選ばれないまま続くと書かれている" caption="提案する台が 2 台いると、番号を競り合って何も選ばれない" align="center" >}}
+
+[Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf) は、進み続けるために提案する役を 1 台に決めることを 2.4 節で求めています。ログの位置ごとに Paxos を繰り返し、安定した Leader に提案を任せる形は Multi-Paxos と呼ばれ、結局は Leader and Followers の形に戻ってきます。
 
 </details>
 
 <br>
 
-幅が 5 ミリ秒以下だと、片道の遅延より先に他のノードも Candidate になるため、最初の任期の 8 割以上で票が割れます（図の split vote）。150〜300 ミリ秒の幅では票割れが 3.6% に下がり、99% の試行が 412 ミリ秒以内に決まりました。測定値の split_vote は、最初の任期で決まらなかった試行（stuck を含む）の割合で、median_ms から右の列は決まった試行だけの値です。
+<details><summary>余談: Leader がいない複製と、Leader が複数いる複製</summary>
 
-Leader から Follower に戻る経路は、分断から復帰した旧 Leader などが通るので、「古い Leader の締め出し」で改めて扱います。
+Leader を置かずに、どの台でも書き込みを受け付ける複製もあります。Amazon が発表した [Dynamo](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf) の流れをくむ [Apache Cassandra](https://cassandra.apache.org/) などで、書く台と読む台の数を重ねて新しい値を拾います。重ねるだけでは書き込みの順序は決まらないので、どちらが新しいかはタイムスタンプなどで別に判定します。この重ね方は、上で触れた Quorum のノートで扱っています。
 
-投票を求められた側の処理は短く書けます。Leader が 2 台立つのを防いでいるのは、1 つの任期で 2 票を投じないことと、当選に過半数を要求することの組み合わせです。過半数の集合はどの 2 つを取っても 1 台以上を共有するので、共有するノードが 1 票しか出さなければ、同じ任期に 2 台が過半数に届くことはありません。
+データセンターごとに Leader を置いて互いに複製する方式もあり、同じ行を 2 か所で同時に書き換えると、後でどちらを残すかを決める必要があります。冒頭の実験で見た id=500 は、この食い違いを Leader and Followers の中で起こしてしまった形です。どちらを残すかを決めなくても同じ状態に揃うデータ型に [CRDT](https://crdt.tech/)（Conflict-free Replicated Data Type）がありますが、扱えるデータの形は限られます。
 
-```go
-// handleRequestVote は、Candidate から届いた投票要求を処理します。
-// ログの新しさの検査（Raft 論文 5.4 節）は省略しています。
-func (n *node) handleRequestVote(term int, candidateID string) bool {
-	if term < n.currentTerm {
-		return false // 古い任期からの要求は拒否する
-	}
-	if term > n.currentTerm {
-		// 新しい任期を見たら、投票の記録を捨てて Follower に戻る
-		n.currentTerm = term
-		n.votedFor = ""
-		n.role = roleFollower
-	}
-	if n.votedFor != "" && n.votedFor != candidateID {
-		return false // 同じ任期で 2 台に投票しない
-	}
-	n.votedFor = candidateID
-	return true
-}
-```
-
-上記のコードは `currentTerm` と `votedFor` をメモリ上で書き換えるだけで、実装には不足があります。
-
-Raft は、この 2 つとログを RPC（Remote Procedure Call、遠隔手続き呼び出し）に応答する前に安定ストレージ（再起動や電源断の後も内容が残る記憶装置）に書くことを要求しています。投票した直後に再起動して `votedFor` を失うと、同じ任期でもう 1 台に投票してしまい、Leader が 2 台立つ場合があります。
+</details>
 
 <br>
 
-省略したログの新しさの検査は、コミット済みのエントリ（Leader が過半数への複製を確認し、以後取り消されないと判断したログの 1 件）を守るためのものです。Raft では、Candidate より新しいログを持つノードは投票を拒否します。新しさは末尾のエントリの任期で比べ、任期が同じならログが長い方を新しいとします（論文 5.4.1 節）。
-
-コミット済みのエントリは過半数が持っており、票を集めるにも過半数が必要なので、エントリを持つ過半数と票を出す過半数は必ず重なります。以下は、コミット済みのエントリを持たないノードが Candidate になった例で、台数と配置は説明用の値です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart TB
-    E["Node E（Candidate）<br/>エントリ無し"]
-    E -->|"投票を要求"| D["Node D<br/>エントリ無し<br/>投票する"]
-    E -->|"投票を要求"| M
-    subgraph M["コミット済みのエントリを持つ過半数"]
-        direction LR
-        A["Node A<br/>拒否"]
-        B["Node B<br/>拒否"]
-        C["Node C<br/>拒否"]
-    end
-    N["当選には 3 票が必要<br/>E と D だけでは届かない"]:::note
-    D ~~~ N
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-    classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
-```
-
-上記の図で Node E が当選できない理屈は、[クォーラム](../quorum/)と同じです。
-
-期間を区切って権利を与える点は、[Lease](../lease/) と同じ発想です。違いは期限の決め方にあり、Lease は時間の経過で切れるのに対し、任期はより新しい任期の出現で切れます。任期は時計を参照しないので、ノード間で時刻を合わせる必要がありません。その代わり、誰かが新しい任期を始めるまで古い Leader は自分の失効を知りません。
-
-時刻を合わせずに済むのは安全性（safety、誤った結果を出さない性質）の話で、処理が前に進むかどうかはタイミングに依存します。Raft は、信号が往復する時間・選出の待ち時間・ノードが故障する平均間隔が、この順に十分な差で並ぶことを前提にしています。待ち時間が往復の時間に近いと、生きている Leader が居るのに選出が始まり、更新が進まなくなります。
-
-<br>
-
-更新の並びを決める役を 1 台に固定しない解き方もあり、その代表が Leslie Lamport 氏の合意アルゴリズム Paxos です。合意アルゴリズムの役目は、提案された値のうち 1 つだけが選ばれることを保証することです（[Paxos Made Simple](https://lamport.azurewebsites.net/pubs/paxos-simple.pdf)）。
-
-Paxos では、提案を出すノードが値に番号（提案番号）を付けて過半数の受け入れを求めます。受け入れる側は、より大きな番号を見たら、それより小さい番号の提案を以後受け入れないと約束します。1 つの値だけが選ばれるという保証は固定された Leader を前提とせず、提案番号とクォーラムだけで守られます。
-
-しかし、提案を出すノードが複数居ると、互いに大きな番号を出し合い、何も選ばれないまま進まなくなる場合があります。以下はその例で、番号は説明用の値です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant P1 as 提案を出すノード 1
-    participant A as 過半数のノード
-    participant P2 as 提案を出すノード 2
-    P1->>A: 提案番号 1
-    P2->>A: 提案番号 2
-    Note over A: より大きな番号が届き<br/>番号 1 の提案は選ばれない
-    P1->>A: 提案番号 3
-    Note over A: 番号 2 の提案も選ばれない
-    P2->>A: 提案番号 4
-    Note over P1,P2: 何も選ばれないまま続く
-```
-
-上記の図のような番号の競り合いを避けて進み続けるには、提案を出す役を 1 台に定める必要があります（同じ論文の 2.4 節）。ログの各位置について Paxos を繰り返し、安定した Leader で処理を効率化する構成が、一般に Multi-Paxos と呼ばれます。
-
 ---
 
-### 更新の複製とコミット
+### Follower に読み取りを回す前に
 
-Client の更新を受け取った Leader は、まず自分のログの末尾に追記し、続けて同じ内容を Follower に送ります。ログは [WAL](../write-ahead-log/)（Write-Ahead Log、ログ先行書き込み）と同じく末尾に追記していく記録で、Leader が決めた順序をそのまま保持します。追記した 1 件をエントリと呼びます。
+read replica やフェイルオーバーを使う時に決めることは 4 つです。
 
-現在の任期で作られたエントリが過半数のノードに複製された時点で、Leader はそのエントリをコミット（commit）します。コミットは実行と同じではありません。Leader はコミットしたエントリを自分の状態機械（state machine、ログのコマンドを順に適用して状態を作る部分）に適用し、その実行結果を Client に返します。
+1 つ目は、どの読み取りを Follower に回すかです。書いた本人がその直後に読む画面は、Leader から読むか、LSN を待ってから Follower で読みます。前半の実験では、非同期の Follower は 2000 回中 2000 回、古い値を返しました。
 
-追記しかしないのは Leader のログだけです。Leader は複製要求に直前のエントリの位置と任期を添え、Follower は同じ位置に同じ任期のエントリが無ければ拒否します。拒否されると Leader は位置を 1 つずつ戻して送り直し、一致した位置より後ろを上書きさせます。Raft は、Leader が追記しかしない性質を Leader Append-Only と呼んでいます。
+2 つ目は、同期レプリケーションを使うかと、同期の Follower を何台にするかです。同期の Follower が 1 台だけだと、その 1 台が止まるだけで書き込みも止まるので、`ANY 1 (f1, f2)` のように候補を複数並べます。その時、コミットが返った行を持つのは返事をした台だけなので、フェイルオーバーでは WAL を一番先まで受け取った台を昇格させます。
 
-以下がコミットまでの往復です。
+3 つ目は、エラーで返った書き込みの扱いです。同期でも、エラーで返った行が古い Leader に残っていることがあるので、送り直しても二重にならないようにしておきます。
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as Client
-    participant L as Leader
-    participant F1 as Follower 1
-    participant F2 as Follower 2
-    C->>L: x = 1
-    L->>L: 自分のログに追記
-    L->>F1: 複製要求
-    L->>F2: 複製要求
-    F1-->>L: 受け取った
-    Note over L,F1: Leader 自身と合わせて<br/>2 台なので過半数に到達
-    L->>L: コミットして状態機械に適用
-    L-->>C: 実行結果
-    F2-->>L: 受け取った（遅れて到着）
-```
+4 つ目は、古い Leader を誰が止めるかです。冒頭の図で最後のコマが示すように、PostgreSQL だけでは、落とした Leader は起動し直すと Leader に戻ります。フェイルオーバーの道具が、更新の止まった Leader を読み取り専用に落とすか、手元で落として起動し直して試しておくと安心です。
 
-上記の図で Leader が Client に応答したのは、Follower 2 の応答が届く前です。全ノードの応答を待たないため、1 台が遅れていても更新は進みます。遅れた Follower は、後から届いた分を自分のログに追記して追い付きます。
-
-Leader は、Follower ごとに「どこまで複製できたか」の位置を `matchIndex` として持ち、コミット済みの末尾を `commitIndex` として持ちます。コミットの判定は、`matchIndex` を数えて過半数に届いた位置まで `commitIndex` を進める処理になります。
-
-```go
-// advanceCommitIndex は、過半数に複製できた位置まで commitIndex を進めます。
-// Leader を務めているノードだけが呼びます。
-// n.log は Raft 論文に合わせて添字 1 から使い、log[0] は番兵です。
-// commitIndex の初期値 0 は、まだ何もコミットしていないことを表します。
-func (n *node) advanceCommitIndex() {
-	total := len(n.matchIndex) + 1 // Follower の数と、Leader 自身の 1 台
-	for i := len(n.log) - 1; i > n.commitIndex; i-- {
-		if n.log[i].Term != n.currentTerm {
-			continue // 過去の任期のエントリは、応答数だけではコミットしない
-		}
-		agreed := 1 // Leader は自分のログに追記済み
-		for _, m := range n.matchIndex {
-			if m >= i {
-				agreed++
-			}
-		}
-		if agreed*2 > total {
-			n.commitIndex = i
-			return
-		}
-	}
-}
-```
-
-複製の数でコミットするのは現在の任期で作られたエントリだけ、という条件が入っています。
-
-Raft 論文の Figure 2 はコミットの規則を「`N > commitIndex` かつ過半数の `matchIndex[i] >= N` かつ `log[N].term == currentTerm` を満たす N があれば `commitIndex = N` とする」と規定しており、`log[N].term == currentTerm` がこの条件です。
-
-過去の任期のエントリは、過半数に複製されていても、後の Leader に上書きされる場合があります。そのエントリを持たないノードでも、ログの末尾の任期が新しければ Leader に選ばれる場合があるからです（論文の Figure 8）。
-
-例えば 5 台の構成で、次の順に Leader が入れ替わったとします。任期 2 の Leader A が B に配って落ち、任期 3 の Leader E が自分だけに書いて落ちます。任期 4 で A が復帰して C に配り、A が落ちた後に E が当選して上書きします。
-
-{{< figure src="images/leader-and-followers_overwrite.svg" alt="段階 1 から 4 までを横に並べ、各段階で A から E の 5 台が、ログの同じ位置に持つエントリの任期を縦に並べた図。段階 1 は A と B が 2。段階 2 は A と B が 2、E が 3。段階 3 は A・B・C が 2 で過半数に届き、E が 3。段階 4 は 5 台とも 3 になり、任期 2 のエントリが消える。エントリが無い所は点線の「-」" caption="過半数に届いた任期 2 のエントリが、上書きされるまで" align="center" >}}
-
-段階 3 で任期 2 のエントリは過半数の 3 台に届いています。それでも段階 4 で E は B・C・D の票を集めて当選できます。E の末尾の任期 3 が、B・C の末尾の任期 2 より新しいためです。
-
-現在の任期のエントリが過半数に複製されると、そのエントリを持たないノードは検査に落ち、Leader になれません。Raft は、2 つのログの同じ位置に同じ任期のエントリがあれば、そこまでの内容が全て一致するように保っています。そのため、Leader が `commitIndex` を現在の任期のエントリの位置まで進めると、その手前にある過去の任期のエントリもコミット済みの範囲に入ります。
-
----
-
-### 古い Leader の締め出し
-
-ネットワークが分断されると、Leader が生きているのに Follower がその信号を受け取れない状態になります。多数派（過半数が残った側）のノードは新しい Leader を選び、少数派に取り残された旧 Leader は自分が Leader のつもりで動き続けます。1 台に集約したはずの更新の受け口が、一時的に 2 台に増えます。
-
-以下は、分断が起きてから旧 Leader が締め出されるまでの流れです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant A as Node A（任期 5 の Leader）
-    participant B as Node B
-    participant C as Node C
-    Note over A,C: 分断が発生し Node A が孤立
-    A->>B: 複製要求（任期 5）
-    Note over B: 届かない
-    B->>C: 投票を要求（任期 6）
-    C-->>B: 投票する
-    Note over B,C: Node B が任期 6 の Leader に
-    Note over A,C: 分断が解消
-    A->>B: 複製要求（任期 5）
-    B-->>A: 拒否（現在の任期は 6）
-    Note over A: 任期 6 を見て<br/>Follower に戻る
-```
-
-上記の図の Node A は、拒否の応答に含まれる任期番号を見て、初めて自分が交代させられたことを知ります。権利を渡すたびに大きくなる番号で古い操作を拒否する点は、[Lease](../lease/) で使う fencing token と同じ発想です。
-
-分断されている間、Node A が更新をコミットすることはありません。コミットには過半数の応答が必要で、少数派は定義上その数に届かないからです。更新はコミットしていないので、Node A は Client に完了も返していません。非同期で複製する Redis では、取り残された旧 master が書き込みに成功を返し、後で上書きされて消えます。その様子は [Ambassador](/notes/software-architecture/ambassador/) の実験で測っています。分断が解消すると、Node A のログは前述の手順で任期 6 の Leader のものと突き合わせられ、食い違う位置から後ろが上書きされます。
-
-締め出しは、複製要求を受け取る側の数行のコードで実現できます。
-
-```go
-// handleAppendEntries は、Leader から届いた複製要求を処理します。
-// ログの整合性検査と追記（Raft 論文 5.3 節）は省略しています。
-func (n *node) handleAppendEntries(args appendEntriesArgs) appendEntriesReply {
-	if args.Term < n.currentTerm {
-		// 分断から復帰した旧 Leader は、ここで弾かれる。
-		// 応答に自分の任期を載せるので、旧 Leader は交代を知る
-		return appendEntriesReply{Term: n.currentTerm, Success: false}
-	}
-	if args.Term > n.currentTerm {
-		n.currentTerm = args.Term
-		n.votedFor = ""
-	}
-	n.role = roleFollower
-	n.leaderID = args.LeaderID // Client を現在の Leader に案内するために覚える
-	return appendEntriesReply{Term: n.currentTerm, Success: true}
-}
-```
-
----
-
-### 読み取りの流し先
-
-読み取りを Follower に分散させると、Leader の負荷は下がります。その代わり、コミットした更新がまだ届いていない Follower は古い値を返します。更新の直後に自分の書いた値を読み返す用途では、この遅れが表に出ます。
-
-Leader から読んでも、古い値が返る場合があります。2014 年、Kyle Kingsbury 氏は故障を注入して DB（データベース）の正しさを調べる [Jepsen](https://jepsen.io/) で、[etcd](https://etcd.io/)（Raft で複製する Key-Value ストア）の[読み取りが古い値を返す](https://aphyr.com/posts/316-call-me-maybe-etcd-and-consul)ことを示しました。
-
-当時の etcd は、`consistent` を指定した読み取りでも、自分を Leader と考えているノードが手元の状態をそのまま返していました。分断で孤立した旧 Leader も、交代に気付くまでは自分を Leader と考えているので、新しい Leader の下でコミットした値を知らないまま応答します。
-
-Kingsbury 氏はこの問題を [issue #741](https://github.com/etcd-io/etcd/issues/741)「Consistent reads are not consistent」（一貫性のある読み取りが一貫していない）として報告し、読み取りもログに追記してコミットする `quorum=true` が etcd に足されました。ログを通せば確実ですが、読み取りのたびに複製とコミットの往復が掛かります。
-
-<br>
-
-Raft は、ログに追記せずに最新の値を返すため、2 つの手順を要求しています（論文 8 節）。1 つ目は、Leader が就任した直後に自分の任期の空エントリをコミットすることです。`advanceCommitIndex` は現在の任期のエントリしか複製の数で数えないので、自分の任期のエントリを 1 つコミットするまで、就任した Leader はどこまでがコミット済みなのかを把握できません。
-
-2 つ目は、読み取りに応答する前に過半数とハートビートを交換することです。上記の etcd の旧 Leader のような応答は、ここで防げます。新しい Leader が既に立っていれば、過半数のうち少なくとも 1 台が新しい任期を返します。
-
-以下は、2 つの手順を済ませた Leader が読み取りに応答するまでの流れです。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as Client
-    participant L as Leader
-    participant F1 as Follower 1
-    participant F2 as Follower 2
-    Note over L: 就任直後に自分の任期の<br/>空エントリをコミット済み
-    C->>L: 読み取り
-    L->>F1: ハートビート
-    L->>F2: ハートビート
-    F1-->>L: 応答（同じ任期）
-    Note over L,F1: Leader 自身と合わせて<br/>2 台なので過半数に到達
-    L-->>C: コミット済みの値
-```
-
-論文は、上記の図の往復の代わりに、ハートビートを Lease のように扱う方法も挙げています。過半数への問い合わせを省ける代わりに、ノード間の時計のずれに上限があることを前提にします。
-
-ここまでの厳密さが必要ない読み取りであれば、Follower に流して構いません。集計や一覧の表示のように、数秒古い値でも判断が変わらない用途が候補になります。
-
----
-
-### 利点
-
-- コミットした更新の順序が Leader のログの並びに定まり、順序を後から復元する仕組みが必要ない
-- 過半数の応答でコミットするため、一部のノードが遅れても更新が進む
-- Follower は Leader の内容を写すだけなので、複製の処理が単純になる
-- Leader が落ちても、過半数のノードが残っていれば選び直して処理を続けられる
-- Raft のように任期の番号で新旧を判定する実装なら、時計を合わせずに古い Leader を排除できる
-
----
-
-### 欠点
-
-Leader 1 台に更新を集める構成には、次の制約があります。
-
-- 更新が全て Leader を通るため、書き込みの性能が Leader 1 台の性能で頭打ちになる
-- Leader が落ちてから次が決まるまで、更新を受け付けられない時間が生じる
-- 選出の待ち時間を短くすると誤検知による交代が増え、長くすると復旧が遅れる
-- 拠点をまたぐ構成では、コミットのたびに Leader と過半数の間の往復の時間が加わる
-- Follower から読むと、コミット済みの更新がまだ届いていない値が返る場合がある
-
----
-
-### 適さないケース
-
-- 書き込みが多く、1 台では捌けないワークロード。データを分割して Leader を複数立てる構成を検討する
-- 分断中も両側で更新を受け付けたいシステム。[CRDT](https://crdt.tech/)（Conflict-free Replicated Data Type）を検討する。CRDT は、並行な更新の順序を決めなくても、同じ更新を受け取ったノード同士が同じ状態に揃うデータ型で、扱えるデータの形は限られる
-- 数百台のノードを 1 つの合意グループに参加させる構成。1 つのグループは数台に絞るのが前提で、システム全体の台数が多いことは問題にならない
-- 更新が稀で、1 台の停止による短い中断を許容できるシステム
+実験のスクリプトと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/distributed-systems/leader-and-followers/lab) にあります。

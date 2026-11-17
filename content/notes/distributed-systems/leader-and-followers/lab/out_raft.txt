@@ -1,0 +1,16 @@
+   0.2s  Leader は e1（term 2）。put k=v1 -> OK
+   0.3s  e1 をネットワークから外した
+   2.1s  外した e1 が自分から Leader を降りた（Leader=False term=2）
+   2.5s  残りの 2 台で新しい Leader e2（term 3）
+   2.6s  e2 に put k=v-new -> OK
+   5.4s  外した e1 に put k=v-old -> Error: context deadline exceeded
+   5.7s  外した e1 に get k（linearizable） -> Error: context deadline exceeded
+   5.8s  外した e1 に get k（serializable） -> v1
+   6.0s  e1 を戻した
+   9.1s  e1: Leader=False term=3 get k -> v-new
+   9.3s  e2: Leader=True term=3 get k -> v-new
+   9.4s  e3: Leader=False term=3 get k -> v-new
+        e1 のログ: 57e45b068303314d stepped down to follower since quorum is not active
+        e1 のログ: 57e45b068303314d became follower at term 2
+        e1 のログ: 57e45b068303314d became follower at term 3
+        e1 のログ: found conflict at index 10 [existing term: 2, conflicting term: 3]
