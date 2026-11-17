@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/math/convex-functions/index.md",
- "overall": 3,
- "product": 18,
- "blob": "6ee533b5c2497e93661729fb31d75ad83eda95c2",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "6e7d26fe19a98f5f77c3c11520e4584eee947f83",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
