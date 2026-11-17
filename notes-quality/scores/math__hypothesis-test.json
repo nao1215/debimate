@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/math/hypothesis-test/index.md",
- "overall": 3,
- "product": 8,
- "blob": "e13314f3b6f38ba509f24cdbdff0a999a95828ac",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 36,
+ "blob": "b153efbd7a85db21a55d37bbd0755977837fb125",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
