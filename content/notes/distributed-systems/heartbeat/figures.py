@@ -1,257 +1,283 @@
-"""Generate the cover diagram of the heartbeat note as a hand-written SVG.
+"""Generate the figures of the Heartbeat note (WebP).
 
-concept_figure() lays the signals the Monitor receives on a time axis, one
-row per node. Nodes send every 1 s and the Monitor gives up after 5 s of
-silence (the example in the note). Node 3 really stops, Node 2 only pauses
-for 8 s in a GC, and both are judged failed in the same way.
+cover_animation() replays one trial of lab/monitor_pause.py (the "thread"
+monitor) from the recorded timestamps: node-a and node-b keep sending, the
+monitor is stopped for 1.5 s, and on resume it judges both nodes down before
+it reads the 31 heartbeats waiting in the socket buffer. Played at 0.5x.
 
-tradeoff_figure() plots lab/sim.py: for fixed timeouts of 2 to 10 times the
-interval, the mean detection delay against false suspicions per day.
+gray_figure() draws lab/gray_failure.json: heartbeats and request results on
+one time axis, for the two places the heartbeat is sent from.
 
-Run: python3 content/notes/distributed-systems/heartbeat/figures.py
+phi_figure() evaluates the phi formulas of Apache Pekko (normal distribution
+plus acceptable-heartbeat-pause) and Apache Cassandra (exponential, scaled by
+1/ln 10) with their default settings.
+
+topology_figure() counts the heartbeats per period for n = 5 nodes: one\nmonitor, all-to-all, and gossip where each node sends to one peer.\n\nRun: python3 content/notes/distributed-systems/heartbeat/figures.py
 """
 
-import sys
-from html import escape
+import json
+import math
 from pathlib import Path
 
 import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE / "lab"))
-import sim  # noqa: E402
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
+LAB = HERE / "lab"
+IMG = HERE / "images"
+INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#4f81a8", "#d64545"
 FILL, PALE = "#f2f2f2", "#eaf1f5"
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
-GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+OCHRE, OCHRE_PALE = "#c98f2a", "#f8eed8"
+JP = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
+MONO = "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"
 
-X0, X1, T_MAX = 250, 920, 12  # time axis: 0..12 s
-TIMEOUT = 5
-
-
-def tx(t):
-    return X0 + (X1 - X0) * t / T_MAX
+plt.rcParams["font.family"] = "Noto Sans CJK JP"
 
 
-def concept_figure():
-    w, h = 960, 540
-    p = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
-        f'viewBox="0 0 {w} {h}" role="img"><title>'
-        f'{escape("Monitor が受け取るハートビートと、5 秒の途絶で故障とみなす時点")}</title>',
-        f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}} '
-        f'.red{{fill:{RED}}}</style>',
-        f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
-    ]
-
-    def text(x, y, s, size=24, anchor="middle", weight="normal", cls=""):
-        c = f' class="{cls}"' if cls else ""
-        p.append(f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-                 f'text-anchor="{anchor}"{c}>{escape(s)}</text>')
-
-    text(480, 50, "Monitor が受け取る信号（1 秒ごとに送信）", 28, weight="normal")
-
-    rows = [
-        # name, sub label, received times, last tick before silence, resumed
-        ("Node 1", "", list(range(0, 13)), None, False),
-        ("Node 2", "GC で 8 秒停止", [0, 1, 2, 10, 11, 12], 2, True),
-        ("Node 3", "停止", [0, 1, 2, 3], 3, False),
-    ]
-    for i, (name, sub, ticks, last, resumed) in enumerate(rows):
-        y = 140 + i * 112  # centre line of the row
-        text(40, y + (-4 if sub else 9), name, 28, "start", "normal")
-        if sub:
-            text(40, y + 32, sub, 24, "start", cls="sub")
-        p.append(f'<line x1="{X0}" y1="{y}" x2="{X1}" y2="{y}" stroke="{SUB}" '
-                 'stroke-width="1.5"/>')
-        if last is not None:
-            # Silence counted by the Monitor, until it gives up.
-            x, xe = tx(last), tx(last + TIMEOUT)
-            p.append(f'<rect x="{x}" y="{y - 34}" width="{xe - x}" height="68" '
-                     f'fill="{OCHRE_PALE}" stroke="none"/>')
-            text((x + xe) / 2, y + 9, "5 秒 受信なし", 24, cls="sub")
-            # Moment the node is regarded as failed.
-            p.append(f'<line x1="{xe}" y1="{y - 42}" x2="{xe}" y2="{y + 42}" '
-                     f'stroke="{RED}" stroke-width="7" stroke-linecap="round"/>')
-            cx = (xe + tx(10)) / 2 if resumed else (xe + X1) / 2
-            half = 40 if resumed else 64
-            p.append(f'<rect x="{cx - half}" y="{y - 20}" width="{2 * half}" height="40" '
-                     'fill="#ffffff"/>')
-            if resumed:
-                text((xe + tx(10)) / 2, y + 9, "誤検知", 24, cls="red", weight="normal")
-            else:
-                text((xe + X1) / 2, y + 9, "本当に停止", 24, weight="normal")
-        for t in ticks:
-            p.append(f'<line x1="{tx(t)}" y1="{y - 24}" x2="{tx(t)}" y2="{y + 24}" '
-                     f'stroke="{ACCENT}" stroke-width="7" stroke-linecap="round"/>')
-
-    # Time axis.
-    ya = 470
-    p.append(f'<line x1="{X0}" y1="{ya}" x2="{X1}" y2="{ya}" stroke="{SUB}" '
-             'stroke-width="2"/>')
-    for t in range(0, T_MAX + 1, 2):
-        p.append(f'<line x1="{tx(t)}" y1="{ya}" x2="{tx(t)}" y2="{ya + 10}" '
-                 f'stroke="{SUB}" stroke-width="2"/>')
-        text(tx(t), ya + 38, str(t), 24, cls="sub")
-    text(40, ya + 38, "経過（秒）", 24, "start", cls="sub")
-
-    (HERE / "images").mkdir(exist_ok=True)
-    (HERE / "images" / "heartbeat_concept.svg").write_text(
-        "\n".join(p + ["</svg>"]) + "\n", encoding="utf-8")
+def to_webp(png: Path, name: str):
+    Image.open(png).convert("RGB").save(IMG / name, "WEBP", quality=90, method=6)
+    png.unlink()
 
 
-def tradeoff_figure():
-    plt.rcParams.update({
-        "font.size": 11, "axes.edgecolor": SUB, "axes.labelcolor": INK,
-        "xtick.color": INK, "ytick.color": INK, "text.color": INK,
-        "svg.fonttype": "path", "svg.hashsalt": "heartbeat",
-        "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
-    })
-    fig, ax = plt.subplots(figsize=(7.2, 4.0))
-    styles = {"stable": (ACCENT, "o", "stable (same DC)"),
-              "jittery": (RED, "s", "jittery (cross-region)")}
-    for name, (color, marker, label) in styles.items():
-        rows = [r for r in sim.run(name) if r[1] > 0]  # log axis: drop zeros
-        xs, ys = [r[2] for r in rows], [r[1] for r in rows]
-        ax.plot(xs, ys, color=color, marker=marker, lw=2.2, ms=7, label=label)
-        for k, fp, mean, _ in rows:
-            ax.annotate(f"{k}T", (mean, fp), textcoords="offset points",
-                        xytext=(6, 6), fontsize=10, color=SUB)
-    ax.set_yscale("log")
-    ax.set_xlabel("Mean detection delay after a crash (s)")
-    ax.set_ylabel("False suspicions per day")
-    ax.set_xlim(0, 11)
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, loc="upper right")
+# ---------------------------------------------------------------- cover
+S = 2               # draw at 2x, then shrink
+W, H = 1200, 560
+
+
+def font(size, mono=False):
+    return ImageFont.truetype(MONO if mono else JP, size * S)
+
+
+def cover_animation(trial_index=2):
+    r = json.load(open(LAB / "monitor_pause.json"))[trial_index]
+    assert r["mode"] == "thread"
+    stop, cont = r["stop"], r["cont"]
+    sends = {n: sorted(s["t"] for s in r["sends"] if s["node"] == n) for n in ("node-a", "node-b")}
+    recvs = {n: sorted(e["t"] for e in r["events"] if e["ev"] == "recv" and e["node"] == n)
+             for n in ("node-a", "node-b")}
+    deads = {e["node"]: e["t"] for e in r["events"] if e["ev"] == "dead"}
+    burst = {n: sum(1 for v in recvs[n] if cont <= v < cont + 0.01) for n in recvs}
+    assert sum(burst.values()) == 31
+    t_lo, t_hi = 1.0, 4.3
+    x0, x1 = 210, 1160
+
+    def X(t):
+        return (x0 + (t - t_lo) / (t_hi - t_lo) * (x1 - x0)) * S
+
+    def frame(t, phase, note):
+        im = Image.new("RGB", (W * S, H * S), "#ffffff")
+        d = ImageDraw.Draw(im)
+        d.text((40 * S, 22 * S), "監視する側（monitor）を 1.5 秒止めると、動いている 2 台が落ちたと判定される",
+               font=font(22), fill=INK)
+        d.text((40 * S, 60 * S), f"経過 {t:4.2f} 秒（実測の時刻を 0.5 倍速で再生）", font=font(17), fill=SUB)
+        # time band
+        top, bot = 110, 470
+        d.rectangle([X(stop), top * S, X(cont), bot * S], fill="#ececec")
+        d.text((X(stop) + 10 * S, (top + 6) * S), "monitor が止まっている（SIGSTOP）", font=font(15), fill=SUB)
+        for k in range(1, 5):
+            d.line([X(k), (bot) * S, X(k), (bot + 8) * S], fill=SUB, width=2 * S)
+            d.text((X(k) - 14 * S, (bot + 12) * S), f"{k} 秒", font=font(14), fill=SUB)
+        d.line([X(t), top * S, X(t), bot * S], fill=INK, width=2 * S)
+        rows = {"node-a": 170, "node-b": 230}
+        for n, y in rows.items():
+            d.text((40 * S, (y - 12) * S), f"{n} が送る", font=font(16), fill=INK)
+            for s in sends[n]:
+                if t_lo <= s <= t:
+                    d.ellipse([X(s) - 5 * S, (y - 5) * S, X(s) + 5 * S, (y + 5) * S], fill=ACCENT)
+        # buffer
+        y_buf = 300
+        waiting = sum(1 for n in sends for s in sends[n] if stop <= s <= t) if phase < 2 else 0
+        if t < stop:
+            waiting = 0
+        d.text((40 * S, (y_buf - 12) * S), "受信バッファ", font=font(16), fill=INK)
+        d.rounded_rectangle([X(stop), (y_buf - 18) * S, X(cont), (y_buf + 18) * S], radius=8 * S,
+                            outline=OCHRE, width=2 * S, fill=OCHRE_PALE if waiting else "#ffffff")
+        buf_note = f"届いて読まれていない ハートビート {waiting} 通"
+        if phase >= 2:
+            buf_note += "（monitor が読み終えた）"
+        d.text((X(stop) + 14 * S, (y_buf - 11) * S), buf_note, font=font(15), fill=INK)
+        # monitor rows
+        mrows = {"node-a": 370, "node-b": 430}
+        for n, y in mrows.items():
+            d.text((40 * S, (y - 12) * S), f"monitor が読む\n（{n}）", font=font(14), fill=INK, spacing=2 * S)
+            for v in recvs[n]:
+                if t_lo <= v <= t and (v < cont or phase >= 2):
+                    d.ellipse([X(v) - 5 * S, (y - 5) * S, X(v) + 5 * S, (y + 5) * S], fill=INK)
+            if n in deads and phase >= 1:
+                # the cross sits above the row so it does not hide the dots read at the same time
+                xd, yc = X(deads[n]), y - 21
+                d.line([xd - 8 * S, (yc - 8) * S, xd + 8 * S, (yc + 8) * S], fill=RED, width=4 * S)
+                d.line([xd - 8 * S, (yc + 8) * S, xd + 8 * S, (yc - 8) * S], fill=RED, width=4 * S)
+                d.text((xd + 14 * S, (yc - 11) * S), "落ちたと判定", font=font(15), fill=RED)
+            if phase >= 2:
+                d.text((X(cont) + 4 * S, (y + 9) * S), f"再開後、まとめて {burst[n]} 通を読んだ",
+                       font=font(13), fill=INK)
+        d.text((40 * S, 515 * S), note, font=font(16), fill=INK)
+        return im.resize((W, H), Image.LANCZOS)
+
+    frames, durs = [], []
+    t = t_lo
+    while t < cont - 1e-9:
+        note = "2 台とも 100 ms ごとに送り続けている" if t < stop else \
+            "monitor は止まっているが、ハートビートは届いて受信バッファに溜まる"
+        frames.append(frame(t, 0, note))
+        durs.append(200)
+        t = round(t + 0.1, 3)
+    frames.append(frame(cont, 1, "再開した直後、判定のスレッドが先に動いた。最後に読んだのは 1.5 秒前なので、2 台とも落ちたと判定"))
+    durs.append(2000)
+    frames.append(frame(cont + 0.001, 2, "1 ms も経たないうちに受信のスレッドが 31 通を読み、2 台とも生き返ったと判定し直す"))
+    durs.append(2000)
+    t = round(cont + 0.1, 3)
+    while t <= t_hi:
+        frames.append(frame(t, 2, "1 ms も経たないうちに受信のスレッドが 31 通を読み、2 台とも生き返ったと判定し直す"))
+        durs.append(200)
+        t = round(t + 0.1, 3)
+    durs[-1] = 3000
+    frames[0].save(IMG / "heartbeat_monitor_pause.webp", "WEBP", save_all=True,
+                   append_images=frames[1:], duration=durs, loop=0, quality=80, method=6)
+    print("cover", len(frames), "frames", sum(durs) / 1000, "s")
+
+
+# ---------------------------------------------------------------- gray failure
+def gray_figure():
+    data = json.load(open(LAB / "gray_failure.json"))
+    labels = {"thread": "別のスレッドから送る", "inloop": "処理のループから送る"}
+    fig, axes = plt.subplots(2, 1, figsize=(10, 4.6), sharex=True)
+    for ax, mode in zip(axes, ("thread", "inloop")):
+        ev = data[mode]
+        hb = [e["t"] for e in ev if e["ev"] == "hb"]
+        ok = [e["t"] for e in ev if e["ev"] == "ok"]
+        to = [e["sent"] for e in ev if e["ev"] == "timeout"]
+        dead = [e["t"] for e in ev if e["ev"] == "dead"]
+        ax.scatter(hb, [1] * len(hb), s=14, color=ACCENT, label="monitor に届いたハートビート")
+        ax.scatter(ok, [0] * len(ok), s=14, color=INK, label="300 ms 以内に返った要求")
+        ax.scatter(to, [0] * len(to), s=40, color=RED, marker="x", label="返らなかった要求")
+        for t in dead:
+            ax.axvline(t, color=RED, lw=1.5)
+            ax.text(t + 0.05, 1.35, f"{t:.2f} 秒に落ちたと判定", color=RED, fontsize=10)
+        ax.axvline(2.0, color=SUB, lw=1, ls="--")
+        ax.set_yticks([1, 0], ["ハートビート", "要求"])
+        ax.set_ylim(-0.6, 1.7)
+        ax.set_title(f"ハートビートを{labels[mode]}", loc="left", fontsize=12)
+        for sp in ("top", "right"):
+            ax.spines[sp].set_visible(False)
+    axes[0].text(2.03, 1.35, "2.0 秒に処理のループがデッドロック", color=SUB, fontsize=10)
+    axes[1].text(1.97, 0.45, "2.0 秒に処理のループがデッドロック", color=SUB, fontsize=10, ha="right")
+    axes[1].set_xlabel("開始からの時間（秒）")
+    axes[1].set_xlim(0, 5)
+    axes[0].legend(loc="upper left", bbox_to_anchor=(0, -0.08), ncol=3, frameon=False, fontsize=9.5)
     fig.tight_layout()
-    fig.savefig(HERE / "images" / "heartbeat_timeout_tradeoff.svg",
-                metadata={"Date": None})
+    png = IMG / "gray.png"
+    fig.savefig(png, dpi=200, facecolor="#ffffff")
+    plt.close(fig)
+    to_webp(png, "heartbeat_gray_failure.webp")
 
 
-class Svg:
-    """A tiny hand-written SVG canvas for the explanatory figures."""
-
-    def __init__(self, title, w=960, h=540):
-        self.p = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
-            f'viewBox="0 0 {w} {h}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}}</style>',
-            '<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" '
-            f'markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="{SUB}"/>'
-            '</marker></defs>',
-            f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
-        ]
-
-    def text(self, x, y, s, size=24, anchor="middle", cls=""):
-        c = f' class="{cls}"' if cls else ""
-        self.p.append(f'<text x="{x:.1f}" y="{y:.1f}" font-size="{size}" '
-                      f'text-anchor="{anchor}"{c}>{escape(s)}</text>')
-
-    def raw(self, s):
-        self.p.append(s)
-
-    def line(self, x1, y1, x2, y2, color=SUB, sw=2.5, start=False, end=False, dash=""):
-        m = (' marker-start="url(#a)"' if start else "") + (' marker-end="url(#a)"' if end else "")
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.p.append(f'<line x1="{x1:.1f}" y1="{y1:.1f}" x2="{x2:.1f}" y2="{y2:.1f}" '
-                      f'stroke="{color}" stroke-width="{sw}"{d}{m}/>')
-
-    def circle(self, cx, cy, r, fill, stroke, sw=3):
-        self.p.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r}" fill="{fill}" '
-                      f'stroke="{stroke}" stroke-width="{sw}"/>')
-
-    def save(self, name):
-        (HERE / "images").mkdir(exist_ok=True)
-        (HERE / "images" / name).write_text("\n".join(self.p + ["</svg>"]) + "\n",
-                                            encoding="utf-8")
-
-
-def topology_figure():
-    """Messages per period with n = 5: central monitoring vs mutual monitoring."""
-    import math
-    f = Svg("中央集約型と相互監視型で 1 周期に流れる信号の本数")
-    n, r_ring, r_node = 5, 150, 30
-
-    def ring(cx, cy):
-        return [(cx + r_ring * math.sin(2 * math.pi * i / n),
-                 cy - r_ring * math.cos(2 * math.pi * i / n)) for i in range(n)]
-
-    def arrow(a, b, both=False):
-        (x1, y1), (x2, y2) = a, b
-        d = math.hypot(x2 - x1, y2 - y1)
-        ux, uy = (x2 - x1) / d, (y2 - y1) / d
-        f.line(x1 + ux * (r_node + 4), y1 + uy * (r_node + 4),
-               x2 - ux * (r_node + 6), y2 - uy * (r_node + 6), start=both, end=True)
-
-    # Central: every node sends to the monitor.
-    cx, cy = 240, 270
-    f.text(cx, 52, "中央集約型", 28)
-    for pt in ring(cx, cy):
-        arrow(pt, (cx, cy))
-    f.circle(cx, cy, 40, OCHRE_PALE, OCHRE)
-    f.text(cx, cy + 9, "監視", 24)
-    for x, y in ring(cx, cy):
-        f.circle(x, y, r_node, PALE, ACCENT)
-    f.text(cx, 500, "1 周期に n = 5 本", 26, cls="sub")
-
-    # Mutual: every pair watches each other.
-    cx = 720
-    f.text(cx, 52, "相互監視型", 28)
-    pts = ring(cx, cy)
-    for i in range(n):
-        for j in range(i + 1, n):
-            arrow(pts[i], pts[j], both=True)
-    for x, y in pts:
-        f.circle(x, y, r_node, PALE, ACCENT)
-    f.text(cx, 500, "1 周期に n × (n−1) = 20 本", 26, cls="sub")
-    f.line(480, 90, 480, 470, FILL, sw=2)
-    f.save("heartbeat_topology.svg")
+# ---------------------------------------------------------------- phi
+def pekko_phi(t, mean, sd):
+    y = (t - mean) / sd
+    if y < -8:
+        return 0.0
+    if y > 8:
+        return 99.0  # far above every threshold drawn
+    e = math.exp(-y * (1.5976 + 0.070566 * y * y))
+    return -math.log10(e / (1 + e)) if t > mean else -math.log10(1 - 1 / (1 + e))
 
 
 def phi_figure():
-    """phi = -log10(P): the tail of a normal model of arrival intervals."""
-    import math
-    from statistics import NormalDist
-    f = Svg("到着間隔の分布の裾の面積 P と phi")
-    dist = NormalDist(1.0, 0.2)             # arrival interval [s], illustrative
-    x0, x1, lo, hi = 110, 900, 0.3, 1.8     # plot range in px and seconds
-    yb, top = 420, 110
+    ts = [i / 100 for i in range(0, 2101)]
+    fig, ax = plt.subplots(figsize=(10, 4.4))
+    curves = [
+        ("Pekko、間隔の平均 1 秒・標準偏差 0.1 秒", lambda t: pekko_phi(t, 1.0 + 3.0, 0.1), ACCENT, "-"),
+        ("Pekko、間隔の平均 1 秒・標準偏差 1 秒", lambda t: pekko_phi(t, 1.0 + 3.0, 1.0), ACCENT, "--"),
+        ("Cassandra、間隔の平均 1 秒", lambda t: t / 1.0 / math.log(10), OCHRE, "-"),
+    ]
+    for label, f, color, ls in curves:
+        ys = [f(t) if f(t) <= 12 else float("nan") for t in ts]
+        ax.plot(ts, ys, color=color, ls=ls, lw=2, label=label)
+        cross = next(t for t in ts if f(t) >= 8)
+        ax.plot([cross], [8], "o", color=color)
+        ax.annotate(f"{cross:.1f} 秒", (cross, 8), xytext=(cross + 0.35, 7.0), color=color, fontsize=11)
+    ax.axhline(8, color=RED, lw=1, ls=":")
+    ax.text(0.2, 8.25, "閾値 8（どちらも既定）", color=RED, fontsize=10)
+    ax.annotate("Pekko は平均に猶予の 3 秒を足すので、\n4 秒近くまで φ はほぼ 0", (3.6, 0.08), xytext=(9.6, 0.5),
+                color=ACCENT, fontsize=10, arrowprops=dict(arrowstyle="->", color=ACCENT, lw=1))
+    ax.set_xlim(0, 21)
+    ax.set_ylim(0, 12)
+    ax.set_xlabel("最後のハートビートからの経過時間（秒）")
+    ax.set_ylabel("φ")
+    ax.legend(loc="upper right", frameon=False)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    fig.tight_layout()
+    png = IMG / "phi.png"
+    fig.savefig(png, dpi=200, facecolor="#ffffff")
+    plt.close(fig)
+    to_webp(png, "heartbeat_phi.webp")
 
-    def px(t):
-        return x0 + (x1 - x0) * (t - lo) / (hi - lo)
+# ---------------------------------------------------------------- topology
+def topology_figure(n=5):
+    """Messages per period with n nodes: one monitor, all-to-all, gossip (1 peer each)."""
+    from matplotlib.patches import Circle, FancyArrowPatch
+    fig, axes = plt.subplots(1, 3, figsize=(10.5, 4.2))
+    R, r = 1.0, 0.27
 
-    peak = dist.pdf(1.0)
+    def ring():
+        return [(R * math.sin(2 * math.pi * i / n), R * math.cos(2 * math.pi * i / n)) for i in range(n)]
 
-    def py(t):
-        return yb - (yb - top) * dist.pdf(t) / peak
+    def arrow(ax, a, b, both=False, color=SUB, shrink_b=24):
+        ax.add_patch(FancyArrowPatch(a, b, arrowstyle="<|-|>" if both else "-|>", mutation_scale=12,
+                                     shrinkA=24, shrinkB=shrink_b, color=color, lw=1.4, zorder=5))
 
-    ts = [lo + (hi - lo) * i / 400 for i in range(401)]
-    t2 = dist.inv_cdf(0.9)                  # phi = 1: shade P = 10%
-    tail = [t for t in ts if t >= t2]
-    d = f"M{px(t2):.1f},{yb} " + " ".join(f"L{px(t):.1f},{py(t):.1f}" for t in [t2] + tail)
-    f.raw(f'<path d="{d} L{px(hi):.1f},{yb} Z" fill="{OCHRE_PALE}" stroke="none"/>')
-    d = "M" + " L".join(f"{px(t):.1f},{py(t):.1f}" for t in ts)
-    f.raw(f'<path d="{d}" fill="none" stroke="{ACCENT}" stroke-width="4"/>')
-    f.line(x0, yb, x1 + 10, yb, SUB, sw=2, end=True)
-    for phi in (1, 2, 3):
-        t = dist.inv_cdf(1 - 10 ** -phi)
-        ylab = 140 + (phi - 1) * 80
-        f.line(px(t), yb, px(t), ylab + 44, SUB, sw=2, dash="6 6")
-        f.text(px(t) + 10, ylab, f"φ = {phi}", 24, "start")
-        f.text(px(t) + 10, ylab + 30, f"P = {10 ** (2 - phi):g}%", 24, "start", cls="sub")
-    f.text(px(t2) + 28, yb - 16, "P", 24)
-    f.text(px(1.0), 92, "これまでの到着間隔の分布", 24, cls="sub")
-    f.text(x0, 470, "最後の受信からの経過 t", 24, "start", cls="sub")
-    f.text(x1, 470, "長い →", 24, "end", cls="sub")
-    f.save("heartbeat_phi.svg")
+    def nodes(ax, pts, label=None):
+        for k, (x, y) in enumerate(pts):
+            ax.add_patch(Circle((x, y), r, facecolor=PALE, edgecolor=ACCENT, lw=2, zorder=3))
+            if label:
+                ax.text(x, y, label(k), ha="center", va="center", fontsize=10, zorder=4)
+
+    pts = ring()
+    # 1) one monitor
+    ax = axes[0]
+    for pt in pts:
+        arrow(ax, pt, (0, 0), shrink_b=34)
+    ax.add_patch(Circle((0, 0), 0.4, facecolor=OCHRE_PALE, edgecolor=OCHRE, lw=2, zorder=3))
+    ax.text(0, 0, "monitor", ha="center", va="center", fontsize=10.5, zorder=4)
+    nodes(ax, pts)
+    ax.set_title("1 台の monitor が全てを見る", fontsize=15)
+    ax.text(0, -1.55, f"1 周期に n = {n} 本", ha="center", color=SUB, fontsize=14)
+    # 2) all-to-all
+    ax = axes[1]
+    for i in range(n):
+        for j in range(i + 1, n):
+            arrow(ax, pts[i], pts[j], both=True)
+    nodes(ax, pts)
+    ax.set_title("全てのノードが送り合う", fontsize=15)
+    ax.text(0, -1.55, f"1 周期に n × (n−1) = {n * (n - 1)} 本", ha="center", color=SUB, fontsize=14)
+    # 3) gossip: each node picks one peer (fixed here for the drawing)
+    ax = axes[2]
+    for i in range(n):
+        arrow(ax, pts[i], pts[(i + 2) % n], color=ACCENT)
+    nodes(ax, pts, label=lambda k: f"{n} 台分")
+    ax.set_title("gossip（送る相手を 1 台に絞った例）", fontsize=15)
+    ax.text(0, -1.55, f"1 周期に {n} 本、1 通に {n} 台分の記録", ha="center", color=SUB, fontsize=14)
+    for ax in axes:
+        ax.set_xlim(-1.4, 1.4)
+        ax.set_ylim(-1.75, 1.35)
+        ax.set_aspect("equal")
+        ax.axis("off")
+    fig.tight_layout()
+    png = IMG / "topology.png"
+    fig.savefig(png, dpi=200, facecolor="#ffffff")
+    plt.close(fig)
+    to_webp(png, "heartbeat_topology.webp")
 
 
 if __name__ == "__main__":
-    concept_figure()
-    tradeoff_figure()
-    topology_figure()
+    IMG.mkdir(exist_ok=True)
+    cover_animation()
+    gray_figure()
     phi_figure()
+    topology_figure()

@@ -1,8 +1,16 @@
 {
  "path": "content/notes/distributed-systems/heartbeat/index.md",
- "overall": 3,
- "product": 8,
- "blob": "55b0909e4bb36a3ae6fb64b49285690253842a43",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:01:50"
+ "overall": 5,
+ "product": 54,
+ "blob": "3fb18185f364e7e133bccabcc086df8355bb8328",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }
