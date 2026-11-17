@@ -1,0 +1,23 @@
+BIP143 vector: sighash match, signature match
+one P2WPKH input = 68 vB
+one: balance=100000000 sat in 1 coins -> send 90000000 sat at 10 sat/vB: inputs=1 vsize=141 vB fee=1410 sat change=9998590 sat coins_after=1 (accepted: fee 1410 sat)
+many: balance=100000000 sat in 200 coins -> send 90000000 sat at 10 sat/vB: inputs=181 vsize=12357 vB fee=123810 sat change=376190 sat coins_after=20 (accepted: fee 123810 sat)
+spend alice's 1 BTC coin again: rejected: input 0 is not in the UTXO set
+spend alice's change coin: accepted: fee 2000 sat
+100 x 1000 sat at  1 sat/vB: all inputs -> 93158 sat | send_max -> 93158 sat (100 inputs)
+100 x 1000 sat at  2 sat/vB: all inputs -> 86316 sat | send_max -> 86316 sat (100 inputs)
+100 x 1000 sat at  4 sat/vB: all inputs -> 72632 sat | send_max -> 72632 sat (100 inputs)
+100 x 1000 sat at  6 sat/vB: all inputs -> 58948 sat | send_max -> 58948 sat (100 inputs)
+100 x 1000 sat at  8 sat/vB: all inputs -> 45264 sat | send_max -> 45264 sat (100 inputs)
+100 x 1000 sat at 10 sat/vB: all inputs -> 31580 sat | send_max -> 31580 sat (100 inputs)
+100 x 1000 sat at 12 sat/vB: all inputs -> 17896 sat | send_max -> 17896 sat (100 inputs)
+100 x 1000 sat at 13 sat/vB: all inputs -> 11054 sat | send_max -> 11054 sat (100 inputs)
+100 x 1000 sat at 14 sat/vB: all inputs -> 4212 sat | send_max -> 4212 sat (100 inputs)
+100 x 1000 sat at 15 sat/vB: all inputs -> -2630 sat | send_max -> 0 sat (0 inputs)
+100 x 1000 sat at 16 sat/vB: all inputs -> -9472 sat | send_max -> 0 sat (0 inputs)
+100 x 1000 sat at 18 sat/vB: all inputs -> -23156 sat | send_max -> 0 sat (0 inputs)
+100 x 1000 sat at 20 sat/vB: all inputs -> -36840 sat | send_max -> 0 sat (0 inputs)
+100 x 1000 sat at 25 sat/vB: all inputs -> -71050 sat | send_max -> 0 sat (0 inputs)
+100 x 1000 sat at 30 sat/vB: all inputs -> -105260 sat | send_max -> 0 sat (0 inputs)
+break-even fee rate = 14.7 sat/vB
+dust threshold: {'P2WPKH': 294, 'P2TR': 330, 'P2PKH': 546}

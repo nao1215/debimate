@@ -920,3 +920,8 @@ architecture-testing-systems	mutant	変異	ミュータント	修正済み	中	c
 architecture-testing-systems	oracle (strong / weak)	判定（細かい・弱い）	テストオラクル（厳密・緩い）	修正済み	中	content/notes/software-testing/quint/index.md	既存のテストオラクルの行（JSTQB）	2026-11-14 同上
 architecture-testing-systems	backup / glue code	backup・つなぎのコード	バックアップ・グルーコード	修正済み	弱	content/notes/software-testing/quint/index.md	定着語のため検索省略	2026-11-14 同上
 ml-ml-mlops	OPTICS reachability distance	到達可能距離	到達可能距離	一致		projects/ml/notes/ml/dbscan/index.md	MetricGate https://metricgate.com/docs/ja/optics-clustering/ ／ https://metricgate.com/docs/ja/reachability-plot/	コア距離と対で使う。プロットは到達可能性プロット
+blockchain-b	change (output)	お釣り	お釣り	一致		content/notes/blockchain-systems/utxo/index.md	Bitcoin Optech ニュースレター日本語版 https://bitcoinops.org/ja/newsletters/2024/06/14/	「未承認のお釣り」。本人の実文に用例は無いが分野の言い方に従う / 2026-11-17 utxo の書き直しで追加
+blockchain-b	coin selection	コイン選択	コイン選択	一致		content/notes/blockchain-systems/utxo/index.md	Bitcoin Optech ニュースレター日本語版 https://bitcoinops.org/ja/newsletters/2024/01/03/	「新しいコイン選択戦略」 / 2026-11-17 utxo の書き直しで追加
+blockchain-b	double spending	二重支出	二重支出	一致		content/notes/blockchain-systems/utxo/index.md	bitcoin.org 用語集（日本語） https://bitcoin.org/ja/vocabulary	2026-11-17 utxo は旧版の「二重使用」から二重支出にした。blockchain-basics・bitcoin-block の行（未確定）は別途
+blockchain-b	dust	ダスト（dust）	ダスト	未確定		content/notes/blockchain-systems/utxo/index.md	Bitcoin Optech Uneconomical outputs（英語） https://bitcoinops.org/en/topics/uneconomical-outputs/	日本語の資料は未確認。カタカナで併記した / 2026-11-17 utxo の書き直しで追加
+blockchain-b	consolidation	統合（consolidation）	統合（コンソリデーション）	未確定		content/notes/blockchain-systems/utxo/index.md		日本語の資料は未確認 / 2026-11-17 utxo の書き直しで追加

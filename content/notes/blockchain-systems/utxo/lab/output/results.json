@@ -1,0 +1,246 @@
+{
+  "bip143_sighash": "match",
+  "bip143_signature_rfc6979": "match",
+  "input_vbytes": 68,
+  "payment": {
+    "one": {
+      "coins_before": 1,
+      "balance_sat": 100000000,
+      "inputs": 1,
+      "outputs": 2,
+      "vsize": 141,
+      "fee_sat": 1410,
+      "change_sat": 9998590,
+      "inputs_share": 0.482,
+      "base_bytes": 113,
+      "total_bytes": 222,
+      "result": "accepted: fee 1410 sat",
+      "coins_after": 1
+    },
+    "many": {
+      "coins_before": 200,
+      "balance_sat": 100000000,
+      "inputs": 181,
+      "outputs": 2,
+      "vsize": 12357,
+      "fee_sat": 123810,
+      "change_sat": 376190,
+      "inputs_share": 0.994,
+      "base_bytes": 7493,
+      "total_bytes": 26946,
+      "result": "accepted: fee 123810 sat",
+      "coins_after": 20
+    }
+  },
+  "double_spend": "rejected: input 0 is not in the UTXO set",
+  "spend_change": "accepted: fee 2000 sat",
+  "small_coins": {
+    "coins": 100,
+    "value_each": 1000,
+    "balance": 100000,
+    "curve": [
+      {
+        "fee_rate": 1,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 6842,
+          "received": 93158
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 6842,
+          "received": 93158
+        }
+      },
+      {
+        "fee_rate": 2,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 13684,
+          "received": 86316
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 13684,
+          "received": 86316
+        }
+      },
+      {
+        "fee_rate": 4,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 27368,
+          "received": 72632
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 27368,
+          "received": 72632
+        }
+      },
+      {
+        "fee_rate": 6,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 41052,
+          "received": 58948
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 41052,
+          "received": 58948
+        }
+      },
+      {
+        "fee_rate": 8,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 54736,
+          "received": 45264
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 54736,
+          "received": 45264
+        }
+      },
+      {
+        "fee_rate": 10,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 68420,
+          "received": 31580
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 68420,
+          "received": 31580
+        }
+      },
+      {
+        "fee_rate": 12,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 82104,
+          "received": 17896
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 82104,
+          "received": 17896
+        }
+      },
+      {
+        "fee_rate": 13,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 88946,
+          "received": 11054
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 88946,
+          "received": 11054
+        }
+      },
+      {
+        "fee_rate": 14,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 95788,
+          "received": 4212
+        },
+        "send_max": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 95788,
+          "received": 4212
+        }
+      },
+      {
+        "fee_rate": 15,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 102630,
+          "received": -2630
+        },
+        "send_max": null
+      },
+      {
+        "fee_rate": 16,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 109472,
+          "received": -9472
+        },
+        "send_max": null
+      },
+      {
+        "fee_rate": 18,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 123156,
+          "received": -23156
+        },
+        "send_max": null
+      },
+      {
+        "fee_rate": 20,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 136840,
+          "received": -36840
+        },
+        "send_max": null
+      },
+      {
+        "fee_rate": 25,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 171050,
+          "received": -71050
+        },
+        "send_max": null
+      },
+      {
+        "fee_rate": 30,
+        "all": {
+          "inputs": 100,
+          "vsize": 6842,
+          "fee": 205260,
+          "received": -105260
+        },
+        "send_max": null
+      }
+    ],
+    "break_even_rate": 14.705882352941176
+  },
+  "dust_threshold": {
+    "P2WPKH": 294,
+    "P2TR": 330,
+    "P2PKH": 546
+  },
+  "utxo_set_size": 123
+}

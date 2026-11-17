@@ -1,0 +1,7 @@
+source: https://mempool.space/api/v1/mining/blocks/fee-rates/3y
+points: 2193
+2023: points=90 median>=14.7: 90 (100%) max=468
+2024: points=732 median>=14.7: 324 (44%) max=1192
+2025: points=730 median>=14.7: 0 (0%) max=13
+2026: points=641 median>=14.7: 0 (0%) max=5
+peak median: 1192 sat/vB at 2024-04-20 (avg height 840034)

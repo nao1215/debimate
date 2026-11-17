@@ -66,3 +66,4 @@ ml__dbscan	一覧	その他	DBSCAN - 塊の間に密度の低い所が無けれ�
 ml__data-leakage	一覧	その他	データリーク - 検証に回る行の正解が学習に届く経路ほど、評価は大きく膨らむ
 software-architecture__cell-based-architecture	他の手	その他	Cell-based Architecture - 障害が届く範囲は、台数ではなく顧客の分け方で決まる
 blockchain-systems__bitcoin-block	予想	その他	Bitcoin Block - ブロックの順番は時刻ではなく、直前ブロックのハッシュ値で決まる
+blockchain-systems__utxo	予想	その他	UTXO - 送金の手数料は、残高ではなく使う UTXO の数で決まる
