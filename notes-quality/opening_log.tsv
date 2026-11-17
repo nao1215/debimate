@@ -77,3 +77,4 @@ distributed-systems__consistent-hashing	主張	その他	Consistent Hashing - �
 distributed-systems__heartbeat	一覧	その他	Heartbeat - ハートビートが途絶えても、相手が止まったとは限らない
 distributed-systems__leader-and-followers	一覧	その他	Leader and Followers - コミットが返る時点と、Follower に書き込みが届く時点はずれる
 distributed-systems__quorum	場面	その他	Quorum - タイムアウトした書き込みは、失敗したとは限らない
+math__bayes-theorem	予想	その他	ベイズの定理 - 陽性の割合が学習時と違えば、同じ予測確率でも意味が変わる
