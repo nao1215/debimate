@@ -1,9 +1,9 @@
 {
  "path": "projects/ml/notes/math/correlation/index.md",
- "overall": 3,
- "product": 4,
- "blob": "4bbd1bc72d8789ddcee970aabd3ee849dbcdd33e",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "0fc58c47d33ca32eb782cc7e86fbb86667e6a689",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,

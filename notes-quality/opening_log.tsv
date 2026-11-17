@@ -80,3 +80,4 @@ distributed-systems__quorum	場面	その他	Quorum - タイムアウトした�
 math__bayes-theorem	予想	その他	ベイズの定理 - 陽性の割合が学習時と違えば、同じ予測確率でも意味が変わる
 distributed-systems__write-ahead-log	予想	その他	WAL - ログをどこまで書いてから成功を返すかで、消えるコミットが変わる
 math__convex-functions	先に断る	その他	凸関数 - 局所最小は大域最小になるが、最小にする係数は 1 つとは限らない
+math__correlation	一覧	その他	相関係数 - 0 でも関係は残り、1 点の外れ値で符号まで変わる

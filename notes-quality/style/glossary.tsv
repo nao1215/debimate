@@ -943,3 +943,4 @@ database-systems	demand-pull pipeline	要求引き寄せ型（demand-pull）パ�
 ml-math	strictly convex	狭義凸	狭義凸（厳密に凸も通用）	一致		projects/ml/notes/math/convex-functions/index.md	Wikipedia「凸関数」 https://ja.wikipedia.org/wiki/凸関数	2026-11-17 convex-functions の書き直しで確認
 ml-math	positive semidefinite	半正定値	半正定値	一致		projects/ml/notes/math/convex-functions/index.md	Wikipedia「凸関数」（ヘッセ行列が半正定値） https://ja.wikipedia.org/wiki/凸関数	2026-11-17 convex-functions の書き直しで確認
 ml-math	coordinate descent	座標降下法	座標降下法	一致		projects/ml/notes/math/convex-functions/index.md	Wikipedia 検索「座標降下法」 https://ja.wikipedia.org/w/index.php?search=座標降下法	2026-11-17 convex-functions の書き直しで確認
+ml-math	confounder	交絡因子	交絡因子（交絡変数）	一致		projects/ml/notes/math/correlation/index.md	Wikipedia「交絡」 https://ja.wikipedia.org/wiki/交絡	2026-11-17

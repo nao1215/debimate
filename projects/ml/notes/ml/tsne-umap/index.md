@@ -142,7 +142,7 @@ PCA は分散の大きい x・z 方向へ射影するので、渦巻きの断面
 
 ### 散布図の距離の意味
 
-UMAP の島は t-SNE よりはっきり分かれていましたが、島同士の距離は元データの距離を表しているのでしょうか。数字ごとの重心を 64 次元と 2 次元でそれぞれ求め、10 個の重心から作る 45 組の距離の順位がどれだけ一致するかを Spearman の順位相関で比べます。あわせて、各点の近傍 10 点がどれだけ保たれたかを trustworthiness で測ります。最初のコードの `X_pca`・`X_tsne`・`X_umap` と、Swiss Roll の節で import した `np`・`trustworthiness` を使います。
+UMAP の島は t-SNE よりはっきり分かれていましたが、島同士の距離は元データの距離を表しているのでしょうか。数字ごとの重心を 64 次元と 2 次元でそれぞれ求め、10 個の重心から作る 45 組の距離の順位がどれだけ一致するかを [Spearman の順位相関](../../math/correlation/)で比べます。あわせて、各点の近傍 10 点がどれだけ保たれたかを trustworthiness で測ります。最初のコードの `X_pca`・`X_tsne`・`X_umap` と、Swiss Roll の節で import した `np`・`trustworthiness` を使います。
 
 ```python
 from scipy.spatial.distance import pdist
