@@ -1,0 +1,12 @@
+== 1. XA PREPARE の後に接続が切れる
+[  0.08] mysql が終了（XA COMMIT しないまま接続が切れた）
+-- XA RECOVER
+1	8	0	order-42
+[  0.18] 別のセッションの UPDATE を開始（innodb_lock_wait_timeout 10）
+ERROR 1205 (HY000) at line 1: Lock wait timeout exceeded; try restarting transaction
+[ 10.27] UPDATE が終わった
+[ 10.27] MySQL を再起動
+[ 12.76] 再起動が終わった
+-- XA RECOVER
+1	8	0	order-42
+1	700

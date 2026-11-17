@@ -1,0 +1,75 @@
+== 0. 既定の設定では PREPARE TRANSACTION が使えない
+0
+BEGIN
+CREATE TABLE
+ERROR:  prepared transactions are disabled
+HINT:  Set "max_prepared_transactions" to a nonzero value.
+CREATE TABLE
+CREATE TABLE
+INSERT 0 1
+
+== 1. 普通のトランザクションは、接続が切れれば中止されてロックが外れる
+BEGIN
+UPDATE 1
+[  0.08] psql が終了（COMMIT しないまま接続が切れた）
+SET
+UPDATE 1
+[  0.16] 別のセッションの UPDATE はすぐ通った
+
+== 2. コーディネータが、注文の DB だけコミットした所で止まる
+[  0.01] 準備: orders
+BEGIN
+INSERT 0 1
+PREPARE TRANSACTION
+[  0.08] 準備: points
+BEGIN
+UPDATE 1
+PREPARE TRANSACTION
+[  0.16] 決定: orders に COMMIT PREPARED
+COMMIT PREPARED
+[  0.25] コーディネータが停止（points には決定が届かない）
+-- points に残った準備済みトランザクション
+order-42|2026-11-17 03:18:44.604822+00|postgres
+-- そのトランザクションに接続はあるか（pg_stat_activity で xact_start のあるセッション）
+0
+-- 行のロックを持つ者（pg_locks の pid が空）
+transactionid|ExclusiveLock|(null)|5/2
+-- 外から見えるもの: 注文はある、ポイントは減っていない
+42|1|300
+1|1000
+[  0.63] 別のアプリの UPDATE を開始（lock_timeout 10s）
+SET
+-- 待っているセッションから、待たせている相手を引く
+active|Lock|transactionid|{0}
+f
+WARNING:  PID 0 is not a PostgreSQL backend process
+ERROR:  canceling statement due to lock timeout
+CONTEXT:  while updating tuple (0,3) in relation "points"
+[ 10.73] UPDATE が lock_timeout で失敗
+[ 10.74] points の PostgreSQL を再起動
+[ 11.35] 再起動が終わった
+order-42|2026-11-17 03:18:44.604822+00
+[ 11.42] 別のアプリの UPDATE を再開（lock_timeout 30s、裏で待たせる）
+-- 運用者が判断する: orders に order-42 の準備済みは残っているか
+0
+1
+[ 15.54] orders ではコミット済みなので、points も COMMIT PREPARED
+COMMIT PREPARED
+[ 15.59] 待っていた UPDATE が通った
+1|750
+
+== 3. 準備済みが残っている間は、VACUUM が消せない
+-- 準備済みが無い時の VACUUM
+tuples: 100000 removed, 0 remain, 0 are dead but not yet removable
+removable cutoff: 750, which was 1 XIDs old when operation ended
+BEGIN
+UPDATE 1
+PREPARE TRANSACTION
+-- 準備済みが 1 つ残っている時の VACUUM
+NOTICE:  relation "junk" already exists, skipping
+tuples: 0 removed, 100000 remain, 100000 are dead but not yet removable
+removable cutoff: 751, which was 4 XIDs old when operation ended
+ROLLBACK PREPARED
+-- ROLLBACK PREPARED の後の VACUUM（行は消したまま）
+tuples: 100000 removed, 0 remain, 0 are dead but not yet removable
+removable cutoff: 755, which was 1 XIDs old when operation ended

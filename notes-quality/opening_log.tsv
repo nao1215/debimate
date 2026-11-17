@@ -67,3 +67,4 @@ ml__data-leakage	一覧	その他	データリーク - 検証に回る行の正�
 software-architecture__cell-based-architecture	他の手	その他	Cell-based Architecture - 障害が届く範囲は、台数ではなく顧客の分け方で決まる
 blockchain-systems__bitcoin-block	予想	その他	Bitcoin Block - ブロックの順番は時刻ではなく、直前ブロックのハッシュ値で決まる
 blockchain-systems__utxo	予想	その他	UTXO - 送金の手数料は、残高ではなく使う UTXO の数で決まる
+distributed-systems__two-phase-commit	症状	その他	2PC - 準備を終えた参加者は、コーディネータの決定が届くまでロックを放さない

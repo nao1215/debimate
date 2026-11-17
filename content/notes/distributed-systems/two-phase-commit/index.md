@@ -1,254 +1,278 @@
 ---
-title: "2PC - コミットか中止を全参加者で揃える"
+title: "2PC - 準備を終えた参加者は、コーディネータの決定が届くまでロックを放さない"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Distributed Systems"]
 tags: ["distributed-systems", "transaction"]
 weight: 6
+wrapTables: true
 topics: ["Distributed Transactions"]
 crossTopics:
   database-systems: ["Transaction / Concurrency Control"]
 ---
 
-2PC（Two-Phase Commit、2 相コミット）は、複数の DB（データベース）にまたがる 1 つの更新について、関わった全員の最終的な判断がコミット（commit）か中止（abort）のどちらか一方に揃うようにする手順です。コミットできるかを全員に問い合わせる準備フェーズと、決めた結果を配る決定フェーズの 2 段階で進むことが名前の由来です。
+PostgreSQL で、ポイントの残高を 1 行更新するだけの UPDATE が返ってこなくなりました。ロックを待っているはずなのに、`pg_stat_activity` にはトランザクションを開いたままの接続が 1 つもありません。待たせている相手を `pg_blocking_pids()` で引くとプロセス ID は 0 で、その相手を `pg_terminate_backend()` で切ることもできません。DB を再起動しても、UPDATE はまた待たされます。
 
-例えば、注文を記録する DB と、支払いに使うポイントの残高を持つ DB が別のサーバーにある EC サイトで、ポイント払いの注文を受けるとします。注文がコミットしたのにポイントの更新は中止された、という食い違いが起きると、後から人手で突き合わせて直すしかありません。
+{{< figure src="images/two-phase-commit_stuck.webp" alt="動く図。0.2 秒でコーディネータが注文 DB にだけ COMMIT PREPARED を送って止まる。注文 DB はコミット済みになり、ポイント DB は準備済みのまま行のロックを持ち続ける。0.6 秒に始めた別アプリの UPDATE は 10.7 秒に lock_timeout で失敗する。10.7 秒から 11.4 秒の再起動の後もポイント DB は準備済みのままで、再開した UPDATE はまた待つ。15.5 秒に運用者がポイント DB で COMMIT PREPARED を実行すると、UPDATE はすぐに通る" caption="コーディネータが止まった後のポイント DB と、待たされる UPDATE（実測した時刻を 2 倍速で再生）" align="center" >}}
 
-1 つの注文処理は、注文の DB とポイントの DB で別々のトランザクション（ローカルトランザクション）として実行されます。登場するのは、コミットか中止かを決めて参加者に配るコーディネータと、自分のローカルトランザクションを実際にコミット・中止する参加者です。
+2 相コミット（two-phase commit、2PC）は、複数の DB にまたがる更新で、全部コミットするか全部中止するかに揃える手順です。取りまとめ役をコーディネータ（coordinator）、更新を受け持つ各 DB を参加者（participant）と呼びます。参加者は、コミットの前に準備を済ませ、準備済みのトランザクションとして決定を待ちます。
 
-上記の例では、注文の DB を参加者 A、ポイントの DB を参加者 B とします。コーディネータは、2 つの DB とは別に動くトランザクションマネージャ（複数の DB のトランザクションをまとめてコミットする専用のプロセス）が務めます。
-
-以下は、参加者 A・B の状態を時間に沿って並べた図です。上は決定が届いた場合、下は決定の前にコーディネータが停止した場合です。
-
-{{< figure src="images/two-phase-commit_concept.svg" alt="上の段では、参加者 A と B が yes を返してから決定が届くまでの網掛けの区間を経てコミットに移り、A が B より先にコミットする。下の段では、決定の前にコーディネータが停止し、A と B の網掛けの区間が右端まで続く" caption="決定を待つ参加者と、コーディネータが止まった場合" align="center" >}}
-
-網掛けの区間の参加者は、ロックを持ったまま決定を待ちます。コーディネータが止まると、この区間は終わりません。
-
-2PC は、ある参加者はコミット・別の参加者は中止という最終的な判断の分裂を防ぐことを目的にしています。揃うのは最終的な判断であって、複数の DB の変更が同じ瞬間に見え始めることまでは保証しません。決定を配っている途中には、上の段の A と B のように、片方がコミット済みで、もう片方はまだ決定を待っている、という瞬間があり得ます。
+図は、手元の PostgreSQL 17 で、注文 DB とポイント DB にまたがる 2PC の途中で、コーディネータを止めた時の記録です。行のロックを持っていたのは接続ではなく、ポイント DB に残った準備済みのトランザクションでした。それは再起動しても消えず、運用者が手でコミットするまで、別アプリの UPDATE を止め続けました。
 
 <br>
 
-本記事では、2PC が判断を揃える手順と、その代償を説明します。以下の疑問を 1 つずつ見ていきます。
-
-- なぜ 2 つの DB に順番に COMMIT を送るだけでは、片方だけが成立するのか。
-- 参加者が yes の約束を残せないと、何が起きるのか。
-- 決定フェーズで、コーディネータは結果をいつ記録し、どう配るのか。
-- コーディネータが止まると、なぜ参加者は動けなくなるのか。
-- その停止を避けるために、どんな手順が提案されてきたのか。
-
-想定する故障は、参加するプロセスの停止と通信の途絶です。誤った値を返す故障（[ビザンチン障害](../byzantine-fault-tolerance/)）には触れません。
-
----
-
-### コミットの合図を 2 回に分ける理由
-
-素朴な方法は、アプリケーションが 2 つの DB に順番に COMMIT を送ることです。この方法は、1 つ目の COMMIT と 2 つ目の COMMIT の間に故障が挟まると壊れます。具体的には、以下の流れで片方だけが成立します。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant A as アプリケーション
-    participant D1 as 注文の DB
-    participant D2 as ポイントの DB
-    A->>D1: COMMIT
-    D1-->>A: 成功
-    A->>D2: COMMIT
-    Note over D2: サーバーが停止していて<br/>届かない
-    Note over D1,D2: 注文だけがコミットし<br/>ポイントは減らないまま
-```
-
-上記の図の注文のコミットは取り消せません。ローカルトランザクションの原子性（変更を全て反映するか、全て無かったことにするかの性質）は 1 台の DB の中で閉じており、コミットした変更は以後に始まる読み取りから見えます。後から注文を打ち消す更新を入れることはできるものの、それは新しい別の更新であり、間の時間には片方だけの状態が読まれています。
-
-2 回の COMMIT の間隔が短くても、この故障は避けられません。しかも、片方だけが成立したことに気付いて直す仕組みは、この構成のどこにもありません。
-
-各 DB が個別にコミットすると、一方が成功した後に他方が失敗する場合があります。そのため 2PC は、コミットの前に「言われればいつでもコミットできる」状態を全員に作らせ、全員がそこに到達したことを見届けてから、コミットの合図を一斉に配ります。
-
----
-
-### 準備フェーズ - コミットできる状態の用意と投票
-
-前提として、注文とポイントの更新は、アプリケーションが各 DB のローカルトランザクションとして実行済みです。各参加者は更新対象のレコードのロックを取り、変更をコミットしないまま保持しています。2PC が引き受けるのは、このコミットの段階だけです。
-
-コーディネータは、全参加者に prepare（準備の要求）を送ります。受け取った参加者は、トランザクションの変更内容と「準備が完了した」という記録をディスクに書いてから、コミットに応じられるなら yes、応じられないなら no を返します。この返事が投票になります。
-
-yes の返事は、コーディネータに言われればいつでもコミットするという約束です。参加者は、返事の後に再起動しても約束を守れるように、クラッシュしても消えないディスクに先に書きます。以下は、prepare を受けてから yes を返すまでの順序です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as コーディネータ
-    participant P as 参加者 A
-    participant D as 参加者 A のディスク
-    C->>P: prepare
-    P->>D: 変更内容と prepared を書く
-    D-->>P: 書き込み完了
-    P-->>C: yes
-    Note over P,D: 再起動しても prepared が<br/>残っているので約束を守れる
-```
-
-書き込みと yes の順序が逆だと、再起動した参加者は自分が何を約束したのかを知らないまま、コーディネータから commit を受け取ります。
+アプリのコードで直接書くことは少なく、Java の [Jakarta Transactions](https://jakarta.ee/specifications/transactions/)（旧 JTA）のトランザクションマネージャや、MySQL の XA トランザクションを使う所で出会います。
 
 <br>
 
-この準備済み状態を維持できない不具合が、MySQL に 10 年近く残っていました。MySQL の XA トランザクション（後述の XA 仕様に基づく 2PC）では、クライアントが切断するかサーバーを正常に停止すると、prepared まで進んだトランザクションが中止されていました。
+本記事では、2PC をこれから使う人と、準備済みのトランザクションに既存のシステムで出会った人に向けて、次の疑問に答えます。
 
-切断の場合、DB は動き続けているのに yes の約束だけが消えるので、接続し直したコーディネータが commit を送っても、コミットさせる相手が残っていません。2005 年に [Bug #12161](https://bugs.mysql.com/bug.php?id=12161) として報告され、prepared の状態をバイナリログ（MySQL が変更を記録するログ）に残すよう直されたのは、2015 年の 5.7.7 です。
-
-この永続化には DB の [WAL](../write-ahead-log/) などが使われ、PostgreSQL では PREPARE TRANSACTION がこの状態を作ります。[公式ドキュメント](https://www.postgresql.org/docs/current/sql-prepare-transaction.html)によれば、このコマンドの後のトランザクションは「セッションから切り離され、その状態は完全にディスクに保存される」ので、コミットを要求する前に DB がクラッシュしても、コミットに成功する見込みが非常に高い状態です。
-
-yes と答えた参加者は、自分から中止する権利を手放します。準備の前なら、参加者はいつでも自分の判断で中止できます（制約違反やタイムアウトが典型）。準備の後は、コミットか中止かを決める権限がコーディネータに一本化されます。
-
-運用者が待ち切れずに prepared のトランザクションを手でコミット・中止すること（PostgreSQL なら ROLLBACK PREPARED）自体はできますが、選べば最終的な判断が揃う保証は失われます。この一本化があるから、コーディネータは全員の yes を見た時点で、勝手に中止した参加者が出ることを心配せずにコミットを配れます。
-
-以下が参加者の状態遷移です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-stateDiagram-v2
-    [*] --> working
-    working --> prepared: prepare を受けて<br/>ディスクに記録
-    working --> aborted: 自分の判断で<br/>中止できる
-    prepared --> committed: コーディネータの<br/>commit を受けた時
-    prepared --> aborted: コーディネータの<br/>abort を受けた時
-```
-
-上記の図の prepared から出る 2 本の矢印は、どちらもコーディネータの決定を条件にしています。参加者は、更新対象へのロックを保持したまま prepared に留まり、決定を待ちます。
+- 誰もロックを持っていないように見えるのに、UPDATE が待つのはなぜか。
+- 2PC は、なぜコミットを 2 回に分けるのか。
+- 準備を終えた参加者は、なぜ自分でコミットも中止も選べないのか。
+- 残ったトランザクションは、何を見てどちらに決めるのか。
+- 放っておくと、ロックの他に何が起きるのか。
+- PostgreSQL と MySQL で、扱いはどう違うのか。
 
 ---
 
-### 決定フェーズ - 配る前の結果の記録
+### 待たせている相手を探す
 
-コーディネータがコミットを選べるのは、全参加者の yes が揃った時だけです。1 台でも no を返すか応答が間に合わなければ、コーディネータは中止を選び、参加者に abort を送ります。
+実験には、Docker で動かした PostgreSQL 17.11 を 2 台と、MySQL 8.4.11 を使いました。
 
-選んだ決定は、参加者に配る前に自分のログに書きます。この書き込みで、トランザクション全体の結果が決まります。書く前にコーディネータが落ちれば、再起動後に中止を選び直せます。書いた後に落ちても、ログを読んで同じ決定を配り直せます。決定が後から変わらないのは、この順序で書いているからです。
+冒頭の図で止めたコーディネータは、次の SQL を順に送るシェルスクリプトです。注文 DB に注文 42 を足し、ポイント DB で利用者 1 の残高から 300 を引きます。`PREPARE TRANSACTION` が 2PC の準備で、`COMMIT PREPARED` がコミットの決定です。`'order-42'` は、この分散トランザクションに付けた識別子で、2 つの DB で同じ値を使います。
 
-以下は、prepare からコミットまでの全体の流れです。
+```sql
+-- 注文 DB
+BEGIN;
+INSERT INTO orders VALUES (42, 1, 300);
+PREPARE TRANSACTION 'order-42';
 
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as コーディネータ
-    participant P1 as 参加者 A
-    participant P2 as 参加者 B
-    C->>P1: prepare
-    C->>P2: prepare
-    P1->>P1: 記録して投票
-    P2->>P2: 記録して投票
-    P1-->>C: yes
-    P2-->>C: yes
-    C->>C: コミットをログに書く
-    C->>P1: commit
-    C->>P2: commit
-    P1-->>C: ack
-    P2-->>C: ack
+-- ポイント DB
+BEGIN;
+UPDATE points SET balance = balance - 300 WHERE user_id = 1;
+PREPARE TRANSACTION 'order-42';
+
+-- 注文 DB にだけ決定を送り、ここでコーディネータが止まる
+COMMIT PREPARED 'order-42';
 ```
 
-参加者は、commit を受け取った時点で自分のローカルトランザクションをコミットできます。上記の図の ack（acknowledgment、受領の応答）は、コーディネータが完了を確認するための応答で、2 つのフェーズそのものとは別の役割です。ack が返らない参加者には、コーディネータが決定を送り直します。決定はログに残っているので、何度送っても同じ結果です。
+この後、別アプリがポイント DB で、利用者 1 の残高に 50 を足す UPDATE を送ると、待たされました。この UPDATE には、ロックを待つ上限として `lock_timeout` を 10 秒に設定しています。待っている間に、冒頭で挙げた順に原因を探していきます。
 
-再起動した参加者も、ディスクに prepared の記録を見付けたらコーディネータに問い合わせ、決定を受け取り直します。
+最初に疑うのは、`BEGIN` したままコミットを忘れた接続です。しかし、`pg_stat_activity` でトランザクションを開いている接続を数えると、0 でした。普通のトランザクションは接続と一緒に生きていて、接続が切れれば中止され、ロックも外れます。実験でも、`BEGIN` と `UPDATE` の後に psql を終わらせると、別の接続から送った UPDATE は 0.1 秒以内に通りました。
 
-上記の図の通り、コミットまでには prepare の要求と投票、commit の通知という複数回の通信に加え、参加者・コーディネータ双方のディスクへの書き込みが挟まります。この遅延はコミットのたびに掛かり、参加者が増えるほどメッセージの数も比例して増えます。
+次に、待っている UPDATE から相手を引きました。
+
+```sql
+SELECT state, wait_event_type, wait_event, pg_blocking_pids(pid)
+FROM pg_stat_activity WHERE query LIKE 'UPDATE points%';
+
+SELECT locktype, mode, pid, virtualtransaction
+FROM pg_locks WHERE locktype = 'transactionid';
+```
+
+```text
+active|Lock|transactionid|{0}
+transactionid|ExclusiveLock|(null)|5/2
+```
+
+1 行目は待っている UPDATE で、行を書き換えたトランザクションの終わりを待っています（`transactionid` のロック）。最後の列は待たせている相手で、[pg_blocking_pids()](https://www.postgresql.org/docs/17/functions-info.html) は 0 を返しました。この 0 は、衝突するロックを持つ準備済みのトランザクションを表します。2 行目はそのロックを持つ側で、3 列目の pid が空です。
+
+0 は接続ではないので、`pg_terminate_backend(0)` は「PID 0 is not a PostgreSQL backend process」（PID 0 は PostgreSQL のバックエンドプロセスではない）という警告を返すだけでした。
+
+最後に、ポイント DB を再起動しました。再起動は 0.6 秒で終わりましたが、準備済みのトランザクションを並べる [pg_prepared_xacts](https://www.postgresql.org/docs/17/view-pg-prepared-xacts.html) には `order-42` が残り、再開した UPDATE はまた待ちました。
+
+```text
+[ 10.74] points の PostgreSQL を再起動
+[ 11.35] 再起動が終わった
+order-42|2026-11-17 03:18:44.604822+00
+```
+
+[PREPARE TRANSACTION](https://www.postgresql.org/docs/17/sql-prepare-transaction.html) を実行したトランザクションは、接続から切り離され、状態をディスクに書いて残ります。このトランザクションは、日本語に訳された PostgreSQL の文書ではプリペアドトランザクション（prepared transaction）と呼ばれています。接続を切っても再起動しても消えないのは、壊れた後でもコミットできることを約束するためで、2PC の準備はその約束をする操作です。
 
 ---
 
-### コーディネータの停止で縛られる参加者
+### コミットを 2 回に分ける理由
 
-yes と答えた後、決定が届く前にコーディネータが落ちると、参加者は動けなくなります。コミットも中止も自分では選べないからです。この状態は in-doubt と呼ばれ、2PC の代表的な制約です。
+約束が必要なのは、参加者に順にコミットを送るだけでは揃わないからです。注文 DB をコミットした後で、ポイント DB が残高の制約違反やディスクの故障でコミットできなかったとします。注文 DB で済ませたコミットは取り消せないので、ポイントを引いていない注文が残ります。
 
-他の参加者に聞いて回る手はあります。誰かが既に commit か abort を受け取っていれば、決定はその受け取った内容だと分かる筈です。しかし、全員が prepared のままなら決められません。コーディネータがコミットをログに書いた直後に落ちた可能性が残るからです。その場合、復旧したコーディネータはログにあるコミットを配り直すので、待ち切れずに中止した参加者と食い違います。
+2PC は、コミットの前にもう 1 回やり取りを挟みます。想定する故障はプロセスの停止と通信の途絶で、誤った値を返す [ビザンチン障害](/notes/distributed-systems/byzantine-fault-tolerance/) は扱いません。以下は、コーディネータと参加者 2 つが交わすやり取りを時間の順に左から右へ描いた図です。
 
-in-doubt の間、参加者はロックを保持し続けます。その結果、同じレコードに触る後続のトランザクションが次々に詰まります。
-
-prepared のトランザクションは、外部のトランザクションマネージャが速やかにコミットか中止を指示する前提で使います。PostgreSQL のドキュメントも、[VACUUM](/notes/database-systems/mvcc-vacuum/) の妨げになることとロックを持ち続けることを挙げ、prepared のまま長時間放置しないよう注意しています。
-
-例えば、コーディネータが決定を配る前に停止すると、以下のように後続のトランザクションが詰まります。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-sequenceDiagram
-    participant C as コーディネータ
-    participant P as 参加者 A
-    participant O as 後続のトランザクション
-    P-->>C: yes（ロックを保持）
-    Note over C: 決定を配る前に停止
-    O->>P: 同じレコードを更新したい
-    Note over P: prepared のロックに<br/>阻まれて待つ
-    Note over C,P: コーディネータが<br/>復旧するまで解けない
-```
-
-コーディネータが止まっても、コミットと中止が食い違う結末にはなりません。壊れるのは進行性（liveness、処理が前に進む性質）で、決定を知らない参加者は、安全性（safety、コミットと中止が食い違う結果を出さない性質）を保ったまま止まって待ちます。
-
-この待ちが blocking と呼ばれる代償です（Jim Gray 氏と Leslie Lamport 氏の論文「[Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf)」、2004 年）。上記の図の詰まりを解く正攻法は、コーディネータの復旧です。
-
----
-
-### blocking を避ける手順
-
-1 台が落ちても残りがコミットか中止かを決められる手順は、non-blocking commit protocol と呼ばれます。その代表例が、1980 年代初めに提案された 3 相コミット（Three-Phase Commit）です。
-
-[Skeen 氏の 1981 年の論文](https://doi.org/10.1145/582318.582339)が示した 3 相コミットは、prepared とコミットの間に、全員が yes と答えたことを参加者に知らせる段階（pre-commit）を足し、コーディネータが落ちても残った参加者だけで結論を出せるようにします。
-
-ただし、メッセージの遅延に上限があることを前提にしており、ネットワークが分断されると両側で別の判断をし得ます。前述の論文によれば、この系統で、正しさの条件をはっきり定め、それを満たすと証明された完全なアルゴリズムは知られていません。
+{{< figure src="images/two-phase-commit_protocol.webp" alt="コーディネータが参加者 A と B に準備を頼み、A と B は作業中から準備済みに移って「はい」を返す。全員の「はい」が揃うと、コーディネータは「コミットと記録」を書いてから、A と B にコミットを送る。A と B は、はいを返してからコミットが届くまで準備済みの区間にいて、ロックを持って待ち、自分ではコミットも中止も選べない。コーディネータの線の上に、止まる所として ① 記録を書く前、② 記録の後で配る前、③ 配っている途中の 3 つの印がある" caption="2PC の 2 つのフェーズと、参加者が準備済みで待つ区間" align="center" >}}
 
 <br>
 
-論文が代わりに提案するのが Paxos Commit です。2PC ではコーディネータ 1 台のログにしか無かった決定の記録が、Paxos Commit では複数台に複製されます。
+#### 準備フェーズ
 
-複製には、合意アルゴリズムの Paxos（[Leader and Followers](../leader-and-followers/) で触れた、提案された値のうち 1 つだけを選ぶ手順）を使います。参加者ごとの Prepared / Aborted という判断は、acceptor（判断の記録役）の過半数に記録した時点で決まります。
+準備フェーズ（prepare phase）では、コーディネータが各参加者に準備を頼みます。参加者は、コミット以外の作業を全て済ませ、壊れた後でもコミットできるように変更と準備済みの印をディスクに書き、ロックを持ったまま「はい」と答えます。できなければ「いいえ」と答えます。準備の前なら、参加者は制約違反やタイムアウトを理由に、自分から中止できます。
 
-冒頭の例で acceptor を 3 台置くと、参加者 A は自分の判断（Prepared）を 3 台に送り、2 台が記録した時点で A の判断は決まります。B も同様です。提案をまとめる Leader は、A と B の判断が両方 Prepared に決まったのを見てコミットを配ります。決定の記録がどこにあるのかを 2PC と並べると、以下のようになります。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
-flowchart LR
-    subgraph T["2PC"]
-        TP["prepared の参加者"] -. 決定を聞けない .-> TC["コーディネータ<br/>停止中"]
-        TC --- TL[("決定のログ")]
-    end
-    subgraph P["Paxos Commit（acceptor 3 台）"]
-        PP["prepared の参加者"] --> PL["Leader"]
-        PL --> PA1[("acceptor 1")]
-        PL --> PA2[("acceptor 2")]
-        PA3[("acceptor 3<br/>停止中")]
-    end
-    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
-```
-
-上記の図の Paxos Commit では、acceptor が 1 台止まっていても、Leader が残り 2 台と通信できれば参加者は決定を知ることができます。Leader が落ちても、別のノードが acceptor に聞けば A と B の判断を復元できます。一般には、F 台までの故障に耐えるために 2F + 1 台の acceptor を置き、その分だけメッセージの数が増えます。
-
-F = 0 として acceptor 1 台と Leader を同じノードに置くと、そのノードが 2PC のコーディネータに当たり、Paxos Commit は 2PC と本質的に同じ手順になります。
+書き込みと「はい」の順番には意味があります。書く前に「はい」と答えて落ちると、再起動した参加者は自分が何を約束したかを知りません。DB の中では、この書き込みに [WAL](/notes/distributed-systems/write-ahead-log/) が使われます。
 
 <br>
 
-過半数で足りるのは、参加者 1 人分の判断を記録する acceptor の間だけです。トランザクションのコミットには、Paxos Commit でも全参加者の Prepared が必要です。
+#### コミットフェーズ
 
-参加者はそれぞれ別の資源を管理しているので、ポイントの DB が残高不足で中止を選んだなら、注文の DB が yes を返していても全体はコミットにできません。この点が、同じデータを複製して持つノードの間で過半数を使う [Leader and Followers](../leader-and-followers/) や[クォーラム](../quorum/)との違いです。
+コミットフェーズ（commit phase）では、コーディネータが全員の答えを見て決めます。全員が「はい」ならコミット、1 つでも「いいえ」か返事が無ければ中止です。コミットに決めたら、その決定を自分のログに書いてから参加者に配ります。この記録を書いた時点で、トランザクション全体のコミットが決まります。
+
+決定を受けた参加者は確認応答（ack）を返し、返ってこない参加者には、コーディネータが記録した決定を再送します。何度送っても同じ決定なので、再送で結果は変わりません。
+
+この手順では、コミットのたびに 2 往復のやり取りと、参加者とコーディネータの両方でディスクへの書き込みが挟まります。参加者が増えれば、やり取りの数もその分だけ増えます。また、1 つでも準備に失敗すれば全体が中止になるので、参加者が増えるほどコミットまで進める見込みは下がります。
+
+この手順は、Jim Gray 氏が 1978 年に出版した講義録「[Notes on Data Base Operating Systems](https://jimgray.azurewebsites.net/papers/dbos.pdf)」の 5.8.3.3 節でも説明されています。
+
+<br>
+
+#### 準備済みの参加者が自分で決められない理由
+
+「はい」と答えた参加者は、図の赤い区間に入ります。この区間では、参加者は自分で中止できません。コーディネータが既にコミットに決め、他の参加者がコミットを終えているかもしれないからです。冒頭の実験では、注文 DB がそうでした。かといって、自分でコミットすることもできません。他の参加者が「いいえ」と答え、コーディネータが中止に決めたかもしれないからです。
+
+この状態を in-doubt と呼びます。参加者どうしで聞き合えば分かりそうですが、PostgreSQL の参加者は他の参加者を知らず、話す相手はコーディネータだけです。
+
+仮に聞き合えたとしても、全員が準備済みのままなら決められません。以下は、全員が準備済みのままコーディネータが止まった 2 つの場合を並べた図です。
+
+{{< figure src="images/two-phase-commit_indoubt.webp" alt="左はコーディネータが記録を書く前に止まった場合で、ログには記録が無く、正しい決定は中止。右は記録を書いた直後に止まった場合で、ログにはコミットがあり、正しい決定はコミット。どちらも参加者から見えるものは、参加者 A と B が準備済みでロックを保持している状態で、同じ" caption="参加者から見ると同じなのに、正しい決定が逆になる 2 つの場合" align="center" >}}
+
+参加者から見えるものは 2 つとも同じなのに、正しい決定は逆です。結局、決定を知っているコーディネータが戻るまで、ロックを持ったまま待つしかありません。Daniel Abadi 氏は、2019 年のブログ「[It's Time to Move on from Two Phase Commit](http://dbmsmusings.blogspot.com/2019/01/its-time-to-move-on-from-two-phase.html)」で、これを blocking problem と呼び、2PC の 2 つの大きな問題の 1 つに挙げています。
+
+それでも、コミットと中止が食い違う結果にはなりません。Jim Gray 氏と Leslie Lamport 氏の論文「[Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf)」の言葉では、2PC の停止で壊れるのは、処理が先に進むという活性（liveness）で、食い違う結果を出さないという安全性（safety）は保たれます。
+
+全員でコミットか中止かを決める手順は合意の一種で、1 台が応答しないだけで全体が待つ期間をどの手順も完全には無くせないことは、[FLP Impossibility](/notes/distributed-systems/flp-impossibility/) のノートで扱っています。
+
+<br>
+
+#### 待つ期間を短くする手順
+
+待つ期間を短くする手順も提案されてきました。[Skeen 氏が 1981 年に示した](https://doi.org/10.1145/582318.582339) 3 相コミット（three-phase commit）は、準備とコミットの間に段を 1 つ足し、コーディネータが止まっても残りの参加者で結論を出せるようにします。ただし、メッセージの遅れに上限があることを前提にしていて、ネットワークが分断されると両側で別の判断をし得ます。
+
+Gray 氏と Lamport 氏の論文が提案する Paxos Commit は、決定の記録をコーディネータ 1 台に置かず、複数台に複製します。複製には、[Leader and Followers](/notes/distributed-systems/leader-and-followers/) のノートで触れた合意アルゴリズムの Paxos を使います。
+
+1 台が止まっても、残りの台から決定を復元できます。複数台の過半数で揃える点は [Quorum](/notes/distributed-systems/quorum/) に似ていますが、全体のコミットには、2PC と同じく全員の「はい」が必要です。
+
+代わりに払うのは台数とやり取りです。F 台の停止に耐えるには 2F + 1 台の記録役を置き、その分だけメッセージが増えます。記録役を 1 台にすると、その 1 台がコーディネータに当たり、2PC と同じ形になります。
 
 ---
 
-### 利点
+### 残ったトランザクションをどちらに決めるか
 
-- 最終的な決定が参加者の間でコミットと中止に分裂することを防げる
-- 参加者は、ローカルトランザクションの仕組み（WAL とロック）をほぼそのまま流用できる
-- X/Open XA（コーディネータと参加者の間のインターフェースを定めた仕様）として標準化され、対応する DB やミドルウェアを組み合わせて使える
+コーディネータが戻らない時は、人が決めることになります。正しい答えは、図の ①〜③ のどこでコーディネータが止まったかで決まります。
 
-XA は、標準化団体 X/Open の文書「[Distributed Transaction Processing: The XA Specification](https://pubs.opengroup.org/onlinepubs/009680699/toc.pdf)」として発行されています。例えば MySQL は、[XA トランザクションのドキュメント](https://dev.mysql.com/doc/refman/8.4/en/xa.html)で、実装がこの文書に基づくと明記しています。
+| 止まった所 | コーディネータのログ | 準備済みの参加者に送る決定 |
+|---|---|---|
+| ① 記録を書く前 | コミットの記録が無い | 中止（`ROLLBACK PREPARED`） |
+| ② 記録の後、配る前 | コミット | コミット（`COMMIT PREPARED`） |
+| ③ 配っている途中 | コミット | 残った参加者だけコミット |
+
+① では、どの参加者にもコミットは届いていないので、中止しても食い違いは起きません。② と ③ では、コミットが決まっているので、残った参加者もコミットするしかありません。どちらの場合も、準備済みの参加者だけを見ても区別は付かず、見るべきなのはコーディネータのログか、決定が届いた他の参加者です。
+
+冒頭の実験は ③ でした。注文 DB を見ると、`order-42` は準備済みの一覧に無く、注文 42 の行がありました。注文 DB はコミット済みなので、ポイント DB にも `COMMIT PREPARED` を送りました。待っていた UPDATE は 0.05 秒後に通り、残高は 1000 から 300 を引いて 50 を足した 750 になりました。
+
+```text
+-- 注文 DB: 準備済みの order-42 の数と、注文 42 の行の数
+0
+1
+[ 15.54] orders ではコミット済みなので、points も COMMIT PREPARED
+[ 15.59] 待っていた UPDATE が通った
+1|750
+```
+
+この実験では、0.2 秒から 15.5 秒までの間、注文 42 は見えるのにポイントは減っていませんでした。2PC が揃えるのは最終的な結果で、2 つの DB の変更が見え始める時刻までは揃えません。
+
+運用者がポイント DB だけを見て、`ROLLBACK PREPARED` を選んでいたらどうなるでしょうか。注文はあるのにポイントは引かれていない状態が残ります。2PC が防ぐはずだった食い違いが、人の手で生まれます。
+
+コーディネータの決定を待たずに参加者だけで下す決定は、ヒューリスティック決定（heuristic decision）と呼ばれます。Jakarta Transactions には、その結果、一部がコミットされ一部がロールバックされたことを知らせる [HeuristicMixedException](https://jakarta.ee/specifications/transactions/2.0/apidocs/jakarta/transaction/HeuristicMixedException.html) という例外があります。
+
+実験では、グローバルトランザクション識別子（gid）に注文の番号を入れたので、注文 DB を引くことができました。識別子からコーディネータとその中のトランザクションを辿れるかどうかで、人が決める時の手間が変わります。
 
 ---
 
-### 欠点
+### 長く残ると VACUUM が回収できない
 
-2PC は、全参加者の yes が揃うまでコミットを待つことで判断を揃えます。準備済みの参加者が待機するため、次の制約があります。
+ロックの他にも、準備済みのトランザクションが残ると困ることがあります。PostgreSQL の [PREPARE TRANSACTION の文書](https://www.postgresql.org/docs/17/sql-prepare-transaction.html)は、準備済みのまま長く置くと VACUUM が領域を回収できなくなり、極端な場合はトランザクション ID の周回を防ぐために DB が止まる、と注意しています。PostgreSQL のトランザクション ID は 32 ビットの番号を使い回すので、古い行を片付けないまま番号が一周すると、行の新旧を区別できなくなります。
 
-- 1 台でも準備に失敗すると全体が中止になり、参加者が増えるほどコミットに進める見込みが下がる
-- prepared の参加者はロックを持ったまま待ち、決定が遅れるほど後続のトランザクションを巻き込む
-- コーディネータが進行性の単一障害点になる。故障しても結果は分裂せず安全に止まる代わりに、prepared のまま決定を知らない参加者は、待ち続けるしかない（blocking）
-- コミットのたびに複数回の通信と、参加者・コーディネータ双方のディスクへの書き込みが掛かる
+ポイント DB で、10 万行を入れて全部消し、すぐに VACUUM を掛けました。準備済みのトランザクションが無い時と、1 つ残っている時と、それを `ROLLBACK PREPARED` で消した後の 3 回です。
+
+{{< figure src="images/two-phase-commit_vacuum.webp" alt="横棒グラフ。準備済みが無い時は 100,000 行を回収。準備済みが 1 つ残っている時は回収 0 行で、100,000 行が残る。ROLLBACK PREPARED の後は 100,000 行を回収" caption="10 万行を消した直後の VACUUM が回収できた行の数" align="center" >}}
+
+```text
+-- 準備済みが無い時
+tuples: 100000 removed, 0 remain, 0 are dead but not yet removable
+-- 準備済みが 1 つ残っている時
+tuples: 0 removed, 100000 remain, 100000 are dead but not yet removable
+-- ROLLBACK PREPARED の後
+tuples: 100000 removed, 0 remain, 0 are dead but not yet removable
+```
+
+準備済みのトランザクションは、PostgreSQL から見ればまだ終わっていないトランザクションです。そのため、それより後に消された行の古いバージョンは、まだ誰かが読むかもしれないものとして残されます。古いバージョンと VACUUM の関係は [MVCC と VACUUM](/notes/database-systems/mvcc-vacuum/) のノートで説明しています。`idle in transaction` の接続と違って接続の一覧に現れないので、長いトランザクションを接続の一覧で探す監視には映りません。
 
 ---
 
-### 適さないケース
+### PostgreSQL と MySQL の違い
 
-- 参加者に他の組織のサービスが混ざる統合。相手にロックの保持と in-doubt の受け入れを要求する
-- 書き込みの遅延とスループットを最優先する経路
-- DB の更新を先にコミットし、イベントを介して別のサービスを後から追随させる結果整合で足りる業務。[Transactional Outbox](../transactional-outbox/) は、そのイベント発行を確実にする代表的な方法になる。途中で失敗した時に済んだ段を打ち消す流れは [Saga](../saga/) で組む
+MySQL では、`XA PREPARE` が PostgreSQL の `PREPARE TRANSACTION` に当たります。XA は、トランザクションマネージャが DB を呼び出す方法として X/Open が定めた[仕様](https://pubs.opengroup.org/onlinepubs/009680699/toc.pdf)で、Jakarta Transactions もこの呼び出しで DB を束ねます。同じ実験を MySQL 8.4 でも行いました。
+
+```sql
+XA START 'order-42';
+UPDATE points SET balance = balance - 300 WHERE user_id = 1;
+XA END 'order-42';
+XA PREPARE 'order-42';
+-- ここで接続が切れる
+```
+
+```text
+-- XA RECOVER
+1	8	0	order-42
+ERROR 1205 (HY000) at line 1: Lock wait timeout exceeded; try restarting transaction
+[ 10.27] MySQL を再起動
+[ 12.76] 再起動が終わった
+-- XA RECOVER
+1	8	0	order-42
+```
+
+`XA RECOVER` の出力は、最後の列が識別子です。接続が切れた後も、再起動の後も、準備済みのトランザクションは `XA RECOVER` に残り、別の接続から送った UPDATE はロック待ちで失敗しました。MySQL でも、準備済みの XA トランザクションは `XA COMMIT` か `XA ROLLBACK` を明示するまで残る[仕様](https://dev.mysql.com/doc/refman/8.4/en/xa-restrictions.html)です。
+
+この振る舞いは昔からではありません。MySQL 5.7.7 より前は、接続が切れたりサーバーを正常に停止したりすると、準備済みの XA トランザクションが中止されていました。2005 年に [Bug #12161](https://bugs.mysql.com/bug.php?id=12161) として報告され、2015 年の 5.7.7 で、準備済みの状態をバイナリログに残すよう直されています。直る前は、「はい」と答えた約束が接続と一緒に消えるので、つなぎ直したコーディネータがコミットを送っても、コミットさせる相手が残っていませんでした。
+
+今の PostgreSQL と MySQL で違うのは、既定の設定です。
+
+| | PostgreSQL 17 | MySQL 8.4 |
+|---|---|---|
+| 準備の文 | `PREPARE TRANSACTION` | `XA PREPARE` |
+| 既定で使えるか | 使えない | 使える |
+| 準備済みの一覧 | `pg_prepared_xacts` | `XA RECOVER` |
+| 接続が切れた後・再起動の後 | 残る | 残る |
+| ロックを待つ上限の既定 | 無し（`lock_timeout` が 0） | 50 秒 |
+
+PostgreSQL は、`max_prepared_transactions` の既定が 0 で、そのままでは `PREPARE TRANSACTION` が「prepared transactions are disabled」（準備済みのトランザクションは無効）で失敗します。文書は、準備済みのトランザクションを追って片付けるトランザクションマネージャが無いなら、0 のままにして、忘れられた準備済みを作らないよう勧めています。
+
+<br>
+
+一方で、ロック待ちの上限（[lock_timeout](https://www.postgresql.org/docs/17/runtime-config-client.html#GUC-LOCK-TIMEOUT)）の既定は 0 で、上限がありません。実験では 10 秒に設定しましたが、既定のままのアプリは、準備済みのトランザクションが片付くまで待ち続けます。MySQL では `innodb_lock_wait_timeout` の既定が 50 秒なので、待ちは 50 秒ごとのエラーとして現れます。
+
+---
+
+### 2PC を使う前に決めること
+
+既に 2PC で動いているシステムを持つ人が最初に確認することは、コーディネータが決定を記録する場所です。冒頭の図で赤い帯を終わらせられたのは、決定を知る誰かが残っていたからでした。トランザクションマネージャのログが消えないストレージにあり、再起動の時に準備済みの参加者を見つけて片付けるかを確認します。
+
+そのうえで、`pg_prepared_xacts` の `prepared`（準備した時刻）や `XA RECOVER` を定期的に見て、一定の時間より古いものを知らせる監視を足します。UPDATE が止まって `pg_blocking_pids()` が 0 を返したら、最初に見るのはこの一覧です。
+
+<br>
+
+サービスをまたぐ更新に 2PC を新しく入れようとしている人は、全ての参加者に、他人が決めるまでロックを持って待つことを求める点を考えます。同じチームが持つ DB どうしなら受け入れられても、別のチームや外部のサービスに準備済みのまま待つことを求めるのは難しいはずです。
+
+待たない代わりに、途中の状態が見えることを受け入れる構成もあります。各サービスが自分の DB でトランザクションを先にコミットし、失敗したら打ち消しの処理で戻すのが [Saga](/notes/distributed-systems/saga/) です。DB の更新と、他のサービスに送るイベントを同じトランザクションで書くのが [Transactional Outbox](/notes/distributed-systems/transactional-outbox/) です。以下は、注文とポイントの例で 3 つを比べた表です。
+
+| | 2PC | Saga | Transactional Outbox |
+|---|---|---|---|
+| 参加者が待つもの | コーディネータの決定 | 待たない | 待たない |
+| 外に見える途中の状態 | 決定を配る間の片方だけ | 後で打ち消す更新も見える | イベントが届くまでの片方 |
+| 失敗した時 | 全員が中止する | 打ち消しの処理で戻す | 送信を再試行する |
+| 参加者に求めること | 準備に対応した DB | 打ち消しの処理 | 同じイベントを 2 回受けても困らない作り |
+
+送信を再試行すると同じイベントが 2 回届くことがあるので、受け手は [Idempotency](/notes/distributed-systems/idempotency/) のノートで扱う冪等な作りにしておきます。
+
+身近な例では、コーヒー店が Saga に近いやり方で動いています。Gregor Hohpe 氏の「[Starbucks Does Not Use Two-Phase Commit](https://www.enterpriseintegrationpatterns.com/ramblings/18_starbucks.html)」（2004 年）は、店で 2PC を使うと、飲み物ができるまで代金とレシートを台に置いたままレジで待つことになる、と例えています。実際の店は先に代金を受け取り、飲み物を作れなければ返金します。
+
+3 つのどれでも、注文はあるのにポイントがまだ引かれていない時間は生まれます。2PC は、その時間を決定を配る間に絞る代わりに、参加者にロックを持って待たせます。冒頭の図に描いた赤い帯のような待ちを受け入れるか、途中の状態を見せて後から直すことを受け入れるかが、選ぶ時の分かれ目です。
+
+実験のスクリプトと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/distributed-systems/two-phase-commit/lab) にあります。

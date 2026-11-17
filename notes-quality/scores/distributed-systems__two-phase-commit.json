@@ -1,8 +1,16 @@
 {
  "path": "content/notes/distributed-systems/two-phase-commit/index.md",
- "overall": 3,
- "product": 4,
- "blob": "4d1d5209b0e2653c44719abc31cd3995595ebba8",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:15:05"
+ "overall": 4,
+ "product": 54,
+ "blob": "85eda2d97c0dabd08638f39c0549930e093a2041",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }
