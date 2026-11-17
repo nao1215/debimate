@@ -215,6 +215,22 @@ OWN_PROJECTS = ('filesql', 'sqly', 'atago', 'jsonize', 'jz ', 'metamon', 'himori
                 'mimixbox', 'gozen', 'sqlode', 'oaspec', 'nao1215', '著者', '手元', '私')
 
 
+# 手元の実験で測った値やデータ名を副題に置くと、その場の結果が一般則に見える（2026-11-17 著者の指定）。
+# 割合・小数・倍率・何通り・回数・数値の変化・桁区切りの大きな数・「k=4」の形の設定・データセット名を止める。
+# 仕様や定義から決まる数（2/3、64 バイト、8 bit、10 分に 1 個）は形が違うので掛からない
+LOCAL_RESULT = (
+    r'\d[\d.,]*\s*%',
+    r'\d+\.\d+',
+    r'\d[\d,]*\s*[万億]?\s*倍',
+    r'\d+\s*通り',
+    r'(\d{2,}|\d+\s*[万億])\s*回',
+    r'-?\d[\d.,e-]*\s*(件|ms|秒|個|枚)?\s*から\s*-?\d',
+    r'\d{1,3}(,\d{3})+',
+    r'\b[A-Za-z_]+\s*=\s*\d',
+    r'\b(iris|digits|wine|breast_cancer|Pima|California Housing|MNIST|Titanic|titanic|penguins?)\b|ペンギン',
+)
+
+
 def title_subject_ng(t):
     """副題が一般知識でなく著者の出来事を主題にしていれば、その理由を返す。"""
     if ' - ' not in t:
@@ -225,6 +241,10 @@ def title_subject_ng(t):
     hit = [w.strip() for w in OWN_PROJECTS if w in sub]
     if hit:
         return f'副題に著者のプロジェクトや経験の語（{"、".join(hit)}）がある: {sub}'
+    hit = [m.group(0).strip() for pat in LOCAL_RESULT for m in [re.search(pat, sub)] if m]
+    if hit:
+        return (f'副題に手元の実験の値やデータ名（{"、".join(hit)}）がある: {sub}'
+                '（その場の結果が一般則に見える。数字とデータ名は本文の実験に置き、副題は数字を外した現象を書く）')
     return None
 
 
@@ -504,6 +524,11 @@ def check_small_whole(rel, old_text, new_text):
     ng = []
     if any(re.match(r'#{2,6}\s', l) for l in removed_lines(old_text, new_text)):
         ng += check_anchors(rel, new_text)
+    # 題を変えた時は、小さな修正でも副題の規則を見る（2026-11-17）
+    if title_of(old_text) != title_of(new_text):
+        why = title_subject_ng(title_of(new_text))
+        if why:
+            ng.append(why)
     terms = glossary_pairs()
     body = re.sub(r'```.*?```', '', new_text, flags=re.S)
     plain = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', body)
