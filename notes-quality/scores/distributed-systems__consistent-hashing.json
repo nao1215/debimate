@@ -1,9 +1,9 @@
 {
  "path": "content/notes/distributed-systems/consistent-hashing/index.md",
- "overall": 3,
- "product": 12,
- "blob": "0562c4d0ebdc32c8e930116aa12657f8814de7e1",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 5,
+ "product": 54,
+ "blob": "206959b8a65363d4dc5e99f9e431eb6793405336",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,
