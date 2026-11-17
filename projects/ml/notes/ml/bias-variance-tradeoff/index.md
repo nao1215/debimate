@@ -1,5 +1,5 @@
 ---
-title: "バイアス-バリアンストレードオフ（bias-variance tradeoff）"
+title: "バイアス-バリアンストレードオフ - 正則化の無い線形回帰では、列の数が行の数に並ぶ所でバリアンスが跳ね上がり、その先で下がる"
 date: 2026-05-25
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
@@ -8,241 +8,365 @@ weight: 7
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-バイアス-バリアンス分解（bias-variance decomposition）は、教師あり学習の期待誤差を「Bias の 2 乗」「Variance」「ノイズ（既約誤差）」の 3 項に切り分ける枠組みです。モデルが外す原因を「表現力が足りない（high bias）」と「訓練データの揺らぎに過敏（high variance）」のどちらか（あるいは両方）に診断し、モデルの変更やデータの追加を検討します。
+バイアス-バリアンストレードオフ（bias-variance tradeoff）は、モデルの誤差を 2 つの成分に分けて、モデルの複雑さとの関係を説明する考え方です。1 つ目のバイアスは、学習データを替えて何度も学習した時に、予測の平均が正解からどれだけずれるかです。2 つ目のバリアンスは、学習データを替えるたびに予測がどれだけばらつくかです。
 
-[過学習（overfitting）](../overfitting/) は high variance 側の症状、その対概念である未学習（underfitting）は high bias 側の症状にあたります。バイアス-バリアンス分解は両者を同じ式で扱えるようにする道具で、学習曲線や検証誤差の読み解きと組み合わせると、現状のモデルがどちらの方向に偏っているかを判定できます。
+定番の教科書 [The Elements of Statistical Learning](https://hastie.su.domains/ElemStatLearn/)（第 2 版、2.9 節）は、この関係を次のように書いています。
+
+> More generally, as the model complexity of our procedure is increased, the variance tends to increase and the squared bias tends to decrease.
+
+訳すと「一般に、手法の複雑さを上げるとバリアンスは増える傾向にあり、バイアスの 2 乗は減る傾向にある」です。複雑にし過ぎるとバリアンスが増えて誤差が上がるので、その手前の釣り合う所を選ぶ、というのがトレードオフの意味です。本はこの文の直前で、[k 近傍法](../knn/)で近傍に使う数 k を例に挙げています。k が小さいほど複雑で、バリアンスが大きくなります。
+
+この 1 文を手元で試しました。[scikit-learn](https://scikit-learn.org/stable/) に同梱の手書き数字 [load_digits](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html) から 200 行を選んで線形回帰を学習し、64 画素から乱数で作る列（特徴量）を 5〜4000 本に増やしました。列が多いほど細かい形を表せるので、列の数を複雑さとみなします。列ごとに別の 200 行で 40 回学習し直し、バイアスとバリアンスを測りました。
+
+{{< figure src="bv_cover.webp" alt="左右 2 枚のグラフで、横軸はどちらも列の数 p の対数で 5 から 4000。左は縦軸が対数で、黒いテストの二乗誤差、青い破線のバイアス²、赤いバリアンスの 3 本。列の数 200 の点線の所で 3 本とも鋭く跳ね上がり、二乗誤差は 1634 になる。150 本まではバリアンスが 0.016 から 0.53 へ増え、バイアス² は 0.77 から 0.20 へ減る。200 より右では両方が下がり、4000 本で二乗誤差 0.183。右は数字の誤分類率で、列 75 本の 0.119 が左側の最小、200 本で 0.798 に跳ね、4000 本では 0.045 まで下がる" caption="列を増やした時に測った、テストの二乗誤差と内訳（左）、数字の誤分類率（右）" align="center" >}}
+
+列が 200 本より少ない左側は、引用のとおりでした。列を増やすとバイアスの 2 乗は減り、バリアンスは増え、数字を外した割合（誤分類率）は列 75 本の 0.119 で底を打ちます。ところが列の数が学習に使う行の数と同じ 200 本になると、バリアンスは 1593 まで跳ね上がり、10 択の数字を 8 割外しました。その先で列を増やし続けると、バリアンスもバイアスも下がり、列 4000 本の誤分類率は 0.045 と、左側の一番良い所の半分以下になりました。
+
+検証のスコアが伸びない時に、列を足すか、行を集めるか、正則化を掛けるかは、よくある判断です。学習に使う行より列やパラメータの方が多いモデルは、遺伝子や文書の単語を列にした表でも、大きなニューラルネットでも珍しくありません。上記の図にある線形回帰では、同じ「列を足す」でも、どこから足すかで結果が逆になりました。
+
+<br>
+
+本記事では、ML を学び始めた人と、scikit-learn で手元のデータにモデルを使う人に向けて、次の疑問に答えます。
+
+- バイアスとバリアンスは、何を数えた値なのか。
+- 列を増やし続けると、バリアンスは増え続けるのか。
+- 列の数が行の数に並ぶと、なぜ誤差が跳ね上がるのか。
+- 行を足せば、誤差は必ず下がるのか。
+- 正則化を掛けると、この山はどう変わるのか。
+- 手元の 1 組のデータでバリアンスを測る時、何に気を付けるのか。
+
+実験は scikit-learn 1.9.1 と [NumPy](https://numpy.org/) 2.5.4 で行いました。図を描く処理も含めた完全なコードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
 
 ---
 
-### 数式での分解
+### バイアスとバリアンスの数え方
 
-回帰の二乗誤差で書くと、未知の入力 `x` に対する期待誤差は次の 3 項に分かれます。
+load_digits は、8 × 8 画素の手書き数字 1797 枚で、各行は 64 画素の濃さです。正解の数字に当たる列だけを 1 にした 10 列を目標にして[線形回帰](../linear-regression/)で当てはめ、10 列のうち一番大きい値を予測の数字にします。
 
-```text
-E[(y - f_hat(x))^2] = Bias[f_hat(x)]^2 + Var[f_hat(x)] + sigma^2
-```
-
-各項の意味:
-
-- Bias = `E[f_hat(x)] - f(x)`。多数の訓練セットで学習を繰り返した時の平均予測と、真の関数 `f(x)` のずれ。モデルの表現力不足を表す
-- Variance = `Var[f_hat(x)]`。訓練セットの揺らぎによって予測がどれだけ振れるか。モデルの不安定さを表す
-- ノイズ `sigma^2`。データに本質的に含まれる削れない誤差（irreducible error）
-
-[期待値](/ml/math/expectation/)・[分散](/ml/math/variance/)はいずれも「訓練セット集団」に対する統計量である点に注意が必要です。1 つの訓練セットで学習した 1 つの予測値だけを見ても Bias と Variance は直接観察できず、データを変えながら再学習した予測の挙動から測ることになります。
-
----
-
-### Bias と Variance を視覚化する
-
-同じ真の関数 `sin(2πx) + 0.4x` に対して、観測点 30 個から[多項式回帰](../linear-regression/)（scikit-learn の [PolynomialFeatures](https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.PolynomialFeatures.html) で x のべき乗を特徴量に足し、[LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) で当てはめる）を行い、次数を `1 / 3 / 15` と変えた 3 例を並べます。本記事のコードは軸の範囲や凡例などの体裁を省いています。完全なコードは [bias-variance-tradeoff_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/bias-variance-tradeoff_gen.py) にあります。
+列は、scikit-learn の [RBFSampler](https://scikit-learn.org/stable/modules/generated/sklearn.kernel_approximation.RBFSampler.html) で 64 画素から作ります。RBFSampler は、乱数で決めた向きに画素を重み付けして足し、指定した本数だけ、その値の cos を取った列を作ります。[Rahimi 氏と Recht 氏の論文](https://papers.nips.cc/paper/3182-random-features-for-large-scale-kernel-machines)で提案された方法で、本数が多いほど、細かい形まで表せます。本記事では、この本数 p をモデルの複雑さとして扱います。
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import PolynomialFeatures
-
+X, y = load_digits(return_X_y=True)   # 8×8 画素の手書き数字 1797 枚
+X = X / 16.0                           # 画素の値を 0〜1 に
+Y = np.eye(10)[y]                      # 正解の数字の列だけ 1 にした 10 列
 rng = np.random.default_rng(0)
-x_train = rng.uniform(0.0, 1.0, 30)
-y_train = np.sin(2 * np.pi * x_train) + 0.4 * x_train + rng.normal(0.0, 0.25, 30)
-x_grid = np.linspace(0.0, 1.0, 200)
-y_true = np.sin(2 * np.pi * x_grid) + 0.4 * x_grid
+order = rng.permutation(len(X))
+test, pool = order[:400], order[400:]  # 測る 400 枚と、学習に使う行を選ぶ元の 1397 枚
+n = 200                                # 1 回の学習に使う行の数
+R = 40                                 # 学習し直す回数
 
-fig, axes = plt.subplots(1, 3, figsize=(12, 4), sharey=True)
-for ax, deg, title in zip(
-    axes,
-    [1, 3, 15],
-    ["degree=1 (high bias)", "degree=3 (just right)", "degree=15 (high variance)"],
-):
-    model = make_pipeline(PolynomialFeatures(deg), LinearRegression())
-    model.fit(x_train.reshape(-1, 1), y_train)
-    ax.scatter(x_train, y_train, color="#999999", s=22)
-    ax.plot(x_grid, y_true, color="#59a14f", lw=2, ls="--", label="true f(x)")
-    ax.plot(x_grid, model.predict(x_grid.reshape(-1, 1)), color="#e15759", lw=2)
-    ax.set_title(title)
-plt.tight_layout()
-plt.savefig("polyfit_compare.svg", bbox_inches="tight")
+
+def features(p):
+    """64 画素から、乱数で決めた p 本の列を作る（全行分）。"""
+    return RBFSampler(gamma=0.05, n_components=p, random_state=0).fit(X).transform(X)
+
+
+# 切片を付けると山の位置が 1 本ずれるので、作った列だけで当てはめる
+def bias_variance(p, n=n, make=lambda: LinearRegression(fit_intercept=False), seed=1):
+    F = features(p)
+    rng = np.random.default_rng(seed)
+    preds = np.empty((R, len(test), 10))
+    for r in range(R):
+        rows = rng.choice(pool, n, replace=False)   # 毎回違う 200 行で学習し直す
+        preds[r] = make().fit(F[rows], Y[rows]).predict(F[test])
+    mean = preds.mean(axis=0)                        # 40 個のモデルが出した予測の平均
+    bias2 = np.mean(np.sum((mean - Y[test]) ** 2, axis=1))
+    var = np.mean(np.sum(preds.var(axis=0), axis=1))
+    miss = np.mean(np.argmax(preds, axis=2) != y[test])
+    return bias2, var, miss, preds
 ```
 
-{{< figure src="polyfit_compare.svg" alt="同じ 30 点に 1 次・3 次・15 次の多項式を当てはめた 3 枚の図。緑の点線が真の関数 sin(2πx) + 0.4x で、1 次は波を無視した直線、3 次は真の関数の波にほぼ沿い、15 次は訓練点に張り付いて点の間で大きく揺れる" caption="次数 1・3・15 の多項式回帰" align="center" >}}
-
-左端の直線（degree=1）は、波打つ真の関数を 1 次式で押さえ込もうとして全域で外しています。これがバイアスの正体で、訓練セットをいくら入れ替えても直線は直線のままなので「平均しても真の関数からずれる」性質を持ちます。一方の右端（degree=15）は訓練点の 1 つ 1 つに張り付き、観測点が少し変わるだけで形が大きく揺れます。この揺れがバリアンスです。
-
-中央の degree=3 は真の関数の波に沿っています。ただし 1 回の当てはめでは Bias と Variance は測れないので、次の節で訓練セットを入れ替えて測ります。
-
----
-
-### モデル複雑度との関係
-
-次数ごとに 25 点の訓練セットを 200 回作り直し、そのつど学習したモデルのテスト点 50 個での予測から Bias^2 と Variance を計算します。次数 9 では、誤差が最も大きかった訓練セットを 1 つだけ除いた値も出します。
+`bias_variance` は、選ぶ元の 1397 枚から重複無しで 200 行を選んで学習する操作を 40 回繰り返し、テストの 400 枚に対する 40 組の予測を集めます。テストの 1 枚目（正解は 6）について、列 10 本・200 本・4000 本のそれぞれで、40 個のモデルが「6」の列に付けた点数を比べます。正解なら 1 になるのが理想です。
 
 ```python
-import numpy as np
-from sklearn.linear_model import LinearRegression
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import PolynomialFeatures
-
-rng = np.random.default_rng(0)
-x_test = np.linspace(0.05, 0.95, 50)
-y_true = np.sin(2 * np.pi * x_test) + 0.4 * x_test
-
-for d in range(1, 16):
-    preds = np.zeros((200, len(x_test)))
-    x_sets = np.zeros((200, 25))
-    for t in range(200):
-        x_tr = rng.uniform(0.0, 1.0, 25)
-        y_tr = np.sin(2 * np.pi * x_tr) + 0.4 * x_tr + rng.normal(0.0, 0.25, 25)
-        m = make_pipeline(PolynomialFeatures(d), LinearRegression())
-        m.fit(x_tr.reshape(-1, 1), y_tr)
-        preds[t] = m.predict(x_test.reshape(-1, 1))
-        x_sets[t] = x_tr
-    bias_sq = np.mean((preds.mean(axis=0) - y_true) ** 2)
-    variance = np.mean(preds.var(axis=0))
-    total = bias_sq + variance + 0.25**2
-    print(f"degree={d:2d} bias^2={bias_sq:.4f} variance={variance:.4f} total={total:.4f}")
-    if d == 9:
-        # 誤差が最も大きかった訓練セットを 1 つだけ除いて計算し直す
-        worst = ((preds - y_true) ** 2).mean(axis=1).argmax()
-        rest = np.delete(preds, worst, axis=0)
-        print(f"  worst set: x in [{x_sets[worst].min():.3f}, {x_sets[worst].max():.3f}]")
-        print(f"  without it: bias^2={np.mean((rest.mean(axis=0) - y_true) ** 2):.4f}"
-              f" variance={np.mean(rest.var(axis=0)):.4f}")
+img = test[0]
+for p in [10, 200, 4000]:
+    *_, preds = bias_variance(p)
+    s = preds[:, 0, y[img]]                          # 正解の数字の列に付けた点数
+    print(f"p={p:<5} 平均 {s.mean():6.2f}  正解との差 {s.mean() - 1:6.2f}  標準偏差 {s.std():6.2f}"
+          f"  最小 {s.min():7.2f}  最大 {s.max():7.2f}")
 ```
 
 ```text
-degree= 1 bias^2=0.1529 variance=0.0209 total=0.2363
-degree= 2 bias^2=0.1484 variance=0.0497 total=0.2607
-degree= 3 bias^2=0.0029 variance=0.0107 total=0.0761
-degree= 4 bias^2=0.0026 variance=0.0203 total=0.0854
-degree= 5 bias^2=0.0001 variance=0.0363 total=0.0989
-degree= 6 bias^2=0.0005 variance=0.1222 total=0.1852
-degree= 7 bias^2=0.0019 variance=0.5441 total=0.6085
-degree= 8 bias^2=0.0096 variance=1.8263 total=1.8983
-degree= 9 bias^2=0.6058 variance=122.4722 total=123.1405
-  worst set: x in [0.394, 0.994]
-  without it: bias^2=0.0011 variance=0.1459
-degree=10 bias^2=0.0154 variance=1.6657 total=1.7436
-degree=11 bias^2=0.0034 variance=1.2578 total=1.3237
-degree=12 bias^2=0.5198 variance=76.8490 total=77.4314
-degree=13 bias^2=5.1113 variance=954.5296 total=959.7034
-degree=14 bias^2=0.1151 variance=20.2059 total=20.3834
-degree=15 bias^2=9.4015 variance=1967.1729 total=1976.6370
+p=10    平均   0.39  正解との差  -0.61  標準偏差   0.07  最小    0.25  最大    0.51
+p=200   平均   2.43  正解との差   1.43  標準偏差   3.68  最小   -4.10  最大   15.93
+p=4000  平均   1.08  正解との差   0.08  標準偏差   0.06  最小    0.95  最大    1.25
 ```
 
-この値を対数軸で描いたものが次の図です。Total は Bias^2 と Variance の和にノイズ（点線の 0.0625）を足したものです。
+{{< figure src="bv_strip.webp" alt="3 段の点の図で、横軸は正解の数字に付けた点数。正解の 1 に点線がある。列 10 本の段は 40 個の点が 0.25〜0.51 に固まり、平均の赤い縦線は 0.39 で、1 から左に離れている。列 200 本の段は点が -1.3 から 3 まで散らばり、範囲外が左に 1 個、右に 8 個あり、平均は 2.43。列 4000 本の段は点が 0.95〜1.25 に固まり、平均は 1.08 で 1 のすぐ右" caption="テストの 1 枚目に 40 個のモデルが付けた点数（正解は 1、範囲外の点は数だけ表示）" align="center" >}}
 
-{{< figure src="decomposition_curve.svg" alt="横軸を多項式の次数 1〜15、縦軸を対数目盛の誤差とした Bias^2・Variance・Total の 3 本の線と、ノイズ 0.0625 の点線。Bias^2 は次数 3〜5 で大きく下がり、Variance は次数とともに上がる。Total は次数 3 で最小になり、次数 9 以降は 3 本とも大きく跳ねる" caption="多項式の次数と Bias^2・Variance・Total" align="center" >}}
+点の固まりの中心が 1 からずれる量がバイアス、点の広がりがバリアンスです。列 10 本は、どの 200 行で学習しても 0.4 付近に揃い、そろって正解に届きません。列 200 本は、学習した 200 行によって -4.1 から 15.9 まで散らばります。列 4000 本は、中心がほぼ 1 で、広がりも列 10 本と同じくらい小さくなっています。
 
-次数 8 までは、おおむね教科書どおりの動きです。Bias^2 は次数 1〜2 の 0.15 前後から次数 5 の 0.0001 まで下がり、Variance は次数 3 の 0.011 から次数 8 の 1.83 まで上がります。Total は次数 3 の 0.0761 が最小です。
+<br>
 
-ただし、どちらの曲線も単調ではありません。Variance は次数 2→3 で 0.050 から 0.011 に下がっています。放物線は波の形に合わないので、25 点がどこに落ちたかで当てはめ方が大きく変わるからです。
+#### 二乗誤差を 2 つに分ける式
 
-上のコードの `rng.normal(0.0, 0.25, 25)` を `rng.normal(0.0, 0.0, 25)` にしてノイズを消しても、Variance は次数 2 で 0.044、次数 3 で 0.001 でした。
+テストの 1 行の正解を `y`、学習データを替えて得た予測を `ŷ` とし、学習データの選び方について平均を取る記号を `E[ ]` と書きます。この平均が[期待値](../../math/expectation/)です。予測の平均 `E[ŷ]` を引いて足すと、二乗誤差は次の 2 つに分かれます。
 
-次数 9 以降の Bias^2 と Variance は大きく跳ねます。原因は 200 回のうちの 1 回です。次数 9 で誤差が最大だった訓練セットは x が 0.394〜0.994 にしかなく、0〜0.39 の範囲に点が 1 つもありません。9 次の多項式はその空白を外挿で埋めて暴れました。この 1 セットを除くと、Bias^2 は 0.606 から 0.0011、Variance は 122 から 0.146 に下がります。
+```text
+E[(y − ŷ)²] = (y − E[ŷ])² + E[(ŷ − E[ŷ])²]
+```
 
-Bias^2 まで跳ねるのは、Bias^2 を 200 個の予測の平均から計算しているためです。平均そのものも揺れ、その 2 乗の期待値は Variance / 200 になるので、その分が Bias^2 に上乗せされます。
+右辺の 1 つ目がバイアスの 2 乗（以下、バイアス²）、2 つ目がバリアンス（予測の[分散](../../math/variance/)）です。展開すると残る掛け算の項は、`E[ŷ − E[ŷ]] = 0` なので消えます。上記のコードは、この 2 つを 10 列とテストの 400 行について足し、平均しています。
 
-次数 9・13・15 の Variance を 200 で割ると 0.61、4.77、9.84 で、Bias^2 の 0.606、5.11、9.40 とほぼ一致します。次数 6〜8 で Bias^2 が少しずつ増えるのも同じ理由です。高い次数の Bias^2 が大きいのは、表現力が下がったからではありません。
+この足し算が成り立つのは二乗誤差なので、本記事で 2 つに分けるのは二乗誤差だけで、誤分類率は結果として並べます。バリアンスが大きく効いて訓練データにだけ合う状態が[過学習](../overfitting/)、バイアスが大きく効いて訓練データにも合わない状態が未学習です。
 
-大きく見ると、Bias を下げると Variance が上がるトレードオフ関係が、複雑度という[ハイパーパラメータ](../hyperparameter/)の背後で起こっています。Total が最小になる複雑度の選び方そのものが、[交差検証](../cross-validation/) や [正則化](../regularization/) の役割と直結します。
+<br>
+
+<details>
+<summary>二乗誤差以外の損失と、ノイズの項</summary>
+
+誤分類率のように当たりか外れかだけを数える[損失](../loss-functions/)では、同じ足し算になりません。Domingos 氏の[論文](https://homes.cs.washington.edu/~pedrod/papers/mlc00a.pdf)は、当たり外れの損失に合わせた分け方を提案し、多数決の予測が外れている点ではバリアンスが増えるほど誤差が減る、という直感に反する例も示しています。交差エントロピーでも、二乗誤差と似た形の分け方が[導かれています](https://arxiv.org/abs/2511.08789)。
+
+教科書では、正解そのものの揺れ（ノイズ）を 3 つ目の項「ノイズの分散」として足すのが普通です。load_digits ではノイズだけを取り出せないので、本記事のバイアス² はノイズを含んだ値です。
+
+</details>
+
+<br>
+
+40 個のモデルで予測を平均すれば、バリアンスの大部分は消えます。これを手法にしたのが[アンサンブル学習](../ensemble-learning/)のバギングで、多数の[決定木](../decision-tree/)を平均する[ランダムフォレスト](../random-forest/)もその 1 つです。前のモデルが外した分を順に直す[勾配ブースティング](../gradient-boosting/)は、逆にバイアスを減らす側の手法です。
 
 ---
 
-### 学習曲線で診断する
+### 列の数を増やした結果
 
-実モデルで Bias と Variance を直接測るのは難しいので、学習曲線（learning curve, 訓練サンプル数を増やしながら訓練 accuracy と検証 accuracy を追跡したもの。scikit-learn では [learning_curve](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.learning_curve.html)）で両者の正解率を比較します。max_depth を 1・6・制限なしと変えた[決定木](../decision-tree/) 3 つで、曲線の形を並べてみます。
+列の数 p を 5 本から 4000 本まで 24 通りに変えて `bias_variance` を呼んだ結果が、冒頭の図です。
 
 ```python
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.datasets import make_classification
-from sklearn.model_selection import learning_curve
-from sklearn.tree import DecisionTreeClassifier
-
-X, y = make_classification(n_samples=1500, n_features=20, n_informative=10,
-                          n_redundant=5, n_classes=2, random_state=0)
-
-models = [
-    ("high bias (depth=1)", DecisionTreeClassifier(max_depth=1, random_state=0)),
-    ("middle (depth=6)", DecisionTreeClassifier(max_depth=6, random_state=0)),
-    ("high variance (depth=None)", DecisionTreeClassifier(max_depth=None, random_state=0)),
-]
-
-fig, axes = plt.subplots(1, 3, figsize=(13, 4), sharey=True)
-for ax, (title, est) in zip(axes, models):
-    sizes, tr, va = learning_curve(est, X, y, train_sizes=np.linspace(0.1, 1.0, 8),
-                                   cv=5, scoring="accuracy", random_state=0)
-    ax.plot(sizes, tr.mean(axis=1), "o-", color="#7aa6c2", label="train")
-    ax.plot(sizes, va.mean(axis=1), "s-", color="#e15759", label="validation")
-    ax.set_title(title)
-plt.tight_layout()
-plt.savefig("learning_curves_diagnose.svg", bbox_inches="tight")
+ps = [5, 10, 20, 30, 50, 75, 100, 125, 150, 175, 190, 200, 210, 225, 250, 300,
+      400, 500, 700, 1000, 1500, 2000, 3000, 4000]
+rows = []
+for p in ps:
+    b2, var, miss, _ = bias_variance(p)
+    rows.append((p, b2, var, miss))
+    print(f"p={p:<5} バイアス² {b2:8.3f}  バリアンス {var:9.3f}  二乗誤差 {b2 + var:9.3f}  誤分類率 {miss:.3f}")
+res = np.array(rows)   # 列ごとに p・バイアス²・バリアンス・誤分類率
 ```
 
-{{< figure src="learning_curves_diagnose.svg" alt="横軸を訓練サンプル数 120〜1200、縦軸を正解率とした 3 枚の学習曲線。depth=1 は訓練と検証が 0.68 前後で重なって横ばい、depth=6 は訓練 0.9 前後と検証 0.82 前後の間に差があり、depth=None は訓練が 1.0 に張り付き、検証は 0.75 から 0.83 へ上がる" caption="決定木の深さを変えた学習曲線" align="center" >}}
+```text
+p=5     バイアス²    0.766  バリアンス     0.016  二乗誤差     0.783  誤分類率 0.590
+p=75    バイアス²    0.280  バリアンス     0.165  二乗誤差     0.445  誤分類率 0.119
+p=150   バイアス²    0.198  バリアンス     0.525  二乗誤差     0.722  誤分類率 0.163
+p=190   バイアス²    0.273  バリアンス     3.278  二乗誤差     3.550  誤分類率 0.440
+p=200   バイアス²   41.453  バリアンス  1593.168  二乗誤差  1634.621  誤分類率 0.798
+p=210   バイアス²    0.242  バリアンス     3.333  二乗誤差     3.575  誤分類率 0.439
+p=300   バイアス²    0.150  バリアンス     0.355  二乗誤差     0.505  誤分類率 0.113
+p=1000  バイアス²    0.117  バリアンス     0.104  二乗誤差     0.221  誤分類率 0.053
+p=4000  バイアス²    0.106  バリアンス     0.077  二乗誤差     0.183  誤分類率 0.045
+```
 
-3 つの図に現れるパターンの読み方:
+出力は 24 行のうち 9 行の抜粋で、全ての行を描いたのが冒頭の図です。図を左から読むと、形は 3 つの区間に分かれます。
 
-- 左（high bias）: 訓練・検証ともに 0.685 前後で並走し、データを増やしても上がらない。モデルが表現力不足
-- 中央（depth=6）: 1200 件で訓練 0.907、検証 0.817。差は 0.09 まで縮む
-- 右（high variance）: 訓練は 1.0 に張り付き、検証は 0.834。差（汎化ギャップ）は 0.17 と大きいが、検証はデータを増やすほど上がっている
+列 150 本までは、引用の文のとおりです。二乗誤差は列 50〜75 本で底を打ち、そこから上がる U 字を描きます。p = 200 より手前の 190 本からバリアンスが急に増え、200 本で 1593 になります。バイアス² は 40 個の予測を平均してから正解との差を測るので、平均そのものに残る揺れ、つまりバリアンスを 40 で割った分が混ざります。p = 200 でバイアス² が 41 と大きいのは、この混ざる分が 1593 ÷ 40 で 40 ほどあるためです。
 
-depth=None の検証正解率が depth=6 より高い点に注意してください。ギャップの大きさは「どちらへ動かすか」の手がかりで、モデルの良し悪しは検証スコアそのもので比べます。同じコードで max_depth を 6 から 15 まで変えると、1200 件での検証正解率は 0.817〜0.837 で大差がありません。
+p = 200 を越えると、列を足すたびにバリアンスもバイアスの 2 乗も下がります。複雑にしたのにバリアンスが減るので、右側では「列の数＝複雑さ」という見方が当てはまっていません。誤差が一度下がり、上がり、また下がる形は二重降下（double descent）と呼ばれ、Belkin 氏らの[論文](https://arxiv.org/abs/1812.11118)が名付けました。この論文は、RBFSampler と同じ作り方の列で MNIST という手書き数字のデータを学習した結果に加え、全結合のニューラルネットやランダムフォレストでも同じ形を示しています。
+
+Nakkiran 氏らの [Deep Double Descent](https://arxiv.org/abs/1912.02292) は、画像に使う畳み込みニューラルネットや、文章に使う Transformer でも、幅を広げた時や学習を長く続けた時に同じ形が出ることを報告しています。
 
 ---
 
-### 診断フロー
+### 列の数が行の数に並ぶ所
 
-学習曲線を見て改善方法を選ぶ手順を示します。
+山が p = 200 に出るのは、行の数が 200 だからです。列の数 p と行の数 n の大小で、線形回帰が解く問題が変わります。点を通る直線にならって、学習データのどの行でも予測が正解と一致することを「全ての行を通る」と書きます。
+
+- p < n: 全ての行を通る係数は無いので、誤差の二乗和が最小の係数を選ぶ
+- p = n: 全ての行をちょうど通る係数が 1 つだけある
+- p > n: 全ての行を通る係数が無数にあり、どれかを選ぶ必要がある
+
+p > n の時、scikit-learn の [LinearRegression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) は SciPy の [lstsq](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) を呼び、全ての行を通る係数のうち、係数の 2 乗和が一番小さいものを返します。これを最小ノルム解（minimum-norm solution）と呼びます。
+
+次のコードは、1 組の 200 行について、列を 200 行 × p 列に並べた行列で一番小さい特異値と、学習した係数の大きさを測ります。[特異値](../../math/eigen-decomposition/)は、長さ 1 の係数ベクトルに行列を掛けた時、向きごとに、予測の長さが何倍になるかを並べた値です。一番小さい特異値が 0 に近い向きは、その向きの係数を大きくしても学習データの予測がほとんど変わりません。
+
+```python
+rows_one = np.random.default_rng(1).choice(pool, n, replace=False)   # 1 組の 200 行
+for p in ps:
+    Fp = features(p)[rows_one]
+    s = np.linalg.svd(Fp, compute_uv=False)                          # 大きい順の特異値
+    model = LinearRegression(fit_intercept=False).fit(Fp, Y[rows_one])
+    if p in (100, 200, 4000):
+        ref = np.linalg.lstsq(Fp, Y[rows_one], rcond=None)[0].T
+        print(f"p={p:<5} 最小の特異値 {s[-1]:.2e}  係数の大きさ {np.linalg.norm(model.coef_):9.2f}"
+              f"  NumPy の最小ノルム解と一致: {np.allclose(model.coef_, ref, atol=1e-6)}")
+```
+
+```text
+p=100   最小の特異値 6.78e-02  係数の大きさ     27.66  NumPy の最小ノルム解と一致: True
+p=200   最小の特異値 4.01e-04  係数の大きさ    871.18  NumPy の最小ノルム解と一致: True
+p=4000  最小の特異値 4.88e-02  係数の大きさ     30.30  NumPy の最小ノルム解と一致: True
+```
+
+{{< figure src="bv_singular.webp" alt="左右 2 枚の両対数のグラフで、横軸は列の数 p。左は 200 行 × p 列の行列の最小の特異値で、5 本の 2 付近から下がり続け、200 本で 4.0e-4 まで落ち、その先は 0.05 付近まで戻って平らになる。右は学習した係数の大きさで、列とともに増えて 200 本で 871 の山になり、その先は 30 付近まで下がる" caption="200 行 × p 列の行列の、一番小さい特異値（左）と学習した係数の大きさ（右）" align="center" >}}
+
+p = 200 では、200 本の列でちょうど 200 行を通す必要があります。一番小さい特異値は 4.0e-4 で、p = 100 の 170 分の 1 です。係数を求める時は正解を特異値で割る形になり、この向きでは予測の長さが 4.0e-4 倍にしかならないので、係数は逆に 1 ÷ 4.0e-4 で 2500 倍に引き伸ばされます。学習データに含まれる正解の小さな揺れもこの倍率で係数に入るので、係数の大きさは 871 になり、選んだ 200 行ごとに予測が大きく変わります。冒頭の図でバリアンスが作る山は、この拡大です。
+
+p > n では、全ての行を通る係数が無数にあり、列が多いほど、同じ 200 行を通す方法の中から 2 乗和の小さいものを選べます。列 4000 本では係数の大きさが 30 で、1 本ずつの係数は小さく、予測は滑らかになります。列を足すと、係数を小さくする余地が増え、[正則化](../regularization/)を掛けたのに近い効き方をするということです。Hastie 氏らの[論文](https://arxiv.org/abs/1903.08560)は、最小ノルム解が出す誤差を p と n の比から計算しています。
+
+<br>
+
+<details>
+<summary>scikit-learn が小さい特異値を切り捨てる条件</summary>
+
+scikit-learn 1.9 の LinearRegression は、一番大きい特異値の 1e-6 倍より小さい特異値を 0 として切り捨てますが、この実験の p = 200 の比は 3.5e-5 で、切り捨てには届いていません。
+
+</details>
+
+<br>
+
+---
+
+### 行を足すと悪化する範囲
+
+山の位置が p = n で決まるなら、列を 200 本に固定して行を増やしても、n = 200 で同じ山が出るはずです。次のコードは、列 200 本のまま、学習に使う行を 50 行から 600 行まで変えました。
+
+```python
+ns = [50, 75, 100, 125, 150, 175, 190, 200, 210, 225, 250, 300, 400, 500, 600]
+for m in ns:
+    b2, var, miss, _ = bias_variance(200, n=m)
+    print(f"n={m:<4} 二乗誤差 {b2 + var:9.3f}  誤分類率 {miss:.3f}")
+```
+
+```text
+n=100  二乗誤差     0.509  誤分類率 0.147
+n=150  二乗誤差     0.776  誤分類率 0.177
+n=200  二乗誤差  1634.621  誤分類率 0.798
+n=300  二乗誤差     0.470  誤分類率 0.088
+n=600  二乗誤差     0.216  誤分類率 0.029
+```
+
+{{< figure src="bv_rows.webp" alt="左右 2 枚のグラフで、横軸は学習に使う行の数 n で 50 から 600、列は 200 本のまま。左は縦軸が対数のテストの二乗誤差で、n が 100 付近の 0.5 から増え、n = 200 の点線で 1634 の山になり、600 行で 0.216 まで下がる。右は誤分類率で、100 行の 0.147 から 200 行の 0.798 に上がり、300 行で 0.088、600 行で 0.029 になる" caption="列を 200 本に固定して、学習に使う行を増やした時の誤差" align="center" >}}
+
+行を 100 行から 200 行に倍にすると、誤分類率は 0.147 から 0.798 に悪くなりました。行を足して良くなるのは、300 行を越えてからです。Nakkiran 氏の [More Data Can Hurt for Linear Regression](https://arxiv.org/abs/1912.07242) は、行を足すと誤差が上がる範囲が線形回帰にあることを計算と実験で示しています。
+
+行を増やしながら訓練と検証のスコアを並べた図を学習曲線（learning curve）と呼び、scikit-learn の [learning_curve](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.learning_curve.html) で描けます。上記の図は、学習曲線の検証側に当たる線が、途中で跳ねる例です。行を足す前に列の数と比べておけば、この山は避けられます。行の数が列の数に近付く所では、行を足すより先に、次で扱う正則化を掛けます。
+
+<br>
+
+#### 山から離れた所の学習曲線
+
+山から離れた所では、学習曲線を見れば、左側の U 字のどちら寄りにいるかが分かります。列を 10 本と 150 本にして、行を 200 行から 1000 行まで増やし、学習に使った行とテストの 400 行で二乗誤差を測りました。ここではテストの 400 行が検証の役をします。
+
+```python
+def train_test_error(p, n, seed=1):
+    F = features(p)
+    rng = np.random.default_rng(seed)
+    tr, te = [], []
+    for r in range(R):
+        rows = rng.choice(pool, n, replace=False)
+        model = LinearRegression(fit_intercept=False).fit(F[rows], Y[rows])
+        tr.append(np.mean(np.sum((model.predict(F[rows]) - Y[rows]) ** 2, axis=1)))
+        te.append(np.mean(np.sum((model.predict(F[test]) - Y[test]) ** 2, axis=1)))
+    return np.mean(tr), np.mean(te)
+
+for p in (10, 150):
+    for m in [200, 300, 400, 600, 800, 1000]:
+        a, b = train_test_error(p, m)
+        print(f"p={p:<4} n={m:<5} 訓練の二乗誤差 {a:.3f}  テストの二乗誤差 {b:.3f}")
+```
+
+```text
+p=10   n=200   訓練の二乗誤差 0.645  テストの二乗誤差 0.724
+p=10   n=1000  訓練の二乗誤差 0.670  テストの二乗誤差 0.695
+p=150  n=200   訓練の二乗誤差 0.036  テストの二乗誤差 0.722
+p=150  n=1000  訓練の二乗誤差 0.137  テストの二乗誤差 0.195
+```
+
+{{< figure src="bv_curve.webp" alt="左右 2 枚の学習曲線で、横軸は学習に使う行の数 n で 200 から 1000、縦軸は二乗誤差。左の列 10 本では、青い訓練の誤差が 0.645 から 0.670、赤いテストの誤差が 0.724 から 0.695 で、2 本は近いまま 0.7 前後で横ばい。右の列 150 本では、200 行で訓練 0.036、テスト 0.722 と大きく開き、行を増やすと差が縮んで、1000 行で訓練 0.137、テスト 0.195 になる" caption="列 10 本と 150 本で、行を増やした時の訓練とテストの二乗誤差" align="center" >}}
+
+列 10 本では、訓練とテストの誤差が近いまま、行を 1000 行にしても 0.7 前後から下がりません。これがバイアス側の形です。列 150 本では、200 行の時に訓練だけが低く、テストとの差が大きく開いています。行を足すほど差が縮み、テストの誤差は 0.195 まで下がりました。これがバリアンス側の形です。
+
+列 10 本の内訳を `bias_variance(10, n=m)` で測ると、行を 50 行から 800 行に増やした時、バリアンスは 0.168 から 0.0035 に減り、バイアス² は 0.701 から 0.694 とほぼ同じでした。行を足して減るのは主にバリアンスで、列が足りないことから来るバイアスは残ります。
+
+---
+
+### Ridge で山を消す
+
+最小ノルム解は、全ての行をちょうど通すことを優先します。[Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) は、誤差の二乗和に係数の 2 乗和の alpha 倍を足した値を最小にするので、全ての行を通すことを諦めてでも、係数を小さく抑えます。`bias_variance` の `make` を Ridge に替えて、同じ 24 通りの p で測りました。
+
+```python
+alphas = [1e-3, 1e-2, 1e-1]
+ridge = {}
+for a in alphas:
+    ridge[a] = []
+    for p in ps:
+        b2, var, miss, _ = bias_variance(p, make=lambda a=a: Ridge(alpha=a, fit_intercept=False))
+        ridge[a].append((b2 + var, miss))
+    ridge[a] = np.array(ridge[a])
+for p in (50, 200, 4000):
+    i = ps.index(p)   # res は前の節で LinearRegression を測った結果
+    cells = "  ".join(f"alpha={a:g} {ridge[a][i, 0]:7.3f}" for a in alphas)
+    print(f"p={p:<5} LinearRegression {res[i, 1] + res[i, 2]:9.3f}  {cells}")
+```
+
+```text
+p=50    LinearRegression     0.445  alpha=0.001   0.444  alpha=0.01   0.433  alpha=0.1   0.397
+p=200   LinearRegression  1634.621  alpha=0.001   0.515  alpha=0.01   0.293  alpha=0.1   0.257
+p=4000  LinearRegression     0.183  alpha=0.001   0.180  alpha=0.01   0.174  alpha=0.1   0.201
+```
+
+{{< figure src="bv_ridge.webp" alt="両対数のグラフで、横軸は列の数 p、縦軸はテストの二乗誤差。黒い LinearRegression は p = 200 で 1634 の山になる。橙の Ridge の alpha=0.001 は 200 付近に 0.5 ほどの小さなこぶが残る。緑の alpha=0.01 と青の alpha=0.1 は山もこぶも無く、列を増やすほど下がり続ける。右端では 4 本とも 0.17〜0.20 に集まる" caption="LinearRegression と、alpha を 3 通りにした Ridge で測ったテストの二乗誤差" align="center" >}}
+
+alpha = 0.001 でも、p = 200 の二乗誤差は 1634 から 0.515 に下がりました。alpha = 0.01 以上では山が消え、列を増やすほど誤差が下がる 1 本の曲線になります。Nakkiran 氏らの [Optimal Regularization Can Mitigate Double Descent](https://arxiv.org/abs/2003.01897) は、alpha を適切に選べば、線形回帰のいくつかの設定で二重降下が消えることを示しています。
+
+一方で、列 4000 本では alpha = 0.1 の 0.201 が、LinearRegression の 0.183 より悪くなりました。右側では列の多さが係数を小さくしているので、強い alpha は削り過ぎになります。alpha の効き目はデータや列の大きさでも変わるので、[交差検証](../cross-validation/)で選びます。
+
+---
+
+### 手元の 200 行でバリアンスを測る
+
+ここまでの実験は、選ぶ元の 1397 枚から、別の 200 行を何度でも選べました。実際の作業では手元のデータが 1 組だけで、バリアンスを測るには、その 1 組から行を選び直して学習を繰り返します。よく使うのが、重複を許して同じ数の行を選び直すブートストラップ（bootstrap）です。1 組の 200 行から 40 回ブートストラップして、同じ式でバリアンスを測りました。
+
+```python
+def boot_variance(p, base, seed=2):
+    F = features(p)
+    rng = np.random.default_rng(seed)
+    preds = np.empty((R, len(test), 10))
+    uniq = []
+    for r in range(R):
+        rows = rng.choice(base, len(base), replace=True)   # 重複を許して 200 行を選び直す
+        uniq.append(len(np.unique(rows)))
+        preds[r] = LinearRegression(fit_intercept=False).fit(F[rows], Y[rows]).predict(F[test])
+    return np.mean(np.sum(preds.var(axis=0), axis=1)), np.mean(uniq)
+
+
+boot = [boot_variance(p, rows_one) for p in ps]   # rows_one は前の節で選んだ 1 組の 200 行
+bvar = np.array([b[0] for b in boot])
+print(f"選び直した 200 行に含まれる、違う行の数（平均）: {np.mean([b[1] for b in boot]):.1f}")
+for p in (50, 125, 200, 1000):
+    i = ps.index(p)
+    print(f"p={p:<5} 別の 200 行のバリアンス {res[i, 2]:9.3f}  ブートストラップのバリアンス {bvar[i]:9.3f}")
+```
+
+```text
+選び直した 200 行に含まれる、違う行の数（平均）: 126.9
+p=50    別の 200 行のバリアンス     0.109  ブートストラップのバリアンス     0.143
+p=125   別の 200 行のバリアンス     0.347  ブートストラップのバリアンス    16.834
+p=200   別の 200 行のバリアンス  1593.168  ブートストラップのバリアンス     0.313
+p=1000  別の 200 行のバリアンス     0.104  ブートストラップのバリアンス     0.070
+```
+
+{{< figure src="bv_bootstrap.webp" alt="両対数のグラフで、横軸は列の数 p、縦軸はバリアンス。赤い実線は別の 200 行で学習を繰り返したバリアンスで、p = 200 で 1593 の山になる。青い破線は手元の 200 行のブートストラップで、山は約 127 の点線の所の p = 125 にあり 16.8、p = 200 では 0.31 しかない。山から離れた p = 50 以下と 1000 以上では、2 本は近い値になる" caption="別の 200 行で学習を繰り返したバリアンスと、手元の 200 行のブートストラップで測ったバリアンス" align="center" >}}
+
+ブートストラップの山は p = 125 にあり、本当に山がある p = 200 では 0.313 と、何も起きていないような値でした。200 行を重複を許して選び直すと、違う行は平均で 127 行ほどしか入りません。同じ行を 2 回並べても通す点は増えないので、選び直した行で学習したモデルにとって、行の数は約 127 行になり、山もそこへ動きます。
+
+山から離れた p = 50 や p = 1000 では、2 つのバリアンスの差は 1.5 倍以内に収まりました。ブートストラップの値を読む時は、違う行の数を数えて、列の数がその数や元の 200 行に近くないかを先に見ます。近ければ、その範囲のバリアンスは信用せず、Ridge を掛けるか、列の数を行の数から離します。交差検証では試していませんが、各回の学習に使う行は全体の (k − 1) / k に減るので、山の位置は同じ向きにずれるはずです。
+
+---
+
+### 列を足すか行を足すか決める前に
+
+正則化を掛けない線形回帰で検証のスコアが伸びない時、最初に見るのは、学習に使う行の数と列の数がどれだけ近いかです。本記事の実験では、2 つが近い所で教科書の U 字の考え方が当てはまらず、列を足しても行を足しても誤差が大きく上下しました。近ければ、Ridge のように係数を小さく抑える正則化を先に掛けます。決定木やニューラルネットでは、山の位置を列の数と行の数だけで読めるとは限りません。
+
+列の数が行の数より十分に少ない左側では、引用の文どおりに考えてよく、バリアンスが大きければ行を足すか、列を減らすか、正則化を強めます。バイアスが大きければ列を足します。行を集めてもバイアスはほとんど減らないので、データを集める手間を掛ける前に、どちらが大きいかを決めます。
+
+どちらが大きいかは、学習曲線で訓練と検証の誤差を並べると見当が付きます。両方が高く近ければバイアス側、訓練だけ低く検証との差が大きければバリアンス側です。予測のばらつきを数で知りたい時は学習データを選び直して測りますが、ブートストラップでは行の数が実質 6 割ほどになることを差し引いて読みます。列の数や alpha のように学習の前に決める値の探し方は、[ハイパーパラメータ](../hyperparameter/)で扱っています。
 
 ```mermaid
-graph TD
-    A["学習曲線を描く"] --> B{"訓練と検証のギャップは?"}
-    B -->|"大きい かつ 訓練は十分高い"| C["High variance<br/>= 過学習側"]
-    B -->|"小さい かつ 両方とも低い"| D["High bias<br/>= 未学習側"]
-    B -->|"小さい かつ 両方とも高い"| E["Just right<br/>= そのままで OK"]
-    C --> C1["データ追加 / 正則化強化 / 容量を下げる / Early stopping"]
-    D --> D1["容量を上げる / 特徴量追加 / 学習を長く回す / 正則化を弱める"]
-    E --> E1["さらなる改善は限界に近い"]
+flowchart LR
+    A["正則化の無い線形回帰で<br>列の数と行の数を比べる"] -->|"近い"| B["Ridge で係数を抑える"]
+    A -->|"列が十分に少ない"| C{"学習曲線で<br>訓練と検証を並べる"}
+    A -->|"列が十分に多い"| F["本記事の実験では<br>列を足すとバリアンスが下がった<br>検証のスコアで確かめる"]
+    C -->|"両方が高く近い"| D["バイアス側<br>列を足す"]
+    C -->|"訓練だけ低く差が大きい"| E["バリアンス側<br>行を足す・列を減らす・正則化を強める"]
 ```
 
-ギャップが大きく訓練だけ高い場合は high variance、ギャップが小さく両方低い場合は high bias を疑います。フローでは「両方低くてギャップも大きい」というケースを省いています。この場合は両方への対処を検討します。まずモデル容量を上げて high bias を減らし、その後で訓練スコアと検証スコアの差を確認します。
-
----
-
-### 各シナリオの打ち手
-
-学習曲線の状態と対処法を表にまとめます。
-
-| 症状 (symptom) | 診断 | 改善方法 (effective) | 改善しにくい・悪化させる方法 (ineffective) |
-|---|---|---|---|
-| 訓練 ≒ 検証、両方とも目標未満で頭打ち | High bias (未学習) | 容量を上げる（深い木・ブースティング・大きなニューラルネット）／ 有用な特徴量追加 ／ 学習エポック増 ／ 正則化を弱める | 正則化強化 ／ 訓練データ追加 ／ Early stopping |
-| 訓練 ≫ 検証、ギャップが顕著、訓練は十分高い | High variance (過学習) | 訓練データ追加 ／ 正則化強化 ／ Early stopping ／ 容量を下げる ／ ドロップアウト | 容量をさらに上げる ／ 特徴量をさらに増やす |
-| 訓練 ≈ 検証、両方とも十分高い | Just right | そのまま運用 ／ 別軸の改善（推論速度・解釈性）に切り替え | 過剰なチューニング（過学習に振れるリスク） |
-
-原因に合わない方法を選ぶと、スコアが改善しなかったり、悪化したりします。例として、上の depth=1 の木は訓練データを 120 件から 1200 件に増やしても検証正解率が 0.674 から 0.685 にしか上がりません。データ追加で減るのは主に Variance で、表現力不足による Bias はほとんど減らないからです。
-
-一方で high variance の状態でモデルを大きくすると、多項式の次数 7 以降のように Variance が膨らみやすくなります。表は目安で、どの方法がどれだけ効くかは学習曲線を描き直して確認します。
-
----
-
-### 機械学習での使いどころ
-
-- モデル選定の初期段階で「もっと大きいモデルを試すべきか、データ追加に投資すべきか」の判断に使う
-- ハイパーパラメータ探索の方向性決め（深さを上げる方向か、正則化係数を上げる方向か）
-- [交差検証](../cross-validation/) で訓練 / 検証スコアを取った後、ギャップの大きさを見て次のサイクルの仮説を立てる
-- [アンサンブル](../ensemble-learning/)（[ランダムフォレスト](../random-forest/) / [勾配ブースティング](../gradient-boosting/)）が「なぜ素の決定木より強いか」を理解する枠組みとして。バギングは Variance を平均で打ち消し、ブースティングは弱学習器の Bias を逐次補正する操作と読める
-- [kNN](../knn/) のハイパーパラメータ `k` の選び方（`k` が小さい = high variance、`k` が大きい = high bias）
-
----
-
-### 適さないケース / 限界
-
-バイアス-バリアンス分解を適用する場合には、次の制約があります。
-
-- 損失によっては分解が足し算にならない。[交差エントロピー](../loss-functions/)を含む Bregman ダイバージェンスでは、MSE と同じ形の分解が[導かれている](https://arxiv.org/abs/2511.08789)。ただし、訓練セットをまたいだ予測の平均は単純な平均ではなくなる。0-1 損失では、[Domingos（2000）](https://homes.cs.washington.edu/~pedrod/papers/mlc00a.pdf)が示すとおり、多数決の予測が外れる点では Variance が増えると誤差が減る。実用上は「同じ直感を分類タスクの学習曲線で読む」運用で代用する
-- 「Bias と Variance の値」を 1 つの訓練セットから直接出すことはできない。上の多項式の実験のように複数訓練セットの再サンプリングが必要で、学習曲線の形による定性診断で代用するのが普通である
-- 訓練データを完全に再現できる規模を超えてパラメータを増やすと、テスト誤差が再び下がる [double descent](https://arxiv.org/abs/1812.11118) が報告されている。この論文はニューラルネットだけでなく、random Fourier features やランダムフォレスト、L2-boosting でも同じ曲線を示している。古典的な U 字曲線の枠から外れる挙動なので、超大規模モデルにはそのまま適用しにくい
-- 分布シフト下では「訓練と検証が同じ分布から来る」という前提が崩れるため、ギャップの原因が Variance なのか [データドリフト](../../mlops/data-drift/) なのかを別途切り分ける必要がある
+列の数が行の数を大きく越える右側では、本記事で試した範囲だと、列を足すほど係数が小さくなり、バリアンスも下がりました。入力から乱数で作った列を最小ノルム解で当てはめた結果で、別の作り方の列や別のモデルで同じになるかは測っていません。列 4000 本のモデルは学習した 200 行を全て通すので、訓練の二乗誤差は 7.5e-29 とほぼ 0 ですが、テストの誤分類率 0.045 は、列 3000 本と並んで 24 通りの中で一番低い値でした。訓練と検証で誤差が開く大きさは、どちらへ動かすかの手がかりにはなりますが、モデルの良し悪しは検証のスコアそのもので比べます。訓練と検証でデータの分布が違う時は、この差は[データドリフト](../../mlops/data-drift/)でも開くので、バリアンスのせいと決める前に分布を比べます。

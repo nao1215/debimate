@@ -1,8 +1,16 @@
 {
  "path": "projects/ml/notes/ml/bias-variance-tradeoff/index.md",
- "overall": 3,
- "product": 8,
- "blob": "31062819808933b17cd4b485d48c87c31e1200d7",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-12T00:15:52"
+ "overall": 4,
+ "product": 36,
+ "blob": "6448c1949e7ee1e9bb2d1f448440c0aea73a3624",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }
