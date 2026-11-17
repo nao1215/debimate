@@ -1,5 +1,5 @@
 ---
-title: "ロジスティック回帰 - Pima の糖尿病データを元の単位のまま liblinear に渡すと、年齢の係数が 3.5% に縮む"
+title: "ロジスティック回帰 - 単位を変えていない列を liblinear に渡すと、切片へのペナルティで係数が縮む"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

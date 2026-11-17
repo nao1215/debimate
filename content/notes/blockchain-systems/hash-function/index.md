@@ -1,5 +1,5 @@
 ---
-title: "Hash Function - 4 バイトの keccak256 は、どれか 2 つの名前なら平均 8 万回弱で重なる"
+title: "Hash Function - 4 バイトの関数セレクターは、狙った値に当てるより、どれか 2 つが重なる方がはるかに早い"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

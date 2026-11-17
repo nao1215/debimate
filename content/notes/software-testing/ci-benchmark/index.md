@@ -1,5 +1,5 @@
 ---
-title: "CI のベンチマーク - GitHub Actions のランナーは、同じ型番の CPU でもジョブごとに 29% 速さが違う"
+title: "CI のベンチマーク - GitHub Actions のランナーは、同じ型番の CPU でもジョブごとに速さが違う"
 date: 2026-11-13
 draft: false
 series: ["技術ノート", "Software Testing"]

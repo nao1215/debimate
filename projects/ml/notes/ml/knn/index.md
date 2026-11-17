@@ -1,5 +1,5 @@
 ---
-title: "kNN - 緯度と経度を度から m に書き直すだけで、R² が 0.15 から 0.80 に変わる理由"
+title: "kNN - 列の単位を書き直すだけで、近傍と予測の精度が大きく変わる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

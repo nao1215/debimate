@@ -1,5 +1,5 @@
 ---
-title: "平均 - float32 で画像 1000 枚の画素の平均を取ると、R・G・B が全て 0.334 になる理由"
+title: "平均 - float32 で多くの値を足すと、合計がある所から増えなくなる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

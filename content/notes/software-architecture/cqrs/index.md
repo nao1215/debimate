@@ -1,5 +1,5 @@
 ---
-title: "CQRS - 4 つの worker で 1 つのキューを取り合うと、一部の商品が古い価格で止まる"
+title: "CQRS - 1 つのキューを複数の worker で取り合うと、読み取りモデルの一部が古い値で止まる"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Software Architecture"]

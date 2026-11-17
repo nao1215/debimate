@@ -1,5 +1,5 @@
 ---
-title: "歪度と log1p - 単位を変えるだけで、log1p 後の歪度が 0.79 から -0.17 まで動く"
+title: "歪度と log1p - 歪度は単位で変わらないが、log1p 後の歪度は単位で変わる"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

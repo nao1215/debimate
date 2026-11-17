@@ -1,5 +1,5 @@
 ---
-title: "SVM - SVC を LinearSVC に替えると、なぜ列の値をずらすだけで正解率が 53% に落ちるのか"
+title: "SVM - SVC を LinearSVC に替えると、なぜ列の値をずらすだけで正解率が落ちるのか"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

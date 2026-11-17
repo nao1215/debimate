@@ -1,5 +1,5 @@
 ---
-title: "固有値分解 - wine の PC4 を「malic_acid の軸」と呼んでよいか"
+title: "固有値分解 - 固有値がほぼ等しい主成分は、データを選び直すたびに向きが大きく変わる"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Mathematics"]

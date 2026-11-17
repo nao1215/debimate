@@ -1,5 +1,5 @@
 ---
-title: "k-means - 塊の無い一様乱数でも、k を選ぶ 3 つの指標はそろって k=4 を指す"
+title: "k-means - 塊の無い一様乱数でも、k を選ぶ指標はそろって 1 つの k を指す"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

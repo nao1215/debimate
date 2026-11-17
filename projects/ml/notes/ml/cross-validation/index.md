@@ -1,5 +1,5 @@
 ---
-title: "交差検証 - cv=3 で正解率 97% の iris が、KFold(3) と書くと 0% になる理由"
+title: "交差検証 - cv に整数を渡す時と KFold を渡す時で、行の分け方が変わる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

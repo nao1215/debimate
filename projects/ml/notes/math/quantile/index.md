@@ -1,5 +1,5 @@
 ---
-title: "Quantile - 同じ 10 個の応答時間の 90 パーセンタイルが、関数ごとに 40〜814 ms の 4 通りに分かれる理由"
+title: "Quantile - 同じデータの 90 パーセンタイルが、関数ごとに違う値になる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

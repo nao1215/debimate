@@ -1,5 +1,5 @@
 ---
-title: "ハイパーパラメータ - 81 回のグリッド探索で、learning_rate は 3 通りしか試されない"
+title: "ハイパーパラメータ - グリッド探索は、試す回数を増やしても 1 つの値を数通りしか試さない"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

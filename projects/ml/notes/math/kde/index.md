@@ -1,5 +1,5 @@
 ---
-title: "カーネル密度推定（KDE） - 同じ「scott」のバンド幅が、細胞核の面積では scikit-learn と scipy で 352 倍違う"
+title: "カーネル密度推定（KDE） - 同じ「scott」のバンド幅でも、scikit-learn と scipy では意味が違う"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

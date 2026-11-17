@@ -1,5 +1,5 @@
 ---
-title: "混同行列 - 閾値を下げて Recall が 1.000 になったのに、悪性の見逃しが 2 件から 14 件に増えた理由"
+title: "混同行列 - 閾値を下げて Recall が上がったのに、悪性の見逃しが増える理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

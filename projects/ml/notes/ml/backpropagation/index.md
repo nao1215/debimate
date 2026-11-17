@@ -1,5 +1,5 @@
 ---
-title: "誤差逆伝播法 - backward の 1 行を消しても、正解率 96% まで学習が進む理由"
+title: "誤差逆伝播法 - backward の 1 行を消しても、正解率が上がり続ける理由"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "最急降下法・SGD - 標準化しても SGDRegressor の R² が 10 回とも負になる理由"
+title: "最急降下法・SGD - 標準化した後も極端に大きな値の行が残ると、SGD の重みは 1 回の更新で跳ね上がる"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Mathematics"]

@@ -1,5 +1,5 @@
 ---
-title: "Gradient Boosting - 10,000 行では毎回同じ結果が、1 行足すと学習のたびに変わる理由"
+title: "Gradient Boosting - HistGradientBoosting は行数が一定を超えると、学習のたびに結果が変わる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
