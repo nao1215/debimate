@@ -1,0 +1,122 @@
+[
+ {
+  "rows": 5000,
+  "work_mem": "4MB",
+  "query": "not_in",
+  "ms": 1.718
+ },
+ {
+  "rows": 5000,
+  "work_mem": "4MB",
+  "query": "not_exists",
+  "ms": 1.562
+ },
+ {
+  "rows": 5000,
+  "work_mem": "64kB",
+  "query": "not_in",
+  "ms": 1143.642
+ },
+ {
+  "rows": 5000,
+  "work_mem": "64kB",
+  "query": "not_exists",
+  "ms": 1.199
+ },
+ {
+  "rows": 10000,
+  "work_mem": "4MB",
+  "query": "not_in",
+  "ms": 3.434
+ },
+ {
+  "rows": 10000,
+  "work_mem": "4MB",
+  "query": "not_exists",
+  "ms": 3.13
+ },
+ {
+  "rows": 10000,
+  "work_mem": "64kB",
+  "query": "not_in",
+  "ms": 4613.091
+ },
+ {
+  "rows": 10000,
+  "work_mem": "64kB",
+  "query": "not_exists",
+  "ms": 2.275
+ },
+ {
+  "rows": 20000,
+  "work_mem": "4MB",
+  "query": "not_in",
+  "ms": 6.804
+ },
+ {
+  "rows": 20000,
+  "work_mem": "4MB",
+  "query": "not_exists",
+  "ms": 6.49
+ },
+ {
+  "rows": 20000,
+  "work_mem": "64kB",
+  "query": "not_in",
+  "ms": 15193.571
+ },
+ {
+  "rows": 20000,
+  "work_mem": "64kB",
+  "query": "not_exists",
+  "ms": 4.534
+ },
+ {
+  "rows": 40000,
+  "work_mem": "4MB",
+  "query": "not_in",
+  "ms": 15.452
+ },
+ {
+  "rows": 40000,
+  "work_mem": "4MB",
+  "query": "not_exists",
+  "ms": 13.436
+ },
+ {
+  "rows": 40000,
+  "work_mem": "64kB",
+  "query": "not_in",
+  "ms": 72539.663
+ },
+ {
+  "rows": 40000,
+  "work_mem": "64kB",
+  "query": "not_exists",
+  "ms": 13.958
+ },
+ {
+  "rows": 80000,
+  "work_mem": "4MB",
+  "query": "not_in",
+  "ms": 55.224
+ },
+ {
+  "rows": 80000,
+  "work_mem": "4MB",
+  "query": "not_exists",
+  "ms": 45.255
+ },
+ {
+  "rows": 80000,
+  "work_mem": "64kB",
+  "query": "not_in",
+  "ms": 259456.248
+ },
+ {
+  "rows": 80000,
+  "work_mem": "64kB",
+  "query": "not_exists",
+  "ms": 18.534
+ }
+]

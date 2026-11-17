@@ -1,0 +1,14 @@
+sqlalchemy 2.1.9
+-- not_in
+SELECT members.name 
+FROM members 
+WHERE (members.id NOT IN (SELECT members.referred_by 
+FROM members))
+=> []
+-- not_exists
+SELECT members.name 
+FROM members 
+WHERE NOT (EXISTS (SELECT * 
+FROM members AS members_1 
+WHERE members_1.referred_by = members.id))
+=> ['takahashi', 'tanaka', 'ito']

@@ -1,0 +1,250 @@
+{
+  "versions": {
+    "postgres": "18.6 (Debian 18.6-1.pgdg13+2)",
+    "mysql": "8.4.11",
+    "sqlite": "3.46.1",
+    "duckdb": "v1.5.5 (Variegata) d8cdaa33fd"
+  },
+  "queries": {
+    "ne": {
+      "postgres": "2",
+      "mysql": "2",
+      "sqlite": "2",
+      "duckdb": "2"
+    },
+    "not_in": {
+      "postgres": "0",
+      "mysql": "0",
+      "sqlite": "0",
+      "duckdb": "0"
+    },
+    "in": {
+      "postgres": "2",
+      "mysql": "2",
+      "sqlite": "2",
+      "duckdb": "2"
+    },
+    "not_exists": {
+      "postgres": "3",
+      "mysql": "3",
+      "sqlite": "3",
+      "duckdb": "3"
+    },
+    "not_in_filtered": {
+      "postgres": "3",
+      "mysql": "3",
+      "sqlite": "3",
+      "duckdb": "3"
+    },
+    "left_join": {
+      "postgres": "3",
+      "mysql": "3",
+      "sqlite": "3",
+      "duckdb": "3"
+    },
+    "outer_join_all": {
+      "postgres": "5",
+      "mysql": "5",
+      "sqlite": "5",
+      "duckdb": "5"
+    },
+    "outer_join_where_ne": {
+      "postgres": "1",
+      "mysql": "1",
+      "sqlite": "1",
+      "duckdb": "1"
+    },
+    "outer_join_on_ne": {
+      "postgres": "5",
+      "mysql": "5",
+      "sqlite": "5",
+      "duckdb": "5"
+    },
+    "outer_join_where_distinct": {
+      "postgres": "3",
+      "mysql": "3",
+      "sqlite": "3",
+      "duckdb": "3"
+    },
+    "count_star": {
+      "postgres": "5",
+      "mysql": "5",
+      "sqlite": "5",
+      "duckdb": "5"
+    },
+    "count_col": {
+      "postgres": "3",
+      "mysql": "3",
+      "sqlite": "3",
+      "duckdb": "3"
+    },
+    "avg": {
+      "postgres": "76.67",
+      "mysql": "76.67",
+      "sqlite": "76.67",
+      "duckdb": "76.67"
+    },
+    "sum_div_count": {
+      "postgres": "46.00",
+      "mysql": "46.00",
+      "sqlite": "46.0",
+      "duckdb": "46.0"
+    },
+    "sum_empty": {
+      "postgres": "NULL",
+      "mysql": "NULL",
+      "sqlite": "NULL",
+      "duckdb": "NULL"
+    },
+    "count_distinct": {
+      "postgres": "2",
+      "mysql": "2",
+      "sqlite": "2",
+      "duckdb": "2"
+    },
+    "select_distinct": {
+      "postgres": "3",
+      "mysql": "3",
+      "sqlite": "3",
+      "duckdb": "3"
+    },
+    "group_by_null": {
+      "postgres": "2",
+      "mysql": "2",
+      "sqlite": "2",
+      "duckdb": "2"
+    },
+    "union_nulls": {
+      "postgres": "1",
+      "mysql": "1",
+      "sqlite": "1",
+      "duckdb": "1"
+    },
+    "top_score": {
+      "postgres": "suzuki",
+      "mysql": "tanaka",
+      "sqlite": "tanaka",
+      "duckdb": "tanaka"
+    },
+    "top_score_nulls_last": {
+      "postgres": "tanaka",
+      "mysql": "ERROR: ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NULLS LAST LIMIT 1' at line 1",
+      "sqlite": "tanaka",
+      "duckdb": "tanaka"
+    },
+    "top_score_is_null": {
+      "postgres": "tanaka",
+      "mysql": "tanaka",
+      "sqlite": "tanaka",
+      "duckdb": "tanaka"
+    },
+    "order_first": {
+      "postgres": "ito@example.com",
+      "mysql": "NULL",
+      "sqlite": "NULL",
+      "duckdb": "ito@example.com"
+    },
+    "order_desc_first": {
+      "postgres": "NULL",
+      "mysql": "suzuki@example.com",
+      "sqlite": "suzuki@example.com",
+      "duckdb": "suzuki@example.com"
+    },
+    "order_nulls_last": {
+      "postgres": "suzuki@example.com",
+      "mysql": "ERROR: ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NULLS LAST LIMIT 1' at line 1",
+      "sqlite": "suzuki@example.com",
+      "duckdb": "suzuki@example.com"
+    },
+    "order_is_null": {
+      "postgres": "NULL",
+      "mysql": "NULL",
+      "sqlite": "NULL",
+      "duckdb": "NULL"
+    },
+    "eq_null": {
+      "postgres": "NULL",
+      "mysql": "NULL",
+      "sqlite": "NULL",
+      "duckdb": "NULL"
+    },
+    "concat_op": {
+      "postgres": "NULL",
+      "mysql": "NULL",
+      "sqlite": "NULL",
+      "duckdb": "NULL"
+    },
+    "concat_ab": {
+      "postgres": "ab",
+      "mysql": "0",
+      "sqlite": "ab",
+      "duckdb": "ab"
+    },
+    "concat_ab_pipes_mode": {
+      "postgres": "ab",
+      "mysql": "ab",
+      "sqlite": "ab",
+      "duckdb": "ab"
+    },
+    "concat_fn": {
+      "postgres": "a",
+      "mysql": "NULL",
+      "sqlite": "a",
+      "duckdb": "a"
+    },
+    "unique_two_nulls": {
+      "postgres": "2",
+      "mysql": "2",
+      "sqlite": "2",
+      "duckdb": "2"
+    },
+    "unique_nulls_not_distinct": {
+      "postgres": "ERROR: ERROR:  duplicate key value violates unique constraint \"u2_email_key\"\nDETAIL:  Key (email)=(null) already exists.",
+      "mysql": "ERROR: ERROR 1064 (42000) at line 2: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'NULLS NOT DISTINCT)' at line 1",
+      "sqlite": "ERROR: near \"NULLS\": syntax error",
+      "duckdb": "ERROR: Parser Error: syntax error at or near \"NULLS\"\n\nLINE 1: CREATE TABLE u2 (email VARCHAR(50) UNIQUE NULLS NOT DISTINCT);\n                                                  ^\nCatalog Error: Table with name u2 does not exist!\nDid you mean \"u\"?\nCatalog Error: Table with name u2 does not exist!\nDid you mean \"u\"?\nCatalog Error: Table with name u2 does not exist!\nDid you mean \"u\"?\n\nLINE 1: SELECT count(*) FROM u2;\n                             ^"
+    },
+    "is_not_distinct": {
+      "postgres": "TRUE",
+      "mysql": "ERROR: ERROR 1064 (42000) at line 1: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'DISTINCT FROM NULL THEN 'TRUE' ELSE 'not TRUE' END' at line 1",
+      "sqlite": "TRUE",
+      "duckdb": "TRUE"
+    },
+    "null_safe_eq": {
+      "postgres": "ERROR: ERROR:  operator does not exist: unknown <=> unknown\nLINE 1: SELECT CASE WHEN NULL <=> NULL THEN 'TRUE' ELSE 'not TRUE' E...\n                              ^\nHINT:  No operator matches the given name and argument types. You might need to add explicit type casts.",
+      "mysql": "TRUE",
+      "sqlite": "ERROR: near \">\": syntax error",
+      "duckdb": "ERROR: Binder Error: Could not choose a best candidate function for the function call \"<=>(\"NULL\", \"NULL\")\". In order to select one, please add explicit type casts.\n\tCandidate functions:\n\t<=>(DOUBLE[], DOUBLE[]) -> DOUBLE\n\t<=>(FLOAT[], FLOAT[]) -> FLOAT\n\n\nLINE 1: SELECT CASE WHEN NULL <=> NULL THEN 'TRUE' ELSE 'not TRUE' END;\n                              ^"
+    },
+    "pk_two_nulls": {
+      "postgres": "ERROR: ERROR:  null value in column \"code\" of relation \"pk\" violates not-null constraint\nDETAIL:  Failing row contains (null).",
+      "mysql": "ERROR: ERROR 1048 (23000) at line 3: Column 'code' cannot be null",
+      "sqlite": "2",
+      "duckdb": "ERROR: Constraint Error: NOT NULL constraint failed: pk.code\nConstraint Error: NOT NULL constraint failed: pk.code"
+    },
+    "outer_null_not_in": {
+      "postgres": "0",
+      "mysql": "0",
+      "sqlite": "0",
+      "duckdb": "0"
+    },
+    "outer_null_not_exists": {
+      "postgres": "1",
+      "mysql": "1",
+      "sqlite": "1",
+      "duckdb": "1"
+    },
+    "check_null": {
+      "postgres": "1",
+      "mysql": "1",
+      "sqlite": "1",
+      "duckdb": "1"
+    },
+    "check_negative": {
+      "postgres": "ERROR: ERROR:  new row for relation \"c2\" violates check constraint \"c2_score_check\"\nDETAIL:  Failing row contains (-1).",
+      "mysql": "ERROR: ERROR 3819 (HY000) at line 3: Check constraint 'c2_chk_1' is violated.",
+      "sqlite": "ERROR: CHECK constraint failed: score >= 0",
+      "duckdb": "ERROR: Constraint Error: CHECK constraint failed on table c2 with expression CHECK((score >= 0))"
+    }
+  }
+}

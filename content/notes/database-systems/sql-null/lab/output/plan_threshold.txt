@@ -1,0 +1,6 @@
+rows=  100000  work_mem=4MB  Filter: (NOT (ANY (id = (hashed SubPlan 1).col1)))
+rows=  200000  work_mem=4MB  Filter: (NOT (ANY (id = (hashed SubPlan 1).col1)))
+rows=  250000  work_mem=4MB  Filter: (NOT (ANY (id = (hashed SubPlan 1).col1)))
+rows=  300000  work_mem=4MB  Filter: (NOT (ANY (id = (SubPlan 1).col1)))
+rows=  500000  work_mem=4MB  Filter: (NOT (ANY (id = (SubPlan 1).col1)))
+rows= 1000000  work_mem=4MB  Filter: (NOT (ANY (id = (SubPlan 1).col1)))

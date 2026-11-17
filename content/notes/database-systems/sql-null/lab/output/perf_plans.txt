@@ -1,0 +1,73 @@
+-- rows=20000 work_mem=4MB not_in
+Aggregate (actual rows=1.00 loops=1)
+  Buffers: shared hit=178
+  ->  Seq Scan on big b (actual rows=10506.00 loops=1)
+        Filter: (NOT (ANY (id = (hashed SubPlan 1).col1)))
+        Rows Removed by Filter: 9494
+        Buffers: shared hit=178
+        SubPlan 1
+          ->  Seq Scan on big (actual rows=17999.00 loops=1)
+                Filter: (referred_by IS NOT NULL)
+                Rows Removed by Filter: 2001
+                Buffers: shared hit=89
+Planning:
+  Buffers: shared hit=73
+Planning Time: 0.382 ms
+Execution Time: 6.878 ms
+
+-- rows=20000 work_mem=4MB not_exists
+Aggregate (actual rows=1.00 loops=1)
+  Buffers: shared hit=178
+  ->  Hash Right Anti Join (actual rows=10506.00 loops=1)
+        Hash Cond: (r.referred_by = b.id)
+        Buffers: shared hit=178
+        ->  Seq Scan on big r (actual rows=20000.00 loops=1)
+              Buffers: shared hit=89
+        ->  Hash (actual rows=20000.00 loops=1)
+              Buckets: 32768  Batches: 1  Memory Usage: 960kB
+              Buffers: shared hit=89
+              ->  Seq Scan on big b (actual rows=20000.00 loops=1)
+                    Buffers: shared hit=89
+Planning:
+  Buffers: shared hit=186
+Planning Time: 0.876 ms
+Execution Time: 7.135 ms
+
+-- rows=20000 work_mem=64kB not_in
+Aggregate (actual rows=1.00 loops=1)
+  Buffers: shared hit=178, temp read=476782 written=32
+  ->  Seq Scan on big b (actual rows=10506.00 loops=1)
+        Filter: (NOT (ANY (id = (SubPlan 1).col1)))
+        Rows Removed by Filter: 9494
+        Buffers: shared hit=178, temp read=476782 written=32
+        SubPlan 1
+          ->  Materialize (actual rows=13746.77 loops=20000)
+                Storage: Disk  Maximum Storage: 247kB
+                Buffers: shared hit=89, temp read=476782 written=32
+                ->  Seq Scan on big (actual rows=17999.00 loops=1)
+                      Filter: (referred_by IS NOT NULL)
+                      Rows Removed by Filter: 2001
+                      Buffers: shared hit=89
+Planning:
+  Buffers: shared hit=75
+Planning Time: 0.251 ms
+Execution Time: 15193.571 ms
+
+-- rows=20000 work_mem=64kB not_exists
+Aggregate (actual rows=1.00 loops=1)
+  Buffers: shared hit=99
+  ->  Merge Anti Join (actual rows=10506.00 loops=1)
+        Merge Cond: (b.id = r.referred_by)
+        Buffers: shared hit=99
+        ->  Index Only Scan using big_pkey on big b (actual rows=20000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=57
+        ->  Index Only Scan using big_referred_by_idx on big r (actual rows=18000.00 loops=1)
+              Heap Fetches: 0
+              Index Searches: 1
+              Buffers: shared hit=42
+Planning:
+  Buffers: shared hit=186
+Planning Time: 0.741 ms
+Execution Time: 5.041 ms

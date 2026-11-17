@@ -1,103 +1,234 @@
-"""Generate the cover diagram of the SQL NULL note (stdlib only).
+"""NULL のノートの図（WebP）を描く。
 
-concept_figure() sorts the four users of the note's example table into the
-three truth values TRUE / FALSE / UNKNOWN for two conditions:
-email <> 'sato@example.com' and id NOT IN (2, NULL).
-Only the TRUE column survives WHERE.
-
-Run: python3 content/notes/database-systems/sql-null/figures.py
+数値と並び順は lab/output/results.json と lab/output/perf.json（lab/run.py・lab/perf.py の出力）から描く。
+実行: python3 content/notes/database-systems/sql-null/figures.py
 """
 
-from html import escape
+import json
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib import font_manager  # noqa: E402
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch  # noqa: E402
+from PIL import Image  # noqa: E402
+
 HERE = Path(__file__).resolve().parent
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
-OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
-FILL, PALE = "#f2f2f2", "#eaf1f5"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+IMAGES = HERE / "images"
+OUT = HERE / "lab" / "output"
+R = json.loads((OUT / "results.json").read_text())
+PERF = json.loads((OUT / "perf.json").read_text())
 
+for path in ["/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"]:
+    if Path(path).exists():
+        font_manager.fontManager.addfont(path)
+plt.rcParams["font.family"] = ["Noto Sans CJK JP", "DejaVu Sans"]
+plt.rcParams["font.size"] = 12
 
-class Svg:
-    """Minimal hand-written SVG canvas (stdlib only)."""
+INK, SUB, GRID = "#1f1f1f", "#666666", "#dddddd"
+BLUE, BLUE_PALE = "#4e79a7", "#e3ecf5"
+RED, RED_PALE = "#d1495b", "#f8e1e4"
+GRAY_PALE = "#eeeeee"
+MONO = "DejaVu Sans Mono"
 
-    def __init__(self, width, height, title):
-        self.parts = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
-            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
-            f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs>'
-            + "".join(
-                f'<marker id="arrow-{n}" viewBox="0 0 10 10" refX="9" refY="5" '
-                'markerWidth="4" markerHeight="4" orient="auto">'
-                f'<path d="M0,0 L10,5 L0,10 z" fill="{c}"/></marker>'
-                for n, c in (("red", RED), ("sub", SUB), ("accent", ACCENT)))
-            + '</defs>',
-            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
-        ]
+ENGINES = ["postgres", "mysql", "sqlite", "duckdb"]
+ENGINE_LABEL = {"postgres": "PostgreSQL", "mysql": "MySQL", "sqlite": "SQLite", "duckdb": "DuckDB"}
 
-    def text(self, x, y, s, size=24, color=INK, weight="normal", anchor="middle"):
-        self.parts.append(
-            f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-            f'text-anchor="{anchor}" style="fill:{color}">{escape(s)}</text>')
-
-    def box(self, x, y, w, h, fill, stroke, sw=2.5, dash="", rx=8):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
-            f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    def line(self, x1, y1, x2, y2, color, sw=4, arrow=None, dash=""):
-        m = f' marker-end="url(#arrow-{arrow})"' if arrow else ""
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.parts.append(
-            f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
-            f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
-
-    def save(self, path):
-        path.parent.mkdir(exist_ok=True)
-        path.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
-
-
-# (label, x, width, fill, stroke, dash, foot, foot color)
-COLUMNS = {
-    "TRUE": (210, 190, PALE, ACCENT, "", "結果に残る", INK),
-    "FALSE": (414, 190, FILL, SUB, "", "落ちる", SUB),
-    "UNKNOWN": (618, 312, OCHRE_PALE, OCHRE, "10 7", "落ちる", SUB),
-}
-# (condition lines, row center y, {column: names})
-ROWS = [
-    (["email <>", "'sato@…'"], 200,
-     {"TRUE": ["鈴木"], "FALSE": ["佐藤"], "UNKNOWN": ["高橋", "田中"]}),
-    (["id NOT IN", "(2, NULL)"], 360,
-     {"TRUE": [], "FALSE": ["鈴木"], "UNKNOWN": ["佐藤", "高橋", "田中"]}),
+MEMBERS = [  # lab/run.py の SCHEMA と同じ
+    (1, "sato", "sato@example.com", None),
+    (2, "suzuki", "suzuki@example.com", 1),
+    (3, "takahashi", None, 1),
+    (4, "tanaka", None, None),
+    (5, "ito", "ito@example.com", 2),
 ]
+REFERRERS = [m[3] for m in MEMBERS]
 
 
-def concept_figure():
-    f = Svg(960, 540, "WHERE が残す TRUE と、落ちる FALSE・UNKNOWN")
-    for name, (x, w, fill, stroke, dash, foot, fc) in COLUMNS.items():
-        f.box(x, 100, w, 350, fill, stroke, sw=3, dash=dash, rx=14)
-        f.text(x + w / 2, 80, name, 28, weight="normal")
-        f.text(x + w / 2, 492, foot, 26, fc)
-    f.line(30, 280, 930, 280, "#cccccc", sw=2, dash="6 6")
-    for lines, cy, cells in ROWS:
-        for i, s in enumerate(lines):
-            f.text(30, cy - 6 + i * 32, s, 24, anchor="start")
-        for col, names in cells.items():
-            x, w = COLUMNS[col][:2]
-            if not names:
-                f.text(x + w / 2, cy + 10, "0 件", 26, SUB)
-                continue
-            cw, gap = 88, 12
-            left = x + (w - len(names) * cw - (len(names) - 1) * gap) / 2
-            for i, n in enumerate(names):
-                bx = left + i * (cw + gap)
-                stroke = ACCENT if col == "TRUE" else (OCHRE if col == "UNKNOWN" else SUB)
-                f.box(bx, cy - 28, cw, 56, "#ffffff", stroke, sw=3, rx=28)
-                f.text(bx + cw / 2, cy + 9, n, 26)
-    f.save(HERE / "images" / "sql-null_concept.svg")
+def save(fig, name):
+    png = IMAGES / (name + ".png")
+    fig.savefig(png, dpi=200, facecolor="#ffffff", bbox_inches="tight", pad_inches=0.15)
+    plt.close(fig)
+    Image.open(png).convert("RGB").save(IMAGES / (name + ".webp"), "WEBP", quality=90, method=6)
+    png.unlink()
+
+
+def chip(ax, x, y, text, kind, w=1.25, h=0.5, size=11):
+    face, edge, color = {
+        "TRUE": (BLUE_PALE, BLUE, BLUE),
+        "FALSE": (GRAY_PALE, SUB, SUB),
+        "UNKNOWN": (RED_PALE, RED, RED),
+        "plain": ("#ffffff", SUB, INK),
+    }[kind]
+    ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h, boxstyle="round,pad=0.02,rounding_size=0.12",
+                                fc=face, ec=edge, lw=1.2))
+    ax.text(x, y, text, ha="center", va="center", color=color, fontsize=size,
+            family=MONO if kind != "plain" or text.isascii() else None)
+
+
+def not_in_value(mid):
+    """id NOT IN (referrers) を三値論理で評価する（<> を AND でつないだ形）。"""
+    if any(r == mid for r in REFERRERS if r is not None):
+        return "FALSE"
+    if any(r is None for r in REFERRERS):
+        return "UNKNOWN"
+    return "TRUE"
+
+
+def not_exists_value(mid):
+    return "FALSE" if any(r == mid for r in REFERRERS) else "TRUE"
+
+
+def cover():
+    """表紙: 会員ごとの NOT IN と NOT EXISTS の評価と、残る件数。"""
+    q = R["queries"]
+    assert all(q["not_in"][e] == "0" for e in ENGINES)
+    assert all(q["not_exists"][e] == "3" for e in ENGINES)
+
+    fig, ax = plt.subplots(figsize=(10, 5.6))
+    ax.set_xlim(0, 10)
+    ax.set_ylim(-0.6, 6.6)
+    ax.axis("off")
+
+    ax.text(0.1, 6.3, "副問い合わせの結果（referred_by の 5 行）", fontsize=12, color=SUB, va="center")
+    for i, r in enumerate(REFERRERS):
+        chip(ax, 4.9 + i * 1.05, 6.3, "NULL" if r is None else str(r), "UNKNOWN" if r is None else "plain",
+             w=0.9, h=0.48)
+
+    ax.text(0.25, 5.4, "会員", fontsize=12, color=SUB, va="center")
+    ax.text(5.6, 5.4, "id NOT IN (…)", fontsize=12, color=INK, ha="center", va="center", family=MONO)
+    ax.text(8.4, 5.4, "NOT EXISTS (…)", fontsize=12, color=INK, ha="center", va="center", family=MONO)
+    ax.plot([0.1, 9.9], [5.05, 5.05], color=GRID, lw=1)
+
+    for i, (mid, name, _email, _ref) in enumerate(MEMBERS):
+        y = 4.6 - i * 0.78
+        ax.text(0.25, y, f"id={mid}  {name}", fontsize=12, color=INK, va="center", family=MONO)
+        a, b = not_in_value(mid), not_exists_value(mid)
+        chip(ax, 5.6, y, a, a, w=1.5)
+        chip(ax, 8.4, y, b, b, w=1.5)
+        if mid in (1, 2):
+            ax.text(2.55, y, "誰かを紹介した", fontsize=10, color=SUB, va="center")
+        else:
+            ax.text(2.55, y, "誰も紹介していない", fontsize=10, color=SUB, va="center")
+
+    ax.plot([0.1, 9.9], [0.95, 0.95], color=GRID, lw=1)
+    ax.text(0.25, 0.45, "WHERE で残る行", fontsize=12, color=INK, va="center")
+    ax.text(5.6, 0.45, f"{q['not_in']['postgres']} 件", fontsize=17, color=RED, ha="center", va="center")
+    ax.text(8.4, 0.45, f"{q['not_exists']['postgres']} 件", fontsize=17, color=BLUE, ha="center", va="center")
+    ax.text(7.0, -0.3, "PostgreSQL・MySQL・SQLite・DuckDB で同じ件数", fontsize=10, color=SUB,
+            ha="center", va="center")
+    save(fig, "sql-null_not_in")
+
+
+def gates():
+    """UNKNOWN（NULL）を受け取った時の、WHERE・CHECK・UNIQUE・GROUP BY の扱い。"""
+    q = R["queries"]
+    assert all(q["check_null"][e] == "1" for e in ENGINES)
+    assert all(q["unique_two_nulls"][e] == "2" for e in ENGINES)
+    assert all(q["group_by_null"][e] == "2" for e in ENGINES)
+
+    panels = [
+        ("WHERE", "email <> 'sato@…'", "TRUE の行だけ残す", "UNKNOWN の行は捨てる", RED,
+         "email が NULL の 2 人は\n結果に入らない"),
+        ("CHECK", "CHECK (score >= 0)", "FALSE の行だけ拒む", "UNKNOWN の行は入る", BLUE,
+         "NULL は入り、-1 は拒否"),
+        ("UNIQUE", "UNIQUE (email)", "等しい値の 2 行目を拒む", "NULL どうしは等しくない", BLUE,
+         "NULL の行が 2 行とも入る"),
+        ("GROUP BY・DISTINCT", "GROUP BY referred_by", "同じ値を 1 つにまとめる", "NULL は 1 つにまとまる", INK,
+         "NULL の 2 人が\n1 つのグループになる"),
+    ]
+    fig, ax = plt.subplots(figsize=(12, 4.6))
+    ax.set_xlim(0, 12)
+    ax.set_ylim(0, 4.6)
+    ax.axis("off")
+    for i, (title, sql, rule, unknown, color, result) in enumerate(panels):
+        x0 = 0.15 + i * 3.0
+        ax.add_patch(FancyBboxPatch((x0, 0.2), 2.7, 4.2, boxstyle="round,pad=0.02,rounding_size=0.12",
+                                    fc="#ffffff", ec=GRID, lw=1.2))
+        cx = x0 + 1.35
+        ax.text(cx, 4.0, title, ha="center", va="center", fontsize=14, color=INK)
+        ax.text(cx, 3.45, sql, ha="center", va="center", fontsize=9.5, color=SUB, family=MONO)
+        ax.text(cx, 2.85, rule, ha="center", va="center", fontsize=11, color=INK)
+        ax.add_patch(FancyArrowPatch((cx, 2.55), (cx, 2.15), arrowstyle="-|>", mutation_scale=14,
+                                     color=SUB, lw=1.2))
+        face = {RED: RED_PALE, BLUE: BLUE_PALE, INK: GRAY_PALE}[color]
+        ax.add_patch(FancyBboxPatch((x0 + 0.1, 1.45), 2.5, 0.6, boxstyle="round,pad=0.02,rounding_size=0.1",
+                                    fc=face, ec=color, lw=1.2))
+        ax.text(cx, 1.75, unknown, ha="center", va="center", fontsize=10.5, color=color)
+        ax.text(cx, 0.8, result, ha="center", va="center", fontsize=10, color=SUB, linespacing=1.4)
+    save(fig, "sql-null_gates")
+
+
+def order():
+    """ORDER BY email の ASC と DESC で、NULL が並ぶ位置を DBMS ごとに並べる。"""
+    q = R["queries"]
+    emails = sorted(m[2] for m in MEMBERS if m[2])
+    n_null = sum(1 for m in MEMBERS if m[2] is None)
+    # 実測の先頭の行から、NULL が先頭か末尾かを決める
+    first_asc = {e: q["order_first"][e] == "NULL" for e in ENGINES}
+    first_desc = {e: q["order_desc_first"][e] == "NULL" for e in ENGINES}
+
+    fig, ax = plt.subplots(figsize=(12, 4.9))
+    ax.set_xlim(0, 12)
+    ax.set_ylim(-0.4, 5.6)
+    ax.axis("off")
+    for i, e in enumerate(ENGINES):
+        x0 = 0.2 + i * 2.95
+        ax.text(x0 + 1.35, 5.3, ENGINE_LABEL[e], ha="center", va="center", fontsize=14, color=INK)
+        for j, (label, desc, null_first) in enumerate([("ASC", False, first_asc[e]),
+                                                       ("DESC", True, first_desc[e])]):
+            cx = x0 + 0.65 + j * 1.4
+            ax.text(cx, 4.75, label, ha="center", va="center", fontsize=11, color=SUB, family=MONO)
+            vals = sorted(emails, reverse=desc)
+            vals = (["NULL"] * n_null + vals) if null_first else (vals + ["NULL"] * n_null)
+            for k, v in enumerate(vals):
+                y = 4.2 - k * 0.78
+                kind = "UNKNOWN" if v == "NULL" else "plain"
+                chip(ax, cx, y, v.split("@")[0], kind, w=1.25, h=0.56, size=10)
+    ax.text(6.0, -0.2, "上が先頭。email は @ より前だけを表示", ha="center", va="center", fontsize=10, color=SUB)
+    save(fig, "sql-null_order")
+
+
+def perf():
+    """NOT IN と NOT EXISTS の実行時間（PostgreSQL 18、行数と work_mem を変える）。"""
+    fig, ax = plt.subplots(figsize=(9, 4.8))
+    series = [
+        ("not_in", "64kB", "NOT IN（work_mem 64kB）", RED, "-"),
+        ("not_in", "4MB", "NOT IN（work_mem 4MB）", RED, "--"),
+        ("not_exists", "64kB", "NOT EXISTS（work_mem 64kB）", BLUE, "-"),
+        ("not_exists", "4MB", "NOT EXISTS（work_mem 4MB）", BLUE, "--"),
+    ]
+    for qid, wm, label, color, ls in series:
+        pts = [(r["rows"], r["ms"]) for r in PERF if r["query"] == qid and r["work_mem"] == wm]
+        xs, ys = zip(*pts)
+        ax.plot(xs, ys, ls, marker="o", color=color, label=label, lw=1.8, ms=5)
+        if qid == "not_in" and wm == "64kB":
+            for x, y in pts:
+                text = f"{y / 1000:,.1f} 秒" if y >= 1000 else f"{y:.0f} ms"
+                ax.annotate(text, (x, y), textcoords="offset points", xytext=(4, -16), ha="left",
+                            fontsize=10, color=RED)
+    ax.set_xscale("log")
+    ax.set_yscale("log")
+    rows = sorted({r["rows"] for r in PERF})
+    ax.set_xticks(rows)
+    ax.set_xticklabels([f"{r:,}" for r in rows])
+    ax.minorticks_off()
+    ticks = [1, 10, 100, 1000, 10000, 100000]
+    ax.set_yticks(ticks)
+    ax.set_yticklabels(["1 ms", "10 ms", "100 ms", "1 秒", "10 秒", "100 秒"])
+    ax.set_xlabel("会員の行数")
+    ax.set_ylabel("実行時間（対数）")
+    ax.grid(True, color=GRID, lw=0.8)
+    for s in ["top", "right"]:
+        ax.spines[s].set_visible(False)
+    ax.legend(frameon=False, fontsize=10, loc="upper left")
+    save(fig, "sql-null_not_in_time")
 
 
 if __name__ == "__main__":
-    concept_figure()
+    IMAGES.mkdir(exist_ok=True)
+    cover()
+    gates()
+    order()
+    perf()
