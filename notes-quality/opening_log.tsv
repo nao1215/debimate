@@ -68,3 +68,4 @@ software-architecture__cell-based-architecture	他の手	その他	Cell-based Ar
 blockchain-systems__bitcoin-block	予想	その他	Bitcoin Block - ブロックの順番は時刻ではなく、直前ブロックのハッシュ値で決まる
 blockchain-systems__utxo	予想	その他	UTXO - 送金の手数料は、残高ではなく使う UTXO の数で決まる
 distributed-systems__two-phase-commit	症状	その他	2PC - 準備を終えた参加者は、コーディネータの決定が届くまでロックを放さない
+ml__linear-regression	主張	その他	線形回帰 - 係数は、他にどの列を入れたかで符号まで変わる

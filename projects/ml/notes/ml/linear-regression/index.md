@@ -1,5 +1,5 @@
 ---
-title: "線形回帰（linear regression）"
+title: "線形回帰 - 係数は、他にどの列を入れたかで符号まで変わる"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
@@ -8,230 +8,321 @@ weight: 18
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-線形回帰（linear regression）は、入力特徴量の線形和でターゲットを予測する最も基本的な教師あり回帰モデルです。
+線形回帰（linear regression）は、列ごとの値 `x_k` に係数 `w_k` を掛けて足し、切片 `b` を加えた式 `ŷ = w_1 x_1 + ... + w_d x_d + b` で値を予測する手法で、予測したい値を目的変数と呼びます。係数と切片は、予測と正解の差を 2 乗して足した値が最も小さくなるように決め、この決め方を最小二乗法（ordinary least squares、OLS）と呼びます。
 
-`ŷ = w_1 x_1 + w_2 x_2 + ... + w_d x_d + b = w · x + b`
+線形回帰は結果を係数で説明できるので、売上や所要時間の予測で最初に試すことの多いモデルです。係数が読めると、どの列が売上を押し上げているかも知りたくなります。列を 2 つ以上使う線形回帰は重回帰と呼びます。scikit-learn の解説「[Common pitfalls in the interpretation of coefficients of linear models](https://scikit-learn.org/stable/auto_examples/inspection/plot_linear_model_coefficient_interpretation.html)」は、重回帰の係数を「他の列を全て一定に保った時の、その列と目的変数の関係」と説明しています。
 
-線形回帰には、次の特徴があります。`(1)` 解析解 `w = (X^T X)^-1 X^T y` が閉形式で出る、`(2)` 係数の解釈が直接できる（他の特徴量を固定して `x_k` を 1 増やすと `ŷ` が `w_k` 増える）、`(3)` [正則化](../regularization/) と組み合わせて Ridge / Lasso に拡張できる、という 3 点です。
+scikit-learn に同梱の [diabetes](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_diabetes.html) で、この説明を試しました。diabetes は、糖尿病の患者 442 人について、年齢・性別・BMI・血圧と 6 つの血液検査の値を 10 列に並べ、1 年後に病状がどれだけ進んだかを目的変数にしたデータです。総コレステロールの列 s1 だけで直線を引くと、傾きは +0.47 です。10 列を全て入れると、s1 の係数は -1.09 に変わりました。
 
-[ロジスティック回帰](../logistic-regression/)や[サポートベクターマシン](../svm/)、[ニューラルネット](../perceptron/)の各層でも、入力の線形和を計算します。
+次に、442 人から 133 人をテスト用に先に取り分け、残りの 309 人から重複を許して 309 人を選び直して学習するブートストラップ（bootstrap）を 200 回繰り返しました。結果が次の図です。
+
+{{< figure src="linreg_cover.webp" alt="左は 10 列ごとに、列を 1 標準偏差増やした時の係数について、200 回分の 90% の範囲を横棒で示した図。s1 は -56 から +15、s2 は -18 から +37、s3 は -25 から +12、s4 は -14 から +18 と広く、0 をまたぐ赤い棒になっている。age と s6 も 0 をまたぐが、範囲は狭い。黒い菱形はその列 1 列だけで求めた傾きで、s1 は +16 と、10 列の係数の中央値 -22 と符号が逆になっている。右は 200 回分のテストの R² の箱ひげ図で、外れた 1 回の 0.29 を含めて 0.29 から 0.42 の狭い範囲に収まる" caption="行を 200 回選び直した時の、1 標準偏差あたりの係数とテストの R²" align="center" >}}
+
+図の s1〜s6 は血液検査の列で、順に総コレステロール、LDL コレステロール、HDL コレステロール、総コレステロールを HDL で割った値、中性脂肪の対数、血糖値です。図の係数は、列ごとに単位が違うので、列を 1 標準偏差増やした時の変化に直してあります。そのため図に描いた s1 の大きさは、本文の +0.47 や -1.09 とは違います。
+
+s1 の係数は 200 回のうち 166 回が負、34 回が正です。s2・s3・s4 も範囲が広く、0 をまたぎます。一方で、取り分けておいた 133 人で予測の精度を測ると、200 回とも [R²](../regression-metrics/)（決定係数）が 0.29〜0.42 に収まりました。R² は全員に平均値を返す予測より誤差がどれだけ減ったかを表し、1 なら全て当たり、0 なら平均値と同じです。予測はほとんど変わらないまま、係数の符号が選び直すたびに入れ替わります。
+
+<br>
+
+本記事では、手元のデータに線形回帰を使い、係数から列の影響を読みたい人に向けて、次の疑問に順に答えます。
+
+- 最小二乗法は、データのどの差を小さくして直線を決めるのか。
+- 「他の列を一定に保つ」係数は、データの何から決まるのか。
+- s1 の係数は、なぜ選び直すたびに符号が変わるのか。
+- 似た列を足し続けると、予測まで崩れることはあるのか。
+- 列の値に誤差が混ざると、傾きはどう変わるのか。
+
+実験は scikit-learn 1.9.1 と [NumPy](https://numpy.org/) 2.5.4 で行い、図を描く処理も含めた完全なコードは [linear-regression_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/linear-regression_gen.py) にあります。
 
 ---
 
-### 数式と直感
+### 最小二乗法が決める直線
 
-`n` 個のサンプル、`d` 個の特徴量を持つ[データ行列](/ml/math/vector-matrix-ops/) `X`（`n × d`）と重み `w`（`d × 1`）について、`y_pred = X w + b` の予測式に対して、[平均二乗誤差（MSE）](../loss-functions/) を最小化する `w, b` を求めるのが OLS（ordinary least squares, 最小二乗法）です。
-
-`min_w (1/n) Σ_i (y_i - (w · x_i + b))^2`
-
-このコスト関数は `w` について二次の[凸関数](/ml/math/convex-functions/)なので、[勾配](../../math/partial-derivative-gradient/)を 0 と置いた正規方程式 `X^T X w = X^T y` を満たす点が最小解です（バイアス項 `b` は、特徴量に常に 1 の列を加えれば `w` に含められます）。`X^T X` が逆行列を持つ時、つまり特徴量の列が線形独立な時に限り、最小解は 1 つに決まり、次の形で書けます。
-
-`w = (X^T X)^-1 X^T y`
-
-特徴量の数がサンプル数より多い時や、ある特徴量が他の特徴量の線形和で書ける時は逆行列が無く、最小解が無数にあります。逆行列があっても、特徴量同士の相関が極端に強い（[多重共線性](#多重共線性と正則化)）と数値的に不安定になります。
-
-scikit-learn の [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) は、密な行列なら [`scipy.linalg.lstsq`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) で解きます。既定の LAPACK ドライバ gelsd は SVD（Singular Value Decomposition、特異値分解）を使い、`(X^T X)^-1` を直接計算しないので、数値的に安定します。`X^T X` を作ると小さい特異値が丸めに埋もれる様子は、[固有値分解](../../math/eigen-decomposition/)で scikit-learn の PCA を例に確認しています。最小解が無数にある時は、その中でノルムが最小の解を返します。
-
----
-
-### 単回帰の見た目
-
-最も単純な「特徴量 1 つ vs ターゲット」のデータに OLS を当てる例です。scikit-learn の結果と、正規方程式を直接解いた結果を並べます。
+最初に、BMI の列 bmi だけで病状の値を予測します。`load_diabetes` は既定で各列の平均を引いて大きさをそろえた値を返すので、`scaled=False` で元の単位に戻しています。[scikit-learn](https://scikit-learn.org/stable/) の [`LinearRegression`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html) では、学習後の `coef_` に係数、`intercept_` に切片が入ります。
 
 ```python
-import numpy as np
-from sklearn.linear_model import LinearRegression
+d = load_diabetes(scaled=False)               # 単位を元に戻した 442 行 × 10 列
+X, y = d.data, d.target
+names = d.feature_names
+bmi = X[:, 2]
+m = LinearRegression().fit(bmi.reshape(-1, 1), y)
+r = np.corrcoef(bmi, y)[0, 1]
+rev = LinearRegression().fit(y.reshape(-1, 1), bmi)      # bmi を y から予測する
+print(f"y を bmi で予測する直線: 傾き {m.coef_[0]:.2f}、切片 {m.intercept_:.1f}")
+print(f"bmi を y で予測する直線を y = ... の形に直した傾き: {1 / rev.coef_[0]:.2f}")
+print(f"相関係数 r = {r:.3f}、r² = {r * r:.3f}、2 つの傾きの比 = {m.coef_[0] * rev.coef_[0]:.3f}")
+```
 
+```text
+y を bmi で予測する直線: 傾き 10.23、切片 -117.8
+bmi を y で予測する直線を y = ... の形に直した傾き: 29.75
+相関係数 r = 0.586、r² = 0.344、2 つの傾きの比 = 0.344
+```
+
+{{< figure src="linreg_lsq.webp" alt="横軸が bmi、縦軸が 1 年後の病状の値の散布図。黒い実線は y を bmi で予測する直線で傾き 10.2、緑の破線は bmi を y で予測する直線で傾き 29.8。40 人分について、点から黒い直線までの縦の差を赤い線で描いている" caption="bmi と病状の値に引いた 2 本の直線" align="center" >}}
+
+黒い直線は、赤い線で描いた縦の差（残差、residual）を 2 乗して足した値が最も小さくなる直線です。BMI が 1 増えると、病状の値は平均で 10.23 増えると読めます。最小二乗法が小さくするのは縦の差だけで、横の差は見ません。
+
+そのため、bmi と y の役割を入れ替えて、bmi を y から予測する直線を引くと、緑の破線になります。同じ点の集まりでも傾きは 29.75 で、黒い直線の 3 倍近くあります。黒い直線の傾き 10.23 は、緑の破線が持つ傾き 29.75 に、[相関係数](../../math/correlation/)の 2 乗 `r² = 0.344` を掛けた値です。相関が弱いほど 2 本は離れ、`r = ±1` の時だけ重なります。
+
+最小二乗法の直線は「x と y の関係」ではなく、「x を知った時に y を予測する式」です。
+
+<br>
+
+#### 正規方程式と lstsq
+
+残差の 2 乗の合計は、係数について下に凸な 2 次関数なので、[勾配](../../math/partial-derivative-gradient/)が 0 になる点が最小です。勾配を 0 と置くと正規方程式 `X^T X w = X^T y` になり、`X^T X` が逆行列を持つ時は `w = (X^T X)^-1 X^T y` と 1 つに決まります。[凸関数](../../math/convex-functions/)なので、最小になる点が複数あっても、局所的な最小に捕まることはありません。正規方程式は `X^T (y - Xw) = 0` とも書け、残差がどの列とも直交することを表します。予測 `Xw` は、`y` を列の張る空間へ正射影した点です。
+
+`LinearRegression` は、正規方程式を使わず、SciPy の [`lstsq`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.lstsq.html) で解いています。正規方程式のように `X^T X` を作ると、`X` が方向ごとに値をどれだけ伸び縮みさせるかを表す特異値が 2 乗され、値の範囲が 2 乗に広がります。小さい特異値は、丸めの誤差に埋もれます。逆行列を作らずに `X^T X w = X^T y` を解いても、この 2 乗は避けられません。
+
+lstsq は `X` を直接、特異値分解（SVD、Singular Value Decomposition）で分けるので、`X^T X` を作りません。`X^T X` で小さい成分が消える様子は、[固有値分解](../../math/eigen-decomposition/)の「小さい分散が 0 になる PCA」で、scikit-learn の PCA を例に扱っています。2 乗の代わりに絶対値を足すと外れ値に引っ張られにくくなることは、[損失関数](../loss-functions/)で比べています。
+
+<br>
+
+#### 多項式回帰
+
+式の「線形」は、係数について線形という意味です。`x²` や `x³` の列を足せば曲線も引け、これを多項式回帰と呼びます。次数を上げ過ぎて学習データに張り付く様子は、[過学習](../overfitting/)と[バイアス-バリアンストレードオフ](../bias-variance-tradeoff/)で扱っています。値の線形和は[ベクトルの内積](../../math/vector-matrix-ops/)で、[ロジスティック回帰](../logistic-regression/)・[SVM](../svm/)・[パーセプトロン](../perceptron/)も同じ線形和を使います。列を変換せずに曲がった関係を扱うなら、[決定木](../decision-tree/)か[勾配ブースティング](../gradient-boosting/)を使います。
+
+時刻を列にして直線を引けば、時系列のトレンドも求められます。トレンドを引いた残りで周期を見る前処理は、[時系列予測](../time-series-forecasting/)で扱っています。
+
+<br>
+
+<details>
+<summary>補足: 残差の並び方と、外れ値・カテゴリの列</summary>
+
+予測値と残差の散布図で、残差が予測値の大きい所ほど扇形に広がっていれば、誤差のばらつきが一定でない不均一分散（heteroscedasticity）です。誤差の平均が 0 で列と無相関なら、係数そのものは偏りませんが、ばらつきを一定と仮定する標準誤差が狂い、[信頼区間や検定](../../math/hypothesis-test/)が当てになりません。少ない行で信頼区間や検定を正確に出すには、さらに誤差が正規分布に従う必要があります。係数を求めるだけなら、正規分布である必要はありません。
+
+ばらつきが一定で、誤差どうしが無相関なら、偏りが無く線形な推定のうちで最小二乗法の係数のばらつきが最も小さくなります。これを[ガウス・マルコフの定理](https://en.wikipedia.org/wiki/Gauss%E2%80%93Markov_theorem)と呼びます。正規性はヒストグラムや Q-Q プロットで、誤差どうしの独立性は残差を時間順に並べて見ます。
+
+不均一分散の対処は、次の 3 つです。
+
+| 対処 | 使う場面 |
+|---|---|
+| 目的変数を `log y` に変換する | `y` が正の値で、ばらつきの標準偏差が `y` の大きさに比例する |
+| 重み付き最小二乗法（WLS） | 行ごとのばらつきの大きさが分かり、その逆数で重みを付けられる |
+| White の標準誤差 | 係数はそのままにして、信頼区間と検定だけを出し直す |
+
+`log y` でばらつきをそろえる考え方は、[分散安定化変換](https://en.wikipedia.org/wiki/Variance-stabilizing_transformation)と呼ばれます。右に裾が長い列を log で縮める時の注意は、[歪度](../../math/skewness/)で扱っています。
+
+外れ値は 2 乗で効き、少数の行でも直線を大きく動かします。scikit-learn の[外れ値に強い回帰](https://scikit-learn.org/stable/modules/linear_model.html#robustness-regression-outliers-and-modeling-errors)の `HuberRegressor` や `RANSACRegressor` のほか、条件付きの[中央値](../../math/median/)を予測する `QuantileRegressor` も候補です。カテゴリの列を 0・1・2 の整数のまま入れると、無い順序を仮定した係数が 1 つ付くだけなので、[カテゴリ変数のエンコーディング](../categorical-encoding/)で one-hot などに変えてから入れます。
+
+</details>
+
+<br>
+
+---
+
+### 他の列を一定に保つ係数
+
+s1 から、他の 9 列で s1 を予測した値を引くと、残差が残ります。本記事では、この残差を「他の 9 列で説明できない s1 の残り」と呼びます。列が 2 つ以上ある重回帰では、s1 の係数は、この残りを横軸に、病状の値から同じように他の 9 列で予測した値を引いた残りを縦軸にして引いた直線の傾きになります。この性質は、[Frisch 氏と Waugh 氏](https://doi.org/10.2307/1907330)、[Lovell 氏](https://doi.org/10.1080/01621459.1963.10480682)の論文で示されたもので、3 人の名前を取って Frisch-Waugh-Lovell の定理と呼ばれます。diabetes で計算し、10 列の係数と比べました。
+
+```python
+full = LinearRegression().fit(X, y)           # 10 列を全て入れた重回帰
+others = [k for k in range(10) if k != 4]
+s1 = X[:, 4]
+s1_rest = s1 - LinearRegression().fit(X[:, others], s1).predict(X[:, others])
+y_rest = y - LinearRegression().fit(X[:, others], y).predict(X[:, others])
+b_rest = LinearRegression().fit(s1_rest.reshape(-1, 1), y_rest).coef_[0]
+r2_s1 = LinearRegression().fit(X[:, others], s1).score(X[:, others], s1)
+print(f"残りどうしの傾き: {b_rest:.3f}（10 列の係数 {full.coef_[4]:.3f}）")
+print(f"s1 の標準偏差 {s1.std():.1f}、他の 9 列で説明できない残りの標準偏差 {s1_rest.std():.1f}")
+print(f"他の 9 列から s1 を予測した R² {r2_s1:.3f}、VIF {1 / (1 - r2_s1):.1f}")
+```
+
+```text
+残りどうしの傾き: -1.090（10 列の係数 -1.090）
+s1 の標準偏差 34.6、他の 9 列で説明できない残りの標準偏差 4.5
+他の 9 列から s1 を予測した R² 0.983、VIF 59.2
+```
+
+{{< figure src="linreg_partial.webp" alt="左右 2 枚の散布図で、横軸の範囲はどちらも -110〜110。左は s1 と病状の値で、点は横に広がり、傾き +0.47 の直線が右上がり。右は他の 9 列で説明できない s1 の残りと病状の値の残りで、点は横軸 -10〜25 の細い縦の帯に集まり、傾き -1.09 の直線が右下がり" caption="s1 と病状の値（左）と、他の 9 列で説明できない残りどうし（右）" align="center" >}}
+
+残りどうしの傾きは、10 列の係数 -1.090 と一致しました。左の図では s1 が -100〜+100 の幅に広がっていますが、他の 9 列で説明できない残りは、[標準偏差](../../math/stddev/) 4.5 の細い帯しかありません。s1 の係数は、この細い帯で引いた傾きです。
+
+他の 9 列から s1 を予測すると、R² は 0.983 になります。この R² を `1 / (1 - R²)` に入れた値を VIF（variance inflation factor、分散拡大係数）と呼び、係数の分散が、他の列と無関係な時の何倍に広がるかを表します。s1 の VIF は 59.2 です。列どうしが強く連動する状態を多重共線性（multicollinearity）と呼び、[Wikipedia の解説](https://ja.wikipedia.org/wiki/%E5%A4%9A%E9%87%8D%E5%85%B1%E7%B7%9A%E6%80%A7)では VIF が 5 か 10 以上なら多重共線性を疑う目安が紹介されています。
+
+<br>
+
+#### s1 は他の列から計算できる
+
+s1 が他の列でここまで説明できる理由を探すと、s1 は s2・s3 と中性脂肪からほぼ計算できることが分かりました。中性脂肪の値は、対数を取った s5 を exp で戻して求めます。
+
+```python
+tg = np.exp(X[:, 8])                           # s5 は中性脂肪の対数なので、exp で戻す
+calc = X[:, 5] + X[:, 6] + tg / 5              # LDL + HDL + 中性脂肪 / 5
+print(f"s1 と s2 + s3 + 中性脂肪/5 の差: 最大 {np.abs(s1 - calc).max():.2f}、"
+      f"相関係数 {np.corrcoef(s1, calc)[0, 1]:.6f}")
+```
+
+```text
+s1 と s2 + s3 + 中性脂肪/5 の差: 最大 0.40、相関係数 1.000000
+```
+
+{{< figure src="linreg_friedewald.webp" alt="横軸が s2 + s3 + exp(s5) / 5、縦軸が s1（総コレステロール）の散布図。442 人の点が全て、s1 = s2 + s3 + 中性脂肪 / 5 を表す赤い破線の上に乗る" caption="s1 と、s2・s3・中性脂肪から計算した値" align="center" >}}
+
+442 人全員で、s1 と「s2 + s3 + 中性脂肪 / 5」の差は 0.40 以内でした。この式は、総コレステロール・HDL・中性脂肪から LDL を求める [Friedewald の式](https://doi.org/10.1093/clinchem/18.6.499)と同じ形です。s2 の LDL は測った値ではなく、この式で計算した値と考えられます。
+
+s1 を 1 増やして s2・s3・s5 を一定に保つ患者は、このデータに 1 人もいません。s1 は中性脂肪の値とは直線の関係ですが、データに入っているのは対数の s5 なので、s5 とは直線の関係になりません。最小二乗法は、丸めで生じた 0.40 以内の差と、s5 との関係が直線から外れる分から、s1 の係数を決めます。冒頭の解説の「他の列を全て一定に保った時」は、データの中では起きていない場面の係数です。
+
+---
+
+### 行を選び直した時の係数と予測
+
+係数を決める材料が標準偏差 4.5 の帯しかないと、行を少し入れ替えるだけで傾きが動きます。冒頭の図は、学習の 309 人から 309 人を選び直すブートストラップを 200 回行ったものです。重複を許して選ぶことを復元抽出と呼び、ブートストラップは復元抽出で学習データを作り直して結果のばらつきを見る方法です。コードは次のとおりです。
+
+```python
+rows = np.arange(len(y))
+train, test = train_test_split(rows, test_size=0.3, random_state=0)  # 309 行で学習、133 行でテスト
 rng = np.random.default_rng(0)
-x = np.linspace(0, 10, 60)
-y = 0.7 * x + 1.5 + rng.normal(0, 1.2, 60)
-
-ols = LinearRegression().fit(x.reshape(-1, 1), y)
-print(f"slope = {ols.coef_[0]:.3f}, intercept = {ols.intercept_:.3f}")
-
-# 常に 1 の列を足し、正規方程式 (X^T X) w = X^T y を直接解く
-X1 = np.column_stack([np.ones_like(x), x])
-b, w = np.linalg.solve(X1.T @ X1, X1.T @ y)
-print(f"normal equation: slope = {w:.3f}, intercept = {b:.3f}")
+coefs, scores, preds = [], [], []
+for _ in range(200):
+    i = rng.choice(train, size=len(train), replace=True)  # 学習の行を重複を許して選び直す
+    mb = LinearRegression().fit(X[i], y[i])
+    coefs.append(mb.coef_)
+    scores.append(mb.score(X[test], y[test]))  # テストの 133 行で測る R²
+    preds.append(mb.predict(X[test]))
+coefs, scores, preds = np.array(coefs), np.array(scores), np.array(preds)
+for j in [4, 5, 6, 7]:
+    print(f"{names[j]}: 係数が負になった回数 {(coefs[:, j] < 0).sum()} / 200")
+print("テストの R² の 5% 点・中央値・95% 点:", np.percentile(scores, [5, 50, 95]).round(3))
+print("テストの行ごとの予測の標準偏差（中央値）:", np.median(preds.std(axis=0)).round(1))
+print("目的変数の標準偏差:", y.std().round(1))
 ```
-
-出力:
 
 ```text
-slope = 0.766, intercept = 1.265
-normal equation: slope = 0.766, intercept = 1.265
+s1: 係数が負になった回数 166 / 200
+s2: 係数が負になった回数 55 / 200
+s3: 係数が負になった回数 125 / 200
+s4: 係数が負になった回数 67 / 200
+テストの R² の 5% 点・中央値・95% 点: [0.33  0.372 0.407]
+テストの行ごとの予測の標準偏差（中央値）: 8.8
+目的変数の標準偏差: 77.0
 ```
 
-2 つの解き方で同じ値になります。次の図は同じデータを描いたものです。
+テストの 133 人について、200 回分の予測のばらつきは標準偏差で 8.8 でした。病状の値そのものの標準偏差 77.0 と比べると小さく、どの回のモデルもほぼ同じ予測を返しています。係数が大きく動くのに予測が動かない理由は、s1 と s2 の係数を 200 回分並べると見えます。
 
-![単回帰の OLS 当てはめと残差](./linreg_simple_fit.svg)
+{{< figure src="linreg_collinear.webp" alt="左は 200 回分の s1 の係数を横軸、s2 の係数を縦軸にした散布図で、点は左上から右下へ細長く並び、s1 が負で s2 が正の領域と、s1 が正で s2 が負の領域の両方に点がある。右は 200 回分のテストの R² で、元の 10 列は全て 0.29〜0.42 に集まる。中性脂肪を足した 11 列も多くは同じ高さだが、0.3 を下回る点が 32 回あり、そのうち 22 回は -1 未満で、下端の三角で示している" caption="200 回分の s1 と s2 の係数（左）と、テストの R²（右）" align="center" >}}
 
-赤い線が OLS の推定直線、灰色の縦線が各サンプルの残差（`y_i - ŷ_i`）で、これらの二乗和が最小になるように直線が引かれます。緑の点線は真の関係 `y = 0.7 x + 1.5` です。推定した傾き 0.766 と切片 1.265 は、60 点に乗ったノイズの分だけ真の値からずれています。
+左の図では、点が右下がりの細い帯に並びます。s1 の係数が下がった回は s2 の係数が上がり、2 つを合わせた影響はほぼ一定です。s1 と s2 は相関係数 0.90 で一緒に動くので、どちらに重みを置いても予測はほとんど変わらず、どちらに置くかは選んだ行の偶然で決まります。右の図では、10 列の R² が冒頭の図と同じく 0.29〜0.42 に集まります。中性脂肪を足した 11 列は、次の小見出しで扱います。
 
-傾き 0.766 は「`x` が 1 増えると `y` が約 0.77 増える」と直接読めます。決定木やニューラルネットでは同じ読み方ができないので、説明性が要求される場面で線形モデルが選ばれることが多いです。
+予測が目的なら多重共線性は問題になりにくい、という説明もよく見かけます。[渋谷駅前で働くデータサイエンティストのブログ](https://tjo.hatenablog.com/entry/2025/01/13/120000)の「多重共線性のはなし」もその 1 つで、この説明が指すのは、係数が揺れても予測が揺れない上の状態です。係数の符号から「総コレステロールが高いと病状が軽くなる」と読むのは、偶然を読んでいることになります。
 
----
+<br>
 
-### 線形モデルの「表現力」と複雑度
+#### 中性脂肪の列を足した時
 
-「線形」は重み `w` について線形であって、特徴量については任意の変換を施せます。多項式特徴量 `x, x^2, x^3, ...` を加えれば曲線も表現できます（多項式回帰）が、次数を上げすぎると過学習します。訓練に使わなかった 200 点で、テスト時の [MSE](../regression-metrics/) も測ります（以降のコードは、前のコードの import の続きで実行します）。
+先に、関係が完全な時を見ておきます。列どうしの関係が完全な時は、残差の 2 乗の合計を最小にする係数が無数にあります。列の数が行の数より多い時も同じです。bmi を 2 回入れると、`LinearRegression` は係数 10.23 を 5.12 ずつに分けて返しました。`lstsq` が既定で使う、線形代数の計算ライブラリ LAPACK の [gelsd](https://netlib.org/lapack/double/dgelsd.f) は、無数にある解から係数の 2 乗の合計が最も小さいものを選ぶからです。どの解を選ぶかを自分の基準で決めたい時は、この節の最後に出てくる Ridge のように、係数の大きさを表す項を残差の 2 乗の合計に足します。
+
+次は、関係を完全ではなく、ほぼ完全にします。s5 を元に戻した中性脂肪の値を 11 列目に足すと、足した 11 列目と s2・s3 から、s1 は丸めの差を除いて計算できます。
 
 ```python
-from sklearn.metrics import mean_squared_error
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import PolynomialFeatures
-
+twice = LinearRegression().fit(np.column_stack([bmi, bmi]), y)
+print("bmi を 2 回入れた時の係数:", twice.coef_.round(2))
+X11 = np.column_stack([X, tg])
+m11 = LinearRegression().fit(X11, y)
+o11 = [k for k in range(11) if k != 4]
+r2_11 = LinearRegression().fit(X11[:, o11], s1).score(X11[:, o11], s1)
+print(f"11 列の係数 s1 {m11.coef_[4]:.2f}、s2 {m11.coef_[5]:.2f}、s3 {m11.coef_[6]:.2f}、"
+      f"中性脂肪 {m11.coef_[10]:.2f}、s1 の VIF {1 / (1 - r2_11):.0f}")
+print(f"全行で学習した R²: 10 列 {full.score(X, y):.4f}、11 列 {m11.score(X11, y):.4f}")
 rng = np.random.default_rng(0)
-x_train = np.sort(rng.uniform(0, 1, 20))
-y_train = np.sin(2 * np.pi * x_train) + rng.normal(0, 0.25, 20)
-x_test = rng.uniform(0, 1, 200)
-y_test = np.sin(2 * np.pi * x_test) + rng.normal(0, 0.25, 200)
-
-for deg in [1, 3, 15]:
-    model = make_pipeline(PolynomialFeatures(deg), LinearRegression())
-    model.fit(x_train.reshape(-1, 1), y_train)
-    mse_tr = mean_squared_error(y_train, model.predict(x_train.reshape(-1, 1)))
-    mse_te = mean_squared_error(y_test, model.predict(x_test.reshape(-1, 1)))
-    print(f"degree={deg:2d}: train MSE = {mse_tr:.3f}, test MSE = {mse_te:.3f}")
+c11, s11 = [], []
+for _ in range(200):
+    i = rng.choice(train, size=len(train), replace=True)
+    mm = LinearRegression().fit(X11[i], y[i])
+    c11.append(mm.coef_)
+    s11.append(mm.score(X11[test], y[test]))
+c11, s11 = np.array(c11), np.array(s11)
+print("11 列の s1 の係数の 5% 点・中央値・95% 点:", np.percentile(c11[:, 4], [5, 50, 95]).round(1))
+print("11 列のテストの R² の 5% 点・中央値・95% 点:", np.percentile(s11, [5, 50, 95]).round(3))
+print(f"11 列でテストの R² が 0.3 を下回った回数: {(s11 < 0.3).sum()} / 200"
+      f"（10 列では {(scores < 0.3).sum()} / 200）")
 ```
-
-出力:
 
 ```text
-degree= 1: train MSE = 0.218, test MSE = 0.294
-degree= 3: train MSE = 0.018, test MSE = 0.105
-degree=15: train MSE = 0.010, test MSE = 1.365
+bmi を 2 回入れた時の係数: [5.12 5.12]
+11 列の係数 s1 -19.26、s2 18.92、s3 18.54、中性脂肪 3.63、s1 の VIF 1330197
+全行で学習した R²: 10 列 0.5177、11 列 0.5178
+11 列の s1 の係数の 5% 点・中央値・95% 点: [ -40.5   45.5 5319.7]
+11 列のテストの R² の 5% 点・中央値・95% 点: [-8.165  0.36   0.401]
+11 列でテストの R² が 0.3 を下回った回数: 32 / 200（10 列では 1 / 200）
 ```
 
-![次数を上げるほど訓練データに張り付き、汎化性能が落ちる](./linreg_poly_complexity.svg)
+s1 の VIF は 59.2 から約 133 万に跳ね上がり、係数は s1 が -19.26、s2 と s3 が +18.9 と +18.5 になりました。s1 から s2・s3 を引くと 0.40 以内で中性脂肪の 5 分の 1 になるので、大きな係数を掛けた項を足すと、差し引きでほぼ 0 になります。学習データでの R² は 0.5177 と 0.5178 で、10 列と変わりません。
 
-degree=1 は直線なので、波打つ真の関係（緑点線）を表現できず、訓練時もテスト時も MSE が大きくなります。これが under-fit です。degree=3 は真の関数 `sin(2πx)` の形を捉え、テスト時の MSE が最も小さくなります。degree=15 は訓練時の MSE が最も小さいのに、テスト時は 1.365 まで悪化します。[過学習](../overfitting/) のノートと同じ構図です。
+選び直すと、s1 の係数は 95% 点が 5319.7 まで広がりました。上の図で右に描いたとおり、テストの R² が 0.3 を下回った回は 10 列の 1 回から 32 回に増え、そのうち 22 回は -1 未満です。R² が負なのは、全員に平均値を返すより外れたという意味です。
 
-degree=15 の曲線は訓練点の間で波打ち、最後の訓練点（x ≈ 0.94）より右で急降下します。上のコードで作った `x_test` のうち、最後の訓練点より右にある 18 点だけで二乗誤差を合計すると、200 点全体の 94% を占めました。高次の多項式は、訓練点が無い所で値が暴れます。
+テストの人も、s1 と s2・s3・中性脂肪の関係を 0.40 以内で満たしています。ただし係数が数千になった回は、丸めで生じた 0.40 以内の差にも数千が掛かり、予測が数百ずれます。学習データでは差し引きで消えていた大きな項が、新しい行の小さなずれでは消えなくなるからです。
 
-表現力と過学習のトレードオフは非線形モデルでも共通する課題で、[バイアス-バリアンス分解](../bias-variance-tradeoff/) の考え方と [交差検証](../cross-validation/) で次数や正則化の強さを選ぶのが定石です。
+<br>
+
+残差の 2 乗の合計に係数の 2 乗の合計を足して小さくする Ridge なら、こうした大きな係数の組を選ばなくなります。
+
+足す項は列の単位に左右されるので、Ridge の前には[標準化](../standardization/)を入れ、足す項の強さは[交差検証](../cross-validation/)で選びます。強さに応じて係数がどう縮むかは、[正則化](../regularization/)で扱っています。係数を 0 にして列を落とす Lasso を[特徴量選択](../feature-selection/)に使うと、選び直すたびに別の列が残ることも、正則化のノートで扱っています。似た列を [PCA](../pca/) で少数の列にまとめてから入れる方法もあります。
 
 ---
 
-### 残差プロットで仮定をチェックする
+### 列の値に誤差がある時
 
-OLS の前提は、何を求めるかで変わります。
-
-- 係数を計算するだけ: `X^T X` が逆行列を持てば十分
-- 推定値が偏らない（不偏）: 誤差の期待値が特徴量に依らず 0 であることが必要。特徴量と相関する変数を入れ忘れると崩れる
-- ガウス・マルコフ定理（線形不偏推定量の中で OLS の分散が最小）: さらに誤差の等分散（homoscedastic）と無相関が必要
-- 少ないサンプルで [t 検定や信頼区間](/ml/math/hypothesis-test/)を正確に出す: さらに誤差の正規分布が必要
-
-残差プロット（横軸: 予測値、縦軸: 残差）で主に分かるのは、等分散が崩れていないかと、関係に曲がりが残っていないかです。独立性は残差を時間順などに並べて、正規性はヒストグラムや Q-Q プロットで確認します。
-
-次のコードは、ばらつきが一定のデータと、`x` とともにばらつきが増えるデータに OLS を当てます。
+最初の節で、最小二乗法は縦の差だけを小さくすると書きました。言い換えると、説明に使う列の値は正確だとみなしています。BMI を測った精度が低く、記録された値に誤差が混ざっていたら、傾きはどうなるでしょうか。bmi と病状の値のそれぞれに、平均が 0 で正規分布に従う誤差を足して、傾きを 200 回ずつ求めました。
 
 ```python
 rng = np.random.default_rng(0)
-x = np.linspace(0, 10, 200).reshape(-1, 1)
-y_good = 1.0 * x[:, 0] + 2 + rng.normal(0, 1.0, 200)
-y_bad = 1.0 * x[:, 0] + 2 + rng.normal(0, 0.3 + 0.4 * x[:, 0], 200)  # x とともに分散が増える
-
-for name, y in [("good", y_good), ("bad", y_bad)]:
-    m = LinearRegression().fit(x, y)
-    resid = y - m.predict(x)
-    print(f"{name}: slope = {m.coef_[0]:.3f}, "
-          f"resid std (x<5) = {resid[:100].std():.2f}, (x>=5) = {resid[100:].std():.2f}")
+b0 = m.coef_[0]
+ks = [0.0, 0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
+bx, by = [], []
+for k in ks:
+    sx = [LinearRegression().fit((bmi + rng.normal(0, k * bmi.std(), len(y))).reshape(-1, 1), y).coef_[0]
+          for _ in range(200)]                       # bmi に誤差
+    sy = [LinearRegression().fit(bmi.reshape(-1, 1), y + rng.normal(0, k * y.std(), len(y))).coef_[0]
+          for _ in range(200)]                       # 病状の値に誤差
+    bx.append(np.mean(sx))
+    by.append(np.mean(sy))
+    print(f"誤差の標準偏差 = 元の標準偏差 × {k:<4}: bmi に足すと傾き {np.mean(sx):5.2f}"
+          f"（式 {b0 / (1 + k * k):5.2f}）、病状の値に足すと傾き {np.mean(sy):5.2f}")
 ```
-
-出力:
 
 ```text
-good: slope = 0.980, resid std (x<5) = 0.96, (x>=5) = 0.95
-bad: slope = 0.999, resid std (x<5) = 1.52, (x>=5) = 3.02
+誤差の標準偏差 = 元の標準偏差 × 0.0 : bmi に足すと傾き 10.23（式 10.23）、病状の値に足すと傾き 10.23
+誤差の標準偏差 = 元の標準偏差 × 0.25: bmi に足すと傾き  9.65（式  9.63）、病状の値に足すと傾き 10.22
+誤差の標準偏差 = 元の標準偏差 × 0.5 : bmi に足すと傾き  8.17（式  8.19）、病状の値に足すと傾き 10.25
+誤差の標準偏差 = 元の標準偏差 × 0.75: bmi に足すと傾き  6.54（式  6.55）、病状の値に足すと傾き 10.13
+誤差の標準偏差 = 元の標準偏差 × 1.0 : bmi に足すと傾き  5.16（式  5.12）、病状の値に足すと傾き 10.27
+誤差の標準偏差 = 元の標準偏差 × 1.5 : bmi に足すと傾き  3.15（式  3.15）、病状の値に足すと傾き 10.16
+誤差の標準偏差 = 元の標準偏差 × 2.0 : bmi に足すと傾き  2.06（式  2.05）、病状の値に足すと傾き 10.17
 ```
 
-![残差プロット: 上段は均一、下段は不均一分散 (ファン型)](./linreg_residual_diag.svg)
+{{< figure src="linreg_dilution.webp" alt="横軸が足した誤差の標準偏差を元の列の標準偏差で割った比（0〜2）、縦軸が 200 回の平均の bmi の傾き。青の四角の病状の値に誤差を足した線は 10.2 前後で平らなまま。赤の丸の bmi に誤差を足した線は 10.23 から 9.65、8.17、5.16、2.06 と下がり、灰色の破線の式 元の傾き ÷ (1 + 比²) に重なる" caption="bmi と病状の値に誤差を足した時の、bmi の傾き" align="center" >}}
 
-上段の残差は予測値全域で均一に 0 の周りに散らばっています。下段は予測値が大きいほど残差が広がる「ファン型」で、出力でも `x >= 5` の残差の標準偏差が `x < 5` の約 2 倍です。これが不均一分散（heteroscedasticity）の症状です。
+病状の値に誤差を足しても、傾きは平均で 10.2 前後のまま変わりません。縦の誤差は、最小二乗法が想定している残差に混ざるだけだからです。bmi に誤差を足すと、傾きは 0 に向かって小さくなり、誤差の標準偏差が bmi と同じ大きさで約半分の 5.16 になりました。
 
-下段でも傾きは 0.999 で、推定値そのものは崩れていません。ずれるのは標準誤差です。通常の標準誤差の式は誤差の分散が一定だと仮定するので、信頼区間や係数の検定結果が当てになりません。対策は次のいずれかです。
+誤差の標準偏差を bmi の標準偏差で割った値を比と呼ぶと、下がり方は `元の傾き ÷ (1 + 比²)` の式に重なります。比² は誤差の分散を bmi の分散で割った値なので、元の傾きに `bmi の分散 / (bmi の分散 + 誤差の分散)` を掛けても同じです。比が 1 なら 1/2、2 なら 1/5 です。この現象は regression dilution と呼ばれ、[Frost 氏と Thompson 氏の論文](https://doi.org/10.1111/1467-985x.00164)が補正の方法を比べています。
 
-- 目的変数を `log y` で変換する（`y` が正の値で、ばらつきの[標準偏差が `y` の大きさに比例する](https://en.wikipedia.org/wiki/Variance-stabilizing_transformation)場合。[歪度](../../math/skewness/) のノート参照）
-- 重み付き最小二乗法（WLS）で分散の逆数を重みにする
-- 不均一分散に頑健な標準誤差（White の標準誤差）で信頼区間を出し直す
+誤差の混ざった列で学習したモデルは、同じように誤差の混ざった列で予測するなら、小さくなった傾きのまま予測に使えます。誤差の混ざった bmi から予測するなら、その傾きが最も外れにくいからです。困るのは、傾きを「BMI が 1 増えると病状の値がいくつ増えるか」と読む時で、記録の精度が低い列ほど影響は小さく見えます。
 
 ---
 
-### 多重共線性と正則化
+### 係数を読む前に
 
-特徴量同士の[相関](/ml/math/correlation/)が高い場合、`(X^T X)` がほぼ特異になり、係数が極端な値を取る、符号が反転する、標準誤差が爆発するという不安定さが出ます。これを多重共線性（multicollinearity）と呼びます。
+線形回帰を予測に使うだけなら、まず冒頭の図で右に描いたように、テストの R² が選び直しで安定しているかを見ます。新しく試すモデルが線形回帰より悪ければ、モデルより先にデータか前処理を疑います。ただし、中性脂肪を足した 11 列のように、他の列からほぼ計算できる列が入っていると、予測も崩れることがあります。係数を読むなら、さらに下の表を上から順に見ます。
 
-対策の一つが [正則化](../regularization/) で、係数の大きさを抑制するペナルティ項を損失に加えます。式は scikit-learn の [`Ridge`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) と [`Lasso`](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Lasso.html) の定義に合わせています。
+| 見ること | 見る値 | diabetes での値 |
+|---|---|---|
+| 他の列から計算できる列が無いか | 他の列で予測した R²、VIF | s1 は R² 0.983、VIF 59.2 |
+| 選び直しで符号が変わらないか | 数百回のうち負になった回数 | s1 は 200 回中 166 回が負 |
+| 列の値に誤差が無いか | 測り方と記録の精度 | 誤差が bmi と同じ大きさで 10.23 → 5.16 |
+| 入れ忘れた列が無いか | 結果と入れた列の両方に関わる列 | s1 だけなら +0.47、10 列なら -1.09 |
 
-- Ridge（L2 正則化）: `min Σ (y_i - ŷ_i)^2 + α Σ w_k^2`
-- Lasso（L1 正則化）: `min (1/(2n)) Σ (y_i - ŷ_i)^2 + α Σ |w_k|`
-- ElasticNet（混合）: Ridge と Lasso のペナルティを線形結合
+1 に近い R² の列があれば、どの式で計算された列かを探します。diabetes の s2 は、Friedewald の式で計算した値と考えられます。選び直しで範囲が 0 をまたぐ列は、冒頭の図に赤く描いた列のように符号を読みません。似た列が組になって動くなら、s1 と s2 のように組の合計として読みます。精度の低い列の係数は 0 に向かって小さく出るので、係数が小さく出た列は記録の精度も疑います。
 
-次のコードは、20 個の特徴量のうち 5 個だけがターゲットに効くデータを作り、標準化してから `α` を変えて Ridge と Lasso を当てます。
+<br>
 
-```python
-from sklearn.datasets import make_regression
-from sklearn.linear_model import Lasso, Ridge
-from sklearn.pipeline import make_pipeline
-from sklearn.preprocessing import StandardScaler
+#### 係数と因果
 
-X, y, true_coef = make_regression(n_samples=80, n_features=20, n_informative=5,
-                                  noise=10.0, random_state=0, coef=True)
-print("informative:", np.flatnonzero(true_coef))
+符号が選び直しで変わらなくても、係数は「他の列をそろえた人どうしで比べた時の差」であって、その列を動かした時の変化ではありません。結果と入れた列の両方に関わる列を入れ忘れると、入れた列の係数がその分を背負って偏ります。この偏りは欠落変数バイアス（[omitted-variable bias](https://en.wikipedia.org/wiki/Omitted-variable_bias)）と呼ばれます。
 
-for alpha in [1, 10, 30, 100]:
-    ridge = make_pipeline(StandardScaler(), Ridge(alpha=alpha)).fit(X, y)[-1]
-    lasso = make_pipeline(StandardScaler(), Lasso(alpha=alpha, max_iter=20000)).fit(X, y)[-1]
-    print(f"alpha={alpha:3}: Ridge の 0 = {np.sum(ridge.coef_ == 0):2d} 個, "
-          f"Lasso が残した特徴量 = {np.flatnonzero(lasso.coef_)}")
-```
+s1 だけの傾き +0.47 と 10 列での -1.09 の差は、s1 と一緒に動く他の列が受け持つ分まで、s1 が背負うかどうかで生まれます。入れていない列が入れた列と相関していなければ、係数は偏りません。他の列を入れるかどうかで傾きの符号が逆になる例は、[同時分布・周辺分布・条件付き分布](../../math/joint-marginal-conditional/)でも扱っています。
 
-出力:
+列を動かした時の変化を言うには、ランダム化比較試験（randomized controlled trial、RCT）のように、列の値を割り振る側で決める設計が要ります。実験ができない時に使う回帰調整や、[操作変数法](https://ja.wikipedia.org/wiki/%E6%93%8D%E4%BD%9C%E5%A4%89%E6%95%B0%E6%B3%95)の 2 段階最小二乗法も、中で線形回帰を部品として使います。
 
-```text
-informative: [ 1  8 12 13 16]
-alpha=  1: Ridge の 0 =  0 個, Lasso が残した特徴量 = [ 1  2  3  6  7  8 12 13 16]
-alpha= 10: Ridge の 0 =  0 個, Lasso が残した特徴量 = [ 1  8 12 13 16]
-alpha= 30: Ridge の 0 =  0 個, Lasso が残した特徴量 = [ 8 13 16]
-alpha=100: Ridge の 0 =  0 個, Lasso が残した特徴量 = []
-```
-
-![Ridge は全係数を滑らかに縮め、Lasso は不要な係数を 0 に潰す](./linreg_ridge_lasso.svg)
-
-図は `α` を 0.01〜100 の 30 段階で変えた時の係数の推移で、赤い線が真に効く 5 個、灰色の線が効かない 15 個の特徴量の係数です。
-
-- Ridge: 全係数が 0 に向かって滑らかに縮む（shrinkage）が、ちょうど 0 にはならない。重要な特徴量も縮むので、解釈は若干歪む
-- Lasso: 効かない特徴量の係数から順に 0 に潰れる（sparse solution）。`α = 10` では真に効く 5 個だけが残り、[特徴量選択](../feature-selection/) として機能する
-
-ただし `α = 30` では真に効く特徴量まで落ち、`α = 100` では全部 0 になり、under-fit します。`α = 0` は素の OLS に当たり、`α` は [交差検証](../cross-validation/) で選ぶのが標準です。
-
----
-
-### 数学での使いどころ
-
-- 最尤推定との関係: 誤差が正規分布の時、MSE 最小化が最尤推定と等価になる
-- 射影の解釈: `ŷ = X w` は `y` を `X` の張る部分空間に正射影したもの
-- 一般化線形モデル（GLM）の基礎: 線形回帰の枠組みを指数族分布に拡張すると、ロジスティック回帰やポアソン回帰になる
-
----
-
-### 機械学習での使いどころ
-
-- ベースライン回帰: 新しいタスクで最初に試すモデル。複雑なモデルがこれより悪いなら、データかパイプラインを疑う
-- 高速・軽量な予測: 推論時は `w · x + b` の内積だけで済み、レイテンシ要件の厳しい本番でも採用される
-- 説明性が必要な場面: 係数の符号と大きさで「どの特徴量がどれだけ効いたか」を直接示せる。規制業界（金融、医療）で重宝される
-- 時系列の傾向除去: 線形トレンドを引いてから周期成分や残差を分析する前処理に（[時系列予測](../time-series-forecasting/) のノート参照）
-- 因果推論の部品: 共変量を入れた回帰調整や、操作変数法の 2 段階最小二乗法の中で OLS を使う
-
----
-
-### 適さないケース / 落とし穴
-
-- 関係が強く非線形: 多項式特徴量や [決定木](../decision-tree/) / [勾配ブースティング](../gradient-boosting/) など、非線形な関係を表せる方法を検討する
-- 特徴量同士が極端に相関: 係数の解釈が崩れる。Ridge / [PCA](../pca/) / 特徴量の事前選択で対処
-- 外れ値が支配的: MSE は二乗するので外れ値が学習を歪める。[外れ値に頑健な回帰](https://scikit-learn.org/stable/modules/linear_model.html#robustness-regression-outliers-and-modeling-errors)（`HuberRegressor` / `RANSACRegressor`）や `QuantileRegressor` で対処
-- 高次元（特徴量数 > サンプル数）: OLS は解が一意に決まらない。Ridge / Lasso / ElasticNet で解を絞る
-- 標準化を忘れて Ridge / Lasso を当てる: 特徴量のスケールが違うとペナルティが偏る。[標準化](../standardization/) を先に挟む
-- カテゴリ変数を整数のまま入れる: 順序が無いのに「1 < 2 < 3」の関係を仮定してしまう。[カテゴリ変数のエンコーディング](../categorical-encoding/) で one-hot などに変換する
-- 因果関係の主張: 線形回帰の係数は「相関」を示すだけで、操作変数や RCT（Randomized Controlled Trial、ランダム化比較試験）などの設計が無いと「`x` を増やすと `y` が動く」とは言えない
+冒頭の解説の「他の列を全て一定に保った時」がデータの中で起きているかは、他の列で説明できない残りの幅で分かります。s1 は残りの標準偏差が 4.5 しか無く、係数の符号はその狭い幅で決まった偶然でした。

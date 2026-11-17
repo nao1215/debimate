@@ -925,3 +925,4 @@ blockchain-b	coin selection	コイン選択	コイン選択	一致		content/note
 blockchain-b	double spending	二重支出	二重支出	一致		content/notes/blockchain-systems/utxo/index.md	bitcoin.org 用語集（日本語） https://bitcoin.org/ja/vocabulary	2026-11-17 utxo は旧版の「二重使用」から二重支出にした。blockchain-basics・bitcoin-block の行（未確定）は別途
 blockchain-b	dust	ダスト（dust）	ダスト	未確定		content/notes/blockchain-systems/utxo/index.md	Bitcoin Optech Uneconomical outputs（英語） https://bitcoinops.org/en/topics/uneconomical-outputs/	日本語の資料は未確認。カタカナで併記した / 2026-11-17 utxo の書き直しで追加
 blockchain-b	consolidation	統合（consolidation）	統合（コンソリデーション）	未確定		content/notes/blockchain-systems/utxo/index.md		日本語の資料は未確認 / 2026-11-17 utxo の書き直しで追加
+ml-ml-mlops	omitted-variable bias	欠落変数バイアス	欠落変数バイアス	一致		projects/ml/notes/ml/linear-regression/index.md	慶應の計量経済学の演習解答 https://www.fbc.keio.ac.jp/~tyabu/keiryo/answer_ch5.pdf 、同志社の講義資料 https://yukiyanai.github.io/jp/classes/econometrics2/contents/slides/metrics2_topic04_slides.pdf	日本語版 Wikipedia に項目が無いので英語版にリンク
