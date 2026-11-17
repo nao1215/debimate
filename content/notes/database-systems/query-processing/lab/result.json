@@ -1,0 +1,175 @@
+{
+  "postgres_version": "18.6",
+  "limit_sweep": [
+    {
+      "limit": 1,
+      "node": "Index Scan using events_pkey",
+      "ms": 328.906
+    },
+    {
+      "limit": 10,
+      "node": "Index Scan using events_pkey",
+      "ms": 507.939
+    },
+    {
+      "limit": 100,
+      "node": "Index Scan using events_pkey",
+      "ms": 658.038
+    },
+    {
+      "limit": 1000,
+      "node": "Parallel Index Scan using events_pkey",
+      "ms": 249.418
+    },
+    {
+      "limit": 3000,
+      "node": "Bitmap Heap Scan",
+      "ms": 3.345
+    },
+    {
+      "limit": 10000,
+      "node": "Bitmap Heap Scan",
+      "ms": 4.082
+    },
+    {
+      "limit": null,
+      "node": "Bitmap Heap Scan",
+      "ms": 3.177
+    }
+  ],
+  "other_plan_cost": 17490.21,
+  "spread_vs_tail": {
+    "500": {
+      "ms": 0.058,
+      "removed": 497,
+      "estimated_rows": 4972,
+      "node": "Index Scan using events_pkey"
+    },
+    "1": {
+      "ms": 340.673,
+      "removed": 4990000,
+      "estimated_rows": 8000,
+      "node": "Index Scan using events_pkey"
+    }
+  },
+  "user1_first_id": 4990001,
+  "composite_ms": 0.055,
+  "correlated": {
+    "before": {
+      "filter_estimated": 4,
+      "filter_actual": 1000,
+      "join_estimated": 8,
+      "join_actual": 5000,
+      "join_ms": 30.093,
+      "join_node": "Nested Loop"
+    },
+    "after": {
+      "filter_estimated": 997,
+      "filter_actual": 1000,
+      "join_estimated": 2077,
+      "join_actual": 5000,
+      "join_ms": 18.709,
+      "join_node": "Nested Loop"
+    }
+  },
+  "planning": [
+    {
+      "tables": 2,
+      "comma_plan_ms": 1.231,
+      "comma_exec_ms": 0.572,
+      "join_plan_ms": 1.182
+    },
+    {
+      "tables": 3,
+      "comma_plan_ms": 1.513,
+      "comma_exec_ms": 0.991,
+      "join_plan_ms": 1.626
+    },
+    {
+      "tables": 4,
+      "comma_plan_ms": 2.114,
+      "comma_exec_ms": 1.427,
+      "join_plan_ms": 2.117
+    },
+    {
+      "tables": 5,
+      "comma_plan_ms": 2.848,
+      "comma_exec_ms": 1.751,
+      "join_plan_ms": 2.949
+    },
+    {
+      "tables": 6,
+      "comma_plan_ms": 4.815,
+      "comma_exec_ms": 2.171,
+      "join_plan_ms": 5.007
+    },
+    {
+      "tables": 7,
+      "comma_plan_ms": 9.948,
+      "comma_exec_ms": 2.957,
+      "join_plan_ms": 9.195
+    },
+    {
+      "tables": 8,
+      "comma_plan_ms": 23.075,
+      "comma_exec_ms": 3.637,
+      "join_plan_ms": 20.374
+    },
+    {
+      "tables": 9,
+      "comma_plan_ms": 57.947,
+      "comma_exec_ms": 3.879,
+      "join_plan_ms": 24.034
+    },
+    {
+      "tables": 10,
+      "comma_plan_ms": 162.613,
+      "comma_exec_ms": 4.566,
+      "join_plan_ms": 25.397
+    },
+    {
+      "tables": 11,
+      "comma_plan_ms": 466.018,
+      "comma_exec_ms": 4.908,
+      "join_plan_ms": 25.459
+    },
+    {
+      "tables": 12,
+      "comma_plan_ms": 83.181,
+      "comma_exec_ms": 5.277,
+      "join_plan_ms": 26.69
+    },
+    {
+      "tables": 13,
+      "comma_plan_ms": 99.927,
+      "comma_exec_ms": 5.763,
+      "join_plan_ms": 30.587
+    },
+    {
+      "tables": 14,
+      "comma_plan_ms": 114.014,
+      "comma_exec_ms": 6.39,
+      "join_plan_ms": 38.298
+    }
+  ],
+  "settings": {
+    "geqo_threshold": "12",
+    "join_collapse_limit": "8",
+    "from_collapse_limit": "8"
+  },
+  "mysql": {
+    "order_by_id": {
+      "ms": 3.8,
+      "access": "Index lookup on events using events_user_id_idx"
+    },
+    "order_by_seq": {
+      "ms": 11161.0,
+      "access": "Index scan on events using events_seq_idx"
+    },
+    "order_by_seq_off": {
+      "ms": 18.0,
+      "access": "Index lookup on events using events_user_id_idx"
+    }
+  },
+  "mysql_version": "8.4.11"
+}

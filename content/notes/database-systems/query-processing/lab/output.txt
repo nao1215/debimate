@@ -1,115 +1,78 @@
-PostgreSQL 17.11 (Debian 17.11-1.pgdg13+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
-== selectivity: no extended statistics
--- country only
-                                     QUERY PLAN                                     
-------------------------------------------------------------------------------------
- Seq Scan on users  (cost=0.00..180.00 rows=100 width=10) (actual rows=100 loops=1)
-   Filter: (country = 'JP'::text)
-   Rows Removed by Filter: 9900
-(3 rows)
+PostgreSQL 18.6
+## 1. ORDER BY id LIMIT n（利用者 1、行は id の末尾に固まる）
+LIMIT      1:   328.906 ms  Index Scan using events_pkey
+LIMIT     10:   507.939 ms  Index Scan using events_pkey
+LIMIT    100:   658.038 ms  Index Scan using events_pkey
+LIMIT   1000:   249.418 ms  Parallel Index Scan using events_pkey
+LIMIT   3000:     3.345 ms  Bitmap Heap Scan
+LIMIT  10000:     4.082 ms  Bitmap Heap Scan
+LIMIT     なし:     3.177 ms  Bitmap Heap Scan
+-- LIMIT 1 の実行計画
+Limit  (cost=0.43..21.60 rows=1 width=14) (actual time=452.919..452.922 rows=1.00 loops=1)
+  ->  Index Scan using events_pkey on events  (cost=0.43..169379.43 rows=8000 width=14) (actual time=452.917..452.918 rows=1.00 loops=1)
+        Filter: (user_id = 1)
+        Rows Removed by Filter: 4990000
+        Index Searches: 1
+Planning Time: 0.731 ms
+Execution Time: 452.953 ms
+-- 比べて捨てられた方の計画（主キーの索引を使えなくした時に選ばれる）
+SET
+Limit  (cost=17490.21..17490.21 rows=1 width=14)
+  ->  Sort  (cost=17490.21..17510.21 rows=8000 width=14)
+        Sort Key: id
+        ->  Bitmap Heap Scan on events  (cost=90.43..17450.21 rows=8000 width=14)
+              Recheck Cond: (user_id = 1)
+              ->  Bitmap Index Scan on events_user_id_idx  (cost=0.00..88.43 rows=8000 width=0)
+                    Index Cond: (user_id = 1)
 
--- city only
-                                     QUERY PLAN                                     
-------------------------------------------------------------------------------------
- Seq Scan on users  (cost=0.00..180.00 rows=100 width=10) (actual rows=100 loops=1)
-   Filter: (city = '東京'::text)
-   Rows Removed by Filter: 9900
-(3 rows)
+## 2. 同じ SQL で利用者だけを変える
+user_id = 500:     0.058 ms  捨てた行       497  見積もった行 4972
+Limit  (cost=0.43..34.50 rows=1 width=14) (actual time=0.075..0.076 rows=1.00 loops=1)
+  ->  Index Scan using events_pkey on events  (cost=0.43..169379.43 rows=4972 width=14) (actual time=0.073..0.074 rows=1.00 loops=1)
+        Filter: (user_id = 500)
+        Rows Removed by Filter: 497
+        Index Searches: 1
+Planning Time: 0.613 ms
+Execution Time: 0.105 ms
+user_id =   1:   340.673 ms  捨てた行 4,990,000  見積もった行 8000
+利用者 1 の最初の id: 4990001
 
--- country AND city
-                                    QUERY PLAN                                    
-----------------------------------------------------------------------------------
- Seq Scan on users  (cost=0.00..205.00 rows=1 width=10) (actual rows=100 loops=1)
-   Filter: ((country = 'JP'::text) AND (city = '東京'::text))
-   Rows Removed by Filter: 9900
-(3 rows)
+## 3. (user_id, id) の複合索引を足す
+LIMIT 1: 0.055 ms  Index Scan using events_user_id_id_idx
 
-== selectivity: with CREATE STATISTICS (dependencies)
--- country AND city
-                                     QUERY PLAN                                     
-------------------------------------------------------------------------------------
- Seq Scan on users  (cost=0.00..205.00 rows=100 width=10) (actual rows=100 loops=1)
-   Filter: ((country = 'JP'::text) AND (city = '東京'::text))
-   Rows Removed by Filter: 9900
-(3 rows)
+## 4. 関係のある 3 列の条件で見積もる行の数
+[before] 絞り込み: 見積もり 4 行 / 実際 1000 行  結合: 見積もり 8 行 / 実際 5000 行  30.1 ms
+[after] 絞り込み: 見積もり 997 行 / 実際 1000 行  結合: 見積もり 2077 行 / 実際 5000 行  18.7 ms
+pg_stats の n_distinct:
+city|1000
+pref|50
+region|5
 
-== plan: default (planner choice)
-                                        QUERY PLAN                                         
--------------------------------------------------------------------------------------------
- Nested Loop  (cost=0.42..1277.50 rows=9985 width=8)
-   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
-         Filter: (country = 'JP'::text)
-   ->  Index Scan using idx_orders_user_id on orders o  (cost=0.42..9.98 rows=100 width=8)
-         Index Cond: (user_id = u.id)
-(5 rows)
+## 5. 結合する表の数と、計画を作る時間
+ 2 表: FROM に並べる 計画      1.2 ms 実行    0.6 ms / JOIN で書く 計画    1.2 ms
+ 3 表: FROM に並べる 計画      1.5 ms 実行    1.0 ms / JOIN で書く 計画    1.6 ms
+ 4 表: FROM に並べる 計画      2.1 ms 実行    1.4 ms / JOIN で書く 計画    2.1 ms
+ 5 表: FROM に並べる 計画      2.8 ms 実行    1.8 ms / JOIN で書く 計画    2.9 ms
+ 6 表: FROM に並べる 計画      4.8 ms 実行    2.2 ms / JOIN で書く 計画    5.0 ms
+ 7 表: FROM に並べる 計画      9.9 ms 実行    3.0 ms / JOIN で書く 計画    9.2 ms
+ 8 表: FROM に並べる 計画     23.1 ms 実行    3.6 ms / JOIN で書く 計画   20.4 ms
+ 9 表: FROM に並べる 計画     57.9 ms 実行    3.9 ms / JOIN で書く 計画   24.0 ms
+10 表: FROM に並べる 計画    162.6 ms 実行    4.6 ms / JOIN で書く 計画   25.4 ms
+11 表: FROM に並べる 計画    466.0 ms 実行    4.9 ms / JOIN で書く 計画   25.5 ms
+12 表: FROM に並べる 計画     83.2 ms 実行    5.3 ms / JOIN で書く 計画   26.7 ms
+13 表: FROM に並べる 計画     99.9 ms 実行    5.8 ms / JOIN で書く 計画   30.6 ms
+14 表: FROM に並べる 計画    114.0 ms 実行    6.4 ms / JOIN で書く 計画   38.3 ms
+設定: {'geqo_threshold': '12', 'join_collapse_limit': '8', 'from_collapse_limit': '8'}
 
-== plan 1: seq scan orders, hash join
-                               QUERY PLAN                               
-------------------------------------------------------------------------
- Hash Join  (cost=181.25..18213.36 rows=9985 width=8)
-   Hash Cond: (o.user_id = u.id)
-   ->  Seq Scan on orders o  (cost=0.00..15406.00 rows=1000000 width=8)
-   ->  Hash  (cost=180.00..180.00 rows=100 width=4)
-         ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
-               Filter: (country = 'JP'::text)
-(6 rows)
-
-   plan    | total_cost | median_ms 
------------+------------+-----------
- Hash Join |   18213.36 |     149.0
-(1 row)
-
-== plan 2: filter users, index lookup (nested loop)
-                                        QUERY PLAN                                         
--------------------------------------------------------------------------------------------
- Nested Loop  (cost=0.42..1277.50 rows=9985 width=8)
-   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
-         Filter: (country = 'JP'::text)
-   ->  Index Scan using idx_orders_user_id on orders o  (cost=0.42..9.98 rows=100 width=8)
-         Index Cond: (user_id = u.id)
-(5 rows)
-
-    plan     | total_cost | median_ms 
--------------+------------+-----------
- Nested Loop |    1277.50 |       3.4
-(1 row)
-
-== plan 3: sort both, merge join
-                                  QUERY PLAN                                  
-------------------------------------------------------------------------------
- Merge Join  (cost=128921.66..134022.01 rows=9985 width=8)
-   Merge Cond: (o.user_id = u.id)
-   ->  Sort  (cost=128738.34..131238.34 rows=1000000 width=8)
-         Sort Key: o.user_id
-         ->  Seq Scan on orders o  (cost=0.00..15406.00 rows=1000000 width=8)
-   ->  Sort  (cost=183.32..183.57 rows=100 width=4)
-         Sort Key: u.id
-         ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
-               Filter: (country = 'JP'::text)
-(9 rows)
-
-    plan    | total_cost | median_ms 
-------------+------------+-----------
- Merge Join |  134022.01 |     223.6
-(1 row)
-
-== orders_scattered: default (planner choice), then plan 2 forced
-                                    QUERY PLAN                                    
-----------------------------------------------------------------------------------
- Hash Join  (cost=181.25..18213.36 rows=10000 width=8)
-   Hash Cond: (o.user_id = u.id)
-   ->  Seq Scan on orders_scattered o  (cost=0.00..15406.00 rows=1000000 width=8)
-   ->  Hash  (cost=180.00..180.00 rows=100 width=4)
-         ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
-               Filter: (country = 'JP'::text)
-(6 rows)
-
-                                                   QUERY PLAN                                                    
------------------------------------------------------------------------------------------------------------------
- Nested Loop  (cost=0.42..21654.68 rows=10000 width=8)
-   ->  Seq Scan on users u  (cost=0.00..180.00 rows=100 width=4)
-         Filter: (country = 'JP'::text)
-   ->  Index Scan using idx_orders_scattered_user_id on orders_scattered o  (cost=0.42..213.75 rows=100 width=8)
-         Index Cond: (user_id = u.id)
-(5 rows)
-
+## 6. MySQL 8.4 で同じ形の SQL
+order_by_id: 3.8 ms  Index lookup on events using events_user_id_idx
+-> Limit: 1 row(s)  (cost=19785 rows=1) (actual time=2.89..2.89 rows=1 loops=1)
+    -> Index lookup on events using events_user_id_idx (user_id=1)  (cost=19785 rows=17998) (actual time=2.89..2.89 rows=1 loops=1)
+order_by_seq: 11161.0 ms  Index scan on events using events_seq_idx
+-> Limit: 1 row(s)  (cost=0.937 rows=0.999) (actual time=11161..11161 rows=1 loops=1)
+    -> Filter: (`events`.user_id = 1)  (cost=0.937 rows=0.999) (actual time=11161..11161 rows=1 loops=1)
+        -> Index scan on events using events_seq_idx  (cost=0.937 rows=693) (actual time=0.292..10869 rows=4.99e+6 loops=1)
+order_by_seq_off: 18.0 ms  Index lookup on events using events_user_id_idx
+-> Limit: 1 row(s)  (cost=18689 rows=1) (actual time=18..18 rows=1 loops=1)
+    -> Sort: `events`.seq, limit input to 1 row(s) per chunk  (cost=18689 rows=17998) (actual time=18..18 rows=1 loops=1)
+        -> Index lookup on events using events_user_id_idx (user_id=1)  (cost=18689 rows=17998) (actual time=2.84..16.9 rows=10000 loops=1)

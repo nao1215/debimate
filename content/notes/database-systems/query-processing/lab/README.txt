@@ -1,24 +1,29 @@
-Query Processing ノートの 2 枚の図（images/query_processing_selectivity.svg、
-images/query_processing_plan_cost.svg）の元になる PostgreSQL 17 の実測。
+Query Processing のノートの実験
 
-再現手順（Docker と postgres:17 のイメージが必要。約 30 秒）:
+PostgreSQL 18 と MySQL 8.4 を docker compose で動かし、次を測る。
 
-    ./run.sh > output.txt
-    uv run --with matplotlib python ../figures.py
+1. 500 万行の events で、ORDER BY id LIMIT n の n を変えた時の実行計画と実行時間
+   （利用者 1 の 10,000 行は id の末尾に固まり、他の利用者の行は全体に散らばる）
+2. 同じ SQL で利用者 500 と利用者 1 を比べる
+3. (user_id, id) の複合索引を足した時の実行時間
+4. 関係のある 3 列（city・pref・region）の条件で、見積もった行数と実際の行数
+   （CREATE STATISTICS の前と後）
+5. 1,000 行の表を 2〜14 個結合する SQL で、計画を作る時間
+   （FROM に表を並べる書き方と、JOIN で順に書く書き方）
+6. MySQL で同じ形の SQL（ORDER BY id と、id と同じ値の列 seq での ORDER BY）
 
-run.sh はコンテナ note-query-processing を起動し、ホストのポートは公開せずに
-docker exec で experiment.sql を流し、終了時に削除する。
+環境（2026-11-17 に実行）
+- docker compose v2、Python 3（標準ライブラリだけ）
+- postgres:18-alpine（PostgreSQL 18.6）、mysql:8.4（MySQL 8.4.11）
+- 設定はどちらも既定値。時間は 5 回（MySQL は 3 回）の中央値で、実行のたびにぶれる
 
-experiment.sql の内容:
-  - users 1 万件（country と city はどの値も 1%、東京の 100 件は全て JP）で、
-    country 単独・city 単独・両方の条件の推定と実際のレコード数を EXPLAIN ANALYZE で比べ、
-    CREATE STATISTICS (dependencies) を作った後の推定も取る。
-  - orders 100 万件（1 人 100 件、利用者ごとに連続）と結合する問い合わせで、
-    enable_* で他の結合方法を外して 3 候補（hash join / nested loop + index scan /
-    両方を整列した merge join）の見積もりコストと、EXPLAIN ANALYZE 5 回の実行時間の中央値を取る。
-    並列実行と JIT は切る。
-  - 比較用に、注文を利用者に散らして入れた orders_scattered での既定の計画と候補 2 のコスト。
+実行
+    cd lab
+    python3 run.py          # 10 分ほど。終わるとコンテナを消す（--keep で残す）
+    cd .. && python3 figures.py
 
-output.txt は PostgreSQL 17.11、32 コアの Linux での結果。selectivity の部分は再実行で一致する。
-結合の部分は ANALYZE の標本抽出で rows の推定と cost の小数がわずかに動き（例: rows=9985 と 9990）、
-実行時間はマシンと実行ごとに変わる。
+ファイル
+- pg_setup.sql・mysql_setup.sql: 表を作る SQL
+- run.py: 測定の手順
+- result.json: 全ての測定値（図はここから描く）
+- output.txt: 実行中に表示した行と実行計画

@@ -1,0 +1,11 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: qplab-postgres
+    environment:
+      POSTGRES_PASSWORD: lab
+  mysql:
+    image: mysql:8.4
+    container_name: qplab-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: lab

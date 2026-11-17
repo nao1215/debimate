@@ -201,7 +201,7 @@ zone map が効くのは、条件に使う列の値が塊ごとにまとまっ�
 
 ### 値の塊をまとめて処理する Vectorized Execution
 
-読む量を減らしても、読んだ値を CPU で計算する時間は掛かります。多くの RDB で、エグゼキュータ（executor）は、上の演算子が下の演算子に次の 1 行を要求する形で動きます（[Query Processing](/notes/database-systems/query-processing/#実行計画から行を引き出す実行器)）。1 行ごとに関数を呼ぶので、400 万行の合計なら、足し算 1 回のために関数呼び出しが 400 万回起きます。
+読む量を減らしても、読んだ値を CPU で計算する時間は掛かります。多くの RDB で、エグゼキュータ（executor）は、上の演算子が下の演算子に次の 1 行を要求する形で動きます（[Query Processing](/notes/database-systems/query-processing/#実行計画から行を引き出すエグゼキュータ)）。1 行ごとに関数を呼ぶので、400 万行の合計なら、足し算 1 回のために関数呼び出しが 400 万回起きます。
 
 Boncz 氏らの論文 [MonetDB/X100: Hyper-Pipelining Query Execution](https://www.cidrdb.org/cidr2005/papers/P19.pdf)（CIDR 2005）は、[MySQL](https://www.mysql.com/) で [TPC-H](https://www.tpc.org/tpch/)（分析処理のベンチマーク）の Query 1 を実行し、1 行ずつの処理のコストを計測しています。
 
