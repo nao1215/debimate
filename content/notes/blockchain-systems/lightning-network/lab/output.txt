@@ -1,7 +1,31 @@
-amount_sat  parts=1  parts=2  parts=4  parts=8  endpoint_bound
-    10,000   100.0%   100.0%   100.0%   100.0%          100.0%
-    30,000    99.1%    99.4%    99.5%    99.5%           99.7%
-   100,000    95.1%    96.1%    97.7%    97.9%           98.3%
-   300,000    69.7%    77.4%    82.5%    84.4%           87.3%
- 1,000,000    17.5%    27.3%    32.6%    38.6%           60.2%
- 3,000,000     0.8%     0.9%     2.1%     3.8%           21.3%
+== 1. alice opens 1,000,000 sat to bob
+{"capacity": 1000000, "local_balance": 996530, "remote_balance": 0, "commit_fee": 3140, "local_chan_reserve_sat": 10000, "remote_chan_reserve_sat": 10000, "csv_delay": 144, "commitment_type": "ANCHORS", "initiator": true}
+bob -> alice 1 sat: FAILED FAILURE_REASON_INSUFFICIENT_BALANCE
+alice max sendable to bob: 982000
+== 2. alice pays bob 10,000, then bob pays alice 5,000
+{"amt": 10000, "status": "SUCCEEDED", "failure_reason": "FAILURE_REASON_NONE", "fee_sat": 0, "attempts": 1, "elapsed_ms": 240}
+{"capacity": 1000000, "local_balance": 10000, "remote_balance": 986530, "commit_fee": 2810, "local_chan_reserve_sat": 10000, "remote_chan_reserve_sat": 10000, "csv_delay": 144, "commitment_type": "ANCHORS", "initiator": false}
+bob -> alice 5,000: FAILED FAILURE_REASON_INSUFFICIENT_BALANCE
+bob max sendable to alice: 0
+== 3. bob opens 500,000 sat to carol; alice pays carol via bob
+alice -> carol reachable max (before): 487000
+{"amt": 150000, "status": "SUCCEEDED", "failure_reason": "FAILURE_REASON_NONE", "fee_sat": 1, "attempts": 1, "elapsed_ms": 361, "ab_bob_local": 160001, "bc_bob_local": 346530, "bc_carol_local": 150000}
+{"amt": 150000, "status": "SUCCEEDED", "failure_reason": "FAILURE_REASON_NONE", "fee_sat": 1, "attempts": 1, "elapsed_ms": 368, "ab_bob_local": 310002, "bc_bob_local": 196530, "bc_carol_local": 300000}
+{"amt": 150000, "status": "SUCCEEDED", "failure_reason": "FAILURE_REASON_NONE", "fee_sat": 1, "attempts": 1, "elapsed_ms": 478, "ab_bob_local": 460003, "bc_bob_local": 46530, "bc_carol_local": 450000}
+{"amt": 150000, "status": "FAILED", "failure_reason": "FAILURE_REASON_NO_ROUTE", "fee_sat": 0, "attempts": 14, "elapsed_ms": 121394, "ab_bob_local": 460003, "bc_bob_local": 46530, "bc_carol_local": 450000}
+alice -> carol reachable max (after): 18750
+== 4. bob keeps an old channel.db, pays alice, restores it and force-closes
+bob -> alice 200,000: {"amt": 200000, "status": "SUCCEEDED", "failure_reason": "FAILURE_REASON_NONE", "fee_sat": 0, "attempts": 1, "elapsed_ms": 459}
+old state confirmed at height 120; alice is offline
+{"old_bob_local": 460003, "pay_back": {"amt": 200000, "status": "SUCCEEDED", "failure_reason": "FAILURE_REASON_NONE", "fee_sat": 0, "attempts": 1, "elapsed_ms": 459}, "honest_bob_local": 260003, "honest_alice_local": 736526, "bob_csv_delay": 144, "restored_bob_local": 460003, "broadcast_height": 120, "alice_back_height": 129, "close_type": "BREACH_CLOSE", "settled_balance_alice": 736526, "time_locked_balance_alice": 0, "alice_onchain_before": 98992300, "bob_onchain_before": 99492300, "alice_onchain_after": 99976529, "bob_onchain_after": 99492300, "timeline": [{"height": 129, "alice_onchain": 98992300, "bob_onchain": 99492300}, {"height": 130, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 131, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 132, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 133, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 134, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 135, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 136, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 137, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 138, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 139, "alice_onchain": 99976529, "bob_onchain": 99492300}, {"height": 140, "alice_onchain": 99976529, "bob_onchain": 99492300}]}
+== 5. force close (bob, b-c) vs cooperative close (carol, c-a)
+{"start_height": 147, "start_onchain": {"alice": 99976529, "bob": 99492300, "carol": 99792300}, "bc": {"capacity": 500000, "local_balance": 46530, "remote_balance": 450000, "commit_fee": 2810, "local_chan_reserve_sat": 5000, "remote_chan_reserve_sat": 5000, "csv_delay": 144, "commitment_type": "ANCHORS", "initiator": true}, "ca_capacity": 200000, "ca_carol_local": 196530, "ca_alice_local": 0, "bob_pending_at_start": {"total_limbo_balance": "506863", "pending_open_channels": [], "pending_closing_channels": [], "pending_force_closing_channels": [{"channel": {"remote_node_pub": "02a4552856d9b78266de45c8360426836526d8bb16cf2fc8d2b40f34eb81e943db", "channel_point": "bab73183af068d3be6b867c731136473ffa61a8e598514b0306c66a749d5a8ea:0", "capacity": "1000000", "local_balance": "460003", "remote_balance": "536526", "local_chan_reserve_sat": "0", "remote_chan_reserve_sat": "0", "initiator": "INITIATOR_REMOTE", "commitment_type": "ANCHORS", "num_forwarding_packages": "0", "chan_status_flags": "", "private": false, "memo": "", "custom_channel_data": ""}, "closing_txid": "391525c26ad5ce9f1f1469b0b983baeca6783078b717146c7cff4d712d212e98", "limbo_balance": "460333", "maturity_height": 264, "blocks_til_maturity": 117, "recovered_balance": "0", "pending_htlcs": [], "anchor": "LIMBO"}], "waiting_close_channels": [{"channel": {"remote_node_pub": "02abf55a615c1acaae82594ce07678f58dcd1913df76f8de1291261b2f30e0099e", "channel_point": "5ead44fa93521b0d38adfe3a87efaa337c1db13220af259cbccac7282311a51c:0", "capacity": "500000", "local_balance": "46530", "remote_balance": "450000", "local_chan_reserve_sat": "5000", "remote_chan_reserve_sat": "5000", "initiator": "INITIATOR_LOCAL", "commitment_type": "ANCHORS", "num_forwarding_packages": "0", "chan_status_flags": "ChanStatusBorked|ChanStatusCommitBroadcasted|ChanStatusLocalCloseInitiator", "private": false, "memo": "", "custom_channel_data": ""}, "limbo_balance": "46530", "commitments": {"local_txid": "bd5d88ec0e0430e1990b8dc204db79220376652637
+{"height": 148, "alice": 99976529, "bob": 99492300, "carol": 99984800, "bob_blocks_til_maturity": 144, "bob_limbo": 46860}
+{"height": 149, "alice": 99976529, "bob": 99492300, "carol": 99984800, "bob_blocks_til_maturity": 143, "bob_limbo": 46860}
+{"height": 150, "alice": 99976529, "bob": 99492300, "carol": 100425493, "bob_blocks_til_maturity": 142, "bob_limbo": 46860}
+{"height": 290, "alice": 99976529, "bob": 99492300, "carol": 100425493, "bob_blocks_til_maturity": 2, "bob_limbo": 46860}
+{"height": 291, "alice": 99976529, "bob": 99492300, "carol": 100425493, "bob_blocks_til_maturity": 1, "bob_limbo": 46860}
+{"height": 292, "alice": 99976529, "bob": 99492300, "carol": 100425493, "bob_blocks_til_maturity": 0, "bob_limbo": 46860}
+{"height": 293, "alice": 99976529, "bob": 99532155, "carol": 100425493, "bob_blocks_til_maturity": null, "bob_limbo": 0}
+{"height": 294, "alice": 99976529, "bob": 99532155, "carol": 100425493, "bob_blocks_til_maturity": null, "bob_limbo": 0}
+{"height": 299, "alice": 99976529, "bob": 99532155, "carol": 100425493, "bob_blocks_til_maturity": null, "bob_limbo": 0}

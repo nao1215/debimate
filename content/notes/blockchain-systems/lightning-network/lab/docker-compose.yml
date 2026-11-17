@@ -1,0 +1,80 @@
+name: lnlab
+services:
+  bitcoind:
+    image: polarlightning/bitcoind:27.0
+    container_name: lnlab-bitcoind
+    command:
+      - bitcoind
+      - -regtest=1
+      - -server=1
+      - -txindex=1
+      - -fallbackfee=0.00001
+      - -rpcuser=lab
+      - -rpcpassword=lab
+      - -rpcbind=0.0.0.0
+      - -rpcallowip=0.0.0.0/0
+      - -zmqpubrawblock=tcp://0.0.0.0:28334
+      - -zmqpubrawtx=tcp://0.0.0.0:28335
+  alice:
+    image: lightninglabs/lnd:v0.18.4-beta
+    container_name: lnlab-alice
+    depends_on: [bitcoind]
+    command:
+      - --noseedbackup
+      - --alias=alice
+      - --externalip=alice
+      - --listen=0.0.0.0:9735
+      - --rpclisten=0.0.0.0:10009
+      - --bitcoin.active
+      - --bitcoin.regtest
+      - --bitcoin.node=bitcoind
+      - --bitcoind.rpchost=bitcoind
+      - --bitcoind.rpcuser=lab
+      - --bitcoind.rpcpass=lab
+      - --bitcoind.zmqpubrawblock=tcp://bitcoind:28334
+      - --bitcoind.zmqpubrawtx=tcp://bitcoind:28335
+      - --nobootstrap
+      - --trickledelay=1000
+      - --gossip.sub-batch-delay=1s
+  bob:
+    image: lightninglabs/lnd:v0.18.4-beta
+    container_name: lnlab-bob
+    depends_on: [bitcoind]
+    command:
+      - --noseedbackup
+      - --alias=bob
+      - --externalip=bob
+      - --listen=0.0.0.0:9735
+      - --rpclisten=0.0.0.0:10009
+      - --bitcoin.active
+      - --bitcoin.regtest
+      - --bitcoin.node=bitcoind
+      - --bitcoind.rpchost=bitcoind
+      - --bitcoind.rpcuser=lab
+      - --bitcoind.rpcpass=lab
+      - --bitcoind.zmqpubrawblock=tcp://bitcoind:28334
+      - --bitcoind.zmqpubrawtx=tcp://bitcoind:28335
+      - --nobootstrap
+      - --trickledelay=1000
+      - --gossip.sub-batch-delay=1s
+  carol:
+    image: lightninglabs/lnd:v0.18.4-beta
+    container_name: lnlab-carol
+    depends_on: [bitcoind]
+    command:
+      - --noseedbackup
+      - --alias=carol
+      - --externalip=carol
+      - --listen=0.0.0.0:9735
+      - --rpclisten=0.0.0.0:10009
+      - --bitcoin.active
+      - --bitcoin.regtest
+      - --bitcoin.node=bitcoind
+      - --bitcoind.rpchost=bitcoind
+      - --bitcoind.rpcuser=lab
+      - --bitcoind.rpcpass=lab
+      - --bitcoind.zmqpubrawblock=tcp://bitcoind:28334
+      - --bitcoind.zmqpubrawtx=tcp://bitcoind:28335
+      - --nobootstrap
+      - --trickledelay=1000
+      - --gossip.sub-batch-delay=1s

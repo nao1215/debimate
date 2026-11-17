@@ -1,21 +1,28 @@
-Lightning Network の支払い成功率シミュレーション
+Lightning Network のノートの実験
 
-Python 3.8 以降の標準ライブラリだけで実行できます。
-実際の Lightning ノード、Bitcoin のネットワーク、秘密鍵は使いません。
+regtest の Bitcoin Core と LND 3 台（alice・bob・carol）を docker compose で動かし、
+次を測る。実資産・公開ネットワークは使わない。
 
-    python3 simulate.py
+1. alice が bob へ 1,000,000 sat のチャネルを開いた直後に、受け取れる額と送れる額
+2. alice から 10,000 sat を受け取った bob が送れる額
+3. bob と carol の 500,000 sat のチャネルを経由して、alice が carol へ 150,000 sat ずつ払う
+4. bob が古い channel.db に戻して強制クローズし、alice が 9 ブロック遅れて戻る
+5. bob の強制クローズと carol の協調クローズで、資金を使えるまでのブロック数
 
-乱数の seed は 42 に固定しているので、同じ Python では同じ表が出ます。
-output.txt と result.json は Python 3.14 で実行した結果です。
-実行時間は手元の PC で 10 秒程度でした。
+環境（2026-11-17 に実行）
+- docker compose v2、Python 3（標準ライブラリだけ）
+- polarlightning/bitcoind:27.0（Bitcoin Core 27.0）
+- lightninglabs/lnd:v0.18.4-beta
+- 手数料率は regtest の既定値（fee_per_kw 2500）。本番の手数料とは違う
 
-モデルの単純化:
-- 200 ノードの合成グラフ。後から加わるノードが既存ノードと 2 本のチャネルを開く
-- チャネル容量は 10 万〜1,000 万 sat の対数一様分布、容量の内訳（片側の残高）は一様分布
-- 送り手は容量だけを知り、残高は知らない。容量が足りるホップ数最小の経路を選ぶ
-- 失敗した区間は次の試行から外し、1 つの部分につき 10 回まで試す
-- 分割は等分で、部分を順に送る。1 つでも届かなければ支払い全体を失敗とする
-- 手数料、cltv_expiry_delta、htlc_maximum_msat、HTLC の同時数の上限、
-  チャネルの reserve は無視する
+実行
+    cd lab
+    python3 run.py          # 10 分ほど。終わるとコンテナを消す（--keep で残す）
+    cd .. && python3 figures.py
 
-図は 1 つ上のディレクトリの figures.py が result.json から生成します。
+出力
+- result.json: 全ての測定値（図はここから描く）
+- output.txt: 実行中に表示した行
+
+送れる額は、払えない支払い（でたらめな payment_hash）を送って
+受取人まで届くかどうかで二分探索している（probe）。残高は動かない。

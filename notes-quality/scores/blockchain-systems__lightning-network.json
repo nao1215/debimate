@@ -1,9 +1,9 @@
 {
  "path": "content/notes/blockchain-systems/lightning-network/index.md",
- "overall": 3,
- "product": 24,
- "blob": "03b1d18c555147010cfb1d623f6a4bd6ea59437f",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 5,
+ "product": 54,
+ "blob": "dc20d92bc860a9780b47c0fce5f74b368b536245",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,

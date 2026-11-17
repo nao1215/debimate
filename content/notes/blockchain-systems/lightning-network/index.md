@@ -1,5 +1,5 @@
 ---
-title: "Lightning Network - 2 者の残高表をチェーンの外で書き換える支払い"
+title: "Lightning Network - チャネルの残高は、そのまま送れる額や受け取れる額にはならない"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]
@@ -9,73 +9,221 @@ wrapTables: true
 topics: ["Scaling"]
 ---
 
-毎朝のコーヒー代を [Bitcoin](https://bitcoin.org/) で払うと、1 杯ごとにトランザクションをブロックに入れることになります。ブロックは平均 10 分に 1 つしか作られず、手数料は金額ではなくトランザクションのデータ量で決まるため、数百円の支払いに数十分の確定待ちと見合わない手数料が付く場合があります。
+[Lightning Network](https://lightning.network/) は、[Bitcoin](https://bitcoin.org/) の支払いを 2 者の間で何度も繰り返し、そのたびにブロックへ記録せずに済ませる仕組みです。2 者はあらかじめ Bitcoin を「チャネル」に預け、2 人が署名した「残高の分け方」を書き換えることで支払います。チェーンに記録するのは、原則としてチャネルを開く時と閉じる時のトランザクションだけです。
 
-[Lightning Network](https://lightning.network/) は、2 者が共同で管理する Bitcoin を「チャネル」に預け、2 人だけが署名する残高表を何度も書き換えることで支払いを進めるネットワークです。チェーンに記録するのは、原則としてチャネルを開くトランザクションと閉じるトランザクションの 2 つだけです。
+ウォレットの画面では、チャネルの残高が銀行口座の残高のように表示されます。そのため、次のような前提を置きたくなります。
 
-複数のチャネルを経由すれば、直接チャネルを持たない相手にも支払えます。プロトコルは [BOLT（Basis of Lightning Technology）](https://github.com/lightning/bolts)という仕様群で定められています。
+- チャネルを開けば、その相手から支払いを受け取れる
+- 残高の分だけ送れる
+- 受け取った分は、すぐに送り返せる
+- 経路上のチャネルに十分な容量があれば、支払いは届く
+- 相手が応答しなくても、閉じればすぐに資金を使える
+- 自分に有利な古い状態で閉じれば、その額を手にできる
 
-以下は、チャネルの容量を 1 本の棒にして、開設から閉鎖までの 2 人の取り分を並べた図です。
+手元の regtest（自分の PC だけで動かす Bitcoin のテスト用チェーン）で、Lightning の実装である [LND](https://github.com/lightningnetwork/lnd) を 3 台動かして試すと、どれも成り立ちませんでした。下の図は、容量 1,000,000 sat のチャネルを開いた直後と、10,000 sat を受け取った直後に測った値です。sat（satoshi）は 1 億分の 1 BTC を表す単位です。
 
-{{< figure src="images/lightning-network_concept.svg" alt="チャネルの容量を表す棒の長さはどの段階でも同じで、更新のたびに Alice と Bob の分割点だけが動く。チェーンの列に印が付くのは開設と閉鎖の 2 回だけで、途中の更新はチェーンに載らない" caption="開設から閉鎖までのチャネルの取り分" align="center" >}}
+{{< figure src="images/ln_cover.webp" alt="容量 1,000,000 sat のチャネル。開いた直後の alice はチャネルの残高 996,530 sat に対して送れる額は 982,000 sat、受け取れる額は 0 sat。10,000 sat を受け取った bob はチャネルの残高 10,000 sat に対して送れる額は 0 sat" caption="チャネルの残高と、送れる額・受け取れる額（regtest の LND で実測）" align="center" >}}
 
-図のように、2 人の取り分は何度変わっても、チェーンが目にするのは最初と最後のトランザクションだけです。しかし、Bob が署名した古い残高表は Alice の手元に残っており、チェーンにはそれが古いかどうかを判断する材料がありません。チェーンに書かないのに、なぜ持ち逃げできないのでしょうか。
+チャネルを開いた alice は 982,000 sat までしか送れず、受け取れる額は 0 でした。10,000 sat を受け取った bob は、1 sat も送り返せません。
+
+Lightning で支払いを受け付けようとする開発者は、ノードを立ててチャネルを開いた直後に、この 0 に出会いやすくなっています。テストの支払いが `FAILURE_REASON_INSUFFICIENT_BALANCE` や `FAILURE_REASON_NO_ROUTE` で失敗し、残高は十分に見えるのに理由が分からない、という形です。
 
 <br>
 
-本記事では、Bitcoin 上の Lightning Network が、チェーンの外の残高更新を Bitcoin のルールで強制する仕組みを説明します。次の疑問を順に扱います。
-
-- チャネルの開設・更新・閉鎖で、チェーンには何が記録されるのか。
-- 古い残高表を出す不正は、どのように罰せられるのか。なぜチャネルを見張り続ける必要があるのか。
-- 直接チャネルが無い相手への支払いで、中継者の持ち逃げをどう防ぐのか。
-- チャネルの残高の偏りは、支払いの成功率にどう影響するのか。
-
-トランザクションの形は、[BOLT 3](https://github.com/lightning/bolts/blob/master/03-transactions.md) が定めるチャネル（[2-of-2 マルチシグ](../multisig/)の出力を使う形）を前提に説明します。出力の考え方は [UTXO](../utxo/)、出力に付ける条件の書き方は [Bitcoin Script](../bitcoin-script/) で説明しています。
+本記事では、Lightning で支払いを受け付けたい人と、ノードを運用する人に向けて、上の 6 つの前提が外れる理由を同じ実験で上から順に説明します。先にチャネルの残高が何に守られているかを示し、最後にオンチェーンの送金やカストディ型のウォレットと比べます。
 
 ---
 
-### チャネルが必要な理由
+### チャネルとコミットメントトランザクション
 
-通常の Bitcoin の送金は、全てのノードに伝わり、各ノードの [mempool](../mempool/) で待ち、マイナーがブロックに入れて初めて記録されます。手数料はデータ量あたりの単価で競うため、1 万円の送金と 300 円の送金で大きくは変わりません。ブロックに入った後も、[Finality](../finality/) の観点では承認数を待ちます。
+チャネルを開く側は、2 人の署名が揃わないと使えない出力に Bitcoin を送ります。2 人のうち 2 人の署名を求める [2-of-2 のマルチシグ](../multisig/)です。このトランザクションを開設トランザクション（funding transaction）と呼び、チャネルの容量は、ここに預けた額で決まります。
 
-この待ちと手数料を避けるだけなら、事業者の帳簿で残高を付け替える方法もあります。しかし、事業者が出金を止めれば、利用者は資金を取り戻せません。小額の支払いを繰り返す仕組みに必要なのは、次の 3 つを同時に満たすことです。
+預けた額をどう分けるかを書いたトランザクションは、[コミットメントトランザクション（commitment transaction）](https://github.com/lightning/bolts/blob/master/03-transactions.md)と呼ばれます。「alice に 900,000 sat、bob に 100,000 sat」のように開設トランザクションの出力を分けるもので、相手の[署名](../digital-signature/)を付けて各自が持っています。どちらも、いつでも自分の分をチェーンに出してチャネルを閉じられます。
 
-- 支払いのたびにブロックを待たない。
-- 相手や中継者を信用しなくても、自分の残高を一方的に取り戻せる。
-- 最後の分配は、Bitcoin のルールで強制できる。
+開く側は、開設トランザクションをチェーンに出す前に、預けた額を自分に戻す最初のコミットメントトランザクションへ相手の署名をもらっておきます。相手が応答しなくなっても、預けた資金が閉じ込められないようにするためです。
 
-Lightning Network は、1 つ目をチェーンに書かないことで、残りを「いつでもチェーンに出せる署名済みのトランザクション」を持つことで満たします。
+本記事では、コミットメントトランザクションが表す残高の分け方をチャネルの状態とも呼びます。
 
----
+支払いのたびに、2 人は新しいコミットメントトランザクションに署名し合い、古い状態を失効させます。失効させた状態をチェーンに出すと、出した側が残高を失います。
 
-### チャネルの開設・更新・閉鎖
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
+flowchart LR
+    F["開設トランザクション<br/>2-of-2 に 1,000,000 sat"]:::chain --> S1["状態 1（失効）<br/>alice 996,530 / bob 0"]
+    S1 -->|支払い| S2["状態 2（失効）<br/>alice 986,530 / bob 10,000"]
+    S2 -->|支払い| S3["状態 3（最新）"]
+    S3 --> C["閉じるトランザクション"]:::chain
+    classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
+    classDef chain fill:#f2f2f2,stroke:#666666,color:#1f1f1f;
+    classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
+```
 
-開設では、資金を出す側（BOLT では funder）が funding transaction を作ります。このトランザクションの出力は「2 人とも署名した時だけ使える」2-of-2 のマルチシグで、預けた資金は片方の[デジタル署名](../digital-signature/)だけでは動かせません。
+灰色で描いた 2 つだけがチェーンに載り、間の状態はチェーンに出さずに書き換えていきます。プロトコルは [BOLT（Basis of Lightning Technology）](https://github.com/lightning/bolts)という仕様群で定められていて、LND のほかに [Core Lightning](https://github.com/ElementsProject/lightning) や [Eclair](https://github.com/ACINQ/eclair) などの実装があります。仕組みの元になったのは、2016 年に Joseph Poon と Thaddeus Dryja が公開した[論文](https://lightning.network/lightning-network-paper.pdf)です。
 
-funder は funding transaction をチェーンに出す前に、その資金を自分に払い戻すトランザクションに、相手の署名をもらいます。そのため、相手が応答しなくなっても資金は閉じ込められません。
+<br>
 
-更新で書き換える残高表の正体は、funding transaction の出力を入力にし、「Alice に何 sat、Bob に何 sat」という出力を持つ commitment transaction です。sat（satoshi）は Bitcoin の最小単位で、1 BTC の 1 億分の 1 です。
-
-例えば、容量 1,000,000 sat のチャネルで Alice が 3,000 sat のコーヒー代を払うと、手数料などを除けば「Alice 997,000 / Bob 3,000」とした新しい commitment transaction に 2 人が署名し直します。このトランザクションは手元に置くだけで、通常はチェーンに出しません。
-
-閉鎖には 2 通りあります。協調 close（mutual close）は、2 人が最終残高で分配する closing transaction に合意して出す方法で、[BOLT 2](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#channel-close) では資金をすぐに使え、手数料も抑えられます。一方的 close（unilateral close）は、相手が応答しない時に、手元の最新の commitment transaction を片方だけで出す方法です。
-
-| 段階 | チェーンに載るもの | チェーンに載らないもの |
-| --- | --- | --- |
-| 開設 | funding transaction（2-of-2 の出力） | 払い戻し用の commitment transaction への署名 |
-| 更新 | なし | 新しい commitment transaction と、古い残高表を取り消す秘密 |
-| 協調 close | 最終残高を分ける closing transaction | 途中の支払いの履歴 |
-| 一方的 close | 最新の commitment transaction と、その出力の払い出し | 途中の支払いの履歴 |
-
-一方的 close でも、チェーンに出るのは最後の 1 枚です。その中の更新の番号も、開設時に交換した値を使った排他的論理和（XOR）で隠されており、外からは更新の回数が読めません。
+実験は、Bitcoin Core と LND 3 台（alice・bob・carol）を docker compose で動かし、[lab/run.py](lab/run.py) で各手順を流しました。手順と環境は [lab/README.txt](lab/README.txt)、全ての測定値は [lab/result.json](lab/result.json) にあります。
 
 ---
 
-### 古い残高表を出した時の罰
+### 受け取れる額は相手の残高で決まる
 
-Alice は、手元にある古い commitment transaction を一方的に出すこともできます。Bob の署名は本物なので、Bitcoin のノードはそのトランザクションを有効と判断します。Lightning Network は、古い残高表を出すことを禁止するのではなく、出すと損をする形にして防ぎます。
+alice が bob へ 1,000,000 sat のチャネルを開いた直後、bob から alice へ 1 sat を払うと、`FAILURE_REASON_INSUFFICIENT_BALANCE` で失敗しました。
 
-そのために、2 人は同じ残高を別々の commitment transaction として持ちます。Alice が持つ commitment transaction では、Alice 自身に払う出力（to_local）に、BOLT 3 が定める次の[条件](https://github.com/lightning/bolts/blob/master/03-transactions.md#to_local-output)が付きます。
+チャネルでの支払いは、状態の上で払う側の残高を減らし、受け取る側の残高を増やす操作です。開いた直後の状態は「alice 996,530 / bob 0」なので、bob の残高から alice へ動かせる額はありません。alice が受け取れる額は、相手である bob の残高で決まります。
+
+自分の残高で送れる額を outbound liquidity、相手の残高で受け取れる額を inbound liquidity と呼びます。本記事では英語のまま使います。自分でチャネルを開くと outbound liquidity だけが増え、inbound liquidity は 0 から始まります。
+
+支払いを受け付けるお店やサービスにとっては、売上の上限が inbound liquidity で決まることになります。増やす方法は、どれも相手側に残高を作る操作です。
+
+| 増やす方法 | 相手側に残高ができる理由 |
+| --- | --- |
+| 他のノードに、自分へ向けたチャネルを開いてもらう | 開いた相手が預けた分が相手側に乗る |
+| 自分の残高を使って、先に何かを支払う | 払った分が相手側へ移る |
+| 開く時に push_amt で、相手側へ初めから残高を渡す | 渡した分が相手側に乗る |
+| [Lightning Pool](https://lightning.engineering/pool/) で、チャネルを開いてもらう権利を買う | 売り手が預けた分が相手側に乗る |
+| [Lightning Loop](https://lightning.engineering/loop/) の Loop Out で、払った額をオンチェーンで受け取る | 事業者へ払った分が相手側へ移る |
+
+Pool と Loop は、相手側に Bitcoin を置いてもらう代わりに手数料が掛かります。
+
+---
+
+### 送れる額は残高より少ない
+
+チャネルを開いた alice の残高は、預けた 1,000,000 sat ではなく 996,530 sat でした。閉じるトランザクションに掛かる手数料と、anchor と呼ぶ 330 sat ずつの小さな出力 2 つ分は開いた側が負担し、あらかじめ残高から差し引かれます。
+
+送れる上限は、さらに少ない 982,000 sat でした。差の 14,530 sat のうち 10,000 sat はチャネルリザーブ（channel reserve）で、相手が「これだけは手元に残しておくこと」と求める額です。
+
+[BOLT #2](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md) は容量の 1% を推奨していて、今回の LND も 1,000,000 sat に対して 10,000 sat を求めました。残りの 4,530 sat は、手数料率が上がった時や、次の節で説明する HTLC の出力が支払いの途中でコミットメントトランザクションに加わる時に備えて、LND が空けておく分です。この分は、現在の手数料率を 2 倍にし、送る HTLC に加えてもう 1 つ出力を足したコミットメントトランザクションの大きさで見積もると [LND のソースコード](https://github.com/lightningnetwork/lnd/blob/v0.18.4-beta/lnwallet/channel.go#L3586-L3602)にあります。
+
+<br>
+
+送れる上限は、払えない支払いを送って二分探索しました。受取人が知らない payment_hash を付けた支払いは、受取人まで届けば「その支払いは知らない」という理由で失敗し、途中で残高が足りなければ別の理由で失敗します。どちらでも残高は動きません。payment_hash は次の節で説明する、支払いを受け取るための鍵になる値です。
+
+```python
+def probe(payer, dest, amt):
+    r = ln(payer, "sendpayment", "--dest", PUB[dest], "--amt", str(amt),
+           "--payment_hash", secrets.token_hex(32), "--final_cltv_delta", "40",
+           "--json", "--timeout", "30s", check=False)
+    return r.get("failure_reason") == "FAILURE_REASON_INCORRECT_PAYMENT_DETAILS"
+
+
+def max_reachable(payer, dest, lo, hi):
+    while hi - lo > 1:
+        mid = (lo + hi) // 2
+        if probe(payer, dest, mid):
+            lo = mid
+        else:
+            hi = mid
+    return lo
+```
+
+`ln` は `docker exec` で各ノードの `lncli` を呼び、JSON を返す補助関数です。`--final_cltv_delta` は次の節で説明する HTLC に付ける期限で、支払いと一緒に指定した値です。上限の測り方には関わらないので、ここでは読み飛ばしてかまいません。
+
+この二分探索を他人のチャネルに使うと、公開されていない残高を外から推測できます。この手法はプロービング（probing）と呼ばれます。
+
+<br>
+
+bob 側のチャネルリザーブも 10,000 sat です。alice から 10,000 sat を受け取った bob は、残高がちょうどチャネルリザーブに届いただけなので、5,000 sat を返そうとすると `FAILURE_REASON_INSUFFICIENT_BALANCE` で失敗しました。BOLT #2 は、開いた直後はリザーブを満たしていない側があることを認め、受け取ってリザーブに届いた後は下回らないように求めています。チャネルリザーブが何のためにあるかは、古い状態を出す実験で分かります。
+
+---
+
+### 直接チャネルが無い相手への支払い
+
+チャネルを開いた相手にしか払えないなら、支払う相手ごとにチャネルが必要です。Lightning では、他のノードが持つチャネルを順に経由して払えます。経由するノードをルーティングノードと呼びます。
+
+途中のノードが受け取った分を持ち逃げしないように、各チャネルで条件付きの支払いを使います。HTLC（Hashed Time-Locked Contract）と呼ばれる条件で、「ある値を示せば受け取れる。期限を過ぎたら払った側に戻る」というものです。この値をプリイメージ（preimage）と呼び、受取人が[インボイス（invoice、請求書）](https://github.com/lightning/bolts/blob/master/11-payment-encoding.md)を作る時に[乱数](../../security/random-number/)で選びます。インボイスに載せるのは、プリイメージから [SHA-256](../../security/sha-256/) で求めた[ハッシュ値](../hash-function/)である payment_hash だけです。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
+sequenceDiagram
+    participant A as alice
+    participant B as bob
+    participant C as carol
+    C-->>A: インボイス（payment_hash と金額）
+    A->>B: HTLC：プリイメージを示せば 150,001 sat
+    B->>C: HTLC：プリイメージを示せば 150,000 sat
+    C->>B: プリイメージを示して受け取る
+    B->>A: 同じプリイメージを示して受け取る
+    Note over A,C: bob の残高は 1 sat の手数料だけ増える
+```
+
+carol がプリイメージを示して受け取ると bob はその値を知り、同じ値を alice に示して受け取れます。bob が carol へ払わなければ carol はプリイメージを明かさないので、bob は alice からも受け取れません。
+
+経路の情報は、[Tor](../../security/tor/) と同じ考え方のオニオンルーティング（[BOLT #4](https://github.com/lightning/bolts/blob/master/04-onion-routing.md)）で包んで送ります。bob が知るのは、直前の alice と直後の carol だけです。
+
+期限は、bob が受け取る HTLC の方が、bob が払う HTLC より遅く切れるように設定します。carol が期限の間際にプリイメージを明かしても、bob が alice から受け取る時間を残すためです。今回の bob は、この差を 80 ブロックに設定していました。差の決め方は、チェーンの組み替え（[Finality](../finality/) で扱う reorg）や相手の応答待ちを足し合わせる形で [BOLT #2](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection) に示されていて、迷うなら差を 34 ブロック以上にするよう勧めています。
+
+<br>
+
+次の図は、bob が carol へ 500,000 sat のチャネルを開いた後、alice が bob 経由で carol へ 150,000 sat ずつ 4 回払った時の、2 つのチャネルの残高です。
+
+{{< figure src="images/ln_route.webp" alt="alice と bob のチャネルでは支払いのたびに bob 側が 150,001 sat ずつ増え、bob と carol のチャネルでは bob 側が 150,000 sat ずつ減る。3 回目の後に bob と carol のチャネルで bob 側は 46,530 sat になり、4 回目の 150,000 sat は届かない" caption="alice から bob 経由で carol へ 150,000 sat ずつ払った時の残高" align="center" >}}
+
+1 回の支払いで、2 つのチャネルの境目が同時に動きます。alice と bob のチャネルでは bob 側が増え、bob と carol のチャネルでは bob 側が減ります。bob の手数料は、基本料 1,000 msat（1 sat）に金額の 100 万分の 1 を足す設定だったので、150,000 sat の支払いで 1 sat でした。手数料の設定は、各ノードが [BOLT #7](https://github.com/lightning/bolts/blob/master/07-routing-gossip.md#the-channel_update-message) の channel_update で公開します。1 回の支払いに掛かった時間は、lncli の実行を含めて 0.36〜0.48 秒です。
+
+4 回目は `FAILURE_REASON_NO_ROUTE` で失敗しました。run.py が記録した 4 回目の結果は次の通りです。
+
+```json
+{
+  "amt": 150000,
+  "status": "FAILED",
+  "failure_reason": "FAILURE_REASON_NO_ROUTE",
+  "attempts": 14,
+  "elapsed_ms": 121394,
+  "bc_bob_local": 46530
+}
+```
+
+`attempts` は LND が試した HTLC の数、`elapsed_ms` は支払いの開始から失敗までの時間、`bc_bob_local` は bob と carol のチャネルに残っていた bob 側の残高です。LND は 14 個の HTLC を試し、121 秒を使った後に諦めています。
+
+<br>
+
+alice は、bob と carol を結ぶチャネルの容量が 500,000 sat であることを知っていました。ノードはチャネルの存在と容量を互いに知らせ合いますが、どちら側にいくらあるかは知らせないからです。
+
+3 回目の後、bob 側には 46,530 sat しか残っておらず、そこから容量 500,000 sat の 1% で決まる bob 側のチャネルリザーブ 5,000 sat も引かれます。容量の数字だけを見ると届きそうな支払いでも、経路上で一番少ない残高が上限になります。払う側は、それを試して失敗するまで知ることができません。
+
+<br>
+
+LND v0.18.4 の既定では、1 回の支払いを最大 16 個に分けて送る[マルチパス・ペイメント（multi-part payment）](https://github.com/lightning/bolts/blob/master/04-onion-routing.md#basic-multi-part-payments)も使えます。受取人は合計が揃うまでプリイメージを明かさず、揃わなければ少なくとも 60 秒待って失敗として戻すよう推奨されています。
+
+分ければ、1 本の経路に収まらない額も複数の経路で届けられます。今回は経路が bob を通る 1 本だけなので、分けても bob 側の残高は超えられません。
+
+経路上の残高を分からない値として扱い、支払いが届く確率で経路を選ぶ研究もあります（[Pickhardt ら、2021](https://arxiv.org/abs/2103.08576)）。
+
+---
+
+### 閉じ方で変わる待ち時間
+
+チャネルを閉じる方法は 2 つあります。2 人が合意して最新の残高どおりに分けるトランザクションを作る[協調クローズ（cooperative close）](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#channel-close)と、片方が手元のコミットメントトランザクションをチェーンに出す強制クローズ（force close）です。協調クローズは 1 つのトランザクションで済むので、手数料も抑えられます。相手が応答しない時は、強制クローズしか方法がありません。
+
+比べるために、carol から alice へ 200,000 sat のチャネルを新たに開きました。そのうえで bob が carol とのチャネルを強制クローズし、同時に carol が alice とのチャネルを協調クローズしました。閉じる指示を出してから、それぞれの資金がオンチェーンの残高に入るまでのブロック数は次の通りです。
+
+{{< figure src="images/ln_close.webp" alt="閉じる指示を出してからオンチェーンの残高に入るまで、carol の協調クローズは 1 ブロック、bob の強制クローズで carol が受け取る相手の分は 3 ブロック、強制クローズした bob 自身の分は 146 ブロック" caption="閉じ方と立場ごとに、資金を使えるまでのブロック数" align="center" >}}
+
+強制クローズした bob 自身の分は、146 ブロック待ちました。Bitcoin のブロックは平均 10 分に 1 つなので、本番なら約 1 日です。
+
+コミットメントトランザクションの中で、自分の残高を受け取る出力には `OP_CHECKSEQUENCEVERIFY` という時間の条件が付いていて、出した側は指定のブロック数が経つまで使えません。[Bitcoin Script](../bitcoin-script/) で書かれた[条件](https://github.com/lightning/bolts/blob/master/03-transactions.md#to_local-output)で、指定のブロック数を to_self_delay と呼びます。to_self_delay は、チャネルを開く時に相手側が指定する値です。
+
+今回の値は 144 ブロックで、コミットメントトランザクションがブロックに入るまでの 1 ブロックと、待ち明けに LND がウォレットへ移すトランザクションの 1 ブロックを足して 146 になりました。
+
+一方、受け取る側の carol は 3 ブロックで使えました。今回のチャネルは anchor outputs という形式で、相手の分にも 1 ブロックの待ちが付き、LND がウォレットへ移す分を足して 3 ブロックです。長く待たされるのは、自分の状態を出した側だけです。
+
+<br>
+
+出した側を待たせるのは、出された状態が最新かどうかを相手が調べる時間を作るためです。bob が古い状態を出していたら、carol はこの 144 ブロックの間に対応できます。その対応を試したのが次の実験です。
+
+---
+
+### 古い状態で閉じると全額を失う
+
+同じ状態でも、alice が持つコミットメントトランザクションと bob が持つものは別物です。待ち時間の条件は、それぞれ持ち主自身の残高を受け取る出力にだけ付いています。
+
+状態を新しくする時、2 人は BOLT #2 の revoke_and_ack というメッセージで、古い状態を失効させる秘密の値（per_commitment_secret）を相手に渡します。この値と自分の鍵が揃うと、[失効鍵（revocation key）](https://github.com/lightning/bolts/blob/master/03-transactions.md#revocationpubkey-derivation)の秘密鍵を計算できます。
+
+失効させた状態がチェーンに出ると、相手はこの鍵を使い、出した側の残高を待ち時間の間に自分のものにできます。この時に出すトランザクションは、ペナルティトランザクション（penalty transaction）と呼ばれます。[原論文](https://lightning.network/lightning-network-paper.pdf)では Breach Remedy Transaction と呼ばれ、扱い方は [BOLT #5](https://github.com/lightning/bolts/blob/master/05-onchain.md#revoked-transaction-close-handling) にあります。
+
+自分の残高を受け取る出力（to_local）の条件は、[BOLT #3](https://github.com/lightning/bolts/blob/master/03-transactions.md#to_local-output) で次のように決まっています。
 
 ```text
 OP_IF
@@ -90,283 +238,114 @@ OP_ENDIF
 OP_CHECKSIG
 ```
 
-`OP_ELSE` の分岐は、トランザクションがブロックに入ってから `to_self_delay` ブロックが経つまで、Alice が自分の出力を使えないことを表します。`OP_IF` の分岐は、revocation key（取り消し鍵）に対応する秘密鍵を持つ者なら、待たずに使えることを表します。この待ち時間を決めるのは相手の Bob で、チャネルを開く時に指定します。
+`OP_ELSE` の分岐は、持ち主が to_self_delay の後に自分の鍵で使う道です。`OP_IF` の分岐は、失効鍵を持つ相手が待たずに使う道で、ペナルティトランザクションは `OP_IF` の分岐を通ります。
 
-```mermaid
-%%{init: {"theme":"base","flowchart":{"nodeSpacing":22,"rankSpacing":30,"padding":8},"themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","fontSize":"15px"}}}%%
-flowchart LR
-    F["funding の出力<br/>2-of-2"] --> C["Alice が持つ<br/>commitment transaction"]
-    C --> L["to_local（Alice の分）"]
-    C --> R["to_remote（Bob の分）"]
-    L --> L1["Alice：to_self_delay<br/>ブロック後に使える"]
-    L --> L2["Bob：取り消し鍵があれば<br/>すぐに使える"]
-    R --> R1["Bob：to_self_delay を<br/>待たずに使える"]
-```
+実験では、経路の実験を終えた alice と bob のチャネルで、bob が古い状態を出す役になりました。この時点で bob の残高は、経路の図で 3 回目の後に示した 460,003 sat です。手順は次の通りです。
 
-図は Alice が持つ commitment transaction で、Bob が持つものは 2 人の役割を入れ替えた形です。チェーンに出した本人だけが自分の分を待たされ、相手は to_self_delay を待たずに受け取れます。なお、anchor outputs（option_anchors）を使うチャネルでは、to_remote にも 1 ブロックの待ちが付きます。
+1. bob を止め、チャネルの状態を保存した `channel.db` を写す。
+2. bob を動かし、alice へ 200,000 sat 払う。最新の残高は 260,003 sat になる。
+3. alice を止める。bob は写した `channel.db` に戻し、強制クローズする。
+4. alice を止めたまま、古い状態がブロックに入ってから 9 ブロック掘り、alice を動かす。
 
-取り消しは、更新のたびに行います。新しい commitment transaction に署名し合った後、Alice は古い方に使った per_commitment_secret という秘密を Bob に渡します（BOLT 2 の `revoke_and_ack`）。
-
-Bob はこの秘密と自分の秘密を組み合わせて、古い方の取り消し鍵の秘密鍵を計算できるようになります。[鍵の導出](https://github.com/lightning/bolts/blob/master/03-transactions.md#revocationpubkey-derivation)の形から、2 人の秘密が揃うまでは誰もこの秘密鍵を計算できません。
-
-Alice が取り消し済みの commitment transaction を出すと、Bob は `to_self_delay` の待ちが終わる前に、取り消し鍵で Alice の分を自分に送る penalty transaction を出します。
-
-Bob の分はもともと Bob に払われるので、[BOLT 5](https://github.com/lightning/bolts/blob/master/05-onchain.md#revoked-transaction-close-handling) の通り、チャネルの資金は全て Bob が請求できます。[Poon 氏と Dryja 氏の論文](https://lightning.network/lightning-network-paper.pdf)で Breach Remedy Transaction と呼ばれていたものです。
-
----
-
-### チャネルの監視と watchtower
-
-penalty transaction は、Bob が気付いて期限内に出した時だけ働きます。Bob が `to_self_delay` より長くオフラインだった場合、待ちが明けた Alice は古い残高のまま自分の分を持ち出せます。
-
-そのため、BOLT 5 は funding transaction を出したか、HTLC を含む commitment transaction に署名したノードに、出力が解決するまでチェーンを監視するよう求めています。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
-sequenceDiagram
-    participant A as Alice
-    participant C as Bitcoin のチェーン
-    participant B as Bob
-    A->>C: 取り消し済みの古い残高表を出す
-    Note over A,C: to_self_delay の間、<br/>Alice の分は動かせない
-    alt Bob が期限内に気付く
-        B->>C: 取り消し鍵で penalty transaction
-        Note over C,B: チャネルの資金は<br/>全て Bob に移る
-    else Bob が期限までオフライン
-        A->>C: 待ちが明けて自分の分を払い出す
-        Note over A,C: 古い残高のまま<br/>持ち出しが成立する
-    end
-```
-
-2 つの結末を分けるのは、Bob がチェーンを見ていたかどうかだけです。
-
-常時起動していないノードのために、監視を他者に頼む watchtower があります。ノード実装の 1 つである [LND](https://github.com/lightningnetwork/lnd) の [watchtower](https://github.com/lightningnetwork/lnd/blob/master/docs/watchtower.md) では、クライアントが penalty 用のトランザクションを暗号化して預け、watchtower は取り消し済みの commitment transaction がチェーンに出た時に初めてそれを復号して送信します。
-
-預けられるのは to_local と to_remote の分だけで、HTLC（次の節で説明します）の出力は今後の対応とされています。
-
-監視と同じくらい厄介なのが、自分の状態のバックアップです。古いバックアップから復元したノードが、最新だと思っている commitment transaction を出すと、相手から見ればそれは取り消し済みです。[Core Lightning のバックアップの文書](https://docs.corelightning.org/docs/backup)も、DB（データベース）のスナップショット型のバックアップを推奨していません。鍵を復元できるだけでは足りないのです。
-
-BOLT 2 の [channel_reestablish](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#message-retransmission) は、再接続時に自分が遅れていると気付いたノードに、自分の commitment transaction を出さず、相手に close を頼むよう定めています。ただし、相手が応じることが前提です。
-
----
-
-### 中継支払いと HTLC
-
-支払う相手ごとにチャネルを開くと、開設のたびにチェーンに載せるトランザクションが必要になります。Alice が Bob とチャネルを持ち、Bob が Carol とチャネルを持っていれば、Bob に中継を頼んで Carol に払えます。問題は、Alice が Bob に払った後、Bob が Carol に払わずに終わる場合です。
-
-この中継を成立させるのが HTLC（Hashed Time Locked Contract）です。HTLC は commitment transaction に追加する出力で、「ハッシュ値 H の元の値（preimage）を示せば受取側が受け取れる。期限のブロック高までに示されなければ送り手に戻る」という条件を持ちます。
-
-preimage は Carol が[乱数](/notes/security/random-number/)で作り、そのハッシュ値だけを[請求書（BOLT 11 の invoice）](https://github.com/lightning/bolts/blob/master/11-payment-encoding.md)で Alice に渡します。ハッシュ値から元の値を求められない性質は、[ハッシュ関数の原像計算困難性](../hash-function/)です。
-
-```mermaid
-%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
-sequenceDiagram
-    participant A as Alice
-    participant B as Bob（中継）
-    participant C as Carol
-    C-->>A: 請求書でハッシュ値 H を渡す
-    A->>B: HTLC：H の preimage と引き換え<br/>期限は高さ N+52
-    B->>C: HTLC：同じ H<br/>期限は高さ N+18
-    C->>B: preimage を示して受け取る
-    B->>A: 同じ preimage を示して受け取る
-    Note over A,C: preimage は受取側から<br/>送り手に逆向きに伝わる
-```
-
-Bob は Carol から preimage を受け取った時点で、Alice からの HTLC を受け取る材料を得ます。Carol が preimage を示さなければ、Bob から Carol への HTLC は期限で Bob に戻り、Bob も Alice からの HTLC を失敗として戻します。ただし、各区間の決済は同時ではなく、Bob が期限内に行動することが前提です。
-
-期限が下流ほど短くないと、Bob は preimage を知った後に、Alice との HTLC をチェーン上で請求する時間を持てません。
-
-BOLT 2 の [cltv_expiry_delta の選び方](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection)は、チェーンの組み替え（reorg）・相手の応答待ち・トランザクションがブロックに入るまでの遅れを足し合わせ、迷うなら差を 34 ブロック以上にするよう勧めています。図の 52 は、この 34 と受取人の最小値の既定である 18 を足した説明用の値です。
-
-以下は、シーケンス図の 2 つの HTLC の期限をブロック高（block height）の軸に並べた図です。
-
-{{< figure src="images/lightning-network_cltv.svg" alt="横軸はブロック高で、N・N+18・N+52 に目盛り。上の Alice → Bob の HTLC は N+52 まで、下の Bob → Carol の HTLC は N+18 まで伸びる。N+18 から N+52 の間は黄土色の破線の枠で、34 blocks for Bob to claim" caption="上流の HTLC の期限が 34 ブロック遅い" align="center" >}}
-
-Carol が N+18 の直前に preimage を示しても、Bob には Alice からの HTLC を請求する時間が 34 ブロック残ります。
-
-中継者は [BOLT 7](https://github.com/lightning/bolts/blob/master/07-routing-gossip.md#the-channel_update-message) で公開した手数料を差し引いて次に渡します。経路は [BOLT 4](https://github.com/lightning/bolts/blob/master/04-onion-routing.md) の [onion routing](/notes/security/tor/) で包まれ、中継者には前後のノードしか分かりません。
-
----
-
-### 流動性とルーティング
-
-チャネルの容量（capacity）は、どちらの向きにも同じだけ送れる量ではありません。容量 1,000,000 sat のチャネルで Alice 側に 900,000 sat、Bob 側に 100,000 sat ある時、手数料と reserve（各側がチャネルに最低限残す額、channel_reserve_satoshis）を除けば、Alice から Bob には 900,000 sat まで送れますが、Bob から Alice には 100,000 sat までしか送れません。
-
-{{< figure src="images/lightning-network_liquidity.svg" alt="容量 1,000,000 sat の棒が、青い Alice 900,000 と黄土色の Bob 100,000 に分かれる。下の青い矢印は Alice → Bob で up to 900,000 sat、黄土色の短い矢印は Bob → Alice で up to 100,000 sat。fees and reserve are left out" caption="同じチャネルでも、向きによって送れる上限が違う" align="center" >}}
-
-支払うたびに残高は受取側に寄るので、受け取りが多い店舗には、相手側に残高のあるチャネル（受け取りの余地、inbound liquidity）が必要です。
-
-送り手には、各チャネルの片側の残高が見えません。公開されたチャネルの容量は funding transaction の出力額としてチェーンから読めますが、残高は 2 人の間で更新され続けます。そのため、送り手は経路を推測で選び、残高が足りなければ失敗の通知を受けて別の経路を試します。
-
-Pickhardt 氏らの 2021 年の論文「[Security and Privacy of Lightning Network Payments with Uncertain Channel Balances](https://arxiv.org/abs/2103.08576)」は、残高を容量の範囲の一様分布とみなし、支払いの成功を確率として扱っています。
-
-大きな支払いは、BOLT 4 の [multi-part payment](https://github.com/lightning/bolts/blob/master/04-onion-routing.md#basic-multi-part-payments)（以下 MPP）で分割できます。各部分は同じハッシュ値を使い、受取人は合計額が揃うまで preimage を出しません。失敗した部分は送り直せます。受取人は最初の部分から少なくとも 60 秒待つことが推奨され、それでも揃わなければ、届いた分も失敗として送り手に戻します。
-
-<br>
-
-#### 支払い額と成功率のシミュレーション
-
-分割の効き方はローカルの [Python](https://www.python.org/) で確認します。200 ノードのグラフの各チャネルに容量と内訳を乱数で割り当て、同じ支払いを分割せずに送った場合と、2・4・8 等分した場合を比べます。送り手は容量だけを見て経路を選び、残高の足りない区間で失敗したら、その区間を外して試し直します。コードは [lab/simulate.py](lab/simulate.py) で、全体を以下に畳みました。
-
-<br>
-
-<details>
-<summary>simulate.py の全体（94 行）</summary>
+手順 3 と 4 に当たるコードは次の通りです。[run.py](lab/run.py) から抜粋し、ブロック数は数値に置き換えました。
 
 ```python
-# Lightning Network の支払い成功率を単純化したモデルで比べる（標準ライブラリのみ）
-import json
-import pathlib
-import random
-from collections import deque
-
-N_NODES, LINKS_PER_NODE = 200, 2
-AMOUNTS = [10_000, 30_000, 100_000, 300_000, 1_000_000, 3_000_000]  # sat
-PARTS = [1, 2, 4, 8]
-TRIALS, MAX_ATTEMPTS = 1000, 10
-
-rng = random.Random(42)
-
-# チャネルのグラフ: 後から来たノードは、繋がりの多いノードと開設しやすい
-capacity, ends = {}, [0, 1]
-capacity[(0, 1)] = capacity[(1, 0)] = 1_000_000
-for new in range(2, N_NODES):
-    peers = set()
-    while len(peers) < min(LINKS_PER_NODE, new):
-        peers.add(rng.choice(ends))
-    for p in peers:
-        c = int(10 ** rng.uniform(5, 7))  # 10 万〜1,000 万 sat
-        capacity[(new, p)] = capacity[(p, new)] = c
-        ends += [new, p]
-neighbors = {}
-for u, v in capacity:
-    neighbors.setdefault(u, []).append(v)
-
-
-def find_path(src, dst, amount, excluded):
-    """容量だけを見て、ホップ数が最小の経路を探す（残高は送る側に見えない）"""
-    prev, queue = {src: None}, deque([src])
-    while queue:
-        u = queue.popleft()
-        if u == dst:
-            path = []
-            while prev[u] is not None:
-                path.append((prev[u], u))
-                u = prev[u]
-            return path[::-1]
-        for v in neighbors[u]:
-            if v not in prev and (u, v) not in excluded and capacity[(u, v)] >= amount:
-                prev[v] = u
-                queue.append(v)
-    return None
-
-
-def pay(src, dst, amount, parts, balance):
-    """amount を parts 個に分けて送る。1 つでも届かなければ支払い全体が失敗"""
-    excluded = set()
-    for _ in range(parts):
-        part = amount // parts
-        for _ in range(MAX_ATTEMPTS):
-            path = find_path(src, dst, part, excluded)
-            if path is None:
-                return False
-            short = next((hop for hop in path if balance[hop] < part), None)
-            if short is None:
-                for hop in path:  # HTLC が経路上の残高を押さえる
-                    balance[hop] -= part
-                break
-            excluded.add(short)  # 失敗した区間を次の試行から外す
-        else:
-            return False
-    return True
-
-
-results, bound = {k: [] for k in PARTS}, []
-for amount in AMOUNTS:
-    ok, possible = {k: 0 for k in PARTS}, 0
-    for _ in range(TRIALS):
-        balance = {}
-        for (u, v), c in capacity.items():
-            if u < v:  # 容量の内訳は一様分布で割り当てる
-                balance[(u, v)] = rng.randint(0, c)
-                balance[(v, u)] = c - balance[(u, v)]
-        src, dst = rng.sample(range(N_NODES), 2)
-        # 送り手の手元の残高と、受取人の受け取りの余地の小さい方が上限
-        out_sum = sum(balance[(src, v)] for v in neighbors[src])
-        in_sum = sum(balance[(v, dst)] for v in neighbors[dst])
-        possible += min(out_sum, in_sum) >= amount
-        for k in PARTS:
-            ok[k] += pay(src, dst, amount, k, dict(balance))
-    for k in PARTS:
-        results[k].append(ok[k] / TRIALS)
-    bound.append(possible / TRIALS)
-
-print("amount_sat  " + "  ".join(f"parts={k}" for k in PARTS) + "  endpoint_bound")
-for i, amount in enumerate(AMOUNTS):
-    row = "  ".join(f"{results[k][i]:>7.1%}" for k in PARTS)
-    print(f"{amount:>10,}  {row}  {bound[i]:>14.1%}")
-
-out = pathlib.Path(__file__).with_name("result.json")
-out.write_text(json.dumps({"amounts": AMOUNTS, "success": results, "bound": bound}, indent=1))
+stop("alice")
+stop("bob")
+run("docker", "cp", str(HERE / "bob-old-channel.db"), f"lnlab-bob:{db}")
+start("bob")
+ln("bob", "closechannel", "--force", "--funding_txid", txid, "--output_index", idx,
+   "--block=false")
+mine(1)    # 古い状態がブロック 120 に入る
+mine(9)    # alice はオフラインのまま、ブロック 129 まで
+start("alice")
 ```
 
-</details>
+`stop`・`start` はコンテナを止めて動かす補助関数、`mine` は regtest でブロックを掘る補助関数です。次の動く図は、掘ったブロック高に沿って、2 人がチャネルから手にした額を示します。
+
+{{< figure src="images/ln_breach.webp" alt="ブロック 120 に bob の古い状態が入る。alice はオフラインで、bob が自分の分を使えるまでの残りブロック数が 144 から減っていく。129 で alice が戻り、130 で alice のペナルティトランザクションが入る。bob がチャネルから手にした額は 0 sat、alice は自分の分と bob の分を合わせた 984,229 sat。最新の状態での bob の残高は 260,003 sat だった" caption="古い状態を出した bob と、あとから戻った alice（1 ブロックを 0.5 秒、約 1,200 倍速で再生）" align="center" >}}
+
+alice は戻ってから最初のブロック 130 でペナルティトランザクションを入れ、古い状態で自分に割り当てられていた 536,526 sat と bob の 460,003 sat を合わせ、手数料を除いた 984,229 sat を受け取りました。
+
+bob がチャネルから手にした額は 0 です。最新の状態で閉じていれば、bob の残高は 260,003 sat でした。LND は、このチャネルの閉じ方を `BREACH_CLOSE` と記録しています。チェーンが不正を見つけたわけではなく、alice が出した証拠を Bitcoin のノードが検証しただけです。
 
 <br>
 
-以下は、実行結果の成功率（success rate）を支払い額（payment amount）ごとに並べたグラフです。破線の `endpoint_bound`（凡例の endpoint balance bound）は、送り手の手元の残高の合計と、受取人側の受け取りの余地の合計が、どちらも支払い額以上だった割合です。
+ここで、チャネルリザーブが求められる理由が分かります。残高が 0 のノードは、古い状態を出して失敗しても失うものがありません。チャネルリザーブは、古い状態を出そうとした時に必ず失うものがあるようにするための額だと、BOLT #2 に書かれています。
 
-{{< figure src="images/lightning_payment_success.svg" alt="支払い額ごとの成功率。3 万 sat までは分割の有無によらずほぼ全て成功する。30 万 sat では分割しない場合 69.7%、8 分割で 84.4%。100 万 sat では 17.5% と 38.6% で、送り手の残高と受取人の受け取りの余地から決まる上限 60.2% には届かない" caption="200 ノードの合成グラフでの支払い額と成功率（各 1,000 回）" align="center" >}}
+<br>
 
-上記の図で、分割が効くのは、支払い額が個々のチャネルの残高に近づく 10 万〜100 万 sat の範囲です。分割すると各区間に必要な額が下がり、別の経路も使えます。しかし、8 分割でも破線の上限には届かず、300 万 sat では 3.8% です。送り手が手元に持つ残高と、受取人が受け取れる余地は、経路の選び方では増えないからです。
+#### 古いバックアップから戻した時
 
-残高を一様分布とした仮定は、前述の論文と同じです。一方で、手数料、`cltv_expiry_delta`、HTLC の金額と同時数の上限、reserve は無視しており、グラフも合成したものです。数値は分割の有無を比べる目安として見てください。表の形の出力は [lab/output.txt](lab/output.txt)、条件は [lab/README.txt](lab/README.txt) にあります。
+この実験の bob は、悪意を持った相手とは限りません。LND の[復旧に関する文書](https://github.com/lightningnetwork/lnd/blob/v0.18.4-beta/docs/recovery.md)は、`channel.db` を定期的にコピーする方法を「最新の状態かどうか分からないので危険」と書いています。古いバックアップから戻したノードが強制クローズすれば、本人に悪意が無くても同じ結果になります。
 
----
+[Core Lightning の文書](https://docs.corelightning.org/docs/backup)も、バックアップに DB のスナップショットを使う方法を勧めていません。LND が勧めるのは、チャネルを開いた時の情報だけを持つ Static Channel Backup（`channel.backup`）です。Static Channel Backup から戻したノードは残高の分け方を持っていないので、自分の状態を出しません。代わりに [channel_reestablish](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#message-retransmission) のやり取りで相手に強制クローズを頼み、相手が出した最新の状態から自分の残高を受け取ります。ただし、相手のノードが動いていて、頼みに応じることが前提です。
 
-### オンチェーンとオフチェーンの役割分担
+<br>
 
-ここまでの仕組みを担い手で分けると、以下の通りです。
+#### 見張る役と watchtower
 
-{{< note-panels caption="チェーンは資金の固定と最後の強制だけを担い、日々の更新と見張りはノードが担います。" >}}
-- title: Bitcoin のチェーン
-  items:
-  - 2-of-2 の出力で資金を固定する
-  - closing transaction による最終残高の分配を記録する
-  - to_self_delay と HTLC の期限を数える
-  - penalty transaction や HTLC の請求を有効なトランザクションとして受け入れる
-- title: Lightning のノード
-  items:
-  - commitment transaction に署名し合って残高を更新する
-  - 相手から受け取った取り消し用の秘密を保管する
-  - 経路を選び、HTLC を中継する
-  - チェーンを監視し、期限内に penalty transaction を出す
-{{< /note-panels >}}
+alice がペナルティトランザクションを出せたのは、144 ブロックの間に戻ってきたからです。戻るのが遅れれば、bob は古い状態の残高をそのまま使えました。チャネルを持つノードは、to_self_delay の間に相手の古い状態を見つけられるように、動いている必要があります。[BOLT #5](https://github.com/lightning/bolts/blob/master/05-onchain.md) も、出力の行き先が決まるまでチェーンを監視するよう求めています。
 
-チェーンが不正を見つけてくれるのではなく、チェーンは当事者が出した証拠を検証するだけです。
+ノードが止まっていなくても、チェーンを読めなくなることがあります。2022 年 10 月には、LND が特定の大きなブロックを解析できなくなる不具合があり、緊急の修正リリース [v0.15.2](https://github.com/lightningnetwork/lnd/releases/tag/v0.15.2-beta) が出ました。11 月にも、入力の多いトランザクションを解析できない不具合で [v0.15.4](https://github.com/lightningnetwork/lnd/releases/tag/v0.15.4-beta) が出ています。解析できないブロックに載ったトランザクションには、ノードは気づけません。
+
+常に動かし続けるのが難しいノードは、見張りを他のノードに任せられます。この役を watchtower と呼び、LND は[見張る側と頼む側の両方](https://github.com/lightningnetwork/lnd/blob/v0.18.4-beta/docs/watchtower.md)を持っています。
+
+頼む側は状態を更新するたびに、暗号化したペナルティトランザクションを渡します。watchtower は、古い状態がチェーンに出た時にだけそれを復号して出せます。v0.18.4 の文書によると、watchtower が扱うのは 2 人の残高を受け取る出力だけで、支払い途中の HTLC は対象外です。
 
 ---
 
-### 利点
+### オンチェーン・カストディ型との比較
 
-- 支払いのたびにブロックを待たず、チャネル内の更新は 2 者間のメッセージで済む
-- 支払いの回数が増えても、チェーンに載るトランザクションは開設と閉鎖の分に抑えられる
-- 相手や中継者を信用しなくても、署名済みのトランザクションで自分の残高を取り戻せる
-- 中継の各区間が同じハッシュ値で結ばれ、中継者が片方だけ受け取ることを防げる
+ここまでの手間は、自分でノードを動かす場合のものです。支払いを受け付ける方法として、オンチェーンの送金と、事業者が鍵を管理するカストディ型の Lightning ウォレットと並べます。
+
+| 項目 | オンチェーン | 自分のノードで Lightning | カストディ型の Lightning |
+| --- | --- | --- | --- |
+| 受け取る前の準備 | アドレスを渡すだけ | inbound liquidity が要る | アカウントを作る |
+| チェーンへの記録 | 支払いごと | チャネルの開閉だけ | 事業者の帳簿 |
+| 支払いが届くまで | ブロックを待つ | 今回は 1 秒未満 | 事業者の中で即時 |
+| 常に動かすノード | 不要 | 要る（watchtower も可） | 不要 |
+| バックアップ | 復元フレーズ | 復元フレーズとチャネルの情報 | 事業者に任せる |
+| 資金を動かせる人 | 自分 | 自分 | 事業者 |
+
+オンチェーンの送金では、ブロックが平均 10 分に 1 つしか作られず、手数料は金額ではなく、トランザクションのデータ量と[使う UTXO の数](../utxo/)で決まります。
+
+手数料の高い順にブロックへ入るので、[Mempool](../mempool/) が混むと待ちも延びます。数百円の支払いを何度も受けるなら、毎回の手数料と確定の待ちが重くなります。この点を Lightning は開設と閉鎖の 2 回にまとめますが、代わりに上の表で「自分のノードで Lightning」の列に並べた手間を負います。
+
+カストディ型は、その手間を事業者が引き受ける形です。[Wallet のノート](../wallet/)で取り上げた [LNbits](https://github.com/lnbits/lnbits) も、他者のサーバーで使えばカストディ型になり、自分のノードで動かせば自分で管理できます。画面が同じでも、誰が資金を動かせるかは構成で決まります。
+
+Ethereum の L2 である [Rollup](../rollup/) も、支払いをチェーンの外で処理する仕組みです。Rollup は誰とでも同じ残高で送り合える代わりに、処理の結果を Ethereum に載せ続けます。Lightning は、相手ごとの状態と見張りを自分で持つことで、チェーンへの記録を開閉の 2 回に抑えます。
 
 ---
 
-### 欠点
+### 受け付ける前に決めること
 
-Lightning Network は、チェーンに書く回数を減らすために、不正の検出と状態の保管を当事者に任せています。そのため、次の制約があります。
+冒頭の図に出た 0 は、どれもチャネルの仕組みから来ていました。受け取れる額は相手の残高で決まり、送れる額はチャネルリザーブと手数料の分だけ少なく、経路では一番少ない残高が上限になります。テストの支払いが失敗したら、まず `lncli listchannels` で自分と相手の残高とチャネルリザーブを見ます。次は、10,000 sat を受け取った後の bob で、送れる額が 0 だった時に出た値を抜粋したものです。
 
-- `to_self_delay` の期間内にチェーンを確認できる状態を保つ必要があり、自分で見られなければ watchtower に頼る
-- チャネルの状態を失うと資金を失い得るので、鍵だけのバックアップでは足りない
-- 資金はチャネルに固定され、開設と閉鎖にはチェーンの手数料と確定待ちが掛かる
-- 残高は向きごとに偏り、送り手には見えないため、大きな支払いほど失敗しやすい
+```json
+{
+  "capacity": "1000000",
+  "local_balance": "10000",
+  "remote_balance": "986530",
+  "local_chan_reserve_sat": "10000",
+  "remote_chan_reserve_sat": "10000",
+  "csv_delay": 144
+}
+```
 
-### 効果が小さくなりやすいケース
+`local_balance` が自分の残高、`local_chan_reserve_sat` が自分に求められたチャネルリザーブで、送れる額はおおよそ前者から後者を引いた額より少なくなります。`csv_delay` は、強制クローズした時に待つ to_self_delay です。
 
-- 支払いの回数が少なく、開設と閉鎖のトランザクションに掛かる手数料を回収できない場合
-- 経路上のチャネルの残高に近い、またはそれを超える額を一度に送る場合
-- 端末を長期間オフラインにする利用者が、監視を誰にも頼まずにチャネルを持つ場合
+Lightning で支払いを受け付けるなら、ノードを立てる前に次の 4 つを決めておきます。どれも、本記事の実験で見た失敗に対応しています。
+
+| 決めること | 実験で見たこと |
+| --- | --- |
+| inbound liquidity をどこから用意するか | 開いた直後の alice は 1 sat も受け取れない |
+| 1 回で受け付ける最大の額 | 容量 500,000 sat の経路で、4 回目の 150,000 sat が届かない |
+| 誰が to_self_delay の間チェーンを見張るか | 古い状態は 144 ブロック以内に見つけないと取り戻せない |
+| バックアップの方法 | 古い `channel.db` で閉じた bob は 0 sat |
+
+出金するまでに受け取る見込みの額が、相手側にある残高の合計より大きければ、途中から受け取れなくなります。経路が何本あっても、払う側の outbound liquidity の合計と、受取人の inbound liquidity の合計を超える額は、マルチパス・ペイメントでどう分けても届きません。経路上の残高は払う側から見えないので、大きな額ほど失敗しやすくなります。
+
+ノードを止める予定があるなら watchtower を頼みます。バックアップには Static Channel Backup のように最新の状態を前提にしない方法を選び、戻す時は相手が応じるのを待つことも見込んでおきます。
+
+この 4 つを自分で引き受けないなら、カストディ型を使うか、オンチェーンで受け取るのが選択肢になります。支払いの回数が少なく、開設と閉鎖の手数料を回収できない場合も、オンチェーンの方が向いています。自分のノードを選んだ場合、冒頭の図で alice が 1 sat も受け取れず、bob が 1 sat も送れなかったのは、不具合ではなく仕組みどおりの動作です。

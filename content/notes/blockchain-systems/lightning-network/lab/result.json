@@ -1,52 +1,1530 @@
 {
- "amounts": [
-  10000,
-  30000,
-  100000,
-  300000,
-  1000000,
-  3000000
- ],
- "success": {
-  "1": [
-   1.0,
-   0.991,
-   0.951,
-   0.697,
-   0.175,
-   0.008
+  "open": {
+    "capacity": 1000000,
+    "local_balance": 996530,
+    "remote_balance": 0,
+    "commit_fee": 3140,
+    "local_chan_reserve_sat": 10000,
+    "remote_chan_reserve_sat": 10000,
+    "csv_delay": 144,
+    "commitment_type": "ANCHORS",
+    "initiator": true
+  },
+  "receive_1sat": {
+    "amt": 1,
+    "status": "FAILED",
+    "failure_reason": "FAILURE_REASON_INSUFFICIENT_BALANCE",
+    "fee_sat": 0,
+    "attempts": 0,
+    "elapsed_ms": 134
+  },
+  "alice_max_send": 982000,
+  "pay_10000": {
+    "amt": 10000,
+    "status": "SUCCEEDED",
+    "failure_reason": "FAILURE_REASON_NONE",
+    "fee_sat": 0,
+    "attempts": 1,
+    "elapsed_ms": 240
+  },
+  "bob_after_10000": {
+    "capacity": 1000000,
+    "local_balance": 10000,
+    "remote_balance": 986530,
+    "commit_fee": 2810,
+    "local_chan_reserve_sat": 10000,
+    "remote_chan_reserve_sat": 10000,
+    "csv_delay": 144,
+    "commitment_type": "ANCHORS",
+    "initiator": false
+  },
+  "bob_back_5000": {
+    "amt": 5000,
+    "status": "FAILED",
+    "failure_reason": "FAILURE_REASON_INSUFFICIENT_BALANCE",
+    "fee_sat": 0,
+    "attempts": 0,
+    "elapsed_ms": 127
+  },
+  "bob_max_send": 0,
+  "bc_advertised_capacity": 500000,
+  "bob_fee_policy": {
+    "base_msat": 1000,
+    "rate_ppm": 1,
+    "time_lock_delta": 80
+  },
+  "bc_open": {
+    "capacity": 500000,
+    "local_balance": 496530,
+    "remote_balance": 0,
+    "commit_fee": 3140,
+    "local_chan_reserve_sat": 5000,
+    "remote_chan_reserve_sat": 5000,
+    "csv_delay": 144,
+    "commitment_type": "ANCHORS",
+    "initiator": true
+  },
+  "ac_max_before": 487000,
+  "ac_pays": [
+    {
+      "amt": 150000,
+      "status": "SUCCEEDED",
+      "failure_reason": "FAILURE_REASON_NONE",
+      "fee_sat": 1,
+      "attempts": 1,
+      "elapsed_ms": 361,
+      "ab_bob_local": 160001,
+      "bc_bob_local": 346530,
+      "bc_carol_local": 150000
+    },
+    {
+      "amt": 150000,
+      "status": "SUCCEEDED",
+      "failure_reason": "FAILURE_REASON_NONE",
+      "fee_sat": 1,
+      "attempts": 1,
+      "elapsed_ms": 368,
+      "ab_bob_local": 310002,
+      "bc_bob_local": 196530,
+      "bc_carol_local": 300000
+    },
+    {
+      "amt": 150000,
+      "status": "SUCCEEDED",
+      "failure_reason": "FAILURE_REASON_NONE",
+      "fee_sat": 1,
+      "attempts": 1,
+      "elapsed_ms": 478,
+      "ab_bob_local": 460003,
+      "bc_bob_local": 46530,
+      "bc_carol_local": 450000
+    },
+    {
+      "amt": 150000,
+      "status": "FAILED",
+      "failure_reason": "FAILURE_REASON_NO_ROUTE",
+      "fee_sat": 0,
+      "attempts": 14,
+      "elapsed_ms": 121394,
+      "ab_bob_local": 460003,
+      "bc_bob_local": 46530,
+      "bc_carol_local": 450000
+    }
   ],
-  "2": [
-   1.0,
-   0.994,
-   0.961,
-   0.774,
-   0.273,
-   0.009
-  ],
-  "4": [
-   1.0,
-   0.995,
-   0.977,
-   0.825,
-   0.326,
-   0.021
-  ],
-  "8": [
-   1.0,
-   0.995,
-   0.979,
-   0.844,
-   0.386,
-   0.038
-  ]
- },
- "bound": [
-  1.0,
-  0.997,
-  0.983,
-  0.873,
-  0.602,
-  0.213
- ]
+  "ac_max_after": 18750,
+  "ab_after_route": {
+    "capacity": 1000000,
+    "local_balance": 536526,
+    "remote_balance": 460003,
+    "commit_fee": 2811,
+    "local_chan_reserve_sat": 10000,
+    "remote_chan_reserve_sat": 10000,
+    "csv_delay": 144,
+    "commitment_type": "ANCHORS",
+    "initiator": true
+  },
+  "bc_after_route": {
+    "capacity": 500000,
+    "local_balance": 46530,
+    "remote_balance": 450000,
+    "commit_fee": 2810,
+    "local_chan_reserve_sat": 5000,
+    "remote_chan_reserve_sat": 5000,
+    "csv_delay": 144,
+    "commitment_type": "ANCHORS",
+    "initiator": true
+  },
+  "breach": {
+    "old_bob_local": 460003,
+    "pay_back": {
+      "amt": 200000,
+      "status": "SUCCEEDED",
+      "failure_reason": "FAILURE_REASON_NONE",
+      "fee_sat": 0,
+      "attempts": 1,
+      "elapsed_ms": 459
+    },
+    "honest_bob_local": 260003,
+    "honest_alice_local": 736526,
+    "bob_csv_delay": 144,
+    "restored_bob_local": 460003,
+    "broadcast_height": 120,
+    "alice_back_height": 129,
+    "close_type": "BREACH_CLOSE",
+    "settled_balance_alice": 736526,
+    "time_locked_balance_alice": 0,
+    "alice_onchain_before": 98992300,
+    "bob_onchain_before": 99492300,
+    "alice_onchain_after": 99976529,
+    "bob_onchain_after": 99492300,
+    "timeline": [
+      {
+        "height": 129,
+        "alice_onchain": 98992300,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 130,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 131,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 132,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 133,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 134,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 135,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 136,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 137,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 138,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 139,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      },
+      {
+        "height": 140,
+        "alice_onchain": 99976529,
+        "bob_onchain": 99492300
+      }
+    ]
+  },
+  "close": {
+    "start_height": 147,
+    "start_onchain": {
+      "alice": 99976529,
+      "bob": 99492300,
+      "carol": 99792300
+    },
+    "bc": {
+      "capacity": 500000,
+      "local_balance": 46530,
+      "remote_balance": 450000,
+      "commit_fee": 2810,
+      "local_chan_reserve_sat": 5000,
+      "remote_chan_reserve_sat": 5000,
+      "csv_delay": 144,
+      "commitment_type": "ANCHORS",
+      "initiator": true
+    },
+    "ca_capacity": 200000,
+    "ca_carol_local": 196530,
+    "ca_alice_local": 0,
+    "bob_pending_at_start": {
+      "total_limbo_balance": "506863",
+      "pending_open_channels": [],
+      "pending_closing_channels": [],
+      "pending_force_closing_channels": [
+        {
+          "channel": {
+            "remote_node_pub": "02a4552856d9b78266de45c8360426836526d8bb16cf2fc8d2b40f34eb81e943db",
+            "channel_point": "bab73183af068d3be6b867c731136473ffa61a8e598514b0306c66a749d5a8ea:0",
+            "capacity": "1000000",
+            "local_balance": "460003",
+            "remote_balance": "536526",
+            "local_chan_reserve_sat": "0",
+            "remote_chan_reserve_sat": "0",
+            "initiator": "INITIATOR_REMOTE",
+            "commitment_type": "ANCHORS",
+            "num_forwarding_packages": "0",
+            "chan_status_flags": "",
+            "private": false,
+            "memo": "",
+            "custom_channel_data": ""
+          },
+          "closing_txid": "391525c26ad5ce9f1f1469b0b983baeca6783078b717146c7cff4d712d212e98",
+          "limbo_balance": "460333",
+          "maturity_height": 264,
+          "blocks_til_maturity": 117,
+          "recovered_balance": "0",
+          "pending_htlcs": [],
+          "anchor": "LIMBO"
+        }
+      ],
+      "waiting_close_channels": [
+        {
+          "channel": {
+            "remote_node_pub": "02abf55a615c1acaae82594ce07678f58dcd1913df76f8de1291261b2f30e0099e",
+            "channel_point": "5ead44fa93521b0d38adfe3a87efaa337c1db13220af259cbccac7282311a51c:0",
+            "capacity": "500000",
+            "local_balance": "46530",
+            "remote_balance": "450000",
+            "local_chan_reserve_sat": "5000",
+            "remote_chan_reserve_sat": "5000",
+            "initiator": "INITIATOR_LOCAL",
+            "commitment_type": "ANCHORS",
+            "num_forwarding_packages": "0",
+            "chan_status_flags": "ChanStatusBorked|ChanStatusCommitBroadcasted|ChanStatusLocalCloseInitiator",
+            "private": false,
+            "memo": "",
+            "custom_channel_data": ""
+          },
+          "limbo_balance": "46530",
+          "commitments": {
+            "local_txid": "bd5d88ec0e0430e1990b8dc204db792203766526375c1a7af7d365a9e01e218d",
+            "remote_txid": "fc2504fe8e868adab3737b30e9ecc7f2e727657782a74d8f283658692150df01",
+            "remote_pending_txid": "",
+            "local_commit_fee_sat": "2810",
+            "remote_commit_fee_sat": "2810",
+            "remote_pending_commit_fee_sat": "0"
+          },
+          "closing_txid": "bd5d88ec0e0430e1990b8dc204db792203766526375c1a7af7d365a9e01e218d",
+          "closing_tx_hex": ""
+        }
+      ]
+    },
+    "series": [
+      {
+        "height": 148,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 99984800,
+        "bob_blocks_til_maturity": 144,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 149,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 99984800,
+        "bob_blocks_til_maturity": 143,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 150,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 142,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 151,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 141,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 152,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 140,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 153,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 139,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 154,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 138,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 155,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 137,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 156,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 136,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 157,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 135,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 158,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 134,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 159,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 133,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 160,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 132,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 161,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 131,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 162,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 130,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 163,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 129,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 164,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 128,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 165,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 127,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 166,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 126,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 167,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 125,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 168,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 124,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 169,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 123,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 170,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 122,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 171,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 121,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 172,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 120,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 173,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 119,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 174,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 118,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 175,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 117,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 176,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 116,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 177,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 115,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 178,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 114,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 179,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 113,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 180,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 112,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 181,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 111,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 182,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 110,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 183,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 109,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 184,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 108,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 185,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 107,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 186,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 106,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 187,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 105,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 188,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 104,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 189,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 103,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 190,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 102,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 191,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 101,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 192,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 100,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 193,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 99,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 194,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 98,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 195,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 97,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 196,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 96,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 197,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 95,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 198,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 94,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 199,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 93,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 200,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 92,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 201,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 91,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 202,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 90,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 203,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 89,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 204,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 88,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 205,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 87,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 206,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 86,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 207,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 85,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 208,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 84,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 209,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 83,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 210,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 82,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 211,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 81,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 212,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 80,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 213,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 79,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 214,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 78,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 215,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 77,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 216,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 76,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 217,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 75,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 218,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 74,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 219,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 73,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 220,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 72,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 221,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 71,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 222,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 70,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 223,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 69,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 224,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 68,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 225,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 67,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 226,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 66,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 227,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 65,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 228,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 64,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 229,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 63,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 230,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 62,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 231,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 61,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 232,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 60,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 233,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 59,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 234,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 58,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 235,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 57,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 236,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 56,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 237,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 55,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 238,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 54,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 239,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 53,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 240,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 52,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 241,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 51,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 242,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 50,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 243,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 49,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 244,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 48,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 245,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 47,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 246,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 46,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 247,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 45,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 248,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 44,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 249,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 43,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 250,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 42,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 251,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 41,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 252,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 40,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 253,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 39,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 254,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 38,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 255,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 37,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 256,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 36,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 257,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 35,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 258,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 34,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 259,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 33,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 260,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 32,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 261,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 31,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 262,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 30,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 263,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 29,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 264,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 28,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 265,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 27,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 266,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 26,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 267,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 25,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 268,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 24,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 269,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 23,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 270,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 22,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 271,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 21,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 272,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 20,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 273,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 19,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 274,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 18,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 275,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 17,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 276,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 16,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 277,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 15,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 278,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 14,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 279,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 13,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 280,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 12,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 281,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 11,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 282,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 10,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 283,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 9,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 284,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 8,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 285,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 7,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 286,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 6,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 287,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 5,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 288,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 4,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 289,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 3,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 290,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 2,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 291,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 1,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 292,
+        "alice": 99976529,
+        "bob": 99492300,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": 0,
+        "bob_limbo": 46860
+      },
+      {
+        "height": 293,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      },
+      {
+        "height": 294,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      },
+      {
+        "height": 295,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      },
+      {
+        "height": 296,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      },
+      {
+        "height": 297,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      },
+      {
+        "height": 298,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      },
+      {
+        "height": 299,
+        "alice": 99976529,
+        "bob": 99532155,
+        "carol": 100425493,
+        "bob_blocks_til_maturity": null,
+        "bob_limbo": 0
+      }
+    ]
+  },
+  "versions": {
+    "lnd": "0.18.4-beta commit=v0.18.4-beta",
+    "bitcoind": "/Satoshi:27.0.0/"
+  }
 }
