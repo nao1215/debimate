@@ -1,0 +1,359 @@
+{
+ "events": [
+  {
+   "t": 0.12,
+   "kind": "write",
+   "msg": "write v1 ALL: OK",
+   "v": "v1",
+   "ok": true,
+   "start": 0.12
+  },
+  {
+   "t": 0.16,
+   "kind": "pause",
+   "msg": "pause q2 q3"
+  },
+  {
+   "t": 2.16,
+   "kind": "write",
+   "msg": "write v2 QUORUM: WriteTimeout: Error from server: code=1100 [Coordinator node timed out waiting for replica nodes' responses] message=\"Operation timed out - received only 1 responses.\" info={'consistency': 'QUORUM', 'required_responses': 2, 'received_responses': 1, 'write_type': 'SIMPLE'}",
+   "v": "v2",
+   "ok": false,
+   "error": "WriteTimeout",
+   "start": 0.16
+  },
+  {
+   "t": 2.16,
+   "kind": "read",
+   "msg": "read via q1 ONE: v2",
+   "node": "q1",
+   "cl": "ONE"
+  },
+  {
+   "t": 20.75,
+   "kind": "down",
+   "node": "q2"
+  },
+  {
+   "t": 21.75,
+   "kind": "down",
+   "node": "q3"
+  },
+  {
+   "t": 22.01,
+   "kind": "write",
+   "msg": "write v3 QUORUM: Unavailable: Error from server: code=1000 [Unavailable exception] message=\"Cannot achieve consistency level QUORUM\" info={'consistency': 'QUORUM', 'required_replicas': 2, 'alive_replicas': 1}",
+   "v": "v3",
+   "ok": false,
+   "error": "Unavailable",
+   "start": 22.01
+  },
+  {
+   "t": 22.03,
+   "kind": "up",
+   "node": "q2"
+  },
+  {
+   "t": 22.03,
+   "kind": "up",
+   "node": "q3"
+  },
+  {
+   "t": 22.04,
+   "kind": "unpause",
+   "msg": "unpause q2 q3"
+  },
+  {
+   "t": 26.69,
+   "kind": "hint",
+   "node": "q2"
+  },
+  {
+   "t": 26.69,
+   "kind": "hint",
+   "node": "q3"
+  }
+ ],
+ "samples": [
+  {
+   "t": 22.21,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 22.71,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 23.21,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 23.71,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 24.21,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 24.71,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 25.21,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 25.71,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 26.21,
+   "q1": "v2",
+   "q2": "v1",
+   "q3": "v1",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 26.71,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 27.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 27.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 28.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 28.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 29.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 29.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 30.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 30.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 31.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 31.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 32.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 32.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 33.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 33.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 34.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 34.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 35.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 35.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 36.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 36.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 37.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 37.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 38.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 38.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 39.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 39.72,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 40.22,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 40.73,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 41.23,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  },
+  {
+   "t": 41.73,
+   "q1": "v2",
+   "q2": "v2",
+   "q3": "v2",
+   "quorum_via_q2": "v2"
+  }
+ ]
+}

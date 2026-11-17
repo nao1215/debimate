@@ -1,0 +1,52 @@
+  0.12s  write v1 ALL: OK
+  0.16s  pause q2 q3
+  2.16s  write v2 QUORUM: WriteTimeout: Error from server: code=1100 [Coordinator node timed out waiting for replica nodes' responses] message="Operation timed out - received only 1 responses." info={'consistency': 'QUORUM', 'required_responses': 2, 'received_responses': 1, 'write_type': 'SIMPLE'}
+  2.16s  read via q1 ONE: v2
+ 22.01s  write v3 QUORUM: Unavailable: Error from server: code=1000 [Unavailable exception] message="Cannot achieve consistency level QUORUM" info={'consistency': 'QUORUM', 'required_replicas': 2, 'alive_replicas': 1}
+ 22.04s  unpause q2 q3
+ 22.21s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 22.71s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 23.21s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 23.71s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 24.21s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 24.71s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 25.21s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 25.71s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 26.21s  ONE q1=v2 q2=v1 q3=v1  QUORUM via q2=v2
+ 26.71s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 27.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 27.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 28.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 28.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 29.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 29.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 30.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 30.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 31.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 31.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 32.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 32.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 33.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 33.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 34.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 34.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 35.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 35.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 36.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 36.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 37.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 37.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 38.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 38.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 39.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 39.72s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 40.22s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 40.73s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 41.23s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 41.73s  ONE q1=v2 q2=v2 q3=v2  QUORUM via q2=v2
+ 20.75s  q1 log: down q2
+ 21.75s  q1 log: down q3
+ 22.03s  q1 log: up q2
+ 22.03s  q1 log: up q3
+ 26.69s  q1 log: hint q2
+ 26.69s  q1 log: hint q3

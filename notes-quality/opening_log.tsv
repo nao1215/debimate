@@ -76,3 +76,4 @@ database-systems__sql-null	予想	その他	NULL - 比較の結果は UNKNOWN �
 distributed-systems__consistent-hashing	主張	その他	Consistent Hashing - 動くキーが 1/N で済むのは平均の話で、偏りはリングに置く点の数で決まる
 distributed-systems__heartbeat	一覧	その他	Heartbeat - ハートビートが途絶えても、相手が止まったとは限らない
 distributed-systems__leader-and-followers	一覧	その他	Leader and Followers - コミットが返る時点と、Follower に書き込みが届く時点はずれる
+distributed-systems__quorum	場面	その他	Quorum - タイムアウトした書き込みは、失敗したとは限らない

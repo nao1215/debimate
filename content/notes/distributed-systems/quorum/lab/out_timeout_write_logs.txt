@@ -1,0 +1,5 @@
+# q2 のログ（戻した後）
+INFO  [ScheduledTasks:1] 2026-11-17 10:15:59,479 MessagingMetrics.java:207 - MUTATION_REQ messages were dropped in last 5000 ms: 0 internal and 1 cross node. Mean internal dropped latency: 0 ms and Mean cross-node dropped latency: 23016 ms
+# q1 のログ（hint を送り終えた時）
+INFO  [HintsDispatcher:2] 2026-11-17 10:15:59,138 HintsDispatchExecutor.java:300 - Finished hinted handoff of file 29f4c1e9-ea9f-4773-9cf0-7669f037ad79-1794910538830-2.hints to endpoint /172.22.0.3:7000: 29f4c1e9-ea9f-4773-9cf0-7669f037ad79
+INFO  [HintsDispatcher:1] 2026-11-17 10:15:59,138 HintsDispatchExecutor.java:300 - Finished hinted handoff of file cb7dde32-2289-4719-9d23-557d6c3665af-1794910538831-2.hints to endpoint /172.22.0.4:7000: cb7dde32-2289-4719-9d23-557d6c3665af

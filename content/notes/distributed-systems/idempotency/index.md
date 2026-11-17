@@ -34,7 +34,7 @@ topics: ["Reliability"]
 
 ### 再送だけで足りない理由
 
-区別が付かない以上、送信側が選べるのは再送するか諦めるかの 2 つで、どちらを選んでも壊れる場合が残ります。
+区別が付かない以上、送信側が選べるのは再送するか諦めるかの 2 つで、どちらを選んでも壊れる場合が残ります。複数のノードに値を持たせる DB でも同じで、過半数の応答が揃わずに失敗と返った書き込みが、後から全てのノードで読めるようになる様子は [Quorum](/notes/distributed-systems/quorum/) で実験しています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%

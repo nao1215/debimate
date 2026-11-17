@@ -1,8 +1,16 @@
 {
  "path": "content/notes/distributed-systems/quorum/index.md",
- "overall": 3,
- "product": 1,
- "blob": "8a7bfb6dc26667fae43284c610803475dc10ce3b",
- "by": "interest-review stage1（抜き出しで採点、基準 5 本 5・5・3・2・2）",
- "scored_at": "2026-11-11T22:01:50"
+ "overall": 5,
+ "product": 54,
+ "blob": "7a5bdb556574e9cf01103720ed24a7b9f26c2543",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "",
+ "standard": "gate-v1"
 }
