@@ -1,0 +1,3 @@
+setting=synchronous_commit=off acked=15702 survived=15530 lost=172
+last_write_lsn=0/1A1A000 acked_beyond_last_write=172
+lost_equals_beyond=True lost_ids=15531..15702

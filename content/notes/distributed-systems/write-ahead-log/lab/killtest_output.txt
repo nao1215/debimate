@@ -1,0 +1,16 @@
+# go run ./killtest -setting <setting> を 3 つの設定で 5 回ずつ（2026-11-17、PostgreSQL 18.6、ext4・NVMe SSD）
+setting=default acked=2917 survived=2917 lost=0 last_ack_ms=2028
+setting=synchronous_commit=off acked=36620 survived=36324 lost=296 last_ack_ms=2032
+setting=fsync=off acked=34924 survived=34924 lost=0 last_ack_ms=2028
+setting=default acked=2940 survived=2940 lost=0 last_ack_ms=2032
+setting=synchronous_commit=off acked=56881 survived=51308 lost=5573 last_ack_ms=2021
+setting=fsync=off acked=61478 survived=61478 lost=0 last_ack_ms=2035
+setting=default acked=2938 survived=2938 lost=0 last_ack_ms=2030
+setting=synchronous_commit=off acked=33711 survived=33394 lost=317 last_ack_ms=2032
+setting=fsync=off acked=32682 survived=32682 lost=0 last_ack_ms=2031
+setting=default acked=2794 survived=2794 lost=0 last_ack_ms=2026
+setting=synchronous_commit=off acked=33380 survived=33347 lost=33 last_ack_ms=2033
+setting=fsync=off acked=33182 survived=33182 lost=0 last_ack_ms=2029
+setting=default acked=2767 survived=2767 lost=0 last_ack_ms=2027
+setting=synchronous_commit=off acked=33287 survived=27200 lost=6087 last_ack_ms=2038
+setting=fsync=off acked=33837 survived=33837 lost=0 last_ack_ms=2030

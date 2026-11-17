@@ -1,9 +1,9 @@
 {
  "path": "content/notes/distributed-systems/write-ahead-log/index.md",
- "overall": 3,
- "product": 24,
- "blob": "f62acd17c55dd62b5abc4279615f686186d79a85",
- "by": "別担当の採点し直し（抜き出しだけ、基準 5 本と同じ回、2026-11-12）",
+ "overall": 4,
+ "product": 54,
+ "blob": "d84c879dce781681d60d58a0c8d72211825ddf3b",
+ "by": "note-rewrite ワークフロー（読解 A・事実確認・抜き出しで採点し直し）",
  "baseline": [
   5,
   5,

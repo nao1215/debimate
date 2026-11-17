@@ -78,3 +78,4 @@ distributed-systems__heartbeat	一覧	その他	Heartbeat - ハートビート�
 distributed-systems__leader-and-followers	一覧	その他	Leader and Followers - コミットが返る時点と、Follower に書き込みが届く時点はずれる
 distributed-systems__quorum	場面	その他	Quorum - タイムアウトした書き込みは、失敗したとは限らない
 math__bayes-theorem	予想	その他	ベイズの定理 - 陽性の割合が学習時と違えば、同じ予測確率でも意味が変わる
+distributed-systems__write-ahead-log	予想	その他	WAL - ログをどこまで書いてから成功を返すかで、消えるコミットが変わる

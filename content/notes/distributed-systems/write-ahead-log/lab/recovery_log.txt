@@ -1,0 +1,8 @@
+# go run ./killtest -setting synchronous_commit=off -out out.json の 6 回目（2026-11-17）。out.log から復旧の行を抜き出した
+44:2026-11-17 13:07:02.430 UTC [50] LOG:  checkpoint complete: wrote 0 buffers (0.0%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.027 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/1765F90, redo lsn=0/1765F90
+64:2026-11-17 13:07:06.466 UTC [32] LOG:  database system was interrupted; last known up at 2026-11-17 13:07:02 UTC
+65:2026-11-17 13:07:07.000 UTC [32] LOG:  database system was not properly shut down; automatic recovery in progress
+66:2026-11-17 13:07:07.002 UTC [32] LOG:  redo starts at 0/1766020
+67:2026-11-17 13:07:07.021 UTC [32] LOG:  invalid magic number 0000 in WAL segment 000000010000000000000001, LSN 0/1A1A000, offset 10592256
+68:2026-11-17 13:07:07.021 UTC [32] LOG:  redo done at 0/1A19FB8 system usage: CPU: user: 0.01 s, system: 0.00 s, elapsed: 0.01 s
+70:2026-11-17 13:07:07.052 UTC [30] LOG:  checkpoint complete: wrote 149 buffers (0.9%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.019 s, total=0.028 s; sync files=35, longest=0.001 s, average=0.001 s; distance=2768 kB, estimate=2768 kB; lsn=0/1A1A048, redo lsn=0/1A1A048

@@ -1,0 +1,20 @@
+# binlog あり（MySQL 8.4 の既定）
+innodb_flush_log_at_trx_commit=1 acked=1186 survived=1186 lost=0
+innodb_flush_log_at_trx_commit=2 acked=1034 survived=1034 lost=0
+innodb_flush_log_at_trx_commit=0 acked=734 survived=734 lost=0
+innodb_flush_log_at_trx_commit=1 acked=1234 survived=1234 lost=0
+innodb_flush_log_at_trx_commit=2 acked=2233 survived=2233 lost=0
+innodb_flush_log_at_trx_commit=0 acked=2235 survived=2234 lost=1
+innodb_flush_log_at_trx_commit=1 acked=1367 survived=1367 lost=0
+innodb_flush_log_at_trx_commit=2 acked=1656 survived=1656 lost=0
+innodb_flush_log_at_trx_commit=0 acked=2188 survived=2188 lost=0
+# --skip-log-bin
+skip-log-bin=true innodb_flush_log_at_trx_commit=1 acked=2542 survived=2542 lost=0
+skip-log-bin=true innodb_flush_log_at_trx_commit=2 acked=16097 survived=16097 lost=0
+skip-log-bin=true innodb_flush_log_at_trx_commit=0 acked=20447 survived=20440 lost=7
+skip-log-bin=true innodb_flush_log_at_trx_commit=1 acked=1832 survived=1832 lost=0
+skip-log-bin=true innodb_flush_log_at_trx_commit=2 acked=17855 survived=17855 lost=0
+skip-log-bin=true innodb_flush_log_at_trx_commit=0 acked=18445 survived=18441 lost=4
+skip-log-bin=true innodb_flush_log_at_trx_commit=1 acked=2295 survived=2295 lost=0
+skip-log-bin=true innodb_flush_log_at_trx_commit=2 acked=17025 survived=17025 lost=0
+skip-log-bin=true innodb_flush_log_at_trx_commit=0 acked=15846 survived=15838 lost=8

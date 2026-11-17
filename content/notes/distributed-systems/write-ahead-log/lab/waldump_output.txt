@@ -1,0 +1,7 @@
+# PostgreSQL 18.6 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+# data_checksums=on full_page_writes=on
+# relation=base/5/16384 start=0/1793FC0 end=0/17940B8
+# pg_waldump --start 0/1793FC0 --end 0/17940B8
+rmgr: XLOG        len (rec/tot):     49/   109, tx:          0, lsn: 0/01793FC0, prev 0/01793F48, desc: FPI_FOR_HINT , blkref #0: rel 1663/5/16384 blk 0 FPW
+rmgr: Heap        len (rec/tot):     71/    71, tx:        755, lsn: 0/01794048, prev 0/01793FC0, desc: HOT_UPDATE old_xmax: 755, old_off: 1, old_infobits: [], flags: 0x60, new_xmax: 0, new_off: 2, blkref #0: rel 1663/5/16384 blk 0
+rmgr: Transaction len (rec/tot):     34/    34, tx:        755, lsn: 0/01794090, prev 0/01794048, desc: COMMIT 2026-11-17 13:04:10.395431 UTC

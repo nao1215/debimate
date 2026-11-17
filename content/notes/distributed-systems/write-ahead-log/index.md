@@ -1,5 +1,5 @@
 ---
-title: "WAL - ログ先行書き込みと 2 つのウォーターマーク"
+title: "WAL - ログをどこまで書いてから成功を返すかで、消えるコミットが変わる"
 date: 2026-08-05
 draft: false
 series: ["技術ノート", "Distributed Systems"]
@@ -11,476 +11,382 @@ crossTopics:
   database-systems: ["Storage Engine"]
 ---
 
-WAL（Write-Ahead Log、ログ先行書き込み）は、DB（データベース）の表や索引をディスクに書き出す前に、その変更をログとして永続化する仕組みです。更新の途中で停止しても、ログを使って未反映の変更を適用できます。毎回すべてのデータページを同期する代わりに、追記するログを同期して応答できる点も利点です。
-
-例えば、残高を更新して成功を返した直後にサーバーが停止したとします。メモリだけにあった更新は消えますが、ログに残っていれば再起動時に残高を復元できます。先に書く対象と、後から書く対象は以下の通りです。
-
-{{< note-steps border="slate" divider="slate" caption="WALが定めるのは、ディスクに書き出す順序です。メモリ上の更新順序とは区別します。" >}}
-- title: 変更を記録
-  body: 表や索引に加える変更を WAL に追記します。
-- title: WAL を同期
-  body: 変更を復元できるログを先に永続化します。
-- title: データページを同期
-  body: 対応する表や索引のページを書き出します。同期コミットの応答は、この完了を待つ必要がありません。
-{{< /note-steps >}}
-
-メモリ上のページは WAL の同期前に変更しても構いません。そのページをディスクに書き出す時には、対応する WAL の同期が終わっている必要があります。また、成功応答済みの更新を停止後も残す同期コミットでは、コミットに必要な WAL を同期してから応答します。[PostgreSQL の WAL の説明](https://www.postgresql.org/docs/current/wal-intro.html)も、この永続化の順序を示しています。
-
-以下は、本記事の後半で扱うログ上の 3 つの位置の例です。
-
-{{< figure src="images/write-ahead-log_concept.svg" alt="ログを左から右へ追記するテープとして描いた図。スナップショットに反映した segment 1 と 2 は低位ウォーターマーク L = 201 より前で、削除して良い。201〜240 は高位ウォーターマーク H = 240 までの確定済みの範囲で、241〜250 はログ末尾 T = 250 までの未確定の範囲としてクライアントに見せない" caption="1 台のログの上の低位・高位ウォーターマークとログ末尾" align="center" >}}
-
-上記の図の左側（segment 1 と 2）は捨てて良い古いログ、右側はまだクライアントに見せないエントリです。
-
-<br>
-
-本記事では、1 台のサーバーが状態を失わないための WAL から、ログを複製した時に現れる 2 つの位置、低位ウォーターマーク（Low-Water Mark）と高位ウォーターマーク（High-Water Mark）までを説明します。扱う疑問は次の 6 つです。
-
-- 状態をディスク上のデータ構造に直接書く方法には、どんな問題があるのか。
-- エントリをどんな形式で追記するのか。
-- ディスクへの同期が失敗した時、同期をやり直して良いのか。
-- 再起動した時、書きかけのエントリが残ったログからどう復旧するのか。
-- 追記しかしないログは、どこまで捨てて良いのか。
-- ログを複製した時、どこまでをクライアントに見せて良いのか。
-
-トランザクションの[分離レベル](/notes/database-systems/transaction-isolation/)や、ログを使った時点復旧は、本記事では扱いません。
-
----
-
-### WAL が必要な理由
-
-状態をディスク上のデータ構造に直接書く方法には、2 つの問題があります。1 つは速度、もう 1 つは中断です。
-
-速度の面では、[索引](/notes/database-systems/b-tree/)や表のページ（ディスクに読み書きする固定長の単位）はディスク上で離れた位置にあるため、更新のたびに複数箇所に書き込む必要があります。WAL は末尾に追記するだけなので、書き込み位置が連続します。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/wal-intro.html)も、ディスク書き込みが減る理由として、コミットのたびに変更した全てのデータファイルを同期する代わりに WAL だけを同期すれば済む点を挙げています。
-
-中断はより深刻です。複数のページを書き換える途中でプロセスが停止すると、一部だけが更新された状態が残ります。例えば、索引のページだけを書き換えた所で停止すると、以下のようになります。
-
-{{< note-steps caption="索引と本体を別々に更新し、その途中で停止した場合。" >}}
-- title: 索引を更新
-  body: 新しいデータの位置を記録します。
-- title: 本体の更新前に停止
-  body: 索引は新しい状態、本体は古い状態のまま残ります。
-- title: 再起動して検索
-  body: 索引が指す先に、目的のデータが見つかりません。
-{{< /note-steps >}}
-
-上記の例で壊れているのは、索引と本体の対応です。どちらのページも単体では読めるため、サーバーは矛盾に気付かないまま古いデータを返すか、存在しない位置を参照します。停止はどの瞬間にも起こり得るので、書き込む順番を工夫しても、複数箇所の更新を分割不能にはできません。
-
-WAL を先に永続化しておけば、データページの更新が途中で止まっても、ログから再適用できます。トランザクションを扱う DB では、どの変更を確定したものとして復旧するかも判断します。以下のサンプルは、1 件の完全なレコードを 1 件の確定したコマンドとして扱う、単一 Writer のログに絞ります。
-
-単一 Writer でも、末尾のレコードが途中までしか書かれない場合があります。しかし「同期前に停止した」だけでは、そのレコードが消えるとは限りません。OS が既に書き出していれば、完全なレコードが残ります。
-
-{{< note-panels caption="本記事のサンプルで、停止した位置と復旧後の結果を比べます。" >}}
-- title: 同期完了前
-  body: 完全なレコードが残る場合も、一部だけ残る場合もあります。成功はまだ応答しません。
-- title: 同期完了後・応答前
-  body: ログから復元できます。しかしクライアントには成功したか分かりません。
-- title: 成功応答後
-  body: ログから復元できます。ストレージが同期の保証を守ることが前提です。
-{{< /note-panels >}}
-
-このため、応答が届かなかった要求は、再試行すると二重に適用される可能性があります。再送の扱いは[冪等性](/notes/distributed-systems/idempotency/)で別に説明しています。WAL だけで要求の重複を防げるわけではありません。
-
----
-
-### エントリの形式と追記
-
-WAL に何を書くかは実装によって違います。状態を変えるコマンドをそのまま書く方式と、変更後のページの内容を書く方式があり、PostgreSQL は後者に近い形でページに対する変更を記録します。以下ではコマンドを書く方式で説明します。
-
-1 件のエントリには、順序を表す通し番号（index）と、再適用に必要なデータ、そして破損を検出するためのチェックサムを持たせます。index はログの中での連番で、DB の索引とは関係がありません。チェックサムは、データから計算した短い値で、偶発的な破損を検出します。ここで使う CRC32 は暗号学的なハッシュではなく、異なる内容でも同じ値になる場合があります。
-
-[Go](https://go.dev/) で書くと次のようになります。レコードの最初の 8 バイトが長さ（4 バイト）とチェックサム（4 バイト）で、その後に続く本体の頭 8 バイトが index です。
-
-```go
-// maxEntrySize は、indexを含む本体の最大バイト数です。
-const maxEntrySize = 8 << 20
-
-// Entry は WAL に 1 件追記する状態変更です。
-type Entry struct {
-	Index uint64
-	Data  []byte
-}
-
-// Append は entry をログ末尾に追記し、ディスクに書き終えるまで戻りません。
-func Append(f *os.File, e Entry) error {
-	if len(e.Data) > maxEntrySize-8 {
-		return fmt.Errorf("entry data exceeds %d bytes", maxEntrySize-8)
-	}
-	body := make([]byte, 8+len(e.Data))
-	binary.BigEndian.PutUint64(body, e.Index)
-	copy(body[8:], e.Data)
-
-	record := make([]byte, 8+len(body))
-	binary.BigEndian.PutUint32(record, uint32(len(body)))
-	copy(record[8:], body)
-	// チェックサムは長さと本体の両方を覆う。
-	binary.BigEndian.PutUint32(record[4:], crc32.ChecksumIEEE(append(record[:4:4], body...)))
-
-	if n, err := f.Write(record); err != nil {
-		return err
-	} else if n != len(record) {
-		return io.ErrShortWrite
-	}
-	return f.Sync()
-}
-```
-
-最後の `f.Sync()` が耐久性を決めています。`Write` が返った時点でデータは OS のページキャッシュ（OS が書き込みを一旦ためておくメモリ上の領域）にあり、まだディスクに届いていない部分は、電源断で失われる可能性があります。`Sync` はそれをディスクに書き出す指示です。
-
-1 件ごとに同期すると遅くなるため、複数の書き込みをまとめて 1 回で同期する実装が使われます。まとめている間は応答も待たせるので、同期の回数を減らす代わりに応答時間が延びます。
-
-この差を手元のマシン（Ubuntu 26.04.1、ext4、NVMe SSD の KIOXIA EXCERIA PLUS G4）で測りました。`Append` と同じ形式で 116 バイトのレコードを作り、何件ごとに `Sync` を 1 回呼ぶかを変えます。
-
-前半は休まず書き続けた時の 1 秒あたりの件数、後半は 1 ミリ秒ごとに 1 件届くとして、規定の件数が揃うまで待ってから書いた時の、届いてから同期が終わるまでの時間です。各値は 3 回の中央値です。
-
-以下は計測部分で、コードの全体は [fsyncbench/main.go](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/write-ahead-log/lab/fsyncbench/main.go) にあります。
-
-```go
-// appendBatch writes n records in one Write and makes them durable with one Sync.
-func appendBatch(f *os.File, next *uint64, n int, data []byte) {
-	buf := make([]byte, 0, n*(16+len(data)))
-	for i := 0; i < n; i++ {
-		*next++
-		buf = append(buf, encode(*next, data)...)
-	}
-	if _, err := f.Write(buf); err != nil {
-		panic(err)
-	}
-	if err := f.Sync(); err != nil {
-		panic(err)
-	}
-}
-```
-
-<br>
-
-<details>
-<summary>計測の出力（各値は 3 回の中央値）</summary>
+PostgreSQL を速くする設定として、次の 2 つがよく紹介されます。テスト用の DB（データベース）を [Testcontainers](https://testcontainers.com/) で立てる [エムスリーのテックブログ](https://www.m3tech.blog/entry/2026/08/28/160000)でも、2 つが並んで使われています。
 
 ```text
-[part 1] back to back, 1 s per batch size, median of 3
-batch  records/s  syncs/s  round_p50_ms  round_p99_ms
-    1       1328     1328         0.699         2.014
-    4       5671     1418         0.692         0.840
-   16      22063     1379         0.704         0.912
-   64      85654     1338         0.732         1.000
-  256     314132     1227         0.769         1.586
-
-[part 2] one record every 1 ms, wait for a full batch, then Sync, median of 3
-batch  latency_p50_ms  latency_p99_ms
-    1           1.394          23.430
-    4           2.828           4.965
-   16           9.453          17.945
-   64          33.667          64.965
+synchronous_commit = off
+fsync = off
 ```
 
-</details>
+どちらか一方だけを設定した PostgreSQL に 1 行ずつ INSERT を送り続け、途中で `docker kill` を使ってプロセスごと強制終了したとします。起動し直した時、成功が返ったはずの行が消えているのは、どちらの設定でしょうか。
 
 <br>
 
-以下は、上記の出力を描いた図です。図の文字は英語で、横軸の Records per Sync は `Sync` 1 回でまとめる件数です。左の Back to back は待たずに続けて書いた時、右の 1 record arrives every 1 ms は 1 ミリ秒ごとに 1 件届く時の結果です。
+消えたのは synchronous_commit = off の方でした。fsync = off は、5 回試して 5 回とも 1 行も失いませんでした。以下は、手元の PostgreSQL 18.6 で、既定の設定と 2 つの設定を 5 回ずつ試した結果です。
 
-{{< figure src="images/write-ahead-log_fsync_batch.svg" alt="左は Sync 1 回あたりの件数を 1 から 256 に増やした時の 1 秒あたりの件数で、1,328 件から 314,132 件までほぼ比例して増える。右は 1 ミリ秒ごとに 1 件届く時の応答時間で、中央値は 1 件ごとの 1.4 ミリ秒から 64 件ごとの 34 ミリ秒まで延びる。p99 は 1 件ごとが 23 ミリ秒と高く、4 件ごとで最も低い" caption="Sync 1 回でまとめる件数と、処理件数・応答時間" align="center" >}}
+{{< figure src="images/wal_kill_result.webp" alt="左は 1 秒あたりに成功が返った INSERT の数の中央値で、既定は 1,438、synchronous_commit = off は 16,590、fsync = off は 16,668。右は docker kill の後に消えていた、成功が返った行の数で、既定と fsync = off は 5 回とも 0 行、synchronous_commit = off は 5 回とも消え、33 行から 6,087 行だった" caption="3 つの設定で 1 行ずつ INSERT し、docker kill で止めた結果（5 回ずつ）" align="center" >}}
 
-1 回の `Sync` は件数によらず約 0.7 ミリ秒なので、1 秒あたりの件数はまとめた数にほぼ比例して増えます。一方で、件数が揃うのを待つ分だけ応答は延びます。1 件ごとの同期は処理能力（約 1,300 件/秒）が到着（1,000 件/秒）に近く、少し遅れると待ち行列が伸びるため [p99](/ml/math/quantile/) が跳ねます。
+名前だけを見ると、fsync を止める方が危なそうです。違いは、成功を返す時点で、コミットの記録がどこまで届いているかにあります。その記録を残す仕組みが WAL です。
 
-計測中は他の処理も動いていて、別の回では 1 件ごとの中央値が 440 ミリ秒になり、前半の大きいバッチでも `Sync` が 3 ミリ秒前後に延びる回がありました。出力の全体は [fsyncbench_output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/write-ahead-log/lab/fsyncbench_output.txt) にあります。
+[WAL](https://www.postgresql.org/docs/18/wal-intro.html)（Write-Ahead Log、ログ先行書き込み）は、表や索引のデータを書き換える前に、変更の内容を追記するだけのログに書いておく仕組みです。落ちた後は、このログを読み直して、データに反映されていなかった変更をやり直します。
 
-本体の上限には index の 8 バイトも含めるため、Data の上限は 8MiB から 8 バイトを引いた値です。書く側と読む側で同じ上限を使わなければ、正常に保存したレコードを復旧時に拒否してしまいます。ファイルは追記モードで開き、書き込みまたは同期に失敗したら、そこで書き込みを止めます。末尾を確認せずに次のレコードを継ぎ足しません。
+WAL は PostgreSQL や SQLite の WAL モードで使われ、MySQL の InnoDB では同じ役割のログを redo log と呼びます。[LSM-Tree](/notes/database-systems/lsm-tree/) を使うストレージや、[Leader and Followers](/notes/distributed-systems/leader-and-followers/) で複製する仕組みも、同じ形のログを中心に置きます。
 
 <br>
 
-`Sync` が失敗した後の扱いも、耐久性を左右します。2018 年には、PostgreSQL の [fsync（`Sync` が内部で呼ぶシステムコール）の扱い](https://wiki.postgresql.org/wiki/Fsync_Errors)が問題になりました。
+本記事では、DB の設定で synchronous_commit を見かけた人、pg_wal のディレクトリがディスクを埋めて慌てた人、ログを使う仕組みを自分で書こうとしている人に向けて、次の疑問に答えます。
 
-一部の OS は、書き出せなかったページキャッシュのデータを捨てて fsync の失敗として報告し、もう一度 fsync を呼ぶと成功を返します。それまでの PostgreSQL はデータファイルの fsync が失敗すると再試行していたので、失われたデータを書き終えたものとして扱う恐れがありました。
+- コミットが成功を返した時、ディスクには何があるのか
+- synchronous_commit = off と fsync = off は、何を手放すのか
+- 1 件ずつ同期すると遅いのに、同時に送ると速くなるのはなぜか
+- 同期そのものが失敗したら、何を信じれば良いのか
+- ログはいつ消せるのか。pg_wal が膨らむのはなぜか
+- 複製した時、どこから先をクライアントに見せてはいけないのか
 
-以下は、データファイルの fsync が失敗した後の 2 つの扱いを並べた図です。
-
-{{< figure src="images/write-ahead-log_fsync_retry.svg" alt="上段の再試行（2019 年 2 月より前）は、fsync 失敗、OS がデータを捨てる、fsync 成功と進み、赤い箱の書けたと扱うに至る。下段の停止（11.2 など以降）は、fsync 失敗、サーバーを止める、再起動と進み、青い箱の WAL から再生するに至る" caption="fsync が失敗した後の再試行と停止" align="center" >}}
-
-上記の図の上段では、2 回目の fsync の成功が、捨てられたデータについて何も保証していません。
-
-2019 年 2 月の更新（[PostgreSQL 11.2](https://www.postgresql.org/docs/release/11.2/) など）からは、既定では fsync が失敗すると再試行せずにサーバーを止め、再起動時に WAL から再生します。失敗したのはデータファイル側の同期で、その時点の WAL は、失われたデータの唯一残った写しになり得ます。
-
-PostgreSQL の[非同期コミット](https://www.postgresql.org/docs/current/wal-async-commit.html)では、WAL の同期完了を待たずに成功を返します。直近のコミットを失う可能性と引き換えに待ち時間を減らします。これは WAL を使わない設定ではなく、WAL をデータページより先に永続化する規則は残ります。
+実験は、Docker で動かした PostgreSQL 18.6 と MySQL 8.4 で行いました。トランザクションの[分離レベル](/notes/database-systems/transaction-isolation/)と、ログを使った時点復旧は扱いません。
 
 ---
 
-### 復旧の手順
+### コミットが返った時にディスクにあるもの
 
-復旧では、先頭から完全なレコードを読みます。次のコードは、正常な終端、途中で切れた末尾、破損を区別します。
+最初に、ログを使わずに表のデータを直接書き換える場合を考えます。1 行の INSERT でも、表のページと、主キーを引く索引のページという、ファイルの離れた位置を書き換えます。成功を返す前にそれぞれをディスクへ書き出すと、離れた位置への書き出しを何回も待つことになります。
+
+途中で止まると、索引だけが新しく表が古い、という組み合わせが残ります。どちらのページも単体では正しく読めるので、壊れたことに気付けません。[B-Tree](/notes/database-systems/b-tree/) のページ分割のように、1 回の変更で書き換えるページが増えるほど、この問題は大きくなります。
+
+WAL は、変更の内容をログの末尾に順に追記し、成功を返す前にはログだけをディスクへ書き出します。表や索引のページは、後でまとめて書き出します。この書き出しを checkpoint と呼びます。落ちた時に表のページが古くても、ログが残っていれば変更をやり直せます。
+
+WAL が決めているのは、ディスクに書き出す順番です。メモリ上のページはいつ書き換えてもよく、そのページをディスクに書き出す前に、対応するログがディスクに届いていれば良い、という規則です。
+
+<br>
+
+PostgreSQL に付属する [pg_waldump](https://www.postgresql.org/docs/18/pgwaldump.html) を使うと、ログの中身を読めます。checkpoint の直後に、索引の無い列（残高）を 400 から 500 に変える UPDATE を 1 回だけ実行した時のログは、次の 3 件でした（出力は列を一部省略）。手順と省略前の出力は [waldump.sh](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/write-ahead-log/lab/waldump.sh) にあります。
+
+```text
+rmgr: XLOG        len (rec/tot):  49/ 109, tx:   0, lsn: 0/01793FC0, desc: FPI_FOR_HINT , blkref #0: rel 1663/5/16384 blk 0 FPW
+rmgr: Heap        len (rec/tot):  71/  71, tx: 755, lsn: 0/01794048, desc: HOT_UPDATE old_off: 1, ... new_off: 2, blkref #0: rel 1663/5/16384 blk 0
+rmgr: Transaction len (rec/tot):  34/  34, tx: 755, lsn: 0/01794090, desc: COMMIT 2026-11-17 13:04:10.395431 UTC
+```
+
+1 件目は、checkpoint の後で初めて手を入れたページの中身を丸ごとログに写した記録です。この回は、UPDATE が行を読んだ時に、その行が見えるかどうかの目印（ヒントビット）をページに書いたので、その時点で写しが取られました。ページを書き出している途中で OS が止まると、新旧の中身が混ざったページが残ることがあるので、その時はこの写しから戻します。
+
+2 件目が行の更新、3 件目がコミットの記録です。PostgreSQL の WAL に書かれるのは SQL の文ではなく、どのページをどう変えたかです。[etcd](https://etcd.io/) のように、状態を変えるコマンドをそのまま書く実装もあります。各行の `lsn` は、ログの先頭からのバイト位置を表す番号です。
+
+コミットが成功するとは、3 件目にある COMMIT の記録が、決められた所まで届いたということです。表のファイル（`rel 1663/5/16384`）は、この時点ではまだ書き換わっていません。
+
+<br>
+
+#### 記録が通る 3 つの置き場
+
+「ディスクに届いた」には段階があります。PostgreSQL がログを書くと、記録はまず PostgreSQL のメモリにある WAL バッファに入り、`write` で OS に渡され、`fsync` でディスクに届きます。以下は、3 つの置き場と、設定ごとに成功を返す位置を描いた図です。
+
+{{< figure src="images/wal_layers.webp" alt="左から PostgreSQL のメモリ（WAL バッファ）、OS のメモリ（ページキャッシュ）、ディスク（WAL のファイル）の 3 つの箱が write と fsync の矢印でつながる。synchronous_commit = off は WAL バッファ、fsync = off はページキャッシュ、既定はディスクまで届いたら成功を返す。PostgreSQL が落ちると WAL バッファの中身が消え、OS が落ちる・電源が切れるとページキャッシュの中身も消える。ディスクの中身はどちらでも残る" caption="コミットの記録が通る 3 つの置き場と、設定ごとに成功を返す位置" align="center" >}}
+
+PostgreSQL のプロセスが落ちると、そのメモリにある WAL バッファが消えます。OS のページキャッシュは OS のメモリなので、PostgreSQL が落ちても残り、後で OS がディスクへ書き出します。OS が止まったり電源が切れたりすると、ページキャッシュも消えます。冒頭の `docker kill` はプロセスを止めるだけなので、消えるのは図で左にある箱だけです。
+
+ディスクに届いた後に落ちても、別の問題が残ります。コミットが済んでから成功の応答がクライアントに届くまでの間に落ちると、クライアントからは成功したかどうかが分かりません。その要求を送り直すと、同じ変更が 2 回適用されることがあります。WAL はこの重複を防がないので、[Idempotency](/notes/distributed-systems/idempotency/) のように、送り直しても結果が変わらない作りが別に必要です。
+
+---
+
+### synchronous_commit = off と fsync = off が手放すもの
+
+[synchronous_commit](https://www.postgresql.org/docs/18/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT) = off にすると、PostgreSQL はコミットの記録を WAL バッファに入れた時点で成功を返します。
+
+バッファの中身は、WAL writer というバックグラウンドのプロセスが `wal_writer_delay`（既定 200 ms）ごとに書き出します。書き出す前に落ちて失い得る範囲は、[最大で `wal_writer_delay` の 3 倍](https://www.postgresql.org/docs/18/wal-async-commit.html)です。
+
+冒頭の実験は [Go](https://go.dev/) で書き、1 本の接続で 1 行ずつ INSERT を送り、2 秒後に別の goroutine から `docker kill` を呼びました。以下は、その部分の抜粋です。全体は [killtest/main.go](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/write-ahead-log/lab/killtest/main.go) にあります。
 
 ```go
-var ErrIncomplete = errors.New("incomplete record")
-var ErrCorrupt = errors.New("corrupt record")
+go func() {
+	time.Sleep(*killAfter)
+	run("kill", container) // SIGKILL。postmaster も子プロセスもまとめて止まる
+	close(stop)
+}()
 
-func Replay(r io.Reader) ([]Entry, error) {
-	var entries []Entry
-	header := make([]byte, 8)
-	for {
-		n, err := io.ReadFull(r, header)
-		if err == io.EOF && n == 0 {
-			return entries, nil
-		}
-		if err != nil {
-			return entries, readError(err)
-		}
-		size := binary.BigEndian.Uint32(header)
-		if size < 8 || size > maxEntrySize {
-			return entries, ErrCorrupt
-		}
-		body := make([]byte, size)
-		if _, err := io.ReadFull(r, body); err != nil {
-			return entries, readError(err)
-		}
-		if crc32.ChecksumIEEE(append(header[:4:4], body...)) != binary.BigEndian.Uint32(header[4:]) {
-			return entries, ErrCorrupt
-		}
-		entries = append(entries, Entry{
-			Index: binary.BigEndian.Uint64(body),
-			Data: body[8:],
-		})
+for id := int64(1); ; id++ {
+	var lsn string
+	err := c.QueryRow(ctx, "INSERT INTO t VALUES ($1) RETURNING pg_current_wal_insert_lsn()::text", id).Scan(&lsn)
+	if err != nil {
+		break // 止めた後は失敗する。成功が返った行だけを数える
 	}
+	res.Acks = append(res.Acks, ack{ID: id, AtMs: ms(), LSN: lsn})
 }
+```
 
-func readError(err error) error {
-	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
-		return ErrIncomplete
-	}
+INSERT と一緒に受け取る `pg_current_wal_insert_lsn()` は、その行の記録を WAL バッファに入れた位置です。
+
+別の接続からは 5 ms ごとに `pg_current_wal_lsn()` を読み、OS に渡した（write した）ログの位置を記録しました。2 つの位置を比べると、成功が返った行の記録が OS まで届いていたかが分かります。以下は、6,087 行が消えた回の、止める直前の 1 秒です。
+
+{{< figure src="images/wal_async_loss.webp" alt="動く図。上の帯は成功が返った行、下の帯は OS に渡した行で、行番号 16,964 から 33,287 までを横に並べる。止める 1 秒前から、成功が返った行は滑らかに伸びるが、OS に渡した行は段を付けて遅れて伸び、その差が数千行ある。止めた後、成功が返った行のうち、OS に渡した位置より後ろの 6,087 行が赤く消える" caption="synchronous_commit = off で止める直前の 1 秒（実測の時刻を 0.2 倍速で再生）" align="center" >}}
+
+成功が返った行と、OS に渡した行の差は、多い時で数千行ありました。消えていた 6,087 行は、止まる直前の 359 ms に成功が返った行で、ドキュメントが示す上限の 600 ms に収まっています。10 行おきに残した記録で突き合わせると、消えた行の境目と、最後に OS へ渡した位置は、同じ 10 行の間にありました。
+
+<br>
+
+1 行単位で比べるために、同じ設定でもう 1 回止め、今度は成功が返った行を全て残しました。この回は 172 行が消え、その 172 行は、記録が最後に OS へ渡した位置（0/1A1A000）より後ろにある行と 1 行の違いも無く一致しました。突き合わせの出力は [killtest_async_check.txt](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/write-ahead-log/lab/killtest_async_check.txt) にあります。
+
+<br>
+
+この回で起動し直した PostgreSQL のログには、ログを読み直して止まった位置が出ています。
+
+```text
+LOG:  database system was not properly shut down; automatic recovery in progress
+LOG:  redo starts at 0/1766020
+LOG:  invalid magic number 0000 in WAL segment 000000010000000000000001, LSN 0/1A1A000, offset 10592256
+LOG:  redo done at 0/1A19FB8 system usage: CPU: user: 0.01 s, system: 0.00 s, elapsed: 0.01 s
+```
+
+ログのファイルは 0/1A1A000 から先が書かれずに 0 のままで、PostgreSQL はそこをログの終わりとして読み直しを終えます。0/1A1A000 は、最後に OS へ渡した位置と同じです。消えた行は、この終わりより後ろにあるはずだった記録です。記録はコミットの順に並んでいるので、後のトランザクションだけが残って前が消えることはありません。synchronous_commit = off で起きるのは直近のコミットを失うことで、DB が壊れることではありません。
+
+<br>
+
+#### fsync = off が手放すもの
+
+fsync = off の PostgreSQL は、コミットの時に `write` で OS に渡すところまでは行い、`fsync` だけを省きます。プロセスが落ちても記録はページキャッシュに残るので、冒頭の実験では 1 行も消えませんでした。手放しているのは、OS が止まった時と電源が切れた時の備えです。
+
+この備えが無いと、失うのは直近のコミットだけでは済みません。[fsync](https://www.postgresql.org/docs/18/runtime-config-wal.html#GUC-FSYNC) を止めると、ログを表のページより先にディスクへ届ける、という WAL の規則も OS 任せになります。そのため、OS や機械が止まった時には、回復できない形で DB が壊れ得ます。fsync を off にして良いのは、外のデータから DB を作り直せる時だけです。
+
+テストのために毎回作り直す DB は、ちょうどその場合に当たります。手元の環境で電源断は試していないので、本記事の実験が示すのは、プロセスが落ちた時の違いだけです。
+
+<br>
+
+#### 他の DB にある同じ設定
+
+成功を返す位置を選べる設定は、他の DB にもあります。MySQL の [innodb_flush_log_at_trx_commit](https://dev.mysql.com/doc/refman/8.4/en/innodb-parameters.html#sysvar_innodb_flush_log_at_trx_commit) を 1・2・0 に変えて同じ実験をすると、次の通りでした。MySQL は、redo log とは別に持つ binlog の同期を外すため、`--skip-log-bin` で起動しました。PostgreSQL は 5 回、MySQL は 3 回ずつ試しています。
+
+| DB | 設定 | 成功を返す時の位置 | docker kill で消えた行 |
+|---|---|---|---|
+| PostgreSQL | 既定 | ディスク | 0・0・0・0・0 |
+| PostgreSQL | synchronous_commit = off | PostgreSQL のメモリ | 33〜6,087 |
+| PostgreSQL | fsync = off | OS のメモリ | 0・0・0・0・0 |
+| MySQL | 1（既定） | ディスク | 0・0・0 |
+| MySQL | 2 | OS のメモリ | 0・0・0 |
+| MySQL | 0 | MySQL のメモリ | 7・4・8 |
+
+MySQL の 2 は PostgreSQL の fsync = off に、0 は synchronous_commit = off に近い位置で成功を返し、プロセスが落ちた時の結果も同じ組み合わせに分かれました。SQLite の WAL モードで [synchronous = NORMAL](https://www.sqlite.org/pragma.html#pragma_synchronous) にした時も、アプリケーションが落ちてもコミットは残り、電源断や OS の停止では直近のコミットが巻き戻ることがあります。
+
+ログを中心に置くシステムでも、同期しないことを選ぶ例があります。[Kafka](https://kafka.apache.org/39/design/design/) は、受け取ったデータをすぐにファイルへ書きますが、ディスクへの同期は必ずしもせず、ページキャッシュに渡すだけです。毎回 `fsync` すると性能が 2〜3 桁落ちるからで、1 台の電源断で失った分は、他のレプリカから取り戻す前提です。
+
+ログを持つことと、ログをディスクに届けることは別の判断です。
+
+---
+
+### 1 件ずつ同期するのに速くなる理由
+
+既定の設定は、冒頭の実験で 1 秒あたり 1,438 行しか成功を返しませんでした。1 本の接続では、1 件のコミットごとに `fsync` を 1 回待つからです。手元の NVMe SSD では、`fsync` を含めて 1 回のコミットに 1 ms 弱掛かっていました。
+
+ところが、同時に送るクライアントの数を増やすと、既定のままでもコミットの数が増えていきます。PostgreSQL に付属するベンチマークのツール [pgbench](https://www.postgresql.org/docs/18/pgbench.html) で 1 行の INSERT を 1 トランザクションとして 10 秒ずつ流し、[pg_stat_io](https://www.postgresql.org/docs/18/monitoring-stats.html#MONITORING-PG-STAT-IO-VIEW) から、WAL を `fsync` した回数を数えました。
+
+```sh
+for n in 1 2 4 8 16 32 64; do
+  before=$(q "SELECT sum(fsyncs) FROM pg_stat_io WHERE object = 'wal'")
+  tx=$(docker exec $C pgbench -U postgres -n -c $n -j $n -T 10 -f /tmp/insert.sql postgres ...)
+  after=$(q "SELECT sum(fsyncs) FROM pg_stat_io WHERE object = 'wal'")
+done
+```
+
+{{< figure src="images/wal_group_commit.webp" alt="横軸は同時に INSERT を送るクライアントの数（1 から 64）、縦軸は対数の回数。既定の 1 秒あたりに WAL を fsync した回数は約 1,000〜1,400 回でほぼ横ばいだが、1 秒あたりのコミットは 1 と 2 では fsync と同じで、4 から先はクライアントの数に比例して増え、64 では 43,136 回。fsync 1 回あたりのコミットは 1.0、1.0、2、4、8、15、30。synchronous_commit = off のコミットは 1 で 34,068 回、64 で 239,043 回" caption="同時に送るクライアントの数と、コミット数・WAL を fsync した回数" align="center" >}}
+
+`fsync` の回数は 1 秒あたり約 1,000〜1,400 回でほぼ変わらないのに、コミットは 64 クライアントで 43,136 回になりました。1 回の `fsync` で、平均 30 件のコミットがディスクに届いています。
+
+`fsync` はそのファイルに書かれた内容をまとめてディスクへ届けるので、あるセッションの `fsync` を待つ間に他のセッションが書いたコミットの記録も、次の 1 回にまとめて乗ります。これをグループコミット（group commit）と呼びます。
+
+PostgreSQL では設定が無くてもこの形になり、[commit_delay](https://www.postgresql.org/docs/18/runtime-config-wal.html#GUC-COMMIT-DELAY) は、まとめる相手を待つ時間をわざと延ばす設定です。1 回に乗る件数は増えますが、待った分だけ 1 件ごとの応答は遅くなります。
+
+1 回の `fsync` に乗る件数は、クライアントの数のほぼ半分でした。推測ですが、`fsync` の最中に成功が返ったクライアントは、次の記録を書いても今の `fsync` には乗れず、次の `fsync` を待つからだと考えています。クライアントが 2 つの組に分かれ、交互に `fsync` に乗ります。以下は、8 クライアントでこの推測を描いた模式図です。
+
+{{< figure src="images/wal_group_commit_cycle.webp" alt="動く図。8 つのクライアントが 1〜4 と 5〜8 の 2 組に分かれる。1〜4 の記録を乗せた fsync #1 の最中に、5〜8 は記録を書いて待つ。fsync #1 が終わると 1〜4 に成功を返し、待っていた 5〜8 の記録で fsync #2 が始まる。1〜4 が次に書いた記録は fsync #3 を待つ。これを繰り返し、4 回の fsync で 16 件、1 回あたり 4 件のコミットが届く" caption="fsync を待つ組と次の fsync に乗る組が入れ替わる様子（推測した仕組みの模式図、1 コマ 1.6 秒で表示）" align="center" >}}
+
+2 クライアントで 1 回あたり 1.0 のままなのも、2 組がそれぞれ 1 クライアントになるので、この推測と合います。
+
+synchronous_commit = off との差も、同時に送る数で変わります。この pgbench での比較では、1 クライアントでは off の方が 34 倍速く、64 クライアントでは 5.5 倍でした。off にする前に、本番で同時に何本のコミットが走るかを見ておくと、得られる速さを見積もれます。
+
+---
+
+### fsync が失敗した時
+
+ここまでは、`fsync` が成功を返せば、記録はディスクに届いているという前提でした。2018 年、この前提が崩れることが PostgreSQL のメーリングリストで報告されました。後に fsyncgate と呼ばれた件で、Craig Ringer 氏が 2018 年 3 月に書いた[メール](https://danluu.com/fsyncgate/)から始まるスレッドは、Dan Luu 氏のサイトに保存されています。経緯は、LWN.net の「[PostgreSQL's fsync() surprise](https://lwn.net/Articles/752063/)」（2018 年 4 月 18 日）がまとめています。
+
+PostgreSQL は、checkpoint で表のページを書き出す `fsync` が失敗すると、エラーを記録して、次の checkpoint で `fsync` をやり直していました。ところが、Linux を含む一部の OS は、ディスクに書けなかったページキャッシュの中身を捨てたうえで、1 回目の `fsync` で失敗を返します。2 回目の `fsync` は、捨てた後なので成功を返します。PostgreSQL は、失われたデータを書けたものとして扱う恐れがありました。以下は、その流れです。
+
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
+sequenceDiagram
+    participant P as PostgreSQL
+    participant K as カーネル（ページキャッシュ）
+    participant D as ディスク
+    P->>K: 表のページを write
+    K->>D: 後で書き出す
+    D-->>K: 書き出しに失敗
+    Note over K: 書けなかったページを捨てる
+    P->>K: checkpoint で fsync
+    K-->>P: 失敗
+    Note over P: エラーを記録し、次の checkpoint でやり直す
+    P->>K: fsync
+    K-->>P: 成功（捨てた後なので書くものが無い）
+    Note over P: checkpoint を終えたものとして扱う
+```
+
+2019 年 2 月 14 日に出た [PostgreSQL 11.2](https://www.postgresql.org/docs/release/11.2/) からは、既定で、データファイルの `fsync` が失敗したら再試行せず、サーバーを PANIC で止めます。再起動すると WAL から変更をやり直すので、捨てられたページの中身はログから戻ります。その時の WAL は、失われたデータを持つ唯一の写しになり得ます。同じ修正は、9.4〜10 の更新にも入りました。
+
+元の動きに戻す [data_sync_retry](https://www.postgresql.org/docs/18/runtime-config-error-handling.html#GUC-DATA-SYNC-RETRY) という設定もありますが、カーネルが中身を捨てないと確信できる時だけ使うものです。
+
+<br>
+
+[PostgreSQL の wiki](https://wiki.postgresql.org/wiki/Fsync_Errors) には、Linux 4.13 で `fsync` がエラーを報告する仕組みが改善されたことや、InnoDB や MongoDB の WiredTiger でも同じ見直しがあったことが記録されています。2020 年には、ext4・XFS・Btrfs と、その上で動く DB などが `fsync` の失敗をどう扱うかを調べた論文「[Can Applications Recover from fsync Failures?](https://www.usenix.org/conference/atc20/presentation/rebello)」も出ました。
+
+<br>
+
+#### ログを自分で書く時に守ること
+
+ログを使う仕組みを自分で書くなら、この件を含めて守ることが 4 つあります。1 つ目は、`write` や `fsync` が失敗したら、再試行で成功したことにせず、追記を止めることです。失敗した後、ファイルの末尾がどうなっているかは分からないので、その後ろに継ぎ足しません。
+
+2 つ目は、読み直す時の判断です。各記録に長さとチェックサム（CRC など）を付けておけば、途中で切れた記録や中身が変わった記録を見つけられます。CRC が見つけるのは偶然の破損で、意図した書き換えは防げません。
+
+ただ、前の節で見た PostgreSQL のように、読めない記録が見つかった所をログの終わりとして扱う場合、書き込みの途中で切れた末尾と、ずっと前に同期した部分の破損は、形だけでは区別できません。後者は別のレプリカかバックアップから戻すしかないので、読めない記録を無視して起動を続けない作りにします。
+
+読み直しでは、記録の先頭にある長さの欄が壊れていることもあります。壊れた長さをそのまま信じて巨大な領域を読もうとしないよう、記録 1 件の長さには上限を決めておきます。この上限は、書く時と読む時で同じ値を使います。揃っていないと、正しく書けた記録を読み直しの時に壊れたものとして扱います。
+
+3 つ目に、新しいログのファイルを作った時は、ファイルだけでなく、そのファイルを置いたディレクトリも `fsync` します。ファイルの名前はディレクトリの中身として記録されるので、ディレクトリを同期しないと、落ちた後にファイルそのものが見つからないことがあります。Go なら次のように書きます。
+
+```go
+f, err := os.OpenFile(filepath.Join(dir, "wal-000002"), os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o600)
+if err != nil {
+	return err
+}
+defer f.Close()
+d, err := os.Open(dir)
+if err != nil {
+	return err
+}
+defer d.Close()
+if err := d.Sync(); err != nil { // 新しいファイルの名前をディスクに届ける
 	return err
 }
 ```
 
-`Replay` は、エラーが起きるまでに読み終えた完全なエントリを返します。ただし、呼び出し側はエラーを無視して起動を続けてはいけません。長さやチェックサムが不正なら、末尾の書きかけか、確定したレコードの破損かをこの形式だけでは区別できないためです。ゼロ埋めによる事前確保も、このサンプルでは行いません。
+4 つ目は、同じ記録を 2 回読む場合への備えです。読み直しでは、スナップショットや表に反映済みの記録をもう一度読むことがあります。同じ記録を 2 回適用しても結果が変わらないよう、適用済みの位置を状態と一緒に保存して読み飛ばすか、「残高を 100 増やす」ではなく「残高を 500 にする」のように書きます。後者の書き方でも、記録の順番と適用済みの位置は管理します。
 
-末尾の欠損と確認できた場合は、最後の完全なレコードまで戻して復旧する方針が考えられます。しかし、過去の同期済みデータが壊れていれば、別の複製やバックアップからの復旧が必要です。読み取りの入出力エラーも、そのまま呼び出し元に返します。
+---
 
-<br>
+### ログを消せる位置と pg_wal が膨らむ理由
 
-[実行可能なサンプル](lab/main.go)では、3 件のログを作り、末尾を 1 バイト切った場合と、2 件目を書き換えた場合を比較します。元のファイルは残し、コピーしたバイト列に対して操作します。
+PostgreSQL は、データを置くディレクトリの下に pg_wal というディレクトリを作り、WAL のファイルをそこに置きます。ログは追記するだけなので、何もしなければ増え続けます。
 
-以下は、前述の `Append` と `Replay` を呼び出す実験部分の抜粋です。`must` はエラーがあれば実験を停止する補助関数です。インポートと各関数をまとめた全体は [main.go](lab/main.go) にあります。
+checkpoint で表のページを書き出し終えると、その時点より前のログは、落ちた時のやり直しには使いません。PostgreSQL は、使わなくなったログのファイル（16 MB ごとのセグメント）を消すか、名前を変えて使い回します。ログは先頭だけを切り詰められないので、消す時はファイル単位です。
 
-```go
-func must(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
+ログを読むのは、落ちた後の自分だけではありません。レプリカ（standby）や、WAL を読んで変更を外へ流す [CDC](/notes/distributed-systems/transactional-outbox/) の仕組みも、ログを順に読みます。PostgreSQL の [replication slot](https://www.postgresql.org/docs/18/warm-standby.html#STREAMING-REPLICATION-SLOTS) は、レプリカや CDC がまだ読んでいないログを消さないよう、相手ごとに位置（`restart_lsn`）を覚えておく仕組みです。
 
-func main() {
-	dir, err := os.MkdirTemp("", "wal-lab-")
-	must(err)
-	defer os.RemoveAll(dir)
-	f, err := os.OpenFile(filepath.Join(dir, "wal"), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
-	must(err)
-	defer f.Close()
-	for i := 1; i <= 3; i++ {
-		must(Append(f, Entry{uint64(i), []byte("set balance=500")}))
-	}
-	raw, err := os.ReadFile(f.Name())
-	must(err)
-	printReplay := func(label string, data []byte) {
-		entries, err := Replay(bytes.NewReader(data))
-		fmt.Printf("%s: entries=%d error=%v\n", label, len(entries), err)
-	}
-	printReplay("complete", raw)
-	printReplay("truncated tail", raw[:len(raw)-1])
-	corrupt := bytes.Clone(raw)
-	corrupt[len(raw)/3+16] ^= 1
-	printReplay("corrupt middle", corrupt)
-	boundary, err := os.OpenFile(filepath.Join(dir, "boundary"), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
-	must(err)
-	defer boundary.Close()
-	data := bytes.Repeat([]byte{0x5a}, maxEntrySize-8)
-	must(Append(boundary, Entry{1, data}))
-	_, err = boundary.Seek(0, 0)
-	must(err)
-	entries, err := Replay(boundary)
-	must(err)
-	fmt.Printf("maximum data: bytes=%d entries=%d equal=%t\n", len(data), len(entries), len(entries) == 1 && bytes.Equal(entries[0].Data, data))
-	oversized, err := os.OpenFile(filepath.Join(dir, "oversized"), os.O_CREATE|os.O_RDWR|os.O_APPEND, 0600)
-	must(err)
-	defer oversized.Close()
-	err = Append(oversized, Entry{1, make([]byte, maxEntrySize-7)})
-	info, statErr := oversized.Stat()
-	must(statErr)
-	fmt.Printf("oversized data: rejected=%t file_bytes=%d\n", err != nil, info.Size())
-}
-```
+相手がいなくなった slot が残ると、その位置から先のログが消せなくなります。
+
+slot が無い場合と、使われていない slot が 1 つある場合で、20 万行を足して CHECKPOINT するのを 10 回繰り返し、pg_wal の大きさを測りました（[slot.sh](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/write-ahead-log/lab/slot.sh)）。
 
 ```sh
-cd lab
-go run .
-go test ./...
+q "SELECT pg_create_physical_replication_slot('standby1', true)"  # slot がある場合だけ
+for step in 1 2 3 4 5 6 7 8 9 10; do
+  q "INSERT INTO t (pad) SELECT repeat('x', 200) FROM generate_series(1, 200000)"
+  q "CHECKPOINT"
+  q "SELECT sum(size) / 1024 / 1024 FROM pg_ls_waldir()"
+done
 ```
 
-```text
-complete: entries=3 error=<nil>
-truncated tail: entries=2 error=incomplete record
-corrupt middle: entries=1 error=corrupt record
-maximum data: bytes=8388600 entries=1 equal=true
-oversized data: rejected=true file_bytes=0
-```
+{{< figure src="images/wal_slot.webp" alt="横軸は書いた WAL の量（0 から 653 MB）、縦軸は pg_wal の大きさ。slot が無い場合は 80〜96 MB で止まる。使われていない slot がある場合は、書いた量とほぼ同じだけ増え続けて 672 MB になる。max_slot_wal_keep_size を 256 MB にすると 288 MB まで増えた後、slot が lost になって 160〜176 MB に下がる" caption="書いた WAL の量と pg_wal の大きさ（slot の有無と上限）" align="center" >}}
 
-最後の 2 行はサイズの境界です。上限ちょうどの Data は保存したバイト列と一致し、1 バイト超えるとファイルに書く前に拒否されます。末尾の切断は復旧処理の入力を再現する実験であり、実際の電源断やストレージの耐久性を検証したものではありません。
+slot が無ければ、653 MB 書いても pg_wal は 96 MB で止まりました。使われていない slot が 1 つあるだけで、書いた量とほぼ同じ 672 MB まで増え続け、slot を消して CHECKPOINT すると 144 MB に戻りました。本番では、止めたレプリカや、使わなくなった CDC の slot を消し忘れると、この線がディスクの容量まで伸びます。
 
-復旧では、ディスク上のデータ構造やスナップショットに既に反映したエントリをもう一度読む場合があります。そのため、同じエントリを 2 回適用しても結果が変わらないことが必要で、これを冪等（べきとう、idempotent）と呼びます。
+上限を決める [max_slot_wal_keep_size](https://www.postgresql.org/docs/18/runtime-config-replication.html#GUC-MAX-SLOT-WAL-KEEP-SIZE) の既定は -1 で、上限がありません。256 MB にすると、上限を超えた所で slot の `wal_status` が `lost` になり、pg_wal は 160 MB 前後で止まりました。
 
-一般的な作り方は、適用済みの index を状態と一緒に保存し、復旧時にそこまでを読み飛ばす方法です。エントリを「残高を 100 増やす」ではなく「残高を 500 にする」と書く方法もあります。ただし、古い設定を新しい設定の後に再適用して良いわけではなく、ログの順序と適用済み位置の管理は必要です。
-
----
-
-### このコードが扱っていないこと
-
-上記のコードでは、次の機能を省いています。
-
-- 複数の Writer：index の採番、追記、同期、状態への適用を一連の順序として管理する排他制御
-- 親ディレクトリの同期：新しいファイルの名前はディレクトリの中身として記録されるので、省くとクラッシュ後に新しいファイルが存在しないことがある
-- 複数レコードのトランザクション、index の連続性検査、破損後のファイル修復
-- 複製：他のサーバーに配る場合に必要な情報（後述の高位ウォーターマークの節で扱う Leader の任期など）
-
----
-
-### 低位ウォーターマーク
-
-WAL は追記しかしないため、放置すればディスクを使い切ります。スナップショットを取れば、そこから再開できるので、それ以前のログは必要なくなります。低位ウォーターマークとは、[この位置より前のログを捨てて良い](https://martinfowler.com/articles/patterns-of-distributed-systems/low-watermark.html)と宣言する index です。削除の判断をログの機構から切り離し、どこまで捨てて良いかを外から与える形にしています。
-
-ファイル単位で削除できるように、ログは一定の大きさごとに別のファイルに分けます。分けた 1 ファイルをセグメントと呼びます。通常のファイルでは先頭部分だけを簡単に切り落とせないため、古いファイルを丸ごと削除できる単位を用意します。
-
-例えば、index 200 までを反映したスナップショットを取ると、以下のセグメントが削除できるようになります。
-
-{{< note-panels caption="index 200までのスナップショットを永続化し、低位ウォーターマークを201にした例です。他の用途で必要なログは別に保持します。" >}}
-- title: 削除できる範囲
-  items:
-  - "segment 1：index 1〜100"
-  - "segment 2：index 101〜200"
-  body: スナップショットから復元できるため、この 2 ファイルを削除できます。
-- title: 残す範囲
-  items:
-  - "segment 3：index 201〜300"
-  - "segment 4：index 301 以降"
-  body: スナップショットより後の変更をログから再適用します。
-{{< /note-panels >}}
-
-上記の図では、スナップショットから再開できるので、index 200 以前のエントリは再適用しません。segment 1 と segment 2 がファイルごと削除の対象になり、復旧はスナップショットの読み込みと index 201 以降の再適用に変わります。
-
-低位ウォーターマークの決め方で代表的なのは 2 つです。1 つはスナップショットに基づく方法で、上記の図がこの方法です。もう 1 つは保持期間に基づく方法で、書かれてから一定時間が過ぎたエントリを消します。ただし、ログを読む遅い Follower やバックアップ処理があれば、その用途に必要なログも残します。保持期間だけで状態復元に必要なログを消して良いわけではありません。
-
----
-
-### 高位ウォーターマーク
-
-WAL が守るのは、1 台のサーバーが停止して再起動するまでの範囲です。そのサーバーが壊れたままなら、誰も読み書きできません。可用性を上げるには、同じログを複数のサーバーに複製します。
-
-[Leader と Follower による複製](../leader-and-followers/)では、1 台が Leader になって書き込みを受け付け、残りの Follower にログを配ります。Leader が落ちたら、残ったサーバーの中から新しい Leader を選び直します。
-
-この時に問題になるのが、Leader が受け取ったエントリのうち、どこまでが失われないと言えるのかです。Leader のログに書いてあるだけでは、Leader が壊れた瞬間にそのエントリも失われます。
-
-高位ウォーターマークとは、[複製が確定した最後のエントリの index](https://martinfowler.com/articles/patterns-of-distributed-systems/high-watermark.html) です。確定の条件は実装によって違います。[過半数を使う合意](../quorum/)では、複製と Leader 選出の両方に規則を設けて、確定したエントリを引き継ぎます。[Apache Kafka](https://kafka.apache.org/) は過半数ではなく、追い付いているレプリカの集合（ISR、In-Sync Replicas）の全員が受け取った時点を確定とします。
-
-以下は、Raft で現在の任期のエントリを同期して複製する場合です。Leader 自身と Follower 1 で永続化が完了すると、高位ウォーターマークが進みます。
-
-```mermaid
-%%{init: {"theme": "base", "themeVariables": {"primaryColor": "#eaf1f5", "primaryTextColor": "#28343b", "primaryBorderColor": "#9cabb5", "lineColor": "#596b76", "textColor": "#28343b", "actorBkg": "#eaf1f5", "actorBorder": "#9cabb5", "actorTextColor": "#28343b", "actorLineColor": "#9cabb5", "signalColor": "#596b76", "signalTextColor": "#28343b", "noteBkgColor": "#f7f1e5", "noteBorderColor": "#c5b99b", "noteTextColor": "#403c32", "activationBkgColor": "#edf3ef", "activationBorderColor": "#9aafa1"}, "sequence": {"actorMargin": 20, "width": 120, "messageMargin": 25, "wrap": false}}}%%
-sequenceDiagram
-    participant C as クライアント
-    participant L as Leader
-    participant F1 as Follower 1
-    participant F2 as Follower 2
-    C->>L: 書き込み
-    L->>L: index 42<br/>追記・同期
-    L->>F1: 複製
-    L->>F2: 複製
-    F1-->>L: index 42まで<br/>永続化完了
-    Note over L,F1: Leader 自身を含めて<br/>3 台中 2 台に到達<br/>確定位置を42に
-    L-->>C: 完了を応答
-    L->>F1: 確定位置42を通知
-```
-
-上記の図では、Leader が Follower 2 の受領を待たずに応答を返しています。これが可用性を高めています。1 台が遅れていても書き込みは進みます。
-
-[Raft](https://raft.github.io/raft.pdf) は、過半数に複製されたことだけでは確定と扱いません。Leader が自分の任期（term）で作ったエントリが過半数に複製された時点で確定とし、それより前のエントリはまとめて確定します。前の任期のエントリを複製数だけで確定と判断すると、後から選ばれた Leader がそれを上書きする経路が残るからです（Raft 論文の Figure 8）。
-
-高位ウォーターマークより後ろのエントリは、Leader のログには存在するのにクライアントからは見えません。Leader が交代すると、新しい Leader は自分のログを正として、食い違う部分を Follower に上書きさせます。確定していないエントリは、新しい Leader がそれを持っていれば後から確定し、持っていなければ消えます。
-
-以下は、高位ウォーターマークが 42 の時に、43 までしか持たない Follower 1 が新しい Leader になった例です。
-
-{{< figure src="images/write-ahead-log_leader_change.svg" alt="上段の旧 Leader は 40〜45 を持ち、新 Leader（元 Follower 1）は 40〜43 を持つ。42 と 43 の間に H = 42 の縦線がある。43 は青で、下に「43 は新 Leader にある、後から確定する」。44 と 45 は黄土色で、下に「44・45 は新 Leader に無い、上書きされて消える」" caption="Leader の交代と、高位ウォーターマークより後ろのエントリ" align="center" >}}
-
-高位ウォーターマークより後ろを読み取り対象から外すことで、確定するか消えるか分からないエントリをクライアントへ返さずに済みます。
-
-そのため、この位置は「ここまでは見せて良い」ではなく「ここより後ろは見せてはいけない」という上限です。
-
-実際に読み取りに応じて良いかには別の条件が付きます。Raft で線形化可能な読み取りを返すには、Leader が現在の任期のコミット位置を確認し、まだ Leader であることを過半数との通信などで確認する必要があります。さらに、読み取り対象の状態へ確認済みのコミット位置まで適用してから応答します（Raft 論文 §8）。
+代わりに、その slot を使っていたレプリカは、続きのログが消えたので読めなくなり、作り直しになります。ディスクを守るか、遅れたレプリカを守るかの選択です。PostgreSQL 18 には、使われていない時間で slot を無効にする [idle_replication_slot_timeout](https://www.postgresql.org/docs/18/runtime-config-replication.html#GUC-IDLE-REPLICATION-SLOT-TIMEOUT) も入りました。
 
 <br>
 
-なお、以前の Kafka の Follower は、再起動した時に自分が知る高位ウォーターマークより後ろを切り捨てていました。高位ウォーターマークは Follower に遅れて伝わるため、Leader では確定済みのエントリまで捨てる場合があり、ログの内容が食い違ったり、確定済みのデータが失われたりしました。
+ここより前は消して良い、という位置は、Unmesh Joshi 氏がまとめた分散システムのパターン集で [Low-Water Mark](https://martinfowler.com/articles/patterns-of-distributed-systems/low-watermark.html) と呼ばれています。位置の決め方は、スナップショットや checkpoint に反映し終えた所で決める方法と、保持する期間や量で決める方法の 2 つです。後者だけで決めると、遅れたレプリカがまだ読んでいないログまで消えます。上の 256 MB の上限は、後者の決め方でした。
 
-現在は、Leader の担当期間ごとに増える番号（leader epoch）をログに記録し、Follower が Leader に問い合わせて切り捨て位置を教えてもらう方式になっています（[KIP-101](https://cwiki.apache.org/confluence/display/KAFKA/KIP-101+-+Alter+Replication+Protocol+to+use+Leader+Epoch+rather+than+High+Watermark+for+Truncation)）。
+どちらの決め方でも、次の節で扱う High-Water Mark より後ろの、まだ確定していない記録は消しません。
 
 ---
 
-### 3 つの位置の関係
+### 複製した時に見せない位置
 
-1 台のサーバーのログの上には、意味の違う 3 つの位置が同時に存在します。
+ログを複製する仕組みでは、もう 1 つ位置を持ちます。どこから先をクライアントに見せてはいけないか、という位置です。以下は、1 本のログに置く 3 つの位置を描いた図です。
 
-| 位置 | 意味 | 進める条件 |
+{{< figure src="images/wal_positions.webp" alt="古い方から新しい方へ伸びる 1 本のログ。左から、消して良い部分、確定した部分、まだ確定していないのでクライアントに見せない部分の 3 つに分かれる。境目は、ここより前は消して良い Low-Water Mark、確定した最後の位置の High-Water Mark、最後に追記した位置の末尾" caption="1 本のログに置く 3 つの位置" align="center" >}}
+
+複製では、1 台の Leader がログの末尾に記録を追記し、他のレプリカ（Follower）へ送ります。Leader が追記したばかりの記録は、Follower に届く前に Leader が落ちると、新しい Leader に引き継がれず消えることがあります。
+
+そこで、複製が確定した最後の位置を [High-Water Mark](https://martinfowler.com/articles/patterns-of-distributed-systems/high-watermark.html) とし、そこまでの記録に成功を返します。そこより後ろはクライアントに見せません。確定の条件は実装で違い、多くは過半数のレプリカに届くことです。Kafka では過半数ではなく、ISR と呼ぶ、Leader に追いついているレプリカの全員に届くことです。
+
+[Raft](https://raft.github.io/raft.pdf) ではコミットのインデックスがこれに当たります。[Quorum](/notes/distributed-systems/quorum/) の重なりと、ログの古い候補を Leader に選ばない規則を組み合わせて、どの Leader に代わっても残るようにしています。
+
+ただし Raft は、過半数に届いただけでは確定と扱いません。今の Leader が自分の任期（term）で書いた記録が過半数に届いた時に、その記録と、それより前の記録をまとめて確定します。前の任期で書いた記録を数だけで確定と扱うと、後から選ばれた Leader に上書きされる経路が残るからです。この例は Raft 論文の Figure 8 にあります。
+
+High-Water Mark より後ろの記録は、新しい Leader が持っていれば後で確定し、持っていなければ上書きされて消えます。以下は、High-Water Mark が 42 の時に、43 までしか持たない Follower が新しい Leader になった例です。
+
+{{< figure src="images/wal_leader_change.webp" alt="上段の旧 Leader は 40〜45 を持ち、下段の新 Leader（元 Follower）は 40〜43 を持つ。42 と 43 の間に High-Water Mark = 42 の縦線がある。43 は青で、下に「43 は新 Leader にある、後から確定する」。44 と 45 は黄土色で、下に「44・45 は新 Leader に無い、上書きされて消える」" caption="Leader の交代と、High-Water Mark より後ろの記録" align="center" >}}
+
+High-Water Mark は、ここまでなら見せて良いという保証ではなく、ここより後ろは見せてはいけないという上限です。
+
+ただ、High-Water Mark までなら読ませて良い、とは限りません。Raft で最新の値を返すには、Leader が自分の任期で書いた記録を確定させ、まだ Leader であることを過半数との通信で確認し、確定した位置まで状態に適用してから答える必要があります。この手順は Raft 論文の 8 節にあります。
+
+<br>
+
+PostgreSQL の同期レプリケーションでは、synchronous_commit の値で、standby のどこまで届いたら成功を返すかを選びます。
+
+| 値 | 成功を返す時点 | standby の OS が落ちても残るか |
 |---|---|---|
-| 低位ウォーターマーク | この前は削除して良い | スナップショットや保持期間を確認し、復旧・複製に不要と判断 |
-| 高位ウォーターマーク | ここより後ろは見せない | 実装が定める複製の条件を満たす |
-| ログ末尾 | 追記された最後のエントリ | 新しい書き込みを受け付ける |
+| remote_apply | standby で適用し、問い合わせから見える | 残る |
+| on（既定） | standby のディスクに届いた | 残る |
+| remote_write | standby の OS に渡した | 消え得る |
+| local | 自分のディスクに届いた（standby は待たない） | 消え得る |
 
-本記事では、低位ウォーターマーク L を「残す最初の index」、高位ウォーターマーク H を「確定した最後の index」、ログ末尾 T を「追記した最後の index」とします。
+前に描いた 3 つの置き場は、standby にもあります。remote_write は standby だけ fsync = off にしたのに近く、remote_apply は書いた直後の読み取りが standby でも見えることまで待つ設定です。
 
-確定した範囲からだけ削除する場合、同じサーバー上では `L ≤ H + 1` と `H ≤ T` が成り立ちます。index H までを全てスナップショットに反映して削除した場合、残す最初の index は H+1 になるためです。
+<br>
 
-{{< note-panels caption="スナップショットはindex 200まで反映済み。保持位置の境界を2例で確認します。" >}}
-- title: 未適用のログがある
-  items:
-  - "L=201、H=240、T=250"
-  - "201〜240 の 40 件は確定済み"
-  - "241〜250 の 10 件は未確定"
-- title: 全件をスナップショットに反映した
-  items:
-  - "L=201、H=200、T=200"
-  - "残すログは 0 件"
-  - "L が H より 1 大きくても矛盾しません"
-{{< /note-panels >}}
+#### Kafka で起きた切り詰めの問題
 
-低位ウォーターマークの制約を `L ≤ H` にすると、後者の正常な状態を表せません。保持期間を使う場合も、未確定のエントリや復旧に必要なエントリを削除しない条件を別に設けます。
+High-Water Mark は、自分のログを切り詰める位置に使うと問題を起こします。再起動した Follower では、ログの末尾に、前の Leader から受け取ったものの確定しなかった記録が残っていることがあります。その記録は、今の Leader が持つログと食い違っているかもしれません。そこで Follower は、確定していると分かる位置までログを切り詰めてから、Leader に続きを取りに行きます。
 
-連番に欠番がなければ、保持するエントリ数は `max(0, T - L + 1)`、未確定のエントリ数は `T - H` です。復旧時間は件数だけでなく、各レコードの大きさや再適用の処理にも依存します。また、未確定である理由は複製の遅れだけとは限りません。
+以前の Kafka は、この位置に、Follower が自分で知っている High-Water Mark を使っていました。ところが、High-Water Mark は、Follower が次に続きを取りに行った時の応答で遅れて伝わるので、Follower が知っている値は古いことがあります。以下は、この問題を直した Kafka の改善提案 [KIP-101](https://cwiki.apache.org/confluence/display/KAFKA/KIP-101+-+Alter+Replication+Protocol+to+use+Leader+Epoch+rather+than+High+Watermark+for+Truncation) に載っている、確定した記録が消える流れを簡単にしたものです。
 
-別のサーバー同士の位置には、この不等式をそのまま使えません。遅れた Follower のログ末尾が、Leader の高位ウォーターマークより手前にある場合があります。
+```mermaid
+%%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
+sequenceDiagram
+    participant A as レプリカ A（Leader）
+    participant B as レプリカ B（Follower）
+    B->>A: 続きを取りに行く
+    A-->>B: 記録 m2（m1 は受け取り済み）
+    Note over A: B に届いたので High-Water Mark を m2 まで進める（m2 は確定）
+    Note over B: B の High-Water Mark は m1 のまま（次の取得で知るはずだった）
+    Note over B: 再起動し、High-Water Mark より後ろの m2 を切り詰める
+    Note over A: A が落ちる
+    Note over B: B が Leader になる（m2 を持たない）
+    Note over A,B: A が戻っても、確定した m2 はどちらにも残らない
+```
 
----
-
-### 利点
-
-- 追記だけで耐久性を確保でき、コミットのたびに全データページを同期する必要がない
-- 書き込み位置が連続するため、複数箇所を書き換えるより同期の負荷が小さい
-- 複数の変更をまとめて 1 回の同期にでき、書き込みが多いほど同期の回数を大きく減らせる
-- 同期済みログから未反映の変更を再適用できる。トランザクションを扱う DB では、未確定変更の扱いも別に判断する
-- 同じログを他のサーバーに送れば、そのまま複製の材料になる
+確定済みの記録を捨てる以外にも、レプリカの間でログが食い違う場合がありました。KIP-101 は、Leader が代わるたびに増える番号（leader epoch）をログに記録し、どこまで切り詰めるかを Leader に問い合わせる方式に変えました。
 
 ---
 
-### 欠点
+### 設定を選ぶ前に確認すること
 
-WAL では、データ構造に加えてログも保存・管理する必要があります。
+冒頭の 2 つの設定に戻ると、どちらも速さは同じくらいで、守るものが違いました。synchronous_commit = off は PostgreSQL が落ちた時に直近の数百 ms のコミットを失い、fsync = off は OS や電源が落ちた時に DB ごと壊れ得ます。選ぶ前に確認することは、次の 4 つです。
 
-- 同じ内容をログとデータ構造に 2 度書くため、書き込み量が増える
-- ログを捨てる仕組みを別に用意しないとディスクを使い切る
-- 状態を変えるコマンドが、再適用しても結果が変わらない性質を満たす必要がある
-- 保持したログの量や再適用の処理が増えると、復旧に時間がかかる
-- 複製した場合、確定していないエントリを読ませない制御が別に必要
+最初は、成功の応答を受けて、外へ何かをするかです。メールを送る、在庫を引き当てる、他のシステムに通知するといった処理が、成功を前提に動くなら、synchronous_commit = off は使えません。例えば、ATM が現金を出したことを記録するトランザクションがこれに当たります。
 
----
+synchronous_commit はトランザクションごとに変えられるので、アクセスログのように失っても困らない書き込みだけを off にする手もあります。
 
-### 適さないケース
+次は、同時に何本のコミットが走るかです。グループコミットの実験では、64 クライアントで off との差が 5.5 倍まで縮まりました。同時に送る数が多い本番なら、設定を変えずに得られる速さが大きくなります。
 
-- 停止したら状態を捨てて作り直して良いキャッシュのような用途
-- 1 件あたりのデータが大きく、ログとデータ構造への 2 度書きが帯域を圧迫する場合
-- 書き込みがほとんど無く、読み取りだけが続くシステム
+3 つ目は、pg_wal を誰が膨らませているかです。次の問い合わせで、`active` が false のまま残っている slot と、slot ごとに手放せずにいるログの量を見ます。
+
+```sql
+SELECT slot_name, active, wal_status,
+       pg_size_pretty(pg_current_wal_lsn() - restart_lsn) AS retained
+FROM pg_replication_slots;
+```
+
+使っていない slot を消したうえで、max_slot_wal_keep_size で上限を決めておきます。上限を決めるなら、遅れたレプリカを作り直す手順も用意しておきます。
+
+最後は、`fsync` の失敗を成功にしないことです。PostgreSQL では data_sync_retry を既定の off のまま使い、ログを自分で書くなら、失敗した後は書き込みを止めて、ログから読み直す道を残します。テスト用に毎回作り直す DB なら、ここに挙げたどれも気にせず、fsync = off で速さを取って構いません。
+
+実験のコード・実行用のスクリプト・出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/distributed-systems/write-ahead-log/lab) にあります。

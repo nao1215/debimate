@@ -1,18 +1,22 @@
-"""Generate the cover diagram of the WAL note as a hand-written SVG.
+"""WAL のノートの図を作る（WebP）。
 
-concept_figure() draws one server's log as a tape split into segments,
-using the example in the note: a snapshot covers index 200, so the
-low-water mark L is 201, the high-water mark H is 240 and the log end T is
-250. Segments 1 and 2 may be deleted, 201..240 is committed, and 241..250
-must not be shown to clients. Widths are not to scale.
+kill_figure()      lab/killtest_output.txt から、設定ごとの 1 秒あたりのコミット数と、止めた後に消えた行数。
+layers_figure()    コミットの記録が通る 3 つの置き場と、設定ごとに成功を返す位置、障害ごとに消える範囲。
+async_animation()  lab/killtest_async_timeline.json の実測の時刻で、成功が返った行と OS に渡した行を動かす。
+group_animation()  グループコミットで、fsync を待つ組と次の fsync に乗る組が入れ替わる様子（推測した仕組みの模式図）。
+group_figure()     lab/groupcommit_output.txt から、同時に送る数とコミット数・fsync の回数。
+slot_figure()      lab/slot_output.txt・slot_cap_output.txt から、書いた WAL の量と pg_wal の大きさ。
+positions_figure() 1 本のログの上の 3 つの位置（消して良い位置・見せて良い位置・末尾）。
+leader_change_figure() Leader の交代で、High-Water Mark より後ろの記録が残るか消えるか。
 
-fsync_figure() plots lab/fsyncbench_output.txt (a measurement, so it reads
-the saved output instead of measuring again): records per second against the
-batch size per Sync, and the latency when one record arrives every 1 ms.
-
-Run: python3 content/notes/distributed-systems/write-ahead-log/figures.py
+再生成: python3 content/notes/distributed-systems/write-ahead-log/figures.py
 """
 
+import json
+import re
+import statistics
+import subprocess
+import tempfile
 from html import escape
 from pathlib import Path
 
@@ -20,193 +24,394 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from PIL import Image, ImageDraw, ImageFont  # noqa: E402
 
 HERE = Path(__file__).resolve().parent
-INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#7aa6c2", "#e15759"
-FILL, PALE = "#f2f2f2", "#eaf1f5"
+LAB = HERE / "lab"
+IMG = HERE / "images"
+INK, SUB, ACCENT, RED = "#1f1f1f", "#666666", "#4e79a7", "#e15759"
+FILL, PALE, RED_PALE = "#f2f2f2", "#eaf1f5", "#fbe3e3"
 OCHRE, OCHRE_PALE = "#d4a24c", "#f8eed8"
-GREEN, GREEN_PALE = "#8fae86", "#e9f1e6"
-FONT = "'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif"
+FONT = "'Noto Sans CJK JP',sans-serif"
+CJK = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc"
 
 
-def concept_figure():
-    w, h = 960, 540
-    p = [
-        f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
-        f'viewBox="0 0 {w} {h}" role="img"><title>'
-        f'{escape("WAL のセグメントと、低位・高位ウォーターマークとログ末尾の位置")}</title>',
-        f'<style>text{{font-family:{FONT};fill:{INK}}} .sub{{fill:{SUB}}} '
-        f'.red{{fill:{RED}}}</style>',
-        f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
-    ]
-
-    def text(x, y, s, size=24, anchor="middle", weight="normal", cls=""):
-        c = f' class="{cls}"' if cls else ""
-        p.append(f'<text x="{x}" y="{y}" font-size="{size}" font-weight="{weight}" '
-                 f'text-anchor="{anchor}"{c}>{escape(s)}</text>')
-
-    def rect(x, y, w_, h_, fill, stroke, sw, dash=""):
-        d = f' stroke-dasharray="{dash}"' if dash else ""
-        p.append(f'<rect x="{x}" y="{y}" width="{w_}" height="{h_}" fill="{fill}" '
-                 f'stroke="{stroke}" stroke-width="{sw}"{d}/>')
-
-    ty, th = 196, 100  # the tape
-    xs = [40, 230, 420, 690, 860, 920]  # seg1 | seg2 | 201-240 | 241-250 | unused
-
-    # Segments 1 and 2: covered by the snapshot, may be deleted.
-    for i, (a, b) in enumerate(((xs[0], xs[1]), (xs[1], xs[2])), start=1):
-        rect(a, ty, b - a, th, FILL, SUB, 2, "9 6")
-        text((a + b) / 2, ty + 42, f"segment {i}", 24, cls="sub")
-        text((a + b) / 2, ty + 78, f"{(i - 1) * 100 + 1}〜{i * 100}", 24, cls="sub")
-    # Segment 3, being written: committed part, uncommitted part, unused tail.
-    rect(xs[2], ty, xs[3] - xs[2], th, GREEN_PALE, GREEN, 3)
-    text((xs[2] + xs[3]) / 2, ty + 42, "segment 3", 24)
-    text((xs[2] + xs[3]) / 2, ty + 78, "201〜240", 24)
-    rect(xs[3], ty, xs[4] - xs[3], th, OCHRE_PALE, OCHRE, 4)
-    text((xs[3] + xs[4]) / 2, ty + 62, "241〜250", 24, weight="normal")
-    rect(xs[4], ty, xs[5] - xs[4], th, "#ffffff", SUB, 1.5, "4 5")
-
-    # The three positions.
-    for x, name, val in ((xs[2], "低位", "L = 201"), (xs[3], "高位", "H = 240"),
-                         (xs[4], "末尾", "T = 250")):
-        p.append(f'<line x1="{x}" y1="{ty - 40}" x2="{x}" y2="{ty + th + 14}" '
-                 f'stroke="{INK}" stroke-width="5" stroke-linecap="round"/>')
-        text(x, ty - 90, name, 26, weight="normal")
-        text(x, ty - 54, val, 24)
-
-    # What each range means.
-    yb = ty + th + 64
-    text((xs[0] + xs[2]) / 2, yb, "削除して良い", 26, weight="normal", cls="sub")
-    text((xs[0] + xs[2]) / 2, yb + 38, "スナップショットに反映済み", 24, cls="sub")
-    text((xs[2] + xs[3]) / 2, yb, "確定済み", 26, weight="normal")
-    text((xs[3] + xs[4]) / 2, yb, "見せない", 26, weight="normal")
-    text((xs[3] + xs[4]) / 2, yb + 38, "未確定", 24, cls="sub")
-
-    # Direction of appends.
-    ya = 490
-    p.append(f'<line x1="{xs[0]}" y1="{ya}" x2="{xs[5] - 10}" y2="{ya}" stroke="{SUB}" '
-             'stroke-width="2"/>')
-    p.append(f'<polygon points="{xs[5]},{ya} {xs[5] - 16},{ya - 8} {xs[5] - 16},{ya + 8}" '
-             f'fill="{SUB}"/>')
-    text(xs[5], ya + 34, "追記する向き", 24, "end", cls="sub")
-
-    (HERE / "images").mkdir(exist_ok=True)
-    (HERE / "images" / "write-ahead-log_concept.svg").write_text(
-        "\n".join(p + ["</svg>"]) + "\n", encoding="utf-8")
+def _style():
+    plt.rcParams.update({"font.family": "Noto Sans CJK JP", "font.size": 10,
+                         "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff"})
 
 
-def read_bench():
-    """Return the rows of part 1 and part 2 of lab/fsyncbench_output.txt."""
-    part, rows = None, {1: [], 2: []}
-    for line in (HERE / "lab" / "fsyncbench_output.txt").read_text().splitlines():
-        if line.startswith("[part "):
-            part = int(line[6])
-        elif part and line.strip() and line.split()[0].isdigit():
-            rows[part].append([float(x) for x in line.split()])
-    return rows[1], rows[2]
-
-
-def fsync_figure():
-    plt.rcParams.update({
-        "font.size": 11, "axes.edgecolor": SUB, "axes.labelcolor": INK,
-        "xtick.color": INK, "ytick.color": INK, "text.color": INK,
-        "svg.fonttype": "path", "svg.hashsalt": "write-ahead-log",
-        "figure.facecolor": "#ffffff", "axes.facecolor": "#ffffff",
-    })
-    back, rate = read_bench()
-    fig, (ax, bx) = plt.subplots(1, 2, figsize=(7.2, 4.0))
-    ax.plot([r[0] for r in back], [r[1] for r in back], color=ACCENT,
-            marker="o", lw=2.4, ms=6)
-    ax.set_yscale("log")
-    ax.set_ylim(1e3, 5e5)
-    ax.set_ylabel("Records per second")
-    ax.set_title("Back to back", fontsize=11, color=SUB)
-    bx.plot([r[0] for r in rate], [r[1] for r in rate], color=ACCENT,
-            marker="o", lw=2.4, ms=6, label="p50")
-    bx.plot([r[0] for r in rate], [r[2] for r in rate], color=RED,
-            marker="s", lw=2.4, ms=6, ls="--", label="p99")
-    bx.set_yscale("log")
-    bx.set_yticks([1, 2, 5, 10, 20, 50, 100], ["1", "2", "5", "10", "20", "50", "100"])
-    bx.set_ylim(1, 100)
-    bx.set_ylabel("Latency until durable (ms)")
-    bx.set_title("1 record arrives every 1 ms", fontsize=11, color=SUB)
-    bx.legend(frameon=False, loc="upper left")
-    for a in (ax, bx):
-        a.set_xscale("log", base=2)
-        ticks = [1, 4, 16, 64, 256] if a is ax else [1, 4, 16, 64]
-        a.set_xticks(ticks, [str(t) for t in ticks])
-        a.set_xlabel("Records per Sync")
-        a.spines[["top", "right"]].set_visible(False)
+def _save(fig, name):
     fig.tight_layout()
-    fig.savefig(HERE / "images" / "write-ahead-log_fsync_batch.svg",
-                metadata={"Date": None})
+    with tempfile.TemporaryDirectory() as tmp:
+        png = Path(tmp) / "fig.png"
+        fig.savefig(png, dpi=200, facecolor="#ffffff")
+        Image.open(png).convert("RGB").save(IMG / name, "WEBP", quality=90, method=6)
+    plt.close(fig)
 
 
-class Canvas:
-    """Small hand-written SVG canvas for the explanatory figures."""
-
-    def __init__(self, title, w=960, h=540):
-        self.p = [
-            f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
-            f'viewBox="0 0 {w} {h}" role="img"><title>{escape(title)}</title>',
+class Svg:
+    def __init__(self, width, height, title):
+        self.w, self.h = width, height
+        self.parts = [
+            f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" '
+            f'viewBox="0 0 {width} {height}" role="img"><title>{escape(title)}</title>',
             f'<style>text{{font-family:{FONT};fill:{INK}}}</style>',
-            '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" '
+            '<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" '
             'markerWidth="4" markerHeight="4" orient="auto">'
-            f'<path d="M0,0 L10,5 L0,10 z" fill="{SUB}"/></marker></defs>',
-            f'<rect width="{w}" height="{h}" fill="#ffffff"/>',
+            f'<path d="M0,0 L10,5 L0,10 z" fill="{INK}"/></marker></defs>',
+            f'<rect width="{width}" height="{height}" fill="#ffffff"/>',
         ]
 
-    def text(self, x, y, s, size=24, color=INK, anchor="middle"):
-        self.p.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}" '
-                      f'style="fill:{color}">{escape(s)}</text>')
+    def text(self, x, y, s, size=20, color=INK, anchor="middle"):
+        self.parts.append(f'<text x="{x}" y="{y}" font-size="{size}" text-anchor="{anchor}" '
+                          f'style="fill:{color}">{escape(s)}</text>')
 
-    def box(self, x, y, w, h, fill, stroke, sw=2.5, dash=""):
+    def box(self, x, y, w, h, fill, stroke, sw=2.5, dash="", rx=10):
         d = f' stroke-dasharray="{dash}"' if dash else ""
-        self.p.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="8" '
-                      f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
+        self.parts.append(f'<rect x="{x}" y="{y}" width="{w}" height="{h}" rx="{rx}" '
+                          f'fill="{fill}" stroke="{stroke}" stroke-width="{sw}"{d}/>')
 
-    def arrow(self, x1, y1, x2, y2):
-        self.p.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{SUB}" '
-                      'stroke-width="4" stroke-linecap="round" marker-end="url(#arr)"/>')
+    def line(self, x1, y1, x2, y2, color=INK, sw=3, arrow=False, dash=""):
+        m = ' marker-end="url(#arrow)"' if arrow else ""
+        d = f' stroke-dasharray="{dash}"' if dash else ""
+        self.parts.append(f'<line x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}" stroke="{color}" '
+                          f'stroke-width="{sw}" stroke-linecap="round"{d}{m}/>')
 
-    def save(self, name):
-        (HERE / "images" / name).write_text("\n".join(self.p + ["</svg>"]) + "\n",
-                                            encoding="utf-8")
+    def save_webp(self, name):
+        """SVG を Chrome で 2 倍の解像度に描き、WebP にする。"""
+        with tempfile.TemporaryDirectory() as tmp:
+            svg, png = Path(tmp) / "fig.svg", Path(tmp) / "fig.png"
+            svg.write_text("\n".join(self.parts + ["</svg>"]) + "\n", encoding="utf-8")
+            subprocess.run(["google-chrome", "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                            "--force-device-scale-factor=2", f"--window-size={self.w},{self.h}",
+                            f"--screenshot={png}", svg.as_uri()], check=True, capture_output=True)
+            Image.open(png).convert("RGB").save(IMG / name, "WEBP", quality=90, method=6)
 
 
-def fsync_retry_figure():
-    """fsync failure: retrying (before 2019) versus stopping and replaying WAL."""
-    c = Canvas("fsync の失敗を再試行した場合と、止めて WAL から再生する場合")
-    rows = [(40, "再試行（2019 年 2 月より前）",
-             [("fsync", "失敗", FILL, SUB), ("OS が", "データを捨てる", FILL, SUB),
-              ("fsync", "成功", FILL, SUB), ("書けたと", "扱う", "#fbe3e3", RED)]),
-            (290, "停止（11.2 など以降）",
-             [("fsync", "失敗", FILL, SUB), ("サーバーを", "止める", FILL, SUB),
-              ("再起動", "", FILL, SUB), ("WAL から", "再生する", PALE, ACCENT)])]
-    for top, label, steps in rows:
-        c.text(40, top + 34, label, 26, anchor="start")
-        for i, (a, b, fill, stroke) in enumerate(steps):
-            x = 40 + i * 230
-            c.box(x, top + 64, 190, 120, fill, stroke, sw=3 if stroke != SUB else 2.5)
-            if b:
-                c.text(x + 95, top + 116, a, 26)
-                c.text(x + 95, top + 154, b, 26)
+def _kill_runs():
+    runs = {}
+    for ln in (LAB / "killtest_output.txt").read_text().splitlines():
+        m = re.match(r"setting=(\S+) acked=(\d+) survived=(\d+) lost=(\d+) last_ack_ms=(\d+)", ln)
+        if m:
+            runs.setdefault(m.group(1), []).append(
+                (int(m.group(2)), int(m.group(4)), int(m.group(5))))
+    return runs
+
+
+def kill_figure():
+    runs = _kill_runs()
+    order = [("default", "既定\n（両方 on）"), ("synchronous_commit=off", "synchronous_commit\n= off"),
+             ("fsync=off", "fsync\n= off")]
+    _style()
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(8.2, 3.2), gridspec_kw={"width_ratios": [1, 1.15]})
+    ys = [2, 1, 0]
+    rates = [statistics.median(a / ms * 1000 for a, _, ms in runs[k]) for k, _ in order]
+    a1.barh(ys, rates, height=0.5, color=[SUB, ACCENT, ACCENT])
+    for y, r in zip(ys, rates):
+        a1.text(r + 300, y, f"{r:,.0f}", va="center", fontsize=9.5)
+    a1.set_yticks(ys, [lbl for _, lbl in order])
+    a1.set_xlim(0, 22000)
+    a1.set_xlabel("1 秒あたりに成功が返った INSERT（5 回の中央値）")
+    a1.spines[["top", "right"]].set_visible(False)
+    for y, (k, _) in zip(ys, order):
+        lost = [lo for _, lo, _ in runs[k]]
+        a2.scatter(lost, [y] * len(lost), s=46, color=RED if max(lost) else INK, zorder=3)
+        if max(lost) == 0:
+            a2.text(300, y + 0.22, "5 回とも 0 行", fontsize=9.5)
+        else:
+            a2.text(300, y + 0.22, f"5 回とも消えた（{min(lost):,}〜{max(lost):,} 行）", fontsize=9.5, color=RED)
+    a2.set_yticks(ys, ["", "", ""])
+    a2.set_ylim(-0.5, 2.6)
+    a1.set_ylim(-0.5, 2.6)
+    a2.set_xlim(-200, 7000)
+    a2.set_xlabel("docker kill の後に消えていた、成功が返った行")
+    a2.spines[["top", "right"]].set_visible(False)
+    a2.grid(axis="x", color="#e5e5e5")
+    _save(fig, "wal_kill_result.webp")
+
+
+def layers_figure():
+    s = Svg(1040, 440, "コミットの記録が通る 3 つの置き場")
+    cols = [(40, "PostgreSQL のメモリ", "WAL バッファ"), (380, "OS のメモリ", "ページキャッシュ"),
+            (720, "ディスク", "WAL のファイル")]
+    for x, top, name in cols:
+        s.box(x, 60, 280, 130, PALE if x < 700 else FILL, INK)
+        s.text(x + 140, 105, top, 20, SUB)
+        s.text(x + 140, 150, name, 24)
+    s.line(320, 125, 376, 125, arrow=True)
+    s.text(348, 108, "write", 16, SUB)
+    s.line(660, 125, 716, 125, arrow=True)
+    s.text(688, 108, "fsync", 16, SUB)
+    s.text(40, 36, "成功を返す時に、コミットの記録がある所", 18, SUB, "start")
+    # 設定ごとに成功を返す位置
+    for label, cx in [("synchronous_commit = off", 180), ("fsync = off", 520), ("既定（両方 on）", 860)]:
+        s.line(cx, 194, cx, 222, SUB, 1.5, dash="3,4")
+        s.box(cx - 135, 226, 270, 76, "#ffffff", ACCENT, 2, rx=14)
+        s.text(cx, 258, label, 17, ACCENT)
+        s.text(cx, 286, "ここまで届いたら成功を返す", 15, ACCENT)
+    # 障害ごとに消える範囲
+    s.box(40, 330, 280, 46, RED_PALE, RED, 2, rx=8)
+    s.text(180, 360, "PostgreSQL が落ちると消える", 17, RED)
+    s.box(40, 384, 620, 46, RED_PALE, RED, 2, dash="6,5", rx=8)
+    s.text(350, 414, "OS が落ちる・電源が切れると消える", 17, RED)
+    s.box(720, 330, 280, 100, "#ffffff", INK, 2, rx=8)
+    s.text(860, 374, "どちらでも残る", 17)
+    s.text(860, 402, "ディスク自体が壊れない限り", 14, SUB)
+    s.save_webp("wal_layers.webp")
+
+
+def _lsn(x):
+    hi, lo = x.split("/")
+    return (int(hi, 16) << 32) + int(lo, 16)
+
+
+def async_animation():
+    r = json.loads((LAB / "killtest_async_timeline.json").read_text())
+    acks = [(a["at_ms"], a["id"], _lsn(a["lsn"])) for a in r["acks"]]
+    polls = [(p["at_ms"], _lsn(p["write_lsn"])) for p in r["polls"]]
+    end = acks[-1][0]
+    window = 1000.0
+    t0 = end - window
+    id0 = max(i for t, i, _ in acks if t <= t0)
+    id1 = acks[-1][1]
+    survived_last = r["lost_first_id"] - 1
+    speed = 0.2
+    S = 2
+    W, H = 900, 370
+    font = lambda n: ImageFont.truetype(CJK, n * S)  # noqa: E731
+    X0, X1 = 60, 840
+
+    def X(i):
+        return (X0 + (X1 - X0) * max(0, i - id0) / (id1 - id0)) * S
+
+    def state(t):
+        acked = max([i for tt, i, _ in acks if tt <= t] or [id0])
+        wl = max([w for tt, w in polls if tt <= t] or [polls[0][1]])
+        written = max([i for _, i, lsn in acks if lsn <= wl] or [id0])
+        return acked, written
+
+    frames, durs = [], []
+    step = 20.0  # ms（実時間）
+    t = t0
+    while t <= end + 0.01:
+        frames.append(("run", t))
+        durs.append(int(step / speed))
+        t += step
+    frames.append(("kill", end))
+    durs.append(3500)
+    imgs = []
+    for kind, t in frames:
+        im = Image.new("RGB", (W * S, H * S), "#ffffff")
+        d = ImageDraw.Draw(im)
+        d.text((20 * S, 14 * S), "synchronous_commit = off で 1 行ずつ INSERT し、docker kill で止める",
+               font=font(19), fill=INK)
+        left = end - t
+        d.text((20 * S, 46 * S), f"止める {left:5.0f} ms 前（実測の時刻を {speed} 倍速で再生）"
+               if kind == "run" else "止めた後（起動し直して数えた）", font=font(16), fill=SUB)
+        # 時間の帯
+        d.rectangle([X0 * S, 78 * S, X1 * S, 86 * S], fill=FILL)
+        d.rectangle([X0 * S, 78 * S, (X0 + (X1 - X0) * (t - t0) / window) * S, 86 * S], fill=SUB)
+        acked, written = state(t)
+        rows = [("成功が返った行", 120, acked, ACCENT), ("OS に渡した行", 210, written, INK)]
+        for label, y, upto, color in rows:
+            d.text((X0 * S, (y - 4) * S), label, font=font(17), fill=INK)
+            d.rectangle([X0 * S, (y + 24) * S, X1 * S, (y + 54) * S], outline="#cccccc", width=S)
+            if kind == "kill" and label.startswith("成功"):
+                d.rectangle([X0 * S, (y + 24) * S, X(survived_last), (y + 54) * S], fill=color)
+                d.rectangle([X(survived_last), (y + 24) * S, X(id1), (y + 54) * S], fill=RED_PALE,
+                            outline=RED, width=S)
             else:
-                c.text(x + 95, top + 134, a, 26)
-            if i < 3:
-                c.arrow(x + 194, top + 124, x + 226, top + 124)
-    c.p.append(f'<line x1="40" y1="262" x2="920" y2="262" stroke="#cccccc" stroke-width="2"/>')
-    c.save("write-ahead-log_fsync_retry.svg")
+                d.rectangle([X0 * S, (y + 24) * S, X(upto), (y + 54) * S], fill=color)
+        if kind == "kill":
+            lost = id1 - survived_last
+            d.text((X0 * S, 300 * S),
+                   f"成功が返ったのに消えた {lost:,} 行", font=font(18), fill=RED)
+            d.text((X0 * S, 330 * S), "消えた行は、OS に渡した位置より後ろの行と一致した",
+                   font=font(16), fill=SUB)
+        else:
+            gap = acked - written
+            d.text((X0 * S, 300 * S), f"成功を返したが、まだ PostgreSQL のメモリにしか無い行: {gap:,}",
+                   font=font(16), fill=RED if gap else SUB)
+        d.text((X0 * S, 268 * S), f"行番号 {id0:,}", font=font(13), fill=SUB)
+        d.text(((X1 - 110) * S, 268 * S), f"行番号 {id1:,}", font=font(13), fill=SUB)
+        imgs.append(im.resize((W, H), Image.LANCZOS))
+    imgs[0].save(IMG / "wal_async_loss.webp", "WEBP", save_all=True, append_images=imgs[1:],
+                 duration=durs, loop=0, quality=80, method=6)
+
+
+def group_animation():
+    """8 クライアントが 2 つの組に分かれ、交互に fsync に乗る様子。時刻は持たない模式図で、1 コマずつ秒で表示する。"""
+    S = 2
+    W, H = 900, 470
+    font = lambda n: ImageFont.truetype(CJK, n * S)  # noqa: E731
+    A, B = range(1, 5), range(5, 9)
+    # (fsync の番号, その fsync に乗る組, 成功を返した組, 待つ組, 説明)
+    frames = [
+        (1, A, None, B, "クライアント 1〜4 の記録を乗せて fsync #1 が始まる。5〜8 はその後に記録を書き、待つ"),
+        (2, B, A, None, "fsync #1 が終わり、1〜4 に成功を返す。待っていた 5〜8 の記録で fsync #2 が始まる"),
+        (2, B, None, A, "1〜4 は次の記録を書くが、fsync #2 はもう始まっているので、次の fsync を待つ"),
+        (3, A, B, None, "fsync #2 が終わり、5〜8 に成功を返す。待っていた 1〜4 の記録で fsync #3 が始まる"),
+        (3, A, None, B, "5〜8 は次の記録を書き、次の fsync を待つ"),
+        (4, B, A, None, "fsync #3 が終わり、1〜4 に成功を返す。待っていた 5〜8 の記録で fsync #4 が始まる"),
+        (4, B, None, A, "1〜4 は次の記録を書き、次の fsync を待つ"),
+        (None, None, B, A, "fsync #4 が終わり、5〜8 に成功を返す。1 回の fsync に乗るのは、いつも 8 クライアントの半分"),
+    ]
+    per = 1.6
+    durs = [int(per * 1000)] * (len(frames) - 1) + [3500]
+    imgs = []
+    done_k, done_c = 0, 0
+    carried = {}
+    for k, cur, acked, wait, text in frames:
+        if acked is not None:
+            done_k += 1
+            done_c += 4
+        if k is not None:
+            carried[k] = cur
+        im = Image.new("RGB", (W * S, H * S), "#ffffff")
+        d = ImageDraw.Draw(im)
+        d.text((20 * S, 14 * S), "8 クライアントが同時にコミットする時のグループコミット（推測した仕組みの模式図）",
+               font=font(18), fill=INK)
+        d.text((20 * S, 44 * S), f"1 コマ {per} 秒で表示", font=font(14), fill=SUB)
+        # fsync の帯（時間の流れ）
+        for i in range(1, 5):
+            x = 40 + (i - 1) * 205
+            on = k == i
+            past = i in carried and (k is None or i < k)
+            fill = PALE if on else (FILL if past else "#ffffff")
+            d.rectangle([x * S, 76 * S, (x + 190) * S, 112 * S], fill=fill,
+                        outline=ACCENT if on else "#cccccc", width=S * (2 if on else 1))
+            lab = f"fsync #{i}"
+            if i in carried:
+                g = carried[i]
+                lab += f"：{g[0]}〜{g[-1]} の記録"
+            d.text(((x + 10) * S, 83 * S), lab, font=font(15), fill=INK if (on or past) else "#bbbbbb")
+        # 時間の向きは fsync の並びにだけ掛かるので、その真上に置く
+        d.line([40 * S, 68 * S, 840 * S, 68 * S], fill=SUB, width=S)
+        d.polygon([(846 * S, 68 * S), (836 * S, 63 * S), (836 * S, 73 * S)], fill=SUB)
+        d.text((790 * S, 46 * S), "時間", font=font(13), fill=SUB)
+        # クライアントの行
+        for c in range(1, 9):
+            y = 146 + (c - 1) * 30
+            d.text((40 * S, y * S), f"クライアント {c}", font=font(15), fill=INK)
+            if cur is not None and c in cur:
+                st, fill, edge = "記録が fsync でディスクへ向かう", PALE, ACCENT
+            elif acked is not None and c in acked:
+                st, fill, edge = "成功が返る", "#e3f0e5", "#59a14f"
+            elif wait is not None and c in wait:
+                st, fill, edge = "記録を書いて、次の fsync を待つ", OCHRE_PALE, OCHRE
+            else:
+                st, fill, edge = "", "#ffffff", "#ffffff"
+            if st:
+                d.rectangle([180 * S, (y - 2) * S, 520 * S, (y + 24) * S], fill=fill, outline=edge, width=S)
+                d.text((192 * S, y * S), st, font=font(14), fill=INK)
+        d.text((560 * S, 160 * S), f"終わった fsync: {done_k} 回", font=font(16), fill=INK)
+        d.text((560 * S, 192 * S), f"成功を返したコミット: {done_c} 件", font=font(16), fill=INK)
+        if done_k:
+            d.text((560 * S, 224 * S), f"fsync 1 回あたり: {done_c / done_k:.0f} 件", font=font(16), fill=ACCENT)
+        d.text((40 * S, 400 * S), text, font=font(15), fill=INK)
+        imgs.append(im.resize((W, H), Image.LANCZOS))
+    imgs[0].save(IMG / "wal_group_commit_cycle.webp", "WEBP", save_all=True, append_images=imgs[1:],
+                 duration=durs, loop=0, quality=80, method=6)
+
+
+def _group_blocks():
+    blocks, cur = {}, None
+    for ln in (LAB / "groupcommit_output.txt").read_text().splitlines():
+        if ln.startswith("# PGOPTIONS="):
+            cur = "off" if "synchronous_commit=off" in ln else "on"
+            blocks[cur] = []
+            continue
+        p = ln.split()
+        if cur and len(p) == 6 and p[0].isdigit():
+            blocks[cur].append(tuple(float(v) for v in p))
+    return blocks
+
+
+def group_figure():
+    blocks = _group_blocks()
+    rows, off = blocks["on"], blocks["off"]
+    n = [r[0] for r in rows]
+    _style()
+    fig, ax = plt.subplots(figsize=(7.4, 3.6))
+    ax.plot(n, [r[2] for r in off], marker="^", color=SUB, ls="--", label="1 秒あたりのコミット（synchronous_commit = off）")
+    ax.plot(n, [r[2] for r in rows], marker="o", color=ACCENT, label="1 秒あたりのコミット（既定）")
+    ax.plot(n, [r[4] for r in rows], marker="s", color=INK, label="1 秒あたりの WAL の fsync（既定）")
+    for r in rows:
+        ax.text(r[0], r[2] * 0.62, f"{r[5]:.0f}" if r[5] >= 2 else f"{r[5]:.1f}", ha="center",
+                fontsize=8.5, color=ACCENT)
+    ax.set_xscale("log", base=2)
+    ax.set_yscale("log")
+    ax.set_xticks(n, [f"{int(v)}" for v in n])
+    ax.set_ylim(300, 2000000)
+    ax.set_xlabel("同時に INSERT を送るクライアントの数（青い数字は既定での fsync 1 回あたりのコミット）")
+    ax.set_ylabel("回数（対数）")
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.legend(loc="upper left", frameon=False, fontsize=8.5)
+    _save(fig, "wal_group_commit.webp")
+
+
+def _slot_series(path, mode):
+    xs, ys = [], []
+    for ln in (LAB / path).read_text().splitlines():
+        m = re.match(rf"{mode} step=(\d+) written_mb=([\d.]+) pg_wal_mb=([\d.]+)", ln)
+        if m:
+            xs.append(float(m.group(2)))
+            ys.append(float(m.group(3)))
+    return xs, ys
+
+
+def slot_figure():
+    _style()
+    fig, ax = plt.subplots(figsize=(7.4, 3.5))
+    x, y = _slot_series("slot_output.txt", "slot")
+    ax.plot(x, y, marker="o", color=RED, label="使われていない slot がある")
+    x, y = _slot_series("slot_cap_output.txt", "cap")
+    ax.plot(x, y, marker="^", color=OCHRE, label="同じ slot と max_slot_wal_keep_size = 256MB")
+    ax.annotate("slot が lost になる", xy=(x[4], y[4]), xytext=(x[4] + 40, y[4] + 120),
+                arrowprops=dict(arrowstyle="->", color=OCHRE), color=OCHRE, fontsize=9)
+    x, y = _slot_series("slot_output.txt", "no_slot")
+    ax.plot(x, y, marker="s", color=INK, label="slot が無い")
+    ax.set_xlabel("書いた WAL の量（MB）。1 段ごとに 20 万行を足して CHECKPOINT")
+    ax.set_ylabel("pg_wal の大きさ（MB）")
+    ax.set_xlim(-10, 700)
+    ax.set_ylim(0, 720)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.legend(loc="upper left", frameon=False, fontsize=9)
+    _save(fig, "wal_slot.webp")
+
+
+def positions_figure():
+    s = Svg(1040, 290, "1 本のログの上の 3 つの位置")
+    x0, x1, y = 60, 940, 150
+    lw, hw = x0 + 220, x0 + 600
+    s.box(x0, y, lw - x0, 56, FILL, "#999999", 1.5, rx=4)
+    s.box(lw, y, hw - lw, 56, PALE, "#999999", 1.5, rx=0)
+    s.box(hw, y, x1 - hw, 56, OCHRE_PALE, "#999999", 1.5, rx=4)
+    s.text((x0 + lw) / 2, y + 35, "消して良い", 16, SUB)
+    s.text((lw + hw) / 2, y + 35, "確定した。成功を返した記録はここに入る", 16)
+    s.text((hw + x1) / 2, y + 35, "まだ確定していない。見せない", 16)
+    marks = [(lw, "Low-Water Mark", "ここより前は消して良い", RED),
+             (hw, "High-Water Mark", "確定した最後の位置", ACCENT),
+             (x1, "末尾", "最後に追記した位置", INK)]
+    for x, name, desc, color in marks:
+        s.line(x, y - 40, x, y + 70, color, 3)
+        s.text(x, y - 74, name, 18)
+        s.text(x, y - 50, desc, 14, SUB)
+    s.text(x0, y + 108, "古い", 15, SUB, "start")
+    s.text(x1, y + 108, "新しい", 15, SUB, "end")
+    s.line(x0 + 50, y + 103, x1 - 60, y + 103, SUB, 1.5, arrow=True)
+    s.save_webp("wal_positions.webp")
 
 
 def leader_change_figure():
-    """Entries after the high-water mark survive only if the new Leader has them."""
-    c = Canvas("Leader の交代で、高位ウォーターマークより後ろのエントリがどうなるか")
+    """High-Water Mark より後ろの記録は、新しい Leader が持っていれば残る。"""
+    s = Svg(960, 520, "Leader の交代で High-Water Mark より後ろの記録がどうなるか")
     cell, x0 = 104, 300
     idx = [40, 41, 42, 43, 44, 45]
     rows = [(70, "旧 Leader", 6), (210, "新 Leader", 4)]
     for y, name, n in rows:
-        c.text(40, y + (52 if n == 6 else 34), name, 26, anchor="start")
+        s.text(40, y + (48 if n == 6 else 34), name, 24, anchor="start")
         for i in range(n):
             v = idx[i]
             if v <= 42:
@@ -215,24 +420,28 @@ def leader_change_figure():
                 fill, stroke = PALE, ACCENT
             else:
                 fill, stroke = OCHRE_PALE, OCHRE
-            c.box(x0 + i * cell, y, cell - 12, 76, fill, stroke)
-            c.text(x0 + i * cell + (cell - 12) / 2, y + 48, str(v), 26)
-    c.text(40, 278, "（元 Follower 1）", 24, SUB, anchor="start")
+            s.box(x0 + i * cell, y, cell - 12, 76, fill, stroke)
+            s.text(x0 + i * cell + (cell - 12) / 2, y + 48, str(v), 24)
+    s.text(40, 274, "（元 Follower）", 20, SUB, anchor="start")
     hx = x0 + 3 * cell - 6
-    c.p.append(f'<line x1="{hx}" y1="40" x2="{hx}" y2="320" stroke="{INK}" '
-               'stroke-width="5" stroke-linecap="round"/>')
-    c.text(hx, 30, "H = 42", 24)
-    c.box(40, 380, 420, 120, PALE, ACCENT, sw=3)
-    c.text(250, 430, "43 は新 Leader にある", 26)
-    c.text(250, 470, "後から確定する", 24, SUB)
-    c.box(500, 380, 420, 120, OCHRE_PALE, OCHRE, sw=3)
-    c.text(710, 430, "44・45 は新 Leader に無い", 26)
-    c.text(710, 470, "上書きされて消える", 24, SUB)
-    c.save("write-ahead-log_leader_change.svg")
+    s.line(hx, 40, hx, 320, INK, 5)
+    s.text(hx, 30, "High-Water Mark = 42", 20)
+    s.box(40, 380, 420, 110, PALE, ACCENT, sw=3)
+    s.text(250, 428, "43 は新 Leader にある", 22)
+    s.text(250, 464, "後から確定する", 20, SUB)
+    s.box(500, 380, 420, 110, OCHRE_PALE, OCHRE, sw=3)
+    s.text(710, 428, "44・45 は新 Leader に無い", 22)
+    s.text(710, 464, "上書きされて消える", 20, SUB)
+    s.save_webp("wal_leader_change.webp")
 
 
 if __name__ == "__main__":
-    concept_figure()
-    fsync_figure()
-    fsync_retry_figure()
+    IMG.mkdir(exist_ok=True)
+    kill_figure()
+    layers_figure()
+    async_animation()
+    group_animation()
+    group_figure()
+    slot_figure()
+    positions_figure()
     leader_change_figure()
