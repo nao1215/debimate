@@ -81,7 +81,7 @@ lstsq は `X` を直接、特異値分解（SVD、Singular Value Decomposition�
 
 #### 多項式回帰
 
-式の「線形」は、係数について線形という意味です。`x²` や `x³` の列を足せば曲線も引け、これを多項式回帰と呼びます。次数を上げ過ぎて学習データに張り付く様子は、[過学習](../overfitting/)と[バイアス-バリアンストレードオフ](../bias-variance-tradeoff/)で扱っています。値の線形和は[ベクトルの内積](../../math/vector-matrix-ops/)で、[ロジスティック回帰](../logistic-regression/)・[SVM](../svm/)・[パーセプトロン](../perceptron/)も同じ線形和を使います。列を変換せずに曲がった関係を扱うなら、[決定木](../decision-tree/)か[勾配ブースティング](../gradient-boosting/)を使います。
+式の「線形」は、係数について線形という意味です。`x²` や `x³` の列を足せば曲線も引け、これを多項式回帰と呼びます。次数を上げ過ぎて学習データに張り付く様子は[過学習](../overfitting/)、列を増やした時の誤差は[バイアス-バリアンストレードオフ](../bias-variance-tradeoff/)で扱っています。値の線形和は[ベクトルの内積](../../math/vector-matrix-ops/)で、[ロジスティック回帰](../logistic-regression/)・[SVM](../svm/)・[パーセプトロン](../perceptron/)も同じ線形和を使います。列を変換せずに曲がった関係を扱うなら、[決定木](../decision-tree/)か[勾配ブースティング](../gradient-boosting/)を使います。
 
 時刻を列にして直線を引けば、時系列のトレンドも求められます。トレンドを引いた残りで周期を見る前処理は、[時系列予測](../time-series-forecasting/)で扱っています。
 

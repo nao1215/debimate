@@ -443,7 +443,7 @@ for rho in (0.0, 0.3):
 
 [ランダムフォレスト](../../ml/random-forest/)は、同じ Breiman 氏が [2001 年の論文](https://doi.org/10.1023/A:1010933404324)で示した方法で、分割ごとに、候補にする特徴量を無作為に一部だけ選び直します。選ぶ数は、scikit-learn の [`RandomForestClassifier`](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) では `max_features` で決めます。どの木も同じ強い特徴量で分けることが減るので、木同士の相関が下がり、`ρ σ²` そのものが小さくなります。
 
-学習データを変えた時の予測のばらつきを分散で測る考え方は、[バイアス-バリアンス分解](../../ml/bias-variance-tradeoff/)で扱っています。そこでは誤差をバイアスの 2 乗・分散・ノイズの 3 つに分け、[過学習](../../ml/overfitting/)を分散が大きい状態として説明します。
+学習データを変えた時の予測のばらつきを分散で測る考え方は、[バイアス-バリアンス分解](../../ml/bias-variance-tradeoff/)で扱っています。そこでは二乗誤差をバイアスの 2 乗と分散の 2 つに分け、[過学習](../../ml/overfitting/)を分散が大きい状態として説明します。
 
 ---
 
