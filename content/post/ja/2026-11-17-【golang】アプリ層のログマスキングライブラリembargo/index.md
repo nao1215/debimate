@@ -264,7 +264,7 @@ func TestMain(m *testing.M) { os.Exit(embargotest.Guard(m)) }
 
 ### 多様なテスト手法の導入
 
-セキュリティのライブラリは、バグがそのまま漏洩に繋がります。embargo では、[技術ノート「Software Testing」](/notes/#software-testing)で書いてきた手法を総動員しました。以下に、手法と、その手法で捕まえたいバグを示します。
+セキュリティのライブラリは、バグがそのまま漏洩に繋がります。embargo では、[技術ノート「Software Testing」](/notes/software-testing/)で書いてきた手法を総動員しました。以下に、手法と、その手法で捕まえたいバグを示します。
 
 | 手法 | 捕まえたいバグ |
 |---|---|
