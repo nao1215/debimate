@@ -1,0 +1,25 @@
+headers checked: 2016 / 2016
+973962 header: {
+ "size": 80,
+ "version": 583917568,
+ "prev": "0000000000000000000174206be0c39696aeac0e41126e8c58171243fe235b31",
+ "merkle": "7533994ec4fc57b133053eaec8dea8f3dfadf9b4a425b202fbc84678c1f991fb",
+ "time": 1793440615,
+ "bits": 386000300,
+ "nonce": 3426205591,
+ "hash_raw": "254451a2aef6105f9c32d09113d99688a39bc840f04300000000000000000000",
+ "hash_shown": "0000000000000000000043f040c89ba38896d91391d0329c5f10f6aea2514425"
+}
+time - parent time: n 2016 negative 58 (2.9%) min (973962, -372) max (974677, 4705)
+our MTP == API mediantime: 2006 / 2006
+time - MTP of parent: min (974479, 899) median 3649.5
+negative blocks, time - MTP: min 1275
+time - firstSeen: n 1065 ahead 198 (18.6%) max (975739, 522.4819068908691) min (973891, -82.65932393074036) median -13
+expected hashes per block = difficulty * 2^32: 6.372e+23 nonce values: 4294967296 ratio: 1.484e+14
+distinct versions: 1164
+bits that changed from 0x20000000: 0x1fffe000
+bit share: {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0, "7": 0, "8": 0, "9": 0, "10": 0, "11": 0, "12": 0, "13": 867, "14": 898, "15": 853, "16": 807, "17": 854, "18": 789, "19": 709, "20": 659, "21": 629, "22": 623, "23": 621, "24": 580, "25": 728, "26": 641, "27": 512, "28": 411, "29": 2016, "30": 0, "31": 0}
+BIP34 height == height: 2016 / 2016
+973962 coinbase scriptSig: 038adc0e -> 973962 ascii: .....Mined by AntPool ..).......mmq.=@)|.....mw.j.....@....V....f.....................
+size: median 1639247.0 max 3972779 min 210 over 1,000,000: 1972
+weight: max 3998835 over 3,990,000: 1929 tx_count==1: 5
