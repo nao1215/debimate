@@ -272,7 +272,7 @@ Pearson 以外の相関係数は、積の平均という作りのどこかを変
 
 [Spearman](https://doi.org/10.2307/1412159) は 1904 年、[Kendall](https://doi.org/10.1093/biomet/30.1-2.81) は 1938 年に発表されました。どちらも順位しか使わないので、単調に増える関係なら曲がっていても 1 になり、外れ値を遠くへ動かしても、順位が同じなら値は変わりません。ただし、増えてから減る関係は、Pearson と同じく 0 に近づきます。SciPy では、Pearson を [`pearsonr`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.pearsonr.html)、Spearman を [`spearmanr`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html)、Kendall を [`kendalltau`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.kendalltau.html) で計算でき、pandas の `DataFrame.corr` も `method` に `"spearman"` と `"kendall"` を渡せます。
 
-Chatterjee の ξ は、2019 年に [arXiv](https://arxiv.org/abs/1909.10140) で公開され、2020 年に学術誌に掲載された新しい相関係数です。SciPy には 1.15.0 で [`scipy.stats.chatterjeexi`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chatterjeexi.html) として入りました。`x` の小さい順に点を並べると、`y` が `x` で決まる時は、隣どうしの点で `y` が近い値になり、順位は少しずつしか変わりません。
+Chatterjee の ξ は、2019 年に [arXiv](https://arxiv.org/abs/1909.10140) で公開され、2021 年に学術誌 [JASA](https://doi.org/10.1080/01621459.2020.1758115) に掲載された新しい相関係数です。SciPy には 1.15.0 で [`scipy.stats.chatterjeexi`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chatterjeexi.html) として入りました。`x` の小さい順に点を並べると、`y` が `x` で決まる時は、隣どうしの点で `y` が近い値になり、順位は少しずつしか変わりません。
 
 {{< figure src="corr_xi.webp" alt="2 枚の折れ線。どちらも x の小さい順に並べた 60 点について、y の順位を縦軸に取る。左の y = x² では、順位が 60 から 1 まで滑らかに下がり、また 60 近くまで上がる V 字になり、ξ = 0.85。右の無関係な乱数では、順位が 1 から 60 の間を上下に激しく跳び、ξ = 0.05" caption="x の順に並べた y の順位。隣との差が小さいほど ξ は 1 に近い" align="center" >}}
 
