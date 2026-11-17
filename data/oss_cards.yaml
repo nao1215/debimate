@@ -22,4 +22,10 @@
   langColor: "#00ADD8"
   awesome: true
   desc: Markdown と Mermaid 図を組み立てるための Go ライブラリ
+
+- name: embargo
+  repo: https://github.com/nao1215/embargo
+  lang: Go
+  langColor: "#00ADD8"
+  desc: Go アプリがログ・エラー報告・トレースへ書き出す前に、シークレットと個人情報を隠すライブラリ。漏洩を見つけるテスト用パッケージ付き
 # gozen は右の帯で固定表示するので、左のランダムの候補から外した（2026-11-10）。
