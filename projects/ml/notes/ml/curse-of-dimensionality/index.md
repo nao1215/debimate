@@ -1,5 +1,5 @@
 ---
-title: "次元の呪い（curse of dimensionality）"
+title: "次元の呪い - 距離に頼れなくなるのは、列の数ではなく独立に動く列が増えた時"
 date: 2026-05-25
 draft: false
 series: ["機械学習ノート", "Machine Learning"]
@@ -8,284 +8,261 @@ weight: 13
 topics: ["Machine Learning（評価・概念・アルゴリズム）"]
 ---
 
-次元の呪い（curse of dimensionality）は、特徴量の次元が高くなるにつれて距離・体積・サンプル密度の常識的な感覚が崩れ、距離ベースのアルゴリズムが機能しなくなる現象群の総称です。[Richard Bellman](https://en.wikipedia.org/wiki/Curse_of_dimensionality) が動的計画法の問題を扱う中で名付けた用語です。
-
-機械学習の文脈では、「特徴量を増やすほど精度が上がるとは限らない、むしろ kNN や [RBF（Radial Basis Function）カーネル](../svm/)が先に動かなくなる」という現実問題として現れます。予測に効く特徴量 5 個にノイズ特徴量を足す本記事の実験では、[kNN](../knn/) が 15 次元で崩れ始め、[ロジスティック回帰](../logistic-regression/) と [RandomForest](../random-forest/) は 100 次元前後でも kNN ほどは落ちません。対処としては [PCA](../pca/) などの次元削減、[L1 正則化](../regularization/) による[特徴量選択](/ml/ml/feature-selection/)、距離指標の見直しがあります。
-
----
-
-### 3 つの症状
-
-本記事では、距離の集中、サンプル密度の低下、体積分布の偏りの 3 つを説明します。
-
-```mermaid
-graph LR
-    A[Curse of dimensionality] --> B[距離の意味喪失]
-    A --> C[サンプル空間の希薄化]
-    A --> D[体積分布の偏り]
-    B --> B1[kNN, 単純な k-means, RBF SVM が崩壊]
-    C --> C1[同じ密度を保つには N が指数的に必要]
-    D --> D1[体積が隅と表面の「殻」に集まる]
-```
-
-対処方法は症状ごとに異なるので、距離、サンプル密度、体積分布のどれに問題があるかを確認します。
-
----
-
-### 症状 1: 距離の意味喪失
-
-`d` 次元空間にランダムに配置した `N` 点について、ある 1 点から見た「最近傍点までの距離」と「最遠点までの距離」の比 `min / max` は、`d` が大きくなるほど 1 に近づきます。距離が「近さ」を意味しなくなり、距離ベースの判定が機能しなくなります。次のコードは、各次元が独立な標準正規分布に従う 1000 点で比を測ります。
+次元の呪い（curse of dimensionality）は、データの列が増えるにつれて、2 次元や 3 次元で当たり前だった「近い」「遠い」の感覚が通じなくなる現象をまとめた呼び名です。ここでの次元は、1 行のデータが持つ数値の列が何本あるかを指します。最初に、短いコードの結果を予想してみてください。
 
 ```python
-import matplotlib.pyplot as plt
 import numpy as np
 
 rng = np.random.default_rng(0)
-dims = [2, 5, 10, 20, 50, 100, 500, 1000, 5000]
-ratios = []
-spreads = []
-for d in dims:
-    points = rng.standard_normal((1000, d))
-    dists = np.linalg.norm(points[1:] - points[0], axis=1)
-    ratios.append(dists.min() / dists.max())
-    spreads.append((dists.max() - dists.min()) / dists.mean())
-
-for d, r in zip(dims, ratios):
-    print(f"d={d:<5d} min/max = {r:.3f}")
-
-fig, axes = plt.subplots(1, 2, figsize=(11, 4))
-axes[0].plot(dims, ratios, "o-", color="#7aa6c2", linewidth=2)
-axes[0].set_xscale("log")
-axes[0].set_xlabel("dimension d (log scale)")
-axes[0].set_ylabel("min distance / max distance")
-axes[0].set_title("Nearest / farthest distance ratio approaches 1")
-axes[0].set_ylim(0, 1.05)
-axes[0].axhline(1.0, color="gray", linestyle="--", alpha=0.5)
-axes[1].plot(dims, spreads, "o-", color="#e15759", linewidth=2)
-axes[1].set_xscale("log")
-axes[1].set_xlabel("dimension d (log scale)")
-axes[1].set_ylabel("(max - min) / mean distance")
-axes[1].set_title("Relative distance spread shrinks")
-plt.tight_layout()
-plt.savefig("curse-of-dimensionality_distance.svg", bbox_inches="tight")
+for d in [2, 1000]:
+    X = rng.random((1000, d))                      # 0〜1 の一様な乱数で 1000 点
+    dist = np.linalg.norm(X[1:] - X[0], axis=1)    # 1 点目から残り 999 点までの距離
+    print(f"{d:4d} 列: 一番遠い点 {dist.max():.3f}、一番近い点 {dist.min():.3f}、比 {dist.max() / dist.min():.2f} 倍")
 ```
 
-実行結果:
+0〜1 の乱数で作った 1000 点のうち 1 点を選び、残り 999 点までの距離を測っています。列が 2 の時と 1000 の時で、一番遠い点は一番近い点の何倍遠いでしょうか。
 
 ```text
-d=2     min/max = 0.027
-d=5     min/max = 0.151
-d=10    min/max = 0.270
-d=20    min/max = 0.272
-d=50    min/max = 0.596
-d=100   min/max = 0.670
-d=500   min/max = 0.822
-d=1000  min/max = 0.893
-d=5000  min/max = 0.931
+   2 列: 一番遠い点 0.948、一番近い点 0.006、比 165.17 倍
+1000 列: 一番遠い点 13.597、一番近い点 12.228、比 1.11 倍
 ```
 
-![Distance ratio approaches 1 as dimension grows](./curse-of-dimensionality_distance.svg)
+2 列では 165 倍でした。1000 列では 1.11 倍しかなく、一番近い点も一番遠い点も、ほぼ同じ距離に並びます。1 点だけでは偶然に左右されるので、全ての点で同じ比を測って[中央値](../../math/median/)を取り、列の数を変えて描きました。それが次の図にある青い線です。赤い点は、scikit-learn に同梱の手書き数字の画像 digits（64 列）と、それに乱数の列を足したものです。緑の点は、5 列の乱数をランダムな行列で 1024 列に変換したものです。
 
-2 次元では最近傍が最遠点の 3% の距離にありますが、5000 次元では 93% です。ほぼすべての点が「同じくらいの距離」にあるので、各次元が独立なノイズであるこのデータでは、kNN の「k 個の最近傍を取る」操作は、ランダムに k 点を取る操作に近づきます。
+{{< figure src="cod_cover.webp" alt="横軸が列の数、縦軸が一番遠い点までの距離を一番近い点までの距離で割った比の両対数のグラフ。青い一様な乱数の線は 2 列の約 70 から下がり、10 列で約 3.7、1000 列で約 1.1 になる。赤い digits の 64 列は比 3.8 で、青い線の 10 列と同じ高さにある。乱数の列を 64、256、1024 足すと、比は 1.67、1.27、1.12 と下がり、青い線に重なっていく。緑の菱形は乱数 5 列の比 8.18 と、それを 1024 列に変換した比 8.24 で、横に並ぶ" caption="列の数と、一番遠い点 ÷ 一番近い点の比（青は一様な乱数、赤は digits、緑は乱数 5 列を 1024 列に変換したもの）" align="center" >}}
+
+digits は 64 列ありますが、比は 3.8 で、乱数なら 10 列ほどの所にいます。5 列の乱数を 1024 列に変換した緑の点も、比は 8.24 で、変換する前の 8.18 とほぼ変わりません。
+
+一方で、digits の 64 列を残したまま乱数の列を 1024 足すと、比は 1.12 になり、乱数の 1000 列とほぼ見分けが付きません。距離の差が縮むかどうかは、列の数そのものより、何列分の独立な動きがあるかで決まっています。
+
+[kNN](../knn/)（k 近傍法）、[k-means](../k-means/)、[DBSCAN](../dbscan/)、[RAG](/notes/generative-ai/rag/)（検索拡張生成）などで使う類似検索は、どれも「近い点は似ている」という前提で動きます。類似検索は、文章や画像を数百〜数千個の数値に直した埋め込み（embedding）どうしの距離で、似たものを探します。
+
+特徴量を足したら kNN の正解率が下がった、類似検索で同じ点ばかり候補に出る、という場面に出会った時、原因の候補に次元の呪いが入ります。
 
 <br>
 
-ただし、この集中は各次元が独立したノイズである場合の話です。[Beyer らの 1999 年の論文](https://link.springer.com/chapter/10.1007/3-540-49257-7_15)は、各次元が独立に同じ分布に従うデータでは最近傍が意味を失う一方で、そうでないデータでは意味を保つ場合があると示しています。次のコードは前のコードの続きで、5 次元の点をランダムな行列で 5000 次元へ写したデータ（見かけは 5000 次元、実質は 5 次元）で同じ比を測ります。
+本記事では、距離を使う手法を手元のデータに使う人と、列を増やそうとしている人に向けて、次の疑問に答えます。
 
-```python
-rng = np.random.default_rng(0)
+- 列が増えると、距離の何が変わるのか。
+- 列の多い実データでも、同じことが起きるのか。
+- 距離を使うモデルと使わないモデルで、崩れ方はどう違うのか。
+- 列を減らすなら、PCA と特徴量選択のどちらが効くのか。
+- 同じ点ばかりが近傍に選ばれるのはなぜか。
 
+実験は [NumPy](https://numpy.org/) 2.5.4 と [scikit-learn](https://scikit-learn.org/stable/) 1.9.1 で行いました。図を描く処理も含めた完全なコードは [curse-of-dimensionality_gen.py](https://github.com/nao1215/debimate/blob/main/projects/ml/scripts/notes/curse-of-dimensionality_gen.py) にあります。
 
-def min_max_ratio(points):
-    dists = np.linalg.norm(points[1:] - points[0], axis=1)
-    return dists.min() / dists.max()
+---
 
+### 距離が平均の周りに集まる理由
 
-iid = rng.standard_normal((1000, 5000))
-latent = rng.standard_normal((1000, 5))
-embedded = latent @ rng.standard_normal((5, 5000))
-print(f"iid 5000 dims         : min/max = {min_max_ratio(iid):.3f}")
-print(f"5 latent -> 5000 dims : min/max = {min_max_ratio(embedded):.3f}")
-print(f"5 dims                : min/max = {min_max_ratio(latent):.3f}")
-```
-
-実行結果:
+2 点の距離を 2 乗した値は、列ごとの差を 2 乗して全ての列で足した値です。0〜1 の一様な乱数なら、1 列で見た差を 2 乗した値は平均 1/6、分散 7/180 で、列が独立なら `d` 列分の和は平均 `d/6`、[標準偏差](../../math/stddev/)は `√d` に比例して増えます。平均が `d` に比例して伸びるのに、ばらつきは `√d` でしか伸びないので、平均に対するばらつきは `1/√d` で縮みます。距離は 2 乗した値を足してから平方根を取るので、平均に対するばらつきの割合はおよそ半分になり、平均のおよそ `0.59/√d` 倍です。
 
 ```text
-iid 5000 dims         : min/max = 0.943
-5 latent -> 5000 dims : min/max = 0.109
-5 dims                : min/max = 0.108
+   2 列: 距離を平均で割った値の標準偏差 0.462、理論の目安 0.59/√d = 0.417
+  10 列: 距離を平均で割った値の標準偏差 0.179、理論の目安 0.59/√d = 0.187
+ 100 列: 距離を平均で割った値の標準偏差 0.053、理論の目安 0.59/√d = 0.059
+1000 列: 距離を平均で割った値の標準偏差 0.017、理論の目安 0.59/√d = 0.019
+1000 列: 平均の ±2% に入る距離の割合 75%、平均から一番離れた距離のずれ 5.0%
 ```
 
-乱数を引き直しているので、独立な 5000 次元の値は上の表の 0.931 と少しずれます。列の数が同じ 5000 でも、実質 5 次元のデータの比は 5 次元のデータとほぼ同じです。距離が効くかどうかは、列の数ではなくデータの本質的な次元（intrinsic dimension）で決まります。
+{{< figure src="cod_spread.webp" alt="左は 1 点から他の 999 点までの距離をその平均で割った値のヒストグラム。2 列は 0 から 2 近くまで平らに広がり、10 列は 0.6 から 1.5、100 列は 0.85 から 1.15、1000 列は 1.0 の周りの細い山になる。右は横軸が列の数（対数）、縦軸が全体の 1% と 10% を含む立方体の 1 辺で、1% の線は 1 列で 0.01、10 列で 0.63、100 列で 0.95 と 1 に近づく" caption="距離が分布する幅（左）と、全体の 1% や 10% を含む立方体の 1 辺（右）" align="center" >}}
 
----
+1000 列なら、距離の 4 分の 3 が平均の ±2% に入り、一番離れた距離でも平均とのずれは 5% です。一番近い点と一番遠い点の比が 1 に近づいたのは、この幅が縮んだからです。Beyer 氏らは [1999 年の論文](https://doi.org/10.1007/3-540-49257-7_15)で、列が増えるにつれて距離のばらつきが平均に比べて 0 に近づくなら、一様な乱数に限らず一番近い点と一番遠い点の比が 1 に近づくことを示しました。ユークリッド距離に限らない結果で、列が独立に同じ分布から増える場合はその一例です。
 
-### 症状 2: サンプル空間の希薄化
-
-`d` 次元空間で「同じ密度」を保ったままサンプルを配置しようとすると、必要なサンプル数が `d` に対して指数的に増えます。例として、各次元を 10 個のビンに切ると、`d` 次元では `10^d` 個のビンがあります。
-
-- `d=2`: 100 ビン → 1000 サンプルあれば各ビン平均 10 個
-- `d=5`: 100,000 ビン → 1000 サンプルなら各ビンほぼ空
-- `d=10`: 100 億ビン → ビン数が多く、大半のビンが空になる
-
-機械学習では、学習データが特徴量空間を覆い尽くせなくなる形で現れます。kNN は近傍点の多数決を前提とするので、空間が希薄だと近くに点が無く、遠くの無関係な点が「近傍」として選ばれます。
-
----
-
-### 症状 3: 体積分布の偏り
-
-`d` 次元の単位球（半径 1 の球）の体積は、`V_d = π^(d/2) / Γ(d/2 + 1)` で表されます。これは `d=5` で最大（約 5.26）になり、それ以降は急減して `d=20` では約 0.026 になります。
-
-```python
-import math
-
-d_values = list(range(1, 26))
-volumes = [math.pi ** (d / 2) / math.gamma(d / 2 + 1) for d in d_values]
-
-fig, ax = plt.subplots(figsize=(7, 4))
-ax.plot(d_values, volumes, "o-", color="#7aa6c2", linewidth=2)
-ax.set_xlabel("dimension d")
-ax.set_ylabel("Volume of unit ball")
-ax.set_title("Volume of unit ball peaks around d=5 and vanishes for high d")
-ax.set_xticks([1, 5, 10, 15, 20, 25])
-plt.tight_layout()
-plt.savefig("curse-of-dimensionality_volume.svg", bbox_inches="tight")
-```
-
-![Unit-ball volume vs dimension](./curse-of-dimensionality_volume.svg)
-
-この球が一辺 2 の立方体に占める割合 `V_d / 2^d` は、`d=2` で 79%、`d=10` で 0.25%、`d=20` で約 2.5 × 10^-8 です。高次元の立方体の体積は、ほとんどが「隅」にあります。
+右の図は、別の見方です。0〜1 の立方体に一様に散らばったデータのうち、1% を含む小さな立方体の 1 辺は `0.01^(1/d)` になります。10 列でも 1 辺は 0.63 で、各列が取る範囲を 6 割以上見ないと、全体の 1% の点が集まりません。一様な乱数なら、近傍が近くにあるという前提は、この時点で崩れています。
 
 <br>
 
-球の中でも、体積は表面近くの「殻」に集中します。半径の外側 5% の殻が占める体積は `1 - 0.95^d` で、`d=2` では 10% ですが、`d=100` では 99.4% です。球の中に一様に点を置くと、ほとんどの点が表面近く、つまり中心からほぼ同じ距離に来ます。症状 1 の距離の集中と根は同じです。
+#### 名前は最適化の計算量から
+
+次元の呪いという名前は、Richard Bellman 氏の 1957 年の本『[Dynamic Programming](https://doi.org/10.1515/9781400835386)』の序文にあります（リンク先は 2010 年に復刊されたもの）。そこで指していたのは距離ではなく、変数が多い関数の最大値を求める計算が手に負えなくなることでした。各列を 10 段に刻んで調べるだけでも、10 列で 10 の 10 乗通りになります。
+
+上の立方体も同じ形で、近くに決まった数だけ点を置き続けるには、列が 1 本増えるたびに行を何倍にも増やす必要があります。[カーネル密度推定](../../math/kde/)のように近くの点を数える手法が、列が増えると急に多くのデータを要するのはこのためです。
 
 ---
 
-### kNN が先に崩れる理由
+### 実データが持つ固有次元
 
-信号特徴量 5 個 + ノイズ特徴量 N 個のデータで、kNN、ロジスティック回帰、RandomForest の 5-fold CV の正解率を比べます。データは scikit-learn の [make_classification](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_classification.html) で作る 500 件の 2 クラス分類です。次のコードは症状 1 のコードの続きで、`np` と `plt` を使います。
+冒頭の図で、digits は 64 列でも乱数の 10 列ほどの比を保っていました。8×8 画素の手書き数字では、隣り合う画素は一緒に濃くなり、数字の形が決まれば多くの画素は値が決まるので、64 列が独立には動きません。データが実際に動ける向きの数を固有次元（intrinsic dimension）と呼びます。
+
+scikit-learn に同梱する他のデータでも、同じ比を測りました。比べる乱数は、それぞれのデータと同じ行数で作っています。行が増えるほど一番近い点が近くなり、比が大きくなるからです。冒頭の図とこの表の digits も、乱数と行数を揃えるため、1797 枚から選んだ 1000 枚で測っています。
 
 ```python
-from sklearn.datasets import make_classification
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.linear_model import LogisticRegression
-from sklearn.model_selection import cross_val_score
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.preprocessing import StandardScaler
+def far_near_ratio(X):
+    """各点から見た「一番遠い点までの距離 ÷ 一番近い点までの距離」の中央値。"""
+    D = pairwise_distances(X)
+    np.fill_diagonal(D, np.nan)                    # 自分自身との距離 0 を外す
+    return float(np.median(np.nanmax(D, axis=1) / np.nanmin(D, axis=1)))
 
 
-def make_dataset(n_noise: int, seed: int = 0):
-    X_sig, y = make_classification(
-        n_samples=500, n_features=5, n_informative=5,
-        n_redundant=0, random_state=seed,
-    )
-    if n_noise > 0:
-        X_noise = np.random.default_rng(seed).standard_normal((500, n_noise))
-        return np.column_stack([X_sig, X_noise]), y
-    return X_sig, y
-
-
-noise_levels = [0, 10, 50, 100, 500, 1000, 5000]
-scores = {"kNN": [], "LR (L2)": [], "RF": []}
-for n in noise_levels:
-    X, y = make_dataset(n)
-    X_std = StandardScaler().fit_transform(X)
-    scores["kNN"].append(cross_val_score(
-        KNeighborsClassifier(n_neighbors=5), X_std, y, cv=5).mean())
-    scores["LR (L2)"].append(cross_val_score(
-        LogisticRegression(max_iter=2000), X_std, y, cv=5).mean())
-    scores["RF"].append(cross_val_score(
-        RandomForestClassifier(n_estimators=100, random_state=0),
-        X_std, y, cv=5).mean())
-
-dims_total = [5 + n for n in noise_levels]
-print(f"{'dim':>6} {'LR':>8} {'RF':>8} {'kNN':>8}")
-for d, lr_s, rf_s, knn_s in zip(
-    dims_total, scores["LR (L2)"], scores["RF"], scores["kNN"]
-):
-    print(f"{d:>6} {lr_s:>8.3f} {rf_s:>8.3f} {knn_s:>8.3f}")
-
-fig, ax = plt.subplots(figsize=(8, 4.5))
-for name, color in zip(["LR (L2)", "RF", "kNN"],
-                       ["#59a14f", "#7aa6c2", "#e15759"]):
-    ax.plot(dims_total, scores[name], "o-", color=color, linewidth=2,
-            label=name)
-ax.set_xscale("log")
-ax.set_xlabel("Total feature count (5 informative + N noise)")
-ax.set_ylabel("CV accuracy (5-fold)")
-ax.set_title("kNN degrades sharply as noise dimensions grow")
-ax.axhline(0.5, color="gray", linestyle="--", alpha=0.5,
-           label="chance level")
-ax.set_ylim(0.4, 1.0)
-ax.legend()
-plt.tight_layout()
-plt.savefig("curse-of-dimensionality_knn_decay.svg", bbox_inches="tight")
+def equivalent_columns(X):
+    """X と同じ比になる一様な乱数の列の数（同じ行の数で比べ、対数の上で補間する）。"""
+    curve = uniform_curve(len(X))                  # 同じ行の数の一様な乱数で、列の数 DIMS（2〜4096）ごとに測った比
+    r = far_near_ratio(X)
+    return r, float(np.exp(np.interp(-np.log(r), -np.log(curve), np.log(DIMS))))
 ```
 
-実行結果:
+| データ | 行 × 列 | 距離の比 | 同じ比になる乱数の列 |
+|---|---|---|---|
+| [wine](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_wine.html)（標準化） | 178 × 13 | 4.58 | 6 |
+| [breast_cancer](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html)（標準化） | 569 × 30 | 10.57 | 4 |
+| [digits](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html) | 1000 × 64 | 3.81 | 10 |
+| [olivetti faces](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.fetch_olivetti_faces.html) | 400 × 4096 | 3.59 | 9 |
+
+olivetti faces は 64×64 画素の顔写真 400 枚で、4096 列あります。それでも比は 3.59 で、乱数の 9 列と同じくらいの差を保っていました。breast_cancer の 30 列は乱数の 4 列相当ですが、これは数件の外れた行が一番遠い点を押し上げたためと考えられます。この比は一番遠い点 1 つで決まるので、外れ値に引っ張られます。
+
+列が多いデータでも、固有次元が低ければ距離は意味を保ちます。画像・音声・文章のように素の列が多いデータも、実際には低い次元の曲がった面の近くに集まっていることが多い、という見方を多様体仮説（manifold hypothesis）と呼びます。digits の分散を 90% まで説明するのに、[PCA](../pca/) の主成分は 21 本で足り、64 列より少なく済みます。見かけは 64 列でも固有次元が 8 のデータなら、近傍を探す索引が速く正確に動くことは、[kNN のノート](../knn/)で近傍を探す節に示しています。
+
+---
+
+### 乱数の列を足した digits
+
+固有次元が上がるのは、他の列と関係なく動く列が増えた時です。digits の 64 列に、0〜16 の乱数で作った画素の列を足していきました。乱数の列は数字と関係が無く、元の 64 列は全て残っています。
+
+乱数の列を足す前と足した後で、同じ画像に近い 5 枚を比べました。
+
+{{< figure src="cod_neighbors.webp" alt="2 枚の問い合わせ画像（3 と 8）ごとに 2 段。上の段は 64 列のままで探した近傍 5 枚で、全て同じ数字なので緑の枠。下の段は乱数の列を 1024 足して探した近傍 5 枚で、3 の近傍は 5・9・3・6・9、8 の近傍は 8・5・6・7・1 と、同じ数字は 1 枚だけで残りは赤の枠" caption="近傍 5 枚（上は 64 列のまま、下は乱数の列を 1024 足した後）" align="center" >}}
+
+64 列のままなら、5 枚とも同じ数字でした。乱数の列を 1024 足すと、同じ数字は 5 枚のうち 1 枚になります。画像に写る部分は何も変わっていないのに、1024 列分の乱数による差が距離の大半を占め、数字の形による差が埋もれたからです。乱数の列は画素と同じ 0〜16 の範囲なので、[標準化](../standardization/)で直すような、列ごとの大きさの違いで起きたことではありません。
+
+次に、1797 枚全部を使い、正解率を 5 分割の[交差検証](../cross-validation/)で測りました。距離を使う kNN に加えて、列ごとに重みを学ぶ[ロジスティック回帰](../logistic-regression/)と、列を 1 本ずつ選んで分岐する[ランダムフォレスト](../random-forest/)も並べています。
+
+```python
+cv = StratifiedKFold(5, shuffle=True, random_state=0)
+models = {
+    "kNN（k=5）": KNeighborsClassifier(5),
+    "ロジスティック回帰": make_pipeline(StandardScaler(), LogisticRegression(max_iter=3000)),
+    "ランダムフォレスト": RandomForestClassifier(300, random_state=0, n_jobs=4),
+}
+NOISE_ALL = [0, 16, 64, 256, 1024]
+acc = {name: [] for name in models}
+for k in NOISE_ALL:
+    X = with_noise(k)                              # digits の 64 列 + 乱数の列 k 本
+    for name, m in models.items():
+        acc[name].append(cross_val_score(m, X, yd, cv=cv, n_jobs=5).mean())
+```
 
 ```text
-   dim       LR       RF      kNN
-     5    0.858    0.904    0.928
-    15    0.840    0.888    0.794
-    55    0.818    0.864    0.658
-   105    0.778    0.850    0.612
-   505    0.634    0.722    0.594
-  1005    0.630    0.696    0.558
-  5005    0.588    0.632    0.508
+乱数 +   0 列: kNN（k=5） 0.986、ロジスティック回帰 0.969、ランダムフォレスト 0.977
+乱数 +  64 列: kNN（k=5） 0.952、ロジスティック回帰 0.945、ランダムフォレスト 0.973
+乱数 + 256 列: kNN（k=5） 0.841、ロジスティック回帰 0.912、ランダムフォレスト 0.965
+乱数 +1024 列: kNN（k=5） 0.573、ロジスティック回帰 0.842、ランダムフォレスト 0.948
 ```
 
-![kNN accuracy degrades as noise features are added](./curse-of-dimensionality_knn_decay.svg)
+{{< figure src="cod_models.webp" alt="横軸が digits の 64 列に足した乱数の列の数（0、16、64、256、1024）、縦軸が 5 分割の交差検証の正解率。赤い kNN は 0.99 から 256 列で 0.84、1024 列で 0.57 まで落ちる。青いロジスティック回帰は 0.97 から 0.84 へ緩やかに下がる。緑のランダムフォレストは 0.98 から 0.95 とほぼ平ら" caption="乱数の列を足した digits の正解率（kNN・ロジスティック回帰・ランダムフォレスト）" align="center" >}}
 
-ノイズが 10 個増えただけで、kNN は 0.928 から 0.794 に落ちます。LR と RF の低下は 0.02 程度です。この差は、各モデルが何に依存しているかで説明できます。
+足す前は kNN が一番高い 0.986 でしたが、1024 列足すと 0.573 まで落ち、3 つの中で一番低くなりました。ランダムフォレストは 0.948 で、ほとんど崩れません。木は分岐ごとに数字を分けやすい列を選ぶので、乱数の列が分岐に使われにくいためと考えられます。
 
-- kNN: 全特徴量を使った距離計算が核。ノイズの次元も距離に同じ重みで足されるので、信号 5 次元の差が埋もれる
-- LR（ロジスティック回帰）: 各特徴量の係数を学習するので、ノイズ特徴量の係数は小さくなる。ただし 500 件に対して特徴量が数百を超えると、[L2 正則化](../regularization/)があってもノイズに合わせた係数が付き、[過学習](../overfitting/)で落ちる
-- RF: 各分割は「特徴量 `X` が閾値 `t` 以下か」の 1 次元判定で、距離を使わない。ただし [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) は各分割で既定 `sqrt(特徴量数)` 個の候補しか見ない。5005 次元では候補 70 個に信号特徴量が 1 つでも入る確率が約 7% しかなく、ほとんどの分割がノイズで切られる
+ただし [RandomForestClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html) は、既定では分岐ごとに、全ての列から平方根に当たる本数だけを選んで候補にします。1088 列なら候補は 32 本で、その中に元の画素が 1 本も入らない分岐が 14% ほどあります。意味のある列の割合がさらに下がれば、木も崩れていきます。
 
-kNN が先に崩れるのは、ノイズの次元が距離に足されて信号の差が埋もれるためで、LR と RF が後から落ちるのは、500 件に対してノイズ特徴量が多すぎて、過学習や分割の質の低下が起きるためです。どちらも次元の呪いの症状ですが、効く対処は異なります。
+ロジスティック回帰はその間で、0.842 まで下がりました。scikit-learn の既定では [L2 正則化](../regularization/)が掛かり、乱数の列に付く重みは小さく抑えられます。それでも、交差検証の学習側は約 1440 行で、列は 1088 あります。乱数がたまたま偏った所に合わせて重みを付け、学習データに[過学習](../overfitting/)したと考えられます。行の数を決めたまま列を足すと、ある所から、多くの問題で平均した正解率が下がることは、Hughes 氏が [1968 年の論文](https://doi.org/10.1109/TIT.1968.1054102)で示しています。
 
 ---
 
-### 対処
+### 列を減らす: PCA と特徴量選択
 
-対処は次の 4 系統に分かれます。
+kNN を使い続けるなら、距離を測る前に列を減らします。よく使われるのは、分散の大きい向きを残す PCA と、正解との関係が強い列を残す[特徴量選択](../feature-selection/)です。scikit-learn の [`SelectKBest`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.SelectKBest.html) に [`f_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_classif.html) を渡すと、列ごとに数字の間で平均がどれだけ違うかを測り、上位の `k` 列を残します。
 
-1. 次元削減で本質的な次元だけ残す
-    - [PCA](../pca/): 分散を最大化する方向に射影。線形手法でスケール感を残す
-    - [t-SNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html) / [UMAP](https://umap-learn.readthedocs.io/en/latest/): 主に 2D 可視化用。近傍関係を保つ非線形射影で、点間の距離そのものは保たれない（[t-SNE と UMAP](../tsne-umap/) のノート）
-    - オートエンコーダー: ニューラルネットで非線形圧縮
-2. 特徴量選択で意味のある列だけ残す
-    - [L1 正則化](../regularization/)（Lasso）: 不要な係数を 0 にする副作用で特徴量選択になる
-    - [相互情報量](/ml/math/information-theory/)や F 値: 目的変数との関連度で上位を選ぶ
-    - [SHAP](https://github.com/shap/shap) / [特徴量重要度](/ml/ml/feature-importance/): 学習後に効いている特徴を抽出して再学習
-3. 距離指標を見直す
-    - コサイン距離: ベクトルの長さを無視して向きだけ比べる。bag-of-words のようなスパースなベクトルや[テキスト埋め込み](/notes/generative-ai/rag/)で使う
-    - マハラノビス距離: 特徴量の[共分散](/ml/math/correlation/)を考慮した距離
-4. 距離に頼らないアルゴリズムを選ぶ
-    - 線形モデル: LR, Ridge, Lasso
-    - 木系: 決定木, [RandomForest](../random-forest/), [GradientBoosting](../gradient-boosting/)
-    - 確率モデル: [Naive Bayes](/ml/math/bayes-theorem/)
+残す数は、学習側の中でさらに 3 分割した交差検証で選ばせました。正解率を測る交差検証の内側に [GridSearchCV](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html) を入れると、評価用の行を見ずに残す数が決まります。
 
-前節の実験のようにノイズ特徴量が原因なら、4 の手法も特徴量が増えれば落ちるので、2 の特徴量選択が先です。
+```python
+inner = StratifiedKFold(3, shuffle=True, random_state=1)
+remedies = {
+    "そのまま": KNeighborsClassifier(5),
+    "PCA → kNN": GridSearchCV(make_pipeline(PCA(random_state=0), KNeighborsClassifier(5)),
+                              {"pca__n_components": [10, 20, 40]}, cv=inner),
+    "SelectKBest → kNN": GridSearchCV(make_pipeline(SelectKBest(f_classif), KNeighborsClassifier(5)),
+                                      {"selectkbest__k": [16, 32, 64, 128]}, cv=inner),
+}
+```
+
+```text
+乱数 +  64 列: そのまま 0.952、PCA → kNN 0.974、SelectKBest → kNN 0.985
+乱数 + 256 列: そのまま 0.841、PCA → kNN 0.957、SelectKBest → kNN 0.982
+乱数 +1024 列: そのまま 0.573、PCA → kNN 0.851、SelectKBest → kNN 0.984
++1024 列で PCA が選んだ 20 本の向きのうち、元の 64 列に載っている割合: 0.279
++1024 列で SelectKBest(k=64) が選んだ列のうち、元の 64 列: 56
+選ばれなかった元の列 [0, 8, 16, 24, 32, 39, 48, 56]: 値が 0 の画像の割合 [1.0, 0.996, 0.998, 0.999, 1.0, 1.0, 0.998, 0.999]
+```
+
+`SelectKBest` は 1024 列足しても 0.984 で、足す前とほぼ同じでした。64 列を残すと、そのうち 56 列が元の画素です。選ばれなかった 8 列は、左端の画素など、99.6% 以上の画像で 0 の列で、元から数字の区別に使えません。
+
+PCA は 0.851 で、そのままよりは良いものの、乱数を足す前に kNN が出した 0.986 までは戻りません。PCA は正解を見ずに分散の大きい向きを選び、乱数の画素も 1 列ごとに元の画素と同じくらいの分散を持つからです。1024 列足したデータで主成分を 20 本にした PCA は、20 本の向きが持つ重みのうち 28% しか元の 64 列に載っていませんでした。
+
+{{< figure src="cod_reduce.webp" alt="横軸が足した乱数の列の数、縦軸が kNN の正解率。赤のそのままは 1024 列で 0.57 まで落ちる。橙の PCA → kNN は 256 列まで 0.95 前後を保ち、1024 列で 0.85 に下がる。緑の SelectKBest → kNN は全ての点で 0.98 前後のまま" caption="kNN の前に列を減らした時の正解率（そのまま・PCA・SelectKBest）" align="center" >}}
+
+非線形に次元を減らす [t-SNE と UMAP](../tsne-umap/) は、近い点どうしの関係を 2 次元の図に残すための手法で、点どうしの距離は保ちません。kNN の前処理には向かず、ここでは比べていません。
+
+<br>
+
+ただし、この実験は特徴量選択に有利な形です。足した列は数字と全く関係が無く、1 列ずつ見れば無関係だと分かります。実際のデータで足す列は、少しだけ関係のある列や、他の列と組み合わせて効く列なので、ここまでうまく分かれるとは限りません。正解を使って列を選ぶ時は、選ぶ処理も交差検証の中に入れます。外で選ぶと、評価に使う行の正解を見たことになり、[データリーク](../data-leakage/)で正解率が実際より高く出ます。
+
+<br>
+
+<details>
+<summary>F 値以外で列を選ぶ方法</summary>
+
+F 値は平均の差しか見ないので、代わりに [`mutual_info_classif`](https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.mutual_info_classif.html) で[相互情報量](../../math/information-theory/)を測ると、平均には差が出ない関係の列も拾えます。モデルに選ばせる方法もあり、L1 正則化を掛ける Lasso は効きの弱い列の係数を 0 にし、木のモデルは学習後の[特徴量重要度](../feature-importance/)で列を並べられます。ただし L1 で残る列は、よく似た列どうしでは、学習に使う行が変わるだけで入れ替わることがあります。
+
+</details>
+
+<br>
 
 ---
 
-### 機械学習での使いどころ
+### 何度も近傍に選ばれる点（ハブ）
 
-特徴量の数が増えた時は、次の点を確認します。
+列が増えると、近傍の選ばれ方にも偏りが出ます。各点について、他の点から見た近傍 10 個に自分が何回入ったかを数えました。全体の平均は必ず 10 回です。何度も選ばれる点をハブ（hub）と呼び、Radovanović 氏らの [2010 年の論文](https://jmlr.org/papers/v11/radovanovic10a.html)が、次元の高いデータで現れることを報告しています。
 
-- アルゴリズム選択: 列が多く本質的な次元も高いデータでは、kNN / 単純な [k-means](../k-means/) / RBF SVM を第一候補にしない
-- 前処理設計: PCA による次元削減や L1 による特徴量選択を試し、残す次元数ごとの検証スコアで比べる
-- 特徴量設計レビュー: 「特徴量を増やせば精度が上がる」という前提に歯止めをかける
+```python
+def k_occurrence(X, k=10):
+    """各点が、他の点の近傍 k 個に何回選ばれたか。"""
+    nn = NearestNeighbors(n_neighbors=k + 1).fit(X)
+    ind = nn.kneighbors(X, return_distance=False)[:, 1:]
+    return np.bincount(ind.ravel(), minlength=len(X))
+
+
+for d in [3, 20, 100]:
+    X = rng.normal(size=(2000, d))                  # 標準正規分布の 2000 点
+    c = k_occurrence(X)
+    r = np.linalg.norm(X - X.mean(axis=0), axis=1)  # 点の集まりの中心からの距離
+```
+
+```text
+正規分布   3 列: 選ばれた回数の最大 19、一度も選ばれない点 0.1%、中心からの距離との順位相関 -0.25、中心からの距離の範囲 0.1〜4.6
+正規分布  20 列: 選ばれた回数の最大 92、一度も選ばれない点 7.8%、中心からの距離との順位相関 -0.93、中心からの距離の範囲 2.5〜7.2
+正規分布 100 列: 選ばれた回数の最大 424、一度も選ばれない点 20.1%、中心からの距離との順位相関 -0.93、中心からの距離の範囲 7.3〜13.5
+```
+
+{{< figure src="cod_hub.webp" alt="左は他の点の近傍 10 個に選ばれた回数のヒストグラム（縦軸は対数）。灰色の 3 列は 0〜20 回に収まる。赤い 100 列は 0 回の点が多く、100 回以上の点が 20 あり、1 点は 424 回選ばれている。中央は 3 列で、横軸が中心からの距離 0〜4.6、縦軸が選ばれた回数 0〜19 で、平均 10 回の破線の上下に広く散らばる。右は 100 列で、点は中心から 7.3〜13.5 の範囲にしか無く、中心に近い点ほど選ばれた回数が多く、100〜424 回の点は全て 7.3〜8.3 にあり、10 より外の点は多くても 7 回" caption="近傍に選ばれた回数の分布（左）と、中心からの距離との関係（中央は 3 列、右は 100 列）" align="center" >}}
+
+3 列では、どの点も 0〜19 回に収まりました。100 列では、1 点が 424 回選ばれ、平均の 40 倍を超えます。その一方で、20% の点は一度も誰の近傍にもなりません。
+
+右の図のとおり、選ばれるのは点の集まりの中心に近い点です。100 列の正規分布では、点は中心から 7.3〜13.5 の殻のような範囲にあり、中心の近くには 1 点もありません。一様な球で考えても、半径で外側 5% にある殻は、2 次元では球の 10% ほどですが、100 次元では `1 - 0.95^100` で 99.4% を占めます。距離の差が縮んだ中で、殻の内側寄りにある点は、どの方向の点から見てもわずかに近いので、多くの点から近傍に選ばれます。
+
+digits に乱数の列を 1024 足した時も、近傍 5 個に選ばれた回数の最大は 17 回から 121 回に増え、一度も選ばれない画像は 4.2% から 19.2% に増えました。kNN の予測なら、ハブの 1 枚が多くの画像で多数決に加わり、ハブの数字に引っ張られます。類似検索なら、多くの問い合わせで同じ結果が上位に出ます。内積で近さを測る場合は、長いベクトルが同じようにハブになり、その例は[ベクトルと行列の演算](../../math/vector-matrix-ops/)で示しています。
 
 ---
 
-### よくある誤解
+### 距離を使う前に測ること
 
-- 「次元の呪いはスケール問題と同じ」ではない: スケール問題は [標準化](../standardization/) で解決する。一方で、次元の呪いは標準化しても残る。kNN が先に崩れる理由の実験も、標準化済みのデータで kNN が落ちている
-- 「特徴量を増やせば精度が上がる」とは限らない: 信号が無いノイズ特徴量を増やすと、距離ベース手法から先に精度が下がる
-- 「次元削減すれば必ず良くなる」とは限らない: PCA は線形な分散最大化なので、非線形な構造を持つデータでは情報を失う。t-SNE / UMAP も可視化向きで、後段の予測に使うと結果が不安定になる場合がある
-- 「列が多いデータは必ず呪われる」ではない: 画像・テキスト・音声は素の次元こそ高いものの、実際のデータは低次元の多様体に乗っていることが多い（manifold hypothesis）。症状 1 の実質 5 次元のデータのように、本質的な次元が低ければ距離は意味を保つ。だから次元削減や深層学習の埋め込みが効く
+特徴量を足す前に、使うモデルが距離に頼るかを考えます。kNN、k-means、DBSCAN、カーネルに RBF を使う [SVM](../svm/)、埋め込みの類似検索は距離に頼り、ランダムフォレストのような木のモデルは列を選んで分岐し、digits の実験でも乱数の列に強いという結果でした。[勾配ブースティング](../gradient-boosting/)も列を選んで分岐する木のモデルですが、本記事では測っていません。
+
+距離に頼るなら、標準化など距離を測る前の処理を済ませた手元のデータで、本記事の `far_near_ratio` と `equivalent_columns` を測ります。
+
+```python
+r, eq = equivalent_columns(X)                      # X は標準化などを済ませた手元のデータ
+print(f"比 {r:.2f}、同じ比になる乱数は {eq:.0f} 列（列の数 {X.shape[1]}）")
+c = k_occurrence(X, k=10)
+print(f"選ばれた回数の最大は平均の {c.max() / 10:.1f} 倍、一度も選ばれない点 {np.mean(c == 0):.1%}")
+```
+
+同じ比になる乱数の列が列の数よりずっと少なければ、列が多くても距離の差は保たれています。列が数百を超えるのに、同じ比になる乱数の列も列の数に近ければ、digits に乱数を 1024 列足した時のように、距離の差が縮んでいる可能性があります。列が少ないデータでは、独立に動く列ばかりでも距離は差を保つので、この比べ方では見分けられません。縮んでいそうなら、kNN の正解率や近傍の中身を見て判断します。
+
+その時は、列を減らしてから距離を測ります。正解のあるタスクなら、`SelectKBest` などの特徴量選択と kNN を 1 本の Pipeline にして、残す数を交差検証で選びます。PCA は分散の大きい向きを残すだけなので、関係の無い列の分散が大きいデータでは、元の正解率まで戻らないことがあります。
+
+<br>
+
+類似検索のように正解が無い場合は、`k_occurrence` で選ばれる回数を数え、最大が平均の何倍か、一度も選ばれない点が何割かを見ると、ハブの偏りが分かります。
+
+列を足すか減らすかを決める時は、足す前と後で、手元のデータが冒頭の図のどこにあり、どこまで青い線に近づくかを測ると、判断の材料になります。
