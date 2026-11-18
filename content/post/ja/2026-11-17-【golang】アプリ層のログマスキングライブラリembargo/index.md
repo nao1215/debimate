@@ -206,7 +206,7 @@ embargo は 13 個中 12 個を検出しました。ただ、図の内訳を見�
 
 遅いライブラリは、嫌われます。ログはリクエストごとに書かれるので、1 行あたり数マイクロ秒の差でも積み重なります。そこで、slog だけ・embargo・pii-shield・masq・go-masker に同じ JSON の slog イベントを通して時間を測りました。検出する種類の数が違うと公平な比較にならないので、embargo の検出内容は相手に揃えています。masq と go-masker はメールとカード番号の規則だけを使うので、embargo もこの 2 種類に絞りました。pii-shield は組み込みの検出を外せないので、embargo はデフォルト（26 種類）で比べました。以下は README から引用した図です。
 
-{{< figure src="images/log-event-time.webp" alt="リクエスト・メール・カードを含む同じ JSON の slog イベント 1 件あたりの時間。slog のみ 0.38 µs、メールとカードに絞った embargo 1.31 µs、デフォルトの embargo 2.86 µs、pii-shield v3.0.0 4.41 µs、masq v0.2.3 2.91 µs、go-masker v0.6.1 1.33 µs" caption="ログ 1 件あたりの時間（embargo の README から引用。短いほど速い）" align="center" >}}
+{{< figure src="images/log-event-time.webp" alt="リクエスト・メール・カードを含む同じ JSON の slog イベント 1 件あたりの時間。slog のみ 0.38 µs、slog とメールとカードに絞った embargo 1.31 µs、slog とデフォルトの embargo 2.86 µs、slog と pii-shield v3.0.0 4.41 µs、slog と masq v0.2.3 2.91 µs、slog と go-masker v0.6.1 1.33 µs" caption="ログ 1 件あたりの時間（embargo の README から引用。短いほど速い）" align="center" >}}
 
 イベントの種類を変えた結果は、以下の通りです。単位はマイクロ秒で、AMD Ryzen AI Max+ 395 の 1 スレッド（GOMAXPROCS=1）で 200 ms の計測を10回した中央値です。
 
