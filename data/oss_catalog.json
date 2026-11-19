@@ -38,7 +38,11 @@
       "description": "go install で入れたツールを並行更新。バージョン固定やエクスポート／インポートで、別のマシンにも同じ環境を用意できます。",
       "stars": 619,
       "article": "/post/ja/2022-02-20-【golang】go-installで取得したgopath-bin以下のバイナリを一括更新",
-      "website": "https://nao1215.github.io/gup/"
+      "website": "https://nao1215.github.io/gup/",
+      "awesome": {
+        "name": "Awesome Go",
+        "url": "https://github.com/avelino/awesome-go"
+      }
     },
     {
       "name": "filesql",
@@ -48,7 +52,11 @@
       "tagline": "ファイルを SQL で読む部品",
       "description": "CSV・JSON・Parquet・Excel などを SQLite に読み込み、Go の database/sql から問い合わせ。圧縮ファイルにも対応します。",
       "stars": 383,
-      "article": "/post/ja/2025-08-28-【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話"
+      "article": "/post/ja/2025-08-28-【golang】csv-tsv-ltsvをsql-dbで操作するfilesqlパッケージを作った話",
+      "awesome": {
+        "name": "Awesome Go",
+        "url": "https://github.com/avelino/awesome-go"
+      }
     },
     {
       "name": "sqly",
@@ -59,7 +67,11 @@
       "description": "CSV・JSON・Excel・Parquet を SQL で集計。形式をまたぐ JOIN と、編集結果のファイルへの書き戻しも対話シェルから。",
       "stars": 193,
       "article": "/post/ja/2026-08-09-【golang】csv／json／excel／parquetにsqlを実行するsqlyをv1.0.0にする話",
-      "website": "https://nao1215.github.io/sqly/"
+      "website": "https://nao1215.github.io/sqly/",
+      "awesome": {
+        "name": "Awesome Go",
+        "url": "https://github.com/avelino/awesome-go"
+      }
     },
     {
       "name": "markdown",
@@ -69,7 +81,11 @@
       "tagline": "コードから Markdown と図を生成",
       "description": "メソッドチェーンで Markdown と Mermaid 図を組み立てる Go ライブラリ。レポートやドキュメント生成に。",
       "stars": 144,
-      "article": "/post/ja/2026-08-13-【golang】markdownとmermaidを生成するmarkdownパッケージをv1.0.0にした話"
+      "article": "/post/ja/2026-08-13-【golang】markdownとmermaidを生成するmarkdownパッケージをv1.0.0にした話",
+      "awesome": {
+        "name": "Awesome Go",
+        "url": "https://github.com/avelino/awesome-go"
+      }
     },
     {
       "name": "jsonize",
@@ -376,7 +392,11 @@
       "kind": "Library",
       "tagline": "ログやテキストの機密情報を見つけて伏せる",
       "description": "個人情報・カード番号・API キーなどを検出してマスクします。依存ゼロ。旧名は sensitive です。",
-      "stars": 2
+      "stars": 2,
+      "awesome": {
+        "name": "Awesome Go",
+        "url": "https://github.com/avelino/awesome-go"
+      }
     },
     {
       "name": "bluesky-terminal-client",
@@ -415,7 +435,11 @@
       "tagline": "YAML で RPG・ADV・SLG をつくる",
       "description": "YAML と CLI で2Dゲームを制作。画像や音声を組み合わせて、コードを書かずにゲームをつくれます。",
       "stars": 4,
-      "website": "https://nao1215.github.io/gozen/"
+      "website": "https://nao1215.github.io/gozen/",
+      "awesome": {
+        "name": "Awesome Ebitengine",
+        "url": "https://github.com/sedyh/awesome-ebitengine"
+      }
     },
     {
       "name": "setup-atago",

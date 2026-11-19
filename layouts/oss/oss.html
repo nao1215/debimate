@@ -40,6 +40,9 @@
           <span class="oss-card-lang"><i class="oss-lang-dot" style="background:{{ index $colors .language }}"></i>{{ .language }}</span>
           {{ partial "oss_stars.html" . }}
         </div>
+        {{- with .awesome }}
+        <a class="oss-card-awesome" href="{{ .url }}"><img src="https://awesome.re/mentioned-badge.svg" width="104" height="20" alt="Mentioned in {{ .name }}" loading="lazy"></a>
+        {{- end }}
       </div>
       <p class="oss-card-desc">{{ .description }}</p>
       <div class="oss-links"><a href="https://github.com/nao1215/{{ .name }}#readme">README ↗</a>{{ with .website }}<a href="{{ . }}">公式サイト ↗</a>{{ end }}{{ with .article }}{{ with site.GetPage . }}<a href="{{ .RelPermalink }}">紹介記事 →</a>{{ end }}{{ end }}{{ if eq .category "games" }}<a href="{{ "games/" | relURL }}">Games →</a>{{ end }}</div>
