@@ -1,0 +1,5 @@
+<ul class="oss-thanks-list">
+  {{- range . }}
+  <li><a href="{{ .url }}" title="{{ .name }}"><img src="{{ .avatar }}" width="28" height="28" alt="{{ .name }}" loading="lazy" referrerpolicy="no-referrer"></a></li>
+  {{- end }}
+</ul>

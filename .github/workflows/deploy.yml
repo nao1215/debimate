@@ -5,8 +5,8 @@ on:
     branches:
       - main
   schedule:
-    # Monday 00:10 JST
-    - cron: '10 15 * * 0'
+    # 毎日 00:10 JST。スポンサーをやめた人を 1 日以内に外すため（2026-11-19 に週次から変更）
+    - cron: '10 15 * * *'
   workflow_dispatch:
   # BBS (/bbs/) は GitHub Discussions をビルド時に静的化しているので、
   # スレッドの作成・コメントで再ビルドして一覧へ反映する
@@ -108,11 +108,19 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/fetch_bbs.py
 
-      # 週次 schedule / 手動実行 / 通常デプロイ時に更新。閲覧時の API 通信は不要。
+      # 毎日の schedule / 手動実行 / 通常デプロイ時に更新。閲覧時の API 通信は不要。
       - name: Refresh OSS star counts
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python3 scripts/fetch_oss_stars.py
+
+      # OSS ページのスポンサー一覧 (data/sponsors.json)。API が返すのは今のスポンサーだけ
+      # なので、やめた人は次のビルド（遅くとも毎日の schedule）で消える。取得に失敗したら
+      # 前の一覧のまま公開する（スクリプトは警告だけ出して 0 で終わる）
+      - name: Refresh GitHub Sponsors
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 scripts/fetch_sponsors.py
 
       - name: Setup Node for browser checks
         uses: actions/setup-node@v7

@@ -4,11 +4,16 @@
 <div class="oss-directory">
 <header class="page-header oss-intro">
   {{ partial "breadcrumbs.html" . }}
-  <div class="oss-title-row"><h1>OSS</h1><a class="oss-sponsor-link" href="https://github.com/sponsors/nao1215"><span aria-hidden="true">♡</span>GitHub Sponsors</a></div>
+  <div class="oss-title-row"><h1>OSS</h1></div>
   <p class="oss-page-description">{{ .Description }}</p>
 </header>
 <section class="oss-star-history" aria-labelledby="oss-stars">
   <h2 id="oss-stars">GitHub Star の推移</h2>
+  {{- /* スポンサー（支えてくれる人・自分が支えている人）はビルドごとに scripts/fetch_sponsors.py が取り直す。
+       やめた人は次のビルドで消える */}}
+  {{- $sponsors := hugo.Data.sponsors.sponsors }}
+  {{- $sponsoring := hugo.Data.sponsors.sponsoring }}
+  <div class="oss-star-row">
   <figure>
     <a href="https://github.com/nao1215">
       <img class="oss-star-history-light" src="https://raw.githubusercontent.com/nao1215/nao1215/master/cards/star-history-light.svg" width="808" height="300" alt="nao1215 の主な OSS と全公開リポジトリ合計の GitHub Star 数の推移">
@@ -16,6 +21,30 @@
     </a>
     <figcaption><a href="https://github.com/nao1215/action-readme-showcase">action-readme-showcase</a> で生成した GitHub Star History</figcaption>
   </figure>
+  {{- /* スポンサーが 0 人でもボタンを出すため、枠は常に置く。それぞれ 10 人前後まではアイコンだけで並べる */}}
+  <aside class="oss-thanks" aria-label="GitHub Sponsors">
+    <div class="oss-thanks-group">
+      <p class="oss-thanks-title">Sponsors</p>
+      <p class="oss-thanks-text">ご支援ありがとうございます。</p>
+      {{- with $sponsors }}{{ partial "oss_sponsor_avatars.html" . }}{{ end }}
+    </div>
+    {{- with $sponsoring }}
+    <div class="oss-thanks-group">
+      <p class="oss-thanks-title">Sponsoring</p>
+      <p class="oss-thanks-text">私が支援している開発者です。</p>
+      {{ partial "oss_sponsor_avatars.html" . }}
+    </div>
+    {{- end }}
+    {{- /* github.com/<login>.png は今のアイコンへ転送されるので、アイコンを変えても追従する */}}
+    <div class="oss-thanks-group oss-thanks-me">
+      <p class="oss-thanks-title">Me</p>
+      <div class="oss-thanks-me-row">
+        <a class="oss-thanks-me-profile" href="https://github.com/nao1215"><img src="https://github.com/nao1215.png?size=64" width="28" height="28" alt="" loading="lazy" referrerpolicy="no-referrer">nao1215</a>
+        <a class="oss-sponsor-link" href="https://github.com/sponsors/nao1215"><span class="oss-sponsor-heart" aria-hidden="true">♥</span>Sponsor</a>
+      </div>
+    </div>
+  </aside>
+  </div>
 </section>
 <section aria-labelledby="oss-all">
   <h2 id="oss-all">用途から探す</h2>

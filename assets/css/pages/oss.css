@@ -7,11 +7,6 @@ body:has(.oss-directory) { --main-width: 1100px; }
 .oss-title-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .oss-intro h1 { font-size: 32px; }
 .oss-page-description { margin-top: 12px; color: var(--secondary); font-size: 14px; }
-.oss-sponsor-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 40px; padding: 7px 14px; border: 1px solid #d98ab4; border-radius: 6px; background: #fff0f7; color: #a02c6c; font-size: 13px; font-weight: 600; white-space: nowrap; }
-.oss-directory .oss-sponsor-link:hover { background: #fce0ef; border-color: #bf3989; text-decoration: none; }
-.oss-directory .oss-sponsor-link:focus-visible { outline-color: #bf3989; }
-[data-theme="dark"] .oss-sponsor-link { background: #33212d; border-color: #945276; color: #f0a6cf; }
-[data-theme="dark"] .oss-directory .oss-sponsor-link:hover { background: #492b3e; border-color: #db61a2; }
 #oss-stars, #oss-all { font-size: 18px; margin-bottom: 12px; }
 .oss-star-history { margin-bottom: 28px; }
 .oss-star-history figure { margin: 0; }
@@ -20,6 +15,47 @@ body:has(.oss-directory) { --main-width: 1100px; }
 [data-theme="dark"] .oss-star-history .oss-star-history-dark { display: block; }
 .oss-star-history figcaption { margin-top: 6px; text-align: center; color: var(--secondary); font-size: 12px; }
 .oss-star-history figcaption a { text-decoration: underline; text-underline-offset: 3px; }
+/* スポンサーの枠は Star History の右に並べ、グラフの画像と同じ高さに伸ばす。figure を display: contents にして
+   画像と説明文を別々の格子に置き、枠は画像の行だけに揃える。色と角丸はグラフの SVG の枠と同じ値。
+   ピンクは GitHub の Sponsor ボタンと同じくハートだけに使う */
+.oss-star-row { display: grid; grid-template-columns: minmax(0, 808px) 248px; grid-template-areas: "chart thanks" "caption ."; column-gap: 16px; justify-content: center; }
+.oss-star-row figure { display: contents; }
+.oss-star-row figure > a { grid-area: chart; }
+.oss-star-row figcaption { grid-area: caption; }
+.oss-thanks { grid-area: thanks; padding: 12px 14px; border: 1.5px solid #d1d9e0; border-radius: 8px; background: #fff; }
+[data-theme="dark"] .oss-thanks { background: #151b23; border-color: #3d444d; }
+/* Me は他の段と同じく見出しを 1 行目に置き、自分のアイコンと Sponsor ボタンを 2 行目に並べる */
+.oss-thanks-me-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+.oss-thanks-me-profile { display: inline-flex; align-items: center; gap: 6px; color: var(--primary); font-size: 13px; font-weight: 600; }
+.oss-thanks-me-profile img { width: 28px; height: 28px; margin: 0; border-radius: 50%; border: 1px solid var(--border); }
+.oss-thanks-title { font-size: 14px; font-weight: 600; line-height: 1.6; }
+.oss-thanks-text { color: var(--secondary); font-size: 12px; line-height: 1.6; }
+.oss-thanks-group + .oss-thanks-group { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+.oss-thanks-list { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 0; padding: 0; list-style: none; }
+.oss-thanks-list a { display: block; border-radius: 50%; }
+.oss-thanks-list img { display: block; width: 28px; height: 28px; margin: 0; border-radius: 50%; border: 1px solid var(--border); }
+.oss-sponsor-link { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--code-bg); color: var(--primary); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.oss-sponsor-heart { color: #bf3989; }
+.oss-directory .oss-sponsor-link:hover { border-color: var(--secondary); text-decoration: none; }
+[data-theme="dark"] .oss-sponsor-heart { color: #db61a2; }
+/* 枠がグラフより高くなる時は、oss-directory.js が is-compact（説明文を隠す）、次に is-stacked（グラフの下へ回す）を付ける。
+   スマホ幅は JavaScript が無くても下へ回す */
+.oss-star-row.is-compact .oss-thanks-text { display: none; }
+.oss-star-row.is-stacked { grid-template-columns: minmax(0, 808px); grid-template-areas: "chart" "caption" "thanks"; }
+.oss-star-row.is-stacked .oss-thanks { margin-top: 16px; }
+@media (max-width: 779px) {
+  .oss-star-row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "chart" "caption" "thanks"; }
+  .oss-thanks { margin-top: 16px; }
+}
+/* グラフの下へ回した時は、グラフと同じ幅の中で Sponsors・Sponsoring・Me を横に並べる。スマホ幅では縦に積む */
+@media (min-width: 600px) {
+  .oss-star-row.is-stacked .oss-thanks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 14px; }
+  .oss-star-row.is-stacked .oss-thanks-group + .oss-thanks-group { margin-top: 0; padding-top: 0; border-top: 0; padding-left: 14px; border-left: 1px solid var(--border); }
+}
+@media (min-width: 600px) and (max-width: 779px) {
+  .oss-thanks { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); column-gap: 14px; }
+  .oss-thanks-group + .oss-thanks-group { margin-top: 0; padding-top: 0; border-top: 0; padding-left: 14px; border-left: 1px solid var(--border); }
+}
 .oss-categories { display: flex; flex-wrap: wrap; gap: 0 16px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
 .oss-categories button { font: inherit; font-size: 13px; color: var(--secondary); padding: 10px 0; border-bottom: 2px solid transparent; cursor: pointer; }
 .oss-categories button[aria-pressed="true"] { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }

@@ -36,3 +36,27 @@
   form.hidden = false;
   document.querySelector('[data-oss-tabs]').hidden = false;
 })();
+// スポンサーの枠を Star History の画像の高さに収める。収まらなければ説明文を隠し、
+// それでも収まらなければグラフの下へ回す。人数と画面幅の両方で変わるので実際の高さで決める
+(() => {
+  const row = document.querySelector('.oss-star-row');
+  const box = row && row.querySelector('.oss-thanks');
+  if (!box) return;
+  const fit = () => {
+    row.classList.remove('is-compact', 'is-stacked');
+    if (getComputedStyle(row).gridTemplateColumns.split(' ').length < 2) return;
+    const chart = [...row.querySelectorAll('figure img')].find(img => img.offsetParent);
+    if (!chart || !chart.offsetHeight) return;
+    const fits = () => box.offsetHeight <= chart.offsetHeight + 1;
+    if (fits()) return;
+    row.classList.add('is-compact');
+    if (fits()) return;
+    row.classList.replace('is-compact', 'is-stacked');
+  };
+  let frame = 0;
+  const schedule = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(fit); };
+  addEventListener('resize', schedule);
+  row.querySelectorAll('img').forEach(img => img.complete || img.addEventListener('load', schedule));
+  if (document.fonts) document.fonts.ready.then(schedule);
+  fit();
+})();

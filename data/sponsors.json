@@ -1,0 +1,55 @@
+{
+  "asOf": "2026-11-19",
+  "sponsors": [
+    {
+      "login": "unclesp1d3r",
+      "name": "UncleSp1d3r",
+      "url": "https://github.com/unclesp1d3r",
+      "avatar": "https://avatars.githubusercontent.com/u/251112?s=96&u=e9174769435a6378a8de21b63b8a37816b2f146e&v=4"
+    },
+    {
+      "login": "EvilBit-Labs",
+      "name": "EvilBit Labs LLC",
+      "url": "https://github.com/EvilBit-Labs",
+      "avatar": "https://avatars.githubusercontent.com/u/64295955?s=96&v=4"
+    }
+  ],
+  "sponsoring": [
+    {
+      "login": "shogo82148",
+      "name": "ICHINOSE Shogo",
+      "url": "https://github.com/shogo82148",
+      "avatar": "https://avatars.githubusercontent.com/u/1157344?s=96&v=4"
+    },
+    {
+      "login": "noborus",
+      "name": "Noboru Saito",
+      "url": "https://github.com/noborus",
+      "avatar": "https://avatars.githubusercontent.com/u/2296563?s=96&u=aba171f20bd52948f1259fb5f676c98647bdeb91&v=4"
+    },
+    {
+      "login": "ikawaha",
+      "name": "ikawaha",
+      "url": "https://github.com/ikawaha",
+      "avatar": "https://avatars.githubusercontent.com/u/4232165?s=96&u=f40e61995099c3320140d2d84034d6ec596d91e7&v=4"
+    },
+    {
+      "login": "hajimehoshi",
+      "name": "Hajime Hoshi",
+      "url": "https://github.com/hajimehoshi",
+      "avatar": "https://avatars.githubusercontent.com/u/16950?s=96&u=d6b1e4d5ff3cc9496452c4a9003f2ff0b8ee46eb&v=4"
+    },
+    {
+      "login": "k1LoW",
+      "name": "Ken’ichiro Oyama",
+      "url": "https://github.com/k1LoW",
+      "avatar": "https://avatars.githubusercontent.com/u/57114?s=96&u=5522499f6546a5c8307460a18653178b6b454780&v=4"
+    },
+    {
+      "login": "goccy",
+      "name": "Masaaki Goshima",
+      "url": "https://github.com/goccy",
+      "avatar": "https://avatars.githubusercontent.com/u/209884?s=96&v=4"
+    }
+  ]
+}
