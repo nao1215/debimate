@@ -34,3 +34,17 @@ date: 2026-11-16T00:00:00+09:00
 ユーザー視点では、退会処理をしたら個人情報の物理削除を必須とする法律、もしくは情報漏洩を厳しく罰する法律が欲しい。今は、セキュリティ対策を真面目に実施するより、情報漏洩した方が企業視点で割安なように感じられる。一定のセキュリティ基準を強制する社会的ルールが必要だ。しかし、私はエンジニア。ここまでの意見は、全てブーメラン発言🪃となる。従来どおりに実装していると、攻撃者に負ける。そんな危機感から、[nao1215/embargo](https://github.com/nao1215/embargo)（マスキングライブラリ）が生まれたりしている。
 
 漏洩を防ぐ技術を追うなら、Rust 界隈は暗号・セキュリティに強く、面白い。「何を食べたら、こんなロジックを思いつくんだ？（例：ゼロ知識証明）」と感心する OSS に出会うことが多い。来年あたりは、Rust に傾倒していくかもしれない。
+
+---
+
+#### Awesome Go/Ebitengineにembargo,gozenが掲載された
+
+[Awesome Go に embargo](https://github.com/avelino/awesome-go/pull/6907), [Awesome Ebitengine に gozen](https://github.com/sedyh/awesome-ebitengine/pull/83)が掲載された。殆ど Star が付いていないが、内容で評価されたようで安心した。なお、この裏で GitHub Sponsors が1名減っており、悲しい。
+
+{{< figure src="awesome-embargo-gozen.webp" alt="embargo と gozen の OGP 画像を斜めの線で区切って並べたもの" caption="左：embargo、右：gozen（各リポジトリの OGP 画像）" width="600" align="center" >}}
+
+Awesome 系に登録された OSS は、6件だ。[gup](https://github.com/nao1215/gup), [filesql](https://github.com/nao1215/filesql), [sqly](https://github.com/nao1215/sqly), [markdown](https://github.com/nao1215/markdown), [embargo](https://github.com/nao1215/embargo), [gozen](https://github.com/nao1215/gozen)。gup だけが毎年安定して Star を獲得している。
+
+{{< figure src="awesome-star-history.webp" alt="Awesome 系に掲載された 6 個の OSS の GitHub Star 数の推移。2026 年 11 月 19 日時点で gup 629、filesql 388、sqly 197、markdown 146、gozen 4、embargo 3" caption="Awesome 系に掲載された OSS の Star History（2026 年 11 月 19 日時点、[action-readme-showcase](https://github.com/nao1215/action-readme-showcase) で生成）" width="800" align="center" >}}
+
+Star 数の少ない embargo や gozen の方がガチガチに作り込んである。私の経験が後発 OSS に活かされている。ちなみに、2026年は40個以上のパブリック OSS を作ったが、その中の2個が awesome 行きだった。3個目（[atago](https://github.com/nao1215/atago)）を狙っているけど、果たして Approve は得られるだろうか。
