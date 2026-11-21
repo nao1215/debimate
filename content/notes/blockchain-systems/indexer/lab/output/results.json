@@ -1,0 +1,311 @@
+{
+ "versions": [
+  "anvil Version: 1.7.1",
+  "Version: 0.8.28+commit.7893614a.Linux.g++"
+ ],
+ "steps": [
+  {
+   "label": "block 1: トークンを作る",
+   "chain": [
+    {
+     "number": 1,
+     "hash": "0xd41c17",
+     "parent": "0x190622",
+     "txs": [
+      "トークンを作る（alice に 1000）"
+     ]
+    }
+   ],
+   "truth": {
+    "alice": 1000,
+    "bob": 0,
+    "carol": 0,
+    "dave": 0
+   },
+   "naive": {
+    "alice": 1000,
+    "bob": 0,
+    "carol": 0,
+    "dave": 0
+   },
+   "careful": {
+    "alice": 1000,
+    "bob": 0,
+    "carol": 0,
+    "dave": 0
+   },
+   "careful_events": []
+  },
+  {
+   "label": "block 2",
+   "chain": [
+    {
+     "number": 1,
+     "hash": "0xd41c17",
+     "parent": "0x190622",
+     "txs": [
+      "トークンを作る（alice に 1000）"
+     ]
+    },
+    {
+     "number": 2,
+     "hash": "0xd3c37b",
+     "parent": "0xd41c17",
+     "txs": [
+      "alice→bob 100"
+     ]
+    }
+   ],
+   "truth": {
+    "alice": 900,
+    "bob": 100,
+    "carol": 0,
+    "dave": 0
+   },
+   "naive": {
+    "alice": 900,
+    "bob": 100,
+    "carol": 0,
+    "dave": 0
+   },
+   "careful": {
+    "alice": 900,
+    "bob": 100,
+    "carol": 0,
+    "dave": 0
+   },
+   "careful_events": []
+  },
+  {
+   "label": "block 3",
+   "chain": [
+    {
+     "number": 1,
+     "hash": "0xd41c17",
+     "parent": "0x190622",
+     "txs": [
+      "トークンを作る（alice に 1000）"
+     ]
+    },
+    {
+     "number": 2,
+     "hash": "0xd3c37b",
+     "parent": "0xd41c17",
+     "txs": [
+      "alice→bob 100"
+     ]
+    },
+    {
+     "number": 3,
+     "hash": "0x92aac4",
+     "parent": "0xd3c37b",
+     "txs": [
+      "alice→carol 50",
+      "alice→carol 1 ETH"
+     ]
+    }
+   ],
+   "truth": {
+    "alice": 850,
+    "bob": 100,
+    "carol": 50,
+    "dave": 0
+   },
+   "naive": {
+    "alice": 850,
+    "bob": 100,
+    "carol": 50,
+    "dave": 0
+   },
+   "careful": {
+    "alice": 850,
+    "bob": 100,
+    "carol": 50,
+    "dave": 0
+   },
+   "careful_events": []
+  },
+  {
+   "label": "block 4",
+   "chain": [
+    {
+     "number": 1,
+     "hash": "0xd41c17",
+     "parent": "0x190622",
+     "txs": [
+      "トークンを作る（alice に 1000）"
+     ]
+    },
+    {
+     "number": 2,
+     "hash": "0xd3c37b",
+     "parent": "0xd41c17",
+     "txs": [
+      "alice→bob 100"
+     ]
+    },
+    {
+     "number": 3,
+     "hash": "0x92aac4",
+     "parent": "0xd3c37b",
+     "txs": [
+      "alice→carol 50",
+      "alice→carol 1 ETH"
+     ]
+    },
+    {
+     "number": 4,
+     "hash": "0x3dc0bc",
+     "parent": "0x92aac4",
+     "txs": [
+      "bob→carol 30"
+     ]
+    }
+   ],
+   "truth": {
+    "alice": 850,
+    "bob": 70,
+    "carol": 80,
+    "dave": 0
+   },
+   "naive": {
+    "alice": 850,
+    "bob": 70,
+    "carol": 80,
+    "dave": 0
+   },
+   "careful": {
+    "alice": 850,
+    "bob": 70,
+    "carol": 80,
+    "dave": 0
+   },
+   "careful_events": []
+  },
+  {
+   "label": "reorg: block 3 と 4 を置き換えた直後（高さは同じ）",
+   "chain": [
+    {
+     "number": 1,
+     "hash": "0xd41c17",
+     "parent": "0x190622",
+     "txs": [
+      "トークンを作る（alice に 1000）"
+     ]
+    },
+    {
+     "number": 2,
+     "hash": "0xd3c37b",
+     "parent": "0xd41c17",
+     "txs": [
+      "alice→bob 100"
+     ]
+    },
+    {
+     "number": 3,
+     "hash": "0x4745b0",
+     "parent": "0xd3c37b",
+     "txs": [
+      "alice→dave 100"
+     ]
+    },
+    {
+     "number": 4,
+     "hash": "0xd10eb1",
+     "parent": "0x4745b0",
+     "txs": []
+    }
+   ],
+   "truth": {
+    "alice": 800,
+    "bob": 100,
+    "carol": 0,
+    "dave": 100
+   },
+   "naive": {
+    "alice": 850,
+    "bob": 70,
+    "carol": 80,
+    "dave": 0
+   },
+   "careful": {
+    "alice": 850,
+    "bob": 70,
+    "carol": 80,
+    "dave": 0
+   },
+   "careful_events": []
+  },
+  {
+   "label": "block 5",
+   "chain": [
+    {
+     "number": 1,
+     "hash": "0xd41c17",
+     "parent": "0x190622",
+     "txs": [
+      "トークンを作る（alice に 1000）"
+     ]
+    },
+    {
+     "number": 2,
+     "hash": "0xd3c37b",
+     "parent": "0xd41c17",
+     "txs": [
+      "alice→bob 100"
+     ]
+    },
+    {
+     "number": 3,
+     "hash": "0x4745b0",
+     "parent": "0xd3c37b",
+     "txs": [
+      "alice→dave 100"
+     ]
+    },
+    {
+     "number": 4,
+     "hash": "0xd10eb1",
+     "parent": "0x4745b0",
+     "txs": []
+    },
+    {
+     "number": 5,
+     "hash": "0xda3ee1",
+     "parent": "0xd10eb1",
+     "txs": [
+      "dave→carol 10"
+     ]
+    }
+   ],
+   "truth": {
+    "alice": 800,
+    "bob": 100,
+    "carol": 10,
+    "dave": 90
+   },
+   "naive": {
+    "alice": 850,
+    "bob": 70,
+    "carol": 90,
+    "dave": -10
+   },
+   "careful": {
+    "alice": 800,
+    "bob": 100,
+    "carol": 10,
+    "dave": 90
+   },
+   "careful_events": [
+    "rollback block 4",
+    "rollback block 3"
+   ]
+  }
+ ],
+ "eth_transfer": {
+  "status": "0x1",
+  "logs": [],
+  "carol_wei": 10001000000000000000000
+ },
+ "log_count": 4
+}

@@ -86,3 +86,4 @@ ml__bias-variance-tradeoff	主張	その他	バイアス-バリアンストレ�
 ml__class-imbalance	先に断る	その他	クラス不均衡 - 重み付けやリサンプリングの効果は、閾値を下げただけのモデルと比べて測る
 ml__categorical-encoding	予想	その他	カテゴリ変数のエンコーディング - 目的変数の平均で置き換えた列は、交差検証では良く見えたまま、未知のデータで外れることがある
 ml__curse-of-dimensionality	予想	その他	次元の呪い - 距離に頼れなくなるのは、列の数ではなく独立に動く列が増えた時
+blockchain-systems__indexer	結果	その他	Blockchain Indexer - ノードに無い検索を作り、reorg では読んだ分を取り消す

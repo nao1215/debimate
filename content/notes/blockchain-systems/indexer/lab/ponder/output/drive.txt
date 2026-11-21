@@ -1,0 +1,4 @@
+start {'head': 50, 'truth': {'alice': 951, 'bob': 49, 'carol': 0, 'dave': 0}, 'ponder': {'alice': 951, 'bob': 49, 'carol': 0, 'dave': 0}}
+inside truth {'alice': 947, 'bob': 46, 'carol': 7, 'dave': 0} last ponder {'alice': 947, 'bob': 46, 'carol': 7, 'dave': 0} first match 0.65 alive True ready 200 health 200
+outside truth {'alice': 930, 'bob': 20, 'carol': 0, 'dave': 50} last ponder {'alice': 947, 'bob': 46, 'carol': 7, 'dave': 0} first match None alive True ready 200 health 200
+after outside {'t': 60.2, 'alive': True, 'ready': 200, 'status_block': 51, 'node_head': 63, 'ponder': {'alice': 947, 'bob': 46, 'carol': 7, 'dave': 0}} truth {'alice': 930, 'bob': 20, 'carol': 0, 'dave': 50}

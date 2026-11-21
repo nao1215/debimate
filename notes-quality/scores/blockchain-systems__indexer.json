@@ -1,0 +1,16 @@
+{
+ "path": "content/notes/blockchain-systems/indexer/index.md",
+ "overall": 5,
+ "product": 81,
+ "blob": "79d7538d937eb837966e26af029a49363d988b63",
+ "by": "採点の担当（別エージェント。抜き出しで採点、基準 5 本も同時に採点）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "2026-11-21",
+ "standard": "gate-v1"
+}

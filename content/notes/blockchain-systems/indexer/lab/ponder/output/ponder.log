@@ -1,0 +1,64 @@
+16:16:07.016 INFO  Connected to database type=pglite database=.ponder/pglite (3s)
+16:16:07.052 INFO  Connected to JSON-RPC chain=anvil hostnames=["127.0.0.1"] (30ms)
+16:16:07.357 INFO  Created database tables count=1 tables=["balance"] (45ms)
+16:16:07.373 INFO  Started migrating 'ponder_rpc_cache_1' schema statement_count=12
+16:16:07.416 INFO  Migrated 'ponder_rpc_cache_1' schema (36ms)
+16:16:07.468 INFO  Created HTTP server port=42071 (3ms)
+16:16:07.468 INFO  Started returning 200 responses endpoint=/health
+16:16:07.478 INFO  Started backfill indexing chain=anvil block_range=[1,35]
+16:16:07.478 INFO  Started fetching backfill JSON-RPC data chain=anvil cached_block=0 cache_rate=0.0%
+16:16:08.357 INFO  Indexed block range chain=anvil event_count=26 block_range=[1,26] (38ms)
+16:16:09.154 INFO  Finished fetching backfill JSON-RPC data chain=anvil (1s)
+16:16:09.174 INFO  Indexed block range chain=anvil event_count=9 block_range=[27,35] (11ms)
+16:16:09.175 INFO  Completed backfill indexing across all chains (1s)
+16:16:09.201 INFO  Started returning 200 responses endpoint=/ready
+16:16:09.204 INFO  Started live indexing chain=anvil finalized_block=35 factory_address_count=0
+16:16:10.095 INFO  Indexed block chain=anvil number=36 event_count=1 (68ms)
+16:16:10.124 INFO  Indexed block chain=anvil number=37 event_count=1 (29ms)
+16:16:10.155 INFO  Indexed block chain=anvil number=38 event_count=1 (30ms)
+16:16:10.177 INFO  Indexed block chain=anvil number=39 event_count=1 (22ms)
+16:16:10.200 INFO  Indexed block chain=anvil number=40 event_count=1 (23ms)
+16:16:10.219 INFO  Indexed block chain=anvil number=41 event_count=1 (19ms)
+16:16:10.241 INFO  Indexed block chain=anvil number=42 event_count=1 (21ms)
+16:16:10.262 INFO  Indexed block chain=anvil number=43 event_count=1 (21ms)
+16:16:10.284 INFO  Indexed block chain=anvil number=44 event_count=1 (22ms)
+16:16:10.306 INFO  Indexed block chain=anvil number=45 event_count=1 (21ms)
+16:16:10.328 INFO  Indexed block chain=anvil number=46 event_count=1 (22ms)
+16:16:10.350 INFO  Indexed block chain=anvil number=47 event_count=1 (22ms)
+16:16:10.372 INFO  Indexed block chain=anvil number=48 event_count=1 (22ms)
+16:16:10.401 INFO  Indexed block chain=anvil number=49 event_count=1 (29ms)
+16:16:10.424 INFO  Indexed block chain=anvil number=50 event_count=1 (22ms)
+16:16:11.080 INFO  Reorged block chain=anvil number=47 (55ms)
+16:16:11.128 INFO  Indexed block chain=anvil number=48 event_count=1 (35ms)
+16:16:11.141 INFO  Indexed block chain=anvil number=49 event_count=0 (13ms)
+16:16:11.153 INFO  Indexed block chain=anvil number=50 event_count=0 (12ms)
+16:16:17.062 INFO  Indexed block chain=anvil number=51 event_count=0 (35ms)
+16:16:17.081 INFO  Finalized block chain=anvil number=36 (19ms)
+16:16:23.238 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (7ms)
+16:16:23.238 WARN  Failed to fetch latest block chain=anvil number=51 hash=0x0768a179cf9b2be93e65785cbaad32c07fd2018a5ae31237e25803e7c9c751b4 retry_count=0
+16:16:29.443 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (9ms)
+16:16:29.443 WARN  Failed to fetch latest block chain=anvil number=52 hash=0x0e113ca2eb10892ba716a48260e7b7c2e6d4b606a3f4a578331a41033800e8fd retry_count=1
+16:16:41.006 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (561ms)
+16:16:41.007 WARN  Failed to fetch latest block chain=anvil number=53 hash=0x8b46223d60b259a389755aa6d1fc7c492e0f313f8c6fbad85452411f8580e76a retry_count=2
+16:16:46.019 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (565ms)
+16:16:46.019 WARN  Failed to fetch latest block chain=anvil number=54 hash=0xcf9fffdabcd023f8df293d1b022a17e3bd1ffa22d2df3e090fce7fe4a11097c1 retry_count=3
+16:16:51.015 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (359ms)
+16:16:51.016 WARN  Failed to fetch latest block chain=anvil number=55 hash=0x9a9e0ff349a5f9f902c5ad4397e5b2a48d85d7720022233915294e6ab51f17fb retry_count=4
+16:16:56.019 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (360ms)
+16:16:56.019 WARN  Failed to fetch latest block chain=anvil number=56 hash=0xe8bd821b9300de9b4ca5f1f7613307ae4e0e71d7464369df443e7433cdf49345 retry_count=5
+16:17:01.029 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (358ms)
+16:17:01.030 WARN  Failed to fetch latest block chain=anvil number=57 hash=0xfb6b35436c3a8144731813a81070bebae941ee381a865f1b662e76d9a30836c1 retry_count=6
+16:17:06.028 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (357ms)
+16:17:06.029 WARN  Failed to fetch latest block chain=anvil number=58 hash=0x0e18a55ab43cef955990b3978e1f416aaccdce23e4d56aac992712f3b6ccfadc retry_count=7
+16:17:11.020 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (339ms)
+16:17:11.021 WARN  Failed to fetch latest block chain=anvil number=59 hash=0xf4acd355edd57c3e884cff45272215af7c87d0c89069d8eae5251a4318c65840 retry_count=8
+16:17:16.018 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (14ms)
+16:17:16.018 WARN  Failed to fetch latest block chain=anvil number=60 hash=0xc33d28fcd517e05ffe1dfd646c4798ae37af6dd29441937439e32a906313f764 retry_count=9
+16:17:21.023 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (13ms)
+16:17:21.024 WARN  Failed to fetch latest block chain=anvil number=61 hash=0xcea3d88f64de3be3df6cd485fb19ca33b803a2d62cbcfa5774fd3357c54a8d7f retry_count=10
+16:17:27.014 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (1s)
+16:17:27.015 WARN  Failed to fetch latest block chain=anvil number=62 hash=0xf668ba929d55333d81f586a76eb1ab25f77e54fdde457634733d7421c7366b38 retry_count=11
+16:17:32.006 WARN  Encountered unrecoverable reorg chain=anvil finalized_block=36 (983ms)
+16:17:32.006 WARN  Failed to fetch latest block chain=anvil number=63 hash=0xf37f4f4253d73bb48c287494224d0d6107157994979ea07b0affaa388f0b3dc6 retry_count=12
+16:17:35.588 WARN  Received SIGTERM
+16:17:35.589 WARN  Started shutdown sequence

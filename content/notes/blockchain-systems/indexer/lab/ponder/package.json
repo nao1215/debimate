@@ -1,0 +1,4 @@
+{ "name": "indexer-reorg-ponder", "private": true, "type": "module",
+  "scripts": { "dev": "ponder dev", "start": "ponder start" },
+  "dependencies": { "ponder": "0.18.9", "viem": "^2", "hono": "^4" },
+  "devDependencies": { "typescript": "^5" } }

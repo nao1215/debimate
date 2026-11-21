@@ -1,0 +1,47 @@
+== block 1: トークンを作る
+  block 1 0xd41c17 (parent 0x190622): トークンを作る（alice に 1000）
+  truth    {'alice': 1000, 'bob': 0, 'carol': 0, 'dave': 0}
+  naive    {'alice': 1000, 'bob': 0, 'carol': 0, 'dave': 0}
+  careful  {'alice': 1000, 'bob': 0, 'carol': 0, 'dave': 0}
+== block 2
+  block 1 0xd41c17 (parent 0x190622): トークンを作る（alice に 1000）
+  block 2 0xd3c37b (parent 0xd41c17): alice→bob 100
+  truth    {'alice': 900, 'bob': 100, 'carol': 0, 'dave': 0}
+  naive    {'alice': 900, 'bob': 100, 'carol': 0, 'dave': 0}
+  careful  {'alice': 900, 'bob': 100, 'carol': 0, 'dave': 0}
+== ETH の送金: status 0x1, logs []
+== block 3
+  block 1 0xd41c17 (parent 0x190622): トークンを作る（alice に 1000）
+  block 2 0xd3c37b (parent 0xd41c17): alice→bob 100
+  block 3 0x92aac4 (parent 0xd3c37b): alice→carol 50, alice→carol 1 ETH
+  truth    {'alice': 850, 'bob': 100, 'carol': 50, 'dave': 0}
+  naive    {'alice': 850, 'bob': 100, 'carol': 50, 'dave': 0}
+  careful  {'alice': 850, 'bob': 100, 'carol': 50, 'dave': 0}
+== block 4
+  block 1 0xd41c17 (parent 0x190622): トークンを作る（alice に 1000）
+  block 2 0xd3c37b (parent 0xd41c17): alice→bob 100
+  block 3 0x92aac4 (parent 0xd3c37b): alice→carol 50, alice→carol 1 ETH
+  block 4 0x3dc0bc (parent 0x92aac4): bob→carol 30
+  truth    {'alice': 850, 'bob': 70, 'carol': 80, 'dave': 0}
+  naive    {'alice': 850, 'bob': 70, 'carol': 80, 'dave': 0}
+  careful  {'alice': 850, 'bob': 70, 'carol': 80, 'dave': 0}
+== eth_getLogs の件数（block 0〜4、Transfer）: 4
+== reorg: block 3 と 4 を置き換えた直後（高さは同じ）
+  block 1 0xd41c17 (parent 0x190622): トークンを作る（alice に 1000）
+  block 2 0xd3c37b (parent 0xd41c17): alice→bob 100
+  block 3 0x4745b0 (parent 0xd3c37b): alice→dave 100
+  block 4 0xd10eb1 (parent 0x4745b0): -
+  truth    {'alice': 800, 'bob': 100, 'carol': 0, 'dave': 100}
+  naive    {'alice': 850, 'bob': 70, 'carol': 80, 'dave': 0}
+  careful  {'alice': 850, 'bob': 70, 'carol': 80, 'dave': 0}
+== block 5
+  block 1 0xd41c17 (parent 0x190622): トークンを作る（alice に 1000）
+  block 2 0xd3c37b (parent 0xd41c17): alice→bob 100
+  block 3 0x4745b0 (parent 0xd3c37b): alice→dave 100
+  block 4 0xd10eb1 (parent 0x4745b0): -
+  block 5 0xda3ee1 (parent 0xd10eb1): dave→carol 10
+  truth    {'alice': 800, 'bob': 100, 'carol': 10, 'dave': 90}
+  naive    {'alice': 850, 'bob': 70, 'carol': 90, 'dave': -10}
+  careful  {'alice': 800, 'bob': 100, 'carol': 10, 'dave': 90}
+  careful: rollback block 4
+  careful: rollback block 3

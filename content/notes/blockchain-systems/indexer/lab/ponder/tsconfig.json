@@ -1,0 +1,1 @@
+{ "compilerOptions": { "strict": true, "moduleResolution": "bundler", "module": "ESNext", "target": "ES2022", "skipLibCheck": true }, "include": ["./**/*.ts"], "exclude": ["node_modules"] }

@@ -23,4 +23,5 @@ topics:
   - name: "Interoperability"
   - name: "DeFi"
   - name: "Node Policy"
+  - name: "Chain Data"
 ---

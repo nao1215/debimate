@@ -1,0 +1,1390 @@
+{
+ "scenarios": [
+  {
+   "ready": 200,
+   "health": 200,
+   "label": "inside",
+   "depth": 3,
+   "window_seconds": 180,
+   "depth_seconds": 36,
+   "before": {
+    "head": 50,
+    "truth": {
+     "alice": 951,
+     "bob": 49,
+     "carol": 0,
+     "dave": 0
+    },
+    "ponder": {
+     "alice": 951,
+     "bob": 49,
+     "carol": 0,
+     "dave": 0
+    }
+   },
+   "truth_after": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "ponder": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.2,
+     "ponder": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.41,
+     "ponder": {
+      "alice": 954,
+      "bob": 46,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.65,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.86,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.07,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.27,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.48,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.69,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.89,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.1,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.3,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.51,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.71,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.92,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.12,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.33,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.53,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.74,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.94,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.15,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.36,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.56,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.77,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.98,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.19,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.39,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.6,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.81,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.01,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.22,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.43,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.65,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.86,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.06,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.27,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.48,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.69,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.89,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.1,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.3,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.51,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.72,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.93,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.13,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.34,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.55,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.76,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.96,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.17,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.38,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.58,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.79,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.0,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.21,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.41,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.62,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.82,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.03,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.23,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "alive": true,
+   "exit_code": null,
+   "first_match_seconds": 0.65
+  },
+  {
+   "ready": 200,
+   "health": 200,
+   "label": "outside",
+   "depth": 30,
+   "window_seconds": 180,
+   "depth_seconds": 360,
+   "before": {
+    "head": 51,
+    "truth": {
+     "alice": 947,
+     "bob": 46,
+     "carol": 7,
+     "dave": 0
+    },
+    "ponder": {
+     "alice": 947,
+     "bob": 46,
+     "carol": 7,
+     "dave": 0
+    }
+   },
+   "truth_after": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.2,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.41,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.61,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.81,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.02,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.22,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.44,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.64,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.85,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.06,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.26,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.47,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.68,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.88,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.09,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.29,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.5,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.7,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.91,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.12,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.32,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.53,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.74,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.94,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.15,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.35,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.55,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.76,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.96,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.17,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.37,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.57,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.78,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.98,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.19,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.4,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.6,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.8,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.01,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.21,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.42,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.62,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.83,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.03,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.24,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.44,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.65,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.85,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.06,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.26,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.47,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.67,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.88,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.08,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.29,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.49,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.7,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.91,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.11,
+     "ponder": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "alive": true,
+   "exit_code": null,
+   "first_match_seconds": null
+  }
+ ],
+ "start": {
+  "head": 50,
+  "truth": {
+   "alice": 951,
+   "bob": 49,
+   "carol": 0,
+   "dave": 0
+  },
+  "ponder": {
+   "alice": 951,
+   "bob": 49,
+   "carol": 0,
+   "dave": 0
+  }
+ },
+ "after_outside": [
+  {
+   "t": 5.0,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 52,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 10.0,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 53,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 15.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 54,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 20.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 55,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 25.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 56,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 30.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 57,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 35.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 58,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 40.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 59,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 45.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 60,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 50.1,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 61,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 55.2,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 62,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  },
+  {
+   "t": 60.2,
+   "alive": true,
+   "ready": 200,
+   "status_block": 51,
+   "node_head": 63,
+   "ponder": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   }
+  }
+ ],
+ "versions": {
+  "anvil": "anvil Version: 1.7.1",
+  "ponder": "0.18.9",
+  "node": "v22.22.1"
+ }
+}
