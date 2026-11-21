@@ -1,0 +1,5 @@
+（LIVE_FILL を入れる前の drive.py で実行。標準出力を書き写したもの。2026-11-21 17:32〜17:36）
+start {'alice': 801, 'bob': 199, 'carol': 0, 'dave': 0} {'alice': 801, 'bob': 199, 'carol': 0, 'dave': 0} 200
+inside truth {'alice': 797, 'bob': 196, 'carol': 7, 'dave': 0} last {'alice': 802, 'bob': 198, 'carol': 0, 'dave': 0} first match None alive True health 200
+outside truth {'alice': 782, 'bob': 168, 'carol': 0, 'dave': 50} last {'alice': 802, 'bob': 198, 'carol': 0, 'dave': 0} first match None alive True health 200
+after outside synced 428 node_head 428 health 200 healthy rindexer {'alice': 802, 'bob': 198, 'carol': 0, 'dave': 0} truth {'alice': 782, 'bob': 168, 'carol': 0, 'dave': 50}

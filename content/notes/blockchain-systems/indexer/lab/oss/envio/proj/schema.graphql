@@ -1,0 +1,4 @@
+type Balance {
+  id: ID!
+  amount: BigInt!
+}

@@ -1,0 +1,23 @@
+name: reorglab
+description: rindexer against reorgs inside and outside its window on a local Anvil chain
+project_type: no-code
+networks:
+  - name: anvil
+    chain_id: 31337
+    rpc: http://127.0.0.1:18791
+    reorg_handling:
+      enabled: true
+storage:
+  postgres:
+    enabled: true
+contracts:
+  - name: Token
+    details:
+      - network: anvil
+        address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+        start_block: "1"
+    abi: ./abis/Token.json
+    include_events:
+      - Transfer
+global:
+  health_port: 18812

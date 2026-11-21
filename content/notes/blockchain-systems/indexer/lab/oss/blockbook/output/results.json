@@ -1,0 +1,5822 @@
+{
+ "versions": {
+  "bitcoind": "/Satoshi:32.1.0/"
+ },
+ "params": {
+  "inside_depth": 3,
+  "outside_depth": 320,
+  "block_addresses_to_keep": 300
+ },
+ "addresses": {
+  "alice": "bcrt1qqfsscxf2wnd5748qex2zue7837wndz5heh7xrs",
+  "carol": "bcrt1qqae5uvzzeccxlswfaspf7lv28es5rx25xhzw3f",
+  "dave": "bcrt1qt0su99nfmykazlt4p9qt6g9wvuakc87u3272gx"
+ },
+ "initial_sync": 1.0,
+ "initial_view": {
+  "node": {
+   "height": 155,
+   "balance": 500000000,
+   "history": [
+    "0312c5809b4c4c832dcccc97c1a7193868bd86a90650176ae5a56d689156e525",
+    "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+    "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+    "74f50f34b9cfe03ad9e18e8fcf56f477fa15641e0ddf7b82907aefdfedc8d46f",
+    "9796553bf830c2d6b1d8dd628bc82b6c3a616fb3ca358429cca7f6c7fe77221f"
+   ]
+  },
+  "blockbook": {
+   "up": true,
+   "height": 155,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "unconfirmedTxs": 0,
+   "txs": 5,
+   "history": [
+    "0312c5809b4c4c832dcccc97c1a7193868bd86a90650176ae5a56d689156e525",
+    "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+    "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+    "74f50f34b9cfe03ad9e18e8fcf56f477fa15641e0ddf7b82907aefdfedc8d46f",
+    "9796553bf830c2d6b1d8dd628bc82b6c3a616fb3ca358429cca7f6c7fe77221f"
+   ]
+  }
+ },
+ "initial_status": {
+  "api": {
+   "status": 200,
+   "bestHeight": 155,
+   "inSync": true,
+   "inSyncMempool": true,
+   "syncMode": true,
+   "lastBlockTime": "2026-11-21T09:31:13.983284731Z",
+   "initialSync": false,
+   "currentFiatRatesTime": null,
+   "backend_blocks": 155,
+   "backend_bestBlockHash": "5930135dd2ca0bb1afc91a541b17b6bfa186141c584869ef684473d745d3cd42"
+  },
+  "metrics": {
+   "status": 200,
+   "lines": [
+    "blockbook_backend_best_height{coin=\"Regtest\"} 155",
+    "blockbook_best_height{coin=\"Regtest\"} 0",
+    "blockbook_index_resync_duration_count{coin=\"Regtest\"} 0",
+    "blockbook_synchronized{coin=\"Regtest\"} 0",
+    "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.015527813"
+   ]
+  }
+ },
+ "inside": {
+  "depth": 3,
+  "first_match_s": 1.3,
+  "node_after": {
+   "height": 156,
+   "balance": 200000000,
+   "history": [
+    "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+    "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+   ]
+  },
+  "bb_after": {
+   "up": true,
+   "height": 156,
+   "balance": 200000000,
+   "unconfirmed": 0,
+   "unconfirmedTxs": 0,
+   "txs": 2,
+   "history": [
+    "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+    "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+   ]
+  },
+  "trace": [
+   {
+    "t": 0.2,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 153,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 2,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    }
+   },
+   {
+    "t": 0.8,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 153,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 2,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    }
+   },
+   {
+    "t": 1.3,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 2,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    }
+   },
+   {
+    "t": 1.3,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 2,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    }
+   }
+  ],
+  "status": {
+   "api": {
+    "status": 200,
+    "bestHeight": 156,
+    "inSync": true,
+    "inSyncMempool": true,
+    "syncMode": true,
+    "lastBlockTime": "2026-11-21T09:31:17.246997711Z",
+    "initialSync": false,
+    "currentFiatRatesTime": null,
+    "backend_blocks": 156,
+    "backend_bestBlockHash": "7c0bed0ff5ad0ed510c4276d99b4f050cebe96dfc0fd6d2db5d0bd88b1360f4c"
+   },
+   "metrics": {
+    "status": 200,
+    "lines": [
+     "blockbook_backend_best_height{coin=\"Regtest\"} 156",
+     "blockbook_best_height{coin=\"Regtest\"} 156",
+     "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 1",
+     "blockbook_index_resync_duration_count{coin=\"Regtest\"} 2",
+     "blockbook_synchronized{coin=\"Regtest\"} 0",
+     "blockbook_tip_age_seconds{coin=\"Regtest\"} 1.011036473"
+    ]
+   }
+  },
+  "alive": {
+   "bitcoind": [
+    true,
+    null
+   ],
+   "blockbook": [
+    true,
+    null
+   ]
+  },
+  "mempool_after": [],
+  "carol": {
+   "node": 2100000000,
+   "blockbook": {
+    "up": true,
+    "height": 156,
+    "balance": 2100000000,
+    "unconfirmed": 0,
+    "unconfirmedTxs": 0,
+    "txs": 3,
+    "history": [
+     "aa106823e2d8d959408af2b981de0a1aecd4941810ad904f3f25e033e66bbf19",
+     "b612cab0bb98b52a6b1d32701975846dc1e276eac2d3d8818287daf7f11968ce",
+     "e3cf38be6297b806f79ae071140aadaa1d33818f86a323c23f15555ea1fcd01e"
+    ]
+   }
+  }
+ },
+ "before_outside": 1.6,
+ "before_outside_view": {
+  "node": {
+   "height": 476,
+   "balance": 500000000,
+   "history": [
+    "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+    "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+    "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+    "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+    "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+   ]
+  },
+  "blockbook": {
+   "up": true,
+   "height": 476,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "unconfirmedTxs": 0,
+   "txs": 5,
+   "history": [
+    "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+    "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+    "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+    "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+    "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+   ]
+  }
+ },
+ "before_outside_status": {
+  "api": {
+   "status": 200,
+   "bestHeight": 476,
+   "inSync": true,
+   "inSyncMempool": true,
+   "syncMode": true,
+   "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+   "initialSync": false,
+   "currentFiatRatesTime": null,
+   "backend_blocks": 476,
+   "backend_bestBlockHash": "70decbeff7adce84f1b21d2a44ac8e9142c0d94f23166eb32e2f43bd064ba9f3"
+  },
+  "metrics": {
+   "status": 200,
+   "lines": [
+    "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+    "blockbook_best_height{coin=\"Regtest\"} 476",
+    "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 1",
+    "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+    "blockbook_synchronized{coin=\"Regtest\"} 0",
+    "blockbook_tip_age_seconds{coin=\"Regtest\"} 1.006867501"
+   ]
+  }
+ },
+ "outside": {
+  "depth": 320,
+  "base_height": 157,
+  "trace": [
+   {
+    "t": 0.1,
+    "node": {
+     "height": 477,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 477,
+      "backend_bestBlockHash": "6d0f9d8805004549e6d17b2a4dea8d692a55611cd6a4b84db1fd34f834ac81f1"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 3",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 2",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 6.3e-07"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 1.1,
+    "node": {
+     "height": 477,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 477,
+      "backend_bestBlockHash": "6d0f9d8805004549e6d17b2a4dea8d692a55611cd6a4b84db1fd34f834ac81f1"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 3",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 2",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 6.3e-07"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 2.1,
+    "node": {
+     "height": 477,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 477,
+      "backend_bestBlockHash": "6d0f9d8805004549e6d17b2a4dea8d692a55611cd6a4b84db1fd34f834ac81f1"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 4",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 3",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 1.050103963"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 3.2,
+    "node": {
+     "height": 477,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 477,
+      "backend_bestBlockHash": "6d0f9d8805004549e6d17b2a4dea8d692a55611cd6a4b84db1fd34f834ac81f1"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 4",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 3",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 1.050103963"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 4.2,
+    "node": {
+     "height": 477,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 477,
+      "backend_bestBlockHash": "6d0f9d8805004549e6d17b2a4dea8d692a55611cd6a4b84db1fd34f834ac81f1"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 5",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 4",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 3.587402969"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 5.2,
+    "node": {
+     "height": 477,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 477,
+      "backend_bestBlockHash": "6d0f9d8805004549e6d17b2a4dea8d692a55611cd6a4b84db1fd34f834ac81f1"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 5",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 4",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 3.587402969"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 6.2,
+    "node": {
+     "height": 478,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 478,
+      "backend_bestBlockHash": "25d0083ae12189a9ebe48e87148358891a3fe0b1d08f94a8d0f7479b32cb690a"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 5",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 4",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 3.587402969"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 7.3,
+    "node": {
+     "height": 478,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 478,
+      "backend_bestBlockHash": "25d0083ae12189a9ebe48e87148358891a3fe0b1d08f94a8d0f7479b32cb690a"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 6",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 5",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.063904013"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 8.3,
+    "node": {
+     "height": 478,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 478,
+      "backend_bestBlockHash": "25d0083ae12189a9ebe48e87148358891a3fe0b1d08f94a8d0f7479b32cb690a"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 6",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 5",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.063904013"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 9.3,
+    "node": {
+     "height": 478,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 478,
+      "backend_bestBlockHash": "25d0083ae12189a9ebe48e87148358891a3fe0b1d08f94a8d0f7479b32cb690a"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 7",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 6",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.593089306"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 10.3,
+    "node": {
+     "height": 478,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 478,
+      "backend_bestBlockHash": "25d0083ae12189a9ebe48e87148358891a3fe0b1d08f94a8d0f7479b32cb690a"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 7",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 6",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.593089306"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 11.4,
+    "node": {
+     "height": 479,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 479,
+      "backend_bestBlockHash": "168ee97ad2b915481530c0761be016332497939b4d194cf02551de9df76b4e71"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 7",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 6",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.593089306"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 12.4,
+    "node": {
+     "height": 479,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 479,
+      "backend_bestBlockHash": "168ee97ad2b915481530c0761be016332497939b4d194cf02551de9df76b4e71"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 8",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 7",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.028132459"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 13.4,
+    "node": {
+     "height": 479,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 479,
+      "backend_bestBlockHash": "168ee97ad2b915481530c0761be016332497939b4d194cf02551de9df76b4e71"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 8",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 7",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.028132459"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 14.4,
+    "node": {
+     "height": 479,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 479,
+      "backend_bestBlockHash": "168ee97ad2b915481530c0761be016332497939b4d194cf02551de9df76b4e71"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 9",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 8",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.554128472"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 15.5,
+    "node": {
+     "height": 479,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 479,
+      "backend_bestBlockHash": "168ee97ad2b915481530c0761be016332497939b4d194cf02551de9df76b4e71"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 9",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 8",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.554128472"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 16.5,
+    "node": {
+     "height": 480,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 480,
+      "backend_bestBlockHash": "006026484d10dcb438a1f0ca5bdcafe326f22e22d2c983d93807a9ce3793be45"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 9",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 8",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.554128472"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 17.5,
+    "node": {
+     "height": 480,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 480,
+      "backend_bestBlockHash": "006026484d10dcb438a1f0ca5bdcafe326f22e22d2c983d93807a9ce3793be45"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 10",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 9",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.062431847"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 18.5,
+    "node": {
+     "height": 480,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 480,
+      "backend_bestBlockHash": "006026484d10dcb438a1f0ca5bdcafe326f22e22d2c983d93807a9ce3793be45"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 10",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 9",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.062431847"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 19.6,
+    "node": {
+     "height": 480,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 480,
+      "backend_bestBlockHash": "006026484d10dcb438a1f0ca5bdcafe326f22e22d2c983d93807a9ce3793be45"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 11",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 10",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.5911631059999998"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 20.6,
+    "node": {
+     "height": 480,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 480,
+      "backend_bestBlockHash": "006026484d10dcb438a1f0ca5bdcafe326f22e22d2c983d93807a9ce3793be45"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 11",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 10",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.5911631059999998"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 21.6,
+    "node": {
+     "height": 481,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 481,
+      "backend_bestBlockHash": "1e2e2c391f84cffd03a616b176fba0f0b9e9de19ce4a70947ab86abb483769d5"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 11",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 10",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.5911631059999998"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 22.6,
+    "node": {
+     "height": 481,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 481,
+      "backend_bestBlockHash": "1e2e2c391f84cffd03a616b176fba0f0b9e9de19ce4a70947ab86abb483769d5"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 12",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 11",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.060447427"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 23.6,
+    "node": {
+     "height": 481,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 481,
+      "backend_bestBlockHash": "1e2e2c391f84cffd03a616b176fba0f0b9e9de19ce4a70947ab86abb483769d5"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 12",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 11",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.060447427"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 24.7,
+    "node": {
+     "height": 481,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 481,
+      "backend_bestBlockHash": "1e2e2c391f84cffd03a616b176fba0f0b9e9de19ce4a70947ab86abb483769d5"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 13",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 12",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.585970158"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 25.7,
+    "node": {
+     "height": 481,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 481,
+      "backend_bestBlockHash": "1e2e2c391f84cffd03a616b176fba0f0b9e9de19ce4a70947ab86abb483769d5"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 13",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 12",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.585970158"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 26.7,
+    "node": {
+     "height": 482,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 482,
+      "backend_bestBlockHash": "631779118b0c6c07d28c291144bdef9c06d599f91227f63c8c7fd07635c1f683"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 13",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 12",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.585970158"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 27.7,
+    "node": {
+     "height": 482,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 482,
+      "backend_bestBlockHash": "631779118b0c6c07d28c291144bdef9c06d599f91227f63c8c7fd07635c1f683"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 14",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 13",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.028726787"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 28.8,
+    "node": {
+     "height": 482,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 482,
+      "backend_bestBlockHash": "631779118b0c6c07d28c291144bdef9c06d599f91227f63c8c7fd07635c1f683"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 14",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 13",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.028726787"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 29.8,
+    "node": {
+     "height": 482,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 482,
+      "backend_bestBlockHash": "631779118b0c6c07d28c291144bdef9c06d599f91227f63c8c7fd07635c1f683"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 15",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 14",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.557221966"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 30.9,
+    "node": {
+     "height": 482,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 482,
+      "backend_bestBlockHash": "631779118b0c6c07d28c291144bdef9c06d599f91227f63c8c7fd07635c1f683"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 15",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 14",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.557221966"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 31.9,
+    "node": {
+     "height": 483,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 483,
+      "backend_bestBlockHash": "0d3a1e7f77cdd4b509822e61069fa5ff8ae55f63b2eaef2130585d92ba80bc88"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 15",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 14",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.557221966"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 32.9,
+    "node": {
+     "height": 483,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 483,
+      "backend_bestBlockHash": "0d3a1e7f77cdd4b509822e61069fa5ff8ae55f63b2eaef2130585d92ba80bc88"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 16",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 15",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.064873647"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 33.9,
+    "node": {
+     "height": 483,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 483,
+      "backend_bestBlockHash": "0d3a1e7f77cdd4b509822e61069fa5ff8ae55f63b2eaef2130585d92ba80bc88"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 16",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 15",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.064873647"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 35.0,
+    "node": {
+     "height": 483,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 483,
+      "backend_bestBlockHash": "0d3a1e7f77cdd4b509822e61069fa5ff8ae55f63b2eaef2130585d92ba80bc88"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 17",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 16",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.590673589"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 36.0,
+    "node": {
+     "height": 483,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 483,
+      "backend_bestBlockHash": "0d3a1e7f77cdd4b509822e61069fa5ff8ae55f63b2eaef2130585d92ba80bc88"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 17",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 16",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.590673589"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 37.0,
+    "node": {
+     "height": 484,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 484,
+      "backend_bestBlockHash": "5cf86c65e51fdbcf182977b02afbd1e75fe5a202a91ca77b3f70c89ee4c96da3"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 17",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 16",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.590673589"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 38.0,
+    "node": {
+     "height": 484,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 484,
+      "backend_bestBlockHash": "5cf86c65e51fdbcf182977b02afbd1e75fe5a202a91ca77b3f70c89ee4c96da3"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 18",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 17",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.026533056"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 39.0,
+    "node": {
+     "height": 484,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 484,
+      "backend_bestBlockHash": "5cf86c65e51fdbcf182977b02afbd1e75fe5a202a91ca77b3f70c89ee4c96da3"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 18",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 17",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.026533056"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 40.1,
+    "node": {
+     "height": 484,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 484,
+      "backend_bestBlockHash": "5cf86c65e51fdbcf182977b02afbd1e75fe5a202a91ca77b3f70c89ee4c96da3"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 19",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 18",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.550803018"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 41.1,
+    "node": {
+     "height": 485,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 485,
+      "backend_bestBlockHash": "0f2ea655de4b5697652740cd08f2a696d1beaab42e9968c223e7de94e4a92af7"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 19",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 18",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.550803018"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 42.1,
+    "node": {
+     "height": 485,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 485,
+      "backend_bestBlockHash": "0f2ea655de4b5697652740cd08f2a696d1beaab42e9968c223e7de94e4a92af7"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 20",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 19",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.05230614"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 43.1,
+    "node": {
+     "height": 485,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 485,
+      "backend_bestBlockHash": "0f2ea655de4b5697652740cd08f2a696d1beaab42e9968c223e7de94e4a92af7"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 20",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 19",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.05230614"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 44.2,
+    "node": {
+     "height": 485,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 485,
+      "backend_bestBlockHash": "0f2ea655de4b5697652740cd08f2a696d1beaab42e9968c223e7de94e4a92af7"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 21",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 20",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.575729898"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 45.2,
+    "node": {
+     "height": 485,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 485,
+      "backend_bestBlockHash": "0f2ea655de4b5697652740cd08f2a696d1beaab42e9968c223e7de94e4a92af7"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 21",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 20",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.575729898"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 46.2,
+    "node": {
+     "height": 486,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 486,
+      "backend_bestBlockHash": "678e00dcef8c5803d44e22ff0257a7af27e3f38f3195dfdf75d91e70662be920"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 21",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 20",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.575729898"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 47.2,
+    "node": {
+     "height": 486,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 486,
+      "backend_bestBlockHash": "678e00dcef8c5803d44e22ff0257a7af27e3f38f3195dfdf75d91e70662be920"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 22",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 21",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.057244651"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 48.3,
+    "node": {
+     "height": 486,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 486,
+      "backend_bestBlockHash": "678e00dcef8c5803d44e22ff0257a7af27e3f38f3195dfdf75d91e70662be920"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 22",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 21",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.057244651"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 49.3,
+    "node": {
+     "height": 486,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 486,
+      "backend_bestBlockHash": "678e00dcef8c5803d44e22ff0257a7af27e3f38f3195dfdf75d91e70662be920"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 23",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 22",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.587821619"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 50.3,
+    "node": {
+     "height": 486,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 486,
+      "backend_bestBlockHash": "678e00dcef8c5803d44e22ff0257a7af27e3f38f3195dfdf75d91e70662be920"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 23",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 22",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.587821619"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 51.3,
+    "node": {
+     "height": 487,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 487,
+      "backend_bestBlockHash": "2e7b0d747c3c09a418586c41e421ac0882533bdb2e6dff21806586f305dbc256"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 23",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 22",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.587821619"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 52.4,
+    "node": {
+     "height": 487,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 487,
+      "backend_bestBlockHash": "2e7b0d747c3c09a418586c41e421ac0882533bdb2e6dff21806586f305dbc256"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 24",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 23",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.134188675"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 53.4,
+    "node": {
+     "height": 487,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 487,
+      "backend_bestBlockHash": "2e7b0d747c3c09a418586c41e421ac0882533bdb2e6dff21806586f305dbc256"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 24",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 23",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.134188675"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 54.4,
+    "node": {
+     "height": 487,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 487,
+      "backend_bestBlockHash": "2e7b0d747c3c09a418586c41e421ac0882533bdb2e6dff21806586f305dbc256"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 25",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 24",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.671314412"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 55.4,
+    "node": {
+     "height": 487,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 487,
+      "backend_bestBlockHash": "2e7b0d747c3c09a418586c41e421ac0882533bdb2e6dff21806586f305dbc256"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 25",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 24",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.671314412"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 56.5,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 25",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 24",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.671314412"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 57.5,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 26",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 25",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.063527226"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 58.5,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 26",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 25",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 0.063527226"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   },
+   {
+    "t": 59.5,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "blockbook": [
+      true,
+      null
+     ]
+    }
+   }
+  ],
+  "final": {
+   "t": 59.5,
+   "node": {
+    "height": 488,
+    "balance": 200000000,
+    "history": [
+     "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+     "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+    ]
+   },
+   "blockbook": {
+    "up": true,
+    "height": 476,
+    "balance": 500000000,
+    "unconfirmed": 0,
+    "unconfirmedTxs": 0,
+    "txs": 5,
+    "history": [
+     "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+     "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+     "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+     "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+     "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+    ]
+   },
+   "status": {
+    "api": {
+     "status": 200,
+     "bestHeight": 476,
+     "inSync": true,
+     "inSyncMempool": true,
+     "syncMode": true,
+     "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+     "initialSync": false,
+     "currentFiatRatesTime": null,
+     "backend_blocks": 488,
+     "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+    },
+    "metrics": {
+     "status": 200,
+     "lines": [
+      "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+      "blockbook_best_height{coin=\"Regtest\"} 476",
+      "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+      "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+      "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+      "blockbook_synchronized{coin=\"Regtest\"} 0",
+      "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+     ]
+    }
+   },
+   "alive": {
+    "bitcoind": [
+     true,
+     null
+    ],
+    "blockbook": [
+     true,
+     null
+    ]
+   }
+  },
+  "first_match_s": null,
+  "dave": {
+   "node": 3000000000,
+   "blockbook": {
+    "up": true,
+    "height": 476,
+    "balance": 0,
+    "unconfirmed": 0,
+    "unconfirmedTxs": 0,
+    "txs": 0,
+    "history": []
+   }
+  }
+ },
+ "quiet": {
+  "trace": [
+   {
+    "t": 0.0,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 1.0,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 2.0,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 3.0,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": true,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 4.0,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 5.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 6.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 7.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 8.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 9.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 10.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 11.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 12.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 13.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 14.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 15.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 16.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 17.1,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 18.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 19.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 20.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 21.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 22.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 23.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 24.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 25.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 26.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 27.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 28.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   },
+   {
+    "t": 29.2,
+    "node_height": 488,
+    "blockbook": {
+     "up": true,
+     "height": 476,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "unconfirmedTxs": 0,
+     "txs": 5,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "27207ecffdb47fbecfa7a2cb9f3de51d45ada4ab8b7e75d9d5fd253306838e3a",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6",
+      "68c47e68f63ab0d9c15c2d38c7a27d8be91a87a6a351b2da92bdef0a5b339e6b",
+      "836b5062af414bacd083c86bcb997655fcecc92fc90a1af1d23b345db238a557"
+     ]
+    },
+    "status": {
+     "api": {
+      "status": 200,
+      "bestHeight": 476,
+      "inSync": false,
+      "inSyncMempool": true,
+      "syncMode": true,
+      "lastBlockTime": "2026-11-21T09:31:47.684966953Z",
+      "initialSync": false,
+      "currentFiatRatesTime": null,
+      "backend_blocks": 488,
+      "backend_bestBlockHash": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854"
+     },
+     "metrics": {
+      "status": 200,
+      "lines": [
+       "blockbook_backend_best_height{coin=\"Regtest\"} 476",
+       "blockbook_best_height{coin=\"Regtest\"} 476",
+       "blockbook_index_reorg_events{coin=\"Regtest\",type=\"disconnect\"} 27",
+       "blockbook_index_resync_duration_count{coin=\"Regtest\"} 27",
+       "blockbook_index_resync_errors{coin=\"Regtest\",error=\"failure\"} 26",
+       "blockbook_synchronized{coin=\"Regtest\"} 0",
+       "blockbook_tip_age_seconds{coin=\"Regtest\"} 2.589252078"
+      ]
+     }
+    }
+   }
+  ],
+  "block_index": {
+   "156": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": "7c0bed0ff5ad0ed510c4276d99b4f050cebe96dfc0fd6d2db5d0bd88b1360f4c"
+     }
+    ],
+    "node": "7c0bed0ff5ad0ed510c4276d99b4f050cebe96dfc0fd6d2db5d0bd88b1360f4c",
+    "orphan": null
+   },
+   "157": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": "2e55a1c14bb69b09c41049be13c50082e028b065bae10351a7bdb3c7dcde659e"
+     }
+    ],
+    "node": "786e43a5aefb8363cd5d41e4fe1f1ce0183eecc1514bdbe6b0d2c82e526754a7",
+    "orphan": "2e55a1c14bb69b09c41049be13c50082e028b065bae10351a7bdb3c7dcde659e"
+   },
+   "317": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": "14fbf3a5f6c8eb3e25ea7f6feb67d6170dc5c025468fab90998a3a1f5ada7ff4"
+     }
+    ],
+    "node": "6104d14540f0c2d7628297ad82993ce87e7455a0ce58e6eaaf1713e52779ba98",
+    "orphan": "14fbf3a5f6c8eb3e25ea7f6feb67d6170dc5c025468fab90998a3a1f5ada7ff4"
+   },
+   "465": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": "01e3de3cd30e62eb42c0cf336a460a3237a851e010eced20ffa37a7f552506c3"
+     }
+    ],
+    "node": "161542fafd958cb8bee95652103421fdd1c13871b98113c929c1f55255b42e35",
+    "orphan": "01e3de3cd30e62eb42c0cf336a460a3237a851e010eced20ffa37a7f552506c3"
+   },
+   "466": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": "3d44e24f4da16d83b324dfc4d32a3f960a42e435717aacf1edd4c6ec2e5fcc71"
+     }
+    ],
+    "node": "261c5cf1c87fae7594ea058e147894f67461d2361a6ee4e89137768ff7a538b7",
+    "orphan": "3d44e24f4da16d83b324dfc4d32a3f960a42e435717aacf1edd4c6ec2e5fcc71"
+   },
+   "476": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": "70decbeff7adce84f1b21d2a44ac8e9142c0d94f23166eb32e2f43bd064ba9f3"
+     }
+    ],
+    "node": "51f5e2eb10376a6fe0da7fa36e0960bc44536f4fbe72348261cc6c1166c5e857",
+    "orphan": "70decbeff7adce84f1b21d2a44ac8e9142c0d94f23166eb32e2f43bd064ba9f3"
+   },
+   "488": {
+    "blockbook": [
+     200,
+     {
+      "blockHash": ""
+     }
+    ],
+    "node": "7c3a0909ba4f7ad5d4f673614c660940f9ad721f6ca711b1d177cbbef4285854",
+    "orphan": null
+   }
+  }
+ },
+ "restart": {
+  "trace": [
+   {
+    "t": 0.0,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": null
+   },
+   {
+    "t": 2.0,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 4.0,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 6.1,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 8.1,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 10.1,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 12.1,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 14.1,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 16.2,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 18.2,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 20.2,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 22.2,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 24.2,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 26.3,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   },
+   {
+    "t": 28.3,
+    "node": {
+     "height": 488,
+     "balance": 200000000,
+     "history": [
+      "0d274e4febc9a5c03576c013b68f1e8c1f2cf5bca49bb364c7ab13928ec524f1",
+      "4fd08cc2675592865e8278f50cc418e8dfccb305f5f9f9b1709787591a9540c6"
+     ]
+    },
+    "blockbook": {
+     "up": false,
+     "error": "URLError: <urlopen error [Errno 111] Connection refused>"
+    },
+    "status": {
+     "api": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     },
+     "metrics": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": 255
+   }
+  ],
+  "first_match_s": null
+ }
+}

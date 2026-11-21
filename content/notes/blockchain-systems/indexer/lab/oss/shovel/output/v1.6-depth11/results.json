@@ -1,0 +1,1163 @@
+{
+ "label": "v1.6-boundary",
+ "binary": "bin/shovel-v1.6",
+ "nblocks": 60,
+ "steps": [
+  "in:11",
+  "out:12"
+ ],
+ "scenarios": [
+  {
+   "label": "in:11",
+   "depth": 11,
+   "before": {
+    "head": 60,
+    "truth": {
+     "alice": 999941,
+     "bob": 59,
+     "carol": 0,
+     "dave": 0
+    },
+    "shovel": {
+     "alice": 999941,
+     "bob": 59,
+     "carol": 0,
+     "dave": 0
+    },
+    "internal": {
+     "task_max": 60,
+     "task_rows": 60,
+     "task_min": 1,
+     "transfer_rows": 60,
+     "transfer_max_block": 60
+    }
+   },
+   "truth_after": {
+    "alice": 999945,
+    "bob": 48,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.55,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.1,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.65,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.2,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.75,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.3,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 3.86,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.43,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.02,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.61,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.17,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.72,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.28,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.89,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.45,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.01,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.57,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.14,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.7,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.26,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.82,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.4,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.97,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.53,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.1,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "internal": {
+    "task_max": 60,
+    "task_rows": 60,
+    "task_min": 1,
+    "transfer_rows": 60,
+    "transfer_max_block": 60
+   },
+   "metrics": {
+    "status": 200,
+    "values": {
+     "shovel_latest_block_local{src=\"anvil\"}": "60",
+     "shovel_pg_ping": "0",
+     "shovel_pg_ping_error": "0",
+     "shovel_latest_block_remote{src=\"anvil\"}": "61",
+     "shovel_rpc_ping{src=\"anvil\"}": "0",
+     "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+     "shovel_delta{src=\"anvil\"}": "1"
+    }
+   },
+   "node_head": 61,
+   "alive": true,
+   "exit_code": null,
+   "seconds_reorg_to_mine": 3.3,
+   "first_match_seconds_after_reorg": null,
+   "first_match_seconds_after_mine": null
+  },
+  {
+   "label": "out:12",
+   "depth": 12,
+   "before": {
+    "head": 61,
+    "truth": {
+     "alice": 999945,
+     "bob": 48,
+     "carol": 7,
+     "dave": 0
+    },
+    "shovel": {
+     "alice": 999941,
+     "bob": 59,
+     "carol": 0,
+     "dave": 0
+    },
+    "internal": {
+     "task_max": 60,
+     "task_rows": 60,
+     "task_min": 1,
+     "transfer_rows": 60,
+     "transfer_max_block": 60
+    }
+   },
+   "truth_after": {
+    "alice": 999902,
+    "bob": 48,
+    "carol": 0,
+    "dave": 50
+   },
+   "samples": [
+    {
+     "t": 0.01,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.58,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.16,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.73,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.31,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.88,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.46,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.03,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.62,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.19,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.78,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.39,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.98,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.54,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.1,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.66,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.21,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.76,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.41,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.09,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.71,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.31,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.9,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.59,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.16,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.79,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "internal": {
+    "task_max": 60,
+    "task_rows": 60,
+    "task_min": 1,
+    "transfer_rows": 60,
+    "transfer_max_block": 60
+   },
+   "metrics": {
+    "status": 200,
+    "values": {
+     "shovel_latest_block_local{src=\"anvil\"}": "60",
+     "shovel_pg_ping": "0",
+     "shovel_pg_ping_error": "0",
+     "shovel_latest_block_remote{src=\"anvil\"}": "62",
+     "shovel_rpc_ping{src=\"anvil\"}": "0",
+     "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+     "shovel_delta{src=\"anvil\"}": "2"
+    }
+   },
+   "node_head": 62,
+   "alive": true,
+   "exit_code": null,
+   "seconds_reorg_to_mine": 3.46,
+   "first_match_seconds_after_reorg": null,
+   "first_match_seconds_after_mine": null,
+   "watch": [
+    {
+     "t": 6.1,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 62,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":62,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "62",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "2"
+      }
+     }
+    },
+    {
+     "t": 13.5,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 63,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":63,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "63",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "3"
+      }
+     }
+    },
+    {
+     "t": 21.0,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 64,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":64,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "64",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "4"
+      }
+     }
+    },
+    {
+     "t": 28.4,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 65,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":65,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "65",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "5"
+      }
+     }
+    },
+    {
+     "t": 35.9,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 66,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":66,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "66",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "6"
+      }
+     }
+    },
+    {
+     "t": 43.3,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 67,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":67,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "1",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "67",
+       "shovel_rpc_ping{src=\"anvil\"}": "1",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "7"
+      }
+     }
+    },
+    {
+     "t": 50.7,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 68,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":68,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "68",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "8"
+      }
+     }
+    },
+    {
+     "t": 58.1,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 69,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":69,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "69",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "9"
+      }
+     }
+    },
+    {
+     "t": 65.5,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 70,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":70,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "70",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "10"
+      }
+     }
+    },
+    {
+     "t": 72.9,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 71,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":71,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "71",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "11"
+      }
+     }
+    },
+    {
+     "t": 80.4,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 72,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":72,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "72",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "12"
+      }
+     }
+    },
+    {
+     "t": 87.8,
+     "alive": true,
+     "internal": {
+      "task_max": 60,
+      "task_rows": 60,
+      "task_min": 1,
+      "transfer_rows": 60,
+      "transfer_max_block": 60
+     },
+     "node_head": 73,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999902,
+      "bob": 48,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":73,\"latency\":0,\"error\":\"\",\"pg_latest\":60,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "60",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "73",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "13"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "block_time_selected": true,
+ "start": {
+  "head": 60,
+  "truth": {
+   "alice": 999941,
+   "bob": 59,
+   "carol": 0,
+   "dave": 0
+  },
+  "shovel": {
+   "alice": 999941,
+   "bob": 59,
+   "carol": 0,
+   "dave": 0
+  },
+  "seconds": 0.7,
+  "matched": true,
+  "internal": {
+   "task_max": 60,
+   "task_rows": 60,
+   "task_min": 1,
+   "transfer_rows": 60,
+   "transfer_max_block": 60
+  },
+  "dashboard_status": 200
+ },
+ "versions": {
+  "anvil": "anvil Version: 1.7.1",
+  "shovel": "v 582d",
+  "postgres": "postgres:16-alpine",
+  "anvil_extra": ""
+ }
+}

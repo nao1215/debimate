@@ -34,3 +34,7 @@ Copy lab/ponder outside the Hugo content directory first (node_modules under con
 - The script compares Ponder's GraphQL balances with balanceOf on the node and records /ready and /health.
 - pollingInterval is 200 ms (default 1000 ms) to keep the run short.
 - Tested on Linux x86_64 with Node.js v22.22.1, anvil 1.7.1, solc 0.8.28.
+
+## oss/: the same kind of experiment against 11 more indexer projects
+
+See oss/README.txt for the versions, the procedure and a summary of the results.

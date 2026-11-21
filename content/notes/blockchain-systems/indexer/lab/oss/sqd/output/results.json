@@ -1,0 +1,1309 @@
+{
+ "finality_confirmation": 10,
+ "scenarios": [
+  {
+   "label": "inside",
+   "depth": 3,
+   "finality_confirmation": 10,
+   "before": {
+    "head": 50,
+    "truth": {
+     "alice": 951,
+     "bob": 49,
+     "carol": 0,
+     "dave": 0
+    },
+    "sqd": {
+     "alice": 951,
+     "bob": 49,
+     "carol": 0,
+     "dave": 0
+    },
+    "status": {
+     "status_height": 40,
+     "status_hash": "0xda1a3305",
+     "hot_min": "41",
+     "hot_max": "50",
+     "hot_count": 10
+    },
+    "metrics": {
+     "sqd_processor_last_block": 50.0,
+     "sqd_processor_chain_height": 50.0,
+     "sqd_processor_sync_ratio": 1.0
+    }
+   },
+   "mined": [
+    51
+   ],
+   "truth_after": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.38,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.76,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.14,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.53,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.91,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.3,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.69,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.07,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.46,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.84,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.23,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.59,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.94,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.29,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.64,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.01,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.38,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.75,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 7.13,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 7.5,
+     "sqd": {
+      "alice": 951,
+      "bob": 49,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.85,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.22,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.58,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.96,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.34,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.73,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.12,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.5,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.89,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.27,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.65,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.03,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.42,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.8,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.17,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.55,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.93,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.3,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.67,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "status_after": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics_after": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "alive": true,
+   "exit_code": null,
+   "first_match_seconds": 7.85
+  },
+  {
+   "label": "outside",
+   "depth": 30,
+   "finality_confirmation": 10,
+   "before": {
+    "head": 51,
+    "truth": {
+     "alice": 947,
+     "bob": 46,
+     "carol": 7,
+     "dave": 0
+    },
+    "sqd": {
+     "alice": 947,
+     "bob": 46,
+     "carol": 7,
+     "dave": 0
+    },
+    "status": {
+     "status_height": 41,
+     "status_hash": "0x07d1df6a",
+     "hot_min": "42",
+     "hot_max": "51",
+     "hot_count": 10
+    },
+    "metrics": {
+     "sqd_processor_last_block": 51.0,
+     "sqd_processor_chain_height": 51.0,
+     "sqd_processor_sync_ratio": 1.0
+    }
+   },
+   "mined": [
+    52
+   ],
+   "truth_after": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.38,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.77,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.16,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.54,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.93,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.32,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.69,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.08,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.45,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.84,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.21,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.58,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.96,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.35,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 5.73,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.12,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.5,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 6.88,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 7.26,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 7.64,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.02,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.39,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.78,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.16,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.55,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.93,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.31,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.69,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.07,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.46,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.84,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.23,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.6,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.99,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.39,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.77,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.15,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.53,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.91,
+     "sqd": {
+      "alice": 947,
+      "bob": 46,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "status_after": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics_after": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "alive": true,
+   "exit_code": null,
+   "first_match_seconds": null
+  }
+ ],
+ "start": {
+  "head": 50,
+  "truth": {
+   "alice": 951,
+   "bob": 49,
+   "carol": 0,
+   "dave": 0
+  },
+  "sqd": {
+   "alice": 951,
+   "bob": 49,
+   "carol": 0,
+   "dave": 0
+  },
+  "status": {
+   "status_height": 40,
+   "status_hash": "0xda1a3305",
+   "hot_min": "41",
+   "hot_max": "50",
+   "hot_count": 10
+  },
+  "metrics": {
+   "sqd_processor_last_block": 50.0,
+   "sqd_processor_chain_height": 50.0,
+   "sqd_processor_sync_ratio": 1.0
+  },
+  "t": 7.67
+ },
+ "after_outside": [
+  {
+   "t": 5.0,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 52,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 10.2,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 53,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 15.5,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 54,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 20.8,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 55,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 26.0,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 56,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 31.2,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 57,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 36.4,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 58,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 41.7,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 59,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 46.9,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 60,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 52.2,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 61,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 57.4,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 62,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  },
+  {
+   "t": 62.7,
+   "alive": true,
+   "exit_code": null,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": {
+    "sqd_processor_last_block": 51.0,
+    "sqd_processor_chain_height": 51.0,
+    "sqd_processor_sync_ratio": 1.0
+   },
+   "node_head": 63,
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  }
+ ],
+ "restart": [
+  {
+   "t": 5,
+   "alive": false,
+   "exit_code": 1,
+   "status": {
+    "status_height": 41,
+    "status_hash": "0x07d1df6a",
+    "hot_min": "42",
+    "hot_max": "51",
+    "hot_count": 10
+   },
+   "metrics": "metrics に届かない（URLError）",
+   "sqd": {
+    "alice": 947,
+    "bob": 46,
+    "carol": 7,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 930,
+    "bob": 20,
+    "carol": 0,
+    "dave": 50
+   }
+  }
+ ],
+ "versions": {
+  "anvil": "anvil Version: 1.7.1",
+  "node": "v22.22.1",
+  "postgres_image": "postgres:16-alpine",
+  "@subsquid/evm-processor": "1.30.3",
+  "@subsquid/typeorm-store": "1.9.3",
+  "@subsquid/util-internal-processor-tools": "4.4.0",
+  "@subsquid/util-internal-ingest-tools": "1.2.0",
+  "@subsquid/typeorm-migration": "1.4.1",
+  "typeorm": "0.3.31"
+ }
+}

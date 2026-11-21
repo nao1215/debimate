@@ -1,0 +1,17 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+# Envio HyperIndex の reorg 実験。ローカルの Anvil（chain ID 31337）を RPC モードで読む。
+# rollback_on_reorg と max_reorg_depth は既定のまま（書かない）。
+name: envio-reorg-lab
+contracts:
+  - name: Token
+    events:
+      - event: "Transfer(address indexed from, address indexed to, uint256 value)"
+chains:
+  - id: 31337
+    start_block: 0
+    rpc:
+      url: http://127.0.0.1:18821
+      for: sync
+    contracts:
+      - name: Token
+        address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"

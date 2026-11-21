@@ -1,0 +1,2 @@
+start {'head': 60, 'truth': {'alice': 999941, 'bob': 59, 'carol': 0, 'dave': 0}, 'shovel': {'alice': 999941, 'bob': 59, 'carol': 0, 'dave': 0}, 'seconds': 0.7, 'matched': True, 'internal': {'task_max': 60, 'task_rows': 60, 'task_min': 1, 'transfer_rows': 60, 'transfer_max_block': 60}, 'dashboard_status': 200}
+in:3 truth {'alice': 999937, 'bob': 56, 'carol': 7, 'dave': 0} last {'alice': 999941, 'bob': 59, 'carol': 0, 'dave': 0} match None alive True internal {'task_max': 61, 'task_rows': 61, 'task_min': 1, 'transfer_rows': 60, 'transfer_max_block': 60}

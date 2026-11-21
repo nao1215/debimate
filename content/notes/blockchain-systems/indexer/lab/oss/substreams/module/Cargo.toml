@@ -1,0 +1,18 @@
+[package]
+name = "token_transfers"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+substreams = "0.7"
+substreams-ethereum = "0.11"
+substreams-database-change = "4"
+hex = "0.4"
+
+[profile.release]
+lto = true
+opt-level = 's'
+strip = "debuginfo"

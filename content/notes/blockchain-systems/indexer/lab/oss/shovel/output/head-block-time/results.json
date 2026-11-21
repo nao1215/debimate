@@ -1,0 +1,1477 @@
+{
+ "label": "head-block-time",
+ "binary": "bin/shovel-head",
+ "nblocks": 1200,
+ "steps": [
+  "in:3",
+  "in:150",
+  "out:1100"
+ ],
+ "scenarios": [
+  {
+   "label": "in:3",
+   "depth": 3,
+   "before": {
+    "head": 1200,
+    "truth": {
+     "alice": 998801,
+     "bob": 1199,
+     "carol": 0,
+     "dave": 0
+    },
+    "shovel": {
+     "alice": 998801,
+     "bob": 1199,
+     "carol": 0,
+     "dave": 0
+    },
+    "internal": {
+     "task_max": 1200,
+     "task_rows": 1200,
+     "task_min": 1,
+     "transfer_rows": 1200,
+     "transfer_max_block": 1200
+    }
+   },
+   "truth_after": {
+    "alice": 998797,
+    "bob": 1196,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.01,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.57,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.13,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.68,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.25,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.81,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.38,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 3.93,
+     "shovel": {
+      "alice": 998801,
+      "bob": 1199,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.5,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.06,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.63,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.2,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.76,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.32,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.87,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.44,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.0,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.56,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.12,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.7,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.28,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.86,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.45,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.03,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.61,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.19,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "internal": {
+    "task_max": 1201,
+    "task_rows": 1201,
+    "task_min": 1,
+    "transfer_rows": 1198,
+    "transfer_max_block": 1198
+   },
+   "metrics": {
+    "status": 200,
+    "values": {
+     "shovel_latest_block_local{src=\"anvil\"}": "1201",
+     "shovel_pg_ping": "0",
+     "shovel_pg_ping_error": "0",
+     "shovel_latest_block_remote{src=\"anvil\"}": "1201",
+     "shovel_rpc_ping{src=\"anvil\"}": "0",
+     "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+     "shovel_delta{src=\"anvil\"}": "0"
+    }
+   },
+   "node_head": 1201,
+   "alive": true,
+   "exit_code": null,
+   "seconds_reorg_to_mine": 3.38,
+   "first_match_seconds_after_reorg": 4.5,
+   "first_match_seconds_after_mine": 1.12
+  },
+  {
+   "label": "in:150",
+   "depth": 150,
+   "before": {
+    "head": 1201,
+    "truth": {
+     "alice": 998797,
+     "bob": 1196,
+     "carol": 7,
+     "dave": 0
+    },
+    "shovel": {
+     "alice": 998797,
+     "bob": 1196,
+     "carol": 7,
+     "dave": 0
+    },
+    "internal": {
+     "task_max": 1201,
+     "task_rows": 1201,
+     "task_min": 1,
+     "transfer_rows": 1198,
+     "transfer_max_block": 1198
+    }
+   },
+   "truth_after": {
+    "alice": 998943,
+    "bob": 1050,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.01,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.59,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.17,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.74,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.32,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.91,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.51,
+     "shovel": {
+      "alice": 998797,
+      "bob": 1196,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.1,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.65,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.24,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.83,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.41,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.0,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.58,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.16,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.74,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.33,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.91,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.5,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.09,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.69,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.28,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.87,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.48,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.04,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.6,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "internal": {
+    "task_max": 1202,
+    "task_rows": 1202,
+    "task_min": 1,
+    "transfer_rows": 1052,
+    "transfer_max_block": 1052
+   },
+   "metrics": {
+    "status": 200,
+    "values": {
+     "shovel_latest_block_local{src=\"anvil\"}": "1202",
+     "shovel_pg_ping": "0",
+     "shovel_pg_ping_error": "0",
+     "shovel_latest_block_remote{src=\"anvil\"}": "1202",
+     "shovel_rpc_ping{src=\"anvil\"}": "0",
+     "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+     "shovel_delta{src=\"anvil\"}": "0"
+    }
+   },
+   "node_head": 1202,
+   "alive": true,
+   "exit_code": null,
+   "seconds_reorg_to_mine": 3.51,
+   "first_match_seconds_after_reorg": 4.1,
+   "first_match_seconds_after_mine": 0.59
+  },
+  {
+   "label": "out:1100",
+   "depth": 1100,
+   "before": {
+    "head": 1202,
+    "truth": {
+     "alice": 998943,
+     "bob": 1050,
+     "carol": 7,
+     "dave": 0
+    },
+    "shovel": {
+     "alice": 998943,
+     "bob": 1050,
+     "carol": 7,
+     "dave": 0
+    },
+    "internal": {
+     "task_max": 1202,
+     "task_rows": 1202,
+     "task_min": 1,
+     "transfer_rows": 1052,
+     "transfer_max_block": 1052
+    }
+   },
+   "truth_after": {
+    "alice": 999849,
+    "bob": 101,
+    "carol": 0,
+    "dave": 50
+   },
+   "samples": [
+    {
+     "t": 0.04,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.61,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.16,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.72,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.28,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.84,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.41,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 3.97,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.54,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.1,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.66,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.23,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.81,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.4,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.99,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.58,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.17,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.76,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.34,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.93,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.5,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.09,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.68,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.25,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.83,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.42,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "internal": {
+    "task_max": 1202,
+    "task_rows": 1202,
+    "task_min": 1,
+    "transfer_rows": 1052,
+    "transfer_max_block": 1052
+   },
+   "metrics": {
+    "status": 200,
+    "values": {
+     "shovel_latest_block_local{src=\"anvil\"}": "1202",
+     "shovel_pg_ping": "0",
+     "shovel_pg_ping_error": "0",
+     "shovel_latest_block_remote{src=\"anvil\"}": "1203",
+     "shovel_rpc_ping{src=\"anvil\"}": "0",
+     "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+     "shovel_delta{src=\"anvil\"}": "1"
+    }
+   },
+   "node_head": 1203,
+   "alive": true,
+   "exit_code": null,
+   "seconds_reorg_to_mine": 3.41,
+   "first_match_seconds_after_reorg": null,
+   "first_match_seconds_after_mine": null,
+   "watch": [
+    {
+     "t": 6.1,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1203,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1203,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1203",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "1"
+      }
+     }
+    },
+    {
+     "t": 13.5,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1204,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1204,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1204",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "2"
+      }
+     }
+    },
+    {
+     "t": 20.9,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1205,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1205,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1205",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "3"
+      }
+     }
+    },
+    {
+     "t": 28.2,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1206,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1206,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "1",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1206",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "4"
+      }
+     }
+    },
+    {
+     "t": 35.7,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1207,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1207,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1207",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "5"
+      }
+     }
+    },
+    {
+     "t": 43.2,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1208,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1208,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1208",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "6"
+      }
+     }
+    },
+    {
+     "t": 50.6,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1209,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1209,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1209",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "7"
+      }
+     }
+    },
+    {
+     "t": 58.1,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1210,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1210,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1210",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "8"
+      }
+     }
+    },
+    {
+     "t": 65.6,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1211,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1211,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1211",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "9"
+      }
+     }
+    },
+    {
+     "t": 73.1,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1212,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1212,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "1",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1212",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "10"
+      }
+     }
+    },
+    {
+     "t": 80.6,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1213,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1213,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":1,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "0",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1213",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "11"
+      }
+     }
+    },
+    {
+     "t": 88.0,
+     "alive": true,
+     "internal": {
+      "task_max": 1202,
+      "task_rows": 1202,
+      "task_min": 1,
+      "transfer_rows": 1052,
+      "transfer_max_block": 1052
+     },
+     "node_head": 1214,
+     "shovel": {
+      "alice": 998943,
+      "bob": 1050,
+      "carol": 7,
+      "dave": 0
+     },
+     "truth": {
+      "alice": 999849,
+      "bob": 101,
+      "carol": 0,
+      "dave": 50
+     },
+     "diag": [
+      200,
+      "[{\"source\":\"anvil\",\"latest\":1214,\"latency\":0,\"error\":\"\",\"pg_latest\":1202,\"pg_latency\":0,\"pg_error\":\"\"}]\n"
+     ],
+     "dashboard": 200,
+     "metrics": {
+      "status": 200,
+      "values": {
+       "shovel_latest_block_local{src=\"anvil\"}": "1202",
+       "shovel_pg_ping": "1",
+       "shovel_pg_ping_error": "0",
+       "shovel_latest_block_remote{src=\"anvil\"}": "1214",
+       "shovel_rpc_ping{src=\"anvil\"}": "0",
+       "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+       "shovel_delta{src=\"anvil\"}": "12"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "block_time_selected": true,
+ "start": {
+  "head": 1200,
+  "truth": {
+   "alice": 998801,
+   "bob": 1199,
+   "carol": 0,
+   "dave": 0
+  },
+  "shovel": {
+   "alice": 998801,
+   "bob": 1199,
+   "carol": 0,
+   "dave": 0
+  },
+  "seconds": 3.0,
+  "matched": true,
+  "internal": {
+   "task_max": 1200,
+   "task_rows": 1200,
+   "task_min": 1,
+   "transfer_rows": 1200,
+   "transfer_max_block": 1200
+  },
+  "dashboard_status": 200
+ },
+ "versions": {
+  "anvil": "anvil Version: 1.7.1",
+  "shovel": "v aea8",
+  "postgres": "postgres:16-alpine",
+  "anvil_extra": "--prune-history 3000"
+ }
+}

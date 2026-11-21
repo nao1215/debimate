@@ -1,0 +1,355 @@
+{
+ "label": "v1.6-depth10",
+ "binary": "bin/shovel-v1.6",
+ "nblocks": 60,
+ "steps": [
+  "in:10"
+ ],
+ "scenarios": [
+  {
+   "label": "in:10",
+   "depth": 10,
+   "before": {
+    "head": 60,
+    "truth": {
+     "alice": 999941,
+     "bob": 59,
+     "carol": 0,
+     "dave": 0
+    },
+    "shovel": {
+     "alice": 999941,
+     "bob": 59,
+     "carol": 0,
+     "dave": 0
+    },
+    "internal": {
+     "task_max": 60,
+     "task_rows": 60,
+     "task_min": 1,
+     "transfer_rows": 60,
+     "transfer_max_block": 60
+    }
+   },
+   "truth_after": {
+    "alice": 999944,
+    "bob": 49,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.01,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 0.58,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.16,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 1.74,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.31,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 2.89,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 3.48,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.06,
+     "shovel": {
+      "alice": 999941,
+      "bob": 59,
+      "carol": 0,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 4.64,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.22,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 5.8,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.38,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.95,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.53,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.1,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.69,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.27,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.86,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.44,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.03,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.59,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.19,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.76,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.34,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.92,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.5,
+     "shovel": {
+      "alice": 999944,
+      "bob": 49,
+      "carol": 7,
+      "dave": 0
+     },
+     "after_mine": true
+    }
+   ],
+   "internal": {
+    "task_max": 61,
+    "task_rows": 61,
+    "task_min": 1,
+    "transfer_rows": 51,
+    "transfer_max_block": 51
+   },
+   "metrics": {
+    "status": 200,
+    "values": {
+     "shovel_latest_block_local{src=\"anvil\"}": "61",
+     "shovel_pg_ping": "0",
+     "shovel_pg_ping_error": "0",
+     "shovel_latest_block_remote{src=\"anvil\"}": "61",
+     "shovel_rpc_ping{src=\"anvil\"}": "0",
+     "shovel_rpc_ping_error{src=\"anvil\"}": "0",
+     "shovel_delta{src=\"anvil\"}": "0"
+    }
+   },
+   "node_head": 61,
+   "alive": true,
+   "exit_code": null,
+   "seconds_reorg_to_mine": 3.48,
+   "first_match_seconds_after_reorg": 4.64,
+   "first_match_seconds_after_mine": 1.16
+  }
+ ],
+ "block_time_selected": true,
+ "start": {
+  "head": 60,
+  "truth": {
+   "alice": 999941,
+   "bob": 59,
+   "carol": 0,
+   "dave": 0
+  },
+  "shovel": {
+   "alice": 999941,
+   "bob": 59,
+   "carol": 0,
+   "dave": 0
+  },
+  "seconds": 0.7,
+  "matched": true,
+  "internal": {
+   "task_max": 60,
+   "task_rows": 60,
+   "task_min": 1,
+   "transfer_rows": 60,
+   "transfer_max_block": 60
+  },
+  "dashboard_status": 200
+ },
+ "versions": {
+  "anvil": "anvil Version: 1.7.1",
+  "shovel": "v 582d",
+  "postgres": "postgres:16-alpine",
+  "anvil_extra": ""
+ }
+}

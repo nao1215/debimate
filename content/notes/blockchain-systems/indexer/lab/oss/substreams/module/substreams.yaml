@@ -1,0 +1,34 @@
+specVersion: v0.1.0
+package:
+  name: token_transfers
+  version: v0.1.0
+
+protobuf:
+  files:
+    - sf/substreams/sink/database/v1/database.proto
+    - sf/ethereum/type/v2/type.proto
+  importPaths:
+    - ./proto
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./target/wasm32-unknown-unknown/release/token_transfers.wasm
+
+modules:
+  - name: db_out
+    kind: map
+    initialBlock: 0
+    inputs:
+      - source: sf.ethereum.type.v2.Block
+    output:
+      type: proto:sf.substreams.sink.database.v1.DatabaseChanges
+
+network: local-ethereum
+
+sink:
+  module: db_out
+  type: sf.substreams.sink.sql.v1.Service
+  config:
+    schema: ./schema.sql
+    engine: postgres

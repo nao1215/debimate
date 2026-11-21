@@ -1,0 +1,923 @@
+{
+ "scenarios": [
+  {
+   "depth": 3,
+   "to": "carol",
+   "value": 7,
+   "before": {
+    "head": 360,
+    "truth": {
+     "alice": 641,
+     "bob": 359,
+     "carol": 0,
+     "dave": 0
+    },
+    "api": {
+     "alice": 641,
+     "bob": 359,
+     "carol": 0,
+     "dave": 0
+    },
+    "health": {
+     "status": 200,
+     "body": {
+      "error": null,
+      "metadata": {
+       "blocks": {
+        "healthy": true,
+        "latest_block": {
+         "node": {
+          "number": "360"
+         },
+         "cache": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         },
+         "db": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         }
+        }
+       }
+      },
+      "healthy": true
+     }
+    }
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "node_head": 361,
+     "truth": {
+      "alice": 637,
+      "bob": 356,
+      "carol": 7,
+      "dave": 0
+     },
+     "api": {
+      "alice": 641,
+      "bob": 359,
+      "carol": 0,
+      "dave": 0
+     },
+     "health": {
+      "status": 200,
+      "body": {
+       "error": null,
+       "metadata": {
+        "blocks": {
+         "healthy": true,
+         "latest_block": {
+          "node": {
+           "number": "360"
+          },
+          "cache": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          },
+          "db": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          }
+         }
+        }
+       },
+       "healthy": true
+      }
+     },
+     "counters": {
+      "transfers_count": "348",
+      "token_holders_count": "2",
+      "ui_multiplier_changes_count": "0"
+     },
+     "latest_transfers": [
+      {
+       "block": 360,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x86d0f8085a"
+      },
+      {
+       "block": 359,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0xb8fa359f51"
+      },
+      {
+       "block": 358,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x33bc9e8e52"
+      }
+     ],
+     "db": {
+      "consensus_hash_mismatch": 1,
+      "mismatch_min": 358,
+      "mismatch_max": 358,
+      "noncons_rows_in_range": 3,
+      "missing_block_ranges": "358|358",
+      "noncons_total": "3",
+      "max_consensus_block": "361",
+      "tt_noncons": "2",
+      "tt_cons": "358"
+     }
+    },
+    {
+     "t": 2.7,
+     "node_head": 361,
+     "truth": {
+      "alice": 637,
+      "bob": 356,
+      "carol": 7,
+      "dave": 0
+     },
+     "api": {
+      "alice": 644,
+      "bob": 356,
+      "carol": 0,
+      "dave": 0
+     }
+    },
+    {
+     "t": 4.7,
+     "node_head": 361,
+     "truth": {
+      "alice": 637,
+      "bob": 356,
+      "carol": 7,
+      "dave": 0
+     },
+     "api": {
+      "alice": 637,
+      "bob": 356,
+      "carol": 7,
+      "dave": 0
+     },
+     "health": {
+      "status": 200,
+      "body": {
+       "error": null,
+       "metadata": {
+        "blocks": {
+         "healthy": true,
+         "latest_block": {
+          "node": {
+           "number": "360"
+          },
+          "cache": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          },
+          "db": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          }
+         }
+        }
+       },
+       "healthy": true
+      }
+     },
+     "counters": {
+      "transfers_count": "348",
+      "token_holders_count": "3",
+      "ui_multiplier_changes_count": "0"
+     },
+     "latest_transfers": [
+      {
+       "block": 358,
+       "to": "0x3c44cddd",
+       "value": "7",
+       "tx": "0xda1ffcd34c"
+      },
+      {
+       "block": 357,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x1efd9d794b"
+      },
+      {
+       "block": 356,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x66f35bfc4d"
+      }
+     ],
+     "db": {
+      "consensus_hash_mismatch": 0,
+      "mismatch_min": null,
+      "mismatch_max": null,
+      "noncons_rows_in_range": 3,
+      "missing_block_ranges": "",
+      "noncons_total": "3",
+      "max_consensus_block": "361",
+      "tt_noncons": "3",
+      "tt_cons": "358"
+     }
+    }
+   ],
+   "api_match_seconds": 4.7,
+   "api_and_db_match_seconds": 4.7,
+   "after": {
+    "head": 361,
+    "truth": {
+     "alice": 637,
+     "bob": 356,
+     "carol": 7,
+     "dave": 0
+    },
+    "api": {
+     "alice": 637,
+     "bob": 356,
+     "carol": 7,
+     "dave": 0
+    },
+    "counters": {
+     "transfers_count": "348",
+     "token_holders_count": "3",
+     "ui_multiplier_changes_count": "0"
+    },
+    "node_transfer_logs": 358,
+    "health": {
+     "status": 200,
+     "body": {
+      "error": null,
+      "metadata": {
+       "blocks": {
+        "healthy": true,
+        "latest_block": {
+         "node": {
+          "number": "360"
+         },
+         "cache": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         },
+         "db": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         }
+        }
+       }
+      },
+      "healthy": true
+     }
+    },
+    "readiness": {
+     "status": 200,
+     "text": "OK"
+    },
+    "db": {
+     "consensus_hash_mismatch": 0,
+     "mismatch_min": null,
+     "mismatch_max": null,
+     "noncons_rows_in_range": 3,
+     "missing_block_ranges": "",
+     "noncons_total": "3",
+     "max_consensus_block": "361",
+     "tt_noncons": "3",
+     "tt_cons": "358"
+    }
+   }
+  },
+  {
+   "depth": 100,
+   "to": "dave",
+   "value": 50,
+   "before": {
+    "head": 361,
+    "truth": {
+     "alice": 637,
+     "bob": 356,
+     "carol": 7,
+     "dave": 0
+    },
+    "api": {
+     "alice": 637,
+     "bob": 356,
+     "carol": 7,
+     "dave": 0
+    },
+    "health": {
+     "status": 200,
+     "body": {
+      "error": null,
+      "metadata": {
+       "blocks": {
+        "healthy": true,
+        "latest_block": {
+         "node": {
+          "number": "360"
+         },
+         "cache": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         },
+         "db": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         }
+        }
+       }
+      },
+      "healthy": true
+     }
+    }
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "node_head": 362,
+     "truth": {
+      "alice": 690,
+      "bob": 260,
+      "carol": 0,
+      "dave": 50
+     },
+     "api": {
+      "alice": 637,
+      "bob": 356,
+      "carol": 7,
+      "dave": 0
+     },
+     "health": {
+      "status": 200,
+      "body": {
+       "error": null,
+       "metadata": {
+        "blocks": {
+         "healthy": true,
+         "latest_block": {
+          "node": {
+           "number": "360"
+          },
+          "cache": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          },
+          "db": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          }
+         }
+        }
+       },
+       "healthy": true
+      }
+     },
+     "counters": {
+      "transfers_count": "348",
+      "token_holders_count": "3",
+      "ui_multiplier_changes_count": "0"
+     },
+     "latest_transfers": [
+      {
+       "block": 358,
+       "to": "0x3c44cddd",
+       "value": "7",
+       "tx": "0xda1ffcd34c"
+      },
+      {
+       "block": 357,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x1efd9d794b"
+      },
+      {
+       "block": 356,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x66f35bfc4d"
+      }
+     ],
+     "db": {
+      "consensus_hash_mismatch": 1,
+      "mismatch_min": 262,
+      "mismatch_max": 262,
+      "noncons_rows_in_range": 103,
+      "missing_block_ranges": "348|348\n342|342\n332|332\n314|314\n312|312",
+      "noncons_total": "103",
+      "max_consensus_block": "362",
+      "tt_noncons": "100",
+      "tt_cons": "262"
+     }
+    },
+    {
+     "t": 2.9,
+     "node_head": 362,
+     "truth": {
+      "alice": 690,
+      "bob": 260,
+      "carol": 0,
+      "dave": 50
+     },
+     "api": {
+      "alice": 690,
+      "bob": 260,
+      "carol": 0,
+      "dave": 50
+     },
+     "health": {
+      "status": 200,
+      "body": {
+       "error": null,
+       "metadata": {
+        "blocks": {
+         "healthy": true,
+         "latest_block": {
+          "node": {
+           "number": "360"
+          },
+          "cache": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          },
+          "db": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          }
+         }
+        }
+       },
+       "healthy": true
+      }
+     },
+     "counters": {
+      "transfers_count": "348",
+      "token_holders_count": "3",
+      "ui_multiplier_changes_count": "0"
+     },
+     "latest_transfers": [
+      {
+       "block": 262,
+       "to": "0x90f79bf6",
+       "value": "50",
+       "tx": "0x8abb28ca4e"
+      },
+      {
+       "block": 261,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x787d68fcf5"
+      },
+      {
+       "block": 260,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0xcff3f72c58"
+      }
+     ],
+     "db": {
+      "consensus_hash_mismatch": 0,
+      "mismatch_min": null,
+      "mismatch_max": null,
+      "noncons_rows_in_range": 103,
+      "missing_block_ranges": "",
+      "noncons_total": "103",
+      "max_consensus_block": "362",
+      "tt_noncons": "100",
+      "tt_cons": "262"
+     }
+    }
+   ],
+   "api_match_seconds": 2.9,
+   "api_and_db_match_seconds": 2.9,
+   "after": {
+    "head": 362,
+    "truth": {
+     "alice": 690,
+     "bob": 260,
+     "carol": 0,
+     "dave": 50
+    },
+    "api": {
+     "alice": 690,
+     "bob": 260,
+     "carol": 0,
+     "dave": 50
+    },
+    "counters": {
+     "transfers_count": "348",
+     "token_holders_count": "3",
+     "ui_multiplier_changes_count": "0"
+    },
+    "node_transfer_logs": 262,
+    "health": {
+     "status": 200,
+     "body": {
+      "error": null,
+      "metadata": {
+       "blocks": {
+        "healthy": true,
+        "latest_block": {
+         "node": {
+          "number": "360"
+         },
+         "cache": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         },
+         "db": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         }
+        }
+       }
+      },
+      "healthy": true
+     }
+    },
+    "readiness": {
+     "status": 200,
+     "text": "OK"
+    },
+    "db": {
+     "consensus_hash_mismatch": 0,
+     "mismatch_min": null,
+     "mismatch_max": null,
+     "noncons_rows_in_range": 103,
+     "missing_block_ranges": "",
+     "noncons_total": "103",
+     "max_consensus_block": "362",
+     "tt_noncons": "100",
+     "tt_cons": "262"
+    }
+   }
+  },
+  {
+   "depth": 300,
+   "to": "dave",
+   "value": 50,
+   "before": {
+    "head": 362,
+    "truth": {
+     "alice": 690,
+     "bob": 260,
+     "carol": 0,
+     "dave": 50
+    },
+    "api": {
+     "alice": 690,
+     "bob": 260,
+     "carol": 0,
+     "dave": 50
+    },
+    "health": {
+     "status": 200,
+     "body": {
+      "error": null,
+      "metadata": {
+       "blocks": {
+        "healthy": true,
+        "latest_block": {
+         "node": {
+          "number": "360"
+         },
+         "cache": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         },
+         "db": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         }
+        }
+       }
+      },
+      "healthy": true
+     }
+    }
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "node_head": 363,
+     "truth": {
+      "alice": 889,
+      "bob": 61,
+      "carol": 0,
+      "dave": 50
+     },
+     "api": {
+      "alice": 690,
+      "bob": 260,
+      "carol": 0,
+      "dave": 50
+     },
+     "health": {
+      "status": 200,
+      "body": {
+       "error": null,
+       "metadata": {
+        "blocks": {
+         "healthy": true,
+         "latest_block": {
+          "node": {
+           "number": "360"
+          },
+          "cache": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          },
+          "db": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          }
+         }
+        }
+       },
+       "healthy": true
+      }
+     },
+     "counters": {
+      "transfers_count": "348",
+      "token_holders_count": "2",
+      "ui_multiplier_changes_count": "0"
+     },
+     "latest_transfers": [
+      {
+       "block": 63,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x6a19c8e390"
+      },
+      {
+       "block": 62,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0xae1c392c25"
+      },
+      {
+       "block": 61,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x37d8d5496c"
+      }
+     ],
+     "db": {
+      "consensus_hash_mismatch": 1,
+      "mismatch_min": 63,
+      "mismatch_max": 63,
+      "noncons_rows_in_range": 403,
+      "missing_block_ranges": "199|199\n197|196\n189|189\n186|185\n175|175",
+      "noncons_total": "403",
+      "max_consensus_block": "363",
+      "tt_noncons": "299",
+      "tt_cons": "63"
+     }
+    },
+    {
+     "t": 3.1,
+     "node_head": 363,
+     "truth": {
+      "alice": 889,
+      "bob": 61,
+      "carol": 0,
+      "dave": 50
+     },
+     "api": {
+      "alice": 889,
+      "bob": 61,
+      "carol": 0,
+      "dave": 50
+     },
+     "health": {
+      "status": 200,
+      "body": {
+       "error": null,
+       "metadata": {
+        "blocks": {
+         "healthy": true,
+         "latest_block": {
+          "node": {
+           "number": "360"
+          },
+          "cache": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          },
+          "db": {
+           "timestamp": "2026-11-21 09:48:06Z",
+           "number": "360"
+          }
+         }
+        }
+       },
+       "healthy": true
+      }
+     },
+     "counters": {
+      "transfers_count": "348",
+      "token_holders_count": "3",
+      "ui_multiplier_changes_count": "0"
+     },
+     "latest_transfers": [
+      {
+       "block": 63,
+       "to": "0x90f79bf6",
+       "value": "50",
+       "tx": "0x8064583e75"
+      },
+      {
+       "block": 62,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0xae1c392c25"
+      },
+      {
+       "block": 61,
+       "to": "0x70997970",
+       "value": "1",
+       "tx": "0x37d8d5496c"
+      }
+     ],
+     "db": {
+      "consensus_hash_mismatch": 0,
+      "mismatch_min": null,
+      "mismatch_max": null,
+      "noncons_rows_in_range": 403,
+      "missing_block_ranges": "",
+      "noncons_total": "403",
+      "max_consensus_block": "363",
+      "tt_noncons": "300",
+      "tt_cons": "63"
+     }
+    }
+   ],
+   "api_match_seconds": 3.1,
+   "api_and_db_match_seconds": 3.1,
+   "after": {
+    "head": 363,
+    "truth": {
+     "alice": 889,
+     "bob": 61,
+     "carol": 0,
+     "dave": 50
+    },
+    "api": {
+     "alice": 889,
+     "bob": 61,
+     "carol": 0,
+     "dave": 50
+    },
+    "counters": {
+     "transfers_count": "348",
+     "token_holders_count": "3",
+     "ui_multiplier_changes_count": "0"
+    },
+    "node_transfer_logs": 63,
+    "health": {
+     "status": 200,
+     "body": {
+      "error": null,
+      "metadata": {
+       "blocks": {
+        "healthy": true,
+        "latest_block": {
+         "node": {
+          "number": "360"
+         },
+         "cache": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         },
+         "db": {
+          "timestamp": "2026-11-21 09:48:06Z",
+          "number": "360"
+         }
+        }
+       }
+      },
+      "healthy": true
+     }
+    },
+    "readiness": {
+     "status": 200,
+     "text": "OK"
+    },
+    "db": {
+     "consensus_hash_mismatch": 0,
+     "mismatch_min": null,
+     "mismatch_max": null,
+     "noncons_rows_in_range": 403,
+     "missing_block_ranges": "",
+     "noncons_total": "403",
+     "max_consensus_block": "363",
+     "tt_noncons": "300",
+     "tt_cons": "63"
+    }
+   }
+  }
+ ],
+ "head_target": 360,
+ "depths": [
+  3,
+  100,
+  300
+ ],
+ "health_ok_seconds": 73.8,
+ "start": {
+  "sync_seconds": 18.8,
+  "health_ok_seconds": 73.8,
+  "head": 360,
+  "truth": {
+   "alice": 641,
+   "bob": 359,
+   "carol": 0,
+   "dave": 0
+  },
+  "api": {
+   "alice": 641,
+   "bob": 359,
+   "carol": 0,
+   "dave": 0
+  },
+  "counters": {
+   "transfers_count": "348",
+   "token_holders_count": "2",
+   "ui_multiplier_changes_count": "0"
+  },
+  "node_transfer_logs": 360,
+  "health": {
+   "status": 200,
+   "body": {
+    "error": null,
+    "metadata": {
+     "blocks": {
+      "healthy": true,
+      "latest_block": {
+       "node": {
+        "number": "360"
+       },
+       "cache": {
+        "timestamp": "2026-11-21 09:48:06Z",
+        "number": "360"
+       },
+       "db": {
+        "timestamp": "2026-11-21 09:48:06Z",
+        "number": "360"
+       }
+      }
+     }
+    },
+    "healthy": true
+   }
+  },
+  "db": {
+   "consensus_hash_mismatch": 0,
+   "mismatch_min": null,
+   "mismatch_max": null,
+   "noncons_rows_in_range": 0,
+   "missing_block_ranges": "",
+   "noncons_total": "0",
+   "max_consensus_block": "360",
+   "tt_noncons": "0",
+   "tt_cons": "360"
+  }
+ },
+ "versions": {
+  "blockscout_image": "indexer-note-blockscout:12.0.4",
+  "blockscout_image_id": "sha256:fb4f42355498d06a8f095b005fd7c24ded0ada1878701fcbe12ed8349045d0b2",
+  "blockscout_tag_commit": "f22a3e6311c1a663c7801b7baf00f1c4be0a5bfb",
+  "anvil_image": "ghcr.io/foundry-rs/foundry:v1.7.1",
+  "postgres_image": "postgres:17"
+ },
+ "backend_env": {
+  "ETHEREUM_JSONRPC_VARIANT": "anvil",
+  "ETHEREUM_JSONRPC_HTTP_URL": "http://anvil:8545/",
+  "ETHEREUM_JSONRPC_TRACE_URL": "http://anvil:8545/",
+  "ETHEREUM_JSONRPC_WS_URL": "ws://anvil:8545/",
+  "ETHEREUM_JSONRPC_TRANSPORT": "http",
+  "ETHEREUM_JSONRPC_DISABLE_ARCHIVE_BALANCES": "true",
+  "INDEXER_DISABLE_INTERNAL_TRANSACTIONS_FETCHER": "true",
+  "INDEXER_DISABLE_PENDING_TRANSACTIONS_FETCHER": "true",
+  "CHAIN_ID": "31337",
+  "DATABASE_URL": "postgresql://blockscout:let-me-in@postgres:5432/blockscout",
+  "ECTO_SSL_MODE": "disable",
+  "PORT": "4000",
+  "DISABLE_MARKET": "true",
+  "POOL_SIZE": "40",
+  "POOL_SIZE_API": "10",
+  "HEART_BEAT_TIMEOUT": "30",
+  "ADMIN_PANEL_ENABLED": "false",
+  "API_V1_READ_METHODS_DISABLED": "false",
+  "API_V1_WRITE_METHODS_DISABLED": "false",
+  "RE_CAPTCHA_DISABLED": "true",
+  "MICROSERVICE_SC_VERIFIER_ENABLED": "false",
+  "MICROSERVICE_VISUALIZE_SOL2UML_ENABLED": "false",
+  "MICROSERVICE_SIG_PROVIDER_ENABLED": "false",
+  "MICROSERVICE_ACCOUNT_ABSTRACTION_ENABLED": "false",
+  "ACCOUNT_ENABLED": "false",
+  "NFT_MEDIA_HANDLER_ENABLED": "false",
+  "DISABLE_FILE_LOGGING": "true",
+  "COIN": "ETH",
+  "COIN_NAME": "Ether"
+ },
+ "backend_log_counts": {
+  "URL is nil": 0,
+  "eaddrnotavail": 0,
+  "is unavailable": 0,
+  "lost consensus": 0,
+  "\"severity\":\"error\"": 20
+ }
+}

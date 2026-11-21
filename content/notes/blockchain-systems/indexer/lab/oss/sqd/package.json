@@ -1,0 +1,1 @@
+{"name":"indexer-note-sqd","private":true,"version":"0.0.0","dependencies":{"@subsquid/evm-abi":"1.0.0","@subsquid/evm-processor":"1.30.3","@subsquid/graphql-server":"4.12.2","@subsquid/typeorm-migration":"1.4.1","@subsquid/typeorm-store":"1.9.3","@types/node":"26.6.6","pg":"8.23.1","typeorm":"0.3.31","typescript":"7.0.2"}}

@@ -233,29 +233,119 @@ def reorg_figure():
 # ---------------------------------------------------------------- 4. 戻せる深さと Polygon の reorg
 
 def depth_figure():
-    # Ponder の窓は 180 秒。2023 年当時の Polygon PoS は 2 秒間隔（0xPolygon/bor の genesis-mainnet-v1.json の period）なので 90 ブロック
-    rows = [("Ponder（2 秒間隔）", 90, ""), ("Rivet（報道）", 125, ""), ("Envio HyperIndex", 200, ""),
-            ("Graph Node", 250, ""), ("rindexer", 256, ""), ("Blockbook", 300, "")]
-    W, H = 820, 376
+    # Ponder のウィンドウは 180 秒。2023 年当時の Polygon PoS は 2 秒間隔（0xPolygon/bor の genesis-mainnet-v1.json の period）なので 90 ブロック。
+    # 値は 2026-11-21 に手元で確認した既定の値（.note-review/work/indexer/results-all.md）。Rivet だけは報道の値。
+    rows = [("Shovel v1.6", 10), ("Ponder（2 秒間隔）", 90), ("Fulcrum", 100), ("Rivet（報道）", 125),
+            ("Envio HyperIndex", 199), ("Substreams（RPC から）", 200), ("Blockbook（Bitcoin）", 300),
+            ("rindexer（Polygon）", 400)]
+    W, H = 860, 520
     c = Canvas(W, H)
     c.text(20, 14, "reorg で戻せる深さ（OSS は既定の値）と、Polygon で起きた reorg", size=18)
-    x0, x1, vmax = 200, 790, 320
+    x0, x1, vmax = 230, 830, 420
     sx = lambda v: x0 + (x1 - x0) * v / vmax
     xp = sx(157)
-    c.line([(xp, 42), (xp, 342)], RED, 2)
-    for i, (name, v, note) in enumerate(rows):
-        y = 64 + i * 46
+    step_y = 46
+    for i, (name, v) in enumerate(rows):
+        y = 64 + i * step_y
         short = v < 157
         c.text(20, y + 4, name, size=16)
-        c.box(x0, y, sx(v) - x0, 30, RED_PALE if short else PALE, RED if short else LINE, 1, 4)
+        c.box(x0, y, max(sx(v) - x0, 4), 30, RED_PALE if short else PALE, RED if short else LINE, 1, 4)
         label = f"約 {v} ブロック" if name.startswith("Rivet") else f"{v} ブロック"
         if sx(v) - x0 < 120:
-            label = f"{v}"
-        c.text(sx(v) - 10, y + 4, label, size=15, color=RED if short else INK, anchor="ra")
+            c.text(sx(v) + 8, y + 4, str(v), size=15, color=RED if short else INK)
+        elif v <= 200:
+            c.text(sx(v) + 8, y + 4, label, size=15, color=INK)
+        else:
+            c.text(sx(v) - 10, y + 4, label, size=15, color=RED if short else INK, anchor="ra")
+    y = 64 + len(rows) * step_y
+    c.text(20, y + 4, "上限なし", size=16)
+    c.box(x0, y, x1 - x0 - 10, 30, GREEN_PALE, GREEN, 1, 4)
+    c.d.polygon([((x1 - 10) * S, (y - 4) * S), ((x1 + 6) * S, (y + 15) * S), ((x1 - 10) * S, (y + 34) * S)], fill=rgb(GREEN))
+    c.text(x0 + 12, y + 5, "electrs・Blockstream electrs・Blockscout・Graph Node（全履歴）", size=14)
+    c.line([(xp, 42), (xp, y + 44)], RED, 2)
     c.text(xp + 6, 40, "157（Polygon の reorg）", size=15, color=RED)
-    for v in (0, 100, 200, 300):
-        c.text(sx(v), 346, str(v), size=14, color=SUB, anchor="ma")
+    for v in (0, 100, 200, 300, 400):
+        c.text(sx(v), y + 50, str(v), size=14, color=SUB, anchor="ma")
     save_webp(c.final(), "depth.webp")
+
+
+# ---------------------------------------------------------------- 6. 上限を超えた時の 4 つの型（模式図）
+
+def types_figure():
+    # 実測（.note-review/work/indexer/results-all.md）の振る舞いを模式的に描く。数値の軸は持たない
+    W, H = 940, 700
+    c = Canvas(W, H)
+    c.text(20, 14, "戻せる深さを超えた reorg の後、取り込んだ番号と表の値がどう動くか（模式図）", size=17)
+    panels = [
+        ("上限が無く正しく戻す", "electrs・Blockstream electrs・Blockscout・Graph Node（全履歴）",
+         "same", [(0.0, 0.08, False), (0.08, 1.0, True)], "表を戻す間だけずれる", "不要"),
+        ("落ちる", "Fulcrum・Substreams",
+         "dead", [(0.0, 0.32, None), (0.32, 1.0, "down")], "帯は Fulcrum。Substreams の表は古い値で DB に残る", "プロセスの終了（終了コード 0 の例あり）"),
+        ("止まるが、正常と答える", "Ponder・SQD・Shovel・Blockbook・Graph Node（刈り込み）",
+         "flat", [(0.0, 1.0, False)], "ヘルスチェックは正常のまま", "取り込んだ番号とノードの最新の差"),
+        ("ずれたまま進み、正常と答える", "rindexer・Envio HyperIndex",
+         "track", [(0.0, 1.0, False)], "ヘルスチェックは正常のまま", "古いブロックのハッシュの照合"),
+    ]
+    pw, ph = 440, 316
+    for i, (title, names, mode, spans, health, clue) in enumerate(panels):
+        px = 20 + (i % 2) * (pw + 20)
+        py = 52 + (i // 2) * (ph + 14)
+        c.box(px, py, pw, ph, "#ffffff", LINE, 1, 8)
+        c.text(px + 16, py + 12, title, size=16)
+        c.text(px + 16, py + 38, names, size=12, color=SUB)
+        # 折れ線の枠
+        gx0, gx1, gy0, gy1 = px + 30, px + pw - 24, py + 70, py + 180
+        c.line([(gx0, gy0 - 4), (gx0, gy1), (gx1, gy1)], LINE, 1)
+        c.text(gx0 - 6, gy0 - 8, "番号", size=11, color=SUB, anchor="ra")
+        c.text(gx1, gy1 + 4, "時間", size=11, color=SUB, anchor="ra")
+        xr = gx0 + 40  # reorg の時刻
+        c.line([(xr, gy0 - 4), (xr, gy1)], RED, 1)
+        c.text(xr + 4, gy0 - 8, "reorg", size=11, color=RED)
+        node = lambda x: gy1 - 12 - (x - gx0) * 0.22
+        c.line([(gx0, node(gx0)), (gx1, node(gx1))], GHOST, 3)
+        c.text(gx1 - 4, node(gx1) - 22, "ノードの最新", size=11, color=SUB, anchor="ra")
+        if mode in ("same", "track"):
+            off = 6
+            if mode == "same":
+                pts = [(gx0, node(gx0) + off), (xr, node(xr) + off), (xr + 8, node(xr) + 18), (xr + 22, node(xr + 22) + off), (gx1, node(gx1) + off)]
+            else:
+                pts = [(gx0, node(gx0) + off), (xr, node(xr) + off), (xr + 8, node(xr) + 18), (xr + 22, node(xr + 22) + off), (gx1, node(gx1) + off)]
+            c.line(pts, INK, 2)
+        elif mode == "flat":
+            c.line([(gx0, node(gx0) + 6), (xr, node(xr) + 6), (gx1, node(xr) + 6)], INK, 2)
+            c.d.line([(gx1 - 6) * S, (node(gx1) + 4) * S, (gx1 - 6) * S, (node(xr) + 2) * S], fill=rgb(RED), width=2 * S)
+            c.text(gx1 - 12, (node(gx1) + node(xr)) / 2 - 2, "差が開く", size=11, color=RED, anchor="ra")
+        elif mode == "dead":
+            xd = xr + 60
+            c.line([(gx0, node(gx0) + 6), (xd, node(xd) + 6)], INK, 2)
+            yd = node(xd) + 6
+            c.line([(xd - 7, yd - 7), (xd + 7, yd + 7)], RED, 3)
+            c.line([(xd - 7, yd + 7), (xd + 7, yd - 7)], RED, 3)
+            c.text(xd + 12, yd - 6, "終了", size=12, color=RED)
+        c.text(gx0 + 4, gy1 + 4, "黒: インデクサーが取り込んだ番号", size=11, color=SUB)
+        # 表の値の帯
+        by = py + 206
+        c.text(px + 16, by + 2, "表", size=12, color=SUB)
+        bx0, bx1 = gx0, gx1
+        for t0, t1, ok in spans:
+            a, b = bx0 + (bx1 - bx0) * t0, bx0 + (bx1 - bx0) * t1
+            if ok is None:
+                fill, edge = GREEN_PALE, GREEN
+            elif ok == "down":
+                fill, edge = FILL, GHOST
+            else:
+                fill, edge = (GREEN_PALE, GREEN) if ok else (RED_PALE, RED)
+            c.box(a, by, max(b - a, 3), 22, fill, edge, 1, 3)
+        c.text(px + 16, by + 34, health, size=13, color=INK)
+        c.text(px + 16, by + 62, "気付く手がかり: " + clue, size=13, color=RED if mode == "track" else INK)
+    y = 52 + 2 * (ph + 14) + 2
+    c.box(20, y, 26, 18, GREEN_PALE, GREEN, 1, 3)
+    c.text(54, y, "表がノードと一致", size=13, color=SUB)
+    c.box(210, y, 26, 18, RED_PALE, RED, 1, 3)
+    c.text(244, y, "表がずれている", size=13, color=SUB)
+    c.box(390, y, 26, 18, FILL, GHOST, 1, 3)
+    c.text(424, y, "応答なし", size=13, color=SUB)
+    save_webp(c.final(), "types.webp")
 
 
 # ---------------------------------------------------------------- 5. Ponder に当てた reorg
@@ -283,12 +373,12 @@ def ponder_figure():
 
     ins = sc["inside"]
     m = ins["first_match_seconds"]
-    lane(64, "窓の内側", "3 ブロック（36 秒分）を置き換え", 6, [0, 2, 4, 6],
+    lane(64, "ウィンドウの内側", "3 ブロック（36 秒分）を置き換え", 6, [0, 2, 4, 6],
          [(0, m, False), (m, 6, True)], [(0, "reorg", INK), (m, f"{m:g} 秒で一致", GREEN)])
     out = sc["outside"]
     watch = res["after_outside"]
     tmax = 12 + watch[-1]["t"]
-    lane(220, "窓の外側", "30 ブロック（360 秒分）を置き換え", tmax, [0, 20, 40, 60],
+    lane(220, "ウィンドウの外側", "30 ブロック（360 秒分）を置き換え", tmax, [0, 20, 40, 60],
          [(0, tmax, False)], [(0, "reorg", INK), (6, "次のブロック", INK)])
     last = watch[-1]
     c.text(20, 330, f"{tmax:.0f} 秒たっても古い値のまま。プロセスは動き、/ready は 200 を返し続けた", size=15, color=RED)
@@ -307,3 +397,4 @@ if __name__ == "__main__":
     reorg_figure()
     depth_figure()
     ponder_figure()
+    types_figure()

@@ -1,0 +1,5178 @@
+{
+ "versions": {
+  "bitcoind": "/Satoshi:32.1.0/"
+ },
+ "addresses": {
+  "alice": "bcrt1qyu4g9tzwg6yyfhfa99qn4ca0mkvygn4m03k0sj",
+  "carol": "bcrt1qua5c2cp7ml4ye5l4ek9xvvgnd9a09v8fdlqkal",
+  "dave": "bcrt1q0gz7636tp90jswl2mszgjzhztx663x828ruzk5",
+  "eve": "bcrt1q5e25t569xru7claxywe4c04ta0kpdepdaqg4ea",
+  "alice_scripthash": "89ff377315674a4fcee1253f471db3be7b8e111842803767e7e8b588ddc46308"
+ },
+ "initial_sync": {
+  "electrs": 0.3,
+  "bs-electrs": 0.3,
+  "fulcrum": 1.9
+ },
+ "initial_view": {
+  "node": {
+   "height": 155,
+   "balance": 500000000,
+   "history": [
+    "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+   ]
+  },
+  "electrs": {
+   "up": true,
+   "height": 155,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "history": [
+    "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+   ],
+   "mempool": []
+  },
+  "bs-electrs": {
+   "up": true,
+   "height": 155,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "history": [
+    "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+   ],
+   "mempool": []
+  },
+  "fulcrum": {
+   "up": true,
+   "height": 155,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "history": [
+    "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+   ],
+   "mempool": []
+  }
+ },
+ "inside": {
+  "depth": 3,
+  "first_match_s": {
+   "electrs": 0.1,
+   "fulcrum": 0.6,
+   "bs-electrs": 3.2
+  },
+  "node_after": {
+   "height": 156,
+   "balance": 200000000,
+   "history": [
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+   ]
+  },
+  "trace": [
+   {
+    "t": 0.1,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    }
+   },
+   {
+    "t": 0.6,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    }
+   },
+   {
+    "t": 1.1,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    }
+   },
+   {
+    "t": 1.6,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    }
+   },
+   {
+    "t": 2.1,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    }
+   },
+   {
+    "t": 2.7,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 155,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "4313010a403b2a585b11a5bd1af14baafeaaae62f136416985f16ee399c87f4e",
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "796339e97f02fea0265254270c8dc403bfd6768ee4e92f7b50b463acc2d45d23",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "90a5914c704b46fd9bdb0fdaf87df37fe78466d9c56b101ae6dcb3fe5f2d2003"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    }
+   },
+   {
+    "t": 3.2,
+    "node": {
+     "height": 156,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": true,
+     "height": 156,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    }
+   }
+  ],
+  "health": {
+   "electrs": {
+    "status": 200,
+    "lines": []
+   },
+   "bs-electrs": {
+    "status": 200,
+    "lines": [
+     "electrs_main_loop_count 2",
+     "initial_sync_height 156",
+     "stale_cleanup_failing 0",
+     "tip_height 156"
+    ]
+   },
+   "fulcrum": {
+    "status": 200,
+    "Controller": {
+     "Header count": 157,
+     "Chain": "regtest",
+     "State": null,
+     "TxNum": 163,
+     "UTXO set": 163
+    }
+   }
+  },
+  "alive": {
+   "bitcoind": [
+    true,
+    null
+   ],
+   "electrs": [
+    true,
+    null
+   ],
+   "bs-electrs": [
+    true,
+    null
+   ],
+   "fulcrum": [
+    true,
+    null
+   ]
+  },
+  "mempool_after": [],
+  "eve": {
+   "node_utxo": 0,
+   "esplora_address": {
+    "up": true,
+    "height": 156,
+    "balance": 0,
+    "unconfirmed": 0,
+    "history": [],
+    "mempool": []
+   },
+   "address_prefix_eve": [
+    "bcrt1q5e25t569xru7claxywe4c04ta0kpdepdaqg4ea"
+   ],
+   "address_prefix_carol": [
+    "bcrt1qua5c2cp7ml4ye5l4ek9xvvgnd9a09v8fdlqkal"
+   ]
+  }
+ },
+ "before_outside": {
+  "electrs": 0.1,
+  "fulcrum": 1.2,
+  "bs-electrs": 2.7
+ },
+ "before_outside_view": {
+  "node": {
+   "height": 276,
+   "balance": 500000000,
+   "history": [
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "7bc6e416dc0d687c46b89a7124263d6bf95ed6cdcdd5786bd5105a88b4af95c5",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "a1fe105df20c433037e583e8c1b056c5141044b03737da3ed4378c6759fd9f43",
+    "dd6956a71e481df6e89362493a466e8f593241bcb478cbf5f3938af11dc682ca"
+   ]
+  },
+  "electrs": {
+   "up": true,
+   "height": 276,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "history": [
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "7bc6e416dc0d687c46b89a7124263d6bf95ed6cdcdd5786bd5105a88b4af95c5",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "a1fe105df20c433037e583e8c1b056c5141044b03737da3ed4378c6759fd9f43",
+    "dd6956a71e481df6e89362493a466e8f593241bcb478cbf5f3938af11dc682ca"
+   ],
+   "mempool": []
+  },
+  "bs-electrs": {
+   "up": true,
+   "height": 276,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "history": [
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "7bc6e416dc0d687c46b89a7124263d6bf95ed6cdcdd5786bd5105a88b4af95c5",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "a1fe105df20c433037e583e8c1b056c5141044b03737da3ed4378c6759fd9f43",
+    "dd6956a71e481df6e89362493a466e8f593241bcb478cbf5f3938af11dc682ca"
+   ],
+   "mempool": []
+  },
+  "fulcrum": {
+   "up": true,
+   "height": 276,
+   "balance": 500000000,
+   "unconfirmed": 0,
+   "history": [
+    "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+    "7bc6e416dc0d687c46b89a7124263d6bf95ed6cdcdd5786bd5105a88b4af95c5",
+    "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+    "a1fe105df20c433037e583e8c1b056c5141044b03737da3ed4378c6759fd9f43",
+    "dd6956a71e481df6e89362493a466e8f593241bcb478cbf5f3938af11dc682ca"
+   ],
+   "mempool": []
+  }
+ },
+ "outside": {
+  "depth": 120,
+  "trace": [
+   {
+    "t": 0.1,
+    "node": {
+     "height": 277,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 276,
+     "balance": 500000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "7bc6e416dc0d687c46b89a7124263d6bf95ed6cdcdd5786bd5105a88b4af95c5",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895",
+      "a1fe105df20c433037e583e8c1b056c5141044b03737da3ed4378c6759fd9f43",
+      "dd6956a71e481df6e89362493a466e8f593241bcb478cbf5f3938af11dc682ca"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 3",
+       "initial_sync_height 276",
+       "stale_cleanup_failing 0",
+       "tip_height 276"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 1.1,
+    "node": {
+     "height": 277,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 4",
+       "initial_sync_height 277",
+       "stale_cleanup_failing 0",
+       "tip_height 277"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 2.1,
+    "node": {
+     "height": 277,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 4",
+       "initial_sync_height 277",
+       "stale_cleanup_failing 0",
+       "tip_height 277"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 3.2,
+    "node": {
+     "height": 277,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 4",
+       "initial_sync_height 277",
+       "stale_cleanup_failing 0",
+       "tip_height 277"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 4.2,
+    "node": {
+     "height": 277,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 4",
+       "initial_sync_height 277",
+       "stale_cleanup_failing 0",
+       "tip_height 277"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 5.2,
+    "node": {
+     "height": 277,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 277,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 4",
+       "initial_sync_height 277",
+       "stale_cleanup_failing 0",
+       "tip_height 277"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 6.3,
+    "node": {
+     "height": 278,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 5",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 7.3,
+    "node": {
+     "height": 278,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 5",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 8.3,
+    "node": {
+     "height": 278,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 5",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 9.4,
+    "node": {
+     "height": 278,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 5",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 10.4,
+    "node": {
+     "height": 278,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 6",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 11.5,
+    "node": {
+     "height": 279,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 6",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 12.5,
+    "node": {
+     "height": 279,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 6",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 13.5,
+    "node": {
+     "height": 279,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 6",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 14.5,
+    "node": {
+     "height": 279,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 278,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 6",
+       "initial_sync_height 278",
+       "stale_cleanup_failing 0",
+       "tip_height 278"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 15.6,
+    "node": {
+     "height": 279,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 7",
+       "initial_sync_height 279",
+       "stale_cleanup_failing 0",
+       "tip_height 279"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 16.6,
+    "node": {
+     "height": 280,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 7",
+       "initial_sync_height 279",
+       "stale_cleanup_failing 0",
+       "tip_height 279"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 17.6,
+    "node": {
+     "height": 280,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 7",
+       "initial_sync_height 279",
+       "stale_cleanup_failing 0",
+       "tip_height 279"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 18.6,
+    "node": {
+     "height": 280,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 7",
+       "initial_sync_height 279",
+       "stale_cleanup_failing 0",
+       "tip_height 279"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 19.7,
+    "node": {
+     "height": 280,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 279,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 7",
+       "initial_sync_height 279",
+       "stale_cleanup_failing 0",
+       "tip_height 279"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 20.7,
+    "node": {
+     "height": 280,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 8",
+       "initial_sync_height 280",
+       "stale_cleanup_failing 0",
+       "tip_height 280"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 21.7,
+    "node": {
+     "height": 281,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 8",
+       "initial_sync_height 280",
+       "stale_cleanup_failing 0",
+       "tip_height 280"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 22.8,
+    "node": {
+     "height": 281,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 8",
+       "initial_sync_height 280",
+       "stale_cleanup_failing 0",
+       "tip_height 280"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 23.8,
+    "node": {
+     "height": 281,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 8",
+       "initial_sync_height 280",
+       "stale_cleanup_failing 0",
+       "tip_height 280"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 24.8,
+    "node": {
+     "height": 281,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 280,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 8",
+       "initial_sync_height 280",
+       "stale_cleanup_failing 0",
+       "tip_height 280"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 25.8,
+    "node": {
+     "height": 281,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 9",
+       "initial_sync_height 281",
+       "stale_cleanup_failing 0",
+       "tip_height 281"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 26.9,
+    "node": {
+     "height": 282,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 9",
+       "initial_sync_height 281",
+       "stale_cleanup_failing 0",
+       "tip_height 281"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 27.9,
+    "node": {
+     "height": 282,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 9",
+       "initial_sync_height 281",
+       "stale_cleanup_failing 0",
+       "tip_height 281"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 28.9,
+    "node": {
+     "height": 282,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 9",
+       "initial_sync_height 281",
+       "stale_cleanup_failing 0",
+       "tip_height 281"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 29.9,
+    "node": {
+     "height": 282,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 281,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 9",
+       "initial_sync_height 281",
+       "stale_cleanup_failing 0",
+       "tip_height 281"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 31.0,
+    "node": {
+     "height": 282,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 32.0,
+    "node": {
+     "height": 283,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 283,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 33.1,
+    "node": {
+     "height": 283,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 283,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 34.1,
+    "node": {
+     "height": 283,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 283,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 35.1,
+    "node": {
+     "height": 283,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 283,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 36.2,
+    "node": {
+     "height": 284,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 37.2,
+    "node": {
+     "height": 284,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 38.2,
+    "node": {
+     "height": 284,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 282,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 10",
+       "initial_sync_height 282",
+       "stale_cleanup_failing 0",
+       "tip_height 282"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 39.3,
+    "node": {
+     "height": 284,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 11",
+       "initial_sync_height 284",
+       "stale_cleanup_failing 0",
+       "tip_height 284"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 40.3,
+    "node": {
+     "height": 284,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 11",
+       "initial_sync_height 284",
+       "stale_cleanup_failing 0",
+       "tip_height 284"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 41.3,
+    "node": {
+     "height": 285,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 11",
+       "initial_sync_height 284",
+       "stale_cleanup_failing 0",
+       "tip_height 284"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 42.4,
+    "node": {
+     "height": 285,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 11",
+       "initial_sync_height 284",
+       "stale_cleanup_failing 0",
+       "tip_height 284"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 43.4,
+    "node": {
+     "height": 285,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 284,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 11",
+       "initial_sync_height 284",
+       "stale_cleanup_failing 0",
+       "tip_height 284"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 44.4,
+    "node": {
+     "height": 285,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 12",
+       "initial_sync_height 285",
+       "stale_cleanup_failing 0",
+       "tip_height 285"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 45.4,
+    "node": {
+     "height": 285,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 12",
+       "initial_sync_height 285",
+       "stale_cleanup_failing 0",
+       "tip_height 285"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 46.5,
+    "node": {
+     "height": 286,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 12",
+       "initial_sync_height 285",
+       "stale_cleanup_failing 0",
+       "tip_height 285"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 47.5,
+    "node": {
+     "height": 286,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 285,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 12",
+       "initial_sync_height 285",
+       "stale_cleanup_failing 0",
+       "tip_height 285"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 48.5,
+    "node": {
+     "height": 286,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 13",
+       "initial_sync_height 286",
+       "stale_cleanup_failing 0",
+       "tip_height 286"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 49.6,
+    "node": {
+     "height": 286,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 13",
+       "initial_sync_height 286",
+       "stale_cleanup_failing 0",
+       "tip_height 286"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 50.6,
+    "node": {
+     "height": 286,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 13",
+       "initial_sync_height 286",
+       "stale_cleanup_failing 0",
+       "tip_height 286"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 51.7,
+    "node": {
+     "height": 287,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 13",
+       "initial_sync_height 286",
+       "stale_cleanup_failing 0",
+       "tip_height 286"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 52.7,
+    "node": {
+     "height": 287,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 286,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 13",
+       "initial_sync_height 286",
+       "stale_cleanup_failing 0",
+       "tip_height 286"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 53.7,
+    "node": {
+     "height": 287,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 14",
+       "initial_sync_height 287",
+       "stale_cleanup_failing 0",
+       "tip_height 287"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 54.8,
+    "node": {
+     "height": 287,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 14",
+       "initial_sync_height 287",
+       "stale_cleanup_failing 0",
+       "tip_height 287"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 55.8,
+    "node": {
+     "height": 287,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 14",
+       "initial_sync_height 287",
+       "stale_cleanup_failing 0",
+       "tip_height 287"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 56.9,
+    "node": {
+     "height": 288,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 288,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 14",
+       "initial_sync_height 287",
+       "stale_cleanup_failing 0",
+       "tip_height 287"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 57.9,
+    "node": {
+     "height": 288,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 288,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 287,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 14",
+       "initial_sync_height 287",
+       "stale_cleanup_failing 0",
+       "tip_height 287"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 58.9,
+    "node": {
+     "height": 288,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 288,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 288,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 15",
+       "initial_sync_height 288",
+       "stale_cleanup_failing 0",
+       "tip_height 288"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   },
+   {
+    "t": 59.9,
+    "node": {
+     "height": 288,
+     "balance": 200000000,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ]
+    },
+    "electrs": {
+     "up": true,
+     "height": 288,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "bs-electrs": {
+     "up": true,
+     "height": 288,
+     "balance": 200000000,
+     "unconfirmed": 0,
+     "history": [
+      "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+      "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+     ],
+     "mempool": []
+    },
+    "fulcrum": {
+     "up": false,
+     "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+    },
+    "health": {
+     "electrs": {
+      "status": 200,
+      "lines": []
+     },
+     "bs-electrs": {
+      "status": 200,
+      "lines": [
+       "electrs_main_loop_count 15",
+       "initial_sync_height 288",
+       "stale_cleanup_failing 0",
+       "tip_height 288"
+      ]
+     },
+     "fulcrum": {
+      "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+     }
+    },
+    "alive": {
+     "bitcoind": [
+      true,
+      null
+     ],
+     "electrs": [
+      true,
+      null
+     ],
+     "bs-electrs": [
+      true,
+      null
+     ],
+     "fulcrum": [
+      false,
+      1
+     ]
+    }
+   }
+  ],
+  "final": {
+   "t": 59.9,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "electrs": {
+    "up": true,
+    "height": 288,
+    "balance": 200000000,
+    "unconfirmed": 0,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ],
+    "mempool": []
+   },
+   "bs-electrs": {
+    "up": true,
+    "height": 288,
+    "balance": 200000000,
+    "unconfirmed": 0,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ],
+    "mempool": []
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "health": {
+    "electrs": {
+     "status": 200,
+     "lines": []
+    },
+    "bs-electrs": {
+     "status": 200,
+     "lines": [
+      "electrs_main_loop_count 15",
+      "initial_sync_height 288",
+      "stale_cleanup_failing 0",
+      "tip_height 288"
+     ]
+    },
+    "fulcrum": {
+     "status": "URLError: <urlopen error [Errno 111] Connection refused>"
+    }
+   },
+   "alive": {
+    "bitcoind": [
+     true,
+     null
+    ],
+    "electrs": [
+     true,
+     null
+    ],
+    "bs-electrs": [
+     true,
+     null
+    ],
+    "fulcrum": [
+     false,
+     1
+    ]
+   }
+  },
+  "first_match_s": {
+   "electrs": 0.1,
+   "bs-electrs": 1.1,
+   "fulcrum": null
+  },
+  "dave_prefix": [
+   "bcrt1q0gz7636tp90jswl2mszgjzhztx663x828ruzk5"
+  ]
+ },
+ "fulcrum_restart": [
+  {
+   "t": 0.0,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": null
+  },
+  {
+   "t": 2.0,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 4.0,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 6.0,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 8.1,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 10.1,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 12.1,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 14.1,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 16.1,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 18.1,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 20.2,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 22.2,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 24.2,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 26.2,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  },
+  {
+   "t": 28.3,
+   "node": {
+    "height": 288,
+    "balance": 200000000,
+    "history": [
+     "6b92a3cf8180bf0a9ba9d5a59efdbd44ab0ac07ef70f4e34abf5e37f3fc86259",
+     "89457880f7525db6b79d5110fc74617f0c7c54ee7ddec24b92d79a818170d895"
+    ]
+   },
+   "fulcrum": {
+    "up": false,
+    "error": "ConnectionRefusedError: [Errno 111] Connection refused"
+   },
+   "alive": 1
+  }
+ ]
+}

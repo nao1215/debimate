@@ -1,0 +1,23 @@
+versions {'anvil': 'anvil Version: 1.7.1', 'fireeth': 'fireeth version 2.25.0 (Commit 251f656, Commit Date 2026-11-11T21:53:27Z)', 'substreams': 'substreams version 1.27.0 (Commit 6864786, Commit Date 2026-11-11T21:16:31Z)', 'postgres_image': 'postgres:16-alpine'}
+history_head 240
+start {'head': 240, 'truth': {'alice': 967, 'bob': 33, 'carol': 0, 'dave': 0}, 'sink': {'alice': 967, 'bob': 33, 'carol': 0, 'dave': 0}, 'db': {'cursor_block': 240, 'history': ['4', '237', '240'], 'transfers': ['34', '240']}, 't': 49.86}
+inside depth 3 before {'head': 240, 'truth': {'alice': 967, 'bob': 33, 'carol': 0, 'dave': 0}, 'sink': {'alice': 967, 'bob': 33, 'carol': 0, 'dave': 0}, 'db': {'cursor_block': 240, 'history': ['4', '237', '240'], 'transfers': ['34', '240']}}
+  truth_after {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} sink_after {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} db_after {'cursor_block': 241, 'history': ['2', '237', '238'], 'transfers': ['32', '238']}
+  first_match_from_mine 1.31 health {'relayer_healthz': 200, 'merger_healthz': 200, 'sink_metrics': {'head_block_number': 241.0, 'substreams_sink_data_message': 245.0, 'substreams_sink_processed_blocks': 242.0, 'substreams_sink_undo_message': 1.0}, 'poller_alive': True, 'poller_exit': None, 'fireeth_alive': True, 'fireeth_exit': None, 'sink_alive': True, 'sink_exit': None}
+outside depth 215 before {'head': 241, 'truth': {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0}, 'sink': {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0}, 'db': {'cursor_block': 241, 'history': ['2', '237', '238'], 'transfers': ['32', '238']}}
+  truth_after {'alice': 925, 'bob': 25, 'carol': 0, 'dave': 50} sink_after {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} db_after {'cursor_block': 241, 'history': ['2', '237', '238'], 'transfers': ['32', '238']}
+  first_match_from_mine None health {'relayer_healthz': 200, 'merger_healthz': 200, 'sink_metrics': {'head_block_number': 241.0, 'substreams_sink_data_message': 245.0, 'substreams_sink_processed_blocks': 242.0, 'substreams_sink_undo_message': 1.0}, 'poller_alive': True, 'poller_exit': None, 'fireeth_alive': True, 'fireeth_exit': None, 'sink_alive': True, 'sink_exit': None}
+watch 5.0 head 242 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer 200 merger 200 poller True None fireeth True None sink True None
+watch 10.3 head 243 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer 200 merger 200 poller True None fireeth True None sink True None
+watch 15.5 head 244 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer 200 merger 200 poller True None fireeth True None sink True None
+watch 20.8 head 245 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer 200 merger 200 poller True None fireeth True None sink True None
+watch 26.0 head 246 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth True None sink True None
+watch 31.2 head 247 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth True None sink True None
+watch 36.5 head 248 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth True None sink True None
+watch 41.7 head 249 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth True None sink True None
+watch 47.1 head 250 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth True None sink True None
+watch 52.4 head 251 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth True None sink True None
+watch 57.7 head 252 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth False 0 sink False 1
+watch 63.0 head 253 sink {'alice': 963, 'bob': 30, 'carol': 7, 'dave': 0} cursor 241 relayer URLError merger URLError poller False 2 fireeth False 0 sink False 1
+final_db_dump.history [['I', '{"id":"ebbbab3ce222c05a7a948f2b85ab293c0abaff6f94e5ad35fa9e6d28e4d3b689-0"}', '237'], ['I', '{"id":"be54df3808327b8f479d9de2f735372be665da8235aa79c1607af194e85f7fd2-0"}', '238']]
+final_db_dump.cursors [['241', '2b136916c2c6049d30570288f06b52862a4faad0b65a66fef7476034298acb9d']]

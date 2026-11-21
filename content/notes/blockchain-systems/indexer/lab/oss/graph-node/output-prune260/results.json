@@ -1,0 +1,2441 @@
+{
+ "scenarios": [
+  {
+   "label": "inside",
+   "depth": 3,
+   "reorg_threshold": 250,
+   "before": {
+    "head": 500,
+    "truth": {
+     "alice": 501,
+     "bob": 499,
+     "carol": 0,
+     "dave": 0
+    },
+    "graph": {
+     "balances": {
+      "alice": 501,
+      "bob": 499,
+      "carol": 0,
+      "dave": 0
+     },
+     "transfers": 500,
+     "meta_block": 500,
+     "meta_hash_matches_node": true,
+     "hasIndexingErrors": false
+    },
+    "status": {
+     "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+     "synced": true,
+     "health": "healthy",
+     "entityCount": "503",
+     "fatalError": null,
+     "nonFatalErrors": [],
+     "chains": [
+      {
+       "network": "mainnet",
+       "chainHeadBlock": {
+        "number": "500",
+        "hash": "0d0aaab4a9595261904e1650af5a162dad1fda4a7b7fa4f6e3c9a24c386235f5"
+       },
+       "latestBlock": {
+        "number": "500",
+        "hash": "0d0aaab4a9595261904e1650af5a162dad1fda4a7b7fa4f6e3c9a24c386235f5"
+       }
+      }
+     ]
+    }
+   },
+   "truth_after": {
+    "alice": 497,
+    "bob": 496,
+    "carol": 7,
+    "dave": 0
+   },
+   "head_after": 501,
+   "samples": [
+    {
+     "t": 0.0,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 0.51,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 1.01,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 1.52,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 2.03,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 2.53,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 3.04,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 3.55,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 4.05,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 4.56,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 5.07,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 5.57,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 6.08,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.59,
+     "graph": {
+      "balances": {
+       "alice": 501,
+       "bob": 499,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 500,
+      "meta_block": 500,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.09,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.6,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.11,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.62,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.13,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.63,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.14,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.64,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.15,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.66,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.16,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.67,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.17,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.68,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.18,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.69,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 15.2,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 15.7,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 16.21,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 16.72,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 17.22,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 17.73,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 18.23,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 18.74,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 19.24,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 19.75,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 20.25,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 20.76,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 21.26,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 21.77,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 22.27,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 22.78,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 23.28,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 23.79,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 24.29,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 24.8,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 25.31,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 25.81,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": true,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    }
+   ],
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "502",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "501",
+       "hash": "e8e14009c8e8e06a1da5ce240f25a5591742336b24ecbc1557551fa9b4835e67"
+      },
+      "latestBlock": {
+       "number": "501",
+       "hash": "e8e14009c8e8e06a1da5ce240f25a5591742336b24ecbc1557551fa9b4835e67"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 501",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 498",
+    "ethereum_chain_head_number{network=\"mainnet\"} 501"
+   ],
+   "first_match_seconds": 7.09
+  },
+  {
+   "label": "outside",
+   "depth": 300,
+   "reorg_threshold": 250,
+   "before": {
+    "head": 501,
+    "truth": {
+     "alice": 497,
+     "bob": 496,
+     "carol": 7,
+     "dave": 0
+    },
+    "graph": {
+     "balances": {
+      "alice": 497,
+      "bob": 496,
+      "carol": 7,
+      "dave": 0
+     },
+     "transfers": 498,
+     "meta_block": 501,
+     "meta_hash_matches_node": true,
+     "hasIndexingErrors": false
+    },
+    "status": {
+     "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+     "synced": true,
+     "health": "healthy",
+     "entityCount": "502",
+     "fatalError": null,
+     "nonFatalErrors": [],
+     "chains": [
+      {
+       "network": "mainnet",
+       "chainHeadBlock": {
+        "number": "501",
+        "hash": "e8e14009c8e8e06a1da5ce240f25a5591742336b24ecbc1557551fa9b4835e67"
+       },
+       "latestBlock": {
+        "number": "501",
+        "hash": "e8e14009c8e8e06a1da5ce240f25a5591742336b24ecbc1557551fa9b4835e67"
+       }
+      }
+     ]
+    }
+   },
+   "truth_after": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "head_after": 502,
+   "samples": [
+    {
+     "t": 0.02,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 0.52,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 1.03,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 1.53,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 2.04,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 2.55,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 3.05,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 3.56,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 4.06,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 4.57,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 5.08,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 5.58,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     }
+    },
+    {
+     "t": 6.09,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 6.59,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.1,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 7.6,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.11,
+     "graph": {
+      "balances": {
+       "alice": 497,
+       "bob": 496,
+       "carol": 7,
+       "dave": 0
+      },
+      "transfers": 498,
+      "meta_block": 501,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 8.63,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.16,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 9.66,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.17,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 10.69,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.19,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 11.69,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.2,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 12.7,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.2,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 13.71,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.21,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 14.71,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 15.22,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 15.72,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 16.22,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 16.73,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 17.24,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 17.75,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 18.25,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 18.76,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 19.26,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 19.77,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 20.27,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 20.77,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 21.28,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 21.78,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 22.29,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 22.79,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 23.29,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 23.8,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 24.3,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 24.81,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 25.31,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    },
+    {
+     "t": 25.81,
+     "graph": {
+      "balances": {
+       "alice": 522,
+       "bob": 478,
+       "carol": 0,
+       "dave": 0
+      },
+      "transfers": 479,
+      "meta_block": 479,
+      "meta_hash_matches_node": false,
+      "hasIndexingErrors": false
+     },
+     "after_mine": true
+    }
+   ],
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "502",
+       "hash": "3b3f5530c86f3c836d44fd74a4cd40e570d8b3b56297b7c7c7aadc556af97105"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 502"
+   ],
+   "first_match_seconds": null
+  }
+ ],
+ "prune": "260",
+ "head_target": 500,
+ "start": {
+  "head": 500,
+  "truth": {
+   "alice": 501,
+   "bob": 499,
+   "carol": 0,
+   "dave": 0
+  },
+  "graph": {
+   "balances": {
+    "alice": 501,
+    "bob": 499,
+    "carol": 0,
+    "dave": 0
+   },
+   "transfers": 500,
+   "meta_block": 500,
+   "meta_hash_matches_node": true,
+   "hasIndexingErrors": false
+  },
+  "status": {
+   "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+   "synced": true,
+   "health": "healthy",
+   "entityCount": "503",
+   "fatalError": null,
+   "nonFatalErrors": [],
+   "chains": [
+    {
+     "network": "mainnet",
+     "chainHeadBlock": {
+      "number": "500",
+      "hash": "0d0aaab4a9595261904e1650af5a162dad1fda4a7b7fa4f6e3c9a24c386235f5"
+     },
+     "latestBlock": {
+      "number": "500",
+      "hash": "0d0aaab4a9595261904e1650af5a162dad1fda4a7b7fa4f6e3c9a24c386235f5"
+     }
+    }
+   ]
+  },
+  "sync_seconds": 1.6
+ },
+ "after_outside": [
+  {
+   "t": 5.0,
+   "node_head": 502,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "502",
+       "hash": "3b3f5530c86f3c836d44fd74a4cd40e570d8b3b56297b7c7c7aadc556af97105"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 502"
+   ]
+  },
+  {
+   "t": 10.0,
+   "node_head": 503,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "503",
+       "hash": "b66b1d111982a35f0f21ba04f7d4c3a05a2d6d9e8c0b7c7b9f40b0358911a978"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 503"
+   ]
+  },
+  {
+   "t": 15.0,
+   "node_head": 504,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "504",
+       "hash": "d3e9cb78687423fe8a3bb6896393fd53db807cface819b78ceb1da654f3a3d20"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 504"
+   ]
+  },
+  {
+   "t": 20.1,
+   "node_head": 505,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "505",
+       "hash": "ca6406e15305d51c0204dd12f1785b58880d2ce2cac67549dd696d806f0181a8"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 505"
+   ]
+  },
+  {
+   "t": 25.1,
+   "node_head": 506,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "506",
+       "hash": "e015720ac16cb7dcf1ce141a98882457c8064c8b615d6d175c654b56a67ee078"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 506"
+   ]
+  },
+  {
+   "t": 30.1,
+   "node_head": 507,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "507",
+       "hash": "55e0817698c1628b534fd7ec343cdb730c992b6f00188d82139ac47b5c53436b"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 507"
+   ]
+  },
+  {
+   "t": 35.1,
+   "node_head": 508,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "508",
+       "hash": "04f165d7b79d099805e32b960164271181e7f6370859d38ba5d7d8b26612c332"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 508"
+   ]
+  },
+  {
+   "t": 40.1,
+   "node_head": 509,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "509",
+       "hash": "7e2416f5e8e4467a5c5c0db7da7930812b9bccc024c3b0568d73dad0b88ed1a6"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 509"
+   ]
+  },
+  {
+   "t": 45.1,
+   "node_head": 510,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "510",
+       "hash": "a22c5eb581f1b78e6211bf5c96b9efe1d8d36a3d3810a34b0e3c6daba95ed7f5"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 510"
+   ]
+  },
+  {
+   "t": 50.2,
+   "node_head": 511,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "511",
+       "hash": "dfbf882fbc972b4358efb0c2bc93bebe37639acf8b201e0b1d4080c803616e5a"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 511"
+   ]
+  },
+  {
+   "t": 55.2,
+   "node_head": 512,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "512",
+       "hash": "0d32382a846787624973a6cdf56da623397201295002fbe67b161268837e3cad"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 512"
+   ]
+  },
+  {
+   "t": 60.2,
+   "node_head": 513,
+   "graph": {
+    "balances": {
+     "alice": 522,
+     "bob": 478,
+     "carol": 0,
+     "dave": 0
+    },
+    "transfers": 479,
+    "meta_block": 479,
+    "meta_hash_matches_node": false,
+    "hasIndexingErrors": false
+   },
+   "truth": {
+    "alice": 750,
+    "bob": 200,
+    "carol": 0,
+    "dave": 50
+   },
+   "status": {
+    "subgraph": "QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL",
+    "synced": true,
+    "health": "healthy",
+    "entityCount": "482",
+    "fatalError": null,
+    "nonFatalErrors": [],
+    "chains": [
+     {
+      "network": "mainnet",
+      "chainHeadBlock": {
+       "number": "513",
+       "hash": "89990cb301d0236d7d4284020e4213d2e52ee1142752d0d26f55af490aa72778"
+      },
+      "latestBlock": {
+       "number": "479",
+       "hash": "3241fa4380d44d0a1cfb3c7b5c382fe1a881405f7bc298e5699bd64d1ce40eea"
+      }
+     }
+    ]
+   },
+   "metrics": [
+    "deployment_head{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\",network=\"mainnet\",shard=\"primary\"} 479",
+    "deployment_reverted_blocks{deployment=\"QmPfHP4xDFuvka9ze8VPc5A5iZT4Lezizwu1Jimr5KL5yL\"} 479",
+    "ethereum_chain_head_number{network=\"mainnet\"} 513"
+   ]
+  }
+ ],
+ "versions": {
+  "graph_node_image": "graphprotocol/graph-node@sha256:b0436347fb24f9ae45b6d3959cac97bf60b3238ad1633a875c118ff86a07a0d3",
+  "anvil_image": "ghcr.io/foundry-rs/foundry:v1.7.1",
+  "postgres_image": "postgres:16-alpine",
+  "ipfs_image": "ipfs/kubo:v0.39.0",
+  "graph_cli": "0.98.1",
+  "graph_ts": "0.38.2"
+ }
+}

@@ -1,0 +1,5 @@
+start {'alice': 801, 'bob': 199, 'carol': 0, 'dave': 0} {'alice': 801, 'bob': 199, 'carol': 0, 'dave': 0} 200
+live fill done {'t': 150.8, 'node_head': 354, 'synced': 354, 'window': [136, 219, 354]} window [130, 228, 357]
+inside truth {'alice': 646, 'bob': 347, 'carol': 7, 'dave': 0} last {'alice': 646, 'bob': 347, 'carol': 7, 'dave': 0} first match 0.0 alive True health 200
+outside truth {'alice': 714, 'bob': 236, 'carol': 0, 'dave': 50} last {'alice': 742, 'bob': 258, 'carol': 0, 'dave': 0} first match None alive True health 200
+after outside {'t': 62.7, 'alive': True, 'health': 200, 'health_body': {'status': 'healthy', 'timestamp': '2026-11-21T08:41:42.421958374+00:00', 'services': {'database': 'healthy', 'indexing': 'healthy', 'sync': 'healthy'}, 'indexing': {'active_tasks': 0, 'is_running': True}}, 'synced': 497, 'node_head': 497, 'rindexer': {'alice': 742, 'bob': 258, 'carol': 0, 'dave': 0}, 'truth': {'alice': 714, 'bob': 236, 'carol': 0, 'dave': 50}, 'window': [128, 370, 497]} truth {'alice': 714, 'bob': 236, 'carol': 0, 'dave': 50}

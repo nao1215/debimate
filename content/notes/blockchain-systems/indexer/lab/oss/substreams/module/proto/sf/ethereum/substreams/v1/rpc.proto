@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package sf.ethereum.substreams.v1;
+
+option go_package = "github.com/streamingfast/firehose-ethereum/types/pb/sf/ethereum/substreams/v1;pbethss";
+
+message RpcCalls {
+  repeated RpcCall calls = 1;
+}
+
+message RpcCall {
+  bytes to_addr = 1;
+  bytes data = 2;
+}
+
+message RpcResponses {
+  repeated RpcResponse responses = 1;
+}
+
+message RpcResponse {
+  bytes raw = 1;
+  bool failed = 2;
+}
+
+message RpcGetBalanceRequest {
+  bytes    address = 1;
+  string  block   = 2;
+}
+
+message RpcGetBalanceResponse {
+  bytes    balance = 1;
+  bool     failed  = 2;
+}
+
+message RpcGetBalanceRequests {
+  repeated RpcGetBalanceRequest requests = 1;
+}
+
+message RpcGetBalanceResponses {
+  repeated RpcGetBalanceResponse responses = 1;
+}

@@ -1,0 +1,2728 @@
+{
+ "scenarios": [
+  {
+   "label": "inside",
+   "depth": 3,
+   "before": {
+    "head": 357,
+    "truth": {
+     "alice": 653,
+     "bob": 347,
+     "carol": 0,
+     "dave": 0
+    },
+    "rindexer": {
+     "alice": 653,
+     "bob": 347,
+     "carol": 0,
+     "dave": 0
+    },
+    "synced": 357,
+    "window": [
+     130,
+     228,
+     357
+    ],
+    "health": [
+     200,
+     {
+      "status": "healthy",
+      "timestamp": "2026-11-21T08:39:36.204118021+00:00",
+      "services": {
+       "database": "healthy",
+       "indexing": "healthy",
+       "sync": "healthy"
+      },
+      "indexing": {
+       "active_tasks": 0,
+       "is_running": true
+      }
+     }
+    ]
+   },
+   "truth_after": {
+    "alice": 646,
+    "bob": 347,
+    "carol": 7,
+    "dave": 0
+   },
+   "samples": [
+    {
+     "t": 0.0,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 358
+    },
+    {
+     "t": 0.37,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 358
+    },
+    {
+     "t": 0.72,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 358
+    },
+    {
+     "t": 1.08,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 359
+    },
+    {
+     "t": 1.43,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 359
+    },
+    {
+     "t": 1.8,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 359
+    },
+    {
+     "t": 2.15,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 360
+    },
+    {
+     "t": 2.51,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 360
+    },
+    {
+     "t": 2.86,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 360
+    },
+    {
+     "t": 3.24,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 361
+    },
+    {
+     "t": 3.61,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 361
+    },
+    {
+     "t": 3.97,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 362
+    },
+    {
+     "t": 4.33,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 362
+    },
+    {
+     "t": 4.68,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 362
+    },
+    {
+     "t": 5.04,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 363
+    },
+    {
+     "t": 5.39,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 363
+    },
+    {
+     "t": 5.77,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 363
+    },
+    {
+     "t": 6.13,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 364
+    },
+    {
+     "t": 6.48,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 364
+    },
+    {
+     "t": 6.84,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 364
+    },
+    {
+     "t": 7.2,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 365
+    },
+    {
+     "t": 7.56,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 365
+    },
+    {
+     "t": 7.93,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 365
+    },
+    {
+     "t": 8.28,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 366
+    },
+    {
+     "t": 8.64,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 366
+    },
+    {
+     "t": 9.01,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 367
+    },
+    {
+     "t": 9.39,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 367
+    },
+    {
+     "t": 9.77,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 367
+    },
+    {
+     "t": 10.14,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 368
+    },
+    {
+     "t": 10.5,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 368
+    },
+    {
+     "t": 10.86,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 369,
+     "after_mine": true
+    },
+    {
+     "t": 11.22,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 370,
+     "after_mine": true
+    },
+    {
+     "t": 11.58,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 370,
+     "after_mine": true
+    },
+    {
+     "t": 11.94,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 370,
+     "after_mine": true
+    },
+    {
+     "t": 12.32,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 371,
+     "after_mine": true
+    },
+    {
+     "t": 12.67,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 371,
+     "after_mine": true
+    },
+    {
+     "t": 13.03,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 372,
+     "after_mine": true
+    },
+    {
+     "t": 13.39,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 372,
+     "after_mine": true
+    },
+    {
+     "t": 13.77,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 372,
+     "after_mine": true
+    },
+    {
+     "t": 14.13,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 373,
+     "after_mine": true
+    },
+    {
+     "t": 14.51,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 373,
+     "after_mine": true
+    },
+    {
+     "t": 14.88,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 373,
+     "after_mine": true
+    },
+    {
+     "t": 15.25,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 374,
+     "after_mine": true
+    },
+    {
+     "t": 15.6,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 374,
+     "after_mine": true
+    },
+    {
+     "t": 15.96,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 374,
+     "after_mine": true
+    },
+    {
+     "t": 16.31,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 375,
+     "after_mine": true
+    },
+    {
+     "t": 16.67,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 375,
+     "after_mine": true
+    },
+    {
+     "t": 17.02,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 376,
+     "after_mine": true
+    },
+    {
+     "t": 17.38,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 376,
+     "after_mine": true
+    },
+    {
+     "t": 17.76,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 376,
+     "after_mine": true
+    },
+    {
+     "t": 18.12,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 377,
+     "after_mine": true
+    },
+    {
+     "t": 18.5,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 377,
+     "after_mine": true
+    },
+    {
+     "t": 18.86,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 378,
+     "after_mine": true
+    },
+    {
+     "t": 19.23,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 378,
+     "after_mine": true
+    },
+    {
+     "t": 19.61,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 378,
+     "after_mine": true
+    },
+    {
+     "t": 19.99,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 379,
+     "after_mine": true
+    },
+    {
+     "t": 20.35,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 379,
+     "after_mine": true
+    },
+    {
+     "t": 20.72,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 379,
+     "after_mine": true
+    },
+    {
+     "t": 21.08,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 380,
+     "after_mine": true
+    },
+    {
+     "t": 21.44,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 380,
+     "after_mine": true
+    },
+    {
+     "t": 21.82,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 380,
+     "after_mine": true
+    },
+    {
+     "t": 22.18,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 381,
+     "after_mine": true
+    },
+    {
+     "t": 22.55,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 381,
+     "after_mine": true
+    },
+    {
+     "t": 22.9,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 382,
+     "after_mine": true
+    },
+    {
+     "t": 23.27,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 382,
+     "after_mine": true
+    },
+    {
+     "t": 23.64,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 382,
+     "after_mine": true
+    },
+    {
+     "t": 23.99,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 383,
+     "after_mine": true
+    },
+    {
+     "t": 24.36,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 383,
+     "after_mine": true
+    },
+    {
+     "t": 24.72,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 383,
+     "after_mine": true
+    },
+    {
+     "t": 25.07,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 384,
+     "after_mine": true
+    },
+    {
+     "t": 25.43,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 384,
+     "after_mine": true
+    },
+    {
+     "t": 25.81,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 384,
+     "after_mine": true
+    },
+    {
+     "t": 26.16,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 385,
+     "after_mine": true
+    },
+    {
+     "t": 26.52,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 385,
+     "after_mine": true
+    },
+    {
+     "t": 26.87,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 386,
+     "after_mine": true
+    },
+    {
+     "t": 27.23,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 386,
+     "after_mine": true
+    },
+    {
+     "t": 27.58,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 386,
+     "after_mine": true
+    },
+    {
+     "t": 27.95,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 387,
+     "after_mine": true
+    },
+    {
+     "t": 28.32,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 387,
+     "after_mine": true
+    },
+    {
+     "t": 28.69,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 387,
+     "after_mine": true
+    },
+    {
+     "t": 29.08,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 388,
+     "after_mine": true
+    },
+    {
+     "t": 29.42,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 388,
+     "after_mine": true
+    },
+    {
+     "t": 29.73,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 388,
+     "after_mine": true
+    },
+    {
+     "t": 30.04,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 389,
+     "after_mine": true
+    },
+    {
+     "t": 30.35,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 389,
+     "after_mine": true
+    },
+    {
+     "t": 30.67,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 389,
+     "after_mine": true
+    },
+    {
+     "t": 30.98,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 390,
+     "after_mine": true
+    },
+    {
+     "t": 31.29,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 390,
+     "after_mine": true
+    },
+    {
+     "t": 31.61,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 390,
+     "after_mine": true
+    },
+    {
+     "t": 31.92,
+     "rindexer": {
+      "alice": 646,
+      "bob": 347,
+      "carol": 7,
+      "dave": 0
+     },
+     "synced": 391,
+     "after_mine": true
+    }
+   ],
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:40:08.440534170+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 391,
+   "window": [
+    133,
+    259,
+    391
+   ],
+   "node_head": 391,
+   "first_match_seconds": 0.0
+  },
+  {
+   "label": "outside",
+   "depth": 150,
+   "before": {
+    "head": 391,
+    "truth": {
+     "alice": 646,
+     "bob": 347,
+     "carol": 7,
+     "dave": 0
+    },
+    "rindexer": {
+     "alice": 646,
+     "bob": 347,
+     "carol": 7,
+     "dave": 0
+    },
+    "synced": 391,
+    "window": [
+     133,
+     259,
+     391
+    ],
+    "health": [
+     200,
+     {
+      "status": "healthy",
+      "timestamp": "2026-11-21T08:40:08.965207518+00:00",
+      "services": {
+       "database": "healthy",
+       "indexing": "healthy",
+       "sync": "healthy"
+      },
+      "indexing": {
+       "active_tasks": 0,
+       "is_running": true
+      }
+     }
+    ]
+   },
+   "truth_after": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "samples": [
+    {
+     "t": 0.02,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 391
+    },
+    {
+     "t": 0.41,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 392
+    },
+    {
+     "t": 0.83,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 392
+    },
+    {
+     "t": 1.19,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 393
+    },
+    {
+     "t": 1.54,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 393
+    },
+    {
+     "t": 1.85,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 393
+    },
+    {
+     "t": 2.27,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 394
+    },
+    {
+     "t": 2.58,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 394
+    },
+    {
+     "t": 3.04,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 394
+    },
+    {
+     "t": 3.36,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 395
+    },
+    {
+     "t": 3.71,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 395
+    },
+    {
+     "t": 4.02,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 395
+    },
+    {
+     "t": 4.32,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 396
+    },
+    {
+     "t": 4.63,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 396
+    },
+    {
+     "t": 4.95,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 396
+    },
+    {
+     "t": 5.26,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 397
+    },
+    {
+     "t": 5.6,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 397
+    },
+    {
+     "t": 5.92,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 397
+    },
+    {
+     "t": 6.24,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 398
+    },
+    {
+     "t": 6.57,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 398
+    },
+    {
+     "t": 6.9,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 398
+    },
+    {
+     "t": 7.22,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 399
+    },
+    {
+     "t": 7.56,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 399
+    },
+    {
+     "t": 7.88,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 399
+    },
+    {
+     "t": 8.2,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 399
+    },
+    {
+     "t": 8.51,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 400
+    },
+    {
+     "t": 8.83,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 400
+    },
+    {
+     "t": 9.16,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 400
+    },
+    {
+     "t": 9.48,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 401
+    },
+    {
+     "t": 9.8,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 401
+    },
+    {
+     "t": 10.13,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 402,
+     "after_mine": true
+    },
+    {
+     "t": 10.44,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 403,
+     "after_mine": true
+    },
+    {
+     "t": 10.75,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 403,
+     "after_mine": true
+    },
+    {
+     "t": 11.07,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 403,
+     "after_mine": true
+    },
+    {
+     "t": 11.39,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 404,
+     "after_mine": true
+    },
+    {
+     "t": 11.72,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 404,
+     "after_mine": true
+    },
+    {
+     "t": 12.04,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 404,
+     "after_mine": true
+    },
+    {
+     "t": 12.38,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 405,
+     "after_mine": true
+    },
+    {
+     "t": 12.74,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 405,
+     "after_mine": true
+    },
+    {
+     "t": 13.1,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 405,
+     "after_mine": true
+    },
+    {
+     "t": 13.46,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 406,
+     "after_mine": true
+    },
+    {
+     "t": 13.81,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 406,
+     "after_mine": true
+    },
+    {
+     "t": 14.18,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 407,
+     "after_mine": true
+    },
+    {
+     "t": 14.55,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 407,
+     "after_mine": true
+    },
+    {
+     "t": 14.9,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 407,
+     "after_mine": true
+    },
+    {
+     "t": 15.26,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 408,
+     "after_mine": true
+    },
+    {
+     "t": 15.62,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 408,
+     "after_mine": true
+    },
+    {
+     "t": 15.99,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 408,
+     "after_mine": true
+    },
+    {
+     "t": 16.37,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 409,
+     "after_mine": true
+    },
+    {
+     "t": 16.74,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 409,
+     "after_mine": true
+    },
+    {
+     "t": 17.1,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 410,
+     "after_mine": true
+    },
+    {
+     "t": 17.47,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 410,
+     "after_mine": true
+    },
+    {
+     "t": 17.84,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 410,
+     "after_mine": true
+    },
+    {
+     "t": 18.21,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 411,
+     "after_mine": true
+    },
+    {
+     "t": 18.59,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 411,
+     "after_mine": true
+    },
+    {
+     "t": 18.95,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 411,
+     "after_mine": true
+    },
+    {
+     "t": 19.32,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 412,
+     "after_mine": true
+    },
+    {
+     "t": 19.69,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 412,
+     "after_mine": true
+    },
+    {
+     "t": 20.05,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 412,
+     "after_mine": true
+    },
+    {
+     "t": 20.42,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 413,
+     "after_mine": true
+    },
+    {
+     "t": 20.81,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 413,
+     "after_mine": true
+    },
+    {
+     "t": 21.13,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 414,
+     "after_mine": true
+    },
+    {
+     "t": 21.45,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 414,
+     "after_mine": true
+    },
+    {
+     "t": 21.76,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 414,
+     "after_mine": true
+    },
+    {
+     "t": 22.08,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 414,
+     "after_mine": true
+    },
+    {
+     "t": 22.39,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 415,
+     "after_mine": true
+    },
+    {
+     "t": 22.71,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 415,
+     "after_mine": true
+    },
+    {
+     "t": 23.01,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 415,
+     "after_mine": true
+    },
+    {
+     "t": 23.32,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 416,
+     "after_mine": true
+    },
+    {
+     "t": 23.64,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 416,
+     "after_mine": true
+    },
+    {
+     "t": 23.96,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 416,
+     "after_mine": true
+    },
+    {
+     "t": 24.29,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 417,
+     "after_mine": true
+    },
+    {
+     "t": 24.61,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 417,
+     "after_mine": true
+    },
+    {
+     "t": 24.94,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 417,
+     "after_mine": true
+    },
+    {
+     "t": 25.25,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 418,
+     "after_mine": true
+    },
+    {
+     "t": 25.59,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 418,
+     "after_mine": true
+    },
+    {
+     "t": 25.92,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 418,
+     "after_mine": true
+    },
+    {
+     "t": 26.25,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 419,
+     "after_mine": true
+    },
+    {
+     "t": 26.57,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 419,
+     "after_mine": true
+    },
+    {
+     "t": 26.89,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 419,
+     "after_mine": true
+    },
+    {
+     "t": 27.22,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 420,
+     "after_mine": true
+    },
+    {
+     "t": 27.53,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 420,
+     "after_mine": true
+    },
+    {
+     "t": 27.86,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 420,
+     "after_mine": true
+    },
+    {
+     "t": 28.18,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 421,
+     "after_mine": true
+    },
+    {
+     "t": 28.5,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 421,
+     "after_mine": true
+    },
+    {
+     "t": 28.83,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 421,
+     "after_mine": true
+    },
+    {
+     "t": 29.18,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 422,
+     "after_mine": true
+    },
+    {
+     "t": 29.54,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 422,
+     "after_mine": true
+    },
+    {
+     "t": 29.91,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 422,
+     "after_mine": true
+    },
+    {
+     "t": 30.28,
+     "rindexer": {
+      "alice": 742,
+      "bob": 258,
+      "carol": 0,
+      "dave": 0
+     },
+     "synced": 423,
+     "after_mine": true
+    }
+   ],
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:40:39.609985756+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 423,
+   "window": [
+    134,
+    290,
+    423
+   ],
+   "node_head": 423,
+   "first_match_seconds": null
+  }
+ ],
+ "start": {
+  "head": 203,
+  "truth": {
+   "alice": 801,
+   "bob": 199,
+   "carol": 0,
+   "dave": 0
+  },
+  "rindexer": {
+   "alice": 801,
+   "bob": 199,
+   "carol": 0,
+   "dave": 0
+  },
+  "table": {
+   "name": "reorglab_token.transfer",
+   "cols": [
+    "rindexer_id",
+    "block_number",
+    "block_timestamp",
+    "tx_index",
+    "value",
+    "tx_hash",
+    "network",
+    "log_index",
+    "block_hash",
+    "contract_address",
+    "from",
+    "to"
+   ]
+  },
+  "health": [
+   200,
+   {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:37:01.831527597+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   }
+  ]
+ },
+ "live_fill": [
+  {
+   "t": 1.0,
+   "node_head": 204,
+   "synced": 204,
+   "window": [
+    2,
+    203,
+    204
+   ]
+  },
+  {
+   "t": 10.2,
+   "node_head": 213,
+   "synced": 213,
+   "window": [
+    11,
+    203,
+    213
+   ]
+  },
+  {
+   "t": 20.4,
+   "node_head": 224,
+   "synced": 224,
+   "window": [
+    22,
+    203,
+    224
+   ]
+  },
+  {
+   "t": 30.6,
+   "node_head": 234,
+   "synced": 234,
+   "window": [
+    32,
+    203,
+    234
+   ]
+  },
+  {
+   "t": 40.8,
+   "node_head": 244,
+   "synced": 244,
+   "window": [
+    42,
+    203,
+    244
+   ]
+  },
+  {
+   "t": 51.0,
+   "node_head": 254,
+   "synced": 254,
+   "window": [
+    52,
+    203,
+    254
+   ]
+  },
+  {
+   "t": 60.2,
+   "node_head": 263,
+   "synced": 263,
+   "window": [
+    61,
+    203,
+    263
+   ]
+  },
+  {
+   "t": 70.3,
+   "node_head": 274,
+   "synced": 273,
+   "window": [
+    72,
+    203,
+    274
+   ]
+  },
+  {
+   "t": 80.5,
+   "node_head": 284,
+   "synced": 284,
+   "window": [
+    82,
+    203,
+    284
+   ]
+  },
+  {
+   "t": 90.7,
+   "node_head": 294,
+   "synced": 294,
+   "window": [
+    92,
+    203,
+    294
+   ]
+  },
+  {
+   "t": 100.9,
+   "node_head": 304,
+   "synced": 304,
+   "window": [
+    102,
+    203,
+    304
+   ]
+  },
+  {
+   "t": 110.1,
+   "node_head": 313,
+   "synced": 313,
+   "window": [
+    111,
+    203,
+    313
+   ]
+  },
+  {
+   "t": 120.2,
+   "node_head": 323,
+   "synced": 323,
+   "window": [
+    121,
+    203,
+    323
+   ]
+  },
+  {
+   "t": 130.4,
+   "node_head": 334,
+   "synced": 334,
+   "window": [
+    132,
+    203,
+    334
+   ]
+  },
+  {
+   "t": 140.6,
+   "node_head": 344,
+   "synced": 344,
+   "window": [
+    134,
+    211,
+    344
+   ]
+  },
+  {
+   "t": 150.8,
+   "node_head": 354,
+   "synced": 354,
+   "window": [
+    136,
+    219,
+    354
+   ]
+  }
+ ],
+ "after_outside": [
+  {
+   "t": 5.0,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:40:44.782160987+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 428,
+   "node_head": 428,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    129,
+    300,
+    428
+   ]
+  },
+  {
+   "t": 10.3,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:40:50.059196030+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 434,
+   "node_head": 434,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    135,
+    300,
+    434
+   ]
+  },
+  {
+   "t": 15.5,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:40:55.225841911+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 440,
+   "node_head": 441,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    131,
+    311,
+    441
+   ]
+  },
+  {
+   "t": 20.6,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:00.412845186+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 447,
+   "node_head": 447,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    137,
+    311,
+    447
+   ]
+  },
+  {
+   "t": 25.8,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:05.614461525+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 453,
+   "node_head": 453,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    130,
+    324,
+    453
+   ]
+  },
+  {
+   "t": 31.1,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:10.872326016+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 459,
+   "node_head": 459,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    136,
+    324,
+    459
+   ]
+  },
+  {
+   "t": 36.4,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:16.130738085+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 465,
+   "node_head": 466,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    132,
+    335,
+    466
+   ]
+  },
+  {
+   "t": 41.6,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:21.377706373+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 472,
+   "node_head": 472,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    138,
+    335,
+    472
+   ]
+  },
+  {
+   "t": 46.9,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:26.645384872+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 478,
+   "node_head": 478,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    132,
+    347,
+    478
+   ]
+  },
+  {
+   "t": 52.1,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:31.913932408+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 484,
+   "node_head": 484,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    138,
+    347,
+    484
+   ]
+  },
+  {
+   "t": 57.4,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:37.155982704+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 491,
+   "node_head": 491,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    133,
+    359,
+    491
+   ]
+  },
+  {
+   "t": 62.7,
+   "alive": true,
+   "health": 200,
+   "health_body": {
+    "status": "healthy",
+    "timestamp": "2026-11-21T08:41:42.421958374+00:00",
+    "services": {
+     "database": "healthy",
+     "indexing": "healthy",
+     "sync": "healthy"
+    },
+    "indexing": {
+     "active_tasks": 0,
+     "is_running": true
+    }
+   },
+   "synced": 497,
+   "node_head": 497,
+   "rindexer": {
+    "alice": 742,
+    "bob": 258,
+    "carol": 0,
+    "dave": 0
+   },
+   "truth": {
+    "alice": 714,
+    "bob": 236,
+    "carol": 0,
+    "dave": 50
+   },
+   "window": [
+    128,
+    370,
+    497
+   ]
+  }
+ ],
+ "versions": {
+  "anvil": "anvil Version: 1.7.1",
+  "rindexer": "rindexer 1.0.0"
+ }
+}
