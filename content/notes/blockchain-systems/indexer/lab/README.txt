@@ -22,7 +22,7 @@ Output:
 
 Requirements: Node.js 22, npm, plus anvil and solc as above.
 Copy lab/ponder outside the Hugo content directory first (node_modules under content/ breaks
-`hugo server`), then from the copy: npm ci && LAB=/path/to/lab python3 drive.py
+`hugo server`), then from the copy: npm install && LAB=/path/to/lab python3 drive.py
 (writes output/results.json, drive.txt, ponder.log; LAB is the directory holding Token.sol and keccak.py)
 
 - Ponder 0.18.9 with PGlite (no external database). The reorg window is the default 180 seconds.

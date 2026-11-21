@@ -1,4 +1,17 @@
-{ "name": "indexer-reorg-ponder", "private": true, "type": "module",
-  "scripts": { "dev": "ponder dev", "start": "ponder start" },
-  "dependencies": { "ponder": "0.18.9", "viem": "^2", "hono": "^4" },
-  "devDependencies": { "typescript": "^5" } }
+{
+  "name": "indexer-reorg-ponder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ponder dev",
+    "start": "ponder start"
+  },
+  "dependencies": {
+    "ponder": "0.18.9",
+    "viem": "2.58.4",
+    "hono": "4.13.19"
+  },
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
+}

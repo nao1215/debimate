@@ -3,6 +3,8 @@ Reorg experiments against 11 indexer projects (run on 2026-11-21)
 Each directory holds the driver (drive.py), the project or config the indexer ran with,
 and the recorded output (results.json is every sample where kept, drive.txt is the summary).
 Logs, binaries, node_modules and build outputs are not kept here.
+package-lock.json is not kept for graph-node and sqd (old transitive dependencies raise security alerts);
+direct dependencies are pinned to the tested versions in package.json, so `npm install` resolves newer transitive versions.
 Do not run npm install inside content/: node_modules under content/ breaks `hugo server`.
 Copy a directory elsewhere first, and pass LAB=/path/to/lab (the directory with Token.sol and keccak.py).
 

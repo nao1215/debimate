@@ -4,3 +4,5 @@ generated/
 build/
 target/
 *.log
+graph-node/subgraph/package-lock.json
+sqd/package-lock.json

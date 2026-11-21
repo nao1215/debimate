@@ -2,3 +2,4 @@ node_modules/
 .ponder/
 output/anvil.log
 generated/
+package-lock.json
