@@ -86,7 +86,7 @@ receipt = rpc('eth_getTransactionReceipt', eth_tx)
 == eth_getLogs の件数（block 0〜4、Transfer）: 4
 ```
 
-トークンの送金でログが出るのは、ERC-20 のコントラクトが `emit Transfer(...)` を実行し、ログを書く命令を通るからです。ETH の送金は、トランザクションの `value` で残高が動くだけで、ログを書く命令をどこも通りません。
+トークンの送金でログが出るのは、ERC-20 のコントラクトが `emit Transfer(...)` を実行し、ログを書く命令を通るからです。ETH の送金は、トランザクションの `value` で残高が動くだけで、ログを書く命令をどこも通りません。冒頭で挙げた「届いたはずの入金が出ない」は、ログだけを集めるインデクサーなら、ETH の入金で実際に起きます。
 
 コントラクトの中から別のアドレスへ ETH を送る場合も同じです。こうした送金は、トランザクションの実行をたどった記録（trace）を `debug_traceTransaction` などで取り出さないと見えません。trace はブロックを実行し直して作るので重く、古いブロックでは実用上、過去の全状態を持つアーカイブノードが必要です。
 
@@ -293,8 +293,6 @@ after outside {'t': 60.2, 'alive': True, 'ready': 200, 'status_block': 51, 'node
 
 いずれも、Ethereum と同じ仮想マシン EVM（Ethereum Virtual Machine、コントラクトを動かす仕組み）でコントラクトを動かすチェーン（EVM チェーン）を主に扱います。保存先は PostgreSQL が中心で、問い合わせは GraphQL か SQL です。
 
-Substreams の変換は、Rust などで書いて WebAssembly にしたものです。
-
 | 名前 | 利用者が書くもの | reorg への備え |
 |---|---|---|
 | [Graph Node](https://github.com/graphprotocol/graph-node) | AssemblyScript | 250 ブロックまで想定 |
@@ -305,9 +303,11 @@ Substreams の変換は、Rust などで書いて WebAssembly にしたもので
 | [rindexer](https://github.com/joshstevens19/rindexer) | YAML、必要なら Rust | 256 ブロックを戻す |
 | [Shovel](https://github.com/indexsupply/shovel) | JSON の設定 | 最新から消して取り直す |
 
-reorg への備えの列にある数は、どれも既定の値です。確定前を戻す 2 つは、まだ覆り得るブロックの分だけ変更の記録を残し、reorg が来たらその分を戻します。どこからを確定とみなすかは、各プロジェクトが事前に抜き出したデータを配る仕組みが決めます。SQD がノードから直接取得する時は、境目を何ブロックにするかを利用者が必ず設定します。
+reorg への備えの列にある数は、どれも既定の値です。確定前を戻す 2 つは、まだ覆り得るブロックの分だけ変更の記録を残し、reorg が来たらその分を戻します。
 
 Envio HyperIndex は、ノードの JSON-RPC から直接取得する時に [reorg を見逃す場合があります](https://docs.envio.dev/docs/HyperIndex/reorgs-support)。RPC の問い合わせが、まとめて 1 回では行われないからです。「parentHash による照合」の節で、ヘッダーを取得してからログを取得するまでの間に置き換わる話をしたのと同じ問題です。
+
+表を作らず、ブロックやログをファイルに書き出すだけの道具もあります。[cryo](https://github.com/paradigmxyz/cryo) と [Ethereum ETL](https://github.com/blockchain-etl/ethereum-etl) で、どちらも reorg への備えは最新のブロックから決めた数だけ離れて書き出すことです。この数は既定で 0 です。
 
 <br>
 
@@ -315,27 +315,17 @@ Envio HyperIndex は、ノードの JSON-RPC から直接取得する時に [reo
 
 下の表のものは、利用者が変換を書かず、設定だけで動かします。Bitcoin も対象に入ってきます。Bitcoin にはコントラクトのログが無いので、これらは、トランザクションが「どのコインを使い、どのアドレスへいくら渡すか」という[入力と出力](../utxo/)から、アドレスごとの入出金を直接表にします。
 
-表の Electrum は、Bitcoin のウォレット [Electrum](https://electrum.org/) がアドレスの履歴を問い合わせる時のプロトコルで、そのサーバーとして動くのが electrs・Blockstream electrs・Fulcrum の 3 つです。Blockbook は、ハードウェアウォレットの [Trezor](https://trezor.io/) が使うサーバーです。Liquid は、Bitcoin と資産を行き来させる別のチェーンです。
+表の Electrum は、Bitcoin のウォレット [Electrum](https://electrum.org/) がアドレスの履歴を問い合わせる時のプロトコルで、そのサーバーとして動くのが electrs・Blockstream electrs・Fulcrum の 3 つです。Blockbook は、ハードウェアウォレットの [Trezor](https://trezor.io/) が使うサーバーです。
 
 | 名前 | 用途 | 対象 | reorg への備え |
 |---|---|---|---|
 | [Blockscout](https://github.com/blockscout/blockscout) | エクスプローラー | EVM チェーン | 外れたブロックに印 |
 | [Blockbook](https://github.com/trezor/blockbook) | Trezor のウォレット | Bitcoin 系・EVM 系 | 300 ブロックを戻す |
 | [electrs](https://github.com/romanz/electrs) | 個人用 Electrum | Bitcoin | 外れた項目を捨てる |
-| [Blockstream electrs](https://github.com/Blockstream/electrs) | エクスプローラー | Bitcoin・Liquid | 共通の祖先まで戻す |
+| [Blockstream electrs](https://github.com/Blockstream/electrs) | エクスプローラー | Bitcoin | 共通の祖先まで戻す |
 | [Fulcrum](https://github.com/cculianu/Fulcrum) | Electrum サーバー | Bitcoin 系 | 100 ブロックを戻す |
 
 Blockscout は、2026 年 4 月 22 日に GPL-3.0 から独自のライセンスへ変わりました。README には、今も「open-source alternative」という言葉が残っています。自分で立てる前に、[LICENSE](https://github.com/blockscout/blockscout/blob/master/LICENSE) で使い方が許されているかを確認する必要があります。
-
-Blockstream electrs は、外れたブロックの[行を消さずに残し](https://github.com/Blockstream/electrs/blob/new-index/doc/schema.md)、そのトランザクションを引き続き返せるようにしています。ただし、アドレスを前方一致で探すための補助の索引は、reorg で外れても[消えません](https://github.com/Blockstream/electrs/blob/new-index/README.md)。消すには、全部の索引を作り直します。
-
-<br>
-
-#### 表を作らず、ファイルに書き出すもの
-
-DB や API を持たず、ブロック・トランザクション・ログを書き出す道具もあります。[cryo](https://github.com/paradigmxyz/cryo) は Parquet などのファイルに書き出し、`--reorg-buffer` で最新のブロックから決めた数だけ離れた所までを書き出します。
-
-[Ethereum ETL](https://github.com/blockchain-etl/ethereum-etl) は CSV や JSON への書き出しに加えて、PostgreSQL や Kafka へ流し続ける stream コマンドを持ち、その `--lag` で同じように最新から離れた所までを流します。どちらも既定は 0 なので、そのままでは最新のブロックまで書き出します。
 
 ---
 
