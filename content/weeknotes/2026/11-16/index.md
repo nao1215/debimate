@@ -48,3 +48,19 @@ Awesome 系に登録された OSS は、6件だ。[gup](https://github.com/nao12
 {{< figure src="awesome-star-history.webp" alt="Awesome 系に掲載された 6 個の OSS の GitHub Star 数の推移。2026 年 11 月 19 日時点で gup 629、filesql 388、sqly 197、markdown 146、gozen 4、embargo 3" caption="Awesome 系に掲載された OSS の Star History（2026 年 11 月 19 日時点、[action-readme-showcase](https://github.com/nao1215/action-readme-showcase) で生成）" width="800" align="center" >}}
 
 Star 数の少ない embargo や gozen の方がガチガチに作り込んである。私の経験が後発 OSS に活かされている。ちなみに、2026年は40個以上のパブリック OSS を作ったが、その中の2個が awesome 行きだった。3個目（[atago](https://github.com/nao1215/atago)）を狙っているけど、果たして Approve は得られるだろうか。
+
+----
+
+#### ゾルトラークとなった時のオカリナ
+
+{{< figure src="zelda-ocarina-ogp.webp" link="https://www.nintendo.com/jp/games/switch2/aa9ja/index.html" alt="森の小道でオカリナを持った子供のリンクと妖精ナビィ、右にゼルダの伝説 時のオカリナのロゴ" caption="Nintendo Switch 2 版『ゼルダの伝説 時のオカリナ』<br>出典：[任天堂 公式サイト](https://www.nintendo.com/jp/games/switch2/aa9ja/index.html)（2026年11月21日取得）" width="600" align="center" >}}
+
+ゾルトラークは、便利な表現だ。ゾルトラークは、[葬送のフリーレン](https://frieren-anime.jp/)に登場する史上初の貫通魔法であり、長い年月の間に研究されすぎて一般攻撃魔法まで格下げされた。[時のオカリナ](https://www.nintendo.com/jp/games/switch2/aa9ja/index.html)も、今回のリメイクでゾルトラークとなった。当時を知らないユーザーは、時のオカリナを完成度の高いアクション RPG 扱いしている。[NIRVANA（グランジ）](https://www.universal-music.co.jp/nirvana/)を2026年に聴いて衝撃を受けないように、ジャンル全体が進歩しており、今現在の基準で衝撃を残す作品を作るのは難しいのだろう（時のオカリナの評価を下げる発言ではなく、一般的なモノ作りに言及している）。
+
+1998年当時（私がプレイしたのは99年だが）、広大なハイラル平原にワクワクしたが、現代の感覚で見ると狭い。ダンジョンも狭い。マップを見ながら神殿をうろつくと、「道なりに進めばクリアできるな？」と気づいてしまう。大人になったので空間認知能力が高まったのかもしれない。余計な知識がついた今では、ブロックを動かしたり、高低差を利用した仕掛けが多いのは、3D グラフィックが作りやすいからだと、余計なゲスパーをしてしまう。純粋な子供時代のような楽しみ方ができない。
+
+{{< figure src="hyrule-field-n64-vs-switch2.webp" alt="左は NINTENDO64 版のハイラル平原で、低解像度の草原の奥にデスマウンテンが小さく見える。右は Nintendo Switch 2 版の平原で、エポナに乗った大人のリンクの背後に草原と山並みが細かく描かれている" caption="ハイラル平原の比較。左：NINTENDO64 版（[Wii バーチャルコンソール版の公式ページ](https://www.nintendo.co.jp/wii/vc/vc_lzo/vc_lzo_06.html)の画面写真）、右：Nintendo Switch 2 版（[公式サイト](https://www.nintendo.com/jp/games/switch2/aa9ja/index.html)の画像）<br>出典：任天堂（2026年11月21日取得）" width="800" align="center" >}}
+
+しかし、時のオカリナリメイクは、100点満点だ。任天堂は私（当時のプレイヤー）の思い出を大切にしてくれたのだな、と受け止めた。華麗なグラフィック、ストーリー補完、プレイしやすさ、豊富なテキストで勝負したと思っており、正当進化だった。時間の流れがあり、その流れの中でキャラが生活している。人間らしいリアクションを返す。昔から任天堂が言語化しようとしていたゼルダらしさが、表現されている。難易度はやや上がっているように感じられるが、丁度よい。簡単な部類だが（ゼルダに難易度を求めていない）。
+
+10〜20年後に再リメイクする際は、大幅に改変しても良いと感じた。ハードの進歩を考えると、同じ方向性でリメイクしても目新しさはないだろう。リメイクしたら別作品になってしまった、というレベルを期待している。[開発者インタビュー](https://www.nintendo.com/jp/interview/aa9ja/index.html)を読む限り、任天堂は技術の継承に成功していそうなので、これからも良質なゼルダはリリースされるだろう。最後に余談だが、私は子供がいるからか、「こんなプニプニしてそうな幼子リンクに旅をさせていいのか？」と、別方向の心配が出てしまった。
