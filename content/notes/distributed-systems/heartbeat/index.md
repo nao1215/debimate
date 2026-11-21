@@ -166,7 +166,7 @@ TCP の接続が切れたかどうかで代わりにできないのも、同じ�
 
 AWS のホワイトペーパーは、日本語版で[グレー障害](https://docs.aws.amazon.com/ja_jp/whitepapers/latest/advanced-multi-az-resilience-patterns/gray-failures.html)と訳しています。論文は、監視と利用者で観測が食い違うこと（differential observability）として定義しています。上に示した図では、上の段がその小さな例です。
 
-ハートビートは届くことしか見ないので、ディスクが壊れていても、ハートビートさえ届けば健全と判定されます。誤った値を返すノード（[ビザンチン障害](../byzantine-fault-tolerance/)）も、ハートビートでは見つけられません。
+ハートビートは届くことしか見ないので、ディスクが壊れていても、ハートビートさえ届けば健全と判定されます。ブロックチェーンの[インデクサー](../../blockchain-systems/indexer/#上限を超える-reorg-と-ponder-の実測)でも、取り込みが止まったまま、準備ができたかを示す応答だけが正常を返し続ける例があります。誤った値を返すノード（[ビザンチン障害](../byzantine-fault-tolerance/)）も、ハートビートでは見つけられません。
 
 ハートビートを処理のループから送れば、利用者の要求と同じ所が止まった時に気付けます。Kubernetes の [liveness probe](https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/) のように、monitor から実際の処理を通る要求を送る方法もあります。どちらの方法でも、ハートビートが届いた時に何が動いていると言えるのかを先に決めておきます。
 
