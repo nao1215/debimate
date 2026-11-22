@@ -46,7 +46,7 @@ KINDS = ("post", "notes", "ml", "weeknotes")
 PREFIXES = {
     "post": "記事：",
     "notes": "技術ノート：",
-    "ml": "機械学習ノート：",
+    "ml": "技術ノート：",
     "weeknotes": "Weeknotes：",
 }
 REPO = Path(__file__).resolve().parent.parent

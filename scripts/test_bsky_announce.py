@@ -10,7 +10,7 @@ class PostTextTests(unittest.TestCase):
         cases = {
             'post': '記事：題名',
             'notes': '技術ノート：題名',
-            'ml': '機械学習ノート：題名',
+            'ml': '技術ノート：題名',
             'weeknotes': 'Weeknotes：題名',
         }
         self.assertEqual(set(cases), set(KINDS))
@@ -38,8 +38,8 @@ class PostTextTests(unittest.TestCase):
 
     def test_one_character_left_for_title_becomes_ellipsis(self):
         base = 'https://debimate.jp/ml/'
-        url = base + 'a' * (MAX_GRAPHEMES - len('機械学習ノート：\n…') - len(base))
-        self.assertEqual(post_text('ml', '長い題名', url), f'機械学習ノート：…\n{url}')
+        url = base + 'a' * (MAX_GRAPHEMES - len('技術ノート：\n…') - len(base))
+        self.assertEqual(post_text('ml', '長い題名', url), f'技術ノート：…\n{url}')
 
     def test_link_only_when_prefix_and_title_do_not_fit(self):
         base = 'https://debimate.jp/notes/'
