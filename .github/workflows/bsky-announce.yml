@@ -1,6 +1,6 @@
 name: Announce new pages on Bluesky
 
-# 記事・技術ノート・ML ノート・weeknotes の 1 話を「題名 + URL」で Bluesky に投稿する。
+# 記事・技術ノート・ML ノート・weeknotes の 1 話を「種類：題名 + 改行 + URL」で Bluesky に投稿する。
 # 毎日昼に、JST の昨日と今日に公開された分を流す。デプロイを待たずに済むよう、まだ公開されていない URL は
 # 飛ばして次の回に回し、同じ URL を既に投稿していれば飛ばす（scripts/bsky_announce.py）。
 # 要る secrets: BSKY_IDENTIFIER（投稿するアカウントのハンドル。メールアドレスは不可）、

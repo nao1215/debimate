@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""debimate の新しいページを Bluesky へ「題名 + URL」で投稿する（.github/workflows/bsky-announce.yml から呼ぶ）。
+"""debimate の新しいページを Bluesky へ「種類：題名 + 改行 + URL」で投稿する（.github/workflows/bsky-announce.yml から呼ぶ）。
 
 対象と取り出し方:
 - 記事（/post/）・技術ノート（/notes/）・ML ノート（/ml/）: 公開中のサイトの index.xml から題名・URL・pubDate を取る。
@@ -43,6 +43,12 @@ from pathlib import Path
 SITE = "https://debimate.jp"
 JST = dt.timezone(dt.timedelta(hours=9))
 KINDS = ("post", "notes", "ml", "weeknotes")
+PREFIXES = {
+    "post": "記事：",
+    "notes": "技術ノート：",
+    "ml": "機械学習ノート：",
+    "weeknotes": "Weeknotes：",
+}
 REPO = Path(__file__).resolve().parent.parent
 WEEKNOTES_GLOB = "content/weeknotes/*/*/index.md"
 UA = "debimate-bsky-announce"
@@ -274,12 +280,13 @@ def display_url(url: str) -> str:
     return decoded
 
 
-def post_text(title: str, url: str) -> str:
+def post_text(kind: str, title: str, url: str) -> str:
+    prefix = PREFIXES[kind]
     link = display_url(url)
-    room = MAX_GRAPHEMES - len(link) - 1  # 改行の分
+    room = MAX_GRAPHEMES - len(prefix) - len(link) - 1  # 改行の分
     if len(title) > room:
         title = title[: max(room - 1, 0)] + "…"
-    return f"{title}\n{link}" if room > 0 else link
+    return f"{prefix}{title}\n{link}" if room > 0 else link
 
 
 def main() -> int:
@@ -342,7 +349,7 @@ def main() -> int:
         return 0
 
     for i, c in enumerate(todo):
-        text = post_text(c["title"], c["url"])
+        text = post_text(c["kind"], c["title"], c["url"])
         print(f"[{c['kind']}] {text.replace(chr(10), ' ')}")
         if args.dry_run:
             continue
