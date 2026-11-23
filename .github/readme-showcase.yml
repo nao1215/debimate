@@ -1,0 +1,16 @@
+# /oss/ の「GitHub Star の推移」の SVG を作る設定（.github/workflows/star-history.yml が使う）。
+# action-readme-showcase は README のマーカー間とカードも書くので、README.md にマーカーを置き、
+# カードは推移の図に要る最小の 1 枚だけにする
+owner: nao1215
+starHistory:
+  repos:
+  - gup
+  - sqly
+  - filesql
+  - markdown
+  total: true # nao1215 の全公開リポジトリ（fork・archive を含む）
+sections:
+- groups:
+  - title: Projects
+    repos:
+    - name: gup

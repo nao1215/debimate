@@ -1,0 +1,38 @@
+name: Refresh star history
+
+# /oss/ の「GitHub Star の推移」の SVG（static/oss/star-history/）を作り直し、変わっていれば main に commit する。
+# 以前は nao1215/nao1215 の README 用の SVG を直接読み込んでいたが、2026-11-22 にあちらから図を外したため、
+# debimate で作る。GITHUB_TOKEN の push では deploy が動かないので、deploy の日次実行（00:10 JST）より前に回す。
+# 全公開リポジトリの Star を取るので 3 分前後かかる
+on:
+  schedule:
+    # 毎日 23:30 JST
+    - cron: '30 14 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: star-history
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate the star history
+        uses: nao1215/action-readme-showcase@v0.6.0
+        with:
+          cards-dir: static/oss/star-history
+      - name: Commit if changed
+        run: |
+          if [ -z "$(git status --porcelain -- README.md static/oss/star-history)" ]; then echo "変更なし"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- README.md static/oss/star-history
+          git commit -m "chore(oss): refresh the star history graph"
+          for i in 1 2 3; do git pull --rebase -q && git push && exit 0; sleep 5; done
+          exit 1
