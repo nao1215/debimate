@@ -120,9 +120,9 @@ def units_figure():
         '<div class="title" style="font-size:28px">同じ 1 つの絵文字（家族 👨‍👩‍👧）を、5 つの単位で数える</div>'
         + row("UTF-8 のバイト", "18", utf8, "Go の len、Rust の len()")
         + row("UTF-16 のコード単位", "8", utf16, "JavaScript の length")
-        + row("コードポイント", "5", cps, "Python の len、SQLite の length")
+        + row("コードポイント", "5", cps, "Python の len、<br>SQLite の length")
         + row("書記素クラスター", "1", grapheme, "Intl.Segmenter、uniseg")
-        + row("表示幅", "2 セル", cells, "go-runewidth、多くの端末")
+        + row("表示幅", "2 セル", cells, "go-runewidth、<br>多くの端末")
         + '</div>')
     css = f"""
     .wrap {{ padding: 28px 32px; }}
