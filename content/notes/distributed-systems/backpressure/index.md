@@ -223,7 +223,7 @@ block は、Producer が自分の速度を変えられる時に、何も失わ�
 
 Push は、Webhook（イベントを相手の URL に POST する仕組み）のように Producer が作った分だけ送る方式です。届くまでの遅延が小さい代わりに、Consumer の処理速度が生産速度を下回ると、超過分が Consumer 側に溜まります。
 
-[Apache Kafka](https://kafka.apache.org/42/design/design/) が Consumer に取りに行かせる Pull 型を選んだ理由の 1 つも、Push 型ではこの状態で Consumer が溢れることです。[Transactional Outbox](../transactional-outbox/) の relay も、outbox テーブルを自分の間隔で読みに行く Pull 型です。
+[Apache Kafka](https://kafka.apache.org/42/design/design/) が Consumer に取りに行かせる Pull 型を選んだ理由の 1 つも、Push 型ではこの状態で Consumer が溢れることです。[Transactional Outbox](../transactional-outbox/) で outbox テーブルからメッセージを取り出して送る処理（relay）も、テーブルから自分の間隔で取り出しに行く Pull 型です。
 
 その代わりに、Pull 型ではデータが無い時も問い合わせを繰り返す無駄が生じます。Kafka は、データが届くまで要求を待たせておく long poll でこの無駄を避けています。
 

@@ -68,7 +68,7 @@ func newOsakaInstructionSet() JumpTable {
 
 下段の大きい棒は 4 つです。Tangerine Whistle の 7 個はディスクを読む命令の値上げ（[EIP-150](https://eips.ethereum.org/EIPS/eip-150)）、Istanbul の 4 個は状態を読む命令の値上げと SSTORE の料金の見直しです。
 
-Berlin の 11 個は cold と warm の導入（[EIP-2929](https://eips.ethereum.org/EIPS/eip-2929)）です。Prague の 4 個は、EOA に別のコントラクトのコードを自分のコードとして動かさせる設定（委任、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)）が入ったため、CALL 系の命令が委任した EOA を呼ぶ時の扱いを変えたものです。
+Berlin の 11 個は cold と warm の導入（[EIP-2929](https://eips.ethereum.org/EIPS/eip-2929)）です。Prague の 4 個は、EOA（Externally Owned Account、秘密鍵で操作するアカウント）に、別のコントラクトのコードを自分のコードとして動かさせる設定（委任、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702)）が入ったため、CALL 系の命令が委任した EOA を呼ぶ時の扱いを変えたものです。
 
 ラベルの無い小さい棒は 1〜2 個の変更で、払い戻しの縮小や、コントラクトを消す命令 SELFDESTRUCT の意味の変更などです（一覧は [geth_tables.json](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/evm-opcode-history/lab/output/geth_tables.json) の `changed`）。The Merge の 1 個は次の段落で説明します。値上げで既存のコントラクトが動かなくなった例は [Ethereum Hard Forks](../ethereum-hard-forks/) で実験しています。
 

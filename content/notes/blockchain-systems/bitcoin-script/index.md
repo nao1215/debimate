@@ -278,7 +278,7 @@ spent inputs: 23, distinct scriptSig: 1, scriptSig bytes: 655
 
 `testmempoolaccept` は、そのトランザクションを mempool に入れるかどうかの判定だけをノードに頼む RPC で、実際には入れません。条件をそのまま書いた出力は `scriptpubkey` という理由で拒否されました。一方で、`generateblock` で直接ブロックに入れると、そのブロックは有効と判定されました。
 
-ブロックに入れて良いかを決める規則（consensus rule）と、各ノードが中継や mempool に入れる時に足す規則（policy、ポリシー）は別物です。Bitcoin Core のポリシーは、P2PKH・P2WSH・P2TR などの決まった形の出力だけを標準とみなし、それ以外の形で出力を作るトランザクションは中継しません。
+ブロックに入れて良いかを決める規則（consensus rule）と、各ノードが中継や mempool に入れる時に足す規則（policy、ポリシー）は別物です。Bitcoin Core のポリシーは、P2PKH・P2WSH と、後の節で説明する P2TR などの決まった形の出力だけを標準とみなし、それ以外の形で出力を作るトランザクションは中継しません。
 
 自分で条件を書く時は、条件を P2WSH や P2TR の形にするのが普通の書き方です。2 つの規則の違いと、ポリシーで拒否されたトランザクションの行方は [Mempool](../mempool/) で扱っています。
 

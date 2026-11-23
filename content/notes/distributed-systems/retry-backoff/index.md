@@ -189,7 +189,7 @@ gRPC の[状態コードの説明](https://github.com/grpc/grpc/blob/d825c2699f5
 
 もう 1 つの条件は、要求の副作用です。timeout は「処理されなかった」ことを意味しません。サーバーが処理を終えた後に応答だけが失われた要求を再試行すると、課金や注文が 2 回作られます。
 
-Amazon Builders' Library の記事は、副作用のある API は冪等性（idempotency、同じ要求を何度処理しても結果が 1 回分になる性質）を備えない限り再試行して安全ではない、としています。gRFC A6 も、`INTERNAL` で失敗した削除の要求は既に削除が済んでいる可能性があり、冪等なメソッドでなければ再試行しないよう求めています。再試行する側は、[Idempotency](/notes/distributed-systems/idempotency/) の冪等キーのように、同じ要求だとサーバーが見分けられる形で送ります。
+Amazon Builders' Library の記事は、副作用のある API は冪等性（idempotency、同じ要求を何度処理しても結果が 1 回分になる性質）を備えない限り再試行して安全ではない、としています。gRFC A6 も、`INTERNAL` で失敗した削除の要求は既に削除が済んでいる可能性があり、冪等なメソッドでなければ再試行しないよう求めています。再試行する側は、要求ごとに一意の値（冪等キー）を付けるなどして、同じ要求だとサーバーが見分けられる形で送ります。冪等キーの作り方は [Idempotency](/notes/distributed-systems/idempotency/) で扱っています。
 
 ---
 

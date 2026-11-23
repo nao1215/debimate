@@ -252,7 +252,7 @@ moved(table.get, table.get)      # 最初に作った表をそのまま引く
 
 ガイドの [Cell migration](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-migration.html) は、データの移し方を 4 段階に分けています。新しい場所に複製する Clone、新しい場所を正とする Flip、古い場所への要求を新しい場所へ向ける Redirect、古い場所のデータを消す Forget です。Redirect は、セルルーターの割り当て表を書き換えるか、移動元のセルから転送して行います。複製から切り替えまでの間に届く書き込みをどう移すかは、セルの DB ごとに設計します。
 
-ルーターで向け先を切り替える考え方は、旧システムから新システムへ少しずつ移す [Strangler Fig](/notes/software-architecture/strangler-fig/) のファサードと近く、新旧の両方に同じ顧客のデータがある期間の扱いが難所になります。
+ルーターで向け先を切り替える考え方は、旧システムから新システムへ少しずつ移す [Strangler Fig](/notes/software-architecture/strangler-fig/) で、入口に置いて新旧どちらへ送るかを決める層（ファサード）と近く、新旧の両方に同じ顧客のデータがある期間の扱いが難所になります。
 
 <br>
 
