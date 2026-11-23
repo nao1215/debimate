@@ -1,0 +1,16 @@
+{
+ "path": "content/notes/computer-systems/unicode-text-length/index.md",
+ "overall": 5,
+ "product": 81,
+ "blob": "9fe8b098a028977900300bbad163482b0407cd68",
+ "by": "別エージェント（抜き出しの採点、基準 5 本を同時に採点）",
+ "baseline": [
+  5,
+  5,
+  3,
+  2,
+  2
+ ],
+ "scored_at": "2026-11-23",
+ "standard": "gate-v1"
+}
