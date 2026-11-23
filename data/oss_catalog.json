@@ -8,6 +8,16 @@
       "description": "ファイルを SQL で読む、JSON に変える、型を付けて扱う。"
     },
     {
+      "id": "web",
+      "title": "Web・アプリ開発",
+      "description": "API のコード生成、アップロード、イベント配信。アプリに組み込む部品。"
+    },
+    {
+      "id": "security",
+      "title": "セキュリティ・匿名性",
+      "description": "暗号、署名、機密情報のマスク、Tor。"
+    },
+    {
       "id": "dev",
       "title": "開発環境・テスト",
       "description": "道具の更新から CLI の動作検証、性能の回帰検知まで。"
@@ -18,9 +28,9 @@
       "description": "ドキュメント、画像、グラフ。出力をつくるための道具。"
     },
     {
-      "id": "network",
-      "title": "通信・セキュリティ",
-      "description": "API、暗号化、Tor、機密情報。境界をつなぎ、確かめる。"
+      "id": "tui",
+      "title": "TUI クライアント",
+      "description": "ターミナルからサービスを使う。"
     },
     {
       "id": "games",
@@ -130,7 +140,7 @@
     },
     {
       "name": "prompt",
-      "category": "dev",
+      "category": "web",
       "language": "Go",
       "kind": "Library",
       "tagline": "対話シェルをアプリに組み込む",
@@ -158,7 +168,7 @@
     },
     {
       "name": "automata",
-      "category": "dev",
+      "category": "web",
       "language": "Gleam",
       "kind": "Library",
       "tagline": "繰り返し・状態・イベントを扱う",
@@ -233,7 +243,7 @@
     },
     {
       "name": "textmetrics",
-      "category": "create",
+      "category": "data",
       "language": "Gleam",
       "kind": "Library",
       "tagline": "テキストの違いを計算する",
@@ -242,7 +252,7 @@
     },
     {
       "name": "sqlode",
-      "category": "data",
+      "category": "web",
       "language": "Gleam",
       "kind": "Codegen",
       "tagline": "SQL から型安全なコードを生成",
@@ -314,7 +324,7 @@
     },
     {
       "name": "oaspec",
-      "category": "network",
+      "category": "web",
       "language": "Gleam",
       "kind": "Codegen",
       "tagline": "OpenAPI からサーバーと SDK を生成",
@@ -323,7 +333,7 @@
     },
     {
       "name": "multipartkit",
-      "category": "network",
+      "category": "web",
       "language": "Gleam",
       "kind": "Library",
       "tagline": "ファイルアップロードを扱う",
@@ -332,7 +342,7 @@
     },
     {
       "name": "mimetype",
-      "category": "network",
+      "category": "web",
       "language": "Gleam",
       "kind": "Library",
       "tagline": "ファイルの種類を判定する",
@@ -341,7 +351,7 @@
     },
     {
       "name": "ssevents",
-      "category": "network",
+      "category": "web",
       "language": "Gleam",
       "kind": "Library",
       "tagline": "サーバーからイベントを届ける",
@@ -350,7 +360,7 @@
     },
     {
       "name": "onionscan",
-      "category": "network",
+      "category": "security",
       "language": "Go",
       "kind": "CLI",
       "tagline": "Onion サービスの設定を検査する",
@@ -359,7 +369,7 @@
     },
     {
       "name": "tornago",
-      "category": "network",
+      "category": "security",
       "language": "Go",
       "kind": "Library",
       "tagline": "Tor を Go のアプリから使う",
@@ -368,7 +378,7 @@
     },
     {
       "name": "jose",
-      "category": "network",
+      "category": "security",
       "language": "Go",
       "kind": "CLI",
       "tagline": "鍵・署名・暗号をシェルで扱う",
@@ -378,7 +388,7 @@
     },
     {
       "name": "horcrux",
-      "category": "network",
+      "category": "security",
       "language": "TypeScript",
       "kind": "Library",
       "tagline": "ファイルを暗号化して分割する",
@@ -387,7 +397,7 @@
     },
     {
       "name": "embargo",
-      "category": "network",
+      "category": "security",
       "language": "Go",
       "kind": "Library",
       "tagline": "ログやテキストの機密情報を見つけて伏せる",
@@ -400,7 +410,7 @@
     },
     {
       "name": "bluesky-terminal-client",
-      "category": "network",
+      "category": "tui",
       "language": "Rust",
       "kind": "CLI",
       "tagline": "ターミナルから Bluesky を使う",
