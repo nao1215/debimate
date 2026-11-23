@@ -21,6 +21,7 @@ git config core.hooksPath notes-quality/hooks
 |---|---|
 | `gate.py` | 関門の本体。`note`・`commit`・`push`・`score`・`record` |
 | `check_note.py`、`style_check.sh`、`textruns.py`、`name_drift.py` | 機械で見られる規則（太字、「を、」、表記、括弧、区切り、図の形式、文字だけの区間） |
+| `undefined_refs.py` | 定義せずに使う書き方（単位の無い数字の並び、リンク先の専門語の借用、定義より前の略語）。`--all` で全ノートを見る |
 | `author_grep.sh`、`build_vocab.py` | 本人の実文（`content/post/ja` と `content/weeknotes`）で語を照合する |
 | `drift_words.tsv` | 本人の実文にほとんど無く、ノートで使わない語 |
 | `style/terms.tsv` | 分野の訳語。パスか題に当たるノートで避ける語と、訳書・公式文書での言い方と根拠。関門が読む |

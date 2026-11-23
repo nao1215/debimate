@@ -24,6 +24,7 @@
 import csv, difflib, glob, json, os, re, shutil, subprocess, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import no_chain  # noqa: E402  名詞を「の」で 3 つ以上つなぐ表現（2026-11-12 著者）
+import undefined_refs  # noqa: E402  定義せずに使う書き方（2026-11-23 著者）
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -370,8 +371,21 @@ def check_full(rel, process=True):
             ng.append(f'omokage の一致度が {sc}%（85% 以上。omokage check --explain で崩れた段落を見る）')
     ng += check_anchors(rel, text)
     ng += check_animation(p, text)
+    ng += check_undefined(undefined_refs.scan(p, text))
     if process:
         ng += check_process(rel, key, text)
+    return ng
+
+
+def check_undefined(found):
+    """定義せずに使う書き方（undefined_refs.py。2026-11-23 著者の指定）。NG の規則は止め、注意の規則は知らせるだけ。"""
+    ng = []
+    for n, rule, level, ex, hint in found:
+        msg = f'{n} 行目 {rule}: {ex[:60]} → {hint}'
+        if level == 'ng':
+            ng.append('定義せずに使っている: ' + msg)
+        else:
+            NOTICES.append('定義せずに使っているかもしれない: ' + msg)
     return ng
 
 
@@ -574,6 +588,8 @@ def check_small_whole(rel, old_text, new_text):
         why = title_subject_ng(title_of(new_text))
         if why:
             ng.append(why)
+    # 定義せずに使う書き方は、足した行に新しく出たものだけを見る（触っていない行の既存の指摘では止めない）
+    ng += check_undefined(undefined_refs.findings_in_added(old_text, new_text, added_lines(old_text, new_text)))
     terms = glossary_pairs()
     body = re.sub(r'```.*?```', '', new_text, flags=re.S)
     plain = re.sub(r'`[^`]*`|\]\([^)]*\)|https?://\S+', '', body)
