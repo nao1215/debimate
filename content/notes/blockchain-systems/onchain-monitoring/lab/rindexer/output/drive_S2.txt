@@ -1,0 +1,16 @@
+12:10:40 rindexer start (checkpoint before start=None)
+12:10:51 rindexer stopped by SIGTERM rc=0 exit_after=0.01s checkpoint before=10 after=10
+12:11:51 rindexer start (checkpoint before start=10)
+== S2-term-none: expected 89 delivered 89 missing [] dup [] unexpected [] retractions 0 alive True
+12:12:27 rindexer start (checkpoint before start=None)
+12:12:38 rindexer stopped by SIGKILL rc=-9 exit_after=0.01s checkpoint before=10 after=10
+12:13:38 rindexer start (checkpoint before start=10)
+== S2-kill-none: expected 89 delivered 89 missing [] dup [] unexpected [] retractions 0 alive True
+12:14:18 rindexer start (checkpoint before start=None)
+12:14:29 rindexer stopped by SIGTERM rc=0 exit_after=0.08s checkpoint before=10 after=10
+12:15:29 rindexer start (checkpoint before start=10)
+== S2-term-pg: expected 89 delivered 89 missing [] dup [] unexpected [] retractions 0 alive True
+12:16:09 rindexer start (checkpoint before start=None)
+12:16:20 rindexer stopped by SIGKILL rc=-9 exit_after=0.09s checkpoint before=10 after=10
+12:17:20 rindexer start (checkpoint before start=10)
+== S2-kill-pg: expected 89 delivered 89 missing [] dup [] unexpected [] retractions 0 alive True

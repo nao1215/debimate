@@ -1,0 +1,334 @@
+rindexer 1.0.0 の欠けの実験（2026-11-23、SCENARIOS.md に従う）
+
+版: rindexer 1.0.0（../../indexer/rindexer/bin/rindexer_cli、sha256 f7134741146ecff5b5486145b8bd48e41189e5f84aec6f3f81cdca876bca19b5、ソースは ../../monitor-src/rindexer-v100 = cb50444 Release v1.0.0）
+    anvil 1.7.1 / solc 0.8.28 / PostgreSQL postgres:16-alpine（コンテナ monitor-note-rindexer-pg、127.0.0.1:18735、各回の後に削除済み）
+置き場所: drive.py（driver）、common.py、sink_ctl.py、abis/Token.json、make_summary.py。各回の rindexer.yaml・rindexer.log・sink.jsonl・faultproxy.jsonl は output/runs/<variant>/
+実行: python3 drive.py S0 S1 S2 S3 S4 S5 S1-a-long   （S3 の safe5 は後述の理由で head 8 から起動。head 1 起動の回は S3-safe5-*-head1 に残した）
+ポート: anvil 18730、faultproxy 18731（control 18732）、sink 18733、health/metrics 18734、PostgreSQL 18735。
+注意: rindexer の health サーバーは 0.0.0.0 で待ち受ける（core/src/health.rs の SocketAddr::from(([0,0,0,0], port))、変える設定なし）。実験中だけ 18734 が全インタフェースで開いた。
+
+設定: streams.webhooks で sink へ、conditions で to=bob。保存先なし（.rindexer/webhooks/Token/last-synced-blocks/*.txt で再開）と storage.postgres の 2 通り。
+S3: none = networks に reorg_handling を書かない（文書の素直な例）、on = reorg_handling.enabled: true、fin = on + webhook の delivery: finalized、
+    safe5 = contract に reorg_safe_distance: 5（reorg_handling なし）。
+sink_ctl.py は ../sink.py に時間で 500 に切り替えるスイッチを足したもの。
+versions: {"rindexer": "rindexer 1.0.0", "anvil": "anvil Version: 1.7.1"}
+
+[S0-none] expected 40 (2-41)
+  delivered(200) 40  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 rindexer start (checkpoint before start=None)
+   log| ===== start 1795403016.862992 =====
+   log| 23 November - 12:03:36.958705  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:03:37.006495  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+
+[S0-pg] expected 40 (2-41)
+  delivered(200) 40  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.1 rindexer start (checkpoint before start=None)
+   log| ===== start 1795403084.8126585 =====
+   log| 23 November - 12:04:44.906531  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:04:45.104109  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+
+[S1-a] expected 40 (2-41)
+  delivered(200) 13  missing 27 (15-41)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 faultproxy {'fail_blocks': [15], 'mode': 'error', 'down': False}
+  t=    0.0 rindexer start (checkpoint before start=None)
+   log| ===== start 1795403138.4146082 =====
+   log| 23 November - 12:05:38.435315  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:05:38.451233  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:05:56.133237  WARN shared tip logs - anvil-hardhat - block 15 (0x514a1dbcbf3c915142bd70b60680f2475aa25666ae7a02a46aa90bc87326b99c) failed after 4 unfiltered eth_getLogs over 1513 ms: Failed to make rpc r
+   log| 23 November - 12:05:56.138058  WARN Token::Transfer::anvil Computed a fallback block range Range1. Provider did not provide information in error: "injected fault"
+   log|    ... repeated 419 more times
+
+[S1-b] expected 40 (2-41)
+  delivered(200) 40  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 16 (max 20.2 s)
+  t=    0.0 faultproxy {'fail_blocks': [15], 'mode': 'error', 'down': False}
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   36.1 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False}
+   log| ===== start 1795403241.562067 =====
+   log| 23 November - 12:07:21.574964  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:07:21.583105  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:07:39.256597  WARN shared tip logs - anvil-hardhat - block 15 (0x65dcb90a762677fff2b16520168b3651adcf91c33ec61ddcdd521653f7134cc4) failed after 4 unfiltered eth_getLogs over 1514 ms: Failed to make rpc r
+   log| 23 November - 12:07:39.259972  WARN Token::Transfer::anvil Computed a fallback block range Range1. Provider did not provide information in error: "injected fault"
+   log|    ... repeated 91 more times
+
+[S2-term-none] expected 89 (2-90)
+  delivered(200) 89  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 55 (max 59.0 s)
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   11.2 rindexer stopped by SIGTERM rc=0 exit_after=0.01s checkpoint before=10 after=10
+  t=   71.0 rindexer start (checkpoint before start=10)
+   log| ===== start 1795403440.5843656 =====
+   log| 23 November - 12:10:40.606245  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:10:40.620075  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 12:10:51  INFO Starting shutdown with 0 active tasks
+   log| 12:10:51  INFO Graceful shutdown completed for SIGTERM
+   log| ===== start 1795403511.5924637 =====
+   log| 23 November - 12:11:51.614172  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:11:51.621597  INFO Token::Transfer Found last synced block number - 10 rindexer will start up from 11
+   log|    ... repeated 1 more times
+
+[S2-kill-none] expected 89 (2-90)
+  delivered(200) 89  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 55 (max 59.1 s)
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   11.2 rindexer stopped by SIGKILL rc=-9 exit_after=0.01s checkpoint before=10 after=10
+  t=   71.1 rindexer start (checkpoint before start=10)
+   log| ===== start 1795403547.7507899 =====
+   log| 23 November - 12:12:27.770451  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:12:27.783901  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| ===== start 1795403618.846151 =====
+   log| 23 November - 12:13:38.867169  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:13:38.874496  INFO Token::Transfer Found last synced block number - 10 rindexer will start up from 11
+   log|    ... repeated 1 more times
+
+[S2-term-pg] expected 89 (2-90)
+  delivered(200) 89  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 55 (max 59.1 s)
+  t=    0.1 rindexer start (checkpoint before start=None)
+  t=   11.5 rindexer stopped by SIGTERM rc=0 exit_after=0.08s checkpoint before=10 after=10
+  t=   71.2 rindexer start (checkpoint before start=10)
+   log| ===== start 1795403658.2447145 =====
+   log| 23 November - 12:14:18.312725  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:14:18.370565  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 12:14:29  INFO Starting shutdown with 0 active tasks
+   log| 12:14:29  INFO Graceful shutdown completed for SIGTERM
+   log| ===== start 1795403729.3253417 =====
+   log| 23 November - 12:15:29.387166  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:15:29.450185  INFO Token::Transfer Found last synced block number - 10 rindexer will start up from 11
+   log|    ... repeated 1 more times
+
+[S2-kill-pg] expected 89 (2-90)
+  delivered(200) 89  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 55 (max 59.1 s)
+  t=    0.1 rindexer start (checkpoint before start=None)
+  t=   11.3 rindexer stopped by SIGKILL rc=-9 exit_after=0.09s checkpoint before=10 after=10
+  t=   71.2 rindexer start (checkpoint before start=10)
+   log| ===== start 1795403768.9924111 =====
+   log| 23 November - 12:16:09.103469  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:16:09.191589  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| ===== start 1795403840.0978937 =====
+   log| 23 November - 12:17:20.150995  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:17:20.214111  INFO Token::Transfer Found last synced block number - 10 rindexer will start up from 11
+   log|    ... repeated 1 more times
+
+[S3-none-none] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 39  missing 3 (1018-1020)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway [18, 19, 20]
+  retractions 0  alive_at_end True exit None
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   22.1 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795403976.4565735 =====
+   log| 23 November - 12:19:36.479550  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:19:36.491971  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+
+[S3-on-none] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 42  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway [18, 19, 20]
+  retractions 1  alive_at_end True exit None
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   22.2 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404034.6251795 =====
+   log| 23 November - 12:20:34.643814  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:20:34.649548  INFO Loaded 0 blocks into reorg window for network anvil
+   log|    ... repeated 1 more times
+   log| 23 November - 12:20:34.656477  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:20:56.884273  WARN Parent hash mismatch — reorg detected network=anvil block_number=20 expected=0x6a9a2914af73648452f3e3dbe069ad319a9ee7adc254262358611fc864987344 got=0xb222d541fb9e2ffc039595cb267b0123ff
+   log| 23 November - 12:20:56.889064  WARN Token::Transfer::anvil - LIVE - REORG DETECTED by coordinator on block 20 (fork_point: 18, depth: 3). Executing rollback.
+   log| 23 November - 12:20:56.889088  INFO Starting reorg task network=anvil fork_point=18 detection_point=20 depth=3
+   log| 23 November - 12:20:56.889213  INFO Reorg task completed network=anvil events_deleted=0 duration_secs=0.000109384
+
+[S3-fin-none] expected 99 (2-17,21-100,1018-1020)
+  delivered(200) 99  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway []
+  retractions 1  alive_at_end True exit None
+  delivered >5 s after emission: 99 (max 68.2 s)
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   25.0 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404092.8053644 =====
+   log| 23 November - 12:21:32.824646  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:21:32.830531  INFO Loaded 0 blocks into reorg window for network anvil
+   log|    ... repeated 1 more times
+   log| 23 November - 12:21:32.836218  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:21:57.869908  WARN Parent hash mismatch — reorg detected network=anvil block_number=20 expected=0x46a5ddac1d829d7e0662c5d2ccfd16b8e132c1187f694a08683ede31c7f45b89 got=0xe9ebcd05d78d795df31d532305db1b2561
+   log| 23 November - 12:21:57.872084  WARN Token::Transfer::anvil - LIVE - REORG DETECTED by coordinator on block 20 (fork_point: 18, depth: 3). Executing rollback.
+   log| 23 November - 12:21:57.872107  INFO Starting reorg task network=anvil fork_point=18 detection_point=20 depth=3
+   log| 23 November - 12:21:57.872146  INFO Reorg task completed network=anvil events_deleted=0 duration_secs=2.8909e-5
+
+[S3-none-pg] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 39  missing 3 (1018-1020)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway [18, 19, 20]
+  retractions 0  alive_at_end True exit None
+  t=    0.1 rindexer start (checkpoint before start=None)
+  t=   22.4 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404399.5393457 =====
+   log| 23 November - 12:26:39.652039  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:26:39.735811  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+
+[S3-on-pg] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 42  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway [18, 19, 20]
+  retractions 1  alive_at_end True exit None
+  t=    0.1 rindexer start (checkpoint before start=None)
+  t=   22.2 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404461.6234977 =====
+   log| 23 November - 12:27:41.737369  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:27:41.805453  INFO Loaded 0 blocks into reorg window for network anvil
+   log|    ... repeated 1 more times
+   log| 23 November - 12:27:41.848890  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:28:03.947632  WARN Parent hash mismatch — reorg detected network=anvil block_number=20 expected=0x823c4a986b04309086398a8af4b2c5a7f90333217aa811df28a53430704a1457 got=0x0d2779afc03141d5f4d172767121867be1
+   log| 23 November - 12:28:03.950327  WARN Token::Transfer::anvil - LIVE - REORG DETECTED by coordinator on block 20 (fork_point: 18, depth: 3). Executing rollback.
+   log| 23 November - 12:28:03.950348  INFO Starting reorg task network=anvil fork_point=18 detection_point=20 depth=3
+   log| 23 November - 12:28:03.957162  INFO Reorg task completed network=anvil events_deleted=3 duration_secs=0.006801679
+
+[S3-fin-pg] expected 99 (2-17,21-100,1018-1020)
+  delivered(200) 99  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway []
+  retractions 1  alive_at_end True exit None
+  delivered >5 s after emission: 99 (max 68.2 s)
+  t=    0.1 rindexer start (checkpoint before start=None)
+  t=   25.2 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404523.8782938 =====
+   log| 23 November - 12:28:43.985330  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:28:44.040302  INFO Loaded 0 blocks into reorg window for network anvil
+   log|    ... repeated 1 more times
+   log| 23 November - 12:28:44.064798  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:29:09.178311  WARN Parent hash mismatch — reorg detected network=anvil block_number=20 expected=0xf69dd99126bc82cb09658f25c72ff3e6dbde66946edeb14ebe526172323e5099 got=0x213386540454d30b7e984a90f32aaae609
+   log| 23 November - 12:29:09.181476  WARN Token::Transfer::anvil - LIVE - REORG DETECTED by coordinator on block 20 (fork_point: 18, depth: 3). Executing rollback.
+   log| 23 November - 12:29:09.181524  INFO Starting reorg task network=anvil fork_point=18 detection_point=20 depth=3
+   log| 23 November - 12:29:09.188500  INFO Reorg task completed network=anvil events_deleted=3 duration_secs=0.006901796
+
+[S3-safe5-none-head1] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 0  missing 39 (2-17,21-40,1018-1020)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway []
+  retractions 0  alive_at_end False exit 1
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   25.0 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404274.9886997 =====
+   log| 23 November - 12:24:35.009923  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| Error starting the server: Could not start indexing: Could not process logs: Failed to make batched rpc request: task 140 panicked with message "attempt to divide by zero"
+   log| Error: StartRindexerError(CouldNotStartIndexing(CombinedError(NonBlockingError(ProcessLogs(BatchRequestFailed(JoinError::Panic(Id(140), "attempt to divide by zero", ...)))))))
+
+[S3-safe5-pg-head1] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 0  missing 39 (2-17,21-40,1018-1020)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway []
+  retractions 0  alive_at_end False exit 1
+  t=    0.1 rindexer start (checkpoint before start=None)
+  t=   25.2 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404709.7924685 =====
+   log| 23 November - 12:31:49.922914  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| Error starting the server: Could not start indexing: Could not process logs: Failed to make batched rpc request: task 160 panicked with message "attempt to divide by zero"
+   log| Error: StartRindexerError(CouldNotStartIndexing(CombinedError(NonBlockingError(ProcessLogs(BatchRequestFailed(JoinError::Panic(Id(160), "attempt to divide by zero", ...)))))))
+
+[S3-safe5-none] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 39  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway []
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 37 (max 9.0 s)
+  t=    6.1 rindexer start (checkpoint before start=None)
+  t=   22.0 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404847.8155415 =====
+   log| 23 November - 12:34:07.842448  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:34:07.878482  INFO Token::Transfer Found last synced block number - 3 rindexer will start up from 4
+
+[S3-safe5-pg] expected 39 (2-17,21-40,1018-1020)
+  delivered(200) 39  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [18, 19, 20] delivered anyway []
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 36 (max 9.1 s)
+  t=    6.1 rindexer start (checkpoint before start=None)
+  t=   22.2 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+   log| ===== start 1795404914.4614756 =====
+   log| 23 November - 12:35:14.690594  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:35:14.794287  INFO Token::Transfer Found last synced block number - 3 rindexer will start up from 4
+
+[S4-none] expected 89 (2-90)
+  delivered(200) 30  missing 59 (11-69)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  webhook POSTs answered 500: 178
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   11.2 sink fail=True
+  t=   71.2 sink fail=False
+   log| ===== start 1795404972.0493002 =====
+   log| 23 November - 12:36:12.070369  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:36:12.086301  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:36:24.207870  WARN stream publish attempt failed, retrying publisher="webhook" target="127.0.0.1:18733" attempt=1 max_attempts=3 retry_in_ms=100 error=Webhook error: Failed to send webhook: 500 Internal 
+   log|    ... repeated 1 more times
+   log| 23 November - 12:36:24.513811 ERROR stream publish dropped after exhausting retries publisher="webhook" target="127.0.0.1:18733" attempts=3 error=Webhook error: Failed to send webhook: 500 Internal Server Error
+   log| 23 November - 12:36:24.513946 ERROR Stream publish failed after retries, dropping to avoid re-running PG inserts on callback retry contract=Token event=Transfer network=anvil block_number=11 error=Webhook could not publi
+   log| 23 November - 12:36:25.219062  WARN stream publish attempt failed, retrying publisher="webhook" target="127.0.0.1:18733" attempt=1 max_attempts=3 retry_in_ms=100 error=Webhook error: Failed to send webhook: 500 Internal 
+   log|    ... repeated 1 more times
+   log| 23 November - 12:36:25.524250 ERROR stream publish dropped after exhausting retries publisher="webhook" target="127.0.0.1:18733" attempts=3 error=Webhook error: Failed to send webhook: 500 Internal Server Error
+   log| 23 November - 12:36:25.524357 ERROR Stream publish failed after retries, dropping to avoid re-running PG inserts on callback retry contract=Token event=Transfer network=anvil block_number=12 error=Webhook could not publi
+   log| 23 November - 12:36:26.232882  WARN stream publish attempt failed, retrying publisher="webhook" target="127.0.0.1:18733" attempt=1 max_attempts=3 retry_in_ms=100 error=Webhook error: Failed to send webhook: 500 Internal 
+   log|    ... repeated 1 more times
+   log| 23 November - 12:36:26.538113 ERROR stream publish dropped after exhausting retries publisher="webhook" target="127.0.0.1:18733" attempts=3 error=Webhook error: Failed to send webhook: 500 Internal Server Error
+
+[S5-none] expected 339 (2-340)
+  delivered(200) 339  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  delivered >5 s after emission: 295 (max 299.7 s)
+  t=    0.0 rindexer start (checkpoint before start=None)
+  t=   11.2 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': True}
+  t=  311.2 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False}
+   log| ===== start 1795405079.2423873 =====
+   log| 23 November - 12:37:59.261755  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:37:59.278533  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:38:10.593016 ERROR Error getting latest block, will try again in 1 second - err: Failed to make rpc request: server returned an error response: error code -32603: injected fault
+   log|    ... repeated 298 more times
+
+[S1-a-long] expected 40 (2-41)
+  delivered(200) 13  missing 27 (15-41)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 faultproxy {'fail_blocks': [15], 'mode': 'error', 'down': False}
+  t=    0.0 rindexer start (checkpoint before start=None)
+   log| ===== start 1795405441.4428194 =====
+   log| 23 November - 12:44:01.462538  INFO shared tip logs enabled for anvil-hardhat (empty_retry_deadline_ms=7000, cache_blocks=32, bloom_trusted=true)
+   log| 23 November - 12:44:01.479197  INFO Token::Transfer Found last synced block number - 1 rindexer will start up from 2
+   log| 23 November - 12:44:19.153657  WARN shared tip logs - anvil-hardhat - block 15 (0xb3d82c9b51ec196a38d637fa35c8c82b4961121777f1d1fe38172a4d19607015) failed after 4 unfiltered eth_getLogs over 1515 ms: Failed to make rpc r
+   log| 23 November - 12:44:19.157684  WARN Token::Transfer::anvil Computed a fallback block range Range1. Provider did not provide information in error: "injected fault"
+   log|    ... repeated 2059 more times
+
+======== 読み取り（実測と、理由を確かめたソースの場所）========
+S0  保存先なし・PostgreSQL とも 40/40、二重なし。受信は mine の約 0.15 秒後。mint（to=alice）は conditions で落ちた。
+S1a ブロック 15 の eth_getLogs が恒久に error だと、量 14 で止まり 15 以降の 27 件が届かない（S1-a 100 秒、S1-a-long 432 秒とも同じ）。
+    プロセスは生きたまま、/health は 200 healthy のまま。WARN "Computed a fallback block range" が約 0.2 秒ごとに出続ける（432 秒で 2,060 行）。
+    metrics: rindexer_rpc_requests_total{method="eth_getLogs",status="error"} は増え続けるが、rindexer_latest_chain_block は 14 で凍り、
+    rindexer_blocks_behind は 0 のまま（ノードの head は 431）。理由: 両方とも update_progress_and_last_synced_task（core/src/indexer/last_synced.rs:301-321）
+    でしか更新されず、バッチが終わらないと書かれない。
+    300 秒の heartbeat は INFO "Indexing alive - chain tip 299, last processed block 14"。チェーンの先頭が進んでいるので Stalled にならない
+    （core/src/indexer/heartbeat.rs は先頭の前進だけを見る）。
+S1b 20 秒の後に回復すると 15〜41 の全件が届いた（量 15 は 20.2 秒遅れ）。消えた量・二重ともなし。
+S2  SIGTERM・SIGKILL、保存先なし・PostgreSQL の 4 通りとも、停止中の 60 件を含む 89/89 が届いた。二重なし。
+    再開位置はチェックポイント 10 の次（停止の前後でチェックポイントは 10）。再起動の直後に 60 件がほぼ同時に届き、最大の遅れは 59 秒。
+    遡る上限の設定は無い（last_synced から必ず追いつく。core/src/indexer/last_synced.rs get_last_synced_block_number）。
+    kill -9 で二重が出なかったのは、1 ブロック 1 件で、kill がブロックの処理の合間に入ったため。間に入る時の二重の幅は今回の設定では測れていない。
+S3  none（reorg_handling を書かない）: 置き換わった 18〜20 の通知は残ったまま、新しい 1018〜1020 は一度も届かない。取り消しなし、ログにも何も出ない。
+    保存先なし・PostgreSQL とも同じ（PostgreSQL の表も 18〜20 のまま）。v1.0.0 は reorg_handling が無いネットワークに ReorgCoordinator を作らない
+    （start.rs の reorg_configs は n.reorg_handling.as_ref().and_then(...)）。enabled の既定 true（network.rs default_reorg_enabled）はセクションを書いた時だけ効く。
+    → 調査メモの「reorg_handling 既定有効」は、セクションを書いた時の話。
+    on: WARN "Parent hash mismatch — reorg detected"、0.04〜0.1 秒後に __rindexer_reorg（fork_block 18、depth 3）が 1 件、続けて 1018〜1020 が届く。旧 18〜20 は届いた後。
+       保存先なしでは affected_tx_hashes が空・events_deleted 0（何を取り消すかは fork_block と depth からしか分からない）。
+       PostgreSQL では tx ハッシュ 3 件・events_deleted 3（表は 1018〜1020 に直った）。ただし affected_events[].rows_deleted は 0 のまま。
+    fin: 旧 18〜20 は一度も送られず、1018〜1020 を含む 99 件が 62〜68 秒遅れ（Anvil の chain_id 31337 は安全距離 64 ブロック、reorg/mod.rs reorg_safe_distance_for_chain）で届いた。
+       ところが __rindexer_reorg は reorg の 0.02〜0.09 秒後にすぐ届く。最初の Transfer が届くのは t=71 秒なので、受け手は「まだ一度も受けていない通知」の取り消しを先に受ける
+       （streams/clients.rs stream_reorg は block_number 0 で、should_buffer は 0 を常に即時に送る）。
+    safe5: 5 ブロック遅れて（3〜9 秒）送るので、置き換わった 18〜20 は一度も送られず、1018〜1020 が届いた。取り消しは来ない（reorg の深さ 3 < 5）。
+    head1: reorg_safe_distance: 5 で head 1 のチェーンに起動すると、rindexer が panic "attempt to divide by zero"（core/src/indexer/progress.rs:366、
+       total_blocks = 0）で終了（exit 1）。保存先なし・PostgreSQL とも再現。実運用のチェーンでは head が距離より小さいことは無いので、実験の都合で起きた不具合として記録。
+S4  500 を返した 60 秒の間の 59 件は、1 件あたり 3 回（100 ms・200 ms 間隔、計約 0.3 秒）試して捨てられた。後から再送されない。
+    ERROR "stream publish dropped after exhausting retries" と ERROR "Stream publish failed after retries, dropping ..." が 1 件ごとに出る。
+    metrics: rindexer_stream_publish_dropped_total{stream_type="webhook",target="127.0.0.1:18733"} = 59、rindexer_stream_messages_total{status="error"} = 59。
+    チェックポイントは進み続け、/health は 200 のまま。（core/src/streams/mod.rs PUBLISH_RETRY_ATTEMPTS = 3、core/src/indexer/no_code.rs:1052 で Err を握って捨てる）
+S5  RPC を 300 秒止めても rindexer は生きたまま。ERROR "Error getting latest block, will try again in 1 second" が 1 秒ごと（299 行）。
+    /health は 10 秒ごとの全 37 標本で 200 healthy。rindexer_latest_chain_block は 10 で凍り、rindexer_blocks_behind は 0 のまま。
+    外から見えた変化は rindexer_rpc_requests_total{method="eth_getBlockByNumber",status="error"} の増加（10 秒で約 10）と ERROR ログだけ。
+    停止中は heartbeat も Stalled の WARN も出ない（heartbeat.tick は先頭の取得に成功した時だけ呼ばれる。fetch_logs.rs:1313-1349）。
+    回復後の最初の heartbeat は INFO "Indexing alive - chain tip 310, last processed block 10"。停止中の 300 件は回復後 0.4 秒から一気に届き、339/339、二重なし。

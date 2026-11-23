@@ -1,0 +1,53 @@
+{
+  "name": "Transfer to bob",
+  "paused": false,
+  "networks": [
+    "anvil_local"
+  ],
+  "addresses": [
+    {
+      "address": "0x5fbdb2315678afecb367f032d93f642f64180aa3",
+      "contract_spec": [
+        {
+          "anonymous": false,
+          "name": "Transfer",
+          "type": "event",
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "from",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "to",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "value",
+              "type": "uint256"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "match_conditions": {
+    "functions": [],
+    "transactions": [],
+    "events": [
+      {
+        "signature": "Transfer(address,address,uint256)",
+        "expression": "to == 0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+      }
+    ]
+  },
+  "trigger_conditions": [],
+  "triggers": [
+    "sink_webhook"
+  ]
+}

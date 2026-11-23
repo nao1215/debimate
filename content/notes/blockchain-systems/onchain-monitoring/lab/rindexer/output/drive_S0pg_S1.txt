@@ -1,0 +1,9 @@
+12:04:44 rindexer start (checkpoint before start=None)
+== S0-pg: expected 40 delivered 40 missing [] dup [] unexpected [] retractions 0 alive True
+12:05:38 faultproxy {'fail_blocks': [15], 'mode': 'error', 'down': False}
+12:05:38 rindexer start (checkpoint before start=None)
+== S1-a: expected 40 delivered 13 missing [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41] dup [] unexpected [] retractions 0 alive True
+12:07:21 faultproxy {'fail_blocks': [15], 'mode': 'error', 'down': False}
+12:07:21 rindexer start (checkpoint before start=None)
+12:07:57 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False}
+== S1-b: expected 40 delivered 40 missing [] dup [] unexpected [] retractions 0 alive True

@@ -1,0 +1,100 @@
+{"t": 1795403206.056671, "ev": "run_start", "ver": "v170", "scen": "S1a_logs", "opts": {"persist": true, "methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}}
+{"t": 1795403206.1883183, "ev": "deployed", "block": 1, "token": "0x5fbdb2315678afecb367f032d93f642f64180aa3"}
+{"t": 1795403206.1889904, "ev": "checkpoint_seeded", "value": 1}
+{"t": 1795403206.6922927, "ev": "sample", "checkpoint": 1, "head": 1, "alive": false, "exit": null}
+{"t": 1795403206.6923554, "ev": "metrics", "alive": false, "values": {"error": "not running"}}
+{"t": 1795403206.6928098, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+{"t": 1795403206.6963303, "ev": "mined", "block": 2, "amount": 2}
+{"t": 1795403206.6970098, "ev": "monitor_start", "pid": 3731022}
+{"t": 1795403207.6938858, "ev": "sample", "checkpoint": 1, "head": 2, "alive": true, "exit": null}
+{"t": 1795403208.69549, "ev": "sample", "checkpoint": 1, "head": 2, "alive": true, "exit": null}
+{"t": 1795403208.7005265, "ev": "mined", "block": 3, "amount": 3}
+{"t": 1795403209.6972709, "ev": "sample", "checkpoint": 1, "head": 3, "alive": true, "exit": null}
+{"t": 1795403209.7040079, "ev": "mined", "block": 4, "amount": 4}
+{"t": 1795403210.6987116, "ev": "sample", "checkpoint": 3, "head": 4, "alive": true, "exit": null}
+{"t": 1795403210.7079647, "ev": "mined", "block": 5, "amount": 5}
+{"t": 1795403211.69998, "ev": "sample", "checkpoint": 3, "head": 5, "alive": true, "exit": null}
+{"t": 1795403211.711557, "ev": "mined", "block": 6, "amount": 6}
+{"t": 1795403212.7011383, "ev": "sample", "checkpoint": 3, "head": 6, "alive": true, "exit": null}
+{"t": 1795403212.716988, "ev": "mined", "block": 7, "amount": 7}
+{"t": 1795403213.7028856, "ev": "sample", "checkpoint": 3, "head": 7, "alive": true, "exit": null}
+{"t": 1795403213.720869, "ev": "mined", "block": 8, "amount": 8}
+{"t": 1795403214.7042847, "ev": "sample", "checkpoint": 3, "head": 8, "alive": true, "exit": null}
+{"t": 1795403214.7253222, "ev": "mined", "block": 9, "amount": 9}
+{"t": 1795403215.706006, "ev": "sample", "checkpoint": 3, "head": 9, "alive": true, "exit": null}
+{"t": 1795403215.7303216, "ev": "mined", "block": 10, "amount": 10}
+{"t": 1795403216.7076516, "ev": "sample", "checkpoint": 3, "head": 10, "alive": true, "exit": null}
+{"t": 1795403216.7481992, "ev": "mined", "block": 11, "amount": 11}
+{"t": 1795403217.407821, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 1.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 2.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 2.0}}
+{"t": 1795403217.7532468, "ev": "mined", "block": 12, "amount": 12}
+{"t": 1795403218.409089, "ev": "sample", "checkpoint": 3, "head": 12, "alive": true, "exit": null}
+{"t": 1795403218.7594583, "ev": "mined", "block": 13, "amount": 13}
+{"t": 1795403219.4102988, "ev": "sample", "checkpoint": 3, "head": 13, "alive": true, "exit": null}
+{"t": 1795403219.763793, "ev": "mined", "block": 14, "amount": 14}
+{"t": 1795403220.4114513, "ev": "sample", "checkpoint": 13, "head": 14, "alive": true, "exit": null}
+{"t": 1795403220.7679102, "ev": "mined", "block": 15, "amount": 15}
+{"t": 1795403221.4127703, "ev": "sample", "checkpoint": 13, "head": 15, "alive": true, "exit": null}
+{"t": 1795403221.7720845, "ev": "mined", "block": 16, "amount": 16}
+{"t": 1795403222.4145029, "ev": "sample", "checkpoint": 13, "head": 16, "alive": true, "exit": null}
+{"t": 1795403222.7773604, "ev": "mined", "block": 17, "amount": 17}
+{"t": 1795403223.41616, "ev": "sample", "checkpoint": 13, "head": 17, "alive": true, "exit": null}
+{"t": 1795403223.781766, "ev": "mined", "block": 18, "amount": 18}
+{"t": 1795403224.4173405, "ev": "sample", "checkpoint": 13, "head": 18, "alive": true, "exit": null}
+{"t": 1795403224.7857635, "ev": "mined", "block": 19, "amount": 19}
+{"t": 1795403225.4185364, "ev": "sample", "checkpoint": 13, "head": 19, "alive": true, "exit": null}
+{"t": 1795403225.7900765, "ev": "mined", "block": 20, "amount": 20}
+{"t": 1795403226.4196804, "ev": "sample", "checkpoint": 13, "head": 20, "alive": true, "exit": null}
+{"t": 1795403226.7951815, "ev": "mined", "block": 21, "amount": 21}
+{"t": 1795403227.420767, "ev": "sample", "checkpoint": 13, "head": 21, "alive": true, "exit": null}
+{"t": 1795403227.799583, "ev": "mined", "block": 22, "amount": 22}
+{"t": 1795403228.0198262, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 2.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 12.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 12.0}}
+{"t": 1795403228.8043597, "ev": "mined", "block": 23, "amount": 23}
+{"t": 1795403229.0212507, "ev": "sample", "checkpoint": 13, "head": 23, "alive": true, "exit": null}
+{"t": 1795403229.810408, "ev": "mined", "block": 24, "amount": 24}
+{"t": 1795403230.0231354, "ev": "sample", "checkpoint": 13, "head": 24, "alive": true, "exit": null}
+{"t": 1795403230.8146787, "ev": "mined", "block": 25, "amount": 25}
+{"t": 1795403231.0249584, "ev": "sample", "checkpoint": 23, "head": 25, "alive": true, "exit": null}
+{"t": 1795403231.8195858, "ev": "mined", "block": 26, "amount": 26}
+{"t": 1795403232.0264246, "ev": "sample", "checkpoint": 23, "head": 26, "alive": true, "exit": null}
+{"t": 1795403232.82364, "ev": "mined", "block": 27, "amount": 27}
+{"t": 1795403233.0280766, "ev": "sample", "checkpoint": 23, "head": 27, "alive": true, "exit": null}
+{"t": 1795403233.828766, "ev": "mined", "block": 28, "amount": 28}
+{"t": 1795403234.0291612, "ev": "sample", "checkpoint": 23, "head": 28, "alive": true, "exit": null}
+{"t": 1795403234.8325338, "ev": "mined", "block": 29, "amount": 29}
+{"t": 1795403235.0302715, "ev": "sample", "checkpoint": 23, "head": 29, "alive": true, "exit": null}
+{"t": 1795403235.8366408, "ev": "mined", "block": 30, "amount": 30}
+{"t": 1795403236.0318089, "ev": "sample", "checkpoint": 23, "head": 30, "alive": true, "exit": null}
+{"t": 1795403236.8414295, "ev": "mined", "block": 31, "amount": 31}
+{"t": 1795403237.0334141, "ev": "sample", "checkpoint": 23, "head": 31, "alive": true, "exit": null}
+{"t": 1795403237.8483057, "ev": "mined", "block": 32, "amount": 32}
+{"t": 1795403238.0356922, "ev": "sample", "checkpoint": 23, "head": 32, "alive": true, "exit": null}
+{"t": 1795403238.6694396, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 1.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 22.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 22.0}}
+{"t": 1795403238.8538682, "ev": "mined", "block": 33, "amount": 33}
+{"t": 1795403239.670547, "ev": "sample", "checkpoint": 23, "head": 33, "alive": true, "exit": null}
+{"t": 1795403239.8569412, "ev": "mined", "block": 34, "amount": 34}
+{"t": 1795403240.6720521, "ev": "sample", "checkpoint": 23, "head": 34, "alive": true, "exit": null}
+{"t": 1795403240.8602576, "ev": "mined", "block": 35, "amount": 35}
+{"t": 1795403241.6729639, "ev": "sample", "checkpoint": 33, "head": 35, "alive": true, "exit": null}
+{"t": 1795403241.8712258, "ev": "mined", "block": 36, "amount": 36}
+{"t": 1795403242.6746655, "ev": "sample", "checkpoint": 33, "head": 36, "alive": true, "exit": null}
+{"t": 1795403242.8831792, "ev": "mined", "block": 37, "amount": 37}
+{"t": 1795403243.6760325, "ev": "sample", "checkpoint": 33, "head": 37, "alive": true, "exit": null}
+{"t": 1795403243.8865025, "ev": "mined", "block": 38, "amount": 38}
+{"t": 1795403244.6771271, "ev": "sample", "checkpoint": 33, "head": 38, "alive": true, "exit": null}
+{"t": 1795403244.8979204, "ev": "mined", "block": 39, "amount": 39}
+{"t": 1795403245.679143, "ev": "sample", "checkpoint": 33, "head": 39, "alive": true, "exit": null}
+{"t": 1795403245.900495, "ev": "mined", "block": 40, "amount": 40}
+{"t": 1795403246.6807823, "ev": "sample", "checkpoint": 33, "head": 40, "alive": true, "exit": null}
+{"t": 1795403246.9042764, "ev": "mined", "block": 41, "amount": 41}
+{"t": 1795403247.6824458, "ev": "sample", "checkpoint": 33, "head": 41, "alive": true, "exit": null}
+{"t": 1795403247.9062812, "ev": "mined", "block": 42, "amount": null}
+{"t": 1795403248.6845467, "ev": "sample", "checkpoint": 33, "head": 42, "alive": true, "exit": null}
+{"t": 1795403248.9080167, "ev": "mined", "block": 43, "amount": null}
+{"t": 1795403249.1818924, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 1.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 4.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 32.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 32.0}}
+{"t": 1795403249.9101686, "ev": "mined", "block": 44, "amount": null}
+{"t": 1795403250.1830907, "ev": "sample", "checkpoint": 33, "head": 44, "alive": true, "exit": null}
+{"t": 1795403251.1842122, "ev": "sample", "checkpoint": 43, "head": 44, "alive": true, "exit": null}
+{"t": 1795403252.1855414, "ev": "sample", "checkpoint": 43, "head": 44, "alive": true, "exit": null}
+{"t": 1795403253.1864798, "ev": "sample", "checkpoint": 43, "head": 44, "alive": true, "exit": null}
+{"t": 1795403253.910972, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+{"t": 1795403253.9138336, "ev": "run_end", "canonical": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41], "health_probe": "HTTP Error 404: Not Found"}

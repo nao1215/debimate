@@ -1,0 +1,7 @@
+OpenZeppelin Monitor openzeppelin-monitor 1.7.0
+commit 4565bb18198d76d651870bc701369b5f53198411
+build: cargo build --release -j 8 --bin openzeppelin-monitor (rust-toolchain 1.90.0, CARGO_TARGET_DIR=oz/build/target-v170, build.sh)
+Docker は使っていない
+anvil Version: 1.7.1
+solc Version: 0.8.28+commit.7893614a.Linux.g++
+実行: ./run_all.sh v170 <base>（drive.py, analyze.py）

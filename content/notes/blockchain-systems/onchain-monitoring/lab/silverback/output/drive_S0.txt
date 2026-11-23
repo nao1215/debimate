@@ -1,0 +1,6 @@
+12:10:27 silverback start runner=ws state=None
+12:10:31 silverback startup complete
+== S0-ws: expected 40 delivered 40 missing [] dup [] retractions 0 alive True rc None
+12:11:31 silverback start runner=poll state=None
+12:11:34 silverback startup complete
+== S0-poll: expected 40 delivered 40 missing [] dup [] retractions 0 alive True rc None

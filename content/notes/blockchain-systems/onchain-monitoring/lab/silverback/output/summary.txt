@@ -1,0 +1,235 @@
+Silverback 0.7.39 の欠けの実験（2026-11-23、SCENARIOS.md に従う）
+
+版: silverback 0.7.39 / eth-ape 0.8.54 / ape-foundry 0.8.13 / web3 7.16.0 / taskiq 0.12.6 / anvil 1.7.1 / solc 0.8.28 / Python 3.12.12（venv/）
+置き場所: drive.py（driver）、botproj/（bot.py・ape-config.yaml・token_abi.json）、sbproxy.py（HTTP+WS の故障中継）、sink_ctl.py、common.py、make_summary.py
+実行: venv/bin/python drive.py S0 S1 S2 S3 S4 S5 S1-a-poll S1-b-poll S3-poll
+ポート: anvil 18736、sbproxy 18737（control は /control）、sink 18738。すべて 127.0.0.1。
+
+共通の道具からの差分（理由つき）
+- faultproxy.py は HTTP だけなので、既定の WebsocketRunner（eth_subscribe）を挟めない。ape-foundry は ws URI を
+  http の host から作る（provider.py の ws_uri = "ws" + uri[4:]）ため、同じポートで HTTP と WS を受ける sbproxy.py を書いた。
+  故障の規則と JSONL の形は faultproxy.py と同じ。WS では fail_blocks のブロックの通知（newHeads/logs）を捨て、down では WS を 1011 で閉じて新しい接続を 503 で断る。
+- sink.py は「最初の N 件」なので、時間で 500 に切り替える sink_ctl.py（POST /__control）にした。
+- bot が起動を終える（約 3.4 秒）まで空のブロックを作り、起動後の最初のブロックから送金を入れた。量 = ブロック番号は同じなので、量は 2 からでなく 6 前後から始まる。
+- S1 の失敗ブロックは「起動後 14 件目」（=19）。S2 は 9 件目が届いた所で止めた。
+- bot は文書の例どおり on_startup で遡らない。ハンドラは requests.post の後 raise_for_status（S4-noraise だけ呼ばない）。
+- S2 の 2 回目以降に出る「exited by itself」は、driver が自分で止めたのを数えた誤記（後で直した）。自発の終了ではない。
+
+versions: {"silverback": "0.7.39", "eth-ape": "0.8.54", "ape-foundry": "0.8.13", "web3": "7.16.0", "taskiq": "0.12.6", "anvil": "anvil Version: 1.7.1"}
+
+[S0-ws] expected 40 (6-45)
+  delivered(200) 40  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.4 silverback startup complete
+   log| ===== start 1795403427.7794063 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S0-poll] expected 40 (6-45)
+  delivered(200) 40  missing 0 (-)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=poll state=None
+  t=    3.4 silverback startup complete
+   log| ===== start 1795403491.173367 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO', '--runner', 'sil
+   log| INFO:     Using PollingRunner: max_exceptions=3
+   log| WARNING:  The polling runner makes a significant amount of requests. Do not use in production over long time periods unless you know what you're doing.
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S1-a] expected 40 (6-45)
+  delivered(200) 39  missing 1 (19)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.6 silverback startup complete
+  t=    3.6 faultproxy {'fail_blocks': [19], 'mode': 'error', 'down': False, 'ws_open': 1}
+   log| ===== start 1795403563.996455 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S1-b] expected 40 (6-45)
+  delivered(200) 39  missing 1 (19)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.2 silverback startup complete
+  t=    3.2 faultproxy {'fail_blocks': [19], 'mode': 'error', 'down': False, 'ws_open': 1}
+  t=   37.0 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False, 'ws_open': 1}
+   log| ===== start 1795403642.4475667 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S2-term] expected 93 (6-98)
+  delivered(200) 29  missing 64 (15-78)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.4 silverback startup complete
+  t=   13.2 silverback stopped {'t': 1795403738.8011532, 'signal': 'SIGTERM', 'rc': 0, 'exit_after_s': 1.17, 'head': 15, 'state_after': {'last_block_seen': 14, 'last_block_
+  t=   13.4 silverback exited by itself rc=0
+  t=   73.1 silverback start runner=ws state={'last_block_seen': 14, 'last_block_processed': 14, 'last_nonce_used': None, 'last_updated': '2026-11-23T03:15:38.970024+00:00'
+  t=   76.7 silverback startup complete
+   log| ===== start 1795403726.7626202 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| WARNING:  SIGTERM signal received
+   log| WARNING:  Shutdown started
+   log| ===== start 1795403799.8629975 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S2-kill] expected 92 (6-97)
+  delivered(200) 29  missing 63 (15-77)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.6 silverback startup complete
+  t=   12.0 silverback stopped {'t': 1795403871.1045384, 'signal': 'SIGKILL', 'rc': -9, 'exit_after_s': 0.02, 'head': 14, 'state_after': None}
+  t=   13.6 silverback exited by itself rc=-9
+  t=   72.0 silverback start runner=ws state=None
+  t=   75.4 silverback startup complete
+   log| ===== start 1795403859.0746577 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| ===== start 1795403931.0815406 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S3-ws] expected 39 (5-20,24-43,1021-1023)
+  delivered(200) 42  missing 0 (-)  duplicated 0 (-)
+  reorged-out amounts [21, 22, 23] delivered anyway [21, 22, 23]
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=ws state=None
+  t=    2.8 silverback startup complete
+  t=   22.0 anvil_reorg depth=3 head=23 dropped=[21, 22, 23] new=[1021, 1022, 1023]
+   log| ===== start 1795403990.2393682 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S4-raise] expected 89 (6-94)
+  delivered(200) 9  missing 80 (15-94)  duplicated 0 (-)
+  retractions 0  alive_at_end False exit 0
+  webhook POSTs answered 500: 4
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.2 silverback startup complete
+  t=   12.0 sink fail=True
+  t=   19.2 silverback exited by itself rc=0
+  t=   72.0 sink fail=False
+   log| ===== start 1795404069.2134812 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| Exception found while executing function.
+   log| Traceback (most recent call last):
+   log|     raise HTTPError(http_error_msg, response=self)
+   log| requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://127.0.0.1:18738/hook
+   log| ERROR:    notify[txn=0x2d053dc0eef4690b07d63696eef051c37db56768d02419ccf9181c8b45e08235,idx=0] - 0.010s
+   log| Exception found while executing function.
+   log| Traceback (most recent call last):
+   log|     raise HTTPError(http_error_msg, response=self)
+   log| requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: http://127.0.0.1:18738/hook
+   log| ERROR:    notify[txn=0x5d01432291446337a25f0e867a193c65ec10ece3323007f39f5bac477c4b7327,idx=0] - 0.010s
+
+[S4-noraise] expected 89 (6-94)
+  delivered(200) 29  missing 60 (15-74)  duplicated 0 (-)
+  retractions 0  alive_at_end True exit None
+  webhook POSTs answered 500: 60
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.4 silverback startup complete
+  t=   12.0 sink fail=True
+  t=   72.0 sink fail=False
+   log| ===== start 1795404207.5508878 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+
+[S5-ws] expected 339 (6-344)
+  delivered(200) 9  missing 330 (15-344)  duplicated 0 (-)
+  retractions 0  alive_at_end False exit 1
+  t=    0.0 silverback start runner=ws state=None
+  t=    3.4 silverback startup complete
+  t=   12.0 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': True, 'ws_open': 1}
+  t=  312.0 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False, 'ws_open': 0}
+   log| ===== start 1795404330.8742871 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO'] =====
+   log| INFO:     Using WebsocketRunner: max_exceptions=3
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| ERROR:    received 1011 (internal error) injected down; then sent 1011 (internal error) injected down
+   log| WARNING:  Shutdown started
+   log|   + Exception Group Traceback (most recent call last):
+   log|   |     await self.shutdown()
+   log|   |   File "lab/silverback/venv/lib/python3.12/site-packages/silverback/runner.py", line 361, in shutdown
+   log|   |     raise BaseExceptionGroup(
+   log|   | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+   log|     | Traceback (most recent call last):
+   log|     | websockets.exceptions.ConnectionClosedError: received 1011 (internal error) injected down; then sent 1011 (internal error) injected down
+
+[S1-a-poll] expected 40 (6-45)
+  delivered(200) 13  missing 27 (19-45)  duplicated 0 (-)
+  retractions 0  alive_at_end False exit 0
+  t=    0.0 silverback start runner=poll state=None
+  t=    3.6 silverback startup complete
+  t=    3.6 faultproxy {'fail_blocks': [19], 'mode': 'error', 'down': False, 'ws_open': 0}
+  t=   19.6 silverback exited by itself rc=0
+   log| ===== start 1795404754.195799 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO', '--runner', 'sil
+   log| INFO:     Using PollingRunner: max_exceptions=3
+   log| WARNING:  The polling runner makes a significant amount of requests. Do not use in production over long time periods unless you know what you're doing.
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| ERROR:    Block with ID '19' not found. Reason: {'code': -32603, 'message': 'injected fault'}
+   log| WARNING:  Shutdown started
+
+[S1-b-poll] expected 40 (6-45)
+  delivered(200) 13  missing 27 (19-45)  duplicated 0 (-)
+  retractions 0  alive_at_end False exit 0
+  t=    0.0 silverback start runner=poll state=None
+  t=    3.6 silverback startup complete
+  t=    3.6 faultproxy {'fail_blocks': [19], 'mode': 'error', 'down': False, 'ws_open': 0}
+  t=   19.6 silverback exited by itself rc=0
+  t=   37.1 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False, 'ws_open': 0}
+   log| ===== start 1795404858.516901 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO', '--runner', 'sil
+   log| INFO:     Using PollingRunner: max_exceptions=3
+   log| WARNING:  The polling runner makes a significant amount of requests. Do not use in production over long time periods unless you know what you're doing.
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| ERROR:    Block with ID '19' not found. Reason: {'code': -32603, 'message': 'injected fault'}
+   log| WARNING:  Shutdown started
+
+[S3-poll] expected 39 (6-21,25-44,1022-1024)
+  delivered(200) 40  missing 2 (1022-1023)  duplicated 0 (-)
+  reorged-out amounts [22, 23, 24] delivered anyway [22, 23, 24]
+  retractions 0  alive_at_end True exit None
+  t=    0.0 silverback start runner=poll state=None
+  t=    3.4 silverback startup complete
+  t=   23.1 anvil_reorg depth=3 head=24 dropped=[22, 23, 24] new=[1022, 1023, 1024]
+   log| ===== start 1795404962.8401642 ['lab/silverback/venv/bin/silverback', 'run', 'bot:bot', '--network', 'ethereum:local:foundry', '-v', 'INFO', '--runner', 'si
+   log| INFO:     Using PollingRunner: max_exceptions=3
+   log| WARNING:  The polling runner makes a significant amount of requests. Do not use in production over long time periods unless you know what you're doing.
+   log| WARNING:  No state snapshot detected, using empty snapshot
+   log| SUCCESS:  Startup complete, transitioning to runtime
+   log| ERROR:    Chain has reorganized since returning the last block. Try adjusting the required network confirmations.
+
+======== 読み取り（実測と、理由を確かめたソースの場所）========
+S0  Websocket・Polling とも 40/40、二重なし。受信は送金の約 0.01〜1 秒後。
+S1  Websocket: ブロック 19 の通知（logs と newHeads）を中継で捨てると、量 19 は永久に届かない。(a)(b) とも同じ（押し付けの通知は再送されない）。
+    ログには何も出ない。bot は生きたまま 20 以降を通常どおり通知する。runner.py の WebsocketRunner._event_task は届いたログを run_task するだけで、ブロック番号の飛びを確かめない。
+    Polling: eth_getBlockByNumber(19) が 1 回 error になった時点で "ERROR: Block with ID '19' not found" を出して bot が終了（exit 0、t=19.6 s）。
+    量 19 以降は (a)(b) とも届かない（20 秒後に回復しても bot は戻らない）。
+S2  SIGTERM: 停止中の 60 件＋再起動の約 3.5 秒の分＝64 件（量 15〜78）が消えた。state.json には last_block_seen=14 が残るが、
+    runner.startup は それを on_startup に渡すだけで、自分では遡らない（runner.py startup）。再起動後は head から。
+    SIGKILL: state.json 自体が書かれていない（_checkpoint は終了時と 1 分ごとの cron ループでしか呼ばれない。今回は起動 12 秒で kill）。63 件消えた。
+S3  Websocket: 置き換わった 21〜23 の通知は残ったまま、新しい 1021〜1023 も届いた（6 件とも removed=false）。取り消しなし。
+    中継の記録では Anvil 1.7.1 の logs 購読は anvil_reorg で removed:true のログを 1 つも流していない。ノードが流さないので、log.removed で取り消す書き方はこの環境では試せていない。
+    Polling: ape が "ERROR: Chain has reorganized since returning the last block" を出すが、取り直すのは新しい head（24）だけ。
+    1024 は届き、1022・1023 は届かない。22〜24 の旧通知は残ったまま。ape_ethereum/provider.py の poll_blocks は reorg 時 next_block = adjusted_head.number にするため、分岐点まで戻らない。
+S4  raise_for_status あり: 500 が 4 回続いた所で bot が終了（max_exceptions=3 を超えた。runner.py run_task の sum(self.exceptions.values()) > max_exceptions で Halt）。
+    終了コードは 0（_cli.py は asyncio.run(runner.run()) を呼ぶだけで、Halt は run() の中で握られる）。再起動の仕組みが「異常終了だけ再起動」なら戻らない。以後の 80 件が消えた。
+    raise_for_status なし: bot は生きたまま、500 の 60 件はそのまま捨てられ、ログにも何も出ない。回復後の 20 件は届いた。
+S5  Websocket を閉じた直後に ConnectionClosedError で bot が終了（exit 1）。5 分後に RPC が戻っても bot は戻らないので、以後の 330 件はすべて消えた。
+    再接続の試みはない（runner.py の WebsocketRunner.run は AsyncWeb3(WebSocketProvider) を 1 回開くだけ）。
+    手元の health/metrics の口は無いので、外から分かるのはプロセスの有無だけ（10 秒ごとの標本は t=13.4 s 以降ずっと alive=false）。
+    注意: 中継は 1011 で能動的に閉じた。TCP が黙って切れる形の障害は試していない。

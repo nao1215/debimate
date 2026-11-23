@@ -1,0 +1,10 @@
+# Ape project for the Silverback experiment. Connects to the fault proxy in front of Anvil
+# (127.0.0.1 only). manage_process: false so ape-foundry never starts its own anvil.
+name: monitornote
+default_ecosystem: ethereum
+ethereum:
+  local:
+    default_provider: foundry
+foundry:
+  host: http://127.0.0.1:18737
+  manage_process: false

@@ -1,0 +1,17 @@
+12:34:07 rindexer start (checkpoint before start=None)
+12:34:23 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+== S3-safe5-none: expected 39 delivered 39 missing [] dup [] unexpected [] retractions 0 alive True
+12:35:14 rindexer start (checkpoint before start=None)
+12:35:30 anvil_reorg depth=3 head=20 dropped=[18, 19, 20] new=[1018, 1019, 1020]
+== S3-safe5-pg: expected 39 delivered 39 missing [] dup [] unexpected [] retractions 0 alive True
+12:36:12 rindexer start (checkpoint before start=None)
+12:36:23 sink fail=True
+12:37:23 sink fail=False
+== S4-none: expected 89 delivered 30 missing [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69] dup [] unexpected [] retractions 0 alive True
+12:37:59 rindexer start (checkpoint before start=None)
+12:38:10 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': True}
+12:43:10 faultproxy {'fail_blocks': [], 'mode': 'error', 'down': False}
+== S5-none: expected 339 delivered 339 missing [] dup [] unexpected [] retractions 0 alive True
+12:44:01 faultproxy {'fail_blocks': [15], 'mode': 'error', 'down': False}
+12:44:01 rindexer start (checkpoint before start=None)
+== S1-a-long: expected 40 delivered 13 missing [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41] dup [] unexpected [] retractions 0 alive True

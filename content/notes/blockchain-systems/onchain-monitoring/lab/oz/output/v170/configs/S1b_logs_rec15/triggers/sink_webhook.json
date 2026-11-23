@@ -1,0 +1,20 @@
+{
+  "sink_webhook": {
+    "name": "sink",
+    "trigger_type": "webhook",
+    "config": {
+      "url": {
+        "type": "plain",
+        "value": "http://127.0.0.1:18723/hook"
+      },
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "message": {
+        "title": "transfer",
+        "body": "amount=${events.0.args.value} tx=${transaction.hash}"
+      }
+    }
+  }
+}

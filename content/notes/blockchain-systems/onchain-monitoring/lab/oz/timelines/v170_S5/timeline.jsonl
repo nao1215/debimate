@@ -1,0 +1,695 @@
+{"t": 1795404295.4814217, "ev": "run_start", "ver": "v170", "scen": "S5", "opts": {}}
+{"t": 1795404295.6301506, "ev": "deployed", "block": 1, "token": "0x5fbdb2315678afecb367f032d93f642f64180aa3"}
+{"t": 1795404295.6308775, "ev": "checkpoint_seeded", "value": 1}
+{"t": 1795404296.1342762, "ev": "sample", "checkpoint": 1, "head": 1, "alive": false, "exit": null}
+{"t": 1795404296.1343498, "ev": "metrics", "alive": false, "values": {"error": "not running"}}
+{"t": 1795404296.1363049, "ev": "mined", "block": 2, "amount": 2}
+{"t": 1795404296.1373286, "ev": "monitor_start", "pid": 3809640}
+{"t": 1795404297.135795, "ev": "sample", "checkpoint": 1, "head": 2, "alive": true, "exit": null}
+{"t": 1795404298.1378624, "ev": "sample", "checkpoint": 1, "head": 2, "alive": true, "exit": null}
+{"t": 1795404298.141321, "ev": "mined", "block": 3, "amount": 3}
+{"t": 1795404299.1395133, "ev": "sample", "checkpoint": 1, "head": 3, "alive": true, "exit": null}
+{"t": 1795404299.144572, "ev": "mined", "block": 4, "amount": 4}
+{"t": 1795404300.1416233, "ev": "sample", "checkpoint": 1, "head": 4, "alive": true, "exit": null}
+{"t": 1795404300.1488764, "ev": "mined", "block": 5, "amount": 5}
+{"t": 1795404301.1435397, "ev": "sample", "checkpoint": 4, "head": 5, "alive": true, "exit": null}
+{"t": 1795404301.1524487, "ev": "mined", "block": 6, "amount": 6}
+{"t": 1795404302.145492, "ev": "sample", "checkpoint": 4, "head": 6, "alive": true, "exit": null}
+{"t": 1795404302.1556711, "ev": "mined", "block": 7, "amount": 7}
+{"t": 1795404303.146993, "ev": "sample", "checkpoint": 4, "head": 7, "alive": true, "exit": null}
+{"t": 1795404303.1588216, "ev": "mined", "block": 8, "amount": 8}
+{"t": 1795404304.1494274, "ev": "sample", "checkpoint": 4, "head": 8, "alive": true, "exit": null}
+{"t": 1795404304.1632063, "ev": "mined", "block": 9, "amount": 9}
+{"t": 1795404305.1539316, "ev": "sample", "checkpoint": 4, "head": 9, "alive": true, "exit": null}
+{"t": 1795404305.1669064, "ev": "mined", "block": 10, "amount": 10}
+{"t": 1795404306.1556501, "ev": "sample", "checkpoint": 4, "head": 10, "alive": true, "exit": null}
+{"t": 1795404306.170568, "ev": "mined", "block": 11, "amount": 11}
+{"t": 1795404306.560818, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 1.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404307.1737928, "ev": "mined", "block": 12, "amount": 12}
+{"t": 1795404307.5633225, "ev": "sample", "checkpoint": 4, "head": 12, "alive": true, "exit": null}
+{"t": 1795404308.1768422, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": true, "fail_methods": null}
+{"t": 1795404308.18518, "ev": "mined", "block": 13, "amount": 13}
+{"t": 1795404308.564532, "ev": "sample", "checkpoint": 4, "head": 13, "alive": true, "exit": null}
+{"t": 1795404309.190806, "ev": "mined", "block": 14, "amount": 14}
+{"t": 1795404309.5657105, "ev": "sample", "checkpoint": 4, "head": 14, "alive": true, "exit": null}
+{"t": 1795404310.1985533, "ev": "mined", "block": 15, "amount": 15}
+{"t": 1795404310.5672815, "ev": "sample", "checkpoint": 4, "head": 15, "alive": true, "exit": null}
+{"t": 1795404311.2033916, "ev": "mined", "block": 16, "amount": 16}
+{"t": 1795404311.5688212, "ev": "sample", "checkpoint": 4, "head": 16, "alive": true, "exit": null}
+{"t": 1795404312.2067502, "ev": "mined", "block": 17, "amount": 17}
+{"t": 1795404312.5705924, "ev": "sample", "checkpoint": 4, "head": 17, "alive": true, "exit": null}
+{"t": 1795404313.2109318, "ev": "mined", "block": 18, "amount": 18}
+{"t": 1795404313.5722635, "ev": "sample", "checkpoint": 4, "head": 18, "alive": true, "exit": null}
+{"t": 1795404314.214141, "ev": "mined", "block": 19, "amount": 19}
+{"t": 1795404314.574123, "ev": "sample", "checkpoint": 4, "head": 19, "alive": true, "exit": null}
+{"t": 1795404315.219072, "ev": "mined", "block": 20, "amount": 20}
+{"t": 1795404315.5752788, "ev": "sample", "checkpoint": 4, "head": 20, "alive": true, "exit": null}
+{"t": 1795404316.223598, "ev": "mined", "block": 21, "amount": 21}
+{"t": 1795404316.5773556, "ev": "sample", "checkpoint": 4, "head": 21, "alive": true, "exit": null}
+{"t": 1795404316.916486, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 1.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 2.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404317.2271252, "ev": "mined", "block": 22, "amount": 22}
+{"t": 1795404317.9179027, "ev": "sample", "checkpoint": 4, "head": 22, "alive": true, "exit": null}
+{"t": 1795404318.230982, "ev": "mined", "block": 23, "amount": 23}
+{"t": 1795404318.919028, "ev": "sample", "checkpoint": 4, "head": 23, "alive": true, "exit": null}
+{"t": 1795404319.2362342, "ev": "mined", "block": 24, "amount": 24}
+{"t": 1795404319.9201849, "ev": "sample", "checkpoint": 4, "head": 24, "alive": true, "exit": null}
+{"t": 1795404320.239729, "ev": "mined", "block": 25, "amount": 25}
+{"t": 1795404320.921326, "ev": "sample", "checkpoint": 4, "head": 25, "alive": true, "exit": null}
+{"t": 1795404321.2439036, "ev": "mined", "block": 26, "amount": 26}
+{"t": 1795404321.9250782, "ev": "sample", "checkpoint": 4, "head": 26, "alive": true, "exit": null}
+{"t": 1795404322.2480814, "ev": "mined", "block": 27, "amount": 27}
+{"t": 1795404322.9262278, "ev": "sample", "checkpoint": 4, "head": 27, "alive": true, "exit": null}
+{"t": 1795404323.2519014, "ev": "mined", "block": 28, "amount": 28}
+{"t": 1795404323.9276733, "ev": "sample", "checkpoint": 4, "head": 28, "alive": true, "exit": null}
+{"t": 1795404324.2557626, "ev": "mined", "block": 29, "amount": 29}
+{"t": 1795404324.9287517, "ev": "sample", "checkpoint": 4, "head": 29, "alive": true, "exit": null}
+{"t": 1795404325.2598538, "ev": "mined", "block": 30, "amount": 30}
+{"t": 1795404325.9298115, "ev": "sample", "checkpoint": 4, "head": 30, "alive": true, "exit": null}
+{"t": 1795404326.2635307, "ev": "mined", "block": 31, "amount": 31}
+{"t": 1795404326.9309301, "ev": "sample", "checkpoint": 4, "head": 31, "alive": true, "exit": null}
+{"t": 1795404327.2675288, "ev": "mined", "block": 32, "amount": 32}
+{"t": 1795404327.4961987, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 2.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404328.2716637, "ev": "mined", "block": 33, "amount": 33}
+{"t": 1795404328.4977143, "ev": "sample", "checkpoint": 4, "head": 33, "alive": true, "exit": null}
+{"t": 1795404329.2758918, "ev": "mined", "block": 34, "amount": 34}
+{"t": 1795404329.4993057, "ev": "sample", "checkpoint": 4, "head": 34, "alive": true, "exit": null}
+{"t": 1795404330.279107, "ev": "mined", "block": 35, "amount": 35}
+{"t": 1795404330.500897, "ev": "sample", "checkpoint": 4, "head": 35, "alive": true, "exit": null}
+{"t": 1795404331.284861, "ev": "mined", "block": 36, "amount": 36}
+{"t": 1795404331.5027535, "ev": "sample", "checkpoint": 4, "head": 36, "alive": true, "exit": null}
+{"t": 1795404332.2892084, "ev": "mined", "block": 37, "amount": 37}
+{"t": 1795404332.5042706, "ev": "sample", "checkpoint": 4, "head": 37, "alive": true, "exit": null}
+{"t": 1795404333.293581, "ev": "mined", "block": 38, "amount": 38}
+{"t": 1795404333.5057452, "ev": "sample", "checkpoint": 4, "head": 38, "alive": true, "exit": null}
+{"t": 1795404334.303186, "ev": "mined", "block": 39, "amount": 39}
+{"t": 1795404334.5072536, "ev": "sample", "checkpoint": 4, "head": 39, "alive": true, "exit": null}
+{"t": 1795404335.3073041, "ev": "mined", "block": 40, "amount": 40}
+{"t": 1795404335.5087175, "ev": "sample", "checkpoint": 4, "head": 40, "alive": true, "exit": null}
+{"t": 1795404336.3115628, "ev": "mined", "block": 41, "amount": 41}
+{"t": 1795404336.5111148, "ev": "sample", "checkpoint": 4, "head": 41, "alive": true, "exit": null}
+{"t": 1795404337.3170884, "ev": "mined", "block": 42, "amount": 42}
+{"t": 1795404337.5124314, "ev": "sample", "checkpoint": 4, "head": 42, "alive": true, "exit": null}
+{"t": 1795404337.9628134, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 3.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 4.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404338.3218243, "ev": "mined", "block": 43, "amount": 43}
+{"t": 1795404338.9640183, "ev": "sample", "checkpoint": 4, "head": 43, "alive": true, "exit": null}
+{"t": 1795404339.3257215, "ev": "mined", "block": 44, "amount": 44}
+{"t": 1795404339.9652486, "ev": "sample", "checkpoint": 4, "head": 44, "alive": true, "exit": null}
+{"t": 1795404340.3290033, "ev": "mined", "block": 45, "amount": 45}
+{"t": 1795404340.9663699, "ev": "sample", "checkpoint": 4, "head": 45, "alive": true, "exit": null}
+{"t": 1795404341.3332658, "ev": "mined", "block": 46, "amount": 46}
+{"t": 1795404341.9674602, "ev": "sample", "checkpoint": 4, "head": 46, "alive": true, "exit": null}
+{"t": 1795404342.3372977, "ev": "mined", "block": 47, "amount": 47}
+{"t": 1795404342.9685712, "ev": "sample", "checkpoint": 4, "head": 47, "alive": true, "exit": null}
+{"t": 1795404343.3415134, "ev": "mined", "block": 48, "amount": 48}
+{"t": 1795404343.9699063, "ev": "sample", "checkpoint": 4, "head": 48, "alive": true, "exit": null}
+{"t": 1795404344.3456926, "ev": "mined", "block": 49, "amount": 49}
+{"t": 1795404344.9714968, "ev": "sample", "checkpoint": 4, "head": 49, "alive": true, "exit": null}
+{"t": 1795404345.350019, "ev": "mined", "block": 50, "amount": 50}
+{"t": 1795404345.9726865, "ev": "sample", "checkpoint": 4, "head": 50, "alive": true, "exit": null}
+{"t": 1795404346.360236, "ev": "mined", "block": 51, "amount": 51}
+{"t": 1795404346.9738517, "ev": "sample", "checkpoint": 4, "head": 51, "alive": true, "exit": null}
+{"t": 1795404347.3641376, "ev": "mined", "block": 52, "amount": 52}
+{"t": 1795404347.975069, "ev": "sample", "checkpoint": 4, "head": 52, "alive": true, "exit": null}
+{"t": 1795404348.3687608, "ev": "mined", "block": 53, "amount": 53}
+{"t": 1795404348.541575, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 4.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 5.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404349.373093, "ev": "mined", "block": 54, "amount": 54}
+{"t": 1795404349.542912, "ev": "sample", "checkpoint": 4, "head": 54, "alive": true, "exit": null}
+{"t": 1795404350.3769567, "ev": "mined", "block": 55, "amount": 55}
+{"t": 1795404350.54406, "ev": "sample", "checkpoint": 4, "head": 55, "alive": true, "exit": null}
+{"t": 1795404351.381177, "ev": "mined", "block": 56, "amount": 56}
+{"t": 1795404351.5451508, "ev": "sample", "checkpoint": 4, "head": 56, "alive": true, "exit": null}
+{"t": 1795404352.3853908, "ev": "mined", "block": 57, "amount": 57}
+{"t": 1795404352.5468252, "ev": "sample", "checkpoint": 4, "head": 57, "alive": true, "exit": null}
+{"t": 1795404353.3894308, "ev": "mined", "block": 58, "amount": 58}
+{"t": 1795404353.547859, "ev": "sample", "checkpoint": 4, "head": 58, "alive": true, "exit": null}
+{"t": 1795404354.3937562, "ev": "mined", "block": 59, "amount": 59}
+{"t": 1795404354.5491104, "ev": "sample", "checkpoint": 4, "head": 59, "alive": true, "exit": null}
+{"t": 1795404355.3987598, "ev": "mined", "block": 60, "amount": 60}
+{"t": 1795404355.550709, "ev": "sample", "checkpoint": 4, "head": 60, "alive": true, "exit": null}
+{"t": 1795404356.402772, "ev": "mined", "block": 61, "amount": 61}
+{"t": 1795404356.5516722, "ev": "sample", "checkpoint": 4, "head": 61, "alive": true, "exit": null}
+{"t": 1795404357.4069772, "ev": "mined", "block": 62, "amount": 62}
+{"t": 1795404357.553394, "ev": "sample", "checkpoint": 4, "head": 62, "alive": true, "exit": null}
+{"t": 1795404358.4112322, "ev": "mined", "block": 63, "amount": 63}
+{"t": 1795404358.5547278, "ev": "sample", "checkpoint": 4, "head": 63, "alive": true, "exit": null}
+{"t": 1795404359.0942762, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 5.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 6.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404359.4154994, "ev": "mined", "block": 64, "amount": 64}
+{"t": 1795404360.0957282, "ev": "sample", "checkpoint": 4, "head": 64, "alive": true, "exit": null}
+{"t": 1795404360.4192746, "ev": "mined", "block": 65, "amount": 65}
+{"t": 1795404361.1004398, "ev": "sample", "checkpoint": 4, "head": 65, "alive": true, "exit": null}
+{"t": 1795404361.423087, "ev": "mined", "block": 66, "amount": 66}
+{"t": 1795404362.1016366, "ev": "sample", "checkpoint": 4, "head": 66, "alive": true, "exit": null}
+{"t": 1795404362.4273934, "ev": "mined", "block": 67, "amount": 67}
+{"t": 1795404363.1028945, "ev": "sample", "checkpoint": 4, "head": 67, "alive": true, "exit": null}
+{"t": 1795404363.431256, "ev": "mined", "block": 68, "amount": 68}
+{"t": 1795404364.1044333, "ev": "sample", "checkpoint": 4, "head": 68, "alive": true, "exit": null}
+{"t": 1795404364.4356718, "ev": "mined", "block": 69, "amount": 69}
+{"t": 1795404365.106217, "ev": "sample", "checkpoint": 4, "head": 69, "alive": true, "exit": null}
+{"t": 1795404365.4391341, "ev": "mined", "block": 70, "amount": 70}
+{"t": 1795404366.10767, "ev": "sample", "checkpoint": 4, "head": 70, "alive": true, "exit": null}
+{"t": 1795404366.4434414, "ev": "mined", "block": 71, "amount": 71}
+{"t": 1795404367.109139, "ev": "sample", "checkpoint": 4, "head": 71, "alive": true, "exit": null}
+{"t": 1795404367.4481175, "ev": "mined", "block": 72, "amount": 72}
+{"t": 1795404368.1104536, "ev": "sample", "checkpoint": 4, "head": 72, "alive": true, "exit": null}
+{"t": 1795404368.4517448, "ev": "mined", "block": 73, "amount": 73}
+{"t": 1795404369.1118345, "ev": "sample", "checkpoint": 4, "head": 73, "alive": true, "exit": null}
+{"t": 1795404369.4560885, "ev": "mined", "block": 74, "amount": 74}
+{"t": 1795404369.6881459, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 6.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 7.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404370.4607935, "ev": "mined", "block": 75, "amount": 75}
+{"t": 1795404370.6897478, "ev": "sample", "checkpoint": 4, "head": 75, "alive": true, "exit": null}
+{"t": 1795404371.464853, "ev": "mined", "block": 76, "amount": 76}
+{"t": 1795404371.6917202, "ev": "sample", "checkpoint": 4, "head": 76, "alive": true, "exit": null}
+{"t": 1795404372.4690764, "ev": "mined", "block": 77, "amount": 77}
+{"t": 1795404372.6932352, "ev": "sample", "checkpoint": 4, "head": 77, "alive": true, "exit": null}
+{"t": 1795404373.4732392, "ev": "mined", "block": 78, "amount": 78}
+{"t": 1795404373.6945772, "ev": "sample", "checkpoint": 4, "head": 78, "alive": true, "exit": null}
+{"t": 1795404374.4776359, "ev": "mined", "block": 79, "amount": 79}
+{"t": 1795404374.6961133, "ev": "sample", "checkpoint": 4, "head": 79, "alive": true, "exit": null}
+{"t": 1795404375.4817307, "ev": "mined", "block": 80, "amount": 80}
+{"t": 1795404375.6982672, "ev": "sample", "checkpoint": 4, "head": 80, "alive": true, "exit": null}
+{"t": 1795404376.4860747, "ev": "mined", "block": 81, "amount": 81}
+{"t": 1795404376.6996582, "ev": "sample", "checkpoint": 4, "head": 81, "alive": true, "exit": null}
+{"t": 1795404377.4903147, "ev": "mined", "block": 82, "amount": 82}
+{"t": 1795404377.7016664, "ev": "sample", "checkpoint": 4, "head": 82, "alive": true, "exit": null}
+{"t": 1795404378.4951417, "ev": "mined", "block": 83, "amount": 83}
+{"t": 1795404378.703278, "ev": "sample", "checkpoint": 4, "head": 83, "alive": true, "exit": null}
+{"t": 1795404379.4996185, "ev": "mined", "block": 84, "amount": 84}
+{"t": 1795404379.705492, "ev": "sample", "checkpoint": 4, "head": 84, "alive": true, "exit": null}
+{"t": 1795404380.3134315, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 7.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 8.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404380.5039823, "ev": "mined", "block": 85, "amount": 85}
+{"t": 1795404381.3162158, "ev": "sample", "checkpoint": 4, "head": 85, "alive": true, "exit": null}
+{"t": 1795404381.5094805, "ev": "mined", "block": 86, "amount": 86}
+{"t": 1795404382.3172696, "ev": "sample", "checkpoint": 4, "head": 86, "alive": true, "exit": null}
+{"t": 1795404382.513627, "ev": "mined", "block": 87, "amount": 87}
+{"t": 1795404383.318322, "ev": "sample", "checkpoint": 4, "head": 87, "alive": true, "exit": null}
+{"t": 1795404383.5163434, "ev": "mined", "block": 88, "amount": 88}
+{"t": 1795404384.323427, "ev": "sample", "checkpoint": 4, "head": 88, "alive": true, "exit": null}
+{"t": 1795404384.5191743, "ev": "mined", "block": 89, "amount": 89}
+{"t": 1795404385.3248217, "ev": "sample", "checkpoint": 4, "head": 89, "alive": true, "exit": null}
+{"t": 1795404385.528921, "ev": "mined", "block": 90, "amount": 90}
+{"t": 1795404386.3259647, "ev": "sample", "checkpoint": 4, "head": 90, "alive": true, "exit": null}
+{"t": 1795404386.537267, "ev": "mined", "block": 91, "amount": 91}
+{"t": 1795404387.3275118, "ev": "sample", "checkpoint": 4, "head": 91, "alive": true, "exit": null}
+{"t": 1795404387.5400765, "ev": "mined", "block": 92, "amount": 92}
+{"t": 1795404388.3289995, "ev": "sample", "checkpoint": 4, "head": 92, "alive": true, "exit": null}
+{"t": 1795404388.5511556, "ev": "mined", "block": 93, "amount": 93}
+{"t": 1795404389.330416, "ev": "sample", "checkpoint": 4, "head": 93, "alive": true, "exit": null}
+{"t": 1795404389.5549183, "ev": "mined", "block": 94, "amount": 94}
+{"t": 1795404390.3321118, "ev": "sample", "checkpoint": 4, "head": 94, "alive": true, "exit": null}
+{"t": 1795404390.5594573, "ev": "mined", "block": 95, "amount": 95}
+{"t": 1795404390.909392, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 9.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 10.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404391.5636504, "ev": "mined", "block": 96, "amount": 96}
+{"t": 1795404391.9107654, "ev": "sample", "checkpoint": 4, "head": 96, "alive": true, "exit": null}
+{"t": 1795404392.568163, "ev": "mined", "block": 97, "amount": 97}
+{"t": 1795404392.9154363, "ev": "sample", "checkpoint": 4, "head": 97, "alive": true, "exit": null}
+{"t": 1795404393.572381, "ev": "mined", "block": 98, "amount": 98}
+{"t": 1795404393.9166994, "ev": "sample", "checkpoint": 4, "head": 98, "alive": true, "exit": null}
+{"t": 1795404394.5771794, "ev": "mined", "block": 99, "amount": 99}
+{"t": 1795404394.9179308, "ev": "sample", "checkpoint": 4, "head": 99, "alive": true, "exit": null}
+{"t": 1795404395.5813801, "ev": "mined", "block": 100, "amount": 100}
+{"t": 1795404395.919238, "ev": "sample", "checkpoint": 4, "head": 100, "alive": true, "exit": null}
+{"t": 1795404396.5856535, "ev": "mined", "block": 101, "amount": 101}
+{"t": 1795404396.9204912, "ev": "sample", "checkpoint": 4, "head": 101, "alive": true, "exit": null}
+{"t": 1795404397.5895731, "ev": "mined", "block": 102, "amount": 102}
+{"t": 1795404397.921752, "ev": "sample", "checkpoint": 4, "head": 102, "alive": true, "exit": null}
+{"t": 1795404398.5937943, "ev": "mined", "block": 103, "amount": 103}
+{"t": 1795404398.9230042, "ev": "sample", "checkpoint": 4, "head": 103, "alive": true, "exit": null}
+{"t": 1795404399.5980406, "ev": "mined", "block": 104, "amount": 104}
+{"t": 1795404399.9245927, "ev": "sample", "checkpoint": 4, "head": 104, "alive": true, "exit": null}
+{"t": 1795404400.6019254, "ev": "mined", "block": 105, "amount": 105}
+{"t": 1795404400.9259176, "ev": "sample", "checkpoint": 4, "head": 105, "alive": true, "exit": null}
+{"t": 1795404401.4981894, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 10.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 11.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404401.6062424, "ev": "mined", "block": 106, "amount": 106}
+{"t": 1795404402.4998953, "ev": "sample", "checkpoint": 4, "head": 106, "alive": true, "exit": null}
+{"t": 1795404402.6106718, "ev": "mined", "block": 107, "amount": 107}
+{"t": 1795404403.5012107, "ev": "sample", "checkpoint": 4, "head": 107, "alive": true, "exit": null}
+{"t": 1795404403.6149497, "ev": "mined", "block": 108, "amount": 108}
+{"t": 1795404404.5027194, "ev": "sample", "checkpoint": 4, "head": 108, "alive": true, "exit": null}
+{"t": 1795404404.6191611, "ev": "mined", "block": 109, "amount": 109}
+{"t": 1795404405.5044146, "ev": "sample", "checkpoint": 4, "head": 109, "alive": true, "exit": null}
+{"t": 1795404405.6236968, "ev": "mined", "block": 110, "amount": 110}
+{"t": 1795404406.5059814, "ev": "sample", "checkpoint": 4, "head": 110, "alive": true, "exit": null}
+{"t": 1795404406.627899, "ev": "mined", "block": 111, "amount": 111}
+{"t": 1795404407.5072167, "ev": "sample", "checkpoint": 4, "head": 111, "alive": true, "exit": null}
+{"t": 1795404407.6319568, "ev": "mined", "block": 112, "amount": 112}
+{"t": 1795404408.5085263, "ev": "sample", "checkpoint": 4, "head": 112, "alive": true, "exit": null}
+{"t": 1795404408.6356378, "ev": "mined", "block": 113, "amount": 113}
+{"t": 1795404409.5099676, "ev": "sample", "checkpoint": 4, "head": 113, "alive": true, "exit": null}
+{"t": 1795404409.6394897, "ev": "mined", "block": 114, "amount": 114}
+{"t": 1795404410.5118337, "ev": "sample", "checkpoint": 4, "head": 114, "alive": true, "exit": null}
+{"t": 1795404410.6434803, "ev": "mined", "block": 115, "amount": 115}
+{"t": 1795404411.5143952, "ev": "sample", "checkpoint": 4, "head": 115, "alive": true, "exit": null}
+{"t": 1795404411.6480658, "ev": "mined", "block": 116, "amount": 116}
+{"t": 1795404411.8537953, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 11.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 12.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404412.6525724, "ev": "mined", "block": 117, "amount": 117}
+{"t": 1795404412.8552783, "ev": "sample", "checkpoint": 4, "head": 117, "alive": true, "exit": null}
+{"t": 1795404413.656213, "ev": "mined", "block": 118, "amount": 118}
+{"t": 1795404413.8566022, "ev": "sample", "checkpoint": 4, "head": 118, "alive": true, "exit": null}
+{"t": 1795404414.6600642, "ev": "mined", "block": 119, "amount": 119}
+{"t": 1795404414.8581877, "ev": "sample", "checkpoint": 4, "head": 119, "alive": true, "exit": null}
+{"t": 1795404415.6646845, "ev": "mined", "block": 120, "amount": 120}
+{"t": 1795404415.8597157, "ev": "sample", "checkpoint": 4, "head": 120, "alive": true, "exit": null}
+{"t": 1795404416.668704, "ev": "mined", "block": 121, "amount": 121}
+{"t": 1795404416.8613133, "ev": "sample", "checkpoint": 4, "head": 121, "alive": true, "exit": null}
+{"t": 1795404417.6733449, "ev": "mined", "block": 122, "amount": 122}
+{"t": 1795404417.8632126, "ev": "sample", "checkpoint": 4, "head": 122, "alive": true, "exit": null}
+{"t": 1795404418.6774588, "ev": "mined", "block": 123, "amount": 123}
+{"t": 1795404418.864681, "ev": "sample", "checkpoint": 4, "head": 123, "alive": true, "exit": null}
+{"t": 1795404419.6815999, "ev": "mined", "block": 124, "amount": 124}
+{"t": 1795404419.865905, "ev": "sample", "checkpoint": 4, "head": 124, "alive": true, "exit": null}
+{"t": 1795404420.6853054, "ev": "mined", "block": 125, "amount": 125}
+{"t": 1795404420.867141, "ev": "sample", "checkpoint": 4, "head": 125, "alive": true, "exit": null}
+{"t": 1795404421.6901448, "ev": "mined", "block": 126, "amount": 126}
+{"t": 1795404421.868727, "ev": "sample", "checkpoint": 4, "head": 126, "alive": true, "exit": null}
+{"t": 1795404422.387665, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 12.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 13.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404422.6967745, "ev": "mined", "block": 127, "amount": 127}
+{"t": 1795404423.3892436, "ev": "sample", "checkpoint": 4, "head": 127, "alive": true, "exit": null}
+{"t": 1795404423.70136, "ev": "mined", "block": 128, "amount": 128}
+{"t": 1795404424.3904104, "ev": "sample", "checkpoint": 4, "head": 128, "alive": true, "exit": null}
+{"t": 1795404424.7054899, "ev": "mined", "block": 129, "amount": 129}
+{"t": 1795404425.3915303, "ev": "sample", "checkpoint": 4, "head": 129, "alive": true, "exit": null}
+{"t": 1795404425.7098079, "ev": "mined", "block": 130, "amount": 130}
+{"t": 1795404426.3930192, "ev": "sample", "checkpoint": 4, "head": 130, "alive": true, "exit": null}
+{"t": 1795404426.7145243, "ev": "mined", "block": 131, "amount": 131}
+{"t": 1795404427.3943377, "ev": "sample", "checkpoint": 4, "head": 131, "alive": true, "exit": null}
+{"t": 1795404427.7187955, "ev": "mined", "block": 132, "amount": 132}
+{"t": 1795404428.3960307, "ev": "sample", "checkpoint": 4, "head": 132, "alive": true, "exit": null}
+{"t": 1795404428.7229853, "ev": "mined", "block": 133, "amount": 133}
+{"t": 1795404429.397279, "ev": "sample", "checkpoint": 4, "head": 133, "alive": true, "exit": null}
+{"t": 1795404429.727178, "ev": "mined", "block": 134, "amount": 134}
+{"t": 1795404430.3989012, "ev": "sample", "checkpoint": 4, "head": 134, "alive": true, "exit": null}
+{"t": 1795404430.7314482, "ev": "mined", "block": 135, "amount": 135}
+{"t": 1795404431.400075, "ev": "sample", "checkpoint": 4, "head": 135, "alive": true, "exit": null}
+{"t": 1795404431.7361457, "ev": "mined", "block": 136, "amount": 136}
+{"t": 1795404432.4015193, "ev": "sample", "checkpoint": 4, "head": 136, "alive": true, "exit": null}
+{"t": 1795404432.7406917, "ev": "mined", "block": 137, "amount": 137}
+{"t": 1795404432.9520917, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 13.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 14.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404433.7451136, "ev": "mined", "block": 138, "amount": 138}
+{"t": 1795404433.953246, "ev": "sample", "checkpoint": 4, "head": 138, "alive": true, "exit": null}
+{"t": 1795404434.749067, "ev": "mined", "block": 139, "amount": 139}
+{"t": 1795404434.9543545, "ev": "sample", "checkpoint": 4, "head": 139, "alive": true, "exit": null}
+{"t": 1795404435.7533934, "ev": "mined", "block": 140, "amount": 140}
+{"t": 1795404435.955674, "ev": "sample", "checkpoint": 4, "head": 140, "alive": true, "exit": null}
+{"t": 1795404436.7588458, "ev": "mined", "block": 141, "amount": 141}
+{"t": 1795404436.9567826, "ev": "sample", "checkpoint": 4, "head": 141, "alive": true, "exit": null}
+{"t": 1795404437.7634954, "ev": "mined", "block": 142, "amount": 142}
+{"t": 1795404437.95798, "ev": "sample", "checkpoint": 4, "head": 142, "alive": true, "exit": null}
+{"t": 1795404438.76856, "ev": "mined", "block": 143, "amount": 143}
+{"t": 1795404438.9590209, "ev": "sample", "checkpoint": 4, "head": 143, "alive": true, "exit": null}
+{"t": 1795404439.7731256, "ev": "mined", "block": 144, "amount": 144}
+{"t": 1795404439.960147, "ev": "sample", "checkpoint": 4, "head": 144, "alive": true, "exit": null}
+{"t": 1795404440.7772493, "ev": "mined", "block": 145, "amount": 145}
+{"t": 1795404440.9614997, "ev": "sample", "checkpoint": 4, "head": 145, "alive": true, "exit": null}
+{"t": 1795404441.780786, "ev": "mined", "block": 146, "amount": 146}
+{"t": 1795404441.9627025, "ev": "sample", "checkpoint": 4, "head": 146, "alive": true, "exit": null}
+{"t": 1795404442.784099, "ev": "mined", "block": 147, "amount": 147}
+{"t": 1795404442.964563, "ev": "sample", "checkpoint": 4, "head": 147, "alive": true, "exit": null}
+{"t": 1795404443.5045574, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 14.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 15.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404443.787709, "ev": "mined", "block": 148, "amount": 148}
+{"t": 1795404444.5064394, "ev": "sample", "checkpoint": 4, "head": 148, "alive": true, "exit": null}
+{"t": 1795404444.7910786, "ev": "mined", "block": 149, "amount": 149}
+{"t": 1795404445.5079641, "ev": "sample", "checkpoint": 4, "head": 149, "alive": true, "exit": null}
+{"t": 1795404445.794724, "ev": "mined", "block": 150, "amount": 150}
+{"t": 1795404446.50968, "ev": "sample", "checkpoint": 4, "head": 150, "alive": true, "exit": null}
+{"t": 1795404446.7981281, "ev": "mined", "block": 151, "amount": 151}
+{"t": 1795404447.511364, "ev": "sample", "checkpoint": 4, "head": 151, "alive": true, "exit": null}
+{"t": 1795404447.8018641, "ev": "mined", "block": 152, "amount": 152}
+{"t": 1795404448.5132039, "ev": "sample", "checkpoint": 4, "head": 152, "alive": true, "exit": null}
+{"t": 1795404448.8053756, "ev": "mined", "block": 153, "amount": 153}
+{"t": 1795404449.515263, "ev": "sample", "checkpoint": 4, "head": 153, "alive": true, "exit": null}
+{"t": 1795404449.8097727, "ev": "mined", "block": 154, "amount": 154}
+{"t": 1795404450.5173335, "ev": "sample", "checkpoint": 4, "head": 154, "alive": true, "exit": null}
+{"t": 1795404450.8138173, "ev": "mined", "block": 155, "amount": 155}
+{"t": 1795404451.5192215, "ev": "sample", "checkpoint": 4, "head": 155, "alive": true, "exit": null}
+{"t": 1795404451.8179376, "ev": "mined", "block": 156, "amount": 156}
+{"t": 1795404452.521091, "ev": "sample", "checkpoint": 4, "head": 156, "alive": true, "exit": null}
+{"t": 1795404452.8224432, "ev": "mined", "block": 157, "amount": 157}
+{"t": 1795404453.5232043, "ev": "sample", "checkpoint": 4, "head": 157, "alive": true, "exit": null}
+{"t": 1795404453.825859, "ev": "mined", "block": 158, "amount": 158}
+{"t": 1795404454.1532054, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 15.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 16.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404454.8321145, "ev": "mined", "block": 159, "amount": 159}
+{"t": 1795404455.1545537, "ev": "sample", "checkpoint": 4, "head": 159, "alive": true, "exit": null}
+{"t": 1795404455.836166, "ev": "mined", "block": 160, "amount": 160}
+{"t": 1795404456.1557274, "ev": "sample", "checkpoint": 4, "head": 160, "alive": true, "exit": null}
+{"t": 1795404456.8403645, "ev": "mined", "block": 161, "amount": 161}
+{"t": 1795404457.1583343, "ev": "sample", "checkpoint": 4, "head": 161, "alive": true, "exit": null}
+{"t": 1795404457.843419, "ev": "mined", "block": 162, "amount": 162}
+{"t": 1795404458.161082, "ev": "sample", "checkpoint": 4, "head": 162, "alive": true, "exit": null}
+{"t": 1795404458.8594735, "ev": "mined", "block": 163, "amount": 163}
+{"t": 1795404459.1633406, "ev": "sample", "checkpoint": 4, "head": 163, "alive": true, "exit": null}
+{"t": 1795404459.8631468, "ev": "mined", "block": 164, "amount": 164}
+{"t": 1795404460.1646817, "ev": "sample", "checkpoint": 4, "head": 164, "alive": true, "exit": null}
+{"t": 1795404460.8666904, "ev": "mined", "block": 165, "amount": 165}
+{"t": 1795404461.16624, "ev": "sample", "checkpoint": 4, "head": 165, "alive": true, "exit": null}
+{"t": 1795404461.8793356, "ev": "mined", "block": 166, "amount": 166}
+{"t": 1795404462.1674628, "ev": "sample", "checkpoint": 4, "head": 166, "alive": true, "exit": null}
+{"t": 1795404462.8838184, "ev": "mined", "block": 167, "amount": 167}
+{"t": 1795404463.168806, "ev": "sample", "checkpoint": 4, "head": 167, "alive": true, "exit": null}
+{"t": 1795404463.8876023, "ev": "mined", "block": 168, "amount": 168}
+{"t": 1795404464.170526, "ev": "sample", "checkpoint": 4, "head": 168, "alive": true, "exit": null}
+{"t": 1795404464.7502148, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 16.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 17.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404464.8908107, "ev": "mined", "block": 169, "amount": 169}
+{"t": 1795404465.7520564, "ev": "sample", "checkpoint": 4, "head": 169, "alive": true, "exit": null}
+{"t": 1795404465.8940046, "ev": "mined", "block": 170, "amount": 170}
+{"t": 1795404466.7555869, "ev": "sample", "checkpoint": 4, "head": 170, "alive": true, "exit": null}
+{"t": 1795404466.8978863, "ev": "mined", "block": 171, "amount": 171}
+{"t": 1795404467.7585447, "ev": "sample", "checkpoint": 4, "head": 171, "alive": true, "exit": null}
+{"t": 1795404467.9020934, "ev": "mined", "block": 172, "amount": 172}
+{"t": 1795404468.7595942, "ev": "sample", "checkpoint": 4, "head": 172, "alive": true, "exit": null}
+{"t": 1795404468.9063587, "ev": "mined", "block": 173, "amount": 173}
+{"t": 1795404469.7606165, "ev": "sample", "checkpoint": 4, "head": 173, "alive": true, "exit": null}
+{"t": 1795404469.9104729, "ev": "mined", "block": 174, "amount": 174}
+{"t": 1795404470.7616084, "ev": "sample", "checkpoint": 4, "head": 174, "alive": true, "exit": null}
+{"t": 1795404470.914562, "ev": "mined", "block": 175, "amount": 175}
+{"t": 1795404471.7630591, "ev": "sample", "checkpoint": 4, "head": 175, "alive": true, "exit": null}
+{"t": 1795404471.9185314, "ev": "mined", "block": 176, "amount": 176}
+{"t": 1795404472.7645936, "ev": "sample", "checkpoint": 4, "head": 176, "alive": true, "exit": null}
+{"t": 1795404472.9225104, "ev": "mined", "block": 177, "amount": 177}
+{"t": 1795404473.7660558, "ev": "sample", "checkpoint": 4, "head": 177, "alive": true, "exit": null}
+{"t": 1795404473.92647, "ev": "mined", "block": 178, "amount": 178}
+{"t": 1795404474.7678049, "ev": "sample", "checkpoint": 4, "head": 178, "alive": true, "exit": null}
+{"t": 1795404474.9303489, "ev": "mined", "block": 179, "amount": 179}
+{"t": 1795404475.3713355, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 17.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 18.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404475.9349627, "ev": "mined", "block": 180, "amount": 180}
+{"t": 1795404476.372835, "ev": "sample", "checkpoint": 4, "head": 180, "alive": true, "exit": null}
+{"t": 1795404476.9393241, "ev": "mined", "block": 181, "amount": 181}
+{"t": 1795404477.3741, "ev": "sample", "checkpoint": 4, "head": 181, "alive": true, "exit": null}
+{"t": 1795404477.94365, "ev": "mined", "block": 182, "amount": 182}
+{"t": 1795404478.375746, "ev": "sample", "checkpoint": 4, "head": 182, "alive": true, "exit": null}
+{"t": 1795404478.9491327, "ev": "mined", "block": 183, "amount": 183}
+{"t": 1795404479.3768692, "ev": "sample", "checkpoint": 4, "head": 183, "alive": true, "exit": null}
+{"t": 1795404479.953181, "ev": "mined", "block": 184, "amount": 184}
+{"t": 1795404480.3782327, "ev": "sample", "checkpoint": 4, "head": 184, "alive": true, "exit": null}
+{"t": 1795404480.958083, "ev": "mined", "block": 185, "amount": 185}
+{"t": 1795404481.3801565, "ev": "sample", "checkpoint": 4, "head": 185, "alive": true, "exit": null}
+{"t": 1795404481.9632623, "ev": "mined", "block": 186, "amount": 186}
+{"t": 1795404482.3811452, "ev": "sample", "checkpoint": 4, "head": 186, "alive": true, "exit": null}
+{"t": 1795404482.9656422, "ev": "mined", "block": 187, "amount": 187}
+{"t": 1795404483.382456, "ev": "sample", "checkpoint": 4, "head": 187, "alive": true, "exit": null}
+{"t": 1795404483.9675431, "ev": "mined", "block": 188, "amount": 188}
+{"t": 1795404484.383438, "ev": "sample", "checkpoint": 4, "head": 188, "alive": true, "exit": null}
+{"t": 1795404484.970415, "ev": "mined", "block": 189, "amount": 189}
+{"t": 1795404485.3848362, "ev": "sample", "checkpoint": 4, "head": 189, "alive": true, "exit": null}
+{"t": 1795404485.7623594, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 18.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 19.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404485.9737728, "ev": "mined", "block": 190, "amount": 190}
+{"t": 1795404486.7644017, "ev": "sample", "checkpoint": 4, "head": 190, "alive": true, "exit": null}
+{"t": 1795404486.9786258, "ev": "mined", "block": 191, "amount": 191}
+{"t": 1795404487.7659347, "ev": "sample", "checkpoint": 4, "head": 191, "alive": true, "exit": null}
+{"t": 1795404487.9817648, "ev": "mined", "block": 192, "amount": 192}
+{"t": 1795404488.7670763, "ev": "sample", "checkpoint": 4, "head": 192, "alive": true, "exit": null}
+{"t": 1795404488.985525, "ev": "mined", "block": 193, "amount": 193}
+{"t": 1795404489.7686377, "ev": "sample", "checkpoint": 4, "head": 193, "alive": true, "exit": null}
+{"t": 1795404489.989135, "ev": "mined", "block": 194, "amount": 194}
+{"t": 1795404490.7704146, "ev": "sample", "checkpoint": 4, "head": 194, "alive": true, "exit": null}
+{"t": 1795404490.9938617, "ev": "mined", "block": 195, "amount": 195}
+{"t": 1795404491.7745936, "ev": "sample", "checkpoint": 4, "head": 195, "alive": true, "exit": null}
+{"t": 1795404491.9981663, "ev": "mined", "block": 196, "amount": 196}
+{"t": 1795404492.776203, "ev": "sample", "checkpoint": 4, "head": 196, "alive": true, "exit": null}
+{"t": 1795404493.003002, "ev": "mined", "block": 197, "amount": 197}
+{"t": 1795404493.7780657, "ev": "sample", "checkpoint": 4, "head": 197, "alive": true, "exit": null}
+{"t": 1795404494.009498, "ev": "mined", "block": 198, "amount": 198}
+{"t": 1795404494.7798412, "ev": "sample", "checkpoint": 4, "head": 198, "alive": true, "exit": null}
+{"t": 1795404495.0141225, "ev": "mined", "block": 199, "amount": 199}
+{"t": 1795404495.786293, "ev": "sample", "checkpoint": 4, "head": 199, "alive": true, "exit": null}
+{"t": 1795404496.0186663, "ev": "mined", "block": 200, "amount": 200}
+{"t": 1795404496.3609314, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 19.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 20.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404497.0230243, "ev": "mined", "block": 201, "amount": 201}
+{"t": 1795404497.3623998, "ev": "sample", "checkpoint": 4, "head": 201, "alive": true, "exit": null}
+{"t": 1795404498.0284123, "ev": "mined", "block": 202, "amount": 202}
+{"t": 1795404498.3637269, "ev": "sample", "checkpoint": 4, "head": 202, "alive": true, "exit": null}
+{"t": 1795404499.0325391, "ev": "mined", "block": 203, "amount": 203}
+{"t": 1795404499.3648279, "ev": "sample", "checkpoint": 4, "head": 203, "alive": true, "exit": null}
+{"t": 1795404500.0367105, "ev": "mined", "block": 204, "amount": 204}
+{"t": 1795404500.3664253, "ev": "sample", "checkpoint": 4, "head": 204, "alive": true, "exit": null}
+{"t": 1795404501.0407946, "ev": "mined", "block": 205, "amount": 205}
+{"t": 1795404501.3677793, "ev": "sample", "checkpoint": 4, "head": 205, "alive": true, "exit": null}
+{"t": 1795404502.0450122, "ev": "mined", "block": 206, "amount": 206}
+{"t": 1795404502.368907, "ev": "sample", "checkpoint": 4, "head": 206, "alive": true, "exit": null}
+{"t": 1795404503.0494857, "ev": "mined", "block": 207, "amount": 207}
+{"t": 1795404503.3702998, "ev": "sample", "checkpoint": 4, "head": 207, "alive": true, "exit": null}
+{"t": 1795404504.0536942, "ev": "mined", "block": 208, "amount": 208}
+{"t": 1795404504.3718197, "ev": "sample", "checkpoint": 4, "head": 208, "alive": true, "exit": null}
+{"t": 1795404505.06956, "ev": "mined", "block": 209, "amount": 209}
+{"t": 1795404505.373475, "ev": "sample", "checkpoint": 4, "head": 209, "alive": true, "exit": null}
+{"t": 1795404506.074267, "ev": "mined", "block": 210, "amount": 210}
+{"t": 1795404506.3753922, "ev": "sample", "checkpoint": 4, "head": 210, "alive": true, "exit": null}
+{"t": 1795404506.989573, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 20.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 21.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404507.078374, "ev": "mined", "block": 211, "amount": 211}
+{"t": 1795404507.991575, "ev": "sample", "checkpoint": 4, "head": 211, "alive": true, "exit": null}
+{"t": 1795404508.0831947, "ev": "mined", "block": 212, "amount": 212}
+{"t": 1795404508.993025, "ev": "sample", "checkpoint": 4, "head": 212, "alive": true, "exit": null}
+{"t": 1795404509.089571, "ev": "mined", "block": 213, "amount": 213}
+{"t": 1795404509.9943686, "ev": "sample", "checkpoint": 4, "head": 213, "alive": true, "exit": null}
+{"t": 1795404510.0936139, "ev": "mined", "block": 214, "amount": 214}
+{"t": 1795404510.9958603, "ev": "sample", "checkpoint": 4, "head": 214, "alive": true, "exit": null}
+{"t": 1795404511.0980728, "ev": "mined", "block": 215, "amount": 215}
+{"t": 1795404511.9971712, "ev": "sample", "checkpoint": 4, "head": 215, "alive": true, "exit": null}
+{"t": 1795404512.101817, "ev": "mined", "block": 216, "amount": 216}
+{"t": 1795404512.9985793, "ev": "sample", "checkpoint": 4, "head": 216, "alive": true, "exit": null}
+{"t": 1795404513.1064165, "ev": "mined", "block": 217, "amount": 217}
+{"t": 1795404514.000437, "ev": "sample", "checkpoint": 4, "head": 217, "alive": true, "exit": null}
+{"t": 1795404514.1105843, "ev": "mined", "block": 218, "amount": 218}
+{"t": 1795404515.00189, "ev": "sample", "checkpoint": 4, "head": 218, "alive": true, "exit": null}
+{"t": 1795404515.115155, "ev": "mined", "block": 219, "amount": 219}
+{"t": 1795404516.003583, "ev": "sample", "checkpoint": 4, "head": 219, "alive": true, "exit": null}
+{"t": 1795404516.12028, "ev": "mined", "block": 220, "amount": 220}
+{"t": 1795404517.0054085, "ev": "sample", "checkpoint": 4, "head": 220, "alive": true, "exit": null}
+{"t": 1795404517.1245413, "ev": "mined", "block": 221, "amount": 221}
+{"t": 1795404517.5898995, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 21.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 22.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404518.128508, "ev": "mined", "block": 222, "amount": 222}
+{"t": 1795404518.5919087, "ev": "sample", "checkpoint": 4, "head": 222, "alive": true, "exit": null}
+{"t": 1795404519.1328952, "ev": "mined", "block": 223, "amount": 223}
+{"t": 1795404519.5934362, "ev": "sample", "checkpoint": 4, "head": 223, "alive": true, "exit": null}
+{"t": 1795404520.1369007, "ev": "mined", "block": 224, "amount": 224}
+{"t": 1795404520.5948362, "ev": "sample", "checkpoint": 4, "head": 224, "alive": true, "exit": null}
+{"t": 1795404521.1412845, "ev": "mined", "block": 225, "amount": 225}
+{"t": 1795404521.5963056, "ev": "sample", "checkpoint": 4, "head": 225, "alive": true, "exit": null}
+{"t": 1795404522.145247, "ev": "mined", "block": 226, "amount": 226}
+{"t": 1795404522.597701, "ev": "sample", "checkpoint": 4, "head": 226, "alive": true, "exit": null}
+{"t": 1795404523.1493678, "ev": "mined", "block": 227, "amount": 227}
+{"t": 1795404523.5994644, "ev": "sample", "checkpoint": 4, "head": 227, "alive": true, "exit": null}
+{"t": 1795404524.1532733, "ev": "mined", "block": 228, "amount": 228}
+{"t": 1795404524.6008737, "ev": "sample", "checkpoint": 4, "head": 228, "alive": true, "exit": null}
+{"t": 1795404525.1575685, "ev": "mined", "block": 229, "amount": 229}
+{"t": 1795404525.6023633, "ev": "sample", "checkpoint": 4, "head": 229, "alive": true, "exit": null}
+{"t": 1795404526.162813, "ev": "mined", "block": 230, "amount": 230}
+{"t": 1795404526.6045792, "ev": "sample", "checkpoint": 4, "head": 230, "alive": true, "exit": null}
+{"t": 1795404527.1676905, "ev": "mined", "block": 231, "amount": 231}
+{"t": 1795404527.6062012, "ev": "sample", "checkpoint": 4, "head": 231, "alive": true, "exit": null}
+{"t": 1795404528.172057, "ev": "mined", "block": 232, "amount": 232}
+{"t": 1795404528.201206, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 22.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 23.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404529.1765013, "ev": "mined", "block": 233, "amount": 233}
+{"t": 1795404529.2021234, "ev": "sample", "checkpoint": 4, "head": 233, "alive": true, "exit": null}
+{"t": 1795404530.1802626, "ev": "mined", "block": 234, "amount": 234}
+{"t": 1795404530.2031386, "ev": "sample", "checkpoint": 4, "head": 234, "alive": true, "exit": null}
+{"t": 1795404531.184403, "ev": "mined", "block": 235, "amount": 235}
+{"t": 1795404531.2040584, "ev": "sample", "checkpoint": 4, "head": 235, "alive": true, "exit": null}
+{"t": 1795404532.1890087, "ev": "mined", "block": 236, "amount": 236}
+{"t": 1795404532.2050989, "ev": "sample", "checkpoint": 4, "head": 236, "alive": true, "exit": null}
+{"t": 1795404533.193486, "ev": "mined", "block": 237, "amount": 237}
+{"t": 1795404533.2060194, "ev": "sample", "checkpoint": 4, "head": 237, "alive": true, "exit": null}
+{"t": 1795404534.198325, "ev": "mined", "block": 238, "amount": 238}
+{"t": 1795404534.2068326, "ev": "sample", "checkpoint": 4, "head": 238, "alive": true, "exit": null}
+{"t": 1795404535.202658, "ev": "mined", "block": 239, "amount": 239}
+{"t": 1795404535.2077415, "ev": "sample", "checkpoint": 4, "head": 239, "alive": true, "exit": null}
+{"t": 1795404536.2123137, "ev": "sample", "checkpoint": 4, "head": 239, "alive": true, "exit": null}
+{"t": 1795404536.2148852, "ev": "mined", "block": 240, "amount": 240}
+{"t": 1795404537.2134788, "ev": "sample", "checkpoint": 4, "head": 240, "alive": true, "exit": null}
+{"t": 1795404537.2183735, "ev": "mined", "block": 241, "amount": 241}
+{"t": 1795404538.2154636, "ev": "sample", "checkpoint": 4, "head": 241, "alive": true, "exit": null}
+{"t": 1795404538.2226164, "ev": "mined", "block": 242, "amount": 242}
+{"t": 1795404538.797585, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 23.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 24.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404539.226576, "ev": "mined", "block": 243, "amount": 243}
+{"t": 1795404539.7990756, "ev": "sample", "checkpoint": 4, "head": 243, "alive": true, "exit": null}
+{"t": 1795404540.2303307, "ev": "mined", "block": 244, "amount": 244}
+{"t": 1795404540.8011765, "ev": "sample", "checkpoint": 4, "head": 244, "alive": true, "exit": null}
+{"t": 1795404541.2343733, "ev": "mined", "block": 245, "amount": 245}
+{"t": 1795404541.8026576, "ev": "sample", "checkpoint": 4, "head": 245, "alive": true, "exit": null}
+{"t": 1795404542.2383804, "ev": "mined", "block": 246, "amount": 246}
+{"t": 1795404542.80429, "ev": "sample", "checkpoint": 4, "head": 246, "alive": true, "exit": null}
+{"t": 1795404543.2422993, "ev": "mined", "block": 247, "amount": 247}
+{"t": 1795404543.8062923, "ev": "sample", "checkpoint": 4, "head": 247, "alive": true, "exit": null}
+{"t": 1795404544.2460887, "ev": "mined", "block": 248, "amount": 248}
+{"t": 1795404544.809623, "ev": "sample", "checkpoint": 4, "head": 248, "alive": true, "exit": null}
+{"t": 1795404545.2498696, "ev": "mined", "block": 249, "amount": 249}
+{"t": 1795404545.8117533, "ev": "sample", "checkpoint": 4, "head": 249, "alive": true, "exit": null}
+{"t": 1795404546.2542198, "ev": "mined", "block": 250, "amount": 250}
+{"t": 1795404546.8164268, "ev": "sample", "checkpoint": 4, "head": 250, "alive": true, "exit": null}
+{"t": 1795404547.2582288, "ev": "mined", "block": 251, "amount": 251}
+{"t": 1795404547.8186312, "ev": "sample", "checkpoint": 4, "head": 251, "alive": true, "exit": null}
+{"t": 1795404548.2634883, "ev": "mined", "block": 252, "amount": 252}
+{"t": 1795404548.8213704, "ev": "sample", "checkpoint": 4, "head": 252, "alive": true, "exit": null}
+{"t": 1795404549.2682664, "ev": "mined", "block": 253, "amount": 253}
+{"t": 1795404549.4912317, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 24.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 25.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404550.2704263, "ev": "mined", "block": 254, "amount": 254}
+{"t": 1795404550.4924037, "ev": "sample", "checkpoint": 4, "head": 254, "alive": true, "exit": null}
+{"t": 1795404551.2760563, "ev": "mined", "block": 255, "amount": 255}
+{"t": 1795404551.4936578, "ev": "sample", "checkpoint": 4, "head": 255, "alive": true, "exit": null}
+{"t": 1795404552.2795413, "ev": "mined", "block": 256, "amount": 256}
+{"t": 1795404552.4987297, "ev": "sample", "checkpoint": 4, "head": 256, "alive": true, "exit": null}
+{"t": 1795404553.2831707, "ev": "mined", "block": 257, "amount": 257}
+{"t": 1795404553.500426, "ev": "sample", "checkpoint": 4, "head": 257, "alive": true, "exit": null}
+{"t": 1795404554.2875047, "ev": "mined", "block": 258, "amount": 258}
+{"t": 1795404554.5014331, "ev": "sample", "checkpoint": 4, "head": 258, "alive": true, "exit": null}
+{"t": 1795404555.2920177, "ev": "mined", "block": 259, "amount": 259}
+{"t": 1795404555.5025914, "ev": "sample", "checkpoint": 4, "head": 259, "alive": true, "exit": null}
+{"t": 1795404556.2973795, "ev": "mined", "block": 260, "amount": 260}
+{"t": 1795404556.5041983, "ev": "sample", "checkpoint": 4, "head": 260, "alive": true, "exit": null}
+{"t": 1795404557.3032014, "ev": "mined", "block": 261, "amount": 261}
+{"t": 1795404557.505675, "ev": "sample", "checkpoint": 4, "head": 261, "alive": true, "exit": null}
+{"t": 1795404558.307564, "ev": "mined", "block": 262, "amount": 262}
+{"t": 1795404558.5075326, "ev": "sample", "checkpoint": 4, "head": 262, "alive": true, "exit": null}
+{"t": 1795404559.312753, "ev": "mined", "block": 263, "amount": 263}
+{"t": 1795404559.50973, "ev": "sample", "checkpoint": 4, "head": 263, "alive": true, "exit": null}
+{"t": 1795404560.0723524, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 25.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 26.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404560.3168762, "ev": "mined", "block": 264, "amount": 264}
+{"t": 1795404561.0736785, "ev": "sample", "checkpoint": 4, "head": 264, "alive": true, "exit": null}
+{"t": 1795404561.3211093, "ev": "mined", "block": 265, "amount": 265}
+{"t": 1795404562.074755, "ev": "sample", "checkpoint": 4, "head": 265, "alive": true, "exit": null}
+{"t": 1795404562.3260612, "ev": "mined", "block": 266, "amount": 266}
+{"t": 1795404563.0760956, "ev": "sample", "checkpoint": 4, "head": 266, "alive": true, "exit": null}
+{"t": 1795404563.3312876, "ev": "mined", "block": 267, "amount": 267}
+{"t": 1795404564.0773973, "ev": "sample", "checkpoint": 4, "head": 267, "alive": true, "exit": null}
+{"t": 1795404564.335427, "ev": "mined", "block": 268, "amount": 268}
+{"t": 1795404565.0786207, "ev": "sample", "checkpoint": 4, "head": 268, "alive": true, "exit": null}
+{"t": 1795404565.3398561, "ev": "mined", "block": 269, "amount": 269}
+{"t": 1795404566.0797093, "ev": "sample", "checkpoint": 4, "head": 269, "alive": true, "exit": null}
+{"t": 1795404566.3443718, "ev": "mined", "block": 270, "amount": 270}
+{"t": 1795404567.0807943, "ev": "sample", "checkpoint": 4, "head": 270, "alive": true, "exit": null}
+{"t": 1795404567.3489134, "ev": "mined", "block": 271, "amount": 271}
+{"t": 1795404568.082056, "ev": "sample", "checkpoint": 4, "head": 271, "alive": true, "exit": null}
+{"t": 1795404568.3536892, "ev": "mined", "block": 272, "amount": 272}
+{"t": 1795404569.0831745, "ev": "sample", "checkpoint": 4, "head": 272, "alive": true, "exit": null}
+{"t": 1795404569.3586786, "ev": "mined", "block": 273, "amount": 273}
+{"t": 1795404570.0842562, "ev": "sample", "checkpoint": 4, "head": 273, "alive": true, "exit": null}
+{"t": 1795404570.362325, "ev": "mined", "block": 274, "amount": 274}
+{"t": 1795404570.6404529, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 27.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 28.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404571.366667, "ev": "mined", "block": 275, "amount": 275}
+{"t": 1795404571.6416285, "ev": "sample", "checkpoint": 4, "head": 275, "alive": true, "exit": null}
+{"t": 1795404572.370933, "ev": "mined", "block": 276, "amount": 276}
+{"t": 1795404572.6430492, "ev": "sample", "checkpoint": 4, "head": 276, "alive": true, "exit": null}
+{"t": 1795404573.3749158, "ev": "mined", "block": 277, "amount": 277}
+{"t": 1795404573.6444883, "ev": "sample", "checkpoint": 4, "head": 277, "alive": true, "exit": null}
+{"t": 1795404574.3781645, "ev": "mined", "block": 278, "amount": 278}
+{"t": 1795404574.6460352, "ev": "sample", "checkpoint": 4, "head": 278, "alive": true, "exit": null}
+{"t": 1795404575.3811705, "ev": "mined", "block": 279, "amount": 279}
+{"t": 1795404575.647431, "ev": "sample", "checkpoint": 4, "head": 279, "alive": true, "exit": null}
+{"t": 1795404576.3855097, "ev": "mined", "block": 280, "amount": 280}
+{"t": 1795404576.6488307, "ev": "sample", "checkpoint": 4, "head": 280, "alive": true, "exit": null}
+{"t": 1795404577.390179, "ev": "mined", "block": 281, "amount": 281}
+{"t": 1795404577.6501286, "ev": "sample", "checkpoint": 4, "head": 281, "alive": true, "exit": null}
+{"t": 1795404578.3941913, "ev": "mined", "block": 282, "amount": 282}
+{"t": 1795404578.651482, "ev": "sample", "checkpoint": 4, "head": 282, "alive": true, "exit": null}
+{"t": 1795404579.3986452, "ev": "mined", "block": 283, "amount": 283}
+{"t": 1795404579.6526208, "ev": "sample", "checkpoint": 4, "head": 283, "alive": true, "exit": null}
+{"t": 1795404580.403074, "ev": "mined", "block": 284, "amount": 284}
+{"t": 1795404580.6540651, "ev": "sample", "checkpoint": 4, "head": 284, "alive": true, "exit": null}
+{"t": 1795404581.246876, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 28.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 29.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404581.4075005, "ev": "mined", "block": 285, "amount": 285}
+{"t": 1795404582.2484825, "ev": "sample", "checkpoint": 4, "head": 285, "alive": true, "exit": null}
+{"t": 1795404582.4126186, "ev": "mined", "block": 286, "amount": 286}
+{"t": 1795404583.2495124, "ev": "sample", "checkpoint": 4, "head": 286, "alive": true, "exit": null}
+{"t": 1795404583.4164348, "ev": "mined", "block": 287, "amount": 287}
+{"t": 1795404584.2505825, "ev": "sample", "checkpoint": 4, "head": 287, "alive": true, "exit": null}
+{"t": 1795404584.4208295, "ev": "mined", "block": 288, "amount": 288}
+{"t": 1795404585.2516813, "ev": "sample", "checkpoint": 4, "head": 288, "alive": true, "exit": null}
+{"t": 1795404585.4251287, "ev": "mined", "block": 289, "amount": 289}
+{"t": 1795404586.2529714, "ev": "sample", "checkpoint": 4, "head": 289, "alive": true, "exit": null}
+{"t": 1795404586.4293528, "ev": "mined", "block": 290, "amount": 290}
+{"t": 1795404587.2540386, "ev": "sample", "checkpoint": 4, "head": 290, "alive": true, "exit": null}
+{"t": 1795404587.4346316, "ev": "mined", "block": 291, "amount": 291}
+{"t": 1795404588.2552543, "ev": "sample", "checkpoint": 4, "head": 291, "alive": true, "exit": null}
+{"t": 1795404588.4388185, "ev": "mined", "block": 292, "amount": 292}
+{"t": 1795404589.256373, "ev": "sample", "checkpoint": 4, "head": 292, "alive": true, "exit": null}
+{"t": 1795404589.4436505, "ev": "mined", "block": 293, "amount": 293}
+{"t": 1795404590.2577987, "ev": "sample", "checkpoint": 4, "head": 293, "alive": true, "exit": null}
+{"t": 1795404590.4476066, "ev": "mined", "block": 294, "amount": 294}
+{"t": 1795404591.258996, "ev": "sample", "checkpoint": 4, "head": 294, "alive": true, "exit": null}
+{"t": 1795404591.4530299, "ev": "mined", "block": 295, "amount": 295}
+{"t": 1795404591.833624, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 29.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 30.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404592.4575322, "ev": "mined", "block": 296, "amount": 296}
+{"t": 1795404592.8374708, "ev": "sample", "checkpoint": 4, "head": 296, "alive": true, "exit": null}
+{"t": 1795404593.4616113, "ev": "mined", "block": 297, "amount": 297}
+{"t": 1795404593.8388472, "ev": "sample", "checkpoint": 4, "head": 297, "alive": true, "exit": null}
+{"t": 1795404594.4662528, "ev": "mined", "block": 298, "amount": 298}
+{"t": 1795404594.843998, "ev": "sample", "checkpoint": 4, "head": 298, "alive": true, "exit": null}
+{"t": 1795404595.4703484, "ev": "mined", "block": 299, "amount": 299}
+{"t": 1795404595.8457167, "ev": "sample", "checkpoint": 4, "head": 299, "alive": true, "exit": null}
+{"t": 1795404596.4745247, "ev": "mined", "block": 300, "amount": 300}
+{"t": 1795404596.847475, "ev": "sample", "checkpoint": 4, "head": 300, "alive": true, "exit": null}
+{"t": 1795404597.4792929, "ev": "mined", "block": 301, "amount": 301}
+{"t": 1795404597.8487358, "ev": "sample", "checkpoint": 4, "head": 301, "alive": true, "exit": null}
+{"t": 1795404598.4835875, "ev": "mined", "block": 302, "amount": 302}
+{"t": 1795404598.8500764, "ev": "sample", "checkpoint": 4, "head": 302, "alive": true, "exit": null}
+{"t": 1795404599.4879482, "ev": "mined", "block": 303, "amount": 303}
+{"t": 1795404599.8513548, "ev": "sample", "checkpoint": 4, "head": 303, "alive": true, "exit": null}
+{"t": 1795404600.492498, "ev": "mined", "block": 304, "amount": 304}
+{"t": 1795404600.852525, "ev": "sample", "checkpoint": 4, "head": 304, "alive": true, "exit": null}
+{"t": 1795404601.496814, "ev": "mined", "block": 305, "amount": 305}
+{"t": 1795404601.853644, "ev": "sample", "checkpoint": 4, "head": 305, "alive": true, "exit": null}
+{"t": 1795404602.4210312, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 30.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 31.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 3.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 3.0}}
+{"t": 1795404602.50157, "ev": "mined", "block": 306, "amount": 306}
+{"t": 1795404603.4224625, "ev": "sample", "checkpoint": 4, "head": 306, "alive": true, "exit": null}
+{"t": 1795404603.5057814, "ev": "mined", "block": 307, "amount": 307}
+{"t": 1795404604.42379, "ev": "sample", "checkpoint": 4, "head": 307, "alive": true, "exit": null}
+{"t": 1795404604.5111272, "ev": "mined", "block": 308, "amount": 308}
+{"t": 1795404605.4249258, "ev": "sample", "checkpoint": 4, "head": 308, "alive": true, "exit": null}
+{"t": 1795404605.5152137, "ev": "mined", "block": 309, "amount": 309}
+{"t": 1795404606.4261367, "ev": "sample", "checkpoint": 4, "head": 309, "alive": true, "exit": null}
+{"t": 1795404606.519371, "ev": "mined", "block": 310, "amount": 310}
+{"t": 1795404607.4272473, "ev": "sample", "checkpoint": 4, "head": 310, "alive": true, "exit": null}
+{"t": 1795404607.5230985, "ev": "mined", "block": 311, "amount": 311}
+{"t": 1795404608.4286604, "ev": "sample", "checkpoint": 4, "head": 311, "alive": true, "exit": null}
+{"t": 1795404608.525377, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+{"t": 1795404608.5297146, "ev": "mined", "block": 312, "amount": 312}
+{"t": 1795404609.429988, "ev": "sample", "checkpoint": 4, "head": 312, "alive": true, "exit": null}
+{"t": 1795404609.5336409, "ev": "mined", "block": 313, "amount": 313}
+{"t": 1795404610.431263, "ev": "sample", "checkpoint": 4, "head": 313, "alive": true, "exit": null}
+{"t": 1795404610.5374897, "ev": "mined", "block": 314, "amount": 314}
+{"t": 1795404611.43265, "ev": "sample", "checkpoint": 312, "head": 314, "alive": true, "exit": null}
+{"t": 1795404611.541853, "ev": "mined", "block": 315, "amount": 315}
+{"t": 1795404612.4345438, "ev": "sample", "checkpoint": 312, "head": 315, "alive": true, "exit": null}
+{"t": 1795404612.5462837, "ev": "mined", "block": 316, "amount": 316}
+{"t": 1795404613.0070858, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 30.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 32.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 16.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 16.0}}
+{"t": 1795404613.5506897, "ev": "mined", "block": 317, "amount": 317}
+{"t": 1795404614.0081968, "ev": "sample", "checkpoint": 312, "head": 317, "alive": true, "exit": null}
+{"t": 1795404614.5553086, "ev": "mined", "block": 318, "amount": 318}
+{"t": 1795404615.0093033, "ev": "sample", "checkpoint": 312, "head": 318, "alive": true, "exit": null}
+{"t": 1795404615.560869, "ev": "mined", "block": 319, "amount": 319}
+{"t": 1795404616.0108654, "ev": "sample", "checkpoint": 312, "head": 319, "alive": true, "exit": null}
+{"t": 1795404616.5644212, "ev": "mined", "block": 320, "amount": 320}
+{"t": 1795404617.0121498, "ev": "sample", "checkpoint": 312, "head": 320, "alive": true, "exit": null}
+{"t": 1795404617.568573, "ev": "mined", "block": 321, "amount": 321}
+{"t": 1795404618.019583, "ev": "sample", "checkpoint": 312, "head": 321, "alive": true, "exit": null}
+{"t": 1795404618.5748677, "ev": "mined", "block": 322, "amount": 322}
+{"t": 1795404619.0206308, "ev": "sample", "checkpoint": 312, "head": 322, "alive": true, "exit": null}
+{"t": 1795404619.5785687, "ev": "mined", "block": 323, "amount": 323}
+{"t": 1795404620.0219066, "ev": "sample", "checkpoint": 312, "head": 323, "alive": true, "exit": null}
+{"t": 1795404620.581508, "ev": "mined", "block": 324, "amount": 324}
+{"t": 1795404621.0234768, "ev": "sample", "checkpoint": 322, "head": 324, "alive": true, "exit": null}
+{"t": 1795404621.5856516, "ev": "mined", "block": 325, "amount": 325}
+{"t": 1795404622.0246832, "ev": "sample", "checkpoint": 322, "head": 325, "alive": true, "exit": null}
+{"t": 1795404622.5900452, "ev": "mined", "block": 326, "amount": 326}
+{"t": 1795404623.0258238, "ev": "sample", "checkpoint": 322, "head": 326, "alive": true, "exit": null}
+{"t": 1795404623.586353, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 30.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 33.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 26.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 26.0}}
+{"t": 1795404623.5928185, "ev": "mined", "block": 327, "amount": 327}
+{"t": 1795404624.5877647, "ev": "sample", "checkpoint": 322, "head": 327, "alive": true, "exit": null}
+{"t": 1795404624.596593, "ev": "mined", "block": 328, "amount": 328}
+{"t": 1795404625.588955, "ev": "sample", "checkpoint": 322, "head": 328, "alive": true, "exit": null}
+{"t": 1795404625.6001766, "ev": "mined", "block": 329, "amount": 329}
+{"t": 1795404626.5912077, "ev": "sample", "checkpoint": 322, "head": 329, "alive": true, "exit": null}
+{"t": 1795404626.6041493, "ev": "mined", "block": 330, "amount": 330}
+{"t": 1795404627.5927906, "ev": "sample", "checkpoint": 322, "head": 330, "alive": true, "exit": null}
+{"t": 1795404627.6093655, "ev": "mined", "block": 331, "amount": 331}
+{"t": 1795404628.5944083, "ev": "sample", "checkpoint": 322, "head": 331, "alive": true, "exit": null}
+{"t": 1795404628.6114933, "ev": "mined", "block": 332, "amount": null}
+{"t": 1795404629.5964687, "ev": "sample", "checkpoint": 322, "head": 332, "alive": true, "exit": null}
+{"t": 1795404629.614426, "ev": "mined", "block": 333, "amount": null}
+{"t": 1795404630.6005461, "ev": "sample", "checkpoint": 322, "head": 333, "alive": true, "exit": null}
+{"t": 1795404630.6205468, "ev": "mined", "block": 334, "amount": null}
+{"t": 1795404631.603394, "ev": "sample", "checkpoint": 332, "head": 334, "alive": true, "exit": null}
+{"t": 1795404632.605698, "ev": "sample", "checkpoint": 332, "head": 334, "alive": true, "exit": null}
+{"t": 1795404633.6070347, "ev": "sample", "checkpoint": 332, "head": 334, "alive": true, "exit": null}
+{"t": 1795404634.2662761, "ev": "metrics", "alive": true, "values": {"block_checkpoint_lag{network=\"anvil_local\"}": 0.0, "monitors_total": 1.0, "network_monitors{network=\"anvil_local\"}": 1.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"jsonrpc_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"network_error\"}": 0.0, "rpc_endpoint_rotations_total{network=\"anvil_local\",reason=\"rate_limit\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"429\"}": 0.0, "rpc_request_errors_total{error_type=\"http\",network=\"anvil_local\",status_code=\"500\"}": 0.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"-32603\"}": 30.0, "rpc_request_errors_total{error_type=\"jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"malformed_jsonrpc\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_request_errors_total{error_type=\"network\",network=\"anvil_local\",status_code=\"0\"}": 0.0, "rpc_requests_total{method=\"eth_blockNumber\",network=\"anvil_local\"}": 34.0, "rpc_requests_total{method=\"eth_getBlockByNumber\",network=\"anvil_local\"}": 36.0, "rpc_requests_total{method=\"eth_getLogs\",network=\"anvil_local\"}": 36.0}}
+{"t": 1795404634.6211483, "ev": "drained", "reached": true, "checkpoint": 332, "last_event_block": 331}
+{"t": 1795404634.6315224, "ev": "run_end", "canonical": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173, 174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269, 270, 271, 272, 273, 274, 275, 276, 277, 278, 279, 280, 281, 282, 283, 284, 285, 286, 287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303, 304, 305, 306, 307, 308, 309, 310, 311, 312, 313, 314, 315, 316, 317, 318, 319, 320, 321, 322, 323, 324, 325, 326, 327, 328, 329, 330, 331], "health_probe": "HTTP Error 404: Not Found"}

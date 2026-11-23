@@ -1,0 +1,363 @@
+== S0 opts={}
+  expected 40 / delivered(distinct) 40 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.658, 'alive': False, 'exit': None}, {'t': 1.66, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 47.917, 'checkpoint': 46, 'head': 47, 'alive': True}
+    @0.66s {"t": 0.66, "ev": "monitor_start", "pid": 3866114}
+    @50.865s {"t": 50.865, "ev": "drained", "reached": true, "checkpoint": 46, "last_event_block": 41}
+    @50.87s {"t": 50.87, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 欠けなし。全件 1 回ずつ。通知の遅れは cron（*/10 秒）待ち。
+
+== S0_r1 opts={}
+  expected 40 / delivered(distinct) 40 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.64, 'alive': False, 'exit': None}, {'t': 1.641, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 45.978, 'checkpoint': 44, 'head': 45, 'alive': True}
+    @0.644s {"t": 0.644, "ev": "monitor_start", "pid": 3892929}
+    @48.854s {"t": 48.854, "ev": "drained", "reached": true, "checkpoint": 44, "last_event_block": 41}
+    @48.858s {"t": 48.858, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: S0 の繰り返し（debug ログ）。欠けなし。
+
+== S0_r2 opts={}
+  expected 40 / delivered(distinct) 40 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.631, 'alive': False, 'exit': None}, {'t': 1.632, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 45.037, 'checkpoint': 43, 'head': 45, 'alive': True}
+    @0.633s {"t": 0.633, "ev": "monitor_start", "pid": 3894198}
+    @48.811s {"t": 48.811, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @48.814s {"t": 48.814, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: S0 の繰り返し（debug ログ）。欠けなし。
+
+== S0_r3 opts={}
+  expected 40 / delivered(distinct) 40 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.637, 'alive': False, 'exit': None}, {'t': 1.639, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 45.02, 'checkpoint': 43, 'head': 44, 'alive': True}
+    @0.641s {"t": 0.641, "ev": "monitor_start", "pid": 3895758}
+    @47.85s {"t": 47.85, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @47.854s {"t": 47.854, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: S0 の繰り返し（debug ログ）。欠けなし。
+
+== S0_r4 opts={}
+  expected 40 / delivered(distinct) 40 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.635, 'alive': False, 'exit': None}, {'t': 1.643, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 45.33, 'checkpoint': 43, 'head': 45, 'alive': True}
+    @0.654s {"t": 0.654, "ev": "monitor_start", "pid": 3915836}
+    @48.856s {"t": 48.856, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @48.86s {"t": 48.86, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: S0 の繰り返し（debug ログ）。欠けなし。
+
+== S1a_full opts={"persist": true, "methods": null}
+  expected 40 / delivered(distinct) 24 / missing 16 [[6, 21]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.638, 'alive': False, 'exit': None}, {'t': 1.64, 'alive': True, 'exit': None}]
+  log ERROR 6 WARN 5 hits skipped_blocks=2, batch_failed=2, jsonrpc_error=2
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 47.357, 'checkpoint': 44, 'head': 47, 'alive': True}
+    [skipped_blocks] 	Start block: 13 (skipped 7 blocks)
+    [skipped_blocks] 	Start block: 22 (skipped 16 blocks)
+    [batch_failed] 2026-11-23T03:40:50.314685Z ERROR process_new_blocks: openzeppelin_monitor::services::blockwatcher::service: Failed to process block batch, network: anvil_local, batch_start: 6, batch_end: 15, error: Failed to get blocks from 6 to 15 network: "anvil_local"
+    [batch_failed] 2026-11-23T03:41:00.342837Z ERROR process_new_blocks: openzeppelin_monitor::services::blockwatcher::service: Failed to process block batch, network: anvil_local, batch_start: 13, batch_end: 25, error: Failed to get blocks from 13 to 25 network: "anvil_local"
+    [jsonrpc_error] 2026-11-23T03:40:50.314567Z  WARN process_new_blocks:get_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    [jsonrpc_error] 2026-11-23T03:41:00.342492Z  WARN process_new_blocks:get_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    @0.639s {"t": 0.639, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": null}
+    @0.644s {"t": 0.644, "ev": "monitor_start", "pid": 3866768}
+    @50.83s {"t": 50.83, "ev": "drained", "reached": true, "checkpoint": 44, "last_event_block": 41}
+    @50.833s {"t": 50.833, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: faultproxy の既定どおり eth_getBlockByNumber(15) も失敗。EVM の get_blocks は 1 つでも失敗すると範囲全体が Err（clients/evm/client.rs get_blocks の try_collect）で、tick は「Failed to process block batch」でチェックポイントを進めない。次の tick の開始は max(last+1, 確定-max_past_blocks) なので、既定 12 ブロックの窓を外れた分は INFO の「skipped N blocks」だけで飛ばされる（service.rs process_new_blocks）。恒久の失敗でも止まらず、失敗ブロックを含む塊ごと消える。消える量は失敗ブロックが塊のどこにあるか（tick の区切り）で 6〜16 件と変わった。main の #544 はフィルタ段の失敗だけが対象で、この経路は v170 と同じ。
+
+== S1a_logs opts={"persist": true, "methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+  expected 40 / delivered(distinct) 39 / missing 1 [[15, 15]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.636, 'alive': False, 'exit': None}, {'t': 1.637, 'alive': True, 'exit': None}]
+  log ERROR 1 WARN 4 hits jsonrpc_error=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 45.128, 'checkpoint': 43, 'head': 44, 'alive': True}
+    [jsonrpc_error] 2026-11-23T03:07:10.334293Z  WARN filter_block:get_logs_for_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: anvil_local addresses: None
+    @0.636s {"t": 0.636, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+    @0.64s {"t": 0.64, "ev": "monitor_start", "pid": 3731022}
+    @47.854s {"t": 47.854, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @47.857s {"t": 47.857, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: eth_getLogs だけ失敗。v170: filter_block の Err を process_block が result.ok() で捨て（bootstrap/mod.rs process_block）、一致なしとして checkpoint が進む。ログは転送層の WARN と「Error occurred, JSON-RPC error」の ERROR 1 行だけで、どのブロックの通知を落としたかは出ない。lag は 0 のまま。main: 3 tick 保留（WARN hold 1..3 of 3、lag が 1→10→20 と見える）後、ERROR「skipping it, so its matches are lost」で飛ばす（service.rs dispatch_processed_block, MAX_FILTER_FAILURE_HOLDS=3）。
+
+== S1a_logs_rec opts={"persist": true, "methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"], "recovery": true}
+  expected 40 / delivered(distinct) 39 / missing 1 [[15, 15]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.638, 'alive': False, 'exit': None}, {'t': 1.641, 'alive': True, 'exit': None}]
+  log ERROR 1 WARN 4 hits jsonrpc_error=1, recovery=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 85.474, 'checkpoint': 81, 'head': 82, 'alive': True}
+    [jsonrpc_error] 2026-11-23T03:08:51.081269Z  WARN filter_block:get_logs_for_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: anvil_local addresses: None
+    [recovery] 2026-11-23T03:08:25.950922Z  INFO openzeppelin_monitor::services::blockwatcher::service: Started recovery job for network: anvil_local with schedule: */5 * * * * *
+    @0.638s {"t": 0.638, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+    @0.641s {"t": 0.641, "ev": "monitor_start", "pid": 3735460}
+    @48.818s {"t": 48.818, "ev": "drained", "reached": true, "checkpoint": 44, "last_event_block": 41}
+    @88.926s {"t": 88.926, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: recovery 有効（*/5 秒, max_retries 3）。v170 はフィルタ段の失敗を missed に保存しない（missed は取得段の Dense の穴か Sparse の failed_blocks だけ）ので recovery は何もしない。main は missed に保存→recovery が 3 回失敗→status Failed で以後試さない。
+
+== S1b_full opts={"persist": false, "methods": null}
+  expected 40 / delivered(distinct) 34 / missing 6 [[13, 18]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.64, 'alive': False, 'exit': None}, {'t': 1.642, 'alive': True, 'exit': None}]
+  log ERROR 3 WARN 4 hits skipped_blocks=1, batch_failed=1, jsonrpc_error=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 43.891, 'checkpoint': 41, 'head': 43, 'alive': True}
+    [skipped_blocks] 	Start block: 19 (skipped 6 blocks)
+    [batch_failed] 2026-11-23T03:41:50.136537Z ERROR process_new_blocks: openzeppelin_monitor::services::blockwatcher::service: Failed to process block batch, network: anvil_local, batch_start: 13, batch_end: 22, error: Failed to get blocks from 13 to 22 network: "anvil_local"
+    [jsonrpc_error] 2026-11-23T03:41:50.136082Z  WARN process_new_blocks:get_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    @0.641s {"t": 0.641, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": null}
+    @0.645s {"t": 0.645, "ev": "monitor_start", "pid": 3867754}
+    @42.833s {"t": 42.833, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+    @42.833s {"t": 42.833, "ev": "fault_cleared", "first_fault": 1795405310.1310735}
+    @46.835s {"t": 46.835, "ev": "drained", "reached": true, "checkpoint": 41, "last_event_block": 41}
+    @46.839s {"t": 46.839, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 20 秒で直っても、直る前に次の tick の窓が量 15 を過ぎていたため消えた（skipped 6 blocks）。
+
+== S1b_logs opts={"persist": false, "methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+  expected 40 / delivered(distinct) 39 / missing 1 [[15, 15]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.642, 'alive': False, 'exit': None}, {'t': 1.645, 'alive': True, 'exit': None}]
+  log ERROR 1 WARN 4 hits jsonrpc_error=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 45.018, 'checkpoint': 43, 'head': 44, 'alive': True}
+    [jsonrpc_error] 2026-11-23T03:08:00.151914Z  WARN filter_block:get_logs_for_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: anvil_local addresses: None
+    @0.647s {"t": 0.647, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+    @0.657s {"t": 0.657, "ev": "monitor_start", "pid": 3734241}
+    @44.855s {"t": 44.855, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+    @44.855s {"t": 44.855, "ev": "fault_cleared", "first_fault": 1795403280.147334}
+    @47.856s {"t": 47.856, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @47.86s {"t": 47.86, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: v170: 黙って消える（a と同じ）。main: 保留中に直り、次の tick で量 15 が届いた（遅れて、順番どおり）。
+
+== S1b_logs_rec opts={"persist": false, "methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"], "recovery": true}
+  expected 40 / delivered(distinct) 39 / missing 1 [[15, 15]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.637, 'alive': False, 'exit': None}, {'t': 1.641, 'alive': True, 'exit': None}]
+  log ERROR 1 WARN 4 hits jsonrpc_error=1, recovery=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 84.74, 'checkpoint': 79, 'head': 81, 'alive': True}
+    [jsonrpc_error] 2026-11-23T03:10:20.463933Z  WARN filter_block:get_logs_for_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: anvil_local addresses: None
+    [recovery] 2026-11-23T03:09:56.873174Z  INFO openzeppelin_monitor::services::blockwatcher::service: Started recovery job for network: anvil_local with schedule: */5 * * * * *
+    @0.637s {"t": 0.637, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+    @0.642s {"t": 0.642, "ev": "monitor_start", "pid": 3738011}
+    @44.86s {"t": 44.86, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+    @44.86s {"t": 44.86, "ev": "fault_cleared", "first_fault": 1795403420.4590256}
+    @47.861s {"t": 47.861, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @87.952s {"t": 87.952, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: main: recovery を有効にすると保留（3 tick 待つ）の代わりに missed へ回る。*/5 秒×3 回の再試行が 20 秒の障害の内に尽き（最後の試行は障害が直る 10ms 前）、Failed で確定して消えた。recovery 無しの S1b_logs では届いていたので、有効にした方が消えた。
+
+== S1b_logs_rec15 opts={"persist": false, "methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"], "recovery": true, "rec_cron": "*/15 * * * * *"}
+  expected 40 / delivered(distinct) 39 / missing 1 [[15, 15]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.637, 'alive': False, 'exit': None}, {'t': 1.64, 'alive': True, 'exit': None}]
+  log ERROR 1 WARN 4 hits jsonrpc_error=1, recovery=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 85.989, 'checkpoint': 80, 'head': 83, 'alive': True}
+    [jsonrpc_error] 2026-11-23T03:43:51.367834Z  WARN filter_block:get_logs_for_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: anvil_local addresses: None
+    [recovery] 2026-11-23T03:43:26.722792Z  INFO openzeppelin_monitor::services::blockwatcher::service: Started recovery job for network: anvil_local with schedule: */15 * * * * *
+    @0.637s {"t": 0.637, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": ["eth_getLogs", "eth_getTransactionReceipt", "eth_getBlockReceipts"]}
+    @0.641s {"t": 0.641, "ev": "monitor_start", "pid": 3876528}
+    @45.854s {"t": 45.854, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+    @45.854s {"t": 45.854, "ev": "fault_cleared", "first_fault": 1795405431.3623185}
+    @48.855s {"t": 48.855, "ev": "drained", "reached": true, "checkpoint": 43, "last_event_block": 41}
+    @88.955s {"t": 88.955, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: recovery の cron を */15 秒にすると、2 回目の試行（障害の後）で取り戻した。量 15 は他より 25 秒ほど遅れ、順番も後ろに届く。v170 は recovery の対象にならず消える。
+
+== S2_kill_default opts={"sig": "KILL"}
+  expected 93 / delivered(distinct) 36 / missing 57 [[14, 70]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.641, 'alive': False, 'exit': None}, {'t': 1.643, 'alive': True, 'exit': None}, {'t': 15.334, 'alive': False, 'exit': -9}, {'t': 75.447, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 6 hits skipped_blocks=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0]
+  final checkpoint {'t': 105.474, 'checkpoint': 103, 'head': 104, 'alive': True}
+    [skipped_blocks] 	Start block: 71 (skipped 57 blocks)
+    @0.644s {"t": 0.644, "ev": "monitor_start", "pid": 3757667}
+    @14.694s {"t": 14.694, "ev": "monitor_signal", "sig": "KILL", "checkpoint": 13}
+    @14.701s {"t": 14.701, "ev": "monitor_exit", "code": -9, "took": 0.007515907287597656, "checkpoint": 13}
+    @75.038s {"t": 75.038, "ev": "monitor_start", "pid": 3767307}
+    @108.15s {"t": 108.15, "ev": "drained", "reached": true, "checkpoint": 103, "last_event_block": 94}
+    @108.154s {"t": 108.154, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: kill -9 でも SIGTERM と同じ（通知の直後で tick の合間に止めたため、処理途中の殺しは試せていない）。二重なし。
+
+== S2_kill_unlimited opts={"sig": "KILL", "max_past": "unlimited"}
+  expected 94 / delivered(distinct) 94 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.634, 'alive': False, 'exit': None}, {'t': 1.636, 'alive': True, 'exit': None}, {'t': 16.444, 'alive': False, 'exit': -9}, {'t': 76.526, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 6 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0]
+  final checkpoint {'t': 104.099, 'checkpoint': 102, 'head': 103, 'alive': True}
+    @0.637s {"t": 0.637, "ev": "monitor_start", "pid": 3889959}
+    @15.712s {"t": 15.712, "ev": "monitor_signal", "sig": "KILL", "checkpoint": 13}
+    @15.72s {"t": 15.72, "ev": "monitor_exit", "code": -9, "took": 0.007510185241699219, "checkpoint": 13}
+    @75.97s {"t": 75.97, "ev": "monitor_start", "pid": 3891415}
+    @107.077s {"t": 107.077, "ev": "drained", "reached": true, "checkpoint": 102, "last_event_block": 95}
+    @107.081s {"t": 107.081, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 再実行では全件。1 回目（S2_kill_unlimited_run1）は量 7（停止の前、通常運転中の block 7）だけが届かず、ログに何も出なかった。eth_getLogs(7) は失敗なしで呼ばれ、sink への要求も来ていない。同条件 S0 を 8 回（debug ログ付き）繰り返しても再現せず、理由は確かめられていない。
+
+== S2_kill_unlimited_run1 opts={"sig": "KILL", "max_past": "unlimited"}
+  expected 93 / delivered(distinct) 92 / missing 1 [[7, 7]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.635, 'alive': False, 'exit': None}, {'t': 1.637, 'alive': True, 'exit': None}, {'t': 15.278, 'alive': False, 'exit': -9}, {'t': 75.39, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 6 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0]
+  final checkpoint {'t': 104.222, 'checkpoint': 102, 'head': 103, 'alive': True}
+    @0.637s {"t": 0.637, "ev": "monitor_start", "pid": 3780418}
+    @14.688s {"t": 14.688, "ev": "monitor_signal", "sig": "KILL", "checkpoint": 13}
+    @14.695s {"t": 14.695, "ev": "monitor_exit", "code": -9, "took": 0.00752568244934082, "checkpoint": 13}
+    @74.944s {"t": 74.944, "ev": "monitor_start", "pid": 3785592}
+    @107.06s {"t": 107.06, "ev": "drained", "reached": true, "checkpoint": 102, "last_event_block": 94}
+    @107.064s {"t": 107.064, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 量 7 だけ理由不明の欠け（S2_kill_unlimited の注を参照）。
+
+== S2_term_default opts={"sig": "TERM"}
+  expected 93 / delivered(distinct) 37 / missing 56 [[14, 69]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.637, 'alive': False, 'exit': None}, {'t': 1.639, 'alive': True, 'exit': None}, {'t': 16.364, 'alive': False, 'exit': 0}, {'t': 76.441, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 6 hits skipped_blocks=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0]
+  final checkpoint {'t': 104.451, 'checkpoint': 102, 'head': 103, 'alive': True}
+    [skipped_blocks] 	Start block: 70 (skipped 56 blocks)
+    @0.641s {"t": 0.641, "ev": "monitor_start", "pid": 3748332}
+    @14.691s {"t": 14.691, "ev": "monitor_signal", "sig": "TERM", "checkpoint": 13}
+    @16.008s {"t": 16.008, "ev": "monitor_exit", "code": 0, "took": 1.3161280155181885, "checkpoint": 13}
+    @76.274s {"t": 76.274, "ev": "monitor_start", "pid": 3755344}
+    @108.384s {"t": 108.384, "ev": "drained", "reached": true, "checkpoint": 102, "last_event_block": 94}
+    @108.388s {"t": 108.388, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 停止中の 60 件のうち再起動直後の窓（max_past_blocks 既定 12）に入らない 56 件が INFO「skipped 56 blocks」だけで消えた。SIGTERM は約 1 秒で終了コード 0。
+
+== S2_term_default_rec opts={"sig": "TERM", "recovery": true}
+  expected 94 / delivered(distinct) 38 / missing 56 [[15, 70]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.642, 'alive': False, 'exit': None}, {'t': 1.644, 'alive': True, 'exit': None}, {'t': 17.32, 'alive': False, 'exit': 0}, {'t': 77.403, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 6 hits skipped_blocks=1, recovery=2
+  checkpoint_lag metric samples [0.0, 0.0, 0.0]
+  final checkpoint {'t': 105.325, 'checkpoint': 102, 'head': 103, 'alive': True}
+    [skipped_blocks] 	Start block: 71 (skipped 56 blocks)
+    [recovery] 2026-11-23T03:18:45.823399Z  INFO openzeppelin_monitor::services::blockwatcher::service: Started recovery job for network: anvil_local with schedule: */5 * * * * *
+    [recovery] 2026-11-23T03:20:02.449023Z  INFO openzeppelin_monitor::services::blockwatcher::service: Started recovery job for network: anvil_local with schedule: */5 * * * * *
+    @0.644s {"t": 0.644, "ev": "monitor_start", "pid": 3787273}
+    @15.714s {"t": 15.714, "ev": "monitor_signal", "sig": "TERM", "checkpoint": 14}
+    @17.03s {"t": 17.03, "ev": "monitor_exit", "code": 0, "took": 1.315976619720459, "checkpoint": 14}
+    @77.286s {"t": 77.286, "ev": "monitor_start", "pid": 3791568}
+    @108.385s {"t": 108.385, "ev": "drained", "reached": true, "checkpoint": 102, "last_event_block": 95}
+    @108.389s {"t": 108.389, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: recovery を有効にしても max_past_blocks で飛ばしたブロックは missed に保存されない（skipped は info のみ）ので戻らない。
+
+== S2_term_unlimited opts={"sig": "TERM", "max_past": "unlimited"}
+  expected 94 / delivered(distinct) 94 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.638, 'alive': False, 'exit': None}, {'t': 1.639, 'alive': True, 'exit': None}, {'t': 17.286, 'alive': False, 'exit': 0}, {'t': 77.368, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 6 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0]
+  final checkpoint {'t': 105.242, 'checkpoint': 102, 'head': 103, 'alive': True}
+    @0.641s {"t": 0.641, "ev": "monitor_start", "pid": 3771475}
+    @15.698s {"t": 15.698, "ev": "monitor_signal", "sig": "TERM", "checkpoint": 14}
+    @17.014s {"t": 17.014, "ev": "monitor_exit", "code": 0, "took": 1.3159856796264648, "checkpoint": 14}
+    @77.277s {"t": 77.277, "ev": "monitor_start", "pid": 3778204}
+    @108.39s {"t": 108.39, "ev": "drained", "reached": true, "checkpoint": 102, "last_event_block": 95}
+    @108.394s {"t": 108.394, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: max_past_blocks = "unlimited" で停止中の分も全部届いた。二重なし。
+
+== S3_c1 opts={"conf": 1}
+  expected 43 / delivered(distinct) 41 / missing 2 [[1022, 1023]]
+  duplicated [] / stale(not canonical) [22, 23] / retractions none
+  alive_at_end True alive_changes [{'t': 0.638, 'alive': False, 'exit': None}, {'t': 1.639, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 54.713, 'checkpoint': 50, 'head': 51, 'alive': True}
+    @0.641s {"t": 0.641, "ev": "monitor_start", "pid": 3793491}
+    @27.762s {"t": 27.762, "ev": "reorg_before", "head": 24, "checkpoint": 23, "checkpoint_reached": true, "delivered_before": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], "replaced": [22, 23, 24]}
+    @27.77s {"t": 27.77, "ev": "reorg", "depth": 3, "head": 24, "new_amounts": [1022, 1023, 1024]}
+    @57.922s {"t": 57.922, "ev": "drained", "reached": true, "checkpoint": 50, "last_event_block": 44}
+    @57.927s {"t": 57.927, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: reorg の時点でチェックポイントは 23（=頭 24 - 1）。置き換えた 22,23 は通知済みのまま残り（取り消しなし）、新しい 1022,1023 はチェックポイントより前なので処理されず消えた。未処理だった 24 の位置の 1024 だけ届いた。reorg を示すログは何も出ない。
+
+== S3_c5 opts={"conf": 5}
+  expected 53 / delivered(distinct) 53 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.634, 'alive': False, 'exit': None}, {'t': 5.647, 'alive': True, 'exit': None}]
+  log ERROR 0 WARN 3 hits 
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 64.887, 'checkpoint': 56, 'head': 61, 'alive': True}
+    @4.654s {"t": 4.654, "ev": "monitor_start", "pid": 3871291}
+    @37.829s {"t": 37.829, "ev": "reorg_before", "head": 34, "checkpoint": 29, "checkpoint_reached": true, "delivered_before": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29], "replaced": [32, 33, 34]}
+    @37.836s {"t": 37.836, "ev": "reorg", "depth": 3, "head": 34, "new_amounts": [1032, 1033, 1034]}
+    @67.942s {"t": 67.942, "ev": "drained", "reached": true, "checkpoint": 56, "last_event_block": 54}
+    @67.945s {"t": 67.945, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 確認数 5 > reorg の深さ 3 なので、置き換え前のブロックは未処理。新しい 3 件だけ届き、古い 3 件は通知されない。正しい結果。
+
+== S4 opts={}
+  expected 89 / delivered(distinct) 30 / missing 59 [[4, 62]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.636, 'alive': False, 'exit': None}, {'t': 1.637, 'alive': True, 'exit': None}]
+  log ERROR 177 WARN 180 hits notification_failed=177
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 124.539, 'checkpoint': 119, 'head': 121, 'alive': True}
+    [notification_failed] 2026-11-23T03:23:00.622074Z ERROR openzeppelin_monitor::utils::logging::error: Error occurred, Webhook request failed with status: 500 Internal Server Error, trace_id: 548d75bd-6ad6-4f0c-bad2-468604893063, timestamp: 2026-11-23T03:23:00.621990644+00:00
+    [notification_failed] 2026-11-23T03:23:00.622492Z ERROR openzeppelin_monitor::utils::logging::error: Error occurred, "Execution error: Notification failed: Webhook request failed with status: 500 Internal Server Error", trace_id: 644c947d-7d98-4f4d-a9ce-c8665a5a7c85, timestamp: 2026-11-23T03:23:00.622458162+00:00
+    @0.639s {"t": 0.639, "ev": "monitor_start", "pid": 3805488}
+    @10.674s {"t": 10.674, "ev": "sink_control", "fail": true}
+    @70.945s {"t": 70.945, "ev": "sink_control", "fail": false}
+    @97.046s {"t": 97.046, "ev": "drained", "reached": true, "checkpoint": 92, "last_event_block": 90}
+    @127.119s {"t": 127.119, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: webhook の再送は既定の retry_policy（max_retries 3）で 1 回目＋3 回の計 4 回を約 1 秒以内に打ち、尽きると ERROR ログで捨てる。60 秒の障害中に通知を試みた分は全部消えた。チェックポイントは通知の成否と無関係に進む（trigger は tokio::spawn で投げっぱなし）。metrics に通知失敗の数は無い。
+
+== S5 opts={}
+  expected 330 / delivered(distinct) 35 / missing 295 [[5, 299]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.653, 'alive': False, 'exit': None}, {'t': 1.654, 'alive': True, 'exit': None}]
+  log ERROR 60 WARN 33 hits skipped_blocks=1, jsonrpc_error=30
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 336.122, 'checkpoint': 332, 'head': 334, 'alive': True}
+    [skipped_blocks] 	Start block: 300 (skipped 295 blocks)
+    [jsonrpc_error] 2026-11-23T03:25:10.237155Z  WARN process_new_blocks:get_latest_block_number: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    [jsonrpc_error] 2026-11-23T03:25:20.263599Z  WARN process_new_blocks:get_latest_block_number: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    @0.656s {"t": 0.656, "ev": "monitor_start", "pid": 3809640}
+    @12.695s {"t": 12.695, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": true, "fail_methods": null}
+    @313.044s {"t": 313.044, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+    @339.14s {"t": 339.14, "ev": "drained", "reached": true, "checkpoint": 332, "last_event_block": 331}
+    @339.15s {"t": 339.15, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: RPC 停止 5 分の間、プロセスは生きたまま。各 tick の eth_blockNumber が 1 回失敗し（rpc_request_errors_total が tick ごとに +1、計 30）、ERROR 2 行/tick。block_checkpoint_lag は保存時しか更新されないので 0 のまま凍った。回復後は max_past_blocks 既定の窓の外 295 件を INFO「skipped」だけで飛ばした。health の口は無い（/health は 404）。
+
+== S5_unlimited opts={"max_past": "unlimited"}
+  expected 330 / delivered(distinct) 330 / missing 0 []
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.634, 'alive': False, 'exit': None}, {'t': 1.636, 'alive': True, 'exit': None}]
+  log ERROR 60 WARN 33 hits jsonrpc_error=30
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 334.492, 'checkpoint': 331, 'head': 332, 'alive': True}
+    [jsonrpc_error] 2026-11-23T03:30:50.423661Z  WARN process_new_blocks:get_latest_block_number: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    [jsonrpc_error] 2026-11-23T03:31:00.451636Z  WARN process_new_blocks:get_latest_block_number: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    @0.636s {"t": 0.636, "ev": "monitor_start", "pid": 3831422}
+    @12.69s {"t": 12.69, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": true, "fail_methods": null}
+    @313.172s {"t": 313.172, "ev": "proxy_control", "fail_blocks": [], "mode": "error", "down": false, "fail_methods": null}
+    @337.262s {"t": 337.262, "ev": "drained", "reached": true, "checkpoint": 331, "last_event_block": 331}
+    @337.272s {"t": 337.272, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: "unlimited" なら回復後に停止中の 300 件も全部届いた（MAX_BATCHES_PER_TICK の上限内）。lag はやはり 0 のまま。
+
+== _artifact_startup_S1a_full opts={"persist": true, "methods": null}
+  expected 40 / delivered(distinct) 26 / missing 14 [[2, 8], [10, 16]]
+  duplicated [] / stale(not canonical) [] / retractions none
+  alive_at_end True alive_changes [{'t': 0.637, 'alive': True, 'exit': None}]
+  log ERROR 3 WARN 4 hits skipped_blocks=1, batch_failed=1, jsonrpc_error=1
+  checkpoint_lag metric samples [0.0, 0.0, 0.0, 0.0, 0.0]
+  final checkpoint {'t': 52.033, 'checkpoint': 48, 'head': 50, 'alive': True}
+    [skipped_blocks] 	Start block: 17 (skipped 7 blocks)
+    [batch_failed] 2026-11-23T03:05:20.123559Z ERROR process_new_blocks: openzeppelin_monitor::services::blockwatcher::service: Failed to process block batch, network: anvil_local, batch_start: 10, batch_end: 19, error: Failed to get blocks from 10 to 19 network: "anvil_local"
+    [jsonrpc_error] 2026-11-23T03:05:20.121191Z  WARN process_new_blocks:get_blocks: openzeppelin_monitor::services::blockchain::transports::http::endpoint_manager: JSON-RPC error from 127.0.0.1: code -32603 - injected fault network: "anvil_local"
+    @0.635s {"t": 0.635, "ev": "monitor_start", "pid": 3726674}
+    @3.637s {"t": 3.637, "ev": "proxy_control", "fail_blocks": [15], "mode": "error", "down": false, "fail_methods": null}
+    @55.827s {"t": 55.827, "ev": "drained", "reached": true, "checkpoint": 48, "last_event_block": 41}
+    @55.83s {"t": 55.83, "ev": "run_end", "health_probe": "HTTP Error 404: Not Found"}
+  notes: 起動手順の不具合の証拠（集計から外す）。チェックポイント 1 を置いて頭 1・確定 0 のときに tick が走ると、last(1) >= confirmed(0) の分岐で checkpoint に confirmed=0 を保存し、次の tick が初回扱い（last==0）で最新の確定ブロックから始め、2..8 を飛ばした（service.rs process_new_blocks の else 分岐、main も同じ形）。RPC が一時的に低い頭を返すとチェックポイントが戻りうることを示すが、それ自体はシナリオ外で未検証。
