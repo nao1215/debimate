@@ -1,5 +1,5 @@
 ---
-title: "Lease - 期限付きで権利を貸す仕組み"
+title: "Lease - 期限付きで権利を貸して止まった相手から取り戻す"
 date: 2026-08-05
 draft: false
 series: ["技術ノート", "Distributed Systems"]

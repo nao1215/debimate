@@ -1,5 +1,5 @@
 ---
-title: "MVCC と VACUUM - 更新で残る古い版と、それを消せなくする長いトランザクション"
+title: "MVCC and VACUUM - 更新で残る古い版とその回収"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Database Systems"]

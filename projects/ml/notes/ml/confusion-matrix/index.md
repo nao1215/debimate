@@ -1,5 +1,5 @@
 ---
-title: "混同行列 - 閾値を下げて Recall が上がったのに、悪性の見逃しが増える理由"
+title: "混同行列 - 見逃しと誤報のコストから閾値を決める表"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

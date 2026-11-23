@@ -1,5 +1,5 @@
 ---
-title: "Bulkhead - 1 つの呼び出し先の停止が、スレッドを全て奪わないように区切る"
+title: "Bulkhead - 呼び出し先ごとに資源を区切って障害を閉じ込める"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Software Architecture"]

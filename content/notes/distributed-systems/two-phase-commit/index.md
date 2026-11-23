@@ -1,5 +1,5 @@
 ---
-title: "2PC - 準備を終えた参加者は、コーディネータの決定が届くまでロックを放さない"
+title: "2PC - 2 段階でコミットする分散トランザクションと残るロック"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Distributed Systems"]

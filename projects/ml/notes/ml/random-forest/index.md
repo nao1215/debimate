@@ -1,5 +1,5 @@
 ---
-title: "RandomForest - ランダムフォレスト"
+title: "RandomForest - 木を平均して予測を安定させるアンサンブル"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

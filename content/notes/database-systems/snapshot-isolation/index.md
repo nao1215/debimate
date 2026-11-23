@@ -1,5 +1,5 @@
 ---
-title: "Snapshot Isolation - 固定したスナップショットで読み、書き込みの重なりを止める"
+title: "Snapshot Isolation - 固定したスナップショットによる読み取りと書き込みの衝突検出"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Database Systems"]

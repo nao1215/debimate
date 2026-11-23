@@ -1,5 +1,5 @@
 ---
-title: "Saga - ローカルトランザクションをつなぎ、失敗したら補償で戻す"
+title: "Saga - ローカルトランザクションを補償でつなぐ長い処理"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Distributed Systems"]

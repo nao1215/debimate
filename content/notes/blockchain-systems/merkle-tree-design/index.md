@@ -1,5 +1,5 @@
 ---
-title: "Merkle Tree Design - 構築規則が決める安全性と証明能力"
+title: "Merkle Tree Design - 違う木が同じルートにならないように葉を扱い並べる"
 date: 2026-08-09
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

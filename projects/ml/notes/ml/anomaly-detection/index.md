@@ -1,5 +1,5 @@
 ---
-title: "異常検知（anomaly detection）: Isolation Forest / LOF / One-Class SVM"
+title: "異常検知（anomaly detection） - 正常から外れた点を見つける代表的な 4 つの手法"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "Quorum - タイムアウトした書き込みは、失敗したとは限らない"
+title: "Quorum - 過半数の重なりで一貫性を保つ書き込みと読み取り"
 date: 2026-08-06
 draft: false
 series: ["技術ノート", "Distributed Systems"]

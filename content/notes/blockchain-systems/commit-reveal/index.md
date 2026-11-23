@@ -1,5 +1,5 @@
 ---
-title: "Commit-Reveal - 中身を隠したまま約束し、締め切りの後に明かす"
+title: "Commit-Reveal - 中身を隠して約束し締め切りの後に明かす"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "Background Removal - 切り抜いた立ち絵の縁に、描いた時の背景が残る"
+title: "Background Removal - 立ち絵の切り抜きと縁に残る背景"
 date: 2026-11-12
 draft: false
 series: ["技術ノート", "Generative AI"]

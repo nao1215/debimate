@@ -1,5 +1,5 @@
 ---
-title: "Ethereum Hard Forks - EVM の規則は全ノードで同時に切り替わる"
+title: "Ethereum Hard Forks - デプロイ済みのコントラクトにも効く規則の切り替え"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

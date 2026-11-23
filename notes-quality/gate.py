@@ -231,13 +231,58 @@ LOCAL_RESULT = (
 )
 
 
+# 2026-11-23 著者の指定: 副題の LLM 臭さを機械で止める。別の担当（Claude の別エージェント）に 227 本を分析させ、
+# 型として出た「空語の締め」「並列の羅列」「本題と注意点の二段構え」「時点の語・漢語の抽象名詞」「教科書の問い」を NG にする。
+# 英語名の言い直しとセクションごとの画一は 1 本の題では判定できないので、人が見る。
+SUB_EMPTY_WORDS = ('仕組み', '全体像', '役割', '扱い方', '構成要素')
+# 「使われ方」は 2026-11-23 著者の判断で許す（Hash Function の題）
+SUB_EMPTY_END = re.compile(r'((?<!使われ)方|方法|手順|設計|パターン|影響|性質)$')
+SUB_TWO_PART = re.compile(r'と[^と]*(限界|不安定さ|影響|違い|関係|選び方|抑え方|見方|確かめ方|効き方|誤差)$')
+SUB_BANNED = ('最新', '解けた', '形成', '能力', '使用条件', '一次記録')
+# 並列でない「と」: 語の一部（こと・ごと・ひとつ・もと・あと・そと・まとめ）と、引用・比較・変化の「と」
+_NOT_PARALLEL_TO = re.compile(r'(?<=[こごひもあそま])と|と(?=は|の|一緒|言|い[うっ]|見な|同じ|な[るっりら]|し[てた]|す[るれ]|き|ころ|も|比べ|ともに)')
+
+
+def sub_parallel_count(sub):
+    """副題で名詞を並べる区切り（並列の「と」・中黒・全角スラッシュ）の数。"""
+    to = len(re.findall('と', sub)) - len(_NOT_PARALLEL_TO.findall(sub))
+    # 動詞の後ろの中黒（遅れる・消える）は動作の並びなので数えない
+    dots = len(re.findall(r'(?<![るうくすつぬむぶぐい])・', sub))
+    return to + dots + sub.count('／')
+
+
+def title_style_ng(sub):
+    """副題の LLM 臭さ（空語・羅列・二段構え・時点の語・教科書の問い）を返す。無ければ None。"""
+    hit = [w for w in SUB_EMPTY_WORDS if w in sub]
+    if hit or SUB_EMPTY_END.search(sub):
+        w = hit[0] if hit else SUB_EMPTY_END.search(sub).group(1)
+        return f'副題が中身の無い語（{w}）で締めている: {sub}（何が起きるか・何を決めるかを動詞で言い切る）'
+    n = sub_parallel_count(sub)
+    if n >= 2:
+        return f'副題が語の羅列になっている（並列の区切りが {n} 個）: {sub}（並べるのは 2 つまで。範囲は 1 つの問いか動詞の句で表す）'
+    if SUB_TWO_PART.search(sub):
+        return f'副題が「本題と注意点」の二段構えになっている: {sub}（利点と欠点の章立てを 1 行に縮めた形。ノートの核心を 1 つの句で言う）'
+    hit = [w for w in SUB_BANNED if w in sub]
+    if hit:
+        return f'副題に時点で変わる語か抽象的な漢語（{"、".join(hit)}）がある: {sub}'
+    if re.search(r'なぜ.*のか', sub):
+        return f'副題が教科書の問い（なぜ〜のか）になっている: {sub}（読者が実際に迷う問いか、答えを言い切る形にする）'
+    return None
+
+
 def title_subject_ng(t):
     """副題が一般知識でなく著者の出来事を主題にしていれば、その理由を返す。"""
     if ' - ' not in t:
         return None
     sub = t.split(' - ', 1)[1].strip()
+    # 2026-11-23 著者の指定: 副題に読点・句点を入れない。副題は 1 つの句でノート全体の範囲を表す
+    if re.search(r'[、。]', sub):
+        return f'副題に読点か句点がある: {sub}（読点で文をつながず、ノート全体の範囲を 1 つの句で表す）'
     if re.search(r'(た|ていた|だった|なかった|かった)[」）。]?$', sub):
         return f'副題が過去形で終わり、出来事の報告になっている: {sub}'
+    why = title_style_ng(sub)
+    if why:
+        return why
     hit = [w.strip() for w in OWN_PROJECTS if w in sub]
     if hit:
         return f'副題に著者のプロジェクトや経験の語（{"、".join(hit)}）がある: {sub}'

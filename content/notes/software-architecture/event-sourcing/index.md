@@ -1,5 +1,5 @@
 ---
-title: "Event Sourcing - 出来事の並びを一次記録にする"
+title: "Event Sourcing - 起きた出来事を記録して状態を組み立て直す"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Software Architecture"]

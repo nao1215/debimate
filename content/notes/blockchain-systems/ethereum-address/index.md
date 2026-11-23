@@ -1,5 +1,5 @@
 ---
-title: "Ethereum Address - アドレスの決まり方"
+title: "Ethereum Address - 鍵やデプロイの条件から計算で決まるアドレス"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

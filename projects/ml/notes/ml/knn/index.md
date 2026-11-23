@@ -1,5 +1,5 @@
 ---
-title: "kNN - 列の単位を書き直すだけで、近傍と予測の精度が大きく変わる理由"
+title: "kNN - 近傍の多数決と列の単位で変わる結果"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

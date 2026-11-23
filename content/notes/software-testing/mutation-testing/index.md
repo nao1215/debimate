@@ -1,5 +1,5 @@
 ---
-title: "Mutation Testing - コードを 1 か所ずつ書き換え、テストが誤りに気づくかを数える"
+title: "Mutation Testing - コードを書き換えてテストが誤りに気づくかを数える"
 date: 2026-11-14
 draft: false
 series: ["技術ノート", "Software Testing"]

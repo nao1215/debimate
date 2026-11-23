@@ -1,5 +1,5 @@
 ---
-title: "Quint - 仕様に書いた失敗の順番は全部試し、書かなかった失敗は試さない"
+title: "Quint - 仕様を書いて失敗の順番を網羅的に試す"
 date: 2026-11-13
 draft: false
 series: ["技術ノート", "Software Testing"]

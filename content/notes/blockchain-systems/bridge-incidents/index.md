@@ -1,5 +1,5 @@
 ---
-title: "Bridge の事故 - 預け入れの確認が破られた 4 件"
+title: "Bridge Incidents - 預け入れの確認が破られた 4 件の事故"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

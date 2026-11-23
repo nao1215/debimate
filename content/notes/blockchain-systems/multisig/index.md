@@ -1,5 +1,5 @@
 ---
-title: "Multisig - 複数の鍵で承認する仕組み"
+title: "Multisig - 鍵を 1 本盗まれても送金させない署名の条件"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

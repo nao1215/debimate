@@ -1,5 +1,5 @@
 ---
-title: "標準偏差"
+title: "標準偏差 - 平均からの散らばりの大きさと Z スコア"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

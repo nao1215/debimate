@@ -1,5 +1,5 @@
 ---
-title: "アンサンブル学習（ensemble learning）: bagging / boosting / stacking"
+title: "アンサンブル学習（ensemble learning） - 複数のモデルを平均や逐次の補正で組み合わせる"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "カーネル密度推定（KDE） - 同じ「scott」のバンド幅でも、scikit-learn と scipy では意味が違う"
+title: "カーネル密度推定（KDE） - カーネルを足して分布を描く方法とバンド幅"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

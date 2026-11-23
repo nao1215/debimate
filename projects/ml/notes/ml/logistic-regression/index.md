@@ -1,5 +1,5 @@
 ---
-title: "ロジスティック回帰 - 単位を変えていない列を liblinear に渡すと、切片へのペナルティで係数が縮む"
+title: "ロジスティック回帰 - 確率を出す線形モデルと正則化"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "時系列予測（time series forecasting）"
+title: "時系列予測（time series forecasting） - 時間順の分割と特徴量"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

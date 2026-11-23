@@ -1,5 +1,5 @@
 ---
-title: "Secrets in Logs - シークレットがログへ漏れる経路は層ごとに違い、後段の消去だけでは止まらない"
+title: "Secrets in Logs - シークレットがログへ漏れる層ごとの経路"
 date: 2026-11-14
 draft: false
 series: ["技術ノート", "Security"]

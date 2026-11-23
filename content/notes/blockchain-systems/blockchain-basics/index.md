@@ -1,5 +1,5 @@
 ---
-title: "Blockchain Basics - 管理者のいない台帳は、規則を変えると 2 本に割れることがある"
+title: "Blockchain Basics - 管理者のいない台帳で順番を決め規則の変更で分岐する"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

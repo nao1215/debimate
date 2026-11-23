@@ -1,5 +1,5 @@
 ---
-title: "Heartbeat - ハートビートが途絶えても、相手が止まったとは限らない"
+title: "Heartbeat - 生存確認の信号と途絶えた時の判定"
 date: 2026-08-05
 draft: false
 series: ["技術ノート", "Distributed Systems"]

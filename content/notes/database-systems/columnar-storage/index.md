@@ -1,5 +1,5 @@
 ---
-title: "Columnar Storage - 列ごとに並べて、読まない列と塊を増やす"
+title: "Columnar Storage - 列ごとに並べて I/O を減らす保存形式"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Database Systems"]

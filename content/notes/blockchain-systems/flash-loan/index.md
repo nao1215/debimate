@@ -1,5 +1,5 @@
 ---
-title: "Flash Loan - 1 つのトランザクションの中だけ担保なしで借りる仕組みと bZx の事故"
+title: "Flash Loan - 同じトランザクションで返す前提で担保なしに借りる"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

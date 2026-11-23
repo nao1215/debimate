@@ -1,5 +1,5 @@
 ---
-title: "損失関数（loss function）: MSE と交差エントロピー"
+title: "損失関数（loss function） - MSE と交差エントロピー"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

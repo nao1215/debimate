@@ -1,5 +1,5 @@
 ---
-title: "Connection Pool - DB への接続を使い回し、同時に使う本数を絞る"
+title: "Connection Pool - DB への接続を使い回して同時に使う本数を絞る"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Database Systems"]

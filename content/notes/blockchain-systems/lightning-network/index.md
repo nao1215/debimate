@@ -1,5 +1,5 @@
 ---
-title: "Lightning Network - チャネルの残高は、そのまま送れる額や受け取れる額にはならない"
+title: "Lightning Network - チャネルで送れる額は残高だけでは決まらない"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

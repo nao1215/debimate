@@ -1,5 +1,5 @@
 ---
-title: "Passkey - サブドメインで作った署名は origin のチェックでしか止まらない"
+title: "Passkey - 公開鍵の署名で偽サイトに強いログインを作る"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Security"]

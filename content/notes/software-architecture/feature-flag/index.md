@@ -1,5 +1,5 @@
 ---
-title: "Feature Flag - 割合で出す判定は、どのサーバーでも同じ答えを返すハッシュで決める"
+title: "Feature Flag - 公開をデプロイから切り離して利用者を割合で振り分ける"
 date: 2026-08-17
 draft: false
 series: ["技術ノート", "Software Architecture"]

@@ -1,5 +1,5 @@
 ---
-title: "Keyset Pagination - OFFSET が後ろのページほど遅くなる理由と、前のページの続きから読む方法"
+title: "Keyset Pagination - 直前に返した最後のキーから続きを取り出す"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Database Systems"]

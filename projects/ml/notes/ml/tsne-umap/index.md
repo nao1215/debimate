@@ -1,5 +1,5 @@
 ---
-title: "t-SNE と UMAP: 非線形次元削減"
+title: "t-SNE と UMAP - 近傍を保って 2 次元に写す非線形次元削減"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

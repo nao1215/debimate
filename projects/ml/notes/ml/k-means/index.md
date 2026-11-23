@@ -1,5 +1,5 @@
 ---
-title: "k-means - 塊の無い一様乱数でも、k を選ぶ指標はそろって 1 つの k を指す"
+title: "k-means - 割り当てと更新を繰り返して点を k 個に分ける"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "Ethereum Transaction - 送信元は署名から決まり、priority fee は base fee との和が maxFeePerGas 以下の間、書いた値のまま払われる"
+title: "Ethereum Transaction - 署名した欄から送信元と払う手数料が決まる"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

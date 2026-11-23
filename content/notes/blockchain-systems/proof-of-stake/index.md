@@ -1,5 +1,5 @@
 ---
-title: "Proof of Stake - 預け入れた資産を担保に合意を形成する"
+title: "Proof of Stake - 預けた資産の没収を恐れさせて正直に投票させる"
 date: 2026-11-08
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "モデルレジストリとバージョニング（model registry）"
+title: "モデルレジストリとバージョニング（model registry） - バージョンと別名による本番モデルの管理"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "MLOps"]

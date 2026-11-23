@@ -1,5 +1,5 @@
 ---
-title: "UUIDv7 - 時刻順に並ぶ UUID を主キーにすると、索引の何が変わるか"
+title: "UUIDv7 - UUIDv4 の主キーで散らばる書き込みを索引の末尾に寄せる"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Database Systems"]

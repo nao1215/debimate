@@ -1,5 +1,5 @@
 ---
-title: "Bitcoin Merkle Tree の弱点 - トランザクションの複製と 64 バイトのトランザクション"
+title: "Bitcoin Merkle Tree Attacks - トランザクションの複製と 64 バイトのトランザクションによる攻撃"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

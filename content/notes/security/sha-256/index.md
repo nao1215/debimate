@@ -1,5 +1,5 @@
 ---
-title: "SHA-256 - なぜ任意長のデータを固定長に変換できるのか"
+title: "SHA-256 - 区切ったブロックを内部状態に混ぜ続けて 256 bit に縮める"
 date: 2026-09-04
 draft: false
 series: ["技術ノート", "Security"]

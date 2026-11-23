@@ -1,5 +1,5 @@
 ---
-title: "Random Number - 暗号で乱数がなぜ重要なのか"
+title: "Random Number - 暗号の乱数は OS から取り一度だけ使う"
 date: 2026-09-02
 draft: false
 series: ["技術ノート", "Security"]

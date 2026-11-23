@@ -1,5 +1,5 @@
 ---
-title: "Proof of Work - 10 分に 1 個のブロックでも、待ち時間は平均 10 分"
+title: "Proof of Work - ハッシュの計算に費やした力でブロックを作る権利を決める"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

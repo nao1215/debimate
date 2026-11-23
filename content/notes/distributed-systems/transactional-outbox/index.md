@@ -1,5 +1,5 @@
 ---
-title: "Transactional Outbox - id の順に読む relay は、コミット済みの行を飛ばす"
+title: "Transactional Outbox - DB の更新とイベントの送信を 1 つのトランザクションにそろえる"
 date: 2026-08-18
 draft: false
 series: ["技術ノート", "Distributed Systems"]

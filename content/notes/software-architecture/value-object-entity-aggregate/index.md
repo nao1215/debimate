@@ -1,5 +1,5 @@
 ---
-title: "Value Object・Entity・Aggregate - DDD のモデル構成要素"
+title: "Value Object・Entity・Aggregate - 同一性と整合の範囲で型を分ける"
 date: 2026-08-05
 draft: false
 series: ["技術ノート", "Software Architecture"]

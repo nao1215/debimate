@@ -1,5 +1,5 @@
 ---
-title: "ControlNet - 骨格や深度マップでポーズを縛る仕組み"
+title: "ControlNet - 骨格や深度マップでポーズを縛る"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Generative AI"]

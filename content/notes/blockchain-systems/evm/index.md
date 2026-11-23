@@ -1,5 +1,5 @@
 ---
-title: "EVM - Ethereum のトランザクションを実行する仮想マシンの全体像"
+title: "EVM - 命令ごとにガスを払って進むスタックマシン"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

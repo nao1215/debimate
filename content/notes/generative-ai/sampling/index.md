@@ -1,5 +1,5 @@
 ---
-title: "Sampling - temperature を指定しない時に何が使われ、0 にすると毎回同じになるのか"
+title: "Sampling - temperature と top-p で次のトークンを選ぶ計算"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Generative AI"]

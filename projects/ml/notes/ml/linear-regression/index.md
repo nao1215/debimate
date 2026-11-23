@@ -1,5 +1,5 @@
 ---
-title: "線形回帰 - 係数は、他にどの列を入れたかで符号まで変わる"
+title: "線形回帰 - 最小二乗法と係数の意味"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

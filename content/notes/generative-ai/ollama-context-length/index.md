@@ -1,5 +1,5 @@
 ---
-title: "Ollama Context Length - num_ctx の既定値・確保されるメモリ・超えた入力の切り詰め"
+title: "Ollama Context Length - num_ctx の既定値と超えた入力の切り詰め"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Generative AI"]

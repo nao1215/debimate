@@ -1,5 +1,5 @@
 ---
-title: "Consistent Hashing - 動くキーが 1/N で済むのは平均の話で、偏りはリングに置く点の数で決まる"
+title: "Consistent Hashing - 台数の増減で動くキーを減らす配置と偏り"
 date: 2026-11-03
 draft: false
 series: ["技術ノート", "Distributed Systems"]

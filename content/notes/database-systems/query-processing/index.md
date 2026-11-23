@@ -1,5 +1,5 @@
 ---
-title: "Query Processing - プランナは、条件に合う行が並びの中に均等に散らばり、列どうしは無関係だと見なして実行計画を選ぶ"
+title: "Query Processing - SQL が結果を返すまでの段階とプランナの見積もり"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Database Systems"]

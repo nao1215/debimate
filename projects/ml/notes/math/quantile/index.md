@@ -1,5 +1,5 @@
 ---
-title: "Quantile - 同じデータの 90 パーセンタイルが、関数ごとに違う値になる理由"
+title: "Quantile - 同じデータの分位点がツールごとに違う値になる理由"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

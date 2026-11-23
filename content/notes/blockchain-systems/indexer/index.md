@@ -1,5 +1,5 @@
 ---
-title: "Blockchain Indexer - ノードに無い検索を作り、reorg では取り込んだ分を巻き戻す"
+title: "Blockchain Indexer - ノードに無い検索を作り reorg で巻き戻す"
 date: 2026-11-21
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "Anticorruption Layer - 外部システムの語は、1 か所で自分たちの語に置き換える"
+title: "Anticorruption Layer - 外部システムの語を自分たちの語に置き換える層"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]

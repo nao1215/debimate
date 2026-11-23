@@ -1,5 +1,5 @@
 ---
-title: "Merkle Tree - 35 億件の証明書ログにある 1 件は、32 個のハッシュで示せる"
+title: "Merkle Tree - 少ないハッシュで包含と改ざんの無さを示す木"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

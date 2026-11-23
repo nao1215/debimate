@@ -1,5 +1,5 @@
 ---
-title: "AMM - 板を使わず、プールの残高の比で交換する取引所"
+title: "AMM - 板の代わりにプールの残高の比で価格を決める取引所"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

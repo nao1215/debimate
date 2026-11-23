@@ -1,5 +1,5 @@
 ---
-title: "Depth Body Shape - 3D モデルから作った深度マップは、ポーズと一緒に体型と服の厚みも写す"
+title: "Depth Body Shape - 深度マップがポーズと一緒に写す体型と服の厚み"
 date: 2026-11-12
 draft: false
 series: ["技術ノート", "Generative AI"]

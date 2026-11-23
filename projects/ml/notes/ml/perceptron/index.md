@@ -1,5 +1,5 @@
 ---
-title: "パーセプトロン（perceptron） - 正則化なしで重みを 0 から始め、止め方を切れば、学習率を 12 桁変えても予測は同じ"
+title: "パーセプトロン（perceptron） - 誤りのたびに足す学習と止まる条件"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

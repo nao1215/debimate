@@ -1,5 +1,5 @@
 ---
-title: "歪度と log1p - 歪度は単位で変わらないが、log1p 後の歪度は単位で変わる"
+title: "歪度と log1p - 分布の偏りを測る指標と変換"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

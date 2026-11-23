@@ -1,5 +1,5 @@
 ---
-title: "Zero-Knowledge Proof - ハッシュから R を外す、IsZero 回路の制約を 1 行消すと偽の証明が通る"
+title: "Zero-Knowledge Proof - 秘密を明かさずに知っていることを示す証明"
 date: 2026-11-03T00:00:00+09:00
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

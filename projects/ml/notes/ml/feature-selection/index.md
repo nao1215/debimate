@@ -1,5 +1,5 @@
 ---
-title: "特徴量選択（feature selection）"
+title: "特徴量選択（feature selection） - 効く列を選ぶ 3 系統の使い分け"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

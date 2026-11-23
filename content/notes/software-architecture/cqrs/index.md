@@ -1,5 +1,5 @@
 ---
-title: "CQRS - 1 つのキューを複数の worker で取り合うと、読み取りモデルの一部が古い値で止まる"
+title: "CQRS - 書き込みと読み取りでモデルを分けて読み取りの遅れを受け入れる"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Software Architecture"]

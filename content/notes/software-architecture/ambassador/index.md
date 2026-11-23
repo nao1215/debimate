@@ -1,5 +1,5 @@
 ---
-title: "Ambassador - localhost のプロキシに master の切り替えを任せると、書き込みは何秒止まり、何件消えるか"
+title: "Ambassador - localhost のプロキシに接続先の切り替えを任せる"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]

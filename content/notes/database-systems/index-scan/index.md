@@ -1,5 +1,5 @@
 ---
-title: "Index Scan - 索引から表のレコードに届くまでに何が起きるか"
+title: "Index Scan - 索引で見つけたレコードを表へ取りに行くコスト"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Database Systems"]

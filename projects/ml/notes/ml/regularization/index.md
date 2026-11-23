@@ -1,5 +1,5 @@
 ---
-title: "正則化 - Lasso が残す列は、なぜ行を選び直すだけで何通りにも分かれるのか"
+title: "正則化 - 係数にペナルティを課して過学習を抑える"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

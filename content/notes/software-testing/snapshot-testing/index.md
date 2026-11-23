@@ -1,5 +1,5 @@
 ---
-title: "Snapshot Testing - golden ファイルが保証するのは前回と同じことで、正しいことではない"
+title: "Snapshot Testing - 前回の出力と比べるテストが保証する範囲"
 date: 2026-11-14
 draft: false
 series: ["技術ノート", "Software Testing"]

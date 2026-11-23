@@ -1,5 +1,5 @@
 ---
-title: "CLIP Token Limit - 長いプロンプトの区切りと、効いている語の探し方"
+title: "CLIP Token Limit - 77 トークンの枠で区切られる長いプロンプト"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Generative AI"]

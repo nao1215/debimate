@@ -1,5 +1,5 @@
 ---
-title: "特徴量重要度（feature importance）と permutation importance"
+title: "特徴量重要度（feature importance） - MDI と permutation importance"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "ERC-20 - 残高はコントラクトが持つ表、approve は引き出しを任せる許可"
+title: "ERC-20 - 残高を持つ表と approve による引き出しの許可"
 date: 2026-11-03T00:00:00+09:00
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "NULL - 比較の結果は UNKNOWN になり、WHERE は行を捨て、制約は行を通す"
+title: "NULL - 3 値論理と WHERE や制約や集計での扱い"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Database Systems"]

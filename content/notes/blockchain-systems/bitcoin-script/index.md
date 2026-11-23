@@ -1,5 +1,5 @@
 ---
-title: "Bitcoin Script - 署名を求めない条件は、mempool を見た誰でも使える"
+title: "Bitcoin Script - 出力に書いた条件を満たした人が送金を使える"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

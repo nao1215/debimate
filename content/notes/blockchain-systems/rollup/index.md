@@ -1,5 +1,5 @@
 ---
-title: "Rollup - 実行を外へ出し、結果をチェーンで確定する"
+title: "Rollup - 実行をチェーンの外へ出して結果だけを確定させる"
 date: 2026-11-08
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

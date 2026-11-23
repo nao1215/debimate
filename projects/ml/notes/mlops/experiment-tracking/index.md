@@ -1,5 +1,5 @@
 ---
-title: "実験管理（experiment tracking） - MLflow で 1 位の run は、seed を変えても 1 位か"
+title: "実験管理（experiment tracking） - MLflow での記録と結果の再現性"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "MLOps"]

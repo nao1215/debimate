@@ -1,5 +1,5 @@
 ---
-title: "DBSCAN - 塊の間に密度の低い所が無ければ、eps をどう選んでも分かれない"
+title: "DBSCAN - 密度の低い所を境にクラスタを分ける"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

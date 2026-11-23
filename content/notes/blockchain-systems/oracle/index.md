@@ -1,5 +1,5 @@
 ---
-title: "Oracle - レンディングが読む価格をプールの価格・TWAP・プッシュ型で比べる"
+title: "Oracle - 外部の価格をチェーンへ取り込む方式と操作への強さ"
 date: 2026-11-08T00:00:00+09:00
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "欠損値処理（missing values）: MCAR / MAR / MNAR と imputation"
+title: "欠損値処理（missing values） - 値の欠け方で補完の正しさが変わる"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

@@ -1,5 +1,5 @@
 ---
-title: "Wallet - 送金の仕組みと鍵の管理、セキュリティ"
+title: "Wallet - 秘密鍵を守り署名して送金するアプリ"
 date: 2026-10-31T00:00:00+09:00
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

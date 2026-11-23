@@ -1,5 +1,5 @@
 ---
-title: "KV Cache - 読んだトークンの計算結果を取っておく仕組みとコンテキスト長"
+title: "KV Cache - 計算済みのトークンを取っておきコンテキスト長でメモリが増える"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Generative AI"]

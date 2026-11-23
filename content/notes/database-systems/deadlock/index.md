@@ -1,5 +1,5 @@
 ---
-title: "Deadlock - 更新順序が逆になると何が起きるか"
+title: "Deadlock - DBMS による検出とロックを取る順序の統一"
 date: 2026-08-12
 draft: false
 series: ["技術ノート", "Database Systems"]

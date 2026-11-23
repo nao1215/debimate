@@ -1,5 +1,5 @@
 ---
-title: "WAL - ログをどこまで書いてから成功を返すかで、消えるコミットが変わる"
+title: "WAL - ログをどこまで書いてから成功を返すかで消えるコミットが決まる"
 date: 2026-08-05
 draft: false
 series: ["技術ノート", "Distributed Systems"]

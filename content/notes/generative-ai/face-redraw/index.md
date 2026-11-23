@@ -1,5 +1,5 @@
 ---
-title: "Face Redraw - 全身の立ち絵で、顔だけを拡大して描き直す"
+title: "Face Redraw - 全身の立ち絵で顔だけを拡大して描き直す"
 date: 2026-11-13
 draft: false
 series: ["技術ノート", "Generative AI"]

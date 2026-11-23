@@ -1,5 +1,5 @@
 ---
-title: "中央値（メジアン）"
+title: "中央値（メジアン） - 外れ値に強い代表値と L1 損失"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

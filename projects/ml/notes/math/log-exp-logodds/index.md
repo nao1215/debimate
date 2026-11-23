@@ -1,5 +1,5 @@
 ---
-title: "対数・指数と log-odds - 確率を掛けただけの Naive Bayes が、log を足す計算と違う答えを返す理由"
+title: "対数・指数と log-odds - 積を和にする性質と確率の計算"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Mathematics"]

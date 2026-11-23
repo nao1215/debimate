@@ -1,5 +1,5 @@
 ---
-title: "Prompt Weighting - 語の重みとネガティブプロンプトが画像を崩す仕組み"
+title: "Prompt Weighting - 語の重みやネガティブプロンプトで画像が崩れる理由"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Generative AI"]

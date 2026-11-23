@@ -1,5 +1,5 @@
 ---
-title: "Long Context - 長い入力で LLM の答えが崩れる問題はどこまで解けたか"
+title: "Long Context - 公称の長さと答えが崩れずに使える長さの差"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Generative AI"]

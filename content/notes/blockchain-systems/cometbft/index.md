@@ -1,5 +1,5 @@
 ---
-title: "CometBFT - 2/3 を超える票で確定し、届かなければ止まる合意エンジン"
+title: "CometBFT - 2/3 を超える票で即時に確定する合意エンジン"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

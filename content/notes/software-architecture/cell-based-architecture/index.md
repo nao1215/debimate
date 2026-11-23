@@ -1,5 +1,5 @@
 ---
-title: "Cell-based Architecture - 障害が届く範囲は、台数ではなく顧客の分け方で決まる"
+title: "Cell-based Architecture - 顧客をセルに分けて障害の届く範囲を絞る"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Software Architecture"]

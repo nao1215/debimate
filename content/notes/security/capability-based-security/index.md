@@ -1,5 +1,5 @@
 ---
-title: "Capability-based Security - 誰が頼んだかではなく、何を持っているかで権限を決める"
+title: "Capability-based Security - 誰が頼んだかではなく何を持っているかで権限を決める"
 date: 2026-11-10
 draft: false
 series: ["技術ノート", "Security"]

@@ -1,5 +1,5 @@
 ---
-title: "UTXO - 送金の手数料は、残高ではなく使う UTXO の数で決まる"
+title: "UTXO - 出力を丸ごと使う送金のモデルと手数料"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

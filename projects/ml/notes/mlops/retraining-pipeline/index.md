@@ -1,5 +1,5 @@
 ---
-title: "再学習パイプライン（retraining pipeline）"
+title: "再学習パイプライン（retraining pipeline） - トリガーと評価ゲート"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "MLOps"]

@@ -1,5 +1,5 @@
 ---
-title: "ROC-AUC / PR-AUC"
+title: "ROC-AUC / PR-AUC - 閾値を決めずにランキングの良さを測る"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

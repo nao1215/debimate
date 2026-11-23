@@ -1,5 +1,5 @@
 ---
-title: "分散 - SQLite の AVG(ts*ts) - AVG(ts)*AVG(ts) は、ミリ秒で記録した時刻の標準偏差が数秒以下だと 0 や負の値を返すことがある"
+title: "分散 - 偏差の 2 乗の平均と桁落ちを避ける計算"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]

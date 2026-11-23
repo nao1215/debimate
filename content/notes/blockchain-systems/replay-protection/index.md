@@ -1,5 +1,5 @@
 ---
-title: "Replay Protection - 署名済みのデータを別の場所や時点で使い回させない仕組み"
+title: "Replay Protection - 署名済みのデータを別の場所や時点で使い回させない"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

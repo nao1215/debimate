@@ -1,5 +1,5 @@
 ---
-title: "Property-Based Testing - プロパティを書いて入力を作らせ、破れた入力を縮める"
+title: "Property-Based Testing - プロパティから入力を作り破れた入力を縮める"
 date: 2026-11-12
 draft: false
 series: ["技術ノート", "Software Testing"]

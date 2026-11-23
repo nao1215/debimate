@@ -1,5 +1,5 @@
 ---
-title: "Gas and EIP-1559 - 計算量の単位と、ブロックの混み具合で動く base fee"
+title: "Gas and EIP-1559 - 計算量の単位と混み具合で動く base fee"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

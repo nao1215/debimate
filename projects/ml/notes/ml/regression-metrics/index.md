@@ -1,5 +1,5 @@
 ---
-title: "回帰の評価指標（RMSE / MAE / R²）- 誤差が一番小さい地域で R² が一番低くなる"
+title: "回帰の評価指標（RMSE / MAE / R²） - 3 つの指標の違いと順位の入れ替わり"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

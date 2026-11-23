@@ -1,5 +1,5 @@
 ---
-title: "PBS - ブロックの中身を作る builder と、署名する proposer の分業"
+title: "PBS - ブロックを作る builder と署名する proposer の分業"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "Bitcoin Block - ブロックの順番は時刻ではなく、直前ブロックのハッシュ値で決まる"
+title: "Bitcoin Block - 時刻ではなく直前のハッシュ値で並ぶブロック"
 date: 2026-08-09
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

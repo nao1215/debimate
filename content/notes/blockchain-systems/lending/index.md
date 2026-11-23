@@ -1,5 +1,5 @@
 ---
-title: "Lending - 担保を預けて暗号資産を借りる仕組みと清算"
+title: "Lending - 担保の価値が下がると清算される暗号資産の借り入れ"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

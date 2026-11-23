@@ -1,5 +1,5 @@
 ---
-title: "Leader and Followers - コミットが返る時点と、Follower に書き込みが届く時点はずれる"
+title: "Leader and Followers - レプリケーションの遅れと Leader の交代"
 date: 2026-08-07
 draft: false
 series: ["技術ノート", "Distributed Systems"]

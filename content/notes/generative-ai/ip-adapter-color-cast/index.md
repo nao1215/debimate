@@ -1,5 +1,5 @@
 ---
-title: "IP-Adapter Color Cast - 参照の背景で、描いた絵の色が転ぶ"
+title: "IP-Adapter Color Cast - 参照画像の背景で描いた絵の色が転ぶ"
 date: 2026-11-12
 draft: false
 series: ["技術ノート", "Generative AI"]

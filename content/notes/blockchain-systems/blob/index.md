@@ -1,5 +1,5 @@
 ---
-title: "Blob - 大きなデータなら calldata より安く、コントラクトからは読めないデータ置き場"
+title: "Blob - コントラクトから読めない安価なデータ置き場"
 date: 2026-11-11
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

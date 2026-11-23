@@ -1,5 +1,5 @@
 ---
-title: "Hash Function - 4 バイトの関数セレクターは、狙った値に当てるより、どれか 2 つが重なる方がはるかに早い"
+title: "Hash Function - 衝突への強さとブロックチェーンでの使われ方"
 date: 2026-08-10
 draft: false
 series: ["技術ノート", "Blockchain Systems"]

@@ -1,5 +1,5 @@
 ---
-title: "Sidecar - 同じ Pod に置いた補助コンテナは、いつ起動し、いつ止まるのか"
+title: "Sidecar - 同じ Pod に置く補助コンテナの起動と停止"
 date: 2026-08-08
 draft: false
 series: ["技術ノート", "Software Architecture"]

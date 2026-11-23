@@ -1,5 +1,5 @@
 ---
-title: "決定木（decision tree） - データの分け方の乱数だけで、根の質問に選ばれる列が入れ替わる"
+title: "決定木（decision tree） - 質問を重ねて分ける木がデータの揺れで入れ替わる"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

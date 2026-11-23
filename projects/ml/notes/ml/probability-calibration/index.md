@@ -1,5 +1,5 @@
 ---
-title: "確率の校正（probability calibration）: Platt scaling / Isotonic"
+title: "確率の校正（probability calibration） - Platt scaling と Isotonic"
 date: 2026-05-26
 draft: false
 series: ["機械学習ノート", "Machine Learning"]

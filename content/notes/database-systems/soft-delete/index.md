@@ -1,5 +1,5 @@
 ---
-title: "Soft Delete - 論理削除は、消えたことを読む側の全ての SQL に覚えさせる設計"
+title: "Soft Delete - 論理削除が SQL と制約に持ち込む条件"
 date: 2026-08-11
 draft: false
 series: ["技術ノート", "Database Systems"]

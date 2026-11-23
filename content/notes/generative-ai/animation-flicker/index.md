@@ -1,5 +1,5 @@
 ---
-title: "Animation Flicker - 生成した絵をコマにして動かすと、止まっている所までちらつく"
+title: "Animation Flicker - 生成した絵をコマにすると止まっている所までちらつく"
 date: 2026-11-12
 draft: false
 series: ["技術ノート", "Generative AI"]

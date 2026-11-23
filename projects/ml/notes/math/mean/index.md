@@ -1,5 +1,5 @@
 ---
-title: "平均 - float32 で多くの値を足すと、合計がある所から増えなくなる理由"
+title: "平均 - 合計を個数で割る計算と書き方で変わる結果"
 date: 2026-05-24
 draft: false
 series: ["機械学習ノート", "Mathematics"]
