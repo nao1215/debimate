@@ -13,38 +13,38 @@ topics: ["Smart Contract"]
 
 この規則には、コントラクト（チェーンに置いたプログラム）を実行する仮想マシン [EVM](../evm/)（Ethereum Virtual Machine）の命令の一覧と、命令ごとの手数料が含まれます。手数料はガス（gas）という単位で数え、命令の重さに合わせて決まっています。
 
-ハードフォーク（hard fork）は、決めたブロックや時刻を境に、この規則を全てのノードで一斉に切り替える更新です。Ethereum は 2015 年からハードフォークを 20 回ほど行い、更新ごとに Istanbul・Berlin・Cancun のような名前を付けています。
+ハードフォーク（hard fork）は、決めたブロックや時刻を境に、この規則を全てのノードで一斉に切り替える更新です。Ethereum は 2015 年から 20 回ほどハードフォークで規則を切り替え、更新ごとに Istanbul・Berlin・Cancun のような名前を付けています。
 
 <br>
 
-開発者には、この切り替えが 2 つの形で効きます。1 つ目は、コンパイラが新しい規則の命令を使い始めることです。
+この切り替えは、開発者に 2 つの形で影響します。1 つ目は、コンパイラが新しい規則の命令を使い始めることです。
 
 例えば [Solidity](https://soliditylang.org/) のコンパイラ（solc）は 0.8.20 から、2023 年 4 月の更新 Shanghai で加わった PUSH0（スタックに 0 を積む命令）を出力します。そのため、solc を上げただけで、Shanghai の規則をまだ取り込んでいない、EVM を動かす別のチェーン（後の節で説明する L2 など）へのデプロイが失敗することがあります。
 
-2 つ目は、デプロイ済みのコードの値段と意味が変わることです。次の図は、3 回の更新をまたいで同じバイトコード（コンパイル済みのコード）を実行した時の様子です。
+2 つ目は、デプロイ済みのコードで値段と意味が変わることです。次の図は、3 回の更新をまたいで同じバイトコード（コンパイル済みのコード）を実行した時の様子です。
 
 {{< figure src="images/ethereum-hard-forks_concept.webp" alt="上段は 1 本のブロックの列で、Istanbul・Berlin・Cancun の区間の境目に点線がある。Berlin の境目から、更新しなかったノードが古い規則で伸ばす黄土色の列が分かれている。中段は全区間に渡る「デプロイ済みの同じバイトコード」の帯。下段は区間ごとの値で、SLOAD は Istanbul で 800、Berlin と Cancun で 2100 / 100、SELFDESTRUCT は Istanbul と Berlin でコードを消し、Cancun ではコードを残す。直前の区間から値が変わった箱だけが青い（左端の Istanbul は基準）" caption="フォークの境目で、同じバイトコードの値段と意味が変わる" align="center" >}}
 
 ストレージ（コントラクトが持つ永続的な領域）を読む SLOAD 命令は、Istanbul では 800 ガスでしたが、Berlin からは、同じトランザクションの中で 1 回目に読む時が 2100、2 回目が 100 ガスになりました。コントラクトを消す SELFDESTRUCT 命令は、Cancun からコードを残すようになりました。
 
-黄土色の点線の列は、仮に更新しなかったノードがあった場合に、そのノードが古い規則で伸ばす別の列です。実際の更新では全てのノードが切り替えるので、列は 1 本のままです（次の節で説明します）。
+黄土色の点線で描いた列は、仮に更新しなかったノードがあった場合に、そのノードが古い規則で伸ばす別の列です。実際の更新では全てのノードが切り替えるので、列は 1 本のままです（次の節で説明します）。
 
 <br>
 
 本記事では、ハードフォークで EVM の何が変わり、開発者のコードにどう影響するのかを説明します。
 
 - ハードフォークは、チェーンが分裂して新しいコインが生まれることなのか。
-- デプロイ済みのコントラクトの振る舞いは、更新で変わるのか。
+- デプロイ済みのコントラクトでも、振る舞いは更新で変わるのか。
 - 最新の solc でコンパイルしたコードは、どのチェーンでも動くのか。
 - 規則の更新は、誰がどのような手順で決めるのか。
 
-前半で答えを示し、後半では、フォークを固定したローカルのノードで同じバイトコードを実行して確認します。ブロックの合意の仕組みだけを変える更新と、価格や投資の話は扱いません。
+前半で答えを示し、後半では、フォークを固定したローカルのノードで同じバイトコードを実行して確認します。ブロックを合意する仕組みだけを変える更新と、価格や投資の話は扱いません。
 
 ---
 
 ### 計画された規則の更新
 
-ハードフォークと聞くと、チェーンが 2 つに割れて新しいコインが生まれる出来事を想像するかもしれません。しかし、Ethereum のハードフォークのほとんどは、開発者とノードの運用者が事前に合意した計画的な更新で、チェーンは 1 本のままです。[ethereum.org の更新の一覧](https://ethereum.org/ethereum-forks/)に並ぶ更新の多くは、分岐を起こしていません。
+ハードフォークと聞くと、チェーンが 2 つに割れて新しいコインが生まれる出来事を想像するかもしれません。しかし、Ethereum のハードフォークのほとんどは、開発者とノードの運用者が事前に合意した計画的な更新で、チェーンは 1 本のままです。[ethereum.org にある更新の一覧](https://ethereum.org/ethereum-forks/)に並ぶ更新の多くは、分岐を起こしていません。
 
 規則を変える時は、切り替える境目を先に決め、全てのノードが、新しい規則を実装したノードのソフトウェア（クライアント）を事前に入れておきます。境目の決め方は、時期によって次のように変わってきました。
 
@@ -62,7 +62,7 @@ Paris は The Merge と呼ばれる更新で、ブロックを作る権利の決
 
 {{< figure src="images/ethereum-hard-forks_rules.webp" alt="左はソフトフォーク。灰色の「古い規則で有効」の枠の中に、青い「新しい規則で有効」の枠が収まっていて、古いノードも新しいブロックを受け入れ、ブロックの列は 1 本。右はハードフォーク。青い枠が灰色の枠からはみ出し、はみ出した所に PUSH0 がある。古いノードは新しいブロックを拒み、ブロックの列が黄土色の列に分かれる" caption="ソフトフォークとハードフォークの違い" align="center" >}}
 
-上記の図の左のように、新しい規則が有効なブロックの範囲を狭めるだけなら、古いノードも新しいブロックを受け入れられます。この、古いノードとの互換性を保つ更新はソフトフォーク（soft fork）と呼ばれ、ハードフォークと区別されます（[ethereum.org の用語集](https://ethereum.org/glossary/#soft-fork)）。右のハードフォークでは、古い規則では無効だったブロックが有効になるので、古いノードはついていけません。
+上記の図で左に示したように、新しい規則が有効なブロックの範囲を狭めるだけなら、古いノードも新しいブロックを受け入れられます。この、古いノードとの互換性を保つ更新はソフトフォーク（soft fork）と呼ばれ、ハードフォークと区別されます（[ethereum.org の用語集](https://ethereum.org/glossary/#soft-fork)）。右のハードフォークでは、古い規則では無効だったブロックが有効になるので、古いノードはついていけません。
 
 分岐が残るのは、一部の参加者が意図して古い規則を使い続けた時です。2016 年、Ethereum の通貨 ETH を集めて使い道を投票で決めるコントラクト The DAO から、不具合を突かれて 360 万 ETH 以上が流出しました。
 
@@ -74,7 +74,7 @@ Paris は The Merge と呼ばれる更新で、ブロックを作る権利の決
 
 ### デプロイ済みのコントラクトに効く変更
 
-[コントラクト](../smart-contract/)のコードは、デプロイした後に書き換えられません。それでも振る舞いが変わることがあるのは、変わらないのがバイト列だけで、各命令のガスの値と意味はハードフォークで変わるからです。
+[コントラクト](../smart-contract/)のコードは、デプロイした後に書き換えられません。それでも振る舞いが変わることがあるのは、変わらないのがバイト列だけで、各命令が持つガスの値と意味はハードフォークで変わるからです。
 
 ハードフォークで EVM に入る変更は、命令の追加、ガスの値の変更、既存の命令の意味の変更の 3 種類で、影響を受けるコードが違います。
 
@@ -95,15 +95,15 @@ Paris は The Merge と呼ばれる更新で、ブロックを作る権利の決
   - デプロイ済みのコードの結果が変わる
 {{< /note-panels >}}
 
-バイトコードは、1 バイトの命令番号（オペコード）を並べた列です。命令の追加がデプロイ済みのコードに効かないのは、新しい命令に割り当てた番号が、それまでは実行すると失敗する無効な命令で、通常のコンパイラの出力に含まれないからです。デプロイ済みのコードに効くのは、残りの 2 つです。以下では、実際に問題になった例を取り上げます。全ての更新で命令がどう増えたかは [EVM Opcode History](../evm-opcode-history/) で数えています。
+バイトコードは、1 バイトの命令番号（オペコード）を並べた列です。命令の追加がデプロイ済みのコードに影響しないのは、新しい命令に割り当てた番号が、それまでは実行すると失敗する無効な命令で、通常はコンパイラの出力に含まれないからです。デプロイ済みのコードに影響するのは、残りの 2 つです。以下では、実際に問題になった例を取り上げます。全ての更新で命令がどう増えたかは [EVM Opcode History](../evm-opcode-history/) で数えています。
 
 <br>
 
 #### warm と cold
 
-2019 年 12 月の Istanbul は、SLOAD を 200 から 800 ガスに値上げしました（[EIP-1884](https://eips.ethereum.org/EIPS/eip-1884)）。EIP（Ethereum Improvement Proposal）は規則の変更を提案する文書で、更新ごとに採用する EIP の組が決まります。決まり方は後の「更新を決める手順」の節で説明します。
+2019 年 12 月の Istanbul は、SLOAD を 200 から 800 ガスに値上げしました（[EIP-1884](https://eips.ethereum.org/EIPS/eip-1884)）。EIP（Ethereum Improvement Proposal）は規則の変更を提案する文書で、更新ごとに採用する EIP が決まります。決まり方は後の「更新を決める手順」の節で説明します。
 
-2021 年 4 月の Berlin は、さらに、トランザクションの中で初めて読むストレージの値（cold）を 2100 ガス、同じトランザクションの中で既に読んだ値（warm）を 100 ガスに分けました（[EIP-2929](https://eips.ethereum.org/EIPS/eip-2929)）。別のコントラクトを呼ぶ時のアドレスの参照にも同じ区別があり、初回は 2600、2 回目以降は 100 ガスです。ノードのディスクから初めて読み出す処理が重く、ガスの値と実際の負荷が離れていたからです。
+2021 年 4 月の Berlin は、さらに、トランザクションの中で初めて読むストレージの値（cold）を 2100 ガス、同じトランザクションの中で既に読んだ値（warm）を 100 ガスに分けました（[EIP-2929](https://eips.ethereum.org/EIPS/eip-2929)）。別のコントラクトを呼ぶ時に参照するアドレスにも同じ区別があり、初回は 2600、2 回目以降は 100 ガスです。ノードのディスクから初めて読み出す処理が重く、ガスの値と実際の負荷が離れていたからです。
 
 冒頭の図の「2100 / 100」は、この 1 回目と 2 回目の値です。
 
@@ -111,15 +111,15 @@ Paris は The Merge と呼ばれる更新で、ブロックを作る権利の決
 
 {{< figure src="images/ethereum-hard-forks_warm.webp" alt="横棒が 2 本。access list なしは、呼び出し先のアドレスの初回 2,600、ストレージの値の初回 2,100、2 回目 100 で計 4,800。access list ありは、開始時にアドレス 1 件の 2,400 とキー 1 件の 1,900 の計 4,300 を先払いし、呼び出しと 2 回の読み出しは warm で 100 ずつ、計 4,600" caption="別のコントラクトを呼び、その中で同じ値を 2 回読む時のガス（Berlin 以降）" align="center" >}}
 
-上記の図のように、access list はガスを先払いして、呼び出しの中の参照を全て warm にする仕組みです。合計はあまり変わりませんが（この例では 4,800 と 4,600）、呼び出しと読み出しのガスは 100 ずつで済みます。
+上記の図のように、access list はガスを先払いして、呼び出し内の参照を全て warm にする仕組みです。合計はあまり変わりませんが（この例では 4,800 と 4,600）、呼び出しと読み出しのガスは 100 ずつで済みます。
 
-これは、次の `transfer` のように、使えるガスに上限がある呼び出しの中で効きます。後の実験では、この性質で、Berlin 以降に失敗するようになった送金を再び通します。
+これは、次の `transfer` のように、使えるガスに上限がある呼び出しの中で、読み出しのガスを減らせます。後の実験では、この性質で、Berlin 以降に失敗するようになった送金を再び通します。
 
 <br>
 
 #### 2300 ガスの transfer
 
-ETH をコントラクトに送ると、受け取る側のコントラクトのコードが動きます。呼び出す側は、そのコードが使ってよいガスの量に上限を付けて呼び出せます。
+ETH をコントラクトに送ると、受け取る側のコントラクトでコードが動きます。呼び出す側は、そのコードが使って良いガスの量に上限を付けて呼び出せます。
 
 Solidity の `transfer` は、ETH を送る時に、受け取る側のコードに 2300 ガスだけを渡します。[Solidity のドキュメント](https://docs.soliditylang.org/en/v0.8.28/contracts.html#receive-ether-function)は、2300 ガスでは基本的なログを出す程度の処理しかできないと説明しています。[リエントランシー](../reentrancy/)（reentrancy、呼び出しの途中で同じコントラクトを呼び返すこと）の対策として、受け取る側が何もできないこの少なさを当てにしたコードもありました。
 
@@ -129,9 +129,9 @@ Solidity の `transfer` は、ETH を送る時に、受け取る側のコード�
 
 #### 延期された Constantinople
 
-値上げだけでなく、値下げで壊れかけた例もあります。2019 年の Constantinople は、ストレージに書く SSTORE 命令を安くする [EIP-1283](https://eips.ethereum.org/EIPS/eip-1283) を含んでいました。同じトランザクションの中で既に書き換えたスロット（ストレージの 1 か所）への再書き込みが 200 ガスになるので、2300 ガスの中でも、受け取る側が送金元を呼び返してそのストレージを書き換えられるようになり、`transfer` ならリエントランシーを受けないと考えていた既存のコントラクトの一部が攻撃できる状態になります。
+値上げだけでなく、値下げで問題が起きかけた例もあります。2019 年の Constantinople は、ストレージに書く SSTORE 命令を安くする [EIP-1283](https://eips.ethereum.org/EIPS/eip-1283) を含んでいました。同じトランザクションの中で既に書き換えたスロット（ストレージの 1 か所）への再書き込みが 200 ガスになるので、2300 ガスの中でも、受け取る側が送金元を呼び返してそのストレージを書き換えられるようになり、`transfer` ならリエントランシーを受けないと考えていた既存のコントラクトのうち一部が攻撃できる状態になります。
 
-スマートコントラクトの監査会社 ChainSecurity がこの問題を報告し、更新は 2019 年 1 月の予定の直前に[延期されました](https://blog.ethereum.org/2019/01/15/security-alert-ethereum-constantinople-postponement)。Constantinople は、EIP-1283 を外す Petersburg という更新と同時に、2019 年 2 月に出し直されています。
+スマートコントラクトの監査会社 ChainSecurity がこの問題を報告し、更新は 2019 年 1 月に予定していた日の直前に[延期されました](https://blog.ethereum.org/2019/01/15/security-alert-ethereum-constantinople-postponement)。Constantinople は、EIP-1283 を外す Petersburg という更新と同時に、2019 年 2 月に出し直されています。
 
 この件の後も、2300 ガスを当てにする書き方は残りました。Solidity 0.8.31 は、`send` と `transfer` に非推奨の警告を出すようになりました。[リリースのお知らせ](https://www.soliditylang.org/blog/2025/12/03/solidity-0.8.31-release-announcement/)は、2300 ガスの設計が「命令の値段が変わらない」という暗黙の前提に立っていたことを理由に挙げ、渡すガスを制限しない低レベルの呼び出し `call` に空のデータを渡して使うよう勧めています。
 
@@ -139,11 +139,11 @@ Solidity の `transfer` は、ETH を送る時に、受け取る側のコード�
 
 #### SELFDESTRUCT の意味
 
-SELFDESTRUCT は、コントラクトのコードとストレージを消し、残高を指定先に送る命令でした。2024 年 3 月の Cancun の [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780) から、コードとストレージを消すのは、コントラクトを作成したのと同じトランザクションの中で実行した場合だけになりました。別のトランザクションで実行すると、残高を送って実行を止めるだけで、コードもストレージも残ります。
+SELFDESTRUCT は、コントラクトのコードとストレージを消し、残高を指定先に送る命令でした。2024 年 3 月に Cancun で入った [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780) から、コードとストレージを消すのは、コントラクトを作成したのと同じトランザクションの中で実行した場合だけになりました。別のトランザクションで実行すると、残高を送って実行を止めるだけで、コードもストレージも残ります。
 
 この変更で、作成先のアドレスを事前に決められる [CREATE2](../ethereum-address/) と SELFDESTRUCT を繰り返し、同じアドレスに別のコードを置き直す手法（[metamorphic contract](../metamorphic-contract/)）は使えなくなりました。
 
-コントラクトを「消して止める」設計も、Cancun 以降はコードが残ったまま呼び出せる状態になります。処理を別のコントラクトに転送するプロキシで、転送先のコードを SELFDESTRUCT で消された事故があり、この変更がその種の事故にどう効くかは [Upgradeable Proxy](../upgradeable-proxy/#初期化関数と初期化を忘れた事故) で扱っています。
+コントラクトを「消して止める」設計も、Cancun 以降はコードが残ったまま呼び出せる状態になります。処理を別のコントラクトに転送するプロキシで、転送先のコードを SELFDESTRUCT で消された事故があり、この変更がその種の事故にどう影響するかは [Upgradeable Proxy](../upgradeable-proxy/#初期化関数と初期化を忘れた事故) で扱っています。
 
 <br>
 
@@ -151,9 +151,9 @@ SELFDESTRUCT は、コントラクトのコードとストレージを消し、�
 
 Ethereum のアカウントには、秘密鍵で操作する通常のアカウント（EOA、Externally Owned Account）と、コードを持つコントラクトの 2 種類があります。
 
-2025 年 5 月の Prague の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で、EOA のアドレスに、指定したコントラクトのコードを指す印を書き込めるようになりました。印を書いた EOA を呼ぶと、そのコードが EOA 自身のアドレスで動きます。これを委任と呼びます。仕組みは [Ethereum Account Model](../ethereum-account-model/)、トランザクションの型は [Ethereum Transaction](../ethereum-transaction/) で説明しています。
+2025 年 5 月に Prague で入った [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で、EOA のアドレスに、指定したコントラクトのコードを指す印を書き込めるようになりました。印を書いた EOA を呼ぶと、そのコードが EOA 自身のアドレスで動きます。これを委任と呼びます。仕組みは [Ethereum Account Model](../ethereum-account-model/)、トランザクションの型は [Ethereum Transaction](../ethereum-transaction/) で説明しています。
 
-この変更で、既存のコントラクトが使っていた 2 つの判定の意味が変わりました。1 つは、相手のコードの大きさを返す EXTCODESIZE 命令です。大きさが 0 なら相手は EOA だと判定するコードがありましたが、委任した EOA に対しては、委任先のアドレスを示す 23 バイトのデータの大きさを返します。
+この変更で、既存のコントラクトが使っていた 2 つの判定の意味が変わりました。1 つは、相手が持つコードの大きさを返す EXTCODESIZE 命令です。大きさが 0 なら相手は EOA だと判定するコードがありましたが、委任した EOA に対しては、委任先のアドレスを示す 23 バイトあるデータの大きさを返します。
 
 もう 1 つは `require(msg.sender == tx.origin)` です。`msg.sender` は直接の呼び出し元、`tx.origin` はトランザクションに署名した EOA で、2 つが等しければ、間に別のコントラクトを挟まずに EOA から呼ばれたと判断できました。
 
@@ -161,7 +161,7 @@ Ethereum のアカウントには、秘密鍵で操作する通常のアカウ�
 
 この判定は、コントラクトを経由して 1 つのトランザクションの中に複数の操作をまとめることを禁じ、リエントランシーや[サンドイッチ攻撃](../mev/)（他人のトランザクションを自分のトランザクションで前後から挟んで価格差を取る攻撃）を防ぐために使われてきました。
 
-この目的では、この書き方は成り立たなくなりました（呼び出し元が EOA かどうかの確認には影響しないと、EIP は書いています）。委任した EOA は、トランザクションの送り主のまま、委任先のコードとして他のコントラクトを 1 つのトランザクションの中で何度でも呼べるからです（EIP-7702 の設計の理由とセキュリティの節）。
+この目的では、この書き方は成り立たなくなりました（呼び出し元が EOA かどうかの確認には影響しないと、EIP は書いています）。委任した EOA は、トランザクションの送り主のまま、委任先のコードとして他のコントラクトを 1 つのトランザクションの中で何度でも呼べるからです（EIP-7702 で設計の理由とセキュリティを述べた節）。
 
 ---
 
@@ -202,7 +202,7 @@ Ethereum のアカウントには、秘密鍵で操作する通常のアカウ�
 
 ### 更新を決める手順
 
-Ethereum には、規則の更新を決める管理者がいません。変更の提案は前の節で触れた EIP という文書で出し、[EIP-1](https://eips.ethereum.org/EIPS/eip-1) が書式と状態の遷移を定めています。全ノードが同時に切り替える必要がある変更は、Core（ノードの規則を変える分類）の EIP です（トークンの規格を決める ERC などの他の分類との違いは [EVM Opcode History](../evm-opcode-history/#eip-と-erc)）。
+Ethereum には、規則の更新を決める管理者がいません。変更の提案は前の節で触れた EIP という文書で出し、[EIP-1](https://eips.ethereum.org/EIPS/eip-1) が書式と状態の遷移を定めています。全ノードが同時に切り替える必要がある変更は、Core（ノードの規則を変える分類）の EIP です（トークンの規格を決める ERC など他の分類との違いは [EVM Opcode History](../evm-opcode-history/#eip-と-erc)）。
 
 どの EIP をどの更新に入れるかは、クライアントの開発者が集まる All Core Devs という公開の会議で議論します。議事録と議題は [ethereum/pm](https://github.com/ethereum/pm) で公開されています。更新ごとに、対象の EIP を並べた Meta EIP という一覧の文書があり、[EIP-7723](https://eips.ethereum.org/EIPS/eip-7723) は、個々の EIP がその一覧の中で「提案」「検討」「予定」と段階を進める手順を定めています。
 
@@ -223,7 +223,7 @@ devnet で試すのは、Ethereum には実装の異なるクライアントが�
 
 <br>
 
-Ethereum のノードは、トランザクションを実行する実行レイヤー（execution layer）のクライアントと、ブロックの合意を担うコンセンサス・レイヤー（consensus layer）のクライアントを組み合わせて動きます。そのため、The Merge 以降の更新には、実行レイヤーとコンセンサス・レイヤーの 2 つの名前があります。実行レイヤーは開発者会議の Devcon などの開催都市、コンセンサス・レイヤーは恒星の名前で、2 つを組み合わせた通称で呼ばれます。
+Ethereum のノードは、トランザクションを実行する実行レイヤー（execution layer）のクライアントと、ブロックについて合意を取るコンセンサス・レイヤー（consensus layer）のクライアントを組み合わせて動きます。そのため、The Merge 以降の更新には、実行レイヤーとコンセンサス・レイヤーの 2 つの名前があります。実行レイヤーは開発者会議の Devcon などの開催都市、コンセンサス・レイヤーは恒星の名前で、2 つを組み合わせた通称で呼ばれます。
 
 | 実行レイヤー | コンセンサス・レイヤー | 通称 | mainnet で有効になった日（UTC） |
 | --- | --- | --- | --- |
@@ -232,7 +232,7 @@ Ethereum のノードは、トランザクションを実行する実行レイ�
 | Prague | Electra | Pectra | 2025-05-07 |
 | Osaka | Fulu | Fusaka | 2025-12-03 |
 
-日付は [ethereum.org の更新の一覧](https://ethereum.org/ethereum-forks/)と execution-specs の更新履歴に基づきます。EVM の規則を決めるのは実行レイヤーなので、solc の evmVersion などの設定では Shanghai・Cancun のような実行レイヤーの名前を使います。
+日付は [ethereum.org にある更新の一覧](https://ethereum.org/ethereum-forks/)と execution-specs の更新履歴に基づきます。EVM の規則を決めるのは実行レイヤーなので、solc の evmVersion などの設定では Shanghai・Cancun のような実行レイヤーの名前を使います。
 
 ---
 
@@ -244,7 +244,7 @@ Ethereum のノードは、トランザクションを実行する実行レイ�
 
 Anvil と solc の設定ではフォーク名を小文字で書くので、以下の図と出力も小文字です。
 
-ノードは [Docker](https://www.docker.com/) の専用のネットワークの中だけで動かし、公開のネットワークには接続しません。トランザクションには Anvil の既定のテスト用アカウントだけを使っています。コンテナの起動から後始末までは [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh) が行い、リポジトリのルートで次を実行すると約 10 秒で終わります。使ったイメージの版は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/README.txt) に記録しています。
+ノードは [Docker](https://www.docker.com/) で作った専用ネットワークの中だけで動かし、公開のネットワークには接続しません。トランザクションには Anvil が既定で用意するテスト用アカウントだけを使っています。コンテナの起動から後始末までは [lab/run.sh](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh) が実行し、リポジトリのルートで次を実行すると約 10 秒で終わります。使ったイメージのバージョンは [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/README.txt) に記録しています。
 
 ```bash
 bash content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh
@@ -264,13 +264,13 @@ bash content/notes/blockchain-systems/ethereum-hard-forks/lab/run.sh
 | MCOPY | メモリの中で値をコピーする | Cancun（[EIP-5656](https://eips.ethereum.org/EIPS/eip-5656)） |
 | CLZ | 先頭の 0 のビットを数える | Osaka（[EIP-7939](https://eips.ethereum.org/EIPS/eip-7939)） |
 
-各命令を初期化用コードとして並べ、宛先を付けずに [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-call)（ノードを操作する HTTP の API である JSON-RPC のメソッドの 1 つ）で送りました。宛先の無い `eth_call` は、[JSON-RPC の仕様](https://github.com/ethereum/execution-apis/blob/main/src/schemas/transaction.yaml)の通りコントラクトの作成を模擬して初期化用コードを実行し、結果を状態に保存しないので、トランザクションを送らずに命令の可否を試せます。バイトコードは、命令を 1 つずつ確認するために手で組み立てた学習用のもので、監査していません。
+各命令を初期化用コードとして並べ、宛先を付けずに [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/#eth-call)（ノードを操作する HTTP の API である JSON-RPC が持つメソッドの 1 つ）で送りました。宛先の無い `eth_call` は、[JSON-RPC の仕様](https://github.com/ethereum/execution-apis/blob/main/src/schemas/transaction.yaml)が定める通りコントラクトの作成を模擬して初期化用コードを実行し、結果を状態に保存しないので、トランザクションを送らずに命令の可否を試せます。バイトコードは、命令を 1 つずつ確認するために手で組み立てた学習用のもので、監査していません。
 
 {{< figure src="images/ethereum-hard-forks_opcodes.webp" alt="行がフォーク（petersburg から osaka）、列が BASEFEE・PUSH0・TSTORE・MCOPY・CLZ と SLOAD のガスの 1 回目・2 回目。BASEFEE は london から、PUSH0 は shanghai から、TSTORE と MCOPY は cancun から、CLZ は osaka から「動く」で、それより前は「失敗」。SLOAD は petersburg で 200 / 200、istanbul で 800 / 800、berlin 以降は 2100 / 100" caption="同じバイトコードを 8 つのフォークで実行した結果" align="center" >}}
 
-図の TSTORE の列は、TSTORE で書いた値を TLOAD で読み戻した結果です。各命令は、追加されたフォークより前では `NotActivated`（上記の図の「失敗」）というエラーで失敗し、追加されたフォーク以降では同じ値を返しました。
+図で TSTORE の列は、TSTORE で書いた値を TLOAD で読み戻した結果です。各命令は、追加されたフォークより前では `NotActivated`（上記の図の「失敗」）というエラーで失敗し、追加されたフォーク以降では同じ値を返しました。
 
-右の 2 列は、同じスロットを 1 回の `eth_call` の中で（同じトランザクションの中と同じ扱いで）2 回読んだ SLOAD のガスです。Istanbul で 4 倍になり、Berlin からは 1 回目と 2 回目で 21 倍の差が付いています。
+右の 2 列は、同じスロットを 1 回の `eth_call` 内で（同じトランザクションの中と同じ扱いで）2 回読んだ SLOAD のガスです。Istanbul で 4 倍になり、Berlin からは 1 回目と 2 回目で 21 倍の差が付いています。
 
 SLOAD のガスは、残りのガスを返す GAS 命令を SLOAD の前後に置き、差から間の PUSH1・POP・GAS の 7 ガスを引いて求めています。以下は [lab/probe.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/probe.py) の抜粋です。`rpc(fork, ...)` は、そのフォークの Anvil に JSON-RPC で要求を送る補助関数です。
 
@@ -517,13 +517,13 @@ osaka      |      2100 |       100
 
 次に、受け取る側のコードを変えずに、Solidity の `transfer` で 1 wei（ETH の最小単位）を送るトランザクションを各フォークで送りました。受け取る側は、ETH を受け取るとストレージを 3 か所読むだけのコードです。
 
-送る側の [Sender.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/Sender.sol) は `payable(to).transfer(msg.value)` を呼ぶだけで、全てのフォークで動くように evmVersion を petersburg にしてコンパイルしています。受け取る側が 3 か所を読むのに要るガスは、以下の通りです。
+送る側の [Sender.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/ethereum-hard-forks/lab/Sender.sol) は `payable(to).transfer(msg.value)` を呼ぶだけで、全てのフォークで動くように evmVersion を petersburg にしてコンパイルしています。受け取る側が 3 か所を読むのに必要なガスは、以下の通りです。
 
 {{< figure src="images/ethereum-hard-forks_transfer.webp" alt="横棒グラフ。受け取る側の SLOAD 3 回のガスは、petersburg が 600 で成功、istanbul が 2,400 で失敗、berlin から osaka が 6,300 で失敗、access list を付けると 300 で成功。2300 の位置に transfer が渡すガスの点線がある" caption="SLOAD 3 回のガスと transfer が渡す 2300 ガス" align="center" >}}
 
-棒の長さは、上記で測った SLOAD のガスの 3 倍です。
+棒の長さは、上記で測った SLOAD のガスを 3 倍したものです。
 
-petersburg で成功した送金が、同じバイトコードのまま istanbul 以降で失敗しました。SLOAD の値上げで、3 回の読み出しが 2300 ガスに収まらなくなったからです。Berlin 以降は、3 つのスロットを access list に書くと warm になり、送金が再び成功しました。access list の先払いはトランザクションの開始時に送り主が払うので、`transfer` が渡す 2300 ガスの枠からは引かれず、枠の中の SLOAD は warm の 100 × 3 = 300 ガスで済みます。
+petersburg で成功した送金が、同じバイトコードのまま istanbul 以降で失敗しました。SLOAD の値上げで、3 回の読み出しが 2300 ガスに収まらなくなったからです。Berlin 以降は、3 つのスロットを access list に書くと warm になり、送金が再び成功しました。access list の先払いはトランザクションの開始時に送り主が払うので、`transfer` が渡す 2300 ガスの枠からは引かれず、枠内の SLOAD は warm の 100 × 3 = 300 ガスで済みます。
 
 <br>
 
@@ -597,9 +597,9 @@ Guard.sol (transient) with cancun: compiled
 
 2026 年 11 月 11 日時点で、mainnet で最後に有効になった、名前の付いた更新は Osaka/Fulu（Fusaka、2025-12-03）です。その後は、blob に関わる値だけを変える小さな更新が 2 回ありました。
 
-blob は、L2 がデータを安く載せるためにトランザクションに添える、一時的なデータです。2025 年 12 月 9 日と 2026 年 1 月 7 日に、ブロックに載せる blob の数の目標・上限と、blob の手数料の変わり方だけを変える BPO（Blob Parameter Only）フォークが有効になりました（[EIP-7607](https://eips.ethereum.org/EIPS/eip-7607)、[EIP-7892](https://eips.ethereum.org/EIPS/eip-7892)。値の推移は [Blob](../blob/#blob-の手数料) で扱っています）。
+blob は、L2 がデータを安く載せるためにトランザクションに添える、一時的なデータです。2025 年 12 月 9 日と 2026 年 1 月 7 日に、ブロックに載せる blob について、数の目標・上限と手数料の変わり方だけを変える BPO（Blob Parameter Only）フォークが有効になりました（[EIP-7607](https://eips.ethereum.org/EIPS/eip-7607)、[EIP-7892](https://eips.ethereum.org/EIPS/eip-7892)。値の推移は [Blob](../blob/#blob-の手数料) で扱っています）。
 
-次の名前の付いた更新は、実行レイヤーが Amsterdam、コンセンサス・レイヤーが Gloas で、通称は Glamsterdam です。下の図は、Fusaka 以降の動きと Glamsterdam の予定です。
+名前の付いた次の更新は、実行レイヤーが Amsterdam、コンセンサス・レイヤーが Gloas で、通称は Glamsterdam です。下の図は、Fusaka 以降の動きと Glamsterdam の予定です。
 
 {{< figure src="images/ethereum-hard-forks_schedule.webp" alt="2025 年 12 月から 2026 年 12 月の時間軸に mainnet・Sepolia・Hoodi の 3 行。mainnet には Fusaka（2025-12-03）、BPO1（2025-12-09）、BPO2（2026-01-07）の青い点があり、Glamsterdam の日付は未定と書かれている。Sepolia には Glamsterdam（2026-10-06）の青い点。Hoodi には 2026-10-26 の予定を保留した黄土色の点線の点。2026-11-11 に本記事の時点を示す縦の点線" caption="Fusaka 以降の更新と、Glamsterdam の予定（2026 年 11 月 11 日時点）" align="center" >}}
 
@@ -607,7 +607,7 @@ Glamsterdam の Meta EIP の [EIP-7773](https://github.com/ethereum/EIPs/blob/f1
 
 ただし Hoodi の予定は、実行レイヤーを扱う All Core Devs の会議（ACDE、All Core Devs Execution）の[第 248 回](https://github.com/ethereum/pm/issues/2267)で、ガスの値を変える EIP-8037 と EIP-8038 へのセキュリティ上の懸念が議論され、保留になりました。
 
-会議の issue には、ChainSecurity の調査として、残りのガス（Solidity の `gasleft()`）が実行の途中で増える場合があるなど、ガスの値を前提にしたコントラクトが壊れる例が寄せられています。Constantinople を止めたのと同じ会社が、同じ種類の問題を指摘した形です。クライアントは、予定を取り除いたリリースを出しています（例: 実行レイヤーのクライアントのうち [Nethermind 2.2.1](https://github.com/NethermindEth/nethermind/releases/tag/2.2.1)、2026-10-22）。2026 年 11 月 11 日時点で、新しい日付は決まっていません。
+会議の issue には、ChainSecurity の調査として、残りのガス（Solidity の `gasleft()`）が実行の途中で増える場合があるなど、ガスの値を前提にしたコントラクトが正しく動かなくなる例が寄せられています。Constantinople を止めたのと同じ会社が、同じ種類の問題を指摘した形です。クライアントは、予定を取り除いたリリースを出しています（例: 実行レイヤーのクライアントのうち [Nethermind 2.2.1](https://github.com/NethermindEth/nethermind/releases/tag/2.2.1)、2026-10-22）。2026 年 11 月 11 日時点で、新しい日付は決まっていません。
 
 <br>
 
@@ -624,4 +624,4 @@ Glamsterdam の Meta EIP の [EIP-7773](https://github.com/ethereum/EIPs/blob/f1
 
 <br>
 
-ガスの値は、ノードの負荷に合わせて今後も見直される対象です。コントラクトの中で特定のガスの値を前提にした分岐や上限を書くと、その前提はハードフォーク 1 回で崩れます。デプロイ先が対応するフォークを確認して evmVersion を指定し、ガスの値を固定値として扱わないことが、規則が変わり続けるチェーンでコードを長く動かす前提になります。
+ガスの値は、ノードの負荷に合わせて今後も見直される対象です。コントラクトの中で、ガスが特定の値であることを前提にした分岐や上限を書くと、その前提はハードフォーク 1 回で崩れます。デプロイ先が対応するフォークを確認して evmVersion を指定し、ガスの値を固定値として扱わないことが、規則が変わり続けるチェーンでコードを長く動かす前提になります。
