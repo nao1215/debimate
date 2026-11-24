@@ -17,7 +17,7 @@ Dencun の後は書き込み先が blob に移りました。[Vitalik Buterin �
 
 {{< figure src="images/blob_overview.webp" alt="左に blob を添えたトランザクションがあり、calldata・versioned hash・blob の 3 つの部分に分かれる。calldata の中身と versioned hash は、右上の実行レイヤー（EVM が動き、ブロックに残り続ける）へ入り、calldata は CALLDATALOAD、versioned hash は BLOBHASH で読める。blob は右下のコンセンサス・レイヤーへ入り、beacon node が 4096 epoch（約 18 日）は提供する義務を負い、その先は保証されない" caption="ブロックに入った後の calldata と blob の行き先" align="center" >}}
 
-送る時は本体を添えて実行クライアントに渡しますが、上記の図のように、ブロックに入った後の中身は、コントラクトを実行する EVM と同じ実行レイヤー（execution layer）に残りません。中身を保持して提供するのは、ブロックの合意を担うコンセンサス・レイヤー（consensus layer）のノードで、beacon node と呼ばれます。
+送る時は本体を添えて実行クライアントに渡しますが、上記の図のように、ブロックに入った後の中身は、コントラクトを実行する EVM と同じ実行レイヤー（execution layer）に残りません。中身を持ち続けて提供するのは、ブロックの合意を取るコンセンサス・レイヤー（consensus layer）のノードで、beacon node と呼ばれます。
 
 コントラクトから見えるのは、blob の中身から計算した 32 バイトの要約値である versioned hash だけです。beacon node が blob を提供する義務も、約 18 日で終わります。その代わり、大きなデータなら calldata より安く置けます。
 
@@ -31,7 +31,7 @@ Dencun の後は書き込み先が blob に移りました。[Vitalik Buterin �
 - 使用量が少ないのに、今の手数料が 1 wei まで下がらないのはなぜか。
 - 小さなデータでも、calldata より blob の方が安いのか。
 
-手元の実験は [Foundry](https://getfoundry.sh/) の anvil と cast で行います。anvil は開発用のチェーンを手元で動かすツールで、cast はそのチェーンへトランザクションを送るコマンドです。手数料は mainnet のブロックヘッダーから計算し、実資産は送りません。手数料に使う wei は ETH の最小単位で、1 gwei は 10 億 wei、1 ETH は 10 の 18 乗 wei です。
+手元の実験は [Foundry](https://getfoundry.sh/) の anvil と cast を使います。anvil は開発用のチェーンを手元で動かすツールで、cast はそのチェーンへトランザクションを送るコマンドです。手数料は mainnet のブロックヘッダーから計算し、実資産は送りません。手数料に使う wei は ETH の最小単位で、1 gwei は 10 億 wei、1 ETH は 10 の 18 乗 wei です。
 
 ---
 
@@ -105,7 +105,7 @@ slot2 CALLDATASIZE  0
 
 ただし、`BLOBHASH` が返すのは、実行中のトランザクションに添えた blob の versioned hash だけです。後のトランザクションからは読めないので、rollup のコントラクトは、L2 のトランザクションを束ねた batch を受け取る時にこの値を記録します。
 
-この検証は、EVM に組み込まれた関数であるプリコンパイルの 1 つで、アドレス 0x0a の point evaluation precompile が 50,000 gas で行います。0x0a には、記録した versioned hash と、点 z・値 y・commitment・証明を渡します。0x0a は、commitment から作った versioned hash が渡された値と一致するかも確認するので、証明が記録した blob についての主張だと結び付きます。
+この検証は、EVM に組み込まれた関数であるプリコンパイルの 1 つで、アドレス 0x0a の point evaluation precompile が 50,000 gas で実行します。0x0a には、記録した versioned hash と、点 z・値 y・commitment・証明を渡します。0x0a は、commitment から作った versioned hash が渡された値と一致するかも確認するので、証明が記録した blob についての主張だと結び付きます。
 
 <br>
 
@@ -203,7 +203,7 @@ def blob_base_fee(excess, params):
 
 <br>
 
-この式で前のブロックから次の `excessBlobGas` を計算し、mainnet のヘッダーと照らしました。2024-03-27 の 800 ブロック（Cancun の式）と、2026-11-12 の 300 ブロック（BPO2 の式）で、全ての組が一致しています。Cancun は、Dencun のうち実行レイヤー側の呼び名です。
+この式で前のブロックから次の `excessBlobGas` を計算し、mainnet のヘッダーと照らしました。2024-03-27 の 800 ブロック（Cancun の式）と、2026-11-12 の 300 ブロック（BPO2 の式）で、全てのブロックで値が一致しています。Cancun は、Dencun のうち実行レイヤー側の呼び名です。
 
 ```text
 Cancun の式: 次のブロックの excessBlobGas が一致 799/799
@@ -239,7 +239,7 @@ Dencun から 2 週間ほど、blob の単価は 1 wei のままでした。roll
 
 下限の目安は、blob 1 個の手数料が実行の 8,192 gas 分（base fee × 8,192）になる値で、blob gas 1 あたりにすると base fee × 8,192 / 131,072 です。単価がこれより安い間は `excessBlobGas` が減らなくなり、blob が載る度に、載った blob gas × (max − target) / max だけ増えます。単価そのものを止めるのではないので、下回ることはありますが、下限の辺りへ押し戻されます。
 
-先の照合で EIP-7918 を外した式が 299 組のうち 100 組しか一致しなかったのは、この分岐を通った組が多かったからです。
+先の照合で EIP-7918 を外した式が 299 ブロックのうち 100 ブロックしか一致しなかったのは、この分岐を通ったブロックが多かったからです。
 
 {{< figure src="images/blob_fee_reserve.webp" alt="2026-11-12 12:56〜13:56 UTC の mainnet（BPO2: target 14、max 21）。上の段は対数の縦軸で、実際の単価（赤）が下限 base fee × 8192 / 131072（灰色の破線）にほぼ重なって 500 万から 5,000 万 wei の間を動く。同じ使われ方を EIP-7918 なしの式に通した場合（青）は下がり続け、約 48 分で 1 wei になる。下の段はブロックごとの blob の数で、多くのブロックが target 14 の破線より下にある" caption="2026-11-12 の単価と下限（ヘッダーから計算）" align="center" >}}
 
