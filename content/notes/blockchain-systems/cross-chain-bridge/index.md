@@ -11,47 +11,47 @@ topics: ["Interoperability"]
 
 [Cross-chain bridge](https://ethereum.org/en/developers/docs/bridges/)（以下、bridge）は、あるブロックチェーンで起きた預け入れの事実を別のブロックチェーンに伝えて、資産を移す仕組みです。
 
-ブロックチェーン（以下、チェーン）は、参加するコンピュータが同じトランザクションの記録を共有する台帳で、[Ethereum](https://ethereum.org/) や [Bitcoin](https://bitcoin.org/) がその例です。チェーンごとに台帳は別々なので、Ethereum の通貨である ETH は Ethereum の台帳の中にしか存在しません。
+ブロックチェーン（以下、チェーン）は、参加するコンピュータが同じトランザクションの記録を共有する台帳で、[Ethereum](https://ethereum.org/) や [Bitcoin](https://bitcoin.org/) がその例です。チェーンごとに台帳は別々なので、Ethereum の通貨である ETH は Ethereum の台帳にしか存在しません。
 
-例えば、Alice が手持ちの 100 ETH を別のチェーンのアプリケーションで使いたいとします。bridge を使う場合、Alice は Ethereum 上の bridge の金庫に 100 ETH を預けてロックし、相手のチェーンで 100 wrapped ETH を受け取ります。
+例えば、Alice が手持ちの 100 ETH を別のチェーンで動くアプリケーションで使いたいとします。bridge を使う場合、Alice は Ethereum 上にある bridge の金庫に 100 ETH を預けてロックし、相手のチェーンで 100 wrapped ETH を受け取ります。
 
-wrapped ETH は、金庫の中の ETH への引換券にあたるトークン（チェーン上で残高を管理される資産）です。以下では、預ける側を source chain、受け取る側を destination chain と呼びます。
+wrapped ETH は、金庫に入った ETH と引き換えられるトークン（チェーン上で残高を管理される資産）です。以下では、預ける側を source chain、受け取る側を destination chain と呼びます。
 
 {{< figure src="images/bridge_concept.webp" alt="左の預ける側（source chain）の金庫に青い丸で描いたコインがロックされ、右の受け取る側（destination chain）には同じ数の点線の丸で描いた引換券（wrapped token）が発行されている。間に黄土色の「検証役」の箱があり、預け入れが本当にあったかを確認してから発行を許可する" caption="ロックした分だけ引換券を発行し、間で預け入れを確認する" align="center" >}}
 
-上記の図の中央にある検証役が、本記事の主題です。destination chain は source chain の台帳を直接読めないため、誰かが「100 ETH の預け入れがあった」と伝え、destination chain はその主張を何らかの方法で確認してから引換券を発行します。この確認を偽れば、金庫に何も入れずに引換券を作れます。
+上記の図で中央にある検証役が、本記事の主題です。destination chain は source chain の台帳を直接読めないため、誰かが「100 ETH の預け入れがあった」と伝え、destination chain はその主張を何らかの方法で確認してから引換券を発行します。この確認を偽れば、金庫に何も入れずに引換券を作れます。
 
 <br>
 
-本記事では、bridge は何を信頼して、別のチェーンの出来事を受け入れるのかを説明します。チェーン同士が直接確かめ合えない理由から始め、資産の移し方を 2 つのタイプに絞って確認した後、預け入れの確かめ方を 4 つ比べます。最後に、署名の鍵を奪われた時に何が起きるかを Python の実験で確認し、実際の事故がどの確かめ方を破ったかを対応させます。
+本記事では、bridge は何を信頼して、別のチェーンで起きた出来事を受け入れるのかを説明します。チェーン同士が直接確かめ合えない理由から始め、資産の移し方を 2 つのタイプに絞って確認した後、預け入れの確かめ方を 4 つ比べます。最後に、署名の鍵を奪われた時に何が起きるかを Python の実験で確認し、実際の事故がどの確かめ方を破ったかを対応させます。
 
-source chain のトランザクションをどの時点で確定と見なすかは [Finality](../finality/) で、事故の経緯の詳細は [Bridge の事故](../bridge-incidents/) で扱います。
+source chain のトランザクションをどの時点で確定と見なすかは [Finality](../finality/) で、事故の詳しい経緯は [Bridge の事故](../bridge-incidents/) で扱います。
 
 ---
 
 ### チェーン同士が互いを読めない理由
 
-ブロックチェーンのノード（台帳を保持してトランザクションを検証するコンピュータ）は、自分のチェーンに届いたトランザクションを検証し、自分のチェーンの状態を保持します。チェーン上で動くプログラムを [Smart Contract](../smart-contract/)（以下、コントラクト）と呼びます。コントラクトの実行結果は全てのノードで一致する必要があるため、コントラクトは外部の API を呼んだり、別のチェーンのノードに問い合わせたりできません。
+ブロックチェーンのノード（台帳を保持してトランザクションを検証するコンピュータ）は、自分のチェーンに届いたトランザクションを検証し、自分のチェーンが持つ状態を保持します。チェーン上で動くプログラムを [Smart Contract](../smart-contract/)（以下、コントラクト）と呼びます。コントラクトの実行結果は全てのノードで一致する必要があるため、コントラクトは外部の API を呼んだり、別のチェーンで動くノードに問い合わせたりできません。
 
-そのため、destination chain のコントラクトが source chain の出来事を知るには、誰かがトランザクションとしてその情報を持ち込む必要があります。この構造は、価格などのチェーンの外の情報を渡す [Oracle](../oracle/) と同じです。違いは、持ち込む情報が別のチェーンの状態であり、その状態には署名やハッシュといった検証できる材料が付いている点です。
+そのため、destination chain のコントラクトが source chain の出来事を知るには、誰かがトランザクションとしてその情報を持ち込む必要があります。この構造は、価格などのチェーンの外にある情報を渡す [Oracle](../oracle/) と同じです。違いは、持ち込む情報が別のチェーンが持つ状態であり、その状態には署名やハッシュといった検証できる材料が付いている点です。
 
 <br>
 
-ただし、材料があることと、destination chain がそれを安く検証できることは別です。source chain のトランザクションが正しく確定したかを自分で確認するには、source chain の合意の規則（どのブロックを正しいと認めるか。承認者の署名の数や、計算量の大きさで決まる）をコントラクトとして実装する必要があります。相手が [Proof of Work](../proof-of-work/) なのか [CometBFT](../cometbft/) なのかで、必要な処理も変わります。この負担を避けるために、多くの bridge は確認を外部の署名者に任せてきました。
+ただし、材料があることと、destination chain がそれを安く検証できることは別です。source chain のトランザクションが正しく確定したかを自分で確認するには、source chain が使う合意の規則（どのブロックを正しいと認めるか。承認者が付けた署名の数や、計算量の大きさで決まる）をコントラクトとして実装する必要があります。相手が [Proof of Work](../proof-of-work/) なのか [CometBFT](../cometbft/) なのかで、必要な処理も変わります。この負担を避けるために、多くの bridge は確認を外部の署名者に任せてきました。
 
 ---
 
 ### 資産を移すタイプ
 
-bridge で「資産を移す」と言っても、同じ[トークン](../erc-20/)がチェーンの間を移動するわけではありません。ethereum.org の [bridge の解説](https://ethereum.org/en/developers/docs/bridges/)は、lock and mint、burn and mint、atomic swap の 3 つのタイプを挙げています。
+bridge で「資産を移す」と言っても、同じ[トークン](../erc-20/)がチェーンの間を移動するわけではありません。ethereum.org にある [bridge の解説](https://ethereum.org/en/developers/docs/bridges/)は、lock and mint、burn and mint、atomic swap の 3 つのタイプを挙げています。
 
-このうち atomic swap は、交換相手と直接資産を交換するタイプで、[Lightning Network](../lightning-network/) と同じ仕組みの条件付きの支払いを両方のチェーンに置きます。間で預け入れを確認する役が無いため、本記事では残りの 2 つを扱います。
+このうち atomic swap は、交換相手と直接資産を交換するタイプで、[Lightning Network](../lightning-network/) と同じ仕組みで条件を付けた支払いを両方のチェーンに置きます。間で預け入れを確認する役が無いため、本記事では残りの 2 つを扱います。
 
 <br>
 
 #### lock and mint
 
-lock and mint は、冒頭の Alice の例のタイプです。source chain の金庫にロックした資産を裏付けとして destination chain で wrapped token を発行し、戻す時は wrapped token を焼却（残高から消して二度と使えなくすること）して金庫から払い出します。検証役が見るのは、行きは預け入れ、帰りは焼却です。
+lock and mint は、冒頭で挙げた Alice の例と同じタイプです。source chain の金庫にロックした資産を裏付けとして destination chain で wrapped token を発行し、戻す時は wrapped token を焼却（残高から消して二度と使えなくすること）して金庫から払い出します。検証役が見るのは、行きは預け入れ、帰りは焼却です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
@@ -70,7 +70,7 @@ sequenceDiagram
     S->>A: 40 を払い出す
 ```
 
-上記の流れでは、wrapped token の価値は金庫の中身に依存します。発行済みの wrapped token の総量が金庫の残高を超えると、最後に払い出しを求めた人から順に受け取れなくなります。bridge の事故の多くは、この 2 つの量の対応が崩れることで起きます。
+上記の流れでは、wrapped token の価値は金庫の中身に依存します。発行済みの wrapped token の総量が金庫の残高を超えると、最後に払い出しを求めた人から順に受け取れなくなります。bridge で起きた事故の多くは、この 2 つの量の対応が崩れることで起きます。
 
 <br>
 
@@ -80,7 +80,7 @@ burn and mint は、同じ発行者が複数のチェーンでトークンを発
 
 source chain で USDC を焼却し、Circle が焼却を確認して attestation（焼却があったことを示す署名付きの証明）を出し、destination chain がそれを確認して USDC を発行します。
 
-金庫に資産が残らないため、wrapped token のような引換券は生まれません。確かめ方は次節の外部の署名者のタイプで、署名するのは Circle です。USDC の利用者は既に発行者として Circle を信頼しているため、新しく加わる信頼の相手はいません。
+金庫に資産が残らないため、wrapped token のような引換券は生まれません。確かめ方は、次節で挙げる中では外部の署名者を使うタイプで、署名するのは Circle です。USDC の利用者は既に発行者として Circle を信頼しているため、新しく加わる信頼の相手はいません。
 
 ---
 
@@ -96,7 +96,7 @@ lock and mint と burn and mint のどちらでも、destination chain は「sou
 
 bridge の運営者が選んだ署名者（bridge によって validator や guardian などと呼ばれます）が source chain を監視し、預け入れを見つけたらメッセージに署名します。destination chain のコントラクトは、[Multisig](../multisig/) と同じく、決められた数以上の有効な署名があるかだけを確認します。
 
-この方法は、新しいチェーンに対応する時も署名者が監視するノードを足すだけで済むため、多くのチェーンをつなぐ bridge で使われてきました。しかし、destination chain は署名者が正しい預け入れを見たかを確認できません。署名者の過半の鍵を持つ者は、存在しない預け入れや焼却に署名して資産を発行・払い出しできます。利用者が信頼するのは、source chain ではなく署名者の集団です。
+この方法は、新しいチェーンに対応する時も署名者が監視するノードを足すだけで済むため、多くのチェーンをつなぐ bridge で使われてきました。しかし、destination chain は署名者が正しい預け入れを見たかを確認できません。署名者のうち過半の鍵を持つ者は、存在しない預け入れや焼却に署名して資産を発行・払い出しできます。利用者が信頼するのは、source chain ではなく署名者の集団です。
 
 <br>
 
@@ -104,7 +104,9 @@ bridge の運営者が選んだ署名者（bridge によって validator や gua
 
 ライト・クライアントは、チェーンの全トランザクションを持たずにブロックヘッダ（ブロックの要約。ブロック内のトランザクションをまとめたハッシュを含む）だけを追い、トランザクションがブロックに入っていることを短い証明で確認するクライアントです（Bitcoin での例は [Bitcoin Merkle Tree](../bitcoin-merkle-tree/)）。この証明は、[Merkle Tree](../merkle-tree/) の葉から根までの経路のハッシュで、Merkle proof と呼びます。
 
-bridge では、source chain のライト・クライアントを destination chain のコントラクトとして実装し、ヘッダと Merkle proof から預け入れを確認します。[Cosmos](https://cosmos.network/) のチェーン間で使われる [IBC（Inter-Blockchain Communication）](https://github.com/lfdt-ibc/ibc) は、相手のチェーンを追うライト・クライアントを各チェーンに置き、相手のヘッダに付いた承認者（相手のチェーンでブロックを承認する参加者）の署名と、メッセージの存在を示す Merkle proof を検証します。この承認者は bridge の署名者ではなく、source chain 自体の参加者で、validator とも呼ばれます。
+bridge では、source chain のライト・クライアントを destination chain のコントラクトとして実装し、ヘッダと Merkle proof から預け入れを確認します。[Cosmos](https://cosmos.network/) のチェーン間で使われる [IBC（Inter-Blockchain Communication）](https://github.com/lfdt-ibc/ibc) は、相手のチェーンを追うライト・クライアントを各チェーンに置き、相手のヘッダに付いた承認者（相手のチェーンでブロックを承認する参加者）の署名と、メッセージの存在を示す Merkle proof を検証します。
+
+この承認者は bridge の署名者ではなく、source chain 自体の参加者で、validator とも呼ばれます。
 
 {{< figure src="images/bridge_light_client.webp" alt="左の source chain では、承認者の署名付きのヘッダが並び、最後のヘッダの下に Merkle Tree がある。葉の 1 つが預け入れで、黄土の丸の兄弟のハッシュが Merkle proof になる。relayer が右の destination chain へ運び、ライト・クライアントのコントラクトが、1. 新しいヘッダに承認者の署名が足りるか、2. 預け入れと proof から計算した値がヘッダの root と一致するかを確認する" caption="ライト・クライアントが確認する 2 つのこと" align="center" >}}
 
@@ -112,9 +114,9 @@ bridge では、source chain のライト・クライアントを destination ch
 
 <br>
 
-この方法で信頼するのは、source chain 自体の合意です。source chain の承認者の[多くが結託して](/notes/distributed-systems/byzantine-fault-tolerance/)不正な状態に署名すれば、ライト・クライアントも騙されます。しかし、それは source chain 自体が壊れた状態であり、bridge のために新しい信頼の相手は増えません。
+この方法で信頼するのは、source chain 自体の合意です。source chain の承認者のうち[多くが結託して](/notes/distributed-systems/byzantine-fault-tolerance/)不正な状態に署名すれば、ライト・クライアントも騙されます。しかし、それは source chain 自体が壊れた状態であり、bridge のために新しい信頼の相手は増えません。
 
-その代わりに、相手のチェーンごとに合意の規則を検証するコードが要ります。Bitcoin のように、後からブロックが差し替わる可能性が残るチェーンでは、何ブロック待つかも決める必要があります。検証コードや証明の形式に欠陥があれば、偽の Merkle proof が通ります。Bitcoin の Merkle Tree には、64 バイトのトランザクションを使って偽の包含の証明を通す[弱点](../bitcoin-merkle-tree-attacks/)が知られています。
+その代わりに、相手のチェーンごとに合意の規則を検証するコードが必要です。Bitcoin のように、後からブロックが差し替わる可能性が残るチェーンでは、何ブロック待つかも決める必要があります。検証コードや証明の形式に欠陥があれば、偽の Merkle proof が通ります。Bitcoin の Merkle Tree には、64 バイトのトランザクションを使って偽の包含証明を通す[弱点](../bitcoin-merkle-tree-attacks/)が知られています。
 
 <br>
 
@@ -128,7 +130,7 @@ optimistic な bridge は、relayer が提出したメッセージをすぐに�
 
 #### 有効性の証明
 
-[Zero-Knowledge Proof](../zero-knowledge-proof/) の技術を使い、source chain のヘッダの署名の検証や合意の規則の確認を回路（証明を作れる形の計算）として書きます。
+[Zero-Knowledge Proof](../zero-knowledge-proof/) の技術を使い、source chain のヘッダに付いた署名の検証や、合意の規則に沿うかの確認を回路（証明を作れる形の計算）として書きます。
 
 destination chain は、その計算を正しく実行したことを示す短い証明を検証します。ライト・クライアントが行う検証を destination chain が安く確認できるようにしたもの、と考えると分かりやすいです。信頼の相手は source chain の合意に加えて、証明を作り検証する仕組み（証明系）と回路の実装です。
 
@@ -247,7 +249,7 @@ wrapped coins without backing: 360
 
 4 本の鍵では払い出しを拒否しましたが、5 本目で通りました。`release` は署名の数だけを確認し、destination chain で焼却があったかを確認する手段を持たないからです。なお、拒否された時は `used` に記録しないため、同じ番号 3 で送り直せます。
 
-偽の払い出し（forged release）の後も destination chain の 360 wrapped はそのまま残り、Alice と Carol の残高の表示は変わりません。しかし、金庫（locked）は空なので、2 人が焼却して払い出しを求めても受け取れません。外部の署名者のタイプで信頼していた「署名者の過半は正直」という前提が崩れると、destination chain の側からは何も異常が見えないまま裏付けが消えます。
+偽の払い出し（forged release）の後も destination chain の 360 wrapped はそのまま残り、Alice と Carol の残高表示は変わりません。しかし、金庫（locked）は空なので、2 人が焼却して払い出しを求めても受け取れません。外部の署名者を使うタイプで信頼していた「署名者の過半は正直」という前提が崩れると、destination chain からは何も異常が見えないまま裏付けが消えます。
 
 ---
 
@@ -262,15 +264,15 @@ wrapped coins without backing: 360
 | [Nomad](../bridge-incidents/#nomad) | 2022 年 8 月 | 異議の受付期間 | 確認済みの扱いにする初期値 |
 | [BSC Token Hub](../bridge-incidents/#bsc-token-hub) | 2022 年 10 月 | ライト・クライアント | Merkle proof を確認するコード |
 
-Ronin は、前節の実験と同じ場面です。運営する会社の鍵 4 本と、署名の代行の許可が残っていた 1 本の計 5 本で、偽の払い出しが通りました。残りの 3 件では鍵は奪われておらず、署名や証明を確認するコードの欠陥で、偽の預け入れや焼却が本物として扱われました。
+Ronin は、前節の実験と同じ場面です。運営する会社の鍵 4 本と、署名を代行する許可が残っていた 1 本の計 5 本で、偽の払い出しが通りました。残りの 3 件では鍵は奪われておらず、署名や証明を確認するコードの欠陥で、偽の預け入れや焼却が本物として扱われました。
 
-4 件とも、金庫やトークンのコントラクト自体ではなく、相手のチェーンの預け入れや焼却を確認する部分が破られています。どの確かめ方でも、信頼の前提には「確認するコードが正しい」ことが含まれます。2021 年の Poly Network では、確認を通ったメッセージが呼ぶ関数を 4 バイトのセレクターで選ぶ部分が破られました。この仕組みは [Hash Function](../hash-function/) のノートで扱っています。各事故の経緯と再現は [Bridge の事故](../bridge-incidents/) で扱います。
+4 件とも、金庫やトークンのコントラクト自体ではなく、相手のチェーンで起きた預け入れや焼却を確認する部分が破られています。どの確かめ方でも、信頼の前提には「確認するコードが正しい」ことが含まれます。2021 年の Poly Network では、確認を通ったメッセージが呼ぶ関数を 4 バイトのセレクターで選ぶ部分が破られました。この仕組みは [Hash Function](../hash-function/) のノートで扱っています。各事故の経緯と再現は [Bridge の事故](../bridge-incidents/) で扱います。
 
 ---
 
 ### 利用者が確かめること
 
-bridge の wrapped token は、名前に元の資産の名前が入っていても、金庫への引換券です。同じ ETH を元にした wrapped token でも、どの bridge が発行したかで裏付けと信頼の相手が異なります。
+bridge の wrapped token は、名前に元の資産名が入っていても、金庫への引換券です。同じ ETH を元にした wrapped token でも、どの bridge が発行したかで裏付けと信頼の相手が異なります。
 
 以下は、bridge を使う前に確認する点です。
 
@@ -279,6 +281,6 @@ bridge の wrapped token は、名前に元の資産の名前が入っていて�
 - source chain のトランザクションをどの時点で確定と見なしているか。[Finality](../finality/) より前に発行する bridge は、source chain のブロックが差し替わると裏付けを失います。
 - 受け取るトークンが発行者自身の発行したものか、bridge の wrapped token か。
 
-確定と見なす時点は、速さとの引き換えです。2026 年 11 月時点の CCTP の[公式ドキュメント](https://developers.circle.com/cctp/concepts/finality-and-block-confirmations)では、Ethereum からの標準の転送は確定を待つため約 65 ブロック・15〜19 分かかり、確定前に attestation を出す Fast Transfer は 2 ブロック・約 20 秒です。
+確定と見なす時点は、速さとの引き換えです。2026 年 11 月時点で CCTP の[公式ドキュメント](https://developers.circle.com/cctp/concepts/finality-and-block-confirmations)では、Ethereum からの標準の転送は確定を待つため約 65 ブロック・15〜19 分かかり、確定前に attestation を出す Fast Transfer は 2 ブロック・約 20 秒です。
 
-確定前の発行は、Circle が確保した USDC の枠（[Fast Transfer Allowance](https://developers.circle.com/cctp/concepts/fast-transfer-allowance)）の範囲に限られます。source chain の焼却が確定すると枠に戻り、枠を使い切ると Fast Transfer は一時的に使えません。枠は、確定前の焼却を信じて発行してよい総額の上限です。どの bridge でも、速さと引き換えに何を信頼しているかを分けて確認する必要があります。
+確定前の発行は、Circle が確保した USDC の枠（[Fast Transfer Allowance](https://developers.circle.com/cctp/concepts/fast-transfer-allowance)）の範囲に限られます。source chain の焼却が確定すると枠に戻り、枠を使い切ると Fast Transfer は一時的に使えません。枠は、確定前の焼却を信じて発行して良い総額の上限です。どの bridge でも、速さと引き換えに何を信頼しているかを分けて確認する必要があります。
