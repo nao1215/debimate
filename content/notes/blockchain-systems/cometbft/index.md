@@ -24,7 +24,7 @@ CometBFT では、投票に参加するノードをバリデータ（validator�
 - ロックは、どのような食い違いを防ぐのか。
 - バリデータが何台止まると、チェーンは止まるのか。止まった後は分岐するのか。
 
-[PBFT](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance) を例にした BFT の基礎（嘘をつくノードが f 台いても合意するには 3f+1 台が要る理由や、決定に必要な票の集まりである [quorum](/notes/distributed-systems/quorum/) どうしが重なる理由）は [Byzantine Fault Tolerance](/notes/distributed-systems/byzantine-fault-tolerance/) で説明しています。本記事はその続きで、CometBFT に固有の部分を扱います。
+[PBFT](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance) を例にした BFT の基礎（嘘をつくノードが f 台いても合意するには 3f+1 台が必要な理由や、決定に必要な票の集まりである [quorum](/notes/distributed-systems/quorum/) どうしが重なる理由）は [Byzantine Fault Tolerance](/notes/distributed-systems/byzantine-fault-tolerance/) で説明しています。本記事はその続きで、CometBFT に固有の部分を扱います。
 
 CometBFT は [Tendermint Core](https://github.com/tendermint/tendermint) のコードを 2022 年末に引き継いで始まったソフトウェアで、合意アルゴリズムは今も Tendermint と呼ばれます。説明と実験は v0.38.26（[CHANGELOG](https://github.com/cometbft/cometbft/blob/v0.38.x/CHANGELOG.md)）に合わせています。
 
@@ -32,7 +32,7 @@ CometBFT は [Tendermint Core](https://github.com/tendermint/tendermint) のコ�
 
 ### ABCI によるアプリケーションの分離
 
-CometBFT はトランザクションをバイト列として運ぶだけで、残高や署名の規則は知りません。トランザクションの中身を判断するのは、別に書くアプリケーションです。両者の間の境界を ABCI（Application BlockChain Interface）と呼びます。[CometBFT の入門文書](https://github.com/cometbft/cometbft/blob/v0.38.x/docs/introduction/README.md)は、Bitcoin のような仕組みを ABCI の上に作る場合の分担として、次の例を挙げています。
+CometBFT はトランザクションをバイト列として運ぶだけで、残高や署名の規則は扱いません。トランザクションの中身を判断するのは、別に書くアプリケーションです。両者の間の境界を ABCI（Application BlockChain Interface）と呼びます。[CometBFT の入門文書](https://github.com/cometbft/cometbft/blob/v0.38.x/docs/introduction/README.md)は、Bitcoin のような仕組みを ABCI の上に作る場合の分担として、次の例を挙げています。
 
 {{< note-panels caption="CometBFT は順序を決め、アプリケーションは中身を判断します。" >}}
 - title: CometBFT
@@ -95,9 +95,9 @@ precommit が 2/3 を超えたブロックは、その時点で確定します�
 
 ### ロックによる食い違いの防止
 
-ロック（lock）は、precommit を送ったブロックに、同じ高さの後のラウンドでも投票し続ける約束です。バリデータは 2/3 を超える prevote を見てブロック B に precommit すると、B とそのラウンドを記録します。後のラウンドで別のブロックが提案されても、それを支持せず、ロックした B に prevote します。
+ロック（lock）は、precommit を送ったブロックに、同じ高さの後のラウンドでも投票し続ける規則です。バリデータは 2/3 を超える prevote を見てブロック B に precommit すると、B とそのラウンドを記録します。後のラウンドで別のブロックが提案されても、それを支持せず、ロックした B に prevote します。
 
-ロックが無いと何が起きるか、4 台のうち V3 が嘘をつく例で見ます。票の重みは全員 10 で、確定には 27 以上が要ります。図は、高さ h のラウンド 0 とラウンド 1 で、各バリデータが送った票を左から時間順に並べたものです。
+ロックが無いと何が起きるか、4 台のうち V3 が嘘をつく例で見ます。票の重みは全員 10 で、確定には 27 以上が必要です。図は、高さ h のラウンド 0 とラウンド 1 で、各バリデータが送った票を左から時間順に並べたものです。
 
 {{< figure src="images/cometbft_lock.webp" alt="4 行 3 列の図。ラウンド 0 の prevote は、V2 だけが提案を受け取れず nil、他の 3 台は B で、B への prevote は 30。ラウンド 0 の precommit は、V0 と V1 が B で B にロック、V2 が nil、嘘つきの V3 は B を V0 にだけ送り、V0 だけが precommit B を 30 見る。ラウンド 1 では V3 が B′ を提案し、V0 は確定済みで次の高さへ、V1 はロックした B に、V2 と V3 は B′ に prevote する。B′ への prevote は 40 のうち 20 で、2/3 の線に届かない" caption="ロックの例：高さ h のラウンド 0 とラウンド 1 で各バリデータが送った票" align="center" >}}
 
@@ -154,7 +154,7 @@ BFT のチェーンも PoW と同じように、分断された 2 つのグル�
 
 同じラウンドで矛盾する 2 つの票に署名した二重投票なら、2 つの署名から違反者を特定できます。CometBFT はこれを証拠（evidence）としてブロックに入れてアプリケーションに渡し、罰則を科すかはアプリケーションが決めます。
 
-ロックを無視するなど、ラウンドをまたいだ違反は 1 組の署名からは分からず、[仕様](https://github.com/cometbft/cometbft/blob/v0.38.x/spec/consensus/consensus.md#proof-of-fork-accountability)では各バリデータに投票の根拠を示させて特定します。
+ロックを無視するなど、ラウンドをまたいだ違反は矛盾する 2 つの署名だけでは分からず、[仕様](https://github.com/cometbft/cometbft/blob/v0.38.x/spec/consensus/consensus.md#proof-of-fork-accountability)では各バリデータに投票の根拠を示させて特定します。
 
 次の節の実験は 4 台の重みが等しいので、表の 1・2 行目から、1 台（重みの 1/4）を止めても進み続け、2 台（1/2）を止めると止まるはずです。どちらも実測します。
 
@@ -523,7 +523,7 @@ run 3: heights 1..89 identical on 4 nodes: True; heights decided after round 0: 
 
 <br>
 
-2 台を止めた区間（図の「2 台」）では、3 回とも 45 秒間に 1 つもブロックが確定せず、ラウンドも 0 のままでした。段階まで記録した 1 回目では、残った 2 台は同じ高さのラウンド 0 の prevote の段階に留まり、prevote は `2/4 = 0.50` で 2/3 に届いていません。2 台ずつに分断した区間（図の「2|2 に分断」）も、結果は同じです。どちらのグループも prevote が `2/4` のまま止まり、自分たちだけでブロックを作り進めることはありませんでした。
+2 台を止めた区間（図の「2 台」）では、3 回とも 45 秒間に 1 つもブロックが確定せず、ラウンドも 0 のままでした。段階まで記録した 1 回目では、残った 2 台は同じ高さのラウンド 0 で prevote の段階に留まり、prevote は `2/4 = 0.50` で 2/3 に届いていません。2 台ずつに分断した区間（図の「2|2 に分断」）も、結果は同じです。どちらのグループも prevote が `2/4` のまま止まり、自分たちだけでブロックを作り進めることはありませんでした。
 
 {{< figure src="images/cometbft_stall.webp" alt="左は 2 台を止めた区間で、動いている node0 と node1 の prevote は 40 のうち 20 で、2/3 の線に届かない。右は node0・node1 と node2・node3 の間の通信を切った区間で、両側とも 40 のうち 20 で 2/3 に届かない。どの側も同じ高さで待ち続ける" caption="2 台を止めた区間と 2|2 に分断した区間で、各ノードに見えている prevote" align="center" >}}
 
@@ -533,13 +533,13 @@ run 3: heights 1..89 identical on 4 nodes: True; heights decided after round 0: 
 
 止まっている間も、node0 はトランザクションを受け付けました（`code=0` は `CheckTx` が通ったことを示します）。しかし、キー `halted` を問い合わせても値は返らず、トランザクションは mempool で待っているだけです。
 
-2 台を再起動すると、止まっていた高さ（1 回目は 32）のブロックが確定しました。ラウンド 0 は precommit の待ち時間が切れて終わり（出力のログの `Timed out ... PrecommitWait`）、ラウンド 1 で確定しています。このブロックにトランザクションが入り、値 `eWVz`（base64 で `yes`）が読めるようになりました。
+2 台を再起動すると、止まっていた高さ（1 回目は 32）のブロックが確定しました。ラウンド 0 は precommit の待ち時間が切れて終わり（出力したログにある `Timed out ... PrecommitWait`）、ラウンド 1 で確定しています。このブロックにトランザクションが入り、値 `eWVz`（base64 で `yes`）が読めるようになりました。
 
-docker start の直後の計測から最初の確定までは、3 回の中央値で 6.5 秒（1.5〜6.5 秒）でした。計測の間隔が約 1.6 秒なので、この秒数はその幅で前後します。2|2 の分断も、通信を戻すと 3 回の中央値 10.9 秒（9.9〜12.6 秒）で確定が再開しました。
+docker start を実行した直後の計測から最初の確定までは、3 回の中央値で 6.5 秒（1.5〜6.5 秒）でした。計測の間隔が約 1.6 秒なので、この秒数はその幅で前後します。2|2 の分断も、通信を戻すと 3 回の中央値 10.9 秒（9.9〜12.6 秒）で確定が再開しました。
 
 最後に全ノードのブロックハッシュを高さ 1 から比べ、3 回とも 4 台で一致しました。分断の前後で、別々のブロックが確定した高さはありません。
 
-各ノードに票が届かない重み（止まったバリデータと、分断の向こう側のバリデータの重み）の割合で 4 つの区間を並べると、以下のようになります。1/3 の線をまたいだ所で、進むか止まるかが分かれています。
+各ノードに票が届かない重み（止まったバリデータと、分断の向こうにいるバリデータの重み）の割合で 4 つの区間を並べると、以下のようになります。1/3 の線をまたいだ所で、進むか止まるかが分かれています。
 
 {{< figure src="images/cometbft_halt.webp" alt="横軸は各ノードに票が届かない重み（止まったバリデータと分断の向こう側の重み）の割合で、1/3 に縦線がある。1/3 より左は青の「確定が進む」、右は黄土色の「全体が止まり、分岐しない」。0 の 4 台は 20 秒で 15 個、1/4 の node3 停止は 30 秒で 11 個のブロックが確定した。1/2 の 2 台停止と 2 台ずつの分断は、どちらも 45 秒で 0 個" caption="票が届かない重みの割合と、実験の各区間での確定の有無" align="center" >}}
 
@@ -547,7 +547,7 @@ docker start の直後の計測から最初の確定までは、3 回の中央�
 
 ### 合意方式の比較
 
-ここまでの性質を他の方式と並べると以下の通りです。PBFT は参加者を固定した論文のアルゴリズム、Ethereum は 2026 年 11 月時点のメインネットの仕組みです。
+ここまでの性質を他の方式と並べると以下の通りです。PBFT は参加者を固定した論文のアルゴリズム、Ethereum は 2026 年 11 月時点でメインネットが使う仕組みです。
 
 | 方式 | 票の重みの根拠 | 確定の時点 | 安全性が耐える割合 | 参加者の 1/3 以上が止まるか分断された時 |
 |---|---|---|---|---|
