@@ -13,13 +13,13 @@ ERC-721 は、[Ethereum](https://ethereum.org/) 上で 1 つずつ区別でき�
 
 ここでのトークンは、[スマートコントラクト](../smart-contract/)（チェーン上に置かれ、トランザクションで呼び出されるプログラム。以下、コントラクト）が記録する「誰が何を持っているか」の表です。チェーンは、トランザクションをまとめたブロックを順につないだ記録で、参加するノードが同じ内容を持ちます。コントラクトの記録も、その一部として全員に共有されます。
 
-ERC は、Ethereum の改善提案 [EIP](https://eips.ethereum.org/EIPS/eip-1)（Ethereum Improvement Proposal）のうち、コントラクトのインターフェース（関数の名前や引数）などアプリケーションの層の規格に付く分類で、721 は提案の番号です。[ERC-20](../erc-20/) がアドレス（アカウントの宛先）ごとの数量を記録するのに対して、ERC-721 は `tokenId` という番号ごとに所有者を記録します。
+ERC は、Ethereum の改善提案 [EIP](https://eips.ethereum.org/EIPS/eip-1)（Ethereum Improvement Proposal）のうち、コントラクトのインターフェース（関数の名前や引数）などアプリケーション層の規格に付く分類で、721 は提案の番号です。[ERC-20](../erc-20/) がアドレス（アカウントの宛先）ごとの数量を記録するのに対して、ERC-721 は `tokenId` という番号ごとに所有者を記録します。
 
 画面に表示される NFT には、画像や名前が付いています。しかし、ERC-721 のコントラクトが持っているのは、番号と所有者の対応と、説明の置き場所を指す [URI](https://www.rfc-editor.org/rfc/rfc3986)（Uniform Resource Identifier）の文字列です。以下は、NFT コントラクトが記録するものと、画像や説明の置き場所を分けた図です。
 
 {{< figure src="images/erc-721_concept.webp" alt="左の青い枠が NFT コントラクト（チェーン上）で、tokenId #1〜#4 と所有者 alice・bob・carol・bob の対応表と、tokenURI(2) が返す文字列 https://…/2.json がある。その文字列から、右の黄土色の点線の枠（チェーンの外のサーバー）にある 2.json に矢印が伸び、2.json の image から画像に矢印が伸びている" caption="チェーン上の所有の記録と、チェーンの外にある JSON と画像" align="center" >}}
 
-上記の図の右側は、チェーンの外にあります。チェーン上の所有の記録が変わらなくても、サーバーの JSON や画像は書き換えられることがあり、消えることもあります。
+上記の図で、右側はチェーンの外にあります。チェーン上で所有の記録が変わらなくても、サーバーの JSON や画像は書き換えられることがあり、消えることもあります。
 
 <br>
 
@@ -30,15 +30,15 @@ ERC は、Ethereum の改善提案 [EIP](https://eips.ethereum.org/EIPS/eip-1)�
 - `approve` と `setApprovalForAll` は、それぞれ誰に何を許すのか。
 - NFT の画像や説明は、どこに保存されているのか。
 
-後半では、ローカルのチェーンに学習用の NFT をデプロイし、上記の 4 つを実行結果で確認します。最後に、受け手の確認で引っかかりやすい場面と、ERC-1155 という別の規格との違いを扱います。価格や取引所の手数料、著作権の扱いは説明しません。
+後半では、ローカルのチェーンに学習用の NFT をデプロイし、上記の 4 つを実行結果で確認します。最後に、受け手の確認で引っかかりやすい場面と、別の規格である ERC-1155 との違いを扱います。価格や取引所の手数料、著作権の扱いは説明しません。
 
 ---
 
 ### 番号ごとの所有者
 
-ERC-20 の残高は「アドレス → 数量」の対応で、同じトークンの 1 枚同士は区別しません。ERC-721 では、`uint256`（256 ビットの符号なし整数）の番号 `tokenId` が 1 つの資産を表し、「tokenId → 所有者」の対応を記録します。[ERC-721 の仕様](https://eips.ethereum.org/EIPS/eip-721)では、コントラクトのアドレスと `tokenId` の組が、チェーン上でその資産を一意に指す識別子です。
+ERC-20 の残高は「アドレス → 数量」の対応で、同じトークンの 1 枚同士は区別しません。ERC-721 では、`uint256`（256 ビットの符号なし整数）の番号 `tokenId` が 1 つの資産を表し、「tokenId → 所有者」の対応を記録します。[ERC-721 の仕様](https://eips.ethereum.org/EIPS/eip-721)では、コントラクトのアドレスと `tokenId` の組み合わせが、チェーン上でその資産を一意に指す識別子です。
 
-所有者は `ownerOf(tokenId)` で照会します。`balanceOf(owner)` もありますが、返すのは同じ種類のトークンの枚数ではなく、そのアドレスが持つ区別できる NFT が何個あるかです。どの番号を持っているかは、`balanceOf` からは分かりません。番号の振り方も規格は決めておらず、仕様は呼び出し側が番号に規則性を仮定しないよう求めています。
+所有者は `ownerOf(tokenId)` で照会します。`balanceOf(owner)` もありますが、返すのは同じ種類のトークンが何枚あるかではなく、そのアドレスが持つ区別できる NFT が何個あるかです。どの番号を持っているかは、`balanceOf` からは分かりません。番号の振り方も規格は決めておらず、仕様は呼び出し側が番号に規則性を仮定しないよう求めています。
 
 ERC-20 と並べると、主な違いは以下の通りです。
 
@@ -50,7 +50,7 @@ ERC-20 と並べると、主な違いは以下の通りです。
 | 第三者への許可 | `approve(spender, amount)` で数量 | `approve` で 1 つ、`setApprovalForAll` で全部 |
 | 受け手の確認 | 規格に無い | `safeTransferFrom` が受け手のコントラクトを確認する |
 
-新しい NFT を作る発行（mint）と、消す焼却（burn）の関数は、ERC-20 と同じく規格に含まれていません。関数の名前や呼べる人は実装が決め、規格はその通知の仕方だけを決めています（後述のイベントの節）。
+新しい NFT を作る発行（mint）と、消す焼却（burn）の関数は、ERC-20 と同じく規格に含まれていません。関数の名前や呼べる人は実装が決め、規格はその通知の仕方だけを決めています（イベントの節で後述）。
 
 ---
 
@@ -58,7 +58,7 @@ ERC-20 と並べると、主な違いは以下の通りです。
 
 ERC-721 で NFT を移す関数は、`transferFrom` と、引数の数が違う 2 つの `safeTransferFrom` です。ERC-20 の `transfer` に相当する本人専用の関数は無く、所有者も `transferFrom(自分, 宛先, tokenId)` を呼びます。引数が 4 つの `safeTransferFrom` は、宛先に渡す任意のバイト列 `data` を足したものです。
 
-`transferFrom` は、呼び出し元が所有者か、所有者から許可を受けた相手（後述の承認の節）であれば、宛先を確認せずに所有者を書き換えます。仕様のコメントには、次の注意があります。
+`transferFrom` は、呼び出し元が所有者か、所有者から許可を受けた相手（承認の節で後述）であれば、宛先を確認せずに所有者を書き換えます。仕様のコメントには、次の注意があります。
 
 > THE CALLER IS RESPONSIBLE TO CONFIRM THAT `_to` IS CAPABLE OF RECEIVING NFTS OR ELSE THEY MAY BE PERMANENTLY LOST
 
@@ -68,19 +68,19 @@ ERC-721 で NFT を移す関数は、`transferFrom` と、引数の数が違う 
 
 #### 受け取れない宛先
 
-Ethereum のアカウントには、秘密鍵でトランザクションに署名する EOA（Externally Owned Account）と、コードを持つコントラクトの 2 種類があります（[Ethereum Account Model](../ethereum-account-model/#eoa-とコントラクトアカウント)）。EOA のコードの長さは 0 で、コントラクトは 1 バイト以上のコードを持ちます。
+Ethereum のアカウントには、秘密鍵でトランザクションに署名する EOA（Externally Owned Account）と、コードを持つコントラクトの 2 種類があります（[Ethereum Account Model](../ethereum-account-model/#eoa-とコントラクトアカウント)）。EOA はコードの長さが 0 で、コントラクトは 1 バイト以上のコードを持ちます。
 
-NFT を動かせるのは、所有者と許可を受けた相手が `msg.sender`（その関数の呼び出し元）として呼んだ時だけです。所有者がコントラクトになると、そのコントラクトのコードが `transferFrom` や `approve` を呼ばない限り、誰も動かせません。以下は、NFT を扱うコードを持たないコントラクト（後半の実験の `Counter`）に #1 を送った後の図です。
+NFT を動かせるのは、所有者と許可を受けた相手が `msg.sender`（その関数の呼び出し元）として呼んだ時だけです。所有者がコントラクトになると、そのコントラクトのコードが `transferFrom` や `approve` を呼ばない限り、誰も動かせません。以下は、NFT を扱うコードを持たないコントラクト（後半の実験で使う `Counter`）に #1 を送った後の図です。
 
 {{< figure src="images/erc-721_stuck.webp" alt="左上に EOA の alice、右上にコードが increment() だけのコントラクト Counter、下に #1 の所有者が Counter になった NFT コントラクトがある。alice から NFT コントラクトへの transferFrom(Counter, alice, 1) の矢印には赤い × が付き、呼び出し元が所有者でないので拒否と書かれている。Counter から NFT コントラクトへの点線には、呼び出すコードが無いと書かれている" caption="コントラクトが所有者になった NFT は、そのコードが呼ばない限り動かない" align="center" >}}
 
-元の所有者の alice が秘密鍵を持っていても、呼び出し元は alice のアドレスです。`Counter` のアドレスとして呼び出す方法は無いので、#1 は取り戻せません。
+元の所有者である alice が秘密鍵を持っていても、呼び出し元は alice のアドレスです。`Counter` のアドレスとして呼び出す方法は無いので、#1 は取り戻せません。
 
 <br>
 
 #### safeTransferFrom による受け手の確認
 
-`safeTransferFrom` は、この事故を防ぐための関数です。移転の後で宛先のコードの長さを見て、0 より大きければ宛先の `onERC721Received` を呼びます。宛先が決められた値 `0x150b7a02` を返さなければ、トランザクション全体を revert（取り消して状態を元に戻すこと。[Ethereum Transaction](../ethereum-transaction/#実行が止まった時に消費する-gas) を参照）します。
+`safeTransferFrom` は、この事故を防ぐための関数です。移転の後で宛先が持つコードの長さを見て、0 より大きければ宛先の `onERC721Received` を呼びます。宛先が決められた値 `0x150b7a02` を返さなければ、トランザクション全体を revert（取り消して状態を元に戻すこと。[Ethereum Transaction](../ethereum-transaction/#実行が止まった時に消費する-gas) を参照）します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
@@ -104,7 +104,7 @@ sequenceDiagram
     end
 ```
 
-上記の図の通り、確認は所有者を書き換えた後で行います。失敗すれば書き換えも取り消されるので、受け取れない宛先に NFT が残ることはありません。
+上記の図が示す通り、所有者を書き換えた後で確認します。失敗すれば書き換えも取り消されるので、受け取れない宛先に NFT が残ることはありません。
 
 決められた値の `0x150b7a02` は、`onERC721Received(address,address,uint256,bytes)` という関数の名前と引数の型を keccak256 という[ハッシュ関数](../hash-function/)でハッシュした先頭 4 バイトです。この 4 バイトは関数の識別子（セレクター）と呼ばれ、呼び出す関数を選ぶ時にも使われます。
 
@@ -142,11 +142,11 @@ ERC-721 の承認には、範囲の違う 2 つの関数があります。ERC-20
 
 下段に #3 が無いのは、実験では先に carol が #3 を移したためです。
 
-`setApprovalForAll` は、1 つの NFT を出品するための許可だと思うかもしれません。しかし、許可は番号ではなく所有者と相手の組に紐づくので、承認した後で受け取った NFT も含まれます。operator は、個々の NFT の `approve` を別の相手に設定することもできます。
+`setApprovalForAll` は、1 つの NFT を出品するための許可だと思うかもしれません。しかし、許可は番号ではなく所有者と相手の組み合わせに紐づくので、承認した後で受け取った NFT も含まれます。operator は、個々の NFT について `approve` を別の相手に設定することもできます。
 
 許可は `setApprovalForAll(相手, false)` で取り消せます。ただし、取り消しもトランザクションなので、そのトランザクションがブロックに入る前の移転や、すでに終わった移転は戻りません。また、許可はコントラクトごとの記録なので、別の NFT コレクション（別のコントラクト）への許可は残ります。
 
-この形の承認は、取引所（NFT の売買を仲介するコントラクトとサイト）とのやり取りを簡単にします。後述の [ERC-1155 の仕様](https://eips.ethereum.org/EIPS/eip-1155)も、同じ形の承認をそのためと説明しています。一方で、承認を求める画面を偽装する詐欺の典型的な経路にもなっています。
+この形の承認は、取引所（NFT の売買を仲介するコントラクトとサイト）とのやり取りを簡単にします。最後の節で比べる [ERC-1155 の仕様](https://eips.ethereum.org/EIPS/eip-1155)も、同じ形の承認をそのためと説明しています。一方で、承認を求める画面を偽装する詐欺の典型的な経路にもなっています。
 
 <br>
 
@@ -158,7 +158,7 @@ ERC-721 の承認には、範囲の違う 2 つの関数があります。ERC-20
 2. 書き換えた JavaScript が、通常の「ウォレット（秘密鍵を管理し、トランザクションに署名するアプリ）の接続」の画面を偽の画面に置き換え、ウォレットへの全面的なアクセスを求めた。
 3. 承認したユーザーの NFT が攻撃者のウォレットに移された。
 
-上記の 1 と 2 は [PREMINT の発表](https://web.archive.org/web/20221201231600/https://blog.premint.xyz/p/july-17-2022-incident-update)（Internet Archive の保存ページ）に基づきます。セキュリティ企業の [CertiK の分析](https://www.certik.com/blog/premint-nft-incident-analysis)によると、PREMINT は「Set Approval For All」（すべてを承認）のトランザクションに署名しないよう呼びかけ、攻撃者のウォレット 2 つが 314 個の NFT を奪い、攻撃全体で約 275 ETH（ETH は Ethereum の通貨）の損失が出ました。
+上記の 1 と 2 は [PREMINT の発表](https://web.archive.org/web/20221201231600/https://blog.premint.xyz/p/july-17-2022-incident-update)（Internet Archive の保存ページ）に基づきます。セキュリティ企業 [CertiK の分析](https://www.certik.com/blog/premint-nft-incident-analysis)によると、PREMINT は「Set Approval For All」（すべてを承認）のトランザクションに署名しないよう呼びかけ、攻撃者のウォレット 2 つが 314 個の NFT を奪い、攻撃全体で約 275 ETH（ETH は Ethereum の通貨）の損失が出ました。
 
 どちらの資料も NFT を移したトランザクションの中身までは示していませんが、呼びかけの内容からは `setApprovalForAll` の許可が悪用されたと読めます。改ざんされたのはサイトの JavaScript で、チェーンの規則は破られていません。
 
@@ -174,7 +174,7 @@ ERC-721 の承認には、範囲の違う 2 つの関数があります。ERC-20
 | `Approval(owner, approved, tokenId)` | `approve` で 1 つの許可を設定・再設定した時 | 3 つとも |
 | `ApprovalForAll(owner, operator, approved)` | `setApprovalForAll` を呼んだ時 | owner と operator |
 
-仕様では、`Transfer` が出た時点で、その NFT の `approve` の許可も解除されたことを表します。解除のために別の `Approval` を出す必要はありません。
+仕様では、`Transfer` が出た時点で、その NFT に `approve` で出した許可も解除されたことを表します。解除のために別の `Approval` を出す必要はありません。
 
 発行と焼却は、ゼロアドレス（値がすべて 0 のアドレス）を使った `Transfer` で通知します。発行は送り主をゼロアドレスに、焼却は宛先をゼロアドレスにします。コントラクトの作成中に発行する分だけは、`Transfer` を出さなくて良い例外があります。
 
@@ -184,17 +184,17 @@ ERC-721 の承認には、範囲の違う 2 つの関数があります。ERC-20
 
 違いは 3 つ目の引数が `indexed` であることです。`indexed` を付けた引数は topics に入ります。ERC-721 の `Transfer` では `tokenId` が topics に入り、ERC-20 の `Transfer` では数量がデータ欄に入ります。
 
-以下は、2 つの規格の `Transfer` のログの欄を並べた図です。
+以下は、2 つの規格で `Transfer` のログが持つ欄を並べた図です。
 
 {{< figure src="images/erc-721_log.webp" alt="上に topics（検索用の欄）とデータ欄の見出しがあり、topic0 から topic3 とデータ欄の列が並ぶ。ERC-20 の行は topic0 が 0xddf252ad…、topic1 が from、topic2 が to、topic3 がなし、データ欄が数量。ERC-721 の行は topic0 が同じ 0xddf252ad…、from、to、topic3 が tokenId、データ欄が空（0x）。2 つの topic0 は同じ色で、イベントの名前と引数の型のハッシュという同じ値だと示している" caption="ERC-20 と ERC-721 の Transfer のログの欄" align="center" >}}
 
-ログを集める側は、topic0 だけでは 2 つの規格を区別できません。topics の数やデータ欄の中身で見分けるか、次の節の方法でコントラクトに問い合わせます。
+ログを集める側は、topic0 だけでは 2 つの規格を区別できません。topics の数やデータ欄の中身で見分けるか、次の節で説明する方法でコントラクトに問い合わせます。
 
 ---
 
 ### 対応する機能の問い合わせ
 
-ウォレットや取引所は、コントラクトに「ERC-721 の関数を実装しているか」を直接問い合わせられます。ERC-721 は、そのための規格 [ERC-165](https://eips.ethereum.org/EIPS/eip-165) の `supportsInterface(bytes4)` を実装することを求めています。引数はインターフェース（関数の組）を表す 4 バイトの識別子です。
+ウォレットや取引所は、コントラクトに「ERC-721 の関数を実装しているか」を直接問い合わせられます。ERC-721 は、そのための規格 [ERC-165](https://eips.ethereum.org/EIPS/eip-165) の `supportsInterface(bytes4)` を実装することを求めています。引数はインターフェース（関数の集まり）を表す 4 バイトの識別子です。
 
 | 識別子 | インターフェース |
 | --- | --- |
@@ -209,7 +209,7 @@ ERC-721 の承認には、範囲の違う 2 つの関数があります。ERC-20
 
 ### tokenURI とメタデータ
 
-名前や画像の情報は、実装しなくても良い拡張（任意の拡張）である ERC-721 Metadata が扱います。この拡張は `name()`、`symbol()`、`tokenURI(tokenId)` の 3 つの関数を定め、`tokenURI` は「ERC721 Metadata JSON Schema」（メタデータの JSON の形式）に従う JSON を指して良いとしています。
+名前や画像の情報は、実装しなくても良い拡張（任意の拡張）である ERC-721 Metadata が扱います。この拡張は `name()`、`symbol()`、`tokenURI(tokenId)` の 3 つの関数を定め、`tokenURI` は「ERC721 Metadata JSON Schema」（メタデータを書く JSON の形式）に従う JSON を指して良いとしています。
 
 JSON の項目は `name`、`description`、`image` で、`image` は画像の URI です。
 
@@ -219,7 +219,7 @@ JSON の項目は `name`、`description`、`image` で、`image` は画像の UR
 
 規格が定めるのは URI の文字列を返すことだけで、画像はチェーンに保存されているとは限りません。JSON と画像をどこに置くかは実装が決め、仕様は URI が時々変わって良い（MAY be mutable）とも書いています。チェーン上に残るのは、URI を組み立てるコードと文字列です。
 
-URI の指す先によって、壊れ方が変わります。以下の表の [IPFS](https://ipfs.tech/)（InterPlanetary File System）は、中身のハッシュでデータを指す分散型のファイル共有の仕組みです。`data:` は、中身を URI に埋め込む [RFC 2397](https://www.rfc-editor.org/rfc/rfc2397) の形式です。
+URI の指す先によって、壊れ方が変わります。以下の表にある [IPFS](https://ipfs.tech/)（InterPlanetary File System）は、中身のハッシュでデータを指し、分散してファイルを共有する仕組みです。`data:` は、中身を URI に埋め込む [RFC 2397](https://www.rfc-editor.org/rfc/rfc2397) の形式です。
 
 | URI の例 | 中身が変わるか | 消えるか |
 | --- | --- | --- |
@@ -237,15 +237,15 @@ IPFS の場合は、[IPFS の NFT データのベストプラクティス](https
 
 ### ローカルでの確認
 
-実験では、[Foundry](https://github.com/foundry-rs/foundry) のローカル用ノード [Anvil](https://getfoundry.sh/anvil/overview) と Solidity のコンパイラを使い、ローカルのチェーンに学習用の `StudyNFT` をデプロイします。使った版とチェーンの設定は [lab/README.txt](lab/README.txt) にあります。
+実験では、[Foundry](https://github.com/foundry-rs/foundry) のローカル用ノード [Anvil](https://getfoundry.sh/anvil/overview) と Solidity のコンパイラを使い、ローカルのチェーンに学習用の `StudyNFT` をデプロイします。使ったバージョンとチェーンの設定は [lab/README.txt](lab/README.txt) にあります。
 
-アカウントは Anvil の既定のテスト用アカウントの先頭 4 つ（alice・bob・carol・keeper）で、公開のネットワークには繋ぎません。メタデータの JSON は、同じ PC の 127.0.0.1 で動かす HTTP サーバーから返します。以下は、実験の登場人物を並べた図です。
+アカウントは Anvil が既定で用意するテスト用アカウントのうち先頭の 4 つ（alice・bob・carol・keeper）で、公開のネットワークには繋ぎません。メタデータの JSON は、同じ PC の 127.0.0.1 で動かす HTTP サーバーから返します。以下は、実験の登場人物を並べた図です。
 
 {{< figure src="images/erc-721_lab.webp" alt="青い枠のローカルのチェーン（Anvil）の中に、上段に EOA の alice（発行者・最初の所有者）、bob（全部の許可を受ける）、carol（1 つの許可を受ける）、keeper（withdraw を呼べる）、下段に StudyNFT（学習用の ERC-721）と、宛先のコントラクトの Counter（NFT を扱うコードが無い）と StudyReceiver（受け取り・withdraw）が並ぶ。StudyNFT から枠の外の 127.0.0.1 の HTTP サーバー（JSON）に、tokenURI の指す先として矢印が伸びる" caption="実験のアカウントとコントラクト" align="center" >}}
 
-`StudyNFT` は ERC-721 と Metadata 拡張を最小限で実装した学習用のコードで、監査を受けていません。`mint` と `setBaseURI` は、サンプル独自の管理用の関数です。
+`StudyNFT` は ERC-721 と Metadata 拡張を最小限で実装した学習用のコードで、監査を受けていません。`mint` と `setBaseURI` は、サンプルが独自に持つ管理用の関数です。
 
-宛先には、[Smart Contract](../smart-contract/) のノートの `Counter` から `increment` だけを残したもの（NFT を扱うコードが無い）と、`onERC721Received` と送り出す関数 `withdraw` を持つ `StudyReceiver` を置きました。`StudyReceiver` をデプロイした keeper だけが `withdraw` を呼べます。本番で使う場合は、[OpenZeppelin Contracts の ERC721](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.7.0/contracts/token/ERC721/ERC721.sol)（MIT ライセンス）のような実装を確認してください。
+宛先には、[Smart Contract](../smart-contract/) のノートで使った `Counter` から `increment` だけを残したもの（NFT を扱うコードが無い）と、`onERC721Received` と送り出す関数 `withdraw` を持つ `StudyReceiver` を置きました。`StudyReceiver` をデプロイした keeper だけが `withdraw` を呼べます。本番で使う場合は、[OpenZeppelin Contracts の ERC721](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.7.0/contracts/token/ERC721/ERC721.sol)（MIT ライセンス）のような実装を確認してください。
 
 <br>
 
@@ -256,7 +256,7 @@ IPFS の場合は、[IPFS の NFT データのベストプラクティス](https
 3. #4〜#6 を追加で発行しながら、`approve` と `setApprovalForAll` で carol と bob に許可を出して動かさせ、最後に取り消す。
 4. サーバーの上と `setBaseURI` で、#2 の JSON を書き換える。
 
-以下は、2 と 3 の部分の抜粋です。`step` はトランザクションを送り、成否と、成功ならイベントのログ、失敗なら revert の理由を 1 行にまとめる補助関数です。`ok` は期待する成否（1 が成功、0 が失敗）で、違えば実験を止めます。
+以下は、2 と 3 の部分を抜き出したコードです。`step` はトランザクションを送り、成否と、成功ならイベントのログ、失敗なら revert の理由を 1 行にまとめる補助関数です。`ok` は期待する成否（1 が成功、0 が失敗）で、違えば実験を止めます。
 
 ```python
 step('safeTransferFrom #1 -> Counter', alice,
@@ -746,7 +746,7 @@ Transfer topic0 = 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523
 supportsInterface: {'ERC165': True, 'ERC721': True, 'Metadata': True, 'Enumerable': False, 'invalid': False}
 ```
 
-1 の発行では、3 回とも送り主がゼロアドレス（`zero`）の `Transfer` が出て、topics が 4 つ、データ欄は空（`0x`）です。topic0 は [ERC-20 の実験](../erc-20/)のログと同じ `0xddf252ad…` でした。
+1 の発行では、3 回とも送り主がゼロアドレス（`zero`）の `Transfer` が出て、topics が 4 つ、データ欄は空（`0x`）です。topic0 は [ERC-20 の実験](../erc-20/)で出たログと同じ `0xddf252ad…` でした。
 
 `supportsInterface` は、実装した 3 つに `true`、実装していない Enumerable と、仕様が `false` を求める `0xffffffff`（出力の `invalid`）に `false` を返しました。
 
@@ -762,7 +762,7 @@ StudyReceiver.withdraw #2 -> alice | keeper | status=1 | Transfer(StudyReceiver-
 
 2 では、`Counter` 宛ての `safeTransferFrom` が `receiver rejected` で失敗し、`StudyReceiver` 宛ては成功しました。同じ `Counter` 宛てでも `transferFrom` は成功し、#1 の所有者は `Counter` になります。
 
-その後、元の所有者の alice が取り戻そうとしても、呼び出し元が所有者ではないので失敗しました（移転の節の図の状態です）。alice が自分に `approve` することもできません。`Counter` のコードは NFT の関数を呼ばないので、#1 はこのチェーンが続く限り `Counter` のものです。`StudyReceiver` の #2 は、keeper が `withdraw` を呼んで alice に戻せました。
+その後、元の所有者である alice が取り戻そうとしても、呼び出し元が所有者ではないので失敗しました（移転の節で示した図の状態です）。alice が自分に `approve` することもできません。`Counter` のコードは NFT の関数を呼ばないので、#1 はこのチェーンが続く限り `Counter` のものです。`StudyReceiver` の #2 は、keeper が `withdraw` を呼んで alice に戻せました。
 
 ```text
 == 3. approve vs setApprovalForAll
@@ -791,21 +791,21 @@ after setBaseURI | block=25 owner=bob | http://127.0.0.1:WEB/v2/2.json -> {'name
 server deletes v2/2.json | block=25 owner=bob | http://127.0.0.1:WEB/v2/2.json -> HTTP 404
 ```
 
-4 では、bob が持つ #2 の JSON の中身が 3 回変わりました。最初の base URI は `…/v1/` で、`setBaseURI` で `…/v2/` に替えています。以下の図は、所有者とブロック番号、サーバーが返した JSON を段階ごとに並べたものです。
+4 では、bob が持つ #2 について、JSON の中身が 3 回変わりました。最初の base URI は `…/v1/` で、`setBaseURI` で `…/v2/` に替えています。以下の図は、所有者とブロック番号、サーバーが返した JSON を段階ごとに並べたものです。
 
 {{< figure src="images/erc-721_metadata.webp" alt="4 つの段階が横に並ぶ。上の青い帯のチェーン上の ownerOf(2) は、どの段階も bob。ブロック番号は最初とサーバーで書き換えた後が 24、setBaseURI(v2) とサーバーで削除した後が 25。段階の間にはトランザクションなし、トランザクション 1 件・イベントなし、トランザクションなしと書かれている。下の黄土色の点線の枠のサーバーが返す JSON は、v1/2.json の image が blue.svg、red.svg、v2/2.json の image が green.svg と変わり、最後は赤い枠の HTTP 404" caption="所有者が bob のまま、tokenId #2 の JSON が変わる様子" align="center" >}}
 
-Anvil はトランザクションを 1 件受け取るたびにブロックを 1 つ作ります。1 回目はサーバー上のファイルの書き換えで、ブロック番号は 24 のままです。つまり、トランザクションは 1 つも発生していません。2 回目は `setBaseURI` のトランザクションで、ブロックは進みましたが、本サンプルは ERC-4906 のイベントを出さないので、出力は `no event` です。最後にファイルを消すと、`ownerOf(2)` は bob のまま、JSON は 404 になりました。
+Anvil はトランザクションを 1 件受け取るたびにブロックを 1 つ作ります。1 回目はサーバー上でファイルを書き換えたもので、ブロック番号は 24 のままです。つまり、トランザクションは 1 つも発生していません。2 回目は `setBaseURI` のトランザクションで、ブロックは進みましたが、本サンプルは ERC-4906 のイベントを出さないので、出力は `no event` です。最後にファイルを消すと、`ownerOf(2)` は bob のまま、JSON は 404 になりました。
 
 ---
 
 ### 委任した EOA 宛ての失敗
 
-`safeTransferFrom` は、宛先のコードの長さが 0 なら EOA とみなして確認を飛ばします。2025 年の Ethereum の規則の更新（[Pectra](https://ethereum.org/roadmap/pectra/)。規則の切り替え方は [Ethereum Hard Forks](../ethereum-hard-forks/) を参照）で、この前提が崩れる場面ができました。
+`safeTransferFrom` は、宛先が持つコードの長さが 0 なら EOA とみなして確認を飛ばします。2025 年に Ethereum が規則を更新した（[Pectra](https://ethereum.org/roadmap/pectra/)。規則の切り替え方は [Ethereum Hard Forks](../ethereum-hard-forks/) を参照）ことで、この前提が崩れる場面ができました。
 
 この更新で入った [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) は、呼び出された EOA の処理を指定したコントラクトのコードに任せる（委任する）仕組みです。委任を設定した EOA は、委任先のアドレスを指す 23 バイトのコード（`0xef0100` の後に委任先のアドレス 20 バイト）を持ちます。そのため `safeTransferFrom` は委任先のコードで `onERC721Received` を呼び、委任先がこの関数を実装していなければ、EOA 宛ての送付でも失敗します。
 
-本記事のサンプルで試すと、次のようになりました。[eip7702.sh](lab/eip7702.sh) は、Pectra の規則（Anvil の設定名は Prague）で別のローカルのチェーンを起動し、`StudyNFT` と `Counter` を置き直して alice に #1 を発行します。その後、テスト用の EOA（出力の dave）のコードを `Counter` に委任し、委任の前後で、alice から dave への `safeTransferFrom` が通るかどうかだけを試しています（トランザクションは送らない呼び出し）。
+本記事のサンプルで試すと、次のようになりました。[eip7702.sh](lab/eip7702.sh) は、Pectra の規則（Anvil の設定名は Prague）でローカルのチェーンを別に起動し、`StudyNFT` と `Counter` を置き直して alice に #1 を発行します。その後、テスト用の EOA（出力の dave）のコードを `Counter` に委任し、委任の前後で、alice から dave への `safeTransferFrom` が通るかどうかだけを試しています（トランザクションは送らない呼び出し）。
 
 ```text
 dave code before: 0x
@@ -820,7 +820,7 @@ safeTransferFrom #1 -> dave (delegated): Error: server returned an error respons
 
 ### ERC-1155 との違い
 
-ERC-1155 は、1 つのコントラクトで複数の種類のトークンを数量付きで扱う規格です。同じ番号のトークンを 1 つだけ発行すれば、NFT のようにも使えます。ERC-721 との主な違いは、以下の通りです。
+ERC-1155 は、1 つのコントラクトで複数種類のトークンを数量付きで扱う規格です。同じ番号のトークンを 1 つだけ発行すれば、NFT のようにも使えます。ERC-721 との主な違いは、以下の通りです。
 
 | 項目 | ERC-721 | ERC-1155 |
 | --- | --- | --- |
@@ -839,6 +839,6 @@ ERC-1155 の規格には確認を飛ばす移転の関数が無く、承認は�
 
 ERC-721 が揃えるのは、所有の照会、移転、許可、通知、機能の判定の呼び出し方です。ウォレットや取引所は、コレクションごとにコードを読まなくても、同じ関数で NFT を表示し、移せます。
 
-一方で、規格に含まれない部分はコントラクトごとに異なります。発行できる人、URI を変えられる人、移転を止める機能などです。規格は移転と受け取りの関数について、必ず失敗させる（MUST throw。Solidity の今の書き方では revert）条件だけを定めており、それ以外の場面で失敗させることは実装に任せています。ERC-721 に対応していることは、画像が残り続けることも、発行者が URI を変えないことも保証しません。
+一方で、規格に含まれない部分はコントラクトごとに異なります。発行できる人、URI を変えられる人、移転を止める機能などです。規格は移転と受け取りの関数について、必ず失敗させる（MUST throw。今の Solidity で書くなら revert）条件だけを定めており、それ以外の場面で失敗させることは実装に任せています。ERC-721 に対応していることは、画像が残り続けることも、発行者が URI を変えないことも保証しません。
 
 利用者が確認することは、ERC-20 と同じく 2 つです。送る時は宛先が受け取れるか、許可する時は相手が誰で、どこまで許すかです。特に `setApprovalForAll` は、そのコレクションの NFT 全部を相手に渡す許可として読む必要があります。サイトとの接続を解除しても許可が残ることと、承認する前の確かめ方は、[Wallet のノート](../wallet/#鍵の保護と誤承認への対策)で扱っています。
