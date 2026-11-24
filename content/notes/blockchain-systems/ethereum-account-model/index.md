@@ -12,7 +12,7 @@ topics: ["Transaction / Wallet"]
 
 例えば、2 件の送金を短い間隔で出すと、[ウォレット](../wallet/)が付けた通し番号（nonce）の小さい方から順に取り込まれ、1 件目が取り込まれないうちは 2 件目も待たされます。同じアカウントから自動でトランザクションを出すサービスを書くなら、この番号を誰が採番するのかを決める必要があります。
 
-以下は、Alice から Bob に 1 ETH を送るトランザクション（nonce 7）で、アカウントの状態のどの欄が変わるのかを示した図です。
+以下は、Alice から Bob に 1 ETH を送るトランザクション（nonce 7）で、アカウントの状態のうちどの欄が変わるのかを示した図です。
 
 {{< figure src="images/ethereum-account-model_concept.svg" alt="アドレスごとに nonce・balance・storageRoot・codeHash の 4 欄を並べた表。Alice の nonce 7 → 8 と balance 5 → 4 − 手数料、Bob の balance 2 → 3 だけが青く塗られ、EOA の storageRoot と codeHash は空、コントラクトの行だけがストレージとコードを持つ" caption="1 ETH の送金で書き換わる、アカウントの状態の欄" align="center" >}}
 上記の図で変わるのは青い欄だけで、Bob のように受け取るだけのアカウントでは nonce は動きません。送り主の残高からは、送る 1 ETH に加えて手数料も引かれます。手数料は、実行に要した計算量を [gas](../gas-eip-1559/) という単位で計り、その量と単価から決まります。
@@ -74,7 +74,7 @@ sequenceDiagram
 
 従来は、コードの有無で 2 種類を見分けられました。公式ドキュメントでも、EOA の codeHash は「[the hash of an empty string](https://ethereum.org/en/developers/docs/accounts/)」（空文字列のハッシュ）です。
 
-今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の [Pectra](https://ethereum.org/roadmap/pectra/) という[プロトコルの更新](../ethereum-hard-forks/)で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA のコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
+今の Ethereum では、コードを持つアカウントがコントラクトアカウントとは限りません。2025 年の [Pectra](https://ethereum.org/roadmap/pectra/) という[プロトコルの更新](../ethereum-hard-forks/)で、仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) が有効になり、EOA が持つコードの項目に委任先のコントラクトを指す短いデータ（`0xef0100` に続くアドレス）を書けるようになったからです。
 
 この EOA を呼び出すと、委任先のコードが EOA のアドレスで動き、読み書きするストレージも EOA のものになります。例えば、複数の操作を 1 件のトランザクションにまとめたり、手数料を別のアカウントに払ってもらったりできます。2 種類の違いはコードの有無ではなく、EOA が秘密鍵による認証を起点にトランザクションを送り出せるのに対し、コントラクトアカウントはコードの実行によって動く点にあります。
 
@@ -86,7 +86,7 @@ sequenceDiagram
 
 [UTXO](../utxo/) では、データの構造そのものがこのリプレイを防ぎます。トランザクションが消費する出力は outpoint で名指しされており、一度消費された出力は集合から消えるため、同じトランザクションは 2 度成立しません。アカウントモデルには消費される対象が無く、更新される残高があるだけです。
 
-アカウントモデルでリプレイを止める役割を担うのが [nonce](https://masteringethereum.xyz/chapter_6.html) です。トランザクションには送り主の nonce を書く項目があり、その値は、送り主のアカウントが今持っている nonce と一致している必要があります。取り込まれると 1 増えるため、同じトランザクションをもう一度流しても古い番号として弾かれます。
+アカウントモデルでリプレイを止めるのが [nonce](https://masteringethereum.xyz/chapter_6.html) です。トランザクションには送り主の nonce を書く項目があり、その値は、送り主のアカウントが今持っている nonce と一致している必要があります。取り込まれると 1 増えるため、同じトランザクションをもう一度流しても古い番号として弾かれます。
 
 nonce が 1 ずつ増えるのは、通常の EOA がトランザクションを送る場合です。EIP-7702 の委任を設定するトランザクションでは、委任を許可した EOA の nonce も増えます。
 
@@ -102,7 +102,7 @@ nonce で防げるのは、同じチェーンでの再送です。[チェーン�
 
 nonce の一致は、トランザクションが有効である条件の 1 つです。このほかに署名が有効か、手数料と送る額を払える残高があるかなども検査されます。これらの検査を通らないトランザクションはブロックに入れられず、アカウントの nonce も動きません。
 
-実行が始まった後にコードが `REVERT`（実行を中止して変更を取り消す命令）を呼んだ場合や gas を使い切った場合、そのトランザクションによる状態の変更は取り消されます。それでも送り主の nonce の増加と手数料の支払いは残るため、次に有効な番号は 1 つ進んだままです。
+実行が始まった後にコードが `REVERT`（実行を中止して変更を取り消す命令）を呼んだ場合や gas を使い切った場合、そのトランザクションによる状態の変更は取り消されます。それでも送り主の nonce が増えたことと手数料を払ったことは残るため、次に有効な番号は 1 つ進んだままです。
 
 <br>
 
@@ -126,7 +126,7 @@ nonce が制約するのは、同じ送り主が出したトランザクショ�
   - Alice nonce 3
 {{< /note-panels >}}
 
-上記の図の受け入れられない並びの先頭にある nonce 4 は、その時点の Alice の nonce（3）と一致しないため、トランザクションとして有効になりません。
+上記の図で、受け入れられない並びの先頭にある nonce 4 は、その時点で Alice が持つ nonce（3）と一致しないため、トランザクションとして有効になりません。
 
 <br>
 
@@ -134,11 +134,11 @@ nonce が制約するのは、同じ送り主が出したトランザクショ�
 
 番号が飛んだトランザクションも、欠けた番号が取り込まれるまでは有効になりません。
 
-送り主が通常の EOA の場合、多くのクライアント（ノードが動かす Ethereum の実装ソフトウェア）はこのトランザクションを mempool に置いて待ちます。
+送り主が通常の EOA であれば、多くのクライアント（ノードが動かす Ethereum の実装ソフトウェア）はこのトランザクションを mempool に置いて待ちます。
 
 保持するかどうかはコンセンサス規則（全ノードが守り、破るとブロックが拒否される規則）ではなくクライアントのポリシーで決まり、件数や時間の上限を超えると捨てられます。未確認のトランザクションを置く場所の性質は、Bitcoin を例に [Mempool](../mempool/) で扱っています。
 
-以下は、届いたトランザクションの nonce と、送り主のアカウントの nonce を比べた結果の行き先です。
+以下は、届いたトランザクションの nonce と、送り主のアカウントが持つ nonce を比べた結果の行き先です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -150,7 +150,7 @@ flowchart TD
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確認できます。開発用モードはトランザクションが届くとすぐブロックを作ります。
+上記の図で示した行き先は、外部と接続しないローカルのチェーン（[geth](https://geth.ethereum.org/) 1.17.10 の[開発用モード](https://geth.ethereum.org/docs/developers/dapp-developer/dev-mode)）で確認できます。開発用モードはトランザクションが届くとすぐブロックを作ります。
 
 geth は、mempool を txpool と呼び、すぐ実行できるトランザクションを pending、番号の欠けで待つトランザクションを queued と数えます。nonce 0 のアカウントから nonce 2・0・1 の順に送り、最後に nonce 0 のトランザクションを流し直した結果が以下です。
 
@@ -175,7 +175,7 @@ nonce 0 が取り込まれても 1 が欠けている間は 2 は動かず、1 �
 
 ### 世界状態と execution layer の `state_root`
 
-全アカウントの現在の状態をまとめたものを世界状態（world state）と呼びます。公式ドキュメントには「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書かれています。
+全アカウントについて、現在の状態をまとめたものを世界状態（world state）と呼びます。公式ドキュメントには「[Instead of a distributed ledger, Ethereum is a distributed state machine](https://ethereum.org/en/developers/docs/evm/)」（Ethereum は分散台帳ではなく分散状態機械である）と書かれています。
 
 トランザクションは、この状態を次の状態に移す入力です。そのため、同じ送金のトランザクションでも、先に別のトランザクションが残高を減らしていれば失敗します。
 
@@ -185,7 +185,7 @@ nonce 0 が取り込まれても 1 が欠けている間は 2 は動かず、1 �
 
 <br>
 
-現在の Ethereum のブロックは、トランザクションを実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。トランザクションの並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。
+現在、Ethereum のブロックは、トランザクションを実行する execution layer と、ブロックについて合意を取る consensus layer の 2 層で扱われます。トランザクションの並びは execution payload という execution layer 用のまとまりに入り、それが consensus layer のブロックに含まれます。
 
 consensus layer のブロックにある同名の `state_root` は、EVM ではなく consensus layer 自身の状態を指します。
 
@@ -201,7 +201,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の S' は各ノードが手元に保持します。
+上記の図にある S' は各ノードが手元に保持します。
 
 全てのクライアントは execution payload のトランザクションを実行し直し、得られた状態が `state_root` の示す状態と一致するかを[確認します](https://ethereum.org/en/developers/docs/blocks/)。一致しなければ、そのブロックは受け入れられません。
 
