@@ -13,7 +13,7 @@ topics: ["Smart Contract"]
 
 署名を受け取ったサービスは、自分のサーバーで検証するか、後でその署名を[コントラクト](../smart-contract/)に渡して検証させます。
 
-EIP-712 は、このメッセージが構造を持つデータ（型と項目名の付いたデータ）の時に、それを[ハッシュ](../hash-function/)して署名する手順を定めた規格です。EIP（Ethereum Improvement Proposal）は Ethereum の仕様の提案で、その中でアプリが共通で使う規格を ERC（Ethereum Request for Comments）と呼びます。
+EIP-712 は、このメッセージが構造を持つデータ（型と項目名の付いたデータ）の時に、それを[ハッシュ](../hash-function/)して署名する手順を定めた規格です。EIP（Ethereum Improvement Proposal）は Ethereum の仕様に対する提案で、その中でアプリが共通で使う規格を ERC（Ethereum Request for Comments）と呼びます。
 
 [ウォレット](../wallet/)は署名を求める画面で、例えばトークンの利用承認なら `spender`（使う相手）・`value`（量）・`deadline`（期限）のような項目を並べて表示でき、コントラクトは同じ手順でハッシュを計算して署名を検証します。
 
@@ -21,16 +21,16 @@ EIP-712 は、このメッセージが構造を持つデータ（型と項目名
 
 {{< figure src="images/eip-712_concept.webp" alt="署名する 32 バイトは、0x1901、domain separator、hashStruct(message) の 3 つを繋いだ列の keccak256。domain separator（黄土色）には name・version・chainId・verifyingContract が入り、hashStruct（青）には型の名前と項目の並びから作る typeHash と、owner・spender・value・nonce・deadline の値が入る。chainId の横の赤い ≠ は、別の chainId やコントラクトなら別のハッシュになって署名が通らないことを表す" caption="EIP-712 で鍵が署名する 32 バイトの組み立て" align="center" >}}
 
-上記の図の左の黄土色の部分（domain separator、署名の領域を表すハッシュ）が「どのチェーンの、どのコントラクト向けの署名か」を表し、右の青い部分（hashStruct(message)、メッセージのハッシュ）が署名する中身を表します。どちらか 1 項目でも違えば、別の 32 バイトになります。
+上記の図で左にある黄土色の部分（domain separator、署名の領域を表すハッシュ）が「どのチェーンの、どのコントラクト向けの署名か」を表し、右の青い部分（hashStruct(message)、メッセージのハッシュ）が署名する中身を表します。どちらか 1 項目でも違えば、別の 32 バイトになります。
 
-赤い ≠ は chainId を例にした印で、verifyingContract などの他の項目でも同じです。keccak256 は Ethereum が使うハッシュ関数で、先頭の `1901` は後の節で説明する接頭辞です。右の枠の中身は、後で扱う permit の例です。
+赤い ≠ は chainId を例にした印で、verifyingContract などの他の項目でも同じです。keccak256 は Ethereum が使うハッシュ関数で、先頭の `1901` は、署名するデータをトランザクションと取り違えないための接頭辞です。右の枠に入っているのは、署名でトークンの利用を承認する permit の例です。
 
 <br>
 
 本記事では、[ERC-20](../erc-20/) の承認（Approve）と [Digital Signature](../digital-signature/) の署名と検証を前提に、次の疑問を順に説明します。
 
 - 署名を求める画面で、なぜ中身を読めないことがあったのか。
-- EIP-712 は何をハッシュに含め、別のチェーンや別のコントラクトでの再利用をどう防ぐのか。
+- EIP-712 は何をハッシュに含め、別のチェーンや別のコントラクトで再利用されるのをどう防ぐのか。
 - トランザクションを送っていないのに、permit の署名 1 つで資産を失うのはなぜか。
 
 途中では、ローカルのチェーンでハッシュを手で計算し、ウォレットの署名とコントラクトの検証が一致することと、署名だけでトークンを移される流れを確認します。秘密鍵を持たないコントラクトのアカウントが署名を示す方法は、[ERC-1271](../erc-1271/) のノートで扱います。
@@ -63,13 +63,13 @@ MetaMask は 2024 年 5 月作成の [MIP-3](https://github.com/MetaMask/metamas
 
 <br>
 
-トランザクションと取り違えないための約束が、[EIP-191](https://eips.ethereum.org/EIPS/eip-191) です。署名するデータを `0x19 ‖ バージョン（1 バイト）‖ バージョンごとのデータ` の形にすると定めました（`‖` はバイト列の連結）。
+トランザクションと取り違えないための決まりが、[EIP-191](https://eips.ethereum.org/EIPS/eip-191) です。署名するデータを `0x19 ‖ バージョン（1 バイト）‖ バージョンごとのデータ` の形にすると定めました（`‖` はバイト列の連結）。
 
-[トランザクション](../ethereum-transaction/)を符号化したバイト列の先頭は、旧来の形なら 0xc0 以上（[RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/) という符号化でのリストの印）、新しい形ならトランザクションの種類を表す番号（[EIP-2718](https://eips.ethereum.org/EIPS/eip-2718)、2026 年 11 月時点で 0x01〜0x04）です。どちらも `0x19` にならないので、この形のデータへの署名は、トランザクションの署名として使えません。
+[トランザクション](../ethereum-transaction/)を符号化したバイト列の先頭は、旧来の形なら 0xc0 以上（[RLP](https://ethereum.org/developers/docs/data-structures-and-encoding/rlp/) という符号化でリストを表す印）、新しい形ならトランザクションの種類を表す番号（[EIP-2718](https://eips.ethereum.org/EIPS/eip-2718)、2026 年 11 月時点で 0x01〜0x04）です。どちらも `0x19` にならないので、この形のデータに対する署名は、トランザクションの署名として使えません。
 
 {{< figure src="images/eip-712_prefix.webp" alt="署名するバイト列の先頭 1 バイトを 0x00 から 0xff の帯で表した図。左端の 0x01〜0x04 が型付きトランザクションの種類、0xc0 から右端が旧来のトランザクション（RLP のリスト）、その間の 0x19 だけが EIP-191（personal_sign・EIP-712）。トランザクションと EIP-191 のデータは先頭の 1 バイトで重ならない" caption="署名するバイト列の先頭 1 バイトの使い分け" align="center" >}}
 
-上記の図の帯は、先頭 1 バイトが取りうる 256 通りの値を左から並べたものです。トランザクションが使う範囲は左端の 4 つと右側の 64 個で、EIP-191 の `0x19` はその間に入ります。
+上記の図で帯は、先頭 1 バイトが取りうる 256 通りの値を左から並べたものです。トランザクションが使う範囲は左端の 4 つと右側の 64 個で、EIP-191 の `0x19` はその間に入ります。
 
 よく使われる `personal_sign` は、この形の 1 つ（バージョン `0x45`）で、メッセージの前に `\x19Ethereum Signed Message:\n` と長さを付けてからハッシュします。文字列なら画面に表示できますが、ハッシュを渡されれば、やはり 16 進の列が並ぶだけです。
 
@@ -79,9 +79,9 @@ MetaMask は 2024 年 5 月作成の [MIP-3](https://github.com/MetaMask/metamas
 | `personal_sign`（EIP-191 のバージョン 0x45） | keccak256(接頭辞 ‖ 長さ ‖ メッセージ) | 文字列。ハッシュを渡されたら 16 進の列 |
 | `eth_signTypedData_v4`（EIP-712） | keccak256(0x19 0x01 ‖ domain separator ‖ hashStruct) | 型と項目名の付いた値 |
 
-表の最後の `_v4` は、MetaMask が付けた実装の版です。[eth-sig-util](https://github.com/MetaMask/eth-sig-util/blob/9e0cdc2be912415e0cc9159b52d26db76ffe99b0/src/sign-typed-data.ts#L50-L60) によると、v3 は配列と再帰的なデータ構造（自分の型を含む構造体など）を扱えず、v4 はそれらも扱えます。
+表で最後の行にある `_v4` は、MetaMask が付けた実装のバージョンです。[eth-sig-util](https://github.com/MetaMask/eth-sig-util/blob/9e0cdc2be912415e0cc9159b52d26db76ffe99b0/src/sign-typed-data.ts#L50-L60) によると、v3 は配列と再帰的なデータ構造（自分の型を含む構造体など）を扱えず、v4 はそれらも扱えます。
 
-以下は、`eth_signTypedData_v4` で署名を求められた時の MetaMask の画面です。後の実験で使う仕様の `Mail` の例（送り主・宛先・本文）で、送り主のアドレスを配列に変えた形です。
+以下は、`eth_signTypedData_v4` で署名を求められた時に MetaMask が出す画面です。後の実験で使う、仕様にある `Mail` の例（送り主・宛先・本文）で、送り主のアドレスを配列に変えた形です。
 
 {{< figure src="images/metamask-signtypeddata.webp" link="https://docs.metamask.io/wallet/how-to/sign-data/" width="360" alt="MetaMask の Signature request の画面。Network は Ethereum、Request from は metamask.github.io、Interacting with は 0xCcCCc…ccccC。Message の欄に Primary type: Mail、Contents: Hello, Bob!、From の Name: Cow と Wallets の 2 つのアドレスが並び、下に Cancel と Confirm のボタンがある" caption="eth_signTypedData_v4 の署名画面（MetaMask）<br>出典：[MetaMask 公式ドキュメント Sign data](https://docs.metamask.io/wallet/how-to/sign-data/)。" align="center" >}}
 
@@ -99,14 +99,14 @@ Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadlin
 
 この型の文字列を `encodeType`、そのハッシュを `typeHash` と呼びます。
 
-値は `encodeData` で、各項目を 32 バイトに揃えて型の順に繋ぎます。アドレスや `uint` は左を 0 で埋め（負の `int` は 2 の補数のまま 32 バイトに広げる）、`string` と `bytes` は中身の keccak256 に置き換えます。別の構造体を含む項目は、その構造体のハッシュに置き換え、`encodeType` の後ろにも、その構造体と、さらにその先で参照する構造体の型の文字列も、名前の順で連結します（例：後の実験 1 の `Mail(…)Person(…)`）。
+値は `encodeData` で、各項目を 32 バイトに揃えて型の順に繋ぎます。アドレスや `uint` は左を 0 で埋め（負の `int` は 2 の補数のまま 32 バイトに広げる）、`string` と `bytes` は中身の keccak256 に置き換えます。別の構造体を含む項目は、その構造体のハッシュに置き換え、`encodeType` の後ろにも、その構造体と、さらにその先で参照する構造体について、型の文字列も名前の順で連結します（例：後の実験 1 の `Mail(…)Person(…)`）。
 
 ```text
 hashStruct(s)   = keccak256(typeHash ‖ encodeData(s))
 digest          = keccak256(0x19 ‖ 0x01 ‖ domainSeparator ‖ hashStruct(message))
 ```
 
-`typeHash` を先頭に入れるので、項目の並びが同じでも、型の名前や項目名が違えば別のハッシュになります。EIP-712 の Rationale は、ERC-20 と [ERC-721](../erc-721/)（NFT の規格）の `transfer(address,uint256)` が、数量と識別子という別の意味の `uint256` を同じ形で持つ例を挙げ、型の意味まで区別する理由にしています。
+`typeHash` を先頭に入れるので、項目の並びが同じでも、型の名前や項目名が違えば別のハッシュになります。EIP-712 の Rationale は、ERC-20 と [ERC-721](../erc-721/)（NFT の規格）の `transfer(address,uint256)` が、数量と識別子という意味の違う `uint256` を同じ形で持つ例を挙げ、型の意味まで区別する理由にしています。
 
 先頭の `0x19 0x01` は、EIP-191 のバージョン `0x01` を表します。トランザクションの署名対象は `0x19` で始まらず、`personal_sign` はバージョン `0x45` なので、3 種類の署名対象が同じバイト列になることはありません。
 
@@ -124,19 +124,19 @@ domain separator は、`EIP712Domain` という型の hashStruct です。項目
 
 `name` と `version` は、アプリが自分で名乗る文字列です。登録制ではないので、別のコントラクトも同じ名前を名乗れます。区別の決め手になるのは `chainId` と `verifyingContract` です。
 
-一方で、[同じドメインの中での再利用](../replay-protection/)は、EIP-712 の範囲外です。仕様の冒頭にも「It does not include replay protection.」（リプレイの防止は含まない）とあります。permit はメッセージに `nonce`（使うたびに増える番号）を入れ、使うたびにコントラクト側の値を 1 増やして、同じ署名の 2 回目を拒否します。期限の `deadline` も、メッセージ側の項目です。
+一方で、同じドメインの中で[署名が再利用されるのを防ぐ](../replay-protection/)ことは、EIP-712 の範囲外です。仕様の冒頭にも「It does not include replay protection.」（リプレイの防止は含まない）とあります。permit はメッセージに `nonce`（使うたびに増える番号）を入れ、使うたびにコントラクト側の値を 1 増やして、同じ署名の 2 回目を拒否します。期限の `deadline` も、メッセージ側の項目です。
 
 ---
 
 ### ローカルでのハッシュと署名の照合
 
-EIP-712 の手順を Python で書き、仕様のテストベクタ（仕様に載っている入力と期待値。送り主・宛先・本文を持つ `Mail` という型の例）、ウォレットの署名、コントラクトの検証の 3 つと突き合わせます。
+EIP-712 の手順を Python で書き、仕様のテストベクタ（仕様に載っている入力と期待値。送り主・宛先・本文を持つ `Mail` という型の例）、ウォレットの署名、コントラクトによる検証の 3 つと突き合わせます。
 
-環境は、開発ツール [Foundry](https://github.com/foundry-rs/foundry) の Anvil（手元だけで動くローカルのノード）を `127.0.0.1` だけで 2 つ起動し、chain ID を 31337 と 31338 にしたものです。秘密鍵は Anvil が既定で作るテスト用のアカウントだけを使います。広く公開されている鍵なので、公開のネットワークでは使えません。ツールの版は [lab/output/versions.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/output/versions.txt) に残しています。
+環境は、開発ツール [Foundry](https://github.com/foundry-rs/foundry) の Anvil（手元だけで動くローカルのノード）を `127.0.0.1` だけで 2 つ起動し、chain ID を 31337 と 31338 にしたものです。秘密鍵は Anvil が既定で作るテスト用のアカウントだけを使います。広く公開されている鍵なので、公開のネットワークでは使えません。ツールのバージョンは [lab/output/versions.txt](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/output/versions.txt) に残しています。
 
 トークンは、[OpenZeppelin Contracts v5.1.0](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/v5.1.0)（MIT ライセンス）の [ERC20Permit](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/token/ERC20/extensions/ERC20Permit.sol) を継承した学習用の `StudyPermitToken` です（監査していません）。
 
-EIP-712 のドメインは `name = "Study Token"`、`version = "1"`、実行中のチェーンの chain ID、トークンのアドレスです。`decimals()` を 0 にして、数量を 1 枚単位の整数で読めるようにしています。
+EIP-712 のドメインは `name = "Study Token"`、`version = "1"`、実行中のチェーンが持つ chain ID、トークンのアドレスです。`decimals()` を 0 にして、数量を 1 枚単位の整数で読めるようにしています。
 
 ```solidity
 contract StudyPermitToken is ERC20, ERC20Permit {
@@ -152,7 +152,7 @@ contract StudyPermitToken is ERC20, ERC20Permit {
 
 <br>
 
-Python 側の中心は、次の 3 つの関数です。keccak256 は標準ライブラリの [`hashlib.sha3_256`](https://docs.python.org/3/library/hashlib.html) では計算できません。[SHA-3 の標準化](https://csrc.nist.gov/pubs/fips/202/final)の際に末尾の埋め方（padding）が変わり、Ethereum は変更前の Keccak を使っているからです。そのため、lab には標準ライブラリだけで書いた [keccak.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/keccak.py) を置いています。
+Python 側の中心は、次の 3 つの関数です。keccak256 は標準ライブラリの [`hashlib.sha3_256`](https://docs.python.org/3/library/hashlib.html) では計算できません。[SHA-3 を標準化した](https://csrc.nist.gov/pubs/fips/202/final)際に末尾の埋め方（padding）が変わり、Ethereum は変更前の Keccak を使っているからです。そのため、lab には標準ライブラリだけで書いた [keccak.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/keccak.py) を置いています。
 
 ```python
 def encode_data(primary, data, types):
@@ -240,15 +240,15 @@ def digest(typed):
 
 <br>
 
-実験は、Anvil の起動とデプロイを含む [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/run.py) で行います。以下の例（run.py の抜粋）では、permit の署名を作り、別の環境に持ち込んでいます。
+実験は、Anvil の起動とデプロイを含む [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/eip-712/lab/run.py) で動かします。以下の例（run.py の抜粋）では、permit の署名を作り、別の環境に持ち込んでいます。
 
-トークンの `permit(owner, spender, value, deadline, v, r, s)` は、owner の署名を検証して、spender が owner のトークンを使える上限を設定する関数です（詳しくは後の permit の節）。`v, r, s` は、65 バイトの署名を次の図のように 3 つに分けたものです。
+トークンの `permit(owner, spender, value, deadline, v, r, s)` は、owner の署名を検証して、spender が owner のトークンを使える上限を設定する関数です（詳しくは permit の節）。`v, r, s` は、65 バイトの署名を次の図のように 3 つに分けたものです。
 
 {{< figure src="images/eip-712_sig.webp" alt="65 バイトの署名が、左から r（32 バイト）、s（32 バイト）、v（1 バイト）の順に並ぶ帯。下に、v は署名から求まる公開鍵の 2 つの候補のどちらかを選ぶと書かれている" caption="65 バイトの署名の並び（r・s・v）" align="center" >}}
 
-ecrecover は、上記の図の r・s・v の 3 つから署名者を復元します。v は、署名から求まる公開鍵の 2 つの候補のどちらを使うかを選ぶ値です。コードの `sig[130:132]` などは、16 進の文字列からこの区切りを切り出しています。
+ecrecover は、上記の図にある r・s・v の 3 つから署名者を復元します。v は、署名から求まる公開鍵の 2 つの候補のどちらを使うかを選ぶ値です。コードの `sig[130:132]` などは、16 進の文字列からこの区切りを切り出しています。
 
-`a` と `b` は chain ID 31337 と 31338 の Anvil、`token_b` は 31338 にデプロイしたトークンです。コントラクトのアドレスはデプロイした側のアドレスとそのトランザクション数で決まるので、同じアカウントの 1 件目のデプロイにすると 31337 のトークンと同じアドレスになります。`token_2` は 31337 にもう 1 つデプロイした同名のトークン、`psig` は permit の関数の型です。
+`a` と `b` は chain ID 31337 と 31338 の Anvil、`token_b` は 31338 にデプロイしたトークンです。コントラクトのアドレスはデプロイした側のアドレスとそのトランザクション数で決まるので、同じアカウントの 1 件目のデプロイにすると 31337 のトークンと同じアドレスになります。`token_2` は 31337 にもう 1 つデプロイした同名のトークン、`psig` は permit 関数の型です。
 
 `permit_typed` は前述の Permit 型と domain を組み立てる関数（spender、value = 100、nonce = 0、期限 1 時間）、`checker` は ecrecover でアドレスを復元する学習用のコントラクト `SigCheck`（監査していません）、`a.call` は [`eth_call`](https://ethereum.org/developers/docs/apis/json-rpc/) （トランザクションを送らずに関数を呼ぶ）で呼び出して、結果か失敗（revert）の理由を返す関数です。
 
@@ -268,7 +268,7 @@ log('same signature, token on 31338', b.call(token_b, psig, *permit_args))
 log('same signature, 2nd token on 31337', a.call(token_2, psig, *permit_args))
 ```
 
-run.py は、コンパイルまで行う次のスクリプトから呼ばれます。
+run.py は、コンパイルも済ませる次のスクリプトから呼ばれます。
 
 ```bash
 bash content/notes/blockchain-systems/eip-712/lab/run.sh
@@ -296,11 +296,11 @@ same signature, token on 31338 | revert ERC2612InvalidSigner(recovered=0x099c16B
 same signature, 2nd token on 31337 | revert ERC2612InvalidSigner(recovered=0x0eEA99498227F3E451059ae4d26d00c98b81f2fB, owner=0x70997970C51812dc3A010C7d01b50e0d17dc79C8)
 ```
 
-1 は、EIP-712 の仕様にある `Mail` の例です。手で計算した 5 つの値は、仕様の [Example.js](https://github.com/ethereum/EIPs/blob/master/assets/eip-712/Example.js) の期待値と一致し、仕様に載っている署名から復元したアドレスも、例の送り主 `0xCD2a…D826` になりました。
+1 は、EIP-712 の仕様にある `Mail` の例です。手で計算した 5 つの値は、仕様に付いた [Example.js](https://github.com/ethereum/EIPs/blob/master/assets/eip-712/Example.js) の期待値と一致し、仕様に載っている署名から復元したアドレスも、例の送り主 `0xCD2a…D826` になりました。
 
 2 では、コントラクトの `DOMAIN_SEPARATOR()` と Python の値が一致し、Python で計算したハッシュから owner のアドレスが復元されました。ウォレット（Anvil）とコントラクトと Python が、同じ 32 バイトを見ていたことになります。
 
-同じ署名を chain ID 31338 の同じアドレスのトークンや、同じ名前の別のトークンに渡すと、どちらも `ERC2612InvalidSigner` で失敗（revert）しました。以下は、1 つの署名を 3 つのトークンに渡した結果をまとめた図です。
+同じ署名を chain ID 31338 の同じアドレスのトークンや、同じ名前を持つ別のトークンに渡すと、どちらも `ERC2612InvalidSigner` で失敗（revert）しました。以下は、1 つの署名を 3 つのトークンに渡した結果をまとめた図です。
 
 {{< figure src="images/eip-712_replay.webp" alt="左の 1 つの署名（owner 0x7099…）から 3 本の矢印が出る。上の青い枠の chain ID 31337 のトークン（署名したドメイン）では owner が復元され、署名者が owner と一致する。下の 2 つの枠、chain ID 31338 の同じアドレスのトークン（chainId が違う）と chain ID 31337 の別のトークン（verifyingContract が違う）では、0x099c… と 0x0eEA… が復元され、灰色の枠からまとめて revert に繋がる" caption="1 つの permit の署名を 3 つのトークンに渡した結果" align="center" >}}
 
@@ -314,7 +314,7 @@ ecrecover(digest, personal_sign) | 0x317EddB3BcF4583bA6C9C7744A4Ded28CAC3DE57
 ecrecover(EIP-191 hash, personal_sign) | 0x70997970C51812dc3A010C7d01b50e0d17dc79C8
 ```
 
-`personal_sign` の署名は、接頭辞を付けたハッシュに対してだけ owner を復元します。permit の検証は接頭辞の無いハッシュで行うので、この署名では承認できません。逆に、接頭辞を付けない `eth_sign` が使えるウォレットでは、16 進の列に署名させるだけで permit が成立していたことになります。
+`personal_sign` の署名は、接頭辞を付けたハッシュに対してだけ owner を復元します。permit は接頭辞の無いハッシュで検証するので、この署名では承認できません。逆に、接頭辞を付けない `eth_sign` が使えるウォレットでは、16 進の列に署名させるだけで permit が成立していたことになります。
 
 ---
 
@@ -369,7 +369,7 @@ flowchart LR
     P -- "4. transferFrom（ユーザーから受取人へ）" --> T
 ```
 
-上記の図の 1 で、ユーザーは Permit2 に自分の残高を動かす権限を渡し、トークンがそれを記録しています。2 以降の許可は署名だけで済むので便利な反面、Permit2 を承認済みのトークンは、Permit2 向けの署名 1 つで動かせる状態になります。次の節の詐欺は、この点も狙います。
+上記の図で 1 の手順では、ユーザーは Permit2 に自分の残高を動かす権限を渡し、トークンがそれを記録しています。2 以降の許可は署名だけで済むので便利な反面、Permit2 を承認済みのトークンは、Permit2 向けの署名 1 つで動かせる状態になります。次の節で見る詐欺は、この点も狙います。
 
 ---
 
@@ -377,13 +377,13 @@ flowchart LR
 
 署名を集める詐欺サイトは、正規のトークンや Permit2 のドメインのまま、spender を攻撃者にした署名を求めます。詐欺の検知サービスを提供する [Scam Sniffer の 2024 年の報告](https://drops.scamsniffer.io/?p=971)では、資産を抜き取る詐欺（wallet drainer）による 2024 年の被害は約 4 億 9,400 万ドルで、大口の被害を署名の種類で分けると、損失額の 56.7% が Permit でした。
 
-2024 年 9 月 28 日、同社は 1 件の [Permit の署名で 12,083 spWETH（約 3,243 万ドル）が失われた](https://x.com/realScamSniffer/status/1839923975184625832)と報告しています。spWETH は、貸借サービス [Spark](https://spark.finance/) に WETH（ETH を ERC-20 の形にしたトークン）を預けると受け取るトークンです。
+2024 年 9 月 28 日、同社は 1 件の [Permit 署名で 12,083 spWETH（約 3,243 万ドル）が失われた](https://x.com/realScamSniffer/status/1839923975184625832)と報告しています。spWETH は、貸借サービス [Spark](https://spark.finance/) に WETH（ETH を ERC-20 の形にしたトークン）を預けると受け取るトークンです。
 
 では、EIP-712 で項目が読めれば、署名の中身も安全なのでしょうか。EIP-712 が保証するのは、画面に出した項目と署名するハッシュが対応することまでです。
 
 {{< figure src="images/eip-712_scam.webp" alt="左の破線の枠が詐欺サイトで、URL は画面に出ても署名には入らないと書かれている。右は署名するメッセージの項目（Permit の例）で、verifyingContract（本物のトークン）と chainId（操作するつもりのチェーン）は黄土色で本物のまま、spender（攻撃者のアドレス）、value（最大値・無制限）、deadline（遠い将来）は赤で差し替えられている" caption="詐欺サイトが求める Permit の項目の例：ドメインは本物のまま" align="center" >}}
 
-上記の図の黄土色の項目は本物のままで、赤の項目だけが攻撃者の都合に変わっています。上記の詐欺でも、ドメインは本物のトークンで、署名も仕様通りに作られていました。署名を求めたサイトの URL は、ウォレットの画面に出ることはあっても、ドメインにもメッセージにも含まれません。`name` は自己申告の文字列なので、攻撃者のコントラクトが有名なトークンと同じ名前を名乗ることもできます。
+上記の図で黄土色の項目は本物のままで、赤の項目だけが攻撃者の都合に変わっています。上記の詐欺でも、ドメインは本物のトークンで、署名も仕様通りに作られていました。署名を求めたサイトの URL は、ウォレットの画面に出ることはあっても、ドメインにもメッセージにも含まれません。`name` は自己申告の文字列なので、攻撃者のコントラクトが有名なトークンと同じ名前を名乗ることもできます。
 
 画面で判断するのは人です。例えば Permit なら、図の 5 つの項目を次のように確認します。
 
@@ -404,7 +404,7 @@ flowchart LR
 
 ### 欠点
 
-- 同じドメインの中の再利用は防がない。nonce や期限はアプリが設計する。
+- 同じドメインの中で再利用されるのは防がない。nonce や期限はアプリが設計する。
 - 署名は相手の手元に残り、所有者は使われる時点を見られない。取り消しにはトランザクションが必要になる。
 - 読めることと安全なことは別で、詐欺は正規のドメインのまま spender だけを差し替える。
-- ecrecover で比べる検証は、秘密鍵を持たないコントラクトのアカウントの署名を受け付けない。その対処は [ERC-1271](../erc-1271/) のノートで説明している。
+- ecrecover で比べる検証は、秘密鍵を持たないコントラクトのアカウントが出す署名を受け付けない。その対処は [ERC-1271](../erc-1271/) のノートで説明している。
