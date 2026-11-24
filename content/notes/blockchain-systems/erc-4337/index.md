@@ -17,13 +17,13 @@ Ethereum のアカウントには、秘密鍵で署名してトランザクシ�
 
 <br>
 
-ERC-4337 では、利用者はトランザクションの代わりに UserOperation という依頼を作ります。Bundler と呼ぶ第三者がそれを集め、自分の EOA から 普通のトランザクション 1 件として送ります。そのトランザクションの宛先は、全てのスマートアカウントが共有する EntryPoint というコントラクトです。
+ERC-4337 では、利用者はトランザクションの代わりに UserOperation という依頼を作ります。Bundler と呼ぶ第三者がそれを集め、自分の EOA から普通のトランザクション 1 件として送ります。そのトランザクションの宛先は、全てのスマートアカウントが共有する EntryPoint というコントラクトです。
 
-UserOperation は、普通のトランザクションとは別の置き場（UserOperation の mempool）で Bundler どうしの間を配られます。EntryPoint は依頼ごとにアカウントの検証と実行を呼び、使った分の手数料は、アカウントか肩代わり役の Paymaster の預け金（deposit）から Bundler に返します。
+UserOperation は、普通のトランザクションとは別の置き場（UserOperation の mempool）で Bundler どうしの間を配られます。EntryPoint は依頼ごとにアカウントの検証と実行を呼び、使った分の手数料は、アカウントか、手数料を肩代わりする Paymaster の預け金（deposit）から Bundler に返します。
 
 {{< figure src="images/erc-4337_concept.webp" alt="上段は破線で囲んだチェーンの外の層で、青い UserOperation のカード（署名の形式は自由）が黄土色の Bundler（EOA・ガス代を払う）に渡る。Bundler から handleOps のトランザクションが下段の灰色の層（チェーンの上、プロトコルは従来のまま）に下り、EntryPoint の中で 1. 検証（使える処理に制限）→ 2. 実行（任意のコード）の順に処理し、スマートアカウントと、使う場合は Paymaster を呼ぶ。EntryPoint から Bundler へ、手数料を ETH で返す破線の矢印が戻る" caption="チェーンの外の UserOperation と、チェーンに載る 1 件のトランザクション" align="center" >}}
 
-上記の図の上段はチェーンの外、灰色の下段はチェーンの上です。下段は従来の Ethereum と何も変わらず、チェーンから見えるのは、Bundler の EOA が EntryPoint の `handleOps` という関数を呼ぶ普通のトランザクションだけです。
+上記の図では、上段がチェーンの外、灰色の下段はチェーンの上です。下段は従来の Ethereum と何も変わらず、チェーンから見えるのは、Bundler の EOA が EntryPoint の `handleOps` という関数を呼ぶ普通のトランザクションだけです。
 
 <br>
 
@@ -50,19 +50,19 @@ EOA のトランザクションは、プロトコルが決めた 1 通りの方�
 | 手数料は送り主が ETH で払う | ETH を持たない新しい利用者は、最初の操作ができない |
 | 1 件のトランザクションで呼べる宛先は 1 つ | トークンの使用許可（`approve`）と交換を 1 回でまとめられない |
 
-アカウント抽象化（account abstraction）は、検証と手数料の払い方をプロトコルの固定の規則から外し、アカウント自身のコードに任せる考え方です。[Wallet](../wallet/) で触れたスマートアカウントや[マルチシグ](../safe-multisig/)は、この考え方をコントラクトで実現しています。ただし冒頭で述べた通り、スマートアカウントは自分ではトランザクションを送れないので、誰かの EOA が呼び出す必要がありました。
+アカウント抽象化（account abstraction）は、検証と手数料の払い方をプロトコルが固定した規則から外し、アカウント自身のコードに任せる考え方です。[Wallet](../wallet/) で触れたスマートアカウントや[マルチシグ](../safe-multisig/)は、この考え方をコントラクトで実現しています。ただし冒頭で述べた通り、スマートアカウントは自分ではトランザクションを送れないので、誰かの EOA が呼び出す必要がありました。
 
 <br>
 
-ERC-4337 は Ethereum のプロトコルを変えた、と思うかもしれません。しかし、仕様の冒頭の要約（Abstract）が述べる通り、ERC-4337 はコンセンサス層（全ノードが守るブロックの規則）の変更を完全に避けています。トランザクションの型を足す代わりに、UserOperation を別の [mempool](../mempool/)（未確定の要求の置き場）で配り、EntryPoint というコントラクトで処理します。
+ERC-4337 は Ethereum のプロトコルを変えた、と思うかもしれません。しかし、仕様が冒頭の要約（Abstract）で述べる通り、ERC-4337 はコンセンサス層（全ノードが守るブロックの規則）の変更を完全に避けています。トランザクションの型を足す代わりに、UserOperation を別の [mempool](../mempool/)（未確定の要求を置いておく場所）で配り、EntryPoint というコントラクトで処理します。
 
-EIP（Ethereum Improvement Proposal）は Ethereum の改善提案の総称で、ERC はそのうちアプリケーション層の規格の分類です。ERC-4337 は 2021 年 9 月に提案され、2026 年 6 月に Final（確定）になりました（[ethereum/ERCs の変更履歴](https://github.com/ethereum/ERCs/commits/master/ERCS/erc-4337.md)）。
+EIP（Ethereum Improvement Proposal）は Ethereum の改善提案を指す総称で、ERC はそのうちアプリケーション層の規格を指す分類です。ERC-4337 は 2021 年 9 月に提案され、2026 年 6 月に Final（確定）になりました（[ethereum/ERCs の変更履歴](https://github.com/ethereum/ERCs/commits/master/ERCS/erc-4337.md)）。
 
 ---
 
 ### UserOperation と部品
 
-UserOperation は、アカウントにさせたい操作を表す構造体です。トランザクションに似た項目（送り主・nonce・呼び出しデータの `callData`・手数料の上限・署名）に加えて、アカウントを作るための `initCode` や、手数料を肩代わりする Paymaster の指定を持ちます。`signature` の中身はプロトコルではなく、アカウントのコードが解釈します。コントラクトのアカウントの署名を他のコントラクトが確認する一般的な方法は、[ERC-1271](../erc-1271/) で説明しています。
+UserOperation は、アカウントにさせたい操作を表す構造体です。トランザクションに似た項目（送り主・nonce・呼び出しデータの `callData`・手数料の上限・署名）に加えて、アカウントを作るための `initCode` や、手数料を肩代わりする Paymaster の指定を持ちます。`signature` の中身はプロトコルではなく、アカウントのコードが解釈します。コントラクトで作ったアカウントの署名を他のコントラクトが確認する一般的な方法は、[ERC-1271](../erc-1271/) で説明しています。
 
 UserOperation を受け取ってからチェーンに載るまでには、次の部品が関わります。
 
@@ -93,13 +93,13 @@ sequenceDiagram
     E->>B: deposit から手数料を払う
 ```
 
-上記の図の `eth_sendUserOperation` は、Bundler が受け付ける JSON-RPC のメソッドです。ウォレットが Bundler に渡すのはトランザクションではありません。チェーンに載るトランザクションの送り主は Bundler で、UserOperation はその呼び出しデータの中に入ります。
+上記の図にある `eth_sendUserOperation` は、Bundler が受け付ける JSON-RPC のメソッドです。ウォレットが Bundler に渡すのはトランザクションではありません。チェーンに載るトランザクションの送り主は Bundler で、UserOperation はその呼び出しデータの中に入ります。
 
 ---
 
 ### 検証と実行の分離
 
-EntryPoint の `handleOps` は、ループを 2 回回します。1 回目は全ての UserOperation の検証で、必要ならアカウントを作り、`validateUserOp` を呼び、手数料の前払いを受け取ります。2 回目で、検証を通った UserOperation の `callData` を実行します。
+EntryPoint の `handleOps` は、ループを 2 回回します。1 回目は全ての UserOperation を検証する回で、必要ならアカウントを作り、`validateUserOp` を呼び、手数料の前払いを受け取ります。2 回目で、検証を通った UserOperation の `callData` を実行します。
 
 {{< figure src="images/erc-4337_loops.webp" alt="EntryPoint の handleOps（Bundler が送る 1 件のトランザクション）。見出しの下に、検証は全て、どの実行よりも前に終わる（実行で他の検証の結果が変わらない）とある。左の青い枠「1 回目のループ：検証」（アカウントの作成・署名の確認・前払い）と右の緑の枠「2 回目のループ：実行」（callData を実行）が並び、それぞれに UserOperation 1〜3 の箱がある。全て通ったら左から右へ進む。左の枠から赤い矢印が下に伸び、1 件でも検証に失敗すると handleOps 全体が取り消し（FailedOp など）、前払いも戻り、ガス代は Bundler の損とある。右の枠の下には、実行が失敗しても使ったガスの手数料はアカウントか Paymaster が払うとある" caption="handleOps の 2 つのループと、失敗した時に損をする側" align="center" >}}
 
@@ -111,7 +111,7 @@ EntryPoint の `handleOps` は、ループを 2 回回します。1 回目は全
 
 損を避けるため、Bundler は送る前に検証を手元でシミュレーションし、通ったものだけを載せます。しかし、検証のコードがブロックの時刻（`block.timestamp`）のような値や、多数のアカウントが共通に読む値を使うと、シミュレーションで通った検証がブロックの中では失敗し得ます。これを悪用すれば、Bundler に手数料を損させ続けられます。
 
-そこで [ERC-7562](https://eips.ethereum.org/EIPS/eip-7562) が、検証の段階で使える命令と読める値を制限しています（2026 年 11 月時点の仕様の状態は意見募集中の Review）。制限が掛かるのは検証だけで、実行の段階では任意のコードが動きます。規則の中身と、それが防ぐ攻撃の流れは [ERC-7562](../erc-7562/) のノートで説明します。
+そこで [ERC-7562](https://eips.ethereum.org/EIPS/eip-7562) が、検証の段階で使える命令と読める値を制限しています（2026 年 11 月時点で、仕様の状態は意見募集中の Review）。制限が掛かるのは検証だけで、実行の段階では任意のコードが動きます。規則の中身と、それが防ぐ攻撃の流れは [ERC-7562](../erc-7562/) のノートで説明します。
 
 ---
 
@@ -123,7 +123,7 @@ Bundler の負担は、EntryPoint が後で返します。EntryPoint は、ア�
 
 {{< figure src="images/erc-4337_payflow.webp" alt="左にアカウントの残高（ETH）と Paymaster の箱。アカウントの残高から、検証の中で不足分を前払いする矢印が EntryPoint の中のアカウントの deposit へ伸びる。Paymaster から前もって預ける矢印が Paymaster の deposit へ伸びる。2 つの deposit から黄土色の矢印が右の Bundler（beneficiary）へ伸び、実際に使った分を払う、余りは deposit に残るとある。下に、Paymaster を指定した UserOperation は Paymaster の deposit から払うとある" caption="手数料の ETH の出どころと行き先" align="center" >}}
 
-上記の図の左上の前払いは、検証の時点で、使い得る最大の手数料に deposit が足りない分です。アカウントは `validateUserOp` の中で、その分の ETH を EntryPoint に送ります。払う側は次のどちらかです。
+上記の図で左上にある前払いは、検証の時点で、使い得る最大の手数料に deposit が足りない分です。アカウントは `validateUserOp` の中で、その分の ETH を EntryPoint に送ります。払う側は次のどちらかです。
 
 | UserOperation の指定 | 手数料を払う主体 |
 | --- | --- |
@@ -146,13 +146,13 @@ EntryPoint が測れないガスもあります。どのトランザクション
 address = keccak256(0xff ‖ factory ‖ salt ‖ keccak256(creationCode))[12:]
 ```
 
-`‖` はバイト列の連結、`salt` は作る側が選ぶ任意の 32 バイトの値、`[12:]` は 32 バイトのハッシュの末尾 20 バイトをアドレスとして取る操作です。
+`‖` はバイト列の連結、`salt` は作る側が選ぶ任意の 32 バイトの値、`[12:]` は 32 バイトあるハッシュの末尾 20 バイトをアドレスとして取る操作です。
 
-`creationCode` は、作るコントラクトの生成用のコードです。実験で使う SimpleAccountFactory では、アカウントの初期化に渡す所有者のアドレスもここに入ります。そのため、別の人が先回りして同じアドレスにアカウントを作っても、所有者を自分に変えることはできません。仕様も、アドレスが最初の署名者に依存することが重要だと述べています。
+`creationCode` は、作るコントラクトを生成するコードです。実験で使う SimpleAccountFactory では、アカウントの初期化に渡す所有者のアドレスもここに入ります。そのため、別の人が先回りして同じアドレスにアカウントを作っても、所有者を自分に変えることはできません。仕様も、アドレスが最初の署名者に依存することが重要だと述べています。
 
 <br>
 
-ウォレットはこのアドレスを先に利用者に見せ、ETH やトークンを受け取れるようにします。アドレスに残高はあっても、まだコードはありません。最初の UserOperation の `initCode` に Factory のアドレスと `createAccount` の呼び出しを入れておくと、EntryPoint は検証の前にアカウントを作ります。
+ウォレットはこのアドレスを先に利用者に見せ、ETH やトークンを受け取れるようにします。アドレスに残高はあっても、まだコードはありません。最初の UserOperation で `initCode` に Factory のアドレスと `createAccount` の呼び出しを入れておくと、EntryPoint は検証の前にアカウントを作ります。
 
 <br>
 
@@ -169,7 +169,7 @@ address = keccak256(0xff ‖ factory ‖ salt ‖ keccak256(creationCode))[12:]
 
 ### ローカルでの UserOperation 実験
 
-実験では、[Foundry](https://github.com/foundry-rs/foundry)（Ethereum の開発ツール群）のローカル開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) の上で、ERC-4337 の参照実装 [eth-infinitism/account-abstraction](https://github.com/eth-infinitism/account-abstraction/tree/v0.9.0) の 4 つのコントラクトを使います。EntryPoint、所有者 1 人の署名で動く最小のスマートアカウントの [SimpleAccount](https://github.com/eth-infinitism/account-abstraction/blob/v0.9.0/contracts/accounts/SimpleAccount.sol)、その Factory、無条件に手数料を払う試験用の Paymaster です。
+実験では、[Foundry](https://github.com/foundry-rs/foundry)（Ethereum の開発ツール群）のローカル開発用ノード [Anvil](https://getfoundry.sh/anvil/overview) の上で、ERC-4337 の参照実装 [eth-infinitism/account-abstraction](https://github.com/eth-infinitism/account-abstraction/tree/v0.9.0) の 4 つのコントラクトを使います。EntryPoint、所有者 1 人の署名で動く最小のスマートアカウントである [SimpleAccount](https://github.com/eth-infinitism/account-abstraction/blob/v0.9.0/contracts/accounts/SimpleAccount.sol)、その Factory、無条件に手数料を払う試験用の Paymaster です。
 
 Bundler のソフトウェアと UserOperation の mempool は使いません。スクリプトが UserOperation を組み立て、テスト用の EOA から `handleOps` を直接呼んで Bundler の役を代わります。鍵は Anvil の公開されたテスト用のニーモニック（鍵を作る元になる単語列）から作ったものだけで、所有者の鍵には ETH を一度も入れません。
 
@@ -178,7 +178,7 @@ Bundler のソフトウェアと UserOperation の mempool は使いません。
 <details>
 <summary>実験の環境とライセンス</summary>
 
-| 部品 | 版と補足 |
+| 部品 | バージョンと補足 |
 | --- | --- |
 | Anvil・[`cast`](https://getfoundry.sh/cast/overview)（Foundry） | 1.7.1。実行規則は Prague |
 | コンパイラ | [solc 0.8.28](https://github.com/argotorg/solidity/releases/tag/v0.8.28)。設定はリポジトリの [Hardhat](https://hardhat.org/) の設定に合わせる |
@@ -193,9 +193,9 @@ Bundler のソフトウェアと UserOperation の mempool は使いません。
 
 <br>
 
-以下は、UserOperation を作って署名し、`handleOps` を送る部分の抜粋です。`cast` は Foundry の CLI、`call` は読み取りの呼び出し、`send` はトランザクションの送信、`entry_point` と `sender` はデプロイ済みの EntryPoint と、作る前のアカウントのアドレスです。
+以下は、UserOperation を作って署名し、`handleOps` を送る部分の抜粋です。`cast` は Foundry の CLI、`call` は読み取りの呼び出し、`send` はトランザクションの送信、`entry_point` と `sender` はデプロイ済みの EntryPoint と、これから作るアカウントのアドレスです。
 
-`u128x2` は 2 つの値を 32 バイトに詰める補助関数で、v0.7 以降の EntryPoint（版の違いは付録）はガスの上限 2 つと手数料の単価 2 つをこの形で受け取ります。`OP_TYPE` と `op_tuple` は構造体の型と値を `cast` に渡す文字列、`handle_ops` は `handleOps` の呼び出しデータを作る関数、`o` は送る UserOperation です。
+`u128x2` は 2 つの値を 32 バイトに詰める補助関数で、v0.7 以降の EntryPoint（バージョンの違いは付録）はガスの上限 2 つと手数料の単価 2 つをこの形で受け取ります。`OP_TYPE` と `op_tuple` は構造体の型と値を `cast` に渡す文字列、`handle_ops` は `handleOps` の呼び出しデータを作る関数、`o` は送る UserOperation です。
 
 ```python
 def user_op(nonce, to, init=b'', pm='0x'):
@@ -524,7 +524,7 @@ Assertions: PASS
 
 <br>
 
-1 段目では、作る前のアカウントのアドレスを 3 通りで計算しています。`CREATE2` の式、Factory の `getAddress`、EntryPoint の `getSenderAddress` です。3 つは一致し、そのアドレスはコードが空のまま 0.1 ETH を受け取りました。
+1 段目では、これから作るアカウントのアドレスを 3 通りで計算しています。`CREATE2` の式、Factory の `getAddress`、EntryPoint の `getSenderAddress` です。3 つは一致し、そのアドレスはコードが空のまま 0.1 ETH を受け取りました。
 
 ```text
 CREATE2 formula      : 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
@@ -533,7 +533,7 @@ getSenderAddress     : 0xD34A413E5659cCDc5f14B5DDb5e8c3C232E4EA21
 code before          : 0x  balance: 0.1 ETH
 ```
 
-2 段目は、署名した後に送金額を 0.01 ETH から 1 ETH に書き換えた場合と、所有者以外の鍵で署名した場合です。どちらもチェーンには送らず、`handleOps` を `eth_call`（トランザクションを出さずに実行だけを試す呼び出し）で試しています。どちらも検証で `AA24 signature error` になり、アカウントは作られません。ちなみに、`AA2` で始まるコードはアカウントの検証での失敗を表します。
+2 段目は、署名した後に送金額を 0.01 ETH から 1 ETH に書き換えた場合と、所有者以外の鍵で署名した場合です。どちらもチェーンには送らず、`handleOps` を `eth_call`（トランザクションを出さずに実行だけを試す呼び出し）で試しています。どちらも検証で `AA24 signature error` になり、アカウントは作られません。ちなみに、`AA2` で始まるコードはアカウントの検証で失敗したことを表します。
 
 ```text
 value changed after signing : FailedOp(0, "AA24 signature error")
@@ -546,25 +546,25 @@ signed by another key       : FailedOp(0, "AA24 signature error")
 
 op1 の後、同じアドレスに 141 バイトのコード（OpenZeppelin の [ERC1967Proxy](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/proxy/ERC1967/ERC1967Proxy.sol)）が置かれました。SimpleAccount の本体は Factory が作った別のアドレスにあり、アカウントのアドレスにあるのは、処理を本体に委ねる[プロキシ](../upgradeable-proxy/)です。
 
-3 段目の結果では、所有者の EOA の残高は全ての行で 0 のままです。op1 と op2 では、アカウントの残高と deposit の合計が、送金額に加えて手数料（op1 は、`preVerificationGas` を含めて UserOperation に請求された 298,816 gas × 2 gwei = 597,632 gwei）だけ減りました。op3 では、アカウントは送金額しか減らず、手数料は Paymaster の deposit から引かれています。
+3 段目の結果では、所有者の EOA は、全ての行で残高が 0 のままです。op1 と op2 では、アカウントの残高と deposit の合計が、送金額に加えて手数料（op1 は、`preVerificationGas` を含めて UserOperation に請求された 298,816 gas × 2 gwei = 597,632 gwei）だけ減りました。op3 では、アカウントは送金額しか減らず、手数料は Paymaster の deposit から引かれています。
 
-以下は、3 段目の UserOperation の手数料と、Bundler 自身が払ったトランザクションのガス代を並べたグラフです。手数料の棒は、払った主体で色を分けています。
+以下は、3 段目で送った UserOperation の手数料と、Bundler 自身が払ったトランザクションのガス代を並べたグラフです。手数料の棒は、払った主体で色を分けています。
 
 {{< figure src="images/erc-4337_fees.webp" alt="op1・op2・op3 の 3 組の横棒。上の棒は UserOperation の手数料で、op1 は 597,632、op2 は 248,598 で青（アカウントが払う）、op3 は 241,398 で黄土色（Paymaster が払う）。下の灰色の棒は Bundler 自身のトランザクションのガス代で、585,516・234,634・228,528。単位は gwei" caption="op1〜op3 の手数料の出どころと Bundler の出費（gwei）" align="center" >}}
 
-上の棒の額は、そのまま EntryPoint が Bundler に払った額です。どの行も、Bundler は自分が送るトランザクションのガス代（図の灰色の棒）を ETH で払い、それより 12,000〜14,000 gwei ほど多い額を受け取っています。差額は、実験で `preVerificationGas` に置いた 50,000 が、EntryPoint の測れない部分より大きかったからです。
+上の棒が示す額は、そのまま EntryPoint が Bundler に払った額です。どの行も、Bundler は自分が送るトランザクションのガス代（図では灰色の棒）を ETH で払い、それより 12,000〜14,000 gwei ほど多い額を受け取っています。差額は、実験で `preVerificationGas` に置いた 50,000 が、EntryPoint の測れない部分より大きかったからです。
 
 以下は、4 段目のガスを処理ごとに分けたグラフです。
 
 {{< figure src="images/erc-4337_gas.webp" alt="トランザクションのガスを横棒で比べた図。op1（作成・自分で払う）は 292,758 で、アカウントの作成が 141,089 を占める。op2（自分で払う）は 117,317、op3（Paymaster）は 114,264 で、どちらも検証・実行・EntryPoint などの残りに分かれる。EOA の送金は 21,000" caption="トランザクション 1 件に掛かるガスの内訳と、EOA の送金との比較" align="center" >}}
 
-作成を含まない op2 でも、EOA の送金の約 5.6 倍、op3 で約 5.4 倍です。実行の 35,768 には、使われていないアドレスに ETH を送る `CALL`（別のアドレスを呼ぶ命令）の追加分 25,000 が含まれます。EOA がトランザクションで同じ送金をする時には、この追加分は掛かりません。op3 の検証が op2 より軽いのは、アカウントが EntryPoint に前払いの ETH を送らないからです。
+作成を含まない op2 でも、EOA で送金する場合の約 5.6 倍、op3 で約 5.4 倍です。実行の 35,768 には、使われていないアドレスに ETH を送る `CALL`（別のアドレスを呼ぶ命令）の追加分 25,000 が含まれます。EOA がトランザクションで同じ送金をする時には、この追加分は掛かりません。op3 の検証が op2 より軽いのは、アカウントが EntryPoint に前払いの ETH を送らないからです。
 
 ---
 
 ### EIP-7702 との関係
 
-[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) は、EOA にコントラクトのコードを委任する仕組みです。2025 年 5 月 7 日に、Pectra という名前の Ethereum の[プロトコルの更新](../ethereum-hard-forks/)（[Ethereum Foundation の告知](https://blog.ethereum.org/2025/04/23/pectra-mainnet)）で有効になりました。委任の書き方と nonce の扱いは [Ethereum Account Model](../ethereum-account-model/) で説明しています。ERC-4337 とは競合せず、次のように組み合わせて使います。
+[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) は、EOA にコントラクトのコードを委任する仕組みです。2025 年 5 月 7 日に、Ethereum が Pectra という名前で[プロトコルを更新](../ethereum-hard-forks/)した時（[Ethereum Foundation の告知](https://blog.ethereum.org/2025/04/23/pectra-mainnet)）に有効になりました。委任の書き方と nonce の扱いは [Ethereum Account Model](../ethereum-account-model/) で説明しています。ERC-4337 とは競合せず、次のように組み合わせて使います。
 
 | | ERC-4337 だけ | EIP-7702 で委任した EOA |
 | --- | --- | --- |
@@ -582,7 +582,7 @@ Bundler は、UserOperation に付いた委任の承認（委任を許す EOA �
 
 - プロトコルを変えずに、署名の方式・複数人の承認・鍵の差し替えをアカウントごとに決められる
 - Paymaster で、ETH を持たない利用者の手数料を肩代わりできる
-- アドレスを先に配り、最初の操作の時にアカウントを作れる
+- アドレスを先に配り、最初に操作する時にアカウントを作れる
 - 検証の規則を守る限り、誰でも Bundler になれる
 
 ---
@@ -592,21 +592,21 @@ Bundler は、UserOperation に付いた委任の承認（委任を許す EOA �
 - 同じ送金でも、EOA より多くのガスを使う（実験では作成なしで約 5.4〜5.6 倍）
 - Bundler・mempool・Paymaster という、トランザクションの外にある仕組みに頼る
 - 全てのアカウントが EntryPoint を信頼するので、EntryPoint の欠陥が全体に及ぶ
-- 検証のコードに ERC-7562 の制限が掛かる。ブロックの時刻は直接読めず、有効期間を EntryPoint に返す形でしか条件にできない（詳細は ERC-7562 のノート）。他のコントラクトの状態を広く読むには、ETH をステーク（stake）として預ける必要がある
+- 検証のコードに ERC-7562 の制限が掛かる。ブロックの時刻は直接読めず、有効期間を EntryPoint に返す形でしか条件にできない（詳細は ERC-7562 のノート）。他のコントラクトが持つ状態を広く読むには、ETH をステーク（stake）として預ける必要がある
 
 ---
 
 ### 適さないケース
 
 - 1 つの鍵で ETH を送るだけで、承認の方式も手数料の肩代わりも使わない場合。EOA の方が安く済む
-- 既存の EOA のアドレスを変えずに機能を足したい場合。EIP-7702 の委任を先に検討する
-- 検証に外部の価格など、他のコントラクトの変わりやすい状態を使いたい場合。検証ではなく実行の段階で確認する設計にする
+- 既存の EOA で、アドレスを変えずに機能を足したい場合。EIP-7702 の委任を先に検討する
+- 検証に外部の価格など、他のコントラクトが持つ変わりやすい状態を使いたい場合。検証ではなく実行の段階で確認する設計にする
 
 ---
 
-### 付録: EntryPoint の版
+### 付録: EntryPoint のバージョン
 
-アカウントは信頼する EntryPoint のアドレスをコードに持つので（SimpleAccount では `immutable`）、EntryPoint の版を変えるにはアカウントの更新が必要です。本記事の実験は v0.9.0 を使っています。
+アカウントは信頼する EntryPoint のアドレスをコードに持つので（SimpleAccount では `immutable`）、EntryPoint のバージョンを変えるにはアカウントの更新が必要です。本記事の実験は v0.9.0 を使っています。
 
 <br>
 
