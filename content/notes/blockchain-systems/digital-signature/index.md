@@ -39,7 +39,7 @@ crossTopics:
 
 Bitcoin のトランザクションは、誰でも作ってネットワークに流せます。出力に「持ち主だけが使える」という制限を掛けるには、持ち主であることの証明をトランザクションに含める必要があります。単純な案は、出力を作る時に合言葉を決めておき、使う時にその合言葉を添える方式です。
 
-この案は、検証者が世界中に居る環境では成立しません。合言葉を添えたトランザクションはネットワーク全体に転送されるので、検証した参加者の全員が合言葉を知ります。合言葉は使い回せるので、見た人は同じ合言葉で守られた Alice の別のコインを奪うトランザクションを作れます。以下は、合言葉方式が壊れる流れです。
+この案は、検証者が世界中に居る環境では成立しません。合言葉を添えたトランザクションはネットワーク全体に転送されるので、検証した参加者の全員が合言葉を知ります。合言葉は使い回せるので、見た人は同じ合言葉で守られた、Alice が持つ別のコインを奪うトランザクションを作れます。以下は、合言葉方式が壊れる流れです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -54,7 +54,7 @@ sequenceDiagram
     Note over N: 正しい合言葉なので<br/>見分けられない
 ```
 
-上記の図の問題は、証明そのものが再利用できる点にあります。
+上記の図で起きている問題は、証明そのものが再利用できる点にあります。
 
 合言葉のハッシュ値（原文に戻せない要約）を出力に置き、使う時に原文を見せる改良も考えられます。この改良は事前に合言葉を隠せるものの、使う瞬間には原文が公開されます。トランザクションは[ブロックに入るまで確定しない](../mempool/)ので、その間に公開された原文を流用し、宛先を自分宛に書き換えた別のトランザクションを割り込ませる余地が残ります。
 
@@ -81,7 +81,7 @@ flowchart LR
 
 秘密鍵から公開鍵を計算するのは一瞬です。一方で、公開鍵から秘密鍵を求める問題は楕円曲線離散対数問題（Elliptic Curve Discrete Logarithm Problem、ECDLP）と呼ばれ、現実的な計算量では解けないと考えられています。逆向きが困難という見た目は [Hash Function](../hash-function/) の一方向性と似ているものの、根拠になっている問題は別です。
 
-上記の図の最後の段が、[UTXO](../utxo/) で触れた「アドレスは条件を組み立てるための情報を符号化した文字列」の中身です。アドレスの種類によっては、公開鍵をハッシュ関数で短縮した値がアドレスの材料になります。
+上記の図で最後の段が、[UTXO](../utxo/) で触れた「アドレスは条件を組み立てるための情報を符号化した文字列」の中身です。アドレスの種類によっては、公開鍵をハッシュ関数で短縮した値がアドレスの材料になります。
 
 鍵ペアは誰の許可も無しに手元で作れます。銀行口座の開設のような登録の手続きは無く、乱数から秘密鍵を作った瞬間に、対応するアドレス宛のコインを受け取る準備が整います。1 人 1 個という決まりも無く、[ウォレット](../wallet/)は多数の鍵ペアを内部で管理します。
 
@@ -106,7 +106,7 @@ sequenceDiagram
     Note over S,V: 合格なら、秘密鍵の<br/>持ち主がこのメッセージを<br/>承認したと分かる
 ```
 
-上記の図の検証が合格した時に分かるのは、「対応する秘密鍵の持ち主がこのメッセージに署名した」ことと、「メッセージが署名の後に書き換えられていない」ことの 2 つです。メッセージを 1 バイトでも書き換えるとハッシュ値が変わり、署名との対応が取れずに不合格になります。トランザクションの文脈では、この 2 つが「出力の持ち主が、この内容のトランザクションを承認した」ことの検証になります。
+上記の図で検証が合格した時に分かるのは、「対応する秘密鍵の持ち主がこのメッセージに署名した」ことと、「メッセージが署名の後に書き換えられていない」ことの 2 つです。メッセージを 1 バイトでも書き換えるとハッシュ値が変わり、署名との対応が取れずに不合格になります。トランザクションの文脈では、この 2 つが「出力の持ち主が、この内容のトランザクションを承認した」ことの検証になります。
 
 冒頭の合言葉は何に添えても同じ文字列なので、見た人が再利用できました。署名はメッセージごとに別の値になり、公開しても、別のメッセージに対する署名を作る材料にはなりません。
 
@@ -118,7 +118,7 @@ sequenceDiagram
 
 ### メッセージを変えた時の検証結果
 
-署名した後に金額を変えると、本当に検証が落ちるのかを確認します。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式。[FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final) で規格化）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。
+署名した後に金額を変えると、本当に検証が失敗するのかを確認します。Python の [cryptography](https://cryptography.io/en/50.0.0/hazmat/primitives/asymmetric/ec/) を使い、`pay Bob 10` という文字列に ECDSA（Elliptic Curve Digital Signature Algorithm、楕円曲線を使うデジタル署名方式。[FIPS 186-5](https://csrc.nist.gov/pubs/fips/186-5/final) で規格化）で署名します。曲線は Bitcoin でも使う secp256k1、メッセージのハッシュ関数は [SHA-256](/notes/security/sha-256/) です。
 
 これは署名の性質を確認する実験で、Bitcoin のトランザクション形式や署名対象の組み立てを再現するものではありません。
 
@@ -167,7 +167,7 @@ Path(__file__).with_name('versions.txt').write_text(f'cryptography {cryptography
 print(output, end='')
 ```
 
-`verify` は成功すれば通常どおり戻り、署名が一致しなければ `InvalidSignature` という例外になります。公開鍵やメッセージを変え、同じ検証を行います。実行前に、最後の「同じメッセージをもう一度検証する」ケースがどうなるかも考えてみてください。
+`verify` は成功すれば通常どおり戻り、署名が一致しなければ `InvalidSignature` という例外になります。公開鍵やメッセージを変え、同じ方法で検証します。実行前に、最後の「同じメッセージをもう一度検証する」ケースがどうなるかも考えてみてください。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -198,7 +198,7 @@ same message replayed: VALID
 Assertions: PASS
 ```
 
-元の文字列は検証を通り、1 バイトだけ変えた `pay Bob 90` と、別の公開鍵での検証は失敗しました。署名を公開しても、金額を変更したメッセージの承認としては使えません。
+元の文字列は検証を通り、1 バイトだけ変えた `pay Bob 90` と、別の公開鍵で検証した場合は失敗しました。署名を公開しても、金額を変更したメッセージの承認としては使えません。
 
 一方で、元のメッセージと署名をもう一度渡すと、再び成功します。署名の検証は、そのメッセージを以前に処理したかどうかを記憶しません。[支払いの二重実行を防ぐ](../replay-protection/)には、Bitcoin なら参照先の [UTXO](../utxo/) が未使用かを確認し、[Ethereum](https://ethereum.org/) なら [nonce](../ethereum-account-model/) を確認するなど、状態に基づく検査も必要です。
 
@@ -208,7 +208,7 @@ Assertions: PASS
 
 Bitcoin の署名に使われる ECDSA の計算には、楕円曲線を使います。ECDSA は、署名ごとに使う秘密の値（nonce）を混ぜて計算します。[乱数](/notes/security/random-number/)から生成する方法に加え、秘密鍵とメッセージから決定的に導出する方法（[RFC 6979](https://www.rfc-editor.org/rfc/rfc6979)）もあります。この nonce は、Ethereum のトランザクションに付ける通し番号とは別物です。
 
-楕円曲線には複数の規格があり、Bitcoin は [secp256k1](https://www.secg.org/sec2-v2.pdf)（SEC 2 で定義）という曲線を使います。秘密鍵は 256 ビットの整数で、この曲線の上の演算で公開鍵を導出します。
+楕円曲線には複数の規格があり、Bitcoin は [secp256k1](https://www.secg.org/sec2-v2.pdf)（SEC 2 で定義）という曲線を使います。秘密鍵は 256 ビットの整数で、この曲線上の演算で公開鍵を導出します。
 
 <br>
 
@@ -233,7 +233,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の検証者は、入力の公開鍵をハッシュして出力の値と一致することと、署名がその公開鍵での検証に合格することの 2 つを確認します。条件の書き方の仕組みは [Bitcoin Script](../bitcoin-script/) で扱います。
+上記の図で検証者は、入力の公開鍵をハッシュして出力の値と一致することと、署名がその公開鍵での検証に合格することの 2 つを確認します。条件の書き方の仕組みは [Bitcoin Script](../bitcoin-script/) で扱います。
 
 署名の対象には、署名自身を含められません。署名を計算する時点で、その値はまだ存在しないからです。Bitcoin では、決められた規則に従って、トランザクションの一部と、使用する出力の情報から署名対象のハッシュ値を組み立てます。
 
@@ -245,7 +245,7 @@ flowchart LR
 
 <br>
 
-1 つのメッセージに対する正しい署名は、1 通りではありません。ECDSA の署名は 2 つの数の組で、秘密鍵を知らない第三者でも、片方の数を置き換えて別の有効な署名に作り替えられます。
+1 つのメッセージに対する正しい署名は、1 通りではありません。ECDSA の署名は 2 つの数からなり、秘密鍵を知らない第三者でも、片方の数を置き換えて別の有効な署名に作り替えられます。
 
 署名の値だけが変わっても検証は合格し続けるため、署名を含めて txid を計算すると、トランザクションの内容が同じまま識別子だけが変わります。[Bitcoin Merkle Tree](../bitcoin-merkle-tree/) で説明した transaction malleability の一因がこれで、witness が txid の計算から外されている背景になっています。
 
@@ -281,4 +281,4 @@ flowchart LR
 
 壊れていたのは ECDSA でも Bitcoin でもなく、署名のたびに乱数を渡す Android の部品です。
 
-更新版のウォレットは、乱数を別の経路から読んで新しい鍵を作り、古い鍵の UTXO を新しい鍵宛に自動で送り直す作りでした。Android で作った鍵は全て危険と[告知](https://bitcoin.org/en/alert/2013-08-11-android)され、古いアドレスを知る相手には新しいアドレスを伝え直すよう求められました。
+更新版のウォレットは、乱数を別の経路から取得して新しい鍵を作り、古い鍵の UTXO を新しい鍵宛に自動で送り直す作りでした。Android で作った鍵は全て危険と[告知](https://bitcoin.org/en/alert/2013-08-11-android)され、古いアドレスを知る相手には新しいアドレスを伝え直すよう求められました。
