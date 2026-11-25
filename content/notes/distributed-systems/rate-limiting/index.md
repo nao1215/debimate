@@ -66,7 +66,7 @@ Stripe は、ブログの [Scaling your API with rate limiters](https://stripe.c
 
 式は、前の 1 分の 42 件が枠の中に均等に並んでいたとみなし、直近 60 秒に重なる 45 秒分だけを数えています。
 
-同じブログは、27 万の送信元からの 4 億件の要求で、誤って通した・断った要求が 0.003%、推定と実際の速さの差が平均 6% だったとしています。
+同じブログによると、27 万の送信元からの 4 億件の要求で、誤って通した・断った要求が 0.003%、推定と実際の速さの差が平均 6% でした。
 
 一方で、同じブログは式の前提として「This algorithm assumes a constant rate of requests during the previous sampling period.」（このアルゴリズムは、前の枠の間、要求が一定の速さで届いたと仮定している）と断っています。
 
@@ -236,7 +236,7 @@ Retry-After は、[RFC 9110 の 10.2.3 節](https://www.rfc-editor.org/rfc/rfc91
 
 -11 は、方針を示す `RateLimit-Policy`（上限 `q` とウィンドウの秒数 `w`）と、今の状態を示す `RateLimit`（残り `r` と、割り当てが元に戻るまでの秒数 `t`）の 2 つのヘッダーを定めています。
 
-draft は「This specification does not mandate a specific throttling algorithm.」（本仕様は特定の制限のアルゴリズムを定めない）としており、Retry-After と両方ある時は Retry-After を優先します。
+draft には「This specification does not mandate a specific throttling algorithm.」（本仕様は特定の制限のアルゴリズムを定めない）とあり、Retry-After と両方ある時は Retry-After が優先されます。
 
 標準ライブラリの HTTP サーバーで、固定ウィンドウの「10 秒あたり 5 件」を数え、-11 の形でヘッダーを返す [lab/server.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/server.py) を書きました。curl で 6 回続けて送った時の、5 回目と 6 回目の応答です（全体は [lab/output_server.txt](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/output_server.txt)）。
 
