@@ -59,7 +59,7 @@ Chroma の報告「[Context Rot](https://www.trychroma.com/research/context-rot)
 
 <br>
 
-[Anthropic のマルチエージェントの調査システムの記事](https://www.anthropic.com/engineering/multi-agent-research-system)（2025 年 6 月）は、子の役割を次のように説明しています。
+[Anthropic のマルチエージェントの調査システムの記事](https://www.anthropic.com/engineering/multi-agent-research-system)（2025 年 6 月）では、子の役割が次のように説明されています。
 
 > Subagents facilitate compression by operating in parallel with their own context windows, exploring different aspects of the question simultaneously before condensing the most important tokens for the lead research agent.
 >
@@ -189,7 +189,7 @@ administrative records.
 
 規模の大きいシステムでは、トークンの増え方はもっと大きくなります。Anthropic の記事によると、同社のデータでは、エージェントはチャットの約 4 倍、マルチエージェントのシステムは約 15 倍のトークンを使います。
 
-同じ記事は、Claude Opus 4 を親、Claude Sonnet 4 を子にした構成が、Claude Opus 4 単体より社内の調査の評価で 90.2% 良い成績だったと報告しつつ、ブラウジングの評価（[BrowseComp](https://arxiv.org/abs/2504.12516)）の成績のばらつきの 80% はトークンの使用量だけで説明できたとしています。分けたことで賢くなったというより、別々のコンテキストに分けることで、1 つのコンテキストには収まらない量のトークンを使えるようになった、という読み方です。
+同じ記事によると、Claude Opus 4 を親、Claude Sonnet 4 を子にした構成は、Claude Opus 4 単体より社内の調査の評価で 90.2% 良い成績でした。一方で、ブラウジングの評価（[BrowseComp](https://arxiv.org/abs/2504.12516)）の成績のばらつきの 80% は、トークンの使用量だけで説明できたとされています。分けたことで賢くなったというより、別々のコンテキストに分けることで、1 つのコンテキストには収まらない量のトークンを使えるようになった、という読み方です。
 
 ---
 
