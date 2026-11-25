@@ -152,7 +152,7 @@ carol がプリイメージを示して受け取ると bob はその値を知り
 
 経路の情報は、[Tor](../../security/tor/) と同じ考え方のオニオンルーティング（[BOLT #4](https://github.com/lightning/bolts/blob/master/04-onion-routing.md)）で包んで送ります。bob が知るのは、直前の alice と直後の carol だけです。
 
-期限は、bob が受け取る HTLC の方が、bob が払う HTLC より遅く切れるように設定します。carol が期限の間際にプリイメージを明かしても、bob が alice から受け取る時間を残すためです。今回の bob は、この差を 80 ブロックに設定していました。差の決め方は、チェーンの組み替え（[Finality](../finality/) で扱う reorg）や相手の応答待ちを足し合わせる形で [BOLT #2](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection) に示されていて、迷うなら差を 34 ブロック以上にするよう勧めています。
+期限は、bob が受け取る HTLC の方が、bob が払う HTLC より遅く切れるように設定します。carol が期限の間際にプリイメージを明かしても、bob が alice から受け取る時間を残すためです。今回の bob は、この差を 80 ブロックに設定していました。差の決め方は、チェーンの再編成（[Finality](../finality/) で扱う reorg）や相手の応答待ちを足し合わせる形で [BOLT #2](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#cltv_expiry_delta-selection) に示されていて、迷うなら差を 34 ブロック以上にするよう勧めています。
 
 <br>
 
@@ -175,7 +175,7 @@ carol がプリイメージを示して受け取ると bob はその値を知り
 }
 ```
 
-`attempts` は LND が試した HTLC の数、`elapsed_ms` は支払いの開始から失敗までの時間、`bc_bob_local` は bob と carol のチャネルに残っていた bob 側の残高です。LND は 14 個の HTLC を試し、121 秒を使った後に諦めています。
+`attempts` は LND が試した HTLC の数、`elapsed_ms` は支払いの開始から失敗までの時間、`bc_bob_local` は bob と carol のチャネルに残っていた bob 側の残高です。LND は 14 個の HTLC を試し、121 秒を使った後に支払いを失敗で終えています。
 
 <br>
 
@@ -287,7 +287,7 @@ bob がチャネルから手にした額は 0 です。最新の状態で閉じ�
 
 alice がペナルティトランザクションを出せたのは、144 ブロックの間に戻ってきたからです。戻るのが遅れれば、bob は古い状態の残高をそのまま使えました。チャネルを持つノードは、to_self_delay の間に相手の古い状態を見つけられるように、動いている必要があります。[BOLT #5](https://github.com/lightning/bolts/blob/master/05-onchain.md) も、出力の行き先が決まるまでチェーンを監視するよう求めています。
 
-ノードが止まっていなくても、チェーンを読めなくなることがあります。2022 年 10 月には、LND が特定の大きなブロックを解析できなくなる不具合があり、緊急の修正リリース [v0.15.2](https://github.com/lightningnetwork/lnd/releases/tag/v0.15.2-beta) が出ました。11 月にも、入力の多いトランザクションを解析できない不具合で [v0.15.4](https://github.com/lightningnetwork/lnd/releases/tag/v0.15.4-beta) が出ています。解析できないブロックに載ったトランザクションには、ノードは気づけません。
+ノードが止まっていなくても、チェーンのブロックを解析できなくなることがあります。2022 年 10 月には、LND が特定の大きなブロックを解析できなくなる不具合があり、緊急の修正リリース [v0.15.2](https://github.com/lightningnetwork/lnd/releases/tag/v0.15.2-beta) が出ました。11 月にも、入力の多いトランザクションを解析できない不具合で [v0.15.4](https://github.com/lightningnetwork/lnd/releases/tag/v0.15.4-beta) が出ています。解析できないブロックに載ったトランザクションには、ノードは気づけません。
 
 常に動かし続けるのが難しいノードは、見張りを他のノードに任せられます。この役を watchtower と呼び、LND は[見張る側と頼む側の両方](https://github.com/lightningnetwork/lnd/blob/v0.18.4-beta/docs/watchtower.md)を持っています。
 
