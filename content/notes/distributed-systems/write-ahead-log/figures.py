@@ -3,7 +3,7 @@
 kill_figure()      lab/killtest_output.txt から、設定ごとの 1 秒あたりのコミット数と、止めた後に消えた行数。
 layers_figure()    コミットの記録が通る 3 つの置き場と、設定ごとに成功を返す位置、障害ごとに消える範囲。
 async_animation()  lab/killtest_async_timeline.json の実測の時刻で、成功が返った行と OS に渡した行を動かす。
-group_animation()  グループコミットで、fsync を待つ組と次の fsync に乗る組が入れ替わる様子（推測した仕組みの模式図）。
+group_animation()  グループコミットで、fsync を待つグループと次の fsync に乗るグループが入れ替わる様子（推測した仕組みの模式図）。
 group_figure()     lab/groupcommit_output.txt から、同時に送る数とコミット数・fsync の回数。
 slot_figure()      lab/slot_output.txt・slot_cap_output.txt から、書いた WAL の量と pg_wal の大きさ。
 positions_figure() 1 本のログの上の 3 つの位置（消して良い位置・見せて良い位置・末尾）。
@@ -241,12 +241,12 @@ def async_animation():
 
 
 def group_animation():
-    """8 クライアントが 2 つの組に分かれ、交互に fsync に乗る様子。時刻は持たない模式図で、1 コマずつ秒で表示する。"""
+    """8 クライアントが 2 つのグループに分かれ、交互に fsync に乗る様子。時刻は持たない模式図で、1 コマずつ秒で表示する。"""
     S = 2
     W, H = 900, 470
     font = lambda n: ImageFont.truetype(CJK, n * S)  # noqa: E731
     A, B = range(1, 5), range(5, 9)
-    # (fsync の番号, その fsync に乗る組, 成功を返した組, 待つ組, 説明)
+    # (fsync の番号, その fsync に乗るグループ, 成功を返したグループ, 待つグループ, 説明)
     frames = [
         (1, A, None, B, "クライアント 1〜4 の記録を乗せて fsync #1 が始まる。5〜8 はその後に記録を書き、待つ"),
         (2, B, A, None, "fsync #1 が終わり、1〜4 に成功を返す。待っていた 5〜8 の記録で fsync #2 が始まる"),
