@@ -43,7 +43,7 @@ flowchart LR
 - 古い結果は、どこまで許容できるのか。
 - materialized view に索引を張ると、何が速くなり、何が遅くなるのか。
 
-実験は、コンテナを動かす [Docker](https://www.docker.com/) 上の PostgreSQL 17.11 で行いました。変更分だけを反映する方法は、[Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/19/dwhsg/refreshing-materialized-views.html) と PostgreSQL の拡張 [pg_ivm](https://github.com/sraoss/pg_ivm) を例に、比較に必要な範囲で触れます。
+実験には、コンテナを動かす [Docker](https://www.docker.com/) 上の PostgreSQL 17.11 を使いました。変更分だけを反映する方法は、[Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/19/dwhsg/refreshing-materialized-views.html) と PostgreSQL の拡張 [pg_ivm](https://github.com/sraoss/pg_ivm) を例に、比較に必要な範囲で触れます。
 
 ---
 
@@ -53,7 +53,7 @@ flowchart LR
 
 1 秒弱の問い合わせでも、ダッシュボードを開く度に実行されると DB の負荷になります。10 人が 1 分ごとに画面を更新すれば、同じ 500 万件を 1 分に 10 回読みます。しかも、過去の日付の売上は、注文の取り消しなどが無い限り変わりません。毎回同じ手順で、変わらない結果を計算し直していることになります。
 
-materialized view は、この計算を `REFRESH` の時に 1 回だけ行い、結果を残します。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/rules-materializedviews.html)にも、過去の売上をグラフにしたい場合に、当日の不完全なデータを除いて日別に集計し、夜間に `REFRESH` する例があります。
+materialized view は、この計算を `REFRESH` の時に 1 回だけ実行し、結果を残します。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/rules-materializedviews.html)にも、過去の売上をグラフにしたい場合に、当日の不完全なデータを除いて日別に集計し、夜間に `REFRESH` する例があります。
 
 ---
 
@@ -65,7 +65,7 @@ materialized view では、元の表が唯一の書き込み先で、materialize
 
 そのため、2 つの値が食い違った時に正しいのは、常に元の表です。materialized view は消しても、定義さえあれば `REFRESH` で作り直せます。逆に、materialized view にしか無い情報を持たせることはできません。
 
-更新を受ける側と、画面や集計に合わせた形で読む側を分ける構図は、[CQRS](/notes/software-architecture/cqrs/) の読み取りモデルと同じです。CQRS は読み取りモデルへの反映をアプリケーションで行うこともありますが、materialized view では DB が定義の問い合わせから結果を作るので、反映の処理を自分で書かずに済みます。
+更新を受ける側と、画面や集計に合わせた形で読む側を分ける構図は、[CQRS](/notes/software-architecture/cqrs/) の読み取りモデルと同じです。CQRS は読み取りモデルへの反映をアプリケーションで実装することもありますが、materialized view では DB が定義の問い合わせから結果を作るので、反映の処理を自分で書かずに済みます。
 
 ---
 
@@ -83,7 +83,7 @@ Oracle は[読み手と書き手が互いを待たない](https://docs.oracle.co
 
 incremental refresh は、元の表に入った変更から、結果のどこが変わるかを計算して反映します。Oracle Database の fast refresh は、元の表の変更を materialized view log という表に記録しておき、それを使って反映します。
 
-PostgreSQL 17 の標準機能には incremental refresh がありません。拡張の pg_ivm は、`pgivm.create_immv()` で作った IMMV という表について、元の表に文単位の `AFTER` トリガー（変更の文が終わった後に自動で動く処理）を作り、元の表を更新した同じトランザクションの中で IMMV も更新してくれます。
+PostgreSQL 17 の標準機能には incremental refresh がありません。拡張の pg_ivm は、`pgivm.create_immv()` で作った IMMV という表について、元の表に文単位の `AFTER` トリガー（変更の文が終わった後に自動で動く処理）を作り、元の表を更新した同じトランザクションの中で IMMV も更新します。
 
 その代わり、元の表への書き込みは遅くなり、使える集約関数も `count`・`sum`・`avg`・`min`・`max` に限られます。
 
@@ -304,7 +304,7 @@ COMMIT;
 
 ### 索引と組み合わせる条件
 
-materialized view は中身を表として持つので、普通の表と同じく索引を張れます。索引が効くのは、materialized view のレコードが多く、その一部だけを条件で取り出す場合です。例えば、顧客ごと・日ごとに集計した数百万件の materialized view から 1 人分を読むなら、索引でレコードの在り処を直接求められます（[Index Scan](../index-scan/)）。
+materialized view は中身を表として持つので、普通の表と同じく索引を張れます。索引で速くなるのは、materialized view のレコードが多く、その一部だけを条件で取り出す場合です。例えば、顧客ごと・日ごとに集計した数百万件の materialized view から 1 人分を読むなら、索引でレコードの在り処を直接求められます（[Index Scan](../index-scan/)）。
 
 今回の 365 件の `daily_sales` なら、全件を読んでも 1 ミリ秒を切ります。
 
