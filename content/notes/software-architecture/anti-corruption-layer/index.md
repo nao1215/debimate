@@ -252,7 +252,7 @@ Stripe の SDK は、Java や Go のような型付きの言語では、その S
 
 {{< figure src="images/acl_placement.webp" alt="左の灰色の領域が決済サービスの語で、決済サービスの API と SDK の型がある。右の青い領域が通販の語で、PaymentState、業務規則の ACTIONS の表、出荷・メール・売上・在庫の 4 か所がある。2 つの領域の境目に ACL の translate() があり、SDK の型から PaymentState への矢印は translate() だけを通る。業務規則は ACL の外、通販の語の領域に置く" caption="ACL を置く位置と、業務規則を置く位置" align="center" >}}
 
-図のように、SDK は決済サービスの語で書かれた部品です。`translate()` は、SDK と通販のコードをつなぐ境目に置きます。Microsoft の Azure Architecture Center にある[解説](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer)は、このパターンが適さない場合を挙げる項の中で、ACL は翻訳に絞り、業務の規則や複数のシステムを呼ぶ順番の制御を置かないよう勧めています。実験で `ACTIONS` の表を `translate()` の外に置いたのも同じ理由で、「確認中なら出荷を待つ」は通販の業務規則であり、決済サービスの語とは関係がありません。
+図のように、SDK は決済サービスの語で書かれた部品です。`translate()` は、SDK と通販のコードをつなぐ境目に置きます。Microsoft の Azure Architecture Center にある[解説](https://learn.microsoft.com/en-us/azure/architecture/patterns/anti-corruption-layer)では、このパターンが適さない場合を挙げる項の中で、ACL は翻訳に絞り、業務の規則や複数のシステムを呼ぶ順番の制御を置かないよう勧められています。実験で `ACTIONS` の表を `translate()` の外に置いたのも同じ理由で、「確認中なら出荷を待つ」は通販の業務規則であり、決済サービスの語とは関係がありません。
 
 同じ解説によると、ACL はアプリケーションに組み込む部品としても、独立したサービスとしても作れます。独立したサービスにすると、呼び出しの遅延と、管理するサービスが 1 つ増えます。下流のアプリケーションが 1 つなら、実験のように同じプロセスの関数で足ります。
 
