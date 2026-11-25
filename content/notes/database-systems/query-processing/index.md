@@ -213,20 +213,20 @@ Leis 氏らは論文「[How Good Are Query Optimizers, Really?](https://www.vldb
 
 #### 列どうしの関係を教える
 
-PostgreSQL では、[CREATE STATISTICS](https://www.postgresql.org/docs/18/sql-createstatistics.html) で列の組を指定すると、列どうしの関係も記録します。この拡張統計情報（extended statistics）を足して ANALYZE をやり直すと、見積もりは 997 行になりました。
+PostgreSQL では、[CREATE STATISTICS](https://www.postgresql.org/docs/18/sql-createstatistics.html) で複数の列を指定すると、列どうしの関係も記録します。この拡張統計情報（extended statistics）を足して ANALYZE をやり直すと、見積もりは 997 行になりました。
 
 ```sql
 CREATE STATISTICS customers_dep (dependencies) ON city, pref, region FROM customers;
 ANALYZE customers;
 ```
 
-`dependencies` は、ある列の値が決まると別の列でも値が決まる関係を記録する種類です。他に、列の組ごとに異なる値の数を数える `ndistinct` と、よく出る値の組を記録する `mcv` があります。ただ、どの種類も、ある値を持つ行が、別の列で並べた時にどこへ来るかは記録しません。冒頭で LIMIT 1 が遅くなった原因は、この位置でした。
+`dependencies` は、ある列の値が決まると別の列でも値が決まる関係を記録する種類です。他に、列の組み合わせごとに異なる値の数を数える `ndistinct` と、よく出る値の組み合わせを記録する `mcv` があります。ただ、どの種類も、ある値を持つ行が、別の列で並べた時にどこへ来るかは記録しません。冒頭で LIMIT 1 が遅くなった原因は、この位置でした。
 
 ---
 
 ### 見積もりの外れの見つけ方と直し方
 
-遅い SQL を見つけたら、EXPLAIN ANALYZE の各段で、見積もりの `rows` と実際の `rows` を並べて見ます。桁がずれている最初の段が、プランナの判断が狂い始めた所です。
+遅い SQL を見つけたら、EXPLAIN ANALYZE の各段で、見積もりの `rows` と実際の `rows` を並べて見ます。桁がずれている最初の段が、プランナの見積もりが外れ始めた所です。
 
 冒頭の件では、見積もりの行数はほぼ合っていて、手掛かりは `Rows Removed by Filter: 4990000` でした。Limit の下にある段が膨大な行を捨てていたら、プランナが「すぐ見つかる」と見込んだ行が、並びの後ろに固まっています。
 
@@ -245,7 +245,7 @@ ANALYZE customers;
 
 ### 結合する表の数と、計画を選ぶ時間
 
-2 つの表を結合する仕方には、次の 3 つがあります。プランナは、結合する表の組ごとに、この中から安いものを選びます。
+2 つの表を結合する仕方には、次の 3 つがあります。プランナは、結合する表の組み合わせごとに、この中から安いものを選びます。
 
 | 結合の仕方 | 動き | 向く場面 |
 |---|---|---|
@@ -255,9 +255,9 @@ ANALYZE customers;
 
 先の顧客と注文の結合で見積もりが外れても計画が変わらなかったのは、顧客を外側に置いて注文を索引で引く Nested Loop が、4 行でも 1,000 行でも安かったからです。どちらの表を外側にするかもプランナが決めるので、FROM に書いた順とは限りません。
 
-結合する表が増えると、候補の数が急に増えます。表が n 個なら、結合する順番だけで n の階乗（n!）通りあります。PostgreSQL のプランナは、2 表の組から順に最も安い結合の仕方を求め、それを積み上げて大きな組を作る動的計画法で、順番を[ほぼ網羅的に](https://www.postgresql.org/docs/18/planner-optimizer.html)調べます。
+結合する表が増えると、候補の数が急に増えます。表が n 個なら、結合する順番だけで n の階乗（n!）通りあります。PostgreSQL のプランナは、2 表の結合から順に最も安い結合の仕方を求め、それを積み上げて表の多い結合を作る動的計画法で、順番を[ほぼ網羅的に](https://www.postgresql.org/docs/18/planner-optimizer.html)調べます。
 
-組ごとに安い候補だけを残して先へ進み、結合の条件が無い組み合わせも原則として後回しにするので、n! 通りを全て比べるわけではありません。IBM の System R で示された方法で、1979 年の [Selinger 氏らの論文](https://doi.org/10.1145/582095.582099)が元になっています。
+表の組み合わせごとに安い候補だけを残して先へ進み、結合の条件が無い組み合わせも原則として後回しにするので、n! 通りを全て比べるわけではありません。IBM の System R で示された方法で、1979 年の [Selinger 氏らの論文](https://doi.org/10.1145/582095.582099)が元になっています。
 
 ただし、FROM に並ぶ表が [geqo_threshold](https://www.postgresql.org/docs/18/runtime-config-query.html#GUC-GEQO-THRESHOLD)（既定は 12）以上になると、遺伝的アルゴリズムで一部の順番だけを調べる [GEQO](https://www.postgresql.org/docs/18/geqo.html) に切り替えます。1,000 行の表を 2〜14 個用意し、全てを 1 つ目の表と id で結合する SQL の、計画を作る時間を測りました。
 
