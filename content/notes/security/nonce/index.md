@@ -12,7 +12,7 @@ nonce（number used once）は、プロトコルがやり取りするデータ�
 
 同じ定義は、その目的を「usually for the purpose of guaranteeing liveness and thus detecting and protecting against replay attacks」（多くは liveness、つまり相手がその場で応答していることを保証し、それによって replay 攻撃を検出して防ぐ目的で使う）と続けます。[replay](/notes/blockchain-systems/replay-protection/) は、過去のやり取りを記録して後から送り直す攻撃です。
 
-ただし、nonce と呼ばれる値に求められる性質は、用途によって違います。本記事では 3 つの用途を扱います。1 つ目は、暗号化と改竄の検出を 1 つの操作で行う方式である AEAD（authenticated encryption with associated data）に渡す nonce です。2 つ目は、ログインで使う challenge（サーバーが毎回出し、利用者が署名して返す値）です。3 つ目は、署名方式の ECDSA（Elliptic Curve Digital Signature Algorithm）が署名のたびに選ぶ秘密の値 k で、文献では k も nonce と呼びます。
+ただし、nonce と呼ばれる値に求められる性質は、用途によって違います。本記事では 3 つの用途を扱います。1 つ目は、暗号化と改竄の検出を 1 つの操作で済ませる方式の AEAD（authenticated encryption with associated data）に渡す nonce です。2 つ目は、ログインで使う challenge（サーバーが毎回出し、利用者が署名して返す値）です。3 つ目は、署名方式の ECDSA（Elliptic Curve Digital Signature Algorithm）が署名のたびに選ぶ秘密の値 k で、文献では k も nonce と呼びます。
 
 {{< note-panels caption="nonce は繰り返して使わない値です。用途によって、予測できないことや、秘密であることも必要になります。" >}}
 - title: AEAD の nonce
@@ -89,7 +89,7 @@ flowchart LR
 
 タグを nonce に結び付けているのは `AES_K(J0)` です。タグ全体は nonce にも依存するので、同じ鍵と同じ nonce を 2 度使えば `AES_K(J0)` も同じ値になります。
 
-2 つのタグを XOR すると共通の `AES_K(J0)` が消え、`H` を未知数とする関係式が残ります。1 組では `H` の候補が複数残りますが、同じ鍵と同じ nonce で作られた暗号文とタグの組を集めるほど、候補は減ります。
+2 つのタグを XOR すると共通の `AES_K(J0)` が消え、`H` を未知数とする関係式が残ります。1 組では `H` の候補が複数残りますが、同じ鍵と同じ nonce で作られた暗号文とタグを集めるほど、候補は減ります。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -107,7 +107,7 @@ sequenceDiagram
 
 候補が 1 つに絞れると、攻撃者は観測した暗号文・AAD・タグからその nonce の `AES_K(J0)` を復元し、改変した暗号文と AAD に合うタグを計算できます。観測していない nonce では `AES_K(J0)` が分からないので、何も見ずに任意のタグを作れるわけではありません。
 
-しかし `H` はその鍵に 1 つなので、影響は再利用した nonce だけに閉じません。`H` が分かれば、1 度しか使っていない nonce の通信でも、観測した暗号文と AAD から `GHASH_H` を計算し、タグと XOR してその nonce の `AES_K(J0)` を求められます。あとは上記と同じく、改変した暗号文に合うタグを作れます。[RFC 5116](https://www.rfc-editor.org/rfc/rfc5116.txt) §5.1.1 は、内容の違う 2 通で nonce を再利用すると「undermines all of the authenticity and integrity protection provided by that key」（その鍵が与える認証と完全性の保護の全てを損なう）と述べています。
+しかし `H` はその鍵に 1 つなので、影響は再利用した nonce だけに閉じません。`H` が分かれば、1 度しか使っていない nonce の通信でも、観測した暗号文と AAD から `GHASH_H` を計算し、タグと XOR してその nonce の `AES_K(J0)` を求められます。あとは上記と同じく、改変した暗号文に合うタグを作れます。[RFC 5116](https://www.rfc-editor.org/rfc/rfc5116.txt) §5.1.1 には、内容の違う 2 通で nonce を再利用すると「undermines all of the authenticity and integrity protection provided by that key」（その鍵が与える認証と完全性の保護の全てを損なう）とあります。
 
 完全性は、データが書き換えられていないことです。そのため、その鍵で作ったタグは以後も信用できないものとして扱い、鍵ごと交換します。
 
@@ -282,7 +282,7 @@ sequenceDiagram
 
 仕様では、challenge がランダムで推測できないことを要求しています。
 
-記録した応答をそのまま送り直す攻撃は、サーバー側の運用で弾きます。発行した値との照合と有効期限、そして成功した challenge を保存から消す扱いです。
+記録した応答をそのまま送り直す攻撃は、サーバー側の運用で防ぎます。発行した値との照合と有効期限、そして成功した challenge を保存から消す扱いです。
 
 要求が違えば、破った時に失うものも違います。
 
@@ -302,7 +302,7 @@ flowchart LR
 
 #### 署名の nonce（k）
 
-違うメッセージで繰り返さず、しかも秘密でなければならない nonce もあります。冒頭で取り上げた ECDSA は、楕円曲線を使う署名方式で、署名のたびに秘密の乱数 k を選びます。署名は 2 つの数の組 (r, s) です（署名の役割は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノート）。
+違うメッセージで繰り返さず、しかも秘密でなければならない nonce もあります。冒頭で取り上げた ECDSA は、楕円曲線を使う署名方式で、署名のたびに秘密の乱数 k を選びます。署名は 2 つの数のペア (r, s) です（署名の役割は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノート）。
 
 r は k だけから決まる値ですが、r から k を逆算することは計算上できません。s は、秘密鍵 d とメッセージのハッシュ値 z を使って次の式で計算します。計算は全て、曲線ごとに決まる大きな素数 n（基準になる点 G の位数）で割った余りで行います。
 
@@ -336,7 +336,7 @@ NIST の署名の標準である [FIPS 186-5](https://csrc.nist.gov/pubs/fips/18
 
 nonce が繰り返されても、被害が広がらない AEAD もあります。RFC 8452 が定める AES-GCM-SIV は、同じ鍵と nonce で 2 通を暗号化しても、機密性と完全性が一度に崩れないように設計された方式です。
 
-作り方は、2 つの鍵の導出から始まります。鍵と nonce から、その nonce だけで使う認証鍵と暗号鍵を導きます。AAD と平文を POLYVAL（GHASH と同じ役割で、入力を 1 つの値に潰す計算）に通し、その結果に nonce を混ぜ、暗号鍵で暗号化した値がタグです。そのタグから作る値を CTR（counter）モード（カウンタを暗号化して鍵ストリームを作る方式で、AES-GCM も内部で使う）の初期カウンタにして、平文を暗号化します。
+作り方は、2 つの鍵の導出から始まります。鍵と nonce から、その nonce だけで使う認証鍵と暗号鍵を導きます。AAD と平文を POLYVAL（GHASH と同じ役割で、入力を 1 つの値にまとめる計算）に通し、その結果に nonce を混ぜ、暗号鍵で暗号化した値がタグです。そのタグから作る値を CTR（counter）モード（カウンタを暗号化して鍵ストリームを作る方式で、AES-GCM も内部で使う）の初期カウンタにして、平文を暗号化します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
