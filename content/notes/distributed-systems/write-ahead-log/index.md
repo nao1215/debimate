@@ -43,7 +43,7 @@ WAL は PostgreSQL や SQLite の WAL モードで使われ、MySQL の InnoDB �
 - ログはいつ消せるのか。pg_wal が膨らむのはなぜか
 - 複製した時、どこから先をクライアントに見せてはいけないのか
 
-実験は、Docker で動かした PostgreSQL 18.6 と MySQL 8.4 で行いました。トランザクションの[分離レベル](/notes/database-systems/transaction-isolation/)と、ログを使った時点復旧は扱いません。
+実験には、Docker で動かした PostgreSQL 18.6 と MySQL 8.4 を使いました。トランザクションの[分離レベル](/notes/database-systems/transaction-isolation/)と、ログを使った時点復旧は扱いません。
 
 ---
 
@@ -141,7 +141,7 @@ LOG:  redo done at 0/1A19FB8 system usage: CPU: user: 0.01 s, system: 0.00 s, el
 
 #### fsync = off が手放すもの
 
-fsync = off の PostgreSQL は、コミットの時に `write` で OS に渡すところまでは行い、`fsync` だけを省きます。プロセスが落ちても記録はページキャッシュに残るので、冒頭の実験では 1 行も消えませんでした。手放しているのは、OS が止まった時と電源が切れた時の備えです。
+fsync = off の PostgreSQL は、コミットの時に `write` で OS に渡すところまでは済ませ、`fsync` だけを省きます。プロセスが落ちても記録はページキャッシュに残るので、冒頭の実験では 1 行も消えませんでした。手放しているのは、OS が止まった時と電源が切れた時の備えです。
 
 この備えが無いと、失うのは直近のコミットだけでは済みません。[fsync](https://www.postgresql.org/docs/18/runtime-config-wal.html#GUC-FSYNC) を止めると、ログを表のページより先にディスクへ届ける、という WAL の規則も OS 任せになります。そのため、OS や機械が止まった時には、回復できない形で DB が壊れ得ます。fsync を off にして良いのは、外のデータから DB を作り直せる時だけです。
 
@@ -162,7 +162,7 @@ fsync = off の PostgreSQL は、コミットの時に `write` で OS に渡す�
 | MySQL | 2 | OS のメモリ | 0・0・0 |
 | MySQL | 0 | MySQL のメモリ | 7・4・8 |
 
-MySQL の 2 は PostgreSQL の fsync = off に、0 は synchronous_commit = off に近い位置で成功を返し、プロセスが落ちた時の結果も同じ組み合わせに分かれました。SQLite の WAL モードで [synchronous = NORMAL](https://www.sqlite.org/pragma.html#pragma_synchronous) にした時も、アプリケーションが落ちてもコミットは残り、電源断や OS の停止では直近のコミットが巻き戻ることがあります。
+MySQL の 2 は PostgreSQL の fsync = off に、0 は synchronous_commit = off に近い位置で成功を返し、プロセスが落ちた時の結果も同じように分かれました。SQLite の WAL モードで [synchronous = NORMAL](https://www.sqlite.org/pragma.html#pragma_synchronous) にした時も、アプリケーションが落ちてもコミットは残り、電源断や OS の停止では直近のコミットが巻き戻ることがあります。
 
 ログを中心に置くシステムでも、同期しないことを選ぶ例があります。[Kafka](https://kafka.apache.org/39/design/design/) は、受け取ったデータをすぐにファイルへ書きますが、ディスクへの同期は必ずしもせず、ページキャッシュに渡すだけです。毎回 `fsync` すると性能が 2〜3 桁落ちるからで、1 台の電源断で失った分は、他のレプリカから取り戻す前提です。
 
@@ -204,7 +204,7 @@ synchronous_commit = off との差も、同時に送る数で変わります。�
 
 ### fsync が失敗した時
 
-ここまでは、`fsync` が成功を返せば、記録はディスクに届いているという前提でした。2018 年、この前提が崩れることが PostgreSQL のメーリングリストで報告されました。後に fsyncgate と呼ばれた件で、Craig Ringer 氏が 2018 年 3 月に書いた[メール](https://danluu.com/fsyncgate/)から始まるスレッドは、Dan Luu 氏のサイトに保存されています。経緯は、LWN.net の「[PostgreSQL's fsync() surprise](https://lwn.net/Articles/752063/)」（2018 年 4 月 18 日）がまとめています。
+ここまでは、`fsync` が成功を返せば、記録はディスクに届いているという前提でした。2018 年、この前提が成り立たないことが PostgreSQL のメーリングリストで報告されました。後に fsyncgate と呼ばれた件で、Craig Ringer 氏が 2018 年 3 月に書いた[メール](https://danluu.com/fsyncgate/)から始まるスレッドは、Dan Luu 氏のサイトに保存されています。経緯は、LWN.net の「[PostgreSQL's fsync() surprise](https://lwn.net/Articles/752063/)」（2018 年 4 月 18 日）がまとめています。
 
 PostgreSQL は、checkpoint で表のページを書き出す `fsync` が失敗すると、エラーを記録して、次の checkpoint で `fsync` をやり直していました。ところが、Linux を含む一部の OS は、ディスクに書けなかったページキャッシュの中身を捨てたうえで、1 回目の `fsync` で失敗を返します。2 回目の `fsync` は、捨てた後なので成功を返します。PostgreSQL は、失われたデータを書けたものとして扱う恐れがありました。以下は、その流れです。
 
