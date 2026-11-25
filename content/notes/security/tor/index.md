@@ -315,7 +315,7 @@ flowchart LR
 
 ControlPort からは Onion Service を作ることから回線の制御までできるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
 
-[Tor の control 仕様](https://spec.torproject.org/control-spec/implementation-notes.html)も、ControlPort が開いていて認証が無効な場合は、接続してきたローカルの利用者を誰でも信頼すると書き、この状態を勧めていません。
+[Tor の control 仕様](https://spec.torproject.org/control-spec/implementation-notes.html)にも、ControlPort が開いていて認証が無効な場合は、接続してきたローカルの利用者を誰でも信頼すると書かれていて、この状態は勧められていません。
 
 作った経緯と実装の詳細は「[【Golang】tor client/server を実装するための nao1215/tornago ライブラリを作った話](/post/ja/2025-11-21golangtornago%E3%83%A9%E3%82%A4%E3%83%96%E3%83%A9%E3%83%AA%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%9F%E8%A9%B1/)」で扱っています。
 
