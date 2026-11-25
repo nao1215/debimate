@@ -43,7 +43,7 @@ source chain のトランザクションをどの時点で確定と見なすか�
 
 ### 資産を移すタイプ
 
-bridge で「資産を移す」と言っても、同じ[トークン](../erc-20/)がチェーンの間を移動するわけではありません。ethereum.org にある [bridge の解説](https://ethereum.org/en/developers/docs/bridges/)は、lock and mint、burn and mint、atomic swap の 3 つのタイプを挙げています。
+bridge で「資産を移す」と言っても、同じ[トークン](../erc-20/)がチェーンの間を移動するわけではありません。ethereum.org にある [bridge の解説](https://ethereum.org/en/developers/docs/bridges/)では、lock and mint、burn and mint、atomic swap の 3 つのタイプが挙げられています。
 
 このうち atomic swap は、交換相手と直接資産を交換するタイプで、[Lightning Network](../lightning-network/) と同じ仕組みで条件を付けた支払いを両方のチェーンに置きます。間で預け入れを確認する役が無いため、本記事では残りの 2 つを扱います。
 
