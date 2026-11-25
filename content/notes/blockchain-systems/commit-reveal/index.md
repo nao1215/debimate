@@ -134,7 +134,7 @@ contract CommitRevealAuction {
 
 ハッシュ値の入力は `abi.encode` で作っています。固定長の値は 32 バイトに揃え、可変長の値には長さを付けて並べるので、区切りの位置が一意に決まります。
 
-一方で、詰めて並べる `abi.encodePacked` は、文字列のような長さの変わる値を 2 つ並べると区切りが消えます。[Solidity の ABI の仕様](https://docs.soliditylang.org/en/v0.8.28/abi-spec.html#non-standard-packed-mode)も、`abi.encodePacked("a", "bc")` と `abi.encodePacked("ab", "c")` が同じバイト列になる例を挙げ、特別な理由が無ければ `abi.encode` を使うよう勧めています。コミットでこの衝突が起きると、同じハッシュ値を別の中身として明かせてしまいます。
+一方で、詰めて並べる `abi.encodePacked` は、文字列のような長さの変わる値を 2 つ並べると区切りが消えます。[Solidity の ABI 仕様](https://docs.soliditylang.org/en/v0.8.28/abi-spec.html#non-standard-packed-mode)にも、`abi.encodePacked("a", "bc")` と `abi.encodePacked("ab", "c")` が同じバイト列になる例が載っており、特別な理由が無ければ `abi.encode` を使うよう勧められています。コミットでこの衝突が起きると、同じハッシュ値を別の中身として明かせてしまいます。
 
 ---
 
