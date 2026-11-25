@@ -58,7 +58,7 @@ PoH の連鎖は、ある初期値から始めて、前の出力を次の入力�
 
 <br>
 
-ただし、連鎖が示すのは、ハッシュを何回、どの順で計算したかまでです。それが何ミリ秒に当たるかは、計算機の速さという連鎖の外の仮定から推定します。Agave の [entry.rs のコメント](https://github.com/anza-xyz/agave/blob/v4.4.1/entry/src/entry.rs#L37-L45)も、世界最速の計算機を仮定すれば「これより短い時間はあり得ない」という見積もりになると書いています。逐次の計算で時間を稼ぐ同じ発想と、計算機が速くなって想定が崩れた例は、[Timelock Encryption](/notes/security/timelock-encryption/) で説明しています。
+ただし、連鎖が示すのは、ハッシュを何回、どの順で計算したかまでです。それが何ミリ秒に当たるかは、計算機の速さという連鎖の外の仮定から推定します。Agave の [entry.rs にあるコメント](https://github.com/anza-xyz/agave/blob/v4.4.1/entry/src/entry.rs#L37-L45)にも、世界最速の計算機を仮定すれば「これより短い時間はあり得ない」という見積もりになると書かれています。逐次の計算で時間を稼ぐ同じ発想と、計算機が速くなって想定が崩れた例は、[Timelock Encryption](/notes/security/timelock-encryption/) で説明しています。
 
 実装もこの区別に沿っています。Agave のリーダーは、計算が予定より進んだ時に自分の時計で待ちます（[poh_service.rs](https://github.com/anza-xyz/agave/blob/v4.4.1/poh/src/poh_service.rs#L443-L447)）。この待ちはリーダーの手元の判断で、検証する側が確認できるのはハッシュの回数だけです。
 
