@@ -107,7 +107,7 @@ def poison_figure():
                 s.text(gx + 68, y + 110, f"cell{g[0] // 2}", 18, ACCENT)
                 x += 18
         if mode == "shuffle":
-            s.text(290 + 4 * 72, y + 110, "c007 の組は :9002 と :9003", 18, SUB)
+            s.text(290 + 4 * 72, y + 110, "c007 のシャッフルシャードは :9002 と :9003", 18, SUB)
         n = failed_customers(res)
         s.text(1050, y + 64, f"{n} / {len(run.CUSTOMERS) - 1} 人", 26, RED if n else INK)
         y += 118
