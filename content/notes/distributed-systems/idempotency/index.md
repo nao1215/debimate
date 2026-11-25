@@ -34,7 +34,7 @@ topics: ["Reliability"]
 
 ### 再送だけで足りない理由
 
-区別が付かない以上、送信側が選べるのは再送するか諦めるかの 2 つで、どちらを選んでも壊れる場合が残ります。複数のノードに値を持たせる DB でも同じで、過半数の応答が揃わずに失敗と返った書き込みが、後から全てのノードで読めるようになる様子は [Quorum](/notes/distributed-systems/quorum/) で実験しています。
+区別が付かない以上、送信側が選べるのは再送するか諦めるかの 2 つで、どちらを選んでも結果がおかしくなる場合が残ります。複数のノードに値を持たせる DB でも同じで、過半数の応答が揃わずに失敗と返った書き込みが、後から全てのノードで読めるようになる様子は [Quorum](/notes/distributed-systems/quorum/) で実験しています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -109,7 +109,7 @@ HTTP の意味論を定める [RFC 9110](https://www.rfc-editor.org/rfc/rfc9110.
 
 最終状態を指定する形に書き直せない場合は、要求に一意な値を付けて見分けます。この値を冪等キー（idempotency key）と呼び、クライアントが要求ごとに生成して添えます。
 
-サーバーはキーのカラムに[一意制約](/notes/database-systems/unique-constraint/)（同じ値のレコードを 2 つ作れない制約）を付けてキーを登録してから業務処理（ここでは課金を記録する処理）を行い、同じキーの 2 度目には業務処理を再実行せず、記録済みの応答を返します。
+サーバーはキーのカラムに[一意制約](/notes/database-systems/unique-constraint/)（同じ値のレコードを 2 つ作れない制約）を付けてキーを登録してから業務処理（ここでは課金を記録する処理）に進み、同じキーの 2 度目には業務処理を再実行せず、記録済みの応答を返します。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -237,7 +237,7 @@ stateDiagram-v2
 
 同じキーが違う本文で使い回された要求は、再送として扱えません。草案は、この場合の応答に 422 を割り当てています。422 は、本文の構文は正しいのに、その内容の指示を処理できない場合に使う応答です。前述の `fingerprint` カラムが、この判定に使う本文の指紋（idempotency fingerprint）です。草案は、指紋をキーと併用する判定も認めています。
 
-キーを生成するのはクライアントで、草案は UUID のようなランダムな識別子を推奨しています。再送のたびに新しいキーを作る実装では、サーバーの記録と結び付かず、重複排除が働きません。
+キーを生成するのはクライアントで、草案は UUID のようなランダムな識別子を推奨しています。再送のたびに新しいキーを作る実装では、サーバーの記録と結び付かず、重複を排除できません。
 
 ---
 
