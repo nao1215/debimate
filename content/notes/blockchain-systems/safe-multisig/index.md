@@ -15,7 +15,7 @@ Ethereum の通常のアカウントは、1 個の秘密鍵の署名しか受け
 
 {{< figure src="images/safe_overview.webp" alt="左に所有者 A・B・C の丸があり、A と B がチェーンの外でハッシュに署名する。署名 2 個が送信する EOA に渡り、EOA は手数料を払って execTransaction を Safe のプロキシに送る。プロキシの中の破線の storage の枠に、所有者 A・B・C、必要数（threshold）2、nonce（通し番号）、実装のアドレスがあり、その外に ETH の残高がある。プロキシから破線の delegatecall の矢印が実装（singleton）に伸び、実装は署名を数えて（checkNSignatures）トランザクションを実行するコードだけを持つ。宛先への送金・呼び出しの矢印はプロキシから出ており、送り主はプロキシ" caption="Safe で 2-of-3 の送金が実行されるまで" align="center" >}}
 
-上記の図が答えの全体像です。所有者（owner）はチェーンの外でハッシュに署名するだけで、トランザクションを送るのは誰の EOA（秘密鍵で操作する通常のアカウント）でも構いません。署名を数えるのは Safe のコードで、資産と設定を持つプロキシ（proxy）と、コードを持つ実装（singleton）の 2 つのコントラクトに分かれています。
+上記の図が、この問いへの答えです。所有者（owner）はチェーンの外でハッシュに署名するだけで、トランザクションを送るのは誰の EOA（秘密鍵で操作する通常のアカウント）でも構いません。署名を数えるのは Safe のコードで、資産と設定を持つプロキシ（proxy）と、コードを持つ実装（singleton）の 2 つのコントラクトに分かれています。
 
 宛先から見た送り主は、資産の持ち主であるプロキシです。図の用語は、以降の節で順に説明します。
 
@@ -37,7 +37,7 @@ Ethereum のアカウントには、秘密鍵で操作する EOA（Externally Ow
 
 Safe のコントラクトは、図の右側の 2 つに分かれています。資産の持ち主になり、設定（所有者・必要数・nonce）と、処理を回す先の実装のアドレスを自分のストレージ（storage）に持つのがプロキシで、利用者ごとに 1 個作られます。署名の検査と実行のコードを持つのが実装（singleton）で、多くのプロキシが同じ 1 個を共有します。
 
-資産の持ち主といっても、資産が storage に入っているわけではありません。ETH はプロキシのアカウントの残高で、トークンの保有量はトークンのコントラクトの側に、プロキシのアドレスの分として記録されます。
+資産の持ち主といっても、資産が storage に入っているわけではありません。ETH はプロキシのアカウントが持つ残高で、トークンの保有量はトークンのコントラクトが、プロキシのアドレスに対応付けて記録します。
 
 プロキシは受けた呼び出しを [`delegatecall`](https://docs.soliditylang.org/en/latest/introduction-to-smart-contracts.html#delegatecall-and-libraries) で実装に回します。`delegatecall` は、呼び出し先のコードを呼び出し元の storage と残高のまま実行する命令です。実装のコードが読み書きするのはプロキシの storage なので、コードを共有しても、各 Safe の所有者や資産は混ざりません。
 
@@ -47,7 +47,7 @@ Safe のコントラクトは、図の右側の 2 つに分かれています。
 
 ### 所有者が署名する内容
 
-送金は、プロキシの [`execTransaction`](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/Safe.sol#L115-L207) を呼んで行います。引数は、トランザクションの内容と、所有者の署名を連結したものです。送る EOA は手数料を払うだけで、所有者である必要はありません。宛先に Safe 自身を指定すれば、所有者や必要数を変える Safe の関数も、同じ手順（必要数の署名）で呼べます。
+送金するには、プロキシの [`execTransaction`](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/Safe.sol#L115-L207) を呼びます。引数は、トランザクションの内容と、所有者の署名を連結したものです。送る EOA は手数料を払うだけで、所有者である必要はありません。宛先に Safe 自身を指定すれば、所有者や必要数を変える Safe の関数も、同じ手順（必要数の署名）で呼べます。
 
 所有者が署名するのは、トランザクションの内容から作った 32 バイトのハッシュです。Safe は、構造のあるデータを型付きでハッシュにする [EIP-712](../eip-712/) を使い、[SafeTx の型](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/Safe.sol#L59-L62)を次のように定めています。EIP-712 の domain（署名がどのチェーンのどのコントラクト向けかを表す部分）には、chain ID と Safe 自身のアドレスだけを入れます。
 
@@ -62,7 +62,7 @@ SafeTx(address to,uint256 value,bytes data,uint8 operation,uint256 safeTxGas,
 
 ### Safe が署名を数える方法
 
-`execTransaction` は、現在の nonce でハッシュを計算して nonce を 1 進め、署名を検査してから、`operation` に従って宛先を呼び出します。署名の検査に失敗するとトランザクションは revert（途中の変更を全て取り消して失敗）するので、nonce も進みません。署名の検査は [`checkNSignatures`](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/Safe.sol#L287-L342) が行います。
+`execTransaction` は、現在の nonce でハッシュを計算して nonce を 1 進め、署名を検査してから、`operation` に従って宛先を呼び出します。署名の検査に失敗するとトランザクションは revert（途中の変更を全て取り消して失敗）するので、nonce も進みません。署名は [`checkNSignatures`](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/Safe.sol#L287-L342) が検査します。
 
 署名は 65 バイトずつ連結して渡し、`checkNSignatures` が先頭から必要数だけ検査します。65 バイトの署名は r（32 バイト）・s（32 バイト）・v（1 バイト）からなり、Ethereum の ECDSA では、ハッシュと署名から署名者のアドレスを計算で復元できます（ecrecover）。
 
@@ -89,7 +89,7 @@ Safe は各署名から署名者のアドレスを復元し、そのアドレス
 
 Ethereum の開発ツール群 [Foundry](https://getfoundry.sh/) の anvil（手元だけで動く Ethereum のノード）に、2-of-3 の Safe を作りました。所有者は EOA 2 個と、ERC-1271 を実装した学習用のコントラクト `StudySigner` 1 個です。
 
-Safe は [safe-smart-account v1.5.0](https://github.com/safe-fndn/safe-smart-account/tree/v1.5.0)（LGPL-3.0-only）をそのままコンパイルしています。鍵は anvil の既定のテスト用の鍵だけで、公開ネットワークには繋いでいません。使った道具の版は [lab の README](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/safe-multisig/lab/README.txt) に記録しました。`StudySigner` は本記事のために書いたもので、監査を受けていません。
+Safe は [safe-smart-account v1.5.0](https://github.com/safe-fndn/safe-smart-account/tree/v1.5.0)（LGPL-3.0-only）をそのままコンパイルしています。鍵は anvil が既定で用意するテスト用の鍵だけで、公開ネットワークには繋いでいません。使った道具の版は [lab の README](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/safe-multisig/lab/README.txt) に記録しました。`StudySigner` は本記事のために書いたもので、監査を受けていません。
 
 ```solidity
 // SPDX-License-Identifier: MIT
@@ -335,7 +335,7 @@ ERC-1271 の所有者は、コントラクトがハッシュを承認する前�
 
 ### 署名の数では防げないこと
 
-m 個の署名を要求しても、所有者の全員が同じ偽の内容に署名すれば、検査は通ります。署名の数が守るのは鍵を盗まれる場合で、何に署名したかの確認は守りません。
+m 個の署名を要求しても、所有者の全員が同じ偽の内容に署名すれば、検査は通ります。署名の数で防げるのは鍵を盗まれる場合で、所有者が何に署名したかは確かめられません。
 
 危険なのが `operation = 1`（delegatecall）です。次の図の通り、`operation = 0` の通常の呼び出しでは、宛先のコードは宛先自身の storage で動きます。`operation = 1` では、プロキシから回された実装のコードが、さらに宛先を `delegatecall` で呼びます。宛先のコードがプロキシの storage のまま動くので、プロキシが持つ実装のアドレスも書き換えられます。
 
@@ -370,7 +370,7 @@ m 個の署名を要求しても、所有者の全員が同じ偽の内容に署
 ### 欠点
 
 - コントラクトなので、実装や `delegatecall`・モジュールの設定を誤ると、署名の検査ごと迂回される
-- トランザクションごとに署名の検査のコードが動き、EOA の送金より手数料が高い
+- トランザクションごとに署名を検査するコードが動き、EOA の送金より手数料が高い
 - 所有者が署名するのは 32 バイトのハッシュで、内容の確認は所有者の端末と運用に任される
 
 ---
@@ -378,5 +378,5 @@ m 個の署名を要求しても、所有者の全員が同じ偽の内容に署
 ### 適さないケース
 
 - 少額を頻繁に送る用途で、署名を集める手間と手数料が資産の保護に見合わない場合
-- 所有者がトランザクションの内容を自分の端末で確認する手段を持たず、共通の画面の表示を信じるしかない場合
+- 所有者がトランザクションの内容を自分の端末で確認する手段を持たず、共通の画面に出る表示を信じるしかない場合
 - チェーン上で誰が承認したかを隠したい場合（所有者のアドレスと署名がチェーンに出る）
