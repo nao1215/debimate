@@ -76,7 +76,7 @@ CPU が 2 コアなら、同時に動ける問い合わせは 2 個です。そ�
 - 共有メモリの上のロックや、内部のデータ構造の奪い合い
 - 接続ごとのプロセスが使うメモリ
 
-PostgreSQL の [wiki の接続数のページ](https://wiki.postgresql.org/wiki/Number_Of_Database_Connections)も、接続が多い時の費用として、CPU のキャッシュの奪い合いや、接続数に応じて大きくなる内部の構造を挙げています。
+PostgreSQL の [wiki にある接続数のページ](https://wiki.postgresql.org/wiki/Number_Of_Database_Connections)でも、接続が多い時の費用として、CPU のキャッシュの奪い合いや、接続数に応じて大きくなる内部の構造が挙げられています。
 
 この実験では、各接続は前の問い合わせが返るとすぐ次を送るので、DB と pgbench の間には、常に接続数と同じ数の問い合わせがあります。
 
