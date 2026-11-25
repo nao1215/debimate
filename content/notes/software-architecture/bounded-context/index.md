@@ -39,7 +39,7 @@ DDD（Domain-Driven Design、ドメイン駆動設計）でいうモデルは、
 
 Saleor は、Python と Django で書かれた EC の基盤で、注文を `Order` というモデルで表します。2024 年 4 月の PR「[Calculate order promotions in draft order](https://github.com/saleor/saleor/pull/15459)」で、下書きの注文に値引きを計算する処理が入りました。
 
-値引きの条件は「合計が一定の額以上」のような形で、Saleor はこの判定を SQL で行います。判定の前に税抜きの合計を DB（データベース）へ保存しておく必要があり、その書き先が、税を計算した結果も入れる `subtotal` と `total` でした。どちらも税抜き（net）と税込み（gross）の 2 つの列の組で、値引きの処理は税抜きの合計を両方の列に書いていました。以下は、直す前と後で、2 つの処理がどの列に書くかを並べた図です。
+値引きの条件は「合計が一定の額以上」のような形で、Saleor はこの条件を SQL で判定します。判定の前に税抜きの合計を DB（データベース）へ保存しておく必要があり、その書き込む先が、税を計算した結果も入れる `subtotal` と `total` でした。どちらも税抜き（net）と税込み（gross）の 2 つの列に分かれていて、値引きの処理は税抜きの合計を両方の列に書いていました。以下は、直す前と後で、2 つの処理がどの列に書くかを並べた図です。
 
 {{< figure src="images/writers.webp" alt="左は直す前で、値引きの判定と税の計算の 2 つの処理が、どちらも同じ total に矢印で書き込み、total には税抜きと税込みが交互に入る。右は直した後で、値引きの判定は base_total に、税の計算は total に書き、total には税込みだけが入る" caption="PR #19801 の前と後で、合計を書く列" align="center" >}}
 
@@ -70,7 +70,7 @@ PR で足されたコードのコメントには、`Checkout` と同じ持ち方
 
 Saleor を動かすには PostgreSQL などの環境が要るので、仕組みだけを Python の標準ライブラリで真似ました。Saleor のコードではありません。
 
-注文は小計 70・送料 10・税率 10% で、前回の計算で税込みの 88 が `total` に入っている下書きです。税の計算は外部のアプリへ問い合わせる想定で 2 秒待ち、別の処理は 1 秒後に注文の備考を変えます。以下は、再計算を行う関数の抜粋で、全体は [lab/race.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/bounded-context/lab/race.py) にあります。
+注文は小計 70・送料 10・税率 10% で、前回の計算で税込みの 88 が `total` に入っている下書きです。税の計算は外部のアプリへ問い合わせる想定で 2 秒待ち、別の処理は 1 秒後に注文の備考を変えます。以下は、合計を計算し直す関数の抜粋で、全体は [lab/race.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/bounded-context/lab/race.py) にあります。
 
 ```python
 def recalculate(db, shared, log, crash=False):
@@ -138,7 +138,7 @@ normal shared 確定した合計: 88
 
 ### Bounded Context が区切るもの
 
-Saleor の直し方は列の名前を分けただけで、境界を引いたわけではありません。それでも「この場所で、この語はどの意味か」を決める判断は同じで、Bounded Context はそれをモデルの単位で行います。
+Saleor の直し方は列の名前を分けただけで、境界を引いたわけではありません。それでも「この場所で、この語はどの意味か」を決める判断は同じで、Bounded Context はその判断をモデルの単位で下します。
 
 DDD Reference は、境界をチームの体制、アプリケーションのどの部分で使うか、コードベースや DB のスキーマのような物理的な形で明示し、その中ではモデルの概念と用語を厳密に揃えるよう勧めています。境界の中で揃える語の集まりは、ユビキタス言語（ubiquitous language）と呼ばれ、モデルの型名や列名がそのままこの言語の語になります。
 
