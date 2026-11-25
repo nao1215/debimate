@@ -234,7 +234,7 @@ function makeCommitment(
 }
 ```
 
-`Registration` には、名前（label）、所有者（owner）、期間、`secret`、名前の解決先（resolver）などが入ります。`secret` が本記事の salt で、ドキュメントは利用者が作る 32 バイトの乱数としています。名前は辞書の単語のように候補を絞りやすいので、`secret` が無ければ総当たりで当てられます。所有者もハッシュ値の入力に入るので、他人のリビールを写しても、名前は元の所有者に登録されます。
+`Registration` には、名前（label）、所有者（owner）、期間、`secret`、名前の解決先（resolver）などが入ります。`secret` が本記事の salt で、ドキュメントでは利用者が作る 32 バイトの乱数とされています。名前は辞書の単語のように候補を絞りやすいので、`secret` が無ければ総当たりで当てられます。所有者もハッシュ値の入力に入るので、他人のリビールを写しても、名前は元の所有者に登録されます。
 
 `register` は、コミットから `minCommitmentAge` 以上、`maxCommitmentAge` 未満の時間が経ったことを[確かめます](https://github.com/ensdomains/ens-contracts/blob/v1.7.0/contracts/ethregistrar/ETHRegistrarController.sol#L263-L283)。ドキュメントによると最短は 60 秒で、v1.7.0 の[デプロイのスクリプト](https://github.com/ensdomains/ens-contracts/blob/v1.7.0/deploy/ethregistrar/04_deploy_eth_registrar_controller.ts)では `maxCommitmentAge` が 86400 秒（24 時間）です。
 
