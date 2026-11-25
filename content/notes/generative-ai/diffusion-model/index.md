@@ -38,7 +38,7 @@ topics: ["Image Generation"]
 
 SDXL で 1 枚を描く時に使う部品と、データの流れは次の通りです。
 
-{{< figure src="images/diffusion_pipeline.webp" alt="プロンプトはテキストエンコーダーで語ごとのベクトルになり、潜在空間で 28 回繰り返す UNet とサンプラーの組に渡る。繰り返しの入口は seed から作ったノイズで、出口の潜在表現は VAE のデコーダーで 1024 × 1024 の画像になる" caption="SDXL で 1 枚を描く時の部品の流れ" align="center" >}}
+{{< figure src="images/diffusion_pipeline.webp" alt="プロンプトはテキストエンコーダーで語ごとのベクトルになり、潜在空間で 28 回繰り返す UNet とサンプラーに渡る。繰り返しの入口は seed から作ったノイズで、出口の潜在表現は VAE のデコーダーで 1024 × 1024 の画像になる" caption="SDXL で 1 枚を描く時の部品の流れ" align="center" >}}
 
 SDXL は [Latent Diffusion Model](https://arxiv.org/abs/2112.10752)（LDM）の構成で、画素の上ではなく、[VAE](https://arxiv.org/abs/1312.6114)（Variational Autoencoder）で画像を縮めた潜在表現（latent）の上でノイズを取り除きます。1024 × 1024 の画像を縮めた潜在表現は、128 × 128 × 4 の数の配列です。
 
