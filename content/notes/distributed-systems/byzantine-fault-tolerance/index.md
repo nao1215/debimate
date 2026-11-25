@@ -17,7 +17,7 @@ crossTopics:
 
 {{< figure src="images/bft_crash_vs_byzantine.svg" alt="左は停止したノード A が何も送らず、B と C に届く値は食い違わない。右はノード A が B に commit、C に abort を送り、B と C が別々の値を正しいと信じる" caption="止まる故障（左）と嘘をつく故障（右）" align="center" >}}
 
-上記の図の右側の B と C は、手元の情報だけでは、どちらの値が嘘なのかを判定できません。このような故障を前提にしなければならないのは、運営者の違うノードが同じ台帳を持つ[ブロックチェーン](/notes/blockchain-systems/blockchain-basics/)や、攻撃者に乗っ取られる可能性を想定する複製です。嘘をつくノードがいても合意できる代表的なアルゴリズムである PBFT（Practical Byzantine Fault Tolerance）の[論文](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)は、攻撃に加えてソフトウェアのバグも、このような故障の原因に挙げています。
+上記の図の右側の B と C は、手元の情報だけでは、どちらの値が嘘なのかを判定できません。このような故障を前提にしなければならないのは、運営者の違うノードが同じ台帳を持つ[ブロックチェーン](/notes/blockchain-systems/blockchain-basics/)や、攻撃者に乗っ取られる可能性を想定する複製です。嘘をつくノードがいても合意できる代表的なアルゴリズムである PBFT（Practical Byzantine Fault Tolerance）の[論文](https://www.usenix.org/conference/osdi-99/practical-byzantine-fault-tolerance)では、攻撃に加えてソフトウェアのバグも、このような故障の原因に挙げられています。
 
 <br>
 
