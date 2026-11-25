@@ -35,7 +35,7 @@ MVCC が読み手に見せる版を選ぶ規則（分離レベル）は、[Trans
 
 PostgreSQL の表は、8 KB のブロックを並べたファイルです。1 つのブロックに、レコードの版（tuple）がいくつも入ります。各版には、その版を作ったトランザクションの ID（`xmin`）と、その版を消したトランザクションの ID（`xmax`、まだ消されていなければ 0）が付いています。トランザクション ID は、書き込みをするトランザクションに 1 つずつ振られる通し番号です。
 
-2 件の口座（id 1 の残高 100、id 2 の残高 500）を入れた表で、id 1 の残高を 200 に更新しました。psql で 1 文ずつ実行すると、文ごとに別のトランザクションとしてコミットされる（自動コミット）ので、INSERT が 741、UPDATE が 742、後の DELETE が 743 になっています。拡張機能 [pageinspect](https://www.postgresql.org/docs/17/pageinspect.html) の `heap_page_items()` は、ブロックの中の版を、見えるかどうかに関係なく全て並べます。
+2 件の口座（id 1 の残高 100、id 2 の残高 500）を入れた表で、id 1 の残高を 200 に更新しました。psql で 1 文ずつ実行すると、文ごとに別のトランザクションとしてコミットされる（自動コミット）ので、INSERT が 741、UPDATE が 742、後の DELETE が 743 になっています。拡張機能 [pageinspect](https://www.postgresql.org/docs/17/pageinspect.html) の `heap_page_items()` は、ブロックの中の版を見えるかどうかに関係なく全て並べます。
 
 ```text
 SELECT lp, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
@@ -48,9 +48,9 @@ SELECT lp, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
 
 `lp` はブロックの中の版の番号、`t_ctid` は次の版の位置（ブロック 0 の 3 番、のように読みます）で、自分自身を指していれば最新の版です。普通の `SELECT` では id 1 は 1 件しか見えませんが、ブロックの中には 1 番（残高 100）と 3 番（残高 200）の 2 つの版があります。以下は、この 2 つの版と、それを読む側の関係を描いた図です。
 
-{{< figure src="images/mvcc-vacuum_versions.webp" alt="表のブロック 0 に、1 番の版（id 1、残高 100、xmin 741、xmax 742）と、3 番の版（id 1、残高 200、xmin 742、xmax 0）が並び、1 番から 3 番へ矢印が向く。742 のコミットより前のスナップショットは 1 番を、後のスナップショットは 3 番を読む" caption="UPDATE の後のブロックの中（id 2 の版は省略）" align="center" >}}
+{{< figure src="images/mvcc-vacuum_versions.webp" alt="表のブロック 0 に、1 番の版（id 1、残高 100、xmin 741、xmax 742）と、3 番の版（id 1、残高 200、xmin 742、xmax 0）が並び、1 番から 3 番へ矢印が向く。742 のコミットより前のスナップショットは 1 番を読み、後のスナップショットは 3 番を読む" caption="UPDATE の後のブロックの中（id 2 の版は省略）" align="center" >}}
 
-UPDATE を実行したトランザクション 742 は、1 番の中身を書き換えず、`xmax` に自分の ID を書いて、3 番を足しました。742 がコミットする前に取ったスナップショットで読むトランザクションは 1 番を、コミットした後に取ったスナップショットで読むトランザクションは 3 番を読みます。書き手が古い版を残しておくので、読み手は書き手を待たずに読めます。
+UPDATE を実行したトランザクション 742 は、1 番の中身を書き換えず、`xmax` に自分の ID を書いて、3 番を足しました。742 がコミットする前に取ったスナップショットで読むトランザクションは 1 番を読み、コミットした後に取ったスナップショットで読むトランザクションは 3 番を読みます。書き手が古い版を残しておくので、読み手は書き手を待たずに読めます。
 
 続けて id 1 を DELETE すると、3 番の `xmax` に 743 が入るだけで、版はブロックに残りました。
 
@@ -66,7 +66,7 @@ UPDATE を実行したトランザクション 742 は、1 番の中身を書き
 
 ### VACUUM が消すもの
 
-`xmax` が付いて、その削除がコミットされ、今後どのスナップショットからも見えなくなった版を、PostgreSQL の[ドキュメント](https://www.postgresql.org/docs/17/routine-vacuuming.html#VACUUM-FOR-SPACE-RECOVERY)では dead tuple（死んだ版）と呼びます。「どのスナップショットからも見えない」という条件は、後の節で効いてきます。上の DELETE の後で `VACUUM acct` を実行すると、ブロックの中は次のようになりました。
+PostgreSQL の[ドキュメント](https://www.postgresql.org/docs/17/routine-vacuuming.html#VACUUM-FOR-SPACE-RECOVERY)では、`xmax` が付いて、その削除がコミットされ、今後どのスナップショットからも見えなくなった版を dead tuple（死んだ版）と呼びます。「どのスナップショットからも見えない」という条件は、後の節で問題になります。上の DELETE の後で `VACUUM acct` を実行すると、ブロックの中は次のようになりました。
 
 ```text
 SELECT lp, lp_flags, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('acct', 0));
@@ -82,7 +82,7 @@ SELECT lp, lp_flags, t_xmin, t_xmax, t_ctid FROM heap_page_items(get_raw_page('a
 
 #### 空いた場所は使い回すが、ファイルは縮まない
 
-冒頭のグラフで、毎回 VACUUM した表が 1 回目に 13.5 MB から 27 MB に増え、そこで止まったのは、このためです。1 回目の UPDATE で、全件の新しい版が足されて 2 倍になります。その後の VACUUM で古い版の場所が空き、2 回目の UPDATE はその空きに新しい版を書きます。古い版と新しい版の 2 組分の場所があれば、それ以上は増えません。
+冒頭のグラフで、毎回 VACUUM した表が 1 回目に 13.5 MB から 27 MB に増え、そこで止まったのは、このためです。1 回目の UPDATE で、全件の新しい版が足されて 2 倍になります。その後の VACUUM で古い版の場所が空き、2 回目の UPDATE はその空きに新しい版を書きます。全件の古い版と新しい版を置ける場所があれば、それ以上は増えません。
 
 VACUUM は空いた場所を使い回せるようにするだけで、ファイルを小さくはしません（末尾のブロックが丸ごと空き、表のロックがすぐ取れる時は、その分を切り詰めます）。VACUUM しなかった 148 MB の表で確認すると、次の通りでした。
 
@@ -134,7 +134,7 @@ tuples: 1000000 removed, 100000 remain, 0 are dead but not yet removable
 removable cutoff: 828, which was 0 XIDs old when operation ended
 ```
 
-100 万の版が消え、生きている 10 万件だけが残りました。古いスナップショットは、その表だけでなく、同じ DB の全ての表の VACUUM を止めます。実験でも、毎回 VACUUM の表の計測を、待たせるトランザクションを開く前に済ませる必要がありました。
+100 万の版が消え、生きている 10 万件だけが残りました。古いスナップショットは、その表だけでなく、同じ DB の全ての表の VACUUM を止めます。実験でも、待たせるトランザクションを開く前に、毎回 VACUUM する表の計測を済ませる必要がありました。
 
 <br>
 
@@ -153,7 +153,7 @@ removable cutoff: 828, which was 0 XIDs old when operation ended
 - 読み取り用の複製（レプリカ）で長い問い合わせを流し、その境目を書き込みを受ける側（プライマリ）に伝える設定（[hot_standby_feedback](https://www.postgresql.org/docs/17/runtime-config-replication.html#GUC-HOT-STANDBY-FEEDBACK)）。プライマリが古い版を消すと、レプリカの問い合わせが読む版が無くなるので、この設定ではプライマリが消すのを待つ
 - hot_standby_feedback を使っていたレプリカが止まったまま残った、物理レプリケーションのスロット（複製先がどこまで受け取ったかをプライマリが覚えておく仕組みで、受け取った境目も覚え続ける）。論理レプリケーションのスロットが止めるのは、システムカタログの回収だけ
 
-1 つ目は、トランザクションの範囲を広げすぎた時に起きます（[Transaction Scope](/notes/database-systems/transaction-scope/) のノート）。PostgreSQL には、`idle in transaction` のまま一定の時間が経った接続を切る [idle_in_transaction_session_timeout](https://www.postgresql.org/docs/17/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT) がありますが、既定は 0（切らない）です。書き込みをしたまま開いたトランザクションは、[Transactional Outbox](/notes/distributed-systems/transactional-outbox/) の行をトランザクション ID で読む relay の送信も止めます。接続の一覧に現れないまま VACUUM を止めるものに、[2PC](/notes/distributed-systems/two-phase-commit/) で準備したまま残ったトランザクションもあります。
+1 つ目は、[トランザクションの範囲](/notes/database-systems/transaction-scope/)を広げすぎた時に起きます。PostgreSQL には、`idle in transaction` のまま一定の時間が経った接続を切る [idle_in_transaction_session_timeout](https://www.postgresql.org/docs/17/runtime-config-client.html#GUC-IDLE-IN-TRANSACTION-SESSION-TIMEOUT) がありますが、既定は 0（切らない）です。書き込みをしたまま開いたトランザクションは、[Transactional Outbox](/notes/distributed-systems/transactional-outbox/) の行をトランザクション ID で読む relay の送信も止めます。接続の一覧に現れないまま VACUUM を止めるものに、[2PC](/notes/distributed-systems/two-phase-commit/) で準備したまま残ったトランザクションもあります。
 
 ---
 
@@ -175,7 +175,7 @@ VACUUM には、もう 1 つ大事な仕事があります。トランザクシ�
 
 以下は、32 ビットの ID を円で描き、凍結していない古い版が見えなくなる仕組みを示した図です。
 
-{{< figure src="images/mvcc-vacuum_wrap.webp" alt="トランザクション ID を約 40 億で一周する円で描く。今の ID から見て、反時計回りの半周（約 20 億）が過去、時計回りの半周が未来。過去の端の近くにある古い版の xmin は、今の ID がさらに進むと未来の側に入り、見えなくなる。凍結した版は xmin を比べずに常に過去として扱う" caption="32 ビットのトランザクション ID の円" align="center" >}}
+{{< figure src="images/mvcc-vacuum_wrap.webp" alt="トランザクション ID を約 40 億で一周する円で描く。今の ID から見て、反時計回りの半周（約 20 億）が過去、時計回りの半周が未来。過去の端の近くにある古い版の xmin は、今の ID がさらに進むと未来の範囲に入り、見えなくなる。凍結した版は xmin を比べずに常に過去として扱う" caption="32 ビットのトランザクション ID の円" align="center" >}}
 
 周回の手前で、PostgreSQL は段階を踏んで知らせます。残りが 4,000 万トランザクションを切るとログに警告を出し、それでも凍結が追いつかず、残り 300 万トランザクションを切ると、PostgreSQL は新しいトランザクション ID の割り当てを拒否します。書き込みが全て止まり、次のエラーになります。
 
@@ -213,7 +213,7 @@ PostgreSQL の MVCC は、古い版を表の中に残すことで、読み手と
 ### VACUUM の問題が小さくなりやすいケース
 
 - 追記だけで、更新と削除がほとんど無い表（ログや履歴）
-- 古いデータを `DELETE` ではなく、パーティションごと捨てる表（[Partitioning](/notes/database-systems/partitioning/) のノート）
+- 古いデータを `DELETE` ではなく、[パーティション](/notes/database-systems/partitioning/)ごと捨てる表
 - トランザクションが全て短く、`idle in transaction` の接続を監視・切断している DB
 
 実験の SQL・実行用のスクリプト・出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/database-systems/mvcc-vacuum/lab) にあります。
