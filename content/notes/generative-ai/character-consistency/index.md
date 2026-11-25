@@ -38,9 +38,9 @@ topics: ["Image Generation"]
 
 <br>
 
-さらに、書いた属性も必ず守られるとは限りません。語の色が別の物に移る話は [Attribute Binding のノート](/notes/generative-ai/attribute-binding/)、語に重みを付けると絵が崩れる話は [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/)で扱いました。
+さらに、書いた属性も必ず守られるとは限りません。語の色が別のものに移る話は [Attribute Binding のノート](/notes/generative-ai/attribute-binding/)、語に重みを付けると絵が崩れる話は [Prompt Weighting のノート](/notes/generative-ai/prompt-weighting/)で扱いました。
 
-冒頭の紺のカーディガンも、`cardigan` は 4 枚とも描かれたのに、`navy` は効いていません。詳しい外見の語を足しても、揃うのは語で書ける属性までで、語を積むほど別の崩れ方の危険が増えます。
+冒頭の紺のカーディガンも、`cardigan` は 4 枚とも描かれたのに、`navy` は反映されていません。詳しい外見の語を足しても、揃うのは語で書ける属性までで、語を積むほど別の崩れ方の危険が増えます。
 
 そこで、語以外の経路で情報を渡す手段が使われます。以下は、生成の流れのどこに各手段が入るかを描いた図です。
 
@@ -87,7 +87,7 @@ topics: ["Image Generation"]
 
 <br>
 
-`<trigger>` は LoRA を効かせる起動語です。プロンプトの全文、ネガティブプロンプト（描かせたくない物を並べるプロンプト）、候補から外した絵の理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/README.txt) にあります。冒頭の 4 枚のうち、目がはっきり見えて正面を向いた右端（seed 20261114）を基準の絵にし、そこから描き分けました。
+`<trigger>` は LoRA を効かせる起動語です。プロンプトの全文、ネガティブプロンプト（描かせたくないものを並べるプロンプト）、候補から外した絵の理由は [lab/README.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/README.txt) にあります。冒頭の 4 枚のうち、目がはっきり見えて正面を向いた右端（seed 20261114）を基準の絵にし、そこから描き分けました。
 
 <br>
 
@@ -111,7 +111,7 @@ for i in (1, 2):
 
 `ipa` は参照画像（IP-Adapter）、`i2i` は img2img、`pose` は骨格の ControlNet で、いずれも後の節で説明します。上記のほかに、参照画像の使い方の別案・denoise 0.85・物差し用の別人の 8 件を送っています（一覧は lab/README.txt）。
 
-揃い具合は、目で見るのに加えて、顔の切り抜きを 2 つの方法で比べました。顔の範囲は、文字で指定した物の範囲を推定する [CLIPSeg](https://huggingface.co/CIDAS/clipseg-rd64-refined)（[論文](https://arxiv.org/abs/2112.10003)）に `face` を探させて切り抜いています（[lab/metrics.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/metrics.py)）。
+揃い具合は、目で見るのに加えて、顔の切り抜きを 2 つの方法で比べました。顔の範囲は、文字で指定したものの範囲を推定する [CLIPSeg](https://huggingface.co/CIDAS/clipseg-rd64-refined)（[論文](https://arxiv.org/abs/2112.10003)）に `face` を探させて切り抜いています（[lab/metrics.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/metrics.py)）。
 
 | 指標 | 数え方 |
 |---|---|
@@ -144,7 +144,7 @@ for i in (1, 2):
 <figure style="margin:0;flex:0 1 170px;min-width:0"><img src="images/nolora_3.webp" alt="画風 LoRA なし、seed 20261114。同じ顔立ちで、ベージュのカーディガン" width="416" height="608" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">20261114</figcaption></figure>
 </div>
 
-画風 LoRA を外した 4 枚は、どれも正面か少し斜めを向いて立つ構図で、顔立ちもよく似ています。組の中で総当たりに比べると（基準の絵との比較ではなく、4 枚どうしの比較）、顔のタグの一致は LoRA ありの 4 枚が平均 0.53（0.41〜0.73）、LoRA なしが平均 0.95（0.92〜1.00）でした（[lab/output_pairwise.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/output_pairwise.txt)）。
+画風 LoRA を外した 4 枚は、どれも正面か少し斜めを向いて立つ構図で、顔立ちもよく似ています。同じ条件の 4 枚の中で総当たりに比べると（基準の絵との比較ではなく、4 枚どうしの比較）、顔のタグの一致は LoRA ありの 4 枚が平均 0.53（0.41〜0.73）、LoRA なしが平均 0.95（0.92〜1.00）でした（[lab/output_pairwise.txt](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/character-consistency/lab/output_pairwise.txt)）。
 
 画風 LoRA を当てると、絵ごとの差はむしろ広がりました。今回の 4 枚では、この画風 LoRA が斜め上からの構図や、顔の大きさ・向きに幅を持たせ、seed ごとの違いも大きくしたように見えました。画風 LoRA が揃えるのは塗りと線で、特定の人物の顔ではありません。なお、カーディガンは LoRA なしでも紺になりませんでした。
 
@@ -163,7 +163,7 @@ for i in (1, 2):
 
 語を 1 つ変えただけの笑顔は、構図も顔もほぼ基準のままでした。顔のタグの一致は 0.73 です。ただし、カーディガンの色はベージュから黄緑に、耳飾りは緑の石の飾りから銀の輪に変わっています。
 
-手を振る・カフェでは、構図ごと変わりました。顔のタグの一致は 0.33 と 0.38 で、seed を変えた冒頭の 3 枚（0.41〜0.73）より低い値です。同じ seed でも、プロンプトが変われば各ステップでモデルが向かう先が変わるので、最初のノイズが同じでも途中から別の絵になります。今回は、seed の固定が効いたのは、構図をほとんど変えない小さな差分まででした。
+手を振る・カフェでは、構図ごと変わりました。顔のタグの一致は 0.33 と 0.38 で、seed を変えた冒頭の 3 枚（0.41〜0.73）より低い値です。同じ seed でも、プロンプトが変われば各ステップでモデルが向かう先が変わるので、最初のノイズが同じでも途中から別の絵になります。今回は、seed を固定して揃ったのは、構図をほとんど変えない小さな差分まででした。
 
 ---
 
@@ -201,9 +201,9 @@ ControlNet は、骨格や奥行きの画像を形の条件として渡し、ポ
 
 ### 参照画像で寄せる（IP-Adapter）
 
-[IP-Adapter](https://arxiv.org/abs/2308.06721) は、参照画像を CLIP の画像エンコーダーで特徴に変え、プロンプトとは別の cross-attention（画像の特徴を生成の途中へ混ぜる層）から渡す仕組みです。ベースモデルの重みは変えずに、論文の SD1.5 版では 22M のパラメータを足すだけで、画像をプロンプトのように使えます。
+[IP-Adapter](https://arxiv.org/abs/2308.06721) は、参照画像を CLIP の画像エンコーダーで特徴に変え、プロンプトとは別の cross-attention（画像の特徴を生成の途中へ混ぜる層）から渡す仕組みです。ベースモデルの重みは変えずに、論文が示した SD1.5 用のモデルでは 22M のパラメータを足すだけで、画像をプロンプトのように使えます。
 
-今回は、画像を小さな区画に分けた特徴を使う [IP-Adapter Plus の SDXL 版](https://huggingface.co/h94/IP-Adapter/tree/018e402)（`ip-adapter-plus_sdxl_vit-h`）を使いました。
+今回は、画像を小さな区画に分けた特徴を使う [IP-Adapter Plus の SDXL 用モデル](https://huggingface.co/h94/IP-Adapter/tree/018e402)（`ip-adapter-plus_sdxl_vit-h`）を使いました。
 
 参照画像は基準の絵、プロンプトは笑顔、seed は基準と別の 20261211 で、参照なしの絵と同じです。
 
@@ -218,7 +218,7 @@ ControlNet は、骨格や奥行きの画像を形の条件として渡し、ポ
 
 使い方を 2 通り変えても、同じように色が転びました。1 つは、ノイズの多い最初の 3 割のステップでは参照画像を使わず、残りのステップだけに重み 0.6 で使う方法です。もう 1 つは、参照なしで描いた絵を下絵にして denoise 0.5 の img2img で描き直し、その描き直しにだけ重み 0.7 で参照画像を使う方法です。
 
-IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので、今回のベースモデルは SDXL を大きく追加学習した派生モデルです。その差と画風 LoRA の重なりが原因と推測していますが、確認してはいません。公式の README は、同じベースモデルから追加学習したモデルにも IP-Adapter を使える（"IP-Adapter can be generalized not only to other custom models fine-tuned from the same base model"）と書いているので、この推測はその記述と食い違います。少なくともこの組み合わせでは、参照画像は顔を寄せる前に絵を壊しました。参照の背景・使う段・効かせ方を変えて色の転びを切り分けた実験は、[IP-Adapter Color Cast のノート](/notes/generative-ai/ip-adapter-color-cast/)にまとめました。
+IP-Adapter の SDXL のモデルは SDXL 1.0 向けに公開されたもので、今回のベースモデルは SDXL を大きく追加学習した派生モデルです。その差と画風 LoRA の重なりが原因と推測していますが、確認してはいません。公式の README は、同じベースモデルから追加学習したモデルにも IP-Adapter を使える（"IP-Adapter can be generalized not only to other custom models fine-tuned from the same base model"）と書いているので、この推測はその記述と食い違います。少なくともこの組み合わせでは、参照画像を使うと、顔が寄る前に絵が崩れました。参照の背景・使う段・効かせ方を変えて色の転びを切り分けた実験は、[IP-Adapter Color Cast のノート](/notes/generative-ai/ip-adapter-color-cast/)にまとめました。
 
 ---
 
@@ -246,7 +246,7 @@ ipa80_cafe      face_clip=0.692 face_tags=0.417 ...
 
 <br>
 
-左の CLIP は、物差しとしては目盛りが詰まっていました。髪も目の色も違う別人が 0.90 で、seed を変えた同じプロンプトの絵（0.92〜0.98）とほとんど差がありません。参照画像（IP-Adapter）の絵は、別人より低い 0.69〜0.88 で、前の節の色の崩れが効いていると見ています。img2img の 0.85 は、タグの一致が下がったのに CLIP では最も高い組の 1 つ（0.98）でした。今回の 36 枚では、CLIP の埋め込みは顔立ちよりも塗り・色・構図の違いに強く反応しているように見えます。
+左の CLIP は、物差しとしては目盛りが詰まっていました。髪も目の色も違う別人が 0.90 で、seed を変えた同じプロンプトの絵（0.92〜0.98）とほとんど差がありません。参照画像（IP-Adapter）の絵は、別人より低い 0.69〜0.88 で、前の節の色の崩れが影響していると見ています。img2img の 0.85 は、タグの一致が下がったのに CLIP では最も高い組の 1 つ（0.98）でした。今回の 36 枚では、CLIP の埋め込みは顔立ちよりも塗り・色・構図の違いに強く反応しているように見えます。
 
 右のタグの一致は、別人を 0.21〜0.23 と低く出し、img2img を 0.67〜0.89 と高く出しました。ただし、タグが数えるのは「緑の目」「茶髪」「耳飾り」のような語で書ける特徴です。冒頭の 4 枚のように、語の上では同じでも顔立ちが違う絵は、別人と判定できません。
 
@@ -284,7 +284,7 @@ ipa80_cafe      face_clip=0.692 face_tags=0.417 ...
 
 - 構図や視点を大きく変える場合。基準の絵からの img2img では新しい構図が出ず、プロンプトで描くと顔が変わる
 - 顔立ちが似ていることを数値で保証したい場合。CLIP は別人と同じキャラの差が小さく、タグは語で書けない顔の差を測れない
-- 服の色や小物の形が語で縛れない場合。今回の `navy` のように、語が効かずに塗りの傾向に引っ張られる
+- 服の色や小物の形が語で縛れない場合。今回の `navy` のように、語が反映されずに塗りの傾向に引っ張られる
 - 今回の組み合わせのように、参照画像を使うと色と塗りが崩れる場合。顔を寄せる前に使えなくなる
 
 プロンプト・seed・LoRA・img2img・ControlNet・参照画像は、それぞれ揃えるものが違います。何を揃え、何を変えたいかを先に決めて、手段を組み合わせる必要があります。
