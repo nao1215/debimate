@@ -11,9 +11,9 @@ crossTopics:
   distributed-systems: ["Reliability"]
 ---
 
-サーキットブレーカー（Circuit Breaker）は、失敗が続いている下流のサービスへの呼び出しを一定時間止め、呼び出し側をすぐに失敗させる仕組みです。配電盤のブレーカーと同じく、異常を検知すると回路を開いて呼び出しを通さなくなり、しばらく経つと少数の呼び出しで回復を確認します。
+サーキットブレーカー（Circuit Breaker）は、失敗が続いている下流サービスへの呼び出しを一定時間止め、呼び出し側をすぐに失敗させる仕組みです。配電盤のブレーカーと同じく、異常を検知すると回路を開いて呼び出しを通さなくなり、しばらく経つと少数の呼び出しで回復を確認します。
 
-Michael Nygard 氏の書籍『[Release It!](https://pragprog.com/titles/mnee2/release-it-second-edition/)』が安定性のパターンの 1 つとして取り上げ、Martin Fowler 氏の [CircuitBreaker](https://martinfowler.com/bliki/CircuitBreaker.html) も実装例付きで紹介しています。
+Michael Nygard 氏の書籍『[Release It!](https://pragprog.com/titles/mnee2/release-it-second-edition/)』が安定性を保つパターンの 1 つとして取り上げ、Martin Fowler 氏の [CircuitBreaker](https://martinfowler.com/bliki/CircuitBreaker.html) も実装例付きで紹介しています。
 
 例えば、注文サービスが呼ぶ在庫サービスが 30 秒間だけ応答を返さなくなると、注文サービスのスレッドは応答待ちで埋まり、在庫と関係の無い注文履歴の表示まで受け付けられなくなります。下流 1 つが黙るだけで、呼び出し側も止まるのです。ブレーカーは、この待ちを「すぐに返るエラー」に置き換えます。
 
@@ -39,7 +39,7 @@ stateDiagram-v2
 
 <br>
 
-本記事では、呼び出し側のプロセスの中に置くブレーカーを中心に、状態遷移の条件と、Timeout（応答を待つ時間の上限）・Retry・Fallback との組み合わせを説明します。下流が 30 秒黙る状況をシミュレーションで再現し、次の疑問に答えます。
+本記事では、呼び出し側のプロセス内に置くブレーカーを中心に、状態遷移の条件と、Timeout（応答を待つ時間の上限）・Retry・Fallback との組み合わせを説明します。下流が 30 秒黙る状況をシミュレーションで再現し、次の疑問に答えます。
 
 - 下流が遅くなると、なぜ呼び出し側まで止まるのか。
 - 失敗をどう数え、いつ Open にし、いつ Closed に戻すのか。
@@ -148,7 +148,7 @@ class CircuitBreaker:
             self.opened_at = now
 ```
 
-このコードでは、結果を数えるのは呼び出しが終わった時で、待っている途中の呼び出しは数えません。状態が変わるたびに `generation` を進め、前の状態で通した呼び出しの遅れた結果は数えません。数えると、Closed の時に通した呼び出しの失敗を Half-Open の試しの結果と取り違えます。
+このコードでは、結果を数えるのは呼び出しが終わった時で、待っている途中の呼び出しは数えません。状態が変わるたびに `generation` を進め、前の状態で通した呼び出しの遅れた結果は数えません。数えると、Closed の時に通した呼び出しの失敗を Half-Open で試した呼び出しの結果と取り違えます。
 
 シミュレーション本体（[lab/sim.py](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/circuit-breaker/lab/sim.py)）から、`run()` の中で下流の停止・timeout・ブレーカーを組み合わせる部分を抜粋します。メインループは 1 ミリ秒ごとに、終わった呼び出しの結果をブレーカーに渡し、届いた要求をスレッドに割り当てます。到着時刻を作る `arrivals()`、終了の事象を積む `push()`、統計の記録、結果を表示する `main()` は省きました。
 
@@ -205,7 +205,7 @@ class CircuitBreaker:
                     finish("a_fast_fail")
 ```
 
-`retry_outside` と `attempts` は後の節の Retry の構成で使います。`lab/` で `python3 sim.py` を実行した[結果](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/circuit-breaker/lab/output.txt)が以下です。`B (local) served` は、下流が黙っていた 30 秒間に届いた要求 B のうち処理できた件数、`fast_fail` はブレーカーに断られた件数です。
+`retry_outside` と `attempts` は後の節で Retry を含む構成に使います。`lab/` で `python3 sim.py` を実行した[結果](https://github.com/nao1215/debimate/blob/main/content/notes/software-architecture/circuit-breaker/lab/output.txt)が以下です。`B (local) served` は、下流が黙っていた 30 秒間に届いた要求 B のうち処理できた件数、`fast_fail` はブレーカーに断られた件数です。
 
 ```text
 == no breaker
@@ -299,7 +299,7 @@ class CircuitBreaker:
 
 timeout は、ブレーカーが失敗を知るまでの時間の上限です。
 
-[Retry](/notes/distributed-systems/retry-backoff/)（失敗した呼び出しをやり直すこと）は、ブレーカーとの位置関係で効き方が変わります。
+[Retry](/notes/distributed-systems/retry-backoff/)（失敗した呼び出しをやり直すこと）は、ブレーカーの内側と外側のどちらに置くかで振る舞いが変わります。
 
 Resilience4j を Java のフレームワーク [Spring Boot](https://spring.io/projects/spring-boot) から使う場合、[既定の順序](https://resilience4j.readme.io/docs/getting-started-3)は `Retry ( CircuitBreaker ( RateLimiter ( TimeLimiter ( Bulkhead ( Function ) ) ) ) )` で、Retry が一番外側です。
 
@@ -313,7 +313,7 @@ Retry だけでブレーカーの無い構成では、処理できた要求 B �
 
 外側に置く場合も、Open で断られた呼び出しは、やり直してもすぐに失敗が返るだけなので、やり直しを止めます（[Azure の説明](https://learn.microsoft.com/en-us/azure/architecture/patterns/circuit-breaker)）。
 
-この実験は単純化して、試行の間の待ち時間を 0 にし、断られた時点で打ち切っています。Resilience4j の Retry は既定で 500 ms 待ち、`CallNotPermittedException` もやり直すので、`ignoreExceptions` に入れて外します。
+この実験は単純化して、試行の間に待つ時間を 0 にし、断られた時点で打ち切っています。Resilience4j の Retry は既定で 500 ms 待ち、`CallNotPermittedException` もやり直すので、`ignoreExceptions` に入れて外します。
 
 呼び出しが何段も重なる構成では、各段の Retry が掛け算になります。5 段の各段で 3 回試すと、最下段の DB への負荷は `3^5 = 243` 倍です（[Amazon Builders' Library](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)）。
 
@@ -349,7 +349,7 @@ Open の間に、エラーの代わりに既定値やキャッシュの値を返
 
 この場合は、壊れた宛先だけを振り分けから外す仕組みと組み合わせます。サービスメッシュのプロキシとして使われる [Envoy](https://www.envoyproxy.io/) の [Outlier detection](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/outlier) は、5xx が続くなど他と違う振る舞いをするホストを一定時間だけ外します。
 
-Envoy の [Circuit breaking](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/circuit_breaking) は、名前は同じでも接続数や処理中の要求数の上限で、本記事の状態遷移とは別の仕組みです。Envoy を [Sidecar](/notes/software-architecture/sidecar/) や [Ambassador](/notes/software-architecture/ambassador/) として置くと、アプリケーションのコードを変えずにこれらを足せます。
+Envoy の [Circuit breaking](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/circuit_breaking) は、名前は同じでも接続数や処理中の要求数に置く上限で、本記事の状態遷移とは別の仕組みです。Envoy を [Sidecar](/notes/software-architecture/sidecar/) や [Ambassador](/notes/software-architecture/ambassador/) として置くと、アプリケーションのコードを変えずにこれらを足せます。
 
 ---
 
@@ -375,6 +375,6 @@ Envoy の [Circuit breaking](https://www.envoyproxy.io/docs/envoy/latest/intro/a
 
 ### 適さないケース
 
-- 呼び出し先がプロセス内のメモリ上のデータ構造で、ネットワーク越しの待ちが無い場合
-- 失敗の原因が要求の内容（入力の不備や残高不足）だけで、下流の健康状態と関係しない呼び出し。Resilience4j は既定で全ての例外を失敗として数えるので、絞らないと正常な下流で Open になる
+- 呼び出し先がプロセス内にあるメモリ上のデータ構造で、ネットワーク越しの待ちが無い場合
+- 失敗の原因が要求の内容（入力の不備や残高不足）だけで、下流が正常かどうかと関係しない呼び出し。Resilience4j は既定で全ての例外を失敗として数えるので、絞らないと正常な下流で Open になる
 - メッセージキューを介して非同期に処理し、失敗したメッセージを Dead Letter Queue（処理できなかったメッセージを溜める別のキュー）に回して後で処理できる場合
