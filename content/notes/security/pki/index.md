@@ -167,7 +167,7 @@ Certificate Transparency（CT）は、公開 Web PKI の証明書を追記専用
 
 {{< figure src="images/pki_lifecycle.svg" alt="横長の帯が 1 枚の証明書の発行から有効期限まで。左端の発行に「ACME で自動化」と「発行時に CT ログへ記録（SCT）、誤発行を第三者が観測できる」。途中で鍵の漏洩や誤発行が分かり、その後の失効（CRL / OCSP）から有効期限までの帯は黄土色の「期限は残るが失効済み」。失効の下に「取れない時に止めるかはクライアント次第」" caption="証明書の一生と、ACME・CT・失効の受け持ち" align="center" >}}
 
-ACME（Automatic Certificate Management Environment）は、CA と証明書利用者の間で証明書の発行・更新・失効を自動化するプロトコルです。[RFC 8555](https://www.rfc-editor.org/rfc/rfc8555) では、HTTP-01 や DNS-01 の challenge で識別子の制御を検証します。ただし、更新済みの証明書をサーバーが読み込み直す設定は、ACME とは別に用意します。
+ACME（Automatic Certificate Management Environment）は、CA と証明書利用者の間で証明書の発行・更新・失効を自動化するプロトコルです。[RFC 8555](https://www.rfc-editor.org/rfc/rfc8555) では、HTTP-01 や DNS-01 の challenge で、識別子を管理していることを検証します。ただし、更新済みの証明書をサーバーが読み込み直す設定は、ACME とは別に用意します。
 
 ---
 
