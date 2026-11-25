@@ -8,7 +8,7 @@
 
 - cover_figure(): 表紙。修正前の Distinct に同じプロパティを掛けた時、testing/quick が報告した反例（10 行）と
   rapid が縮めた反例（2 行）を並べる（lab/output/exp1_shrink.tsv の種 1）。
-- keys_figure(): 修正前の makeRowKey が、異なる 2 行に同じ鍵を作る 3 つの組（filesql Issue #354）。
+- keys_figure(): 修正前の makeRowKey が、異なる 2 行に同じ鍵を作る 3 つのペア（filesql Issue #354）。
 - shrink_animation(): rapid が種 1 の反例を縮める途中で、プロパティが破れた表を順に見せる動画
   （lab/output/exp1_shrink_steps_seed1.txt）。
 - float_figure(): 修正後の鍵が整数を float64 にしてから文字列にするので、2^53 を超えると
@@ -188,7 +188,7 @@ def keys_figure():
         key = buggy_key(r1 + ((None,) * 0)).replace("\x00", "\\x00")
         s.box(686, y + 14, 240, 34, RED_PALE, RED, rx=4)
         s.text(698, y + 37, f'鍵 "{key}"', 15, RED, "start", mono=True)
-    s.text(30, 344, "どの組も 2 行の値は異なるが、鍵が同じなので Distinct は 2 行目を捨てる", 14, SUB, "start")
+    s.text(30, 344, "どのペアも 2 行の値は異なるが、鍵が同じなので Distinct は 2 行目を捨てる", 14, SUB, "start")
     s.save("keys.webp")
 
 
