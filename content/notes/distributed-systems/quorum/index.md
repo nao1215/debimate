@@ -82,7 +82,7 @@ Dynamo は、止まったノードの代わりにレプリカを持つはずの�
 
 ### 何台で組み、何台まで止まれるか
 
-過半数で決めるなら、止まれる台の数は「台数 − 過半数」です。Martin Fowler 氏のサイトにある Unmesh Joshi 氏の [Majority Quorum](https://martinfowler.com/articles/patterns-of-distributed-systems/majority-quorum.html) の解説も、f 台の故障に耐えるには 2f + 1 台が要るとしています。
+過半数で決めるなら、止まれる台の数は「台数 − 過半数」です。Unmesh Joshi 氏も、Martin Fowler 氏のサイトにある [Majority Quorum](https://martinfowler.com/articles/patterns-of-distributed-systems/majority-quorum.html) の解説で、f 台の故障に耐えるには 2f + 1 台が要るとしています。
 
 | 台数 | 過半数 | 止まれる台 |
 |---|---|---|
