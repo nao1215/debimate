@@ -22,7 +22,7 @@ topics: ["Image Generation"]
 本記事では、参照画像で見た目を揃えようとしているエンジニアに向けて、色が転ぶ条件を手元の実験で切り分けます。変えたのは、参照の背景・使う段・効かせ方・強さの 4 つです。扱う疑問は次の通りです。
 
 - 参照の背景色は、描いた絵のどこに出るのか。
-- 背景を透明にすれば、背景の色は効かないのか。
+- 背景を透明にすれば、背景の色は絵に出ないのか。
 - ノイズから描く段と描き直す段の、どちらで使うと転ぶのか。
 - 2 つの効かせ方（linear と style transfer precise）で、何が違うのか。
 - 色を転ばせずに、参照の色だけを写せるのか。
@@ -95,7 +95,7 @@ wf["33"] = {"class_type": "IPAdapterAdvanced", "inputs": {
 wf["6"]["inputs"]["model"] = ["33", 0]   # KSampler は参照を足したモデルで描く
 ```
 
-全体の台本は [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/run.py) にあります。
+全体のスクリプトは [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/ip-adapter-color-cast/lab/run.py) にあります。
 
 <br>
 
@@ -137,7 +137,7 @@ back_dE = np.linalg.norm(img[back].mean(axis=0) - (100, 0, 0))  # 背景と白�
 
 {{< figure src="images/ipa_metrics.webp" alt="2 つの点のグラフ。縦は参照なし、白・precise、白・linear、黒・precise、黒・linear、緑・precise、緑・linear。左の人物の彩度 C* は、参照なしが 4〜6、1 段目は precise が 12〜18、linear が 16〜67、2 段目は precise が 6〜11、linear が 9〜28。右の背景と白の差 ΔE は、参照なしが 1〜6、1 段目の緑・linear が 7〜79、1 段目の緑・precise が 3〜18、2 段目の緑・linear が 3〜14、それ以外は概ね 1〜12" caption="人物の彩度と、背景と白の差（銀の参照、各 3 seed。右の横軸は 10 より先を縮めた）" align="center" >}}
 
-人物の彩度は、1 段目で使うと背景が何色でも 12 以上に上がりました。style transfer precise で参照なしの 3 倍前後、linear ではそれ以上です。背景と白の差を最も大きくしたのは、背景が緑の参照を linear で使った組です。黒の背景は、背景よりも人物の彩度に強く出ました。段と効かせ方ごとにまとめると、次の通りです。
+人物の彩度は、1 段目で使うと背景が何色でも 12 以上に上がりました。style transfer precise で参照なしの 3 倍前後、linear ではそれ以上です。背景と白の差を最も大きくしたのは、背景が緑の参照を linear で使った場合です。黒の背景は、背景よりも人物の彩度に強く出ました。段と効かせ方ごとにまとめると、次の通りです。
 
 | 段 | 効かせ方 | 人物の彩度 C\* | 背景と白の差 ΔE |
 |---|---|---|---|
@@ -147,7 +147,7 @@ back_dE = np.linalg.norm(img[back].mean(axis=0) - (100, 0, 0))  # 背景と白�
 | 2 段目 | style transfer precise | 6〜11 | 1〜7 |
 | 2 段目 | linear | 9〜28 | 1〜14 |
 
-1 段目は、構図も色もノイズから決める段です。参照の特徴が加わると、全体の色調がそれに引っ張られます。2 段目では、構図と大まかな色が元の絵で決まっていて、参照が動かせる幅が小さくなります。2 段目の style transfer precise がほとんど効かなかったのは、参照を足すのが 11 か所のうち 1 か所だからと見ています。linear は 11 か所すべてに足すので、2 段目でも色を動かします。
+1 段目は、構図も色もノイズから決める段です。参照の特徴が加わると、全体の色調がそれに寄ります。2 段目では、構図と大まかな色が元の絵で決まっていて、参照が動かせる幅が小さくなります。2 段目の style transfer precise が絵をほとんど変えなかったのは、参照を足すのが 11 か所のうち 1 か所だからと見ています。linear は 11 か所すべてに足すので、2 段目でも色を動かします。
 
 ---
 
