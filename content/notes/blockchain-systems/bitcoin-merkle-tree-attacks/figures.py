@@ -169,7 +169,7 @@ def duplicate_figure():
 
     # Bitcoin Core's fix: a pair of equal hashes marks the block as mutated.
     f.box(rx_leaf[2] - 52, ys["leaf"] - 36, 204, 72, "none", RED, sw=3, dash="8 6")
-    f.text((rx_leaf[2] + rx_leaf[3]) / 2, 466, "組の 2 つが同じ", 24)
+    f.text((rx_leaf[2] + rx_leaf[3]) / 2, 466, "ペアの 2 つが同じ", 24)
     f.text((rx_leaf[2] + rx_leaf[3]) / 2, 500, "→ 棄却", 24, RED)
     f.save("bitcoin-merkle-tree-attacks_duplicate.webp")
 
