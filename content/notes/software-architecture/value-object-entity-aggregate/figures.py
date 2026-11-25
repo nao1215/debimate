@@ -158,7 +158,7 @@ def units_figure():
     (ochre) takes it as newton-seconds. Bottom: a Money value that keeps the
     amount and the currency together, so the pair cannot be split.
     """
-    f = Svg(960, 540, "数値から単位が落ちる受け渡しと、単位を組で持つ値")
+    f = Svg(960, 540, "数値から単位が落ちる受け渡しと、数値と単位をペアで持つ値")
     f.text(40, 50, "Mars Climate Orbiter の受け渡し（数値は例）", 24, SUB, anchor="start")
     f.box(40, 86, 260, 150, PALE, ACCENT)
     f.text(170, 132, "地上のソフトウェア", 24)
@@ -182,7 +182,7 @@ def units_figure():
     f.text(377, 474, "amount 1999", 24)
     f.box(488, 446, 190, 40, WHITE, ACCENT, sw=2, rx=6)
     f.text(583, 474, "currency JPY", 24)
-    f.text(760, 460, "組のまま渡る", 24, SUB, anchor="start")
+    f.text(760, 460, "ペアのまま渡る", 24, SUB, anchor="start")
     f.save("value-object-entity-aggregate_units.svg")
 
 

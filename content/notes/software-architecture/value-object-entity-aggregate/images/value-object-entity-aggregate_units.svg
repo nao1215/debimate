@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>数値から単位が落ちる受け渡しと、単位を組で持つ値</title>
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img"><title>数値から単位が落ちる受け渡しと、数値と単位をペアで持つ値</title>
 <style>text{font-family:'Hiragino Sans','Noto Sans CJK JP','Yu Gothic',sans-serif;fill:#1f1f1f}</style>
 <defs><marker id="arrow-ink" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666666"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7aa6c2"/></marker><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#e15759"/></marker></defs>
 <rect width="960" height="540" fill="#ffffff"/>
@@ -25,5 +25,5 @@
 <text x="377" y="474" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">amount 1999</text>
 <rect x="488" y="446" width="190" height="40" rx="6" fill="#ffffff" stroke="#7aa6c2" stroke-width="2"/>
 <text x="583" y="474" font-size="24" font-weight="normal" text-anchor="middle" style="fill:#1f1f1f">currency JPY</text>
-<text x="760" y="460" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">組のまま渡る</text>
+<text x="760" y="460" font-size="24" font-weight="normal" text-anchor="start" style="fill:#666666">ペアのまま渡る</text>
 </svg>

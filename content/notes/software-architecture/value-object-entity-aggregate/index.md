@@ -80,9 +80,9 @@ Value Object とは、属性の組み合わせだけで意味が決まり、同�
 
 地上のソフトウェアが推進装置の噴射データ（力積）をポンド秒で書き出し、軌道を計算する側は、ファイルの仕様に定めたニュートン秒として[読んでいました](https://llis.nasa.gov/llis_lib/pdf/1009464main1_0641-mr.pdf)。1 ポンド重は約 4.45 ニュートンなので、値は 4.45 分の 1 に読まれていました。
 
-{{< figure src="images/value-object-entity-aggregate_units.svg" alt="上段は Mars Climate Orbiter の受け渡し。青い地上のソフトウェアがポンド秒で書き出し、灰色のファイルには数値の 100 だけが入り、黄土色の軌道の計算がそれをニュートン秒として読む。下に「100 ポンド秒は約 445 ニュートン秒。ファイルに単位は無い」。下段は Value Object にした金額で、Money の枠の中に amount 1999 と currency JPY が並び、右に「組のまま渡る」" caption="数値だけの受け渡しと、単位を組で持つ Money" align="center" >}}
+{{< figure src="images/value-object-entity-aggregate_units.svg" alt="上段は Mars Climate Orbiter の受け渡し。青い地上のソフトウェアがポンド秒で書き出し、灰色のファイルには数値の 100 だけが入り、黄土色の軌道の計算がそれをニュートン秒として読む。下に「100 ポンド秒は約 445 ニュートン秒。ファイルに単位は無い」。下段は Value Object にした金額で、Money の枠の中に amount 1999 と currency JPY が並び、右に「ペアのまま渡る」" caption="数値だけの受け渡しと、数値と単位をペアで持つ Money" align="center" >}}
 
-この事故の受け渡しはファイルでしたが、数値と単位を組で持たなかった点は、プログラムの中で金額から通貨が落ちる場合と同じです。例えば、金額と通貨を組にした `Money` を Value Object にすれば、通貨の落ちた金額は作れなくなります。足し算は元の値を書き換えずに新しい `Money` を返します。
+この事故の受け渡しはファイルでしたが、数値と単位をペアで持たなかった点は、プログラムの中で金額から通貨が落ちる場合と同じです。例えば、金額と通貨をペアにした `Money` を Value Object にすれば、通貨の落ちた金額は作れなくなります。足し算は元の値を書き換えずに新しい `Money` を返します。
 
 ---
 
@@ -152,7 +152,7 @@ const (
 	USD Currency = "USD"
 )
 
-// Money は金額と通貨の組で、生成後に値を変えられません。
+// Money は金額と通貨のペアで、生成後に値を変えられません。
 // amount は通貨の最小単位（JPY なら円、USD ならセント）で保持します。
 type Money struct {
 	amount   int64
