@@ -260,7 +260,7 @@ def identity_figure(res):
         ax.set_title(title, fontsize=11)
         ax.set_xlabel("cos")
         ax.legend(frameon=False, fontsize=9, loc="upper left")
-    axes[0].set_ylabel("組の割合（%）")
+    axes[0].set_ylabel("ペアの割合（%）")
     fig.tight_layout()
     save_matplotlib(fig, "image_linting_identity.webp")
     plt.close(fig)
