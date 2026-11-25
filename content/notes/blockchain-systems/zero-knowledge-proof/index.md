@@ -238,7 +238,7 @@ iszero_ok 偽の witness: 公開値 [out, x] = ["1","5"]  検証 Invalid proof
 
 当時の circom では、信号への `=` も IsZero の実験で使った `<--` と同じく、制約を足しませんでした。[0xPARC の zk-bug-tracker](https://github.com/0xPARC/zk-bug-tracker) によると、証明者はハッシュの出力を自由に選べるので、偽の Merkle 木の根を作り、他人が預けた ETH を引き出せる状態でした。
 
-[Trail of Bits の解説](https://blog.trailofbits.com/2022/09/15/it-pays-to-be-circomspect/)によると、Tornado Cash のチームは他の人に見つかる前に、自分たちでこの穴を使って資金を引き出し、利用者の資金を守りました。Trail of Bits のこの解説は、circom で `<--` を使った所に警告を出す静的解析のツール Circomspect を紹介しています。Merkle 木と根の役割は [Merkle Tree](../merkle-tree/) で説明しています。
+[Trail of Bits の解説](https://blog.trailofbits.com/2022/09/15/it-pays-to-be-circomspect/)によると、Tornado Cash のチームは他の人に見つかる前に、自分たちでこの穴を使って資金を引き出し、利用者の資金を守りました。Trail of Bits のこの解説では、circom で `<--` を使った所に警告を出す静的解析のツール Circomspect が紹介されています。Merkle 木と根の役割は [Merkle Tree](../merkle-tree/) で説明しています。
 
 <br>
 
@@ -282,7 +282,7 @@ RISC Zero には、証明を作らずに偽の receipt を返す [dev-mode](http
 
 RISC Zero の [Security Model](https://dev.risczero.com/api/security-model#zero-knowledge-proving) によると、実行を区間に分けて作った証明は、再帰でまとめる前の形だと実行の長さが漏れます。区間の数は実行が長いほど増えるからです。再帰で 1 つにまとめた証明では漏れません。実験では、succinct receipt と呼ばれる、まとめた形を使いました。
 
-同じ資料は、目標とする完全なゼロ知識性について、数学的な証明をまだ書いていないとも明記しています。2026 年 11 月に、実験で使った 3.0 系と 3.1 の文書を読み、どちらも同じ記述でした。
+同じ資料には、目標とする完全なゼロ知識性について、数学的な証明をまだ書いていないとも明記されています。2026 年 11 月に、実験で使った 3.0 系と 3.1 の文書を読み、どちらも同じ記述でした。
 
 </details>
 
