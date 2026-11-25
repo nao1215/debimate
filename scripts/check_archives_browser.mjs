@@ -124,7 +124,7 @@ try {
   await page.goto(`${origin}/games/`);
   assert.equal(await page.locator('video').count(), 0);
   const demos = page.locator('.game-demo img');
-  assert.equal(await demos.count(), 3);
+  assert.equal(await demos.count(), 4);
   for (const demo of await demos.all()) {
     await demo.scrollIntoViewIfNeeded();
     await waitForImage(demo);

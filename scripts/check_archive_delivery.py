@@ -87,7 +87,7 @@ def check(root, baseline=None):
             report[path]['before_gzip_bytes'] = len(gzip.compress(old_data, mtime=0))
     games = Page(root / 'games/index.html')
     assert not games.videos, 'Games must use animated images, not video players'
-    assert len(games.demos) == 3
+    assert len(games.demos) == 4
     for i, demo in enumerate(games.demos):
         assert demo['loading'] == ('eager' if i == 0 else 'lazy')
         assert demo.get('srcset') and demo.get('sizes')
