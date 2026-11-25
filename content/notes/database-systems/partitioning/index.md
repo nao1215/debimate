@@ -150,7 +150,7 @@ EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
 
 <br>
 
-[Index Scan](/notes/database-systems/index-scan/#索引があっても絞り込みに使いにくい条件) のノートで扱った「カラムを関数で包むと索引を使いにくい」と同じ形の落とし穴です。つまり、パーティションキーは関数で包まず、範囲の比較で書くのが基本です。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-BEST-PRACTICES)も、`WHERE` 句に最もよく現れるカラムをキーに選ぶよう勧めています。
+[Index Scan](/notes/database-systems/index-scan/#索引があっても絞り込みに使いにくい条件) のノートで扱った「カラムを関数で包むと索引を使いにくい」と同じ形の落とし穴です。つまり、パーティションキーは関数で包まず、範囲の比較で書くのが基本です。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html#DDL-PARTITIONING-DECLARATIVE-BEST-PRACTICES)でも、`WHERE` 句に最もよく現れるカラムをキーに選ぶよう勧められています。
 
 (3) は、プランを作る時点では値が分かりません。そのため、プランには 6 つのパーティションが入っていますが、実行を始める時に `$1` と `$2` の値で 5 つを外しました（`Subplans Removed: 5`）。実行時の刈り込みには、この初期化時の段階と、ネストループ結合の内側のように実行中に値が分かる段階の 2 つがあります。
 
@@ -373,6 +373,6 @@ B_ddl    finished after 5.2 s
 - 問い合わせの大半が、パーティションキーを条件に含まない場合
 - 古いレコードをまとめて消す運用が無く、削除の速さが活きない場合
 
-どの程度の大きさから効果が出るかは用途によります。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)は、表の大きさが DB サーバーの物理メモリを超える場合を目安に挙げ、典型的な問い合わせがごく一部を除いて刈り込める限り、数千個程度のパーティションまでプランナが扱えるとしています。
+どの程度の大きさから効果が出るかは用途によります。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)では、表の大きさが DB サーバーの物理メモリを超える場合が目安に挙げられ、典型的な問い合わせがごく一部を除いて刈り込める限り、数千個程度のパーティションまでプランナが扱えるとされています。
 
 パーティションは多いほど良いわけではなく、刈り込める問い合わせの形と、消す単位から数を決めます。
