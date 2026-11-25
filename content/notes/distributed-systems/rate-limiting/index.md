@@ -11,7 +11,7 @@ crossTopics:
   software-architecture: ["Resilience Patterns"]
 ---
 
-レート制限（rate limiting）は、利用者ごとに一定時間あたりに受け付ける要求の数に上限を設け、超えた分を断るか遅らせる仕組みです。公開 API の「1 分に 60 回まで」、ログイン画面の試行回数の制限、Web サーバーの [nginx の limit_req](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html) などが、この仕組みにあたります。断る時は、HTTP の 429 Too Many Requests を返すのが一般的です。
+レート制限（rate limiting）は、利用者ごとに一定時間あたりに受け付ける要求の数に上限を設け、超えた分を断るか遅らせる仕組みです。公開 API の「1 分に 60 回まで」、ログイン画面の試行回数の制限、Web サーバーの [nginx の limit_req](https://nginx.org/en/docs/http/ngx_http_limit_req_module.html) などが、この仕組みの例です。断る時は、HTTP の 429 Too Many Requests を返すのが一般的です。
 
 同じ「1 分に 60 回」でも、数え方は 1 つではありません。時刻を 1 分ごとの枠に切って数える方式（固定ウィンドウ）、直近 1 分の記録を数える方式（スライディングログ）、一定の速さで溜まる許可を使う方式（トークンバケット）などがあり、どの瞬間に何件まで通すかが方式ごとに違います。以下は、枠の境目をまたいで 60 件ずつ要求が届いた時に、固定ウィンドウとスライディングログの 2 つの方式が通した件数です。
 
@@ -26,7 +26,7 @@ crossTopics:
 - ウィンドウで数える 3 つの方式は、それぞれ何を数え、どこで上限を超えるのか。
 - トークンバケットとリーキーバケットは、瞬間的な集中（バースト）をどう扱うのか。
 - 複数のサーバーで上限を共有すると、どんな誤差が出るのか。
-- 断ったことと再試行してよい時刻は、HTTP でどう伝えるのか。
+- 断ったことと再試行して良い時刻は、HTTP でどう伝えるのか。
 
 下流の処理が詰まった時に送る量を絞らせる仕組みは [Backpressure](/notes/distributed-systems/backpressure/) のノートで扱っています。同時に処理中の要求の数を制限する方式と、サーバー全体の負荷に応じて要求を捨てるロードシェディング（load shedding）は説明しません。
 
@@ -136,7 +136,7 @@ class SlidingWindowCounter:
 
 #### GCRA
 
-GCRA（Generic Cell Rate Algorithm）は、トークンバケットと同じ判定を時刻の値 1 つで行う方式です。トークンの数と最後に補充した時刻の 2 つを持つ代わりに 1 つの値で済むので、Redis の 1 つのキーにも置けます。元は ATM（Asynchronous Transfer Mode）網で、セル（固定長のパケット）が契約した速さに従っているかを判定するために定められました。
+GCRA（Generic Cell Rate Algorithm）は、トークンバケットと同じ判定を時刻の値 1 つで計算する方式です。トークンの数と最後に補充した時刻の 2 つを持つ代わりに 1 つの値で済むので、Redis の 1 つのキーにも置けます。元は ATM（Asynchronous Transfer Mode）網で、セル（固定長のパケット）が契約した速さに従っているかを判定するために定められました。
 
 ATM Forum の [Traffic Management Specification 4.1](https://sunsite.icm.edu.pl/packages/normos/atm/af-tm-0121.000.pdf)（1999 年 3 月、リンクは大学のミラー）の 4.4.2 節が、[ITU-T I.371](https://www.itu.int/rec/T-REC-I.371) の図を元に、仮想スケジューリングと連続状態のリーキーバケットの 2 つの等価な流れ図で定義しています。
 
@@ -165,7 +165,7 @@ class GCRA:
 
 API のサーバーが 1 台なら、数は自分のメモリに置けば済みます。ロードバランサーの後ろに複数台が並ぶと、同じ利用者の要求が別々のサーバーに届くので、数をどこに置くかを決める必要があります。
 
-素朴な方法は、上限を台数で割り、各サーバーが自分の分だけを数えることです。サーバー間の通信が要らない代わりに、要求が均等に振り分けられる前提に頼ります。[lab/split.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/split.py) で、上限 60 件を 2 台で 30 件ずつ分け合い、利用者が 60 秒に 60 件（上限ちょうど）を送る状況を計算しました。
+素朴な方法は、上限を台数で割り、各サーバーが自分の分だけを数えることです。サーバー間の通信が不要な代わりに、要求が均等に振り分けられる前提に頼ります。[lab/split.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/split.py) で、上限 60 件を 2 台で 30 件ずつ分け合い、利用者が 60 秒に 60 件（上限ちょうど）を送る状況を計算しました。
 
 {{< figure src="images/ratelimit_split.webp" alt="横軸はサーバー 1 に届いた割合、縦軸は 60 秒に通した件数。中央で数える場合は常に 60 件。2 台で 30 件ずつ分け合う場合は、50% では 60 件だが、80% では 42 件、100% では 30 件に下がる" caption="上限を 2 台で分け合った時と中央で数えた時に通した件数" align="center" >}}
 
@@ -179,7 +179,7 @@ API のサーバーが 1 台なら、数は自分のメモリに置けば済み�
 
 同じ 11 月 11 日に、8 個のプロセスを 8 台のサーバーに見立て、同じ利用者のキーに 50 件ずつ一斉に要求を送りました。上限は 100 件です。
 
-Redis は Docker で 127.0.0.1 だけに公開して動かしました（版は [lab/output_race.txt](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/output_race.txt) の先頭に記録）。以下は、[lab/race.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/race.py) の 2 つの数え方の抜粋です。`r.call()` は、標準ライブラリだけで書いた Redis のクライアント（[lab/resp.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/resp.py)）でコマンドを 1 つ送る関数です。
+Redis は Docker で 127.0.0.1 だけに公開して動かしました（バージョンは [lab/output_race.txt](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/output_race.txt) の先頭に記録）。以下は、[lab/race.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/race.py) の 2 つの数え方の抜粋です。`r.call()` は、標準ライブラリだけで書いた Redis のクライアント（[lab/resp.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/resp.py)）でコマンドを 1 つ送る関数です。
 
 ```python
 def check_then_incr(r, key, gap=0.0):
@@ -204,13 +204,13 @@ def incr(r, key, sha):
     return r.call("EVALSHA", sha, 1, key) <= LIMIT   # 増やした後の値で判定する
 ```
 
-後者は、Redis の INCR のドキュメントにある Lua のスクリプトの EXPIRE を 60 秒にし、戻り値と上限の比較を足したもので、最初の要求から 60 秒の固定ウィンドウにあたります。
+後者は、Redis の INCR のドキュメントにある Lua のスクリプトの EXPIRE を 60 秒にし、戻り値と上限の比較を足したもので、最初の要求から 60 秒の固定ウィンドウになります。
 
-比較のために、トークンバケットの計算全体を Lua で書いた版（[lab/race.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/race.py) の `TOKEN_BUCKET_LUA`）も試しました。Redis は [Lua のスクリプトを不可分に実行](https://redis.io/docs/latest/develop/programmability/eval-intro/)し、実行中は他のコマンドを処理しません。以下は、各方式を 20 回ずつ試した結果です。
+比較のために、トークンバケットの計算全体を Lua で書いた実装（[lab/race.py](https://github.com/nao1215/debimate/blob/main/content/notes/distributed-systems/rate-limiting/lab/race.py) の `TOKEN_BUCKET_LUA`）も試しました。Redis は [Lua のスクリプトを不可分に実行](https://redis.io/docs/latest/develop/programmability/eval-intro/)し、実行中は他のコマンドを処理しません。以下は、各方式を 20 回ずつ試した結果です。
 
 {{< figure src="images/ratelimit_race.webp" alt="通した件数の 20 回分。GET してから INCR は 100〜106 件、GET と INCR の間に 1 ms 待つと 101〜107 件で、ほぼ毎回上限 100 を超える。INCR の戻り値で判定する方式と、Lua のトークンバケットは 20 回とも 100 件" caption="8 プロセスから 400 件を送った時に通した件数（上限 100）" align="center" >}}
 
-GET してから INCR する方式は、20 回中 19 回で上限を超え、最大 106 件を通しました。GET と INCR の間に 1 ms 待たせると最大 107 件です。99 件を通した時点で 8 台が同時に GET し、全員が 99 を読んでから増やすと 107 件になるので、超える量は最大で「同時に判定しているサーバーの数 − 1」です。INCR の戻り値で判定する方式と、トークンバケットの計算全体を Lua で書いた方式は、20 回とも 100 件ちょうどでした。INCR は読んで増やすまでを 1 つのコマンドで行うので、間に他のサーバーの要求が割り込みません。
+GET してから INCR する方式は、20 回中 19 回で上限を超え、最大 106 件を通しました。GET と INCR の間に 1 ms 待たせると最大 107 件です。99 件を通した時点で 8 台が同時に GET し、全員が 99 を読んでから増やすと 107 件になるので、超える量は最大で「同時に判定しているサーバーの数 − 1」です。INCR の戻り値で判定する方式と、トークンバケットの計算全体を Lua で書いた方式は、20 回とも 100 件ちょうどでした。INCR は読んで増やすまでを 1 つのコマンドで実行するので、間に他のサーバーの要求が割り込みません。
 
 <br>
 
@@ -224,7 +224,7 @@ Redis が止まった時に要求を通すか断るかも、先に決めてお�
 
 ### 429 と Retry-After で断ったことを伝える
 
-上限を超えた要求に返す 429 Too Many Requests は、[RFC 6585](https://www.rfc-editor.org/rfc/rfc6585#section-4)（2012 年 4 月）で定義された状態コードです。RFC 6585 は、利用者の見分け方や数え方を定めていません。429 の応答に Retry-After を付けてよいこと（MAY）と、429 の応答をキャッシュに保存してはならないこと（MUST NOT）を定めています。
+上限を超えた要求に返す 429 Too Many Requests は、[RFC 6585](https://www.rfc-editor.org/rfc/rfc6585#section-4)（2012 年 4 月）で定義された状態コードです。RFC 6585 は、利用者の見分け方や数え方を定めていません。429 の応答に Retry-After を付けて良いこと（MAY）と、429 の応答をキャッシュに保存してはならないこと（MUST NOT）を定めています。
 
 Retry-After は、[RFC 9110 の 10.2.3 節](https://www.rfc-editor.org/rfc/rfc9110#section-10.2.3)で定義されたヘッダーで、次の要求までどれだけ待つべきかを `Retry-After: 120` のような秒数か、HTTP の日時で示します。
 
@@ -234,7 +234,7 @@ Retry-After は、[RFC 9110 の 10.2.3 節](https://www.rfc-editor.org/rfc/rfc91
 
 断られる前に残りの量を知らせるヘッダーは、IETF の HTTPAPI ワーキンググループで [draft-ietf-httpapi-ratelimit-headers](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/) として議論されています。2026 年 11 月 11 日時点の最新は 2026 年 5 月 23 日の -11 で、RFC にはなっていない Internet-Draft です。
 
-この版は、方針を示す `RateLimit-Policy`（上限 `q` とウィンドウの秒数 `w`）と、今の状態を示す `RateLimit`（残り `r` と、割り当てが元に戻るまでの秒数 `t`）の 2 つのヘッダーを定めています。
+-11 は、方針を示す `RateLimit-Policy`（上限 `q` とウィンドウの秒数 `w`）と、今の状態を示す `RateLimit`（残り `r` と、割り当てが元に戻るまでの秒数 `t`）の 2 つのヘッダーを定めています。
 
 draft は「This specification does not mandate a specific throttling algorithm.」（本仕様は特定の制限のアルゴリズムを定めない）としており、Retry-After と両方ある時は Retry-After を優先します。
 
@@ -280,4 +280,4 @@ Retry-After: 5
 - サーバー全体が既に過負荷で、利用者ごとの上限以内の要求だけでも処理しきれない状況
 - 呼び出し側から見て、失敗が続く下流への呼び出しを止めたい状況（[Circuit Breaker](/notes/software-architecture/circuit-breaker/) の役割）
 
-1 つ目と 3 つ目は、レート制限が要らないという意味ではありません。Stripe が同時実行数の制限や負荷に応じて捨てる制限を並べて使っているように、件数の上限は他の制限と組み合わせて初めて資源を守れます。
+1 つ目と 3 つ目は、レート制限が不要という意味ではありません。Stripe が同時実行数の制限や負荷に応じて捨てる制限を並べて使っているように、件数の上限は他の制限と組み合わせて初めて資源を守れます。
