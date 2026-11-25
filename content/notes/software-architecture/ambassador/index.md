@@ -259,7 +259,7 @@ min-replicas-to-write 1 を付けると、消えた数は 4 つのアプリと�
 
 接続を保つ ambassador のアプリも、1.3 秒から `NOREPLICAS` で拒否されました。11.3 秒に redis-a が replica にされた後は、設定のままの時と同じく `READONLY` に変わり、最後まで戻りません。繋ぎ直した接続が、まだ送り先に残っていた redis-a に振り分けられ、そのまま残ったからです。
 
-Sentinel の[ドキュメント](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)も、この設定には引き換えがあると書いていて、replica が全て止まると master も書き込みを止めます。同じドキュメントは、Redis と Sentinel の組み合わせでは、成功と返した書き込みを失う時間の幅が常に残るとも書いています。複製が非同期で、最後に切り替えた方の内容で上書きするからです。
+Sentinel の[ドキュメント](https://redis.io/docs/latest/operate/oss_and_stack/management/sentinel/)にも、この設定には引き換えがあると書かれていて、replica が全て止まると master も書き込みを止めます。同じドキュメントによると、Redis と Sentinel の組み合わせでは、成功と返した書き込みを失う時間の幅が常に残ります。複製が非同期で、最後に切り替えた方の内容で上書きするからです。
 
 ambassador の設定で直せたのは、接続の張り直しだけでした。消えるかどうかは、どのサーバーが自分を master と信じているかで決まり、それを正すのは Redis と Sentinel です。
 
