@@ -66,7 +66,7 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 | trace ID・span ID | 所属する Trace と、自分の識別子 | 16 バイト・8 バイトの乱数 |
 | 親 | 呼び出し元の Span。root span には無い | orders の `reserve` |
 | 開始・終了時刻 | 記録したホストの時計で測った時刻 | ミリ秒の UNIX 時刻 |
-| 属性（attributes） | キーと値の組。HTTP のステータスや再試行の回数など | `http.request.resend_count=1` |
+| 属性（attributes） | キーと値のペア。HTTP のステータスや再試行の回数など | `http.request.resend_count=1` |
 | ステータス（status） | 未設定（Unset）・成功（Ok）・失敗（Error）の 3 値 | `ERROR` |
 | link | 親子ではない別の Span への参照 | 後述 |
 
