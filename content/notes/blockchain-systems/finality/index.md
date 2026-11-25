@@ -37,7 +37,7 @@ flowchart LR
 - Ethereum では、バリデータの投票がどのように finality を作るのか。投票が集まらなかった 2023 年 5 月には、何が起きたのか。
 - `finalized`・`safe`・承認数は、それぞれ誰が何を根拠に決めるのか。
 - 承認数をいくつ待つかは、何を材料に決めるのか。
-- 別のチェーンの状態を受け入れる bridge はどこまで待つのか。待たずに進めて良いのはどんな場面か。
+- 別のチェーンから状態を受け入れる bridge はどこまで待つのか。待たずに進めて良いのはどんな場面か。
 
 1 件の送金がどの段階を通るのかは、[Bitcoin Transaction Lifecycle](../bitcoin-transaction-lifecycle/) で追っています。Bitcoin と Ethereum 以外のチェーンが確定を作る方法は、[CometBFT](../cometbft/)・[Snowman](../snowman/)・[Proof of Authority](../proof-of-authority/)・[Proof of History](../proof-of-history/) のノートで説明しています。
 
@@ -116,7 +116,7 @@ sequenceDiagram
 
 ホワイトペーパーは、成功確率が 0.1% を下回る `z` を `q` ごとに並べています。
 
-| 攻撃者のハッシュ計算能力の割合 `q` | 必要な `z`（後ろに積むブロック数） | 承認数（`z + 1`） |
+| 攻撃者が握るハッシュ計算能力の割合 `q` | 必要な `z`（後ろに積むブロック数） | 承認数（`z + 1`） |
 | --- | --- | --- |
 | 0.10 | 5 | 6 |
 | 0.15 | 8 | 9 |
@@ -127,19 +127,19 @@ sequenceDiagram
 | 0.40 | 89 | 90 |
 | 0.45 | 340 | 341 |
 
-承認数 6 は、Bitcoin の規則で定められた値ではなく、`q` を 0.10 と置いた時の値です。`q` を 0.30 と見るなら 25 必要になります。また、表の値は上のモデルの中での確率で、ネットワークの分断、実装と合意の規則の不具合、コミュニティの調整による手動の介入は含みません。
+承認数 6 は、Bitcoin の規則で定められた値ではなく、`q` を 0.10 と置いた時の値です。`q` を 0.30 と見るなら 25 必要になります。また、表の値は上のモデルで計算した確率で、ネットワークの分断、実装と合意規則の不具合、コミュニティの調整による手動の介入は含みません。
 
 ---
 
 ### checkpoint への投票による finality
 
-Ethereum のバリデータ（validator）は、Ethereum の通貨 ether をプロトコルに預けて、ブロックの提案と検証と投票を行う参加者です。規則に反する投票（矛盾する 2 票など）を残すと、その証拠によって預けた ether の一部または全部が没収されます。
+Ethereum のバリデータ（validator）は、Ethereum の通貨 ether をプロトコルに預けて、ブロックを提案し、検証し、投票する参加者です。規則に反する投票（矛盾する 2 票など）を残すと、その証拠によって預けた ether の一部または全部が没収されます。
 
 これを slashing と呼び、本記事で「スラッシング」と書く時はこれだけを指します。参加の仕組みと報酬・罰則の違いは、[Proof of Stake](../proof-of-stake/) で説明しています。
 
-Ethereum では、どの列を canonical chain に選ぶかを計算量ではなく、バリデータの投票の重み（預けた ether の量）で決めます。この選び方でも末尾は組み替わり得るので、Ethereum でも `latest` のブロックは、より重い列が現れれば外れます。
+Ethereum では、どの列を canonical chain に選ぶかを計算量ではなく、バリデータが投じた票の重み（預けた ether の量）で決めます。この選び方でも末尾は組み替わり得るので、Ethereum でも `latest` のブロックは、より重い列が現れれば外れます。
 
-この投票を finality に変える仕組みが [Casper FFG](https://arxiv.org/abs/1710.09437)（Casper the Friendly Finality Gadget）です。投票の対象を説明するために、まず Ethereum の時間の区切りを見ます。
+この投票を finality に変える仕組みが [Casper FFG](https://arxiv.org/abs/1710.09437)（Casper the Friendly Finality Gadget）です。投票の対象を説明するために、まず Ethereum が時間をどう区切るかを見ます。
 
 Ethereum の時間は 12 秒の slot に区切られ、1 つの slot で作られるブロックは最大 1 個です。32 slot で 1 epoch（6 分 24 秒）になります。finality の投票が対象にするのは全てのブロックではなく、各 epoch に 1 つずつ置かれる checkpoint です。
 
@@ -149,17 +149,17 @@ checkpoint は、epoch の先頭 slot のブロックです。図の epoch N+1 �
 
 <br>
 
-checkpoint の状態は、投票待ち・justified（正当化済み）・finalized（確定済み）の 3 つです。出発点として、チェーンの最初のブロックの checkpoint だけは、初めから justified かつ finalized と決めておきます。
+checkpoint の状態は、投票待ち・justified（正当化済み）・finalized（確定済み）の 3 つです。出発点として、チェーンで最初のブロックにある checkpoint だけは、初めから justified かつ finalized と決めておきます。
 
 1 票は「既に合意した checkpoint から、次の checkpoint まで合意を延ばしてよい」という意思表示で、ある checkpoint から別の checkpoint への矢印として書きます。矢印の根元を起点（source）、先をターゲット（target）と呼び、起点には既に justified な checkpoint を選びます。
 
 {{< figure src="images/finality_votes.webp" alt="4 つの checkpoint が左から並ぶ。最初のブロックから epoch 1 へ、epoch 1 から epoch 2 へ、2/3 の投票の矢印がある。epoch 2 から epoch 3 への矢印は破線で集計中。状態は左から finalized、finalized、justified、投票待ち" caption="起点からターゲットへの 2/3 の投票と、checkpoint の状態" align="center" >}}
 
-図の矢印に添えた 2/3 は、預けられた ether の 2/3 にあたるバリデータが、同じ起点とターゲットの組に投票したことを表します。justified（正当化済み）な起点から 2/3 の投票が張られたターゲットの checkpoint が、justified になります。最初のブロックから epoch 1 への 2/3 で epoch 1 が、epoch 1 から epoch 2 への 2/3 で epoch 2 が justified になり、1 つずつ先へ延びていきます。
+図の矢印に添えた 2/3 は、預けられた ether の 2/3 を占めるバリデータが、同じ起点と同じターゲットに投票したことを表します。justified（正当化済み）な起点から 2/3 の投票が張られたターゲットの checkpoint が、justified になります。最初のブロックから epoch 1 への 2/3 で epoch 1 が、epoch 1 から epoch 2 への 2/3 で epoch 2 が justified になり、1 つずつ先へ延びていきます。
 
 起点とターゲットが隣り合う checkpoint の場合は、ターゲットが justified になるのに加えて、起点が finalized（確定済み）に変わります。図で epoch 1 が finalized なのは、epoch 1 から直後の epoch 2 へ 2/3 が集まったからです。
 
-Casper FFG の論文の規則では、epoch を飛ばした投票（epoch 1 から epoch 3 へなど）でターゲットは justified になりますが、起点は finalized になりません。Ethereum の実装は少し広く、間の checkpoint も justified なら、1 つ飛ばしの投票でも起点が finalized になる場合があります。以下の状態図は、論文の規則で描いています。
+Casper FFG の論文が定める規則では、epoch を飛ばした投票（epoch 1 から epoch 3 へなど）でターゲットは justified になりますが、起点は finalized になりません。Ethereum の実装は少し広く、間の checkpoint も justified なら、1 つ飛ばしの投票でも起点が finalized になる場合があります。以下の状態図は、論文の規則で描いています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -171,9 +171,9 @@ stateDiagram-v2
     justified --> 破棄: 別の列が canonical chain になる<br/>（finalized ほど固定されていない）
 ```
 
-ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。finalized が justified より 1 epoch 遅れるのは、この 2 段階を踏むためです。
+ブロックタグの `finalized` が指すのは、この finalized になった checkpoint です。finalized が justified より 1 epoch 遅れるのは、この 2 段階を経るためです。
 
-投票は epoch の間ずっと集まるため、ある epoch の checkpoint が justified になるのは、その epoch が終わる頃です。そのため順調な時、現在から見て justified は 1 つ前、finalized は 2 つ前の epoch の checkpoint になります。
+投票は epoch の間ずっと集まるため、ある epoch の checkpoint が justified になるのは、その epoch が終わる頃です。そのため順調な時、現在から見て justified は 1 つ前、finalized は 2 つ前の epoch にある checkpoint です。
 
 状態図の「破棄」は、checkpoint を含む列が選ばれなかった場合です。justified になった checkpoint でも、別の列が選ばれれば捨てられます。
 
@@ -185,17 +185,17 @@ stateDiagram-v2
 
 {{< figure src="images/finality_overlap.webp" alt="上に、バリデータが預けた ether の全体を表す横長の帯があり、下に 0・1/3・2/3・1 の目盛りがある。checkpoint A を確定させた 2/3 の投票は 0 から 2/3 まで、A と矛盾する B に至る列の 2/3 の投票は 1/3 から 1 までを占める。1/3 から 2/3 の区間は両方に投票した分で、スラッシング（slashing）の対象と書かれている" caption="矛盾する 2 つの checkpoint への 2/3 の重なり（簡略化した図）" align="center" >}}
 
-規則では、1 人のバリデータが同じ epoch をターゲットとする 2 票を投じることと、一方がもう一方を内側に包む 2 票（例えば epoch 1→4 と epoch 2→3）を投じることを禁じています。Casper FFG の論文の証明によると、矛盾する 2 つの checkpoint が両方確定した時は、stake の 1/3 以上を占めるバリデータが、必ずどこかでこの禁じられた組を投じています。
+規則では、1 人のバリデータが同じ epoch をターゲットとする 2 票を投じることと、一方がもう一方を内側に包む 2 票（例えば epoch 1→4 と epoch 2→3）を投じることを禁じています。Casper FFG の論文が示す証明によると、矛盾する 2 つの checkpoint が両方確定した時は、stake の 1/3 以上を占めるバリデータが、必ずどこかでこの禁じられた 2 票を投じています。
 
-そのため、少なくとも stake の 1/3 にあたるバリデータが、スラッシング（slashing）の対象になる投票を証拠として残し、預けた ether を没収されます。Casper FFG の論文は、この性質を accountable safety と呼びます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
+そのため、少なくとも stake の 1/3 を占めるバリデータが、スラッシング（slashing）の対象になる投票を証拠として残し、預けた ether を没収されます。Casper FFG の論文は、この性質を accountable safety と呼びます。誰が矛盾する投票をしたのかを特定できる点が、計算量を積み直す方式との違いです。
 
 ---
 
 ### finalized・safe・承認数の違い
 
-`finalized` という保証には、例外が書き添えられています。ブロックタグを定義している [Ethereum の API の schema](https://github.com/ethereum/execution-apis/blob/main/src/schemas/block.yaml) には、「cannot be re-orged outside of manual intervention driven by community coordination」（コミュニティの調整による手動の介入を除いて、reorg され得ない）とあります。
+`finalized` という保証には、例外が書き添えられています。ブロックタグを定義している [Ethereum の API を定める schema](https://github.com/ethereum/execution-apis/blob/main/src/schemas/block.yaml) には、「cannot be re-orged outside of manual intervention driven by community coordination」（コミュニティの調整による手動の介入を除いて、reorg され得ない）とあります。
 
-つまり、例えば参加者が話し合ってソフトウェアを差し替えるような、プロトコルの規則の外にある手段までは保証していません。
+つまり、例えば参加者が話し合ってソフトウェアを差し替えるような、プロトコルが定める規則の外にある手段までは保証していません。
 
 <br>
 
@@ -211,13 +211,13 @@ Ethereum のノードは、トランザクションを実行して残高など�
 
 `safe` はスラッシングではなく仮定を根拠にしており、仮定が崩れれば誰もスラッシングされないまま覆り得ます。この点が `finalized` との違いです。
 
-`safe` の位置を図で幅にしたのは、どのブロックを返すかがクライアントの実装と版で変わるからです。
+`safe` の位置を図で幅にしたのは、どのブロックを返すかがクライアントの実装とバージョンで変わるからです。
 
 2026 年 11 月時点の [Consensus Specifications](https://github.com/ethereum/consensus-specs/blob/master/specs/bellatrix/fast-confirmation.md) には、投票の集まり具合から finalized を待たずに外れないと判断する規則（Fast Confirmation Rule）で確認したブロックを `safe` とする定義があります。ただし、各クライアントがその規則をいつ採り入れるかは別です。
 
-同じ時点で、[Lighthouse](https://github.com/sigp/lighthouse) と [Prysm](https://github.com/OffchainLabs/prysm) はこの規則をオプションで有効にする形です。既定では、Lighthouse は justified な checkpoint のブロックを、Prysm は集計途中の投票で justified の条件を満たした checkpoint（unrealized justified）のブロックを `safe` として返します。
+同じ時点で、[Lighthouse](https://github.com/sigp/lighthouse) と [Prysm](https://github.com/OffchainLabs/prysm) では、この規則はオプションを指定した時だけ有効になります。既定で `safe` として返すのは、Lighthouse では justified な checkpoint のブロック、Prysm では集計途中の投票で justified の条件を満たした checkpoint（unrealized justified）のブロックです。
 
-`safe` を使う時は手元のクライアントの説明を確認する必要があります。
+`safe` を使う時は、手元で使うクライアントの説明を確認する必要があります。
 
 ここまでの 3 つは、ノードがブロックタグとして返すものです。一方で、Bitcoin と同じく承認数で判断する方法は Ethereum でも使え、その閾値はアプリケーションの運用者が決めます。4 つの判断それぞれについて、誰がどこに線を引いているのかを以下にまとめます。
 
@@ -250,11 +250,11 @@ flowchart LR
 
 ネットワークが 2 つに分かれ続けると、両側でそれぞれ相手側の残高が減り、両側が別々に 2/3 に届いて finalize し得ます。
 
-この場合は誰もスラッシングされないまま、矛盾する 2 つの checkpoint が finalized になり得ます。checkpoint の節で見た重なりの保証は、各バリデータの残高（投票の重み）が変わらない間だけ効くということです。この時どちらの列を残すかは、`finalized` の例外として触れた手動の介入で決めることになります。
+この場合は誰もスラッシングされないまま、矛盾する 2 つの checkpoint が finalized になり得ます。checkpoint の節で見た重なりの保証は、各バリデータの残高（投票の重み）が変わらない間だけ成り立つということです。この時どちらの列を残すかは、`finalized` の例外として触れた手動の介入で決めることになります。
 
 2023 年 5 月 11 日と 12 日には、Ethereum の[メインネット](../mainnet-and-testnet/)で finalize が実際に 2 回止まり、コンセンサス・レイヤーのクライアントである Prysm の開発元が[事後報告](https://prysm.offchainlabs.com/docs/resources/mainnet-postmortems/)を公開しています。
 
-実行レイヤーのクライアントが応答しない時に古い checkpoint へ投票する一部のクライアントの挙動により、古い checkpoint をターゲットとする投票が大量に届きました。Prysm などは、その投票がその epoch に投票を割り当てられたバリデータのものかを検証するために、古い checkpoint の時点に戻したコンセンサス・レイヤーの状態（バリデータの一覧や残高などのデータ）を計算し直して資源を使い果たしました。処理が追い付かなくなると、ブロックと投票が欠けて、投票が 2/3 に届かない epoch が続きました。
+一部のクライアントは、実行レイヤーのクライアントが応答しない時に古い checkpoint へ投票します。この挙動により、古い checkpoint をターゲットとする投票が大量に届きました。Prysm などは、その投票がその epoch に投票を割り当てられたバリデータのものかを検証するために、古い checkpoint の時点に戻したコンセンサス・レイヤーの状態（バリデータの一覧や残高などのデータ）を計算し直して資源を使い果たしました。処理が追い付かなくなると、ブロックと投票が欠けて、投票が 2/3 に届かない epoch が続きました。
 
 止まっていた長さを epoch 単位で並べると、以下のようになります。
 
@@ -288,7 +288,7 @@ flowchart TD
 
 Ethereum の `finalized` が指すのは、「finalized・safe・承認数の違い」の図のとおり、順調な時でも 2 epoch 前の checkpoint です。現在が epoch のどこにいるかで、13 分から 19 分ほど過去のブロックになります。
 
-Bitcoin の承認数 3 と 6、Ethereum の `finalized` について、取り込まれてから確定扱いにするまでの時間を並べると、以下のようになります。Ethereum の棒の濃い部分は、取り込まれた位置が epoch のどこかで変わる幅です。
+Bitcoin の承認数 3 と 6、Ethereum の `finalized` について、取り込まれてから確定扱いにするまでの時間を並べると、以下のようになります。Ethereum の棒で濃い部分は、取り込まれた位置が epoch のどこかで変わる幅です。
 
 {{< figure src="images/finality_wait.webp" alt="横棒グラフ。ブロックに取り込まれてからの時間は、Bitcoin の承認数 3 が平均約 20 分、承認数 6 が平均約 50 分、Ethereum の finalized が約 13〜19 分" caption="取り込まれてから確定扱いにするまでの時間の目安（Bitcoin はブロック間隔 10 分の平均）" align="center" >}}
 
@@ -298,7 +298,7 @@ Bitcoin の値は平均で、ブロックの間隔は毎回ばらつきます。
 
 少額はブロックに入った時点、中額は決めた承認数、高額は finalized と、金額のレンジごとに待つ段階を変える方法もあります。閾値を設定として外に出しておくと、変える時にコードを触らずに済みます。
 
-トランザクションを見つけた時のブロックのハッシュを控えておくと、後から同じ位置に残っているかを確かめられ、reorg で外れたことに気付けます。ブロックを読み続けて表を作る[インデクサー](../indexer/)も、同じ方法で読んだ分を取り消します。
+トランザクションを見つけた時に、そのブロックのハッシュを控えておくと、後から同じ位置に残っているかを確かめられ、reorg で外れたことに気付けます。ブロックを読み続けて表を作る[インデクサー](../indexer/)も、同じ方法で読んだ分を取り消します。
 
 ---
 
