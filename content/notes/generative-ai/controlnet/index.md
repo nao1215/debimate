@@ -15,7 +15,7 @@ ControlNet は、学習済みの画像生成モデルに、骨格・深度マッ
 
 {{< figure src="images/controlnet_cover.webp" alt="左から、黒地に色付きの棒で描いた突きの骨格、その骨格から描いた絵（紺の上着の男性が脚を前後に開き、右手で棒を縦に握る）、同じ姿勢を付けた 3D モデルの深度マップ（棒が体の前後に水平に伸びる）、深度マップから描いた絵（同じ姿勢で、棒を前へ水平に突き出す）" caption="同じ姿勢の骨格（左 2 枚）と深度マップ（右 2 枚）から描いた突き" align="center" >}}
 
-骨格の画像には、関節の点しか描かれていません。棒の向き、体の厚み、腕が体の手前か奥かは骨格から読めないので、モデルがプロンプトと学習した絵から補います。
+骨格の画像には、関節の点しか描かれていません。棒の向き、体の厚み、腕が体の手前か奥かは骨格からは分からないので、モデルがプロンプトと学習した絵から補います。
 
 <br>
 
@@ -36,13 +36,13 @@ SDXL 系の画像生成モデルは、ノイズだけの画像から少しずつ
 
 プロンプトから届くのは「何を描くか」の手掛かりで、画面のどの座標に何を置くかを指定する入力はありません。`raising staff overhead` と書いても、右腕を画面のどこまで上げるか、棒をどの角度に傾けるかは、学習した絵の中で多かった形にモデルが寄せます。
 
-後の実験 1 でも、プロンプトに `lunging forward, thrusting staff forward with both hands` と書いた絵は、2 つの seed とも前屈みになり、棒の先を足元に向けた姿になりました。プロンプトが「突き」と伝えても、どの関節をどこへ置くかは伝わっていません。
+後の実験 1 でも、プロンプトに `lunging forward, thrusting staff forward with both hands` と書いた絵は、2 つの seed とも前屈みになり、棒の先を足元に向けた姿になりました。プロンプトが「突き」と伝えても、どの関節をどこに置くかは伝わっていません。
 
 ---
 
 ### ControlNet の仕組み
 
-ControlNet は、学習済みモデルの重みを書き換えずに、条件の画像を読む経路を横に足します。[論文](https://arxiv.org/abs/2302.05543)の 3.2 節では、Stable Diffusion の U-Net のうち、画像を縮めていくエンコーダー（encoder）にある 12 個の段と、中央の 1 段を複製し、複製だけを学習します。元の U-Net は固定（locked）のままです。
+ControlNet は、学習済みモデルの重みを書き換えずに、条件の画像を取り込む経路を横に足します。[論文](https://arxiv.org/abs/2302.05543)の 3.2 節では、Stable Diffusion の U-Net のうち、画像を縮めていくエンコーダー（encoder）にある 12 個の段と、中央の 1 段を複製し、複製だけを学習します。元の U-Net は固定（locked）のままです。
 
 {{< figure src="images/controlnet_concept.svg" alt="上段に灰色の SDXL の U-Net。左から縮める段 3 つ、中央、広げる段 3 つが並び、縮める段から対になる広げる段へ skip connection の線が伸びる。下段に黄土色の学習するコピーが、広げる段の真下に右から左へ並び、右端の青い条件の画像から入力を受ける。コピーの各段から、0 と書いた四角（ゼロ畳み込み）を通る線が、真上の広げる段と中央へ伸びる" caption="固定した U-Net と、学習するコピー・ゼロ畳み込み（段の数は省略）" align="center" >}}
 
@@ -54,7 +54,7 @@ ControlNet は、学習済みモデルの重みを書き換えずに、条件の
 
 コピーと、元の U-Net との間には、重みとバイアスを 0 で初期化した 1×1 の畳み込みを挟みます。論文ではゼロ畳み込み（zero convolution）と呼んでいます。学習の始めは出力が全部 0 なので、ControlNet を付けても元のモデルと同じ絵が出ます。[lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) の README も、学習前のゼロ畳み込みは 0 を出力し、絵を歪めないと説明しています。
 
-学習では、元のモデルを壊さずに、コピーが条件の画像を読む方法を少しずつ覚えます。論文の 3.3 節では、学習データにあるプロンプトの 50% を空にしています。プロンプトが無くても条件の画像だけから意味を読み取らせるためです。
+学習では、元のモデルを書き換えずに、コピーが条件の画像を扱えるように少しずつ学習します。論文の 3.3 節では、学習データにあるプロンプトの 50% を空にしています。プロンプトが無くても条件の画像だけから意味を読み取らせるためです。
 
 <br>
 
@@ -135,7 +135,7 @@ end_percent  sigma_end  active_steps  (start_percent=0)
 - 深度マップ。カメラは平行投影で、手前ほど明るい
 - OpenPose の 18 点を画面に写した座標。MPFB の [rig.openpose.json](https://github.com/makehumancommunity/mpfb2/blob/v2.0.18/src/mpfb/data/rigs/standard/rig.openpose.json) が決める頂点や関節の位置は、姿勢を付けた後の体で計算する。鼻・目・耳は、体に隠れる時は書き出さない
 
-骨格の画像は、18 点から [lab/draw_openpose.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/draw_openpose.py) で描きました。色と棒の組は [comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux) の描き方と同じで、太さは [xinsir/controlnet-openpose-sdxl-1.0](https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0) の model card が勧める太い線（長辺 1,000〜2,000 px なら 3 倍）に合わせています。model card は、学習の骨格を太い線で描いたので、細い線では結果が不安定になると説明しています。
+骨格の画像は、18 点から [lab/draw_openpose.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/draw_openpose.py) で描きました。棒ごとの色は [comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux) の描き方と同じで、太さは [xinsir/controlnet-openpose-sdxl-1.0](https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0) の model card が勧める太い線（長辺 1,000〜2,000 px なら 3 倍）に合わせています。model card は、学習の骨格を太い線で描いたので、細い線では結果が不安定になると説明しています。
 
 ベースモデルは、Illustrious 系でイラスト向けのモデル [WAI-illustrious-SDXL v17.0](https://civitai.com/models/827184?modelVersionId=2883731) で、アーキテクチャは SDXL です。[LoRA](/notes/generative-ai/lora/) は使っていません。ライセンスは [Fair AI Public License 1.0-SD](https://freedevproject.org/faipl-1.0-sd/) で、生成した画像はライセンスの対象外です。ControlNet は、xinsir/controlnet-union-sdxl-1.0 に含まれる promax のモデル（Apache License 2.0）です。
 
@@ -214,7 +214,7 @@ if control:
 <figure style="margin:0;flex:0 1 150px;min-width:0"><img src="images/lunge_depth_20261112.webp" alt="深度マップ、seed 2。棒を前へ水平に突き出す" width="300" height="438" loading="lazy" style="width:100%;height:auto;margin:0"><figcaption style="margin:4px 0 0;text-align:center;font-weight:normal;font-size:14px">深度マップ・seed 2</figcaption></figure>
 </div>
 
-冒頭の図に載せた組です。骨格を渡すと、脚の開きと上体の向きは 3D モデルに揃いました。しかし、棒は 2 つの seed とも縦に握られています。骨格には棒が描かれていないので、モデルは、`thrusting staff forward` というプロンプトと腕を前へ伸ばした骨格の両方に、「棒を立てて握る」形で応えました。深度マップは、棒の外形も渡すので、前へ水平に突き出す形になります。
+冒頭の図に載せた姿勢です。骨格を渡すと、脚の開きと上体の向きは 3D モデルに揃いました。しかし、棒は 2 つの seed とも縦に握られています。骨格には棒が描かれていないので、モデルは、`thrusting staff forward` というプロンプトと腕を前に伸ばした骨格の両方を満たす形として、「棒を立てて握る」絵を描きました。深度マップは、棒の外形も渡すので、前へ水平に突き出す形になります。
 
 ### 実験 1 の続き: 振り返る姿勢では、骨格だと棒が足元へ向く
 
@@ -369,7 +369,7 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 
 ### ControlNet の利点
 
-- 学習済みのモデルを固定したまま、画像で形を指定できる。同じ ControlNet は、同じアーキテクチャ（本記事では SDXL）の別のモデルにも当てられる
+- 学習済みのモデルを固定したまま、画像で形を指定できる。同じ ControlNet は、同じアーキテクチャ（本記事では SDXL）の別のモデルにも使える
 - プロンプトでは伝わらない関節の位置や物の向きも、画面の座標で渡せる。実験 1 の突きは、プロンプトだけでは一度も出なかった
 - 3D モデルと固定したカメラから条件の画像を作れば、人物の位置と大きさを毎回同じにできる
 - 強さと `end_percent` で、どこまで縛り、どこからモデルに任せるかを調整できる
@@ -378,7 +378,7 @@ raise_text_20261112                arms  20.5  legs   3.1  torso  19.4  people 1
 
 ### ControlNet の欠点
 
-条件の画像は、学習した種類ごとの決まりに従って描く必要があります。骨格なら色と棒の組、深度マップなら手前ほど明るいことなどです。手で描いた画像や、検出器が間違えた骨格を渡すと、その誤りも形として縛られると考えられます。
+条件の画像は、学習した種類ごとの決まりに従って描く必要があります。骨格なら棒ごとの色、深度マップなら手前ほど明るいことなどです。手で描いた画像や、検出器が間違えた骨格を渡すと、その誤りも形として縛られると考えられます。
 
 - 骨格は、関節の点しか伝えない。手に持つものの向き、体の厚み、腕が体の手前か奥かはモデルが決める
 - 深度マップとエッジは、外形まで縛る。絵の体型は、条件の画像に写った体型に寄る
