@@ -80,7 +80,7 @@ Brendan Burns 氏らが 2016 年に書いた論文「[Design Patterns for Contai
 
 {{< figure src="images/adapter_unify.webp" alt="3 つの実行単位に PostgreSQL・MySQL・Redis が 1 つずつある。統計は、PostgreSQL では SQL で読む統計のビュー、MySQL では SHOW GLOBAL STATUS、Redis では INFO コマンドから出るので、丸・三角・四角の違う形で描かれている。それぞれの隣の postgres_exporter・mysqld_exporter・redis_exporter（adapter）を通ると同じひし形になり、Prometheus にはテキスト形式 1 つだけが届く" caption="隣の exporter が、出し方の違う DB を 1 つの形式に揃える" align="center" >}}
 
-上記の図のように、MySQL の隣に [mysqld_exporter](https://github.com/prometheus/mysqld_exporter)、Redis の隣に [redis_exporter](https://github.com/oliver006/redis_exporter) を置けば、Prometheus は統計の出し方が違う DB でも 1 つの形式で読めます。違いを吸収するのは各実行単位の adapter で、Prometheus は DB の種類を知りません。論文が 4.3 節で Adapter を「複数のコンテナにまたがって出力とインターフェースを標準化すること」と定義しているのは、この揃え方のことです。
+上記の図のように、MySQL の隣に [mysqld_exporter](https://github.com/prometheus/mysqld_exporter)、Redis の隣に [redis_exporter](https://github.com/oliver006/redis_exporter) を置けば、Prometheus は統計の出し方が違う DB でも 1 つの形式で読めます。違いを吸収するのは各実行単位の adapter で、Prometheus は DB の種類を知りません。Adapter が論文の 4.3 節で「複数のコンテナにまたがって出力とインターフェースを標準化すること」と定義されているのは、この揃え方のことです。
 
 1 個あたりの重さも小さく済みます。PostgreSQL 17 に exporter を繋いで 10 秒ごとに 6 回読ませた後、`docker stats` でメモリを見ると次の通りでした。
 
@@ -92,7 +92,7 @@ postgres 17: 24.98MiB / 61.43GiB
 
 exporter 1 個は 10MiB 足らずで、何も処理していない PostgreSQL 17 の 25MiB より小さい量です。ただし DB の数だけ動くので、数百の DB を持つ環境では総量が無視できなくなります。
 
-3 行目の [multi-target](https://prometheus.io/docs/guides/multi-target-exporter/) は、1 つの exporter が、要求ごとに `/probe?target=` で指定された DB を読む方式です。postgres_exporter の README は、sidecar として置けないクラウドの管理サービス向けと説明しています。
+3 行目の [multi-target](https://prometheus.io/docs/guides/multi-target-exporter/) は、1 つの exporter が、要求ごとに `/probe?target=` で指定された DB を読む方式です。postgres_exporter の README によると、この方式は sidecar として置けないクラウドの管理サービス向けです。
 
 4 行目は、[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) の [postgresql receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/postgresqlreceiver) のように、値を集める部品が DB を読む方式です。監視する DB の種類が増えるたびに、集める側の設定と receiver に手を入れることになり、変換の誤りや重さは、全ての値を集める部品そのものに及びます。監視の仕組みにアプリごとのコードを抱えさせる構成は、論文で、関心の分離がきれいでないと指摘されています。
 
