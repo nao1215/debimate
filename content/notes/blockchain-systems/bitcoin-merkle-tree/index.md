@@ -76,7 +76,7 @@ flowchart LR
 
 上記の図のとおり、txid の計算に witness は入りません。
 
-葉が並んだら、隣同士を左から順に組にして連結し、その組に SHA-256 を 2 回適用した値を 1 段上のノードにします。1 つになるまで繰り返した結果が、ブロックヘッダに入るルートハッシュです。
+葉が並んだら、隣同士を左から順にペアにして連結し、そのペアに SHA-256 を 2 回適用した値を 1 段上のノードにします。1 つになるまで繰り返した結果が、ブロックヘッダに入るルートハッシュです。
 
 トランザクションを並べる順序を決めるのはブロックを作った参加者（マイナー）で、順序が変われば別のルートハッシュになります。
 
@@ -92,7 +92,7 @@ txid から witness を外したのは、第三者がトランザクションの
 
 ### 奇数の葉の複製
 
-Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してから組を作ります。代表的なノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の[実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
+Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してからペアを作ります。代表的なノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の[実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
 
 例えば、トランザクション 3 件のブロックでは、次のように複製します。
 
@@ -108,7 +108,7 @@ flowchart BT
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の Hash0〜Hash2 は Tx0〜Tx2 の txid で、Hash22 は Hash2 を 2 つ連結した組のハッシュです。この木は、4 件目のトランザクションとして Tx2 をもう一度並べた場合と同じ形になります。
+上記の図の Hash0〜Hash2 は Tx0〜Tx2 の txid で、Hash22 は Hash2 を 2 つ連結したペアのハッシュです。この木は、4 件目のトランザクションとして Tx2 をもう一度並べた場合と同じ形になります。
 
 この規則には副作用があります。3 件の並びと、Tx2 を実際に 2 回並べた 4 件の並びが、同じルートハッシュになります。SHA-256 の[衝突](../hash-function/)ではなく、木の構築規則に由来する一致です。Bitcoin Core はこの一致を検出して棄却しています。放置した場合に成り立つ攻撃と検出の方法は、[Bitcoin Merkle Tree の弱点](../bitcoin-merkle-tree-attacks/) で説明します。
 
