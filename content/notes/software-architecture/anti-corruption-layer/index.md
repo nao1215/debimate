@@ -262,7 +262,7 @@ Stripe の SDK は、Java や Go のような型付きの言語では、その S
 
 #### 名前の似たパターン
 
-同じ解説は、ACL を facade か adapter の層として作るパターンとも説明しています。facade は複雑な相手の API を単純な窓口にまとめる層、adapter は相手のインターフェースを自分が期待する形に合わせる層で、どちらも、著者 4 人の通称 Gang of Four から GoF 本と呼ばれる書籍『[Design Patterns](https://www.informit.com/store/design-patterns-elements-of-reusable-object-oriented-9780201633610)』に載っているパターンの名前です。実験の `translate()` は adapter に近い役です。
+同じ解説では、ACL は facade か adapter の層として作るパターンとも説明されています。facade は複雑な相手の API を単純な窓口にまとめる層、adapter は相手のインターフェースを自分が期待する形に合わせる層で、どちらも、著者 4 人の通称 Gang of Four から GoF 本と呼ばれる書籍『[Design Patterns](https://www.informit.com/store/design-patterns-elements-of-reusable-object-oriented-9780201633610)』に載っているパターンの名前です。実験の `translate()` は adapter に近い役です。
 
 コンテナを並べる [Adapter](/notes/software-architecture/adapter/) のパターンとは、名前が同じでも別物です。
 
