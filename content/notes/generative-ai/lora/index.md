@@ -11,7 +11,7 @@ topics: ["Image Generation"]
 
 LoRA（Low-Rank Adaptation）は、学習済みモデルの重み行列 `W` を書き換えずに、`W` に足す差分だけを 2 つの細長い行列 `B` と `A` の積として学習する手法です。[Hu 氏らの論文](https://arxiv.org/abs/2106.09685)（2021 年）は大規模言語モデルの追加学習を対象にしていましたが、現在は画像生成モデルに画風やキャラクターを足すファイルの形式としても広く使われています。
 
-例えば、手元の画像生成のベースモデルは 6.9 GB ありますが、本記事の説明用に用意した独自の画風 LoRA（`example_style_lora.safetensors`）は 170 MB です。プロンプトでは、この LoRA を効かせるための語（起動語）を `<trigger>` と書きます。この 170 MB をベースモデルに重ねて読み込むと、同じプロンプトでも絵柄が変わります。
+例えば、手元の画像生成のベースモデルは 6.9 GB ありますが、本記事の説明用に用意した独自の画風 LoRA（`example_style_lora.safetensors`）は 170 MB です。プロンプトでは、この LoRA の画風を出すための語（起動語）を `<trigger>` と書きます。この 170 MB をベースモデルに重ねて読み込むと、同じプロンプトでも絵柄が変わります。
 
 以下は、1 つの重み行列について、凍結した `W` と、学習する `B`・`A` の大きさを面積で比べた図です。
 
@@ -105,7 +105,7 @@ weight += function(((strength * alpha) * lora_diff).type(weight.dtype))
 
 ### 実験 1: LoRA ファイルの中身を数える
 
-LoRA とベースモデルは、どちらも [safetensors](https://github.com/huggingface/safetensors) 形式で配布されています。safetensors は、先頭 8 バイトにヘッダーの長さ（リトルエンディアンの符号なし 64 ビット整数）を置き、続けて JSON のヘッダー、その後にテンソルの中身を並べた形式です。ヘッダーには、テンソルごとの名前・型（`dtype`）・形（`shape`）・データの位置が入っています。`__metadata__` という特別なキーには、文字列の組を自由に入れられます。
+LoRA とベースモデルは、どちらも [safetensors](https://github.com/huggingface/safetensors) 形式で配布されています。safetensors は、先頭 8 バイトにヘッダーの長さ（リトルエンディアンの符号なし 64 ビット整数）を置き、続けて JSON のヘッダー、その後にテンソルの中身を並べた形式です。ヘッダーには、テンソルごとの名前・型（`dtype`）・形（`shape`）・データの位置が入っています。`__metadata__` という特別なキーには、文字列のキーと値のペアを自由に入れられます。
 
 そのため、ヘッダーだけを読めば、6.9 GB のファイルでも中身を読まずにパラメータ数を数えられます。スクリプト（[lab/count_params.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/lora/lab/count_params.py)）は、Python の標準ライブラリだけで、LoRA の対象の層・ランク・パラメータ数と、ベースモデルの部品ごとのパラメータ数を出します。
 
@@ -276,7 +276,7 @@ if __name__ == "__main__":
 
 {{< figure src="images/lora_params.svg" alt="ベースモデルの UNet は 2,567.5 M、text encoder 2 つで 817.7 M、LoRA が差分を足す 722 層の W は合わせて 2,207.7 M。LoRA の B と A は 85.1 M で、UNet の 3.32%" caption="ベースモデルの部品と LoRA のパラメータ数" align="center" >}}
 
-LoRA が差分を足す 722 層（target layers）の `W` は、UNet のパラメータ（parameters）の 86% を占めます。つまり、この LoRA は UNet の大部分の層に手を入れていながら、その層の 3.9% の量で済んでいます。層の内訳は、UNet の中にある 70 個の [Transformer](https://arxiv.org/abs/1706.03762) ブロック（注意機構と全結合層を組み合わせた単位）ごとに、注意機構（attention）の行列 8 個と全結合の行列 2 個です。残りの 22 個は、Transformer ブロックを束ねる 11 個の単位が入口と出口に 1 個ずつ持つ行列です（数は [SDXL が公開する UNet の設定](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/unet/config.json)と一致します）。
+LoRA が差分を足す 722 層（target layers）の `W` は、UNet のパラメータ（parameters）の 86% を占めます。つまり、この LoRA は UNet の大部分の層に差分を足していながら、その層の 3.9% の量で済んでいます。層の内訳は、UNet の中にある 70 個の [Transformer](https://arxiv.org/abs/1706.03762) ブロック（注意機構と全結合層を組み合わせた単位）ごとに、注意機構（attention）の行列 8 個と全結合の行列 2 個です。残りの 22 個は、Transformer ブロックを束ねる 11 個の単位が入口と出口に 1 個ずつ持つ行列です（数は [SDXL が公開する UNet の設定](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/unet/config.json)と一致します）。
 
 メタデータの `trained on` と `base SHA-256` は、sd-scripts が学習時に記録したベースモデルのファイル名と [SHA-256](https://csrc.nist.gov/pubs/fips/180-4/upd1/final)（ファイルの中身から計算する[ハッシュ値](/notes/security/sha-256/)）です。ファイル名と、SHA-256 が配布ページの v17.0 の値と一致することから、学習に使ったのは WAI-illustrious-SDXL v17.0 だと分かります。差分は、このベースモデルとの差として学習された値です。
 
@@ -389,7 +389,7 @@ for w, pid in jobs:
 
 <br>
 
-ComfyUI の `LoraLoader` は、強さが 2 つとも 0 の時に LoRA を読まずにベースモデルをそのまま返します。また、実験 1 の通り、この LoRA は text encoder の層を持たないので、効くのは `strength_model` だけです（`strength_clip` は効きません）。
+ComfyUI の `LoraLoader` は、強さが 2 つとも 0 の時に LoRA を読まずにベースモデルをそのまま返します。また、実験 1 の通り、この LoRA は text encoder の層を持たないので、画像に影響するのは `strength_model` だけです（`strength_clip` を変えても画像は変わりません）。
 
 1 枚あたり 23.5〜26.0 秒で生成できました。以下が、euler_ancestral で生成した 5 枚です。画像の下の数字が強さです。
 
@@ -417,7 +417,7 @@ ComfyUI の `LoraLoader` は、強さが 2 つとも 0 の時に LoRA を読ま�
 
 euler でも、構図を保ったまま、強さを上げるほど部屋が明るくなり、置物と額が増えました。1.0 では黒い卓上ライトが消え、窓の光が入る昼の部屋になっています。
 
-この LoRA の学習画像は、ほとんどが人物のイラストです（メタデータのタグの集計による）。人物の無い題材でも、差分は部屋の明るさや小物の数まで変えました。差分が人物の描き方だけでなく、画面全体の描き方を動かしていると考えられます。ここは推測で、層ごとの差分を調べたわけではありません。
+この LoRA の学習画像は、ほとんどが人物のイラストです（メタデータのタグの集計による）。人物の無い題材でも、差分は部屋の明るさや小物の数まで変えました。差分が人物の描き方だけでなく、画面全体の描き方を変えていると考えられます。ここは推測で、層ごとの差分を調べたわけではありません。
 
 ### 画素の差で見る変化
 
