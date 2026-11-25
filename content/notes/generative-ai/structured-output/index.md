@@ -357,7 +357,7 @@ if __name__ == "__main__":
     OLLAMA_HOST=127.0.0.1:11435 python3 run.py <出力の .jsonl> <モデル> <繰り返し回数> [方式,...]
 方式の既定は prompt,json,schema。
 1 回目は 40 件全て、2 回目以降は時間を測るために先頭の 20 件だけを解かせる。
-出力に既にある組（モデル・回・入力・方式）は飛ばすので、途中で止めても続きから再開できる。
+出力に既にある組み合わせ（モデル・回・入力・方式）は飛ばすので、途中で止めても続きから再開できる。
 Python 標準ライブラリだけで動く。
 """
 import json
@@ -728,7 +728,7 @@ qwen3:4b think=true  format=schema thinking= 7964 chars  tokens=  37  eval=   1.
 ```python
 """think（思考モード）と format の組み合わせで、思考の文がどこに返るかを見る。
 
-同じ入力 1 件を、think: false / true と format 無し / スキーマの組で解かせ、
+同じ入力 1 件を、think: false / true と format 無し / スキーマの組み合わせで解かせ、
 content の先頭、thinking の長さ、生成したトークン数と時間を出す。
 tokens と eval は Ollama の応答の eval_count と eval_duration、wall は要求を送ってから応答が返るまでの時間。
 

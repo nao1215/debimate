@@ -1,6 +1,6 @@
 """think（思考モード）と format の組み合わせで、思考の文がどこに返るかを見る。
 
-同じ入力 1 件を、think: false / true と format 無し / スキーマの組で解かせ、
+同じ入力 1 件を、think: false / true と format 無し / スキーマの組み合わせで解かせ、
 content の先頭、thinking の長さ、生成したトークン数と時間を出す。
 tokens と eval は Ollama の応答の eval_count と eval_duration、wall は要求を送ってから応答が返るまでの時間。
 
