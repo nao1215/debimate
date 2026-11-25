@@ -15,7 +15,7 @@ EVM の話に入る前に、Ethereum の登場人物を確認します。Ethereu
 
 {{< figure src="images/evm_overview.webp" alt="左の EOA の箱に秘密鍵・残高・nonce。そこから「トランザクション」の矢印（宛先・額・入力、ガスの上限）が右のコントラクトに向かう。コントラクトの中には青いコード（不変）と黄土色の storage（キー → 値）があり、コードから storage に読み書きの矢印" caption="EOA が送るトランザクションと、コードと storage を持つコントラクト" align="center" >}}
 
-上記の図の EOA（Externally Owned Account）は、人が秘密鍵で操作する通常のアカウントで、残高と nonce を持ちます。nonce は、そのアカウントが送ったトランザクションを数える番号で、同じトランザクションを 2 回実行させないために使います。
+上記の図にある EOA（Externally Owned Account）は、人が秘密鍵で操作する通常のアカウントで、残高と nonce を持ちます。nonce は、そのアカウントが送ったトランザクションを数える番号で、同じトランザクションを 2 回実行させないために使います。
 
 コントラクト（contract）は、デプロイしたプログラムのコードと、そのコードが読み書きするストレージ（storage）を持つアカウントです。コードはデプロイ後に変わらず、storage はキーと値の対応表です。
 
@@ -29,21 +29,21 @@ Ethereum には、計算結果を配る中央のサーバーがありません�
 
 上記の図のように、1 つのノードでも結果が違えば、そのノードは他と別の状態を持つことになります。そのため EVM は、同じ入力から必ず同じ結果が出るように、命令の意味を細かく決めています。
 
-もう 1 つの前提がガス（gas）です。EVM の全ての命令には、ガスという単位で値段が決まっています。以下は、トランザクション 1 件のガスと手数料の関係を示した図です。
+もう 1 つの前提がガス（gas）です。EVM では、全ての命令にガスという単位で値段が決まっています。以下は、トランザクション 1 件のガスと手数料の関係を示した図です。
 
 {{< figure src="images/evm_gas_fee.webp" alt="横長の棒がガスの上限（gas limit）で、左の青い部分が使ったガス（gasUsed）、右の白い部分が使わなかった分。使ったガスから黄土色の「手数料 = gasUsed × 単価、ETH（wei）で払う」へ、使わなかった分から点線の「払わない」へ矢印" caption="ガスの上限・使ったガス・手数料" align="center" >}}
 
-トランザクションはガスの上限（gas limit）の範囲でしか実行できず、使い切ると実行は止まります。送り主は、実際に使ったガス（gasUsed）に 1 ガスあたりの単価を掛けた額を ETH で払い、使わなかった分は払いません。額の単位には、ETH の 10 の 18 乗分の 1 にあたる wei も使います。ガスがなぜ必要かは「命令とガス」の節で説明します。
+トランザクションはガスの上限（gas limit）の範囲でしか実行できず、使い切ると実行は止まります。送り主は、実際に使ったガス（gasUsed）に 1 ガスあたりの単価を掛けた額を ETH で払い、使わなかった分は払いません。額の単位には wei も使い、1 ETH は 10 の 18 乗 wei です。ガスがなぜ必要かは「命令とガス」の節で説明します。
 
-EVM の仕様は 1 つですが、実装（ノードで動くソフトウェアで、クライアントとも呼びます）は複数あります。Go で書かれた [go-ethereum](https://github.com/ethereum/go-ethereum)（geth）や、開発用のローカルノードの [Foundry の Anvil](https://getfoundry.sh/anvil/overview) が使う Rust の [revm](https://github.com/bluealloy/revm) などが、同じブロックから同じ状態を計算します。
+EVM の仕様は 1 つですが、実装（ノードで動くソフトウェアで、クライアントとも呼びます）は複数あります。Go で書かれた [go-ethereum](https://github.com/ethereum/go-ethereum)（geth）や、開発用のローカルノードである [Foundry の Anvil](https://getfoundry.sh/anvil/overview) が使う Rust の [revm](https://github.com/bluealloy/revm) などが、同じブロックから同じ状態を計算します。
 
 {{< figure src="images/evm_clients.webp" alt="左の青い「仕様（execution-specs）」から、geth（Go）・revm（Rust）・他の実装の 3 つに矢印が分かれ、3 つから緑の「同じブロック → 同じ状態」に矢印が集まる。下に「Anvil は revm を使う」" caption="1 つの仕様と複数の実装" align="center" >}}
 
-上記の図の仕様は、[Python](https://www.python.org/) で書かれていてテストとしても動かせる [execution-specs](https://github.com/ethereum/execution-specs) が読みやすいです。本記事は Anvil で実験し、規則の根拠として geth と execution-specs のコードをコミットを固定して参照します。
+上記の図にある仕様は、[Python](https://www.python.org/) で書かれていてテストとしても動かせる [execution-specs](https://github.com/ethereum/execution-specs) が読みやすいです。本記事は Anvil で実験し、規則の根拠として geth と execution-specs のコードをコミットを固定して参照します。
 
 <br>
 
-本記事では、EVM を初めて学ぶ開発者に向けて、トランザクションが届いてからコードが実行され、結果が残るまでを順に説明します。最初にトランザクションを処理する全体の流れを見て、EVM の中の仕組み（スタック、データ領域、フレーム）、ガス、関数の呼び分け（calldata と ABI）、コントラクト同士の呼び出し、失敗の扱いへ進みます。
+本記事では、EVM を初めて学ぶ開発者に向けて、トランザクションが届いてからコードが実行され、結果が残るまでを順に説明します。最初にトランザクションを処理する全体の流れを見て、EVM 内部の仕組み（スタック、データ領域、フレーム）、ガス、関数の呼び分け（calldata と ABI）、コントラクト同士の呼び出し、失敗の扱いへ進みます。
 
 Ethereum は、全てのノードが決めた時期に一斉に規則を切り替える更新（ハードフォーク）を重ねていて、命令やガスの値は更新ごとに変わります。本文では、更新を「2021 年 4 月の更新（Berlin）」のように時期と名前で示します。
 
@@ -59,11 +59,11 @@ Ethereum は、全てのノードが決めた時期に一斉に規則を切り�
 
 外側の左では、署名（signature）と nonce を確認し、トランザクション 1 件ごとに決まった基本のガス（intrinsic gas）を引き、gas limit 分の手数料を送り主の残高から前払いさせます。EVM はまだ動いていません。
 
-中央のメッセージ呼び出し（message call）は、呼び出し元・宛先・入力・渡すガス・送る ETH の組です。EVM はこれを 1 つのフレーム（frame）として実行します。
+中央のメッセージ呼び出し（message call）は、呼び出し元・宛先・入力・渡すガス・送る ETH をまとめたものです。EVM はこれを 1 つのフレーム（frame）として実行します。
 
-フレームは、1 回の呼び出しの実行に必要なもの（残りのガス、後で説明するスタックや memory）をまとめた単位です。フレームの中では、命令を読み、ガスを引き、実行する、を停止まで繰り返します。コードが CALL 命令で別のコントラクトを呼ぶと、同じループを持つ子のフレームが作られます。
+フレームは、1 回の呼び出しの実行に必要なもの（残りのガス、次の節で説明するスタックや memory）をまとめた単位です。フレームの中では、命令を読み、ガスを引き、実行する、を停止まで繰り返します。コードが CALL 命令で別のコントラクトを呼ぶと、同じループを持つ子のフレームが作られます。
 
-外側の右では、払い戻し（refund。storage の値を 0 に戻した時などに付く割引で、後の節で説明）を計算し、使わなかったガスの分を送り主に返して手数料を払い、レシート（receipt）を作ります。レシートはトランザクションの結果を記録したもので、ノードの API が返すレシートは、成否を表す `status`、使ったガスの `gasUsed`、後で説明するログを持ちます。
+外側の右では、払い戻し（refund。storage の値を 0 に戻した時などに付く割引で、「トランザクション全体のガス」で説明）を計算し、使わなかったガスの分を送り主に返して手数料を払い、レシート（receipt）を作ります。レシートはトランザクションの結果を記録したもので、ノードの API が返すレシートは、成否を表す `status`、使ったガスの `gasUsed`、「イベントとログ」で説明するログを持ちます。
 
 <br>
 
@@ -80,15 +80,15 @@ Ethereum は、全てのノードが決めた時期に一斉に規則を切り�
 
 <br>
 
-EVM が担うのは、上記の図の中央の部分だけです。どのブロックを採用するかの合意は、[Proof of Stake](../proof-of-stake/) を担う別のソフトウェアの仕事で、EVM は関わりません。また、宛先が EOA で ETH を送るだけのトランザクションなら、宛先にコードが無いので、EVM の命令は 1 つも実行されません。
+EVM が実行するのは、上記の図で中央にある部分だけです。どのブロックを採用するかは、[Proof of Stake](../proof-of-stake/) を動かす別のソフトウェアが合意して決め、EVM は関わりません。また、宛先が EOA で ETH を送るだけのトランザクションなら、宛先にコードが無いので、EVM の命令は 1 つも実行されません。
 
-コントラクトは、時間が来ても自分では動きません。コードが動く入口は、ユーザーが送ったトランザクションか、ノード自身がブロックの処理の始めや終わりに決まったコントラクトを呼ぶ場合だけです。後者の例には、合意の仕組みが使う値をコントラクトに書き込む呼び出しがあり、Ethereum の仕様変更の提案（EIP、Ethereum Improvement Proposal）の [EIP-4788](https://eips.ethereum.org/EIPS/eip-4788) で決まっています。
+コントラクトは、時間が来ても自分では動きません。コードが動く入口は、ユーザーが送ったトランザクションか、ノード自身がブロックを処理する始めや終わりに決まったコントラクトを呼ぶ場合だけです。後者の例には、合意の仕組みが使う値をコントラクトに書き込む呼び出しがあり、Ethereum の仕様を変える提案（EIP、Ethereum Improvement Proposal）の 1 つ、[EIP-4788](https://eips.ethereum.org/EIPS/eip-4788) で決まっています。
 
 ---
 
 ### 実行の仕組み
 
-前の節の命令の実行ループが、1 つのフレームの中で何を読み書きするのかを見ます。
+前の節で見た命令の実行ループが、1 つのフレームの中で何を読み書きするのかを見ます。
 
 #### スタック
 
@@ -106,17 +106,17 @@ EVM のコードが読み書きする場所は、スタックの他に複数あ�
 
 {{< figure src="images/evm_data_areas.webp" alt="2 つの枠。青い「フレームに属する」に stack（フレームの終わりまで、256 ビットの語）、memory（フレームの終わりまで、バイト列）、calldata（フレームの終わりまで、読むだけ）、returndata（次に子を呼ぶまで）。黄土色の「アカウントに属する」に transient storage（トランザクションの終わりまで）、storage（書き換えるまで）、code（デプロイ後は不変、読むだけ）" caption="EVM が読み書きする場所と、その持ち主" align="center" >}}
 
-左のフレームに属する 4 つは、フレームが終わると消えます。memory は作業用のバイト列で、使った分だけガスが掛かります。calldata は呼び出しの入力のバイト列で、読むだけです。returndata は直近に呼んだ子のフレームが返したバイト列です。
+左のフレームに属する 4 つは、フレームが終わると消えます。memory は作業用のバイト列で、使った分だけガスが掛かります。calldata は呼び出しで渡す入力のバイト列で、読むだけです。returndata は直近に呼んだ子のフレームが返したバイト列です。
 
-右のアカウントに属する 3 つのうち、storage と transient storage は、どちらも 256 ビットのキーから 256 ビットの値への対応表です。時間軸に並べると、以下のようになります。
+右のアカウントに属する 3 つのうち、storage と transient storage は、どちらも 256 ビットのキーを 256 ビットの値に対応させる表です。時間軸に並べると、以下のようになります。
 
 {{< figure src="images/evm_lifetimes.webp" alt="1 件のトランザクションの時間軸。フレーム A はトランザクションの開始から終わりまで、フレーム B（CALL）は途中の一部だけ続く。A と B の stack・memory はそれぞれのフレームの間だけ青い帯で続く。transient storage は TSTORE の時点からトランザクションの終わりまで黄土色の帯で続き、終わりに赤い×がある。storage の緑の帯はトランザクションの前から次のトランザクションまで続く" caption="トランザクション 1 件の間に各領域が残る期間" align="center" >}}
 
-memory はフレームごとに新しく作られます。子のフレームに渡すのは、親の memory の一部をコピーした calldata で、子は親の memory を直接は触れません。
+memory はフレームごとに新しく作られます。子のフレームに渡すのは、親が持つ memory の一部をコピーした calldata で、子は親の memory を直接は触れません。
 
 storage は、次のトランザクションにも残る唯一の領域です。2 の 256 乗個の場所を確保しているわけではなく、0 以外の値を書いたキーだけを状態に持ちます。Solidity の変数がどのキー（slot）に置かれるかは、EVM ではなくコンパイラの規則で決まります（[Solidity の storage layout](https://docs.soliditylang.org/en/v0.8.28/internals/layout_in_storage.html)）。この配置が問題になる例は [Upgradeable Proxy](../upgradeable-proxy/#storage-の衝突) のノートで説明しています。
 
-transient storage は、2024 年 3 月の更新（Cancun）で [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153) が加えた領域で、TSTORE と TLOAD で読み書きします。同じトランザクションの中なら複数のフレームから見えますが、トランザクションが終わると消えます。「処理の途中である」ことを示す旗のように、トランザクションの間だけ要る値に向いています。
+transient storage は、2024 年 3 月の更新（Cancun）で [EIP-1153](https://eips.ethereum.org/EIPS/eip-1153) が加えた領域で、TSTORE と TLOAD で読み書きします。同じトランザクションの中なら複数のフレームから見えますが、トランザクションが終わると消えます。「処理の途中である」ことを示す旗のように、トランザクションの間だけ必要な値に向いています。
 
 <br>
 
@@ -128,13 +128,13 @@ transient storage は、2024 年 3 月の更新（Cancun）で [EIP-1153](https:
 
 {{< figure src="images/evm_jumpdest.webp" alt="コード 60 5b 5b 00 の 4 バイト。PC 0 の 60 は PUSH1、PC 1 の 5b は黄土色で PUSH1 の即値、PC 2 の 5b は JUMPDEST、PC 3 の 00 は STOP。PC 0 と 1 は「1 つの命令: PUSH1 0x5b」。「1 へ JUMP」は赤い×、「2 へ JUMP」は緑のチェック" caption="即値の中の 0x5b と、本物の JUMPDEST" align="center" >}}
 
-上記の図の PC 1 の 0x5b は PUSH1 の即値で、命令ではありません。そのため、PC 1 に飛ぶと失敗し、PC 2 に飛ぶと成功します。クライアントは、コードを先頭から読んで実行の前に、即値の範囲を除いた飛び先の一覧を作ります（geth の [`analysis_legacy.go`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/vm/analysis_legacy.go#L75-L118)）。
+上記の図で PC 1 にある 0x5b は PUSH1 の即値で、命令ではありません。そのため、PC 1 に飛ぶと失敗し、PC 2 に飛ぶと成功します。クライアントは、コードを先頭から読んで実行の前に、即値の範囲を除いた飛び先の一覧を作ります（geth の [`analysis_legacy.go`](https://github.com/ethereum/go-ethereum/blob/ddaa6957127ef0c4b7d41e5cbd9c19e260c0a42f/core/vm/analysis_legacy.go#L75-L118)）。
 
 ---
 
 ### 命令とガス
 
-冒頭で、命令にはガスの値段が付いていると書きました。EVM のコードはループで任意の回数の計算を書けるので、コードが止まるかどうかを事前に判定できません。そこで EVM は、全ての命令に値段を付け、送り主が gas limit で用意した量を使い切ったら例外として止めます。止まらないコードも、ガスを使い切った時点で終わります。
+冒頭で、命令にはガスの値段が付いていると書きました。EVM のコードはループで計算を何回でも繰り返せるので、コードが止まるかどうかを事前に判定できません。そこで EVM は、全ての命令に値段を付け、送り主が gas limit で用意した量を使い切ったら例外として止めます。止まらないコードも、ガスを使い切った時点で終わります。
 
 命令の値段は、計算の重さだけでなく、ノードのディスクや状態の大きさへの負担で決まります。以下は、Osaka の主な命令のガスを対数の目盛りで並べた図です（execution-specs の [`gas.py`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/gas.py#L30-L199)）。
 
@@ -170,7 +170,7 @@ ADD の 3 に比べて、storage やアカウントに触る命令（図の状�
 
 #### 実験の環境
 
-ここからは、ガスの式を実際のノードで確認します。実験は、手元のコンテナで動かした開発用ノードの Anvil を Osaka の規則に固定して行い、公開のネットワークには繋ぎません。
+ここからは、ガスの式を実際のノードで確認します。実験では、手元のコンテナで動かした開発用ノードの Anvil を Osaka の規則に固定し、公開のネットワークには繋ぎません。
 
 <br>
 
@@ -179,7 +179,7 @@ ADD の 3 に比べて、storage やアカウントに触る命令（図の状�
 
 Anvil 1.7.1 を [Docker](https://www.docker.com/) の専用ネットワークで起動し、`--hardfork osaka` で規則を Osaka に固定しました。ホストのポートは公開しません。使う秘密鍵は、Anvil が既定で用意するテスト用の公開された鍵だけです。
 
-Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコンパイルしています。optimizer はコードを小さく・安くする最適化で、切ると命令がソースの形に近くなります。evmVersion はコンパイラが使う命令の範囲の指定で、cancun 向けのコードは Osaka のノードでもそのまま動きます。
+Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコンパイルしています。optimizer はコードを小さく・安くする最適化で、切ると命令がソースの形に近くなります。evmVersion はコンパイラが使う命令の範囲を指定する設定で、cancun 向けのコードは Osaka のノードでもそのまま動きます。
 
 </details>
 
@@ -191,7 +191,7 @@ Solidity は solc 0.8.28（optimizer 無し、evmVersion は cancun）でコン�
 
 #### memory の拡張
 
-memory は使った最大の位置までを語数 `a` で数え、累計で `3a + floor(a² / 512)` のガスが掛かります。命令が memory を広げた時は、広げた後と前の累計の差を払います（execution-specs の [`calculate_memory_gas_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/gas.py#L253-L276)）。
+memory は使った最大の位置までを語数 `a` で数え、累計で `3a + floor(a² / 512)` のガスが掛かります。命令が memory を広げた時は、広げる前後で累計が増えた分を払います（execution-specs の [`calculate_memory_gas_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/vm/gas.py#L253-L276)）。
 
 この式を確認するため、残りのガスを積む GAS 命令で MLOAD（memory から 1 語読む命令）の前後を挟んだ短いコードを `eth_call` で実行し、差から拡張の分を求めました。同じ位置を 2 回読み、2 回目には拡張が無いことも見ています。
 
@@ -240,11 +240,11 @@ for size in (32, 1024, 32768, 131072):
 
 #### トランザクション全体のガス
 
-命令のガスの外側にも、トランザクションごとに掛かる分があります。最初の節の図の intrinsic gas は、宛先のあるトランザクションなら、基本の 21,000 に、トランザクションの `data` で、0 のバイトごとに 4、0 以外のバイトごとに 16 を足した値です。トランザクションでコントラクトを作成（デプロイ）する場合などは、その分も足します（execution-specs の [`calculate_intrinsic_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/transactions.py#L598-L666)）。
+命令ごとのガスとは別に、トランザクションごとに掛かる分もあります。最初の節で図に示した intrinsic gas は、宛先のあるトランザクションなら、基本の 21,000 に、トランザクションの `data` で、0 のバイトごとに 4、0 以外のバイトごとに 16 を足した値です。トランザクションでコントラクトを作成（デプロイ）する場合などは、その分も足します（execution-specs の [`calculate_intrinsic_cost`](https://github.com/ethereum/execution-specs/blob/f9488c74b3d1f7433a0134b8029a3ae99c994d51/src/ethereum/forks/osaka/transactions.py#L598-L666)）。
 
-2025 年 5 月の更新（Prague）からは、[EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) の下限（floor）もあります。命令をほとんど実行せずに大量の `data` を載せるトランザクションで、ブロックのデータが大きくなりすぎるのを抑えるためのものです。`data` の 0 のバイトは 1、0 以外のバイトは 4 と数え、その合計に 10 を掛けて 21,000 に足した値 `21000 + 10 × (0 のバイト数 + 4 × 0 以外のバイト数)` を下限とし、使ったガスがこれを下回る時は、この値まで引き上げます。
+2025 年 5 月の更新（Prague）からは、[EIP-7623](https://eips.ethereum.org/EIPS/eip-7623) の下限（floor）もあります。命令をほとんど実行せずに大量の `data` を載せるトランザクションで、ブロックのデータが大きくなりすぎるのを抑えるためのものです。`data` にある 0 のバイトは 1、0 以外のバイトは 4 と数え、その合計に 10 を掛けて 21,000 に足した値 `21000 + 10 × (0 のバイト数 + 4 × 0 以外のバイト数)` を下限とし、使ったガスがこれを下回る時は、この値まで引き上げます。
 
-storage の値を 0 に戻すと、払い戻し（refund）が付きます。払い戻しはトランザクションの最後にまとめて行われ、2021 年 8 月の更新（London）の [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529) から、払い戻し前のガスの 5 分の 1 が上限です。実行中に使えるガスは増えません。
+storage の値を 0 に戻すと、払い戻し（refund）が付きます。払い戻しはトランザクションの最後にまとめて計算され、2021 年 8 月の更新（London）の [EIP-3529](https://eips.ethereum.org/EIPS/eip-3529) から、払い戻す前に数えたガスの 5 分の 1 が上限です。実行中に使えるガスは増えません。
 
 <br>
 
@@ -276,7 +276,7 @@ cold と warm の区別はトランザクションごとにやり直すので、
 
 `set(0)` は同じ 5,000 を払った後、0 以外の slot を 0 に戻した時の払い戻し 4,800（EIP-3529 の値）を受け、28,177 から 23,377 に下がっています。払い戻しの上限は 28,177 の 5 分の 1（5,635）なので、全額が戻りました。
 
-なお、払い戻し前の 28,177 が `set(43)` の 28,189 より 12 少ないのは、引数の 0 が calldata の 0 のバイトになり、intrinsic gas が 1 バイトあたり 16 から 4 に下がるからです。手数料は、この gasUsed に 1 ガスあたりの単価を掛けた額です。単価の決まり方（[base fee と priority fee](../gas-eip-1559/)）は [Ethereum Transaction](../ethereum-transaction/) で説明しています。
+なお、払い戻し前の 28,177 が `set(43)` の 28,189 より 12 少ないのは、引数の 0 が calldata で 0 のバイトになり、intrinsic gas が 1 バイトあたり 16 から 4 に下がるからです。手数料は、この gasUsed に 1 ガスあたりの単価を掛けた額です。単価の決まり方（[base fee と priority fee](../gas-eip-1559/)）は [Ethereum Transaction](../ethereum-transaction/) で説明しています。
 
 ---
 
@@ -290,15 +290,15 @@ cold と warm の区別はトランザクションごとにやり直すので、
 calldata of set(42): 60fe47b1 000000000000000000000000000000000000000000000000000000000000002a
 ```
 
-コンパイルされた `Dispatcher` のコードの先頭には、この selector を見て関数の本体に飛ぶ部分があります。以下は、その流れを図にしたものです。
+コンパイルされた `Dispatcher` では、コードの先頭に、この selector を見て関数の本体に飛ぶ部分があります。以下は、その流れを図にしたものです。
 
 {{< figure src="images/evm_dispatcher.webp" link="images/evm_dispatcher.webp" alt="上段は calldata（36 バイト）で、青い 4 バイトの 60fe47b1 と黄土色の 32 バイトの 00 … 00 2a (42)。中段は CALLDATALOAD 0 → SHR 224 → 60fe47b1 で、取り出した 60fe47b1 から下段に矢印。下段は EQ 3fa4f245（value()）が「否」、EQ 60fe47b1（set(uint256)）が「一致」で JUMPI → pc 86 に進み、SSTORE、LOG2、STOP の set() の本体に至る。どれとも不一致なら REVERT。左下に「EVM は set という名前を見ない」" caption="calldata の selector から set() の本体に至る分岐" align="center" >}}
 
-CALLDATALOAD で calldata の先頭の 32 バイトを読み、224 ビット右にずらして（SHR）先頭 4 バイトだけを残します。それを `value()` の `3fa4f245`（`uint256 public value` から Solidity が自動で作る読み出し用の関数）、`set(uint256)` の `60fe47b1` と順に比べ（EQ）、一致した所の JUMPDEST に飛びます。
+CALLDATALOAD で calldata から先頭の 32 バイトを読み、224 ビット右にずらして（SHR）先頭 4 バイトだけを残します。それを `value()` の `3fa4f245`（`uint256 public value` から Solidity が自動で作る読み出し用の関数）、`set(uint256)` の `60fe47b1` と順に比べ（EQ）、一致した所の JUMPDEST に飛びます。
 
 図の pc 86 は飛び先の位置で、16 進では 0x56 です（下に畳んだ抜粋の `PUSH2 0x0056`）。どれにも一致しなければ REVERT します。
 
-`set(42)` のトランザクションを `debug_traceTransaction` でたどると、実行された命令もこの順でした。Foundry の [cast](https://getfoundry.sh/cast/overview) の `cast disassemble` で命令に戻した該当部分は、以下に畳みました。
+`set(42)` のトランザクションを `debug_traceTransaction` でたどると、実行された命令もこの順でした。Foundry の [cast](https://getfoundry.sh/cast/overview) にある `cast disassemble` で命令に戻した該当部分は、以下に畳みました。
 
 <br>
 
@@ -337,19 +337,19 @@ CALLDATALOAD で calldata の先頭の 32 バイトを読み、224 ビット右�
 
 <br>
 
-この直線の比較は、関数が少なく optimizer を使わない場合の形です。optimizer の設定は、関数を振り分ける部分の二分探索の大きさなどを変えます（[solc の optimizer options](https://docs.soliditylang.org/en/v0.8.28/using-the-compiler.html#optimizer-options)）。
+この直線の比較は、関数が少なく optimizer を使わない場合の形です。optimizer の設定は、関数を振り分ける部分で、二分探索の大きさなどを変えます（[solc の optimizer options](https://docs.soliditylang.org/en/v0.8.28/using-the-compiler.html#optimizer-options)）。
 
-どちらの場合も、EVM が比べているのは 4 バイトの数値だけです。そのため、別のシグネチャから同じ 4 バイトが出る衝突も起こり得ます。呼び出しを別のコントラクトのコードに転送するプロキシ（DELEGATECALL の節で触れます）では、呼び先の関数と管理用の関数の selector が重ならないように設計します（[Upgradeable Proxy](../upgradeable-proxy/#プロキシの型)）。
+どちらの場合も、EVM が比べているのは 4 バイトの数値だけです。そのため、別のシグネチャから同じ 4 バイトが出る衝突も起こり得ます。呼び出しを別のコントラクトが持つコードに転送するプロキシ（DELEGATECALL の節で触れます）では、呼び先の関数と管理用の関数で selector が重ならないように設計します（[Upgradeable Proxy](../upgradeable-proxy/#プロキシの型)）。
 
 <br>
 
 #### イベントとログ
 
-`set` の中の `emit Changed(msg.sender, x)` は、LOG2 命令になります。ログはレシートに残る一方通行の出力で、storage とは違い、コントラクトが後から読み返す命令はありません。アプリはノードの API でログを取得し、処理結果を追跡します。
+`set` にある `emit Changed(msg.sender, x)` は、LOG2 命令になります。ログはレシートに残る一方通行の出力で、storage とは違い、コントラクトが後から読み返す命令はありません。アプリはノードの API でログを取得し、処理結果を追跡します。
 
 {{< figure src="images/evm_log.webp" alt="set(42) の LOG2: 1,381 ガス = 375 + 2 × 375 + 8 × 32 バイト。青い帯の address（Dispatcher）、topic0（keccak(Changed(...))）、topic1（sender（indexed））と、黄土色の data（value = 42）。address と 2 つの topic から右の灰色の bloom（2048 ビット）に矢印があり、data からは無い。下に「data は bloom に入らない」" caption="set(42) の LOG2 の中身と bloom" align="center" >}}
 
-上記の図の topic0 は、イベントのシグネチャ `Changed(address,uint256)` の Keccak-256 の 32 バイト全体で、関数の selector のように 4 バイトに切りません。`indexed` を付けた引数は topic1 以降に入り、付けていない引数は data に ABI の形で入ります。実験の LOG2 は、図の式どおり 1,381 ガスでした。
+上記の図にある topic0 は、イベントのシグネチャ `Changed(address,uint256)` を Keccak-256 でハッシュした 32 バイト全体で、関数の selector のように 4 バイトに切りません。`indexed` を付けた引数は topic1 以降に入り、付けていない引数は data に ABI の形で入ります。実験の LOG2 は、図の式どおり 1,381 ガスでした。
 
 ```text
 topic0 of Changed: 0xb52dda022b6c1a1f40905a85f257f689aa5d69d850e49cf939d688fbe5af5946
@@ -372,7 +372,7 @@ bloom にビットが無ければ、そのブロックに該当のログが無�
 | STATICCALL | 呼び先 | 呼び出し元 | 0 |
 | CALLCODE（古い命令） | 呼び出し元 | 呼び出し元 | 指定した額（自分宛てなので残高は動かない） |
 
-CALLCODE は最初の版からある古い命令で、今は代わりに DELEGATECALL（[EIP-7](https://eips.ethereum.org/EIPS/eip-7)）を使います。表の 4 つのうち、状態を変更できないのは STATICCALL だけです。
+CALLCODE は最初のバージョンからある古い命令で、今は代わりに DELEGATECALL（[EIP-7](https://eips.ethereum.org/EIPS/eip-7)）を使います。表の 4 つのうち、状態を変更できないのは STATICCALL だけです。
 
 STATICCALL は 2017 年 10 月の更新（Byzantium）の [EIP-214](https://eips.ethereum.org/EIPS/eip-214) で加わり、storage への書き込み、ログ、コントラクトの作成、ETH を送る CALL などを禁止します（TSTORE も EIP-1153 で同じ扱いになりました）。この禁止は孫のフレームにも引き継がれます。
 
@@ -455,23 +455,23 @@ balance after (wei): Caller=4, Target=3
 
 DELEGATECALL では、`Target` のコードが動いたのに、`address(this)` は `Caller` で、増えたのも `Caller` の `count` でした。`msg.sender` と `msg.value` も、`Caller` が受け取った EOA と 7 wei のままです。この性質を使うのがプロキシで、仕組みと storage の衝突は [Upgradeable Proxy](../upgradeable-proxy/) で説明しています。
 
-STATICCALL は、書き込む `record()` では失敗し、読むだけの `peek()` では成功しました。失敗しても `run()` のトランザクションは成功しています。この理由は最後の節で説明します。なお、Solidity が別のコントラクトの `view` 関数を呼ぶ時は STATICCALL を使います（[Solidity の view functions](https://docs.soliditylang.org/en/v0.8.28/contracts.html#view-functions)）。
+STATICCALL は、書き込む `record()` では失敗し、読むだけの `peek()` では成功しました。失敗しても `run()` のトランザクションは成功しています。この理由は最後の節で説明します。なお、別のコントラクトにある `view` 関数を Solidity が呼ぶ時は STATICCALL を使います（[Solidity の view functions](https://docs.soliditylang.org/en/v0.8.28/contracts.html#view-functions)）。
 
 <br>
 
 #### 子のフレームの終わり方
 
-親は子を呼ぶ時に、自分の残りのガスの一部を子に渡します。子のフレームの終わり方は 4 通りあり、どれで終わったかで、状態の変更と渡したガスの扱いが変わります。
+親は子を呼ぶ時に、残っているガスの一部を子に渡します。子のフレームには 4 通りの終わり方があり、どれで終わったかで、状態の変更と渡したガスの扱いが変わります。
 
 {{< figure src="images/evm_frame_exit.webp" alt="4 行の比較。STOP / RETURN は、子に渡したガスの棒が灰色の「使った分」と青い「返す」に分かれ、状態は「残す」、親へは 1 + データ。REVERT も「使った分」と「返す」で、状態は「取り消す」、親へは 0 + データ。例外は棒の全体が黄土色の「全て失う」で、取り消す、0。始められないは点線の棒で「親に残る」、実行しない、0。下に「『残す』の変更も、親が後で失敗すれば取り消される」" caption="フレームの 4 通りの終わり方と、状態・ガスの扱い" align="center" >}}
 
-STOP と RETURN は成功で、状態の変更を残し、使わなかったガスを親に返します。REVERT は失敗で、そのフレームの中の状態の変更（storage・transient storage への書き込み、ETH の移動、ログなど）を全て取り消します（undone）。ただし、残りのガスは返し、失敗の理由のデータを親に渡せます。
+STOP と RETURN は成功で、状態の変更を残し、使わなかったガスを親に返します。REVERT は失敗で、そのフレームの中で加えた状態の変更（storage・transient storage への書き込み、ETH の移動、ログなど）を全て取り消します（undone）。ただし、残りのガスは返し、失敗の理由を表すデータを親に渡せます。
 
-例外は、ガス切れ、無効な命令、JUMPDEST 以外への JUMP などで、変更を取り消したうえで渡されたガスを全て失います。「始められない」は、呼び出しの深さの上限（1,024 段）や残高不足で子を始められない場合で、渡そうとしたガスは親に残ります。
+例外は、ガス切れ、無効な命令、JUMPDEST 以外への JUMP などで、変更を取り消したうえで渡されたガスを全て失います。「始められない」は、呼び出しが深さの上限（1,024 段）に達したり残高が足りなかったりして、子を始められない場合で、渡そうとしたガスは親に残ります。
 
 右端の「親へ」の列は、CALL の結果として親のスタックに積まれる値（成功なら 1、失敗なら 0）と、親に返すデータです。最上位のフレーム（トランザクションが直接呼んだフレーム）の場合は、この成否がトランザクションの結果になります。
 
-図の下の注記のとおり、「残す」とした変更も確定ではなく、親が後で失敗すれば、親の変更と一緒に取り消されます。
+図の下にある注記のとおり、「残す」とした変更も確定ではなく、親が後で失敗すれば、親の変更と一緒に取り消されます。
 
 <br>
 
@@ -483,9 +483,9 @@ CALL で子に渡せるガスには上限があります。2016 年 10 月の更
 
 `eth_call` に 1,000 万ガスを渡し、入口で残りのガスを返すだけの子コントラクトを CALL して、式どおりの量が渡るかを確認しました。子は初めて触るアカウントなので cold の 2,600 が掛かり、返り値を書く memory の 1 語の拡張で 3 が加わります。
 
-{{< figure src="images/evm_call_split.webp" alt="上に g = 9,946,370（CALL の前）− 2,603（CALL の費用）= 9,943,767。その下の横棒の大部分が青い「子が受け取る 9,788,396（63/64）」で、右端の細い黄土色が「親に残る 155,371（1/64）」。下に「10,000 を要求 → 子は 10,000 を受け取る（上限 9,788,364 より小さい）」" caption="CALL で子に渡るガスの 63/64 の分け方" align="center" >}}
+{{< figure src="images/evm_call_split.webp" alt="上に g = 9,946,370（CALL の前）− 2,603（CALL のコスト）= 9,943,767。その下の横棒の大部分が青い「子が受け取る 9,788,396（63/64）」で、右端の細い黄土色が「親に残る 155,371（1/64）」。下に「10,000 を要求 → 子は 10,000 を受け取る（上限 9,788,364 より小さい）」" caption="CALL で子に渡るガスの 63/64 の分け方" align="center" >}}
 
-全てを要求した時、子が受け取ったガスは、`g` から 64 分の 1 を引いた値と 1 ガスも違いませんでした。10,000 だけを要求した時は、上限より小さいので要求どおりに渡っています（この時は CALL の前の命令が少し違い、残りのガスが 33 少ないので、上限も 9,788,364 と少し下がります）。
+全てを要求した時、子が受け取ったガスは、`g` から 64 分の 1 を引いた値と 1 ガスも違いませんでした。10,000 だけを要求した時は、上限より小さいので要求どおりに渡っています（この時は CALL より前の命令が少し違い、残りのガスが 33 少ないので、上限も 9,788,364 と少し下がります）。
 
 <br>
 
@@ -534,17 +534,17 @@ contract Deep {
 
 #### リエントランシー
 
-呼び出しの文脈で最も事故が多いのが[リエントランシー（reentrancy）](../reentrancy/)です。A が B を CALL すると、A のフレームは B が終わるまで途中で止まっています。その間に B が A を呼び返すと、A のコードが、最初の A がまだ更新していない storage を読んで動きます。以下は、A が「残高を読んで送金し、その後で残高を 0 にする」コードだった場合の時間の流れです。
+呼び出しの文脈で最も事故が多いのが[リエントランシー（reentrancy）](../reentrancy/)です。A が B を CALL すると、A のフレームは B が終わるまで途中で止まっています。その間に B が A を呼び返すと、A のコードが、最初の A がまだ更新していない storage を読んで動きます。以下は、A が「残高を読んで送金し、その後で残高を 0 にする」コードだった場合に起きることを時間の順に並べた図です。
 
 {{< figure src="images/evm_reentrancy.webp" alt="3 行の時間軸。A（1 回目）は青い「残高 10 を読む」、黄土色の「10 を送る CALL の途中」、青い「残高に 0 を書く」と続く。CALL の途中で B が「A を呼び返す」を実行し、A（2 回目）の青い「また 10 を読み、送る」に矢印が下りる。その右に赤い×。下に「×: 0 になる前の残高で 2 回目の送金が起きる（並列ではなく、フレームの入れ子）」" caption="1 本のスレッドの中で起きるリエントランシー" align="center" >}}
 
-上記の図では、1 回目の送金の途中で呼び返された A が、まだ 0 になっていない残高 10 を読み、もう一度 10 を送ってしまいます。並列に動くスレッドは無く、同期的な呼び出しの入れ子だけで起きる問題です（[Solidity の Security Considerations](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#reentrancy)）。対策は、外部を呼ぶ前に自分の状態を更新しておくことと、前に見た transient storage などに「処理中」の旗を置いて呼び返しを拒むことです。
+上記の図では、1 回目に送金している途中で呼び返された A が、まだ 0 になっていない残高 10 を読み、もう一度 10 を送ってしまいます。並列に動くスレッドは無く、同期的な呼び出しの入れ子だけで起きる問題です（[Solidity の Security Considerations](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#reentrancy)）。対策は、外部を呼ぶ前に自分の状態を更新しておくことと、前に見た transient storage などに「処理中」の旗を置いて呼び返しを拒むことです。
 
 ---
 
 ### 失敗の扱い
 
-最後に、ここまでに出てきた失敗が、トランザクションの結果としてどう残るかをまとめます。トランザクションが失敗する場所は、最初の節の 3 段の入れ子のうち 2 つです。
+最後に、ここまでに出てきた失敗が、トランザクションの結果としてどう残るかをまとめます。トランザクションが失敗する場所は、最初の節で見た 3 段の入れ子のうち 2 つです。
 
 {{< figure src="images/evm_failure_kinds.webp" alt="左からトランザクション、灰色の検査（署名・nonce・前払い）、青いコードの実行（EVM のフレーム）、右端に縦長のブロックの枠。検査から点線で下に降りた先は赤い×の拒否で、ブロックに入らない、nonce も残高も不変。コードの実行から下に降りた黄土色のエラー / REVERT は状態を取り消し、矢印でブロックの中の status 0（nonce + 1、手数料は払う）に入る。成功（矢印のみ）はコードの実行からブロックの status 1（nonce + 1）に入る" caption="トランザクションが失敗する 2 つの場所と、ブロックへの残り方" align="center" >}}
 
@@ -560,7 +560,7 @@ unknown selector 0xdeadbeef: status=0
 
 ただし、子のフレームの失敗は、そのままトランザクションの失敗にはなりません。「子のフレームの終わり方」の図のとおり、CALL は子の失敗を 0 としてスタックに積むだけで、親はその値を見て処理を続けられます。前の節の STATICCALL の `record()` が失敗しても `run()` のトランザクションが成功したのは、`Caller` が 0 を受け取って記録しただけだからです。
 
-Solidity の高水準の呼び出し（`target.f()`）が子の失敗を親の失敗として伝えるのは、コンパイラが 0 を見て REVERT するコードを入れているからです。2 種類の失敗の違いは、[Smart Contract](../smart-contract/) の実験でも確認しています。
+Solidity で書く高水準の呼び出し（`target.f()`）が子の失敗を親の失敗として伝えるのは、コンパイラが 0 を見て REVERT するコードを入れているからです。2 種類の失敗がどう違うかは、[Smart Contract](../smart-contract/) の実験でも確認しています。
 
 ---
 
