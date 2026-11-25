@@ -17,7 +17,7 @@ PoH を導入したのは、ブロックチェーンの 1 つである [Solana](
 
 {{< figure src="images/proof-of-history_concept.webp" alt="上段は 22 個のハッシュが 1 本の列に並び、左から順に計算される。途中の 2 か所でトランザクション A とトランザクション B が混ぜ込まれ、黄土色で示される。下段は同じ 22 個を 4 本の短い列に分け、各列の先頭（前の区切りに記録された値）から並列に計算し直して確認する。下段の時間の矢印は上段より短い" caption="連鎖の生成は 1 本で、検証は区切って並列に進む" align="center" >}}
 
-生成では次の値を作るのに前の値が要るので、計算は 1 本で順に進むしかありません。一方、ブロックには途中の値も区切りごとに記録されるので（後述する entry という単位です）、検証では区切りごとに同時に計算し直せます。
+生成では次の値を作るのに前の値が必要なので、計算は 1 本で順に進むしかありません。一方、ブロックには途中の値も entry という区切りごとに記録されるので、検証では区切りごとに同時に計算し直せます。
 
 <br>
 
@@ -48,7 +48,7 @@ Solana は、スロット（slot）と呼ぶ短い時間の枠ごとにリーダ
 
 ### ハッシュの連鎖で経過を示す
 
-PoH の連鎖は、ある初期値から始めて、前の出力を次の入力にして SHA-256 を計算し続けたものです。n 回目の値を得るには n − 1 回目の値が必要で、途中を飛ばす近道はありません。SHA-256 の出力は入力から予測できないからです。つまり、n 回目の値を示せた参加者は、少なくとも n 回の計算を順に行ったことになります。
+PoH の連鎖は、ある初期値から始めて、前の出力を次の入力にして SHA-256 を計算し続けたものです。n 回目の値を得るには n − 1 回目の値が必要で、途中を飛ばす近道はありません。SHA-256 の出力は入力から予測できないからです。つまり、n 回目の値を示せた参加者は、少なくとも n 回を順に計算したことになります。
 
 全ての値を配る必要はありません。Solana の実装の 1 つである [Agave](https://github.com/anza-xyz/agave) では、連鎖を entry という記録に区切ります。各 entry には、前の entry からのハッシュの回数（`num_hashes`）、区切りの値（`hash`）、その間に混ぜたトランザクションが入ります（[entry.rs](https://github.com/anza-xyz/agave/blob/v4.4.1/entry/src/entry.rs#L33-L61)、Agave v4.4.1）。トランザクションを含まない entry は tick と呼ばれ、経過だけを刻みます。
 
@@ -286,7 +286,7 @@ func main() {
 
 <br>
 
-[poh.go](lab/poh.go) を保存し、`go run poh.go` で実行します（Go 1.22 以降）。各計測は 1 回の空回しの後に 7 回行い、中央値と最小〜最大を出しています。計測は 16 コア 32 スレッドの CPU で、他の作業の負荷が掛かった状態で行いました。以下は実行結果の抜粋です。負荷の値と全ての行は [output.txt](lab/output.txt) にあります。
+[poh.go](lab/poh.go) を保存し、`go run poh.go` で実行します（Go 1.22 以降）。各計測は 1 回の空回しの後に 7 回繰り返し、中央値と最小〜最大を出しています。16 コア 32 スレッドの CPU で、他の作業の負荷が掛かった状態で測りました。以下は実行結果の抜粋です。負荷の値と全ての行は [output.txt](lab/output.txt) にあります。
 
 ```text
 [1] hash rate: 10.5M hashes/s (median of 7, range 9.4-14.8M)
@@ -311,9 +311,9 @@ verify 32 goroutines     0.054s (range 0.053-0.058)   36.7x faster than generate
 
 読み取るべき点は、生成は 1 本の速さで決まるのに対し、検証はコアを増やすと短くなることです。ホワイトペーパーでは、4,000 コアの GPU で分担する例が示されています。ただし、分担しても計算の総量は生成と同じで、減ってはいません。
 
-[3] では、トランザクション A と B を入れ替えると entry 100 で、計算の回数を半分と偽ると entry 10 で検証が落ちました。
+[3] では、トランザクション A と B を入れ替えると entry 100 で、計算の回数を半分と偽ると entry 10 で検証に失敗しました。
 
-では、リーダーが A と B の順序を偽り、入れ替えた順で正しい連鎖を作り直そうとすると、どれだけ計算が要るでしょうか。
+では、リーダーが A と B の順序を偽り、入れ替えた順で正しい連鎖を作り直そうとすると、どれだけ計算が必要でしょうか。
 
 A を混ぜ直す entry 400 までの計算では足りません。entry 100 で A の代わりに B を混ぜた所から後の値は全て変わるので、末尾の entry 2047 まで約 1,595 万回を順に計算し直す必要があります。連鎖全体（約 1,678 万回）の 95% で、[1] の速さでは約 1.5 秒、ほぼ生成し直すのと同じです。
 
@@ -331,7 +331,7 @@ Solana は、どのスロットを誰が担当するかを leader schedule（リ
 
 Agave v4.4.1 では、乱数の種に epoch の番号を使い、1 人のリーダーに連続 4 スロットを割り当てます（[leader-schedule の実装](https://github.com/anza-xyz/agave/blob/v4.4.1/leader-schedule/src/lib.rs#L20-L64)）。全ノードが同じ stake の記録と同じ種から計算するので、予定表を配る通信は必要ありません。
 
-PoH がこの予定表に効くのは、リーダーが前の担当分の計算を飛ばして自分の番を始められない点です。切り替え前の Solana では、前のリーダーのブロックが届かない場合、次のリーダーは前の担当分のスロットを tick で埋めてから自分のブロックを作ります（[Fork Generation の文書](https://github.com/anza-xyz/agave/blob/v3.0.0/docs/src/consensus/fork-generation.md)）。以下は、リーダー B のブロックが届かなかった場合の流れです。
+PoH がこの予定表に関わるのは、リーダーが前の担当分の計算を飛ばして自分の番を始められない点です。切り替え前の Solana では、前のリーダーのブロックが届かない場合、次のリーダーは前の担当分のスロットを tick で埋めてから自分のブロックを作ります（[Fork Generation の文書](https://github.com/anza-xyz/agave/blob/v3.0.0/docs/src/consensus/fork-generation.md)）。以下は、リーダー B のブロックが届かなかった場合の流れです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
