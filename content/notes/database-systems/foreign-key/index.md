@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Data Modeling"]
 ---
 
-外部キー制約（foreign key constraint）は、ある表のカラムに入っている値が、別の表に実在するレコードを指していることを DB（データベース）に保証させる仕組みです。[PostgreSQL](https://www.postgresql.org/docs/current/ddl-constraints.html) の定義では、1 つのカラムまたは複数のカラムの組の値が、別の表のいずれかのレコードに現れる値と一致する必要があります。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
+外部キー制約（foreign key constraint）は、ある表のカラムに入っている値が、別の表に実在するレコードを指していることを DB（データベース）に保証させる仕組みです。[PostgreSQL](https://www.postgresql.org/docs/current/ddl-constraints.html) の定義では、1 つのカラムまたは複数のカラムを合わせた値が、別の表のいずれかのレコードに現れる値と一致する必要があります。この保証が保たれている状態を参照整合性（referential integrity）と呼びます。
 
 注文の一覧に存在しない会員の ID が混ざると、会員別の集計と注文表全体の合計が食い違います。その ID が `INSERT` の時に入ったのか、会員を消した時に生まれたのかも、後からは辿れません。
 
@@ -72,7 +72,7 @@ flowchart TB
 INSERT INTO orders (id, member_id, amount) VALUES (1001, 999, 3000);
 ```
 
-このレコードを含む注文表に会員名を付けて一覧する問い合わせを考えます。`orders` と `members` を `INNER JOIN` で繋ぐと、対応する会員のレコードが無い注文 1001 は結果から落ちます。`orders` を単独で合計した売上とは、3,000 円の差が出ます。
+このレコードを含む注文表に会員名を付けて一覧する問い合わせを考えます。`orders` と `members` を `INNER JOIN` で繋ぐと、対応する会員のレコードが無い注文 1001 は結果から消えます。`orders` を単独で合計した売上とは、3,000 円の差が出ます。
 
 この差が読み取りの誤りではない点が、調査を長引かせる原因になります。どちらの問い合わせも書いた通りに動いており、`JOIN` の結果が正しい以上、DB は矛盾を報告しません。孤児レコードを検出するには、参照先が存在しないレコードを検索する必要があります。
 
@@ -95,7 +95,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図で存在確認を行うのは注文 API だけです。経路が増えるたびに、同じ検査を書き足す必要があります。書き足し忘れても構文の誤りにはならないので、その経路からの書き込みは DB に止められません。
+上記の図で会員の存在を確認するのは注文 API だけです。経路が増えるたびに、同じ検査を書き足す必要があります。書き足し忘れても構文の誤りにはならないので、その経路からの書き込みは DB に止められません。
 
 外部キー制約は、この検査を DB に 1 つ置きます。どの経路から来た `INSERT` でも同じ検査が掛かり、通らない書き込みはエラーで止まります。注文 API だけでなく、バッチや手動 SQL からの書き込みにも適用されます。
 
@@ -157,7 +157,7 @@ SQLite のドキュメントには「[Foreign key constraints are disabled by de
 
 ### ON DELETE の指定と親子の所有関係
 
-外部キー制約を張ると、親のレコードを消す操作の意味を決める必要が出ます。`ON DELETE` に何を書くかで、削除が子にどう及ぶのかが変わります。制約の検査は通常は文ごとに行われ、`DEFERRABLE` を付けた制約では `COMMIT` まで遅らせられます。PostgreSQL が用意している指定で、会員 42 を消した後に残るものは以下の通りです。
+外部キー制約を張ると、親のレコードを消す操作の意味を決める必要が出ます。`ON DELETE` に何を書くかで、削除が子にどう及ぶのかが変わります。制約は通常、文ごとに検査され、`DEFERRABLE` を付けた制約では `COMMIT` まで遅らせられます。PostgreSQL が用意している指定で、会員 42 を消した後に残るものは以下の通りです。
 
 {{< figure src="images/foreign-key_on_delete.svg" alt="ON DELETE の指定ごとの 4 列。NO ACTION と RESTRICT は会員 42 が残り、注文は member_id = 42 のまま会員を指し、DELETE はエラーになる。CASCADE は会員も注文も点線で消える。SET NULL は会員が消え、注文は member_id = NULL で残る。SET DEFAULT は会員が消え、注文は member_id = 既定値で残る" caption="ON DELETE の指定ごとの、親を消した後の子" align="center" >}}
 
@@ -296,4 +296,4 @@ child_rows  index  delete_ms  fk_check_ms   scan of orders in the FK lookup
 
 上記の図の通り、索引が無い（no index on orders.member_id）と親 1 件の削除にかかる時間は子の件数にほぼ比例し、400 万件では約 240 ms でした。時間のほとんどは外部キーの検査（測定値の `fk_check_ms`）です。索引があれば、どの件数でも 1 ms 未満でした。
 
-欠点の 3 つ目に挙げた、親と子が別のノードに分かれる構成についても、分散を前提に作られた DBMS には、[CockroachDB](https://docs.cockroachlabs.com/docs/stable/foreign-key) のように外部キー制約を支援するものがあります。
+欠点の 3 つ目に挙げた、親と子が別のノードに分かれる構成についても、分散を前提に作られた DBMS には、[CockroachDB](https://docs.cockroachlabs.com/docs/stable/foreign-key) のように外部キー制約に対応するものがあります。
