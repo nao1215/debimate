@@ -82,7 +82,7 @@ PBFT はこの前提を置かず、遅延に上限が無くても安全性が崩
 
 3 台では足りないことは、全ての組み合わせを列挙すると確認できます。[ローカルで実行するコード](lab/bft_quorum.py)は Python の標準ライブラリだけで動きます。
 
-前半の `quorum_intersection` は、quorum の全ての組と嘘つきの全ての選び方について、重なりに残る正直なノードの最小数を数えます。
+前半の `quorum_intersection` は、2 つの quorum と嘘つきの選び方を全て試し、重なりに残る正直なノードの最小数を数えます。
 
 後半の `one_round` は、PBFT の最初の 2 段階だけの 1 ラウンドです。ノード 0 が値を提案する primary で、残りの backup は受け取った値を全員に伝え直します。各ノードは提案と伝え直された値を 1 票ずつ数え、quorum の台数分だけ同じ値が揃ったら、その値で prepared になるものとします。
 
@@ -263,9 +263,9 @@ View Change は、primary が止まった時や、順序を進めない時に、
 
 [Leader and Followers](../leader-and-followers/) の Raft では、Follower は[ハートビート](../heartbeat/)の途絶で Leader を疑います。PBFT の backup が要求の実行を見張るのは、嘘をつく primary はハートビートを送り続けたまま順序だけを止められるからです。次の view の primary は、投票ではなく view の番号をノード数で割った余りで決まります。
 
-VIEW-CHANGE には、送り主が prepared にした要求の証明を入れます。証明は、pre-prepare と 2f 個の一致した prepare の組です。署名付きのメッセージを束ねているので、嘘つきは存在しない prepared をでっち上げられません。VIEW-CHANGE には古い記録を捨てるためのチェックポイントの情報も入りますが、本記事では省略します。
+VIEW-CHANGE には、送り主が prepared にした要求の証明を入れます。証明は、pre-prepare と 2f 個の一致した prepare をまとめたものです。署名付きのメッセージを束ねているので、嘘つきは存在しない prepared をでっち上げられません。VIEW-CHANGE には古い記録を捨てるためのチェックポイントの情報も入りますが、本記事では省略します。
 
-ここまでの説明は、全てのメッセージに署名する前提で書かれた論文の 4 節の手順です。論文の実装は通常の往復を MAC（Message Authentication Code、共有鍵で作る認証符号）で認証し、MAC では第三者に真正性を示せないので、[5 節](https://www.usenix.org/legacy/events/osdi99/full_papers/castro/castro_html/node5.html)にある通り VIEW-CHANGE と NEW-VIEW にだけ署名を使います。View Change まで MAC だけで行う手順は、[同じ著者の技術メモ](https://dspace.mit.edu/handle/1721.1/149288)で説明されています。
+ここまでの説明は、全てのメッセージに署名する前提で書かれた論文の 4 節の手順です。論文の実装は通常の往復を MAC（Message Authentication Code、共有鍵で作る認証符号）で認証し、MAC では第三者に真正性を示せないので、[5 節](https://www.usenix.org/legacy/events/osdi99/full_papers/castro/castro_html/node5.html)にある通り VIEW-CHANGE と NEW-VIEW にだけ署名を使います。View Change も MAC だけで認証する手順は、[同じ著者の技術メモ](https://dspace.mit.edu/handle/1721.1/149288)で説明されています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
