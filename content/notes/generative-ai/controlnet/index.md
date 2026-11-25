@@ -52,7 +52,7 @@ ControlNet は、学習済みモデルの重みを書き換えずに、条件の
 
 #### ゼロ畳み込み
 
-コピーと、元の U-Net との間には、重みとバイアスを 0 で初期化した 1×1 の畳み込みを挟みます。論文ではゼロ畳み込み（zero convolution）と呼んでいます。学習の始めは出力が全部 0 なので、ControlNet を付けても元のモデルと同じ絵が出ます。[lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) の README も、学習前のゼロ畳み込みは 0 を出力し、絵を歪めないと説明しています。
+コピーと、元の U-Net との間には、重みとバイアスを 0 で初期化した 1×1 の畳み込みを挟みます。論文ではゼロ畳み込み（zero convolution）と呼んでいます。学習の始めは出力が全部 0 なので、ControlNet を付けても元のモデルと同じ絵が出ます。[lllyasviel/ControlNet](https://github.com/lllyasviel/ControlNet) の README にも、学習前のゼロ畳み込みは 0 を出力し、絵を歪めないという説明があります。
 
 学習では、元のモデルを書き換えずに、コピーが条件の画像を扱えるように少しずつ学習します。論文の 3.3 節では、学習データにあるプロンプトの 50% を空にしています。プロンプトが無くても条件の画像だけから意味を読み取らせるためです。
 
@@ -135,7 +135,7 @@ end_percent  sigma_end  active_steps  (start_percent=0)
 - 深度マップ。カメラは平行投影で、手前ほど明るい
 - OpenPose の 18 点を画面に写した座標。MPFB の [rig.openpose.json](https://github.com/makehumancommunity/mpfb2/blob/v2.0.18/src/mpfb/data/rigs/standard/rig.openpose.json) が決める頂点や関節の位置は、姿勢を付けた後の体で計算する。鼻・目・耳は、体に隠れる時は書き出さない
 
-骨格の画像は、18 点から [lab/draw_openpose.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/draw_openpose.py) で描きました。棒ごとの色は [comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux) の描き方と同じで、太さは [xinsir/controlnet-openpose-sdxl-1.0](https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0) の model card が勧める太い線（長辺 1,000〜2,000 px なら 3 倍）に合わせています。model card は、学習の骨格を太い線で描いたので、細い線では結果が不安定になると説明しています。
+骨格の画像は、18 点から [lab/draw_openpose.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/controlnet/lab/draw_openpose.py) で描きました。棒ごとの色は [comfyui_controlnet_aux](https://github.com/Fannovel16/comfyui_controlnet_aux) の描き方と同じで、太さは [xinsir/controlnet-openpose-sdxl-1.0](https://huggingface.co/xinsir/controlnet-openpose-sdxl-1.0) の model card で勧められている太い線（長辺 1,000〜2,000 px なら 3 倍）に合わせています。model card によると、学習の骨格を太い線で描いたので、細い線では結果が不安定になります。
 
 ベースモデルは、Illustrious 系でイラスト向けのモデル [WAI-illustrious-SDXL v17.0](https://civitai.com/models/827184?modelVersionId=2883731) で、アーキテクチャは SDXL です。[LoRA](/notes/generative-ai/lora/) は使っていません。ライセンスは [Fair AI Public License 1.0-SD](https://freedevproject.org/faipl-1.0-sd/) で、生成した画像はライセンスの対象外です。ControlNet は、xinsir/controlnet-union-sdxl-1.0 に含まれる promax のモデル（Apache License 2.0）です。
 
