@@ -221,7 +221,7 @@ go test fuzz v1
 
 前の loop の図の通り、Go の fuzz が失敗とみなすのは、panic した時、`t.Fatal` などでテストが失敗した時、1 つの入力の実行が長すぎる時です。
 
-[公式の文書](https://go.dev/doc/security/fuzz/)は、長すぎる時間を 1 秒と書いていますが、手元の Go 1.26.9 で試すと、8 秒眠る入力は通り、12 秒眠る入力は 10 秒で失敗になりました。試したのは以下の fuzz のテストで、環境変数 `SLEEP` を 3・8・12 と変えて [exp3_hang.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp3_hang.sh) で 40 秒ずつ走らせました。
+[公式の文書](https://go.dev/doc/security/fuzz/)には、長すぎる時間が 1 秒と書かれていますが、手元の Go 1.26.9 で試すと、8 秒眠る入力は通り、12 秒眠る入力は 10 秒で失敗になりました。試したのは以下の fuzz のテストで、環境変数 `SLEEP` を 3・8・12 と変えて [exp3_hang.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp3_hang.sh) で 40 秒ずつ走らせました。
 
 ```go
 package hang
