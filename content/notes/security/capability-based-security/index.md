@@ -51,9 +51,9 @@ ACL と capability の違いは、[Lampson 氏の Protection](https://www.bwlamp
 | 利用者 alice | 読み書き | なし | なし |
 | コンパイラ | なし | 書き込み | 書き込み |
 
-列を切り出してオブジェクトに付けると ACL になり、OS は要求した主体を確認してからこの表を引きます。行を切り出して主体に持たせると capability の一覧（C-list）になります。1966 年の [Dennis 氏と Van Horn 氏の論文](https://doi.org/10.1145/365230.365252)は、計算が使って良い対象と操作の一覧を C-list として表しました。
+列を切り出してオブジェクトに付けると ACL になり、OS は要求した主体を確認してからこの表を引きます。行を切り出して主体に持たせると capability の一覧（C-list）になります。1966 年の [Dennis 氏と Van Horn 氏の論文](https://doi.org/10.1145/365230.365252)では、計算が使って良い対象と操作の一覧が C-list として表されました。
 
-Miller 氏らの [Capability Myths Demolished](https://papers.agoric.com/papers/capability-myths-demolished/full-text/)（2003 年）は、2 つを等価とみなす考えを「Equivalence Myth」と呼んで否定しています。ACL 型では、対象の名前と、それを使って良いかの判断が別々に流れます。
+Miller 氏らは [Capability Myths Demolished](https://papers.agoric.com/papers/capability-myths-demolished/full-text/)（2003 年）で、2 つを等価とみなす考えを「Equivalence Myth」と呼んで否定しています。ACL 型では、対象の名前と、それを使って良いかの判断が別々に流れます。
 
 capability 型（論文の言う object-capability）では、1 つの参照が対象の指定と権限を兼ねるので、権限を持たずに対象だけを指せません。論文では、使う権限を要求の中で選ぶ性質が Confused Deputy を避けるのに役立つとされています。
 
