@@ -79,7 +79,7 @@ sequenceDiagram
     Note over V,N: 投票は後続の<br/>ブロックにも格納
 ```
 
-各 epoch の最初の slot のブロックは、確定を進める時の区切りになります。この区切りを checkpoint（チェックポイント）と呼び、epoch 番号とブロックの識別子の組で表します。境界の slot にブロックがなければ、それより前の直近のブロックを使います（[仕様の get_block_root](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#get_block_root)）。
+各 epoch の最初の slot のブロックは、確定を進める時の区切りになります。この区切りを checkpoint（チェックポイント）と呼び、epoch 番号とブロックの識別子で表します。境界の slot にブロックがなければ、それより前の直近のブロックを使います（[仕様の get_block_root](https://ethereum.github.io/consensus-specs/specs/phase0/beacon-chain/#get_block_root)）。
 
 以下は、epoch 2 の途中で送る投票が、どのブロックを指すかを示した図です。
 
@@ -208,7 +208,7 @@ crossing: none
 next vote: none
 ```
 
-`changed head` は `source` と `target` を変えずに `head` だけを変更していますが、二重投票に該当します。`surrounded` と `reverse order` は同じ組を逆順に渡した結果です。一方で、起点が等しい `equal source` と、区間が交差する `crossing` は包囲投票になりません。
+`changed head` は `source` と `target` を変えずに `head` だけを変更していますが、二重投票に該当します。`surrounded` と `reverse order` は同じ 2 つの投票を逆順に渡した結果です。一方で、起点が等しい `equal source` と、区間が交差する `crossing` は包囲投票になりません。
 
 ---
 
@@ -228,8 +228,8 @@ sequenceDiagram
     N->>N: 証拠をブロックに入れ<br/>鍵 K のバリデータを slashing
 ```
 
-[EIP-3076](https://eips.ethereum.org/EIPS/eip-3076) は、バリデータクライアント間で署名履歴を移すための形式を定義しています。鍵だけを新しいクライアントに移すと、新しい側は古い側が何に署名したか分かりません。署名履歴の移行と、同じ鍵で複数の署名処理を並行させない管理が必要です。
+[EIP-3076](https://eips.ethereum.org/EIPS/eip-3076) は、バリデータクライアント間で署名履歴を移すための形式を定義しています。鍵だけを新しいクライアントに移すと、新しいクライアントは古いクライアントが何に署名したか分かりません。署名履歴の移行と、同じ鍵で複数の署名処理を並行させない管理が必要です。
 
 PoS には、PoW のような継続的なハッシュ計算競争を必要とせず、署名された違反の証拠に基づいて担保を減らせる利点があります。一方で、資産を大量に預ける主体の影響や、多数のバリデータが同じソフトウェア・運用者に依存するリスクがあります。[Ethereum の攻撃と防御](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/attack-and-defense/)では、投票の妨害や確定の停止など、攻撃者が持つ資産の割合に応じた問題を整理しています。
 
-上記に加えて、担保を引き出した過去のバリデータに、今から同じ罰則を適用できるとは限りません。引き出し済みの古い鍵を集めれば、罰則を恐れずに過去の時点から分岐する別の履歴に署名できます（long-range attack）。初めて同期するノードや長く止まっていたノードは、どちらの履歴が正しいかを署名だけでは区別できません。そこで、こうしたノードは信頼できる最近の checkpoint を確認してから同期します。Ethereum の [weak subjectivity（弱い主観性）](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/weak-subjectivity/)は、このような同期時の前提を含みます。「担保があるから常に正しい履歴を選べる」とするだけでは、PoS の安全性を説明できません。
+上記に加えて、担保を引き出した過去のバリデータに、今から同じ罰則を適用できるとは限りません。引き出し済みの古い鍵を集めれば、罰則を恐れずに過去の時点から分岐する別の履歴に署名できます（long-range attack）。初めて同期するノードや長く止まったノードは、どちらの履歴が正しいかを署名だけでは区別できません。そこで、こうしたノードは信頼できる最近の checkpoint を確かめてから同期します。Ethereum の [weak subjectivity（弱い主観性）](https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/weak-subjectivity/)は、この同期時の前提を含みます。「担保があるから常に正しい履歴を選べる」とするだけでは、PoS の安全性を説明できません。
