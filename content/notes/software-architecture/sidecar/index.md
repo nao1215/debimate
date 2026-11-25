@@ -43,7 +43,7 @@ Kubernetes の Job（完了したら終わるバッチ処理）に、ログを�
 | sidecar | 1 | コンテナごと | sidecar のイメージ | Pod ごとに 1 つ |
 | ノードごとに 1 つ | 1 | コンテナごと | そのコンテナだけ | ノードごとに 1 つ |
 
-表の「同じコンテナに同梱」は、1 つのコンテナの中で 2 つのプロセスを動かす方式です。「ノードごとに 1 つ」は、マシン（Kubernetes ではノード）ごとに 1 つ置く方式で、Kubernetes では [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) で置きます。資源の上限は CPU とメモリの上限で、sidecar のイメージを入れ替える時は、後の節で見るように Pod の作り直しが要ります。
+表の「同じコンテナに同梱」は、1 つのコンテナの中で 2 つのプロセスを動かす方式です。「ノードごとに 1 つ」は、マシン（Kubernetes ではノード）ごとに 1 つ置く方式で、Kubernetes では [DaemonSet](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) で置きます。資源の上限は CPU とメモリの上限で、sidecar のイメージを入れ替える時は、後の節で見るように Pod の作り直しが必要です。
 
 sidecar の強みは「実装の数」と「資源の上限」の列です。実装は 1 つで済み、言語を問わず同じイメージを付けられます。資源の上限もコンテナごとに分かれるので、転送先が止まってログ転送のプロセスがメモリを使い切っても、メモリの上限を超えたプロセスは [OOM Killer](/notes/computer-systems/oom-killer/) に止められますが、止められるのはログ転送のコンテナだけで、上限を共有していないアプリケーションまでは及びません。同梱の方式では、2 つのプロセスが 1 つの上限を分け合います。cgroup v2 で動く Kubernetes の既定では、上限を超えるとコンテナの中のプロセスがまとめて止められるので、原因はログの転送なのにアプリケーションも止まります。資源を用途ごとに区切って、1 つの用途の失敗を他に広げない考え方は、[Bulkhead](/notes/software-architecture/bulkhead/) と同じです。
 
@@ -57,7 +57,7 @@ sidecar の強みは「実装の数」と「資源の上限」の列です。実
 
 <details><summary>余談: Sidecar という名前とパターン</summary>
 
-Kubernetes の文脈では、Brendan Burns 氏が 2015 年 6 月に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」が、よく見かける 3 つのパターンとして、メインのコンテナを拡張し強化する Sidecar、通信を仲介する [Ambassador](../ambassador/)、出力の形を揃える [Adapter](../adapter/) を紹介しました。翌年の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」でも、同じ 3 つに分けています。sidecar という語自体は、それより前の 2014 年に Netflix が公開した [Prana](https://github.com/Netflix/Prana)（「A Sidecar for your Netflix PaaS based Applications」）にも出てきます。今の Kubernetes の周辺では、通信を仲介するプロキシも含めて、同居する補助コンテナ全般を sidecar と呼ぶことが多く、本記事もその広い意味で使っています。
+Kubernetes の文脈では、Brendan Burns 氏が 2015 年 6 月に公開したブログ「[The Distributed System ToolKit: Patterns for Composite Containers](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/)」が、よく見かける 3 つのパターンとして、メインのコンテナを拡張し強化する Sidecar、通信を仲介する [Ambassador](../ambassador/)、出力の形を揃える [Adapter](../adapter/) を紹介しました。翌年の論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」でも、同じ 3 つに分けています。sidecar という語自体は、それより前の 2014 年に Netflix が公開した [Prana](https://github.com/Netflix/Prana) の説明文「A Sidecar for your Netflix PaaS based Applications」（Netflix の PaaS で動くアプリケーションのための sidecar）にも出てきます。今の Kubernetes の周辺では、通信を仲介するプロキシも含めて、同居する補助コンテナ全般を sidecar と呼ぶことが多く、本記事もその広い意味で使っています。
 
 </details>
 
@@ -69,7 +69,7 @@ sidecar が隣のアプリケーションに機能を足せるのは、同じ Po
 
 Kubernetes の Pod では、コンテナはネットワークを共有するので、互いを `localhost` の別のポートとして呼べます。ファイルは volume で共有します。volume は Pod に宣言するファイルの置き場で、双方のコンテナがマウントすれば同じ内容が見えます。Web サーバーはログをファイルに書くだけで、転送先も再試行も知りません。
 
-イメージと資源の上限は、図のようにコンテナごとに分かれます。落ちたコンテナの再起動も、コンテナごとです。何をどこまで分けられるかは実行基盤ごとに違い、既定が分離とは限りません。Amazon ECS には、コンテナの停止を Task の全体に波及させるかを決める `essential` という設定があり、[公式ドキュメント](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html)によると既定は true です。そのままでは sidecar が止まると Task ごと止まるので、切り離したい sidecar は明示的に false にします。
+イメージと資源の上限は、図のようにコンテナごとに分かれます。異常終了したコンテナの再起動も、コンテナごとです。何をどこまで分けられるかは実行基盤ごとに違い、既定が分離とは限りません。Amazon ECS には、コンテナの停止を Task の全体に波及させるかを決める `essential` という設定があり、[公式ドキュメント](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html)によると既定は true です。そのままでは sidecar が止まると Task ごと止まるので、切り離したい sidecar は明示的に false にします。
 
 ---
 
@@ -160,7 +160,7 @@ log-shipper: finished 2026-11-11T14:12:39Z exit 0
 
 ### 起動の直後に通信が失敗する理由
 
-止める時と同じく、起動する時にも、どちらが先かを決める者がいないと問題が起きます。普通のコンテナとして並べたコンテナは、隣が待ち受けの準備を終えたかを待たずに起動します。通信を仲介するプロキシを sidecar に置き、アプリケーションは `localhost` のプロキシ経由で外と話す構成では、プロキシが待ち受けを始める前にアプリケーションが接続すると失敗します。
+止める時と同じく、起動する時にも、どちらが先かを決める者がいないと問題が起きます。普通のコンテナとして並べたコンテナは、隣が待ち受けの準備を終えたかを待たずに起動します。通信を仲介するプロキシを sidecar に置き、アプリケーションは `localhost` のプロキシ経由で外と通信する構成では、プロキシが待ち受けを始める前にアプリケーションが接続すると失敗します。
 
 実験では、`main` が起動するとすぐ `localhost:8080` に接続し、プロキシ役のコンテナは待ち受けを始めるまで 3 秒掛かるようにしました。2 つを普通のコンテナとして並べると、次の通りでした。
 
@@ -217,7 +217,7 @@ sidecar の弱みは、最初の節の表の最後の列でした。Pod ごと�
 
 {{< figure src="images/sidecar_per_node.webp" alt="左はノードの中の Pod 4 つのそれぞれに proxy がある。右は同じ 4 つの Pod が、ノードに 1 つだけ置いた proxy を共有する" caption="プロキシを Pod ごとに置く場合と、ノードごとに 1 つ置く場合" align="center" >}}
 
-service mesh の Istio は、プロキシの [Envoy](https://www.envoyproxy.io/) を sidecar として全ての Pod に置く方式を長く使ってきました。2022 年 9 月に ambient mesh として発表した方式（今の名前は ambient mode）の[発表の記事](https://istio.io/latest/blog/2022/introducing-ambient-mesh/)は、sidecar の限界として次の 3 つを挙げています。
+service mesh の Istio は、プロキシの [Envoy](https://www.envoyproxy.io/) を sidecar として全ての Pod に置く方式を長く使ってきました。2022 年 9 月に ambient mesh として発表した方式（今の名前は ambient mode）の[発表のブログ](https://istio.io/latest/blog/2022/introducing-ambient-mesh/)は、sidecar の限界として次の 3 つを挙げています。
 
 - 入れる・更新するたびに、Pod を作り直す必要がある
 - Pod ごとに最悪の負荷に合わせて予約するので、資源が余る
@@ -225,7 +225,7 @@ service mesh の Istio は、プロキシの [Envoy](https://www.envoyproxy.io/)
 
 3 つ目の通信の捕捉は、Pod の通信を横取りしてプロキシへ回すことです。HTTP の実装が規格に沿わないアプリケーションでは、プロキシが HTTP として解釈し直す所で通信が壊れることがあります。
 
-ambient mode は、暗号化のような基本の処理をノードごとに 1 つのプロキシにまとめ、HTTP の処理が要る時だけ別のプロキシを通します。2 つの方式の違いは、Istio の[データプレーンの比較](https://istio.io/latest/docs/overview/dataplane-modes/)にまとまっています。ログの転送で DaemonSet を使うのも、同じ考え方です。どちらも、資源の上限と障害の範囲が Pod ごとに独立するという利点を一部手放して、数を減らしています。
+ambient mode は、暗号化のような基本の処理をノードごとに 1 つのプロキシにまとめ、HTTP の処理が必要な時だけ別のプロキシを通します。2 つの方式の違いは、Istio の[データプレーンの比較](https://istio.io/latest/docs/overview/dataplane-modes/)にまとまっています。ログの転送で DaemonSet を使うのも、同じ考え方です。どちらも、資源の上限と障害の範囲が Pod ごとに独立するという利点を一部手放して、数を減らしています。
 
 ---
 
@@ -239,6 +239,6 @@ Job やバッチのように終わる処理に足すなら、Kubernetes 1.29 以
 
 sidecar が止まった時にアプリケーションも止めるべきかを決めます。ログの転送なら止めない方がよく、通信の仲介なら sidecar の停止は通信の停止そのものです。Amazon ECS では `essential` の既定が true なので、止めないなら明示します。
 
-最後に、本当に全ての Pod に 1 つずつ要るのかを考えます。言語が 1 つで足したい機能も 1 つならライブラリの方が軽く、全 Pod に同じ処理を置くならノードごとに 1 つ置く方式も候補です。
+最後に、本当に全ての Pod に 1 つずつ必要なのかを考えます。言語が 1 つで足したい機能も 1 つならライブラリの方が軽く、全 Pod に同じ処理を置くならノードごとに 1 つ置く方式も候補です。
 
 実験のマニフェスト・実行用のスクリプト・出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/software-architecture/sidecar/lab) にあります。
