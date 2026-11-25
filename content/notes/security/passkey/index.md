@@ -193,7 +193,7 @@ for (const [host, rpId] of cases) {
 
 2 段目はサーバーです。上の `uploads` のように、同じ rpId の下で利用者が作ったページを配るサービスを考えます。攻撃者は、本物のサーバーから受け取った challenge を自分が作ったページのスクリプトに渡しておきます。別の利用者がそのページを訪れて確認の操作をすると、スクリプトはその利用者の鍵で正しい署名を得られます。攻撃者はその応答を本物のサーバーに送れば、訪れた利用者としてログインできます。
 
-WebAuthn の仕様は、[コードの注入](https://www.w3.org/TR/webauthn-3/#sctn-code-injection)を扱う節で `usercontent.example.org` と `example.org` をこの例として挙げ、[origin のチェック](https://www.w3.org/TR/webauthn-3/#sctn-validating-origin)を MUST としています。
+WebAuthn の仕様では、[コードの注入](https://www.w3.org/TR/webauthn-3/#sctn-code-injection)を扱う節で `usercontent.example.org` と `example.org` がこの例として挙げられ、[origin のチェック](https://www.w3.org/TR/webauthn-3/#sctn-validating-origin)が MUST とされています。
 
 冒頭の図は、このチェックを Python で書いて試した結果です。ブラウザと認証器の役も Python で書き、正規の応答から 1 か所だけ変えた応答を作りました。チェックの順は仕様の [7.2 節](https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion)の主な手順に合わせました。サーバーは UV を `required` にした設定で、署名は [cryptography](https://cryptography.io/) の ECDSA（P-256）で作っています。
 
@@ -249,7 +249,7 @@ rp.verify(dev.sign(client_data(ch, "https://uploads.app.example")))
 
 ### 署名カウンタで分かること
 
-authenticatorData の signCount は、認証器が署名するたびに増やす数です。仕様で[署名カウンタを扱う節](https://www.w3.org/TR/webauthn-3/#sctn-sign-counter)は、サーバーが前回の値を保存し、次の値がそれ以下なら複製された認証器を疑うよう書いています。同じ節は、カウンタを持たない認証器は常に 0 を返す、とも決めています。
+authenticatorData の signCount は、認証器が署名するたびに増やす数です。仕様で[署名カウンタを扱う節](https://www.w3.org/TR/webauthn-3/#sctn-sign-counter)には、サーバーが前回の値を保存し、次の値がそれ以下なら複製された認証器を疑うよう書かれています。同じ節は、カウンタを持たない認証器は常に 0 を返す、とも決めています。
 
 lab/verify.py の `counters()` では、同じ秘密鍵を持つ 2 台目の端末 B を作り、端末 A で 2 回、端末 B で 1 回ログインしました。
 
