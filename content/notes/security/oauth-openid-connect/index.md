@@ -93,7 +93,7 @@ sequenceDiagram
 
 code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.2) は、code の有効期限を短くし（最大 10 分を推奨）、1 度しか使えないようにすることを求めています。さらに、client が自分のシークレットを持てる場合は、交換の時に authorization server が client を認証します。
 
-しかし、client の全てがシークレットを持てるわけではありません。RFC 6749 §2.1 は、サーバーで動きシークレットを守れる client を confidential client、スマートフォンのアプリや SPA（Single Page Application、ブラウザの中で動くアプリ）のように配布物の中身を読まれる client を public client と呼んで区別しています。public client では、code と `client_id` さえあれば誰でも交換できてしまいます。
+しかし、client の全てがシークレットを持てるわけではありません。RFC 6749 §2.1 では、サーバーで動きシークレットを守れる client を confidential client、スマートフォンのアプリや SPA（Single Page Application、ブラウザの中で動くアプリ）のように配布物の中身を読まれる client を public client と呼んで区別しています。public client では、code と `client_id` さえあれば誰でも交換できてしまいます。
 
 ---
 
@@ -221,7 +221,7 @@ state は、client がログインの開始時にセッションに保存して�
 
 nonce は OIDC の値で、client が認証要求に入れ、authorization server が ID Token の `nonce` クレームにそのまま写します。nonce の目的は、client のセッションと ID Token を結び付け、[replay](/notes/blockchain-systems/replay-protection/)（過去の値を送り直す攻撃）を緩和することです（[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken)）。
 
-RFC 9700 §2.1 は、OIDC のフローでは nonce が CSRF 対策になるとしています。nonce はログインを始めたセッションに保存され、ID Token に写った値と比べられるので、他人のログインで発行された ID Token は一致しないからです。replay を防ぐ値として予測できないことが必要になる点は、[Nonce](../nonce/) のノートで見た認証の challenge と同じです。
+RFC 9700 §2.1 によると、OIDC のフローでは nonce が CSRF 対策になります。nonce はログインを始めたセッションに保存され、ID Token に写った値と比べられるので、他人のログインで発行された ID Token は一致しないからです。replay を防ぐ値として予測できないことが必要になる点は、[Nonce](../nonce/) のノートで見た認証の challenge と同じです。
 
 ---
 
