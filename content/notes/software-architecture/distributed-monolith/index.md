@@ -63,7 +63,7 @@ sequenceDiagram
 
 この図で決済サービスが停止している間、注文サービスは注文を受け付けられません。[再試行](/notes/distributed-systems/retry-backoff/)を増やせば一時的な失敗には耐えられますが、呼び出し先が復旧しなければ接続やワーカを待たせ続けます。
 
-[Microservices.io の Self-contained Service パターン](https://microservices.io/patterns/decomposition/self-contained-service.html)は、同期で呼ぶ操作の可用性は呼び出す各サービスが持つ可用性の積になり、再試行は応答時間を延ばすと説明しています。可用性を上げ、待ち時間を下げるには、実行時の結合を小さくする必要があります。
+[Microservices.io の Self-contained Service パターン](https://microservices.io/patterns/decomposition/self-contained-service.html)では、同期で呼ぶ操作の可用性は呼び出す各サービスが持つ可用性の積になり、再試行は応答時間を延ばすと説明されています。可用性を上げ、待ち時間を下げるには、実行時の結合を小さくする必要があります。
 
 同期通信そのものが誤りではありません。要求を受けた時点で「在庫がある」という結果が必要なら、在庫サービスに問い合わせる境界は残ります。一方で、配送依頼を後から処理してもよいなら、注文の確定後に [Domain Event](../domain-event/) を記録し、配送サービスが読む形に変えられます。注文の確定とイベントの記録を同じトランザクションに入れる方法は、[Transactional Outbox](../../distributed-systems/transactional-outbox/) のノートで扱います。
 
