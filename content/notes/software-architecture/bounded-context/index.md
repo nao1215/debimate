@@ -19,7 +19,7 @@ OSS で EC の基盤を作る [Saleor](https://github.com/saleor/saleor) の注�
 
 <br>
 
-DDD（Domain-Driven Design、ドメイン駆動設計）でいうモデルは、業務の概念を表す型と、その概念が守る規則の集まりです。1 つの語が場所によって違う意味を持つ時、その意味が 1 つに定まる範囲を明示した境界を Bounded Context（境界づけられたコンテキスト）と呼びます。DDD を提唱した Eric Evans 氏の [DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) は、Bounded Context を「特定のモデルが定義され、適用される境界の記述」とし、多くはサブシステムか、あるチームが受け持つ範囲になると書いています。
+DDD（Domain-Driven Design、ドメイン駆動設計）でいうモデルは、業務の概念を表す型と、その概念が守る規則の集まりです。1 つの語が場所によって違う意味を持つ時、その意味が 1 つに定まる範囲を明示した境界を Bounded Context（境界づけられたコンテキスト）と呼びます。DDD を提唱した Eric Evans 氏は、[DDD Reference](https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf) で Bounded Context を「特定のモデルが定義され、適用される境界の記述」とし、多くはサブシステムか、あるチームが受け持つ範囲になると書いています。
 
 1 つの語が部署ごとに違う意味を持つ状況は、DDD を採用しているかどうかに関わらず現れます。
 
@@ -144,7 +144,7 @@ DDD Reference は、境界をチームの体制、アプリケーションのど
 
 揃え続ける手段として、DDD Reference はコードを頻繁に統合し、チームで用語とモデルの解釈を突き合わせ続けることを挙げています。
 
-Evans 氏の書籍『[Domain-Driven Design](https://www.informit.com/store/domain-driven-design-tackling-complexity-in-the-heart-9780321125217)』（2003 年）の第 14 章は、大規模なシステムでモデルを完全に統一するのは難しく、コストにも見合わないとしています。統一を諦める代わりに置くのが境界で、その大きさに決まりはありません。
+Evans 氏は書籍『[Domain-Driven Design](https://www.informit.com/store/domain-driven-design-tackling-complexity-in-the-heart-9780321125217)』（2003 年）の第 14 章で、大規模なシステムでモデルを完全に統一するのは難しく、コストにも見合わないとしています。統一を諦める代わりに置くのが境界で、その大きさに決まりはありません。
 
 DDD は、モデルを組み立てる部品にも名前を付けています。ID で同じものを追い続ける [Entity と、まとめて整合を保つ単位の Aggregate](/notes/software-architecture/value-object-entity-aggregate/)、保存と取得を受け持つ [Repository](/notes/software-architecture/repository/)、起きた事実を表す [Domain Event](/notes/software-architecture/domain-event/) です。どれも 1 つの Bounded Context の中で定義するので、同じ「注文」の型でも、コンテキストが違えば持つ値と名前が変わります。
 
