@@ -78,7 +78,7 @@ Ethereum Foundation は分岐の 6 日後の[ブログ](https://blog.ethereum.or
 
 EIP-155 の Rationale は、目的を「a way to send transactions that work on Ethereum without working on ETC or the Morden testnet」（ETC やテストネットの Morden では通らず、Ethereum でだけ通るトランザクションを送る方法）と書き、ETC にも別の chain ID で採用するよう勧めています。
 
-ただし、chain ID を含めない古い形式も、引き続き有効です。上記の告知も、この互換性のために EIP-155 を採用していないチェーン（ETC など）で作ったトランザクションは、まだ Ethereum でリプレイできると注意しています。ETC は 2017 年 1 月 13 日のブロック 3,000,000 の Die Hard で EIP-155 を採用し、chain ID 61 を使っています（[ECIP-1066](https://github.com/ethereumclassic/ECIPs/blob/cad0aecc6978e5fa0cdff66b99f79e6dc4978d86/_specs/ecip-1066.md)）。
+ただし、chain ID を含めない古い形式も、引き続き有効です。上記の告知でも、この互換性のために EIP-155 を採用していないチェーン（ETC など）で作ったトランザクションは、まだ Ethereum でリプレイできると注意されています。ETC は 2017 年 1 月 13 日のブロック 3,000,000 の Die Hard で EIP-155 を採用し、chain ID 61 を使っています（[ECIP-1066](https://github.com/ethereumclassic/ECIPs/blob/cad0aecc6978e5fa0cdff66b99f79e6dc4978d86/_specs/ecip-1066.md)）。
 
 ---
 
