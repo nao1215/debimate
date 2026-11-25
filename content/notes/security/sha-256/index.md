@@ -141,7 +141,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-出力の各 bit が 1/2 の確率で独立に反転するなら、違う bit の数は平均 128 になります。32 byte の入力で 1 bit だけ違うペアを 2000 件作り、ハッシュ値で異なる bit の数を数えました。以下は、その計算部分です。
+出力の各 bit が 1/2 の確率で独立に反転するなら、違う bit の数は平均 128 になります。32 byte の入力で 1 bit だけ違う入力を 2000 組作り、ハッシュ値で異なる bit の数を数えました。以下は、その計算部分です。
 
 ```python
 import hashlib
