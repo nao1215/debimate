@@ -13,7 +13,7 @@ Differential Testing（差分テスト）は、同じ仕事をする 2 つ以上
 
 同じ仕事をする実装が 2 つある場面は、思ったより身近にあります。Ubuntu 25.10 では、`ls` や `sort` などの基本コマンドを集めた coreutils の既定が、C で書かれた [GNU coreutils](https://www.gnu.org/software/coreutils/) から Rust で書き直した [uutils coreutils](https://github.com/uutils/coreutils) に切り替わりました。経緯は [Ubuntu の告知](https://discourse.ubuntu.com/t/an-update-on-rust-coreutils/80773)にあります。
 
-著者の Ubuntu 26.04 には両方が入っていて、`ls` は uutils、`gnuls` は GNU です。シェルスクリプトから見ると、ある日を境に同じ名前のコマンドの中身が入れ替わったことになります。
+著者の Ubuntu 26.04 には両方が入っていて、`ls` は uutils、`gnuls` は GNU です。シェルスクリプトから見ると、ある日を境に同じ名前で呼ぶコマンドの中身が入れ替わったことになります。
 
 著者はこの 2 つに、同じ 32 ケースの呼び出しを渡して比べました。26 ケースは出力も終了コードも一致し、5 ケースで違いました。残りの 1 ケースは、エラーの文面だけの差です。違った 5 ケースのうち 4 ケースは、書き込み先のディスクが一杯の時の振る舞いです。`/dev/full` は、書き込むと必ず「空き容量が無い」エラーを返す特殊なファイルで、ディスクが一杯の状況を再現できます。
 
@@ -160,7 +160,7 @@ uutils の開発者も同じ判断をしています。uutils のリポジトリ
 
 uufuzz は、stderr を比べる前に両方の stderr から `sort:` のような最初の `:` までを落とし、コマンド名の違いが差として出ないようにしています。また、GNU を `LC_ALL=C` で起動します。
 
-何を比べないかを決めないと、差の一覧の大半がノイズになり、本当の差を見落とします。一方で、比べない範囲を広げ過ぎると、本当の差も消えます。stderr を全く比べなければ、`ls` が書き込み失敗を報告しない差は終了コードでしか見えません。
+何を比べないかを決めないと、差の一覧は大半がノイズになり、本当の差を見落とします。一方で、比べない範囲を広げ過ぎると、本当の差も見えなくなります。stderr を全く比べなければ、`ls` が書き込み失敗を報告しない差は終了コードでしか見えません。
 
 同じソースから 2 回ビルドした成果物を比べる [Reproducible Builds](/notes/security/reproducible-builds/) でも、時刻やファイルの所有者のように比べなくてよい差を先に取り除いてから、中身の差を調べます。
 
@@ -184,7 +184,7 @@ uufuzz は、stderr を比べる前に両方の stderr から `sort:` のよう�
 
 #### ls -l の +
 
-実験では、ファイルに名前と値の組を付ける拡張属性（xattr）で、`user.note` という属性を付けました。これはアクセス制御ではないので、GNU の `ls` は `+` を付けません。
+実験では、ファイルに名前と値のペアを付ける拡張属性（xattr）で、`user.note` という属性を付けました。これはアクセス制御ではないので、GNU の `ls` は `+` を付けません。
 
 uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0/src/uucore/src/lib/features/fsxattr.rs)は、拡張属性が 1 つでもあれば ACL があるとみなすので、`+` を付けました。
 
@@ -202,13 +202,13 @@ uutils 0.8.0 の [has_acl 関数](https://github.com/uutils/coreutils/blob/0.8.0
 
 `md5sum` の異常終了は、Rust の panic です。panic は、回復できないエラーで処理を止める仕組みです。uutils は panic した時にすぐ止まる設定（`panic = "abort"`）で[ビルドされている](https://github.com/uutils/coreutils/blob/0.8.0/Cargo.toml)ので、プロセスは SIGABRT（シグナル 6）で終わり、シェルからは 128 にシグナル番号の 6 を足した終了コード 134 に見えます。Python の `returncode` では -6 です。
 
-書き込みの失敗の扱いは、同じ uutils の中でもコマンドごとに違います。[stdio Buffering のノート](/notes/computer-systems/stdout-buffering/)で試した uutils の `cat` は、`/dev/full` への書き込みでエラーを表示して 1 を返しました。
+書き込みに失敗した時の扱いは、同じ uutils の中でもコマンドごとに違います。[stdio Buffering のノート](/notes/computer-systems/stdout-buffering/)で試した uutils の `cat` は、`/dev/full` への書き込みでエラーを表示して 1 を返しました。
 
 <br>
 
 #### バージョンを上げた時の比較
 
-本記事を書いている途中の 2026-11-12 の朝に、著者の Ubuntu 26.04 では、更新を自動で入れる unattended-upgrades が uutils を 0.8.0 から 0.10.0 に上げました。同じスクリプトを実行し直すと、normalized の差は 5 から 4 に減りました。0.8.0 の結果は、docker の `ubuntu:26.04` のイメージで同じスクリプトを実行して残しています。
+本記事を書いている途中の 2026-11-12 の朝に、著者の Ubuntu 26.04 では、更新を自動で入れる unattended-upgrades が uutils を 0.8.0 から 0.10.0 に上げました。同じスクリプトを実行し直すと、normalized の差は 5 から 4 に減りました。0.8.0 の結果は、docker の `ubuntu:26.04` イメージで同じスクリプトを実行して残しています。
 
 | ケース | GNU 9.7 | uutils 0.8.0 | uutils 0.10.0 |
 |---|---|---|---|
@@ -230,7 +230,7 @@ POSIX の ls は「0 より大きい値」としか定めていないので、�
 
 [jsonize](https://github.com/nao1215/jsonize) は、コマンドの出力を JSON に変換する著者の CLI で、コマンド名は `jz` です。`jz run ip -br link` のように使うと、コマンドを実行して、その出力を JSON にします。コマンドごとに、出力の各行を正規表現で読む「定義」を持っています。
 
-Linux のネットワークの設定を表示する `ip` コマンドは、`-br`（brief）を付けるとインターフェースを 1 行 1 つの短い表で出し、`-j` を付けると同じ内容を JSON で出します。以下は、docker が作った veth の行です。veth は、コンテナとホストをつなぐ仮想のネットワークインターフェースです。
+Linux でネットワークの設定を表示する `ip` コマンドは、`-br`（brief）を付けるとインターフェースを 1 行 1 つの短い表で出し、`-j` を付けると同じ内容を JSON で出します。以下は、docker が作った veth の行です。veth は、コンテナとホストをつなぐ仮想のネットワークインターフェースです。
 
 ```text
 $ ip -br link
@@ -264,7 +264,7 @@ for o, n in zip(ours, native):
 
 {{< figure src="images/native_json.webp" alt="上は修正前の jz。interface の値 veth3a8eedd@if2 が赤く、jz にだけある値。ip -j の ifname の veth3a8eedd と link_index の 2 も赤い枠で、ip -j にだけある値。state の UP、lladdr の MAC、flags の 4 個は ip -j の値と実線でつながる。下は修正後の v0.9.1。interface の veth3a8eedd は ifname と実線で、peer の if2 は link_index の 2 と点線でつながり、if2 と 2 は表現の違いと書かれている" caption="docker の veth の 1 行。修正前の jz は名前に相手の番号を含めていた" align="center" >}}
 
-修正前の jz は、`veth3a8eedd@if2` 全体をインターフェース名にしていました。`@` の後ろは veth の相手の番号で、`ip -j` では `link_index` という別の値です。この値をインターフェース名として次のコマンドに渡すと、`ip link show dev veth3a8eedd@if2` は `Device "veth3a8eedd@if2" does not exist.` で失敗します。
+修正前の jz は、`veth3a8eedd@if2` 全体をインターフェース名にしていました。`@` の後ろは veth の相手を表す番号で、`ip -j` では `link_index` という別の値です。この値をインターフェース名として次のコマンドに渡すと、`ip link show dev veth3a8eedd@if2` は `Device "veth3a8eedd@if2" does not exist.` で失敗します。
 
 `classify` は、jz にだけある値のうち、表現が違うだけと分かっている 2 種類を先に分けて数えます。1 つは「アドレスと長さ」で、jz の `127.0.0.1/8` に対して `ip -j` は `127.0.0.1` と `8` に分けています。もう 1 つは「ifN と N」で、jz の `if2` に対して `ip -j` は `2` です。
 
@@ -313,7 +313,7 @@ ip -br addr: 11 行、43 値、jz にだけある値 21（アドレスと長さ 
 
 比べる前に表現の違いを吸収する変換（正規化）は、ノイズを減らす一方で、同じ形のバグも隠します。正規化の規則は、何の値に対して、なぜ同じとみなすかを 1 つずつ書いておく必要があります。
 
-著者は jsonize で、表を出すコマンドとその JSON 出力の組 66 組を同じ方法で比べました。値の誤りとして直したのは、この `@if2` の 1 件です。
+著者は jsonize で、表を出すコマンドとその JSON 出力 66 組を同じ方法で比べました。値の誤りとして直したのは、この `@if2` の 1 件です。
 
 別の機会に、ディスクの一覧を出す `lsblk` の `-f`・`-m`・`-t` の 3 つの表で、`lsblk -J` とキーの名前で値を対応させて比べました。空白区切りの `-r` の形式でも桁を揃えた表でも、3 つ合わせて 1281 個の値で差が 0 でした。差が 0 という結果も、定義が値を正しく読んでいる根拠になります。
 
