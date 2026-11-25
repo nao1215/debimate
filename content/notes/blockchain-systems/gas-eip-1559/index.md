@@ -13,7 +13,7 @@ gas は、[Ethereum](https://ethereum.org/) でトランザクションの実行
 
 [EIP-1559](https://eips.ethereum.org/EIPS/eip-1559)（EIP は Ethereum の仕様を変える提案）は、2021 年 8 月 5 日に London の[ハードフォーク](../ethereum-hard-forks/)（全ノードで規則を一斉に更新）で入った、1 gas あたりの額の決め方です。この額は、ブロックごとにプロトコルが決める base fee と、送り主が上乗せする priority fee の 2 つに分かれます。base fee は、前のブロックが上限の半分（target）よりどれだけ多く、または少なく gas を使ったかで、1 ブロックごとに最大 12.5% 上下します。以下は、前のブロックが使った gas と次の base fee の関係を描いた図です。
 
-{{< figure src="images/gas-eip-1559_concept.webp" alt="3 組の図。左の組は gas の上限の箱が青で満杯になっており、次の base fee の黄土色の棒は、今の base fee を示す点線より高い ×1.125。中央の組は箱の半分の破線（target）まで青で、次の棒は点線と同じ高さの ×1。右の組は空の箱で、次の棒は点線より低い ×0.875" caption="前のブロックの使用量と、次のブロックの base fee" align="center" >}}
+{{< figure src="images/gas-eip-1559_concept.webp" alt="3 つの場面を並べた図。左の場面は gas の上限の箱が青で満杯になっており、次の base fee の黄土色の棒は、今の base fee を示す点線より高い ×1.125。中央の場面は箱の半分の破線（target）まで青で、次の棒は点線と同じ高さの ×1。右の場面は空の箱で、次の棒は点線より低い ×0.875" caption="前のブロックの使用量と、次のブロックの base fee" align="center" >}}
 
 満杯のブロックが続けば base fee は 1.125 倍ずつ上がり、空のブロックが続けば 0.875 倍ずつ下がります。次のブロックでも base fee は今の 1.125 倍を超えないので、払う額の上限を見積もれます。EIP-1559 の本文も、これで[ウォレット](../wallet/)が手数料を自動で設定しやすくなると説明しています。
 
