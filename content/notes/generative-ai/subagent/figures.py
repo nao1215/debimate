@@ -198,7 +198,7 @@ def results_figure():
                      marker=m, lw=2, label=label)
         c = [sum(ctx[(mode, k)]) / len(ctx[(mode, k)]) / 1000 for k in ks]
         axes[1].plot(ks, c, color=color, ls=ls, marker=m, lw=2, label=label)
-    axes[0].set_ylabel("合計まで正しかった組（4 組中）")
+    axes[0].set_ylabel("合計まで正しかった品目（4 品目中）")
     axes[0].set_ylim(-0.3, 4.3)
     axes[0].set_yticks(range(5))
     axes[0].set_xticks(ks)
