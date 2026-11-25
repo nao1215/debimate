@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Data Structure"]
 ---
 
-Merkle Tree（マークルツリー）は、多数のデータをそれぞれ[ハッシュ関数](../hash-function/)に通し、その値を 2 つずつ組にしてハッシュし直す操作を繰り返して、最後に 1 つの値へまとめる木です。最後に残る 1 つをルートハッシュと呼びます。名前は、この木を使った署名方式を 1979 年に[特許](https://patents.google.com/patent/US4309569A/en)として出願し、1987 年の論文「[A Digital Signature Based on a Conventional Encryption Function](https://link.springer.com/chapter/10.1007/3-540-48184-2_32)」で発表した Ralph Merkle に由来します。
+Merkle Tree（マークルツリー）は、多数のデータをそれぞれ[ハッシュ関数](../hash-function/)に通し、その値を 2 つずつペアにしてハッシュし直す操作を繰り返して、最後に 1 つの値へまとめる木です。最後に残る 1 つをルートハッシュと呼びます。名前は、この木を使った署名方式を 1979 年に[特許](https://patents.google.com/patent/US4309569A/en)として出願し、1987 年の論文「[A Digital Signature Based on a Conventional Encryption Function](https://link.springer.com/chapter/10.1007/3-540-48184-2_32)」で発表した Ralph Merkle に由来します。
 
 {{< figure src="images/merkle-tree_cover.webp" alt="横軸はログの件数、縦軸は送るデータのバイト数で、どちらも対数目盛り。葉のハッシュを全件並べた灰色の直線は件数に比例して伸び、35 億件で約 1,120 億バイトに達する。手元の木で測った包含証明と一貫性証明は 10 件から 100 万件まで数百バイトでほぼ横ばい。公開ログ Argon 2026h2 の 35.0 億件での包含証明 1,024 バイトが赤い点で、記録 1 件の大きさ 819 バイトの破線のすぐ上にある。Wyvern 2027h1 の 5.3 億件での一貫性証明 832 バイトが赤い四角で、破線とほぼ同じ高さにある" caption="ログの件数と、証明に必要なデータの大きさ（手元の木と、公開の CT ログで測った値）" align="center" >}}
 
@@ -120,7 +120,7 @@ def verify_inclusion(index, size, leaf, proof, expected_root) -> bool:
 | 100,000 | 17 個（544 バイト） | 3,200,000 バイト | 22 µs |
 | 1,000,000 | 20 個（640 バイト） | 32,000,000 バイト | 43 µs |
 
-件数が 1,000 倍になっても、証明は 10 個増えただけでした。件数を n とすると、証明の個数は多くても `ceil(log2 n)` 個で、件数が 2 の累乗でない RFC 9162 の木では、浅い位置にある葉の証明はこれより短くなります。各段で末尾の値を複製して組む Bitcoin の規則では、どの葉の証明もちょうど `ceil(log2 n)` 個です。
+件数が 1,000 倍になっても、証明は 10 個増えただけでした。件数を n とすると、証明の個数は多くても `ceil(log2 n)` 個で、件数が 2 の累乗でない RFC 9162 の木では、浅い位置にある葉の証明はこれより短くなります。各段で末尾の値を複製してペアにする Bitcoin の規則では、どの葉の証明もちょうど `ceil(log2 n)` 個です。
 
 検証は数十マイクロ秒で終わります。一方で、ルートを作る側は全ての葉をハッシュする必要があり、100 万件で 1.1 秒かかりました。計測の全体は [proof_size.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/merkle-tree/lab/proof_size.py) にあり、Python の標準ライブラリ [hashlib](https://docs.python.org/3/library/hashlib.html) が計算する SHA-256（[FIPS 180-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf)）だけを使います。
 
@@ -132,9 +132,9 @@ def verify_inclusion(index, size, leaf, proof, expected_root) -> bool:
 
 #### 公開ログでの検証
 
-次に、実際に運用されているログで同じ検証を行います。Certificate Transparency（CT）は、認証局が発行した証明書を誰でも読める追記だけのログに残す仕組みです。[Chrome](https://googlechrome.github.io/CertificateTransparency/ct_policy.html) などのブラウザは、公開の証明書にこのログへの登録を求めています。ログは全ての記録を Merkle Tree の葉にし、その時点の件数とルートハッシュに署名して公開します。この署名した値を STH（Signed Tree Head）と呼びます。
+次に、実際に運用されているログで同じ包含証明を検証します。Certificate Transparency（CT）は、認証局が発行した証明書を誰でも読める追記だけのログに残す仕組みです。[Chrome](https://googlechrome.github.io/CertificateTransparency/ct_policy.html) などのブラウザは、公開の証明書にこのログへの登録を求めています。ログは全ての記録を Merkle Tree の葉にし、その時点の件数とルートハッシュに署名して公開します。この署名した値を STH（Signed Tree Head）と呼びます。
 
-ログの API は [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-4) で決まっています。木の作り方は RFC 9162 と同じなので、上記の検証をそのまま使えます。2026 年 11 月 13 日に、Argon 2026h2 の STH、位置 3,000,000,000 の記録、その包含証明を 1 回ずつ取得してファイルに保存しました。検証はその保存したファイルだけで行います。
+ログの API は [RFC 6962](https://www.rfc-editor.org/rfc/rfc6962#section-4) で決まっています。木の作り方は RFC 9162 と同じなので、上記の検証をそのまま使えます。2026 年 11 月 13 日に、Argon 2026h2 の STH、位置 3,000,000,000 の記録、その包含証明を 1 回ずつ取得してファイルに保存しました。検証にはその保存したファイルだけを使います。
 
 ```python
 import base64, json
