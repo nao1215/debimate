@@ -277,9 +277,9 @@ bob がチャネルから手にした額は 0 です。最新の状態で閉じ�
 
 #### 古いバックアップから戻した時
 
-この実験の bob は、悪意を持った相手とは限りません。LND の[復旧に関する文書](https://github.com/lightningnetwork/lnd/blob/v0.18.4-beta/docs/recovery.md)は、`channel.db` を定期的にコピーする方法を「最新の状態かどうか分からないので危険」と書いています。古いバックアップから戻したノードが強制クローズすれば、本人に悪意が無くても同じ結果になります。
+この実験の bob は、悪意を持った相手とは限りません。LND の[復旧に関する文書](https://github.com/lightningnetwork/lnd/blob/v0.18.4-beta/docs/recovery.md)には、`channel.db` を定期的にコピーする方法は「最新の状態かどうか分からないので危険」と書かれています。古いバックアップから戻したノードが強制クローズすれば、本人に悪意が無くても同じ結果になります。
 
-[Core Lightning の文書](https://docs.corelightning.org/docs/backup)も、バックアップに DB のスナップショットを使う方法を勧めていません。LND が勧めるのは、チャネルを開いた時の情報だけを持つ Static Channel Backup（`channel.backup`）です。Static Channel Backup から戻したノードは残高の分け方を持っていないので、自分の状態を出しません。代わりに [channel_reestablish](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#message-retransmission) のやり取りで相手に強制クローズを頼み、相手が出した最新の状態から自分の残高を受け取ります。ただし、相手のノードが動いていて、頼みに応じることが前提です。
+[Core Lightning の文書](https://docs.corelightning.org/docs/backup)でも、バックアップに DB のスナップショットを使う方法は勧められていません。LND が勧めるのは、チャネルを開いた時の情報だけを持つ Static Channel Backup（`channel.backup`）です。Static Channel Backup から戻したノードは残高の分け方を持っていないので、自分の状態を出しません。代わりに [channel_reestablish](https://github.com/lightning/bolts/blob/master/02-peer-protocol.md#message-retransmission) のやり取りで相手に強制クローズを頼み、相手が出した最新の状態から自分の残高を受け取ります。ただし、相手のノードが動いていて、頼みに応じることが前提です。
 
 <br>
 
