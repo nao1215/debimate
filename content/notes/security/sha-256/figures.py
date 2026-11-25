@@ -53,7 +53,7 @@ def save(name: str) -> None:
     print(f"wrote {path}")
 
 
-# --- 1 bit だけ違う入力の組で、ハッシュ値の異なる bit 数を数える ---
+# --- 1 bit だけ違う入力のペアで、ハッシュ値の異なる bit 数を数える ---
 counts = []
 for _ in range(PAIRS):
     msg = bytearray(rng.integers(0, 256, size=MSG_BYTES, dtype=np.uint8).tolist())
