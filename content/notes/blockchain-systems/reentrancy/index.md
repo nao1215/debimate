@@ -104,7 +104,7 @@ ETH が届くたびに、銀行にまだ 1 ETH 以上あれば `withdraw` を呼
 
 The DAO は、Slock.it が公開した [DAO（Decentralized Autonomous Organization）のフレームワーク](https://github.com/slockit/DAO/tree/v1.0)で作られ、集めた ETH の使い道をトークンを持つ人の投票で決めるコントラクトでした。
 
-2016 年 6 月 17 日、Ethereum Foundation のブログは、攻撃者が The DAO の ETH を子 DAO（The DAO から分かれた別のコントラクト）へ流し出している最中だと[警告しました](https://blog.ethereum.org/2016/06/17/critical-update-re-dao-vulnerability)。原因は「再帰的な呼び出し（recursive calling）」の脆弱性で、攻撃者は、出資者が自分の取り分の ETH を持って新しい子 DAO へ抜けるための分割の関数（ソースでは `splitDAO`）をその実行の中から繰り返し呼んでいました。[ethereum.org の歴史のページ](https://ethereum.org/en/history/#dao-fork)によると、流出したのは 360 万 ETH 以上です。
+2016 年 6 月 17 日、Ethereum Foundation はブログで、攻撃者が The DAO の ETH を子 DAO（The DAO から分かれた別のコントラクト）へ流し出している最中だと[警告しました](https://blog.ethereum.org/2016/06/17/critical-update-re-dao-vulnerability)。原因は「再帰的な呼び出し（recursive calling）」の脆弱性で、攻撃者は、出資者が自分の取り分の ETH を持って新しい子 DAO へ抜けるための分割の関数（ソースでは `splitDAO`）をその実行の中から繰り返し呼んでいました。[ethereum.org の歴史のページ](https://ethereum.org/en/history/#dao-fork)によると、流出したのは 360 万 ETH 以上です。
 
 当時のソース（[slockit/DAO の v1.0](https://github.com/slockit/DAO/blob/v1.0/DAO.sol#L667-L669)）の `splitDAO` は、末尾で次の順に処理しています。
 
