@@ -4,7 +4,7 @@
 - ollama-context-length_default.webp   : 既定の num_ctx が GPU のメモリで決まり、モデルの上限で頭打ちになる流れ
 - ollama-context-length_breakdown.webp : q4_K_M の size を KV キャッシュとそれ以外に分ける
 - ollama-context-length_truncate.webp  : num_ctx 2,048 で 3,084 トークンの入力を切り詰めた範囲
-- ollama-context-length_slot.webp      : 枠が 1 組の時に別の要求が挟まると、共通のプレフィックスだけが残る（cache.go の模式）
+- ollama-context-length_slot.webp      : スロットが 1 つの時に別の要求が挟まると、共通のプレフィックスだけが残る（cache.go の模式）
 
 手書きの SVG を Chrome の headless で PNG にしてから WebP にする。images/ に SVG は残さない。
 
@@ -158,12 +158,12 @@ def default_figure():
 
 
 def slot_figure():
-    """並列数 1（枠が 1 組）で、要求 A の間に要求 B が挟まった時に使い回せる範囲。
+    """並列数 1（スロットが 1 つ）で、要求 A の間に要求 B が挟まった時に使い回せる範囲。
 
-    Ollama 0.22.1 の runner/ollamarunner/cache.go は、枠に残ったトークン列と新しい入力を
+    Ollama 0.22.1 の runner/ollamarunner/cache.go は、スロットに残ったトークン列と新しい入力を
     先頭から比べ、一致した数だけ使い回す。実測ではなく、コードの動きを描いた模式。
     """
-    s = Svg(960, 470, "枠が 1 組の時に別の要求が挟まると、共通のプレフィックスだけが残る")
+    s = Svg(960, 470, "スロットが 1 つの時に別の要求が挟まると、共通のプレフィックスだけが残る")
     s.rect(300, 28, 28, 28, PALE, ACCENT, 2.5)
     s.text(338, 50, "枠から使い回す", 24, "start")
     s.rect(560, 28, 28, 28, OCHRE_PALE, OCHRE, 2.5)
@@ -183,7 +183,7 @@ def slot_figure():
             s.rect(x, y, w, 48, fill, stroke, 2.5)
             s.text(x + w / 2, y + 33, name, 22)
             x += w
-    s.text(480, 400, "3 の時、枠の組には 2 の要求 B が入っているので、資料 A の K・V は残っていない", 22, "middle", "sub")
+    s.text(480, 400, "3 の時、スロットには 2 の要求 B が入っているので、資料 A の K・V は残っていない", 22, "middle", "sub")
     s.text(480, 440, "並列数 1。Ollama 0.22.1 の cache.go の動きを描いた模式（実測ではない）", 22, "middle", "sub")
     s.save("ollama-context-length_slot.webp")
 
