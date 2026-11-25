@@ -32,7 +32,7 @@ CometBFT は [Tendermint Core](https://github.com/tendermint/tendermint) のコ�
 
 ### ABCI によるアプリケーションの分離
 
-CometBFT はトランザクションをバイト列として運ぶだけで、残高や署名の規則は扱いません。トランザクションの中身を判断するのは、別に書くアプリケーションです。両者の間の境界を ABCI（Application BlockChain Interface）と呼びます。[CometBFT の入門文書](https://github.com/cometbft/cometbft/blob/v0.38.x/docs/introduction/README.md)は、Bitcoin のような仕組みを ABCI の上に作る場合の分担として、次の例を挙げています。
+CometBFT はトランザクションをバイト列として運ぶだけで、残高や署名の規則は扱いません。トランザクションの中身を判断するのは、別に書くアプリケーションです。両者の間の境界を ABCI（Application BlockChain Interface）と呼びます。[CometBFT の入門文書](https://github.com/cometbft/cometbft/blob/v0.38.x/docs/introduction/README.md)では、Bitcoin のような仕組みを ABCI の上に作る場合の分担として、次の例が挙げられています。
 
 {{< note-panels caption="CometBFT は順序を決め、アプリケーションは中身を判断します。" >}}
 - title: CometBFT
