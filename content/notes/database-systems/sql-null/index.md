@@ -109,7 +109,7 @@ WHERE r.referred_by IS NULL;
 
 ただし、`NOT EXISTS` へ書き換えると結果が変わる行もあります。それは `NOT IN` の左に書いたカラムが `NULL` の行です。例えば `referred_by NOT IN (SELECT id FROM members)` なら、`referred_by` が `NULL` の sato と tanaka が当たります。
 
-この行は、副問い合わせが 1 行でも返せば、`NOT IN` では UNKNOWN で落ちます。`NOT EXISTS` では等しい行が見つからないので残ります。`NOT IN` の左が `NULL` になる行を 1 行だけ用意した実験では、4 つの DBMS で `NOT IN` が 0 件、`NOT EXISTS` が 1 件でした。
+この行は、副問い合わせが 1 行でも返せば、`NOT IN` では UNKNOWN になって消えます。`NOT EXISTS` では等しい行が見つからないので残ります。`NOT IN` の左が `NULL` になる行を 1 行だけ用意した実験では、4 つの DBMS で `NOT IN` が 0 件、`NOT EXISTS` が 1 件でした。
 
 `NOT IN` は、PostgreSQL の Wiki の「[Don't Do This](https://wiki.postgresql.org/wiki/Don%27t_Do_This#Don.27t_use_NOT_IN)」で、避けるべき SQL の書き方の最初に挙げられ、`NOT EXISTS` への書き換えが勧められています。理由は 2 つで、1 つは上の 0 件、もう 1 つは後の節で測る実行時間です。`IS NOT NULL` で `NULL` を除いた `NOT IN` は件数こそ正しく返しますが、遅さは残ります。
 
@@ -155,7 +155,7 @@ LEFT JOIN members r ON r.id = m.referred_by;               -- 5
 -- 上に WHERE r.name IS DISTINCT FROM 'sato' を足す         -- 3
 ```
 
-紹介者のいない sato と tanaka は、結合で `r.name` が `NULL` になり、`<>` の比較が UNKNOWN になって消えます。残ったのは ito の 1 件だけで、`LEFT JOIN` で残したはずの行を `WHERE` が落とし、内部結合と同じ結果になりました。`IS DISTINCT FROM` で書けば、紹介者のいない 2 人も残って 3 件です。
+紹介者のいない sato と tanaka は、結合で `r.name` が `NULL` になり、`<>` の比較が UNKNOWN になって消えます。残ったのは ito の 1 件だけで、`LEFT JOIN` で残したはずの行を `WHERE` が除き、内部結合と同じ結果になりました。`IS DISTINCT FROM` で書けば、紹介者のいない 2 人も残って 3 件です。
 
 同じ `r.name <> 'sato'` を `ON r.id = m.referred_by AND r.name <> 'sato'` のように `ON` に書くと、4 つの DBMS で 5 件でした。`LEFT JOIN` の `ON` は結合の相手を選ぶ条件なので、条件が UNKNOWN でも左の会員は捨てられず、相手を `NULL` で埋めて残ります。絞り込みたい条件は `WHERE` に、相手を選ぶ条件は `ON` に書きます。
 
@@ -199,7 +199,7 @@ INSERT INTO u2 VALUES (NULL);
 INSERT INTO u2 VALUES (NULL);  -- PostgreSQL 18 は重複のエラー
 ```
 
-反対に、SQL Server は既定で `NULL` を 1 つしか許しません。[Microsoft の文書](https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints)には「only one null value is allowed per column」（1 つのカラムに NULL は 1 つまで）とあります。SQL Server から PostgreSQL へ移すと、`NULL` が 1 つまでという前提が黙って外れます。
+反対に、SQL Server は既定で `NULL` を 1 つしか許しません。[Microsoft の文書](https://learn.microsoft.com/en-us/sql/relational-databases/tables/unique-constraints-and-check-constraints)には「only one null value is allowed per column」（1 つのカラムに NULL は 1 つまで）とあります。SQL Server から PostgreSQL へ移すと、`NULL` が 1 つまでという前提が気づかないうちに外れます。
 
 主キーにも差がありました。主キーは SQL 標準では `NOT NULL` を含みますが、SQLite は `INTEGER PRIMARY KEY`・`WITHOUT ROWID` の表・`STRICT` の表などの例外を除いて、主キーのカラムに `NULL` を許します。`code VARCHAR(10) PRIMARY KEY` の表に `NULL` を 2 行入れると、SQLite だけが 2 行とも受け付け、他の 3 つは拒否しました。この動きは、SQLite の[文書](https://www.sqlite.org/lang_createtable.html#the_primary_key)によると、初期のバージョンにあった不具合を互換のために残したものです。
 
@@ -257,7 +257,7 @@ SELECT name FROM members ORDER BY score IS NULL, score DESC LIMIT 1;  -- 4 つ�
 
 <br>
 
-文字列の連結は、演算子の `||` と関数の `concat` で結果が割れました。
+文字列の連結は、演算子の `||` と関数の `concat` で結果が分かれました。
 
 | 連結するもの | PostgreSQL | MySQL | SQLite | DuckDB |
 |---|---|---|---|---|
@@ -342,7 +342,7 @@ rows=  300000  work_mem=4MB  Filter: (NOT (ANY (id = (SubPlan 1).col1)))
 
 `NULL` を避けて特別な値を入れる手もありますが、問題の場所が移るだけです。年齢に 0 を入れる設計は 0 歳の会員が現れた時点で意味が衝突し、期限の `9999-12-31` は「期限が最も遠い契約」を求めた結果に紛れ込みます。特別な値を使ってよいのは、本物の値として入り得ず、集計や範囲の比較に混ざっても意味が壊れない時だけです。
 
-2 つ目は、`NULL` を許すカラムに否定の条件を書く時の形です。`<>` と `NOT IN` は UNKNOWN の行を落とすので、`NOT EXISTS` か `IS DISTINCT FROM` で書きます。ORM のメソッドが組み立てる SQL も、`NOT IN` になっていないかを一度は見ておきたい所です。
+2 つ目は、`NULL` を許すカラムに否定の条件を書く時の形です。`<>` と `NOT IN` は UNKNOWN の行を結果から除くので、`NOT EXISTS` か `IS DISTINCT FROM` で書きます。ORM のメソッドが組み立てる SQL も、`NOT IN` になっていないかを一度は見ておきたい所です。
 
 3 つ目は、既定の扱いに頼らず、期待する結果を SQL に書いておくことです。本記事の実験で DBMS ごとに分かれた所や、既定のままでは期待とずれた所と、その書き方は次の通りです。
 
