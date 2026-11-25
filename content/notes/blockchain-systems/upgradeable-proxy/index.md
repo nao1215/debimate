@@ -11,9 +11,9 @@ topics: ["Smart Contract"]
 
 アップグレード可能なプロキシ（upgradeable proxy）は、[スマートコントラクト](../smart-contract/)（チェーン上で動くプログラム）について、アドレスとデータを変えずに処理だけを後から差し替えるための構成です。
 
-Ethereum では、一度置いたコントラクトのコードを書き換えられません。そこで、利用者が呼ぶ入口のコントラクト（プロキシ）と、処理のコードを持つ別のコントラクト（実装）に分け、プロキシが覚えている「実装のアドレス」だけを書き換えます。
+Ethereum では、一度置いたコントラクトのコードを書き換えられません。そこで、利用者が呼ぶ入口のコントラクト（プロキシ）と、処理のコードを持つ別のコントラクト（実装）に分け、プロキシが保存している「実装のアドレス」だけを書き換えます。
 
-Web の開発に置き換えると、URL を固定したリバースプロキシの裏で、アプリケーションサーバーを新しい版に入れ替える運用に近い形です。ただし、データの置き場所が異なります。コントラクトは、次のトランザクション（トランザクション）にも残る値を storage という自分専用のストレージに持ちます。Web ではデータは DB（データベース）にありますが、プロキシの構成ではデータもプロキシの storage にあり、実装はコードだけを貸します。
+Web の開発に置き換えると、URL を固定したリバースプロキシの裏で、アプリケーションサーバーを新しいバージョンに入れ替える運用に近い形です。ただし、データの置き場所が異なります。コントラクトは、次のトランザクションにも残る値を storage という自分専用のストレージに持ちます。Web ではデータは DB（データベース）にありますが、プロキシの構成ではデータもプロキシの storage にあり、実装はコードだけを貸します。
 
 この構成は、複数人の承認で送金する [Safe](../safe-multisig/) や、コントラクトで作るアカウント（[スマートアカウント](../erc-4337/)）でも使われています。以下は、プロキシと 2 つの実装の関係を示した図です。
 
@@ -94,7 +94,7 @@ slot 0 before increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93
 slot 0 after  increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93f642f64180aa4
 ```
 
-末尾が `aa3` から `aa4` に増えたアドレスには、コードがありません。コードの無いアドレスへの `DELEGATECALL` は失敗せず、何も返さずに成功します。以後、プロキシ経由の `count()` は空の返り値（`0x`）で成功し、プロキシ自身はエラーを出さないまま壊れます（呼び出し側が数値として読もうとして、初めて失敗します）。
+末尾が `aa3` から `aa4` に増えたアドレスには、コードがありません。コードの無いアドレスへの `DELEGATECALL` は失敗せず、何も返さずに成功します。以後、プロキシ経由の `count()` は空の返り値（`0x`）で成功し、プロキシ自身はエラーを出さないまま使えなくなります（呼び出し側が数値として読もうとして、初めて失敗します）。
 
 ちなみに、Safe は現在の [v1.5.0](https://github.com/safe-fndn/safe-smart-account/blob/v1.5.0/contracts/common/Singleton.sol) でも実装のアドレスを slot 0 に置いています。実装側の先頭に同じ変数を宣言させ、両者の意味を揃えることで衝突を避けています（[Safe Multisig](../safe-multisig/)）。
 
@@ -108,7 +108,7 @@ slot 0 after  increment(): 0x0000000000000000000000005fbdb2315678afecb367f032d93
 
 上記の図の中央にあるプロキシの storage の値は、差し替えの前後で同じです。変わったのは、実装がそれぞれの slot に付ける意味だけです。つまり、実装を更新してもデータは新しい実装に移りません。データはプロキシに残ったまま、新しい実装の並びで読まれます。図の `fee` の値は、slot 0 のアドレスを 1 つの整数として読んだものです。
 
-この状態で V2Bad の `setFee(5)` を呼ぶと slot 0 が 5 になり、末尾に `fee` を足した正しい V2 に差し替え直しても、`owner` は 0x…05 のままでした。読み方を直しても、壊れた間に書き込まれた値は戻りません。
+この状態で V2Bad の `setFee(5)` を呼ぶと slot 0 が 5 になり、末尾に `fee` を足した正しい V2 に差し替え直しても、`owner` は 0x…05 のままでした。読み方を直しても、並びがずれていた間に書き込まれた値は戻りません。
 
 Solidity の部品を集めたライブラリ [OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) の[ガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)も、状態変数の順序と型を変えず、新しい変数は末尾に足すよう求めています。
 
@@ -116,7 +116,7 @@ Solidity の部品を集めたライブラリ [OpenZeppelin Contracts](https://g
 
 ### 衝突を避ける置き場所
 
-1 つ目の衝突は、プロキシが使う値と実装の変数が離れていれば起きません。実装の変数は 0 の近くに並ぶので、プロキシの値は遠い slot に置けば避けられます。2 つ目の衝突は、後で見るように継承でも起きます。継承で親の変数が増えて子の変数がずれる場合は、変数のまとまりごとに名前で決めた場所に置けば避けられます。ただし、まとまりの中の並びは、これまで通り宣言の順で決まります。
+1 つ目の衝突は、プロキシが使う値と実装の変数が離れていれば起きません。実装の変数は 0 の近くに並ぶので、プロキシの値は遠い slot に置けば避けられます。2 つ目の衝突は、継承でも起きます。継承で親の変数が増えて子の変数がずれる場合は、変数のまとまりごとに名前で決めた場所に置けば避けられます。ただし、まとまりの中の並びは、これまで通り宣言の順で決まります。
 
 Ethereum には、こうした置き場所を決めた規格があります。Ethereum の仕様の改善案は EIP（Ethereum Improvement Proposal）と呼ばれ、そのうちコントラクトどうしの約束事を決めるものを ERC（Ethereum Request for Comments）と呼びます（[EVM Opcode History の EIP と ERC](../evm-opcode-history/#eip-と-erc)）。
 
@@ -143,7 +143,7 @@ Keccak-256（Ethereum が使う[ハッシュ関数](../hash-function/)）の出�
 <details>
 <summary>ハッシュから 1 を引く理由</summary>
 
-Solidity は、mapping（キーと値の表）の値を `keccak256(キーと slot 番号)` の場所に置きます。ハッシュの値をそのまま slot にすると、ハッシュの入力（原像）が分かっているので、細工したキーを使った mapping の値と同じ場所になる余地が残ります。仕様は、1 を引いて原像の知られていない場所にすることで、この可能性を減らしたと説明しています。
+Solidity は、mapping（キーと値の表）の値を `keccak256(キーと slot 番号)` の場所に置きます。ハッシュの値をそのまま slot にすると、ハッシュの入力（原像）が分かっているので、細工したキーを使った mapping の値と同じ場所になる余地が残ります。仕様によると、1 を引いて原像の知られていない場所にすることで、この可能性を減らしています。
 
 </details>
 
@@ -157,9 +157,9 @@ Solidity は、mapping（キーと値の表）の値を `keccak256(キーと slo
 
 #### ERC-7201：実装の変数の置き場所
 
-2 つ目の衝突は、継承を使うとさらに起きやすくなります。親コントラクトの変数は子より前に並ぶので、ライブラリの親が新しい版で変数を 1 つ足すと、子の変数が全部ずれます。
+2 つ目の衝突は、継承を使うとさらに起きやすくなります。親コントラクトの変数は子より前に並ぶので、ライブラリの親が新しいバージョンで変数を 1 つ足すと、子の変数が全部ずれます。
 
-以前の [OpenZeppelin Contracts Upgradeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/tree/v4.9.6)（プロキシ向けの版）4.x は、親ごとに [`uint256[49] private __gap;`](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/v4.9.6/contracts/access/OwnableUpgradeable.sol) という未使用の配列を置いて、場所を予約していました。親に変数を 1 つ足す時は、配列を 49 個から 48 個に縮め、子の変数の位置を保ちます。この数合わせは人の手で行うので、間違えると子の変数がずれます。
+以前の [OpenZeppelin Contracts Upgradeable](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/tree/v4.9.6)（プロキシ向けのライブラリ）4.x は、親ごとに [`uint256[49] private __gap;`](https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable/blob/v4.9.6/contracts/access/OwnableUpgradeable.sol) という未使用の配列を置いて、場所を予約していました。親に変数を 1 つ足す時は、配列を 49 個から 48 個に縮め、子の変数の位置を保ちます。配列の長さは人が手で合わせるので、間違えると子の変数がずれます。
 
 [ERC-7201](https://eips.ethereum.org/EIPS/eip-7201) は、変数を構造体にまとめ、名前から計算した slot を起点に置く規格です。この名前ごとの置き場所を名前空間（namespace）と呼びます。構造体のメンバーは、起点から通常の変数と同じ規則（宣言の順に並べ、32 バイトに満たない型は詰める）で並びます。名前は、次のように構造体の注記で示します。
 
@@ -174,7 +174,7 @@ struct OwnableStorage {
 
 ただし、ERC-7201 が固定するのは構造体の起点だけです。構造体の中のメンバーは起点から宣言の順に並ぶので、メンバーの順序や型を変えたり、途中にメンバーを挟んだりすると、[更新で並びがずれる衝突](#更新で並びがずれる衝突)と同じことが名前空間の中で起きます。
 
-新しいメンバーは構造体の末尾に足します。前述の OpenZeppelin のガイドも、同社の更新用ツール（Upgrades Plugins）は名前空間の中の変更を、通常の変数と同じ規則で検査すると説明しています。
+新しいメンバーは構造体の末尾に足します。前に挙げた OpenZeppelin のガイドによると、同社の更新用ツール（Upgrades Plugins）も、名前空間の中の変更を通常の変数と同じ規則で検査します。
 
 <br>
 
@@ -221,7 +221,7 @@ OpenZeppelin Contracts 5.x の[文書](https://docs.openzeppelin.com/contracts/5
 
 上記の図の ③ のように、実装の初期化関数を第三者が直接呼ぶと、その人が実装の所有者になります。実装の storage は普段使われないので無害に見えます。しかし、所有者の権限で実装のコードを消せる場合、その実装を借りているすべてのプロキシが止まります。初期化を忘れるのではなく、更新の時の初期化で渡す値を誤った事故には、bridge の [Nomad](../bridge-incidents/#nomad) があります。
 
-以下の 2 件は、`SELFDESTRUCT`（コントラクトのコードを消す命令）がまだコードを消せた、2024 年 3 月より前の規則の下で起きた事故です。今の規則は事故の後で説明します。
+以下の 2 件は、`SELFDESTRUCT`（コントラクトのコードを消す命令）がまだコードを消せた、2024 年 3 月より前の規則の下で起きた事故です。現在の規則では、`SELFDESTRUCT` は作成と同じトランザクションの中でなければコードを消しません。
 
 <br>
 
@@ -297,7 +297,7 @@ contract NamespacedVault {
 }
 ```
 
-slot の計算は、Python の標準ライブラリだけで書いた [slots.py](lab/slots.py) が行います。
+slot の計算には、Python の標準ライブラリだけで書いた [slots.py](lab/slots.py) を使います。
 
 [run.py](lab/run.py) は、計算した slot を `cast storage`（指定した slot の値を読むコマンド）で読んだ値と照合します。以下は、run.py の検査の抜粋です。
 
@@ -637,7 +637,7 @@ BoxLocked.initialize by mallory: status=0 revert InvalidInitialization()
 
 テスト用アカウント 2（mallory）が実装の `initialize` を直接呼ぶと、図の ③ の通り実装の所有者になりました。一方で、実装を直接 `upgradeToAndCall` で呼ぶと `onlyProxy` の検査で拒否され、プロキシの所有者も alice のままでした。
 
-constructor で `_disableInitializers()` を呼んだ `BoxLocked` は `initialize` を拒否し、初期化の状態を表す slot には `uint64` の最大値が入っていました。`_disableInitializers()` は、初期化済みの版数を最大値にして、以後の `initialize` をすべて拒否させます。
+constructor で `_disableInitializers()` を呼んだ `BoxLocked` は `initialize` を拒否し、初期化の状態を表す slot には `uint64` の最大値が入っていました。`_disableInitializers()` は、初期化済みのバージョン番号を最大値にして、以後の `initialize` をすべて拒否させます。
 
 ---
 
