@@ -437,4 +437,4 @@ crash rate deliveries | over-reserved units | over-reserved units
 - 業務上、複数の Aggregate が必ず同時に成立しなければならない場合。Aggregate の境界をどう引くかから見直す
 - ハンドラが 1 つしかなく、今後も増える見込みが無い連携。関数を直接呼ぶ方が追いやすい
 
-遅れを許容できるかは、ドメインエキスパートに聞いて決めます。Vernon 氏の Effective Aggregate Design Part II も、ドメインエキスパートは開発者より遅延に寛容な場合が多く、数秒から数日の遅れを許すことがあると書いています。
+遅れを許容できるかは、ドメインエキスパートに聞いて決めます。Vernon 氏も Effective Aggregate Design Part II で、ドメインエキスパートは開発者より遅延に寛容な場合が多く、数秒から数日の遅れを許すことがあると書いています。
