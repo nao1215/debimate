@@ -35,9 +35,9 @@ jsonize の wc の定義にも、GNU coreutils 9.7 の `wc` の本物の出力�
 
 ### 正解を書けない処理
 
-テストは普通、入力と期待値の組を書きます。例えば、`add(1, 2)` が `3` を返すかを確認するテストです。出力が正しいかを判定する仕組みは、テストオラクル（test oracle）と呼ばれます。上記の例では、人が書いた `3` がオラクルです。
+テストは普通、入力と期待値をペアにして書きます。例えば、`add(1, 2)` が `3` を返すかを確認するテストです。出力が正しいかを判定する仕組みは、テストオラクル（test oracle）と呼ばれます。上記の例では、人が書いた `3` がオラクルです。
 
-しかし、期待値を人が書けない処理や、書いても正しいと言い切れない処理があります。検索の結果の並び、機械学習のモデルの出力、コンパイラの最適化、数値計算などです。Weyuker 氏は 1982 年の論文 [On Testing Non-Testable Programs](https://doi.org/10.1093/comjnl/25.4.465) で、オラクルを用意できないプログラムを「テストできないプログラム」と呼びました。オラクルを用意できないことは、テストオラクル問題（test oracle problem）と呼ばれます。
+しかし、期待値を人が書けない処理や、書いても正しいと言い切れない処理があります。検索結果の並び、機械学習モデルの出力、コンパイラの最適化、数値計算などです。Weyuker 氏は 1982 年の論文 [On Testing Non-Testable Programs](https://doi.org/10.1093/comjnl/25.4.465) で、オラクルを用意できないプログラムを「テストできないプログラム」と呼びました。オラクルを用意できないことは、テストオラクル問題（test oracle problem）と呼ばれます。
 
 <br>
 
@@ -267,7 +267,7 @@ jsonize では、同じ関係を Go のテストとして書き、全ての定�
 | 分割（実験 1） | ファイルを 1 つずつ渡す | つなぐと同じ |
 | トークン感度（実験 2） | トークンを 1 文字変える | 変わるか、エラーになる |
 
-連結の関係を初めて全 fixture で検証した時は、2 つ目の出力の見出し行をデータの行として読む定義が 20 個見つかりました。例えば、`docker network ls` の出力を 2 回つなぐと、2 つ目の見出し `NETWORK ID  NAME  DRIVER  SCOPE` が `{"network_id":"NETWORK","name":"ID",...}` という 1 件のネットワークとして JSON に入りました。
+連結の関係を初めて全 fixture で検証した時は、2 つ目の出力にある見出し行をデータの行として読む定義が 20 個見つかりました。例えば、`docker network ls` の出力を 2 回つなぐと、2 つ目の見出し `NETWORK ID  NAME  DRIVER  SCOPE` が `{"network_id":"NETWORK","name":"ID",...}` という 1 件のネットワークとして JSON に入りました。
 
 <br>
 
@@ -279,7 +279,7 @@ jz では利用者も自分の定義を足せて、`jz test` でテストでき�
 
 ### 実験 3: 関係の方が間違っている時
 
-関係は期待値を必要としないので、乱数で作った入力や、[Fuzzing](/notes/software-testing/fuzzing/) が作った入力とも組み合わせられます。Go の標準ライブラリには [testing/quick](https://pkg.go.dev/testing/quick) があり、関数の引数の型に合わせて乱数の入力を作り、渡した関数が false を返す入力を探します。この入力を反例と呼びます。
+関係は期待値を必要としないので、乱数で作った入力や、[Fuzzing](/notes/software-testing/fuzzing/) が作った入力とも組み合わせられます。Go の標準ライブラリには [testing/quick](https://pkg.go.dev/testing/quick) があり、関数が受け取る引数の型に合わせて乱数の入力を作り、渡した関数が false を返す入力を探します。この入力を反例と呼びます。
 
 この節では、テストが失敗した原因が関係にあった例を説明します。以下は、語の数を数える関数 `Words` で、「つないだ文字列の語数は、それぞれの語数の和になる」という関係を testing/quick で検証した実験です。実験 1 の分割と同じ形の関係です。
 
@@ -336,7 +336,7 @@ Words(a+" "+b) == Words(a)+Words(b): holds for 1000 inputs
 shrunk by hand: Words("xy")=1, Words("x")+Words("y")=2
 ```
 
-上記の反例の文字列は途中を略しています。全文は [exp3_quick.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/lab/output/exp3_quick.txt) にあります。1 つ目の関係は最初の入力で失敗し、testing/quick が報告した反例は 31 文字と 37 文字の乱数の文字列でした。testing/quick は Unicode 全体から文字を選ぶので、空白をほとんど含まず、a と b はそれぞれ 1 語になります。
+上記の反例の文字列は途中を略しています。全文は [exp3_quick.txt](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/metamorphic-testing/lab/output/exp3_quick.txt) にあります。1 つ目の関係は最初の入力で失敗し、testing/quick が報告した反例は 乱数で作った 31 文字と 37 文字の文字列でした。testing/quick は Unicode 全体から文字を選ぶので、空白をほとんど含まず、a と b はそれぞれ 1 語になります。
 
 {{< figure src="images/quick_shrink.webp" alt="上に testing/quick が見つけた反例として、a と b に \U000ea123 のような 31 文字と 37 文字の文字列が並ぶ。下に手で最小化した反例として a = x、b = y があり、Words(xy) = 1、Words(x) + Words(y) = 2、つなぐと 2 語が 1 語になる、と書かれている" caption="最小化していない反例からは原因が読めず、手で最小化すると 2 語がつながることが分かる" align="center" >}}
 
@@ -352,7 +352,7 @@ jsonize でも同じことが起きています。2026-09-12 に関係のテス�
 
 ### 反例の最小化
 
-testing/quick は新しい機能を追加しない方針（frozen）で、反例を最小化する機能もありません。実験 3 で手で行った最小化を自動で行う機能は収縮（shrinking）と呼ばれ、[Property-Based Testing](/notes/software-testing/property-based-testing/) のライブラリの多くが持っています。
+testing/quick は新しい機能を追加しない方針（frozen）で、反例を最小化する機能もありません。実験 3 で手作業だった最小化を自動にする機能は収縮（shrinking）と呼ばれ、[Property-Based Testing](/notes/software-testing/property-based-testing/) のライブラリの多くが持っています。
 
 著者は、Erlang の VM と JavaScript で動く関数型言語の [Gleam](https://gleam.run/) で、Property-Based Testing と Metamorphic Testing を同じ形で書けるライブラリ [metamon](https://github.com/nao1215/metamon) を作っています。以下は README にある例で、`string.trim` を 2 回実行しても 1 回と同じ、という冪等の関係を書いています。
 
@@ -390,7 +390,7 @@ pub fn trim_idempotent_test() {
 
 <br>
 
-同じものを計算する別の実装があるなら、関係より強い比較相手になります。例えば、`lsblk` は表の形の出力とは別に、`lsblk -J` で自分の JSON を出せます。jsonize が表の出力から作った JSON と `lsblk -J` を突き合わせると、関係では「どちらかがおかしい」までしか言えない所で、どの値が違うかまで分かります。これが [Differential Testing](/notes/software-testing/differential-testing/) です。
+同じものを計算する別の実装があるなら、関係より強い比較相手になります。例えば、`lsblk` は表の形をした出力とは別に、`lsblk -J` で自分の JSON を出せます。jsonize が表の出力から作った JSON と `lsblk -J` を突き合わせると、関係では「どちらかがおかしい」までしか言えない所で、どの値が違うかまで分かります。これが [Differential Testing](/notes/software-testing/differential-testing/) です。
 
 正解を書けない処理を持っているなら、まず「変えても結果が変わらないはずのもの」を 1 つ挙げて、手元の入力で試すのが始めやすいです。テストが失敗した時に、関係・実装・仕様のどれが原因かを決めること自体が、仕様を詰める作業になります。
 
