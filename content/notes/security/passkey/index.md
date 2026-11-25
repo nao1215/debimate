@@ -23,7 +23,7 @@ Passkey（パスキー）は、パスワードの代わりに、利用者の端�
 
 {{< figure src="images/passkey_verify_grid.webp" alt="7 通りの応答と 2 つのサーバーの判定の表。どちらのサーバーも UV を必須にした設定。全部チェックするサーバーは正規の応答だけを通し、他の 6 通りを origin、challenge、rpIdHash、UV フラグ、署名のチェックで止める。origin をチェックしないサーバーは、サブドメインのページで作った応答も通す（赤いマス）。残りの 5 通りは両方とも止める" caption="1 か所だけ変えた応答と、サーバーの判定（lab/verify.py の実測）" align="center" >}}
 
-origin は、応答を作ったページの URL から取ったスキーム・ホスト・ポートの組です。rpId は、どのサービス向けの鍵かを表す名前です。どちらも次の節で詳しく見ます。
+origin は、応答を作ったページの URL から取ったスキーム・ホスト・ポートの組み合わせです。rpId は、どのサービス向けの鍵かを表す名前です。どちらも次の節で詳しく見ます。
 
 サブドメインのページで作った応答は、署名も rpId も正規の応答と同じく正しい値でした。違うのは応答の中に記録された origin だけで、それをチェックしないサーバーは正規の応答と同じく通しました。
 
@@ -43,7 +43,7 @@ origin は、応答を作ったページの URL から取ったスキーム・�
 
 登場するのは 3 者です。ログインを受け付けるサービスは RP（Relying Party）です。鍵を作って署名する部分は認証器（authenticator）と呼び、利用者が開いているブラウザが両者の間を仲介します。
 
-認証器には、スマートフォンや PC の OS に組み込まれたものと、USB や NFC でつなぐセキュリティキーがあります。ブラウザがセキュリティキーと話す手順は CTAP（Client to Authenticator Protocol）で、WebAuthn と CTAP を合わせて [FIDO2](https://fidoalliance.org/fido2/) と呼びます。
+認証器には、スマートフォンや PC の OS に組み込まれたものと、USB や NFC でつなぐセキュリティキーがあります。ブラウザがセキュリティキーと通信する手順は CTAP（Client to Authenticator Protocol）で、WebAuthn と CTAP を合わせて [FIDO2](https://fidoalliance.org/fido2/) と呼びます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -75,7 +75,7 @@ sequenceDiagram
 
 ログインの時は、サーバーが毎回新しい乱数を challenge として渡します。この値を[推測できないようにする理由](../random-number/)は、乱数のノートで扱っています。ブラウザは challenge と、今開いているページの origin を JSON にまとめます。
 
-認証器は、どのサービス向けの鍵かを表す rpId の[ハッシュ値](/notes/blockchain-systems/hash-function/)などを並べた authenticatorData を作り、両方に秘密鍵で署名します。この署名と付随するデータの組を assertion と呼び、以降は応答と書きます。
+認証器は、どのサービス向けの鍵かを表す rpId の[ハッシュ値](/notes/blockchain-systems/hash-function/)などを並べた authenticatorData を作り、両方に秘密鍵で署名します。この署名と、付随するデータをまとめたものを assertion と呼び、以降は応答と書きます。
 
 {{< figure src="images/passkey_signed_bytes.webp" alt="署名の対象となる 69 byte の並び。左から authenticatorData の rpIdHash 32 byte、flags 1 byte、signCount 4 byte、続いてブラウザが作る clientDataJSON の SHA-256 32 byte。clientDataJSON には type、challenge、origin が入る" caption="ログインの署名が覆う 69 byte" align="center" >}}
 
@@ -95,7 +95,7 @@ UV を求めるかは、RP がログインを求める時に渡す [userVerifica
 
 サーバーは、登録時に受け取った公開鍵でこの署名を検証します。解説では「サーバーが署名を公開鍵で復号し、challenge と比べる」と書かれることがあります。この説明と教科書の公開鍵暗号が合わないという[質問](https://mond.how/ja/topics/8t9i33a9lt6rh87/t9tua01k8j5m39h)は、2025 年 9 月にはてなブックマークで 1,083 users を集めました。
 
-Passkey でよく使われる ECDSA（P-256）の署名は、暗号化ではありません。公開鍵で分かるのは、署名がこの 69 byte とこの鍵の組で作られたかどうかだけです。署名と暗号化の違いは[デジタル署名](/notes/blockchain-systems/digital-signature/)のノートで扱っています。
+Passkey でよく使われる ECDSA（P-256）の署名は、暗号化ではありません。公開鍵で分かるのは、署名がこの 69 byte に対してこの鍵で作られたかどうかだけです。署名と暗号化の違いは[デジタル署名](/notes/blockchain-systems/digital-signature/)のノートで扱っています。
 
 冒頭の図で一番下の行は、登録していない鍵で署名した応答です。サーバーの DB（データベース）から公開鍵が漏れても、秘密鍵が無ければ、この行と同じく署名のチェックで止まります。つまり、2 つ目の前提にあった「サーバーが預かる秘密」は、Passkey では存在しないのです。
 
@@ -193,7 +193,7 @@ for (const [host, rpId] of cases) {
 
 2 段目はサーバーです。上の `uploads` のように、同じ rpId の下で利用者が作ったページを配るサービスを考えます。攻撃者は、本物のサーバーから受け取った challenge を自分が作ったページのスクリプトに渡しておきます。別の利用者がそのページを訪れて確認の操作をすると、スクリプトはその利用者の鍵で正しい署名を得られます。攻撃者はその応答を本物のサーバーに送れば、訪れた利用者としてログインできます。
 
-WebAuthn の仕様は、[コードの注入](https://www.w3.org/TR/webauthn-3/#sctn-code-injection)を扱う節で `usercontent.example.org` と `example.org` の組をこの例として挙げ、[origin のチェック](https://www.w3.org/TR/webauthn-3/#sctn-validating-origin)を MUST としています。
+WebAuthn の仕様は、[コードの注入](https://www.w3.org/TR/webauthn-3/#sctn-code-injection)を扱う節で `usercontent.example.org` と `example.org` をこの例として挙げ、[origin のチェック](https://www.w3.org/TR/webauthn-3/#sctn-validating-origin)を MUST としています。
 
 冒頭の図は、このチェックを Python で書いて試した結果です。ブラウザと認証器の役も Python で書き、正規の応答から 1 か所だけ変えた応答を作りました。チェックの順は仕様の [7.2 節](https://www.w3.org/TR/webauthn-3/#sctn-verifying-assertion)の主な手順に合わせました。サーバーは UV を `required` にした設定で、署名は [cryptography](https://cryptography.io/) の ECDSA（P-256）で作っています。
 
@@ -286,7 +286,7 @@ BE は鍵を作った時に決まり、後から変わりません。仕様は B
 | 1 | 0 | 同期できるが、まだバックアップされていない | 状態は後で変わるので、ログインのたびに保存し直す |
 | 1 | 1 | 同期できて、バックアップ済み | 端末の紛失だけでは使えなくならない |
 
-BE が 0 で BS が 1 の組は、[仕様](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)で認められていません。仕様は BE が 0 の鍵を断る使い方は挙げず、別の鍵を登録させるか、復旧の手順を用意するよう勧めています。
+BE が 0 で BS が 1 の組み合わせは、[仕様](https://www.w3.org/TR/webauthn-3/#sctn-credential-backup)で認められていません。仕様は BE が 0 の鍵を断る使い方は挙げず、別の鍵を登録させるか、復旧の手順を用意するよう勧めています。
 
 BE と BS が表すのは、Passkey Provider が管理するバックアップだけです。攻撃や不具合で秘密鍵が管理の外に写った複製は、この 2 bit に現れません。flags は署名の対象ですが、値を出した認証器をどこまで信頼するかは、認証器の製造元を示す証明である attestation のような別の根拠が必要です。
 
