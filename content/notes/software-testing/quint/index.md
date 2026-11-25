@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Formal Specification"]
 ---
 
-[Quint](https://quint.sh/) は、システムが持つ状態と、状態を変える操作を書き、操作をどの順番で行っても守られるべき条件に違反しないかを機械に調べさせる仕様記述言語です。[TLA+](https://lamport.azurewebsites.net/tla/tla.html) と同じ Temporal Logic of Actions という論理の上に、プログラマーが読み書きしやすい型付きの文法と、仕様を実行して調べる CLI を載せています。
+[Quint](https://quint.sh/) は、システムが持つ状態と、状態を変える操作を書き、操作をどの順番で実行しても守られるべき条件に違反しないかを機械に調べさせる仕様記述言語です。[TLA+](https://lamport.azurewebsites.net/tla/tla.html) と同じ Temporal Logic of Actions という論理の上に、プログラマーが読み書きしやすい型付きの文法と、仕様を実行して調べる CLI を載せています。
 
 著者の [sqly](https://github.com/nao1215/sqly) は、CSV などのファイルを取り込み、対話シェルで SQL を実行する CLI です。シェルには、編集した表を元のファイルへ書き戻す `.save` があります。複数のファイルを 1 回で書き戻す時は、途中で失敗したら全てのファイルを元のままにする保証です。この保証を守る実装は、2026 年 7 月 29 日から 8 月 4 日までに 7 本の commit で直されました。どの修正も、前の設計が考えていなかった失敗の順番を塞いだものです。ところが途中の 1 本は、前の修正が塞いだ穴を開け直していました。
 
@@ -195,7 +195,7 @@ Quint で書くのは、システムの振る舞いを抜き出した抽象で�
 
 1742eca で足した [partialwrite_test.go の注釈](https://github.com/nao1215/sqly/blob/4f67868/shell/partialwrite_test.go#L29-L31)も、同じことを書いています。宛先を壊さずにエラーを返すだけのスタブでは、バックアップを持たない実装でもテストが通ってしまい、それがこのコードにあったバグだという注釈です。1742eca のテストは、宛先を切り詰めてから失敗するスタブに変わりました。
 
-失敗の種類を思い付くのは、Quint でもテストでも人です。想定していなかった失敗が後から見つかる例は他にもあり、PostgreSQL が fsync で失敗した時の扱いを見直した件は [WAL のノート](/notes/distributed-systems/write-ahead-log/)で扱いました。Quint が引き受けるのは、思い付いた失敗を全ての順番で組み合わせる所です。
+失敗の種類を思い付くのは、Quint でもテストでも人です。想定していなかった失敗が後から見つかる例は他にもあり、PostgreSQL が fsync で失敗した時の扱いを見直した件は [WAL のノート](/notes/distributed-systems/write-ahead-log/)で扱いました。Quint に任せられるのは、思い付いた失敗を全ての順番で組み合わせる所です。
 
 ---
 
@@ -203,7 +203,7 @@ Quint で書くのは、システムの振る舞いを抜き出した抽象で�
 
 実験 1 で調べたのは仕様で、sqly のコードではありません。仕様とコードをつなぐ方法の 1 つに、モデルベースドテスト（model-based testing）があります。訳語は [JSTQB のシラバス](https://www.jstqb.jp/dl/JSTQB-Syllabus.Advanced_MBT_Version1.1.J01.pdf)に合わせました。Quint では、`quint run --out-itf` がトレースを ITF（[Informal Trace Format](https://apalache-mc.org/docs/adr/015adr-trace.html)）という JSON の形式でファイルに書き出します。`--mbt` を足すと、各ステップで選んだ操作と `nondet` の値もトレースに入ります。文書では、`--mbt` は試験的な機能とされています。
 
-テストはそれを読み、本物のコードに同じ操作を流して、各状態が仕様と一致するかを確認します。
+テストはそのファイルを読み込み、本物のコードに同じ操作を流して、各状態が仕様と一致するかを確認します。
 
 ```console
 $ quint run save.qnt --main=touched --mbt --max-steps=6 --max-samples=500 \
@@ -222,7 +222,7 @@ Rust には公式の [Quint Connect](https://github.com/quint-co/quint-connect) 
 
 再生には、sqly の [fileOps](https://github.com/nao1215/sqly/blob/4f67868/shell/fileops.go#L9-L23) を使いました。書き戻しの経路が使うファイル操作をまとめた構造体で、テストから 1 つの操作だけを失敗させられます。下のコードで、`plan` はトレースから作ったファイルごとの失敗の指定、`byPath` はファイルのパスから a・b を引く表です。
 
-トレースが「a は上書きの途中で失敗」と言えば、a への rename を断り、続くコピーによる上書きで a を切り詰めてから失敗させます。コードの `.sqly-save-` は一時ファイル、`.sqly-bak` はバックアップの名前に入る文字列です。以下はその抜粋で、全体は [savemodel_test.go](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/quint/lab/savemodel_test.go) にあります。
+トレースに「a は上書きの途中で失敗」とあれば、a への rename を断り、続くコピーによる上書きで a を切り詰めてから失敗させます。コードの `.sqly-save-` は一時ファイル、`.sqly-bak` はバックアップの名前に入る文字列です。以下はその抜粋で、全体は [savemodel_test.go](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/quint/lab/savemodel_test.go) にあります。
 
 ```go
 	s.files.Rename = func(oldpath, newpath string) error {
@@ -245,7 +245,7 @@ Rust には公式の [Quint Connect](https://github.com/quint-co/quint-connect) 
 	}
 ```
 
-保存の後に 2 つのファイルを読み、元の中身・新しい中身・書き込み途中のどれかに分けて、トレースが最後に示す状態と比べます。
+保存の後に 2 つのファイルの中身を読み出し、元の中身・新しい中身・書き込み途中のどれかに分けて、トレースが最後に示す状態と比べます。
 
 <br>
 
@@ -274,7 +274,7 @@ Quint のトレースは、各ファイルが最後にどの中身であるべ�
 
 #### 一致しない原因はコードとは限らない
 
-再生のテストを最初に書いた時は、今の sqly でも 500 本中 8 本が仕様と一致しませんでした。a も b も戻せない順序で、sqly は 2 つの報告を返していたのに、著者が Go で書いたテストオラクルが 2 つ目を拾えていませんでした。`executeWriteBack` を呼ぶ `writeBack` は、結合したエラーを 1 段包んで返すので、`Unwrap() []error` だけを辿る書き方では、中の報告に届かなかったわけです。
+再生のテストを最初に書いた時は、今の sqly でも 500 本中 8 本が仕様と一致しませんでした。a も b も戻せない順序で、sqly は 2 つの報告を返していたのに、著者が Go で書いたテストオラクルが 2 つ目を取り出せていませんでした。`executeWriteBack` を呼ぶ `writeBack` は、結合したエラーを 1 段包んで返すので、`Unwrap() []error` だけを辿る書き方では、中の報告に届かなかったわけです。
 
 仕様と一致しない時は、コード・仕様・グルーコードの 3 つを疑う必要があります。
 
@@ -300,7 +300,7 @@ sqly で最近見つかったバグは、Quint ではなく rapid が見つけ�
 
 testing/quick と rapid の違いは、[Property-Based Testing のノート](/notes/software-testing/property-based-testing/)で扱いました。Go の道具は、どれも本物のコードを動かします。Quint は仕様を動かすので、コードがまだ無い段階で設計を調べられ、ステップ数の中では全ての実行を調べたと言えます。
 
-しかし、今回の `.save` は失敗の順序が 12 通りしかなく、rapid でも数回で見つかりました。Quint の「全部を調べた」が効くのは、順序の数が乱数では回り切れない時です。例えば、複数のプロセスが同じファイルを書き合う手順や、メッセージが遅れて届く分散システムのプロトコルです。
+しかし、今回の `.save` は失敗の順序が 12 通りしかなく、rapid でも数回で見つかりました。Quint の「全部を調べた」が意味を持つのは、順序の数が乱数では回り切れない時です。例えば、複数のプロセスが同じファイルを書き合う手順や、メッセージが遅れて届く分散システムのプロトコルです。
 
 ---
 
@@ -319,7 +319,7 @@ Error: LinkageError occurred while loading main class at.forsyte.apalache.tla.To
 	java.lang.UnsupportedClassVersionError: at/forsyte/apalache/tla/Tool has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 61.0
 ```
 
-CI では、ジョブごとに評価器と Apalache をダウンロードするか、`~/.quint` をキャッシュすることになります。Go のテストからトレースを使うなら、グルーコードも自分で持ちます。
+CI では、ジョブごとに評価器と Apalache をダウンロードするか、`~/.quint` をキャッシュすることになります。Go のテストからトレースを使うなら、グルーコードも自分で用意します。
 
 Go のプロジェクトで形式仕様を持つ例に、[etcd-io/raft の tla ディレクトリ](https://github.com/etcd-io/raft/tree/main/tla)があります。Quint ではなく TLA+ の仕様で、Go の実装に `with_tla` のビルドタグでトレースを書かせ、仕様と照らす手順が README にあります。
 
