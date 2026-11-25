@@ -85,7 +85,7 @@ backend redis_master
 
 ambassador は大使の意味で、外との交渉をアプリの代わりに引き受ける役を指しています。上のブログを書いた Brendan Burns 氏らは、翌年の論文「Design Patterns for Container-based Distributed Systems」でも、同じ Pod に置く補助コンテナを [Sidecar](../sidecar/)・Ambassador・[Adapter](../adapter/) の 3 つに分けています。
 
-論文は 4.2 節で、メインのコンテナに向かう通信とそこから出る通信を仲介するコンテナを Ambassador と定義しています。4.3 節の Adapter との対比では、Ambassador はアプリに外の世界を単純化して見せ、Adapter は外の世界にアプリを揃えて見せます。
+Ambassador は、論文の 4.2 節で、メインのコンテナに向かう通信とそこから出る通信を仲介するコンテナとして定義されています。4.3 節の Adapter との対比では、Ambassador はアプリに外の世界を単純化して見せ、Adapter は外の世界にアプリを揃えて見せます。
 
 Microsoft の設計パターン集にも [Ambassador パターン](https://learn.microsoft.com/ja-jp/azure/architecture/patterns/ambassador)として載っています。似た名前の Ambassador Labs の API ゲートウェイ（今の Emissary-ingress）は製品の名前で、本記事のパターンとは別物です。
 
