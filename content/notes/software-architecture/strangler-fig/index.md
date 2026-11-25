@@ -45,7 +45,7 @@ Strangler Fig は、古いシステムの外側に新しいシステムを作り
 | レガシーシステム | 置き換えて、最終的に止めたい既存のシステム | 注文管理のモノリス |
 | 新システム | レガシーシステムの機能を引き継ぐ新しいシステム | 請求サービス |
 | 業務の機能 | 請求・配送・在庫のように、業務として提供している機能のまとまり。Strangler Fig で移す基本の単位 | 請求 |
-| 経路 | URL のパスと HTTP メソッドの組。ファサードが要求を振り分ける単位 | `GET /orders/{id}/invoice` |
+| 経路 | URL のパスと HTTP メソッドの組み合わせ。ファサードが要求を振り分ける単位 | `GET /orders/{id}/invoice` |
 | 振り分けの規則 | どの経路やテナントの要求をどちらのシステムに送るかを決めた、ファサードの設定。変えれば次の要求から送り先が変わる | 請求書の照会は請求サービスへ |
 | Transitional Architecture | 移行の間だけ置き、移行が終われば取り除く部品（[Transitional Architecture](https://martinfowler.com/articles/patterns-legacy-displacement/transitional-architecture.html)） | ファサード、新旧の DB の間で値を揃える同期 |
 
