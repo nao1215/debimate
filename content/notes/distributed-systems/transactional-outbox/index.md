@@ -284,7 +284,7 @@ SELECT だけのトランザクションが開いている間にコミットし�
 
 この方式を製品にしたものに、[Debezium](https://debezium.io/) があります。WAL から拾った outbox の行は、[Outbox Event Router](https://debezium.io/documentation/reference/stable/transformations/outbox-event-router.html) が Kafka のメッセージに組み直します。既定では `aggregateid` の列を Kafka のキーに使います。outbox の表の `order_id` をこの列に入れれば、前の節の注文ごとの順番も保たれます。このように DB の変更の記録を外へ流す仕組みは、CDC（Change Data Capture）と呼ばれます。MySQL では変更の記録である[バイナリログ](https://dev.mysql.com/doc/refman/8.4/en/binary-log.html)を読む形になり、Debezium にも [MySQL 用のコネクタ](https://debezium.io/documentation/reference/stable/connectors/mysql.html)があります。
 
-[event-driven.io のブログ](https://event-driven.io/en/push_based_outbox_pattern_with_postgres_logical_replication/)も、表を定期的に読む代わりに、PostgreSQL の論理レプリケーションで変更を DB 側から送る方式として紹介しています。論理レプリケーションは、論理デコーディングで読み出した変更を購読する側へ流す PostgreSQL の機能です。
+[event-driven.io のブログ](https://event-driven.io/en/push_based_outbox_pattern_with_postgres_logical_replication/)でも、表を定期的に読む代わりに、PostgreSQL の論理レプリケーションで変更を DB 側から送る方式として紹介されています。論理レプリケーションは、論理デコーディングで読み出した変更を購読する側へ流す PostgreSQL の機能です。
 
 <br>
 
