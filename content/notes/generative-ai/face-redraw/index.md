@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Image Generation"]
 ---
 
-人物の全身を 1 枚の絵（立ち絵）として描くと、顔は画面の小さな一部になります。画像生成の分野では、顔だけを切り抜いて拡大し、描き直してから元の絵へ貼り戻す仕上げがよく使われます。[Stable Diffusion web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) に足す拡張の [ADetailer](https://github.com/Bing-su/adetailer) は、この手順を自動で行う道具です。ノードと呼ぶ処理の箱をつないで画像生成の手順を組むツール [ComfyUI](https://github.com/comfyanonymous/ComfyUI) にも、同じ働きの拡張があります。以下は、832 x 1216 画素で描いた全身の立ち絵と、その顔だけを描き直した結果です。
+人物の全身を 1 枚の絵（立ち絵）として描くと、顔は画面の小さな一部になります。画像生成の分野では、顔だけを切り抜いて拡大し、描き直してから元の絵へ貼り戻す仕上げがよく使われます。[Stable Diffusion web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) に足す拡張の [ADetailer](https://github.com/Bing-su/adetailer) は、この手順を自動で実行する道具です。ノードと呼ぶ処理の箱をつないで画像生成の手順を組むツール [ComfyUI](https://github.com/comfyanonymous/ComfyUI) にも、同じ働きの拡張があります。以下は、832 x 1216 画素で描いた全身の立ち絵と、その顔だけを描き直した結果です。
 
 {{< figure src="images/fr_cover.webp" alt="左は紺の上着と黒いズボンの成人の女性の全身。中央はその顔の拡大で、見る側から左の目は橙、右の目は灰緑と、左右で目の色が違い、目元の線が粗い。右は顔だけを描き直した後の拡大で、両目とも茶色になり、まつ毛が描き込まれ、口の形と頬の塗りも変わっている" caption="全身の立ち絵（左）と、顔の拡大。描いたまま（中央）と、顔だけ描き直した後（右）。seed 20261120" align="center" >}}
 
@@ -49,7 +49,7 @@ SDXL を元にした [WAI-illustrious-SDXL](https://civitai.com/models/827184?mo
 
 5 枚の立ち姿は、同じ形に揃えました。[Depth Body Shape のノート](../depth-body-shape/)で作った人体の 3D モデルから奥行きの画像（深度マップ）を書き出し、これを [ControlNet](../controlnet/) という仕組みで、形の条件として渡しています。
 
-この 5 枚に、次の 4 つの方法を当てて比べました。
+この 5 枚に、次の 4 つの方法を試して比べました。
 
 | 方法 | 内容 |
 |---|---|
@@ -134,7 +134,7 @@ wf.update({
 
 検出器は顔らしさの確信度も返し、しきい値より低い候補は捨てます。
 
-MediaPipe は実写の顔で使われてきたモデルなので、アニメ調の顔を拾えるかが気になります。そこで、全身の立ち絵 23 枚で、顔のバウンディングボックスを返した枚数を数えました。face_yolov8n の枠と半分近く以上重なる（IoU 0.3 以上）ものを「顔に当たった」と数えています。23 枚は、本記事の 5 枚と、[Background Removal のノート](../background-removal/)で描いた 18 枚です。比べに、ADetailer が既定で使う、アニメ調の顔も学習した [face_yolov8n](https://huggingface.co/Bingsu/adetailer) も通しています。
+MediaPipe は実写の顔で使われてきたモデルなので、アニメ調の顔を検出できるかが気になります。そこで、全身の立ち絵 23 枚で、顔のバウンディングボックスを返した枚数を数えました。face_yolov8n の枠と半分近く以上重なる（IoU 0.3 以上）ものを「顔に当たった」と数えています。23 枚は、本記事の 5 枚と、[Background Removal のノート](../background-removal/)で描いた 18 枚です。比べるために、ADetailer が既定で使う、アニメ調の顔も学習した [face_yolov8n](https://huggingface.co/Bingsu/adetailer) も通しています。
 
 | 検出器（しきい値） | 枠を返した | そのうち顔に当たった |
 |---|---|---|
@@ -143,11 +143,11 @@ MediaPipe は実写の顔で使われてきたモデルなので、アニメ調�
 | MediaPipe の full（0.1） | 23 枚 | 22 枚 |
 | face_yolov8n（0.3、ADetailer の既定） | 23 枚 | 23 枚 |
 
-既定の short は、23 枚の顔を 1 枚も拾えず、6 枚では腰のあたりを顔として返しました。
+既定の short は、23 枚の顔を 1 枚も検出できず、6 枚では腰のあたりを顔として返しました。
 
 {{< figure src="images/fr_detect.webp" alt="全身の立ち絵に 3 つの枠を重ねた図。緑の face_yolov8n と青の MediaPipe の full は顔を囲み、赤の MediaPipe の short は腰とベルトの下の手のあたりを囲んでいる" caption="同じ絵（seed 20261118）で 3 つの検出器が返した枠" align="center" >}}
 
-しかし、アニメ調の画風が原因ではありませんでした。同じ 23 枚を顔の周りで切り抜き、顔の幅が、切り抜いた絵の幅に対して 2〜5 割になるようにすると、short でも 23 枚とも顔を拾いました（[lab/detect_crop.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/face-redraw/lab/detect_crop.py)）。つまり、全身の絵では顔が小さすぎるわけです。
+しかし、アニメ調の画風が原因ではありませんでした。同じ 23 枚を顔の周りで切り抜き、顔の幅が、切り抜いた絵の幅に対して 2〜5 割になるようにすると、short でも 23 枚とも顔を検出しました（[lab/detect_crop.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/face-redraw/lab/detect_crop.py)）。つまり、全身の絵では顔が小さすぎるわけです。
 
 そのため、全身の絵には full を使うか、アニメ調の顔も学習した検出器を使います。本記事の実験では、MediaPipe の full（0.5）でバウンディングボックスを決めました。本記事の 5 枚は、5 枚とも full（0.5）で顔に当たる枠が返りました。
 
@@ -185,7 +185,7 @@ denoise 0.3 でも、開いていた口が閉じ気味になりました。前�
 
 #### 顔用のプロンプト
 
-ADetailer は、顔用のプロンプトを空にすると、全身を描いた時のプロンプトを使います（[README](https://github.com/Bing-su/adetailer/blob/3a599f5d4607d8f9d8b9fc5a15526197418dae1a/README.md)）。全身と同じプロンプトには full body（全身）が入っているので、切り抜いた顔の中に体を描こうとするかもしれません。そこで、構図の語と、下半身に着る服の語を外して portrait, close-up, face を足した顔用のプロンプトとも比べました。
+ADetailer は、顔用のプロンプトを空にすると、全身を描いた時のプロンプトを使います（[README](https://github.com/Bing-su/adetailer/blob/3a599f5d4607d8f9d8b9fc5a15526197418dae1a/README.md)）。全身と同じプロンプトには full body（全身）が入っているので、切り抜いた顔の中に体が描かれるかもしれません。そこで、構図の語と、下半身に着る服の語を外して portrait, close-up, face を足した顔用のプロンプトとも比べました。
 
 結果は、前の図で上下の行が示すように、ほとんど同じ顔でした。バウンディングボックスの中で比べた差も、denoise 0.45 で 14.9〜15.9 と、全身と同じプロンプトの 14.5〜16.1 と重なっています。今回は、切り抜く正方形に肩まで写っていたので、顔の中に体が出ることはありませんでした。
 
@@ -238,7 +238,7 @@ ADetailer は、顔用のプロンプトを空にすると、全身を描いた�
 
 {{< figure src="images/fr_big.webp" alt="1664 x 2432 で最初から描いた 5 枚。どれも紺の上着の女性が 2 人以上いて、深度マップの立ち姿の人物の後ろに、背の高いもう 1 人がいる。20261120 では後ろの 1 人が上半身だけ浮いた形で、右端の 20261122 は頭が 3 つある" caption="最初から 2 倍の大きさで描いた 5 枚" align="center" >}}
 
-SDXL は、学習を締めくくる段で、画素数が 1024 x 1024 前後の画像を使っています（[SDXL の論文](https://arxiv.org/abs/2307.01952)、2.3 節・2.5 節）。今回の 5 枚では、それより大きく描くと、空いた所に人物をもう 1 人描きました。Stable Diffusion web UI の説明でも、高い解像度では絵が崩れるので、小さく描いた絵の構図を使うのが hires fix だとしています。
+SDXL は、最後に学習する段階で、画素数が 1024 x 1024 前後の画像を使っています（[SDXL の論文](https://arxiv.org/abs/2307.01952)、2.3 節・2.5 節）。今回の 5 枚では、それより大きく描くと、空いた所に人物をもう 1 人描きました。Stable Diffusion web UI の説明でも、高い解像度では絵が崩れるので、小さく描いた絵の構図を使うのが hires fix だとしています。
 
 ---
 
@@ -250,7 +250,7 @@ SDXL は、学習を締めくくる段で、画素数が 1024 x 1024 前後の�
 
 #### 検出器の設定
 
-ComfyUI が持つ MediaPipe のノードは、既定の short のままでは全身の絵から顔を拾えません。full に切り替えるか、アニメ調の顔も学習した検出器を使います。検出の後は、枠が顔に当たっているかを絵に重ねて確認します。
+ComfyUI が持つ MediaPipe のノードは、既定の short のままでは全身の絵から顔を検出できません。full に切り替えるか、アニメ調の顔も学習した検出器を使います。検出の後は、枠が顔に当たっているかを絵に重ねて確認します。
 
 <br>
 
