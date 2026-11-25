@@ -10,7 +10,7 @@ topics: ["Storage Engine"]
 cardImage: "images/lsm-tree_space_timeline.svg"
 ---
 
-LSM-Tree（Log-Structured Merge-Tree）は、更新をメモリに貯めてから、キーの順に並べたファイルとしてディスクにまとめて書く索引です。同じキーを更新すると新しいバージョンを別のファイルに足し、古いバージョンは後から行うコンパクション（compaction）で捨てます。
+LSM-Tree（Log-Structured Merge-Tree）は、更新をメモリに貯めてから、キーの順に並べたファイルとしてディスクにまとめて書く索引です。同じキーを更新すると新しいバージョンを別のファイルに足し、古いバージョンは後から実行するコンパクション（compaction）で捨てます。
 
 キーと値を保存する組み込みの KVS（Key-Value Store）である [RocksDB](https://rocksdb.org/) や [LevelDB](https://github.com/google/leveldb)、分散 DB（データベース）の [Apache Cassandra](https://cassandra.apache.org/) が、この考え方でデータを保存しています。
 
@@ -79,7 +79,7 @@ LSM-Tree の書き込みは、ログへの追記とメモリ上の表への挿�
   body: immutable Memtable をキーの順に書き出し、最上段のレベル（L0）に置きます。flush が済んだ分の WAL は不要になります。
 {{< /note-steps >}}
 
-満杯の目安は、LevelDB では[ログが約 4MB に達した時](https://github.com/google/leveldb/blob/main/doc/impl.md)、RocksDB では `write_buffer_size`（[options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/options.h) で既定 64MB）に達した時に切り替えます。flush は裏のスレッドで行うので、通常は書き込みの応答を待たせません。
+満杯の目安は、LevelDB では[ログが約 4MB に達した時](https://github.com/google/leveldb/blob/main/doc/impl.md)、RocksDB では `write_buffer_size`（[options.h](https://github.com/facebook/rocksdb/blob/main/include/rocksdb/options.h) で既定 64MB）に達した時に切り替えます。flush は裏のスレッドで実行するので、通常は書き込みの応答を待たせません。
 
 ---
 
@@ -103,7 +103,7 @@ flowchart LR
 
 [RocksDB の Bloom filter](https://github.com/facebook/rocksdb/wiki/RocksDB-Bloom-Filter) では、キー 1 件あたり約 10 bit で、誤って「有るかもしれない」と答える割合（偽陽性率）が約 1% です。
 
-しかし、キー全体で作った Bloom filter は、キー 1 つを指定した読み取りにしか効きません。RocksDB には、キーの先頭部分で作る [prefix Bloom filter](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) もあり、先頭が揃った範囲の検索に限って SSTable を飛ばせます。
+しかし、キー全体で作った Bloom filter は、キー 1 つを指定した読み取りでしか SSTable を飛ばせません。RocksDB には、キーの先頭部分で作る [prefix Bloom filter](https://github.com/facebook/rocksdb/wiki/Prefix-Seek) もあり、先頭が揃った範囲の検索に限って SSTable を飛ばせます。
 
 `user100` から `user199` までのような範囲の読み取りでは、範囲に掛かる全ての SSTable を開き、キーの順に突き合わせながら最新のバージョンを選びます。SSTable の数が増えるほど、範囲の読み取りは重くなります。
 
@@ -121,7 +121,7 @@ LevelDB の実装メモには、[コンパクションは上書きされた値�
 
 ### コンパクションの 2 つのやり方
 
-コンパクションは、複数の SSTable を読んで 1 つの並びに併合し、古いバージョンと不要な tombstone を落として書き直す処理です。キーの順に並び、同じキーが 1 回しか現れない 1 本の並びを sorted run と呼びます。どの SSTable をいつ併合するかで、大きく 2 つのやり方に分かれます。
+コンパクションは、複数の SSTable を読んで 1 つの並びに併合し、古いバージョンと不要な tombstone を捨てて書き直す処理です。キーの順に並び、同じキーが 1 回しか現れない 1 本の並びを sorted run と呼びます。どの SSTable をいつ併合するかで、大きく 2 つのやり方に分かれます。
 
 - size-tiered: 大きさが近い sorted run が一定数揃ったら、まとめて 1 本にする。[Cassandra の STCS](https://cassandra.apache.org/doc/latest/cassandra/managing/operating/compaction/stcs.html) は既定で 4 本
 - leveled: レベルごとに上限の大きさを決め、各レベルを重なりの無い 1 本の sorted run に保つ。上限を超えたら、溢れた分を次のレベルの重なる範囲と併合する
@@ -225,7 +225,7 @@ class LSM:
             self.levels[level] = []
 ```
 
-`none` はコンパクションを一切行わない設定で、コンパクションが追い付かない状態の極端な例です。負荷は 3 つとも同じで、2 万種類のキーにランダムに 10 万回 `put` した後、半分の 1 万キーを `delete` します。最後に、ランダムなキーを 2 万回 `get` します。
+`none` はコンパクションを一切実行しない設定で、コンパクションが追い付かない状態の極端な例です。負荷は 3 つとも同じで、2 万種類のキーにランダムに 10 万回 `put` した後、半分の 1 万キーを `delete` します。最後に、ランダムなキーを 2 万回 `get` します。
 
 このコードでは、量をバイトではなく件数で数え、WAL への追記は含めません（含めると書き込みの増幅は 1 増えます）。また、レベルを丸ごと書き直しており、ファイルの一部だけを併合する LevelDB や RocksDB より単純です。
 
@@ -302,7 +302,7 @@ LSM-Tree の書き込みが速いのは、コンパクションの作業を後�
 LSM-Tree は、書き込みの時に済ませるはずの整理をコンパクションに後回しにします。その代わりに、次の制約があります。
 
 - 1 つのキーを読む時に、複数の SSTable を確認する場合がある
-- 範囲の読み取りではキー全体で作った Bloom filter が効かず、範囲に掛かる全ての sorted run を突き合わせる
+- 範囲の読み取りではキー全体で作った Bloom filter で SSTable を飛ばせず、範囲に掛かる全ての sorted run を突き合わせる
 - 削除しても、コンパクションが最下段に届くまで容量が減らない
 - コンパクションの I/O が通常の読み書きと競合し、追い付かなければ書き込みが絞られる
 
@@ -316,6 +316,6 @@ LSM-Tree は、書き込みの時に済ませるはずの整理をコンパク�
 
 書き込みが少ないなら、B-Tree の方が素直です。[B-Tree](/notes/database-systems/b-tree/) なら、根から葉まで数ページを降りれば値に届きます。LSM-Tree は Bloom filter で読む SSTable を絞れても、各レベルを確認する処理が残ります。
 
-範囲の読み取りが中心の場合は、平均の速さより、コンパクションの I/O が重なった時の遅れが問題になります。大きなコンパクションの I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量のレコードを集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が効く場合があります。
+範囲の読み取りが中心の場合は、平均の速さより、コンパクションの I/O が重なった時の遅れが問題になります。大きなコンパクションの I/O は、範囲の読み取りとディスクを奪い合います。どちらが有利かは、書き込みの比率、キーの分布、ストレージの性能で変わります。なお、大量のレコードを集計する分析が中心なら、列ごとに保存する [Columnar Storage](/notes/database-systems/columnar-storage/) の方が向く場合があります。
 
 削除と挿入の繰り返しで典型的なのは、先頭から順に取り出して消すキューのような使い方です。消したキーの tombstone が最下段に届くまで残るので、先頭を範囲で読むたびに、既に消した分の印を読み飛ばすことになります。
