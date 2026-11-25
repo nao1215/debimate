@@ -216,7 +216,7 @@ AI の研究企業の Thinking Machines Lab は「[Defeating Nondeterminism in L
 
 #### greedy decoding を避けるモデル
 
-毎回同じになるからといって、temperature 0 が良い答えになるとは限りません。[Qwen3-8B の説明](https://huggingface.co/Qwen/Qwen3-8B)は、思考モードについて "DO NOT use greedy decoding, as it can lead to performance degradation and endless repetitions." と書いています。greedy decoding を使うと性能が落ちたり、同じ言い回しを延々と繰り返したりすることがある、という警告です。
+毎回同じになるからといって、temperature 0 が良い答えになるとは限りません。[Qwen3-8B の説明](https://huggingface.co/Qwen/Qwen3-8B)には、思考モードについて "DO NOT use greedy decoding, as it can lead to performance degradation and endless repetitions." と書かれています。greedy decoding を使うと性能が落ちたり、同じ言い回しを延々と繰り返したりすることがある、という警告です。
 
 思考モードで再現性が欲しい時は、勧められた temperature のまま seed を固定する方法があり、手元では冒頭の 4 行目のように揃いました。seed を固定した時に、使い回しの有無で 1 回目が変わるかは確認していません。
 
