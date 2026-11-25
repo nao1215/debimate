@@ -39,13 +39,13 @@ crossTopics:
 
 再試行は、失敗が一時的なものなら、利用者に失敗を見せずに済む安価な方法です。ネットワークの瞬断や、サーバーの入れ替えの間に届いた要求は、少し待てば成功します。
 
-一方で、AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)（Amazon Builders' Library）は、再試行を「selfish」（利己的）と書いています。クライアントが再試行すると、そのクライアントのためにサーバーの時間をさらに使うからです。失敗の原因が過負荷なら、再試行は負荷を増やし、過負荷を悪化させます。
+一方で、AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter)（Amazon Builders' Library）では、再試行が「selfish」（利己的）と書かれています。クライアントが再試行すると、そのクライアントのためにサーバーの時間をさらに使うからです。失敗の原因が過負荷なら、再試行は負荷を増やし、過負荷を悪化させます。
 
 <br>
 
 上記に加えて、問題を大きくするのは再試行の時刻が揃うことです。例えば、サーバーが落ちた瞬間に処理中だった 1,000 件は、同じ時刻に失敗を受け取ります。全員が「1 秒後に再試行」と決めていれば、1 秒後に 1,000 件が同時に届きます。サーバーが起動し直した直後で容量が足りなければ、その山で再び落ち、全員がまた同じ時刻に失敗します。
 
-このように、大勢のクライアントが同じ時刻に一斉に押し寄せる現象は thundering herd と呼ばれます。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) も、再試行の時刻が待ち時間の幅の中に散っていないと、ネットワークの小さな揺れのような乱れで再試行が同じ時刻に集まり、さらに増幅し合うことがあると書き、乱数を入れた指数バックオフを常に使うよう勧めています。
+このように、大勢のクライアントが同じ時刻に一斉に押し寄せる現象は thundering herd と呼ばれます。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) でも、再試行の時刻が待ち時間の幅の中に散っていないと、ネットワークの小さな揺れのような乱れで再試行が同じ時刻に集まり、さらに増幅し合うことがあるとして、乱数を入れた指数バックオフを常に使うことが勧められています。
 
 ---
 
@@ -165,7 +165,7 @@ decorrelated      12.86 ( 10.41- 15.20)        8151 (  7404-  8500)      2.9
 
 ### 再試行してよい失敗
 
-再試行して良いのは、時間が経てば成功し得る失敗だけです。Amazon Builders' Library の記事は、クライアントのエラーは同じ要求のままでは後でも成功しないので再試行せず、サーバーのエラーは次の試行で成功し得る、と分けています。HTTP なら、[400 番台の多く](https://www.rfc-editor.org/rfc/rfc9110#section-15.5)（不正な要求・権限が無い）は再試行しても結果が変わりません。
+再試行して良いのは、時間が経てば成功し得る失敗だけです。Amazon Builders' Library の記事では、クライアントのエラーは同じ要求のままでは後でも成功しないので再試行せず、サーバーのエラーは次の試行で成功し得る、と分けて扱われています。HTTP なら、[400 番台の多く](https://www.rfc-editor.org/rfc/rfc9110#section-15.5)（不正な要求・権限が無い）は再試行しても結果が変わりません。
 
 例外は、サーバーが「後でなら受け付ける」と伝える応答です。[503 Service Unavailable](https://www.rfc-editor.org/rfc/rfc9110#section-15.6.4) と [429 Too Many Requests](https://www.rfc-editor.org/rfc/rfc6585#section-4)（[レート制限](/notes/distributed-systems/rate-limiting/)で断られた時）は、[Retry-After](https://www.rfc-editor.org/rfc/rfc9110#section-10.2.3) ヘッダーで待つ秒数を返せます。この値があれば、自分のバックオフより優先するのが一般的です。
 
@@ -197,7 +197,7 @@ Amazon Builders' Library の記事では、副作用のある API は冪等性�
 
 待ち時間を散らしても、下流が長く止まっていれば、再試行の分だけ負荷は増えます。そのため、再試行は回数でも抑えます。
 
-1 つ目は、1 件の要求あたりの回数の上限です。SRE 本の [Handling Overload](https://sre.google/sre-book/handling-overload/) は、1 要求あたり最大 3 回の試行を上限にし、3 回とも過負荷で断られたら呼び出し元に失敗を返す例を挙げています。gRPC の `maxAttempts` は最初の送信を含む試行の回数で、仕様では 5 より大きい値は 5 として扱われます。
+1 つ目は、1 件の要求あたりの回数の上限です。SRE 本の [Handling Overload](https://sre.google/sre-book/handling-overload/) には、1 要求あたり最大 3 回の試行を上限にし、3 回とも過負荷で断られたら呼び出し元に失敗を返す例が載っています。gRPC の `maxAttempts` は最初の送信を含む試行の回数で、仕様では 5 より大きい値は 5 として扱われます。
 
 <br>
 
@@ -283,4 +283,4 @@ Amazon Builders' Library の記事によると、ブレーカーはシステム�
 - 利用者が画面の前で待っていて、待ち時間の合計が timeout を超える呼び出し
 - 呼び出しの多段の途中にあって、上の段が既に再試行している層
 
-最後の項目は、再試行を 1 か所に寄せるためです。SRE 本の Handling Overload は、深いスタックでは、要求を断った層のすぐ上の層だけが再試行するべきだとしています。下の段は失敗をそのまま返し、「過負荷なので再試行しない」と分かる応答を付けると、上の段も再試行を控えられます。同じ節は、バックエンドが受け取った要求の再試行の回数から周りの過負荷を推し量り、「overloaded; don't retry」（過負荷なので再試行しない）の応答を返す例も挙げています。
+最後の項目は、再試行を 1 か所に寄せるためです。SRE 本の Handling Overload では、深いスタックでは、要求を断った層のすぐ上の層だけが再試行するべきだとされています。下の段は失敗をそのまま返し、「過負荷なので再試行しない」と分かる応答を付けると、上の段も再試行を控えられます。同じ節には、バックエンドが受け取った要求の再試行の回数から周りの過負荷を推し量り、「overloaded; don't retry」（過負荷なので再試行しない）の応答を返す例もあります。
