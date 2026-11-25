@@ -92,7 +92,7 @@ txid から witness を外したのは、第三者がトランザクションの
 
 ### 奇数の葉の複製
 
-Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してからペアを作ります。代表的なノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の[実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)のコメントは、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断っています。
+Bitcoin は、段の中のノード数が奇数になると最後のノードを複製してからペアを作ります。代表的なノードのソフトウェアである [Bitcoin Core](https://bitcoincore.org/) の[実装](https://github.com/bitcoin/bitcoin/blob/master/src/consensus/merkle.cpp)には、この複製を「which is unusual in Merkle trees」（Merkle Tree では異例）と断るコメントがあります。
 
 例えば、トランザクション 3 件のブロックでは、次のように複製します。
 

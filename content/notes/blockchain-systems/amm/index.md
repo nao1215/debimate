@@ -359,7 +359,7 @@ held 150 blocks  spot 12,036  TWAP 24s 12,036  TWAP 30min 12,036  attacker cost 
 
 1 ブロックだけ吊り上げても、30 分の TWAP は 3,060 で 2% しか動きません。しかし、24 秒の TWAP は 7,509 まで動きます。
 
-30 分の TWAP を 4 倍にするには 150 ブロックの間吊り上げ続ける必要があり、コストは 2 億 5 千万 USDC を超えました。600 万 USDC 相当のプールに対して、コストはその 40 倍以上です。[Uniswap v2 のオラクルの説明](https://developers.uniswap.org/docs/protocols/v2/concepts/oracles)も、操作のコストはプールの残高と区間の長さにおおよそ比例すると述べています。
+30 分の TWAP を 4 倍にするには 150 ブロックの間吊り上げ続ける必要があり、コストは 2 億 5 千万 USDC を超えました。600 万 USDC 相当のプールに対して、コストはその 40 倍以上です。[Uniswap v2 にあるオラクルの説明](https://developers.uniswap.org/docs/protocols/v2/concepts/oracles)にも、操作のコストはプールの残高と区間の長さにおおよそ比例すると書かれています。
 
 ---
 
