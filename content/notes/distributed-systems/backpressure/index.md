@@ -330,7 +330,7 @@ layers  retry=1  retry=2  retry=3  one-layer(r=3)  budget10%
 
 3 層がそれぞれ 3 回再試行すると、1 回の操作が最下層では 64 回の試行になります。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) にも、同じ条件の例として 64 回（4³）が出てきます。
 
-AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) は、5 層の各層が 3 回再試行すると 243 倍になると説明しています。243 は 3⁵ で、1 層あたり合計 3 回の試行として計算した値なので、上記の出力の retry=2 の列と同じ値です。下流が遅れて失敗している時ほど、この最大値に近づきます。
+AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) では、5 層の各層が 3 回再試行すると 243 倍になると説明されています。243 は 3⁵ で、1 層あたり合計 3 回の試行として計算した値なので、上記の出力の retry=2 の列と同じ値です。下流が遅れて失敗している時ほど、この最大値に近づきます。
 
 増幅を抑える方法のうち 2 つは、上記の出力の右 2 列に対応します。
 
