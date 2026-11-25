@@ -43,7 +43,7 @@ Ethereum の[アカウント](../ethereum-account-model/)には、秘密鍵で�
 
 <br>
 
-送ったトランザクションは、[mempool](../mempool/) で待った後、次のブロックを作る役に選ばれたノード（提案者）が、ブロックに並べて実行します。ブロックを受け取った他のノードも、同じトランザクションを同じ順に自分で再実行します。2026 年時点の Ethereum では、並べる作業の多くを builder という別の参加者が担っています。この分担は [PBS](../pbs/) のノートで扱っています。
+送ったトランザクションは、[mempool](../mempool/) で待った後、次のブロックを作る役に選ばれたノード（提案者）が、ブロックに並べて実行します。ブロックを受け取った他のノードも、同じトランザクションを同じ順に自分で再実行します。2026 年時点の Ethereum では、並べる作業の多くは、builder という別の参加者がしています。この分担は [PBS](../pbs/) のノートで扱っています。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32"}}}%%
@@ -366,7 +366,7 @@ flowchart TB
 
 <br>
 
-更新できるコントラクトの利用者は、開発者が勝手に書き換えないと信頼するしかありません。ethereum.org の [Upgrading smart contracts](https://ethereum.org/en/developers/docs/smart-contracts/upgrading/) も、この点を更新の欠点に挙げています。差し替えを複数の鍵で承認する[マルチシグ](../multisig/)や、変更が効くまで待つタイムロック（timelock）は、この信頼を減らすための工夫です。
+更新できるコントラクトの利用者は、開発者が勝手に書き換えないと信頼するしかありません。ethereum.org の [Upgrading smart contracts](https://ethereum.org/en/developers/docs/smart-contracts/upgrading/) も、この点を更新の欠点に挙げています。差し替えを複数の鍵で承認する[マルチシグ](../multisig/)や、変更を実行するまで一定の時間を待つタイムロック（timelock）は、この信頼を減らすための工夫です。
 
 更新の仕組みが無くても、管理者だけが残高を変えられる関数を書くことはできます。コードがチェーン上にあることと、管理者がいないことは別なので、どの関数を誰が呼べるかまでコードで読む必要があります。
 
