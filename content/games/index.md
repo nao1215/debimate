@@ -10,7 +10,7 @@ cover:
 games:
   - name: "lottery6"
     label: "数字選択式宝くじゲーム"
-    description: "43 個から 6 個の数字を選ぶ宝くじを、友人の金で買い続けるギャルのゲーム。"
+    description: "43 個から 6 個の数字を選ぶ宝くじを友人の金で買い続けるギャルのゲーム。"
     image: "images/lottery6.webp"
     demo: "media/lottery6-demo.webp"
     imageSource: "https://nao1215.github.io/lottery6/ogp.png"
