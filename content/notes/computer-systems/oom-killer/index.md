@@ -28,7 +28,7 @@ GUI が数分間固まると、OS やデスクトップ環境が不安定だと�
 - earlyoom は、カーネルの OOM killer と何が違うのか。
 - メモリを使い切る処理は、どうすれば他のプロセスから切り離せるのか。
 
-スワップの設定やメモリの断片化など、カーネルのメモリ管理の細部は説明しません。
+スワップの設定やメモリの断片化など、カーネルによるメモリ管理の細部は説明しません。
 
 ---
 
@@ -75,7 +75,7 @@ $ cat /proc/$$/oom_score_adj
 
 原因の一つは、自作のコマンドである [jsonize](https://github.com/nao1215/jsonize) の [Fuzzing](https://go.dev/doc/security/fuzz/)（自動で作った入力を大量に与えて、クラッシュする入力を探すテスト）でした。jsonize の aligned テーブルのパーサーは、列数に 256 の上限がある一方で行数には上限が無く、入力の約 13,000 倍のメモリを保持していました。
 
-Fuzzing が作る 1MB 程度の入力でも、確保するメモリは十数 GB に達します。Go の Fuzzing は複数のワーカーで並列に動くので、合計はさらに増えます。64GB のメモリがあっても、入力の大きさに比例してメモリを使う処理が 1 つあれば足りなくなります。メモリの使い過ぎを fuzz のテストの失敗として見つける方法は、[Fuzzing のノート](/notes/software-testing/fuzzing/)で扱っています。
+Fuzzing が作る 1MB 程度の入力でも、確保するメモリは十数 GB に達します。Go の Fuzzing は複数のワーカーで並列に動くので、合計はさらに増えます。64GB のメモリがあっても、入力の大きさに比例してメモリを使う処理が 1 つあれば足りなくなります。メモリの使い過ぎを fuzz テストの失敗として見つける方法は、[Fuzzing のノート](/notes/software-testing/fuzzing/)で扱っています。
 
 ---
 
@@ -88,7 +88,7 @@ $ sudo apt install earlyoom
 $ systemctl status earlyoom
 ```
 
-利点は、カーネルの OOM killer より前に介入するので、GUI が長く固まる時間を短くできることです。冒頭の図で言えば、破線の縦線の時点で介入します。しかし、earlyoom が見ているのは空きの割合であり、GUI の応答そのものは見ていません。閾値に届く前に固まり始めることもあり、固まらないことを保証するものではありません。
+利点は、カーネルの OOM killer より前に介入するので、GUI が長く固まる時間を短くできることです。冒頭の図で言えば、破線の縦線で示した時点で介入します。しかし、earlyoom が見ているのは空きの割合であり、GUI の応答そのものは見ていません。閾値に届く前に固まり始めることもあり、固まらないことを保証するものではありません。
 
 欠点は、待てば終わったかもしれない処理も終了させることです。大きなビルドのように一時的にメモリを使う処理が終了される場合は、空きメモリの閾値を `-m`（空きスワップの閾値は `-s`）で下げます。`--avoid` を使うと、指定したプロセスの点数から 300 を引いて選ばれにくくできます。対象から完全に外すのは `--ignore` です。
 
@@ -102,9 +102,9 @@ $ systemctl status earlyoom
 
 earlyoom は固まる時間を短くしますが、メモリを使い切る処理を直すわけではありません。jsonize の場合は、保持する行数に上限を付ける修正が根本対策です。
 
-テストや Fuzzing のように、使うメモリの量を読みにくい処理は、動かす側で上限を付けます。Go には [`GOMEMLIMIT`](https://pkg.go.dev/runtime#hdr-Environment_Variables) がありますが、これは Go のランタイムが管理するメモリの目標値で、超えることもあります。保持し続けるデータが増える処理は、GOMEMLIMIT では止まりません。
+テストや Fuzzing のように、使うメモリの量を見積もりにくい処理は、動かす側で上限を付けます。Go には [`GOMEMLIMIT`](https://pkg.go.dev/runtime#hdr-Environment_Variables) がありますが、これは Go のランタイムが管理するメモリの目標値で、超えることもあります。保持し続けるデータが増える処理は、GOMEMLIMIT では止まりません。
 
-確実に止めるには、Linux カーネルの [cgroup](https://docs.kernel.org/admin-guide/cgroup-v2.html) を使います。cgroup は、プロセスのまとまりごとに CPU やメモリの上限を付ける機能です。cgroup のメモリが上限に達し、回収しても収まらない場合、OOM killer はその cgroup の中だけからプロセスを選びます。コンテナのメモリの上限もこの仕組みで付けられています。そのため、[Sidecar](/notes/software-architecture/sidecar/) のように同じ Pod にログ転送などの補助コンテナを置いても、補助コンテナがメモリを使い切った時に止められるのは補助コンテナだけで、アプリケーションは巻き込まれません。
+確実に止めるには、Linux カーネルの [cgroup](https://docs.kernel.org/admin-guide/cgroup-v2.html) を使います。cgroup は、プロセスのまとまりごとに CPU やメモリの上限を付ける機能です。cgroup のメモリが上限に達し、回収しても収まらない場合、OOM killer はその cgroup の中だけからプロセスを選びます。コンテナに付けるメモリの上限もこの仕組みで付けられています。そのため、[Sidecar](/notes/software-architecture/sidecar/) のように同じ Pod にログ転送などの補助コンテナを置いても、補助コンテナがメモリを使い切った時に止められるのは補助コンテナだけで、アプリケーションは巻き込まれません。
 
 <br>
 
@@ -128,7 +128,7 @@ print("finished without OOM", flush=True)
 sys.exit(0)
 ```
 
-[systemd-run](https://www.freedesktop.org/software/systemd/man/latest/systemd-run.html) は、コマンドを一時的な cgroup の中で動かしてくれます。`MemoryMax=200M` でメモリの上限を 200MB にし、`MemorySwapMax=0` でスワップへの退避を禁じています。実行環境は Linux 7.0.0、systemd 259、Python 3.14.4 です。
+[systemd-run](https://www.freedesktop.org/software/systemd/man/latest/systemd-run.html) は、コマンドを一時的な cgroup の中で動かします。`MemoryMax=200M` でメモリの上限を 200MB にし、`MemorySwapMax=0` でスワップへの退避を禁じています。実行環境は Linux 7.0.0、systemd 259、Python 3.14.4 です。
 
 ```console
 $ systemd-run --user --scope -p MemoryMax=200M -p MemorySwapMax=0 python3 lab/eat_memory.py
@@ -147,6 +147,6 @@ oom-kill:constraint=CONSTRAINT_MEMCG,...,task=python3,pid=818544,uid=1000
 Memory cgroup out of memory: Killed process 818544 (python3) total-vm:221812kB, anon-rss:204308kB, ...
 ```
 
-`constraint=CONSTRAINT_MEMCG` は、システム全体ではなく cgroup（memcg）の上限で OOM killer が動いたことを示します。終了させる候補も、その cgroup の中の python3 だけです。この間、PC の他のプロセスと GUI は普段通りに動いていました。ログの全体は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/computer-systems/oom-killer/lab/output.txt) にあります。
+`constraint=CONSTRAINT_MEMCG` は、システム全体ではなく cgroup（memcg）の上限で OOM killer が動いたことを示します。終了させる候補も、その cgroup に入っている python3 だけです。この間、PC で動く他のプロセスと GUI は普段通りに動いていました。ログの全体は [lab/output.txt](https://github.com/nao1215/debimate/blob/main/content/notes/computer-systems/oom-killer/lab/output.txt) にあります。
 
-Fuzzing のようにメモリの使い方を読めない処理も、同じように `systemd-run` で上限を付けて動かせば、PC 全体を巻き込まずに済みます。
+Fuzzing のようにメモリの使い方を見積もれない処理も、同じように `systemd-run` で上限を付けて動かせば、PC 全体を巻き込まずに済みます。
