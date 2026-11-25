@@ -44,11 +44,11 @@ topics: ["Introduction"]
 
 上記の表の終わり方には、主に 3 つの理由があります。
 
-1 つ目は維持の負担です。Ropsten と Rinkeby を終える 2022 年の告知は、履歴が増え続けるとノードを動かすのが難しくなること、クライアントの開発チームが長く支えるテストネットを 2 つに絞りたいことを挙げています。
+1 つ目は維持の負担です。Ropsten と Rinkeby を終える 2022 年の告知では、履歴が増え続けるとノードを動かすのが難しくなること、クライアントの開発チームが長く支えるテストネットを 2 つに絞りたいことが挙げられています。
 
 2 つ目は、Goerli のように通貨を配れなくなること（[後の節](#テストネットの通貨と-faucet)）、3 つ目は、Holesky のように不具合の後で試したい操作ができなくなることです（次の節）。
 
-[ethereum.org のネットワークのページ](https://ethereum.org/en/developers/docs/networks/)（2026-09-23 更新）は、アプリの開発には Sepolia、validator の試験には Hoodi を勧めています。
+[ethereum.org にあるネットワークのページ](https://ethereum.org/en/developers/docs/networks/)（2026-09-23 更新）では、アプリの開発には Sepolia、validator の試験には Hoodi が勧められています。
 
 Sepolia も、後継を立てて 2027 年に終える案が [2026 年 5 月に Ethereum Magicians で提案](https://ethereum-magicians.org/t/sepolia-testnet-replacement-sunsetting/28647)されています。2026 年 11 月時点で、後継の名前と終了日は決まっていません。
 
