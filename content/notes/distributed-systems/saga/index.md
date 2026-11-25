@@ -55,7 +55,7 @@ Saga を実装するワークフローエンジンの製品比較と、サービ
 
 論文が実装を論じたのは 1 台の DB の中の Saga で、分散した DB でも実装できると述べるに留まります。
 
-複数のサービスにまたがる処理への応用は、後にマイクロサービスの文脈で広まりました。[microservices.io の Saga のページ](https://microservices.io/patterns/data/saga.html)（Chris Richardson 氏）や、[Azure Architecture Center の Saga のページ](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga)（2026 年 11 月時点）は、サービスごとに DB を持つ構成でのデータの整合性の保ち方として説明しています。
+複数のサービスにまたがる処理への応用は、後にマイクロサービスの文脈で広まりました。[microservices.io の Saga のページ](https://microservices.io/patterns/data/saga.html)（Chris Richardson 氏）や、[Azure Architecture Center の Saga のページ](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga)（2026 年 11 月時点）では、Saga がサービスごとに DB を持つ構成でのデータの整合性の保ち方として説明されています。
 
 ---
 
