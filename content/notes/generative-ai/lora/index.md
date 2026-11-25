@@ -453,7 +453,7 @@ weight=1.00  diff_from_0= 60.45  diff_from_prev= 28.11  brightness= 115.8
 
 <br>
 
-この差の大きさを読むには、比べる基準が必要です。そこで、LoRA を使わずに seed だけを変えた 5 枚を生成し、全ての組（10 組）の差を数えました（[lab/seed_baseline.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/lora/lab/seed_baseline.py)）。生成部分は run_sweep.py と同じなので、差を数える部分だけを抜粋します。
+この差の大きさを読むには、比べる基準が必要です。そこで、LoRA を使わずに seed だけを変えた 5 枚を生成し、全てのペア（10 組）の差を数えました（[lab/seed_baseline.py](https://github.com/nao1215/debimate/blob/main/content/notes/generative-ai/lora/lab/seed_baseline.py)）。生成部分は run_sweep.py と同じなので、差を数える部分だけを抜粋します。
 
 ```python
 # lab/seed_baseline.py の main() から抜粋（paths は seed ごとの PNG のパス）
