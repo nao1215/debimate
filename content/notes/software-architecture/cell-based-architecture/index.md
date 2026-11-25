@@ -244,7 +244,7 @@ moved(table.get, table.get)      # 最初に作った表をそのまま引く
 
 表を使わない方式でも、特定の顧客を特定のセルへ固定する上書きの表を持つことを勧めています。重い顧客を専用のセルへ移す、試験用の顧客を決まったセルに置く、といった用途です。
 
-一方で、ガイドでルーティングを扱う[節](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-routing.html)は、計算が軽いことを理由に、暗号学的ハッシュと剰余の組み合わせを勧めています。剰余を選ぶなら、表の 8 割の移動を前提に、顧客をデータごと動かす仕組みを先に作ることになります。
+一方で、ガイドでルーティングを扱う[節](https://docs.aws.amazon.com/wellarchitected/latest/reducing-scope-of-impact-with-cell-based-architecture/cell-routing.html)では、計算が軽いことを理由に、暗号学的ハッシュと剰余の組み合わせが勧められています。剰余を選ぶなら、表の 8 割の移動を前提に、顧客をデータごと動かす仕組みを先に作ることになります。
 
 <br>
 
