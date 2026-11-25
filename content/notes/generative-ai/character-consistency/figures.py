@@ -150,7 +150,7 @@ def routes_figure():
 
 
 def pairwise(names, key):
-    """組の中の総当たりの近さ（顔の埋め込みの cos と、顔のタグの Jaccard）。"""
+    """条件の中の総当たりの近さ（顔の埋め込みの cos と、顔のタグの Jaccard）。"""
     out = []
     for a, b in itertools.combinations(names, 2):
         if key == "face_clip":
