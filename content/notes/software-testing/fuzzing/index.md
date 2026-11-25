@@ -13,9 +13,9 @@ Fuzzing（ファジング）は、テスト対象に渡す入力を機械に大�
 
 著者のデスクトップは、2026 年の 9 月ごろ、月に 1 回ほど GUI が固まっていました。Ubuntu 26.04 が不安定なのだろうと思っていましたが、調べると原因はメモリ不足で、メモリを使っていたのは著者が書いた fuzz のテストでした。fuzz のテストは、止めるか異常が見つかるまで入力を作り続けるので、手元で何時間も回すことがあります。
 
-例えば 2026-09-10 には、[jsonize](https://github.com/nao1215/jsonize) の fuzz のテストのプロセスが、システムに割り当てた 64 GB のほぼ全てに当たる 58 GB までメモリを使い、[OOM Killer](/notes/computer-systems/oom-killer/) に止められています。OOM Killer は、メモリが尽きた時に Linux がプロセスを選んで止める仕組みです。jsonize は、コマンドの出力を JSON に変換する著者の CLI です。
+例えば 2026-09-10 には、[jsonize](https://github.com/nao1215/jsonize) で fuzz のテストを動かすプロセスが、システムに割り当てた 64 GB のほぼ全てに当たる 58 GB までメモリを使い、[OOM Killer](/notes/computer-systems/oom-killer/) に止められています。OOM Killer は、メモリが尽きた時に Linux がプロセスを選んで止める仕組みです。jsonize は、コマンドの出力を JSON に変換する著者の CLI です。
 
-原因は、jsonize が表を読む処理にありました。jsonize は、`ps` や `df` のように見出しの行と値の行が並ぶ出力を表として読みます。表の列の数には 256 の上限がありましたが、行の数には上限が無く、入力の大きさの 1 万倍を超えるメモリを保持する作りでした。
+原因は、jsonize が表を読む処理にありました。jsonize は、`ps` や `df` のように見出しの行と値の行が並ぶ出力を表として読みます。表の列数には 256 の上限がありましたが、行の数には上限が無く、入力の大きさの 1 万倍を超えるメモリを保持する作りでした。
 
 fuzz のテストは 1 MiB までの入力を受け付けるので、1 つの入力で十数 GB を保持します。Go の fuzz は複数のプロセスで並列に入力を試すので、合計はさらに増えます。
 
@@ -38,7 +38,7 @@ fuzz のテストは 1 MiB までの入力を受け付けるので、1 つの入
 
 Fuzzing の始まりは、1988 年の雷雨の夜です。[Barton Miller 氏の回想](https://pages.cs.wisc.edu/~bart/fuzz/Foreword1.html)によると、同氏は自宅から電話回線で大学の UNIX にログインしていて、雷雨の雑音が入力に混ざると、普段使っているコマンドが落ちることに気付きました。
 
-同氏はこれを大学院の授業の課題にし、ランダムな文字列を UNIX のコマンドに渡す実験に学生が取り組みました。[1990 年の報告](https://pages.cs.wisc.edu/~bart/fuzz/)では、どの UNIX でも、テストしたコマンドの 25〜33% が落ちるか、止まらなくなりました。判定は「落ちたか、止まらなくなったか」だけです。出力の正解が不要なので、どのコマンドにも同じ方法で掛けられます。
+同氏はこれを大学院の授業で課題にし、ランダムな文字列を UNIX のコマンドに渡す実験に学生が取り組みました。[1990 年の報告](https://pages.cs.wisc.edu/~bart/fuzz/)では、どの UNIX でも、テストしたコマンドの 25〜33% が落ちるか、止まらなくなりました。判定は「落ちたか、止まらなくなったか」だけです。出力の正解が不要なので、どのコマンドにも同じ方法で掛けられます。
 
 同氏らは [2020 年に同じ方法で調べ直し](https://arxiv.org/abs/2008.06537)、Rust で書き直した coreutils である [uutils](https://github.com/uutils/coreutils) の 14 個のコマンドも試しました。そのうち `comm`、`fold`、`ptx` の 3 つが止まらなくなりました。
 
@@ -200,7 +200,7 @@ func FuzzCount(f *testing.F) {
 
 libFuzzer には、比較の命令に渡された値を記録し、その値を入力に入れてみる [Tracing CMP instructions](https://llvm.org/docs/LibFuzzer.html#tracing-cmp-instructions) という機能があります。この機能があれば、`AtOnce` の `0x5a5a5546` のような定数も入力に入ります。手元の Go 1.26 の `go test -fuzz` では、`AtOnce` は見つかりませんでした。
 
-Go で、ファイル形式の先頭の識別子やチェックサムを確認する処理を fuzz する時は、正しいファイルを `f.Add` で seed に渡します。正しいファイルから始めれば、確認の処理を通った後の分岐から変異が始まります。後の実験 2 の filesql も、本物の Parquet のファイルを seed に渡しています。
+Go で、ファイル形式の先頭の識別子やチェックサムを確認する処理を fuzz する時は、正しいファイルを `f.Add` で seed に渡します。正しいファイルから始めれば、確認の処理を通った後の分岐から変異が始まります。後の実験 2 の filesql も、本物の Parquet ファイルを seed に渡しています。
 
 <br>
 
@@ -319,7 +319,7 @@ jsonize の件は、マシンが固まって初めて分かりました。メモ
 
 filesql の `FuzzParseBinary` は、壊れたファイルで panic しないかと、行のセルの数が見出しの数と合うかを検査する fuzz で、Parquet の読み取りの中で panic が起きる入力を 3 秒未満で見つけています（[Issue #413](https://github.com/nao1215/filesql/issues/413)）。
 
-この関数を元に、Parquet の読み取りが 16 MiB を超えて確保したら失敗にする fuzz を書き、後で触れる filesql の修正で確保を制限する前のコードに掛けました。seed には、filesql のテスト用の本物の Parquet のファイルを渡しています。[exp2_parquet.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp2_parquet.sh) が、このファイルを filesql の parser パッケージに置いて走らせます。
+この関数を元に、Parquet の読み取りが 16 MiB を超えて確保したら失敗にする fuzz を書き、後で触れる filesql の修正で確保を制限する前のコードに掛けました。seed には、filesql がテストに使う本物の Parquet ファイルを渡しています。[exp2_parquet.sh](https://github.com/nao1215/debimate/blob/main/content/notes/software-testing/fuzzing/lab/exp2_parquet.sh) が、このファイルを filesql の parser パッケージに置いて走らせます。
 
 ```go
 package parser
@@ -453,9 +453,9 @@ fuzz が見つけられるのは、fuzz の関数が検査している異常だ�
 
 <br>
 
-4 行目は、fuzz が失敗した原因がプログラムではなく検査にあった例です。`"\uD800"` は、[UTF-16 で 2 つ組で使う値](/notes/computer-systems/unicode-text-length/)の片方だけを書いたエスケープで、1 つの文字を表しません。Go の `encoding/json` は、これを U+FFFD（置換文字）に置き換えて読みます。jsonize は入力を黙って変えないことを方針にしていて、置き換えずに拒否するとテストで決めていました。
+4 行目は、fuzz が失敗した原因がプログラムではなく検査にあった例です。`"\uD800"` は、[UTF-16 でペアにして使う値](/notes/computer-systems/unicode-text-length/)の片方だけを書いたエスケープで、1 つの文字を表しません。Go の `encoding/json` は、これを U+FFFD（置換文字）に置き換えて読みます。jsonize は入力を黙って変えないことを方針にしていて、置き換えずに拒否するとテストで決めていました。
 
-そこで、検査に「2 つ組の片方だけのエスケープは、拒否して良い」という例外を足し、見つかった入力を `lone-surrogate` という名前で seed に入れました。fuzz が失敗した時は、プログラムを直す前に、検査がプログラムの仕様と合っているかを確認します。
+そこで、検査に「ペアの片方だけのエスケープは、拒否して良い」という例外を足し、見つかった入力を `lone-surrogate` という名前で seed に入れました。fuzz が失敗した時は、プログラムを直す前に、検査がプログラムの仕様と合っているかを確認します。
 
 ---
 
@@ -463,7 +463,7 @@ fuzz が見つけられるのは、fuzz の関数が検査している異常だ�
 
 実験 1 の節で書いたように、`-fuzz` を付けない `go test` は seed を実行するだけです。そのため、新しい入力を探すには、fuzz の関数ごとに `go test -fuzz` を走らせる仕組みが別に必要です。filesql と jsonize は、GitHub Actions のスケジュールで毎晩動くジョブで、fuzz の関数ごとに 5〜10 分ずつ回しています。
 
-ジョブは、パッケージのパスと関数名の組の一覧（matrix）から作ります。filesql では、v0.55.0 でパッケージを `internal/` の下に移した時、この一覧を直し忘れました。
+ジョブは、パッケージのパスと関数名を並べた一覧（matrix）から作ります。filesql では、v0.55.0 でパッケージを `internal/` の下に移した時、この一覧を直し忘れました。
 
 {{< figure src="images/matrix.webp" alt="左は filesql の夜間の fuzz の matrix の 7 行、右はリポジトリにある Fuzz 関数の 7 個。5 組は線でつながる。左の ./parser FuzzParseFormats と ./parser FuzzParseBinary は赤で、ディレクトリが無いと示す。右の internal/parser FuzzParseFormats と internal/parser FuzzParseBinary は黄色で、どのジョブも回していなかった" caption="filesql v0.56.0 の時点で、2 つの fuzz の関数を誰も回していなかった" align="center" >}}
 
@@ -471,9 +471,9 @@ fuzz が見つけられるのは、fuzz の関数が検査している異常だ�
 
 回っていなかった 2 つは、外から受け取ったファイルを読む関数の fuzz で、filesql の中で最も fuzz が必要な所でした。v0.56.0 の時点でジョブの失敗に気付き、[Issue #1051](https://github.com/nao1215/filesql/issues/1051) で直しました。
 
-jsonize でも、新しく書いた 2 つの fuzz の関数を一覧に足し忘れました。一覧とリポジトリの fuzz の関数を比べるジョブはありましたが、1 日 1 回の定期実行でしか動かなかったので、関数を書いたプルリクエストではなく、翌日の定期実行で報告されました。
+jsonize でも、新しく書いた 2 つの fuzz の関数を一覧に足し忘れました。一覧とリポジトリにある fuzz の関数を比べるジョブはありましたが、1 日 1 回の定期実行でしか動かなかったので、関数を書いたプルリクエストではなく、翌日の定期実行で報告されました。
 
-どちらも、一覧とリポジトリの fuzz の関数を比べる確認が、プルリクエストごとに走るように直しました。リポジトリの fuzz の関数は `grep '^func Fuzz'` で列挙できます。fuzz を CI に入れたら、緑であることだけでなく、全ての関数が実際に回っていることを確認する必要があります。
+どちらも、一覧とリポジトリにある fuzz の関数を比べる確認が、プルリクエストごとに走るように直しました。リポジトリにある fuzz の関数は `grep '^func Fuzz'` で列挙できます。fuzz を CI に入れたら、緑であることだけでなく、全ての関数が実際に回っていることを確認する必要があります。
 
 ---
 
