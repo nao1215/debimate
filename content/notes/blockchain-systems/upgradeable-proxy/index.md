@@ -205,7 +205,7 @@ ERC-1967 は値の置き場所だけを決め、誰がどの関数で実装を�
 
 Transparent が管理者とそれ以外を分けるのは、プロキシの管理用の関数と実装の関数で、関数セレクタ（呼び出しの先頭 4 バイトで関数を識別する値）が重なると、利用者が呼んだつもりの実装の関数ではなく管理機能が動いてしまうからです（[OpenZeppelin の解説](https://www.openzeppelin.com/news/the-transparent-proxy-pattern)）。
 
-OpenZeppelin Contracts 5.x の[文書](https://docs.openzeppelin.com/contracts/5.x/api/proxy)は、軽く柔軟な UUPS を推奨する方向に移っているとしています。
+OpenZeppelin Contracts 5.x の[文書](https://docs.openzeppelin.com/contracts/5.x/api/proxy)によると、軽く柔軟な UUPS を推奨する方向に移っています。
 
 ---
 
@@ -261,7 +261,7 @@ sequenceDiagram
 
 上記の図の 3 本目の矢印が、[DELEGATECALL の節](#delegatecall-でコードを借りる)の図の右側（借りたコードは呼び出し元のデータと文脈で動く）と同じ形です。UUPS では差し替えの関数も実装にあるので、プロキシは直せなくなります。OpenZeppelin は、資金を失ったプロジェクトは把握していないとしています。
 
-対策は 2 つあります。4.3.2 から、差し替えの関数はプロキシ経由の呼び出しだけを受け付けます（`onlyProxy`）。また、[OpenZeppelin のガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)は、実装の constructor で `_disableInitializers()` を呼び、実装の初期化を塞ぐよう勧めています。
+対策は 2 つあります。4.3.2 から、差し替えの関数はプロキシ経由の呼び出しだけを受け付けます（`onlyProxy`）。また、[OpenZeppelin のガイド](https://docs.openzeppelin.com/upgrades-plugins/writing-upgradeable)では、実装の constructor で `_disableInitializers()` を呼び、実装の初期化を塞ぐよう勧められています。
 
 なお、2024 年 3 月の Ethereum の仕様の更新（ハードフォーク Cancun）以降の [`SELFDESTRUCT`](https://eips.ethereum.org/EIPS/eip-6780) は、作成と同じトランザクションの中でなければコードを消しません。そのため、今の Ethereum では、上記の 2 つの事故と同じ経路で実装を消すことはできません。それでも、第三者が実装の所有者になれる状態は残り、その権限で何ができるかは実装のコード次第です。また、Ethereum と同じ仮想マシンで動く別のチェーンが、同じ規則を採り入れているとは限りません。初期化を塞ぐ対策は、今も勧められています。
 
