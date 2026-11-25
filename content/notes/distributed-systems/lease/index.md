@@ -17,7 +17,7 @@ Lease（リース）は、ある権利を期限付きで貸し出し、期限が
 
 {{< figure src="images/lease_concept.svg" alt="Node A の lease（token 33）が切れた後に Node B が lease（token 34）を借りて書き込む。GC で止まっていた Node A は期限切れに気付かず token 33 で書き込み、token 34 を受け取っていたストレージに拒否される" caption="失効に気付かない Node A の書き込みが token で拒否される流れ" align="center" >}}
 
-権利を貸す側（Grantor）は権利の管理だけを担当し、ストレージのような保護対象への操作は借りる側（Holder）が行います。権利の貸し借りと実際の操作が別の経路を通るため、保護対象は「操作してきた相手が今も権利を持っているか」を知りません。上記の図のストレージは、番号の大小だけで遅れた書き込みを拒否しています。
+権利を貸す側（Grantor）は権利の管理だけを担当し、ストレージのような保護対象を操作するのは借りる側（Holder）です。権利の貸し借りと実際の操作が別の経路を通るため、保護対象は「操作してきた相手が今も権利を持っているか」を知りません。上記の図のストレージは、番号の大小だけで遅れた書き込みを拒否しています。
 
 <br>
 
@@ -33,9 +33,9 @@ Lease（リース）は、ある権利を期限付きで貸し出し、期限が
 
 ### Lease が必要な理由
 
-保持者からの返却だけで解放する、期限の無いロックを考えます。保持者が落ちるとロックが返却されず、後続の処理は管理者が手で解放するまで待ち続けます。
+保持者からの返却だけで解放する、期限の無いロックを考えます。保持者が停止するとロックが返却されず、後続の処理は管理者が手で解放するまで待ち続けます。
 
-[ハートビート](../heartbeat/)で保持者の生死を見張り、落ちたと判断した時点で管理側がロックを強制的に解放する方法は、誤検知に耐えられません。停止したノードと、応答が遅いだけのノードを確実に区別する手段が無いからです。
+[ハートビート](../heartbeat/)で保持者の生死を見張り、停止したと判断した時点で管理側がロックを強制的に解放する方法は、誤検知に耐えられません。停止したノードと、応答が遅いだけのノードを確実に区別する手段が無いからです。
 
 例えば、保持者の同意なしにロックを強制解放し、次のノードが取得すると、以下のようになります。図中の GC（Garbage Collection）は、使われなくなったメモリを回収する処理で、実行中はプロセスが数秒から数十秒止まることがあります。
 
@@ -101,9 +101,9 @@ Lease の安全性（同じ時点に権利を持つ者が 2 人にならない�
 
 Lease は時計の仮定に加えて、Holder が保護対象を操作する時点で Lease がまだ有効であることにも頼っています。Holder が期限を確認した直後に GC で止まると、復帰後には期限を過ぎていても操作を続ける場合があります。
 
-分散 DB の [HBase](https://hbase.apache.org/) では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#ch_zkSessions)（Grantor の役を担う協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
+分散 DB の [HBase](https://hbase.apache.org/) では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#ch_zkSessions)（Grantor に当たる協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
 
-[HBASE-7504](https://issues.apache.org/jira/browse/HBASE-7504) では、どのサーバーがどのデータを持つかを引く時の起点になる [-ROOT- テーブル](https://svn.apache.org/repos/asf/hbase/hbase.apache.org/trunk/0.94/book/arch.catalog.html)の担当サーバーが GC で約 229 秒止まり、その間にセッションが失効しました。
+[HBASE-7504](https://issues.apache.org/jira/browse/HBASE-7504) では、どのサーバーがどのデータを持つかを調べる時の起点になる [-ROOT- テーブル](https://svn.apache.org/repos/asf/hbase/hbase.apache.org/trunk/0.94/book/arch.catalog.html)の担当サーバーが GC で約 229 秒止まり、その間にセッションが失効しました。
 
 ところが、移す前に master が確認すると、GC から戻ったこのサーバーは「まだ担当している」と応えたので、master は移すのをやめました。直後にこのサーバーは故障扱いを知って自ら停止し、-ROOT- は master を再起動するまで誰も担当しない状態になりました。
 
@@ -111,7 +111,7 @@ Lease は時計の仮定に加えて、Holder が保護対象を操作する時�
 
 <br>
 
-古い権利からの応答を受け手が捨てる、という同じ考え方を番号で行うのが [fencing token](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html) です。fencing token は権利を貸すたびに大きくなる番号で、Grantor が権利と一緒に渡します。番号は減らないため、保護対象は大小の比較だけで古い権利からの操作を拒否できます。以下は、失効に気付かない Holder の書き込みを拒否する流れです。
+古い権利からの応答を受け手が捨てる、という同じ考え方を番号で実現するのが [fencing token](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html) です。fencing token は権利を貸すたびに大きくなる番号で、Grantor が権利と一緒に渡します。番号は減らないため、保護対象は大小の比較だけで古い権利からの操作を拒否できます。以下は、失効に気付かない Holder の書き込みを拒否する流れです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -130,7 +130,7 @@ sequenceDiagram
     Note over S: 33 は 34 より小さいので拒否
 ```
 
-上記の図のストレージは、権利の期限を知らず、番号の大小だけで判断しています。Lease は権利を次の保持者へ渡す時期を決め、fencing token は古い保持者から届いた操作を保存先で拒否します。期限が切れても古い保持者が動き続ける場合に、保存先での番号の検査が書き込みを防ぎます。
+上記の図のストレージは、権利の期限を知らず、番号の大小だけで判断しています。Lease は権利を次の保持者へ渡す時期を決め、fencing token は古い保持者から届いた操作を保存先で拒否します。期限が切れても古い保持者が動き続ける場合に、保存先が番号を検査して書き込みを防ぎます。
 
 ---
 
@@ -198,7 +198,7 @@ UPDATE resource SET value = ?, token = ?
 WHERE id = 1 AND token <= ?;
 ```
 
-番号の比較と値の更新は、1 つの SQL 文で行います。アプリで番号を読んでから無条件で更新すると、間に別の書き込みが入り得ます。この保存先の検査が、[fencing token で遅れた要求を拒否する仕組み](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html)に相当します。
+番号の比較と値の更新は、1 つの SQL 文で実行します。アプリで番号を読んでから無条件で更新すると、間に別の書き込みが入り得ます。この保存先の検査が、[fencing token で遅れた要求を拒否する仕組み](https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html)に相当します。
 
 ここで拒否できるのは、保存先がすでに 34 を受け取った後の 33 です。Lease の期限が切れただけでは、保存先の番号は変わりません。実際のシステムでは、Grantor が再起動しても番号を巻き戻さず発行する仕組みと、すべての書き込みがこの検査を通る設計も必要です。
 
@@ -208,7 +208,7 @@ WHERE id = 1 AND token <= ?;
 
 分散 KVS（Key-Value Store、キーと値を複数ノードで保持する DB）の [etcd](https://etcd.io/docs/v3.5/learning/api/) が lease を API として持っています。生存時間を指定して lease を作り（実際の長さはサーバーが決める）、キーをその lease に紐付けると、更新が途絶えた後にそれらのキーがまとめて削除されます。更新は `LeaseKeepAlive`、明示的な返却は `LeaseRevoke` です。
 
-リーダーの座を表すキーを lease に紐付けておけば、保持者が落ちた後にキーが消え、次の候補が取得できるようになります。
+リーダーの座を表すキーを lease に紐付けておけば、保持者が停止した後にキーが消え、次の候補が取得できるようになります。
 
 Google の分散ロックサービス [Chubby](https://research.google/pubs/pub27897/) も同じ考え方を実装しています。Chubby はクライアントとの間でセッションを維持し、期限が切れたセッションのロックを解放します。fencing token に当たる番号として、ロックの世代番号を含む sequencer も渡し、受け取ったサーバーが検査します。
 
@@ -218,7 +218,7 @@ Google の分散ロックサービス [Chubby](https://research.google/pubs/pub2
 
 ### 利点
 
-- 保持者が落ちても、時間の経過だけで権利が戻る
+- 保持者が停止しても、時間の経過だけで権利が戻る
 - 管理者の介入も、他ノードによる強制解除も必要ない
 - Grantor と連絡が取れなくても、借りた側が自分で失効を判断できる
 - 期限の記録と更新の受け付けだけで実装できる
@@ -229,11 +229,11 @@ Google の分散ロックサービス [Chubby](https://research.google/pubs/pub2
 
 Lease は、権利の回収を相手の返却ではなく時間の経過に任せます。そのため、待ち時間と時計に関わる次の制約を抱えます。
 
-- 保持者が明らかに落ちていても、期限が来るまで次の担当者は動けない
+- 保持者が明らかに停止していても、期限が来るまで次の担当者は動けない
 - 時計の進む速さのずれに上限があることと、操作の時点で Lease が有効であることの 2 つの仮定に頼る
 - 期限を長くすると復旧が遅れ、短くすると更新の通信が増える
 - 更新の通信と実際の仕事は別なので、仕事が止まっている Holder でも、更新さえ続けば権利を持ち続ける
-- Grantor 自身が落ちると権利の記録ごと失われるため、実装では Grantor を複数ノードで複製する（etcd は Raft で記録を揃える）。複製しても、交代した Grantor は前の Grantor が貸した期限を正確に知らず、長めに見積もり直す必要がある
+- Grantor 自身が停止すると権利の記録ごと失われるため、実装では Grantor を複数ノードで複製する（etcd は Raft で記録を揃える）。複製しても、交代した Grantor は前の Grantor が貸した期限を正確に知らず、長めに見積もり直す必要がある
 
 ---
 
