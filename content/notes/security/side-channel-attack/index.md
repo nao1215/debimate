@@ -246,7 +246,7 @@ Spectre は、正しい実行経路では決して起きない、範囲外の値
 
 どの統計を使うかで、必要な回数が変わります。ネットワークの遅延は、ほとんどの応答が下限の近くに集まり、たまに大きく遅れる右に長い分布になります。
 
-[Crosby・Wallach・Riedi の論文](https://www.cs.rice.edu/~dwallach/pub/crosby-timing2009.pdf)（ACM TISSEC 2009）は、平均や中央値より下位の[パーセンタイル](/ml/math/quantile/)（例えば 10 パーセンタイル）を使う方が揺らぎに強いと示し、インターネット越しで 15〜100 µs、LAN で 100 ns ほどの差まで測れるとしています。下位のパーセンタイルは、たまに大きく遅れた応答の影響をほとんど受けません。
+[Crosby・Wallach・Riedi の論文](https://www.cs.rice.edu/~dwallach/pub/crosby-timing2009.pdf)（ACM TISSEC 2009）では、平均や中央値より下位の[パーセンタイル](/ml/math/quantile/)（例えば 10 パーセンタイル）を使う方が揺らぎに強いと示され、インターネット越しで 15〜100 µs、LAN で 100 ns ほどの差まで測れるとされています。下位のパーセンタイルは、たまに大きく遅れた応答の影響をほとんど受けません。
 
 揺らぎの中から差が見えてくる様子を乱数で作った応答時間でシミュレーションしました（実測ではありません）。遅い候補だけがサーバーで 1 µs 多く処理し、そこに固定の 500 µs と、平均で数十 µs の右に長い揺らぎを足します。各候補を何度か計測し、その統計が大きい方を遅い候補と判断して、正しく選べた割合を見ます。全体は [simulate_remote.py](https://github.com/nao1215/debimate/blob/main/content/notes/security/side-channel-attack/lab/simulate_remote.py) にあります。
 
