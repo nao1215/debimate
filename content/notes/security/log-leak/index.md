@@ -25,7 +25,7 @@ topics: ["Secret Management"]
 
 <br>
 
-本記事では、図の層を上から順に、実際の事故と原因、その層で効く対策を紹介します。コードとランタイムの層は、Go で漏れ方を再現した実験も載せます。最後に、層をまたいでどの順に手を打つかと、漏れていないことをテストで確認する方法を扱います。
+本記事では、図の層を上から順に、実際の事故と原因、その層で有効な対策を紹介します。コードとランタイムの層は、Go で漏れ方を再現した実験も載せます。最後に、層をまたいでどの順に手を打つかと、漏れていないことをテストで確認する方法を扱います。
 
 実験のコードと出力は [lab](https://github.com/nao1215/debimate/tree/main/content/notes/security/log-leak/lab) に置きました。シークレットの値は全て `CANARY-` で始まる説明用の偽物で、コードの中では定数 `canary` に入っています。外部のサービスには何も送っていません。
 
@@ -47,7 +47,7 @@ topics: ["Secret Management"]
 
 この件を受けて、Sentry は `privatekey` や `private_key` という名前の項目を保存しない処理を足したと[公表](https://blog.sentry.io/slope-wallet-solana-hack)しました。項目の名前で消すのは、ログやエラー報告の道具でよく使われる守り方です。ただし、名前で消す仕組みには限界があります。
 
-次のコードは、Go の [log/slog](https://pkg.go.dev/log/slog) の `ReplaceAttr` で、キーが `mnemonic` などの属性（ログの 1 行に付けるキーと値の組）を `[FILTERED]` に置き換えます。`ImportParams` は、ウォレット名と復元フレーズを持つ構造体です。その上で、同じ値を 3 通りの書き方でログに渡します。
+次のコードは、Go の [log/slog](https://pkg.go.dev/log/slog) の `ReplaceAttr` で、キーが `mnemonic` などの属性（ログの 1 行に付けるキーと値のペア）を `[FILTERED]` に置き換えます。`ImportParams` は、ウォレット名と復元フレーズを持つ構造体です。その上で、同じ値を 3 通りの書き方でログに渡します。
 
 ```go
 deny := []string{"mnemonic", "private_key", "password"}
@@ -74,7 +74,7 @@ log.Info("import", "params", fmt.Sprintf("%+v", p))
 
 #### この層の対策
 
-この層で効くのは、ログに出して良い項目を選んで書くことです。リクエストや設定、構造体を丸ごと渡さず、`wallet_id` や `mnemonic_len` のように出して良い値だけを属性にします。消す項目を並べる拒否リストは、新しい項目や文字列への変換を見逃します。出す項目を並べる許可リストなら、知らない項目は出ません。
+この層で有効なのは、ログに出して良い項目を選んで書くことです。リクエストや設定、構造体を丸ごと渡さず、`wallet_id` や `mnemonic_len` のように出して良い値だけを属性にします。消す項目を並べる拒否リストは、新しい項目や文字列への変換を見逃します。出す項目を並べる許可リストなら、知らない項目は出ません。
 
 もう 1 つは、シークレットを専用の型で包むことです。Go なら、`fmt`・`slog`・`encoding/json` が表示の時に自動で呼ぶ `String()`・`Format()`・`LogValue()`・`MarshalJSON()` が固定の文字列を返す型にシークレットを入れ、中身は明示したメソッドでしか取り出せないようにします。
 
@@ -114,7 +114,7 @@ KV v2 というシークレットの保管機能に、REST API で形の崩れ�
 "error":"error converting input <sensitive data> for field \"data\": '' expected a map, got 'string'"
 ```
 
-[Kubernetes の CVE-2020-8564](https://github.com/kubernetes/kubernetes/issues/95622) も同じ形です。形の崩れた Docker の設定ファイルを読んだ時、ログの詳しさ（`-v` の値）を 4 以上にしていると、レジストリの認証情報を含む中身がログに出ました。
+[Kubernetes の CVE-2020-8564](https://github.com/kubernetes/kubernetes/issues/95622) も同じ形です。形の崩れた Docker の設定ファイルを読み込んだ時、ログの詳しさ（`-v` の値）を 4 以上にしていると、レジストリの認証情報を含む中身がログに出ました。
 
 エラー文ではありませんが、Vault の [CVE-2020-13223](https://discuss.hashicorp.com/t/hcsec-2020-13-vault-proxy-environment-variable-was-logged-to-stdout/18096) も設定値をそのまま出した似た例です。環境変数 `HTTP_PROXY` の URL を標準出力に書き、URL に含まれるプロキシのユーザー名とパスワードも出ました。
 
@@ -141,13 +141,13 @@ URL.String:   https://user:CANARY-abandon-ability-able@example.com/
 URL.Redacted: https://user:xxxxx@example.com/
 ```
 
-[strconv.Atoi](https://pkg.go.dev/strconv#Atoi) と [url.Parse](https://pkg.go.dev/net/url#Parse) は、変換に失敗した入力をそのままエラー文に入れました。URL を表示用の文字列にする時は、[URL.Redacted](https://pkg.go.dev/net/url#URL.Redacted) を使えばパスワードが `xxxxx` になります。しかし、URL として読めなかった時のエラー文には、その手当てが届きません。
+[strconv.Atoi](https://pkg.go.dev/strconv#Atoi) と [url.Parse](https://pkg.go.dev/net/url#Parse) は、変換に失敗した入力をそのままエラー文に入れました。URL を表示用の文字列にする時は、[URL.Redacted](https://pkg.go.dev/net/url#URL.Redacted) を使えばパスワードが `xxxxx` になります。しかし、URL としてパースできなかった時のエラー文では、パスワードは伏せられません。
 
 <br>
 
 #### この層の対策
 
-この層で効くのは、エラーを出口に渡す前に、決めておいた分類に写すことです。`err.Error()` の文字列をそのままログやトレースに入れず、`upstream_request_failed` のような分類コードと、固定の説明だけを出します。元のエラーはアプリ内の制御に使い、外へは出しません。
+この層で有効なのは、エラーを出口に渡す前に、決めておいた分類に写すことです。`err.Error()` の文字列をそのままログやトレースに入れず、`upstream_request_failed` のような分類コードと、固定の説明だけを出します。元のエラーはアプリ内の制御に使い、外へは出しません。
 
 エラー文の中身は、自分のコードよりも依存するライブラリが決めます。Vault の件は、Vault の開発元でさえ形の崩れた入力の経路を見落としていたことを示しています。正常な入力だけでテストしていると、この層の漏れには気づけません。
 
@@ -159,7 +159,7 @@ URL.Redacted: https://user:xxxxx@example.com/
 
 この件は、2022 年 8 月 2 日から Solana のウォレット[約 8,000 個](https://www.theregister.com/2022/08/04/solana_wallet_slope/)で資金が抜かれた事件の調査で見つかりました。後の集計では 9,000 個を超えています。
 
-[ITPro の報道](https://www.itpro.com/security/hacking/368730/auditors-blame-4-million-cryptocurrency-heist-on-leaky-logging-tech)によると、調査した監査会社は、そのうち約 1,400 個のアドレス（ウォレットを指す公開の ID）が Sentry のログに含まれていたと説明しています。残りのアドレスは説明できず、ログからの窃取が流出全体の原因だったかは、Slope の[声明](https://forkast.news/no-conclusive-evidence-solana-loophole/)でも、監査会社から決定的な証拠は出ていないとされています。
+[ITPro の報道](https://www.itpro.com/security/hacking/368730/auditors-blame-4-million-cryptocurrency-heist-on-leaky-logging-tech)によると、調査した監査会社の説明では、そのうち約 1,400 個のアドレス（ウォレットを指す公開の ID）が Sentry のログに含まれていました。残りのアドレスは説明できず、ログからの窃取が流出全体の原因だったかは、Slope の[声明](https://forkast.news/no-conclusive-evidence-solana-loophole/)でも、監査会社から決定的な証拠は出ていないとされています。
 
 <br>
 
@@ -201,7 +201,7 @@ SDK のソースでも、`exception.message` に `err.Error()` を入れてい�
 
 #### この層の対策
 
-この層で効くのは、SDK に生のエラー・リクエスト・設定を渡さないことです。層 2 で写した分類コードと固定の説明だけを SDK に渡します。多くの SDK は送信の直前に呼ばれる関数を持っています。Sentry の Go SDK にある [BeforeSend](https://docs.sentry.io/platforms/go/configuration/filtering/) などがその例ですが、届いた時点でエラーの文は `err.Error()` の文字列になっているので、層 1 のフィルターと同じ限界を持ちます。
+この層で有効なのは、SDK に生のエラー・リクエスト・設定を渡さないことです。層 2 で写した分類コードと固定の説明だけを SDK に渡します。多くの SDK は送信の直前に呼ばれる関数を持っています。Sentry の Go SDK にある [BeforeSend](https://docs.sentry.io/platforms/go/configuration/filtering/) などがその例ですが、届いた時点でエラーの文は `err.Error()` の文字列になっているので、層 1 のフィルターと同じ限界があります。
 
 送る直前の消去は補助と考え、SDK に渡す値を手前で減らす方を先にします。
 
@@ -249,7 +249,7 @@ func panicSign(key [2]uint64) {
 
 #### この層の対策
 
-スタックを出口へ付けるなら、引数を持たない形で自分で作ります。Go なら [runtime.CallersFrames](https://pkg.go.dev/runtime#CallersFrames) で、関数名・ファイル・行だけを取り出せます。`GOTRACEBACK=none` は未回復の panic にしか効かないので、それだけで済んだと考えないようにします。
+スタックを出口へ付けるなら、引数を持たない形で自分で作ります。Go なら [runtime.CallersFrames](https://pkg.go.dev/runtime#CallersFrames) で、関数名・ファイル・行だけを取り出せます。`GOTRACEBACK=none` は未回復の panic で出す表示しか変えないので、それだけで済んだと考えないようにします。
 
 クラッシュダンプは、ログとは別の問題です。プロセスのメモリを丸ごと書く以上、アプリのコードでは消せません。
 
@@ -311,7 +311,7 @@ sequenceDiagram
 
 #### この層の対策
 
-この層で効くのは、渡す前に消すことと、渡したものの寿命を短くすることです。診断ファイルを集める側は、受け取る前か受け取った直後に Cookie やトークンを消し、保存期間を決めます。Tangem のログは 7 日で消える作りで、影響を受けたのは、復元フレーズで有効化してから 7 日以内に、アプリからサポートへ問い合わせた利用者だけでした。
+この層で有効なのは、渡す前に消すことと、渡したものの寿命を短くすることです。診断ファイルを集める側は、受け取る前か受け取った直後に Cookie やトークンを消し、保存期間を決めます。Tangem のログは 7 日で消える作りで、影響を受けたのは、復元フレーズで有効化してから 7 日以内に、アプリからサポートへ問い合わせた利用者だけでした。
 
 漏れたと分かったら、ログを消すだけでは足りません。漏れたシークレットは、すでに誰かが写しているかもしれません。Okta はファイルに入っていたセッショントークンを無効にし、Vault の公告は該当するシークレットの交換を勧め、Tangem は新しいウォレットへの移し替えを案内しました。どれも、漏れたシークレットを使えなくする対応です。
 
@@ -386,7 +386,7 @@ func TestImportFixedOK(t *testing.T) { checkExit(t, handleImportFixed) }
 --- PASS: TestImportFixedOK
 ```
 
-不具合のある関数は落ち、項目を選んだ関数は通りました。`out.Len() == 0` の確認は、ログが 1 行も出なかった時に通ってしまうことを防ぐためです。何も出ていないことは、漏れていないことの証明になりません。
+不具合のある関数のテストは失敗し、項目を選んだ関数のテストは通りました。`out.Len() == 0` の確認は、ログが 1 行も出なかった時に通ってしまうことを防ぐためです。何も出ていないことは、漏れていないことの証明になりません。
 
 このテストで大事なのは、正常な入力だけでなく、層 2 で扱った形の崩れた入力・認証の失敗・タイムアウト・panic の経路にも目印を流すことです。漏れは、普段は通らないエラーの経路で起きてきました。OTel なら、層 3 の実験で使った `SpanRecorder` を出口にして、同じ検査ができます。
 
@@ -396,7 +396,7 @@ func TestImportFixedOK(t *testing.T) { checkExit(t, handleImportFixed) }
 
 既存のサービスを点検するなら、層の番号順に見ていくのが早いです。まず、シークレットを受け取る入口を挙げ、その値がログ・エラー文・SDK に渡る所を探します。次に、依存するライブラリが入力をエラー文に入れないか、形の崩れた入力で試します。SDK の設定は、スタックトレースやリクエストの本文を送る設定になっていないかを見ます。
 
-その上で、ログ基盤の消去と保存期間、サポートが受け取る診断ファイルの扱いを確認します。最後に、目印を流す出口のテストを CI に足せば、次の変更で同じ層から漏れた時に気づけます。シークレットをアプリに置かない設計を選べる段階なら、それが最も多くの層をまとめて閉じます。
+その上で、ログ基盤の消去と保存期間、サポートが受け取る診断ファイルの扱いを確認します。最後に、目印を流す出口のテストを CI に足せば、次の変更で同じ層から漏れた時に気づけます。シークレットをアプリに置かない設計を選べる段階なら、それが最も多くの層で漏れをまとめて防ぎます。
 
 <br>
 
