@@ -11,7 +11,7 @@ topics: ["Authentication / Identity", "Authorization"]
 
 写真アプリが「access token を受け取り、その持ち主としてログインさせる」API を持っていたとします。利用者が以前、同じアカウントでクイズアプリにも連携していた場合、クイズアプリの運営者は手元にある access token を写真アプリに送るだけで、その利用者として写真アプリにログインできます。token は本物で期限も切れていないので、写真アプリのサーバーには攻撃を見分ける材料がありません。
 
-[OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749.html) は、利用者の資源へのアクセスを第三者のアプリに委ねるための認可の枠組みです。[OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)（OIDC）は、その上に「誰が、どのアプリにログインしたか」を伝える ID Token を足した認証の層です。上記の事故は、アクセスの委譲のために発行された access token をログインの証明として読んだことで起きます。
+[OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749.html) は、利用者の資源へのアクセスを第三者のアプリに委ねるための認可の枠組みです。[OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html)（OIDC）は、その上に「誰が、どのアプリにログインしたか」を伝える ID Token を足した認証の層です。上記の事故は、アクセスの委譲のために発行された access token をログインの証明として扱ったことで起きます。
 
 登場するのは、利用者・利用者の代わりに API を呼ぶアプリ（client）・token を発行する authorization server・API を提供する resource server の 4 者です。2 種類の token は、宛先が違います。
 
@@ -57,7 +57,7 @@ sequenceDiagram
     Note over P,AS: token はクイズアプリ向けに<br/>発行されたもの
 ```
 
-上記の図の authorization server は、token の持ち主を正しく答えています。誤りは、写真アプリが「持ち主を教えてもらえた」ことを「alice が今ここでログインした」と読んだ所にあります。
+上記の図の authorization server は、token の持ち主を正しく答えています。誤りは、写真アプリが「持ち主を教えてもらえた」ことを「alice が今ここでログインした」と解釈した所にあります。
 
 access token は refresh token から利用者のいない所で発行し直すこともできるので、持っているだけではログインの証明になりません。前述の解説は、この壊れ方を access token の注入と audience restriction（宛先の制限）の欠如として説明しており、token substitution とも呼ばれます。
 
@@ -91,7 +91,7 @@ sequenceDiagram
 
 一方で、`/token` への要求は client から authorization server への直接の HTTPS 通信で、バックチャネルと呼びます。token をバックチャネルだけに載せるために、フロントチャネルには code という引換券だけを流すわけです。
 
-code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.2) は、code の有効期限を短くし（最大 10 分を推奨）、1 度しか使えないようにすることを求めています。さらに、client が自分のシークレットを持てる場合は、交換の時に client 認証を行います。
+code にも制約があります。[RFC 6749 §4.1.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-4.1.2) は、code の有効期限を短くし（最大 10 分を推奨）、1 度しか使えないようにすることを求めています。さらに、client が自分のシークレットを持てる場合は、交換の時に authorization server が client を認証します。
 
 しかし、client の全てがシークレットを持てるわけではありません。RFC 6749 §2.1 は、サーバーで動きシークレットを守れる client を confidential client、スマートフォンのアプリや SPA（Single Page Application、ブラウザの中で動くアプリ）のように配布物の中身を読まれる client を public client と呼んで区別しています。public client では、code と `client_id` さえあれば誰でも交換できてしまいます。
 
@@ -164,7 +164,7 @@ def login_with_id_token(self, session, id_token):
 
 `main()` では 4 つの場面を順に試します。callback は、state・nonce・code_verifier のうち使う値がセッションに保存されていなければ拒否します。
 
-(a) と (b) は、alice のログインで返った code を攻撃者が横取りして `/token` に送る場面、(c) は攻撃者 mallory が自分のアカウントで code を取り、交換する前に、ログインを始めた被害者のブラウザにその code を踏ませる場面です。
+(a) と (b) は、alice のログインで返った code を攻撃者が横取りして `/token` に送る場面、(c) は攻撃者 mallory が自分のアカウントで code を取り、交換する前に、ログインを始めた被害者のブラウザにその code を含む URL を開かせる場面です。
 
 (d) は冒頭の事故で、クイズアプリが受け取った alice の token を写真アプリに持ち込みます。access token を受け付ける `login_with_access_token()` は、`/userinfo` が返した持ち主をそのままログインさせます。
 
@@ -205,7 +205,7 @@ python3 lab/run.py
 
 ### Redirect URI・state・nonce
 
-実験の (c) で効いた値と redirect URI は、それぞれ別の結び付きを確認しています。整理すると以下の通りです。
+実験の (c) で攻撃を止めた値と redirect URI は、それぞれ別の結び付きを確認しています。整理すると以下の通りです。
 
 | 値 | 検証する者 | 結び付けるもの | 検証しないと |
 | --- | --- | --- | --- |
@@ -241,7 +241,7 @@ access token を JWT で発行する場合の形式は、[RFC 9068](https://www.
 
 `typ` は、形の似た ID Token を access token として受け入れないための区別です。
 
-逆向きに、ID Token を API に送って認可に使うと、resource server は「ログインした」という結果を「操作を許された」と読むことになります。
+逆向きに、ID Token を API に送って認可に使うと、resource server は「ログインした」という結果を「操作を許された」と解釈することになります。
 
 ID Token の署名の検証には、authorization server が公開する鍵を使います。公開鍵と署名の関係は [Digital Signature](/notes/blockchain-systems/digital-signature/) のノートにあります。その鍵は TLS（通信路を暗号化し、相手のサーバーを証明書で確認する規約）で取得するので、[PKI](../pki/) が前提になります。
 
