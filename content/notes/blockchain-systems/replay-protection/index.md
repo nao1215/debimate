@@ -26,7 +26,7 @@ chain ID を含めない古い形式のトランザクションは、両方の�
 - 署名済みのトランザクションは、なぜ別のチェーンでも通るのか。
 - nonce は何を防ぎ、分岐したチェーンでは何を防げないのか。
 - 2016 年の ETH と ETC の分岐では何が起き、EIP-155 は chain ID をどう署名に入れたのか。
-- コントラクトに渡す署名は、domain と nonce・期限でどう縛るのか。
+- コントラクトに渡す署名は、domain と nonce・期限で使える範囲をどう絞るのか。
 
 [Cross-Chain Bridge](../cross-chain-bridge/) のメッセージの検証と、Bitcoin 系のチェーンの分岐での対策は扱いません。
 
@@ -92,7 +92,7 @@ Anvil は `127.0.0.1` だけで待ち受け、公開のネットワークや実�
 
 <br>
 
-署名は、Python だけで書いた secp256k1 の署名と復元（[secp256k1.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/secp256k1.py)）で行います。[cast](https://getfoundry.sh/cast/overview/) の `wallet sign` と同じ署名になること、EIP-155 の仕様にある例のトランザクションを同じバイト列で作れることを確かめています。以下が、トランザクションに署名する部分です。
+署名は、Python だけで書いた secp256k1 の署名と復元（[secp256k1.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/replay-protection/lab/secp256k1.py)）で作ります。[cast](https://getfoundry.sh/cast/overview/) の `wallet sign` と同じ署名になること、EIP-155 の仕様にある例のトランザクションを同じバイト列で作れることを確かめています。以下が、トランザクションに署名する部分です。
 
 ```python
 def sighash(fields, chain_id=None):
@@ -172,7 +172,7 @@ chain ID を割り当てる管理者はいないので、一覧に登録され�
 
 Ethereum のノードの実装である [Geth](https://geth.ethereum.org/) は [1.10.0](https://github.com/ethereum/go-ethereum/releases/tag/v1.10.0) から、chain ID を含めないトランザクションを RPC で既定では拒否します（`--rpc.allow-unprotected-txs` で解除）。
 
-これはノードの受け付けのポリシーで、プロトコルの規則は変わっていません。誰かがブロックに入れれば、chain ID を含めないトランザクションは今も実行されます。2022 年の [Optimism](https://www.optimism.io/) で、Ethereum の古いトランザクションを L2 に流してコントラクトを同じアドレスに作られた事故は、[Ethereum Address](../ethereum-address/) で説明しています。
+これはノードが受け付けるかどうかの方針で、プロトコルの規則は変わっていません。誰かがブロックに入れれば、chain ID を含めないトランザクションは今も実行されます。2022 年の [Optimism](https://www.optimism.io/) で、Ethereum の古いトランザクションを L2 に流してコントラクトを同じアドレスに作られた事故は、[Ethereum Address](../ethereum-address/) で説明しています。
 
 ---
 
@@ -182,7 +182,7 @@ Ethereum のノードの実装である [Geth](https://geth.ethereum.org/) は [
 
 ハッシュの組み立ては [EIP-712 のノート](../eip-712/)で説明しています。以下のコードの `ecrecover` は、署名とハッシュから署名者のアドレスを復元する EVM の組み込み関数です。
 
-domain の項目は、アプリが選びます。`chainId` を入れない domain も規格の上では作れますし、`chainId` を入れても、その値をいつ計算するかで結果が変わります。そこで、発行者が署名した引換券を出すと 1 ETH を払うコントラクトで、domain の作り方を 3 通りに変えて比べました。以下は、検証の部分の抜粋です。
+domain の項目は、アプリが選びます。`chainId` を入れない domain も規格の上では作れますし、`chainId` を入れても、その値をいつ計算するかで結果が変わります。そこで、発行者が署名した引換券を出すと 1 ETH を払うコントラクトで、domain の作り方を 3 通りに変えて比べました。以下は、検証する部分の抜粋です。
 
 ```solidity
 // mode 0: name と version だけ / mode 1: chainId と自分のアドレスを入れ、デプロイ時に計算して固定 / mode 2: 同じ項目を検証のたびに計算
@@ -238,7 +238,7 @@ EIP-712 の仕様の冒頭も「It does not include replay protection.」（リ�
   voucher signed a year ago (deadline +1 h) -> revert execution reverted: expired
 ```
 
-トランザクションは 1 年後でも実行され、期限を 1 時間後にした引換券は `expired` で拒否されました。送らずに手元に残したトランザクションを無効にするには、同じ nonce を持つ別のトランザクションを先に実行させるしかありません。署名をサービスに渡す場面では、期限を短くすることが、相手の手元に残った署名の寿命を決めます。
+トランザクションは 1 年後でも実行され、期限を 1 時間後にした引換券は `expired` で拒否されました。送らずに手元に残したトランザクションを無効にするには、同じ nonce を持つ別のトランザクションを先に実行させるしかありません。署名をサービスに渡す場面では、期限を短くするほど、相手の手元に残った署名を使える期間が短くなります。
 
 ---
 
@@ -246,7 +246,7 @@ EIP-712 の仕様の冒頭も「It does not include replay protection.」（リ�
 
 chain ID を含めない署名は、使い回せることを利用されてもいます。[deterministic-deployment-proxy](https://github.com/Arachnid/deterministic-deployment-proxy/tree/be3c5974db5028d502537209329ff2e730ed336c) は、秘密鍵を誰も知らない使い捨てのアカウントが署名した、chain ID を含めないトランザクション（`v` が 27）でファクトリ（コントラクトを作るためのコントラクト）を作ります。署名の値を先に決め、そこから送り主のアドレスを逆に計算するので、そのアドレスの秘密鍵は誰も知りません。同じトランザクションを各チェーンに流せるので、どのチェーンでも同じアドレスにファクトリが置かれます。仕組みは [Ethereum Address](../ethereum-address/) で説明しています。
 
-[EIP-7702](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-7702.md) で、秘密鍵で動く普通のアカウント（EOA）が、自分の代わりに動くコントラクトのコードを指定（委任）する署名も、chain ID を 0 にすると全てのチェーンで有効になります。仕様は、委任先のアドレスに別のチェーンで何が置かれているかを考え、必要なら chain ID で範囲を絞るよう書き、全てのチェーンで使いたい場合は 0 にするとしています。使い回せることは、それ自体が欠陥なのではありません。問題は、どこまで使い回せるかを署名する人が分かっているかどうかです。
+[EIP-7702](https://github.com/ethereum/EIPs/blob/bd93d240b72702450920eeeadc2ce593626bfd8a/EIPS/eip-7702.md) で、秘密鍵で動く普通のアカウント（EOA）が、自分の代わりに動くコントラクトのコードを指定（委任）する署名も、chain ID を 0 にすると全てのチェーンで有効になります。仕様は、委任先のアドレスに別のチェーンで何が置かれているかを考え、必要なら chain ID で範囲を絞るよう書き、全てのチェーンで使いたい場合は 0 にするとしています。使い回せること自体は欠陥ではなく、問題はどこまで使い回せるかを署名する人が分かっているかどうかです。
 
 ---
 
@@ -263,7 +263,7 @@ chain ID を含めない署名は、使い回せることを利用されても�
 
 - chain ID を含めない古い署名も有効なままで、受け付けるかどうかはノードの設定に任される
 - chain ID は登録制ではなく、別のチェーンが同じ番号を名乗ることを規則では止められない
-- EIP-712 の domain や nonce・期限はコントラクトごとの実装で、入れ忘れや計算の時点の誤りは規格では防げない
+- EIP-712 の domain や nonce・期限はコントラクトごとの実装で、入れ忘れや計算する時点の誤りは規格では防げない
 - トランザクションに期限が無いので、送らずに残した署名済みのトランザクションは、同じ nonce を使うまで有効なまま残る
 
 ### これらの仕組みで防げないケース
