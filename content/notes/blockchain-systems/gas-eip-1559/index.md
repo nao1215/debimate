@@ -81,7 +81,7 @@ EIP-1559 のトランザクションが 1 gas あたりに払う額は、ブロ�
 
 上限に余裕が無いと、tip は書いた額より小さくなります。
 
-base fee の分は誰にも渡らず焼却され、priority fee の分だけがブロックの提案者に渡ります。EIP の本文は受け取る側を miner（マイナー）と書いていますが、2022 年 9 月に [Proof of Stake](../proof-of-stake/) へ移ってからは、ブロックを提案するバリデータが指定したアドレスに渡ります。base fee を提案者に渡さない理由について、本文は次のように書いています。
+base fee の分は誰にも渡らず焼却され、priority fee の分だけがブロックの提案者に渡ります。EIP の本文では受け取る側が miner（マイナー）と書かれていますが、2022 年 9 月に [Proof of Stake](../proof-of-stake/) へ移ってからは、ブロックを提案するバリデータが指定したアドレスに渡ります。base fee を提案者に渡さない理由について、本文は次のように書いています。
 
 > Finally, ensuring the miner of a block does not receive the base fee is important because it removes miner incentive to manipulate the fee in order to extract more fees from users.
 >
@@ -93,7 +93,7 @@ base fee の分は誰にも渡らず焼却され、priority fee の分だけが�
 
 #### priority fee の役割
 
-priority fee について、Proof of Work の時代に書かれた本文は 1 nanoeth（1 gwei）程度の小さな額を想定し、ブロックを作る側が負う、作ったブロックが[孤立して（orphan）チェーンに残らない](../finality/)危険への補償と説明しています。ブロックに空きがあれば、小さな tip でもトランザクションは入ります。満杯のブロックが続いた時に何が起きるかは、後の実験で確かめます。
+Proof of Work の時代に書かれた本文では、priority fee は 1 nanoeth（1 gwei）程度の小さな額と想定され、ブロックを作る側が負う、作ったブロックが[孤立して（orphan）チェーンに残らない](../finality/)危険への補償と説明されています。ブロックに空きがあれば、小さな tip でもトランザクションは入ります。満杯のブロックが続いた時に何が起きるかは、後の実験で確かめます。
 
 ---
 

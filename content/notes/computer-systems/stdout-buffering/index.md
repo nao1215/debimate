@@ -151,7 +151,7 @@ C と Python は、端末なら行バッファ、パイプなら完全バッフ�
 
 Go は、バッファを持ちません。`os.Stdout` は、ファイル記述子をそのまま包んだ [`*os.File`](https://pkg.go.dev/os#pkg-variables) で、`fmt.Println` は呼ぶたびに `write(2)` まで進みます。速さが必要な時は、利用者が `bufio.Writer` で包み、自分で `Flush` を呼びます。
 
-Rust の標準出力は、改行で書き出す `LineWriter` です。[公式の文書](https://doc.rust-lang.org/std/io/struct.Stdout.html)は「端末につながっている時は行バッファ」と書いていますが、実装は出力先を見ずに常に `LineWriter` を使うので、パイプでも 1 行ずつ届きます。出力先で完全バッファリングへ切り替える案は [rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673) で議論が続いています。
+Rust の標準出力は、改行で書き出す `LineWriter` です。[公式の文書](https://doc.rust-lang.org/std/io/struct.Stdout.html)には「端末につながっている時は行バッファ」と書かれていますが、実装は出力先を見ずに常に `LineWriter` を使うので、パイプでも 1 行ずつ届きます。出力先で完全バッファリングへ切り替える案は [rust-lang/rust#60673](https://github.com/rust-lang/rust/issues/60673) で議論が続いています。
 
 <br>
 

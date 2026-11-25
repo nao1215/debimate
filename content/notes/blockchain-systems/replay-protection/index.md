@@ -213,7 +213,7 @@ mode 0 は、分岐した B でも、同じチェーンの別のコントラク�
 
 mode 1 は、別のコントラクトでは署名が一致しませんが、B では払いました。domain separator をデプロイ時に計算して固定したので、B のコントラクトも分岐の前の chain ID 31337 で検証するからです。
 
-[ERC-2612](https://github.com/ethereum/ERCs/blob/6504eb9dbd3f42c685f057fd2a7e7cd20b5bc391/ERCS/erc-2612.md) の Security Considerations も、`chainId` を含む `DOMAIN_SEPARATOR` を署名ごとに作り直さずデプロイ時に決めると、将来のチェーンの分岐でチェーンをまたいだリプレイの恐れがあると書いています。
+[ERC-2612](https://github.com/ethereum/ERCs/blob/6504eb9dbd3f42c685f057fd2a7e7cd20b5bc391/ERCS/erc-2612.md) の Security Considerations にも、`chainId` を含む `DOMAIN_SEPARATOR` を署名ごとに作り直さずデプロイ時に決めると、将来のチェーンの分岐でチェーンをまたいだリプレイの恐れがあると書かれています。
 
 mode 2 だけが、B と別のコントラクトの両方で署名の不一致になりました。[OpenZeppelin Contracts v5.1.0 の EIP712](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.1.0/contracts/utils/cryptography/EIP712.sol#L80-L86) は、デプロイ時の値を持ちつつ、`block.chainid` か自分のアドレスが変わっていれば計算し直します。固定の値で gas を節約しながら、mode 2 と同じ結果になる作りです。
 
