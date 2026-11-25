@@ -169,7 +169,7 @@ def counter_restart_figure():
     ax.set_ylim(1e-24, 1e8)
     ax.set_yticks([1e-20, 1e-15, 1e-10, 1e-5, 1, 1e5])
     ax.set_xlabel("1 つの鍵で送った通数（平均 1 万通に 1 回落ちる）")
-    ax.set_ylabel("再利用した鍵と nonce の組の数")
+    ax.set_ylabel("鍵と nonce のペアを再利用した数")
     ax.text(1.2e3, 3e-4, "予約を先に保存するカウンタ：全ての点で 0",
             color=SUB, fontsize=10)
     ax.legend(loc="center right", frameon=False, fontsize=10,
@@ -354,7 +354,7 @@ def tls_krack_figure():
     f.text((x(52) + x(120)) / 2, 285, "設定し直す前", 24)
     seg(f, 0, 50, 296, 40, OCHRE_PALE, OCHRE, "設定し直した後")
     f.box(x(0) - 4, 250, x(50) - x(0) + 8, 92, "none", RED, sw=4, rx=6)
-    f.text(x(50) + 24, 326, "同じ鍵と nonce の組を 2 度使う", 24, RED, anchor="start")
+    f.text(x(50) + 24, 326, "同じ鍵と nonce のペアを 2 度使う", 24, RED, anchor="start")
     f.save(HERE / "images" / "nonce_tls_krack.webp")
 
 
