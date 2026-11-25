@@ -49,7 +49,7 @@ Snapshot Isolation では、Start-Timestamp のスナップショットに必要
 
 ### 書き込みの重なりを止める first-committer-wins
 
-読み取りが待たないだけでは、[Transaction Isolation](../transaction-isolation/) の冒頭で見た在庫の取り合いは止まりません。2 本とも同じ残数 1 を読み、両方が 0 を書けてしまいます。Snapshot Isolation は、書き込みに検査を置いてこれを止めます。
+読み取りが待たないだけでは、[Transaction Isolation](../transaction-isolation/) の冒頭で見た在庫の取り合いは止まりません。2 本とも同じ残数 1 を読み、両方が 0 を書けてしまいます。Snapshot Isolation は、書き込みを検査してこれを止めます。
 
 論文が定めた条件では、T1 がコミットできるのは、T1 の実行区間 [Start-Timestamp, Commit-Timestamp] の中に Commit-Timestamp を持つ別のトランザクションが、T1 と同じデータを書いていない場合に限られます。満たさなければ T1 は中止されます。
 
@@ -95,7 +95,7 @@ sequenceDiagram
     Note over T1,T2: 書いたレコードが違うため<br/>合計は -100 になる
 ```
 
-上記の図の 2 本は同じスナップショットを見て、別のレコードを書きます。書き込みが重なっていないので first-committer-wins は働かず、両方ともコミットします。
+上記の図の 2 本は同じスナップショットを見て、別のレコードを書きます。書き込みが重なっていないので first-committer-wins の検査に掛からず、両方ともコミットします。
 
 次の疑似コードは、x と y それぞれの口座に対して実行します。読み取り、条件判断、更新を同じトランザクションに含めます。
 
@@ -327,7 +327,7 @@ SSI は、Cahill 氏らが 2008 年の論文「[Serializable Isolation for Snaps
 
 依存関係を調べるために、PostgreSQL は、読み取りが実際に触れたデータや範囲を述語ロック（predicate lock）として記録します。この記録は、ある書き込みが、並行して走る別のトランザクションが先に読んだ結果を変えていたかどうかの判定に使われます。
 
-口座の例なら、T1 と T2 が x と y を読んだことを記録しておきます。T1 が x を書くと、T2 が読んだものを T1 が書き換えたという依存が見付かり、T2 が y を書くと逆向きの依存が見付かります。PostgreSQL は依存が 1 本あるだけでは中止せず、この例のように 2 本が連続してつながる形を見付けた時に中止を考えます。PostgreSQL 17 の [README-SSI](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/storage/lmgr/README-SSI) は、この形を dangerous structure と呼んでいます。
+口座の例なら、T1 と T2 が x と y を読んだことを記録しておきます。T1 が x を書くと、T2 が読んだものを T1 が書き換えたという依存が見付かり、T2 が y を書くと逆向きの依存が見付かります。PostgreSQL は依存が 1 本あるだけでは中止せず、この例のように 2 本が連続してつながる形を見付けた時に中止の対象にします。PostgreSQL 17 の [README-SSI](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/backend/storage/lmgr/README-SSI) は、この形を dangerous structure と呼んでいます。
 
 記録した依存関係のうち、直列化異常につながり得る組み合わせが見付かると、関係するいずれかのトランザクションが直列化の失敗として中止されます。先ほどの実験を SERIALIZABLE で動かすと、T2 は更新・コミットの途中で `could not serialize access` を含むエラーを受け、T1 だけがコミットしました。合計は 0 です。
 
@@ -366,7 +366,7 @@ flowchart TB
 
 - 読み取りが書き込みを待たないので、長い集計と更新を同時に走らせられる
 - 他のトランザクションが途中でコミットした変更で、複数の問い合わせの基準時点がずれない
-- lost update が DBMS の検査で止まり、アプリケーション側で読み直しを組む手間が減る
+- lost update が DBMS の検査で止まり、アプリケーション側で読み直しを書く手間が減る
 - 書き込みをしないトランザクションは、first-committer-wins では中止されない
 
 ---
@@ -375,7 +375,7 @@ flowchart TB
 
 Snapshot Isolation は、読み取りを待たせない代わりに、書き込みの重なりしか検査しません。そのため、次の制約があります。
 
-- 別々のレコードを書く write skew が残り、壊れたことは結果の値としてだけ現れる
+- 別々のレコードを書く write skew が残り、制約が破れたことは結果の値にしか現れない
 - 書き込みが重なったトランザクションは中止されるので、再試行の処理が必要
 - 古いバージョンを保持する領域が必要で、長いトランザクションがあるほど溜まる
 - SQL 標準に Snapshot Isolation という分離レベル名が無く、標準のレベル名だけからは実現方式を判別できない
