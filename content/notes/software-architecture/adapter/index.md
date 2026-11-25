@@ -9,7 +9,7 @@ wrapTables: true
 topics: ["Container Patterns"]
 ---
 
-監視用の補助コンテナを古いバージョンのままにして、PostgreSQL を 16 から 17 に上げると、ダッシュボードで checkpoint 回数のグラフだけが途切れます。DB は動いていて、接続を表す `pg_up` は 1 のままで、DB が落ちた時に鳴らすアラートも鳴りません。補助コンテナを新しいバージョンに上げると、エラーは消えますが、グラフは途切れたままです。
+監視用の補助コンテナを古いバージョンのままにして、PostgreSQL を 16 から 17 に上げると、ダッシュボードで checkpoint 回数のグラフだけが途切れます。DB は動いていて、接続を表す `pg_up` は 1 のままで、DB が止まった時に鳴らすアラートも鳴りません。補助コンテナを新しいバージョンに上げると、エラーは消えますが、グラフは途切れたままです。
 
 以下は、この流れを手元の Docker で 240 秒の間に再現し、[Prometheus](https://prometheus.io/) が 5 秒ごとに集めた値を並べた結果です。
 
@@ -90,7 +90,7 @@ exporter v0.20.1: 8.449MiB / 61.43GiB
 postgres 17: 24.98MiB / 61.43GiB
 ```
 
-exporter 1 個は 10MiB 足らずで、何も処理していない PostgreSQL 17 の 25MiB より小さい量です。ただし DB の数だけ動くので、数百の DB を持つ環境では総量が効いてきます。
+exporter 1 個は 10MiB 足らずで、何も処理していない PostgreSQL 17 の 25MiB より小さい量です。ただし DB の数だけ動くので、数百の DB を持つ環境では総量が無視できなくなります。
 
 3 行目の [multi-target](https://prometheus.io/docs/guides/multi-target-exporter/) は、1 つの exporter が、要求ごとに `/probe?target=` で指定された DB を読む方式です。postgres_exporter の README は、sidecar として置けないクラウドの管理サービス向けと説明しています。
 
@@ -106,7 +106,7 @@ java -javaagent:jmx_prometheus_javaagent-1.5.0.jar=9404:exporter.yaml -jar your-
 
 <br>
 
-どこに置いても、変わらないことがあります。PostgreSQL のバージョンごとにどの列を何という名前で出すか、という対応の知識が、DB の開発者とも自分たちとも違う人のコードにあることです。DB 側のテストは exporter を通らないので、この対応が崩れても DB のテストでは気付けません。冒頭の図で起きたのは、DB が形を変え、その対応が追い付かなかった時の話です。
+どこに置いても、変わらないことがあります。PostgreSQL のバージョンごとにどの列を何という名前で出すか、という対応の知識が、DB の開発者とも自分たちとも違う人のコードにあることです。DB 側のテストでは exporter を動かさないので、この対応が崩れても DB のテストでは気付けません。冒頭の図で起きたのは、DB が形を変え、その対応が追い付かなかった時の話です。
 
 ---
 
@@ -295,7 +295,7 @@ collector を有効にしても、ダッシュボードとアラートの式を�
 
 2026 年 6 月の v0.20.0 は、変更履歴の BREAKING CHANGES で、collector の `replication_slot` を `replication_slots` に改め、`pg_replication_slot_` で始まるメトリクスを `pg_replication_slots_` に変えたと告知しています。
 
-手元で取ったマス目の出力でも、v0.20.1 では collector の名前が `replication_slots` でした。`collector="replication_slot"` で書いたアラートは、バージョンを上げると黙って空になります。
+手元で取ったマス目の出力でも、v0.20.1 では collector の名前が `replication_slots` でした。`collector="replication_slot"` で書いたアラートは、バージョンを上げると気づかないうちに空になります。
 
 Kubernetes でも同じ形の変更がありました。kubelet に組み込まれた [cAdvisor](https://github.com/google/cadvisor) は、コンテナが使った資源の量を Prometheus の形にして出す部品です。Kubernetes 1.16 は、そのメトリクスのラベル `pod_name` と `container_name` を消し、`pod` と `container` に揃えました。この変更は [PR #80376](https://github.com/kubernetes/kubernetes/pull/80376) で入っています。
 
@@ -320,7 +320,7 @@ curl -s localhost:9187/metrics | grep -E '^pg_' | sed -E 's/[{ ].*//' | sort -u 
 comm -23 pg16-v0.15.0 pg17-v0.17.1   # 左にあり右に無い名前
 ```
 
-PostgreSQL 16 と v0.15.0 の組から、17 と v0.17.1 の組に上げた前後で比べると、消えた名前は 9 個でした。7 個は `pg_stat_bgwriter_` で始まる名前です。前の節で表に並べた 5 個に、PostgreSQL 17 で列ごと削除された `buffers_backend` と `buffers_backend_fsync` の 2 個が加わります。
+PostgreSQL 16 と v0.15.0 から、17 と v0.17.1 に上げた前後で比べると、消えた名前は 9 個でした。7 個は `pg_stat_bgwriter_` で始まる名前です。前の節で表に並べた 5 個に、PostgreSQL 17 で列ごと削除された `buffers_backend` と `buffers_backend_fsync` の 2 個が加わります。
 
 残る 2 個は PostgreSQL 17 で無くなった設定の `db_user_namespace` と `old_snapshot_threshold` です。この一覧が、そのまま書き換えるダッシュボードとアラートの一覧になります。
 
