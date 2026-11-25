@@ -249,7 +249,7 @@ sequenceDiagram
 
 TCP も同じ構造です。[RFC 9293](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6) では、受信側が各セグメントで受け取れるシーケンス番号の範囲（受信ウィンドウ）を広告し、送信側はその範囲に収まるように送ります。アプリケーションが受信バッファを読まなければウィンドウは 0 まで縮み、送信側は止まります。
 
-ちなみに [RFC 9293 の 3.8.6.1](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6.1) は、受信側がウィンドウを閉じたまま無期限に待つ場面として、RFC 1122 にある「プリンタの紙切れ」の例を引いています。紙が補充されるまで、送信側はウィンドウが開いたかを確認する小さなセグメント（zero-window probe）を定期的に送りながら接続を保ちます。
+ちなみに [RFC 9293 の 3.8.6.1](https://www.rfc-editor.org/rfc/rfc9293#section-3.8.6.1) では、受信側がウィンドウを閉じたまま無期限に待つ場面として、RFC 1122 にある「プリンタの紙切れ」の例が引かれています。紙が補充されるまで、送信側はウィンドウが開いたかを確認する小さなセグメント（zero-window probe）を定期的に送りながら接続を保ちます。
 
 [HTTP/2](https://www.rfc-editor.org/rfc/rfc9113#section-5.2) は、1 本の TCP 接続に複数のストリームを載せるので、ストリームごとと接続全体の 2 段でウィンドウを持ちます。初期値はどちらも 65,535 バイトで、対象は DATA フレームだけです。受信側は処理した分を `WINDOW_UPDATE` フレームで返し、送信側が送れる量を広げます。
 
@@ -328,7 +328,7 @@ layers  retry=1  retry=2  retry=3  one-layer(r=3)  budget10%
 
 各層が再試行する線は、対数の軸で直線になります。層を 1 つ足すごとに、同じ倍率が掛かるからです。
 
-3 層がそれぞれ 3 回再試行すると、1 回の操作が最下層では 64 回の試行になります。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) も、同じ条件の例で 64 回（4³）を挙げています。
+3 層がそれぞれ 3 回再試行すると、1 回の操作が最下層では 64 回の試行になります。Google の [SRE 本の Addressing Cascading Failures](https://sre.google/sre-book/addressing-cascading-failures/) にも、同じ条件の例として 64 回（4³）が出てきます。
 
 AWS の [Timeouts, retries, and backoff with jitter](https://builder.aws.com/content/3EumjoZascWd1oZiEgL8ORlv3qE/timeouts-retries-and-backoff-with-jitter) は、5 層の各層が 3 回再試行すると 243 倍になると説明しています。243 は 3⁵ で、1 層あたり合計 3 回の試行として計算した値なので、上記の出力の retry=2 の列と同じ値です。下流が遅れて失敗している時ほど、この最大値に近づきます。
 
