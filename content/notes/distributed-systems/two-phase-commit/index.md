@@ -187,7 +187,7 @@ Gray 氏と Lamport 氏の論文が提案する Paxos Commit は、決定の記�
 
 ### 長く残ると VACUUM が回収できない
 
-ロックの他にも、準備済みのトランザクションが残ると困ることがあります。PostgreSQL の [PREPARE TRANSACTION の文書](https://www.postgresql.org/docs/17/sql-prepare-transaction.html)は、準備済みのまま長く置くと VACUUM が領域を回収できなくなり、極端な場合はトランザクション ID の周回を防ぐために DB が止まる、と注意しています。PostgreSQL のトランザクション ID は 32 ビットの番号を使い回すので、古い行を片付けないまま番号が一周すると、行の新旧を区別できなくなります。
+ロックの他にも、準備済みのトランザクションが残ると困ることがあります。PostgreSQL の [PREPARE TRANSACTION の文書](https://www.postgresql.org/docs/17/sql-prepare-transaction.html)には、準備済みのまま長く置くと VACUUM が領域を回収できなくなり、極端な場合はトランザクション ID の周回を防ぐために DB が止まる、という注意があります。PostgreSQL のトランザクション ID は 32 ビットの番号を使い回すので、古い行を片付けないまま番号が一周すると、行の新旧を区別できなくなります。
 
 ポイント DB で、10 万行を入れて全部消し、すぐに VACUUM を掛けました。準備済みのトランザクションが無い時と、1 つ残っている時と、それを `ROLLBACK PREPARED` で消した後の 3 回です。
 
