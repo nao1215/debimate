@@ -59,7 +59,7 @@ sequenceDiagram
 
 上記の図の authorization server は、token の持ち主を正しく答えています。誤りは、写真アプリが「持ち主を教えてもらえた」ことを「alice が今ここでログインした」と解釈した所にあります。
 
-access token は refresh token から利用者のいない所で発行し直すこともできるので、持っているだけではログインの証明になりません。前述の解説は、この壊れ方を access token の注入と audience restriction（宛先の制限）の欠如として説明しており、token substitution とも呼ばれます。
+access token は refresh token から利用者のいない所で発行し直すこともできるので、持っているだけではログインの証明になりません。この壊れ方は、前述の解説で access token の注入と audience restriction（宛先の制限）の欠如として説明されており、token substitution とも呼ばれます。
 
 OIDC の ID Token は、この穴を埋めるために client 宛てに発行される、署名付きの認証結果です。[OpenID Connect Core 1.0 §2](https://openid.net/specs/openid-connect-core-1_0.html#IDToken) は、ID Token の `aud`（audience、宛先）に client の `client_id` を含めることを必須にしています。クイズアプリ向けの ID Token の `aud` はクイズアプリなので、写真アプリが `aud` を確認すれば、冒頭の事故は起きません。
 
