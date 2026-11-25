@@ -140,7 +140,7 @@ sequenceDiagram
 | REPEATABLE READ | 起きない | 起きない | 起き得る |
 | SERIALIZABLE | 起きない | 起きない | 起きない |
 
-上記の表の「起き得る」は、その現象を標準が禁止していないという意味で、実装がそれより強く保証しても標準には反しません。[PostgreSQL](https://www.postgresql.org/) のドキュメントは、自身の REPEATABLE READ が phantom read を許さないことに触れた上で、「[higher guarantees are acceptable](https://www.postgresql.org/docs/current/transaction-iso.html)」（より強い保証は許容される）としています。
+上記の表の「起き得る」は、その現象を標準が禁止していないという意味で、実装がそれより強く保証しても標準には反しません。[PostgreSQL](https://www.postgresql.org/) のドキュメントでは、PostgreSQL 自身の REPEATABLE READ が phantom read を許さないことに触れた上で、「[higher guarantees are acceptable](https://www.postgresql.org/docs/current/transaction-iso.html)」（より強い保証は許容される）とされています。
 
 最終行の SERIALIZABLE だけは、この 3 列だけでは定義し切れません。各レベルが 1 つ手前に何を足すのかを以下の図に示します。
 
@@ -161,7 +161,7 @@ SERIALIZABLE が要求しているのは、並行実行の結果が何らかの�
 
 PostgreSQL は 4 つ全部を指定として受け付けるものの、内部では 3 つしか実装しておらず、ドキュメントには「[PostgreSQL's Read Uncommitted mode behaves like Read Committed](https://www.postgresql.org/docs/current/transaction-iso.html)」（PostgreSQL の Read Uncommitted モードは Read Committed と同じように動く）と書かれています。
 
-[Oracle Database のドキュメント](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)は、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードを挙げており、read uncommitted と repeatable read は挙げていません。
+[Oracle Database のドキュメント](https://docs.oracle.com/en/database/oracle/oracle-database/23/cncpt/data-concurrency-and-consistency.html)では、提供する分離レベルとして read committed（既定）と serializable、および読み取り専用のモードが挙げられており、read uncommitted と repeatable read はありません。
 
 [MySQL](https://www.mysql.com/) の既定のストレージエンジンである [InnoDB](https://dev.mysql.com/doc/refman/8.4/en/innodb-transaction-isolation-levels.html) は、4 つ全部に対応した上で既定を REPEATABLE READ としています。設定するレベル名を揃えても、実際に防がれる現象は揃いません。
 
