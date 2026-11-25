@@ -55,7 +55,7 @@ ACL と capability の違いは、[Lampson 氏の Protection](https://www.bwlamp
 
 Miller 氏らの [Capability Myths Demolished](https://papers.agoric.com/papers/capability-myths-demolished/full-text/)（2003 年）は、2 つを等価とみなす考えを「Equivalence Myth」と呼んで否定しています。ACL 型では、対象の名前と、それを使って良いかの判断が別々に流れます。
 
-capability 型（論文の言う object-capability）では、1 つの参照が対象の指定と権限を兼ねるので、権限を持たずに対象だけを指せません。論文は、使う権限を要求の中で選ぶ性質が Confused Deputy を避けるのに役立つとしています。
+capability 型（論文の言う object-capability）では、1 つの参照が対象の指定と権限を兼ねるので、権限を持たずに対象だけを指せません。論文では、使う権限を要求の中で選ぶ性質が Confused Deputy を避けるのに役立つとされています。
 
 [RBAC](https://csrc.nist.gov/projects/role-based-access-control)（Role-Based Access Control）は、主体と権限の間に役割（role）を挟みます。権限の管理は楽になりますが、判断の入口は「この主体はどの役割を持つか」で、誰が頼んだかで判断する点は ACL と変わりません。
 
@@ -340,7 +340,7 @@ Linux の fd にも、渡した後に送り手が取り上げる汎用の仕組�
 
 [capsicum(4)](https://man.freebsd.org/cgi/man.cgi?query=capsicum&sektion=4) によると、Capsicum は fd を capability にし、`cap_enter()` で capability mode に入ったプロセスからファイルシステムなどのグローバルな名前空間を取り上げます。この状態では、`openat()` も渡されたディレクトリの fd の下しか開けません。
 
-実験のコンパイラが capability mode で動いていれば、`open("SYSX/BILL")` も失敗します。Unix の API を残したまま capability を足す設計で、man ページは hybrid capability system と呼んでいます。
+実験のコンパイラが capability mode で動いていれば、`open("SYSX/BILL")` も失敗します。Unix の API を残したまま capability を足す設計で、man ページでは hybrid capability system と呼ばれています。
 
 [wasi-filesystem](https://github.com/WebAssembly/wasi-filesystem) も、グローバルな名前空間を暗黙に参照せず、渡されたディレクトリのハンドルの中だけでパスを解決します。[Wasmtime](https://docs.wasmtime.dev/cli-options.html) なら `wasmtime --dir . foo.wasm` のように、渡すディレクトリを起動時に指定します。
 
