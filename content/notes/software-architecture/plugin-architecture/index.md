@@ -31,7 +31,7 @@ Plugin Architecture が特に役に立つのは、対応する宛先や形式が
 
 ### コアに直接足す形の限界
 
-新しい出力先を追加する最も手早い方法は、コアの処理に `if` を足すことです。問題は、宛先が増えるたびにコアの分岐と依存が両方とも増える点です。Elasticsearch 用のクライアントと S3 用の SDK が同じ関数に並び、使わない宛先の依存まで抱えます。
+新しい出力先を追加する最も手早い方法は、コアの処理に `if` を足すことです。問題は、宛先が増えるたびにコアの分岐と依存が両方とも増える点です。Elasticsearch 用のクライアントと S3 用の SDK が同じ関数に並び、使わない宛先の依存まで含みます。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -181,7 +181,7 @@ func New(name string, cfg Config) (Exporter, error) {
 
 境界を公開すると、自チームの外の人も拡張を書くようになります。ここからは、拡張の作者が自分たちの管理下に居ない場合の話です。
 
-Go のようにインターフェースが既定実装を持てない言語で境界を表している限り、メソッドの追加も破壊的変更です。追加したメソッドを持たない既存の実装は、その時点でインターフェースを満たさなくなり、ビルドが落ちます。安全なのは「メソッドを足すこと」ではなく「既存のインターフェースを触らないこと」です。
+Go のようにインターフェースが既定実装を持てない言語で境界を表している限り、メソッドの追加も破壊的変更です。追加したメソッドを持たない既存の実装は、その時点でインターフェースを満たさなくなり、ビルドが失敗します。安全なのは「メソッドを足すこと」ではなく「既存のインターフェースを触らないこと」です。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -201,7 +201,7 @@ flowchart LR
 
 厄介なのは実行するまで気付けない側で、型検査もビルドも通るため、誤りが表面化するのは拡張が動いた後になります。
 
-互換性を保って機能を追加するには、既存のインターフェースを変更せず、新しいメソッドを別のインターフェースで定義します。コアは、受け取った拡張が新しいインターフェースを満たすかを実行時に（Go なら型アサーションで）確認し、満たす拡張にだけ新しい呼び出しを行います。Go の標準ライブラリでは、`http.ResponseWriter` に対する `http.Flusher` や `http.Pusher` がこの形です。
+互換性を保って機能を追加するには、既存のインターフェースを変更せず、新しいメソッドを別のインターフェースで定義します。コアは、受け取った拡張が新しいインターフェースを満たすかを実行時に（Go なら型アサーションで）確認し、満たす拡張にだけ新しいメソッドを呼びます。Go の標準ライブラリでは、`http.ResponseWriter` に対する `http.Flusher` や `http.Pusher` がこの形です。
 
 拡張を別プロセスに分けても、公開した境界が API になる点は変わりません。互換を保つ対象が Go のインターフェースではなく、JSON や Protocol Buffers、RPC の呼び出し形式に移るだけです。フィールドを必須にする、意味を変えるといった変更が何を壊すかは、その形式の規約で決まります。
 
