@@ -85,7 +85,7 @@ fdd7585e08c4e2afd71dcabdb4636c89d557a3f42db9e2040c8bbd1708aa4ce7  -
 | --- | --- | --- |
 | 原像計算困難性（preimage resistance） | ハッシュ値だけ | その値になる入力 |
 | 第二原像計算困難性（second preimage resistance） | 入力とそのハッシュ値 | 同じ値になる別の入力 |
-| 衝突耐性（collision resistance） | 何も無い | 同じ値になる入力の組 |
+| 衝突耐性（collision resistance） | 何も無い | 同じ値になる入力のペア |
 
 ハッシュ値から元の入力へ戻れないことを一方向性と呼ぶ時は、1 つ目の原像計算困難性を指します。
 
