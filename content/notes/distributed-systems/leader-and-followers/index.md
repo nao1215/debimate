@@ -190,7 +190,7 @@ Leader を誰がどう選ぶかと、データをどう複製するかは別の�
 
 #### 外の道具が止める仕組み
 
-PostgreSQL のフェイルオーバーでよく使われる [Patroni](https://patroni.readthedocs.io/en/latest/dcs_failsafe_mode.html) は、etcd などの Key-Value ストアに、Leader であることを示す期限付きのキーを置きます。Leader はこのキーの期限を更新し続け、更新できなくなったら、期限が切れる前に自分を読み取り専用に落とします。期限が切れると、他の台がキーを取って昇格します。
+PostgreSQL のフェイルオーバーでよく使われる [Patroni](https://patroni.readthedocs.io/en/latest/dcs_failsafe_mode.html) は、etcd などの Key-Value ストアに、Leader であることを示す期限付きのキーを置きます。Leader はこのキーの期限を更新し続け、更新できなくなったら、期限が切れる前に自分を読み取り専用に切り替えます。期限が切れると、他の台がキーを取って昇格します。
 
 期限付きの権利で古い持ち主を止める考え方は [Lease](/notes/distributed-systems/lease/) と同じです。通信を仲介する [Ambassador](/notes/software-architecture/ambassador/) のノートでは、戻ってきた古い Redis の master に 99 件を書いて全てを失う様子を再現しています。
 
@@ -200,7 +200,7 @@ PostgreSQL のフェイルオーバーでよく使われる [Patroni](https://pa
 
 ### Raft では、外された Leader は書き込めない
 
-[Raft](https://raft.github.io/raft.pdf) は、Leader and Followers の形で複数の台にログを複製する合意アルゴリズムです。[etcd](https://etcd.io/) は Raft で複製する Key-Value ストアで、上の Patroni が Leader のキーを置く先の 1 つです。etcd の 3 台で、PostgreSQL と同じ実験を行いました。Leader をネットワークから外し、外した Leader と残りの 2 台の両方に書き込みます。
+[Raft](https://raft.github.io/raft.pdf) は、Leader and Followers の形で複数の台にログを複製する合意アルゴリズムです。[etcd](https://etcd.io/) は Raft で複製する Key-Value ストアで、上の Patroni が Leader のキーを置く先の 1 つです。etcd の 3 台で、PostgreSQL と同じ手順で試しました。Leader をネットワークから外し、外した Leader と残りの 2 台の両方に書き込みます。
 
 {{< figure src="images/leader-and-followers_raft.webp" alt="動く図。etcd の e1・e2・e3 の 3 台で、最初は e1 が term 2 の Leader で k=v1。0.3 秒で e1 をネットワークから外すと、2.1 秒で e1 は過半数と話せずに自分から Leader を降り、2.5 秒で残りの e2 と e3 が e2 を term 3 の Leader に選び、2.6 秒で e2 に書いた k=v-new が e2 と e3 に入る。外した e1 への put k=v-old は待ち続け、5.4 秒で失敗する。e1 から読むと、既定の linearizable は失敗し、serializable は古い v1 を返す。最後のコマでは e1 を戻してから 3 秒後、e1 は term 3 の Follower になり、3 台とも k は v-new で、e1 のログにあった v-old は term 3 のエントリで上書きされている" caption="etcd の 3 台で Leader をネットワークから外した時（実測の時刻を 0.5 倍速で再生）" align="center" >}}
 
@@ -241,7 +241,7 @@ Leader を選ぶ投票では、各台は 1 つの任期に 1 票しか投じず�
 
 任期 2 の Leader A が B に配って落ち、任期 3 の Leader E が自分だけに書いて落ちます。任期 4 で戻った A が C に配り、任期 2 のエントリは 3 台に届きます。それでも A が落ちると、E は B・C・D の票を集めて任期 5 の Leader になれます。ログの末尾にある任期は、E が 3 で、B・C の 2 より新しいためです。
 
-そのため Raft の Leader は、自分の任期で足したエントリが過半数に届いた時に初めてコミットを進め、それより前のエントリはまとめてコミット済みにします。自分の任期で足したエントリが過半数に届けば、それを持たない台は投票の検査に落ちて当選できません。
+そのため Raft の Leader は、自分の任期で足したエントリが過半数に届いた時に初めてコミットを進め、それより前のエントリはまとめてコミット済みにします。自分の任期で足したエントリが過半数に届けば、それを持たない台は投票の検査を通らず当選できません。
 
 <br>
 
@@ -265,7 +265,7 @@ linearizable の読み取りでは、Leader が過半数とハートビートを
 
 Raft の代わりに払うのは台数と待ち時間です。1 台が落ちても書き込みを続けるには 3 台、2 台なら 5 台が必要で、全ての書き込みが過半数の返事を待ちます。Raft が想定する故障は台の停止と分断で、嘘の値を返す台は想定していません。そうした台まで扱うのは[ビザンチン障害耐性](/notes/distributed-systems/byzantine-fault-tolerance/)の方式です。
 
-どの方式でも、書き込みは全て Leader 1 台を通るので、書き込める量の上限は Leader 1 台で決まります。超えるなら、[Consistent Hashing](/notes/distributed-systems/consistent-hashing/) などでデータをキーで分け、分けた組ごとに Leader を置きます。
+どの方式でも、書き込みは全て Leader 1 台を通るので、書き込める量の上限は Leader 1 台で決まります。超えるなら、[Consistent Hashing](/notes/distributed-systems/consistent-hashing/) などでデータをキーで分け、分けた単位ごとに Leader を置きます。
 
 <br>
 
@@ -305,6 +305,6 @@ read replica やフェイルオーバーを使う時に決めることは 4 つ�
 
 3 つ目は、エラーで返った書き込みの扱いです。同期でも、エラーで返った行が古い Leader に残っていることがあるので、送り直しても二重にならないようにしておきます。
 
-4 つ目は、古い Leader を誰が止めるかです。冒頭の図で最後のコマが示すように、PostgreSQL だけでは、落とした Leader は起動し直すと Leader に戻ります。フェイルオーバーの道具が、更新の止まった Leader を読み取り専用に落とすか、手元で落として起動し直して試しておくと安心です。
+4 つ目は、古い Leader を誰が止めるかです。冒頭の図で最後のコマが示すように、PostgreSQL だけでは、落とした Leader は起動し直すと Leader に戻ります。フェイルオーバーの道具が、更新の止まった Leader を読み取り専用に切り替えるか、手元で落として起動し直して試しておくと安心です。
 
 実験のスクリプトと出力の全体は [lab/](https://github.com/nao1215/debimate/tree/main/content/notes/distributed-systems/leader-and-followers/lab) にあります。
