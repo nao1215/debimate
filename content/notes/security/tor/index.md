@@ -264,9 +264,9 @@ flowchart TB
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-上記の図の Traffic correlation は、回線の中身を解読しない攻撃で、両端を観測できれば global passive adversary でなくても行えます。論文も「Tor only minimally hides such correlations」（Tor がこの相関を隠せるのは最小限にとどまる）と認めています。
+上記の図の Traffic correlation は、回線の中身を解読しない攻撃で、両端を観測できれば global passive adversary でなくても仕掛けられます。論文も「Tor only minimally hides such correlations」（Tor がこの相関を隠せるのは最小限にとどまる）と認めています。
 
-この形の攻撃が起きたのが、2014 年の [relay early traffic confirmation attack](https://blog.torproject.org/tor-security-advisory-relay-early-traffic-confirmation-attack/) です。2014 年 1 月 30 日に約 115 台のリレーが加わり、Guard になれるリレー全体の通信容量の約 6.4% を占めました。
+この形の攻撃が起きたのが、2014 年の [relay early traffic confirmation attack](https://blog.torproject.org/tor-security-advisory-relay-early-traffic-confirmation-attack/) です。2014 年 1 月 30 日に約 115 台のリレーが加わり、Guard になれるリレーを合わせた通信容量の約 6.4% を占めました。
 
 これらは Guard に加えて、Onion Service の descriptor を預かる役にも就いています。Exit Relay を運用した形跡はなく、接続先に近い端に立ったのは descriptor を預かる役でした。
 
@@ -313,7 +313,7 @@ flowchart LR
 
 上記の図のとおり、Guard Relay の選択も層ごとの暗号化も tor デーモンの仕事で、tornago は、これらのインターフェースを使って構築済みの回線を利用します。Onion Service を立てる場合は、ControlPort に `ADD_ONION` を送ってアドレスを作り、例えばその 80 番ポートをローカルの HTTP サーバーに転送する対応付けを設定します。
 
-ControlPort からは Onion Service の作成や回線の制御まで行えるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
+ControlPort からは Onion Service を作ることから回線の制御までできるので、外部のネットワークに開かず、cookie 認証やパスワード認証を設定したうえで使います。
 
 [Tor の control 仕様](https://spec.torproject.org/control-spec/implementation-notes.html)も、ControlPort が開いていて認証が無効な場合は、接続してきたローカルの利用者を誰でも信頼すると書き、この状態を勧めていません。
 
