@@ -323,7 +323,7 @@ flowchart LR
     classDef default fill:#eaf1f5,stroke:#9cabb5,color:#28343b;
 ```
 
-上記の図の最後で表を読む順序は、索引に並んでいた順ではなく物理的な順です。同じページに載っているレコードをまとめて処理でき、ページを何度も読み直す動きが減ります。同じドキュメントは、その代償として「[any ordering of the original indexes is lost](https://www.postgresql.org/docs/current/indexes-bitmap-scans.html)」（元の索引が持っていた順序は失われる）と書き、`ORDER BY` があれば別に整列の段が必要だと続けています。
+上記の図の最後で表を読む順序は、索引に並んでいた順ではなく物理的な順です。同じページに載っているレコードをまとめて処理でき、ページを何度も読み直す動きが減ります。同じドキュメントには、その代償として「[any ordering of the original indexes is lost](https://www.postgresql.org/docs/current/indexes-bitmap-scans.html)」（元の索引が持っていた順序は失われる）とあり、`ORDER BY` があれば別に整列の段が必要だと続きます。
 
 先頭の 1 件が返るまでの時間も変わります。ビットマップを合成し終えるまで表を読み始められないので、索引を降りた直後に 1 件目が返るという性質は失われます。
 
