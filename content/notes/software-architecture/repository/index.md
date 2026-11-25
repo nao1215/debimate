@@ -273,7 +273,7 @@ Evans 氏は、ドメイン専門家にとって意味のある条件でオブ�
   - 検索条件が画面の都合で決まり、更新に使わない場面に向く
 {{< /note-panels >}}
 
-Specification とは、Evans 氏と Fowler 氏が論文「[Specifications](https://martinfowler.com/apsupp/spec.pdf)」で示したパターンで、候補が条件に合うかを判定する規則をオブジェクトにします。論文が中心の考えとして挙げているのは、合致の判定方法の記述と、判定される候補オブジェクトを分離することです。条件を `and` や `or` で組み合わせられるため、メソッド名の組み合わせ爆発は起きません。
+Specification とは、Evans 氏と Fowler 氏が論文「[Specifications](https://martinfowler.com/apsupp/spec.pdf)」で示したパターンで、候補が条件に合うかを判定する規則をオブジェクトにします。論文で中心の考えとして挙げられているのは、合致の判定方法の記述と、判定される候補オブジェクトを分離することです。条件を `and` や `or` で組み合わせられるため、メソッド名の組み合わせ爆発は起きません。
 
 ただし、この論文が扱っているのは、候補を受け取って真偽を返す `isSatisfiedBy` という判定の抽象で、条件を DB のクエリに変換する方法は含まれていません。Repository に Specification を渡す設計では、`WHERE` 句への変換を自分で書く必要があります。
 
