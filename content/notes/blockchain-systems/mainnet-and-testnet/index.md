@@ -19,7 +19,7 @@ topics: ["Introduction"]
 
 例えば、[スマートコントラクト](../smart-contract/)の開発者は、ローカルのチェーンで試した後にテストネットで公開し、最後にメインネットにデプロイします。ウォレットの開発者も、利用者の資産を動かす前にテストネットで送金を確認します。
 
-以下は、Ethereum を例に、3 種類のチェーンがいつから存在し、いつ規則が変わるかを示した図です。横軸は時間で、四角は 1 つのブロックです。テストネットの列は、Ethereum のテストネットの Sepolia です。
+以下は、Ethereum を例に、3 種類のチェーンがいつから存在し、いつ規則が変わるかを示した図です。横軸は時間で、四角は 1 つのブロックです。テストネットの列は、Ethereum のテストネットである Sepolia です。
 
 {{< figure src="images/mainnet-and-testnet_concept.webp" alt="左にメインネット（chain ID 1）、テストネット（Sepolia、chain ID 11155111）、ローカル（Anvil、chain ID 31337）の 3 行が並び、それぞれ四角を線で繋いだ別々の列を持つ。メインネットの列は最も左から始まり、テストネットはその途中から、ローカルは右端の数個だけ。新しい規則を示す点線はテストネットの列の中ほどにあり、メインネットでは右端の近くにある。ローカルは最初のブロックから、起動時に選んだ規則で始まっている" caption="別々に伸びる 3 種類のチェーンと、新しい規則が有効になる時期（Ethereum の例）" align="center" >}}
 
@@ -54,7 +54,7 @@ topics: ["Introduction"]
 | 規則の切り替え | テストネットの後 | メインネットより先 | 起動時に自分で選ぶ |
 | 状態 | 長い履歴と、デプロイ済みのコントラクト | 別の履歴。同じコントラクトでもアドレスが違う | 空から始まる |
 
-上記の表の状態の行は、テストネットでの確認がメインネットでの成功を保証しない理由の 1 つです。
+上記の表にある状態の行は、テストネットでの確認がメインネットでの成功を保証しない理由の 1 つです。
 
 例えば、ドル建ての通貨（トークン）の [USDC](https://www.circle.com/usdc) は、チェーン上でアドレスを持つプログラム（コントラクト）として置かれています。このコントラクトは、[発行元の Circle の一覧](https://developers.circle.com/stablecoins/usdc-contract-addresses)によると、Ethereum のメインネットでは `0xA0b8…eB48`、Sepolia では `0x1c7D…7238` にあります。アドレスを直書きしたプログラムは、ネットワークを替えると別の相手を呼びます。
 
@@ -91,7 +91,7 @@ network ID は、ノード同士の通信で使う番号です。[eth プロト�
 | Hoodi | 560048 | 稼働中 |
 | Anvil・Hardhat の既定 | 31337 | ローカル |
 
-chain ID を割り当てる管理者はいません。上記の ethereum-lists/chains は利用者が登録する共有の台帳で、31337 は GoChain Testnet というネットワークの番号として登録されています。Anvil や Hardhat の既定値と重なっており、番号だけではどのネットワークかが決まらない例です。
+chain ID を割り当てる管理者はいません。上記の ethereum-lists/chains は利用者が登録する共有の一覧で、31337 は GoChain Testnet というネットワークの番号として登録されています。Anvil や Hardhat の既定値と重なっており、番号だけではどのネットワークかが決まらない例です。
 
 <br>
 
@@ -133,7 +133,7 @@ for n in (a, b):
     log(f'send to chain {n.chain_id:>8}: {n.publish(raw)}')
 ```
 
-`Node` はコンテナの起動と RPC の呼び出しをまとめたクラス、`KEY`・`BOB`・`USDC_ON_MAINNET` は送り主の鍵・宛先・メインネットの USDC のアドレスです。全体は [eth_replay.py](lab/eth_replay.py)、使ったイメージと版は [README](lab/README.txt) にあります。以下が[出力](lab/output/eth_replay.txt)の前半です。
+`Node` はコンテナの起動と RPC の呼び出しをまとめたクラス、`KEY`・`BOB`・`USDC_ON_MAINNET` は送り主の鍵・宛先・メインネットの USDC のアドレスです。全体は [eth_replay.py](lab/eth_replay.py)、使ったイメージとバージョンは [README](lab/README.txt) にあります。以下が[出力](lab/output/eth_replay.txt)の前半です。
 
 ```text
 == 1. labels and state
@@ -187,7 +187,7 @@ height 200: coinbase pays 25.0 BTC
 
 テストネットの通貨には価値が無い筈なので、鍵の扱いも気にしなくてよい、と思うかもしれません。しかし、Ethereum のアカウントのアドレスは、[Ethereum Address](../ethereum-address/) で説明したように、秘密鍵だけから計算され、chain ID は入りません。Bitcoin も、上記の実験の通り、同じ鍵から接頭辞だけが違うアドレスができます。
 
-テストネットで使っている鍵は、そのままメインネットの同じアドレスの鍵です。テストネット用だからと設定ファイルに書いた鍵がリポジトリから漏れると、同じ鍵のメインネットの資産も動かされます。テストネットの通貨そのものも、配る量が足りなくなって[売買された例](../testnet-history/#テストネットの通貨と-faucet)があります。
+テストネットで使っている鍵は、そのままメインネットの同じアドレスの鍵です。テストネット用だからと設定ファイルに書いた鍵がリポジトリから漏れると、同じ鍵で動かせるメインネットの資産も動かされます。テストネットの通貨そのものも、配る量が足りなくなって[売買された例](../testnet-history/#テストネットの通貨と-faucet)があります。
 
 ローカルのチェーンの既定の鍵は、もっと危険です。Anvil や Hardhat の既定のアカウントの秘密鍵は公開されており、誰でも知っています。Hardhat のノードは起動時に、公開された鍵のアカウントに本番のネットワークで送った資金は失われる、と[警告を出します](https://github.com/NomicFoundation/hardhat/blob/ed85a936f4b5df0fb371ec6127fdebebf7a88b66/packages/hardhat/src/internal/builtin-plugins/node/helpers.ts#L139-L144)。
 
