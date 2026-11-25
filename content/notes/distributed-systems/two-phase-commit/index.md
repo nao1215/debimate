@@ -242,7 +242,7 @@ ERROR 1205 (HY000) at line 1: Lock wait timeout exceeded; try restarting transac
 | 接続が切れた後・再起動の後 | 残る | 残る |
 | ロックを待つ上限の既定 | 無し（`lock_timeout` が 0） | 50 秒 |
 
-PostgreSQL は、`max_prepared_transactions` の既定が 0 で、そのままでは `PREPARE TRANSACTION` が「prepared transactions are disabled」（準備済みのトランザクションは無効）で失敗します。文書は、準備済みのトランザクションを追って片付けるトランザクションマネージャが無いなら、0 のままにして、忘れられた準備済みを作らないよう勧めています。
+PostgreSQL は、`max_prepared_transactions` の既定が 0 で、そのままでは `PREPARE TRANSACTION` が「prepared transactions are disabled」（準備済みのトランザクションは無効）で失敗します。文書では、準備済みのトランザクションを追って片付けるトランザクションマネージャが無いなら、0 のままにして、忘れられた準備済みを作らないよう勧められています。
 
 <br>
 
