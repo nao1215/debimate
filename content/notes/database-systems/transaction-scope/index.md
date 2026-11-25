@@ -79,7 +79,7 @@ Time: 4005.503 ms (00:04.006)
 
 <br>
 
-ロックに加えて、トランザクションを開いている間は DB への接続も 1 本占有します。Go の `database/sql` のドキュメントは、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書いています。
+ロックに加えて、トランザクションを開いている間は DB への接続も 1 本占有します。Go で DB を扱う `database/sql` のドキュメントには、「[Once DB.Begin is called, the returned Tx is bound to a single connection](https://pkg.go.dev/database/sql)」（DB.Begin を呼ぶと、返された Tx は 1 本の接続に結び付けられる）と書かれています。
 
 その接続がプールに戻るのは `Commit` か `Rollback` の後です。上限まで接続が埋まると、その注文と関係のない処理まで接続を取れずに待ちます。
 
