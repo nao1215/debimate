@@ -3,7 +3,7 @@
 - kv-cache_concept.webp        : 前から埋まる KV キャッシュの枠と、新しいトークンが全部を読む様子（手書きの SVG）
 - kv-cache_qkv.webp            : 今のトークンの Q と過去の K から比率を求め、その比率で V を混ぜる（手書きの SVG）
 - kv-cache_steps.webp          : キャッシュ無し・有りで、各ステップに K・V を計算するトークン（手書きの SVG）
-- kv-cache_gqa.webp            : 通常・GQA・MQA の Q ヘッドと K・V の組の対応（手書きの SVG）
+- kv-cache_gqa.webp            : 通常・GQA・MQA の Q ヘッドと K・V ヘッドの対応（手書きの SVG）
 - kv-cache_memory.webp         : num_ctx と読み込んだモデルの size（matplotlib）
 - kv-cache_prefill.webp        : 入力の長さと、プロンプトの処理の時間・生成の速さ（matplotlib）
 - kv-cache_read_per_token.webp : 生成の 1 トークンごとに読む量と実測の速さ（手書きの SVG）
@@ -235,9 +235,9 @@ def steps_figure():
 
 
 def gqa_figure():
-    """16 個の Q ヘッドが K・V の組をいくつ共有するか。組の数がキャッシュの大きさになる。"""
-    s = Svg(960, 540, "通常の注意機構・GQA・MQA で、Q ヘッドと K・V の組の対応を比べる")
-    s.text(451, 52, "上の小さい枠: Q ヘッド 16 個　下の枠: K・V の組", 24, "middle", "sub")
+    """16 個の Q ヘッドが K・V ヘッドをいくつ共有するか。K・V ヘッドの数がキャッシュの大きさになる。"""
+    s = Svg(960, 540, "通常の注意機構・GQA・MQA で、Q ヘッドと K・V ヘッドの対応を比べる")
+    s.text(451, 52, "上の小さい枠: Q ヘッド 16 個　下の枠: K・V ヘッド", 24, "middle", "sub")
     qw, qg, x0 = 22, 6, 230
     rows = (("通常", 16), ("GQA（Qwen3）", 8), ("MQA", 1))
     for r, (label, kv) in enumerate(rows):
@@ -253,7 +253,7 @@ def gqa_figure():
             xa = x0 + k * group * (qw + qg)
             s.rect(xa, y + 70, group * (qw + qg) - qg, 34, OCHRE_PALE, OCHRE, 2.5, 4)
         s.text(700, y + 62, f"{per_token // 1024} KiB / トークン", 26, "start")
-    s.text(480, 522, "KV ヘッドの数にキャッシュの大きさが比例する（28 層、head_dim 128、f16）",
+    s.text(480, 522, "K・V ヘッドの数にキャッシュの大きさが比例する（28 層、head_dim 128、f16）",
            24, "middle", "sub")
     s.save("kv-cache_gqa.webp")
 
