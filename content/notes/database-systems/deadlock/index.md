@@ -36,7 +36,7 @@ Deadlock（デッドロック）は、2 本以上のトランザクションが�
 
 循環待ちができると、多くの DBMS はこの循環を検出し、関わっているどれかを巻き戻します。
 
-どれを巻き戻すかは、アプリケーションからは選べません。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-DEADLOCKS)も、どのトランザクションが中止されるかは予測しにくく、当てにしてはいけないとしています。
+どれを巻き戻すかは、アプリケーションからは選べません。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/current/explicit-locking.html#LOCKING-DEADLOCKS)でも、どのトランザクションが中止されるかは予測しにくく、当てにしてはいけないとされています。
 
 以下は、待ちが起きてから処置に至るまでの流れです。
 
