@@ -53,7 +53,7 @@ topics: ["Image Generation"]
 
 拡散モデルで描き直す場合は、描き足す量がずっと多くなります。[img2img](/notes/generative-ai/img2img-denoise/) の描き直しでは、入力の絵にノイズを足してから、拡散モデルがノイズを取り除きながら描き直します。denoise はどれだけノイズを足すかの割合（0〜1）で、0.35 なら元の絵をかなり残します。それでも、モデルはノイズを足した画像から顔や鱗を描き直すので、入力のわずかな違いが、目の形や模様の配置の違いにまで広がります。足すノイズを決めるシード値（seed）を全フレームで同じにしても、入力の画像そのものがフレームごとに違うので、同じ絵にはなりません。
 
-[Upscale-A-Video の論文](https://arxiv.org/abs/2312.06640)（2023 年）も、拡散モデルを動画の超解像に使う時に時間方向の一貫性を保つのが難しい理由として、拡散モデルが本来持つランダムさを挙げています。
+[Upscale-A-Video の論文](https://arxiv.org/abs/2312.06640)（2023 年）でも、拡散モデルを動画の超解像に使う時に時間方向の一貫性を保つのが難しい理由として、拡散モデルが本来持つランダムさが挙げられています。
 
 ---
 
@@ -154,7 +154,7 @@ hqdn3d による時間方向の除去は、前のフレームを混ぜてノイ�
 
 {{< figure src="images/video-upscale_vsr.webp" alt="左は 1 枚ずつの拡大。入力 t−1・t・t+1 がそれぞれ真下の出力へ拡大され、フレームの間に線が無い。右は BasicVSR。各入力から作った特徴の間を、青の矢印で前向きに、黄の矢印で後ろ向きに伝え、合わせた特徴から各フレームを拡大する" caption="1 枚ずつの拡大と、前後の情報を双方向に伝える動画用の超解像（BasicVSR の論文の構成を縮めた概念図）" align="center" >}}
 
-ただし、伝える情報にノイズが混じっていると、ノイズも一緒に伝わります。BasicVSR の筆頭著者らによる [RealBasicVSR](https://arxiv.org/abs/2111.12704)（2021 年）は、実際の動画にある強い劣化は伝えるうちに強調されることがあるとして、伝える前に画像を掃除する段が欠かせないと書いています。
+ただし、伝える情報にノイズが混じっていると、ノイズも一緒に伝わります。BasicVSR の筆頭著者らによる [RealBasicVSR](https://arxiv.org/abs/2111.12704)（2021 年）の論文には、実際の動画にある強い劣化は伝えるうちに強調されることがあるとして、伝える前に画像を掃除する段が欠かせないと書かれています。
 
 > To balance the tradeoff between detail synthesis and artifact suppression, we found an image pre-cleaning stage indispensable to reduce noises and artifacts prior to propagation.
 >
