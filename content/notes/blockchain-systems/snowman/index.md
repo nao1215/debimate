@@ -62,7 +62,7 @@ Snowman には、元になった 2019 年の論文の方式、それを確認す
 
 ### Slush - 多い方に乗り換える
 
-Snowman の土台は、2019 年に公開された論文 [Scalable and Probabilistic Leaderless BFT Consensus through Metastability](https://arxiv.org/abs/1906.08936) です。論文は、Slush → Snowflake → Snowball の順に、1 つずつ仕組みを足して説明しています。Snowman は論文には出てこない名前で、Avalanche を開発する [Ava Labs](https://www.avalabs.org/) が、Snowball をブロックの列に当てはめたものです（現在の実装が Snowflake を使う点は、実装の節で触れます）。
+Snowman の元になったのは、2019 年に公開された論文 [Scalable and Probabilistic Leaderless BFT Consensus through Metastability](https://arxiv.org/abs/1906.08936) です。論文は、Slush → Snowflake → Snowball の順に、1 つずつ仕組みを足して説明しています。Snowman は論文には出てこない名前で、Avalanche を開発する [Ava Labs](https://www.avalabs.org/) が、Snowball をブロックの列に当てはめたものです（現在の実装が Snowflake を使う点は、実装の節で触れます）。
 
 この節から「確率的な確定の意味」の節までは、論文の方式の説明です。
 
@@ -124,7 +124,7 @@ Snowball は、さらに色ごとの成功の累計を持ち、累計の多い�
 
 ### Snowman - ブロックの列に当てはめる
 
-論文は最後に、トランザクションを DAG（Directed Acyclic Graph、有向非巡回グラフ）で繋ぐ方式を説明しています（論文の中での名前はチェーンと同じ Avalanche なので、以下では DAG 方式と呼びます）。DAG 方式は、同じ資金を二重に使おうとするトランザクションの組（どちらか一方しか有効にできない組）ごとに Snowball を 1 つ持ちます。
+論文は最後に、トランザクションを DAG（Directed Acyclic Graph、有向非巡回グラフ）で繋ぐ方式を説明しています（論文の中での名前はチェーンと同じ Avalanche なので、以下では DAG 方式と呼びます）。DAG 方式は、同じ資金を二重に使おうとするトランザクションの集まり（どちらか一方しか有効にできないもの）ごとに Snowball を 1 つ持ちます。
 
 送金だけなら、衝突しないトランザクション同士は順序を決めなくても結果が変わりません。しかし、[スマートコントラクト](../smart-contract/)のようにトランザクションの順序で結果が変わるチェーンでは、全てのトランザクションを 1 列に並べる必要があります。
 
@@ -536,7 +536,7 @@ Snowball では、1 ノードの問い合わせ 1 回は 2k 通で、n に依存
 
 #### 既定のパラメータ
 
-既定値は [`snowball/parameters.go`](https://github.com/ava-labs/avalanchego/blob/v1.15.3/snow/consensus/snowball/parameters.go) の `DefaultParameters` にあり、本記事の実験の基準と同じです。
+既定値は [`snowball/parameters.go`](https://github.com/ava-labs/avalanchego/blob/v1.15.3/snow/consensus/snowball/parameters.go) の `DefaultParameters` にあり、本記事の実験で基準にした値と同じです。
 
 | 値 | 論文の評価 | avalanchego の既定値 |
 |---|---|---|
@@ -562,7 +562,7 @@ avalanchego は α を 2 つに分けており、`alphaPreference` は支持を�
 
 {{< figure src="images/snowman_epsilon.webp" alt="横軸が β、縦軸が対数の (1 − α / k)^β。k = 20 で α = 11、13、15、17 の 4 本の直線が右下がりに並び、α が大きいほど傾きが急。α = 15、β = 20 の点は約 9 × 10⁻¹³" caption="ドキュメントの目安 (1 − α / k)^β（k = 20）" align="center" >}}
 
-β を 1 増やすごとに目安は一定の比で小さくなり、α が大きいほどその比が強く効きます。ただし、これは論文の ε を厳密に計算した値ではなく、不正なノードの戦略やノード数を含まない簡易な見積もりです。
+β を 1 増やすごとに目安は一定の比で小さくなり、α が大きいほどその比が小さくなり、目安は速く下がります。ただし、これは論文の ε を厳密に計算した値ではなく、不正なノードの戦略やノード数を含まない簡易な見積もりです。
 
 <br>
 
@@ -582,7 +582,7 @@ Snowman の確定にはリーダーがいませんが、誰がブロックを作
 
 2024 年 3 月 6 日のアップグレードの後は、親ブロックの時刻から 5 秒ごとの枠に 1 人ずつ提案者を割り当て、その枠では割り当てられた提案者のブロックだけが有効です（[`proposer/windower.go`](https://github.com/ava-labs/avalanchego/blob/v1.15.3/vms/proposervm/proposer/windower.go)。リンクした README はアップグレード前の方式を説明しています）。
 
-提案者は、PBFT の primary と同じ役割を持つのでしょうか。Snowman++ の提案者が決めるのはブロックを作る順番だけで、そのブロックを確定するかどうかは、全員が同じ Snowman の問い合わせで判断します。提案者が応答しなくても、次の枠の提案者が作るまで遅れるだけです。
+提案者は、PBFT の primary と同じ役割を持つのでしょうか。Snowman++ の提案者が決めるのはブロックを作る順番だけで、そのブロックを確定するかどうかは、全員が同じ Snowman の問い合わせで判断します。提案者が応答しなくても、次の枠に割り当てられた提案者が作るまで遅れるだけです。
 
 ---
 
@@ -604,7 +604,7 @@ Snowman の列で固定の閾値を書けないのは、安全性が「何割ま
 ### 利点
 
 - 1 ノードが 1 回の決定に使うメッセージ数が、全体のノード数に依存しない
-- 確定の判断を主導するリーダーがいないので、リーダーの交代の手順が無い
+- 確定の判断を主導するリーダーがいないので、リーダーを交代する手順が無い
 - 不正が想定を少し超えても、安全性が一度に崩れず、割れる確率が上がっていく
 - 一度確定したブロックは、ノード自身が後から外すことが無い
 
