@@ -42,7 +42,7 @@ flowchart TB
 
 - 時計や sleep で待つ実装では、なぜ足りないのか。
 - 逐次計算で時間を稼ぐ Time-lock Puzzle は、35 年の想定だった LCS35 でなぜ 20 年で解かれたのか。
-- drand の round の署名から、tlock はどう復号するのか。
+- drand が round ごとに出す署名から、tlock はどう復号するのか。
 - 予定より早く復号される障害と、復号できなくなる障害は、それぞれ何が原因で起きるのか。
 
 ---
@@ -76,7 +76,7 @@ sleep も、待機処理を消せば待たずに復号できます。鍵を時�
 
 Time-lock Puzzle では、作成者が連続した計算を要する問題を公開し、解く人がその解から共通鍵を取り出します。
 
-[Rivest 氏、Shamir 氏、Wagner 氏の 1996 年の論文](https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-684.pdf)の方式では、大きな素数 p と q の積 `n = pq` を作り、`a^(2^t) mod n` を鍵の保護に使います。t は実時間ではなく、必要な 2 乗の回数です。共通鍵 K に `b = a^(2^t) mod n` を足した値を公開するので、b を求めた人だけが引き算で K を得られます。
+[Rivest 氏、Shamir 氏、Wagner 氏の 1996 年の論文](https://publications.csail.mit.edu/lcs/pubs/pdf/MIT-LCS-TR-684.pdf)が示した方式では、大きな素数 p と q の積 `n = pq` を作り、`a^(2^t) mod n` を鍵の保護に使います。t は実時間ではなく、必要な 2 乗の回数です。共通鍵 K に `b = a^(2^t) mod n` を足した値を公開するので、b を求めた人だけが引き算で K を得られます。
 
 作成者は p と q から `φ(n) = (p-1)(q-1)` を求められます。`a^φ(n) ≡ 1 (mod n)` が成り立つので、指数 `2^t` を `φ(n)` で割った余りに置き換えれば t 回の逐次計算を省けます。公開後に作成者も早く開けないよう、p、q、`φ(n)`、短縮した指数、共通鍵など、近道や復号に使える秘密状態を全て消す必要があります。
 
@@ -97,7 +97,7 @@ sequenceDiagram
     S->>S: 共通鍵を取り出して復号
 ```
 
-解く人は n、a、t などの puzzle を受け取りますが、p と q は知りません。逐次 2 乗を大幅に高速化する方法がないという仮定の下では、解く人は repeated squaring（繰り返し 2 乗）を t 回行います。この逐次性は、素因数分解困難性だけから証明されているわけではありません。
+解く人は n、a、t などの puzzle を受け取りますが、p と q は知りません。逐次 2 乗を大幅に高速化する方法がないという仮定の下では、解く人は repeated squaring（繰り返し 2 乗）で t 回 2 乗します。この逐次性は、素因数分解困難性だけから証明されているわけではありません。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -152,7 +152,7 @@ LCS35 の t を同じ速度で解くと: 30.1 年
 
 近道は t に関係なく 29 ms 前後で終わり、逐次 2 乗は t に比例して 0.14 秒、1.32 秒、11.91 秒と伸びました。どちらも同じ値に届くので、p と q を残した作成者は解く人を待たずに開けられます。手元の PC は 32 コアですが、このループが使うのは 1 コアだけです。
 
-最後の 2 行は、この速度のまま LCS35 を解くと 30 年かかるという外挿です。同じ PC で再実行すると 40.4 年になり、他の処理の負荷で揺れます。
+最後の 2 行は、この速度のまま LCS35 を解くと 30 年かかるという外挿です。同じ PC で再実行すると 40.4 年になり、他の処理による負荷で揺れます。
 
 ### コアを増やしても縮まないことの実測
 
