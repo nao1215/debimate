@@ -31,7 +31,7 @@ Partitioning（パーティショニング）は、あるカラムの値によ�
 - 主キーにパーティションキーを含めないと、何が起きるのか。
 - 動いている表に、止めずにパーティションを足したり外したりするにはどうするのか。
 
-実験は [Docker](https://www.docker.com/) 上の PostgreSQL 17.11 で行い、[Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/23/vldbg/partition-concepts.html) と [MySQL](https://dev.mysql.com/doc/refman/8.4/en/partitioning.html) は違いが出る所だけを取り上げます。
+実験には [Docker](https://www.docker.com/) 上の PostgreSQL 17.11 を使い、[Oracle Database](https://docs.oracle.com/en/database/oracle/oracle-database/23/vldbg/partition-concepts.html) と [MySQL](https://dev.mysql.com/doc/refman/8.4/en/partitioning.html) は違いが出る所だけを取り上げます。
 
 ---
 
@@ -60,7 +60,7 @@ Time: 29.028 ms
 
 `DELETE` は 1 件ずつ削除の印を付けるので、印の付いたレコード（`n_dead_tup`）が 500 万件残り、表の大きさも 211 MB のままです。
 
-これを回収するのは後で動く `VACUUM` です（[MVCC と VACUUM](/notes/database-systems/mvcc-vacuum/) のノート）。`DROP TABLE` はファイルごと捨てるので、回収するものがありません。一括の `DELETE` が生む `VACUUM` の負担を避けられる点は、[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)でも利点に挙げられています。
+これを回収するのは後で動く `VACUUM` で、その仕組みは [MVCC と VACUUM](/notes/database-systems/mvcc-vacuum/) のノートで扱っています。`DROP TABLE` はファイルごと捨てるので、回収するものがありません。一括の `DELETE` が生む `VACUUM` の負担を避けられる点は、[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)でも利点に挙げられています。
 
 ---
 
@@ -160,7 +160,7 @@ EXPLAIN (...) EXECUTE q('2026-03-01', '2026-04-01');
 
 Hot Partition（ホットパーティション）は、書き込みや読み出しが 1 つのパーティションに集中する状態です。時刻の Range で分けた表では、新しいレコードは全て最新の月に入るので、この状態が自然に起きます。
 
-以下は、2026-11-10 の 1 日分（1 秒 1 件、86,400 件）の行き先を比べた結果です（[03_hot_partition.sql](lab/03_hot_partition.sql)）。同じレコードを月ごとの Range で分けた表と `id` の Hash で 3 つに分けた表の両方に入れ、パーティションごとの `INSERT` 件数と、刈り込みの効き方を比べました。
+以下は、2026-11-10 の 1 日分（1 秒 1 件、86,400 件）の行き先を比べた結果です（[03_hot_partition.sql](lab/03_hot_partition.sql)）。同じレコードを月ごとの Range で分けた表と `id` の Hash で 3 つに分けた表の両方に入れ、パーティションごとの `INSERT` 件数と、刈り込めるかどうかを比べました。
 
 {{< figure src="images/partitioning_hot.svg" alt="左は月ごとの Range で、11 月のパーティションに 86,400 件が入り、10 月と 12 月は 0 件。右は id の Hash で、余り 0・1・2 のパーティションに 29,032 件・28,937 件・28,431 件が入る" caption="1 日分の INSERT が、パーティションごとに入った件数" align="center" >}}
 
@@ -210,7 +210,7 @@ SELECT tableoid::regclass AS partition, id, created_at FROM orders ORDER BY crea
 --  orders_2026_11 |  1 | 2026-11-01 00:00:00
 ```
 
-`id` だけの主キーは作れず、`(id, created_at)` なら作れました。しかし、後者が保証するのは組の一意性で、同じ `id = 1` が 10 月と 11 月に 1 件ずつ入ってもエラーになりません。
+`id` だけの主キーは作れず、`(id, created_at)` なら作れました。しかし、後者が保証するのは `id` と `created_at` の組み合わせの一意性で、同じ `id = 1` が 10 月と 11 月に 1 件ずつ入ってもエラーになりません。
 
 分ける前の表で `id` に主キーを付けていた場合、パーティション化した瞬間に `id` の重複を止める仕組みが消えます。`id` を採番する側で重複しない値を作るか、`id` だけを持つ別の表で一意性を守る必要があります。[MySQL](https://dev.mysql.com/doc/refman/8.4/en/partitioning-limitations-partitioning-keys-unique-keys.html) も、全ての一意キーがパーティションの式のカラムを含むことを求めます。
 
@@ -320,7 +320,7 @@ ALTER TABLE metrics DETACH PARTITION metrics_2026_11 CONCURRENTLY;
 
 {{< figure src="images/partitioning_times.svg" alt="対数軸の横棒グラフ。1 か月分の DELETE は 2,129 ms、パーティションの DROP は 29 ms。CHECK 制約の無い ATTACH は 346 ms、ある ATTACH は 6 ms" caption="レコード単位の操作とパーティション単位の操作の時間" align="center" >}}
 
-どちらの組も、レコードを 1 件ずつ扱う操作とパーティションの単位で済ませる操作で、約 70 倍と約 60 倍の差が出ています。
+どちらの比較も、レコードを 1 件ずつ扱う操作とパーティションの単位で済ませる操作で、約 70 倍と約 60 倍の差が出ています。
 
 DEFAULT パーティションには落とし穴があります。2027-02 のレコードが 1 件でも入っていると、2027-02 のパーティションは作れず、先にそのレコードを移す必要があります。
 
@@ -371,8 +371,8 @@ B_ddl    finished after 5.2 s
 
 - 表が小さく、索引で十分に絞れる場合
 - 問い合わせの大半が、パーティションキーを条件に含まない場合
-- 古いレコードをまとめて消す運用が無く、削除の速さが効かない場合
+- 古いレコードをまとめて消す運用が無く、削除の速さが活きない場合
 
-どの程度の大きさから効くかは用途によります。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)は、表の大きさが DB サーバーの物理メモリを超える場合を目安に挙げ、典型的な問い合わせがごく一部を除いて刈り込める限り、数千個程度のパーティションまでプランナが扱えるとしています。
+どの程度の大きさから効果が出るかは用途によります。[PostgreSQL のドキュメント](https://www.postgresql.org/docs/17/ddl-partitioning.html)は、表の大きさが DB サーバーの物理メモリを超える場合を目安に挙げ、典型的な問い合わせがごく一部を除いて刈り込める限り、数千個程度のパーティションまでプランナが扱えるとしています。
 
-パーティションは多いほど良いわけではなく、刈り込みが効く問い合わせの形と、消す単位から数を決めます。
+パーティションは多いほど良いわけではなく、刈り込める問い合わせの形と、消す単位から数を決めます。
