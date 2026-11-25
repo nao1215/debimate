@@ -217,7 +217,7 @@ sidecar の弱みは、最初の節の表の最後の列でした。Pod ごと�
 
 {{< figure src="images/sidecar_per_node.webp" alt="左はノードの中の Pod 4 つのそれぞれに proxy がある。右は同じ 4 つの Pod が、ノードに 1 つだけ置いた proxy を共有する" caption="プロキシを Pod ごとに置く場合と、ノードごとに 1 つ置く場合" align="center" >}}
 
-service mesh の Istio は、プロキシの [Envoy](https://www.envoyproxy.io/) を sidecar として全ての Pod に置く方式を長く使ってきました。2022 年 9 月に ambient mesh として発表した方式（今の名前は ambient mode）の[発表のブログ](https://istio.io/latest/blog/2022/introducing-ambient-mesh/)は、sidecar の限界として次の 3 つを挙げています。
+service mesh の Istio は、プロキシの [Envoy](https://www.envoyproxy.io/) を sidecar として全ての Pod に置く方式を長く使ってきました。2022 年 9 月に ambient mesh として発表した方式（今の名前は ambient mode）の[発表のブログ](https://istio.io/latest/blog/2022/introducing-ambient-mesh/)では、sidecar の限界として次の 3 つが挙げられています。
 
 - 入れる・更新するたびに、Pod を作り直す必要がある
 - Pod ごとに最悪の負荷に合わせて予約するので、資源が余る
