@@ -284,7 +284,7 @@ sequenceDiagram
 
 <br>
 
-ホワイトペーパーが実例として挙げているのは、セキュリティ研究者の samczsun による [2019 年の報告](https://samczsun.com/taking-undercollateralized-loans-for-fun-and-for-profit/)です。暗号資産を貸し出す [bZx](https://github.com/bZxNetwork) は、担保の価格を交換サービスの [Kyber](https://kyber.network/) から読んでいました。Kyber には REP（予測市場 Augur のトークン）の交換の相手が複数あり、その 1 つが Uniswap のプールを使っていました。
+ホワイトペーパーで実例に挙げられているのは、セキュリティ研究者の samczsun による [2019 年の報告](https://samczsun.com/taking-undercollateralized-loans-for-fun-and-for-profit/)です。暗号資産を貸し出す [bZx](https://github.com/bZxNetwork) は、担保の価格を交換サービスの [Kyber](https://kyber.network/) から読んでいました。Kyber には REP（予測市場 Augur のトークン）の交換の相手が複数あり、その 1 つが Uniswap のプールを使っていました。
 
 報告では当時のチェーンの状態で試算され、プールにある REP の 9 割を買うと 1 REP が約 0.05 ETH から約 6.05 ETH に上がることが示されています。報告は修正の後に公開され、資金は失われていません。
 

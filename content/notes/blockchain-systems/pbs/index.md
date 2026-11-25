@@ -44,7 +44,7 @@ sandwich attack などの MEV の手口は [MEV](../mev/) で、slot と propose
 
 2026 年 11 月時点のメインネットでは、PBS は Ethereum のプロトコルの規則には入っていません。プロトコルの外で PBS を実現しているのが、バリデータが追加で動かす [MEV-Boost](https://github.com/flashbots/mev-boost) というソフトウェアです。
 
-[Who Wins Ethereum Block Building Auctions and Why?](https://arxiv.org/abs/2407.13931)（Öz ら、2024 年）は、論文の執筆時点で Ethereum のブロックの約 90% が MEV-Boost の入札から作られていると報告しています。
+Öz らは 2024 年の論文 [Who Wins Ethereum Block Building Auctions and Why?](https://arxiv.org/abs/2407.13931) で、執筆時点で Ethereum のブロックの約 90% が MEV-Boost の入札から作られていると報告しています。
 
 MEV-Boost の構成では、冒頭の図の 4 つの役割が次のように動きます。relay は複数あり、proposer は MEV-Boost の設定で選んだ relay に問い合わせて、その中で最も高い入札を選びます。
 
