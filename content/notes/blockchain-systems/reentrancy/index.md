@@ -23,7 +23,7 @@ topics: ["Smart Contract"]
 
 <br>
 
-本記事では、手元のローカルチェーンでリエントランシー攻撃を再現し、銀行の残高の推移から対策の効き方を説明します。扱う疑問は次の通りです。
+本記事では、手元のローカルチェーンでリエントランシー攻撃を再現し、銀行の残高の推移から、対策を入れると何が変わるかを説明します。扱う疑問は次の通りです。
 
 - 送金の途中で、なぜ相手のコードが動くのか。
 - 2016 年の The DAO では、何が起きたのか。
@@ -83,7 +83,7 @@ receive() external payable {
 
 ETH が届くたびに、銀行にまだ 1 ETH 以上あれば `withdraw` を呼び直します。呼び直しが拒否された時は、`try` で受け止めて理由をログに残し、トランザクション全体は成功させます。`crossFunction_` は後の節で使う切り替えです。銀行と攻撃側のコントラクトの全体は [lab/Bank.sol](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/reentrancy/lab/Bank.sol)、トランザクションを送るスクリプトは [lab/run.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/reentrancy/lab/run.py) にあります。説明用の実装で、監査は受けていません。
 
-最初の節の脆弱な銀行を攻撃した結果は次の通りです。
+最初の節で示した脆弱な銀行を攻撃した結果は次の通りです。
 
 ```text
   VulnerableBank: tx ok, gas used 172,961
@@ -158,7 +158,7 @@ pull 型にすると、外部を呼ぶ場所が、残高を 0 にしてから送
 
 ### ロックで呼び直しを拒む
 
-CEI は関数ごとの並び順の約束なので、関数が長くなると守れているかを確かめにくくなります。そこで、関数の入口で旗を立て、旗が立っている間の呼び出しを拒むロックを併用します。[OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) の [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.7.0/contracts/utils/ReentrancyGuard.sol#L69-L106) は、`nonReentrant` という modifier（関数の前後に処理を挟む Solidity の記法）でこれを提供しています。v5.7.0 の要所は次の通りです（コメントは要約に差し替えています）。
+CEI は関数ごとに並び順を守る決まりなので、関数が長くなると守れているかを確かめにくくなります。そこで、関数の入口で旗を立て、旗が立っている間の呼び出しを拒むロックを併用します。[OpenZeppelin Contracts](https://github.com/OpenZeppelin/openzeppelin-contracts) の [ReentrancyGuard](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v5.7.0/contracts/utils/ReentrancyGuard.sol#L69-L106) は、`nonReentrant` という modifier（関数の前後に処理を挟む Solidity の記法）でこれを提供しています。v5.7.0 の要所は次の通りです（コメントは要約に差し替えています）。
 
 ```solidity
 modifier nonReentrant() {
@@ -173,7 +173,7 @@ function _nonReentrantBefore() private {
 }
 ```
 
-関数の本体を実行する前に旗を `ENTERED`（2）にし、終わったら `NOT_ENTERED`（1）に戻します。実験では、脆弱な銀行の `withdraw` の並び順を変えずに `nonReentrant` を付けただけで、呼び直しが `ReentrancyGuardReentrantCall()` で拒否されました（攻撃の節の図の青い線）。
+関数の本体を実行する前に旗を `ENTERED`（2）にし、終わったら `NOT_ENTERED`（1）に戻します。実験では、脆弱な銀行の `withdraw` の並び順を変えずに `nonReentrant` を付けただけで、呼び直しが `ReentrancyGuardReentrantCall()` で拒否されました（攻撃を再現した節の図にある青い線）。
 
 <br>
 
@@ -197,7 +197,7 @@ OpenZeppelin は v5.1 から、旗を transient storage に置く [ReentrancyGua
 
 ### 関数をまたぐリエントランシー
 
-ロックは、付けた関数にしか効きません。呼び直されるのが同じ関数とは限らず、同じ状態を触る別の関数を呼ばれることもあります。これを関数をまたぐリエントランシー（cross-function reentrancy）と呼びます。
+ロックが呼び直しを拒むのは、付けた関数だけです。呼び直されるのが同じ関数とは限らず、同じ状態を触る別の関数を呼ばれることもあります。これを関数をまたぐリエントランシー（cross-function reentrancy）と呼びます。
 
 実験では、`withdraw` にだけ `nonReentrant` を付け、帳簿の残高を他人へ移す `transferBalance` にはロックを付けない銀行を用意しました。攻撃側は、ETH を受け取った時に `withdraw` ではなく `transferBalance` を呼び、まだ減っていない 1 ETH を Mallory 本人のアカウントへ移します。
 
@@ -241,7 +241,7 @@ The DAO でも、関数の組み合わせが穴になっていました。Daian 
 
 この値を価格の計算に使っていた MakerDAO（ETH などを担保にトークンを貸し出すプロジェクト）など複数のプロジェクトが操作を受け得る状態で、ChainSecurity は詳細の公開より前に Curve と各プロジェクトへ知らせていました。担保の評価がずれると何が起きるかは、[Lending](../lending/) のノートで扱っています。
 
-OpenZeppelin は v5.5.0 で、`view` 関数に付ける `nonReentrantView` を加えました。旗が立っている間に呼ばれると revert するだけで、旗は変えません。ただし、これで守れるのは自分の `view` 関数だけです。他のプロジェクトの値を読む側は、相手が呼び出しの途中ではないかを自分で確かめる必要があります。
+OpenZeppelin は v5.5.0 で、`view` 関数に付ける `nonReentrantView` を加えました。旗が立っている間に呼ばれると revert するだけで、旗は変えません。ただし、これで守れるのは自分の `view` 関数だけです。他のプロジェクトから値を読む側は、相手が呼び出しの途中ではないかを自分で確かめる必要があります。
 
 ---
 
@@ -251,7 +251,7 @@ Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だ�
 
 この前提は、命令の gas の値段が変わらないことに依存していました。2019 年のハードフォーク Istanbul で入った [EIP-1884](https://eips.ethereum.org/EIPS/eip-1884) は、storage を読む SLOAD を 200 から 800 gas に上げ、storage を読む受け取り用の関数が 2,300 gas を超える場合があると互換性の節で警告しています。
 
-実験の Cancun の規則では、2021 年のハードフォーク Berlin の [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) でトランザクションの中で初めて読む SLOAD が 2,100 gas になっており、storage の値を 1 つ読んでログに出すだけの `receive` は、`transfer` では失敗しました。
+実験で使った Cancun の規則では、2021 年のハードフォーク Berlin の [EIP-2929](https://eips.ethereum.org/EIPS/eip-2929) でトランザクションの中で初めて読む SLOAD が 2,100 gas になっており、storage の値を 1 つ読んでログに出すだけの `receive` は、`transfer` では失敗しました。
 
 ```text
   payWithTransfer -> reverted; gas given to receiver 2,300, used 2,300, error: out of gas
@@ -275,8 +275,8 @@ Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だ�
 
 どの対策も、外部を呼ぶ間に自分の状態を他人に触らせないことでリエントランシーを防ぎます。その代わりに、次の制約があります。
 
-- CEI は関数ごとの約束で、外部を呼ぶ処理が深い所に隠れていると守れているかを見落としやすい
-- ロックは付けた関数にしか効かず、付け忘れた関数から関数をまたぐリエントランシーを受ける
+- CEI は関数ごとに守る決まりで、外部を呼ぶ処理が深い所に隠れていると守れているかを見落としやすい
+- ロックは付けた関数の呼び直ししか拒まず、付け忘れた関数から関数をまたぐリエントランシーを受ける
 - `nonReentrant` の関数どうしは互いに呼べず、内部の処理を private な関数に分ける必要がある
 - pull 型では、受け取る人が自分で引き出すトランザクションを送る手間と手数料が増える
 
@@ -286,4 +286,4 @@ Solidity の `transfer` と `send` は、受け手のコードに 2,300 gas だ�
 - 同じ状態を複数のコントラクトで分け持ち、ロックの旗がコントラクトごとに別になっている場合
 - transient storage の無いチェーンに、ReentrancyGuardTransient を使ったコントラクトを置く場合（transient storage に書く命令の TSTORE を実行できず、関数が失敗する）
 
-リエントランシーの対策は、自分のコントラクトの中の約束です。外部の値を信じて動く部分は、相手のコントラクトが更新の途中ではないかという別の問いとして残ります。
+リエントランシーの対策は、自分のコントラクトで守る決まりです。外部の値を信じて動く部分は、相手のコントラクトが更新の途中ではないかという別の問いとして残ります。
