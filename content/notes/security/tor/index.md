@@ -264,7 +264,7 @@ flowchart TB
     classDef note fill:#f7f1e5,stroke:#c5b99b,color:#403c32;
 ```
 
-上記の図の Traffic correlation は、回線の中身を解読しない攻撃で、両端を観測できれば global passive adversary でなくても仕掛けられます。論文も「Tor only minimally hides such correlations」（Tor がこの相関を隠せるのは最小限にとどまる）と認めています。
+上記の図の Traffic correlation は、回線の中身を解読しない攻撃で、両端を観測できれば global passive adversary でなくても仕掛けられます。論文でも「Tor only minimally hides such correlations」（Tor がこの相関を隠せるのは最小限にとどまる）と認められています。
 
 この形の攻撃が起きたのが、2014 年の [relay early traffic confirmation attack](https://blog.torproject.org/tor-security-advisory-relay-early-traffic-confirmation-attack/) です。2014 年 1 月 30 日に約 115 台のリレーが加わり、Guard になれるリレーを合わせた通信容量の約 6.4% を占めました。
 
