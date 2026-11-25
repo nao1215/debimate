@@ -43,7 +43,7 @@ return int64(float64(buckets)*(x+low)/(high-low)) + 1, nil
 
 - ミュータントは、どう作られて、どう数えられるのか。
 - 生き残ったミュータントは、全てテストの穴なのか。
-- どれくらい時間がかかり、どこから回せばよいのか。
+- どれくらい時間がかかり、どこから回せば良いのか。
 - 専用のツールが無い言語でも試せるのか。
 
 ---
@@ -78,9 +78,9 @@ Go のツール [gremlins](https://github.com/go-gremlins/gremlins) は、既定
 
 ### filesql の dialect に gremlins を掛ける
 
-filesql の [dialect](https://github.com/nao1215/filesql/tree/21fbc9c7517f095d50d0dee22bd323de397e4d43/dialect) は、MySQL・PostgreSQL・GoogleSQL の書き方の SQL を構文木に読み、SQLite で実行できる SQL に書き直すパッケージです。SQLite に無い関数は、`width_bucket` のように Go で書いた関数を SQLite に登録して補います。
+filesql の [dialect](https://github.com/nao1215/filesql/tree/21fbc9c7517f095d50d0dee22bd323de397e4d43/dialect) は、MySQL・PostgreSQL・GoogleSQL の書き方の SQL を構文木にパースし、SQLite で実行できる SQL に書き直すパッケージです。SQLite に無い関数は、`width_bucket` のように Go で書いた関数を SQLite に登録して補います。
 
-構文を読む parser、SQLite 向けに書き換える lower、関数を集めた runtime などは、dialect 配下の internal にある別のパッケージです。filesql のコミット 21fbc9c で、gremlins v0.6.0 を dialect に掛けました。gremlins は、渡したディレクトリ配下のパッケージも全て書き換えます。
+構文を解析する parser、SQLite 向けに書き換える lower、関数を集めた runtime などは、dialect 配下の internal にある別のパッケージです。filesql のコミット 21fbc9c で、gremlins v0.6.0 を dialect に掛けました。gremlins は、渡したディレクトリ配下のパッケージも全て書き換えます。
 
 ```bash
 gremlins unleash --workers 4 ./dialect
@@ -140,7 +140,7 @@ if x >= high {                        // L214
 return int64(float64(buckets)*(x-low)/(high-low)) + 1, nil  // L219
 ```
 
-5 種類を 1 つずつ元のコードに入れ、既存のテストと、新しく足したテストを回しました。足したテストの答えは、PostgreSQL 18.6 で実際に `SELECT width_bucket(...)` を実行して取りました。下限を 0 から離し、値が下限・上限ちょうどの所も入れています。最後の行は、上限ちょうどの値が浮動小数の丸めで 1 つ下の区画に落ちないかを見る入力です。
+5 種類を 1 つずつ元のコードに入れ、既存のテストと、新しく足したテストを回しました。足したテストの答えは、PostgreSQL 18.6 で実際に `SELECT width_bucket(...)` を実行して取りました。下限を 0 から離し、値が下限・上限ちょうどの所も入れています。最後の行は、上限ちょうどの値が浮動小数の丸めで 1 つ下の区画に入らないかを見る入力です。
 
 ```go
 func TestWidthBucketAwayFromZero(t *testing.T) {
