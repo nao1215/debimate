@@ -72,7 +72,7 @@ Brendan Burns 氏は 2015 年 6 月の Kubernetes ブログ「[The Distributed S
 
 表の 1 行目のように、自分たちで書いたアプリなら、Prometheus の [client library](https://prometheus.io/docs/instrumenting/clientlibs/) を組み込んで、最初から Prometheus の形で出せます。変換は必要ありません。PostgreSQL や Redis のように中を変えられないソフトウェアでは、この行が使えないので、残りの 3 つのどれかになります。Prometheus の公式サイトには、こうした [exporter の一覧](https://prometheus.io/docs/instrumenting/exporters/)があります。
 
-Brendan Burns 氏らが 2016 年に書いた論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」によると、Google 社内ではコードの規約で監視の形を揃えていますが、それはソフトウェアを一から作る場合にしかできません。既存のシステムやオープンソースのソフトウェアを改変せずに揃えるために、論文は Adapter を挙げています。
+Brendan Burns 氏らが 2016 年に書いた論文「[Design Patterns for Container-based Distributed Systems](https://www.usenix.org/conference/hotcloud16/workshop-program/presentation/burns)」によると、Google 社内ではコードの規約で監視の形を揃えていますが、それはソフトウェアを一から作る場合にしかできません。既存のシステムやオープンソースのソフトウェアを改変せずに揃える手段として、論文では Adapter が挙げられています。
 
 <br>
 
@@ -94,7 +94,7 @@ exporter 1 個は 10MiB 足らずで、何も処理していない PostgreSQL 17
 
 3 行目の [multi-target](https://prometheus.io/docs/guides/multi-target-exporter/) は、1 つの exporter が、要求ごとに `/probe?target=` で指定された DB を読む方式です。postgres_exporter の README は、sidecar として置けないクラウドの管理サービス向けと説明しています。
 
-4 行目は、[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) の [postgresql receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/postgresqlreceiver) のように、値を集める部品が DB を読む方式です。監視する DB の種類が増えるたびに、集める側の設定と receiver に手を入れることになり、変換の誤りや重さは、全ての値を集める部品そのものに及びます。論文は、監視の仕組みにアプリごとのコードを抱えさせる構成について、関心の分離がきれいでないと指摘しています。
+4 行目は、[OpenTelemetry Collector](https://opentelemetry.io/docs/collector/) の [postgresql receiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/postgresqlreceiver) のように、値を集める部品が DB を読む方式です。監視する DB の種類が増えるたびに、集める側の設定と receiver に手を入れることになり、変換の誤りや重さは、全ての値を集める部品そのものに及びます。監視の仕組みにアプリごとのコードを抱えさせる構成は、論文で、関心の分離がきれいでないと指摘されています。
 
 表に無い置き場所もあります。Java のアプリは、監視の値を [JMX](https://docs.oracle.com/javase/8/docs/technotes/guides/jmx/)（Java Management Extensions）という窓口で出します。[jmx_exporter](https://prometheus.github.io/jmx_exporter/) は、別のコンテナから JMX を読むとリモート接続の設定が必要なので、同じ JVM（Java の実行環境）に Java Agent として読み込ませる形を勧めています。jmx_exporter 1.5.0 の[文書](https://prometheus.github.io/jmx_exporter/1.5.0/deployment/java-agent/)にある起動例は次の通りで、アプリの `java` コマンドにエージェントの指定を足し、`9404` 番のポートで `/metrics` を出します。
 
@@ -116,7 +116,7 @@ postgres_exporter が何をしているかは、Prometheus が取りに来た時
 
 {{< figure src="images/adapter_concept.webp" alt="破線の Pod の枠の中に PostgreSQL と postgres_exporter（adapter）が並ぶ。PostgreSQL の中には pg_stat_database・pg_stat_bgwriter・pg_stat_checkpointer などの統計のビューがあり、exporter の中には database・stat_bgwriter・stat_checkpointer などの collector がある。stat_bgwriter の collector は pg_stat_bgwriter へ SQL を投げ、stat_checkpointer から pg_stat_checkpointer への矢印は破線で既定は無効。Pod の外の Prometheus は 5 秒ごとに GET /metrics を送り、テキストを受け取る" caption="DB の隣に置いた exporter と、取りに来る Prometheus" align="center" >}}
 
-同じ Pod のコンテナはネットワークを共有するので、exporter は `localhost` で DB に繋がります。論文も、本体と adapter の間は `localhost` か共有の volume で繋ぐとしています。共有の volume は、同じ実行単位に置いた複数のコンテナから同じ内容が見えるファイルの置き場です。
+同じ Pod のコンテナはネットワークを共有するので、exporter は `localhost` で DB に繋がります。論文でも、本体と adapter の間は `localhost` か共有の volume で繋ぐとされています。共有の volume は、同じ実行単位に置いた複数のコンテナから同じ内容が見えるファイルの置き場です。
 
 本記事の exporter は DB に問い合わせて取りに行く形ですが、繋ぎ方はアプリの出し方で決まります。[StatsD](https://github.com/statsd/statsd) は、値を短いテキスト 1 行で一定間隔に送る形の例です。
 
