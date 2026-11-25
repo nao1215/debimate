@@ -9,15 +9,15 @@ wrapTables: true
 topics: ["Node Policy"]
 ---
 
-[Proof of Stake](../proof-of-stake/) の Ethereum では、ブロックを作る順番が決まっています。時間を 12 秒ごとの slot（スロット）に区切り、slot ごとに 1 つのバリデータ（ETH を預けてブロックの提案と投票を担う参加者）を proposer（ブロックの提案者）に選びます。proposer は、その slot のブロックに入れるトランザクションと並び順を決め、署名してネットワークに送ります。
+[Proof of Stake](../proof-of-stake/) の Ethereum では、ブロックを作る順番が決まっています。時間を 12 秒ごとの slot（スロット）に区切り、slot ごとに 1 つのバリデータ（ETH を預けてブロックを提案し、投票する参加者）を proposer（ブロックの提案者）に選びます。proposer は、その slot のブロックに入れるトランザクションと並び順を決め、署名してネットワークに送ります。
 
-[MEV](../mev/) のノートで説明した通り、ブロックに入るトランザクションの並び順は価値を生みます。ただし、価値の高い並び順を探すには、多くのトランザクションを集めて、他の参加者より速く計算する設備が要ります。
+[MEV](../mev/) のノートで説明した通り、ブロックに入るトランザクションの並び順は価値を生みます。ただし、価値の高い並び順を探すには、多くのトランザクションを集めて、他の参加者より速く計算する設備が必要です。
 
 <br>
 
 PBS（Proposer-Builder Separation）は、この仕事を 2 つに分ける考え方です。ブロックの中身を組む仕事を専門の builder に任せ、proposer は署名するだけにします。builder は、並び順で得られる価値の一部を proposer に支払うと申し出て（入札して）、proposer は最も高い入札のブロックを選びます。
 
-PBS は分け方の考え方で、実現する形は 1 つではありません。本記事では主に、現在のメインネット（実際の資産が動く本番のネットワーク）で使われている MEV-Boost という構成（次節で説明）を扱います。もう 1 つの形であるプロトコルへの組み込みは、最後の節で扱います。
+PBS は分け方の考え方で、実現する形は 1 つではありません。本記事では主に、現在のメインネット（実際の資産が動く本番のネットワーク）で使われている MEV-Boost という構成を扱います。もう 1 つの形であるプロトコルへの組み込みは、最後の節で扱います。
 
 この構成では、builder と proposer の間に、入札を集めて仲介する relay が入ります。以下の図は、MEV のノートで説明した searcher を加えた 4 つの役割と、それぞれが見るものです。
 
@@ -59,7 +59,7 @@ MEV-Boost の構成では、冒頭の図の 4 つの役割が次のように動�
   body: 中身を見ずに、最高額のヘッダーに署名する。
 {{< /note-steps >}}
 
-searcher が送る組を bundle と呼びます。[Flashbots のドキュメント](https://docs.flashbots.net/flashbots-auction/advanced/understanding-bundles)によると、bundle は指定した順に実行されるトランザクションの組で、[mempool](../mempool/)（ブロックに入る前のトランザクションを置く場所）にある他人のトランザクションも含められます。MEV のノートの冒頭で並べた B → A → C は、他人のトランザクション A を自分の B と C で挟む bundle です。
+searcher が送るトランザクションのまとまりを bundle と呼びます。[Flashbots のドキュメント](https://docs.flashbots.net/flashbots-auction/advanced/understanding-bundles)によると、bundle は指定した順に実行される複数のトランザクションで、[mempool](../mempool/)（ブロックに入る前のトランザクションを置く場所）にある他人のトランザクションも含められます。MEV のノートの冒頭で並べた B → A → C は、他人のトランザクション A を自分の B と C で挟む bundle です。
 
 ---
 
@@ -84,7 +84,7 @@ sequenceDiagram
     Note over R,P: 署名した後で<br/>中身が明かされる
 ```
 
-Proof of Stake に移った後の Ethereum のノードは、合意（どのブロックを採用するか）を担うコンセンサス・レイヤー（consensus layer）と、トランザクションを実行する実行レイヤー（execution layer）の 2 つのソフトウェアに分かれています。上記の図の beacon node はコンセンサス・レイヤーのソフトウェアで、受け取ったブロックを検証してネットワークに配ります。
+Proof of Stake に移った後の Ethereum のノードは、合意（どのブロックを採用するか）を決めるコンセンサス・レイヤー（consensus layer）と、トランザクションを実行する実行レイヤー（execution layer）の 2 つのソフトウェアに分かれています。上記の図の beacon node はコンセンサス・レイヤーのソフトウェアで、受け取ったブロックを検証してネットワークに配ります。
 
 proposer は中身を見ないまま署名します。relay は署名を受け取ってから beacon node を通してブロックを公開し、proposer にも中身を返します。中身を先に見せると、proposer が builder のブロックを写し、bundle を崩して自分のトランザクションに差し替えられるからです。そうすれば proposer は、入札額として一部を受け取る代わりに、並び順の価値を丸ごと自分のものにできます。
 
@@ -118,13 +118,13 @@ proposer は中身を見ないまま署名します。relay は署名を受け�
 1. 攻撃者が、囮として、slippage tolerance（受取量の下限）を付けずに ETH でトークンを買う交換を公開 mempool に流した。sandwich を狙う searcher の bot（自動でトランザクションを送るプログラム）は、下限が無いので大きく先回りできると見て、これを挟む bundle を組んだ。
 2. bot の bundle は builder に渡り、bot のトランザクションを含むブロックの入札が relay に届いた。
 
-後半の 3〜5 を追う前に、proposer が署名するものの形を確認しておきます。ここまで「ヘッダーに署名する」と書いてきましたが、正確には、proposer が署名するのはコンセンサス・レイヤーのブロック（beacon block）です。その中に、トランザクションの中身を指すヘッダー（execution payload header）が入れ子で入っています。
+後半の 3〜5 には、proposer が署名するブロックの形が関わります。ここまで「ヘッダーに署名する」と書いてきましたが、正確には、proposer が署名するのはコンセンサス・レイヤーのブロック（beacon block）です。その中に、トランザクションの中身を指すヘッダー（execution payload header）が入れ子で入っています。
 
 以下の図のように、中身を 1 つに固定しているのは、ヘッダーの中の block_hash（中身のハッシュ値）です。block_hash 以外の欄、例えば parent_root（直前のブロックを指す値）が誤っていると、ブロックは無効になりますが、block_hash が指す中身は変わりません。
 
 {{< figure src="images/pbs_signed.webp" alt="左の灰色の枠は proposer が署名するコンセンサス・レイヤーのブロック（beacon block）で、slot・proposer の番号、parent_root（直前のブロックを指す値）、state_root（コンセンサス・レイヤーの状態のハッシュ値）、青い枠の execution payload header（中身を指すヘッダー）を含む。header の中の block_hash（中身のハッシュ値）から、右の relay が持つ中身（execution payload。事故では bot の買い・囮の交換・bot の売りなど）へ矢印が伸びる。block_hash は事故でもそのまま。下に、relay は block_hash で自分の中身を探し、署名されたブロックが有効かは確認しなかったと書いてある" caption="proposer が署名するブロックの入れ子と、relay が中身を探した block_hash" align="center" >}}
 
-3. proposer に選ばれた攻撃者が、Ultra Sound という relay からヘッダーを受け取った。Ultra Sound は、Flashbots が公開する relay のソフトウェア（[mev-boost-relay](https://github.com/flashbots/mev-boost-relay)）を動かしていた。攻撃者は、事後報告によると「state root と parent root を 0 にした」無効なブロックに署名して返した（state root という欄は中身を指すヘッダーの側にもあり、どの階層の欄かは報告に書かれていない）。block_hash は元のままだった。無効なブロックなので、公開は失敗する。
+3. proposer に選ばれた攻撃者が、Ultra Sound という relay からヘッダーを受け取った。Ultra Sound は、Flashbots が公開する relay のソフトウェア（[mev-boost-relay](https://github.com/flashbots/mev-boost-relay)）を動かしていた。攻撃者は、事後報告によると「state root と parent root を 0 にした」無効なブロックに署名して返した（state root という欄は中身を指すヘッダーにもあり、どの階層の欄かは報告に書かれていない）。block_hash は元のままだった。無効なブロックなので、公開は失敗する。
 4. relay は、block_hash から自分のブロックへの署名と判断し、中身を proposer に返した。その後に別の処理で試みた公開は beacon node に拒否されたが、当時の relay は公開の結果を待たずに中身を返す作りだった。
 5. bot のトランザクションは bot 自身が署名済みなので、中身さえ分かれば誰のブロックにも入れられる。攻撃者は bot の先回りの買いを取り出し、その直後に自分の売りを置いたブロックを作った（囮は入れなかった。bot の売りは攻撃者の売りの後に置かれ、失敗した）。
 
@@ -180,9 +180,9 @@ builder が少数に集まると、その数社が並び順と、どのトラン
 
 {{< figure src="images/pbs_epbs.webp" alt="左の黄土色の枠は proposer が署名するブロックで、中には builder の入札（支払いの約束と中身のハッシュ値）と proposer の署名だけが入る。右の青い枠は builder が後で公開するトランザクションの中身。下に、支払いはプロトコルが builder の預けた残高から行い、中身が期限までに公開されたかは一部のバリデータが投票で確認すると書いてある" caption="プロトコルに組み込んだ PBS では、ブロックが 2 つに分かれる" align="center" >}}
 
-支払いは、プロトコルが builder の預けた残高から行います。中身が期限までに公開されたかは、slot ごとに選ばれる 512 のバリデータが確認し、その結果でその slot の中身を採用するかが決まります。一方、proposer への支払いは中身の公開を条件にしません。proposer のブロック自体が期限内に通常の投票（そのブロックを採用するという attestation）を十分に集めていれば、builder が中身を出さなくても支払われます。その場合、その slot はトランザクションの中身が無いまま進み、builder は払うだけ払って何も得ません。
+支払いは、builder の預けた残高からプロトコルが差し引きます。中身が期限までに公開されたかは、slot ごとに選ばれる 512 のバリデータが確認し、その結果でその slot の中身を採用するかが決まります。一方、proposer への支払いは中身の公開を条件にしません。proposer のブロック自体が期限内に通常の投票（そのブロックを採用するという attestation）を十分に集めていれば、builder が中身を出さなくても支払われます。その場合、その slot はトランザクションの中身が無いまま進み、builder は払うだけ払って何も得ません。
 
-builder の側も、中身を自分で持ったまま、proposer のブロックが出た後で自分で公開するので、中身を預ける第三者が要りません。そのため、両側が relay を信頼する必要がなくなります。
+builder も、中身を自分で持ったまま、proposer のブロックが出た後で自分で公開するので、中身を預ける第三者が必要ありません。そのため、両側が relay を信頼する必要がなくなります。
 
 Ethereum の規則の変更は、EIP（Ethereum Improvement Proposal）という提案書で議論され、複数の EIP をまとめて全ノードが同時に切り替えます。この切り替えの仕組みは [Ethereum Hard Forks](../ethereum-hard-forks/) で扱っています。
 
