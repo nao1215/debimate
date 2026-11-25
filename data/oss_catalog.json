@@ -438,6 +438,16 @@
       "website": "https://nao1215.github.io/succubus-live/"
     },
     {
+      "name": "lottery6",
+      "category": "games",
+      "language": "Python",
+      "kind": "Game",
+      "tagline": "ギャルと 6/43 の宝くじを買い続ける",
+      "description": "43 個から 6 個の数字を選ぶ宝くじを、友人の金で買い続けるギャルのゲーム。ブラウザやデスクトップで動作します。",
+      "stars": 0,
+      "website": "https://nao1215.github.io/lottery6/"
+    },
+    {
       "name": "gozen",
       "category": "games",
       "language": "Go",

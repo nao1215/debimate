@@ -8,6 +8,14 @@ cover:
   image: "images/gozen-cutin.webp"
   hidden: true
 games:
+  - name: "lottery6"
+    label: "数字選択式宝くじゲーム"
+    description: "43 個から 6 個の数字を選ぶ宝くじを、友人の金で買い続けるギャルのゲーム。"
+    image: "images/lottery6.webp"
+    demo: "media/lottery6-demo.webp"
+    imageSource: "https://nao1215.github.io/lottery6/ogp.png"
+    repo: "https://github.com/nao1215/lottery6"
+    play: "https://nao1215.github.io/lottery6/"
   - name: "Succubus Live"
     label: "仮想ライブ配信ゲーム"
     description: "配信を聞きながら、チャットを楽しむ放置ゲーム"

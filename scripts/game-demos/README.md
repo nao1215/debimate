@@ -10,6 +10,7 @@ Sources in sibling repositories:
 - rabbitrun: recorded with the built-in `--record-demo` command
 - succubus-live: recorded from the published browser game in Japanese
 - gozen: `gozen/docs/images/go-zen.gif`
+- lottery6: `lottery6/doc/img/demo.gif` (auto buy on the phone, 720 px, 12 fps)
 
 Output: `content/games/media/{name}-demo.webp`.
 
