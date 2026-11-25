@@ -69,7 +69,7 @@ V1 と V2 の initcode は違いますが、手順 2 と 5 の `CREATE` の材�
 
 2024 年 3 月 13 日の Cancun で有効になった [EIP-6780](https://eips.ethereum.org/EIPS/eip-6780)（EIP は Ethereum の仕様変更の提案）により、`SELFDESTRUCT` でアカウントが消えるのは、コントラクトを作ったのと同じトランザクションの中で呼んだ場合だけになりました。別のトランザクションで呼ばれた `SELFDESTRUCT` は残高を送るだけで、コードも nonce も消しません。
 
-そのため、手順 3 の後も Deployer は残り、手順 4 の `CREATE2` は、消えずに残った Deployer に当たって失敗します。仕様の更新ごとの `SELFDESTRUCT` の違いは、[Ethereum Hard Forks](../ethereum-hard-forks/#selfdestruct-の意味) でも確認しています。
+そのため、手順 3 の後も Deployer は残り、手順 4 の `CREATE2` は、Deployer が消えずに残っているので失敗します。仕様の更新ごとの `SELFDESTRUCT` の違いは、[Ethereum Hard Forks](../ethereum-hard-forks/#selfdestruct-の意味) でも確認しています。
 
 ---
 
@@ -168,4 +168,4 @@ Shanghai では、`SELFDESTRUCT` の後に V1 も Deployer も 0 バイトにな
 
 Cancun 以降も、同じトランザクションの中で作って消したアドレスには、後のトランザクションで別のコードを作れます。しかし、そのコードは 1 つのトランザクションの中にしか無かったので、トランザクションをまたいで誰かが確認したコードが差し替わることはありません。
 
-ただし、コードが変わらなくても振る舞いが変わる仕組みは残っています。処理を担うコントラクト（実装）の参照先をストレージに持つ[プロキシ](../upgradeable-proxy/)は、参照先を差し替えると別の処理を行います。また、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で EOA（秘密鍵で操作するアカウント）がコードの実行を任せた委任先も、後から書き換えられます（[Ethereum Account Model](../ethereum-account-model/)）。アドレスのコードを確認する時は、そのコードが別のアドレスの何に処理を任せているかまで見る必要があります。
+ただし、コードが変わらなくても振る舞いが変わる仕組みは残っています。実際の処理を書いたコントラクト（実装）の参照先をストレージに持つ[プロキシ](../upgradeable-proxy/)は、参照先を差し替えると別の処理を実行します。また、[EIP-7702](https://eips.ethereum.org/EIPS/eip-7702) で EOA（秘密鍵で操作するアカウント）がコードの実行を任せた委任先も、後から書き換えられます（[Ethereum Account Model](../ethereum-account-model/)）。アドレスのコードを確認する時は、そのコードが別のアドレスの何に処理を任せているかまで見る必要があります。
