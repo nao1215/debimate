@@ -160,7 +160,7 @@ ERC-721 の承認には、範囲の違う 2 つの関数があります。ERC-20
 
 上記の 1 と 2 は [PREMINT の発表](https://web.archive.org/web/20221201231600/https://blog.premint.xyz/p/july-17-2022-incident-update)（Internet Archive の保存ページ）に基づきます。セキュリティ企業 [CertiK の分析](https://www.certik.com/blog/premint-nft-incident-analysis)によると、PREMINT は「Set Approval For All」（すべてを承認）のトランザクションに署名しないよう呼びかけ、攻撃者のウォレット 2 つが 314 個の NFT を奪い、攻撃全体で約 275 ETH（ETH は Ethereum の通貨）の損失が出ました。
 
-どちらの資料も NFT を移したトランザクションの中身までは示していませんが、呼びかけの内容からは `setApprovalForAll` の許可が悪用されたと読めます。改ざんされたのはサイトの JavaScript で、チェーンの規則は破られていません。
+どちらの資料にも NFT を移したトランザクションの中身までは書かれていませんが、呼びかけの内容からは `setApprovalForAll` の許可が悪用されたと読めます。改ざんされたのはサイトの JavaScript で、チェーンの規則は破られていません。
 
 ---
 
