@@ -67,7 +67,7 @@ capability が権限として成り立つには、持ち主が勝手に作れな
 
 ### Confused Deputy と ambient authority
 
-代理人（deputy）は、他者に頼まれた仕事を自分の権限で行うプログラムで、コンパイラもその 1 つです。事故の流れを順に並べると、以下の通りです。
+代理人（deputy）は、他者に頼まれた仕事を自分の権限でこなすプログラムで、コンパイラもその 1 つです。事故の流れを順に並べると、以下の通りです。
 
 ```mermaid
 %%{init: {"theme":"base","themeVariables":{"primaryColor":"#eaf1f5","primaryTextColor":"#28343b","primaryBorderColor":"#9cabb5","lineColor":"#596b76","textColor":"#28343b","actorBkg":"#eaf1f5","actorBorder":"#9cabb5","actorTextColor":"#28343b","actorLineColor":"#9cabb5","signalColor":"#596b76","signalTextColor":"#28343b","noteBkgColor":"#f7f1e5","noteBorderColor":"#c5b99b","noteTextColor":"#403c32","activationBkgColor":"#edf3ef","activationBorderColor":"#9aafa1"}}}%%
@@ -288,7 +288,7 @@ STAT: 3 lines written with the compiler's own authority
 
 出力は [output.txt](lab/output.txt) にもあります。
 
-ケース 1 では、alice 自身は BILL を開けないのに、コンパイラを通すと書けました。fd を渡す設計では、権限の確認は alice が `open()` した時点で alice の権限で行われます。ケース 4 のように、fd は「読み取りだけ」という範囲も運びます。`STAT` は、要求が届かなかったケース 3 以外の 3 回分が記録されています。
+ケース 1 では、alice 自身は BILL を開けないのに、コンパイラを通すと書けました。fd を渡す設計では、alice が `open()` した時点で、OS が alice の権限を確かめます。ケース 4 のように、fd は「読み取りだけ」という範囲も運びます。`STAT` は、要求が届かなかったケース 3 以外の 3 回分が記録されています。
 
 ただし、コンパイラのプロセスは UID 2001 のままなので、コードが `open("SYSX/BILL")` を呼べば今も書けます。消えたのは、利用者の指定が名前としてコンパイラの権限に届く経路だけです。名前で開く権限まで取り上げるには、次の節の Capsicum のような OS の仕組みが必要です。
 
@@ -348,7 +348,7 @@ OAuth の Access Token の発行までの流れは、[OAuth 2.0 / OpenID Connect
 
 <br>
 
-一方で、ambient authority を全て消すのは簡単ではありません。普通の Linux のプロセスは、UID が許すパスなら名前で開け、到達できる IP アドレスならどこにでも接続できます。SSRF は、このネットワークの ambient authority を突く攻撃です。また、同じプロセスの中のライブラリは、プロセスが持つ fd や認証情報を全て使えるので、プロセス内の部品同士は区切れません。
+一方で、ambient authority を全て消すのは簡単ではありません。Linux で動く普通のプロセスは、UID が許すパスなら名前で開け、到達できる IP アドレスならどこにでも接続できます。SSRF は、このネットワークの ambient authority を悪用する攻撃です。また、同じプロセス内のライブラリは、プロセスが持つ fd や認証情報を全て使えるので、プロセス内の部品同士は区切れません。
 
 ---
 
