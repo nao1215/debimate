@@ -236,7 +236,7 @@ node3 が round 4 に入った時、他の 2 台も round 4 でしたが、round
 
 #### Clique
 
-Clique は同じ止め方に加えて、node1+node2 と node3+node4 の 2 組に通信を分断し、戻す操作も行いました（[lab/clique/scenario.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/clique/scenario.py)）。
+Clique は同じ止め方に加えて、node1+node2 と node3+node4 の 2 つのグループに通信を分断し、戻す操作も試しました（[lab/clique/scenario.py](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/clique/scenario.py)）。
 
 右の列は各段階の最初の 12 ブロックの署名者で、`n4*` は node4 が順番外（difficulty 1）で署名したブロックです。以下は 4 回目の試行の出力で、`+5 min` の node2・node4 の行と、末尾の集計行を省いた抜粋です。
 
@@ -411,7 +411,7 @@ flowchart LR
 
 図の高さ 18 は、node4 を止めた時のブロックです。18 は node4 の番で、node4 は止まる直前に 18（difficulty 2）を作りました。一方、node3 も順番外で 18（difficulty 1）を作り、チェーンは node3 の 18 の上に伸びました。
 
-高さ 18 だけを見れば node4 の 18 の方が重いのですが、node4 が止まったのでその上には誰も積まず、node3 の 18 の側が伸びて合計で上回ったと考えられます。どのノードがいつ node4 の 18 を受け取ったかは記録していません。
+高さ 18 だけを見れば node4 の 18 の方が重いのですが、node4 が止まったのでその上には誰も積まず、node3 の 18 につながるチェーンが伸びて合計で上回ったと考えられます。どのノードがいつ node4 の 18 を受け取ったかは記録していません。
 
 この再実行（[出力](https://github.com/nao1215/debimate/blob/main/content/notes/blockchain-systems/proof-of-authority/lab/output/clique_trial5.txt)）では、node3 と node4 が、番号で 18 を問い合わせると node4 の 18 を返しました（図の点線）。ところが、同じノードの 19 の親は node3 の 18 で、19 以降のブロックは全ノードで一致しました。10 秒の時間切れで問い合わせ直しても（答えが無ければ 3 回まで）、全ノードが答えを返し、同じ食い違いが残りました。
 
@@ -432,7 +432,7 @@ Nethermind の不具合かどうかまでは確認していません。再実行
 
 つまり、Clique の過半数の規則は、少数の署名者がチェーンを独占しないための制限で、ブロックの確定とは別です。Clique には確定の定義が無く、入金を扱うアプリケーションは、PoW と同じく[何ブロック待つか](../finality/#承認数をいくつ待つかを決める材料)を自分で決める必要があります。
 
-QBFT は、不正な検証者が ⌊(N−1)/3⌋ 人以下なら、ブロックを挿入した時点で確定します。代わりに、quorum に届かない組は 1 ブロックも作れません。同じ 2 対 2 の分断では、どちらの組も止まる筈です（QBFT の分断は今回試していません）。分岐するか止まるかの選択で、QBFT は止まる方を選んでいます。同じく止まる方を選ぶ合意エンジンには [CometBFT](../cometbft/) があります。
+QBFT は、不正な検証者が ⌊(N−1)/3⌋ 人以下なら、ブロックを挿入した時点で確定します。代わりに、quorum に届かないグループは 1 ブロックも作れません。同じ 2 対 2 の分断では、どちらのグループも止まる筈です（QBFT の分断は今回試していません）。分岐するか止まるかの選択で、QBFT は止まる方を選んでいます。同じく止まる方を選ぶ合意エンジンには [CometBFT](../cometbft/) があります。
 
 ---
 
@@ -440,7 +440,7 @@ QBFT は、不正な検証者が ⌊(N−1)/3⌋ 人以下なら、ブロック�
 
 PoA は、署名者を選べる場面で使われてきました。2026 年 11 月時点の状況は次の通りです。
 
-- テストネット: Ethereum の Rinkeby（[geth v1.10.26 の設定](https://github.com/ethereum/go-ethereum/blob/v1.10.26/params/config.go#L179)）と Görli（[geth v1.13.15 の設定](https://github.com/ethereum/go-ethereum/blob/v1.13.15/params/config.go#L115)。後に PoS へ移行）は Clique で動いていましたが、どちらも非推奨（deprecated）されています。現在の [Sepolia](https://github.com/eth-clients/sepolia) は PoS ですが、検証者は[クライアントとテストのチームが管理する許可制](https://ethereum.org/developers/docs/networks/)です。入れ替わりの経緯は [Testnet History](../testnet-history/) にあります。
+- テストネット: Ethereum の Rinkeby（[geth v1.10.26 の設定](https://github.com/ethereum/go-ethereum/blob/v1.10.26/params/config.go#L179)）と Görli（[geth v1.13.15 の設定](https://github.com/ethereum/go-ethereum/blob/v1.13.15/params/config.go#L115)。後に PoS へ移行）は Clique で動いていましたが、どちらも非推奨（deprecated）になっています。現在の [Sepolia](https://github.com/eth-clients/sepolia) は PoS ですが、検証者は[クライアントとテストのチームが管理する許可制](https://ethereum.org/developers/docs/networks/)です。入れ替わりの経緯は [Testnet History](../testnet-history/) にあります。
 - サイドチェーン: Gnosis Chain（旧 xDai）は、Clique と同じく 1 人が署名する系統の PoA（[Aura](https://openethereum.github.io/Aura)）で動いていました。その後、Ethereum 本体が PoS に移った [The Merge](https://ethereum.org/roadmap/merge/) と同様の切り替えで、PoS で動く Gnosis Beacon Chain と統合し、PoS に移りました（[Gnosis Chain のドキュメント](https://docs.gnosischain.com/about/specs/consensus/)）。
 - 私設のチェーン: Besu は QBFT を推奨しています。公開されている PoA のチェーンでは、Nethermind が 日本の企業が署名者を務める [JOC Mainnet](https://www.japanopenchain.org/)（Clique）や、エネルギー業界向けの [Energy Web Chain](https://www.energyweb.org/)（Aura）の設定を[同梱しています](https://github.com/NethermindEth/nethermind/tree/17b84a019d75ed4a03dfce53b5599ace81026c7b/src/Nethermind/Chains)。
 
