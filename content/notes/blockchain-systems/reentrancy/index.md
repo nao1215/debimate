@@ -126,7 +126,7 @@ EVM の命令などの規則は変えず、特定のアカウントの残高を 
 
 ### 状態を先に更新する
 
-最も基本の対策は、外部を呼ぶ前に自分の状態を更新し終えることです。関数の中を検査（checks）、状態の更新（effects）、外部とのやり取り（interactions）の順に並べるので、checks-effects-interactions（CEI）と呼ばれます。Solidity のドキュメントも、[外部とのやり取りを関数の最後に置く](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#use-the-checks-effects-interactions-pattern)よう勧めています。
+最も基本の対策は、外部を呼ぶ前に自分の状態を更新し終えることです。関数の中を検査（checks）、状態の更新（effects）、外部とのやり取り（interactions）の順に並べるので、checks-effects-interactions（CEI）と呼ばれます。Solidity のドキュメントでも、[外部とのやり取りを関数の最後に置く](https://docs.soliditylang.org/en/v0.8.28/security-considerations.html#use-the-checks-effects-interactions-pattern)よう勧められています。
 
 ```solidity
 function withdraw() external {
@@ -150,7 +150,7 @@ function withdraw() external {
 
 #### pull 型の支払い
 
-CEI をさらに進めて、送金そのものを別の関数に切り出す形もあります。例えば、オークションで高い入札が来た時に前の入札者へすぐ返金する（push 型）代わりに、返金額を帳簿に記録しておき、本人に `withdraw` で引き出してもらいます（pull 型）。Solidity のドキュメントは、[Withdrawal from Contracts](https://docs.soliditylang.org/en/v0.8.28/common-patterns.html#withdrawal-from-contracts) としてこの形を勧めています。
+CEI をさらに進めて、送金そのものを別の関数に切り出す形もあります。例えば、オークションで高い入札が来た時に前の入札者へすぐ返金する（push 型）代わりに、返金額を帳簿に記録しておき、本人に `withdraw` で引き出してもらいます（pull 型）。この形は、Solidity のドキュメントで [Withdrawal from Contracts](https://docs.soliditylang.org/en/v0.8.28/common-patterns.html#withdrawal-from-contracts) として勧められています。
 
 pull 型にすると、外部を呼ぶ場所が、残高を 0 にしてから送るだけの小さな関数 1 つにまとまります。受け取りを常に失敗させる相手がいても、失敗するのはその相手の引き出しだけで、入札の処理は止まりません。
 
