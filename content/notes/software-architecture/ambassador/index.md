@@ -77,7 +77,7 @@ backend redis_master
     server redis-c 172.28.0.13:6379 check inter 1s fall 1 rise 1
 ```
 
-`inter 1s fall 1 rise 1` は、1 秒ごとに確認し、1 回失敗したら外し、1 回通ったら戻す設定です。冒頭の図では、4 段目で書き込みが消えていました。この確認が「自分は master だ」と答えるサーバーを全て信じるからです。それを見るために、実験の組み方を先に示します。
+`inter 1s fall 1 rise 1` は、1 秒ごとに確認し、1 回失敗したら外し、1 回通ったら戻す設定です。冒頭の図では、4 段目で書き込みが消えていました。この確認が「自分は master だ」と答えるサーバーを全て送り先に入れるからです。それを見るために、実験の組み方を先に示します。
 
 <br>
 
@@ -112,7 +112,7 @@ ambassador の HAProxy は `network_mode: "service:writer-ambassador"` でアプ
     volumes: ["./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro"]
 ```
 
-アプリは、通し番号を 100ms ごとに 1 回 `RPUSH` するだけの Python のプログラムで、`MODE` で繋ぎ方を変えます。redis-py が既定で行う再試行は切り、1 回の失敗をそのまま 1 マスに数えます。
+アプリは、通し番号を 100ms ごとに 1 回 `RPUSH` するだけの Python のプログラムで、`MODE` で繋ぎ方を変えます。redis-py が既定で掛ける再試行は切り、1 回の失敗をそのまま 1 マスに数えます。
 
 ```python
 import json, os, time
@@ -213,7 +213,7 @@ HAProxy は、送り先が 2 台あれば新しい接続を順に振り分けま
 
 今度はライブラリも含めて、redis-a に繋がっていた 3 つのアプリが、11.3 秒までに約 110 件を失いました。redis-b は 0.3 秒で master になりましたが、redis-a は自分がもう master ではないことを知らされず、書き込みを受け付け続けます。Sentinel が redis-a を replica にして、つないでいたクライアントを切ったのは 11.3 秒です。
 
-ライブラリが助けにならなかったのは、redis-py が Sentinel に master を聞き直すのが、接続が切れた時と `READONLY` を受けた時だけだからです。Redis が示す[クライアントの指針](https://redis.io/docs/latest/develop/reference/sentinel-clients/)も、master を Sentinel に聞くのは繋ぎ直す時としていて、構成が変わった時は Sentinel がクライアントの接続を切って聞き直させます。この実験では、その切断が 11.3 秒まで来ませんでした。redis-a が何も言わずに受け付ける限り、どの繋ぎ方でも書き込みは redis-a に届きます。
+ライブラリが助けにならなかったのは、redis-py が Sentinel に master を聞き直すのが、接続が切れた時と `READONLY` を受けた時だけだからです。Redis が示す[クライアントの指針](https://redis.io/docs/latest/develop/reference/sentinel-clients/)も、master を Sentinel に聞くのは繋ぎ直す時としていて、構成が変わった時は Sentinel がクライアントの接続を切って聞き直させます。この実験では、その切断が 11.3 秒まで来ませんでした。redis-a がエラーを返さずに受け付ける限り、どの繋ぎ方でも書き込みは redis-a に届きます。
 
 <br>
 
@@ -299,17 +299,17 @@ ambassador は届いた要求が送り直して良い操作かを知らないの
 
 #### ambassador を置く前に
 
-これから置くなら、まず ambassador が必要かを考えます。言語が 1 つで、そのクライアントが Sentinel に対応しているなら、ライブラリでも冒頭の図と同じく約 2 秒で書けるようになりました。ambassador が効くのは、言語が多い時や、TLS や[接続の束ね方](/notes/database-systems/connection-pool/)を 1 か所に寄せたい時です。
+これから置くなら、まず ambassador が必要かを考えます。言語が 1 つで、そのクライアントが Sentinel に対応しているなら、ライブラリでも冒頭の図と同じく約 2 秒で書けるようになりました。ambassador が役に立つのは、言語が多い時や、TLS や[接続の束ね方](/notes/database-systems/connection-pool/)を 1 か所に寄せたい時です。
 
 相手のプロトコルを扱える ambassador があるかも見ます。実験の HAProxy が master を選べたのは、Redis に `INFO replication` を送って応答を読めたからです。中身を見て選ぶ処理や読み書きの振り分けは、ambassador が対応するプロトコルに限られ、独自のプロトコルで話す相手には使えません。
 
-ambassador を置くと、経路が 1 段増える分の遅延と、Pod ごとに動く分のメモリと CPU が掛かります。その分を嫌ってマシンごとに 1 つだけ置く構成も採れますが、localhost で届く前提が外れ、その ambassador が止まると同じマシンで動く全てのアプリが外と話せなくなります。障害を調べる時、アプリのログに残る宛先は `127.0.0.1:6380` だけで、実際にどのサーバーに書いたかは ambassador のログを見ます。
+ambassador を置くと、経路が 1 段増える分の遅延と、Pod ごとに動く分のメモリと CPU が掛かります。その分を嫌ってマシンごとに 1 つだけ置く構成も採れますが、localhost で届く前提が外れ、その ambassador が止まると同じマシンで動く全てのアプリが外と通信できなくなります。障害を調べる時、アプリのログに残る宛先は `127.0.0.1:6380` だけで、実際にどのサーバーに書いたかは ambassador のログを見ます。
 
 <br>
 
 #### ambassador が止まった時と起動の前
 
-ambassador が止まれば、アプリは外と話せません。起動の前も同じです。Pod ごとにプロキシを置く [Istio](https://istio.io/) は、アプリの通信を[横取りして](https://docs.cloud.google.com/service-mesh/docs/troubleshooting/troubleshoot-proxy)プロキシに通すので、localhost で呼ぶ ambassador とは繋ぎ方が違いますが、通信がプロキシを通る点は同じです。
+ambassador が止まれば、アプリは外と通信できません。起動の前も同じです。Pod ごとにプロキシを置く [Istio](https://istio.io/) は、アプリの通信を[横取りして](https://docs.cloud.google.com/service-mesh/docs/troubleshooting/troubleshoot-proxy)プロキシに通すので、localhost で呼ぶ ambassador とは繋ぎ方が違いますが、通信がプロキシを通る点は同じです。
 
 その Istio で、アプリのコンテナがプロキシより先に動き出すと、外への単純な通信まで失敗する[報告](https://github.com/istio/istio/issues/11130)がありました。後からコンテナに入って試すと繋がるため、気付くまで数日掛かったユーザーもいます。
 
