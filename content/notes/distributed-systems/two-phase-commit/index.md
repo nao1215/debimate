@@ -59,7 +59,7 @@ COMMIT PREPARED 'order-42';
 
 この後、別アプリがポイント DB で、利用者 1 の残高に 50 を足す UPDATE を送ると、待たされました。この UPDATE には、ロックを待つ上限として `lock_timeout` を 10 秒に設定しています。待っている間に、冒頭で挙げた順に原因を探していきます。
 
-最初に疑うのは、`BEGIN` したままコミットを忘れた接続です。しかし、`pg_stat_activity` でトランザクションを開いている接続を数えると、0 でした。普通のトランザクションは接続と一緒に生きていて、接続が切れれば中止され、ロックも外れます。実験でも、`BEGIN` と `UPDATE` の後に psql を終わらせると、別の接続から送った UPDATE は 0.1 秒以内に通りました。
+最初に疑うのは、`BEGIN` したままコミットを忘れた接続です。しかし、`pg_stat_activity` でトランザクションを開いている接続を数えると、0 でした。普通のトランザクションは接続が続く間だけ残り、接続が切れれば中止され、ロックも外れます。実験でも、`BEGIN` と `UPDATE` の後に psql を終わらせると、別の接続から送った UPDATE は 0.1 秒以内に通りました。
 
 次に、待っている UPDATE から相手を引きました。
 
@@ -106,7 +106,7 @@ order-42|2026-11-17 03:18:44.604822+00
 
 準備フェーズ（prepare phase）では、コーディネータが各参加者に準備を頼みます。参加者は、コミット以外の作業を全て済ませ、壊れた後でもコミットできるように変更と準備済みの印をディスクに書き、ロックを持ったまま「はい」と答えます。できなければ「いいえ」と答えます。準備の前なら、参加者は制約違反やタイムアウトを理由に、自分から中止できます。
 
-書き込みと「はい」の順番には意味があります。書く前に「はい」と答えて落ちると、再起動した参加者は自分が何を約束したかを知りません。DB の中では、この書き込みに [WAL](/notes/distributed-systems/write-ahead-log/) が使われます。
+書き込みと「はい」の順番には意味があります。書く前に「はい」と答えてから止まると、再起動した参加者は自分が何を約束したかを知りません。DB の中では、この書き込みに [WAL](/notes/distributed-systems/write-ahead-log/) が使われます。
 
 <br>
 
@@ -134,7 +134,7 @@ order-42|2026-11-17 03:18:44.604822+00
 
 参加者から見えるものは 2 つとも同じなのに、正しい決定は逆です。結局、決定を知っているコーディネータが戻るまで、ロックを持ったまま待つしかありません。Daniel Abadi 氏は、2019 年のブログ「[It's Time to Move on from Two Phase Commit](http://dbmsmusings.blogspot.com/2019/01/its-time-to-move-on-from-two-phase.html)」で、これを blocking problem と呼び、2PC の 2 つの大きな問題の 1 つに挙げています。
 
-それでも、コミットと中止が食い違う結果にはなりません。Jim Gray 氏と Leslie Lamport 氏の論文「[Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf)」の言葉では、2PC の停止で壊れるのは、処理が先に進むという活性（liveness）で、食い違う結果を出さないという安全性（safety）は保たれます。
+それでも、コミットと中止が食い違う結果にはなりません。Jim Gray 氏と Leslie Lamport 氏の論文「[Consensus on Transaction Commit](https://lamport.azurewebsites.net/video/consensus-on-transaction-commit.pdf)」の言葉では、2PC の停止で失われるのは、処理が先に進むという活性（liveness）で、食い違う結果を出さないという安全性（safety）は保たれます。
 
 全員でコミットか中止かを決める手順は合意の一種で、1 台が応答しないだけで全体が待つ期間をどの手順も完全には無くせないことは、[FLP Impossibility](/notes/distributed-systems/flp-impossibility/) のノートで扱っています。
 
@@ -208,7 +208,7 @@ tuples: 100000 removed, 0 remain, 0 are dead but not yet removable
 
 ### PostgreSQL と MySQL の違い
 
-MySQL では、`XA PREPARE` が PostgreSQL の `PREPARE TRANSACTION` に当たります。XA は、トランザクションマネージャが DB を呼び出す方法として X/Open が定めた[仕様](https://pubs.opengroup.org/onlinepubs/009680699/toc.pdf)で、Jakarta Transactions もこの呼び出しで DB を束ねます。同じ実験を MySQL 8.4 でも行いました。
+MySQL では、`XA PREPARE` が PostgreSQL の `PREPARE TRANSACTION` に当たります。XA は、トランザクションマネージャが DB を呼び出す方法として X/Open が定めた[仕様](https://pubs.opengroup.org/onlinepubs/009680699/toc.pdf)で、Jakarta Transactions もこの呼び出しで DB を束ねます。同じ実験を MySQL 8.4 でも試しました。
 
 ```sql
 XA START 'order-42';
