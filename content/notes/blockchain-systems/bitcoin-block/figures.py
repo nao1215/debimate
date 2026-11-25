@@ -228,7 +228,7 @@ def fig_parent_ahead():
     ax.set_ylabel('ヘッダの時刻 − 受け取った時刻（秒）', color=SUB)
     ax.text(0.5, 500, f'{len(pairs)} 組の全てで、前のブロックの時刻が\n受け取った時刻より先（0 より上）', ha='center', color=INK, fontsize=11)
     ax.set_ylim(-120, 600)
-    ax.set_title('時刻が逆転した組の、受け取った時刻との差', color=INK, fontsize=12.5, loc='left')
+    ax.set_title(f'時刻が逆転した {len(pairs)} 組の、受け取った時刻との差', color=INK, fontsize=12.5, loc='left')
     style(ax)
     save_plt(fig, 'block_parent_ahead.webp')
 
