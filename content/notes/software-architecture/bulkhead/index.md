@@ -183,7 +183,7 @@ A の上限を小さくすれば B は守りやすくなりますが、在庫サ
 
 区切る資源はスレッドに限りません。DB の接続プールを管理画面とユーザー向けの API で分ける例や、呼び出し先ごとに HTTP クライアントが張る接続の上限を分ける例もあります。DB が受ける接続数の上限そのものは、[Connection Pool](/notes/database-systems/connection-pool/) のノートで扱います。
 
-区切る単位も、呼び出し先ごと（上の例）に限りません。提供する側が、顧客やテナントごとに資源を区切ることもあります。顧客ごとに独立した環境をセル（cell）として並べる [Cell-Based Architecture](/notes/software-architecture/cell-based-architecture/) は、この考えをサービスの全体に広げたものです。Microsoft の解説も、Bulkhead は cell-based architecture とも呼ばれる、と書いています。
+区切る単位も、呼び出し先ごと（上の例）に限りません。提供する側が、顧客やテナントごとに資源を区切ることもあります。顧客ごとに独立した環境をセル（cell）として並べる [Cell-Based Architecture](/notes/software-architecture/cell-based-architecture/) は、この考えをサービスの全体に広げたものです。Microsoft の解説にも、Bulkhead は cell-based architecture とも呼ばれる、と書かれています。
 
 ---
 
