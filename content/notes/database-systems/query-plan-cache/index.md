@@ -11,11 +11,11 @@ topics: ["Query Processing"]
 
 Query Plan Cache（実行計画のキャッシュ）は、DB（データベース）が同じ形の SQL を受け取るたびに構文解析と実行計画の作成をやり直さず、前に作った結果を使い回す仕組みです。実行計画（query plan）は、どの表をどの順に読み、どの索引を使うかという DB 内部の手順で、作り方は [Query Processing](/notes/database-systems/query-processing/) のノートで説明しています。
 
-使い回しの単位になるのが、プリペアドステートメント（prepared statement）です。`$1` のような値の穴を残した SQL を先に DB に渡しておき、実行時には値だけを送ります。以下は、[PostgreSQL](https://www.postgresql.org/) で `PREPARE` した文を繰り返し `EXECUTE` する時に、解析と計画を何回目に行うかを示した図です。
+使い回しの単位になるのが、プリペアドステートメント（prepared statement）です。`$1` のような値の穴を残した SQL を先に DB に渡しておき、実行時には値だけを送ります。以下は、[PostgreSQL](https://www.postgresql.org/) で `PREPARE` した文を繰り返し `EXECUTE` する時に、何回目に解析し、計画を作るかを示した図です。
 
 {{< figure src="images/query-plan-cache_concept.svg" alt="PREPARE の時に 1 回だけ解析する。計画は 1〜5 回目の EXECUTE では値ごとに作り、6 回目からは保存した計画 1 つを使い回す。generic plan の方が安く見積もられた場合の流れ" caption="PREPARE した文の解析と計画が行われる回" align="center" >}}
 
-上記の図の解析は `PREPARE` の時に 1 回だけ行われます。計画は 2 通りで、1〜5 回目のように値を見て毎回作るのが custom plan、6 回目からのように値を見ずに作った計画を使い回すのが generic plan です。どちらを使うかを DB が途中で切り替えるので、同じ SQL が 6 回目から急に別の計画で動く、という現象が起こります。
+上記の図では、解析は `PREPARE` した時に 1 回だけです。計画は 2 通りで、1〜5 回目のように値を見て毎回作るのが custom plan、6 回目からのように値を見ずに作った計画を使い回すのが generic plan です。どちらを使うかを DB が途中で切り替えるので、同じ SQL が 6 回目から急に別の計画で動く、という現象が起こります。
 
 <br>
 
@@ -179,7 +179,7 @@ PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
 
 ### 計画が作り直される条件
 
-保存した計画は、表の定義や統計が変わると古くなります。PostgreSQL は、文が参照する表や関数を覚えておき、それらが変わったという通知（キャッシュの無効化）を受けると、次の実行の前に解析と計画をやり直します。
+保存した計画は、表の定義や統計が変わると古くなります。PostgreSQL は、文が参照する表や関数を記録しておき、それらが変わったという通知（キャッシュの無効化）を受けると、次の実行の前に解析と計画をやり直します。
 
 [PREPARE のドキュメント](https://www.postgresql.org/docs/17/sql-prepare.html)には、DDL（Data Definition Language、表や索引を定義する SQL）による定義の変更、統計の更新、`search_path` の変更が挙げられています。実験で確認した結果は以下の通りです。
 
@@ -206,7 +206,7 @@ PostgreSQL 17 の generic plan は、1 つの文に 1 つです。
                ->  Parallel Seq Scan on orders  (cost=0.00..10614.34 rows=208333 width=4)
 ```
 
-ソースを読むと、理由が分かります。計画を捨てる合図は `pg_class`（表のレコード数やページ数を持つカタログ）などの更新から出ます（[inval.c](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/inval.c#L1383)）。カラムの値の分布を持つ `pg_statistic` の更新には、保存した計画は反応しません（[plancache.c のコールバック登録](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L162-L172)）。
+ソースを読むと、理由が分かります。計画を捨てる合図は `pg_class`（表のレコード数やページ数を持つカタログ）などの更新から出ます（[inval.c](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/inval.c#L1383)）。カラムの値の分布を持つ `pg_statistic` が更新されても、保存した計画は捨てられません（[plancache.c のコールバック登録](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/utils/cache/plancache.c#L162-L172)）。
 
 `ANALYZE` は、レコード数やページ数などが前と同じなら `pg_class` を書き換えません（[vacuum.c の vac_update_relstats](https://github.com/postgres/postgres/blob/REL_17_11/src/backend/commands/vacuum.c#L1545)）。以下は、合図が出る変更と出ない変更を並べた図です。
 
@@ -238,7 +238,7 @@ PgBouncer は [1.21.0](https://www.pgbouncer.org/changelog.html)（2023 年 10 �
 
 PgBouncer は文を接続ごとに prepare し直すので、「5 回」もサーバー接続ごと・文ごとに数えられる筈です。そのため、同じ API が時々だけ遅いという症状になり得ます（本記事では未検証）。
 
-対策として `plan_cache_mode` を `force_custom_plan` にする場合、transaction mode ではセッションの `SET` が別の接続に残るので、トランザクション内の `SET LOCAL` か、`ALTER ROLE ... SET` を使います。後者は新しいサーバー接続にしか効かず、PgBouncer が保持している既存の接続は張り直すまで古い値のままです。
+対策として `plan_cache_mode` を `force_custom_plan` にする場合、transaction mode ではセッションの `SET` が別の接続に残るので、トランザクション内の `SET LOCAL` か、`ALTER ROLE ... SET` を使います。後者は新しいサーバー接続にしか反映されず、PgBouncer が保持している既存の接続は張り直すまで古い値のままです。
 
 ---
 
@@ -250,7 +250,7 @@ PgBouncer は文を接続ごとに prepare し直すので、「5 回」もサ�
 
 ### 欠点
 
-実行計画のキャッシュは、計画を作る時間を省くために、計画を値に合わせる機会を手放します。その代わりに、次の制約があります。
+実行計画のキャッシュを使うと、計画を作る時間を省ける代わりに、計画を値に合わせられなくなります。その結果、次の制約があります。
 
 - 値の件数が偏ったカラムでは、使い回した計画が一部の値で大きく遅くなる
 - 切り替わるかどうかが最初の数回の値で変わり、再現しにくい
