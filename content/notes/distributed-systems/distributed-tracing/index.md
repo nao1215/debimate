@@ -87,7 +87,7 @@ Context は、サービスの境界を越えて渡す最小限の情報です。
 
 Context を次の処理に渡すことは、伝搬（propagation）と呼ばれます。同期的な HTTP 呼び出しでは、呼ぶ側が `traceparent` ヘッダに Context を書き込み、呼ばれた側が読み出します。
 
-OpenTelemetry では、この書き込みは inject、読み出しは extract と呼ばれ、[Propagators API](https://opentelemetry.io/docs/specs/otel/context/api-propagators/) で形式を差し替えられるようにしています。W3C Trace Context には、製品ごとの追加情報を載せる `tracestate` ヘッダもあり、最大 32 個のキーと値の組を運べます。
+OpenTelemetry では、この書き込みは inject、読み出しは extract と呼ばれ、[Propagators API](https://opentelemetry.io/docs/specs/otel/context/api-propagators/) で形式を差し替えられるようにしています。W3C Trace Context には、製品ごとの追加情報を載せる `tracestate` ヘッダもあり、最大 32 個のキーと値のペアを運べます。
 
 キューを挟む非同期処理には HTTP ヘッダがありません。そのため、送る側はメッセージの属性（ヘッダやメタデータ）に Context を入れ、取り出した側がそこから読みます。OpenTelemetry の[メッセージングの規約](https://opentelemetry.io/docs/specs/semconv/messaging/messaging-spans/)（2026 年 11 月時点で状態は Development）は、送る側が各メッセージに作成時の Context を付けることを求めています。
 
@@ -249,7 +249,7 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
 
 <br>
 
-1 件の注文確定から、10 個の Span ができました。在庫の引き当てとメールの処理は、それぞれ 2 つの Span として現れています。2 回目の実行では、inventory の Span が親の `reserve` より 99 ms 前に始まっています。呼ぶ前に呼ばれた処理が始まることは無いので、この表示は時計のずれが作った見かけです。次の節から、この 2 つの現象を順に読み解きます。
+1 件の注文確定から、10 個の Span ができました。在庫の引き当てとメールの処理は、それぞれ 2 つの Span として現れています。2 回目の実行では、inventory の Span が親の `reserve` より 99 ms 前に始まっています。呼ぶ前に呼ばれた処理が始まることは無いので、この表示は時計のずれで生じた見かけです。次の節から、この 2 つの現象を順に読み解きます。
 
 ---
 
@@ -273,7 +273,7 @@ POST /checkout [gateway] start=+0ms dur=62ms OK
 
 ### Sampling
 
-全ての要求の Span を保存すると、保存と送信のコストが要求の数に比例して増えます。そのため、一部の Trace だけを残す Sampling を行います。Dapper の論文では、要求の多いサービスでは 1/1024 の割合でも分析に十分なデータが集まったと報告しています。
+全ての要求の Span を保存すると、保存と送信のコストが要求の数に比例して増えます。そのため、Sampling で一部の Trace だけを残します。Dapper の論文では、要求の多いサービスでは 1/1024 の割合でも分析に十分なデータが集まったと報告しています。
 
 [OpenTelemetry の Sampling の説明](https://opentelemetry.io/docs/concepts/sampling/)では、決める時点で head sampling と tail sampling の 2 つのタイプに分けています。head-based・tail-based とも呼ばれます。
 
@@ -304,7 +304,7 @@ Span の開始・終了時刻は、その Span を記録したホストの時計
 
 - Span の長さ（終了 − 開始）は信頼できる。ただし、壁時計の時刻で測っていると、記録の途中で時刻が跳んだ時に長さも狂う。時計を合わせる [NTP](https://www.rfc-editor.org/rfc/rfc5905) の実装は通常、時計の進む速さを変えて少しずつ合わせるが、ずれが大きい時の一括補正（step）や手動の変更では時刻が跳ぶ（[Heartbeat](../heartbeat/) の単調増加する時計の話と同じ）
 - 呼ぶ側の Span と呼ばれた側の Span の開始時刻の差は、そのままネットワークの遅延とは読めない。差には時計のずれが混ざる
-- 呼ぶ側は呼ばれる側より先に送り、呼ばれる側は応答より先に受け取るので、呼ばれた側の Span は呼ぶ側の Span の内側にある筈である。外にはみ出していたら、時計のずれを疑う。ただし、キューの先の処理は親の外にはみ出すのが通常なので、この見方は HTTP のような同期の呼び出しに限る
+- 呼ぶ側は呼ばれる側より先に送り、呼ばれる側は応答より先に受け取るので、呼ばれた側の Span は呼ぶ側の Span の内側にあるはずである。外にはみ出していたら、時計のずれを疑う。ただし、キューの先の処理は親の外にはみ出すのが通常なので、この見方は HTTP のような同期の呼び出しに限る
 
 最後の性質は、Dapper の論文でも、サーバー側の時刻の上限と下限を決めるために使われています。表示する側のツールによっては、この性質を使って子の Span の位置を補正します。
 
