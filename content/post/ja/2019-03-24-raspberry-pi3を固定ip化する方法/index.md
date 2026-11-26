@@ -27,7 +27,7 @@ IPアドレス固定化のために必要な情報
 
 - DHCPサーバが割り当てるIPアドレス範囲
 - [サブネットマスク](https://wa3.i-3-i.info/word11975.html)
-- [デフォルトゲートウェイ](https://employment.en-japan.com/tenshoku-daijiten/14868/)アドレス
+- デフォルトゲートウェイアドレス
 - [DNSサーバ](https://www.kagoya.jp/howto/rentalserver/dns-server/)アドレス
 
 ---

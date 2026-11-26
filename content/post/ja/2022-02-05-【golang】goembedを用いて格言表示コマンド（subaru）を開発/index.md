@@ -36,7 +36,7 @@ go:embedの利点は、「バイナリインストール（設定ファイルや
 
 ### subaru：格言を出力するfortuneライクコマンド
 
-[subaruコマンド](https://github.com/nao1215/subaru)は、[fortuneコマンド](https://ja.wikipedia.org/wiki/Fortune_\(UNIX\)#:~:text=fortune%E3%81%A8%E3%81%AF%E3%80%81Unix%E7%B3%BB,%E7%84%A1%E4%BD%9C%E7%82%BA%E3%81%AB%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E3%80%82)をインスパイアしています。
+[subaruコマンド](https://github.com/nao1215/subaru)は、[fortuneコマンド](https://ja.wikipedia.org/wiki/Fortune_%28UNIX%29#:~:text=fortune%E3%81%A8%E3%81%AF%E3%80%81Unix%E7%B3%BB,%E7%84%A1%E4%BD%9C%E7%82%BA%E3%81%AB%E8%A1%A8%E7%A4%BA%E3%81%99%E3%82%8B%E3%80%82)をインスパイアしています。
 
 > **fortune**とは、[Unix系](https://ja.wikipedia.org/wiki/Unix%E7%B3%BB "Unix系")OSのコマンドの一つ。[フォーチュン・クッキー](https://ja.wikipedia.org/wiki/%E3%83%95%E3%82%A9%E3%83%BC%E3%83%81%E3%83%A5%E3%83%B3%E3%83%BB%E3%82%AF%E3%83%83%E3%82%AD%E3%83%BC "フォーチュン・クッキー")を模したプログラムであり、歴史上の偉人の名言や有名人の発言などを一部引用したメッセージを無作為に表示する。
 

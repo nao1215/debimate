@@ -231,9 +231,9 @@ Linux 4.9.0-8-amd64 x86_64
   }    
 ```
 
-[Darwin](https://ja.wikipedia.org/wiki/Darwin_\(%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0\))はOS XかiOSの事であり、`sw_vers -productName`を実行すると"Mac OS X"/"iPhone OS"と表示されます。[CYGWIN](https://ja.wikipedia.org/wiki/Cygwin)は、Windows環境で仕方なくUNIXっぽい事をする際に用います。最新版のneofetchでは、[MINIX](https://ja.wikipedia.org/wiki/MINIX)/[AIX](https://ja.wikipedia.org/wiki/AIX)/[IRIX](https://ja.wikipedia.org/wiki/IRIX)/[FreeMiNT](https://freemint.github.io/)も判別します。
+[Darwin](https://ja.wikipedia.org/wiki/Darwin_%28%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%29)はOS XかiOSの事であり、`sw_vers -productName`を実行すると"Mac OS X"/"iPhone OS"と表示されます。[CYGWIN](https://ja.wikipedia.org/wiki/Cygwin)は、Windows環境で仕方なくUNIXっぽい事をする際に用います。最新版のneofetchでは、[MINIX](https://ja.wikipedia.org/wiki/MINIX)/[AIX](https://ja.wikipedia.org/wiki/AIX)/[IRIX](https://ja.wikipedia.org/wiki/IRIX)/[FreeMiNT](https://freemint.github.io/)も判別します。
 
-私がneofetchの実装を見て存在を認識したOSは、[Haiku](https://ja.wikipedia.org/wiki/Haiku_\(%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0\))/AIX/IRIXあたり。
+私がneofetchの実装を見て存在を認識したOSは、[Haiku](https://ja.wikipedia.org/wiki/Haiku_%28%E3%82%AA%E3%83%9A%E3%83%AC%E3%83%BC%E3%83%86%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%B7%E3%82%B9%E3%83%86%E3%83%A0%29)/AIX/IRIXあたり。
 
 
 ---

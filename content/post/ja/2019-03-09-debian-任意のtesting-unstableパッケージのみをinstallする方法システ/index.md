@@ -63,7 +63,7 @@ deb http://ftp.jp.debian.org/debian/ unstable main non-free
 deb-src http://ftp.jp.debian.org/debian/ unstable main non-free
 ```
 
-"http://ftp.jp.debian.org/debian/"部分は、好きなミラーサーバを選択してください[(ミラーサーバ一覧へのリンク)](https://www.debian.or.jp/using/mirror.html)。上記で重要な部分は、"testing"もしくは"unstable"と記載した箇所です。通常であれば、stableのVersion(例：stretch)と書かれています。testing/unstableを追記した事により、これらのVersionのパッケージをミラーサーバからダウンロード可能な状態になりました(正確には、apt updateまで必要)。
+`http://ftp.jp.debian.org/debian/`部分は、好きなミラーサーバを選択してください[(ミラーサーバ一覧へのリンク)](https://www.debian.or.jp/using/mirror.html)。上記で重要な部分は、"testing"もしくは"unstable"と記載した箇所です。通常であれば、stableのVersion(例：stretch)と書かれています。testing/unstableを追記した事により、これらのVersionのパッケージをミラーサーバからダウンロード可能な状態になりました(正確には、apt updateまで必要)。
 
 ---
 
@@ -189,4 +189,4 @@ Hello,World
 
 [Debian Experimental](https://wiki.debian.org/DebianExperimental)
 
-[Debian管理者ハンドブック](https://debian-handbook.info/download/ja-JP/stable/debian-handbook.pdf)
+[Debian管理者ハンドブック](https://debian-handbook.info/browse/ja-JP/stable/)

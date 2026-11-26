@@ -49,7 +49,7 @@ aliases:
 
 以下のURLより、ファイルがダウンロードできます。
 
-- [Androidイメージ(and7\_1-tablet-23012017.zip)](https://raspbian-france.fr/download/and7_1-tablet-23012017.zip)
+- Androidイメージ(and7\_1-tablet-23012017.zip)
 - [Google Play Storeインストーラ(gapps.sh)](http://raspbian-france.fr/download/gapps.sh)
 
 ---

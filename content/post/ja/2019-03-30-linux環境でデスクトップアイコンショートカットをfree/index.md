@@ -73,7 +73,7 @@ freedesktop.orgに準じたデスクトップ環境
 
 ### デスクトップアイコンの準備
 
-デスクトップアイコンは、[freedesktop.orgによって拡張子・サイズの仕様](https://standards.freedesktop.org/icon-theme-spec/latest/ar01s02.html)が定められています。拡張子は、PNG(推奨)、SVG(オプション)、XPM(下位互換、非推奨)のいずれかです。サイズに関しては、推奨フォーマットのPNGのみを以下に一覧を示します。
+デスクトップアイコンは、[freedesktop.orgによって拡張子・サイズの仕様](https://specifications.freedesktop.org/icon-theme/latest/#directory_layout)が定められています。拡張子は、PNG(推奨)、SVG(オプション)、XPM(下位互換、非推奨)のいずれかです。サイズに関しては、推奨フォーマットのPNGのみを以下に一覧を示します。
 
 PNG形式のアイコンサイズ(42x42以下は除外)
 

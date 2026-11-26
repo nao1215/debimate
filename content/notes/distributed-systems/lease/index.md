@@ -101,7 +101,7 @@ Lease の安全性（同じ時点に権利を持つ者が 2 人にならない�
 
 Lease は時計の仮定に加えて、Holder が保護対象を操作する時点で Lease がまだ有効であることにも頼っています。Holder が期限を確認した直後に GC で止まると、復帰後には期限を過ぎていても操作を続ける場合があります。
 
-分散 DB の [HBase](https://hbase.apache.org/) では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/zookeeperProgrammers.html#ch_zkSessions)（Grantor に当たる協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
+分散 DB の [HBase](https://hbase.apache.org/) では、各サーバーが [ZooKeeper](https://zookeeper.apache.org/doc/current/developer/programmers-guide/sessions)（Grantor に当たる協調サービス）とセッションという Lease を結び、管理役の master はセッションが切れたサーバーを故障とみなして担当を別のサーバーへ移します。
 
 [HBASE-7504](https://issues.apache.org/jira/browse/HBASE-7504) では、どのサーバーがどのデータを持つかを調べる時の起点になる [-ROOT- テーブル](https://svn.apache.org/repos/asf/hbase/hbase.apache.org/trunk/0.94/book/arch.catalog.html)の担当サーバーが GC で約 229 秒止まり、その間にセッションが失効しました。
 

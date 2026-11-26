@@ -113,7 +113,7 @@ Linux上でGoogle ChromeやFireFoxが動作するため、Webアプリは何で�
 | --- | --- |
 | [Lollypop](https://wiki.gnome.org/Apps/Lollypop) | ミュージックプレイヤー。数百GBの音楽を取り扱っても落ちず、アーティスト情報や歌詞情報を表示する機能あり。アートワークもDL可能。 |
 | [Plex Media Server](https://www.plex.tv/ja/media-server-downloads/) | 音楽、動画、写真を配信するためのメディアサーバー。自分の管理するメディアを一元管理できるため便利（最近、有料会員となった）。[導入記事はコチラ](https://debimate.jp/post/ja/2020-10-31-%E7%92%B0%E5%A2%83%E6%A7%8B%E7%AF%89raspberry-pi%E3%81%ABplex-media-server%E3%82%92%E3%82%A4%E3%83%B3%E3%82%B9%E3%83%88%E3%83%BC%E3%83%ABkodiemby%E3%81%A8%E3%81%AE/)。 |
-| [Cinema](https://appcenter.elementary.io/com.github.artemanufrij.playmyvideos/) | ムービープレイヤー（elementary OSフォルトアプリ）。オススメするほど多機能ではないが、シンプルで分かりやすい。 |
+| Cinema | ムービープレイヤー（elementary OSフォルトアプリ）。オススメするほど多機能ではないが、シンプルで分かりやすい。 |
 | [Photo](https://github.com/elementary/photos) | 写真管理アプリ（elementary OSフォルトアプリ）。雰囲気は、Macの写真アプリに類似。 |
 | [Steam](https://store.steampowered.com/?l=japanese) | ゲーム配信プラットフォーム。Linux環境で動作するゲームの配信に力を入れているため、今後に期待。[Helltaker](https://store.steampowered.com/app/1289310/Helltaker/?l=japanese)が最近面白かった。 |
 

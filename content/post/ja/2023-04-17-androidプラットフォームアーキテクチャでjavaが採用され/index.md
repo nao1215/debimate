@@ -48,7 +48,7 @@ GoogleとOracleとJava著作権侵害訴訟（[GoogleがOracleのJava SE APIを1
 > 
 > しかし、ルービンは最初の起業であるDangerでの経験を語りながら、スマートフォンにJavaを使うことの利点を次のように強調した。Javaは、世界中の大学で教えられている共通言語であり、知名度の高さで知られている
 > 
-> 引用元：[Trial: Android chief on why Java was picked for Android](https://www.zdnet.com/google-amp/article/trial-android-chief-on-why-java-was-picked-for-android/)
+> 引用元：Trial: Android chief on why Java was picked for Android
 
 上記の文章を読む限り、実行速度よりもエンジニア人口を優先したように読み取れます。他のプログラミング言語候補が、JavascriptやPython、Luaのようなスクリプト言語だったことにも驚きです。遅そう。
 

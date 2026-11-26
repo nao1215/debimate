@@ -30,7 +30,7 @@ BashによるShell Scriptを国際化(メッセージ翻訳)する方法は、C�
 
 この点に関しては、数々の議論があります。以下に、Google先生の見解を引用します。
 
-> 原文：出典["Shell Style Guide"](https://google.github.io/styleguide/shell.xml)  
+> 原文：出典["Shell Style Guide"](https://google.github.io/styleguide/shellguide.html)  
 > If you are writing a script that is more than 100 lines long, you should probably   
 > be writing it in Python instead. Bear in mind that scripts grow. Rewrite your   
 > script in another language early to avoid a time-consuming rewrite at a later date.

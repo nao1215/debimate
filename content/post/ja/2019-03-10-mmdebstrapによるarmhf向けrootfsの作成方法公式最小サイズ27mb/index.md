@@ -40,7 +40,7 @@ mmdebstrapは開発中ですが、組み込み分野で使用される可能性�
 - debootstrapより、3〜6倍高速
 - 必須パッケージおよびaptコマンドを含むrootfsが11秒で作成可能
 - [aptコマンド](https://manpages.debian.org/stretch/apt/apt.8.ja.html)を含むrootfs(.tar.gz)が**27MB以下**
-- [namespace](https://linuxjm.osdn.jp/html/LDP_man-pages/man7/namespaces.7.html)、[fakechroot](https://linux.die.net/man/1/fakechroot)、[proot](https://github.com/proot-me/PRoot/blob/master/doc/proot/manual.txt)を用いた非管理者権限での動作が可能
+- [namespace](https://linuxjm.osdn.jp/html/LDP_man-pages/man7/namespaces.7.html)、[fakechroot](https://linux.die.net/man/1/fakechroot)、[proot](https://github.com/proot-me/proot/blob/master/doc/proot/manual.rst)を用いた非管理者権限での動作が可能
 - [nodev(特殊デバイス)](https://www.atmarkit.co.jp/ait/articles/1802/15/news035.html)としてマウントされたFilesystem上で操作可能
 - mmdebstrapとアーキテクチャが異なる場合は、qemuを用いてrootfsを作成
 
@@ -74,7 +74,7 @@ rootfs(TARGET)形式は、非圧縮(ディレクトリ)、tar(アーカイブ)�
 | --- | --- |
 | help | ヘルプを表示。 |
 | variant | rootfsにインストール対象のパッケージを指定。パッケージ名を直接指定せず、extract, custom, essential, apt, required(デフォルト), minbase, buildd, important, debootstrap, -, standardから選択します。詳細は後述。 |
-| mode | rootfs作成時の権限をauto(デフォルト), [sudo](https://linuxjm.osdn.jp/html/sudo/man8/sudo.8.html), root, [unshare](https://www.commandlinux.com/man-page/man1/unshare.1.html), [fakeroot](https://wiki.debian.org/FakeRoot), [fakechroot](https://linux.die.net/man/1/fakechroot)、[proot](https://github.com/proot-me/PRoot/blob/master/doc/proot/manual.txt)から選択します。 |
+| mode | rootfs作成時の権限をauto(デフォルト), [sudo](https://linuxjm.osdn.jp/html/sudo/man8/sudo.8.html), root, [unshare](https://www.commandlinux.com/man-page/man1/unshare.1.html), [fakeroot](https://wiki.debian.org/FakeRoot), [fakechroot](https://linux.die.net/man/1/fakechroot)、[proot](https://github.com/proot-me/proot/blob/master/doc/proot/manual.rst)から選択します。 |
 | aptopt | rootfs作成時に、aptコマンドへ渡すオプションを指定します。   指定オプションはrootfs内"/etc/apt/apt.conf.d/99mmdebstrap"に記載されます。 |
 | dpkgopt | rootfs作成時に、dpkgコマンドへ渡すオプションを指定します。   指定オプションはrootfs内"/etc/dpkg/dpkg.cfg.d/99mmdebstrap"に記載されます。 |
 | include | rootfsに追加したいパッケージをカンマ区切りで記載します。   variantsがextract/custom以外は、依存関係を解決します。 |
@@ -380,4 +380,4 @@ env --unset=APT_CONFIG proot --root-id --bind=/dev --rootfs=/tmp/ZHyl0fOB8r --cw
 
 上記のエラーを考慮した場合、bash(dash、fishも可能)、coreutils、diffutils、libc-binが最低限必要な事が分かります。さらに、基本的なログインシステムを提供するには、[login](https://packages.debian.org/ja/stretch/login), [passwd](https://packages.debian.org/ja/stretch/passwd), [uidmap](https://packages.debian.org/ja/stretch/uidmap), [base-files](https://packages.debian.org/ja/stretch/linux-base)も導入しなければいけません。極めつけとして、variantオプションがcustomの場合は、依存関係を自動的に解決しないため、依存解決用パッケージをincludeオプションに渡さなければなりません。依存関係を手動で列挙する事は苦痛なため、これ以上の挑戦を止めました。
 
-最後に、パッケージをinstallした後に、除外するファイルについてです。「mmdebstrapの実行例」と同じく、man、locale、docが削除できます。さらに、aptコマンド実行後のゴミも削除できます。これらの削除対象ファイルに関しては、[2015年のELBE(Embedded Linux Build Enviroment)](https://elbe-rfs.org/images/20150322-clt-elbe.pdf)で言及されています。
+最後に、パッケージをinstallした後に、除外するファイルについてです。「mmdebstrapの実行例」と同じく、man、locale、docが削除できます。さらに、aptコマンド実行後のゴミも削除できます。これらの削除対象ファイルに関しては、2015年のELBE(Embedded Linux Build Enviroment)で言及されています。

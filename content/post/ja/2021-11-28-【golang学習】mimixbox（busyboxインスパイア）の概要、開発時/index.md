@@ -176,7 +176,7 @@ sha512sum - alculate or Check sercure hash 512 algorithm
 
 また、MimixBoxの開発状況を伝えるためのTwitterアカウントがあります（ちょっと作るの早いと思いましたが……）。日本語と英語の両方で情報発信して行く予定ですので、ご興味があればフォローお願いいたします！
 
-<blockquote class="twitter-tweet"><p dir="ltr" lang="en">Mimixbox 0.25.1 has been released.<br><br>The following commands have been newly added.<br>- hostid<br>- md5sum<br>- seq<br>- sha1sum／sha256sum／sha512sum<br>Furthermore, all commands support redirects.<br><br>Now, MimixBox supports 39 commands.<a href="https://t.co/YAWdc7KkMh">https://t.co/YAWdc7KkMh</a> <a href="https://t.co/3ad3NPukPH">pic.twitter.com/3ad3NPukPH</a></p>— MimixBox@ʕ◔ϖ◔ʔ (@mimixbox156) <a href="https://twitter.com/mimixbox156/status/1464499737982242817?ref_src=twsrc%5Etfw">November 27, 2021</a></blockquote>
+<blockquote class="twitter-tweet"><p dir="ltr" lang="en">Mimixbox 0.25.1 has been released.<br><br>The following commands have been newly added.<br>- hostid<br>- md5sum<br>- seq<br>- sha1sum／sha256sum／sha512sum<br>Furthermore, all commands support redirects.<br><br>Now, MimixBox supports 39 commands.<a href="https://t.co/YAWdc7KkMh">https://t.co/YAWdc7KkMh</a> pic.twitter.com/3ad3NPukPH</p>— MimixBox@ʕ◔ϖ◔ʔ (@mimixbox156) November 27, 2021</blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 

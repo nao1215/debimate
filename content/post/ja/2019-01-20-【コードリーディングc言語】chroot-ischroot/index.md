@@ -52,7 +52,7 @@ aliases:
 
 ### 検証環境
 
-- [Debian8.6(64bit)](https://www.debian.org/index.ja.html)
+- [Debian8.6(64bit)](https://www.debian.org/)
 - [coreutils-8.23](https://packages.debian.org/jessie/coreutils)
 - [debianutils-4.4](https://packages.debian.org/jessie/debianutils)
 

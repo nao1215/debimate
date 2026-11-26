@@ -59,7 +59,7 @@ date: 2026-08-17T00:00:00+09:00
 
 色々書いたが、変態 Android 機の候補は以下のとおりである。
 - [Titan 2 Elite Pro](https://www.unihertz.com/ja-jp/products/titan-2-elite-pro)（約9.4万円、物理キーボード）
-- [Minimal Phone](https://minimalcompany.com/collections/frontpage/products/minimal-phone)（約7.2万円、E-Ink + 物理キーボード）
+- Minimal Phone（約7.2万円、E-Ink + 物理キーボード）
 - [Minimal Phone2](https://minimalcompany.com/pages/mp02)（約9.5万円、物理キーボード）
 - [Clicks Communicator](https://clicks.tech/communicator)（約7.2万円、物理キーボード）
 - [BOOX Palma 2](https://sktgroup.co.jp/boox-palma2/)（約7万、E-Ink）

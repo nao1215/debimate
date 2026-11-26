@@ -42,7 +42,7 @@ UserLAndは、AndroidアプリとしてPlayストア経由で配信されてい�
 
 今回の検証環境はスマホではなく、タブレット端末です。ただし、スマホ([Nexus 5X](https://www.amazon.co.jp/LG-H791-Nexus-5X-CARBON-32GB/dp/B01BR86Z2U))でも動作確認済みです。
 
-|   | [MediaPad M5 10.8【Amazon限定】](https://www.amazon.co.jp/dp/B07JP3L3PC/ref=emc_b_5_t) |
+|   | MediaPad M5 10.8【Amazon限定】 |
 | --- | --- |
 | OS | Android 8.0 |
 | CPU | HUAWEI Kirin 960s オクタコア   (4 x Cortex-A73@2.1GHz + 4 x Cortex-A53@1.8GHz) |
@@ -113,7 +113,7 @@ trace-cmd python3 python3-dev python3-pip
 | --- | --- |
 | [Alpine](https://alpinelinux.org/) | BusyBox(coreutilsの代替)およびmusl(glibcの代替)を用いた軽量かつセキュアなOS。パッケージマネージャは、APK。 |
 | [Arch](https://www.archlinux.org/) | 軽量かつシンプルなOS。初期状態では最低限の環境しか提供されないため、Linuxをカスタマイズするための知識が必要。パッケージマネージャは、Pacman。 |
-| [Debian](https://www.debian.org/index.ja.html) | 安定したパッケージを提供し、プログラマ向けの開発環境構築が簡単なOS。パッケージマネージャは、APT。 |
+| [Debian](https://www.debian.org/) | 安定したパッケージを提供し、プログラマ向けの開発環境構築が簡単なOS。パッケージマネージャは、APT。 |
 | [Kali](https://www.kali.org/) | セキュリティ診断ツール(ペネトレーションツール)が多く提供されるOS。Debianベース。パッケージマネージャは、APT。   [便利なチートシートはこちら](https://www.comparitech.com/net-admin/kali-linux-cheat-sheet/) |
 | [Ubuntu](https://www.ubuntu.com/) | DebianのUnstable/Testingパッケージから派生したOS。パッケージマネージャは、APT。 |
 
@@ -132,7 +132,7 @@ trace-cmd python3 python3-dev python3-pip
 
 - やや処理速度が遅い
 
-やや処理速度が遅い理由は簡単で、prootを使用しているからです。prootはroot権限を擬似的に提供するため、[ptrace](http://surf.ml.seikei.ac.jp/~nakano/JMwww/html/LDP_man-pages/man2/ptrace.2.html)システムコールを使用します。ptraceは、子プロセスが実行したシステムコールの監視・制御ができます。より具体的には、ファイルアクセス関連システムコールが発生した場合、システムコールをフックし、ファイルアクセス先のPATH名を書き換えています。システムコール単位でフック処理が入るため、処理速度が落ちてしまう点は仕方がありません。
+やや処理速度が遅い理由は簡単で、prootを使用しているからです。prootはroot権限を擬似的に提供するため、ptraceシステムコールを使用します。ptraceは、子プロセスが実行したシステムコールの監視・制御ができます。より具体的には、ファイルアクセス関連システムコールが発生した場合、システムコールをフックし、ファイルアクセス先のPATH名を書き換えています。システムコール単位でフック処理が入るため、処理速度が落ちてしまう点は仕方がありません。
 
 なお、prootは他OSのGuest rootfsを仮想化し、Shell Sessionを起動できます。つまり、UserLAndは、各Linux ディストリビューションをprootによる仮想化rootfsとして用意した後、Shellを起動しています。
 

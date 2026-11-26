@@ -45,7 +45,7 @@ Log4j2およびその開発者は、様々な媒体やSNSで糾弾されてい�
 
 そのような中で[Log4j2メンテナの一人であるVolkan Yazıcı氏](https://github.com/vy)は、今回の問題の後に以下のコメントをしています（バグ対応中の様子を詳細に知りたい方は、[コチラのPull Request](https://github.com/apache/logging-log4j2/pull/608)を参照してください）
 
-<blockquote class="twitter-tweet"><p dir="ltr" lang="en">Log4j maintainers have been working sleeplessly on mitigation measures; fixes, docs, CVE, replies to inquiries, etc. Yet nothing is stopping people to bash us, for work we aren't paid for, for a feature we all dislike yet needed to keep due to backward compatibility concerns. <a href="https://t.co/W2u6AcBUM8">https://t.co/W2u6AcBUM8</a></p>— Volkan Yazıcı (@yazicivo) <a href="https://twitter.com/yazicivo/status/1469349956880408583?ref_src=twsrc%5Etfw">December 10, 2021</a></blockquote>
+<blockquote class="twitter-tweet"><p dir="ltr" lang="en">Log4j maintainers have been working sleeplessly on mitigation measures; fixes, docs, CVE, replies to inquiries, etc. Yet nothing is stopping people to bash us, for work we aren't paid for, for a feature we all dislike yet needed to keep due to backward compatibility concerns. https://t.co/W2u6AcBUM8</p>— Volkan Yazıcı (@yazicivo) <a href="https://twitter.com/yazicivo/status/1469349956880408583?ref_src=twsrc%5Etfw">December 10, 2021</a></blockquote>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
@@ -110,7 +110,7 @@ Log4j2に関する情報収集の中で、海外の方は
 
 **Gradle（Javaのビルドツール）メンテナ**
 
-<blockquote class="twitter-tweet"><p dir="ltr" lang="en">It's a bit annoying how folks think that funding OSS would have avoided the log4j problem. It wouldn't. We all write bugs, more important is the process to fix them and how easy it is to upgrade. In this case despite not being paid, log4j maintainers did a great job.</p>— Cédric Champeau (@CedricChampeau) <a href="https://twitter.com/CedricChampeau/status/1470036680543555589?ref_src=twsrc%5Etfw">December 12, 2021</a></blockquote>
+<blockquote class="twitter-tweet"><p dir="ltr" lang="en">It's a bit annoying how folks think that funding OSS would have avoided the log4j problem. It wouldn't. We all write bugs, more important is the process to fix them and how easy it is to upgrade. In this case despite not being paid, log4j maintainers did a great job.</p>— Cédric Champeau (@CedricChampeau) December 12, 2021</blockquote>
 
 **意訳：**OSSに資金提供すればlog4jの問題を回避できたと、人々が考えるのはちょっと厄介です。そうではないと思います。私達は皆、バグを書きます。より重要なのは、バグを修正するプロセスと、アップグレードが簡単にできるかどうかという事です。今回のlog4jのケースでは、無給にも関わらず、log4jメンテナは素晴らしい仕事をしました。
 

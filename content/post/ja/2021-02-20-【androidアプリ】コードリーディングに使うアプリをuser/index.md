@@ -30,7 +30,7 @@ aliases:
 
 UserLAndは「Android環境でのLinux」という点でまだまだ魅力的な存在ですが、コードを読むだけであればAndroidアプリを選択した方が良いのではないかと感じ始めました。
 
-そこで、本記事ではAndroidでコードリーディングするために[「Source Code Viewer Pro（有料）」](https://play.google.com/store/apps/details?id=com.sourceviewerpro&hl=ja&gl=US)を試した感想を記載します。
+そこで、本記事ではAndroidでコードリーディングするために「Source Code Viewer Pro（有料）」を試した感想を記載します。
 
 ![](images/title.webp)
 

@@ -23,7 +23,7 @@ aliases:
 
 2018年2月頃、私は職場環境が変わり、定時退社できるようになっていました。毎日17時ぐらいに家に着くと、暇です。そんな中で、[Qiita](https://qiita.com/)経由で[ある記事](https://review-of-my-life.blogspot.com/2017/09/python-dmm-web-api-twitter.html?m=1)が目に入りました。
 
-上記の記事は、[DMM API](https://affiliate.dmm.com/api/)と[Twitter Bot](https://developer.twitter.com/en.html)で、R18な内容をつぶやくプログラムの紹介です。私は**「簡単に作れそうだな(事実、簡単)」**と感じただけでなく、**「人気作品を自動でツイートし続ければ、広告で儲かるのではないか」**と短絡的に考えました。人間の欲望に直結した商売が強い事は、歴史が証明しています。
+上記の記事は、[DMM API](https://affiliate.dmm.com/api/)と[Twitter Bot](https://developer.x.com/)で、R18な内容をつぶやくプログラムの紹介です。私は**「簡単に作れそうだな(事実、簡単)」**と感じただけでなく、**「人気作品を自動でツイートし続ければ、広告で儲かるのではないか」**と短絡的に考えました。人間の欲望に直結した商売が強い事は、歴史が証明しています。
 
 本記事では、実際にDMM APIを用いたTwitter Bot(自動広告)を作成し、得た知見を共有します。プログラムの作成方法は、記載しません。
 

@@ -22,7 +22,7 @@ aliases:
 
 ### 前書き：UbuntuはWelcomeメッセージが立派で邪魔
 
-ラズパイサーバ（[Raspberry Pi OS](https://www.raspberrypi.org/software/)）から[HP小型PC](https://amzn.to/3jQZUtz)（[Ubuntu 20.04](https://releases.ubuntu.com/20.04/)）にサーバ移行した時、UbuntuのWelcomeメッセージがラズパイより立派な事に気づきました。
+ラズパイサーバ（[Raspberry Pi OS](https://www.raspberrypi.org/software/)）からHP小型PC（[Ubuntu 20.04](https://releases.ubuntu.com/20.04/)）にサーバ移行した時、UbuntuのWelcomeメッセージがラズパイより立派な事に気づきました。
 
 例えば、Ubuntuにsshログインした時、以下のようなWelcomeメッセージが出ます。
 

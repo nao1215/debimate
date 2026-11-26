@@ -23,7 +23,7 @@ aliases:
 
 私は以前から、物書きやコードリーディングの用途で、ノートPCの購入を検討していました。
 
-で、2020年 賞与をいただいたタイミングで、[ドスパラ THIRDWAVE VF-AD4](https://www.dospara.co.jp/5shopping/detail_prime.php?mc=9479&sn=0)の購入に踏み切りました。お金をケチって整備品を購入したので、27,755円！安い！
+で、2020年 賞与をいただいたタイミングで、ドスパラ THIRDWAVE VF-AD4の購入に踏み切りました。お金をケチって整備品を購入したので、27,755円！安い！
 
 <blockquote class="twitter-tweet"><p dir="ltr" lang="ja">ドスパラのVF-AD4、設定完了<br>見た目がシンプルで、余計なロゴ無し、薄い、SSD増設が楽と完璧。<br><br>Ubuntu派生のelementary OSは、見た目がMacで、設定項目が少ないのも似ている。<br><br>デスクトップ環境はGTKとVala言語で構築されているっぽい。Vala開発者集めるの、大変じゃないのかな。<br>自分なら別言語使う <a href="https://t.co/exQpe9xjL5">pic.twitter.com/exQpe9xjL5</a></p>— Nao03 (@ARC_AED) <a href="https://twitter.com/ARC_AED/status/1340438267498356738?ref_src=twsrc%5Etfw">December 19, 2020</a></blockquote>
 
@@ -56,7 +56,7 @@ aliases:
 
 このような事情を踏まえて、以下のPCが候補に挙がりました（入出力ポートの情報は省略）
 
-| **PC名** | **[THIRDWAVE VF-AD4](https://www.dospara.co.jp/5shopping/detail_prime.php?tg=3&tc=275&ft=&mc=9479&sn=0&st=1&vr=10&tb=2#tabContents)** | **[TECLAST F7Plus](https://amzn.to/383EQeK)** | **[ThinkPad E595](https://amzn.to/3pLFkfz)** |
+| **PC名** | **THIRDWAVE VF-AD4** | **[TECLAST F7Plus](https://amzn.to/383EQeK)** | **ThinkPad E595** |
 | :-- | :-- | :-- | :-- |
 | **ディスプレイ** | 14.0インチ（1920×1080） | 14インチ（1920×1080） |  15.6インチ（1920×1080） |
 | **OS** | Windows 10 Pro 64 | Windows 10 Home | Windows 10 Home |
