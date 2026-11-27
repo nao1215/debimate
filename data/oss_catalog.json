@@ -418,6 +418,15 @@
       "stars": 6
     },
     {
+      "name": "misskey-terminal-client",
+      "category": "tui",
+      "language": "Rust",
+      "kind": "CLI",
+      "tagline": "ターミナルから Misskey を使う",
+      "description": "画像や動画、カスタム絵文字も表示する非公式クライアント。bluesky-terminal-client と同じキーで使えます。",
+      "stars": 1
+    },
+    {
       "name": "rabbitrun",
       "category": "games",
       "language": "Go",
