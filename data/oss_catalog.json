@@ -409,12 +409,12 @@
       }
     },
     {
-      "name": "sns-terminal-clients",
+      "name": "social-terminal-clients",
       "category": "tui",
       "language": "Rust",
       "kind": "CLI",
-      "tagline": "ターミナルから Bluesky を使う",
-      "description": "画像や動画も表示する非公式クライアント。kitty graphics・sixel・iTerm2 に対応します。",
+      "tagline": "ターミナルから Bluesky などの SNS を使う",
+      "description": "Bluesky の非公式クライアント bsky です。画像や動画もターミナルの中に表示し、kitty graphics・sixel・iTerm2 に対応します。Mastodon と Misskey のクライアントも同じリポジトリに加えていきます。",
       "stars": 6
     },
     {

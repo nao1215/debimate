@@ -19,7 +19,7 @@
 - latest: 種類ごとに最新の 1 件。
 
 二重投稿の防止: 投稿前に公開 API（getAuthorFeed、認証不要）で自分の投稿を遡り、同じ URL が既にあれば飛ばす。
-投稿は bsky（nao1215/sns-terminal-clients）の `bsky post` に任せる。URL は bsky が押せるリンクにする。
+投稿は bsky（nao1215/social-terminal-clients）の `bsky post` に任せる。URL は bsky が押せるリンクにする。
 """
 
 from __future__ import annotations
@@ -267,7 +267,7 @@ def posted_urls(actor: str, pages: int = 10) -> set[str]:
 # --- 投稿の本文 ---
 
 MAX_GRAPHEMES = 300  # Bluesky の本文の上限（bsky も同じ数で弾く）
-# bsky が URL の途中でもリンクを切る文字（sns-terminal-clients の src/api/facets.rs の URL_BREAK・TRAILING）
+# bsky が URL の途中でもリンクを切る文字（social-terminal-clients の src/api/facets.rs の URL_BREAK・TRAILING）
 URL_BREAK = set("、。，．！？：；「」『』【】〈〉《》〔〕［］｛｝　…〜“”‘’")
 TRAILING = set(".,;:!?)]}\"'」。、！？）』】〉》〕］｝，．：；…”’")
 
