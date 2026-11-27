@@ -54,8 +54,9 @@ def post_text(kind: str, title: str, url: str) -> str:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--mode", choices=("recent", "yesterday", "latest"), default="recent")
-    ap.add_argument("--date", help="yesterday の代わりに JST のこの日（YYYY-MM-DD）を対象にする")
+    ap.add_argument("--mode", choices=("recent", "yesterday", "since", "latest"), default="recent")
+    ap.add_argument("--date", help="yesterday ではその日だけ、since ではその日から今日まで（JST、YYYY-MM-DD）")
+    ap.add_argument("--max", type=int, default=ba.MAX_POSTS, help=f"これより多ければ何も投稿しない（既定 {ba.MAX_POSTS}）")
     ap.add_argument("--kinds", default=",".join(ba.KINDS), help=f"対象の種類（カンマ区切り）: {','.join(ba.KINDS)}")
     ap.add_argument("--dry-run", action="store_true", help="投稿せずに表示だけする")
     args = ap.parse_args()
@@ -67,9 +68,13 @@ def main() -> int:
     candidates: list[dict] = []
     rss = ba.rss_items() if set(kinds) & {"post", "notes", "ml"} else []
     today = dt.datetime.now(ba.JST).date()
-    if args.mode in ("recent", "yesterday"):
+    if args.mode in ("recent", "yesterday", "since"):
         if args.mode == "recent":
             first, last, end = today - dt.timedelta(days=1), today, None
+        elif args.mode == "since":
+            if not args.date:
+                ap.error("since には --date が要る")
+            first, last, end = dt.date.fromisoformat(args.date), today, None
         else:
             first = last = dt.date.fromisoformat(args.date) if args.date else today - dt.timedelta(days=1)
             end = dt.datetime.combine(last + dt.timedelta(days=1), dt.time(), ba.JST)
@@ -99,8 +104,8 @@ def main() -> int:
         seen.add(key)
         todo.append(c)
 
-    if len(todo) > ba.MAX_POSTS:
-        print(f"投稿が {len(todo)} 件あり上限 {ba.MAX_POSTS} を超えるため、何も投稿しない", file=sys.stderr)
+    if len(todo) > args.max:
+        print(f"投稿が {len(todo)} 件あり上限 {args.max} を超えるため、何も投稿しない", file=sys.stderr)
         for c in todo:
             print(f"  {c['kind']}: {c['title']} {c['url']}", file=sys.stderr)
         return 1

@@ -12,14 +12,18 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'recent: 昨日と今日の分 / yesterday: 昨日（または date の日）の分 / latest: 種類ごとに最新の 1 件'
+        description: 'recent: 昨日と今日の分 / yesterday: 昨日（または date の日）の分 / since: date の日から今日までの分 / latest: 種類ごとに最新の 1 件'
         type: choice
-        options: [recent, yesterday, latest]
+        options: [recent, yesterday, since, latest]
         default: recent
       date:
-        description: 'yesterday の代わりに対象にする JST の日（YYYY-MM-DD、空なら昨日）'
+        description: 'yesterday ではその日だけ、since ではその日から今日まで（JST の YYYY-MM-DD。yesterday で空なら昨日）'
         type: string
         default: ''
+      max:
+        description: 'これより多ければ何も投稿しない'
+        type: string
+        default: '10'
       kinds:
         description: '対象の種類（カンマ区切り）'
         type: string
@@ -71,11 +75,12 @@ jobs:
           MSKY_CONFIG_DIR: ${{ runner.temp }}/msky-config
           MODE: ${{ inputs.mode || 'recent' }}
           DATE: ${{ inputs.date }}
+          MAX: ${{ inputs.max || '10' }}
           KINDS: ${{ inputs.kinds || 'post,notes,ml,weeknotes' }}
           DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
         run: |
           msky --version
-          args=(--mode "$MODE" --kinds "$KINDS")
+          args=(--mode "$MODE" --kinds "$KINDS" --max "$MAX")
           [ -n "$DATE" ] && args+=(--date "$DATE")
           [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
           python3 scripts/msky_announce.py "${args[@]}"
