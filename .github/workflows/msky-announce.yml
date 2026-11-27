@@ -1,0 +1,81 @@
+name: Announce new pages on Misskey
+
+# bsky-announce.yml と同じ対象・同じ範囲を、Misskey（misskey.io）へ「種類：題名 + 改行 + URL」で投稿する
+# （scripts/msky_announce.py）。投稿済みの URL と、まだ公開されていない URL は飛ばす。
+# 要る secrets: MSKY_TOKEN（misskey.io の設定 → API で作るアクセストークン。read:account と write:notes）
+# 要る variables: MSKY_VERSION（使う msky のリリース。例 v0.1.0）。msky を公開してリリースするまでは
+#                 設定しない。設定されていない間、このジョブは何もせずに終わる。
+on:
+  schedule:
+    # bsky の 12:17 JST と同じ回に流す。半端な分は cron の混雑を避けるため
+    - cron: '19 3 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'recent: 昨日と今日の分 / yesterday: 昨日（または date の日）の分 / latest: 種類ごとに最新の 1 件'
+        type: choice
+        options: [recent, yesterday, latest]
+        default: recent
+      date:
+        description: 'yesterday の代わりに対象にする JST の日（YYYY-MM-DD、空なら昨日）'
+        type: string
+        default: ''
+      kinds:
+        description: '対象の種類（カンマ区切り）'
+        type: string
+        default: 'post,notes,ml,weeknotes'
+      dry_run:
+        description: '投稿せずに表示だけする（msky post --dry-run で本文とプレビューを確かめる）'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: msky-announce
+  cancel-in-progress: false
+
+jobs:
+  announce:
+    if: vars.MSKY_VERSION != ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MSKY_VERSION: ${{ vars.MSKY_VERSION }}
+      MSKY_HOST: misskey.io
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # weeknotes の見出しを足した commit を日付で探すので履歴が要る
+          fetch-depth: 0
+          filter: blob:none
+
+      - name: Install msky
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          dir="$RUNNER_TEMP/msky-dl"
+          mkdir -p "$dir" "$HOME/.local/bin"
+          asset="msky-${MSKY_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          gh release download "$MSKY_VERSION" -R nao1215/misskey-terminal-client -D "$dir" -p "$asset" -p checksums.txt
+          (cd "$dir" && grep " ${asset}\$" checksums.txt | sha256sum -c -)
+          tar -xzf "$dir/$asset" -C "$dir"
+          install -m 0755 "$(find "$dir" -type f -name msky | head -1)" "$HOME/.local/bin/msky"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Post
+        env:
+          MSKY_TOKEN: ${{ secrets.MSKY_TOKEN }}
+          MSKY_CONFIG_DIR: ${{ runner.temp }}/msky-config
+          MODE: ${{ inputs.mode || 'recent' }}
+          DATE: ${{ inputs.date }}
+          KINDS: ${{ inputs.kinds || 'post,notes,ml,weeknotes' }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+        run: |
+          msky --version
+          args=(--mode "$MODE" --kinds "$KINDS")
+          [ -n "$DATE" ] && args+=(--date "$DATE")
+          [ "$DRY_RUN" = "true" ] && args+=(--dry-run)
+          python3 scripts/msky_announce.py "${args[@]}"
