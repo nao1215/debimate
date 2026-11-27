@@ -423,7 +423,7 @@
       "language": "Rust",
       "kind": "CLI",
       "tagline": "ターミナルから Misskey を使う",
-      "description": "画像や動画、カスタム絵文字も表示する非公式クライアント。bluesky-terminal-client と同じキーで使えます。",
+      "description": "画像や動画、カスタム絵文字も表示する非公式クライアント。kitty graphics・sixel・iTerm2 に対応します。",
       "stars": 1
     },
     {
