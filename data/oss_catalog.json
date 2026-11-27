@@ -409,7 +409,7 @@
       }
     },
     {
-      "name": "bluesky-terminal-client",
+      "name": "sns-terminal-clients",
       "category": "tui",
       "language": "Rust",
       "kind": "CLI",

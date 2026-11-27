@@ -59,7 +59,7 @@ jobs:
           dir="$RUNNER_TEMP/bsky-dl"
           mkdir -p "$dir" "$HOME/.local/bin"
           asset="bsky-${BSKY_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
-          gh release download "$BSKY_VERSION" -R nao1215/bluesky-terminal-client -D "$dir" -p "$asset" -p checksums.txt
+          gh release download "$BSKY_VERSION" -R nao1215/sns-terminal-clients -D "$dir" -p "$asset" -p checksums.txt
           (cd "$dir" && grep " ${asset}\$" checksums.txt | sha256sum -c -)
           tar -xzf "$dir/$asset" -C "$dir"
           install -m 0755 "$(find "$dir" -type f -name bsky | head -1)" "$HOME/.local/bin/bsky"

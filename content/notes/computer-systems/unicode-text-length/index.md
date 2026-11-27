@@ -23,7 +23,7 @@ topics: ["Text / Unicode"]
 - 画面に `id` と表示された列名は、SQL で `id` と書けば見つかる。
 - 文字に戻せないバイトがあれば、どこかでエラーになる。
 
-実例に使う OSS は、CSV や Excel に SQL を実行する [sqly](https://github.com/nao1215/sqly) と、sqly がファイルの読み込みと書き出しに使うライブラリの [filesql](https://github.com/nao1215/filesql)、ログの秘密情報を伏せる [embargo](https://github.com/nao1215/embargo)、端末の入力欄を作る [prompt](https://github.com/nao1215/prompt)、SNS の Bluesky を端末で使うクライアントの [bsky](https://github.com/nao1215/bluesky-terminal-client) です。
+実例に使う OSS は、CSV や Excel に SQL を実行する [sqly](https://github.com/nao1215/sqly) と、sqly がファイルの読み込みと書き出しに使うライブラリの [filesql](https://github.com/nao1215/filesql)、ログの秘密情報を伏せる [embargo](https://github.com/nao1215/embargo)、端末の入力欄を作る [prompt](https://github.com/nao1215/prompt)、SNS の Bluesky を端末で使うクライアントの [bsky](https://github.com/nao1215/sns-terminal-clients) です。
 
 <br>
 
