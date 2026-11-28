@@ -414,7 +414,7 @@
       "language": "Rust",
       "kind": "CLI",
       "tagline": "ターミナルから Bluesky と Misskey を使う",
-      "description": "Bluesky の非公式クライアント bsky と、Misskey の非公式クライアント msky です。どちらも画像や動画をターミナルの中に表示し、kitty graphics・sixel・iTerm2 に対応します。",
+      "description": "Bluesky、Misskey ターミナルクライアント。画像や動画もターミナルの中に表示し、kitty graphics・sixel・iTerm2 に対応します。",
       "stars": 6
     },
     {
