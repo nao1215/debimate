@@ -330,10 +330,13 @@ jobs:
           } >> "${GITHUB_STEP_SUMMARY}"
           rm -f "${sizes}"
 
+      # include-hidden-files: static/.well-known/nostr.json（Nostr の NIP-05、nchika@debimate.jp）を
+      # 公開するため。v5 は既定でドットで始まるファイルを artifact から外す（.git と .github は常に外れる）
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
           path: ./public
+          include-hidden-files: true
 
   deploy:
     environment:
