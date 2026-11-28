@@ -413,8 +413,8 @@
       "category": "tui",
       "language": "Rust",
       "kind": "CLI",
-      "tagline": "ターミナルから Bluesky を使う",
-      "description": "Bluesky の非公式クライアント bsky です。画像や動画もターミナルの中に表示し、kitty graphics・sixel・iTerm2 に対応します。",
+      "tagline": "ターミナルから Bluesky と Misskey を使う",
+      "description": "Bluesky の非公式クライアント bsky と、Misskey の非公式クライアント msky です。どちらも画像や動画をターミナルの中に表示し、kitty graphics・sixel・iTerm2 に対応します。",
       "stars": 6
     },
     {
